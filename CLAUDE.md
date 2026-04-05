@@ -24,6 +24,8 @@
 - One step at a time on deployments. Confirm before proceeding.
 - End every session: "update the MD" → commit only changed files.
 - Log decisions when made. Log lessons when the pain is fresh.
+- GitHub MCP is connected — use it to read/write eq-context directly.
+- If GitHub MCP tools not loading in session, use API token as fallback.
 
 ---
 
@@ -59,6 +61,7 @@
 ## Current Focus (detail in state/pending.md)
 
 - SKS Receipt Tracker: deploy Cloudflare Worker, battle-test
+- eq-context: GitHub MCP connected — update the MD works natively next session
 - AHD: first property acquisition, solicitor engagement
 - FY24/25 tax lodgement across all entities
 - EQ trademark: monitor post August 2026
