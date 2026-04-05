@@ -47,17 +47,19 @@ Add new items at the time they arise — not reconstructed later.
 - [ ] Audit trail
 
 ## Context & Infrastructure
-- [ ] Connect GitHub MCP to Claude account (Settings → Integrations)
-- [ ] Create eq-context repo in eq-solutions org (private)
-- [ ] Commit initial eq-context folder structure to repo
-- [ ] Confirm Supabase MCP connected and working in chat sessions
+- [x] Connect GitHub MCP to Claude account — DONE 2026-04-05
+- [x] Create eq-solutions/eq-context repo — DONE 2026-04-05
+- [x] Commit initial eq-context folder structure — DONE 2026-04-05
+- [ ] Confirm GitHub MCP read/write working in fresh chat session
+- [ ] Revoke temporary GitHub PATs once MCP confirmed working
 
 ---
 
 ## Completed (recent)
 - [x] SKS Receipt Tracker v2.0 built — single HTML, Cloudflare Worker, SheetJS export (2026-04-05)
 - [x] Cloudflare Worker (worker.js) written — generic Anthropic proxy, shared across all apps (2026-04-05)
-- [x] eq-context folder structure created — CLAUDE.md + rules/ + state/ + knowledge/ + sessions/ (2026-04-05)
+- [x] eq-context repo created and populated — eq-solutions/eq-context (2026-04-05)
+- [x] GitHub MCP connected to Claude account (2026-04-05)
 - [x] EQ trademark accepted early by IP Australia (2026-04-01)
 - [x] EQ Property Solutions incorporated (2026-03-14)
 - [x] EQ business name transferred to CDC Solutions (2026-03-15)
