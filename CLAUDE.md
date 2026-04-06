@@ -1,67 +1,118 @@
-# EQ Context — Master Index
+﻿# CLAUDE.md — EQ Solutions Global Rules
 
-> This is the first file Claude reads in every session.
-> It is a map, not a document. Detail lives in subfiles.
-> When updating: edit the relevant subfile, not this one.
-> Last updated: 2026-04-05
-
----
-
-## Who & What
-
-**Royce Milmlow** — founder of EQ Solutions, NSW Operations Manager at SKS Technologies.
-**Emma Curth** — co-director, EQ Property Solutions and CDC Solutions.
-**Entity trading as EQ:** CDC Solutions Pty Ltd (ACN 651 962 935).
-**Accountant:** Webb Financial (Andrew, agent 25818815).
-**Primary email:** royce@eq.solutions
+> This file governs all Claude sessions across EQ Solutions, SKS Technologies, and related entities.
+> Read this first. Apply all rules below throughout the session.
+> Last updated: 2026-04-06
 
 ---
 
-## How We Work
-
-- Deliver complete drafts first. Explain briefly after. No preamble.
-- Working before refactoring. Never restructure while fixing.
-- One step at a time on deployments. Confirm before proceeding.
-- End every session: "update the MD" → commit only changed files.
-- Log decisions when made. Log lessons when the pain is fresh.
-- GitHub MCP is connected — use it to read/write eq-context directly.
-- If GitHub MCP tools not loading in session, use API token as fallback.
+## Session Start Protocol
+1. Read this file in full
+2. Read state/pending.md - know what's outstanding
+3. Confirm what you've read, then ask what we're working on today
 
 ---
 
-## File Map
+## Live Context Rule (Non-Negotiable)
 
-| File | What it contains | Update frequency |
-|------|-----------------|-----------------|
-| `rules/deployment.md` | Deployment guardrails, branch rules, cross-deploy prohibitions | Rarely |
-| `rules/brand.md` | Colours, fonts, logo rules for EQ and subsidiaries | Rarely |
-| `rules/non-negotiables.md` | Hard rules Claude never breaks | Rarely |
-| `state/products.md` | Every product — current version, status, URLs, architecture | Each session |
-| `state/pending.md` | Active to-do list across all workstreams | Every session |
-| `state/entities.md` | Business entities, bank accounts, key contacts, credentials index | When things change |
-| `knowledge/architecture.md` | Why things are built the way they are | When decisions are made |
-| `knowledge/lessons.md` | Technical gotchas and hard-won learnings | When pain is fresh |
-| `knowledge/decisions.md` | Key decisions made and the reasoning behind them | When decisions are made |
-| `sessions/YYYY-MM-DD.md` | What was worked on, what changed, what's next | Each session |
+This repo (eq-solutions/eq-context) is the single source of truth for all project context.
 
----
+### How to access (depends on which mode you are in):
+- Cowork mode: Use Claude in Chrome to navigate to GitHub and read/edit files
+- Chat mode: Use GitHub MCP tools (get_file_contents, create_or_update_file)
+- Code mode: Use git CLI (pull, commit, push)
 
-## Non-Negotiables (full detail in rules/non-negotiables.md)
+### At session start:
+1. Read this file + state/pending.md + relevant changelog/ files
+2. Confirm context before starting work
 
-1. Never deploy without explicit instruction
-2. Never expose Anthropic API key in frontend
-3. Never cross-deploy between EQ and SKS codebases
-4. Never spin up a new Supabase project — use eq-field-app always
-5. Never remove DEMO_FLAG comments
-6. Never reference GKE Lawyers or Gilbert + Tobin
-7. Never include 173 Chuter Ave in marketing materials
+### At session end:
+1. Update all relevant changelog/[PROJECT].md files
+2. Update state/pending.md with any new outstanding items
+3. Commit changes to eq-solutions/eq-context on main
+4. Commit message format: chore(context): [date] session update - [short description]
+
+### Between sessions:
+- Never assume context from memory - always read the repo files
+- If GitHub access is unavailable, produce a zip for manual commit (fallback only)
 
 ---
 
-## Current Focus (detail in state/pending.md)
+## Changelog Rule (Non-Negotiable)
+At the end of every session where code, documents, or decisions were produced:
 
-- SKS Receipt Tracker: deploy Cloudflare Worker, battle-test
-- eq-context: GitHub MCP connected — update the MD works natively next session
-- AHD: first property acquisition, solicitor engagement
-- FY24/25 tax lodgement across all entities
-- EQ trademark: monitor post August 2026
+1. Identify which project(s) were touched
+2. Write a changelog entry with: date, session URL, who built it, what changed, current status
+3. Append to the relevant changelog/[PROJECT].md file
+4. If multiple projects were touched, update all relevant changelogs
+5. Never skip this step - it is the permanent audit trail proving development history and IP origin
+
+Changelog files:
+- changelog/EQ-FIELD.md
+- changelog/EQ-EXPENSES.md
+- changelog/EQ-QUOTES.md
+- changelog/EQ-OPS.md
+- changelog/SKS-LABOUR.md
+- changelog/AHD.md
+- changelog/EQ-CONTEXT.md
+
+---
+
+## Deployment Rules (Non-Negotiable)
+- eq.solutions: Cloudflare Pages as zip bundle (EQ Quotes, EQ Ops, website)
+- EQ Field demo: Netlify via GitHub, demo branch ONLY
+- SKS live app: sks-nsw-labour.netlify.app, main branch ONLY
+- Never cross-deploy between these targets
+- Never push to demo branch without explicit instruction from Royce
+- Never deploy to eq-solves-field.netlify.app directly
+
+---
+
+## Supabase Guardrails
+- Always confirm which project/DB before connecting
+- Never run INSERT, UPDATE, DELETE, or schema changes without explicit approval
+- Read-only SELECT is fine - state query before executing
+- Never touch SKS live data unless Royce explicitly says SKS live
+
+---
+
+## Cowork Guardrails
+- Never delete files without permission
+- Never hardcode API keys
+- Never push to GitHub branches without explicit per-session approval
+- Auth changes require Chat review before deployment
+- State intended actions and wait for go-ahead before proceeding
+- Working before refactoring - always
+
+---
+
+## Self-Critique
+Triggers: stress test this, devils advocate, give me the 10/10 version
+Apply on complex, strategic, or high-stakes tasks only.
+
+---
+
+## Design Standard (EQ Design Brief v1.2)
+- Font: Plus Jakarta Sans
+- Primary: #3DA8D8 (Sky Blue)
+- Background: #EAF5FB (Ice)
+- Text: #1A1A2E (Ink)
+
+---
+
+## Entity Structure
+- Milmlow Holdings (trustee) > Milmlow Family Trust > Allcraft Solutions (beneficiary)
+- CDC Solutions (trustee) > Hexican Holdings Trust (crypto, consulting, EQ ventures)
+- EQ Property Solutions (directors: Royce Milmlow + Emma Curth)
+- EQ Solutions (not yet incorporated)
+- Hexican SMSF
+- All entities: Australian FY (1 Jul - 30 Jun)
+- Accountant: Webb Financial
+
+---
+
+## Key People
+- Royce Milmlow - NSW Operations Manager, SKS Technologies / Director, EQ Solutions
+- Emma Curth - Co-director, CDC Solutions + EQ Property Solutions / Owner, Favour Perfect
+- Simon Bramall - Project Manager, SKS
+- Leif Lundberg, Jack Cluff, Federico Sander, Nathan Anderson - Job Managers, SKS
