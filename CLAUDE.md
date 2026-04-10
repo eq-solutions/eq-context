@@ -80,3 +80,4 @@ Context sync layer between AI tools.
 - **90-day AI career plan** — using AI to accelerate EQ Solutions and demonstrate real-world AI product capability
 - **EQ Tender:** Proving it as a product. Refactoring for real contractor workflow. Lowering barrier to entry.
 - **Priority order this week:** EQ Tender refactor → EQ Context setup → EQ Field App maintenance
+<!-- last-sync-test: 2026-04-10 -->
