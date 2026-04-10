@@ -1,6 +1,13 @@
-# Rules — Brand
+---
+title: Rules — Brand
+owner: Royce Milmlow
+last_updated: 2026-04-10
+scope: EQ, EQ Property, and SKS brand palettes, typography, and logo rules
+read_priority: standard
+status: live
+---
 
-Last updated: 2026-04-05
+# Rules — Brand
 
 ---
 
@@ -69,7 +76,8 @@ Subsidiary palettes vary supporting colours only. The logo mark stays Sky Blue a
 - Never stretch, skew, or distort
 - Never place on busy photographic backgrounds
 - Always use transparent-background SVGs for production work
-- SVG source files held in EQ Claude Project (rename to .txt for upload workaround)
+- SVG source files held in the EQ assets project workspace (rename to .txt for upload
+  into Claude.ai — see `knowledge/lessons.md` for the .svg upload workaround)
 - PNG raster exports exist but are legacy — SVG is source of truth
 
 ---

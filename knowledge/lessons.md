@@ -1,6 +1,13 @@
-# Knowledge — Lessons Learned
+---
+title: Knowledge — Lessons Learned
+owner: Royce Milmlow
+last_updated: 2026-04-10
+scope: Hard-won technical gotchas; append-only
+read_priority: reference
+status: live
+---
 
-Last updated: 2026-04-05
+# Knowledge — Lessons Learned
 
 Hard-won technical knowledge. Append — never overwrite.
 Format: what went wrong → what the fix is → why it matters.

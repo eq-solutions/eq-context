@@ -1,18 +1,35 @@
+---
+title: eq-context — Repository README
+owner: Royce Milmlow
+last_updated: 2026-04-10
+scope: Human-readable entry point for the eq-context repository
+read_priority: reference
+status: live
+---
+
 # eq-context
 
-Private context repository for EQ Solutions — used by Claude (chat, Cowork, Code)
-to maintain continuity across sessions.
+Private context repository for EQ Solutions — used by any LLM assistant
+(Claude chat, Cowork, Code; Cursor; Codex; Perplexity; ChatGPT; Gemini;
+future tools) to maintain continuity across sessions.
+
+**Entry points:**
+- `CLAUDE.md` — global rules (Claude Code auto-loads this)
+- `AGENTS.md` — equivalent entry point for non-Claude tools
+- `MD_BEST_PRACTICES.md` — style guide for writing or updating any MD in this repo
 
 ## How it works
 
-Every conversation with Claude that produces new knowledge, decisions, or state changes
-ends with "update the MD". Claude commits only the files that changed, with a clear
-commit message describing what was added.
+Every assistant conversation that produces new knowledge, decisions, or state changes
+ends with "update the MD". The assistant commits only the files that changed, with a
+clear commit message describing what was added.
 
 ## Structure
 
 ```
-CLAUDE.md                  ← Master index — Claude reads this first, always
+CLAUDE.md                  ← Master index — assistants read this first, always
+AGENTS.md                  ← Tool-neutral equivalent entry point
+MD_BEST_PRACTICES.md       ← Style standard for writing/updating any MD in this repo
 rules/
   deployment.md            ← Deployment guardrails, never break these
   brand.md                 ← Colours, fonts, logo rules

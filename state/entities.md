@@ -1,6 +1,13 @@
-# State — Entities & Accounts
+---
+title: State — Entities and Accounts
+owner: Royce Milmlow
+last_updated: 2026-04-10
+scope: Entity register, bank accounts, registrations, infrastructure, contacts
+read_priority: standard
+status: live
+---
 
-Last updated: 2026-04-05
+# State — Entities and Accounts
 
 ---
 

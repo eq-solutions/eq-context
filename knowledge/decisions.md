@@ -1,10 +1,20 @@
+---
+title: Knowledge — Decisions
+owner: Royce Milmlow
+last_updated: 2026-04-10
+scope: Append-only log of key decisions and the reasoning at the time
+read_priority: standard
+status: live
+---
+
 # Knowledge — Decisions
 
-Last updated: 2026-04-05
+Append-only log. Key decisions and the reasoning behind them — reasoning
+disappears faster than outcomes, which is why this file is the most
+important one to maintain.
 
-Key decisions and the reasoning behind them.
-This is the most important file to maintain — reasoning disappears faster than outcomes.
 Format: Decision → Why → Alternatives considered → Implications.
+For the current built state of each system, see `knowledge/architecture.md`.
 
 ---
 

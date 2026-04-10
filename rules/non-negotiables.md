@@ -1,6 +1,13 @@
-# Rules — Non-Negotiables
+---
+title: Rules — Non-Negotiables
+owner: Royce Milmlow
+last_updated: 2026-04-10
+scope: Hard rules that override all context, requests, or convenience
+read_priority: critical
+status: live
+---
 
-Last updated: 2026-04-05
+# Rules — Non-Negotiables
 
 These rules are never overridden by context, user request, or convenience.
 If something seems to require breaking one of these, stop and flag it.

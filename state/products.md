@@ -1,6 +1,13 @@
-# State — Products
+---
+title: State — Products
+owner: Royce Milmlow
+last_updated: 2026-04-10
+scope: Current live status of every EQ and SKS product
+read_priority: standard
+status: live
+---
 
-Last updated: 2026-04-05
+# State — Products
 
 ---
 

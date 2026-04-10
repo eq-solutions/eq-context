@@ -1,6 +1,13 @@
-# State — Pending Actions
+---
+title: State — Pending Actions
+owner: Royce Milmlow
+last_updated: 2026-04-10
+scope: Live to-do list across all workstreams; overwrite in place
+read_priority: critical
+status: live
+---
 
-Last updated: 2026-04-05
+# State — Pending Actions
 
 Items are grouped by workstream. Tick off or remove when done.
 Add new items at the time they arise — not reconstructed later.

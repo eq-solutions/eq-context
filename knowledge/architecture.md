@@ -1,9 +1,17 @@
+---
+title: Knowledge — Architecture
+owner: Royce Milmlow
+last_updated: 2026-04-10
+scope: Current state of how systems are built and how they fit together
+read_priority: standard
+status: live
+---
+
 # Knowledge — Architecture
 
-Last updated: 2026-04-05
-
-Why things are built the way they are.
-This file explains reasoning, not just facts.
+Describes how systems are currently built. For the *decision* behind each
+choice (alternatives considered, reasoning at the time), see
+`knowledge/decisions.md`. This file is the "what", decisions.md is the "why".
 
 ---
 

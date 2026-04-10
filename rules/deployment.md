@@ -1,6 +1,13 @@
-# Rules — Deployment
+---
+title: Rules — Deployment
+owner: Royce Milmlow
+last_updated: 2026-04-10
+scope: Deployment guardrails for EQ and SKS sites and infrastructure
+read_priority: critical
+status: live
+---
 
-Last updated: 2026-04-05
+# Rules — Deployment
 
 ---
 

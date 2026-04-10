@@ -1,8 +1,18 @@
-﻿# CLAUDE.md — EQ Solutions Global Rules
+﻿---
+title: CLAUDE.md — EQ Solutions Global Rules
+owner: Royce Milmlow
+last_updated: 2026-04-10
+scope: All assistants working on EQ / SKS / AHD context (tool-neutral)
+read_priority: critical
+status: live
+---
 
-> This file governs all Claude sessions across EQ Solutions, SKS Technologies, and related entities.
+# CLAUDE.md — EQ Solutions Global Rules
+
+> This file governs all assistant sessions across EQ Solutions, SKS Technologies, and related entities.
 > Read this first. Apply all rules below throughout the session.
-> Last updated: 2026-04-06
+> `AGENTS.md` is an equivalent entry point for non-Claude tools.
+> Style standard for writing/updating any file in this repo: see `MD_BEST_PRACTICES.md`.
 
 ---
 
@@ -17,10 +27,11 @@
 
 This repo (eq-solutions/eq-context) is the single source of truth for all project context.
 
-### How to access (depends on which mode you are in):
-- Cowork mode: Use Claude in Chrome to navigate to GitHub and read/edit files
-- Chat mode: Use GitHub MCP tools (get_file_contents, create_or_update_file)
-- Code mode: Use git CLI (pull, commit, push)
+### How to access (tool-specific):
+- Claude Cowork: Use Claude in Chrome to navigate to GitHub and read/edit files
+- Claude Chat: Use GitHub MCP tools (get_file_contents, create_or_update_file)
+- Claude Code / Cursor / Codex: Use git CLI (pull, commit, push)
+- Perplexity / other read-only tools: Read raw files from GitHub web view
 
 ### At session start:
 1. Read this file + state/pending.md + relevant changelog/ files
