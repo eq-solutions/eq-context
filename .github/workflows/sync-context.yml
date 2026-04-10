@@ -1,0 +1,80 @@
+name: Sync context files to Supabase
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '*.md'
+      - 'rules/**'
+      - 'state/**'
+      - 'knowledge/**'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Sync MD files to Supabase
+        env:
+          SUPABASE_URL: https://urjhmkhbgaxrofurpbgc.supabase.co
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          python3 << 'PYEOF'
+          import urllib.request
+          import urllib.error
+          import json
+          import os
+
+          SUPABASE_URL = os.environ["SUPABASE_URL"]
+          SERVICE_KEY  = os.environ["SUPABASE_SERVICE_ROLE_KEY"]
+
+          # slug → filename mapping (all at repo root)
+          FILES = {
+              "eq":     "CLAUDE.md",
+              "sks":    "SKS-CONTEXT.md",
+              "cowork": "COWORK-PROMPT.md",
+              "rules":  "AI-RULES.md",
+              "agents": "AGENTS.md",
+          }
+
+          def upsert(slug, filename):
+              try:
+                  with open(filename, "r") as f:
+                      content = f.read()
+              except FileNotFoundError:
+                  print(f"  {slug}: {filename} not found — skipping")
+                  return
+
+              payload = json.dumps({
+                  "slug":     slug,
+                  "filename": filename,
+                  "content":  content,
+              }).encode("utf-8")
+
+              req = urllib.request.Request(
+                  f"{SUPABASE_URL}/rest/v1/context_files?on_conflict=slug",
+                  data=payload,
+                  headers={
+                      "apikey":        SERVICE_KEY,
+                      "Authorization": f"Bearer {SERVICE_KEY}",
+                      "Content-Type":  "application/json",
+                      "Prefer":        "resolution=merge-duplicates,return=minimal",
+                  },
+                  method="POST",
+              )
+              try:
+                  with urllib.request.urlopen(req) as resp:
+                      print(f"  {slug} ({filename}): synced ✓  [{len(content)} chars]")
+              except urllib.error.HTTPError as e:
+                  body = e.read().decode()
+                  print(f"  {slug} ({filename}): ERROR {e.code} — {body}")
+                  raise
+
+          print("Syncing context files to Supabase...")
+          for slug, filename in FILES.items():
+              upsert(slug, filename)
+          print("Done.")
+          PYEOF
