@@ -9,6 +9,8 @@ on:
       - 'rules/**'
       - 'state/**'
       - 'knowledge/**'
+      - 'sessions/**'
+      - 'changelog/**'
 
 jobs:
   sync:
@@ -17,7 +19,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Sync MD files to Supabase
+      - name: Sync all MD files to Supabase
         env:
           SUPABASE_URL: https://urjhmkhbgaxrofurpbgc.supabase.co
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
@@ -27,12 +29,13 @@ jobs:
           import urllib.error
           import json
           import os
+          import glob
 
           SUPABASE_URL = os.environ["SUPABASE_URL"]
           SERVICE_KEY  = os.environ["SUPABASE_SERVICE_ROLE_KEY"]
 
-          # slug → filename mapping (all at repo root)
-          FILES = {
+          # Root files: slug → filename
+          ROOT_FILES = {
               "eq":     "CLAUDE.md",
               "sks":    "SKS-CONTEXT.md",
               "cowork": "COWORK-PROMPT.md",
@@ -40,17 +43,26 @@ jobs:
               "agents": "AGENTS.md",
           }
 
-          def upsert(slug, filename):
+          # Subdirectory files: slug = relative path (e.g. "state/pending.md")
+          SUBDIR_PATTERNS = [
+              "state/*.md",
+              "rules/*.md",
+              "knowledge/*.md",
+              "sessions/*.md",
+              "changelog/*.md",
+          ]
+
+          def upsert(slug, filepath):
               try:
-                  with open(filename, "r") as f:
+                  with open(filepath, "r") as f:
                       content = f.read()
               except FileNotFoundError:
-                  print(f"  {slug}: {filename} not found — skipping")
+                  print(f"  {slug}: {filepath} not found — skipping")
                   return
 
               payload = json.dumps({
                   "slug":     slug,
-                  "filename": filename,
+                  "filename": filepath,
                   "content":  content,
               }).encode("utf-8")
 
@@ -67,14 +79,21 @@ jobs:
               )
               try:
                   with urllib.request.urlopen(req) as resp:
-                      print(f"  {slug} ({filename}): synced ✓  [{len(content)} chars]")
+                      print(f"  {slug}: synced ✓  [{len(content)} chars]")
               except urllib.error.HTTPError as e:
                   body = e.read().decode()
-                  print(f"  {slug} ({filename}): ERROR {e.code} — {body}")
+                  print(f"  {slug}: ERROR {e.code} — {body}")
                   raise
 
-          print("Syncing context files to Supabase...")
-          for slug, filename in FILES.items():
+          print("=== Syncing root context files ===")
+          for slug, filename in ROOT_FILES.items():
               upsert(slug, filename)
+
+          print("=== Syncing subdirectory MD files ===")
+          for pattern in SUBDIR_PATTERNS:
+              for filepath in sorted(glob.glob(pattern)):
+                  slug = filepath  # e.g. "state/pending.md"
+                  upsert(slug, filepath)
+
           print("Done.")
           PYEOF
