@@ -21,7 +21,7 @@ jobs:
 
       - name: Sync all MD files to Supabase
         env:
-          SUPABASE_URL: https://vjvamvfpbwcqfudousmg.supabase.co
+          SUPABASE_URL: https://urjhmkhbgaxrofurpbgc.supabase.co
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: |
           python3 << 'PYEOF'
