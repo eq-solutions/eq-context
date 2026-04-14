@@ -65,19 +65,6 @@ status: live
 
 ---
 
-## SKS Receipt Tracker (v2.0)
-**Status:** Battle-testing
-**Architecture:** Cloudflare Worker (shared anthropic-proxy) + single index.html + localStorage
-**Distribution:** Share index.html directly or host as static file
-**Export:** Weekly SKS-format Excel claim + FY summary (SheetJS, client-side)
-**Pending:**
-- Deploy Cloudflare Worker (anthropic-proxy)
-- Configure Worker URL in Settings on each PC
-- Battle-test: receipt scanning accuracy, weekly export, Excel compatibility
-- Future: migrate localStorage → Supabase (eq-field-app, sks_ prefix) for multi-user
-
----
-
 ## Australian Housing Dividend (AHD)
 **Status:** Pre-acquisition
 **Entity:** EQ Property Solutions Pty Ltd (ACN 696 198 482, ABN 82 696 198 482)
@@ -93,3 +80,27 @@ status: live
 - First property acquisition
 - Solicitor engagement (ISA, MIS opinion, EISP)
 - Government engagement letter (NSW Treasurer) ~6 months after first bonus paid
+
+- 
+## SKS Labour App (v3.3.7)
+**Status:** Live
+**URL:** sks-nsw-labour.netlify.app
+**Repo:** eq-solutions/eq-field-app, **main branch only**
+**Architecture:** Single-page PWA, vanilla JS (modularised into ~17 script files),
+  Supabase backend, Netlify Functions for PIN auth + email + AI agent
+**Users:** ~55 SKS NSW field staff and supervisors
+**Key details:**
+- Staff PIN: `2026` (read-only + staff timesheet self-entry)
+- Supervisor password: `SKSNSW` (full edit)
+- Service worker: network-first for JS/CSS/HTML, cache-first for icons (fixed in v3.3.7)
+- Netlify Site ID: bd00e7db-09a4-4f0e-a996-105cd63b0c8b
+- SKS tenant org_id: 1eb831f9-aeae-4e57-b49e-9681e8f51e15
+**Reference:** see `SKS_LABOUR_APP.md` in the sks-nsw-labour repo for full technical details
+
+---
+
+## EQ Solves — Service
+**Status:** Live
+**URL:** eq-solves-service.netlify.app
+**Architecture:** Single HTML file, Supabase backend
+**Deploy:** GitHub CD
