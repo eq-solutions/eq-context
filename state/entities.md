@@ -75,8 +75,14 @@ Royce Director ID: 036 71246 96371 17
 
 | Person | Role | Notes |
 |--------|------|-------|
-| John Murphy | Jemena Client Services Manager (Melbourne) | SKS/Jemena account |
-| Leanne McDuff | Jemena Client Services Lead Support (Melbourne) | SKS/Jemena account |
-| Anthony Hartley | SKS technician | Undocumented Jemena site knowledge |
-| John Angangan | SKS NSW technician | Jemena sites |
 | Mark Brame | Delta Elcom | Invoice recipient; Unit 27/10 Gladstone Rd Castle Hill NSW 2154 |
+
+---
+
+## SKS Team (NSW)
+
+| Person | Role |
+|--------|------|
+| Simon Bramall | Equinix account manager |
+| Matthew Miller Equinix supervisor |
+
