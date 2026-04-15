@@ -14,34 +14,30 @@ check here first — don't reinvent.
 
 ---
 
-## SKS Quotation Template (v1 — April 2026)
+## SKS Quotation Template (v3 — April 2026)
 
 **Format:** A4 .docx, built with docx-js (Node)
 **Font:** Arial throughout
-**Colour:** SKS Navy #003366 for headers, white text on navy cells
-**Footer:** SKS Technologies Pty Ltd | ABN 80 006 455 699 | Page N
+**Brand colour:** SKS Navy #1F335C
+**Logo:** White+Text variant from R2 (`SKS_Logo_White_Text_Clean.png`)
+**Footer:** SKS Technologies Pty Ltd | ABN 80 006 455 699 | sks.com.au | Page N
 
-**Structure (in order):**
+**Layout (matches Royce's Word template screenshot):**
 
-1. **Header** — SKS Technologies / Electrical | Data | Communications, navy rule
-2. **Title** — "QUOTATION" centred
-3. **Details Table** — 4-column grid:
-   - Quotation No / Date
-   - Project / Rev
-   - Client / Attention
-   - Client Ref / Validity (default 30 days)
-   - Site / Prepared By
-4. **Scope of Works & Pricing Table** — columns: Item | Description | Qty | Unit | Rate | Total
-   - Alternating row shading
-   - Summary rows: Subtotal (ex GST) / GST / TOTAL (inc GST)
-5. **Inclusions** — tick bullet list (✓)
-6. **Exclusions** — cross bullet list (✗)
-7. **Clarifications & Assumptions** — numbered list
-8. **Photo Register** — 2-column table with:
-   - Embedded images (room photos, floor plans)
-   - Captions below each image
-   - Placeholder slots for additional photos
-9. **Acceptance Block** — table: Client Name / Signature / Date / Purchase Order No.
+1. **Navy banner** — full-width navy cell, "QUOTATION" left (white, 24pt bold), SKS white logo right
+2. **Details block** — simple tab-stop label/value lines (NO table borders, NO navy cell backgrounds):
+   - Date / Quote Reference / Attention / Project / Scope / Prepared by / Contact
+3. **Section headers** — navy left-bar (12pt border) + light grey (#F2F2F2) background cell
+4. **Sections (numbered):**
+   - **1. Scope of Works** — brief italic paragraph + bullet list of key deliverables
+   - **2. Pricing** — 2-column table only (Description + Amount ex GST)
+     - Rows: Labour / Materials / Subcontractors-Equipment
+     - Summary: Subtotal (grey bg, navy text) / GST / TOTAL (navy bg, white text)
+   - **3. Inclusions** — tick bullet list (✓)
+   - **4. Exclusions** — cross bullet list (✗)
+   - **5. Clarifications** — numbered list
+   - **6. Photo Register** — 2-column table, embedded images + captions + placeholder slots
+   - **7. Acceptance** — navy label / white value table (Client Name / Signature / Date / PO Number)
 
 **Standard Exclusions (always include unless scope says otherwise):**
 - Data cabling (unless specified)
@@ -61,6 +57,14 @@ check here first — don't reinvent.
 - Final locations confirmed on-site before 1st fix
 - All electrical work to AS/NZS 3000:2018
 - Valid for 30 days
+- Payment terms: 30 days from date of invoice
+
+**Key difference from earlier template versions:**
+- v1/v2 used 7 numbered sections with 6-column pricing (Item/Desc/Qty/Labour/Materials/Total),
+  navy cell backgrounds on details table, "SKS TECHNOLOGIES | ELECTRICAL QUOTATION" text header,
+  and sign-off with estimator left + acceptance right.
+- v3 matches the current Word template: simpler 2-column pricing, cleaner details layout,
+  navy banner with logo, section headers with left-bar accent.
 
 **First use:** SY5-4 Level 2 FLX61 quote for Erilyan (Sabrina Lowe), 15 April 2026
 
@@ -68,7 +72,7 @@ check here first — don't reinvent.
 
 ## Client Context Blocks
 
-These are reusable context blocks for the three primary client relationships.
+Reusable context blocks for the three primary client relationships.
 Paste the relevant block at session start when producing documents for that client.
 
 ### Equinix Australia
