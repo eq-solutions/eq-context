@@ -1,7 +1,7 @@
 ---
 title: EQ Solutions — Master AI Context
 owner: Royce Milmlow
-last_updated: 2026-04-12
+last_updated: 2026-04-18
 scope: Global rules and context for all AI sessions across EQ Solutions, SKS Technologies, and related entities
 read_priority: critical
 status: live
@@ -16,7 +16,7 @@ status: live
 
 ## Who I Am
 
-Royce Milmlow — NSW Operations Manager at SKS Technologies (electrical contractor, data centre and healthcare infrastructure). Also running EQ Solutions, a SaaS suite for trade subcontractors, and EQ Property Solutions (co-directed with Emma Curth).
+Royce Milmlow — NSW Operations Manager at SKS Technologies (electrical contractor, data centre and healthcare infrastructure). Also founder/director of EQ Solutions, a SaaS suite for trade subcontractors, and co-director of EQ Property Solutions with Emma Curth.
 
 ---
 
@@ -34,10 +34,10 @@ Royce Milmlow — NSW Operations Manager at SKS Technologies (electrical contrac
 
 ## Key People
 
-- Royce Milmlow — Operations Manager, SKS / Director, EQ Solutions
+- Royce Milmlow — NSW Operations Manager, SKS / Founder, EQ Solutions
 - Emma Curth — Co-director CDC Solutions + EQ Property Solutions / Owner, Favour Perfect
 - Simon Bramall — Project Manager, SKS
-- Leif Lundberg, Jack Cluff, Federico Sander, Nathan Anderson — Job Managers, SKS
+- Leif Lundberg, Jack Cluff, Federico Sander, Nathan Anderson — Job / Project Managers, SKS
 
 ---
 
@@ -46,10 +46,17 @@ Royce Milmlow — NSW Operations Manager at SKS Technologies (electrical contrac
 | Purpose | Account |
 |---|---|
 | Dev / Netlify / GitHub | dev@eq.solutions |
-| Cloudflare (website) | royce@eq.solutions |
-| GitHub org | eq-solutions / milmlow |
-| Supabase project | eq-field-app (nspbmirochztcjijmcrx) |
+| Cloudflare (website, R2) | royce@eq.solutions |
+| GitHub orgs | eq-solutions / milmlow |
 | Beelink (always-on workstation) | beelink.eq.solutions (Cloudflare Tunnel) |
+
+### Supabase Projects — THREE projects, do not confuse
+
+| Project ID | Name | Purpose | Touch rule |
+|---|---|---|---|
+| `nspbmirochztcjijmcrx` | sks-labour | **Live SKS staff production data** | **Never touch unless Royce says "SKS live"** |
+| `ktmjmdzqrogauaevbktn` | eq-solves-field | EQ Field app demo backend | Demo environment — safer to modify |
+| `urjhmkhbgaxrofurpbgc` | eq-solves-service-dev | Canonical context store (claude_context table) | Paid/active — reliable path for context reads/writes |
 
 ---
 
@@ -60,20 +67,37 @@ Royce Milmlow — NSW Operations Manager at SKS Technologies (electrical contrac
 | EQ Field (demo) | eq-solves-field.netlify.app | Live | Staff PIN: demo / Super: demo1234 |
 | EQ Quotes | eq.solutions → quotes.html | Live | Status: won/sent/draft/lost |
 | EQ Ops / Compliance | eq.solutions → eq-ops.html | Beta | Supabase-backed |
-| EQ Expenses | eq-expenses.netlify.app | Live | Cloudflare Worker proxy for API |
+| EQ Expenses | eq-expenses.netlify.app | Live | Netlify Drop deployment |
 | EQ Variations | eq-variations.netlify.app | Live | PIN login, Supabase |
-| EQ Solves Service | eq-solves-service.netlify.app | Live | GitHub CD |
-| SKS Labour App | sks-nsw-labour.netlify.app | Live (v3.0.4) | GitHub CD, main branch only |
+| EQ Solves Service | (active development) | Next.js + Supabase + Netlify functions; 22 sprints, 80 Vitest tests; multi-tenant with RLS |
+| SKS Labour App | sks-nsw-labour.netlify.app | Live (v3.0.4 [CONFIRM]) | GitHub CD, main branch only |
 | SKS Receipt Tracker | local / battle-testing | Beta | Cloudflare Worker + SheetJS |
+
+Primary build focus: **EQ Solves Service**.
 
 ---
 
 ## SKS Technologies Context
 
 - 50+ field staff across NSW
-- Major projects: data centre acceleration programmes, healthcare infrastructure
-- Never name real clients in outputs — use generic placeholders (e.g. "Data Centre Client A")
-- Key active programme: 20-week data centre acceleration (soft start 23 Mar 2026, target PC 21 Aug 2026)
+- Never name real clients in outputs — use generic placeholders ("Data Centre Client A", "Tier 1 Client", etc.)
+- Job/project management software: Workbench
+- Active projects (Apr 2026):
+  - AWS SYD053 PDC Acceleration (20-week programme, soft start 23 Mar 2026, target PC 21 Aug 2026)
+  - AirTrunk SYD3 transformer commissioning (29 × 2250kVA kiosks)
+  - NEXTDC S3 tender (Artarmon)
+  - Equinix SY6 CUFT (multi-contractor annual test)
+  - DigiCo busway/busduct — active dispute with head contractor over tap off box quantities (VAR-003 15 Dec + Feb parts list are anchor documents)
+
+---
+
+## Beelink Workstation
+
+- Primary AI workstation (Ryzen 7 7735HS, 32GB RAM, 1TB NVMe)
+- Chrome Remote Desktop for remote access from work PC (ThreatLocker blocks Tailscale)
+- Cloudflare Tunnel "beelink" → beelink.eq.solutions for exposing local dev servers
+- eq-field-app local repo: `C:\Users\EQ\eq-field-app-demo`
+- Global CLAUDE.md path: `C:\Users\Royce\.claude\CLAUDE.md`
 
 ---
 
@@ -96,34 +120,49 @@ Royce Milmlow — NSW Operations Manager at SKS Technologies (electrical contrac
 
 ## Deployment Rules
 
-- EQ Field demo: Netlify via GitHub, demo branch ONLY — never push to main for EQ Field
-- SKS Labour: sks-nsw-labour.netlify.app, main branch ONLY
-- eq.solutions: Cloudflare Pages zip bundle
-- EQ Expenses / Variations: Netlify Drop (manual zip)
+- EQ Field demo: Netlify Drop → eq-solves-field.netlify.app. Never deploy directly without explicit instruction.
+- SKS Labour: GitHub main → Netlify CD → sks-nsw-labour.netlify.app
+- EQ Solutions site: Cloudflare Pages zip bundle → eq.solutions (royce@ account)
+- EQ Variations: Netlify Drop → eq-variations.netlify.app
+- EQ Expenses: Netlify Drop → eq-expenses.netlify.app
+- EQ Solves Service: GitHub → Netlify CD
+- All Netlify sites on dev@eq.solutions unless noted
 - Never cross-deploy between EQ and SKS codebases
-- Never deploy to eq-solves-field.netlify.app directly
+- All web apps must include a `_headers` file with baseline security headers
 
 ---
 
 ## Supabase Guardrails
 
-- Always confirm project before connecting: eq-field-app (nspbmirochztcjijmcrx)
+- **Three projects exist** (see Accounts & Access). Always confirm which project before connecting.
+- **Never touch SKS live (nspbmirochztcjijmcrx) unless Royce explicitly says "SKS live"**
+- Treat EQ Field demo and SKS live as entirely separate environments
 - SELECT queries are fine — state query before executing
 - Never INSERT/UPDATE/DELETE/schema change without explicit approval
-- Never touch SKS live data unless Royce says "SKS live"
-- Never spin up a new Supabase project
+- Supabase MCP is the reliable path for claude_context reads/writes (GitHub MCP unreliable for writes)
+- Monthly ops: Supabase → Account → Access Tokens → revoke all but the most recent OAuth token
 
 ---
 
 ## Cowork Guardrails
 
+- Never push to demo branch without explicit instruction
+- Never deploy to eq-solves-field.netlify.app directly
 - Never delete files without permission
 - Never hardcode API keys or secrets
-- Never push to GitHub branches without explicit per-session approval
+- Any file touching SKS Supabase must be clearly scoped
 - Auth changes require Chat review first
 - State intended actions before proceeding
 - Working before refactoring — always
 - Pre-mortem required before any build session: 3 risks, mitigations, then go
+
+---
+
+## GitHub MCP Status
+
+- **Read-only on both `milmlow` and `eq-solutions` orgs** (403 on all write operations)
+- Fix path: `github.com/settings/installations` → grant write access to Claude GitHub app
+- Until fixed: all GitHub writes done manually via browser or Cowork
 
 ---
 
@@ -132,7 +171,7 @@ Royce Milmlow — NSW Operations Manager at SKS Technologies (electrical contrac
 1. Never expose Anthropic API key in any frontend — Cloudflare Worker proxy only
 2. Never reference real client names in any output
 3. Never deploy or push to any branch without explicit instruction
-4. Never spin up new Supabase projects
+4. Never touch SKS live Supabase (nspbmirochztcjijmcrx) without explicit "SKS live" instruction
 5. Never remove DEMO_FLAG comments
 6. Never use legacy emails (rwm185@pm.me, roycemilmlow@gmail.com) in new documents
 7. HHT crypto: CGT investor method — capital losses quarantined within trust
@@ -141,13 +180,18 @@ Royce Milmlow — NSW Operations Manager at SKS Technologies (electrical contrac
 
 ---
 
-## Design Standard (EQ Design Brief v1.2)
+## Design Standard (EQ Design Brief v1.3 — 17 Apr 2026)
 
-- Font: Plus Jakarta Sans
-- Primary: #3DA8D8 (Sky Blue)
-- Background: #EAF5FB (Ice Blue)
-- Text: #1A1A2E (Ink)
-- No gradients, no drop shadows, 8px grid, max-width 1200px
+- Font (web): Plus Jakarta Sans
+- Font (print): Aptos Display
+- Sky #3DA8D8 — primary
+- Deep #2986B4 — dark accent
+- Ice #EAF5FB — light background
+- Ink #1A1A2E — body text
+- Grey #666666 — secondary text
+- No gradients, no shadows, WCAG AA minimum
+- Two logo variants only: Blue, White
+- 8px grid, max-width 1200px
 - Never recolour the EQ logo mark
 
 ---

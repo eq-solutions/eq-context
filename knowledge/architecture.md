@@ -1,7 +1,7 @@
 ---
 title: Knowledge — Architecture
 owner: Royce Milmlow
-last_updated: 2026-04-10
+last_updated: 2026-04-18
 scope: Current state of how systems are built and how they fit together
 read_priority: standard
 status: live
@@ -28,16 +28,27 @@ to maintain, and zero friction when adding new apps.
 
 ---
 
-## One Supabase Project for Everything
+## Three Supabase Projects — Segmented by Risk
 
-**Decision:** eq-field-app (nspbmirochztcjijmcrx, Sydney) is the single Supabase project
-for all workstreams — EQ products and SKS tools alike.
+**Current state (Apr 2026):** The "one Supabase project for everything" rule
+evolved as the risk profile diverged. Three projects now exist, each with a
+distinct role:
 
-**Why:** Separate projects multiply management overhead (separate API keys, separate billing,
-separate dashboards) for no architectural benefit at current scale.
-Tenant separation via table prefixes (sks_, eq_) or schemas is sufficient and reversible.
+| Project ID | Name | Role |
+|---|---|---|
+| `nspbmirochztcjijmcrx` | sks-labour | Live SKS staff production data |
+| `ktmjmdzqrogauaevbktn` | eq-solves-field | EQ Field demo backend |
+| `urjhmkhbgaxrofurpbgc` | eq-solves-service-dev | Canonical context store (claude_context table) |
 
-**Implication:** Never spin up a new Supabase project. If a table feels crowded, add a prefix.
+**Why the split:** SKS live data hitting the same project as EQ demo experiments
+is an unacceptable blast radius — one bad DELETE on a demo table becomes an
+SKS outage. Separating projects creates hard boundaries that tenant prefixes alone cannot.
+
+**Operational rule:** Always confirm which project before connecting. **Never
+touch `nspbmirochztcjijmcrx` unless Royce explicitly says "SKS live"**.
+
+**Implication:** Do not spin up a fourth project without a clear risk-segmentation
+reason. Four was not the goal — three is the current equilibrium.
 
 ---
 

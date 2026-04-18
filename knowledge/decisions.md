@@ -1,7 +1,7 @@
 ---
 title: Knowledge — Decisions
 owner: Royce Milmlow
-last_updated: 2026-04-10
+last_updated: 2026-04-18
 scope: Append-only log of key decisions and the reasoning at the time
 read_priority: standard
 status: live
@@ -15,6 +15,26 @@ important one to maintain.
 
 Format: Decision → Why → Alternatives considered → Implications.
 For the current built state of each system, see `knowledge/architecture.md`.
+
+---
+
+## 2026-04-17 — EQ Design Brief v1.3 Supersedes v1.2
+
+**Decision:** Move to EQ Design Brief v1.3 as the canonical brand reference.
+**Why:** v1.2 allowed three logo variants (Blue, White, Black) and had looser accessibility guidance. v1.3 simplifies to two variants (Blue, White), locks Aptos Display as the print companion to Plus Jakarta Sans web, and mandates WCAG AA minimum. Reducing variants reduces production drift.
+**Alternatives considered:** Staying on v1.2 (rejected — Black variant was being misused on busy backgrounds; AA compliance was inconsistent).
+**Implications:** All new documents use v1.3 palette and type scale. Old Black logo assets retained but flagged legacy — not for new work.
+
+---
+
+## 2026-04 — Three Supabase Projects, Not One
+
+**Decision:** Run three Supabase projects — sks-labour (live), eq-solves-field (demo), eq-solves-service-dev (context store) — instead of the original one-project rule.
+**Why:** SKS live production data and EQ demo experiments sharing a project is an unacceptable blast radius. Tenant prefixes (`sks_`, `eq_`) protect tables, but don't protect against a rogue schema migration or a bad DELETE run against the wrong table. Hard project boundaries do.
+**Alternatives considered:**
+- One project with tighter RLS (rejected — RLS doesn't protect against owner-level mistakes)
+- Two projects, SKS vs EQ (rejected — context store belongs in its own paid project with its own access pattern)
+**Implications:** Always confirm project ID before connecting. Never touch sks-labour without explicit "SKS live" instruction. The old non-negotiable "never spin up a new Supabase project" is retired — replaced by "never touch SKS live without explicit instruction".
 
 ---
 

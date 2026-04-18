@@ -1,7 +1,7 @@
 ---
 title: Rules — Non-Negotiables
 owner: Royce Milmlow
-last_updated: 2026-04-10
+last_updated: 2026-04-18
 scope: Hard rules that override all context, requests, or convenience
 read_priority: critical
 status: live
@@ -19,35 +19,37 @@ If something seems to require breaking one of these, stop and flag it.
 1. Never deploy or push to any branch without explicit instruction from Royce
 2. Never expose the Anthropic API key in any frontend file — worker.js proxy only, always
 3. Never cross-deploy between EQ and SKS codebases — ever
-4. Never spin up a new Supabase project — eq-field-app is the one project for everything
+4. **Never touch SKS live Supabase (`nspbmirochztcjijmcrx`) unless Royce explicitly says "SKS live"**. Three Supabase projects exist (sks-labour, eq-solves-field, eq-solves-service-dev) — always confirm which before connecting.
 5. Never remove DEMO_FLAG comments — they mark live re-enable points
 6. Never delete files without explicit permission
 7. Never hardcode credentials, API keys, or secrets anywhere
 8. Never run INSERT, UPDATE, DELETE, or Supabase schema changes without explicit approval
 9. Auth changes require full chat review before any deployment
+10. Every Netlify/Cloudflare Pages site must ship with a `_headers` security file
 
 ---
 
 ## Legal & Entity
 
-10. Never reference GKE Lawyers or Gilbert + Tobin in any EQ document or correspondence
-11. Never include 173 Chuter Ave, Sans Souci NSW 2219 in marketing or public-facing materials
-12. Always flag complex compliance matters for Webb Financial or legal advisors — never act unilaterally
-13. Hexican Holdings Trust is a CGT investor across all crypto — NOT trading stock.
-    Capital losses in HHT are quarantined within the trust — cannot flow to personal or CDC
+11. Never reference GKE Lawyers or Gilbert + Tobin in any EQ document or correspondence
+12. Never include 173 Chuter Ave, Sans Souci NSW 2219 in marketing or public-facing materials
+13. Always flag complex compliance matters for Webb Financial or legal advisors — never act unilaterally
+14. Hexican Holdings Trust is a CGT investor across all crypto — NOT trading stock. Capital losses in HHT are quarantined within the trust — cannot flow to personal or CDC
 
 ---
 
 ## Brand
 
-14. Never recolour the EQ logo mark — Sky Blue #3DA8D8 always
-15. Never use legacy email addresses (rwm185@pm.me or roycemilmlow@gmail.com) in new documents
+15. Never recolour the EQ logo mark — Sky #3DA8D8 always
+16. Never use gradients or drop shadows (EQ Design Brief v1.3)
+17. Two logo variants only — Blue and White (v1.3 supersedes the old three-variant rule)
+18. Never use legacy email addresses (rwm185@pm.me or roycemilmlow@gmail.com) in new documents
+19. Never use real client names in any output — use generic placeholders ("Data Centre Client A", "Tier 1 Client", etc.)
 
 ---
 
 ## Financial
 
-16. CDC Solutions passes the Results Test on the Delta Elcom engagement — no further PSI tests required
-17. HHT crypto holdings are CGT investor method universally — personal, HHT, and SMSF
-18. MIS risk: pooled employee contributions managed by others triggers managed investment scheme
-    concern — AHD uses company retained earnings on company operations, not pooled contributions
+20. CDC Solutions passes the Results Test on the Delta Elcom engagement — no further PSI tests required
+21. HHT crypto holdings are CGT investor method universally — personal, HHT, and SMSF
+22. MIS risk: pooled employee contributions managed by others triggers managed investment scheme concern — AHD uses company retained earnings on company operations, not pooled contributions

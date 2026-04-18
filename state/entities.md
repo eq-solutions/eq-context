@@ -1,7 +1,7 @@
 ---
 title: State — Entities and Accounts
 owner: Royce Milmlow
-last_updated: 2026-04-10
+last_updated: 2026-04-18
 scope: Entity register, bank accounts, registrations, infrastructure, contacts
 read_priority: standard
 status: live
@@ -63,11 +63,20 @@ Royce Director ID: 036 71246 96371 17
 
 | Service | Account | Notes |
 |---------|---------|-------|
-| Supabase | eq-field-app (nspbmirochztcjijmcrx, Sydney) | One project for everything |
-| GitHub | eq-solutions org | All repos private |
-| Cloudflare | eq.solutions account | Pages + Workers |
+| Supabase | Three projects (see table below) | Do NOT assume one project anywhere |
+| GitHub | eq-solutions org + milmlow user | All repos private; MCP is read-only (403 on writes) |
+| Cloudflare | royce@eq.solutions | Pages + Workers + R2 (sks-assets, eq-assets buckets) |
 | GoDaddy | — | Domain registrar only |
-| Netlify | dev@eq.solutions | eq-solves-field + sks-nsw-labour |
+| Netlify | dev@eq.solutions | All Netlify sites (EQ + SKS) |
+| Beelink | beelink.eq.solutions (Cloudflare Tunnel) | Ryzen 7 7735HS, 32GB RAM, 1TB NVMe; Chrome Remote Desktop |
+
+### Supabase Projects
+
+| Project ID | Name | Purpose | Access rule |
+|---|---|---|---|
+| `nspbmirochztcjijmcrx` | sks-labour | **Live SKS staff production data** | **Never touch unless "SKS live" is explicit** |
+| `ktmjmdzqrogauaevbktn` | eq-solves-field | EQ Field demo backend | Demo environment |
+| `urjhmkhbgaxrofurpbgc` | eq-solves-service-dev | Canonical context store (claude_context table) | Paid/active; primary path for context reads/writes |
 
 ---
 
@@ -83,6 +92,9 @@ Royce Director ID: 036 71246 96371 17
 
 | Person | Role |
 |--------|------|
-| Simon Bramall | Equinix account manager |
-| Matthew Miller Equinix supervisor |
-
+| Simon Bramall | Project Manager |
+| Leif Lundberg | Job / Project Manager |
+| Jack Cluff | Job / Project Manager |
+| Federico Sander | Job / Project Manager |
+| Nathan Anderson | Job / Project Manager |
+| Matthew Miller | Equinix supervisor |
