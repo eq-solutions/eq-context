@@ -1,7 +1,7 @@
 ﻿---
 title: Changelog — EQ Solves Field
 owner: Royce Milmlow
-last_updated: 2026-04-10
+last_updated: 2026-04-18
 scope: Append-only history of changes to the EQ Solves Field product
 read_priority: reference
 status: live
@@ -38,11 +38,3 @@ status: live
 - EQ Field Ops commercialisation roadmap built (85-item Excel workbook)
 - White-label conversion estimated at 2-3 hours
 **Status:** Planning complete - not yet executed
-
-## [2026-03-01] SKS Labour Forecast Live
-**Built by:** Royce Milmlow + assistant
-**Changes:**
-- Single-file HTML/JS app with Supabase backend
-- Supports 50+ field staff scheduling
-- Positive day-one reception from field staff
-**Status:** Live at sks-nsw-labour.netlify.app
