@@ -41,6 +41,8 @@ Items grouped by workstream. Tick off or remove when done.
 ## EQ Solves Service — PRIMARY BUILD
 
 - [ ] Open PR and review `feat/ip-hardening` (commit `8a47994`) — EQ footer, sticky attribution logo, `/terms` page, login splash, `_meta` migration 0048, file headers on entry points
+- [ ] Open PR and review `feat/delta-wo-import` (commit `e392065`) — Delta/Equinix Maximo WO Excel import, parser + UI + idempotent commit, migrations 0049 + 0050, WO# on PM Asset Report
+- [ ] **Delta WO import — live dry-run** on SKS tenant with Aug 2025 file: confirm ~250 rows resolve, MVSWBD fuzzy prompt fires, LBS unknown-code prompt works, commit succeeds, re-upload triggers duplicate blocker
 - [ ] Full-repo file-header backfill (EQ-IP-Register P2 #7 scope A) — dedicated session
 - [ ] Continue sprint cadence (22 sprints to date, 80 Vitest tests)
 
@@ -95,6 +97,7 @@ Parked from public-facing materials; revisit for capital activation by 2027. Kee
 
 ## Completed (recent)
 
+- [x] Delta/Equinix WO Excel import built end-to-end on `feat/delta-wo-import` — parser + levenshtein fuzzy match + preview/commit actions + wizard UI + WO# on PM report; migrations 0049 (job_plan_aliases) + 0050 (WO# unique idx) applied; 38/38 tests passing, tsc clean, advisors 0 new ERROR — 2026-04-19
 - [x] IP Protection scaffolding shipped on `feat/ip-hardening` (EQ footer, sticky attribution, `/terms`, login splash, migration 0048, headers on entry points) — 2026-04-19
 - [x] Migration 0048 (`public._meta` ownership marker) applied to eq-solves-service-dev — 2026-04-19
 - [x] GitHub PATs issued (Milmlow + eq-solutions, fine-grained, 30-day) — first Cowork → GitHub push succeeded — 2026-04-19
