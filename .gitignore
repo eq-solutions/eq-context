@@ -1,0 +1,60 @@
+# eq-context .gitignore — context repo only.
+# Rules and rationale: see MD_BEST_PRACTICES.md §17.
+
+# --- Binary files (this repo holds context, not artefacts) ---
+*.zip
+*.tar
+*.gz
+*.7z
+*.docx
+*.doc
+*.xlsx
+*.xls
+*.pptx
+*.ppt
+*.pdf
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+*.svg
+*.webp
+*.mov
+*.mp4
+*.mp3
+*.wav
+
+# --- Sandbox / test leftovers ---
+_test_*.tmp
+*.tmp
+*.bak
+*.swp
+.DS_Store
+Thumbs.db
+
+# --- Claude Code worktrees (subagent leftovers) ---
+.claude/worktrees/
+
+# --- Half-applied cleanup folders (use a feature branch instead) ---
+_cleanup-patch-*/
+_cleanup-*/
+_archive-*/
+
+# --- Per-version changelog files (use rolling CHANGELOG.md) ---
+# Note: doesn't apply within eq-context itself — there's no CHANGELOG-v* here —
+# but kept for clarity if this template is reused.
+CHANGELOG-v*.md
+CHANGELOG-V*.md
+
+# --- Local editor / IDE noise ---
+.vscode/
+.idea/
+*.iml
+
+# --- OS metadata ---
+desktop.ini
+$RECYCLE.BIN/
+
+# --- Allow ---
+# (Use !pattern to allow specific files if a future rule excludes them.)

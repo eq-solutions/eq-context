@@ -25,5 +25,13 @@ order:
 
 Then confirm context before taking any action.
 
+## Working principle — finish what you start
+
+Every recommendation, suggestion, or pending action surfaced during a
+session must be either completed before session close or explicitly
+deferred to `state/pending.md` with a date. Half-applied work is the
+failure mode this principle prevents — see `rules/non-negotiables.md`
+§0 (Session Discipline).
+
 `CLAUDE.md` and `AGENTS.md` are equivalent entry points — same rules
 apply regardless of which tool is loading the session.

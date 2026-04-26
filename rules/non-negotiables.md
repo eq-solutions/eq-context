@@ -1,7 +1,7 @@
 ---
 title: Rules — Non-Negotiables
 owner: Royce Milmlow
-last_updated: 2026-04-18
+last_updated: 2026-04-26
 scope: Hard rules that override all context, requests, or convenience
 read_priority: critical
 status: live
@@ -11,6 +11,15 @@ status: live
 
 These rules are never overridden by context, user request, or convenience.
 If something seems to require breaking one of these, stop and flag it.
+
+---
+
+## Session Discipline
+
+0. **Finish what you start.** At session start, identify every recommendation, suggestion, and pending action surfaced in the conversation. Aim is to complete every one of them before session close. Half-applied work is the failure mode this rule prevents.
+   - If a recommendation genuinely cannot be completed in-session (blocked by external action, requires explicit approval, depends on someone else), add a dated entry to `state/pending.md` before close — never leave it hanging in chat.
+   - Never propose a fix and walk away. Either do it or defer it on the record.
+   - "Half-applied cleanup patches" sitting unapplied on disk are a violation of this rule.
 
 ---
 

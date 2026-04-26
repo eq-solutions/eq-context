@@ -1,10 +1,10 @@
 ---
 title: MD Best Practices — Cross-LLM Context Files
 owner: Royce Milmlow
-last_updated: 2026-04-10
+last_updated: 2026-04-26
 scope: All MD files in eq-context and any future context repos (EQ, SKS, AHD)
 read_priority: reference
-status: v1.0
+status: v1.1
 ---
 
 # MD Best Practices — Cross-LLM Context Files
@@ -262,3 +262,127 @@ Ordered by impact, low effort first:
 
 Nothing is deleted by this document. It is the style guide that every
 other MD file in the repo should be measured against going forward.
+
+---
+
+## 17. Anti-patterns and enforcement (added 2026-04-26)
+
+Real failure modes observed in the audit on 2026-04-26 — each is now
+blocked by a pre-commit hook in `.githooks/pre-commit` and the
+`md-health` GitHub Action. Treat this section as the rule list both
+checkers enforce.
+
+### 17.1 Per-version changelog sprawl — BLOCKED
+
+`CHANGELOG-v3.4.5.md`, `CHANGELOG-v3.4.6.md` etc. proliferate fast
+(13 of them across two repos before cleanup). One rolling
+`CHANGELOG.md` per repo is canonical, with version sections inside it.
+
+- **Allowed:** `CHANGELOG.md`
+- **Blocked:** any file matching `CHANGELOG-v*.md` or
+  `CHANGELOG-V*.md` at any depth.
+
+### 17.2 Binary files in `eq-context` — BLOCKED
+
+This repo holds context, not artefacts. Zips, Word docs, PDFs,
+spreadsheets, screenshots etc. belong in their respective project
+folders or in S3/R2. The `eq-context-cleanup-patch-2026-04-18-reviewed.zip`
+that got committed accidentally is the kind of thing the hook now
+catches.
+
+- **Blocked extensions in this repo:** `.zip`, `.docx`, `.doc`,
+  `.xlsx`, `.xls`, `.pdf`, `.pptx`, `.png`, `.jpg`, `.jpeg`, `.gif`,
+  `.mov`, `.mp4`, `.tar`, `.gz`.
+
+### 17.3 Half-applied cleanup folders — BLOCKED
+
+A `_cleanup-patch-2026-04-18/` folder sat unapplied in the working tree
+for 8 days. Either apply the cleanup the same session it's drafted, or
+do not stage it. The hook blocks any path matching
+`_cleanup-patch-*` from being committed.
+
+If a multi-session cleanup is genuinely needed, use a feature branch,
+not a folder of pending changes on `main`.
+
+### 17.4 Session filename canonicalisation — REQUIRED
+
+Sessions go in `sessions/YYYY-MM-DD.md`. Nothing else. The hook
+rejects:
+
+- `sessions/sessions_YYYY-MM-DD.md` (duplicates the prefix)
+- `sessions/YYYY-MM-DD-anything.md` (suffixed)
+- `sessions/sessions_*.md` (any sessions prefix)
+- Anything other than `\d{4}-\d{2}-\d{2}\.md`
+
+If two events happen on one day, append both into the single dated
+file under separate H2 sections — do not split into two files.
+
+### 17.5 Drafts location — REQUIRED
+
+Working drafts (emails, briefs, explainers, anything pre-deliverable)
+live in `drafts/<context>-<ISO-date>/`. Examples:
+- `drafts/akko-2026-04-22/email-to-paul.md`
+- `drafts/equinix-2026-05-15/scope-of-works.md`
+
+The `drafts/` folder is git-tracked but **not synced to Supabase**
+(by design — drafts shouldn't pollute the live context store). Keep
+working notes here so you don't need to dig in code project folders to
+find them later.
+
+### 17.6 Worktree directories — IGNORED
+
+Claude Code subagents create worktrees at `.claude/worktrees/<name>/`.
+These are full repo copies that pollute `git status` and produce
+phantom duplicate-file alerts. The repo `.gitignore` excludes
+`.claude/worktrees/` and the daily audit prunes them via
+`git worktree prune` plus on-disk removal.
+
+### 17.7 Daily drift audit — RUNS AUTOMATICALLY
+
+A scheduled Cowork task at `C:\Projects\md-health-daily.ps1` runs
+every morning and surfaces:
+
+1. eq-context local drift vs `origin/main` (any local commits not pushed,
+   or remote commits not pulled)
+2. Uncommitted MD changes older than 3 days in any tracked repo
+3. New `_cleanup-patch-*` folders
+4. Binary files in `eq-context`
+5. Per-version changelog files anywhere in `C:\Projects`
+6. Worktree leftovers in any repo
+7. Total MD count delta vs the previous day
+
+Output: `C:\Projects\md-health-reports\YYYY-MM-DD.md` (latest also
+linked from `latest.md`). If anything is flagged, the report leads
+with it — otherwise the file is a one-liner "all clean".
+
+### 17.8 Session start / session end discipline — REQUIRED
+
+Cause of the 15-commit drift on 2026-04-26: working without a
+`git pull` at the start, and without a `git push` at the end.
+Codified ritual:
+
+**Start of any session that touches `eq-context`:**
+```powershell
+cd C:\Projects\eq-context
+git pull --rebase origin main
+git status   # should be clean
+```
+
+**End of any session that touched `eq-context`:**
+```powershell
+cd C:\Projects\eq-context
+git status
+git add -A
+git commit -m "session(YYYY-MM-DD): <short summary>"
+git push origin main
+```
+
+The same applies to any `eq-solves-*` repo where work was done.
+
+### 17.9 No tokens, ever, in chat — REQUIRED
+
+GitHub PATs, Supabase service-role keys, AWS keys, anything looking
+like a credential — never paste into a Claude / Cowork / Chat
+conversation, the message log persists. If a tool genuinely needs
+access, configure it server-side. Any token that appears in chat is
+treated as compromised and revoked.

@@ -55,3 +55,4 @@ Never suggest adding a new tool or service without explaining why it's better th
 - He builds fast and iterates — favour "working now, polish later."
 - He's comfortable with technical depth. Don't dumb things down, but don't add complexity for its own sake.
 - Default bias: attempt the task, then ask if needed. Not the other way around.
+- **Finish what you start.** Every recommendation surfaced in a session must be completed before close, or explicitly deferred to `state/pending.md` with a date. No half-applied work, no orphaned suggestions. See `rules/non-negotiables.md` §0.

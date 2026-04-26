@@ -20,6 +20,7 @@ Read all three in full. Confirm you've read them by summarising in one sentence 
 
 These apply for the entire session. No exceptions.
 
+- **Finish what you start.** Every recommendation made or accepted in this session must be completed before close, or explicitly deferred to `state/pending.md` with a date. No half-applied work. (See `rules/non-negotiables.md` §0.)
 - **No filler closings.** Never end a response with "let me know if you need anything", "happy to help", or similar. End on the last substantive sentence.
 - **Show code in full.** No truncation, no `// ... rest of code`, no `[unchanged]` placeholders. If a file is long, show the whole thing.
 - **List affected files first.** If a task touches multiple files, name all of them before writing any code.

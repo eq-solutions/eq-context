@@ -16,11 +16,7 @@ status: live
 
 ## Who I Am
 
-<<<<<<< Updated upstream
-Royce Milmlow — NSW Operations Manager at SKS Technologies (electrical contractor, data centre infrastructure). Also founder/director of EQ Solutions, a SaaS suite for trade subcontractors, and co-director of EQ Property Solutions with Emma Curth.
-=======
 Royce Milmlow — NSW Operations Manager at SKS Technologies (electrical contractor, data centre and healthcare infrastructure). Also founder/director of EQ Solutions, a SaaS suite for trade subcontractors, and co-director of EQ Property Solutions with Emma Curth.
->>>>>>> Stashed changes
 
 ---
 
@@ -73,13 +69,8 @@ Royce Milmlow — NSW Operations Manager at SKS Technologies (electrical contrac
 | EQ Ops / Compliance | eq.solutions → eq-ops.html | Beta | Supabase-backed |
 | EQ Expenses | eq-expenses.netlify.app | Live | Netlify Drop deployment |
 | EQ Variations | eq-variations.netlify.app | Live | PIN login, Supabase |
-<<<<<<< Updated upstream
 | EQ Solves Service | — (in development) | Active | Next.js + Supabase + Netlify functions; 22 sprints, 80 Vitest tests; multi-tenant with RLS |
 | SKS Labour App | sks-nsw-labour.netlify.app | Live (v3.4.3) | GitHub CD, main branch only |
-=======
-| EQ Solves Service | (active development) | Next.js + Supabase + Netlify functions; 22 sprints, 80 Vitest tests; multi-tenant with RLS |
-| SKS Labour App | sks-nsw-labour.netlify.app | Live (v3.0.4 [CONFIRM]) | GitHub CD, main branch only |
->>>>>>> Stashed changes
 | SKS Receipt Tracker | local / battle-testing | Beta | Cloudflare Worker + SheetJS |
 
 Primary build focus: **EQ Solves Service**.
@@ -88,11 +79,7 @@ Primary build focus: **EQ Solves Service**.
 
 ## SKS Technologies Context
 
-<<<<<<< Updated upstream
 - ~55 field staff across NSW
-=======
-- 50+ field staff across NSW
->>>>>>> Stashed changes
 - Never name real clients in outputs — use generic placeholders ("Data Centre Client A", "Tier 1 Client", etc.)
 - Job/project management software: Workbench
 - Active projects (Apr 2026):
@@ -100,11 +87,8 @@ Primary build focus: **EQ Solves Service**.
   - AirTrunk SYD3 transformer commissioning (29 × 2250kVA kiosks)
   - NEXTDC S3 tender (Artarmon)
   - Equinix SY6 CUFT (multi-contractor annual test)
-<<<<<<< Updated upstream
   - Equinix SY5 COLO 14 (testing documentation complete)
   - Telstra SLDC emergency lighting (514 Stanilite NEXUS fittings replacement)
-=======
->>>>>>> Stashed changes
   - DigiCo busway/busduct — active dispute with head contractor over tap off box quantities (VAR-003 15 Dec + Feb parts list are anchor documents)
 
 ---
@@ -123,16 +107,18 @@ Primary build focus: **EQ Solves Service**.
 
 1. Read this file
 2. Fetch state/pending.md
-3. Confirm what you have, then ask what we are working on
+3. **Aim to finish every recommendation made or accepted in this session before close.** If a recommendation can't be finished in-session, defer it explicitly to `state/pending.md` with a date — never leave it hanging.
+4. Confirm what you have, then ask what we are working on
 
 ---
 
 ## Session End Protocol (Non-Negotiable)
 
-1. UPDATE state/pending.md — tick completed items, add new ones
-2. INSERT sessions/YYYY-MM-DD.md — log what was built/decided
-3. UPDATE relevant changelog/[PROJECT].md if code was touched
-4. Push to GitHub main — Action syncs to Supabase automatically within ~20 seconds
+1. **Verify every recommendation surfaced this session was either applied or explicitly deferred to `state/pending.md`.** No half-applied work.
+2. UPDATE state/pending.md — tick completed items, add new ones
+3. INSERT sessions/YYYY-MM-DD.md — log what was built/decided
+4. UPDATE relevant changelog/[PROJECT].md if code was touched
+5. Push to GitHub main — Action syncs to Supabase automatically within ~20 seconds
 
 ---
 
