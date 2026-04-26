@@ -16,7 +16,11 @@ status: live
 
 ## Who I Am
 
+<<<<<<< Updated upstream
 Royce Milmlow — NSW Operations Manager at SKS Technologies (electrical contractor, data centre infrastructure). Also founder/director of EQ Solutions, a SaaS suite for trade subcontractors, and co-director of EQ Property Solutions with Emma Curth.
+=======
+Royce Milmlow — NSW Operations Manager at SKS Technologies (electrical contractor, data centre and healthcare infrastructure). Also founder/director of EQ Solutions, a SaaS suite for trade subcontractors, and co-director of EQ Property Solutions with Emma Curth.
+>>>>>>> Stashed changes
 
 ---
 
@@ -69,8 +73,13 @@ Royce Milmlow — NSW Operations Manager at SKS Technologies (electrical contrac
 | EQ Ops / Compliance | eq.solutions → eq-ops.html | Beta | Supabase-backed |
 | EQ Expenses | eq-expenses.netlify.app | Live | Netlify Drop deployment |
 | EQ Variations | eq-variations.netlify.app | Live | PIN login, Supabase |
+<<<<<<< Updated upstream
 | EQ Solves Service | — (in development) | Active | Next.js + Supabase + Netlify functions; 22 sprints, 80 Vitest tests; multi-tenant with RLS |
 | SKS Labour App | sks-nsw-labour.netlify.app | Live (v3.4.3) | GitHub CD, main branch only |
+=======
+| EQ Solves Service | (active development) | Next.js + Supabase + Netlify functions; 22 sprints, 80 Vitest tests; multi-tenant with RLS |
+| SKS Labour App | sks-nsw-labour.netlify.app | Live (v3.0.4 [CONFIRM]) | GitHub CD, main branch only |
+>>>>>>> Stashed changes
 | SKS Receipt Tracker | local / battle-testing | Beta | Cloudflare Worker + SheetJS |
 
 Primary build focus: **EQ Solves Service**.
@@ -79,7 +88,11 @@ Primary build focus: **EQ Solves Service**.
 
 ## SKS Technologies Context
 
+<<<<<<< Updated upstream
 - ~55 field staff across NSW
+=======
+- 50+ field staff across NSW
+>>>>>>> Stashed changes
 - Never name real clients in outputs — use generic placeholders ("Data Centre Client A", "Tier 1 Client", etc.)
 - Job/project management software: Workbench
 - Active projects (Apr 2026):
@@ -87,8 +100,11 @@ Primary build focus: **EQ Solves Service**.
   - AirTrunk SYD3 transformer commissioning (29 × 2250kVA kiosks)
   - NEXTDC S3 tender (Artarmon)
   - Equinix SY6 CUFT (multi-contractor annual test)
+<<<<<<< Updated upstream
   - Equinix SY5 COLO 14 (testing documentation complete)
   - Telstra SLDC emergency lighting (514 Stanilite NEXUS fittings replacement)
+=======
+>>>>>>> Stashed changes
   - DigiCo busway/busduct — active dispute with head contractor over tap off box quantities (VAR-003 15 Dec + Feb parts list are anchor documents)
 
 ---

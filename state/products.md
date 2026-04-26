@@ -24,7 +24,11 @@ status: live
 
 ---
 
+<<<<<<< Updated upstream
 ## EQ Solves — Field (v3.4.7)
+=======
+## EQ Solves — Field (v[CONFIRM])
+>>>>>>> Stashed changes
 
 **Status:** Live (demo branch)
 **URL:** eq-solves-field.netlify.app
@@ -96,7 +100,11 @@ status: live
 
 ---
 
+<<<<<<< Updated upstream
 ## SKS Labour App (v3.4.3)
+=======
+## SKS Labour App (v3.0.4 [CONFIRM])
+>>>>>>> Stashed changes
 
 **Status:** Live
 **URL:** sks-nsw-labour.netlify.app
