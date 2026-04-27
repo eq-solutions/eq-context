@@ -87,9 +87,10 @@ for the living spec.
 - [x] Strategy decided: existing `isManager` global stays; `EQ_PERMS` reads
       it as primary today-path signal. Legacy migration is opportunistic,
       not a sweep (97 occurrences ruled out wholesale refactor).
-- [x] PR opened — [#23](https://github.com/Milmlow/eq-field-app/pull/23)
-      `claude/hopeful-wright-058c8b` → `demo`. **Royce to click Merge**
-      when ready (Netlify auto-deploys ~1 min after merge).
+- [x] PR [#23](https://github.com/Milmlow/eq-field-app/pull/23) merged to
+      `demo` (merge commit `996a895`, 2026-04-27 09:36 UTC). Netlify
+      auto-deploy triggered. Verify Project Hours panel appears on
+      eq-solves-field.netlify.app once deploy lands.
 
 ### Phase 2 — multi-tenancy foundation (gated on customer trigger)
 
