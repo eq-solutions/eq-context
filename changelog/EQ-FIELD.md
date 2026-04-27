@@ -30,6 +30,13 @@ status: live
   sessionStorage flags. Plan revised: 97 `isManager` references across
   `scripts/`/`index.html` rules out a wholesale refactor — strangler
   pattern instead, migrate opportunistically when touching files.
+- `89f96dc` — `scripts/project-hours.js` + placeholder div before
+  `</body>`. Self-mounting "Project Hours" burn-down panel — activates
+  only when `feat_project_hours_v1` flag is on AND `EQ_PERMS.can('ph.view_dashboard')`
+  is true. Renders per-site Budget / Used / Remaining / % used with
+  colour treatment (sky / amber / red). Graceful states for "migration
+  not applied yet", "no tracked sites", and network errors. Client-side
+  aggregation over timesheets for v1.
 
 **Next manual steps required (Royce):**
 - Create `feat_project_hours_v1` flag in EQ PostHog project (default off,

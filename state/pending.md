@@ -68,8 +68,10 @@ for the living spec.
       `migrations/2026-04-27_sites_track_hours.sql` (commit `8b6bdb1`)
 - [ ] Apply that migration to `ktmjmdzqrogauaevbktn` via Supabase MCP /
       Studio **(Royce manual step — review SQL first)**
-- [ ] Project-hours UI: supervisor "Project Hours" tab with burn-down per
-      tracked site **(scaffolding not yet shipped)**
+- [x] Project-hours UI scaffolding: self-mounting burn-down panel —
+      commit `89f96dc`. Activates when both gates open (PostHog flag on +
+      `EQ_PERMS.can('ph.view_dashboard')` true). Graceful empty / coming-soon
+      states until migration is applied.
 - [x] `eq_role` Postgres enum + `people.role` column SQL written —
       `migrations/2026-04-27_eq_role_enum_people_role.sql` (commit `8b6bdb1`).
       Header includes verification queries to run before applying.
