@@ -1,0 +1,541 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EQ Field — Role Permission Matrix</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --eq-sky: #3DA8D8;
+      --eq-deep: #2986B4;
+      --eq-ice: #EAF5FB;
+      --eq-ink: #1A1A2E;
+      --eq-grey: #666666;
+      --role-1: #1F335C;
+      --role-2: #2986B4;
+      --role-3: #3DA8D8;
+      --role-4: #82c6e2;
+      --role-5: #b8dcec;
+      --border: #e5e7eb;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      color: var(--eq-ink);
+      background: white;
+      margin: 0;
+      padding: 0;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+    .container { max-width: 1280px; margin: 0 auto; padding: 32px 24px 64px; }
+    h1 { font-size: 28px; font-weight: 700; margin: 0 0 6px; letter-spacing: -0.01em; }
+    h2 { font-size: 18px; font-weight: 600; margin: 32px 0 12px; }
+    .subtitle { color: var(--eq-grey); margin: 0 0 32px; max-width: 720px; }
+
+    /* Hierarchy infographic */
+    .hierarchy {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0;
+      margin-bottom: 8px;
+      background: var(--eq-ice);
+      padding: 24px;
+      border-radius: 8px;
+      align-items: stretch;
+    }
+    .role-card {
+      padding: 18px 14px;
+      text-align: center;
+      color: white;
+      font-weight: 600;
+      position: relative;
+      border-right: 1px solid rgba(255,255,255,0.18);
+    }
+    .role-card:last-child { border-right: none; }
+    .role-card .tier { font-size: 10px; opacity: 0.75; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 4px; }
+    .role-card .name { font-size: 17px; margin: 2px 0 4px; letter-spacing: -0.01em; }
+    .role-card .desc { font-size: 11px; opacity: 0.9; font-weight: 400; line-height: 1.35; }
+    .role-card.tier-1 { background: var(--role-1); }
+    .role-card.tier-2 { background: var(--role-2); }
+    .role-card.tier-3 { background: var(--role-3); }
+    .role-card.tier-4 { background: var(--role-4); color: var(--eq-ink); }
+    .role-card.tier-5 { background: var(--role-5); color: var(--eq-ink); }
+    .legend { display: flex; gap: 12px; align-items: center; font-size: 11px; color: var(--eq-grey); margin: 0 0 24px; padding: 0 4px; }
+    .legend-arrow { flex: 1; height: 1px; background: var(--border); }
+
+    /* Toolbar */
+    .toolbar {
+      display: flex;
+      gap: 8px;
+      margin: 16px 0 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .toolbar .spacer { flex: 1; }
+    .meta {
+      font-size: 11px;
+      color: var(--eq-grey);
+    }
+    button {
+      font-family: inherit;
+      font-size: 13px;
+      padding: 8px 14px;
+      border: 1px solid var(--eq-deep);
+      background: white;
+      color: var(--eq-deep);
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background 80ms ease;
+    }
+    button:hover { background: var(--eq-ice); }
+    button.primary { background: var(--eq-deep); color: white; border-color: var(--eq-deep); }
+    button.primary:hover { background: var(--eq-sky); border-color: var(--eq-sky); }
+    button.subtle { border-color: var(--border); color: var(--eq-grey); }
+    button.subtle:hover { background: #f7f9fb; }
+
+    /* Permission matrix */
+    .matrix-wrap {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .matrix {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .matrix th, .matrix td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      vertical-align: middle;
+    }
+    .matrix tbody tr:last-child td { border-bottom: none; }
+    .matrix thead th {
+      background: var(--eq-ink);
+      color: white;
+      font-weight: 600;
+      font-size: 12px;
+      letter-spacing: 0.3px;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      text-transform: uppercase;
+    }
+    .matrix thead th.role-col { text-align: center; }
+    .matrix tbody tr:hover { background: #fafcfd; }
+    .matrix .perm-name { width: 38%; font-weight: 500; }
+    .matrix .perm-desc { font-size: 11px; color: var(--eq-grey); font-weight: 400; margin-top: 2px; }
+    .matrix td.role-col { text-align: center; width: 12%; }
+    .matrix .category {
+      background: var(--eq-ice);
+    }
+    .matrix .category td {
+      font-weight: 700;
+      font-size: 12px;
+      color: var(--eq-deep);
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      padding: 12px 12px 8px;
+    }
+
+    /* Checkboxes */
+    .matrix input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: var(--eq-deep);
+      margin: 0;
+    }
+
+    /* Output area */
+    .output {
+      margin-top: 32px;
+      padding: 16px;
+      background: #f7f9fb;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+    }
+    .output pre {
+      font-family: 'SF Mono', Menlo, Consolas, monospace;
+      font-size: 12px;
+      margin: 0;
+      max-height: 360px;
+      overflow: auto;
+      white-space: pre-wrap;
+      color: var(--eq-ink);
+    }
+    .output h3 { margin: 0 0 8px; font-size: 13px; font-weight: 600; color: var(--eq-grey); text-transform: uppercase; letter-spacing: 0.4px; }
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      padding: 10px 14px;
+      background: var(--eq-ink);
+      color: white;
+      border-radius: 4px;
+      font-size: 13px;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 160ms ease, transform 160ms ease;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    footer { color: var(--eq-grey); font-size: 11px; margin-top: 32px; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>EQ Field — Role Permission Matrix</h1>
+    <p class="subtitle">Tick which permissions belong to which role. State persists in your browser. Use the export buttons to copy the matrix as JSON or markdown when you're ready to commit it.</p>
+
+    <div class="hierarchy">
+      <div class="role-card tier-1">
+        <div class="tier">Tier 1</div>
+        <div class="name">Manager</div>
+        <div class="desc">Full control. Owns the tenant.</div>
+      </div>
+      <div class="role-card tier-2">
+        <div class="tier">Tier 2</div>
+        <div class="name">Supervisor</div>
+        <div class="desc">Team-level ops. Approvals.</div>
+      </div>
+      <div class="role-card tier-3">
+        <div class="tier">Tier 3</div>
+        <div class="name">Employee</div>
+        <div class="desc">Standard staff member.</div>
+      </div>
+      <div class="role-card tier-4">
+        <div class="tier">Tier 4</div>
+        <div class="name">Apprentice</div>
+        <div class="desc">In-training employee. Extra workflows.</div>
+      </div>
+      <div class="role-card tier-5">
+        <div class="tier">Tier 5</div>
+        <div class="name">Labour Hire</div>
+        <div class="desc">External / contracted. Minimum access.</div>
+      </div>
+    </div>
+    <div class="legend">
+      <span>Higher tier = more access</span>
+      <span class="legend-arrow"></span>
+      <span>Lower tier = scoped access</span>
+    </div>
+
+    <div class="toolbar">
+      <button onclick="cascadeManager()" class="primary">Tick all for Manager</button>
+      <button onclick="applyDefaults()">Apply sensible defaults</button>
+      <button onclick="resetAll()" class="subtle">Reset all</button>
+      <span class="spacer"></span>
+      <button onclick="exportJSON()">Copy as JSON</button>
+      <button onclick="exportMarkdown()">Copy as Markdown</button>
+      <span class="meta" id="meta">0 permissions ticked</span>
+    </div>
+
+    <div class="matrix-wrap">
+      <table class="matrix" id="matrix">
+        <thead>
+          <tr>
+            <th>Permission</th>
+            <th class="role-col">Manager</th>
+            <th class="role-col">Supervisor</th>
+            <th class="role-col">Employee</th>
+            <th class="role-col">Apprentice</th>
+            <th class="role-col">Labour Hire</th>
+          </tr>
+        </thead>
+        <tbody id="matrixBody"></tbody>
+      </table>
+    </div>
+
+    <div class="output">
+      <h3>Output</h3>
+      <pre id="output">Click "Copy as JSON" or "Copy as Markdown" — the matrix appears here and copies to your clipboard.</pre>
+    </div>
+
+    <footer>
+      EQ Field — Role design draft, 2026-04-27. Saves to localStorage. Not committed until you export.
+    </footer>
+  </div>
+  <div class="toast" id="toast">Copied</div>
+
+  <script>
+    const ROLES = ['manager', 'supervisor', 'employee', 'apprentice', 'labour_hire'];
+    const ROLE_LABELS = ['Manager', 'Supervisor', 'Employee', 'Apprentice', 'Labour Hire'];
+
+    const PERMISSIONS = [
+      // [category, key, name, description]
+      ['Roster & Schedule', 'roster.view_own', 'View own schedule', 'See your assigned shifts'],
+      ['Roster & Schedule', 'roster.view_team', 'View team schedule', 'See others on the same site/team'],
+      ['Roster & Schedule', 'roster.view_all', 'View all schedules', 'Tenant-wide visibility'],
+      ['Roster & Schedule', 'roster.request_changes', 'Request own schedule changes', 'Submit a swap or change request'],
+      ['Roster & Schedule', 'roster.edit_team', 'Edit team schedule', 'Assign / move shifts for others'],
+      ['Roster & Schedule', 'roster.approve_changes', 'Approve schedule change requests', ''],
+
+      ['Timesheets', 'ts.submit_own', 'Submit own timesheet', 'Daily / weekly hours entry'],
+      ['Timesheets', 'ts.edit_own', 'Edit own timesheet (pre-lock)', ''],
+      ['Timesheets', 'ts.view_own', 'View own timesheet history', ''],
+      ['Timesheets', 'ts.view_team', 'View team timesheets', ''],
+      ['Timesheets', 'ts.approve', 'Approve team timesheets', ''],
+      ['Timesheets', 'ts.send_reminders', 'Send timesheet reminders', 'Resend prompt to staff who haven\'t submitted'],
+      ['Timesheets', 'ts.view_completion', 'View completion stats', 'Tenant-wide submission rate'],
+
+      ['Project Hours (new)', 'ph.view_dashboard', 'View project-hours dashboard', 'Burn-down for tracked sites'],
+      ['Project Hours (new)', 'ph.tick_track_hours', 'Mark site for hours tracking', 'sites.track_hours'],
+      ['Project Hours (new)', 'ph.set_budget', 'Set / edit hour budget', 'sites.budget_hours'],
+      ['Project Hours (new)', 'ph.view_per_person', 'View per-person hours on tracked projects', ''],
+
+      ['Leave & Time-off', 'leave.view_own_balance', 'View own leave balance', ''],
+      ['Leave & Time-off', 'leave.view_team_balances', 'View team leave balances', ''],
+      ['Leave & Time-off', 'leave.submit_request', 'Submit leave request', ''],
+      ['Leave & Time-off', 'leave.approve', 'Approve / decline leave requests', ''],
+      ['Leave & Time-off', 'leave.edit_balances', 'Edit leave balances', 'Set initial / adjust balances'],
+      ['Leave & Time-off', 'leave.archive', 'Archive leave requests', ''],
+
+      ['People & Profiles', 'people.view_own', 'View own profile', ''],
+      ['People & Profiles', 'people.edit_own', 'Edit own profile (limited fields)', 'Phone, emergency contact, etc.'],
+      ['People & Profiles', 'people.view_team', 'View team profiles', ''],
+      ['People & Profiles', 'people.view_all', 'View all profiles in tenant', ''],
+      ['People & Profiles', 'people.edit_others', 'Edit other profiles', ''],
+      ['People & Profiles', 'people.add_new', 'Add new staff member', ''],
+      ['People & Profiles', 'people.deactivate', 'Deactivate / remove staff', ''],
+      ['People & Profiles', 'people.assign_role', 'Assign / change role', ''],
+
+      ['Sites & Projects', 'sites.view_list', 'View site list', ''],
+      ['Sites & Projects', 'sites.view_details', 'View site details', ''],
+      ['Sites & Projects', 'sites.add', 'Add new site', ''],
+      ['Sites & Projects', 'sites.edit', 'Edit site details', ''],
+      ['Sites & Projects', 'sites.archive', 'Archive / close site', ''],
+      ['Sites & Projects', 'sites.edit_lead', 'Edit site lead info', ''],
+
+      ['Apprentice Features', 'app.view_own_profile', 'View own apprentice profile', ''],
+      ['Apprentice Features', 'app.view_team_profiles', 'View team apprentice profiles', ''],
+      ['Apprentice Features', 'app.submit_feedback', 'Submit feedback', ''],
+      ['Apprentice Features', 'app.view_skills', 'View skills ratings', ''],
+      ['Apprentice Features', 'app.edit_skills', 'Edit skills ratings', ''],
+      ['Apprentice Features', 'app.manage_rotations', 'Manage rotations', ''],
+      ['Apprentice Features', 'app.buddy_checkin', 'Submit buddy check-in', ''],
+      ['Apprentice Features', 'app.view_engagement', 'View engagement log', ''],
+      ['Apprentice Features', 'app.quarterly_review', 'Conduct quarterly review', ''],
+
+      ['Reports & Digests', 'reports.receive_digest', 'Receive supervisor digest email', 'Friday 12:00 AEST automated send'],
+      ['Reports & Digests', 'reports.subscribe_digest', 'Subscribe / unsubscribe to digests', ''],
+      ['Reports & Digests', 'reports.view_tenant_reports', 'View tenant-wide reports', ''],
+      ['Reports & Digests', 'reports.export_data', 'Export tenant data (CSV / Excel)', ''],
+
+      ['Admin & Settings', 'admin.view_config', 'View tenant config', ''],
+      ['Admin & Settings', 'admin.edit_config', 'Edit tenant config', 'app_config table'],
+      ['Admin & Settings', 'admin.manage_roles', 'Manage roles & permissions', 'Edit this matrix'],
+      ['Admin & Settings', 'admin.invite_users', 'Invite users to tenant', ''],
+      ['Admin & Settings', 'admin.manage_billing', 'Manage billing (Stripe)', 'Future Phase 3'],
+      ['Admin & Settings', 'admin.view_audit_log', 'View audit log', '']
+    ];
+
+    // Sensible default permission set per role — Royce can adjust from here.
+    const DEFAULTS = {
+      manager: {
+        // Manager gets every permission
+        all: true
+      },
+      supervisor: [
+        'roster.view_own', 'roster.view_team', 'roster.view_all', 'roster.request_changes', 'roster.edit_team', 'roster.approve_changes',
+        'ts.submit_own', 'ts.edit_own', 'ts.view_own', 'ts.view_team', 'ts.approve', 'ts.send_reminders', 'ts.view_completion',
+        'ph.view_dashboard', 'ph.tick_track_hours', 'ph.set_budget', 'ph.view_per_person',
+        'leave.view_own_balance', 'leave.view_team_balances', 'leave.submit_request', 'leave.approve', 'leave.archive',
+        'people.view_own', 'people.edit_own', 'people.view_team',
+        'sites.view_list', 'sites.view_details', 'sites.edit', 'sites.edit_lead',
+        'app.view_team_profiles', 'app.view_skills', 'app.edit_skills', 'app.manage_rotations', 'app.view_engagement', 'app.quarterly_review',
+        'reports.receive_digest', 'reports.subscribe_digest', 'reports.view_tenant_reports'
+      ],
+      employee: [
+        'roster.view_own', 'roster.view_team', 'roster.request_changes',
+        'ts.submit_own', 'ts.edit_own', 'ts.view_own',
+        'leave.view_own_balance', 'leave.submit_request',
+        'people.view_own', 'people.edit_own', 'people.view_team',
+        'sites.view_list', 'sites.view_details'
+      ],
+      apprentice: [
+        'roster.view_own', 'roster.view_team', 'roster.request_changes',
+        'ts.submit_own', 'ts.edit_own', 'ts.view_own',
+        'leave.view_own_balance', 'leave.submit_request',
+        'people.view_own', 'people.edit_own', 'people.view_team',
+        'sites.view_list', 'sites.view_details',
+        'app.view_own_profile', 'app.submit_feedback', 'app.buddy_checkin', 'app.view_skills'
+      ],
+      labour_hire: [
+        'roster.view_own',
+        'ts.submit_own', 'ts.view_own',
+        'people.view_own',
+        'sites.view_list'
+      ]
+    };
+
+    const STORAGE_KEY = 'eq_field_role_matrix_v1';
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : {};
+      } catch (e) { return {}; }
+    }
+
+    function saveState(s) {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); } catch (e) {}
+    }
+
+    function cellKey(permKey, role) { return permKey + '|' + role; }
+
+    let state = loadState();
+
+    function updateMeta() {
+      const ticks = Object.keys(state).filter(k => state[k]).length;
+      const meta = document.getElementById('meta');
+      if (meta) meta.textContent = ticks + ' permission' + (ticks === 1 ? '' : 's') + ' ticked';
+    }
+
+    function render() {
+      const tbody = document.getElementById('matrixBody');
+      tbody.innerHTML = '';
+      let lastCategory = null;
+      PERMISSIONS.forEach(([cat, key, name, desc]) => {
+        if (cat !== lastCategory) {
+          const catRow = document.createElement('tr');
+          catRow.className = 'category';
+          const td = document.createElement('td');
+          td.colSpan = 6;
+          td.textContent = cat;
+          catRow.appendChild(td);
+          tbody.appendChild(catRow);
+          lastCategory = cat;
+        }
+        const tr = document.createElement('tr');
+        const nameCell = document.createElement('td');
+        nameCell.className = 'perm-name';
+        nameCell.innerHTML = escapeHtml(name) + (desc ? '<div class="perm-desc">' + escapeHtml(desc) + '</div>' : '');
+        tr.appendChild(nameCell);
+        ROLES.forEach(role => {
+          const td = document.createElement('td');
+          td.className = 'role-col';
+          const cb = document.createElement('input');
+          cb.type = 'checkbox';
+          cb.checked = !!state[cellKey(key, role)];
+          cb.addEventListener('change', () => {
+            state[cellKey(key, role)] = cb.checked;
+            saveState(state);
+            updateMeta();
+          });
+          td.appendChild(cb);
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+      updateMeta();
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+
+    function cascadeManager() {
+      PERMISSIONS.forEach(([, key]) => { state[cellKey(key, 'manager')] = true; });
+      saveState(state);
+      render();
+      toast('Manager: all permissions ticked');
+    }
+
+    function applyDefaults() {
+      if (!confirm('Replace current ticks with the default starter set?\n\nThis is a sensible baseline you can then adjust.')) return;
+      state = {};
+      PERMISSIONS.forEach(([, key]) => {
+        ROLES.forEach(role => {
+          const def = DEFAULTS[role];
+          if (def && def.all) {
+            state[cellKey(key, role)] = true;
+          } else if (Array.isArray(def) && def.indexOf(key) !== -1) {
+            state[cellKey(key, role)] = true;
+          }
+        });
+      });
+      saveState(state);
+      render();
+      toast('Defaults applied — adjust as needed');
+    }
+
+    function resetAll() {
+      if (!confirm('Clear all ticks?')) return;
+      state = {};
+      saveState(state);
+      render();
+      toast('Cleared');
+    }
+
+    function buildMatrix() {
+      const result = {};
+      ROLES.forEach(r => result[r] = []);
+      PERMISSIONS.forEach(([, key]) => {
+        ROLES.forEach(role => {
+          if (state[cellKey(key, role)]) result[role].push(key);
+        });
+      });
+      return result;
+    }
+
+    function exportJSON() {
+      const matrix = buildMatrix();
+      const out = JSON.stringify({
+        generated_at: new Date().toISOString(),
+        roles: ROLES,
+        permissions_by_role: matrix
+      }, null, 2);
+      document.getElementById('output').textContent = out;
+      copyToClipboard(out, 'JSON copied');
+    }
+
+    function exportMarkdown() {
+      let md = '# EQ Field — Role Permission Matrix\n\n';
+      md += '_Generated ' + new Date().toISOString() + '_\n\n';
+      md += '| Permission | Manager | Supervisor | Employee | Apprentice | Labour Hire |\n';
+      md += '|---|:-:|:-:|:-:|:-:|:-:|\n';
+      let lastCat = null;
+      PERMISSIONS.forEach(([cat, key, name]) => {
+        if (cat !== lastCat) {
+          md += '| **' + cat + '** | | | | | |\n';
+          lastCat = cat;
+        }
+        const cells = ROLES.map(r => state[cellKey(key, r)] ? ' x ' : '   ').join('|');
+        md += '| ' + name + ' |' + cells + '|\n';
+      });
+      document.getElementById('output').textContent = md;
+      copyToClipboard(md, 'Markdown copied');
+    }
+
+    function copyToClipboard(text, message) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(
+          () => toast(message),
+          () => toast('Output rendered below — copy manually')
+        );
+      } else {
+        toast('Output rendered below — copy manually');
+      }
+    }
+
+    let toastTimer = null;
+    function toast(msg) {
+      const el = document.getElementById('toast');
+      if (!el) return;
+      el.textContent = msg;
+      el.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => el.classList.remove('show'), 1800);
+    }
+
+    render();
+  </script>
+</body>
+</html>

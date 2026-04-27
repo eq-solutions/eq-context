@@ -1,7 +1,7 @@
 ---
 title: State — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-04-26
+last_updated: 2026-04-27
 scope: Live to-do list across all workstreams; overwrite in place
 read_priority: critical
 status: live
@@ -46,9 +46,55 @@ Items grouped by workstream. Tick off or remove when done.
 
 ## EQ Field App
 
+**Multi-tenancy plan locked 2026-04-27** — see
+`sessions/2026-04-27.md` for decisions and
+`eq-solves-field/.claude/worktrees/hopeful-wright-058c8b/MULTI-TENANCY-PLAN.md`
+for the living spec.
+
 - [ ] Netlify env var cleanup — delete SECRET_SALT, STAFF_HASH, MANAGER_HASH
+      (folds into Phase 1 role-system migration when implementation starts —
+      single change instead of two)
 - [ ] Clear Supabase rate_limits table on demo branch (ktmjmdzqrogauaevbktn)
 - [ ] Write fresh Cowork brief for EQ Field (guardrails, demo branch rules)
+
+### Phase 1 — implementation (pending Royce go-ahead)
+
+Locked plan; not yet started. Starts when Royce gives the word.
+
+- [ ] `scripts/flags.js` PostHog wrapper (loaded after `analytics.js`)
+- [ ] `feat_project_hours_v1` flag in EQ PostHog project (`phc_zXpRxm6Q…`),
+      default off, targeted at Royce only first
+- [ ] `sites.track_hours` + `sites.budget_hours` migration on
+      `ktmjmdzqrogauaevbktn`
+- [ ] Project-hours UI: supervisor "Project Hours" tab with burn-down per
+      tracked site
+- [ ] `eq_role` Postgres enum + `people.role` column migration
+- [ ] `verify-pin.js` rewrite: tenant slug from URL path → `tenant_id` lookup;
+      single tenant PIN from `organisations.tenant_pin`; role from
+      `people.role`; mints Supabase-native JWT with `app_metadata.tenant_id`
+      and `app_metadata.eq_role`
+- [ ] `scripts/core/permissions.js` (`EQPerms.can()`) + matrix v1 JSON
+      embedded in `scripts/core/permission-matrix.js`
+- [ ] Existing `role === 'supervisor'` UI checks migrated to `EQPerms.can(...)`
+
+### Phase 2 — multi-tenancy foundation (gated on customer trigger)
+
+Do **not** start until one of these fires:
+
+- First self-serve trial signup is on a calendar
+- ~3 customers manually provisioned and per-customer ops cost is biting
+
+Items when triggered:
+
+- [ ] FK + NOT NULL + CHECK constraints on all 14+ `org_id` columns
+- [ ] RLS policies, per-table behind a kill switch (`mt_rls_strict` flag),
+      lowest-traffic table first
+- [ ] Edge function audit (`supervisor-digest`, `ts-reminder`) — service-role
+      bypasses RLS, so `org_id` filter discipline must be explicit in queries
+- [ ] Demo-mode redesign — currently bypasses Supabase entirely; must hit a
+      sandboxed real tenant for self-serve trials
+- [ ] Routing infrastructure (Cloudflare Worker proxy on
+      `eq.solutions/field/*` OR `field.eq.solutions` subdomain on Netlify)
 
 ## EQ Expenses
 
