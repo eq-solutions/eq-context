@@ -87,8 +87,9 @@ for the living spec.
 - [x] Strategy decided: existing `isManager` global stays; `EQ_PERMS` reads
       it as primary today-path signal. Legacy migration is opportunistic,
       not a sweep (97 occurrences ruled out wholesale refactor).
-- [ ] Open PR `claude/hopeful-wright-058c8b` → `demo` when ready to merge
-      **(Royce decision)**
+- [x] PR opened — [#23](https://github.com/Milmlow/eq-field-app/pull/23)
+      `claude/hopeful-wright-058c8b` → `demo`. **Royce to click Merge**
+      when ready (Netlify auto-deploys ~1 min after merge).
 
 ### Phase 2 — multi-tenancy foundation (gated on customer trigger)
 
