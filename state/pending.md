@@ -57,25 +57,36 @@ for the living spec.
 - [ ] Clear Supabase rate_limits table on demo branch (ktmjmdzqrogauaevbktn)
 - [ ] Write fresh Cowork brief for EQ Field (guardrails, demo branch rules)
 
-### Phase 1 — implementation (pending Royce go-ahead)
+### Phase 1 — implementation (in progress on `claude/hopeful-wright-058c8b`)
 
-Locked plan; not yet started. Starts when Royce gives the word.
+5 commits past `demo` tip on feature branch; not merged.
 
-- [ ] `scripts/flags.js` PostHog wrapper (loaded after `analytics.js`)
+- [x] `scripts/flags.js` PostHog wrapper — commit `e9b4706`
 - [ ] `feat_project_hours_v1` flag in EQ PostHog project (`phc_zXpRxm6Q…`),
-      default off, targeted at Royce only first
-- [ ] `sites.track_hours` + `sites.budget_hours` migration on
-      `ktmjmdzqrogauaevbktn`
+      default off, targeted at Royce only first **(Royce manual step)**
+- [x] `sites.track_hours` + `sites.budget_hours` SQL written —
+      `migrations/2026-04-27_sites_track_hours.sql` (commit `8b6bdb1`)
+- [ ] Apply that migration to `ktmjmdzqrogauaevbktn` via Supabase MCP /
+      Studio **(Royce manual step — review SQL first)**
 - [ ] Project-hours UI: supervisor "Project Hours" tab with burn-down per
-      tracked site
-- [ ] `eq_role` Postgres enum + `people.role` column migration
+      tracked site **(scaffolding not yet shipped)**
+- [x] `eq_role` Postgres enum + `people.role` column SQL written —
+      `migrations/2026-04-27_eq_role_enum_people_role.sql` (commit `8b6bdb1`).
+      Header includes verification queries to run before applying.
+- [ ] Apply that migration to `ktmjmdzqrogauaevbktn` **(Royce manual step —
+      verify pre-conditions in header first)**
 - [ ] `verify-pin.js` rewrite: tenant slug from URL path → `tenant_id` lookup;
       single tenant PIN from `organisations.tenant_pin`; role from
       `people.role`; mints Supabase-native JWT with `app_metadata.tenant_id`
-      and `app_metadata.eq_role`
-- [ ] `scripts/core/permissions.js` (`EQPerms.can()`) + matrix v1 JSON
-      embedded in `scripts/core/permission-matrix.js`
-- [ ] Existing `role === 'supervisor'` UI checks migrated to `EQPerms.can(...)`
+      and `app_metadata.eq_role` **(auth change — needs Chat review per
+      `rules/non-negotiables.md`)**
+- [x] `scripts/permission-matrix.js` (matrix v1) + `scripts/permissions.js`
+      (`EQ_PERMS.can()` + `.role()` + `.list()`) — commits `f2d0e91`, `b367eb1`
+- [x] Strategy decided: existing `isManager` global stays; `EQ_PERMS` reads
+      it as primary today-path signal. Legacy migration is opportunistic,
+      not a sweep (97 occurrences ruled out wholesale refactor).
+- [ ] Open PR `claude/hopeful-wright-058c8b` → `demo` when ready to merge
+      **(Royce decision)**
 
 ### Phase 2 — multi-tenancy foundation (gated on customer trigger)
 

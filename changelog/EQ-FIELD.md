@@ -9,6 +9,39 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-04-27] Phase 1 implementation kickoff — flags, perms helper, migrations
+**Built by:** Royce Milmlow + Claude Code (Opus 4.7)
+**Branch:** `claude/hopeful-wright-058c8b` (not merged to demo — awaiting review)
+**Changes (5 commits past `0145c78`):**
+- `e9b4706` — `scripts/flags.js` PostHog feature-flag wrapper exposing
+  `window.EQ_FLAGS.isEnabled()` + `variant()`. Safe defaults, no-op until
+  a flag is created in the EQ PostHog project (`phc_zXpRxm6Q…`).
+- `f2d0e91` — `scripts/permission-matrix.js` + `scripts/permissions.js`.
+  Matrix v1 embedded as static JS; `window.EQ_PERMS.can(permKey)` reads
+  the current role.
+- `8b6bdb1` — Two SQL migrations written (NOT applied):
+  - `migrations/2026-04-27_sites_track_hours.sql` — `track_hours` boolean
+    + `budget_hours numeric` on `public.sites`
+  - `migrations/2026-04-27_eq_role_enum_people_role.sql` — `eq_role`
+    Postgres enum + `people.role` column with manager-table backfill
+    pattern. Header includes verification queries to run before applying.
+- `b367eb1` — `EQ_PERMS.getRole()` reads `window.isManager` as primary
+  today-path role signal (durable for page lifetime), falling back to
+  sessionStorage flags. Plan revised: 97 `isManager` references across
+  `scripts/`/`index.html` rules out a wholesale refactor — strangler
+  pattern instead, migrate opportunistically when touching files.
+
+**Next manual steps required (Royce):**
+- Create `feat_project_hours_v1` flag in EQ PostHog project (default off,
+  cohort = your `distinct_id` only)
+- Apply both migrations to `ktmjmdzqrogauaevbktn` via Supabase MCP /
+  Studio after running the verification queries in the role-enum header.
+  Do NOT apply to `nspbmirochztcjijmcrx` (SKS live).
+- Open PR `claude/hopeful-wright-058c8b` → `demo` when ready to merge.
+
+**Status:** Code shipped to feature branch only. No Netlify deploy. No
+Supabase changes. SKS Labour untouched.
+
 ## [2026-04-27] Multi-tenancy + dev-workflow plan locked (planning only, no code shipped)
 **Built by:** Royce Milmlow + Claude Code (Opus 4.7)
 **Changes:**
