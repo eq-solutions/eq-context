@@ -9,6 +9,27 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-04-28] Add Contact button wired into Contacts page (PR #24)
+**Built by:** Royce Milmlow + Claude Code (Opus 4.7)
+**Branch:** `claude/hopeful-wright-058c8b` → `demo` (merge commit `5105517`)
+**Changes:**
+- `index.html` page-contacts filter row gets a "＋ Add Contact"
+  button calling existing `openAddManager()` (managers.js:109).
+  No new code paths — reuses the existing modal-manager + saveManager
+  flow that already lived on the Supervision page.
+- Both demo (SEED) and live (eq) tenants get the button — `managers`
+  is in `ORG_TABLES`, not in any `TENANT_DISABLED_TABLES` entry.
+- One-line diff to a single file. No JS changes, no migration, no
+  permission shape change.
+
+**Why:** The page-contacts page (nav: "Contacts" ◉) showed staff/people
+but lacked an Add affordance — anyone looking for "where do I add a
+contact" landed there and saw nothing. Add button only existed on
+page-managers (nav: "Supervision" ☎). UX parity fix.
+
+**Status:** Live on eq-solves-field.netlify.app post-Netlify-deploy
+(~1 min after merge).
+
 ## [2026-04-27] Phase 1 implementation kickoff — flags, perms helper, migrations
 **Built by:** Royce Milmlow + Claude Code (Opus 4.7)
 **Branch:** `claude/hopeful-wright-058c8b` (not merged to demo — awaiting review)
