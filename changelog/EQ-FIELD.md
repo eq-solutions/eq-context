@@ -9,6 +9,19 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-04-28] Add Contact button cherry-picked to main (SKS) — PR #25
+**Built by:** Royce Milmlow + Claude Code (Opus 4.7)
+**Branch:** `fix/add-contact-main` → `main` (merge commit `4f03227`,
+cherry-pick of `f372a43` from demo)
+**Why:** Same repo Milmlow/eq-field-app; demo branch deploys to
+eq-solves-field.netlify.app (EQ Field demo), main branch deploys to
+sks-nsw-labour.netlify.app (SKS LIVE — ~55 staff). The button only
+shipped to demo via PR #24, so SKS staff didn't get it. Cherry-pick
+brings just that one-line UX fix to main without dragging the rest
+of Phase 1 (flags, perms, project-hours, role enum) onto SKS.
+**Status:** Merged. Netlify auto-deploy to sks-nsw-labour.netlify.app
+in flight at 2026-04-28.
+
 ## [2026-04-28] Add Contact button wired into Contacts page (PR #24)
 **Built by:** Royce Milmlow + Claude Code (Opus 4.7)
 **Branch:** `claude/hopeful-wright-058c8b` → `demo` (merge commit `5105517`)
