@@ -1,7 +1,7 @@
 ---
 title: Knowledge — Lessons Learned
 owner: Royce Milmlow
-last_updated: 2026-04-10
+last_updated: 2026-04-28
 scope: Hard-won technical gotchas; append-only
 read_priority: reference
 status: live
@@ -127,4 +127,45 @@ Do not suggest strategies that assume these losses are available elsewhere.
 **Problem:** Dragging a zip or folder into GitHub's browser upload flattens the folder structure —
 all files land in root, subfolders are lost.
 **Fix:** Either push via git CLI, or use GitHub API (Python script with base64 encoding per file).
+
+---
+
+## Cowork Sandbox + Git — Orphan `.git/index.lock` (the Loop of Despair)
+
+**Problem:** When Claude runs `git` from the Cowork Linux sandbox against a Windows-mounted repo (`C:\Projects\*`), every git command leaves a `.git/index.lock` behind that the sandbox **cannot unlink** — the virtiofs mount allows create/overwrite but blocks `unlink()` on files that pre-existed the session. The lock then blocks every subsequent git command, including the user's own commands from PowerShell/cmd. Cleaning it from Windows usually works, but if Claude keeps running git from the sandbox, a fresh orphan lock appears within seconds and the user is stuck in a loop.
+
+**Symptoms:** `fatal: Unable to create '.git/index.lock': File exists. Another git process seems to be running...` repeating across many commands, even after deleting the lock.
+
+**Root cause:** Each Linux-side git op opens `index.lock`, then tries to `unlink()` it on exit. virtiofs returns `EPERM` (Operation not permitted) for unlink-of-pre-existing-file. The lock survives. Next git op sees it, errors out. Repeat.
+
+**Recovery (Windows side):**
+- cmd:  `del /f /q .git\index.lock`
+- PowerShell:  `Remove-Item .git\index.lock -Force`
+- If that fails too (rare): rename it first — `ren .git\index.lock index.lock.dead && del .git\index.lock.dead`
+
+**Rule for Claude:** Do NOT run `git` (status, add, commit, rm, pull, push, anything) from the Cowork sandbox against `C:\Projects\*` repos. Use Read/Write/Edit for file content; emit a `.bat` (cmd) or `.ps1` (PowerShell) script for the user to run when git operations are needed. Read-only inspection of the repo via `cat .git/HEAD`, `cat .git/refs/heads/*`, etc. is fine — those don't take a lock.
+
+**Bonus:** If the user's terminal title says "Command Prompt", they're in cmd.exe — `Remove-Item` won't work. Match the script type to the shell.
 **Pattern used:** Python loop — get tree SHAs with `?recursive=1`, PUT each file individually.
+ith base64 encoding per file).
+
+---
+
+## Cowork Sandbox + Git — Orphan `.git/index.lock` (the Loop of Despair)
+
+**Problem:** When Claude runs `git` from the Cowork Linux sandbox against a Windows-mounted repo (`C:\Projects\*`), every git command leaves a `.git/index.lock` behind that the sandbox **cannot unlink** — the virtiofs mount allows create/overwrite but blocks `unlink()` on files that pre-existed the session. The lock then blocks every subsequent git command, including the user's own commands from PowerShell/cmd. Cleaning it from Windows usually works, but if Claude keeps running git from the sandbox, a fresh orphan lock appears within seconds and the user is stuck in a loop.
+
+**Symptoms:** `fatal: Unable to create '.git/index.lock': File exists. Another git process seems to be running...` repeating across many commands, even after deleting the lock.
+
+**Root cause:** Each Linux-side git op opens `index.lock`, then tries to `unlink()` it on exit. virtiofs returns `EPERM` for unlink-of-pre-existing-file. The lock survives. Next git op sees it, errors out. Repeat.
+
+**Recovery (Windows side):**
+- cmd: `del /f /q .git\index.lock`
+- PowerShell: `Remove-Item .git\index.lock -Force`
+- If both fail (rare): rename first — `ren .git\index.lock index.lock.dead && del .git\index.lock.dead`
+
+**Rule for Claude:** Do NOT run `git` (status, add, commit, rm, pull, push, anything) from the Cowork sandbox against `C:\Projects\*` repos. Use Read/Write/Edit for file content; emit a `.bat` (cmd) or `.ps1` (PowerShell) script for the user to run. Read-only inspection via `cat .git/HEAD`, `cat .git/refs/heads/*` is fine — those don't take a lock.
+
+**Bonus:** If user's terminal title says "Command Prompt", they're in cmd.exe — `Remove-Item` won't work. Match the script type to the shell.
+
+**Bonus 2:** Edit/Write file tools may TRUNCATE writes silently against this mount when the file is large. For appends, prefer bash `cat >> file << EOF` over Edit on long files.
