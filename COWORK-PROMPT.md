@@ -8,7 +8,7 @@ Paste everything below this line into Cowork at the start of a session.
 
 Before we begin, fetch my context files from the canonical store:
 
-1. **Master context:** `https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq` (maps to CLAUDE.md)
+1. **Master context:** `https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/claude` (maps to CLAUDE.md)
 2. **Cross-LLM rules:** `https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/agents` (maps to AGENTS.md)
 
 Read both in full. Confirm you've read them by summarising in one sentence what each contains.
