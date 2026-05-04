@@ -20,6 +20,18 @@ for operational support: tax, entities, infrastructure, substrate.
 
 ---
 
+## Cross-Tool Consistency — Original Reason for 2026-05-04 Refactor
+
+The 2026-05-04 tier refactor solved tier-bleed and dead-product noise within Claude. It did NOT solve cross-tool consistency between Chat / Cowork / Code / ChatGPT / Grok. The substrate is now canonical for Claude only; ChatGPT and Grok still walk into every session blind. Three follow-up items, prioritised:
+
+- [ ] **(A) ChatGPT and Grok bootstrap prompts** — produce `CHATGPT-PROMPT.md` and `GROK-PROMPT.md` mirroring `COWORK-PROMPT.md` (paste-once-per-session prompts that fetch the same canonical Supabase URLs). Highest-priority, lowest-risk follow-up. Closes the original framing: "consistency across all tools."
+- [ ] **(C) `TODAY.md` — current-focus surface** — a 500-char file at repo root that captures the current week's priority and any blocked items. Auto-prepended to every session via the entry-point files. Cheap, high-signal, doesn't replace anything.
+- [ ] **(B) Session-end discipline as a hard rule** — current rule says "update the substrate at session end"; lessons.md confirms the rule isn't being followed (17 of 30 stale at 2026-04-27). Revise to: every session ends with a written delta to a tier file (even "no changes today, status confirmed"), assistant refuses to close otherwise. Decision-grade change to non-negotiables.
+
+Defer to: Beelink return (12 May+) for proper test coverage. Holiday-laptop work has higher risk of introducing new issues we can't test rigorously.
+
+---
+
 ## Infrastructure — Live Blockers
 
 - [ ] **OAuth GitHub MCP connector** — consent-screen auto-login loop blocks org-picker flow for `claude.ai` chat. Cowork writes are unblocked via PATs (2026-04-19); this item only gates the chat surface. Fix: revoke prior OAuth grant at `github.com/settings/applications`, sign out, reconnect from Claude desktop.
