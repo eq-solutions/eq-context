@@ -177,12 +177,15 @@ all files land in root, subfolders are lost.
 **Pattern:** Run this Supabase query end-of-week to find files that have drifted past the cadence promised by the README's update-frequency table:
 
 ```sql
+-- Updated 2026-05-04 for tier-separated structure (eq/sks/ops/system).
 SELECT slug, updated_at, NOW() - updated_at AS age
 FROM context_files
 WHERE
-  (slug LIKE 'state/%' AND updated_at < NOW() - INTERVAL '7 days')
-  OR (slug LIKE 'knowledge/%' AND updated_at < NOW() - INTERVAL '14 days')
-  OR (slug LIKE 'changelog/%' AND updated_at < NOW() - INTERVAL '30 days')
+  (slug LIKE '%/pending.md' AND updated_at < NOW() - INTERVAL '7 days')
+  OR (slug LIKE 'system/%' AND updated_at < NOW() - INTERVAL '14 days')
+  OR (slug LIKE 'ops/%' AND updated_at < NOW() - INTERVAL '14 days')
+  OR (slug LIKE '%/changelog/%' AND updated_at < NOW() - INTERVAL '30 days')
+  OR (slug LIKE 'archive/%' AND updated_at < NOW() - INTERVAL '180 days')
 ORDER BY updated_at ASC;
 ```
 
