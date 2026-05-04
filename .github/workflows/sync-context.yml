@@ -1,0 +1,159 @@
+name: Sync context files to Supabase
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '*.md'
+      - 'rules/**'
+      - 'eq/**'
+      - 'sks/**'
+      - 'ops/**'
+      - 'system/**'
+      - 'archive/**'
+      - 'sessions/**'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Sync all MD files to Supabase
+        env:
+          SUPABASE_URL: https://urjhmkhbgaxrofurpbgc.supabase.co
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          python3 << 'PYEOF'
+          import urllib.request
+          import urllib.error
+          import urllib.parse
+          import json
+          import os
+          import glob
+          import datetime
+
+          SUPABASE_URL = os.environ["SUPABASE_URL"]
+          SERVICE_KEY  = os.environ["SUPABASE_SERVICE_ROLE_KEY"]
+          synced_slugs = set()
+
+          # Root entry-point files: slug → filename
+          # Updated 2026-05-04 for tier-separated structure.
+          ROOT_FILES = {
+              "claude":   "CLAUDE.md",
+              "agents":   "AGENTS.md",
+              "cowork":   "COWORK-PROMPT.md",
+              "readme":   "README.md",
+          }
+
+          # Subdirectory glob patterns. Recursive (**) covers nested folders
+          # like eq/field/multi-tenancy/ and eq/changelog/.
+          SUBDIR_PATTERNS = [
+              "rules/**/*.md",
+              "eq/**/*.md",
+              "sks/**/*.md",
+              "ops/**/*.md",
+              "system/**/*.md",
+              "archive/**/*.md",
+              "sessions/**/*.md",
+          ]
+
+          def upsert(slug, filepath):
+              try:
+                  with open(filepath, "r") as f:
+                      content = f.read()
+              except FileNotFoundError:
+                  print(f"  {slug}: {filepath} not found — skipping")
+                  return
+
+              payload = json.dumps({
+                  "slug":       slug,
+                  "filename":   filepath,
+                  "content":    content,
+                  "updated_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+              }).encode("utf-8")
+
+              req = urllib.request.Request(
+                  f"{SUPABASE_URL}/rest/v1/context_files?on_conflict=slug",
+                  data=payload,
+                  headers={
+                      "apikey":        SERVICE_KEY,
+                      "Authorization": f"Bearer {SERVICE_KEY}",
+                      "Content-Type":  "application/json",
+                      "Prefer":        "resolution=merge-duplicates,return=minimal",
+                  },
+                  method="POST",
+              )
+              try:
+                  with urllib.request.urlopen(req) as resp:
+                      print(f"  {slug}: synced (" + str(len(content)) + " chars)")
+                      synced_slugs.add(slug)
+              except urllib.error.HTTPError as e:
+                  body = e.read().decode()
+                  print(f"  {slug}: ERROR {e.code} - {body}")
+                  raise
+
+          print("=== Syncing root context files ===")
+          for slug, filename in ROOT_FILES.items():
+              upsert(slug, filename)
+
+          print("=== Syncing subdirectory MD files ===")
+          for pattern in SUBDIR_PATTERNS:
+              for filepath in sorted(glob.glob(pattern, recursive=True)):
+                  slug = filepath
+                  upsert(slug, filepath)
+
+          # Verification: confirm every synced slug shows fresh updated_at
+          print("=== Verifying freshness ===")
+
+          if not synced_slugs:
+              print("  (no slugs synced - nothing to verify)")
+          else:
+              slugs_param = ",".join(
+                  urllib.parse.quote(s, safe="") for s in sorted(synced_slugs)
+              )
+              verify_url = (
+                  f"{SUPABASE_URL}/rest/v1/context_files"
+                  f"?slug=in.({slugs_param})&select=slug,updated_at"
+              )
+              verify_req = urllib.request.Request(
+                  verify_url,
+                  headers={
+                      "apikey":        SERVICE_KEY,
+                      "Authorization": f"Bearer {SERVICE_KEY}",
+                  },
+                  method="GET",
+              )
+              with urllib.request.urlopen(verify_req) as resp:
+                  rows = json.loads(resp.read())
+
+              by_slug = {row["slug"]: row["updated_at"] for row in rows}
+              now = datetime.datetime.now(datetime.timezone.utc)
+              threshold = datetime.timedelta(seconds=60)
+              failures = []
+              for slug in sorted(synced_slugs):
+                  ts = by_slug.get(slug)
+                  if ts is None:
+                      failures.append(f"{slug}: NOT FOUND post-upsert")
+                      continue
+                  updated_at = datetime.datetime.fromisoformat(ts)
+                  age = now - updated_at
+                  if age > threshold:
+                      failures.append(
+                          f"{slug}: STALE ({int(age.total_seconds())}s old)"
+                      )
+                  else:
+                      print(f"  {slug}: fresh ({int(age.total_seconds())}s)")
+
+              if failures:
+                  print("=== VERIFICATION FAILED ===")
+                  for f in failures:
+                      print(f"  {f}")
+                  raise SystemExit(1)
+
+              print("=== Verification passed ===")
+
+          print("Done.")
+          PYEOF
