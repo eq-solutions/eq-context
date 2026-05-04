@@ -119,4 +119,4 @@ scripts/
 - Merge state and rules — they have different update frequencies for a reason
 - Cross-pollute tiers — EQ context goes in `/eq`, SKS in `/sks`. Don't mix.
 - Reference parked products as live — see CLAUDE.md "Killed / deferred" section
-- 
+  
