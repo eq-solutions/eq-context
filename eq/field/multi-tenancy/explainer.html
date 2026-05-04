@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EQ Field — Phase 1 shipped (2026-04-27)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --eq-sky: #3DA8D8;
+      --eq-deep: #2986B4;
+      --eq-ice: #EAF5FB;
+      --eq-ink: #1A1A2E;
+      --eq-grey: #666666;
+      --eq-grey-2: #9aa0a6;
+      --border: #e5e7eb;
+      --green: #2f9e44;
+      --amber: #d68a08;
+      --red: #c53030;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      color: var(--eq-ink);
+      background: white;
+      line-height: 1.55;
+      font-size: 15px;
+    }
+    .container {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    /* Hero */
+    .hero {
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .hero .eyebrow {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      color: var(--eq-deep);
+      background: var(--eq-ice);
+      padding: 4px 10px;
+      border-radius: 3px;
+      margin-bottom: 16px;
+    }
+    .hero h1 {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      line-height: 1.15;
+      margin: 0 0 12px;
+    }
+    .hero .meta {
+      color: var(--eq-grey);
+      font-size: 14px;
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .pill.live    { background: #d1f4dd; color: var(--green); }
+    .pill.pending { background: #fff4d6; color: var(--amber); }
+    .pill.done    { background: #d1f4dd; color: var(--green); }
+    .pill.dot::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    /* Section */
+    section {
+      margin-bottom: 36px;
+    }
+    section h2 {
+      font-size: 18px;
+      font-weight: 700;
+      margin: 0 0 14px;
+      letter-spacing: -0.005em;
+    }
+    section .lede {
+      color: var(--eq-grey);
+      margin: 0 0 16px;
+      font-size: 14px;
+    }
+
+    /* TL;DR card */
+    .tldr {
+      background: var(--eq-ice);
+      border-left: 3px solid var(--eq-deep);
+      padding: 18px 20px;
+      border-radius: 4px;
+    }
+    .tldr ul { margin: 0; padding-left: 20px; }
+    .tldr li { margin-bottom: 6px; }
+    .tldr li:last-child { margin-bottom: 0; }
+
+    /* Feature cards */
+    .features {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    @media (min-width: 720px) {
+      .features { grid-template-columns: 1fr 1fr; }
+    }
+    .feature {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 16px 18px;
+    }
+    .feature .name {
+      font-weight: 600;
+      font-size: 14px;
+      margin: 0 0 4px;
+    }
+    .feature .path {
+      font-family: 'JetBrains Mono', Menlo, monospace;
+      font-size: 12px;
+      color: var(--eq-grey);
+      margin: 0 0 8px;
+      word-break: break-all;
+    }
+    .feature .desc {
+      font-size: 13px;
+      color: var(--eq-grey);
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    /* Steps */
+    .steps {
+      counter-reset: step;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .steps li {
+      counter-increment: step;
+      padding: 12px 0 12px 44px;
+      position: relative;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+    .steps li:last-child { border-bottom: none; }
+    .steps li::before {
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      top: 12px;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--eq-deep);
+      color: white;
+      font-weight: 600;
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .steps code {
+      font-family: 'JetBrains Mono', Menlo, monospace;
+      font-size: 12px;
+      background: var(--eq-ice);
+      padding: 1px 6px;
+      border-radius: 3px;
+    }
+
+    /* Decisions */
+    .decisions {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .decisions li {
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 130px 1fr;
+      gap: 16px;
+      align-items: baseline;
+      font-size: 14px;
+    }
+    .decisions li:last-child { border-bottom: none; }
+    .decisions .label {
+      font-weight: 600;
+      color: var(--eq-deep);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    .decisions code {
+      font-family: 'JetBrains Mono', Menlo, monospace;
+      font-size: 12px;
+      background: var(--eq-ice);
+      padding: 1px 6px;
+      border-radius: 3px;
+    }
+
+    /* Pending list */
+    .pending-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .pending-list li {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: baseline;
+      font-size: 14px;
+    }
+    .pending-list li:last-child { border-bottom: none; }
+    .pending-list .what { font-weight: 500; }
+    .pending-list .trigger {
+      font-size: 11px;
+      color: var(--eq-grey);
+      text-align: right;
+      max-width: 240px;
+    }
+
+    /* Roles row */
+    .roles {
+      display: flex;
+      gap: 6px;
+      margin: 12px 0 0;
+    }
+    .role-tile {
+      flex: 1;
+      padding: 10px 8px;
+      text-align: center;
+      border-radius: 4px;
+      color: white;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+    .role-tile small {
+      display: block;
+      opacity: 0.75;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 500;
+      margin-top: 2px;
+    }
+    .role-tile.t1 { background: #1F335C; }
+    .role-tile.t2 { background: var(--eq-deep); }
+    .role-tile.t3 { background: var(--eq-sky); }
+    .role-tile.t4 { background: #82c6e2; color: var(--eq-ink); }
+    .role-tile.t5 { background: #b8dcec; color: var(--eq-ink); }
+
+    /* Footer */
+    footer {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      color: var(--eq-grey);
+      font-size: 12px;
+    }
+    footer a {
+      color: var(--eq-deep);
+      text-decoration: none;
+    }
+    footer a:hover { text-decoration: underline; }
+    footer .links {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <header class="hero">
+      <span class="eyebrow">EQ Solves — Field</span>
+      <h1>Phase 1 multi-tenancy is live</h1>
+      <div class="meta">
+        <span>2026-04-27</span>
+        <span>·</span>
+        <span>7 commits past <code style="font-family:'JetBrains Mono',monospace; font-size:13px">demo</code></span>
+        <span>·</span>
+        <span class="pill live dot">Deployed to eq-solves-field.netlify.app</span>
+      </div>
+    </header>
+
+    <section>
+      <h2>TL;DR</h2>
+      <div class="tldr">
+        <ul>
+          <li>Multi-tenancy plan locked — three architectural decisions and a tenant URL convention.</li>
+          <li>Phase 1 scaffolding shipped: feature-flag wrapper, 5-tier role permissions, and a Project Hours burn-down panel — visible at the bottom of the page when logged in as supervisor.</li>
+          <li>Phase 2 (real RLS, Supabase-native JWT, edge-function defence in depth) is fully specified but deferred — fires on first self-serve trial signup or after ~3 customers are manually provisioned.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section>
+      <h2>What's now live</h2>
+      <p class="lede">Four scaffolds shipped behind feature flags + permission gates. None of these touch existing modules — purely additive.</p>
+      <div class="features">
+
+        <div class="feature">
+          <div class="name">Feature flag wrapper</div>
+          <div class="path">scripts/flags.js · window.EQ_FLAGS</div>
+          <div class="desc">Thin PostHog wrapper. <code style="font-family:'JetBrains Mono',monospace;font-size:11px">EQ_FLAGS.isEnabled(key)</code> with safe defaults when PostHog isn't configured. <span class="pill live dot" style="font-size:10px;padding:2px 8px;margin-top:6px">Live</span></div>
+        </div>
+
+        <div class="feature">
+          <div class="name">Role permission helper</div>
+          <div class="path">scripts/permissions.js · window.EQ_PERMS</div>
+          <div class="desc">5-tier role gate. <code style="font-family:'JetBrains Mono',monospace;font-size:11px">EQ_PERMS.can('perm.key')</code> backed by matrix v1. Reads <code style="font-family:'JetBrains Mono',monospace;font-size:11px">isManager</code> global today; future-proof for JWT claims. <span class="pill live dot" style="font-size:10px;padding:2px 8px;margin-top:6px">Live</span></div>
+        </div>
+
+        <div class="feature">
+          <div class="name">Project Hours panel</div>
+          <div class="path">scripts/project-hours.js · #project-hours-panel</div>
+          <div class="desc">Self-mounting burn-down view. Per-site Budget / Used / Remaining / % used. Visible only when flag + permission both green. <span class="pill live dot" style="font-size:10px;padding:2px 8px;margin-top:6px">Live</span></div>
+        </div>
+
+        <div class="feature">
+          <div class="name">Site tracking columns</div>
+          <div class="path">migrations/2026-04-27_sites_track_hours.sql</div>
+          <div class="desc"><code style="font-family:'JetBrains Mono',monospace;font-size:11px">sites.track_hours</code> (boolean) + <code style="font-family:'JetBrains Mono',monospace;font-size:11px">sites.budget_hours</code> (numeric) applied to <code style="font-family:'JetBrains Mono',monospace;font-size:11px">ktmjmdzqrogauaevbktn</code>. <span class="pill done dot" style="font-size:10px;padding:2px 8px;margin-top:6px">Applied</span></div>
+        </div>
+
+      </div>
+
+      <h3 style="font-size:14px;margin:24px 0 8px;font-weight:600;color:var(--eq-deep);text-transform:uppercase;letter-spacing:0.4px">Role hierarchy (matrix v1)</h3>
+      <div class="roles">
+        <div class="role-tile t1">Manager<small>Tier 1 · 56</small></div>
+        <div class="role-tile t2">Supervisor<small>Tier 2 · 36</small></div>
+        <div class="role-tile t3">Employee<small>Tier 3 · 13</small></div>
+        <div class="role-tile t4">Apprentice<small>Tier 4 · 17</small></div>
+        <div class="role-tile t5">Labour Hire<small>Tier 5 · 5</small></div>
+      </div>
+      <p style="font-size:12px;color:var(--eq-grey);margin:6px 0 0">Numbers = permissions ticked per role in matrix v1. Edit via <a href="../eq-field-roles-2026-04-27/permission-matrix.html" style="color:var(--eq-deep)">permission-matrix.html</a>.</p>
+    </section>
+
+    <section>
+      <h2>How to see it</h2>
+      <ol class="steps">
+        <li>Open <code>eq-solves-field.netlify.app</code> (hard refresh if you've been there recently).</li>
+        <li>Log in with the supervisor PIN (<code>demo1234</code> on demo).</li>
+        <li>Scroll to the bottom of the page. You'll see the <strong>Project Hours</strong> panel. Empty until a site has <code>track_hours = true</code>; tick that on a site and set <code>budget_hours</code> to populate the burn-down.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Decisions locked today</h2>
+      <ul class="decisions">
+        <li>
+          <span class="label">Sprint scope</span>
+          <span>Phase 1 only. Phase 2 deferred until first self-serve trial signup is on a calendar OR ~3 customers manually provisioned.</span>
+        </li>
+        <li>
+          <span class="label">Tenancy boundary</span>
+          <span>Multi-tenancy lives inside <code>ktmjmdzqrogauaevbktn</code> only. SKS Labour stays on its own project, untouched. Future enterprise customers handled case-by-case.</span>
+        </li>
+        <li>
+          <span class="label">Auth surface</span>
+          <span>When Phase 2 fires: <code>verify-pin.js</code> mints a Supabase-native JWT with <code>app_metadata.tenant_id</code> + <code>app_metadata.eq_role</code>. PIN UX preserved. Standard <code>auth.jwt()</code> RLS pattern.</span>
+        </li>
+        <li>
+          <span class="label">Tenant URL</span>
+          <span><code>eq.solutions/field/&lt;slug&gt;/</code>. Path-based slug resolution, single shared Netlify site, no per-tenant subdomains.</span>
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>What's queued for later</h2>
+      <ul class="pending-list">
+        <li>
+          <span class="what">Apply <code>migrations/2026-04-27_eq_role_enum_people_role.sql</code></span>
+          <span class="trigger">When ready · Verification queries in the SQL header</span>
+        </li>
+        <li>
+          <span class="what">Create <code>feat_project_hours_v1</code> flag in PostHog</span>
+          <span class="trigger">When cohort rollouts matter (external customers)</span>
+        </li>
+        <li>
+          <span class="what">Phase 2: RLS hardening + Supabase-native JWT mint + edge-function defence in depth (A+B+C)</span>
+          <span class="trigger">First trial signup OR ~3 customers</span>
+        </li>
+        <li>
+          <span class="what">Migrate 97 <code>isManager</code> references to <code>EQ_PERMS.can(...)</code> opportunistically</span>
+          <span class="trigger">When touching files for other reasons — never as a sweep</span>
+        </li>
+        <li>
+          <span class="what">Stripe subscription linking (Phase 3)</span>
+          <span class="trigger">First paying customer queued</span>
+        </li>
+      </ul>
+    </section>
+
+    <footer>
+      <div class="links">
+        <a href="plan.md">Living plan (plan.md)</a>
+        <a href="../eq-field-roles-2026-04-27/permission-matrix.html">Permission matrix HTML</a>
+        <a href="../eq-field-roles-2026-04-27/permissions-by-role-v1.json">Matrix v1 JSON</a>
+        <a href="https://github.com/Milmlow/eq-field-app/pull/23" target="_blank" rel="noopener">PR #23 (merged)</a>
+      </div>
+      <div>
+        Generated 2026-04-27. Lives in <code>eq-context/drafts/eq-field-mt-2026-04-27/</code>. Drafts folder is git-tracked but not synced to Supabase — rendered from local clone or via direct GitHub view.
+      </div>
+    </footer>
+
+  </div>
+</body>
+</html>
