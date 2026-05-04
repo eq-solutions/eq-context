@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__6cc721e0-dd2d-40e4-a8a6-0aa3843e0ef8__get_advisors",
+      "mcp__6cc721e0-dd2d-40e4-a8a6-0aa3843e0ef8__list_migrations",
+      "mcp__ccd_session__mark_chapter",
+      "mcp__f5bcbae1-f0f9-4bff-a647-0948e3ccd5d2__netlify-project-services-reader"
+    ]
+  }
+}
