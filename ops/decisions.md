@@ -20,6 +20,24 @@ For the current built state of each system, see `system/architecture.md`.
 
 ---
 
+## 2026-05-04 — Real Client Names Permitted in Substrate, Forbidden in Outputs
+
+**Status:** Accepted
+
+**Decision:** Rule #19 ("real client names MUST NOT appear in outputs — use generic placeholders") applies to outputs only. The substrate (`eq-context` repo) MAY contain real client names because operational fidelity is the substrate's whole purpose. The assistant MUST redact to generic placeholders ("Data Centre Client A", "Tier 1 Client") whenever substrate content is carried into outputs.
+**Why:** A 2026-05-04 audit found 5 substrate files containing real client names (Equinix, AirTrunk, AWS, DigiCo, Schneider, Telstra, Microsoft) — surfacing the ambiguity in the original rule. Two failure modes were possible: (1) scrub all names from substrate, losing operational fidelity ("Equinix SY6 CUFT" carries protocol/facility/expectation context that "Data Centre Client A SY6" does not); (2) leave the contradiction in place, accepting that every audit re-flags it. Carve-out resolves both: substrate keeps its fidelity, outputs stay clean.
+**Alternatives considered:**
+- **Strict scrub of substrate** (rejected — loses real operational context that makes the substrate useful; recurring cleanup cost as new names get added; the eq-context repo is private with low leak risk).
+- **Leave the contradiction in place** (rejected — every audit will flag this as a violation; ambiguity in non-negotiables compounds quietly).
+- **Move client names to a separate encrypted file** (rejected — over-engineered for the actual risk; adds reading-friction to the highest-value tier).
+**Implications:**
+- Rule #19 in `rules/non-negotiables.md` clarified with substrate carve-out.
+- The assistant MUST redact substrate-sourced client names to generic placeholders before any output (document, email, presentation, public artefact).
+- "Outputs" defined as: anything sent to, shown to, or seen by parties outside Royce.
+- This entry exists so future audits don't re-flag the substrate as a rule violation.
+
+---
+
 ## 2026-04-28 — Annual `rules/*` Review Cadence
 
 **Status:** Accepted
