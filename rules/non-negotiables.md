@@ -83,7 +83,9 @@ defaults from one tier only. Cross-tier loads are explicit, not implicit.
 16. Outputs MUST NOT use gradients or drop shadows (EQ Design Brief v1.3).
 17. Only two logo variants MAY be used — Blue and White (v1.3 supersedes the old three-variant rule).
 18. New documents MUST NOT use legacy email addresses (rwm185@pm.me or roycemilmlow@gmail.com).
-19. Outputs MUST NOT use real client names — generic placeholders MUST be used instead ("Data Centre Client A", "Tier 1 Client", etc.).
+19. **Outputs MUST NOT use real client names — generic placeholders MUST be used instead** ("Data Centre Client A", "Tier 1 Client", etc.).
+   - **Outputs** means anything sent to, shown to, or seen by parties outside Royce: documents, emails, presentations, draft replies, public artefacts, agent responses where the user is not Royce.
+   - **Substrate is exempt** — files in `eq-context` (this repo, including `sks/active.md`, `sks/pending.md`, `sks/team.md`, `sks/templates.md`) MAY use real client names because operational fidelity matters more than scrubbing internal context. The assistant MUST NOT carry those names into outputs without redacting them to placeholders first. Conscious carve-out, 2026-05-04 audit.
 
 ---
 
