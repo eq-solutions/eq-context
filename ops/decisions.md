@@ -33,7 +33,7 @@ For the current built state of each system, see `system/architecture.md`.
 **Implications:**
 - Calendar event registered on 2026-04-28; first review fires 2027-04-28.
 - The Friday substrate audit (`eq-context-substrate-audit` agent) checks freshness, not currency. This decision adds the currency check at annual cadence.
-- Out-of-cycle review is permitted whenever a rule is suspected stale — surface via `relevant tier pending.md`.
+- Out-of-cycle review is permitted whenever a rule is suspected stale — surface via the relevant tier's `pending.md`.
 
 ---
 
@@ -49,7 +49,7 @@ For the current built state of each system, see `system/architecture.md`.
 **Implications:**
 - New rules added to `rules/non-negotiables.md` MUST use a modal verb.
 - Other `rules/*` files (`brand.md`, `deployment.md`, `stack.md`) MAY adopt the same convention when next edited; not retrofitted unless a real change is being made.
-- A meaning-altering rewrite (vs vocabulary sharpening) is a decision-grade change — surfaced via `relevant tier pending.md`, not committed inline.
+- A meaning-altering rewrite (vs vocabulary sharpening) is a decision-grade change — surfaced via the relevant tier's `pending.md`, not committed inline.
 
 ---
 
@@ -96,7 +96,7 @@ For the current built state of each system, see `system/architecture.md`.
 - Block all chat writes period (rejected — emergencies happen and the runtime store should reflect ground truth).
 **Implications:**
 - Add a non-negotiable: "GitHub is canonical. Supabase is cache." (see `rules/non-negotiables.md` follow-up — separate task).
-- Any direct-Supabase write must append a flag to `relevant tier pending.md` titled "RECONCILE: <slug> written direct to Supabase on <date>".
+- Any direct-Supabase write must append a flag to the relevant tier's `pending.md` titled "RECONCILE: <slug> written direct to Supabase on <date>".
 
 ---
 
