@@ -1,0 +1,175 @@
+#!/usr/bin/env bash
+#
+# eq-context pre-commit hook
+# Enforces system/md-style.md anti-patterns locally before any commit.
+#
+# Activated by: git config core.hooksPath .githooks
+# (run scripts/install-hooks.ps1 once after cloning to enable).
+#
+# Bypass (only when truly needed): git commit --no-verify
+
+set -e
+
+RED=$'\033[0;31m'
+YELLOW=$'\033[0;33m'
+GREEN=$'\033[0;32m'
+NC=$'\033[0m'
+
+violations=0
+warnings=0
+
+# Get the list of files staged for commit (Added, Copied, Modified, Renamed)
+staged_files=$(git diff --cached --name-only --diff-filter=ACMR)
+
+if [ -z "$staged_files" ]; then
+    exit 0
+fi
+
+# ----------------------------------------------------------------------
+# 17.1 — Per-version changelog files (CHANGELOG-vX.Y.Z.md) — BLOCK
+# ----------------------------------------------------------------------
+echo "$staged_files" | grep -iE '(^|/)CHANGELOG-v[0-9]+\.[0-9]+(\.[0-9]+)?\.md$' > /tmp/_pre_v_chk_$$ || true
+if [ -s /tmp/_pre_v_chk_$$ ]; then
+    echo "${RED}BLOCK: per-version changelog files (use rolling CHANGELOG.md):${NC}"
+    sed 's/^/  - /' /tmp/_pre_v_chk_$$
+    echo "  Fix: append the version section into CHANGELOG.md and unstage the per-version file."
+    violations=$((violations+1))
+fi
+rm -f /tmp/_pre_v_chk_$$
+
+# ----------------------------------------------------------------------
+# 17.2 — Binary files in eq-context — BLOCK
+# ----------------------------------------------------------------------
+echo "$staged_files" | grep -iE '\.(zip|tar|gz|7z|docx|doc|xlsx|xls|pptx|ppt|pdf|png|jpg|jpeg|gif|bmp|webp|mov|mp4|mp3|wav)$' > /tmp/_pre_bin_$$ || true
+if [ -s /tmp/_pre_bin_$$ ]; then
+    echo "${RED}BLOCK: binary files do not belong in eq-context:${NC}"
+    sed 's/^/  - /' /tmp/_pre_bin_$$
+    echo "  Fix: move artefacts to a project folder or S3/R2; unstage with 'git reset HEAD <file>'."
+    violations=$((violations+1))
+fi
+rm -f /tmp/_pre_bin_$$
+
+# ----------------------------------------------------------------------
+# 17.3 — _cleanup-patch-* folders — BLOCK
+# ----------------------------------------------------------------------
+echo "$staged_files" | grep -E '(^|/)_cleanup-patch-[^/]+/' > /tmp/_pre_cp_$$ || true
+if [ -s /tmp/_pre_cp_$$ ]; then
+    echo "${RED}BLOCK: half-applied cleanup-patch folders should not be committed:${NC}"
+    sed 's/^/  - /' /tmp/_pre_cp_$$
+    echo "  Fix: apply the cleanup now or move it to a feature branch. See system/md-style.md."
+    violations=$((violations+1))
+fi
+rm -f /tmp/_pre_cp_$$
+
+# ----------------------------------------------------------------------
+# 17.4 — Non-canonical session filenames — BLOCK
+# ----------------------------------------------------------------------
+echo "$staged_files" | grep -E '^sessions/' | grep -vE '^sessions/[0-9]{4}-[0-9]{2}-[0-9]{2}\.md$' > /tmp/_pre_sess_$$ || true
+if [ -s /tmp/_pre_sess_$$ ]; then
+    echo "${RED}BLOCK: non-canonical filenames in sessions/ (must match YYYY-MM-DD.md):${NC}"
+    sed 's/^/  - /' /tmp/_pre_sess_$$
+    echo "  Fix: rename to sessions/YYYY-MM-DD.md, or append to the existing dated file."
+    violations=$((violations+1))
+fi
+rm -f /tmp/_pre_sess_$$
+
+# ----------------------------------------------------------------------
+# Duplicate-content check across staged + tracked sessions
+# Compares sha1 of session files; flags any duplicates.
+# ----------------------------------------------------------------------
+if echo "$staged_files" | grep -q '^sessions/'; then
+    # Build a temp file of "sha1  path" for every sessions/*.md in the working tree
+    : > /tmp/_pre_sha_$$
+    for f in sessions/*.md; do
+        if [ -f "$f" ]; then
+            sha=$(git hash-object "$f")
+            echo "$sha $f" >> /tmp/_pre_sha_$$
+        fi
+    done
+    # Find duplicate hashes
+    sort /tmp/_pre_sha_$$ | awk '{print $1}' | uniq -d > /tmp/_pre_sha_dup_$$
+    if [ -s /tmp/_pre_sha_dup_$$ ]; then
+        echo "${RED}BLOCK: duplicate session content detected (same SHA, different paths):${NC}"
+        while read -r dup_sha; do
+            grep "^$dup_sha " /tmp/_pre_sha_$$ | sed 's/^/  /'
+        done < /tmp/_pre_sha_dup_$$
+        echo "  Fix: delete one of each pair before committing."
+        violations=$((violations+1))
+    fi
+    rm -f /tmp/_pre_sha_$$ /tmp/_pre_sha_dup_$$
+fi
+
+# ----------------------------------------------------------------------
+# Tool-attribution drift in substrate prose — WARN (not block)
+# (See system/md-style.md "Tool-neutral writing")
+# Flags newly-added MD content that uses tool brand names instead of
+# the tool-neutral `assistant` convention. Only checks staged additions
+# (lines starting with `+`), so existing prose isn't re-warned forever.
+# ----------------------------------------------------------------------
+attr_warnings=0
+echo "$staged_files" | grep -iE '\.md$' > /tmp/_pre_attr_$$ || true
+if [ -s /tmp/_pre_attr_$$ ]; then
+    while read -r mdfile; do
+        [ -f "$mdfile" ] || continue
+        # Files where tool-name examples are intentional or out-of-scope.
+        case "$mdfile" in
+            README.md|COWORK-PROMPT.md|system/md-style.md|system/onboarding.md|archive/*|.github/*|.githooks/*) continue ;;
+        esac
+        matches=$(git diff --cached "$mdfile" | grep -E '^\+[^+]' | grep -iE '(Claude Code \(Opus|Claude Desktop|Cursor agent|Codex|GPT-?4|Cowork (did|updated|pushed|added))' || true)
+        if [ -n "$matches" ]; then
+            if [ "$attr_warnings" = "0" ]; then
+                echo "${YELLOW}WARN: tool-attribution phrases in newly-added prose (see system/md-style.md):${NC}"
+            fi
+            echo "  - $mdfile"
+            echo "$matches" | sed 's/^/      /'
+            attr_warnings=$((attr_warnings+1))
+            warnings=$((warnings+1))
+        fi
+    done < /tmp/_pre_attr_$$
+fi
+rm -f /tmp/_pre_attr_$$
+
+# ----------------------------------------------------------------------
+# YAML frontmatter check on changed MD files — WARN (not block)
+# ----------------------------------------------------------------------
+echo "$staged_files" | grep -iE '\.md$' > /tmp/_pre_md_$$ || true
+if [ -s /tmp/_pre_md_$$ ]; then
+    while read -r mdfile; do
+        # Skip if file no longer in working tree (D files filtered out by --diff-filter=ACMR but be safe)
+        [ -f "$mdfile" ] || continue
+        # Skip files where frontmatter is not required
+        case "$mdfile" in
+            README.md|COWORK-PROMPT.md|archive/*|.github/*|.githooks/*) continue ;;
+        esac
+        # Strip trailing CR (CRLF line endings) and a leading UTF-8 BOM
+        # (\xEF\xBB\xBF) before comparing — both can be present on
+        # Windows-edited files and would otherwise false-positive this check.
+        first=$(head -1 "$mdfile" | tr -d '\r' | sed $'s/^\xef\xbb\xbf//')
+        if [ "$first" != "---" ]; then
+            if [ "$warnings" = "0" ]; then
+                echo "${YELLOW}WARN: missing YAML frontmatter (see system/md-style.md):${NC}"
+            fi
+            echo "  - $mdfile"
+            warnings=$((warnings+1))
+        fi
+    done < /tmp/_pre_md_$$
+fi
+rm -f /tmp/_pre_md_$$
+
+# ----------------------------------------------------------------------
+# Result
+# ----------------------------------------------------------------------
+if [ "$violations" -gt 0 ]; then
+    echo ""
+    echo "${RED}Pre-commit blocked: $violations violation group(s) above.${NC}"
+    echo "Bypass (only if you really know): git commit --no-verify"
+    exit 1
+fi
+
+if [ "$warnings" -gt 0 ]; then
+    echo ""
+    echo "${YELLOW}Pre-commit passed with $warnings warning(s).${NC}"
+fi
+
+echo "${GREEN}MD health checks passed.${NC}"
+exit 0
