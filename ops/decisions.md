@@ -1,11 +1,11 @@
----
-title: OPS — Decisions Log
+-----
+
+## title: OPS — Decisions Log
 owner: Royce Milmlow
 last_updated: 2026-05-04
 scope: Append-only log of key decisions across all tiers and the reasoning at the time
 read_priority: standard
 status: live
----
 
 # OPS — Decisions Log
 
@@ -18,74 +18,102 @@ Status values: Accepted | Superseded by [date+title] | On Hold | Deprecated | Pr
 Append-only — never delete an entry. Supersede or deprecate it instead.
 For the current built state of each system, see `system/architecture.md`.
 
----
+-----
+
+## 2026-05-04 — Decline ChatGPT Structural Expansion Proposal (Operations / Contracts / Modes / START.md)
+
+**Status:** Accepted
+
+**Decision:** Decline ChatGPT’s “EQ Context — System Review & Next-Step Plan” proposal in full, with two minor exceptions noted below for possible future revisit. The proposal would have added four new structural elements to the substrate (`/operations/`, `/contracts/`, `/modes/`, `/START.md`) plus rewrites of “loaders into execution contracts” and a JSON schema layer for output standardisation. Rejected as speculative architectural expansion against a substrate that is < 2 hours old in its current form and has not yet been used in a single real-world session. The proposal solves theoretical gaps, not observed ones.
+
+**Why:** The substrate underwent a major refactor on 2026-05-04 specifically to *reduce* structural complexity (state/, knowledge/, drafts/, four root files → tier-separated four-tier model + thin pointers). ChatGPT’s review, while correctly diagnosing the system as “behaviourally strong but executionally weak,” prescribed re-introducing complexity under different names. Accepting it would have undone the day’s consolidation work. The actual remedy for the diagnosed gap is *templates*, not *architecture* — and templates grow organically as operational outputs are produced (one currently exists: SKS Quote v3). Speculative pre-building of operations, contracts, and mode files is the exact failure mode the refactor was designed to escape.
+
+**Alternatives considered:**
+
+- **Accept full ChatGPT proposal** (rejected — restores complexity just deconstructed; introduces 4 new folders and a JSON schema layer; speculative against zero real-world session evidence).
+- **Accept “drift correction” rule (item 7) only** (deferred — useful idea but small enough to add organically the first time a real session shows the problem; not worth a commit on its own).
+- **Accept “minimum session-close fallback” (item 9) only** (deferred — same reasoning; the existing 5-step §10 has not been used enough to know if a fallback is needed).
+- **Accept “structured exploration output pattern” (item 4)** (rejected — risks making exploration formulaic, which defeats its purpose; revisit only if real exploration outputs feel inconsistent in practice).
+
+**Implications:**
+
+- The substrate stays as deployed at session close 2026-05-04: tier-separated repo, single CLAUDE.md behavioural contract, two thin pointer files, no `/operations/`, no `/contracts/`, no `/modes/`, no `/START.md`.
+- The original ChatGPT proposal text is logged here for future revisit. Items 7 (drift correction) and 9 (minimum session-close) remain candidates for organic adoption if real-world use surfaces the gaps they predict.
+- Re-evaluation trigger: if after ~2 weeks of real-world use across Chat/Cowork/Code, operational outputs are still inconsistent OR sessions are skipping the start protocol, revisit ChatGPT’s proposal with felt-need evidence rather than theoretical critique.
+- General principle: do not expand substrate structure speculatively. Wait for observed gaps. Theoretical gaps are not gaps.
+
+-----
 
 ## 2026-05-04 — Real Client Names Permitted in Substrate, Forbidden in Outputs
 
 **Status:** Accepted
 
-**Decision:** Rule #19 ("real client names MUST NOT appear in outputs — use generic placeholders") applies to outputs only. The substrate (`eq-context` repo) MAY contain real client names because operational fidelity is the substrate's whole purpose. The assistant MUST redact to generic placeholders ("Data Centre Client A", "Tier 1 Client") whenever substrate content is carried into outputs.
-**Why:** A 2026-05-04 audit found 5 substrate files containing real client names (Equinix, AirTrunk, AWS, DigiCo, Schneider, Telstra, Microsoft) — surfacing the ambiguity in the original rule. Two failure modes were possible: (1) scrub all names from substrate, losing operational fidelity ("Equinix SY6 CUFT" carries protocol/facility/expectation context that "Data Centre Client A SY6" does not); (2) leave the contradiction in place, accepting that every audit re-flags it. Carve-out resolves both: substrate keeps its fidelity, outputs stay clean.
+**Decision:** Rule #19 (“real client names MUST NOT appear in outputs — use generic placeholders”) applies to outputs only. The substrate (`eq-context` repo) MAY contain real client names because operational fidelity is the substrate’s whole purpose. The assistant MUST redact to generic placeholders (“Data Centre Client A”, “Tier 1 Client”) whenever substrate content is carried into outputs.
+**Why:** A 2026-05-04 audit found 5 substrate files containing real client names (Equinix, AirTrunk, AWS, DigiCo, Schneider, Telstra, Microsoft) — surfacing the ambiguity in the original rule. Two failure modes were possible: (1) scrub all names from substrate, losing operational fidelity (“Equinix SY6 CUFT” carries protocol/facility/expectation context that “Data Centre Client A SY6” does not); (2) leave the contradiction in place, accepting that every audit re-flags it. Carve-out resolves both: substrate keeps its fidelity, outputs stay clean.
 **Alternatives considered:**
+
 - **Strict scrub of substrate** (rejected — loses real operational context that makes the substrate useful; recurring cleanup cost as new names get added; the eq-context repo is private with low leak risk).
 - **Leave the contradiction in place** (rejected — every audit will flag this as a violation; ambiguity in non-negotiables compounds quietly).
 - **Move client names to a separate encrypted file** (rejected — over-engineered for the actual risk; adds reading-friction to the highest-value tier).
-**Implications:**
+  **Implications:**
 - Rule #19 in `rules/non-negotiables.md` clarified with substrate carve-out.
 - The assistant MUST redact substrate-sourced client names to generic placeholders before any output (document, email, presentation, public artefact).
-- "Outputs" defined as: anything sent to, shown to, or seen by parties outside Royce.
-- This entry exists so future audits don't re-flag the substrate as a rule violation.
+- “Outputs” defined as: anything sent to, shown to, or seen by parties outside Royce.
+- This entry exists so future audits don’t re-flag the substrate as a rule violation.
 
----
+-----
 
 ## 2026-04-28 — Annual `rules/*` Review Cadence
 
 **Status:** Accepted
 
-**Decision:** All files in `rules/` are reviewed for currency once per year. Mechanism: a recurring calendar event on 28 April each year titled "Review eq-context rules/* for currency". The reviewer (Royce) confirms each rule still applies, amends or supersedes any that don't, and logs the review as a session entry with a "no changes" or "changes applied" outcome.
+**Decision:** All files in `rules/` are reviewed for currency once per year. Mechanism: a recurring calendar event on 28 April each year titled “Review eq-context rules/* for currency”. The reviewer (Royce) confirms each rule still applies, amends or supersedes any that don’t, and logs the review as a session entry with a “no changes” or “changes applied” outcome.
 **Why:** ISO 27001 requires annual review of security policies; the same pattern transfers to any normative ruleset that can drift quietly. `rules/` is the lowest-changing folder by design — without an explicit review cadence, files accumulate stale assumptions invisibly.
 **Alternatives considered:**
+
 - `last_reviewed` frontmatter field (rejected 2026-04-28 — duplicates `updated_at` semantics; ritual without signal).
 - Quarterly review (rejected — overkill for a folder that changes ~3x/year).
 - No formal review (rejected — the gap closes here for ~10 minutes/year of work).
-**Implications:**
+  **Implications:**
 - Calendar event registered on 2026-04-28; first review fires 2027-04-28.
 - The Friday substrate audit (`eq-context-substrate-audit` agent) checks freshness, not currency. This decision adds the currency check at annual cadence.
-- Out-of-cycle review is permitted whenever a rule is suspected stale — surface via the relevant tier's `pending.md`.
+- Out-of-cycle review is permitted whenever a rule is suspected stale — surface via the relevant tier’s `pending.md`.
 
----
+-----
 
 ## 2026-04-28 — RFC 2119 Modal Verbs Adopted in `rules/`
 
 **Status:** Accepted
 
 **Decision:** Rules in `rules/non-negotiables.md` use RFC 2119 modal verbs (MUST, MUST NOT, SHOULD, SHOULD NOT, MAY) for the bolded rule statements. Narrative prose remains conversational.
-**Why:** Rules are normative documents. Without standardised modal verbs, "always X" and "never X" can be read as either absolute or aspirational — fine for two readers who share context, ambiguous for automation or new collaborators.
+**Why:** Rules are normative documents. Without standardised modal verbs, “always X” and “never X” can be read as either absolute or aspirational — fine for two readers who share context, ambiguous for automation or new collaborators.
 **Alternatives considered:**
+
 - Apply across all `rules/*` files immediately (deferred — start with non-negotiables; expand as other rules files mature).
 - Stay informal (rejected — gap against ISO 80000-1 / RFC 2119 conventions, and the substrate is now mature enough to merit formality).
-**Implications:**
+  **Implications:**
 - New rules added to `rules/non-negotiables.md` MUST use a modal verb.
 - Other `rules/*` files (`brand.md`, `deployment.md`, `stack.md`) MAY adopt the same convention when next edited; not retrofitted unless a real change is being made.
-- A meaning-altering rewrite (vs vocabulary sharpening) is a decision-grade change — surfaced via the relevant tier's `pending.md`, not committed inline.
+- A meaning-altering rewrite (vs vocabulary sharpening) is a decision-grade change — surfaced via the relevant tier’s `pending.md`, not committed inline.
 
----
+-----
 
 ## 2026-04-28 — ADR Status Field Adopted on decisions.md
 
 **Status:** Accepted
 
 **Decision:** Every entry in `ops/decisions.md` carries a `Status` field — one of Accepted, Superseded by [date+title], On Hold, Deprecated, or Proposed. Inserted between the entry heading and the `Decision` line.
-**Why:** Closes the only real gap against the Nygard ADR standard. Without a Status field, superseded decisions sit alongside current ones with no visual signal — the prose handles supersession but the structure doesn't, which means a fresh reader has to parse every entry to know what's still in force.
+**Why:** Closes the only real gap against the Nygard ADR standard. Without a Status field, superseded decisions sit alongside current ones with no visual signal — the prose handles supersession but the structure doesn’t, which means a fresh reader has to parse every entry to know what’s still in force.
 **Alternatives considered:**
+
 - Move superseded entries to `decisions-archive.md` immediately (rejected — premature at 13 entries; revisit at 30+).
 - Add `last_reviewed` frontmatter (rejected 2026-04-28 — adds ritual without signal once `updated_at` is reliable).
-**Implications:**
+  **Implications:**
 - All future decision entries MUST start with a `**Status:**` line (codified in `system/md-style.md` ADR section).
-- When a decision is superseded, the new decision's title is appended to the old entry's Status line; both entries remain in the file.
+- When a decision is superseded, the new decision’s title is appended to the old entry’s Status line; both entries remain in the file.
 - At 30+ entries, split into `decisions-archive.md` for non-Accepted entries.
 
----
+-----
 
 ## 2026-04-28 — Supabase Context Store Lives in eq-solves-service-dev, Table is `context_files`
 
@@ -94,44 +122,47 @@ For the current built state of each system, see `system/architecture.md`.
 **Decision:** Confirm the runtime context store as table `context_files` (id, slug UNIQUE, filename, content, updated_at) inside the `eq-solves-service-dev` Supabase project (`urjhmkhbgaxrofurpbgc`) — not a separate dedicated context project, and not the table name `claude_context` that earlier memory carried.
 **Why:** Live audit of Supabase 2026-04-28 returned the actual schema. The `context_files` table is the canonical runtime read source for all assistants. Creating a second project just for context would split costs and add an MCP target for no functional benefit while the row count is small (~30).
 **Alternatives considered:**
+
 - Dedicated `eq-context-store` Supabase project (rejected — context volume is tiny; multi-project sprawl is worse than co-tenancy with the product DB).
 - Move to `claude_context` named table for clarity (rejected — rename would break the live sync action and existing MCP reads; the slug column already gives clarity).
-**Implications:**
+  **Implications:**
 - All future Supabase MCP queries against the context store target table `context_files`, project `urjhmkhbgaxrofurpbgc`.
 - The table is co-located with EQ Solves Service product data; tenant separation is by *table*, not project. This is acceptable because `context_files` has no `tenant_id` and is not part of the multi-tenant data plane.
 - Update `system/architecture.md` next session to document this co-tenancy explicitly.
 
----
+-----
 
 ## 2026-04-28 — GitHub is the Source of Truth; Direct Supabase Writes are Emergency-Only
 
 **Status:** Accepted
 
 **Decision:** Chat (claude.ai web/mobile) drafts MD deltas; Cowork or Code commits them to GitHub; the sync action propagates to Supabase. Direct chat writes to the `context_files` Supabase table are reserved for emergencies only and must be reconciled to GitHub the same day.
-**Why:** Bypassing GitHub destroys the audit trail that is the actual moat of eq-context. The git log is the substrate's value — once Supabase and GitHub drift, every "what did we decide and why" question has two possibly-conflicting answers.
+**Why:** Bypassing GitHub destroys the audit trail that is the actual moat of eq-context. The git log is the substrate’s value — once Supabase and GitHub drift, every “what did we decide and why” question has two possibly-conflicting answers.
 **Alternatives considered:**
+
 - Allow chat to write Supabase routinely (rejected — silently demotes git to a backup).
 - Block all chat writes period (rejected — emergencies happen and the runtime store should reflect ground truth).
-**Implications:**
-- Add a non-negotiable: "GitHub is canonical. Supabase is cache." (see `rules/non-negotiables.md` follow-up — separate task).
-- Any direct-Supabase write must append a flag to the relevant tier's `pending.md` titled "RECONCILE: <slug> written direct to Supabase on <date>".
+  **Implications:**
+- Add a non-negotiable: “GitHub is canonical. Supabase is cache.” (see `rules/non-negotiables.md` follow-up — separate task).
+- Any direct-Supabase write must append a flag to the relevant tier’s `pending.md` titled “RECONCILE: <slug> written direct to Supabase on <date>”.
 
----
+-----
 
-## 2026-04-28 — "Done" in eq-context Means a Fresh Supabase updated_at, Nothing Else
+## 2026-04-28 — “Done” in eq-context Means a Fresh Supabase updated_at, Nothing Else
 
 **Status:** Accepted
 
-**Decision:** A change is not "done" until the row in `context_files` shows a fresh `updated_at`. Terminal output, commit hashes, and "looks good" visual confirmation do not count.
-**Why:** Three claims of completion in one session (2026-04-27/28) all turned out to be false on measurement: a wrong table name in memory, a "brief implemented" that hadn't been pushed, and a "push landed" where two of three files weren't actually edited. Each surface signal looked correct. Only the Supabase row's `updated_at` exposed the gap.
+**Decision:** A change is not “done” until the row in `context_files` shows a fresh `updated_at`. Terminal output, commit hashes, and “looks good” visual confirmation do not count.
+**Why:** Three claims of completion in one session (2026-04-27/28) all turned out to be false on measurement: a wrong table name in memory, a “brief implemented” that hadn’t been pushed, and a “push landed” where two of three files weren’t actually edited. Each surface signal looked correct. Only the Supabase row’s `updated_at` exposed the gap.
 **Alternatives considered:**
+
 - Trust git push output (rejected — push can succeed on the wrong content).
 - Trust commit message intent (rejected — commit messages and diffs are routinely mismatched).
-**Implications:**
-- After every eq-context push, run the verification SQL (see `system/lessons.md` "Substrate Audit Query") and confirm the expected files show today's date.
-- Stop using "done" as a status word in this repo unless the SQL has been run.
+  **Implications:**
+- After every eq-context push, run the verification SQL (see `system/lessons.md` “Substrate Audit Query”) and confirm the expected files show today’s date.
+- Stop using “done” as a status word in this repo unless the SQL has been run.
 
----
+-----
 
 ## 2026-04-17 — EQ Design Brief v1.3 Supersedes v1.2
 
@@ -142,20 +173,21 @@ For the current built state of each system, see `system/architecture.md`.
 **Alternatives considered:** Staying on v1.2 (rejected — Black variant was being misused on busy backgrounds; AA compliance was inconsistent).
 **Implications:** All new documents use v1.3 palette and type scale. Old Black logo assets retained but flagged legacy — not for new work.
 
----
+-----
 
 ## 2026-04 — Three Supabase Projects, Not One
 
-**Status:** Accepted — supersedes the prior non-negotiable "never spin up a new Supabase project" (which never had a discrete decision entry).
+**Status:** Accepted — supersedes the prior non-negotiable “never spin up a new Supabase project” (which never had a discrete decision entry).
 
 **Decision:** Run three Supabase projects — sks-labour (live), eq-solves-field (demo), eq-solves-service-dev (context store) — instead of the original one-project rule.
-**Why:** SKS live production data and EQ demo experiments sharing a project is an unacceptable blast radius. Tenant prefixes (`sks_`, `eq_`) protect tables, but don't protect against a rogue schema migration or a bad DELETE run against the wrong table. Hard project boundaries do.
+**Why:** SKS live production data and EQ demo experiments sharing a project is an unacceptable blast radius. Tenant prefixes (`sks_`, `eq_`) protect tables, but don’t protect against a rogue schema migration or a bad DELETE run against the wrong table. Hard project boundaries do.
 **Alternatives considered:**
-- One project with tighter RLS (rejected — RLS doesn't protect against owner-level mistakes)
-- Two projects, SKS vs EQ (rejected — context store belongs in its own paid project with its own access pattern)
-**Implications:** Always confirm project ID before connecting. Never touch sks-labour without explicit "SKS live" instruction. The old non-negotiable "never spin up a new Supabase project" is retired — replaced by "never touch SKS live without explicit instruction".
 
----
+- One project with tighter RLS (rejected — RLS doesn’t protect against owner-level mistakes)
+- Two projects, SKS vs EQ (rejected — context store belongs in its own paid project with its own access pattern)
+  **Implications:** Always confirm project ID before connecting. Never touch sks-labour without explicit “SKS live” instruction. The old non-negotiable “never spin up a new Supabase project” is retired — replaced by “never touch SKS live without explicit instruction”.
+
+-----
 
 ## 2026-04-05 — SKS Receipt Tracker: localStorage over Supabase for v1
 
@@ -169,7 +201,7 @@ value is proven); no persistence (rejected — data loss between sessions kills 
 **Implications:** Users must use Export → Backup JSON regularly to protect data until migration.
 Migration path is clean: data shape stays identical, only read/write functions swap out.
 
----
+-----
 
 ## 2026-04-05 — One Shared Cloudflare Worker for All Apps
 
@@ -182,26 +214,27 @@ one API key, one deployment, one place to rotate credentials.
 **Alternatives considered:** Per-app workers (rejected — multiplies maintenance for no benefit).
 **Implications:** Every new tool that needs AI points at the same URL. Never create a new worker.
 
----
+-----
 
 ## 2026-04-05 — eq-context Folder in GitHub (not Supabase)
 
-**Status:** Accepted — reinforced by 2026-04-28 "GitHub is the Source of Truth" decision.
+**Status:** Accepted — reinforced by 2026-04-28 “GitHub is the Source of Truth” decision.
 
 **Decision:** Store the living project context (CLAUDE.md + subfiles) in a GitHub repo,
 not in Supabase or Claude Project files.
 **Why:** GitHub provides version history (every update is a commit), is portable,
 readable as raw files, and works natively with Claude Code when that enters the workflow.
 Supabase is better for structured data, not documents.
-Claude Project files are read-only for Claude — can't be updated programmatically.
+Claude Project files are read-only for Claude — can’t be updated programmatically.
 **Alternatives considered:**
-- Supabase (rejected — no version history, overkill for documents)
-- Claude Project files (rejected — read-only, can't be updated in-session)
-- Single flat file (rejected — doesn't scale; mixes stable rules with fast-changing state)
-**Implications:** Every session that produces new knowledge or changes state ends with
-"update the MD" → Claude commits only changed files with meaningful commit messages.
 
----
+- Supabase (rejected — no version history, overkill for documents)
+- Claude Project files (rejected — read-only, can’t be updated in-session)
+- Single flat file (rejected — doesn’t scale; mixes stable rules with fast-changing state)
+  **Implications:** Every session that produces new knowledge or changes state ends with
+  “update the MD” → Claude commits only changed files with meaningful commit messages.
+
+-----
 
 ## 2026-03-14 — EQ Property Solutions Incorporated as Wholly-Owned CDC Subsidiary
 
@@ -213,7 +246,7 @@ Cleaner for lending, cleaner for future equity/investor conversations.
 **Implications:** Intercompany Services Agreement needed between CDC and EQ Property Solutions.
 All AHD property acquisition goes through EQ Property Solutions, not CDC directly.
 
----
+-----
 
 ## 2026-03 — AHD Targets New Build Over Established Property
 
@@ -221,15 +254,16 @@ All AHD property acquisition goes through EQ Property Solutions, not CDC directl
 
 **Decision:** Prefer new build / house-and-land packages over established property for AHD acquisitions.
 **Why three reasons compound:**
-1. Stamp duty savings (significant at $500K+)
-2. Stronger depreciation (Division 40/43 on new build)
-3. Housing crisis narrative alignment for future government engagement
-**Key finding:** Two $500K new builds outperform one $750K established property on every
-employee-relevant metric — yield, depreciation, per-employee bonus impact.
-**Alternatives considered:** Established property (rejected on above metrics);
-commercial property (rejected — outside Class 36 trademark scope and higher complexity).
 
----
+1. Stamp duty savings (significant at $500K+)
+1. Stronger depreciation (Division 40/43 on new build)
+1. Housing crisis narrative alignment for future government engagement
+   **Key finding:** Two $500K new builds outperform one $750K established property on every
+   employee-relevant metric — yield, depreciation, per-employee bonus impact.
+   **Alternatives considered:** Established property (rejected on above metrics);
+   commercial property (rejected — outside Class 36 trademark scope and higher complexity).
+
+-----
 
 ## 2026-03 — AHD Primary Market: Adelaide North Corridor
 
@@ -241,7 +275,7 @@ rental yields sufficient for AHD bonus distribution; lower entry cost than Sydne
 **Alternatives considered:** Sydney (rejected — price point too high for LVR strategy);
 Brisbane inner (rejected — oversupplied); Melbourne (rejected — stamp duty, land tax exposure).
 
----
+-----
 
 ## 2025 — CDC Solutions: PSI Results Test Pass on Delta Elcom
 
@@ -252,4 +286,4 @@ Brisbane inner (rejected — oversupplied); Melbourne (rejected — stamp duty, 
 milestone-based fees (not time), liability sits with CDC (not Royce personally).
 Results Test pass makes all other PSI tests irrelevant.
 **Implications:** CDC consulting income is legitimately company income, not personal services income.
-Personal tax treatment of Royce's drawings from CDC follows normal Division 7A / loan account rules.
+Personal tax treatment of Royce’s drawings from CDC follows normal Division 7A / loan account rules.
