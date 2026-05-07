@@ -9,6 +9,7 @@ on:
       - 'rules/**'
       - 'eq/**'
       - 'sks/**'
+      - 'sks-team/**'
       - 'ops/**'
       - 'system/**'
       - 'archive/**'
