@@ -1,7 +1,7 @@
 ---
 title: CLAUDE.md — Master Behavioural Contract
 owner: Royce Milmlow
-last_updated: 2026-05-04
+last_updated: 2026-05-07
 scope: Single source of truth for how every assistant (Chat, Cowork, Code, ChatGPT, Grok, any future tool) must behave when working with Royce
 read_priority: critical
 status: live
@@ -47,6 +47,8 @@ Every session, every tool. No exceptions.
    | OPS | `ops/README.md` + `ops/pending.md` |
 
    `/archive/` only when Royce explicitly references parked content (EQ Quotes, AHD).
+
+   `/sks-team/` is a separate substrate tier for SKS team members' AI sessions — not loaded for Royce's personal sessions. Only fetch from `sks-team/` when the task is specifically authoring or reviewing the team-facing canonical guidance (e.g. `sks-team/quoting.md`).
 
 5. **Confirm and ask** what we're working on. Use options where possible.
 
@@ -182,6 +184,7 @@ This contract points; it doesn't restate. Authoritative files:
 | Tech / financial architecture | `system/architecture.md`, `ops/financial-architecture.md` |
 | EQ pending / products | `eq/pending.md`, `eq/products.md` |
 | SKS pending / active / team / templates | `sks/pending.md`, `sks/active.md`, `sks/team.md`, `sks/templates.md` |
+| SKS team-facing AI guidance (different audience) | `sks-team/README.md`, `sks-team/quoting.md` |
 | OPS pending | `ops/pending.md` |
 | Decisions / lessons | `ops/decisions.md`, `system/lessons.md` |
 | MD style / onboarding | `system/md-style.md`, `system/onboarding.md` |
