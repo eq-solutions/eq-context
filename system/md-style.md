@@ -1,7 +1,7 @@
 ---
 title: SYSTEM — MD Style Standard
 owner: Royce Milmlow
-last_updated: 2026-05-04
+last_updated: 2026-05-07
 scope: Style standard for all MD files in eq-context
 read_priority: reference
 status: live
@@ -106,6 +106,13 @@ When pointing at another file, use the path from repo root: `eq/pending.md`,
 
 When citing a section: `ops/decisions.md` 2026-04-28 (date-suffixed
 section title) or `rules/non-negotiables.md §0` for numbered sections.
+
+**`sks-team/` is the exception:** files in that tier MUST NOT cross-reference
+any other tier — they stand alone. If a fact in `sks-team/` is needed from
+elsewhere (e.g. brand colours from `rules/brand.md`), copy the fact in rather
+than linking. The cost of duplication is the price of separability — the
+tier needs to extract cleanly to its own substrate later, and cross-references
+make that mechanical move into a rewrite.
 
 ---
 
