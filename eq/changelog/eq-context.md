@@ -1,13 +1,47 @@
 ---
 title: Changelog — EQ Context Repo
 owner: Royce Milmlow
-last_updated: 2026-04-28
+last_updated: 2026-05-07
 scope: Append-only history of changes to the eq-context repository itself
 read_priority: reference
 status: live
 ---
 
 # Changelog — EQ Context Repo
+
+## [2026-05-07] sks-team/ Tier Sync Repair + Edge Function Path Fix
+**Built by:** Royce Milmlow + assistant
+**Context:** Holiday-laptop session. Started as a small "fix one MD file" request and escalated into a full substrate-incident investigation when content turned out to be wrong, sync turned out to be broken, and the public edge function turned out to be partially blind to the post-2026-05-04 tier structure.
+
+**Content fixes (3 MD files):**
+- `sks/team.md` — was a duplicate of `sks-team/README.md` content (wrong file pasted into wrong path during 2026-05-04 refactor). Rewritten as actual NSW Operations team roster: Mark Brame (NSW GM), Royce, John Ryan (NSW Construction Mgr), Sharon Maroni; PMs Koos Otto, Ian Marston, Benjamen Ritchie, Leif Lundberg, Jack Cluff; Estimator John McKee; Supervisors Todd Wilson, Wayne Rowe, Collin Toohey, Luke Wheeler, Matt Miller, Simon Bramall, David Boyd. Names sourced from `SKS business advice` chat (today, post demo-strip) — not from `userMemories` which carried stale Federico Sander / Nathan Anderson references that aren't on the current bench.
+- `sks-team/README.md` — replaced lowercase `readme.md`. Rule 1 violations (cross-references to `ops/decisions.md`) removed. Rule 3 ("Public-readable") clarified: "team-safe content only" — no labour rates, no client commercial terms, names yes / commercials no.
+- `sks-team/quoting.md` §5 — estimator quick-pick rewritten. John McKee (NSW estimator) promoted to top of the list. Federico Sander removed (not on current bench). Simon Bramall removed from PM list (he's now Leading Hand/Supervisor, not PM).
+
+**Sync workflow bug (the meat):**
+- Discovered that `sks-team/quoting.md` and `sks-team/README.md` had been in GitHub since 2026-05-04 but had **never synced to Supabase**. Workflow ran green for every push that touched those files. Verification job inside the workflow passed. But direct query against `context_files` showed zero `sks-team/*` rows.
+- Root cause: `.github/workflows/sync-context.yml` has two duplicate path lists. The YAML `on.push.paths:` filter (deciding *whether* the workflow triggers) included `sks-team/**`. The Python `SUBDIR_PATTERNS` glob list (deciding *what files the script actually reads*) did NOT include `sks-team/**/*.md`. So the workflow triggered, ran, found no `sks-team/*` files via glob, and exited green having silently skipped the entire tier.
+- Fix: added `"sks-team/**/*.md"` to `SUBDIR_PATTERNS`. End-to-end verified with a test commit — `sks-team/*` rows now sync within ~30 seconds.
+- Lesson logged in `system/lessons.md` 2026-05-07: workflow has duplicate state, drift caused this incident, future-hardening item logged in `ops/pending.md` to either derive one list from the other or add a CI check.
+
+**Edge function bug (incidental discovery during the same investigation):**
+- Public Supabase edge function at `https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/<slug>` was written for the original flat 5-slug substrate (`eq`, `sks`, `cowork`, `rules`, `agents`). When 2026-05-04 refactor moved everything to tier-separated paths, the edge function was never updated. It used `pathParts[pathParts.length - 1]` to extract the slug — meaning `/context/sks-team/quoting.md` resolved to slug `quoting.md` and 404'd because no such row exists.
+- Cowork session-start protocol fetches `/context/claude` (single segment, still works). Tier-deep fetches from chat, ChatGPT, Grok all 404'd silently for ~3 days.
+- Fix deployed: edge function v3 → v4 (project `urjhmkhbgaxrofurpbgc`). Slug now constructed by joining everything after `context/`, with a fallback that tries `<slug>/README.md` when single-segment slugs don't resolve directly. So `/context/eq` → falls back to `eq/README.md` (tier index), `/context/sks-team/quoting.md` resolves directly, `/context/claude` continues to work via direct match.
+- Lesson logged in `system/lessons.md` 2026-05-07.
+
+**Same-day reconciliation (chat → Supabase → GitHub):**
+- During the investigation, three corrected files were written directly to Supabase via MCP (chat-to-Supabase emergency path per `rules/non-negotiables.md` Substrate section).
+- After the workflow fix landed, GitHub was uploaded with the same three patched files. Sync ran clean, GitHub canonical content now matches Supabase content. Drift closed same-day per substrate rule.
+
+**Substrate state at session close:**
+- 44 rows in `context_files`, all syncing reliably from GitHub `main`
+- `sks-team/*` tier reachable via public edge function for the first time
+- Workflow + edge function now consistent with post-2026-05-04 tier structure
+- Two new lessons logged (workflow path-list drift, edge function path handling)
+- Two new pending items logged (collapse workflow duplicate state, edge-function checklist for structure changes)
+
+**Honest score:** good substrate-incident response — direct query caught what workflow status didn't, fix at structural level (workflow patch + edge function deploy), reconciled to GitHub same day, lessons logged. The original "fix one MD file" framing was wrong; the underlying issue was substrate plumbing, not content. Spotting that early is worth more than the speed of the content fix.
 
 ## [2026-04-28] Substrate-Discipline Closeout — Trigger Fix, Documentation, Audit Cadence
 **Built by:** Royce Milmlow + assistant
