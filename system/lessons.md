@@ -1,7 +1,7 @@
 ---
 title: SYSTEM — Lessons Learned
 owner: Royce Milmlow
-last_updated: 2026-05-04
+last_updated: 2026-05-07
 scope: Hard-won technical gotchas; append-only
 read_priority: reference
 status: live
@@ -207,3 +207,46 @@ WHERE slug IN ('<file-1>', '<file-2>', '<file-3>');
 
 Replace `<expected-marker>` with a unique string that should be in the new content (a date, a heading, a phrase). Replace the slugs with the files that should have changed.
 **Why it matters:** Terminal output and commit hashes are success-shaped artefacts, not success itself. Only the row in Supabase containing the expected content counts as done.
+
+---
+
+## Sync Workflow Has Two Path Lists That Must Stay in Sync (2026-05-07)
+
+**Problem:** `.github/workflows/sync-context.yml` has duplicate state for which folders count as substrate: a YAML `paths:` filter at the top that decides **whether** the workflow triggers on a push, and a Python `SUBDIR_PATTERNS` glob list inside the script that decides **what files** the script actually reads and upserts. When `sks-team/` was added as a new tier, only the YAML `paths:` filter was updated. The glob list was missed.
+
+**Symptoms:**
+- Push of `sks-team/quoting.md` to `main` triggers the workflow (path filter matches)
+- Workflow runs green — exit code 0
+- Verification job inside the workflow passes (it only checks slugs the script *tried* to sync)
+- But `context_files` table has zero rows for `sks-team/*`
+- Public edge function returns 404 for those paths
+- Substrate looks healthy from every signal except direct DB query
+
+**Root cause:** Path filter and glob list are duplicate state. They have to be kept in sync manually. There is no test or check that catches drift between them.
+
+**Fix applied (2026-05-07):** Added `"sks-team/**/*.md"` to the `SUBDIR_PATTERNS` list. Verified end-to-end with a test commit — `sks-team/*` rows now sync within ~30 seconds of any push.
+
+**Rule going forward:** When adding a new tier folder to `eq-context`, update **both** locations in `sync-context.yml`:
+1. The `on.push.paths:` YAML list (top of file, ~line 11)
+2. The Python `SUBDIR_PATTERNS` array (inside the inline script, ~line 53)
+
+Future hardening worth considering: collapse the two into a single source — e.g. derive the YAML paths list from the Python list at workflow render time, or vice versa. Until then, treat them as a known footgun.
+
+**Why it matters:** Workflow-green-but-rows-absent is a uniquely bad failure mode. It violates the "done = fresh updated_at" rule from the substrate non-negotiable and the False-Implementation Pattern lesson — but indirectly: the *expected* slugs were never queued for verification at all, so the verification job has nothing to fail on. The only signal that catches it is direct query against `context_files` for the slug you expected. Worth re-running that as a separate check after any workflow change touching path lists.
+
+---
+
+## Edge Function `/context/<slug>` Only Served Single-Segment Paths Until 2026-05-07
+
+**Problem:** The Supabase edge function at `https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/<slug>` was written for the original flat 5-slug substrate (`eq`, `sks`, `cowork`, `rules`, `agents`). When the substrate was refactored on 2026-05-04 to tier-separated paths and the workflow started syncing slugs like `sks/team.md` and `sks-team/quoting.md`, the edge function was never updated. It used `pathParts[pathParts.length - 1]` to extract the slug — meaning `/context/sks-team/quoting.md` resolved to slug `quoting.md` and 404'd because no such row exists.
+
+**Symptoms:** Top-level slugs (`/context/claude`, `/context/eq`) appeared to work. Anything tier-deep returned `# Not Found` even though the row was present in `context_files`. Easy to miss because the Cowork session-start protocol fetches `/context/claude` (works) and rarely fetches a tier-deep file from chat.
+
+**Fix applied (2026-05-07):** Two-line change — slug now constructed by joining all path segments after `context/`, plus a fallback that tries `<slug>/README.md` when a single-segment slug doesn't resolve directly. So:
+- `/context/eq` → tries `eq` → not found → tries `eq/README.md` → ✅ serves tier index
+- `/context/sks-team/quoting.md` → tries `sks-team/quoting.md` → ✅ serves directly
+- `/context/claude` → tries `claude` → ✅ serves directly (top-level slug exists)
+
+**Why it matters:** Most of the substrate has been silently unreachable via public URL for ~3 days. Anyone fetching tier files from a non-Cowork tool got 404s. The edge function is the public face of the substrate — it has to keep up with substrate structure changes, same as the sync workflow does.
+
+**Rule going forward:** When the substrate structure changes (new tier folder, renamed slug, etc.), the edge function is on the checklist of things to update — not just the workflow.
