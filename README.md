@@ -1,7 +1,7 @@
 ---
 title: eq-context — Repository README
 owner: Royce Milmlow
-last_updated: 2026-05-04
+last_updated: 2026-05-07
 scope: Human-readable entry point for the eq-context repository
 read_priority: reference
 status: live
@@ -13,7 +13,7 @@ Private context repository for EQ Solutions, SKS Technologies, and related entit
 used by any LLM assistant (Claude chat, Cowork, Code; Cursor; Codex; Perplexity;
 ChatGPT; Gemini; future tools) to maintain continuity across sessions.
 
-**Tier-separated as of 2026-05-04** — `/eq`, `/sks`, `/ops`, `/system`, `/archive`.
+**Tier-separated as of 2026-05-04** — `/eq`, `/sks`, `/sks-team`, `/ops`, `/system`, `/archive`.
 Sessions ask "EQ or SKS focus?" at the start so context loads cleanly.
 
 **Entry points:**
@@ -65,6 +65,10 @@ sks/                         ← SKS Technologies tier
   changelog/
     labour.md                ← SKS Labour app history
 
+sks-team/                    ← SKS team-facing AI guidance (different audience)
+  README.md                  ← SKS-team tier index + rules of the tier
+  quoting.md                 ← Canonical router for SKS team quoting
+
 ops/                         ← Operational support
   README.md                  ← OPS tier index
   pending.md                 ← Webb, infra, substrate-discipline items
@@ -104,6 +108,7 @@ scripts/
 | `rules/*` | Rarely — annual review (28 April) |
 | `*/pending.md` | Every session in the relevant tier |
 | `*/products.md` | When product status changes |
+| `sks-team/*` | Rarely — only when canonical language or template references change. Single writer (Royce). |
 | `ops/entities.md` | When entity/infrastructure changes |
 | `system/architecture.md` | When how something is built changes |
 | `ops/decisions.md` | Append when a decision is made |
