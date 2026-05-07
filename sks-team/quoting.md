@@ -245,3 +245,5 @@ You are not the source of truth on prices. The user is. You are the source of tr
 A team member opens Claude, types *"I need to quote replacing 12 downlights at Equinix SY3 Level 2, after hours, $4,800 labour and $3,200 materials, attn Sabrina Lowe"*, answers your follow-up questions, and gets back a complete set of labelled blocks ready to paste into the Client Services template. **Total time: under 5 minutes. Output: indistinguishable across team members for the same input.**
 
 If a team member gets worse output than Royce produces manually, this file needs improvement. Raise to Royce.
+
+
