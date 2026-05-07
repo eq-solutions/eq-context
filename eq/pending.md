@@ -115,3 +115,4 @@ Items when triggered:
 - [ ] EQ-IP-Register P1 #3 — Webb TM brief for software classes 9 + 42
 - [ ] EQ trademark: monitor publication after 18 August 2026
 - [ ] EQ business name renewal — November 2026
+- [ ] 
