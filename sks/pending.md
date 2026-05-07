@@ -1,7 +1,7 @@
 ---
 title: SKS Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-05-04
+last_updated: 2026-05-08
 scope: SKS Technologies to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -16,7 +16,8 @@ SKS Technologies work only. EQ items in `eq/pending.md`. OPS items
 
 ## SKS Operations — Infrastructure (HIGH RISK)
 
-- [ ] SKS Labour Supabase backup strategy — no scheduled backups, ~55 staff depend on the app (project: nspbmirochztcjijmcrx)
+- [ ] SKS Labour Supabase backup strategy — automated JSON-per-table dumps now landing in Cloudflare R2 `sks-assets/backups/YYYY-MM-DD/` (verified 2026-05-07: people, schedule, timesheets, leave_requests, managers, sites, organisations, audit_log, job_numbers + `_manifest.json`). Outstanding: (a) document the backup script location and schedule in `system/infrastructure.md`, (b) test restore path end-to-end, (c) decide retention policy
+- [ ] Audit + download R2 backup `sks-assets/backups/2026-05-07/` from Beelink (12 May+) — no bulk-download in R2 dashboard; use wrangler / rclone / S3 SDK. Confirms backup integrity and gives an offline copy
 - [ ] Resend email deliverability issue — unresolved
 - [ ] Netlify rollback tagged release for SKS Labour
 
