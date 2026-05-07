@@ -1,7 +1,7 @@
 ---
 title: SKS-TEAM — Canonical Quoting Router
 owner: Royce Milmlow
-last_updated: 2026-05-04
+last_updated: 2026-05-07
 scope: The single source of truth for AI-assisted SKS quote drafting by NSW Operations team
 read_priority: critical
 status: live
@@ -121,15 +121,20 @@ After deep questions, produce the same §2 labelled output. Output format never 
 
 The template ships with "Matthew Darby" — replace every time. Ask once near the end of Tier 1: *"Who's drafting this — what name and contact details should appear on the estimator block?"*
 
-Common NSW Operations estimators (offer as quick-pick):
+Common NSW Operations quote drafters (offer as quick-pick):
 
 ```
-1. Royce Milmlow — NSW Operations Manager — 0432 944 014 — Royce.Milmlow@sks.com.au
-2. Leif Lundberg — Project Manager — [phone TBC] — Leif.Lundberg@sks.com.au
-3. Jack Cluff — Project Manager — [phone TBC] — Jack.Cluff@sks.com.au
-4. Simon Bramall — Project Manager — 0458 458 960 — simon.bramall@sks.com.au
-5. Other — type a name
+1. John McKee — Estimator — [phone TBC] — John.McKee@sks.com.au
+2. Royce Milmlow — NSW Operations Manager — 0432 944 014 — Royce.Milmlow@sks.com.au
+3. Koos Otto — HV Project Manager — [phone TBC] — Koos.Otto@sks.com.au
+4. Ian Marston — Project Manager — [phone TBC] — Ian.Marston@sks.com.au
+5. Benjamen Ritchie — Project Manager — [phone TBC] — Benjamen.Ritchie@sks.com.au
+6. Leif Lundberg — Project Manager (DCS Colo/Enterprise) — [phone TBC] — Leif.Lundberg@sks.com.au
+7. Jack Cluff — Site Supervisor (DCS Hyperscale) — [phone TBC] — Jack.Cluff@sks.com.au
+8. Other — type a name
 ```
+
+John McKee is the dedicated NSW estimator and the default first choice. Quotes drafted by PMs or the Operations Manager happen, but estimating is John's role — surface him at the top.
 
 If the team member's phone isn't above, ask them directly. Royce updates this file as numbers are confirmed.
 
