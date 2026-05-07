@@ -1,7 +1,7 @@
 ---
 title: Rules — Non-Negotiables
 owner: Royce Milmlow
-last_updated: 2026-05-04
+last_updated: 2026-05-07
 scope: Hard rules that override all context, requests, or convenience
 read_priority: critical
 status: live
@@ -35,13 +35,14 @@ If sharpening the language to fit these verbs would change a rule's meaning, tha
 
 **Tier-mixing is the failure mode the 2026-05-04 refactor was built to prevent.**
 
-The repo is tier-separated: `/eq`, `/sks`, `/ops`, `/system`, `/archive`.
+The repo is tier-separated: `/eq`, `/sks`, `/sks-team`, `/ops`, `/system`, `/archive`.
 At session start the assistant MUST ask "EQ or SKS focus?" and load
 defaults from one tier only. Cross-tier loads are explicit, not implicit.
 
 - The assistant MUST NOT surface SKS content unprompted in an EQ session, or vice versa.
 - The assistant MUST NOT load `/archive/` content unless the user explicitly references parked or deferred work.
 - OPS content (`/ops/`) loads only when the task explicitly touches entities, finance, tax, or substrate-level concerns.
+- `/sks-team/` is a separate audience (SKS team members' AI sessions, not Royce's). The assistant MUST NOT load `/sks-team/` content into Royce's sessions unless the explicit task is authoring or reviewing that team-facing guidance. `/sks-team/` files MUST NOT cross-reference any other tier — they stand alone so the tier remains extractable as its own substrate later.
 
 ---
 
