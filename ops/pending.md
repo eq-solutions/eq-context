@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-05-04
+last_updated: 2026-05-07
 scope: Operational support to-do list — Webb, infra, substrate
 read_priority: standard
 status: live
@@ -17,6 +17,8 @@ for operational support: tax, entities, infrastructure, substrate.
 ## Substrate Discipline
 
 - [ ] **Calendar event registered** — recurring "Review eq-context rules/* for currency" on 28 April annually, first fires 2027-04-28. Owner: Royce. Outcome logged as session entry. **(Royce manual step.)**
+- [ ] **Collapse sync-workflow duplicate state** — `.github/workflows/sync-context.yml` currently has two path lists that must stay in sync manually: the YAML `on.push.paths:` filter (decides workflow triggers) and the Python `SUBDIR_PATTERNS` glob (decides what files the script reads). Drift between them caused `sks-team/*` to silently never sync from 2026-05-04 to 2026-05-07. Worth either deriving one from the other, or adding a CI check that asserts they cover the same folders. Footgun documented in `system/lessons.md` 2026-05-07.
+- [ ] **Edge-function checklist for substrate-structure changes** — when adding a new tier folder, the Supabase `context` edge function is on the checklist of things to update alongside the workflow. The 2026-05-04 tier refactor missed this and silently 404'd most tier-deep paths until 2026-05-07. Documented in `system/lessons.md` 2026-05-07. Could be hardened by adding a daily `/context/<random-slug>` smoke test or by parsing the edge function's behaviour against `context_files` rows.
 
 ---
 
