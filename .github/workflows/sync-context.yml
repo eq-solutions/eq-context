@@ -55,6 +55,7 @@ jobs:
               "rules/**/*.md",
               "eq/**/*.md",
               "sks/**/*.md",
+              "sks-team/**/*.md",
               "ops/**/*.md",
               "system/**/*.md",
               "archive/**/*.md",
