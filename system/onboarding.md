@@ -1,7 +1,7 @@
 ---
 title: SYSTEM — Onboarding
 owner: Royce Milmlow
-last_updated: 2026-05-04
+last_updated: 2026-05-07
 scope: Tutorial introduction for any new assistant or human entering this repo
 read_priority: optional
 status: live
@@ -22,8 +22,13 @@ status: live
 SKS Technologies (electrical contractor, NSW data centre + healthcare)
 and EQ Solutions (SaaS for trade subcontractors).
 
-Tier-separated: `/eq`, `/sks`, `/ops`, `/system`, `/archive`. Sessions
+Tier-separated: `/eq`, `/sks`, `/sks-team`, `/ops`, `/system`, `/archive`. Sessions
 ask "EQ or SKS focus?" before loading context.
+
+`/sks-team/` is a different audience from the rest — it serves SKS team members'
+AI sessions (canonical quoting guidance, etc.), not Royce's own sessions. Files
+in that tier stand alone with no cross-references to other tiers, so the tier can
+extract cleanly to its own substrate later if needed.
 
 ---
 
@@ -45,7 +50,7 @@ within 60 seconds.
 
 ## How to make a change
 
-1. Decide which **tier** owns the change (eq / sks / ops / system).
+1. Decide which **tier** owns the change (eq / sks / sks-team / ops / system).
 2. Decide which file owns the fact within that tier (each fact has one home).
 3. Edit the MD file. Update `last_updated:` in frontmatter to today.
 4. Commit and push to `main`: `context(YYYY-MM-DD): <what changed>`.
