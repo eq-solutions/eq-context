@@ -19,37 +19,31 @@ for operational support: tax, entities, infrastructure, substrate.
 - [ ] **`system/writing-style.md` — awaiting writing samples** —
   File does not yet exist. Identified as a gap in May 2026 substrate
   review. Cannot be drafted from training data — must be built from
-  real examples to be useful. Action required from Royce: supply
-  5–10 writing samples (emails, Slack messages, docs written in his
-  voice). Once supplied: Claude Chat session to analyse → draft
-  `system/writing-style.md` → commit to /system tier.
+  real examples. Royce will supply 5–10 writing samples (emails, Slack
+  messages, docs written in his voice) in a Claude Chat session from
+  his work PC on a future day. Once supplied: Chat to analyse → draft
+  `system/writing-style.md` → commit to `/system` tier.
 
-- [ ] **`system/TODAY.md` outcomes — Royce to define** —
-  Scaffold landed 2026-05-13 with placeholder outcomes. Royce to
-  answer: "What are the three things that, if true on 1 August 2026,
-  mean Q3 was a success?" Replace bracketed placeholders, flip
-  frontmatter `status` from `scaffold-awaiting-input` to `live`,
-  remove the Status section at the bottom.
+- [x] **`system/TODAY.md` outcomes — DEFINED 2026-05-13** —
+  Royce supplied the three Q3 2026 success outcomes (NSW running
+  EQ Field / EQ Service in real ops; electrical + comms divisions
+  integrated; AI used across all areas of life). TODAY.md promoted
+  from scaffold to live status.
 
-- [ ] **Orientation file `cowork-eq-context-orientation.md` is stale** —
-  Holiday-period orientation file describes the post-refactor layout
-  as 5 directories (eq, sks, ops, system, archive) and claims `rules/`
-  was removed. Reality (2026-05-13 audit): `rules/` is still present
-  with 4 active files referenced by CLAUDE.md §7 and §8. Also claims
-  44 rows synced; actual is 47. Orientation file is not in the substrate
-  itself — lives wherever Royce stores Cowork session prompts. Update
-  it next time it's edited.
+- [x] **VC cull execution prompt (`cowork-prompt-2026-04-29.md`) — CLOSED 2026-05-13** —
+  Confirmed by Royce: the 2026-04-29 product cull is fully landed.
+  Variations killed, Compliance/Ops killed, Quotes deferred, Expenses
+  demoted to internal SKS tool. All reflected in CLAUDE.md §9,
+  `eq/products.md`, and `archive/`. Prompt itself is archived as
+  historical artefact — not needed for any further execution.
 
-- [ ] **VC cull execution prompt (`cowork-prompt-2026-04-29.md`)** —
-  Holiday orientation referenced a Chat-generated prompt covering 6
-  tasks for the 2026-04-29 product cull (Variations killed, Ops
-  killed, Expenses internal-only, Quotes deferred). The cull decisions
-  ARE already reflected in CLAUDE.md, eq/products.md, and
-  archive/. The prompt itself was not in the substrate at 2026-05-13
-  audit and was not uploaded that session. Royce to confirm: either
-  (a) cull is fully landed and prompt can be archived as "complete",
-  or (b) re-supply the prompt for execution if anything is still
-  unapplied.
+- [ ] **Orientation file `cowork-eq-context-orientation.md` updated 2026-05-13** —
+  Holiday-period orientation file was stale (claimed `rules/` removed,
+  44 rows, 3 unfixed bugs). Refreshed version produced this session
+  describing current state: 49 rows, all 4 tier dirs + `rules/`/`sks-team/`/
+  `sessions/` present, all 3 bugs resolved, TODAY.md live, VC cull closed.
+  Lives outside the substrate (wherever Royce stores Cowork session
+  prompts). Royce to drop in the updated copy.
 
 - [ ] **Calendar event registered** — recurring "Review eq-context rules/* for currency" on 28 April annually, first fires 2027-04-28. Owner: Royce. Outcome logged as session entry. **(Royce manual step.)**
 
@@ -64,7 +58,7 @@ for operational support: tax, entities, infrastructure, substrate.
 The 2026-05-04 tier refactor solved tier-bleed and dead-product noise within Claude. It did NOT solve cross-tool consistency between Chat / Cowork / Code / ChatGPT / Grok. The substrate is now canonical for Claude only; ChatGPT and Grok still walk into every session blind. Three follow-up items, prioritised:
 
 - [ ] **(A) ChatGPT and Grok bootstrap prompts** — produce `CHATGPT-PROMPT.md` and `GROK-PROMPT.md` mirroring `COWORK-PROMPT.md` (paste-once-per-session prompts that fetch the same canonical Supabase URLs). Highest-priority, lowest-risk follow-up. Closes the original framing: "consistency across all tools."
-- [x] **(C) `TODAY.md` — current-focus surface** — scaffold landed 2026-05-13 at `system/TODAY.md`. Q3 outcomes still need to be defined by Royce (see Substrate Discipline above).
+- [x] **(C) `TODAY.md` — current-focus surface** — landed live 2026-05-13 at `system/TODAY.md` with three Q3 outcomes defined. Outstanding: wire TODAY.md into the session-start protocol (CLAUDE.md §1) so it's auto-loaded alongside the tier defaults.
 - [ ] **(B) Session-end discipline as a hard rule** — current rule says "update the substrate at session end"; lessons.md confirms the rule isn't being followed (17 of 30 stale at 2026-04-27). Revise to: every session ends with a written delta to a tier file (even "no changes today, status confirmed"), assistant refuses to close otherwise. Decision-grade change to non-negotiables.
 
 Defer to: Beelink return (12 May+) for proper test coverage. Holiday-laptop work has higher risk of introducing new issues we can't test rigorously.

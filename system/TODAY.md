@@ -4,36 +4,41 @@ owner: Royce Milmlow
 last_updated: 2026-05-13
 scope: Current-quarter success outcomes — the filter for every Claude session decision
 read_priority: critical
-status: scaffold-awaiting-input
+status: live
 ---
 
 # Q3 2026 Focus
 
-Last updated: 2026-05-13 (scaffold — outcomes not yet defined)
+Last updated: 2026-05-13
 
 ## If these three things are true on 1 August 2026, Q3 was a success:
 
-1. _[Outcome 1 — to be defined by Royce]_
-2. _[Outcome 2 — to be defined by Royce]_
-3. _[Outcome 3 — to be defined by Royce]_
+1. **A working version of EQ Field / EQ Service is being used by the
+   NSW office** — not a demo, not a sandbox; real NSW staff using it
+   for real operational work.
+
+2. **The electrical and comms divisions of NSW are successfully
+   integrated** — single operational view, shared processes, no
+   division-side silos.
+
+3. **AI is being used across all areas of life** — work (SKS, EQ),
+   admin (entities, finance), personal — AI is the default assistant,
+   not a special-case tool.
 
 ## Default question for every build/feature decision:
 
 "Is this being used at SKS?"
 
----
+## How to use this file
 
-## Status
+Every session decision filters through these outcomes:
 
-**Scaffold only.** This file was created 2026-05-13 to land the path so
-the session-start filter can resolve, but the three Q3 outcomes have not
-been defined. Until Royce supplies them, this file should not be treated
-as authoritative — the default-question line is the only operational
-content.
+- **Build / feature requests:** does this move outcome 1, 2, or 3
+  forward in the next ~11 weeks? If no, defer it.
+- **Substrate changes:** does this make the AI better at supporting
+  outcome 1, 2, or 3? If no, surface but don't expand scope.
+- **Time allocation:** if a week's work doesn't visibly move one of
+  these three, that's a signal — investigate before continuing.
 
-Action: Royce to answer — "What are the three things that, if true on
-1 August 2026, mean Q3 was a success?" — and replace the bracketed
-placeholders above.
-
-Once filled in, change `status: live` in the frontmatter and remove this
-section.
+This is the single highest-leverage filter in the substrate. Re-read
+it at session start when "what should I work on?" is the question.
