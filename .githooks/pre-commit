@@ -130,6 +130,38 @@ fi
 rm -f /tmp/_pre_attr_$$
 
 # ----------------------------------------------------------------------
+# Auto-bump last_updated on staged MD files — silent, re-stages on change
+# Keeps freshness metadata in sync with actual edits without manual effort.
+# Skips files where frontmatter is not expected (README, archive, hooks etc).
+# ----------------------------------------------------------------------
+today=$(date +%Y-%m-%d)
+echo "$staged_files" | grep -iE '\.md$' > /tmp/_pre_bump_$$ || true
+if [ -s /tmp/_pre_bump_$$ ]; then
+    bumped=0
+    while read -r mdfile; do
+        [ -f "$mdfile" ] || continue
+        case "$mdfile" in
+            README.md|COWORK-PROMPT.md|archive/*|.github/*|.githooks/*) continue ;;
+        esac
+        first=$(head -1 "$mdfile" | tr -d '\r' | sed $'s/^\xef\xbb\xbf//')
+        [ "$first" = "---" ] || continue
+        if grep -qE '^last_updated:' "$mdfile"; then
+            current=$(grep -m1 -E '^last_updated:' "$mdfile" | awk '{print $2}' | tr -d '\r')
+            if [ "$current" != "$today" ]; then
+                sed -i.bak -E "s/^last_updated:.*/last_updated: $today/" "$mdfile"
+                rm -f "${mdfile}.bak"
+                git add "$mdfile"
+                bumped=$((bumped+1))
+            fi
+        fi
+    done < /tmp/_pre_bump_$$
+    if [ "$bumped" -gt 0 ]; then
+        echo "${GREEN}auto-bumped last_updated on $bumped file(s) to $today${NC}"
+    fi
+fi
+rm -f /tmp/_pre_bump_$$
+
+# ----------------------------------------------------------------------
 # YAML frontmatter check on changed MD files — WARN (not block)
 # ----------------------------------------------------------------------
 echo "$staged_files" | grep -iE '\.md$' > /tmp/_pre_md_$$ || true
