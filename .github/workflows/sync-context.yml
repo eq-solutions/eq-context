@@ -6,14 +6,7 @@ on:
       - main
     paths:
       - '*.md'
-      - 'rules/**'
-      - 'eq/**'
-      - 'sks/**'
-      - 'sks-team/**'
-      - 'ops/**'
-      - 'system/**'
-      - 'archive/**'
-      - 'sessions/**'
+      - '**/*.md'
 
 jobs:
   sync:

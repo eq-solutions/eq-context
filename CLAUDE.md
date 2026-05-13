@@ -1,7 +1,7 @@
 ---
 title: CLAUDE.md — Master Behavioural Contract
 owner: Royce Milmlow
-last_updated: 2026-05-07
+last_updated: 2026-05-13
 scope: Single source of truth for how every assistant (Chat, Cowork, Code, ChatGPT, Grok, any future tool) must behave when working with Royce
 read_priority: critical
 status: live
@@ -38,6 +38,9 @@ Every session, every tool. No exceptions.
    Do NOT skip. Do NOT assume from prior context. Do NOT default to loading both tiers.
 
 4. **Load tier defaults:**
+
+   **Always fetch first (every session, all tiers):** `system/TODAY.md`
+   This is the Q3 2026 focus filter. Read it before loading any tier content.
 
    | Answer | Files to fetch |
    |---|---|
