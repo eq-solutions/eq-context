@@ -1,7 +1,7 @@
 ---
 title: Changelog — EQ Solves Quotes
 owner: Royce Milmlow
-last_updated: 2026-04-28
+last_updated: 2026-05-13
 scope: Append-only history of changes to the EQ Solves Quotes tool
 read_priority: reference
 status: archived

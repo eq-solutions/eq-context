@@ -1,7 +1,7 @@
 ---
 title: EQ Field — Multi-Tenancy & Dev Workflow Plan
 owner: Royce Milmlow
-last_updated: 2026-04-27
+last_updated: 2026-05-13
 scope: Plan for moving EQ Field from single-org tool to multi-tenant SaaS on the eq-solves-field Supabase project
 read_priority: standard
 status: draft

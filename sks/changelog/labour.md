@@ -1,7 +1,7 @@
 ---
 title: Changelog — SKS Labour
 owner: Royce Milmlow
-last_updated: 2026-04-28
+last_updated: 2026-05-13
 scope: Append-only history of changes to the SKS Labour scheduling app
 read_priority: reference
 status: live
