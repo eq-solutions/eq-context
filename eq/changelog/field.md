@@ -9,6 +9,76 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-05-13] v3.4.73 — widen week-picker so "(this week)" no longer truncates
+**Built by:** Royce Milmlow + assistant
+**Branch:** `claude/v3.4.73-week-pill-width` → `demo` then cherry-picked to `main` (PR #69)
+**Changes:**
+- Removed `max-width:80px` on `#globalWeek`; `<select>` now sizes to widest option (~150px).
+- Mobile unaffected — `.topbar-week` still uses `flex:1`.
+**Why:** SKS topbar dropdown was cutting "◉ DD.MM.YY (this week)" to "(t...s)" on prod.
+**Status:** Live on both demo and SKS prod.
+
+## [2026-05-13] v3.4.72 — skip render when polled data hasn't changed (kills flash)
+**Built by:** Royce Milmlow + assistant
+**Branch:** `claude/v3.4.72-skip-render-on-unchanged` → `demo` then `main` (PR #67)
+**Changes:**
+- New `_computeStateSignature()` builds sort-stable signature over people / managers / sites / schedule / timesheets / leaveRequests.
+- `refreshData()` diffs post-load signature against last rendered; only calls `renderCurrentPage` on actual change.
+- Manual ↻ Sync still renders unconditionally for visual feedback. Signature seeded after initial load so first poll doesn't fake-trigger.
+**Why:** Constant flashing on SKS prod — 30-second background poll was doing full innerHTML swap unconditionally, causing scroll jump + focus drop even with no data delta.
+**Status:** Live on both demo and SKS prod. Idle background poll is now a silent no-op.
+
+## [2026-05-13] v3.4.71 — remove Project Hours panel + fix EQ→SKS logo flash
+**Built by:** Royce Milmlow + assistant
+**Branch:** `claude/v3.4.70-supervisor-fixes` → `demo` then `main` (PR #64; bundled with v3.4.70)
+**Changes:**
+- Removed `#project-hours-panel` + script tag. Kept `scripts/project-hours.js` (parked) + `sites.track_hours` column on EQ.
+- New `earlyBootBranding()` IIFE in `scripts/app-state.js` fires on DOMContentLoaded, detects slug synchronously, applies `TENANT_BRANDING` before first paint.
+- `loadTenantConfig` still runs at onload for Supabase-driven access codes; `applyTenantBranding` idempotent so second call just refreshes.
+**Why:** (1) Project Hours panel surfaced 'schema not applied' warnings on SKS where the migration hadn't run, added nothing useful. (2) SKS users saw EQ sky-blue logo for 200-600ms before SKS dark-blue snapped in — cause was async `loadTenantConfig()` from `window.onload` despite branding data being static per tenant.
+**Status:** Live on both demo and SKS prod.
+
+## [2026-05-13] v3.4.70 — supervisor dob/start_date + Excel date import + archive
+**Built by:** Royce Milmlow + assistant
+**Branch:** `claude/v3.4.70-supervisor-fixes` → `demo` then `main` (PR #64)
+**Changes:**
+- `migrations/2026-05-13_managers_dob_start_date_archived.sql` adds `dob_day`, `dob_month`, `start_date`, `archived` on `managers`; `archived` on `people`. **Applied to BOTH Supabase projects on 2026-05-13.**
+- `import-export.js`: `_parseCsvBirthday` now matches DD/MM/YYYY; new `_parseStartDate` handles ISO + DD/MM/YYYY + Excel serial numbers.
+- Supervisor modal exposes DOB + start_date. Both filter rows get "Show archived" toggle. Active/archived render-tint + handlers wired in `managers.js` / `people.js`. Badges count active rows only.
+- `supabase.js`: `saveManagerToSB` sends new columns; `savePersonToSB` sends `archived`; new `archiveManagerInSB` + `archivePersonInSB` helpers via PostgREST PATCH.
+**Why:** Royce CSV review 2026-05-13 surfaced: supervisors had no DOB/start_date (people had since v3.4.16), Excel uploads rejected DD/MM/YYYY + serial dates, no reversible archive (only hard delete via `deleted_at`). Contacts↔Supervisors double-up confirmed by design (Wave 4).
+**Status:** Live on both demo and SKS prod. Behaviour-preserving for existing rows.
+
+## [2026-05-13] v3.4.69 — Site Reports module + Prestart MVP (DEMO ONLY)
+**Built by:** Royce Milmlow + assistant
+**Branch:** `claude/v3.4.67-prestart` → `demo` (PR #62) — rebased on top of v3.4.68 role-system, so the branch name keeps the original v3.4.67 label but the merge ships as v3.4.69. v3.4.67 was never released.
+**Changes:**
+- New "Site Reports" sidebar entry under "Testing (DO NOT USE)" section with BETA chip. v1 ships Prestart only — toolbox / diary / weekly follow the same pattern.
+- Photos: max 8 per record, camera+gallery on mobile, resized to 1600px / JPEG-q70, stored inline as base64 in `prestarts.photos` JSONB. Lightbox + captions.
+- Signature pad: HTML5 canvas modal, touch + mouse, DPR-aware. Saved as base64 PNG into `crew[i].signature_image`; idempotent re-tap preserved (v3.4.54 lesson).
+- Offline write queue: `navigator.onLine` + try/catch around `sbFetch`; localStorage-backed queue replays on `'online'` event + page load. Per-tenant scoped. Visible pending pill in form footer.
+- Mobile responsive: form grid collapses to 1 column < 640px; modal goes full-screen; signature canvas bumps to 260px for finger signing.
+- Dual-source notice: dismissible yellow banner directing users away from `sks-field-reports.netlify.app`.
+- **Migrations applied 2026-05-13 to BOTH Supabase projects:**
+  - `2026-05-13_site_reports_v1.sql` — `prestarts` table + RLS + realtime
+  - `2026-05-13_prestarts_photos.sql` — `ADD COLUMN photos jsonb`
+**Why:** Path C absorb (see `ops/decisions.md` 2026-05-13) — workflows from Ben Ritchie's `sks-field-reports.netlify.app` v29 fold into EQ Field as a commercial sub-module. Prestart is the first of four (Toolbox / Diary / Weekly to follow). Lessons applied: v3.4.54 per-action inflight guards, v3.4.55 id-coercion for bigint/uuid PK portability, v3.4.56 audit failures surfaced via `console.warn` not silenced.
+**Status:** Live on demo only (`eq-solves-field.netlify.app`). NOT deployed to SKS prod — gated on Ben Ritchie sign-off + Royce explicit go. 5 modified, 3 new files, ~1130 line diff.
+
+## [2026-05-13] v3.4.68 — Phase B + C role system foundation (DEMO ONLY soak)
+**Built by:** Royce Milmlow + assistant
+**Branch:** `claude/v3.4.68-role-system-clean` → `demo` (PR #63)
+**Changes:**
+- `scripts/permissions.js`: new `resolveSessionRole()` (Phase C).
+- Call wired into `initApp()` + supervisor PIN unlock + lock-out.
+- 5 handler gates migrated to `EQ_PERMS.can()` (Phase B v1):
+  - `leave.js`: `respondLeave` / `archiveLeaveRequest` / `unarchiveLeaveRequest`
+  - `timesheets.js`: `fillTsWeekFromMon` / `sendTsReminder`
+- All 5 perms behaviour-preserving in both supervisor + manager tiers.
+- Phase A schema applied to BOTH Supabase projects on 2026-05-13.
+**Why:** Royce flagged Phase B+C risk on SKS prod; chose to ship to demo this week for a 5-7 day soak before porting. PIN-unlock-wins rule preserves today's behaviour — anyone with the supervisor PIN keeps full supervisor access regardless of DB role. Phase D will tighten this server-side later (~2 weeks, planned early June).
+**Status:** Demo only. SKS stays on `isManager` binary model until demo soak passes. Plan ref: `MELBOURNE-SCALE-DESIGN.md §7 Q3`.
+
 ## [2026-04-28] Add Contact button cherry-picked to main (SKS) — PR #25
 **Built by:** Royce Milmlow + assistant
 **Branch:** `fix/add-contact-main` → `main` (merge commit `4f03227`,

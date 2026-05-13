@@ -45,6 +45,25 @@ full technical details.
 
 ---
 
+## SKS Field Reports (v29) — **flagged for retirement**
+
+**Status:** Live but on retirement watch — being absorbed into EQ Field's Site Reports module
+**URL:** sks-field-reports.netlify.app
+**Original author:** Ben Ritchie
+**Architecture:** Separate Netlify site; standalone forms for Prestart / Toolbox Talk / Daily Diary / Weekly Site Report
+
+**Retirement plan (Path C — see `ops/decisions.md` 2026-05-13):**
+- Workflows being absorbed into EQ Field's Site Reports sub-module (v3.4.69+).
+- Prestart MVP shipped to EQ Field demo 2026-05-13 (v3.4.69); Toolbox / Diary / Weekly to follow.
+- This SKS internal tool retires only once EQ Field reaches **parity on all 4 workflows** AND Ben + Royce sign off.
+- Collaboration, not replacement — Ben's MVP shapes the EQ implementation; co-author credit / consulting engagement TBD with Webb Financial.
+
+**Pre-retirement housekeeping:**
+- Cleanup any test prestart rows Ben writes during trial before sunset: `DELETE FROM prestarts WHERE works_scope LIKE 'Test%' OR created_by = '<test name>';`
+- Communicate retirement window to SKS supervisors before pulling the plug.
+
+---
+
 ## EQ Expenses (internal SKS tool — not an EQ product)
 
 Demoted from EQ product status 2026-04-29. Internal SKS Flask tool only,

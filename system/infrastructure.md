@@ -1,7 +1,7 @@
 ---
 title: SYSTEM — Infrastructure Accounts
 owner: Royce Milmlow
-last_updated: 2026-05-04
+last_updated: 2026-05-13
 scope: Supabase project IDs, Cloudflare, Netlify, GitHub, Beelink workstation
 read_priority: standard
 status: live
@@ -35,6 +35,18 @@ account" before connecting.
 | `nspbmirochztcjijmcrx` | sks-labour | **Live SKS staff production data** | **Never touch unless "SKS live" is explicit** |
 | `ktmjmdzqrogauaevbktn` | eq-solves-field | EQ Field demo backend | Demo environment |
 | `urjhmkhbgaxrofurpbgc` | eq-solves-service-dev | Canonical context store (`context_files` table) — co-tenant with EQ Solves Service product data | Paid/active; primary path for context reads/writes |
+
+### Shared tables across sks-labour + eq-solves-field
+
+Both Supabase projects share the same EQ Field codebase (one repo, two branches → two sites → two databases). Most schema changes get applied to both projects on the same day.
+
+| Table | Project(s) | Applied | Purpose |
+|---|---|---|---|
+| `prestarts` (+ RLS + realtime) | sks-labour + eq-solves-field | 2026-05-13 | Site Reports v1 — prestart submissions |
+| `prestarts.photos` (jsonb) | sks-labour + eq-solves-field | 2026-05-13 | Up to 8 base64 photos per prestart, inline |
+| `managers.dob_day/dob_month/start_date/archived` | sks-labour + eq-solves-field | 2026-05-13 | Supervisor DOB + start_date + reversible archive |
+| `people.archived` | sks-labour + eq-solves-field | 2026-05-13 | Reversible archive on people (parallel to managers) |
+| `sites.track_hours/budget_hours` | eq-solves-field only | 2026-04-27 | Project Hours panel (panel removed v3.4.71, columns retained) |
 
 ---
 

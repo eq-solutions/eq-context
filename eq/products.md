@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Products
 owner: Royce Milmlow
-last_updated: 2026-05-04
+last_updated: 2026-05-13
 scope: Live EQ products. Killed/deferred entries removed in 2026-05-04 refactor.
 read_priority: standard
 status: live
@@ -17,16 +17,25 @@ listed here — see `CLAUDE.md` "Killed / deferred" section, or
 
 ## EQ Solves — Field (LEAD MODULE)
 
-**Status:** Live (demo branch). Phase 1 multi-tenancy foundation in place.
-**URL:** eq-solves-field.netlify.app
-**Repo:** Milmlow/eq-field-app (private), demo branch
+**Status:** Live. Current version **v3.4.73** (demo + main both on 2026-05-13). Phase 1 multi-tenancy foundation in place; Phase B+C role system in 5-7 day demo soak; Site Reports sub-module shipping workflows (Prestart MVP live, Toolbox/Diary/Weekly to follow).
+**URL:** eq-solves-field.netlify.app (demo) / sks-nsw-labour.netlify.app (main = SKS prod)
+**Repo:** Milmlow/eq-field-app (private); `demo` → EQ Field demo, `main` → SKS prod
 **Working file:** index.html
 **Architecture:** PWA, URL-based tenant detection
 **Supabase project:** ktmjmdzqrogauaevbktn (eq-solves-field) — bypassed in demo mode
-**Deploy:** Netlify Drop (manual zip)
+**Deploy:** GitHub push → Netlify auto (per branch)
 
 **Strategic priority:** Sole EQ build focus until 20 paying customers.
 Validation gate = 5 outside-SKS trade subbies on Field demo first.
+
+**Site Reports sub-module (v3.4.69+, demo only):**
+- Sidebar entry under "Testing (DO NOT USE)" with BETA chip.
+- v1 ships **Prestart** only (form + 8 photos + signature pad + offline queue + mobile-responsive).
+- `prestarts` table + `photos` JSONB column live on BOTH Supabase projects as of 2026-05-13.
+- Next workflows in order (per `eq-solves-field/AUDIT-REVIEW.md` and outstanding build brief): Toolbox Talk → Diary → Weekly Report.
+- Hub/dashboard restructure deferred until ≥2 workflows ship.
+- Absorbs workflows from Ben Ritchie's `sks-field-reports.netlify.app` v29 (see `ops/decisions.md` 2026-05-13 Path C entry).
+- Compliance pack export (Hammertech / Aconex / Procore) gated on all 4 workflows shipping.
 
 **Phase 1 (live as of 2026-04-27, PR [#23](https://github.com/Milmlow/eq-field-app/pull/23) merged):**
 - `window.EQ_FLAGS` — PostHog feature-flag wrapper (`scripts/flags.js`).
@@ -34,32 +43,32 @@ Validation gate = 5 outside-SKS trade subbies on Field demo first.
 - `window.EQ_PERMS` — 5-tier role permission helper
   (manager > supervisor > employee > apprentice > labour_hire).
   Reads `isManager` global as primary today-path role signal.
-- Project Hours self-mounting burn-down panel (`scripts/project-hours.js`)
-  — visible at the bottom of the page for supervisors. Gated on
-  `EQ_FLAGS.isEnabled('feat_project_hours_v1')` + `EQ_PERMS.can('ph.view_dashboard')`.
-- `sites.track_hours` + `sites.budget_hours` columns added to
-  ktmjmdzqrogauaevbktn (migration `2026-04-27_sites_track_hours.sql` applied).
+- Project Hours panel **removed in v3.4.71** (added no value with migration-not-applied warnings on SKS; `scripts/project-hours.js` parked for revival, `sites.track_hours` column retained).
 - Living plan + permission matrix in `eq/field/multi-tenancy/` and `eq/field/permissions/`.
+
+**Phase B+C role system (v3.4.68, demo only soak):**
+- `resolveSessionRole()` wired into `initApp()` + supervisor PIN unlock.
+- 5 handler gates migrated to `EQ_PERMS.can()` (leave.js + timesheets.js).
+- PIN-unlock-wins rule preserves today's behaviour — supervisor PIN still grants full access regardless of DB role.
+- Phase D (server-side tightening) planned early June.
 
 **Demo:**
 - Tenant slug: "eq" (bypasses Supabase)
 - Staff PIN: "demo" / Supervisor PIN: "demo1234"
 - Generic SEED data (staff, sites, schedule)
 - Network error toasts suppressed in demo mode
+- Demo tenant DOES send real emails (Royce uses CC to verify flow end-to-end)
 
 **Local repo (Beelink):** `C:\Users\EQ\eq-field-app-demo`
 
 **Pending:**
-- Apply `migrations/2026-04-27_eq_role_enum_people_role.sql` to
-  ktmjmdzqrogauaevbktn (verification queries in header) — does not block
-  Phase 1 functionality, lays groundwork for Phase 2 verify-pin rewrite
-- PostHog flag `feat_project_hours_v1` not yet created — only matters
-  when cohort rollouts become important (e.g. external customers)
-- Netlify env var cleanup (delete SECRET_SALT, STAFF_HASH, MANAGER_HASH) —
-  folds into Phase 2 verify-pin rewrite
-- Phase 2 (RLS hardening, Supabase-native JWT mint, edge function
-  defence in depth, multi-tenancy proper) — gated on first self-serve
-  trial signup OR ~3 customers manually provisioned
+- Apply `migrations/2026-04-27_eq_role_enum_people_role.sql` to ktmjmdzqrogauaevbktn — does not block Phase 1, lays groundwork for Phase 2 verify-pin rewrite
+- Site Reports next workflow: **Toolbox Talk (v3.4.74)** — 3-4 days, mirror Prestart scaffolding
+- PostHog flag `feat_project_hours_v1` not yet created — only matters when cohort rollouts become important
+- Netlify env var cleanup (delete SECRET_SALT, STAFF_HASH, MANAGER_HASH) — folds into Phase 2 verify-pin rewrite
+- Phase 2 (RLS hardening, Supabase-native JWT mint, edge function defence in depth, multi-tenancy proper) — gated on first self-serve trial signup OR ~3 customers manually provisioned
+- Phase D (server-side role enforcement) — planned early June, ~2 weeks after Phase B+C demo soak passes
+- Demo → main merge for Site Reports — gated on Ben Ritchie sign-off + Royce explicit go
 - Stripe payments integration (Phase 3, not started)
 
 ---

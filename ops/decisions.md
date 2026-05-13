@@ -20,6 +20,56 @@ For the current built state of each system, see `system/architecture.md`.
 
 ---
 
+## 2026-05-13 — Path C: Absorb sks-field-reports workflows into EQ Field as a Sub-Module
+
+**Status:** Accepted
+
+**Decision:** Workflows from Ben Ritchie's standalone `sks-field-reports.netlify.app` (v29) — Prestart, Toolbox Talk, Daily Site Diary, Weekly Site Report — fold into EQ Field's new "Site Reports" sub-module rather than continuing as a separate SKS internal tool. Treat this as collaboration with Ben, not replacement: his MVP shapes the EQ implementation, and `sks-field-reports.netlify.app` retires only once EQ Field reaches parity on all four workflows AND Ben + Royce sign off on the cutover. Prestart MVP shipped to EQ Field demo as v3.4.69 on 2026-05-13.
+
+**Why:** Two separate apps maintaining the same workflows is the failure mode the substrate audits keep flagging in other places. Folding the workflows into EQ Field (a) gives the commercial product real operational depth (Site Reports becomes a flagship sub-module, not just timesheets), (b) keeps a single canonical data store (`prestarts` table on both Supabases as of 2026-05-13), (c) avoids the dual-source confusion that already required a yellow banner on the EQ Prestart page directing users away from Ben's app, and (d) sets up the commercial unlock — a Friday compliance pack export bundling staff + licences + prestarts + toolbox + weekly into Hammertech/Aconex/Procore format — which only works against one canonical dataset.
+
+**Alternatives considered:**
+
+- **Path A — keep both apps running indefinitely** (rejected — duplicate maintenance, dual-source data, no path to the compliance pack export commercial unlock).
+- **Path B — rebuild EQ Field's version independently, ignoring Ben's MVP** (rejected — Ben's app is battle-tested with SKS supervisors; throwing away tacit operational knowledge would re-introduce bugs already squashed in v29).
+- **Path D — deprecate sks-field-reports immediately and force migration** (rejected — SKS supervisors currently rely on Ben's tool; pulling the rug before EQ Field parity would break their daily workflow).
+
+**Implications:**
+
+- EQ Field's Site Reports module ships workflows in the order Prestart → Toolbox Talk → Daily Diary → Weekly Report. Toolbox Talk is next (v3.4.74).
+- Hub/dashboard restructure deferred until ≥2 workflows ship (no premature abstraction with only Prestart).
+- Sub-module lives in "Testing (DO NOT USE)" sidebar section with BETA chips until each workflow soaks on demo.
+- Demo → main merge for Site Reports is gated on Ben Ritchie sign-off (not just Royce go) — Ben is a stakeholder, not just an information source.
+- Ben Ritchie credit / consulting engagement / role in EQ team to be resolved by Royce + Webb Financial (open coordination item).
+- Test prestart rows Ben writes during trial must be cleaned before retirement: `DELETE FROM prestarts WHERE works_scope LIKE 'Test%' OR created_by = '<test name>';`
+- Retirement of `sks-field-reports.netlify.app` requires communication window to SKS supervisors — not a silent cutover.
+- Compliance pack export (DOCX/PDF generator bundling all 4 workflows for Hammertech/Aconex/Procore) is the demo that closes EQ customer #2 — pre-built only after all 4 workflows exist.
+
+---
+
+## 2026-05-13 — Demo Version Numbers: Second-to-Merge Bumps, Both Shapes Coexist
+
+**Status:** Accepted
+
+**Decision:** When two parallel Claude sessions target the same `demo` branch with the same version number, the second-to-merge bumps to the next number rather than blocking, and both shapes coexist on demo for soak. The branch name keeps its original label (so `claude/v3.4.67-prestart` can ship as v3.4.69 after rebase) — the ship version is what's in the banner/APP_VERSION/sidebar/sw.js tuple, not the branch name.
+
+**Why:** On 2026-05-13 two workstreams collided: Phase B+C role system (`claude/v3.4.68-role-system-clean`) and Site Reports / Prestart MVP (`claude/v3.4.67-prestart`). Both wanted v3.4.68. Role system landed first as v3.4.68 (PR #63); Prestart rebased on top and bumped to v3.4.69 (PR #62). Both ship together because gating either workstream on the other's soak would have delayed customer-visible value by 5-7 days for no defensible reason.
+
+**Alternatives considered:**
+
+- **Serialise via lock file or coordination doc** (rejected — overhead for a 2-3x/year event; Claude sessions are short enough that the rebase cost is small).
+- **Pre-allocate version ranges per workstream** (deferred — could revisit if this collision happens twice more; not worth pre-building for an N=1 case).
+- **Block second-to-merge until first-to-merge passes soak** (rejected — couples otherwise-independent workstreams; soaks routinely take 5-7 days which would freeze parallel work).
+
+**Implications:**
+
+- Always run `git log origin/demo --oneline -3` before claiming a version number — the brief assumed v3.4.69 was the tip on 2026-05-13 but v3.4.70-73 had already shipped behind it.
+- Outstanding brief documents that name a target version (e.g. "Toolbox v3.4.70") become stale fast — confirm the actual next-free number at session start.
+- Version bumps are a 4-file tuple per the global feedback memory (banner + APP_VERSION + sidebar span + sw.js CACHE); the rebase-and-bump path must update all four, not just the banner.
+- When two parallel worktrees run, confirm worktree paths before multi-step git ops — the working-directory header in a brief can refer to a different worktree than the one the new session is in.
+
+---
+
 ## 2026-05-13 — eq-field-app Repo Canonical Org is Milmlow (Personal Account)
 
 **Status:** Accepted
