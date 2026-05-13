@@ -1,7 +1,7 @@
 ---
 title: SKS Tier — Products
 owner: Royce Milmlow
-last_updated: 2026-05-04
+last_updated: 2026-05-13
 scope: Live SKS internal tools
 read_priority: standard
 status: live
@@ -18,7 +18,7 @@ is operational tooling for the NSW office.
 
 **Status:** Live
 **URL:** sks-nsw-labour.netlify.app
-**Repo:** eq-solutions/eq-field-app, **main branch only**
+**Repo:** Milmlow/eq-field-app, **main branch only**
 **Architecture:** Single-page PWA, vanilla JS (modularised), Supabase
 backend, Netlify Functions for PIN auth + email + AI agent
 **Supabase project:** nspbmirochztcjijmcrx (sks-labour) — **LIVE

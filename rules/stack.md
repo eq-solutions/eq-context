@@ -1,7 +1,7 @@
 ---
 title: Rules — Default Stack
 owner: Royce Milmlow
-last_updated: 2026-05-04
+last_updated: 2026-05-13
 scope: Default technology stack and output preferences for all EQ and SKS work
 read_priority: critical
 status: live
@@ -20,7 +20,7 @@ Default stack for any new work. Do not deviate without stating a reason.
 | Frontend | Vite + React + Tailwind |
 | Backend | Supabase (auth, database, edge functions, storage) |
 | Deploy | Netlify |
-| Source of truth | GitHub (org: eq-solutions) |
+| Source of truth | GitHub (org: eq-solutions, with personal Milmlow account for active EQ products — see Exceptions) |
 | Language | TypeScript — always |
 | AI proxy | Cloudflare Worker `anthropic-proxy` (shared across all apps) |
 
@@ -43,6 +43,13 @@ what is already in the stack. Working before refactoring — always.
 
 ## Exceptions
 
+- **EQ Solves Service** (`Milmlow/eq-solves-service`) is **Next.js 16**
+  (App Router, TypeScript strict, Tailwind v4), not Vite. Deliberate
+  exception to the Vite default — Next.js was already shipping at
+  production complexity (169 commits, 80+ Vitest tests, 22 sprints) when
+  this rules file was written. First commercial customer: SKS
+  Technologies. Stack: Next.js + Supabase RLS + Resend + docx-js +
+  Netlify CD. Confirmed by repo README inspection 2026-05-13.
 - Legacy single-HTML apps (EQ Quotes, EQ Expenses, SKS Receipt Tracker,
   early EQ Field prototype) stay vanilla JS + single `index.html`. Do not
   migrate them to React unless there is a specific reason.
