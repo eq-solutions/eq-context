@@ -1,7 +1,7 @@
 ---
 title: SYSTEM — Infrastructure Accounts
 owner: Royce Milmlow
-last_updated: 2026-05-13
+last_updated: 2026-05-14
 scope: Supabase project IDs, Cloudflare, Netlify, GitHub, Beelink workstation
 read_priority: standard
 status: live
@@ -42,6 +42,7 @@ Both Supabase projects share the same EQ Field codebase (one repo, two branches 
 
 | Table | Project(s) | Applied | Purpose |
 |---|---|---|---|
+| `toolbox_talks` (+ RLS + realtime + photos jsonb) | sks-labour + eq-solves-field | 2026-05-14 | Site Reports v2 — toolbox talk submissions. v3.4.75. SKS apply per explicit "SKS live" so Ben can preview via `eq-solves-field.netlify.app/?tenant=sks`. |
 | `prestarts` (+ RLS + realtime) | sks-labour + eq-solves-field | 2026-05-13 | Site Reports v1 — prestart submissions |
 | `prestarts.photos` (jsonb) | sks-labour + eq-solves-field | 2026-05-13 | Up to 8 base64 photos per prestart, inline |
 | `managers.dob_day/dob_month/start_date/archived` | sks-labour + eq-solves-field | 2026-05-13 | Supervisor DOB + start_date + reversible archive |

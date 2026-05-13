@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Products
 owner: Royce Milmlow
-last_updated: 2026-05-13
+last_updated: 2026-05-14
 scope: Live EQ products. Killed/deferred entries removed in 2026-05-04 refactor.
 read_priority: standard
 status: live
@@ -17,7 +17,7 @@ listed here — see `CLAUDE.md` "Killed / deferred" section, or
 
 ## EQ Solves — Field (LEAD MODULE)
 
-**Status:** Live. Current version **v3.4.73** (demo + main both on 2026-05-13). Phase 1 multi-tenancy foundation in place; Phase B+C role system in 5-7 day demo soak; Site Reports sub-module shipping workflows (Prestart MVP live, Toolbox/Diary/Weekly to follow).
+**Status:** Live. Current version **v3.4.75** (demo on 2026-05-14; main on 2026-05-13 at v3.4.74). Phase 1 multi-tenancy foundation in place; Phase B+C role system in 5-7 day demo soak; Site Reports sub-module shipping workflows (Prestart + Toolbox live on demo, Diary + Weekly to follow).
 **URL:** eq-solves-field.netlify.app (demo) / sks-nsw-labour.netlify.app (main = SKS prod)
 **Repo:** Milmlow/eq-field-app (private); `demo` → EQ Field demo, `main` → SKS prod
 **Working file:** index.html
@@ -29,13 +29,15 @@ listed here — see `CLAUDE.md` "Killed / deferred" section, or
 Validation gate = 5 outside-SKS trade subbies on Field demo first.
 
 **Site Reports sub-module (v3.4.69+, demo only):**
-- Sidebar entry under "Testing (DO NOT USE)" with BETA chip.
-- v1 ships **Prestart** only (form + 8 photos + signature pad + offline queue + mobile-responsive).
-- `prestarts` table + `photos` JSONB column live on BOTH Supabase projects as of 2026-05-13.
-- Next workflows in order (per `eq-solves-field/AUDIT-REVIEW.md` and outstanding build brief): Toolbox Talk → Diary → Weekly Report.
-- Hub/dashboard restructure deferred until ≥2 workflows ship.
+- Two sidebar entries under "Testing (DO NOT USE)" with BETA chips: Prestart, Toolbox.
+- **Prestart** (v3.4.69, shipped 2026-05-13) — form + 8 photos + signature pad + offline queue + mobile-responsive. Tables: `prestarts` + `prestarts.photos` on BOTH Supabases.
+- **Toolbox Talk** (v3.4.75, shipped 2026-05-14) — same shape as Prestart with workflow-specific fields (`topic`, `safety_message`, `items_reviewed`, `open_actions`, `next_meeting`, `attendance` JSONB). Tenant-neutral column names (`facilitator` not `sks_rep` — the Prestart leak is not repeated). Table: `toolbox_talks` on BOTH Supabases. Code in `scripts/toolbox.js` (sibling to `site-reports.js`).
+- **Ben's preview path:** `eq-solves-field.netlify.app/?tenant=sks` — loads SKS branding + SKS Supabase data on the demo build. Same URL works for both Prestart and Toolbox.
+- Next workflows in order (per outstanding build brief): Daily Site Diary → Weekly Site Report.
+- Hub/dashboard restructure: ≥2 workflows now exist (the original trigger condition) but kept deferred — each workflow soaks individually before the chooser ships.
 - Absorbs workflows from Ben Ritchie's `sks-field-reports.netlify.app` v29 (see `ops/decisions.md` 2026-05-13 Path C entry).
 - Compliance pack export (Hammertech / Aconex / Procore) gated on all 4 workflows shipping.
+- Refactor target: once Diary lands, extract photo + signature + offline-queue helpers from `site-reports.js` and `toolbox.js` into shared `scripts/site-report-shared.js`.
 
 **Phase 1 (live as of 2026-04-27, PR [#23](https://github.com/Milmlow/eq-field-app/pull/23) merged):**
 - `window.EQ_FLAGS` — PostHog feature-flag wrapper (`scripts/flags.js`).
@@ -63,12 +65,16 @@ Validation gate = 5 outside-SKS trade subbies on Field demo first.
 
 **Pending:**
 - Apply `migrations/2026-04-27_eq_role_enum_people_role.sql` to ktmjmdzqrogauaevbktn — does not block Phase 1, lays groundwork for Phase 2 verify-pin rewrite
-- Site Reports next workflow: **Toolbox Talk (v3.4.74)** — 3-4 days, mirror Prestart scaffolding
+- Site Reports next workflow: **Daily Site Diary (v3.4.76+)** — ~4-5 days, mirror Prestart/Toolbox scaffolding (weather JSONB, shift_type, delays array, incidents array, work_areas)
+- Then **Weekly Site Report (v3.4.77+)** — ~6-8 days, HSEQ metrics, ITPs, hold points, RFIs; week-ending Friday default
+- Hub/dashboard restructure — defer until Diary lands, then half-day to ship "Site Reports" collapsed entry + status cards
+- Compliance pack export (DOCX/PDF, Hammertech / Aconex / Procore) — dedicated 1-2 week sprint after all 4 workflows exist
 - PostHog flag `feat_project_hours_v1` not yet created — only matters when cohort rollouts become important
 - Netlify env var cleanup (delete SECRET_SALT, STAFF_HASH, MANAGER_HASH) — folds into Phase 2 verify-pin rewrite
 - Phase 2 (RLS hardening, Supabase-native JWT mint, edge function defence in depth, multi-tenancy proper) — gated on first self-serve trial signup OR ~3 customers manually provisioned
 - Phase D (server-side role enforcement) — planned early June, ~2 weeks after Phase B+C demo soak passes
-- Demo → main merge for Site Reports — gated on Ben Ritchie sign-off + Royce explicit go
+- Demo → main merge for Site Reports — gated on Ben Ritchie sign-off + Royce explicit go. Ben's preview path (`?tenant=sks` on the demo site) is the sign-off surface; SKS prod (`sks-nsw-labour.netlify.app`) still on `main` without Site Reports UI.
+- Ben Ritchie credit / consulting engagement / formal role in EQ team — TBD with Webb Financial
 - Stripe payments integration (Phase 3, not started)
 
 ---

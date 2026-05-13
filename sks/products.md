@@ -1,7 +1,7 @@
 ---
 title: SKS Tier — Products
 owner: Royce Milmlow
-last_updated: 2026-05-13
+last_updated: 2026-05-14
 scope: Live SKS internal tools
 read_priority: standard
 status: live
@@ -54,12 +54,17 @@ full technical details.
 
 **Retirement plan (Path C — see `ops/decisions.md` 2026-05-13):**
 - Workflows being absorbed into EQ Field's Site Reports sub-module (v3.4.69+).
-- Prestart MVP shipped to EQ Field demo 2026-05-13 (v3.4.69); Toolbox / Diary / Weekly to follow.
+- **Prestart MVP** shipped to EQ Field demo 2026-05-13 (v3.4.69).
+- **Toolbox Talk MVP** shipped to EQ Field demo 2026-05-14 (v3.4.75). `toolbox_talks` table on BOTH Supabases.
+- Daily Site Diary + Weekly Site Report still to come.
+- Ben's preview path: `eq-solves-field.netlify.app/?tenant=sks` — SKS branding + SKS Supabase data on the demo build (so submissions land in SKS-labour Supabase tables, not EQ demo).
 - This SKS internal tool retires only once EQ Field reaches **parity on all 4 workflows** AND Ben + Royce sign off.
 - Collaboration, not replacement — Ben's MVP shapes the EQ implementation; co-author credit / consulting engagement TBD with Webb Financial.
 
 **Pre-retirement housekeeping:**
-- Cleanup any test prestart rows Ben writes during trial before sunset: `DELETE FROM prestarts WHERE works_scope LIKE 'Test%' OR created_by = '<test name>';`
+- Cleanup any test rows Ben writes during trial before sunset:
+  - `DELETE FROM prestarts WHERE works_scope LIKE 'Test%' OR created_by = '<test name>';`
+  - `DELETE FROM toolbox_talks WHERE topic LIKE 'Test%' OR created_by = '<test name>';`
 - Communicate retirement window to SKS supervisors before pulling the plug.
 
 ---
