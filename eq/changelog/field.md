@@ -9,18 +9,58 @@ status: live
 
 # Changelog — EQ Solves Field
 
-## [2026-05-15] PRs in flight (not merged) — six branches open against `demo`
+## [2026-05-15] SEC2 design — rate-limit-buckets migration file (PENDING)
 **Built by:** Royce Milmlow + assistant
-**Branches:** see PR numbers
-**Open PRs (suggested merge order):**
-- **#83** `claude/v3.5.1-supervisor-home` — v3.5.1 Supervisor mobile home tile screen (Phase 2 of mobile-first nav). Extends `scripts/home.js` with role branch + supervisor action strip + 6-tile grid + richer drawer. Schema corrections vs the phase-2 draft (leaveRequests is module-local `'Pending'` not STATE+'pending'; prestarts in `prestartCache` with `status:'draft'` + `briefing_date`; timesheets have no review-state column so the count was dropped from MVP). ~366 net new lines.
-- **#84** audit-session-summary-2026-05-15 — append-only Session entry under Night 1 in `AUDIT-REVIEW.md`. Captures state-of-the-world correction (brief was stale) + schema-correction table for #83 + decisions needed.
-- **#85** `claude/v3.5.2-site-reports-hub` — v3.5.2 Site Reports HUB. Collapses Prestart/Toolbox/Diary into one sidebar entry. Three status cards (today / this week / today). Count accessors added to each workflow module. Three originals hidden, not deleted (deep-links + home-tile pre-start tile still work). ~280 net new lines.
-- **#86** `claude/audit-slash-command` — `.claude/commands/audit-multi-lens.md`. Local on-demand replacement for the dead cloud `/schedule`. Targets the 3-perspective strategic review (mirrors `REVIEW-MULTI-LENS.md` v1 format), produces a dated artifact in `_reviews/multi-lens/`. `.claude/` is in `.git/info/exclude` locally — file was force-added.
-- **#87** `claude/u2-axe-ci-scaffold` — `.github/workflows/accessibility-audit.yml`. Phase 1 of U2. Manual workflow_dispatch only (no cron). Targets dropdown `eq` | `sks`. axe-core CLI via npx, WCAG 2.0 + 2.1 A/AA. JSON + HTML reports uploaded as artifacts.
-- **#89** `claude/v3.5.3-s1-sliding-window` — v3.5.3 S1 sliding-window queries. Resolves FINDING #S1 (HIGH). All 5 phases bundled: instrumentation + scope `loadFromSupabase` and `loadTimesheets` to ±4 weeks + `_loadWeeks` lazy-load with adjacent prefetch + cache eviction at 16 weeks + bulk-export full-fetch path + dashboard confirmed no-op. DEMO ONLY this PR; SKS port after 3-5 days clean soak per Q5 default. Supersedes #88 (Phase 1 only).
-- **#88** `claude/s1-phase1-visibility-tracking` — superseded by #89; close in favor of it.
-**Status:** All open against `demo`. Royce reviewing in suggested order. Substrate updated 2026-05-15 to reflect pre-merge state; the per-PR changelog entries below will land as each merges.
+**Branch:** `claude/sec2-rate-limit-buckets-design` → `demo` (PR #90)
+**Changes:**
+- New `migrations/2026-05-15_rate_limit_buckets_v1.sql` — `public.rate_limit_buckets` table + `public.bump_rate_limit(p_key, p_max, p_window_seconds)` RPC + RLS denial-by-default (service-role bypass). SQL lifted verbatim from `SPRINT-PLAN.md` §SEC2 per SPRINT-QUESTIONS Q9 default.
+- File marked **PENDING** in top-comment header: DO NOT call `mcp__*__apply_migration` / `mcp__*__execute_sql`. Phase D consumes it when server-side role checks land, alongside wiring `bump_rate_limit()` into `netlify/functions/verify-pin.js` (replaces in-memory `attempts = {}` map flagged as FINDING #SEC2).
+- `SPRINT-PLAN.md` §SEC2 — status block: Phase 1 ✅ shipped, Phase D ⏳ pending.
+- `AUDIT-REVIEW.md` — FINDING #SEC2 moved from Open → Tracked findings with pointer to the migration file.
+**Status:** SQL file on demo `migrations/` directory. **Not applied to EQ demo or SKS prod Supabase.** Phase D unblocks the actual fix.
+
+## [2026-05-15] v3.5.3 — S1 sliding-window queries (Melbourne scaling unblocked)
+**Built by:** Royce Milmlow + assistant
+**Branch:** `claude/v3.5.3-s1-sliding-window` → `demo` (PR #89, merge `8890efd`; supersedes closed PR #88)
+**Changes:**
+- Resolves AUDIT-REVIEW FINDING #S1 (HIGH severity) — the single biggest Melbourne scaling blocker. `schedule?select=*` and `timesheets?select=*` were unscoped; at 577 ppl × 52 weeks (~30k rows) the page load + every 30s poll pulled 5–10MB. Unusable above ~100 users.
+- All 5 phases bundled. Phase 1 — `STATE.loadedWeeks = new Set()` + `_getVisibleWeekRange()` helper (9-week window centred on current week). Phase 2 — `loadFromSupabase` + `loadTimesheets` now use `&week=in.(visibleWeeks)`. Phase 3 — `_loadWeeks(weekKeys)` lazy-loads on `onWeekChange` with adjacent ±4 prefetch + inline "↻ Loading…" indicator. Phase 4 — `_evictDistantWeeks()` caps `loadedWeeks` at 16, drops furthest-from-current first. Phase 5 — dashboard investigation confirmed no-op (renderDashboard + updateTopStats both scope to `STATE.currentWeek`).
+- Bulk exports split off — `_loadFullDataForExport()` returns un-scoped snapshot; `exportScheduleCSV` pre-fetches via the helper. Single-week exports untouched (already scoped).
+- Defaults applied per SPRINT-QUESTIONS: Q1 (±4 weeks / 9 visible), Q2 (always prefetch adjacent), Q3 (bulk-exports full-fetch on demand), Q4 (investigate dashboard first), Q5 (DEMO ONLY — SKS port after 3–5 days clean soak).
+- Realtime channel still org-scoped (FINDING #S3 parked) — out-of-window updates dropped client-side; user sees them on next nav to that week.
+**Status:** Live on demo. SKS prod (sks-nsw-labour) untouched, still on v3.4.73 — soak clock for v3.5.4 SKS port starts 2026-05-15.
+
+## [2026-05-15] v3.5.2 — Site Reports HUB (collapses Prestart / Toolbox / Diary)
+**Built by:** Royce Milmlow + assistant
+**Branch:** `claude/v3.5.2-site-reports-hub` → `demo` (PR #85, merge `e4985c5`)
+**Changes:**
+- New `scripts/site-reports-hub.js` — single "Site Reports" sidebar entry lands on a HUB page with three status cards (Prestart · today / Toolbox · this week / Diary · today). Tap-through routes to the existing workflow via `showPage('prestart' | 'toolbox' | 'diary')`. Pre-loads all three caches in parallel on first render so counts are live.
+- Three original sidebar entries (Prestart / Toolbox / Diary) **hidden** (inline `style="display:none"`), not deleted — deep-links + v3.5.0 staff home-tile Pre-starts tile still work.
+- Count accessors added to each workflow module: `window.eqGetPrestartsTodayCount()`, `window.eqGetToolboxWeekCount()`, `window.eqGetDiariesTodayCount()`. SKS Prestart card suppressed via `TENANT_DISABLED_TABLES.sks`.
+- Permissions: HUB always renders. Each card tap-through hits the underlying workflow which already enforces `reports.{prestart,toolbox,diary}.view` via `EQ_PERMS` — no double-gating needed in HUB.
+**Status:** Live on demo. Weekly Site Report (next Site Reports milestone, ~6–8 days work) gated on at least one supervisor actually using all three workflows weekly.
+
+## [2026-05-15] v3.5.1 — Mobile-first home tile screen: supervisor variant
+**Built by:** Royce Milmlow + assistant
+**Branch:** `claude/v3.5.1-supervisor-home` → `demo` (PR #83, merge `c215571`)
+**Changes:**
+- Phase 2 of the mobile-first nav rollout (Phase 1 was v3.5.0 staff). Supervisors on mobile (viewport <768px, `isManager === true`, `home_screen_v1` flag on) land on a six-tile home screen plus action strip: "Needs you today · N leave to approve · N pre-start". Empty state shows a green "All clear" panel.
+- TILES — Schedule, Timesheets, Leave, Pre-starts, Team, Reports. Decision G1: STATUS badges only on tiles (e.g. "New" on Pre-starts) — counts live exclusively on the action strip.
+- COG DRAWER — supervisor variant adds Edit roster / Sites / Job numbers / Apprentices / Supervision / Import-Export / Audit log on top of the staff drawer.
+- Action-strip data: `window.eqGetPendingLeaveCount()` (in leave.js) + `window.eqGetPrestartsDraftCount()` (in site-reports.js, distinct from HUB's `eqGetPrestartsTodayCount` — different semantics). "Timesheets to review" count **dropped** from MVP — timesheets have no review-state column.
+- ROUTING — `initApp()` gets a parallel supervisor branch mirroring v3.5.0 staff. Desktop supervisor (≥768px) or flag-off keeps existing sidebar shell — no regression for the 90% of supervisor work happening at a desk.
+- Reuses `home_screen_v1` flag (no separate flag). Draft `_proposals/mobile-first-nav/phase-2-supervisor-home.js` stamped SHIPPED IN v3.5.1 header.
+**Status:** Live on demo. SKS sees this on mobile too since flag default-on for both tenants.
+
+## [2026-05-15] Audit + CI chores (no version bump)
+**Built by:** Royce Milmlow + assistant
+**Branches:** `claude/audit-slash-command` (PR #86, merge `e8ff20c`), `claude/u2-axe-ci-scaffold` (PR #87, merge `a005104`), `claude/audit-session-summary-2026-05-15` (PR #84, merge `067576c`)
+**Changes:**
+- `.claude/commands/audit-multi-lens.md` (PR #86) — on-demand `/audit-multi-lens` replacement for the dead cloud `/schedule`. Mirrors `REVIEW-MULTI-LENS.md` v1 three-perspective format, produces dated artifact in `_reviews/multi-lens/`.
+- `.github/workflows/accessibility-audit.yml` (PR #87) — U2 Phase 1. Manual `workflow_dispatch` (no cron). Tenant dropdown `eq` | `sks`. axe-core CLI via npx; WCAG 2.0/2.1 A/AA; JSON + HTML reports uploaded as artifacts. CI report doubles as procurement-gate documentation.
+- `AUDIT-REVIEW.md` Session entry for 2026-05-15 (PR #84) — captures state-of-the-world corrections + schema-correction table for the supervisor home draft.
+**Status:** All three merged into demo same session. Axe workflow available to trigger manually any time; no auto-runs.
+
 
 ## [2026-05-14] v3.5.0 — Mobile-first home tile screen (staff role, flag-gated)
 **Built by:** Royce Milmlow + assistant (separate session)

@@ -17,7 +17,7 @@ listed here — see `CLAUDE.md` "Killed / deferred" section, or
 
 ## EQ Solves — Field (LEAD MODULE)
 
-**Status:** Live. Current version **v3.5.0** on demo (shipped 2026-05-14); SKS prod still on **v3.4.73** awaiting clean-soak window. Phase 1 multi-tenancy live; Phase B+C role system soaked into prod 2026-05-13. Three sub-modules in active state: **Site Reports** (Prestart + Toolbox + Diary live; HUB landing in PR #85), **Tender Pipeline** (entire new workstream landed v3.4.79–v3.4.83), **Mobile-first home** (v3.5.0 staff tile screen live, supervisor variant in PR #83). Six PRs in flight against demo as of 2026-05-15 — see `eq/changelog/field.md` 2026-05-15 entry for the queue. Melbourne scaling unblocker (S1 sliding-window queries) is PR #89, ready for review.
+**Status:** Live. Current version **v3.5.3** on demo (shipped 2026-05-15); SKS prod still on **v3.4.73** — soak clock for v3.5.4 SKS port started 2026-05-15 (3–5 days clean demo soak per Q5 default). Phase 1 multi-tenancy live; Phase B+C role system soaked into prod 2026-05-13. Three sub-modules in active state: **Site Reports** (Prestart + Toolbox + Diary live; HUB shipped v3.5.2), **Tender Pipeline** (entire new workstream landed v3.4.79–v3.4.83), **Mobile-first home** (v3.5.0 staff + v3.5.1 supervisor tile screens live). Six PRs cleared from demo backlog 2026-05-15 (v3.5.1 → v3.5.2 → v3.5.3 + audit + CI chores + SEC2 design-only file). Melbourne scaling unblocker (S1 sliding-window queries) shipped as v3.5.3.
 **URL:** eq-solves-field.netlify.app (demo) / sks-nsw-labour.netlify.app (main = SKS prod)
 **Repo:** Milmlow/eq-field-app (private); `demo` → EQ Field demo, `main` → SKS prod
 **Working file:** index.html
@@ -34,7 +34,7 @@ Validation gate = 5 outside-SKS trade subbies on Field demo first.
 - **Toolbox Talk** (v3.4.75, shipped 2026-05-14) — same shape as Prestart with workflow-specific fields (`topic`, `safety_message`, `items_reviewed`, `open_actions`, `next_meeting`, `attendance` JSONB). Tenant-neutral column names (`facilitator` not `sks_rep`). Table: `toolbox_talks` on BOTH Supabases. Code in `scripts/toolbox.js`.
 - **Shared scaffold** (v3.4.76, 2026-05-13) — `scripts/site-reports-shared.js` (~470 lines) extracted the photo / signature / offline-queue helpers that had been copy-pasted between Prestart and Toolbox. Prestart shed ~310 lines, Toolbox ~290 lines. Lands before Diary so the third workflow starts lean.
 - **Daily Site Diary** (v3.4.77, shipped 2026-05-13) — `scripts/diary.js` (~700 lines). Diary-specific surface: weather JSONB, shift_type, repeating sections (work_areas / delays / incidents / visitors), free-text materials_received / equipment_status / notes. Table: `site_diaries` on EQ Supabase only — SKS application gated on Royce green-light.
-- **Site Reports HUB** (PR #85, v3.5.2, not yet merged) — collapses Prestart / Toolbox / Diary into ONE sidebar entry; landing page with three status cards (today / this week / today). Three originals hidden, not deleted (deep-links + home-tile pre-start tile still work).
+- **Site Reports HUB** (v3.5.2, shipped 2026-05-15) — collapses Prestart / Toolbox / Diary into ONE sidebar entry; landing page with three status cards (today / this week / today). Three originals hidden, not deleted (deep-links + home-tile pre-start tile still work). Count accessors `eqGetPrestartsTodayCount` / `eqGetToolboxWeekCount` / `eqGetDiariesTodayCount` live on each workflow module.
 - **Ben's preview path:** `eq-solves-field.netlify.app/?tenant=sks` — loads SKS branding + SKS Supabase data on the demo build.
 - **Weekly Site Report** — ~6-8 days estimated. Gated on one supervisor actually using the three current workflows weekly. Premature today.
 - **Compliance pack export** (Hammertech / Aconex / Procore) — P2, gated on all four workflows shipping (Weekly is the fourth).
@@ -50,13 +50,14 @@ Validation gate = 5 outside-SKS trade subbies on Field demo first.
 
 **Mobile-first home tile screen (v3.5.0+):**
 - New surface for mobile staff (viewport <768px, `home_screen_v1` flag, `role==='staff'`). Four tiles: My Schedule, Timesheets, Leave, Pre-starts. Next-shift pill at top. Cog drawer for everything-else nav.
-- Phase 2 SUPERVISOR variant in PR #83 (v3.5.1) — six tiles + action strip + richer drawer; same flag, role-branched in `scripts/home.js`.
+- Phase 2 SUPERVISOR variant shipped v3.5.1 (2026-05-15) — six tiles + action strip ("Needs you today · N leave to approve · N pre-start") + richer drawer (Edit roster / Sites / Job numbers / Apprentices / Supervision / Import-Export / Audit log); same `home_screen_v1` flag, role-branched in `scripts/home.js`. Action-strip data via `eqGetPendingLeaveCount` (leave.js) + `eqGetPrestartsDraftCount` (site-reports.js). "Timesheets to review" count dropped from MVP — no review-state column.
 - Decisions baked in: see `_proposals/mobile-first-nav/MOBILE-FIRST-NAV-PROPOSAL.md` v1.1 (A1/B1/C1/D/E/G1/H1/I1) and `_proposals/mobile-first-nav/STATUS-2026-05-14-EOD.md` for the v3.5.0 hand-off context.
 
-**Melbourne scaling unblocker (PR #89, v3.5.3, DEMO ONLY):**
-- Resolves Night 1 audit FINDING #S1 (HIGH severity). Sliding-window queries — STATE.schedule + STATE.timesheets now scoped to ±4 weeks instead of full-table. Lazy-load on week nav with adjacent prefetch. Cache eviction at 16 weeks.
-- After this lands and soaks 3-5 days on demo (Q5 default from SPRINT-QUESTIONS), the SKS port is a one-line version bump.
-- Companion findings in queue: #S2 (clusterize.js for big-list views, unblocked by S1 STATE shape), #S3 (week-scoped realtime channel, parked).
+**Melbourne scaling unblocker (v3.5.3, shipped 2026-05-15, DEMO ONLY):**
+- Resolves Night 1 audit FINDING #S1 (HIGH severity). Sliding-window queries — STATE.schedule + STATE.timesheets now scoped to ±4 weeks (9-week window) instead of full-table. Lazy-load on week nav with adjacent prefetch. Cache eviction at 16 weeks. Bulk exports get a separate full-fetch path (`_loadFullDataForExport`).
+- SKS port soak window: 2026-05-15 → ~2026-05-18 to 2026-05-20. After clean soak the SKS port is a one-line version bump to v3.5.4 against main (gated on explicit Royce green-light per Q5 default).
+- Companion findings in queue: **#S2** (clusterize.js for big-list views, unblocked now that S1 STATE shape settled — next on the backlog), **#S3** (week-scoped realtime channel, parked).
+- **SEC2 rate-limit schema** — `migrations/2026-05-15_rate_limit_buckets_v1.sql` shipped to demo `migrations/` directory PENDING (unapplied). Phase D will apply + wire into `verify-pin.js`.
 
 **Audit + sprint substrate (within the repo, not within this substrate):**
 - `AUDIT-REVIEW.md` — Night 1 findings (8 total, 7 open) + session-summary entries appended manually. Cloud nightly schedule never reliably fired; replaced with local `/audit-multi-lens` slash command (PR #86) — `.claude/commands/audit-multi-lens.md` produces a dated artifact at `_reviews/multi-lens/YYYY-MM-DD.md`.
