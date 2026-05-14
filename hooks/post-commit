@@ -1,0 +1,37 @@
+#!/bin/sh
+# eq-context: post-commit auto-push hook.
+#
+# Pushes the current branch to origin after every commit, but only when on `main`.
+# Other branches are skipped so feature/exploration work doesn't auto-publish.
+#
+# Bypass for a single commit:  SKIP_AUTOPUSH=1 git commit -m "..."
+# Disable entirely:             git config --unset core.hooksPath
+#
+# Failure mode: a failed push (network, auth, non-fast-forward) does NOT undo
+# the commit. The commit stays local; you'll see PUSH FAILED and can resolve
+# manually with `git push` or `git pull --rebase && git push`.
+
+if [ -n "$SKIP_AUTOPUSH" ]; then
+  echo "[post-commit] SKIP_AUTOPUSH set — skipping auto-push."
+  exit 0
+fi
+
+branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+if [ "$branch" != "main" ]; then
+  echo "[post-commit] On branch '$branch' (not main) — skipping auto-push."
+  exit 0
+fi
+
+echo "[post-commit] Auto-pushing eq-context to origin/main..."
+if git push origin HEAD; then
+  echo "[post-commit] Push complete. Supabase sync will follow within ~30s."
+else
+  echo ""
+  echo "[post-commit] PUSH FAILED — commit is local-only."
+  echo "[post-commit] Common fixes:"
+  echo "[post-commit]   - non-fast-forward: git pull --rebase && git push"
+  echo "[post-commit]   - auth (401/403):  PAT may be expired — check ops/pending.md"
+  echo ""
+fi
+
+exit 0

@@ -1,7 +1,7 @@
 ---
 title: SYSTEM — Lessons Learned
 owner: Royce Milmlow
-last_updated: 2026-05-07
+last_updated: 2026-05-14
 scope: Hard-won technical gotchas; append-only
 read_priority: reference
 status: live
@@ -250,3 +250,87 @@ Future hardening worth considering: collapse the two into a single source — e.
 **Why it matters:** Most of the substrate has been silently unreachable via public URL for ~3 days. Anyone fetching tier files from a non-Cowork tool got 404s. The edge function is the public face of the substrate — it has to keep up with substrate structure changes, same as the sync workflow does.
 
 **Rule going forward:** When the substrate structure changes (new tier folder, renamed slug, etc.), the edge function is on the checklist of things to update — not just the workflow.
+
+---
+
+## PowerShell Won't Run Scripts from CWD Without `.\` Prefix (2026-05-14)
+
+**Problem:** Royce typed `setup-and-push.bat` at a PowerShell prompt in
+`C:\Projects\eq-context`. The file existed, but PowerShell threw
+`CommandNotFoundException` with `setup-and-push.bat : The term ... is
+not recognized`. cmd.exe runs current-directory scripts directly;
+PowerShell does not, by default, for safety.
+
+**Fix:** `.\setup-and-push.bat` — or invoke via cmd: `cmd /c setup-and-push.bat`.
+
+**Why it matters:** When emitting `.bat` files for Royce to run, default
+to telling him `.\name.bat` rather than `name.bat`. Costs nothing if
+he's in cmd, saves a round-trip if he's in PowerShell (which is the
+default modern terminal).
+
+---
+
+## `Repository not found` from GitHub is Ambiguous (2026-05-14)
+
+**Problem:** `git push` returned `remote: Repository not found / fatal:
+repository '...' not found` for `Milmlow/eq-solves-assets`. Easy to
+mis-diagnose as a credential failure — but GitHub returns this same
+404 for both genuinely-missing repos AND access-denied private repos
+(deliberate, to avoid leaking private repo names).
+
+**Fix:** Before assuming a credential problem, browser-verify the
+remote URL exists. If the repo is listed under the user/org page but
+the push still 404s, then it's a PAT scope issue. If the repo isn't
+listed at all, the local clone's remote URL is wrong (renamed?
+typo?).
+
+**Why it matters:** Auth diagnostics waste a lot of time when the real
+problem is a missing remote. One browser tab beats ten rounds of
+credential helper debugging.
+
+---
+
+## `demo` Branch Protection Caught Us — But For the Wrong Reason (2026-05-14)
+
+**Problem:** A multi-repo push script (`push-all.bat`) blindly ran
+`git push origin HEAD` against four repos. For eq-solves-field, local
+HEAD was on `demo` branch and the push was rejected as non-fast-forward
+(remote had unmerged commits). The reject was correct, but the rule
+that *should* have caught it — CLAUDE.md §11 "never push to `demo`
+without instruction" — wasn't enforced anywhere. The reject was a happy
+accident, not a designed safety net.
+
+**Fix:** Push automation needs to be branch-aware. The post-commit hook
+for eq-context only pushes when on `main` — same pattern should apply
+to per-repo hooks for the apps. For `push-all.bat`, the safer default
+is `git push origin main` (explicit branch), not `git push origin HEAD`
+(whatever-you're-checked-out-on).
+
+**Why it matters:** The hard rules in §11 only help if they're encoded
+into the automation. "Never push to demo" as prose protects you in
+manual workflow; the same rule has to be a `branch != demo` check
+in any script that pushes.
+
+---
+
+## `.git-credentials` Should Never Travel Through Chat (2026-05-14)
+
+**Problem:** Mid-session, the credentials file was uploaded into chat
+as a `.git-credentials` file to wire up a push. Even though it wasn't
+read by Claude, the file sat in plaintext in
+`%APPDATA%\Claude\local-agent-mode-sessions\...\uploads\` and in
+chat history. Anyone with access to either could exfiltrate PATs.
+
+**Fix:** For credential installation, generate a `.bat`/`.ps1` that
+reads the credentials from a path the user already controls (their own
+file, not an upload) and writes to `%USERPROFILE%\.git-credentials`.
+If a file must move, it moves on the user's machine — never through
+the chat boundary.
+
+**Recovery if it already happened:** delete the uploaded file from
+`%APPDATA%\Claude\local-agent-mode-sessions\...\uploads\` and rotate
+the PATs. Treat any credentials that touched chat as compromised.
+
+**Why it matters:** The substrate has a hard rule against hardcoded
+credentials. The same posture has to extend to credentials in flight
+— not just credentials at rest in code.

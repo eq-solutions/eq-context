@@ -17,6 +17,7 @@ Files that run the substrate, not the work. Read by AIs to understand
 | Path | Purpose |
 |---|---|
 | `architecture.md` | Tech architecture (Cloudflare, Supabase, substrate, single-file HTML pattern) |
+| `git-automation.md` | Post-commit hook, credential helpers, push-failure recovery |
 | `infrastructure.md` | Supabase project IDs, Cloudflare account, Netlify, Beelink, GitHub orgs |
 | `lessons.md` | Tech gotchas (append-only) |
 | `md-style.md` | MD writing standard (slimmed) |

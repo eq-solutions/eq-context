@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-05-13 (Code session)
+last_updated: 2026-05-14 (Cowork — git automation)
 scope: Operational support to-do list — Webb, infra, substrate
 read_priority: standard
 status: live
@@ -68,7 +68,48 @@ Defer to: Beelink return (12 May+) for proper test coverage. Holiday-laptop work
 ## Infrastructure — Live Blockers
 
 - [ ] **OAuth GitHub MCP connector** — consent-screen auto-login loop blocks org-picker flow for `claude.ai` chat. Cowork writes are unblocked via PATs (2026-04-19); this item only gates the chat surface. Fix: revoke prior OAuth grant at `github.com/settings/applications`, sign out, reconnect from Claude desktop.
-- [ ] **PAT rotation** — Milmlow + eq-solutions fine-grained PATs expire 2026-05-19. Calendar reminder set for 2026-05-16.
+- [ ] **PAT rotation** — Milmlow + eq-solutions fine-grained PATs expire 2026-05-19. Calendar reminder set for 2026-05-16. **When rotating: also update `%USERPROFILE%\.git-credentials` on every machine that pushes (Beelink + laptop).** The post-commit hook will silently start failing the moment PATs expire.
+
+---
+
+## Multi-Repo Push Automation
+
+- [x] **eq-context post-commit auto-push — INSTALLED 2026-05-14** —
+  `hooks/post-commit` + `install-hooks.bat` shipped this session. After
+  running `install-hooks.bat` once per clone, every commit on `main`
+  auto-pushes to `origin/main`. Substrate sync follows within ~30s.
+  Docs: `system/git-automation.md`. Branches other than `main` skip the
+  hook; failed pushes don't undo the commit.
+
+- [ ] **eq-solves-field push blocked on `demo` branch** —
+  2026-05-14 `push-all.bat` attempted push of local `demo` to
+  `Milmlow/eq-field-app:demo`, rejected as non-fast-forward (remote has
+  commits we don't). §11 hard rule also says never push `demo` without
+  explicit instruction. Decisions needed: (a) `git pull --rebase origin
+  demo` and re-push, or (b) switch local to `main` for the SKS labour
+  app surface and push there, or (c) skip until the EQ Field branch
+  strategy is settled. **Royce to call.**
+
+- [ ] **eq-solves-assets remote doesn't exist on GitHub** —
+  2026-05-14 `push-all.bat` got `Repository not found` for
+  `Milmlow/eq-solves-assets`. Browser-verified — Milmlow has
+  `eq-field-app`, `eq-solves-service`, `eq-cards` and no
+  `eq-solves-assets`. Likely either (a) the local clone is a rename of
+  `eq-solves-service` and the remote URL was never updated, or (b) the
+  GitHub repo was never created. **Action:** `cd C:\Projects\eq-solves-assets
+  && git remote -v` to confirm the URL, then either retarget remote or
+  create the GitHub repo. **Royce to call.**
+
+- [ ] **Per-repo post-commit hooks for eq-cards, eq-solves-field,
+  eq-solves-assets** — only eq-context has the auto-push hook installed.
+  The other three still need manual `git push`. Replicate the pattern
+  once the two blockers above are resolved. Each repo's `demo`/`main`
+  branch semantics differ — hook needs per-repo branch logic.
+
+- [ ] **Delete stale `setup-and-push.bat`** at eq-context repo root —
+  created earlier this session, points at a Cowork-internal upload path
+  that doesn't resolve on Windows. Superseded by `install-hooks.bat`.
+  Royce to `del C:\Projects\eq-context\setup-and-push.bat`.
 
 ---
 
