@@ -1,7 +1,7 @@
 ---
 title: OPS — Decisions Log
 owner: Royce Milmlow
-last_updated: 2026-05-13
+last_updated: 2026-05-14
 scope: Append-only log of key decisions across all tiers and the reasoning at the time
 read_priority: standard
 status: live
@@ -17,6 +17,32 @@ Format: Status → Decision → Why → Alternatives considered → Implications
 Status values: Accepted | Superseded by [date+title] | On Hold | Deprecated | Proposed.
 Append-only — never delete an entry. Supersede or deprecate it instead.
 For the current built state of each system, see `system/architecture.md`.
+
+---
+
+## 2026-05-14 — Build vs Adopt: Existing Software Wins by Default
+
+**Status:** Accepted
+
+**Decision:** Add a non-negotiable rule (new "Build vs Adopt" section in `rules/non-negotiables.md`) requiring the assistant to search for and present existing software that solves the same or similar problem before scaffolding anything new — commercial SaaS, open-source, internal SKS/EQ tools, or whatever already runs in the substrate's stack. Building from scratch is permitted only after alternatives are named and rejected with stated reasons. For anything larger than a one-off utility script, the reasoning is logged as an ADR with rejected alternatives under **Alternatives considered**.
+
+**Why:** The substrate has been operating on this principle intermittently for months. The 2026-05-13 decision to absorb Ben Ritchie's `sks-field-reports` MVP into EQ Field rather than rebuild it independently is the principle in action. The 2026-04-29 product cull killed EQ Variations, EQ Compliance, and EQ Ops in part because Procore, Hammertech, and Aconex already do those jobs. The "working before refactoring" rule (CLAUDE.md §4) and the system-prompt guidance to not add features beyond what the task requires both point in the same direction. Formalising the rule prevents the failure mode where the assistant scaffolds something new because the request literally asked for "build me X", even when adopting an existing tool would beat the build on time-to-value, maintenance load, integration, and ecosystem support. Royce's time is the scarcest input. Building software that already exists wastes it.
+
+**Alternatives considered:**
+
+- **Leave the existing soft rule in `rules/stack.md`** (rejected — that rule applies to tech-stack additions (libraries, services) and explicitly says "explain why it beats what's in the stack", but it does not cover whole solutions like SaaS apps, open-source projects, or internal tools. The gap was real).
+- **Phrase as SHOULD rather than MUST** (rejected — soft language makes the rule easy to skip silently; the failure mode the rule prevents is exactly "assistant scaffolds without checking", which a SHOULD rule does not catch in practice).
+- **Apply to all new code with no exemption** (rejected — would force a search and ADR for trivial utility scripts; the value of the rule is in the bigger builds where adopt-vs-build is consequential. The exemption for one-off utility scripts (~≤100 lines, single-use) keeps the rule from becoming friction theatre).
+- **Higher "battle-tested" bar for what counts as existing software** (rejected — a narrower bar would miss small open-source tools and internal-to-SKS solutions that nonetheless solve the problem well. "Production use anywhere — real people, real work" is the right floor).
+- **Add to CLAUDE.md §7 critical subset rather than non-negotiables.md** (rejected — §7 is reserved for "MUST NOT" prevention rules guarding against irreversible mistakes (deploys, credentials, cross-deploys). This rule is a positive default about methodology, not a prevention rule; it belongs in non-negotiables.md, which CLAUDE.md §8 already points to).
+
+**Implications:**
+
+- `rules/non-negotiables.md` gains a new "Build vs Adopt" section placed between Substrate and Code & Deployment.
+- Future non-trivial build requests should produce an alternatives-considered section in the assistant's response; full-app or full-module builds should also produce an ADR before scaffolding begins.
+- `rules/stack.md`'s existing soft version of this rule for tech-stack additions stands as-is — it is now explicitly the narrower stack-specific application of the broader principle.
+- The 2026-05-13 sks-field-reports absorption decision is the canonical worked example of the rule. Future ambiguous cases can refer to that ADR for shape (collaboration with existing builder, gradual cutover, no silent retirement of the absorbed tool).
+- Failure mode to watch for: rule degenerating into a perfunctory list of alternatives at the top of every build response. The rule's value is in *changing the answer*, not just in *documenting that an answer was reached*. Surface this in a future lessons.md entry if the pattern emerges.
 
 ---
 

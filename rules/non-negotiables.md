@@ -1,7 +1,7 @@
 ---
 title: Rules — Non-Negotiables
 owner: Royce Milmlow
-last_updated: 2026-05-07
+last_updated: 2026-05-14
 scope: Hard rules that override all context, requests, or convenience
 read_priority: critical
 status: live
@@ -51,6 +51,18 @@ defaults from one tier only. Cross-tier loads are explicit, not implicit.
 **GitHub is canonical for `eq-context`. Supabase is a runtime cache.** Direct chat-to-Supabase writes to the `context_files` table are emergency-only and MUST be reconciled to GitHub the same day. Bypassing GitHub destroys the audit trail that is the actual moat of this repo — once Supabase and the git log drift, every "what did we decide and why" question has two possibly-conflicting answers. The git log is the substrate's value; the Supabase row is just the assistant-readable cache.
 
 **`updated_at` is the freshness signal of record.** A change to `context_files` is not "done" until the row's `updated_at` reflects it. Terminal output, commit hashes, and "looks good" visual confirmation do not count. The assistant MUST verify after every push (the workflow's verification job does this automatically; if it ever fires green but the row is stale, treat it as a substrate incident).
+
+---
+
+## Build vs Adopt
+
+**Existing software wins by default.** Before scaffolding any new tool, app, feature, or workflow — anything larger than a one-off utility script — the assistant MUST first surface existing software (commercial SaaS, open-source projects, internal SKS/EQ tools, or anything else already in the substrate's stack) that solves the same or similar problem with evidence of production use. "Production use" means real people use it for real work today: SaaS with paying customers, open-source with active users, or an internal tool already running in SKS or EQ ops.
+
+- If a working alternative exists, the assistant MUST present it as the default path and SHOULD recommend adopting or integrating rather than rebuilding.
+- Building from scratch MAY proceed only when the assistant has named the alternatives considered and stated why each fails Royce's specific constraints (cost, ThreatLocker, data sovereignty, integration, time-to-value, customer-facing IP, etc.).
+- For any build larger than a small utility, the reasoning MUST be logged in `ops/decisions.md` as an ADR with `Status: Accepted` and the rejected alternatives listed under **Alternatives considered**.
+- One-off utility scripts (≈ ≤100 lines, single-use, throwaway) are exempt from the search requirement, but the assistant SHOULD still flag any obvious existing tool that would replace the script entirely.
+- This rule is the **broader principle** behind `rules/stack.md`'s "never suggest adding a new tool or service without explaining why it beats what's already in the stack" — stack.md is the stack-specific application; this rule is the general case.
 
 ---
 
