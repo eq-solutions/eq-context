@@ -96,11 +96,6 @@ Defer to: Beelink return (12 May+) for proper test coverage. Holiday-laptop work
   `demo` branch blocker above is resolved. Each repo's `demo`/`main`
   branch semantics differ — hook needs per-repo branch logic.
 
-- [ ] **Delete stale `setup-and-push.bat`** at eq-context repo root —
-  created earlier this session, points at a Cowork-internal upload path
-  that doesn't resolve on Windows. Superseded by `install-hooks.bat`.
-  Royce to `del C:\Projects\eq-context\setup-and-push.bat`.
-
 ---
 
 ## Tax & Entities (Webb Financial)
