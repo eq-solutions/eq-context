@@ -1,7 +1,7 @@
 ---
 title: SKS-TEAM — Tier README
 owner: Royce Milmlow
-last_updated: 2026-05-07
+last_updated: 2026-05-15
 scope: Substrate tier providing canonical AI guidance to the SKS NSW Operations team
 read_priority: critical
 status: live
@@ -81,32 +81,46 @@ If a piece of guidance applies across multiple document types (e.g. a canonical 
 ### Live
 
 - `README.md` — this file
-- `quoting.md` — canonical router for SKS team quoting (Client Services template)
+- `gateway.md` — **start here** — single-file master router; handles all document types; designed to be a Claude Project system prompt; rubbish-proof (drives the conversation from any input)
+- `quoting.md` — canonical router for SKS team quoting (Client Services template); detailed standalone version
+- `variations.md` — canonical router for variation claims; same depth as quoting.md
+- `mops.md` — MOP (Method of Procedure) router; functional skeleton; evolving
+- `clients/equinix.md` — Equinix terminology, site codes, and language patterns (light reference)
+- `clients/schneider.md` — Schneider Electric terminology and project conventions (light reference)
 
-### Planned (not yet built)
+### Planned
 
-- `scopes.md` — canonical scope-of-works language patterns (when justified by usage)
-- `mops.md` — Method of Procedure document guidance (when team starts producing them via AI)
+- `clients/nextdc.md` — NEXTDC site codes and submission conventions
+- `clients/airtruck.md` — AirTrunk site codes and project patterns
+- `jsas.md` — JSA / SWMS router (stubs in gateway.md; standalone when justified by usage)
+- `itps.md` — ITP router (stubs in gateway.md; standalone when justified by usage)
 
-Files are added when there's evidence of recurring drift in a document type. No speculative additions.
+Files are added when there's evidence of recurring drift in a document type.
 
 ---
 
 ## How team members access this tier
 
-Team members don't visit GitHub or Supabase directly. They use one of two access paths:
+Team members don't visit GitHub or Supabase directly. Royce sets them up once; after that they just use Claude normally.
 
-### Path A — Claude Project (recommended for AI-fluent users)
+### Path A — Claude Project (recommended — set up once, works forever)
 
-The team member sets up a Claude Project called "SKS Quoting" with a system prompt that instructs Claude to fetch `sks-team/quoting.md` at the start of every conversation in that Project, then follow its instructions exactly.
+1. Team member opens Claude and creates a new Project called "SKS Documents" (or Royce creates it for them).
+2. In the Project's system prompt, paste the contents of `gateway.md` — or the bootstrap fetch instruction:
+   ```
+   Fetch https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/sks-team/gateway.md and follow its instructions exactly for every conversation in this project.
+   ```
+3. Done. Every conversation in that Project automatically has the full routing logic. The team member just types what they need — even vague input works.
 
-Setup is one-time, ~15 minutes per team member.
+**gateway.md is designed to handle rubbish input.** The team member doesn't need to know what to type. Claude asks the right questions.
 
-### Path B — Paste-the-prompt (for ad-hoc users)
+### Path B — Paste the file (for one-off use)
 
-A team member who doesn't want to maintain a Project pastes the same prompt at the start of any Claude conversation when drafting a quote. Less convenient, same result.
+For someone who doesn't want to maintain a Project: paste the full contents of `gateway.md` at the start of any Claude conversation. Same result, less convenient.
 
-Both paths produce identical output because both fetch the same canonical `quoting.md`.
+### Path C — Direct file load (for specific document types)
+
+A team member who only ever drafts quotes can load `quoting.md` directly (more focused, same quoting quality). Same pattern for `variations.md` or `mops.md`. Only use this if the team member's workload is limited to one document type.
 
 ---
 
