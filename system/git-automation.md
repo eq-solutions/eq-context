@@ -135,17 +135,17 @@ Most common failures and the one-line fix:
 
 ---
 
-## Multi-Repo Push (eq-cards, eq-solves-field, eq-solves-assets)
+## Multi-Repo Push (eq-cards, eq-solves-field)
 
-`push-all.bat` at the repo root pushes the four EQ repos in sequence:
-eq-context (priority), eq-cards, eq-solves-field, eq-solves-assets.
+`push-all.bat` at the repo root pushes the three EQ repos in sequence:
+eq-context (priority), eq-cards, eq-solves-field.
 
 This is a **manual fallback** — the per-repo post-commit hooks are the
 primary mechanism. Use `push-all.bat` when you've batch-committed across
 multiple repos and want a single command to ship them all.
 
-Hooks for the other three repos are NOT installed yet — only eq-context
-has been wired. Adding per-repo hooks is a pending item.
+Hooks for eq-cards and eq-solves-field are NOT installed yet — only
+eq-context has been wired. Adding per-repo hooks is a pending item.
 
 ---
 

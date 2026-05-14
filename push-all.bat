@@ -6,7 +6,7 @@ setlocal EnableDelayedExpansion
 set FAILED=
 
 echo ============================================================
-echo [1/4] eq-context (priority)
+echo [1/3] eq-context (priority)
 echo ============================================================
 pushd C:\Projects\eq-context
 git status -sb
@@ -16,7 +16,7 @@ popd
 
 echo.
 echo ============================================================
-echo [2/4] eq-cards
+echo [2/3] eq-cards
 echo ============================================================
 pushd C:\Projects\eq-cards
 git status -sb
@@ -26,22 +26,12 @@ popd
 
 echo.
 echo ============================================================
-echo [3/4] eq-solves-field
+echo [3/3] eq-solves-field
 echo ============================================================
 pushd C:\Projects\eq-solves-field
 git status -sb
 git push origin HEAD
 if errorlevel 1 set FAILED=!FAILED! eq-solves-field
-popd
-
-echo.
-echo ============================================================
-echo [4/4] eq-solves-assets
-echo ============================================================
-pushd C:\Projects\eq-solves-assets
-git status -sb
-git push origin HEAD
-if errorlevel 1 set FAILED=!FAILED! eq-solves-assets
 popd
 
 echo.

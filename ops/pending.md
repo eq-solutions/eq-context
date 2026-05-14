@@ -90,20 +90,10 @@ Defer to: Beelink return (12 May+) for proper test coverage. Holiday-laptop work
   app surface and push there, or (c) skip until the EQ Field branch
   strategy is settled. **Royce to call.**
 
-- [ ] **eq-solves-assets remote doesn't exist on GitHub** —
-  2026-05-14 `push-all.bat` got `Repository not found` for
-  `Milmlow/eq-solves-assets`. Browser-verified — Milmlow has
-  `eq-field-app`, `eq-solves-service`, `eq-cards` and no
-  `eq-solves-assets`. Likely either (a) the local clone is a rename of
-  `eq-solves-service` and the remote URL was never updated, or (b) the
-  GitHub repo was never created. **Action:** `cd C:\Projects\eq-solves-assets
-  && git remote -v` to confirm the URL, then either retarget remote or
-  create the GitHub repo. **Royce to call.**
-
-- [ ] **Per-repo post-commit hooks for eq-cards, eq-solves-field,
-  eq-solves-assets** — only eq-context has the auto-push hook installed.
-  The other three still need manual `git push`. Replicate the pattern
-  once the two blockers above are resolved. Each repo's `demo`/`main`
+- [ ] **Per-repo post-commit hooks for eq-cards and eq-solves-field** —
+  only eq-context has the auto-push hook installed. The other two still
+  need manual `git push`. Replicate the pattern once the eq-solves-field
+  `demo` branch blocker above is resolved. Each repo's `demo`/`main`
   branch semantics differ — hook needs per-repo branch logic.
 
 - [ ] **Delete stale `setup-and-push.bat`** at eq-context repo root —
