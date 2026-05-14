@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Products
 owner: Royce Milmlow
-last_updated: 2026-05-14
+last_updated: 2026-05-15
 scope: Live EQ products. Killed/deferred entries removed in 2026-05-04 refactor.
 read_priority: standard
 status: live
@@ -17,7 +17,7 @@ listed here — see `CLAUDE.md` "Killed / deferred" section, or
 
 ## EQ Solves — Field (LEAD MODULE)
 
-**Status:** Live. Current version **v3.4.75** (demo on 2026-05-14; main on 2026-05-13 at v3.4.74). Phase 1 multi-tenancy foundation in place; Phase B+C role system in 5-7 day demo soak; Site Reports sub-module shipping workflows (Prestart + Toolbox live on demo, Diary + Weekly to follow).
+**Status:** Live. Current version **v3.5.0** on demo (shipped 2026-05-14); SKS prod still on **v3.4.73** awaiting clean-soak window. Phase 1 multi-tenancy live; Phase B+C role system soaked into prod 2026-05-13. Three sub-modules in active state: **Site Reports** (Prestart + Toolbox + Diary live; HUB landing in PR #85), **Tender Pipeline** (entire new workstream landed v3.4.79–v3.4.83), **Mobile-first home** (v3.5.0 staff tile screen live, supervisor variant in PR #83). Six PRs in flight against demo as of 2026-05-15 — see `eq/changelog/field.md` 2026-05-15 entry for the queue. Melbourne scaling unblocker (S1 sliding-window queries) is PR #89, ready for review.
 **URL:** eq-solves-field.netlify.app (demo) / sks-nsw-labour.netlify.app (main = SKS prod)
 **Repo:** Milmlow/eq-field-app (private); `demo` → EQ Field demo, `main` → SKS prod
 **Working file:** index.html
@@ -29,15 +29,40 @@ listed here — see `CLAUDE.md` "Killed / deferred" section, or
 Validation gate = 5 outside-SKS trade subbies on Field demo first.
 
 **Site Reports sub-module (v3.4.69+, demo only):**
-- Two sidebar entries under "Testing (DO NOT USE)" with BETA chips: Prestart, Toolbox.
+- THREE workflows shipped on demo (was two): Prestart, Toolbox, Diary. All under "Testing (DO NOT USE)" sidebar section with BETA chips.
 - **Prestart** (v3.4.69, shipped 2026-05-13) — form + 8 photos + signature pad + offline queue + mobile-responsive. Tables: `prestarts` + `prestarts.photos` on BOTH Supabases.
-- **Toolbox Talk** (v3.4.75, shipped 2026-05-14) — same shape as Prestart with workflow-specific fields (`topic`, `safety_message`, `items_reviewed`, `open_actions`, `next_meeting`, `attendance` JSONB). Tenant-neutral column names (`facilitator` not `sks_rep` — the Prestart leak is not repeated). Table: `toolbox_talks` on BOTH Supabases. Code in `scripts/toolbox.js` (sibling to `site-reports.js`).
-- **Ben's preview path:** `eq-solves-field.netlify.app/?tenant=sks` — loads SKS branding + SKS Supabase data on the demo build. Same URL works for both Prestart and Toolbox.
-- Next workflows in order (per outstanding build brief): Daily Site Diary → Weekly Site Report.
-- Hub/dashboard restructure: ≥2 workflows now exist (the original trigger condition) but kept deferred — each workflow soaks individually before the chooser ships.
-- Absorbs workflows from Ben Ritchie's `sks-field-reports.netlify.app` v29 (see `ops/decisions.md` 2026-05-13 Path C entry).
-- Compliance pack export (Hammertech / Aconex / Procore) gated on all 4 workflows shipping.
-- Refactor target: once Diary lands, extract photo + signature + offline-queue helpers from `site-reports.js` and `toolbox.js` into shared `scripts/site-report-shared.js`.
+- **Toolbox Talk** (v3.4.75, shipped 2026-05-14) — same shape as Prestart with workflow-specific fields (`topic`, `safety_message`, `items_reviewed`, `open_actions`, `next_meeting`, `attendance` JSONB). Tenant-neutral column names (`facilitator` not `sks_rep`). Table: `toolbox_talks` on BOTH Supabases. Code in `scripts/toolbox.js`.
+- **Shared scaffold** (v3.4.76, 2026-05-13) — `scripts/site-reports-shared.js` (~470 lines) extracted the photo / signature / offline-queue helpers that had been copy-pasted between Prestart and Toolbox. Prestart shed ~310 lines, Toolbox ~290 lines. Lands before Diary so the third workflow starts lean.
+- **Daily Site Diary** (v3.4.77, shipped 2026-05-13) — `scripts/diary.js` (~700 lines). Diary-specific surface: weather JSONB, shift_type, repeating sections (work_areas / delays / incidents / visitors), free-text materials_received / equipment_status / notes. Table: `site_diaries` on EQ Supabase only — SKS application gated on Royce green-light.
+- **Site Reports HUB** (PR #85, v3.5.2, not yet merged) — collapses Prestart / Toolbox / Diary into ONE sidebar entry; landing page with three status cards (today / this week / today). Three originals hidden, not deleted (deep-links + home-tile pre-start tile still work).
+- **Ben's preview path:** `eq-solves-field.netlify.app/?tenant=sks` — loads SKS branding + SKS Supabase data on the demo build.
+- **Weekly Site Report** — ~6-8 days estimated. Gated on one supervisor actually using the three current workflows weekly. Premature today.
+- **Compliance pack export** (Hammertech / Aconex / Procore) — P2, gated on all four workflows shipping (Weekly is the fourth).
+
+**Tender Pipeline sub-module (v3.4.79+, DEMO ONLY):**
+- New workstream — not in any earlier brief. Royce's mid-week pivot.
+- Kanban for tracking tender opportunities through stages (watch → confirmed → likely → won/lost). Drag-and-drop transitions (v3.4.82). Enrichment slide-over. Nomination model with clash detection (`nominations`, `nomination_clashes` view). Review queue surface that doubles as a fortnightly decision queue.
+- Excel ingestion via SheetJS (`scripts/tender-parser.js`). CSP needed a hotfix (v3.4.80) plus a cdnjs URL pin (v3.4.81) before this worked end-to-end.
+- Pipeline Dashboard with Stage + Dept filters; Review queue with Stage filter (defaulting to "Likely + Won").
+- Sidebar entries: Pipeline Dashboard, Pipeline (kanban), Fortnightly Review, Tender Sync.
+- Tables on EQ Supabase only: `tenders`, `tender_enrichment`, `nominations`, `nomination_clashes` (view), `tender_import_runs`, `tender_review_decisions`, `pending_schedule`. All in `TENANT_DISABLED_TABLES.sks` until cutover.
+- Status: ~1900 lines in `scripts/tender-pipeline.js` (~2000 after v3.4.80-84 patches). Royce's currently-active surface — not part of any other workstream's scope.
+
+**Mobile-first home tile screen (v3.5.0+):**
+- New surface for mobile staff (viewport <768px, `home_screen_v1` flag, `role==='staff'`). Four tiles: My Schedule, Timesheets, Leave, Pre-starts. Next-shift pill at top. Cog drawer for everything-else nav.
+- Phase 2 SUPERVISOR variant in PR #83 (v3.5.1) — six tiles + action strip + richer drawer; same flag, role-branched in `scripts/home.js`.
+- Decisions baked in: see `_proposals/mobile-first-nav/MOBILE-FIRST-NAV-PROPOSAL.md` v1.1 (A1/B1/C1/D/E/G1/H1/I1) and `_proposals/mobile-first-nav/STATUS-2026-05-14-EOD.md` for the v3.5.0 hand-off context.
+
+**Melbourne scaling unblocker (PR #89, v3.5.3, DEMO ONLY):**
+- Resolves Night 1 audit FINDING #S1 (HIGH severity). Sliding-window queries — STATE.schedule + STATE.timesheets now scoped to ±4 weeks instead of full-table. Lazy-load on week nav with adjacent prefetch. Cache eviction at 16 weeks.
+- After this lands and soaks 3-5 days on demo (Q5 default from SPRINT-QUESTIONS), the SKS port is a one-line version bump.
+- Companion findings in queue: #S2 (clusterize.js for big-list views, unblocked by S1 STATE shape), #S3 (week-scoped realtime channel, parked).
+
+**Audit + sprint substrate (within the repo, not within this substrate):**
+- `AUDIT-REVIEW.md` — Night 1 findings (8 total, 7 open) + session-summary entries appended manually. Cloud nightly schedule never reliably fired; replaced with local `/audit-multi-lens` slash command (PR #86) — `.claude/commands/audit-multi-lens.md` produces a dated artifact at `_reviews/multi-lens/YYYY-MM-DD.md`.
+- `SPRINT-PLAN.md` — S1 + U2 + S2 + SEC2 design. S1 fully built per PR #89. U2 Phase 1 (axe-core CI scaffold) in PR #87. S2 + SEC2 still to come.
+- `SPRINT-QUESTIONS.md` — Royce's "all defaults confirmed" answer authorised the S1 build per default-set Q1-Q13.
+- `REVIEW-MULTI-LENS.md` — v1 strategic review dated 2026-05-13. Future runs via `/audit-multi-lens` go into `_reviews/multi-lens/` (append-only convention).
 
 **Phase 1 (live as of 2026-04-27, PR [#23](https://github.com/Milmlow/eq-field-app/pull/23) merged):**
 - `window.EQ_FLAGS` — PostHog feature-flag wrapper (`scripts/flags.js`).

@@ -14,9 +14,9 @@ is operational tooling for the NSW office.
 
 ---
 
-## SKS Labour App (v3.4.3)
+## SKS Labour App (v3.4.73)
 
-**Status:** Live
+**Status:** Live. Currently on **v3.4.73** (deployed 2026-05-13); EQ demo has advanced to v3.5.0 with v3.5.1-v3.5.3 in flight. SKS port of the demo-only workstreams (Site Reports Diary + HUB, Tender Pipeline, mobile-first home tile, S1 sliding-window queries) gated on per-workstream "SKS live" green-light from Royce after demo soak.
 **URL:** sks-nsw-labour.netlify.app
 **Repo:** Milmlow/eq-field-app, **main branch only**
 **Architecture:** Single-page PWA, vanilla JS (modularised), Supabase
@@ -56,7 +56,9 @@ full technical details.
 - Workflows being absorbed into EQ Field's Site Reports sub-module (v3.4.69+).
 - **Prestart MVP** shipped to EQ Field demo 2026-05-13 (v3.4.69).
 - **Toolbox Talk MVP** shipped to EQ Field demo 2026-05-14 (v3.4.75). `toolbox_talks` table on BOTH Supabases.
-- Daily Site Diary + Weekly Site Report still to come.
+- **Daily Site Diary MVP** shipped to EQ Field demo 2026-05-13 (v3.4.77). `site_diaries` table on EQ Supabase only — SKS application gated on Royce "SKS live" go.
+- **Site Reports HUB** in PR #85 (v3.5.2, not yet merged) — collapses the three sidebar entries into one.
+- Weekly Site Report still to come (~6-8 days, premature until one supervisor uses all three current workflows weekly).
 - Ben's preview path: `eq-solves-field.netlify.app/?tenant=sks` — SKS branding + SKS Supabase data on the demo build (so submissions land in SKS-labour Supabase tables, not EQ demo).
 - This SKS internal tool retires only once EQ Field reaches **parity on all 4 workflows** AND Ben + Royce sign off.
 - Collaboration, not replacement — Ben's MVP shapes the EQ implementation; co-author credit / consulting engagement TBD with Webb Financial.

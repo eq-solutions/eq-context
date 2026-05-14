@@ -1,13 +1,100 @@
 ---
 title: Changelog — EQ Solves Field
 owner: Royce Milmlow
-last_updated: 2026-05-14
+last_updated: 2026-05-15
 scope: Append-only history of changes to the EQ Solves Field product
 read_priority: reference
 status: live
 ---
 
 # Changelog — EQ Solves Field
+
+## [2026-05-15] PRs in flight (not merged) — six branches open against `demo`
+**Built by:** Royce Milmlow + assistant
+**Branches:** see PR numbers
+**Open PRs (suggested merge order):**
+- **#83** `claude/v3.5.1-supervisor-home` — v3.5.1 Supervisor mobile home tile screen (Phase 2 of mobile-first nav). Extends `scripts/home.js` with role branch + supervisor action strip + 6-tile grid + richer drawer. Schema corrections vs the phase-2 draft (leaveRequests is module-local `'Pending'` not STATE+'pending'; prestarts in `prestartCache` with `status:'draft'` + `briefing_date`; timesheets have no review-state column so the count was dropped from MVP). ~366 net new lines.
+- **#84** audit-session-summary-2026-05-15 — append-only Session entry under Night 1 in `AUDIT-REVIEW.md`. Captures state-of-the-world correction (brief was stale) + schema-correction table for #83 + decisions needed.
+- **#85** `claude/v3.5.2-site-reports-hub` — v3.5.2 Site Reports HUB. Collapses Prestart/Toolbox/Diary into one sidebar entry. Three status cards (today / this week / today). Count accessors added to each workflow module. Three originals hidden, not deleted (deep-links + home-tile pre-start tile still work). ~280 net new lines.
+- **#86** `claude/audit-slash-command` — `.claude/commands/audit-multi-lens.md`. Local on-demand replacement for the dead cloud `/schedule`. Targets the 3-perspective strategic review (mirrors `REVIEW-MULTI-LENS.md` v1 format), produces a dated artifact in `_reviews/multi-lens/`. `.claude/` is in `.git/info/exclude` locally — file was force-added.
+- **#87** `claude/u2-axe-ci-scaffold` — `.github/workflows/accessibility-audit.yml`. Phase 1 of U2. Manual workflow_dispatch only (no cron). Targets dropdown `eq` | `sks`. axe-core CLI via npx, WCAG 2.0 + 2.1 A/AA. JSON + HTML reports uploaded as artifacts.
+- **#89** `claude/v3.5.3-s1-sliding-window` — v3.5.3 S1 sliding-window queries. Resolves FINDING #S1 (HIGH). All 5 phases bundled: instrumentation + scope `loadFromSupabase` and `loadTimesheets` to ±4 weeks + `_loadWeeks` lazy-load with adjacent prefetch + cache eviction at 16 weeks + bulk-export full-fetch path + dashboard confirmed no-op. DEMO ONLY this PR; SKS port after 3-5 days clean soak per Q5 default. Supersedes #88 (Phase 1 only).
+- **#88** `claude/s1-phase1-visibility-tracking` — superseded by #89; close in favor of it.
+**Status:** All open against `demo`. Royce reviewing in suggested order. Substrate updated 2026-05-15 to reflect pre-merge state; the per-PR changelog entries below will land as each merges.
+
+## [2026-05-14] v3.5.0 — Mobile-first home tile screen (staff role, flag-gated)
+**Built by:** Royce Milmlow + assistant (separate session)
+**Branch:** `claude/v3.5.0-mobile-home` → `demo` (commits `6fe968c`, `89072b6`, `375a72f`, `b512c84`)
+**Changes:**
+- New `scripts/home.js` (~362 lines) — mobile-first tile screen for STAFF role. Four tiles: My Schedule, Timesheets, Leave, Pre-starts. Next-shift pill (decision B1). Cog drawer (slide-up sheet) for everything-else nav. PostHog page-view fires from here.
+- New `styles/home.css` (~315 lines) — tile grid, pill, drawer, loading skeleton, offline banner. Hidden on viewport ≥ 768px (desktop staff keep existing shell).
+- New PostHog flag `home_screen_v1` in `scripts/flags.js`. Default ON as of `b512c84` (after eyeballing the staff flow on phone). Routing fires only when (a) flag enabled (b) `role==='staff'` (c) viewport <768px.
+- New `index.html` mount `<div id="page-home">`, `PAGE_TITLES.home`, dispatch in `renderCurrentPage`, routing in `initApp()` to choose home vs schedule landing.
+- EQ blue diamond favicons (recoloured from navy `#1F335C` to EQ blue `#3DA8D8` gradient) shipped in same version.
+- **v3.4.84 pipeline UI polish FOLDED IN** (commit message confirms): PM/Supervisor dropdowns now pull from `STATE.managers` (was `STATE.people`); Pipeline Dashboard + Review queue Stage/Dept filters; nomination name lookups check managers first then people. The orphan `CHANGELOG-v3.4.84.md` file remained on disk as historical doc; no separate version was published.
+- Decisions baked in per `_proposals/mobile-first-nav/MOBILE-FIRST-NAV-PROPOSAL.md` v1.1: A1 (staff mobile only), B1 (next-shift pill), C1 (Pre-starts hidden on SKS via `TENANT_DISABLED_TABLES`), D (labels), E (greeting personality), H1 (greeting once per day then date), I1 (live counts on schedule + timesheets only).
+**Status:** Live on demo. SKS prod still on v3.4.73 (flag default-on for both tenants but supervisor variant not in v3.5.0 — Phase 2 in #83).
+
+## [2026-05-14] v3.4.83 — Tender Pipeline: onclick fix + Dashboard + job fields + session close + Promote UX
+**Built by:** Royce Milmlow + assistant
+**Branch:** `claude/v3.4.83-pipeline-polish` → `demo` (commit `82123ff`)
+**Changes:** Quality-of-life cleanup on the Tender Pipeline kanban: card onclick fixed for some edge cases, dashboard refinements, additional job fields surfaced, review-session close UX clarified, Promote-to-Schedule flow tightened. Pure UX polish — no schema changes.
+**Status:** Live on demo. SKS untouched (Tender Pipeline is demo-only).
+
+## [2026-05-14] v3.4.82 — Tender Pipeline: drag-and-drop kanban + Review = decision queue
+**Built by:** Royce Milmlow + assistant
+**Branch:** `claude/v3.4.82-pipeline-dnd` → `demo` (commits `0ca5956`, `36bd23e` for the missed changelog)
+**Changes:** Drag-and-drop on the Tender Pipeline kanban (stage transitions via DnD). "Review" surface restructured into a decision queue rather than a list. The v3.4.82 changelog commit was missed in the original push (sandbox /tmp path quirk) and landed in a follow-up `36bd23e`.
+**Status:** Live on demo.
+
+## [2026-05-14] v3.4.81 — Tender Sync actually working + What's New refresh
+**Built by:** Royce Milmlow + assistant
+**Branch:** `claude/v3.4.81-tender-sync-fix` → `demo` (commit `36e4009`)
+**Changes:**
+- Tender Sync (Excel import) was DOA after v3.4.80 because the cdnjs URL pointed at xlsx 0.20.3 which cdnjs doesn't host. Pinned to xlsx 0.18.5 (last cdnjs-hosted build, same API surface).
+- "What's New" banner refreshed — was stuck on v3.4.22-era content (digest, birthdays, timesheet bar). Now surfaces recent shipments: Tender Pipeline, Daily Site Diary, Toolbox Talks. WHATSNEW_KEY bumped to v3.4.81 so every user sees the banner once.
+**Status:** Live on demo.
+
+## [2026-05-14] v3.4.80 — CSP hotfix: unblock SheetJS for Tender Sync
+**Built by:** Royce Milmlow + assistant
+**Branch:** `claude/v3.4.80-csp-fix` → `demo` (commit `9e7d901`)
+**Changes:** Tender Sync (v3.4.79) was DOA on live demo — SheetJS CDN script blocked by CSP. Two CSP definitions live in the repo (`_headers` and inline meta tag); both relaxed to permit the SheetJS cdnjs origin. Real fix but not THE fix — v3.4.81 had to pin the actual cdnjs URL since the original 0.20.3 path 404'd.
+**Status:** Live on demo.
+
+## [2026-05-14] v3.4.79 — Tender Pipeline module (new workstream)
+**Built by:** Royce Milmlow + assistant
+**Branch:** `claude/v3.4.79-tender-pipeline` → `demo` (PR #82, squash merge `b587b78`)
+**Changes:**
+- New `scripts/tender-pipeline.js` (~1900 lines at ship time, ~2000 after the v3.4.80-84 patches landed) — kanban for tracking tender opportunities through stages (watch → confirmed → likely → won/lost). Drag-and-drop transitions, enrichment slide-over, nomination model, review queue.
+- New `scripts/tender-parser.js` — Excel ingestion via SheetJS (xlsx). Parses tender intake spreadsheets into `tender_import_runs` rows. CSP needed v3.4.80 hotfix before this actually worked end-to-end.
+- New Supabase migration creating `tenders`, `tender_enrichment`, `nominations`, `nomination_clashes` (view), `tender_import_runs`, `tender_review_decisions`, `pending_schedule`. DEMO ONLY — SKS tenant has these in `TENANT_DISABLED_TABLES.sks` so the fetches no-op.
+- New sidebar entries: Pipeline Dashboard, Pipeline (kanban), Fortnightly Review, Tender Sync. Pipeline Dashboard surfaces stage-by-stage counts + filters.
+**Status:** Live on demo. Not in any earlier brief — was Royce's mid-week pivot. Five subsequent versions of polish (v3.4.80–84) landed within 36 hours.
+
+## [2026-05-13] v3.4.77 — Site Reports v3: Daily Site Diary MVP (DEMO ONLY)
+**Built by:** Royce Milmlow + assistant
+**Branch:** `claude/v3.4.77-diary` → `demo` (PR #81, squash merge `ceec471`)
+**Changes:**
+- New `scripts/diary.js` (~700 lines) — third workflow in Site Reports, sibling to Prestart and Toolbox. Consumes `scripts/site-reports-shared.js` (v3.4.76) for photo / signature / offline-queue controllers; only diary-specific logic remains in this file: weather JSONB, shift_type (day / night / split), repeating sections for work_areas / delays / incidents / visitors, free-text materials_received / equipment_status / notes.
+- New migration `2026-05-13_site_diaries_v1.sql` — `site_diaries` table with same RLS + realtime pattern as `prestarts` and `toolbox_talks`. Photos JSONB included from day 1.
+- `permission-matrix.js` updated — `reports.diary.{view,create,submit,sign}` added.
+- New sidebar entry "Diary" under "Testing (DO NOT USE)", BETA chip, next to Prestart and Toolbox.
+- Hub/dashboard restructure DEFERRED again (now three workflows exist — trigger condition reached — but soak first; HUB ships in PR #85 not yet merged).
+**Status:** Live on demo. SKS untouched (diary tables not yet applied to SKS Supabase).
+
+## [2026-05-13] v3.4.76 — Site Reports refactor: extract shared photos / signature / queue
+**Built by:** Royce Milmlow + assistant
+**Branch:** `claude/v3.4.76-shared-refactor` → `demo` (PR #80, squash merge `306525d`)
+**Changes:**
+- New `scripts/site-reports-shared.js` (~470 lines) — factory functions extracting the helpers that had been copy-pasted between Prestart (v3.4.69) and Toolbox (v3.4.75):
+  - `createPhotoController(config)` — photo upload, list render, captions, lightbox, max-N enforcement.
+  - `createSignatureController(config)` — canvas-based signature pad, attendance roster, sign / unsign / clear.
+  - `createOfflineQueue(config)` — localStorage-backed write queue with replay listener.
+  - `injectMobileStyle(prefix)` — mobile responsive CSS, one-shot per prefix.
+- `scripts/site-reports.js` — Prestart drops ~310 lines of duplicated helpers. Keeps Prestart-specific: HRCW categories, crew shape, dual-source notice.
+- `scripts/toolbox.js` — Toolbox drops ~290 lines of duplicated helpers. Keeps Toolbox-specific: topic / safety_message / items_reviewed / attendance.
+- Refactor lands BEFORE Diary (v3.4.77) so the third workflow starts lean.
+**Status:** Live on demo. No schema or behaviour change — purely structural cleanup.
 
 ## [2026-05-14] v3.4.75 — Site Reports v2: Toolbox Talk MVP (DEMO ONLY)
 **Built by:** Royce Milmlow + assistant
