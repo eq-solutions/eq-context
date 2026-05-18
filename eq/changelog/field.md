@@ -9,6 +9,20 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-05-18] Phase D EQ Shell — design locked + Phase 1.A scaffold provisioned
+**Built by:** Royce Milmlow + assistant
+**Brief:** Phase D of `NEW-WINDOW-PROMPT-melbourne-ready.md` (design pivot per the cowork EQ Shell architecture)
+**Branches:** `claude/phase-d-eq-shell-design` (PR #104, merged 13:25Z)
+**Companion repos / projects (new):**
+- GitHub: [`eq-solutions/eq-shell`](https://github.com/eq-solutions/eq-shell) (private, main branch, Vite + React + TS scaffold pushed)
+- Supabase: `eq-shell-control` (id `hxwitoveffxhcgjvubbd`, region ap-southeast-2, EQ Solutions org, $10/mo)
+- Netlify: `eq-shell` (id `a3473f83-7c82-4f1e-872d-aa96eaa55172`, milmlow team, `eq-shell.netlify.app`)
+**Changes:**
+- **Design locked (PR #104):** All 10 architecture questions resolved. EQ Shell is Vite + React + TypeScript, hosted at `*.eq.solutions` on Netlify with a canonical Supabase (`eq-shell-control`) for tenants / users / module_entitlements / branding. Cookie auth on `*.eq.solutions` for React modules; URL-hash HMAC token for the cross-domain EQ Field iframe. EQ Field stays vanilla and embedded via iframe initially; Tender Pipeline migration to React shell-routes is Phase 2 (the wedge); surface-by-surface Field migration is Phase 3+ as each needs rework. Auto-merge bar declined; Royce reviewed + merged manually.
+- **Phase 1.A scaffolding provisioned:** Three real-world resources created in one pass — (1) `eq-solutions/eq-shell` GitHub repo (private, default Vite react-ts template plus a real README documenting the design + companion infra), (2) `eq-shell-control` Supabase project in Sydney (Royce confirmed $10/mo cost; canonical schema v1 applied with `tenants` / `users` / `module_entitlements` tables + `_touch_updated_at` trigger function with explicit `search_path = ''` to satisfy the database linter; RLS enabled on all three with no policies yet — deny-by-default until Phase 1.B's auth model lands), (3) `eq-shell` Netlify project on the milmlow team (empty container; needs GitHub integration + custom domain configured via dashboard — manual handoff to Royce per Netlify UI's better DX for these settings).
+- **Substrate observation:** the cowork message Royce surfaced mid-session about Tender Pipeline's fortnightly review meeting being "the product, not the screen" reframed Phase D's scope. Adoption signal of "6 fortnightlies + 30 notes at month 3" is now preserved in the design doc as the Phase 2 success metric. Tender Pipeline's existing vanilla implementation (v3.4.79-83) lives on until the React port is shipped + soaked for ~2 weeks — no cutover risk.
+**Status:** PR #104 merged to demo. Three new infra resources alive. Phase 1.B (wire-up: shell-login + verify-shell-session + mint-iframe-token Netlify functions + React shell with login + tenant-home + iframe-Field route) is the natural next session. Two open items deliberately handed off to Royce: (1) link the `eq-solutions/eq-shell` GitHub repo to the `eq-shell` Netlify project via the dashboard's auto-deploy integration, (2) configure the `*.eq.solutions` wildcard custom domain DNS. Both are 2-minute UI flows that the Netlify MCP doesn't cleanly cover.
+
 ## [2026-05-18] Phase C Melbourne prep — U2 accessibility cleared + Phase D design opened
 **Built by:** Royce Milmlow + assistant
 **Brief:** `NEW-WINDOW-PROMPT-melbourne-ready.md` (Phase C of 5 + Phase D design pivot)
