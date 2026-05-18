@@ -9,6 +9,36 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-05-18 overnight] Phase 1.B wire-up + docs hygiene + Phase 2 spike
+**Built by:** Claude (autonomous overnight run, Royce reviews in the morning)
+**Brief:** "EQ Shell" overnight prompt — Phase 1.B + docs hygiene + Phase 2 spike, open PRs only, NEVER merge.
+**Branches:**
+- `claude/phase-1-b-wire-up` on `eq-solutions/eq-shell` → [PR #1](https://github.com/eq-solutions/eq-shell/pull/1)
+- `claude/audit-doc-hygiene-2026-05-18` on `Milmlow/eq-field-app` → [PR #107](https://github.com/Milmlow/eq-field-app/pull/107)
+- `claude/phase-2-spike-tender-pipeline` on `eq-solutions/eq-shell` → [PR #2](https://github.com/eq-solutions/eq-shell/pull/2)
+**Companion changes (no new infra; uses Phase 1.A's provisioned resources):**
+- Supabase migration `2026_05_18_phase_1b_pin_hash_and_service_role_policies` applied to `eq-shell-control` (`hxwitoveffxhcgjvubbd`): adds `users.pin_hash TEXT`, plus service-role-only ALL policies on `tenants` / `users` / `module_entitlements`. HONEST CAVEAT in migration header — not the long-term `auth.uid()` shape; precedent set in `2026-05-13_roster_presence_rls_tighten.sql` + `2026-05-18_tender_rls_tighten.sql`.
+
+**Changes:**
+- **Phase 1.B wire-up (PR #1 on eq-shell):** Three TS Netlify functions — `shell-login` (POST email + bcrypt PIN → sets `eq_shell_session` cookie on `.eq.solutions`, signed with shared `EQ_SECRET_SALT`), `verify-shell-session` (GET → hydrates user/tenant/entitlements; 401 on invalid; rejects if cookie tenant_id no longer matches canonical), `mint-iframe-token` (POST → 60s shell-token in the exact shape Phase 1.C's `verifyShellToken` expects). React Router shell: `SessionProvider` hydrates on mount, `RequireSession` guards `/:tenantSlug/*`, `ModuleGate` enforces entitlements per route. `BrandProvider` writes tenant `brand_color` to `--eq-brand` CSS custom property (Q6 lock). `FieldIframe` POSTs to `mint-iframe-token` and embeds `https://eq-solves-field.netlify.app/#sh=<token>`. Cards / Intake / Quotes / Service / Tender Pipeline ship as separate lazy chunks per Q5 (vite build verified). Shared HMAC helpers + lazy service-role Supabase client in `netlify/functions/_shared/`. **Do NOT auto-merge** — auth surface change.
+- **Docs hygiene (PR #107 on eq-field-app):** AUDIT-REVIEW.md — moved FINDING #S1 + FINDING #S2 from open to closed with full per-PR breakdowns (PRs #89/#91/#92/#95 for the four phases / three workstreams), added new "Session — 2026-05-18 → 2026-05-19" iteration log entry covering Phase A+B+C+D + EQ Shell pivot + 1.A/1.B/1.C work. SPRINT-PLAN.md — ticked the four "Order to tackle" workstreams as shipped (S1/U2/SEC2/S2), updated U2 + S2 status blocks, added new "EQ Shell" section pointing at `EQ-SHELL-DESIGN.md`. DEMO-VS-LIVE.md — refreshed deploy-snapshot table to HEAD `7249833` post-PR #104, added v3.5.7 → v3.5.9 / EQ Shell Phase 1.C section. ~157 lines net; within auto-merge bar but left open per the brief.
+- **Phase 2 spike (PR #2 on eq-shell):** 5 placeholder routes under `/<tenant>/tender-pipeline/{import|kanban|review|enrichment|curve}`, each a `React.lazy()` chunk. Each stub documents the vanilla source line range in `scripts/tender-pipeline.js` (import: 276-540, kanban: 542-750, enrichment: 752-961, review: 963-1455, curve: 1457-1900) + the deps to use during the proper migration. Added Phase 2 stack deps: `@dnd-kit/core`, `@dnd-kit/sortable`, `@tanstack/react-table`, `react-hook-form`. Branched off `main` (NOT off Phase 1.B) so the two PRs are reviewable independently.
+
+**Decisions punted to Royce (morning):**
+1. **Netlify env vars on the `eq-shell` project** — must set before functions run: `EQ_SECRET_SALT` (SAME value as eq-solves-field; HMAC handshake breaks if different), `SUPABASE_URL` (`https://hxwitoveffxhcgjvubbd.supabase.co`), `SUPABASE_SERVICE_ROLE_KEY` (from Supabase dashboard — service-role key not readable via MCP).
+2. **Netlify ↔ GitHub link on `eq-shell`** — project provisioned empty in Phase 1.A, still not connected. Royce wires after reviewing PR #1.
+3. **Logout endpoint on eq-shell** — Phase 1.B's logout button just navigates to `/`; the HttpOnly cookie expires in 7d. Adding `shell-logout` that sends `Set-Cookie: ...; Max-Age=0` is a small follow-up.
+4. **Rate limiting on `shell-login`** — same gap eq-solves-field's verify-pin had pre-SEC2 (PR #99). Extend the same `rate_limit_buckets` RPC pattern to this surface in a follow-up.
+
+**Deferred / out-of-scope:**
+- DNS for `*.eq.solutions` — per the brief guardrail (no DNS changes).
+- NVDA / VoiceOver U2 verification — outside the Claude harness.
+- SKS prod ports (S1 / U2 / SEC2 etc.) remain in PR #93 + DEMO-VS-LIVE.md decision matrix; left for explicit Royce instruction.
+- Per-user `auth.uid()`-based RLS on the canonical Supabase — waits for the day client-side Supabase access matters (Phase 2+).
+- End-to-end smoke (Phase 1.D) — needs Netlify deploy live + env vars set. Royce runs after morning review.
+
+**Status:** Three PRs open, none merged. eq-field-app/demo HEAD unchanged (`7249833`). eq-solutions/eq-shell main unchanged. `eq-shell-control` Supabase has one new migration applied (pin_hash + service-role policies). No version banner / APP_VERSION / sw.js bumps on EQ Field — overnight run touched only the docs files on demo, and the v3.5.9 banner ship is still PR #106 (Phase 1.C). Next session resumes from Royce's morning review of PRs #1, #107, #2 — with env vars set + Netlify GitHub link wired, Phase 1.D end-to-end smoke can run.
+
 ## [2026-05-18] Phase D EQ Shell — design locked + Phase 1.A scaffold provisioned
 **Built by:** Royce Milmlow + assistant
 **Brief:** Phase D of `NEW-WINDOW-PROMPT-melbourne-ready.md` (design pivot per the cowork EQ Shell architecture)
