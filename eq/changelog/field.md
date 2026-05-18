@@ -1,13 +1,27 @@
 ---
 title: Changelog — EQ Solves Field
 owner: Royce Milmlow
-last_updated: 2026-05-15
+last_updated: 2026-05-18
 scope: Append-only history of changes to the EQ Solves Field product
 read_priority: reference
 status: live
 ---
 
 # Changelog — EQ Solves Field
+
+## [2026-05-18] Phase A+B Melbourne prep — security backlog cleared on demo
+**Built by:** Royce Milmlow + assistant
+**Brief:** `NEW-WINDOW-PROMPT-melbourne-ready.md` (Phases A + B of 5)
+**Branches:** `claude/melbourne-scale-verify` (Phase A, PR #97 open), `claude/sec3-tender-rls-rewrite` (PR #98, merged), `claude/sec2-phase-d-rate-limit` (PR #99, merged), `claude/sec1-magic-link-ttl-48h` (PR #100, merged), `claude/melbourne-session-2026-05-18-summary` (this doc-update PR)
+**Changes:**
+- **Phase A — Scale verification (PR #97 open):** Drove Claude-in-Chrome against `eq-solves-field.netlify.app/?seed500`. Verified live: Contacts virtualisation (498 people / 43 `<tr>` in DOM via `EQVirtualTable`), Edit Roster + Roster view `content-visibility: auto` on 498 rows each, sliding-window helpers wired (`_getVisibleWeekRange` returns 9 weeks), Tender Pipeline `EQ_TENDER_PIPELINE.loadAll()` returns 323 tenders + 12 nominations, mobile home tile flag default-on. Limitations recorded honestly: EQ tenant short-circuits Supabase so live `week=in.(...)` only exercised on SKS port (PR #93); supervisor home variant deferred (requires supervisor unlock). New doc `MELBOURNE-VERIFY-2026-05-18.md`.
+- **Phase B1 — FINDING #SEC3 closed (PR #98, merged 11:33:17Z):** New migration `migrations/2026-05-18_tender_rls_tighten.sql`. All 24 placeholder `_anon_*` policies on the 6 tender tables replaced. 4 tables with direct `org_id` (tenders/tender_import_runs/tender_review_decisions/pending_schedule) gated on `org_id IS NOT NULL`. 2 tables without (nominations/tender_enrichment) gated on `EXISTS (tender_id → tenders.org_id IS NOT NULL)`. HONEST CAVEAT in migration header (mirrors `2026-05-13_roster_presence_rls_tighten.sql` precedent): EQ Field's anon-key auth model can't enforce `auth.uid()`-based RLS — cross-tenant read by anyone with the anon key remains structural until Wave 5+ SSO. The brief's prescribed `TO authenticated USING (auth.uid()...)` pattern was a wrong premise; surfaced and adjusted mid-session. Migration applied to EQ Supabase via MCP; app post-tighten still reads 323 tenders + 12 nominations.
+- **Phase B2 — FINDING #SEC2 Phase D closed (PR #99, merged 11:33:29Z):** Migration `2026-05-15_rate_limit_buckets_v1.sql` activated — applied to EQ demo Supabase via MCP, RPC sanity-tested (5x true, 6th false), header updated from "DO NOT APPLY" to "Applied 2026-05-18". `netlify/functions/verify-pin.js` wired with env-var feature flag `RATE_LIMIT_V2`: when off (current state), serves the in-memory `attempts={}` path unchanged; when on, distributed `bump_rate_limit` RPC bucket lockout supersedes in-memory (kills the cold-start bypass that was the original finding). Belt-and-braces fallback: RPC blip falls through to in-memory. Tenant derived from request Origin (`sks` / `eq` / `unknown`). New client helper `bumpRateLimit(key, max, windowSeconds)` in `scripts/supabase.js` for future defence-in-depth use. **Activation requires setting `RATE_LIMIT_V2=on` in eq-solves-field Netlify env vars** — not auto-flipped by the merge.
+- **Phase B3 — FINDING #SEC1 closed (PR #100, merged 11:33:38Z):** `LEAVE_ACTION_TTL_MS` dropped from `7 * 24 * 60 * 60 * 1000` to `48 * 60 * 60 * 1000` in both `netlify/functions/send-email.js` and `supabase/functions/supervisor-digest/index.ts`. `approve-leave.js` header comment updated to match. Was parked 2026-05-13 with risk accepted; unparked for Melbourne procurement posture. Newly-minted approve/reject links expire after 48h; already-minted links keep their original `exp` until they hit it.
+- `AUDIT-REVIEW.md` — session log entry appended; #SEC1/#SEC2/#SEC3 moved to Closed/shipped findings.
+- `SPRINT-PLAN.md` — §SEC2 status block updated (Phase D ✅ shipped). §SEC1 in out-of-scope list updated (✅ shipped via PR #100).
+- `DEMO-VS-LIVE.md` — Tender Pipeline SEC3 section rewritten (closed), §9 SEC2 section rewritten (closed pending env-var flip), "Risks on live" section updated, deploy snapshot table updated to post-#100 HEAD (`c9cde43`).
+**Status:** Phase A doc PR (#97) still open — Royce's call. Phases B1/B2/B3 all merged to `demo`. Phase B GATE passed. `RATE_LIMIT_V2` env var NOT set; Phase D's RPC path is dormant code until that flip. SKS prod unaffected by any of this work — separate rollout decision per finding when Royce calls "SKS live". Phase C (FINDING #U2 accessibility, ~5-6h split across axe-core auto-fixes + manual focus/keyboard/aria-live pass) awaiting green-light. Phase D (tenant onboarding admin flow) is design-first; brief has four open questions (E1-E4) requiring Royce decisions.
 
 ## [2026-05-15] SEC2 design — rate-limit-buckets migration file (PENDING)
 **Built by:** Royce Milmlow + assistant
