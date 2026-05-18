@@ -1,126 +1,170 @@
+<!-- source: rules/brand.md | synced: 2026-05-19 -->
+
 ---
-title: Rules — Brand
+title: SKS Brand — Rules & Assets
 owner: Royce Milmlow
-last_updated: 2026-05-04
-scope: EQ, EQ Property, and SKS brand palettes, typography, and logo rules
-read_priority: standard
+last_updated: 2026-05-19
+scope: SKS Technologies brand specification — colours, fonts, logos, usage rules
+read_priority: critical
 status: live
-canonical_ref: EQ Design Brief v1.3 (17 Apr 2026, supersedes v1.2)
 ---
 
-# Rules — Brand
+# SKS Brand Rules
 
-EQ Design Brief v1.3 (17 Apr 2026) is the canonical brand reference.
-Two logo variants only: Blue and White. Never recolour, never gradient, never shadow.
-
----
-
-## EQ Parent Brand
-
-| Token | Hex | Usage |
-|-------|-----|-------|
-| EQ Sky | #3DA8D8 | Primary. Logo mark, headlines, CTAs, key UI elements |
-| EQ Deep | #2986B4 | Dark accent. Hover states, borders, secondary headings |
-| EQ Ice | #EAF5FB | Light tint. Backgrounds, card fills, table headers |
-| EQ Ink | #1A1A2E | Primary body text |
-| EQ Grey | #666666 | Secondary text, labels, captions |
-| White | #FFFFFF | Backgrounds, reversed text on blue |
-
-**EQ Sky #3DA8D8 is the parent mark colour — never recoloured for any subsidiary.**
-Subsidiary palettes vary supporting colours only. The logo mark stays Sky always.
-
-Accessibility: WCAG AA minimum on all colour combinations.
+Canonical brand spec for all SKS Technologies outputs (quotes, MOPs, reports, presentations, HTML, PDF). Reference Source: SKS Brand Style Guide v1.0 (Apr 2025).
 
 ---
 
-## EQ Property Solutions Palette
+## 1. Logo Files — R2 CDN (definitive source)
 
-| Token | Hex | Usage |
-|-------|-----|-------|
-| Property Navy | #1B2A4A | Primary / headers |
-| Slate Blue | #2E4A7A | Accent / H2 |
-| Property Gold | #C9A84C | Premium highlight, key figures |
-| Mist | #E8EDF5 | Background tint |
+Base URL: `https://pub-97a4f025d993484e91b8f15a8c73084d.r2.dev/`
 
----
+| File | Use case |
+|---|---|
+| `SKS_Logo_Colour_Arrows_Clean.png` | Primary — arrows + text, on white/light backgrounds |
+| `SKS_Logo_Colour_Text_Clean.png` | Wide text-only variant, on white/light backgrounds |
+| `SKS_Logo_White_Arrows_Clean.png` | Arrows + text, on dark backgrounds |
+| `SKS_Logo_White_Text_Clean.png` | Wide text-only variant, on dark backgrounds |
 
-## SKS Technologies Palette (for SKS-branded tools)
+**Never process from local source files. Always pull from R2.**
 
-| Token | Hex |
-|-------|-----|
-| Dark Blue | #1F335C |
-| Purple | #7C77B9 |
-| Slate | #566686 |
-| Light | #F0F7F7 |
+### Logo dimensions (VERIFIED 2026-05-19 from R2)
 
----
+| Variant | Native size (px) | Aspect ratio | Derive height from |
+|---|---|---|---|
+| **Arrows** (Colour + White) | 2000 × 1626 | **1.230:1** | `height = width / 1.230` |
+| **Text** (Colour + White) | 2000 × 723 | **2.766:1** | `height = width / 2.766` |
 
-## Typography
+**Critical:** Text variant is *wide and short*, not tall. Common bug: assuming the Text variant has a similar ratio to Arrows — it does not. If unsure, fetch the file and check actual dimensions with PIL before placing.
 
-| Context | Typeface |
-|---------|----------|
-| Web / digital | Plus Jakarta Sans (Google Fonts) |
-| Word / PowerPoint / print | Aptos Display |
+**Rules:**
+- Never alter aspect ratio. Never set width and height independently.
+- Always derive height from the chosen width using the correct ratio for the variant.
+- Applies to all document types (docx, pptx, HTML, PDF, email signatures).
 
-**CSS stack:** `font-family: 'Plus Jakarta Sans', 'Aptos Display', 'Aptos', Arial, sans-serif`
+### Logo backgrounds
 
-**Type scale (documents):**
-- Page/Section Title: Bold, 18–22pt, #3DA8D8
-- Heading 1: Bold, 16pt, #3DA8D8
-- Heading 2: Bold, 13pt, #2986B4
-- Body: Regular, 11–12pt, #1A1A2E
-- Caption/Label: Regular, 9–10pt, #666666
-- Button/CTA: Bold, 11pt, White on #3DA8D8
+- White logo variants → dark backgrounds (e.g. Dark Blue `#1F335C`).
+- Colour logo variants → white or light backgrounds (e.g. Light Blue `#F0F7F7`).
+- On busy backgrounds (e.g. photography), use the **white backing frame** pattern from the Style Guide (logo in a white box, placed in top-left/right or bottom-left/right corner of the document). Frame the primary logo rather than dropping to the secondary.
 
----
+### Logo — do not
 
-## Logo Rules
-
-- **Two approved variants only:** Blue (#3DA8D8) on white | White on blue/dark
-- Never recolour, add gradients, drop shadows, outlines, or effects
-- Never stretch, skew, or distort
-- Never place on busy photographic backgrounds
-- Always use transparent-background SVGs for production work
-- Never upload transparent PNG to Claude chat — always reference R2 URL
-- SVG source files held in the EQ assets project workspace (rename to .txt for upload into Claude.ai — see `system/lessons.md`)
-
-### EQ Logo Assets (R2 — eq-assets bucket, dev@eq.solutions)
-
-Base URL: `https://pub-409bd651f2e549f4907f5a856a9264ae.r2.dev/`
-
-| File | Use |
-|------|-----|
-| `EQ_logo_blue_transparent.svg` | Web (primary) |
-| `EQ_logo_white_transparent.svg` | Web (reversed) |
-| `EQ_logo_blue_transparent.png` | Raster fallback |
-| `EQ_logo_blue_transparent@2x.png` | Retina raster |
-| `EQ_logo_white_transparent.png` | Raster reversed |
-| `EQ_logo_white_transparent@2x.png` | Retina raster reversed |
-
-### SKS Logo Assets (R2 — sks-assets bucket)
-
-| File | URL |
-|------|-----|
-| Colour + Text | `https://pub-97a4f025d993484e91b8f15a8c73084d.r2.dev/SKS_Logo_Colour_Text_Clean.png` |
-| White + Text | `https://pub-97a4f025d993484e91b8f15a8c73084d.r2.dev/SKS_Logo_White_Text_Clean.png` |
-| Colour Arrows | `https://pub-97a4f025d993484e91b8f15a8c73084d.r2.dev/SKS_Logo_Colour_Arrows_Clean.png` |
-| White Arrows | `https://pub-97a4f025d993484e91b8f15a8c73084d.r2.dev/SKS_Logo_White_Arrows_Clean.png` |
+- Add or alter colours.
+- Add extra elements (badges, taglines, decorations).
+- Disproportionately size (squash or stretch).
+- Add a coloured background fill directly behind the logo (use a white frame instead).
+- Rotate.
+- Place directly on busy backgrounds without a frame.
 
 ---
 
-## Design Principles
+## 2. Colour Palette
 
-- No gradients. No drop shadows. Linear/Notion aesthetic.
-- 8px spacing grid (8, 16, 24, 32, 48, 64px)
-- Max content width: 1200px centred
-- Blue on white / white on blue is the visual cornerstone — avoid low-contrast combos
-- Every element must earn its place — white space is intentional
-- Table header rows: EQ Sky fill (#3DA8D8) with white text
-- WCAG AA minimum
+### Primary
+
+| Name | Hex | RGB | CMYK | PMS |
+|---|---|---|---|---|
+| Dark Blue | `#1F335C` | 31, 51, 92 | 98, 85, 37, 28 | PMS 2955 |
+| White | `#FFFFFF` | 255, 255, 255 | — | — |
+| Purple (accent) | `#7C77B9` | 124, 119, 185 | 56, 55, 0, 0 | PMS 272C |
+
+**Usage:** Dark Blue and White are the foundation, alternating for contrast. Purple is an accent only — interactive elements (buttons, CTAs), not a primary fill.
+
+### Secondary (use sparingly, supporting role)
+
+| Name | Hex | Notes |
+|---|---|---|
+| Light Blue | `#F0F7F7` | Background tint for sections / table rows |
+| Slate Blue (90% tint of Dark Blue) | `#34486C` | Subheading / body text on light backgrounds |
+| Dusty Blue (75% tint of Dark Blue) | `#566686` | Muted text, secondary captions |
+| Charcoal (25% shade) | `#373D58` | — |
+| Onyx (70% shade) | `#3E3E48` | — |
+| Black | `#000000` | Page numbers, footer rules |
+| Grey | `#808285` | Dividers, icon strokes |
+| Indigenous Purple | `#573B8F` | **Only** for applications directly tied to that brand |
 
 ---
 
-## Address Rules
+## 3. Typography
 
-- 173 Chuter Ave, Sans Souci NSW 2219 is for **legal/statutory documents only**
-- Never appears in presentations, one-pagers, social assets, or marketing materials
+| Use | Font | Weight |
+|---|---|---|
+| Headings | Roboto | Black |
+| Subheaders | Roboto | Bold |
+| Body text | Muli | Regular |
+| Logo font | Source Sans Pro | — |
+
+**Substitution policy:**
+- Word/PDF outputs where Muli isn't available: fall back to **Arial Regular** for body.
+- Web/HTML: load Roboto and Muli from Adobe Fonts. If not feasible, fall back to **Plus Jakarta Sans** (EQ standard) only for internal EQ work, never for SKS customer-facing.
+- Never substitute the logo font — it's baked into the logo file.
+
+---
+
+## 4. Primary Brand Element — The Arrows
+
+The double-chevron arrows from the logo are a brand asset in their own right. Use only in **Dark Blue** or **Light Blue**.
+
+### Arrow rules
+
+- Always point right (it's a directional asset symbolising forward movement).
+- Reversed direction (pointing left) is **only** permitted for the Solid Overlay and Split Overlay treatments on photographic backgrounds — never for floating or corner image arrows.
+- Never colour purple, grey, or any non-brand colour.
+- Never change the internal spacing between the two chevrons.
+- Never display a single arrow.
+- Never convert to outlines.
+- Never rotate.
+
+### Arrow asset variants
+
+| Variant | Use case | Fill |
+|---|---|---|
+| Solid Overlay Arrow | Large background element with photo, blending-mode overlay (50–85% opacity) | Solid fill, blend = Overlay |
+| Split Overlay Arrow | Two arrows with central split, layered effect | 100% fill + 50–85% opacity overlay |
+| Floating Image Arrow | Image-filled arrow, stretches horizontally (x-axis only) | Image fill only — never solid colour |
+| Corner Image Arrow | Image-filled arrow tucked into a corner, straight edge aligned to document edge | Image fill only |
+
+---
+
+## 5. Imagery Style
+
+- Blue-toned / blue-highlighted photography to align with primary palette.
+- Subjects: technology (devices, screens, coding), connectivity (satellites, networks, fibre), infrastructure (cityscapes, server stacks, data centres), workspaces (modern office, teams), energy and movement (time-lapse, data streams, abstract motion).
+- Avoid: warm-toned imagery, stock-photo clichés (handshakes, generic office), human-only imagery without a technology context.
+
+---
+
+## 6. Icons
+
+SKS maintains an icon library specific to its industries. Request the compressed folder from internal marketing — icons must come from this set, not third-party libraries (Lucide, Font Awesome, etc.) for customer-facing collateral. Internal tools may use Lucide where workflow demands.
+
+---
+
+## 7. Document Hierarchy — Default Layout
+
+For Word / PDF customer-facing outputs:
+
+| Element | Spec |
+|---|---|
+| Page size | US Letter (12240 × 15840 DXA) or A4 |
+| Margins | 1 inch / 1440 DXA all sides |
+| Header logo | Top-right, Colour Arrows variant, ~160–220 px wide |
+| Title | Roboto Black (Arial Bold fallback), Dark Blue `#1F335C`, 18 pt |
+| Subtitle / strap | Roboto Bold or Slate Blue `#34486C`, 11 pt, with 1.5pt Purple `#7C77B9` underline rule |
+| Body | Muli Regular (Arial fallback), Dark Blue `#1F335C`, 11 pt |
+| Table headers | Dark Blue `#1F335C` fill, White text, bold |
+| Table body rows | Alternating White and Light Blue `#F0F7F7` |
+| Table borders | `#CCCCCC` thin |
+| Footer | Centred, Slate Blue `#34486C`, 8 pt, with Dark Blue top rule |
+| Footer content | `SKS Technologies Pty Ltd  \|  27/10 Gladstone Rd, Castle Hill NSW 2154  \|  (02) 9659 9199` |
+
+---
+
+## 8. Common Mistakes — Caught in Past Sessions
+
+- **Wrong logo aspect ratio for Text variant** (memory had 1456 × 812 / 1.793:1, actual is 2000 × 723 / 2.766:1). Always verify file dimensions, never trust prior numbers. Fixed 2026-05-19.
+- Using Purple as a primary fill instead of an accent — Purple is for CTAs/buttons only.
+- Using gradients or drop shadows — neither is in the SKS visual language. Flat colour only.
+- Mixing EQ design tokens (Plus Jakarta Sans, Sky `#3DA8D8`) into SKS customer-facing documents. EQ ≠ SKS.
+- Placing the logo directly on a busy background without a white frame.
