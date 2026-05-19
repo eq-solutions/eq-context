@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-05-04
+last_updated: 2026-05-19
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -95,6 +95,93 @@ Items when triggered:
 - [ ] Full-repo file-header backfill (EQ-IP-Register P2 #7 scope A) —
       dedicated session
 - [ ] Continue sprint cadence (22 sprints to date, 80 Vitest tests)
+
+---
+
+## CRITICAL — Rotate GitHub PATs (substrate exposure)
+
+Discovered 2026-05-19: `system/infrastructure.md` was tracking the literal
+values of all 3 GitHub PATs in plaintext from at least 2026-05-15. GitHub
+push-protection caught the pattern when this commit re-touched the file
+and rejected the push. Older commits in the substrate history likely
+contain the same values and were pushed before push-protection caught up.
+
+**Treat all 3 as compromised regardless of which got "removed" from
+`.git-credentials.*` files** — they've been on GitHub.
+
+- [ ] **Revoke all 3 PATs** in GitHub Settings → Developer settings →
+      Personal access tokens. Labels: "EQ Solutions", "Milmlow",
+      "Milmlow alt".
+- [ ] **Issue one new fine-grained PAT** to replace EQ Solutions (the
+      other two were duplicates / stale).
+- [ ] Update `C:\Projects\.git-credentials.eq-solutions` and
+      `C:\Projects\.git-credentials` on the Beelink with the new value.
+- [ ] **Verify push works** on eq-context against this commit if the
+      auto-push hook didn't already.
+- [ ] **Substrate hardening** — consider adding `gitleaks` (or similar)
+      pre-commit hook on the eq-context repo so secret-scan happens
+      locally before push.
+
+---
+
+## EQ Shell + EQ Intake (per-tenant Supabase rollout)
+
+Two-Supabase architecture confirmed 2026-05-19 (see `system/architecture.md`
+"Control Plane + Per-Tenant Data Planes"):
+
+- `eq-shell-control` (`hxwitoveffxhcgjvubbd`) — shared, live, used by
+  EQ Shell Netlify functions.
+- `eq-demo-canonical` (`jvknxcmbtrfnxfrwfimn`) — demo tenant data
+  plane, live, used by EQ Intake.
+- `sks-canonical-eq` — planned, not yet provisioned.
+
+### EQ Shell Phase 1.B (Netlify wire-up)
+
+- [ ] Confirm Phase 1.B status — Royce reported "almost working" on
+      2026-05-19; not picked up this session, sitting in
+      `C:\Projects\eq-shell\.claude\worktrees\angry-morse-56771d`
+      on branch `claude/angry-morse-56771d`.
+
+### eq-demo-canonical — security advisor cleanup (open)
+
+Diagnosed 2026-05-19. 17 advisor warnings, fix drafted but not applied.
+
+- [ ] **Apply migration 004 to `eq-demo-canonical`** —
+      `C:\Projects\eq-intake\sql\004_security_advisor_fix.sql`
+      rewritten 2026-05-19 to grant EXECUTE to `authenticated`
+      (not `service_role` — see session log for why). Paste into the
+      Supabase SQL editor for the project and Run.
+- [ ] **Toggle leaked-password protection** in eq-demo-canonical
+      dashboard → Authentication → Providers → Email → enable
+      HaveIBeenPwned check.
+- [ ] **Commit + push the two eq-intake edits** —
+      `sql/004_security_advisor_fix.sql` and
+      `eq-platform/scripts/db-apply.ts` are uncommitted in
+      `C:\Projects\eq-intake` (no auto-push hook on that repo, no
+      GitHub remote either per `system/infrastructure.md`).
+- [ ] **Smoke-test intake commit after applying 004** — through the
+      signed-in shell, an intake commit through the demo path should
+      still succeed (authenticated grant retained). An anon-key curl
+      to the same RPC should now return 403.
+- [ ] **Decide on server-side commit RPC migration** — the 4
+      remaining "Signed-In Users Can Execute SECURITY DEFINER"
+      warnings clear only if the commit moves to a Netlify Function
+      (service-role) AND the in-function `auth.jwt()` tenant check
+      is rewritten. Deferred — no urgency until `sks-canonical-eq`
+      is provisioned with real users.
+
+### sks-canonical-eq provisioning (gated, not started)
+
+- [ ] Provision `sks-canonical-eq` Supabase project (Sydney /
+      `ap-southeast-2`).
+- [ ] Run `pnpm db:apply` from `eq-platform/` to regenerate
+      `all-migrations.sql` with 004 bundled (`db-apply.ts` updated
+      2026-05-19).
+- [ ] Paste `all-migrations.sql` into the new project's SQL editor.
+- [ ] Add Royce as the first user with `user_metadata.tenant_id`
+      set to the SKS tenant uuid.
+- [ ] Drop SKS credentials into the Netlify env vars for the
+      production shell deployment.
 
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: SYSTEM — Tech Architecture
 owner: Royce Milmlow
-last_updated: 2026-05-04
+last_updated: 2026-05-19
 scope: Current state of how systems are built and how they fit together
 read_priority: standard
 status: live
@@ -52,6 +52,49 @@ touch `nspbmirochztcjijmcrx` unless Royce explicitly says "SKS live"**.
 
 **Implication:** Do not spin up a fourth project without a clear risk-segmentation
 reason. Four was not the goal — three is the current equilibrium.
+
+---
+
+## Control Plane + Per-Tenant Data Planes (May 2026 evolution)
+
+**Decision (2026-05-18):** EQ Shell + the Phase 2 module suite (EQ Intake,
+EQ Service, EQ Quotes) move to a **per-tenant Supabase** model. Each
+customer gets their own Supabase project as their canonical data layer.
+The "three projects, segmented by risk" equilibrium above describes the
+single-tenant legacy footprint; this section describes the new shape
+layered on top of it.
+
+| Layer | Project(s) | Role |
+|---|---|---|
+| Control plane (shared) | `hxwitoveffxhcgjvubbd` — eq-shell-control | One project across all tenants. Holds `tenants`, `users`, `module_entitlements`. The EQ Shell's 3 Netlify functions (`shell-login`, `verify-shell-session`, `mint-iframe-token`) read it via service-role to resolve "who is this user, what tenant, what modules can they see." Not a data plane — no operational data lives here. |
+| Data plane (per tenant) | `jvknxcmbtrfnxfrwfimn` — eq-demo-canonical (live) | Demo tenant's data plane and the reference deployment for the EQ Intake spine. New tenants get a parallel project provisioned from the same migration set. |
+| Data plane (per tenant) | `sks-canonical-eq` — planned | SKS's per-tenant data plane. Same migration SQL as eq-demo-canonical. Royce + bookkeeper run live work here once demo proves stable. |
+
+**Auth model in the data planes:** Each per-tenant project uses
+Supabase Auth (email + password, with `user_metadata.tenant_id` set on
+the user row). The shell signs the user in via Supabase JS, then the
+loaded modules (Intake, Service, Quotes) call RPCs directly with the
+user's JWT — role-resolves to `authenticated`. Tenant isolation is
+enforced inside SECURITY DEFINER function bodies via
+`auth.jwt() → user_metadata → tenant_id` checks against the
+function's tenant argument. Not RLS-only; defence-in-depth at the
+function boundary.
+
+**Why per-tenant, not RLS-on-shared:** physical separation gives a
+cleaner compliance narrative, smaller blast radius if one tenant's
+schema or data is corrupted, and a clearer story for industry
+audits than logical (RLS) isolation in a shared DB. Cost is $25/mo
+per active customer — rounding error at trade-subbie scale. Manual
+provisioning via the Supabase UI today; automated via the Management
+API once customer count grows past ~20. See
+`eq-intake/EQ-TENANCY-MODEL.md` for the full decision record.
+
+**Active Supabase footprint (May 2026):** 4 active (`sks-labour`,
+`eq-solves-field`, `eq-solves-service-dev`, `eq-shell-control`,
+`eq-demo-canonical`) + 1 planned (`sks-canonical-eq`). The Apr-2026
+"three is equilibrium" claim is superseded; the operational rule
+("confirm which project before connecting; never touch sks-labour
+unless 'SKS live' is explicit") still holds.
 
 ---
 
