@@ -31,6 +31,29 @@ any further build investment.
 - [ ] Clear Supabase rate_limits table on demo branch (ktmjmdzqrogauaevbktn)
 - [ ] Write fresh Cowork brief for EQ Field (guardrails, demo branch rules)
 
+### Tender Pipeline — SKS promotion (blocked)
+
+Shipped to demo 2026-05-14 (v3.4.79 → v3.4.84 across patches). Do NOT
+promote to `main`/SKS until all three are cleared:
+
+- [ ] Apply migrations 001 + 002 to SKS Supabase (`nspbmirochztcjijmcrx`)
+- [ ] Remove pipeline tables from `TENANT_DISABLED_TABLES.sks` in
+      `scripts/app-state.js`
+- [ ] Backfill `migrations/` on disk from `list_migrations` MCP
+      (applied via MCP only — not on disk)
+
+Open Tender Pipeline items (demo):
+
+- [ ] Wire `clash_detected` PostHog event (reserved in
+      `tender-pipeline.js`, not yet firing)
+- [ ] Decide `pending_schedule` table fate — currently written but
+      bypassed (Confirm Curve writes direct to `schedule`). Either
+      promote it to a real CM-editable staging queue with a second
+      approval page, or drop it and treat `schedule` as the single
+      source of truth
+- [ ] Lazy-load SheetJS if first-load bundle size becomes a problem
+      (~250KB added)
+
 ### Phase 1 — implementation (in progress on `claude/hopeful-wright-058c8b`)
 
 5 commits past `demo` tip on feature branch; not merged.
