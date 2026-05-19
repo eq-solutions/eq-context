@@ -9,6 +9,25 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-05-19] Phase 1.B audit-review merge pass + scope-reduce
+**Built by:** Royce Milmlow + assistant
+**Context:** Morning review of the overnight build (eq-field-app PR #106 #107 #108 + eq-shell #1 #2) and the overnight audit (eq-field-app PR #108 / [OVERNIGHT-AUDIT-2026-05-19.md](https://github.com/Milmlow/eq-field-app/blob/demo/OVERNIGHT-AUDIT-2026-05-19.md)).
+**Merged:**
+- `eq-field-app` **PR #106** (Phase 1.C v3.5.9 — Field-side handshake token) — auth-surface, merged as-is after audit verdict LGTM.
+- `eq-field-app` **PR #107** (docs hygiene) — placeholder `PR # — fill in after merge` patched to `PR #2` on the branch before merge.
+- `eq-field-app` **PR #108** (overnight audit summary doc — `OVERNIGHT-AUDIT-2026-05-19.md`) — preserved as audit-trail artefact on demo.
+- `eq-solutions/eq-shell` **PR #1** (Phase 1.B wire-up — shell auth + iframe handoff) — auth-surface, merged as-is per Royce's call. 8 audit should-fixes deferred to follow-up rather than blocking this merge.
+**New PRs open on eq-shell (awaiting Royce review):**
+- **PR #3 — Phase 1.B follow-up** addressing all 8 audit should-fixes: timing-safe HMAC sig comparison (`crypto.timingSafeEqual` via `sigsEqual()` helper), display-name stopgap (`user.email.split('@')[0]` so Field sidebar shows `test` not `test@eq.solutions`), structured stdout audit log on every shell-login attempt (`logShellLogin()` helper), DB error message no longer leaked in 500 response body, `last_login_at` update error captured + console.warn'd, `referrerPolicy="no-referrer"` on the EQ Field iframe, `allow-popups` dropped from the iframe sandbox, role mapping comment expanded. 87+/14-, 4 files. Type-checked clean. Deliberately defers: `users.name` column migration, rate limiting on `shell-login`, real `audit_log` table, timing-safe HMAC fix on eq-field-app side.
+- **PR #2 — Phase 2 spike**, force-pushed (`b302ea7` → `4af3993`) and scope-reduced: branched off post-Phase-1.B main (d822af8), deletes only the 10-line `src/modules/tender-pipeline.tsx` stub from PR #1, and adds the directory tree with 5 lazy-loaded placeholder pages (Import / Kanban / Review / Enrichment / Curve). No App.tsx touch. The audit's auth-bypass risk (the original commit removed `SessionProvider` / `RequireSession`) is eliminated.
+**README update (eq-shell main):** companion-infrastructure table refreshed; required env-var matrix added; auth contract documented inline.
+**Pending Royce manual handoffs (carried forward):**
+- Set Netlify env vars on `eq-shell` project: `EQ_SECRET_SALT` (must match eq-solves-field's value), `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`.
+- Link `eq-solutions/eq-shell` GitHub repo to the `eq-shell` Netlify project for auto-deploy.
+- Configure `*.eq.solutions` wildcard custom-domain DNS.
+- NVDA spot-check on EQ Field v3.5.8 (modal focus + aria-live) — owed since 2026-05-18.
+**Status:** EQ Field demo HEAD now includes PR #106 (Field-side shell handshake) — pure no-op on direct visits; activates only when a shell iframe ships a `#sh=<token>` hash. EQ Shell main now includes the Phase 1.B wire-up. Two open PRs (#2, #3) extend that foundation and are awaiting your review. Phase 1.D smoke test unblocks once the three manual handoffs are done.
+
 ## [2026-05-18 overnight] Phase 1.B wire-up + docs hygiene + Phase 2 spike
 **Built by:** Claude (autonomous overnight run, Royce reviews in the morning)
 **Brief:** "EQ Shell" overnight prompt — Phase 1.B + docs hygiene + Phase 2 spike, open PRs only, NEVER merge.
