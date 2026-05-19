@@ -37,6 +37,101 @@ For the current built state of each system, see [system/architecture.md](https:/
 
 ---
 
+## 2026-05-19 — Dedupe Is Intake's Job, Not Per-App
+
+**Status:** Accepted; companion to the "EQ Quotes Canonical Migration:
+Reject Path A, Adopt Parallel-Tracks" entry below.
+
+**Decision:** When a CRM export (SimPRO, AroFlo, Xero, MYOB, etc.)
+lands in EQ Intake with structural duplication — the most common
+pattern being "one row per (customer, site) where the customer name
+repeats across many site rows" — the dedupe + collapse-to-canonical-shape
+work happens **inside the intake pipeline**, not inside the app
+consuming the data. The skill belongs to the canonical layer. Apps
+read clean canonical data; they don't re-implement dedupe themselves.
+
+**Why:**
+
+The pattern is universal. Every CRM with a "site" or "location"
+concept produces this shape on export — and every tenant onboarding
+into EQ will encounter it. Building dedupe once in intake means
+every tenant gets the benefit. Building it per-app means every app
+solves the same problem from scratch and the bookkeeper learns N
+different dedupe UIs.
+
+It maps to intake's job description per `eq-intake/EQ-INTAKE-ARCHITECTURE.md`:
+"AI maps the columns to the canonical schema by reading the column
+names and a sample of values, then asks for confirmation. Once
+confirmed, the mapping is saved as a template — next time a
+similar-shaped file comes in, no AI call needed." Dedupe is exactly
+the same shape — AI proposes "47 rows look like one Equinix entity,
+collapse to 1 customer + 47 sites?", bookkeeper confirms via the
+Confirm-UI, decision is cached so re-importing the same file shape
+skips the AI call.
+
+The canonical schema already supports the right answer. `eq-canonical`
+has customers + sites + contacts as separate tables with the FKs
+pre-wired. SimPRO's flat "customer-with-site per row" splits cleanly:
+one customer row + N site rows + contacts attached at the right
+level (company-wide vs site-bound).
+
+Confirm-UI is built for low-confidence human review. `CONFIRM-UI-SPEC.md`
+already covers AI-proposes + bookkeeper-validates. The dedupe step
+adds two confidence tiers ("47 'Equinix' rows = HIGH confidence,
+collapse" vs "12 'A.G. Coombs' + 3 'AG Coombs NSW' = MEDIUM, review
+each"). Bookkeeper accepts the highs in bulk, eyeballs the mediums.
+
+This is also a sellable feature. "EQ Intake recognizes when your
+CRM export has the customer-vs-site pattern wrong and cleans it on
+the way in" is a real value prop versus "drop a SimPRO CSV into the
+new system, get a mess that doesn't match how you actually work."
+
+**Alternatives considered:**
+
+- **Per-app UI dedupe (e.g. customer list groups by name, contact
+  directory dedupes by company+contact)** — rejected. Solves the
+  symptom in one app, doesn't transfer to others. EQ Field, EQ
+  Service, EQ Cards would all reinvent the same logic. Throwaway
+  work given the eq-quotes-port Flask app is being replaced 2-3
+  months out anyway.
+- **Destructive dedupe during a one-off import script** — rejected.
+  Considered earlier same day during the canonical migration reset.
+  Bakes legacy assumptions into canonical, skips the audit / rollback
+  / schema-version tracking intake provides.
+- **`customer_group_id` column linking dupe rows at the data layer** —
+  rejected. Adds a concept just to paper over the missing customer↔sites
+  FK. If we're adding infrastructure, do it right via the canonical
+  customers + sites tables.
+- **Fuzzy-match dedupe with no UI review** — rejected. False-positives
+  collapse legitimately separate entities ("Smith & Sons" vs "Smith
+  Sons Pty Ltd" might be different ABNs). Needs Confirm-UI human
+  review for medium-confidence matches.
+
+**Implications:**
+
+- The dedupe step gets added to `eq-intake/CONFIRM-UI-SPEC.md` as a
+  new section (companion to column-mapping confirmation).
+  Implementation detail lives there; this entry is the "why."
+- `eq-quotes-port` Flask app keeps the duplicated customer rows
+  visible during the pilot. Estimators learn to search ("Equinix
+  SY3" returns the right row, "Equinix Australia" returns ~50). Pain
+  level acceptable; if it becomes blocking we revisit with a 2-hour
+  UI patch but the goal is no throwaway work.
+- When eq-canonical takes over EQ Quotes (~2-3 months out), the data
+  arriving there from intake is already deduped. The new React
+  module reads clean customers + sites + contacts from canonical
+  with no app-side workaround needed.
+- Each tenant that onboards via intake benefits. Generic skill, built
+  once.
+
+**Risk:** The dedupe AI prompts need real validation against more
+than one CRM export shape. SimPRO is the only one we have today.
+AroFlo / Xero / MYOB will surface edge cases. Acceptable — the
+pattern is sound; per-source quirks land as test fixtures as they
+appear.
+
+---
+
 ## 2026-05-19 — EQ Quotes Canonical Migration: Reject Path A, Adopt Parallel-Tracks
 
 **Status:** Accepted; reverses an earlier-same-day "Path A — fix in

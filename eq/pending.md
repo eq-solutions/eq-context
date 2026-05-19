@@ -154,9 +154,30 @@ Two-Supabase architecture confirmed 2026-05-19 (see `system/architecture.md`
 
 - `eq-shell-control` (`hxwitoveffxhcgjvubbd`) — shared, live, used by
   EQ Shell Netlify functions.
-- `eq-demo-canonical` (`jvknxcmbtrfnxfrwfimn`) — demo tenant data
-  plane, live, used by EQ Intake.
+- `eq-canonical` (`jvknxcmbtrfnxfrwfimn`, renamed 2026-05-19 from
+  `eq-demo-canonical`) — reference data plane, live, used by EQ Intake.
 - `sks-canonical-eq` — planned, not yet provisioned.
+
+### Dedupe-on-ingest skill (intake feature)
+
+Decision logged 2026-05-19 in `ops/decisions.md` ("Dedupe Is Intake's
+Job, Not Per-App"). When EQ Intake ingests a CRM export, the
+collapse-dupes step (e.g. "47 rows of Equinix Australia Pty Ltd →
+1 customer + 47 sites") happens inside intake via the Confirm-UI,
+not inside the app reading the data. Implementation detail to be
+added to `eq-intake/CONFIRM-UI-SPEC.md` as a new section.
+
+- [ ] **Extend `eq-intake/CONFIRM-UI-SPEC.md`** with a "Dedupe
+      confirmation step" section (confidence tiers, screen sketch,
+      signature caching). Companion to the existing column-mapping
+      confirmation spec.
+- [ ] **Implement the dedupe step in the intake pipeline** — runs
+      AFTER column-mapping is confirmed, BEFORE the commit_batch
+      call. Two confidence tiers (HIGH = exact normalized name
+      match, MEDIUM = fuzzy match needing review).
+- [ ] **Test against the SimPRO bundle** — 524 customer-site rows
+      should collapse to ~150 unique customer rows + 524 site rows
+      in canonical.
 
 ### EQ Shell Phase 1.B (Netlify wire-up)
 
