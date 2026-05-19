@@ -1,7 +1,7 @@
 ---
 title: Changelog — EQ Context Repo
 owner: Royce Milmlow
-last_updated: 2026-05-07
+last_updated: 2026-05-19
 scope: Append-only history of changes to the eq-context repository itself
 read_priority: reference
 status: live
