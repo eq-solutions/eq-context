@@ -1,7 +1,7 @@
 ---
 title: SYSTEM Tier — Index
 owner: Royce Milmlow
-last_updated: 2026-05-14
+last_updated: 2026-05-19
 scope: The substrate itself — how the AI context system works
 read_priority: reference
 status: live

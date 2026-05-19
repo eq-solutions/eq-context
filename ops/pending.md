@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-05-14
+last_updated: 2026-05-19
 scope: Operational support to-do list — Webb, infra, substrate
 read_priority: standard
 status: live
