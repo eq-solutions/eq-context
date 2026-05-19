@@ -1,7 +1,7 @@
 ---
 title: SYSTEM — Lessons Learned
 owner: Royce Milmlow
-last_updated: 2026-05-14
+last_updated: 2026-05-19
 scope: Hard-won technical gotchas; append-only
 read_priority: reference
 status: live
