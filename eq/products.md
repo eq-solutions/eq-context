@@ -89,6 +89,13 @@ Validation gate = 5 outside-SKS trade subbies on Field demo first.
 
 **Local repo (Beelink):** `C:\Users\EQ\eq-field-app-demo`
 
+**Infrastructure notes (operational):**
+- **CSP:** Two sources — `netlify.toml` takes precedence over `_headers`. Always update both for any external-origin change. (Lesson from v3.4.80 hotfix where `_headers` alone was insufficient and SheetJS was blocked on live.)
+- **SheetJS:** Pinned to `cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js`. cdnjs tops out at 0.18.5 — don't bump to 0.19+ from cdnjs; switch CDN to `cdn.sheetjs.com` if/when an upgrade is needed.
+- **Auth:** Plaintext PIN compare in `verify-pin.js` since v3.4.36 (hash removed). `EQ_SECRET_SALT` retained only for HMAC token signing. PINs live in two places (Supabase `app_config` + Netlify env vars) and must be kept in sync until the verify-pin → Supabase `app_config` refactor lands.
+- **Service Worker cache:** Versioned per release (e.g. `eq-field-v3.5.3`). Users need a hard-refresh (Ctrl+Shift+R) until the auto-update toast ships.
+- **Analytics IDs:** Microsoft Clarity — `wek7yeida5` (EQ tenant), `wek8dmtbuu` (SKS tenant); SKS has `strictMask: true`. PostHog EU instance.
+
 **Pending:**
 - Apply `migrations/2026-04-27_eq_role_enum_people_role.sql` to ktmjmdzqrogauaevbktn — does not block Phase 1, lays groundwork for Phase 2 verify-pin rewrite
 - Site Reports next workflow: **Daily Site Diary (v3.4.76+)** — ~4-5 days, mirror Prestart/Toolbox scaffolding (weather JSONB, shift_type, delays array, incidents array, work_areas)

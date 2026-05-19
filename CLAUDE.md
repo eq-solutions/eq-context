@@ -39,19 +39,19 @@ Every session, every tool. No exceptions.
 
 4. **Load tier defaults:**
 
-   **Always fetch first (every session, all tiers):** `system/TODAY.md`
+   **Always fetch first (every session, all tiers):** [system/TODAY.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/system/TODAY.md)
    This is the Q3 2026 focus filter. Read it before loading any tier content.
 
    | Answer | Files to fetch |
    |---|---|
-   | EQ | `eq/README.md` + `eq/pending.md` |
-   | SKS | `sks/README.md` + `sks/pending.md` + `sks/active.md` |
+   | EQ | [eq/README.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/README.md) + [eq/pending.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/pending.md) |
+   | SKS | [sks/README.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/sks/README.md) + [sks/pending.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/sks/pending.md) + [sks/active.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/sks/active.md) |
    | Cross-tier | Both — state which tier owns the work |
-   | OPS | `ops/README.md` + `ops/pending.md` |
+   | OPS | [ops/README.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/ops/README.md) + [ops/pending.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/ops/pending.md) |
 
-   `/archive/` only when Royce explicitly references parked content (EQ Quotes, AHD).
+   [archive/](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/archive/README.md) only when Royce explicitly references parked content (EQ Quotes, AHD).
 
-   `/sks-team/` is a separate substrate tier for SKS team members' AI sessions — not loaded for Royce's personal sessions. Only fetch from `sks-team/` when the task is specifically authoring or reviewing the team-facing canonical guidance (e.g. `sks-team/quoting.md`).
+   [sks-team/](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/sks-team/README.md) is a separate substrate tier for SKS team members' AI sessions — not loaded for Royce's personal sessions. Only fetch from `sks-team/` when the task is specifically authoring or reviewing the team-facing canonical guidance (e.g. [sks-team/quoting.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/sks-team/quoting.md)).
 
 5. **Confirm and ask** what we're working on. Use options where possible.
 
@@ -179,19 +179,28 @@ This contract points; it doesn't restate. Authoritative files:
 
 | Topic | File |
 |---|---|
-| Hard rules | `rules/non-negotiables.md` |
-| Brand (Design Brief v1.3) | `rules/brand.md` |
-| Deployment / stack | `rules/deployment.md`, `rules/stack.md` |
-| Entities, accounts | `ops/entities.md` |
-| Infrastructure (Supabase IDs, CF, Netlify) | `system/infrastructure.md` |
-| Tech / financial architecture | `system/architecture.md`, `ops/financial-architecture.md` |
-| EQ pending / products | `eq/pending.md`, `eq/products.md` |
-| SKS pending / active / team / templates | `sks/pending.md`, `sks/active.md`, `sks/team.md`, `sks/templates.md` |
-| SKS team-facing AI guidance (different audience) | `sks-team/README.md`, `sks-team/quoting.md` |
-| OPS pending | `ops/pending.md` |
-| Decisions / lessons | `ops/decisions.md`, `system/lessons.md` |
-| MD style / onboarding | `system/md-style.md`, `system/onboarding.md` |
-| Parked | `archive/` |
+| Hard rules | [rules/non-negotiables.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/rules/non-negotiables.md) |
+| Brand (Design Brief v1.3) | [rules/brand.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/rules/brand.md) |
+| Deployment | [rules/deployment.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/rules/deployment.md) |
+| Stack defaults | [rules/stack.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/rules/stack.md) |
+| Entities, accounts | [ops/entities.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/ops/entities.md) |
+| Infrastructure (Supabase IDs, CF, Netlify) | [system/infrastructure.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/system/infrastructure.md) |
+| Tech architecture | [system/architecture.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/system/architecture.md) |
+| Financial architecture | [ops/financial-architecture.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/ops/financial-architecture.md) |
+| EQ pending | [eq/pending.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/pending.md) |
+| EQ products | [eq/products.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/products.md) |
+| SKS pending | [sks/pending.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/sks/pending.md) |
+| SKS active | [sks/active.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/sks/active.md) |
+| SKS team | [sks/team.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/sks/team.md) |
+| SKS templates | [sks/templates.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/sks/templates.md) |
+| SKS team-facing AI guidance — index (different audience) | [sks-team/README.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/sks-team/README.md) |
+| SKS team-facing AI guidance — quoting (different audience) | [sks-team/quoting.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/sks-team/quoting.md) |
+| OPS pending | [ops/pending.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/ops/pending.md) |
+| Decisions log | [ops/decisions.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/ops/decisions.md) |
+| Lessons | [system/lessons.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/system/lessons.md) |
+| MD style | [system/md-style.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/system/md-style.md) |
+| Onboarding | [system/onboarding.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/system/onboarding.md) |
+| Parked | [archive/README.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/archive/README.md) |
 
 Do NOT duplicate content into this file. Update facts in their home.
 
@@ -230,7 +239,7 @@ Skipping these = substrate stale = next session inherits drift. (See `system/les
 |---|---|---|---|
 | **Claude Code** (Beelink) | Local `CLAUDE.md` (`C:\Users\Royce\.claude\CLAUDE.md`) | Filesystem + git | Run `git pull` at start if clone may be stale |
 | **Claude Chat** (claude.ai) | Memory only | None | Produce patched files; Royce uploads via GitHub web UI |
-| **Cowork** | Cowork system prompt + pasted `COWORK-PROMPT.md` | Filesystem | Never run `git` from sandbox against `C:\Projects\*` repos — produces orphan `.git/index.lock` files. Emit `.bat`/`.ps1` for Royce instead |
+| **Cowork** | Cowork system prompt + pasted `COWORK-PROMPT.md` | Filesystem | Never run `git` from the **Cowork sandbox** against `C:\Projects\*` repos — produces orphan `.git/index.lock` files. Emit `.bat`/`.ps1` for Royce to run instead. (Claude Code on the Beelink runs git directly — this constraint is Cowork-only.) |
 | **ChatGPT / Grok / others** | None | None | Bootstrap manually: "Fetch CLAUDE.md from `https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/claude` and follow it." Proper bootstrap files pending — see `ops/pending.md` |
 
 All tools share: never push to demo branch without instruction; never deploy to `eq-solves-field.netlify.app` directly; auth changes require Chat review.

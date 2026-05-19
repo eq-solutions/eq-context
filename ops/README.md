@@ -17,6 +17,15 @@ build sessions.
 Topics: entity register, financial architecture (AHD, Delta cliff, CDC
 PSI), tax positions, IP, Webb Financial admin, decisions log.
 
+## OPS substrate map
+
+Every canonical OPS file as a full URL — clickable from `/context/claude`:
+
+- [ops/pending.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/ops/pending.md) — Webb tax, infra blockers, substrate-discipline items
+- [ops/entities.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/ops/entities.md) — entity register, bank accounts, registrations, key contacts
+- [ops/financial-architecture.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/ops/financial-architecture.md) — AHD design, Delta Elcom cliff, CDC PSI position
+- [ops/decisions.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/ops/decisions.md) — append-only decisions log (ADR format) — covers all tiers
+
 ## Files
 
 | Path | Purpose |

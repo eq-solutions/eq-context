@@ -51,6 +51,33 @@ for operational support: tax, entities, infrastructure, substrate.
 
 - [ ] **Edge-function checklist for substrate-structure changes** — when adding a new tier folder, the Supabase `context` edge function is on the checklist of things to update alongside the workflow. The 2026-05-04 tier refactor missed this and silently 404'd most tier-deep paths until 2026-05-07. Documented in `system/lessons.md` 2026-05-07. Could be hardened by adding a daily `/context/<random-slug>` smoke test or by parsing the edge function's behaviour against `context_files` rows.
 
+- [ ] **Cowork cross-repo substrate leak vector** — Cowork sessions
+      mounted on a non-eq-context repo (e.g. `eq-solves-field`) produce
+      substrate-bound content (session logs, `eq/active.md`, pending
+      updates) but cannot push to `eq-context` from the sandbox. The
+      assistant drops the content into an `eq-context/` or
+      `eq-context-updates/` folder in whatever repo *is* mounted, then
+      the session ends. Without a hand-off step the leaked folders sit
+      untracked in the wrong repo indefinitely. Confirmed live 2026-05-19
+      audit found a 2026-05-14 Cowork session's outputs (4 files,
+      ~330 lines including a missing `eq/active.md` and Tender Pipeline
+      SKS-promotion blockers) stuck inside `eq-solves-field/eq-context/`
+      and `eq-solves-field/eq-context-updates/` for 5 days. Recovered
+      the operational facts into `eq/products.md` (infrastructure notes)
+      and `eq/pending.md` (Tender Pipeline blockers); deleted the leaked
+      folders. **Fix candidates:** (a) Cowork convention — every session
+      that touches substrate-class content writes a single
+      `SUBSTRATE-UPDATES.md` file at repo root visible at session close,
+      so Royce sees the hand-off requirement; (b) per-repo `.gitignore`
+      entry for `eq-context/` and `eq-context-updates/` so leaked
+      folders never accidentally commit; (c) longer term — a Cowork
+      hook that detects substrate-bound content and either pushes
+      direct to `eq-context` (via PAT) or refuses to write outside it.
+      Current "Cross-Tool Consistency" item (A) below frames this as a
+      ChatGPT/Grok bootstrap issue — that's a different gap. This is
+      the specific Cowork-from-wrong-repo leak pattern, which is
+      live and recurring.
+
 ---
 
 ## Cross-Tool Consistency — Original Reason for 2026-05-04 Refactor
