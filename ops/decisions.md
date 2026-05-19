@@ -20,6 +20,90 @@ For the current built state of each system, see `system/architecture.md`.
 
 ---
 
+## 2026-05-19 — EQ Quotes Canonical Migration: Reject Path A, Adopt Parallel-Tracks
+
+**Status:** Accepted; reverses an earlier-same-day "Path A — fix in
+intake now, delay pilot" stance taken during the canonical migration
+review.
+
+**Decision:** EQ Quotes Flask v1 (`https://quotes.eq.solutions`,
+hosted Fly.io, backed by `sks-labour` Supabase) ships the SKS pilot
+as-is. No data migration, no schema rework, no Supabase repointing.
+The `eq-canonical` project (`jvknxcmbtrfnxfrwfimn`) is built as a
+**greenfield** multi-tenant canonical layer in parallel. The Flask
+app and the canonical layer **do not interact** during the pilot.
+When the real EQ Quotes React module is eventually built (Position 4
+per the un-defer entry above), it lands as an eq-shell module
+against eq-canonical with no inherited coupling.
+
+**Why:** Mid-session, the plan was a 7-phase migration of
+sks_quotes_* schema + data from sks-labour to eq-canonical, including
+a Customer→Site refactor and a new two-stage typeahead. Phase 1
+(bulk SimPRO import: 267 customers / 472 sites / 393 contacts)
+landed via a one-off Python script with deterministic UUIDs. Royce
+course-corrected three times:
+
+1. "Should we finish eq-shell first?" — i.e., the canonical-data
+   work depends on eq-shell being functional, which it isn't yet for
+   SKS.
+2. "We are not touching SKS — please stop thinking we are, this is a
+   fresh start. Nothing to do with SKS." — The canonical layer is
+   not "SKS's canonical." It's generic multi-tenant infrastructure.
+   Any tenant onboards the same way: via EQ Intake's commit RPC, not
+   via direct DB-to-DB migration.
+3. "EQ Intake is the only path in." — One-off bulk imports skip the
+   audit, rollback, and schema-version tracking that
+   `eq_intake_commit_batch` provides. The 1,132 imported rows were
+   dropped from eq-canonical and the import scripts retained for
+   reference only.
+
+**Alternatives considered:**
+
+- **Path A — migrate EQ Quotes onto eq-canonical now** (rejected
+  mid-session — couples a still-evolving canonical layer to a
+  pre-pilot Flask app; delays the pilot for an architectural fix
+  estimators won't see; bakes SKS-specific assumptions into what
+  should be a tenant-agnostic foundation).
+- **Path B — dedupe sks_quotes_customers directly without involving
+  canonical** (rejected during the earlier-same-day review —
+  faster but bakes "Quotes owns customer data" into the system,
+  opposite of the conduit thesis).
+- **Half-port — Flask app reads from eq-canonical for customer/site,
+  writes to sks-labour for quotes** (rejected — cross-project
+  reads complicate auth, RLS, and operational debugging; the upside
+  is small).
+
+**Implications:**
+
+- `eq-quotes-port` repo's `docs/canonical-migration-plan.md`
+  (Phases 1-7) deleted. Replaced by `docs/canonical-plugin-contract.md`
+  capturing the operational contract for any future module
+  (not just Quotes).
+- `eq-canonical` is "ready to receive modules": 12 canonical
+  entity tables, intake + export spines, tenants/users/
+  module_entitlements all live; one tenant (`core` / EQ Solutions)
+  registered; zero canonical entity rows.
+- `quotes.eq.solutions` pilot ships unchanged. Estimator feedback
+  during the pilot informs whether the eventual React rewrite
+  needs to bring forward in the queue (currently Position 4).
+- The Flask v1 codebase becomes "the spec" for the eventual React
+  rewrite. Business logic, validation, status transitions, money
+  math, Word doc tokenization, scope/rate preset structure — all
+  documented through working code. Treat as an executable spec.
+- No new SKS dependency added to eq-canonical. When SKS is ready to
+  move from sks-labour onto canonical (post-pilot, post-rewrite),
+  it follows the standard tenant-onboarding flow per the contract
+  doc — `INSERT INTO tenants`, provision users with `tenant_id` in
+  Raw User Meta, populate entities via EQ Intake.
+
+**Risk:** carrying two implementations of EQ Quotes (Flask v1 +
+future React module) during the transition. Acceptable for the
+pilot horizon. Becomes problematic if both are maintained
+long-term — but the React module replaces the Flask app once it's
+proven, no parallel maintenance.
+
+---
+
 ## 2026-05-19 — Un-Defer EQ Quotes; Position 4 in EQ Shell Module Queue
 
 **Status:** Accepted; supersedes the 2026-04-29 cull's "EQ Quotes deferred ~6 months" stance.

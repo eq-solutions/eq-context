@@ -120,38 +120,83 @@ Validation gate = 5 outside-SKS trade subbies on Field demo first.
 
 ## EQ Solves — Quotes
 
-**Status:** Un-deferred 2026-05-19 (was on the 2026-04-29 6-month defer
-list — see `ops/decisions.md` 2026-05-19 entry for the reversal).
-**Current shipped form:** Word + Excel templates + Markdown SOPs. v2
-template set finalised 2026-05-18 — SKS Client Services Quote Template
-v2, Job Creation Template v7, Quote Register, Field Mapping doc,
-Implementation Guide. Live operational use inside SKS quoting motion.
-**Real product build:** position 4 in the EQ Shell module-mounting
-queue (after Shell working, Field, Service). Build not started — Shell
-+ Field + Service take priority through validation gate. When build
-begins: React UI under EQ Shell generating Word output via docx-js,
-quote register persisted to canonical Supabase (likely sibling to
-eq-shell-control or under it), scope/price/issue/track workflow.
-**URL:** None — no deployed app yet. Templates only.
-**Repo:** None tracked as a code repo. Templates live in
-`C:\Projects\eq-quotes\` (not git-managed; operational artefacts).
-**Working files:** SKS Client Services Quote Template v2 (.docx, 2.5MB),
-Job Creation Template v7, Quote Register, Field Mapping, Implementation
-Guide.
-**Architecture:** Currently Word + Excel templates. Real product
-architecture: TBD when build begins.
-**Supabase project:** TBD. Likely a `quotes` and `quote_register` table
-under `eq-shell-control` (`hxwitoveffxhcgjvubbd`) or a sibling project.
-**Strategic position:** Position 4 in the EQ Shell module queue. Build
-does NOT begin until Shell working + Field mounted + Service mounted
-under Shell. Validation gate stays on Field — Quotes does not introduce
-a new gate.
+**Status:** Un-deferred 2026-05-19. Two live forms today (templates +
+Flask v1 pilot); a third — the real React module under EQ Shell —
+remains Position 4 in the module-mounting queue per the 2026-05-19
+canonical-migration-reset decision.
+
+**Current shipped forms:**
+
+1. **Word + Excel templates + Markdown SOPs.** v2 template set
+   finalised 2026-05-18 — SKS Client Services Quote Template v2, Job
+   Creation Template v7, Quote Register, Field Mapping doc,
+   Implementation Guide. Live operational use inside SKS quoting motion.
+2. **Flask v1 pilot app** at `https://quotes.eq.solutions`. Built
+   2026-05-16 through 2026-05-19 as a fast pre-canonical pilot
+   deployment. Full CRUD over quotes, customers, line items, status
+   transitions, attachments, status history. Generates Word doc via
+   raw zipfile + token replace (no python-docx dependency). PDF
+   generation via headless LibreOffice on Fly. Search + delete +
+   duplicate per row on the register. Editable header AND editable
+   line items on the detail page (Draft + Submitted only). Inline
+   "+ New contact" in site contact picker. Customer/site shown as
+   separate fields. Scope template dropdown + curated rate library
+   under a `/setup/` admin section. Email-quote scaffold with
+   pluggable backends (currently sandbox-stubbed, Resend wiring
+   ready). 30/30 routes pass the smoke harness.
+
+**Real product build (the React module):** Position 4 in the EQ Shell
+module-mounting queue. Build not started — Shell + Field + Service
+take priority through validation gate. The Flask v1 codebase becomes
+"the executable spec" for the rewrite: every validation rule, every
+status transition, every token-replace pattern, every business rule
+is captured in working Python that the React rewrite translates.
+
+**URL:** `https://quotes.eq.solutions` (Flask v1, live). Real module
+TBD when its turn arrives.
+**Repo:** `github.com/eq-solutions/eq-quotes-port` (private). Flask +
+Jinja + supabase-py + gunicorn, deployed Fly.io.
+**Working files:** `app/` (Flask blueprints + Jinja templates),
+`word_templates/template_v3.docx` (token-replaced SKS template — has
+`{{Site}}` placeholder added 2026-05-19), `scripts/smoke_routes.py`
+(30-route harness), `docs/canonical-plugin-contract.md` (the
+operational contract for the future React rewrite).
+**Architecture (Flask v1):** Flask 3 + Jinja + supabase-py. Backed by
+`sks-labour` Supabase (`nspbmirochztcjijmcrx`) — same project as
+SKS Field LIVE (legacy single-tenant coupling). Word generation via
+raw zipfile + `{{Token}}` string replace. PDF via headless
+`soffice --convert-to pdf` subprocess. Fly.io single-machine
+deployment in Sydney. Image ~216MB (LibreOffice core+writer
+included). No CSP allowance for inline scripts/event handlers —
+all UI behaviours via separate JS files using data-attribute
+patterns.
+**Architecture (Real product, TBD):** React/Vite module under EQ
+Shell. Reads/writes to `eq-canonical` (the canonical layer
+project — `jvknxcmbtrfnxfrwfimn`). Customers / sites / contacts
+come from canonical platform tables; quote-specific tables
+(quotes, line items, status history, attachments) FK into them.
+Word doc generation moves server-side (Edge Function or eq-shell
+backend) to keep the React module pure. Auth via Supabase Auth
+through the shell's JWT.
+**Supabase project (Flask v1):** `nspbmirochztcjijmcrx` (sks-labour) —
+inherited. **Will not migrate** during the Flask v1 lifetime
+(per 2026-05-19 reset). When the React rewrite ships, it lands on
+`eq-canonical` (`jvknxcmbtrfnxfrwfimn`) and the Flask v1 is
+deprecated.
+**Strategic position:** Position 4 in the EQ Shell module queue —
+unchanged. Validation gate stays on Field. The Flask v1 is the
+pilot's executable spec, not a queue-jump.
 
 **Pending:**
-- Real product build (~6-10 weeks at 10 hrs/week when its turn comes)
-- Decision on Supabase project (eq-shell-control sibling vs subtable)
+- SKS pilot kickoff against Flask v1 (Royce sends estimators the URL
+  + shared password)
+- Resend wiring for real email delivery (`flyctl secrets set
+  EMAIL_BACKEND=resend RESEND_API_KEY=…`) — see
+  `eq-quotes-port/docs/email-setup.md`
+- Real React module build (~6-10 weeks at 10 hrs/week when its turn
+  comes)
 - `archive/changelog-eq-quotes.md` to be reinstated as
-  `eq/changelog/quotes.md` once build begins
+  `eq/changelog/quotes.md` once the React build begins
 
 ---
 

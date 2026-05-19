@@ -67,7 +67,7 @@ layered on top of it.
 | Layer | Project(s) | Role |
 |---|---|---|
 | Control plane (shared) | `hxwitoveffxhcgjvubbd` — eq-shell-control | One project across all tenants. Holds `tenants`, `users`, `module_entitlements`. The EQ Shell's 3 Netlify functions (`shell-login`, `verify-shell-session`, `mint-iframe-token`) read it via service-role to resolve "who is this user, what tenant, what modules can they see." Not a data plane — no operational data lives here. |
-| Data plane (per tenant) | `jvknxcmbtrfnxfrwfimn` — eq-demo-canonical (live) | Demo tenant's data plane and the reference deployment for the EQ Intake spine. New tenants get a parallel project provisioned from the same migration set. |
+| Data plane (per tenant) | `jvknxcmbtrfnxfrwfimn` — eq-canonical (live) | Reference data plane for the EQ Intake spine. Renamed from `eq-demo-canonical` 2026-05-19. Hosts the `core` / "EQ Solutions" tenant. Full canonical schema in place: 12 entity tables (customers, sites, contacts, staff, assets, swms, prestart_checks, jsa_records, toolbox_talks, incidents, itp_records, schedule_entries) + intake spine (events, row audit, templates, commit RPC) + export spine + tenants/users/module_entitlements. Zero canonical entity rows currently (clean — populated via EQ Intake's commit flow when modules wire in). |
 | Data plane (per tenant) | `sks-canonical-eq` — planned | SKS's per-tenant data plane. Same migration SQL as eq-demo-canonical. Royce + bookkeeper run live work here once demo proves stable. |
 
 **Auth model in the data planes:** Each per-tenant project uses
@@ -89,12 +89,19 @@ provisioning via the Supabase UI today; automated via the Management
 API once customer count grows past ~20. See
 `eq-intake/EQ-TENANCY-MODEL.md` for the full decision record.
 
-**Active Supabase footprint (May 2026):** 4 active (`sks-labour`,
+**Active Supabase footprint (May 2026):** 5 active (`sks-labour`,
 `eq-solves-field`, `eq-solves-service-dev`, `eq-shell-control`,
-`eq-demo-canonical`) + 1 planned (`sks-canonical-eq`). The Apr-2026
+`eq-canonical`) + 1 planned (`sks-canonical-eq`). The Apr-2026
 "three is equilibrium" claim is superseded; the operational rule
 ("confirm which project before connecting; never touch sks-labour
 unless 'SKS live' is explicit") still holds.
+
+**Operational contract for modules plugging into eq-canonical:** see
+`eq-quotes-port/docs/canonical-plugin-contract.md`. Covers JWT shape,
+tenant scoping, the intake commit RPC as the only ingestion path,
+canonical-vs-module ownership split, module entitlement gating, and
+onboarding checklists for new modules and new tenants. Authored
+during the 2026-05-19 EQ Quotes canonical-migration reset.
 
 ---
 
