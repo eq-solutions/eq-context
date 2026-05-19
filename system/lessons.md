@@ -14,6 +14,20 @@ Format: what went wrong → what the fix is → why it matters.
 
 ---
 
+## Supabase Function Migrations — Search Path + Privilege Hygiene
+
+**Problem:** Supabase Security Advisor flags every function lacking an explicit `SET search_path` in its definition (category: "Function Search Path Mutable"), and every `SECURITY DEFINER` function callable by `public` or `authenticated` (categories: "Public Can Execute SECURITY DEFINER" and "Signed-In Users Can Execute SECURITY DEFINER"). Discovered 2026-05-19 on `eq-demo-canonical` — 17 warnings on 7 functions across the 4 advisor categories, all originating from `eq-intake/sql/001-003_*.sql`. The migrations used a session-level `set search_path = public` at the top of the file (which only affects the migration session), but didn't bake `SET search_path` into each function definition.
+
+**Fix:** Two parts.
+
+1. **Per-function (in the migration):** Every `CREATE FUNCTION` (or `CREATE OR REPLACE FUNCTION`) MUST include `SET search_path = public, pg_temp` (or whatever schema list the function actually needs) inside the function declaration — not just at file top. Example: `CREATE FUNCTION foo() RETURNS void LANGUAGE plpgsql SET search_path = public, pg_temp AS $$ ... $$;`
+2. **Per-`SECURITY DEFINER` function:** Always pair the `CREATE FUNCTION ... SECURITY DEFINER` with explicit grants: `REVOKE EXECUTE ... FROM PUBLIC; REVOKE EXECUTE ... FROM authenticated; GRANT EXECUTE ... TO service_role` (or whichever specific role legitimately calls it). The default privilege on functions is `EXECUTE TO PUBLIC` which is wrong for server-side machinery.
+3. **For existing functions that already shipped without these:** apply a follow-up migration using `ALTER FUNCTION ... SET search_path` and `REVOKE/GRANT` statements. Use `pg_catalog.pg_proc` iteration to catch every overload defensively — see `eq-intake/sql/004_security_advisor_fix.sql` for the pattern.
+
+**Why it matters:** Mutable `search_path` enables function hijack — an attacker creates a same-named function in a schema earlier in the search path (e.g. `pg_temp` in a session they control) and your `SECURITY DEFINER` function calls *theirs* with elevated privileges. Public-callable `SECURITY DEFINER` lets unauthenticated requests (anon key) run with the function owner's privileges. Both are low *real* risk in default hosted Supabase environments — public schema writes are restricted, `pg_temp` is per-session — but trivial to prevent at write time, and the advisor reflags every new function as you build. Cleaning at definition time costs zero; cleaning retroactively costs a migration per project.
+
+---
+
 ## GitHub API
 
 **Problem:** Inline `-d` flag fails for large JSON payloads in GitHub API PUT requests.

@@ -9,6 +9,47 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-05-19 PM] Project-folder audit (HTML showcase) + stale substrate drafts reverted
+
+**Built by:** Royce Milmlow + assistant
+
+**Context:** Evening Code session after the morning Phase 1.B audit-review merge pass. Royce asked for an overnight interactive HTML audit of every project folder in `C:\Projects\` with brutal-mode ratings, then later asked about "finishing" EQ Shell. The session produced the showcase, drafted a migration plan + `@eq/shell-contract` skeleton, and proposed substrate updates positioning Shell as a "canonical layer" alongside Field-as-lead-build. Pre-flight against actual `eq-shell` repo state revealed the drafts were built on a stale "Phase 1.B in flight" model — reality (verified at evening pre-flight): Phase 1.A + 1.B + 1.B-followup + Phase 2 spike all merged via PRs #1 / #2 / #3, PR #4 open with the handoff runbook, autonomous session in flight on `claude/phase-2-import-screen`. Drafts discarded; this entry captures only what was actually preserved.
+
+**Shipped:**
+
+- `C:\Projects\eq-showcase.html` — single-file interactive audit of 17 project folders + loose files at the C:\Projects root. Brutal-mode ratings (S → F), filterable card grid, EQ Shell hero panel (rated A+ as canonical-layer thesis), three-column verdict (strong / weak / waste), `localStorage`-persisted comment box. Dark gallery aesthetic — `Instrument Serif` headings, `Space Grotesk` body, `JetBrains Mono` annotations. Deliberately ignores EQ brand colours per brief ("ignore EQ design, get creative"). Not committed to any repo — lives at C:\Projects root as a build artefact.
+
+**Reverted (working-tree only, never pushed):**
+
+- 4 edits in `eq-context` (`ops/decisions.md` proposed "Shell as canonical layer" decision entry; `eq/products.md` proposed Shell section; `eq/pending.md` proposed Shell phase items; `eq/changelog/eq-context.md` self-changelog entry) — all `git checkout`-ed back to origin.
+- `sessions/2026-05-19.md` — deleted (file was new, untracked).
+
+**Deleted:**
+
+- `C:\Projects\eq-shell-migration\` — entire folder removed (`SHELL-MIGRATION-PLAN.md` + `packages/shell-contract/` skeleton + README). The plan's §1 simplification critique flagged 5 mechanisms as premature for current scale (React.lazy code splitting, 60s HMAC iframe tokens, separate `shell-control` Supabase, three Netlify functions with service-role-key isolation, brand-from-DB at runtime). Reality: all 5 already shipped cleanly in Phase 1.B — the critique was too late to re-litigate. The `@eq/shell-contract` skeleton was unnecessary; Shell is shipping with inline types and the team isn't experiencing the type-drift the package would have prevented. Folder served its purpose as an exploration exercise; not worth preserving.
+
+**Audit-surfaced cull findings (logged here, not yet escalated to PRs):**
+
+- `eq-website/` — 42,647 files, undeployed, last touched April. Either ship to `eq.solutions` via Cloudflare Pages or `rm -rf`.
+- `flutter/` — 17,130 files of upstream Flutter SDK clone. Belongs in `~/dev/sdks/flutter/`, not project root.
+- `eq-solves-jobs/` — single HTML commissioning page in a folder. Promote to a doc, delete folder.
+- `akko-jobsetup/`, `sks-nsw-labour/` — client/staging material in dev workspace. Belongs in OneDrive / client storage.
+- `For upload/` — staging entropy. Figure out and delete.
+- Stack inconsistency: `eq-cards` is the only Flutter project across the EQ portfolio. Open decision — commit to mobile-first (Cards drives Intake confirm-UI) or kill.
+- `eq-analytics-v2` — placeholder `phc_REPLACE_ME` config dormant for 29 days. Provision PostHog (EU) + Clarity accounts or delete folder.
+
+**Decisions punted:**
+
+- Cull execution on the 6 folders above — surfaced only, no PRs opened.
+- The Shell "simplification" architectural read from the deleted migration plan — too late to re-litigate, Phase 1.B already shipped the architecture as scoped.
+- Whether to formally document "Shell as canonical layer" in `eq/products.md` — deferred until Shell has a real entry shape worth committing. Morning changelog entry already covers Shell work as Field-side; treating Shell as its own product line in substrate can wait until Phase 1.D unblocks and a non-Field module ships under it.
+
+**Look at this first next session:**
+
+- **PR #4 on `eq-solutions/eq-shell`** (`HANDOFF-PHASE-1-A-B.md`) — 3 Royce-only manual handoffs (Netlify env vars, GitHub→Netlify repo link, `*.eq.solutions` wildcard DNS). These are the only thing blocking Phase 1.D smoke test per the morning entry; nothing in the evening session moved them.
+- **Active autonomous session on `claude/phase-2-import-screen`** — WIP on `src/modules/tender-pipeline/pages/Import.tsx`, new `lib/`, new `styles.css`, `package.json` changes. Do not touch this branch from a new session unless Royce explicitly confirms it's stale.
+- **`C:\Projects\eq-showcase.html`** — review at leisure; the comment box is `localStorage`-only so scratch notes don't leave the browser.
+
 ## [2026-05-19] Phase 1.B audit-review merge pass + scope-reduce
 **Built by:** Royce Milmlow + assistant
 **Context:** Morning review of the overnight build (eq-field-app PR #106 #107 #108 + eq-shell #1 #2) and the overnight audit (eq-field-app PR #108 / [OVERNIGHT-AUDIT-2026-05-19.md](https://github.com/Milmlow/eq-field-app/blob/demo/OVERNIGHT-AUDIT-2026-05-19.md)).
@@ -434,4 +475,32 @@ Supabase changes. SKS Labour untouched.
 **Status:** Plan complete. No code touched. Phase 1 implementation pending
 explicit Royce go-ahead.
 
-## [2026-04-05] Demo Mode, Seed Data and Netwo
+## [2026-04-05] Demo Mode, Seed Data and Network Error Suppression
+**Built by:** Royce Milmlow + assistant
+**Changes:**
+- Demo mode implemented - bypasses Supabase auth when tenant slug is eq
+- 18 generic staff, 7 generic sites, 5 weeks of schedule seeded
+- Network error toasts suppressed in demo mode
+- Cowork guardrail issue documented
+**Status:** Live on eq-solves-field.netlify.app (demo branch)
+
+## [2026-04-05] Cloudflare Pages Deployment Architecture Locked
+**Built by:** Royce Milmlow + assistant
+**Changes:**
+- Deployment architecture confirmed and locked
+- Rule: never cross-deploy between targets
+**Status:** Architecture documented
+
+## [2026-04-04] Redundancy and Failover Gap Assessment
+**Built by:** Royce Milmlow + assistant
+**Changes:**
+- Full infrastructure assessment across Netlify, Supabase, Resend, GitHub
+- Gaps identified: Supabase single point of failure, no backups, no tagged release
+**Status:** Gaps identified - NOT yet resolved
+
+## [2026-03-31] White-Label Commercialisation Review
+**Built by:** Royce Milmlow + assistant
+**Changes:**
+- EQ Field Ops commercialisation roadmap built (85-item Excel workbook)
+- White-label conversion estimated at 2-3 hours
+**Status:** Planning complete - not yet executed

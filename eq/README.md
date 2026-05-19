@@ -37,9 +37,12 @@ Field demo first.
 
 - **EQ Variations** — killed 2026-04-29
 - **EQ Compliance / EQ Ops** — killed 2026-04-29
-- **EQ Quotes** — deferred ~6 months (changelog at `/archive/changelog-eq-quotes.md`)
 - **EQ Expenses** — demoted to internal SKS tool (no longer an EQ product)
 - **AHD** — parked to 2027 (changelog at `/archive/changelog-ahd.md`)
+
+EQ Quotes was deferred 2026-04-29 but un-deferred 2026-05-19 — see
+`eq/products.md` and `ops/decisions.md` 2026-05-19 entry. Reinstated as
+position 4 in the EQ Shell module-mounting queue.
 
 ## Brand
 
