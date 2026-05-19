@@ -12,6 +12,17 @@ status: live
 Files that run the substrate, not the work. Read by AIs to understand
 *how* to use the repo, not *what* the work is.
 
+## System substrate map
+
+Every canonical system file as a full URL — clickable from `/context/claude`:
+
+- [system/TODAY.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/system/TODAY.md) — Q3 2026 focus filter (always loaded first, every session)
+- [system/infrastructure.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/system/infrastructure.md) — Supabase project IDs, Cloudflare, Netlify, Beelink, GitHub orgs
+- [system/architecture.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/system/architecture.md) — tech architecture (Cloudflare, Supabase, substrate, single-file HTML pattern)
+- [system/lessons.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/system/lessons.md) — tech gotchas (append-only)
+- [system/md-style.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/system/md-style.md) — MD writing standard
+- [system/onboarding.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/system/onboarding.md) — first-time tutorial
+
 ## Files
 
 | Path | Purpose |

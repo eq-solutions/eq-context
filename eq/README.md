@@ -14,6 +14,14 @@ post-cull strategy (29 April 2026): **EQ Field** until 20 paying
 customers, validated by 5 outside-SKS trade subbies engaging with a
 Field demo first.
 
+## EQ substrate map
+
+Every canonical EQ file as a full URL — clickable from `/context/claude`:
+
+- [eq/pending.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/pending.md) — EQ-only to-do list
+- [eq/products.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/products.md) — EQ live product status
+- `eq/templates.md` — forward-pointer; file does not exist yet, will be created when the first EQ deliverable template is captured
+
 ## Strategic focus (2026 Q2)
 
 - **EQ Field** is the only build focus — 10 hrs/week.

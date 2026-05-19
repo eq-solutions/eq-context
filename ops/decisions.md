@@ -16,7 +16,24 @@ important one to maintain.
 Format: Status → Decision → Why → Alternatives considered → Implications.
 Status values: Accepted | Superseded by [date+title] | On Hold | Deprecated | Proposed.
 Append-only — never delete an entry. Supersede or deprecate it instead.
-For the current built state of each system, see `system/architecture.md`.
+For the current built state of each system, see [system/architecture.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/system/architecture.md).
+
+---
+
+## 2026-05-19 — Substrate URLs Converted to Full Links for Transitive Fetchability
+
+**Status:** Accepted
+
+**Decision:** All relative paths in `CLAUDE.md` and every `README.md` (eq, sks, ops, system) were converted to full markdown links pointing at the Supabase edge function (base URL `https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/<path>`). New "substrate map" sections added to `sks/README.md`, `eq/README.md`, `ops/README.md`, and `system/README.md` indexing every canonical file as a fully-qualified clickable URL. The `§8 Where Things Live` table in `CLAUDE.md` was split so each file is its own row with its own clickable link.
+
+**Why:** Claude.ai chat's `web_fetch` tool is allowlist-driven — it only fetches URLs that were user-provided in the prompt or appeared in a prior fetch result. Relative paths like `sks/templates.md` inside an already-fetched `CLAUDE.md` are therefore invisible to it: there's no URL for the allowlist to admit, so sibling files cannot be reached transitively from `/context/claude`. Live confirmation came from a 2026-05-19 chat session that fetched `CLAUDE.md` cleanly but then refused to fetch any of the relative paths inside it because they weren't full URLs. The model could *construct* the URL ("just append the slug to the base") but the fetch tool still wouldn't take it — the constraint is in the tool, not the model.
+
+**Alternatives considered:**
+- *Tell Claude to construct URLs from base + relative path.* Rejected — the model can build the string, but `web_fetch` won't fetch URLs it has never observed in the conversation, regardless of provenance.
+- *Paste every needed URL into each chat manually.* Rejected — that is precisely the friction this fix removes.
+- *Concatenate everything into a single megaprompt.* Rejected — defeats the tier-gating design (§1) and bloats every session beyond the attention budget.
+
+**Implications and principle going forward:** Every new substrate file must be linked as a full markdown URL from at least one already-reachable file — most likely its tier's `README.md` "substrate map" section, or the `§8 Where Things Live` table in `CLAUDE.md` — before it can be considered reachable. Otherwise it is **orphaned**: a fact of life inside the GitHub repo but invisible to any chat that bootstraps from `/context/claude`. Treat un-linked files the way you would treat un-`include`'d source files: from the consumer's perspective they don't exist. When adding a new tier directory or top-level file, the "wire it into a substrate map" step is now on the substrate-structure checklist alongside the `context` edge function update (see `ops/pending.md` → Substrate Discipline).
 
 ---
 
