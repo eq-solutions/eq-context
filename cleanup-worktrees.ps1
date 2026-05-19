@@ -1,60 +1,146 @@
 # cleanup-worktrees.ps1
-# Generated: 2026-05-18 (v2 — handles unregistered worktrees + permission-denied)
-# Removes orphan Claude worktrees from eq-context, eq-solves-field, eq-solves-service
-# Run from anywhere on the Beelink — paths are absolute.
-# Safe: only removes worktree directories, does not touch branches or commits.
+# v3 (2026-05-19) — detect-and-clean, self-maintaining
+#
+# Policy:
+#   - Scans `git worktree list --porcelain` in each known repo
+#   - REMOVES a worktree iff ALL of:
+#       (a) not the main worktree (which is the repo root itself)
+#       (b) not the worktree this script is running from
+#       (c) not locked (`git worktree lock` flag absent)
+#       (d) working tree is clean — no uncommitted, no untracked
+#       (e) branch is fully merged into main/demo (parent of worktree-root branch),
+#           OR worktree HEAD is identical to the parent-branch HEAD
+#   - SKIPS (with a printed reason) anything that doesn't meet all of the above.
+#
+# Branches are NEVER deleted — only worktree filesystems + .git/worktrees/<name> metadata.
+# Any commits in skipped worktrees remain on their branches for later checkout.
+#
+# Run from anywhere on the Beelink (absolute paths).
+#   .\cleanup-worktrees.ps1                    # full sweep across known repos
+#   .\cleanup-worktrees.ps1 -DryRun            # print actions, change nothing
+#   .\cleanup-worktrees.ps1 -Force             # ignore the merge-status check (still skips locked/dirty/current)
 
-$ErrorActionPreference = "Continue"
+[CmdletBinding()]
+param(
+    [switch]$DryRun,
+    [switch]$Force
+)
 
-function Remove-Worktree {
+$ErrorActionPreference = 'Continue'
+
+$repos = @(
+    @{ Path = 'C:\Projects\eq-context';        ParentBranch = 'main' }
+    @{ Path = 'C:\Projects\eq-solves-field';   ParentBranch = 'demo' }
+    @{ Path = 'C:\Projects\eq-solves-service'; ParentBranch = 'main' }
+)
+
+$scriptDir = (Get-Location).Path
+
+function Test-WorktreeRemovable {
     param(
+        [string]$WorktreePath,
         [string]$RepoPath,
-        [string]$WorktreeName
+        [string]$ParentBranch,
+        [bool]$IsLocked,
+        [bool]$ForceMerge
     )
-    $worktreePath = Join-Path $RepoPath ".claude\worktrees\$WorktreeName"
-    Write-Host "[$RepoPath] $WorktreeName" -ForegroundColor Cyan
 
-    if (-not (Test-Path $worktreePath)) {
-        Write-Host "  -> Already gone" -ForegroundColor Gray
-        return
-    }
+    if ($WorktreePath -eq $RepoPath) { return @{ Remove = $false; Reason = 'main worktree' } }
+    if ($scriptDir -like "$WorktreePath*") { return @{ Remove = $false; Reason = 'this script is running from inside' } }
+    if ($IsLocked) { return @{ Remove = $false; Reason = 'locked' } }
 
-    # Strip read-only / hidden / system flags on all files inside (fixes Permission denied)
-    Get-ChildItem -Path $worktreePath -Recurse -Force -ErrorAction SilentlyContinue |
-        ForEach-Object { $_.Attributes = 'Normal' }
-
-    # Also clear the directory itself
-    (Get-Item $worktreePath -Force).Attributes = 'Normal'
-
+    Push-Location $WorktreePath
     try {
-        Remove-Item -Recurse -Force $worktreePath -ErrorAction Stop
-        Write-Host "  -> Deleted" -ForegroundColor Green
-    } catch {
-        Write-Warning "  -> Still failed: $_"
-        Write-Host "     Try: takeown /f `"$worktreePath`" /r /d y && icacls `"$worktreePath`" /grant `"$env:USERNAME`:F` /t" -ForegroundColor Yellow
+        $dirty = (git status --porcelain 2>&1)
+        if ($dirty) { return @{ Remove = $false; Reason = "dirty (`n        $($dirty -join "`n        ")`n      )" } }
+
+        if (-not $ForceMerge) {
+            $head = (git rev-parse HEAD 2>&1).Trim()
+            $parentHead = (git rev-parse "origin/$ParentBranch" 2>&1).Trim()
+            if ($LASTEXITCODE -ne 0) { $parentHead = (git rev-parse $ParentBranch 2>&1).Trim() }
+
+            if ($head -eq $parentHead) { return @{ Remove = $true; Reason = 'on parent HEAD' } }
+
+            $merged = git merge-base --is-ancestor HEAD $parentHead 2>&1
+            if ($LASTEXITCODE -eq 0) { return @{ Remove = $true; Reason = "fully merged into $ParentBranch" } }
+            return @{ Remove = $false; Reason = "has commits not in $ParentBranch (use -Force to override)" }
+        }
+        return @{ Remove = $true; Reason = '-Force given' }
+    } finally {
+        Pop-Location
     }
 }
 
-# --- eq-context ---
-$repo = "C:\Projects\eq-context"
-Remove-Worktree $repo "practical-bhabha-e28313"
+function Remove-WorktreeSafe {
+    param([string]$WorktreePath, [string]$RepoPath, [string]$WorktreeName)
 
-# --- eq-solves-field ---
-$repo = "C:\Projects\eq-solves-field"
-Remove-Worktree $repo "dreamy-bhabha-006b91"
-Remove-Worktree $repo "epic-noether-984c57"
-Remove-Worktree $repo "festive-roentgen-60761d"
-Remove-Worktree $repo "loving-dubinsky-128a63"
-Remove-Worktree $repo "upbeat-varahamihira-797063"
-Remove-Worktree $repo "zen-golick-a9e7e1"
+    if ($DryRun) { Write-Host "    [dry-run] would remove" -ForegroundColor Yellow; return }
 
-# --- eq-solves-service ---
-$repo = "C:\Projects\eq-solves-service"
-Remove-Worktree $repo "crazy-swanson-cb5a62"
-Remove-Worktree $repo "relaxed-hopper-e45f17"
-Remove-Worktree $repo "sharp-germain-af2e3f"
-Remove-Worktree $repo "xenodochial-clarke-fe01e2"
+    Get-ChildItem -Path $WorktreePath -Recurse -Force -ErrorAction SilentlyContinue |
+        ForEach-Object { try { $_.Attributes = 'Normal' } catch {} }
+    try { (Get-Item $WorktreePath -Force).Attributes = 'Normal' } catch {}
+
+    try {
+        Remove-Item -Recurse -Force $WorktreePath -ErrorAction Stop
+        Write-Host "    -> filesystem removed" -ForegroundColor Green
+    } catch {
+        Write-Warning "    -> filesystem remove failed: $($_.Exception.Message.Split([Environment]::NewLine)[0])"
+        Write-Host "    -> probably an open file handle (VS Code / Explorer / terminal). Skipping metadata cleanup." -ForegroundColor Yellow
+        return
+    }
+
+    $metaPath = Join-Path $RepoPath ".git\worktrees\$WorktreeName"
+    if (Test-Path $metaPath) {
+        try {
+            Remove-Item -Recurse -Force $metaPath -ErrorAction Stop
+            Write-Host "    -> metadata removed" -ForegroundColor Green
+        } catch {
+            Push-Location $RepoPath; git worktree prune 2>&1 | Out-Null; Pop-Location
+            Write-Host "    -> metadata pruned via 'git worktree prune'" -ForegroundColor Green
+        }
+    }
+}
+
+foreach ($r in $repos) {
+    $repoPath = $r.Path
+    $parent   = $r.ParentBranch
+    Write-Host ""
+    Write-Host "=== $repoPath (parent: $parent) ===" -ForegroundColor Cyan
+    if (-not (Test-Path $repoPath)) { Write-Host "  (repo not present, skipping)" -ForegroundColor Gray; continue }
+
+    Push-Location $repoPath
+    $porcelain = git worktree list --porcelain 2>&1
+    Pop-Location
+
+    $worktrees = @()
+    $current = @{}
+    foreach ($line in $porcelain) {
+        if ($line -match '^worktree (.+)$') {
+            if ($current.Count -gt 0) { $worktrees += $current }
+            $current = @{ Path = ($matches[1] -replace '/', '\') }
+        } elseif ($line -match '^branch (.+)$') {
+            $current.Branch = $matches[1]
+        } elseif ($line -match '^locked') {
+            $current.Locked = $true
+        } elseif ($line -match '^HEAD (.+)$') {
+            $current.HEAD = $matches[1]
+        }
+    }
+    if ($current.Count -gt 0) { $worktrees += $current }
+
+    foreach ($wt in $worktrees) {
+        $name = Split-Path $wt.Path -Leaf
+        Write-Host "  $name" -ForegroundColor White
+        $verdict = Test-WorktreeRemovable -WorktreePath $wt.Path -RepoPath $repoPath -ParentBranch $parent -IsLocked ([bool]$wt.Locked) -ForceMerge $Force.IsPresent
+        if ($verdict.Remove) {
+            Write-Host "    decision: REMOVE ($($verdict.Reason))" -ForegroundColor Green
+            Remove-WorktreeSafe -WorktreePath $wt.Path -RepoPath $repoPath -WorktreeName $name
+        } else {
+            Write-Host "    decision: skip ($($verdict.Reason))" -ForegroundColor Gray
+        }
+    }
+}
 
 Write-Host ""
-Write-Host "Worktree cleanup complete." -ForegroundColor Green
-Write-Host "Run 'git worktree list' in each repo to verify." -ForegroundColor Gray
+if ($DryRun) { Write-Host "Dry run complete. No changes made." -ForegroundColor Yellow }
+else { Write-Host "Cleanup complete." -ForegroundColor Green }
