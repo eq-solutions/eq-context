@@ -20,6 +20,7 @@ Every canonical EQ file as a full URL — clickable from `/context/claude`:
 
 - [eq/pending.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/pending.md) — EQ-only to-do list
 - [eq/products.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/products.md) — EQ live product status
+- [eq/cards/canonical-migration/plan.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/cards/canonical-migration/plan.md) — Cards §18 close-out: move Cards data to eq-canonical, retire standalone Supabase, SSO via shared JWT (active workstream 2026-05-20)
 - `eq/templates.md` — forward-pointer; file does not exist yet, will be created when the first EQ deliverable template is captured
 
 ## Strategic focus (2026 Q2)
@@ -38,6 +39,7 @@ Every canonical EQ file as a full URL — clickable from `/context/claude`:
 | `products.md` | EQ live product status |
 | `field/multi-tenancy/` | EQ Field MT plan + explainer (active reference) |
 | `field/permissions/` | EQ Field role/permission matrix |
+| `cards/canonical-migration/plan.md` | EQ Cards §18 close-out (active 2026-05-20) |
 | `changelog/field.md` | EQ Field append-only history |
 | `changelog/eq-context.md` | Substrate self-changelog |
 
