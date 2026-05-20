@@ -123,6 +123,35 @@ Defer to: Beelink return (12 May+) for proper test coverage. Holiday-laptop work
   `demo` branch blocker above is resolved. Each repo's `demo`/`main`
   branch semantics differ — hook needs per-repo branch logic.
 
+- [ ] **eq-solves-assets `feat/calm-capture` branch — parked 2026-05-20** —
+  Local clone `C:\Projects\eq-solves-assets` (origin: `Milmlow/eq-solves-service`)
+  has the `feat/calm-capture` branch with 2 unpushed commits last touched
+  2026-05-13: `675ba1b Add .gitattributes` and `b15cd19 WIP: md-health
+  sweep 2026-05-13`. File delta vs `origin/main`: new
+  `ACB Asset Capture.html` (~1265 lines), new `.gitattributes`, removed
+  70 lines from `src/lib/fillTemplate.ts`. Confirmed there's no remote
+  tracking branch yet (work exists only in this folder). Royce decided
+  2026-05-20 to park rather than action — "enough happening". Revisit
+  when the EQ Solves Service surface is back on the active list. **Risk:**
+  the 1265-line single-file capture tool is real work that will be lost
+  if the clone is ever deleted without first pushing the branch.
+
+- [ ] **eq-field → SKS Live GitHub split — IN PLANNING** —
+  Local folders for sks-nsw-labour and eq-solves-field were split
+  2026-05-20. On GitHub both still live in `eq-solutions/eq-field`
+  (main = SKS Live, demo = EQ Field demo, deploys confirmed via
+  Netlify MCP audit). The two branches are no longer in any way
+  in sync — demo is 106 commits ahead of main, intentional. Royce
+  decided 2026-05-20 to extract main into its own dedicated repo:
+  cut from current main HEAD (no history preservation), push as
+  initial state of a new `eq-solutions/sks-nsw-labour` (name TBC),
+  re-wire `sks-nsw-labour.netlify.app` Netlify project to pull from
+  the new repo, repoint local `C:\Projects\sks-nsw-labour` origin,
+  then decide what to do with eq-field/main (delete? rename
+  demo→main?). Pre-condition: eq-solves-field demo clone has 50
+  uncommitted entries + 1 stale unpushed commit (`db2b5fa`) that
+  should be addressed first to avoid stranding work.
+
 ---
 
 ## Tax & Entities (Webb Financial)
