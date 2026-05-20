@@ -112,6 +112,105 @@ Validation gate = 5 outside-SKS trade subbies on Field demo first.
 
 ---
 
+## EQ Shell — PLATFORM (multi-module shell)
+
+**Status:** Phase 1.F shipped (2026-05-20). End-to-end live at
+`core.eq.solutions` — login → tenant home → Intake module at
+`/core/intake` (drop CSV → map → validate → commit via the `@eq/*`
+engine) and EQ Field surface mounted via iframe with HMAC handoff
+(no second PIN). **Phase 2 is paused pending the EQ GTM validation
+gate** (5 outside-SKS trade subbies on EQ Field demo) — no further
+shell modules until that clears or a paying customer asks for one.
+
+**URL:** `core.eq.solutions` (live, dog-food tenant for EQ Solutions
+itself). Per-tenant subdomain alias on a single Netlify project;
+Netlify wildcard not viable on external DNS.
+**Repo:** `eq-solutions/eq-shell` (private)
+**Working files:** `src/modules/intake/`, `src/modules/cards/`,
+`netlify/functions/{shell-login,verify-shell-session,mint-iframe-token,mint-supabase-jwt}.ts`,
+`src/App.tsx` (RequireSession + ModuleGate + `useCan()` + `<Gate>`)
+**Architecture:** Vite + React 19 + TypeScript strict. React Router
+v6. pnpm workspace with `@eq/*` packages vendored at
+`eq-intake/eq-platform/packages/` (sibling private repo
+`eq-solves-intake` — vendored because Netlify can't clone private
+submodules). HS256 JWT minted by Netlify Functions, carried by
+`@supabase/supabase-js` browser client. Writes route only through
+`eq_intake_commit_batch` SECURITY DEFINER RPC. RLS predicates read
+`app_metadata.tenant_id` (swept 2026-05-20 Phase 1.F).
+**Supabase project:** `eq-canonical` (`jvknxcmbtrfnxfrwfimn`,
+ap-southeast-2). Holds both control-plane (`tenants`, `users`,
+`module_entitlements`) and 13 canonical entity tables. The earlier
+`eq-shell-control` (`hxwitoveffxhcgjvubbd`) was decommissioned
+2026-05-19.
+**Netlify project:** `eq-shell` (`a3473f83-7c82-4f1e-872d-aa96eaa55172`)
+**Deploy:** GitHub push → Netlify auto on `main`. Per-tenant
+subdomain alias added manually (~5 min) until automated.
+
+**Phase plan (current):**
+
+| Phase | Goal | Status |
+|---|---|---|
+| 1.A–1.E | Scaffold → wire-up → Field handoff → smoke → single-canonical consolidation | Shipped (1.E on 2026-05-19) |
+| 1.F | Unified Identity — `eq_role` enum + `is_platform_admin` flag, `app_metadata` claims, `useCan()` + `<Gate>`, mint-supabase-jwt, admin invite/edit, Field iframe bridge carries new fields. RLS swept across 13 canonical tables + 4 intake spine + 3 RPCs from `user_metadata` to `app_metadata`. | Shipped 2026-05-20 |
+| 2 | **PAUSED pending GTM gate.** Intake module already live at `/core/intake`. Further modules deferred until 5/5 outside-SKS validation gate clears OR a paying customer requests one. | Intake shipped; further modules paused |
+| 3+ | Replace each EQ Field surface (roster, schedule, leave, tenders, audits, prestarts, toolbox talks) with a shell module backed by `eq-canonical`. Sequencing undecided — re-pick after GTM gate based on what early customers pay for. | Long-term |
+| 4 | EQ Field demo deploy + `ktmjmdzqrogauaevbktn` Supabase decommissioned, once every surface has a shell replacement | Long-term |
+
+**Modules in shell today:**
+
+- **Intake** (live at `/core/intake`) — drop CSV → map → validate →
+  commit via `@eq/intake` + `@eq/validation` + `@eq/confirm-ui`.
+  SimPRO fixtures validated through parser + customer/contact/site
+  mapping + validation legs (267 customers / 393 contacts / 544
+  sites). The first real Phase 2 module.
+- **Cards** (iframe wedge at `/:tenant/cards`, MVP not deployed) —
+  mounts `eq-cards.netlify.app` Flutter web build. No SSO in v1
+  (email-OTP first iframe load; browser persists). Eq-cards needs a
+  redeploy with updated `_headers` before iframe renders. Proper
+  close-out is Cards Unit 4 (Flutter flip to canonical + SSO via
+  mint-supabase-jwt) per `eq/cards/canonical-migration/plan.md`.
+- **Tender Pipeline** scaffolding under `src/modules/tender-pipeline/`
+  is **stale exploration** — 5 page stubs ~9KB total, not on the
+  roadmap. Tender Pipeline lives in EQ Field, not in the shell.
+
+**Critical architectural risks open** (per 2026-05-20 part-d external
+critique synthesis — deferred to Phase 2 resumption):
+
+1. Shared `EQ_SECRET_SALT` across Shell + Field — no dual-salt
+   rotation support yet; leak forces coordinated outage.
+2. Single mega-RPC `eq_intake_commit_batch` — chokepoint risk before
+   it hits 5 module branches.
+3. No `revoked_sessions` table — cannot kill an active JWT before
+   1-hr TTL.
+4. Control-plane + app-data colocated in same Postgres schemas —
+   regional secondary day will hurt.
+5. iframe-then-replace migration with no retirement deadline — trap
+   risk if Phase 2 extends past ~12 months.
+
+Full list in `eq/pending.md` "EQ Shell + EQ Intake" section. Real,
+not stale — deferred, not dropped.
+
+**Strategic priority:** Phase 2 paused pending GTM gate. The
+strategic question per ChatGPT critique (2026-05-20 part-d) is
+whether EQ Shell is acknowledged as a platform-tier product (with
+SLOs, oncall, dedicated headcount) or remains solo-maintained. Not a
+Phase 2 question — a tier-of-company question.
+
+**Pending:**
+- [ ] Phase 2 resumption decision (gated on GTM validation gate
+      OR a paying customer request)
+- [ ] Critique action items listed in `eq/pending.md` "EQ Shell +
+      EQ Intake" — dual-salt rotation, revoked_sessions, schema
+      split, RPC decomposition, canonical→Field one-way sync,
+      token-mint audit log, vendored-package hash check, etc.
+- [ ] Cards Unit 4 (Flutter flip + SSO) — blocked on Phase 1.F
+      verified end-to-end through the iframe wedge
+- [ ] `src/modules/tender-pipeline/` scaffolding cleanup — delete
+      the stub pages (not on roadmap) OR keep as future-exploration
+      with a `// stale 2026-05-20` marker. Royce decision.
+
+---
+
 ## EQ Solves — Service
 
 **Status:** Active development

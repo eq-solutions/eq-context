@@ -147,16 +147,87 @@ contain the same values and were pushed before push-protection caught up.
 
 ---
 
-## EQ Shell + EQ Intake (per-tenant Supabase rollout)
+## EQ Shell + EQ Intake (Phase 2 PAUSED pending GTM validation gate)
 
-Two-Supabase architecture confirmed 2026-05-19 (see `system/architecture.md`
-"Control Plane + Per-Tenant Data Planes"):
+**Status as of 2026-05-20:** Phase 1.E + 1.F shipped (single canonical
+Supabase, Intake module live at `/core/intake`, Unified Identity, RLS
+swept to `app_metadata`). Phase 2 paused — no further shell modules
+until the GTM validation gate clears (see EQ GTM PRIORITY section
+below) OR a paying customer specifically asks for one.
 
-- `eq-shell-control` (`hxwitoveffxhcgjvubbd`) — shared, live, used by
-  EQ Shell Netlify functions.
-- `eq-canonical` (`jvknxcmbtrfnxfrwfimn`, renamed 2026-05-19 from
-  `eq-demo-canonical`) — reference data plane, live, used by EQ Intake.
-- `sks-canonical-eq` — planned, not yet provisioned.
+**Two-Supabase architecture is OBSOLETE** as of Phase 1.E (2026-05-19).
+Current state:
+
+- `eq-canonical` (`jvknxcmbtrfnxfrwfimn`) — single canonical project
+  holding both shell control tables (`tenants`, `users`,
+  `module_entitlements`) and tenant application data (13 canonical
+  entity tables incl. `licences` added 2026-05-20 part-c). Region
+  `ap-southeast-2`.
+- `eq-shell-control` (`hxwitoveffxhcgjvubbd`) — **DECOMMISSIONED**
+  2026-05-19 per `sessions/2026-05-19.md`.
+- `sks-canonical-eq` — planned, not provisioned. Gated on GTM
+  validation gate, not on shell readiness.
+
+### Critique action items — deferred to Phase 2 resumption
+
+Three external-model critiques (Claude / Grok / ChatGPT) shopped
+2026-05-20 part-d. The actions below are real risks the architecture
+carries today. They DO NOT ship until Phase 2 resumes (GTM gate
+clears, or a paying customer requests a new module). Priority order
+= highest blast-radius first.
+
+- [ ] **Dual-salt rotation support for `EQ_SECRET_SALT`** — both
+      shell-side `mint-iframe-token` and Field-side validator accept
+      salt-A and salt-B; mint with salt-B; redeploy both; wait for
+      token TTL; remove salt-A. Without this, a salt leak forces a
+      coordinated outage to rotate. Shared secret across two Netlify
+      projects is the single highest-blast-radius risk in the stack.
+- [ ] **Dual-secret support in `verify-shell-session`** for
+      `SUPABASE_JWT_SECRET` rotation. Same rationale.
+- [ ] **`revoked_sessions` table** + shorten JWT TTL from 1 hour to
+      ~30 minutes. Without this you cannot kill an active session
+      before its TTL expires.
+- [ ] **Schema split** — `shell_control.*` (tenants/users/
+      module_entitlements) vs `app_data.*` (canonical entities) in
+      the same `eq-canonical` project. `CREATE SCHEMA` +
+      `search_path` update. Free now, saves ~3 weeks when a regional
+      secondary is needed.
+- [ ] **Per-domain RPC decomposition** — split
+      `eq_intake_commit_batch` before it accumulates 5 module
+      branches. Per-entity validators in a shared library; per-domain
+      RPCs call the library. Currently 1 mega-RPC handles all
+      mutation; this is the chokepoint all three critiques flagged.
+- [ ] **Canonical → Field one-way sync rule** documented + enforced
+      with a Supabase trigger for shared concepts (staff, sites,
+      schedule_entries). Never the reverse. Otherwise dual-write
+      pain during iframe-purgatory becomes uncontrolled.
+- [ ] **Token-mint audit log** (tenant_id, IP, timestamp) with a
+      Sentry threshold alert per `https://mcp.sentry.dev/mcp/eq-solutions/eq-shell`.
+      Today there's no detection mechanism for a stolen salt.
+- [ ] **Build-time hash check** for the vendored `@eq/*` packages so
+      a stale vendor can't silently ship through Netlify.
+- [ ] **`STABLE SECURITY DEFINER` wrapper** for the `tenant_id` UUID
+      cast read in every RLS predicate (perf optimisation for the
+      day load matters).
+- [ ] **Iframe retirement deadline decision** — Grok pushed 9 months,
+      Claude said 3 years is a roadmap not purgatory, ChatGPT said
+      4 years is the modal failure mode. Pick a number, write it
+      somewhere, hold to it. Not a code task; a strategic decision
+      Royce makes when Phase 2 resumes.
+
+Full critique synthesis + the items already shipped (so we don't
+re-litigate them) is in [sessions/2026-05-20-part-d.md](../sessions/2026-05-20-part-d.md).
+
+### Substrate-drift note (2026-05-20 part-d)
+
+The `eq-shell/README.md` Phase 2 row said "Tender Pipeline first"
+through 2026-05-20. This was a stale claim — Tender Pipeline is a
+Field sub-module, not a flagship shell module. The README has been
+corrected. Going forward: when writing critique prompts or briefing
+external models against the shell, read the substrate actively, do
+not just copy what the README says — and check for drift signals
+(passing pivots that have hardened into "platform doctrine"
+language).
 
 ### Dedupe-on-ingest skill (intake feature)
 
@@ -179,12 +250,13 @@ added to `eq-intake/CONFIRM-UI-SPEC.md` as a new section.
       should collapse to ~150 unique customer rows + 524 site rows
       in canonical.
 
-### EQ Shell Phase 1.B (Netlify wire-up)
+### EQ Shell Phase 1.B (Netlify wire-up) — DONE
 
-- [ ] Confirm Phase 1.B status — Royce reported "almost working" on
-      2026-05-19; not picked up this session, sitting in
-      `C:\Projects\eq-shell\.claude\worktrees\angry-morse-56771d`
-      on branch `claude/angry-morse-56771d`.
+- [x] Phase 1.B (Netlify wire-up), 1.C (Field-side `?sh=` handler),
+      1.D (end-to-end smoke), 1.E (single-canonical consolidation),
+      1.F (Unified Identity + `app_metadata` RLS sweep) — all
+      shipped by 2026-05-20. `core.eq.solutions` live, Intake module
+      at `/core/intake` running the `@eq/*` engine end-to-end.
 
 ### eq-demo-canonical — security advisor cleanup (open)
 
