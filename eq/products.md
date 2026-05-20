@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Products
 owner: Royce Milmlow
-last_updated: 2026-05-19
+last_updated: 2026-05-20
 scope: Live EQ products. Killed/deferred entries removed in 2026-05-04 refactor.
 read_priority: standard
 status: live
@@ -166,8 +166,13 @@ Jinja + supabase-py + gunicorn, deployed Fly.io.
 **Working files:** `app/` (Flask blueprints + Jinja templates),
 `word_templates/template_v3.docx` (token-replaced SKS template — has
 `{{Site}}` placeholder added 2026-05-19), `scripts/smoke_routes.py`
-(30-route harness), `docs/canonical-plugin-contract.md` (the
-operational contract for the future React rewrite).
+(37-route harness as of 2026-05-20), `scripts/smoke_writes.py`
+(12 write-path assertions), `scripts/qa_visual_audit.py` (17-route
+heuristic checks for icon coverage, empty states, inline scripts),
+`docs/canonical-plugin-contract.md` (the operational contract for the
+future React rewrite), `docs/runbooks/sentry-setup.md` +
+`docs/runbooks/resend-setup.md` (operational cutover steps for the
+two pending integrations).
 **Architecture (Flask v1):** Flask 3 + Jinja + supabase-py. Backed by
 `sks-labour` Supabase (`nspbmirochztcjijmcrx`) — same project as
 SKS Field LIVE (legacy single-tenant coupling). Word generation via
@@ -190,6 +195,28 @@ inherited. **Will not migrate** during the Flask v1 lifetime
 (per 2026-05-19 reset). When the React rewrite ships, it lands on
 `eq-canonical` (`jvknxcmbtrfnxfrwfimn`) and the Flask v1 is
 deprecated.
+**UI state (2026-05-20):** Five overnight design packs shipped plus a
+day-after polish run: status colours + icons + tabular numbers + empty
+states (Pack 1), home dashboard at `/` with KPI tiles + 14-day activity
+heatmap (Pack 2 + Pack A), brand layer (EQ logo + favicon + tenant
+palette + split-screen login — Pack 3), Cmd-K command palette +
+keyboard shortcuts + persistent filters + recent-viewed (Pack 4),
+AI scope/line-item suggestions through the anthropic-proxy Cloudflare
+Worker (Pack 5, gated on `ANTHROPIC_PROXY_URL`), Notion-style
+click-to-edit inline editing on quote + customer headers (Pack F + H1),
+sticky action toolbar + status journey mini-viz on quote detail
+(Pack B), `/reports/quality` page with win rate / hit rate /
+time-in-status histogram / per-estimator breakdown (Pack E), mobile
+responsive pass for header / cards / tables (Pack H2), and a "?" key
+shortcuts help overlay with a discoverability FAB (Pack H3).
+
+**Observability (2026-05-20):** Sentry MCP wired into the repo via
+`.mcp.json` at `https://mcp.sentry.dev/mcp/eq-solutions/eq-quotes`. The
+runtime DSN secret is still pending — see `docs/runbooks/sentry-setup.md`.
+Resend cutover steps in `docs/runbooks/resend-setup.md`. Slug convention
+captured in `ops/decisions.md` 2026-05-20 entry — `eq-<product>`, not
+repo or deploy name.
+
 **Strategic position:** Position 4 in the EQ Shell module queue —
 unchanged. Validation gate stays on Field. The Flask v1 is the
 pilot's executable spec, not a queue-jump.

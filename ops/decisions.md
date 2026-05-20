@@ -1,7 +1,7 @@
 ---
 title: OPS — Decisions Log
 owner: Royce Milmlow
-last_updated: 2026-05-19
+last_updated: 2026-05-20
 scope: Append-only log of key decisions across all tiers and the reasoning at the time
 read_priority: standard
 status: live
@@ -17,6 +17,23 @@ Format: Status → Decision → Why → Alternatives considered → Implications
 Status values: Accepted | Superseded by [date+title] | On Hold | Deprecated | Proposed.
 Append-only — never delete an entry. Supersede or deprecate it instead.
 For the current built state of each system, see [system/architecture.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/system/architecture.md).
+
+---
+
+## 2026-05-20 — Sentry / Observability Project Slug = `eq-<product>`, Not Repo Name
+
+**Status:** Accepted; supersedes the prior "slug = repo name" guidance in `~/.claude/CLAUDE.md` (Observability stack table).
+
+**Decision:** Sentry project slugs (and by extension PostHog project keys, Clarity project IDs, and any other per-app observability slug) follow the **`eq-<product>` convention**: `eq-quotes`, `eq-field`, `eq-expenses`, `eq-ops`. Not the repo name (`eq-quotes-port`), not the deploy slug (`eq-quotes-sks`), not the Netlify site name (`eq-solves-service`). Captured 2026-05-20 in `~/.claude/CLAUDE.md` (Observability stack table). The first project wired under the new rule is `eq-solutions/eq-quotes` on Sentry.
+
+**Why:** Repo names carry implementation history (`-port` for the SQLite→Supabase port, `-react` for a future rewrite, `-v2` for redesigns). Deploy slugs carry deployment history (`-sks` for the SKS pilot tenant). Product slugs are stable across both — they're how a human refers to the system. Tying the observability slug to the product means a repo rename or a tenant addition doesn't break alert routing, DSN environment variables, or the muscle-memory URL pattern `mcp.sentry.dev/mcp/eq-solutions/<product>`.
+
+**Alternatives considered:**
+- *Repo-name slug (original rule).* Rejected — couples observability to the repo's implementation history. The eq-solves-service Sentry project already paid this cost; we're not adding more.
+- *Deploy-slug slug.* Rejected — couples observability to the deployment tenant. Adding a second tenant of the same product would force a second Sentry project, which is wrong (we want one project per product, not per deploy).
+- *Free-form per project.* Rejected — every time the question comes up Royce has to remember "did I call it eq-quotes or quotes-eq or eqq?" Pattern enforcement is cheaper than recall.
+
+**Implications and principle going forward:** When wiring observability for a new EQ app, the slug is mechanical: `eq-` + the product name in `eq/products.md`. The MCP URL, the Fly secret name, the alert email subject pattern all follow. Repo or deploy details stay out of the observability surface. Existing projects (`eq-solves-service`) keep their legacy slug for backwards compat but new ones follow the rule.
 
 ---
 
