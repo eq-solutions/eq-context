@@ -180,22 +180,61 @@ independent, verifiable deliverable.
 ### Unit 2 — Intake spine: licence commit path
 
 **Owner:** Claude Code
-**Effort:** 4-6 hours
+**Effort estimate when planned:** 4-6 hours
 **Risk:** medium — Confirm-UI is a complex surface; new entity
 might surface integration assumptions
 
-- Extend `@eq/intake` parser to recognise the licence entity (column
-  detection, alias resolution, validation invocation)
-- Extend `@eq/confirm-ui` with a licence confirmation surface (Royce
-  may want a specific layout — surface this before building, the
-  Confirm-UI spec at `eq-intake/CONFIRM-UI-SPEC.md` is the authority)
-- Verify `eq_intake_commit_batch` in canonical routes by entity name
-  to the new `licences` table — existing function probably handles
-  arbitrary entity tables via generic pattern, but confirm reading
-  `eq-intake/sql/003_schema_version_columns.sql`
-- Smoke test: drop a 10-row licence CSV into `/core/intake`, walk
-  through column mapping → dedupe → confirm → commit, verify rows
-  land in `canonical.licences`
+**Status 2026-05-20:** RPC piece done. UI piece deferred (see below).
+
+#### 2.A RPC routing — DONE 2026-05-20
+
+The `eq_intake_commit_batch` RPC has a hardcoded table whitelist + a
+per-entity dispatch case. Generic-across-tables it is NOT. Adding
+licences required:
+
+- New migration `eq-intake/sql/006_licences_commit_path.sql` that
+  `create or replace`s the RPC with `'licences'` added to the
+  whitelist + a full `when 'licences' then` dispatch branch
+  (INSERT + UPSERT on conflict on `licence_id`, all 13 columns
+  refreshed on upsert except PK / tenant_id / created_at / created_by)
+- `scripts/db-apply.ts` bundles 006 as section 7, between 005 and the
+  seed_schema_registry step
+- `.generated/all-migrations.sql` regenerated → 5,067 lines, 211 KB
+
+**Discovery (not in original plan):** the classifier in
+`@eq/intake/src/classify.ts` is fully schema-driven. It scores
+arbitrary canonical schemas against parsed source columns. Adding
+`licence.schema.json` to the registry handed to it is enough; no
+classifier code changes needed.
+
+**Discovery (also not in original plan):** the @eq/confirm-ui
+ParserDropZone is fully schema-driven too. Its FlowConfig takes
+`schema: Record<string, unknown>` plus a `commit: CommitFn`. Any
+host can mount a licence-specific drop zone by passing
+`licenceSchema` + a commit function that calls
+`supabase.rpc('eq_intake_commit_batch', { p_table: 'licences', ... })`.
+
+#### 2.B IntakeModule UI — DEFERRED
+
+Today's IntakeModule (the in-shell mount at `/:tenant/intake`)
+contains three SimPRO-specific surfaces hardcoded to customer/site/
+contact: `QuickExportSection`, `RollupDropZone`,
+`CanonicalCommitSection`. None handle a single-entity drop like
+a licence CSV.
+
+Adding a `LicenceImportSection` (using the generic `ParserDropZone`
+configured with `licenceSchema`) is straightforward but is **not
+required for Cards Unit 4** — the Flutter app calls
+`eq_intake_commit_batch` directly with `p_table: 'licences'`, no
+shell UI in the loop.
+
+Build the IntakeModule UI when there's a bulk-import use case (HR
+training register CSV, RTO export). For now, the RPC alone unblocks
+Cards.
+
+Effort when scheduled: ~3 hours (new section component +
+LicenceImportSection wrapper around ParserDropZone + tests +
+plug into IntakeModule).
 
 ### Unit 3 — Data migration from Cards Supabase → canonical
 
