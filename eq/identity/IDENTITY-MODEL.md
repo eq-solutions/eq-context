@@ -9,7 +9,7 @@ status: live
 
 # EQ Solutions — Unified Identity & Permissions Model
 
-**Status:** Draft v1, 2026-05-20.
+**Status:** Live v1, 2026-05-20. (Promoted from Draft when Phase 1.F shipped — see commit history on `claude/phase-1f-identity-foundation`.)
 **Implementation owner (shell side):** see [eq/identity/PHASE-1F-PLAN.md](./PHASE-1F-PLAN.md).
 **Scope:** Authoritative reference for every present and future EQ Solutions product (Field, Quotes, Cards, Service, Intake, Tender Pipeline, and anything that follows). Every new module shipped under the EQ shell must conform to this document.
 
@@ -240,15 +240,25 @@ Every new module PR that adds a gated screen or action must:
 - [ ] Never call out to fetch permissions at runtime
 - [ ] If the module runs outside the shell (Flutter, native, etc.), present a fresh `mint-supabase-jwt`-issued token on every Supabase call; refresh before expiry
 
-## 11. Open questions to settle before implementation
+## 11. Open questions — resolved 2026-05-20
 
-These need decisions before [Phase 1.F](./PHASE-1F-PLAN.md) starts; tracked here so they're not forgotten.
+The five §11 questions that flagged uncertainty in the draft were all settled by Phase 1.F's pre-flight assumptions and the shipped implementation. Recorded here so future readers can see the rationale, not as live questions.
 
-1. **PIN vs password.** Today the shell uses bcrypt-hashed 4-character PINs. For the unified-identity story, is PIN sufficient long-term, or do we move to per-user passwords + MFA at some point? Affects the invite/landing flow design.
-2. **Multi-tenant membership.** Can one user belong to multiple tenants? Today `users.tenant_id` is a single FK, implying no. If yes (e.g. a contractor working for SKS *and* Melbourne), the data model and login UX need different shapes — separate accounts vs a tenant switcher.
-3. **Role granularity beyond 5.** Does the AHD programme (or any near-term plan) need a 6th tier? If so, add it here before any code lands.
-4. **Self-service invite acceptance.** Does the "set your PIN" landing page also let the user set their display name, or is that admin-controlled at invite time?
-5. **JWT TTL and refresh strategy.** 15 minutes is the proposed default for the Supabase JWT. Cards' Flutter app will be the first real consumer — confirm the refresh cadence works for offline-tolerant use (e.g. a tradie on-site with patchy signal photographing a licence).
+1. ~~**PIN vs password.**~~ **Decided: PIN stays for v1.** Bcrypt-hashed (cost factor 10), 4–12 letters or digits. Re-evaluate post-pilot if a tenant manager requests password+MFA — see §11.2 below for the upgrade-path hooks.
+2. ~~**Multi-tenant membership.**~~ **Decided: one user belongs to one tenant.** `users.tenant_id` stays a single FK. If a real cross-tenant use case appears, the model becomes two `users` rows linked by email — not a single row with multiple tenant IDs. Tracked as a v2 candidate.
+3. ~~**Role granularity beyond 5.**~~ **Decided: 5 tiers correct for v1.** AHD programme uses the existing tiers without exception (apprentice + employee + supervisor cover the field). 6th tier added only via a deliberate model bump.
+4. ~~**Self-service invite acceptance.**~~ **Decided: PIN only on the landing page.** Display name comes from the invite payload; editable by an admin later via `/admin/users/<id>`. Keeps the landing form to one field — finishable in 5 seconds on a phone.
+5. ~~**JWT TTL and refresh strategy.**~~ **Decided: 15-minute default, refresh-on-demand via `/.netlify/functions/mint-supabase-jwt`.** Cards's Flutter app (first external consumer, see Cards canonical-migration plan Unit 4) caches the most-recent JWT in `flutter_secure_storage` + refreshes opportunistically when online. If real-world Cards use shows 15 min is too tight for patchy-signal scenarios, bump to 60 min and document the trade in §11.5 web considerations.
+
+## 11.2 v2 backlog — deliberate model bumps for later
+
+When any of these arrive, they ship as a v2 of this doc (deliberate version bump, every module re-pins to v2 in their `permissions.ts`).
+
+- **Multi-tenant membership** — one user with rights across multiple tenants (a contractor working for SKS and a Melbourne customer). Likely shape: separate `users` rows linked by `email`, with a tenant-switcher in the shell UI.
+- **Password + MFA replacement of PIN** — driven by an enterprise customer requirement. The invite/landing flow extends to accept email-link OR PIN-set on first acceptance.
+- **6th role tier** — driven by a real product need. Default first-pass for a "contractor" or "external auditor" tier would slot between employee and labour_hire.
+- **Audit log of permission decisions** — every `useCan()` call logged for forensics. Adds runtime cost; only worth it once a tenant manager asks "who clicked what when."
+- **Dynamic / DB-backed matrix** — currently the matrix is static + version-pinned in code. A future admin UI for editing per-tenant grants would land here.
 
 ---
 
