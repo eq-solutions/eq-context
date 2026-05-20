@@ -1,35 +1,44 @@
 # cleanup-worktrees.ps1
-# v3 (2026-05-19) — detect-and-clean, self-maintaining
+# v4 (2026-05-20) — orphan-aware, covers eq-intake + eq-shell
 #
-# Policy:
-#   - Scans `git worktree list --porcelain` in each known repo
-#   - REMOVES a worktree iff ALL of:
-#       (a) not the main worktree (which is the repo root itself)
-#       (b) not the worktree this script is running from
-#       (c) not locked (`git worktree lock` flag absent)
-#       (d) working tree is clean — no uncommitted, no untracked
-#       (e) branch is fully merged into main/demo (parent of worktree-root branch),
-#           OR worktree HEAD is identical to the parent-branch HEAD
-#   - SKIPS (with a printed reason) anything that doesn't meet all of the above.
+# Two classes of leftover handled:
 #
-# Branches are NEVER deleted — only worktree filesystems + .git/worktrees/<name> metadata.
-# Any commits in skipped worktrees remain on their branches for later checkout.
+# 1. GIT-KNOWN worktrees (`git worktree list --porcelain`). REMOVE iff ALL of:
+#      (a) not the main worktree (the repo root itself)
+#      (b) not the worktree this script is running from
+#      (c) not locked
+#      (d) working tree is clean (no uncommitted, no untracked)
+#      (e) branch is fully merged into parent (main/demo), OR worktree HEAD
+#          equals parent HEAD
+#    Branches are NEVER deleted — only worktree filesystem + .git/worktrees/<name>
+#    metadata. Skipped commits remain on their branches.
+#
+# 2. ORPHAN dirs — `.claude/worktrees/<name>` directories with NO entry in
+#    `git worktree list`. Typically left behind by Cowork sessions that ended
+#    abnormally. REMOVE iff age > $OrphanAgeDaysDefault OR -Force given.
+#    Recent orphans (< threshold) are reported but kept, in case they hold
+#    unfinished work.
 #
 # Run from anywhere on the Beelink (absolute paths).
-#   .\cleanup-worktrees.ps1                    # full sweep across known repos
+#   .\cleanup-worktrees.ps1                    # full sweep, 7-day orphan threshold
 #   .\cleanup-worktrees.ps1 -DryRun            # print actions, change nothing
-#   .\cleanup-worktrees.ps1 -Force             # ignore the merge-status check (still skips locked/dirty/current)
+#   .\cleanup-worktrees.ps1 -Force             # ignore merge-status check AND
+#                                              # remove orphans regardless of age
+#   .\cleanup-worktrees.ps1 -OrphanAgeDays 14  # change orphan age threshold
 
 [CmdletBinding()]
 param(
     [switch]$DryRun,
-    [switch]$Force
+    [switch]$Force,
+    [int]$OrphanAgeDays = 7
 )
 
 $ErrorActionPreference = 'Continue'
 
 $repos = @(
     @{ Path = 'C:\Projects\eq-context';        ParentBranch = 'main' }
+    @{ Path = 'C:\Projects\eq-intake';         ParentBranch = 'main' }
+    @{ Path = 'C:\Projects\eq-shell';          ParentBranch = 'main' }
     @{ Path = 'C:\Projects\eq-solves-field';   ParentBranch = 'demo' }
     @{ Path = 'C:\Projects\eq-solves-service'; ParentBranch = 'main' }
 )
@@ -137,6 +146,36 @@ foreach ($r in $repos) {
             Remove-WorktreeSafe -WorktreePath $wt.Path -RepoPath $repoPath -WorktreeName $name
         } else {
             Write-Host "    decision: skip ($($verdict.Reason))" -ForegroundColor Gray
+        }
+    }
+
+    # Orphan scan: filesystem dirs under .claude/worktrees/ that git no longer tracks
+    $wtBase = Join-Path $repoPath '.claude\worktrees'
+    if (Test-Path $wtBase) {
+        $knownNames = @($worktrees | ForEach-Object { Split-Path $_.Path -Leaf })
+        $orphans = Get-ChildItem $wtBase -Directory -ErrorAction SilentlyContinue | Where-Object { $_.Name -notin $knownNames }
+        foreach ($orph in $orphans) {
+            $ageDays = [int]((Get-Date) - $orph.LastWriteTime).TotalDays
+            Write-Host "  $($orph.Name) [ORPHAN, ${ageDays}d old]" -ForegroundColor Yellow
+            $shouldRemove = $Force.IsPresent -or ($ageDays -gt $OrphanAgeDays)
+            if ($shouldRemove) {
+                Write-Host "    decision: REMOVE orphan (age ${ageDays}d > ${OrphanAgeDays}d threshold)" -ForegroundColor Green
+                if ($DryRun) {
+                    Write-Host "    [dry-run] would remove orphan" -ForegroundColor Yellow
+                } else {
+                    Get-ChildItem -Path $orph.FullName -Recurse -Force -ErrorAction SilentlyContinue |
+                        ForEach-Object { try { $_.Attributes = 'Normal' } catch {} }
+                    try { (Get-Item $orph.FullName -Force).Attributes = 'Normal' } catch {}
+                    try {
+                        Remove-Item -Recurse -Force $orph.FullName -ErrorAction Stop
+                        Write-Host "    -> orphan removed" -ForegroundColor Green
+                    } catch {
+                        Write-Warning "    -> orphan remove failed: $($_.Exception.Message.Split([Environment]::NewLine)[0])"
+                    }
+                }
+            } else {
+                Write-Host "    decision: skip (age ${ageDays}d <= ${OrphanAgeDays}d threshold, -Force overrides)" -ForegroundColor Gray
+            }
         }
     }
 }
