@@ -26,6 +26,8 @@ Two facts landed between plan-draft (morning) and plan-execution (evening) that 
 
 **Action for the executing session:** before running Step 1, either expand the migration SQL to include the user_metadata→app_metadata sweep across all 13 entity tables + intake spine, OR explicitly add a Step 1.5 doing the sweep separately. Either is fine; the gate is "no `rls_references_user_metadata` warnings remain after the new migration."
 
+**Full context on what landed 2026-05-20 evening:** [sessions/2026-05-20-part-c.md](../../sessions/2026-05-20-part-c.md).
+
 **Existing canonical migrations as of this update:**
 
 ```
