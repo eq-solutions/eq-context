@@ -20,6 +20,38 @@ For the current built state of each system, see [system/architecture.md](https:/
 
 ---
 
+## 2026-05-20 — Split SKS Live Out of eq-field Into Dedicated Repo
+
+**Status:** Accepted; supersedes the 2026-05-13 "eq-field-app Lives at Milmlow Personal Account; One Repo, Two Branches" decision (which itself superseded the original "eq-solutions/eq-field-app" guidance).
+
+**Decision:** The SKS NSW Labour app now lives in its own dedicated GitHub repo `eq-solutions/sks-nsw-labour` (public). The previous arrangement — one repo (`eq-solutions/eq-field`, formerly `Milmlow/eq-field-app`) with `main` = SKS Live and `demo` = EQ Field demo — has been unwound. After the split: `eq-solutions/sks-nsw-labour` serves `sks-nsw-labour.netlify.app` from its `main` branch; `eq-solutions/eq-field` is EQ-Field-only with `main` as the active development branch (the former `demo` renamed in place). The pre-existing local folder split (`C:\Projects\sks-nsw-labour` vs `C:\Projects\eq-solves-field`) now mirrors a real repo boundary instead of two clones of one repo.
+
+Execution sequence (2026-05-20):
+1. Created empty `eq-solutions/sks-nsw-labour` via `gh repo create`.
+2. From `C:\Projects\sks-nsw-labour` (the local SKS Live clone), pushed `main` (HEAD `aa1eedd`) + the active feature branch `claude/sks-db-hardening-2026-05-20` to the new repo.
+3. Manually re-linked the existing `sks-nsw-labour` Netlify project to the new repo via the Netlify dashboard (the API rejects `build_settings.repo_url` PATCH silently — see `system/lessons.md`).
+4. Triggered a fresh build via Netlify API; deploy verified ready at commit `aa1eedd` from the new repo (deploy time 6s, no functional change to the live site).
+5. Repointed the local clone's `origin` to the new repo (the old eq-field origin retained as `eq-field-archive` for rollback).
+6. On `eq-solutions/eq-field`: closed PR #116 (the SKS feature branch's PR against eq-field/main, now obsolete), deleted `claude/sks-db-hardening-2026-05-20`, changed default branch `main` → `demo` as a transient step, deleted the now-orphan `main`, renamed `demo` → `main`. Net result: eq-field has the standard "main is the active development branch" shape.
+
+**Why:** Two-clone-one-repo patterns are an active source of substrate noise and stranded commits. The 2026-05-13 ADR justified the consolidated repo on the grounds that migrating to a separate one "would require redoing Netlify integration, which is not on the priority list" — that estimate proved low (the actual rewire was a dashboard click + ~6s build, totalling under 5 minutes). The cost of not splitting was much higher: the 2026-05-20 md-health audit surfaced the eq-solves-field clone holding a 7-day-stale local-only commit (`db2b5fa Add .gitattributes`) that the sks-nsw-labour clone couldn't see, plus 50 uncommitted entries; the "MISSING .gitattributes" report finding required three separate course corrections before the right action (write a fresh commit on main from the SKS Live clone, since the demo-side commit was never pushed) became clear. Two clones diverging silently is exactly the failure mode that a single-purpose-per-repo structure prevents.
+
+**Alternatives considered:**
+
+- *git worktrees off a single clone* (one `.git`, two working trees `eq-field/main` + `eq-field/demo`). Rejected — solves the local clone-drift problem but doesn't address the underlying conceptual problem (one GitHub repo serving two unrelated products with deliberately divergent codebases). The two branches were 1-ahead-106-behind on `demo` and there was no scenario in which they would converge again. Two products → two repos is the right shape.
+- *Single clone, switch branches* on each working session. Rejected — blocks parallel work on EQ Field and SKS Live, makes accidental cross-deploys more likely (push the wrong branch from the wrong context).
+- *Cut from a clean HEAD vs subtree-split preserving history.* Adopted the clean-HEAD cut per Royce's 2026-05-20 call ("eq field and sks live are no longer sync — I've gone too far ahead with eq field"). The two codebases share a common ancestor at `948f414` but diverge so heavily afterwards that preserving the intertwined history would have produced a confusing single-product log full of irrelevant EQ Field commits. Cutting from `aa1eedd` gives the new repo a clean baseline; the historical eq-field repo retains the full record if needed.
+- *Leave eq-field/main as an archived orphan* (option C in the post-split cleanup question). Rejected — orphan branches in a repo are recurring confusion-generators ("which main is real?"); cheaper to fix once now than answer that question every time someone navigates the repo.
+
+**Implications and principle going forward:**
+
+1. **Update local references** — `C:\Projects\eq-solves-field` (which has 50 uncommitted entries on the local `demo` branch) needs `git fetch --prune && git branch -m demo main && git branch --set-upstream-to=origin/main main` when Royce next opens that folder. Logged in `ops/pending.md`. The OLD origin URL for `C:\Projects\sks-nsw-labour` is retained as `eq-field-archive` remote for rollback for ~30 days.
+2. **CLAUDE.md / global rules** — Royce's `C:\Users\EQ\.claude\CLAUDE.md` deployment table lists `sks-nsw-labour.netlify.app` against repo "EQ Field (demo)"; that row needs to become repo `eq-solutions/sks-nsw-labour`. Royce-manual edit (in his personal global rules, not substrate).
+3. **The 2026-05-13 ADR is now superseded** but remains in the log as the historical reasoning. Its "migration cost too high" line is the contradicted prediction that motivated this entry's "Why".
+4. **Default repo shape going forward** — one product per repo. The next time a dual-purpose pattern is proposed (one repo, two long-lived branches, two products), this ADR is the rebuttal.
+
+---
+
 ## 2026-05-20 — Sentry / Observability Project Slug = `eq-<product>`, Not Repo Name
 
 **Status:** Accepted; supersedes the prior "slug = repo name" guidance in `~/.claude/CLAUDE.md` (Observability stack table).

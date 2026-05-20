@@ -14,6 +14,24 @@ Format: what went wrong → what the fix is → why it matters.
 
 ---
 
+## Netlify — `build_settings.repo_url` Cannot Be PATCHed Via API
+
+**Problem:** When migrating a Netlify project to a new source GitHub repo, the obvious move is `PATCH /api/v1/sites/{id}` with `{"build_settings":{"repo_url":"https://github.com/<new>","repo_path":"<new>","provider":"github","repo_branch":"main",...}}`. The API returns 200 OK with a refreshed `updated_at` — but `repo_url` and `repo_path` in the response are unchanged. The patch is **silently rejected**. Confirmed 2026-05-20 attempting to rewire `sks-nsw-labour.netlify.app` from `eq-solutions/eq-field` to `eq-solutions/sks-nsw-labour`.
+
+**Fix:** The repo source on a Netlify project is OAuth-protected (it requires the GitHub App webhook + deploy key to be set up on the new repo). It can only be changed through:
+
+1. **Netlify dashboard** — Project → Configuration → Build & deploy → Continuous deployment → Repository → Manage repository → Link to a different repository. The standard supported path. Takes ~60s, preserves all env vars, build settings, custom domains, deploy hooks. Recommended.
+2. **Netlify CLI** — `netlify link` operates on local folders, not at remote project config level. No CLI command exposes the relink-to-different-repo operation.
+3. **Recreate the project** — `POST /sites` with the new repo, migrate env vars, swap the custom domain. Heavy.
+
+After the dashboard relink, the new repo is wired but Netlify does **not** auto-trigger a deploy from it (Netlify only auto-deploys on git push webhooks). Trigger a first build manually via `POST /api/v1/sites/{id}/builds` with `{}` body, then poll `/sites/{id}/deploys/{deploy_id}` until `state=ready`.
+
+**Also note:** branch-only changes (`build_settings.repo_branch`) on the same site are subject to the same silent rejection. Same dashboard path: change "Branch to deploy" in Build settings. Discovered while migrating `eq-solves-field.netlify.app` from `demo` → `main` after the 2026-05-20 demo→main rename.
+
+**Why it matters:** The "I'll script the Netlify rewire" assumption costs the most time when discovered mid-migration — the new repo is already created, code is already pushed, and you're staring at an API that lied with a 200. Better to know up front that the rewire is a dashboard step (or a manual user action) and plan the migration with that in the critical path. Affects any migration that splits one repo into two, consolidates two into one, or moves a repo between orgs.
+
+---
+
 ## Supabase Function Migrations — Search Path + Privilege Hygiene
 
 **Problem:** Supabase Security Advisor flags every function lacking an explicit `SET search_path` in its definition (category: "Function Search Path Mutable"), and every `SECURITY DEFINER` function callable by `public` or `authenticated` (categories: "Public Can Execute SECURITY DEFINER" and "Signed-In Users Can Execute SECURITY DEFINER"). Discovered 2026-05-19 on `eq-demo-canonical` — 17 warnings on 7 functions across the 4 advisor categories, all originating from `eq-intake/sql/001-003_*.sql`. The migrations used a session-level `set search_path = public` at the top of the file (which only affects the migration session), but didn't bake `SET search_path` into each function definition.

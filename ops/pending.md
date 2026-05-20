@@ -136,21 +136,52 @@ Defer to: Beelink return (12 May+) for proper test coverage. Holiday-laptop work
   the 1265-line single-file capture tool is real work that will be lost
   if the clone is ever deleted without first pushing the branch.
 
-- [ ] **eq-field → SKS Live GitHub split — IN PLANNING** —
-  Local folders for sks-nsw-labour and eq-solves-field were split
-  2026-05-20. On GitHub both still live in `eq-solutions/eq-field`
-  (main = SKS Live, demo = EQ Field demo, deploys confirmed via
-  Netlify MCP audit). The two branches are no longer in any way
-  in sync — demo is 106 commits ahead of main, intentional. Royce
-  decided 2026-05-20 to extract main into its own dedicated repo:
-  cut from current main HEAD (no history preservation), push as
-  initial state of a new `eq-solutions/sks-nsw-labour` (name TBC),
-  re-wire `sks-nsw-labour.netlify.app` Netlify project to pull from
-  the new repo, repoint local `C:\Projects\sks-nsw-labour` origin,
-  then decide what to do with eq-field/main (delete? rename
-  demo→main?). Pre-condition: eq-solves-field demo clone has 50
-  uncommitted entries + 1 stale unpushed commit (`db2b5fa`) that
-  should be addressed first to avoid stranding work.
+- [x] **eq-field → SKS Live GitHub split — DONE 2026-05-20** —
+  Executed end-to-end this session. `eq-solutions/sks-nsw-labour`
+  created, main + claude/sks-db-hardening-2026-05-20 pushed across,
+  Netlify project re-linked via dashboard (the API silently rejects
+  build_settings.repo_url updates — see system/lessons.md), live
+  deploy verified at commit aa1eedd from the new repo. On the
+  eq-field side: PR #116 closed, SKS feature branch deleted, main
+  deleted, demo renamed → main (new default). Full reasoning in
+  `ops/decisions.md` "2026-05-20 — Split SKS Live Out of eq-field
+  Into Dedicated Repo". Three follow-up items below.
+
+- [ ] **eq-solves-field local clone — rename demo → main** —
+  After the 2026-05-20 split, `eq-solutions/eq-field` no longer
+  has a `demo` branch (renamed in place to `main`). The local
+  clone at `C:\Projects\eq-solves-field` is still on a local
+  `demo` branch tracking the gone-from-origin `origin/demo`. Has
+  50 uncommitted entries on that branch + 1 local-only unpushed
+  commit (`db2b5fa Add .gitattributes`). Next time Royce opens
+  the folder, the cleanup sequence is: (a) commit or stash the
+  50 uncommitted entries, (b) `git fetch --prune`, (c)
+  `git branch -m demo main`, (d) `git branch --set-upstream-to=origin/main main`,
+  (e) decide whether `db2b5fa` is wanted (the new SKS Live repo's
+  main already has an equivalent .gitattributes via `aa1eedd`,
+  so if the demo-branch one is a duplicate it can be dropped).
+  Until cleanup: pushes from this clone will fail with "ref does
+  not exist" because origin/demo is gone.
+
+- [ ] **eq-solves-field Netlify branch rewire — dashboard click** —
+  After demo→main rename on eq-field, Netlify project
+  `eq-solves-field.netlify.app` still has its build branch set
+  to `demo` (which no longer exists on origin). Already-deployed
+  content keeps serving from cache, but new pushes won't deploy
+  until Royce changes the Build branch from `demo` → `main` in
+  the Netlify dashboard. Same flow as the sks-nsw-labour rewire
+  done this session — Netlify API can't update branch programmatically
+  for the same OAuth-protected reason.
+
+- [ ] **Personal global rules `C:\Users\EQ\.claude\CLAUDE.md`
+      deployment table is stale (post-split)** —
+  Royce's personal global rules still show
+  `sks-nsw-labour.netlify.app` as deploying from "EQ Field (demo)"
+  repo on `demo` branch. After today's split that row should read
+  `eq-solutions/sks-nsw-labour` on `main`, and the eq-solves-field
+  row should read `eq-solutions/eq-field` on `main` (renamed from
+  demo 2026-05-20). Not substrate-visible — Royce-manual edit in
+  his personal global rules.
 
 ---
 
