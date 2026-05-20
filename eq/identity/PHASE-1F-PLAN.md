@@ -16,6 +16,31 @@ status: draft (pre-implementation)
 
 ---
 
+## Context update — 2026-05-20 evening (read before starting)
+
+Two facts landed between plan-draft (morning) and plan-execution (evening) that change Step 1's scope. Neither breaks the plan; both expand it slightly.
+
+**1. There are now 13 canonical entities, not 12.** The Cards canonical-migration ([eq/cards/canonical-migration/plan.md](../cards/canonical-migration/plan.md)) added `licences` as the 13th entity. Applied to `eq-canonical` 2026-05-20 evening as migration `2026_05_20_licences_commit_path_and_drop_4arg_overload`. The new table has 4 RLS policies (select/insert/update/delete) all reading `auth.jwt() -> 'user_metadata' ->> 'tenant_id'`. Step 1's sweep needs to cover these.
+
+**2. The user_metadata → app_metadata sweep is implicit in this plan, not explicit.** Step 1's SQL block below adds the enum + `is_platform_admin` + `user_invites` table, but does **not** include the canonical-wide RLS rewrite from `user_metadata.tenant_id` to `app_metadata.tenant_id`. That sweep is the architectural prerequisite for the Supabase JWT minter in Step 4 to actually work end-to-end. Supabase's database linter currently reports **28 ERROR-level `rls_references_user_metadata` warnings** across the canonical (12 entity tables + 4 licences policies + intake spine tables = 28). After Step 1's sweep lands, that count must drop to ≤5 (the by-design SECURITY DEFINER warnings + leaked-password toggle remain).
+
+**Action for the executing session:** before running Step 1, either expand the migration SQL to include the user_metadata→app_metadata sweep across all 13 entity tables + intake spine, OR explicitly add a Step 1.5 doing the sweep separately. Either is fine; the gate is "no `rls_references_user_metadata` warnings remain after the new migration."
+
+**Existing canonical migrations as of this update:**
+
+```
+20260519093858  2026_05_19_shell_control_plane
+20260519105945  2026_05_19_enable_intake_for_core
+20260519111130  2026_05_19_canonical_select_rls_policies         <-- these are the user_metadata policies to rewrite
+20260519114355  2026_05_19_align_public_user_id_with_auth        <-- step 1's role-type swap must respect this FK
+20260519120438  2026_05_19_drop_old_commit_batch_overload
+20260519120722  2026_05_19_commit_batch_inject_pk_uuid
+20260519120911  2026_05_19_commit_batch_inject_timestamps_active
+20260520112318  2026_05_20_licences_commit_path_and_drop_4arg_overload   <-- tonight's add
+```
+
+---
+
 ## Goal
 
 Stand up the unified identity layer specified in [IDENTITY-MODEL.md](./IDENTITY-MODEL.md). After Phase 1.F:
@@ -120,7 +145,17 @@ create index if not exists user_invites_token on public.user_invites (invite_tok
 
 **Verify:** `select role, is_platform_admin from public.users where email = 'dev@eq.solutions'` returns `('manager', true)`. `\d+ public.users` shows `role` as `eq_role` not `text`.
 
-**Rollback path:** keep the migration reversible until the bridges in steps 4 + 5 ship — if either Field's HMAC handoff or Cards' JWT consumption breaks against the new role, we need to be able to revert the type swap.
+**Additionally required as of 2026-05-20** (see Context update at top): rewrite all canonical RLS policies + RPC tenant-checks from `user_metadata.tenant_id` to `app_metadata.tenant_id`. Scope:
+
+- 13 entity tables: `staff`, `sites`, `assets`, `swms`, `schedule_entries`, `prestart_checks`, `jsa_records`, `toolbox_talks`, `incidents`, `itp_records`, `customers`, `contacts`, `licences`
+- Intake spine: `eq_intake_templates`, `eq_intake_events`, `eq_intake_row_audit`, `eq_export_events`, `eq_export_profiles`
+- Functions: `eq_intake_commit_batch`, `eq_intake_find_template_by_signature`, `eq_intake_rollback`
+
+Pattern (per IDENTITY-MODEL.md §6.2): replace `auth.jwt() -> 'user_metadata' ->> 'tenant_id'` with `auth.jwt() -> 'app_metadata' ->> 'tenant_id'` everywhere. Use `CREATE OR REPLACE POLICY` (drop-then-recreate, idempotent — Postgres has no `CREATE POLICY IF NOT EXISTS`).
+
+**Sweep verification:** after Step 1 applies, `mcp__<supabase>__get_advisors` security run returns `<5` results (the by-design SECURITY DEFINER + leaked-password-protection warnings remain; everything else clears).
+
+**Rollback path:** keep the migration reversible until the bridges in steps 4 + 5 ship — if either Field's HMAC handoff or Cards' JWT consumption breaks against the new role, we need to be able to revert the type swap. Rollback also reverts the user_metadata→app_metadata sweep (i.e. all RLS policies recreated with the old claim path).
 
 ### 2. Session payload + cookie
 
@@ -308,6 +343,7 @@ Pre-flight decisions add ~0.5d if any of the five §11 questions need real explo
 - `dev@eq.solutions` logs into `core.eq.solutions`, sees role `manager` + platform admin in the session payload.
 - A second invited user can complete the invite flow end-to-end, sign in, and have the correct role + entitlements applied.
 - `mint-supabase-jwt` returns a valid Supabase JWT; a smoke-test RLS policy on `eq-canonical` correctly scopes rows by `app_metadata.tenant_id`.
+- `mcp__<supabase>__get_advisors security` on `eq-canonical` returns fewer than 5 results — the 28 `rls_references_user_metadata` ERROR warnings present pre-1.F all cleared.
 - EQ Field iframe handoff still works (regression check on the `core` tenant).
 - Intake module gates one action via `useCan()` and at least one Supabase call via the minted JWT.
 - `core` tenant has `module_entitlements` rows for every module that's currently mounted in the shell (`field`, `intake`, `cards`, `tender`, anything else live). Documented in the migration verification step.
