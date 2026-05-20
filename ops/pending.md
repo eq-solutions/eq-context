@@ -147,31 +147,20 @@ Defer to: Beelink return (12 May+) for proper test coverage. Holiday-laptop work
   `ops/decisions.md` "2026-05-20 — Split SKS Live Out of eq-field
   Into Dedicated Repo". Three follow-up items below.
 
-- [ ] **eq-solves-field local clone — rename demo → main** —
-  After the 2026-05-20 split, `eq-solutions/eq-field` no longer
-  has a `demo` branch (renamed in place to `main`). The local
-  clone at `C:\Projects\eq-solves-field` is still on a local
-  `demo` branch tracking the gone-from-origin `origin/demo`. Has
-  50 uncommitted entries on that branch + 1 local-only unpushed
-  commit (`db2b5fa Add .gitattributes`). Next time Royce opens
-  the folder, the cleanup sequence is: (a) commit or stash the
-  50 uncommitted entries, (b) `git fetch --prune`, (c)
-  `git branch -m demo main`, (d) `git branch --set-upstream-to=origin/main main`,
-  (e) decide whether `db2b5fa` is wanted (the new SKS Live repo's
-  main already has an equivalent .gitattributes via `aa1eedd`,
-  so if the demo-branch one is a duplicate it can be dropped).
-  Until cleanup: pushes from this clone will fail with "ref does
-  not exist" because origin/demo is gone.
+- [x] **eq-solves-field local clone — rename demo → main — DONE 2026-05-20** —
+  Completed by a parallel chat session. The clone is now on `main`
+  tracking `origin/main` (0/0), with the previous SKS-Live main
+  preserved as a local `main-pre-split-archive` branch (more
+  conservative than the original "delete it" plan — good call).
+  Three merged branches deleted locally; safe-cleanups worktree
+  removed. The 50 prior uncommitted entries were handled in that
+  pass.
 
-- [ ] **eq-solves-field Netlify branch rewire — dashboard click** —
-  After demo→main rename on eq-field, Netlify project
-  `eq-solves-field.netlify.app` still has its build branch set
-  to `demo` (which no longer exists on origin). Already-deployed
-  content keeps serving from cache, but new pushes won't deploy
-  until Royce changes the Build branch from `demo` → `main` in
-  the Netlify dashboard. Same flow as the sks-nsw-labour rewire
-  done this session — Netlify API can't update branch programmatically
-  for the same OAuth-protected reason.
+- [x] **eq-solves-field Netlify branch rewire — DONE 2026-05-20** —
+  Royce did the dashboard rewire mid-session.
+  `eq-solves-field.netlify.app` now builds from
+  `eq-solutions/eq-field` `main` (formerly demo). Verified
+  via the Netlify REST API + a manual build trigger.
 
 - [ ] **Personal global rules `C:\Users\EQ\.claude\CLAUDE.md`
       deployment table is stale (post-split)** —
