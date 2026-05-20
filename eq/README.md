@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Index
 owner: Royce Milmlow
-last_updated: 2026-05-19
+last_updated: 2026-05-20
 scope: EQ Solutions work — products, decisions, build state
 read_priority: critical
 status: live
