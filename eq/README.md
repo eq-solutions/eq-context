@@ -21,6 +21,10 @@ Every canonical EQ file as a full URL — clickable from `/context/claude`:
 - [eq/pending.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/pending.md) — EQ-only to-do list
 - [eq/products.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/products.md) — EQ live product status
 - [eq/cards/canonical-migration/plan.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/cards/canonical-migration/plan.md) — Cards §18 close-out: move Cards data to eq-canonical, retire standalone Supabase, SSO via shared JWT (active workstream 2026-05-20)
+- [eq/canonical-readiness/plan.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/canonical-readiness/plan.md) — Canonical layer readiness plan: bring eq-canonical to the shape needed to host Intake + Field + Quotes as first-class modules. **EXECUTED 2026-05-20** — all 6 work units shipped (42 entities across 5 modules)
+- [eq/sprints/2026-05-20-S1-canonical-lockin.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/sprints/2026-05-20-S1-canonical-lockin.md) — Sprint S1: canonical-readiness lock-in + ship-ready. 10 items, 1-week, security rotations + PostgREST schema exposure + first functional Core dropzone + Cards iframe deploy (draft 2026-05-20)
+- [eq/canonical-readiness/audit-2026-05-21.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/canonical-readiness/audit-2026-05-21.md) — Honest audit of core.eq.solutions post-S3. Top issues: EntityImportPanel hangs the renderer; home screen reads as admin dashboard not platform; intake legacy has no topbar. **All 8 items shipped + verified in browser 2026-05-21**.
+- [eq/overnight-prompt-2026-05-21.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/overnight-prompt-2026-05-21.md) — Self-contained brief for a multi-hour autonomous session. Mission, scope, authority, priority queue (Tenant Settings → Storage browser → Invite UX → module placeholders), definition of done. Paste at session start. (2026-05-21)
 - `eq/templates.md` — forward-pointer; file does not exist yet, will be created when the first EQ deliverable template is captured
 
 ## Strategic focus (2026 Q2)
@@ -40,6 +44,7 @@ Every canonical EQ file as a full URL — clickable from `/context/claude`:
 | `field/multi-tenancy/` | EQ Field MT plan + explainer (active reference) |
 | `field/permissions/` | EQ Field role/permission matrix |
 | `cards/canonical-migration/plan.md` | EQ Cards §18 close-out (active 2026-05-20) |
+| `canonical-readiness/plan.md` | Canonical layer readiness for Intake/Field/Quotes ports (draft 2026-05-20) |
 | `changelog/field.md` | EQ Field append-only history |
 | `changelog/eq-context.md` | Substrate self-changelog |
 
