@@ -150,20 +150,25 @@ In `public` schema, all `SECURITY DEFINER`, JWT-gated on
      `{tenant_id}/{staff_id}/{licence_id}/front.jpg` path), OR
    - Run a tiny copy script later — would need both service-role
      keys, which I didn't have access to overnight
-2. **Shell flag flip end-to-end verification not done.** Took it on
-   trust that the wiring is right because every individual piece
-   was tested. First sign-in tomorrow IS the verification.
-3. **cards.eq.solutions custom domain still pending** (S2.E, your
+2. **cards.eq.solutions custom domain still pending** (S2.E, your
    dashboard work — unchanged from before).
-4. **Cards changelog + ARCHITECTURE.md §18 not updated** to reflect
+3. **Cards changelog + ARCHITECTURE.md §18 not updated** to reflect
    the canonical flip. Currently still describe the old standalone-
    Supabase posture. Lower-priority bookkeeping.
-5. **`eq/products.md` Cards section** also describes the old posture.
-6. **EQ Shell polish queue from `overnight-prompt-2026-05-21.md`
-   was not started.** All overnight time went into the Cards flip
-   instead of the original audit queue. Items 1-10 in that brief
-   (Tenant Settings, Storage browser, invite UX polish, console-clean
-   walk, etc.) are all still open.
+4. **`eq/products.md` Cards section** also describes the old posture.
+5. **User invite UX polish** (priority queue item #3) — the invite
+   flow works but post-invite shows a raw URL. Email-provider wiring
+   is the bigger lift; the accept-invite landing page already exists
+   per `src/pages/AcceptInvite.tsx`. Not touched this pass.
+6. **Branch-deploy of `claude/canonical-migration`** in eq-cards is
+   pushed but no PR opened — the Cards repo isn't on the
+   GitHub-auto-deploy path (per its netlify.toml comment). The branch
+   exists as the change record; the actual prod is the
+   `flutter build web → netlify deploy --prod` artifact already live.
+7. **eq-tokens CDN package files** accidentally got tracked in commit
+   `d4ad3cb` (packages/eq-tokens/cdn/*). Not harmful, but they
+   shouldn't be in the repo — they're build outputs of the vendored
+   eq-platform packages. Add to .gitignore on next pass.
 
 ## If it broke
 
@@ -216,15 +221,47 @@ still work). To roll back:
 
 Inside 15 minutes you're back to the pre-flip state.
 
+## Worked end-to-end overnight (continued) — polish suite
+
+After Cards verification passed, I worked the EQ Shell polish queue
+from `overnight-prompt-2026-05-21.md`. Six more commits to
+`eq-shell` `main`:
+
+| Commit | What |
+|---|---|
+| `d4ad3cb` | Topbar on Quotes/Service/Tender placeholders + canonical-styled `ComingSoon` with description/features/ETA props + real 404 page replaces the silent `<Navigate to="."/>` catch-all |
+| `929a87e` | Tenant Settings page at `/core/admin/settings` (name, brand colour with live swatch, logo URL, module entitlements gated to platform admin) + 2 new RPCs (`eq_get_tenant_settings`, `eq_update_tenant_settings`) |
+| `ba540f5` | Read-only Storage browser at `/core/storage` (per-tenant Supabase bucket, breadcrumb nav, 60-sec signed URLs) |
+| `0c174ac` | **Real bug fix**: logout used to only clear local state — HttpOnly cookie persisted and `verify-shell-session` re-hydrated on next page load, silently signing the user back in. New `/shell-logout` Netlify function returns `Set-Cookie` with `Max-Age=0` + `Expires` in the past, mirroring login's cookie attrs |
+
+## Verification results (Chrome MCP walk)
+
+| Page | Result |
+|---|---|
+| `/core` (home) | ✅ dark-navy hero, hero tiles, snapshot grid, Cards migration intake event visible in recent activity |
+| `/core/intake` (legacy) | ✅ Topbar + per-domain pivot banner + SimPRO surface |
+| `/core/intake/{core,field,quotes,cards,service}` | ✅ all 42 entities listed across the 5 domains |
+| `/core/cards` | ✅ iframe src `https://eq-cards.netlify.app/#sh=<jwt>` with correct app_metadata claims |
+| `/core/field` | ✅ iframe loaded, overlay disappeared (Field broadcast `accepted` over postMessage) |
+| `/core/admin/audit` | ✅ Token mints tab shows 1 row, Intake events shows 3 (incl. Cards migration) |
+| `/core/admin/users` | ✅ Topbar + RPC-backed list with platform admin pill |
+| `/core/admin/settings` (NEW) | ✅ Tenant settings form with 6 modules toggle row |
+| `/core/storage` (NEW) | ✅ Read-only file browser, breadcrumb nav, signed URL on click |
+| `/core/quotes`, `/core/service`, `/core/tender-pipeline` | ✅ Honest "Coming soon" with features list + ETA |
+| `/core/data/customer` | ✅ 50 customers in canonical Sky-header table |
+| `/core/some-broken-url` (NEW) | ✅ Proper 404 page with module-card nav fallback |
+
+Console: zero errors anywhere. Only observability-disabled INFOs.
+
 ## Files touched
 
 | Repo | Files | Net lines |
 |---|---|---|
-| `eq-shell` (main, deployed) | `src/pages/CardsIframe.tsx` | +4 / -4 |
+| `eq-shell` (main, deployed) | 11 commits — Cards flag flip, FieldIframe PR #7 merge, ComingSoon redesign, NotFound, Tenant Settings, Storage browser, logout fix | +1,250 / -150 |
 | `eq-cards` (`claude/canonical-migration` branch + deployed build) | 18 files, see commit `0d14c50` | +409 / -672 |
-| `eq-canonical` (DB) | 5 migrations applied | — |
+| `eq-canonical` (DB) | 7 migrations applied (5 Cards + 2 Tenant Settings RPCs) | — |
 | `hshvnjzczdytfiklhojz` (Cards source DB) | 1 migration applied (read-only lock) | — |
-| `eq-context` | This file + audit log update | — |
+| `eq-context` | overnight-prompt + overnight-report + audit doc updates | — |
 
 ## Revision history
 
