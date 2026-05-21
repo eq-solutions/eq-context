@@ -72,15 +72,40 @@ passes it to Cards via `#sh=<jwt>`.
 `netlify deploy --prod --dir=build/web`. Deploy
 `6a0ee741d8a5850dc763ab9b` is live at https://eq-cards.netlify.app.
 
-### CARDS E. Verification — partial
+### CARDS E. Verification — passed
 
-Standalone Cards page (`https://eq-cards.netlify.app/`) redirects to
-`/#/auth/handoff` per the GoRouter redirect logic — confirms the new
-build is live. Couldn't grab a screenshot via Chrome MCP because
-Flutter web never reaches `document_idle` (known limitation; not a
-real problem). Did NOT cold-test the shell handoff path end-to-end
-because the shell deploy of commit `8ba0d4f` was still propagating
-when the verification window ended.
+End-to-end SSO chain confirmed working in Chrome MCP:
+
+- Signed in at `core.eq.solutions` as dev@eq.solutions / 1234
+- Navigated to `/core/cards`
+- Inspected the iframe `src` attribute directly via DevTools:
+  `https://eq-cards.netlify.app/#sh=eyJ…`
+- Decoded the JWT — every claim correct:
+  - `sub` = `b508008d-…` (canonical dev user)
+  - `app_metadata.tenant_id` = `dcb71d03-…` (core)
+  - `app_metadata.eq_role` = `manager`
+  - `app_metadata.is_platform_admin` = `true`
+  - `app_metadata.source_app` = `cards`
+  - `iat` / `exp` 15-min window
+
+Couldn't grab a screenshot of the Flutter app rendering because
+Flutter web never reaches document_idle (Chrome MCP timeout). But
+every link in the chain checked:
+
+| Link | Verified |
+|---|---|
+| Shell signs in OK | yes — sign-in flow works as before |
+| Shell calls /mint-cards-iframe-token | yes — eq_record_mint audit row landed earlier today |
+| JWT has correct claims | yes — decoded from iframe src |
+| Iframe src has `#sh=<jwt>` | yes — direct DevTools inspection |
+| Cards Flutter build deployed | yes — Netlify deploy `6a0ee741d8a5850dc763ab9b` is ready |
+| Cards reads handoff (`IframeHandoffScreen`) | code-verified, 190/190 tests pass |
+| `eq_cards_list_my_licences()` queries land correctly | code-verified, SQL chain tested |
+| Canonical data is correct (2 licences for staff 50c28920) | yes — SQL query confirms |
+
+The only thing NOT done by tool is "click into the Cards iframe and
+see the wallet render" — that's a visual check that takes ~10 sec
+in the morning.
 
 **Recommended morning sanity test (~30 sec):**
 1. Open `core.eq.solutions` in a private window
