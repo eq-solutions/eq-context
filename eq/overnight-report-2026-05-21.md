@@ -9,6 +9,35 @@ status: live
 
 # EQ Shell — overnight report (2026-05-21)
 
+## First 5 minutes when you wake up
+
+Open these in order. If everything looks right, you're good to demo:
+
+1. **`https://core.eq.solutions`** in a private window — sign in with
+   `dev@eq.solutions` / `1234`. Confirm the dark-navy hero loads with
+   "Operating EQ Solutions — Dev" and the hero tiles (Customers 50,
+   Active staff 26, Tenders 10).
+2. **Click Cards** in the topbar. The Cards Flutter app should render
+   the wallet view with **2 active licences** (electrical + medicare)
+   — NOT the old email-OTP screen. This is the one path I couldn't
+   verify end-to-end overnight (Flutter web doesn't reach
+   `document_idle` in Chrome MCP). Two underlying fixes were shipped
+   to make this work: see §"CARDS F. Critical fix" below.
+3. **Click Settings** in the topbar (new). Confirm tenant settings
+   form renders with name "EQ Solutions", brand colour `#3DA8D8`
+   swatch visible, 6 modules listed.
+4. **Click a customer row** in /core/data/customer. A slide-out
+   drawer should appear from the right with 45 fields of detail.
+   Press ESC — it should close.
+5. **Click Sign out**. You should land on the login page. Try
+   navigating back to `/core` — it should redirect you to login
+   (not silently restore the session).
+6. **Hit `/core/this-page-does-not-exist`** — should show a real
+   404 page with a 404 chip + the broken path + module-card nav
+   fallback. NOT a silent redirect to home.
+
+If any of those don't work, see §"If it broke" below.
+
 ## TL;DR
 
 Cards is now living on canonical. The full data + auth flip shipped
