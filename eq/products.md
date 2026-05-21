@@ -163,12 +163,18 @@ subdomain alias added manually (~5 min) until automated.
   SimPRO fixtures validated through parser + customer/contact/site
   mapping + validation legs (267 customers / 393 contacts / 544
   sites). The first real Phase 2 module.
-- **Cards** (iframe wedge at `/:tenant/cards`, MVP not deployed) —
-  mounts `eq-cards.netlify.app` Flutter web build. No SSO in v1
-  (email-OTP first iframe load; browser persists). Eq-cards needs a
-  redeploy with updated `_headers` before iframe renders. Proper
-  close-out is Cards Unit 4 (Flutter flip to canonical + SSO via
-  mint-supabase-jwt) per `eq/cards/canonical-migration/plan.md`.
+- **Cards** (iframe wedge at `/:tenant/cards`, **canonical flip
+  shipped 2026-05-21**) — mounts `eq-cards.netlify.app` Flutter web
+  build. Authentication is via shell-minted JWT passed in the iframe
+  URL hash (`mint-cards-iframe-token` Netlify function); no more
+  email-OTP. Data lives in `app_data.licences` + `app_data.staff` on
+  eq-canonical, accessed via `eq_cards_list_my_licences` /
+  `eq_cards_upsert_my_licence` / `eq_cards_soft_delete_my_licence`
+  RPCs that bridge the column rename (user_id → staff_id,
+  photo_*_url → photo_*_path, deleted_at → active=false). Legacy
+  Cards Supabase (`hshvnjzczdytfiklhojz`) is read-only rollback
+  insurance until the JPG photos are also migrated (deferred — see
+  `eq/overnight-report-2026-05-21.md` §Known gaps).
 - **Tender Pipeline** scaffolding under `src/modules/tender-pipeline/`
   is **stale exploration** — 5 page stubs ~9KB total, not on the
   roadmap. Tender Pipeline lives in EQ Field, not in the shell.
@@ -203,8 +209,12 @@ Phase 2 question — a tier-of-company question.
       EQ Intake" — dual-salt rotation, revoked_sessions, schema
       split, RPC decomposition, canonical→Field one-way sync,
       token-mint audit log, vendored-package hash check, etc.
-- [ ] Cards Unit 4 (Flutter flip + SSO) — blocked on Phase 1.F
-      verified end-to-end through the iframe wedge
+- [x] Cards Unit 4 (Flutter flip + SSO) — **SHIPPED 2026-05-21**.
+      Flutter app (commit `0d14c50` on `claude/canonical-migration`,
+      Netlify deploy `6a0ee741d8a5850dc763ab9b`) reads
+      `app_data.licences` via the eq_cards_* RPC bridge. Shell flag
+      `CARDS_USE_SHELL_SSO=true` (`8ba0d4f`). Verified end-to-end in
+      Chrome MCP (decoded JWT, confirmed staff/licence chain).
 - [ ] `src/modules/tender-pipeline/` scaffolding cleanup — delete
       the stub pages (not on roadmap) OR keep as future-exploration
       with a `// stale 2026-05-20` marker. Royce decision.
