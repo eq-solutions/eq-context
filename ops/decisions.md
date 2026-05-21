@@ -1,7 +1,7 @@
 ---
 title: OPS — Decisions Log
 owner: Royce Milmlow
-last_updated: 2026-05-20
+last_updated: 2026-05-21
 scope: Append-only log of key decisions across all tiers and the reasoning at the time
 read_priority: standard
 status: live
@@ -17,6 +17,40 @@ Format: Status → Decision → Why → Alternatives considered → Implications
 Status values: Accepted | Superseded by [date+title] | On Hold | Deprecated | Proposed.
 Append-only — never delete an entry. Supersede or deprecate it instead.
 For the current built state of each system, see [system/architecture.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/system/architecture.md).
+
+---
+
+## 2026-05-21 — SKS Brand Enforcement: Spec → Artefacts
+
+**Status:** Accepted.
+
+**Decision:** Move SKS brand enforcement from runtime-spec ("Claude reads `rules/brand.md` every output and applies it") to pre-built artefacts (CSS, Word template, preflight checklist). Three artefacts now own enforcement; `rules/brand.md` stays as the source-of-truth spec but is no longer the per-output enforcement surface.
+
+**Why:** Inconsistency in past SKS outputs traced to Claude misremembering or misapplying `brand.md` rules at output time (wrong hex, wrong logo aspect ratio for the Text variant — fixed 2026-05-19, EQ tokens leaking into SKS docs, footer omissions). The cost was paid per-output in tokens (re-fetching and re-reasoning over the full brand spec) AND in defects when the re-reasoning was wrong. Pre-built artefacts pay the cost once at build time, eliminate the failure mode entirely for HTML (CSS link) and Word (template inheritance), and add a six-line final-gate check (`rules/brand-check.md`) for everything else. Expected consistency lift: ~70% → ~98% (estimate from Chat session that designed the kit).
+
+**Artefacts deployed (2026-05-21):**
+- `sks-brand.css` → `https://pub-97a4f025d993484e91b8f15a8c73084d.r2.dev/sks-brand.css` (HTML/web canonical stylesheet; CSS custom properties for colours/fonts; component classes `sks-banner`, `sks-table`, etc.)
+- `SKS_Master.docx` → `https://pub-97a4f025d993484e91b8f15a8c73084d.r2.dev/SKS_Master.docx` (Word template with named styles SKSTitle, SKSH1, SKSH2, SKSH3, SKSBody, SKSBodyMuted, SKSCaption, SKSFooter; brand-correct header logo + footer)
+- `rules/brand-check.md` in substrate (six-line preflight; linked from `CLAUDE.md` §3 and `rules/brand.md` §7)
+
+**Resolved discrepancies (Royce 2026-05-21):**
+- **SKS ABN:** `51 168 906 956`. Three sources had disagreed (`sks/templates.md` footer had `80 006 455 699`; the SKS PDF Style Guide v1.0 footer had `24 004 554 929`; global memories had `51 168 906 956`). Royce confirmed `51 168 906 956`. `sks/templates.md` and the master docx footer string updated to match. Pending follow-up to verify against ASIC / ABN Lookup and to investigate the two stray ABNs.
+- **NSW office address:** `27/10 Gladstone Rd, Castle Hill NSW 2154` (matches `rules/brand.md` §7 already; the PDF Style Guide's `Unit 18, 7-9 Percy Street, Auburn NSW 2144` was rejected as the canonical address but flagged for confirmation that Auburn isn't a current second site).
+- **Quote body font:** Hybrid Roboto/Calibri policy. Headings in all outputs = Roboto. Body in PDFs we generate = Roboto (fonts embedded). Body in editable `.docx` = **Calibri** (Word default since Office 2007; universally installed on Win/Mac Office; zero install friction; zero layout drift on recipient machines). This supersedes the prior `rules/brand.md` §3 "Muli body with Arial substitution" policy — Muli was never installed in Word by default anyway, Arial was the de-facto rendering, and the new explicit Calibri-for-docx rule replaces the implicit fallback chain. `build-master-docx.js` was refactored to split `SKS.font = "Arial"` into `SKS.headingFont = "Roboto"` and `SKS.bodyFont = "Calibri"`, every named style updated to reference the appropriate token, and the master docx rebuilt + uploaded.
+
+**Alternatives considered:**
+- *Keep runtime spec enforcement and just write a better `brand.md`.* Rejected — the failure mode wasn't spec quality, it was recall accuracy at output time. A clearer spec doesn't solve "Claude forgot to fetch it."
+- *Roboto everywhere (body + headings).* Rejected by Royce after explaining the recipient-side font fallback risk: editable `.docx` files sent to Equinix / Schneider / Erilyan recipients whose workstations may not have Roboto installed would render in Calibri silently via Word's missing-font substitution, and the layout drift (different metrics → reflow → table breakage) is the exact "looks inconsistent" failure mode this kit is meant to eliminate.
+- *Arial everywhere (the previous policy).* Rejected — Arial-only sacrifices the brand visual without solving any problem Roboto-with-Calibri-fallback doesn't already solve.
+- *PDF-only deliverables (no editable docx at all).* Rejected — Royce's customers explicitly want the editable docx for variation edits and acceptance signatures. PDF-only would break a real workflow.
+
+**Implications and principle going forward:**
+
+1. **`rules/brand.md` is the SPEC; the artefacts are the ENFORCEMENT.** Future brand updates edit `brand.md` first, then rebuild the artefacts (re-run `node build-master-docx.js`; edit `sks-brand.css` to match). Never edit an artefact without updating the spec.
+2. **The R2 bucket holding `sks-brand.css` and `SKS_Master.docx` is in the SKS Cloudflare account, NOT the EQ Solutions Cloudflare account.** Initial upload attempt via `wrangler r2 object put` targeted EQ's `sks-assets` bucket (where wrangler was authed); files were uploaded to the wrong account, then deleted, and Royce did the final upload manually via the SKS Cloudflare dashboard. Future R2 ops on the SKS public bucket need a re-auth (or dashboard upload). Logged as a constraint to remember.
+3. **`brand-check.md` is the canary** — if Royce stops seeing the single-line "Brand check: ✓ ..." in outputs, the discipline has lapsed and the next failure is incoming. Three monitoring follow-ups added to `sks/pending.md`.
+4. **The 2026-05-21 ABN/address/font discrepancies are surfaced, not yet definitively resolved against external truth** (ASIC for the ABN, internal records for the address). The decision captures Royce's call but `sks/pending.md` carries the verification follow-ups.
+5. **Wrangler version 4.x defaults to LOCAL for R2 uploads.** Without `--remote`, `wrangler r2 object put` writes to a local emulator (not actual R2) and reports "Upload complete" with no warning beyond an easily-missed "Resource location: local" line. This is a real footgun that almost caused a silent deployment failure today; all SKS R2 ops from wrangler 4.x must use `--remote`. Logged to `system/lessons.md` is pending.
 
 ---
 

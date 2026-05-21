@@ -1,7 +1,7 @@
 ---
 title: SKS — Document Templates
 owner: Royce Milmlow
-last_updated: 2026-05-04
+last_updated: 2026-05-21
 scope: Standard templates and document formats for SKS work
 read_priority: reference
 status: live
@@ -17,10 +17,10 @@ check here first — don't reinvent.
 ## SKS Quotation Template (v3 — April 2026)
 
 **Format:** A4 .docx, built with docx-js (Node)
-**Font:** Arial throughout
+**Font:** Roboto for headings, Calibri for body (per `rules/brand.md` §3 — supersedes the prior "Arial throughout" policy; see `ops/decisions.md` 2026-05-21 for rationale)
 **Brand colour:** SKS Navy #1F335C
 **Logo:** White+Text variant from R2 (`SKS_Logo_White_Text_Clean.png`)
-**Footer:** SKS Technologies Pty Ltd | ABN 80 006 455 699 | sks.com.au | Page N
+**Footer:** SKS Technologies Pty Ltd | ABN 51 168 906 956 | sks.com.au | Page N
 
 **Layout (matches Royce's Word template screenshot):**
 

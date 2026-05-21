@@ -3,7 +3,7 @@
 ---
 title: SKS Brand — Rules & Assets
 owner: Royce Milmlow
-last_updated: 2026-05-19
+last_updated: 2026-05-21
 scope: SKS Technologies brand specification — colours, fonts, logos, usage rules
 read_priority: critical
 status: live
@@ -90,14 +90,16 @@ Base URL: `https://pub-97a4f025d993484e91b8f15a8c73084d.r2.dev/`
 
 | Use | Font | Weight |
 |---|---|---|
-| Headings | Roboto | Black |
-| Subheaders | Roboto | Bold |
-| Body text | Muli | Regular |
+| Headings (all outputs) | Roboto | Black |
+| Subheaders (all outputs) | Roboto | Bold |
+| Body text — PDF and web | Roboto | Regular |
+| Body text — Word (.docx) | Calibri | Regular |
 | Logo font | Source Sans Pro | — |
 
+**Why Calibri for docx body** (decided 2026-05-21): editable .docx files are sent to recipients (Equinix, Schneider, Erilyan) whose workstations may not have Roboto installed. Word silently substitutes missing fonts and the layout drifts. Calibri is the Word default since Office 2007 and is universally available on Win/Mac Office — zero install friction, zero layout risk. PDFs we generate ourselves embed Roboto, so the risk doesn't apply there. Roboto headings in docx accept the same fallback risk, but heading text is short enough that substitution doesn't reflow layout meaningfully.
+
 **Substitution policy:**
-- Word/PDF outputs where Muli isn't available: fall back to **Arial Regular** for body.
-- Web/HTML: load Roboto and Muli from Adobe Fonts. If not feasible, fall back to **Plus Jakarta Sans** (EQ standard) only for internal EQ work, never for SKS customer-facing.
+- Web/HTML: load Roboto from Adobe Fonts / Google Fonts. If not feasible, fall back to **Plus Jakarta Sans** (EQ standard) only for internal EQ work, never for SKS customer-facing.
 - Never substitute the logo font — it's baked into the logo file.
 
 ---
@@ -150,14 +152,16 @@ For Word / PDF customer-facing outputs:
 | Page size | US Letter (12240 × 15840 DXA) or A4 |
 | Margins | 1 inch / 1440 DXA all sides |
 | Header logo | Top-right, Colour Arrows variant, ~160–220 px wide |
-| Title | Roboto Black (Arial Bold fallback), Dark Blue `#1F335C`, 18 pt |
-| Subtitle / strap | Roboto Bold or Slate Blue `#34486C`, 11 pt, with 1.5pt Purple `#7C77B9` underline rule |
-| Body | Muli Regular (Arial fallback), Dark Blue `#1F335C`, 11 pt |
+| Title | Roboto Black, Dark Blue `#1F335C`, 18 pt |
+| Subtitle / strap | Roboto Bold, Slate Blue `#34486C`, 11 pt, with 1.5pt Purple `#7C77B9` underline rule |
+| Body | Calibri Regular (docx) or Roboto Regular (PDF), Dark Blue `#1F335C`, 11 pt |
 | Table headers | Dark Blue `#1F335C` fill, White text, bold |
 | Table body rows | Alternating White and Light Blue `#F0F7F7` |
 | Table borders | `#CCCCCC` thin |
 | Footer | Centred, Slate Blue `#34486C`, 8 pt, with Dark Blue top rule |
-| Footer content | `SKS Technologies Pty Ltd  \|  27/10 Gladstone Rd, Castle Hill NSW 2154  \|  (02) 9659 9199` |
+| Footer content | `SKS Technologies Pty Ltd  \|  ABN 51 168 906 956  \|  27/10 Gladstone Rd, Castle Hill NSW 2154  \|  (02) 9659 9199` |
+
+**Preflight:** Before presenting any customer-facing output, run the checklist in [rules/brand-check.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/rules/brand-check.md).
 
 ---
 

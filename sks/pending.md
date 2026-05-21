@@ -1,7 +1,7 @@
 ---
 title: SKS Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-05-08
+last_updated: 2026-05-21
 scope: SKS Technologies to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -38,3 +38,11 @@ SKS Technologies work only. EQ items in `eq/pending.md`. OPS items
 - [ ] Deploy Cloudflare Worker (anthropic-proxy) — follow DEPLOY.md
 - [ ] Battle-test: receipt scanning, Excel export, data persistence
 - [ ] Broader SKS staff testing
+
+---
+
+## SKS Brand — Lockdown Deployment Follow-ups (2026-05-21)
+
+- [ ] Verify SKS ABN canonical source (resolved 2026-05-21 → 51 168 906 956; confirm against ASIC / ABN Lookup and reconcile the two other ABNs that appeared in past sources — `80 006 455 699` previously in `sks/templates.md`, `24 004 554 929` in the PDF Style Guide v1.0 footer)
+- [ ] Verify NSW office address canonical source (resolved 2026-05-21 → 27/10 Gladstone Rd, Castle Hill NSW 2154; the SKS PDF Style Guide listed Unit 18, 7-9 Percy Street, Auburn NSW 2144 — confirm Auburn isn't a current second site before deleting it from any internal reference)
+- [ ] Monitor first 5 SKS outputs after brand kit deployment — check `rules/brand-check.md` is actually being run (single-line "Brand check: ✓ ..." should appear before each customer-facing output)
