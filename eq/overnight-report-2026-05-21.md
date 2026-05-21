@@ -19,12 +19,18 @@ redeployed to `eq-cards.netlify.app`, the shell flag flipped so the
 iframe handoff is the only sign-in path, and the legacy
 `hshvnjzczdytfiklhojz` Supabase locked read-only as rollback insurance.
 
-**One critical fix was caught + shipped *after* the initial deploy.**
-Tracing the gotrue Dart source surfaced that `setSession(token)`
-would have hit the refresh-token branch and 400'd, breaking auth.
-Re-shipped with `setSession(token, accessToken: token)` so the
-access-token branch fires — full chain SHOULD work, but a 10-second
-visual check in the morning is the only thing that hasn't run.
+**Two critical fixes were caught + shipped *after* the initial deploy.**
+Tracing the gotrue Dart source + the Supabase Flutter SDK surfaced:
+1. `setSession(token)` would have hit the refresh-token branch and
+   400'd — re-shipped with `setSession(token, accessToken: token)`
+2. `currentUser.appMetadata['tenant_id']` returns null because
+   `auth.users.raw_app_meta_data` doesn't carry tenant_id; only the
+   JWT app_metadata claim does. PhotoUpload now decodes the JWT
+   directly to extract tenant_id
+
+Both fixes deployed to eq-cards.netlify.app (commits 6b55b22 +
+e765846, deploys 6a0ef2a3b39 + 6a0ef370bb9). A 10-second visual
+check in the morning is the only thing that hasn't run.
 
 After that, worked the EQ Shell polish queue end-to-end: Tenant
 Settings, Storage browser, real 404, ComingSoon redesign, logout
