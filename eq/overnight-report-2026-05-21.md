@@ -224,7 +224,7 @@ Inside 15 minutes you're back to the pre-flip state.
 ## Worked end-to-end overnight (continued) — polish suite
 
 After Cards verification passed, I worked the EQ Shell polish queue
-from `overnight-prompt-2026-05-21.md`. Six more commits to
+from `overnight-prompt-2026-05-21.md`. Ten more commits to
 `eq-shell` `main`:
 
 | Commit | What |
@@ -233,6 +233,10 @@ from `overnight-prompt-2026-05-21.md`. Six more commits to
 | `929a87e` | Tenant Settings page at `/core/admin/settings` (name, brand colour with live swatch, logo URL, module entitlements gated to platform admin) + 2 new RPCs (`eq_get_tenant_settings`, `eq_update_tenant_settings`) |
 | `ba540f5` | Read-only Storage browser at `/core/storage` (per-tenant Supabase bucket, breadcrumb nav, 60-sec signed URLs) |
 | `0c174ac` | **Real bug fix**: logout used to only clear local state — HttpOnly cookie persisted and `verify-shell-session` re-hydrated on next page load, silently signing the user back in. New `/shell-logout` Netlify function returns `Set-Cookie` with `Max-Age=0` + `Expires` in the past, mirroring login's cookie attrs |
+| `81c5e2e` | Gitignored + untracked `packages/eq-tokens/cdn/*` build outputs accidentally committed earlier |
+| `2e5fb72` | Entity detail drawer — click a row in `/core/data/{entity}` to see the full record in a slide-out drawer (sorted columns, ESC + backdrop close) |
+| `9cbfffc` | Hide "+N this week" delta when count_recent >= count_total (just-seeded data shouldn't read as organic growth) |
+| `6b4abaf` | AcceptInvite page rewritten on the canonical login aesthetic — dark-navy hero "One PIN, every EQ tool" matching marketing-site energy |
 
 ## Verification results (Chrome MCP walk)
 
