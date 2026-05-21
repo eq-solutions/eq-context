@@ -19,6 +19,19 @@ redeployed to `eq-cards.netlify.app`, the shell flag flipped so the
 iframe handoff is the only sign-in path, and the legacy
 `hshvnjzczdytfiklhojz` Supabase locked read-only as rollback insurance.
 
+**One critical fix was caught + shipped *after* the initial deploy.**
+Tracing the gotrue Dart source surfaced that `setSession(token)`
+would have hit the refresh-token branch and 400'd, breaking auth.
+Re-shipped with `setSession(token, accessToken: token)` so the
+access-token branch fires — full chain SHOULD work, but a 10-second
+visual check in the morning is the only thing that hasn't run.
+
+After that, worked the EQ Shell polish queue end-to-end: Tenant
+Settings, Storage browser, real 404, ComingSoon redesign, logout
+bug fix, entity detail drawer, misleading-delta fix, AcceptInvite
+redesign. 10 more commits to `eq-shell` `main`. Console clean
+across all pages. Every link verified.
+
 If you open `core.eq.solutions/core/cards` cold this morning, you
 should see the Cards Flutter app load via the shell handoff (no
 email-OTP), with your 2 active licences visible. If it doesn't —
@@ -71,6 +84,39 @@ passes it to Cards via `#sh=<jwt>`.
 `flutter build web --release --dart-define-from-file=.dart-defines.prod.json` →
 `netlify deploy --prod --dir=build/web`. Deploy
 `6a0ee741d8a5850dc763ab9b` is live at https://eq-cards.netlify.app.
+
+### CARDS F. Critical fix found AFTER initial verification
+
+While auditing the rest of the system, traced the gotrue Dart source
+(`gotrue-2.20.0/lib/src/gotrue_client.dart`) and discovered the
+Flutter `IframeHandoffScreen.setSession(token)` call would have
+**broken the entire Cards flip end-to-end**.
+
+`gotrue.setSession(String refreshToken, {String? accessToken})` has
+two branches:
+- accessToken **not** provided → calls `_callRefreshToken` which
+  POSTs to `/auth/v1/token?grant_type=refresh_token` with the JWT
+  as the refresh token. 400 invalid_grant (the JWT isn't a refresh
+  token, it's an HS256 access token).
+- accessToken provided AND not expired → decodes JWT, calls
+  `getUser(accessToken)` to validate, constructs Session directly,
+  no /token round-trip.
+
+Original Flutter code passed the JWT only as positional first arg
+(refreshToken slot) — would have hit the broken branch. User would
+see "rejected the sign-in handoff" overlay; wallet never renders.
+
+Fix: `setSession(token, accessToken: token)` — the refreshToken
+slot stores the same JWT but is never used (we never call
+refreshSession; the JWT cache is re-minted by the shell on
+cadence).
+
+Confirmed `auth.users` has the row matching
+`shell_control.users.id=b508008d-…` so the `getUser(accessToken)`
+lookup will succeed.
+
+Shipped on commit `6b55b22` (eq-cards branch) + Netlify deploy
+`6a0ef2a3b3915004a7c0dcee`. flutter analyze clean, tests green.
 
 ### CARDS E. Verification — passed
 
