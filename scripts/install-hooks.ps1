@@ -22,6 +22,9 @@ if (-not (Test-Path .git)) {
 if (-not (Test-Path .githooks/pre-commit)) {
     throw ".githooks/pre-commit not found. Pull latest main first."
 }
+if (-not (Test-Path .githooks/post-commit)) {
+    throw ".githooks/post-commit not found. Pull latest main first."
+}
 
 git config core.hooksPath .githooks
 Write-Host ("Configured core.hooksPath = " + (git config core.hooksPath)) -ForegroundColor Green
@@ -29,11 +32,11 @@ Write-Host ("Configured core.hooksPath = " + (git config core.hooksPath)) -Foreg
 # On Windows the executable bit isn't tracked the same way, but Git Bash will
 # run the hook regardless via bash invocation. Force +x for WSL/macOS sanity.
 if (Get-Command bash -ErrorAction SilentlyContinue) {
-    bash -c "chmod +x .githooks/pre-commit" 2>$null
+    bash -c "chmod +x .githooks/pre-commit .githooks/post-commit" 2>$null
 }
 
 Write-Host ""
-Write-Host "Pre-commit hook enabled. It will block:"
+Write-Host "Hooks enabled (pre-commit + post-commit). Pre-commit will block:"
 Write-Host "  - per-version CHANGELOG-vX.Y.Z.md files"
 Write-Host "  - binary files (.zip, .docx, .pdf, images, etc.)"
 Write-Host "  - _cleanup-patch-* folders"
