@@ -1,7 +1,7 @@
 ---
 title: SKS-TEAM — Canonical Quoting Router
 owner: Royce Milmlow
-last_updated: 2026-05-07
+last_updated: 2026-05-23
 scope: The single source of truth for AI-assisted SKS quote drafting by NSW Operations team
 read_priority: critical
 status: live
