@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Products
 owner: Royce Milmlow
-last_updated: 2026-05-21
+last_updated: 2026-05-23
 scope: Live EQ products. Killed/deferred entries removed in 2026-05-04 refactor.
 read_priority: standard
 status: live
@@ -114,12 +114,15 @@ Validation gate = 5 outside-SKS trade subbies on Field demo first.
 
 ## EQ Shell — PLATFORM (multi-module shell)
 
-**Status:** Phase 1.F shipped (2026-05-20). End-to-end live at
-`core.eq.solutions` — login → tenant home → Intake module at
+**Status:** Phase 1.F + Sprint S3 polish shipped (2026-05-23). End-to-end live at
+`core.eq.solutions` — login → tenant home dashboard → Intake module at
 `/core/intake` (drop CSV → map → validate → commit via the `@eq/*`
 engine) and EQ Field surface mounted via iframe with HMAC handoff
-(no second PIN). **Phase 2 is paused pending the EQ GTM validation
-gate** (5 outside-SKS trade subbies on EQ Field demo) — no further
+(no second PIN). The platform now reads as a real product at first glance:
+dashboard with live counts, activity feed, quick-action grid, proper
+skeleton loading, readable error states, role-gated admin nav.
+**Phase 2 is paused pending the EQ GTM validation gate**
+(5 outside-SKS trade subbies on EQ Field demo) — no further
 shell modules until that clears or a paying customer asks for one.
 
 **URL:** `core.eq.solutions` (live, dog-food tenant for EQ Solutions
@@ -178,6 +181,17 @@ subdomain alias added manually (~5 min) until automated.
 - **Tender Pipeline** scaffolding under `src/modules/tender-pipeline/`
   is **stale exploration** — 5 page stubs ~9KB total, not on the
   roadmap. Tender Pipeline lives in EQ Field, not in the shell.
+  (Royce decision pending: delete stubs or add `// stale` markers.)
+
+**Sprint S3 surface improvements (2026-05-23):**
+
+- **TenantHome dashboard** — hero strip (tenant name, role chip, platform_admin indicator), hero number tiles with delta labels, Snapshot stat-card grid (6 entities), recent intake activity feed (5 events, colour-coded status), module grid, Quick Actions (6 cards). Data via `eq_tenant_dashboard_counts` + `eq_recent_intake_events` RPCs.
+- **Skeleton loading** — all plain "Loading…" divs replaced with Skeleton component throughout (RequireSession, RootRoute, all Suspense boundaries, entity browser, audit page).
+- **AdminAuditPage rollback** — replaced `prompt()/alert()` with a proper modal UI (reason textarea, Cancel/Confirm, error + success display).
+- **AdminCardsFeed** — refactored from card-per-row to standard eq-table with name/email search + per-row busy state.
+- **Topbar role-gating** — admin nav items (Users, Audit log, New staff) gated by `useCan()` — labour hire and employees don't see admin links.
+- **Copy sweep** — plain English throughout: "Business owner" not "Tenant owner", "Your team members" not "Tenant members", "Settings" not "Tenant settings", "Business name" not "Tenant name".
+- **Seed data** — supplemental SQL added 25 licences + 22 prestart checks + 14 toolbox talks to fill thin entities. Core entities (50 customers, 100 contacts, 30 sites, 25 staff, 200 schedule, 80 timesheets, 15 leave) were already seeded from S2.
 
 **Critical architectural risks open** (per 2026-05-20 part-d external
 critique synthesis — deferred to Phase 2 resumption):

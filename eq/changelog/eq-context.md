@@ -1,13 +1,40 @@
 ---
 title: Changelog — EQ Context Repo
 owner: Royce Milmlow
-last_updated: 2026-05-19
+last_updated: 2026-05-23
 scope: Append-only history of changes to the eq-context repository itself
 read_priority: reference
 status: live
 ---
 
 # Changelog — EQ Context Repo
+
+## [2026-05-23] Sprint S3 — EQ Shell polish + audit + visible features
+
+**Built by:** Claude (autonomous session, Royce asleep)
+**Repos touched:** `eq-solutions/eq-shell` (3 commits), `eq-solutions/eq-intake` (1 commit, supplemental seed)
+
+**What changed:**
+
+**eq-shell:**
+- `TenantHome.tsx` — full dashboard rebuild: dark-navy hero strip, hero number tiles with delta labels, Snapshot stat-card grid, recent intake activity feed, module grid with Live/Soon chips, Quick Actions section (6 actions). Fixed nested `<main>` structure.
+- `App.tsx` — all plain "Loading…" divs replaced with Skeleton-based states in RequireSession, RootRoute, and Suspense boundaries.
+- `AdminAuditPage.tsx` — rollback UX replaced `prompt()/alert()` with a proper modal (textarea for reason, Cancel/Confirm, error + success display).
+- `AdminTenantSettings.tsx` — copy polish: "Tenant settings" → "Settings", "Tenant name" → "Business name", "module" → "app"; jargon stripped from hint text.
+- `Topbar.tsx` — role-gated nav items via `useCan('admin.list_users')` + `useCan('audit.view')` + `useCan('admin.review_cards')`. "New staff" nav item added for card reviewers.
+- `AdminCardsFeed.tsx` — refactored from card-per-row to standard eq-table layout with name/email search + per-row busy state.
+- Copy sweep across NotFound, AdminUserList, AdminInviteUser, EntityBrowserPage: jargon removed, plain-English copy throughout.
+- `tender_pipeline` removed from MODULES array (module removed per CLAUDE.md 2026-05-23).
+
+**eq-intake:**
+- `sql/012_s3_supplemental_seed.sql` — 25 licences (real Australian licence types), 22 prestart checks, 14 toolbox talks seeded against core tenant. All marked `imported_from = 'sprint_s3_seed_2026_05_20'`. Idempotent DO block.
+
+**eq-context (this repo):**
+- `eq/sprints/2026-05-20-S3-polish-and-audit.md` — execution record appended.
+- `eq/products.md` — EQ Shell section updated to post-S3 state.
+- `eq/changelog/eq-context.md` (this file) — S3 entry added.
+
+**Build:** Green on all pushes. core.eq.solutions auto-deployed from eq-shell `main`.
 
 ## [2026-05-07] sks-team/ Tier Sync Repair + Edge Function Path Fix
 **Built by:** Royce Milmlow + assistant
