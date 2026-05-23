@@ -90,6 +90,8 @@ Before drafting any operational deliverable (quote, email, MOP, scope, log, lett
 
 For SKS customer-facing outputs, also run [rules/brand-check.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/rules/brand-check.md) before presenting.
 
+For EQ customer-facing or marketing outputs, also run the brand check in [rules/brand-eq.md §10](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/rules/brand-eq.md) before presenting.
+
 This is the consistency mechanism: same template + same substrate = same output across every Claude.
 
 ---
@@ -182,7 +184,8 @@ This contract points; it doesn't restate. Authoritative files:
 | Topic | File |
 |---|---|
 | Hard rules | [rules/non-negotiables.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/rules/non-negotiables.md) |
-| Brand (Design Brief v1.3) | [rules/brand.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/rules/brand.md) |
+| EQ Brand (Design Brief v1.3) | [rules/brand-eq.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/rules/brand-eq.md) |
+| SKS Brand | [rules/brand-sks.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/rules/brand-sks.md) |
 | Deployment | [rules/deployment.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/rules/deployment.md) |
 | Stack defaults | [rules/stack.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/rules/stack.md) |
 | Entities, accounts | [ops/entities.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/ops/entities.md) |

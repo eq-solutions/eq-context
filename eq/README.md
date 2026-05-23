@@ -64,4 +64,4 @@ position 4 in the EQ Shell module-mounting queue.
 
 EQ Design Brief v1.3 is canonical. Two logo variants only (Blue, White).
 Sky #3DA8D8 logo mark, never recoloured. Plus Jakarta Sans (web), Aptos
-Display (print). See `rules/brand.md` for full spec.
+Display (print). See `rules/brand-eq.md` for full spec.

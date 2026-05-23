@@ -86,7 +86,7 @@ Separate audience — only fetch when explicitly authoring or reviewing team-fac
 
 ## Reference
 
-- Brand spec (palette, fonts, logo URLs): `rules/brand.md`
+- Brand spec (palette, fonts, logo URLs): `rules/brand-sks.md`
 - Deployment guardrails: `rules/deployment.md`
 - Stack defaults: `rules/stack.md`
 - SKS Labour App technical detail: `SKS_LABOUR_APP.md` in the
