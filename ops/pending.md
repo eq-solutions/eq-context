@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-05-20
+last_updated: 2026-05-24
 scope: Operational support to-do list — Webb, infra, substrate
 read_priority: standard
 status: live
@@ -88,14 +88,12 @@ The 2026-05-04 tier refactor solved tier-bleed and dead-product noise within Cla
 - [x] **(C) `TODAY.md` — current-focus surface** — landed live 2026-05-13 at `system/TODAY.md` with three Q3 outcomes defined. Wired into CLAUDE.md §1 Step 4 as universal always-load — commit `e2cf57a` 2026-05-13.
 - [ ] **(B) Session-end discipline as a hard rule** — current rule says "update the substrate at session end"; lessons.md confirms the rule isn't being followed (17 of 30 stale at 2026-04-27). Revise to: every session ends with a written delta to a tier file (even "no changes today, status confirmed"), assistant refuses to close otherwise. Decision-grade change to non-negotiables.
 
-Defer to: Beelink return (12 May+) for proper test coverage. Holiday-laptop work has higher risk of introducing new issues we can't test rigorously.
-
 ---
 
 ## Infrastructure — Live Blockers
 
 - [ ] **OAuth GitHub MCP connector** — consent-screen auto-login loop blocks org-picker flow for `claude.ai` chat. Cowork writes are unblocked via PATs (2026-04-19); this item only gates the chat surface. Fix: revoke prior OAuth grant at `github.com/settings/applications`, sign out, reconnect from Claude desktop.
-- [ ] **PAT rotation** — Milmlow + eq-solutions fine-grained PATs expire 2026-05-19. Calendar reminder set for 2026-05-16. **When rotating: also update `%USERPROFILE%\.git-credentials` on every machine that pushes (Beelink + laptop).** The post-commit hook will silently start failing the moment PATs expire.
+- [ ] **PAT rotation** — All 3 PATs expired 2026-05-19 and were exposed in plaintext in substrate history before that. **Treat as compromised.** Full rotation checklist in `eq/pending.md` §CRITICAL — Rotate GitHub PATs.
 
 ---
 

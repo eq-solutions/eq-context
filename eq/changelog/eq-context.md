@@ -1,13 +1,46 @@
 ---
 title: Changelog — EQ Context Repo
 owner: Royce Milmlow
-last_updated: 2026-05-23
+last_updated: 2026-05-24
 scope: Append-only history of changes to the eq-context repository itself
 read_priority: reference
 status: live
 ---
 
 # Changelog — EQ Context Repo
+
+## [2026-05-24] Substrate maintenance pass — overnight artefacts deleted, Cards gaps promoted
+
+**Built by:** Royce Milmlow + assistant
+
+- `eq/overnight-prompt-2026-05-21.md` + `eq/overnight-report-2026-05-21.md` — deleted. One-time artefacts; known-gaps content promoted to `eq/pending.md` before deletion.
+- `eq/pending.md` — new `## EQ Cards` section added with 3 open follow-up items from the 2026-05-21 Cards canonical flip (photo migration, custom domain, branch cleanup). Trailing blank list item removed.
+- `eq/products.md` — stale overnight-report reference in the Cards section replaced with `eq/pending.md §EQ Cards`.
+- `eq/changelog/eq-context.md` (this file) — 2026-05-21 Cards flip entry + this maintenance entry added.
+- `ops/pending.md` — PAT rotation note updated (PATs expired 2026-05-19); stale "Beelink return" deferral note removed.
+- `archive/sessions-2026-04.md` — created; 8 April sessions rolled up to one-liners.
+- `sessions/2026-04-{05,10,12,15,18,19,27,28}.md` — removed from GitHub (>30 days old, value already in tier files).
+- `system/lessons.md` — `core.hooksPath` gotcha lesson added.
+- 14 orphaned Supabase rows deleted (8 April sessions + 6 stale file renames).
+- Substrate: 80 → 67 rows post-cleanup.
+
+## [2026-05-21] EQ Cards — canonical flip (Flutter app + SSO handoff)
+
+**Built by:** assistant (overnight autonomous session, Royce asleep)
+**Repos touched:** `eq-solutions/eq-shell` (2 commits), `eq-cards` (1 commit on `claude/canonical-migration`)
+
+**What changed:**
+
+- Flutter app rebuilt to read from `app_data.licences` + `app_data.staff` on eq-canonical (`jvknxcmbtrfnxfrwfimn`) via 8 new `eq_cards_*` RPCs that bridge the column rename (`user_id → staff_id`, `photo_*_url → photo_*_path`, `deleted_at → active=false`).
+- Shell flag `CARDS_USE_SHELL_SSO=true` added (`commit 8ba0d4f`). `mint-cards-iframe-token` Netlify function mints a JWT; Flutter app receives it in the iframe URL hash — no more email-OTP flow.
+- `IframeHandoffScreen` built in Flutter to pick up the token and bootstrap the session.
+- Verified end-to-end: decoded JWT confirmed correct staff/licence chain in Chrome MCP session.
+- Legacy Cards Supabase (`hshvnjzczdytfiklhojz`) left as read-only rollback insurance pending photo migration.
+
+**Known gaps (open in `eq/pending.md` §EQ Cards):**
+- Licence photo JPGs not migrated — `photo_front_path` NULL on canonical.
+- `cards.eq.solutions` custom domain not yet aliased on Netlify.
+- `claude/canonical-migration` branch not yet merged/deleted.
 
 ## [2026-05-23] Sprint S3 — EQ Shell polish + audit + visible features
 

@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Products
 owner: Royce Milmlow
-last_updated: 2026-05-23
+last_updated: 2026-05-24
 scope: Live EQ products. Killed/deferred entries removed in 2026-05-04 refactor.
 read_priority: standard
 status: live
@@ -177,7 +177,7 @@ subdomain alias added manually (~5 min) until automated.
   photo_*_url → photo_*_path, deleted_at → active=false). Legacy
   Cards Supabase (`hshvnjzczdytfiklhojz`) is read-only rollback
   insurance until the JPG photos are also migrated (deferred — see
-  `eq/overnight-report-2026-05-21.md` §Known gaps).
+  `eq/pending.md` §EQ Cards).
 - **Tender Pipeline** scaffolding under `src/modules/tender-pipeline/`
   is **stale exploration** — 5 page stubs ~9KB total, not on the
   roadmap. Tender Pipeline lives in EQ Field, not in the shell.
