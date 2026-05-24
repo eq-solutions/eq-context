@@ -1,7 +1,7 @@
 ---
 title: SYSTEM — Lessons Learned
 owner: Royce Milmlow
-last_updated: 2026-05-20
+last_updated: 2026-05-24
 scope: Hard-won technical gotchas; append-only
 read_priority: reference
 status: live
@@ -366,3 +366,20 @@ the PATs. Treat any credentials that touched chat as compromised.
 **Why it matters:** The substrate has a hard rule against hardcoded
 credentials. The same posture has to extend to credentials in flight
 — not just credentials at rest in code.
+
+---
+
+## `core.hooksPath` Pointing at Wrong Directory — Pre-Commit Hook Silently Skipped (2026-05-24)
+
+**Problem:** `git config core.hooksPath` was set to `hooks/` which only contained `post-commit` (the auto-push script). The pre-commit hook that bumps `last_updated` on staged files lived in `.githooks/pre-commit`. Because `core.hooksPath` didn't point at `.githooks/`, the pre-commit hook never ran — silently. Symptoms: `last_updated` dates were never bumping before commits, the GitHub `auto-bump-frontmatter.yml` bot kept detecting stale dates and pushing its own bump commits, and every `git push` required a `git pull --rebase` first because the bot had already pushed.
+
+**Fix:** Three steps.
+1. Copy `hooks/post-commit` → `.githooks/post-commit` so both hooks live in the same directory.
+2. Change `core.hooksPath` from `hooks` to `.githooks` (local git config: `git config core.hooksPath .githooks`).
+3. Update `scripts/install-hooks.ps1` to check for `post-commit` in `.githooks/` and `chmod +x` both hooks.
+
+After the fix: pre-commit bumps dates before each commit, the bot finds nothing to change, pushes land clean on the first try.
+
+**Re-clone setup:** Run `.\scripts\install-hooks.ps1` after cloning to wire `core.hooksPath` correctly. Without this step the hooks directory defaults to `.git/hooks/` which is empty.
+
+**Why it matters:** A pre-commit hook that silently doesn't run is worse than no hook at all — you think the guard is in place and it isn't. The tell was the bot's auto-bump commits appearing on every push. Any time you see the bot fighting your pushes, check `git config core.hooksPath` before diagnosing the bot itself.
