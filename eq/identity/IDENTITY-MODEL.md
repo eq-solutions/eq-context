@@ -1,7 +1,7 @@
 ---
 title: EQ Solutions — Unified Identity & Permissions Model
 owner: Royce Milmlow
-last_updated: 2026-05-20
+last_updated: 2026-05-27
 scope: Authoritative cross-product reference. Every present and future EQ Solutions product (Field, Quotes, Cards, Service, Intake, Tender Pipeline, anything that follows) conforms to this model. Governs the 5-tier role system, the platform-admin escape hatch, naming conventions for roles and permission keys, the invite flow, session lifecycle, and the JWT shape that lets modules talk directly to Supabase.
 read_priority: critical
 status: live
@@ -198,6 +198,8 @@ EQ Field is loaded via iframe with a 60-second HMAC handoff token from `/.netlif
 | `employee` / `apprentice` / `labour_hire` | `staff` (Field-side) |
 
 This mapping lives in `mint-iframe-token.ts` and is the only place Field's narrower model leaks into the shell. When Field is decommissioned (Phase 4 of the overall shell plan), the mapping deletes.
+
+**Current status (2026-05-24):** Bridge not yet live. EQ Field's permission system currently runs as a standalone JS shim — `window.EQ_PERMS` (`eq-solves-field/scripts/permission-matrix.js` + `scripts/permissions.js`) — that predates the Shell integration. Phase 1.B (shell token validation in `verify-pin.js`) is designed and ready but `mint-iframe-token` has not yet extended the token to carry `eq_role`. Until Phase 1.B ships: EQ Field's legacy scripts are the active runtime; `useCan()` is unused there. When Phase 1.B completes, Field's permission keys move to `src/modules/field/permissions.ts` in eq-shell and the legacy scripts are deleted.
 
 ### 7.2 EQ Cards (Flutter app — Supabase JWT)
 

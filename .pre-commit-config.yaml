@@ -1,0 +1,29 @@
+# Pre-commit config for eq-context substrate.
+#
+# To enable:
+#   pip install pre-commit
+#   pre-commit install
+#
+# Background: 2026-05-19 incident — three GitHub PATs landed in plaintext
+# in system/infrastructure.md history. GitHub push-protection caught the
+# second push but earlier pushes had already exposed them. This hook is
+# the local prevention so secrets never leave the working tree.
+#
+# The native git pre-commit hook at .git/hooks/pre-commit also runs a
+# regex sweep (committed to-repo as scripts/pre-commit-secrets.sh) so
+# basic protection is in place even without the pre-commit framework
+# installed.
+
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.21.2
+    hooks:
+      - id: gitleaks
+        name: gitleaks (block secret patterns)
+        description: Detect hardcoded secrets in staged changes
+        stages: [pre-commit]
+
+  - repo: meta
+    hooks:
+      - id: check-hooks-apply
+      - id: check-useless-excludes
