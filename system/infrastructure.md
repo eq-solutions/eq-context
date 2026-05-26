@@ -1,7 +1,7 @@
 ---
 title: SYSTEM — Infrastructure Accounts
 owner: Royce Milmlow
-last_updated: 2026-05-19
+last_updated: 2026-05-27
 scope: Supabase project IDs, Cloudflare, Netlify, GitHub, Beelink workstation
 read_priority: standard
 status: live
@@ -21,7 +21,7 @@ account" before connecting.
 |---------|---------|-------|
 | Supabase | Five projects (see table below) | Do NOT assume one project anywhere |
 | GitHub | eq-solutions org + milmlow user | All repos private; MCP is read-only (403 on writes). PATs stored in `C:\Projects\.git-credentials.*` — see table below |
-| Cloudflare | royce@eq.solutions | Pages + Workers + R2 (sks-assets, eq-assets buckets) |
+| Cloudflare | Two accounts — see Cloudflare section below | Pages + Workers + R2 buckets |
 | GoDaddy | — | Domain registrar only |
 | Netlify | dev@eq.solutions | All Netlify sites (EQ + SKS) |
 | Beelink | beelink.eq.solutions (Cloudflare Tunnel) | Ryzen 7 7735HS, 32GB RAM, 1TB NVMe; Chrome Remote Desktop |
@@ -96,6 +96,52 @@ work PC because ThreatLocker blocks Tailscale.
 - Local context repo: `C:\Projects\eq-context`
 - Local EQ Field repo: `C:\Users\EQ\eq-field-app-demo`
 - Global CLAUDE.md: `C:\Users\Royce\.claude\CLAUDE.md`
+
+---
+
+## Cloudflare — Two accounts
+
+**IMPORTANT: Two separate Cloudflare accounts. Confirm which before logging in.**
+
+| Account | Login method | What lives here |
+|---|---|---|
+| dev@eq.solutions | GitHub OAuth | R2 buckets (eq-assets, sks-assets, eq-solves-service) |
+| royce@eq.solutions | Email/password | Domain (eq.solutions), Workers, Pages, Zero Trust, Tunnel |
+
+### R2 Buckets (dev@eq.solutions)
+
+| Bucket | Contents | Public base URL |
+|---|---|---|
+| eq-assets | EQ logo SVGs + PNGs | https://pub-409bd651f2e549f4907f5a856a9264ae.r2.dev/ |
+| sks-assets | SKS logo PNGs + SKS Labour weekly DB backups (`backups/` prefix) | https://pub-97a4f025d993484e91b8f15a8c73084d.r2.dev/ |
+| eq-solves-service | EQ Solves Service weekly DB backups | (private — no public URL) |
+
+### Workers + Pages (royce@eq.solutions)
+
+| Name | Type | Purpose |
+|---|---|---|
+| eq-website | Pages | eq.solutions marketing site |
+| anthropic-proxy | Worker | Shared Anthropic API proxy — EQ Expenses, SKS Receipt Tracker, future tools. Never create per-app workers. |
+| supabase-backup-worker | Worker | Weekly DB backups (see Backup Schedule below) |
+
+### Backup Schedule
+
+`supabase-backup-worker` runs weekly and backs up two projects:
+
+| Project | Supabase ID | Destination bucket | Schedule |
+|---|---|---|---|
+| SKS Labour | nspbmirochztcjijmcrx | sks-assets/backups/ | Wednesdays (post labour meeting) |
+| EQ Solves Service | urjhmkhbgaxrofurpbgc | eq-solves-service/ | Weekly |
+
+File format: `YYYY-MM-DD_HHMM_db_backup.sql.gz`
+Restore: `gunzip < YYYY-MM-DD_HHMM_db_backup.sql.gz | psql <connection-string>`
+**Restore test against scratch project: OUTSTANDING — do before treating backups as reliable.**
+
+### Other (royce@eq.solutions)
+
+- Domain: `eq.solutions` (Cloudflare DNS, proxied)
+- Tunnel: `beelink.eq.solutions` → Beelink workstation (Cloudflare Zero Trust)
+- Security insights: 8 open as of 2026-05-27 (2 critical, 2 high, 4 low) — review in dashboard
 
 ---
 
