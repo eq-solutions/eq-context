@@ -1,13 +1,28 @@
 ---
 title: Changelog — EQ Solves Field
 owner: Royce Milmlow
-last_updated: 2026-05-19
+last_updated: 2026-05-29
 scope: Append-only history of changes to the EQ Solves Field product
 read_priority: reference
 status: live
 ---
 
 # Changelog — EQ Solves Field
+
+## [2026-05-29] v3.5.23 — Phase 1 eq_role wiring (PR #135, pending merge)
+**Built by:** Royce Milmlow + Claude Code
+
+**Summary:** All three auth paths (PIN, shell-token, shell-cookie) now derive and propagate `eq_role` to `window.EQ_SESSION.app_metadata.eq_role`, wiring the Phase D slot in `permissions.js` so `EQ_PERMS.getRole()` resolves the full role tier without a DB lookup.
+
+**Changes:**
+- `netlify/functions/verify-pin.js` — PIN success path: derives `eq_role` from `role` (supervisor → `'supervisor'`, else `'employee'`); passes as 4th arg to `signToken()`; returns in response body
+- `scripts/auth.js` — after successful login on all 3 paths, stores `data.eq_role` into `window.EQ_SESSION.app_metadata.eq_role`
+- `scripts/app-state.js` — `APP_VERSION` `3.5.22` → `3.5.23`
+- `sw.js` — CACHE `eq-field-v3.5.22` → `eq-field-v3.5.23`; banner bumped
+- `index.html` — CHANGES IN v3.5.23 block prepended
+
+**PR:** [#135](https://github.com/eq-solutions/eq-field/pull/135) — **pending Royce smoke test + squash-merge**  
+**Preview:** `https://deploy-preview-135--eq-solves-field.netlify.app/`
 
 ## [2026-05-19 PM] Project-folder audit (HTML showcase) + stale substrate drafts reverted
 

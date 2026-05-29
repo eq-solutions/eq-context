@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-05-24
+last_updated: 2026-05-29
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -25,9 +25,8 @@ any further build investment.
 - [ ] Identify first 5 outside-SKS trade subbies for demo engagement
 - [ ] Send outreach message to first target (trade business outside SKS)
 - [ ] Build sales motion — stop building features before first external user
-- [ ] Netlify env var cleanup — delete SECRET_SALT, STAFF_HASH, MANAGER_HASH
-      (folds into Phase 1 role-system migration when implementation starts —
-      single change instead of two)
+- [x] Netlify env var cleanup — confirmed clean 2026-05-29 (prior session
+      deleted hashes; only `EQ_SECRET_SALT` + active vars remain)
 - [ ] Clear Supabase rate_limits table on demo branch (ktmjmdzqrogauaevbktn)
 - [ ] Write fresh Cowork brief for EQ Field (guardrails, demo branch rules)
 
@@ -74,11 +73,13 @@ Open Tender Pipeline items (demo):
       Header includes verification queries to run before applying.
 - [ ] Apply that migration to `ktmjmdzqrogauaevbktn` **(Royce manual step —
       verify pre-conditions in header first)**
-- [ ] `verify-pin.js` rewrite: tenant slug from URL path → `tenant_id` lookup;
-      single tenant PIN from `organisations.tenant_pin`; role from
-      `people.role`; mints Supabase-native JWT with `app_metadata.tenant_id`
-      and `app_metadata.eq_role` **(auth change — needs Chat review per
-      `rules/non-negotiables.md`)**
+- [x] `verify-pin.js` Phase 1 wiring (2026-05-29) — PIN path now derives and
+      returns `eq_role` ('supervisor'/'employee'); all 3 auth paths store
+      `eq_role` in `window.EQ_SESSION.app_metadata.eq_role`; shipped as
+      **v3.5.23, PR #135** on eq-solutions/eq-field.
+      **Royce: smoke deploy-preview then squash-merge PR #135.**
+      Full verify-pin rewrite (tenant-slug → DB lookup, per-user JWT) is
+      Phase 2 multi-tenancy work — still gated.
 - [x] `scripts/permission-matrix.js` (matrix v1) + `scripts/permissions.js`
       (`EQ_PERMS.can()` + `.role()` + `.list()`) — commits `f2d0e91`, `b367eb1`
 - [x] Strategy decided: existing `isManager` global stays; `EQ_PERMS` reads
@@ -267,9 +268,9 @@ Diagnosed 2026-05-19. 17 advisor warnings, fix drafted but not applied.
       rewritten 2026-05-19 to grant EXECUTE to `authenticated`
       (not `service_role` — see session log for why). Paste into the
       Supabase SQL editor for the project and Run.
-- [ ] **Toggle leaked-password protection** in eq-demo-canonical
-      dashboard → Authentication → Providers → Email → enable
-      HaveIBeenPwned check.
+- [ ] **Toggle leaked-password protection** in eq-canonical (`jvknxcmbtrfnxfrwfimn`)
+      dashboard → Authentication → Settings → enable HaveIBeenPwned check.
+      **(Royce manual step)**
 - [ ] **Commit + push the two eq-intake edits** —
       `sql/004_security_advisor_fix.sql` and
       `eq-platform/scripts/db-apply.ts` are uncommitted in
@@ -304,7 +305,8 @@ Diagnosed 2026-05-19. 17 advisor warnings, fix drafted but not applied.
 ## EQ Cards — canonical flip follow-ups (shipped 2026-05-21)
 
 - [ ] **Licence photo JPGs not migrated** — 2 active licence photos (electrical + medicare) still on legacy Cards Supabase (`hshvnjzczdytfiklhojz`). `photo_front_path` is NULL on canonical. Re-upload via the new Cards UI OR run a copy script with both service-role keys.
-- [ ] **`cards.eq.solutions` custom domain** (S2.E) — DNS alias + Netlify domain alias on the `eq-cards` project still pending.
+- [x] **`cards.eq.solutions` custom domain** (S2.E) — CONFIRMED LIVE 2026-05-29. CNAME already configured.
+- [x] **Per-tenant storage bucket policies** (2026-05-29) — `org_admins_read_member_licence_photos` RLS policy applied to `storage.objects` on eq-canonical (`jvknxcmbtrfnxfrwfimn`). Org admins can read licence photos of active members in their org.
 - [ ] **`claude/canonical-migration` branch** — exists in eq-cards as change record; prod is the flutter build web artefact. Either merge or delete.
 
 ---
