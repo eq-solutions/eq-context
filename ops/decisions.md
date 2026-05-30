@@ -1,7 +1,7 @@
 ---
 title: OPS — Decisions Log
 owner: Royce Milmlow
-last_updated: 2026-05-21
+last_updated: 2026-05-30
 scope: Append-only log of key decisions across all tiers and the reasoning at the time
 read_priority: standard
 status: live
@@ -17,6 +17,27 @@ Format: Status → Decision → Why → Alternatives considered → Implications
 Status values: Accepted | Superseded by [date+title] | On Hold | Deprecated | Proposed.
 Append-only — never delete an entry. Supersede or deprecate it instead.
 For the current built state of each system, see [system/architecture.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/system/architecture.md).
+
+---
+
+## 2026-05-30 — Autonomous Sprint: Full-Auto EQ Deploy, SKS Live Untouchable, Auth Gated
+
+**Status:** Accepted
+
+**Decision:** For the autonomous parallel sprint, agents MAY build, branch, open PRs, gate them green, and **merge + deploy autonomously for EQ-side changes** — superseding, *for the sprint scope only*, the standing "no push/deploy/commit without explicit instruction" and "never deploy to eq-solves-field.netlify.app directly" rules (`CLAUDE.md` §7/§11, `rules/non-negotiables.md`). Two carve-outs remain hard gates:
+- **SKS live is untouchable** — no deploy to sks-nsw-labour.netlify.app, no writes to the SKS live DB (`nspbmirochztcjijmcrx`), no Field-merge cutover. Unchanged from the standing rule.
+- **Auth-flow changes stay gated** — build + green PR is fine, but deploying any auth / MFA / session / password change still needs Royce's explicit OK. Preserves the standing auth-review non-negotiable.
+
+Full conventions in `SPRINT-BOARD.md`, `AUTONOMOUS-SPRINT-RULES.md`, `STATE.md` (eq-context repo root).
+
+**Why:** 2026-05-30 ran several parallel agent sessions and hit repeated *divergence*: diverged local mains dragging unrelated commits into PRs, duplicate sequential migration numbers breaking Service CI twice (`0097`, then a `0110` near-miss), stale worktrees holding uncommitted work, two sessions colliding in one repo. A source of truth + structural guardrails (branch-from-origin, timestamp migrations, claim-before-start) makes divergence structurally hard; full-auto EQ deploy keeps the sprint moving without a human bottleneck on every change. The carve-outs preserve the only two gates whose blast radius justifies a human: SKS (separate live entity) and auth (suite-wide, hard to unwind).
+
+**Alternatives considered:**
+- *Keep all deploys gated.* Rejected — re-introduces the bottleneck the sprint is meant to remove; review load on Royce becomes the constraint.
+- *Full-auto including auth + SKS.* Rejected by Royce — auth is highest-blast-radius, SKS is a separate live entity; both keep a human gate.
+- *Document the policy only in the root sprint docs.* Rejected — agents load the substrate contract at session start and would get the opposite instruction; the policy must live in the governance log to authoritatively supersede.
+
+**Implications:** Agents on the EQ sprint deploy on green without asking. `rules/non-negotiables.md` and `CLAUDE.md` §7/§11 still carry the old "no direct deploy / auth review" lines — they are superseded by this entry **for the sprint scope only** and should gain a pointer to it (decision-grade edit; Royce to apply, or relax auth too if he chooses). When the sprint ends, mark this Superseded or restore the non-negotiables. The SKS-live and auth carve-outs remain in force permanently regardless of sprint status.
 
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-05-29
+last_updated: 2026-05-30
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -11,6 +11,19 @@ status: live
 
 EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## 🟦 Autonomous Sprint — SOURCE OF TRUTH (read first if running sprint work)
+
+Parallel autonomous agents coordinate through three root files (added 2026-05-30):
+- `SPRINT-BOARD.md` — full backlog + claim/ownership (claim before you start)
+- `AUTONOMOUS-SPRINT-RULES.md` — diverge-proof conventions (branch from origin/main, **timestamp migrations**, SKS-live untouchable, full-auto EQ deploy, auth gated)
+- `STATE.md` — per-repo + Supabase reality + known hazards
+
+Autonomy policy: `ops/decisions.md` 2026-05-30. Session log: `sessions/2026-05-30.md`.
+
+**Drift to reconcile (noticed 2026-05-30):** the "two-Supabase obsolete / single canonical" and GTM-gate notes below are stale — reality is the two-plane split (`eq-canonical` + `eq-canonical-internal`) and the GTM gate was removed. `STATE.md` carries current reality.
 
 ---
 
