@@ -79,6 +79,8 @@ defaults from one tier only. Cross-tier loads are explicit, not implicit.
 9. Auth changes MUST be reviewed in chat before any deployment.
 10. Every Netlify/Cloudflare Pages site MUST ship with a `_headers` security file.
 
+> **Sprint-scope note (see `ops/decisions.md` 2026-05-30 ADR):** within the authorised autonomous EQ sprint, #1 is conditionally relaxed — **full-auto merge + deploy is authorised for EQ surfaces** — while #4 (SKS-live untouchable), #8 (schema-change approval), and #9 (auth changes gated for deploy) remain fully in force. Outside that sprint scope, #1 applies as written.
+
 ---
 
 ## Legal & Entity

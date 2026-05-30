@@ -161,7 +161,9 @@ contain the same values and were pushed before push-protection caught up.
 
 ---
 
-## EQ Shell + EQ Intake (Phase 2 PAUSED pending GTM validation gate)
+## EQ Shell + EQ Intake
+
+> **⚠ SUPERSEDED (2026-05-30) — the architecture + gate notes in this section are STALE; `STATE.md` carries current reality.** (1) The **two-plane** model is current, NOT "single canonical": browser → `eq-canonical` (control plane) + tenant data **server-only** in `eq-canonical-internal` (`zaapmfdkgedqupfjtchl`). The "Two-Supabase obsolete / single canonical" copy below is itself now obsolete. (2) The **GTM validation gate was REMOVED** — do NOT block Shell Phase 2 (or any EQ work) on outside-customer validation (see `ops/decisions.md` + memory `feedback_gtm_intent`). Historical detail below kept for record only.
 
 **Status as of 2026-05-20:** Phase 1.E + 1.F shipped (single canonical
 Supabase, Intake module live at `/core/intake`, Unified Identity, RLS
