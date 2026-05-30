@@ -32,13 +32,17 @@ Last refreshed: 2026-05-30.
 |----|------|------|--------|----------------|-------|
 | B0 | Re-scope + staleness audit | — | ✅ | this session | EQ Field already multi-tenant w/ SKS support; config NOT stale → merge = port modules + cutover |
 | B1 | Tenant-safety groundwork | eq-solves-field | ✅ | (pre-existing) | branding/detection/disabled-tables already in EQ Field |
-| B2a | Port `project-hours.js` (safest first) | eq-solves-field | ⚪ | (worktree `claude/field-merge-phase1` ready) | self-gating + graceful degrade; EQ flag off. See stream2 plan |
-| B2b | Port `safety.js` + `safety-dashboard.js` | eq-solves-field | ⚪ | — | dedicated surface; add `prestarts`/`toolbox_talks` to EQ disabled-tables |
-| B2c | Port `teams.js` | eq-solves-field | ⚪ | — | **coupled** into roster/contacts/schedule — reconcile carefully |
-| B2d | Port `pipeline*` (×3) | eq-solves-field | ⚪ | — | huge (2439 ln), `SKS_PIPELINE` ns; do LAST (SKS `pipeline-ui` worktree was recently active) |
+| B2a | ~~Port `project-hours.js`~~ → **resolved: NO PORT** | eq-solves-field | ✅ | this session (verified) | **Ground-truth 2026-05-30:** dead in BOTH — unwired orphan in SKS (no live `<script>`/precache; only a comment ref) AND EQ **deliberately deleted** the file at v3.5.11 (dead-code audit). Re-adding = re-introducing removed dead code → not done. Perms/flag/history already at parity, so cutover loses nothing. Revival = fresh-feature decision for Royce (see ⬇ pending decision), **not** a merge port. |
+| B2b | Port `safety.js` + `safety-dashboard.js` | eq-solves-field | ⚪ | — | **Verified LIVE in SKS** (boot tags ln 89-90; safety.js precached): 989 + 270 = ~1259ln. Dedicated surface. Port = SKS boot-load → EQ lazy-loader + tenant-gate + add `prestarts`/`toolbox_talks` to `TENANT_DISABLED_TABLES.eq`. |
+| B2c | Port `teams.js` | eq-solves-field | ⚪ | — | **Verified LIVE in SKS** (boot tag ln 64, precached): 446ln. **Coupled** into roster/contacts/schedule — reconcile carefully. Boot-load → lazy. |
+| B2d | Port `pipeline*` (×3) | eq-solves-field | ⚪ | — | **Verified LIVE in SKS** (boot tags ln 85-87, precached): import 376 + pipeline 583 + resource 1480 = 2439ln. `SKS_PIPELINE` ns. Needs local `xlsx.full.min.js` (SKS CSP blocks CDN). Boot → lazy. Do LAST (SKS `pipeline-ui` worktree recently active). |
 | B3 | Reconcile SKS 11-release delta | eq-solves-field | ⚪ | — | fixes SKS has that EQ lacks |
 | B4 | Light canonical wiring → `sks-canonical` | eq-solves-field | ⚪ | — | control-plane reads only; no operational migration |
 | B5 | **CUTOVER** repoint sks-nsw-labour.netlify.app | infra | ⛔ | — | **ROYCE-GATED — touches SKS live. Do not run.** |
+
+> **Module-state ground-truth (verified 2026-05-30, read-only).** The recon premise "SKS-only modules are live in SKS → port them" holds for B2b/B2c/B2d (all are live boot-loaded `<script>` tags + precached in SKS) but was **wrong for B2a** (project-hours is a dead orphan in *both* repos). **Lesson for the next agent:** verify a module is actually *wired* in SKS (live tag / precache / nav) before porting — don't trust the file's mere existence. **Structural note:** SKS loads all modules at boot; EQ Field uses a lazy-loader (v3.5.21+). Every B2 port must convert SKS boot-load → EQ lazy-manifest, not just copy the file + tag.
+>
+> **⛔ PENDING ROYCE DECISION — project-hours revival.** B2a is closed as a no-op (nothing to merge). *Separately:* do you want the project-hours burn-down panel revived as a **live EQ Field feature**? It was pulled from EQ on 13 May (v3.4.71) then the file deleted (v3.5.11); perms (`ph.*`) + flag (`feat_project_hours_v1`) + `sites.track_hours` column still exist in EQ. Reviving = a fresh feature build (restore file from git, re-add panel + lazy entry, set EQ flag default `false` until ready). **Not started — needs your go.**
 
 ## Stream C — Auth re-platform
 | id | item | repo | status | owner / branch | notes |

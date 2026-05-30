@@ -97,12 +97,26 @@ EQ Field's `origin/main` **already is a full multi-tenant codebase with complete
 
 **Consequence:** Phase 1 (tenant-safety groundwork: branding-to-CSS-vars / detection / disabled-tables) is **~80% pre-existing** — do NOT rebuild it. The real work re-scopes to:
 - **P1' Staleness audit — DONE 2026-05-30. Verdict: config NOT stale.** SKS's live `TENANT_BRANDING.sks` (logos, codes 2026/SKSNSW, aliases, disclaimer) is byte-identical to EQ Field's retained copy. Both repos are the same multi-tenant base; EQ Field's app-state is the larger superset (636 vs 528 lines — has tier/demo-trades/melbourne). Divergence is **modules/features only** (SKS v3.10.40 vs EQ v3.5.24), not tenant config. → merge = port modules + reconcile + cutover; no config refresh needed.
-- **P2 Port SKS-only modules** — recon done 2026-05-30. Recommended order (safest first): **project-hours → safety → teams → pipeline***.
-  - `project-hours.js` (189 ln) — **safest pattern-setter.** Self-contained dedicated panel; `gateOk()` self-gates on PostHog flag + permission and degrades gracefully on missing schema. EQ retains `ph.*` perms (permission-matrix.js) + an orphan ref. Port = restore script + `#project-hours-panel` HTML (index.html v3.4.71 removal block says "revival = restore this block"); keep EQ's flag OFF, SKS ON. Can't break EQ (flag off + graceful degrade).
+- **P2 Port SKS-only modules** — recon + **wired-state ground-truth done 2026-05-30** (table below). Revised order (safest first, project-hours dropped): **safety → teams → pipeline**. ⚠ The assumed easy "pattern-setter" (project-hours) evaporated on verification — every remaining port is substantial (≥446ln) and all require an SKS-boot → EQ-lazy conversion, so they want careful/supervised execution, **not** unattended auto-merge.
+  - ~~`project-hours.js` (189 ln)~~ — **DROPPED — not a port.** Ground-truth: it is a **dead orphan in BOTH repos** — in SKS it has no live `<script>` tag (only a comment ref at `index.html:1269`), is **not** in `sw.js` PRECACHE, and is **not** lazy-loaded; in EQ it was **deliberately deleted** at v3.5.11 (overnight dead-code audit: *"orphan from the v3.4.71 feature removal that left the file behind"*). Re-adding it would re-introduce code EQ chose to remove. EQ already retains the `ph.*` perms + `feat_project_hours_v1` flag default + `sites.track_hours` column, so **cutover loses no functionality.** Revival as a live feature is a **fresh-feature decision for Royce** (tracked on the board), not merge work.
   - `safety.js`+`safety-dashboard.js` (1259 ln) — dedicated surface; add `prestarts`/`toolbox_talks` to `TENANT_DISABLED_TABLES.eq`.
   - `teams.js` (448 ln) — **coupled** (woven into roster/contacts/schedule, STATE-heavy) → reconcile carefully.
   - `pipeline.js`+`pipeline-import.js`+`pipeline-resource.js` (2439 ln) — `SKS_PIPELINE` namespace (low collision w/ EQ `tender-pipeline`), but huge + SKS `pipeline-ui` worktree recently active → do LAST, after that work lands.
-  - Per-port checklist: copy from sks-nsw-labour origin/main → reconcile cross-version deps (SKS v3.10 vs EQ v3.5) → wire lazy-loader + nav (tenant/flag-gated) → disabled-tables for EQ → version bump → smoke BOTH tenants. Worktree `claude/field-merge-phase1`.
+  - Per-port checklist: copy from sks-nsw-labour origin/main → reconcile cross-version deps (SKS v3.10 vs EQ v3.5) → **convert SKS boot `<script>` tag → EQ lazy-loader manifest entry** + nav (tenant/flag-gated) → disabled-tables for EQ → add to EQ `sw.js` PRECACHE → version bump → smoke BOTH tenants. Worktree `claude/field-merge-phase1`.
+
+  **Verified wired-state in SKS `origin/main` (ground-truth 2026-05-30):**
+
+  | Module | Lines | SKS live `<script>`? | SKS `sw.js` precache? | EQ Field has file? | Port verdict |
+  |---|---|---|---|---|---|
+  | `project-hours.js` | 189 | ❌ comment only (`:1269`) | ❌ | ❌ deleted v3.5.11 | **NO PORT — dead in both** |
+  | `teams.js` | 446 | ✅ `:64` | ✅ | ❌ | port — **coupled**, careful |
+  | `safety.js` | 989 | ✅ `:89` | ✅ | ❌ | port — dedicated surface |
+  | `safety-dashboard.js` | 270 | ✅ `:90` | ❌ | ❌ | port (with safety.js) |
+  | `pipeline-import.js` | 376 | ✅ `:85` | ✅ | ❌ | port (with pipeline) |
+  | `pipeline.js` | 583 | ✅ `:86` | ✅ | ❌ | port — `SKS_PIPELINE` ns |
+  | `pipeline-resource.js` | 1480 | ✅ `:87` | ✅ | ❌ | port — largest, do last |
+
+  Method note: a `grep` count of `src="scripts/<m>.js"` over-counts — the v3.4.71 history comment block embeds the string for project-hours/etc. Confirm with an anchored `^[[:space:]]*<script src=` match **and** the `sw.js` PRECACHE list before calling a module "live".
 - **P3 Reconcile** the rest of the 11-release delta. (unchanged)
 - **P4 light canonical wiring.** (unchanged)
 - **P5 Cutover** — point `sks-nsw-labour.netlify.app` at the EQ Field repo, smoke both tenants, retire old repo. (unchanged)
