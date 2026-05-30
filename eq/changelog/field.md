@@ -1,13 +1,34 @@
 ---
 title: Changelog — EQ Solves Field
 owner: Royce Milmlow
-last_updated: 2026-05-29
+last_updated: 2026-05-30
 scope: Append-only history of changes to the EQ Solves Field product
 read_priority: reference
 status: live
 ---
 
 # Changelog — EQ Solves Field
+
+## [2026-05-30] v3.5.34 — On-screen chrome is tenant-aware (PR #147, merged)
+**Built by:** Royce Milmlow + Claude Code
+
+**Summary:** On-screen counterpart to the v3.5.33 print brand fix. `styles/base.css` used `--navy` (SKS `#1F335C`, `:root`-flagged "no EQ token") as EQ Field's primary on-screen colour in ~30 places — primary buttons, section/modal titles, active pills/tabs, table headers, the EQ Agent panel, the sidebar — so EQ-tenant chrome rendered in SKS navy.
+
+**Changes:**
+- `styles/base.css` — one override `body:not(.tenant-sks) { --navy / --navy-2 / --navy-3 }` remaps the navy accent family to EQ deep `#2986B4` for every tenant except SKS, flipping all ~30 usages at once. Dark chrome surfaces (`.sidebar`, `#eq-agent-fab`, `#eq-agent-header`) carved to EQ ink `#1A1A2E` per the design profile (not blue). `:root` untouched → SKS byte-identical (keeps navy).
+- Version stamps → v3.5.34 (`APP_VERSION`, `sw.js` CACHE + banner, in-HTML banner).
+
+**Verified:** computed styles on the deploy preview, both tenants — EQ deep accents + ink sidebar/FAB/header; SKS navy throughout.
+**PR:** [#147](https://github.com/eq-solutions/eq-field/pull/147) — **merged** (`3f02cc1`).
+**Note:** PR #146 was a same-fix duplicate of #145 (print) built concurrently; closed unmerged.
+
+## [2026-05-30] v3.5.33 — Print/PDF brand fix + 3 core features (PR #145, merged)
+**Built by:** Royce Milmlow + Claude Code
+
+**Summary:** `styles/print.css` (shared EQ/SKS sheet) hardcoded SKS navy → EQ roster PDFs printed navy. Made the roster `<thead>`, print-header underline, and "Weekly Roster" title tenant-aware: EQ deep `#2986B4` default, SKS navy under `body.tenant-sks` (the class is present in `@media print`, unlike runtime CSS vars). Also shipped the weekly site-attendance report, roster bulk assign/clear, and mobile roster week-swipe. SKS print output unchanged.
+**PR:** [#145](https://github.com/eq-solutions/eq-field/pull/145) — **merged** (`509c6a3`). Full detail in `sessions/2026-05-30.md`.
+
+> v3.5.24–v3.5.32 shipped via the in-HTML banner (the canonical changelog for the v3.5.x series per eq-field CLAUDE.md) and are not backfilled here.
 
 ## [2026-05-29] v3.5.23 — Phase 1 eq_role wiring (PR #135, pending merge)
 **Built by:** Royce Milmlow + Claude Code
