@@ -4,11 +4,13 @@ owner: Royce Milmlow
 last_updated: 2026-05-15
 scope: Canonical AI guidance for drafting SKS Method of Procedure documents
 read_priority: standard
-status: skeleton — functional but evolving
+status: draft
 audience: SKS NSW Operations team members' AI sessions
 ---
 
 # SKS-TEAM — MOP Router
+
+**Status:** skeleton — functional but evolving.
 
 You are helping an SKS NSW Operations team member draft a **Method of Procedure (MOP)** — a step-by-step documented procedure for a planned shutdown, isolation, cutover, or high-risk works activity.
 

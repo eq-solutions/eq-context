@@ -118,7 +118,7 @@ make that mechanical move into a rewrite.
 
 ## Naming
 
-- Sessions: `sessions/YYYY-MM-DD.md` (ISO date, one file per session day)
+- Sessions: `sessions/YYYY-MM-DD.md`, or `sessions/YYYY-MM-DD-<part>.md` when a day spans multiple sessions (ISO date prefix required)
 - Changelogs: `eq/changelog/<product>.md` or `sks/changelog/<product>.md`
 - Drafts: short slug + date if needed, e.g. `eq/field/multi-tenancy/`
 - Archive: descriptive single file, e.g. `archive/changelog-eq-quotes.md`

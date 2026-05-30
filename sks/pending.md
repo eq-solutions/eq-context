@@ -1,5 +1,3 @@
-<!-- source: sks/pending.md | updated 2026-05-25 -->
-
 ---
 title: SKS — Pending
 owner: Royce Milmlow

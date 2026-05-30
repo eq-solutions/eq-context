@@ -4,7 +4,7 @@ owner: Royce Milmlow
 last_updated: 2026-05-23
 scope: Take EQ Shell from "scaffolding-complete" to "visibly impressive when someone clicks around". Agent walks the live experience, identifies clunky surfaces, fixes them. Adds the audit / observability / dashboard surfaces that make the substrate work feel real. Builds the features that turn empty pages into something a non-engineer goes "oh this is solid" at.
 read_priority: critical
-status: live — use as a session prompt
+status: live
 duration_estimate: full session, autonomous mode
 ---
 

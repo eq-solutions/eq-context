@@ -4,13 +4,15 @@ owner: Royce Milmlow
 last_updated: 2026-05-23
 scope: First sprint after canonical-readiness Units 1-7 shipped autonomously. Lock in the work (verify, harden, expose), close out paused PRs, ship the deferred Cards iframe, rotate compromised credentials, and produce the first functional registry-driven dropzone end-to-end.
 read_priority: critical
-status: **in flight** — locked 2026-05-20. 6 of 10 items shipped autonomously; 4 remaining are Royce-required dashboard/local-build actions.
+status: live
 duration_estimate: 1 week calendar (~10 hours work at EQ pace) — autonomous phase took ~2 hours actual
 shipped: S1.1, S1.4, S1.5, S1.6, S1.9, S1.10
 pending: S1.2 (PAT rotation), S1.3 (Sentry rotation), S1.7 (open PRs — depends on S1.2), S1.8 (Cards redeploy)
 ---
 
 # Sprint S1 — Canonical-readiness lock-in + ship-ready
+
+**Status:** in flight — locked 2026-05-20. 6 of 10 items shipped autonomously; 4 remaining are Royce-required dashboard/local-build actions.
 
 10 items. Sequenced by dependency. Each has effort, blast-radius, definition
 of done. Recommended order is top-to-bottom but item 2 (PAT rotation) is the
