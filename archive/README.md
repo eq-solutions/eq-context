@@ -18,6 +18,24 @@ explicitly directed.
 | `changelog-eq-quotes.md` | EQ Quotes deferred ~6 months (per 2026-04-29 cull) | When EQ Field hits 20 paying customers |
 | `changelog-ahd.md` | AHD parked to 2027 capital activation | 2027 capital activation review |
 
+## Sprint working docs — `sprints/`
+
+One-shot planning, audit, and reconcile docs from the 2026-05-30 autonomous
+sprint, kept for git history after their plans executed and merged. Read only
+when explicitly tracing how a 2026-05-30 decision was made.
+
+| File | Why archived |
+|---|---|
+| `sprints/component-audit-2026-05-30.md` | Component audit — executed |
+| `sprints/design-audit-2026-05-30.md` | Design-token audit — design pillar complete |
+| `sprints/cards-token-consolidation-2026-05-30.md` | Cards token work (#10) — merged |
+| `sprints/field-reconcile-b3-2026-05-30.md` | B3 reconcile analysis — 10 fixes merged (#141) |
+| `sprints/stream2-field-merge-plan-2026-05-30.md` | Field/SKS codebase merge plan — merged (v3.5.33) |
+| `sprints/sprint-2026-05-30-one-spine.md` | Sprint framing doc — sprint closed |
+| `sprints/sprint2-wave2-shortlist-2026-05-30.md` | Wave-2 shortlist — all selected items merged |
+| `sprints/cards-rebuild-plan-2026-05-30.md` | Cards worker-first rebuild plan — S2-A deferred ("not building now"); revive if E1 resumes |
+| `sprints/RESUME-2026-05-21.md` | One-time session resume prompt (2026-05-21) — superseded by `STATE.md` |
+
 ## How to revive archived content
 
 1. Move the file out of `/archive/` into the appropriate tier folder.

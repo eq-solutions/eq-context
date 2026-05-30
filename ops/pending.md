@@ -99,12 +99,13 @@ The 2026-05-04 tier refactor solved tier-bleed and dead-product noise within Cla
 
 ## Multi-Repo Push Automation
 
-- [x] **eq-context post-commit auto-push — INSTALLED 2026-05-14** —
-  `hooks/post-commit` + `install-hooks.bat` shipped this session. After
-  running `install-hooks.bat` once per clone, every commit on `main`
-  auto-pushes to `origin/main`. Substrate sync follows within ~30s.
-  Docs: `system/git-automation.md`. Branches other than `main` skip the
-  hook; failed pushes don't undo the commit.
+- [x] **eq-context post-commit auto-push — INSTALLED 2026-05-14, hardened 2026-05-24** —
+  `.githooks/post-commit` + `scripts/install-hooks.ps1` are the current
+  mechanism (the original `hooks/` + `install-hooks.bat` pair was superseded
+  2026-05-24 and removed 2026-05-30). After running `.\scripts\install-hooks.ps1`
+  once per clone, every commit on `main` auto-pushes to `origin/main`.
+  Substrate sync follows within ~30s. Docs: `system/git-automation.md`.
+  Branches other than `main` skip the hook; failed pushes don't undo the commit.
 
 - [ ] **eq-solves-field push blocked on `demo` branch** —
   2026-05-14 `push-all.bat` attempted push of local `demo` to
