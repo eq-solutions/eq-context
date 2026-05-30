@@ -117,6 +117,38 @@ EQ Field's `origin/main` **already is a full multi-tenant codebase with complete
   | `pipeline-resource.js` | 1480 | ✅ `:87` | ✅ | ❌ | port — largest, do last |
 
   Method note: a `grep` count of `src="scripts/<m>.js"` over-counts — the v3.4.71 history comment block embeds the string for project-hours/etc. Confirm with an anchored `^[[:space:]]*<script src=` match **and** the `sw.js` PRECACHE list before calling a module "live".
+
+### B2b — `safety` port: EXECUTION-READY SPEC (recon complete 2026-05-30)
+
+**Dep-check verdict: FAVOURABLE.** `safety.js` (989) + `safety-dashboard.js` (270) are **self-contained** (headers: *"ships without site-reports-shared.js"*; deps = `app-state.js, utils.js, supabase.js` only). External symbols they use — `STATE.sites / STATE.people / STATE.schedule`, `sbFetch(path, method, payload, headers)`, `showToast`, `window.SpeechRecognition` — **all exist in EQ Field**. No site-reports-shared dependency. CSS is self-injected (`#safety-responsive-style`, safety.js:409) so nothing to port style-side.
+
+**Mount model:** `showPage`-driven, NOT self-mounting (contrast project-hours). `showPage('safety')` must call `loadSafety()` (safety.js:973); `showPage('safety-dashboard')` → `loadSafetyDashboard()` (safety-dashboard.js:46).
+
+**⚠ Name collision:** EQ Field already owns the `prestart` and `toolbox` page IDs (mapped to its own `site-reports` bundle in `lazy-loader.js`, different schema: EQ `site_reports` vs SKS `prestarts`/`toolbox_talks`). **Use the SKS page IDs `safety` + `safety-dashboard`** (which EQ does NOT use) — do not touch EQ's prestart/toolbox.
+
+**What to transplant from `sks-nsw-labour` `origin/main` (all tenant-gated to `sks`):**
+| Piece | SKS source | EQ target |
+|---|---|---|
+| 2 JS files | `scripts/safety.js`, `scripts/safety-dashboard.js` | copy verbatim to EQ `scripts/` |
+| Nav buttons ×2 | `index.html:2804-2805` (`#nav-safety`, `#nav-safety-dashboard` edit-only) | add to EQ nav, `style="display:none"` |
+| Mobile drawer | `index.html:3279` (`#ditem-safety`) | add to EQ mobile drawer |
+| Panel: safety | `index.html:3241` `#page-safety` (tabs + `#safety-tab-content-*`, `#page-prestart-list`, `#page-toolbox-list`) | add to EQ `<main>` page stack |
+| Panel: dashboard | `index.html:3236` `#page-safety-dashboard` | add to EQ page stack |
+| Modals | `index.html` ~3316-3340 (`#prestart-modal-*`, `#prestart-form-body`, `#toolbox-modal-*`, `#toolbox-form-body`, signature canvas) | add to EQ modal layer |
+| showPage wiring | SKS `showPage` routes `safety`→`loadSafety()`, `safety-dashboard`→`loadSafetyDashboard()` | add the two cases to EQ `showPage()` |
+| lazy-loader | (SKS boot-loads) | add `'safety':['scripts/safety.js'], 'safety-dashboard':['scripts/safety-dashboard.js']` to `TAB_SCRIPTS` |
+| sw precache | — | add both files to EQ `sw.js` PRECACHE |
+
+**Tenant-gating = 3 layers (EQ provably never loads it):**
+1. **Nav** — buttons ship `display:none`; the tier-gating fn (`app-state.js:303`, called from `applyTenantBranding`) reveals `#nav-safety`/`#nav-safety-dashboard`/`#ditem-safety` only when `TENANT.slug === 'sks'`.
+2. **Lazy-loader** — `safety` tab scripts only ever requested via the (sks-only) nav, so EQ never injects them.
+3. **Disabled-tables** — add a **new** `eq:` key to `TENANT_DISABLED_TABLES` (currently only `sks:` exists) listing `prestarts`, `toolbox_talks` — belt-and-braces so even a leaked gate fires no EQ queries.
+
+**Why this is EQ-safe to land before the (gated) cutover:** triple-gated → EQ users never see or load it; `sks-nsw-labour.netlify.app` still runs its own repo until B5 cutover, so any SKS-side wiring imperfection has **zero live blast radius** and is caught at the cutover smoke. Validation of the SKS path therefore happens at **B5 (Royce-gated)**, not now.
+
+**Then:** version-bump (app-state + sw + banner) + smoke EQ tenant (confirm no Safety nav, no console errors) on the deploy-preview. Land as its own PR off `origin/main`.
+
+**Open reconciliation (future, not blocking the port):** whether SKS eventually converges its `safety.js` prestart/toolbox onto EQ's `site-reports` implementation, or keeps both — a Royce design call for Phase 3, not Phase 2.
 - **P3 Reconcile** the rest of the 11-release delta. (unchanged)
 - **P4 light canonical wiring.** (unchanged)
 - **P5 Cutover** — point `sks-nsw-labour.netlify.app` at the EQ Field repo, smoke both tenants, retire old repo. (unchanged)
