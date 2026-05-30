@@ -23,7 +23,7 @@ Royce selected 4 streams (2026-05-30). **Phase 0 = DISCOVERY** — read-only age
 
 ## Build Wave 1 — IN FLIGHT (2026-05-30; Royce selected Field + Service + Quality; Cards deferred)
 - ✅ **S2-B Field batch (6) MERGED** (#143, Field **v3.5.31**). Timesheet pre-fill + multi-week export + hard-delete leave + roster copy-week + audit-log fix (was a `who`/`manager_name` field bug silently dropping auth-audit events — no migration needed). Licence-expiry ships **dormant**. ⚠ **PENDING ROYCE MIGRATION** (apply to activate licence-expiry alerts): `ALTER TABLE people ADD COLUMN IF NOT EXISTS licence_expiry date;` on `ktmjmdzqrogauaevbktn`.
-- 🔵 **S2-C Service batch (9 = 5 features + 4 quality)** — `claude/s2-service` (worktree `eq-service-s2-wt`). Last-mile completions + focus-traps/loading-error boundaries.
+- ✅ **S2-C Service batch MERGED** (#206). **4 of 5 "features" were ALREADY BUILT** (discovery doc over-stated the gaps — Service is more complete than thought). Net new: pre-visit **tech-brief** (inline schedule editor + Resend email w/ `.ics`, graceful-degrade on no RESEND key) + 4 quality fixes (Modal + SlidePanel focus traps, global `:focus-visible`, loading.tsx ×5 + error.tsx boundary). CI green.
 - 🔵 **S2-D-shell Shell quality (A4 focus-visible + Z2 live-feed bug)** — `claude/s2-shell-quality` (worktree `eq-shell-s2-wt`).
 - ✅ **#73 ghost-border** — eq-ui ghost border restored (eq-ui v1.0.1, `886c5de`); consumers pick it up on dep bump. #73 (Shell Button) stays held for Royce's preview; I'll refresh its eq-ui dep when he decides.
 - ✅ **Substrate-drift docs** — eq/pending.md §EQ Shell superseded-banner (two-plane + GTM-removed); non-negotiables.md ADR sprint-scope pointer.
