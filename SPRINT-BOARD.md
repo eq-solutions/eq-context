@@ -47,9 +47,9 @@ Last refreshed: 2026-05-30.
 ## Stream C — Auth re-platform
 | id | item | repo | status | owner / branch | notes |
 |----|------|------|--------|----------------|-------|
-| C1 | Role registry `@eq-solutions/roles` | eq-roles (new) | ✅ | local git only | built + verified; matrix matches Shell |
-| C1b | Create public `eq-roles` repo + push | eq-roles | ⛔ | — | new public repo → flag before creating (Rule §1) |
-| C2 | Wire Shell to consume @eq-solutions/roles | eq-shell | ⚪ | — | replace hand-defined EqRole + MATRIX; needs eq-shell quiet |
+| C1 | Role registry `@eq-solutions/roles` | eq-roles (new) | ✅ | **pushed: eq-solutions/eq-roles (public)** | built + verified; matrix matches Shell |
+| C1b | Create public `eq-roles` repo + push | eq-roles | ✅ | Royce-approved 2026-05-30 | live at github.com/eq-solutions/eq-roles (main) |
+| C2 | Wire Shell to consume @eq-solutions/roles | eq-shell | ⚪ | — | **now unblocked** (repo live); replace hand-defined EqRole + MATRIX. Do when eq-shell quiet (currently HOT). |
 | C3 | Supabase-Auth IdP + passkey spike | eq-shell | ⚪ | — | spike branch; no prod auth change |
 | C4 | Staged auth cutover (shadow → app-by-app → retire HMAC) | all | ⛔ | — | **auth deploy = Royce-gated (Rule §1)** |
 
