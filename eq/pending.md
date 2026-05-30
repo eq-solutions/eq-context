@@ -319,27 +319,4 @@ Diagnosed 2026-05-19. 17 advisor warnings, fix drafted but not applied.
 
 ## EQ Cards — canonical flip follow-ups (shipped 2026-05-21)
 
-- [ ] **Licence photo JPGs not migrated** — 2 active licence photos (electrical + medicare) still on legacy Cards Supabase (`hshvnjzczdytfiklhojz`). `photo_front_path` is NULL on canonical. Re-upload via the new Cards UI OR run a copy script with both service-role keys.
-- [x] **`cards.eq.solutions` custom domain** (S2.E) — CONFIRMED LIVE 2026-05-29. CNAME already configured.
-- [x] **Per-tenant storage bucket policies** (2026-05-29) — `org_admins_read_member_licence_photos` RLS policy applied to `storage.objects` on eq-canonical (`jvknxcmbtrfnxfrwfimn`). Org admins can read licence photos of active members in their org.
-- [ ] **`claude/canonical-migration` branch** — exists in eq-cards as change record; prod is the flutter build web artefact. Either merge or delete.
-
----
-
-## EQ GTM — PRIORITY (gates further build)
-
-- [ ] First outreach message sent (trade business outside SKS)
-- [ ] First demo booking confirmed
-- [ ] 5/5 validation gate cleared
-
----
-
-## EQ Brand & Legal
-
-- [ ] EQ-IP-Register P1 #1 — IP-clarity email to SKS Technologies
-      (formalise arm's-length commercial relationship for EQ Solves Service)
-- [ ] EQ-IP-Register P1 #2 — repo visibility audit (confirm
-      `eq-solves-service` private; flip any that drifted)
-- [ ] EQ-IP-Register P1 #3 — Webb TM brief for software classes 9 + 42
-- [ ] EQ trademark: monitor publication after 18 August 2026
-- [ ] EQ business name renewal — November 2026
+- [ ] **Licence p

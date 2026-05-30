@@ -106,6 +106,4 @@ defaults from one tier only. Cross-tier loads are explicit, not implicit.
 
 ## Financial
 
-20. CDC Solutions has passed the Results Test on the Delta Elcom engagement — no further PSI tests are required.
-21. HHT crypto holdings MUST be treated under the CGT investor method universally — personal, HHT, and SMSF.
-22. MIS risk: pooled employee contributions managed by others trigger managed investment scheme concern. AHD MUST use company retained earnings on company operations, NOT pooled contributions.
+20. CDC Solutions has passed the Results
