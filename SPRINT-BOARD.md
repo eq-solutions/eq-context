@@ -25,7 +25,7 @@ Last refreshed: 2026-05-30.
 | A3 | Service de-vendor + 0097 cleanup | eq-solves-service | ✅ | #203, #204 merged | live |
 | A4 | Cards token consolidation | eq-cards | ⚪ | — | **Decision needed:** Cards has parallel `EqSpacing`/`EqSpacingTokens`; re-vendor would dup-class compile-error. Bundle with E1. NOT SKS. |
 | A5 | Component audit doc (→ future @eq-solutions/ui) | eq-shell + eq-solves-service | ⚪ | — | read-only research; rank duplicated buttons/tables/forms |
-| A6 | Field `base.css` legacy vars → `--eq-*` | eq-solves-field | ✅ | PR #137 (v3.5.25) | bridged with `var()` fallbacks → zero visual change; deploy-preview green. Awaiting merge. |
+| A6 | Field `base.css` legacy vars → `--eq-*` | eq-solves-field | ✅ | **merged #137 → main (v3.5.26)** | bridged with `var()` fallbacks → zero visual change. Live. |
 
 ## Stream B — EQ Field + SKS merge (codebase only; data stays separate)
 | id | item | repo | status | owner / branch | notes |
@@ -33,7 +33,7 @@ Last refreshed: 2026-05-30.
 | B0 | Re-scope + staleness audit | — | ✅ | this session | EQ Field already multi-tenant w/ SKS support; config NOT stale → merge = port modules + cutover |
 | B1 | Tenant-safety groundwork | eq-solves-field | ✅ | (pre-existing) | branding/detection/disabled-tables already in EQ Field |
 | B2a | ~~Port `project-hours.js`~~ → **resolved: NO PORT** | eq-solves-field | ✅ | this session (verified) | **Ground-truth 2026-05-30:** dead in BOTH — unwired orphan in SKS (no live `<script>`/precache; only a comment ref) AND EQ **deliberately deleted** the file at v3.5.11 (dead-code audit). Re-adding = re-introducing removed dead code → not done. Perms/flag/history already at parity, so cutover loses nothing. **Royce 2026-05-30: leave dead** — no revival. |
-| B2b | Port `safety.js` + `safety-dashboard.js` | eq-solves-field | ⚪ **spec-ready** | — (execution-ready) | **Recon complete — see stream2 plan §B2b.** Dep-check favourable (self-contained). Large tenant-gated HTML transplant (nav + 2 panels + modals + showPage), distinct page IDs (EQ owns prestart/toolbox). Triple-gated → EQ-safe; SKS path validates at B5 cutover. Focused pass. |
+| B2b | Port `safety.js` + `safety-dashboard.js` | eq-solves-field | ✅ | **merged #138 → main (v3.5.26)** | Ported tenant-gated to `sks`; triple-gated → **EQ provably unaffected** (verified: no dup IDs, sks-only reveal, disabled-tables). Review caught + fixed a dup-ID defect (safety list IDs collided with EQ site-reports). **Cutover TODOs (B5):** (1) safety form modals not transplanted — safety.js refs EQ's `#modal-prestart`/`#prestart-form-body` etc.; SKS needs own namespaced modals or reconcile; (2) `toolbox_talks` may need adding to `ORG_TABLES` if it has `org_id`; (3) SKS path unsmoked — validate at cutover; (4) safety list IDs namespaced `#safety-prestart-list/-toolbox-list` (diverges from SKS safety.js). |
 | B2c | Port `teams.js` | eq-solves-field | ⚪ | — | **Verified LIVE in SKS** (boot tag ln 64, precached): 446ln. **Coupled** into roster/contacts/schedule — reconcile carefully. Boot-load → lazy. |
 | B2d | Port `pipeline*` (×3) | eq-solves-field | ⚪ | — | **Verified LIVE in SKS** (boot tags ln 85-87, precached): import 376 + pipeline 583 + resource 1480 = 2439ln. `SKS_PIPELINE` ns. Needs local `xlsx.full.min.js` (SKS CSP blocks CDN). Boot → lazy. Do LAST (SKS `pipeline-ui` worktree recently active). |
 | B3 | Reconcile SKS 11-release delta | eq-solves-field | ⚪ | — | fixes SKS has that EQ lacks |
