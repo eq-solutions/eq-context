@@ -9,6 +9,16 @@ status: live
 
 # Changelog — EQ Context Repo
 
+## [2026-05-30] Dead-weight audit + CI greening (3 PRs)
+
+**Built by:** Royce Milmlow + assistant (Claude Code)
+
+- **Hooks (#2):** removed superseded `hooks/` dir + `install-hooks.bat` (v2 mechanism, superseded 2026-05-24 by `.githooks/` + `scripts/install-hooks.ps1`); corrected stale pointers in `system/git-automation.md` + `ops/pending.md`.
+- **Archive (#2):** moved 9 spent/deferred 2026-05-30 sprint working docs → `archive/sprints/` (git-rename, history kept), logged in `archive/README.md`; redirected live pointers in `SPRINT-2-BOARD.md`. Kept `SPRINT-BOARD.md` (live-wired), the 3 S2 backlogs, and `auth-spike` (C4 reference) as not-dead.
+- **Scripts (#3):** removed 2 spent one-shot scripts — `push-sks-team.bat` + `cleanup-worktrees.bat` (the latter superseded by the generic `cleanup-worktrees.ps1`).
+- **CI green (#4):** fixed 11 pre-existing frontmatter violations (prose in `status:` → valid enum + lossless `**Status:**` body note; missing `read_priority`; 4 stray `<!-- source -->` comments stripped) and relaxed the session-filename rule to allow `YYYY-MM-DD-<part>.md` across `md-health.yml` + `.githooks/pre-commit` + `system/md-style.md`. `Frontmatter validation` + `MD health` had been red on `main` since before this work; now green.
+- Empty `hooks/` + `resume/` dirs removed; 3 merged branches pruned (local + remote). No broken links; substrate synced.
+
 ## [2026-05-24] Substrate maintenance pass — overnight artefacts deleted, Cards gaps promoted
 
 **Built by:** Royce Milmlow + assistant
