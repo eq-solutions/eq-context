@@ -11,6 +11,16 @@ status: live
 
 Snapshot 2026-05-30. **Verify before relying on the git/worktree lines** — they drift. The Supabase map + SKS-live flags are stable.
 
+> ## ⏩ POST-SPRINT UPDATE — end of 2026-05-30 (supersedes the table rows below where they conflict)
+> The "everything-then-cutover" fan-out completed. Current reality:
+> - **eq-solves-field** → **v3.5.29 on `main`**, clean. All SKS-only modules ported, **triple tenant-gated to `sks`** (EQ provably unaffected): `safety` (#138), `teams` (#139), `sks-pipeline*` (#140), + 10 B3 reconcile fixes (#141). My worktree removed; clone on main.
+> - **eq-shell** → consumes **`@eq-solutions/roles`** (C2 #70 — replaces hand-defined matrix, perms verified identical) **and `@eq-solutions/ui`** (#71 — Table+Skeleton; Button still CSS-classes = follow-up). `claude/c3-auth-spike` (#72) is a **no-deploy reference spike** (live auth untouched). Prior equipment-intake session appears settled.
+> - **eq-solves-service** → consumes `@eq-solutions/ui` (#205, re-exports; `transpilePackages` set).
+> - **eq-cards** → tokens consolidated (#10 — dead `EqSpacingTokens` dropped, barrel export).
+> - **NEW packages:** **`@eq-solutions/roles`** (public github.com/eq-solutions/eq-roles — consumed by Shell) + **`@eq-solutions/ui`** (public github.com/eq-solutions/eq-ui — Button/Skeleton/Table, token-only — consumed by Shell+Service). Both alongside `@eq-solutions/tokens`. Design pillar = COMPLETE.
+> - **Branch tidy-up:** 108 old merged branches deleted across eq-field/shell/service/cards; unmerged/open + reference branches kept.
+> - **Remaining = Royce-driven:** B4 canonical wiring (cutover-phase), B3 medium/high (#5 schema, #11 structural, #13 DB-migration), E1 Cards rebuild, ⛔ C4 auth cutover, **B5 cutover = LAST (SKS-live)**. SKS-live (`nspbmirochztcjijmcrx`) untouched throughout.
+
 ## Repos
 | repo | GitHub | prod target | branch state @ snapshot | notes |
 |------|--------|-------------|--------------------------|-------|
