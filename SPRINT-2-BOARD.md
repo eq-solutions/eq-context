@@ -25,11 +25,21 @@ Royce selected 4 streams (2026-05-30). **Phase 0 = DISCOVERY** — read-only age
 - ✅ **S2-B Field batch (6) MERGED** (#143, Field **v3.5.31**). Timesheet pre-fill + multi-week export + hard-delete leave + roster copy-week + audit-log fix (was a `who`/`manager_name` field bug silently dropping auth-audit events — no migration needed). Licence-expiry ships **dormant**. ⚠ **PENDING ROYCE MIGRATION** (apply to activate licence-expiry alerts): `ALTER TABLE people ADD COLUMN IF NOT EXISTS licence_expiry date;` on `ktmjmdzqrogauaevbktn`.
 - ✅ **S2-C Service batch MERGED** (#206). **4 of 5 "features" were ALREADY BUILT** (discovery doc over-stated the gaps — Service is more complete than thought). Net new: pre-visit **tech-brief** (inline schedule editor + Resend email w/ `.ics`, graceful-degrade on no RESEND key) + 4 quality fixes (Modal + SlidePanel focus traps, global `:focus-visible`, loading.tsx ×5 + error.tsx boundary). CI green.
 - 🔵 **S2-D-shell Shell quality (A4 focus-visible + Z2 live-feed bug)** — `claude/s2-shell-quality` (worktree `eq-shell-s2-wt`).
-- ✅ **#73 ghost-border** — eq-ui ghost border restored (eq-ui v1.0.1, `886c5de`); consumers pick it up on dep bump. #73 (Shell Button) stays held for Royce's preview; I'll refresh its eq-ui dep when he decides.
+- ✅ **#73 ghost-border FINALIZED** — eq-ui v1.0.1 (`886c5de`, bordered ghost) now pinned in #73's `pnpm-lock.yaml`; `tsc -b` + `vite build` green; Netlify preview rebuilding. **#73 ready for Royce's merge** (eyeball the bordered-ghost preview → merge).
 - ✅ **Substrate-drift docs** — eq/pending.md §EQ Shell superseded-banner (two-plane + GTM-removed); non-negotiables.md ADR sprint-scope pointer.
 - ⏸ **S2-A Cards MVP** — deferred (Royce: not building now).
 
 All build agents report for review (no auto-merge); merges gate on green; tidy branches.
+
+## Build Wave 2 — SHORTLIST READY (2026-05-30; awaiting Royce selection)
+Discovery agent extracted the next-ranked **unbuilt** items per stream (Wave-1-built + already-built excluded). Full doc: `sprint2-wave2-shortlist-2026-05-30.md`.
+
+> **⚠ Service is more complete than the discovery doc claimed.** The Wave-2 agent verified each candidate against the live `eq-solves-service` codebase and found **6 MORE already-built** items wrongly listed as gaps: site-access edit UI (`SiteForm.tsx`), all 4 notification event-types firing, field-sync admin trigger (`IntegrationsClient.tsx`), renewal-pack page, portal scope register, scope-from-work derive wizard. **Lesson reinforced (from #206): always verify Service "gaps" against code before building.**
+
+**Field core (4, zero-risk, no migration):** F-W2-1 roster PDF/print · F-W2-2 dashboard gap-alerts card · F-W2-3 leave-calendar person filter · F-W2-4 apprentice year auto-advance (manager-gated batch write).
+**Field migration-gated (2):** F-W2-5 timesheet approval + bulk-approve (needs `approved`/`approved_by`/`approved_at` on `timesheets`) · F-W2-6 searchable audit-log UI (needs `target_id`/`target_name` on `audit_log`). → ship dormant + flag SQL (licence-expiry pattern), or hold.
+**Service (5, additive — RPCs/read-only, no schema change):** S-W2-1 defect detail page + photo attachments · S-W2-2 analytics per-customer/per-tech cuts · S-W2-3 canonical-export fill stubs (nsx_test/rcd_test/contract_scope/pm_calendar) · S-W2-4 asset detail `/assets/[id]` · S-W2-5 instrument calibration-due reminders (cron extension).
+**Quality (6, all S):** Q-W2-1 Service skip-nav (WCAG 2.4.1) · Q-W2-2 unify Shell iframe errors onto `EqError` · Q-W2-3 `EqError` retry loading-state + aria-label · Q-W2-4 dashboard null-tenant "workspace not ready" notice · Q-W2-5 detail-page `loading.tsx` (maintenance/[id] + sites/[id] + 3 testing routes) · Q-W2-6 Shell NotFound jargon fix + sync-bar aria.
 
 ## Rules (carried from Sprint 1 — see `AUTONOMOUS-SPRINT-RULES.md`)
 Branch from `origin/main`; isolated worktrees; **reviewed PRs** — no auto-merge to a core surface on visible / behavior / auth changes without Royce's look; EQ-safe (tenant-gate SKS-only code); **timestamp migrations**; **never touch SKS-live** (`nspbmirochztcjijmcrx`); gate on green deploy-preview; tidy branches as we go.
