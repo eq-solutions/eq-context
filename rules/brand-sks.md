@@ -1,7 +1,7 @@
 ---
 title: SKS Brand — Rules & Assets
 owner: Royce Milmlow
-last_updated: 2026-05-21
+last_updated: 2026-05-30
 scope: SKS Technologies brand specification — colours, fonts, logos, usage rules
 read_priority: critical
 status: live

@@ -1,7 +1,7 @@
 ---
 title: Sprint S1 — Canonical-readiness lock-in + ship-ready
 owner: Royce Milmlow
-last_updated: 2026-05-23
+last_updated: 2026-05-30
 scope: First sprint after canonical-readiness Units 1-7 shipped autonomously. Lock in the work (verify, harden, expose), close out paused PRs, ship the deferred Cards iframe, rotate compromised credentials, and produce the first functional registry-driven dropzone end-to-end.
 read_priority: critical
 status: live

@@ -1,7 +1,7 @@
 ---
 title: EQ Canonical — Existing 13 Tables Audit (Unit 1 Output)
 owner: Claude Code (Royce reviews)
-last_updated: 2026-05-27
+last_updated: 2026-05-30
 scope: Column-level audit of every existing canonical entity table against Field's actual migration shape (where applicable), Quotes' v1 schema, and Cards' working columns. Output drives Unit 2's schema-split-and-reshape migration. Where canonical and an app's shape diverge, this doc surfaces the gap and recommends a resolution.
 read_priority: standard
 status: draft

@@ -1,7 +1,7 @@
 ---
 title: SYSTEM — MD Style Standard
 owner: Royce Milmlow
-last_updated: 2026-05-07
+last_updated: 2026-05-30
 scope: Style standard for all MD files in eq-context
 read_priority: reference
 status: live
@@ -20,7 +20,7 @@ rules AIs need to apply. Historical reasoning lives in git history.
 ---
 title: <short human title>
 owner: <person responsible>
-last_updated: YYYY-MM-DD
+last_updated: 2026-05-30
 scope: <one line — who/what this applies to>
 read_priority: critical | standard | reference
 status: draft | live | archived

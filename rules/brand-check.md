@@ -1,7 +1,7 @@
 ---
 title: SKS Brand — Preflight Check
 owner: Royce Milmlow
-last_updated: 2026-05-21
+last_updated: 2026-05-30
 scope: Mandatory checklist before presenting any SKS customer-facing output
 read_priority: critical
 status: live

@@ -1,7 +1,7 @@
 ---
 title: SKS-TEAM — MOP Router (Skeleton)
 owner: Royce Milmlow
-last_updated: 2026-05-15
+last_updated: 2026-05-30
 scope: Canonical AI guidance for drafting SKS Method of Procedure documents
 read_priority: standard
 status: draft

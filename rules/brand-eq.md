@@ -1,7 +1,7 @@
 ---
 title: EQ Brand — Rules & Assets
 owner: Royce Milmlow
-last_updated: 2026-05-24
+last_updated: 2026-05-30
 scope: EQ Solutions brand specification — colours, fonts, logos, usage rules
 read_priority: critical
 status: live

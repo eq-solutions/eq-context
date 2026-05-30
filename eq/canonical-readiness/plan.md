@@ -1,7 +1,7 @@
 ---
 title: EQ Canonical Layer — Readiness Plan
 owner: Royce Milmlow
-last_updated: 2026-05-27
+last_updated: 2026-05-30
 scope: Bring eq-canonical (jvknxcmbtrfnxfrwfimn) to the shape needed to host EQ Intake, EQ Field, and EQ Quotes as first-class canonical-backed modules. Captures the gap matrix per app, sequences the schema + RPC + storage work, and surfaces architectural prerequisites (mega-RPC decomposition, schema split, per-tenant data plane decision) that get more expensive every week they're deferred.
 read_priority: critical
 status: live
