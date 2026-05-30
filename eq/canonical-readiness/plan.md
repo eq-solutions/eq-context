@@ -4,10 +4,12 @@ owner: Royce Milmlow
 last_updated: 2026-05-27
 scope: Bring eq-canonical (jvknxcmbtrfnxfrwfimn) to the shape needed to host EQ Intake, EQ Field, and EQ Quotes as first-class canonical-backed modules. Captures the gap matrix per app, sequences the schema + RPC + storage work, and surfaces architectural prerequisites (mega-RPC decomposition, schema split, per-tenant data plane decision) that get more expensive every week they're deferred.
 read_priority: critical
-status: **EXECUTED** 2026-05-20 (autonomous push). All 6 work units shipped (1 → 2 → 3 → 4 → 5 → 7). Canonical now hosts 42 entities across 5 modules (core=3, field=30, cards=1, quotes=7, service=1) split into shell_control + app_data schemas with per-domain RPCs, per-domain unwinders, and registry-driven per-domain Intake UI landing pages. See §"Execution record" for migration log.
+status: live
 ---
 
 # EQ Canonical Layer — Readiness Plan
+
+**Status:** EXECUTED 2026-05-20 (autonomous push). All 6 work units shipped (1 → 2 → 3 → 4 → 5 → 7). Canonical now hosts 42 entities across 5 modules (core=3, field=30, cards=1, quotes=7, service=1), split into shell_control + app_data schemas with per-domain RPCs, unwinders, and registry-driven Intake UI landing pages. See §"Execution record" for the migration log.
 
 This plan generalises the Cards §18 close-out (see
 [`eq/cards/canonical-migration/plan.md`](../cards/canonical-migration/plan.md))

@@ -1,5 +1,3 @@
-<!-- source: rules/brand-eq.md | synced: 2026-05-24 -->
-
 ---
 title: EQ Brand — Rules & Assets
 owner: Royce Milmlow

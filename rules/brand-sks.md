@@ -1,5 +1,3 @@
-<!-- source: rules/brand-sks.md | synced: 2026-05-24 -->
-
 ---
 title: SKS Brand — Rules & Assets
 owner: Royce Milmlow

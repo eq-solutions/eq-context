@@ -64,11 +64,11 @@ rm -f /tmp/_pre_cp_$$
 # ----------------------------------------------------------------------
 # 17.4 — Non-canonical session filenames — BLOCK
 # ----------------------------------------------------------------------
-echo "$staged_files" | grep -E '^sessions/' | grep -vE '^sessions/[0-9]{4}-[0-9]{2}-[0-9]{2}\.md$' > /tmp/_pre_sess_$$ || true
+echo "$staged_files" | grep -E '^sessions/' | grep -vE '^sessions/[0-9]{4}-[0-9]{2}-[0-9]{2}(-[a-z0-9-]+)?\.md$' > /tmp/_pre_sess_$$ || true
 if [ -s /tmp/_pre_sess_$$ ]; then
-    echo "${RED}BLOCK: non-canonical filenames in sessions/ (must match YYYY-MM-DD.md):${NC}"
+    echo "${RED}BLOCK: non-canonical filenames in sessions/ (must match YYYY-MM-DD.md or YYYY-MM-DD-<part>.md):${NC}"
     sed 's/^/  - /' /tmp/_pre_sess_$$
-    echo "  Fix: rename to sessions/YYYY-MM-DD.md, or append to the existing dated file."
+    echo "  Fix: rename to sessions/YYYY-MM-DD.md (or a -<part> suffix), or append to the existing dated file."
     violations=$((violations+1))
 fi
 rm -f /tmp/_pre_sess_$$

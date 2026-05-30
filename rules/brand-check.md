@@ -1,5 +1,3 @@
-<!-- source: rules/brand-check.md | synced: 2026-05-21 -->
-
 ---
 title: SKS Brand — Preflight Check
 owner: Royce Milmlow

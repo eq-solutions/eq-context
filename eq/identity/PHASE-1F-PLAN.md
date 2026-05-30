@@ -4,7 +4,7 @@ owner: Royce Milmlow
 last_updated: 2026-05-20
 scope: Implementation plan for the eq-shell side of the unified identity model. Expands shell-login/verify-shell-session/SessionContext to carry the 5-tier role + platform-admin boolean; adds a per-user Supabase JWT minter consumed by Cards and Intake; adds admin invite + edit UX; bridges EQ Field's iframe handoff. Predecessor Phase 1.E (Supabase consolidation). Blocks all module-shipping work until merged.
 read_priority: critical
-status: draft (pre-implementation)
+status: draft
 ---
 
 # Phase 1.F — Unified Identity & Permissions (eq-shell implementation)
