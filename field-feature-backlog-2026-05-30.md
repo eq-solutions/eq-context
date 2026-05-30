@@ -19,6 +19,16 @@ SKS-specific features (safety, teams, sks-pipeline) are already ported and tenan
 
 ---
 
+## ✅ BUILD STATUS (updated 2026-05-30 — after batches #143 / #144 / #145)
+
+**Built & merged:** #1 timesheet pre-fill, #3 multi-week export, #4 hard-delete leave, #6 calendar person-filter, #7 roster copy-week, #8 dashboard gap-alerts, **#9 roster bulk-ops (#145)**, #13 apprentice year auto-advance, **#14 weekly site-attendance report (#145)**, #16 roster PDF/print, **#17 mobile roster swipe (#145 — pages the week, not a single day; the one-day premise was stale)**, #19 audit-log schema-fix. Plus a **print.css EQ/SKS tenant-brand fix** (#145 — EQ deep default, navy only under `body.tenant-sks`).
+**Built but DORMANT** (UI ships inert; needs a parked migration to activate): #12 licence-expiry alerts.
+**PARKED — migration-gated (Royce, 2026-05-30):** #2 timesheet approval, #5 leave balance, #10 staff unavailability, #11 self-serve availability portal, #15 audit-log UI. #18 supervisor timesheet tile is blocked on #2.
+**Available, not yet built:** #20 PIN double-source-of-truth fix (auth backbone — build + green PR OK, but deploy needs Royce's chat review per Rule §9).
+**Net:** the no-migration EQ-tenant backlog is essentially exhausted. Next Field work needs either a parked migration run, the #20 auth fix, or net-new scope beyond this doc.
+
+---
+
 ## Ranking methodology
 
 Score = **value to a paying EQ tenant** (1–5) × **(1 / effort)** where effort is S=1, M=0.5, L=0.25. Features with identical scores are ordered by risk (lower risk first). "Additive" means zero change to existing code paths; "shared" means it touches code used by multiple modules.
