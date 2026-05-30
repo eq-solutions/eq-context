@@ -15,7 +15,7 @@ status: live
 Legend: ✅ done · 🔵 in-progress (claimed) · ⚪ todo (unclaimed) · ⛔ Royce-gated · ⏸ paused
 Last refreshed: 2026-05-30.
 
-> **🟦 ACTIVE FAN-OUT (Code session, 2026-05-30) — "everything then cutover last".** Royce authorized full fan-out. **Wave 1 RESULTS:** A4 Cards ✅ **merged** (Milmlow/eq-cards#10); A5b `@eq-solutions/ui` ✅ **created** (public github.com/eq-solutions/eq-ui — Button done, token-only; Skeleton+Table building now); C2 Shell→roles ✅ verified green ([#70](https://github.com/eq-solutions/eq-shell/pull/70), exhaustive 5×15 permission-equivalence) but **⛔ HELD for Royce merge — auth-gate** (permission system on the core hub; behaviorally identical but auth stays gated). **Wave 2 (next):** B2c teams + B2d pipeline (eq-solves-field, sequential — shared files), `@eq-solutions/ui` **wiring** into Shell+Service (after C2), C3 auth spike. **B5 cutover = LAST (SKS-live, Royce-trigger).** Each agent reports for review; merges gate on green. Don't grab these items.
+> **🟦 ACTIVE FAN-OUT (Code session, 2026-05-30) — "everything then cutover last".** Royce authorized full fan-out. **Wave 1 RESULTS:** A4 Cards ✅ **merged** (Milmlow/eq-cards#10); A5b `@eq-solutions/ui` ✅ **created** (public github.com/eq-solutions/eq-ui — Button done, token-only; Skeleton+Table building now); C2 Shell→roles ✅ **MERGED** (#70, Royce-approved — exhaustive 5×15 permission-equivalence, auth/session untouched). **Wave 2 IN FLIGHT:** B2c teams port (eq-solves-field), `@eq-solutions/ui` wiring → Shell (`claude/eq-ui-shell-wiring`, **visible change to core hub → Royce reviews look before merge**) + Service (`claude/eq-ui-service-wiring`, near-identical). **Queued:** B2d pipeline (after B2c — shared Field files), C3 auth spike (after Shell wiring frees eq-shell), B3 reconcile, B4 canonical. **B5 cutover = LAST (SKS-live, Royce-trigger).** Agents report for review; merges gate on green. Don't grab these items.
 
 ---
 
@@ -51,7 +51,7 @@ Last refreshed: 2026-05-30.
 |----|------|------|--------|----------------|-------|
 | C1 | Role registry `@eq-solutions/roles` | eq-roles (new) | ✅ | **pushed: eq-solutions/eq-roles (public)** | built + verified; matrix matches Shell |
 | C1b | Create public `eq-roles` repo + push | eq-roles | ✅ | Royce-approved 2026-05-30 | live at github.com/eq-solutions/eq-roles (main) |
-| C2 | Wire Shell to consume @eq-solutions/roles | eq-shell | ✅ build / ⛔ merge | PR #70 (verified, **held for Royce**) | Swapped hand-defined `EqRole`+admin/audit MATRIX → `@eq-solutions/roles`; module matrices stay local. **Exhaustive 5×15 permission-equivalence (all IDENTICAL)**, build clean, preview green, auth/session untouched. **Merge held — auth-gate** (permissions on core hub). |
+| C2 | Wire Shell to consume @eq-solutions/roles | eq-shell | ✅ | **merged #70 → main** (Royce-approved) | Swapped hand-defined `EqRole`+admin/audit MATRIX → `@eq-solutions/roles`; module matrices stay local. **Exhaustive 5×15 permission-equivalence (all IDENTICAL)**, build clean, auth/session untouched. Live on core hub. |
 | C3 | Supabase-Auth IdP + passkey spike | eq-shell | ⚪ | — | spike branch; no prod auth change |
 | C4 | Staged auth cutover (shadow → app-by-app → retire HMAC) | all | ⛔ | — | **auth deploy = Royce-gated (Rule §1)** |
 
