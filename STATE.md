@@ -1,3 +1,12 @@
+---
+title: Autonomous Sprint — State
+owner: Royce Milmlow
+last_updated: 2026-05-30
+scope: Per-repo + Supabase reality snapshot, CI guards, and known hazards for the sprint
+read_priority: critical
+status: live
+---
+
 # Autonomous Sprint — STATE (current reality; refresh at sprint start)
 
 Snapshot 2026-05-30. **Verify before relying on the git/worktree lines** — they drift. The Supabase map + SKS-live flags are stable.

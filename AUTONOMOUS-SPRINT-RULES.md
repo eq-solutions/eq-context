@@ -1,3 +1,12 @@
+---
+title: Autonomous Sprint — Rules
+owner: Royce Milmlow
+last_updated: 2026-05-30
+scope: Diverge-proof conventions for all parallel autonomous agent work across EQ repos
+read_priority: critical
+status: live
+---
+
 # Autonomous Sprint — RULES (read before doing anything)
 
 These are the hard conventions that make parallel autonomous work **diverge-proof**. Every one exists because we hit the failure on 2026-05-30. Breaking one re-introduces a known break. If a task seems to require breaking a rule, STOP and flag it — don't work around it.

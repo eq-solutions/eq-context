@@ -1,3 +1,12 @@
+---
+title: Autonomous Sprint — Board
+owner: Royce Milmlow
+last_updated: 2026-05-30
+scope: Full sprint backlog + ownership/claims across all EQ streams; the coordination contract
+read_priority: critical
+status: live
+---
+
 # Autonomous Sprint — BOARD (single source of truth for who's doing what)
 
 **Read [`AUTONOMOUS-SPRINT-RULES.md`](AUTONOMOUS-SPRINT-RULES.md) first, then [`STATE.md`](STATE.md).**

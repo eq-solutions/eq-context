@@ -1,3 +1,12 @@
+---
+title: EQ Suite Design Audit
+owner: Royce Milmlow
+last_updated: 2026-05-30
+scope: Per-app design-token adoption audit + theming architecture decision
+read_priority: reference
+status: live
+---
+
 # EQ Suite Design Audit — 2026-05-30
 
 **Stream 1 of the "One Spine" sprint. Audit-first, by Royce's call.**

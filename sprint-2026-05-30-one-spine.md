@@ -1,3 +1,12 @@
+---
+title: EQ Suite Sprint — One Spine
+owner: Royce Milmlow
+last_updated: 2026-05-30
+scope: The cross-app design/merge/auth sprint plan (Design → Field → Auth)
+read_priority: standard
+status: live
+---
+
 # EQ Suite Sprint — "One Spine"
 
 **Created:** 2026-05-30

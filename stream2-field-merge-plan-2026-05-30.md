@@ -1,3 +1,12 @@
+---
+title: Stream 2 — EQ Field + SKS Merge Plan
+owner: Royce Milmlow
+last_updated: 2026-05-30
+scope: Phased plan to unify EQ Field + SKS into one codebase (SKS as tenant; data stays separate)
+read_priority: standard
+status: live
+---
+
 # Stream 2 — EQ Field + SKS merge: execution plan
 
 **Part of the "One Spine" sprint. Created 2026-05-30.**
