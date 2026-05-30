@@ -16,7 +16,7 @@ Royce selected 4 streams (2026-05-30). **Phase 0 = DISCOVERY** — read-only age
 ## Streams
 | id | stream | phase | discovery doc | notes |
 |----|--------|-------|---------------|-------|
-| **S2-A** | Cards worker-first rebuild (E1) | 🔵 discovery | `cards-rebuild-plan-2026-05-30.md` | rebuild eq-cards on the worker-first model; folds in A4 tokens + `@eq-solutions/ui` patterns; needs Royce product steer |
+| **S2-A** | Cards worker-first rebuild (E1) | 🔵 discovery | `archive/sprints/cards-rebuild-plan-2026-05-30.md` | rebuild eq-cards on the worker-first model; folds in A4 tokens + `@eq-solutions/ui` patterns; needs Royce product steer |
 | **S2-B** | EQ Field feature push | 🔵 discovery | `field-feature-backlog-2026-05-30.md` | ranked roster/resource feature backlog (staff/licences/availability/assignments/time/shutdowns) |
 | **S2-C** | EQ Service (CMMS) feature push | 🔵 discovery | `service-feature-backlog-2026-05-30.md` | ranked maintenance/defect/report feature backlog |
 | **S2-D** | Quality + UX polish | 🔵 discovery | `quality-polish-backlog-2026-05-30.md` | error/empty/loading states, a11y, perf, mobile polish, suite-wide; folds in #73 + substrate drift |
@@ -32,7 +32,7 @@ Royce selected 4 streams (2026-05-30). **Phase 0 = DISCOVERY** — read-only age
 All build agents report for review (no auto-merge); merges gate on green; tidy branches.
 
 ## Build Wave 2 — ✅ COMPLETE, ALL MERGED (2026-05-30; Royce: "merge everything")
-Discovery agent extracted next-ranked **unbuilt** items per stream (Wave-1-built + already-built excluded). Full doc: `sprint2-wave2-shortlist-2026-05-30.md`. Royce selected Field core (4) + Service (5) + Quality (6); did NOT select the 2 migration-gated Field items (F-W2-5/F-W2-6) → **HELD**. 3 build agents fanned out (one PR per repo, gate-on-green) → **all merged**:
+Discovery agent extracted next-ranked **unbuilt** items per stream (Wave-1-built + already-built excluded). Full doc: `archive/sprints/sprint2-wave2-shortlist-2026-05-30.md`. Royce selected Field core (4) + Service (5) + Quality (6); did NOT select the 2 migration-gated Field items (F-W2-5/F-W2-6) → **HELD**. 3 build agents fanned out (one PR per repo, gate-on-green) → **all merged**:
 - ✅ **Field #144 (v3.5.32)** — F-W2-1 roster PDF/print · F-W2-2 dashboard gap-card · F-W2-3 calendar person-filter · F-W2-4 apprentice year auto-advance (`people.year_level` exists → shipped; manager-gated; real cert labels preserved). Dup-ID + `node --check` clean.
 - ✅ **Service #207** — S-W2-1 defect detail+photos · S-W2-2 analytics cuts (**in-app, not RPC** → stays migration-free) · S-W2-3 canonical-export fill stubs · S-W2-4 asset detail `/assets/[id]` · S-W2-5 calibration reminders · Q-W2-1 skip-nav · Q-W2-5 detail loading.tsx (1 already-built skipped). `npm run check` clean, 201/201 vitest.
 - ✅ **Shell #75** — Q-W2-2 iframe errors→`EqError` · Q-W2-3 retry loading-state+aria · Q-W2-4 null-tenant notice · Q-W2-6 NotFound plain-English + sync-bar aria. `pnpm run build` clean, no auth touched.

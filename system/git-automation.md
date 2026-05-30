@@ -28,20 +28,20 @@ Hands-on steps: **edit + commit only**. Everything else runs by itself.
 
 ## Post-Commit Hook
 
-`hooks/post-commit` is a POSIX shell script tracked in the repo. It runs
+`.githooks/post-commit` is a POSIX shell script tracked in the repo. It runs
 after every commit and pushes `main` to `origin`. Feature branches are
 skipped so exploratory work doesn't auto-publish.
 
 Activation per clone (one-time):
 
-```bat
+```powershell
 cd C:\Projects\eq-context
-install-hooks.bat
+.\scripts\install-hooks.ps1
 ```
 
-That runs `git config core.hooksPath hooks` — git then resolves hooks from
+That runs `git config core.hooksPath .githooks` — git then resolves hooks from
 the in-repo directory directly. No copying into `.git/hooks`. Cloning
-fresh and forgetting to re-run `install-hooks.bat` is the only way to
+fresh and forgetting to re-run `install-hooks.ps1` is the only way to
 end up without the hook.
 
 ### Bypass for a single commit
