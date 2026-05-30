@@ -1,7 +1,7 @@
 ---
 title: SYSTEM — Git Automation for eq-context
 owner: Royce Milmlow
-last_updated: 2026-05-14
+last_updated: 2026-05-30
 scope: How auto-push, credential helpers, and hooks are wired for the substrate repo
 read_priority: reference
 status: live
