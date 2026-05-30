@@ -15,7 +15,7 @@ status: live
 Legend: ✅ done · 🔵 in-progress (claimed) · ⚪ todo (unclaimed) · ⛔ Royce-gated · ⏸ paused
 Last refreshed: 2026-05-30.
 
-> **🟦 ACTIVE FAN-OUT (Code session, 2026-05-30) — "everything then cutover last".** Royce authorized full fan-out. **Wave 1 (parallel, claimed):** A4 Cards Path A (eq-cards), C2 Shell→roles (eq-shell), A5b `@eq-solutions/ui` foundation (NEW public repo — Royce-approved). **Wave 2 (next):** B2c teams + B2d pipeline (eq-solves-field, sequential — shared files), `@eq-solutions/ui` wiring into Shell+Service, C3 auth spike. **B5 cutover = LAST (SKS-live, Royce-trigger).** Each agent reports for review (no auto-merge); merges gate on green. Don't grab these items.
+> **🟦 ACTIVE FAN-OUT (Code session, 2026-05-30) — "everything then cutover last".** Royce authorized full fan-out. **Wave 1 RESULTS:** A4 Cards ✅ **merged** (Milmlow/eq-cards#10); A5b `@eq-solutions/ui` ✅ **created** (public github.com/eq-solutions/eq-ui — Button done, token-only; Skeleton+Table building now); C2 Shell→roles ✅ verified green ([#70](https://github.com/eq-solutions/eq-shell/pull/70), exhaustive 5×15 permission-equivalence) but **⛔ HELD for Royce merge — auth-gate** (permission system on the core hub; behaviorally identical but auth stays gated). **Wave 2 (next):** B2c teams + B2d pipeline (eq-solves-field, sequential — shared files), `@eq-solutions/ui` **wiring** into Shell+Service (after C2), C3 auth spike. **B5 cutover = LAST (SKS-live, Royce-trigger).** Each agent reports for review; merges gate on green. Don't grab these items.
 
 ---
 
@@ -25,7 +25,7 @@ Last refreshed: 2026-05-30.
 | A1 | Shell consume @eq-solutions/tokens | eq-shell | ✅ | #66 merged | live |
 | A2 | Field tokens + Plus Jakarta Sans + drift-guard | eq-solves-field | ✅ | #136 merged | live |
 | A3 | Service de-vendor + 0097 cleanup | eq-solves-service | ✅ | #203, #204 merged | live |
-| A4 | Cards token consolidation | eq-cards | ⚪ | — | **Decision needed:** Cards has parallel `EqSpacing`/`EqSpacingTokens`; re-vendor would dup-class compile-error. Bundle with E1. NOT SKS. |
+| A4 | Cards token consolidation | eq-cards | ✅ | **merged Milmlow/eq-cards#10** | Path A: deleted dead `EqSpacingTokens`/`EqTypographyTokens` (0 callsites), barrel-export `EqSpacing`; spacing values identical, `dart analyze` clean. Typography deferred (values diverge). |
 | A5 | Component audit doc (→ future @eq-solutions/ui) | eq-shell + eq-solves-service | ⚪ | — | read-only research; rank duplicated buttons/tables/forms |
 | A6 | Field `base.css` legacy vars → `--eq-*` | eq-solves-field | ✅ | **merged #137 → main (v3.5.26)** | bridged with `var()` fallbacks → zero visual change. Live. |
 
@@ -51,7 +51,7 @@ Last refreshed: 2026-05-30.
 |----|------|------|--------|----------------|-------|
 | C1 | Role registry `@eq-solutions/roles` | eq-roles (new) | ✅ | **pushed: eq-solutions/eq-roles (public)** | built + verified; matrix matches Shell |
 | C1b | Create public `eq-roles` repo + push | eq-roles | ✅ | Royce-approved 2026-05-30 | live at github.com/eq-solutions/eq-roles (main) |
-| C2 | Wire Shell to consume @eq-solutions/roles | eq-shell | ⚪ | — | **now unblocked** (repo live); replace hand-defined EqRole + MATRIX. Do when eq-shell quiet (currently HOT). |
+| C2 | Wire Shell to consume @eq-solutions/roles | eq-shell | ✅ build / ⛔ merge | PR #70 (verified, **held for Royce**) | Swapped hand-defined `EqRole`+admin/audit MATRIX → `@eq-solutions/roles`; module matrices stay local. **Exhaustive 5×15 permission-equivalence (all IDENTICAL)**, build clean, preview green, auth/session untouched. **Merge held — auth-gate** (permissions on core hub). |
 | C3 | Supabase-Auth IdP + passkey spike | eq-shell | ⚪ | — | spike branch; no prod auth change |
 | C4 | Staged auth cutover (shadow → app-by-app → retire HMAC) | all | ⛔ | — | **auth deploy = Royce-gated (Rule §1)** |
 
