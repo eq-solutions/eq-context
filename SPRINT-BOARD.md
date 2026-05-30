@@ -15,6 +15,8 @@ status: live
 Legend: ✅ done · 🔵 in-progress (claimed) · ⚪ todo (unclaimed) · ⛔ Royce-gated · ⏸ paused
 Last refreshed: 2026-05-30.
 
+> **🟦 ACTIVE FAN-OUT (Code session, 2026-05-30) — "everything then cutover last".** Royce authorized full fan-out. **Wave 1 (parallel, claimed):** A4 Cards Path A (eq-cards), C2 Shell→roles (eq-shell), A5b `@eq-solutions/ui` foundation (NEW public repo — Royce-approved). **Wave 2 (next):** B2c teams + B2d pipeline (eq-solves-field, sequential — shared files), `@eq-solutions/ui` wiring into Shell+Service, C3 auth spike. **B5 cutover = LAST (SKS-live, Royce-trigger).** Each agent reports for review (no auto-merge); merges gate on green. Don't grab these items.
+
 ---
 
 ## Stream A — Design / tokens
