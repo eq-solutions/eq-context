@@ -11,15 +11,16 @@ status: live
 
 Snapshot 2026-05-30. **Verify before relying on the git/worktree lines** — they drift. The Supabase map + SKS-live flags are stable.
 
-> ## ⏩ POST-SPRINT UPDATE — end of 2026-05-30 (supersedes the table rows below where they conflict)
-> The "everything-then-cutover" fan-out completed. Current reality:
-> - **eq-solves-field** → **v3.5.29 on `main`**, clean. All SKS-only modules ported, **triple tenant-gated to `sks`** (EQ provably unaffected): `safety` (#138), `teams` (#139), `sks-pipeline*` (#140), + 10 B3 reconcile fixes (#141). My worktree removed; clone on main.
-> - **eq-shell** → consumes **`@eq-solutions/roles`** (C2 #70 — replaces hand-defined matrix, perms verified identical) **and `@eq-solutions/ui`** (#71 — Table+Skeleton; Button still CSS-classes = follow-up). `claude/c3-auth-spike` (#72) is a **no-deploy reference spike** (live auth untouched). Prior equipment-intake session appears settled.
-> - **eq-solves-service** → consumes `@eq-solutions/ui` (#205, re-exports; `transpilePackages` set).
-> - **eq-cards** → tokens consolidated (#10 — dead `EqSpacingTokens` dropped, barrel export).
-> - **NEW packages:** **`@eq-solutions/roles`** (public github.com/eq-solutions/eq-roles — consumed by Shell) + **`@eq-solutions/ui`** (public github.com/eq-solutions/eq-ui — Button/Skeleton/Table, token-only — consumed by Shell+Service). Both alongside `@eq-solutions/tokens`. Design pillar = COMPLETE.
-> - **Branch tidy-up:** 108 old merged branches deleted across eq-field/shell/service/cards; unmerged/open + reference branches kept.
-> - **Remaining = Royce-driven:** B4 canonical wiring (cutover-phase), B3 medium/high (#5 schema, #11 structural, #13 DB-migration), E1 Cards rebuild, ⛔ C4 auth cutover, **B5 cutover = LAST (SKS-live)**. SKS-live (`nspbmirochztcjijmcrx`) untouched throughout.
+> ## ⏩ POST-SPRINT UPDATE — end of 2026-05-30 (Sprint 1 + Sprint 2 Waves 1–2 ALL MERGED; supersedes the table rows below where they conflict)
+> The "everything-then-cutover" fan-out + Sprint 2 completed. Current reality:
+> - **eq-solves-field** → **v3.5.32 on `main`**, clean. SKS-only modules ported + **triple tenant-gated to `sks`** (EQ provably unaffected): `safety` (#138), `teams` (#139), `sks-pipeline*` (#140) + 10 B3 reconcile fixes (#141). **Wave 1 #143 (v3.5.31):** timesheet pre-fill, multi-week export, hard-delete leave, roster copy-week, audit-log field-fix. **Wave 2 #144 (v3.5.32):** roster PDF/print, dashboard gap-card, calendar person-filter, apprentice year auto-advance. Worktree `eq-field-w2-wt` lingers (long-path; harmless).
+> - **eq-shell** → consumes **`@eq-solutions/roles`** (C2 #70 — perms verified identical) **and `@eq-solutions/ui` fully** (#71 Table+Skeleton; **#73 Button across all 14 surfaces** + eq-ui v1.0.1 bordered ghost). **Wave 2 #75:** iframe errors→`EqError`, retry loading-state, null-tenant notice, NotFound plain-English + aria. `claude/c3-auth-spike` (#72) = no-deploy reference (live auth untouched).
+> - **eq-solves-service** → consumes `@eq-solutions/ui` (#205). **Wave 1 #206:** pre-visit tech-brief + 4 quality fixes. **Wave 2 #207:** defect detail+photos, analytics cuts (in-app, not RPC), canonical-export fill stubs, asset detail `/assets/[id]`, calibration reminders, skip-nav, detail loading. `npm run check` clean, 201/201 vitest.
+> - **eq-cards** → tokens consolidated (#10). Cards worker-first rebuild (E1) deferred.
+> - **Packages:** **`@eq-solutions/roles`** (public — consumed by Shell) + **`@eq-solutions/ui` v1.0.1** (public, bordered ghost — consumed by Shell+Service) + `@eq-solutions/tokens`. Design pillar = COMPLETE. ⚠ A concurrent session is tagging these (`eq-roles v1.0.0`, `eq-ui v1.0.1`) + moving consumers `#main`→consume-by-tag (also owns the literal `STATE.md` row-33 fix this round).
+> - **Branch tidy-up:** 108 old merged branches + all Wave-2 branches deleted across eq-field/shell/service/cards; unmerged/open + reference branches kept.
+> - **HELD — Royce-gated (features ship dormant until you act):** 3 DB migrations NOT run — licence-expiry (`people.licence_expiry` @ `ktmjmdzqrogauaevbktn`), timesheet-approval (`approved`/`approved_by`/`approved_at` on `timesheets`), audit-log-UI (`target_id`/`target_name` on `audit_log`). Plus B4 canonical wiring, ⛔ C4 auth cutover, **B5 cutover = LAST (SKS-live)**. SKS-live (`nspbmirochztcjijmcrx`) untouched throughout.
+> - **EYEBALL (low-risk, post-merge):** (1) F-W2-4 apprentice auto-advance batch-mutates real rows — test on one apprentice before broad use; (2) eq-field `print.css` uses SKS-navy `#1F335C` on the shared EQ/SKS print stylesheet — brand follow-up to tokenize/tenant-gate.
 
 ## Repos
 | repo | GitHub | prod target | branch state @ snapshot | notes |
