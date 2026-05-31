@@ -15,6 +15,28 @@ status: live
 Legend: ✅ done · 🔵 in-progress (claimed) · ⚪ todo (unclaimed) · ⛔ Royce-gated · ⏸ paused
 Last refreshed: 2026-05-31.
 
+## 🎯 SPRINT 3 — Next big sprint (priority cut, 2026-05-31)
+Consolidates **every** outstanding finding from the 2026-05-31 deep-dive + cross-app audit + canonical/worker-creds design. Detail in the streams below; this is the sequencing. Owners per the carve-out (C4 = eq-shell src+auth; C-CANON = data-plane; Cards/Field/Service consoles per repo). ⛔ = Royce-gated.
+
+**P0 — live security (first):**
+- **I1** ⛔ plaintext access codes in client JS — Field (`2026`) + SKS Labour (`SKSNSW`) → move server-side *(SKS Labour = SKS-live)*
+- **I2** ⛔ RLS holes — Quotes (off) + SKS Labour (9 permissive/disabled tables) → lock down
+- **F1** ⛔ rotate exposed `ehowg` service_role key (you rotate → I propagate)
+
+**P1 — security + correctness (eq-shell, C4):**
+- **B2** ~15 ad-hoc role checks → `can()` · **B4** consolidate 5 `verify*Token` → one · **B11** `ai-briefing` cache + typed session + drop `?? ''`
+- **I3** port `friendlyError` to the other 4 apps · **I4** ⛔ fix Quotes broken expiry-cron (prod)
+
+**P1 — worker-creds Phase 1 (Stream G, ⛔ gated on your inputs):** G1 schema+worker_id+phone-claim · G3 SKS seed via Intake · G4 Cards reminders · G2 Cards gateway → worker-house
+
+**P2 — invisible-tech / design (C4 + design consoles):**
+- **B8** gm-reports silent failures (redo — branch reverted) · **B5** tokenize gm-reports · **B6** dedup buttons → `<Button>` · **B9** App.css de-sprawl
+- **A7–A12** eq-ui components + font self-host · **I5** gradients/shadows sweep + SKS Labour DM Sans → Plus Jakarta
+
+**P2 — structural (roles):** C5 split `@eq-solutions/roles` → C7 Field adopt · C6 Service matrix · C8 Shell mirror reconcile (absorbs **B12**)
+
+**P3 — housekeeping:** B10 ⛔ delete dead stubs (your permission) · Stream D asset-intake (in-flight) · migrate the 4 held plans → eq-context, then prune
+
 > **✅ SPRINT 1 + SPRINT 2 (Waves 1–2) COMPLETE — 2026-05-30.** Sprint 2 detail + all merged Wave-1/2 PRs are in [`SPRINT-2-BOARD.md`](SPRINT-2-BOARD.md); current per-repo reality is the [`STATE.md`](STATE.md) POST-SPRINT block. **Held for Royce:** 3 dormant-feature migrations (licence-expiry, timesheet-approval, audit-log-UI) + B4 canonical wiring + ⛔ C4 auth cutover + **B5 SKS-live cutover (LAST)**. The Sprint-1 fan-out record below is retained for history.
 >
 > **🧭 CONVERGENCE DIRECTIVE (2026-05-31, Royce) — collapse parallel consoles to ONE driver.**
@@ -147,6 +169,36 @@ Phase 1 = seed + self-maintenance (build now, pending Royce inputs); Phase 2 = s
 
 > **Royce-gated inputs (block G1–G4, not the design):** evidence export (scans+numbers+expiries ×60), phone numbers ×60, auth-hook GATE A, `sks-canonical` security lock (F1-adjacent). See the model doc's "Royce-gated inputs".
 > **Ownership:** G1/G3 = data-plane (C-CANON carve-out); G2 spans C4 + Cards; G4 = Cards. Coordinate per the carve-out table. **E1 (Stream E) now feeds G4.**
+
+## Stream H — eq-shell hardening backlog (2026-05-31 deep-dive) · owner C4
+Roadmap: `~/.claude/plans/distributed-dazzling-curry.md` + memory `eq-hardening-roadmap`. **Shipped this session:** A1–A3 (#79), B1+B3 (#80), B7 (#81). Remaining:
+
+| id | item | bar | size | status | notes |
+|----|------|-----|------|--------|-------|
+| B2 | retrofit ~15 ad-hoc role checks → `can()`/`requirePerm` | 🔒 | M | ⚪ | uses `_shared/permissions.ts`; add missing `entity.*` PermKeys |
+| B4 | consolidate 5 `verify*Token` fns → `verifyToken(kind)` | 🔒 | S | ⚪ | |
+| B5 | tokenize `gm-reports/index.tsx` (~118 inline → classes/tokens) | 🎨 | M | ⚪ | use EqError/Skeleton |
+| B6 | delete dup `.eq-btn-*`; migrate call-sites → `<Button>` | 🎨 | S | ⚪ | ui Button needs `as`/link variant for anchors |
+| B8 | surface gm-reports silent archive/delete + detail-load failures | ✅ | S | ⚪ | **branch reverted — redo vs real render structure** |
+| B9 | ~800 lines page CSS out of App.css → co-located + tokenize | 🎨 | M | ⚪ | |
+| B10 | delete dead `modules/cards.tsx` + `modules/service.tsx` stubs | ✅ | S | ⛔ | **needs Royce permission** |
+| B11 | `ai-briefing` Cache-Control private + typed `entity-actions` + drop `?? ''` | 🔒 | S | ⚪ | |
+| B12 | single-source the permission matrix (client+server) | 🔒 | M | ⚪ | folds into C8 (roles split) |
+
+## Stream I — cross-app remediation (`eq-shell/docs/cross-app-audit.md`) · per-repo, gated
+11 agents, adversarially verified, across Field/Cards/Service/Quotes/SKS-Labour. None fully canonical-conformant.
+
+| id | item | apps | bar | status | notes |
+|----|------|------|-----|--------|-------|
+| I1 | plaintext access codes in client JS | Field (`2026`), SKS Labour (`SKSNSW`) | 🔒 | ⛔ | **P0.** Move server-side. SKS Labour = SKS-live. |
+| I2 | permissive/disabled RLS | SKS Labour (9 tables), Quotes (off) | 🔒 | ⛔ | **P0.** Per-tenant scoped keys + RLS on. |
+| I3 | raw backend errors → users | all 5 | 👻🔒 | ⚪ | port the `friendlyError` pattern |
+| I4 | expiry-cron broken in prod | Quotes | ✅ | ⛔ | ties to Quotes console chip + F5 |
+| I5 | gradients/shadows + non-brand font | all (+ SKS Labour DM Sans) | 🎨 | ⚪ | brand sweep → Plus Jakarta, no gradients/shadows |
+| I6 | OTP sessions lack `app_metadata.tenant_id` | Cards | 🔒 | ⛔ | **reframed by Stream G** (Cards → worker-house); auth-hook GATE A |
+
+> **Refuted (don't chase):** Field `salt info.txt` "committed secret" — untracked + gitignored, never committed (verify caught it).
+> **3 remediation chips already in separate consoles** (SKS Labour / Cards / Quotes) — fold their results into this stream.
 
 ## Migration-number ledger (timestamp from now on — see Rule §3)
 - `eq-solves-service`: `0110` taken (`0110_performance_level_hf.sql`). All new migrations → `YYYYMMDDHHMMSS_*`.
