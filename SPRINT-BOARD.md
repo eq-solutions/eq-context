@@ -130,6 +130,24 @@ Verify every claim live via Supabase MCP — never trust docs over the DB. Detai
 | F4 | SKS Service CMMS reconcile | `scripts/check-tenant-drift.mjs` → SQL | ⛔ | Run drift gate first for the work-list (older `ppm_*` path vs branch 0020/0021). |
 | F5 | Track B — Quotes → canonical-api + retire `sks_*` silo + `shell_control.eq_intake_*` retirement | eq-quotes + Shell | ⛔ | **WOULD BREAK LIVE QUOTES** — needs the staged cutover. Ties to the eq-quotes console chip. LAST. |
 
+## Stream G — Worker-owned credentials (EQ Cards · worker-house) · DESIGN DONE 2026-05-31
+Model + decisions: [`eq/identity/worker-credentials-model-2026-05-31.md`](eq/identity/worker-credentials-model-2026-05-31.md).
+Worker data lives in the **worker-house** (`eq-canonical-internal` `worker_*`), worker-keyed, first-class `worker_id`.
+**Supersedes the Cards-rewire per-business-tenant assumption — do NOT flip Cards `gateway` until G2 lands.**
+Phase 1 = seed + self-maintenance (build now, pending Royce inputs); Phase 2 = snapshot + live-link + grant (deferred to business #2).
+
+| id | item | repo / surface | status | notes |
+|----|------|----------------|--------|-------|
+| G0 | Model + 5 locked decisions | eq-context | ✅ | this session; reconciled w/ IDENTITY-MODEL §3.2/§11.2 + Cards PR #12 |
+| G1 | `worker_*` schema + first-class `worker_id` + phone-keyed claim | eq-canonical-internal (C-CANON) | ⛔⚪ | Phase 1. Needs phone list. Timestamped migration. |
+| G2 | Cards `gateway`/live-link → worker-house (not business DB) | eq-shell `cards-api.ts` + eq-cards | ⛔⚪ | Reconcile PR #12. **Don't flip transport until done.** |
+| G3 | SKS 60-worker seed via Intake (= verification event) | eq-intake | ⛔⚪ | Phase 1. Per-credential trust tier from evidence found. Needs evidence export. |
+| G4 | Cards self-maintenance + **renewal reminder engine (live at launch)** | eq-cards | ⛔⚪ | Phase 1. Non-negotiable: stale seeded data is a liability. Folds in E1. |
+| G5 | Phase 2 — snapshot + live-link + grant/revoke + cross-tenant trust | canonical + Cards + Shell | ⏸ | Deferred until business #2 needs an SKS-verified worker. |
+
+> **Royce-gated inputs (block G1–G4, not the design):** evidence export (scans+numbers+expiries ×60), phone numbers ×60, auth-hook GATE A, `sks-canonical` security lock (F1-adjacent). See the model doc's "Royce-gated inputs".
+> **Ownership:** G1/G3 = data-plane (C-CANON carve-out); G2 spans C4 + Cards; G4 = Cards. Coordinate per the carve-out table. **E1 (Stream E) now feeds G4.**
+
 ## Migration-number ledger (timestamp from now on — see Rule §3)
 - `eq-solves-service`: `0110` taken (`0110_performance_level_hf.sql`). All new migrations → `YYYYMMDDHHMMSS_*`.
 
