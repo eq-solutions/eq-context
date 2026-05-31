@@ -20,6 +20,28 @@ For the current built state of each system, see [system/architecture.md](https:/
 
 ---
 
+## 2026-05-31 — EQ Design System: Tokens Everywhere, Components Per-Stack, Pin Never Vendor
+
+**Status:** Accepted (authorised by Royce 2026-05-31)
+
+**Decision:** Formalise the EQ design-system model the One Spine sprint (2026-05-30) built ad hoc. Three standing rules: (1) **Tokens are the single cross-stack source of truth** — `@eq-solutions/tokens` (one JSON → CSS / TS / Tailwind preset / Dart) is consumed by every surface regardless of stack. (2) **Shared components are per-stack** — `@eq-solutions/ui` (React) for Shell + Service; vanilla (Field) and Flask (Quotes) consume token CSS + a thin local layer; Flutter (Cards) consumes the Dart token output + Flutter widgets. There is deliberately no single cross-stack component set. (3) **Distribution is pin-by-tag, never vendor** (already `AUTONOMOUS-SPRINT-RULES.md` §5) — vendored/hand-copied tokens are the drift mechanism. Claude Design is brought on-brand by attaching the tokens repo + the `design_eq_profile` brief as its "start with context" bundle (`eq/design/claude-design-context.md`).
+
+**Why:** Royce's question — "can we have one UI template for everything?" — resolves to: yes at the token layer (one source already feeds React, vanilla, Flutter, Flask), no at the component layer (a React package can't serve Flask or Flutter). The 2026-05-30 + 2026-05-31 audits showed every drifted surface was a copied-not-pinned one, and the foundation (tokens, theming, first three components) is already strong. Recording the model stops the next app re-deriving it or re-vendoring.
+
+**Alternatives considered:**
+- *One cross-stack component library.* Rejected — technically impossible across React / Flutter / Flask; forces a lowest-common-denominator or a maintenance burden. Tokens already deliver the seamlessness that matters.
+- *Keep the model implicit in the sprint docs.* Rejected — it was scattered across `design-audit-2026-05-30.md` + Rule §5; a standing decision is the canonical home so it survives the sprint closing.
+- *Per-app fonts/colours (status quo before One Spine).* Rejected — that was the drift this consolidation removes.
+
+**Implications:**
+- New EQ surface → consume `@eq-solutions/tokens` by tag on day one; never vendor. A React surface also consumes `@eq-solutions/ui`.
+- The shared component library grows by promoting best-in-class app components (mostly Service's) into `@eq-solutions/ui`, then adopting in Shell — board rows A7–A12, brief in `component-audit-2026-05-30.md`.
+- Plus Jakarta Sans ships self-hosted from the shared layer (one fix for all consumers; supersedes the per-app Google-Fonts loads).
+- Claude Design and the Figma connector both point at the same tokens repo + brief; mocks come out on-brand by construction.
+- Does not touch auth or SKS live — unaffected by `AUTONOMOUS-SPRINT-RULES.md` §0/§1.
+
+---
+
 ## 2026-05-30 — Autonomous Sprint: Full-Auto EQ Deploy, SKS Live Untouchable, Auth Gated
 
 **Status:** Accepted

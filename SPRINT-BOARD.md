@@ -13,7 +13,7 @@ status: live
 **Claim an item before starting:** set its `owner` + `branch` + status to 🔵 in-progress. Don't start an item whose repo+files are already claimed.
 
 Legend: ✅ done · 🔵 in-progress (claimed) · ⚪ todo (unclaimed) · ⛔ Royce-gated · ⏸ paused
-Last refreshed: 2026-05-30.
+Last refreshed: 2026-05-31.
 
 > **✅ SPRINT 1 + SPRINT 2 (Waves 1–2) COMPLETE — 2026-05-30.** Sprint 2 detail + all merged Wave-1/2 PRs are in [`SPRINT-2-BOARD.md`](SPRINT-2-BOARD.md); current per-repo reality is the [`STATE.md`](STATE.md) POST-SPRINT block. **Held for Royce:** 3 dormant-feature migrations (licence-expiry, timesheet-approval, audit-log-UI) + B4 canonical wiring + ⛔ C4 auth cutover + **B5 SKS-live cutover (LAST)**. The Sprint-1 fan-out record below is retained for history.
 >
@@ -30,6 +30,12 @@ Last refreshed: 2026-05-30.
 | A4 | Cards token consolidation | eq-cards | ✅ | **merged Milmlow/eq-cards#10** | Path A: deleted dead `EqSpacingTokens`/`EqTypographyTokens` (0 callsites), barrel-export `EqSpacing`; spacing values identical, `dart analyze` clean. Typography deferred (values diverge). |
 | A5 | Component audit doc (→ future @eq-solutions/ui) | eq-shell + eq-solves-service | ⚪ | — | read-only research; rank duplicated buttons/tables/forms |
 | A6 | Field `base.css` legacy vars → `--eq-*` | eq-solves-field | ✅ | **merged #137 → main (v3.5.26)** | bridged with `var()` fallbacks → zero visual change. Live. |
+| A7 | eq-ui: Modal + ConfirmDialog (incl. a11y A1/A2) | eq-ui + consumers | ⚪ | — | **new wave** (`design-system-consolidation-2026-05-31.md`); promote Service version, fold focus-trap/`role=dialog`/scroll-lock; tag + bump consumers |
+| A8 | eq-ui: FormInput | eq-ui + consumers | ⚪ | — | Service version (label/error/hint); adopt in Shell |
+| A9 | eq-ui: StatusBadge + KindPill | eq-ui + consumers | ⚪ | — | map Shell pill vocab → typed `StatusKind` |
+| A10 | eq-ui: Card + Toast + Tabs | eq-ui + consumers | ⚪ | — | Card/Toast lift from Service; Tabs greenfield; resolve ghost-border (Option B) |
+| A11 | Font self-host in shared layer | eq-design-tokens | ⚪ | — | ship woff2 + `@font-face`; supersedes per-app P5 |
+| A12 | Claude Design context bundle | eq-context + eq-design-tokens | ✅ | this session | `eq/design/claude-design-context.md` created + issued to Claude Design 2026-05-31 |
 
 ## Stream B — EQ Field + SKS merge (codebase only; data stays separate)
 | id | item | repo | status | owner / branch | notes |

@@ -27,6 +27,22 @@ Autonomy policy: `ops/decisions.md` 2026-05-30. Session log: `sessions/2026-05-3
 
 ---
 
+## EQ Design System — consolidation (plan 2026-05-31)
+
+Foundation shipped (One Spine, Stream A): `@eq-solutions/tokens` v1.0 consumed (not vendored) across Shell/Service/Field/Cards; `@eq-solutions/ui` v1.0.1 = Button/Skeleton/Table. Full plan + model: `design-system-consolidation-2026-05-31.md`, `ops/decisions.md` 2026-05-31. Remaining (board rows A7–A12):
+
+- [ ] **A7** eq-ui Modal + ConfirmDialog (fold in a11y A1/A2 from `quality-polish-backlog-2026-05-30.md`)
+- [ ] **A8** eq-ui FormInput
+- [ ] **A9** eq-ui StatusBadge + KindPill
+- [ ] **A10** eq-ui Card + Toast + Tabs (resolve ghost-border → Option B)
+- [ ] **A11** Font self-host in the shared package (supersedes per-app P5)
+- [ ] Confirm the pin-by-tag migration landed (eq-ui v1.0.1 / eq-roles tags); move any `#main` consumers to `#vX`
+- [ ] Add 2 drift items to `quality-polish-backlog-2026-05-30.md`: Service emoji-in-Lucide (~7 files), Service `RouteProgress` cyan→indigo gradient — **verify vs origin/main first**
+- [x] **A12** Claude Design context bundle — `eq/design/claude-design-context.md` created + issued to Claude Design 2026-05-31
+- [x] Quotes (Flask) decision — **leave at 85%**, no investment (React rewrite supersedes, ~2–3mo)
+
+---
+
 ## EQ Solves Field — LEAD MODULE
 
 **Multi-tenancy plan locked 2026-04-27** — see
