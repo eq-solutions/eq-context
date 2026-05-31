@@ -39,6 +39,18 @@ Last refreshed: 2026-05-31.
 > - **PR #80 OPEN, MERGEABLE — ⛔ auth-gated (Rule §1):** B1 TS `strict` (0 fallout) + B3 TOTP
 >   rate-limit. Awaiting Royce review+deploy.
 >
+> **🔀 SANCTIONED PARALLEL — ONE canonical-layer console (Royce 2026-05-31).** The DB/data-plane
+> track (Part D / Stream F below) runs as the SINGLE exception to "C4 sole driver," because its
+> file domain is disjoint from C4's. **Strict carve-out — neither console crosses the line:**
+>
+> | Path / surface | Owner |
+> |---|---|
+> | `supabase/**` (migrations, tenant-migrations, staged), `scripts/*.mjs` (migrate-tenants, check-tenant-drift, provision-tenant, re-encrypt), `netlify/functions/_shared/encryption.ts` + `tenant-routing.ts`, `canonical-api.ts`, Supabase MCP (all 3 projects) | **C-CANON** (canonical console) |
+> | `src/**`, `netlify/functions/_shared/{permissions,token,supabase-jwt,cookie}.ts`, auth fns (`shell-login`, `challenge-totp`, `mint-*`, `intake-commit`), `tsconfig*.json`, CSS/design | **C4** |
+> | `_shared/supabase.ts` (service client — read by both, rarely edited) | **coordinate** — edit only with a board note |
+>
+> C-CANON works on its own branch off updated `main`, commits incrementally, **deploys/pushes-to-main NOTHING without Royce** (same gates). Its live-SKS + staged items stay ⛔. If it needs a file in C4's column (or vice-versa), STOP and coordinate on the board — do not cross.
+>
 > **🟦 ACTIVE FAN-OUT (Code session, 2026-05-30) — "everything then cutover last".** Royce authorized full fan-out. **Wave 1 RESULTS:** A4 Cards ✅ **merged** (Milmlow/eq-cards#10); A5b `@eq-solutions/ui` ✅ **created** (public github.com/eq-solutions/eq-ui — Button done, token-only; Skeleton+Table building now); C2 Shell→roles ✅ **MERGED** (#70, Royce-approved — exhaustive 5×15 permission-equivalence, auth/session untouched). **Wave 2 PROGRESS:** ✅ B2c teams merged (Field v3.5.27); ✅ Service wiring merged (#205); ✅ Shell wiring merged (#71 — ice headers, Royce-approved). **🎨 DESIGN PILLAR COMPLETE** — tokens + `@eq-solutions/ui` (Button/Skeleton/Table) across Shell/Field/Service/Cards (Shell Button-as-React = minor follow-up). **🧩 B2 MODULE PORTS COMPLETE** — B2b safety + B2c teams + B2d pipeline all merged to Field main (v3.5.28), tenant-gated to sks, EQ-safe (review caught/fixed the dup-ID issues). The Field+SKS **codebase** merge is done bar cutover. ✅ **C3 auth spike done** ([#72](https://github.com/eq-solutions/eq-shell/pull/72) — verified **live-auth-untouched** (zero diff on session.ts/functions/LoginPage), additive `src/spike/`, builds clean. **No-deploy spike for reference — NOT for merge.** Supabase-side setup (WebAuthn, tenant_members, Custom-Access-Token-Hook w/ exception guard, RLS) documented for Royce to apply). ✅ **B3 reconcile analysis done** (`field-reconcile-b3-2026-05-30.md` — 15 ranked carry-forward fixes: 11 low-risk/additive, 3 medium, 1 high-risk (live-EQ DB migration), 8 must-not-port). ✅ **B3-apply MERGED** (#141 — Field **v3.5.29**, 10 reconcile fixes incl. SW auto-reload + TAFE-40h). **🏁 NON-CUTOVER BACKLOG COMPLETE.** 🧹 **Tidy-up done:** 108 old **merged** branches closed across eq-field/shell/service/cards (unmerged/open + c3 reference kept); Field worktree removed + clone back on main; STATE.md refreshed. **Follow-up wave IN FLIGHT (Royce-selected):** 🔵 B3 #11 home.js + #5 approval-chips (one Field PR, `claude/b3-followup-home-approval`, v3.5.30; #5 schema-gated → graceful-degrade if EQ lacks `approved` cols, NO migration); 🔵 Shell Button → eq-ui Button (`claude/eq-ui-shell-button`, isolated worktree `eq-shell-button-wt`, visible-change review). **HELD for cutover (Royce 2026-05-30):** B4 canonical wiring + B3 #13 audit-revert (needs live-EQ DB migration). **Deferred:** E1 Cards worker-first rebuild. ⛔ C4 auth cutover. **B5 cutover = LAST** (SKS-live, Royce-trigger). **Remaining (cutover-phase / gated):** B3-apply (Royce-reviewed), B4 canonical wiring (do with cutover), ⛔ C4 auth cutover, **B5 cutover = LAST (SKS-live, Royce-trigger)**. Don't grab these items.
 
 ---
@@ -104,6 +116,19 @@ Last refreshed: 2026-05-31.
 | E3 | eq-service observability keys (PostHog/Sentry) | eq-solves-service | ⛔ | — | Royce's task (Netlify env vars) |
 
 ---
+
+## Stream F — Canonical layer (DB / data-plane) · owner C-CANON (sanctioned parallel)
+Part D of the eq-shell hardening roadmap. PR #78 reconciliation already MERGED + LIVE (`f78e428`).
+Verify every claim live via Supabase MCP — never trust docs over the DB. Detail: memory
+`canonical-layer-reconciliation` + `docs/FINAL-SPRINT.md`.
+
+| id | item | repo / surface | status | notes |
+|----|------|----------------|--------|-------|
+| F1 | **Rotate exposed `ehowg` service_role key** | Supabase + Shell + Fly | ⛔🔵 | **P1 SECURITY.** Royce rotates in the dashboard FIRST; then propagate the new key to 3 consumers: (1) re-encrypt into `shell_control.tenant_routing` (ehowg row) under `TENANT_ROUTING_MASTER_KEY` — author a one-off script per `_shared/encryption.ts` + `provision-tenant.mjs`, Royce runs it; (2) `eq-quotes-sks` Fly secret `CANONICAL_SUPABASE_KEY`; (3) any other ehowg service-role consumer. **Never echo/commit the key.** Build the script; Royce executes. |
+| F2 | gm/briefing `tenant_id` reshape (expand+contract) | `supabase/staged/sks_gm_briefing_reshape_*` | ⛔ | Deploy-coupled with `upload-gm-report.ts` onConflict change. Parity, not security. Royce-gated. |
+| F3 | SKS safety-RPC hardening | `supabase/staged/sks_safety_rpc_hardening.sql` | ⛔ | `approve/submit_safety_record` trust caller-supplied `p_tenant_id`. Apply when SKS goes multi-tenant or the Field caller is confirmed. |
+| F4 | SKS Service CMMS reconcile | `scripts/check-tenant-drift.mjs` → SQL | ⛔ | Run drift gate first for the work-list (older `ppm_*` path vs branch 0020/0021). |
+| F5 | Track B — Quotes → canonical-api + retire `sks_*` silo + `shell_control.eq_intake_*` retirement | eq-quotes + Shell | ⛔ | **WOULD BREAK LIVE QUOTES** — needs the staged cutover. Ties to the eq-quotes console chip. LAST. |
 
 ## Migration-number ledger (timestamp from now on — see Rule §3)
 - `eq-solves-service`: `0110` taken (`0110_performance_level_hf.sql`). All new migrations → `YYYYMMDDHHMMSS_*`.
