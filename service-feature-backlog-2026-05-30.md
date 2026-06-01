@@ -1,7 +1,7 @@
 ---
 title: "EQ Service — Feature Backlog 2026-05-30"
 owner: Royce Milmlow
-last_updated: 2026-05-30
+last_updated: 2026-06-01
 scope: EQ Solves Service (eq-solves-service) — ranked feature candidates for the next push
 read_priority: standard
 status: live
@@ -16,6 +16,31 @@ eq/pending.md, SPRINT-BOARD.md, STATE.md).
 
 **PPM canonical realignment (Stream E2) is noted but PAUSED per the sprint board — it
 appears as a flagged item at the end, not in the main ranking.**
+
+---
+
+## ✅ BUILD STATUS (updated 2026-06-01)
+
+**Done this sprint:**
+- **#2 Site Access Fields — edit UI** → PR #223 merged. Four fields (`gate_code`, `after_hours_phone`, `parking_notes`, `safety_notes`) in SiteForm collapsible section.
+- **#3 Defect Detail Page** → PR #223 merged. `/defects/[id]` route + `DefectRow.tsx` links. Photo attachments deferred (AttachmentList wiring = M effort).
+- **#1 Pre-visit Tech Brief (label)** → PR #220: label updated from "Scheduled Start" to "Planned Visit". Phase 1 email/ICS = still open.
+
+**Found already done in prior sessions (PRs #205–#213):**
+- **#4 Notifications** — `defect_raised` + `check_assigned` both wired in actions.
+- **#5 Analytics cuts** — per-customer date filter + per-tech table already live.
+- **#6 Canonical Export (NSX/RCD)** — all stubs filled; backup complete.
+- **#7 Field Sync admin UI** — "Sync sites from EQ Field" button + last-synced display live on Integrations page.
+- **Portal defects** — `/portal/defects` fully populated.
+
+**Still open / Royce-gated:**
+- **#1 ICS email** — Resend template + `.ics` builder (needs `RESEND_API_KEY` in Netlify env)
+- **#8 Renewal Pack UI** — page.tsx still missing
+- **#9 Defect → WO email** — Resend call-site in `createDefectAction` not yet added
+- **#10 Delta WO dry-run** — validation task, Royce runs on SKS tenant
+- **#11 Asset Detail** — `/assets/[id]` still needed
+- **#12–#20** — all deferred; see Group 4 below
+- **PPM canonical realignment (E2)** — ⏸ still paused
 
 ---
 

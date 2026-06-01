@@ -1,7 +1,7 @@
 ---
 title: Direction D — State Tracker
 owner: Royce Milmlow
-last_updated: 2026-05-31
+last_updated: 2026-06-01
 scope: Living state doc for the Direction D design-system + IA wave. Updated after each task closes.
 read_priority: high
 status: live
@@ -15,14 +15,14 @@ blocking decisions. Update it when a task closes or a PR merges.
 
 ---
 
-## Package versions (current as of 2026-05-31)
+## Package versions (current as of 2026-06-01)
 
 | Package | Version | Released | Key changes |
 |---|---|---|---|
 | `@eq-solutions/tokens` | **v1.2.0** | 2026-05-31 | Warm-sand ramp, 5 new brand tokens (`--eq-sand-*`), global a11y CSS (`prefers-reduced-motion`, focus-visible ring) |
-| `@eq-solutions/ui` | **v1.1.0** | 2026-05-31 | 9-component contract complete: Button, Skeleton, Table, Modal, ConfirmDialog, FormInput, StatusBadge, KindPill, Card, Toast, Tabs |
+| `@eq-solutions/ui` | **v1.1.1** | 2026-06-01 | Ghost Button hover border (`border-color: var(--eq-gray-300)`) — at-rest border was already in v1.0.1 |
 
-Previous: tokens v1.0.0 / v1.1.0, ui v1.0.1
+Previous: tokens v1.0.0 / v1.1.0, ui v1.0.1 / v1.1.0
 
 ---
 
@@ -62,36 +62,32 @@ Decision: Lucide is the icon family. Adoption is scoped — React apps (Shell + 
 
 | Task | Status | Notes |
 |---|---|---|
-| D3.1 Specs for 4 net-new screens | **Awaiting review** | Specs written to `eq-shell/docs/specs/` — see D3.2 PR (eq-shell #96); awaiting Royce sign-off before D3.3 build |
-| D3.2 Compact density mode | **PR open** | eq-shell PR #96 open (also carries token v1.2.0 bump); eq-design-tokens PR #3 open |
-| D3.3 Build net-new screens | Blocked on D3.1 review | |
-
-Open PRs:
-- `https://github.com/eq-solutions/eq-design-tokens/pull/3`
-- `https://github.com/eq-solutions/eq-shell/pull/96`
+| D3.1 Specs for 4 net-new screens | **Done** | Specs locked 2026-06-01. All decisions confirmed. |
+| D3.2 Compact density mode | **Done** | eq-shell PR #96 merged 2026-06-01 |
+| D3.3 Build net-new screens | **Done** | All 4 specs shipped: icon-rail (PR #106 + #119 gap-fills), service-do (PR #215), calendar (PR #220), cards-ocr (PRs #102/#103 — already on main). |
 
 ### D4 — Records IA
 
 | Task | Status | Notes |
 |---|---|---|
-| D4.1 Records-into-Shell IA audit | **Written** | `eq-shell/docs/d4-1-ia-audit.md` — in docs PR (awaiting Royce review) |
-| D4.2 IA + migration spec | **Written** | `eq-shell/docs/specs/d4-2-ia-migration-spec.md` — in docs PR (awaiting Royce review) |
-| D4.3 Records IA build (phased) | Blocked on D4.2 review | Open questions OQ-1 through OQ-6 in the spec must be answered first |
+| D4.1 Records-into-Shell IA audit | **Done** | `eq-shell/docs/d4-1-ia-audit.md` |
+| D4.2 IA + migration spec | **Done** | `eq-shell/docs/specs/d4-2-ia-migration-spec.md`; all OQ-1–OQ-6 resolved 2026-06-01 |
+| D4.3 Records IA build (phased) | **Phase 1+2 done** | Phase 1: HubLayout `iframe` prop already renders IconRail only (no HubSidebar) — solved by PR #106. Phase 2: PR #115 merged 2026-06-01 — EntityBrowserPage sidebarRecords fixed + Staff/Licences added to sidebar |
 
-Key open questions for D4.3 (from D4.2 spec):
-- **OQ-1:** Was v3.5.40 Field nav-suppression removal intentional?
-- **OQ-2:** Assets — consolidate two Shell surfaces or keep separate?
-- **OQ-3:** Should Assets appear in Shell sidebar RECORDS section?
-- **OQ-4:** EQ Quotes sidebar status when embedded?
-- **OQ-5:** Service `/records` hub after Phase 2?
-- **OQ-6:** Timing and deployer for Phase 1 Field deploy?
+Resolved OQs (2026-06-01):
+- **OQ-1:** Yes, Field nav-suppression removal (v3.5.40) was intentional. Shell suppresses HubSidebar via `iframe` prop on HubLayout. No Field deploy needed.
+- **OQ-2:** Keep both surfaces (`/equipment` + `/data/asset`) with clearer labels. Merge is D4.3+ scope.
+- **OQ-3:** No — EQUIPMENT section covers it. Assets stay out of RECORDS.
+- **OQ-4:** No sidebar in Flask Quotes — no action needed.
+- **OQ-5:** Defer Service `/records` hub decision until Phase 1+2 stable.
+- **OQ-6:** Phase 1 required no Field deploy (Shell-only change).
 
 ### D5 — Consumer adoption of eq-ui v1.1.0
 
 | Task | Status | Notes |
 |---|---|---|
-| D5.1 eq-shell adopt eq-ui v1.1.0 | **PR open** | eq-shell PR #95 — `package.json` bumped from `#v1.0.1` to `#v1.1.0`; build clean. Inline sweep skipped (see findings below). |
-| D5.2 eq-solves-service adopt eq-ui v1.1.0 | **PR open** | eq-solves-service PR #212 — `package.json` pin moved from `#main` to `#v1.1.0`; `FormInput.tsx` replaced with thin re-export covering 29 callsites; `tsc --noEmit` clean. |
+| D5.1 eq-shell adopt eq-ui v1.1.0 | **Done** | PR #95 merged. Also: Skeleton adoption in App.tsx + LicenceOcrPage via PR #106. |
+| D5.2 eq-solves-service adopt eq-ui v1.1.0 | **Done** | PR #212 merged — FormInput re-export (29 callsites). StatusBadge/KindPill/ConfirmDialog/Tabs skipped (incompatible domain models — see findings). |
 
 **D5.1 inline sweep findings (eq-shell — all skipped, no clean replacements):**
 - `gm-reports/index.tsx` — inline Badge uses loss/watch/ok values; doesn't map to StatusBadge's open/in-progress/overdue/closed/await
@@ -107,16 +103,12 @@ Key open questions for D4.3 (from D4.2 spec):
 - ConfirmDialog: local is a promise-based `useConfirm()` provider; kit is prop-driven — architecturally incompatible
 - Tabs: all tab strips use router `<Link>` elements or embed icons/status indicators outside the kit TabItem interface
 
-Open PRs:
-- `https://github.com/eq-solutions/eq-shell/pull/95`
-- `https://github.com/Milmlow/eq-solves-service/pull/212`
-
 ### D6 — Housekeeping
 
 | Task | Status | Notes |
 |---|---|---|
 | D6.1 live-dot token check | Done | Confirmed `var(--eq-brand)` in use; no raw hex found in shell src |
-| D6.2 Field CLAUDE.md Lucide note | **Blocked** | Waiting for security-audit branch to land on eq-solves-field before adding CLAUDE.md note |
+| D6.2 Field CLAUDE.md Lucide note | **Done** | security-audit branch had no CLAUDE.md conflicts — note added 2026-06-01. File is local-exclude only (not committed by design). |
 | D6.3 Rotate exposed eq-solves-service GitHub token | Done | Remote URL cleaned. User must revoke old PAT at `github.com/settings/tokens`. |
 | D6.4 eq-context Direction-D doc update | Done | This file |
 
@@ -124,13 +116,32 @@ Open PRs:
 
 ## Open PRs summary
 
-| PR | Repo | Task | Status |
-|---|---|---|---|
-| [#95](https://github.com/eq-solutions/eq-shell/pull/95) | eq-shell | D5.1 ui v1.1.0 bump | Open |
-| [#96](https://github.com/eq-solutions/eq-shell/pull/96) | eq-shell | D3.2 density mode + token bump | Open |
-| [#3](https://github.com/eq-solutions/eq-design-tokens/pull/3) | eq-design-tokens | D3.2 token changes | Open |
-| [#212](https://github.com/Milmlow/eq-solves-service/pull/212) | eq-solves-service | D5.2 ui v1.1.0 + FormInput | Open |
-| docs PR TBC | eq-shell | D3.1 specs + D4.1 audit + D4.2 IA spec | To be created |
+All Direction D PRs merged as of 2026-06-01. No open PRs.
+
+Merged PRs (this wave):
+| PR | Repo | Task |
+|---|---|---|
+| #95 | eq-shell | D5.1 ui v1.1.0 bump |
+| #96 | eq-shell | D3.2 density mode |
+| #106 | eq-shell | D3.3a icon rail + D5.1 Skeleton (also completes D4.3 Phase 1) |
+| #111 | eq-shell | Hotfix: TS build errors + conflict markers |
+| #114 | eq-shell | B12: perm drift guard full matrix |
+| #115 | eq-shell | D4.3 Phase 2: EntityBrowser sidebarRecords + Staff/Licences |
+| #116 | eq-shell | Quality polish: L3 briefing skeleton · U3 jargon · P5 Google Fonts · U2 ComingSoon |
+| #117 | eq-shell | C3: TenantPicker hex → CSS vars |
+| #118 | eq-shell | M1: TenantPicker responsive padding |
+| #119 | eq-shell | D3.3 icon rail gap-fills (Q4 Quotes trial tooltip) · P1 dashboard 60s cache · P2 lazy briefing · M2 mobile sidebar drawer |
+| #122 | eq-shell | eq-ui v1.1.1 bump |
+| #2 | eq-ui | Ghost Button hover border · v1.1.1 |
+| #212 | eq-solves-service | D5.2 ui v1.1.0 + FormInput |
+| #215 | eq-solves-service | D3.3b Service Do screen |
+| #217 | eq-solves-service | M3 SlidePanel mobile · C2 defects token swap · 7 loading.tsx |
+| #218 | eq-solves-service | E5 dashboard empty state |
+| #219 | eq-solves-service | Z3 reports empty state |
+| #220 | eq-solves-service | D3.3 calendar Direction D reskin · P4 defect count RPC · pre-visit brief label |
+| #222 | eq-solves-service | eq-ui v1.1.1 bump |
+| #223 | eq-solves-service | Site access edit fields · defect detail page + DefectRow links |
+| #153 | eq-solves-field | v3.5.49 — L5 SW update toast · U6 PIN from app_config |
 
 ---
 

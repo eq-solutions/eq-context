@@ -86,11 +86,11 @@ Consolidates **every** outstanding finding from the 2026-05-31 deep-dive + cross
 | A4 | Cards token consolidation | eq-cards | ✅ | **merged Milmlow/eq-cards#10** | Path A: deleted dead `EqSpacingTokens`/`EqTypographyTokens` (0 callsites), barrel-export `EqSpacing`; spacing values identical, `dart analyze` clean. Typography deferred (values diverge). |
 | A5 | Component audit doc (→ future @eq-solutions/ui) | eq-shell + eq-solves-service | ⚪ | — | read-only research; rank duplicated buttons/tables/forms |
 | A6 | Field `base.css` legacy vars → `--eq-*` | eq-solves-field | ✅ | **merged #137 → main (v3.5.26)** | bridged with `var()` fallbacks → zero visual change. Live. |
-| A7 | eq-ui: Modal + ConfirmDialog (incl. a11y A1/A2) | eq-ui + consumers | ⚪ | — | **new wave** (`design-system-consolidation-2026-05-31.md`); promote Service version, fold focus-trap/`role=dialog`/scroll-lock; tag + bump consumers |
-| A8 | eq-ui: FormInput | eq-ui + consumers | ⚪ | — | Service version (label/error/hint); adopt in Shell |
-| A9 | eq-ui: StatusBadge + KindPill | eq-ui + consumers | ⚪ | — | map Shell pill vocab → typed `StatusKind` |
-| A10 | eq-ui: Card + Toast + Tabs | eq-ui + consumers | ⚪ | — | Card/Toast lift from Service; Tabs greenfield; resolve ghost-border (Option B) |
-| A11 | Font self-host in shared layer | eq-design-tokens | ⚪ | — | ship woff2 + `@font-face`; supersedes per-app P5 |
+| A7 | eq-ui: Modal + ConfirmDialog (incl. a11y A1/A2) | eq-ui + consumers | ✅ | eq-ui v1.1.0 PR #1 | Modal+ConfirmDialog in 9-component contract; focus-trap, role=dialog, scroll-lock |
+| A8 | eq-ui: FormInput | eq-ui + consumers | ✅ | eq-ui v1.1.0 PR #1; eq-shell D5.1 #95; eq-service D5.2 #212 | FormInput with label/error/hint; 29 Service callsites |
+| A9 | eq-ui: StatusBadge + KindPill | eq-ui + consumers | ✅ | eq-ui v1.1.0 PR #1 | Shipped in kit; domain model mismatch in Shell/Service → local patterns kept |
+| A10 | eq-ui: Card + Toast + Tabs | eq-ui + consumers | ✅ | eq-ui v1.1.0 PR #1 | All three in kit; ghost-border Option B resolved in v1.1.1 (hover border) |
+| A11 | Font self-host in shared layer | eq-design-tokens | ⚪ | — | deferred; P5 Shell fixed (removed render-blocking import in #116) |
 | A12 | Claude Design context bundle | eq-context + eq-design-tokens | ✅ | this session | `eq/design/claude-design-context.md` created + issued to Claude Design 2026-05-31 |
 
 ## Stream B — EQ Field + SKS merge (codebase only; data stays separate)
@@ -175,15 +175,15 @@ Roadmap: `~/.claude/plans/distributed-dazzling-curry.md` + memory `eq-hardening-
 
 | id | item | bar | size | status | notes |
 |----|------|-----|------|--------|-------|
-| B2 | retrofit ~15 ad-hoc role checks → `can()`/`requirePerm` | 🔒 | M | ⚪ | uses `_shared/permissions.ts`; add missing `entity.*` PermKeys |
-| B4 | consolidate 5 `verify*Token` fns → `verifyToken(kind)` | 🔒 | S | ⚪ | |
-| B5 | tokenize `gm-reports/index.tsx` (~118 inline → classes/tokens) | 🎨 | M | ⚪ | use EqError/Skeleton |
-| B6 | delete dup `.eq-btn-*`; migrate call-sites → `<Button>` | 🎨 | S | ⚪ | ui Button needs `as`/link variant for anchors |
-| B8 | surface gm-reports silent archive/delete + detail-load failures | ✅ | S | ⚪ | **branch reverted — redo vs real render structure** |
-| B9 | ~800 lines page CSS out of App.css → co-located + tokenize | 🎨 | M | ⚪ | |
-| B10 | delete dead `modules/cards.tsx` + `modules/service.tsx` stubs | ✅ | S | ⛔ | **needs Royce permission** |
-| B11 | `ai-briefing` Cache-Control private + typed `entity-actions` + drop `?? ''` | 🔒 | S | ⚪ | |
-| B12 | single-source the permission matrix (client+server) | 🔒 | M | ⚪ | folds into C8 (roles split) |
+| B2 | retrofit ~15 ad-hoc role checks → `can()`/`requirePerm` | 🔒 | M | ✅ | PR #120 merged — `useCan('admin.list_users')` + security groups PR #123 |
+| B4 | consolidate 5 `verify*Token` fns → `verifyToken(kind)` | 🔒 | S | ⚪ | still open |
+| B5 | tokenize `gm-reports/index.tsx` (~118 inline → classes/tokens) | 🎨 | M | ⚪ | still open |
+| B6 | delete dup `.eq-btn-*`; migrate call-sites → `<Button>` | 🎨 | S | ✅ | PR #120 — removed `.eq-btn-*` CSS classes; PR #116 ComingSoon fixed |
+| B8 | surface gm-reports silent archive/delete + detail-load failures | ✅ | S | ⚪ | still open (branch reverted — redo) |
+| B9 | ~800 lines page CSS out of App.css → co-located + tokenize | 🎨 | M | ⚪ | still open |
+| B10 | delete dead `modules/cards.tsx` + `modules/service.tsx` stubs | ✅ | S | ✅ | PR #120 merged — stubs deleted |
+| B11 | `ai-briefing` Cache-Control private + typed `entity-actions` + drop `?? ''` | 🔒 | S | ⚪ | still open |
+| B12 | single-source the permission matrix (client+server) | 🔒 | M | ✅ | PR #108 merged — `check-perm-sync.mjs` reads `@eq-solutions/roles` directly; C8 reconcile (permissions.ts) still open |
 
 ## Stream I — cross-app remediation (`eq-shell/docs/cross-app-audit.md`) · per-repo, gated
 11 agents, adversarially verified, across Field/Cards/Service/Quotes/SKS-Labour. None fully canonical-conformant.
