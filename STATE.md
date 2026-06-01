@@ -11,6 +11,14 @@ status: live
 
 Snapshot 2026-05-30. **Verify before relying on the git/worktree lines** — they drift. The Supabase map + SKS-live flags are stable.
 
+> ## ⏩ POST-SPRINT UPDATE — 2026-06-02 (tenant model confirmed + quotes/field wiring audit)
+> - **Tenant model confirmed by Royce:** `eq-canonical` = control layer only (Cards config, tenant registry). `{tenant}-canonical` = per-tenant Supabase. `eq-canonical-internal` = EQ tenant; `sks-canonical` = SKS tenant. Documented in STATE.md + system/architecture.md + system/infrastructure.md.
+> - **eq-context** → merged to main (8 commits from worker-credentials branch). Substrate auto-synced.
+> - **eq-solves-field CLAUDE.md** → committed to main (`github.com/eq-solutions/eq-field`). Now references eq-context substrate URL at session start.
+> - **EQ Quotes (eq-quotes-sks) audit:** All canonical secrets confirmed deployed ✅ (`CANONICAL_API_KEY`, `CANONICAL_API_KEY_QUOTES`, `CANONICAL_SUPABASE_URL`, `CANONICAL_SUPABASE_KEY`). App wired to `core.eq.solutions` canonical API via `canonical.py`. Fly app name `eq-quotes-sks` = correct (follows `{tenant}` suffix convention). Stale `SUPABASE_URL` env var removed from fly.toml. Live at `quotes.eq.solutions`.
+> - **Royce-action resolved:** (2) fly deploy ✅ done; (3) CANONICAL_API_KEY_QUOTES ✅ confirmed set.
+> - **Royce-action still pending:** (1) `TENANT_ORG_UUID` Netlify env var for eq-solves-field; (4) drift CI secrets in eq-shell GitHub repo settings; (5) revoke old `gho_...` PAT.
+>
 > ## ⏩ POST-SPRINT UPDATE — end of 2026-06-01 (Sprint 4: quality polish + Direction D build wave; supersedes all prior blocks)
 > All unblocked code work complete. Royce-action items remain (see bottom).
 > - **eq-shell** → **PR #122 on main**. eq-ui v1.1.1 consumed. Quality polish PRs #116–#119 + #122 all merged: L3 briefing lazy, U3 jargon, P5 font, U2, C3, M1, P1 cache, P2 lazy, M2 sidebar, D3.3 icon rail gaps (Q4 Quotes tooltip), D5.1 v1.1.1 bump. Open gated: #80 (⛔ auth), security-groups (#123 merged — B2 groups).
