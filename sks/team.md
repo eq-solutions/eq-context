@@ -1,90 +1,122 @@
 ---
 title: SKS Tier — NSW Team
 owner: Royce Milmlow
-last_updated: 2026-05-07
-scope: SKS NSW Operations team roster — leadership, PMs, supervisors
+last_updated: 2026-06-01
+scope: SKS NSW team roster — leadership, PMs, supervisors
 read_priority: standard
 status: live
 ---
 
 # SKS — NSW Team
 
-NSW office bench. Field crew (~50+ direct + labour hire) is rostered via
-SKS Labour App, not listed here.
-
-For team-facing AI guidance (canonical quoting router etc.), see
-`sks-team/` tier — different audience, separately maintained.
+NSW office bench. Field crew (~60 direct + labour hire) rostered via SKS
+Labour App, not listed here. Disciplines: **Electrical** and **Comms**.
 
 ---
 
-## Leadership
+## Executive / Regional
 
-| Name | Role |
-|---|---|
-| Mark Brame | NSW General Manager |
-| Royce Milmlow | NSW Operations Manager |
-| John Ryan | NSW Construction Manager |
-| Sharon Maroni | Office Manager |
+| Name | Role | Notes |
+|---|---|---|
+| Mark Brame | NSW General Manager | Variable engagement — capable when stakes visible. Plan routes around when disengaged. |
+| Michael Richardson ("Richo") | GM Client Services & DC Solutions | **Active sponsor.** Dino reports to him. Monthly cadence with Royce established. |
+| Jonathan Ryan | NSW Construction Manager | Fixed constraint — low drive, two-year commitment. Routed around. |
+| Sharon Maroni | Office Manager | Hold — succession plan needed. |
+
+---
+
+## Senior Hires (new / landing)
+
+| Name | Role | Discipline | Status |
+|---|---|---|---|
+| Scott Hotson | Operations Lead — Client Services | Electrical | **Accepted** — start date TBC. Reports to Royce. |
+| Dino Cabal | Comms Growth — National Account Manager background | Comms | **Active** — reports to Richo, peer to Royce. Watch sold→delivered handoff. |
 
 ---
 
 ## Project Managers
 
-| Name | Role |
-|---|---|
-| Koos Otto | HV Project Manager |
-| Ian Marston | Project Manager |
-| Benjamen Ritchie | Project Manager |
-| Leif Lundberg | Project Manager (DCS Colo / Enterprise) |
-| Jack Cluff | Site Supervisor (DCS Hyperscale) — listed PM-tier in DB, supervisor on chart |
+| Name | Role | Discipline | Discuss |
+|---|---|---|---|
+| Benjamen Ritchie | Project Manager | Electrical | ⬆ Promotion — visible pathway, DC construction track |
+| Ian Marston | Project Manager | Electrical | — |
+| Johannes (Koos) Otto | Project Manager | Electrical | ⟲ Role change — redesign as HV Technical Lead |
+| Leif Lundberg | Project Manager (DCS Colo/Enterprise) | Comms | ⬇ Succession — Senior Comms Advisor reframe, Huon as shadow |
+| Nathan Anderson | Project Manager | Electrical | — |
+| Jack Cluff | Site Supervisor / Comms PM (hyperscale) | Comms | ⬆ Promotion — Hyperscale Comms PM track |
 
 ## Commercial
 
-| Name | Role |
-|---|---|
-| John McKee | Estimator |
+| Name | Role | Discipline |
+|---|---|---|
+| John McKee | Estimating Manager | Electrical |
+
+---
+
+## Service / Account Leads (de facto — formal titles pending)
+
+| Name | Role | Discipline | Discuss |
+|---|---|---|---|
+| Simon Bramall | Equinix Account Lead (de facto) | Electrical | ⬆ Promotion — formal title + pay overdue |
+| Luke Wheeler | Schneider Account Lead (de facto) | Electrical | ⟲ Role change — formalise, respect time constraints |
+| Matthew Miller | Equinix Site Lead (proposed) | Electrical | ⟲ Role change — structured executor scope |
 
 ---
 
 ## Supervisors
 
-| Name | Role |
+| Name | Role | Discipline | Discuss |
+|---|---|---|---|
+| Todd Wilson | Foreman LIC | Electrical | — |
+| Wayne Rowe | Foreman LIC (Digico) | Comms | ⚠ Risk — cultural drag, exit conversation pending. Mark to own. |
+| Collin Toohey | Leading Hand LIC | Electrical | ⬆ Promotion — Senior Supervisor track, scaffolded PM dev |
+| David Bower | Foreman LIC | Electrical | — |
+| Jack Fitzpatrick | Site Supervisor | Electrical | — |
+
+---
+
+## High-potential field
+
+| Name | Role | Discipline | Discuss |
+|---|---|---|---|
+| Huon Henne | Site Technician | Comms | ⬆ Promotion — Leif comms shadow, lead-in-training |
+| William Brown | Site Technician | Electrical | ⬆ Promotion — Controls / Commissioning specialist track |
+
+---
+
+## Office
+
+| Name | Role | Notes |
+|---|---|---|
+| Charlotte White | Administrative Assistant | ⟲ Role change — Project Coordinator scope definition pending |
+| Fadi Mounayerji | BIM/Electric Lead | — |
+| Michael Zoghbi | Audio Visual Account Manager | AV discipline |
+| John Angangan | Field Supervisor | — |
+
+---
+
+## Discuss flag legend
+
+| Flag | Meaning |
 |---|---|
-| Todd Wilson | Foreman |
-| Wayne Rowe | Foreman |
-| Collin Toohey | Leading Hand |
-| Luke Wheeler | Leading Hand |
-| Matt Miller | Leading Hand |
-| Simon Bramall | Leading Hand |
-| David Boyd | Senior Tradesperson / Mentor ("Legend of Industry" in DB) |
+| ⬆ Promotion | Positive future — formal recognition pending |
+| ⬇ Succession | Runway / knowledge transfer in progress |
+| ⟲ Role change | Scope redesign — conversation required |
+| ⚠ Risk | Cultural, performance, or exit risk |
 
 ---
 
 ## Royce — direct contact
 
-| Name | Mobile | Email |
-|---|---|---|
-| Royce Milmlow | 0432 944 014 | Royce.Milmlow@sks.com.au |
-
-Other contact details to be filled in here as confirmed — keep this file
-contact-light, not a phone book.
-
----
-
-## Operational Cadence
-
-- Monthly multi-site review meetings across active projects.
-- Schneider Electric Contractor Safety Audit preparation underway
-  (acquired from Delta Elcom, January 2026 transition).
-- Succession planning discussions ongoing with national client services manager.
+| Mobile | Email |
+|---|---|
+| 0432 944 014 | Royce.Milmlow@sks.com.au |
 
 ---
 
 ## Field Workforce
 
-~50+ field staff (electricians, apprentices, labour hire) on EBA terms.
-Roster and scheduling managed via SKS Labour App
-(`sks-nsw-labour.netlify.app`, project `nspbmirochztcjijmcrx`).
-
-For the live roster, query the SKS Labour app — not this file. This file
-is the office bench only.
+~60 NSW field staff across both NSW and NSW (Delta) tabs.
+Roster managed via SKS Labour App (`sks-nsw-labour.netlify.app`,
+project `nspbmirochztcjijmcrx`). Do not query this file for live roster —
+query the app.
