@@ -11,6 +11,16 @@ status: live
 
 Snapshot 2026-05-30. **Verify before relying on the git/worktree lines** — they drift. The Supabase map + SKS-live flags are stable.
 
+> ## ⏩ POST-SPRINT UPDATE — 2026-06-02 (eq-roles v1.3.0 + tenant migration strategy)
+> - **`@eq-solutions/roles` v1.3.0** — PR on worktree `bold-boyd-e6afae`, ready to merge. Changes: `canAny()` + `canAll()` helpers added (route/nav-guard use); 21-test suite (`roles.test.ts`, `node:test` + `tsx`, zero extra deps); `package.json` version synced (was stuck at `1.1.0` vs artefacts at `1.2.0`); `prepublishOnly` now runs tests; CHANGELOG backfilled for 1.1.0 + 1.2.0. Bumped to 1.3.0 (new public API = minor).
+> - **Tenant canonical migration strategy decided** — `eq-canonical-internal` and `sks-canonical` start identical but will diverge without explicit tooling. Pattern agreed: split migrations into `core/` (applied to every tenant) and `tenants/{eq,sks}/` (tenant-specific extensions). Deploy script applies core to all tenants first, then tenant-specific. Drift CI guard (#4 from prior Royce-actions) is the implementation of this. Migration files for tenant canonicals have no home yet — need a folder in eq-context or a thin `tenant-schema` repo before the first core migration lands.
+> - **Direction review complete** — eq-roles architecture rated sound (explicit grants, no inheritance, codegen pattern correct). Gaps closed: tests, version sync, canAny/canAll. Remaining lower-priority items: `labour_hire` perm granularity (before Field labour hire portal goes live), `reports` module gating (too restrictive at manager-only), `service.assign` perm, tier-gating mechanism.
+> - **Royce-action:** merge `bold-boyd-e6afae` eq-roles PR → publish v1.3.0. Then: establish tenant migration folder before landing first core schema change.
+>
+> ## ⏩ POST-SPRINT UPDATE — 2026-06-02 (canonical-api routing live)
+> - **tenant_routing LIVE:** `tenants` + `tenant_routing` tables created in eq-canonical. SKS tenant registered → sks-canonical (`ehowgjardagevnrluult`). `TENANT_ROUTING_MASTER_KEY` rotated (new key) + set in eq-shell Netlify. eq-shell redeployed. **canonical-api can now route `X-Tenant: sks` PUT requests to sks-canonical.** Service `syncCustomer`/`syncSite`/`syncAsset`/`syncDefect` and Quotes `write_event` are now live end-to-end.
+> - **sks-canonical schema still empty** — `app_data` schema with canonical tables (customers, sites, assets, etc.) needs to be applied before any write-through data lands. Next step: run canonical schema migration against sks-canonical.
+>
 > ## ⏩ POST-SPRINT UPDATE — 2026-06-02 (tenant model confirmed + quotes/field wiring audit)
 > - **Tenant model confirmed by Royce:** `eq-canonical` = control layer only (Cards config, tenant registry). `{tenant}-canonical` = per-tenant Supabase. `eq-canonical-internal` = EQ tenant; `sks-canonical` = SKS tenant. Documented in STATE.md + system/architecture.md + system/infrastructure.md.
 > - **eq-context** → merged to main (8 commits from worker-credentials branch). Substrate auto-synced.
@@ -52,7 +62,7 @@ Snapshot 2026-05-30. **Verify before relying on the git/worktree lines** — the
 | **eq-solves-service** | Milmlow/eq-solves-service | eq-solves-service.netlify.app on `main` | #203/#204 merged; local main diverged (leave) | Next 16. `npm run check` before push. CI `data-quality audit` fails on expired `SUPABASE_ACCESS_TOKEN` (known, unrelated). Worktree `charming-dirac` dormant (committed). |
 | **eq-cards** | Milmlow/eq-cards | (Flutter app) | **clean**, idle ~18h, no worktrees | safest repo to work in. NOT SKS. |
 | **eq-intake** | (home of `@eq/*`) | n/a (vendored into eq-shell) | **main ahead 23 unpushed**; active worktree `clever-roentgen` (6 uncommitted) | changes here must be **re-vendored into eq-shell**. |
-| **eq-roles** | not yet remote | n/a (package) | local git only, 1 commit | `C:\Projects\eq-roles`. Push pending Royce OK (new public repo). |
+| **eq-roles** | eq-solutions/eq-roles (public) | n/a (package) | main @ v1.2.0; **PR `bold-boyd-e6afae` ready to merge → v1.3.0** | `canAny`/`canAll` + 21 tests + version sync. Merge + publish before any consumer bumps past 1.2.0. |
 | **eq-design-tokens** | eq-solutions/eq-design-tokens (**public**) | n/a (package) | v1.0.0 tag | consumed by Shell/Field/Service via git-dep. |
 
 ## Supabase projects (org `sqjyblkiqonyrdobaucn`, ap-southeast-2)
@@ -73,6 +83,7 @@ Snapshot 2026-05-30. **Verify before relying on the git/worktree lines** — the
 | token drift-guard | eq-solves-field | ✅ `.github/workflows/tokens-drift.yml` |
 | token drift-guard | eq-cards (dart) | ⚪ not built (deferred w/ A4) |
 | **dup-migration guard** | eq-solves-service | ⚪ **spec'd, not built** (RULES §6) — broke twice; build first |
+| **tenant canonical drift guard** | eq-context (or tenant-schema repo) | ⚪ **strategy agreed, not built** — CI job to confirm `eq-canonical-internal` + `sks-canonical` have applied all `core/` migrations. Blocker: migration folder doesn't exist yet. |
 
 ## Known hazards (don't re-trip these)
 - Sequential `00xx` migrations collide across parallel agents → **timestamps only** (RULES §3). `eq-solves-service 0110` taken.
