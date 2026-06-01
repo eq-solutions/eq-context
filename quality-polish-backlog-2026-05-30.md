@@ -1,7 +1,7 @@
 ---
 title: EQ Quality & UX Polish Backlog
 owner: Royce Milmlow
-last_updated: 2026-05-30
+last_updated: 2026-06-01
 scope: eq-shell, eq-solves-field, eq-solves-service
 read_priority: standard
 status: live
@@ -12,6 +12,26 @@ status: live
 Read-only audit across all three EQ app repos plus carry-over items from
 PR #73 and substrate-drift. Ranked by value × effort ratio (highest first).
 Effort: S = half-day, M = 1–2 days, L = 3+ days.
+
+---
+
+## ✅ BUILD STATUS (updated 2026-06-01 — after sprint quality + Direction D polish)
+
+**Done this sprint (2026-06-01):** L3 (Shell briefing skeleton decoupled), U3 (jargon sweep), P5 (render-blocking Google Fonts removed), U2 (ComingSoon back-link), C3 (TenantPicker CSS vars), M1 (TenantPicker responsive padding), P1 (HubLayout 60s dashboard cache), P2 (lazy briefing behind button), M2 (mobile sidebar drawer), M3 (Service SlidePanel mobile), C2 (Service defects token swap), E1 partial (7 loading.tsx added), E5 (Service dashboard empty state), Z3 (Service reports empty state), P4 (defect count RPC), L5 (Field SW update toast), U6 (Field PIN from app_config), ghost-border (eq-ui v1.1.1).
+
+**Found already done in prior sessions:** A1-A5 (all accessibility items), E2 (iframe error states — all on EqError), E4 (EqError retry aria), U4 (sync bar aria — fixed in #75), Z2 (live-feed render condition), E3 (Field audit_log fix in v3.5.31), P3 (Field SheetJS lazy-load already in lazy-loader.js).
+
+**Still open / deferred:**
+- **A1-A2** Modal/SlidePanel focus trap — confirmed done (Service ConfirmDialog is the standard, Modal.tsx has focus-trap from eq-ui v1.1.0)
+- **U1** Modal/SlidePanel → eq-ui: deferred to a dedicated eq-ui PR
+- **U5** PageSkeleton filterSlots prop: not yet built
+- **M4** Field roster grid at 375px: deferred (migration-gated work ahead)
+- **M5** Service `pt-18` token: still needs verification
+- **L4** KPI skeleton width: cosmetic, deferred
+- **C1** Field `--eq-grey` contrast bump: token contract change, deferred
+- **Z1** Service empty-state consistency (centred card pattern): M effort, deferred
+- **P3** Field SheetJS: already done (not needed)
+- **Migration-gated Field items** (#2 timesheet approval, #5 leave balance, #10 unavailability, #11 portal, #15 audit-log UI): ⛔ Royce migrations
 
 ---
 

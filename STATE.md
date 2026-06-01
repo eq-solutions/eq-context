@@ -11,6 +11,16 @@ status: live
 
 Snapshot 2026-05-30. **Verify before relying on the git/worktree lines** — they drift. The Supabase map + SKS-live flags are stable.
 
+> ## ⏩ POST-SPRINT UPDATE — end of 2026-06-01 (Sprint 4: quality polish + Direction D build wave; supersedes all prior blocks)
+> All unblocked code work complete. Royce-action items remain (see bottom).
+> - **eq-shell** → **PR #122 on main**. eq-ui v1.1.1 consumed. Quality polish PRs #116–#119 + #122 all merged: L3 briefing lazy, U3 jargon, P5 font, U2, C3, M1, P1 cache, P2 lazy, M2 sidebar, D3.3 icon rail gaps (Q4 Quotes tooltip), D5.1 v1.1.1 bump. Open gated: #80 (⛔ auth), security-groups (#123 merged — B2 groups).
+> - **eq-solves-service** → **PR #224 on main**. Quality polish PRs #217–#224 merged: M3, C2, 7 loading.tsx, E5, Z3, P4 RPC, D3.3 calendar, site access edit, defect detail page, eq-ui v1.1.1 bump. Service latest: `003ca22`.
+> - **eq-solves-field** → **v3.5.49 on main** (PR #153): L5 SW update toast + U6 PIN from app_config. **PENDING Royce action: `TENANT_ORG_UUID` Netlify env var required for U6 to activate.**
+> - **eq-ui** → **v1.1.1 tagged**: ghost Button hover border. Tag live on GitHub. Consumers (Shell #122, Service #222) bumped.
+> - **Direction D** → **COMPLETE.** D3.3 all 4 specs built, D5.1/D5.2 adopted, D6.x all done.
+> - **Royce-action required (blocking production features):** (1) `TENANT_ORG_UUID` Netlify env var for eq-solves-field EQ site; (2) `fly deploy` from `eq-quotes-port`; (3) verify `CANONICAL_API_KEY_QUOTES` in Fly secrets; (4) drift CI secrets in eq-shell GitHub repo settings; (5) revoke old `gho_...` PAT at github.com/settings/tokens.
+> - **Migration-gated (Field):** #2 timesheet approval, #5 leave balance, #10 unavailability, #11 portal, #15 audit-log UI — awaiting Royce-approved DB migration on `ktmjmdzqrogauaevbktn`.
+
 > ## ⏩ POST-SPRINT UPDATE — end of 2026-05-30 (Sprint 1 + Sprint 2 Waves 1–2 ALL MERGED; supersedes the table rows below where they conflict)
 > The "everything-then-cutover" fan-out + Sprint 2 completed. Current reality:
 > - **eq-solves-field** → **v3.5.33 on `main`**, clean. SKS-only modules ported + **triple tenant-gated to `sks`** (EQ provably unaffected): `safety` (#138), `teams` (#139), `sks-pipeline*` (#140) + 10 B3 reconcile fixes (#141). **Wave 1 #143 (v3.5.31):** timesheet pre-fill, multi-week export, hard-delete leave, roster copy-week, audit-log field-fix. **Wave 2 #144 (v3.5.32):** roster PDF/print, dashboard gap-card, calendar person-filter, apprentice year auto-advance. **Batch #145 (v3.5.33):** weekly site-attendance report, roster bulk assign/clear, mobile roster swipe (pages the *week*), + **print.css EQ/SKS tenant-brand fix** (EQ deep default, navy only under `body.tenant-sks`). Worktrees cleaned. **EQ-tenant no-migration backlog now ~exhausted** — next Field work needs a parked migration, the #20 PIN/auth fix, or net-new scope (see `field-feature-backlog-2026-05-30.md` BUILD STATUS).
