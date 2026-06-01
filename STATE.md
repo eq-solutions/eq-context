@@ -19,7 +19,7 @@ Snapshot 2026-05-30. **Verify before relying on the git/worktree lines** — the
 >
 > ## ⏩ POST-SPRINT UPDATE — 2026-06-02 (canonical-api routing live)
 > - **tenant_routing LIVE:** `tenants` + `tenant_routing` tables created in eq-canonical. SKS tenant registered → sks-canonical (`ehowgjardagevnrluult`). `TENANT_ROUTING_MASTER_KEY` rotated (new key) + set in eq-shell Netlify. eq-shell redeployed. **canonical-api can now route `X-Tenant: sks` PUT requests to sks-canonical.** Service `syncCustomer`/`syncSite`/`syncAsset`/`syncDefect` and Quotes `write_event` are now live end-to-end.
-> - **sks-canonical schema still empty** — `app_data` schema with canonical tables (customers, sites, assets, etc.) needs to be applied before any write-through data lands. Next step: run canonical schema migration against sks-canonical.
+> - **sks-canonical fully live** — schema was already complete with 60 applied migrations. Live data: customers (389), sites (591), assets (4,808), test results (713), canonical_events (21). EQ Quotes writes directly to `public.sks_quotes_*` (37 documents, 520 customers). `app_data.*` write-through from Service is now unblocked.
 >
 > ## ⏩ POST-SPRINT UPDATE — 2026-06-02 (tenant model confirmed + quotes/field wiring audit)
 > - **Tenant model confirmed by Royce:** `eq-canonical` = control layer only (Cards config, tenant registry). `{tenant}-canonical` = per-tenant Supabase. `eq-canonical-internal` = EQ tenant; `sks-canonical` = SKS tenant. Documented in STATE.md + system/architecture.md + system/infrastructure.md.
