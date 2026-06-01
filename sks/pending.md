@@ -1,7 +1,7 @@
 ---
 title: SKS — Pending
 owner: Royce Milmlow
-last_updated: 2026-05-30
+last_updated: 2026-06-01
 scope: SKS Technologies operational TODO list
 read_priority: critical
 status: live
