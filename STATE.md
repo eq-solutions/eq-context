@@ -11,6 +11,13 @@ status: live
 
 Snapshot 2026-05-30. **Verify before relying on the git/worktree lines** — they drift. The Supabase map + SKS-live flags are stable.
 
+> ## ⏩ POST-SPRINT UPDATE — 2026-06-02 (eq-canonical-internal LIVE as EQ Field tenant DB)
+> - **Registry flipped:** eq-canonical `organisations.supabase_url` for eq/demo-trades/melbourne now points to `zaapmfdkgedqupfjtchl` (eq-canonical-internal). All EQ Field operational data writes there.
+> - **Schema complete:** 49-table EQ Field operational schema applied to eq-canonical-internal (PR #155, v3.5.50). Exact mirror of eq-solves-field schema.
+> - **eq-solves-field (`ktmjmdzqrogauaevbktn`) is now cold backup.** No data deleted. Registry no longer points there for EQ tenants.
+> - **Netlify LEAVE_SB_URL/LEAVE_SB_KEY** updated on eq-solves-field site → eq-canonical-internal.
+> - **eq-canonical-internal starts clean** — app_config access codes + org rows seeded; people/schedule copied for reference only.
+>
 > ## ⏩ POST-SPRINT UPDATE — 2026-06-02 (security hardening — 4 migrations applied)
 > - **eq-canonical PIN RPC hardening LIVE:** `set_pin_for_user`, `verify_pin_for_user`, `has_pin_for_user` (shell_control) revoked from anon + authenticated; service_role only. `eq_recent_auth_events` anon grant revoked. Migration: `auth_rpc_hardening_pin_service_role_only`. Verified: anon/auth → false, service_role → true.
 > - **eq-canonical-internal `_eq_migrations` RLS enabled:** Migration tracker table now has RLS on (was critical advisory). service_role bypasses RLS — migration runner unaffected.
@@ -82,7 +89,7 @@ Snapshot 2026-05-30. **Verify before relying on the git/worktree lines** — the
 |-----|------|------|--------|
 | `jvknxcmbtrfnxfrwfimn` | eq-canonical | **Control layer** — Cards config, tenant registry, app settings. Browser-accessible via `VITE_SUPABASE_URL`. | browser via VITE_SUPABASE_URL |
 | `zaapmfdkgedqupfjtchl` | eq-canonical-internal | **EQ tenant Supabase** — all EQ Solutions operational/tenant data (workers, identity, ops). Pattern: `{tenant}-canonical`. | EQ tenant data |
-| `ktmjmdzqrogauaevbktn` | eq-solves-field | EQ Field tenant DB | per app-state |
+| `ktmjmdzqrogauaevbktn` | eq-solves-field | **Cold backup** — EQ Field was here pre-2026-06-02. Registry now points to eq-canonical-internal. | cold backup |
 | `urjhmkhbgaxrofurpbgc` | eq-solves-service-dev | Service DB + context substrate (`context_files`) | per repo |
 | `ehowgjardagevnrluult` | sks-canonical | **SKS tenant Supabase** — all SKS operational/tenant data. Pattern: `{tenant}-canonical`. SKS tenant id `7dee117c-98bd-4d39-af8c-2c81d02a1e85`. | SKS tenant data |
 | `nspbmirochztcjijmcrx` | sks-labour | **SKS LIVE operational DB** | **READ-ONLY / AVOID — SKS live** |

@@ -9,6 +9,23 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-06-02] v3.5.50 — eq-canonical-internal live as EQ tenant DB (PR #155, merged)
+**Built by:** Royce Milmlow + Claude Code
+
+**Summary:** EQ Field operational data now lives in eq-canonical-internal (`zaapmfdkgedqupfjtchl`). The eq-canonical registry was flipped so all three EQ demo tenants (eq, demo-trades, melbourne) resolve to eq-canonical-internal at boot. eq-solves-field (`ktmjmdzqrogauaevbktn`) becomes cold backup — no data deleted, no code changes required.
+
+**Changes:**
+- `migrations/2026-06-02_eq_canonical_internal_schema.sql` — 49-table schema + 5 enums + all indexes + RLS policies applied to eq-canonical-internal (exact mirror of eq-solves-field as of 2026-06-02).
+- eq-canonical `organisations` table: `supabase_url` + `supabase_anon_key` updated for eq/demo-trades/melbourne → `zaapmfdkgedqupfjtchl.supabase.co`.
+- Netlify `LEAVE_SB_URL` + `LEAVE_SB_KEY` env vars updated on eq-solves-field site → eq-canonical-internal; `approve-leave.js` and `send-email.js` magic-link mode now resolve against the live tenant DB.
+- Version bump 3.5.49 → 3.5.50; v3.5.49 banner entry (SW auto-update toast + PIN from app_config) backfilled.
+
+**Note:** eq-canonical-internal starts clean. All new data (roster entries, timesheets, leave requests) writes there. The 605 people + 2417 schedule rows previously in eq-solves-field were also migrated for reference but are not needed — the operational DB is authoritative.
+
+**PR:** [#155](https://github.com/eq-solutions/eq-field/pull/155) — **merged**.
+
+---
+
 ## [2026-05-30] v3.5.34 — On-screen chrome is tenant-aware (PR #147, merged)
 **Built by:** Royce Milmlow + Claude Code
 
