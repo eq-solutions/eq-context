@@ -1,7 +1,7 @@
 ---
 title: SYSTEM — Tech Architecture
 owner: Royce Milmlow
-last_updated: 2026-05-19
+last_updated: 2026-06-02
 scope: Current state of how systems are built and how they fit together
 read_priority: standard
 status: live
