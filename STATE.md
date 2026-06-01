@@ -11,11 +11,19 @@ status: live
 
 Snapshot 2026-05-30. **Verify before relying on the git/worktree lines** — they drift. The Supabase map + SKS-live flags are stable.
 
-> ## ⏩ POST-SPRINT UPDATE — 2026-06-02 (eq-roles v1.3.0 + tenant migration strategy)
-> - **`@eq-solutions/roles` v1.3.0** — PR on worktree `bold-boyd-e6afae`, ready to merge. Changes: `canAny()` + `canAll()` helpers added (route/nav-guard use); 21-test suite (`roles.test.ts`, `node:test` + `tsx`, zero extra deps); `package.json` version synced (was stuck at `1.1.0` vs artefacts at `1.2.0`); `prepublishOnly` now runs tests; CHANGELOG backfilled for 1.1.0 + 1.2.0. Bumped to 1.3.0 (new public API = minor).
-> - **Tenant canonical migration strategy decided** — `eq-canonical-internal` and `sks-canonical` start identical but will diverge without explicit tooling. Pattern agreed: split migrations into `core/` (applied to every tenant) and `tenants/{eq,sks}/` (tenant-specific extensions). Deploy script applies core to all tenants first, then tenant-specific. Drift CI guard (#4 from prior Royce-actions) is the implementation of this. Migration files for tenant canonicals have no home yet — need a folder in eq-context or a thin `tenant-schema` repo before the first core migration lands.
-> - **Direction review complete** — eq-roles architecture rated sound (explicit grants, no inheritance, codegen pattern correct). Gaps closed: tests, version sync, canAny/canAll. Remaining lower-priority items: `labour_hire` perm granularity (before Field labour hire portal goes live), `reports` module gating (too restrictive at manager-only), `service.assign` perm, tier-gating mechanism.
-> - **Royce-action:** merge `bold-boyd-e6afae` eq-roles PR → publish v1.3.0. Then: establish tenant migration folder before landing first core schema change.
+> ## ⏩ POST-SPRINT UPDATE — 2026-06-02 (security hardening — 4 migrations applied)
+> - **eq-canonical PIN RPC hardening LIVE:** `set_pin_for_user`, `verify_pin_for_user`, `has_pin_for_user` (shell_control) revoked from anon + authenticated; service_role only. `eq_recent_auth_events` anon grant revoked. Migration: `auth_rpc_hardening_pin_service_role_only`. Verified: anon/auth → false, service_role → true.
+> - **eq-canonical-internal `_eq_migrations` RLS enabled:** Migration tracker table now has RLS on (was critical advisory). service_role bypasses RLS — migration runner unaffected.
+> - **sks-canonical overlay fn revoke LIVE:** 5 `sks_*` trigger functions revoked from anon/authenticated/PUBLIC. Migration: `sks_overlay_fn_revoke`.
+> - **sks-canonical safety RPC JWT guard LIVE:** `approve_safety_record` + `submit_safety_record` rewritten to derive tenant from JWT (`app_metadata.tenant_id`) instead of trusting caller-supplied param. Latent cross-tenant write hole closed. Migration: `sks_safety_rpc_jwt_tenant_guard`.
+> - **Staged files applied:** archive `eq-shell/supabase/staged/jvkn_auth_rpc_hardening.sql`, `sks_overlay_fn_revoke.sql`, `sks_safety_rpc_hardening.sql`.
+> - **`0029_safety_rpcs` committed** to `eq-shell/supabase/tenant-migrations/` — runner will apply to eq-canonical-internal on next migration run. Staged files deleted from `eq-shell/supabase/staged/`.
+- **eq-roles v1.3.0 confirmed merged** — `d0fa143` on main; eq-shell already bumped to consume it (`d58513a`).
+>
+> ## ⏩ POST-SPRINT UPDATE — 2026-06-02 (eq-roles v1.3.0 SHIPPED)
+> - **`@eq-solutions/roles` v1.3.0 LIVE** — merged to main, tagged `v1.3.0`, worktree + branch cleaned. Changes shipped: `canAny()` + `canAll()` helpers; 21-test suite (all pass); `package.json` version synced; `prepublishOnly` runs tests; CHANGELOG complete. eq-shell bumped to `#v1.3.0` (commit `d58513a`).
+> - **Tenant canonical migration strategy decided** — split migrations into `core/` (applied to every tenant) and `tenants/{eq,sks}/` (tenant-specific extensions). Migration folder doesn't exist yet — create in eq-context or thin `tenant-schema` repo before landing first core schema change.
+> - **Direction review complete** — eq-roles architecture sound. Remaining: `labour_hire` perm granularity (before Field labour hire portal), `reports` module gating, `service.assign` perm, tier-gating mechanism.
 >
 > ## ⏩ POST-SPRINT UPDATE — 2026-06-02 (eq-shell build fix)
 > - **eq-shell build fixed** — `@eq/confirm-ui` DTS was failing: (1) `cap_exceeded` missing from `ValidationError` union in `eq-validation/validate.ts` — added; (2) exhaustive switch then made `e: never` in `default:` branch — cast to `{ kind: string }`. Commits `ecd75c2` + `163d799`. Build green, `core.eq.solutions` live.
@@ -66,7 +74,7 @@ Snapshot 2026-05-30. **Verify before relying on the git/worktree lines** — the
 | **eq-solves-service** | Milmlow/eq-solves-service | eq-solves-service.netlify.app on `main` | #203/#204 merged; local main diverged (leave) | Next 16. `npm run check` before push. CI `data-quality audit` fails on expired `SUPABASE_ACCESS_TOKEN` (known, unrelated). Worktree `charming-dirac` dormant (committed). |
 | **eq-cards** | Milmlow/eq-cards | (Flutter app) | **clean**, idle ~18h, no worktrees | safest repo to work in. NOT SKS. |
 | **eq-intake** | (home of `@eq/*`) | n/a (vendored into eq-shell) | **main ahead 23 unpushed**; active worktree `clever-roentgen` (6 uncommitted) | changes here must be **re-vendored into eq-shell**. |
-| **eq-roles** | eq-solutions/eq-roles (public) | n/a (package) | main @ v1.2.0; **PR `bold-boyd-e6afae` ready to merge → v1.3.0** | `canAny`/`canAll` + 21 tests + version sync. Merge + publish before any consumer bumps past 1.2.0. |
+| **eq-roles** | eq-solutions/eq-roles (public) | n/a (package) | **v1.3.0 on main** — tag live, branch cleaned | consumed by eq-shell `#v1.3.0` (d58513a). `canAny`/`canAll` + 21-test suite. No open PRs. |
 | **eq-design-tokens** | eq-solutions/eq-design-tokens (**public**) | n/a (package) | v1.0.0 tag | consumed by Shell/Field/Service via git-dep. |
 
 ## Supabase projects (org `sqjyblkiqonyrdobaucn`, ap-southeast-2)

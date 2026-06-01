@@ -29,7 +29,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [ ] Revoke old `gho_...` PAT at github.com/settings/tokens
 - [ ] Drift CI secrets in eq-shell GitHub repo settings
 - [ ] HaveIBeenPwned toggle in eq-canonical Supabase Auth settings
-- [ ] Merge eq-roles PR `bold-boyd-e6afae` → publish v1.3.0
+- [x] Merge eq-roles PR `bold-boyd-e6afae` → publish v1.3.0 ✅ 2026-06-02 (v1.3.0 tagged, eq-shell bumped to #v1.3.0)
 
 ---
 
