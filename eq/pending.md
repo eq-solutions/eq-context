@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-05-31
+last_updated: 2026-06-02
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -11,6 +11,25 @@ status: live
 
 EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## ⏩ Session close — 2026-06-02
+
+**Completed this session:**
+- Tenant model confirmed + documented (STATE.md / architecture.md / infrastructure.md)
+- `tenant_routing` gap fixed — canonical-api routing now live end-to-end (sks → sks-canonical)
+- EQ Quotes wiring audited ✅; stale `SUPABASE_URL` removed from fly.toml
+- EQ Service canonical wiring audited ✅ (write-through live, 4 export stubs non-blocking)
+- eq-solves-field CLAUDE.md committed to main
+- eq-shell build fixed (cap_exceeded union + never cast in errorSummary) — `core.eq.solutions` live
+
+**Pending Royce-actions (carried forward):**
+- [ ] `TENANT_ORG_UUID` Netlify env var for eq-solves-field EQ site (blocks U6 PIN)
+- [ ] Revoke old `gho_...` PAT at github.com/settings/tokens
+- [ ] Drift CI secrets in eq-shell GitHub repo settings
+- [ ] HaveIBeenPwned toggle in eq-canonical Supabase Auth settings
+- [ ] Merge eq-roles PR `bold-boyd-e6afae` → publish v1.3.0
 
 ---
 

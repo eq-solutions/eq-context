@@ -17,6 +17,10 @@ Snapshot 2026-05-30. **Verify before relying on the git/worktree lines** — the
 > - **Direction review complete** — eq-roles architecture rated sound (explicit grants, no inheritance, codegen pattern correct). Gaps closed: tests, version sync, canAny/canAll. Remaining lower-priority items: `labour_hire` perm granularity (before Field labour hire portal goes live), `reports` module gating (too restrictive at manager-only), `service.assign` perm, tier-gating mechanism.
 > - **Royce-action:** merge `bold-boyd-e6afae` eq-roles PR → publish v1.3.0. Then: establish tenant migration folder before landing first core schema change.
 >
+> ## ⏩ POST-SPRINT UPDATE — 2026-06-02 (eq-shell build fix)
+> - **eq-shell build fixed** — `@eq/confirm-ui` DTS was failing: (1) `cap_exceeded` missing from `ValidationError` union in `eq-validation/validate.ts` — added; (2) exhaustive switch then made `e: never` in `default:` branch — cast to `{ kind: string }`. Commits `ecd75c2` + `163d799`. Build green, `core.eq.solutions` live.
+> - **Session logged:** `sessions/2026-06-02.md`
+>
 > ## ⏩ POST-SPRINT UPDATE — 2026-06-02 (canonical-api routing live)
 > - **tenant_routing LIVE:** `tenants` + `tenant_routing` tables created in eq-canonical. SKS tenant registered → sks-canonical (`ehowgjardagevnrluult`). `TENANT_ROUTING_MASTER_KEY` rotated (new key) + set in eq-shell Netlify. eq-shell redeployed. **canonical-api can now route `X-Tenant: sks` PUT requests to sks-canonical.** Service `syncCustomer`/`syncSite`/`syncAsset`/`syncDefect` and Quotes `write_event` are now live end-to-end.
 > - **sks-canonical fully live** — schema was already complete with 60 applied migrations. Live data: customers (389), sites (591), assets (4,808), test results (713), canonical_events (21). EQ Quotes writes directly to `public.sks_quotes_*` (37 documents, 520 customers). `app_data.*` write-through from Service is now unblocked.

@@ -2,7 +2,7 @@
 title: SYSTEM — Tech Architecture
 owner: Royce Milmlow
 last_updated: 2026-06-02
-scope: Current state of how systems are built and how they fit together
+scope: Current state of how systems are built and how they fit together — including tenant migration management pattern
 read_priority: standard
 status: live
 ---
@@ -85,6 +85,49 @@ apply the canonical migration set, register the connection in `eq-canonical`, se
 
 **Operational rule:** confirm which project before connecting. Never touch
 `nspbmirochztcjijmcrx` (sks-labour) unless "SKS live" is explicitly stated.
+
+---
+
+## Tenant Canonical Migration Management
+
+**Problem:** `eq-canonical-internal` and `sks-canonical` start from identical schema but will
+diverge. Two types of change exist — core (every tenant must have it) and tenant-specific
+(one tenant only). Without an explicit pattern, core migrations get missed on one tenant,
+causing silent app breakage.
+
+**Pattern (agreed 2026-06-02):** Split migrations by scope.
+
+```
+tenant-schema/
+  core/
+    migrations/   ← applied to EVERY {tenant}-canonical project
+  tenants/
+    eq/
+      migrations/ ← EQ Solutions extensions only
+    sks/
+      migrations/ ← SKS extensions only
+```
+
+**Deploy order** (core first, tenant-specific after):
+1. Apply `core/migrations/` → `eq-canonical-internal`
+2. Apply `core/migrations/` → `sks-canonical`
+3. Apply `tenants/eq/migrations/` → `eq-canonical-internal`
+4. Apply `tenants/sks/migrations/` → `sks-canonical`
+
+**Intentional divergence is fine** — tenant-specific tables and columns are the whole point of
+per-tenant projects. The guard is against *unintentional* divergence: a core migration landing
+on one tenant but not the other.
+
+**CI drift guard:** A GitHub Actions job on any change to `core/migrations/` should validate
+both tenant projects have applied every migration in the folder. This is the pending CI guard
+item in STATE.md. Until it exists, any core migration MUST be manually applied to both tenants
+and confirmed before merging.
+
+**Where these files live:** TBD — either a `tenant-schema/` folder in this repo (`eq-context`)
+or a thin dedicated repo. Decision needed before the first core migration is written.
+
+**Adding a new tenant:** Apply `core/migrations/` in full, then create `tenants/{name}/`
+for any tenant-specific additions. Register in `eq-canonical`.
 
 ---
 
