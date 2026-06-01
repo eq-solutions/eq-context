@@ -49,14 +49,14 @@ Snapshot 2026-05-30. **Verify before relying on the git/worktree lines** — the
 ## Supabase projects (org `sqjyblkiqonyrdobaucn`, ap-southeast-2)
 | ref | name | role | access |
 |-----|------|------|--------|
-| `jvknxcmbtrfnxfrwfimn` | eq-canonical | control plane (browser-facing: intake events, list RPCs) | browser via VITE_SUPABASE_URL |
-| `zaapmfdkgedqupfjtchl` | eq-canonical-internal | EQ tenant data plane (`app_data.*`, commit RPCs) | **server-only** via Netlify functions |
+| `jvknxcmbtrfnxfrwfimn` | eq-canonical | **Control layer** — Cards config, tenant registry, app settings. Browser-accessible via `VITE_SUPABASE_URL`. | browser via VITE_SUPABASE_URL |
+| `zaapmfdkgedqupfjtchl` | eq-canonical-internal | **EQ tenant Supabase** — all EQ Solutions operational/tenant data (workers, identity, ops). Pattern: `{tenant}-canonical`. | EQ tenant data |
 | `ktmjmdzqrogauaevbktn` | eq-solves-field | EQ Field tenant DB | per app-state |
-| `urjhmkhbgaxrofurpbgc` | eq-solves-service-dev | Service DB | per repo |
-| `ehowgjardagevnrluult` | sks-canonical | SKS control plane (created 2026-05-24) | server-side; SKS tenant id `7dee117c-98bd-4d39-af8c-2c81d02a1e85` |
+| `urjhmkhbgaxrofurpbgc` | eq-solves-service-dev | Service DB + context substrate (`context_files`) | per repo |
+| `ehowgjardagevnrluult` | sks-canonical | **SKS tenant Supabase** — all SKS operational/tenant data. Pattern: `{tenant}-canonical`. SKS tenant id `7dee117c-98bd-4d39-af8c-2c81d02a1e85`. | SKS tenant data |
 | `nspbmirochztcjijmcrx` | sks-labour | **SKS LIVE operational DB** | **READ-ONLY / AVOID — SKS live** |
 
-**Two-plane rule:** browser talks only to the control plane; tenant data (`app_data.*`) is server-only via Netlify functions (`getTenantDataClientById`). Browser cannot call tenant RPCs directly.
+**Tenant model:** `eq-canonical` = control layer only (config, registry). Each tenant gets their own `{tenant}-canonical` Supabase with all their data. EQ Field boots from eq-canonical to resolve the tenant's Supabase connection, then all data ops go direct to that tenant's project. `eq-canonical-internal` = EQ's tenant; `sks-canonical` = SKS's tenant.
 
 ## CI guards
 | guard | repo | status |

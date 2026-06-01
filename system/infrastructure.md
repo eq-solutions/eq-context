@@ -32,11 +32,12 @@ account" before connecting.
 
 | Project ID | Name | Purpose | Access rule |
 |---|---|---|---|
-| `nspbmirochztcjijmcrx` | sks-labour | **Live SKS staff production data** | **Never touch unless "SKS live" is explicit** |
-| `ktmjmdzqrogauaevbktn` | eq-solves-field | EQ Field demo backend | Demo environment |
-| `urjhmkhbgaxrofurpbgc` | eq-solves-service-dev | Canonical context store (`context_files` table) — co-tenant with EQ Solves Service product data | Paid/active; primary path for context reads/writes |
-| `hxwitoveffxhcgjvubbd` | eq-shell-control | **Shared shell control plane.** Holds `tenants`, `users`, `module_entitlements` — the "who is who" lookup that routes logged-in users to their per-tenant data plane. Read by the 3 EQ Shell Netlify functions (`shell-login`, `verify-shell-session`, `mint-iframe-token`) using the service-role key. | One shared project across all tenants. Not a data plane. Service-role only (used by Netlify functions, never client-side). |
-| `jvknxcmbtrfnxfrwfimn` | eq-demo-canonical | EQ Intake Phase 2 canonical spine + the **demo tenant's data plane**. Hosts `eq_schema_registry`, `eq_intake_events`, `eq_intake_templates`, plus the `eq_intake_*` / `eq_set_imported_at` / `eq_schema_registry_one_current` functions deployed via `eq-intake/sql/001-003_*.sql`. | **Authenticated-callable per-tenant data plane.** The commit RPC enforces tenant isolation via in-function `auth.jwt() → user_metadata.tenant_id` check (see `eq-intake/sql/003_schema_version_columns.sql:111`). Migration 004 (search_path pin + revoke PUBLIC, grant authenticated) rewritten 2026-05-19 — **uncommitted in eq-intake, not yet applied to DB**. |
+| `jvknxcmbtrfnxfrwfimn` | **eq-canonical** | **Control layer** — Cards config, tenant registry, app settings, module entitlements. No operational data. | Browser-accessible via `VITE_SUPABASE_URL` |
+| `zaapmfdkgedqupfjtchl` | **eq-canonical-internal** | **EQ tenant Supabase** — all EQ Solutions tenant/operational data. Pattern: `{tenant}-canonical`. | EQ tenant data |
+| `ehowgjardagevnrluult` | **sks-canonical** | **SKS tenant Supabase** — all SKS tenant/operational data. Pattern: `{tenant}-canonical`. | SKS tenant data; **never touch sks-labour instead** |
+| `ktmjmdzqrogauaevbktn` | eq-solves-field | EQ Field demo/tenant DB | Demo + EQ Field data |
+| `urjhmkhbgaxrofurpbgc` | eq-solves-service-dev | EQ Service DB + context substrate (`context_files` table — co-tenant) | Paid/active; primary path for context reads/writes |
+| `nspbmirochztcjijmcrx` | sks-labour | **SKS LIVE staff production data** | **NEVER TOUCH unless "SKS live" is explicit** |
 
 ### Shared tables across sks-labour + eq-solves-field
 
