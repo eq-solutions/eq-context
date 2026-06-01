@@ -20,7 +20,7 @@ check here first — don't reinvent.
 **Font:** Roboto for headings, Calibri for body (per `rules/brand.md` §3 — supersedes the prior "Arial throughout" policy; see `ops/decisions.md` 2026-05-21 for rationale)
 **Brand colour:** SKS Navy #1F335C
 **Logo:** White+Text variant from R2 (`SKS_Logo_White_Text_Clean.png`)
-**Footer:** SKS Technologies Pty Ltd | ABN 51 168 906 956 | sks.com.au | Page N
+**Footer:** SKS Technologies Pty Ltd | ABN 51 168 906 956 | 27/10 Gladstone Rd, Castle Hill NSW 2154 | (02) 9659 9199 | Page N
 
 **Layout (matches Royce's Word template screenshot):**
 
