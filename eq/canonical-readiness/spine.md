@@ -18,8 +18,10 @@ The roadmap to "ask the system anything and trust the answer" rests on a
 **trust ladder**: coherence → surfacing → ask-anything → gating (see memory
 `project_eq_north_star_vision`). Rung 0 (coherence) needs a precise answer to
 one question: *which tables must mean the same thing in every tenant?* That
-set is the **spine**. Everything outside it is free to be shaped around each
-tenant's business — we build software around the business, not the reverse.
+set is the **spine**. The full schema ships uniformly to every tenant;
+anything a specific business needs beyond the standard lives in extension
+columns — we build software around the business via extensions, not by
+diverging the shared schema.
 
 The headline: **out of 55 `app_data` tables, only 6 are true cross-app
 shared entities.** The "must align" set is small. Tenants are not locked into
@@ -57,9 +59,11 @@ Carried by nearly every canonical table — the real backbone:
   guarantee made physical (every row knows which intake event created it).
 - **`external_id`** (17 tables) — crosswalk to source systems (SimPRO etc).
 
-## The free zone (~49 tables, vary per tenant)
+## App-local tables (~49 — shipped uniformly, used where they apply)
 
-App-local clusters — NOT spine, free to add/drop/reshape per tenant:
+NOT spine. Shipped to **every** tenant in the same uniform schema; a tenant
+simply doesn't use the clusters that don't apply to it. Per-tenant variation
+is the rare exception via extension columns, not divergence of the standard:
 
 - **Quotes:** quote, quote_line_item, quote_attachment, quote_email_outbox, quote_status_history, rate_library, scope_template
 - **Tenders:** tenders, tender_enrichments, tender_nominations, tender_review_decisions, tender_import_runs

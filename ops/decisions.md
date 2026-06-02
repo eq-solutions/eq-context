@@ -20,6 +20,22 @@ For the current built state of each system, see [system/architecture.md](https:/
 
 ---
 
+## 2026-06-02 — Multi-Tenant Operating Model: Uniform Schema, Per-Tenant Data, Generic Spine
+
+**Status:** Accepted (authorised by Royce 2026-06-02)
+
+**Decision:** Every tenant Supabase gets the SAME full uniform canonical schema (all ~55 `app_data` tables). A tenant simply doesn't *use* the parts that don't apply — carrying unused tables/columns costs effectively nothing (storage, perf, RLS all negligible, and *easier* when uniform). This is what makes the core capability real: build an app once, ship one migration, and every tenant automatically gets the new version pointed at its own data; provisioning a new tenant is "clone the standard." Per-tenant variation is the RARE exception via extension columns/namespaces — never by diverging the standard schema. The one hard discipline: the 6 spine entities (sites, staff, customers, assets, contacts, licences) + 3 structural columns (tenant_id, intake_id, external_id) keep GENERIC semantics — never bake one tenant's meaning into a shared spine field; tenant-specific meaning lives in extensions. See `eq/canonical-readiness/spine.md`.
+
+**Why:** Royce, 2026-06-02 — "building apps together and tenants automatically getting the new version that talks to their own info appeals to me; does it really matter if the tenant Supabase has info the tenant doesn't use?" It doesn't. Uniformity is the enabler of one-codebase-ship-once + trivial provisioning. The earlier "6 align, 49 free to vary" framing was corrected: divergence breaks ship-once, so uniformity is the default and divergence the exception. Drift trends to zero by design.
+
+**Alternatives considered:**
+- Per-tenant tailored schemas (rejected — breaks ship-once + auto-upgrade; bespoke provisioning; operational nightmare).
+- Minimal per-tenant schema, add tables only when used (rejected — fragments the fleet, reintroduces drift, complicates migrations for marginal storage savings).
+
+**Implications:** Migrations apply identically to all tenants; the drift guard enforces structural identity, not just spine. New-app rollout = one migration + mount the module in Shell. Anti-over-fit guardrail folds in: spine stays general even with one real tenant (SKS). Related: 2026-06-02 gate-kill entry below; memory `project_canonical_spine_map`, `project_eq_north_star_vision`.
+
+---
+
 ## 2026-06-02 — GTM Validation Gate Killed (Build For Ourselves)
 
 **Status:** Accepted (authorised by Royce 2026-06-02)
