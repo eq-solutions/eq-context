@@ -9,6 +9,21 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-06-03] v3.5.54 — Resources: Remove job confirm fix (BUG-009) (PR #161, merged)
+**Built by:** Royce Milmlow + Claude Code
+
+**Summary:** The v3.5.53 "Remove job" button appeared but did nothing — `removeProject()` gated on `window.confirm()`, which is silently swallowed inside the eq-shell iframe and in iOS PWA standalone (returns false), so it bailed with no dialog. Fixed by routing through the shared `#modal-confirm` dialog.
+
+**Changes:**
+- `scripts/sks-pipeline-resource.js` — new `_raConfirm()` helper (promise-based, uses `#modal-confirm`, falls back to `window.confirm`); `removeProject()` now awaits it. Same BUG-009 pattern as timesheets/leave/apprentices.
+- Version bump 3.5.53 → 3.5.54.
+
+**PR:** [#161](https://github.com/eq-solutions/eq-field/pull/161) — **merged**.
+
+**Note:** Resources (sks-pipeline-resource) remove/archive is being trialled on the **eq** tenant and is intended for **SKS live** once validated — track for the SKS-side merge.
+
+---
+
 ## [2026-06-03] v3.5.53 — Resources: remove/archive a job (PR #160, merged)
 **Built by:** Royce Milmlow + Claude Code
 
