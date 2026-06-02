@@ -11,10 +11,11 @@
 |--------|-------------|--------|
 | Royce Actions | Manual secrets/PAT/auth tasks | **BLOCKED — MANUAL REQUIRED** |
 | Stream 1 | Phase 3 smoke test + NSW go-live | **BLOCKED** (on R1/R2) |
-| Stream 2 | C5: @eq-solutions/roles v2.0.0 | **IN PROGRESS** (PR #4 open) |
-| Stream 3 | C6/C7/C8 role adoption | **NEXT** (after C5 merges) |
-| Stream 4 | Phase 4 HMAC retirement prep | **IN PROGRESS** (doc being drafted) |
-| Stream 5 | Shell hardening (B4/B8/B11) | **IN PROGRESS** |
+| Stream 2 | C5: @eq-solutions/roles v2.0.0 | **DONE** ✓ (merged, v2.0.0 tagged) |
+| Stream 3 | C6/C7/C8 role adoption | **PR REVIEW** (all 3 PRs open) |
+| Stream 4 | Phase 4 HMAC retirement prep | **DONE** ✓ (runbook committed) |
+| Stream 5 | Shell hardening (B4/B8/B11) | **PR REVIEW** (B8#143, B4#144 open; B11 already done) |
+| C8 | eq-shell roles v2.0.0 bump | **PR REVIEW** (#145 open) |
 | B5 | SKS cutover planning | **NEXT** |
 
 ---
@@ -46,47 +47,45 @@ Steps (run in order after R1/R2 complete):
 
 ## Stream 2 — C5: @eq-solutions/roles v2.0.0
 
-**Status: IN PROGRESS**
+**Status: DONE ✓**
 
-- Per-module subpath exports for all 10 modules.
-- 70/70 tests passing.
-- PR: https://github.com/eq-solutions/eq-roles/pull/4
-
-Next step: review + merge PR #4.
+- Per-module subpath exports for all 10 modules (`/field`, `/service`, `/admin`, etc.).
+- 70/70 tests pass. Merged 2026-06-02, `v2.0.0` tagged.
 
 ---
 
 ## Stream 3 — C6/C7/C8 Role Adoption
 
-**Status: NEXT (after C5 merges)**
+**Status: PR REVIEW (all 3 open)**
 
-| Ticket | Repo | Work |
-|--------|------|------|
-| C6 | eq-solves-service | Adopt typed `ServicePermKey` from `@eq-solutions/roles/service` |
-| C7 | eq-solves-field | Adopt typed `FieldPermKey` from `@eq-solutions/roles/field` |
-| C8 | eq-shell | Adopt typed `AdminPermKey` from `@eq-solutions/roles/admin` for route guards |
+| Ticket | Repo | PR | Work |
+|--------|------|----|------|
+| C6 | eq-solves-service | [#229](https://github.com/Milmlow/eq-solves-service/pull/229) | EQ canonical → Service role mapping in `shell-auth/route.ts`. Known gap: JWT path updates `profiles.role` but can't upsert `tenant_members` without tenant_slug in JWT (Sprint 6). |
+| C7 | eq-solves-field | [#159](https://github.com/eq-solutions/eq-field/pull/159) | Adds `EQ_ROLE_KEYS` + `FIELD_DISPATCH_ROLES` constants from `@eq-solutions/roles/field` FIELD_MATRIX. Validates `eq_role` before use. |
+| C8 | eq-shell | [#145](https://github.com/eq-solutions/eq-shell/pull/145) | Bumps `@eq-solutions/roles` from `v1.3.0` → `v2.0.0`. Perm sync check passes. |
+
+**Sprint 6 follow-on (C6 gap):** Add `tenant_slug` to Supabase JWT in `token-exchange.ts` for `aud=service`, then Service `shell-auth` can upsert `tenant_members` on first access.
 
 ---
 
 ## Stream 4 — Phase 4 HMAC Retirement Prep
 
-**Status: IN PROGRESS**
+**Status: DONE ✓**
 
-- Document: `auth-phase4-hmac-retirement-runbook.md` → eq-context
-- Status: draft only.
-- Merge target: Sprint 6, after R1/R2/R4 complete + 2-week production soak.
+- Runbook: `eq-context/auth-phase4-hmac-retirement-runbook.md` committed 2026-06-02.
+- Draft only — do not merge until 2-week production soak after R1/R2 done.
 
 ---
 
 ## Stream 5 — Shell Hardening
 
-**Status: IN PROGRESS**
+**Status: PR REVIEW**
 
-| Ticket | Work |
-|--------|------|
-| B11 | Add `Cache-Control: private` on `ai-briefing` endpoint |
-| B8 | Fix GM Reports silent failures |
-| B4 | Consolidate `verify*Token` helpers |
+| Ticket | PR | Work |
+|--------|------|------|
+| B11 | (none) | Already done — `Cache-Control: private, no-store` was already on all ai-briefing responses. |
+| B8 | [#143](https://github.com/eq-solutions/eq-shell/pull/143) | Fixed 4 silent failure paths in `ai-briefing.ts` + `generate-gm-briefing.ts`. |
+| B4 | [#144](https://github.com/eq-solutions/eq-shell/pull/144) | Removed `injectEmailIntoJwt` (35 lines) — email now passed directly to `signSupabaseJwt`. |
 
 ---
 
@@ -103,8 +102,8 @@ Next step: review + merge PR #4.
 
 1. **Royce:** Complete R1, R2, R3 (R4 optional before go-live but recommended).
 2. Once R1/R2 done: run Stream 1 smoke test checklist top-to-bottom.
-3. Merge PR #4 (C5 roles v2.0.0) and begin C6 (eq-solves-service) immediately after.
-4. Review Phase 4 HMAC runbook draft — no merge until 2-week soak clock starts.
+3. Merge PRs: B8 (#143), B4 (#144), C8 (#145), C7 (#159), C6 (#229) — in any order (no dependencies).
+4. Sprint 6 planning: add `tenant_slug` to iframe JWT for `aud=service` (unblocks C6 full tenant provisioning).
 5. Assign B5 SKS cutover discussion to a scheduled planning slot.
 
 ---
@@ -113,6 +112,10 @@ Next step: review + merge PR #4.
 
 - C4 auth re-platform phases 0–3: **COMPLETE — all merged**
 - Supabase project: **jvkn**
-- eq-roles PR #4: https://github.com/eq-solutions/eq-roles/pull/4
-- HMAC retirement runbook: `eq-context/auth-phase4-hmac-retirement-runbook.md` (draft)
+- HMAC retirement runbook: `eq-context/auth-phase4-hmac-retirement-runbook.md` (draft, Sprint 6)
 - Security rotation runbook: `eq-context/security-secret-rotation-runbook-2026-05-31.md`
+- B8 PR: https://github.com/eq-solutions/eq-shell/pull/143
+- B4 PR: https://github.com/eq-solutions/eq-shell/pull/144
+- C8 PR: https://github.com/eq-solutions/eq-shell/pull/145
+- C7 PR: https://github.com/eq-solutions/eq-field/pull/159
+- C6 PR: https://github.com/Milmlow/eq-solves-service/pull/229
