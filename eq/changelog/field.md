@@ -1,13 +1,52 @@
 ---
 title: Changelog — EQ Solves Field
 owner: Royce Milmlow
-last_updated: 2026-06-02
+last_updated: 2026-06-03
 scope: Append-only history of changes to the EQ Solves Field product
 read_priority: reference
 status: live
 ---
 
 # Changelog — EQ Solves Field
+
+## [2026-06-03] v3.5.53 — Resources: remove/archive a job (PR #160, merged)
+**Built by:** Royce Milmlow + Claude Code
+
+**Summary:** The Resources (Resource Allocation) screen could add jobs ("+ Add Active Job") but never remove them. Added a **Remove job** action on both Needs Allocation and Confirmed jobs. Shipped to trial on the eq tenant.
+
+**Changes:**
+- `scripts/sks-pipeline-resource.js` — `removeProject()` sets `tenders.archived_at` (reversible soft-remove, matching the pipeline "kill" pattern). Job disappears from Resources + Pipeline; roster entries already pushed to `schedule` are left in place. Confirm dialog before archiving.
+- Remove buttons added to the Needs Allocation panel footer and the Confirmed labour-curve panel footer.
+- Confirmed rows with no labour slots now still open a panel (`_emptyConfirmedPanel`) so they can be removed.
+- Version bump 3.5.52 → 3.5.53 (app-state.js, sw.js, index.html banner).
+
+**PR:** [#160](https://github.com/eq-solutions/eq-field/pull/160) — **merged**.
+
+---
+
+## [2026-06-02] v3.5.52 — Licence admin surface (PR #158, merged)
+**Built by:** Royce Milmlow + Claude Code
+
+**Summary:** Licence administration panel on the Supervision page — type toggle, expiry reminders, gap alerts, and an admin review gate for imported licences (Phase 3). Degrades gracefully until the migration is applied.
+
+**Changes:**
+- `scripts/licence-admin.js` + `migrations/2026-06-02_licence_admin.sql`.
+- RLS policies for the licence admin tables.
+
+**PR:** [#158](https://github.com/eq-solutions/eq-field/pull/158) — **merged**.
+
+---
+
+## [2026-06-02] v3.5.51 — Lazy loader dependency fixes
+**Built by:** Royce Milmlow + Claude Code
+
+**Summary:** Fixed first-visit lazy-load gaps on the contacts and sites tabs.
+
+**Changes:**
+- `lazy-loader.js`: contacts tab now loads managers.js alongside people.js (Add Contact calls a managers.js fn); sites tab now loads roster.js before sites.js (renderSites → getWeekSchedule lives in roster.js).
+- `sites.js`: defensive typeof guard on getWeekSchedule().
+
+---
 
 ## [2026-06-02] v3.5.50 — eq-canonical-internal live as EQ tenant DB (PR #155, merged)
 **Built by:** Royce Milmlow + Claude Code
