@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Products
 owner: Royce Milmlow
-last_updated: 2026-05-24
+last_updated: 2026-06-02
 scope: Live EQ products. Killed/deferred entries removed in 2026-05-04 refactor.
 read_priority: standard
 status: live
@@ -25,8 +25,8 @@ listed here — see `CLAUDE.md` "Killed / deferred" section, or
 **Supabase project:** ktmjmdzqrogauaevbktn (eq-solves-field) — bypassed in demo mode
 **Deploy:** GitHub push → Netlify auto (per branch)
 
-**Strategic priority:** Sole EQ build focus until 20 paying customers.
-Validation gate = 5 outside-SKS trade subbies on Field demo first.
+**Strategic priority:** Lead module. Built for ourselves (SKS NSW) —
+no outside-validation gate (killed 2026-06-02).
 
 **Site Reports sub-module (v3.4.69+, demo only):**
 - THREE workflows shipped on demo (was two): Prestart, Toolbox, Diary. All under "Testing (DO NOT USE)" sidebar section with BETA chips.
@@ -121,9 +121,10 @@ engine) and EQ Field surface mounted via iframe with HMAC handoff
 (no second PIN). The platform now reads as a real product at first glance:
 dashboard with live counts, activity feed, quick-action grid, proper
 skeleton loading, readable error states, role-gated admin nav.
-**Phase 2 is paused pending the EQ GTM validation gate**
-(5 outside-SKS trade subbies on EQ Field demo) — no further
-shell modules until that clears or a paying customer asks for one.
+**Phase 2 sequencing is by the trust ladder + Royce's go** — the old
+GTM validation gate (5 outside-SKS subbies) is dead (killed 2026-06-02).
+Further modules build when the ladder calls for them, not on outside
+validation.
 
 **URL:** `core.eq.solutions` (live, dog-food tenant for EQ Solutions
 itself). Per-tenant subdomain alias on a single Netlify project;
@@ -155,8 +156,8 @@ subdomain alias added manually (~5 min) until automated.
 |---|---|---|
 | 1.A–1.E | Scaffold → wire-up → Field handoff → smoke → single-canonical consolidation | Shipped (1.E on 2026-05-19) |
 | 1.F | Unified Identity — `eq_role` enum + `is_platform_admin` flag, `app_metadata` claims, `useCan()` + `<Gate>`, mint-supabase-jwt, admin invite/edit, Field iframe bridge carries new fields. RLS swept across 13 canonical tables + 4 intake spine + 3 RPCs from `user_metadata` to `app_metadata`. | Shipped 2026-05-20 |
-| 2 | **PAUSED pending GTM gate.** Intake module already live at `/core/intake`. Further modules deferred until 5/5 outside-SKS validation gate clears OR a paying customer requests one. | Intake shipped; further modules paused |
-| 3+ | Replace each EQ Field surface (roster, schedule, leave, tenders, audits, prestarts, toolbox talks) with a shell module backed by `eq-canonical`. Sequencing undecided — re-pick after GTM gate based on what early customers pay for. | Long-term |
+| 2 | Intake module live at `/core/intake`. Further modules sequenced by the trust ladder + Royce's go (GTM gate killed 2026-06-02). | Intake shipped; further modules sequenced by ladder |
+| 3+ | Replace each EQ Field surface (roster, schedule, leave, tenders, audits, prestarts, toolbox talks) with a shell module backed by `eq-canonical`. Sequencing by the trust ladder + what SKS needs next. | Long-term |
 | 4 | EQ Field demo deploy + `ktmjmdzqrogauaevbktn` Supabase decommissioned, once every surface has a shell replacement | Long-term |
 
 **Modules in shell today:**
@@ -210,15 +211,16 @@ critique synthesis — deferred to Phase 2 resumption):
 Full list in `eq/pending.md` "EQ Shell + EQ Intake" section. Real,
 not stale — deferred, not dropped.
 
-**Strategic priority:** Phase 2 paused pending GTM gate. The
+**Strategic priority:** Phase 2 sequenced by the trust ladder + Royce's
+go (GTM gate killed 2026-06-02). The
 strategic question per ChatGPT critique (2026-05-20 part-d) is
 whether EQ Shell is acknowledged as a platform-tier product (with
 SLOs, oncall, dedicated headcount) or remains solo-maintained. Not a
 Phase 2 question — a tier-of-company question.
 
 **Pending:**
-- [ ] Phase 2 resumption decision (gated on GTM validation gate
-      OR a paying customer request)
+- [ ] Phase 2 module sequencing per the trust ladder + Royce's go
+      (GTM gate killed 2026-06-02)
 - [ ] Critique action items listed in `eq/pending.md` "EQ Shell +
       EQ Intake" — dual-salt rotation, revoked_sessions, schema
       split, RPC decomposition, canonical→Field one-way sync,
@@ -277,7 +279,7 @@ canonical-migration-reset decision.
 
 **Real product build (the React module):** Position 4 in the EQ Shell
 module-mounting queue. Build not started — Shell + Field + Service
-take priority through validation gate. The Flask v1 codebase becomes
+take priority per the trust ladder. The Flask v1 codebase becomes
 "the executable spec" for the rewrite: every validation rule, every
 status transition, every token-replace pattern, every business rule
 is captured in working Python that the React rewrite translates.
@@ -341,8 +343,8 @@ captured in `ops/decisions.md` 2026-05-20 entry — `eq-<product>`, not
 repo or deploy name.
 
 **Strategic position:** Position 4 in the EQ Shell module queue —
-unchanged. Validation gate stays on Field. The Flask v1 is the
-pilot's executable spec, not a queue-jump.
+unchanged. The Flask v1 is the pilot's executable spec, not a
+queue-jump.
 
 **Pending:**
 - SKS pilot kickoff against Flask v1 (Royce sends estimators the URL

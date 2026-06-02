@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Index
 owner: Royce Milmlow
-last_updated: 2026-05-24
+last_updated: 2026-06-02
 scope: EQ Solutions work — products, decisions, build state
 read_priority: critical
 status: live
@@ -10,9 +10,11 @@ status: live
 # EQ Tier
 
 Default load when working on any EQ Solutions topic. Lead module per
-post-cull strategy (29 April 2026): **EQ Field** until 20 paying
-customers, validated by 5 outside-SKS trade subbies engaging with a
-Field demo first.
+post-cull strategy (29 April 2026): **EQ Field**. Build strategy
+(updated 2026-06-02): we build EQ for ourselves (SKS NSW) because it's
+a good product. Sequencing is by the trust ladder + Royce's go — **not**
+gated on outside validation. The old 5-outside-subbie GTM gate is dead
+(see `ops/decisions.md` 2026-06-02).
 
 ## EQ substrate map
 
@@ -22,6 +24,7 @@ Every canonical EQ file as a full URL — clickable from `/context/claude`:
 - [eq/products.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/products.md) — EQ live product status
 - [eq/cards/canonical-migration/plan.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/cards/canonical-migration/plan.md) — Cards §18 close-out: move Cards data to eq-canonical, retire standalone Supabase, SSO via shared JWT (active workstream 2026-05-20)
 - [eq/canonical-readiness/plan.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/canonical-readiness/plan.md) — Canonical layer readiness plan: bring eq-canonical to the shape needed to host Intake + Field + Quotes as first-class modules. **EXECUTED 2026-05-20** — all 6 work units shipped (42 entities across 5 modules)
+- [eq/canonical-readiness/spine.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/canonical-readiness/spine.md) — **The trust spine**: which 6 of 55 `app_data` tables must be identical/trusted across tenants vs free to vary. Foundation for the coherence rung + drift guard (2026-06-02)
 - [eq/sprints/2026-05-20-S1-canonical-lockin.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/sprints/2026-05-20-S1-canonical-lockin.md) — Sprint S1: canonical-readiness lock-in + ship-ready. 10 items, 1-week, security rotations + PostgREST schema exposure + first functional Core dropzone + Cards iframe deploy (draft 2026-05-20)
 - [eq/canonical-readiness/audit-2026-05-21.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/canonical-readiness/audit-2026-05-21.md) — Honest audit of core.eq.solutions post-S3. Top issues: EntityImportPanel hangs the renderer; home screen reads as admin dashboard not platform; intake legacy has no topbar. **All 8 items shipped + verified in browser 2026-05-21**.
 - [eq/overnight-prompt-2026-05-21.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/overnight-prompt-2026-05-21.md) — Self-contained brief for a multi-hour autonomous session. Mission, scope, authority, priority queue (Tenant Settings → Storage browser → Invite UX → module placeholders), definition of done. Paste at session start. (2026-05-21)
@@ -30,9 +33,12 @@ Every canonical EQ file as a full URL — clickable from `/context/claude`:
 
 ## Strategic focus (2026 Q2)
 
-- **EQ Field** is the only build focus — 10 hrs/week.
-- **No new features outside Field** until validation gate clears.
-- **Validation gate** = 5 outside-SKS trade subbies on Field demo.
+- **Building for ourselves.** EQ is built for SKS NSW because it's a good
+  product. No outside-validation gate (killed 2026-06-02).
+- **Sequencing** is by the trust ladder + Royce's go — not by waiting for
+  external users.
+- **EQ Field** remains the lead module; Shell / Service / Intake / Cards
+  build in parallel.
 - **Target market** = ALL trade subcontractors (electrical, mechanical,
   fire, hydraulic, civil) — not narrowed to electrical.
 

@@ -1,7 +1,7 @@
 ---
 title: OPS — Decisions Log
 owner: Royce Milmlow
-last_updated: 2026-05-31
+last_updated: 2026-06-02
 scope: Append-only log of key decisions across all tiers and the reasoning at the time
 read_priority: standard
 status: live
@@ -17,6 +17,22 @@ Format: Status → Decision → Why → Alternatives considered → Implications
 Status values: Accepted | Superseded by [date+title] | On Hold | Deprecated | Proposed.
 Append-only — never delete an entry. Supersede or deprecate it instead.
 For the current built state of each system, see [system/architecture.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/system/architecture.md).
+
+---
+
+## 2026-06-02 — GTM Validation Gate Killed (Build For Ourselves)
+
+**Status:** Accepted (authorised by Royce 2026-06-02)
+
+**Decision:** The "5 outside-SKS trade subbies validate Field" GTM validation gate is dead, permanently. EQ is built for ourselves (SKS NSW) because it's a good product. No EQ work — Shell Phase 2, new modules, canonical, anything — is gated on outside-customer validation. Build sequencing is by the **trust ladder** (coherence → surfacing → ask-anything → gating; see memory `project_eq_north_star_vision`) + Royce's go. Stale gate language was purged from the forward docs (`eq/README.md`, `eq/products.md`, `eq/pending.md`); historical records (sessions, archive, changelog, the EXECUTED `canonical-readiness/plan.md`) keep their gate references as point-in-time record.
+
+**Why:** Royce, 2026-06-02: "anything that mentioned 5 outside subbies — this needs to go. We are building for ourselves because it's a good product, end of story." The gate was first removed in direction on 2026-05-30 but never cleaned out of the forward docs, so every audit kept re-surfacing it as live. EQ's value is the integrated per-tenant canonical store + an AI ask-anything layer for SKS itself; gating substrate work behind external validation is a chicken-and-egg trap the canonical-readiness plan already flagged.
+
+**Alternatives considered:**
+- Keep the gate (rejected — Royce killed it; building for ourselves is the axiom).
+- Soft gate / build-but-don't-cutover (rejected — no outside dependency at all; cutover is Royce's own-merits call).
+
+**Implications:** Roadmap sequences purely on the trust ladder + Royce's go. `STATE.md` already reflects gate-free reality. Supersedes the gate framing in the 2026-05-20 part-d session and any earlier "EQ GTM PRIORITY" entries. Related memory: `project_eq_north_star_vision`, `feedback_royce_is_the_user`.
 
 ---
 
