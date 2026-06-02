@@ -82,6 +82,6 @@ Apply via Supabase Studio SQL editor (or MCP `apply_migration`). Source of truth
 
 ## After the punch list — the next BUILD step
 With the gate dead, the spine mapped, and the operating model locked, Rung 0 (coherence) is the next build move, in this order:
-1. **Spine FK migration** — enforce referential integrity on the 6 spine entities only (`sites, staff, customers, assets, contacts, licences`), leave the other ~49 loose. (See `eq/canonical-readiness/spine.md`.)
+1. **Spine `ON DELETE` normalisation** — the spine is *already* FK-enforced (correction 2026-06-02), so this is NOT a from-scratch build. The real task: make `ON DELETE` consistent on the spine, esp. `licences.staff_id` → `RESTRICT` so compliance history can't be silently deleted. Small surgical migration + a design call. (See `eq/canonical-readiness/spine.md`.)
 2. **Drift guard** — wire `tenant-drift.yml` to enforce *structural identity* across tenants (uniform-schema operating model, see `ops/decisions.md` 2026-06-02).
 3. **Then Rung 1** — the §3 migrations above turn the surfacing features on, over now-trusted data.

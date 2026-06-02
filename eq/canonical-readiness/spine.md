@@ -27,14 +27,21 @@ The headline: **out of 55 `app_data` tables, only 6 are true cross-app
 shared entities.** The "must align" set is small. Tenants are not locked into
 a 55-table mould.
 
-## Important substrate fact: no enforced foreign keys
+## Substrate fact: the schema is already comprehensively FK'd
 
-There are **zero enforced FK constraints between `app_data` tables**.
-Relationships are by convention (id columns), almost certainly so Intake's
-`jsonb_populate_record` loads aren't blocked by FK ordering. Consequence:
-integrity is currently guaranteed only by the intake process, not the DB —
-nothing physically stops a bad reference today. This is the gap the coherence
-rung closes.
+**CORRECTION (2026-06-02):** an earlier draft of this doc claimed "zero enforced
+FKs" — that was **wrong**, caused by a buggy catalog query (cast a table OID to
+`regnamespace`, matched nothing). `app_data` actually has **~70 FK constraints**,
+including **every spine edge** (`contacts`/`sites` → `customers`, `assets` →
+`sites`, `licences` → `staff`, etc.). Referential integrity for the spine is
+**already enforced by the database**.
+
+The real gap is **inconsistent `ON DELETE` semantics**. The schema was built in
+two passes (note the `_fk` vs `_fkey` constraint-name split), so delete behaviour
+varies — e.g. `contacts.customer_id` and `licences.staff_id` are `ON DELETE
+CASCADE` (deleting a customer wipes their contacts; deleting a staff row wipes
+their licence/compliance history), while `quote.customer_id` is `RESTRICT` and
+`assets.site_id` is `NO ACTION`.
 
 ## The 6 spine entities
 
@@ -72,9 +79,12 @@ is the rare exception via extension columns, not divergence of the standard:
 - **Safety:** swms, jsa_records, itp_records, prestart_checks, toolbox_talks, site_diaries, incidents, weekly_reports
 - **Infra/reports:** gm_report_jobs, gm_report_periods, briefing_actions, briefing_cache, canonical_events, api_intake_calls, tenant_app_configs, _eq_migrations
 
-## Recommended coherence move
+## Recommended coherence move (revised 2026-06-02)
 
-Enforce referential integrity on the **6 spine entities only** (one
-migration), leave the other ~49 loose. "Thin spine fiercely guarded,
-everything else free" as actual DDL. This is the foundation the drift-CI
-guard then protects.
+Rung 0 via FKs is **largely already done** — the spine references are enforced.
+The remaining work is to **normalise `ON DELETE` policy on the spine**, especially
+the compliance-critical edges: `licences.staff_id` should be `RESTRICT` (never
+silently delete a sparkie's licence history by deleting the staff row), and the
+`contacts`/`customers` cascade reviewed. That's a small, surgical migration + a
+design decision — not a from-scratch build. The drift-CI guard then keeps the
+agreed semantics uniform across tenants.
