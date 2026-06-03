@@ -1,7 +1,7 @@
 ---
 title: Autonomous Sprint — Rules
 owner: Royce Milmlow
-last_updated: 2026-06-03
+last_updated: 2026-06-04
 scope: Diverge-proof conventions for all parallel autonomous agent work across EQ repos
 read_priority: critical
 status: live
