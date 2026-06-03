@@ -9,6 +9,30 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-06-03] v3.5.65 — Sync from SKS NSW Labour v3.10.50–51 (PR #173, merged)
+**Built by:** Royce Milmlow + Claude Code
+Manual cross-repo port (shared codebase). No DB changes. (1) Timesheets jump-to-top fix (live bug): `renderCurrentPage` split into `_renderCurrentPageDispatch()` + a wrapper that preserves scroll/focus/caret across the rebuild that fires on every realtime echo/poll/post-write refresh. (2) Resources "This week" strip in `sks-pipeline-resource.js`: jobs live · allocated · on the roster · free (non-fatal schedule fetch). Aggregate only.
+
+## [2026-06-03] v3.5.64 — Phase 2 (Goal 1): close anon leak + bucket-B + realtime (PR #172, merged)
+**Built by:** Royce Milmlow + Claude Code
+REVOKED anon on the 22 migrated `public.*` tables (incl. `public.tenders`) — leak closed, prod anon→401 (edge fns use service_role, unaffected). `public.app_config` left anon (gate reads PINs pre-login → separate auth refactor). Bucket-B secured (field_* twins): job_numbers, regions, projects, project_targets, roster_presence. `realtime.js` repointed to `app_data.field_*` via the data JWT (publication + replica identity full; degrades to poll). Carrier now stamps `org_id` on JWT POSTs (twins keep org_id for composite PKs). Migration: `field_bucketb_realtime_closeleak`.
+
+## [2026-06-03] v3.5.63 — Phase 2 (Goal 1): secure Tender Pipeline + retire 9 dead tables (PR #171, merged)
+**Built by:** Royce Milmlow + Claude Code
+Tender Pipeline secured onto the JWT (in active use → 323 rows copied into field_* twins; `public.*` kept as fallback): tenders, tender_enrichment, tender_import_runs, tender_review_decisions, nominations, pending_schedule. Dropped 9 dead/empty Field tables on EQ (staff_availability, unavailability, leave_balances, checkins, field_customers, field_waitlist, buddy_checkins, quarterly_reviews, engagement_log). Foreign tables (workers/worker_*/qualifications, organisations) intentionally untouched. Apprentices deferred. Migrations: `field_retire_bucket_d_dead_tables`, `field_secure_tender_pipeline_goal1`.
+
+## [2026-06-03] v3.5.62 — Phase 2 (Goal 1): secure same-shape cutover, first 11 surfaces (PR #170, merged)
+**Built by:** Royce Milmlow + Claude Code
+Anon-exposure remediation Phase 2, "Goal 1 — secure same-shape": move surfaces off the anon key onto the authenticated data-plane JWT WITHOUT re-homing onto canonical (lossy — canonical app_data.staff/sites aren't supersets; deferred as B5). Each surface = `app_data.field_<name>` (`LIKE public.* INCLUDING ALL` + tenant_id RLS, anon revoked, granted authenticated). people, sites, schedule, timesheets, timesheet_locks, leave_requests, managers, audit_log, prestarts, toolbox_talks, site_diaries. Migrations: `field_secure_homes_phase2_goal1`, `field_secure_homes_org_id_nullable`.
+
+## [2026-06-03] v3.5.61 — Phase 1 auth carrier: data-plane Supabase JWT (PR #168, merged)
+**Built by:** Royce Milmlow + Claude Code
+Security remediation Phase 1 (carrier only, dormant). verify-pin gains `signSupabaseJwt` + `mint-data-jwt` (signs a per-tenant zaap JWT with `ZAAP_JWT_SECRET`, ~1h TTL); supabase.js gains a dual-mode JWT path (JWT_TABLES, started EMPTY) for app_data access. No surface migrated. EQ app_data tenant_id = `dcb71d03` ("core"). Prod-smoked.
+
+## [2026-06-03] v3.5.60 — revert licence admin (redundant vs canonical worker-home) (PR #167, merged)
+**Built by:** Royce Milmlow + Claude Code
+Reverted the licence-admin screen — redundant against the canonical worker-home model.
+
 ## [2026-06-03] v3.5.59 — Pipeline import: normalise email-form estimators (PR #166, merged)
 **Built by:** Royce Milmlow + Claude Code
 

@@ -14,6 +14,35 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-06-03 (PM) — EQ Field anon-remediation Phase 2 + SKS sync
+
+**Completed (all prod-verified; EQ repo only, no cross-deploy):**
+- **Phase 2 (Goal 1 — secure same-shape):** 22 Field surfaces moved off the anon key onto the
+  authenticated data-plane JWT + RLS via `app_data.field_<name>` twins (`LIKE public.*` + tenant_id,
+  anon revoked, granted authenticated). anon REVOKED on all 22 `public.*` (prod anon→401).
+  v3.5.62 (11 surfaces) → v3.5.63 (tender pipeline, 323 rows preserved) → v3.5.64 (close leak +
+  bucket-B + realtime). PRs #170–172.
+- **Dropped 9 dead/empty Field tables** on EQ/zaap (bucket-D). Foreign tables (workers/worker_*/
+  qualifications, organisations) left untouched (shared DB).
+- **realtime.js** repointed to the secured twins via the data JWT (publication set).
+- **SKS sync v3.10.50–51 ported** (timesheet jump-to-top fix + Resources this-week strip). v3.5.65, PR #173.
+- Migrations on disk in eq-field/migrations/ (applied via MCP to zaap).
+
+**Decision:** Goal 1 = close the hole only, NOT re-home onto canonical (lossy; canonical isn't a
+superset — no pin/role, no region/project). The B5 canonical unification stays a separate track.
+
+**Backlog (deferred, Royce-gated):**
+- [ ] **`app_config` PIN-read auth refactor** — last real anon leak; can't be JWT-gated (gate reads
+      it pre-login). Needs login-touching change to stop the browser reading PINs.
+- [ ] **Realtime browser verification** — repointed but not eyeballed (EQ demo twins empty); fails
+      safe to 30s poll.
+- [ ] **Drop the revoked `public.*` husks + `public.tenders` fallback** once confident (anon already
+      revoked — not leaking).
+- [ ] **Apprentices module** — neither wired nor dropped (not in use); secure-or-retire when needed.
+- [ ] SKS (separate repo/DB) inherits the Goal-1 pattern when its anon-remediation runs.
+
+---
+
 ## ⏩ Session close — 2026-06-03
 
 **Completed (EQ Field pipeline/Resources sprint — all live; mirrored to SKS standalone):**
