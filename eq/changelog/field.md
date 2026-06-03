@@ -9,6 +9,17 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-06-03] v3.5.58 — Resources: editing workers/duration rebuilds the labour plan (PR #165, merged)
+**Built by:** Royce Milmlow + Claude Code
+
+**Summary:** Closes the v3.5.57 limitation — changing start/workers/duration on a confirmed job saved the numbers but the labour plan (Assign-to-Roster tracks/slots) didn't reflow. `saveConfirmedDetails` now calls `_rebuildLabourPlan`, which regenerates `pending_schedule` from the new numbers. Roster-safe: if any slots were already pushed (`confirmed_at` set) it leaves the plan untouched and the toast warns to adjust manually; clears the plan if start/workers/duration are incomplete.
+
+**SKS:** shipped to standalone repo as **v3.10.48** (PR #22), live.
+
+**PR:** [#165](https://github.com/eq-solutions/eq-field/pull/165) — **merged**, live.
+
+---
+
 ## [2026-06-03] v3.5.57 — Resources: edit confirmed-job details; pipeline shows start date (PR #164, merged)
 **Built by:** Royce Milmlow + Claude Code
 
