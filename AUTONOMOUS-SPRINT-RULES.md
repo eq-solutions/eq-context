@@ -1,7 +1,7 @@
 ---
 title: Autonomous Sprint — Rules
 owner: Royce Milmlow
-last_updated: 2026-05-30
+last_updated: 2026-06-03
 scope: Diverge-proof conventions for all parallel autonomous agent work across EQ repos
 read_priority: critical
 status: live
@@ -51,6 +51,13 @@ Autonomy is **full-auto build → PR → merge → deploy on green**, EXCEPT:
 - Token drift-guard (Field: shipped; add to other vendored copies).
 - **Dup-migration guard** (spec: fail CI if two migration files share a version prefix) — build for `eq-solves-service` first; it broke twice.
 - Build + typecheck must pass; `tsc --noEmit` at 0 errors before closing any task.
+
+## 7. Ground-truth before trust (kills docs-vs-reality drift)
+The substrate **lags reality** — boards / `STATE.md` / punch-lists are *leads, not facts*. (2026-06-03: a "re-verified 2026-06-02" punch-list still told an agent to apply 5 migrations that were already live — the live check took 30s; acting on the doc would have cost hours.)
+- **Verify load-bearing claims against the live system before acting on them OR marking them done/blocked.** DB schema/migrations via Supabase MCP (`list_tables`, `information_schema`); deployed version by curling the prod artefact; branch state via `git branch -a` + diff; key status against the live key. Never act on a doc's word for live state.
+- **Stamp what you verify:** write `(live-checked YYYY-MM-DD)` next to the fact. A claim with no recent live-check is a lead, not a fact.
+- **One fact, one home.** A volatile fact (a migration's status, a key's exposure, which DB serves what) lives in exactly ONE authoritative file; everything else links to it. The same fact in two docs guarantees a future conflict (we hit it on F1 and on migration status).
+- **On drift, fix the source — don't staple a correction on top.** Correct the doc at its home + bump `last_updated`; don't leave stale text sitting under a patch-block (that's how the board became a patchwork).
 
 ## When in doubt
 Stop and write the question into the board item's `notes`. A blocked-and-flagged item beats a divergent merge.
