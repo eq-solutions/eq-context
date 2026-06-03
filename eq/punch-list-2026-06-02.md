@@ -13,6 +13,20 @@ These are the **owner-only** actions that unblock value already built and switch
 plus the security items. None need a dev — they're dashboard/secret/toggle actions.
 Work top-down; CRITICAL first.
 
+## ✅ Status (re-verified against LIVE systems 2026-06-02 — mostly DONE)
+
+- ✅ **Field migrations** (#2/#5/#12/#15/#10/#11) — applied on `ktmjmdzqrogauaevbktn`.
+- ✅ **Drift-CI secrets** — all set in eq-shell.
+- ✅ **Fly deploy** — done.
+- ✅ **Netlify `TENANT_ORG_UUID`** — done-per-Royce (MCP connector was down at recheck).
+- ✅ **`supabase-env.txt`** — now gitignored.
+- ✅ **Spine coherence** — FK integrity confirmed + `ON DELETE` normalised (migration 048, both tenant DBs).
+- 🅿️ **GitHub PAT rotation** — parked.
+- ⚪ **HIBP toggle** — optional.
+- 🟡 **`ehowg` service-role key** — NOT rotated, BUT investigated: no evidence of real exposure (every committed JWT is an *anon* key; the service-role key is never committed, lives encrypted in `tenant_routing`). The "exposed" flag looks stale. Low priority — rotate lazily unless a *non-git* leak (chat/email/screenshot/contractor) is recalled.
+
+Detailed steps below kept for reference.
+
 > ⚠️ **Migration safety:** for the dormant-feature items (§3), apply the **actual
 > migration from `field-feature-backlog-2026-05-30.md`** — confirm the columns against
 > the live table first. Do NOT run hand-typed DDL from memory; the indicative columns
