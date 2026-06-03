@@ -172,6 +172,7 @@ The assistant MUST NOT:
 - Hardcode credentials, API keys, or secrets.
 - Use real client names in **outputs** (Equinix, AirTrunk, AWS, etc.) — use "Data Centre Client A", "Tier 1 Client". Substrate files are exempt (see `ops/decisions.md` 2026-05-04).
 - Cross-deploy between EQ and SKS codebases.
+- **Act on the substrate's word for live-system state** (DB schema, applied migrations, deployed versions, key/secret status) **without verifying against the live system first.** The substrate lags reality — such claims are leads to verify, not facts. (Convention: `AUTONOMOUS-SPRINT-RULES.md` §7.)
 
 Auth changes MUST be reviewed in chat before deployment.
 
