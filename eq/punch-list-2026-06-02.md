@@ -51,7 +51,15 @@ Detailed steps below kept for reference.
 - **Rule:** never echo or commit the key.
 - **Unblocks:** closes the exposed-credential hole; keeps quotes write-through working.
 
-### 3. Apply the dormant Field migrations (DB: `ktmjmdzqrogauaevbktn`)
+### 3. ~~Apply the dormant Field migrations~~ — ✅ VERIFIED ALREADY DONE / N/A (2026-06-03)
+
+> **Live-checked `information_schema` on `ktmjmdzqrogauaevbktn` (ACTIVE_HEALTHY). Do NOT re-run — existing columns will error:**
+> - #12 `people.licence_expiry` ✅ exists · #2 `timesheets.approved`/`approved_by`/`approved_at` ✅ all exist · #10 `unavailability` table ✅ exists · #11 `staff_availability` table ✅ exists. **These are live at the data layer** — verify the UIs surface them rather than applying anything.
+> - #5 `people.leave_balance_days` — MISSING, **but no Field code reads it (grep: zero `leave_balance`/`balance` refs). The feature is unbuilt, not migration-gated.** Net-new scope, not a dormant unlock. Adding the column is a no-op.
+> - #15 `audit_log.target_name` — MISSING, **but the audit silent-fail was already fixed differently in v3.5.31** (`verify-pin.js` writes `manager_name`; `audit.js` uses `target_id`). Nothing writes `target_name` → adding it = dead column. No action.
+>
+> **Net: nothing to apply here.** This contradicted the §Status block above (which correctly said ✅ applied) — now reconciled. Original instruction retained below for history only.
+
 Apply via Supabase Studio SQL editor (or MCP `apply_migration`). Source of truth: `field-feature-backlog-2026-05-30.md`. The UI for each already ships and degrades gracefully until the columns exist.
 
 - **#12 Licence-expiry alerts** — adds licence-expiry date to people. → expiring/expired badges + dashboard compliance card.
