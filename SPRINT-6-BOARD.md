@@ -13,6 +13,22 @@
 
 ---
 
+## Current status — 2026-06-04
+
+**Governance half (the canonical spine) — DONE + ENFORCED.**
+- One Pipe (gated runner + ledger reconciler), scope-aware **semantic** drift guard, EOL determinism — shipped (eq-shell #156, #157).
+- `0034` (fold migration 048 ON-DELETE) + `0035` (reconcile the final 5 spine columns: `briefing/gm tenant_id` text→uuid, `contacts.customer_id` → nullable, `licences.licence_number` → NOT NULL) — **applied to BOTH tenants** via the gated pipe, canary `core` → `sks`, 2026-06-04. (Canary caught a policy-dependency bug in `0035` on `core`; fixed in #161 before SKS was touched.)
+- `check-tenant-drift --strict-spine` → **GREEN** (spine identical across tenants) and now **enforced in CI** (#162) — spine drift fails the drift check.
+- **Open toggle (Royce):** `main` is unprotected; making "Schema drift + anon-grant invariant" a *Required* check (Settings → Branches) turns the red check into a hard merge-block. Optional — it puts a live-DB check in the merge path.
+
+**Security half (Field `anon` → `authenticated`) — IN PROGRESS, owned by a concurrent session** (`focused-brattain`, eq-field `main`): Field now mints a tenant-scoped `authenticated` Supabase JWT; `app_data.staff` granted to `authenticated` (anon denied) behind tenant-isolation RLS; "Phase 2 repeats per surface." Stream 0 audit fixes (supervisor fail-open, hardcoded codes) already on `main`; PR #175 closed as redundant. **Do not duplicate this surface.**
+
+**Still live (not yet closed):** **T1** — `zaap.public.app_config` is anon-readable and holds the staff/manager codes (Field validates them client-side via the anon key). Closing it = the server-side-validation work below (Stream 0.2 / Stream 1), in the concurrent session's lane. The codes are also in git history → **rotate them** regardless of the access fix.
+
+**Key correction (don't relitigate):** the canonical `app_data` spine was *already* RLS-on + tenant-gated on both tenants — the earlier "165 RLS gaps" were a guard artifact (exact-matching policy decomposition), fixed by the semantic `effective_rls` comparison. The real anon exposure is the **legacy `public.*`** tables only.
+
+---
+
 ## Threat model — what an attacker holding the shipped anon key can do TODAY
 
 The anon key is embedded in the browser bundle (necessarily — it's the client credential). With it, an unauthenticated attacker can hit the Supabase REST API directly and:
