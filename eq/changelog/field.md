@@ -9,6 +9,22 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-06-03] v3.5.57 — Resources: edit confirmed-job details; pipeline shows start date (PR #164, merged)
+**Built by:** Royce Milmlow + Claude Code
+
+**Summary:** Confirmed jobs on the Resources screen now have an 'Edit details' block — start date / est hours / duration / peak workers / PM / supervisor / notes — so dates/hours can be amended after confirmation. Writes to `tender_enrichment` (+ `nominations`), the same tables the pipeline board reads, so changes flow through. Pipeline cards now also show a Start date tag.
+
+**Changes:**
+- `scripts/sks-pipeline-resource.js` — shared `_detailsFields` helper (Needs-Alloc panel + confirmed Edit block); `_editDetailsSection` / `toggleEditDetails` / `saveConfirmedDetails`.
+- `scripts/sks-pipeline.js` — Start date tag on cards.
+- **Known limit:** structural changes (workers/duration/start) save + warn but do NOT auto-rebuild the labour plan (protects already-pushed roster). Possible follow-up.
+
+**SKS:** shipped to standalone repo as **v3.10.47** (PR #21) — which also carried the estimator/builder filters (the held #20 was superseded/closed). SKS now live with estimator/builder + edit-confirmed + start-date tag.
+
+**PR:** [#164](https://github.com/eq-solutions/eq-field/pull/164) — **merged**, live.
+
+---
+
 ## [2026-06-03] v3.5.56 — Pipeline: filter by estimator + builder (PR #163, merged)
 **Built by:** Royce Milmlow + Claude Code
 
