@@ -24,10 +24,12 @@ status: live
 > | Held migration: licence-expiry | superseded by `worker_credentials` (worker-house model) | ✅ moot |
 > | **I1** plaintext access codes — Field | codes now from `app_config` (`__TENANT_CODES_DB__`), none in committed JS | ✅ done |
 > | **I1** plaintext access codes — SKS Labour | still hardcoded in live app — **= part of B5 cutover** | ⛔ folds into B5 |
+> | **TENANT_ORG_UUID** Netlify env (eq-solves-field) | set = `1eb831f9-aeae-4e57-b49e-9681e8f51e15` (matches documented EQ org UUID) | ✅ done |
+> | **F1** rotate exposed `ehowg` service_role key | **legacy service_role JWT STILL LIVE** (read live SKS row, HTTP 200; bad-key control 401). Key `iat`≈2026-05-24 unchanged → no JWT-secret rotation. Both consumers (Quotes Fly `SUPABASE_SERVICE_ROLE_KEY`; `tenant_routing` row, anon `eyJhbGci…`, `status_changed_at` 2026-05-24) still hold the legacy key. | ❌ **NOT done** |
 >
-> **Could NOT verify from here (no DB/source trace — Royce-confirm):** F1 `ehowg` key rotation; `TENANT_ORG_UUID` Netlify env var (MCP reader doesn't expose env vars). Royce indicates both done; no contradicting evidence found.
+> **F1 remediation (Royce-gated, P0):** rotate JWT secret / disable legacy keys on `ehowg`, but ONLY after propagating the new key to BOTH consumers (Quotes Fly secret + `tenant_routing` re-encrypt) — disabling legacy blind breaks live Quotes + canonical-api routing. Re-test: legacy service_role GET → 401.
 >
-> **Bottom line: stop rebuilding the spine. Open work = B5 only.**
+> **Bottom line: stop rebuilding the spine. Open code/infra work = B5 + F1 (both Royce-gated). Everything else verified done.**
 
 Snapshot 2026-05-30. **Verify before relying on the git/worktree lines** — they drift. The Supabase map + SKS-live flags are stable.
 
