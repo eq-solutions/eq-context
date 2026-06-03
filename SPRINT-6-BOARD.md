@@ -4,9 +4,10 @@
 **Theme:** Move EQ Field off the public `anon` key onto per-user identity, rewrite RLS to be identity/tenant-scoped, retire the legacy open grants — and in doing so **align the canonical spine** and **unblock the SKS go-live**.
 
 > **The keystone.** One finding gates three goals. EQ Field talks to Supabase with the **public `anon` key** and **no per-user identity** (`auth.uid()` is always null). ~22 `public.*` tables on the EQ tenant are anon `SELECT/INSERT/UPDATE/DELETE` via `USING(true)` — **including `app_config`, which holds plaintext staff/manager PIN codes.** Closing this:
-> 1. removes a **live auth-bypass + data-tamper exposure**,
-> 2. completes the **canonical spine** (165 of 175 `--strict-spine` diffs are exactly the `tenant_isolation` RLS the EQ tenant lacks and SKS has), and
-> 3. is the **prerequisite to roll EQ Field onto the SKS tenant and cut SKS live**.
+> 1. removes a **live auth-bypass + data-tamper exposure** (on the legacy `public.*` tables), and
+> 2. is the **prerequisite to roll EQ Field onto the SKS tenant and cut SKS live**.
+>
+> **Correction (2026-06-03, measured):** an earlier draft said the EQ tenant *lacks* the `tenant_isolation` RLS. That was a guard artifact, not reality — the guard exact-matched policy *decomposition*. Measured: **the canonical `app_data` spine is already RLS-on + tenant-gated on BOTH tenants** (zaap and ehow). The real anon exposure is on the **legacy `public.*`** tables (e.g. `app_config` — T1 below), which the in-progress remediation migrates onto the already-isolated `app_data`. The guard was upgraded to a **semantic `effective_rls`** comparison (eq-shell #157): real spine drift is now **18 items = 5 columns** (`briefing/gm tenant_id` text↔uuid + 2 nullability), not 165. Closing those 5 columns takes `--strict-spine` to green.
 >
 > Fix it once, unlock all three. **The RLS that secures Field is the same policy shape that aligns the spine.**
 
