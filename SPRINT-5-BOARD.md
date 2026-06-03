@@ -9,13 +9,13 @@
 
 | Stream | Description | Status |
 |--------|-------------|--------|
-| Royce Actions | Manual secrets/PAT/auth tasks | **BLOCKED — MANUAL REQUIRED** |
-| Stream 1 | Phase 3 smoke test + NSW go-live | **BLOCKED** (on R1/R2) |
+| Royce Actions | Manual secrets/PAT/auth tasks | **DONE** ✓ (R1✓ R2✓ R3✓ R4✓) |
+| Stream 1 | Phase 3 smoke test + NSW go-live | **DONE** ✓ (eq-field + eq-service deployed 2026-06-03, smoke test PASSED) |
 | Stream 2 | C5: @eq-solutions/roles v2.0.0 | **DONE** ✓ (merged, v2.0.0 tagged) |
-| Stream 3 | C6/C7/C8 role adoption | **PR REVIEW** (all 3 PRs open) |
+| Stream 3 | C6/C7/C8 role adoption | **DONE** ✓ (C6#229, C7#159, C8#145 merged 2026-06-03) |
 | Stream 4 | Phase 4 HMAC retirement prep | **DONE** ✓ (runbook committed) |
-| Stream 5 | Shell hardening (B4/B8/B11) | **PR REVIEW** (B8#143, B4#144 open; B11 already done) |
-| C8 | eq-shell roles v2.0.0 bump | **PR REVIEW** (#145 open) |
+| Stream 5 | Shell hardening (B4/B8/B11) | **DONE** ✓ (B8#143, B4#144 merged 2026-06-03; B11 already done) |
+| C8 | eq-shell roles v2.0.0 bump | **DONE** ✓ (#145 merged 2026-06-03) |
 | B5 | SKS cutover planning | **NEXT** |
 
 ---
@@ -24,18 +24,18 @@
 
 These tasks require manual action by Royce before blocked streams can proceed.
 
-| ID | Task | Unblocks |
-|----|------|----------|
-| R1 | Set `SUPABASE_JWT_SECRET` env var on **eq-field** Netlify site | Stream 1 |
-| R2 | Set `SUPABASE_JWT_SECRET` env var on **eq-solves-service** Netlify site | Stream 1 |
-| R3 | Rotate 3 exposed GitHub PATs — one found in eq-field remote URL (check all three) | Security |
-| R4 | Enable HaveIBeenPwned integration on Supabase Auth (jvkn project) | Stream 1 (nice-to-have before go-live) |
+| ID | Task | Status | Notes |
+|----|------|--------|-------|
+| R1 | Set `SUPABASE_JWT_SECRET` env var on **eq-field** Netlify site | **DONE ✓** | Account-level secret set 2026-06-03; redeploy eq-field to activate |
+| R2 | Set `SUPABASE_JWT_SECRET` env var on **eq-solves-service** Netlify site | **DONE ✓** | Inherits account-level secret; redeploy eq-service to activate |
+| R3 | Rotate 3 exposed GitHub PATs — one found in eq-field remote URL | **DONE ✓** | PAT removed from eq-field git remote URL; no classic PATs found; gho_ was GitHub CLI OAuth token |
+| R4 | Enable HaveIBeenPwned integration on Supabase Auth (jvkn project) | **OPTIONAL** | Nice-to-have before go-live |
 
 ---
 
 ## Stream 1 — Phase 3 Smoke Test + NSW Go-Live
 
-**Status: BLOCKED on R1 + R2**
+**Status: DONE ✓ — 2026-06-03**
 
 Steps (run in order after R1/R2 complete):
 
@@ -56,13 +56,13 @@ Steps (run in order after R1/R2 complete):
 
 ## Stream 3 — C6/C7/C8 Role Adoption
 
-**Status: PR REVIEW (all 3 open)**
+**Status: DONE ✓ — all merged 2026-06-03**
 
-| Ticket | Repo | PR | Work |
-|--------|------|----|------|
-| C6 | eq-solves-service | [#229](https://github.com/Milmlow/eq-solves-service/pull/229) | EQ canonical → Service role mapping in `shell-auth/route.ts`. Known gap: JWT path updates `profiles.role` but can't upsert `tenant_members` without tenant_slug in JWT (Sprint 6). |
-| C7 | eq-solves-field | [#159](https://github.com/eq-solutions/eq-field/pull/159) | Adds `EQ_ROLE_KEYS` + `FIELD_DISPATCH_ROLES` constants from `@eq-solutions/roles/field` FIELD_MATRIX. Validates `eq_role` before use. |
-| C8 | eq-shell | [#145](https://github.com/eq-solutions/eq-shell/pull/145) | Bumps `@eq-solutions/roles` from `v1.3.0` → `v2.0.0`. Perm sync check passes. |
+| Ticket | Repo | PR | Status |
+|--------|------|----|--------|
+| C6 | eq-solves-service | [#229](https://github.com/Milmlow/eq-solves-service/pull/229) | **MERGED** — EQ canonical → Service role mapping in `shell-auth/route.ts`. Known gap: can't upsert `tenant_members` without `tenant_slug` in JWT (Sprint 6). |
+| C7 | eq-solves-field | [#159](https://github.com/eq-solutions/eq-field/pull/159) | **MERGED** — Adds `EQ_ROLE_KEYS` + `FIELD_DISPATCH_ROLES` constants from `@eq-solutions/roles/field`. |
+| C8 | eq-shell | [#145](https://github.com/eq-solutions/eq-shell/pull/145) | **MERGED** — Bumps `@eq-solutions/roles` v1.3.0 → v2.0.0. |
 
 **Sprint 6 follow-on (C6 gap):** Add `tenant_slug` to Supabase JWT in `token-exchange.ts` for `aud=service`, then Service `shell-auth` can upsert `tenant_members` on first access.
 
@@ -79,13 +79,13 @@ Steps (run in order after R1/R2 complete):
 
 ## Stream 5 — Shell Hardening
 
-**Status: PR REVIEW**
+**Status: DONE ✓ — all merged 2026-06-03**
 
-| Ticket | PR | Work |
-|--------|------|------|
-| B11 | (none) | Already done — `Cache-Control: private, no-store` was already on all ai-briefing responses. |
-| B8 | [#143](https://github.com/eq-solutions/eq-shell/pull/143) | Fixed 4 silent failure paths in `ai-briefing.ts` + `generate-gm-briefing.ts`. |
-| B4 | [#144](https://github.com/eq-solutions/eq-shell/pull/144) | Removed `injectEmailIntoJwt` (35 lines) — email now passed directly to `signSupabaseJwt`. |
+| Ticket | PR | Status |
+|--------|------|--------|
+| B11 | (none) | Already done — `Cache-Control: private, no-store` on all ai-briefing responses. |
+| B8 | [#143](https://github.com/eq-solutions/eq-shell/pull/143) | **MERGED** — Fixed 4 silent failure paths in `ai-briefing.ts` + `generate-gm-briefing.ts`. |
+| B4 | [#144](https://github.com/eq-solutions/eq-shell/pull/144) | **MERGED** — Removed `injectEmailIntoJwt` (35 lines); email passed directly to `signSupabaseJwt`. |
 
 ---
 
@@ -100,11 +100,9 @@ Steps (run in order after R1/R2 complete):
 
 ## Next-Session Priorities
 
-1. **Royce:** Complete R1, R2, R3 (R4 optional before go-live but recommended).
-2. Once R1/R2 done: run Stream 1 smoke test checklist top-to-bottom.
-3. Merge PRs: B8 (#143), B4 (#144), C8 (#145), C7 (#159), C6 (#229) — in any order (no dependencies).
-4. Sprint 6 planning: add `tenant_slug` to iframe JWT for `aud=service` (unblocks C6 full tenant provisioning).
-5. Assign B5 SKS cutover discussion to a scheduled planning slot.
+1. **Sprint 6 planning**: add `tenant_slug` to iframe JWT for `aud=service` in `token-exchange.ts` (unblocks C6 full `tenant_members` provisioning).
+2. **B5**: SKS NSW Labour cutover discussion — schedule planning slot.
+3. Phase 4 HMAC retirement: 2-week production soak starts now; schedule retirement for ~2026-06-17.
 
 ---
 
