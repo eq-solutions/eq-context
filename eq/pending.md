@@ -64,7 +64,7 @@ Parallel autonomous agents coordinate through three root files (added 2026-05-30
 
 Autonomy policy: `ops/decisions.md` 2026-05-30. Session log: `sessions/2026-05-30.md`.
 
-**Drift to reconcile (noticed 2026-05-30):** the "two-Supabase obsolete / single canonical" and GTM-gate notes below are stale — reality is the two-plane split (`eq-canonical` + `eq-canonical-internal`) and the GTM gate was removed. `STATE.md` carries current reality.
+**Drift resolved (2026-06-02):** the GTM gate was killed (we build for ourselves — see `ops/decisions.md` 2026-06-02) and the stale gate language was purged from the forward docs. The "two-Supabase obsolete / single canonical" framing is also stale — reality is the two-plane split (`eq-canonical` + `eq-canonical-internal`). `STATE.md` carries current reality.
 
 ---
 
@@ -89,12 +89,10 @@ Foundation shipped (One Spine, Stream A): `@eq-solutions/tokens` v1.0 consumed (
 **Multi-tenancy plan locked 2026-04-27** — see
 `eq/field/multi-tenancy/plan.md` for living spec.
 
-**Validation gate:** 5 outside-SKS trade subbies on Field demo before
-any further build investment.
-
-- [ ] Identify first 5 outside-SKS trade subbies for demo engagement
-- [ ] Send outreach message to first target (trade business outside SKS)
-- [ ] Build sales motion — stop building features before first external user
+**No validation gate.** EQ is built for ourselves (SKS NSW) because it's
+a good product — build investment is sequenced by the trust ladder +
+Royce's go, not by outside-customer validation (gate killed 2026-06-02,
+see `ops/decisions.md`).
 - [x] Netlify env var cleanup — confirmed clean 2026-05-29 (prior session
       deleted hashes; only `EQ_SECRET_SALT` + active vars remain)
 - [ ] Clear Supabase rate_limits table on demo branch (ktmjmdzqrogauaevbktn)
