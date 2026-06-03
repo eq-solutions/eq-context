@@ -9,6 +9,19 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-06-03] v3.5.56 — Pipeline: filter by estimator + builder (PR #163, merged)
+**Built by:** Royce Milmlow + Claude Code
+
+**Summary:** Two more header dropdowns on the pipeline board — Estimator (`tenders.estimator`) and Builder (`tenders.client`) — alongside department/vertical, applied together with the value/probability sliders.
+
+**Notes:** No literal 'builder' column; `client` holds the head-contractors (126 distinct). `estimator` has import dupes (e.g. name vs email) that show as separate options until cleaned.
+
+**SKS:** sibling PR sks-nsw-labour #20 (v3.10.46) raised + green, **held** (not merged) pending Royce smoke.
+
+**PR:** [#163](https://github.com/eq-solutions/eq-field/pull/163) — **merged**, live.
+
+---
+
 ## [2026-06-03] v3.5.55 — Pipeline: value+probability sliders + Keep/Discard triage (PR #162, merged)
 **Built by:** Royce Milmlow + Claude Code
 
