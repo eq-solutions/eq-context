@@ -1,7 +1,7 @@
 ---
 title: EQ Canonical — The Trust Spine
 owner: Royce Milmlow
-last_updated: 2026-06-02
+last_updated: 2026-06-03
 scope: Which canonical app_data tables must be identical/trusted across tenants vs free to vary per tenant
 read_priority: critical
 status: live
