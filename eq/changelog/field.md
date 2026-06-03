@@ -1,13 +1,140 @@
 ---
 title: Changelog — EQ Solves Field
 owner: Royce Milmlow
-last_updated: 2026-06-02
+last_updated: 2026-06-03
 scope: Append-only history of changes to the EQ Solves Field product
 read_priority: reference
 status: live
 ---
 
 # Changelog — EQ Solves Field
+
+## [2026-06-03] v3.5.59 — Pipeline import: normalise email-form estimators (PR #166, merged)
+**Built by:** Royce Milmlow + Claude Code
+
+**Summary:** Estimator dedupe. The Smartsheet 'SKS Estimator' cell sometimes arrives as an email, so one person showed as several filter options (e.g. Matthew Miller / matthew.miller@sks.com.au / Matthew.Miller@sks.com.au). `tender-parser.js` now converts email-form values to name form on import; name-form values left as typed.
+
+**One-time SQL cleanup applied** (collapses existing rows) to EQ `zaapmfdkgedqupfjtchl` + SKS `nspbmirochztcjijmcrx` tenders: `update tenders set estimator = initcap(replace(split_part(estimator,'@',1),'.',' ')) where estimator like '%@%'`. Verified: Matthew Miller→6, Simon Bramall→16, zero '@' estimators remain.
+
+**SKS:** shipped as **v3.10.49** (PR #23), live.
+
+**Housekeeping:** old EQ DB `ktmjmdzqrogauaevbktn` (cold backup since v3.5.50) — Royce chose to pause it, but Supabase only pauses free-tier projects and it's paid. **Action for Royce:** downgrade it to free tier in the Supabase dashboard, then it can be paused / auto-pauses. Not done.
+
+**PR:** [#166](https://github.com/eq-solutions/eq-field/pull/166) — **merged**, live.
+
+---
+
+## [2026-06-03] v3.5.58 — Resources: editing workers/duration rebuilds the labour plan (PR #165, merged)
+**Built by:** Royce Milmlow + Claude Code
+
+**Summary:** Closes the v3.5.57 limitation — changing start/workers/duration on a confirmed job saved the numbers but the labour plan (Assign-to-Roster tracks/slots) didn't reflow. `saveConfirmedDetails` now calls `_rebuildLabourPlan`, which regenerates `pending_schedule` from the new numbers. Roster-safe: if any slots were already pushed (`confirmed_at` set) it leaves the plan untouched and the toast warns to adjust manually; clears the plan if start/workers/duration are incomplete.
+
+**SKS:** shipped to standalone repo as **v3.10.48** (PR #22), live.
+
+**PR:** [#165](https://github.com/eq-solutions/eq-field/pull/165) — **merged**, live.
+
+---
+
+## [2026-06-03] v3.5.57 — Resources: edit confirmed-job details; pipeline shows start date (PR #164, merged)
+**Built by:** Royce Milmlow + Claude Code
+
+**Summary:** Confirmed jobs on the Resources screen now have an 'Edit details' block — start date / est hours / duration / peak workers / PM / supervisor / notes — so dates/hours can be amended after confirmation. Writes to `tender_enrichment` (+ `nominations`), the same tables the pipeline board reads, so changes flow through. Pipeline cards now also show a Start date tag.
+
+**Changes:**
+- `scripts/sks-pipeline-resource.js` — shared `_detailsFields` helper (Needs-Alloc panel + confirmed Edit block); `_editDetailsSection` / `toggleEditDetails` / `saveConfirmedDetails`.
+- `scripts/sks-pipeline.js` — Start date tag on cards.
+- **Known limit:** structural changes (workers/duration/start) save + warn but do NOT auto-rebuild the labour plan (protects already-pushed roster). Possible follow-up.
+
+**SKS:** shipped to standalone repo as **v3.10.47** (PR #21) — which also carried the estimator/builder filters (the held #20 was superseded/closed). SKS now live with estimator/builder + edit-confirmed + start-date tag.
+
+**PR:** [#164](https://github.com/eq-solutions/eq-field/pull/164) — **merged**, live.
+
+---
+
+## [2026-06-03] v3.5.56 — Pipeline: filter by estimator + builder (PR #163, merged)
+**Built by:** Royce Milmlow + Claude Code
+
+**Summary:** Two more header dropdowns on the pipeline board — Estimator (`tenders.estimator`) and Builder (`tenders.client`) — alongside department/vertical, applied together with the value/probability sliders.
+
+**Notes:** No literal 'builder' column; `client` holds the head-contractors (126 distinct). `estimator` has import dupes (e.g. name vs email) that show as separate options until cleaned.
+
+**SKS:** sibling PR sks-nsw-labour #20 (v3.10.46) raised + green, **held** (not merged) pending Royce smoke.
+
+**PR:** [#163](https://github.com/eq-solutions/eq-field/pull/163) — **merged**, live.
+
+---
+
+## [2026-06-03] v3.5.55 — Pipeline: value+probability sliders + Keep/Discard triage (PR #162, merged)
+**Built by:** Royce Milmlow + Claude Code
+
+**Summary:** Two pipeline-board features. (1) The value-preset dropdown is replaced by two range sliders — Min value ($, dynamic max from data) and Min probability (%, backed by `tenders.probability_pct`, 0–100). Both apply together; labels update live on drag, filter on release. (2) Keep/Discard triage on every card — user decides (no auto-stale rule yet).
+
+**Changes:**
+- `scripts/sks-pipeline.js` — sliders (`setProbFilter`/`lblVal`/`lblProb`), `keepJob` (stamps `tenders.reviewed_at`, card shows ✓ Reviewed), `discardJob` (archives via `tenders.archived_at`, confirm via shared `#modal-confirm`). Buttons stopPropagation.
+- **Migration:** `tenders.reviewed_at` (timestamptz, additive/nullable) applied to ktmjmdzqrogauaevbktn (EQ active), zaapmfdkgedqupfjtchl (canonical-internal), nspbmirochztcjijmcrx (SKS live).
+- Version bump 3.5.54 → 3.5.55.
+
+**Also shipped to SKS standalone:** sks-nsw-labour v3.10.45 (PR #19, live) — same feature in `scripts/pipeline.js`.
+
+**Flag:** EQ pipeline tenders (333) live in the *original* `ktmjmdzqrogauaevbktn`, NOT eq-canonical-internal (1 row). The v3.5.50 registry flip didn't migrate pipeline data — reconcile before declaring the canonical cutover complete.
+
+**PR:** [#162](https://github.com/eq-solutions/eq-field/pull/162) — **merged**.
+
+---
+
+## [2026-06-03] v3.5.54 — Resources: Remove job confirm fix (BUG-009) (PR #161, merged)
+**Built by:** Royce Milmlow + Claude Code
+
+**Summary:** The v3.5.53 "Remove job" button appeared but did nothing — `removeProject()` gated on `window.confirm()`, which is silently swallowed inside the eq-shell iframe and in iOS PWA standalone (returns false), so it bailed with no dialog. Fixed by routing through the shared `#modal-confirm` dialog.
+
+**Changes:**
+- `scripts/sks-pipeline-resource.js` — new `_raConfirm()` helper (promise-based, uses `#modal-confirm`, falls back to `window.confirm`); `removeProject()` now awaits it. Same BUG-009 pattern as timesheets/leave/apprentices.
+- Version bump 3.5.53 → 3.5.54.
+
+**PR:** [#161](https://github.com/eq-solutions/eq-field/pull/161) — **merged**.
+
+**Note:** Resources (sks-pipeline-resource) remove/archive is being trialled on the **eq** tenant and is intended for **SKS live** once validated — track for the SKS-side merge.
+
+---
+
+## [2026-06-03] v3.5.53 — Resources: remove/archive a job (PR #160, merged)
+**Built by:** Royce Milmlow + Claude Code
+
+**Summary:** The Resources (Resource Allocation) screen could add jobs ("+ Add Active Job") but never remove them. Added a **Remove job** action on both Needs Allocation and Confirmed jobs. Shipped to trial on the eq tenant.
+
+**Changes:**
+- `scripts/sks-pipeline-resource.js` — `removeProject()` sets `tenders.archived_at` (reversible soft-remove, matching the pipeline "kill" pattern). Job disappears from Resources + Pipeline; roster entries already pushed to `schedule` are left in place. Confirm dialog before archiving.
+- Remove buttons added to the Needs Allocation panel footer and the Confirmed labour-curve panel footer.
+- Confirmed rows with no labour slots now still open a panel (`_emptyConfirmedPanel`) so they can be removed.
+- Version bump 3.5.52 → 3.5.53 (app-state.js, sw.js, index.html banner).
+
+**PR:** [#160](https://github.com/eq-solutions/eq-field/pull/160) — **merged**.
+
+---
+
+## [2026-06-02] v3.5.52 — Licence admin surface (PR #158, merged)
+**Built by:** Royce Milmlow + Claude Code
+
+**Summary:** Licence administration panel on the Supervision page — type toggle, expiry reminders, gap alerts, and an admin review gate for imported licences (Phase 3). Degrades gracefully until the migration is applied.
+
+**Changes:**
+- `scripts/licence-admin.js` + `migrations/2026-06-02_licence_admin.sql`.
+- RLS policies for the licence admin tables.
+
+**PR:** [#158](https://github.com/eq-solutions/eq-field/pull/158) — **merged**.
+
+---
+
+## [2026-06-02] v3.5.51 — Lazy loader dependency fixes
+**Built by:** Royce Milmlow + Claude Code
+
+**Summary:** Fixed first-visit lazy-load gaps on the contacts and sites tabs.
+
+**Changes:**
+- `lazy-loader.js`: contacts tab now loads managers.js alongside people.js (Add Contact calls a managers.js fn); sites tab now loads roster.js before sites.js (renderSites → getWeekSchedule lives in roster.js).
+- `sites.js`: defensive typeof guard on getWeekSchedule().
+
+---
 
 ## [2026-06-02] v3.5.50 — eq-canonical-internal live as EQ tenant DB (PR #155, merged)
 **Built by:** Royce Milmlow + Claude Code

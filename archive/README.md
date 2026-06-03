@@ -15,7 +15,7 @@ explicitly directed.
 
 | File | Why archived | When to revisit |
 |---|---|---|
-| `changelog-eq-quotes.md` | EQ Quotes deferred ~6 months (per 2026-04-29 cull) | When EQ Field hits 20 paying customers |
+| `changelog-eq-quotes.md` | Historical Flask v1 changelog. EQ Quotes was un-deferred 2026-05-19 and is now live first-round core (`eq/products.md`) | Reinstate as `eq/changelog/quotes.md` when the React rewrite begins |
 | `changelog-ahd.md` | AHD parked to 2027 capital activation | 2027 capital activation review |
 
 ## Sprint working docs — `sprints/`

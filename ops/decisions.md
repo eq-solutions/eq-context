@@ -52,6 +52,33 @@ For the current built state of each system, see [system/architecture.md](https:/
 
 ---
 
+## 2026-06-02 — EQ Tech Bets: PowerSync for Offline, Semantic-Layer/MCP for the Agent, Never Text-to-SQL
+
+**Status:** Accepted (authorised by Royce 2026-06-02)
+
+**Decision:** Lock three standing technology choices for the EQ core platform, validated by adversarially-verified external research (2025–2026 sources; 19 of 25 claims survived 3-vote verification). These ratify existing direction with evidence — they do **not** introduce new build scope.
+
+1. **Offline / local-first → PowerSync** (when EQ Field needs offline). PowerSync mirrors the canonical Supabase Postgres into a per-device SQLite DB (WAL replication down, upload queue up) — true offline reads *and* writes for field workers who lose signal. **ElectricSQL is rejected** for this: it does read-path sync only ("Electric does not do write-path sync") and pushes the write path onto us as a DIY concern.
+2. **Agent-over-canonical → semantic layer + typed tools over MCP, with Postgres RLS + column masking enforced at the data layer. Raw / fine-tuned text-to-SQL is banned.** Semantic layers are both more accurate and *fail safe* (explicit error vs silent wrong answer). Fine-tuned text-to-SQL is a security liability (ToxicSQL: 0.44% data poisoning → 79% malicious-SQL rate; 100% evasion of static SQL filters). The agent starts **read + recommend; writes (dispatch, status changes) are human-confirmed** until reliability is proven on SKS's own data.
+3. **The moat is the data model + workflow lock-in + compliance depth — not the app code.** Agentic coding has commoditised code (the "Clone Test": if a clone with your team, codebase and frontier models could outcompete you, code is not the moat). For a regulated trade, the defensive moat (licences, certifications, shutdown safety, compliance sign-off) is exactly the hardest-to-clone layer. The cross-customer "data network effect" is contested/over-claimed — **not** banked on while SKS-first.
+
+**Why:** Royce asked for a steelman on direction, best available tech, and where AI is heading, then to document it. The research confirmed the existing strategy rather than redirecting it: the clean canonical Supabase data model already named as the core asset is precisely where 2026 literature says defensibility sits. Recording the three tech choices removes future decision points (which sync engine, how to expose the agent, where the moat lives) and stops them being re-litigated per app.
+
+**Alternatives considered:**
+- *ElectricSQL for offline.* Rejected — read-path only; an n=1 practitioner shipped on it for ~2 months then abandoned the push mechanism. Architecture fit for our offline-write case is wrong.
+- *Fine-tuned text-to-SQL over canonical.* Rejected — backdoorable, evades static validation, fails silently. Wrong risk profile for a multi-tenant operational DB feeding dispatch/compliance decisions.
+- *Treat the apps/features as the moat.* Rejected — commoditised by agentic coding; the durable asset is the spine + workflow embedding + compliance.
+- *Build the agent layer now.* Rejected (Royce) — it is documented intent, not active scope. It waits behind the EQ Field B5 cutover; the only thing consuming build hours is getting Field live.
+
+**Implications:**
+- Roadmap order unchanged: (1) EQ Field → B5 → daily SKS use; (2) freeze/protect the canonical spine; (3) agent-over-canonical spike (semantic + MCP + RLS, read-only first); (+) PowerSync offline deferred behind Field-live.
+- When offline work begins, the open question to resolve first is **conflict resolution on shared operational records** (two techs editing the same dispatch offline) — not the sync transport, which is solved.
+- The agent's access model reuses the canonical role registry (`@eq-solutions/roles`) and Supabase RLS — it inherits the user's access, never a broader grant.
+- Does not touch auth or SKS live — unaffected by `AUTONOMOUS-SPRINT-RULES.md` §0/§1. No new product surfaces created; Ops/Expenses remain culled per §9.
+- Source caveats: sync evidence leans on vendor docs + one practitioner blog (superlative maturity claims were refuted); the semantic-layer accuracy figures are a small vendor benchmark (directional); moat sources are VC thesis pieces (the broad consensus holds, the data-network-effect sub-claim does not). Treat verdicts as well-grounded, exact figures as indicative.
+
+---
+
 ## 2026-05-31 — EQ Design System: Tokens Everywhere, Components Per-Stack, Pin Never Vendor
 
 **Status:** Accepted (authorised by Royce 2026-05-31)

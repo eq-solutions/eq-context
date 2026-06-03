@@ -1,7 +1,7 @@
 ---
 title: CLAUDE.md — Master Behavioural Contract
 owner: Royce Milmlow
-last_updated: 2026-05-24
+last_updated: 2026-06-02
 scope: Single source of truth for how every assistant (Chat, Cowork, Code, ChatGPT, Grok, any future tool) must behave when working with Royce
 read_priority: critical
 status: live
@@ -49,7 +49,7 @@ Every session, every tool. No exceptions.
    | Cross-tier | Both — state which tier owns the work |
    | OPS | [ops/README.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/ops/README.md) + [ops/pending.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/ops/pending.md) |
 
-   [archive/](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/archive/README.md) only when Royce explicitly references parked content (EQ Quotes, AHD).
+   [archive/](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/archive/README.md) only when Royce explicitly references parked content (AHD).
 
    [sks-team/](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/sks-team/README.md) is a separate substrate tier for SKS team members' AI sessions — not loaded for Royce's personal sessions. Only fetch from `sks-team/` when the task is specifically authoring or reviewing the team-facing canonical guidance (e.g. [sks-team/quoting.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/sks-team/quoting.md)).
 
@@ -213,14 +213,15 @@ Do NOT duplicate content into this file. Update facts in their home.
 
 ## 9. Killed / Deferred — NOT Live Products
 
-(2026-04-29 cull, 2026-05-04 refactor)
+(2026-04-29 cull, 2026-05-04 refactor; EQ Quotes un-deferred 2026-05-19)
 
 - **EQ Variations, EQ Compliance, EQ Ops** — killed.
-- **EQ Quotes** — deferred ~6 months. `archive/changelog-eq-quotes.md`.
 - **EQ Expenses** — internal SKS tool only, no longer an EQ product.
 - **AHD** — parked to 2027. `archive/changelog-ahd.md`.
 
 If Royce mentions these, treat as historical unless he explicitly reactivates.
+
+**EQ Quotes is NOT on this list** — it was deferred at the 2026-04-29 cull but un-deferred 2026-05-19. It is finished and part of the first round of EQ core (Flask v1 live at `quotes.eq.solutions`; React module rewrite queued separately). See `eq/products.md`.
 
 ---
 

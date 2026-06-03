@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-06-02
+last_updated: 2026-06-03
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -11,6 +11,28 @@ status: live
 
 EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## ⏩ Session close — 2026-06-03
+
+**Completed (EQ Field pipeline/Resources sprint — all live; mirrored to SKS standalone):**
+- Resources: Remove/archive job (v3.5.53–54, BUG-009 modal-confirm fix)
+- Pipeline: value + probability sliders + Keep/Discard triage (v3.5.55)
+- Pipeline: Estimator + Builder filters (v3.5.56)
+- Resources: edit confirmed-job details + pipeline Start-date tag (v3.5.57)
+- Resources: editing workers/duration rebuilds the labour plan (v3.5.58)
+- Pipeline import: email-form estimator normalisation + one-time SQL dedupe both DBs (v3.5.59)
+- EQ pipeline data migrated `ktm` → `eq-canonical-internal` (pipeline only; roster intentionally NOT migrated — Royce: not relevant)
+- SKS standalone kept in lockstep: v3.10.44 → v3.10.49
+- Smartsheet import reviewed — parse→preview→confirm gate confirmed safe; no change needed
+
+**Pending Royce-actions (carried forward + new):**
+- [ ] **NEW:** Downgrade old EQ DB `ktmjmdzqrogauaevbktn` → free tier in Supabase dashboard, then pause it (paid projects can't be paused via API). Dead cold-backup, unused by live EQ Field.
+- [ ] `TENANT_ORG_UUID` Netlify env var for eq-solves-field EQ site (blocks U6 PIN)
+- [ ] Revoke old `gho_...` PAT at github.com/settings/tokens
+- [ ] Drift CI secrets in eq-shell GitHub repo settings
+- [ ] HaveIBeenPwned toggle in eq-canonical Supabase Auth settings
 
 ---
 
