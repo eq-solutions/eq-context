@@ -9,6 +9,21 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-06-03] v3.5.59 — Pipeline import: normalise email-form estimators (PR #166, merged)
+**Built by:** Royce Milmlow + Claude Code
+
+**Summary:** Estimator dedupe. The Smartsheet 'SKS Estimator' cell sometimes arrives as an email, so one person showed as several filter options (e.g. Matthew Miller / matthew.miller@sks.com.au / Matthew.Miller@sks.com.au). `tender-parser.js` now converts email-form values to name form on import; name-form values left as typed.
+
+**One-time SQL cleanup applied** (collapses existing rows) to EQ `zaapmfdkgedqupfjtchl` + SKS `nspbmirochztcjijmcrx` tenders: `update tenders set estimator = initcap(replace(split_part(estimator,'@',1),'.',' ')) where estimator like '%@%'`. Verified: Matthew Miller→6, Simon Bramall→16, zero '@' estimators remain.
+
+**SKS:** shipped as **v3.10.49** (PR #23), live.
+
+**Housekeeping:** old EQ DB `ktmjmdzqrogauaevbktn` (cold backup since v3.5.50) — Royce chose to pause it, but Supabase only pauses free-tier projects and it's paid. **Action for Royce:** downgrade it to free tier in the Supabase dashboard, then it can be paused / auto-pauses. Not done.
+
+**PR:** [#166](https://github.com/eq-solutions/eq-field/pull/166) — **merged**, live.
+
+---
+
 ## [2026-06-03] v3.5.58 — Resources: editing workers/duration rebuilds the labour plan (PR #165, merged)
 **Built by:** Royce Milmlow + Claude Code
 
