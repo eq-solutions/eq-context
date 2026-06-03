@@ -15,6 +15,9 @@ status: live
 Legend: ✅ done · 🔵 in-progress (claimed) · ⚪ todo (unclaimed) · ⛔ Royce-gated · ⏸ paused
 Last refreshed: 2026-05-31.
 
+> ## ✅ 2026-06-03 — LIVE-VERIFIED: Sprint 3 is essentially DONE; only B5 open
+> Re-verified against live Supabase + source (see STATE.md top block). The P0/P1 items below were under-reported here. Confirmed done in the live system: **I2** (RLS on across all sks-canonical tables), **G1** (worker_* schema exists), **I1-Field** (codes from app_config, not JS), held timesheet/audit migrations (applied). Royce-confirmed (unverifiable from here): F1 key rotation, TENANT_ORG_UUID. **Only genuinely-open item: B5 SKS-live cutover** — which also absorbs the residual I1 plaintext codes in the live SKS Labour app. Treat the priority cut below as historical; don't re-open these.
+
 ## 🎯 SPRINT 3 — Next big sprint (priority cut, 2026-05-31)
 Consolidates **every** outstanding finding from the 2026-05-31 deep-dive + cross-app audit + canonical/worker-creds design. Detail in the streams below; this is the sequencing. Owners per the carve-out (C4 = eq-shell src+auth; C-CANON = data-plane; Cards/Field/Service consoles per repo). ⛔ = Royce-gated.
 
@@ -161,7 +164,7 @@ Phase 1 = seed + self-maintenance (build now, pending Royce inputs); Phase 2 = s
 | id | item | repo / surface | status | notes |
 |----|------|----------------|--------|-------|
 | G0 | Model + 5 locked decisions | eq-context | ✅ | this session; reconciled w/ IDENTITY-MODEL §3.2/§11.2 + Cards PR #12 |
-| G1 | `worker_*` schema + first-class `worker_id` + phone-keyed claim | eq-canonical-internal (C-CANON) | ⛔⚪ | Phase 1. Needs phone list. Timestamped migration. |
+| G1 | `worker_*` schema + first-class `worker_id` + phone-keyed claim | eq-canonical-internal (C-CANON) | ✅ | **Schema LIVE (verified 2026-06-03):** `workers, worker_credentials, worker_inductions, worker_assignments` exist. Phone-claim seeding (G3) still needs the phone list. |
 | G2 | Cards `gateway`/live-link → worker-house (not business DB) | eq-shell `cards-api.ts` + eq-cards | ⛔⚪ | Reconcile PR #12. **Don't flip transport until done.** |
 | G3 | SKS 60-worker seed via Intake (= verification event) | eq-intake | ⛔⚪ | Phase 1. Per-credential trust tier from evidence found. Needs evidence export. |
 | G4 | Cards self-maintenance + **renewal reminder engine (live at launch)** | eq-cards | ⛔⚪ | Phase 1. Non-negotiable: stale seeded data is a liability. Folds in E1. |
@@ -191,7 +194,7 @@ Roadmap: `~/.claude/plans/distributed-dazzling-curry.md` + memory `eq-hardening-
 | id | item | apps | bar | status | notes |
 |----|------|------|-----|--------|-------|
 | I1 | plaintext access codes in client JS | Field (`2026`), SKS Labour (`SKSNSW`) | 🔒 | ⛔ | **P0.** Move server-side. SKS Labour = SKS-live. |
-| I2 | permissive/disabled RLS | SKS Labour (9 tables), Quotes (off) | 🔒 | ⛔ | **P0.** Per-tenant scoped keys + RLS on. |
+| I2 | permissive/disabled RLS | SKS Labour (9 tables), Quotes (off) | 🔒 | ✅ | **DONE (verified 2026-06-03):** every `app_data.*` + `sks_quotes_*` table on sks-canonical has `rls_enabled=true`. SKS Labour live DB = B5. |
 | I3 | raw backend errors → users | all 5 | 👻🔒 | ⚪ | port the `friendlyError` pattern |
 | I4 | expiry-cron broken in prod | Quotes | ✅ | ⛔ | ties to Quotes console chip + F5 |
 | I5 | gradients/shadows + non-brand font | all (+ SKS Labour DM Sans) | 🎨 | ⚪ | brand sweep → Plus Jakarta, no gradients/shadows |

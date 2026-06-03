@@ -9,6 +9,26 @@ status: live
 
 # Autonomous Sprint — STATE (current reality; refresh at sprint start)
 
+> ## ✅ LIVE-VERIFIED RECONCILIATION — 2026-06-03 (supersedes the "left/⛔" framing in all blocks below)
+> Royce flagged that the board under-reports completion → causing duplicate builds (Rule 0.5). Re-verified against live Supabase + source this session. **Result: the platform spine is built, populated, and RLS-locked. The ONLY genuinely-open item is B5 (SKS-live cutover, Royce-gated).**
+>
+> | Claim | Live check (2026-06-03) | Verdict |
+> |---|---|---|
+> | Tenant registry flipped (eq/demo-trades/melbourne → eq-canonical-internal) | `organisations` table confirms; SKS still → `nspbmirochztcjijmcrx` **by design** (B5 pending) | ✅ |
+> | eq-canonical-internal has EQ Field schema | 48 public tables | ✅ |
+> | sks-canonical live data | `app_data`: customers 389 / sites 591 / assets 4808; `sks_quotes_customers` 520 | ✅ |
+> | **I2** RLS holes (was "Quotes off / SKS permissive") | **every** `app_data.*` + `sks_quotes_*` table on sks-canonical: `rls_enabled=true` | ✅ done |
+> | **G1** worker_* schema (board said ⛔⚪ not-started) | `workers, worker_credentials, worker_inductions, worker_assignments` exist | ✅ built |
+> | Held migration: timesheet-approval | `timesheets.approved` present on eq-canonical-internal | ✅ applied |
+> | Held migration: audit-log-UI | `audit_log.target_id/target_name` present | ✅ applied |
+> | Held migration: licence-expiry | superseded by `worker_credentials` (worker-house model) | ✅ moot |
+> | **I1** plaintext access codes — Field | codes now from `app_config` (`__TENANT_CODES_DB__`), none in committed JS | ✅ done |
+> | **I1** plaintext access codes — SKS Labour | still hardcoded in live app — **= part of B5 cutover** | ⛔ folds into B5 |
+>
+> **Could NOT verify from here (no DB/source trace — Royce-confirm):** F1 `ehowg` key rotation; `TENANT_ORG_UUID` Netlify env var (MCP reader doesn't expose env vars). Royce indicates both done; no contradicting evidence found.
+>
+> **Bottom line: stop rebuilding the spine. Open work = B5 only.**
+
 Snapshot 2026-05-30. **Verify before relying on the git/worktree lines** — they drift. The Supabase map + SKS-live flags are stable.
 
 > ## ⏩ POST-SPRINT UPDATE — 2026-06-02 (eq-canonical-internal LIVE as EQ Field tenant DB)
