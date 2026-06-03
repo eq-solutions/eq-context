@@ -9,6 +9,24 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-06-03] v3.5.55 — Pipeline: value+probability sliders + Keep/Discard triage (PR #162, merged)
+**Built by:** Royce Milmlow + Claude Code
+
+**Summary:** Two pipeline-board features. (1) The value-preset dropdown is replaced by two range sliders — Min value ($, dynamic max from data) and Min probability (%, backed by `tenders.probability_pct`, 0–100). Both apply together; labels update live on drag, filter on release. (2) Keep/Discard triage on every card — user decides (no auto-stale rule yet).
+
+**Changes:**
+- `scripts/sks-pipeline.js` — sliders (`setProbFilter`/`lblVal`/`lblProb`), `keepJob` (stamps `tenders.reviewed_at`, card shows ✓ Reviewed), `discardJob` (archives via `tenders.archived_at`, confirm via shared `#modal-confirm`). Buttons stopPropagation.
+- **Migration:** `tenders.reviewed_at` (timestamptz, additive/nullable) applied to ktmjmdzqrogauaevbktn (EQ active), zaapmfdkgedqupfjtchl (canonical-internal), nspbmirochztcjijmcrx (SKS live).
+- Version bump 3.5.54 → 3.5.55.
+
+**Also shipped to SKS standalone:** sks-nsw-labour v3.10.45 (PR #19, live) — same feature in `scripts/pipeline.js`.
+
+**Flag:** EQ pipeline tenders (333) live in the *original* `ktmjmdzqrogauaevbktn`, NOT eq-canonical-internal (1 row). The v3.5.50 registry flip didn't migrate pipeline data — reconcile before declaring the canonical cutover complete.
+
+**PR:** [#162](https://github.com/eq-solutions/eq-field/pull/162) — **merged**.
+
+---
+
 ## [2026-06-03] v3.5.54 — Resources: Remove job confirm fix (BUG-009) (PR #161, merged)
 **Built by:** Royce Milmlow + Claude Code
 
