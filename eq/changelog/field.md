@@ -22,6 +22,21 @@ status: live
 
 ---
 
+## Catch-up — v3.5.66–v3.5.71 (compact; in-HTML banner is canonical)
+
+> These six releases shipped without per-version entries here. The canonical,
+> full-detail changelog for v3.5+ is the in-HTML banner at the top of `index.html`
+> in eq-field. One line each below for narrative continuity:
+
+- **v3.5.71** — Mobile: Staff-home "Team week" read-only crew view + "Who's with me"; My Schedule day cards list the site crew. Ported from SKS v3.10.55. (PR #184)
+- **v3.5.70** — Timesheets: education codes (TAFE/TRAINING) only mute the sheet for apprentices, not direct employees; in-place row-stripe + live weekly-stats sync on cell edit. Ported from SKS v3.10.54. (PR #183)
+- **v3.5.69** — Resources: "Supervisor" → "Person in charge", now lists Direct employees too; `nominations.capacity_tag` source-tag stops the people/managers id-space collision. Ported from SKS v3.10.53. (PR #181)
+- **v3.5.68** — Forecast: "suggest N workers" now divides by a 40-hour work week (was 38), so the hint no longer runs high. Ported from SKS v3.10.52. (PR #178)
+- **v3.5.67** — sw.js: "Update available" toast only fires on a genuine update (a prior `eq-field-*` cache existed), killing the first-install nag.
+- **v3.5.66** — Design tokens re-vendored to @eq-solutions/tokens v1.3.1 (additive); tenant-tier theming — `applyTenantBranding` sets `data-tier` on `<html>`, Enterprise (melbourne) gets the deeper-teal accent. Mirrors Shell's brand.tsx.
+
+---
+
 ## [2026-06-03] v3.5.65 — Sync from SKS NSW Labour v3.10.50–51 (PR #173, merged)
 **Built by:** Royce Milmlow + Claude Code
 Manual cross-repo port (shared codebase). No DB changes. (1) Timesheets jump-to-top fix (live bug): `renderCurrentPage` split into `_renderCurrentPageDispatch()` + a wrapper that preserves scroll/focus/caret across the rebuild that fires on every realtime echo/poll/post-write refresh. (2) Resources "This week" strip in `sks-pipeline-resource.js`: jobs live · allocated · on the roster · free (non-fatal schedule fetch). Aggregate only.
@@ -45,27 +60,6 @@ Security remediation Phase 1 (carrier only, dormant). verify-pin gains `signSupa
 ## [2026-06-03] v3.5.60 — revert licence admin (redundant vs canonical worker-home) (PR #167, merged)
 **Built by:** Royce Milmlow + Claude Code
 Reverted the licence-admin screen — redundant against the canonical worker-home model.
-
-## Catch-up â€” v3.5.60â€“v3.5.71 (compact; in-HTML banner is canonical)
-
-> These eleven releases shipped without per-version entries here. The canonical,
-> full-detail changelog for v3.5+ is the in-HTML banner at the top of `index.html`
-> in eq-field. One line each below for narrative continuity:
-
-- **v3.5.71** â€” Mobile: Staff-home "Team week" read-only crew view + "Who's with me"; My Schedule day cards list the site crew. Ported from SKS v3.10.55. (PR #184)
-- **v3.5.70** â€” Timesheets: education codes (TAFE/TRAINING) only mute the sheet for apprentices, not direct employees; in-place row-stripe + live weekly-stats sync on cell edit. Ported from SKS v3.10.54. (PR #183)
-- **v3.5.69** â€” Resources: "Supervisor" â†’ "Person in charge", now lists Direct employees too; `nominations.capacity_tag` source-tag stops the people/managers id-space collision. Ported from SKS v3.10.53. (PR #181)
-- **v3.5.68** â€” Forecast: "suggest N workers" now divides by a 40-hour week (was 38), so the hint no longer runs high. Ported from SKS v3.10.52. (PR #178)
-- **v3.5.67** â€” sw.js: "Update available" toast only fires on a genuine update (a prior `eq-field-*` cache existed), killing the first-install nag.
-- **v3.5.66** â€” Design tokens re-vendored to @eq-solutions/tokens v1.3.1 (additive); tenant-tier theming â€” `applyTenantBranding` sets `data-tier` on `<html>`, Enterprise (melbourne) gets the deeper-teal accent. Mirrors Shell's brand.tsx.
-- **v3.5.65** â€” Sync from SKS v3.10.50â€“51: timesheets jump-to-top focus/scroll/caret-preservation fix; Resources "This week" capacity strip. No DB changes.
-- **v3.5.64** â€” Anon-remediation Phase 2 / Goal 1: REVOKED anon on the 22 migrated `public.*` tables; bucket-B secured onto JWT twins; realtime repointed to `app_data.field_*` (authed websocket). `public.app_config` left anon (gate read pre-login). Migration: `field_bucketb_realtime_closeleak`.
-- **v3.5.63** â€” Phase 2 / Goal 1: Tender Pipeline secured onto JWT twins (rows copied, tenant_id = EQ core); retired 9 dead/empty Field tables on zaap; Apprentices deferred. Migrations: `field_retire_bucket_d_dead_tables`, `field_secure_tender_pipeline_goal1`.
-- **v3.5.62** â€” Phase 2 / Goal 1: first 11 surfaces cut onto the authed data-plane JWT via `app_data.field_<name>` same-shape twins (RLS tenant_id, anon revoked). Migrations: `field_secure_homes_phase2_goal1`, `field_secure_homes_org_id_nullable`.
-- **v3.5.61** â€” Phase 1 auth carrier: verify-pin `mint-data-jwt` swaps a Field session token for a ~1h zaap-signed Supabase JWT (gated by `DATA_JWT_ENABLED`, off by default); dual-mode supabase.js. No surface migrated yet â€” JWT_TABLES empty.
-- **v3.5.60** â€” Reverted licence-admin.js (inert; the eq-canonical worker-home already covers credentials / reminders / invites).
-
----
 
 ## [2026-06-03] v3.5.59 — Pipeline import: normalise email-form estimators (PR #166, merged)
 **Built by:** Royce Milmlow + Claude Code
