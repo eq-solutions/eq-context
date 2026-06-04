@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-06-04
+last_updated: 2026-06-05
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -11,6 +11,26 @@ status: live
 
 EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## ⏩ Session close — 2026-06-05 — PostHog MCP + EQ Core go-live readiness
+
+**Done:**
+- **PostHog MCP connected** (claude.ai OAuth connector → `mcp.posthog.com`, EU, project 162632). Live-queried. *(Connector is mislabeled "Github" in the connector list — rename when convenient.)*
+- **Data read:** ~19 real sticky users (not the inflated 419 UUIDs), growing usage, flat retention tail. Auth surface most-exercised.
+- **Go-live readiness verified vs LIVE systems** → no structural blockers. Canonical DB healthy + RLS-clean + 0 ERROR advisors; auth/iframe-SSO engineered; anon RPCs audited (3 clear, 1 optional `claim_invite` null-guard).
+- **`eq/go-live-runbook.md`** written + committed — live-verified weekend runbook.
+
+**Go-live gates (weekend) — see `eq/go-live-runbook.md` §B:**
+- [ ] 🔴 **`EQ_SECRET_SALT` parity** Shell vs Service — silent #1 go/no-go, never compared
+- [ ] Finish **Service domain cutover** (DNS/TLS, `NEXT_PUBLIC_SITE_URL`, Supabase URL allowlist); confirm Service prod project (`urjhmkhbgaxrofurpbgc` lists as "-dev")
+- [ ] 🟠 **MFA-bypass posture** — PIN-only Shell → Service single-factor; accept or gate behind mandatory Shell-TOTP
+
+**Deferred (spun off as post-launch tasks):**
+- [ ] Unify cross-app PostHog distinct_id (Shell UUID / Field `tenant:handle` / Service id) — fixes the "refused to merge" warning + the inflated user count
+- [ ] Fix EQ Field double `$pageview` capture (SPA logs ~80% of pageviews as `/`)
+- [ ] Optional: add `auth.uid() IS NULL` guard to `eq_cards_claim_invite`
 
 ---
 
