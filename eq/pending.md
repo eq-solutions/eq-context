@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-06-04
+last_updated: 2026-06-05
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -11,6 +11,21 @@ status: live
 
 EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## ⏩ Session close — 2026-06-05
+
+**Completed (EQ Field):**
+- v3.5.73 — job numbers on the weekly schedule (project→job, derived onto roster grid + My Schedule). PR [#186](https://github.com/eq-solutions/eq-field/pull/186), merged, live.
+- v3.5.74 — per-cell job **pin** for multi-job sites (Edit Roster pick-list; pin > project primary > none). PR [#187](https://github.com/eq-solutions/eq-field/pull/187), merged, live.
+
+**Deferred (next step, Royce-gated):**
+- [ ] Auto-fill labour-hire/apprentice Field timesheets from the roster job pin (the invoice-reconciliation path). Held deliberately — touches the accounts reconciliation.
+
+**Rollout note:** a site only offers a job pick-list when its jobs are tagged to it (Job Numbers → Site, `job_numbers.site_name`).
+
+**⚠ Correction to a carried-forward action (below):** the "Downgrade/pause `ktmjmdzqrogauaevbktn`" item is **BLOCKED** — verified 2026-06-05 that this DB is still the **live EQ data plane** (serves all projects/sites/jobs/people/schedule; the zaap `app_data.field_*` twins are empty). Pausing it takes EQ Field down. Do not action until the canonical reseed/cutover lands.
 
 ---
 

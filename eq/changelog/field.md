@@ -1,13 +1,25 @@
 ---
 title: Changelog — EQ Solves Field
 owner: Royce Milmlow
-last_updated: 2026-06-04
+last_updated: 2026-06-05
 scope: Append-only history of changes to the EQ Solves Field product
 read_priority: reference
 status: live
 ---
 
 # Changelog — EQ Solves Field
+
+## [2026-06-05] v3.5.74 — Job number per roster assignment (menu + pin) (PR #187, merged)
+**Built by:** Royce Milmlow + Claude Code
+Multi-job sites. In Edit Roster, a cell whose site carries >1 job number shows a per-day job pick-list; the supervisor pins which job that person is on. The pin shows under the site code on the roster grid and as "🔢 Job …" on My Schedule, **overriding** the project primary for that cell. Single-/no-job sites unchanged (primary auto-shows, no picker); leave cells none. Resolution per cell: pin (`schedule.{day}_job`) > project primary (v3.5.73) > none. Stores the plain job **number string** — the value direct workers carry into Workbench. **LH/apprentice timesheet auto-fill from the pin deliberately deferred** (next step). DB: `schedule.mon_job…sun_job` (nullable text) on **ktmj.public.schedule** (live) + forward-compat zaap twins. Realtime propagates pins. PR [#187](https://github.com/eq-solutions/eq-field/pull/187) — **merged**, prod sw.js = `eq-field-v3.5.74`.
+
+## [2026-06-05] v3.5.73 — Job numbers on the weekly schedule (PR #186, merged)
+**Built by:** Royce Milmlow + Claude Code
+Roster grid + My Schedule show a project's job number under each site assignment. **Derived, not entered:** a project links to one row in the Job Numbers list (Projects → edit → "Job Number"), inherited by every site in the project. No `schedule`-table change, no per-cell entry; loose free-text reminder cells untouched. DB: `projects.job_number_id` (nullable, no FK) on **ktmjmdzqrogauaevbktn.public.projects** (the LIVE EQ plane — NOT zaap) + forward-compat zaap twins. PR [#186](https://github.com/eq-solutions/eq-field/pull/186) — **merged**, prod sw.js = `eq-field-v3.5.73`.
+
+**Operating model (captured this session):** the Weekly Roster is the single surface every worker reads. Direct staff book hours in **Workbench**; Field timesheets are a tracking/reconciliation surface (execs reconcile Field vs Workbench). Labour-hire & apprentices are entered into Field timesheets for **invoice reconciliation by accounts**. So the roster job number is the *communicated truth* direct workers carry into Workbench.
+
+> **⚠ Data-plane correction (live > docs):** `ktmjmdzqrogauaevbktn` is still the live EQ read/write plane (12 projects / 48 sites / 11 job_numbers / 605 people / 2417 schedule rows). The zaap `app_data.field_*` twins are **empty**, so the JWT routing in `supabase.js` isn't serving EQ data at runtime — reads/writes hit `public.*` via anon. Any EQ schema change must target **ktmj.public.\*** or `saveX-to-SB` 400s on deploy. This contradicts the Phase-2 "secured on JWT" wording; reconcile before acting on it. **Do NOT pause/downgrade `ktmjmdzqrogauaevbktn`** (a carried-forward `pending.md` action) — it would take EQ Field down.
 
 ## [2026-06-04] v3.5.72 — Remove the "Pick a demo tenant" workspace picker (PR #185, merged)
 **Built by:** Royce Milmlow + Claude Code
