@@ -47,6 +47,10 @@ _archive-*/
 CHANGELOG-v*.md
 CHANGELOG-V*.md
 
+# --- Python tooling cache (scripts/sync.py + tests) ---
+__pycache__/
+*.pyc
+
 # --- Local editor / IDE noise ---
 .vscode/
 .idea/

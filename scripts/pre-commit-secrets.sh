@@ -21,8 +21,13 @@
 #   - AWS access keys (AKIA...)
 #   - Stripe live keys (sk_live_)
 #   - Anthropic API keys (sk-ant-)
-#   - OpenAI keys (sk-...)
-#   - Generic 'password=' / 'api_key=' / 'secret=' assignments with non-empty values
+#   - OpenAI keys (sk-proj-... and legacy sk-...)
+#   - Generic 'password=' / 'api_key=' / 'secret=' / 'token=' assignments whose
+#     value is a 20+ char high-entropy token (placeholders like YOUR_KEY_HERE
+#     may also trip it — clear the value or use --no-verify).
+#
+# Coverage rule: every format listed above MUST have a matching entry in the
+# `patterns` array below. Do not advertise here what the array doesn't enforce.
 
 set -euo pipefail
 
@@ -31,6 +36,10 @@ files=$(git diff --cached --name-only --diff-filter=ACM)
 [ -z "$files" ] && exit 0
 
 # Patterns to scan for (extended regex)
+# Matched case-insensitively (grep -iEn below). Every format the header
+# comment advertises MUST appear here — a scanner that under-delivers on its
+# documented coverage is worse than none (false confidence). Last reconciled
+# against the header 2026-06-04.
 patterns=(
   'ghp_[A-Za-z0-9]{36,}'
   'gho_[A-Za-z0-9]{36,}'
@@ -45,6 +54,14 @@ patterns=(
   'AKIA[0-9A-Z]{16}'
   'sk_live_[A-Za-z0-9]{24,}'
   'sk-ant-[A-Za-z0-9_-]{40,}'
+  # OpenAI: project keys (sk-proj-) and legacy (sk-<base62>). Ordered before
+  # the legacy form; sk-ant- above is matched by its own stricter pattern.
+  'sk-proj-[A-Za-z0-9_-]{32,}'
+  'sk-[A-Za-z0-9]{32,}'
+  # Generic 'key = value' / 'key: value' assignments. The value must be a
+  # 20+ char high-entropy token (no spaces) so prose like "the access token
+  # model" cannot trip it — only real secret-shaped values do.
+  '(password|passwd|secret|api[_-]?key|apikey|access[_-]?key|auth[_-]?token|bearer)["'"'"']?[[:space:]]*[:=][[:space:]]*["'"'"']?[A-Za-z0-9/+_=-]{20,}'
 )
 
 hits=0
@@ -55,7 +72,7 @@ for f in $files; do
   fi
 
   for p in "${patterns[@]}"; do
-    if matches=$(git show ":$f" 2>/dev/null | grep -En "$p" || true); then
+    if matches=$(git show ":$f" 2>/dev/null | grep -iEn "$p" || true); then
       if [ -n "$matches" ]; then
         echo "❌ Possible secret in $f:" >&2
         echo "$matches" | sed 's/^/   /' >&2

@@ -12,6 +12,23 @@
 --
 -- This is intentionally a queue, not a fancy collab system — keep
 -- diff-and-apply discipline; review is human, not automated.
+--
+-- STATUS (verified live 2026-06-04): NOT YET APPLIED. The table does
+-- not exist on the substrate project (urjhmkhbgaxrofurpbgc). Do not
+-- apply without first standing up the consumer (the "scheduled task /
+-- Cowork poll" in the application notes below) — an anon-writable
+-- queue with no consumer is pure attack surface.
+--
+-- HARDENING (2026-06-04, pre-apply): the anon INSERT path is reachable
+-- by anyone holding the public anon key (it ships to browsers). Two
+-- guards added before this is ever applied:
+--   1. Per-column length CHECK constraints cap a single proposal's
+--      footprint so the table can't be used for storage exhaustion.
+--   2. The dead "proposer can read own" policy is removed (it keyed on
+--      a JWT claim anon inserts never carry — it enforced nothing).
+-- Residual risk: volume (many small rows). RLS cannot rate-limit;
+-- when this is wired up, front the INSERT with the edge function +
+-- a per-session/IP throttle, or restrict INSERT to authenticated.
 -- ============================================================
 
 create extension if not exists pgcrypto;
@@ -48,7 +65,16 @@ create table if not exists context_proposals (
   github_pr_url text,
 
   -- Free-form attribution / metadata
-  metadata jsonb not null default '{}'::jsonb
+  metadata jsonb not null default '{}'::jsonb,
+
+  -- Footprint caps — a single proposal cannot be used to exhaust storage.
+  -- 256 KiB of content is far above any real MD edit; rationale/notes are
+  -- prose-sized. Reject oversized payloads at write time.
+  constraint proposed_content_len check (proposed_content is null or length(proposed_content) <= 262144),
+  constraint patch_diff_len       check (patch_diff is null       or length(patch_diff)       <= 262144),
+  constraint rationale_len        check (rationale is null         or length(rationale)        <= 8192),
+  constraint review_note_len      check (review_note is null       or length(review_note)      <= 8192),
+  constraint target_path_len      check (length(target_path) <= 512)
 );
 
 create index if not exists idx_context_proposals_status_created
@@ -67,22 +93,21 @@ create index if not exists idx_context_proposals_source
 -- ============================================================
 alter table context_proposals enable row level security;
 
--- Anyone can propose
+-- Anyone can propose. Footprint is bounded by the *_len CHECK constraints
+-- above; per-volume throttling is the consumer's job (see hardening note
+-- in the header) — RLS cannot rate-limit.
 drop policy if exists "anyone can propose" on context_proposals;
 create policy "anyone can propose"
   on context_proposals
   for insert
   with check (true);
 
--- Proposer can read their own (by session_id match)
-drop policy if exists "proposer can read own" on context_proposals;
-create policy "proposer can read own"
-  on context_proposals
-  for select
-  using (
-    session_id is not null
-    and session_id = current_setting('request.jwt.claims', true)::jsonb->>'session_id'
-  );
+-- NOTE: the former "proposer can read own" SELECT policy was removed
+-- 2026-06-04. It keyed on request.jwt.claims->>'session_id', but anon
+-- inserts carry no such claim, so it granted read to no one — dead policy
+-- masquerading as access control. Proposers do not read back through RLS;
+-- the consumer (service role) reads the queue. If read-back is ever needed,
+-- implement it through the edge function with an explicit token, not RLS.
 
 -- Service role bypasses RLS automatically; no policy needed.
 
