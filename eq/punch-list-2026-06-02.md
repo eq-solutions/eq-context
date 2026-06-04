@@ -1,7 +1,7 @@
 ---
 title: EQ — Owner Punch List (resume after break)
 owner: Royce Milmlow
-last_updated: 2026-06-03
+last_updated: 2026-06-04
 scope: Owner-only actions (Royce must do these by hand). Pick up here after the break.
 read_priority: critical
 status: live
