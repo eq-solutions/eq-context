@@ -36,7 +36,7 @@ jobs:
 
           for f in $(git ls-files '*.md'); do
             case "$f" in
-              README.md|COWORK-PROMPT.md|AGENTS.md|archive/*|drafts/*|sessions/*|.github/*|.githooks/*|md-health-reports/*)
+              README.md|COWORK-PROMPT.md|CHATGPT-PROMPT.md|GROK-PROMPT.md|AGENTS.md|archive/*|drafts/*|sessions/*|.github/*|.githooks/*|md-health-reports/*)
                 continue ;;
             esac
 

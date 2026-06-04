@@ -1,3 +1,11 @@
+---
+title: Weekend Merge Runbook — Consolidate + Deploy + EQ Anon Remediation
+owner: Royce Milmlow
+last_updated: 2026-06-04
+scope: Step-by-step runbook for the weekend merge/deploy/remediation
+read_priority: standard
+status: live
+---
 # Weekend Merge Runbook — Consolidate + Deploy (#2) + EQ Anon Remediation (#3)
 
 **Prepared:** 2026-06-04 · **For:** the weekend merge window

@@ -1,3 +1,11 @@
+---
+title: eq-canonical Reference Classification (2026-05-31)
+owner: Royce Milmlow
+last_updated: 2026-05-31
+scope: eq-canonical table classification audit (archived snapshot)
+read_priority: reference
+status: archived
+---
 # eq-canonical reference classification — 2026-05-31
 
 Companion to `roles-canonical-audit-2026-05-31.md`. Classifies every `eq-canonical` string ref

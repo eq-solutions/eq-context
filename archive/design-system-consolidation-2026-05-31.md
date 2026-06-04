@@ -1,4 +1,12 @@
 ---
+title: EQ Design System — Consolidation Plan (2026-05-31)
+owner: Royce Milmlow
+last_updated: 2026-05-31
+scope: Design-system consolidation analysis (archived snapshot)
+read_priority: reference
+status: archived
+---
+---
 title: EQ Design System — Consolidation Plan
 owner: Royce Milmlow
 last_updated: 2026-05-31

@@ -1,3 +1,11 @@
+---
+title: Roles + eq-canonical Audit (2026-05-31)
+owner: Royce Milmlow
+last_updated: 2026-05-31
+scope: Roles/canonical audit (archived snapshot)
+read_priority: reference
+status: archived
+---
 # Roles + eq-canonical audit — 2026-05-31
 
 **Source:** ad-hoc fan-out (2 read-only `Explore` agents over 9 EQ repos) + manual verification

@@ -2,8 +2,11 @@
 title: F1 — Rotate the exposed ehowg (sks-canonical) service_role key
 owner: Royce Milmlow
 created: 2026-06-03
-status: ready-to-run (P0, Royce-gated)
+last_updated: 2026-06-03
 scope: Kill the leaked SKS-canonical service_role key and swap the new one into both consumers
+read_priority: critical
+status: live
+readiness: ready-to-run (P0, Royce-gated)
 ---
 
 # F1 runbook — rotate the leaked SKS database key

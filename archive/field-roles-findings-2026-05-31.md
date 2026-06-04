@@ -1,3 +1,11 @@
+---
+title: Field Roles — Verified Findings + Cross-App Decision (2026-05-31)
+owner: Royce Milmlow
+last_updated: 2026-05-31
+scope: Field roles findings audit (archived snapshot)
+read_priority: reference
+status: archived
+---
 # Field roles — verified findings + a cross-app decision — 2026-05-31
 
 Companion to `roles-canonical-audit-2026-05-31.md` §B/§D. Verified read of EQ Field's role model

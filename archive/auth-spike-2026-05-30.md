@@ -2,6 +2,14 @@
 title: Auth Re-platform Spike — Supabase Auth IdP + Passkeys
 owner: Royce Milmlow
 last_updated: 2026-05-30
+scope: One-shot spike on Supabase Auth IdP + passkeys (archived snapshot)
+read_priority: reference
+status: archived
+---
+---
+title: Auth Re-platform Spike — Supabase Auth IdP + Passkeys
+owner: Royce Milmlow
+last_updated: 2026-05-30
 scope: Design + staged migration plan for Supabase-Auth single IdP, passkeys-first, 5-tier roles → JWT/RLS. Design only — review before build.
 read_priority: standard
 status: live

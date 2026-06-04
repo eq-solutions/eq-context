@@ -141,7 +141,7 @@ if [ -s /tmp/_pre_bump_$$ ]; then
     while read -r mdfile; do
         [ -f "$mdfile" ] || continue
         case "$mdfile" in
-            README.md|COWORK-PROMPT.md|archive/*|.github/*|.githooks/*) continue ;;
+            README.md|COWORK-PROMPT.md|CHATGPT-PROMPT.md|GROK-PROMPT.md|archive/*|.github/*|.githooks/*) continue ;;
         esac
         first=$(head -1 "$mdfile" | tr -d '\r' | sed $'s/^\xef\xbb\xbf//')
         [ "$first" = "---" ] || continue
@@ -171,7 +171,7 @@ if [ -s /tmp/_pre_md_$$ ]; then
         [ -f "$mdfile" ] || continue
         # Skip files where frontmatter is not required
         case "$mdfile" in
-            README.md|COWORK-PROMPT.md|archive/*|.github/*|.githooks/*) continue ;;
+            README.md|COWORK-PROMPT.md|CHATGPT-PROMPT.md|GROK-PROMPT.md|archive/*|.github/*|.githooks/*) continue ;;
         esac
         # Strip trailing CR (CRLF line endings) and a leading UTF-8 BOM
         # (\xEF\xBB\xBF) before comparing — both can be present on

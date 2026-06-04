@@ -2,6 +2,14 @@
 title: Sprint — EQ Design System Component Buildout (A7–A11)
 owner: Royce Milmlow
 last_updated: 2026-05-31
+scope: Dated design-system sprint doc (archived snapshot)
+read_priority: reference
+status: archived
+---
+---
+title: Sprint — EQ Design System Component Buildout (A7–A11)
+owner: Royce Milmlow
+last_updated: 2026-05-31
 scope: Finish @eq-solutions/ui (Modal/FormInput/StatusBadge/Card/Toast/Tabs) + self-host the font; written for a second console to review and execute
 read_priority: standard
 status: draft

@@ -1,3 +1,11 @@
+---
+title: SKS Cutover — Critical-Path Plan
+owner: Royce Milmlow
+last_updated: 2026-06-04
+scope: Critical path to put EQ Field on the SKS tenant (B5 cutover)
+read_priority: standard
+status: live
+---
 # SKS Cutover — Critical-Path Plan (Field on the SKS tenant)
 
 **Prepared:** 2026-06-04

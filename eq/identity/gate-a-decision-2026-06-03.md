@@ -1,3 +1,11 @@
+---
+title: Gate A Decision — Worker Auth Provisioning
+owner: Royce Milmlow
+last_updated: 2026-06-03
+scope: Decision record for the Gate A worker auth-provisioning question
+read_priority: standard
+status: live
+---
 # GATE A — Worker auth provisioning: DECISION
 
 **Date:** 2026-06-03 · **Owner:** Royce Milmlow · **Streams:** Cards + C-CANON · **Board:** Stream G (auth gate)

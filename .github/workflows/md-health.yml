@@ -83,7 +83,7 @@ jobs:
           missing=0
           for f in $(git ls-files '*.md'); do
             case "$f" in
-              README.md|COWORK-PROMPT.md|archive/*|.github/*|.githooks/*) continue ;;
+              README.md|COWORK-PROMPT.md|CHATGPT-PROMPT.md|GROK-PROMPT.md|archive/*|.github/*|.githooks/*) continue ;;
             esac
             first=$(head -1 "$f" || true)
             if [ "$first" != "---" ]; then

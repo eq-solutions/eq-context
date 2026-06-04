@@ -1,3 +1,11 @@
+---
+title: Auth Phase 4 — HMAC Retirement Runbook
+owner: Royce Milmlow
+last_updated: 2026-06-03
+scope: Runbook to retire the HMAC auth path (Phase 4)
+read_priority: standard
+status: draft
+---
 # Auth Phase 4 — HMAC Retirement Runbook
 
 **Sprint:** 6

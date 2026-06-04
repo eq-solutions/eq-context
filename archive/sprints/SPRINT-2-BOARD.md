@@ -1,4 +1,12 @@
 ---
+title: Sprint 2 — Board (complete)
+owner: Royce Milmlow
+last_updated: 2026-05-30
+scope: Sprint 2 board — waves complete (archived snapshot)
+read_priority: reference
+status: archived
+---
+---
 title: Sprint 2 — Board
 owner: Royce Milmlow
 last_updated: 2026-05-30
