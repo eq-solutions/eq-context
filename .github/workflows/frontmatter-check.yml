@@ -99,6 +99,38 @@ jobs:
           fi
           echo "All tracked text files use LF."
 
+  index-drift:
+    name: Tier index vs folder
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      # Every .md in a tier folder must be mentioned (by basename) in that
+      # tier's README.md. Catches the drift where eq/README listed 8 of 20
+      # files. Cheap basename match — a file totally absent from its index
+      # fails; precise path-vs-path is left to review.
+      - name: Check each tier README lists its files
+        run: |
+          set -euo pipefail
+          drift=0
+          for tier in eq sks ops system sks-team archive; do
+            readme="$tier/README.md"
+            [ -f "$readme" ] || continue
+            for f in $(git ls-files "$tier/**/*.md" "$tier/*.md" 2>/dev/null | sort -u); do
+              base=$(basename "$f")
+              [ "$base" = "README.md" ] && continue
+              if ! grep -qF "$base" "$readme"; then
+                echo "::error file=$readme::$f is not listed in $readme (index drift)"
+                drift=$((drift+1))
+              fi
+            done
+          done
+          if [ "$drift" -gt 0 ]; then
+            echo "::error::$drift file(s) missing from their tier index."
+            exit 1
+          fi
+          echo "All tier indexes match their folders."
+
   no-new-root-clutter:
     name: No new dated working-docs in root
     if: github.event_name == 'pull_request'

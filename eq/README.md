@@ -16,20 +16,10 @@ a good product. Sequencing is by the trust ladder + Royce's go — **not**
 gated on outside validation. The old 5-outside-subbie GTM gate is dead
 (see `ops/decisions.md` 2026-06-02).
 
-## EQ substrate map
-
-Every canonical EQ file as a full URL — clickable from `/context/claude`:
-
-- [eq/pending.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/pending.md) — EQ-only to-do list
-- [eq/products.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/products.md) — EQ live product status
-- [eq/cards/canonical-migration/plan.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/cards/canonical-migration/plan.md) — Cards §18 close-out: move Cards data to eq-canonical, retire standalone Supabase, SSO via shared JWT (active workstream 2026-05-20)
-- [eq/canonical-readiness/plan.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/canonical-readiness/plan.md) — Canonical layer readiness plan: bring eq-canonical to the shape needed to host Intake + Field + Quotes as first-class modules. **EXECUTED 2026-05-20** — all 6 work units shipped (42 entities across 5 modules)
-- [eq/canonical-readiness/spine.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/canonical-readiness/spine.md) — **The trust spine**: which 6 of 55 `app_data` tables must be identical/trusted across tenants vs free to vary. Foundation for the coherence rung + drift guard (2026-06-02)
-- [eq/sprints/2026-05-20-S1-canonical-lockin.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/sprints/2026-05-20-S1-canonical-lockin.md) — Sprint S1: canonical-readiness lock-in + ship-ready. 10 items, 1-week, security rotations + PostgREST schema exposure + first functional Core dropzone + Cards iframe deploy (draft 2026-05-20)
-- [eq/canonical-readiness/audit-2026-05-21.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/canonical-readiness/audit-2026-05-21.md) — Honest audit of core.eq.solutions post-S3. Top issues: EntityImportPanel hangs the renderer; home screen reads as admin dashboard not platform; intake legacy has no topbar. **All 8 items shipped + verified in browser 2026-05-21**.
-- [eq/overnight-prompt-2026-05-21.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/overnight-prompt-2026-05-21.md) — Self-contained brief for a multi-hour autonomous session. Mission, scope, authority, priority queue (Tenant Settings → Storage browser → Invite UX → module placeholders), definition of done. Paste at session start. (2026-05-21)
-- [eq/overnight-report-2026-05-21.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/overnight-report-2026-05-21.md) — **What I actually did overnight.** Cards canonical flip shipped end-to-end (data migration + Flutter Unit 4 + shell SSO flag + Netlify deploy). Sanity test + rollback path in the report. (2026-05-21)
-- `eq/templates.md` — forward-pointer; file does not exist yet, will be created when the first EQ deliverable template is captured
+The complete, authoritative file index lives in the **Files** table below —
+single source, kept in step with the folder. (Two `overnight-*-2026-05-21.md`
+links previously listed here were dead — the files were never committed — and
+have been removed.)
 
 ## Strategic focus (2026 Q2)
 
@@ -44,16 +34,31 @@ Every canonical EQ file as a full URL — clickable from `/context/claude`:
 
 ## Files
 
+Complete index of the EQ tier (rebuilt 2026-06-04 to match the folder). Each
+path is fetchable at `…/functions/v1/context/eq/<path>`.
+
 | Path | Purpose |
 |---|---|
 | `pending.md` | EQ-only to-do list |
 | `products.md` | EQ live product status |
-| `field/multi-tenancy/` | EQ Field MT plan + explainer (active reference) |
-| `field/permissions/` | EQ Field role/permission matrix |
-| `cards/canonical-migration/plan.md` | EQ Cards §18 close-out (active 2026-05-20) |
-| `canonical-readiness/plan.md` | Canonical layer readiness for Intake/Field/Quotes ports (draft 2026-05-20) |
+| `punch-list-2026-06-02.md` | EQ punch list (2026-06-02) |
+| `field/multi-tenancy/plan.md` | EQ Field multi-tenancy plan (active reference) |
+| `cards/canonical-migration/plan.md` | EQ Cards §18 close-out — Cards → eq-canonical |
+| `canonical-readiness/plan.md` | Canonical layer readiness for Intake/Field/Quotes (EXECUTED 2026-05-20) |
+| `canonical-readiness/spine.md` | The trust spine — which app_data tables must stay identical across tenants |
+| `canonical-readiness/audit-2026-05-21.md` | Post-S3 honest audit of core.eq.solutions (shipped) |
+| `canonical-readiness/audit-existing-tables.md` | Audit of existing eq-canonical tables |
+| `identity/IDENTITY-MODEL.md` | Authoritative EQ identity model |
+| `identity/worker-credentials-model-2026-05-31.md` | Worker-owned portable credentials model (decided design) |
+| `identity/onboarding-portable-identity-2026-06-04.md` | Low-friction onboarding + portable identity (draft/proposed) |
+| `identity/PHASE-1F-PLAN.md` | Identity Phase 1F build plan |
+| `identity/gate-a-decision-2026-06-03.md` | Gate A — worker auth provisioning decision |
+| `design/claude-design-context.md` | Design context for Claude Design / mockups |
+| `sprints/2026-05-20-S1-canonical-lockin.md` | Sprint S1 — canonical lock-in (historical) |
+| `sprints/2026-05-20-S3-polish-and-audit.md` | Sprint S3 — polish + audit (historical) |
 | `changelog/field.md` | EQ Field append-only history |
 | `changelog/eq-context.md` | Substrate self-changelog |
+| `templates.md` | Forward-pointer — does not exist yet (first EQ template captured here) |
 
 ## Killed / deferred (do not reference as live products)
 

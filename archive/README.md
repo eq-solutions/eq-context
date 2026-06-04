@@ -1,7 +1,7 @@
 ---
 title: Archive
 owner: Royce Milmlow
-last_updated: 2026-05-04
+last_updated: 2026-06-04
 scope: Parked, deferred, and historical content kept out of default AI load
 read_priority: reference
 status: live
@@ -17,6 +17,13 @@ explicitly directed.
 |---|---|---|
 | `changelog-eq-quotes.md` | Historical Flask v1 changelog. EQ Quotes was un-deferred 2026-05-19 and is now live first-round core (`eq/products.md`) | Reinstate as `eq/changelog/quotes.md` when the React rewrite begins |
 | `changelog-ahd.md` | AHD parked to 2027 capital activation | 2027 capital activation review |
+| `sessions-2026-04.md` | April 2026 session logs, rolled off the 30-day window | Tracing an April decision |
+| `auth-spike-2026-05-30.md` | One-shot Supabase-Auth IdP + passkeys spike | If the auth re-platform resumes |
+| `design-system-consolidation-2026-05-31.md` | Design-system consolidation analysis (snapshot) | Design-system rework |
+| `eq-canonical-classification-2026-05-31.md` | eq-canonical table classification audit (snapshot) | Re-auditing canonical exposure |
+| `field-roles-findings-2026-05-31.md` | Field roles findings + cross-app decision (snapshot) | Roles model changes |
+| `roles-canonical-audit-2026-05-31.md` | Roles + eq-canonical audit (snapshot) | Roles model changes |
+| `sks-anon-exposure-audit-2026-05-31.md` | SKS canonical anon-exposure audit (snapshot) | Re-auditing SKS RLS |
 
 ## Sprint working docs — `sprints/`
 
@@ -35,6 +42,8 @@ when explicitly tracing how a 2026-05-30 decision was made.
 | `sprints/sprint2-wave2-shortlist-2026-05-30.md` | Wave-2 shortlist — all selected items merged |
 | `sprints/cards-rebuild-plan-2026-05-30.md` | Cards worker-first rebuild plan — S2-A deferred ("not building now"); revive if E1 resumes |
 | `sprints/RESUME-2026-05-21.md` | One-time session resume prompt (2026-05-21) — superseded by `STATE.md` |
+| `sprints/SPRINT-2-BOARD.md` | Sprint 2 board — waves complete |
+| `sprints/sprint-2026-05-31-design-system.md` | Design-system component buildout sprint (A7–A11) — snapshot |
 
 ## How to revive archived content
 

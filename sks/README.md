@@ -82,6 +82,7 @@ Separate audience — only fetch when explicitly authoring or reviewing team-fac
 | `team.md` | NSW team |
 | `products.md` | SKS live tools (Labour, Receipt Tracker) |
 | `templates.md` | Quote v3 spec + client context blocks |
+| `brand-kit-tests.md` | SKS brand-kit QA / test notes |
 | `changelog/labour.md` | SKS Labour app history |
 
 ## Reference
