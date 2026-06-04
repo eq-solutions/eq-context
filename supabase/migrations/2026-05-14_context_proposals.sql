@@ -13,22 +13,25 @@
 -- This is intentionally a queue, not a fancy collab system — keep
 -- diff-and-apply discipline; review is human, not automated.
 --
--- STATUS (verified live 2026-06-04): NOT YET APPLIED. The table does
--- not exist on the substrate project (urjhmkhbgaxrofurpbgc). Do not
--- apply without first standing up the consumer (the "scheduled task /
--- Cowork poll" in the application notes below) — an anon-writable
--- queue with no consumer is pure attack surface.
+-- STATUS: APPLIED 2026-06-04 to the substrate project
+-- (urjhmkhbgaxrofurpbgc) via Supabase migration `context_proposals`.
+-- Table created empty; live posture verified — RLS on, anon INSERT-only,
+-- anon SELECT revoked on both table and view.
 --
--- HARDENING (2026-06-04, pre-apply): the anon INSERT path is reachable
--- by anyone holding the public anon key (it ships to browsers). Two
--- guards added before this is ever applied:
+-- HARDENING (2026-06-04): the anon INSERT path is reachable by anyone
+-- holding the public anon key (it ships to browsers). Guards applied:
 --   1. Per-column length CHECK constraints cap a single proposal's
 --      footprint so the table can't be used for storage exhaustion.
 --   2. The dead "proposer can read own" policy is removed (it keyed on
 --      a JWT claim anon inserts never carry — it enforced nothing).
+--   3. context_proposals_pending is security_invoker=true and has
+--      SELECT revoked from anon/authenticated — a plain view would run
+--      as owner and leak EVERY pending proposal past the table's RLS.
+--   4. SELECT revoked from anon/authenticated on the base table too
+--      (reads are service-role only).
 -- Residual risk: volume (many small rows). RLS cannot rate-limit;
--- when this is wired up, front the INSERT with the edge function +
--- a per-session/IP throttle, or restrict INSERT to authenticated.
+-- the consumer (scheduled task / Cowork poll, NOT YET BUILT) must add a
+-- per-session/IP throttle, or INSERT should be restricted to authenticated.
 -- ============================================================
 
 create extension if not exists pgcrypto;
@@ -111,10 +114,20 @@ create policy "anyone can propose"
 
 -- Service role bypasses RLS automatically; no policy needed.
 
+-- Reads are service-role only. Revoke the default SELECT grant so anon /
+-- authenticated cannot even attempt to read the queue (RLS already returns
+-- zero rows, but this removes the grant entirely — defence in depth).
+revoke select on context_proposals from anon, authenticated;
+
 -- ============================================================
--- Convenience view: pending queue sorted oldest-first
+-- Convenience view: pending queue sorted oldest-first.
+-- security_invoker=true is LOAD-BEARING: a default (owner-rights) view
+-- bypasses the base table's RLS, so anon could read every pending proposal
+-- through it. With security_invoker the view honours the caller's RLS.
+-- SELECT is also revoked from anon/authenticated as belt-and-suspenders.
 -- ============================================================
-create or replace view context_proposals_pending as
+create or replace view context_proposals_pending
+  with (security_invoker = true) as
   select
     id,
     created_at,
@@ -129,6 +142,8 @@ create or replace view context_proposals_pending as
   from context_proposals
   where status = 'pending'
   order by created_at asc;
+
+revoke all on context_proposals_pending from anon, authenticated;
 
 -- ============================================================
 -- Application notes (not enforced in DB):
