@@ -94,6 +94,33 @@ def compute_current_slugs(root="."):
     return {slug for slug, _ in compute_upserts(root)}
 
 
+# Directories whose .md files are intentionally NOT synced. A file landing
+# here is fine; a file landing OUTSIDE both these and the sync patterns is the
+# bug we want to surface (see lessons.md "workflow-green-but-rows-absent").
+UNSYNCED_DIRS = (".git/", ".github/", ".githooks/", "node_modules/",
+                 "md-health-reports/", "drafts/", "scripts/")
+
+
+def uncovered_md(root="."):
+    """Tracked-looking .md files that no sync pattern picks up.
+
+    Guards the footgun where a new tier folder is added but the pattern list
+    in compute_upserts() isn't updated: the push still triggers the workflow
+    (paths: '**/*.md'), the run goes green, but the rows never appear. This
+    returns those silently-dropped files so the caller can shout about them.
+    """
+    covered = {fp for _, fp in compute_upserts(root)}
+    out = []
+    for fp in glob.glob(os.path.join(root, "**", "*.md"), recursive=True):
+        rel = os.path.relpath(fp, root).replace(os.sep, "/")
+        if rel in covered:
+            continue
+        if any(rel.startswith(d) for d in UNSYNCED_DIRS):
+            continue
+        out.append(rel)
+    return sorted(out)
+
+
 def find_orphans(current_slugs, existing_slugs):
     """Slugs present in the store but no longer produced by the file tree."""
     return sorted(s for s in existing_slugs if s not in current_slugs)
@@ -217,6 +244,17 @@ def main():
     base_url = os.environ["SUPABASE_URL"]
     service_key = os.environ["SUPABASE_SERVICE_ROLE_KEY"]
     max_abs = int(os.environ.get("MAX_ORPHAN_DELETE", DEFAULT_MAX_ORPHAN_ABS))
+
+    # Footgun guard: any .md outside both the sync patterns and the known
+    # unsynced dirs would silently never reach Supabase. Shout, don't fail —
+    # a stray draft shouldn't break the run, but a missed tier should be loud.
+    missed = uncovered_md(".")
+    if missed:
+        print("::warning:: %d .md file(s) match no sync pattern and will NOT "
+              "be synced — add a pattern in compute_upserts() if this is a new "
+              "tier:" % len(missed))
+        for m in missed:
+            print(f"  UNCOVERED: {m}")
 
     synced = set()
     print("=== Syncing context files ===")

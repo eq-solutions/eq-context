@@ -66,6 +66,26 @@ class SlugMappingTests(unittest.TestCase):
         )
 
 
+class UncoveredMdTests(unittest.TestCase):
+    def setUp(self):
+        self.dir = tempfile.mkdtemp()
+        _touch(os.path.join(self.dir, "eq/pending.md"))          # covered (tier)
+        _touch(os.path.join(self.dir, "STATE.md"))               # covered (root)
+        _touch(os.path.join(self.dir, "drafts/wip.md"))          # exempt dir
+        _touch(os.path.join(self.dir, ".github/workflows/x.md")) # exempt dir
+        _touch(os.path.join(self.dir, "newtier/oops.md"))        # NOT covered
+
+    def test_new_tier_file_is_flagged(self):
+        self.assertIn("newtier/oops.md", sync.uncovered_md(self.dir))
+
+    def test_covered_and_exempt_not_flagged(self):
+        missed = sync.uncovered_md(self.dir)
+        self.assertNotIn("eq/pending.md", missed)
+        self.assertNotIn("STATE.md", missed)
+        self.assertNotIn("drafts/wip.md", missed)
+        self.assertNotIn(".github/workflows/x.md", missed)
+
+
 class OrphanSafetyTests(unittest.TestCase):
     def test_small_batch_allowed(self):
         blocked, _ = sync.orphan_delete_blocked(["a", "b"], total_existing=100, max_abs=15)

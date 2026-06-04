@@ -74,6 +74,24 @@ fi
 rm -f /tmp/_pre_sess_$$
 
 # ----------------------------------------------------------------------
+# 17.5 — New dated working-docs in repo root — BLOCK
+# Root accumulated ~14 dated working docs (field-feature-backlog-2026-05-30.md
+# etc) that should live in a tier or archive/. Block NEW ones at the source so
+# the clutter can't grow back. Only checks ADDED files, and only the root.
+# ----------------------------------------------------------------------
+added_files=$(git diff --cached --name-only --diff-filter=A)
+echo "$added_files" | grep -E '^[^/]+-[0-9]{4}-[0-9]{2}-[0-9]{2}[^/]*\.md$' > /tmp/_pre_dated_$$ || true
+if [ -s /tmp/_pre_dated_$$ ]; then
+    echo "${RED}BLOCK: new dated working-doc(s) in repo root — put these in a tier or archive/:${NC}"
+    sed 's/^/  - /' /tmp/_pre_dated_$$
+    echo "  Fix: move into eq/, sks/, ops/ (live reference) or archive/ (snapshot),"
+    echo "       or sessions/YYYY-MM-DD.md if it's a session log. Root is for stable"
+    echo "       index/contract files only."
+    violations=$((violations+1))
+fi
+rm -f /tmp/_pre_dated_$$
+
+# ----------------------------------------------------------------------
 # Duplicate-content check across staged + tracked sessions
 # Compares sha1 of session files; flags any duplicates.
 # ----------------------------------------------------------------------

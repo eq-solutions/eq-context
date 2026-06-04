@@ -64,5 +64,11 @@ jobs:
           git config user.name  "eq-context-bot"
           git config user.email "eq-context-bot@users.noreply.github.com"
           git add -A
-          git commit -m "chore: auto-bump last_updated to $(TZ=Australia/Sydney date +%Y-%m-%d) [skip ci]"
+          # NOTE: deliberately NO [skip ci]. [skip ci] suppressed ALL workflows
+          # on the bump commit — including sync-context — so the bumped
+          # last_updated never reached Supabase until the next real edit. The
+          # bot-author guard (`if author != eq-context-bot`) already prevents a
+          # loop, so letting CI run on the bump commit is safe and keeps the
+          # cache in sync.
+          git commit -m "chore: auto-bump last_updated to $(TZ=Australia/Sydney date +%Y-%m-%d)"
           git push origin main
