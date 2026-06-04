@@ -34,6 +34,7 @@ Every canonical OPS file as a full URL — clickable from `/context/claude`:
 | `entities.md` | Entity register, bank accounts, registrations, key contacts |
 | `decisions.md` | Append-only decisions (ADR format) — covers all tiers |
 | `financial-architecture.md` | AHD design, Delta Elcom cliff, CDC PSI position |
+| `security-register.md` | Open security findings across all Supabase projects (advisors + live probes) |
 
 ## When to load OPS
 

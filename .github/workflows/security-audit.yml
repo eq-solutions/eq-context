@@ -1,0 +1,40 @@
+name: Security audit
+
+# Standing security gate for the EQ/SKS Supabase surface. Runs weekly + on
+# demand + whenever the security tooling changes. Two checks:
+#   1. RLS zero-rows probe — public-key data-leak test. No secret needed.
+#   2. Advisor audit — fails on NEW ERROR-level Supabase advisories. Needs the
+#      SUPABASE_ACCESS_TOKEN secret; no-ops cleanly until that's set.
+# See ops/security-register.md for the tracked findings these gate against.
+
+on:
+  schedule:
+    - cron: "17 19 * * 0"   # Sundays ~05:17 Sydney — off the :00 mark
+  workflow_dispatch: {}
+  push:
+    branches: [main]
+    paths:
+      - "scripts/rls_probe.py"
+      - "scripts/security_audit.py"
+      - "scripts/test_security.py"
+      - ".github/workflows/security-audit.yml"
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Unit tests (probe + triage logic)
+        run: python3 scripts/test_security.py
+
+      - name: RLS zero-rows probe (public key must read 0 rows)
+        run: python3 scripts/rls_probe.py
+
+      - name: Supabase advisor audit (fails on NEW ERROR findings)
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        run: python3 scripts/security_audit.py
