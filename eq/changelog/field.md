@@ -1,13 +1,26 @@
 ---
 title: Changelog — EQ Solves Field
 owner: Royce Milmlow
-last_updated: 2026-06-03
+last_updated: 2026-06-04
 scope: Append-only history of changes to the EQ Solves Field product
 read_priority: reference
 status: live
 ---
 
 # Changelog — EQ Solves Field
+
+## [2026-06-04] v3.5.72 — Remove the "Pick a demo tenant" workspace picker (PR #185, merged)
+**Built by:** Royce Milmlow + Claude Code
+
+**Summary:** A plain load of eq-solves-field.netlify.app no longer shows the v3.5.18 "Pick a demo tenant" overlay — it boots straight into EQ Field (the default `eq` tenant resolved by `_detectTenantSlug` on the Field host). EQ Field is the front door for tenants now; the tiered demo chooser is gone. Removed the `tenant-picker-overlay` HTML + boot IIFE (index.html) and the `#tenant-picker-overlay` / `.tpo-*` CSS (styles/base.css). Nothing read `__EQ_TENANT_PICKER_ACTIVE__`.
+
+**No loss of reach:** the Advanced/Enterprise demo tenants are still reachable on demand via `?tenant=demo-trades` / `?tenant=melbourne`; the `#sh=` shell handoff is unchanged. Enterprise surface to be built out later.
+
+**Note:** this changelog had drifted — v3.5.60–v3.5.71 shipped without entries here (the in-HTML banner in index.html is the canonical changelog for v3.5+). This entry resumes the log at v3.5.72.
+
+**PR:** [#185](https://github.com/eq-solutions/eq-field/pull/185) — **merged**, live (prod sw.js = `eq-field-v3.5.72`).
+
+---
 
 ## [2026-06-03] v3.5.65 — Sync from SKS NSW Labour v3.10.50–51 (PR #173, merged)
 **Built by:** Royce Milmlow + Claude Code

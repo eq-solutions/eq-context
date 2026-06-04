@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-06-03
+last_updated: 2026-06-04
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -11,6 +11,20 @@ status: live
 
 EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## ⏩ Session close — 2026-06-04
+
+**Completed (EQ Field):**
+- v3.5.72 — removed the "Pick a demo tenant" workspace picker; EQ Field now boots straight into the default `eq` tenant (PR [#185](https://github.com/eq-solutions/eq-field/pull/185), merged, live). Demo tiers still reachable via `?tenant=demo-trades` / `?tenant=melbourne`.
+
+**Pending Royce-actions (carried forward):**
+- [ ] Downgrade old EQ DB `ktmjmdzqrogauaevbktn` → free tier in Supabase dashboard, then pause it (paid projects can't be paused via API)
+- [ ] `TENANT_ORG_UUID` Netlify env var for eq-solves-field EQ site (blocks U6 PIN)
+- [ ] Revoke old `gho_...` PAT at github.com/settings/tokens
+- [ ] Drift CI secrets in eq-shell GitHub repo settings
+- [ ] HaveIBeenPwned toggle in eq-canonical Supabase Auth settings
 
 ---
 
