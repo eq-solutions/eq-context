@@ -68,10 +68,10 @@ PROJECTS = {
 # permanently red). See ops/security-register.md. Remove an entry the moment
 # it's fixed. Format: "project.public.table": "ticket — review_by".
 KNOWN_LEAKS = {
-    "sks-labour.public.people": "SEC-1 SKS Labour anon model — fix in B5 cutover — review_by 2026-06-09",
-    "sks-labour.public.timesheets": "SEC-1 SKS Labour anon model — fix in B5 cutover — review_by 2026-06-09",
-    "sks-labour.public.leave_requests": "SEC-1 SKS Labour anon model — fix in B5 cutover — review_by 2026-06-09",
-    "sks-labour.public.audit_log": "SEC-1 SKS Labour anon model — fix in B5 cutover — review_by 2026-06-09",
+    "sks-labour.public.people": "SEC-1 — DECOMMISSION SKS Labour at Field cutover — review_by 2026-06-09",
+    "sks-labour.public.timesheets": "SEC-1 — DECOMMISSION SKS Labour at Field cutover — review_by 2026-06-09",
+    "sks-labour.public.leave_requests": "SEC-1 — DECOMMISSION SKS Labour at Field cutover — review_by 2026-06-09",
+    "sks-labour.public.audit_log": "SEC-1 — DECOMMISSION SKS Labour at Field cutover — review_by 2026-06-09",
 }
 
 

@@ -68,6 +68,7 @@ The EQ tenant is mid-migration between an old **un-prefixed** schema and the new
 1. Repoint the SKS Field surface at the `field_*` schema on the SKS tenant, on per-user auth.
 2. Parallel-run / verify for a soak period.
 3. Decommission the legacy SKS NSW Labour app + its anon access. Drop the old labour tables only after the soak proves the cutover.
+   - **SECURITY-CRITICAL (SEC-1, see `ops/security-register.md`):** the legacy app's public key reads live staff PII (`people`/`timesheets`/`leave_requests`/`audit_log`) — verified 2026-06-05. This step *closes a live leak*, not just tidies up. **If the team moves to Field before this Phase-E decommission lands, the leak persists** — interim-disable anon access (or pause project `nspbmirochztcjijmcrx`) the moment the team is off SKS Labour, don't wait for the full soak.
 
 ---
 
