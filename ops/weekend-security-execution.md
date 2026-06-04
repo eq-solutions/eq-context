@@ -95,6 +95,17 @@ entries from `scripts/rls_probe.py` `KNOWN_LEAKS` so the probe goes fully green.
 
 ---
 
+## SEC-3 — F1 ehowg key rotation (optional this window)
+
+Full ready-to-run steps live in **`f1-ehowg-key-rotation-runbook-2026-06-03.md`** —
+do **not** duplicate them here. Re-verified 2026-06-05: still OPEN (the `sks`
+routing row's `status_changed_at` is unchanged at 2026-05-24 → never re-keyed).
+Coordinated rotation (Supabase JWT secret → Quotes Fly secret → re-encrypt
+`tenant_routing` → verify legacy = 401). **Only attempt with the two secrets in
+hand** (eq-shell `TENANT_ROUTING_MASTER_KEY` + a Supabase `sbp_` token) and
+accept a ~1-min Quotes blip. If unsure, defer to the cutover's Phase C (you're in
+`ehowg`'s auth lane there).
+
 ## Order & timing
 
 1. **SEC-2** — any time in the window (independent of cutover; `zaap` is live so
@@ -102,6 +113,7 @@ entries from `scripts/rls_probe.py` `KNOWN_LEAKS` so the probe goes fully green.
 2. **SEC-1** — *after* the team has moved onto Field for real. If full Phase-E
    decommission isn't happening this weekend, Option A is the interim that closes
    the live PII exposure without waiting.
+3. **SEC-3 (F1)** — optional; only with both secrets in hand. Else defer to Phase C.
 
-Both are also referenced from `ops/security-register.md` (SEC-1, SEC-2) and the
-cutover runbook (`CUTOVER-RUNBOOK.md` §6).
+All three are tracked in `ops/security-register.md` and referenced from
+`CUTOVER-RUNBOOK.md` §6.

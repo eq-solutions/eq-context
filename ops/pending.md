@@ -14,6 +14,28 @@ for operational support: tax, entities, infrastructure, substrate.
 
 ---
 
+## Security (full register: `ops/security-register.md`, 2026-06-05)
+
+Automated gating now in place (`scripts/rls_probe.py` + `security_audit.py` +
+`.github/workflows/security-audit.yml`). Open items:
+
+- [ ] **SEC-1 (P0, LIVE) — `sks-labour` public key reads staff PII.** Fix =
+  decommission/anon-disable SKS Labour once the team is on Field. Staged SQL in
+  `ops/weekend-security-execution.md`. **Royce — weekend.**
+- [ ] **SEC-3 (P0) — F1 ehowg service_role key still leaked** (re-verified open
+  2026-06-05; routing row never re-keyed). Runbook: `f1-ehowg-key-rotation-runbook-2026-06-03.md`. **Royce-gated.**
+- [ ] **SEC-2 (P1) — `zaap` `eq_intake_rate_limits` RLS trusts `user_metadata`.**
+  Staged fix (→ `app_metadata`) ready in `ops/weekend-security-execution.md`. **Royce — weekend.**
+- [ ] **SEC-4/5 (P3) — verified NOT exploitable** (anon SECURITY DEFINER fns are
+  auth.uid()/token-guarded; always-true write policies have no anon grant).
+  Post-launch hardening pass.
+- [ ] Add `SUPABASE_ACCESS_TOKEN` (read-only) repo secret → arms the advisor-audit CI gate.
+- [ ] **SKS→Field cutover** — `CUTOVER-RUNBOOK.md` (multi-session mini-sprint, not a
+  weekend). Phase A (canonicalize `field_*` on `zaap`) is the long-pole.
+- [ ] **Merge PR #20** (substrate hardening + security gating + cutover prep; CI green). **Royce-gated.**
+
+---
+
 ## Substrate Discipline
 
 - [ ] **`system/writing-style.md` — awaiting writing samples** —

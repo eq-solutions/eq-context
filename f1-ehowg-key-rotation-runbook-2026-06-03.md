@@ -33,6 +33,12 @@ So: rotate → swap into both → confirm old key is dead.
 - Both consumers still hold the legacy key (`tenant_routing` `status_changed_at` = 2026-05-24;
   Quotes Fly secret `SUPABASE_SERVICE_ROLE_KEY` present, no `sb_secret` migration).
 
+**Re-verified 2026-06-05 (read-only):** `shell_control.tenant_routing` for `sks`
+(`ehowgjardagevnrluult`) still shows `status_changed_at = 2026-05-24 09:28` — the
+routing row has NOT been re-keyed → the leaked key is still the live one. Still
+OPEN. (Couldn't test the legacy key value directly from here; the unchanged
+re-key timestamp corroborates the 2026-06-03 finding.)
+
 ## Before you start — gather two secrets (no downtime yet)
 1. **Existing master key** — Netlify → eq-shell site → Environment variables →
    `TENANT_ROUTING_MASTER_KEY` → context **production** → reveal & copy.
