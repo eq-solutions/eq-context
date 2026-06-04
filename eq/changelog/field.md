@@ -22,6 +22,21 @@ status: live
 
 ---
 
+## Catch-up — v3.5.66–v3.5.71 (compact; in-HTML banner is canonical)
+
+> These six releases shipped without per-version entries here. The canonical,
+> full-detail changelog for v3.5+ is the in-HTML banner at the top of `index.html`
+> in eq-field. One line each below for narrative continuity:
+
+- **v3.5.71** — Mobile: Staff-home "Team week" read-only crew view + "Who's with me"; My Schedule day cards list the site crew. Ported from SKS v3.10.55. (PR #184)
+- **v3.5.70** — Timesheets: education codes (TAFE/TRAINING) only mute the sheet for apprentices, not direct employees; in-place row-stripe + live weekly-stats sync on cell edit. Ported from SKS v3.10.54. (PR #183)
+- **v3.5.69** — Resources: "Supervisor" → "Person in charge", now lists Direct employees too; `nominations.capacity_tag` source-tag stops the people/managers id-space collision. Ported from SKS v3.10.53. (PR #181)
+- **v3.5.68** — Forecast: "suggest N workers" now divides by a 40-hour work week (was 38), so the hint no longer runs high. Ported from SKS v3.10.52. (PR #178)
+- **v3.5.67** — sw.js: "Update available" toast only fires on a genuine update (a prior `eq-field-*` cache existed), killing the first-install nag.
+- **v3.5.66** — Design tokens re-vendored to @eq-solutions/tokens v1.3.1 (additive); tenant-tier theming — `applyTenantBranding` sets `data-tier` on `<html>`, Enterprise (melbourne) gets the deeper-teal accent. Mirrors Shell's brand.tsx.
+
+---
+
 ## [2026-06-03] v3.5.65 — Sync from SKS NSW Labour v3.10.50–51 (PR #173, merged)
 **Built by:** Royce Milmlow + Claude Code
 Manual cross-repo port (shared codebase). No DB changes. (1) Timesheets jump-to-top fix (live bug): `renderCurrentPage` split into `_renderCurrentPageDispatch()` + a wrapper that preserves scroll/focus/caret across the rebuild that fires on every realtime echo/poll/post-write refresh. (2) Resources "This week" strip in `sks-pipeline-resource.js`: jobs live · allocated · on the roster · free (non-fatal schedule fetch). Aggregate only.
