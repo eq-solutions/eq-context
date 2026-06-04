@@ -267,6 +267,7 @@ When any of these arrive, they ship as a v2 of this doc (deliberate version bump
 **Versioning:** this doc gets a version bump (v1 → v2) any time the role list, naming conventions, session payload shape, or JWT shape changes. Modules pin themselves to a version in their `permissions.ts` so a breaking change is visible in PR review.
 
 **Related:**
+- [eq/identity/onboarding-portable-identity-2026-06-04.md](./onboarding-portable-identity-2026-06-04.md) — **proposed extension (2026-06-04):** low-friction onboarding + portable worker identity. Pulls §11.2 multi-tenant-membership forward and flags a GoTrue-vs-own-mint (§9) reconciliation. A deliberate v2 bump of this doc when its Phase 2 lands — not yet applied.
 - [eq/identity/PHASE-1F-PLAN.md](./PHASE-1F-PLAN.md) — eq-shell implementation plan for this model
 - [eq/cards/canonical-migration/plan.md](../cards/canonical-migration/plan.md) — Cards is the first consumer of the Supabase JWT (§6.2 + §7.2)
 - [eq/field/permissions/](../field/permissions/) — EQ Field's original 5-tier matrix; this doc supersedes it as the cross-product spec, Field becomes a derived view (§7.1)

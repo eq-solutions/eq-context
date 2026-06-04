@@ -20,6 +20,29 @@ For the current built state of each system, see [system/architecture.md](https:/
 
 ---
 
+## 2026-06-04 — Low-Friction Onboarding & Portable Worker Identity (Cards-first)
+
+**Status:** Accepted (direction authorised by Royce 2026-06-04). Implementation **phased**; Phases 2–3 trigger a deliberate v2 bump of `eq/identity/IDENTITY-MODEL.md`. Full design: [eq/identity/onboarding-portable-identity-2026-06-04.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/identity/onboarding-portable-identity-2026-06-04.md).
+
+**Decision:** EQ optimises for **lowest friction *above a necessary floor*** (the floor is set by the sensitive payload — licences, right-to-work, PII), not friction-zero. The onboarding model: (1) **Portable identity** — one human = one identity with many tenant memberships; a tradie logs into the *same* EQ Cards across employers (pulls `IDENTITY-MODEL.md` §11.2 multi-tenant-membership forward from v2 backlog; `shell_control.user_tenant_memberships` already exists live). (2) **Decouple authorisation from login convenience** — the admin-issued **claim code** is the high-assurance authorisation event; **phone** is the repeatable convenience credential; **email is an optional recovery channel, not a login requirement**. (3) **Consent per employer** — the worker approves each new employer membership, and the approval scopes what that employer sees. (4) **Force email by *event, not timer*** — never hard-block showing a card; hard-require recovery email only at risk events (phone change, 2nd employer, export); the "14-day wall" is rejected. (5) **Lifecycle policy lives in the control layer** — rules + state in `shell_control`; the **Shell evaluates and projects verdict flags into the JWT via `custom_access_token_hook`**; apps react read-only and never hardcode policy; genuine gates are also server-enforced (RLS/RPC), UI walls are nags.
+
+**Why:** Royce's goal is lowest barrier to entry for tradies (who won't self-serve data entry or remember passwords). Steelman/critique converged on: the friction win is real for *login*, but "lowest possible" ignores recovery, identity-assurance, and SMS-dependency costs that compound at scale. Portability is the right end-state for labour hire (mobility is the point) and resolves *in favour* of phone-as-personal-anchor — while *raising* the assurance floor (a recycled number now exposes cross-employer PII). Putting policy in the control layer is what makes "one portable identity, consistent rules across Cards/Field/Service" true instead of aspirational, and stops each app re-deriving lifecycle logic.
+
+**Alternatives considered:**
+- *Per-employer record (window model).* Rejected — same tradie re-onboards every gig, double data entry; structurally wrong for labour hire.
+- *Friction-zero (phone-only, no recovery anchor).* Rejected — lost SIM = locked out of sensitive records; phone is a weak uniqueness key for a sensitive, portable identity.
+- *Time-based forcing (14-day wall).* Rejected — lands at random/worst moments, manufactures churn; event-based forcing converts on self-evident value.
+- *Lifecycle policy per-app (or hardcoded in Cards).* Rejected — drift across the suite; re-litigated per app; the exact failure the control-plane model removes.
+- *Build the full model before pilot.* Rejected — out-builds the load; instead: right schema now (Phase 1 thin slice), enforcement engine later (Phases 2–3).
+
+**Implications:**
+- **Phased build:** Phase 1 thin slice (phone-OTP + claim + optional recovery-email, state in `shell_control`); Phase 2 enable `custom_access_token_hook` + retire per-method shell-exchange bridges + control-plane policy (= v2 `IDENTITY-MODEL.md` bump); Phase 3 consent-scoping + event-forcing + recovery flow + server-enforced gates.
+- **Three open problems to design deliberately, not assume:** (a) identity-resolution / same-human matching beyond the weak phone key; (b) the recovery flow (now a *platform* responsibility under portability); (c) **GoTrue-vs-own-mint reconciliation** — `IDENTITY-MODEL.md` §9 says "not Supabase-Auth-managed", but Cards' phone-OTP uses GoTrue as an OTP transport then swaps for a shell-minted JWT; must be reconciled before Phase 2 because the token hook runs in GoTrue's mint path. Docs lag reality — verify live first.
+- **Reachability:** new design doc linked from `IDENTITY-MODEL.md` Related + this entry (per the 2026-05-19 full-link substrate rule).
+- **Does not change** the live IDENTITY-MODEL.md yet — that is a deliberate v2 version bump applied when Phase 2 lands, not a silent edit. Related memory: `product_adoption_strategy`, `eq_phone_otp_login_wiring`.
+
+---
+
 ## 2026-06-02 — Multi-Tenant Operating Model: Uniform Schema, Per-Tenant Data, Generic Spine
 
 **Status:** Accepted (authorised by Royce 2026-06-02)
