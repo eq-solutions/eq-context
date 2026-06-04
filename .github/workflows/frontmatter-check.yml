@@ -65,12 +65,15 @@ jobs:
               violations=$((violations+1))
             fi
 
-            # Validate status is one of: live | draft | archived | deprecated
+            # Validate status. Lifecycle states (live/draft/archived/deprecated)
+            # plus the ADR/decision-doc states the substrate's own md-style.md
+            # ADR format uses (proposed/accepted/superseded) — decision records
+            # legitimately carry these.
             st=$(echo "$fm" | grep -E '^status:' | head -1 | sed -E 's/^status:[[:space:]]*//' | tr -d '"' | tr -d "'")
             case "$st" in
-              live|draft|archived|deprecated|"") ;;
+              live|draft|archived|deprecated|proposed|accepted|superseded|"") ;;
               *)
-                echo "::error file=$f::status must be one of: live|draft|archived|deprecated (got '$st')"
+                echo "::error file=$f::status must be one of: live|draft|archived|deprecated|proposed|accepted|superseded (got '$st')"
                 violations=$((violations+1)) ;;
             esac
           done

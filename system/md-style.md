@@ -23,9 +23,15 @@ owner: <person responsible>
 last_updated: 2026-05-30
 scope: <one line — who/what this applies to>
 read_priority: critical | standard | reference
-status: draft | live | archived
+status: live | draft | archived | deprecated | proposed | accepted | superseded
 ---
 ```
+
+`status` covers two kinds of doc. Most files use a **lifecycle** state:
+`live` | `draft` | `archived` | `deprecated`. Decision/ADR-style records may
+instead use an **ADR** state: `proposed` | `accepted` | `superseded`
+(matching the ADR format below). `frontmatter-check.yml` enforces this set —
+keep the two in step if you change it.
 
 `read_priority` lets a session-start script load `critical` files first
 when the context window is tight.

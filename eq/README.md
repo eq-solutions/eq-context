@@ -49,6 +49,7 @@ path is fetchable at `…/functions/v1/context/eq/<path>`.
 | `canonical-readiness/audit-2026-05-21.md` | Post-S3 honest audit of core.eq.solutions (shipped) |
 | `canonical-readiness/audit-existing-tables.md` | Audit of existing eq-canonical tables |
 | `identity/IDENTITY-MODEL.md` | Authoritative EQ identity model |
+| `identity/identity-convergence-target-2026-06-04.md` | The one canonical identity record + store retire-list (accepted) |
 | `identity/worker-credentials-model-2026-05-31.md` | Worker-owned portable credentials model (decided design) |
 | `identity/onboarding-portable-identity-2026-06-04.md` | Low-friction onboarding + portable identity (draft/proposed) |
 | `identity/PHASE-1F-PLAN.md` | Identity Phase 1F build plan |
