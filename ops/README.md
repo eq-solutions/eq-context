@@ -35,6 +35,7 @@ Every canonical OPS file as a full URL — clickable from `/context/claude`:
 | `decisions.md` | Append-only decisions (ADR format) — covers all tiers |
 | `financial-architecture.md` | AHD design, Delta Elcom cliff, CDC PSI position |
 | `security-register.md` | Open security findings across all Supabase projects (advisors + live probes) |
+| `weekend-security-execution.md` | Staged copy-paste fixes for SEC-1 (nspbm anon-disable) + SEC-2 (zaap RLS) |
 
 ## When to load OPS
 
