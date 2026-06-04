@@ -20,6 +20,26 @@ For the current built state of each system, see [system/architecture.md](https:/
 
 ---
 
+## 2026-06-04 — Identity Convergence Target (one truth, scheduled demolition of the duplicates)
+
+**Status:** Accepted (direction authorised by Royce 2026-06-04). Sets the destination; execution scheduled, not immediate. Full doc: [eq/identity/identity-convergence-target-2026-06-04.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/identity/identity-convergence-target-2026-06-04.md).
+
+**Decision:** Declare the ONE canonical identity+membership record and put the overlapping stores on a retire-list. A 2026-06-04 live audit of eq-canonical found identity/access smeared across **six** stores (`auth.users`, `shell_control.users`, `shell_control.user_tenant_memberships`, `public.org_memberships`, `public.workers`, `public.profiles`), with membership stored **twice and already divergent** (5 vs 4 users). Target: **`shell_control.{users, user_tenant_memberships}` = identity+membership truth; `auth.users` = GoTrue transport only; `public.workers` = operational HR record linked by `user_id`; `public.org_memberships` + `public.profiles` = retire** (`org_memberships` → a view over the canonical membership table; `profiles` folded into `workers`). Guardrail: no new identity/membership store without updating the target doc; writes target the canonical home or are explicitly-justified temporary bridges with a retirement line.
+
+**Why:** Without a declared truth, every onboarding/login change (incl. the Phase-1 claim bridge, which now writes membership to BOTH `org_memberships` and `user_tenant_memberships`) adds coupling the eventual unification must unwind — accretion, not convergence. Naming the truth is a ~1-hour, docs-only act that converts sideways motion into directed motion: every future PR is checked against it. Recommendation reached by steelmanning the just-shipped bridge against live data — the bridge's identity-*creation* is durable (the Phase-2 hook *reads* the `shell_control.users` row it creates), but the membership double-write and the undefined convergence target are the real debt. Honesty correction logged: an earlier claim that `auth.users`↔`shell_control.users` emails had drifted was **false** (0 drift live) — conflated two ids.
+
+**Alternatives considered:**
+- *Hook first (enable `custom_access_token_hook` before more onboarding work).* Deferred — highest blast radius (GoTrue on shared canonical DB), gated, needs the GoTrue-vs-own-mint reconciliation resolved, and unblocks nothing the bridge didn't. Optimises an unwalked path at N=1 real worker.
+- *Big convergence migration now (collapse `org_memberships`→view, retire `profiles`).* Deferred — rewrites live RLS to harden an unvalidated model; premature per "don't out-build the load".
+- *Keep bridging blind for the pilot.* Rejected as the framing — that is how you reach a seventh store. Bridging continues, but now *directed* at the declared target.
+
+**Implications:**
+- Demolition schedule (execute with real-usage evidence): **P-now (done)** Phase-1 bridge creates the canonical identity on claim; **P2-a** `public.org_memberships` → view over `user_tenant_memberships` (kills the 5-vs-4 double-write); **P2-b** enable `custom_access_token_hook` + retire the `shell-login-phone-otp` exchange; **P3** retire `public.profiles`.
+- Pre-rollout flag: the claim bridge defaults bridged workers to role `employee` — correct for SKS's own team, **over-permissioned for labour-hire tradies** (`labour_hire`). Fix before outside-SKS/labour-hire rollout (invite carries role; default to safest tier when unknown).
+- Watch-item: if Cards' RLS proves too dependent on `public.*` for `shell_control`-as-truth, the target shifts (P2-a is the test). Related: 2026-06-04 onboarding entry below; eq-cards migration `0016`; memory `eq_phone_otp_login_wiring`.
+
+---
+
 ## 2026-06-04 — Low-Friction Onboarding & Portable Worker Identity (Cards-first)
 
 **Status:** Accepted (direction authorised by Royce 2026-06-04). Implementation **phased**; Phases 2–3 trigger a deliberate v2 bump of `eq/identity/IDENTITY-MODEL.md`. Full design: [eq/identity/onboarding-portable-identity-2026-06-04.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/identity/onboarding-portable-identity-2026-06-04.md).

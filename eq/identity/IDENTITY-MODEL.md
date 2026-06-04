@@ -268,6 +268,7 @@ When any of these arrive, they ship as a v2 of this doc (deliberate version bump
 
 **Related:**
 - [eq/identity/onboarding-portable-identity-2026-06-04.md](./onboarding-portable-identity-2026-06-04.md) — **proposed extension (2026-06-04):** low-friction onboarding + portable worker identity. Pulls §11.2 multi-tenant-membership forward and flags a GoTrue-vs-own-mint (§9) reconciliation. A deliberate v2 bump of this doc when its Phase 2 lands — not yet applied.
+- [eq/identity/identity-convergence-target-2026-06-04.md](./identity-convergence-target-2026-06-04.md) — **convergence target (2026-06-04):** names `shell_control.{users, user_tenant_memberships}` as the one identity+membership truth and schedules retiring `public.org_memberships`/`profiles`. Makes the §3.2 auth-vs-operational split explicit on the membership side.
 - [eq/identity/PHASE-1F-PLAN.md](./PHASE-1F-PLAN.md) — eq-shell implementation plan for this model
 - [eq/cards/canonical-migration/plan.md](../cards/canonical-migration/plan.md) — Cards is the first consumer of the Supabase JWT (§6.2 + §7.2)
 - [eq/field/permissions/](../field/permissions/) — EQ Field's original 5-tier matrix; this doc supersedes it as the cross-product spec, Field becomes a derived view (§7.1)
