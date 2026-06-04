@@ -40,7 +40,9 @@ README.md                    ← This file (human-focused)
 
 rules/
   non-negotiables.md         ← Hard rules that override everything
-  brand.md                   ← Colours, fonts, logo rules (EQ Design Brief v1.3)
+  brand-eq.md                ← EQ colours, fonts, logo rules (EQ Design Brief v1.3)
+  brand-sks.md               ← SKS brand spec
+  brand-check.md             ← Brand-check pass for customer-facing output
   deployment.md              ← Deployment guardrails
   stack.md                   ← Default technology stack
 

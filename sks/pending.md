@@ -9,6 +9,9 @@ status: live
 
 # SKS Pending
 
+Product/code backlog (EQ Quotes, SKS Labour). People, personnel, and
+personal-ops actions moved to `sks/operations.md` (2026-06-04).
+
 ## Done (pruned summary — full history in git log)
 
 - [x] EQ Quotes Supabase port — full Flask rewrite (v50+)
@@ -38,46 +41,6 @@ status: live
 ## Apply when ready (no code change needed)
 
 _Nothing pending — migrations 001–023 all applied._
-
-## Done (this session — 2026-06-01)
-
-- [x] Scott Hotson offer issued and accepted — Operations Lead, Client Services
-- [x] Dino Cabal reporting line confirmed — reports to Richo (not Royce)
-- [x] Ben Ritchie holiday email sent — pathway conversation booked
-- [x] Personal operating system designed and set up:
-  - Apple Notes "Brain Dump" note + Siri shortcut (voice capture)
-  - iPhone widget for text capture
-  - Outlook Tier 1 auto-flag + Read Later rules + Focused Inbox
-  - Three Claude sweep prompts saved (standard / quick / end-of-week)
-- [x] SKS NSW Delivery board designed — MS Planner, 6 time-buckets, 6 labels, 30 starter tasks seeded (PDF setup guide built)
-- [x] NSW interactive org chart built — HTML, 61 people, discipline split (Electrical/Comms), discuss flags, filter strip. Ready for Mark meeting.
-- [x] Talent acquisition playbook drafted — relationship-warming, trigger-watching, pace-matching with Dino
-
-## Pending (added 2026-06-01)
-
-- [ ] Book monthly check-in cadence with Richo (Michael Richardson)
-- [ ] Tell Mark about catch-up conversations before starting (casual, no fanfare)
-- [ ] Confirm Scott Hotson start date + written offer
-- [ ] Schedule Simon Bramall catch-up — Equinix Account Lead conversation
-- [ ] Hold Ben Ritchie coffee — first/second week back
-- [ ] Schedule Simon + Matt three-way (Equinix rhythm + scope clarity)
-- [ ] Koos Otto role redesign conversation — HV Technical Lead framing
-- [ ] Pair Huon Henne with Leif as comms shadow — frame as deployment
-- [ ] Launch weekly construction PM standup (Royce chairs initially, Ben presents LOTO)
-- [ ] Set up MS Planner board (setup PDF at `SKS_NSW_Delivery_Planner_Setup.pdf`)
-- [ ] Leif → Senior Comms Advisor reframe — demand-driven framing
-- [ ] Wayne Rowe exit conversation — Mark to own
-- [ ] Charlotte White → Project Coordinator scope definition
-
-## Tools built (2026-06-01) — reference
-
-| Deliverable | File | Format |
-|---|---|---|
-| NSW Operating Plan v2 | `SKS_NSW_Operating_Plan_v2.html` | HTML |
-| Interactive org chart | `SKS_NSW_Org_Chart_Interactive.html` | HTML |
-| Personal operating system setup | `Royce_Operating_System_Setup.pdf` | PDF |
-| MS Planner delivery system setup | `SKS_NSW_Delivery_Planner_Setup.pdf` | PDF |
-| Scott Hotson JD | `Scott_Hotson_Operations_Lead_SKS.docx` | Word |
 
 ## Active (in progress or blocked)
 
@@ -121,6 +84,6 @@ The following tests were broken before this sprint and remain so:
 - [ ] Bring apprentice module from demo to SKS Labour prod
 - [ ] Scale EQ Field App for Melbourne office demo
 - [ ] R2 backup audit/download from Beelink desktop
-- [ ] Scott Hotson hire finalisation
-- [ ] One-on-one catch-up sessions with 8 key staff
-- [ ] Comms portfolio growth under Royce
+
+(People/personnel items — Scott Hotson hire, 1:1 catch-ups, comms portfolio —
+moved to `sks/operations.md`.)

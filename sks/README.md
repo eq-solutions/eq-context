@@ -25,7 +25,8 @@ commercial management, day-to-day NSW operations.
 
 Every canonical SKS file as a full URL — clickable from `/context/claude`:
 
-- [sks/pending.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/sks/pending.md) — SKS-only to-do list
+- [sks/pending.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/sks/pending.md) — product/code backlog (EQ Quotes, SKS Labour)
+- [sks/operations.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/sks/operations.md) — people, personnel & personal-ops actions
 - [sks/active.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/sks/active.md) — rolling active projects (current quarter)
 - [sks/templates.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/sks/templates.md) — Quote v3 spec + client context blocks
 - [sks/team.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/sks/team.md) — NSW team
@@ -77,7 +78,8 @@ Separate audience — only fetch when explicitly authoring or reviewing team-fac
 
 | Path | Purpose |
 |---|---|
-| `pending.md` | SKS-only to-do list |
+| `pending.md` | Product/code backlog (EQ Quotes, SKS Labour) |
+| `operations.md` | People, personnel & personal-ops actions |
 | `active.md` | Rolling active projects (current quarter) |
 | `team.md` | NSW team |
 | `products.md` | SKS live tools (Labour, Receipt Tracker) |
