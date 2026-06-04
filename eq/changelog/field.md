@@ -9,6 +9,16 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-06-05] v3.5.77 — Analytics: one clean PostHog pageview per screen (PR #190, merged)
+**Built by:** Royce Milmlow + Claude Code
+**Problem:** In PostHog (EU, project 162632 *eq-production*) the bare path `/` was ~7,736 of ~9,500 pageviews in 30 days (~80%); every real screen was double/triple digits. Root cause: Field is a SPA — `showPage()` swaps content without changing `window.location`, and pageviews were captured TWICE — PostHog autocapture (`capture_pageview: true`) firing the bare `/` (and once per pre-login gate-bounce) PLUS the manual virtual-URL `$pageview` (`/#<page>`) in `_events.pageViewed()`.
+**Fix:** `scripts/analytics.js` — `capture_pageview: false`. The synthetic virtual-URL `$pageview` (`/#dashboard`, `/#leave`, …) is now the single source: one pageview per logical screen. Added a consecutive-duplicate guard (`_lastPageView`) in `pageViewed()` so the boot `showPage()`+`mobileNav()` double-call and double-clicks don't double-count; cleared in `_reset()` on logout. Initial app-load pageview now fires exactly once. Polling/realtime call `renderCurrentPage()` (not `showPage()`), so they never re-fire pageviews.
+**Trade-off:** pre-login gate-bounce no longer emits a `/` pageview (`session_started` + `$pageleave` still fire).
+**Verify (post-traffic):** PostHog → Activity → SQL — `SELECT properties.$current_url AS path, count() AS views FROM events WHERE event = '$pageview' AND timestamp > now() - INTERVAL 7 DAY GROUP BY path ORDER BY views DESC` — expect distinct `/#screen` rows, bare `/` gone/near-zero.
+**PR:** [#190](https://github.com/eq-solutions/eq-field/pull/190) — **merged**, live (prod sw.js = `eq-field-v3.5.77`). Note: squash-commit message reads v3.5.76 (renumbered to v3.5.77 on rebase after #189 took v3.5.76); shipped content is v3.5.77.
+
+---
+
 ## [2026-06-05] v3.5.74 — Job number per roster assignment (menu + pin) (PR #187, merged)
 **Built by:** Royce Milmlow + Claude Code
 Multi-job sites. In Edit Roster, a cell whose site carries >1 job number shows a per-day job pick-list; the supervisor pins which job that person is on. The pin shows under the site code on the roster grid and as "🔢 Job …" on My Schedule, **overriding** the project primary for that cell. Single-/no-job sites unchanged (primary auto-shows, no picker); leave cells none. Resolution per cell: pin (`schedule.{day}_job`) > project primary (v3.5.73) > none. Stores the plain job **number string** — the value direct workers carry into Workbench. **LH/apprentice timesheet auto-fill from the pin deliberately deferred** (next step). DB: `schedule.mon_job…sun_job` (nullable text) on **ktmj.public.schedule** (live) + forward-compat zaap twins. Realtime propagates pins. PR [#187](https://github.com/eq-solutions/eq-field/pull/187) — **merged**, prod sw.js = `eq-field-v3.5.74`.
