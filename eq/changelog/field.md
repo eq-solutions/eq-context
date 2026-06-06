@@ -9,6 +9,19 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-06-06] v3.5.83 — Data carrier: anon fallback fixes SKS gate lock-out on EQ Field (PR #199, merged)
+**Built by:** Royce Milmlow + Claude Code
+
+**Summary:** Fixed the cutover blocker where the **SKS tenant on the EQ Field build** (`field.sks.eq.solutions`) showed an **empty "who are you" gate** — nobody could log in. The gate's pre-login name fetch (`sbFetch('people'/'managers')`) hits `JWT_TABLES`, so the carrier tried to mint a data-JWT; pre-auth there's no session → it threw → empty list → lock-out.
+
+**Fix (`scripts/supabase.js`):** `sbFetch` now **falls back to the anon path** when the data-JWT can't be minted (no-session / disabled / tenant-not-provisioned) instead of throwing; `_getDataJwt` latches *stable* failures but never `no-session`, so the JWT path still activates the moment a session exists. Post-login the authed path is unchanged.
+
+**Verified live:** gate now lists **69 SKS names**; `DATA_JWT_ENABLED` is **on**, so post-login SKS reads its own data via the STEP-1 in-place authed policies. Also fixed `melbourne`/`demo-trades` (not in `DATA_TENANT_IDS`) throwing on the JWT path. EQ demo tenants unaffected (SEED gate).
+
+**PR:** [#199](https://github.com/eq-solutions/eq-field/pull/199) — **merged**, live (prod sw.js = `eq-field-v3.5.83`).
+
+---
+
 ## [2026-06-06] v3.5.82 — SKS pipeline → authenticated JWT + RLS (B5 Track 2, staged dormant) (PR #195, merged)
 **Built by:** Royce Milmlow + Claude Code
 

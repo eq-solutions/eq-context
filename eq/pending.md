@@ -14,18 +14,23 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## ⏩ Session close — 2026-06-06 — SKS JWT+RLS Track 2 (dormant) + Teams uuid fix
+## ⏩ Session close — 2026-06-06 — SKS tenant LIVE on EQ Field + JWT/RLS Track 2 staged + Teams uuid fix
 
-**Completed (EQ Field, prod-verified — prod sw.js = `eq-field-v3.5.82`):**
-- **v3.5.82 — SKS pipeline JWT+RLS carrier (B5 Track 2), MERGED dormant** (PR [#195](https://github.com/eq-solutions/eq-field/pull/195)). Per-tenant data-JWT secret resolver + in-place carrier (`JWT_INPLACE_TENANTS={sks}` → `public.*` on SKS's own Supabase, not the canonical twins). Code LIVE but **inert** (`DATA_JWT_ENABLED` off; EQ unchanged). Was the "in flight #195" item in `sessions/2026-06-06.md`.
-- **v3.5.81 — Teams id-type fix for uuid tenants** (PR [#196](https://github.com/eq-solutions/eq-field/pull/196); parallel duplicate #197 closed). Teams editing + filter pills now work on EQ/melbourne/demo-trades (uuid); SKS (bigint) unchanged.
-- **Canonical hostname repoint:** `organisations.hostname` `sks → sks-field.netlify.app` (eq-canonical control plane); `eq` unchanged; reversible.
+**SKS is now usable on the EQ Field build** at `field.sks.eq.solutions` (eq-field **v3.5.83**). Big correction vs the earlier draft of this block: **`DATA_JWT_ENABLED` is ON deploy-wide**, so SKS runs on the AUTHED JWT path post-login (not anon parity), and STEP 1 is load-bearing.
 
-**Pending Royce-actions (SKS-LIVE gate — Track 2 stays dormant until done; each needs a snapshot + per-action OK):**
-- [ ] Apply `migrations/2026-06-06_sks_pipeline_rls.sql` to SKS LIVE (`nspbmirochztcjijmcrx`) — snapshot first; prefer a Supabase branch + preview smoke (realtime / Smartsheet import / edge fns must use service_role / audit logging).
-- [ ] Add `SKS_JWT_SECRET` (= SKS Supabase JWT secret) to the SKS Netlify site env.
-- [ ] Flip `DATA_JWT_ENABLED=on` on the SKS Netlify site (after the above).
-- [ ] Follow-up: point `AUDIT_SB_KEY` at a service_role key, then drop the `audit_log` anon-insert carve-out.
+**Completed (EQ Field, prod-verified):**
+- **v3.5.82 — SKS pipeline JWT+RLS carrier (B5 Track 2)** (PR [#195](https://github.com/eq-solutions/eq-field/pull/195)). Per-tenant data-JWT secret resolver + in-place carrier (`JWT_INPLACE_TENANTS={sks}` → `public.*` on SKS's own Supabase).
+- **STEP 1 RLS (authed policies) APPLIED to SKS prod** (migration `sks_pipeline_rls_step1_additive`; 22 `field_authed_*` policies; anon untouched/intact). **Load-bearing** — with the flag on, this is what lets SKS read its own data post-login. **Do NOT roll back.** Dry-run-validated on a disposable Supabase branch first.
+- **v3.5.83 — gate anon-fallback fix** (PR [#199](https://github.com/eq-solutions/eq-field/pull/199)). Fixed the empty-gate lock-out (pre-login `sbFetch` of JWT_TABLES couldn't mint → now falls back to anon). Verified live: gate lists 69 SKS names.
+- **v3.5.81 — Teams id-type fix for uuid tenants** (PR [#196](https://github.com/eq-solutions/eq-field/pull/196); dup #197 closed).
+- **Canonical hostname** for `sks` = `field.sks.eq.solutions` (was repointed to `sks-field.netlify.app` then finalised to the custom domain).
+- **Track-2 migration files** PR'd ([#200](https://github.com/eq-solutions/eq-field/pull/200), docs/SQL only): STEP1 (applied), STEP2 lockdown (deferred), PRE-SNAPSHOT, original marked superseded.
+
+**Remaining for SKS go-live (Royce-gated):**
+- [ ] Visual smoke on `field.sks.eq.solutions` (log in → pipeline / import-preview / resources / roster / safety / teams against SKS data).
+- [ ] Cutover **soak** 24–48h with the standalone (`sks-nsw-labour`, v3.10.59) kept warm → then **retire** the standalone.
+- [ ] **Track 2 STEP 2 (anon lockdown)** — DEFERRED until the standalone is retired (the anon revoke breaks the standalone's soak-rollback). Then: follow-up to move `AUDIT_SB_KEY` → service_role and drop the `audit_log` anon-insert carve-out.
+- [ ] (Optional) merge [#200](https://github.com/eq-solutions/eq-field/pull/200) (Track-2 SQL artifacts — record only).
 
 ---
 
