@@ -1,13 +1,41 @@
 ---
 title: Changelog — EQ Solves Field
 owner: Royce Milmlow
-last_updated: 2026-06-05
+last_updated: 2026-06-06
 scope: Append-only history of changes to the EQ Solves Field product
 read_priority: reference
 status: live
 ---
 
 # Changelog — EQ Solves Field
+
+## [2026-06-06] v3.5.82 — SKS pipeline → authenticated JWT + RLS (B5 Track 2, staged dormant) (PR #195, merged)
+**Built by:** Royce Milmlow + Claude Code
+
+**Summary:** Generalised the dormant PIN→Supabase-JWT carrier so the **SKS** tenant can be secured **in-place** (on SKS's own Supabase `nspbmirochztcjijmcrx`) rather than via the canonical `app_data.field_*` twins EQ uses (zaap twins are empty; SKS data is live in its own project). Ships **DORMANT behind `DATA_JWT_ENABLED` (off)** — code is live on eq-solves-field but inert; EQ stays twin-mode, behaviour unchanged.
+
+- **verify-pin.js** — single `ZAAP_JWT_SECRET` replaced by a per-tenant secret resolver (`eq`→`ZAAP_JWT_SECRET`, `sks`→`SKS_JWT_SECRET`, extensible via `TENANT_JWT_SECRETS_JSON`). `signSupabaseJwt()` takes the resolved secret; `DATA_TENANT_IDS` gains `sks → 1eb831f9-…` (= `org_id` on SKS rows).
+- **supabase.js** — JWT table rewrite + `app_data` profile header now conditional on `JWT_INPLACE_TENANTS = {sks}`: in-place tenants keep `public.<name>` on their own project + minted JWT; twin tenants unchanged. RPC path guarded.
+- **realtime.js** — in-place tenants stream `realtime:public:<table>` (socket already JWT-authed since v3.5.64).
+
+**RLS migration AUTHORED, NOT applied:** `migrations/2026-06-06_sks_pipeline_rls.sql` — `authenticated`-role + tenant isolation (`org_id = jwt app_metadata.tenant_id`; `nominations`/`tender_enrichment` via parent `tender_id → tenders.org_id`), `nominations` supervisor-vs-`confirmed` visibility (the `person_id::text = sub` clause is text-safe + inert under shared-PIN auth), anon revoked on carrier tables, `audit_log` carve-out keeps a narrowed anon INSERT for verify-pin's server logger. Narrows the `rls_policy_always_true` advisor WARNs.
+
+**⚠ Still gated on Royce (SKS LIVE):** apply the migration + add `SKS_JWT_SECRET` to the SKS Netlify site + flip `DATA_JWT_ENABLED=on` — each needs a snapshot + per-action OK. Merging only landed dormant code; nothing touched SKS.
+
+**Live-system note (recon):** the Tender Pipeline IS already promoted to SKS live + populated (CLAUDE.md's "not yet promoted" TODO is stale). SKS carrier tables key on `org_id`, not `tenant_id`. Canonical `organisations.hostname` for `sks` was also repointed to `sks-field.netlify.app` this session so EQ Field resolves SKS at the new host.
+
+**PR:** [#195](https://github.com/eq-solutions/eq-field/pull/195) — **merged**, live (prod sw.js = `eq-field-v3.5.82`). Rebumped 3.5.80→3.5.82 (3.5.81 taken by #196).
+
+---
+
+## [2026-06-06] v3.5.81 — Teams: id-type fix for uuid tenants (PR #196, merged)
+**Built by:** Royce Milmlow + Claude Code
+
+**Summary:** `scripts/teams.js` was numeric-id-native, so the whole Teams feature broke on uuid-id tenants (EQ / melbourne / demo-trades): filter pills emitted unquoted uuid ids into `setTeamFilter(...)` (invalid JS), and Manage-Teams member checkboxes used `Number(uuid)=NaN`, so no member could be added. All team/person ids now coerce to strings via a `_sid()` helper before any compare, and onclick handler ids are quoted — works on bigint (SKS) AND uuid tenants; SKS unchanged.
+
+**PR:** [#196](https://github.com/eq-solutions/eq-field/pull/196) — **merged**, live. (A parallel duplicate, #197, was closed in favour of this one.)
+
+---
 
 ## [2026-06-05] v3.5.74 — Job number per roster assignment (menu + pin) (PR #187, merged)
 **Built by:** Royce Milmlow + Claude Code
