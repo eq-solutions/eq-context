@@ -9,6 +9,27 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-06-06] v3.5.86 — Fix team delete (FK violation) (PR #203, merged)
+**Built by:** Royce Milmlow + Claude Code
+
+**Summary:** Deleting a team on SKS failed ("Could not delete team"). `deleteTeam` (`scripts/teams.js`) deleted the `teams` row directly, relying on an `ON DELETE CASCADE` that the SKS `team_members → teams` FK doesn't have → foreign-key violation on any team with members (all 6 SKS teams). **Fix:** delete the `team_members` links first, then the team (robust regardless of the FK; people rows untouched). Live-verified `field.sks.eq.solutions/sw.js` = v3.5.86.
+
+## [2026-06-06] v3.5.85 — SSO supervisor mapping (cookie path) + Teams org_id stamping (PR #202, merged)
+**Built by:** Royce Milmlow + Claude Code
+
+**Summary:** Two pre-go-live fixes. (1) **Auth** — `verify-pin.js` `verify-shell-cookie` now grants Field `supervisor` to platform admins (parity with `verify-shell-token`); previously the cookie SSO path ignored `is_platform_admin`, so an admin whose tenant-membership role wasn't manager/supervisor landed in **view-only** on the `core.eq.solutions` front door. (2) **Teams** — `teams` + `team_members` added to `ORG_TABLES` (both `org_id NOT NULL`, no default) so `sbFetch` stamps `org_id` on POST; without it, team/member creates 400'd on SKS.
+
+**Companion live DB hardening (same pass, not app versions):**
+- **SKS prod `nspbmi`:** added nullable `people.employment_type/rto/hire_company` + `sites.project_id` (EQ Field writes them; SKS lacked them → person/site edits 400'd + silently dropped on the dual-write soak).
+- **SKS-canonical `ehow`:** `eq_check/increment_intake_rate_limit` DEFINER fns — pinned `search_path` + revoked EXECUTE from public/anon/authenticated (sole caller = api-intake edge fn on service_role); they had trusted a caller-supplied `p_tenant_id`.
+- **Control-plane drift (earlier same day):** `app_data.eq_intake_rate_limits` RLS gate `user_metadata`→`app_metadata` on `ehow` (unblocked eq-shell schema-drift CI).
+- Audited safe: 17/19 ehow DEFINER RPCs JWT-scoped; the 4 anon control-plane Cards DEFINER fns are auth.uid()/token-gated.
+
+## [2026-06-06] v3.5.84 — Boot-crash guard: updateTopStats isLeave ReferenceError
+**Built by:** Royce Milmlow + Claude Code
+
+**Summary:** `updateTopStats()` (called from `initApp()` on every boot) referenced an undefined `isLeave`, throwing a `ReferenceError` on the EQ tenant at boot. Guarded/fixed so boot stats compute clean.
+
 ## [2026-06-06] v3.5.83 — Data carrier: anon fallback fixes SKS gate lock-out on EQ Field (PR #199, merged)
 **Built by:** Royce Milmlow + Claude Code
 
