@@ -25,9 +25,11 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - **v3.5.81 — Teams id-type fix for uuid tenants** (PR [#196](https://github.com/eq-solutions/eq-field/pull/196); dup #197 closed).
 - **Canonical hostname** for `sks` = `field.sks.eq.solutions` (was repointed to `sks-field.netlify.app` then finalised to the custom domain).
 - **Track-2 migration files** PR'd ([#200](https://github.com/eq-solutions/eq-field/pull/200), docs/SQL only): STEP1 (applied), STEP2 lockdown (deferred), PRE-SNAPSHOT, original marked superseded.
+- **`core.eq.solutions` → SKS Field WORKING** — eq-shell [#189](https://github.com/eq-solutions/eq-shell/pull/189) (merged + live). The admin auto-route honored a sticky `localStorage` last-pick over the URL tenant, so `/sks/field` loaded the empty EQ tenant; fixed so the active shell tenant wins. Verified live (loads `field.sks.eq.solutions` + sks even with last-pick=eq).
+- **SKS-canonical drift fixed:** `app_data.eq_intake_rate_limits` RLS gate `user_metadata`→`app_metadata` on `ehow` (aligned to core; source migration `0023_intake_infra.sql` already correct — SKS had drifted out-of-band). Unblocked the eq-shell schema-drift CI gate.
 
 **Remaining for SKS go-live (Royce-gated):**
-- [ ] Visual smoke on `field.sks.eq.solutions` (log in → pipeline / import-preview / resources / roster / safety / teams against SKS data).
+- [ ] Functional click-through smoke on `core.eq.solutions/sks/field` (front door now works) → pipeline / import-preview / resources / roster / safety / teams against SKS data.
 - [ ] Cutover **soak** 24–48h with the standalone (`sks-nsw-labour`, v3.10.59) kept warm → then **retire** the standalone.
 - [ ] **Track 2 STEP 2 (anon lockdown)** — DEFERRED until the standalone is retired (the anon revoke breaks the standalone's soak-rollback). Then: follow-up to move `AUDIT_SB_KEY` → service_role and drop the `audit_log` anon-insert carve-out.
 - [ ] (Optional) merge [#200](https://github.com/eq-solutions/eq-field/pull/200) (Track-2 SQL artifacts — record only).
