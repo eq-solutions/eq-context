@@ -28,10 +28,19 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - **`core.eq.solutions` → SKS Field WORKING** — eq-shell [#189](https://github.com/eq-solutions/eq-shell/pull/189) (merged + live). The admin auto-route honored a sticky `localStorage` last-pick over the URL tenant, so `/sks/field` loaded the empty EQ tenant; fixed so the active shell tenant wins. Verified live (loads `field.sks.eq.solutions` + sks even with last-pick=eq).
 - **SKS-canonical drift fixed:** `app_data.eq_intake_rate_limits` RLS gate `user_metadata`→`app_metadata` on `ehow` (aligned to core; source migration `0023_intake_infra.sql` already correct — SKS had drifted out-of-band). Unblocked the eq-shell schema-drift CI gate.
 
+**Pre-go-live hardening pass (2026-06-06) — advisors swept on nspbmi/ehow/jvkn + dual-write + DEFINER audits:**
+- **Dual-write silent-data-loss FIXED (was HIGH).** EQ Field writes `people.employment_type/rto/hire_company` + `sites.project_id`; SKS lacked them → every person/site edit from EQ Field would 400 and silently drop. Added the 4 nullable columns to SKS prod (`nspbmirochztcjijmcrx`), matching the EQ plane. **Smoke a person + site edit post-merge of #202.**
+- **SSO "view only" + Teams create FIXED** — eq-field [#202](https://github.com/eq-solutions/eq-field/pull/202) (v3.5.85): cookie SSO path grants supervisor to platform admins (parity w/ token path); `teams`+`team_members` added to ORG_TABLES (org_id NOT NULL stamping). Merge to land.
+- **SKS-canonical rate-limit DEFINER fns hardened (live):** `eq_check/increment_intake_rate_limit` trusted a caller-supplied `p_tenant_id` (cross-tenant) + mutable search_path → pinned search_path + revoked EXECUTE from public/anon/authenticated (sole caller is the api-intake edge fn on service_role). 
+- **Audits clean elsewhere:** the 17 other ehow DEFINER RPCs are JWT-tenant-scoped (safe); the 4 anon-callable control-plane Cards DEFINER fns are auth.uid()/token-gated (safe — advisor pattern, not a hole). Control plane has NO anon exposure of registry/config/entitlements.
+
 **Remaining for SKS go-live (Royce-gated):**
-- [ ] Functional click-through smoke on `core.eq.solutions/sks/field` (front door now works) → pipeline / import-preview / resources / roster / safety / teams against SKS data.
+- [ ] Merge eq-field [#202](https://github.com/eq-solutions/eq-field/pull/202) (SSO supervisor + Teams org_id) → then you land supervisor on core + can create teams.
+- [ ] Functional click-through smoke on `core.eq.solutions/sks/field` (incl. a **person edit + site edit + team create** to confirm the dual-write/teams fixes) → pipeline / import / resources / roster / safety / teams against SKS data.
+- [ ] 🔴 **Rotate `EQ_SECRET_SALT`** (exposed shared master key) — see `eq-secret-salt-rotation-runbook-2026-06-06.md`. Do it pre-onboarding (Method A coordinated swap, ~0 users). Also rotate the `GOOGLE_DOC_AI_CREDENTIALS` GCP key (marked not-secret on eq-shell).
+- [ ] 🟠 **Enable PITR** on `nspbmirochztcjijmcrx` + `ehowgjardagevnrluult` (Supabase dashboard) — escape the ~14-day RPO before EQ Field is SKS's system of record.
 - [ ] Cutover **soak** 24–48h with the standalone (`sks-nsw-labour`, v3.10.59) kept warm → then **retire** the standalone.
-- [ ] **Track 2 STEP 2 (anon lockdown)** — DEFERRED until the standalone is retired (the anon revoke breaks the standalone's soak-rollback). Then: follow-up to move `AUDIT_SB_KEY` → service_role and drop the `audit_log` anon-insert carve-out.
+- [ ] **Track 2 STEP 2 (anon lockdown)** — DEFERRED until the standalone is retired. Then move `AUDIT_SB_KEY` → service_role and drop the `audit_log` anon-insert carve-out.
 - [ ] (Optional) merge [#200](https://github.com/eq-solutions/eq-field/pull/200) (Track-2 SQL artifacts — record only).
 
 ---
