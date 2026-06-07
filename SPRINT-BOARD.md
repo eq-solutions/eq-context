@@ -1,7 +1,8 @@
+<!-- Last updated: 2026-06-07. Streams above reflect Sprint 5 completions. Active sprint: see sks-live-sprint-2026-06-07.md -->
 ---
 title: Autonomous Sprint — Board
 owner: Royce Milmlow
-last_updated: 2026-06-03
+last_updated: 2026-06-07
 scope: Full sprint backlog + ownership/claims across all EQ streams; the coordination contract
 read_priority: critical
 status: live
@@ -121,10 +122,10 @@ Consolidates **every** outstanding finding from the 2026-05-31 deep-dive + cross
 | C2 | Wire Shell to consume @eq-solutions/roles | eq-shell | ✅ | **merged #70 → main** (Royce-approved) | Swapped hand-defined `EqRole`+admin/audit MATRIX → `@eq-solutions/roles`; module matrices stay local. **Exhaustive 5×15 permission-equivalence (all IDENTICAL)**, build clean, auth/session untouched. Live on core hub. |
 | C3 | Supabase-Auth IdP + passkey spike | eq-shell | ⚪ | — | spike branch; no prod auth change |
 | C4 | Staged auth cutover (shadow → app-by-app → retire HMAC) | all | ⛔ | — | **auth deploy = Royce-gated (Rule §1)** |
-| C5 | **Split `@eq-solutions/roles`: tier-list + convention ⟂ per-app matrices** | eq-roles | 🔵 | C4 / TBD branch | **DECIDED 2026-05-31 (Royce).** Blocks C6/C7/C8. Package exports: shared `EqRole`+`is_platform_admin`+`can(matrix,…)` helper shape; each app supplies its own matrix. Tag a new MAJOR (consumers pin by tag, not #main — coordinate w/ the tag-migration session). NOT started — design first. |
-| C6 | Service role-mapping proposal (read-only) | eq-solves-service | 🔵 | C4 | **Reframed by C5:** not a role→role remap — canonical has NO service/CMMS perms, so Service needs its own matrix module under the split. Earlier fan-out got Service↔canonical backwards (`roles-canonical-audit` §C) — proposal must be source-verified. Output = decision input, implement nothing. Sequence AFTER C5 shape is known. |
-| C7 | Field roles adoption (tier-list only) | eq-solves-field | ⚪ | (C4, queued) | Tier names already match; adopt shared tier-list from C5, keep Field's own matrix. Real work = auth-gated `verify-pin.js` token-fidelity fix (`field-roles-findings-2026-05-31.md`) → ⛔ Rule §1. Decisions: `regional_manager` placement, does Field need `is_platform_admin`. |
-| C8 | Reconcile Shell server-mirror onto split package | eq-shell | ⚪ | (C4, queued) | Replace the hand-mirrored MATRIX in `netlify/functions/_shared/permissions.ts` (PR #79) with a consume-by-tag of the C5 shared shape, resolving the Rule §5 divergence. |
+| C5 | **Split `@eq-solutions/roles`: tier-list + convention ⟂ per-app matrices** | eq-roles | ✅ | merged Sprint 5 — now v2.3.0 | `resolveEffectivePermissions` shipped. Package is now at v2.3.0. Unblocked C6/C7/C8. |
+| C6 | Service role-mapping proposal (read-only) | eq-solves-service | ✅ | PR #229 merged Sprint 5 | eq-service role adoption complete. |
+| C7 | Field roles adoption (tier-list only) | eq-solves-field | ✅ | PR #159 merged Sprint 5 | eq-field role adoption complete. |
+| C8 | Reconcile Shell server-mirror onto split package | eq-shell | ✅ | PR #145 merged Sprint 5 | Shell role adoption complete; Rule §5 divergence resolved. |
 
 ## Stream D — Equipment / asset intake (in flight from other sessions)
 | id | item | repo | status | owner / branch | notes |
@@ -179,13 +180,13 @@ Roadmap: `~/.claude/plans/distributed-dazzling-curry.md` + memory `eq-hardening-
 | id | item | bar | size | status | notes |
 |----|------|-----|------|--------|-------|
 | B2 | retrofit ~15 ad-hoc role checks → `can()`/`requirePerm` | 🔒 | M | ✅ | PR #120 merged — `useCan('admin.list_users')` + security groups PR #123 |
-| B4 | consolidate 5 `verify*Token` fns → `verifyToken(kind)` | 🔒 | S | ⚪ | still open |
+| B4 | consolidate 5 `verify*Token` fns → `verifyToken(kind)` | 🔒 | S | ✅ | PR #144 merged Sprint 5 |
 | B5 | tokenize `gm-reports/index.tsx` (~118 inline → classes/tokens) | 🎨 | M | ⚪ | still open |
 | B6 | delete dup `.eq-btn-*`; migrate call-sites → `<Button>` | 🎨 | S | ✅ | PR #120 — removed `.eq-btn-*` CSS classes; PR #116 ComingSoon fixed |
-| B8 | surface gm-reports silent archive/delete + detail-load failures | ✅ | S | ⚪ | still open (branch reverted — redo) |
+| B8 | surface gm-reports silent archive/delete + detail-load failures | ✅ | S | ✅ | PR #143 merged Sprint 5 |
 | B9 | ~800 lines page CSS out of App.css → co-located + tokenize | 🎨 | M | ⚪ | still open |
 | B10 | delete dead `modules/cards.tsx` + `modules/service.tsx` stubs | ✅ | S | ✅ | PR #120 merged — stubs deleted |
-| B11 | `ai-briefing` Cache-Control private + typed `entity-actions` + drop `?? ''` | 🔒 | S | ⚪ | still open |
+| B11 | `ai-briefing` Cache-Control private + typed `entity-actions` + drop `?? ''` | 🔒 | S | ✅ | Sprint 5 done |
 | B12 | single-source the permission matrix (client+server) | 🔒 | M | ✅ | PR #108 merged — `check-perm-sync.mjs` reads `@eq-solutions/roles` directly; C8 reconcile (permissions.ts) still open |
 
 ## Stream I — cross-app remediation (`eq-shell/docs/cross-app-audit.md`) · per-repo, gated

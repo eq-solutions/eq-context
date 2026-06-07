@@ -14,15 +14,23 @@ is operational tooling for the NSW office.
 
 ---
 
-## SKS Labour App (v3.4.73)
+## SKS Labour App — standalone (LEGACY / FROZEN)
 
-**Status:** Live. Currently on **v3.4.73** (deployed 2026-05-13); EQ demo has advanced to v3.5.0 with v3.5.1-v3.5.3 in flight. SKS port of the demo-only workstreams (Site Reports Diary + HUB, Tender Pipeline, mobile-first home tile, S1 sliding-window queries) gated on per-workstream "SKS live" green-light from Royce after demo soak.
+**Status:** Live but **FROZEN for new development** (since the 2026-05-20 split).
+Kept running warm in parallel, short-term only. **All new SKS app development now
+targets the EQ Field SKS tenant** (`eq-solutions/eq-field`, served at
+`core.eq.solutions/field` · `field.sks.eq.solutions`) — NOT this standalone. Do
+not port features between them (the auto-port model was killed at the split).
+Cutover + decommission is Royce-gated (no date set). See `sks/README.md` →
+"SKS app systems — the split".
 **URL:** sks-nsw-labour.netlify.app
-**Repo:** Milmlow/eq-field-app, **main branch only**
+**Repo:** eq-solutions/sks-nsw-labour — **own dedicated repo since 2026-05-20**, main branch only
 **Architecture:** Single-page PWA, vanilla JS (modularised), Supabase
 backend, Netlify Functions for PIN auth + email + AI agent
 **Supabase project:** nspbmirochztcjijmcrx (sks-labour) — **LIVE
-PRODUCTION DATA, DO NOT TOUCH unless "SKS live" is explicit**
+PRODUCTION DATA, DO NOT TOUCH unless "SKS live" is explicit.** ⚠️ The EQ Field
+SKS tenant currently shares THIS SAME DB (canonical decouple not done — see
+`DATA-PLANES-SOURCE-OF-TRUTH.md` in the eq-field repo).
 **Users:** ~55 SKS NSW field staff and supervisors
 
 **Key details:**
