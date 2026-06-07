@@ -1,13 +1,22 @@
 ---
 title: Changelog — EQ Context Repo
 owner: Royce Milmlow
-last_updated: 2026-05-30
+last_updated: 2026-06-07
 scope: Append-only history of changes to the eq-context repository itself
 read_priority: reference
 status: live
 ---
 
 # Changelog — EQ Context Repo
+
+## [2026-06-07] SKS Live roles sprint doc added (live-verified)
+
+**Built by:** Royce Milmlow + Claude Code
+
+- `sks-live-sprint-2026-06-07.md` (new, root) — source-of-truth handoff for the **roles / security-groups track** of SKS Live: repo/action table, order of operations, and agent prompts A–E. Sibling to `SKS-CUTOVER-CRITICAL-PATH.md` (the Field schema/data track) — the two are parallel workstreams, cross-linked, not overlapping.
+- Live-verified before saving: project refs (`sks-canonical`/`eq-canonical`/`eq-canonical-internal`/`sks-labour`), `shell_control` group counts (9 groups / 16 perms / 0 assignments), `user_security_groups` columns, tenant `sks` = 3 × manager, and the `contact_customer_links` `with_check=null` Phase-5 finding. GitHub-side claims (PR #7, branch divergence) left flagged as leads.
+- Two drift fixes baked into the prompts: Phase 3 writes `assigned_by`/`assigned_at`; Phase 5 `WITH CHECK` casts `::uuid` to match the existing qual.
+- Session log: `sessions/2026-06-07.md`.
 
 ## [2026-05-30] Dead-weight audit + CI greening (3 PRs)
 
