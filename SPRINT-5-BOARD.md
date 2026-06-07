@@ -122,7 +122,4 @@ Steps (run in order after R1/R2 complete):
 - HMAC retirement runbook: `eq-context/auth-phase4-hmac-retirement-runbook.md` (draft, Sprint 6)
 - Security rotation runbook: `eq-context/security-secret-rotation-runbook-2026-05-31.md`
 - B8 PR: https://github.com/eq-solutions/eq-shell/pull/143
-- B4 PR: https://github.com/eq-solutions/eq-shell/pull/144
-- C8 PR: https://github.com/eq-solutions/eq-shell/pull/145
-- C7 PR: https://github.com/eq-solutions/eq-field/pull/159
-- C6 PR: https://github.com/Milmlow/eq-solves-service/pull/229
+- B4 PR: https://github.com/eq-solutions/eq-sh

@@ -47,5 +47,4 @@ grant all on
 
 ## Pointers
 - Migration code: `eq-intake/sql/030_secdef_caller_tenant_guard.sql`
-- Lockdown plan (Quotes anon path was service_role, so revoke was low-risk): `~/.claude/plans/sks-quotes-anon-lockdown.md`
-- Likely related concurrent work: `security-secret-rotation-runbook-2026-05-31.md` (this repo, untracked) — the anon-key rotation in #3a may belong there.
+- Lockdown plan (Quotes 

@@ -94,8 +94,4 @@ Between each: check the site's Netlify deploy went `ready` (not `error` — we h
 ## Definition of "weekend done"
 
 - [ ] eq-service SSO fix shipped + smoke-passed.
-- [ ] eq-field #156 shipped (if rebased) or cleanly deferred.
-- [ ] EQ anon burn-down advanced/closed (concurrent agent) + smoke-passed.
-- [ ] Codes rotated.
-- [ ] No site in `error`; all smoke tests green.
-- [ ] #1 (SKS) explicitly **not** attempted — scheduled as its own project.
+- [ ] eq-field #156 shipped (if rebased) 

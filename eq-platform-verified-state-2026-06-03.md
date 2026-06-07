@@ -32,4 +32,4 @@ status: live
 - sks-canonical (`ehowgjardagevnrluult`): RLS **ON**, anon grants **revoked** (fixed in the 2026-05-31 audit). The "RLS off + open key" framing is **stale**. Remaining: a service_role key in a local gitignored `.env` (`eq-quotes-port`) used by `eq-quotes-sks` on Fly — rotate as hygiene.
 
 ## To move worker-creds live (Royce-gated)
-phone list ×~60 · evidence export (scans + numbers + expiries) · **GATE A** auth sign-off · security key rotation (hygiene). The worker-owned-credentials architecture is the **locked design** (`eq/identity/worker-credentials-model-2026-05-31.md`, owner: Royce) — Phase 1 (seed + self-maintain) build is just blocked on those inputs; Phase 2 (live-link grants / multi-employer / "subbie with N contractors") is deferred until a 2nd business consumes.
+phone list ×~60 · evidence export (scans + numbers + expiries) · **GATE A** auth sign-off · security key rotation (hygiene). The worker-owned-credentials architecture is the **locked design** (`eq/identity/worker-credentials-m

@@ -222,5 +222,4 @@ S0 (stop bleeding) ─▶ S1 (identity) ─▶ S2 (RLS) ─▶ S3 (server-side s
 - EQ Field security audit: `eq-solves-field/SECURITY-REMEDIATION-HANDOFF.md` (findings #1–#6), `SKS-CUTOVER-STATUS.md` (item #3 per-user auth decision).
 - Schema governance: `eq-shell/SCHEMA-GOVERNANCE.md` (spine model, `--strict-spine`, the 175-diff worklist).
 - Guard burn-down: `eq-shell/scripts/check-tenant-drift.mjs` → `KNOWN_LEGACY_ANON` (25 tables) + `--strict-spine`.
-- Field data plane: browser → `ktmjmdzqrogauaevbktn` (EQ) / `nspbmirochztcjijmcrx` (SKS); routing via canonical `jvknxcmbtrfnxfrwfimn`. Canonical tenant data planes: `zaapmfdkgedqupfjtchl` (EQ), `ehowgjardagevnrluult` (SKS).
-- This sprint's north star (Royce, 2026-06-03): perfect EQ Field → secure it → roll to SKS tenant → cut SKS live.
+- Field data plane: browser → `ktmjmdzqrogauaevbktn` (EQ) / `nspbmirochztcjijmcrx` (SKS); routing via canonical `jvknxcmbtrfnxfrwfimn`. Canonical tena

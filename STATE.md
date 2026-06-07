@@ -134,4 +134,4 @@ Snapshot 2026-05-30. **Verify before relying on the git/worktree lines** — the
 - Sequential `00xx` migrations collide across parallel agents → **timestamps only** (RULES §3). `eq-solves-service 0110` taken.
 - Branching from local `main` drags other sessions' commits → **branch from `origin/main`** (RULES §2).
 - Stale worktrees hold uncommitted work → **never prune without confirming committed** (RULES §2).
-- `eq-shell src/pages/TenantHome.tsx` edited by PRs #64/#65/#68/#69 → coordinate.
+- `eq-shell

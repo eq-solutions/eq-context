@@ -88,4 +88,4 @@ Don't out-build the load. Get the data model right immediately so nothing needs 
 
 ## 6. Threat/assurance note
 
-Portability *raises* the assurance floor: a recycled phone number that resolves to a portable identity exposes licences aggregated across **every** employer the real person worked for — bigger blast radius than a single-employer view. The property that delivers low friction (one portable key) is the same one that raises the security bar. Both must be designed; optimising one and ignoring the other is the trap.
+Portability *raises* the assurance floor: a recycled phone number that resolves to a portable identity exposes licences aggregated across **every** employer the real person worked for — bigger blast radius than a single-employer view. The property that delivers low friction (one portable key) is the same one that raises the security bar. Both must be designed; optimising one and ignoring the
