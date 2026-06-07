@@ -14,6 +14,19 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## SKS Live — roles / security-groups track (2026-06-07)
+
+Parallel to the Field schema/data cutover below. Full plan + agent prompts (A–E): [`sks-live-sprint-2026-06-07.md`](../sks-live-sprint-2026-06-07.md). Live-verified 2026-06-07: `shell_control` has 9 groups / 16 perms / **0** user assignments; tenant `sks` = 3 × manager.
+
+- [ ] **eq-roles** — merge PR #7 → tag `v2.3.0` (unblocks the eq-shell dep bump). *(Royce)*
+- [ ] **eq-shell** — converge `c2-shell-roles` + `sks-field-host` into one trunk (Prompt A; Royce picks trunk).
+- [ ] **eq-shell Phase 2** — wire group perms into the session as `extra_perms` via `resolveEffectivePermissions` (Prompt B).
+- [ ] **eq-shell Phase 3** — `AdminSecurityGroups` page; first write moves `user_security_groups` off 0 rows (Prompt C).
+- [ ] **eq-shell Phase 4** — walk ONE real SKS user end-to-end; first-ever `user_security_groups` row (Prompt D).
+- [ ] **Phase 5 hardening** — `contact_customer_links` explicit `WITH CHECK` (`::uuid` cast) + CI policy-lint + eq-roles no-orphan-keys test (Prompt E).
+
+---
+
 ## ⏩ Session close — 2026-06-06 — SKS tenant LIVE on EQ Field + JWT/RLS Track 2 staged + Teams uuid fix
 
 **SKS is now usable on the EQ Field build** at `field.sks.eq.solutions` (eq-field **v3.5.83**). Big correction vs the earlier draft of this block: **`DATA_JWT_ENABLED` is ON deploy-wide**, so SKS runs on the AUTHED JWT path post-login (not anon parity), and STEP 1 is load-bearing.

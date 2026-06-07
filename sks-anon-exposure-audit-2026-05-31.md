@@ -1,3 +1,12 @@
+---
+title: SKS canonical anon-exposure audit + canonical RPC hardening
+owner: Royce Milmlow
+last_updated: 2026-06-01
+scope: Anon-exposure audit + RPC hardening for sks-canonical (changes applied, follow-ups open)
+read_priority: reference
+status: live
+---
+
 # SKS canonical anon-exposure audit + canonical RPC hardening — 2026-05-31
 
 **Status:** changes applied to sks-canonical (prod), verified safe. EQ control plane assessed (no action). Several follow-ups open.

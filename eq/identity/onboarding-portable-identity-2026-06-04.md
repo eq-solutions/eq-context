@@ -4,7 +4,7 @@ owner: Royce Milmlow
 last_updated: 2026-06-04
 scope: Cross-product design for how a worker enters EQ (Cards-first), carries one identity across employers, and progressively secures it. Extends eq/identity/IDENTITY-MODEL.md — pulls its §11.2 multi-tenant-membership v2 item forward and flags the GoTrue/own-mint reconciliation. Governs onboarding friction, consent, recovery, and where identity-lifecycle policy lives.
 read_priority: high
-status: proposed
+status: draft
 related:
   - eq/identity/IDENTITY-MODEL.md (authoritative model this extends)
   - product-adoption-strategy (memory) — admin pre-populates, workers consume
@@ -12,6 +12,8 @@ related:
 ---
 
 # EQ — Low-Friction Onboarding & Portable Worker Identity
+
+**Status:** proposed.
 
 **Status:** Proposed direction, authorised by Royce 2026-06-04 (conversation steelman/critique). Implementation is **phased** (below); Phases 2–3 trigger a deliberate v2 bump of `IDENTITY-MODEL.md` when they land.
 

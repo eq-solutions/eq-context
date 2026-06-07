@@ -1,3 +1,12 @@
+---
+title: Grok — Session Starter
+owner: Royce Milmlow
+last_updated: 2026-06-02
+scope: Bootstrap prompt to paste into a new Grok session
+read_priority: reference
+status: live
+---
+
 # Grok — Session Starter
 
 Paste everything below this line into a new Grok conversation at the start of a session.

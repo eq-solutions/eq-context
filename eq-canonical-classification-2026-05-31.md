@@ -1,3 +1,12 @@
+---
+title: eq-canonical reference classification
+owner: Royce Milmlow
+last_updated: 2026-05-31
+scope: Classification of every eq-canonical string ref across the EQ repos
+read_priority: reference
+status: live
+---
+
 # eq-canonical reference classification — 2026-05-31
 
 Companion to `roles-canonical-audit-2026-05-31.md`. Classifies every `eq-canonical` string ref

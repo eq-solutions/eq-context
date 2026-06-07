@@ -1,3 +1,12 @@
+---
+title: "Sprint 6 Board — EQ Field Auth Hardening: Retire the Anon Model"
+owner: Royce Milmlow
+last_updated: 2026-06-04
+scope: Sprint 6 task board
+read_priority: reference
+status: live
+---
+
 # Sprint 6 Board — EQ Field Auth Hardening: Retire the Anon Model
 
 **Started:** 2026-06-03

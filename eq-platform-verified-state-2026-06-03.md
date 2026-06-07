@@ -1,3 +1,12 @@
+---
+title: EQ platform — VERIFIED live state
+owner: Royce Milmlow
+last_updated: 2026-06-03
+scope: DB-verified snapshot of the live EQ platform (drifts — re-verify before relying)
+read_priority: reference
+status: live
+---
+
 # EQ platform — VERIFIED live state (2026-06-03)
 
 > **Read this before assuming something isn't built.** Every fact below was checked against the **live system** (Supabase queries, deployed apps, git branches) on 2026-06-03 — not from design docs. Design docs, STATE files, and recon summaries **lag reality**: repeatedly during the 2026-06-03 session, things assumed "not built" were already built or in-flight. **This snapshot will drift — re-verify against live before relying on it.** When live and docs disagree, **live wins.**

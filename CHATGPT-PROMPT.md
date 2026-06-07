@@ -1,3 +1,12 @@
+---
+title: ChatGPT — Session Starter
+owner: Royce Milmlow
+last_updated: 2026-06-02
+scope: Bootstrap prompt to paste into a new ChatGPT session
+read_priority: reference
+status: live
+---
+
 # ChatGPT — Session Starter
 
 Paste everything below this line into a new ChatGPT conversation at the start of a session.

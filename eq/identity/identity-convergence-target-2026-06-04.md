@@ -4,13 +4,15 @@ owner: Royce Milmlow
 last_updated: 2026-06-04
 scope: Declares the ONE canonical identity + membership record for the EQ suite and the retire-list / demolition schedule for the overlapping stores. Companion to IDENTITY-MODEL.md (the model) and onboarding-portable-identity-2026-06-04.md (the onboarding direction). Purpose — convert identity-store accretion into directed motion: every future change is checked against this target.
 read_priority: high
-status: accepted
+status: live
 related:
   - eq/identity/IDENTITY-MODEL.md
   - eq/identity/onboarding-portable-identity-2026-06-04.md
 ---
 
 # EQ — Identity Convergence Target
+
+**Status:** accepted.
 
 **Status:** Accepted direction, authorised by Royce 2026-06-04. This sets the *destination*; execution is scheduled (below), not immediate. The point is cheap and now: stop building sideways.
 

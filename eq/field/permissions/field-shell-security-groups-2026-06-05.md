@@ -4,7 +4,7 @@ owner: Royce Milmlow
 last_updated: 2026-06-05
 scope: How Field consumes Shell identity today, and the target for tying Field permissions into Shell security groups
 read_priority: high
-status: live (verified against running code + DB 2026-06-05)
+status: live
 ---
 
 # EQ Field ↔ EQ Shell — security tie-in

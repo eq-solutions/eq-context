@@ -5,6 +5,7 @@ scope: Coordinated rotation of the platform-wide EQ_SECRET_SALT HMAC key
 read_priority: critical
 status: live
 created: 2026-06-06
+last_updated: 2026-06-06
 ---
 
 # EQ_SECRET_SALT rotation runbook

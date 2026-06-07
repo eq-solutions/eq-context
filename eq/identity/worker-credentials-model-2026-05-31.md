@@ -4,10 +4,12 @@ owner: Royce Milmlow
 last_updated: 2026-05-31
 scope: The mechanics of worker-owned portable credentials (EQ Cards) and how businesses (SKS first) consume them via snapshot + live-link. Reconciles the worker-house data target with the Cards canonical-api rewire and the unified identity model.
 read_priority: critical
-status: decided (design) — Phase 1 build pending Royce-gated inputs
+status: live
 ---
 
 # Worker-Owned Credentials — Model & Phase-1 Sprint
+
+**Status:** decided (design) — Phase 1 build pending Royce-gated inputs.
 
 Decisions taken 2026-05-31 (Royce + C4 console). This is the **design record — no
 code yet.** It supersedes the Cards-rewire assumption that worker data routes to a
