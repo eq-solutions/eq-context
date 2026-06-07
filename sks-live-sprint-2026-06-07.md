@@ -1,7 +1,7 @@
 ---
 title: SKS Live — Roles / Security-Groups Sprint
 owner: Royce Milmlow
-last_updated: 2026-06-07
+last_updated: 2026-06-08
 scope: Handoff + agent prompts for the roles/security-groups track of SKS Live
 read_priority: reference
 status: live
@@ -38,6 +38,8 @@ Project refs and load-bearing table/row claims confirmed against the running sys
 **NOT verified here (GitHub-side, outside Supabase scope) — treat as leads, verify before acting:**
 - eq-roles **PR #7** / branch `claude/gallant-cartwright-847187`, "v2.3.0 resolver, 91 tests."
 - eq-shell branch divergence (`claude/c2-shell-roles` ~+197, `claude/sks-field-host` ~+59) and which commits are load-bearing.
+
+**2026-06-08 update:** Audited live codebase. All branches are 1 commit ahead of main. Main IS the trunk.  `@eq-solutions/roles v2.3.0` already on main. Phases 2 and 3 already implemented. `contact_customer_links` WITH CHECK applied to ehow. PR #231 (0044 migration + orphan-perms script) open on eq-shell. See sessions/2026-06-08.md Part 2 for full log.
 
 ---
 
@@ -183,4 +185,25 @@ audit of sks-canonical (ehowgjardagevnrluult):
 
 1. app_data.contact_customer_links has an ALL policy (ccl_tenant) with
    with_check=null. It's currently safe (Postgres falls back to the tenant_id
-   USING qual), but add an explicit WITH CHECK for c
+   USING qual), but add an explicit WITH CHECK for clarity + future-proofing.
+   IMPORTANT: match the existing USING qual's cast — it casts to ::uuid:
+     WITH CHECK (tenant_id = ((auth.jwt()->'app_metadata'->>'tenant_id'))::uuid)
+   (A plain text comparison without ::uuid will not type-match the uuid column.)
+   Only the ALL policy needs it; the ccl_tenant_read SELECT policy does not use
+   WITH CHECK. Migration via the tenant-migrations path.
+2. Add a CI policy-lint asserting EVERY app_data table has a tenant-isolation
+   policy, so a future migration can't ship a table without one.
+
+Also (eq-roles): add a no-orphan-keys CI test — every perm key referenced in
+shell_control.security_group_perms must exist in the pinned @eq-solutions/roles.
+
+No deploy without explicit instruction.
+```
+
+---
+
+## Cross-references
+
+- [SKS-CUTOVER-CRITICAL-PATH.md](SKS-CUTOVER-CRITICAL-PATH.md) — the Field schema + live-data migration (parallel track).
+- [eq/field/permissions/field-shell-security-groups-2026-06-05.md](eq/field/permissions/field-shell-security-groups-2026-06-05.md) — the app-layer-groups locked decision.
+- [eq-platform-verified-state-2026-06-03.md](eq-platform-verified-state-2026-06-03.md) — DB-verified platform snapshot (re-verify; drifts).
