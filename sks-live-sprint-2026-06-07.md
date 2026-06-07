@@ -1,3 +1,12 @@
+---
+title: SKS Live — Roles / Security-Groups Sprint
+owner: Royce Milmlow
+last_updated: 2026-06-07
+scope: Handoff + agent prompts for the roles/security-groups track of SKS Live
+read_priority: reference
+status: live
+---
+
 # SKS Live — Roles / Security-Groups Sprint (handoff + agent prompts)
 
 **Prepared:** 2026-06-07
