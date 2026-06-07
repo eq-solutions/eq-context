@@ -1,7 +1,7 @@
 ---
 title: Weekend Merge Runbook — Consolidate + Deploy + EQ Anon Remediation
 owner: Royce Milmlow
-last_updated: 2026-06-04
+last_updated: 2026-06-07
 scope: Runbook for the weekend merge + deploy + EQ anon-remediation window
 read_priority: reference
 status: live

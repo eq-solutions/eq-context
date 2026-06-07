@@ -1,7 +1,7 @@
 ---
 title: SKS canonical anon-exposure audit + canonical RPC hardening
 owner: Royce Milmlow
-last_updated: 2026-06-01
+last_updated: 2026-06-07
 scope: Anon-exposure audit + RPC hardening for sks-canonical (changes applied, follow-ups open)
 read_priority: reference
 status: live

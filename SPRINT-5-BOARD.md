@@ -1,7 +1,7 @@
 ---
 title: Sprint 5 Board — Phase 3 Landing + NSW Go-Live + HMAC Retirement
 owner: Royce Milmlow
-last_updated: 2026-06-04
+last_updated: 2026-06-07
 scope: Sprint 5 task board
 read_priority: reference
 status: live

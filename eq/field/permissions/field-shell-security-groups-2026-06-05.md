@@ -1,7 +1,7 @@
 ---
 title: EQ Field ↔ EQ Shell — identity & security-groups tie-in
 owner: Royce Milmlow
-last_updated: 2026-06-05
+last_updated: 2026-06-07
 scope: How Field consumes Shell identity today, and the target for tying Field permissions into Shell security groups
 read_priority: high
 status: live

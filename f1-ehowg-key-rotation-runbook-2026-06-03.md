@@ -2,7 +2,7 @@
 title: F1 — Rotate the exposed ehowg (sks-canonical) service_role key
 owner: Royce Milmlow
 created: 2026-06-03
-last_updated: 2026-06-03
+last_updated: 2026-06-07
 status: live
 read_priority: critical
 scope: Kill the leaked SKS-canonical service_role key and swap the new one into both consumers

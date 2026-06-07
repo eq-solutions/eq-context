@@ -1,7 +1,7 @@
 ---
 title: "GATE A — Worker auth provisioning: DECISION"
 owner: Royce Milmlow
-last_updated: 2026-06-03
+last_updated: 2026-06-07
 scope: Decision record for the worker auth provisioning gate (Streams Cards + C-CANON)
 read_priority: reference
 status: live

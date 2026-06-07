@@ -1,7 +1,7 @@
 ---
 title: EQ — Low-Friction Onboarding & Portable Worker Identity
 owner: Royce Milmlow
-last_updated: 2026-06-04
+last_updated: 2026-06-07
 scope: Cross-product design for how a worker enters EQ (Cards-first), carries one identity across employers, and progressively secures it. Extends eq/identity/IDENTITY-MODEL.md — pulls its §11.2 multi-tenant-membership v2 item forward and flags the GoTrue/own-mint reconciliation. Governs onboarding friction, consent, recovery, and where identity-lifecycle policy lives.
 read_priority: high
 status: draft

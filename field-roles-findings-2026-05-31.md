@@ -1,7 +1,7 @@
 ---
 title: Field roles — verified findings + a cross-app decision
 owner: Royce Milmlow
-last_updated: 2026-05-31
+last_updated: 2026-06-07
 scope: Verified read of EQ Field's role model + cross-app role decision
 read_priority: reference
 status: live

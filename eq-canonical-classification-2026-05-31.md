@@ -1,7 +1,7 @@
 ---
 title: eq-canonical reference classification
 owner: Royce Milmlow
-last_updated: 2026-05-31
+last_updated: 2026-06-07
 scope: Classification of every eq-canonical string ref across the EQ repos
 read_priority: reference
 status: live

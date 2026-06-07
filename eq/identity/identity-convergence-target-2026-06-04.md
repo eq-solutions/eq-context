@@ -1,7 +1,7 @@
 ---
 title: EQ — Identity Convergence Target
 owner: Royce Milmlow
-last_updated: 2026-06-04
+last_updated: 2026-06-07
 scope: Declares the ONE canonical identity + membership record for the EQ suite and the retire-list / demolition schedule for the overlapping stores. Companion to IDENTITY-MODEL.md (the model) and onboarding-portable-identity-2026-06-04.md (the onboarding direction). Purpose — convert identity-store accretion into directed motion: every future change is checked against this target.
 read_priority: high
 status: live

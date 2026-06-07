@@ -1,7 +1,7 @@
 ---
 title: EQ platform — VERIFIED live state
 owner: Royce Milmlow
-last_updated: 2026-06-03
+last_updated: 2026-06-07
 scope: DB-verified snapshot of the live EQ platform (drifts — re-verify before relying)
 read_priority: reference
 status: live
