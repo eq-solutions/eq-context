@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Index
 owner: Royce Milmlow
-last_updated: 2026-06-07
+last_updated: 2026-06-08
 scope: Operational support — entities, finance, legal, admin
 read_priority: standard
 status: live

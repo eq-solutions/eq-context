@@ -1,7 +1,7 @@
 ---
 title: Autonomous Sprint — State
 owner: Royce Milmlow
-last_updated: 2026-06-03
+last_updated: 2026-06-08
 scope: Per-repo + Supabase reality snapshot, CI guards, and known hazards for the sprint
 read_priority: critical
 status: live
