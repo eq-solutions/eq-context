@@ -1,13 +1,45 @@
 ---
 title: Changelog — EQ Solves Field
 owner: Royce Milmlow
-last_updated: 2026-06-07
+last_updated: 2026-06-08
 scope: Append-only history of changes to the EQ Solves Field product
 read_priority: reference
 status: live
 ---
 
 # Changelog — EQ Solves Field
+
+## [2026-06-08] v3.5.100 — Sentry EQ-FIELD-5: complete dashboard lazy-load guard (PR #230, merged)
+**Built by:** Royce Milmlow + Claude Code
+
+`siteColor()`, `getSiteName()`, and `isAbsence()` all live in lazy-loaded `roster.js`
+but are called from core-loaded `dashboard.js` before `roster.js` loads. Added inline
+fallbacks for all three using eagerly-loaded `app-state.js` constants (SITE_COLOR_MAP,
+EDUCATION_TERMS, LEAVE_TERMS, STATE.sites). Fixes Sentry EQ-FIELD-5 (`siteColor is not
+defined`, seen via `field.sks.eq.solutions`). Pre-empts the next two crashes in the same
+render path. Combined with v3.5.99, fully closes the dashboard lazy-load race for all
+`roster.js` dependants. No schema/data/auth changes.
+
+**PR:** [#230](https://github.com/eq-solutions/eq-field/pull/230) — merged, live.
+
+---
+
+## [2026-06-07] v3.5.99 — Sentry EQ-FIELD-3 + EQ-FIELD-4: lazy-load ReferenceErrors (PR #227, merged)
+**Built by:** Royce Milmlow + Claude Code
+
+**EQ-FIELD-3** `isLeave is not defined` (dashboard.js:77, 15 events, escalating): dashboard
+site-count loop called `isLeave()` from lazy-loaded `roster.js` before it loaded. Added
+`_isLeave` inline fallback using `LEAVE_TERMS` from `app-state.js` (same pattern as v3.5.84
+`updateTopStats` guard).
+
+**EQ-FIELD-4** `auditLog is not defined` (timesheets.js:419): `auditLog()` called unguarded
+from 14+ modules; `audit.js` was lazy (Audit tab only). `audit.js` (233 lines) moved to
+core-loaded scripts in `index.html`; removed from `TAB_SCRIPTS` to prevent duplicate `let`
+redeclare crash. Kills the entire class of auditLog crashes. No schema/data/auth changes.
+
+**PR:** [#227](https://github.com/eq-solutions/eq-field/pull/227) — merged, live.
+
+---
 
 ## [2026-06-06] v3.5.86 — Fix team delete (FK violation) (PR #203, merged)
 **Built by:** Royce Milmlow + Claude Code
