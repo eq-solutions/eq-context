@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-06-07
+last_updated: 2026-06-08
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -14,6 +14,59 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-06-08 — EQ Field Sentry crash fixes
+
+**Completed:**
+- [x] **v3.5.99 verified live** — EQ-FIELD-3 (isLeave) + EQ-FIELD-4 (auditLog) confirmed
+      resolved in Sentry; no new occurrences since deploy. Both marked resolved with notes.
+- [x] **v3.5.100 shipped + live** — EQ-FIELD-5 (siteColor + getSiteName + isAbsence
+      lazy-load race in dashboard.js). PR #230, merged, smoked, production verified.
+- [x] **All Sentry eq-field issues resolved** — 0 unresolved. Dashboard lazy-load race
+      fully closed for all roster.js dependants.
+- [x] **eq-context updated** — sessions/2026-06-08.md, eq/changelog/field.md (v3.5.99 +
+      v3.5.100 entries), eq/pending.md.
+
+**EQ Field live version:** v3.5.100
+
+**Deferred (carry forward):**
+- [ ] Deploy-preview auth gate (zaap anon-revoked) — `demo-trades` on previews 401s on
+      name list. Use `?tenant=demo` to bypass for smoke. Pre-existing, deferred 2026-06-06.
+- [ ] eq-context sks/ local edits still uncommitted (`sks/README.md`, `sks/products.md`)
+      — Royce to commit via GitHub web UI or emit .bat.
+- [ ] eq-context itself — commit + push this session's updates (auto-push hook or manual).
+
+---
+
+## ⏩ Session close — 2026-06-07 (PM) — Cross-app linkage audit
+
+Live-verified map of Cards/Shell/Field/Service/Quotes linkage (4 Supabase projects + 5 repos, read-only).
+Full report: [`cross-app-linkage-audit-2026-06-07.md`](../cross-app-linkage-audit-2026-06-07.md).
+Gated playbook: [`cross-app-linkage-remediation-plan-2026-06-07.md`](../cross-app-linkage-remediation-plan-2026-06-07.md).
+Sprint (steelman-corrected, 10/10): [`cross-app-linkage-sprint-2026-06-07.md`](../cross-app-linkage-sprint-2026-06-07.md) — 7 workstreams, 4 waves, pre-mortem.
+
+**Headline:** canonical model (`ehow.app_data`) is FK-wired but its linking rows are empty (`jobs`=0, `quote`=0);
+worker→staff link 1/50, customer `canonical_id` 0/520 in live ehow, sites→customer 28/591. Asset sync (4808) works.
+
+**Prioritised actions (all Royce-gated — see plan for mechanism/verify):**
+- [ ] **P4 (small, do first):** repoint Cards→Field approval bridge off legacy `ktmj` → live plane (`app_data.staff`). eq-shell repo, PR + gated deploy. **Then** decommission ktmj.
+- [ ] **P1a:** resolve GATE A onto eq-cards `claude/otp-tenant-fix` (Option A). **Auth — chat-review before deploy.**
+- [ ] **P1b:** backfill `app_data.staff.cards_worker_id` (confirm match key — phone collisions are the landmine; dry-run first).
+- [~] **P2:** customer convergence — **PARTIAL APPLIED 2026-06-07** (`_ws1-customer-dedup-2026-06-07.md`): Tier S 38
+      stub customers retired (dup-groups 117→80); 28 quotes `canonical_id` linked (1:1-both-sides). **Remaining:** decide
+      SoR (rec `app_data.customers`); Tier A merge (26, supervised); Tier C (50 ambiguous) + quotes-side N:1 dedup via
+      Intake; 99 dangling sites need source re-import. Note: `sks_quotes_customers.canonical_id` is UNIQUE (1:1) vs N:1 data.
+- [x] **P3:** backfill `app_data.sites.customer_id` — **APPLIED 2026-06-07 (ehow)**: 440 sites linked (28→468),
+      assets→customer 4769/4808 (99.2%). Reversible; record in `_ws2-site-customer-backfill-2026-06-07.md`. Remaining
+      123 sites wait on P2 (customer dedup); `zaap` (30 sites) not yet run.
+- [ ] **P5 (decision):** who owns "job/work-order"? `app_data.jobs`=0 → no quote→job trace until decided.
+- [ ] **P7a:** SKS anon-remediation (nspb) — exact policy worklist in plan §7a. **SKS-live, gated.**
+- [ ] **P7b:** ktmj anon-write policies close via the pause/decommission already pending (after P4).
+- [ ] **P7d:** run a `get_advisors` pass on the EQ Service DB `urjhmkhbgaxrofurpbgc` (not yet audited).
+- [x] Audit internal authz of jvkn anon RPCs `eq_cards_get_worker_hr_record`, `eq_cards_delete_account` —
+      **CLEARED 2026-06-07**: both `SECURITY DEFINER` but scoped to `auth.uid()`; anon has no uid → harmless. Non-issue.
+
+**Drift corrected (live wins):** `architecture.md` "jvkn = no operational data" is false (it's the worker house);
+creds 779→737, invites 37→58 since 06-03; `0028_contact_customer_links` IS present on SKS (291 rows).
 ## SKS Live — roles / security-groups track (2026-06-07)
 
 Parallel to the Field schema/data cutover below. Full plan + agent prompts (A–E): [`sks-live-sprint-2026-06-07.md`](../sks-live-sprint-2026-06-07.md). Live-verified 2026-06-07: `shell_control` has 9 groups / 16 perms / **0** user assignments; tenant `sks` = 3 × manager.

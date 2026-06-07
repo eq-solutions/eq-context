@@ -1,7 +1,7 @@
 ---
 title: SKS Tier — Index
 owner: Royce Milmlow
-last_updated: 2026-05-24
+last_updated: 2026-06-07
 scope: SKS Technologies work — operations, projects, team, tools
 read_priority: critical
 status: live
@@ -18,6 +18,31 @@ SKS under the Delta Elcom integration.
 
 **Royce Milmlow** is NSW Operations Manager — quoting, project delivery,
 commercial management, day-to-day NSW operations.
+
+---
+
+## SKS app systems — the split (as of 2026-05-20)
+
+The SKS roster / timesheet / field app runs on **two separate systems** during
+the cutover. Do not conflate them:
+
+| | **Standalone — legacy** | **EQ Field · SKS tenant — the focus** |
+|---|---|---|
+| Site | `sks-nsw-labour.netlify.app` | `core.eq.solutions/field` · `field.sks.eq.solutions` |
+| Repo | `eq-solutions/sks-nsw-labour` | `eq-solutions/eq-field` (tenant slug `sks`) |
+| Dev status | **FROZEN** — no new features; kept warm/parallel, short-term only | **ACTIVE — all new SKS development happens here** |
+
+- **All new SKS app work goes to the EQ Field SKS tenant** (`eq-field` repo).
+  Do **not** build features in the standalone repo, and do **not** port between
+  them — the auto-port model was killed at the 2026-05-20 split.
+- ⚠️ **Both currently share ONE database** (`nspbmirochztcjijmcrx` = SKS live).
+  The per-tenant DB decouple / canonical migration is **not done yet** — so the
+  EQ Field SKS tenant's saves still write the same live DB as the standalone.
+  Any doc claiming the SKS tenant is on `sks-canonical` / `ehowg` is aspirational;
+  it's on `nspb` today. Full verified DB picture:
+  `DATA-PLANES-SOURCE-OF-TRUTH.md` (eq-field repo).
+- Cutover (repoint the tenant onto its own DB, then decommission the standalone)
+  is **Royce-gated — no date set**; the standalone stays warm in the meantime.
 
 ---
 

@@ -47,10 +47,10 @@ Snapshot 2026-05-30. **Verify before relying on the git/worktree lines** — the
 > - **sks-canonical safety RPC JWT guard LIVE:** `approve_safety_record` + `submit_safety_record` rewritten to derive tenant from JWT (`app_metadata.tenant_id`) instead of trusting caller-supplied param. Latent cross-tenant write hole closed. Migration: `sks_safety_rpc_jwt_tenant_guard`.
 > - **Staged files applied:** archive `eq-shell/supabase/staged/jvkn_auth_rpc_hardening.sql`, `sks_overlay_fn_revoke.sql`, `sks_safety_rpc_hardening.sql`.
 > - **`0029_safety_rpcs` committed** to `eq-shell/supabase/tenant-migrations/` — runner will apply to eq-canonical-internal on next migration run. Staged files deleted from `eq-shell/supabase/staged/`.
-- **eq-roles v1.3.0 confirmed merged** — `d0fa143` on main; eq-shell already bumped to consume it (`d58513a`).
+- **eq-roles v1.3.0 confirmed merged** — `d0fa143` on main; eq-shell already bumped to consume it (`d58513a`). **Now at v2.3.0** (Sprint 5 — `resolveEffectivePermissions` + C5 split shipped; pull origin/main to get latest).
 >
 > ## ⏩ POST-SPRINT UPDATE — 2026-06-02 (eq-roles v1.3.0 SHIPPED)
-> - **`@eq-solutions/roles` v1.3.0 LIVE** — merged to main, tagged `v1.3.0`, worktree + branch cleaned. Changes shipped: `canAny()` + `canAll()` helpers; 21-test suite (all pass); `package.json` version synced; `prepublishOnly` runs tests; CHANGELOG complete. eq-shell bumped to `#v1.3.0` (commit `d58513a`).
+> - **`@eq-solutions/roles` v1.3.0 LIVE** — merged to main, tagged `v1.3.0`, worktree + branch cleaned. Changes shipped: `canAny()` + `canAll()` helpers; 21-test suite (all pass); `package.json` version synced; `prepublishOnly` runs tests; CHANGELOG complete. eq-shell bumped to `#v1.3.0` (commit `d58513a`). **⚠ Now superseded by v2.3.0** (Sprint 5 — C5 split + `resolveEffectivePermissions`; eq-roles main is 1 commit ahead of local).
 > - **Tenant canonical migration strategy decided** — split migrations into `core/` (applied to every tenant) and `tenants/{eq,sks}/` (tenant-specific extensions). Migration folder doesn't exist yet — create in eq-context or thin `tenant-schema` repo before landing first core schema change.
 > - **Direction review complete** — eq-roles architecture sound. Remaining: `labour_hire` perm granularity (before Field labour hire portal), `reports` module gating, `service.assign` perm, tier-gating mechanism.
 >
@@ -95,16 +95,20 @@ Snapshot 2026-05-30. **Verify before relying on the git/worktree lines** — the
 > - **EYEBALL (low-risk, post-merge):** (1) F-W2-4 apprentice auto-advance batch-mutates real rows — test on one apprentice before broad use; (2) **#145 print colours** — confirm browser Print-preview shows EQ-deep on an EQ tenant + navy on SKS (cascade-verified via `body.tenant-sks`, but browser print pixels not machine-provable); (3) **#145 mobile swipe** pages the *week* (the one-day-view premise was stale) — isolated ~70-line block, easy to retune. (print.css SKS-navy follow-up = DONE in #145.)
 
 ## Repos
-| repo | GitHub | prod target | branch state @ snapshot | notes |
-|------|--------|-------------|--------------------------|-------|
-| **eq-shell** | eq-solutions/eq-shell (public) | **core.eq.solutions** (auth hub) on `main` | main synced; **ACTIVE other sessions** | worktrees: `affectionate-yonath` (85 uncommitted!), `equipment-finish`, `festive-burnell`, `naughty-heyrovsky`, `equipment-qr-hierarchy`(#69). Build `pnpm run build`. Hotspot file: `src/pages/TenantHome.tsx`. |
-| **eq-solves-field** | eq-solutions/eq-field (public) | eq-solves-field.netlify.app on `main` | idle ~17h; main behind 2 | EQ-side of the merge. Stale worktree `musing-mcnulty` (5 uncommitted). My `claude/field-merge-phase1` worktree staged. Vanilla HTML/JS/CSS; version-stamp every release. |
-| **sks-nsw-labour** | eq-solutions/sks-nsw-labour | **sks-nsw-labour.netlify.app = SKS LIVE — DO NOT DEPLOY** | idle ~18h; ahead1/behind3 | 5 stale worktrees incl `pipeline-ui`. Source of the SKS-only modules to PORT (read from `origin/main`). |
-| **eq-solves-service** | Milmlow/eq-solves-service | eq-solves-service.netlify.app on `main` | #203/#204 merged; local main diverged (leave) | Next 16. `npm run check` before push. CI `data-quality audit` fails on expired `SUPABASE_ACCESS_TOKEN` (known, unrelated). Worktree `charming-dirac` dormant (committed). |
-| **eq-cards** | Milmlow/eq-cards | (Flutter app) | **clean**, idle ~18h, no worktrees | safest repo to work in. NOT SKS. |
-| **eq-intake** | (home of `@eq/*`) | n/a (vendored into eq-shell) | **main ahead 23 unpushed**; active worktree `clever-roentgen` (6 uncommitted) | changes here must be **re-vendored into eq-shell**. |
-| **eq-roles** | eq-solutions/eq-roles (public) | n/a (package) | **v1.3.0 on main** — tag live, branch cleaned | consumed by eq-shell `#v1.3.0` (d58513a). `canAny`/`canAll` + 21-test suite. No open PRs. |
-| **eq-design-tokens** | eq-solutions/eq-design-tokens (**public**) | n/a (package) | v1.0.0 tag | consumed by Shell/Field/Service via git-dep. |
+> Last verified: 2026-06-07. Dirty counts reflect `git status --short` output; CRLF noise = line-ending only, no real changes.
+
+| repo | branch (2026-06-07) | dirty | notes |
+|------|---------------------|-------|-------|
+| **eq-shell** | `claude/worker-linker-schema-fix` | 271 (CRLF noise only) | `.git` repaired 2026-06-07 (config had null bytes; HEAD was truncated). 3 active agent worktrees locked (`wf_f1c4afc6-761-4`, `agent-a3e8cad7de9a023fc`, `agent-a15dd68d59734b633`). Stale unlocked worktrees: `eq-shell-button-wt`, `eq-shell-cleanup-wt`, `eq-shell-w2-wt`, `eq-shell-ocr-wt`. Build: `pnpm run build`. |
+| **eq-cards** | `claude/cards-otp-fix-minimal` | 1 (untracked: eq-cards-marketing.html) | clean; safest repo to work in. NOT SKS. |
+| **eq-intake** | `revert/intake-matrix-spike` | 0 | upstream gone — dead branch; switch to main before starting new work. |
+| **eq-solves-field** | `revert/licence-admin` | 157 (CRLF noise only) | `.git` packed-refs repaired 2026-06-07. Vanilla HTML/JS/CSS; version-stamp every release. |
+| **eq-solves-service** | `claude/posthog-canonical-distinct-id` | 0 | 1 commit ahead of origin (unpushed). `npm run check` before push. |
+| **eq-roles** | `main` | 0 | 1 commit BEHIND origin — v2.3.0 not pulled yet. `resolveEffectivePermissions` shipped in Sprint 5. No open PRs. |
+| **eq-ui** | `claude/component-audit` | 22 (CRLF noise only) | no real changes. |
+| **eq-design-tokens** | `main` | 10 (CRLF noise only) | no real changes. Consumed by Shell/Field/Service via git-dep. |
+| **sks-nsw-labour** | `claude/sks-field-host` | 5 (untracked) | **sks-nsw-labour.netlify.app = SKS LIVE — DO NOT DEPLOY.** 2 untracked SQL migrations need committing. |
+| **eq-context** | `claude/identity-convergence-target-2026-06-04` | 5 | 2 commits ahead of origin; untracked sprint/spec docs need committing. |
 
 ## Supabase projects (org `sqjyblkiqonyrdobaucn`, ap-southeast-2)
 | ref | name | role | access |
