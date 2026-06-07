@@ -79,4 +79,11 @@ full technical details.
 
 ---
 
-## EQ Expenses (internal SKS tool �
+## EQ Expenses (internal SKS tool — not an EQ product)
+
+Demoted from EQ product status 2026-04-29. Internal SKS Flask tool only,
+not a commercial offering. No active changelog (deleted in 2026-05-04
+refactor — start fresh `sks/changelog/expenses.md` if/when next touched).
+
+**Architecture:** Cloudflare Worker proxy (anthropic-proxy) + single index.html
+**Key rule:** API key lives in worker env var only — never in frontend
