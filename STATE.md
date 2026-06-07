@@ -31,6 +31,14 @@ status: live
 >
 > **Bottom line: stop rebuilding the spine. Open code/infra work = B5 + F1 (both Royce-gated). Everything else verified done.**
 
+> ## ⏩ POST-SPRINT UPDATE — 2026-06-07 (suite security pass + OCR / canonical-RLS findings)
+> - **Suite security pass DONE.** Read-only audit of all EQ+SKS repos; safe fixes merged in 5 PRs; eq-service came back clean. Detail: `eq-solves-service/docs/security/2026-06-07-suite-key-security-audit.md` + `docs/runbooks/secrets-rotation-and-scoping.md`.
+>   - **eq-shell #198** — `ocr-parse` was **UNAUTHENTICATED** (ran paid Google Document AI for any caller). Now session-gated + CORS allow-list; verified 401 on preview. Admin-override merged (blocked by the canonical drift check, unrelated).
+>   - Also merged: sks #33 (constant-time HMAC compare), eq-quotes #29 (webhook fail-closed in prod), eq-cards #39 (RLS comment), eq-service #248 (security docs + `backup.yml` → `production-ops` GitHub Environment).
+>   - **Royce-action:** Google Document AI quota cap; eq-service CSP report-only→enforce; eq-field demo-PIN rotation (if real data); finish `production-ops` env in eq-shell repo settings; confirm trust models (cards `share-licence`, quotes `QUOTES_SKIP_PASSWORD`). **Never run `netlify env:list --json` in a session — it dumps values.**
+> - **OCR is triplicated → consolidate onto EQ Intake.** Shell (Google Doc AI) + Cards (Claude Vision) + the **package-only** Intake vision engine all do "photo→fields". Design (build POST-go-live): `eq-intake` branch `claude/ocr-consolidation-design`. Full finding: `ocr-consolidation-and-canonical-rls-2026-06-07.md`. **Don't build a 4th bespoke OCR.**
+> - **Canonical RLS drift-check seam.** eq-shell `scripts/check-tenant-drift.mjs` IS built + enforcing — it fails ANY eq-shell PR on canonical spine drift (the "CI guards" table below still says "not built" — **stale**). `app_data.migration_baseline` RLS oscillated on zaap 2026-06-07 (likely `rls_auto_enable()`); migration `0037` should `ENABLE RLS` to match the on-everywhere norm. Don't blind-toggle canonical prod.
+
 Snapshot 2026-05-30. **Verify before relying on the git/worktree lines** — they drift. The Supabase map + SKS-live flags are stable.
 
 > ## ⏩ POST-SPRINT UPDATE — 2026-06-02 (eq-canonical-internal LIVE as EQ Field tenant DB)
