@@ -41,6 +41,19 @@ what is already in the stack. Working before refactoring — always.
 
 ---
 
+## Design system imports (React apps)
+
+```css
+/* Root CSS — one import covers tokens + all component styles */
+@import "@eq-solutions/ui/src/index.css";
+```
+
+Both `@eq-solutions/tokens` and `@eq-solutions/ui` must be listed as direct deps in `package.json`. Tokens is a peer dep of ui (app controls the version) and is also needed directly for `tokens.ts` JS values.
+
+Do not import `@eq-solutions/tokens/tokens.css` separately — the barrel covers it.
+
+---
+
 ## Exceptions
 
 - **EQ Solves Service** (`Milmlow/eq-solves-service`) is **Next.js 16**

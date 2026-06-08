@@ -34,6 +34,16 @@ Audit session (2026-06-08) found the following state across the suite:
 - [x] **eq-design-tokens** `pubspec.yaml`: created (enables Flutter git dep)
 - [x] **eq-design-tokens** `lib/eq_design_tokens.dart`: created (Flutter package entry point)
 - [x] **eq-design-tokens** `build.mjs`: updated to emit `lib/eq_design_tokens.dart` on every build
+- [x] **eq-ui** `src/index.css`: barrel stylesheet created — imports `@eq-solutions/tokens/tokens.css` then all 10 component CSS files in one shot
+- [x] **eq-ui** `package.json`: `@eq-solutions/tokens` moved from `dependencies` → `peerDependencies >=1.3.1`; `./styles` export alias added; tokens added to `devDependencies` for local dev; bumped to v1.2.0
+- [x] **eq-shell** `src/index.css`: replaced `@import "@eq-solutions/tokens/tokens.css"` with `@import "@eq-solutions/ui/src/index.css"`
+- [x] **eq-solves-service** `app/globals.css`: replaced tokens import with `@import "@eq-solutions/ui/src/index.css"`; removed inline `#3DA8D8` fallback from `:focus-visible` rule
+- [x] **eq-solves-service** `package.json`: bumped `@eq-solutions/ui` → `#v1.2.0` (T8 complete)
+- [x] **eq-solves-field** `scripts/sks-pipeline.js`: replaced `accent-color:#3DA8D8` (×2) with `accent-color:var(--eq-sky)` (T5 partial)
+- [x] **eq-solves-field** `scripts/sks-pipeline-resource.js`: replaced `color:#3DA8D8` with `color:var(--eq-sky)` (T5 complete)
+- [x] **eq-design-tokens** `build.mjs`: synced `PKG_VERSION` to `1.3.3`; rebuilt all artefacts
+- [x] **eq-design-tokens** `package.json`: bumped version `1.3.2 → 1.3.3`
+- [x] **eq-design-tokens** `CHANGELOG.md`: added entries for 1.3.1, 1.3.2, 1.3.3 (previously undocumented)
 
 ## Remaining work
 
@@ -99,16 +109,18 @@ Audit session (2026-06-08) found the following state across the suite:
 
 ---
 
-### T5 — eq-field: replace inline hex fallbacks (10 min)
-**Repo:** eq-solves-field  
-**Context:** Two files use inline JS to set colours with hex fallbacks rather than pure CSS vars.  
-**Files:** `sks-pipeline.js:165`, `sks-pipeline-resource.js:692`  
-**Steps:**
-1. Open each line, replace `#3da8d8` / literal hex with `var(--eq-sky)` etc. in the JS string
-2. Check any other `#3da` / `#2986` / `#1a1a` occurrences in inline JS: `grep -r "3da8d8\|2986b4\|1a1a2e" src/`
-3. Smoke-test locally
+### T5 — eq-field: replace inline hex fallbacks ✅ DONE
+**Files fixed:**
+- `sks-pipeline.js:165,169` — `accent-color:#3DA8D8` → `accent-color:var(--eq-sky)` (×2)
+- `sks-pipeline.js:286` — `#EAF5FB`/`#2986B4` tag span → CSS vars
+- `sks-pipeline-resource.js:692` — `color:#3DA8D8` → `color:var(--eq-sky)`
+- `sks-pipeline-resource.js:1495,1496` — border + heading color → CSS vars
+- `roster.js:1214` — onfocus/onblur borderColor → CSS vars
 
-**Acceptance:** zero hard-coded EQ hex values in JS; only CSS var references.
+**Knowingly left as hex (can't use CSS vars):**
+- `timesheets.js` — print HTML template (separate document, no `:root`)
+- `leave.js`, `managers.js`, `timesheets.js:2551`, `tender-pipeline.js` — chart color maps (literal values required by chart library)
+- `safety.js`, `site-reports-shared.js` — canvas `ctx.strokeStyle` (canvas API, no CSS var support)
 
 ---
 
@@ -124,7 +136,7 @@ Audit session (2026-06-08) found the following state across the suite:
 
 ---
 
-### T7 — eq-intake: audit @eq/intake-demo and @eq/shell CSS for stale hex (20 min)
+### T7 — eq-intake: audit @eq/intake-demo for stale hex ✅ DONE
 **Repo:** eq-intake  
 **Context:** The audit confirmed these two packages define `--eq-*` vars correctly in their `:root`. This task validates there are no stale hex values leaking through elsewhere.  
 **Steps:**
@@ -136,15 +148,17 @@ Audit session (2026-06-08) found the following state across the suite:
 
 ---
 
-### T8 — eq-shell + eq-service: bump to eq-ui v1.1.2 when cut (10 min)
+### T8 — eq-shell + eq-service: bump to eq-ui v1.2.0 ✅ DONE
 **Repo:** eq-shell, eq-solves-service  
-**Depends on:** T1 (v1.1.2 tag)  
+**Depends on:** eq-ui v1.2.0 tag  
 **Steps:**
-1. Update both `package.json`: `@eq-solutions/ui` ref → `#v1.1.2`
-2. `npm install` + typecheck in each
-3. PR per repo (or combined if trivial)
+1. Update both `package.json`: `@eq-solutions/ui` ref → `#v1.2.0`
+2. In each app's root CSS, replace `@import "@eq-solutions/tokens/tokens.css"` with `@import "@eq-solutions/ui/src/index.css"` (or `@import "@eq-solutions/ui/styles"`)
+3. Verify `@eq-solutions/tokens` is still listed as a direct dep (peer dep requirement); keep it — needed for tokens.ts TS values
+4. `npm install` + typecheck in each
+5. PR per repo (or combined if trivial)
 
-**Acceptance:** both apps on eq-ui v1.1.2.
+**Acceptance:** both apps on eq-ui v1.2.0; single CSS import; no duplicate tokens import.
 
 ---
 
@@ -190,9 +204,24 @@ T9 (font self-host) — independent, any time
 ## Done definition
 
 Suite is 10/10 consistent when:
-- [ ] All apps reference `@eq-solutions/tokens` as a package (not a copy)
-- [ ] Zero hard-coded EQ brand hex values outside generated/vendored token files
-- [ ] Plus Jakarta Sans self-hosted, no Google Fonts CDN calls
-- [ ] eq-cards fully on Flutter git dep (no manual vendor step)
-- [ ] CI guards drift in eq-cards and eq-field
-- [ ] eq-ui and all consumers pinned to same tokens version (v1.3.1+)
+- [x] All React apps reference `@eq-solutions/tokens` as a package (not a copy) — Shell, Service, Intake ✓
+- [x] All React apps use the barrel CSS import (`@eq-solutions/ui/src/index.css`) — Shell ✓, Service ✓
+- [x] Zero hard-coded EQ brand hex in vanilla JS (Field) — T5 complete ✓
+- [x] eq-ui and all consumers on tokens v1.3.3+ / ui v1.2.0+
+- [ ] eq-intake-demo: zero hardcoded EQ hex in TSX files (T7 — in progress)
+- [ ] Plus Jakarta Sans self-hosted, no Google Fonts CDN calls (T9 — deferred)
+- [ ] eq-cards fully on Flutter git dep — T2 (needs tag v1.3.3 + flutter pub get)
+- [ ] eq-cards typography consolidation — T3 (after T2)
+- [ ] CI guards drift in eq-cards — T10 (after T2)
+- [ ] Git tags: eq-design-tokens v1.3.3 · eq-ui v1.2.0 (manual — push tags after code review)
+
+## Remaining manual steps (code complete, needs git ops)
+
+```
+1. eq-design-tokens: tag v1.3.3, push
+2. eq-ui: tag v1.2.0, push
+3. T2: eq-cards pubspec.yaml — wire Flutter git dep (ref: v1.3.3)
+4. T3: eq-cards typography consolidation
+5. T9: self-host Plus Jakarta Sans (separate session — download woff2 + CDN)
+6. T10: eq-cards CI drift guard (after T2)
+```

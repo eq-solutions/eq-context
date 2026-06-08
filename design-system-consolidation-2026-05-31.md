@@ -85,4 +85,29 @@ Everything else the 2026-05-31 audit flagged (Shell login palette, Service raw T
 - `ops/decisions.md` 2026-05-31 (this model) · `AUTONOMOUS-SPRINT-RULES.md` §5
 - `eq/design/claude-design-context.md` (Claude Design brief)
 - Memory: `design_eq_profile`, `project_design_system_state`
-- Packages: `@eq-solutions/tokens` v1.0 · `@eq-solutions/ui` v1.0.1
+- Packages: `@eq-solutions/tokens` v1.3+ · `@eq-solutions/ui` v1.2+
+
+---
+
+## Addendum — 2026-06-08: barrel CSS + peer dep (eq-ui v1.2.0)
+
+**Problem:** React apps had to make two separate CSS imports — once for `@eq-solutions/tokens/tokens.css` and separately discover that component CSS exists. Missed imports caused unstyled components with no build error.
+
+**Fix shipped in eq-ui v1.2.0:**
+
+1. `src/index.css` — barrel stylesheet: imports `tokens.css` then all 10 component CSS files.
+2. `./styles` package export alias pointing to `src/index.css`.
+3. `@eq-solutions/tokens` moved from `dependencies` → `peerDependencies >=1.3.1` — consuming app controls the token version (and must list it explicitly).
+
+**Canonical import for any React EQ app (eq-shell, eq-service, etc.):**
+
+```css
+/* In your app's root CSS — one line covers everything */
+@import "@eq-solutions/ui/src/index.css";
+/* or equivalently: */
+@import "@eq-solutions/ui/styles";
+```
+
+**Apps must still list `@eq-solutions/tokens` as a direct dep** (satisfies the peer dep requirement, and is needed for `tokens.ts` JS values in chart/canvas code).
+
+**eq-shell** already updated to use the barrel import (2026-06-08). eq-service follows at T8.
