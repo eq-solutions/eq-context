@@ -1,7 +1,7 @@
 ---
 title: TODAY — Q3 2026 Focus Filter
 owner: Royce Milmlow
-last_updated: 2026-06-07
+last_updated: 2026-06-08
 scope: Current-quarter success outcomes — the filter for every Claude session decision
 read_priority: critical
 status: live
