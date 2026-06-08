@@ -41,7 +41,7 @@ distinct role:
 |---|---|---|
 | `nspbmirochztcjijmcrx` | sks-labour | Live SKS staff production data |
 | `ktmjmdzqrogauaevbktn` | eq-solves-field | EQ Field demo backend |
-| `urjhmkhbgaxrofurpbgc` | eq-solves-service-dev | Canonical context store (`context_files` table) + EQ Solves Service product data (co-tenant) |
+| `urjhmkhbgaxrofurpbgc` | eq-solves-service-dev | Canonical context store (`context_files` table). **EQ Service product data migrated to ehow (sks-canonical) — cutover executed 2026-06-08, pending smoke-test verification.** Becoming substrate-only. |
 
 **Why the split:** SKS live data hitting the same project as EQ demo experiments
 is an unacceptable blast radius — one bad DELETE on a demo table becomes an

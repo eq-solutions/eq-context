@@ -14,6 +14,27 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Sprint 7 — EQ Service cutover (urjh → ehow) — 2026-06-08
+
+**Done:** Schema (28 CMMS tables) + data + 9 storage files migrated to ehow;
+Netlify env vars (Supabase URL/keys, SITE_URL, Sentry) swapped; code domain
+refs updated (PR #257 → main, open); repo on `eq-solutions/eq-service`.
+
+**Follow-on tasks:**
+- [ ] **`canonical_field_id` gap** — all 37 SKS Service sites have `canonical_field_id = NULL`.
+      The bridge from EQ Service sites to EQ Field dispatch is not wired. Separate task,
+      not blocking the cutover. (Surfaced during Sprint 7 canonical-id audit.)
+- [ ] **Smoke test (Royce)** — sign in via Shell OTP at service.eq.solutions, confirm
+      checks/tests/defects visible, create a test check → lands in ehow tenant `7dee117c-…`.
+- [ ] **PR #257** — merge to main (triggers deploy) once smoke test passes.
+- [ ] **Post-verification (do NOT do before smoke test):** redirect service.eq.solutions →
+      core (5.2), revoke urjh service-role keys (5.4), decommission old Netlify site (5.3).
+- [ ] **Scheduler/route migration (4.4)** — `supervisor-digest` + `pre-visit-brief` schedulers
+      depend on Next.js `/api/cron/*` routes still in eq-service; needs a route-hosting decision
+      before moving to eq-shell.
+
+---
+
 ## ⏩ Session close — 2026-06-08 — EQ Field Sentry crash fixes
 
 **Completed:**

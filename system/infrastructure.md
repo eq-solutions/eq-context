@@ -34,9 +34,9 @@ account" before connecting.
 |---|---|---|---|
 | `jvknxcmbtrfnxfrwfimn` | **eq-canonical** | **Control layer** — Cards config, tenant registry, app settings, module entitlements. No operational data. | Browser-accessible via `VITE_SUPABASE_URL` |
 | `zaapmfdkgedqupfjtchl` | **eq-canonical-internal** | **EQ tenant Supabase** — all EQ Solutions tenant/operational data. Pattern: `{tenant}-canonical`. | EQ tenant data |
-| `ehowgjardagevnrluult` | **sks-canonical** | **SKS tenant Supabase** — all SKS tenant/operational data. Pattern: `{tenant}-canonical`. | SKS tenant data; **never touch sks-labour instead** |
+| `ehowgjardagevnrluult` | **sks-canonical** | **SKS tenant Supabase** — all SKS tenant/operational data + **EQ Service CMMS (migrated 2026-06-08)**. Pattern: `{tenant}-canonical`. | SKS tenant data; **never touch sks-labour instead** |
 | `ktmjmdzqrogauaevbktn` | eq-solves-field | EQ Field demo/tenant DB | Demo + EQ Field data |
-| `urjhmkhbgaxrofurpbgc` | eq-solves-service-dev | EQ Service DB + context substrate (`context_files` table — co-tenant) | Paid/active; primary path for context reads/writes |
+| `urjhmkhbgaxrofurpbgc` | eq-solves-service-dev | Context substrate (`context_files`). **EQ Service product data migrated to ehow — cutover 2026-06-08, pending smoke-test verification; becoming substrate-only.** | Primary path for context reads/writes |
 | `nspbmirochztcjijmcrx` | sks-labour | **SKS LIVE staff production data** | **NEVER TOUCH unless "SKS live" is explicit** |
 
 ### Shared tables across sks-labour + eq-solves-field
