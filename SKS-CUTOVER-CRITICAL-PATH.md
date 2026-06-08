@@ -84,4 +84,4 @@ The EQ tenant is mid-migration between an old **un-prefixed** schema and the new
 
 ## Rough sizing
 
-Five gated phases, each a session, with verification + soak between. Realistic as a
+Five gated phases, each a session, with verification + soak between. Realistic as a **dedicated mini-sprint**, not a weekend. The good news: the rails (One Pipe, semantic guard, ledger reconciler, the remediation pattern) all exist — this is **execution on proven tooling**, just careful and sequenced.

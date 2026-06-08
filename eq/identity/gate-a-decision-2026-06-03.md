@@ -69,4 +69,7 @@ Test one SKS worker → confirm `shell_control` row written + JWT carries `tenan
 
 ## Sequenced with
 1. **GATE A (this)** → workers can claim.
-2. **PIN follow-up** (separate, cheap): SKS-Field `verify-pin` already
+2. **PIN follow-up** (separate, cheap): SKS-Field `verify-pin` already has a Supabase-JWT path; it likely just needs `SUPABASE_JWT_SECRET` set on the SKS-Field Netlify site. Do after GATE A.
+
+## Coordination
+Cards-stream item (Stream G). **Claim it on `SPRINT-BOARD.md` before building — do not fork.**

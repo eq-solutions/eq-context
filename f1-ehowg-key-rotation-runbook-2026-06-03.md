@@ -112,4 +112,5 @@ directly (search for `SUPABASE_SERVICE_ROLE_KEY` / hardcoded ehowg keys in eq-sh
 functions, other Fly apps), update them too before declaring done.
 
 ## After completion
-- Update `STATE.md` top block + `SPRINT-BOARD.md` F1 row → 
+- Update `STATE.md` top block + `SPRINT-BOARD.md` F1 row → ✅ done (verified old key 401).
+- Log in `sessions/YYYY-MM-DD.md`.

@@ -190,4 +190,26 @@ status: live
 - YAML frontmatter added to every MD file in the repo
 - Replaced `Claude (Anthropic)` with `assistant` across changelogs for tool-neutrality
 - Stripped expired `claude.ai/chat/...` session URLs from changelog entries
-- Split responsibility between `knowledg
+- Split responsibility between `knowledge/architecture.md` (what is built) and `knowledge/decisions.md` (why it was chosen)
+- Bumped `last_updated` to 2026-04-10 across all files
+**Status:** Repo conforms to MD_BEST_PRACTICES v1.0
+
+## [2026-04-06] Live Context System - GitHub MCP Setup
+**Session:** Cowork session
+**Built by:** Royce Milmlow + assistant
+**Changes:**
+- GitHub PAT generated for Claude Desktop
+- MCP config created for Claude Desktop Chat mode
+- CLAUDE.md updated with Live Context Rule
+- Changelog folder created and backfilled from session history
+- Repo cloned to Beelink at C:\Users\EQ\eq-context
+**Status:** Cowork pushing via git, Chat mode MCP pending verification
+
+## [2026-04-05] MD System Built
+**Built by:** Royce Milmlow + assistant
+**Changes:**
+- eq-context folder structure created (CLAUDE.md + rules/ + state/ + knowledge/)
+- Four Claude projects created with MD files uploaded
+- GLOBAL_CLAUDE.md placed on Beelink
+- Self-critique prompts baked into global instructions
+**Status:** System live - GitHub auto-sync was pending

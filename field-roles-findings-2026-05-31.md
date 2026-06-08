@@ -56,4 +56,7 @@ is this split — not "make Field/Service import the package."
 - Real work = **auth-token fidelity**: fix `verify-pin.js` to carry the full `people.role` in the
   token so the backend (not just the client) knows the tier. **This is an auth change → gated,
   needs explicit deploy approval.**
-- Decisions first: where does `regional_man
+- Decisions first: where does `regional_manager` sit, and does Field need `is_platform_admin`?
+
+**Verdict:** role *names* align, but adoption is minor-to-moderate and blocked on (1) the
+package-shape decision above and (2) an auth-sensitive token change. Not a quick win.

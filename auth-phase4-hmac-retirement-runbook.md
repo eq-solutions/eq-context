@@ -216,4 +216,10 @@ Can only be deleted after `verify-shell-session.ts` is also removed (second dele
 ## Approval Sign-off
 
 | Role | Name | Date | Signature |
-|---|---|---|-
+|---|---|---|---|
+| Architect / DRI | Royce Milmlow | | |
+| Reviewer | | | |
+
+---
+
+*Generated: 2026-06-02. Runbook is a planning document only — execution requires all prerequisites checked and explicit approval above.*

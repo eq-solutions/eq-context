@@ -54,4 +54,7 @@ data-plane / SKS-prod target. Boot config read from control plane is correct. Ze
 The "eq-canonical cleanup" is **not a migration project.** It is: verify one comment/code mismatch
 in eq-shell, optionally tidy some migration comments, leave the docs. The two-project split is
 already correctly implemented across the suite — the risk was only in *misreading* it (e.g. a
-blanket find-replace), which 
+blanket find-replace), which this classification removes.
+
+> Caveat: classifications are a point-in-time read by fan-out agents; the single AMBIGUOUS item is
+> left for human eyes precisely because the agent couldn't resolve it from context.

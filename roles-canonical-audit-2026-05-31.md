@@ -79,4 +79,7 @@ impossible "mechanical swap."
    onto canonical `manager/supervisor/employee/apprentice/labour_hire` (or whether Service stays a
    documented variant). A read-only proposal can be drafted in a separate window — see handoff.
 2. **Field** — confirm real role usage (the "lossy 2-tier mapping") before treating name-match as
-   a
+   a drop-in.
+3. **eq-canonical cleanup** — only after classifying each ref control-plane vs data-plane. Not a
+   rename.
+4. **Roles/ui tag-pinning** — owned by a concurrent session; leave alone.
