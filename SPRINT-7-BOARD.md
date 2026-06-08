@@ -7,7 +7,7 @@ read_priority: reference
 status: live
 ---
 
-> Data migration completed 2026-06-08 — all CMMS tables on ehow. Storage file transfer (13 files) pending manual step.
+> Sprint 7 cutover complete 2026-06-08. Data migration, storage transfer, env vars, code refs all done. Redeploy triggered — ready for smoke test.
 
 # Sprint 7 Board — EQ Service Migration: urjh → ehow + Repo Move
 
@@ -160,7 +160,7 @@ Native tables (acb_tests, nsx_tests, rcd_tests) added to ehow.app_data. Two-laye
 | 2.4 | **Migrate check data** (ordered) — maintenance_checks → check_assets → maintenance_check_items. Exclude demo sites. | 1 hr | Claude | ✅ Done |
 | 2.5 | **⚠ Maintenance window — freeze new test saves** then migrate: acb_tests + readings, nsx_tests + readings, rcd_tests + circuits, test_records + readings. Populate `asset_test_result_external_id` FK. | 1 hr | Claude | ✅ Done |
 | 2.6 | **Migrate defects** — 15 rows, map to ehow.app_data schema | 20 min | Claude | ✅ Done |
-| 2.7 | **Migrate attachments** — 19 rows + move storage objects from urjh Storage bucket → ehow Storage bucket | 30 min | Claude | ✅ Done — row data migrated, 13 storage files require manual transfer via Supabase dashboard (buckets created on ehow) |
+| 2.7 | **Migrate attachments** — 19 rows + move storage objects from urjh Storage bucket → ehow Storage bucket | 30 min | Claude | ✅ Done — 9 SKS production files transferred 2026-06-08 (4 demo logos excluded) |
 | 2.8 | **Migrate notifications + import sessions** — 131 + 1 + 3 rows | 20 min | Claude | ✅ Done |
 | 2.9 | **Reconcile row counts** — compare expected vs landed per table using `migration_baseline` pattern | 20 min | Claude | ✅ Done |
 
@@ -168,7 +168,7 @@ Native tables (acb_tests, nsx_tests, rcd_tests) added to ehow.app_data. Two-laye
 
 | # | Task | Effort | Owner | Status |
 |---|---|---|---|---|
-| 3.1 | **Transfer GitHub repo** — Milmlow/eq-solves-service → eq-solutions. Settings → Danger Zone → Transfer. Rename to `eq-service` post-transfer. | 5 min | **Royce** | ☐ |
+| 3.1 | **Transfer GitHub repo** — Milmlow/eq-solves-service → eq-solutions. Settings → Danger Zone → Transfer. Rename to `eq-service` post-transfer. | 5 min | **Royce** | ✅ Done — confirmed 2026-06-08 |
 | 3.2 | **Update local clone remote** — `git remote set-url origin https://github.com/eq-solutions/eq-service.git` | 2 min | Royce | ☐ |
 | 3.3 | **Update package.json name** field `eq-solves-service` → `eq-service` | 2 min | Claude | ✅ Done |
 | 3.4 | **Update Netlify build** — repoint Netlify deploy hook to new repo location if needed | 10 min | Claude | ☐ |
@@ -179,11 +179,11 @@ Native tables (acb_tests, nsx_tests, rcd_tests) added to ehow.app_data. Two-laye
 
 | # | Task | Effort | Owner | Status |
 |---|---|---|---|---|
-| 4.1 | **Sign-off** — confirm switching from urjh direct auth (email+MFA) to Shell auth (jvkn OTP) for service app users | — | **Royce** | ☐ |
-| 4.2 | **Update env vars in app** — `SUPABASE_URL` + `SUPABASE_ANON_KEY` + service-role key → ehow values | 15 min | Claude | ☐ |
-| 4.3 | **Update Netlify env vars** on eq-shell or service app Netlify | 10 min | Royce | ☐ |
-| 4.4 | **Migrate scheduled functions** — port `supervisor-digest-scheduler` + `pre-visit-brief-scheduler` to eq-shell Netlify. Retire urjh Netlify copies. | 1 hr | Claude | ☐ |
-| 4.5 | **Smoke test** — sign in via Shell OTP, confirm checks/tests/defects visible, create test check, verify it lands in ehow with correct tenant_id | 20 min | Royce | ☐ |
+| 4.1 | **Sign-off** — confirm switching from urjh direct auth (email+MFA) to Shell auth (jvkn OTP) for service app users | — | **Royce** | ✅ Done — "Approved" 2026-06-08 |
+| 4.2 | **Update env vars in app** — `SUPABASE_URL` + `SUPABASE_ANON_KEY` + service-role key → ehow values | 15 min | Claude | ✅ Done — all 3 Supabase vars updated in Netlify 2026-06-08 |
+| 4.3 | **Update Netlify env vars** on eq-shell or service app Netlify | 10 min | Claude | ✅ Done — `NEXT_PUBLIC_SITE_URL` → service.eq.solutions, `SENTRY_PROJECT` → eq-service, eq-shell `SERVICE_SUPABASE_URL` → ehow |
+| 4.4 | **Migrate scheduled functions** — port `supervisor-digest-scheduler` + `pre-visit-brief-scheduler` to eq-shell Netlify. Retire urjh Netlify copies. | 1 hr | Claude | ⏸ Deferred — cron API routes still live in eq-service Next.js; moving schedulers to eq-shell without routes = broken chain. Do after smoke test + route migration decision. |
+| 4.5 | **Smoke test** — sign in via Shell OTP, confirm checks/tests/defects visible, create test check, verify it lands in ehow with correct tenant_id | 20 min | Royce | ⏳ Ready — redeploy triggered 2026-06-08, waiting for Royce |
 
 ### Phase 5 — Cutover + decommission
 
