@@ -1,7 +1,7 @@
 ---
 title: SYSTEM — Tech Architecture
 owner: Royce Milmlow
-last_updated: 2026-06-02
+last_updated: 2026-06-08
 scope: Current state of how systems are built and how they fit together — including tenant migration management pattern
 read_priority: standard
 status: live
