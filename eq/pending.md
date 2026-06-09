@@ -19,8 +19,11 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 **Completed (2026-06-09):**
 - [x] **EQ Field v3.5.116 — v8 design pass DONE** — Claude Design handoff applied across all 14 screens. PR #258 squash-merged. styles/field-v8.css + sidebar + dashboard/leave/timesheets/people/managers/roster/calendar/jobnumbers/apprentices/home/projects/whatsnew all updated. Live at eq-solves-field.netlify.app.
 
-**Active:**
-- [ ] **EQ Shell v8 design pass** — LoginPage + TenantHome hub. In progress 2026-06-09.
+**Also completed (2026-06-09):**
+- [x] **EQ Shell v8 design pass DONE** — Direction D warmup applied to React Shell. PRs #290 + #293 squash-merged. `auth.css`, `App.css`, `MobileRecordsDrawer.css`, `MobileTabBar.css` all warmed from cool-gray (#F9FAFB/#F5F4F0) to warm sand (#F6F3EE/#EEECEA). Hub canvas was already correct.
+- [x] **EQ Field v3.5.119** — JS navy token sweep (`apprentices/auth/audit/teams/sks-pipeline.js`). PR #260 merged.
+- [x] **SKS PR #32** — sks-field.netlify.app Shell integration + JWT handoff verification. Merged.
+- [x] **Shell branch housekeeping** — 3 dead branches deleted; 8 unmerged branches resolved (3 merged, 5 closed as already-in-main); all remote branches deleted.
 
 ---
 

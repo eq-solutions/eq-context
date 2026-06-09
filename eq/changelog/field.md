@@ -9,6 +9,17 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-06-09] v3.5.119 — v8 navy → ink/sky token cleanup — JS stragglers (PR #260, merged)
+**Built by:** Royce Milmlow + Claude Code
+
+Swept all remaining `color:var(--navy)` bare inline styles across five JS files that the v3.5.116 v8 CSS pass hadn't touched. Text heading contexts → `var(--ink,var(--navy))`; dollar/stat accent contexts → `var(--sky,var(--navy))`. Backward-compatible fallback pattern throughout (old `--navy` token still resolves on any deploy that hasn't loaded `field-v8.css`).
+
+Files changed: `scripts/apprentices.js` (19), `scripts/auth.js` (1), `scripts/audit.js` (2), `scripts/teams.js` (2), `scripts/sks-pipeline.js` (9 — split treatment). No schema/auth changes.
+
+**PR:** [#260](https://github.com/eq-solutions/eq-field/pull/260) — merged, live.
+
+---
+
 ## [2026-06-08] v3.5.100 — Sentry EQ-FIELD-5: complete dashboard lazy-load guard (PR #230, merged)
 **Built by:** Royce Milmlow + Claude Code
 
