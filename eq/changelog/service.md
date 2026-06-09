@@ -1,7 +1,7 @@
 ---
 title: Changelog — EQ Solves Service
 owner: Royce Milmlow
-last_updated: 2026-06-09
+last_updated: 2026-06-10
 scope: Append-only history of changes to the EQ Solves Service product
 read_priority: reference
 status: live
