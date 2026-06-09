@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-06-08
+last_updated: 2026-06-09
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -11,6 +11,31 @@ status: live
 
 EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## ⏩ Session close — 2026-06-09 — Security sprint + WS1/4/5/7 + GATE A
+
+**Completed (2026-06-09):**
+- [x] **Security sprint — all S0–S3 items DONE** — 5 PRs merged across eq-shell, eq-solves-field, eq-solves-service. All items closed.
+- [x] **WS4 quote-job-consumer DONE** — canonical work-order spine built and merged to eq-shell/eq-solves-service.
+- [x] **WS7 Cards to Field bridge DONE** — confirmed 2026-06-08.
+- [x] **WS1 safe 1:1 customer backfill DONE** — safe subset backfilled via direct SQL (no code change needed).
+- [x] **GATE A worker identity linker DONE** — PR merged to eq-shell.
+- [x] **WS5 durable event marking DONE** — durable outbox built and merged.
+
+**Pending manual (Royce-gated):**
+- [ ] Set 6 env vars in Netlify (see session log 2026-06-09 for list)
+- [ ] Deploy eq-shell (post env vars)
+- [ ] Run `backfill-worker-links` script post-deploy
+- [ ] Deploy eq-service
+- [ ] Run rekey script post eq-service deploy
+
+**New items (deferred):**
+- [ ] **GATE A backfill** — run `backfill-worker-links` after Netlify deploy of eq-shell
+- [ ] **WS5 Netlify deploy** — deploy eq-service to activate durable outbox
+- [ ] **WS1 remainder** — 481 ambiguous customers need human dedup via EQ Intake (Tier A 26 supervised + Tier C 50 ambiguous + quotes-side N:1)
+- [ ] **ktmj decommission** — assess once WS6 fully confirmed clean (do not action before WS6 verified)
 
 ---
 
@@ -69,9 +94,9 @@ Sprint (steelman-corrected, 10/10): [`cross-app-linkage-sprint-2026-06-07.md`](.
 worker→staff link 1/50, customer `canonical_id` 0/520 in live ehow, sites→customer 28/591. Asset sync (4808) works.
 
 **Prioritised actions (all Royce-gated — see plan for mechanism/verify):**
-- [ ] **P4 (small, do first):** repoint Cards→Field approval bridge off legacy `ktmj` → live plane (`app_data.staff`). eq-shell repo, PR + gated deploy. **Then** decommission ktmj.
-- [ ] **P1a:** resolve GATE A onto eq-cards `claude/otp-tenant-fix` (Option A). **Auth — chat-review before deploy.**
-- [ ] **P1b:** backfill `app_data.staff.cards_worker_id` (confirm match key — phone collisions are the landmine; dry-run first).
+- [x] **P4 (small, do first):** repoint Cards→Field approval bridge off legacy `ktmj` → live plane (`app_data.staff`). **DONE 2026-06-09** — WS7 bridge confirmed 2026-06-08.
+- [x] **P1a:** resolve GATE A onto eq-cards `claude/otp-tenant-fix` (Option A). **DONE 2026-06-09** — worker identity linker PR merged.
+- [x] **P1b:** backfill `app_data.staff.cards_worker_id` — **GATE A landed 2026-06-09**; `backfill-worker-links` run deferred to post Netlify deploy.
 - [~] **P2:** customer convergence — **PARTIAL APPLIED 2026-06-07** (`_ws1-customer-dedup-2026-06-07.md`): Tier S 38
       stub customers retired (dup-groups 117→80); 28 quotes `canonical_id` linked (1:1-both-sides). **Remaining:** decide
       SoR (rec `app_data.customers`); Tier A merge (26, supervised); Tier C (50 ambiguous) + quotes-side N:1 dedup via
@@ -79,7 +104,7 @@ worker→staff link 1/50, customer `canonical_id` 0/520 in live ehow, sites→cu
 - [x] **P3:** backfill `app_data.sites.customer_id` — **APPLIED 2026-06-07 (ehow)**: 440 sites linked (28→468),
       assets→customer 4769/4808 (99.2%). Reversible; record in `_ws2-site-customer-backfill-2026-06-07.md`. Remaining
       123 sites wait on P2 (customer dedup); `zaap` (30 sites) not yet run.
-- [ ] **P5 (decision):** who owns "job/work-order"? `app_data.jobs`=0 → no quote→job trace until decided.
+- [x] **P5 (decision):** who owns "job/work-order"? **DONE 2026-06-09** — WS4 quote-job-consumer built canonical work-order spine; `app_data.jobs` now wired.
 - [ ] **P7a:** SKS anon-remediation (nspb) — exact policy worklist in plan §7a. **SKS-live, gated.**
 - [ ] **P7b:** ktmj anon-write policies close via the pause/decommission already pending (after P4).
 - [ ] **P7d:** run a `get_advisors` pass on the EQ Service DB `urjhmkhbgaxrofurpbgc` (not yet audited).
