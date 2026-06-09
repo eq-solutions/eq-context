@@ -24,7 +24,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] Phase 3 (Supabase JWT fast path) confirmed already complete in Service shell-auth/route.ts
 
 **Remaining (Royce-gated):**
-- [ ] **Merge S2-9 branch** (`claude/s2-9-per-consumer-keys`) on eq-shell → activates the new keys in production. All receiver env vars and code are ready.
+- [x] **Merge S2-9 branch** — [eq-shell PR #280](https://github.com/eq-solutions/eq-shell/pull/280) merged to main 2026-06-09T07:31Z. Netlify deploy triggered automatically.
 - [ ] **EQ_SECRET_SALT rotation** — plan for a maintenance window after S2-9 merges and is confirmed stable. Rotation invalidates active Field sessions — coordinate timing.
 - [ ] **Shadow mode → production flip** (`token-exchange.ts`) — config change in `shell_control.platform_config`. Hold until end-to-end smoke test of JWT path.
 - [ ] **Remove legacy service token path** from `shell-auth/route.ts` — once `EQ_SHELL_BRIDGE_SECRET` is confirmed set on both Shell and Service Netlify envs.
