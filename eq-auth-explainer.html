@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EQ Platform — How Login Works</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sky: #3DA8D8;
+    --deep: #2986B4;
+    --ice: #EAF5FB;
+    --ink: #1A1A2E;
+    --mid: #6B7280;
+    --line: #E5E7EB;
+    --green: #22C55E;
+    --amber: #F59E0B;
+    --red: #EF4444;
+    --bg: #F9FAFB;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    padding: 40px 20px 80px;
+  }
+
+  .page {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  /* Header */
+  .header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 48px;
+    padding-bottom: 24px;
+    border-bottom: 2px solid var(--line);
+  }
+
+  .logo {
+    width: 40px;
+    height: 40px;
+    background: var(--sky);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: -0.5px;
+    flex-shrink: 0;
+  }
+
+  .header-text h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.3px;
+  }
+
+  .header-text p {
+    font-size: 14px;
+    color: var(--mid);
+    margin-top: 2px;
+  }
+
+  /* TOC */
+  .toc {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 40px;
+  }
+
+  .toc h2 {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--mid);
+    margin-bottom: 14px;
+  }
+
+  .toc-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .toc-list a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--ink);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: var(--bg);
+    transition: border-color 0.15s;
+  }
+
+  .toc-list a:hover { border-color: var(--sky); }
+
+  .toc-num {
+    width: 22px;
+    height: 22px;
+    background: var(--ice);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--deep);
+    flex-shrink: 0;
+  }
+
+  /* Section */
+  .section {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    margin-bottom: 28px;
+    overflow: hidden;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 24px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .section-num {
+    width: 32px;
+    height: 32px;
+    background: var(--sky);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .section-num.green { background: var(--green); }
+  .section-num.amber { background: var(--amber); }
+  .section-num.red   { background: var(--red); }
+  .section-num.deep  { background: var(--deep); }
+  .section-num.ink   { background: var(--ink); }
+
+  .section-title h2 {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.2px;
+  }
+
+  .section-title p {
+    font-size: 13px;
+    color: var(--mid);
+    margin-top: 3px;
+  }
+
+  .section-body {
+    padding: 24px;
+  }
+
+  /* Badge */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-left: 10px;
+    vertical-align: middle;
+  }
+  .badge.new { background: #DCFCE7; color: #166534; }
+  .badge.gate { background: #FEF9C3; color: #92400E; }
+
+  /* Flow diagram */
+  .flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .flow-actors {
+    display: grid;
+    gap: 2px;
+    margin-bottom: 8px;
+  }
+
+  /* Step rows */
+  .step {
+    display: grid;
+    align-items: start;
+    gap: 0 12px;
+    padding: 6px 0;
+    position: relative;
+  }
+
+  /* Column layouts */
+  .cols-2 { grid-template-columns: 1fr 1fr; }
+  .cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .cols-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+
+  /* Actor label bar */
+  .actor-bar {
+    display: grid;
+    gap: 2px;
+    margin-bottom: 12px;
+  }
+
+  .actor {
+    background: var(--ice);
+    border: 1px solid #BFDBF0;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--deep);
+    text-align: center;
+  }
+
+  .actor.user-actor {
+    background: #F3F4F6;
+    border-color: var(--line);
+    color: var(--ink);
+  }
+
+  /* Step cell */
+  .cell {
+    min-height: 32px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .cell-content {
+    width: 100%;
+    font-size: 12.5px;
+    color: var(--ink);
+    background: #F9FAFB;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 8px 12px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cell-content.user {
+    background: #F3F4F6;
+    border-color: #D1D5DB;
+  }
+
+  .cell-content.action {
+    background: var(--ice);
+    border-color: #BFDBF0;
+    color: var(--deep);
+    font-weight: 500;
+  }
+
+  .cell-content.success {
+    background: #DCFCE7;
+    border-color: #86EFAC;
+    color: #166534;
+    font-weight: 600;
+  }
+
+  .cell-content.error {
+    background: #FEE2E2;
+    border-color: #FCA5A5;
+    color: #991B1B;
+    font-weight: 600;
+  }
+
+  .cell-content.system {
+    background: #EDE9FE;
+    border-color: #C4B5FD;
+    color: #5B21B6;
+    font-weight: 500;
+  }
+
+  /* Arrow between steps */
+  .arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: var(--mid);
+    padding: 4px 0;
+    line-height: 1;
+  }
+
+  /* Vertical step list (simpler flow) */
+  .step-list {
+    list-style: none;
+    position: relative;
+    padding-left: 32px;
+  }
+
+  .step-list::before {
+    content: '';
+    position: absolute;
+    left: 11px;
+    top: 14px;
+    bottom: 14px;
+    width: 2px;
+    background: var(--line);
+  }
+
+  .step-list li {
+    position: relative;
+    margin-bottom: 16px;
+    font-size: 14px;
+  }
+
+  .step-list li::before {
+    content: '';
+    position: absolute;
+    left: -21px;
+    top: 6px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--sky);
+    border: 2px solid white;
+    box-shadow: 0 0 0 1px var(--sky);
+  }
+
+  .step-list li.done::before { background: var(--green); box-shadow: 0 0 0 1px var(--green); }
+  .step-list li.gate::before { background: var(--red); box-shadow: 0 0 0 1px var(--red); }
+
+  .step-label {
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .step-detail {
+    font-size: 12.5px;
+    color: var(--mid);
+    margin-top: 2px;
+  }
+
+  /* Horizontal flow (visual pipe) */
+  .pipe {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .pipe-node {
+    flex-shrink: 0;
+    background: var(--ice);
+    border: 1px solid #BFDBF0;
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--deep);
+    text-align: center;
+    min-width: 110px;
+  }
+
+  .pipe-node.user { background: #F3F4F6; border-color: var(--line); color: var(--ink); }
+  .pipe-node.supabase { background: #EDE9FE; border-color: #C4B5FD; color: #5B21B6; }
+  .pipe-node.success { background: #DCFCE7; border-color: #86EFAC; color: #166534; }
+  .pipe-node.fail { background: #FEE2E2; border-color: #FCA5A5; color: #991B1B; }
+
+  .pipe-arrow {
+    flex-shrink: 0;
+    padding: 0 6px;
+    color: var(--mid);
+    font-size: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .pipe-arrow span {
+    font-size: 10px;
+    color: var(--mid);
+    white-space: nowrap;
+    max-width: 80px;
+    text-align: center;
+    font-weight: 500;
+  }
+
+  /* Cookie shape */
+  .cookie-box {
+    background: var(--ice);
+    border: 1px solid #BFDBF0;
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-top: 16px;
+  }
+
+  .cookie-box h4 {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    color: var(--deep);
+    margin-bottom: 10px;
+  }
+
+  .cookie-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  .cookie-field {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  .cookie-field .key {
+    font-weight: 600;
+    color: var(--mid);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  .cookie-field .val {
+    color: var(--ink);
+    margin-top: 1px;
+  }
+
+  /* Minting table */
+  .mint-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-top: 16px;
+  }
+
+  .mint-table th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--mid);
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .mint-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .mint-table tr:last-child td { border-bottom: none; }
+
+  .fn-name {
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    background: #F3F4F6;
+    padding: 2px 7px;
+    border-radius: 4px;
+    color: var(--ink);
+  }
+
+  /* Decision tree */
+  .tree {
+    font-size: 13px;
+    line-height: 2;
+    background: #F9FAFB;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 16px 20px;
+  }
+
+  .tree-q { font-weight: 600; color: var(--ink); }
+  .tree-indent { padding-left: 24px; }
+  .tree-indent2 { padding-left: 48px; }
+  .tree-yes { color: var(--green); font-weight: 600; }
+  .tree-no  { color: var(--red);   font-weight: 600; }
+  .tree-dest { color: var(--deep); }
+
+  /* Info box */
+  .info {
+    background: var(--ice);
+    border-left: 3px solid var(--sky);
+    border-radius: 0 8px 8px 0;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--ink);
+    margin-top: 16px;
+  }
+
+  .info strong { color: var(--deep); }
+
+  /* Divider label */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 12px 0;
+    color: var(--mid);
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+  }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .toc-list { grid-template-columns: 1fr; }
+    .cookie-fields { grid-template-columns: 1fr; }
+    .pipe { flex-direction: column; align-items: stretch; }
+    .pipe-arrow { transform: rotate(90deg); }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">EQ</div>
+    <div class="header-text">
+      <h1>How Login Works</h1>
+      <p>Every auth scenario across Cards and Shell — plain English with diagrams</p>
+    </div>
+  </div>
+
+  <!-- TOC -->
+  <div class="toc">
+    <h2>Scenarios covered</h2>
+    <ul class="toc-list">
+      <li><a href="#s1"><span class="toc-num">1</span> Worker claims wallet</a></li>
+      <li><a href="#s2"><span class="toc-num">2</span> Admin provisions workspace</a></li>
+      <li><a href="#s3"><span class="toc-num">3</span> Returning Shell user</a></li>
+      <li><a href="#s4"><span class="toc-num">4</span> Email OTP (Cards)</a></li>
+      <li><a href="#s5"><span class="toc-num">5</span> Worker not in system yet</a></li>
+      <li><a href="#s6"><span class="toc-num">6</span> Session expires</a></li>
+    </ul>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════
+       SCENARIO 1 — Worker claims wallet
+  ════════════════════════════════════════════════════ -->
+  <div class="section" id="s1">
+    <div class="section-header">
+      <div class="section-num">1</div>
+      <div class="section-title">
+        <h2>Worker claims their wallet</h2>
+        <p>Tradesperson received a link. They're verifying it's them before seeing their licences and certs.</p>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <!-- Actors -->
+      <div class="actor-bar cols-3">
+        <div class="actor user-actor">👷 Worker</div>
+        <div class="actor">📱 cards.eq.solutions</div>
+        <div class="actor">🔐 GoTrue / Supabase</div>
+      </div>
+
+      <!-- Flow -->
+      <ul class="step-list">
+        <li>
+          <span class="step-label">Opens the join link</span>
+          <div class="step-detail"><code>cards.eq.solutions/join?token=abc123</code></div>
+        </li>
+        <li>
+          <span class="step-label">Types their mobile number</span>
+          <div class="step-detail">Cards sends an SMS OTP via GoTrue → Twilio</div>
+        </li>
+        <li>
+          <span class="step-label">Receives SMS, types the 6-digit code</span>
+          <div class="step-detail">Cards calls <code>verifyPhoneOtpOnly()</code> → gets a GoTrue access token</div>
+        </li>
+        <li>
+          <span class="step-label">Cards calls shell-join-tenant</span>
+          <div class="step-detail">Passes phone + access token + join token → Shell checks shell_control.users, creates membership</div>
+        </li>
+        <li class="done">
+          <span class="step-label">✅ Wallet screen loads</span>
+          <div class="step-detail">Worker sees their licences and certificates. Cards session stays in-app.</div>
+        </li>
+      </ul>
+
+      <div class="info">
+        <strong>What's stored:</strong> A GoTrue session lives in supabase-js local storage (Cards only). No shell session cookie is set — this user doesn't have Shell access yet.
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════
+       SCENARIO 2 — Admin provisions workspace
+  ════════════════════════════════════════════════════ -->
+  <div class="section" id="s2">
+    <div class="section-header">
+      <div class="section-num green">2</div>
+      <div class="section-title">
+        <h2>Admin provisions a new workspace <span class="badge new">✦ Just built</span></h2>
+        <p>Brand-new company. Platform admin sent a /provision link. Nobody exists yet.</p>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <div class="actor-bar cols-4">
+        <div class="actor user-actor">🧑‍💼 Admin</div>
+        <div class="actor">📱 Cards</div>
+        <div class="actor">🏠 Shell functions</div>
+        <div class="actor">🏠 Shell app</div>
+      </div>
+
+      <ul class="step-list">
+        <li>
+          <span class="step-label">Opens the provision link</span>
+          <div class="step-detail"><code>cards.eq.solutions/provision?token=xyz</code></div>
+        </li>
+        <li>
+          <span class="step-label">Types mobile number → receives SMS → types code</span>
+          <div class="step-detail">Same phone OTP flow as Scenario 1. Cards gets a GoTrue access token.</div>
+        </li>
+        <li>
+          <span class="step-label">Cards calls shell-provision-tenant</span>
+          <div class="step-detail">Sends phone + access token + provision token → Shell validates JWT, creates tenant + user + membership, consumes provision token (one-time only)</div>
+        </li>
+        <li>
+          <span class="step-label">Shell returns tenant_slug + access_token</span>
+          <div class="step-detail">Cards captures both values, then signs out of its own GoTrue session</div>
+        </li>
+        <li>
+          <span class="step-label">Browser opens Shell with a hidden token</span>
+          <div class="step-detail"><code>core.eq.solutions/acme<strong>#sh=&lt;token&gt;</strong></code> — the <code>#</code> means it never reaches any server</div>
+        </li>
+        <li>
+          <span class="step-label">Shell detects the fragment, strips it immediately</span>
+          <div class="step-detail">URL is cleaned via <code>history.replaceState</code> before anything else runs</div>
+        </li>
+        <li>
+          <span class="step-label">Shell calls shell-handoff-provision (same-origin)</span>
+          <div class="step-detail">Same-origin POST with the token → Shell validates the JWT, looks up the user, mints a 7-day session cookie</div>
+        </li>
+        <li class="done">
+          <span class="step-label">✅ Admin lands in /acme — already logged in</span>
+          <div class="step-detail">No second OTP. Shell session cookie is set. Cards returned to its sign-in screen in the background.</div>
+        </li>
+      </ul>
+
+      <div class="info">
+        <strong>Why the #sh= trick?</strong> Setting a cookie across two different domains is blocked by browsers. Instead, Shell's own JavaScript calls its own Netlify function with <code>credentials: 'include'</code> — same-origin request, so the browser allows the <code>Set-Cookie</code>. The token travels only inside the browser, never to a server as a URL parameter.
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════
+       SCENARIO 3 — Returning Shell user
+  ════════════════════════════════════════════════════ -->
+  <div class="section" id="s3">
+    <div class="section-header">
+      <div class="section-num deep">3</div>
+      <div class="section-title">
+        <h2>Returning Shell user</h2>
+        <p>Admin or manager who already has a workspace. Goes directly to Shell.</p>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <div class="pipe">
+        <div class="pipe-node user">🧑‍💼 User<br><small>core.eq.solutions/acme</small></div>
+        <div class="pipe-arrow">→<span>no cookie</span></div>
+        <div class="pipe-node">📄 /login</div>
+        <div class="pipe-arrow">→<span>phone + OTP</span></div>
+        <div class="pipe-node supabase">GoTrue<br><small>verifies SMS</small></div>
+        <div class="pipe-arrow">→<span>shell-login-<br>phone-otp</span></div>
+        <div class="pipe-node">Mint cookie<br><small>7-day session</small></div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-node success">✅ /acme<br>workspace</div>
+      </div>
+
+      <div class="info" style="margin-top:20px">
+        <strong>Every page load after this:</strong> Shell calls <code>verify-shell-session</code>, reads the cookie, and restores your session automatically. No login needed until the cookie expires (7 days of inactivity).
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════
+       SCENARIO 4 — Email OTP
+  ════════════════════════════════════════════════════ -->
+  <div class="section" id="s4">
+    <div class="section-header">
+      <div class="section-num" style="background:#6366F1">4</div>
+      <div class="section-title">
+        <h2>Email OTP login (Cards)</h2>
+        <p>For users who prefer email over phone — or for testing without a SIM.</p>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <div class="pipe">
+        <div class="pipe-node user">📧 User<br><small>types email</small></div>
+        <div class="pipe-arrow">→<span>sendOtp<br>(email)</span></div>
+        <div class="pipe-node supabase">GoTrue<br><small>sends magic link</small></div>
+        <div class="pipe-arrow">→<span>user types<br>6-digit code</span></div>
+        <div class="pipe-node">verifyOtp<br><small>GoTrue session</small></div>
+        <div class="pipe-arrow">→<span>authState<br>Changes fires</span></div>
+        <div class="pipe-node success">✅ Wallet<br>screen</div>
+      </div>
+
+      <div class="info" style="margin-top:20px">
+        <strong>Note:</strong> This stays entirely inside Cards. A GoTrue session is stored in supabase-js local storage. No Shell session cookie is involved — the user isn't accessing Shell.
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════
+       SCENARIO 5 — GATE A: Worker not in system
+  ════════════════════════════════════════════════════ -->
+  <div class="section" id="s5">
+    <div class="section-header">
+      <div class="section-num amber">5</div>
+      <div class="section-title">
+        <h2>Worker not in the system yet <span class="badge gate">Gate A</span></h2>
+        <p>Someone clicks a claim link but hasn't been set up by their admin.</p>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <div class="pipe">
+        <div class="pipe-node user">👷 Worker<br><small>/join?token=xxx</small></div>
+        <div class="pipe-arrow">→<span>phone + OTP</span></div>
+        <div class="pipe-node supabase">GoTrue<br><small>✓ verifies</small></div>
+        <div class="pipe-arrow">→<span>shell-join-<br>tenant</span></div>
+        <div class="pipe-node" style="background:#FEF9C3;border-color:#FDE68A;color:#92400E">shell_control<br><small>0 rows found</small></div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-node fail">❌ Gate A<br><small>/not-provisioned</small></div>
+      </div>
+
+      <div class="info" style="margin-top:20px;border-color:var(--amber)">
+        <strong>What the worker sees:</strong> "Your account isn't set up yet. Contact your admin." — a friendly dead-end, not an error page.
+        <br><br>
+        <strong>Fix:</strong> Admin adds the worker's phone number in EQ Field or Shell first, then the worker can try again.
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════
+       SCENARIO 6 — Session expiry
+  ════════════════════════════════════════════════════ -->
+  <div class="section" id="s6">
+    <div class="section-header">
+      <div class="section-num ink">6</div>
+      <div class="section-title">
+        <h2>Session expires (after 7 days)</h2>
+        <p>User comes back after a long break. Cookie is gone or expired.</p>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <div class="pipe">
+        <div class="pipe-node user">🧑‍💼 User<br><small>returns to /acme</small></div>
+        <div class="pipe-arrow">→<span>verify-shell-<br>session</span></div>
+        <div class="pipe-node fail">401<br><small>cookie expired</small></div>
+        <div class="pipe-arrow">→<span>clears session</span></div>
+        <div class="pipe-node">📄 /login</div>
+        <div class="pipe-arrow">→<span>Scenario 3<br>again</span></div>
+        <div class="pipe-node success">✅ Back in<br>/acme</div>
+      </div>
+
+      <div class="info" style="margin-top:20px">
+        <strong>No data is lost.</strong> The cookie is just the key to the door — everything in Supabase is still there. Re-login takes ~15 seconds via phone OTP.
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════
+       SESSION COOKIE
+  ════════════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num" style="background:#0EA5E9">🍪</div>
+      <div class="section-title">
+        <h2>What's inside the session cookie</h2>
+        <p>Every Shell login produces the same shape — regardless of which flow created it.</p>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <div class="cookie-box">
+        <h4>eq_shell_session — HttpOnly · Secure · SameSite=Lax · 7-day expiry</h4>
+        <div class="cookie-fields">
+          <div class="cookie-field"><div class="key">user_id</div><div class="val">uuid</div></div>
+          <div class="cookie-field"><div class="key">phone</div><div class="val">+61412345678</div></div>
+          <div class="cookie-field"><div class="key">tenant_id</div><div class="val">uuid</div></div>
+          <div class="cookie-field"><div class="key">tenant_slug</div><div class="val">acme-corp</div></div>
+          <div class="cookie-field"><div class="key">role</div><div class="val">manager</div></div>
+          <div class="cookie-field"><div class="key">entitlements</div><div class="val">cards, field, service</div></div>
+          <div class="cookie-field"><div class="key">supabase_jwt</div><div class="val">… for downstream DB calls</div></div>
+          <div class="cookie-field"><div class="key">expires_at</div><div class="val">unix timestamp</div></div>
+        </div>
+      </div>
+
+      <table class="mint-table" style="margin-top:20px">
+        <thead>
+          <tr>
+            <th>Netlify function</th>
+            <th>Used in scenario</th>
+            <th>How it's triggered</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code class="fn-name">shell-login-phone-otp</code></td>
+            <td>3 — Returning Shell user</td>
+            <td>User types phone + code on Shell login page</td>
+          </tr>
+          <tr>
+            <td><code class="fn-name">shell-handoff-provision</code></td>
+            <td>2 — Admin after provisioning</td>
+            <td>Shell JS detects <code>#sh=</code> in URL on load</td>
+          </tr>
+          <tr>
+            <td><code class="fn-name">shell-join-tenant</code></td>
+            <td>1 — Worker claim flow</td>
+            <td>Cards calls it after phone OTP verify</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════
+       DECISION TREE
+  ════════════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num" style="background:#6B7280">⚡</div>
+      <div class="section-title">
+        <h2>Quick decision tree</h2>
+        <p>Which scenario applies?</p>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="tree">
+        <div class="tree-q">Is there already a valid session cookie?</div>
+        <div class="tree-indent">
+          <div><span class="tree-yes">YES</span> → verify-shell-session passes → <span class="tree-dest">straight in ✅</span></div>
+          <div><span class="tree-no">NO</span> → Where is the user?</div>
+          <div class="tree-indent">
+            <div>→ <code>/provision?token=</code> → <span class="tree-dest">Scenario 2 (new org admin)</span></div>
+            <div>→ <code>/join?token=</code> → <span class="tree-dest">Scenario 1 (worker claim)</span> — or Gate A if not pre-registered</div>
+            <div>→ cards.eq.solutions with email → <span class="tree-dest">Scenario 4 (email OTP)</span></div>
+            <div>→ core.eq.solutions → <span class="tree-dest">Scenario 3 (Shell phone login)</span></div>
+            <div>→ Returning after 7+ days → <span class="tree-dest">Scenario 6 → then Scenario 3</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Footer -->
+  <div style="text-align:center;color:var(--mid);font-size:12px;margin-top:40px">
+    EQ Solutions — Internal reference · eq-context/eq-auth-explainer.html · 2026-06-09
+  </div>
+
+</div>
+</body>
+</html>

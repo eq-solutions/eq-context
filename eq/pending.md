@@ -14,6 +14,16 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-06-09 — v8 design pass (Session 3)
+
+**Completed (2026-06-09):**
+- [x] **EQ Field v3.5.116 — v8 design pass DONE** — Claude Design handoff applied across all 14 screens. PR #258 squash-merged. styles/field-v8.css + sidebar + dashboard/leave/timesheets/people/managers/roster/calendar/jobnumbers/apprentices/home/projects/whatsnew all updated. Live at eq-solves-field.netlify.app.
+
+**Active:**
+- [ ] **EQ Shell v8 design pass** — LoginPage + TenantHome hub. In progress 2026-06-09.
+
+---
+
 ## ⏩ Session close — 2026-06-09 — Security sprint + WS1/4/5/7 + GATE A + eq-service encryption
 
 **Completed (2026-06-09):**
@@ -27,6 +37,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **eq-service encryption (0123) DONE** — migration schema fixed (public→app_data), RPCs corrected, PRs #268/#269 merged. `SITE_CREDENTIALS_KEY` set. Rekey confirmed 0 rows.
 
 **Active / time-sensitive:**
+- [ ] **EQ Shell v8 design pass** — same Claude Design handoff applied to eq-shell (React). LoginPage + TenantHome hub. Started 2026-06-09.
 - [ ] **⚠ Worker invites expire 2026-06-15** — 25 workers have pending invites. Remind field staff to check email and accept their EQ Shell invite. Self-links on accept via `accept-invite.ts`.
 - [ ] **2 workers with no staff match** — emma_curth@outlook.com, hexperfect@outlook.com. Create staff records in EQ Field or correct emails.
 - [ ] **8 workers with no email** — populate email in eq-canonical `public.workers` to enable linking.
