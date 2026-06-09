@@ -151,15 +151,9 @@ These are overdue. No technical prerequisite.
 
 > This is the 🔴 item. It is 5 minutes. Do it before the stream A cutover work — if they differ, the smoke test (A1) will silently fail authentication.
 
-### C2 — Rotate GitHub PATs (Royce, 15 min)
+### ~~C2 — Rotate GitHub PATs~~ ✓ Done 2026-06-10
 
-Three PATs treated as compromised (were in `system/infrastructure.md` plaintext):
-
-1. **GitHub** → Settings → Developer settings → Personal access tokens → Tokens (classic).
-2. Revoke all three (labels: "EQ Solutions", "Milmlow", "Milmlow alt").
-3. Create one new **fine-grained PAT** scoped to `eq-solutions/*` repos with minimum permissions (Contents: read/write, Pull requests: read/write).
-4. Update `C:\Projects\.git-credentials.eq-solutions` on Beelink with the new token.
-5. Test: `git push` from any eq-solutions repo. Should succeed.
+All 3 PATs revoked, new fine-grained PAT issued, Beelink credentials updated.
 
 ### C3 — Add gitleaks pre-commit hook to eq-context (agent session, 10 min)
 

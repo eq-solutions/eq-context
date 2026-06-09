@@ -174,14 +174,12 @@ Foundation shipped (One Spine, Stream A): `@eq-solutions/tokens` v1.0 + `@eq-sol
 
 ---
 
-## CRITICAL — Rotate GitHub PATs
+## GitHub PATs — ✓ Rotated 2026-06-10
 
-Discovered 2026-05-19: `system/infrastructure.md` tracked literal PAT values in plaintext. Treat all 3 as compromised.
+~~Three PATs were compromised (plaintext in `system/infrastructure.md`).~~
+All 3 revoked and new fine-grained PAT issued. Beelink credentials updated.
 
-- [ ] **Revoke all 3 PATs** — GitHub Settings → Developer settings → Personal access tokens. Labels: "EQ Solutions", "Milmlow", "Milmlow alt".
-- [ ] **Issue one new fine-grained PAT** to replace EQ Solutions.
-- [ ] Update `C:\Projects\.git-credentials.eq-solutions` and `C:\Projects\.git-credentials` on Beelink.
-- [ ] **Substrate hardening** — add `gitleaks` (or similar) pre-commit hook on eq-context repo.
+- [ ] **Substrate hardening** — add `gitleaks` pre-commit hook on eq-context repo (prevents recurrence).
 
 ---
 
