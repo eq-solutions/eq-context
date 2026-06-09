@@ -14,28 +14,27 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## ⏩ Session close — 2026-06-09 — Security sprint + WS1/4/5/7 + GATE A
+## ⏩ Session close — 2026-06-09 — Security sprint + WS1/4/5/7 + GATE A + eq-service encryption
 
 **Completed (2026-06-09):**
 - [x] **Security sprint — all S0–S3 items DONE** — 5 PRs merged across eq-shell, eq-solves-field, eq-solves-service. All items closed.
-- [x] **WS4 quote-job-consumer DONE** — canonical work-order spine built and merged to eq-shell/eq-solves-service.
+- [x] **WS4 quote-job-consumer DONE** — canonical work-order spine built, merged, deployed.
 - [x] **WS7 Cards to Field bridge DONE** — confirmed 2026-06-08.
-- [x] **WS1 safe 1:1 customer backfill DONE** — safe subset backfilled via direct SQL (no code change needed).
-- [x] **GATE A worker identity linker DONE** — PR merged to eq-shell.
-- [x] **WS5 durable event marking DONE** — durable outbox built and merged.
+- [x] **WS1 safe 1:1 customer backfill DONE** — safe subset backfilled via direct SQL.
+- [x] **GATE A worker identity linker DONE** — PR #278 merged + deployed. Backfill run: 7/39 workers linked, 25 pending invite acceptance (expire 2026-06-15).
+- [x] **WS5 durable event marking DONE** — PR #279 merged + deployed to eq-shell.
+- [x] **All 6 security sprint env vars SET** — eq-shell + eq-service Netlify confirmed.
+- [x] **eq-service encryption (0123) DONE** — migration schema fixed (public→app_data), RPCs corrected, PRs #268/#269 merged. `SITE_CREDENTIALS_KEY` set. Rekey confirmed 0 rows.
 
-**Pending manual (Royce-gated):**
-- [ ] Set 6 env vars in Netlify (see session log 2026-06-09 for list)
-- [ ] Deploy eq-shell (post env vars)
-- [ ] Run `backfill-worker-links` script post-deploy
-- [ ] Deploy eq-service
-- [ ] Run rekey script post eq-service deploy
+**Active / time-sensitive:**
+- [ ] **⚠ Worker invites expire 2026-06-15** — 25 workers have pending invites. Remind field staff to check email and accept their EQ Shell invite. Self-links on accept via `accept-invite.ts`.
+- [ ] **2 workers with no staff match** — emma_curth@outlook.com, hexperfect@outlook.com. Create staff records in EQ Field or correct emails.
+- [ ] **8 workers with no email** — populate email in eq-canonical `public.workers` to enable linking.
 
-**New items (deferred):**
-- [ ] **GATE A backfill** — run `backfill-worker-links` after Netlify deploy of eq-shell
-- [ ] **WS5 Netlify deploy** — deploy eq-service to activate durable outbox
+**Deferred:**
 - [ ] **WS1 remainder** — 481 ambiguous customers need human dedup via EQ Intake (Tier A 26 supervised + Tier C 50 ambiguous + quotes-side N:1)
-- [ ] **ktmj decommission** — assess once WS6 fully confirmed clean (do not action before WS6 verified)
+- [ ] **ktmj decommission** — parked ("leave it running")
+- [ ] **Delete `C:\Users\EQ\eq-credentials-ref.html`** after importing to password manager
 
 ---
 
