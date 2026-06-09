@@ -16,21 +16,18 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ## ⏩ Session close — 2026-06-09 — S2-9 per-consumer key isolation: receiver updates
 
-**Completed (code changes, not deployed — env vars pending):**
-- [x] **eq-solves-field** `verify-pin.js` — `verifyShellToken()` now uses `FIELD_HANDOFF_KEY = EQ_FIELD_HANDOFF_KEY || EQ_SECRET_SALT`
-- [x] **eq-cards** `shell-verify.js` — Shell session cookie now verified with `EQ_SESSION_SALT || EQ_SECRET_SALT`
-- [x] **eq-solves-service** `shell-auth/route.ts` — legacy service token path now uses `EQ_SERVICE_HANDOFF_KEY ?? EQ_SECRET_SALT`
+**Completed:**
+- [x] **eq-solves-field** `verify-pin.js` — `verifyShellToken()` uses `FIELD_HANDOFF_KEY = EQ_FIELD_HANDOFF_KEY || EQ_SECRET_SALT` — committed in v3.5.114, live on main
+- [x] **eq-cards** `shell-verify.js` — session cookie verified with `EQ_SESSION_SALT || EQ_SECRET_SALT` — committed + pushed to main
+- [x] **eq-solves-service** `shell-auth/route.ts` — legacy path uses `EQ_SERVICE_HANDOFF_KEY ?? EQ_SECRET_SALT` — committed on `claude/s3-6-site-credentials-encryption` (lands on main when that branch merges)
+- [x] **Env vars set in Netlify** — `EQ_FIELD_HANDOFF_KEY` on eq-field, `EQ_SESSION_SALT` on eq-cards, `EQ_SERVICE_HANDOFF_KEY` on eq-service (all via CLI, 2026-06-09)
 - [x] Phase 3 (Supabase JWT fast path) confirmed already complete in Service shell-auth/route.ts
 
-**Confirmed not needed:**
-- Cards does not sign tokens — only verifies Shell session cookie. No separate signing key required.
-- Service Phase 3 was already implemented.
-
-**Deferred (Royce-gated):**
-- [ ] **Set new env vars in Netlify** — `EQ_SESSION_SALT`, `EQ_FIELD_HANDOFF_KEY`, `EQ_SERVICE_HANDOFF_KEY` on respective sites (eq-shell, eq-solves-field, eq-solves-service, eq-cards). Do before S2-9 branch merges to main.
-- [ ] **EQ_SECRET_SALT rotation** — not urgent (exposed value was demo salt, not prod). Plan for maintenance window after S2-9 env vars are confirmed live. Rotation kills active Field sessions — coordinate timing.
+**Remaining (Royce-gated):**
+- [ ] **Merge S2-9 branch** (`claude/s2-9-per-consumer-keys`) on eq-shell → activates the new keys in production. All receiver env vars and code are ready.
+- [ ] **EQ_SECRET_SALT rotation** — plan for a maintenance window after S2-9 merges and is confirmed stable. Rotation invalidates active Field sessions — coordinate timing.
 - [ ] **Shadow mode → production flip** (`token-exchange.ts`) — config change in `shell_control.platform_config`. Hold until end-to-end smoke test of JWT path.
-- [ ] **Remove legacy service token path** from `shell-auth/route.ts` — the TODO marked "remove once Shell PRs #128/#130 deployed + EQ_SHELL_BRIDGE_SECRET confirmed set." Do after env var confirmation.
+- [ ] **Remove legacy service token path** from `shell-auth/route.ts` — once `EQ_SHELL_BRIDGE_SECRET` is confirmed set on both Shell and Service Netlify envs.
 - [ ] **JTI on ShellTokens** — deferred. No-op without a revocation store.
 
 ---
