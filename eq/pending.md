@@ -14,10 +14,10 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## ⏩ Session close — 2026-06-09 — EQ Service Shell SSO fix (Session 5)
+## ⏩ Session close — 2026-06-09 — EQ Service Shell SSO fix (Sessions 5 + 6)
 
 **Completed (2026-06-09):**
-- [x] **EQ Service Shell SSO — 3 bugs fixed, deployed** — Root causes: (1) edge runtime crypto failure → moved to Node.js `/api/shell-sso`; (2) wrong redirect hostname → `NEXT_PUBLIC_SITE_URL`; (3) `EQ_SESSION_SALT` vs `EQ_SECRET_SALT` HMAC mismatch → mirrored Shell's key priority. Three commits (`9d26b85`, `5e5046e`, `4155abf`), deploy `6a27e38e` live 09:57.
+- [x] **EQ Service Shell SSO — 4 bugs fixed, all deployed** — Root causes: (1) edge runtime crypto failure → moved to Node.js `/api/shell-sso`; (2) wrong redirect hostname → `NEXT_PUBLIC_SITE_URL`; (3) `EQ_SESSION_SALT` vs `EQ_SECRET_SALT` HMAC mismatch; (4) proxy.ts infinite redirect loop — public paths (incl. `/auth/signin`) now exempt via `isPublicPath()`. Latest deploy `6a27f277` (PR #270, Session 6).
 
 **Pending verification:**
 - [ ] **Royce: smoke test Service SSO** — fresh incognito → `core.eq.solutions` → Shell login → click Service → dashboard should load without login prompt. Tick Sprint 7 smoke test when done.
@@ -74,7 +74,7 @@ refs updated (PR #257 → main, open); repo on `eq-solutions/eq-service`.
       not blocking the cutover. (Surfaced during Sprint 7 canonical-id audit.)
 - [ ] **Smoke test (Royce)** — sign in via Shell OTP at service.eq.solutions, confirm
       checks/tests/defects visible, create a test check → lands in ehow tenant `7dee117c-…`.
-      *(Shell SSO now fixed — 2026-06-09, deploy 6a27e38e. Re-test in incognito.)*
+      *(Shell SSO now fixed — 2026-06-09, 4 bugs fixed, deploy 6a27f277. Test in incognito.)*
 - [ ] **PR #257** — merge to main (triggers deploy) once smoke test passes.
 - [ ] **Post-verification (do NOT do before smoke test):** redirect service.eq.solutions →
       core (5.2), revoke urjh service-role keys (5.4), decommission old Netlify site (5.3).
