@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-06-08
+last_updated: 2026-06-09
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -11,6 +11,27 @@ status: live
 
 EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## ⏩ Session close — 2026-06-09 — S2-9 per-consumer key isolation: receiver updates
+
+**Completed (code changes, not deployed — env vars pending):**
+- [x] **eq-solves-field** `verify-pin.js` — `verifyShellToken()` now uses `FIELD_HANDOFF_KEY = EQ_FIELD_HANDOFF_KEY || EQ_SECRET_SALT`
+- [x] **eq-cards** `shell-verify.js` — Shell session cookie now verified with `EQ_SESSION_SALT || EQ_SECRET_SALT`
+- [x] **eq-solves-service** `shell-auth/route.ts` — legacy service token path now uses `EQ_SERVICE_HANDOFF_KEY ?? EQ_SECRET_SALT`
+- [x] Phase 3 (Supabase JWT fast path) confirmed already complete in Service shell-auth/route.ts
+
+**Confirmed not needed:**
+- Cards does not sign tokens — only verifies Shell session cookie. No separate signing key required.
+- Service Phase 3 was already implemented.
+
+**Deferred (Royce-gated):**
+- [ ] **Set new env vars in Netlify** — `EQ_SESSION_SALT`, `EQ_FIELD_HANDOFF_KEY`, `EQ_SERVICE_HANDOFF_KEY` on respective sites (eq-shell, eq-solves-field, eq-solves-service, eq-cards). Do before S2-9 branch merges to main.
+- [ ] **EQ_SECRET_SALT rotation** — not urgent (exposed value was demo salt, not prod). Plan for maintenance window after S2-9 env vars are confirmed live. Rotation kills active Field sessions — coordinate timing.
+- [ ] **Shadow mode → production flip** (`token-exchange.ts`) — config change in `shell_control.platform_config`. Hold until end-to-end smoke test of JWT path.
+- [ ] **Remove legacy service token path** from `shell-auth/route.ts` — the TODO marked "remove once Shell PRs #128/#130 deployed + EQ_SHELL_BRIDGE_SECRET confirmed set." Do after env var confirmation.
+- [ ] **JTI on ShellTokens** — deferred. No-op without a revocation store.
 
 ---
 
@@ -446,12 +467,11 @@ carries today. They DO NOT ship until Phase 2 resumes (GTM gate
 clears, or a paying customer requests a new module). Priority order
 = highest blast-radius first.
 
-- [ ] **Dual-salt rotation support for `EQ_SECRET_SALT`** — both
-      shell-side `mint-iframe-token` and Field-side validator accept
-      salt-A and salt-B; mint with salt-B; redeploy both; wait for
-      token TTL; remove salt-A. Without this, a salt leak forces a
-      coordinated outage to rotate. Shared secret across two Netlify
-      projects is the single highest-blast-radius risk in the stack.
+- [x] **Dual-salt rotation support for `EQ_SECRET_SALT`** — superseded by S2-9
+      per-consumer key isolation (2026-06-09). Each consumer (Field handoff, Service
+      handoff, Session cookie, Quotes handoff) now has its own key with fallback to
+      `EQ_SECRET_SALT`. Rotation can happen consumer-by-consumer without a coordinated
+      outage. See `sessions/2026-06-09.md`.
 - [ ] **Dual-secret support in `verify-shell-session`** for
       `SUPABASE_JWT_SECRET` rotation. Same rationale.
 - [ ] **`revoked_sessions` table** + shorten JWT TTL from 1 hour to
