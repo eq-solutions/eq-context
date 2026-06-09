@@ -14,13 +14,15 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## ⏩ Session close — 2026-06-09 — EQ Service Shell SSO fix (Sessions 5 + 6)
+## ⏩ Session close — 2026-06-10 — EQ Service Shell SSO root cause + fix (Session 7)
 
-**Completed (2026-06-09):**
-- [x] **EQ Service Shell SSO — 4 bugs fixed, all deployed** — Root causes: (1) edge runtime crypto failure → moved to Node.js `/api/shell-sso`; (2) wrong redirect hostname → `NEXT_PUBLIC_SITE_URL`; (3) `EQ_SESSION_SALT` vs `EQ_SECRET_SALT` HMAC mismatch; (4) proxy.ts infinite redirect loop — public paths (incl. `/auth/signin`) now exempt via `isPublicPath()`. Latest deploy `6a27f277` (PR #270, Session 6).
+**Completed (2026-06-10):**
+- [x] **EQ Service Shell SSO — ROOT CAUSE found + fixed (eq-shell PR #306)** — After 4 Service-side bugs (Sessions 5+6), Service still showed login page. Root cause was in Shell: `COOKIE_AUTH = true` in `ServiceIframe.tsx` bypassed TOKEN MODE. Cookie not reliably present at iframe-load time (Shell restores from Supabase cookies without re-minting `eq_shell_session`). Fix: `COOKIE_AUTH = false` → TOKEN MODE always (Supabase JWT handshake). Shell deploy `6a285d53` live.
+- [x] **Diagnostic logs cleaned up** — eq-service PR #274 removes console.logs from proxy.ts + shell-sso added during investigation.
 
 **Pending verification:**
-- [ ] **Royce: smoke test Service SSO** — fresh incognito → `core.eq.solutions` → Shell login → click Service → dashboard should load without login prompt. Tick Sprint 7 smoke test when done.
+- [ ] **Royce: smoke test Service SSO** — fresh incognito → `core.eq.solutions` → Shell login → click Service → dashboard loads without login prompt. Tick Sprint 7 smoke test when done.
+- [ ] **Merge eq-service PR #274** — diagnostic log cleanup (no functional change, safe to merge anytime).
 
 ---
 

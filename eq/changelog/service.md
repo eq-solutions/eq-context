@@ -9,6 +9,23 @@ status: live
 
 # Changelog — EQ Solves Service
 
+## [2026-06-10] Shell SSO — ROOT CAUSE found + fixed (eq-shell PR #306)
+**Built by:** Royce Milmlow + Claude Code
+
+After 4 Service-side bugs fixed, Service still showed login page. Root cause was in Shell, not Service.
+
+**Root cause:** `COOKIE_AUTH = true` in Shell's `ServiceIframe.tsx` was set whenever `VITE_SERVICE_URL` ended in `.eq.solutions`. In COOKIE MODE, Shell skips token minting entirely and loads the iframe at the root URL, relying on `eq_shell_session` being auto-sent. But Shell restores from Supabase cookies on refresh without re-minting `eq_shell_session` — so the cookie was absent at iframe-load time. proxy.ts never saw it → never called shell-sso.
+
+**Fix:** `const COOKIE_AUTH = false` — TOKEN MODE always (eq-shell PR #306, commit `16d3f19`, deploy `6a285d53`).
+
+TOKEN MODE (proven path): `token-exchange?aud=service` → Supabase JWT → `/shell#sh=<jwt>` → `/api/shell-auth` validates → `eq_shell_bridge=1` + redirect to `/` → `ShellReadySignal` fires `EQ_SERVICE_READY` → Shell reveals iframe.
+
+**Cleanup:** diagnostic console.logs removed from proxy.ts + shell-sso (eq-service PR #274).
+
+**Status:** Shell deployed. Smoke test pending.
+
+---
+
 ## [2026-06-09] Shell SSO — 4 bugs found and fixed (PRs #267–#270)
 **Built by:** Royce Milmlow + Claude Code
 
