@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-06-10
+last_updated: 2026-06-11
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -11,6 +11,27 @@ status: live
 
 EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## ⏩ Session close — 2026-06-11 — SKS canonical DB full JWT coverage + start fresh
+
+**Completed (EQ Field v3.5.125 — PR [#267](https://github.com/eq-solutions/eq-field/pull/267), merged):**
+- [x] All 11 `app_data.field_*` views created on ehow — fixes PGRST205 / zeros + loading spinners on `core.eq.solutions/sks/field`
+- [x] `public.site_diaries` table created on ehow (completes `JWT_TABLES` coverage)
+- [x] `public.organisations` stub created (eliminates 404 boot noise)
+- [x] RLS WITH CHECK hardened on all 14 write policies (org_id + authenticated + JWT tenant claim)
+- [x] `audit_log` policies fixed (stale nspb UUID `1eb831f9` → correct SKS org_id)
+- [x] 109 legacy audit_log rows deleted — clean slate on ehow
+- [x] Migration file `supabase/migrations/20260611_sks_canonical_field_sync.sql` committed
+
+**Data state post-session (ehow):** 58 staff · 591 sites · 0 roster rows (empty, data entry needed)
+
+**Deferred (Royce-gated):**
+- [ ] **Roster data entry on ehow** — schedule/timesheets/leave empty; start fresh or migrate from nspb
+- [ ] **Standalone sks-nsw-labour retirement** — after soak confirmation
+- [ ] **Track 2 RLS STEP 2** — anon SELECT lockdown; after standalone retired
+- [ ] **`EQ_SECRET_SALT` rotation** — deferred; runbook: `security-secret-rotation-runbook-2026-05-31.md`
 
 ---
 

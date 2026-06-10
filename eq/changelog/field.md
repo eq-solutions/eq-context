@@ -1,13 +1,34 @@
 ---
 title: Changelog — EQ Solves Field
 owner: Royce Milmlow
-last_updated: 2026-06-09
+last_updated: 2026-06-11
 scope: Append-only history of changes to the EQ Solves Field product
 read_priority: reference
 status: live
 ---
 
 # Changelog — EQ Solves Field
+
+## [2026-06-11] v3.5.125 — SKS canonical DB: full JWT coverage + RLS hardening (PR #267, merged)
+**Built by:** Royce Milmlow + Claude Code
+
+SKS Field (`core.eq.solutions/sks/field`) was showing all zeros + permanent loading spinners after the v3.5.120 greenfield cut-over to ehow. Root cause: 7 of 11 `app_data.field_*` views were missing → PGRST205 on every data load.
+
+**DB changes (applied to ehow `ehowgjardagevnrluult`):**
+- Created `public.organisations` stub (eliminates 404 boot noise)
+- Created `public.site_diaries` table (completes `JWT_TABLES` coverage)
+- Created 7 missing `app_data.field_*` views (pass-through, writable)
+- Hardened RLS WITH CHECK on all 14 write policies (org_id + authenticated + JWT tenant claim)
+- Fixed `audit_log` RLS policies (nspb UUID → correct SKS org_id; SELECT scoped)
+- Cleared 109 legacy audit_log rows (clean slate)
+
+**Migration:** `supabase/migrations/20260611_sks_canonical_field_sync.sql` (idempotent)
+
+**Result:** SKS Field dashboard loads. Staff (58) + sites (591) via adapter views. Roster empty — start fresh.
+
+**PR:** [#267](https://github.com/eq-solutions/eq-field/pull/267) — merged, live.
+
+---
 
 ## [2026-06-09] v3.5.119 — v8 navy → ink/sky token cleanup — JS stragglers (PR #260, merged)
 **Built by:** Royce Milmlow + Claude Code
