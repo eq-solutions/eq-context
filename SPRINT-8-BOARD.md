@@ -45,8 +45,9 @@ Sprint 8 is complete when:
 - [ ] All 25 worker invites are resent or expiry date extended; email gaps on 8 workers filled
 - [ ] All 3 GitHub PATs rotated (old ones revoked, new fine-grained PAT issued)
 - [ ] `EQ_SECRET_SALT` confirmed identical between Shell and Service prod env vars
-- [ ] eq-roles PR #7 merged, v2.3.0 tagged
-- [ ] eq-shell has a single trunk with both `c2-shell-roles` + `sks-field-host` merged in
+- [x] eq-roles PR #7 merged, v2.3.0 tagged *(already on main)*
+- [x] eq-shell dep at v2.3.0 *(already on main)*
+- [ ] Stale branches `c2-shell-roles` + `sks-field-host` closed on GitHub
 
 ---
 
@@ -174,41 +175,21 @@ Or add a simpler hook that greps for `ghp_|gho_|supabase.co.*service_role` befor
 
 ---
 
-## Stream D — SKS roles Prompt A (Royce action, ~20 min)
+## Stream D — SKS roles entry ✓ Already done (verified 2026-06-10)
 
-**Dependency:** none. All code already exists on branches.
+Live inspection found all three D items complete on main:
 
-This is the entry gate to the entire roles sprint (Prompts B-E). Without it, B-E are blocked. Completing Prompt A unblocks a full agent sprint (B-E) as Sprint 9.
+| Item | Finding |
+|---|---|
+| D1 — merge eq-roles PR #7 + tag v2.3.0 | ✅ PR #7 commit `e017cc0` is on main; `v2.3.0` tag exists |
+| D2 — branch convergence | ✅ Both branches stale — content already on main; close without merging |
+| D3 — dep bump in eq-shell | ✅ main already has `@eq-solutions/roles: github:eq-solutions/eq-roles#v2.3.0` |
 
-### D1 — Merge eq-roles PR #7 (Royce, 5 min)
+**Stale branches to close (do not merge):**
+- `claude/c2-shell-roles` — roles wiring already on main. Branch still on `#main` dep + older tokens version (v1.0.0 vs v1.3.2 on main). Merging would be a downgrade.
+- `claude/sks-field-host` — fieldTenants.ts URL change irrelevant (SKS Field routes via Shell `/sks/field`, not an external URL). 64KB behind main.
 
-GitHub → eq-solutions/eq-roles → PR #7 (`claude/gallant-cartwright-847187`) → Merge.
-Then: tag `v2.3.0` on main.
-
-```bash
-cd C:\Projects\eq-roles
-git tag v2.3.0
-git push origin v2.3.0
-```
-
-### D2 — Decide eq-shell trunk (Royce, 5 min)
-
-Two branches exist: `claude/c2-shell-roles` (~+197 commits past main) and `claude/sks-field-host` (~+59 commits). Both have load-bearing work. **Per the 2026-06-08 session:** main IS the trunk; both branches are 1 commit ahead of main — this is simpler than the earlier audit suggested.
-
-Action: run `git log --oneline main..claude/c2-shell-roles` and `git log --oneline main..claude/sks-field-host` to confirm each is 1 commit. If so, both can be merged to main via PR with no conflicts.
-
-**Royce picks:** merge both PRs, or open one agent session to resolve if there are actual conflicts.
-
-### D3 — Bump eq-shell dep to eq-roles v2.3.0 (agent, 10 min)
-
-```bash
-cd C:\Projects\eq-shell
-pnpm add @eq-solutions/roles@v2.3.0
-# Confirm build passes
-pnpm build
-```
-
-Commit + push. This is the unblock for Prompts B-E.
+**Unblocked:** Sprint 9 roles sprint (Prompts B-E) can start now. Prompts are in `sks-live-sprint-2026-06-07.md`.
 
 ---
 
@@ -221,9 +202,9 @@ C1 (salt check)  →  A1 (smoke)  →  A2 (PR #257 merge)
 
 B1 + B2 + B3  ←  run any time, MUST be done before 2026-06-15
 
-C2 + C3  ←  run any time, today preferred
+C2 ✓ DONE     C3 (gitleaks hook)  ←  any time
 
-D1 → D2 → D3  ←  run after C1 confirms salt parity (avoids deploying into a broken auth state)
+D1/D2/D3 ✓ DONE  ←  Sprint 9 roles (B-E) is unblocked
 ```
 
 **Do C1 first, always.** Everything else in Streams A and D is a push to production. If the salt is wrong, diagnose it before any prod deployment.

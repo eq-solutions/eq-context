@@ -41,9 +41,9 @@ Schema + data migrated to ehow; env vars swapped; repo on `eq-solutions/eq-servi
 
 Full plan + agent prompts (A–E): `sks-live-sprint-2026-06-07.md`. Live-verified 2026-06-07: `shell_control` has 9 groups / 16 perms / 0 user assignments; tenant `sks` = 3 × manager.
 
-- [ ] **eq-roles** — merge PR #7 → tag `v2.3.0` (unblocks the eq-shell dep bump). *(Royce)*
-- [ ] **eq-shell** — converge `c2-shell-roles` + `sks-field-host` into one trunk (Prompt A; Royce picks trunk).
-- [ ] **eq-shell Phase 2** — wire group perms into the session as `extra_perms` via `resolveEffectivePermissions` (Prompt B).
+- [x] **eq-roles** — PR #7 merged, v2.3.0 tagged, eq-shell dep at v2.3.0 *(verified 2026-06-10)*
+- [ ] **Close stale branches** — `claude/c2-shell-roles` + `claude/sks-field-host` in eq-shell (both stale, content already on main). *(Royce, GitHub UI)*
+- [ ] **eq-shell Phase 2** — wire group perms into the session as `extra_perms` via `resolveEffectivePermissions` (Prompt B). **Now unblocked.**
 - [ ] **eq-shell Phase 3** — `AdminSecurityGroups` page; first write moves `user_security_groups` off 0 rows (Prompt C).
 - [ ] **eq-shell Phase 4** — walk ONE real SKS user end-to-end; first-ever `user_security_groups` row (Prompt D).
 - [ ] **Phase 5 hardening** — `contact_customer_links` explicit `WITH CHECK` (`::uuid` cast) + CI policy-lint + eq-roles no-orphan-keys test (Prompt E).
