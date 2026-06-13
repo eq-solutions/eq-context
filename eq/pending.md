@@ -25,7 +25,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **EQ_SECRET_SALT rotation** — removed from tracking (Royce: not rotating)
 
 **Open / Royce-gated:**
-- [ ] **jvkn duplicate worker (Collin Toohey)** — jvkn has 2 worker rows for same person; ehow already cleaned up; jvkn dedup is manual
+- [x] **jvkn duplicate worker (Collin Toohey)** — DELETED (2026-06-13): invite + worker `3d18422d-...` removed; original `7514e57d-...` retained. **Pending:** re-send Collin a fresh Cards/Shell invite
 - [ ] Roster data entry on ehow (SKS Field empty schedule/timesheets/leave)
 - [ ] Standalone `sks-nsw-labour` retirement
 - [ ] Track 2 RLS STEP 2 (after standalone retired)

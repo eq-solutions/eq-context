@@ -76,4 +76,4 @@ Shell embed uses cookie SSO (`verify-shell-cookie`).
 1. **Roster data entry on ehow** — schedule/timesheets/leave are empty; start fresh or migrate from nspb standalone
 2. **Standalone `sks-nsw-labour` retirement** — after soak confirmation
 3. **Track 2 RLS STEP 2** — anon SELECT lockdown; after standalone retired
-4. **jvkn duplicate worker (Collin Toohey)** — two workers.id for same person (`7514e57d` 2026-06-01 + `3d18422d` 2026-06-11); ehow duplicate archived/deactivated; jvkn dedup Royce-gated
+4. **Collin Toohey fresh invite** — jvkn duplicate `3d18422d` deleted (2026-06-13); original `7514e57d` retained; needs a new Cards/Shell invite sent
