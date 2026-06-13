@@ -9,6 +9,13 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-06-13] eq-shell fix — EQ Service iframe loading (PR #334, merged)
+**Built by:** Royce Milmlow + Claude Code
+
+No EQ Field version bump — change is in eq-shell. EQ Service (`core.eq.solutions/sks/service`) was showing "Loading EQ Service…" indefinitely. Root cause: `ServiceIframe.tsx` fallback timer was 12s with a stale OTP comment; TOKEN MODE handshake completes in ~2-3s. Fixed: 12s → 4s + Sentry breadcrumbs. PR #334 merged + deployed 2026-06-13T00:44:57Z.
+
+---
+
 ## [2026-06-11] v3.5.125 — SKS canonical DB: full JWT coverage + RLS hardening (PR #267, merged)
 **Built by:** Royce Milmlow + Claude Code
 

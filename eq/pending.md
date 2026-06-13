@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-06-11
+last_updated: 2026-06-13
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -11,6 +11,24 @@ status: live
 
 EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## ⏩ Session close — 2026-06-13 — EQ Service iframe loading fix (Shell PR #334)
+
+**Completed:**
+- [x] **EQ Service loading fixed (eq-shell PR #334)** — `ServiceIframe.tsx` fallback timer 12s → 4s. Root cause: stale OTP comment; TOKEN MODE handshake completes in ~2-3s. Merged + deployed 2026-06-13T00:44:57Z. Service now appears within ~4s.
+- [x] Sentry breadcrumbs added — `EQ_SERVICE_READY` received (info) + fallback reveal fired (warning)
+
+**Pending verification:**
+- [ ] **Royce: smoke test** — navigate to `core.eq.solutions/sks/service`, confirm Service dashboard loads within 5s (hard-refresh if needed)
+
+**Deferred (Royce-gated):**
+- [ ] Roster data entry on ehow (SKS Field — empty schedule/timesheets/leave)
+- [ ] Standalone `sks-nsw-labour` retirement — after soak confirmation
+- [ ] Track 2 RLS STEP 2 — anon SELECT lockdown; after standalone retired
+- [ ] jvkn→ehow canonical identity pipeline — `WORKERS_WEBHOOK_SECRET` + `EHOW_SERVICE_ROLE_KEY` must be set in Supabase Dashboard before bulk sync runs
+- [ ] Waves 2–3 personal PIN revert — v3.5.132–134 deployed wrong direction; revert before further auth work
 
 ---
 
