@@ -9,6 +9,13 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-06-13] v3.5.139 — CSP `_headers` sync + Sentry T3 scrubbing (PR #277, merged)
+**Built by:** Royce Milmlow + Claude Code
+
+Sync `_headers` CSP with `netlify.toml` (wildcards, wss://, api.anthropic.com, c.bing.com, R2 img-src, worker-src). Add T3 secret scrubbing in `netlify/functions/_shared/sentry.js` — `EQ_SECRET_SALT`, `AUDIT_SB_KEY`, `RESEND_API_KEY`, `ANTHROPIC_API_KEY` replaced with `[T3:SCRUBBED]` in Sentry error payloads to prevent secret leakage through error reporting. Production commit `068920b`, deployed 2026-06-13T03:16:59Z.
+
+---
+
 ## [2026-06-13] eq-shell fix — EQ Service iframe loading (PR #334, merged)
 **Built by:** Royce Milmlow + Claude Code
 

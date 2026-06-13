@@ -14,6 +14,24 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-06-13 (part b) — v3.5.139 + canonical pipeline + housekeeping
+
+**Completed:**
+- [x] **v3.5.139 shipped** — CSP `_headers` sync + Sentry T3 scrubbing (PR #277, merged + deployed 2026-06-13T03:16:59Z)
+- [x] **credentials-canonical-sync v1 LIVE** — jvkn trigger on `worker_credentials` → ehow `app_data.licences`; 171 licences synced
+- [x] **Cards→Core pipeline COMPLETE** — full chain live end-to-end (Cards → jvkn → ehow → Shell JWT → Field staff auto-mode)
+- [x] **ehow dedup** — Emma Curth orphan archived; Collin Toohey duplicate archived + staff row deactivated
+- [x] **Local main synced** — eq-solves-field local main reset to `origin/main` (068920b)
+- [x] **EQ_SECRET_SALT rotation** — removed from tracking (Royce: not rotating)
+
+**Open / Royce-gated:**
+- [ ] **jvkn duplicate worker (Collin Toohey)** — jvkn has 2 worker rows for same person; ehow already cleaned up; jvkn dedup is manual
+- [ ] Roster data entry on ehow (SKS Field empty schedule/timesheets/leave)
+- [ ] Standalone `sks-nsw-labour` retirement
+- [ ] Track 2 RLS STEP 2 (after standalone retired)
+
+---
+
 ## ⏩ Session close — 2026-06-13 — EQ Service iframe loading fix (Shell PR #334)
 
 **Completed:**

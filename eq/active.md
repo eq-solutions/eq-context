@@ -9,7 +9,7 @@ status: live
 
 # EQ Field — Active State
 
-**Current version:** v3.5.136 · **Deployed:** `field.eq.solutions` + `field.sks.eq.solutions`
+**Current version:** v3.5.139 · **Deployed:** `field.eq.solutions` + `field.sks.eq.solutions`
 **Repo:** `eq-solutions/eq-field` (main branch, auto-deploy via Netlify)
 
 ---
@@ -27,7 +27,7 @@ status: live
 
 ---
 
-## SKS canonical state (ehow — as of 2026-06-11)
+## SKS canonical state (ehow — as of 2026-06-13)
 
 **JWT data path active** (`DATA_JWT_ENABLED=on`). All 11 `app_data.field_*` views present.
 RLS WITH CHECK hardened on all 14 write policies. Adapter view architecture:
@@ -35,7 +35,9 @@ RLS WITH CHECK hardened on all 14 write policies. Adapter view architecture:
 - `field_sites` → `app_data.sites` (read-only, Service owns)
 - `field_schedule` / `field_timesheets` / etc. → `public.*` (writable pass-throughs)
 
-**Data counts:** 58 staff · 591 sites · 0 roster rows (data entry needed)
+**Canonical sync LIVE (2026-06-13):** jvkn→ehow forward path active via `workers-canonical-sync` (v3) + `credentials-canonical-sync` (v1). 39 staff + 171 licences synced. Triggers on jvkn fire on INSERT/UPDATE/DELETE → ehow upserts.
+
+**Data counts:** 39 staff · 591 sites · 171 licences · 0 roster rows (data entry needed)
 
 ---
 
@@ -74,4 +76,4 @@ Shell embed uses cookie SSO (`verify-shell-cookie`).
 1. **Roster data entry on ehow** — schedule/timesheets/leave are empty; start fresh or migrate from nspb standalone
 2. **Standalone `sks-nsw-labour` retirement** — after soak confirmation
 3. **Track 2 RLS STEP 2** — anon SELECT lockdown; after standalone retired
-4. **`EQ_SECRET_SALT` rotation** — demo salt exposed; runbook in `security-secret-rotation-runbook-2026-05-31.md`
+4. **jvkn duplicate worker (Collin Toohey)** — two workers.id for same person (`7514e57d` 2026-06-01 + `3d18422d` 2026-06-11); ehow duplicate archived/deactivated; jvkn dedup Royce-gated
