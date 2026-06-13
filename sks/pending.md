@@ -1,7 +1,7 @@
 ---
 title: SKS — Pending
 owner: Royce Milmlow
-last_updated: 2026-06-01
+last_updated: 2026-06-13
 scope: SKS Technologies operational TODO list
 read_priority: critical
 status: live
@@ -38,6 +38,32 @@ status: live
 ## Apply when ready (no code change needed)
 
 _Nothing pending — migrations 001–023 all applied._
+
+## ⚠ Time-sensitive — expires 2026-06-15
+
+- [ ] **Worker invites expire 2026-06-15** — 25 SKS workers have pending EQ Shell invites. Remind field staff to check email and accept. Self-link on accept via `accept-invite.ts`. 2 workers have no staff match (emma_curth@outlook.com, hexperfect@outlook.com) — create staff records in EQ Field or correct emails.
+- [ ] **8 workers with no email** — populate email in eq-canonical `public.workers` to enable linking.
+
+---
+
+## ⏩ SKS Field — sessions 2026-06-07 through 2026-06-13
+
+**Completed:**
+- [x] **ehow SKS canonical DB** — 58 staff + 591 sites synced to ehow (`ehowgjardagevnrluult`). All 11 `app_data.field_*` views created. Full JWT coverage (v3.5.125, PR #267, 2026-06-11). SKS Field (`core.eq.solutions/sks/field`) loads correctly.
+- [x] **Audit_log clean slate** — 109 legacy nspb-UUID rows deleted; RLS policies corrected to SKS org_id.
+
+**Pending (Royce-gated):**
+- [ ] **Roster data entry on ehow** — schedule/timesheets/leave all empty. Decide: start fresh or migrate from nspb?
+- [ ] **Standalone `sks-nsw-labour` retirement** — keep warm for soak, then retire after confirmation that ehow Field is the operational system.
+- [ ] **Track 2 RLS STEP 2** — anon SELECT lockdown on ehow. DEFERRED until standalone retired.
+- [ ] **SKS anon-remediation (nspb)** — exact policy worklist in `cross-app-linkage-remediation-plan-2026-06-07.md` §7a. Separate from ehow work. SKS-live gated.
+
+**SKS roles / security-groups track (from 2026-06-07):**
+- [ ] **eq-roles PR #7** — merge → tag `v2.3.0` (unblocks eq-shell dep bump). *(Royce)*
+- [ ] **eq-shell** — converge `c2-shell-roles` + `sks-field-host` branches (Prompt A in `sks-live-sprint-2026-06-07.md`).
+- [ ] **Security groups Phase 2–5** — wire group perms into session, `AdminSecurityGroups` page, first real `user_security_groups` row for a SKS user.
+
+---
 
 ## Done (this session — 2026-06-01)
 

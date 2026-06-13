@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Products
 owner: Royce Milmlow
-last_updated: 2026-06-03
+last_updated: 2026-06-13
 scope: Live EQ products. Killed/deferred entries removed in 2026-05-04 refactor.
 read_priority: standard
 status: live
@@ -17,13 +17,13 @@ listed here — see `CLAUDE.md` "Killed / deferred" section, or
 
 ## EQ Solves — Field (LEAD MODULE)
 
-**Status:** Live. Current version **v3.5.3** on demo (shipped 2026-05-15); SKS prod still on **v3.4.73** — soak clock for v3.5.4 SKS port started 2026-05-15 (3–5 days clean demo soak per Q5 default). Phase 1 multi-tenancy live; Phase B+C role system soaked into prod 2026-05-13. Three sub-modules in active state: **Site Reports** (Prestart + Toolbox + Diary live; HUB shipped v3.5.2), **Tender Pipeline** (entire new workstream landed v3.4.79–v3.4.83), **Mobile-first home** (v3.5.0 staff + v3.5.1 supervisor tile screens live). Six PRs cleared from demo backlog 2026-05-15 (v3.5.1 → v3.5.2 → v3.5.3 + audit + CI chores + SEC2 design-only file). Melbourne scaling unblocker (S1 sliding-window queries) shipped as v3.5.3.
-**URL:** eq-solves-field.netlify.app (demo) / sks-nsw-labour.netlify.app (main = SKS prod)
-**Repo:** Milmlow/eq-field-app (private); `demo` → EQ Field demo, `main` → SKS prod
+**Status:** Live. Current version **v3.5.125** (2026-06-11). SKS Field active on ehow. v8 design pass complete 2026-06-09 (all 14 screens + Shell warmup). Security sprint complete 2026-06-09. Shell SSO fixed 2026-06-10 (eq-shell PR #306). SKS canonical DB full JWT coverage 2026-06-11 (PR #267 — 58 staff + 591 sites on ehow). EQ Service iframe loading fixed 2026-06-13 (eq-shell PR #334, 12s → 4s). Multi-tenant via DATA_JWT_ENABLED + per-tenant Supabase JWT.
+**URL:** eq-solves-field.netlify.app (EQ demo) / core.eq.solutions/sks/field (SKS prod via Shell) / field.sks.eq.solutions (SKS direct)
+**Repo:** eq-solutions/eq-field (private)
 **Working file:** index.html
-**Architecture:** PWA, URL-based tenant detection
-**Supabase project:** ktmjmdzqrogauaevbktn (eq-solves-field) — bypassed in demo mode
-**Deploy:** GitHub push → Netlify auto (per branch)
+**Architecture:** Multi-tenant PWA. URL-based tenant detection + Shell iframe with JWT handoff. EQ tenant → eq-canonical-internal (zaap, `zaapmfdkgedqupfjtchl`). SKS tenant → ehow (`ehowgjardagevnrluult`).
+**Supabase:** EQ live = `zaapmfdkgedqupfjtchl` (eq-canonical-internal/zaap). SKS live = `ehowgjardagevnrluult` (ehow). Old `ktmjmdzqrogauaevbktn` = cold backup (do not write).
+**Deploy:** GitHub push → Netlify auto (main branch → eq-solves-field demo site)
 
 **Strategic priority:** Lead module. Built for ourselves (SKS NSW) —
 no outside-validation gate (killed 2026-06-02).
@@ -114,17 +114,7 @@ no outside-validation gate (killed 2026-06-02).
 
 ## EQ Shell — PLATFORM (multi-module shell)
 
-**Status:** Phase 1.F + Sprint S3 polish shipped (2026-05-23). End-to-end live at
-`core.eq.solutions` — login → tenant home dashboard → Intake module at
-`/core/intake` (drop CSV → map → validate → commit via the `@eq/*`
-engine) and EQ Field surface mounted via iframe with HMAC handoff
-(no second PIN). The platform now reads as a real product at first glance:
-dashboard with live counts, activity feed, quick-action grid, proper
-skeleton loading, readable error states, role-gated admin nav.
-**Phase 2 sequencing is by the trust ladder + Royce's go** — the old
-GTM validation gate (5 outside-SKS subbies) is dead (killed 2026-06-02).
-Further modules build when the ladder calls for them, not on outside
-validation.
+**Status:** Live. Phase 1.F + Sprint S3 + Sprint 7 (EQ Service cutover) + v8 design pass shipped. EQ Service Shell SSO fixed 2026-06-10 (PR #306 — `COOKIE_AUTH = false`, TOKEN MODE always). EQ Service iframe loading fixed 2026-06-13 (PR #334 — fallback timer 12s → 4s). v8 warm-sand design pass applied 2026-06-09 (auth.css, App.css, MobileRecordsDrawer, MobileTabBar). Live at `core.eq.solutions` — login → tenant home → Field iframe (SKS) + Service iframe (SKS) + Intake + Cards. EQ Field surface mounts via JWT handoff (TOKEN MODE, no second PIN). **Phase 2 sequencing by trust ladder + Royce's go.** GTM gate dead (killed 2026-06-02).
 
 **URL:** `core.eq.solutions` (live, dog-food tenant for EQ Solutions
 itself). Per-tenant subdomain alias on a single Netlify project;

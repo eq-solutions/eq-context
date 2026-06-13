@@ -1,7 +1,7 @@
 ---
 title: Autonomous Sprint — State
 owner: Royce Milmlow
-last_updated: 2026-06-08
+last_updated: 2026-06-13
 scope: Per-repo + Supabase reality snapshot, CI guards, and known hazards for the sprint
 read_priority: critical
 status: live
@@ -32,6 +32,30 @@ status: live
 > **Bottom line: stop rebuilding the spine. Open code/infra work = B5 + F1 (both Royce-gated). Everything else verified done.**
 
 Snapshot 2026-05-30. **Verify before relying on the git/worktree lines** — they drift. The Supabase map + SKS-live flags are stable.
+
+> ## ⏩ POST-SPRINT UPDATE — 2026-06-13 (EQ Service iframe loading fixed)
+> - **EQ Service iframe fixed (eq-shell PR #334, merged + deployed 2026-06-13T00:44:57Z):** `ServiceIframe.tsx` fallback timer 12s → 4s. Root cause: stale OTP comment — TOKEN MODE handshake completes in ~2-3s; 12s timer restarted on every refresh, showing loading screen indefinitely. Sentry breadcrumbs added (`EQ_SERVICE_READY` received = info; fallback fired = warning). Service appears within ~4s at `core.eq.solutions/sks/service`.
+> - **Smoke test pending (Royce):** navigate to `/sks/service`, confirm dashboard loads within 5s.
+
+> ## ⏩ POST-SPRINT UPDATE — 2026-06-11 (v3.5.125 — SKS canonical DB full JWT coverage)
+> - **SKS Field data plane fixed (ehow):** SKS Field was showing all zeros + loading spinners after v3.5.120 cut-over. Root cause: 7 of 11 `app_data.field_*` views missing → PGRST205 on every data load. All 11 views created. `public.site_diaries` created (completes JWT_TABLES). `public.organisations` stub added (eliminates 404 boot noise). RLS WITH CHECK hardened on 14 write policies. `audit_log` RLS fixed (nspb UUID → correct SKS org_id). 109 legacy audit_log rows deleted.
+> - **Data state post-fix:** 58 staff · 591 sites · 0 roster rows (start fresh required).
+> - **Migration:** `supabase/migrations/20260611_sks_canonical_field_sync.sql` (idempotent). PR #267 merged + live.
+> - **Roster data entry pending** — ehow schedule/timesheets/leave are empty. Royce decision required.
+
+> ## ⏩ POST-SPRINT UPDATE — 2026-06-10 (EQ Service Shell SSO root cause — eq-shell PR #306)
+> - **Root cause found (was in Shell, not Service):** `COOKIE_AUTH = true` in `ServiceIframe.tsx` activated whenever `VITE_SERVICE_URL` ended in `.eq.solutions`. Cookie mode skips token minting; Shell restores from Supabase cookies without re-minting `eq_shell_session` — cookie absent at iframe-load → proxy.ts never calls shell-sso.
+> - **Fix:** `COOKIE_AUTH = false` → TOKEN MODE always. PR #306 merged, deploy `6a285d53` live.
+> - **TOKEN MODE flow (proven):** `token-exchange?aud=service` → Supabase JWT → `/shell#sh=<jwt>` → `/api/shell-auth` validates → `eq_shell_bridge=1` + redirect → `ShellReadySignal` fires `EQ_SERVICE_READY` → Shell reveals iframe.
+
+> ## ⏩ POST-SPRINT UPDATE — 2026-06-09 (v8 design pass + security sprint + Service SSO 4 bugs)
+> - **v8 design pass COMPLETE:** All 14 EQ Field screens updated (`styles/field-v8.css` + sidebar, dashboard, leave, timesheets, people, managers, roster, calendar, jobnumbers, apprentices, home, projects, whatsnew). PR #258 squash-merged. Live at eq-solves-field.netlify.app.
+> - **EQ Shell v8 warmup COMPLETE:** auth.css, App.css, MobileRecordsDrawer.css, MobileTabBar.css warmed from cool-gray (#F9FAFB) to warm sand (#F6F3EE/#EEECEA). Hub canvas correct. PRs #290 + #293 squash-merged.
+> - **Security sprint — ALL S0–S3 DONE:** 5 PRs merged across eq-shell, eq-solves-field, eq-solves-service. All items closed.
+> - **EQ Service Shell SSO — 4 bugs fixed (PRs #267–#270):** (1) edge runtime crypto failure — auth logic moved to Node.js API route; (2) wrong redirect hostname — `NEXT_PUBLIC_SITE_URL` used instead of `nextUrl.host`; (3) HMAC key mismatch — `EQ_SESSION_SALT` vs `EQ_SECRET_SALT` aligned; (4) proxy.ts infinite loop — `eq_shell_bridge=1` cookie checked to prevent re-entering SSO. Service deploy `6a27f277`.
+> - **Worker identity linker (GATE A) DONE** — PR #278 merged + deployed. Backfill run: 7/39 workers linked, 25 pending invite acceptance (expire 2026-06-15).
+> - **WS4 quote-job-consumer DONE** — canonical work-order spine built (`app_data.jobs` now wired).
+> - **EQ Field v3.5.119** — JS navy → ink/sky token sweep (5 files). PR #260 merged.
 
 > ## ⏩ POST-SPRINT UPDATE — 2026-06-02 (eq-canonical-internal LIVE as EQ Field tenant DB)
 > - **Registry flipped:** eq-canonical `organisations.supabase_url` for eq/demo-trades/melbourne now points to `zaapmfdkgedqupfjtchl` (eq-canonical-internal). All EQ Field operational data writes there.
