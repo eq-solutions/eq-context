@@ -1,0 +1,2023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EQ Suite — Environment Variable Catalog</title>
+<style>
+  :root {
+    --sky:    #3DA8D8;
+    --deep:   #2986B4;
+    --ice:    #EAF5FB;
+    --ink:    #1A1A2E;
+    --ink2:   #2D2D45;
+    --ink3:   #3E3E5E;
+    --muted:  #6B7280;
+    --border: #E5E7EB;
+    --bg:     #F9FAFB;
+    --white:  #FFFFFF;
+
+    /* Service colours */
+    --c-supabase:   #3ECF8E;
+    --c-sentry:     #A855F7;
+    --c-posthog:    #F97316;
+    --c-clarity:    #0078D4;
+    --c-resend:     #000000;
+    --c-anthropic:  #D97706;
+    --c-internal:   #6B7280;
+    --c-netlify:    #00C7B7;
+
+    /* Status */
+    --req:  #EF4444;
+    --opt:  #10B981;
+    --crit: #F59E0B;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* ── Header ── */
+  .header {
+    background: var(--ink);
+    color: var(--white);
+    padding: 32px 40px 28px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 2px solid var(--sky);
+  }
+  .header-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .header h1 {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: var(--white);
+  }
+  .header h1 span { color: var(--sky); }
+  .header-meta {
+    font-size: 12px;
+    color: #9CA3AF;
+    margin-top: 2px;
+  }
+  .search-wrap {
+    margin-left: auto;
+    position: relative;
+  }
+  .search-wrap input {
+    background: var(--ink2);
+    border: 1px solid var(--ink3);
+    color: var(--white);
+    border-radius: 8px;
+    padding: 8px 12px 8px 36px;
+    font-family: inherit;
+    font-size: 13px;
+    width: 260px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .search-wrap input:focus { border-color: var(--sky); }
+  .search-wrap input::placeholder { color: #6B7280; }
+  .search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6B7280;
+    font-size: 15px;
+  }
+
+  /* ── Layout ── */
+  .main {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 32px 40px 80px;
+  }
+
+  /* ── Alert banner ── */
+  .alert {
+    background: #FEF3C7;
+    border: 1px solid #F59E0B;
+    border-left: 4px solid #F59E0B;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 28px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .alert-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .alert-body { flex: 1; }
+  .alert-title { font-weight: 700; color: #92400E; font-size: 13px; margin-bottom: 4px; }
+  .alert-text { font-size: 12px; color: #78350F; line-height: 1.6; }
+  .alert-apps { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+
+  /* ── Legend ── */
+  .legend {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+    padding: 16px 20px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+  .legend-group { display: flex; flex-direction: column; gap: 8px; }
+  .legend-label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; }
+  .legend-items { display: flex; gap: 8px; flex-wrap: wrap; }
+  .legend-chip {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 11px; font-weight: 500;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: #F3F4F6;
+    color: var(--ink);
+  }
+  .legend-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .sep { width: 1px; background: var(--border); align-self: stretch; }
+
+  /* ── App section ── */
+  .app-section { margin-bottom: 40px; }
+  .app-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--border);
+  }
+  .app-icon {
+    width: 36px; height: 36px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .app-title { font-size: 16px; font-weight: 700; }
+  .app-subtitle { font-size: 12px; color: var(--muted); margin-top: 1px; }
+  .app-tags { display: flex; gap: 6px; margin-left: auto; flex-wrap: wrap; }
+
+  /* ── Table ── */
+  .table-wrap {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    overflow-x: auto;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  thead th {
+    background: #F3F4F6;
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    border-bottom: 1px solid var(--border);
+  }
+  tbody tr { border-bottom: 1px solid #F3F4F6; transition: background 0.1s; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #F9FAFB; }
+  tbody tr.hidden { display: none; }
+  td { padding: 10px 14px; vertical-align: top; }
+
+  /* var name */
+  .var-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  /* service badge */
+  .svc-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11px; font-weight: 600;
+    padding: 2px 7px; border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  /* status badge */
+  .status {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11px; font-weight: 600;
+    padding: 2px 7px; border-radius: 4px;
+    white-space: nowrap;
+  }
+  .status-required  { background: #FEE2E2; color: #991B1B; }
+  .status-optional  { background: #D1FAE5; color: #065F46; }
+  .status-critical  { background: #FEF3C7; color: #92400E; }
+
+  /* scope badge */
+  .scope {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 10px; font-weight: 500;
+    padding: 2px 6px; border-radius: 4px;
+    white-space: nowrap;
+    margin-right: 4px;
+  }
+  .scope-browser  { background: #EFF6FF; color: #1D4ED8; }
+  .scope-server   { background: #F5F3FF; color: #6D28D9; }
+  .scope-both     { background: #F0FDF4; color: #166534; }
+
+  /* blast cell */
+  .blast { font-size: 12px; color: var(--ink); }
+  .blast-none { color: var(--muted); font-style: italic; font-size: 12px; }
+  .blast-chain {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .blast-item {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 11px;
+  }
+  .blast-sev { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .sev-high   { background: #EF4444; }
+  .sev-med    { background: #F59E0B; }
+  .sev-low    { background: #10B981; }
+  .blast-app {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    background: #F3F4F6;
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: var(--ink3);
+  }
+
+  /* hardcoded warning */
+  .hardcoded-row td { background: #FFFBEB; }
+  .hardcoded-tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 10px; font-weight: 600;
+    padding: 2px 6px; border-radius: 4px;
+    background: #FEF3C7; color: #92400E;
+    margin-left: 6px;
+  }
+
+  /* cross-repo tag */
+  .cross-tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 10px; font-weight: 700;
+    padding: 2px 7px; border-radius: 4px;
+    background: #FEE2E2; color: #991B1B;
+    margin-left: 6px;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+
+  /* description */
+  .desc { font-size: 12px; color: var(--ink3); max-width: 320px; }
+  .desc-note { font-size: 11px; color: var(--muted); margin-top: 3px; font-style: italic; }
+
+  /* ── tag chip ── */
+  .chip {
+    display: inline-block;
+    font-size: 11px; font-weight: 500;
+    padding: 3px 9px; border-radius: 20px;
+    background: var(--ice); color: var(--deep);
+  }
+
+  /* ── section divider ── */
+  .section-label {
+    font-size: 11px; font-weight: 600; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.6px;
+    padding: 8px 14px;
+    background: #F9FAFB;
+    border-bottom: 1px solid #F3F4F6;
+  }
+
+  /* ── app icon colours ── */
+  .icon-shell   { background: #1A1A2E; color: #3DA8D8; }
+  .icon-field   { background: #0F4C2A; color: #3ECF8E; }
+  .icon-service { background: #1E3A5F; color: #60A5FA; }
+  .icon-cards   { background: #3B1F6B; color: #C4B5FD; }
+  .icon-intake  { background: #451A03; color: #FCD34D; }
+  .icon-sks     { background: #1F335C; color: #7C77B9; }
+
+  /* ── Secret tier badges ── */
+  .tier {
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700;
+    width: 22px; height: 18px;
+    border-radius: 3px;
+    margin-right: 5px;
+    flex-shrink: 0;
+    letter-spacing: 0;
+    vertical-align: middle;
+  }
+  .tier-t1 { background: #D1FAE5; color: #065F46; }
+  .tier-t2 { background: #FEF3C7; color: #92400E; }
+  .tier-t3 { background: #FEE2E2; color: #991B1B; border: 1px solid #FCA5A5; }
+
+  /* ── Advice callout ── */
+  .advice {
+    font-size: 11px; color: #1E40AF;
+    background: #EFF6FF;
+    border-left: 3px solid #3B82F6;
+    padding: 5px 8px;
+    border-radius: 0 4px 4px 0;
+    margin-top: 5px;
+    line-height: 1.5;
+  }
+  .advice-warn {
+    color: #92400E; background: #FFFBEB; border-left-color: #F59E0B;
+  }
+  .advice-danger {
+    color: #991B1B; background: #FEF2F2; border-left-color: #EF4444;
+  }
+  .gen-cmd {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    background: #F3F4F6;
+    padding: 2px 6px;
+    border-radius: 3px;
+    display: inline-block;
+    margin-top: 3px;
+    color: #374151;
+  }
+
+  /* ── Findings section ── */
+  .findings {
+    margin-bottom: 28px;
+  }
+  .findings-title {
+    font-size: 13px; font-weight: 700; color: var(--ink);
+    margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .findings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 10px;
+  }
+  .finding-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    border-left: 3px solid var(--border);
+  }
+  .finding-card.sev-high  { border-left-color: #EF4444; }
+  .finding-card.sev-med   { border-left-color: #F59E0B; }
+  .finding-card.sev-low   { border-left-color: #10B981; }
+  .finding-dim {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.6px; color: var(--muted); margin-bottom: 3px;
+  }
+  .finding-title {
+    font-size: 12px; font-weight: 700; color: var(--ink); margin-bottom: 5px;
+  }
+  .finding-body {
+    font-size: 11px; color: var(--ink3); line-height: 1.6;
+  }
+  .finding-action {
+    font-size: 11px; color: #1E40AF; margin-top: 6px;
+    padding-top: 6px; border-top: 1px solid #EFF6FF;
+    line-height: 1.5;
+  }
+  .finding-action strong { color: #1D4ED8; }
+
+  /* ── footer ── */
+  footer {
+    text-align: center;
+    padding: 24px;
+    font-size: 11px;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+  }
+
+  /* ── no results ── */
+  .no-results {
+    text-align: center;
+    padding: 40px;
+    color: var(--muted);
+    font-size: 13px;
+    display: none;
+  }
+  .no-results.visible { display: block; }
+
+  /* ── toc ── */
+  .toc {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+  .toc a {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 12px; font-weight: 500;
+    color: var(--ink);
+    text-decoration: none;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .toc a:hover { border-color: var(--sky); background: var(--ice); color: var(--deep); }
+  .toc-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  /* ── Decommissioned section ── */
+  .section-decommissioned { opacity: 0.65; }
+  .decommission-banner {
+    background: #FFF7ED;
+    border: 1px solid #FB923C;
+    border-left: 4px solid #FB923C;
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+    font-size: 12px;
+    color: #7C2D12;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .decommission-banner strong { font-weight: 700; }
+
+  /* ── Open Actions section ── */
+  .open-actions-section { margin-bottom: 40px; }
+  .open-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 10px;
+  }
+  .action-item {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    border-left: 3px solid var(--border);
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .action-item.ai-open   { border-left-color: #EF4444; }
+  .action-item.ai-quick  { border-left-color: #F59E0B; }
+  .action-item.ai-arch   { border-left-color: #6366F1; }
+  .action-item.ai-done   { border-left-color: #10B981; opacity: 0.7; }
+  .action-badge {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.6px; padding: 1px 6px; border-radius: 3px;
+    display: inline-block; width: fit-content;
+  }
+  .ai-open   .action-badge { background: #FEE2E2; color: #991B1B; }
+  .ai-quick  .action-badge { background: #FEF3C7; color: #92400E; }
+  .ai-arch   .action-badge { background: #EDE9FE; color: #4C1D95; }
+  .ai-done   .action-badge { background: #D1FAE5; color: #065F46; }
+  .action-title-text { font-size: 12px; font-weight: 700; color: var(--ink); }
+  .action-detail { font-size: 11px; color: var(--ink3); line-height: 1.5; margin-top: 2px; }
+  .action-where {
+    font-size: 10px; color: var(--muted);
+    margin-top: 4px; padding-top: 4px; border-top: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ── Resolved finding ── */
+  .finding-card.resolved {
+    opacity: 0.6;
+    border-left-color: #10B981;
+  }
+  .resolved-badge {
+    font-size: 10px; font-weight: 700; background: #D1FAE5; color: #065F46;
+    padding: 1px 6px; border-radius: 3px; margin-left: 6px;
+  }
+
+  @media (max-width: 900px) {
+    .header, .main { padding-left: 20px; padding-right: 20px; }
+    .search-wrap { margin-left: 0; width: 100%; }
+    .search-wrap input { width: 100%; }
+  }
+
+  /* ── Dashboard Checklist ── */
+  .site-cl-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 14px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+  .site-cl-header {
+    background: var(--ink);
+    color: var(--white);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .site-cl-name { font-size: 15px; font-weight: 700; color: var(--sky); }
+  .site-cl-url { font-size: 11px; color: #9CA3AF; }
+  .site-cl-count { margin-left: auto; font-size: 12px; font-weight: 700; color: #9CA3AF; transition: color 0.2s; }
+  .site-cl-body { padding: 16px 20px; }
+  .cl-group-label {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.4px; color: var(--muted); margin: 0 0 6px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .cl-group-label:not(:first-child) { margin-top: 16px; }
+  .cl-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 7px 10px; border-radius: 7px;
+    cursor: pointer; transition: background 0.12s;
+  }
+  .cl-row:hover { background: var(--bg); }
+  .cl-row input[type=checkbox] {
+    width: 16px; height: 16px; cursor: pointer;
+    accent-color: var(--sky); flex-shrink: 0;
+  }
+  .cl-varname {
+    font-family: 'Courier New', monospace; font-size: 12.5px;
+    color: var(--ink); flex: 1;
+  }
+  .cl-row.done .cl-varname { text-decoration: line-through; color: var(--muted); }
+  .cl-tag {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    padding: 2px 7px; border-radius: 4px; white-space: nowrap; flex-shrink: 0;
+  }
+  .cl-tag-secret  { background: #FEE2E2; color: #991B1B; }
+  .cl-tag-delete  { background: #FEF3C7; color: #92400E; }
+  .cl-tag-already { background: #D1FAE5; color: #065F46; }
+  .cl-tag-ctx     { background: #DBEAFE; color: #1E40AF; }
+  .cl-tag-rotate  { background: #FEF3C7; color: #92400E; border: 1px dashed #D97706; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div>
+      <h1><span>EQ</span> Suite — Environment Variable Catalog</h1>
+      <div class="header-meta">5 EQ apps (+ 1 decommissioning) · 60+ variables · blast-radius mapped · last updated 2026-06-13 · <span style="color:#22c55e">4/7 actions resolved</span> · <span style="color:#f59e0b">3 need manual steps (Netlify dashboard)</span></div>
+    </div>
+    <div class="search-wrap">
+      <span class="search-icon">⌕</span>
+      <input type="text" id="search" placeholder="Search vars, services, apps…" autocomplete="off">
+    </div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- ── Critical invariant alert ── -->
+  <div class="alert">
+    <div class="alert-icon">⚠️</div>
+    <div class="alert-body">
+      <div class="alert-title">CROSS-REPO INVARIANT — EQ_SECRET_SALT must be identical across all four active EQ Netlify sites</div>
+      <div class="alert-text">
+        If you rotate <code style="font-family:monospace;background:#FDE68A;padding:1px 4px;border-radius:3px;">EQ_SECRET_SALT</code>, all four EQ Netlify sites must be updated in the same deploy window.
+        Mismatch = silent auth failures. HMAC tokens signed by Shell won't verify in Field, and vice versa.
+        <strong>sks-nsw-labour</strong> is decommissioning — update it during rotation until cutover is complete.
+      </div>
+      <div class="alert-apps">
+        <span class="chip">eq-shell</span>
+        <span class="chip">eq-solves-field</span>
+        <span class="chip">eq-solves-service</span>
+        <span class="chip">eq-cards</span>
+        <span class="chip" style="opacity:0.5;text-decoration:line-through">sks-nsw-labour</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Critical Findings ── -->
+  <div class="findings">
+    <div class="findings-title">⚑ Critical Findings &amp; Advice <span style="font-size:11px;font-weight:400;color:var(--muted)">— from enterprise standards review · updated 2026-06-13</span></div>
+    <div class="findings-grid">
+
+      <div class="finding-card sev-high">
+        <div class="finding-dim">Security</div>
+        <div class="finding-title">No secret tier classification</div>
+        <div class="finding-body">Every var is tagged Required/Optional but nothing distinguishes a public PostHog key from <code style="font-family:monospace">SUPABASE_SERVICE_ROLE_KEY</code>. A deploy log leaking the anon key is a nuisance. The same leak for the service role key is a breach.</div>
+        <div class="finding-action"><strong>Action:</strong> Vars are now auto-tagged T1/T2/T3 in this catalog. T3 vars must never appear in logs, error responses, Sentry breadcrumbs, or Next.js error overlays. Add each T3 name to your Sentry <code style="font-family:monospace">beforeSend</code> scrub list.</div>
+      </div>
+
+      <div class="finding-card sev-high">
+        <div class="finding-dim">Security</div>
+        <div class="finding-title">Netlify preview deploys inherit T3 secrets</div>
+        <div class="finding-body">By default Netlify injects env vars into all contexts — production, deploy previews, and branch deploys. Any contributor who can open a PR can trigger a preview and exfiltrate <code style="font-family:monospace">SUPABASE_SERVICE_ROLE_KEY</code> or <code style="font-family:monospace">EQ_SECRET_SALT</code> via a Netlify Function.</div>
+        <div class="finding-action"><strong>Action:</strong> In Netlify → Site Settings → Environment Variables, scope all T3 vars to <em>Production</em> context only. Analytics (PostHog, Clarity, Sentry DSN) can stay on All Contexts. Resend key → production only (or use test-mode key for previews).</div>
+      </div>
+
+      <div class="finding-card sev-high">
+        <div class="finding-dim">Security</div>
+        <div class="finding-title">EQ_SECRET_SALT shared across 4 EQ sites amplifies blast radius</div>
+        <div class="finding-body">A single HMAC salt across Shell, Field, Service, and Cards means compromising any one site's Netlify env compromises HMAC integrity on all others simultaneously. sks-nsw-labour also holds the same salt but is decommissioning — blast radius shrinks to 4 sites at cutover.</div>
+        <div class="finding-action"><strong>Architecture fix:</strong> Derive per-app salts via HKDF from a root key — each app gets a unique salt, limiting compromise to one site. Until then: treat a salt rotation as a fleet-wide incident requiring simultaneous update across all 4 EQ Netlify sites (+ sks-nsw-labour until cutover). See Open Actions → Rotation runbook.</div>
+      </div>
+
+      <div class="finding-card sev-high">
+        <div class="finding-dim">Security</div>
+        <div class="finding-title">EQ_SERVICE_JWT_SECRET fallback collapses trust boundary</div>
+        <div class="finding-body">If unset, EQ Service silently uses <code style="font-family:monospace">SUPABASE_JWT_SECRET</code> for application-level JWTs. Tokens meant to be app-scoped can now be validated against Supabase's auth system and vice versa — if the app JWT key is compromised, an attacker can forge Supabase session tokens.</div>
+        <div class="finding-action"><strong>Action:</strong> Remove this fallback before production. Set <code style="font-family:monospace">EQ_SERVICE_JWT_SECRET</code> explicitly in all environments. Never share a signing key between two systems with different trust levels.</div>
+      </div>
+
+      <div class="finding-card sev-high">
+        <div class="finding-dim">Security</div>
+        <div class="finding-title">STAFF_CODE / MANAGER_CODE are security theatre</div>
+        <div class="finding-body">These are low-entropy shared PINs (e.g. <code style="font-family:monospace">2026</code>, <code style="font-family:monospace">SKSNSW</code>) known to every staff member. They are cataloged in plain text here. Storing them alongside <code style="font-family:monospace">SUPABASE_SERVICE_ROLE_KEY</code> creates false equivalence and a misleading security posture.</div>
+        <div class="finding-action"><strong>Action:</strong> Do not conflate with cryptographic secrets. Rotate after every staff departure. Migration path: per-user passkey or OTP before any public-facing deployment.</div>
+      </div>
+
+      <div class="finding-card sev-low">
+        <div class="finding-dim">Architecture</div>
+        <div class="finding-title">AUDIT_SB_URL destination — EQ Field ✓ confirmed <span class="resolved-badge">RESOLVED</span></div>
+        <div class="finding-body">EQ Field: confirmed in <strong>eq-solves-field</strong> (<code style="font-family:monospace">ktmjmdzqrogauaevbktn</code>) — 54 records, latest 2026-06-07, schema correct. eq-canonical-internal has the identical schema with 0 records — set up but nothing writes to it. sks-nsw-labour: verification deferred — app is decommissioning.</div>
+        <div class="finding-action"><strong>EQ Field: closed.</strong> SKS Labour: N/A — decommissioning. Open architecture decision: should eq-canonical-internal receive a copy of Field audit data for cross-app reporting? Currently 0 records, schema ready. Decide before building cross-app audit dashboards.</div>
+      </div>
+
+      <div class="finding-card sev-high">
+        <div class="finding-dim">Architecture</div>
+        <div class="finding-title">Hardcoded keys in EQ Field are unowned defects</div>
+        <div class="finding-body"><code style="font-family:monospace">CANONICAL_URL</code> and analytics keys are hardcoded in EQ Field source. No bundler = no env injection. Rotating these keys requires a code change and redeploy rather than a Netlify env update. sks-nsw-labour has the same issue but is decommissioning.</div>
+        <div class="finding-action"><strong>Remediation (EQ Field):</strong> Use a Netlify build plugin to generate a <code style="font-family:monospace">config.json</code> from env vars at build time, or a Netlify Function to serve config on first load. Owner: EQ Field maintainer. Priority: P1 before external user access.</div>
+      </div>
+
+      <div class="finding-card resolved sev-low">
+        <div class="finding-dim">Architecture</div>
+        <div class="finding-title">EQ Cards Flutter output — dart-defines verified T1-only <span class="resolved-badge">VERIFIED 2026-06-13</span></div>
+        <div class="finding-body">Verified CI workflow (<code style="font-family:monospace">.github/workflows/deploy.yml</code>): dart-defines include only <code style="font-family:monospace">SUPABASE_URL</code>, <code style="font-family:monospace">SUPABASE_ANON_KEY</code> (T1 public keys), <code style="font-family:monospace">SENTRY_DSN</code>, <code style="font-family:monospace">POSTHOG_API_KEY</code>, <code style="font-family:monospace">POSTHOG_HOST</code>, <code style="font-family:monospace">SHELL_BASE_URL</code> — all T1 tier. PostHog key in <code style="font-family:monospace">index.html</code> is a write-only client key (confirmed safe). No T2/T3 values compiled in.</div>
+        <div class="finding-action"><strong>Closed.</strong> Monitor CI: if any new <code style="font-family:monospace">--dart-define</code> is added, re-verify its tier before merging. SUPABASE_ANON_KEY is public by design — Supabase RLS is the access control layer.</div>
+      </div>
+
+      <div class="finding-card sev-med">
+        <div class="finding-dim">Operations</div>
+        <div class="finding-title">No rotation policy or runbook</div>
+        <div class="finding-body">No secret has a documented rotation cadence, rotation trigger, or step-by-step procedure. For EQ_SECRET_SALT, a rotation requires coordinating 5 Netlify sites — without a runbook, this will be executed incorrectly under pressure.</div>
+        <div class="finding-action"><strong>Cadence targets:</strong> API keys (Resend, Anthropic) → 90 days. Infra secrets (Supabase service role) → 180 days. All T3 → immediate on suspected compromise. Runbook: generate → update Netlify (production context) → redeploy → verify health → revoke old at source.</div>
+      </div>
+
+      <div class="finding-card sev-med">
+        <div class="finding-dim">Operations</div>
+        <div class="finding-title">CRON_SECRET Vault sync has no verification step</div>
+        <div class="finding-body"><code style="font-family:monospace">CRON_SECRET</code> must match the Supabase Vault value. A rotation of one without the other silently stops all scheduled jobs with no alert. There is currently no dead-man's-switch monitoring for cron job absence.</div>
+        <div class="finding-action"><strong>Action:</strong> After rotation: (1) update Netlify, (2) update Vault via <code style="font-family:monospace">vault.update_secret()</code>, (3) trigger cron manually + verify 200, (4) set PostHog alert for cron job absence within expected window.</div>
+      </div>
+
+      <div class="finding-card sev-med">
+        <div class="finding-dim">Operations</div>
+        <div class="finding-title">BATTLE_TEST_* vars are in production context</div>
+        <div class="finding-body">Test fixture UUIDs and emails are set as production env vars on EQ Service. If a code path accidentally reads them in production, it affects real data. They also clutter the production env with non-production config.</div>
+        <div class="finding-action"><strong>Action:</strong> Scope to <em>Branch deploys only</em> in Netlify. If battle tests must run against production data, use a dedicated test tenant UUID in the database — not an env var.</div>
+      </div>
+
+      <div class="finding-card sev-med">
+        <div class="finding-dim">Completeness</div>
+        <div class="finding-title">No format / validation requirements documented</div>
+        <div class="finding-body">Secrets with strict format requirements (<code style="font-family:monospace">CRON_SECRET</code> = 32-byte hex, <code style="font-family:monospace">SITE_CREDENTIALS_KEY</code> = ≥32 chars base64) have no generation commands documented. A wrong format produces a silent failure or runtime panic — not a helpful error.</div>
+        <div class="finding-action"><strong>Generate 32-byte hex:</strong> <code style="font-family:monospace">node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"</code><br><strong>Generate base64:</strong> <code style="font-family:monospace">node -e "console.log(require('crypto').randomBytes(48).toString('base64'))"</code></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Open Actions ── -->
+  <div class="open-actions-section">
+    <div class="findings-title">☑ Open Actions <span style="font-size:11px;font-weight:400;color:var(--muted)">— manual or code steps needed to reach green state</span></div>
+    <div class="open-actions-grid">
+
+      <div class="action-item ai-open">
+        <div class="action-badge">🔴 Critical — Netlify dashboard required (MCP limitation confirmed 2026-06-13)</div>
+        <div class="action-title-text">Scope T3 vars to Production-only + mark secret in Netlify</div>
+        <div class="action-detail">
+          <strong>MCP findings (2026-06-13):</strong> Netlify MCP <code>upsertEnvVar</code> with <code>newVarContext:"production"</code> converts a single "all"-context entry into <em>4 explicit context entries</em> (dev + branch + preview + production) — NOT production-only. The <code>envVarIsSecret:true</code> parameter is silently ignored. Exception: <code>GOOGLE_DOC_AI_CREDENTIALS</code> on eq-shell (builds-scoped) is now production-only ✓. Everything else requires the dashboard.<br><br>
+          <strong>Dashboard steps — for each var below:</strong> Site Settings → Environment Variables → click var → (1) toggle "Secret variable" → Save, then (2) click the var again → delete the dev / branch-deploy / deploy-preview context entries → Save.<br><br>
+          <strong>eq-shell (core.eq.solutions):</strong> Mark secret + delete non-prod entries: <code>EQ_PLATFORM_ADMIN_KEY</code>, <code>EQ_SESSION_SALT</code>, <code>EQ_SHELL_JWT_SECRET</code>, <code>SKS_SUPABASE_JWT_SECRET</code>, <code>CANONICAL_API_KEY_FIELD</code>, <code>QUOTES_CRON_SECRET</code>, <code>EQ_FIELD_HANDOFF_KEY</code>, <code>EQ_SERVICE_HANDOFF_KEY</code>, <code>EQ_QUOTES_HANDOFF_KEY</code>. Mark secret only (already secret, just delete non-prod entries): <code>SUPABASE_JWT_SECRET</code>, <code>SUPABASE_SERVICE_ROLE_KEY</code>. Mark secret only (already production-only): <code>GOOGLE_DOC_AI_CREDENTIALS</code> ✓ context done.<br><br>
+          <strong>eq-service (service.eq.solutions):</strong> Mark secret + delete non-prod entries: <code>EQ_PLATFORM_ADMIN_KEY</code>, <code>UNSUBSCRIBE_SECRET</code>, <code>EQ_SHELL_JWT_SECRET</code>, <code>EQ_SESSION_SALT</code>. Delete non-prod entries only (already secret): <code>SUPABASE_JWT_SECRET</code>, <code>SUPABASE_SERVICE_ROLE_KEY</code>, <code>CRON_SECRET</code>.<br><br>
+          <strong>eq-solves-field (eq-solves-field.netlify.app):</strong> Mark secret + delete non-prod entries: <code>EQ_SECRET_SALT</code>, <code>RESEND_API_KEY</code>, <code>SKS_JWT_SECRET</code>.<br><br>
+          <strong>eq-cards:</strong> Mark secret + delete non-prod entries: <code>EQ_SECRET_SALT</code>, <code>EQ_SESSION_SALT</code>, <code>SUPABASE_JWT_SECRET</code>, <code>SUPABASE_SERVICE_ROLE_KEY</code>.
+        </div>
+        <div class="action-where">4 sites: eq-shell · eq-solves-field · eq-solves-service · eq-cards — Netlify dashboard only (MCP cannot achieve production-only scoping or secret marking)</div>
+      </div>
+
+      <div class="action-item ai-open">
+        <div class="action-badge">🔴 Critical — security boundary</div>
+        <div class="action-title-text">Deploy EQ_SERVICE_JWT_SECRET then remove fallback</div>
+        <div class="action-detail">Generate a fresh secret: <code style="font-family:monospace">node -e "console.log(require('crypto').randomBytes(48).toString('base64'))"</code>. Set in eq-solves-service Netlify (Production). Once confirmed live, remove the <code style="font-family:monospace">|| process.env.SUPABASE_JWT_SECRET</code> fallback in <code style="font-family:monospace">lib/auth/service-jwt.ts:5</code> and update the error message on line 54.</div>
+        <div class="action-where">eq-solves-service · Netlify + code change</div>
+      </div>
+
+      <div class="action-item ai-quick">
+        <div class="action-badge">🟡 Quick win — Netlify dashboard, 2 minutes</div>
+        <div class="action-title-text">Scope BATTLE_TEST_* to Branch deploys only</div>
+        <div class="action-detail">In eq-solves-service Netlify dashboard: <strong>Site Settings → Environment Variables</strong> → click <code style="font-family:monospace">BATTLE_TEST_TENANT_ID</code>, <code style="font-family:monospace">BATTLE_TEST_USER_ID</code>, <code style="font-family:monospace">BATTLE_TEST_USER_EMAIL</code> → edit each → change scope from "All" to <strong>Branch deploys</strong> → Save. (Netlify MCP cannot safely change context without re-supplying the full value.)</div>
+        <div class="action-where">eq-solves-service · Netlify dashboard only</div>
+      </div>
+
+      <div class="action-item ai-done">
+        <div class="action-badge resolved-badge">✅ Runbook exists 2026-06-07</div>
+        <div class="action-title-text">CRON_SECRET rotation + verification procedure</div>
+        <div class="action-detail">Full rotation steps documented in <code style="font-family:monospace">eq-solves-service/docs/runbooks/secrets-rotation-and-scoping.md</code> §0.2. Steps: (1) generate <code>node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"</code>, (2) update Netlify env + mark secret + redeploy, (3) verify with <code>curl -X POST /api/cron/pre-visit-brief -H "Authorization: Bearer &lt;new&gt;"</code> → expect <code>{ ok: true, mode: "dry_run" }</code>. A 401 means functions haven't picked up the new value yet. PostHog alert for cron absence is the outstanding step — add a <code>cron_job_missed</code> alert for each expected window in PostHog.</div>
+        <div class="action-where">eq-solves-service/docs/runbooks/secrets-rotation-and-scoping.md §0.2</div>
+      </div>
+
+      <div class="action-item ai-done">
+        <div class="action-badge resolved-badge">✅ Runbook exists 2026-06-06</div>
+        <div class="action-title-text">EQ_SECRET_SALT fleet-rotation procedure</div>
+        <div class="action-detail">Full coordinated fleet-rotation runbook at <code style="font-family:monospace">eq-context/eq-secret-salt-rotation-runbook-2026-06-06.md</code>. Covers Method A (hard swap — recommended pre-onboarding) and Method B (zero-downtime dual-accept — for post go-live). Consumers: eq-shell, eq-solves-field, eq-solves-service, eq-cards. All 4 must be updated in a single window + redeployed. Verification: Shell → /sks/field SSO, Field direct PIN gate, Service SSO. Cross-reference: <code>security-secret-rotation-runbook-2026-05-31.md</code> for Phase 1 migration to Supabase scoped keys.</div>
+        <div class="action-where">eq-context/eq-secret-salt-rotation-runbook-2026-06-06.md</div>
+      </div>
+
+      <div class="action-item ai-done">
+        <div class="action-badge resolved-badge">✅ Decision 2026-06-13</div>
+        <div class="action-title-text">eq-canonical-internal audit_log — keep, wire in dedicated sprint</div>
+        <div class="action-detail"><strong>Decision: keep the schema, defer write-wiring.</strong> Rationale: AUDIT_SB_URL + AUDIT_SB_KEY are already configured on EQ Field's Netlify env — the infrastructure cost is paid. Dropping the schema means recreating it + re-adding env vars later. The 0-records state is correct: nothing writes to it yet because the Field audit write calls haven't been added. Action for the next cross-app reporting sprint: add a thin <code style="font-family:monospace">writeAuditToCanonical()</code> call in <code>eq-solves-field/netlify/functions/_shared/audit.js</code> (or equivalent) that dual-writes Field audit events to eq-canonical-internal alongside the local Field Supabase write. Not a gate for go-live.</div>
+        <div class="action-where">eq-canonical-internal (jvknxcmbtrfnxfrwfimn) — deferred to reporting sprint</div>
+      </div>
+
+      <div class="action-item ai-done">
+        <div class="action-badge resolved-badge">✅ Done 2026-06-13</div>
+        <div class="action-title-text">Add T3 scrub list to Sentry beforeSend hooks</div>
+        <div class="action-detail">T3 scrub added to all three server-side Sentry configs. <code style="font-family:monospace">eq-shell/netlify/functions/_shared/sentry.ts</code> — <code>beforeSend: scrubEvent</code> with full T3 list. <code>eq-solves-service/sentry.server.config.ts</code> — same pattern, Service-specific T3 vars. <code>eq-solves-service/sentry.edge.config.ts</code> — edge-available subset (EQ_SECRET_SALT, service role key, JWT secrets). <code>eq-solves-field/netlify/functions/_shared/sentry.js</code> — dependency-free <code>_scrubT3()</code> applied in <code>_send()</code> before envelope dispatch. Browser/client configs excluded by design — T3 vars are never in browser context.</div>
+        <div class="action-where">eq-shell · eq-solves-field · eq-solves-service (server + edge) · eq-cards pending</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Dashboard Checklist ── -->
+  <div style="margin-bottom:40px">
+    <div class="findings-title">
+      📋 Dashboard Checklist
+      <span style="font-size:11px;font-weight:400;color:var(--muted)"> — tick each item as you complete it · progress saved in your browser</span>
+    </div>
+
+    <div style="background:var(--ice);border:1px solid #bce0f5;border-radius:10px;padding:16px 20px;margin:16px 0 16px;font-size:13px;line-height:1.9">
+      <strong>For each item:</strong> Netlify → site → <strong>Site settings → Environment variables</strong> → search var name → ✏️ Edit<br>
+      &nbsp;&nbsp;<span class="cl-tag cl-tag-secret" style="display:inline-block;margin-right:4px">Mark secret</span> toggle <em>Secret variable</em> → Save<br>
+      &nbsp;&nbsp;<span class="cl-tag cl-tag-delete" style="display:inline-block;margin-right:4px">Delete non-prod</span> in the same modal, click the 🗑 trash icon on the <em>dev</em>, <em>branch-deploy</em>, and <em>deploy-preview</em> rows → Save<br>
+      &nbsp;&nbsp;<span class="cl-tag cl-tag-rotate" style="display:inline-block;margin-right:4px">⚠ Rotate</span> items flagged with this also need the key rotated in the external service first
+    </div>
+
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px">
+      <div id="cl-overall-text" style="font-size:13px;font-weight:700;color:var(--ink2);white-space:nowrap">0 / 26 complete</div>
+      <div style="flex:1;background:var(--border);border-radius:999px;height:8px">
+        <div id="cl-overall-bar" style="background:var(--sky);height:8px;border-radius:999px;width:0%;transition:width 0.35s ease"></div>
+      </div>
+    </div>
+
+    <!-- ── eq-shell ── -->
+    <div class="site-cl-card" id="site-shell">
+      <div class="site-cl-header">
+        <span class="site-cl-name">eq-shell</span>
+        <span class="site-cl-url">core.eq.solutions · Site ID: a3473f83-7c82-4f1e-872d-aa96eaa55172</span>
+        <span class="site-cl-count" id="count-shell">0 / 12</span>
+      </div>
+      <div class="site-cl-body">
+        <div class="cl-group-label">Mark secret + delete dev / branch-deploy / deploy-preview contexts</div>
+        <div class="cl-row"><input type="checkbox" data-key="sh-EQ_PLATFORM_ADMIN_KEY"><span class="cl-varname">EQ_PLATFORM_ADMIN_KEY</span><span class="cl-tag cl-tag-secret">Mark secret</span><span class="cl-tag cl-tag-delete">Delete non-prod</span></div>
+        <div class="cl-row"><input type="checkbox" data-key="sh-EQ_SESSION_SALT"><span class="cl-varname">EQ_SESSION_SALT</span><span class="cl-tag cl-tag-secret">Mark secret</span><span class="cl-tag cl-tag-delete">Delete non-prod</span></div>
+        <div class="cl-row"><input type="checkbox" data-key="sh-EQ_SHELL_JWT_SECRET"><span class="cl-varname">EQ_SHELL_JWT_SECRET</span><span class="cl-tag cl-tag-secret">Mark secret</span><span class="cl-tag cl-tag-delete">Delete non-prod</span></div>
+        <div class="cl-row"><input type="checkbox" data-key="sh-SKS_SUPABASE_JWT_SECRET"><span class="cl-varname">SKS_SUPABASE_JWT_SECRET</span><span class="cl-tag cl-tag-secret">Mark secret</span><span class="cl-tag cl-tag-delete">Delete non-prod</span></div>
+        <div class="cl-row"><input type="checkbox" data-key="sh-CANONICAL_API_KEY_FIELD"><span class="cl-varname">CANONICAL_API_KEY_FIELD</span><span class="cl-tag cl-tag-secret">Mark secret</span><span class="cl-tag cl-tag-delete">Delete non-prod</span></div>
+        <div class="cl-row"><input type="checkbox" data-key="sh-QUOTES_CRON_SECRET"><span class="cl-varname">QUOTES_CRON_SECRET</span><span class="cl-tag cl-tag-secret">Mark secret</span><span class="cl-tag cl-tag-delete">Delete non-prod</span></div>
+        <div class="cl-row"><input type="checkbox" data-key="sh-EQ_FIELD_HANDOFF_KEY"><span class="cl-varname">EQ_FIELD_HANDOFF_KEY</span><span class="cl-tag cl-tag-secret">Mark secret</span><span class="cl-tag cl-tag-delete">Delete non-prod</span></div>
+        <div class="cl-row"><input type="checkbox" data-key="sh-EQ_SERVICE_HANDOFF_KEY"><span class="cl-varname">EQ_SERVICE_HANDOFF_KEY</span><span class="cl-tag cl-tag-secret">Mark secret</span><span class="cl-tag cl-tag-delete">Delete non-prod</span></div>
+        <div class="cl-row"><input type="checkbox" data-key="sh-EQ_QUOTES_HANDOFF_KEY"><span class="cl-varname">EQ_QUOTES_HANDOFF_KEY</span><span class="cl-tag cl-tag-secret">Mark secret</span><span class="cl-tag cl-tag-delete">Delete non-prod</span></div>
+        <div class="cl-group-label">Delete non-prod contexts only <span class="cl-tag cl-tag-already">already secret ✓</span></div>
+        <div class="cl-row"><input type="checkbox" data-key="sh-SUPABASE_JWT_SECRET"><span class="cl-varname">SUPABASE_JWT_SECRET</span><span class="cl-tag cl-tag-delete">Delete non-prod</span></div>
+        <div class="cl-row"><input type="checkbox" data-key="sh-SUPABASE_SERVICE_ROLE_KEY"><span class="cl-varname">SUPABASE_SERVICE_ROLE_KEY</span><span class="cl-tag cl-tag-delete">Delete non-prod</span></div>
+        <div class="cl-group-label">Mark secret only <span class="cl-tag cl-tag-ctx">context ✓ production-only</span></div>
+        <div class="cl-row"><input type="checkbox" data-key="sh-GOOGLE_DOC_AI_CREDENTIALS"><span class="cl-varname">GOOGLE_DOC_AI_CREDENTIALS</span><span class="cl-tag cl-tag-secret">Mark secret</span></div>
+      </div>
+    </div>
+
+    <!-- ── eq-service ── -->
+    <div class="site-cl-card" id="site-service">
+      <div class="site-cl-header">
+        <span class="site-cl-name">eq-service</span>
+        <span class="site-cl-url">service.eq.solutions · Site ID: 6af7bce6-9d4c-4567-88fa-783abf5eb041</span>
+        <span class="site-cl-count" id="count-service">0 / 7</span>
+      </div>
+      <div class="site-cl-body">
+        <div class="cl-group-label">Mark secret + delete dev / branch-deploy / deploy-preview contexts</div>
+        <div class="cl-row"><input type="checkbox" data-key="sv-EQ_PLATFORM_ADMIN_KEY"><span class="cl-varname">EQ_PLATFORM_ADMIN_KEY</span><span class="cl-tag cl-tag-secret">Mark secret</span><span class="cl-tag cl-tag-delete">Delete non-prod</span></div>
+        <div class="cl-row"><input type="checkbox" data-key="sv-UNSUBSCRIBE_SECRET"><span class="cl-varname">UNSUBSCRIBE_SECRET</span><span class="cl-tag cl-tag-secret">Mark secret</span><span class="cl-tag cl-tag-delete">Delete non-prod</span></div>
+        <div class="cl-row"><input type="checkbox" data-key="sv-EQ_SHELL_JWT_SECRET"><span class="cl-varname">EQ_SHELL_JWT_SECRET</span><span class="cl-tag cl-tag-secret">Mark secret</span><span class="cl-tag cl-tag-delete">Delete non-prod</span></div>
+        <div class="cl-row"><input type="checkbox" data-key="sv-EQ_SESSION_SALT"><span class="cl-varname">EQ_SESSION_SALT</span><span class="cl-tag cl-tag-secret">Mark secret</span><span class="cl-tag cl-tag-delete">Delete non-prod</span></div>
+        <div class="cl-group-label">Delete non-prod contexts only <span class="cl-tag cl-tag-already">already secret ✓</span></div>
+        <div class="cl-row"><input type="checkbox" data-key="sv-SUPABASE_JWT_SECRET"><span class="cl-varname">SUPABASE_JWT_SECRET</span><span class="cl-tag cl-tag-delete">Delete non-prod</span></div>
+        <div class="cl-row"><input type="checkbox" data-key="sv-SUPABASE_SERVICE_ROLE_KEY"><span class="cl-varname">SUPABASE_SERVICE_ROLE_KEY</span><span class="cl-tag cl-tag-delete">Delete non-prod</span></div>
+        <div class="cl-row"><input type="checkbox" data-key="sv-CRON_SECRET"><span class="cl-varname">CRON_SECRET</span><span class="cl-tag cl-tag-delete">Delete non-prod</span></div>
+      </div>
+    </div>
+
+    <!-- ── eq-solves-field ── -->
+    <div class="site-cl-card" id="site-field">
+      <div class="site-cl-header">
+        <span class="site-cl-name">eq-solves-field</span>
+        <span class="site-cl-url">eq-solves-field.netlify.app · Site ID: 554a0f1f-d524-4677-98c6-08e7c1edc92b</span>
+        <span class="site-cl-count" id="count-field">0 / 3</span>
+      </div>
+      <div class="site-cl-body">
+        <div class="cl-group-label">Mark secret + delete dev / branch-deploy / deploy-preview contexts</div>
+        <div class="cl-row"><input type="checkbox" data-key="fi-EQ_SECRET_SALT"><span class="cl-varname">EQ_SECRET_SALT</span><span class="cl-tag cl-tag-secret">Mark secret</span><span class="cl-tag cl-tag-delete">Delete non-prod</span></div>
+        <div class="cl-row"><input type="checkbox" data-key="fi-RESEND_API_KEY"><span class="cl-varname">RESEND_API_KEY</span><span class="cl-tag cl-tag-secret">Mark secret</span><span class="cl-tag cl-tag-delete">Delete non-prod</span><span class="cl-tag cl-tag-rotate">⚠ rotate in Resend dashboard first</span></div>
+        <div class="cl-row"><input type="checkbox" data-key="fi-SKS_JWT_SECRET"><span class="cl-varname">SKS_JWT_SECRET</span><span class="cl-tag cl-tag-secret">Mark secret</span><span class="cl-tag cl-tag-delete">Delete non-prod</span></div>
+      </div>
+    </div>
+
+    <!-- ── eq-cards ── -->
+    <div class="site-cl-card" id="site-cards">
+      <div class="site-cl-header">
+        <span class="site-cl-name">eq-cards</span>
+        <span class="site-cl-url">Site ID: c1bf4b4d-3131-4dd6-977f-2c0dd5cc4d72</span>
+        <span class="site-cl-count" id="count-cards">0 / 4</span>
+      </div>
+      <div class="site-cl-body">
+        <div class="cl-group-label">Mark secret + delete dev / branch-deploy / deploy-preview contexts</div>
+        <div class="cl-row"><input type="checkbox" data-key="ca-EQ_SECRET_SALT"><span class="cl-varname">EQ_SECRET_SALT</span><span class="cl-tag cl-tag-secret">Mark secret</span><span class="cl-tag cl-tag-delete">Delete non-prod</span></div>
+        <div class="cl-row"><input type="checkbox" data-key="ca-EQ_SESSION_SALT"><span class="cl-varname">EQ_SESSION_SALT</span><span class="cl-tag cl-tag-secret">Mark secret</span><span class="cl-tag cl-tag-delete">Delete non-prod</span></div>
+        <div class="cl-row"><input type="checkbox" data-key="ca-SUPABASE_JWT_SECRET"><span class="cl-varname">SUPABASE_JWT_SECRET</span><span class="cl-tag cl-tag-secret">Mark secret</span><span class="cl-tag cl-tag-delete">Delete non-prod</span></div>
+        <div class="cl-row"><input type="checkbox" data-key="ca-SUPABASE_SERVICE_ROLE_KEY"><span class="cl-varname">SUPABASE_SERVICE_ROLE_KEY</span><span class="cl-tag cl-tag-secret">Mark secret</span><span class="cl-tag cl-tag-delete">Delete non-prod</span></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function () {
+    var TOTAL = 26;
+    var SITE_TOTALS = { shell: 12, service: 7, field: 3, cards: 4 };
+
+    function save(key, val) { try { localStorage.setItem('cl_' + key, val ? '1' : '0'); } catch (e) {} }
+    function load(key) { try { return localStorage.getItem('cl_' + key) === '1'; } catch (e) { return false; } }
+
+    function updateProgress() {
+      var done = 0;
+      document.querySelectorAll('.cl-row input[type=checkbox]').forEach(function (cb) { if (cb.checked) done++; });
+      var pct = TOTAL > 0 ? Math.round(done / TOTAL * 100) : 0;
+      var txt = document.getElementById('cl-overall-text');
+      var bar = document.getElementById('cl-overall-bar');
+      if (txt) txt.textContent = done + ' / ' + TOTAL + ' complete';
+      if (bar) bar.style.width = pct + '%';
+      Object.keys(SITE_TOTALS).forEach(function (site) {
+        var rows = document.querySelectorAll('#site-' + site + ' .cl-row input[type=checkbox]');
+        var n = 0; rows.forEach(function (r) { if (r.checked) n++; });
+        var el = document.getElementById('count-' + site);
+        if (el) { el.textContent = n + ' / ' + SITE_TOTALS[site]; el.style.color = n === SITE_TOTALS[site] ? '#10B981' : '#9CA3AF'; }
+      });
+    }
+
+    function bindRow(row) {
+      var cb = row.querySelector('input[type=checkbox]');
+      if (!cb) return;
+      if (load(cb.dataset.key)) { cb.checked = true; row.classList.add('done'); }
+      cb.addEventListener('change', function () {
+        row.classList.toggle('done', this.checked);
+        save(this.dataset.key, this.checked);
+        updateProgress();
+      });
+      row.addEventListener('click', function (e) {
+        if (e.target !== cb) { cb.checked = !cb.checked; cb.dispatchEvent(new Event('change')); }
+      });
+    }
+
+    function init() {
+      document.querySelectorAll('.cl-row').forEach(bindRow);
+      updateProgress();
+    }
+
+    if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', init); } else { init(); }
+  })();
+  </script>
+
+  <!-- ── Legend ── -->
+  <div class="legend">
+    <div class="legend-group">
+      <div class="legend-label">Service</div>
+      <div class="legend-items">
+        <div class="legend-chip"><div class="legend-dot" style="background:var(--c-supabase)"></div>Supabase</div>
+        <div class="legend-chip"><div class="legend-dot" style="background:var(--c-sentry)"></div>Sentry</div>
+        <div class="legend-chip"><div class="legend-dot" style="background:var(--c-posthog)"></div>PostHog</div>
+        <div class="legend-chip"><div class="legend-dot" style="background:var(--c-clarity)"></div>Clarity</div>
+        <div class="legend-chip"><div class="legend-dot" style="background:var(--c-resend)"></div>Resend</div>
+        <div class="legend-chip"><div class="legend-dot" style="background:var(--c-anthropic)"></div>Anthropic</div>
+        <div class="legend-chip"><div class="legend-dot" style="background:var(--c-netlify)"></div>Netlify</div>
+        <div class="legend-chip"><div class="legend-dot" style="background:var(--c-internal)"></div>Internal</div>
+      </div>
+    </div>
+    <div class="sep"></div>
+    <div class="legend-group">
+      <div class="legend-label">Status</div>
+      <div class="legend-items">
+        <span class="status status-required">Required</span>
+        <span class="status status-critical">Critical</span>
+        <span class="status status-optional">Optional</span>
+      </div>
+    </div>
+    <div class="sep"></div>
+    <div class="legend-group">
+      <div class="legend-label">Scope</div>
+      <div class="legend-items">
+        <span class="scope scope-browser">Browser</span>
+        <span class="scope scope-server">Server</span>
+        <span class="scope scope-both">Both</span>
+      </div>
+    </div>
+    <div class="sep"></div>
+    <div class="legend-group">
+      <div class="legend-label">Secret Tier</div>
+      <div class="legend-items">
+        <div class="legend-chip"><span class="tier tier-t1">T1</span> Public-safe (browser ok)</div>
+        <div class="legend-chip"><span class="tier tier-t2">T2</span> Sensitive (server, non-destructive)</div>
+        <div class="legend-chip"><span class="tier tier-t3">T3</span> Privileged (bypasses RLS / signs tokens / encrypts)</div>
+      </div>
+    </div>
+    <div class="sep"></div>
+    <div class="legend-group">
+      <div class="legend-label">Risk</div>
+      <div class="legend-items">
+        <div class="legend-chip"><div class="legend-dot sev-high"></div>High blast</div>
+        <div class="legend-chip"><div class="legend-dot sev-med"></div>Med blast</div>
+        <div class="legend-chip"><div class="legend-dot sev-low"></div>Low blast</div>
+        <span class="hardcoded-tag">⚠ Hardcoded</span>
+        <span class="cross-tag">🔗 Cross-repo</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TOC ── -->
+  <div class="toc">
+    <a href="#shell"><div class="toc-dot" style="background:#3DA8D8"></div>EQ Shell</a>
+    <a href="#field"><div class="toc-dot" style="background:#3ECF8E"></div>EQ Field</a>
+    <a href="#service"><div class="toc-dot" style="background:#60A5FA"></div>EQ Service</a>
+    <a href="#cards"><div class="toc-dot" style="background:#C4B5FD"></div>EQ Cards</a>
+    <a href="#intake"><div class="toc-dot" style="background:#FCD34D"></div>EQ Intake</a>
+    <a href="#sks"><div class="toc-dot" style="background:#7C77B9"></div>SKS NSW Labour</a>
+  </div>
+
+  <!-- ── Supabase project reference ── -->
+  <div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:16px 20px;margin-bottom:28px;">
+    <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:10px;">Supabase Project IDs — verified 2026-06-13</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px;font-size:12px;">
+      <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:#F9FAFB;border-radius:6px;border:1px solid #F3F4F6;">
+        <div style="width:8px;height:8px;border-radius:50%;background:#3ECF8E;flex-shrink:0"></div>
+        <div><strong>eq-canonical</strong> — browser control plane<br><code style="font-family:monospace;font-size:10px;color:var(--muted)">jvknxcmbtrfnxfrwfimn</code></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:#F9FAFB;border-radius:6px;border:1px solid #F3F4F6;">
+        <div style="width:8px;height:8px;border-radius:50%;background:#3ECF8E;flex-shrink:0"></div>
+        <div><strong>eq-canonical-internal</strong> — server-only tenant data plane<br><code style="font-family:monospace;font-size:10px;color:var(--muted)">zaapmfdkgedqupfjtchl</code> <span style="font-size:10px;color:#F59E0B">⚠ audit_log has schema but 0 records</span></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:#F9FAFB;border-radius:6px;border:1px solid #F3F4F6;">
+        <div style="width:8px;height:8px;border-radius:50%;background:#3ECF8E;flex-shrink:0"></div>
+        <div><strong>eq-solves-field</strong> — Field app + audit log (54 records)<br><code style="font-family:monospace;font-size:10px;color:var(--muted)">ktmjmdzqrogauaevbktn</code></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:#F9FAFB;border-radius:6px;border:1px solid #F3F4F6;">
+        <div style="width:8px;height:8px;border-radius:50%;background:#3ECF8E;flex-shrink:0"></div>
+        <div><strong>eq-solves-service-dev</strong> — Service dev/staging<br><code style="font-family:monospace;font-size:10px;color:var(--muted)">urjhmkhbgaxrofurpbgc</code></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:#F9FAFB;border-radius:6px;border:1px solid #F3F4F6;">
+        <div style="width:8px;height:8px;border-radius:50%;background:#7C77B9;flex-shrink:0"></div>
+        <div><strong>sks-canonical</strong> — SKS tenant data plane<br><code style="font-family:monospace;font-size:10px;color:var(--muted)">ehowgjardagevnrluult</code></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:#FEF9EC;border-radius:6px;border:1px solid #FDE68A;">
+        <div style="width:8px;height:8px;border-radius:50%;background:#7C77B9;flex-shrink:0"></div>
+        <div><strong>sks-labour</strong> — SKS Labour app (gated: SKS live)<br><code style="font-family:monospace;font-size:10px;color:var(--muted)">nspbmirochztcjijmcrx</code></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="no-results" id="no-results">No variables match your search.</div>
+
+  <!-- ══════════════════════════════════════════════
+       EQ SHELL
+  ═══════════════════════════════════════════════ -->
+  <div class="app-section" id="shell">
+    <div class="app-header">
+      <div class="app-icon icon-shell">🐚</div>
+      <div>
+        <div class="app-title">EQ Shell</div>
+        <div class="app-subtitle">eq-shell · core.eq.solutions · Netlify (Vite + Netlify Functions)</div>
+      </div>
+      <div class="app-tags">
+        <span class="chip">19 vars</span>
+        <span class="chip">.env.example ✓</span>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Variable</th>
+            <th>Service</th>
+            <th>Status</th>
+            <th>Scope</th>
+            <th>Description</th>
+            <th>Blast Radius</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="data-row" data-app="shell" data-text="VITE_SUPABASE_URL supabase shell">
+            <td><span class="var-name">VITE_SUPABASE_URL</span></td>
+            <td><span class="svc-badge" style="background:#D1FAE5;color:#065F46"><div class="legend-dot" style="background:var(--c-supabase);display:inline-block;margin-right:3px"></div>Supabase</span></td>
+            <td><span class="status status-required">Required</span></td>
+            <td><span class="scope scope-browser">Browser</span></td>
+            <td class="desc">eq-canonical project URL. Points to <code style="font-family:monospace;font-size:11px">jvknxcmbtrfnxfrwfimn.supabase.co</code>
+              <div class="desc-note">eq-canonical = browser control plane. NOT eq-canonical-internal.</div>
+            </td>
+            <td>
+              <div class="blast-chain">
+                <div class="blast-item"><div class="blast-sev sev-high"></div><span class="blast-app">shell</span> Auth breaks — no login, no session</div>
+                <div class="blast-item"><div class="blast-sev sev-high"></div><span class="blast-app">field</span> Shell iframe handoff fails → Field won't load</div>
+                <div class="blast-item"><div class="blast-sev sev-high"></div><span class="blast-app">cards</span> Onboarding broken</div>
+              </div>
+            </td>
+          </tr>
+          <tr class="data-row" data-app="shell" data-text="VITE_SUPABASE_ANON_KEY supabase shell">
+            <td><span class="var-name">VITE_SUPABASE_ANON_KEY</span></td>
+            <td><span class="svc-badge" style="background:#D1FAE5;color:#065F46"><div class="legend-dot" style="background:var(--c-supabase);display:inline-block;margin-right:3px"></div>Supabase</span></td>
+            <td><span class="status status-required">Required</span></td>
+            <td><span class="scope scope-browser">Browser</span></td>
+            <td class="desc">Anon/public JWT for eq-canonical. Row-Level Security enforces access.</td>
+            <td>
+              <div class="blast-chain">
+                <div class="blast-item"><div class="blast-sev sev-high"></div><span class="blast-app">shell</span> All Supabase client calls fail</div>
+              </div>
+            </td>
+          </tr>
+          <tr class="data-row" data-app="shell" data-text="SUPABASE_URL supabase shell server">
+            <td><span class="var-name">SUPABASE_URL</span></td>
+            <td><span class="svc-badge" style="background:#D1FAE5;color:#065F46"><div class="legend-dot" style="background:var(--c-supabase);display:inline-block;margin-right:3px"></div>Supabase</span></td>
+            <td><span class="status status-required">Required</span></td>
+            <td><span class="scope scope-server">Server</span></td>
+            <td class="desc">Server-side Supabase URL for Netlify Functions. Same project as VITE_ variant.</td>
+            <td>
+              <div class="blast-chain">
+                <div class="blast-item"><div class="blast-sev sev-high"></div><span class="blast-app">shell</span> OTP send, verify-pin, session-create functions fail</div>
+              </div>
+            </td>
+          </tr>
+          <tr class="data-row" data-app="shell" data-text="SUPABASE_SERVICE_ROLE_KEY supabase shell server">
+            <td><span class="var-name">SUPABASE_SERVICE_ROLE_KEY</span></td>
+            <td><span class="svc-badge" style="background:#D1FAE5;color:#065F46"><div class="legend-dot" style="background:var(--c-supabase);display:inline-block;margin-right:3px"></div>Supabase</span></td>
+            <td><span class="status status-required">Required</span></td>
+            <td><span class="scope scope-server">Server</span></td>
+            <td class="desc">Bypasses RLS. Used in server functions only. Never expose to browser.
+              <div class="advice advice-danger">Never log. Exclude from Sentry <code style="font-family:monospace">beforeSend</code>. Rotate every 180 days — revoke old key in Supabase dashboard after redeploy confirms working. Netlify context: production only.</div>
+            </td>
+            <td>
+              <div class="blast-chain">
+                <div class="blast-item"><div class="blast-sev sev-high"></div><span class="blast-app">shell</span> Auth server functions cannot write sessions or verify workers</div>
+              </div>
+            </td>
+          </tr>
+          <tr class="data-row" data-app="shell" data-text="EQ_SECRET_SALT internal shell cross-repo hmac">
+            <td>
+              <span class="var-name">EQ_SECRET_SALT</span>
+              <span class="cross-tag">🔗 Cross-repo</span>
+            </td>
+            <td><span class="svc-badge" style="background:#F3F4F6;color:#374151"><div class="legend-dot" style="background:var(--c-internal);display:inline-block;margin-right:3px"></div>Internal</span></td>
+            <td><span class="status status-critical">Critical</span></td>
+            <td><span class="scope scope-server">Server</span></td>
+            <td class="desc">Shared HMAC signing key. Must be <strong>identical</strong> in Shell, Field, Service, Cards, and SKS Labour.
+              <div class="desc-note">Rotate all five simultaneously or auth tokens become invalid cross-app.</div>
+              <div class="advice advice-danger">T3 — treat rotation as a fleet-wide incident. Generate: <span class="gen-cmd">node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"</span>. Netlify context: production only on all 5 sites. Architecture debt: migrate to per-app HKDF-derived salts to limit blast radius.</div>
+            </td>
+            <td>
+              <div class="blast-chain">
+                <div class="blast-item"><div class="blast-sev sev-high"></div><span class="blast-app">shell→field</span> Worker token verification fails silently</div>
+                <div class="blast-item"><div class="blast-sev sev-high"></div><span class="blast-app">shell→service</span> Service JWT handoff invalid</div>
+                <div class="blast-item"><div class="blast-sev sev-high"></div><span class="blast-app">shell→cards</span> Card intake SSO broken</div>
+              </div>
+            </td>
+          </tr>
+          <tr class="data-row" data-app="shell" data-text="SUPABASE_JWT_SECRET supabase shell server jwt">
+            <td><span class="var-name">SUPABASE_JWT_SECRET</span></td>
+            <td><span class="svc-badge" style="background:#D1FAE5;color:#065F46"><div class="legend-dot" style="background:var(--c-supabase);display:inline-block;margin-right:3px"></div>Supabase</span></td>
+            <td><span class="status status-required">Required</span></td>
+            <td><span class="scope scope-server">Server</span></td>
+            <td class="desc">Supabase JWT signing secret. Used to mint and verify session cookies server-side.
+              <div class="advice advice-danger">Never log or expose in error responses. Netlify context: production only. Do not share with application-level JWT signing — use EQ_SERVICE_JWT_SECRET for that.</div>
+            </td>
+            <td>
+              <div class="blast-chain">
+                <div class="blast-item"><div class="blast-sev sev-high"></div><span class="blast-app">shell</span> Session cookie verification fails — forced logout</div>
+              </div>
+            </td>
+          </tr>
+          <tr class="data-row" data-app="shell" data-text="EQ_EMAIL_PROVIDER resend email shell">
+            <td><span class="var-name">EQ_EMAIL_PROVIDER</span></td>
+            <td><span class="svc-badge" style="background:#F3F4F6;color:#374151"><div class="legend-dot" style="background:var(--c-internal);display:inline-block;margin-right:3px"></div>Internal</span></td>
+            <td><span class="status status-optional">Optional</span></td>
+            <td><span class="scope scope-server">Server</span></td>
+            <td class="desc">Email provider selector. Unset = log-only fallback (dev mode).
+              <div class="desc-note">Set to <code style="font-family:monospace">resend</code> for transactional emails in production.</div>
+            </td>
+            <td><span class="blast-none">Logs only if unset — no crash</span></td>
+          </tr>
+          <tr class="data-row" data-app="shell" data-text="RESEND_API_KEY resend email shell">
+            <td><span class="var-name">RESEND_API_KEY</span></td>
+            <td><span class="svc-badge" style="background:#F3F4F6;color:#111"><div class="legend-dot" style="background:var(--c-resend);display:inline-block;margin-right:3px"></div>Resend</span></td>
+            <td><span class="status status-optional">Optional</span></td>
+            <td><span class="scope scope-server">Server</span></td>
+            <td class="desc">Resend API key for transactional email (OTP, invites). Required if EQ_EMAIL_PROVIDER=resend.</td>
+            <td>
+              <div class="blast-chain">
+                <div class="blast-item"><div class="blast-sev sev-med"></div><span class="blast-app">shell</span> OTP emails fail → workers can't log in via email</div>
+              </div>
+            </td>
+          </tr>
+          <tr class="data-row" data-app="shell" data-text="EMAIL_FROM resend email shell">
+            <td><span class="var-name">EMAIL_FROM</span></td>
+            <td><span class="svc-badge" style="background:#F3F4F6;color:#111"><div class="legend-dot" style="background:var(--c-resend);display:inline-block;margin-right:3px"></div>Resend</span></td>
+            <td><span class="status status-optional">Optional</span></td>
+            <td><span class="scope scope-server">Server</span></td>
+            <td class="desc">From address override.
+              <div class="desc-note">Default: <code style="font-family:monospace">EQ Solutions &lt;noreply@eq.solutions&gt;</code></div>
+            </td>
+            <td><span class="blast-none">Cosmetic only</span></td>
+          </tr>
+          <tr class="data-row" data-app="shell" data-text="VITE_SENTRY_DSN sentry shell browser">
+            <td><span class="var-name">VITE_SENTRY_DSN</span></td>
+            <td><span class="svc-badge" style="background:#F3E8FF;color:#6B21A8"><div class="legend-dot" style="background:var(--c-sentry);display:inline-block;margin-right:3px"></div>Sentry</span></td>
+            <td><span class="status status-optional">Optional</span></td>
+            <td><span class="scope scope-browser">Browser</span></td>
+            <td class="desc">Browser error reporting. Project: <code style="font-family:monospace">eq-shell</code>, org: <code style="font-family:monospace">eq-solutions</code>, DE region.</td>
+            <td><span class="blast-none">Silent — errors untracked if unset</span></td>
+          </tr>
+          <tr class="data-row" data-app="shell" data-text="VITE_SENTRY_ENVIRONMENT sentry shell">
+            <td><span class="var-name">VITE_SENTRY_ENVIRONMENT</span></td>
+            <td><span class="svc-badge" style="background:#F3E8FF;color:#6B21A8"><div class="legend-dot" style="background:var(--c-sentry);display:inline-block;margin-right:3px"></div>Sentry</span></td>
+            <td><span class="status status-optional">Optional</span></td>
+            <td><span class="scope scope-browser">Browser</span></td>
+            <td class="desc">Environment tag on Sentry events.
+              <div class="desc-note">Default: <code style="font-family:monospace">import.meta.env.MODE</code></div>
+            </td>
+            <td><span class="blast-none">Cosmetic only</span></td>
+          </tr>
+          <tr class="data-row" data-app="shell" data-text="VITE_SENTRY_RELEASE sentry shell">
+            <td><span class="var-name">VITE_SENTRY_RELEASE</span></td>
+            <td><span class="svc-badge" style="background:#F3E8FF;color:#6B21A8"><div class="legend-dot" style="background:var(--c-sentry);display:inline-block;margin-right:3px"></div>Sentry</span></td>
+            <td><span class="status status-optional">Optional</span></td>
+            <td><span class="scope scope-browser">Browser</span></td>
+            <td class="desc">Git SHA for release tracking. Set by CI.</td>
+            <td><span class="blast-none">Affects source map matching only</span></td>
+          </tr>
+          <tr class="data-row" data-app="shell" data-text="SENTRY_DSN sentry shell server">
+            <td><span class="var-name">SENTRY_DSN</span></td>
+            <td><span class="svc-badge" style="background:#F3E8FF;color:#6B21A8"><div class="legend-dot" style="background:var(--c-sentry);display:inline-block;margin-right:3px"></div>Sentry</span></td>
+            <td><span class="status status-optional">Optional</span></td>
+            <td><span class="scope scope-server">Server</span></td>
+            <td class="desc">Server-side Sentry DSN for Netlify Functions errors.</td>
+            <td><span class="blast-none">Silent — server errors untracked if unset</span></td>
+          </tr>
+          <tr class="data-row" data-app="shell" data-text="VITE_POSTHOG_KEY posthog shell analytics">
+            <td><span class="var-name">VITE_POSTHOG_KEY</span></td>
+            <td><span class="svc-badge" style="background:#FFEDD5;color:#9A3412"><div class="legend-dot" style="background:var(--c-posthog);display:inline-block;margin-right:3px"></div>PostHog</span></td>
+            <td><span class="status status-optional">Optional</span></td>
+            <td><span class="scope scope-browser">Browser</span></td>
+            <td class="desc">PostHog EU analytics key. Separate key per app (EQ vs SKS).</td>
+            <td><span class="blast-none">Analytics blind if unset — no crash</span></td>
+          </tr>
+          <tr class="data-row" data-app="shell" data-text="VITE_POSTHOG_HOST posthog shell">
+            <td><span class="var-name">VITE_POSTHOG_HOST</span></td>
+            <td><span class="svc-badge" style="background:#FFEDD5;color:#9A3412"><div class="legend-dot" style="background:var(--c-posthog);display:inline-block;margin-right:3px"></div>PostHog</span></td>
+            <td><span class="status status-optional">Optional</span></td>
+            <td><span class="scope scope-browser">Browser</span></td>
+            <td class="desc">PostHog host.
+              <div class="desc-note">Default: <code style="font-family:monospace">https://eu.i.posthog.com</code></div>
+            </td>
+            <td><span class="blast-none">Cosmetic / EU data residency</span></td>
+          </tr>
+          <tr class="data-row" data-app="shell" data-text="VITE_CLARITY_PROJECT_ID clarity shell">
+            <td><span class="var-name">VITE_CLARITY_PROJECT_ID</span></td>
+            <td><span class="svc-badge" style="background:#DBEAFE;color:#1E40AF"><div class="legend-dot" style="background:var(--c-clarity);display:inline-block;margin-right:3px"></div>Clarity</span></td>
+            <td><span class="status status-optional">Optional</span></td>
+            <td><span class="scope scope-browser">Browser</span></td>
+            <td class="desc">Microsoft Clarity session recording project ID.</td>
+            <td><span class="blast-none">Session replay blind if unset</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════
+       EQ FIELD
+  ═══════════════════════════════════════════════ -->
+  <div class="app-section" id="field">
+    <div class="app-header">
+      <div class="app-icon icon-field">🏗</div>
+      <div>
+        <div class="app-title">EQ Field</div>
+        <div class="app-subtitle">eq-solves-field · eq-solves-field.netlify.app (demo) · Plain HTML/JS — no bundler</div>
+      </div>
+      <div class="app-tags">
+        <span class="chip">10 vars</span>
+        <span class="chip" style="background:#FEF3C7;color:#92400E">⚠ Hardcoded analytics</span>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Variable</th>
+            <th>Service</th>
+            <th>Status</th>
+            <th>Scope</th>
+            <th>Description</th>
+            <th>Blast Radius</th>
+          </tr>
+        </thead>
+        <tbody>
+          <div class="section-label">Netlify Functions (set in Netlify dashboard)</div>
+          <tr class="data-row" data-app="field" data-text="EQ_SECRET_SALT internal field cross-repo hmac">
+            <td>
+              <span class="var-name">EQ_SECRET_SALT</span>
+              <span class="cross-tag">🔗 Cross-repo</span>
+            </td>
+            <td><span class="svc-badge" style="background:#F3F4F6;color:#374151"><div class="legend-dot" style="background:var(--c-internal);display:inline-block;margin-right:3px"></div>Internal</span></td>
+            <td><span class="status status-critical">Critical</span></td>
+            <td><span class="scope scope-server">Server</span></td>
+            <td class="desc">Must match eq-shell, eq-solves-service, eq-cards exactly. See alert above.</td>
+            <td>
+              <div class="blast-chain">
+                <div class="blast-item"><div class="blast-sev sev-high"></div><span class="blast-app">field</span> verify-pin function rejects all worker tokens</div>
+              </div>
+            </td>
+          </tr>
+          <tr class="data-row" data-app="field" data-text="STAFF_CODE pin field netlify">
+            <td><span class="var-name">STAFF_CODE</span></td>
+            <td><span class="svc-badge" style="background:#F3F4F6;color:#374151"><div class="legend-dot" style="background:var(--c-internal);display:inline-block;margin-right:3px"></div>Internal</span></td>
+            <td><span class="status status-required">Required</span></td>
+            <td><span class="scope scope-server">Server</span></td>
+            <td class="desc">Staff PIN code. Per-tenant: EQ=<code style="font-family:monospace">demo</code>, SKS=<code style="font-family:monospace">2026</code>.
+              <div class="desc-note">Different value per Netlify site. Do not share across EQ ↔ SKS.</div>
+              <div class="advice advice-warn">Low-entropy shared PIN — this is authentication theatre, not cryptographic security. It is known to all staff and cataloged in plain text here. Rotate after every staff departure. Migration target: per-user passkey or OTP before any external deployment.</div>
+            </td>
+            <td>
+              <div class="blast-chain">
+                <div class="blast-item"><div class="blast-sev sev-high"></div><span class="blast-app">field</span> All staff logins rejected</div>
+              </div>
+            </td>
+          </tr>
+          <tr class="data-row" data-app="field" data-text="MANAGER_CODE pin field netlify">
+            <td><span class="var-name">MANAGER_CODE</span></td>
+            <td><span class="svc-badge" style="background:#F3F4F6;color:#374151"><div class="legend-dot" style="background:var(--c-internal);display:inline-block;margin-right:3px"></div>Internal</span></td>
+            <td><span class="status status-required">Required</span></td>
+            <td><span class="scope scope-server">Server</span></td>
+            <td class="desc">Supervisor/manager PIN. Per-tenant: EQ=<code style="font-family:monospace">demo1234</code>, SKS=<code style="font-family:monospace">SKSNSW</code>.</td>
+            <td>
+              <div class="blast-chain">
+                <div class="blast-item"><div class="blast-sev sev-high"></div><span class="blast-app">field</span> Manager access denied</div>
+              </div>
+            </td>
+          </tr>
+          <tr class="data-row" data-app="field" data-text="AUDIT_SB_URL supabase field audit">
+            <td><span class="var-name">AUDIT_SB_URL</span></td>
+            <td><span class="svc-badge" style="background:#D1FAE5;color:#065F46"><div class="legend-dot" style="background:var(--c-supabase);display:inline-block;margin-right:3px"></div>Supabase</span></td>
+            <td><span class="status status-required">Required</span></td>
+            <td><span class="scope scope-server">Server</span></td>
+            <td class="desc">Supabase URL for audit logging. May differ from browser Supabase URL.
+              <div class="advice" style="background:#D1FAE5;border-left-color:#10B981;color:#065F46">✓ CONFIRMED 2026-06-13: points to <strong>eq-solves-field</strong> (<code style="font-family:monospace">ktmjmdzqrogauaevbktn</code>). 54 records live, schema matches Field operational audit (org_id, manager_name, before_value, after_value, target_field). Note: eq-canonical-internal has identical schema but 0 records — unused.</div>
+            </td>
+            <td>
+              <div class="blast-chain">
+                <div class="blast-item"><div class="blast-sev sev-med"></div><span class="blast-app">field</span> Audit log writes fail silently</div>
+              </div>
+            </td>
+          </tr>
+          <tr class="data-row" data-app="field" data-text="AUDIT_SB_KEY supabase field audit">
+            <td><span class="var-name">AUDIT_SB_KEY</span></td>
+            <td><span class="svc-badge" style="background:#D1FAE5;color:#065F46"><div class="legend-dot" style="background:var(--c-supabase);display:inline-block;margin-right:3px"></div>Supabase</span></td>
+            <td><span class="status status-required">Required</span></td>
+            <td><span class="scope scope-server">Server</span></td>
+            <td class="desc">Supabase key for audit logging table writes.</td>
+            <td>
+              <div class="blast-chain">
+                <div class="blast-item"><div class="blast-sev sev-med"></div><span class="blast-app">field</span> Audit log auth fails</div>
+              </div>
+            </td>
+          </tr>
+          <tr class="data-row" data-app="field" data-text="RESEND_API_KEY resend field email">
+            <td><span class="var-name">RESEND_API_KEY</span></td>
+            <td><span class="svc-badge" style="background:#F3F4F6;color:#111"><div class="legend-dot" style="background:var(--c-resend);display:inline-block;margin-right:3px"></div>Resend</span></td>
+            <td><span class="status status-optional">Optional</span></td>
+            <td><span class="scope scope-server">Server</span></td>
+            <td class="desc">Email dispatch for Field notifications (e.g. timesheet summaries).</td>
+            <td><span class="blast-none">Emails silently drop if unset</span></td>
+          </tr>
+          <tr class="data-row" data-app="field" data-text="ANTHROPIC_API_KEY anthropic field agent claude">
+            <td><span class="var-name">ANTHROPIC_API_KEY</span></td>
+            <td><span class="svc-badge" style="background:#FEF3C7;color:#92400E"><div class="legend-dot" style="background:var(--c-anthropic);display:inline-block;margin-right:3px"></div>Anthropic</span></td>
+            <td><span class="status status-optional">Optional</span></td>
+            <td><span class="scope scope-server">Server</span></td>
+            <td class="desc">Claude API key. Only required if EQ Agent feature is enabled in Field.</td>
+            <td>
+              <div class="blast-chain">
+                <div class="blast-item"><div class="blast-sev sev-low"></div><span class="blast-app">field</span> EQ Agent feature disabled</div>
+              </div>
+            </td>
+          </tr>
+          <tr class="data-row" data-app="field" data-text="SENTRY_DSN sentry field server">
+            <td><span class="var-name">SENTRY_DSN</span></td>
+            <td><span class="svc-badge" style="background:#F3E8FF;color:#6B21A8"><div class="legend-dot" style="background:var(--c-sentry);display:inline-block;margin-right:3px"></div>Sentry</span></td>
+            <td><span class="status status-optional">Optional</span></td>
+            <td><span class="scope scope-server">Server</span></td>
+            <td class="desc">Server-side Sentry. Project: <code style="font-family:monospace">eq-field</code>, DE region.</td>
+            <td><span class="blast-none">Server errors untracked</span></td>
+          </tr>
+          <tr class="hardcoded-row data-row" data-app="field" data-text="CANONICAL_URL supabase field hardcoded browser">
+            <td>
+              <span class="var-name">CANONICAL_URL</span>
+              <span class="hardcoded-tag">⚠ Hardcoded</span>
+            </td>
+            <td><span class="svc-badge" style="background:#D1FAE5;color:#065F46"><div class="legend-dot" style="background:var(--c-supabase);display:inline-block;margin-right:3px"></div>Supabase</span></td>
+            <td><span class="status status-required">Required</span></td>
+            <td><span class="scope scope-browser">Browser</span></td>
+            <td class="desc">Hardcoded in <code style="font-family:monospace">scripts/app-state.js</code>. Value: <code style="font-family:monospace">jvknxcmbtrfnxfrwfimn.supabase.co</code>
+              <div class="desc-note">No bundler = no env var injection. Change requires source edit + deploy.</div>
+            </td>
+            <td>
+              <div class="blast-chain">
+                <div class="blast-item"><div class="blast-sev sev-high"></div><span class="blast-app">field</span> Complete data loss — app non-functional</div>
+              </div>
+            </td>
+          </tr>
+          <tr class="hardcoded-row data-row" data-app="field" data-text="PostHog Key posthog field hardcoded analytics">
+            <td>
+              <span class="var-name">PostHog Key (EQ)</span>
+              <span class="hardcoded-tag">⚠ Hardcoded</span>
+            </td>
+            <td><span class="svc-badge" style="background:#FFEDD5;color:#9A3412"><div class="legend-dot" style="background:var(--c-posthog);display:inline-block;margin-right:3px"></div>PostHog</span></td>
+            <td><span class="status status-optional">Optional</span></td>
+            <td><span class="scope scope-browser">Browser</span></td>
+            <td class="desc">Hardcoded in <code style="font-family:monospace">scripts/analytics.js</code>. Key: <code style="font-family:monospace">phc_zXpRxm...</code>
+              <div class="desc-note">Override via <code style="font-family:monospace">window.EQ_POSTHOG_KEY</code> before analytics.js loads.</div>
+            </td>
+            <td><span class="blast-none">Analytics only</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════
+       EQ SERVICE
+  ═══════════════════════════════════════════════ -->
+  <div class="app-section" id="service">
+    <div class="app-header">
+      <div class="app-icon icon-service">🔧</div>
+      <div>
+        <div class="app-title">EQ Service</div>
+        <div class="app-subtitle">eq-solves-service · eq-solves-service.netlify.app · Next.js</div>
+      </div>
+      <div class="app-tags">
+        <span class="chip">27 vars</span>
+        <span class="chip">.env.example ✓</span>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Variable</th>
+            <th>Service</th>
+            <th>Status</th>
+            <th>Scope</th>
+            <th>Description</th>
+            <th>Blast Radius</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="data-row" data-app="service" data-text="NEXT_PUBLIC_SUPABASE_URL supabase service">
+            <td><span class="var-name">NEXT_PUBLIC_SUPABASE_URL</span></td>
+            <td><span class="svc-badge" style="background:#D1FAE5;color:#065F46"><div class="legend-dot" style="background:var(--c-supabase);display:inline-block;margin-right:3px"></div>Supabase</span></td>
+            <td><span class="status status-required">Required</span></td>
+            <td><span class="scope scope-browser">Browser</span></td>
+            <td class="desc">Service's Supabase project URL. Confirm which project: eq-canonical or Service-specific?</td>
+            <td>
+              <div class="blast-chain">
+                <div class="blast-item"><div class="blast-sev sev-high"></div><span class="blast-app">service</span> All data reads/writes fail</div>
+              </div>
+            </td>
+          </tr>
+          <tr class="data-row" data-app="service" data-text="NEXT_PUBLIC_SUPABASE_ANON_KEY supabase service">
+            <td><span class="var-name">NEXT_PUBLIC_SUPABASE_ANON_KEY</span></td>
+            <td><span class="svc-badge" style="background:#D1FAE5;color:#065F46"><div class="legend-dot" style="background:var(--c-supabase);display:inline-block;margin-right:3px"></div>Supabase</span></td>
+            <td><span class="status status-required">Required</span></td>
+            <td><span class="scope scope-browser">Browser</span></td>
+            <td class="desc">Anon key for client-side Supabase queries.</td>
+            <td>
+              <div class="blast-chain">
+                <div class="blast-item"><div class="blast-sev sev-high"></div><span class="blast-app">service</span> Browser cannot authenticate with Supabase</div>
+              </div>
+            </td>
+          </tr>
+          <tr class="data-row" data-app="service" data-text="SUPABASE_SERVICE_ROLE_KEY supabase service server">
+            <td><span class="var-name">SUPABASE_SERVICE_ROLE_KEY</span></td>
+            <td><span class="svc-badge" style="background:#D1FAE5;color:#065F46"><div class="legend-dot" style="background:var(--c-supabase);display:inline-block;margin-right:3px"></div>Supabase</span></td>
+            <td><span class="status status-required">Required</span></td>
+            <td><span class="scope scope-server">Server</span></td>
+            <td class="desc">Service role key — bypasses RLS for server operations.</td>
+            <td>
+              <div class="blast-chain">
+                <div class="blast-item"><div class="blast-sev sev-high"></div><span class="blast-app">service</span> Admin/provisioning API routes fail</div>
+              </div>
+            </td>
+          </tr>
+          <tr class="data-row" data-app="service" data-text="EQ_SECRET_SALT internal service cross-repo hmac">
+            <td>
+              <span class="var-name">EQ_SECRET_SALT</span>
+              <span class="cross-tag">🔗 Cross-repo</span>
+            </td>
+            <td><span class="svc-badge" style="background:#F3F4F6;color:#374151"><div class="legend-dot" style="background:var(--c-internal);display:inline-block;margin-right:3px"></div>Internal</span></td>
+            <td><span class="status status-critical">Critical</span></td>
+            <td><span class="scope scope-server">Server</span></td>
+            <td class="desc">Must match eq-shell, eq-solves-field, eq-cards. See alert.</td>
+            <td>
+              <div class="blast-chain">
+                <div class="blast-item"><div class="blast-sev sev-high"></div><span class="blast-app">service</span> Shell → Service iframe auth tokens invalid</div>
+              </div>
+            </td>
+          </tr>
+          <tr class="data-row" data-app="service" data-text="EQ_SERVICE_JWT_SECRET jwt service">
+            <td><span class="var-name">EQ_SERVICE_JWT_SECRET</span></td>
+            <td><span class="svc-badge" style="background:#F3F4F6;color:#374151"><div class="legend-dot" style="background:var(--c-internal);display:inline-block;margin-right:3px"></div>Internal</span></td>
+            <td><span class="status status-optional">Optional</span></td>
+            <td><span class="scope scope-server">Server</span></td>
+            <td class="desc">Service-specific JWT secret. Falls back to SUPABASE_JWT_SECRET with a warning if unset.
+              <div class="desc-note">Set explicitly in production to isolate session signing.</div>
+              <div class="advice advice-danger">The fallback must be removed before production. Sharing the Supabase JWT secret for app-level signing collapses the trust boundary — a compromised app key can forge Supabase session tokens. Generate: <span class="gen-cmd">node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"</span></div>
+            </td>
+            <td>
+              <div class="blast-chain">
+                <div class="blast-item"><div class="blast-sev sev-med"></div><span class="blast-app">service</span> Falls back to Supabase secret — warning logged</div>
+              </div>
+            </td>
+          </tr>
+          <tr class="data-row" data-app="service" data-text="EQ_PLATFORM_ADMIN_KEY admin service">
+            <td><span class="var-name">EQ_PLATFORM_ADMIN_KEY</span></td>
+            <td><span class="svc-badge" style="background:#F3F4F6;color:#374151"><div class="legend-dot" style="background:var(--c-internal);display:inline-block;margin-right:3px"></div>Internal</span></td>
+            <td><span class="status status-optional">Optional</span></td>
+            <td><span class="scope scope-server">Server</span></td>
+            <td class="desc">32-byte hex key for out-of-band tenant provisioning. Returns 503 if unset when provisioning is attempted.
+              <div class="desc-note">Format: 64 hex chars. Generate: <span class="gen-cmd">node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"</span></div>
+              <div class="advice">Netlify context: production only. Never use for any other purpose — single-responsibility key.</div>
+            </td>
+            <td>
+              <div class="blast-chain">
+                <div class="blast-item"><div class="blast-sev sev-med"></div><span class="blast-app">service</span> Tenant provisioning endpoint returns 503</div>
+              </div>
+            </td>
+          </tr>
+          <tr class="data-row" data-app="service" data-text="CRON_SECRET internal service cron">
+            <td><span class="var-name">CRON_SECRET</span></td>
+            <td><span class="svc-badge" style="background:#F3F4F6;color:#374151"><div class="legend-dot" style="background:var(--c-internal);display:inline-block;margin-right:3px"></div>Internal</span></td>
+            <td><span class="status status-required">Required</span></td>
+            <td><span class="scope scope-server">Server</span></td>
+            <td class="desc">32-byte hex. Must match value in Supabase Vault. Authenticates cron job dispatcher.
+              <div class="desc-note">Format: 64 hex chars. Generate: <span class="gen-cmd">node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"</span></div>
+              <div class="advice advice-warn">Rotation procedure: (1) generate new value, (2) update Netlify env (production), (3) update Supabase Vault via <code style="font-family:monospace">vault.update_secret()</code>, (4) redeploy, (5) trigger cron manually + verify 200, (6) set PostHog alert for cron absence. Steps 2 and 3 must match — a mismatch silently kills all scheduled jobs with no error surfacing to users.</div>
+            </td>
+            <td>
+              <div class="blast-chain">
+                <div class="blast-item"><div class="blast-sev sev-high"></div><span class="blast-app">service</span> Scheduled jobs (reports, syncs) all silently stop</div>
+              </div>
+            </td>
+          </tr>
+          <tr class="data-row" data-app="service" data-text="UNSUBSCRIBE_SECRET internal service email">
+            <td><span class="var-name">UNSUBSCRIBE_SECRET</span></td>
+            <td><span class="svc-badge" style="background:#F3F4F6;color:#374151"><div class="legend-dot" style="background:var(--c-internal);display:inline-block;margin-right:3px"></div>Internal</span></td>
+            <td><span class="status status-required">Required</span></td>
+            <td><span class="scope scope-server">Server</span></td>
+            <td class="desc">32-byte hex for signing email unsubscribe tokens.
+              <div class="desc-note">Format: 64 hex chars. Generate: <span class="gen-cmd">node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"</span></div>
+              <div class="advice advice-warn">If rotated without updating existing signed URLs, all outstanding unsubscribe links break — compliance risk. Plan: keep old secret available for a grace period during rotation, or invalidate and re-send.</div>
+            </td>
+            <td>
+              <div class="blast-chain">
+                <div class="blast-item"><div class="blast-sev sev-med"></div><span class="blast-app">service</span> Unsubscribe links broken — compliance risk</div>
+              </div>
+            </td>
+          </tr>
+          <tr class="data-row" data-app="service" data-text="RESEND_API_KEY resend service email">
+            <td><span class="var-name">RESEND_API_KEY</span></td>
+            <td><span class="svc-badge" style="background:#F3F4F6;color:#111"><div class="legend-dot" style="background:var(--c-resend);display:inline-block;margin-right:3px"></div>Resend</span></td>
+            <td><span class="status status-optional">Optional</span></td>
+            <td><span class="scope scope-server">Server</span></td>
+            <td class="desc">Transactional email (reports, notifications, unsubscribe).</td>
+            <td>
+              <div class="blast-chain">
+                <div class="blast-item"><div class="blast-sev sev-med"></div><span class="blast-app">service</span> All outbound email fails silently</div>
+              </div>
+            </td>
+          </tr>
+          <tr class="data-row" data-app="service" data-text="GOTENBERG_URL pdf service">
+            <td><span class="var-name">GOTENBERG_URL</span></td>
+            <td><span class="svc-badge" style="background:#F3F4F6;color:#374151"><div class="legend-dot" style="background:var(--c-internal);display:inline-block;margin-right:3px"></div>Internal</span></td>
+            <td><span class="status status-optional">Optional</span></td>
+            <td><span class="scope scope-server">Server</span></td>
+            <td class="desc">HTML→PDF conversion service (Fly.io).
+              <div class="desc-note">Default: <code style="font-family:monospace">https://eq-solves-gotenberg.fly.dev</code></div>
+            </td>
+            <td>
+              <div class="blast-chain">
+                <div class="blast-item"><div class="blast-sev sev-med"></div><span class="blast-app">service</span> PDF report generation fails</div>
+              </div>
+            </td>
+          </tr>
+          <tr class="data-row" data-app="service" data-text="CANONICAL_API_URL internal service canonical sync">
+            <td><span class="var-name">CANONICAL_API_URL</span></td>
+            <td><span class="svc-badge" style="background:#F3F4F6;color:#374151"><div class="legend-dot" style="background:var(--c-internal);display:inline-block;margin-right:3px"></div>Internal</span></td>
+            <td><span class="status status-optional">Optional</span></td>
+            <td><span class="scope scope-server">Server</span></td>
+            <td class="desc">Shell/canonical write-through sync URL.
+              <div class="desc-note">Default: <code style="font-family:monospace">https://core.eq.solutions</code></div>
+            </td>
+            <td>
+              <div class="blast-chain">
+                <div class="blast-item"><div class="blast-sev sev-med"></div><span class="blast-app">service→shell</span> Worker profile sync skipped</div>
+              </div>
+            </td>
+          </tr>
+          <tr class="data-row" data-app="service" data-text="CANONICAL_API_KEY_SERVICE internal service canonical">
+            <td><span class="var-name">CANONICAL_API_KEY_SERVICE</span></td>
+            <td><span class="svc-badge" style="background:#F3F4F6;color:#374151"><div class="legend-dot" style="background:var(--c-internal);display:inline-block;margin-right:3px"></div>Internal</span></td>
+            <td><span class="status status-optional">Optional</span></td>
+            <td><span class="scope scope-server">Server</span></td>
+            <td class="desc">Service-to-canonical API key. Sync is skipped if unset.</td>
+            <td>
+              <div class="blast-chain">
+                <div class="blast-item"><div class="blast-sev sev-med"></div><span class="blast-app">service→shell</span> Canonical sync skipped silently</div>
+              </div>
+            </td>
+          </tr>
+          <tr class="data-row" data-app="service" data-text="SITE_CREDENTIALS_KEY pgp service security">
+            <td><span class="var-name">SITE_CREDENTIALS_KEY</span></td>
+            <td><span class="svc-badge" style="background:#F3F4F6;color:#374151"><div class="legend-dot" style="background:var(--c-internal);display:inline-block;margin-right:3px"></div>Internal</span></td>
+            <td><span class="status status-optional">Optional</span></td>
+            <td><span class="scope scope-server">Server</span></td>
+            <td class="desc">PGP symmetric key (≥32 chars base64) for encrypting site credentials at rest. Returns 503 if unset when encryption needed.
+              <div class="desc-note">Format: ≥44 base64 chars. Generate: <span class="gen-cmd">node -e "console.log(require('crypto').randomBytes(48).toString('base64'))"</span></div>
+              <div class="advice advice-danger">Rotating this key requires re-encrypting all existing site credentials — cannot be done transparently. Plan the rotation as a migration, not a swap. Netlify context: production only.</div>
+            </td>
+            <td>
+              <div class="blast-chain">
+                <div class="blast-item"><div class="blast-sev sev-med"></div><span class="blast-app">service</span> Site credential endpoints return 503</div>
+              </div>
+            </td>
+          </tr>
+          <tr class="data-row" data-app="service" data-text="BATTLE_TEST_ADMIN_EMAIL battle test service fixtures">
+            <td><span class="var-name">BATTLE_TEST_ADMIN_EMAIL</span></td>
+            <td><span class="svc-badge" style="background:#F3F4F6;color:#374151"><div class="legend-dot" style="background:var(--c-internal);display:inline-block;margin-right:3px"></div>Internal</span></td>
+            <td><span class="status status-optional">Optional</span></td>
+            <td><span class="scope scope-server">Server</span></td>
+            <td class="desc">Test admin email fixture for battle-test suite.
+              <div class="desc-note">Default: <code style="font-family:monospace">battle-test-admin@eq.solutions</code></div>
+              <div class="advice advice-warn">Scope to <em>Branch deploys only</em> in Netlify — these must not be set in production context. If battle tests must run against production data, use a dedicated test tenant in the database, not env vars.</div>
+            </td>
+            <td><span class="blast-none">Test fixtures only — no prod impact if scoped correctly</span></td>
+          </tr>
+          <tr class="data-row" data-app="service" data-text="BATTLE_TEST_ADMIN_UUID battle test service fixtures">
+            <td><span class="var-name">BATTLE_TEST_ADMIN_UUID</span></td>
+            <td><span class="svc-badge" style="background:#F3F4F6;color:#374151"><div class="legend-dot" style="background:var(--c-internal);display:inline-block;margin-right:3px"></div>Internal</span></td>
+            <td><span class="status status-optional">Optional</span></td>
+            <td><span class="scope scope-server">Server</span></td>
+            <td class="desc">Test admin UUID fixture.
+              <div class="advice advice-warn">Scope to Branch deploys only. See BATTLE_TEST_ADMIN_EMAIL advice above.</div>
+            </td>
+            <td><span class="blast-none">Test fixtures only</span></td>
+          </tr>
+          <tr class="data-row" data-app="service" data-text="BATTLE_TEST_PORTAL_EMAIL battle test service fixtures">
+            <td><span class="var-name">BATTLE_TEST_PORTAL_EMAIL</span></td>
+            <td><span class="svc-badge" style="background:#F3F4F6;color:#374151"><div class="legend-dot" style="background:var(--c-internal);display:inline-block;margin-right:3px"></div>Internal</span></td>
+            <td><span class="status status-optional">Optional</span></td>
+            <td><span class="scope scope-server">Server</span></td>
+            <td class="desc">Test portal email fixture.</td>
+            <td><span class="blast-none">Test fixtures only</span></td>
+          </tr>
+          <tr class="data-row" data-app="service" data-text="BATTLE_TEST_PORTAL_UUID battle test service fixtures">
+            <td><span class="var-name">BATTLE_TEST_PORTAL_UUID</span></td>
+            <td><span class="svc-badge" style="background:#F3F4F6;color:#374151"><div class="legend-dot" style="background:var(--c-internal);display:inline-block;margin-right:3px"></div>Internal</span></td>
+            <td><span class="status status-optional">Optional</span></td>
+            <td><span class="scope scope-server">Server</span></td>
+            <td class="desc">Test portal customer UUID.</td>
+            <td><span class="blast-none">Test fixtures only</span></td>
+          </tr>
+
+          <tr class="data-row" data-app="service" data-text="NEXT_PUBLIC_POSTHOG_KEY posthog service analytics">
+            <td><span class="var-name">NEXT_PUBLIC_POSTHOG_KEY</span></td>
+            <td><span class="svc-badge" style="background:#FFEDD5;color:#9A3412"><div class="legend-dot" style="background:var(--c-posthog);display:inline-block;margin-right:3px"></div>PostHog</span></td>
+            <td><span class="status status-optional">Optional</span></td>
+            <td><span class="scope scope-browser">Browser</span></td>
+            <td class="desc">PostHog EU analytics key for Service app.</td>
+            <td><span class="blast-none">Analytics blind if unset</span></td>
+          </tr>
+          <tr class="data-row" data-app="service" data-text="NEXT_PUBLIC_CLARITY_ID clarity service">
+            <td><span class="var-name">NEXT_PUBLIC_CLARITY_ID</span></td>
+            <td><span class="svc-badge" style="background:#DBEAFE;color:#1E40AF"><div class="legend-dot" style="background:var(--c-clarity);display:inline-block;margin-right:3px"></div>Clarity</span></td>
+            <td><span class="status status-optional">Optional</span></td>
+            <td><span class="scope scope-browser">Browser</span></td>
+            <td class="desc">Microsoft Clarity session recording project ID.</td>
+            <td><span class="blast-none">Session replay blind if unset</span></td>
+          </tr>
+          <tr class="data-row" data-app="service" data-text="NEXT_PUBLIC_SENTRY_DSN sentry service browser">
+            <td><span class="var-name">NEXT_PUBLIC_SENTRY_DSN</span></td>
+            <td><span class="svc-badge" style="background:#F3E8FF;color:#6B21A8"><div class="legend-dot" style="background:var(--c-sentry);display:inline-block;margin-right:3px"></div>Sentry</span></td>
+            <td><span class="status status-optional">Optional</span></td>
+            <td><span class="scope scope-browser">Browser</span></td>
+            <td class="desc">Browser Sentry DSN for EQ Service errors.</td>
+            <td><span class="blast-none">Errors untracked if unset</span></td>
+          </tr>
+          <tr class="data-row" data-app="service" data-text="NEXT_PUBLIC_APP_ENV service environment">
+            <td><span class="var-name">NEXT_PUBLIC_APP_ENV</span></td>
+            <td><span class="svc-badge" style="background:#F3F4F6;color:#374151"><div class="legend-dot" style="background:var(--c-internal);display:inline-block;margin-right:3px"></div>Internal</span></td>
+            <td><span class="status status-optional">Optional</span></td>
+            <td><span class="scope scope-browser">Browser</span></td>
+            <td class="desc">Environment tag shown in UI. Values: <code style="font-family:monospace">beta</code> / <code style="font-family:monospace">production</code> / <code style="font-family:monospace">demo</code> / <code style="font-family:monospace">development</code>.
+              <div class="desc-note">Default: <code style="font-family:monospace">beta</code></div>
+            </td>
+            <td><span class="blast-none">UI badge only</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════
+       EQ CARDS
+  ═══════════════════════════════════════════════ -->
+  <div class="app-section" id="cards">
+    <div class="app-header">
+      <div class="app-icon icon-cards">🃏</div>
+      <div>
+        <div class="app-title">EQ Cards</div>
+        <div class="app-subtitle">eq-cards · Flutter web — deployed via GitHub Actions zip upload</div>
+      </div>
+      <div class="app-tags">
+        <span class="chip">~3 vars</span>
+        <span class="chip" style="background:#FEF3C7;color:#92400E">⚠ Config unconfirmed</span>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Variable</th>
+            <th>Service</th>
+            <th>Status</th>
+            <th>Scope</th>
+            <th>Description</th>
+            <th>Blast Radius</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="data-row" data-app="cards" data-text="EQ_SECRET_SALT internal cards cross-repo hmac">
+            <td>
+              <span class="var-name">EQ_SECRET_SALT</span>
+              <span class="cross-tag">🔗 Cross-repo</span>
+            </td>
+            <td><span class="svc-badge" style="background:#F3F4F6;color:#374151"><div class="legend-dot" style="background:var(--c-internal);display:inline-block;margin-right:3px"></div>Internal</span></td>
+            <td><span class="status status-critical">Critical</span></td>
+            <td><span class="scope scope-server">Server</span></td>
+            <td class="desc">Must match eq-shell exactly for SSO iframe token verification.
+              <div class="desc-note">Cards uses Shell SSO — a mismatch breaks the entire onboarding flow.</div>
+            </td>
+            <td>
+              <div class="blast-chain">
+                <div class="blast-item"><div class="blast-sev sev-high"></div><span class="blast-app">cards</span> Shell SSO token verification fails → onboarding broken</div>
+              </div>
+            </td>
+          </tr>
+          <tr class="data-row" data-app="cards" data-text="CANONICAL_URL supabase cards hardcoded">
+            <td>
+              <span class="var-name">CANONICAL_URL</span>
+              <span class="hardcoded-tag">⚠ Likely hardcoded</span>
+            </td>
+            <td><span class="svc-badge" style="background:#D1FAE5;color:#065F46"><div class="legend-dot" style="background:var(--c-supabase);display:inline-block;margin-right:3px"></div>Supabase</span></td>
+            <td><span class="status status-required">Required</span></td>
+            <td><span class="scope scope-browser">Browser</span></td>
+            <td class="desc">Flutter web has no bundler env injection — Supabase URL likely compiled in.
+              <div class="desc-note">Verify in Flutter build config. Change requires rebuild.</div>
+              <div class="advice advice-danger">⚠ UNCONFIRMED. Run <code style="font-family:monospace">grep -r 'eyJ' build/web/</code> on the compiled output — JWT-shaped strings reveal what was compiled in. Only T1 values (anon key, public URL) should be present. Any T3 value found = treat as compromised immediately.</div>
+            </td>
+            <td>
+              <div class="blast-chain">
+                <div class="blast-item"><div class="blast-sev sev-high"></div><span class="blast-app">cards</span> Complete failure if wrong project URL</div>
+              </div>
+            </td>
+          </tr>
+          <tr class="data-row" data-app="cards" data-text="CANONICAL_ANON_KEY supabase cards hardcoded">
+            <td>
+              <span class="var-name">CANONICAL_ANON_KEY</span>
+              <span class="hardcoded-tag">⚠ Likely hardcoded</span>
+            </td>
+            <td><span class="svc-badge" style="background:#D1FAE5;color:#065F46"><div class="legend-dot" style="background:var(--c-supabase);display:inline-block;margin-right:3px"></div>Supabase</span></td>
+            <td><span class="status status-required">Required</span></td>
+            <td><span class="scope scope-browser">Browser</span></td>
+            <td class="desc">Anon key compiled into Flutter web build.</td>
+            <td>
+              <div class="blast-chain">
+                <div class="blast-item"><div class="blast-sev sev-high"></div><span class="blast-app">cards</span> Auth fails</div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════
+       EQ INTAKE
+  ═══════════════════════════════════════════════ -->
+  <div class="app-section" id="intake">
+    <div class="app-header">
+      <div class="app-icon icon-intake">🤖</div>
+      <div>
+        <div class="app-title">EQ Intake</div>
+        <div class="app-subtitle">eq-intake · Parse/emit engine behind Cards · eq-platform/apps/eq-service</div>
+      </div>
+      <div class="app-tags">
+        <span class="chip">4 vars</span>
+        <span class="chip">.env.example ✓</span>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Variable</th>
+            <th>Service</th>
+            <th>Status</th>
+            <th>Scope</th>
+            <th>Description</th>
+            <th>Blast Radius</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="data-row" data-app="intake" data-text="ANTHROPIC_API_KEY anthropic intake claude ai">
+            <td><span class="var-name">ANTHROPIC_API_KEY</span></td>
+            <td><span class="svc-badge" style="background:#FEF3C7;color:#92400E"><div class="legend-dot" style="background:var(--c-anthropic);display:inline-block;margin-right:3px"></div>Anthropic</span></td>
+            <td><span class="status status-required">Required</span></td>
+            <td><span class="scope scope-server">Server</span></td>
+            <td class="desc">Claude API key for entity mapping, data extraction, and escalation pipeline.</td>
+            <td>
+              <div class="blast-chain">
+                <div class="blast-item"><div class="blast-sev sev-high"></div><span class="blast-app">intake</span> All AI parsing fails — Cards intake broken</div>
+                <div class="blast-item"><div class="blast-sev sev-high"></div><span class="blast-app">cards</span> Onboarding data extraction stops</div>
+              </div>
+            </td>
+          </tr>
+          <tr class="data-row" data-app="intake" data-text="EQ_AI_MAP_MODEL anthropic intake claude model">
+            <td><span class="var-name">EQ_AI_MAP_MODEL</span></td>
+            <td><span class="svc-badge" style="background:#FEF3C7;color:#92400E"><div class="legend-dot" style="background:var(--c-anthropic);display:inline-block;margin-right:3px"></div>Anthropic</span></td>
+            <td><span class="status status-optional">Optional</span></td>
+            <td><span class="scope scope-server">Server</span></td>
+            <td class="desc">Claude model for entity mapping step.
+              <div class="desc-note">Default: <code style="font-family:monospace">claude-sonnet-4-5</code></div>
+            </td>
+            <td><span class="blast-none">Falls back to default model</span></td>
+          </tr>
+          <tr class="data-row" data-app="intake" data-text="EQ_AI_EXTRACT_MODEL anthropic intake claude model">
+            <td><span class="var-name">EQ_AI_EXTRACT_MODEL</span></td>
+            <td><span class="svc-badge" style="background:#FEF3C7;color:#92400E"><div class="legend-dot" style="background:var(--c-anthropic);display:inline-block;margin-right:3px"></div>Anthropic</span></td>
+            <td><span class="status status-optional">Optional</span></td>
+            <td><span class="scope scope-server">Server</span></td>
+            <td class="desc">Claude model for data extraction step.
+              <div class="desc-note">Default: <code style="font-family:monospace">claude-sonnet-4-5</code></div>
+            </td>
+            <td><span class="blast-none">Falls back to default model</span></td>
+          </tr>
+          <tr class="data-row" data-app="intake" data-text="EQ_AI_EXTRACT_ESCALATION_MODEL anthropic intake claude model escalation opus">
+            <td><span class="var-name">EQ_AI_EXTRACT_ESCALATION_MODEL</span></td>
+            <td><span class="svc-badge" style="background:#FEF3C7;color:#92400E"><div class="legend-dot" style="background:var(--c-anthropic);display:inline-block;margin-right:3px"></div>Anthropic</span></td>
+            <td><span class="status status-optional">Optional</span></td>
+            <td><span class="scope scope-server">Server</span></td>
+            <td class="desc">Claude model for escalation fallback. Intentionally heavier model.
+              <div class="desc-note">Default: <code style="font-family:monospace">claude-opus-4-7</code> — cost implication if called frequently.</div>
+            </td>
+            <td><span class="blast-none">Falls back to default Opus — cost risk only</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════
+       SKS NSW LABOUR (DECOMMISSIONING)
+  ═══════════════════════════════════════════════ -->
+  <div class="app-section section-decommissioned" id="sks">
+    <div class="decommission-banner">
+      <span style="font-size:18px">🚧</span>
+      <div><strong>DECOMMISSIONING — no new maintenance.</strong> This site will be retired. Retained here for historical reference and active-rotation awareness (EQ_SECRET_SALT must still be synced until cutover). Do not invest in fixes or improvements.</div>
+    </div>
+    <div class="app-header">
+      <div class="app-icon icon-sks">🦘</div>
+      <div>
+        <div class="app-title">SKS NSW Labour <span style="font-size:11px;font-weight:400;color:#9A3412;background:#FEE2E2;padding:2px 7px;border-radius:4px;margin-left:6px">Decommissioning</span></div>
+        <div class="app-subtitle">sks-nsw-labour · sks-nsw-labour.netlify.app · Plain HTML/JS — EQ Field fork (v3.10.3)</div>
+      </div>
+      <div class="app-tags">
+        <span class="chip">~8 vars</span>
+        <span class="chip" style="background:#FEF3C7;color:#92400E">⚠ Hardcoded analytics</span>
+        <span class="chip" style="background:#EDE9FE;color:#5B21B6">SKS entity</span>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Variable</th>
+            <th>Service</th>
+            <th>Status</th>
+            <th>Scope</th>
+            <th>Description</th>
+            <th>Blast Radius</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="data-row" data-app="sks" data-text="STAFF_CODE pin sks netlify">
+            <td><span class="var-name">STAFF_CODE</span></td>
+            <td><span class="svc-badge" style="background:#F3F4F6;color:#374151"><div class="legend-dot" style="background:var(--c-internal);display:inline-block;margin-right:3px"></div>Internal</span></td>
+            <td><span class="status status-required">Required</span></td>
+            <td><span class="scope scope-server">Server</span></td>
+            <td class="desc">SKS staff PIN: <code style="font-family:monospace">2026</code>. Set in sks-nsw-labour Netlify site only — never share with EQ sites.</td>
+            <td>
+              <div class="blast-chain">
+                <div class="blast-item"><div class="blast-sev sev-high"></div><span class="blast-app">sks-labour</span> All SKS staff logins rejected</div>
+              </div>
+            </td>
+          </tr>
+          <tr class="data-row" data-app="sks" data-text="MANAGER_CODE pin sks netlify">
+            <td><span class="var-name">MANAGER_CODE</span></td>
+            <td><span class="svc-badge" style="background:#F3F4F6;color:#374151"><div class="legend-dot" style="background:var(--c-internal);display:inline-block;margin-right:3px"></div>Internal</span></td>
+            <td><span class="status status-required">Required</span></td>
+            <td><span class="scope scope-server">Server</span></td>
+            <td class="desc">SKS manager PIN: <code style="font-family:monospace">SKSNSW</code>.</td>
+            <td>
+              <div class="blast-chain">
+                <div class="blast-item"><div class="blast-sev sev-high"></div><span class="blast-app">sks-labour</span> SKS manager access denied</div>
+              </div>
+            </td>
+          </tr>
+          <tr class="data-row" data-app="sks" data-text="EQ_SECRET_SALT internal sks field cross-repo">
+            <td>
+              <span class="var-name">EQ_SECRET_SALT</span>
+            </td>
+            <td><span class="svc-badge" style="background:#F3F4F6;color:#374151"><div class="legend-dot" style="background:var(--c-internal);display:inline-block;margin-right:3px"></div>Internal</span></td>
+            <td><span class="status status-required">Required</span></td>
+            <td><span class="scope scope-server">Server</span></td>
+            <td class="desc">HMAC key for token verification in SKS Labour Netlify functions. Same shared value as EQ suite apps.
+              <div class="desc-note">SKS Labour is a separate Netlify site — must be set independently here too.</div>
+            </td>
+            <td>
+              <div class="blast-chain">
+                <div class="blast-item"><div class="blast-sev sev-high"></div><span class="blast-app">sks-labour</span> SKS worker tokens invalid</div>
+              </div>
+            </td>
+          </tr>
+          <tr class="data-row" data-app="sks" data-text="AUDIT_SB_URL supabase sks audit">
+            <td><span class="var-name">AUDIT_SB_URL</span></td>
+            <td><span class="svc-badge" style="background:#D1FAE5;color:#065F46"><div class="legend-dot" style="background:var(--c-supabase);display:inline-block;margin-right:3px"></div>Supabase</span></td>
+            <td><span class="status status-required">Required</span></td>
+            <td><span class="scope scope-server">Server</span></td>
+            <td class="desc">Supabase URL for SKS audit logging. Should point to SKS Canonical, not EQ Canonical.
+              <div class="advice advice-warn">⚠ UNVERIFIED. EQ Field confirmed → eq-solves-field. SKS Labour expected → sks-canonical (<code style="font-family:monospace">ehowgjardagevnrluult</code>). Verify: check sks-canonical audit_log for recent records after a known SKS action. SKS live DB is gated — confirm before treating as resolved.</div>
+            </td>
+            <td>
+              <div class="blast-chain">
+                <div class="blast-item"><div class="blast-sev sev-med"></div><span class="blast-app">sks-labour</span> SKS audit logs fail or go to wrong project</div>
+              </div>
+            </td>
+          </tr>
+          <tr class="data-row" data-app="sks" data-text="AUDIT_SB_KEY supabase sks audit">
+            <td><span class="var-name">AUDIT_SB_KEY</span></td>
+            <td><span class="svc-badge" style="background:#D1FAE5;color:#065F46"><div class="legend-dot" style="background:var(--c-supabase);display:inline-block;margin-right:3px"></div>Supabase</span></td>
+            <td><span class="status status-required">Required</span></td>
+            <td><span class="scope scope-server">Server</span></td>
+            <td class="desc">Supabase key for SKS audit logging.</td>
+            <td>
+              <div class="blast-chain">
+                <div class="blast-item"><div class="blast-sev sev-med"></div><span class="blast-app">sks-labour</span> Audit auth fails</div>
+              </div>
+            </td>
+          </tr>
+          <tr class="hardcoded-row data-row" data-app="sks" data-text="PostHog Key SKS posthog sks hardcoded analytics">
+            <td>
+              <span class="var-name">PostHog Key (SKS)</span>
+              <span class="hardcoded-tag">⚠ Hardcoded</span>
+            </td>
+            <td><span class="svc-badge" style="background:#FFEDD5;color:#9A3412"><div class="legend-dot" style="background:var(--c-posthog);display:inline-block;margin-right:3px"></div>PostHog</span></td>
+            <td><span class="status status-optional">Optional</span></td>
+            <td><span class="scope scope-browser">Browser</span></td>
+            <td class="desc">Hardcoded: <code style="font-family:monospace">phc_vM4Hrh7...</code>. SKS-specific PostHog project.
+              <div class="desc-note">EQ and SKS have separate PostHog projects. Do not mix keys.</div>
+            </td>
+            <td><span class="blast-none">Analytics only — separate from EQ analytics</span></td>
+          </tr>
+          <tr class="hardcoded-row data-row" data-app="sks" data-text="Clarity ID SKS clarity sks hardcoded">
+            <td>
+              <span class="var-name">Clarity Project ID (SKS)</span>
+              <span class="hardcoded-tag">⚠ Hardcoded</span>
+            </td>
+            <td><span class="svc-badge" style="background:#DBEAFE;color:#1E40AF"><div class="legend-dot" style="background:var(--c-clarity);display:inline-block;margin-right:3px"></div>Clarity</span></td>
+            <td><span class="status status-optional">Optional</span></td>
+            <td><span class="scope scope-browser">Browser</span></td>
+            <td class="desc">Hardcoded: <code style="font-family:monospace">wek8dmtbuu</code>. SKS-specific Clarity project.</td>
+            <td><span class="blast-none">Session replay only</span></td>
+          </tr>
+          <tr class="hardcoded-row data-row" data-app="sks" data-text="CANONICAL_URL supabase sks hardcoded">
+            <td>
+              <span class="var-name">CANONICAL_URL</span>
+              <span class="hardcoded-tag">⚠ Hardcoded</span>
+            </td>
+            <td><span class="svc-badge" style="background:#D1FAE5;color:#065F46"><div class="legend-dot" style="background:var(--c-supabase);display:inline-block;margin-right:3px"></div>Supabase</span></td>
+            <td><span class="status status-required">Required</span></td>
+            <td><span class="scope scope-browser">Browser</span></td>
+            <td class="desc">Same hardcoded pattern as EQ Field. Points to eq-canonical.
+              <div class="desc-note">SKS tenancy is resolved via tenant slug, not a separate Supabase project URL.</div>
+            </td>
+            <td>
+              <div class="blast-chain">
+                <div class="blast-item"><div class="blast-sev sev-high"></div><span class="blast-app">sks-labour</span> Complete failure</div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  EQ Solutions — Internal tooling · eq-env-catalog.html · Not version-controlled separately — update when vars change.
+</footer>
+
+<script>
+  // ── Auto-inject secret tier badges ──
+  const T3 = new Set([
+    'SUPABASE_SERVICE_ROLE_KEY','EQ_SECRET_SALT','SUPABASE_JWT_SECRET',
+    'EQ_SERVICE_JWT_SECRET','EQ_PLATFORM_ADMIN_KEY','CRON_SECRET',
+    'SITE_CREDENTIALS_KEY','UNSUBSCRIBE_SECRET','SUPABASE_URL',
+    'AUDIT_SB_KEY','CANONICAL_API_KEY_SERVICE',
+  ]);
+  const T1_PREFIXES = ['VITE_','NEXT_PUBLIC_'];
+  const T1_EXACT = new Set([
+    'PostHog Key (EQ)','PostHog Key (SKS)','Clarity Project ID (SKS)',
+    'VITE_POSTHOG_KEY','VITE_POSTHOG_HOST','VITE_CLARITY_PROJECT_ID',
+    'CANONICAL_URL','CANONICAL_ANON_KEY','EQ_AI_MAP_MODEL',
+    'EQ_AI_EXTRACT_MODEL','EQ_AI_EXTRACT_ESCALATION_MODEL',
+    'EQ_AGENT_MODEL','NEXT_PUBLIC_APP_ENV','CANONICAL_TENANT_SLUG',
+    'GOTENBERG_URL','CANONICAL_API_URL','EMAIL_FROM','EQ_EMAIL_PROVIDER',
+    'SENTRY_TRACES_SAMPLE_RATE','NEXT_PUBLIC_POSTHOG_HOST',
+  ]);
+  document.querySelectorAll('.var-name').forEach(el => {
+    const name = el.textContent.trim();
+    let tier = 'T2';
+    if (T3.has(name)) tier = 'T3';
+    else if (T1_EXACT.has(name) || T1_PREFIXES.some(p => name.startsWith(p))) tier = 'T1';
+    const badge = document.createElement('span');
+    badge.className = `tier tier-${tier.toLowerCase()}`;
+    badge.textContent = tier;
+    el.parentNode.insertBefore(badge, el);
+  });
+
+  const searchInput = document.getElementById('search');
+  const noResults   = document.getElementById('no-results');
+  const rows        = document.querySelectorAll('.data-row');
+
+  searchInput.addEventListener('input', () => {
+    const q = searchInput.value.toLowerCase().trim();
+    let visible = 0;
+    rows.forEach(row => {
+      const text = (row.dataset.text + ' ' + row.textContent).toLowerCase();
+      const show = !q || text.includes(q);
+      row.classList.toggle('hidden', !show);
+      if (show) visible++;
+    });
+    // hide/show section headers based on whether section has visible rows
+    document.querySelectorAll('.app-section').forEach(section => {
+      const hasVisible = Array.from(section.querySelectorAll('.data-row'))
+        .some(r => !r.classList.contains('hidden'));
+      section.style.display = hasVisible ? '' : 'none';
+    });
+    noResults.classList.toggle('visible', visible === 0);
+  });
+</script>
+</body>
+</html>
