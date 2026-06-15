@@ -9,6 +9,22 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-06-15] v3.5.147 — Canonical worker write (PR #288, merged)
+**Built by:** Royce Milmlow + Claude Code
+
+Extends v3.5.146: `_canonicalWorkerUpsert()` creates a stub in jvkn.workers (first_name, last_name, email, phone, role) when no canonical worker exists for the email. SELECT-first prevents duplicates. `syncAllToCanonical()` bulk supervisor action seeds all unlinked people at once. Fire-and-forget throughout — canonical failures never block UI. Deployed 2026-06-15T02:38Z.
+
+**Note:** Stub creation from Field is transition scaffolding. Target architecture has Cards/Shell as the sole creator of jvkn.workers rows. Remove create-path when Cards onboarding is live.
+
+---
+
+## [2026-06-15] v3.5.146 — Canonical worker-link bridge (PR #287, merged)
+**Built by:** Royce Milmlow + Claude Code
+
+Phase 2 canonical wiring. `_tryLinkPersonToWorker()` fires on every person save: looks up jvkn.workers by email, patches `people.worker_id` if found. Signature extended to pass name/phone/group. Three call sites wired (modal save, wizard new, wizard edit). Fire-and-forget.
+
+---
+
 ## [2026-06-13] v3.5.139 — CSP `_headers` sync + Sentry T3 scrubbing (PR #277, merged)
 **Built by:** Royce Milmlow + Claude Code
 
