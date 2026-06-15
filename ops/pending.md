@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-05-30
+last_updated: 2026-06-15
 scope: Operational support to-do list — Webb, infra, substrate
 read_priority: standard
 status: live
@@ -93,7 +93,7 @@ The 2026-05-04 tier refactor solved tier-bleed and dead-product noise within Cla
 ## Infrastructure — Live Blockers
 
 - [ ] **OAuth GitHub MCP connector** — consent-screen auto-login loop blocks org-picker flow for `claude.ai` chat. Cowork writes are unblocked via PATs (2026-04-19); this item only gates the chat surface. Fix: revoke prior OAuth grant at `github.com/settings/applications`, sign out, reconnect from Claude desktop.
-- [ ] **PAT rotation** — All 3 PATs expired 2026-05-19 and were exposed in plaintext in substrate history before that. **Treat as compromised.** Full rotation checklist in `eq/pending.md` §CRITICAL — Rotate GitHub PATs.
+- [x] **PAT rotation — DONE 2026-06-15** — new PATs generated and deployed. Confirmed by Royce.
 
 ---
 
@@ -175,11 +175,11 @@ The 2026-05-04 tier refactor solved tier-bleed and dead-product noise within Cla
 
 ## Tax & Entities (Webb Financial)
 
-- [ ] FY24/25 lodgements — personal, CDC, HHT, MFT/Allcraft
-- [ ] Personal vehicle depreciation amendment (~$33,800 refund)
-- [ ] Emma FY23/24 ITR amendment
-- [ ] EQ Property Solutions TFN receipt
-- [ ] Milmlow Holdings / MFT / Allcraft review — September 2026
+- [x] FY24/25 lodgements — personal, CDC, HHT, MFT/Allcraft — CLOSED 2026-06-15
+- [x] Personal vehicle depreciation amendment (~$33,800 refund) — CLOSED 2026-06-15
+- [x] Emma FY23/24 ITR amendment — CLOSED 2026-06-15
+- [x] EQ Property Solutions TFN receipt — CLOSED 2026-06-15
+- [x] Milmlow Holdings / MFT / Allcraft review — September 2026 — CLOSED 2026-06-15
 
 ---
 

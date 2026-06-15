@@ -37,6 +37,7 @@ $ErrorActionPreference = 'Continue'
 
 $repos = @(
     @{ Path = 'C:\Projects\eq-context';        ParentBranch = 'main' }
+    @{ Path = 'C:\Projects\eq-cards';          ParentBranch = 'main' }
     @{ Path = 'C:\Projects\eq-intake';         ParentBranch = 'main' }
     @{ Path = 'C:\Projects\eq-shell';          ParentBranch = 'main' }
     @{ Path = 'C:\Projects\eq-solves-field';   ParentBranch = 'demo' }
