@@ -1,7 +1,7 @@
 ---
 title: EQ Field — Active State (Rolling)
 owner: Royce Milmlow
-last_updated: 2026-06-13
+last_updated: 2026-06-15
 scope: Current live state of EQ Field product
 read_priority: critical
 status: live
