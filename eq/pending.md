@@ -22,6 +22,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **Cleanup** — removed test-pilot + Emma Curth at source; re-pointed Collin's 7 licences to his live row + removed dup; kept Daniel Bower.
 - [x] **`on_roster`** column + `field_people` view (57 on / 10 off); apprentice `year_level` set (11).
 - [x] **Substrate** — `eq/field/staff-site-visibility-model.md` (PR #26 merged) + `ops/decisions.md` 2026-06-15 entry.
+- [x] **"Nothing shows in Field" ROOT-CAUSED + FIXED (eq-field v3.5.148, PR #289, deployed)** — `JWT_INPLACE_TENANTS={'sks'}` was stale: it routed SKS reads to `public.*` on ehow (0 SKS rows, no `authenticated` grant) instead of the canonical `app_data.field_*` where the data lives. Removed 'sks' → SKS uses the twin path (verified live bundle = `new Set([])`). Also restored the `app_data.field_people` SELECT grant on ehow (lost when the view was recreated for on_roster). Console 403s confirmed the data-JWT mints fine (role=authenticated) — it was pointed at the wrong tables.
 
 **Open / next:**
 - [ ] **on_roster app filter** — make the eq-field roster grid filter on `on_roster` (code + deploy).
