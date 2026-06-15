@@ -1,7 +1,7 @@
 ---
 title: OPS — Decisions Log
 owner: Royce Milmlow
-last_updated: 2026-06-04
+last_updated: 2026-06-15
 scope: Append-only log of key decisions across all tiers and the reasoning at the time
 read_priority: standard
 status: live
@@ -9,7 +9,118 @@ status: live
 
 # OPS — Decisions Log
 
-Append-only log. Key decisions and the reasoning behind them — reasoning
+Append-only log.
+
+---
+
+## 2026-06-15 — SKS Field Staff: Tenant-Constant Bug Fixed; Full Roster Loaded via Pipeline
+
+**Status:** Done (executed + verified live 2026-06-15). Code: `workers-canonical-sync` edge fn (jvkn) v4. Data: ehow `app_data.staff`. Model doc: [eq/field/staff-site-visibility-model.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/field/staff-site-visibility-model.md).
+
+**Root cause (why EQ Field showed zero SKS staff):** the `workers-canonical-sync` edge function hard-coded `SKS_TENANT_ID = dcb71d03…` — that is the **EQ/core** tenant, not SKS (`7dee117c`). Every synced worker was stamped onto the EQ tenant; EQ Field reads the SKS tenant → empty. The comment even claimed "SKS tenant_id … verified 2026-06-13" — verified backwards. A second gate compounded it: the function never set `field_approved`, and the `field_people` view filters `field_approved IS TRUE OR NULL` — all rows were `false`, so everyone was hidden regardless of tenant.
+
+**Fix (deployed v4):** constant → `7dee117c`; set `field_approved = true` on sync (auto-approve pipeline-loaded staff); map `employment_type` from `workers.role` (`apprentice`→Apprentice, `labour_hire`→Labour Hire, else Direct).
+
+**Then, all via the pipeline (jvkn.workers → trigger → sync → ehow):**
+- Re-synced the existing 35 → correct SKS tenant + approved.
+- Cleanup: deleted test-pilot + Emma Curth at source; re-pointed Collin Toohey's 7 licences from his dead duplicate to his live row, removed the empty dup; **kept Daniel Bower** (not on authoritative list — confirm leaver).
+- Loaded the 32 missing (apprentices, labour-hire, missing directs/supervisors) into `jvkn.workers` (E.164 phones, mapped `eq_role`) → synced onto the SKS shelf.
+- Result: **67 staff live in EQ Field** (48 Direct / 11 Apprentice / 8 Labour Hire); 171 licences intact.
+
+**Model/schema added:** `app_data.staff.on_roster boolean default true` + exposed in `field_people` view; seeded **57 on / 10 off** (office/management off; field supervisors kept on). `on_roster` = "appears on the weekly roster as an assignable resource, independent of role." Apprentice `year_level` set for all 11.
+
+**Why pipeline, not direct writes:** keeps jvkn (control plane) the source of truth; the trigger fan-out upserts on `cards_worker_id` (no dupes). Direct ehow writes used only for tenant-operational fields that don't live in jvkn (licence re-point, `on_roster`, `year_level`).
+
+**Still open:**
+- **on_roster app filter** — the EQ Field roster grid must filter on `on_roster`; column+view ready but the `eq-field` code change + deploy is not done. Until then the flag is data only.
+- **Login still blocked** — the phone-dedup hook (entry below) is unfixed; workers can't yet sign in. Field *visibility* is fixed; *authentication* is the separate track.
+- **`workers-canonical-sync` is single-tenant** (hardcodes SKS + ehow). Fine while SKS is the only synced tenant; needs per-worker tenant resolution before a second tenant uses it.
+- **Sites** — 591 all `field_enabled = true`; curate to live (`field_sites` view already enforces the flag).
+- **Daniel Bower** — retained; confirm leaver.
+
+**Cross-ref:** complements the same-day eq-field v3.5.146/147 canonical worker-link bridge (`people.worker_id`, stub-on-write) — see `eq/pending.md` 2026-06-15 (part b). That path creates jvkn.workers stubs from Field; this entry's pipeline syncs jvkn.workers → ehow staff. Both feed the jvkn↔ehow correlation; reconcile the stub-creation vs sync ownership when Cards onboarding becomes the sole creator.
+
+---
+
+## 2026-06-15 — Phone Identity Deduplication: Hook Must Match by Phone, Not UUID Only
+
+**Status:** Proposed (pattern identified; fix not yet landed). Implementation target: `custom_access_token_hook` in eq-canonical migration. Related data fix: Luke Wheeler data patch 2026-06-15 (same pattern as Royce identity consolidation 2026-06-10 and SKS health check 2026-06-11).
+
+**Decision:** The `custom_access_token_hook` must match `shell_control.users` by **phone as a fallback** when the UUID lookup finds nothing. Admin back-fills (invite import, shell-exchange claim) create `auth.users` rows via non-OTP paths, storing phone as `+61XXXXXXXXX` (E.164 with +). GoTrue's native phone OTP creates a **new** `auth.users` row with a different UUID, storing phone as bare digits (`61XXXXXXXXX`, no +). The hook's UUID-only lookup fails to connect the new GoTrue row to the pre-existing `shell_control.users` row — the worker lands in notProvisioned, taps "Start my personal wallet," and a broken duplicate is silently created.
+
+**Why:** This failure has occurred identically three times (Royce 2026-06-10, SKS health check 2026-06-11, Luke Wheeler 2026-06-15). Each time it required a manual `shell_control.users` UPDATE + membership INSERT to repair. The pattern is structural: any flow that creates `auth.users` via an admin API or Netlify function will diverge from GoTrue's native OTP phone format. Patching individual accounts is not a fix — it is a symptom loop. The hook is the right place to close it because it runs on every token mint and has access to both the GoTrue user record (including phone) and `shell_control.users`.
+
+**Fix (Option A — hook phone-fallback):**
+```sql
+-- In custom_access_token_hook, replace the single SELECT with:
+SELECT u.* INTO v_user
+FROM shell_control.users u
+WHERE u.id = (event->>'user_id')::uuid
+LIMIT 1;
+
+-- If no match, try phone lookup and adopt the row
+IF v_user.id IS NULL THEN
+  SELECT u.* INTO v_user
+  FROM shell_control.users u
+  JOIN auth.users au ON (
+    u.phone = au.phone
+    OR u.phone = '+' || au.phone
+    OR '+' || u.phone = au.phone
+  )
+  WHERE au.id = (event->>'user_id')::uuid
+  LIMIT 1;
+
+  -- Adopt: update the orphaned shell_control row to the real GoTrue UUID
+  IF v_user.id IS NOT NULL THEN
+    UPDATE shell_control.users SET id = (event->>'user_id')::uuid
+    WHERE id = v_user.id;
+    UPDATE shell_control.user_tenant_memberships SET user_id = (event->>'user_id')::uuid
+    WHERE user_id = v_user.id;
+    v_user.id := (event->>'user_id')::uuid;
+  END IF;
+END IF;
+```
+
+**Alternatives considered:**
+- *Normalize phone format at back-fill time* — store bare digits in all admin-created `auth.users` rows. Partial fix only: phone format drift will recur whenever a new import path is added. The hook fix is self-healing regardless of format.
+- *Never create `auth.users` in back-fills* — only write `workers` + `shell_control.users`. GoTrue creates `auth.users` on first real OTP. Requires notProvisioned screen to phone-match against `shell_control.users` before offering personal wallet. Cleaner architecturally but requires two code changes (hook + notProvisioned) vs one (hook only).
+- *Manual repair per occurrence* — rejected: this is the third occurrence in five days.
+
+**Implications:**
+- Migration needed in eq-canonical to update `custom_access_token_hook`. SECURITY DEFINER function, existing blast-radius controls apply.
+- The adopt UPDATE inside the hook is idempotent — on the second sign-in, the UUID now matches and the fast path fires.
+- Dead `auth.users` rows (the old admin-created ones with no sign-ins) can be pruned after adoption. Not urgent — they sit dormant.
+- `public.worker_invites.claimed_by` may point to the old UUID post-adoption. Update as part of the adoption or accept the stale reference (invite already claimed, field is informational only).
+
+---
+
+## 2026-06-15 — Cards is the Worker-Facing EQ Platform; Core is Employer-Only
+
+**Status:** Accepted (direction authorised by Royce 2026-06-15). Extends and names the UX consequence of the 2026-06-04 portable-identity decision. Supersedes the SSO/iframe framing in [eq/cards/canonical-migration/plan.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/cards/canonical-migration/plan.md). Full design: [eq/cards/worker-platform-direction-2026-06-15.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/cards/worker-platform-direction-2026-06-15.md).
+
+**Decision:** Cards (`cards.eq.solutions`) is the worker-facing EQ platform — the worker's mobile home. Core (`core.eq.solutions` / Shell) is employer-facing only. These are different products for different audiences, not one platform with a worker mode. Specific consequences: (1) Cards is never embedded in Shell as an iframe — the iframe and handoff route are retired. (2) Workers reach employer tools from Cards via a tenant tile (a link-out to the employer's portal, e.g. `core.eq.solutions/sks`), not the reverse. (3) Two auth paths are explicitly the correct model: employer path via Shell HttpOnly cookie session; worker path via GoTrue phone OTP + `custom_access_token_hook`. Both are backed by `shell_control.users`. (4) Long-term: Field's worker-facing features (timesheets, availability, job-assignment push) migrate to Cards. The canonical layer (worker-house, `eq-canonical-internal`) is the data exchange point — not a shared UI session.
+
+**Why:** The 2026-06-04 portable-identity decision established worker-owns-their-record and Cards-as-intake-surface. The UX consequence — Cards is the worker's home, Core is the employer's home — was never named explicitly. This caused: (a) an iframe embedding of Cards in Shell that fights the ownership model and produces unsolvable auth seam problems (`gotrue_dart` 2.20+ rejects shell-minted JWTs; postMessage handoff abandoned after live failure); (b) architectural confusion about which way the cross-app link runs; (c) a double-sign-in problem that is a symptom of the wrong embedding pattern, not a fixable auth problem. Naming the boundary resolves all three as closed, not open, questions.
+
+The two-auth-path reality is acceptable, not a gap. The phone is the shared identity key. 30-day sessions mean workers authenticate once per month per app in practice. Building a shared-session architecture across two different stacks (React Shell vs Flutter Cards PWA) costs more than the friction it removes.
+
+**Alternatives considered:**
+- *Mobile Shell worker mode* — Core adds a mobile-first worker view; Cards is only the wallet. Rejected: Core is React/desktop-first; a parallel mobile experience in Core duplicates what the Flutter PWA already does well. Wrong stack for the audience.
+- *Server-side GoTrue session from Shell* — Shell uses the service role to `createSession()` for the worker and passes real tokens to Cards via postMessage. Rejected: Shell (employer control layer) creating sessions in Cards (worker canonical layer) inverts the ownership model — if Shell is compromised, it can impersonate any worker in their personal wallet. The boundary exists for a reason.
+- *Phone-hint auto-OTP* — Shell postMessages the worker's phone number; Cards pre-fills and auto-fires the OTP; worker enters one code. Viable middle ground, not yet needed. 30-day sessions make the double-sign-in rare enough that the UX cost is low. Revisit if real user feedback shows it is a material drop-off point.
+- *Fully independent apps, no cross-link* — Workers install Cards and SKS Field separately with no in-app bridge. Acceptable but adds cognitive load. The tenant tile provides a bridge without coupling auth systems.
+
+**Implications:**
+- **Remove the Cards iframe from Shell.** `CardsIframe.tsx` and the `/auth/handoff` route in Cards are retired. The Shell nav tile for Cards becomes a plain external link to `cards.eq.solutions`.
+- **Near-term build (tenant tile in Cards):** Add `portal_url` to `shell_control.tenants`. Cards reads the worker's active tenant memberships and surfaces a tile per employer with a link to that URL. No shared session; workers open the employer portal in a new tab and sign in via their existing Shell session (or a fresh OTP if it has expired).
+- **Canonical migration plan superseded:** The 2026-05-20 plan stated "Cards stops being independently sellable as a standalone product." Superseded by migration 0028-0030 (standalone personal wallet). Cards IS independently accessible; employer affiliation is additive, not required.
+- **GoTrue-vs-own-mint reconciliation (flagged 2026-06-04):** Resolved in favour of GoTrue for workers. Workers authenticate directly via GoTrue phone OTP; the `custom_access_token_hook` injects `tenant_id` from `shell_control.users`. Shell-exchange bridges (`shell-login-phone-otp`, `shell-join-tenant`) remain as the join-code / claim paths but are NOT the primary repeat-login path. Phase 2 retirement of these bridges stands as planned.
+- **IDENTITY-MODEL.md v2 bump:** "One sign-in at Shell → same identity across all EQ products" applies to employer-facing products only. Workers have a parallel path via Cards. The v2 bump (flagged as a Phase 2 trigger in the 2026-06-04 implications) should reflect the two-auth-path model explicitly.
+- **Long-term roadmap signal:** As Field's worker-facing features mature (timesheets, availability, job-assignment notifications), they belong in Cards. Field and Shell retain the employer-admin view. The canonical layer is the exchange point.
+
+---
+
+ Key decisions and the reasoning behind them — reasoning
 disappears faster than outcomes, which is why this file is the most
 important one to maintain.
 

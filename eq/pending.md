@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-06-13
+last_updated: 2026-06-15
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -29,6 +29,28 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [ ] **Curate `sites.field_enabled`** — 591 all enabled → trim to live jobs.
 - [ ] **Daniel Bower** — confirm leaver / remove.
 - [ ] **Generalise `workers-canonical-sync`** — currently single-tenant (hardcodes SKS+ehow).
+
+---
+
+## ⏩ Session close — 2026-06-15 (part b) — v3.5.146 + v3.5.147 + canonical architecture rethink
+
+**Completed:**
+- [x] **v3.5.146 merged** — canonical worker-link bridge (PR #287). Adds `people.worker_id` column link to jvkn.workers; fire-and-forget lookup on person save.
+- [x] **v3.5.147 merged** — canonical worker write (PR #288). Extends v3.5.146: if no jvkn.workers row found by email, creates a stub (name, email, phone, role). `syncAllToCanonical()` bulk action added. Deployed 2026-06-15T02:38Z at `field.eq.solutions`.
+- [x] **Architecture rethink completed** — 4-layer model verified and documented (jvkn control plane → Shell → Apps → ehow/zaap tenant canonical). CLAUDE.md updated in eq-field. Memory files written.
+- [x] **Design B adapters confirmed LIVE** — `DATA_JWT_ENABLED=on`, `SKS_JWT_SECRET` set. leave-adapter.js / roster-adapter.js / timesheets-adapter.js all enabled for SKS tenant. Schedule/leave/timesheets write to ehow `app_data.*` via JWT.
+
+**Architecture clarifications (verified 2026-06-15):**
+- ktmj = EQ demo/operational DB only. Not relevant to canonical architecture.
+- jvkn.workers = identity stubs (38 rows). Field reads for cross-app correlation ID; v3.5.147 creates stubs as transition scaffolding only.
+- ehow = THE canonical data platform. `app_data.staff` (40 rows) is source of truth for worker profiles.
+- Tenant boot path: Field → jvkn.organisations → gets SB_URL (= ehow for SKS) + module entitlements.
+
+**Open / next:**
+- [ ] People profile enrichment from ehow — when Field loads a person with worker_id, optionally pre-fill from ehow.app_data.staff. Requires reading ehow via staff map (already loaded by leave adapter). Next meaningful sprint.
+- [ ] `ZAAP_JWT_SECRET=""` — EQ tenant JWT broken (acceptable while zaap unpopulated).
+- [ ] `APP_ORIGIN` env var stale (`eq-solves-field.netlify.app` → should be `field.eq.solutions`).
+- [ ] v3.5.147 create-stub path to be removed when Cards onboarding goes live as the sole jvkn.workers creator.
 
 ---
 

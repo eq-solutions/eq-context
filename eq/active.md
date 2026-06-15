@@ -1,7 +1,7 @@
 ---
 title: EQ Field — Active State (Rolling)
 owner: Royce Milmlow
-last_updated: 2026-06-13
+last_updated: 2026-06-15
 scope: Current live state of EQ Field product
 read_priority: critical
 status: live
@@ -9,7 +9,7 @@ status: live
 
 # EQ Field — Active State
 
-**Current version:** v3.5.139 · **Deployed:** `field.eq.solutions` + `field.sks.eq.solutions`
+**Current version:** v3.5.147 · **Deployed:** `field.eq.solutions` + `field.sks.eq.solutions`
 **Repo:** `eq-solutions/eq-field` (main branch, auto-deploy via Netlify)
 
 ---
@@ -36,6 +36,8 @@ RLS WITH CHECK hardened on all 14 write policies. Adapter view architecture:
 - `field_schedule` / `field_timesheets` / etc. → `public.*` (writable pass-throughs)
 
 **Canonical sync LIVE (2026-06-13):** jvkn→ehow forward path active via `workers-canonical-sync` (v3) + `credentials-canonical-sync` (v1). 39 staff + 171 licences synced. Triggers on jvkn fire on INSERT/UPDATE/DELETE → ehow upserts.
+
+**v3.5.147 identity stub (2026-06-15):** `_tryLinkPersonToWorker()` in `people.js` — on person save with email, looks up jvkn.workers by email; if found, patches `people.worker_id`; if not found, creates a minimal stub (name, email, phone, role). Transition scaffolding — removes when Cards onboarding is the sole creator of jvkn.workers rows. `syncAllToCanonical()` bulk action available to supervisor role.
 
 **Data counts:** 39 staff · 591 sites · 171 licences · 0 roster rows (data entry needed)
 
