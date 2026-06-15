@@ -1,7 +1,7 @@
 ---
 title: Autonomous Sprint — State
 owner: Royce Milmlow
-last_updated: 2026-06-13
+last_updated: 2026-06-15
 scope: Per-repo + Supabase reality snapshot, CI guards, and known hazards for the sprint
 read_priority: critical
 status: live
@@ -25,13 +25,33 @@ status: live
 > | **I1** plaintext access codes — Field | codes now from `app_config` (`__TENANT_CODES_DB__`), none in committed JS | ✅ done |
 > | **I1** plaintext access codes — SKS Labour | still hardcoded in live app — **= part of B5 cutover** | ⛔ folds into B5 |
 > | **TENANT_ORG_UUID** Netlify env (eq-solves-field) | set = `1eb831f9-aeae-4e57-b49e-9681e8f51e15` (matches documented EQ org UUID) | ✅ done |
-> | **F1** rotate exposed `ehowg` service_role key | **legacy service_role JWT STILL LIVE** (read live SKS row, HTTP 200; bad-key control 401). Key `iat`≈2026-05-24 unchanged → no JWT-secret rotation. Both consumers (Quotes Fly `SUPABASE_SERVICE_ROLE_KEY`; `tenant_routing` row, anon `eyJhbGci…`, `status_changed_at` 2026-05-24) still hold the legacy key. | ❌ **NOT done** |
+> | **F1** rotate exposed `ehowg` service_role key | Confirmed rotated by Royce 2026-06-15. | ✅ **DONE** |
 >
 > **F1 remediation (Royce-gated, P0):** rotate JWT secret / disable legacy keys on `ehowg`, but ONLY after propagating the new key to BOTH consumers (Quotes Fly secret + `tenant_routing` re-encrypt) — disabling legacy blind breaks live Quotes + canonical-api routing. Re-test: legacy service_role GET → 401.
 >
 > **Bottom line: stop rebuilding the spine. Open code/infra work = B5 + F1 (both Royce-gated). Everything else verified done.**
 
 Snapshot 2026-05-30. **Verify before relying on the git/worktree lines** — they drift. The Supabase map + SKS-live flags are stable.
+
+> ## ⏩ POST-SPRINT UPDATE — 2026-06-15 (security hardening sprint — eq-shell + eq-cards; Cards deployed)
+> **eq-shell (PRs #369 + #370, merged + deployed 2026-06-15):**
+> - **C2 — anthropic-proxy:** was open relay on server Anthropic key. Now requires valid EQ Shell session cookie + CORS narrowed to `*.eq.solutions` only.
+> - **H1 — mint-iframe-token tenant binding:** non-platform-admin users are now bound to their Shell tenant's `field_tenant_slug` when requesting Field iframe tokens (403 if mismatch). Platform admins retain full picker. `shell_control.tenants.field_tenant_slug` is the canonical mapping (core→eq, sks→sks).
+> - **M1 — ENFORCE_IFRAME_ORIGIN=true:** set as Netlify env var on eq-shell (production/functions scope). Origin check is now enforcing (was report-only).
+> - **workers-canonical-sync v4:** first-time git tracking of the live jvkn edge function. Fixed SKS tenant constant (was dcb71d03 EQ tenant, corrected to 7dee117c), adds `field_approved=true`, back-fills `jvkn.workers.staff_id`.
+> - **on_roster filter:** `loadCanonicalStaffMap` now filters `&on_roster=eq.true` so marked-off-roster staff are excluded from scheduling views (v3.5.151).
+>
+> **eq-cards (committed + deployed 2026-06-15, `cards.eq.solutions`):**
+> - **H3 — PIN brute-force (DB):** `_verify_pin_throttled()` confirmed live on jvkn — exponential backoff 1–60 min, `pin_failed_attempts`/`pin_locked_until` columns on `shell_control.users`. Migrations 0032/0033/0034 now tracked in git.
+> - **0033 — REVOKE on sync trigger functions:** `sync_worker_to_canonical` + `sync_credential_to_canonical` EXECUTE revoked from public/anon/authenticated (vault-reading SECURITY DEFINER must not be directly callable).
+> - **0034 — invite-lookup rate limit:** `eq_cards_lookup_invite_by_phone` per-slug throttle (50 req/10 min); IP-level throttle via Shell `cards-api` gateway (new `InviteLookupApi` client).
+> - **H4 — CSP tightening:** removed stale `cdnjs.cloudflare.com` from `script-src` and `style-src` in `web/_headers` (nothing loads from that CDN). `'unsafe-inline'`/`'unsafe-eval'` remain (Flutter CanvasKit requirement — accepted, documented).
+> - **RateLimitedFailure:** new sealed subclass + user-facing message ("Too many attempts. Try again in N minutes.") surfaced by `ClaimByPhoneScreen`.
+>
+> **State — workers:**
+> - jvkn: 68 workers total; 5 authed (with shell_control.users rows); 63 uninvited (no worker_invite). 20 pending invite records exist but tied to same 4 workers.
+> - ehow: all 68 staff have `cards_worker_id` (canonical sync pipeline correct).
+> - 63 workers can't sign in via Cards — they need invite creation first. **Royce decision required** (creates and sends SMS invites to 63 real people).
 
 > ## ⏩ POST-SPRINT UPDATE — 2026-06-13 (EQ Service iframe loading fixed)
 > - **EQ Service iframe fixed (eq-shell PR #334, merged + deployed 2026-06-13T00:44:57Z):** `ServiceIframe.tsx` fallback timer 12s → 4s. Root cause: stale OTP comment — TOKEN MODE handshake completes in ~2-3s; 12s timer restarted on every refresh, showing loading screen indefinitely. Sentry breadcrumbs added (`EQ_SERVICE_READY` received = info; fallback fired = warning). Service appears within ~4s at `core.eq.solutions/sks/service`.
@@ -124,7 +144,7 @@ Snapshot 2026-05-30. **Verify before relying on the git/worktree lines** — the
 | repo | branch (2026-06-07) | dirty | notes |
 |------|---------------------|-------|-------|
 | **eq-shell** | `claude/worker-linker-schema-fix` | 271 (CRLF noise only) | `.git` repaired 2026-06-07 (config had null bytes; HEAD was truncated). 3 active agent worktrees locked (`wf_f1c4afc6-761-4`, `agent-a3e8cad7de9a023fc`, `agent-a15dd68d59734b633`). Stale unlocked worktrees: `eq-shell-button-wt`, `eq-shell-cleanup-wt`, `eq-shell-w2-wt`, `eq-shell-ocr-wt`. Build: `pnpm run build`. |
-| **eq-cards** | `claude/cards-otp-fix-minimal` | 1 (untracked: eq-cards-marketing.html) | clean; safest repo to work in. NOT SKS. |
+| **eq-cards** | `main` | 0 | Security hardening sprint deployed 2026-06-15. Live at `cards.eq.solutions`. |
 | **eq-intake** | `revert/intake-matrix-spike` | 0 | upstream gone — dead branch; switch to main before starting new work. |
 | **eq-solves-field** | `revert/licence-admin` | 157 (CRLF noise only) | `.git` packed-refs repaired 2026-06-07. Vanilla HTML/JS/CSS; version-stamp every release. |
 | **eq-solves-service** | `claude/posthog-canonical-distinct-id` | 0 | 1 commit ahead of origin (unpushed). `npm run check` before push. |
