@@ -14,6 +14,24 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-06-15 — SKS Field staff: tenant-bug fix + full roster load
+
+**Completed (live + verified):**
+- [x] **Root cause found + fixed** — `workers-canonical-sync` v4: tenant constant `dcb71d03`(EQ)→`7dee117c`(SKS), auto `field_approved=true`, `employment_type` from `eq_role`. Deployed.
+- [x] **EQ Field staff 0 → 67** (48 Direct / 11 Apprentice / 8 Labour Hire), all SKS-tagged + approved; 171 licences intact.
+- [x] **Cleanup** — removed test-pilot + Emma Curth at source; re-pointed Collin's 7 licences to his live row + removed dup; kept Daniel Bower.
+- [x] **`on_roster`** column + `field_people` view (57 on / 10 off); apprentice `year_level` set (11).
+- [x] **Substrate** — `eq/field/staff-site-visibility-model.md` (PR #26 merged) + `ops/decisions.md` 2026-06-15 entry.
+
+**Open / next:**
+- [ ] **on_roster app filter** — make the eq-field roster grid filter on `on_roster` (code + deploy).
+- [ ] **Login hook** (phone-dedup) — workers still can't sign in (separate track; `ops/decisions.md`).
+- [ ] **Curate `sites.field_enabled`** — 591 all enabled → trim to live jobs.
+- [ ] **Daniel Bower** — confirm leaver / remove.
+- [ ] **Generalise `workers-canonical-sync`** — currently single-tenant (hardcodes SKS+ehow).
+
+---
+
 ## ⏩ Session close — 2026-06-15 (part b) — v3.5.146 + v3.5.147 + canonical architecture rethink
 
 **Completed:**

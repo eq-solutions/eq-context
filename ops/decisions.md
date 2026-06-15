@@ -13,6 +13,35 @@ Append-only log.
 
 ---
 
+## 2026-06-15 — SKS Field Staff: Tenant-Constant Bug Fixed; Full Roster Loaded via Pipeline
+
+**Status:** Done (executed + verified live 2026-06-15). Code: `workers-canonical-sync` edge fn (jvkn) v4. Data: ehow `app_data.staff`. Model doc: [eq/field/staff-site-visibility-model.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/field/staff-site-visibility-model.md).
+
+**Root cause (why EQ Field showed zero SKS staff):** the `workers-canonical-sync` edge function hard-coded `SKS_TENANT_ID = dcb71d03…` — that is the **EQ/core** tenant, not SKS (`7dee117c`). Every synced worker was stamped onto the EQ tenant; EQ Field reads the SKS tenant → empty. The comment even claimed "SKS tenant_id … verified 2026-06-13" — verified backwards. A second gate compounded it: the function never set `field_approved`, and the `field_people` view filters `field_approved IS TRUE OR NULL` — all rows were `false`, so everyone was hidden regardless of tenant.
+
+**Fix (deployed v4):** constant → `7dee117c`; set `field_approved = true` on sync (auto-approve pipeline-loaded staff); map `employment_type` from `workers.role` (`apprentice`→Apprentice, `labour_hire`→Labour Hire, else Direct).
+
+**Then, all via the pipeline (jvkn.workers → trigger → sync → ehow):**
+- Re-synced the existing 35 → correct SKS tenant + approved.
+- Cleanup: deleted test-pilot + Emma Curth at source; re-pointed Collin Toohey's 7 licences from his dead duplicate to his live row, removed the empty dup; **kept Daniel Bower** (not on authoritative list — confirm leaver).
+- Loaded the 32 missing (apprentices, labour-hire, missing directs/supervisors) into `jvkn.workers` (E.164 phones, mapped `eq_role`) → synced onto the SKS shelf.
+- Result: **67 staff live in EQ Field** (48 Direct / 11 Apprentice / 8 Labour Hire); 171 licences intact.
+
+**Model/schema added:** `app_data.staff.on_roster boolean default true` + exposed in `field_people` view; seeded **57 on / 10 off** (office/management off; field supervisors kept on). `on_roster` = "appears on the weekly roster as an assignable resource, independent of role." Apprentice `year_level` set for all 11.
+
+**Why pipeline, not direct writes:** keeps jvkn (control plane) the source of truth; the trigger fan-out upserts on `cards_worker_id` (no dupes). Direct ehow writes used only for tenant-operational fields that don't live in jvkn (licence re-point, `on_roster`, `year_level`).
+
+**Still open:**
+- **on_roster app filter** — the EQ Field roster grid must filter on `on_roster`; column+view ready but the `eq-field` code change + deploy is not done. Until then the flag is data only.
+- **Login still blocked** — the phone-dedup hook (entry below) is unfixed; workers can't yet sign in. Field *visibility* is fixed; *authentication* is the separate track.
+- **`workers-canonical-sync` is single-tenant** (hardcodes SKS + ehow). Fine while SKS is the only synced tenant; needs per-worker tenant resolution before a second tenant uses it.
+- **Sites** — 591 all `field_enabled = true`; curate to live (`field_sites` view already enforces the flag).
+- **Daniel Bower** — retained; confirm leaver.
+
+**Cross-ref:** complements the same-day eq-field v3.5.146/147 canonical worker-link bridge (`people.worker_id`, stub-on-write) — see `eq/pending.md` 2026-06-15 (part b). That path creates jvkn.workers stubs from Field; this entry's pipeline syncs jvkn.workers → ehow staff. Both feed the jvkn↔ehow correlation; reconcile the stub-creation vs sync ownership when Cards onboarding becomes the sole creator.
+
+---
+
 ## 2026-06-15 — Phone Identity Deduplication: Hook Must Match by Phone, Not UUID Only
 
 **Status:** Proposed (pattern identified; fix not yet landed). Implementation target: `custom_access_token_hook` in eq-canonical migration. Related data fix: Luke Wheeler data patch 2026-06-15 (same pattern as Royce identity consolidation 2026-06-10 and SKS health check 2026-06-11).
