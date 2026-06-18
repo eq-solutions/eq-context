@@ -9,6 +9,35 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-06-18] v3.5.163 — Apprentices: fix year level pre-fill on setup (PR #305, merged)
+**Built by:** Royce Milmlow + Claude Code
+
+`openSetupProfile` was hardcoding year level to `'1'` before the person lookup. Added one line to read `person.year_level` from STATE.people after the lookup — modal now opens pre-filled to match the contacts card.
+
+---
+
+## [2026-06-18] v3.5.162 — Apprentices: SKS tenant unlock (PR #304, merged)
+**Built by:** Royce Milmlow + Claude Code
+
+- 11 apprentice tables created in SKS tenant DB (ehowgjardagevnrluult): `apprentice_profiles`, `apprentice_journal`, `skills_ratings`, `competencies`, `feedback_entries`, `feedback_requests`, `rotations`, `buddy_checkins`, `quarterly_reviews`, `engagement_log`, `checkins`
+- `person_id`/`supervisor_id`/`buddy_id` in `apprentice_profiles` adapted to `bigint` (SKS `people.id` = bigint, unlike EQ uuid)
+- 11 standard electrical competencies seeded
+- `module_entitlements` flipped to `enabled=true` in jvkn for all 11 apprentice modules on SKS org
+- GRANT SELECT/INSERT/UPDATE/DELETE on all tables to anon role (captured in migration `grant_apprentice_tables_to_anon`)
+- Nav: removed `nav-apprentices` + `ditem-apprentices` from SKS hide list
+
+**Human Recognition context:** Apprentice module is the first full expression of the EQ recognition philosophy — journal (private by default, apprentice-owned), peer acknowledgments, skills growth tracking, feedback on apprentice's terms. Worker-first design verified before SKS unlock.
+
+---
+
+## [2026-06-18] v3.5.161 — Nav: Safety group + hide PIN Management (PR #303, merged)
+**Built by:** Royce Milmlow + Claude Code
+
+- Site Audits, Safety (Prestarts/Toolbox), and Safety Report collapsed into collapsible "Safety ▾" group. Auto-expands for SKS tenant.
+- PIN Management hidden (`nav-pins`) — individual worker PIN feature is orphaned without the labour hire login tier.
+
+---
+
 ## [2026-06-15] v3.5.147 — Canonical worker write (PR #288, merged)
 **Built by:** Royce Milmlow + Claude Code
 

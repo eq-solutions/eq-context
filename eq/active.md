@@ -1,7 +1,7 @@
 ---
 title: EQ Field — Active State (Rolling)
 owner: Royce Milmlow
-last_updated: 2026-06-15
+last_updated: 2026-06-18
 scope: Current live state of EQ Field product
 read_priority: critical
 status: live
@@ -9,7 +9,7 @@ status: live
 
 # EQ Field — Active State
 
-**Current version:** v3.5.147 · **Deployed:** `field.eq.solutions` + `field.sks.eq.solutions`
+**Current version:** v3.5.163 · **Deployed:** `eq-solves-field.netlify.app` + `core.eq.solutions/sks/field`
 **Repo:** `eq-solutions/eq-field` (main branch, auto-deploy via Netlify)
 
 ---
@@ -41,6 +41,10 @@ RLS WITH CHECK hardened on all 14 write policies. Adapter view architecture:
 
 **Data counts:** 39 staff · 591 sites · 171 licences · 0 roster rows (data entry needed)
 
+**Apprentice module (2026-06-18):** 11 tables created (apprentice_profiles, journal, skills_ratings, competencies, feedback_entries, feedback_requests, rotations, buddy_checkins, quarterly_reviews, engagement_log, checkins). 11 standard electrical competencies seeded. All module_entitlements flipped to enabled in jvkn. person_id/supervisor_id/buddy_id are bigint (adapted from EQ uuid pattern). Nav unlocked.
+
+**Acknowledgments (2026-06-18):** `acknowledgments` table live on ehow. One-tap peer recognition working at core.eq.solutions/sks/field → Contacts → profile eye icon.
+
 ---
 
 ## Modules live
@@ -60,7 +64,8 @@ RLS WITH CHECK hardened on all 14 write policies. Adapter view architecture:
 | Resources (Resource Allocation) | sks | Tenant-gated |
 | Site Reports / Diary | All | |
 | Projects / Forecast | Enterprise | Melbourne demo |
-| Apprentices | EQ only | SKS nav hidden |
+| Apprentices | All | SKS enabled v3.5.162 — 11 tables + competencies seeded |
+| Acknowledgments (peer recognition) | All | v3.5.159 — one-tap, peer-to-peer |
 | Site Audits | All | v3.5.112 |
 
 ---

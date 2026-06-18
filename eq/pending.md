@@ -14,6 +14,29 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-06-18 — Apprentices SKS unlock + Recognition philosophy
+
+**Completed (live + verified):**
+- [x] **v3.5.161 merged** — Safety nav group (collapsible); PIN Management hidden
+- [x] **v3.5.159 acknowledgments** — `acknowledgments` table applied to SKS tenant DB (ehow). One-tap peer recognition live at core.eq.solutions/sks/field
+- [x] **CLAUDE.md architecture fix** — corrected stale sks-nsw-labour confusion; added SKS disambiguation block; canonical-driven tenant resolution documented (PR #302)
+- [x] **v3.5.162 merged** — Apprentices full SKS unlock: 11 tables, 11 competencies, canonical entitlements, anon GRANTs, nav unlocked
+- [x] **v3.5.163 merged** — Year level pre-fill fix on Set Up Profile modal
+
+**Human Recognition Philosophy (2026-06-18):**
+- Steelmanned against the filter question (does this help understand/support/recognise/develop another person?). All apprentice features pass.
+- Key design decisions validated: journal private by default, feedback apprentice-initiated, no streaks/gamification.
+- Acknowledged limit: tool amplifies culture, cannot create it. Needs supervisors who give a damn.
+
+**Open / next:**
+- [ ] **Quarterly reviews UI** — table exists in DB, no UI built yet. Decide visibility (self-only vs supervisor-visible) before building
+- [ ] **Acknowledgments smoke test** — verify eye icon → ack flow works end-to-end on SKS at core.eq.solutions/sks/field
+- [ ] **on_roster app filter** — make roster grid filter on `on_roster` (carried from 2026-06-15)
+- [ ] **Curate `sites.field_enabled`** — 591 all enabled → trim to live jobs
+- [ ] **`EQ_SECRET_SALT` rotation** — demo salt was exposed in chat; rotate when convenient
+
+---
+
 ## ⏩ Session close — 2026-06-15 — SKS Field staff: tenant-bug fix + full roster load
 
 **Completed (live + verified):**
