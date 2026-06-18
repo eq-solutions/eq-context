@@ -59,9 +59,16 @@ status: closed
 - on_roster roster grid filter (carried from 2026-06-15)
 - EQ_SECRET_SALT rotation on eq-solves-field
 
+### docs: CLAUDE.md schema correction (PR #308)
+- Corrected stale "people.id / managers.id are bigint on SKS" rule
+- The canonical adapter views (app_data.field_people / field_managers) expose uuid IDs on the SKS EQ Field tenant
+- New rule: all person-referencing columns (person_id, supervisor_id, buddy_id) are uuid on both tenants
+- Documents the 2026-06-18 incident: apprentice_profiles created with bigint → 400s on save → fixed by migration fix_apprentice_profiles_uuid_columns
+
 ## Versions shipped
 | Version | PR | Description |
 |---|---|---|
 | v3.5.161 | #303 | Nav: Safety group + hide PIN Management |
 | v3.5.162 | #304 | Apprentices: SKS tenant unlock |
 | v3.5.163 | #305 | Apprentices: fix year level pre-fill on setup |
+| docs | #308 | CLAUDE.md: correct schema gotcha — person IDs are uuid on both tenants |
