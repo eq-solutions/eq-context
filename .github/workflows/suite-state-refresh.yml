@@ -1,0 +1,46 @@
+name: Refresh suite-state.md
+
+on:
+  schedule:
+    # 10:00 UTC = 8pm AEST. Always-on — no dependency on Claude being open.
+    - cron: '0 10 * * *'
+  push:
+    branches: [main]
+    paths:
+      # Re-run if the script itself changes
+      - '.github/scripts/refresh_suite_state.py'
+  workflow_dispatch:
+    # Manual trigger from GitHub Actions UI
+
+permissions:
+  contents: write   # commit suite-state.md back to main
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_PAT }}   # PAT with repo:read on eq-solutions org
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - run: pip install requests
+
+      - name: Refresh suite-state.md
+        env:
+          SUPABASE_URL:              https://ehowgjardagevnrluult.supabase.co
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY_EHOW }}
+          GH_TOKEN:                  ${{ secrets.GH_PAT }}
+          NETLIFY_TOKEN:             ${{ secrets.NETLIFY_TOKEN }}
+        run: python .github/scripts/refresh_suite_state.py
+
+      - name: Commit if changed
+        run: |
+          git config user.name  "eq-suite-bot"
+          git config user.email "bot@eq.solutions"
+          git add suite-state.md
+          git diff --staged --quiet && echo "No changes" || \
+            git commit -m "chore: nightly suite state refresh $(date -u +%Y-%m-%d)" && git push
