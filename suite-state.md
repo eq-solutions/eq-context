@@ -1,3 +1,8 @@
+---
+title: EQ Suite — Current State
+description: Live suite state refreshed nightly from Supabase, GitHub, and Netlify. Read this first every session.
+---
+
 # EQ Suite — Current State
 _Last verified: 2026-06-22 (live query). Updated nightly by autonomous cron._
 _If this file is >48h old, the cron is broken._
