@@ -55,6 +55,11 @@ The following worktrees were confirmed merged and removed:
 | eq-shell-cleanup-wt | claude/b2-b6-b10-cleanup | already gone |
 | eq-shell-w2-wt | claude/s2-shell-wave2 | already gone |
 | eq-shell-ocr-wt | claude/ocr-parse-auth-gate | already gone |
+| .claude/worktrees/agent-a1505563b4d31152d | orphaned agent run (2026-06-06) | git ref removed; dir pruned via robocopy 2026-06-22 |
+| .claude/worktrees/agent-a4618efa0ee02cddc | orphaned agent run (2026-06-15) | git ref removed; dir pruned via robocopy 2026-06-22 |
+| .claude/worktrees/agent-ac706c691af65192a | orphaned agent run (2026-05-28) | git ref removed; dir pruned via robocopy 2026-06-22 |
+| .claude/worktrees/jovial-hamilton-68009e | orphaned (2026-06-18) | git ref removed; dir removed 2026-06-22 |
+| .claude/worktrees/vigilant-haslett-5bbbfb | orphaned (2026-06-16) | git ref removed; dir removed 2026-06-22 |
 
 ---
 
