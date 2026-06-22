@@ -5,6 +5,7 @@ created: 2026-06-08
 last_updated: 2026-06-08
 scope: Close all remaining UI consistency gaps across Shell, Service, Field, Cards, Intake
 status: active
+read_priority: reference
 ---
 
 # Sprint — UI Consistency Closure

@@ -1,10 +1,14 @@
 ---
 title: Canonical Wiring — Deploy Runbook
 date: 2026-06-07
-status: ready — nothing applied or deployed yet
+status: archived
 covers: the 6-step canonical wiring program built 2026-06-07 (see sessions/2026-06-07.md)
 rule: SKS-tier infra (ehow / nspb / sks tenant plane) is touched in several steps → Royce-gated.
   Tenant-plane DDL goes through the eq-shell One Pipe (tenant-migrate.yml), never hand-applied.
+owner: Royce Milmlow
+last_updated: 2026-06-07
+scope: 6-step canonical wiring deploy runbook built 2026-06-07 — superseded by live system
+read_priority: reference
 ---
 
 # Canonical Wiring — Deploy Runbook

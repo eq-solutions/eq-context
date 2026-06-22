@@ -4,11 +4,6 @@ on:
   schedule:
     # 10:00 UTC = 8pm AEST. Always-on — no dependency on Claude being open.
     - cron: '0 10 * * *'
-  push:
-    branches: [main]
-    paths:
-      # Re-run if the script itself changes
-      - '.github/scripts/refresh_suite_state.py'
   workflow_dispatch:
     # Manual trigger from GitHub Actions UI
 
@@ -20,8 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GH_PAT }}   # PAT with repo:read on eq-solutions org
+        # GITHUB_TOKEN has contents:write via permissions above
 
       - uses: actions/setup-python@v5
         with:
@@ -32,8 +26,9 @@ jobs:
       - name: Refresh suite-state.md
         env:
           SUPABASE_URL:              https://ehowgjardagevnrluult.supabase.co
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY_EHOW }}
-          GH_TOKEN:                  ${{ secrets.GH_PAT }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          # eq-solutions repos are public — GITHUB_TOKEN is sufficient for PR reads
+          GH_TOKEN:                  ${{ secrets.GITHUB_TOKEN }}
           NETLIFY_TOKEN:             ${{ secrets.NETLIFY_TOKEN }}
         run: python .github/scripts/refresh_suite_state.py
 

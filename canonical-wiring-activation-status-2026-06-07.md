@@ -1,8 +1,12 @@
 ---
 title: Canonical Wiring — Activation Status & Morning Continuation
 date: 2026-06-07 (EOD)
-status: ACTIVATED — 5/5 surfaces deployed; 3 bugs caught + fixed; 3 gated items remain for Royce
+status: archived
 companion: canonical-wiring-deploy-runbook-2026-06-07.md (the plan); this doc (what actually happened + what's left)
+owner: Royce Milmlow
+last_updated: 2026-06-07
+scope: Canonical wiring activation log — what shipped 2026-06-07 and what remained gated
+read_priority: reference
 ---
 
 # Canonical Wiring — Activation Status (2026-06-07 EOD)

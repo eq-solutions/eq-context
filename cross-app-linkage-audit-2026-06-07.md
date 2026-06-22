@@ -1,10 +1,14 @@
 ---
 title: Cross-App Linkage Audit — EQ Suite
 date: 2026-06-07
-status: live-verified
+status: archived
 method: Supabase MCP queries (4 projects) + code-seam audit (5 repos) on 2026-06-07
 verifies: cross-repo-contracts, eq-platform-verified-state-2026-06-03, identity-convergence-target-2026-06-04
 rule: live system is ground truth; design docs are leads. Where they disagree, live wins (noted inline).
+owner: Royce Milmlow
+last_updated: 2026-06-07
+scope: Cross-app linkage audit across 4 Supabase projects and 5 repos — 2026-06-07 snapshot
+read_priority: reference
 ---
 
 # Cross-App Linkage Audit — EQ Suite (2026-06-07)

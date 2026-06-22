@@ -2,9 +2,12 @@
 title: WS1 customer convergence — partial APPLIED (Tier S + safe quotes backfill)
 date: 2026-06-07
 project: ehowgjardagevnrluult (sks-canonical) · schemas app_data + public
-status: applied, verified, reversible — safe subset only; ambiguous remainder HELD
+status: archived
 scope: EQ-managed canonical plane (NOT nspb/SKS-live). Non-destructive (soft `active=false` + nullable backfill). No deploy, no app code.
 approval: Royce "you have my approval, steelman first then go for it" (2026-06-07)
+owner: Royce Milmlow
+last_updated: 2026-06-07
+read_priority: reference
 ---
 
 # WS1 customer convergence — what was applied (2026-06-07)

@@ -1,12 +1,15 @@
 ---
 title: SPRINT — Cross-App Linkage Convergence
 date: 2026-06-07
-status: ready — execution gated per item
+status: archived
 sources: cross-app-linkage-audit-2026-06-07.md (+ §1a steelman corrections), cross-app-linkage-remediation-plan-2026-06-07.md
 owner: Royce Milmlow
 rule: every executable step is GATED. Nothing in this sprint has been run. Tenant-plane DDL via the One Pipe
   (eq-shell tenant-migrate.yml); nspb via sks-nsw-labour repo; ktmj via eq-solves-field repo. SKS-live untouchable
   without "SKS live". Auth changes need chat review. No deploy/commit without explicit go.
+last_updated: 2026-06-07
+scope: Sprint plan for cross-app linkage convergence — 2026-06-07, now complete
+read_priority: reference
 ---
 
 # SPRINT — Cross-App Linkage Convergence

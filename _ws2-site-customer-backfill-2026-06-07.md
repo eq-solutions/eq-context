@@ -2,8 +2,11 @@
 title: WS2 site→customer backfill — APPLIED
 date: 2026-06-07
 project: ehowgjardagevnrluult (sks-canonical) · schema app_data
-status: applied, verified, reversible
+status: archived
 scope: EQ-managed canonical plane (NOT nspb/SKS-live). No schema change, no deploy, no app code.
+owner: Royce Milmlow
+last_updated: 2026-06-07
+read_priority: reference
 ---
 
 # WS2 — site→customer backfill (APPLIED 2026-06-07)

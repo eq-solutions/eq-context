@@ -1,4 +1,3 @@
-<!-- Last updated: 2026-06-07. Streams above reflect Sprint 5 completions. Active sprint: see sks-live-sprint-2026-06-07.md -->
 ---
 title: Autonomous Sprint — Board
 owner: Royce Milmlow
@@ -7,6 +6,7 @@ scope: Full sprint backlog + ownership/claims across all EQ streams; the coordin
 read_priority: critical
 status: live
 ---
+<!-- Last updated: 2026-06-07. Streams above reflect Sprint 5 completions. Active sprint: see sks-live-sprint-2026-06-07.md -->
 
 # Autonomous Sprint — BOARD (single source of truth for who's doing what)
 

@@ -1,3 +1,12 @@
+---
+title: EQ Service → Canonical Spine — Decision + Design
+owner: Royce Milmlow
+last_updated: 2026-06-16
+scope: Decision record: EQ Service reads customers/sites from canonical spine (app_data.*) on ehow
+read_priority: reference
+status: live
+---
+
 # EQ Service → Canonical Spine (customers/sites) — Decision + Design (2026-06-16)
 
 **Status:** DRAFT for Royce sign-off. Build follows approval, phase by phase.
@@ -27,7 +36,10 @@ This record is the single source of truth for the SoR decision. Mirror a one-lin
 - ✅ **Read-flip authored** — discovered the `service.customers/sites/assets` bridge views ALREADY exist on ehow (MCP-applied 2026-06-15, never backfilled to disk; they're views so `list_tables` missed them) but were broken: no `is_active` column (eq-service filters `.eq('is_active',true)` everywhere → **400 on undefined column**) and no `service_enabled` scoping. Fix = **`0127_service_spine_views_scoped.sql`** (eq-shell PR #389) — adds `is_active`, `service_enabled` scoping (assets via parent site), and null-aliases the columns Service selects with no canonical source. Apply via the One Pipe.
 - ✅ **Greeting + wizard** — eq-service PR #307 (land on dashboard for Shell/JWT sessions; greet by `app_metadata.name`, first-name, falls back to "there") + eq-shell PR #389 (`token-exchange` threads `user.name` into the JWT `app_metadata`).
 - **Decisions captured:** D2 = **edit-anywhere write-through** (NOT Intake-only) — every app reads+edits the canonical record; *create* guarded by dedupe-on-write. D5 = **drop the wizard** on the embedded path.
-- **Remaining (Royce / follow-up builds):** (a) dispatch One Pipe to apply 0127; (b) merge+deploy PR #389 then #307; (c) **edit-anywhere writes** — make the views updatable via `INSTEAD OF` triggers → app_data (D2 full impl); (d) harden `canonical-api` customer dedupe-on-create with normalized-name match (ABNs empty 1/266); (e) regenerate eq-service `database.types.ts` (stale — describes legacy `public` shape); (f) verify PostgREST `customers(name)` embedding works through the views (dashboard map) — may need a small eq-service fetch tweak.
+- **✅ SHIPPED 2026-06-16:** dedupe (8 clean customers); eq-shell PR #389 + eq-service PR #307 merged+deployed (name-in-JWT, greeting by name, dashboard landing, wizard dropped on embedded path); **0127 applied to sks/ehow via One Pipe run 27611977992 + verified live** — `service.customers`=8, `service.sites`=67, `service.assets`=4769, `is_active` present, customer/site/asset reads no longer 400.
+- **✅ Customer edit-anywhere shipped (0128, PR #391):** the 3 service.* views are now writable via `INSTEAD OF` triggers (UPDATE→app_data, soft DELETE, INSERT with customer name-dedupe); 4 customer columns (code/logo_url/logo_url_on_dark/contract_template) added to canonical. Applied to sks via One Pipe (gate-approved).
+- **Site/asset edit DEFERRED (Royce 2026-06-16):** read-only from canonical for now. Follow-up 0129 = add site-access fields + asset `maximo_id` to canonical; keep `job_plan_id`/`dark_site_test` Service-local.
+- **Remaining polish:** (d) harden `canonical-api` dedupe-on-create (normalized name; ABNs empty 1/266); (e) regenerate eq-service `database.types.ts` (stale legacy `public` shape); (f) verify PostgREST `customers(name)` embed through the views (dashboard map).
 
 ---
 

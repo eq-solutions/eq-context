@@ -8,6 +8,8 @@ method: READ-ONLY — no migrations, no DB writes, no deploys, no PRs
 note: This file lives at repo root. Per the F2 finding below, the sync-context
   workflow does NOT ingest root-level working docs, so this audit will NOT appear
   in the Supabase context_files mirror. GitHub (this repo) is the source of truth.
+owner: Royce Milmlow
+read_priority: reference
 ---
 
 # EQ Platform Architecture Audit — 2026-06-02

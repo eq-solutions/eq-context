@@ -1,3 +1,12 @@
+---
+title: Worktree Registry
+owner: Royce Milmlow
+last_updated: 2026-06-22
+scope: Active and stale git worktrees — check before creating a new one
+read_priority: critical
+status: live
+---
+
 # Worktree Registry
 
 Agents MUST add a row to Active before creating a worktree.

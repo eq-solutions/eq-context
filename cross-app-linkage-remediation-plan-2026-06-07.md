@@ -1,12 +1,15 @@
 ---
 title: Cross-App Linkage — Remediation Plan
 date: 2026-06-07
-status: plan — review-gated (no live changes made)
+status: archived
 companion_to: cross-app-linkage-audit-2026-06-07.md
 owner: Royce Milmlow
 rule: every executable step below is GATED. Nothing here has been run. Tenant-plane DDL goes through the
   One Pipe (eq-shell tenant-migrate.yml); nspb via sks-nsw-labour repo; ktmj via eq-solves-field repo.
   SKS-live (nspb) is untouchable without an explicit "SKS live" instruction. Auth changes need chat review.
+last_updated: 2026-06-07
+scope: Remediation plan for cross-app linkage gaps found 2026-06-07 — superseded by live wiring
+read_priority: reference
 ---
 
 # Cross-App Linkage — Remediation Plan (2026-06-07)
