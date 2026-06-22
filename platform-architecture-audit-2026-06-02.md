@@ -2,7 +2,7 @@
 title: Platform Architecture Audit
 last_updated: 2026-06-22
 type: audit
-status: live-verified
+status: archived
 scope: eq-shell, eq-context, eq-solves-service, eq-solves-field, eq-quotes, eq-cards, eq-roles
 method: READ-ONLY — no migrations, no DB writes, no deploys, no PRs
 note: This file lives at repo root. Per the F2 finding below, the sync-context
