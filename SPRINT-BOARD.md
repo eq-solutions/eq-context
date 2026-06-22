@@ -1,7 +1,7 @@
 ---
 title: Autonomous Sprint — Board
 owner: Royce Milmlow
-last_updated: 2026-06-07
+last_updated: 2026-06-22
 scope: Full sprint backlog + ownership/claims across all EQ streams; the coordination contract
 read_priority: critical
 status: live

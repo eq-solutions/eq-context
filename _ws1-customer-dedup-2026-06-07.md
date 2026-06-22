@@ -6,7 +6,7 @@ status: archived
 scope: EQ-managed canonical plane (NOT nspb/SKS-live). Non-destructive (soft `active=false` + nullable backfill). No deploy, no app code.
 approval: Royce "you have my approval, steelman first then go for it" (2026-06-07)
 owner: Royce Milmlow
-last_updated: 2026-06-07
+last_updated: 2026-06-22
 read_priority: reference
 ---
 

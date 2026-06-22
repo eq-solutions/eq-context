@@ -2,7 +2,7 @@
 title: Sprint — UI Consistency Closure (EQ Suite)
 owner: Royce Milmlow
 created: 2026-06-08
-last_updated: 2026-06-08
+last_updated: 2026-06-22
 scope: Close all remaining UI consistency gaps across Shell, Service, Field, Cards, Intake
 status: active
 read_priority: reference

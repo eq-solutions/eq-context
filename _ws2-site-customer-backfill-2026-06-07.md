@@ -5,7 +5,7 @@ project: ehowgjardagevnrluult (sks-canonical) · schema app_data
 status: archived
 scope: EQ-managed canonical plane (NOT nspb/SKS-live). No schema change, no deploy, no app code.
 owner: Royce Milmlow
-last_updated: 2026-06-07
+last_updated: 2026-06-22
 read_priority: reference
 ---
 

@@ -1,6 +1,6 @@
 ---
 title: Platform Architecture Audit
-last_updated: 2026-06-08
+last_updated: 2026-06-22
 type: audit
 status: live-verified
 scope: eq-shell, eq-context, eq-solves-service, eq-solves-field, eq-quotes, eq-cards, eq-roles

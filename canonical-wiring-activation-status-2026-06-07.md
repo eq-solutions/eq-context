@@ -4,7 +4,7 @@ date: 2026-06-07 (EOD)
 status: archived
 companion: canonical-wiring-deploy-runbook-2026-06-07.md (the plan); this doc (what actually happened + what's left)
 owner: Royce Milmlow
-last_updated: 2026-06-07
+last_updated: 2026-06-22
 scope: Canonical wiring activation log — what shipped 2026-06-07 and what remained gated
 read_priority: reference
 ---

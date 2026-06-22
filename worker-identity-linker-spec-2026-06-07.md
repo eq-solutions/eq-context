@@ -1,7 +1,7 @@
 ---
 title: Worker Identity Linker — Spec
 owner: Royce Milmlow
-last_updated: 2026-06-07
+last_updated: 2026-06-22
 scope: Spec for linking canonical workers to auth.users — 2026-06-07
 read_priority: reference
 status: archived

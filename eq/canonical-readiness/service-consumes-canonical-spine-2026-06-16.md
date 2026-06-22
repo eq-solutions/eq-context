@@ -1,7 +1,7 @@
 ---
 title: EQ Service → Canonical Spine — Decision + Design
 owner: Royce Milmlow
-last_updated: 2026-06-16
+last_updated: 2026-06-22
 scope: Decision record: EQ Service reads customers/sites from canonical spine (app_data.*) on ehow
 read_priority: reference
 status: live
