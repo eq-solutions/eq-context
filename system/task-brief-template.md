@@ -1,3 +1,12 @@
+---
+title: Task Brief Template
+owner: Royce Milmlow
+last_updated: 2026-06-22
+scope: Copy-paste template for Claude session handoffs — fill from live system, not docs
+read_priority: critical
+status: live
+---
+
 # Task Brief Template
 
 Copy this block at the start of any non-trivial handoff to Claude.
