@@ -27,7 +27,6 @@ Check this file first — if your target repo/area is already claimed, coordinat
 | .claude/worktrees/wf_f1c4afc6-761-4 | claude/d33a-icon-rail-d51-ui | workflow agent | 2026-06-07 | locked |
 | .claude/worktrees/agent-a3e8cad7de9a023fc | claude/quality-polish-shell | agent | 2026-06-07 | locked |
 | .claude/worktrees/agent-a15dd68d59734b633 | worktree-agent-a15dd68d59734b633 | agent | 2026-06-07 | locked |
-| .claude/worktrees/great-gagarin-cf0295 | claude/great-gagarin-cf0295 | housekeep session | 2026-06-22 | PR #437 open — merge then prune |
 
 ---
 
@@ -37,6 +36,7 @@ Check this file first — if your target repo/area is already claimed, coordinat
 |--------|--------|-------|
 | .claude/worktrees/epic-herschel-83d77a | claude/epic-herschel-83d77a | merged; git ref removed; directory held by Claude Code file watcher — run cleanup-stale-worktrees.ps1 after closing Claude Code |
 | .claude/worktrees/competent-panini-c33310 | claude/competent-panini-c33310 | squash-merged as 8392609; local branch deleted; dir held by Claude Code file watcher — same cleanup script |
+| .claude/worktrees/great-gagarin-cf0295 | claude/great-gagarin-cf0295 | PR #437 merged 2026-06-22; dir held by Claude Code file watcher — same cleanup script |
 
 ---
 
