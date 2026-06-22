@@ -1,6 +1,10 @@
 ---
 title: EQ Suite — Current State
-description: Live suite state refreshed nightly from Supabase, GitHub, and Netlify. Read this first every session.
+owner: Royce Milmlow
+last_updated: 2026-06-22
+scope: Live suite state — app lineup, DB counts, open PRs, architectural decisions. Auto-refreshed nightly by GitHub Action.
+read_priority: critical
+status: live
 ---
 
 # EQ Suite — Current State
