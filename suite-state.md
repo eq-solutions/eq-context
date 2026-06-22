@@ -72,6 +72,25 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
+## System Health (as of 2026-06-22)
+
+**CI on main:**
+
+| Repo | Status |
+|------|--------|
+| eq-service | ✓ success |
+| eq-shell | ? unknown |
+| eq-field | ? unknown |
+| eq-cards | ? unknown |
+| eq-solves-intake | ? unknown |
+
+**Deploys:**
+_NETLIFY_TOKEN not set — deploy status unavailable_
+
+**Migrations:** eq-service has ? applied
+
+---
+
 ## Architecture: What Owns What
 
 | Entity | Owner | Consumers |

@@ -47,30 +47,63 @@ def gh_get(path):
     )
     return resp.json() if resp.ok else []
 
-def netlify_deploy_status(site_name):
+def main_ci_status(repo):
+    """Latest CI run conclusion on main branch."""
+    data = gh_get(f"repos/eq-solutions/{repo}/actions/runs?branch=main&per_page=3&event=push")
+    if not isinstance(data, dict):
+        return "unknown"
+    runs = data.get("workflow_runs", [])
+    # Find the most recent completed run (skip in_progress)
+    for r in runs:
+        conclusion = r.get("conclusion")
+        if conclusion:
+            return conclusion  # "success", "failure", "cancelled", etc.
+    return runs[0].get("status", "unknown") if runs else "unknown"
+
+def migration_count(repo="eq-solutions/eq-service"):
+    """Count .sql migration files in supabase/migrations/ via GitHub contents API."""
+    contents = gh_get(f"repos/{repo}/contents/supabase/migrations")
+    if not isinstance(contents, list):
+        return "?"
+    sqls = [f for f in contents if isinstance(f, dict) and f.get("name", "").endswith(".sql")]
+    if not sqls:
+        return 0
+    latest = sorted(sqls, key=lambda f: f["name"])[-1]["name"]
+    return f"{len(sqls)} (latest: {latest.split('_')[0]})"
+
+def netlify_site_info(site_name):
+    """Return (state, published_at) for a Netlify site's last deploy."""
     if not NETLIFY_TOKEN:
-        return "unknown"
-    sites = requests.get(
-        "https://api.netlify.com/api/v1/sites",
-        headers={"Authorization": f"Bearer {NETLIFY_TOKEN}"},
-        params={"filter": "all"},
-        timeout=10,
-    ).json()
-    if not isinstance(sites, list):
-        return "unknown"
-    match = next((s for s in sites if site_name in (s.get("name","") + s.get("custom_domain",""))), None)
-    if not match:
-        return "unknown"
-    deploys = requests.get(
-        f"https://api.netlify.com/api/v1/sites/{match['id']}/deploys",
-        headers={"Authorization": f"Bearer {NETLIFY_TOKEN}"},
-        params={"per_page": 1},
-        timeout=10,
-    ).json()
-    if not isinstance(deploys, list) or not deploys:
-        return "unknown"
-    d = deploys[0]
-    return d.get("state", "unknown")
+        return "unknown", None
+    try:
+        sites = requests.get(
+            "https://api.netlify.com/api/v1/sites",
+            headers={"Authorization": f"Bearer {NETLIFY_TOKEN}"},
+            params={"filter": "all"},
+            timeout=10,
+        ).json()
+        if not isinstance(sites, list):
+            return "unknown", None
+        match = next(
+            (s for s in sites if site_name in (s.get("name", "") + s.get("custom_domain", ""))),
+            None,
+        )
+        if not match:
+            return "unknown", None
+        deploys = requests.get(
+            f"https://api.netlify.com/api/v1/sites/{match['id']}/deploys",
+            headers={"Authorization": f"Bearer {NETLIFY_TOKEN}"},
+            params={"per_page": 1},
+            timeout=10,
+        ).json()
+        if not isinstance(deploys, list) or not deploys:
+            return "unknown", None
+        d = deploys[0]
+        published = d.get("published_at") or d.get("created_at", "")
+        published_short = published[:10] if published else "?"
+        return d.get("state", "unknown"), published_short
+    except Exception:
+        return "unknown", None
 
 # ── 1. live counts ────────────────────────────────────────────────────────────
 
@@ -119,14 +152,30 @@ for repo in REPOS:
                 text = line[5:].strip()
                 arch_decisions.append((p["number"], p["merged_at"][:10], text))
 
-# ── 4. Netlify deploy status ──────────────────────────────────────────────────
+# ── 4. CI health on main ──────────────────────────────────────────────────────
+
+print("Checking CI health on main branches...")
+ci_health = {}
+for repo in REPOS:
+    ci_health[repo] = main_ci_status(repo)
+    print(f"  {repo}: {ci_health[repo]}")
+
+# ── 5. Migration count ────────────────────────────────────────────────────────
+
+print("Counting migrations...")
+migrations = migration_count()
+print(f"  eq-service migrations: {migrations}")
+
+# ── 6. Netlify deploy status ──────────────────────────────────────────────────
 
 print("Checking Netlify deploys...")
-deploy_status = {}
+deploy_info = {}
 for site_key, label in NETLIFY_SITES.items():
-    deploy_status[label] = netlify_deploy_status(site_key)
+    state, published = netlify_site_info(site_key)
+    deploy_info[label] = (state, published)
+    print(f"  {label}: {state} ({published})")
 
-# ── 5. Read and patch suite-state.md ─────────────────────────────────────────
+# ── 7. Read and patch suite-state.md ─────────────────────────────────────────
 
 with open("suite-state.md", "r", encoding="utf-8") as f:
     content = f.read()
@@ -136,14 +185,14 @@ m = re.search(r"\| Maintenance checks \| (\d+)", content)
 if m:
     prev_checks = int(m.group(1))
 
-# 5a. Timestamp
+# 7a. Timestamp
 content = re.sub(
     r"_Last verified:.*?\n",
     f"_Last verified: {TODAY} (nightly cron)_\n",
     content,
 )
 
-# 5b. Counts table
+# 7b. Counts table
 def fmt(v):
     return f"{v:,}" if isinstance(v, int) else str(v)
 
@@ -164,14 +213,14 @@ content = re.sub(
     flags=re.DOTALL,
 )
 
-# 5c. First-data flag
+# 7c. First-data flag
 if prev_checks == 0 and isinstance(counts["checks"], int) and counts["checks"] > 0:
     content = content.replace(
         "**SKS tenant ID",
         "⚠️ **FIRST OPERATIONAL DATA CREATED** — migration rebuild now matters.\n\n**SKS tenant ID",
     )
 
-# 5d. Open PRs section
+# 7d. Open PRs section
 pr_lines = [f"## Open PRs (as of {TODAY})\n"]
 if open_prs:
     for repo, prs in sorted(open_prs.items()):
@@ -190,13 +239,53 @@ content = re.sub(
     flags=re.DOTALL,
 )
 
-# 5e. Netlify deploy status — append to Crons section if status != "ready"
-degraded = {k: v for k, v in deploy_status.items() if v not in ("ready", "unknown", "")}
-if degraded:
-    deploy_note = "⚠️ **Deploy issues:** " + ", ".join(f"{k}={v}" for k, v in degraded.items())
-    content = content.replace("## Architecture: What Owns What", deploy_note + "\n\n## Architecture: What Owns What")
+# 7e. System health section — CI + deploys + migrations
+ci_icon = {"success": "✓", "failure": "✗", "cancelled": "⚠", "skipped": "–"}
+ci_rows = "\n".join(
+    f"| {repo} | {ci_icon.get(status, '?')} {status} |"
+    for repo, status in ci_health.items()
+)
 
-# 5f. ARCH: decisions — append new ones to Key Decisions section
+if NETLIFY_TOKEN:
+    deploy_rows = "\n".join(
+        f"| {label} | {state} | {published or '?'} |"
+        for label, (state, published) in deploy_info.items()
+    )
+    deploy_block = f"""
+| Site | State | Last deploy |
+|------|-------|-------------|
+{deploy_rows}"""
+else:
+    deploy_block = "_NETLIFY_TOKEN not set — deploy status unavailable_"
+
+health_block = f"""## System Health (as of {TODAY})
+
+**CI on main:**
+
+| Repo | Status |
+|------|--------|
+{ci_rows}
+
+**Deploys:**
+{deploy_block}
+
+**Migrations:** eq-service has {migrations} applied"""
+
+# Replace existing health section or insert before Architecture
+if "## System Health" in content:
+    content = re.sub(
+        r"## System Health.*?(?=\n---|\n## Architecture)",
+        health_block + "\n",
+        content,
+        flags=re.DOTALL,
+    )
+else:
+    content = content.replace(
+        "\n## Architecture: What Owns What",
+        f"\n{health_block}\n\n---\n\n## Architecture: What Owns What",
+    )
+
+# 7f. ARCH: decisions — append new ones to Key Decisions section
 existing_pr_nums = set(re.findall(r"PR #(\d+)", content))
 new_decisions = []
 for pr_num, date, text in arch_decisions:
@@ -214,7 +303,7 @@ if new_decisions:
     )
     print(f"  Added {len(new_decisions)} new ARCH decisions")
 
-# ── 6. Write back ─────────────────────────────────────────────────────────────
+# ── 8. Write back ─────────────────────────────────────────────────────────────
 
 with open("suite-state.md", "w", encoding="utf-8") as f:
     f.write(content)
