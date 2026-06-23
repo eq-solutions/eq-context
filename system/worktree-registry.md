@@ -32,11 +32,7 @@ Check this file first — if your target repo/area is already claimed, coordinat
 
 ## Stale (verify branch merged before pruning)
 
-| Folder | Branch | Notes |
-|--------|--------|-------|
-| .claude/worktrees/epic-herschel-83d77a | claude/epic-herschel-83d77a | merged; git ref removed; directory held by Claude Code file watcher — run cleanup-stale-worktrees.ps1 after closing Claude Code |
-| .claude/worktrees/competent-panini-c33310 | claude/competent-panini-c33310 | squash-merged as 8392609; local branch deleted; dir held by Claude Code file watcher — same cleanup script |
-| .claude/worktrees/great-gagarin-cf0295 | claude/great-gagarin-cf0295 | PR #437 merged 2026-06-22; dir held by Claude Code file watcher — same cleanup script |
+No stale worktrees — all pruned 2026-06-23.
 
 ---
 
