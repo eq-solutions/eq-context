@@ -8,7 +8,7 @@ status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-06-22 (live query). Updated nightly by autonomous cron._
+_Last verified: 2026-06-23 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -35,11 +35,11 @@ _If this file is >48h old, the cron is broken._
 
 | Entity | Count | Schema |
 |--------|-------|--------|
-| Sites | 633 | app_data.sites |
-| Customers | 232 | app_data.customers |
-| Assets | 4,808 | app_data.assets |
+| Sites | 0 | app_data.sites |
+| Customers | 0 | app_data.customers |
+| Assets | 0 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
-| Users | 5 | service.tenant_members |
+| Users | 0 | service.tenant_members |
 | Maintenance checks | 0 | service.maintenance_checks |
 | Defects | 0 | service.defects |
 
@@ -58,36 +58,39 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-06-22)
-
-**eq-shell:**
-- #436 feat(worker-invites): show email in invite list
-- #435 feat(pwa): web manifest + iOS meta tags
-- #428 fix(eq-ops): cost back-fill, SLAB labour, decimal display
-- #177 [DRAFT] feat(field): F1 prep
+## Open PRs (as of 2026-06-23)
 
 **eq-service:**
-- #292 docs: Shell-embed gaps (parked)
-- #302 #299 #298 #297 #296 dependabot (pending review)
+- #299 chore(deps): bump @supabase/supabase-js from 2.108.1 to 2.108.2
+- #292 docs: capture Shell-embed Service integration gaps (parked)
+
+**eq-shell:**
+- #177 [DRAFT] feat(field): F1 prep — tenant-config contract + schema-parity audit + auth-fork doc
+
+**eq-solves-intake:**
+- #35 fix(intake-demo): mobile responsiveness gaps, per-sheet error messages, SupabaseLikeClient relaxation
+- #34 fix(design): replace all inline styles with CSS classes and CSS var tokens
+- #29 docs(design): consolidate licence/document OCR onto the EQ Intake vision engine
+- #13 Smart asset import: enrichment, dup detection, site fuzzy-match, photo/PDF
 
 ---
 
-## System Health (as of 2026-06-22)
+## System Health (as of 2026-06-23)
 
 **CI on main:**
 
 | Repo | Status |
 |------|--------|
 | eq-service | ✓ success |
-| eq-shell | ? unknown |
-| eq-field | ? unknown |
-| eq-cards | ? unknown |
+| eq-shell | ⚠ cancelled |
+| eq-field | ✓ success |
+| eq-cards | ✗ failure |
 | eq-solves-intake | ? unknown |
 
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has ? applied
+**Migrations:** eq-service has 151 (latest: 0150) applied
 
 ---
 
@@ -115,6 +118,8 @@ _NETLIFY_TOKEN not set — deploy status unavailable_
 ---
 
 ## Key Decisions (auto-derived from merged PRs + manual)
+- CLAUDE.md project ID corrected from deleted urjh to live ehow (ehowgjardagevnrluult) (PR #332, 2026-06-22)
+- Auto-defect trigger ON CONFLICT regression rule moved from memory to CLAUDE.md (PR #332, 2026-06-22)
 
 - **urjh deleted 2026-06-22** — ehow (`ehowgjardagevnrluult`) is the sole DB for EQ Service (PR #327)
 - **Shell owns canonical records** — sites/customers/assets live in `app_data.*` on ehow; service.* are live views; Field sync removed from Service (PR #328, #310)
