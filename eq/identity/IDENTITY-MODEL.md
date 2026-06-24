@@ -185,7 +185,19 @@ The Supabase JWT, being short-lived, propagates role changes within at most one 
 
 Three surfaces predate or co-exist with this model and need explicit bridges:
 
-### 7.1 EQ Field (iframe — HMAC handoff)
+### 7.1 EQ Field (iframe — handoff)
+
+> **⚠️ Updated 2026-06-24 (live-verified against eq-shell + eq-solves-field source) — the HMAC handoff described below is SUPERSEDED.**
+> Per the Phase 3 cutover (see [auth-phase4-hmac-retirement-runbook.md](../../auth-phase4-hmac-retirement-runbook.md), `status: live`), the Field iframe handoff is now a **short-lived Supabase JWT**, not an HMAC token:
+> - **Mint:** eq-shell `netlify/functions/token-exchange.ts` — HS256, signed with `SUPABASE_JWT_SECRET`, **60-second TTL**, `source_app = field:<slug>`, built from `session.tenant_id` (active tenant). The HMAC `mint-iframe-token.ts` / `signShellToken` is **dead code** — no caller, file absent; only referenced in comments.
+> - **Token mode** (SKS — host off `.eq.solutions`): iframe src `https://eq-field.netlify.app/?tenant=<slug>#sh=<jwt>&cid=<uuid>`. Field `verify-pin.js` (action `verify-shell-token`) verifies the JWT with `SUPABASE_JWT_SECRET` and skips the PIN gate.
+> - **Cookie mode** (Field on `.eq.solutions`, e.g. `field.eq.solutions`): src `?tenant=<slug>&shell=1&cid=<uuid>` — the shared `eq_shell_session` cookie rides; `verify-pin` reads it (no `#sh=`).
+> - `cid` (correlation id) rides **alongside** `#sh=` (never inside the signed token) for Shell→Field Sentry threading.
+> - The 5-tier → 2-tier role mapping below still applies, but it is carried in the JWT's `app_metadata`, not in `mint-iframe-token.ts`.
+>
+> **Still stale elsewhere:** the repo `CLAUDE.md` in both eq-shell and eq-solves-field also describe the HMAC `mint-iframe-token` path and need the same correction.
+
+*Historical (2026-05-24 plan — see callout above for live state):*
 
 EQ Field is loaded via iframe with a 60-second HMAC handoff token from `/.netlify/functions/mint-iframe-token`. The token currently carries `{ kind, name, role: 'staff' | 'supervisor', exp }`.
 
