@@ -32,7 +32,9 @@ Check this file first — if your target repo/area is already claimed, coordinat
 
 ## Stale (verify branch merged before pruning)
 
-No stale worktrees — all pruned 2026-06-23.
+| Folder | Branch | Agent / Session | Notes |
+|--------|--------|-----------------|-------|
+| .claude/worktrees/magical-bouman-3bd9c9 | claude/magical-bouman-3bd9c9 | eq-shell agent | PR #440 merged 2026-06-24. Git ref pruned. Dir locked by file watcher — run `cleanup-stale-worktree.ps1` in eq-shell root when process releases. |
 
 ---
 
