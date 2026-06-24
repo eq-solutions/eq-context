@@ -91,18 +91,22 @@ transitional — they go away as each entity converges, they don't grow.
 
 ---
 
-## 3. Open decisions (Royce owns these — they gate the phases)
+## 3. Decisions — RESOLVED (Royce, 2026-06-25)
 
-| # | Decision | Options | Lean | Gates |
-|---|---|---|---|---|
-| **A** | Person/Staff source of truth | (1) Identity in the shared **pool** (passport), employment in the tenant (badge); (2) per-tenant only | **(1) pool** — the *only* model that lets one card work across employers; it's the whole industry bet | Phase 3, Phase 4 |
-| **B** | Field's canonical path | (1) Keep the **JWT-twin** model (proven on SKS), reads via views + writes via triggers; (2) route through eq-shell `canonical-api` gateway | **(1) reads direct via the working JWT-twin; writes via gateway only where cross-app idempotency matters** | Phase 1, Phase 2 |
-| **C** | `public.people` (75) on SKS now that `field_people` reads `app_data.staff` | (1) Confirm dead → retire; (2) keep as a sidecar | **(1) retire** — a 75-row ghost that drifts is exactly the "not defined" failure | Phase 1 |
-| **D** | Licence model | (1) Pool entity (Cards `worker_credentials` is SoR, tenant references); (2) per-tenant `app_data.licences` | **(1) pool** — licences belong to the worker, follow them (same logic as A) | Phase 2 |
+All four resolved together. They are coherent: **identity and credentials belong to
+the worker (the pool); employment belongs to the tenant (the badge); all shared writes
+go through one audited gateway.**
 
-Recommendation in one line: **A=pool, B=hybrid, C=retire, D=pool.** All four point
-the same way — identity and credentials belong to the worker, employment belongs to
-the tenant.
+| # | Decision | Resolved | Gates |
+|---|---|---|---|
+| **A** | Person/Staff source of truth | **Global pool / passport.** Identity (name, DOB, contact, right-to-work) lives in `jvkn.workers`, worker-owned, shared across employers. Tenant `app_data.staff` keeps employment + a live-refreshed identity projection via `cards_worker_id` (write-through, not photocopy). | Phase 3, 4 |
+| **B** | Field's canonical write path | **canonical-api gateway now.** Reads + tenant-local writes stay direct on the proven JWT-twin; identity/licence writes route through eq-shell `canonical-api` (per-app bearer, `external_id` idempotent, central audit). Chosen over the lighter pool-RPC to stand the clean multi-app boundary up *before* a second app contends. | Phase 2, 3 |
+| **C** | `public.people` (75) | **Retire — Phase 3, after the pool repoint** (moved from Phase 1). Verified: all 75 rows are in a *dead id space* — `canonical_id` matches **no** `app_data.staff.staff_id`; the pool back-references them via `jvkn.workers.staff_id → people.canonical_id`. So the safe path is repoint `workers.staff_id` → `app_data.staff.staff_id` (the badge), then snapshot + drop. | Phase 3 |
+| **D** | Licence / credential SoR | **Pool (`worker_credentials`).** Worker-owned, follows the worker; tenants reference via the gateway. `app_data.licences` is empty (greenfield) — no migration. Genuinely site-specific inductions may stay tenant-scoped referencing the pool credential. | Phase 2 |
+
+**Two sequencing corrections from these decisions:** (B) adds gateway provisioning +
+an identity-write contract as explicit tasks; (C) moves from Phase 1 to Phase 3 because
+the pool still references `public.people` and must be repointed first.
 
 ---
 
@@ -129,7 +133,7 @@ leads every phase — it's the only tenant with the spine.
       canonical. Remove from `JWT_INPLACE_TABLES` once twinned.
 - [ ] **Leave**: flip `LEAVE_CANONICAL` on for SKS (normalized `app_data.leave_requests`)
       once the "pick days" side-table lands (`leave-adapter.js` already built, flag default-OFF).
-- [ ] **Retire `public.people` ghost** (Decision C) — confirm 0 reads, snapshot, drop.
+- [ ] (`public.people` retire moved to Phase 3 — Decision C: the pool repoint must come first.)
 - [ ] **`app_config` PIN-at-gate leak**: the one table that can't be JWT-gated
       (read pre-login). Either the deeper auth refactor (stop the browser reading PINs)
       or document as accepted residual.
@@ -143,9 +147,10 @@ leads every phase — it's the only tenant with the spine.
       Quotes at the canonical entity via views — **mirror Service's proven pattern**
       (`security_invoker` views + INSTEAD-OF triggers; the `public.sks_contacts`
       bridge view already shows the shape).
-- [ ] **Licence** (Decision D): stand up the SoR. If pool — wire Cards
-      `worker_credentials` as SoR, tenant references by worker_id. It's 0 everywhere =
-      do it right once, no migration pain.
+- [ ] **Licence** (Decision D = pool): wire Cards `worker_credentials` as the SoR;
+      tenants reference by `worker_id` and read via the gateway; site-specific inductions
+      may stay tenant-scoped referencing the pool credential. `app_data.licences` is empty
+      = do it right once, no migration pain.
 - [ ] **Service**: already consolidated (customer/site/asset/contact) — add a drift
       check that no local copy is silently diverging.
 - **Done when:** customer, contact, asset, site, licence each have exactly one SoR in
@@ -153,13 +158,20 @@ leads every phase — it's the only tenant with the spine.
 
 ### Phase 3 — Person/Staff consolidation *(the big one; gated by Decision A; ~2–3 sprints)*
 - [ ] Implement passport/badge: `jvkn.workers` = identity SoR; tenant `app_data.staff`
-      = employment SoR; linked by `worker_id`, **live** (replace the
-      `cards-approve-staff` photocopy with a live view/RPC or realtime projection).
-- [ ] Collapse `public.people` / `public.sks_staff` into `app_data.staff` (+ a `public`
-      sidecar only for true Field-only columns).
+      = employment SoR; linked by `cards_worker_id`, **live** — replace the
+      `cards-approve-staff` photocopy with a write-through model (identity reads via the
+      projection, identity writes via the **canonical-api gateway**, Decision B).
+- [ ] **Provision Field on the gateway** (Decision B): `CANONICAL_API_KEY_FIELD` + a
+      non-empty write ACL (identity), and define the identity-write contract
+      (`external_id`-keyed idempotent PUT).
+- [ ] **Pool repoint** (Decision C): migrate `jvkn.workers.staff_id` from
+      `public.people.canonical_id` → `app_data.staff.staff_id` (the badge). Then
+      snapshot + drop `public.people` via a reviewed One-Pipe migration.
+- [ ] Collapse `public.sks_staff` (19) into `app_data.staff` (+ a `public` sidecar only
+      for true Field-only columns).
 - [ ] Every app resolves a person through the same canonical id.
 - **Done when:** one person = one identity row in the pool + one employment row per
-  tenant; no photocopy; no drift between `people`/`staff`/`sks_staff`.
+  tenant; no photocopy; `public.people`/`sks_staff` gone; no drift.
 
 ### Phase 4 — The consent layer *(the industry moat; gated by going multi-company; sized when Phase 3 lands)*
 - [ ] **Worker-controlled sharing**: `org_access_requests` / `sharing_scope` /
