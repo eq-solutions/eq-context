@@ -8,7 +8,7 @@ status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-06-23 (nightly cron)_
+_Last verified: 2026-06-24 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -58,13 +58,19 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-06-23)
+## Open PRs (as of 2026-06-24)
+
+**eq-cards:**
+- #86 fix(auth): Shell→Cards OTP handshake (replaces broken setSession path)
 
 **eq-service:**
+- #339 fix(db): remove duplicate PK column aliases from service.* views (HTTP 300 root cause)
 - #299 chore(deps): bump @supabase/supabase-js from 2.108.1 to 2.108.2
 - #292 docs: capture Shell-embed Service integration gaps (parked)
 
 **eq-shell:**
+- #442 docs: correct stale HMAC Field-handoff refs → live token-exchange Supabase JWT
+- #441 fix(cards): OTP token-hash handshake + licence photo URLs
 - #177 [DRAFT] feat(field): F1 prep — tenant-config contract + schema-parity audit + auth-fork doc
 
 **eq-solves-intake:**
@@ -75,22 +81,22 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## System Health (as of 2026-06-23)
+## System Health (as of 2026-06-24)
 
 **CI on main:**
 
 | Repo | Status |
 |------|--------|
-| eq-service | ✓ success |
-| eq-shell | ⚠ cancelled |
+| eq-service | ✗ failure |
+| eq-shell | ✓ success |
 | eq-field | ✓ success |
-| eq-cards | ✗ failure |
+| eq-cards | ✓ success |
 | eq-solves-intake | ? unknown |
 
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 151 (latest: 0150) applied
+**Migrations:** eq-service has 157 (latest: 0155) applied
 
 ---
 
