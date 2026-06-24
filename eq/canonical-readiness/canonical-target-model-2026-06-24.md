@@ -57,9 +57,12 @@ a SECURITY DEFINER RPC — Field already uses the RPC pattern for the Cards pane
 | ktmj (EQ demo tenants) | — | 48 / 2 | — | — |
 | jvkn (control plane) | 2 / 0 (junk) | 17 / 0 | — | 28 / 0 |
 
-## Open next step
+## Open next step — DONE (2026-06-25)
 
-Entity double-up audit — for each shared entity (person, site, customer, asset, licence,
-job/project) inventory its representation across `public` / `app_data` / `service` on ehow,
-mark SoR vs copy vs view, flag true duplicates. That inventory is the consolidation roadmap.
-Related: `service-consumes-canonical-spine-2026-06-16.md`, `spine.md`.
+Entity double-up audit completed and turned into the sequenced consolidation plan:
+**`canonical-consolidation-roadmap-2026-06-25.md`**. Key finding: Field is already
+~80% on canonical for SKS (JWT data-plane + `app_data.field_*` twins over the spine —
+NOT cosmetic pass-throughs). Remaining gaps + the phased path (governance → finish SKS
+Field → consolidate Quotes/Licence → person passport/badge → consent layer → retire
+ktmj) live in the roadmap. Related: `service-consumes-canonical-spine-2026-06-16.md`,
+`spine.md`.
