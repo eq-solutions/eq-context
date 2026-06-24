@@ -121,6 +121,9 @@ leads every phase — it's the only tenant with the spine.
       the One Pipe (`tenant-migrate.yml`); turn on `check-tenant-drift` `--strict-identity`
       so out-of-band dashboard/MCP DDL fails CI instead of being logged informationally.
       (This is the hole behind "8 migrations nobody recognised.")
+      **⚠️ Coordinate:** this is the same drift-CI / security surface as the in-flight
+      Sentry/security update (2026-06-25, separate console). Sequence with that work —
+      do not start `--strict-identity` blind while the drift baseline is being changed.
 - [ ] Seed the **entity-SoR registry** (§7) in eq-context — the machine-readable
       "defined throughout."
 - **Done when:** the four decisions are recorded, no one can alter `app_data` without
@@ -243,3 +246,50 @@ SKS. The hard, valuable, defensible work is later: the **person consolidation** 
 3) and the **consent layer** (Phase 4). That's good news — that's where the business
 actually lives. The single most important thing to hold across all of it: *the worker
 owns their card.*
+
+## 9. Why this direction holds (steelman — 2026-06-25)
+
+**Thesis (strongest form):** the suite should converge on a two-tier canonical spine —
+a shared, worker-owned identity/credential **pool** above the tenants, a per-tenant
+`app_data` spine beneath — with every app reading/writing in place, never copying. This
+is the *only* data shape in which EQ's actual product (a credential that follows a
+worker across employers) can exist. The architecture decision and the product decision
+are the same decision.
+
+**The case for:**
+1. **Substrate already wants this; the risk is retired.** Field reads/writes the SKS
+   spine in-place today; Service reads+writes canonical via views; the pool holds 71
+   linked identities. "Does cross-app in-place work on a live customer?" is already
+   answered yes. The cheapest path forward is also the strategically correct one.
+2. **Duplication is an N² tax that compounds.** One person in 4 tables, one customer in
+   2; every new app adds another copy. One customer = the cheapest this ever gets.
+3. **The pool is the product, not the plumbing.** Portable credentials only exist as a
+   shared pool above tenants. Per-tenant identity = choosing not to build the product.
+4. **It's the EQ philosophy in schema form** — pool = the worker's data; the value is
+   encoded in the model, which is why it resists drift.
+5. **Category change, not increment** — the pool is the substrate the trust/network moat
+   grows on; consolidation turns a feature competitor into a platform.
+
+**Objections it survives (with honest concessions):**
+- **Coupling** ("one migration breaks three apps") → why governance is Phase 0. The
+  coupling is chosen; loose-coupling-via-copies is the worse problem. *Concession:* only
+  holds because the apps genuinely share entities — they do.
+- **Pool = SPOF + latency** → Decision A's write-through projection keeps the hot path
+  in-DB; "shared" is inherent to a passport, so the answer is HA, not avoidance.
+  *Concession:* a real availability dependency; the projection must be engineered well.
+- **"Premature for one customer"** (the serious one, half-right) → lock the *direction*
+  now so features stop adding copies; do the cheap/greenfield pieces now; **defer** the
+  expensive phases until a second employer *pulls* them. *Concession:* the whole case is
+  conditional on the portable-Cards thesis being real (Royce: it is).
+- **Consent is the hard 90%** → the plan *names* it (Phase 4) and sequences it last; the
+  architecture doesn't solve consent but is the only one that *permits* it. *Concession:*
+  the business risk lives in Phase 4; a correct model de-risks it not at all.
+
+**Where it would be wrong:** correct iff (1) the portable-credential product is the real
+goal; (2) governance actually gets installed (else "canonical" → "shared mess"); (3) the
+expensive phases stay demand-driven, not pushed ahead of need.
+
+**Verdict:** given those three, this is not a refactor being *chosen* — it's the latent
+shape the data and the product thesis already pull toward. The risk was never the
+architecture; it's governance discipline and the Phase-4 consent problem — both named
+and sequenced here, not hidden.
