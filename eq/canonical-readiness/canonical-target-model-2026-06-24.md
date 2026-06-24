@@ -1,7 +1,7 @@
 ---
 title: Canonical Target Model — one Supabase per tenant, canonical = a schema inside it
 owner: Royce Milmlow
-last_updated: 2026-06-24
+last_updated: 2026-06-25
 scope: The go-forward data-architecture model for the EQ suite, locked + substrate-verified
 read_priority: high
 ---
