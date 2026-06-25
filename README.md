@@ -26,9 +26,10 @@ Sessions ask "EQ or SKS focus?" at the start so context loads cleanly.
 
 Every assistant conversation that produces new knowledge, decisions, or state changes
 ends with "update the MD". The assistant commits only the files that changed, with a
-clear commit message describing what was added. A GitHub Action syncs all changed
-files to the canonical Supabase context store (`urjhmkhbgaxrofurpbgc`) within
-~20 seconds.
+clear commit message describing what was added. Once pushed to `main`, the change is
+live: the repo is public, so assistants read these files directly from it via raw URLs
+(`https://raw.githubusercontent.com/eq-solutions/eq-context/main/<path>`). A merged
+commit is the deliverable — there is no separate cache to sync.
 
 ## Structure
 

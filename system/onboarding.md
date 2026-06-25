@@ -34,17 +34,17 @@ extract cleanly to its own substrate later if needed.
 
 ## How it works mechanically
 
-GitHub is canonical. Supabase is a runtime cache.
+GitHub is the substrate — canonical and serving layer in one.
 
 - Edit MD files locally → commit → push to `main`.
-- A GitHub Action mirrors changed files into Supabase table
-  `context_files` (project `urjhmkhbgaxrofurpbgc`).
-- Other assistants read from Supabase via MCP. Round-trip: ~20 seconds.
+- That's it. The repo is public, so assistants read files directly from it
+  via raw URLs: `https://raw.githubusercontent.com/eq-solutions/eq-context/main/<path>`
+  (the legacy `/context/claude` alias maps to `CLAUDE.md`).
 
-A Postgres trigger refreshes `updated_at` on every UPDATE — so the
-timestamp is the freshness signal of record. A workflow verification
-job fails the push if any synced file's `updated_at` doesn't move
-within 60 seconds.
+There is no cache and no sync step — a merged commit is live immediately, and
+the file on `main` is the freshness signal of record. (Historical: a Supabase
+edge cache mirrored files into a `context_files` table until its host project
+was deleted 2026-06-22; that path is retired.)
 
 ---
 
@@ -54,18 +54,19 @@ within 60 seconds.
 2. Decide which file owns the fact within that tier (each fact has one home).
 3. Edit the MD file. Update `last_updated:` in frontmatter to today.
 4. Commit and push to `main`: `context(YYYY-MM-DD): <what changed>`.
-5. **Verify.** Wait 30 seconds. Run the SQL below. Confirm `updated_at` reflects today.
+5. **Verify.** Confirm the change is on `main` (pushed, not just committed
+   locally) — e.g. the raw URL returns your new content.
 
-If verification fails, the workflow's verification job has already
-failed the run. Investigate before claiming done.
+A local commit that never reached `main` is not live. Investigate before
+claiming done.
 
 ---
 
 ## What "done" means
 
-A change is **not done** until the Supabase row's `updated_at` reflects
-it. Terminal output is not done. A commit hash is not done. "Looks good"
-is not done. The row is the deliverable.
+A change is **not done** until it is on `main` and the raw URL serves it.
+Terminal output is not done. A local commit that wasn't pushed is not done.
+"Looks good" is not done. The file live on `main` is the deliverable.
 
 This rule exists because three "implementation complete" claims in one
 session on 2026-04-27/28 all turned out to be false on measurement.
@@ -73,16 +74,15 @@ See `system/lessons.md` "False-Implementation Pattern" for the full retro.
 
 ---
 
-## Verification SQL
+## Verification
 
-After any push, run via Supabase MCP on project `urjhmkhbgaxrofurpbgc`:
+After any push, confirm `main` serves the new content (replace `<path>`):
 
-```sql
-SELECT slug, updated_at, NOW() - updated_at AS age
-FROM context_files
-WHERE slug IN ('<files-you-changed>')
-ORDER BY updated_at DESC;
+```bash
+curl -s https://raw.githubusercontent.com/eq-solutions/eq-context/main/<path> | head
 ```
+
+If the raw URL doesn't reflect your change, it isn't on `main` yet.
 
 `age` should be under 60 seconds for everything you touched.
 

@@ -71,11 +71,11 @@ Every Netlify or Cloudflare Pages site must ship with a `_headers` file containi
 - **Three projects exist** — always confirm which one before connecting:
   - `nspbmirochztcjijmcrx` = **sks-labour (LIVE SKS DATA, DO NOT TOUCH)**
   - `ktmjmdzqrogauaevbktn` = eq-solves-field (demo)
-  - `urjhmkhbgaxrofurpbgc` = eq-solves-service-dev (canonical context store)
+  - `urjhmkhbgaxrofurpbgc` = eq-solves-service-dev — **DELETED 2026-06-22** (was the context store; substrate now served from the GitHub repo directly, no Supabase)
 - Never run INSERT, UPDATE, DELETE, or schema changes without explicit approval
 - SELECT queries are fine — state the query before executing
 - Never touch SKS live data unless Royce explicitly says "SKS live"
-- Supabase MCP is the reliable path for `context_files` reads/writes (GitHub MCP unreliable for writes). GitHub is canonical for `eq-context`; direct Supabase writes are emergency-only and must reconcile to GitHub the same day.
+- The `eq-context` substrate is the GitHub repo itself — edit MD files, commit, push to `main`. There is no `context_files` table or Supabase cache (retired 2026-06-22); assistants read via raw URLs (`raw.githubusercontent.com/eq-solutions/eq-context/main/<path>`).
 - Monthly ops: Supabase → Account → Access Tokens → revoke all but the most recent OAuth token
 
 ---

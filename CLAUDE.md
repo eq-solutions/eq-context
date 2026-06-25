@@ -1,7 +1,7 @@
 ---
 title: CLAUDE.md — Master Behavioural Contract
 owner: Royce Milmlow
-last_updated: 2026-06-04
+last_updated: 2026-06-25
 scope: Single source of truth for how every assistant (Chat, Cowork, Code, ChatGPT, Grok, any future tool) must behave when working with Royce
 read_priority: critical
 status: live
@@ -12,10 +12,10 @@ status: live
 Complete, self-contained behavioural specification for any AI assistant working with Royce Milmlow. Read in full before acting. `AGENTS.md` and `COWORK-PROMPT.md` are pointers to this file.
 
 **Substrate:**
-- GitHub (canonical): `github.com/eq-solutions/eq-context`
-- Supabase (runtime cache): `https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/<slug>`
+- GitHub (canonical + serving): `github.com/eq-solutions/eq-context` (public)
+- Raw read URL: `https://raw.githubusercontent.com/eq-solutions/eq-context/main/<path>`
 
-GitHub is source of truth. Supabase syncs from GitHub within ~60s of any push.
+GitHub is the substrate — source of truth and serving layer in one. Files are read directly from the public repo via the raw URL above (token-free, CDN-backed); the legacy `/context/claude` alias maps to `CLAUDE.md`. The former Supabase edge cache (project `eq-solves-service-dev`, table `context_files`) was retired when that project was deleted 2026-06-22 — there is no cache and no sync step.
 
 ---
 
@@ -39,19 +39,19 @@ Every session, every tool. No exceptions.
 
 4. **Load tier defaults:**
 
-   **Always fetch first (every session, all tiers):** [system/TODAY.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/system/TODAY.md)
+   **Always fetch first (every session, all tiers):** [system/TODAY.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/TODAY.md)
    This is the Q3 2026 focus filter. Read it before loading any tier content.
 
    | Answer | Files to fetch |
    |---|---|
-   | EQ | [eq/README.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/README.md) + [eq/pending.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/pending.md) |
-   | SKS | [sks/README.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/sks/README.md) + [sks/pending.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/sks/pending.md) + [sks/active.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/sks/active.md) |
+   | EQ | [eq/README.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/eq/README.md) + [eq/pending.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/eq/pending.md) |
+   | SKS | [sks/README.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/README.md) + [sks/pending.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/pending.md) + [sks/active.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/active.md) |
    | Cross-tier | Both — state which tier owns the work |
-   | OPS | [ops/README.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/ops/README.md) + [ops/pending.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/ops/pending.md) |
+   | OPS | [ops/README.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/README.md) + [ops/pending.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/pending.md) |
 
-   [archive/](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/archive/README.md) only when Royce explicitly references parked content (AHD).
+   [archive/](https://raw.githubusercontent.com/eq-solutions/eq-context/main/archive/README.md) only when Royce explicitly references parked content (AHD).
 
-   [sks-team/](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/sks-team/README.md) is a separate substrate tier for SKS team members' AI sessions — not loaded for Royce's personal sessions. Only fetch from `sks-team/` when the task is specifically authoring or reviewing the team-facing canonical guidance (e.g. [sks-team/quoting.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/sks-team/quoting.md)).
+   [sks-team/](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks-team/README.md) is a separate substrate tier for SKS team members' AI sessions — not loaded for Royce's personal sessions. Only fetch from `sks-team/` when the task is specifically authoring or reviewing the team-facing canonical guidance (e.g. [sks-team/quoting.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks-team/quoting.md)).
 
 5. **Confirm and ask** what we're working on. Use options where possible.
 
@@ -88,9 +88,9 @@ Before drafting any operational deliverable (quote, email, MOP, scope, log, lett
 - **Template exists** → follow it exactly.
 - **No template** → produce the deliverable AND ask Royce whether to draft a template capturing what was just produced. Add to the relevant `templates.md`.
 
-For SKS customer-facing outputs, also run [rules/brand-check.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/rules/brand-check.md) before presenting.
+For SKS customer-facing outputs, also run [rules/brand-check.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/brand-check.md) before presenting.
 
-For EQ customer-facing or marketing outputs, also run the brand check in [rules/brand-eq.md §10](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/rules/brand-eq.md) before presenting.
+For EQ customer-facing or marketing outputs, also run the brand check in [rules/brand-eq.md §10](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/brand-eq.md) before presenting.
 
 This is the consistency mechanism: same template + same substrate = same output across every Claude.
 
@@ -184,29 +184,29 @@ This contract points; it doesn't restate. Authoritative files:
 
 | Topic | File |
 |---|---|
-| Hard rules | [rules/non-negotiables.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/rules/non-negotiables.md) |
-| EQ Brand (Design Brief v1.3) | [rules/brand-eq.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/rules/brand-eq.md) |
-| SKS Brand | [rules/brand-sks.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/rules/brand-sks.md) |
-| Deployment | [rules/deployment.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/rules/deployment.md) |
-| Stack defaults | [rules/stack.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/rules/stack.md) |
-| Entities, accounts | [ops/entities.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/ops/entities.md) |
-| Infrastructure (Supabase IDs, CF, Netlify) | [system/infrastructure.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/system/infrastructure.md) |
-| Tech architecture | [system/architecture.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/system/architecture.md) |
-| Financial architecture | [ops/financial-architecture.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/ops/financial-architecture.md) |
-| EQ pending | [eq/pending.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/pending.md) |
-| EQ products | [eq/products.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/products.md) |
-| SKS pending | [sks/pending.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/sks/pending.md) |
-| SKS active | [sks/active.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/sks/active.md) |
-| SKS team | [sks/team.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/sks/team.md) |
-| SKS templates | [sks/templates.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/sks/templates.md) |
-| SKS team-facing AI guidance — index (different audience) | [sks-team/README.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/sks-team/README.md) |
-| SKS team-facing AI guidance — quoting (different audience) | [sks-team/quoting.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/sks-team/quoting.md) |
-| OPS pending | [ops/pending.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/ops/pending.md) |
-| Decisions log | [ops/decisions.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/ops/decisions.md) |
-| Lessons | [system/lessons.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/system/lessons.md) |
-| MD style | [system/md-style.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/system/md-style.md) |
-| Onboarding | [system/onboarding.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/system/onboarding.md) |
-| Parked | [archive/README.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/archive/README.md) |
+| Hard rules | [rules/non-negotiables.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/non-negotiables.md) |
+| EQ Brand (Design Brief v1.3) | [rules/brand-eq.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/brand-eq.md) |
+| SKS Brand | [rules/brand-sks.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/brand-sks.md) |
+| Deployment | [rules/deployment.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/deployment.md) |
+| Stack defaults | [rules/stack.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/stack.md) |
+| Entities, accounts | [ops/entities.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/entities.md) |
+| Infrastructure (Supabase IDs, CF, Netlify) | [system/infrastructure.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/infrastructure.md) |
+| Tech architecture | [system/architecture.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/architecture.md) |
+| Financial architecture | [ops/financial-architecture.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/financial-architecture.md) |
+| EQ pending | [eq/pending.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/eq/pending.md) |
+| EQ products | [eq/products.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/eq/products.md) |
+| SKS pending | [sks/pending.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/pending.md) |
+| SKS active | [sks/active.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/active.md) |
+| SKS team | [sks/team.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/team.md) |
+| SKS templates | [sks/templates.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/templates.md) |
+| SKS team-facing AI guidance — index (different audience) | [sks-team/README.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks-team/README.md) |
+| SKS team-facing AI guidance — quoting (different audience) | [sks-team/quoting.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks-team/quoting.md) |
+| OPS pending | [ops/pending.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/pending.md) |
+| Decisions log | [ops/decisions.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/decisions.md) |
+| Lessons | [system/lessons.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/lessons.md) |
+| MD style | [system/md-style.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/md-style.md) |
+| Onboarding | [system/onboarding.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/onboarding.md) |
+| Parked | [archive/README.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/archive/README.md) |
 
 Do NOT duplicate content into this file. Update facts in their home.
 
@@ -247,7 +247,7 @@ Skipping these = substrate stale = next session inherits drift. (See `system/les
 | **Claude Code** (Beelink) | Local `CLAUDE.md` (`C:\Users\Royce\.claude\CLAUDE.md`) | Filesystem + git | Run `git pull` at start if clone may be stale |
 | **Claude Chat** (claude.ai) | Memory only | None | Produce patched files; Royce uploads via GitHub web UI |
 | **Cowork** | Cowork system prompt + pasted `COWORK-PROMPT.md` | Filesystem | Never run `git` from the **Cowork sandbox** against `C:\Projects\*` repos — produces orphan `.git/index.lock` files. Emit `.bat`/`.ps1` for Royce to run instead. (Claude Code on the Beelink runs git directly — this constraint is Cowork-only.) |
-| **ChatGPT / Grok / others** | None | None | Bootstrap manually: "Fetch CLAUDE.md from `https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/claude` and follow it." Proper bootstrap files pending — see `ops/pending.md` |
+| **ChatGPT / Grok / others** | None | None | Bootstrap manually: "Fetch CLAUDE.md from `https://raw.githubusercontent.com/eq-solutions/eq-context/main/CLAUDE.md` and follow it." Proper bootstrap files pending — see `ops/pending.md` |
 
 All tools share: never push to demo branch without instruction; never deploy to `eq-solves-field.netlify.app` directly; auth changes require Chat review.
 

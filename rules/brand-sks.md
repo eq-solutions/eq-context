@@ -159,7 +159,7 @@ For Word / PDF customer-facing outputs:
 | Footer | Centred, Slate Blue `#34486C`, 8 pt, with Dark Blue top rule |
 | Footer content | `SKS Technologies Pty Ltd  \|  ABN 51 168 906 956  \|  27/10 Gladstone Rd, Castle Hill NSW 2154  \|  (02) 9659 9199` |
 
-**Preflight:** Before presenting any customer-facing output, run the checklist in [rules/brand-check.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/rules/brand-check.md).
+**Preflight:** Before presenting any customer-facing output, run the checklist in [rules/brand-check.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/brand-check.md).
 
 ---
 

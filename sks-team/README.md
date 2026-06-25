@@ -108,7 +108,7 @@ Team members don't visit GitHub or Supabase directly. Royce sets them up once; a
 1. Team member opens Claude and creates a new Project called "SKS Documents" (or Royce creates it for them).
 2. In the Project's system prompt, paste the contents of `gateway.md` — or the bootstrap fetch instruction:
    ```
-   Fetch https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/sks-team/gateway.md and follow its instructions exactly for every conversation in this project.
+   Fetch https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks-team/gateway.md and follow its instructions exactly for every conversation in this project.
    ```
 3. Done. Every conversation in that Project automatically has the full routing logic. The team member just types what they need — even vague input works.
 

@@ -18,7 +18,7 @@ Two paste-ready prompts that exercise the SKS brand kit end-to-end. Both are des
 
 Run Prompt 1 first. If it passes, run Prompt 2. If Prompt 1 fails, fix what's broken before running Prompt 2 (otherwise failure-mode results may conflate happy-path bugs with enforcement bugs).
 
-The naturalistic counterpart to these is the "monitor first 5 SKS outputs" item in [sks/pending.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/sks/pending.md) — watch organic SKS quote/MOP/letter sessions for the brand-check line. These prompts are the *active* test; the pending-item watch is the *passive* test. Both have a role.
+The naturalistic counterpart to these is the "monitor first 5 SKS outputs" item in [sks/pending.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/pending.md) — watch organic SKS quote/MOP/letter sessions for the brand-check line. These prompts are the *active* test; the pending-item watch is the *passive* test. Both have a role.
 
 ---
 
@@ -32,7 +32,7 @@ SKS session — brand kit deployment validation.
 Context: a brand kit was deployed on 2026-05-21. Three artefacts now own SKS brand enforcement:
 - sks-brand.css       https://pub-97a4f025d993484e91b8f15a8c73084d.r2.dev/sks-brand.css
 - SKS_Master.docx     https://pub-97a4f025d993484e91b8f15a8c73084d.r2.dev/SKS_Master.docx
-- rules/brand-check.md  https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/rules/brand-check.md
+- rules/brand-check.md  https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/brand-check.md
 
 Task: produce two small test deliverables that exercise all three artefacts end-to-end.
 
@@ -88,7 +88,7 @@ Paste this into the same session (or another fresh one) **after Prompt 1 has pas
 ````
 SKS session — brand-check enforcement test.
 
-Context: rules/brand-check.md (https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/rules/brand-check.md) is the 6-line preflight that catches SKS brand violations. This test deliberately introduces one violation at a time to confirm each check fires.
+Context: rules/brand-check.md (https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/brand-check.md) is the 6-line preflight that catches SKS brand violations. This test deliberately introduces one violation at a time to confirm each check fires.
 
 Task: produce 6 tiny HTML snippets (a single paragraph each is fine). Snippet N must violate ONLY brand-check item N and pass the other 5. After each, run brand-check and the result MUST mark item N as ✗ with one-line evidence.
 
@@ -137,4 +137,4 @@ If you find a false negative, report which check failed and what evidence brand-
 - After a Claude tool upgrade (new Chat version, new Cowork plugin, etc.) — to confirm the bootstrap still works.
 - Quarterly, as a regression check, even with no known changes — silent drift in dependency behaviour is real.
 
-If a test fails and the fix is a substrate edit, also add to [ops/decisions.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/ops/decisions.md) so future-you knows *why* the change was made, not just what.
+If a test fails and the fix is a substrate edit, also add to [ops/decisions.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/decisions.md) so future-you knows *why* the change was made, not just what.

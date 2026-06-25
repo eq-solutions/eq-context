@@ -50,15 +50,15 @@ the cutover. Do not conflate them:
 
 Every canonical SKS file as a full URL — clickable from `/context/claude`:
 
-- [sks/pending.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/sks/pending.md) — SKS-only to-do list
-- [sks/active.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/sks/active.md) — rolling active projects (current quarter)
-- [sks/templates.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/sks/templates.md) — Quote v3 spec + client context blocks
-- [sks/team.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/sks/team.md) — NSW team
+- [sks/pending.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/pending.md) — SKS-only to-do list
+- [sks/active.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/active.md) — rolling active projects (current quarter)
+- [sks/templates.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/templates.md) — Quote v3 spec + client context blocks
+- [sks/team.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/team.md) — NSW team
 
 Separate audience — only fetch when explicitly authoring or reviewing team-facing guidance:
 
-- [sks-team/README.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/sks-team/README.md)
-- [sks-team/quoting.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/sks-team/quoting.md)
+- [sks-team/README.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks-team/README.md)
+- [sks-team/quoting.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks-team/quoting.md)
 
 ---
 
