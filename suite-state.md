@@ -8,7 +8,7 @@ status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-06-24 (nightly cron)_
+_Last verified: 2026-06-25 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -58,36 +58,29 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-06-24)
+## Open PRs (as of 2026-06-25)
 
-**eq-cards:**
-- #86 fix(auth): Shell→Cards OTP handshake (replaces broken setSession path)
+**eq-field:**
+- #341 fix(people): pass p_org_id to eq_field_get_worker_summary
 
 **eq-service:**
-- #339 fix(db): remove duplicate PK column aliases from service.* views (HTTP 300 root cause)
-- #299 chore(deps): bump @supabase/supabase-js from 2.108.1 to 2.108.2
+- #346 fix(auth): defects detail page — use getApiUser() so Shell sessions can edit
+- #345 draft(identity): Phase 3 re-key + reference migration (review-only)
 - #292 docs: capture Shell-embed Service integration gaps (parked)
 
 **eq-shell:**
-- #442 docs: correct stale HMAC Field-handoff refs → live token-exchange Supabase JWT
-- #441 fix(cards): OTP token-hash handshake + licence photo URLs
+- #451 fix(jvkn): re-gate eq_field_get_worker_summary with org-membership check
 - #177 [DRAFT] feat(field): F1 prep — tenant-config contract + schema-parity audit + auth-fork doc
-
-**eq-solves-intake:**
-- #35 fix(intake-demo): mobile responsiveness gaps, per-sheet error messages, SupabaseLikeClient relaxation
-- #34 fix(design): replace all inline styles with CSS classes and CSS var tokens
-- #29 docs(design): consolidate licence/document OCR onto the EQ Intake vision engine
-- #13 Smart asset import: enrichment, dup detection, site fuzzy-match, photo/PDF
 
 ---
 
-## System Health (as of 2026-06-24)
+## System Health (as of 2026-06-25)
 
 **CI on main:**
 
 | Repo | Status |
 |------|--------|
-| eq-service | ✗ failure |
+| eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
@@ -96,7 +89,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 157 (latest: 0155) applied
+**Migrations:** eq-service has 161 (latest: 0159) applied
 
 ---
 
