@@ -91,6 +91,53 @@ transitional — they go away as each entity converges, they don't grow.
 
 ---
 
+## 2b. Audit 2026-06-25 — what's already BUILT (the surprise)
+
+A read-only substrate + repo audit (jvkn pool data, eq-cards, eq-shell) found the suite
+is far closer to done than §1 implies. **EQ Cards has shipped the passport + consent +
+multi-tenant model end-to-end, on live data; EQ Field is the laggard.**
+
+**Built and IN USE:**
+- **Consent layer (I had called this "Phase 4, the hard 90%, not started") — SHIPPED in
+  Cards, user-reachable:** worker requests an employer's access → respond → revoke.
+  Live data: `jvkn.org_access_requests`=5, `org_memberships`=15,
+  `shell_control.user_tenant_memberships`=26. RPCs `eq_cards_submit/respond/revoke_*` +
+  Flutter UI (`ConnectToCompanyScreen`, `PendingConnectionsBanner`, revoke in settings).
+- **Multi-tenant / one-card-many-companies — BUILT + used:** `eq_cards_list_my_tenants` /
+  `set_active_tenant`; worker switches active org, JWT re-mints. Many memberships per
+  worker; only *simultaneous* multi-org view is absent (likely unneeded).
+- **Passport self-service (Decision A) — BUILT:** worker self-edits profile + licences in
+  Cards. Pool is the identity SoR; Field reads it via `eq_field_get_worker_summary`.
+- **Licences = pool (Decision D) — ALREADY the model.** Live `jvkn.licences`=14,
+  `licence_types`=21, `certificates`=4. **Correction: the SoR is `licences`/`certificates`,
+  NOT `worker_credentials`** (that table is empty/legacy). Worker self-service licence edit
+  shipped.
+- **canonical-api gateway — production-grade:** 5 app keys, `external_id` idempotent PUT +
+  email/ABN secondary identity match + 23505 race recovery; fronts customers/contacts/
+  sites/staff/licences/jobs/assets/events.
+- **cards-approve-staff (Phase 3 projection) — rich:** `cards_worker_id`-first match +
+  phone fallback, dedup guard, **additive** licence merge, provisions shell membership +
+  `org_memberships` + a `canonical_events` heartbeat. (Still projection-at-approval, not a
+  live sync — Decision C target stands.)
+- **Governance (Phase 0) — BUILT:** `tenant-migrate.yml` One Pipe + `check-tenant-drift.mjs`;
+  `--strict-identity` flips informational→failure. (This is the in-flight security work — coordinate.)
+
+**The genuine remaining backlog:**
+1. **EQ Field is the laggard.** It reads the spine and *receives* approved workers via the
+   cards-approve projection, but: its gateway WRITE ACL is empty by design
+   (`canonical-api.ts:114 field: new Set([])` — "Field writes app_data directly; no
+   canonical-api PUT path yet"), and it does **not** surface the worker's live pool
+   licences/credentials or consent state. → **Decision B is net-new, and it's all in Field.**
+2. **Org-admin side of consent is ABSENT** — the loop is worker-side only; an employer
+   *initiating* a request / an admin request-inbox isn't built (`request_worker_access` has
+   zero callers). Likely lands in Shell/Cards, not Field.
+3. **Field finishers** — tender split, leave-canonical flip, `public.people` retire (Phase 3 repoint).
+
+**Reframe:** the program is much smaller than §4 implied. It's mostly **bring Field up to
+the line Cards already set, build the employer side of consent, and verify the seams** —
+not build the model from scratch. The honest-read in §8 still holds, but Phase 4 is largely
+*done*, not pending.
+
 ## 3. Decisions — RESOLVED (Royce, 2026-06-25)
 
 All four resolved together. They are coherent: **identity and credentials belong to
