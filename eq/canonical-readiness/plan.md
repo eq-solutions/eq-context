@@ -695,8 +695,9 @@ verify/reshape under Unit 1.
 ### Unit 6 — Service domain
 
 **Out of scope for this plan.** EQ Service operates on
-`urjhmkhbgaxrofurpbgc`, separately maintained, 80 Vitest tests, 22
-sprints to date. Surfaced only because the `asset` entity is already
+`ehowgjardagevnrluult` (sks-canonical, `service.*` schema; migrated from
+`urjhmkhbgaxrofurpbgc` 2026-06-08, old project deleted 2026-06-22),
+separately maintained, 80 Vitest tests, 22 sprints to date. Surfaced only because the `asset` entity is already
 in `eq_schema_registry`. Add a Unit-6-equivalent when Service is
 queued for canonical port.
 

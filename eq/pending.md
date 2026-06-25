@@ -254,7 +254,7 @@ worker→staff link 1/50, customer `canonical_id` 0/520 in live ehow, sites→cu
 - [x] **P5 (decision):** who owns "job/work-order"? **DONE 2026-06-09** — WS4 quote-job-consumer built canonical work-order spine; `app_data.jobs` now wired.
 - [ ] **P7a:** SKS anon-remediation (nspb) — exact policy worklist in plan §7a. **SKS-live, gated.**
 - [ ] **P7b:** ktmj anon-write policies close via the pause/decommission already pending (after P4).
-- [ ] **P7d:** run a `get_advisors` pass on the EQ Service DB `urjhmkhbgaxrofurpbgc` (not yet audited).
+- [ ] **P7d:** run a `get_advisors` pass on the EQ Service DB — now `ehowgjardagevnrluult` (sks-canonical, `service.*` schema). Service migrated off `urjhmkhbgaxrofurpbgc` 2026-06-08; that project was deleted 2026-06-22 before this audit ran.
 - [x] Audit internal authz of jvkn anon RPCs `eq_cards_get_worker_hr_record`, `eq_cards_delete_account` —
       **CLEARED 2026-06-07**: both `SECURITY DEFINER` but scoped to `auth.uid()`; anon has no uid → harmless. Non-issue.
 
@@ -332,7 +332,7 @@ Parallel to the Field schema/data cutover below. Full plan + agent prompts (A–
 
 **Go-live gates (weekend) — see `eq/go-live-runbook.md` §B:**
 - [ ] 🔴 **`EQ_SECRET_SALT` parity** Shell vs Service — silent #1 go/no-go, never compared
-- [ ] Finish **Service domain cutover** (DNS/TLS, `NEXT_PUBLIC_SITE_URL`, Supabase URL allowlist); confirm Service prod project (`urjhmkhbgaxrofurpbgc` lists as "-dev")
+- [ ] Finish **Service domain cutover** (DNS/TLS, `NEXT_PUBLIC_SITE_URL`, Supabase URL allowlist on `ehowgjardagevnrluult`). Service prod project resolved: migrated to ehow (sks-canonical) 2026-06-08; old `urjhmkhbgaxrofurpbgc` (-dev) deleted 2026-06-22.
 - [ ] 🟠 **MFA-bypass posture** — PIN-only Shell → Service single-factor; accept or gate behind mandatory Shell-TOTP
 
 **Deferred (spun off as post-launch tasks):**

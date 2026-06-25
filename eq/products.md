@@ -231,7 +231,7 @@ Phase 2 question — a tier-of-company question.
 
 **Status:** Active development
 **Architecture:** Next.js + Supabase + Netlify serverless functions
-**Supabase project:** urjhmkhbgaxrofurpbgc (eq-solves-service-dev)
+**Supabase project:** ehowgjardagevnrluult (sks-canonical), `service.*` schema — migrated from urjhmkhbgaxrofurpbgc (eq-solves-service-dev) on 2026-06-08; old project deleted 2026-06-22
 **Scale:** Production-level complexity, multi-tenant with Supabase RLS
 **Test coverage:** 80 Vitest tests
 **Sprint cadence:** 22 sprints to date
