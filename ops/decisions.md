@@ -15,7 +15,7 @@ Append-only log.
 
 ## 2026-06-15 — SKS Field Staff: Tenant-Constant Bug Fixed; Full Roster Loaded via Pipeline
 
-**Status:** Done (executed + verified live 2026-06-15). Code: `workers-canonical-sync` edge fn (jvkn) v4. Data: ehow `app_data.staff`. Model doc: [eq/field/staff-site-visibility-model.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/field/staff-site-visibility-model.md).
+**Status:** Done (executed + verified live 2026-06-15). Code: `workers-canonical-sync` edge fn (jvkn) v4. Data: ehow `app_data.staff`. Model doc: [eq/field/staff-site-visibility-model.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/eq/field/staff-site-visibility-model.md).
 
 **Root cause (why EQ Field showed zero SKS staff):** the `workers-canonical-sync` edge function hard-coded `SKS_TENANT_ID = dcb71d03…` — that is the **EQ/core** tenant, not SKS (`7dee117c`). Every synced worker was stamped onto the EQ tenant; EQ Field reads the SKS tenant → empty. The comment even claimed "SKS tenant_id … verified 2026-06-13" — verified backwards. A second gate compounded it: the function never set `field_approved`, and the `field_people` view filters `field_approved IS TRUE OR NULL` — all rows were `false`, so everyone was hidden regardless of tenant.
 
@@ -96,7 +96,7 @@ END IF;
 
 ## 2026-06-15 — Cards is the Worker-Facing EQ Platform; Core is Employer-Only
 
-**Status:** Accepted (direction authorised by Royce 2026-06-15). Extends and names the UX consequence of the 2026-06-04 portable-identity decision. Supersedes the SSO/iframe framing in [eq/cards/canonical-migration/plan.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/cards/canonical-migration/plan.md). Full design: [eq/cards/worker-platform-direction-2026-06-15.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/cards/worker-platform-direction-2026-06-15.md).
+**Status:** Accepted (direction authorised by Royce 2026-06-15). Extends and names the UX consequence of the 2026-06-04 portable-identity decision. Supersedes the SSO/iframe framing in [eq/cards/canonical-migration/plan.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/eq/cards/canonical-migration/plan.md). Full design: [eq/cards/worker-platform-direction-2026-06-15.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/eq/cards/worker-platform-direction-2026-06-15.md).
 
 **Decision:** Cards (`cards.eq.solutions`) is the worker-facing EQ platform — the worker's mobile home. Core (`core.eq.solutions` / Shell) is employer-facing only. These are different products for different audiences, not one platform with a worker mode. Specific consequences: (1) Cards is never embedded in Shell as an iframe — the iframe and handoff route are retired. (2) Workers reach employer tools from Cards via a tenant tile (a link-out to the employer's portal, e.g. `core.eq.solutions/sks`), not the reverse. (3) Two auth paths are explicitly the correct model: employer path via Shell HttpOnly cookie session; worker path via GoTrue phone OTP + `custom_access_token_hook`. Both are backed by `shell_control.users`. (4) Long-term: Field's worker-facing features (timesheets, availability, job-assignment push) migrate to Cards. The canonical layer (worker-house, `eq-canonical-internal`) is the data exchange point — not a shared UI session.
 
@@ -127,13 +127,13 @@ important one to maintain.
 Format: Status → Decision → Why → Alternatives considered → Implications.
 Status values: Accepted | Superseded by [date+title] | On Hold | Deprecated | Proposed.
 Append-only — never delete an entry. Supersede or deprecate it instead.
-For the current built state of each system, see [system/architecture.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/system/architecture.md).
+For the current built state of each system, see [system/architecture.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/architecture.md).
 
 ---
 
 ## 2026-06-04 — Identity Convergence Target (one truth, scheduled demolition of the duplicates)
 
-**Status:** Accepted (direction authorised by Royce 2026-06-04). Sets the destination; execution scheduled, not immediate. Full doc: [eq/identity/identity-convergence-target-2026-06-04.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/identity/identity-convergence-target-2026-06-04.md).
+**Status:** Accepted (direction authorised by Royce 2026-06-04). Sets the destination; execution scheduled, not immediate. Full doc: [eq/identity/identity-convergence-target-2026-06-04.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/eq/identity/identity-convergence-target-2026-06-04.md).
 
 **Decision:** Declare the ONE canonical identity+membership record and put the overlapping stores on a retire-list. A 2026-06-04 live audit of eq-canonical found identity/access smeared across **six** stores (`auth.users`, `shell_control.users`, `shell_control.user_tenant_memberships`, `public.org_memberships`, `public.workers`, `public.profiles`), with membership stored **twice and already divergent** (5 vs 4 users). Target: **`shell_control.{users, user_tenant_memberships}` = identity+membership truth; `auth.users` = GoTrue transport only; `public.workers` = operational HR record linked by `user_id`; `public.org_memberships` + `public.profiles` = retire** (`org_memberships` → a view over the canonical membership table; `profiles` folded into `workers`). Guardrail: no new identity/membership store without updating the target doc; writes target the canonical home or are explicitly-justified temporary bridges with a retirement line.
 
@@ -153,7 +153,7 @@ For the current built state of each system, see [system/architecture.md](https:/
 
 ## 2026-06-04 — Low-Friction Onboarding & Portable Worker Identity (Cards-first)
 
-**Status:** Accepted (direction authorised by Royce 2026-06-04). Implementation **phased**; Phases 2–3 trigger a deliberate v2 bump of `eq/identity/IDENTITY-MODEL.md`. Full design: [eq/identity/onboarding-portable-identity-2026-06-04.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/identity/onboarding-portable-identity-2026-06-04.md).
+**Status:** Accepted (direction authorised by Royce 2026-06-04). Implementation **phased**; Phases 2–3 trigger a deliberate v2 bump of `eq/identity/IDENTITY-MODEL.md`. Full design: [eq/identity/onboarding-portable-identity-2026-06-04.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/eq/identity/onboarding-portable-identity-2026-06-04.md).
 
 **Decision:** EQ optimises for **lowest friction *above a necessary floor*** (the floor is set by the sensitive payload — licences, right-to-work, PII), not friction-zero. The onboarding model: (1) **Portable identity** — one human = one identity with many tenant memberships; a tradie logs into the *same* EQ Cards across employers (pulls `IDENTITY-MODEL.md` §11.2 multi-tenant-membership forward from v2 backlog; `shell_control.user_tenant_memberships` already exists live). (2) **Decouple authorisation from login convenience** — the admin-issued **claim code** is the high-assurance authorisation event; **phone** is the repeatable convenience credential; **email is an optional recovery channel, not a login requirement**. (3) **Consent per employer** — the worker approves each new employer membership, and the approval scopes what that employer sees. (4) **Force email by *event, not timer*** — never hard-block showing a card; hard-require recovery email only at risk events (phone change, 2nd employer, export); the "14-day wall" is rejected. (5) **Lifecycle policy lives in the control layer** — rules + state in `shell_control`; the **Shell evaluates and projects verdict flags into the JWT via `custom_access_token_hook`**; apps react read-only and never hardcode policy; genuine gates are also server-enforced (RLS/RPC), UI walls are nags.
 
