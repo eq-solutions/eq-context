@@ -26,17 +26,26 @@ NETLIFY_SITES = {
 
 # ── helpers ──────────────────────────────────────────────────────────────────
 
-def pg_count(table, schema="service", q=""):
-    url = f"{SUPABASE_URL}/rest/v1/{table}?select=count{('&' + q) if q else ''}"
-    headers = {
-        "apikey": SUPABASE_KEY,
-        "Authorization": f"Bearer {SUPABASE_KEY}",
-        "Prefer": "count=exact",
-        "Accept-Profile": schema,
-    }
-    resp = requests.head(url, headers=headers, timeout=10)
-    cr = resp.headers.get("content-range", "*/0")
-    return int(cr.split("/")[-1]) if "/" in cr else 0
+def fetch_counts():
+    """All suite-state counts via one public RPC (counts only, no rows).
+
+    Replaces the old per-table PostgREST HEAD counts. Those hit service.*/app_data.*
+    via Accept-Profile, but PostgREST only serves *exposed* schemas (public) — so every
+    request 406'd, fell through to "*/0", and silently reported 0 while ehow held
+    thousands of rows. raise_for_status() below makes any future failure loud, not zero.
+    """
+    resp = requests.post(
+        f"{SUPABASE_URL}/rest/v1/rpc/suite_state_counts",
+        headers={
+            "apikey": SUPABASE_KEY,
+            "Authorization": f"Bearer {SUPABASE_KEY}",
+            "Content-Type": "application/json",
+        },
+        json={},
+        timeout=15,
+    )
+    resp.raise_for_status()   # 4xx/5xx now FAILS the job — no more silent "*/0" -> 0
+    return resp.json()
 
 def gh_get(path):
     resp = requests.get(
@@ -108,22 +117,18 @@ def netlify_site_info(site_name):
 # ── 1. live counts ────────────────────────────────────────────────────────────
 
 print("Querying Supabase...")
-counts = {}
-try:
-    counts = {
-        "checks":    pg_count("maintenance_checks"),
-        "acb":       pg_count("acb_tests"),
-        "rcd":       pg_count("rcd_tests"),
-        "defects":   pg_count("defects"),
-        "sites":     pg_count("sites",     "app_data", "active=eq.true"),
-        "customers": pg_count("customers", "app_data", "active=eq.true"),
-        "assets":    pg_count("assets",    "app_data", "active=eq.true"),
-        "users":     pg_count("tenant_members"),
-    }
-    print(f"  counts: {counts}")
-except Exception as e:
-    print(f"  Supabase error: {e}", file=sys.stderr)
-    counts = {k: "(err)" for k in ["checks","acb","rcd","defects","sites","customers","assets","users"]}
+counts = fetch_counts()
+print(f"  counts: {counts}")
+
+# Tripwire: refuse to overwrite real numbers with an all-zero collapse.
+with open("suite-state.md", encoding="utf-8") as _f:
+    _prev = re.search(r"\| Maintenance checks \| ([\d,]+)", _f.read())
+_prev_nonzero = bool(_prev) and _prev.group(1).replace(",", "") != "0"
+if all(int(counts.get(k, 0)) == 0 for k in ("sites","customers","assets","users","checks","defects")):
+    if _prev_nonzero:
+        print("ERROR: all counts zero but file had data — refusing to overwrite.", file=sys.stderr)
+        sys.exit(1)
+    print("WARNING: all counts are zero.", file=sys.stderr)
 
 # ── 2. open PRs ──────────────────────────────────────────────────────────────
 
