@@ -127,16 +127,48 @@ work PC because ThreatLocker blocks Tailscale.
 
 ### Backup Schedule
 
-`supabase-backup-worker` runs weekly and backs up two projects:
+**Reality (verified 2026-06-26 against worker source + live Supabase — the old
+"two projects / `.sql.gz`" claim was aspirational and never matched the deployed worker):**
 
-| Project | Supabase ID | Destination bucket | Schedule |
+The deployed `supabase-backup-worker` (source: `sks-nsw-labour/workers/supabase-backup/`)
+backs up **only SKS Labour (`nspbmirochztcjijmcrx`)** — per-table JSON via PostgREST →
+`sks-assets/backups/YYYY-MM-DD/`, weekly Wed 10:00 UTC, 12-week retention, manual
+`wrangler deploy` (royce@eq.solutions). It never backed up EQ Service: that project
+(`urjhmkhbgaxrofurpbgc`, eq-solves-service-dev) was deleted 2026-06-22 and Service
+migrated to ehow 2026-06-08.
+
+| Project | Holds | Off-platform copy | Native (Pro daily, 7-day) |
 |---|---|---|---|
-| SKS Labour | nspbmirochztcjijmcrx | sks-assets/backups/ | Wednesdays (post labour meeting) |
-| EQ Solves Service | urjhmkhbgaxrofurpbgc | eq-solves-service/ | Weekly |
+| `nspbmirochztcjijmcrx` sks-labour | SKS Labour app | ✅ weekly JSON → sks-assets (caveats below) | ✅ |
+| `ehowgjardagevnrluult` sks-canonical | SKS tenant + EQ Service (`service.*`) | ❌ none | ✅ |
+| `zaapmfdkgedqupfjtchl` eq-canonical-internal | EQ tenant data | ❌ none | ✅ |
+| `jvknxcmbtrfnxfrwfimn` eq-canonical | control layer | ❌ none | ✅ |
 
-File format: `YYYY-MM-DD_HHMM_db_backup.sql.gz`
-Restore: `gunzip < YYYY-MM-DD_HHMM_db_backup.sql.gz | psql <connection-string>`
-**Restore test against scratch project: OUTSTANDING — do before treating backups as reliable.**
+**Caveats:** (1) the existing worker's per-table PostgREST JSON captures **rows only —
+no schema, RLS policies, functions, triggers, or sequences** → a restore would be partial.
+(2) **Restore test still OUTSTANDING.** (3) Supabase Pro native backups are physical-only,
+**not downloadable, and die with the project** (the urjh scenario) — not a substitute for an
+off-platform copy.
+
+### Backup strategy — target state (planned 2026-06-26, not yet built)
+
+**Decision: do NOT buy Supabase PITR** ($100–400/mo per project) at current scale. On managed
+Supabase you can't self-host cheap WAL-based PITR (no `archive_command` access), so the real
+menu is PITR (continuous, on-platform) or self-run logical dumps; for our scale the latter wins.
+Target design:
+
+- **`pg_dump --format=custom`** (schema + data + policies + functions) — not per-table JSON.
+- Run from a **GitHub Actions cron** (outside Supabase, so an outage surfaces a *failure*),
+  write-to-disk → verify non-zero → upload to **R2 via `rclone`**, with **failure alerting**.
+- **Schema-split for entity hygiene:** `--schema service` (EQ Service) → EQ bucket; SKS /
+  `app_data` schemas → SKS bucket. EQ workflow in an EQ repo; SKS workflow in `sks-nsw-labour`.
+- Cover `ehow` + `zaap` (+ `jvkn` optional); retention 30–90 days; **one tested restore** before
+  trusting it. Restore: `pg_restore -d <connection-string> <dump>.dump`.
+- Cost ≈ cents/mo (GH Actions free + R2 ~$0.015/GB, no egress) vs $100+/mo for PITR.
+- **Add PITR only** to the single project whose RPO can't tolerate ~24h loss (e.g. ehow once it
+  holds paying-customer CMMS + financial data) — never blanket.
+
+Rationale: backup-gap analysis, 2026-06-26 session.
 
 ### Other (royce@eq.solutions)
 
