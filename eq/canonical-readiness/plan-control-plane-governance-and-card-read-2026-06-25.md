@@ -2,8 +2,10 @@
 title: Plan — close control-plane governance + the consent-gated card read
 owner: Royce Milmlow
 last_updated: 2026-06-25
-status: PLAN — coordination-aware (consoles live elsewhere). Execute the control-plane
-        steps only when a control-plane console is free; the rest is safe in parallel.
+scope: Two-workstream plan to close control-plane governance and the consent-gated Field card read, written to run around active console work
+read_priority: high
+status: live
+stage: "PLAN — coordination-aware (consoles live elsewhere). Execute the control-plane steps only when a control-plane console is free; the rest is safe in parallel."
 relates_to: canonical-consolidation-roadmap-2026-06-25.md (Phase 0), ticket-field-licence-read-2026-06-25.md
 ---
 

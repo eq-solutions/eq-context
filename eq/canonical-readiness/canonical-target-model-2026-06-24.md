@@ -4,6 +4,7 @@ owner: Royce Milmlow
 last_updated: 2026-06-25
 scope: The go-forward data-architecture model for the EQ suite, locked + substrate-verified
 read_priority: high
+status: live
 ---
 
 # Canonical Target Model (locked 2026-06-24)
