@@ -5,7 +5,8 @@ last_updated: 2026-06-25
 scope: The sequenced, verified to-do list to reach "canonical layer of truth, referenced throughout" + the portable worker-owned Cards vision
 read_priority: high
 builds_on: canonical-target-model-2026-06-24.md, service-consumes-canonical-spine-2026-06-16.md
-status: live — substrate-verified 2026-06-25 against ehow (ehowgjardagevnrluult)
+status: live
+verified: 2026-06-25 against ehow (ehowgjardagevnrluult)
 ---
 
 # Canonical Consolidation Roadmap (2026-06-25)

@@ -1,3 +1,13 @@
+---
+title: "Service ← canonical identity seam (Mechanism A — Shell members API)"
+owner: Royce Milmlow
+last_updated: 2026-06-25
+scope: Locked design for EQ Service moving to pure canonical identity — Shell (shell_control.users on jvkn) as the sole source of truth; Service reads members live and stores the canonical Shell user id
+read_priority: high
+status: live
+stage: Design locked 2026-06-25 (Royce)
+---
+
 # Service ← canonical identity seam (Mechanism A: Shell members API)
 
 **Status:** Design locked 2026-06-25 (Royce). Decision: EQ Service moves to **pure

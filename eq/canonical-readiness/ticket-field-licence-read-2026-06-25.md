@@ -2,7 +2,10 @@
 title: Ticket — EQ Field surfaces worker licences (consent-gated, reuse-first)
 owner: Royce Milmlow
 last_updated: 2026-06-25
-status: SPEC — ready to build. Phase A = zero-backend (ships now). Phase B = post-security.
+scope: Spec for surfacing a worker's consent-shared licences in EQ Field (type/number/expiry) — reuse-first, never private licences
+read_priority: high
+status: live
+stage: "SPEC — ready to build. Phase A = zero-backend (ships now). Phase B = post-security."
 relates_to: canonical-consolidation-roadmap-2026-06-25.md (Decision D, Field-laggard)
 ---
 
