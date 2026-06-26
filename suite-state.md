@@ -35,13 +35,15 @@ _If this file is >48h old, the cron is broken._
 
 | Entity | Count | Schema |
 |--------|-------|--------|
-| Sites | 0 | app_data.sites |
-| Customers | 0 | app_data.customers |
-| Assets | 0 | app_data.assets |
+| Sites | 633 | app_data.sites |
+| Customers | 230 | app_data.customers |
+| Assets | 4,808 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
-| Users | 0 | service.tenant_members |
-| Maintenance checks | 0 | service.maintenance_checks |
-| Defects | 0 | service.defects |
+| Users | 5 | service.tenant_members |
+| Maintenance checks | 3 | service.maintenance_checks |
+| Defects | 15 | service.defects |
+
+⚠️ **FIRST OPERATIONAL DATA CREATED** — migration rebuild now matters.
 
 **SKS tenant ID on ehow:** `7dee117c-98bd-4d39-af8c-2c81d02a1e85`
 **Demo tenant ID:** `a0000000-0000-0000-0000-000000000001`
@@ -61,18 +63,13 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-06-26)
 
 **eq-field:**
-- #344 feat(mobile-nav): Field section nav → top strip in shell-mode (Tier 1)
 - #341 fix(people): pass p_org_id to eq_field_get_worker_summary
 
 **eq-service:**
-- #350 fix(types): remove phantom columns from service view Row types
-- #349 fix(canonical-types): contract_scopes view — add 6 missing real columns
-- #348 ci(canonical): scheduled types-drift guard
 - #345 draft(identity): Phase 3 re-key + reference migration (review-only)
 - #292 docs: capture Shell-embed Service integration gaps (parked)
 
 **eq-shell:**
-- #468 feat(mobile-nav): persistent bottom bar on adapted iframe pages (Tier 1)
 - #177 [DRAFT] feat(field): F1 prep — tenant-config contract + schema-parity audit + auth-fork doc
 
 ---
@@ -83,16 +80,16 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ✓ success |
+| eq-service | ✗ failure |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
-| eq-cards | ✓ success |
+| eq-cards | ✗ failure |
 | eq-solves-intake | ? unknown |
 
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 161 (latest: 0159) applied
+**Migrations:** eq-service has 162 (latest: 0160) applied
 
 ---
 
