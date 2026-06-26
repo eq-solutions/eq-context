@@ -54,8 +54,9 @@ pre-flight checklist as of 2026-06-04:
 - ❓ DNS/TLS live — `curl -I https://service.eq.solutions` returns 200/3xx with valid cert
   (run from a real network).
 - ❓ `NEXT_PUBLIC_SITE_URL` on Service → `https://service.eq.solutions` (was netlify.app).
-- ❓ Supabase Auth URL allowlist (project `urjhmkhbgaxrofurpbgc`) includes
-  `https://service.eq.solutions`, or the OTP exchange is rejected.
+- ❓ Supabase Auth URL allowlist (project `ehowgjardagevnrluult`, sks-canonical —
+  Service's DB since the 2026-06-08 migration; old `urjhmkhbgaxrofurpbgc` deleted
+  2026-06-22) includes `https://service.eq.solutions`, or the OTP exchange is rejected.
 - Then: set `VITE_SERVICE_URL=https://service.eq.solutions` in **Shell** Netlify env + redeploy.
 
 ### B-2. ✅ Anon SECURITY DEFINER RPCs — AUDITED 2026-06-05, essentially clear
@@ -81,10 +82,11 @@ convenience), or gate Service behind mandatory Shell-TOTP for the relevant roles
 add an `aal`/`mfa_satisfied` claim to `eq_shell_session` and bypass per-app MFA only when
 asserted (see cutover runbook §MFA).
 
-### B-4. 🟡 Naming flag — confirm Service prod ≠ dev project
-The cutover runbook points Service prod auth at Supabase project `urjhmkhbgaxrofurpbgc`,
-which lists as **"eq-solves-service-*dev*"**. Probably a legacy name — confirm Service prod
-isn't actually pointed at a dev project.
+### B-4. ✅ Naming flag — RESOLVED (Service migrated off the dev-named project)
+This asked whether Service prod was wrongly pointed at the `eq-solves-service-*dev*`
+project (`urjhmkhbgaxrofurpbgc`). Resolved: Service migrated to `ehowgjardagevnrluult`
+(sks-canonical, `service.*` schema) on 2026-06-08, and the old project was deleted
+2026-06-22. Service prod auth now targets ehow — confirm its allowlist (gate B-1 above).
 
 ### B-5. 🟠 Branch hygiene — confirm what ships
 As of 2026-06-05: eq-shell on `claude/b4-validate` (dirty), eq-solves-field on
