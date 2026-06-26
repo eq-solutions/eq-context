@@ -10,16 +10,17 @@ status: live
 # SYSTEM — Git Automation for eq-context
 
 The eq-context substrate is the source of truth. Every edit must reach GitHub
-and then Supabase within ~60s. This file documents how that happens
-automatically and how to recover when the automation breaks.
+`main`, where it is live immediately via raw URLs — there is no Supabase cache
+and no sync step (see "Substrate serving" below). This file documents how that
+happens automatically and how to recover when the automation breaks.
 
 ---
 
 ## The Loop
 
 ```
-edit file → git commit → post-commit hook → git push → GitHub →
-sync-context.yml workflow → context_files (Supabase) → /context/<slug> endpoint
+edit file → git commit → post-commit hook → git push → GitHub main →
+live immediately via raw URLs (raw.githubusercontent.com/eq-solutions/eq-context/main/<path>)
 ```
 
 Hands-on steps: **edit + commit only**. Everything else runs by itself.
