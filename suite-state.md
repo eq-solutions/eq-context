@@ -8,7 +8,7 @@ status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-06-25 (nightly cron)_
+_Last verified: 2026-06-26 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -58,23 +58,26 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-06-25)
+## Open PRs (as of 2026-06-26)
 
 **eq-field:**
+- #344 feat(mobile-nav): Field section nav → top strip in shell-mode (Tier 1)
 - #341 fix(people): pass p_org_id to eq_field_get_worker_summary
 
 **eq-service:**
-- #346 fix(auth): defects detail page — use getApiUser() so Shell sessions can edit
+- #350 fix(types): remove phantom columns from service view Row types
+- #349 fix(canonical-types): contract_scopes view — add 6 missing real columns
+- #348 ci(canonical): scheduled types-drift guard
 - #345 draft(identity): Phase 3 re-key + reference migration (review-only)
 - #292 docs: capture Shell-embed Service integration gaps (parked)
 
 **eq-shell:**
-- #451 fix(jvkn): re-gate eq_field_get_worker_summary with org-membership check
+- #468 feat(mobile-nav): persistent bottom bar on adapted iframe pages (Tier 1)
 - #177 [DRAFT] feat(field): F1 prep — tenant-config contract + schema-parity audit + auth-fork doc
 
 ---
 
-## System Health (as of 2026-06-25)
+## System Health (as of 2026-06-26)
 
 **CI on main:**
 
