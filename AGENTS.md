@@ -16,8 +16,8 @@ This is a pointer file. The complete behavioural contract for every assistant wo
 ## What to do right now
 
 1. Fetch and read `CLAUDE.md` in full:
-   - **GitHub:** `github.com/eq-solutions/eq-context/blob/main/CLAUDE.md`
-   - **Supabase (runtime):** `https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/claude`
+   - **GitHub (web):** `github.com/eq-solutions/eq-context/blob/main/CLAUDE.md`
+   - **Raw (fetch):** `https://raw.githubusercontent.com/eq-solutions/eq-context/main/CLAUDE.md`
 
 2. Follow `CLAUDE.md` as your complete behavioural specification for this session.
 

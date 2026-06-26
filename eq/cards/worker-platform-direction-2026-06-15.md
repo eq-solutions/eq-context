@@ -9,7 +9,7 @@ status: live
 
 # EQ Cards — Worker Platform Direction
 
-Decision logged 2026-06-15. ADR entry in [ops/decisions.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/ops/decisions.md).
+Decision logged 2026-06-15. ADR entry in [ops/decisions.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/decisions.md).
 
 ## The problem this resolves
 
@@ -137,8 +137,8 @@ This is not a near-term build commitment — it is the direction signal that inf
 
 ## Related decisions and docs
 
-- [ops/decisions.md — 2026-06-15 entry](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/ops/decisions.md) — ADR
-- [ops/decisions.md — 2026-06-04 portable identity](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/ops/decisions.md) — upstream decision this extends
-- [eq/identity/worker-credentials-model-2026-05-31.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/identity/worker-credentials-model-2026-05-31.md) — ownership model
-- [eq/identity/IDENTITY-MODEL.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/identity/IDENTITY-MODEL.md) — v2 bump needed to reflect two-auth-path model
-- [eq/cards/canonical-migration/plan.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/eq/cards/canonical-migration/plan.md) — superseded re: SSO/iframe; canonical data migration still in progress
+- [ops/decisions.md — 2026-06-15 entry](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/decisions.md) — ADR
+- [ops/decisions.md — 2026-06-04 portable identity](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/decisions.md) — upstream decision this extends
+- [eq/identity/worker-credentials-model-2026-05-31.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/eq/identity/worker-credentials-model-2026-05-31.md) — ownership model
+- [eq/identity/IDENTITY-MODEL.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/eq/identity/IDENTITY-MODEL.md) — v2 bump needed to reflect two-auth-path model
+- [eq/cards/canonical-migration/plan.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/eq/cards/canonical-migration/plan.md) — superseded re: SSO/iframe; canonical data migration still in progress

@@ -8,7 +8,7 @@ Paste everything below this line into Cowork at the start of a session.
 
 Fetch and read this file in full as your complete behavioural contract for this session:
 
-`https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/claude` (CLAUDE.md)
+`https://raw.githubusercontent.com/eq-solutions/eq-context/main/CLAUDE.md`
 
 Follow every instruction in `CLAUDE.md` exactly. It contains the session-start sequence, the tier question, the tone rules, the question-asking rules, the templates-first rule, the hard rules that override everything, the Cowork-specific sandbox rules (§11), and the session-end protocol.
 

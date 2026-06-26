@@ -149,25 +149,22 @@ eq-context has been wired. Adding per-repo hooks is a pending item.
 
 ---
 
-## Sync to Supabase
+## Substrate serving (no sync)
 
-GitHub Action `sync-context.yml` runs on every push to `main` and upserts
-changed markdown files into `context_files` in the Supabase
-`eq-solves-service-dev` project (`urjhmkhbgaxrofurpbgc`). See
-`system/architecture.md` for the wiring and `system/lessons.md` for the
-known footguns (duplicate path lists, edge-function path handling, false
-implementation pattern).
+There is no sync job. The substrate *is* the public GitHub repo — assistants read
+files directly via raw URLs
+(`https://raw.githubusercontent.com/eq-solutions/eq-context/main/<path>`), so a push
+to `main` is live immediately. The former `sync-context.yml` Action (which upserted
+markdown into a `context_files` table in Supabase project `urjhmkhbgaxrofurpbgc`,
+eq-solves-service-dev) is retired — that project was deleted 2026-06-22. See
+`system/architecture.md` for the current model and `system/lessons.md` for the
+historical footguns (duplicate path lists, edge-function path handling).
 
-Verification query for any push:
+Verification after any push — confirm `main` serves the new content:
 
-```sql
-SELECT slug, updated_at, NOW() - updated_at AS age
-FROM context_files
-WHERE slug IN ('<slug-1>', '<slug-2>', ...)
-ORDER BY updated_at DESC;
+```bash
+curl -s https://raw.githubusercontent.com/eq-solutions/eq-context/main/<path> | head
 ```
-
-Expect `age` < 60s within a minute of the push completing.
 
 ---
 

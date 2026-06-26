@@ -160,7 +160,7 @@ Snapshot 2026-05-30. **Verify before relying on the git/worktree lines** — the
 | `jvknxcmbtrfnxfrwfimn` | eq-canonical | **Control layer** — Cards config, tenant registry, app settings. Browser-accessible via `VITE_SUPABASE_URL`. | browser via VITE_SUPABASE_URL |
 | `zaapmfdkgedqupfjtchl` | eq-canonical-internal | **EQ tenant Supabase** — all EQ Solutions operational/tenant data (workers, identity, ops). Pattern: `{tenant}-canonical`. | EQ tenant data |
 | `ktmjmdzqrogauaevbktn` | eq-solves-field | **Cold backup** — EQ Field was here pre-2026-06-02. Registry now points to eq-canonical-internal. | cold backup |
-| `urjhmkhbgaxrofurpbgc` | eq-solves-service-dev | Service DB + context substrate (`context_files`) | per repo |
+| `urjhmkhbgaxrofurpbgc` | eq-solves-service-dev | **DELETED 2026-06-22.** Was Service DB + context substrate (`context_files`); Service data migrated to ehow, substrate now served from the GitHub repo directly via raw URLs. | n/a — deleted |
 | `ehowgjardagevnrluult` | sks-canonical | **SKS tenant Supabase** — all SKS operational/tenant data. Pattern: `{tenant}-canonical`. SKS tenant id `7dee117c-98bd-4d39-af8c-2c81d02a1e85`. | SKS tenant data |
 | `nspbmirochztcjijmcrx` | sks-labour | **SKS LIVE operational DB** | **READ-ONLY / AVOID — SKS live** |
 

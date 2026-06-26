@@ -98,5 +98,5 @@ row out to the SKS tenant DB (`ehow`) that Field reads:
 
 ## Related
 
-- Identity / login (the separate worker-auth track): [ops/decisions.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/ops/decisions.md) 2026-06-15 phone-dedup hook.
-- Tenant/DB topology: [system/architecture.md](https://urjhmkhbgaxrofurpbgc.supabase.co/functions/v1/context/system/architecture.md) (control layer `jvkn` + per-tenant `ehow`/`zaap`).
+- Identity / login (the separate worker-auth track): [ops/decisions.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/decisions.md) 2026-06-15 phone-dedup hook.
+- Tenant/DB topology: [system/architecture.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/architecture.md) (control layer `jvkn` + per-tenant `ehow`/`zaap`).
