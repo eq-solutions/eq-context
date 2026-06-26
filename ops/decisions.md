@@ -1,7 +1,7 @@
 ---
 title: OPS — Decisions Log
 owner: Royce Milmlow
-last_updated: 2026-06-15
+last_updated: 2026-06-27
 scope: Append-only log of key decisions across all tiers and the reasoning at the time
 read_priority: standard
 status: live
