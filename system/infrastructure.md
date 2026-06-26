@@ -132,7 +132,7 @@ work PC because ThreatLocker blocks Tailscale.
 | Project | Supabase ID | Destination bucket | Schedule |
 |---|---|---|---|
 | SKS Labour | nspbmirochztcjijmcrx | sks-assets/backups/ | Wednesdays (post labour meeting) |
-| EQ Solves Service | urjhmkhbgaxrofurpbgc — **DELETED 2026-06-22; retarget to ehow (Service data migrated)** | eq-solves-service/ | Weekly |
+| EQ Solves Service | urjhmkhbgaxrofurpbgc | eq-solves-service/ | Weekly |
 
 File format: `YYYY-MM-DD_HHMM_db_backup.sql.gz`
 Restore: `gunzip < YYYY-MM-DD_HHMM_db_backup.sql.gz | psql <connection-string>`
