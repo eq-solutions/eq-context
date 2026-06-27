@@ -8,12 +8,10 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-06-27 21:27 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-06-27 21:33 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## ⚠ Needs you (4)
+## ⚠ Needs you (2)
 
-- 🔴 **CI failure** — eq-shell `main`
-- 🔴 **CI failure** — eq-solves-service `main`
 - 🔴 **CI failure** — eq-field `main`
 - 🔴 **CI failure** — eq-cards `main`
 
@@ -21,8 +19,8 @@ _2026-06-27 21:27 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Repo | CI (main) | Open PRs | Oldest |
 |------|-----------|----------|--------|
-| eq-shell | ✗ failure | 0 | — |
-| eq-solves-service | ✗ failure | 1 | — |
+| eq-shell | ✓ success | 0 | — |
+| eq-solves-service | ✓ success | 1 | — |
 | eq-field | ✗ failure | 1 | 0d |
 | eq-cards | ✗ failure | 0 | — |
 | eq-solves-intake | ? unknown | 0 | — |
@@ -67,4 +65,4 @@ _…and 130 more · [eq/pending.md](eq/pending.md)_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-06-27 21:27 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-06-27 21:33 UTC._
