@@ -60,6 +60,9 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-06-27)
 
+**eq-field:**
+- #350 fix(safety): sticky tab row + padding + site_audits on ehow (v3.5.193)
+
 **eq-service:**
 - #345 draft(identity): Phase 3 re-key + reference migration (review-only)
 
@@ -72,9 +75,9 @@ _If this file is >48h old, the cron is broken._
 | Repo | Status |
 |------|--------|
 | eq-service | ✓ success |
-| eq-shell | ✓ success |
-| eq-field | ✓ success |
-| eq-cards | ✓ success |
+| eq-shell | ✗ failure |
+| eq-field | ✗ failure |
+| eq-cards | ✗ failure |
 | eq-solves-intake | ? unknown |
 
 **Deploys:**
@@ -83,8 +86,6 @@ _NETLIFY_TOKEN not set — deploy status unavailable_
 **Migrations:** eq-service has 163 (latest: 0161) applied
 
 ---
-
-## Field Data Plane — SKS tenant (as of 2026-06-28)
 
 | Layer | View / Table | Rows | Status |
 |-------|-------------|------|--------|
@@ -96,7 +97,6 @@ _NETLIFY_TOKEN not set — deploy status unavailable_
 | Safety | public.prestarts | 0 | ⚠ no data yet |
 | Safety | public.toolbox_talks | 0 | ⚠ no data yet |
 | Safety | public.site_audits | 0 | ⚠ no data yet |
-
 _Auto-refreshed nightly. ✓ = has data · ⚠ = empty (no data yet) · ✗ = table missing_
 
 ---
@@ -125,6 +125,7 @@ _Auto-refreshed nightly. ✓ = has data · ⚠ = empty (no data yet) · ✗ = ta
 ---
 
 ## Key Decisions (auto-derived from merged PRs + manual)
+- Shell user_id is now the canonical join key between Shell identity and Field roster person (via app_data.staff.user_id → field_person_by_user_id RPC) (PR #352, 2026-06-27)
 - CLAUDE.md project ID corrected from deleted urjh to live ehow (ehowgjardagevnrluult) (PR #332, 2026-06-22)
 - Auto-defect trigger ON CONFLICT regression rule moved from memory to CLAUDE.md (PR #332, 2026-06-22)
 
