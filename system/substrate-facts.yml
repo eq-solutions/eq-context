@@ -1,0 +1,68 @@
+# substrate-facts.yml — machine-readable load-bearing facts for the substrate.
+#
+# Checked by scripts/substrate_honesty.py (CI: .github/workflows/substrate-honesty.yml).
+#
+# WHY THIS EXISTS
+# On 2026-06-22 the substrate kept pointing agents at Supabase project `urjh…`
+# for weeks after it was DELETED — a confidently-wrong fact that every agent
+# inherited with authority. A wrong substrate is worse than none: it launders a
+# bad premise into the whole fleet. This file is the checkable subset of the
+# substrate's load-bearing claims; CI probes reality and flags any drift, so the
+# substrate cannot silently lie about what is live again.
+#
+# THE RULE
+# When a doc asserts one of these as a load-bearing fact, the fact lives HERE too.
+# A stale entry in this file IS the failure this guard is built to catch — so the
+# fix when CI flags drift is: change reality or change this file, never ignore it.
+#
+# SCOPE
+# EQ projects only. SKS-live (nspb…) is deliberately excluded from active probing —
+# SKS-tier, retiring, and guarded against direct access. EQ is the focus.
+
+# --- Supabase projects -------------------------------------------------------
+# status: live    -> REST endpoint must answer (calibrated: returns HTTP 401).
+# status: deleted -> host must be gone (calibrated: connection failure). Catches
+#                    a deleted project being re-asserted as live (the urjh case).
+supabase_projects:
+  - label: eq-canonical
+    ref: jvknxcmbtrfnxfrwfimn
+    status: live
+    role: browser control plane
+  - label: eq-canonical-internal
+    ref: zaapmfdkgedqupfjtchl
+    status: live
+    role: server-only tenant data plane
+  - label: sks-canonical (ehow)
+    ref: ehowgjardagevnrluult
+    status: live
+    role: EQ Service + Field live DB
+  - label: eq-solves-field
+    ref: ktmjmdzqrogauaevbktn
+    status: live
+    role: EQ Field Supabase
+  - label: eq-substrate (urjh)
+    ref: urjhmkhbgaxrofurpbgc
+    status: deleted
+    role: former Supabase context cache — DELETED 2026-06-22 (must stay dead)
+
+# --- Deploy URLs -------------------------------------------------------------
+# status: live -> host must answer 2xx/3xx. A 4xx root (SPA / auth-gate) is noted
+#                 as INFO, not a failure. Connection failure / 5xx -> drift.
+deploy_urls:
+  - label: EQ Shell (core)
+    url: https://core.eq.solutions
+    status: live
+  - label: EQ website
+    url: https://eq.solutions
+    status: live
+  - label: EQ Service (Netlify)
+    url: https://eq-solves-service.netlify.app
+    status: live
+
+# --- Forbidden live references ----------------------------------------------
+# Tokens that must NOT appear as a live reference in the active tree. archive/
+# and sessions/ are historical record and exempt; a mention qualified by
+# 'deleted/retired/dead/former/…' is fine. An unqualified mention is the footgun.
+forbidden_live_refs:
+  - token: urjhmkhbgaxrofurpbgc
+    reason: Supabase project deleted 2026-06-22 — only valid with a retired/deleted qualifier

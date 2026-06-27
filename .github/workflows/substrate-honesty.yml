@@ -1,0 +1,44 @@
+name: Substrate honesty check
+
+# Verifies the substrate's load-bearing facts (system/substrate-facts.yml) against
+# reality: Supabase project liveness + deploy-URL liveness + a stale-reference scan
+# for deleted project ids used as live mentions.
+#
+# WHY: the substrate pointed agents at a DELETED Supabase project for weeks (the
+# urjh case, 2026-06-22). A passive substrate that lies poisons the whole fleet.
+# This guard makes that class of error visible.
+#
+# Report-only for now — the script exits 0 on drift unless SUBSTRATE_HONESTY_STRICT
+# is set. Once the signal is trusted, flip it to a gate by setting that env to '1'.
+# No secrets: probes are unauthenticated GETs against public REST roots / URLs.
+
+on:
+  schedule:
+    # 11:00 UTC = 9pm AEST — after the suite-state refresh (10:00 UTC) so a fresh
+    # state file and its honesty check land together.
+    - cron: '0 11 * * *'
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  honesty:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - run: pip install pyyaml
+
+      - name: Classifier unit tests
+        run: python scripts/test_substrate_honesty.py
+
+      - name: Substrate honesty check
+        # Report-only: do not set SUBSTRATE_HONESTY_STRICT yet.
+        run: python scripts/substrate_honesty.py
