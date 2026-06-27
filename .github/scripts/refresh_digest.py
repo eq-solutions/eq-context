@@ -3,17 +3,18 @@
 
 Companion to refresh_suite_state.py (the full snapshot). suite-state.md answers
 "what is the state of everything"; digest.md answers "what, if anything, needs me
-right now" — CI failures, aging PRs, stale deploys, substrate drift. If everything
-is green it says so in one line. Deterministic; zero LLM inference.
+right now" — CI failures, aging PRs, stale deploys, substrate drift, and recently
+merged work. If everything is green it says so in one line. Deterministic; zero LLM.
 
 This is the feedback layer of the substrate-coherence model: a solo founder can't
 watch 16 dashboards, so the suite reports its own exceptions on a schedule instead
-of waiting to be asked. Run nightly via .github/workflows/digest-refresh.yml.
+of waiting to be asked. Run on every merge to main via repository_dispatch
+(suite-state-changed) and nightly as fallback via digest-refresh.yml.
 """
 import os
 import subprocess
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 import requests
 
@@ -26,6 +27,8 @@ STAMP = NOW.strftime("%Y-%m-%d %H:%M UTC")
 # EQ repos only (SKS is a separate entity). Names are the GitHub repo slugs.
 REPOS = ["eq-shell", "eq-solves-service", "eq-field", "eq-cards", "eq-solves-intake"]
 PR_AGE_WARN_DAYS = 7
+RECENTLY_MERGED_DAYS = 7
+RECENT_PR_LIMIT = 15  # max rows shown in "recently built" table
 
 # Netlify sites -> label. Only checked when NETLIFY_TOKEN is set.
 NETLIFY_SITES = {
@@ -88,6 +91,48 @@ def open_prs(repo):
     return out
 
 
+def recently_merged_prs(repo, days=RECENTLY_MERGED_DAYS):
+    """PRs merged in the last N days, newest first."""
+    data = gh_get(
+        f"repos/eq-solutions/{repo}/pulls?state=closed&per_page=30&sort=updated&direction=desc"
+    )
+    if not isinstance(data, list):
+        return []
+    cutoff = NOW - timedelta(days=days)
+    out = []
+    for p in data:
+        merged_at = p.get("merged_at")
+        if not merged_at:
+            continue
+        try:
+            merged_dt = datetime.fromisoformat(merged_at.replace("Z", "+00:00"))
+        except ValueError:
+            continue
+        if merged_dt < cutoff:
+            continue
+        out.append({
+            "num": p.get("number"),
+            "title": (p.get("title") or "").strip(),
+            "url": p.get("html_url", ""),
+            "merged": merged_at[:10],
+        })
+    return out
+
+
+def pending_open_items(path):
+    """Unchecked items from a pending.md file. Returns list of strings."""
+    try:
+        with open(path, encoding="utf-8") as f:
+            lines = f.readlines()
+    except FileNotFoundError:
+        return []
+    return [
+        line.strip()[5:].strip()
+        for line in lines
+        if line.strip().startswith("- [ ]")
+    ]
+
+
 def deploy_state(site):
     """(state, published_date) for a Netlify site's last deploy. Token-gated."""
     if not NETLIFY_TOKEN:
@@ -141,6 +186,7 @@ def substrate_honesty():
 def build():
     attention = []   # (severity_emoji, text)
     pulse = []       # (repo, ci, n_open, oldest)
+    recent_by_repo = {}  # repo -> [pr, ...]
 
     for repo in REPOS:
         ci = ci_status(repo)
@@ -149,6 +195,7 @@ def build():
         ages = [p["age"] for p in live_prs if p["age"] is not None]
         oldest = max(ages) if ages else None
         pulse.append((repo, ci, len(prs), oldest))
+        recent_by_repo[repo] = recently_merged_prs(repo)
 
         if ci not in HEALTHY_CI and ci != "unknown":
             attention.append(("🔴", f"**CI {ci}** — {repo} `main`"))
@@ -169,9 +216,22 @@ def build():
             attention.append(("🟠", f"**Deploy {state}** — {label} ({site})"))
 
     ok, issues = substrate_honesty()
-    if ok is False:  # only real drift is an attention item; inconclusive is not
+    if ok is False:
         for issue in issues:
             attention.append(("🔴", f"**Substrate drift** — {issue}"))
+
+    # Flatten + sort recently merged; cap for display
+    recent_all = [
+        (repo, pr)
+        for repo, prs in recent_by_repo.items()
+        for pr in prs
+    ]
+    recent_all.sort(key=lambda x: x[1]["merged"], reverse=True)
+    total_recent = len(recent_all)
+    recent_display = recent_all[:RECENT_PR_LIMIT]
+
+    # Pending open items
+    eq_pending = pending_open_items("eq/pending.md")
 
     # ── render ──
     lines = []
@@ -179,8 +239,11 @@ def build():
     lines.append("title: EQ Suite — Health Digest")
     lines.append("owner: Royce Milmlow")
     lines.append(f"last_updated: {TODAY}")
-    lines.append("scope: Push-style 'what needs your attention' feed across the EQ suite. "
-                 "Regenerated nightly by GitHub Action (digest-refresh.yml). Full snapshot in suite-state.md.")
+    lines.append(
+        "scope: Push-style 'what needs your attention' feed across the EQ suite. "
+        "Regenerated on merge (repository_dispatch: suite-state-changed) and nightly. "
+        "Full snapshot in suite-state.md."
+    )
     lines.append("read_priority: high")
     lines.append("status: live")
     lines.append("---")
@@ -193,7 +256,6 @@ def build():
     lines.append(f"## ⚠ Needs you ({n})" if n else "## ✓ Needs you (0)")
     lines.append("")
     if attention:
-        # 🔴 first, then 🟠
         for emoji, text in sorted(attention, key=lambda a: a[0] != "🔴"):
             lines.append(f"- {emoji} {text}")
     else:
@@ -220,11 +282,47 @@ def build():
             lines.append(f"| {label} | {state} | {published or '?'} |")
         lines.append("")
 
+    # Recently built — replaces the manual PR log in CLAUDE.md
+    lines.append(f"## Recently built (last {RECENTLY_MERGED_DAYS} days)")
+    lines.append("")
+    if recent_display:
+        lines.append("| Merged | Repo | PR |")
+        lines.append("|--------|------|----|")
+        for repo, pr in recent_display:
+            title = pr["title"][:65]
+            link = f"[#{pr['num']}]({pr['url']})" if pr["url"] else f"#{pr['num']}"
+            lines.append(f"| {pr['merged']} | {repo} | {link} {title} |")
+        if total_recent > RECENT_PR_LIMIT:
+            lines.append(
+                f"_Showing {RECENT_PR_LIMIT} of {total_recent} · "
+                f"full record in [sessions/](sessions/)_"
+            )
+        else:
+            s = "s" if total_recent != 1 else ""
+            lines.append(f"_{total_recent} merge{s} · full record in [sessions/](sessions/)_")
+    else:
+        lines.append(f"_No merges in the last {RECENTLY_MERGED_DAYS} days._")
+    lines.append("")
+
+    # Pending open items (EQ)
+    if eq_pending:
+        lines.append("## Pending (EQ)")
+        lines.append("")
+        for item in eq_pending[:10]:
+            lines.append(f"- {item}")
+        if len(eq_pending) > 10:
+            lines.append(f"_…and {len(eq_pending) - 10} more · [eq/pending.md](eq/pending.md)_")
+        else:
+            lines.append("_[eq/pending.md](eq/pending.md)_")
+        lines.append("")
+
     lines.append("## Substrate honesty")
     lines.append("")
     if ok is True:
-        lines.append("✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, "
-                     "no deleted refs used as live) matches reality.")
+        lines.append(
+            "✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, "
+            "no deleted refs used as live) matches reality."
+        )
     elif ok is False:
         lines.append("✗ Drift detected — see **Needs you** above. Source: `scripts/substrate_honesty.py`.")
     else:
@@ -232,8 +330,10 @@ def build():
     lines.append("")
 
     lines.append("---")
-    lines.append(f"_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · "
-                 f"nightly + on demand · {STAMP}._")
+    lines.append(
+        f"_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · "
+        f"on merge + nightly · {STAMP}._"
+    )
     lines.append("")
     return "\n".join(lines)
 
@@ -243,6 +343,5 @@ if __name__ == "__main__":
     with open("digest.md", "w", encoding="utf-8", newline="\n") as f:
         f.write(digest)
     print(f"digest.md written for {TODAY}")
-    # Echo the 'Needs you' count to the Actions log for at-a-glance run history.
     needs = digest.split("Needs you (")[1].split(")")[0]
     print(f"Needs you: {needs}")
