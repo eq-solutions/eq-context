@@ -1,7 +1,7 @@
 ---
 title: CLAUDE.md — Master Behavioural Contract
 owner: Royce Milmlow
-last_updated: 2026-06-25
+last_updated: 2026-06-27
 scope: Single source of truth for how every assistant (Chat, Cowork, Code, ChatGPT, Grok, any future tool) must behave when working with Royce
 read_priority: critical
 status: live
@@ -41,6 +41,13 @@ Every session, every tool. No exceptions.
 
    **Always fetch first (every session, all tiers):** [system/TODAY.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/TODAY.md)
    This is the Q3 2026 focus filter. Read it before loading any tier content.
+
+   **Then read the health digest:** [digest.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/digest.md)
+   The suite's nightly "what needs your attention" feed — CI failures, aging PRs,
+   stale deploys, substrate drift. If its **Needs you** section is non-empty, lead
+   with those items before asking what we're working on. If it's all clear, say so
+   in a few words and move on. (Regenerated nightly by `digest-refresh.yml`; the
+   full snapshot stays in `suite-state.md`.)
 
    | Answer | Files to fetch |
    |---|---|
