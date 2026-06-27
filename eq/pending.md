@@ -22,7 +22,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **`sks-nsw-labour` confirmed zero docx code** — the builder lives entirely in eq-field.
 
 **Open / next:**
-- [ ] **EQ-demo toolbox logo** — `toolbox.js` `exportToolboxDocx` still uses dead `/images/eq-logo.png` path; needs updating to `fetchTenantLogo()` pattern (SKS path already correct)
+- [x] **EQ-demo toolbox logo** — `toolbox.js` `exportToolboxDocx` still uses dead `/images/eq-logo.png` path; needs updating to `fetchTenantLogo()` pattern (SKS path already correct) — **DONE eq-field PR #349 merged 2026-06-27**
 - [ ] Remaining items carried from 2026-06-18 (see below)
 
 ---
@@ -42,11 +42,11 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - Acknowledged limit: tool amplifies culture, cannot create it. Needs supervisors who give a damn.
 
 **Open / next:**
-- [ ] **Quarterly reviews UI** — table exists in DB, no UI built yet. Decide visibility (self-only vs supervisor-visible) before building
-- [ ] **Acknowledgments smoke test** — verify eye icon → ack flow works end-to-end on SKS at core.eq.solutions/sks/field
-- [ ] **on_roster app filter** — make roster grid filter on `on_roster` (carried from 2026-06-15)
+- [x] **Quarterly reviews UI** — table exists in DB, no UI built yet. Decide visibility (self-only vs supervisor-visible) before building — **DONE eq-field PR #310 merged 2026-06-18 (v3.5.167)**
+- [x] **Acknowledgments smoke test** — verify eye icon → ack flow works end-to-end on SKS at core.eq.solutions/sks/field — **DONE: 401 fixed via eq-field PRs #335 + #336 merged 2026-06-25**
+- [x] **on_roster app filter** — make roster grid filter on `on_roster` (carried from 2026-06-15) — **DONE eq-field PR #349 merged 2026-06-27**
 - [ ] **Curate `sites.field_enabled`** — 591 all enabled → trim to live jobs
-- [ ] **`EQ_SECRET_SALT` rotation** — demo salt was exposed in chat; rotate when convenient
+- [x] **`EQ_SECRET_SALT` rotation** — demo salt was exposed in chat; rotate when convenient — **MOOT: EQ_SECRET_SALT / HMAC path retired via shell PRs #329 + #430 merged 2026-06-22; salt has no live consumer**
 
 ---
 
@@ -61,7 +61,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **"Nothing shows in Field" ROOT-CAUSED + FIXED (eq-field v3.5.148, PR #289, deployed)** — `JWT_INPLACE_TENANTS={'sks'}` was stale: it routed SKS reads to `public.*` on ehow (0 SKS rows, no `authenticated` grant) instead of the canonical `app_data.field_*` where the data lives. Removed 'sks' → SKS uses the twin path (verified live bundle = `new Set([])`). Also restored the `app_data.field_people` SELECT grant on ehow (lost when the view was recreated for on_roster). Console 403s confirmed the data-JWT mints fine (role=authenticated) — it was pointed at the wrong tables.
 
 **Open / next:**
-- [ ] **on_roster app filter** — make the eq-field roster grid filter on `on_roster` (code + deploy).
+- [x] **on_roster app filter** — make the eq-field roster grid filter on `on_roster` (code + deploy) — **DONE eq-field PR #349 merged 2026-06-27**
 - [ ] **Login hook** (phone-dedup) — workers still can't sign in (separate track; `ops/decisions.md`).
 - [ ] **Curate `sites.field_enabled`** — 591 all enabled → trim to live jobs.
 - [ ] **Daniel Bower** — confirm leaver / remove.
@@ -123,7 +123,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [ ] Standalone `sks-nsw-labour` retirement — after soak confirmation
 - [ ] Track 2 RLS STEP 2 — anon SELECT lockdown; after standalone retired
 - [ ] jvkn→ehow canonical identity pipeline — `WORKERS_WEBHOOK_SECRET` + `EHOW_SERVICE_ROLE_KEY` must be set in Supabase Dashboard before bulk sync runs
-- [ ] Waves 2–3 personal PIN revert — v3.5.132–134 deployed wrong direction; revert before further auth work
+- [x] Waves 2–3 personal PIN revert — v3.5.132–134 deployed wrong direction; revert before further auth work — **DONE eq-field PR #276 merged 2026-06-13 (v3.5.136)**
 
 ---
 
@@ -156,7 +156,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 **Pending verification:**
 - [ ] **Royce: smoke test Service SSO** — fresh incognito → `core.eq.solutions` → Shell login → click Service → dashboard loads without login prompt. Tick Sprint 7 smoke test when done.
-- [ ] **Merge eq-service PR #274** — diagnostic log cleanup (no functional change, safe to merge anytime).
+- [x] **Merge eq-service PR #274** — diagnostic log cleanup (no functional change, safe to merge anytime) — **MERGED 2026-06-09**
 
 ---
 
@@ -186,7 +186,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **eq-service encryption (0123) DONE** — migration schema fixed (public→app_data), RPCs corrected, PRs #268/#269 merged. `SITE_CREDENTIALS_KEY` set. Rekey confirmed 0 rows.
 
 **Active / time-sensitive:**
-- [ ] **EQ Shell v8 design pass** — same Claude Design handoff applied to eq-shell (React). LoginPage + TenantHome hub. Started 2026-06-09.
+- [x] **EQ Shell v8 design pass** — same Claude Design handoff applied to eq-shell (React). LoginPage + TenantHome hub — **DONE PRs #290 + #293 squash-merged 2026-06-09**
 - [ ] **⚠ Worker invites expire 2026-06-15** — 25 workers have pending invites. Remind field staff to check email and accept their EQ Shell invite. Self-links on accept via `accept-invite.ts`.
 - [ ] **2 workers with no staff match** — emma_curth@outlook.com, hexperfect@outlook.com. Create staff records in EQ Field or correct emails.
 - [ ] **8 workers with no email** — populate email in eq-canonical `public.workers` to enable linking.
@@ -211,7 +211,7 @@ refs updated (PR #257 → main, open); repo on `eq-solutions/eq-service`.
 - [ ] **Smoke test (Royce)** — sign in via Shell OTP at service.eq.solutions, confirm
       checks/tests/defects visible, create a test check → lands in ehow tenant `7dee117c-…`.
       *(Shell SSO now fixed — 2026-06-09, 4 bugs fixed, deploy 6a27f277. Test in incognito.)*
-- [ ] **PR #257** — merge to main (triggers deploy) once smoke test passes.
+- [x] **PR #257** — merge to main (triggers deploy) once smoke test passes — **MERGED 2026-06-08**
 - [ ] **Post-verification (do NOT do before smoke test):** redirect service.eq.solutions →
       core (5.2), revoke urjh service-role keys (5.4), decommission old Netlify site (5.3).
 - [ ] **Scheduler/route migration (4.4)** — `supervisor-digest` + `pre-visit-brief` schedulers
@@ -277,7 +277,7 @@ creds 779→737, invites 37→58 since 06-03; `0028_contact_customer_links` IS p
 
 Parallel to the Field schema/data cutover below. Full plan + agent prompts (A–E): [`sks-live-sprint-2026-06-07.md`](../sks-live-sprint-2026-06-07.md). Live-verified 2026-06-07: `shell_control` has 9 groups / 16 perms / **0** user assignments; tenant `sks` = 3 × manager.
 
-- [ ] **eq-roles** — merge PR #7 → tag `v2.3.0` (unblocks the eq-shell dep bump). *(Royce)*
+- [x] **eq-roles** — merge PR #7 → tag `v2.3.0` (unblocks the eq-shell dep bump) — **DONE PR #7 merged 2026-06-07**
 - [ ] **eq-shell** — converge `c2-shell-roles` + `sks-field-host` into one trunk (Prompt A; Royce picks trunk).
 - [ ] **eq-shell Phase 2** — wire group perms into the session as `extra_perms` via `resolveEffectivePermissions` (Prompt B).
 - [ ] **eq-shell Phase 3** — `AdminSecurityGroups` page; first write moves `user_security_groups` off 0 rows (Prompt C).
@@ -344,7 +344,7 @@ Parallel to the Field schema/data cutover below. Full plan + agent prompts (A–
 - **`eq/go-live-runbook.md`** written + committed — live-verified weekend runbook.
 
 **Go-live gates (weekend) — see `eq/go-live-runbook.md` §B:**
-- [ ] 🔴 **`EQ_SECRET_SALT` parity** Shell vs Service — silent #1 go/no-go, never compared
+- [x] 🔴 **`EQ_SECRET_SALT` parity** Shell vs Service — silent #1 go/no-go, never compared — **MOOT: EQ_SECRET_SALT retired 2026-06-22 (shell + service PRs #329); no live consumer**
 - [ ] Finish **Service domain cutover** (DNS/TLS, `NEXT_PUBLIC_SITE_URL`, Supabase URL allowlist on `ehowgjardagevnrluult`). Service prod project resolved: migrated to ehow (sks-canonical) 2026-06-08; old `urjhmkhbgaxrofurpbgc` (-dev) deleted 2026-06-22.
 - [ ] 🟠 **MFA-bypass posture** — PIN-only Shell → Service single-factor; accept or gate behind mandatory Shell-TOTP
 
@@ -631,12 +631,7 @@ carries today. They DO NOT ship until Phase 2 resumes (GTM gate
 clears, or a paying customer requests a new module). Priority order
 = highest blast-radius first.
 
-- [ ] **Dual-salt rotation support for `EQ_SECRET_SALT`** — both
-      shell-side `mint-iframe-token` and Field-side validator accept
-      salt-A and salt-B; mint with salt-B; redeploy both; wait for
-      token TTL; remove salt-A. Without this, a salt leak forces a
-      coordinated outage to rotate. Shared secret across two Netlify
-      projects is the single highest-blast-radius risk in the stack.
+- [x] **Dual-salt rotation support for `EQ_SECRET_SALT`** — MOOT: `mint-iframe-token` and the HMAC salt path are both retired (shell PRs #329 + #430 merged 2026-06-22). TOKEN MODE (Supabase JWT via token-exchange.ts) is the sole minting path. No rotation needed.
 - [ ] **Dual-secret support in `verify-shell-session`** for
       `SUPABASE_JWT_SECRET` rotation. Same rationale.
 - [ ] **`revoked_sessions` table** + shorten JWT TTL from 1 hour to

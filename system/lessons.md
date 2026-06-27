@@ -189,6 +189,8 @@ all files land in root, subfolders are lost.
 **Fix:** Before describing any substrate (table names, project IDs, file paths, schema), run a live verification query through the relevant MCP. Memory is a draft, not a source.
 **Why it matters:** The whole point of eq-context is to be ground truth. If the assistant's description of ground truth is itself wrong, every diagram, brief, and decision built on it inherits the error. Cheap to verify, expensive to undo.
 
+**Retroactive note (added 2026-06-22):** The `context_files` table and the `eq-solves-service-dev` project (`urjhmkhbgaxrofurpbgc`) were deleted 2026-06-22. The substrate is now served directly from the public GitHub repo (github.com/eq-solutions/eq-context) via raw CDN URLs — no Supabase store. The principle still holds (verify before describing), but the verification target is now the GitHub raw URL, not a Supabase MCP query.
+
 ---
 
 ## Update Discipline Lapsed — 17 of 30 Files Stale by 15+ Days at 2026-04-27 Audit
@@ -223,6 +225,8 @@ ORDER BY updated_at ASC;
 
 Treat each result row as a "needs update or explicit no-change confirmation".
 
+**Retroactive note (added 2026-06-22):** The `context_files` table and its host project (`urjhmkhbgaxrofurpbgc`) were deleted 2026-06-22. This SQL query is no longer executable. Staleness detection for the GitHub-based substrate can be done via: `gh api repos/eq-solutions/eq-context/commits?path=<file>&per_page=1` to get the last commit date per file, or by reading the `last_updated` frontmatter field in each markdown file directly.
+
 ---
 
 ## False-Implementation Pattern — Surface Signals Lie, Measurement Doesn't
@@ -239,6 +243,8 @@ WHERE slug IN ('<file-1>', '<file-2>', '<file-3>');
 
 Replace `<expected-marker>` with a unique string that should be in the new content (a date, a heading, a phrase). Replace the slugs with the files that should have changed.
 **Why it matters:** Terminal output and commit hashes are success-shaped artefacts, not success itself. Only the row in Supabase containing the expected content counts as done.
+
+**Retroactive note (added 2026-06-22):** The `context_files` Supabase table was deleted with its host project 2026-06-22. The substrate is now GitHub. The verification pattern is: fetch `https://raw.githubusercontent.com/eq-solutions/eq-context/main/<path>` and check the expected marker is present. "Done" = expected content at the raw GitHub URL, not a Supabase row.
 
 ---
 
@@ -266,6 +272,8 @@ Future hardening worth considering: collapse the two into a single source — e.
 
 **Why it matters:** Workflow-green-but-rows-absent is a uniquely bad failure mode. It violates the "done = fresh updated_at" rule from the substrate non-negotiable and the False-Implementation Pattern lesson — but indirectly: the *expected* slugs were never queued for verification at all, so the verification job has nothing to fail on. The only signal that catches it is direct query against `context_files` for the slug you expected. Worth re-running that as a separate check after any workflow change touching path lists.
 
+**Retroactive note (added 2026-06-22):** The Supabase cache (`context_files`, urjhmkhbgaxrofurpbgc) was deleted 2026-06-22. The `sync-context.yml` workflow now syncs to GitHub only. The diagnostic for a missed-path failure is: check the workflow run logs to confirm the file appeared in the triggered path list, then fetch the raw GitHub URL to verify content is present. The Supabase-query verification step is obsolete.
+
 ---
 
 ## Edge Function `/context/<slug>` Only Served Single-Segment Paths Until 2026-05-07
@@ -282,6 +290,8 @@ Future hardening worth considering: collapse the two into a single source — e.
 **Why it matters:** Most of the substrate has been silently unreachable via public URL for ~3 days. Anyone fetching tier files from a non-Cowork tool got 404s. The edge function is the public face of the substrate — it has to keep up with substrate structure changes, same as the sync workflow does.
 
 **Rule going forward:** When the substrate structure changes (new tier folder, renamed slug, etc.), the edge function is on the checklist of things to update — not just the workflow.
+
+**Retroactive note (added 2026-06-22):** The Supabase project hosting this edge function (`urjhmkhbgaxrofurpbgc`, eq-solves-service-dev) was deleted 2026-06-22. The edge function no longer exists. The substrate is now served directly from the public GitHub repo via raw CDN URLs (https://raw.githubusercontent.com/eq-solutions/eq-context/main/<path>). The "update the edge function" checklist item is obsolete — the GitHub raw URL structure matches the file path directly and requires no function update.
 
 ---
 
@@ -383,3 +393,27 @@ After the fix: pre-commit bumps dates before each commit, the bot finds nothing 
 **Re-clone setup:** Run `.\scripts\install-hooks.ps1` after cloning to wire `core.hooksPath` correctly. Without this step the hooks directory defaults to `.git/hooks/` which is empty.
 
 **Why it matters:** A pre-commit hook that silently doesn't run is worse than no hook at all — you think the guard is in place and it isn't. The tell was the bot's auto-bump commits appearing on every push. Any time you see the bot fighting your pushes, check `git config core.hooksPath` before diagnosing the bot itself.
+
+---
+
+## Verify the Live System Before Building (added 2026-06-22)
+
+**Rule:** Before writing any code, migration, or PR — query the actual live system. Do not trust docs, suite-state.md, session logs, or substrate files as a substitute for live verification. The failure mode (documented 2026-06-03) is: assume something is not built, build a parallel version, discover it already existed — wasted work and reverts.
+
+**Checklist before any build task:**
+1. `list_tables` on the relevant Supabase project (ehow: ehowgjardagevnrluult or eq-canonical: jvknxcmbtrfnxfrwfimn)
+2. `git branch -a` + `git status` on the target repo
+3. Check worktree-registry.md for in-flight work on a branch
+4. Read suite-state.md for CI/deploy status
+
+**Why it matters:** Substrate files lag reality. A 10-second Supabase query beats a wrong-premise build that takes two hours to undo.
+
+---
+
+## Substrate Lags Reality — and urjh Is Deleted (added 2026-06-22)
+
+**Rule:** Substrate files (CLAUDE.md, suite-state.md, session logs, pending.md) always lag the live system. Treat substrate claims about DB schema, applied migrations, deployed versions, and key/secret status as leads to verify — not facts.
+
+**Critical dead reference:** Supabase project `urjhmkhbgaxrofurpbgc` (urjh / eq-solves-service-dev) was DELETED 2026-06-22. Any reference to it as a live project in substrate files is stale. Do not query it, do not reference it as a data store, do not deploy edge functions to it. The sole live DB for EQ Service and EQ Field is ehow (`ehowgjardagevnrluult`).
+
+**The substrate itself is on GitHub:** The eq-context substrate is served via GitHub raw CDN (https://raw.githubusercontent.com/eq-solutions/eq-context/main/<path>). There is no Supabase cache, no edge function, no context_files table. These were all retired when urjh was deleted.

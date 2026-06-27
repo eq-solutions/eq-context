@@ -239,7 +239,7 @@ Example: SKS Technologies has `cards` enabled (tenant entitlement). Within SKS, 
 - **Not** a per-app permission system. There is one model; every app conforms.
 - **Not** RBAC + ABAC. It's straight role-based with explicit per-role permission lists. No attribute-based rules (no "users in region X can see records tagged Y") — if a feature needs that level of granularity, that's a conversation to extend the model deliberately, not a conversation to fork it.
 - **Not** dynamic / database-backed. The matrix is static, committed to the repo, versioned by git. No admin UI for "edit what supervisors can do" — those edits land as PRs, get reviewed, and ship in a release.
-- **Not** Supabase-Auth-managed. We don't use Supabase's `auth.users` table for our identity. We mint our own JWTs against `public.users` on `eq-canonical`. RLS reads `app_metadata.tenant_id` and `app_metadata.eq_role` from the JWT we sign. This means we own the auth surface end-to-end; trade is that Supabase magic-link / OAuth flows are not available without bridging code we'd have to write.
+- **Not** Supabase-Auth-managed. We don't use Supabase's `auth.users` table for our identity. We mint our own JWTs against `shell_control.users` on `eq-canonical`. RLS reads `app_metadata.tenant_id` and `app_metadata.eq_role` from the JWT we sign. This means we own the auth surface end-to-end; trade is that Supabase magic-link / OAuth flows are not available without bridging code we'd have to write.
 
 ## 10. Hard rules — checklist for any new module
 

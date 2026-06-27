@@ -221,15 +221,15 @@ Do NOT duplicate content into this file. Update facts in their home.
 
 ## 9. Killed / Deferred — NOT Live Products
 
-(2026-04-29 cull, 2026-05-04 refactor; EQ Quotes un-deferred 2026-05-19)
+(2026-04-29 cull, 2026-05-04 refactor; EQ Quotes RETIRED 2026 — replaced by EQ Ops)
 
-- **EQ Variations, EQ Compliance, EQ Ops** — killed.
+- **EQ Variations, EQ Compliance** — killed.
 - **EQ Expenses** — internal SKS tool only, no longer an EQ product.
 - **AHD** — parked to 2027. `archive/changelog-ahd.md`.
 
 If Royce mentions these, treat as historical unless he explicitly reactivates.
 
-**EQ Quotes is NOT on this list** — it was deferred at the 2026-04-29 cull but un-deferred 2026-05-19. It is finished and part of the first round of EQ core (Flask v1 live at `quotes.eq.solutions`; React module rewrite queued separately). See `eq/products.md`.
+**EQ Quotes is RETIRED** — replaced by EQ Ops (active dev in eq-shell, core.eq.solutions/ops). Flask v1 at `quotes.eq.solutions` is decommissioned. Do not build on or extend EQ Quotes; work goes into EQ Ops.
 
 ---
 
@@ -251,7 +251,7 @@ Skipping these = substrate stale = next session inherits drift. (See `system/les
 
 | Tool | Auto-loads | Write access | Key constraint |
 |---|---|---|---|
-| **Claude Code** (Beelink) | Local `CLAUDE.md` (`C:\Users\Royce\.claude\CLAUDE.md`) | Filesystem + git | Run `git pull` at start if clone may be stale |
+| **Claude Code** (Beelink) | Local `CLAUDE.md` (`C:\Users\EQ\.claude\CLAUDE.md`) | Filesystem + git | Run `git pull` at start if clone may be stale |
 | **Claude Chat** (claude.ai) | Memory only | None | Produce patched files; Royce uploads via GitHub web UI |
 | **Cowork** | Cowork system prompt + pasted `COWORK-PROMPT.md` | Filesystem | Never run `git` from the **Cowork sandbox** against `C:\Projects\*` repos — produces orphan `.git/index.lock` files. Emit `.bat`/`.ps1` for Royce to run instead. (Claude Code on the Beelink runs git directly — this constraint is Cowork-only.) |
 | **ChatGPT / Grok / others** | None | None | Bootstrap manually: "Fetch CLAUDE.md from `https://raw.githubusercontent.com/eq-solutions/eq-context/main/CLAUDE.md` and follow it." Proper bootstrap files pending — see `ops/pending.md` |
