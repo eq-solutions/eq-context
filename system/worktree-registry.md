@@ -1,7 +1,7 @@
 ---
 title: Worktree Registry
 owner: Royce Milmlow
-last_updated: 2026-06-25
+last_updated: 2026-06-28
 scope: Active and stale git worktrees — check before creating a new one
 read_priority: critical
 status: live
@@ -24,9 +24,7 @@ Check this file first — if your target repo/area is already claimed, coordinat
 
 | Folder | Branch | Agent / Session | Claimed | Status |
 |--------|--------|-----------------|---------|--------|
-| .claude/worktrees/wf_f1c4afc6-761-4 | claude/d33a-icon-rail-d51-ui | workflow agent | 2026-06-07 | locked |
-| .claude/worktrees/agent-a3e8cad7de9a023fc | claude/quality-polish-shell | agent | 2026-06-07 | locked |
-| .claude/worktrees/agent-a15dd68d59734b633 | worktree-agent-a15dd68d59734b633 | agent | 2026-06-07 | locked |
+| _(none)_ | — | — | — | — |
 
 ---
 
@@ -34,8 +32,10 @@ Check this file first — if your target repo/area is already claimed, coordinat
 
 | Folder | Branch | Agent / Session | Notes |
 |--------|--------|-----------------|-------|
-| .claude/worktrees/magical-bouman-3bd9c9 | main | housekeep session 2026-06-25 | Active session worktree (main branch). Can be removed after Claude Code closes. |
-| .claude/worktrees/elastic-meninsky-efd6a1 | claude/elastic-meninsky-efd6a1 | unknown agent | No open PR. Unlocked but Permission Denied on remove — file lock held. Run `cleanup-stale-worktrees.ps1` in eq-shell root after closing Claude Code. |
+| .claude/worktrees/magical-bouman-3bd9c9 (eq-shell) | main | housekeep session 2026-06-25 | Can be removed after Claude Code closes. |
+| .claude/worktrees/elastic-meninsky-efd6a1 (eq-shell) | claude/elastic-meninsky-efd6a1 | unknown agent | No open PR. Permission Denied on remove — file lock held. Run `cleanup-stale-worktrees.ps1` in eq-shell root. |
+| .claude/worktrees/determined-edison-d6f176 (eq-shell) | determined-edison-d6f176 | unknown | Directory exists; git ref pruned 2026-06-28. Remove when process releases lock. |
+| .claude/worktrees/sharp-kapitsa-93278c (eq-field) | claude/sharp-kapitsa-93278c | unknown | No PR; was at main HEAD. Git ref pruned 2026-06-28. Run `C:\Projects\cleanup-sharp-kapitsa-worktree.ps1`. |
 
 ---
 
