@@ -8,11 +8,10 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-06-27 21:33 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-06-27 22:02 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## ⚠ Needs you (2)
+## ⚠ Needs you (1)
 
-- 🔴 **CI failure** — eq-field `main`
 - 🔴 **CI failure** — eq-cards `main`
 
 ## Pulse
@@ -21,7 +20,7 @@ _2026-06-27 21:33 UTC · what needs your attention. Full snapshot: [suite-state.
 |------|-----------|----------|--------|
 | eq-shell | ✓ success | 0 | — |
 | eq-solves-service | ✓ success | 1 | — |
-| eq-field | ✗ failure | 1 | 0d |
+| eq-field | ✓ success | 1 | 0d |
 | eq-cards | ✗ failure | 0 | — |
 | eq-solves-intake | ? unknown | 0 | — |
 
@@ -29,6 +28,8 @@ _2026-06-27 21:33 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-06-27 | eq-shell | [#503](https://github.com/eq-solutions/eq-shell/pull/503) feat(crm): entityCapabilities policy map (archive/delete/merge pe |
+| 2026-06-27 | eq-shell | [#504](https://github.com/eq-solutions/eq-shell/pull/504) fix(equipment): surface the real cert-import error (no more opaqu |
 | 2026-06-27 | eq-shell | [#501](https://github.com/eq-solutions/eq-shell/pull/501) feat(substrate): notify eq-context on push to main |
 | 2026-06-27 | eq-shell | [#500](https://github.com/eq-solutions/eq-shell/pull/500) fix(eq-ops): make the stage tabs filter the board (were inert in  |
 | 2026-06-27 | eq-shell | [#502](https://github.com/eq-solutions/eq-shell/pull/502) fix(drift): allow-list service.staff security-invoker view (ehow) |
@@ -42,8 +43,6 @@ _2026-06-27 21:33 UTC · what needs your attention. Full snapshot: [suite-state.
 | 2026-06-27 | eq-shell | [#491](https://github.com/eq-solutions/eq-shell/pull/491) feat(perf): React Query for StaffPage — roster, pending, licences |
 | 2026-06-27 | eq-shell | [#490](https://github.com/eq-solutions/eq-shell/pull/490) feat(perf): TanStack Query adoption — CRM + dashboard caching + k |
 | 2026-06-27 | eq-shell | [#488](https://github.com/eq-solutions/eq-shell/pull/488) fix(intake): spinner on duplicate + stale-records scan buttons |
-| 2026-06-27 | eq-shell | [#487](https://github.com/eq-solutions/eq-shell/pull/487) fix(staff): licence image scroll + archive 500 on patch |
-| 2026-06-27 | eq-shell | [#485](https://github.com/eq-solutions/eq-shell/pull/485) feat(staff): show who reviewed licences + when |
 _Showing 15 of 113 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -65,4 +64,4 @@ _…and 130 more · [eq/pending.md](eq/pending.md)_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-06-27 21:33 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-06-27 22:02 UTC._
