@@ -66,6 +66,10 @@ _If this file is >48h old, the cron is broken._
 **eq-service:**
 - #345 draft(identity): Phase 3 re-key + reference migration (review-only)
 
+**eq-shell:**
+- #504 fix(equipment): surface the real cert-import error (no more opaque 'HTTP 502')
+- #503 feat(crm): entityCapabilities policy map (archive/delete/merge per entity)
+
 ---
 
 ## System Health (as of 2026-06-27)
@@ -75,8 +79,8 @@ _If this file is >48h old, the cron is broken._
 | Repo | Status |
 |------|--------|
 | eq-service | ✓ success |
-| eq-shell | ✗ failure |
-| eq-field | ✗ failure |
+| eq-shell | ✓ success |
+| eq-field | ✓ success |
 | eq-cards | ✗ failure |
 | eq-solves-intake | ? unknown |
 
