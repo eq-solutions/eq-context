@@ -1,7 +1,7 @@
 ---
 title: OPS — Security Register
 owner: Royce Milmlow
-last_updated: 2026-06-05
+last_updated: 2026-06-27
 scope: Single tracked register of open security findings across the EQ/SKS Supabase surface — advisor output + live probes + known P0s
 read_priority: critical
 status: live
