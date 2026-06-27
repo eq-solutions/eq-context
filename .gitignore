@@ -58,3 +58,7 @@ $RECYCLE.BIN/
 
 # --- Allow ---
 # (Use !pattern to allow specific files if a future rule excludes them.)
+
+# Python bytecode
+__pycache__/
+*.pyc
