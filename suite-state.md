@@ -84,6 +84,23 @@ _NETLIFY_TOKEN not set — deploy status unavailable_
 
 ---
 
+## Field Data Plane — SKS tenant (as of 2026-06-28)
+
+| Layer | View / Table | Rows | Status |
+|-------|-------------|------|--------|
+| Directory | app_data.field_people | 66 | ✓ 66 |
+| Directory | app_data.field_sites | 66 | ✓ 66 |
+| Directory | app_data.field_managers | 19 | ✓ 19 |
+| Operational | app_data.field_schedule | 0 | ⚠ empty |
+| Operational | app_data.field_timesheets | 0 | ⚠ empty |
+| Safety | public.prestarts | 0 | ⚠ no data yet |
+| Safety | public.toolbox_talks | 0 | ⚠ no data yet |
+| Safety | public.site_audits | 0 | ⚠ no data yet |
+
+_Auto-refreshed nightly. ✓ = has data · ⚠ = empty (no data yet) · ✗ = table missing_
+
+---
+
 ## Architecture: What Owns What
 
 | Entity | Owner | Consumers |

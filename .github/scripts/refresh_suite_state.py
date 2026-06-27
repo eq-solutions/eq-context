@@ -308,6 +308,55 @@ if new_decisions:
     )
     print(f"  Added {len(new_decisions)} new ARCH decisions")
 
+# 7g. Field canonical data plane — SKS tenant counts
+print("Querying Field canonical data plane (ehow)...")
+try:
+    field_resp = requests.post(
+        f"{SUPABASE_URL}/rest/v1/rpc/field_canonical_health",
+        headers={
+            "apikey": SUPABASE_KEY,
+            "Authorization": f"Bearer {SUPABASE_KEY}",
+            "Content-Type": "application/json",
+        },
+        json={},
+        timeout=15,
+    )
+    field_resp.raise_for_status()
+    fc = field_resp.json()
+    print(f"  field counts: {fc}")
+
+    def _field_status(n, is_operational=False):
+        if n is None:
+            return "✗ missing"
+        if n == 0:
+            return "⚠ empty" if is_operational else "⚠ no data yet"
+        return f"✓ {n:,}"
+
+    field_table = f"""| Layer | View / Table | Rows | Status |
+|-------|-------------|------|--------|
+| Directory | app_data.field_people | {fc.get('people',0):,} | {_field_status(fc.get('people'))} |
+| Directory | app_data.field_sites | {fc.get('sites',0):,} | {_field_status(fc.get('sites'))} |
+| Directory | app_data.field_managers | {fc.get('managers',0):,} | {_field_status(fc.get('managers'))} |
+| Operational | app_data.field_schedule | {fc.get('schedule',0):,} | {_field_status(fc.get('schedule'), True)} |
+| Operational | app_data.field_timesheets | {fc.get('timesheets',0):,} | {_field_status(fc.get('timesheets'), True)} |
+| Safety | public.prestarts | {fc.get('prestarts',0):,} | {_field_status(fc.get('prestarts'))} |
+| Safety | public.toolbox_talks | {fc.get('toolbox_talks',0):,} | {_field_status(fc.get('toolbox_talks'))} |
+| Safety | public.site_audits | {fc.get('site_audits',0):,} | {_field_status(fc.get('site_audits'))} |"""
+
+    content = re.sub(
+        r"## Field Data Plane.*?(?=\n_Auto-refreshed nightly\..*?\n\n---)",
+        field_table,
+        content,
+        flags=re.DOTALL,
+    )
+    content = re.sub(
+        r"(## Field Data Plane — SKS tenant \(as of )\d{4}-\d{2}-\d{2}(\))",
+        rf"\g<1>{TODAY}\g<2>",
+        content,
+    )
+except Exception as e:
+    print(f"  WARNING: field canonical health check failed: {e}", file=sys.stderr)
+
 # ── 8. Write back ─────────────────────────────────────────────────────────────
 
 with open("suite-state.md", "w", encoding="utf-8") as f:
