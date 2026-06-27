@@ -106,16 +106,18 @@ work PC because ThreatLocker blocks Tailscale.
 
 | Account | Login method | What lives here |
 |---|---|---|
-| dev@eq.solutions | GitHub OAuth | R2 buckets (eq-assets, sks-assets, eq-solves-service) |
-| royce@eq.solutions | Email/password | Domain (eq.solutions), Workers, Pages, Zero Trust, Tunnel |
+| dev@eq.solutions | GitHub OAuth | R2: eq-assets, eq-solves-service |
+| royce@eq.solutions | Email/password | Domain (eq.solutions zone), Workers (supabase-backup-worker, anthropic-proxy), Pages (eq-website), **R2: sks-assets** (incl. SKS Labour DB backups), Zero Trust, Tunnel. Acct `b3bacbcba05d806286c67a2913a37f12` |
 
-### R2 Buckets (dev@eq.solutions)
+### R2 Buckets
 
-| Bucket | Contents | Public base URL |
-|---|---|---|
-| eq-assets | EQ logo SVGs + PNGs | https://pub-409bd651f2e549f4907f5a856a9264ae.r2.dev/ |
-| sks-assets | SKS logo PNGs + SKS Labour weekly DB backups (`backups/` prefix) | https://pub-97a4f025d993484e91b8f15a8c73084d.r2.dev/ |
-| eq-solves-service | EQ Solves Service weekly DB backups | (private — no public URL) |
+**Verified 2026-06-26 via Cloudflare MCP — buckets are split across BOTH accounts. `sks-assets` is on royce@ (the backup worker binds it, so it must live in the worker's account), NOT dev@ as previously documented.**
+
+| Bucket | Account | Contents | Public base URL |
+|---|---|---|---|
+| eq-assets | dev@ | EQ logo SVGs + PNGs | https://pub-409bd651f2e549f4907f5a856a9264ae.r2.dev/ |
+| eq-solves-service | dev@ | EQ Solves Service backups (legacy) | (private — no public URL) |
+| sks-assets | **royce@** | SKS logo PNGs + SKS Labour DB backups (`backups/` prefix) + `labour-snapshot.{html,json}` | https://pub-97a4f025d993484e91b8f15a8c73084d.r2.dev/ |
 
 ### Workers + Pages (royce@eq.solutions)
 
@@ -136,6 +138,13 @@ backs up **only SKS Labour (`nspbmirochztcjijmcrx`)** — per-table JSON via Pos
 `wrangler deploy` (royce@eq.solutions). It never backed up EQ Service: that project
 (`urjhmkhbgaxrofurpbgc`, eq-solves-service-dev) was deleted 2026-06-22 and Service
 migrated to ehow 2026-06-08.
+
+**Update 2026-06-26 (verified via Cloudflare MCP):** the weekly `0 10 * * 3` cron was
+**not** producing backups — the weekly runs had been triggered **manually** (backups
+landed on Tuesdays, not the cron's Wednesday) and lapsed after 2026-06-16, leaving a
+~10-day gap. The backup itself is healthy: a forced run on 2026-06-26 wrote all 17 tables.
+The weekly cron was re-registered. **Still needed: observability + a "no backup in N days"
+alert** — their absence is exactly why the gap went unnoticed.
 
 | Project | Holds | Off-platform copy | Native (Pro daily, 7-day) |
 |---|---|---|---|
