@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-06-27 03:05 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-06-27 13:22 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## ⚠ Needs you (1)
+## ✓ Needs you (0)
 
-- 🟠 **PR aging 13d** — eq-solves-service [#292](https://github.com/eq-solutions/eq-service/pull/292) "docs: capture Shell-embed Service integration gaps (parked)"
+**Nothing flagged — every EQ repo green, no aging PRs, substrate honest.** ✓
 
 ## Pulse
 
 | Repo | CI (main) | Open PRs | Oldest |
 |------|-----------|----------|--------|
-| eq-shell | ✓ success | 4 | 0d |
-| eq-solves-service | ✓ success | 2 | 13d |
+| eq-shell | ✓ success | 0 | — |
+| eq-solves-service | ✓ success | 1 | — |
 | eq-field | ✓ success | 0 | — |
 | eq-cards | ✓ success | 0 | — |
 | eq-solves-intake | ? unknown | 0 | — |
@@ -29,4 +29,4 @@ _2026-06-27 03:05 UTC · what needs your attention. Full snapshot: [suite-state.
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · nightly + on demand · 2026-06-27 03:05 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · nightly + on demand · 2026-06-27 13:22 UTC._
