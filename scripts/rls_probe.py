@@ -54,11 +54,6 @@ PROJECTS = {
         "key": "sb_publishable_fp1ROufBILdCu5iu2m_Vtw_yX21saaQ",
         "targets": ["people", "timesheets", "leave_requests", "sks_quotes_customers", "audit_log"],
     },
-    "eq-substrate": {
-        "url": "https://urjhmkhbgaxrofurpbgc.supabase.co",
-        "key": "sb_publishable_4Vm4T3e3lIo04SXWgX5tQg_8meN9Y18",
-        "targets": ["context_proposals", "estimates", "briefs", "notifications"],
-    },
 }
 
 

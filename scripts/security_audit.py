@@ -31,7 +31,6 @@ PROJECTS = {
     "sks-canonical": "ehowgjardagevnrluult",
     "eq-solves-field": "ktmjmdzqrogauaevbktn",
     "sks-labour": "nspbmirochztcjijmcrx",
-    "eq-substrate": "urjhmkhbgaxrofurpbgc",
 }
 
 # Accepted ERROR findings (cache_key -> "ticket — review_by"). Baseline so CI
