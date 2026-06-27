@@ -8,7 +8,7 @@ status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-06-26 (nightly cron)_
+_Last verified: 2026-06-27 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -37,13 +37,11 @@ _If this file is >48h old, the cron is broken._
 |--------|-------|--------|
 | Sites | 633 | app_data.sites |
 | Customers | 230 | app_data.customers |
-| Assets | 4,808 | app_data.assets |
+| Assets | 4,769 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
 | Users | 5 | service.tenant_members |
 | Maintenance checks | 3 | service.maintenance_checks |
 | Defects | 15 | service.defects |
-
-⚠️ **FIRST OPERATIONAL DATA CREATED** — migration rebuild now matters.
 
 **SKS tenant ID on ehow:** `7dee117c-98bd-4d39-af8c-2c81d02a1e85`
 **Demo tenant ID:** `a0000000-0000-0000-0000-000000000001`
@@ -60,36 +58,29 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-06-26)
-
-**eq-field:**
-- #341 fix(people): pass p_org_id to eq_field_get_worker_summary
+## Open PRs (as of 2026-06-27)
 
 **eq-service:**
 - #345 draft(identity): Phase 3 re-key + reference migration (review-only)
-- #292 docs: capture Shell-embed Service integration gaps (parked)
-
-**eq-shell:**
-- #177 [DRAFT] feat(field): F1 prep — tenant-config contract + schema-parity audit + auth-fork doc
 
 ---
 
-## System Health (as of 2026-06-26)
+## System Health (as of 2026-06-27)
 
 **CI on main:**
 
 | Repo | Status |
 |------|--------|
-| eq-service | ✗ failure |
+| eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
-| eq-cards | ✗ failure |
+| eq-cards | ✓ success |
 | eq-solves-intake | ? unknown |
 
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 162 (latest: 0160) applied
+**Migrations:** eq-service has 163 (latest: 0161) applied
 
 ---
 
