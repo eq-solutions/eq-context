@@ -1,0 +1,46 @@
+name: Refresh digest.md
+
+# Regenerates digest.md — the push-style "what needs your attention" feed
+# (CI failures, aging PRs, stale deploys, substrate drift). Companion to the
+# suite-state refresh; runs after it so the day's picture is settled.
+#
+# Cross-repo reads use GITHUB_TOKEN — eq-solutions repos are public, so it's
+# sufficient for PR + Actions reads. NETLIFY_TOKEN is optional (deploy section
+# only appears when it's set). Commits with [skip ci] so the bot push doesn't
+# re-trigger the MD/frontmatter workflows.
+
+on:
+  schedule:
+    # 12:00 UTC = 10pm AEST — after suite-state (10:00) and honesty (11:00).
+    - cron: '0 12 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # requests for the digest itself; pyyaml for the substrate-honesty subprocess.
+      - run: pip install requests pyyaml
+
+      - name: Generate digest.md
+        env:
+          GH_TOKEN:      ${{ secrets.GITHUB_TOKEN }}
+          NETLIFY_TOKEN: ${{ secrets.NETLIFY_TOKEN }}
+        run: python .github/scripts/refresh_digest.py
+
+      - name: Commit if changed
+        run: |
+          git config user.name  "eq-suite-bot"
+          git config user.email "bot@eq.solutions"
+          git add digest.md
+          git diff --staged --quiet && echo "No changes" || \
+            git commit -m "chore: nightly health digest $(date -u +%Y-%m-%d) [skip ci]" && git push
