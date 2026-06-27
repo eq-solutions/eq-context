@@ -24,6 +24,11 @@ import urllib.error
 import urllib.request
 
 API = "https://api.supabase.com/v1/projects"
+# api.supabase.com sits behind Cloudflare, which 403s the default urllib
+# User-Agent with "error code: 1010" (a browser-signature block). Sending any
+# explicit UA clears it (verified 2026-06-27: no-UA -> 1010; with-UA -> reaches
+# Supabase). Without this, the advisor audit silently errors once the token is set.
+USER_AGENT = "eq-context-security-audit (+https://github.com/eq-solutions/eq-context)"
 
 PROJECTS = {
     "eq-canonical": "jvknxcmbtrfnxfrwfimn",
@@ -59,7 +64,7 @@ def triage(lints):
 def fetch(ref, token):
     req = urllib.request.Request(
         f"{API}/{ref}/advisors/security",
-        headers={"Authorization": f"Bearer {token}"},
+        headers={"Authorization": f"Bearer {token}", "User-Agent": USER_AGENT},
         method="GET",
     )
     with urllib.request.urlopen(req, timeout=30) as resp:
