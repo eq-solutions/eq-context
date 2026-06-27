@@ -12,6 +12,10 @@ NOT match the secret-scanner's JWT pattern. SECURITY DEFINER *RPCs* are NOT
 probed here because calling unknown functions could mutate data — those are a
 manual/review check (see ops/security-register.md).
 
+Scope: EQ projects only. SKS NSW Labour (the retiring app) is deliberately not
+probed — it's SKS-tier, on its way out, and guarded against direct access. EQ is
+the focus.
+
 Interpretation per target:
   HTTP 200 + non-empty array  -> LEAK   (anon read data — FAIL)
   HTTP 200 + empty array      -> pass   (RLS returns no rows)
@@ -48,12 +52,6 @@ PROJECTS = {
         "key": "sb_publishable_rLY8fFG52GPjzZrrhoqATA_bOrRyfXL",
         "targets": ["people", "timesheets", "leave_requests", "nominations", "audit_log", "tenders"],
     },
-    # SKS live — GET-only, non-mutating; this is the same read any browser can do.
-    "sks-labour": {
-        "url": "https://nspbmirochztcjijmcrx.supabase.co",
-        "key": "sb_publishable_fp1ROufBILdCu5iu2m_Vtw_yX21saaQ",
-        "targets": ["people", "timesheets", "leave_requests", "sks_quotes_customers", "audit_log"],
-    },
 }
 
 
@@ -62,12 +60,9 @@ PROJECTS = {
 # this stays visible with an owner + deadline (not silently green, not
 # permanently red). See ops/security-register.md. Remove an entry the moment
 # it's fixed. Format: "project.public.table": "ticket — review_by".
-KNOWN_LEAKS = {
-    "sks-labour.public.people": "SEC-1 — DECOMMISSION SKS Labour at Field cutover — review_by 2026-06-09",
-    "sks-labour.public.timesheets": "SEC-1 — DECOMMISSION SKS Labour at Field cutover — review_by 2026-06-09",
-    "sks-labour.public.leave_requests": "SEC-1 — DECOMMISSION SKS Labour at Field cutover — review_by 2026-06-09",
-    "sks-labour.public.audit_log": "SEC-1 — DECOMMISSION SKS Labour at Field cutover — review_by 2026-06-09",
-}
+# (Empty — the only entries were SKS-Labour, removed when SKS-Labour was dropped
+#  from the EQ gate. Add EQ exposures here if a tracked one is ever accepted.)
+KNOWN_LEAKS = {}
 
 
 def classify(status, body_text):
@@ -129,7 +124,7 @@ def main():
         for l in new_leaks:
             print(f"  - {l}")
         return 1
-    print("\nNo NEW anon-readable rows. (Known/tracked leaks above must still be closed.)")
+    print("\nNo NEW anon-readable rows.")
     return 0
 
 

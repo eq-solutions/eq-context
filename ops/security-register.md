@@ -72,6 +72,13 @@ disable its anon key. ⚠️ The leak is **live until the old app is actually of
 a "redundant but still running" app is a classic forgotten exposure. Make this an
 explicit cutover checklist line. Remove from `rls_probe.py KNOWN_LEAKS` once done.
 
+**Note 2026-06-27:** sks-labour was dropped from the automated EQ gate —
+`rls_probe.py` is now EQ-only (the gate is EQ-focused, and the local tooling
+blocks probing the SKS-live project). This did **not** resolve SEC-1: the leak is
+live until SKS Labour is decommissioned. SEC-1 is now tracked **manually** here,
+not by CI — a green gate no longer implies SEC-1 is closed. Close it when the app
+is actually off.
+
 ### SEC-2 — eq-canonical-internal RLS trusts user_metadata (P1, advisor ERROR)
 `app_data.eq_intake_rate_limits` policy `tenant_isolation` references
 `auth.user_metadata`, which end users can edit — so a user can forge their tenant
