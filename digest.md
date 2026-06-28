@@ -1,14 +1,14 @@
 ---
 title: EQ Suite — Health Digest
 owner: Royce Milmlow
-last_updated: 2026-06-27
+last_updated: 2026-06-28
 scope: Push-style 'what needs your attention' feed across the EQ suite. Regenerated on merge (repository_dispatch: suite-state-changed) and nightly. Full snapshot in suite-state.md.
 read_priority: high
 status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-06-27 22:02 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-06-28 00:18 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
 ## ⚠ Needs you (1)
 
@@ -28,6 +28,8 @@ _2026-06-27 22:02 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-06-28 | eq-shell | [#505](https://github.com/eq-solutions/eq-shell/pull/505) feat(brand): embed brand_color + brand_logo_url in service JWT |
+| 2026-06-28 | eq-solves-service | [#359](https://github.com/eq-solutions/eq-service/pull/359) feat(brand): Shell owns brand identity — derive palette from bran |
 | 2026-06-27 | eq-shell | [#503](https://github.com/eq-solutions/eq-shell/pull/503) feat(crm): entityCapabilities policy map (archive/delete/merge pe |
 | 2026-06-27 | eq-shell | [#504](https://github.com/eq-solutions/eq-shell/pull/504) fix(equipment): surface the real cert-import error (no more opaqu |
 | 2026-06-27 | eq-shell | [#501](https://github.com/eq-solutions/eq-shell/pull/501) feat(substrate): notify eq-context on push to main |
@@ -41,27 +43,25 @@ _2026-06-27 22:02 UTC · what needs your attention. Full snapshot: [suite-state.
 | 2026-06-27 | eq-shell | [#493](https://github.com/eq-solutions/eq-shell/pull/493) feat(staff): push worker profile updates to tenant staff rows on  |
 | 2026-06-27 | eq-shell | [#492](https://github.com/eq-solutions/eq-shell/pull/492) feat(perf): React Query for AccessControlPage + EntityBrowserPage |
 | 2026-06-27 | eq-shell | [#491](https://github.com/eq-solutions/eq-shell/pull/491) feat(perf): React Query for StaffPage — roster, pending, licences |
-| 2026-06-27 | eq-shell | [#490](https://github.com/eq-solutions/eq-shell/pull/490) feat(perf): TanStack Query adoption — CRM + dashboard caching + k |
-| 2026-06-27 | eq-shell | [#488](https://github.com/eq-solutions/eq-shell/pull/488) fix(intake): spinner on duplicate + stale-records scan buttons |
 _Showing 15 of 113 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **EQ-demo toolbox logo** — `toolbox.js` `exportToolboxDocx` still uses dead `/images/eq-logo.png` path; needs updating to `fetchTenantLogo()` pattern (SKS path already correct)
 - Remaining items carried from 2026-06-18 (see below)
-- **Quarterly reviews UI** — table exists in DB, no UI built yet. Decide visibility (self-only vs supervisor-visible) before building
-- **Acknowledgments smoke test** — verify eye icon → ack flow works end-to-end on SKS at core.eq.solutions/sks/field
-- **on_roster app filter** — make roster grid filter on `on_roster` (carried from 2026-06-15)
 - **Curate `sites.field_enabled`** — 591 all enabled → trim to live jobs
-- **`EQ_SECRET_SALT` rotation** — demo salt was exposed in chat; rotate when convenient
-- **on_roster app filter** — make the eq-field roster grid filter on `on_roster` (code + deploy).
 - **Login hook** (phone-dedup) — workers still can't sign in (separate track; `ops/decisions.md`).
 - **Curate `sites.field_enabled`** — 591 all enabled → trim to live jobs.
-_…and 130 more · [eq/pending.md](eq/pending.md)_
+- **Daniel Bower** — confirm leaver / remove.
+- **Generalise `workers-canonical-sync`** — currently single-tenant (hardcodes SKS+ehow).
+- People profile enrichment from ehow — when Field loads a person with worker_id, optionally pre-fill from ehow.app_data.staff. Requires reading ehow via staff map (already loaded by leave adapter). Next meaningful sprint.
+- `ZAAP_JWT_SECRET=""` — EQ tenant JWT broken (acceptable while zaap unpopulated).
+- `APP_ORIGIN` env var stale (`eq-solves-field.netlify.app` → should be `field.eq.solutions`).
+- v3.5.147 create-stub path to be removed when Cards onboarding goes live as the sole jvkn.workers creator.
+_…and 117 more · [eq/pending.md](eq/pending.md)_
 
 ## Substrate honesty
 
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-06-27 22:02 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-06-28 00:18 UTC._
