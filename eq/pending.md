@@ -22,12 +22,17 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **system/cowork-bootstrap.md** — copy-paste prompt for Cowork with git constraint reminder
 - [x] **SENTRY_AUTH_TOKEN** added to eq-context GitHub secrets
 - [x] **Old PATs revoked** (EQ Solutions, Milmlow, Milmlow alt) — 2026-06-28
+- [x] **MD deep dive** — stale refs audited; HIGH + MEDIUM items fixed (LOCAL_DEV.md urjh→ehow, CLAUDE.md SALT contradiction, architecture.md historical callout, pending.md SALT MOOT)
+- [x] **eq-service PR #363** — LOCAL_DEV.md project ID fix (docs only)
+- [x] **eq-shell PR #513** — CLAUDE.md EQ_SECRET_SALT guidance corrected (docs only)
+- [x] **sks-nsw-labour APP_ORIGIN fix** — committed to `claude/sks-field-host`; push/merge when ready
+- [x] **/brief + /close moved to correct directory** — `~/.claude/commands/` (were in `~/.claude/skills/`, not picked up by Claude Code)
 
 **Open / next:**
-- [ ] **Verify /brief + /close** in first real build session — untested in production
+- [ ] **Verify /brief + /close** in first real build session — just confirmed they appear in `/` menu
 - [ ] **gitleaks pre-commit hook** — prevent PAT exposure in substrate history
 - [ ] **Update C:\Projects\.git-credentials** files with new PAT after rotation
-- [ ] **MD files deep dive** — stale Supabase refs, old architecture claims (agent launched 2026-06-28)
+- [ ] **Merge eq-service #363 + eq-shell #513** — docs-only PRs, safe to merge any time
 
 ---
 
