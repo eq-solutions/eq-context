@@ -36,7 +36,7 @@ _If this file is >48h old, the cron is broken._
 | Entity | Count | Schema |
 |--------|-------|--------|
 | Sites | 633 | app_data.sites |
-| Customers | 230 | app_data.customers |
+| Customers | 44 | app_data.customers |
 | Assets | 4,769 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
 | Users | 5 | service.tenant_members |
@@ -60,14 +60,8 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-06-28)
 
-**eq-field:**
-- #350 fix(safety): sticky tab row + padding + site_audits on ehow (v3.5.193)
-
 **eq-service:**
 - #345 draft(identity): Phase 3 re-key + reference migration (review-only)
-
-**eq-shell:**
-- #511 fix(equipment): cert import 500 + remove forced site assignment
 
 ---
 
