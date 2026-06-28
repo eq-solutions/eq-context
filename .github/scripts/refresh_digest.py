@@ -11,7 +11,9 @@ watch 16 dashboards, so the suite reports its own exceptions on a schedule inste
 of waiting to be asked. Run on every merge to main via repository_dispatch
 (suite-state-changed) and nightly as fallback via digest-refresh.yml.
 """
+import base64
 import os
+import re
 import subprocess
 import sys
 from datetime import datetime, timedelta, timezone
@@ -233,10 +235,63 @@ def substrate_honesty():
     return (False, issues) if issues else (None, ["honesty check inconclusive"])
 
 
+def prev_digest_content():
+    """Fetch the currently-committed digest.md from GitHub (before this run overwrites it)."""
+    if not GH_TOKEN:
+        return None
+    data = gh_get("repos/eq-solutions/eq-context/contents/digest.md")
+    if not isinstance(data, dict) or "content" not in data:
+        return None
+    try:
+        return base64.b64decode(data["content"]).decode("utf-8")
+    except Exception:
+        return None
+
+
+def parse_prev_digest(content):
+    """Extract key facts from the previous digest.md for delta comparison."""
+    result = {"timestamp": None, "ci": {}, "needs_you": None, "recent_prs": set()}
+    if not content:
+        return result
+    for line in content.splitlines():
+        # Timestamp: _2026-06-28 00:36 UTC · ...
+        if line.startswith("_") and "UTC" in line:
+            m = re.search(r"(\d{4}-\d{2}-\d{2} \d{2}:\d{2} UTC)", line)
+            if m:
+                result["timestamp"] = m.group(1)
+        # CI from Pulse table: | eq-shell | ✓ success | ...
+        if line.startswith("| eq-") and line.count("|") >= 3:
+            parts = [p.strip() for p in line.split("|")]
+            if len(parts) >= 3:
+                repo = parts[1]
+                ci_raw = parts[2]
+                if repo in REPOS:
+                    if "✓" in ci_raw:
+                        result["ci"][repo] = "success"
+                    elif "✗" in ci_raw:
+                        result["ci"][repo] = "failure"
+                    else:
+                        result["ci"][repo] = "unknown"
+        # Needs you count
+        if "Needs you (" in line:
+            m = re.search(r"Needs you \((\d+)\)", line)
+            if m:
+                result["needs_you"] = int(m.group(1))
+        # Recent PRs: [#NNN](https://github.com/eq-solutions/REPO/pull/NNN)
+        for m in re.finditer(
+            r"\[#(\d+)\]\(https://github\.com/eq-solutions/([\w-]+)/pull/\1\)", line
+        ):
+            result["recent_prs"].add((m.group(2), int(m.group(1))))
+    return result
+
+
 # ── assemble ─────────────────────────────────────────────────────────────────
 def build():
+    # Fetch previous digest before anything so the delta can compare before/after.
+    prev = parse_prev_digest(prev_digest_content())
+
     attention = []   # (severity_emoji, text)
-    pulse = []       # (repo, ci, n_open, oldest)
+    pulse = []       # (repo, ci, ci_age, n_open, oldest)
     recent_by_repo = {}  # repo -> [pr, ...]
 
     for repo in REPOS:
@@ -309,6 +364,47 @@ def build():
     lines.append("# EQ Suite — Health Digest")
     lines.append(f"_{STAMP} · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._")
     lines.append("")
+
+    # ── delta (since last refresh) ──
+    if prev.get("timestamp"):
+        delta = []
+
+        # CI changes
+        ci_lookup = {repo: ci for repo, ci, _, _, _ in pulse}
+        for repo, prev_ci in prev["ci"].items():
+            curr_ci = ci_lookup.get(repo, "unknown")
+            if prev_ci != curr_ci and curr_ci != "unknown" and prev_ci != "unknown":
+                icon = "✅" if curr_ci == "success" else "🔴"
+                delta.append(f"{icon} CI {repo}: {prev_ci} → {curr_ci}")
+
+        # New PRs merged
+        curr_pr_keys = {(repo, pr["num"]) for repo, pr in recent_all}
+        new_prs = sorted(curr_pr_keys - prev["recent_prs"], key=lambda x: x[1], reverse=True)
+        for repo, num in new_prs[:8]:
+            title = next(
+                (pr["title"][:60] for r, pr in recent_all if r == repo and pr["num"] == num), ""
+            )
+            link = next(
+                (f"[#{num}]({pr['url']})" for r, pr in recent_all if r == repo and pr["num"] == num),
+                f"#{num}",
+            )
+            delta.append(f"Merged: {repo} {link} {title}")
+
+        # Needs you delta
+        prev_n = prev.get("needs_you")
+        curr_n = len(attention)
+        if prev_n is not None and prev_n != curr_n:
+            if curr_n < prev_n:
+                delta.append(f"✅ Needs you: {prev_n} → {curr_n}")
+            else:
+                delta.append(f"⚠ Needs you: {prev_n} → {curr_n} (new items)")
+
+        if delta:
+            lines.append(f"## Since last refresh ({prev['timestamp']} → {STAMP})")
+            lines.append("")
+            for d in delta:
+                lines.append(f"- {d}")
+            lines.append("")
 
     n = len(attention)
     lines.append(f"## ⚠ Needs you ({n})" if n else "## ✓ Needs you (0)")
