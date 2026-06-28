@@ -22,6 +22,7 @@ import requests
 
 GH_TOKEN = os.environ.get("GH_TOKEN", "")
 NETLIFY_TOKEN = os.environ.get("NETLIFY_TOKEN", "")
+SENTRY_TOKEN = os.environ.get("SENTRY_AUTH_TOKEN", "")
 NOW = datetime.now(timezone.utc)
 TODAY = NOW.strftime("%Y-%m-%d")
 STAMP = NOW.strftime("%Y-%m-%d %H:%M UTC")
@@ -32,6 +33,10 @@ PR_AGE_WARN_DAYS = 7
 PR_AGE_CRITICAL_DAYS = 14  # escalates from 🟠 to 🔴
 RECENTLY_MERGED_DAYS = 7
 RECENT_PR_LIMIT = 15  # max rows shown in "recently built" table
+
+SENTRY_ORG = "eq-solutions"
+# Sentry project slugs to monitor. eq-quotes excluded (retired).
+SENTRY_PROJECTS = ["eq-shell", "eq-solves-service", "eq-field", "eq-cards"]
 
 # Netlify sites -> label. Only checked when NETLIFY_TOKEN is set.
 NETLIFY_SITES = {
@@ -275,6 +280,43 @@ def deploy_state(site):
         return None, None
 
 
+def sentry_top_issues(n=8):
+    """Top N unresolved Sentry issues by event count across EQ products. Token-gated.
+
+    Returns list of {proj, id, title, count, last_seen, url}.
+    Skips gracefully when SENTRY_AUTH_TOKEN is not set.
+    """
+    if not SENTRY_TOKEN:
+        return []
+    all_issues = []
+    for proj in SENTRY_PROJECTS:
+        try:
+            r = requests.get(
+                f"https://sentry.io/api/0/projects/{SENTRY_ORG}/{proj}/issues/",
+                headers={"Authorization": f"Bearer {SENTRY_TOKEN}"},
+                params={"query": "is:unresolved", "sort": "events",
+                        "limit": 5, "statsPeriod": "14d"},
+                timeout=10,
+            )
+            if not r.ok:
+                continue
+            for issue in r.json():
+                all_issues.append({
+                    "proj": proj,
+                    "id": issue.get("shortId", ""),
+                    "title": (issue.get("title") or "")[:80],
+                    "count": int(issue.get("count") or 0),
+                    "last_seen": (issue.get("lastSeen") or "")[:10],
+                    "url": issue.get("permalink", ""),
+                })
+        except Exception:
+            continue
+    # Sort by event count desc; within ties, most recently seen first.
+    all_issues.sort(key=lambda x: x["last_seen"], reverse=True)
+    all_issues.sort(key=lambda x: x["count"], reverse=True)
+    return all_issues[:n]
+
+
 def substrate_honesty():
     """Run the L1 honesty check as a subprocess. Returns (ok|None, issue_lines)."""
     here = os.path.dirname(os.path.abspath(__file__))
@@ -370,6 +412,15 @@ def build():
                 link = f"[#{p['num']}]({p['url']})" if p["url"] else f"#{p['num']}"
                 emoji = "🔴" if p["age"] >= PR_AGE_CRITICAL_DAYS else "🟠"
                 attention.append((emoji, f"**PR aging {p['age']}d** — {repo} {link} \"{title}\""))
+
+    sentry_issues = sentry_top_issues()
+    for issue in sentry_issues[:3]:
+        if issue["count"] >= 5:
+            link = f"[{issue['title'][:60]}]({issue['url']})" if issue["url"] else issue["title"][:60]
+            attention.append(("🔴", f"**Sentry {issue['count']} events** — `{issue['proj']}` {link}"))
+        elif issue["last_seen"] == TODAY:
+            link = f"[{issue['title'][:60]}]({issue['url']})" if issue["url"] else issue["title"][:60]
+            attention.append(("🟠", f"**Sentry error today** — `{issue['proj']}` {link}"))
 
     n_stale_wt = worktree_stale_count()
     if n_stale_wt:
@@ -494,6 +545,23 @@ def build():
         lines.append("|------|-------|-------------|")
         for label, site, state, published in deploy_rows:
             lines.append(f"| {label} | {state} | {published or '?'} |")
+        lines.append("")
+
+    # Live Sentry errors (token-gated)
+    if sentry_issues:
+        lines.append("## Live errors (Sentry)")
+        lines.append("")
+        lines.append("| Project | Error | Events | Last seen |")
+        lines.append("|---------|-------|--------|-----------|")
+        for issue in sentry_issues:
+            title = issue["title"]
+            link = f"[{title}]({issue['url']})" if issue["url"] else title
+            lines.append(
+                f"| {issue['proj']} | {link} | {issue['count']} | {issue['last_seen']} |"
+            )
+        lines.append(
+            "_[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunresolved)_"
+        )
         lines.append("")
 
     # Recently built — replaces the manual PR log in CLAUDE.md
