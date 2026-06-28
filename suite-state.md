@@ -61,9 +61,11 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-06-28)
 
 **eq-service:**
+- #364 feat(shell): JWT token refresh + Admin nav link for iframe sessions
 - #363 fix(docs): update LOCAL_DEV.md project ID — urjh deleted, use ehow
 
 **eq-shell:**
+- #518 feat(admin): EQ Service admin tiles in Shell Admin hub
 - #513 fix(docs): correct stale EQ_SECRET_SALT guidance — HMAC retired 2026-06-22
 
 ---
