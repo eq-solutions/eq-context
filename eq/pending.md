@@ -187,7 +187,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 **Active / time-sensitive:**
 - [x] **EQ Shell v8 design pass** — same Claude Design handoff applied to eq-shell (React). LoginPage + TenantHome hub — **DONE PRs #290 + #293 squash-merged 2026-06-09**
-- [ ] **⚠ Worker invites expire 2026-06-15** — 25 workers have pending invites. Remind field staff to check email and accept their EQ Shell invite. Self-links on accept via `accept-invite.ts`.
+- [x] **⚠ Worker invites** — MOOT: deadline was 2026-06-15, 2+ weeks past. Invites expired; any remaining unaccepted workers should be re-invited if still needed.
 - [ ] **2 workers with no staff match** — emma_curth@outlook.com, hexperfect@outlook.com. Create staff records in EQ Field or correct emails.
 - [ ] **8 workers with no email** — populate email in eq-canonical `public.workers` to enable linking.
 
@@ -212,8 +212,7 @@ refs updated (PR #257 → main, open); repo on `eq-solutions/eq-service`.
       checks/tests/defects visible, create a test check → lands in ehow tenant `7dee117c-…`.
       *(Shell SSO now fixed — 2026-06-09, 4 bugs fixed, deploy 6a27f277. Test in incognito.)*
 - [x] **PR #257** — merge to main (triggers deploy) once smoke test passes — **MERGED 2026-06-08**
-- [ ] **Post-verification (do NOT do before smoke test):** redirect service.eq.solutions →
-      core (5.2), revoke urjh service-role keys (5.4), decommission old Netlify site (5.3).
+- [x] **Post-verification:** redirect + urjh keys + Netlify decommission — **DONE: urjh project DELETED 2026-06-22 (PR #327)**
 - [ ] **Scheduler/route migration (4.4)** — `supervisor-digest` + `pre-visit-brief` schedulers
       depend on Next.js `/api/cron/*` routes still in eq-service; needs a route-hosting decision
       before moving to eq-shell.
@@ -237,9 +236,8 @@ refs updated (PR #257 → main, open); repo on `eq-solutions/eq-service`.
 **Deferred (carry forward):**
 - [ ] Deploy-preview auth gate (zaap anon-revoked) — `demo-trades` on previews 401s on
       name list. Use `?tenant=demo` to bypass for smoke. Pre-existing, deferred 2026-06-06.
-- [ ] eq-context sks/ local edits still uncommitted (`sks/README.md`, `sks/products.md`)
-      — Royce to commit via GitHub web UI or emit .bat.
-- [ ] eq-context itself — commit + push this session's updates (auto-push hook or manual).
+- [x] eq-context sks/ local edits — **DONE: substrate now auto-commits via GitHub Actions + repository_dispatch (2026-06-28)**
+- [x] eq-context itself — **DONE: event-driven digest refresh live (2026-06-28)**
 
 ---
 
@@ -363,7 +361,7 @@ Parallel to the Field schema/data cutover below. Full plan + agent prompts (A–
 **Pending Royce-actions (carried forward):**
 - [ ] Downgrade old EQ DB `ktmjmdzqrogauaevbktn` → free tier in Supabase dashboard, then pause it (paid projects can't be paused via API)
 - [ ] `TENANT_ORG_UUID` Netlify env var for eq-solves-field EQ site (blocks U6 PIN)
-- [ ] Revoke old `gho_...` PAT at github.com/settings/tokens
+- [x] Revoke old `gho_...` PAT at github.com/settings/tokens — **DONE 2026-06-28**
 - [ ] Drift CI secrets in eq-shell GitHub repo settings
 - [ ] HaveIBeenPwned toggle in eq-canonical Supabase Auth settings
 
@@ -414,7 +412,7 @@ superset — no pin/role, no region/project). The B5 canonical unification stays
 **Pending Royce-actions (carried forward + new):**
 - [ ] **NEW:** Downgrade old EQ DB `ktmjmdzqrogauaevbktn` → free tier in Supabase dashboard, then pause it (paid projects can't be paused via API). Dead cold-backup, unused by live EQ Field.
 - [ ] `TENANT_ORG_UUID` Netlify env var for eq-solves-field EQ site (blocks U6 PIN)
-- [ ] Revoke old `gho_...` PAT at github.com/settings/tokens
+- [x] Revoke old `gho_...` PAT at github.com/settings/tokens — **DONE 2026-06-28**
 - [ ] Drift CI secrets in eq-shell GitHub repo settings
 - [ ] HaveIBeenPwned toggle in eq-canonical Supabase Auth settings
 
@@ -432,7 +430,7 @@ superset — no pin/role, no region/project). The B5 canonical unification stays
 
 **Pending Royce-actions (carried forward):**
 - [ ] `TENANT_ORG_UUID` Netlify env var for eq-solves-field EQ site (blocks U6 PIN)
-- [ ] Revoke old `gho_...` PAT at github.com/settings/tokens
+- [x] Revoke old `gho_...` PAT at github.com/settings/tokens — **DONE 2026-06-28**
 - [ ] Drift CI secrets in eq-shell GitHub repo settings
 - [ ] HaveIBeenPwned toggle in eq-canonical Supabase Auth settings
 - [x] Merge eq-roles PR `bold-boyd-e6afae` → publish v1.3.0 ✅ 2026-06-02 (v1.3.0 tagged, eq-shell bumped to #v1.3.0)
@@ -585,15 +583,11 @@ contain the same values and were pushed before push-protection caught up.
 **Treat all 3 as compromised regardless of which got "removed" from
 `.git-credentials.*` files** — they've been on GitHub.
 
-- [ ] **Revoke all 3 PATs** in GitHub Settings → Developer settings →
-      Personal access tokens. Labels: "EQ Solutions", "Milmlow",
-      "Milmlow alt".
-- [ ] **Issue one new fine-grained PAT** to replace EQ Solutions (the
-      other two were duplicates / stale).
+- [x] **Revoke all 3 PATs** — DONE 2026-06-28 (EQ Solutions, Milmlow, Milmlow alt revoked)
+- [x] **Issue one new fine-grained PAT** — EQ_CONTEXT_PAT created 2026-06-28 (fine-grained, org secret, notify-substrate use only)
 - [ ] Update `C:\Projects\.git-credentials.eq-solutions` and
       `C:\Projects\.git-credentials` on the Beelink with the new value.
-- [ ] **Verify push works** on eq-context against this commit if the
-      auto-push hook didn't already.
+- [ ] **Verify push works** on eq-context after PAT rotation.
 - [ ] **Substrate hardening** — consider adding `gitleaks` (or similar)
       pre-commit hook on the eq-context repo so secret-scan happens
       locally before push.
