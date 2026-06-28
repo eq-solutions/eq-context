@@ -34,6 +34,8 @@ Check this file first — if your target repo/area is already claimed, coordinat
 |--------|--------|-----------------|-------|
 | .claude/worktrees/determined-edison-d6f176 (eq-shell) | determined-edison-d6f176 | unknown | Emptied 2026-06-28 via robocopy. Directory handle still held — will auto-remove on OS restart. |
 | .claude/worktrees/sharp-kapitsa-93278c (eq-field) | claude/sharp-kapitsa-93278c | unknown | Emptied 2026-06-28 via robocopy. Directory handle still held — will auto-remove on OS restart. |
+| .claude/worktrees/peaceful-golick-d78f88 (eq-solves-service) | main | housekeep session 2026-06-28 | Session worktree for PR #362. Branch = main, work merged. `git worktree remove` fails while session is live — will auto-remove when session closes. |
+| .claude/worktrees/objective-khorana-7248db (eq-shell) | claude/objective-khorana-7248db | housekeep session 2026-06-28 | Stranded change committed + PR #510 created (always-visible contact checkboxes). Worktree still live. |
 
 ---
 
