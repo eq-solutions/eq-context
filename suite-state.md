@@ -40,7 +40,7 @@ _If this file is >48h old, the cron is broken._
 | Assets | 4,769 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
 | Users | 5 | service.tenant_members |
-| Maintenance checks | 3 | service.maintenance_checks |
+| Maintenance checks | 4 | service.maintenance_checks |
 | Defects | 15 | service.defects |
 
 **SKS tenant ID on ehow:** `7dee117c-98bd-4d39-af8c-2c81d02a1e85`
@@ -64,11 +64,7 @@ _If this file is >48h old, the cron is broken._
 - #350 fix(safety): sticky tab row + padding + site_audits on ehow (v3.5.193)
 
 **eq-service:**
-- #360 feat(substrate): notify eq-context on push to main
 - #345 draft(identity): Phase 3 re-key + reference migration (review-only)
-
-**eq-shell:**
-- #506 fix(equipment): cert import bundles without @eq/schemas (was instant 502)
 
 ---
 
