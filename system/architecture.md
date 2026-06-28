@@ -33,9 +33,11 @@ to maintain, and zero friction when adding new apps.
 
 ## Three Supabase Projects — Segmented by Risk
 
-**Current state (Apr 2026):** The "one Supabase project for everything" rule
-evolved as the risk profile diverged. Three projects now exist, each with a
-distinct role:
+> **Historical (Apr 2026) — superseded by the Control Layer model below.**
+> One project (`urjhmkhbgaxrofurpbgc` / eq-solves-service-dev) was deleted 2026-06-22.
+> For the current active project list, see the **Control Layer** section.
+
+**State as of Apr 2026 (retained for audit trail):**
 
 | Project ID | Name | Role |
 |---|---|---|

@@ -161,7 +161,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [ ] **Roster data entry on ehow** — schedule/timesheets/leave empty; start fresh or migrate from nspb
 - [ ] **Standalone sks-nsw-labour retirement** — after soak confirmation
 - [ ] **Track 2 RLS STEP 2** — anon SELECT lockdown; after standalone retired
-- [ ] **`EQ_SECRET_SALT` rotation** — deferred; runbook: `security-secret-rotation-runbook-2026-05-31.md`
+- [x] **`EQ_SECRET_SALT` rotation** — MOOT: HMAC path retired via shell PRs #329 + #430 (2026-06-22). Salt has no live consumers. No rotation needed.
 
 ---
 
