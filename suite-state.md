@@ -8,7 +8,7 @@ status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-06-27 (nightly cron)_
+_Last verified: 2026-06-28 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -58,21 +58,21 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-06-27)
+## Open PRs (as of 2026-06-28)
 
 **eq-field:**
 - #350 fix(safety): sticky tab row + padding + site_audits on ehow (v3.5.193)
 
 **eq-service:**
+- #360 feat(substrate): notify eq-context on push to main
 - #345 draft(identity): Phase 3 re-key + reference migration (review-only)
 
 **eq-shell:**
-- #504 fix(equipment): surface the real cert-import error (no more opaque 'HTTP 502')
-- #503 feat(crm): entityCapabilities policy map (archive/delete/merge per entity)
+- #506 fix(equipment): cert import bundles without @eq/schemas (was instant 502)
 
 ---
 
-## System Health (as of 2026-06-27)
+## System Health (as of 2026-06-28)
 
 **CI on main:**
 
@@ -81,13 +81,13 @@ _If this file is >48h old, the cron is broken._
 | eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
-| eq-cards | ✗ failure |
+| eq-cards | ✓ success |
 | eq-solves-intake | ? unknown |
 
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 163 (latest: 0161) applied
+**Migrations:** eq-service has 164 (latest: 0162) applied
 
 ---
 
