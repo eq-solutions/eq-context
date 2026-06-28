@@ -8,38 +8,50 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-06-28 13:26 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-06-28 21:35 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-06-28 10:24 UTC → 2026-06-28 13:26 UTC)
+## Since last refresh (2026-06-28 13:26 UTC → 2026-06-28 21:35 UTC)
 
-- Merged: eq-shell [#502](https://github.com/eq-solutions/eq-shell/pull/502) fix(drift): allow-list service.staff security-invoker view (
-- Merged: eq-shell [#497](https://github.com/eq-solutions/eq-shell/pull/497) feat(eq-ops): show the Workbench job number on each Kanban c
-- Merged: eq-shell [#496](https://github.com/eq-solutions/eq-shell/pull/496) fix(eq-ops): relabel stage 1 'Submitted' to 'Open' so drafts
-- Merged: eq-shell [#495](https://github.com/eq-solutions/eq-shell/pull/495) fix(eq-ops): gate Job Created on a Workbench job number from
-- Merged: eq-shell [#494](https://github.com/eq-solutions/eq-shell/pull/494) fix(eq-ops): Kanban board groups by the 5 dropdown stages, n
-- Merged: eq-shell [#491](https://github.com/eq-solutions/eq-shell/pull/491) feat(perf): React Query for StaffPage — roster, pending, lic
-- Merged: eq-shell [#490](https://github.com/eq-solutions/eq-shell/pull/490) feat(perf): TanStack Query adoption — CRM + dashboard cachin
-- Merged: eq-shell [#488](https://github.com/eq-solutions/eq-shell/pull/488) fix(intake): spinner on duplicate + stale-records scan butto
+- Merged: eq-shell [#520](https://github.com/eq-solutions/eq-shell/pull/520) fix(build): TS errors blocking Netlify — SMS fields + mapSit
+- Merged: eq-shell [#519](https://github.com/eq-solutions/eq-shell/pull/519) fix(staff): employment type dropdown + hide retired quotes m
+- Merged: eq-shell [#518](https://github.com/eq-solutions/eq-shell/pull/518) feat(admin): EQ Service admin tiles in Shell Admin hub
+- Merged: eq-shell [#504](https://github.com/eq-solutions/eq-shell/pull/504) fix(equipment): surface the real cert-import error (no more 
+- Merged: eq-shell [#503](https://github.com/eq-solutions/eq-shell/pull/503) feat(crm): entityCapabilities policy map (archive/delete/mer
+- Merged: eq-shell [#501](https://github.com/eq-solutions/eq-shell/pull/501) feat(substrate): notify eq-context on push to main
+- Merged: eq-shell [#500](https://github.com/eq-solutions/eq-shell/pull/500) fix(eq-ops): make the stage tabs filter the board (were iner
+- Merged: eq-shell [#498](https://github.com/eq-solutions/eq-shell/pull/498) feat(crm): contact-site assignment + inline delete for sites
+- ⚠ Needs you: 2 → 3 (new items)
 
-## ⚠ Needs you (2)
+## ⚠ Needs you (3)
 
 - 🔴 **Substrate drift** — DRIFT: supabase eq-solves-field (ktmjmdzqrogauaevbktn): claimed LIVE but reality looks DEAD
+- 🟠 **Sentry new error** — `eq-cards` [minified:CW: AuthRetryableFetchException(message: ClientExce](https://eq-solutions.sentry.io/issues/130861353/)
 - 🟡 **1 stale worktree** need cleanup — [worktree-registry.md](system/worktree-registry.md)
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 2 | 0d |
-| eq-solves-service | ✓ success | 0d ago | 2 | 0d |
+| eq-shell | ? unknown | ? | 1 | 0d |
+| eq-solves-service | ✓ success | 0d ago | 1 | 0d |
 | eq-field | ✓ success | 25d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ? unknown | ? | 0 | — |
+
+## Live errors (Sentry)
+
+| Project | Error | Events | Last seen |
+|---------|-------|--------|-----------|
+| eq-cards | [minified:CW: AuthRetryableFetchException(message: ClientException: Failed to fet](https://eq-solutions.sentry.io/issues/130861353/) | 1 | 2026-06-28 |
+_[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunresolved)_
 
 ## Recently built (last 7 days)
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-06-28 | eq-shell | [#520](https://github.com/eq-solutions/eq-shell/pull/520) fix(build): TS errors blocking Netlify — SMS fields + mapSite + E |
+| 2026-06-28 | eq-shell | [#519](https://github.com/eq-solutions/eq-shell/pull/519) fix(staff): employment type dropdown + hide retired quotes module |
+| 2026-06-28 | eq-shell | [#518](https://github.com/eq-solutions/eq-shell/pull/518) feat(admin): EQ Service admin tiles in Shell Admin hub |
 | 2026-06-28 | eq-shell | [#517](https://github.com/eq-solutions/eq-shell/pull/517) feat(crm): site Maps link + Places autocomplete (key-gated) |
 | 2026-06-28 | eq-shell | [#516](https://github.com/eq-solutions/eq-shell/pull/516) fix(staff): approval 500 + subcontractor role + audit hardening |
 | 2026-06-28 | eq-shell | [#515](https://github.com/eq-solutions/eq-shell/pull/515) feat(crm): site address + contact picker |
@@ -51,25 +63,22 @@ _2026-06-28 13:26 UTC · what needs your attention. Full snapshot: [suite-state.
 | 2026-06-28 | eq-shell | [#507](https://github.com/eq-solutions/eq-shell/pull/507) fix(equipment): Haiku + hard deadline to beat Netlify 26s wall; p |
 | 2026-06-28 | eq-shell | [#506](https://github.com/eq-solutions/eq-shell/pull/506) fix(equipment): cert import bundles without @eq/schemas (was inst |
 | 2026-06-28 | eq-shell | [#505](https://github.com/eq-solutions/eq-shell/pull/505) feat(brand): embed brand_color + brand_logo_url in service JWT |
-| 2026-06-28 | eq-solves-service | [#362](https://github.com/eq-solutions/eq-service/pull/362) fix: split FK joins after migration 0147 + JWT role resolution fo |
-| 2026-06-28 | eq-solves-service | [#361](https://github.com/eq-solutions/eq-service/pull/361) fix(substrate): add workflow_dispatch to notify-substrate |
-| 2026-06-28 | eq-solves-service | [#359](https://github.com/eq-solutions/eq-service/pull/359) feat(brand): Shell owns brand identity — derive palette from bran |
-| 2026-06-28 | eq-field | [#355](https://github.com/eq-solutions/eq-field/pull/355) v3.5.197 — canonical field_* views + tenant-agnostic public.* tab |
+| 2026-06-28 | eq-solves-service | [#364](https://github.com/eq-solutions/eq-service/pull/364) feat(shell): JWT token refresh + Admin nav link for iframe sessio |
 _Showing 15 of 112 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **Verify /brief + /close** in first real build session — just confirmed they appear in `/` menu
+- **gitleaks pre-commit hook** — prevent PAT exposure in substrate history _(added 2026-06-28)_
+- **Update C:\Projects\.git-credentials** files with new PAT after rotation _(added 2026-06-28)_
+- **Token refresh smoke test** — shorten TTL locally to confirm ShellTokenRefresh fires (4h is hard to test live) _(added 2026-06-28)_
 - **gitleaks pre-commit hook** — prevent PAT exposure in substrate history
 - **Update C:\Projects\.git-credentials** files with new PAT after rotation
-- **Merge eq-service #363 + eq-shell #513** — docs-only PRs, safe to merge any time
 - Remaining items carried from 2026-06-18 (see below)
 - **Curate `sites.field_enabled`** — 591 all enabled → trim to live jobs
 - **Login hook** (phone-dedup) — workers still can't sign in (separate track; `ops/decisions.md`).
 - **Curate `sites.field_enabled`** — 591 all enabled → trim to live jobs.
 - **Daniel Bower** — confirm leaver / remove.
-- **Generalise `workers-canonical-sync`** — currently single-tenant (hardcodes SKS+ehow).
-_…and 111 more · [eq/pending.md](eq/pending.md)_
+_…and 112 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -101,4 +110,4 @@ _[sessions/](sessions/) · 5 shown_
 ✗ Drift detected — see **Needs you** above. Source: `scripts/substrate_honesty.py`.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-06-28 13:26 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-06-28 21:35 UTC._
