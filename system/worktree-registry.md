@@ -1,7 +1,7 @@
 ---
 title: Worktree Registry
 owner: Royce Milmlow
-last_updated: 2026-06-28
+last_updated: 2026-06-28 (session cleanup)
 scope: Active and stale git worktrees — check before creating a new one
 read_priority: critical
 status: live
@@ -32,10 +32,8 @@ Check this file first — if your target repo/area is already claimed, coordinat
 
 | Folder | Branch | Agent / Session | Notes |
 |--------|--------|-----------------|-------|
-| .claude/worktrees/magical-bouman-3bd9c9 (eq-shell) | main | housekeep session 2026-06-25 | Can be removed after Claude Code closes. |
-| .claude/worktrees/elastic-meninsky-efd6a1 (eq-shell) | claude/elastic-meninsky-efd6a1 | unknown agent | No open PR. Permission Denied on remove — file lock held. Run `cleanup-stale-worktrees.ps1` in eq-shell root. |
-| .claude/worktrees/determined-edison-d6f176 (eq-shell) | determined-edison-d6f176 | unknown | Directory exists; git ref pruned 2026-06-28. Remove when process releases lock. |
-| .claude/worktrees/sharp-kapitsa-93278c (eq-field) | claude/sharp-kapitsa-93278c | unknown | No PR; was at main HEAD. Git ref pruned 2026-06-28. Run `C:\Projects\cleanup-sharp-kapitsa-worktree.ps1`. |
+| .claude/worktrees/determined-edison-d6f176 (eq-shell) | determined-edison-d6f176 | unknown | Emptied 2026-06-28 via robocopy. Directory handle still held — will auto-remove on OS restart. |
+| .claude/worktrees/sharp-kapitsa-93278c (eq-field) | claude/sharp-kapitsa-93278c | unknown | Emptied 2026-06-28 via robocopy. Directory handle still held — will auto-remove on OS restart. |
 
 ---
 

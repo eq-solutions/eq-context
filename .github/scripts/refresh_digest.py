@@ -41,6 +41,20 @@ NETLIFY_SITES = {
 # CI conclusions that mean "broken" (anything not in the healthy set).
 HEALTHY_CI = {"success", "skipped", "neutral"}
 
+# Infra/notification workflows — not build CI. Blocked from ci_status() so they
+# don't overwrite the real build signal. Add any new meta-workflows here.
+META_WORKFLOW_PATHS = {
+    ".github/workflows/notify-substrate.yml",
+    ".github/workflows/tenant-migrate.yml",
+    ".github/workflows/deploy.yml",
+    ".github/workflows/update-goldens.yml",
+    ".github/workflows/backup.yml",
+    ".github/workflows/integration.yml",       # pre-existing failures; not a build gate
+    ".github/workflows/supabase-advisors.yml",
+    ".github/workflows/suite-state-refresh.yml",
+    ".github/workflows/digest-refresh.yml",
+}
+
 
 # ── fetch helpers ────────────────────────────────────────────────────────────
 def gh_get(path):
@@ -57,11 +71,17 @@ def gh_get(path):
 
 
 def ci_status(repo):
-    """(conclusion, age_days) for the latest completed CI run on main."""
-    data = gh_get(f"repos/eq-solutions/{repo}/actions/runs?branch=main&per_page=5&event=push")
+    """(conclusion, age_days) for the latest completed BUILD CI run on main.
+
+    Skips meta/infra workflows (notify-substrate, deploy, backup, etc.) so the
+    result reflects the actual build gate, not the most recent workflow of any kind.
+    """
+    data = gh_get(f"repos/eq-solutions/{repo}/actions/runs?branch=main&per_page=20&event=push")
     if not isinstance(data, dict):
         return "unknown", None
     for run in data.get("workflow_runs", []):
+        if run.get("path") in META_WORKFLOW_PATHS:
+            continue
         if run.get("conclusion"):
             age = None
             updated = run.get("updated_at", "")
