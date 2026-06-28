@@ -14,6 +14,23 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-06-28 — Brain 10/10: substrate coherence + automation layer
+
+**Completed:**
+- [x] **PRs #51 + #52 merged** — Sentry live errors, sessions INDEX.md, Sentry noise filter, /brief + /close skills, brief-gate, tsc --incremental hook
+- [x] **system/chat-bootstrap.md** — copy-paste prompt for Chat replacing old Supabase context cache
+- [x] **system/cowork-bootstrap.md** — copy-paste prompt for Cowork with git constraint reminder
+- [x] **SENTRY_AUTH_TOKEN** added to eq-context GitHub secrets
+- [x] **Old PATs revoked** (EQ Solutions, Milmlow, Milmlow alt) — 2026-06-28
+
+**Open / next:**
+- [ ] **Verify /brief + /close** in first real build session — untested in production
+- [ ] **gitleaks pre-commit hook** — prevent PAT exposure in substrate history
+- [ ] **Update C:\Projects\.git-credentials** files with new PAT after rotation
+- [ ] **MD files deep dive** — stale Supabase refs, old architecture claims (agent launched 2026-06-28)
+
+---
+
 ## ⏩ Session close — 2026-06-26 — Safety docs footer parity
 
 **Completed (live + verified):**
