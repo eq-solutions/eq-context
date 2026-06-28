@@ -66,6 +66,9 @@ _If this file is >48h old, the cron is broken._
 **eq-service:**
 - #345 draft(identity): Phase 3 re-key + reference migration (review-only)
 
+**eq-shell:**
+- #511 fix(equipment): cert import 500 + remove forced site assignment
+
 ---
 
 ## System Health (as of 2026-06-28)
