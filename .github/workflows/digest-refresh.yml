@@ -37,14 +37,18 @@ jobs:
 
       - name: Generate digest.md
         env:
-          GH_TOKEN:      ${{ secrets.GITHUB_TOKEN }}
-          NETLIFY_TOKEN: ${{ secrets.NETLIFY_TOKEN }}
+          GH_TOKEN:           ${{ secrets.GITHUB_TOKEN }}
+          NETLIFY_TOKEN:      ${{ secrets.NETLIFY_TOKEN }}
+          SENTRY_AUTH_TOKEN:  ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: python .github/scripts/refresh_digest.py
+
+      - name: Generate sessions/INDEX.md
+        run: python scripts/generate_session_index.py
 
       - name: Commit if changed
         run: |
           git config user.name  "eq-suite-bot"
           git config user.email "bot@eq.solutions"
-          git add digest.md
+          git add digest.md sessions/INDEX.md
           git diff --staged --quiet && echo "No changes" || \
             git commit -m "chore: nightly health digest $(date -u +%Y-%m-%d) [skip ci]" && git push
