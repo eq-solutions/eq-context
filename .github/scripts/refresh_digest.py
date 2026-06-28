@@ -27,6 +27,7 @@ STAMP = NOW.strftime("%Y-%m-%d %H:%M UTC")
 # EQ repos only (SKS is a separate entity). Names are the GitHub repo slugs.
 REPOS = ["eq-shell", "eq-solves-service", "eq-field", "eq-cards", "eq-solves-intake"]
 PR_AGE_WARN_DAYS = 7
+PR_AGE_CRITICAL_DAYS = 14  # escalates from 🟠 to 🔴
 RECENTLY_MERGED_DAYS = 7
 RECENT_PR_LIMIT = 15  # max rows shown in "recently built" table
 
@@ -56,14 +57,21 @@ def gh_get(path):
 
 
 def ci_status(repo):
-    """Latest completed CI conclusion on main (success/failure/...), or 'unknown'."""
+    """(conclusion, age_days) for the latest completed CI run on main."""
     data = gh_get(f"repos/eq-solutions/{repo}/actions/runs?branch=main&per_page=5&event=push")
     if not isinstance(data, dict):
-        return "unknown"
+        return "unknown", None
     for run in data.get("workflow_runs", []):
         if run.get("conclusion"):
-            return run["conclusion"]
-    return "unknown"
+            age = None
+            updated = run.get("updated_at", "")
+            if updated:
+                try:
+                    age = (NOW - datetime.fromisoformat(updated.replace("Z", "+00:00"))).days
+                except ValueError:
+                    pass
+            return run["conclusion"], age
+    return "unknown", None
 
 
 def open_prs(repo):
@@ -133,6 +141,29 @@ def pending_open_items(path):
     ]
 
 
+def worktree_stale_count(registry_path="system/worktree-registry.md"):
+    """Count rows in the Stale section of the worktree registry."""
+    try:
+        with open(registry_path, encoding="utf-8") as f:
+            content = f.read()
+    except FileNotFoundError:
+        return 0
+    in_stale = False
+    count = 0
+    for line in content.splitlines():
+        if "## Stale" in line:
+            in_stale = True
+            continue
+        if in_stale and line.startswith("## "):
+            break
+        if (in_stale and line.startswith("| ")
+                and not line.startswith("| Folder")
+                and not line.startswith("|---")
+                and "_(none)_" not in line):
+            count += 1
+    return count
+
+
 def deploy_state(site):
     """(state, published_date) for a Netlify site's last deploy. Token-gated."""
     if not NETLIFY_TOKEN:
@@ -189,12 +220,12 @@ def build():
     recent_by_repo = {}  # repo -> [pr, ...]
 
     for repo in REPOS:
-        ci = ci_status(repo)
+        ci, ci_age = ci_status(repo)
         prs = open_prs(repo)
         live_prs = [p for p in prs if not p["draft"]]
         ages = [p["age"] for p in live_prs if p["age"] is not None]
         oldest = max(ages) if ages else None
-        pulse.append((repo, ci, len(prs), oldest))
+        pulse.append((repo, ci, ci_age, len(prs), oldest))
         recent_by_repo[repo] = recently_merged_prs(repo)
 
         if ci not in HEALTHY_CI and ci != "unknown":
@@ -203,7 +234,14 @@ def build():
             if p["age"] is not None and p["age"] >= PR_AGE_WARN_DAYS:
                 title = p["title"][:70]
                 link = f"[#{p['num']}]({p['url']})" if p["url"] else f"#{p['num']}"
-                attention.append(("🟠", f"**PR aging {p['age']}d** — {repo} {link} \"{title}\""))
+                emoji = "🔴" if p["age"] >= PR_AGE_CRITICAL_DAYS else "🟠"
+                attention.append((emoji, f"**PR aging {p['age']}d** — {repo} {link} \"{title}\""))
+
+    n_stale_wt = worktree_stale_count()
+    if n_stale_wt:
+        s = "s" if n_stale_wt > 1 else ""
+        attention.append(("🟡", f"**{n_stale_wt} stale worktree{s}** need cleanup — "
+                                 f"[worktree-registry.md](system/worktree-registry.md)"))
 
     # Deploys (only when a Netlify token is wired)
     deploy_rows = []
@@ -264,13 +302,14 @@ def build():
 
     lines.append("## Pulse")
     lines.append("")
-    lines.append("| Repo | CI (main) | Open PRs | Oldest |")
-    lines.append("|------|-----------|----------|--------|")
+    lines.append("| Repo | CI (main) | CI age | Open PRs | Oldest PR |")
+    lines.append("|------|-----------|--------|----------|-----------|")
     ci_icon = {"success": "✓", "failure": "✗", "cancelled": "⚠", "unknown": "?"}
-    for repo, ci, n_open, oldest in pulse:
+    for repo, ci, ci_age, n_open, oldest in pulse:
         icon = ci_icon.get(ci, "?")
         oldest_s = f"{oldest}d" if oldest is not None else "—"
-        lines.append(f"| {repo} | {icon} {ci} | {n_open} | {oldest_s} |")
+        ci_age_s = f"{ci_age}d ago" if ci_age is not None else "?"
+        lines.append(f"| {repo} | {icon} {ci} | {ci_age_s} | {n_open} | {oldest_s} |")
     lines.append("")
 
     if deploy_rows:
@@ -304,16 +343,19 @@ def build():
         lines.append(f"_No merges in the last {RECENTLY_MERGED_DAYS} days._")
     lines.append("")
 
-    # Pending open items (EQ)
-    if eq_pending:
-        lines.append("## Pending (EQ)")
+    # Pending open items (EQ + SKS)
+    sks_pending = pending_open_items("sks/pending.md")
+    for label, items, path in [("EQ", eq_pending, "eq/pending.md"), ("SKS", sks_pending, "sks/pending.md")]:
+        if not items:
+            continue
+        lines.append(f"## Pending ({label})")
         lines.append("")
-        for item in eq_pending[:10]:
+        for item in items[:10]:
             lines.append(f"- {item}")
-        if len(eq_pending) > 10:
-            lines.append(f"_…and {len(eq_pending) - 10} more · [eq/pending.md](eq/pending.md)_")
+        if len(items) > 10:
+            lines.append(f"_…and {len(items) - 10} more · [{path}]({path})_")
         else:
-            lines.append("_[eq/pending.md](eq/pending.md)_")
+            lines.append(f"_[{path}]({path})_")
         lines.append("")
 
     lines.append("## Substrate honesty")
