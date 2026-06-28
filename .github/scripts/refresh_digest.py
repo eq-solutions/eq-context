@@ -299,12 +299,9 @@ def sentry_top_issues(n=8):
             timeout=10,
         )
         if not r.ok:
-            print(f"[sentry] org issues endpoint returned {r.status_code}: {r.text[:200]}")
             return []
         all_issues = []
-        raw = r.json()
-        print(f"[sentry] org endpoint returned {len(raw)} issues")
-        for issue in raw:
+        for issue in r.json():
             proj_slug = (issue.get("project") or {}).get("slug", "")
             if proj_slug not in SENTRY_PROJECTS:
                 continue  # skip retired/unknown projects (eq-quotes etc.)
