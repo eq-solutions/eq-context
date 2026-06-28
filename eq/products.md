@@ -18,12 +18,12 @@ listed here — see `CLAUDE.md` "Killed / deferred" section, or
 ## EQ Solves — Field (LEAD MODULE)
 
 **Status:** Live. Current version **v3.5.125** (2026-06-11). SKS Field active on ehow. v8 design pass complete 2026-06-09 (all 14 screens + Shell warmup). Security sprint complete 2026-06-09. Shell SSO fixed 2026-06-10 (eq-shell PR #306). SKS canonical DB full JWT coverage 2026-06-11 (PR #267 — 58 staff + 591 sites on ehow). EQ Service iframe loading fixed 2026-06-13 (eq-shell PR #334, 12s → 4s). Multi-tenant via DATA_JWT_ENABLED + per-tenant Supabase JWT.
-**URL:** eq-solves-field.netlify.app (EQ demo) / core.eq.solutions/sks/field (SKS prod via Shell) / field.sks.eq.solutions (SKS direct)
+**URL:** field.eq.solutions (live) / core.eq.solutions/sks/field (SKS prod via Shell)
 **Repo:** eq-solutions/eq-field (private)
 **Working file:** index.html
 **Architecture:** Multi-tenant PWA. URL-based tenant detection + Shell iframe with JWT handoff. EQ tenant → eq-canonical-internal (zaap, `zaapmfdkgedqupfjtchl`). SKS tenant → ehow (`ehowgjardagevnrluult`).
 **Supabase:** EQ live = `zaapmfdkgedqupfjtchl` (eq-canonical-internal/zaap). SKS live = `ehowgjardagevnrluult` (ehow). Old `ktmjmdzqrogauaevbktn` = cold backup (do not write).
-**Deploy:** GitHub push → Netlify auto (main branch → eq-solves-field demo site)
+**Deploy:** GitHub push → Netlify auto (main branch → field.eq.solutions). eq-solves-field.netlify.app is dead since mid-2026.
 
 **Strategic priority:** Lead module. Built for ourselves (SKS NSW) —
 no outside-validation gate (killed 2026-06-02).
@@ -92,7 +92,7 @@ no outside-validation gate (killed 2026-06-02).
 **Infrastructure notes (operational):**
 - **CSP:** Two sources — `netlify.toml` takes precedence over `_headers`. Always update both for any external-origin change. (Lesson from v3.4.80 hotfix where `_headers` alone was insufficient and SheetJS was blocked on live.)
 - **SheetJS:** Pinned to `cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js`. cdnjs tops out at 0.18.5 — don't bump to 0.19+ from cdnjs; switch CDN to `cdn.sheetjs.com` if/when an upgrade is needed.
-- **Auth:** Plaintext PIN compare in `verify-pin.js` since v3.4.36 (hash removed). `EQ_SECRET_SALT` retained only for HMAC token signing. PINs live in two places (Supabase `app_config` + Netlify env vars) and must be kept in sync until the verify-pin → Supabase `app_config` refactor lands.
+- **Auth:** Plaintext PIN compare in `verify-pin.js` since v3.4.36 (hash removed). TOKEN MODE live — Shell iframe mints short-lived Supabase JWT via `token-exchange.ts`. `EQ_SECRET_SALT` and HMAC token signing are dead (removed PR #326/#430). PINs live in two places (Supabase `app_config` + Netlify env vars) and must be kept in sync until the verify-pin → Supabase `app_config` refactor lands.
 - **Service Worker cache:** Versioned per release (e.g. `eq-field-v3.5.3`). Users need a hard-refresh (Ctrl+Shift+R) until the auto-update toast ships.
 - **Analytics IDs:** Microsoft Clarity — `wek7yeida5` (EQ tenant), `wek8dmtbuu` (SKS tenant); SKS has `strictMask: true`. PostHog EU instance.
 
@@ -121,7 +121,8 @@ itself). Per-tenant subdomain alias on a single Netlify project;
 Netlify wildcard not viable on external DNS.
 **Repo:** `eq-solutions/eq-shell` (private)
 **Working files:** `src/modules/intake/`, `src/modules/cards/`,
-`netlify/functions/{shell-login,verify-shell-session,mint-iframe-token,mint-supabase-jwt}.ts`,
+`netlify/functions/{shell-login,verify-shell-session,token-exchange,mint-supabase-jwt}.ts`
+(mint-iframe-token deleted PR #430 — TOKEN MODE live via token-exchange.ts),
 `src/App.tsx` (RequireSession + ModuleGate + `useCan()` + `<Gate>`)
 **Architecture:** Vite + React 19 + TypeScript strict. React Router
 v6. pnpm workspace with `@eq/*` packages vendored at
@@ -187,8 +188,7 @@ subdomain alias added manually (~5 min) until automated.
 **Critical architectural risks open** (per 2026-05-20 part-d external
 critique synthesis — deferred to Phase 2 resumption):
 
-1. Shared `EQ_SECRET_SALT` across Shell + Field — no dual-salt
-   rotation support yet; leak forces coordinated outage.
+1. ~~Shared `EQ_SECRET_SALT`~~ — resolved PR #326/#430. EQ_SECRET_SALT and HMAC path removed; TOKEN MODE (Supabase JWT via token-exchange.ts) is live.
 2. Single mega-RPC `eq_intake_commit_batch` — chokepoint risk before
    it hits 5 module branches.
 3. No `revoked_sessions` table — cannot kill an active JWT before
@@ -233,7 +233,7 @@ Phase 2 question — a tier-of-company question.
 **Architecture:** Next.js + Supabase + Netlify serverless functions
 **Supabase project:** ehowgjardagevnrluult (sks-canonical), `service.*` schema — migrated from urjhmkhbgaxrofurpbgc (eq-solves-service-dev) on 2026-06-08; old project deleted 2026-06-22
 **Scale:** Production-level complexity, multi-tenant with Supabase RLS
-**Test coverage:** 80 Vitest tests
+**Test coverage:** None. Gate is tsc + next build. Integration tests in CI are pre-existing failures — never block a merge on them.
 **Sprint cadence:** 22 sprints to date
 **Deploy:** GitHub → Netlify CD
 **Blocker:** GitHub MCP write access (403) — fix at `github.com/settings/installations`
@@ -242,121 +242,23 @@ Phase 2 question — a tier-of-company question.
 
 ## EQ Solves — Quotes
 
-**Status:** Un-deferred 2026-05-19. Two live forms today (templates +
-Flask v1 pilot); a third — the real React module under EQ Shell —
-remains Position 4 in the module-mounting queue per the 2026-05-19
-canonical-migration-reset decision.
+**Status:** RETIRED 2026. Replaced by EQ Ops (see below). Flask v1 at `quotes.eq.solutions` is the legacy pilot — no further investment. The React module rewrite (formerly Position 4 in Shell queue) is cancelled; EQ Ops supersedes it.
 
-**Current shipped forms:**
+---
 
-1. **Word + Excel templates + Markdown SOPs.** v2 template set
-   finalised 2026-05-18 — SKS Client Services Quote Template v2, Job
-   Creation Template v7, Quote Register, Field Mapping doc,
-   Implementation Guide. Live operational use inside SKS quoting motion.
-2. **Flask v1 pilot app** at `https://quotes.eq.solutions`. Built
-   2026-05-16 through 2026-05-19 as a fast pre-canonical pilot
-   deployment. Full CRUD over quotes, customers, line items, status
-   transitions, attachments, status history. Generates Word doc via
-   raw zipfile + token replace (no python-docx dependency). PDF
-   generation via headless LibreOffice on Fly. Search + delete +
-   duplicate per row on the register. Editable header AND editable
-   line items on the detail page (Draft + Submitted only). Inline
-   "+ New contact" in site contact picker. Customer/site shown as
-   separate fields. Scope template dropdown + curated rate library
-   under a `/setup/` admin section. Email-quote scaffold with
-   pluggable backends (currently sandbox-stubbed, Resend wiring
-   ready). 30/30 routes pass the smoke harness.
+## EQ Ops
 
-**Real product build (the React module):** Position 4 in the EQ Shell
-module-mounting queue. Build not started — Shell + Field + Service
-take priority per the trust ladder. The Flask v1 codebase becomes
-"the executable spec" for the rewrite: every validation rule, every
-status transition, every token-replace pattern, every business rule
-is captured in working Python that the React rewrite translates.
-
-**URL:** `https://quotes.eq.solutions` (Flask v1, live). Real module
-TBD when its turn arrives.
-**Repo:** `github.com/eq-solutions/eq-quotes-port` (private). Flask +
-Jinja + supabase-py + gunicorn, deployed Fly.io.
-**Working files:** `app/` (Flask blueprints + Jinja templates),
-`word_templates/template_v3.docx` (token-replaced SKS template — has
-`{{Site}}` placeholder added 2026-05-19), `scripts/smoke_routes.py`
-(37-route harness as of 2026-05-20), `scripts/smoke_writes.py`
-(12 write-path assertions), `scripts/qa_visual_audit.py` (17-route
-heuristic checks for icon coverage, empty states, inline scripts),
-`docs/canonical-plugin-contract.md` (the operational contract for the
-future React rewrite), `docs/runbooks/sentry-setup.md` +
-`docs/runbooks/resend-setup.md` (operational cutover steps for the
-two pending integrations).
-**Architecture (Flask v1):** Flask 3 + Jinja + supabase-py. Backed by
-`sks-labour` Supabase (`nspbmirochztcjijmcrx`) — same project as
-SKS Field LIVE (legacy single-tenant coupling). Word generation via
-raw zipfile + `{{Token}}` string replace. PDF via headless
-`soffice --convert-to pdf` subprocess. Fly.io single-machine
-deployment in Sydney. Image ~216MB (LibreOffice core+writer
-included). No CSP allowance for inline scripts/event handlers —
-all UI behaviours via separate JS files using data-attribute
-patterns.
-**Architecture (Real product, TBD):** React/Vite module under EQ
-Shell. Reads/writes to `eq-canonical` (the canonical layer
-project — `jvknxcmbtrfnxfrwfimn`). Customers / sites / contacts
-come from canonical platform tables; quote-specific tables
-(quotes, line items, status history, attachments) FK into them.
-Word doc generation moves server-side (Edge Function or eq-shell
-backend) to keep the React module pure. Auth via Supabase Auth
-through the shell's JWT.
-**Supabase project (Flask v1):** `nspbmirochztcjijmcrx` (sks-labour) —
-inherited. **Will not migrate** during the Flask v1 lifetime
-(per 2026-05-19 reset). When the React rewrite ships, it lands on
-`eq-canonical` (`jvknxcmbtrfnxfrwfimn`) and the Flask v1 is
-deprecated.
-**UI state (2026-05-20):** Five overnight design packs shipped plus a
-day-after polish run: status colours + icons + tabular numbers + empty
-states (Pack 1), home dashboard at `/` with KPI tiles + 14-day activity
-heatmap (Pack 2 + Pack A), brand layer (EQ logo + favicon + tenant
-palette + split-screen login — Pack 3), Cmd-K command palette +
-keyboard shortcuts + persistent filters + recent-viewed (Pack 4),
-AI scope/line-item suggestions through the anthropic-proxy Cloudflare
-Worker (Pack 5, gated on `ANTHROPIC_PROXY_URL`), Notion-style
-click-to-edit inline editing on quote + customer headers (Pack F + H1),
-sticky action toolbar + status journey mini-viz on quote detail
-(Pack B), `/reports/quality` page with win rate / hit rate /
-time-in-status histogram / per-estimator breakdown (Pack E), mobile
-responsive pass for header / cards / tables (Pack H2), and a "?" key
-shortcuts help overlay with a discoverability FAB (Pack H3).
-
-**Observability (2026-05-20):** Sentry MCP wired into the repo via
-`.mcp.json` at `https://mcp.sentry.dev/mcp/eq-solutions/eq-quotes`. The
-runtime DSN secret is still pending — see `docs/runbooks/sentry-setup.md`.
-Resend cutover steps in `docs/runbooks/resend-setup.md`. Slug convention
-captured in `ops/decisions.md` 2026-05-20 entry — `eq-<product>`, not
-repo or deploy name.
-
-**Strategic position:** Position 4 in the EQ Shell module queue —
-unchanged. The Flask v1 is the pilot's executable spec, not a
-queue-jump.
-
-**Pending:**
-- SKS pilot kickoff against Flask v1 (Royce sends estimators the URL
-  + shared password)
-- Resend wiring for real email delivery (`flyctl secrets set
-  EMAIL_BACKEND=resend RESEND_API_KEY=…`) — see
-  `eq-quotes-port/docs/email-setup.md`
-- Real React module build (~6-10 weeks at 10 hrs/week when its turn
-  comes)
-- `archive/changelog-eq-quotes.md` to be reinstated as
-  `eq/changelog/quotes.md` once the React build begins
+**Status:** Active development. Operational dashboards — replacing EQ Quotes.
+**URL:** core.eq.solutions/ops
+**Repo:** eq-solutions/eq-shell (same repo as Shell)
+**Architecture:** Module within EQ Shell (Vite + React 19 + TypeScript). Reads from ehow (ehowgjardagevnrluult) via service.* views.
 
 ---
 
 ## (No other EQ products are live)
 
 Removed from this file in 2026-05-04 refactor:
-- EQ Solves Compliance / EQ Ops (killed)
+- EQ Solves Compliance (killed)
 - EQ Variations (killed)
 - EQ Expenses (now SKS internal tool — see `sks/products.md` if added)
-
-EQ Solves Quotes was on this list (deferred 6mo) but was un-deferred
-2026-05-19 and added back above as an active product. Build not yet
-started — currently template-form only — but no longer in the deferred
-category.
+- EQ Ops was incorrectly listed as killed — it is active dev (see above).

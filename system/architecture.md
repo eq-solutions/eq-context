@@ -50,8 +50,7 @@ SKS outage. Separating projects creates hard boundaries that tenant prefixes alo
 **Operational rule:** Always confirm which project before connecting. **Never
 touch `nspbmirochztcjijmcrx` unless Royce explicitly says "SKS live"**.
 
-**Implication:** Do not spin up a fourth project without a clear risk-segmentation
-reason. Four was not the goal — three is the current equilibrium.
+**Implication:** Do not spin up a new project without a clear risk-segmentation reason. The active footprint is defined in the 'Control Layer' section below — refer to that list for the current project count. This section (Apr 2026) predates the per-tenant model.
 
 ---
 
@@ -79,9 +78,7 @@ Cost is ~$25/mo per active tenant — acceptable at trade-subbie scale.
 apply the canonical migration set, register the connection in `eq-canonical`, set
 `TENANT_ORG_UUID` in the app's Netlify env.
 
-**Active Supabase footprint (Jun 2026):** `eq-canonical` (control), `eq-canonical-internal`
-(EQ tenant), `sks-canonical` (SKS tenant), `eq-solves-field` (Field demo DB),
-`eq-solves-service-dev` (Service DB + context substrate), `sks-labour` (**SKS LIVE — never touch**).
+**Active Supabase footprint (as of 2026-06-22):** `eq-canonical` (`jvknxcmbtrfnxfrwfimn`, control), `eq-canonical-internal` (`zaapmfdkgedqupfjtchl`, EQ tenant), `sks-canonical` / ehow (`ehowgjardagevnrluult`, SKS tenant — sole DB for EQ Service + Field), `sks-labour` (`nspbmirochztcjijmcrx`, **SKS LIVE — never touch**). `eq-solves-service-dev` (`urjhmkhbgaxrofurpbgc`): **DELETED 2026-06-22**. `eq-solves-field` (`ktmjmdzqrogauaevbktn`): verify status before use.
 
 **Operational rule:** confirm which project before connecting. Never touch
 `nspbmirochztcjijmcrx` (sks-labour) unless "SKS live" is explicitly stated.

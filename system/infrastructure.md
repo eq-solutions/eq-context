@@ -20,7 +20,7 @@ account" before connecting.
 | Service | Account | Notes |
 |---------|---------|-------|
 | Supabase | Five projects (see table below) | Do NOT assume one project anywhere |
-| GitHub | eq-solutions org + milmlow user | All repos private; MCP is read-only (403 on writes). PATs stored in `C:\Projects\.git-credentials.*` — see table below |
+| GitHub | eq-solutions org + milmlow user | Mixed visibility — 12 public repos confirmed (eq-field, eq-service, eq-context, eq-shell, eq-cards, eq-solves-intake, eq-quotes, eq-website, sks-nsw-labour, eq-design-tokens, eq-roles, eq-ui). MCP is read-only (403 on writes). PATs stored in `C:\Projects\.git-credentials.*` — see table below |
 | Cloudflare | Two accounts — see Cloudflare section below | Pages + Workers + R2 buckets |
 | GoDaddy | — | Domain registrar only |
 | Netlify | dev@eq.solutions | All Netlify sites (EQ + SKS) |
@@ -35,7 +35,7 @@ account" before connecting.
 | `jvknxcmbtrfnxfrwfimn` | **eq-canonical** | **Control layer** — Cards config, tenant registry, app settings, module entitlements. No operational data. | Browser-accessible via `VITE_SUPABASE_URL` |
 | `zaapmfdkgedqupfjtchl` | **eq-canonical-internal** | **EQ tenant Supabase** — all EQ Solutions tenant/operational data. Pattern: `{tenant}-canonical`. | EQ tenant data |
 | `ehowgjardagevnrluult` | **sks-canonical** | **SKS tenant Supabase** — all SKS tenant/operational data + **EQ Service CMMS (migrated 2026-06-08)**. Pattern: `{tenant}-canonical`. | SKS tenant data; **never touch sks-labour instead** |
-| `ktmjmdzqrogauaevbktn` | eq-solves-field | EQ Field demo/tenant DB | Demo + EQ Field data |
+| `ktmjmdzqrogauaevbktn` | eq-solves-field | **STATUS UNKNOWN — not confirmed live. eq-solves-field.netlify.app is dead since mid-2026. Verify before use.** | n/a — verify first |
 | `urjhmkhbgaxrofurpbgc` | eq-solves-service-dev | **DELETED 2026-06-22.** Formerly the context substrate (`context_files`) + EQ Service product data (migrated to ehow 2026-06-08). Substrate now served directly from the public GitHub repo via raw URLs — no Supabase cache. | n/a — deleted |
 | `nspbmirochztcjijmcrx` | sks-labour | **SKS LIVE staff production data** | **NEVER TOUCH unless "SKS live" is explicit** |
 
@@ -45,7 +45,7 @@ Both Supabase projects share the same EQ Field codebase (one repo, two branches 
 
 | Table | Project(s) | Applied | Purpose |
 |---|---|---|---|
-| `toolbox_talks` (+ RLS + realtime + photos jsonb) | sks-labour + eq-solves-field | 2026-05-14 | Site Reports v2 — toolbox talk submissions. v3.4.75. SKS apply per explicit "SKS live" so Ben can preview via `eq-solves-field.netlify.app/?tenant=sks`. |
+| `toolbox_talks` (+ RLS + realtime + photos jsonb) | sks-labour + eq-solves-field | 2026-05-14 | Site Reports v2 — toolbox talk submissions. v3.4.75. SKS apply per explicit "SKS live". The live EQ Field site is field.eq.solutions (eq-solves-field.netlify.app is dead since mid-2026). |
 | `prestarts` (+ RLS + realtime) | sks-labour + eq-solves-field | 2026-05-13 | Site Reports v1 — prestart submissions |
 | `prestarts.photos` (jsonb) | sks-labour + eq-solves-field | 2026-05-13 | Up to 8 base64 photos per prestart, inline |
 | `managers.dob_day/dob_month/start_date/archived` | sks-labour + eq-solves-field | 2026-05-13 | Supervisor DOB + start_date + reversible archive |
@@ -63,10 +63,11 @@ Fine-grained PATs. All verified active 2026-05-15. Credential files in `C:\Proje
 | Local folder | GitHub remote | Deploy method |
 |---|---|---|
 | `eq-context/` | `eq-solutions/eq-context` | git push |
-| `eq-solves-field/` | `Milmlow/eq-field-app` | git push |
-| `eq-cards/` | `Milmlow/eq-cards` (GitHub exists but not used for deploy) | zip → Netlify (no git remote on local clone) |
+| `eq-field/` | `eq-solutions/eq-field` | git push |
+| `eq-cards/` | `eq-solutions/eq-cards` | git push (remote exists and is active) |
+| `eq-solves-service/` | `eq-solutions/eq-service` | git push |
 
-(Other folders — `eq-intake`, `eq-quotes`, `eq-solves-service`, `eq-solves-assets`, `eq-solves-jobs`, `eq-website`, `eq-analytics-v2` — are local-only, no git remote.)
+(Other folders — `eq-intake`, `eq-quotes`, `eq-solves-assets`, `eq-solves-jobs`, `eq-website`, `eq-analytics-v2` — are local-only, no git remote. Note: eq-solves-service repo name on GitHub is `eq-service`, not `eq-solves-service`.)
 
 **Token inventory:**
 
@@ -95,8 +96,8 @@ work PC because ThreatLocker blocks Tailscale.
 - Hardware: Ryzen 7 7735HS, 32 GB RAM, 1 TB NVMe
 - Cloudflare Tunnel: `beelink.eq.solutions` (for exposing local dev servers)
 - Local context repo: `C:\Projects\eq-context`
-- Local EQ Field repo: `C:\Users\EQ\eq-field-app-demo`
-- Global CLAUDE.md: `C:\Users\Royce\.claude\CLAUDE.md`
+- Local EQ Field repo: `C:\Projects\eq-field`
+- Global CLAUDE.md: `C:\Users\EQ\.claude\CLAUDE.md`
 
 ---
 

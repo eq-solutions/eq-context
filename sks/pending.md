@@ -54,13 +54,13 @@ _Nothing pending — migrations 001–023 all applied._
 
 **Pending (Royce-gated):**
 - [x] **Roster data entry on ehow — DECISION 2026-06-15** — start fresh on ehow. Do not migrate from nspb. New entries go direct to ehow from now.
-- [ ] **Standalone `sks-nsw-labour` retirement** — keep warm for soak, then retire after confirmation that ehow Field is the operational system.
+- [ ] **Standalone `sks-nsw-labour` retirement** — NOTE: app is still receiving active feature work as of 2026-06-26 (PRs #32–#54 merged in June). 'Keep warm' understates current investment. Retirement gating question is still open — confirm with Royce whether ehow Field has superseded the standalone app before setting a retirement date.
 - [ ] **Track 2 RLS STEP 2** — anon SELECT lockdown on ehow. DEFERRED until standalone retired.
 - [ ] **SKS anon-remediation (nspb)** — exact policy worklist in `cross-app-linkage-remediation-plan-2026-06-07.md` §7a. Separate from ehow work. SKS-live gated.
 
 **SKS roles / security-groups track (from 2026-06-07):**
 - [x] **eq-roles PR #7 — DONE** — merged, v2.3.0 tagged and on main.
-- [ ] **eq-shell** — converge `c2-shell-roles` + `sks-field-host` branches (Prompt A in `sks-live-sprint-2026-06-07.md`).
+- [ ] **eq-shell** — ~~converge `c2-shell-roles` + `sks-field-host` branches~~ — `c2-shell-roles` no longer exists in eq-shell repo (deleted). Re-assess: verify whether the security-groups work from `sks-live-sprint-2026-06-07.md` Prompt A was folded into main or abandoned before reopening this track.
 - [ ] **Security groups Phase 2–5** — wire group perms into session, `AdminSecurityGroups` page, first real `user_security_groups` row for a SKS user.
 
 ---
@@ -107,18 +107,16 @@ _Nothing pending — migrations 001–023 all applied._
 
 ## Active (in progress or blocked)
 
-- [ ] **Workbench customer CSV import** — export from Workbench, map columns, dry-run first:
-  `python scripts/import_workbench_customers.py customers.csv --dry-run`
+- [ ] ~~**Workbench customer CSV import**~~ — **CANCELLED** — eq-quotes (Flask) is retired; EQ Ops is the replacement. Re-evaluate if import is still needed against EQ Ops.
 
-## Test suite (pre-existing failures, not this session's scope)
+## Test suite — EQ Quotes (RETIRED — do not work on these)
 
-The following tests were broken before this sprint and remain so:
+The following tests belong to eq-quotes-port (Flask), which is retired as of 2026. EQ Ops replaces it. These items are closed with no action required.
 
-- [ ] **Rewrite `test_calc.py`** — 24 tests still on int-cents model; money moved to Decimal
-- [ ] **Rewrite `test_quotes_service.py`** — 3 tests need RPC-aware shape
-- [ ] **Rewrite `test_schema.py`** — 6 tests expect SQLite file; need Supabase stub
-- [ ] **Update `test_validation.py`** — section rename + Decimal math
-- Target: ~91+ tests green on every commit (currently 91 green, 15 pre-existing failures)
+- ~~Rewrite test_calc.py~~
+- ~~Rewrite test_quotes_service.py~~
+- ~~Rewrite test_schema.py~~
+- ~~Update test_validation.py~~
 
 ## Open conversations (deferred from handoff-2026-05-22)
 

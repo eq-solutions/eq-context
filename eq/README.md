@@ -56,13 +56,12 @@ Every canonical EQ file as a full URL — clickable from `/context/claude`:
 ## Killed / deferred (do not reference as live products)
 
 - **EQ Variations** — killed 2026-04-29
-- **EQ Compliance / EQ Ops** — killed 2026-04-29
+- **EQ Compliance** — killed 2026-04-29
+- **EQ Ops** — active dev in `eq-shell` (core.eq.solutions/ops); replaces EQ Quotes
 - **EQ Expenses** — demoted to internal SKS tool (no longer an EQ product)
 - **AHD** — parked to 2027 (changelog at `/archive/changelog-ahd.md`)
 
-EQ Quotes was deferred 2026-04-29 but un-deferred 2026-05-19 — see
-`eq/products.md` and `ops/decisions.md` 2026-05-19 entry. Reinstated as
-position 4 in the EQ Shell module-mounting queue.
+**EQ Quotes** — retired (Flask v1 at quotes.eq.solutions shut down; replaced by EQ Ops). The 2026-05-19 un-deferral was superseded when EQ Ops was designated as the replacement.
 
 ## Brand
 
