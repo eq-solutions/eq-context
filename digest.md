@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-06-28 02:59 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-06-28 08:30 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-06-28 02:43 UTC → 2026-06-28 02:59 UTC)
+## Since last refresh (2026-06-28 02:59 UTC → 2026-06-28 08:30 UTC)
 
-- Merged: eq-shell [#500](https://github.com/eq-solutions/eq-shell/pull/500) fix(eq-ops): make the stage tabs filter the board (were iner
-- Merged: eq-shell [#498](https://github.com/eq-solutions/eq-shell/pull/498) feat(crm): contact-site assignment + inline delete for sites
-- Merged: eq-shell [#493](https://github.com/eq-solutions/eq-shell/pull/493) feat(staff): push worker profile updates to tenant staff row
-- Merged: eq-shell [#492](https://github.com/eq-solutions/eq-shell/pull/492) feat(perf): React Query for AccessControlPage + EntityBrowse
-- Merged: eq-shell [#491](https://github.com/eq-solutions/eq-shell/pull/491) feat(perf): React Query for StaffPage — roster, pending, lic
-- Merged: eq-shell [#490](https://github.com/eq-solutions/eq-shell/pull/490) feat(perf): TanStack Query adoption — CRM + dashboard cachin
-- Merged: eq-shell [#488](https://github.com/eq-solutions/eq-shell/pull/488) fix(intake): spinner on duplicate + stale-records scan butto
-- Merged: eq-shell [#487](https://github.com/eq-solutions/eq-shell/pull/487) fix(staff): licence image scroll + archive 500 on patch
+- Merged: eq-shell [#514](https://github.com/eq-solutions/eq-shell/pull/514) fix(equipment): cert-import-parse-background 500 — return Re
+- Merged: eq-shell [#511](https://github.com/eq-solutions/eq-shell/pull/511) fix(equipment): cert import 500 + remove forced site assignm
+- Merged: eq-shell [#502](https://github.com/eq-solutions/eq-shell/pull/502) fix(drift): allow-list service.staff security-invoker view (
+- Merged: eq-shell [#497](https://github.com/eq-solutions/eq-shell/pull/497) feat(eq-ops): show the Workbench job number on each Kanban c
+- Merged: eq-shell [#496](https://github.com/eq-solutions/eq-shell/pull/496) fix(eq-ops): relabel stage 1 'Submitted' to 'Open' so drafts
+- Merged: eq-shell [#495](https://github.com/eq-solutions/eq-shell/pull/495) fix(eq-ops): gate Job Created on a Workbench job number from
+- Merged: eq-shell [#494](https://github.com/eq-solutions/eq-shell/pull/494) fix(eq-ops): Kanban board groups by the 5 dropdown stages, n
+- Merged: eq-shell [#486](https://github.com/eq-solutions/eq-shell/pull/486) fix(schedulers): retire EQ Quotes Flask schedulers (Sentry E
 
 ## ⚠ Needs you (2)
 
@@ -31,8 +31,8 @@ _2026-06-28 02:59 UTC · what needs your attention. Full snapshot: [suite-state.
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
 | eq-shell | ? unknown | ? | 1 | 0d |
-| eq-solves-service | ✓ success | 0d ago | 1 | — |
-| eq-field | ✓ success | 24d ago | 1 | 0d |
+| eq-solves-service | ✓ success | 0d ago | 1 | 0d |
+| eq-field | ✓ success | 24d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ? unknown | ? | 0 | — |
 
@@ -40,6 +40,8 @@ _2026-06-28 02:59 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-06-28 | eq-shell | [#514](https://github.com/eq-solutions/eq-shell/pull/514) fix(equipment): cert-import-parse-background 500 — return Respons |
+| 2026-06-28 | eq-shell | [#511](https://github.com/eq-solutions/eq-shell/pull/511) fix(equipment): cert import 500 + remove forced site assignment |
 | 2026-06-28 | eq-shell | [#512](https://github.com/eq-solutions/eq-shell/pull/512) chore: drop public.sks_quotes_* legacy tables + fix stale callers |
 | 2026-06-28 | eq-shell | [#510](https://github.com/eq-solutions/eq-shell/pull/510) fix(customers): always-visible contact checkboxes |
 | 2026-06-28 | eq-shell | [#509](https://github.com/eq-solutions/eq-shell/pull/509) feat(equipment): async cert import — background function + Blobs  |
@@ -49,27 +51,25 @@ _2026-06-28 02:59 UTC · what needs your attention. Full snapshot: [suite-state.
 | 2026-06-28 | eq-solves-service | [#362](https://github.com/eq-solutions/eq-service/pull/362) fix: split FK joins after migration 0147 + JWT role resolution fo |
 | 2026-06-28 | eq-solves-service | [#361](https://github.com/eq-solutions/eq-service/pull/361) fix(substrate): add workflow_dispatch to notify-substrate |
 | 2026-06-28 | eq-solves-service | [#359](https://github.com/eq-solutions/eq-service/pull/359) feat(brand): Shell owns brand identity — derive palette from bran |
+| 2026-06-28 | eq-field | [#355](https://github.com/eq-solutions/eq-field/pull/355) v3.5.197 — canonical field_* views + tenant-agnostic public.* tab |
+| 2026-06-28 | eq-field | [#350](https://github.com/eq-solutions/eq-field/pull/350) fix(safety): sticky tab row + padding + site_audits on ehow (v3.5 |
 | 2026-06-28 | eq-field | [#354](https://github.com/eq-solutions/eq-field/pull/354) v3.5.196 — Pipeline: mandatory job number on Confirm Curve + life |
 | 2026-06-28 | eq-field | [#353](https://github.com/eq-solutions/eq-field/pull/353) fix(substrate): add workflow_dispatch to notify-substrate |
-| 2026-06-28 | eq-cards | [#102](https://github.com/eq-solutions/eq-cards/pull/102) fix(substrate): add workflow_dispatch to notify-substrate |
-| 2026-06-27 | eq-shell | [#503](https://github.com/eq-solutions/eq-shell/pull/503) feat(crm): entityCapabilities policy map (archive/delete/merge pe |
-| 2026-06-27 | eq-shell | [#504](https://github.com/eq-solutions/eq-shell/pull/504) fix(equipment): surface the real cert-import error (no more opaqu |
-| 2026-06-27 | eq-shell | [#501](https://github.com/eq-solutions/eq-shell/pull/501) feat(substrate): notify eq-context on push to main |
 _Showing 15 of 111 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **Verify /brief + /close** in first real build session — untested in production
+- **gitleaks pre-commit hook** — prevent PAT exposure in substrate history
+- **Update C:\Projects\.git-credentials** files with new PAT after rotation
+- **MD files deep dive** — stale Supabase refs, old architecture claims (agent launched 2026-06-28)
 - Remaining items carried from 2026-06-18 (see below)
 - **Curate `sites.field_enabled`** — 591 all enabled → trim to live jobs
 - **Login hook** (phone-dedup) — workers still can't sign in (separate track; `ops/decisions.md`).
 - **Curate `sites.field_enabled`** — 591 all enabled → trim to live jobs.
 - **Daniel Bower** — confirm leaver / remove.
 - **Generalise `workers-canonical-sync`** — currently single-tenant (hardcodes SKS+ehow).
-- People profile enrichment from ehow — when Field loads a person with worker_id, optionally pre-fill from ehow.app_data.staff. Requires reading ehow via staff map (already loaded by leave adapter). Next meaningful sprint.
-- `ZAAP_JWT_SECRET=""` — EQ tenant JWT broken (acceptable while zaap unpopulated).
-- `APP_ORIGIN` env var stale (`eq-solves-field.netlify.app` → should be `field.eq.solutions`).
-- v3.5.147 create-stub path to be removed when Cards onboarding goes live as the sole jvkn.workers creator.
-_…and 108 more · [eq/pending.md](eq/pending.md)_
+_…and 111 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -89,11 +89,11 @@ _…and 15 more · [sks/pending.md](sks/pending.md)_
 
 | Date | Session |
 |------|---------|
+| 2026-06-28 | [Brain 10/10: substrate coherence + automation layer](sessions/2026-06-28-brain-10-10.md) |
 | 2026-06-28 | [EQ Service batch-create fix](sessions/2026-06-28-batch-create-fix.md) |
 | 2026-06-27 | [2026-06-27 — Usability sprint + security gate promotion](sessions/2026-06-27-usability-sprint.md) |
 | 2026-06-27 | [Substrate-coherence sprint — honesty CI + security gate + digest + Node 24 bump](sessions/2026-06-27-substrate-coherence-sprint.md) |
 | 2026-06-26 | [Session: Safety docs footer parity](sessions/2026-06-26-footer-parity.md) |
-| 2026-06-25 | [EQ Field — Doc brand palette (WS4) shipped; suite write-path consolidation deferred](sessions/2026-06-25-doc-brand-palette.md) |
 _[sessions/](sessions/) · 5 shown_
 
 ## Substrate honesty
@@ -101,4 +101,4 @@ _[sessions/](sessions/) · 5 shown_
 ✗ Drift detected — see **Needs you** above. Source: `scripts/substrate_honesty.py`.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-06-28 02:59 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-06-28 08:30 UTC._

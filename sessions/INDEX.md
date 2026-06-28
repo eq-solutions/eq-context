@@ -1,9 +1,10 @@
 # Session Index
-_38 logs · reverse-chronological · auto-generated_
+_39 logs · reverse-chronological · auto-generated_
 
 | Date | Session |
 |------|---------|
 | 2026-06-28 | [2026-06-28-types-copy-audit](sessions/2026-06-28-types-copy-audit.md) |
+| 2026-06-28 | [Brain 10/10: substrate coherence + automation layer](sessions/2026-06-28-brain-10-10.md) |
 | 2026-06-28 | [EQ Service batch-create fix](sessions/2026-06-28-batch-create-fix.md) |
 | 2026-06-27 | [2026-06-27 — Usability sprint + security gate promotion](sessions/2026-06-27-usability-sprint.md) |
 | 2026-06-27 | [Substrate-coherence sprint — honesty CI + security gate + digest + Node 24 bump](sessions/2026-06-27-substrate-coherence-sprint.md) |
