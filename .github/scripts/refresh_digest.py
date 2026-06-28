@@ -163,6 +163,65 @@ def pending_open_items(path):
     ]
 
 
+def recent_sessions(sessions_dir="sessions", n=5):
+    """Return list of {date, title} for the N most recent session logs.
+
+    Handles two formats:
+    - YAML frontmatter: title: / date: fields
+    - Heading-based: # Session YYYY-MM-DD — Title  or  # YYYY-MM-DD — Title
+    """
+    import glob as _glob
+    files = sorted(_glob.glob(f"{sessions_dir}/*.md"), reverse=True)
+    out = []
+    for path in files[:n * 3]:  # overshoot to handle files missing metadata
+        try:
+            with open(path, encoding="utf-8") as f:
+                content = f.read(1500)
+        except OSError:
+            continue
+
+        title = ""
+        date = ""
+
+        # Try YAML frontmatter first
+        for line in content.splitlines():
+            if line.startswith("title:"):
+                title = line[6:].strip().strip('"').strip("'")
+            elif line.startswith("date:"):
+                date = line[5:].strip().strip('"').strip("'")
+            if title and date:
+                break
+
+        # Fall back to heading: # [Session] YYYY-MM-DD[ —] rest
+        if not (title and date):
+            for line in content.splitlines():
+                if not line.startswith("#"):
+                    continue
+                text = line.lstrip("#").strip()
+                # Remove leading "Session " prefix if present
+                if text.lower().startswith("session "):
+                    text = text[8:].strip()
+                m = re.match(r"(\d{4}-\d{2}-\d{2})\s*[—–-]+\s*(.+)", text)
+                if m:
+                    date = m.group(1)
+                    title = m.group(2).strip()
+                    break
+
+        # Last fallback: derive date from filename
+        if not date:
+            fn = os.path.basename(path)
+            m = re.match(r"(\d{4}-\d{2}-\d{2})", fn)
+            if m:
+                date = m.group(1)
+
+        if title and date:
+            out.append({"date": date, "title": title,
+                        "file": path.replace("\\", "/")})
+        if len(out) >= n:
+            break
+    return out
+
+
 def worktree_stale_count(registry_path="system/worktree-registry.md"):
     """Count rows in the Stale section of the worktree registry."""
     try:
@@ -472,6 +531,19 @@ def build():
             lines.append(f"_…and {len(items) - 10} more · [{path}]({path})_")
         else:
             lines.append(f"_[{path}]({path})_")
+        lines.append("")
+
+    # Recent sessions
+    sessions = recent_sessions()
+    if sessions:
+        lines.append("## Recent sessions")
+        lines.append("")
+        lines.append("| Date | Session |")
+        lines.append("|------|---------|")
+        for s in sessions:
+            link = f"[{s['title']}]({s['file']})"
+            lines.append(f"| {s['date']} | {link} |")
+        lines.append(f"_[sessions/](sessions/) · {len(sessions)} shown_")
         lines.append("")
 
     lines.append("## Substrate honesty")
