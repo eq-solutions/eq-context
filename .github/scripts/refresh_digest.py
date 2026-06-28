@@ -285,36 +285,39 @@ def sentry_top_issues(n=8):
 
     Returns list of {proj, id, title, count, last_seen, url}.
     Skips gracefully when SENTRY_AUTH_TOKEN is not set.
+    Uses the org-level endpoint (same auth scope as the MCP) and filters
+    out retired projects (eq-quotes).
     """
     if not SENTRY_TOKEN:
         return []
-    all_issues = []
-    for proj in SENTRY_PROJECTS:
-        try:
-            r = requests.get(
-                f"https://sentry.io/api/0/projects/{SENTRY_ORG}/{proj}/issues/",
-                headers={"Authorization": f"Bearer {SENTRY_TOKEN}"},
-                params={"query": "is:unresolved", "sort": "events",
-                        "limit": 5, "statsPeriod": "14d"},
-                timeout=10,
-            )
-            if not r.ok:
-                continue
-            for issue in r.json():
-                all_issues.append({
-                    "proj": proj,
-                    "id": issue.get("shortId", ""),
-                    "title": (issue.get("title") or "")[:80],
-                    "count": int(issue.get("count") or 0),
-                    "last_seen": (issue.get("lastSeen") or "")[:10],
-                    "url": issue.get("permalink", ""),
-                })
-        except Exception:
-            continue
-    # Sort by event count desc; within ties, most recently seen first.
-    all_issues.sort(key=lambda x: x["last_seen"], reverse=True)
-    all_issues.sort(key=lambda x: x["count"], reverse=True)
-    return all_issues[:n]
+    try:
+        r = requests.get(
+            f"https://sentry.io/api/0/organizations/{SENTRY_ORG}/issues/",
+            headers={"Authorization": f"Bearer {SENTRY_TOKEN}"},
+            params={"query": "is:unresolved", "sort": "events",
+                    "limit": n * 2, "statsPeriod": "14d"},
+            timeout=10,
+        )
+        if not r.ok:
+            return []
+        all_issues = []
+        for issue in r.json():
+            proj_slug = (issue.get("project") or {}).get("slug", "")
+            if proj_slug not in SENTRY_PROJECTS:
+                continue  # skip retired/unknown projects (eq-quotes etc.)
+            all_issues.append({
+                "proj": proj_slug,
+                "id": issue.get("shortId", ""),
+                "title": (issue.get("title") or "")[:80],
+                "count": int(issue.get("count") or 0),
+                "last_seen": (issue.get("lastSeen") or "")[:10],
+                "url": issue.get("permalink", ""),
+            })
+        all_issues.sort(key=lambda x: x["last_seen"], reverse=True)
+        all_issues.sort(key=lambda x: x["count"], reverse=True)
+        return all_issues[:n]
+    except Exception:
+        return []
 
 
 def substrate_honesty():
