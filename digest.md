@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-06-28 02:10 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-06-28 02:38 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-06-28 02:09 UTC → 2026-06-28 02:10 UTC)
+## Since last refresh (2026-06-28 02:10 UTC → 2026-06-28 02:38 UTC)
 
-- Merged: eq-shell [#498](https://github.com/eq-solutions/eq-shell/pull/498) feat(crm): contact-site assignment + inline delete for sites
-- Merged: eq-shell [#493](https://github.com/eq-solutions/eq-shell/pull/493) feat(staff): push worker profile updates to tenant staff row
-- Merged: eq-shell [#492](https://github.com/eq-solutions/eq-shell/pull/492) feat(perf): React Query for AccessControlPage + EntityBrowse
-- Merged: eq-shell [#491](https://github.com/eq-solutions/eq-shell/pull/491) feat(perf): React Query for StaffPage — roster, pending, lic
-- Merged: eq-shell [#490](https://github.com/eq-solutions/eq-shell/pull/490) feat(perf): TanStack Query adoption — CRM + dashboard cachin
-- Merged: eq-shell [#488](https://github.com/eq-solutions/eq-shell/pull/488) fix(intake): spinner on duplicate + stale-records scan butto
-- Merged: eq-shell [#487](https://github.com/eq-solutions/eq-shell/pull/487) fix(staff): licence image scroll + archive 500 on patch
-- Merged: eq-shell [#483](https://github.com/eq-solutions/eq-shell/pull/483) fix(cert-import): process PDFs in parallel to avoid timeout
+- Merged: eq-shell [#512](https://github.com/eq-solutions/eq-shell/pull/512) chore: drop public.sks_quotes_* legacy tables + fix stale ca
+- Merged: eq-shell [#502](https://github.com/eq-solutions/eq-shell/pull/502) fix(drift): allow-list service.staff security-invoker view (
+- Merged: eq-shell [#497](https://github.com/eq-solutions/eq-shell/pull/497) feat(eq-ops): show the Workbench job number on each Kanban c
+- Merged: eq-shell [#496](https://github.com/eq-solutions/eq-shell/pull/496) fix(eq-ops): relabel stage 1 'Submitted' to 'Open' so drafts
+- Merged: eq-shell [#495](https://github.com/eq-solutions/eq-shell/pull/495) fix(eq-ops): gate Job Created on a Workbench job number from
+- Merged: eq-shell [#494](https://github.com/eq-solutions/eq-shell/pull/494) fix(eq-ops): Kanban board groups by the 5 dropdown stages, n
+- Merged: eq-shell [#486](https://github.com/eq-solutions/eq-shell/pull/486) fix(schedulers): retire EQ Quotes Flask schedulers (Sentry E
+- Merged: eq-shell [#485](https://github.com/eq-solutions/eq-shell/pull/485) feat(staff): show who reviewed licences + when
 
 ## ⚠ Needs you (2)
 
@@ -36,24 +36,11 @@ _2026-06-28 02:10 UTC · what needs your attention. Full snapshot: [suite-state.
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ? unknown | ? | 0 | — |
 
-## Live errors (Sentry)
-
-| Project | Error | Events | Last seen |
-|---------|-------|--------|-----------|
-| eq-cards | [PlatformException: PlatformException(copy_fail, Clipboard.setData failed., null,](https://eq-solutions.sentry.io/issues/130158073/) | 4 | 2026-06-24 |
-| eq-cards | [minified:iC: Instance of 'minified:iC'](https://eq-solutions.sentry.io/issues/129963599/) | 3 | 2026-06-24 |
-| eq-shell | [TimeoutError: The operation was aborted due to timeout](https://eq-solutions.sentry.io/issues/130190356/) | 2 | 2026-06-27 |
-| eq-shell | [TypeError: fetch failed](https://eq-solutions.sentry.io/issues/130405861/) | 2 | 2026-06-26 |
-| eq-shell | [EQ Field handoff timeout — no postMessage in 30s](https://eq-solutions.sentry.io/issues/129554465/) | 2 | 2026-06-24 |
-| eq-shell | [Error: eq-ops rpc eq_bulk_update_quote_status failed: new row for relation "quot](https://eq-solutions.sentry.io/issues/128424671/) | 2 | 2026-06-17 |
-| eq-shell | [Error: eq-ops rpc eq_update_quote failed: quote number SKS-16964 is already in u](https://eq-solutions.sentry.io/issues/128419826/) | 2 | 2026-06-17 |
-| eq-field | [ReferenceError: Can't find variable: showSafetyTab](https://eq-solutions.sentry.io/issues/130706295/) | 1 | 2026-06-27 |
-_[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunresolved)_
-
 ## Recently built (last 7 days)
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-06-28 | eq-shell | [#512](https://github.com/eq-solutions/eq-shell/pull/512) chore: drop public.sks_quotes_* legacy tables + fix stale callers |
 | 2026-06-28 | eq-shell | [#510](https://github.com/eq-solutions/eq-shell/pull/510) fix(customers): always-visible contact checkboxes |
 | 2026-06-28 | eq-shell | [#509](https://github.com/eq-solutions/eq-shell/pull/509) feat(equipment): async cert import — background function + Blobs  |
 | 2026-06-28 | eq-shell | [#507](https://github.com/eq-solutions/eq-shell/pull/507) fix(equipment): Haiku + hard deadline to beat Netlify 26s wall; p |
@@ -68,8 +55,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-06-27 | eq-shell | [#503](https://github.com/eq-solutions/eq-shell/pull/503) feat(crm): entityCapabilities policy map (archive/delete/merge pe |
 | 2026-06-27 | eq-shell | [#504](https://github.com/eq-solutions/eq-shell/pull/504) fix(equipment): surface the real cert-import error (no more opaqu |
 | 2026-06-27 | eq-shell | [#501](https://github.com/eq-solutions/eq-shell/pull/501) feat(substrate): notify eq-context on push to main |
-| 2026-06-27 | eq-shell | [#500](https://github.com/eq-solutions/eq-shell/pull/500) fix(eq-ops): make the stage tabs filter the board (were inert in  |
-_Showing 15 of 112 · full record in [sessions/](sessions/)_
+_Showing 15 of 111 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
@@ -115,4 +101,4 @@ _[sessions/](sessions/) · 5 shown_
 ✗ Drift detected — see **Needs you** above. Source: `scripts/substrate_honesty.py`.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-06-28 02:10 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-06-28 02:38 UTC._
