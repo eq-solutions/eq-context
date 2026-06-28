@@ -14,6 +14,21 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-06-28 (part b) — Shell↔Service branding + token refresh + admin hub
+
+**Completed:**
+- [x] **eq-service PR #364 merged** — `ShellTokenRefresh` component: keeps `eq_service_jwt` alive for Shell iframe sessions (REQUEST_SHELL_TOKEN → SHELL_TOKEN_RESPONSE → /api/shell-auth, fires 5 min before 4h expiry). Admin link added to Shell iframe inline nav for manager-role users.
+- [x] **eq-shell PR #518 merged** — EQ Service section added to Shell Admin hub with 8 tiles (Report settings, Media, Archive, Imports, Backup, Activity, Today, Connected apps). Gated on `moduleEnabled(session, 'service')`.
+- [x] **Branding wiring audited** — Shell→JWT→shell-auth→getTenantSettings→palette derivation confirmed correct. Write-behind sync at shell-auth covers direct-login sessions.
+- [x] **Verify /brief + /close** — confirmed working this session ✓
+
+**Open / next:**
+- [ ] **gitleaks pre-commit hook** — prevent PAT exposure in substrate history _(added 2026-06-28)_
+- [ ] **Update C:\Projects\.git-credentials** files with new PAT after rotation _(added 2026-06-28)_
+- [ ] **Token refresh smoke test** — shorten TTL locally to confirm ShellTokenRefresh fires (4h is hard to test live) _(added 2026-06-28)_
+
+---
+
 ## ⏩ Session close — 2026-06-28 — Brain 10/10: substrate coherence + automation layer
 
 **Completed:**
@@ -29,10 +44,10 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **/brief + /close moved to correct directory** — `~/.claude/commands/` (were in `~/.claude/skills/`, not picked up by Claude Code)
 
 **Open / next:**
-- [ ] **Verify /brief + /close** in first real build session — just confirmed they appear in `/` menu
+- [x] **Verify /brief + /close** in first real build session — confirmed working 2026-06-28 (part b) ✓
 - [ ] **gitleaks pre-commit hook** — prevent PAT exposure in substrate history
 - [ ] **Update C:\Projects\.git-credentials** files with new PAT after rotation
-- [ ] **Merge eq-service #363 + eq-shell #513** — docs-only PRs, safe to merge any time
+- [x] **Merge eq-service #363 + eq-shell #513** — docs-only PRs, safe to merge any time — merged 2026-06-28
 
 ---
 

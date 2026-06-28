@@ -9,6 +9,11 @@ status: live
 
 # Changelog — EQ Solves Service
 
+## [2026-06-28] Shell JWT token refresh + Admin nav link (PR #364)
+
+- `ShellTokenRefresh`: new client component. Fires `REQUEST_SHELL_TOKEN` 5 min before the 4h `eq_service_jwt` expires, handles `SHELL_TOKEN_RESPONSE`, re-exchanges via `/api/shell-auth`. Keeps Shell iframe sessions alive past the initial 4h window.
+- Admin link added to Shell iframe inline nav for manager-role users. Service sidebar is hidden when embedded — this was the only missing path to `/admin` for Shell users.
+
 ## [2026-06-10] Shell SSO — ROOT CAUSE found + fixed (eq-shell PR #306)
 **Built by:** Royce Milmlow + Claude Code
 
