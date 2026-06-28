@@ -35,9 +35,9 @@ _If this file is >48h old, the cron is broken._
 
 | Entity | Count | Schema |
 |--------|-------|--------|
-| Sites | 633 | app_data.sites |
+| Sites | 270 | app_data.sites |
 | Customers | 44 | app_data.customers |
-| Assets | 4,769 | app_data.assets |
+| Assets | 4,749 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
 | Users | 5 | service.tenant_members |
 | Maintenance checks | 4 | service.maintenance_checks |
@@ -61,7 +61,10 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-06-28)
 
 **eq-service:**
-- #345 draft(identity): Phase 3 re-key + reference migration (review-only)
+- #363 fix(docs): update LOCAL_DEV.md project ID — urjh deleted, use ehow
+
+**eq-shell:**
+- #513 fix(docs): correct stale EQ_SECRET_SALT guidance — HMAC retired 2026-06-22
 
 ---
 
