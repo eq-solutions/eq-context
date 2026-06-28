@@ -310,6 +310,7 @@ def sentry_top_issues(n=8):
                 "id": issue.get("shortId", ""),
                 "title": (issue.get("title") or "")[:80],
                 "count": int(issue.get("count") or 0),
+                "first_seen": (issue.get("firstSeen") or "")[:10],
                 "last_seen": (issue.get("lastSeen") or "")[:10],
                 "url": issue.get("permalink", ""),
             })
@@ -417,13 +418,15 @@ def build():
                 attention.append((emoji, f"**PR aging {p['age']}d** — {repo} {link} \"{title}\""))
 
     sentry_issues = sentry_top_issues()
+    yesterday = (NOW - timedelta(days=2)).strftime("%Y-%m-%d")  # 48h window, tz-safe
     for issue in sentry_issues[:3]:
-        if issue["count"] >= 5:
+        is_new = issue.get("first_seen", "") >= yesterday
+        is_active = issue["count"] >= 20 and issue["last_seen"] == TODAY
+        if is_new or is_active:
             link = f"[{issue['title'][:60]}]({issue['url']})" if issue["url"] else issue["title"][:60]
-            attention.append(("🔴", f"**Sentry {issue['count']} events** — `{issue['proj']}` {link}"))
-        elif issue["last_seen"] == TODAY:
-            link = f"[{issue['title'][:60]}]({issue['url']})" if issue["url"] else issue["title"][:60]
-            attention.append(("🟠", f"**Sentry error today** — `{issue['proj']}` {link}"))
+            label = "new error" if is_new else f"{issue['count']} events today"
+            emoji = "🔴" if issue["count"] >= 10 else "🟠"
+            attention.append((emoji, f"**Sentry {label}** — `{issue['proj']}` {link}"))
 
     n_stale_wt = worktree_stale_count()
     if n_stale_wt:
