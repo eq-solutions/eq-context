@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-06-28 08:46 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-06-28 09:10 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-06-28 08:30 UTC → 2026-06-28 08:46 UTC)
+## Since last refresh (2026-06-28 08:46 UTC → 2026-06-28 09:10 UTC)
 
-- Merged: eq-shell [#504](https://github.com/eq-solutions/eq-shell/pull/504) fix(equipment): surface the real cert-import error (no more 
-- Merged: eq-shell [#503](https://github.com/eq-solutions/eq-shell/pull/503) feat(crm): entityCapabilities policy map (archive/delete/mer
-- Merged: eq-shell [#501](https://github.com/eq-solutions/eq-shell/pull/501) feat(substrate): notify eq-context on push to main
-- Merged: eq-shell [#500](https://github.com/eq-solutions/eq-shell/pull/500) fix(eq-ops): make the stage tabs filter the board (were iner
-- Merged: eq-shell [#498](https://github.com/eq-solutions/eq-shell/pull/498) feat(crm): contact-site assignment + inline delete for sites
-- Merged: eq-shell [#493](https://github.com/eq-solutions/eq-shell/pull/493) feat(staff): push worker profile updates to tenant staff row
-- Merged: eq-shell [#492](https://github.com/eq-solutions/eq-shell/pull/492) feat(perf): React Query for AccessControlPage + EntityBrowse
-- Merged: eq-shell [#491](https://github.com/eq-solutions/eq-shell/pull/491) feat(perf): React Query for StaffPage — roster, pending, lic
+- Merged: eq-shell [#515](https://github.com/eq-solutions/eq-shell/pull/515) feat(crm): site address + contact picker
+- Merged: eq-shell [#502](https://github.com/eq-solutions/eq-shell/pull/502) fix(drift): allow-list service.staff security-invoker view (
+- Merged: eq-shell [#497](https://github.com/eq-solutions/eq-shell/pull/497) feat(eq-ops): show the Workbench job number on each Kanban c
+- Merged: eq-shell [#496](https://github.com/eq-solutions/eq-shell/pull/496) fix(eq-ops): relabel stage 1 'Submitted' to 'Open' so drafts
+- Merged: eq-shell [#495](https://github.com/eq-solutions/eq-shell/pull/495) fix(eq-ops): gate Job Created on a Workbench job number from
+- Merged: eq-shell [#494](https://github.com/eq-solutions/eq-shell/pull/494) fix(eq-ops): Kanban board groups by the 5 dropdown stages, n
+- Merged: eq-shell [#490](https://github.com/eq-solutions/eq-shell/pull/490) feat(perf): TanStack Query adoption — CRM + dashboard cachin
+- Merged: eq-shell [#488](https://github.com/eq-solutions/eq-shell/pull/488) fix(intake): spinner on duplicate + stale-records scan butto
 
 ## ⚠ Needs you (2)
 
@@ -40,6 +40,7 @@ _2026-06-28 08:46 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-06-28 | eq-shell | [#515](https://github.com/eq-solutions/eq-shell/pull/515) feat(crm): site address + contact picker |
 | 2026-06-28 | eq-shell | [#514](https://github.com/eq-solutions/eq-shell/pull/514) fix(equipment): cert-import-parse-background 500 — return Respons |
 | 2026-06-28 | eq-shell | [#511](https://github.com/eq-solutions/eq-shell/pull/511) fix(equipment): cert import 500 + remove forced site assignment |
 | 2026-06-28 | eq-shell | [#512](https://github.com/eq-solutions/eq-shell/pull/512) chore: drop public.sks_quotes_* legacy tables + fix stale callers |
@@ -54,15 +55,14 @@ _2026-06-28 08:46 UTC · what needs your attention. Full snapshot: [suite-state.
 | 2026-06-28 | eq-field | [#355](https://github.com/eq-solutions/eq-field/pull/355) v3.5.197 — canonical field_* views + tenant-agnostic public.* tab |
 | 2026-06-28 | eq-field | [#350](https://github.com/eq-solutions/eq-field/pull/350) fix(safety): sticky tab row + padding + site_audits on ehow (v3.5 |
 | 2026-06-28 | eq-field | [#354](https://github.com/eq-solutions/eq-field/pull/354) v3.5.196 — Pipeline: mandatory job number on Confirm Curve + life |
-| 2026-06-28 | eq-field | [#353](https://github.com/eq-solutions/eq-field/pull/353) fix(substrate): add workflow_dispatch to notify-substrate |
 _Showing 15 of 111 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **Verify /brief + /close** in first real build session — untested in production
+- **Verify /brief + /close** in first real build session — just confirmed they appear in `/` menu
 - **gitleaks pre-commit hook** — prevent PAT exposure in substrate history
 - **Update C:\Projects\.git-credentials** files with new PAT after rotation
-- **MD files deep dive** — stale Supabase refs, old architecture claims (agent launched 2026-06-28)
+- **Merge eq-service #363 + eq-shell #513** — docs-only PRs, safe to merge any time
 - Remaining items carried from 2026-06-18 (see below)
 - **Curate `sites.field_enabled`** — 591 all enabled → trim to live jobs
 - **Login hook** (phone-dedup) — workers still can't sign in (separate track; `ops/decisions.md`).
@@ -101,4 +101,4 @@ _[sessions/](sessions/) · 5 shown_
 ✗ Drift detected — see **Needs you** above. Source: `scripts/substrate_honesty.py`.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-06-28 08:46 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-06-28 09:10 UTC._
