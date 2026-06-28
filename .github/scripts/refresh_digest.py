@@ -294,7 +294,7 @@ def sentry_top_issues(n=8):
         r = requests.get(
             f"https://sentry.io/api/0/organizations/{SENTRY_ORG}/issues/",
             headers={"Authorization": f"Bearer {SENTRY_TOKEN}"},
-            params={"query": "is:unresolved", "sort": "events",
+            params={"query": "is:unresolved", "sort": "freq",
                     "limit": n * 2, "statsPeriod": "14d"},
             timeout=10,
         )
