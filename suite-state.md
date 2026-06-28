@@ -64,11 +64,8 @@ _If this file is >48h old, the cron is broken._
 - #350 fix(safety): sticky tab row + padding + site_audits on ehow (v3.5.193)
 
 **eq-service:**
-- #362 fix(maintenance): split FK joins after migration 0147 converts tables to views
+- #362 fix(queries): split all FK joins after migration 0147 converts service.* tables to views
 - #345 draft(identity): Phase 3 re-key + reference migration (review-only)
-
-**eq-shell:**
-- #507 fix(equipment): Haiku + hard deadline to beat Netlify 26s wall; parsing spinner
 
 ---
 
