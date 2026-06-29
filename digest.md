@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-06-29 15:38 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-06-29 19:05 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-06-29 10:51 UTC → 2026-06-29 15:38 UTC)
+## Since last refresh (2026-06-29 15:38 UTC → 2026-06-29 19:05 UTC)
 
-- Merged: eq-shell [#523](https://github.com/eq-solutions/eq-shell/pull/523) fix(identity): update tenant-routing comment — EQ Solutions 
-- Merged: eq-shell [#522](https://github.com/eq-solutions/eq-shell/pull/522) fix(auth): audit log writes + users page shows all tenant me
-- Merged: eq-shell [#521](https://github.com/eq-solutions/eq-shell/pull/521) feat(equipment): multi-document cert import batching — one A
-- Merged: eq-shell [#520](https://github.com/eq-solutions/eq-shell/pull/520) fix(build): TS errors blocking Netlify — SMS fields + mapSit
-- Merged: eq-shell [#518](https://github.com/eq-solutions/eq-shell/pull/518) feat(admin): EQ Service admin tiles in Shell Admin hub
-- Merged: eq-shell [#517](https://github.com/eq-solutions/eq-shell/pull/517) feat(crm): site Maps link + Places autocomplete (key-gated)
-- Merged: eq-shell [#515](https://github.com/eq-solutions/eq-shell/pull/515) feat(crm): site address + contact picker
-- Merged: eq-shell [#513](https://github.com/eq-solutions/eq-shell/pull/513) fix(docs): correct stale EQ_SECRET_SALT guidance — HMAC reti
+- Merged: eq-shell [#539](https://github.com/eq-solutions/eq-shell/pull/539) feat(audit): Tenant Activity Log — who changed what on the c
+- Merged: eq-shell [#519](https://github.com/eq-solutions/eq-shell/pull/519) fix(staff): employment type dropdown + hide retired quotes m
+- Merged: eq-shell [#516](https://github.com/eq-solutions/eq-shell/pull/516) fix(staff): approval 500 + subcontractor role + audit harden
+- Merged: eq-shell [#514](https://github.com/eq-solutions/eq-shell/pull/514) fix(equipment): cert-import-parse-background 500 — return Re
+- Merged: eq-shell [#512](https://github.com/eq-solutions/eq-shell/pull/512) chore: drop public.sks_quotes_* legacy tables + fix stale ca
+- Merged: eq-shell [#511](https://github.com/eq-solutions/eq-shell/pull/511) fix(equipment): cert import 500 + remove forced site assignm
+- Merged: eq-shell [#510](https://github.com/eq-solutions/eq-shell/pull/510) fix(customers): always-visible contact checkboxes
+- Merged: eq-solves-service [#365](https://github.com/eq-solutions/eq-service/pull/365) perf(maintenance): parallelize check detail page data fetchi
 
 ## ⚠ Needs you (3)
 
@@ -31,7 +31,7 @@ _2026-06-29 15:38 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 1 | 0d |
+| eq-shell | ? unknown | ? | 0 | — |
 | eq-solves-service | ✓ success | 0d ago | 8 | 1d |
 | eq-field | ✓ success | 26d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
@@ -53,6 +53,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-06-29 | eq-shell | [#539](https://github.com/eq-solutions/eq-shell/pull/539) feat(audit): Tenant Activity Log — who changed what on the canoni |
 | 2026-06-29 | eq-shell | [#536](https://github.com/eq-solutions/eq-shell/pull/536) fix: staff edit 500, audit log, employment type, Add Site modal |
 | 2026-06-29 | eq-shell | [#538](https://github.com/eq-solutions/eq-shell/pull/538) feat(notifications): range-based worker reminders + SMS opt-out |
 | 2026-06-29 | eq-shell | [#537](https://github.com/eq-solutions/eq-shell/pull/537) fix(notifications): repoint licence-expiry scheduler to eq-canoni |
@@ -67,22 +68,21 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-06-29 | eq-shell | [#527](https://github.com/eq-solutions/eq-shell/pull/527) feat(gm-reports): carry forward invoice run statuses to new perio |
 | 2026-06-29 | eq-shell | [#526](https://github.com/eq-solutions/eq-shell/pull/526) fix(gm-reports): clamp invoice popover to viewport right edge (pr |
 | 2026-06-29 | eq-shell | [#525](https://github.com/eq-solutions/eq-shell/pull/525) fix(gm-reports): refresh uploaded_at on re-upload |
-| 2026-06-29 | eq-shell | [#524](https://github.com/eq-solutions/eq-shell/pull/524) fix(gm-reports): clamp invoice popover to viewport right edge |
 _Showing 15 of 109 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **Verify header→GUC actor capture** — confirm `actor_id` populates on the first real UI edit; if it shows "Automatic", the change still logs but who-attribution needs a follow-up _(added 2026-06-30)_
+- **Activity Log — team & access events** — invites / role-changes as app-level writes to the tenant plane (no spine row to trigger on) _(added 2026-06-30)_
+- **Activity Log — link-table triggers** — contact_customer_links, contact_site_links _(added 2026-06-30)_
+- **Platform Security Log / operator console** — sign-ins/2FA audit (jvkn), operator-only, separate from the tenant page _(added 2026-06-30)_
 - **Set Twilio env on eq-shell Netlify** — `EQ_SMS_PROVIDER=twilio` + `TWILIO_ACCOUNT_SID/AUTH_TOKEN/FROM_NUMBER`; SMS is log-only until then (email works) _(added 2026-06-29)_
 - **Set `SCHEDULER_TEST_SECRET`** on eq-shell Netlify to use the test endpoint _(added 2026-06-29)_
 - **Set SKS compliance email** at core.eq.solutions/sks/settings to activate the employer 7-day alert _(added 2026-06-29)_
 - **Field-only workers** (ehow `app_data.licences`, no Cards wallet) not covered by the scheduler _(added 2026-06-29)_
 - **Employer 7-day alert still exact-day** (worker path hardened to range-based; Monday digest is the backstop) _(added 2026-06-29)_
 - **Worker→new-company bridge** (worker-vouched provision token + Cards "invite my employer" screen) — Phase 3, only if companies pull; touches provisioning/auth (Royce sign-off) _(added 2026-06-29)_
-- **"Free company view" tier** — pricing/packaging decision; Core capability already exists _(added 2026-06-29)_
-- Shell: active toggle on sites — no UI to flip `active` boolean; Field filters on it but no admin write-path _(added 2026-06-29)_
-- Shell: billing contact on customer — `is_default_invoice_contact` exists in DB, no UI _(added 2026-06-29)_
-- Shell: customer list active filter — default active-only + "include archived" toggle _(added 2026-06-29)_
-_…and 125 more · [eq/pending.md](eq/pending.md)_
+_…and 129 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -102,11 +102,11 @@ _…and 15 more · [sks/pending.md](sks/pending.md)_
 
 | Date | Session |
 |------|---------|
+| 2026-06-30 | [Tenant Activity Log shipped (audit by domain, not storage)](sessions/2026-06-30.md) |
 | 2026-06-29 | [SKS data reset + maintenance check page parallelization](sessions/2026-06-29.md) |
 | 2026-06-28 | [Brain 10/10: substrate coherence + automation layer](sessions/2026-06-28-brain-10-10.md) |
 | 2026-06-28 | [EQ Service batch-create fix](sessions/2026-06-28-batch-create-fix.md) |
 | 2026-06-27 | [2026-06-27 — Usability sprint + security gate promotion](sessions/2026-06-27-usability-sprint.md) |
-| 2026-06-27 | [Substrate-coherence sprint — honesty CI + security gate + digest + Node 24 bump](sessions/2026-06-27-substrate-coherence-sprint.md) |
 _[sessions/](sessions/) · 5 shown_
 
 ## Substrate honesty
@@ -114,4 +114,4 @@ _[sessions/](sessions/) · 5 shown_
 ✗ Drift detected — see **Needs you** above. Source: `scripts/substrate_honesty.py`.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-06-29 15:38 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-06-29 19:05 UTC._

@@ -1,8 +1,9 @@
 # Session Index
-_41 logs · reverse-chronological · auto-generated_
+_42 logs · reverse-chronological · auto-generated_
 
 | Date | Session |
 |------|---------|
+| 2026-06-30 | [Tenant Activity Log shipped (audit by domain, not storage)](sessions/2026-06-30.md) |
 | 2026-06-29 | [SKS data reset + maintenance check page parallelization](sessions/2026-06-29.md) |
 | 2026-06-28 | [2026-06-28](sessions/2026-06-28.md) |
 | 2026-06-28 | [2026-06-28-types-copy-audit](sessions/2026-06-28-types-copy-audit.md) |
