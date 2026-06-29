@@ -68,9 +68,6 @@ _If this file is >48h old, the cron is broken._
 - #366 chore(deps): bump @eq-solutions/ui from v1.8.0 to v1.9.0 in the eq-design-system group
 - #363 fix(docs): update LOCAL_DEV.md project ID — urjh deleted, use ehow
 
-**eq-shell:**
-- #536 fix: staff edit 500, audit log, employment type, Add Site modal
-
 ---
 
 ## System Health (as of 2026-06-29)
