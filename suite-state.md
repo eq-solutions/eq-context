@@ -63,9 +63,6 @@ _If this file is >48h old, the cron is broken._
 **eq-service:**
 - #363 fix(docs): update LOCAL_DEV.md project ID — urjh deleted, use ehow
 
-**eq-shell:**
-- #513 fix(docs): correct stale EQ_SECRET_SALT guidance — HMAC retired 2026-06-22
-
 ---
 
 ## System Health (as of 2026-06-29)
