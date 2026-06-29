@@ -60,6 +60,9 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-06-29)
 
+**eq-field:**
+- #362 v3.5.204 — canonical wiring: unblock Tender Pipeline enrichment/nominations/phases writes
+
 **eq-service:**
 - #375 chore(armada): pre-bake ARMADA fleet for trial (autoMerge off)
 - #370 chore(deps): bump react and @types/react
