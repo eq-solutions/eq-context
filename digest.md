@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-06-29 19:30 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-06-29 19:32 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-06-29 19:17 UTC → 2026-06-29 19:30 UTC)
+## Since last refresh (2026-06-29 19:30 UTC → 2026-06-29 19:32 UTC)
 
-- Merged: eq-shell [#542](https://github.com/eq-solutions/eq-shell/pull/542) feat(customers): customer-level Field/Service toggles in the
-- Merged: eq-shell [#541](https://github.com/eq-solutions/eq-shell/pull/541) feat(customers): site street address + Field/Service toggles
-- Merged: eq-shell [#525](https://github.com/eq-solutions/eq-shell/pull/525) fix(gm-reports): refresh uploaded_at on re-upload
-- Merged: eq-shell [#524](https://github.com/eq-solutions/eq-shell/pull/524) fix(gm-reports): clamp invoice popover to viewport right edg
-- Merged: eq-shell [#523](https://github.com/eq-solutions/eq-shell/pull/523) fix(identity): update tenant-routing comment — EQ Solutions 
-- Merged: eq-shell [#522](https://github.com/eq-solutions/eq-shell/pull/522) fix(auth): audit log writes + users page shows all tenant me
-- Merged: eq-shell [#521](https://github.com/eq-solutions/eq-shell/pull/521) feat(equipment): multi-document cert import batching — one A
-- Merged: eq-shell [#520](https://github.com/eq-solutions/eq-shell/pull/520) fix(build): TS errors blocking Netlify — SMS fields + mapSit
+- Merged: eq-shell [#527](https://github.com/eq-solutions/eq-shell/pull/527) feat(gm-reports): carry forward invoice run statuses to new 
+- Merged: eq-shell [#526](https://github.com/eq-solutions/eq-shell/pull/526) fix(gm-reports): clamp invoice popover to viewport right edg
+- Merged: eq-shell [#519](https://github.com/eq-solutions/eq-shell/pull/519) fix(staff): employment type dropdown + hide retired quotes m
+- Merged: eq-shell [#518](https://github.com/eq-solutions/eq-shell/pull/518) feat(admin): EQ Service admin tiles in Shell Admin hub
+- Merged: eq-shell [#517](https://github.com/eq-solutions/eq-shell/pull/517) feat(crm): site Maps link + Places autocomplete (key-gated)
+- Merged: eq-shell [#516](https://github.com/eq-solutions/eq-shell/pull/516) fix(staff): approval 500 + subcontractor role + audit harden
+- Merged: eq-shell [#515](https://github.com/eq-solutions/eq-shell/pull/515) feat(crm): site address + contact picker
+- Merged: eq-shell [#514](https://github.com/eq-solutions/eq-shell/pull/514) fix(equipment): cert-import-parse-background 500 — return Re
 
 ## ⚠ Needs you (3)
 
@@ -114,4 +114,4 @@ _[sessions/](sessions/) · 5 shown_
 ✗ Drift detected — see **Needs you** above. Source: `scripts/substrate_honesty.py`.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-06-29 19:30 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-06-29 19:32 UTC._
