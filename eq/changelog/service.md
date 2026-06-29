@@ -9,6 +9,10 @@ status: live
 
 # Changelog — EQ Solves Service
 
+## [2026-06-29] Parallelize maintenance check detail page (PR #365)
+
+- Restructured ~10 sequential `await` calls into 3 `Promise.all` waves in `app/(app)/maintenance/[id]/page.tsx`. No logic changes — data-fetching only. Expected ~60% load-time reduction on EU Supabase.
+
 ## [2026-06-28] Shell JWT token refresh + Admin nav link (PR #364)
 
 - `ShellTokenRefresh`: new client component. Fires `REQUEST_SHELL_TOKEN` 5 min before the 4h `eq_service_jwt` expires, handles `SHELL_TOKEN_RESPONSE`, re-exchanges via `/api/shell-auth`. Keeps Shell iframe sessions alive past the initial 4h window.

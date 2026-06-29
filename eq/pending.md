@@ -14,6 +14,21 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-06-29 — SKS data reset + maintenance check page perf
+
+**Completed:**
+- [x] **SKS tenant full reset** — hard-deleted 4,750 assets and all maintenance checks (+ 13 dependent tables cleared in order). Clean slate for contract scope reimport.
+- [x] **eq-service PR #365 merged** — parallelize maintenance check detail page: ~10 sequential awaits → 3 Promise.all waves. Expected ~60% load-time reduction on the EU Supabase instance.
+
+**Discovered:**
+- `service.assets` view does NOT filter on `active = true` — it only filters by `service_enabled` site. Soft-delete is invisible to the view. Hard-delete was the right call for the reset.
+
+**Deferred:**
+- [ ] Add `WHERE a.active = true` to `service.assets` view so soft-delete works correctly _(added 2026-06-29)_
+- [ ] SKS contract scope reimport — Royce to run via `/sks/service/commercials/contract-scopes/import` _(added 2026-06-29)_
+
+---
+
 ## ⏩ Session close — 2026-06-28 (part b) — Shell↔Service branding + token refresh + admin hub
 
 **Completed:**
