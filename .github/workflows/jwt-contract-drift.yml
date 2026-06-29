@@ -1,0 +1,53 @@
+name: JWT contract drift
+
+# Guards the Shell→Service login-handoff JWT contract across repos. The
+# app_metadata claim shape is declared independently in eq-shell (mint side,
+# SupabaseJwtClaims) and eq-service (consume side, ServiceJwtClaims) with no
+# shared type — a rename/drop on one side breaks Service login at RUNTIME with
+# nothing failing at PR time in either repo. This fetches both claim interfaces
+# from main (public raw GitHub) and diffs the key sets.
+#
+# Fails (red) ONLY when Service consumes a claim the Shell mint never sets — a
+# real regression. New mint-only keys are surfaced non-blocking. No secret
+# needed (eq-solutions repos are public; see suite-state-refresh.yml).
+#
+# Runs on:
+#   - A daily schedule — the contract drifts out-of-band (a change in another
+#     repo), so nothing in this repo's PR CI fires when it does.
+#   - PRs/pushes that touch the script or this workflow — self-test the guard.
+#   - Manual workflow_dispatch.
+#
+# This is the cross-repo CONTRACT half of the schema-drift family. The DB↔types
+# half lives in eq-service (canonical-types-drift). Upgrade path: a shared
+# @eq-solutions/contracts package, so tsc becomes the gate.
+
+on:
+  schedule:
+    - cron: '30 9 * * *'   # 09:30 UTC (~19:30 AEST) — offset from the other crons
+  pull_request:
+    paths:
+      - 'scripts/check-jwt-contract-drift.mjs'
+      - '.github/workflows/jwt-contract-drift.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/check-jwt-contract-drift.mjs'
+      - '.github/workflows/jwt-contract-drift.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  drift:
+    name: Shell→Service JWT contract
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Diff minted vs consumed JWT claim shape
+        run: node scripts/check-jwt-contract-drift.mjs
