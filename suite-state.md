@@ -35,8 +35,8 @@ _If this file is >48h old, the cron is broken._
 
 | Entity | Count | Schema |
 |--------|-------|--------|
-| Sites | 270 | app_data.sites |
-| Customers | 43 | app_data.customers |
+| Sites | 271 | app_data.sites |
+| Customers | 42 | app_data.customers |
 | Assets | 0 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
 | Users | 5 | service.tenant_members |
@@ -61,11 +61,13 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-06-29)
 
 **eq-service:**
+- #376 Fail closed on unresolved Shell→Service tenant slug (audit gap #1)
+- #375 chore(armada): pre-bake ARMADA fleet for trial (autoMerge off)
 - #370 chore(deps): bump react and @types/react
 - #369 chore(deps): bump docx from 9.6.1 to 9.7.1
 - #368 chore(deps-dev): bump @netlify/functions from 5.2.0 to 5.3.0
 - #367 chore(deps): bump lucide-react from 1.17.0 to 1.22.0
-- #366 chore(deps): bump @eq-solutions/ui from v1.8.0 to v1.9.0 in the eq-design-system group
+- #366 chore(deps): bump @eq-solutions/ui from v1.8.0 to v1.9.0 in the eq-design-system group across 1 directory
 - #363 fix(docs): update LOCAL_DEV.md project ID — urjh deleted, use ehow
 
 ---
