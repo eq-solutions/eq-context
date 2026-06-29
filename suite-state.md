@@ -69,7 +69,7 @@ _If this file is >48h old, the cron is broken._
 - #363 fix(docs): update LOCAL_DEV.md project ID — urjh deleted, use ehow
 
 **eq-shell:**
-- #536 fix(customers): address + contact picker on Add Site modal
+- #536 fix: staff edit 500, audit log, employment type, Add Site modal
 
 ---
 
