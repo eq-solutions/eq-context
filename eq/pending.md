@@ -28,6 +28,17 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-06-30 (part b) — Customers page: Add Site fix + Field/Service activation
+
+**Completed (eq-shell, merged + deployed):**
+- [x] **PR #540 merged** — Add Site 500 fixed (`crm-write` add_site inserted a non-existent `site_contact_id` column → every Add Site failed, address never saved). Removed the column ref.
+- [x] **PR #541 merged** — CustomersPage now shows the site **street address** + per-site **Field/Service toggle chips** (manager-gated, optimistic, wired to `update-data-activation`). Fixed root cause: address/F-S UI had been built in the **unrouted** CustomersHubPage/SiteDetailView; live route is CustomersPage.
+- [x] **PR #542 merged** — customer-level **Field/Service toggles** in the customer header; independent of site flags (no cascade). `crm-customers` detail endpoint now returns customer field_enabled/service_enabled.
+
+**Deferred:** (none new)
+
+---
+
 ## ⏩ Session close — 2026-06-29 (part d) — Licence-expiry notifications: fixed (wrong DB) + hardened
 
 **Completed (eq-shell, merged + deployed):**

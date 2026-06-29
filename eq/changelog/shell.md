@@ -9,6 +9,11 @@ status: live
 
 # Changelog — EQ Shell
 
+## [2026-06-30] Customers page — Add Site fix + Field/Service activation (PRs #540, #541, #542)
+- **Add Site 500 fixed** (#540) — non-existent `site_contact_id` column removed from the insert; site + address save again.
+- **Site street address + per-site Field/Service toggles** (#541) — address was hidden behind suburb/state; the F/S UI had been built in the unrouted CustomersHubPage. Both now on the live CustomersPage, manager-gated.
+- **Customer-level Field/Service toggles** (#542) — in the customer header, independent of site flags (no cascade).
+
 ## [2026-06-30] Tenant Activity Log + polish fixes (PRs #536, #539)
 - **Tenant Activity Log** (PR #539) — "who changed what" on the canonical spine. Migration 0146: `app_data.audit_log` (service-role-only) + `fn_audit()` trigger storing full before/after snapshot, on customers/sites/contacts/staff/assets. Applied to both planes. `x-eq-actor` header → trigger captures the actor; `tenant-audit.ts` reads + enriches; Activity tab on `/sks/admin/audit`. Auth classified by domain not storage; platform security log deferred.
 - **Polish fixes** (PR #536) — staff edit 500 (disabled `staff_field_sync` → `public.people`), audit log display, employment-type dropdown, cert-import 500 (formData before 202), Add Site modal.
