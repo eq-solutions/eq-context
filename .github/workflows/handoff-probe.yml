@@ -1,0 +1,49 @@
+name: Handoff secret probe
+
+# Synthetic Shell→Service handoff probe. Catches eq-service's EQ_SHELL_JWT_SECRET
+# drifting from eq-shell's signing secret (→ every login 401s) BEFORE a real user
+# hits it — the PROACTIVE complement to eq-service's reactive auth-handoff canary
+# (eq-service #373), which only fires on a victim's failed login.
+#
+# Mints a short-lived HS256 JWT signed with the reference secret for the live
+# tenant slug and POSTs it to eq-service /api/shell-auth:
+#   200 → healthy (secret matches end-to-end)
+#   401 → secret mismatch → job red → ALERT (the catastrophic case)
+#   403 → live tenant slug stopped resolving → ALERT
+# Non-mutating: no brand_color in the token, so the 200 path mints only a stateless
+# (discarded) cookie and writes nothing; it resolves the real tenant, so no
+# slug_unresolved canary fires — zero Sentry noise on healthy runs.
+#
+# Secret required (add to eq-context repo secrets to ARM — skips cleanly until then):
+#   EQ_SHELL_JWT_SECRET  - the secret eq-shell signs handoff JWTs with (= eq-service's
+#                          EQ_SHELL_JWT_SECRET). ⚠ ON ROTATION, update this too.
+#
+# Runs every 30 min (catch drift fast) + on PRs touching the probe + manual.
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  pull_request:
+    paths:
+      - 'scripts/check-handoff-probe.mjs'
+      - '.github/workflows/handoff-probe.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    name: Shell→Service handoff probe
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Probe the handoff
+        env:
+          EQ_SHELL_JWT_SECRET: ${{ secrets.EQ_SHELL_JWT_SECRET }}
+        run: node scripts/check-handoff-probe.mjs
