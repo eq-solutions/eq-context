@@ -14,6 +14,30 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-06-29 (part d) — Licence-expiry notifications: fixed (wrong DB) + hardened
+
+**Completed (eq-shell, merged + deployed):**
+- [x] **PR #537 + #538 merged** — licence-expiry scheduler was routing every tenant through `getTenantRpcClient` → ehow (Cards tables/RPCs don't exist there) → **0 notifications ever sent**. Repointed to eq-canonical via new `getPublicServiceClient()`.
+- [x] **Send path hardened** — E.164 phone normalization, worker SMS at 7d as well as 30d, range-based tiers (replaces exact-day; survives missed runs + catches licences imported <30d out), per-licence dedup/audit (`licence_notification_log`), SMS `Reply STOP` opt-out, tenant autodiscovery, secret-gated test endpoint, humanized licence labels, mojibake fix in live emails.
+- [x] **Migrations live on eq-canonical** — `0061_licence_notification_log` (RLS on, server-only), `0062_revoke_anon_execute_tenant_settings` (closed an anon-executable SECDEF gap on `eq_get/update_tenant_settings` that was failing the CI invariant on every eq-shell PR).
+- [x] **eq-cards `0060` tracked** (`d731a2d`) — already applied to prod but untracked; mirrors merged 0059. No deploy (gated).
+- [x] **Verified** — prod deploy `6a4247de` ready; scheduler test-gate probe returns healthy 403 (runtime imports resolve).
+
+**Decided (GTM — Cards as wedge):** activate SKS roster first (14→50 active) → polish → package Core (already a Cards admin console) into SKS's labour-hire network → worker→new-company bridge LAST. Rationale in memory `cards_wedge_gtm`.
+
+**Deferred:**
+- [ ] **Set Twilio env on eq-shell Netlify** — `EQ_SMS_PROVIDER=twilio` + `TWILIO_ACCOUNT_SID/AUTH_TOKEN/FROM_NUMBER`; SMS is log-only until then (email works) _(added 2026-06-29)_
+- [ ] **Set `SCHEDULER_TEST_SECRET`** on eq-shell Netlify to use the test endpoint _(added 2026-06-29)_
+- [ ] **Set SKS compliance email** at core.eq.solutions/sks/settings to activate the employer 7-day alert _(added 2026-06-29)_
+- [ ] **Field-only workers** (ehow `app_data.licences`, no Cards wallet) not covered by the scheduler _(added 2026-06-29)_
+- [ ] **Employer 7-day alert still exact-day** (worker path hardened to range-based; Monday digest is the backstop) _(added 2026-06-29)_
+- [ ] **Worker→new-company bridge** (worker-vouched provision token + Cards "invite my employer" screen) — Phase 3, only if companies pull; touches provisioning/auth (Royce sign-off) _(added 2026-06-29)_
+- [ ] **"Free company view" tier** — pricing/packaging decision; Core capability already exists _(added 2026-06-29)_
+
+**Notes:** Company self-onboarding already exists end-to-end (`provision_tokens` → `shell-provision-tenant`, phone-OTP) but the token mint is gated to `is_platform_admin` — the gateway is gated by authorization, not capability. Public per-licence share link already exists (`cards.eq.solutions/share?licence_id=`). Adoption snapshot: 18 claimed / 75 workers, 14 active SKS, 1 multi-org, `org_access_requests` 13 approved, `cards_field_approvals` 71. Gateway metric (net-new companies via a worker) = 0.
+
+---
+
 ## ⏩ Session close — 2026-06-29 (part c) — Shell CRM: relational site contacts + address autocomplete
 
 **Completed:**
