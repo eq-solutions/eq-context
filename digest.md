@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-06-29 03:13 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-06-29 04:54 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-06-29 03:08 UTC → 2026-06-29 03:13 UTC)
+## Since last refresh (2026-06-29 03:13 UTC → 2026-06-29 04:54 UTC)
 
-- Merged: eq-shell [#529](https://github.com/eq-solutions/eq-shell/pull/529) feat(eq-ops): clickable status badge in quote detail panel
-- Merged: eq-shell [#514](https://github.com/eq-solutions/eq-shell/pull/514) fix(equipment): cert-import-parse-background 500 — return Re
-- Merged: eq-shell [#512](https://github.com/eq-solutions/eq-shell/pull/512) chore: drop public.sks_quotes_* legacy tables + fix stale ca
-- Merged: eq-shell [#509](https://github.com/eq-solutions/eq-shell/pull/509) feat(equipment): async cert import — background function + B
-- Merged: eq-shell [#507](https://github.com/eq-solutions/eq-shell/pull/507) fix(equipment): Haiku + hard deadline to beat Netlify 26s wa
-- Merged: eq-shell [#506](https://github.com/eq-solutions/eq-shell/pull/506) fix(equipment): cert import bundles without @eq/schemas (was
-- Merged: eq-shell [#504](https://github.com/eq-solutions/eq-shell/pull/504) fix(equipment): surface the real cert-import error (no more 
-- Merged: eq-shell [#503](https://github.com/eq-solutions/eq-shell/pull/503) feat(crm): entityCapabilities policy map (archive/delete/mer
+- Merged: eq-shell [#530](https://github.com/eq-solutions/eq-shell/pull/530) fix(auth): promote Cards-worker stub on invite accept
+- Merged: eq-shell [#515](https://github.com/eq-solutions/eq-shell/pull/515) feat(crm): site address + contact picker
+- Merged: eq-shell [#511](https://github.com/eq-solutions/eq-shell/pull/511) fix(equipment): cert import 500 + remove forced site assignm
+- Merged: eq-shell [#510](https://github.com/eq-solutions/eq-shell/pull/510) fix(customers): always-visible contact checkboxes
+- Merged: eq-shell [#505](https://github.com/eq-solutions/eq-shell/pull/505) feat(brand): embed brand_color + brand_logo_url in service J
+- Merged: eq-shell [#501](https://github.com/eq-solutions/eq-shell/pull/501) feat(substrate): notify eq-context on push to main
+- Merged: eq-shell [#500](https://github.com/eq-solutions/eq-shell/pull/500) fix(eq-ops): make the stage tabs filter the board (were iner
+- Merged: eq-solves-service [#364](https://github.com/eq-solutions/eq-service/pull/364) feat(shell): JWT token refresh + Admin nav link for iframe s
 
 ## ⚠ Needs you (3)
 
@@ -32,7 +32,7 @@ _2026-06-29 03:13 UTC · what needs your attention. Full snapshot: [suite-state.
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
 | eq-shell | ? unknown | ? | 0 | — |
-| eq-solves-service | ✓ success | 0d ago | 1 | 0d |
+| eq-solves-service | ✓ success | 0d ago | 1 | 1d |
 | eq-field | ✓ success | 25d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ? unknown | ? | 0 | — |
@@ -49,6 +49,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-06-29 | eq-shell | [#530](https://github.com/eq-solutions/eq-shell/pull/530) fix(auth): promote Cards-worker stub on invite accept |
 | 2026-06-29 | eq-shell | [#529](https://github.com/eq-solutions/eq-shell/pull/529) feat(eq-ops): clickable status badge in quote detail panel |
 | 2026-06-29 | eq-shell | [#528](https://github.com/eq-solutions/eq-shell/pull/528) fix(cards): overwrite stale workers.staff_id on approval |
 | 2026-06-29 | eq-shell | [#527](https://github.com/eq-solutions/eq-shell/pull/527) feat(gm-reports): carry forward invoice run statuses to new perio |
@@ -63,7 +64,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-06-28 | eq-shell | [#519](https://github.com/eq-solutions/eq-shell/pull/519) fix(staff): employment type dropdown + hide retired quotes module |
 | 2026-06-28 | eq-shell | [#518](https://github.com/eq-solutions/eq-shell/pull/518) feat(admin): EQ Service admin tiles in Shell Admin hub |
 | 2026-06-28 | eq-shell | [#517](https://github.com/eq-solutions/eq-shell/pull/517) feat(crm): site Maps link + Places autocomplete (key-gated) |
-| 2026-06-28 | eq-shell | [#516](https://github.com/eq-solutions/eq-shell/pull/516) fix(staff): approval 500 + subcontractor role + audit hardening |
 _Showing 15 of 110 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -110,4 +110,4 @@ _[sessions/](sessions/) · 5 shown_
 ✗ Drift detected — see **Needs you** above. Source: `scripts/substrate_honesty.py`.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-06-29 03:13 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-06-29 04:54 UTC._
