@@ -36,7 +36,7 @@ _If this file is >48h old, the cron is broken._
 | Entity | Count | Schema |
 |--------|-------|--------|
 | Sites | 270 | app_data.sites |
-| Customers | 44 | app_data.customers |
+| Customers | 43 | app_data.customers |
 | Assets | 4,750 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
 | Users | 5 | service.tenant_members |
@@ -62,6 +62,9 @@ _If this file is >48h old, the cron is broken._
 
 **eq-service:**
 - #363 fix(docs): update LOCAL_DEV.md project ID — urjh deleted, use ehow
+
+**eq-shell:**
+- #534 chore: remove dead already-invited error from invite UI
 
 ---
 
