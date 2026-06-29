@@ -14,6 +14,21 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-06-29 (part c) — Shell CRM: relational site contacts + address autocomplete
+
+**Completed:**
+- [x] **eq-shell PR #515 merged** — `crm-customers.ts` + `crm-write.ts`: site contact moved from free-text to relational (`contact_site_links role='site_contact'`); `address_line_1` exposed in API.
+- [x] **eq-shell PR #517 merged** — `CustomersPage.tsx`: contact picker, address field with Google Places autocomplete, Maps link on site cards. `netlify.toml`: CSP pre-warmed for Google Maps.
+- [x] **Google Maps API key live** — browser-restricted to `core.eq.solutions/*`, Maps JavaScript API only. `NEXT_PUBLIC_GOOGLE_MAPS_KEY` set in Netlify. Autocomplete active.
+
+**Deferred:**
+- [ ] Shell: active toggle on sites — no UI to flip `active` boolean; Field filters on it but no admin write-path _(added 2026-06-29)_
+- [ ] Shell: billing contact on customer — `is_default_invoice_contact` exists in DB, no UI _(added 2026-06-29)_
+- [ ] Shell: customer list active filter — default active-only + "include archived" toggle _(added 2026-06-29)_
+- [ ] Google Maps: add Distance Matrix + Air Quality to API key when dispatch travel times / site safety features are built _(added 2026-06-29)_
+
+---
+
 ## ⏩ Session close — 2026-06-29 — SKS data reset + maintenance check page perf
 
 **Completed:**
