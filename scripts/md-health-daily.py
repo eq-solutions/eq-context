@@ -155,7 +155,9 @@ if sess.is_dir():
         except: continue
         if h in s2p: add("ERROR","duplicate session content",str(s2p[h])+" <-> "+str(p))
         else: s2p[h] = p
-    can = re.compile(r"^\d{4}-\d{2}-\d{2}\.md$")
+    # Allow YYYY-MM-DD[-slug].md session logs and the generated INDEX.md
+    # (scripts/generate_session_index.py) — mirrors .github/workflows/md-health.yml rule 17.4.
+    can = re.compile(r"^(\d{4}-\d{2}-\d{2}(-[a-z0-9-]+)?|INDEX)\.md$")
     for p in sess.glob("*.md"):
         if not can.match(p.name): add("ERROR","non-canonical session filename",str(p))
 
