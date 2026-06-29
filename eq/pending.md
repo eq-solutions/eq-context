@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-06-28
+last_updated: 2026-06-29
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -26,6 +26,17 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 **Deferred:**
 - [ ] Add `WHERE a.active = true` to `service.assets` view so soft-delete works correctly _(added 2026-06-29)_
 - [ ] SKS contract scope reimport — Royce to run via `/sks/service/commercials/contract-scopes/import` _(added 2026-06-29)_
+
+---
+
+## ⏩ Session close — 2026-06-29 (part b) — cert-import 500 fix
+
+**Completed:**
+- [x] **eq-shell PR #535 merged** — cert-import background function: materialise ArrayBuffers synchronously before 202 + `withSentry` wrapping
+- [x] **`compliance-packs` Blobs bucket created** on ehow + zaap (pre-req for async compliance pack export)
+
+**Open / next:**
+- (nothing new)
 
 ---
 
