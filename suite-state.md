@@ -60,6 +60,9 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-06-29)
 
+**eq-field:**
+- #359 v3.5.201 — fix: SKS Contacts/roster blank (canonical adapter flag-gate + resilient load)
+
 **eq-service:**
 - #370 chore(deps): bump react and @types/react
 - #369 chore(deps): bump docx from 9.6.1 to 9.7.1
