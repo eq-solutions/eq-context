@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-06-29
+last_updated: 2026-06-30
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -11,6 +11,20 @@ status: live
 
 EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## ⏩ Session close — 2026-06-30 — Tenant Activity Log + polish fixes
+
+**Completed (eq-shell, merged + deployed):**
+- [x] **PR #536 merged** — staff edit 500 (`public.people` trigger disabled on ehow), audit log display (admin-audit bridge fn), employment-type dropdown, cert-import 500 (formData read before 202 + withSentry), Add Site modal.
+- [x] **PR #539 merged — Tenant Activity Log** ("who changed what" on the canonical spine). Migration `0146` (`app_data.audit_log` service-role-only + `fn_audit()` trigger + AFTER I/U/D on customers/sites/contacts/staff/assets) **applied to both planes** via tenant-migrate.yml (approved prod gate). `getAuditedTenantDataClientById` stamps `x-eq-actor` on writes; `tenant-audit.ts` reads + enriches; Activity tab replaces deferred sign-ins tab. Verified live: table + RLS + 5 triggers + 0 anon grants on ehow + zaap.
+
+**Deferred (added 2026-06-30):**
+- [ ] **Verify header→GUC actor capture** — confirm `actor_id` populates on the first real UI edit; if it shows "Automatic", the change still logs but who-attribution needs a follow-up _(added 2026-06-30)_
+- [ ] **Activity Log — team & access events** — invites / role-changes as app-level writes to the tenant plane (no spine row to trigger on) _(added 2026-06-30)_
+- [ ] **Activity Log — link-table triggers** — contact_customer_links, contact_site_links _(added 2026-06-30)_
+- [ ] **Platform Security Log / operator console** — sign-ins/2FA audit (jvkn), operator-only, separate from the tenant page _(added 2026-06-30)_
 
 ---
 
