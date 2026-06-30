@@ -14,6 +14,23 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-01 (part d) — eq-shell PR batch: URL-per-tab + tsc fixes + cleanup
+
+**Completed (eq-shell, all merged):**
+- [x] **PR #571 merged** (`80c904c`) — URL-per-tab Shell side (superseded #573) + rejection_reason type fix. `buildFieldSrc`/`buildFieldCookieSrc` + `FieldIframe` postMessage listener + `history.pushState`.
+- [x] **PR #576 merged** — `PostgrestBuilder as unknown as Promise<...>` one-line tsc hotfix. Main was broken at `cards-approve-staff.ts:131` (direct cast introduced by PR #568); unblocked all remaining PRs.
+- [x] **PR #570 merged** — Google Maps key prefix fix + dead `NETLIFY_CONTEXT` Sentry fallback removed.
+- [x] **PR #572 merged** — Removed dead `cert-import-parse.ts` (old sync parser, superseded by async background fn).
+- [x] **PR #575 merged** — Training matrix: filter by employment type, sort columns, multi-select, column width fixes.
+- [x] **PR #573 closed** (duplicate of #571); **PR #574 closed** (duplicate type fix).
+
+**Decided:**
+- `as T` direct cast from `PostgrestBuilder` is invalid — must go through `as unknown as T`. Pattern to follow in future.
+
+**Deferred:** none.
+
+---
+
 ## ⏩ Session close — 2026-07-01 (eq-field) — Edge fn canonical deploy + URL-per-tab Field side
 
 **Completed (eq-field, merged + deployed):**
@@ -29,7 +46,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 **Deferred (added 2026-07-01):**
 - [ ] **Add `TENANT_UUID = 7dee117c-98bd-4d39-af8c-2c81d02a1e85` to ehow edge function secrets** — Supabase dashboard → Project Settings → Edge Functions → Secrets. All 4 functions 500 without it. _(Royce action) (added 2026-07-01)_
 - [ ] **Update pg_cron digest cron URL** — check ehow pg_cron; if referencing `supervisor-digest-v2`, update to `supervisor-digest`. _(added 2026-07-01)_
-- [ ] **Shell-side URL-per-tab PR** (eq-shell repo) — Shell reads `?tab=` from its own URL → appends `&tab=<slug>` to Field iframe src; listens for `EQ_TAB_CHANGE` → `history.pushState`. Prompt written. _(added 2026-07-01)_
+- [x] **Shell-side URL-per-tab PR** — PR #571 merged 2026-07-01 (`80c904c`). `buildFieldSrc`/`buildFieldCookieSrc` accept `tab` param; `FieldIframe` reads `?tab=` on mount + listens for `EQ_TAB_CHANGE` → `history.pushState`. _(done 2026-07-01)_
 
 ---
 
@@ -88,13 +105,13 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ## ⏩ Session close — 2026-07-01 (part c) — Field iframe URL-per-tab deep linking (eq-shell PR #573)
 
-**Completed (eq-shell, PR open):**
-- [x] **PR #573 open** — Shell-side URL-per-tab deep linking for the Field iframe. `buildFieldSrc` / `buildFieldCookieSrc` accept optional `tab` param (`&tab=<slug>` before hash). `FieldIframe` reads `?tab=` from Shell URL on mount (`initialTabRef`), listens for `EQ_TAB_CHANGE` postMessages (origin-validated), calls `history.pushState` to keep Shell URL in sync. `pickTenant` clears `?tab=` on workspace switch.
+**Completed (eq-shell, merged):**
+- [x] **PR #571 merged** (`80c904c`) — Shell-side URL-per-tab deep linking. `buildFieldSrc`/`buildFieldCookieSrc` accept optional `tab` param; `FieldIframe` reads `?tab=` from Shell URL on mount, listens for `EQ_TAB_CHANGE` postMessages (origin-validated), calls `history.pushState`. `pickTenant` clears `?tab=` on workspace switch. Also included rejection_reason type fix. PR #573 was a duplicate — closed in favour of #571.
 
 **Deferred (added 2026-07-01):**
 - [x] **eq-field matching PR** — DONE: v3.5.217 (PR #381, merged 2026-07-01). `showPage()` emits `EQ_TAB_CHANGE` postMessage; `initApp()` reads `?tab=` on load _(done 2026-07-01)_
-- [ ] **Merge + smoke PR #573** — Netlify preview at deploy-preview-573--eq-shell.netlify.app. Smoke: navigate tabs → URL updates; bookmark `?tab=timesheets` → reload lands on Timesheets _(added 2026-07-01)_
-- [ ] **Clean up `fix/remove-dead-cert-parse` local branch** — has a stray deep-link commit from branch confusion; `git -C C:\Projects\eq-shell reset --hard f6a0a90` once ready _(added 2026-07-01, needs your call)_
+- [x] **Merge + smoke PR #573** — #573 closed (duplicate); #571 was the actual implementation, merged 2026-07-01 _(done 2026-07-01)_
+- [x] **Clean up `fix/remove-dead-cert-parse` local branch** — remote deleted with `--delete-branch` on #571 merge _(done 2026-07-01)_
 
 ---
 
