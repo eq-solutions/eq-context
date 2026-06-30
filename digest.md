@@ -8,31 +8,31 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-06-30 09:04 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-06-30 09:24 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-06-30 08:55 UTC → 2026-06-30 09:04 UTC)
+## Since last refresh (2026-06-30 09:04 UTC → 2026-06-30 09:24 UTC)
 
-- Merged: eq-shell [#549](https://github.com/eq-solutions/eq-shell/pull/549) feat(ops): Phase 1 — Issues & Attachments on the canonical r
-- Merged: eq-shell [#541](https://github.com/eq-solutions/eq-shell/pull/541) feat(customers): site street address + Field/Service toggles
-- Merged: eq-shell [#540](https://github.com/eq-solutions/eq-shell/pull/540) fix(customers): Add Site 500 — remove non-existent site_cont
-- Merged: eq-shell [#532](https://github.com/eq-solutions/eq-shell/pull/532) fix(iframes): suppress Sentry errors from background pre-war
-- Merged: eq-shell [#531](https://github.com/eq-solutions/eq-shell/pull/531) fix(auth): resend Shell invite instead of blocking
-- Merged: eq-shell [#530](https://github.com/eq-solutions/eq-shell/pull/530) fix(auth): promote Cards-worker stub on invite accept
-- Merged: eq-shell [#529](https://github.com/eq-solutions/eq-shell/pull/529) feat(eq-ops): clickable status badge in quote detail panel
-- Merged: eq-shell [#527](https://github.com/eq-solutions/eq-shell/pull/527) feat(gm-reports): carry forward invoice run statuses to new 
+- Merged: eq-shell [#542](https://github.com/eq-solutions/eq-shell/pull/542) feat(customers): customer-level Field/Service toggles in the
+- Merged: eq-shell [#539](https://github.com/eq-solutions/eq-shell/pull/539) feat(audit): Tenant Activity Log — who changed what on the c
+- Merged: eq-shell [#538](https://github.com/eq-solutions/eq-shell/pull/538) feat(notifications): range-based worker reminders + SMS opt-
+- Merged: eq-shell [#537](https://github.com/eq-solutions/eq-shell/pull/537) fix(notifications): repoint licence-expiry scheduler to eq-c
+- Merged: eq-shell [#536](https://github.com/eq-solutions/eq-shell/pull/536) fix: staff edit 500, audit log, employment type, Add Site mo
+- Merged: eq-shell [#535](https://github.com/eq-solutions/eq-shell/pull/535) fix(equipment): cert-import 500 — read body before waitUntil
+- Merged: eq-shell [#534](https://github.com/eq-solutions/eq-shell/pull/534) polish(shell): staff approval fixes, compliance pack, site/c
+- Merged: eq-shell [#533](https://github.com/eq-solutions/eq-shell/pull/533) fix(auth): upsert membership to handle existing inactive row
+- ✅ Needs you: 3 → 2
 
-## ⚠ Needs you (3)
+## ⚠ Needs you (2)
 
 - 🟠 **Sentry new error** — `eq-cards` [minified:iF: ServerFailure(42883): operator does not exist: ](https://eq-solutions.sentry.io/issues/131103567/)
-- 🟠 **Sentry new error** — `eq-cards` [LateInitializationError: Field '' has not been initialized.](https://eq-solutions.sentry.io/issues/131100659/)
 - 🟠 **Sentry new error** — `eq-cards` [LateInitializationError: Field '' has not been initialized.](https://eq-solutions.sentry.io/issues/131100658/)
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 1 | 0d |
-| eq-solves-service | ✓ success | 0d ago | 8 | 2d |
+| eq-shell | ? unknown | ? | 2 | 0d |
+| eq-solves-service | ✓ success | 0d ago | 6 | 2d |
 | eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ? unknown | ? | 0 | — |
@@ -42,8 +42,8 @@ _2026-06-30 09:04 UTC · what needs your attention. Full snapshot: [suite-state.
 | Project | Error | Events | Last seen |
 |---------|-------|--------|-----------|
 | eq-cards | [minified:iF: ServerFailure(42883): operator does not exist: uuid = text](https://eq-solutions.sentry.io/issues/131103567/) | 6 | 2026-06-29 |
-| eq-cards | [LateInitializationError: Field '' has not been initialized.](https://eq-solutions.sentry.io/issues/131100659/) | 2 | 2026-06-30 |
 | eq-cards | [LateInitializationError: Field '' has not been initialized.](https://eq-solutions.sentry.io/issues/131100658/) | 2 | 2026-06-30 |
+| eq-shell | [UnhandledRejection: Non-Error promise rejection captured with value: Object Not ](https://eq-solutions.sentry.io/issues/129495069/) | 2 | 2026-06-30 |
 | eq-shell | [Cards iframe did not fire onLoad within 30s](https://eq-solutions.sentry.io/issues/130446042/) | 2 | 2026-06-29 |
 | eq-shell | [captureServerError](https://eq-solutions.sentry.io/issues/130413967/) | 2 | 2026-06-29 |
 | eq-shell | [EQ Service iframe did not load within timeout](https://eq-solutions.sentry.io/issues/130169257/) | 2 | 2026-06-29 |
@@ -59,18 +59,18 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-06-30 | eq-shell | [#551](https://github.com/eq-solutions/eq-shell/pull/551) fix(audit): stamp actor on Field/Service toggle + calibration edi |
 | 2026-06-30 | eq-shell | [#550](https://github.com/eq-solutions/eq-shell/pull/550) feat(crm): sites inline toggle table + apply-all + A-Z contacts |
 | 2026-06-30 | eq-shell | [#547](https://github.com/eq-solutions/eq-shell/pull/547) feat(audit): extend Tenant Activity Log to contact link tables |
+| 2026-06-30 | eq-solves-service | [#383](https://github.com/eq-solutions/eq-service/pull/383) feat(app): branded public 'What's New' page (/whats-new) |
+| 2026-06-30 | eq-solves-service | [#380](https://github.com/eq-solutions/eq-service/pull/380) feat(app): add branded error boundaries (error.tsx + global-error |
 | 2026-06-30 | eq-solves-service | [#381](https://github.com/eq-solutions/eq-service/pull/381) fix(canonical): filter service.sites view by active = true |
 | 2026-06-30 | eq-solves-service | [#378](https://github.com/eq-solutions/eq-service/pull/378) feat(ui): branded 404 page — app/not-found.tsx |
+| 2026-06-30 | eq-field | [#370](https://github.com/eq-solutions/eq-field/pull/370) v3.5.210 — canonical wiring: Apprentice cluster fully wired for S |
 | 2026-06-30 | eq-field | [#369](https://github.com/eq-solutions/eq-field/pull/369) v3.5.209 — JWT routing gaps: Bucket-B + tender phases + nominatio |
 | 2026-06-30 | eq-field | [#368](https://github.com/eq-solutions/eq-field/pull/368) v3.5.208 — canonical wiring: Safety module fully wired for SKS |
 | 2026-06-30 | eq-field | [#367](https://github.com/eq-solutions/eq-field/pull/367) fix(canonical): field_sites filters active too (archived sites re |
 | 2026-06-30 | eq-field | [#366](https://github.com/eq-solutions/eq-field/pull/366) v3.5.207 — canonical wiring: Roster/Leave realtime + Teams wire + |
 | 2026-06-30 | eq-field | [#365](https://github.com/eq-solutions/eq-field/pull/365) chore(canonical): record digest opt-out migration (field_managers |
-| 2026-06-29 | eq-shell | [#546](https://github.com/eq-solutions/eq-shell/pull/546) fix(staff): profile review state matches the table badge |
-| 2026-06-29 | eq-shell | [#545](https://github.com/eq-solutions/eq-shell/pull/545) fix(staff): match existing staff stub on Cards approval instead o |
-| 2026-06-29 | eq-shell | [#544](https://github.com/eq-solutions/eq-shell/pull/544) fix(staff): licence review stops flipping back to re-review for p |
-| 2026-06-29 | eq-shell | [#543](https://github.com/eq-solutions/eq-shell/pull/543) Gate the Service mint with @eq-solutions/contracts (mint side) |
-_Showing 15 of 109 · full record in [sessions/](sessions/)_
+| 2026-06-30 | eq-cards | [#103](https://github.com/eq-solutions/eq-cards/pull/103) fix(claim-invite): cast p_token::uuid - fix Sentry EQ-CARDS-T |
+_Showing 15 of 110 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
@@ -116,4 +116,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-06-30 09:04 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-06-30 09:24 UTC._
