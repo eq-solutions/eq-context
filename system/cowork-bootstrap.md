@@ -3,6 +3,8 @@ title: Cowork Bootstrap Prompt
 owner: Royce Milmlow
 last_updated: 2026-06-28
 scope: Paste at the start of every Cowork session. Replaces the old Supabase context cache approach (retired 2026-06-22).
+read_priority: reference
+status: live
 ---
 
 # Cowork Bootstrap Prompt
