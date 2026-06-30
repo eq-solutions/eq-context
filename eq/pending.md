@@ -14,6 +14,13 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-06-30 (EQ Cards blob fix) — Sentry EQ-CARDS-W CanvasKit blob URL revocation
+
+**Completed (eq-cards):**
+- [x] **Sentry EQ-CARDS-W fixed** — `_PhotoSlot` in `licence_edit_screen.dart` converted from `StatelessWidget` → `StatefulWidget`. Root cause: every parent rebuild (toggling "Private" switch, form validation) created a new `MemoryImage`, each allocating a CanvasKit blob URL; Chrome Mobile revoked these under memory pressure. Fix: hold a single `MemoryImage` in state, recreated only when `bytes` reference changes (`identical()` in `didUpdateWidget`); evict on replace + dispose. `gaplessPlayback: true` added. `unawaited()` on both `evict()` calls. No Flutter version bump needed. `flutter analyze` clean.
+
+---
+
 ## ⏩ Session close — 2026-06-30 (part k) — EQ Ops pipeline: age badge + attachment types + 0152 + PR #552 merge
 
 **Completed (eq-shell, merged + deployed):**
