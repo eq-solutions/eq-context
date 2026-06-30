@@ -69,7 +69,6 @@ _If this file is >48h old, the cron is broken._
 - #363 fix(docs): update LOCAL_DEV.md project ID — urjh deleted, use ehow
 
 **eq-shell:**
-- #554 chore(armada): pre-bake ARMADA config for eq-shell (autoMerge off)
 - #552 fix(staff): training matrix licence numbers + CSV export + employment type select
 
 ---
