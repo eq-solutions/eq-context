@@ -66,12 +66,12 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 **Deferred (added 2026-06-30):**
 - [x] **Close duplicate PR #552** — NOT a duplicate; real training-matrix changes. Drift check blocked merge (field_teams/field_team_members missing from KNOWN_LEGACY_ANON on branch). Fixed `3fa4e5e`, merged `6ee18e2` _(done 2026-06-30)_
-- [ ] **Make CI `verify` check REQUIRED** in eq-shell branch protection (Settings → Branches) — else the gate runs but doesn't block _(needs Royce's call) (added 2026-06-30)_
-- [ ] **Defense-in-depth: REVOKE anon grants** on zaap PII tables (workers/worker_credentials/worker_inductions/worker_assignments) via a One-Pipe migration — RLS neutralizes them, but they'd expose instantly if RLS were ever dropped _(added 2026-06-30)_
-- [ ] **nspbmir anon-PII audit** — couldn't verify (eq-guard blocks SKS-live from EQ sessions); needs a dedicated SKS-context session _(added 2026-06-30)_
-- [ ] **God-component extraction** (StaffPage MatrixView/SplitPanel out of the 2,094-line file) — deferred: blind refactor unverifiable without a running app _(added 2026-06-30)_
-- [ ] **Broad hex burndown → flip lint blocking** — blocked on adding slate/semantic tokens to eq-design-tokens (cross-repo design call) + reconciling published `eq-tokens.css` names vs loaded `@eq-solutions/ui/styles` names _(added 2026-06-30)_
-- [ ] **PR or batch the StaffPage hex slice** — branch `claude/hex-burndown-staff` (`0c4a43b`), 31 brand-hex→token conversions, not pushed _(added 2026-06-30)_
+- [x] **Made CI `verify` check REQUIRED** — branch protection on eq-shell main now requires both `typecheck · test · lint` AND `Schema drift + anon-grant + policy-lint` (via `gh api`) _(done 2026-06-30 part i)_
+- [x] **Brand-hex burndown phase 1 — PR #562 merged** (`01718a4`): 105 single-quoted brand-hex literals → `var(--eq-sky/-deep/-ink)` across 19 files. Value-identical (those are the FIXED base tokens; BrandProvider overrides `--eq-brand` not `--eq-sky`, verified `brand.tsx:54`). Single-quote targeting structurally skipped the var()-incompatible double-quoted `fill=`/alpha cases. _(done 2026-06-30 part i)_
+- [→] **Defense-in-depth: REVOKE anon grants on zaap PII tables** — HANDED TO eq-field via task chip (`task_3c021ad3`). It's EQ Field's `public.*` schema, not eq-shell's to migrate (cross-repo rule); pure defense-in-depth (RLS already → anon 0 rows) _(handoff 2026-06-30 part i)_
+- [ ] **nspbmir anon-PII audit** — NOT done (per Royce "don't touch nspbmir"); eq-guard blocks SKS-live from EQ sessions anyway → needs a dedicated SKS-context session _(added 2026-06-30)_
+- [ ] **God-component extraction** (StaffPage MatrixView/SplitPanel out of the 2,094-line file) — still deferred: needs a running-app session to verify layout (tsc catches imports, not render); the #562 same-file conflict is now cleared (merged) _(added 2026-06-30)_
+- [ ] **Flip lint `no-raw-hex` to blocking** — still gated: ~770 slate/semantic hexes have no loadable token; needs tokens ADDED in eq-design-tokens (cross-repo design call) + reconciling published `eq-tokens.css` names vs loaded `@eq-solutions/ui/styles` (`--eq-danger` vs `--eq-err`) _(added 2026-06-30)_
 
 ---
 
