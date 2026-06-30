@@ -71,6 +71,7 @@ _If this file is >48h old, the cron is broken._
 - #363 fix(docs): update LOCAL_DEV.md project ID — urjh deleted, use ehow
 
 **eq-shell:**
+- #553 feat(audit): team & access events in tenant Activity Log
 - #552 fix(staff): training matrix licence numbers + CSV export + employment type select
 
 ---
