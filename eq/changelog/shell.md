@@ -9,6 +9,10 @@ status: live
 
 # Changelog — EQ Shell
 
+## [2026-07-01] URL-per-tab deep linking for Field iframe (PR #573 — open)
+- Shell URL now reflects the active Field tab: `?tab=roster`, `?tab=timesheets`, etc. Bookmarked/shared URLs reopen Field at the right tab. Uses `history.pushState` (no page reload). Reads `?tab=` from Shell URL on mount and forwards it in the iframe src. Listens for `EQ_TAB_CHANGE` postMessages from Field. Clears `?tab=` on workspace switch. Requires matching eq-field PR.
+- Removed dead `netlify/functions/cert-import-parse.ts` (superseded by async URL flow in #563).
+
 ## [2026-07-01] Calibration cert import 500 fixed — async payload wall (PR #563)
 - Multi-cert import failed with "Import failed (500): Internal Error. ID: …". Root cause: `cert-import-parse-background` is a `-background` function (async Lambda invoke, ~256 KB payload limit vs 6 MB sync); POSTing multipart PDF bytes made Netlify reject the invocation before the handler ran (no function logs; the ID is a Netlify request id, not Sentry).
 - Fix: browser uploads each PDF via the synchronous `upload-asset-cert` endpoint, then hands the background parser only JSON `{ url, fileName }`; parser fetches bytes server-side (SSRF-guarded to `SUPABASE_URL`). Parse-time URLs reused at commit so each PDF uploads once.

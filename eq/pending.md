@@ -14,6 +14,25 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-01 (eq-field) — Edge fn canonical deploy + URL-per-tab Field side
+
+**Completed (eq-field, merged + deployed):**
+- [x] **PR #380 merged** — v3.5.216: 4 edge functions rewritten for canonical `app_data.*` schema (ehow compatibility). `supervisor-digest`, `ts-reminder`, `tafe-weekly-fill`, `shift-events` all replaced `public.schedule` / `public.people` queries with `app_data.schedule_entries` / `app_data.field_people`.
+- [x] **All 4 edge functions deployed to ehow** (`ehowgjardagevnrluult`) — none existed there before this session. Status: `ACTIVE` on all 4 post-deploy.
+- [x] **`ts_reminders_sent` migration applied to ehow** — required by `ts-reminder`; confirmed applied.
+- [x] **PR #381 merged** — v3.5.217: URL-per-tab Field side. `showPage()` emits `EQ_TAB_CHANGE` postMessage `{ type: 'EQ_TAB_CHANGE', tab: <slug> }` to `https://core.eq.solutions`; `initApp()` reads `?tab=` deep-link param and applies after role routing.
+
+**Decided:**
+- All user access is via Shell iframe — no direct field.eq.solutions users. URL-per-tab lives at Shell level; Field only needs postMessage emission + `?tab=` read.
+- `supervisor-digest-v2` never existed on ehow (CLAUDE.md reference stale). Deployed as `supervisor-digest` v1 slug.
+
+**Deferred (added 2026-07-01):**
+- [ ] **Add `TENANT_UUID = 7dee117c-98bd-4d39-af8c-2c81d02a1e85` to ehow edge function secrets** — Supabase dashboard → Project Settings → Edge Functions → Secrets. All 4 functions 500 without it. _(Royce action) (added 2026-07-01)_
+- [ ] **Update pg_cron digest cron URL** — check ehow pg_cron; if referencing `supervisor-digest-v2`, update to `supervisor-digest`. _(added 2026-07-01)_
+- [ ] **Shell-side URL-per-tab PR** (eq-shell repo) — Shell reads `?tab=` from its own URL → appends `&tab=<slug>` to Field iframe src; listens for `EQ_TAB_CHANGE` → `history.pushState`. Prompt written. _(added 2026-07-01)_
+
+---
+
 ## ⏩ Session close — 2026-06-30 (ARMADA on eq-intake) — pre-bake + 4 clean fleet cycles
 
 **Completed (eq-intake / repo `eq-solutions/eq-solves-intake`, all merged to main):**
@@ -46,7 +65,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] Verified: `build:packages` + `tsc -b` (functions covered via `tsconfig.netlify.json`) + eslint on both files — clean.
 
 **Deferred (added 2026-07-01):**
-- [ ] **Remove dead `cert-import-parse.ts`** — the old synchronous parser is now unused by the panel (left in place per no-delete rule); drop in a follow-up _(added 2026-07-01)_
+- [x] **Remove dead `cert-import-parse.ts`** — removed in PR #573 (bundled with field deep-link PR) _(done 2026-07-01)_
 - [ ] **Verify cert import live** — once deploy goes green, import multiple certs at core.eq.solutions (hard-refresh for new panel JS); parser now writes a real failure reason to job status if a download fails _(added 2026-07-01)_
 
 ---
@@ -64,6 +83,18 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 **Deferred (added 2026-07-01):**
 - [x] **Invite-path rejection email** — `cards_field_approvals` reject now notifies the worker; PR #569 merged 2026-07-01 _(done 2026-07-01)_
+
+---
+
+## ⏩ Session close — 2026-07-01 (part c) — Field iframe URL-per-tab deep linking (eq-shell PR #573)
+
+**Completed (eq-shell, PR open):**
+- [x] **PR #573 open** — Shell-side URL-per-tab deep linking for the Field iframe. `buildFieldSrc` / `buildFieldCookieSrc` accept optional `tab` param (`&tab=<slug>` before hash). `FieldIframe` reads `?tab=` from Shell URL on mount (`initialTabRef`), listens for `EQ_TAB_CHANGE` postMessages (origin-validated), calls `history.pushState` to keep Shell URL in sync. `pickTenant` clears `?tab=` on workspace switch.
+
+**Deferred (added 2026-07-01):**
+- [ ] **eq-field matching PR** — Field must (a) read `?tab=` from its own `window.location.search` on load and call `showTab(slug)`, and (b) `postMessage({ type: 'EQ_TAB_CHANGE', tab: slug }, parentOrigin)` on every tab switch. Without this, the Shell URL updates but Field doesn't respond _(added 2026-07-01)_
+- [ ] **Merge + smoke PR #573** — Netlify preview at deploy-preview-573--eq-shell.netlify.app. Smoke: navigate tabs → URL updates; bookmark `?tab=timesheets` → reload lands on Timesheets _(added 2026-07-01)_
+- [ ] **Clean up `fix/remove-dead-cert-parse` local branch** — has a stray deep-link commit from branch confusion; `git -C C:\Projects\eq-shell reset --hard f6a0a90` once ready _(added 2026-07-01, needs your call)_
 
 ---
 
@@ -167,8 +198,24 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **Brand-hex burndown phase 1 — PR #562 merged** (`01718a4`): 105 single-quoted brand-hex literals → `var(--eq-sky/-deep/-ink)` across 19 files. Value-identical (those are the FIXED base tokens; BrandProvider overrides `--eq-brand` not `--eq-sky`, verified `brand.tsx:54`). Single-quote targeting structurally skipped the var()-incompatible double-quoted `fill=`/alpha cases. _(done 2026-06-30 part i)_
 - [x] **Defense-in-depth: REVOKE anon grants on zaap PII tables** — DONE in eq-field (PR #379, merged `18b17b8`). `REVOKE ALL FROM anon` on `public.workers`/`worker_credentials`/`worker_inductions`/`worker_assignments`; authenticated + service_role retained; RLS/owner policies intact; verified anon→permission-denied. eq-shell `KNOWN_LEGACY_ANON` needed no change (RLS-on + auth.uid()-gated → never anon-reachable on the drift checker) _(done 2026-06-30)_
 - [ ] **nspbmir anon-PII audit** — NOT done (per Royce "don't touch nspbmir"); eq-guard blocks SKS-live from EQ sessions anyway → needs a dedicated SKS-context session _(added 2026-06-30)_
-- [ ] **God-component extraction** (StaffPage MatrixView/SplitPanel out of the 2,094-line file) — still deferred: needs a running-app session to verify layout (tsc catches imports, not render); the #562 same-file conflict is now cleared (merged) _(added 2026-06-30)_
-- [ ] **Flip lint `no-raw-hex` to blocking** — still gated: ~770 slate/semantic hexes have no loadable token; needs tokens ADDED in eq-design-tokens (cross-repo design call) + reconciling published `eq-tokens.css` names vs loaded `@eq-solutions/ui/styles` (`--eq-danger` vs `--eq-err`) _(added 2026-06-30)_
+### ▶ Design-system + StaffPage quality program (supersedes the separate "god-components" + "flip lint blocking" entries)
+
+These two were listed as independent deferreds; they're one coupled chain. De-hex StaffPage BEFORE splitting it, or you touch every extracted file twice. Quality principle throughout: fix the *class* + encode the invariant, don't patch the instance. Run in order (B + the ramp are Royce's design calls; the rest is mechanical once they land):
+
+- [ ] **A — Unify the token source of truth** (eq-design-tokens) — TWO divergent sets exist: the loaded `@import "@eq-solutions/ui/styles"` (`--eq-err`, `--eq-gray-*`) vs the orphaned, NOT-imported `public/eq-tokens.css` (`--eq-danger`, `--eq-sky`). Collapse to one generated package, one name set, imported everywhere; `public/eq-tokens.css` becomes a pure build artifact (or dies). Adding tokens before this just forks further _(added 2026-06-30)_
+- [ ] **B — Design the neutral + semantic ramp** — greys 50–900 + success/warning/danger, to absorb the ~770 remaining slate/semantic hexes that have NO loadable token today (`#e2e8f0`, `#64748b`, `#ef4444`, `#16a34a`…). The actual quality work + a design decision _(needs Royce's call) (added 2026-06-30)_
+- [ ] **C — Codemod the remaining hexes → tokens** — jscodeshift driven by an explicit hex→token mapping table (not hand edits; the brand-3 `sed` in #562 was the crude version), repo-wide, diff-reviewed. Includes StaffPage _(added 2026-06-30)_
+- [ ] **D — Characterization tests + logic lift (StaffPage)** — snapshot/RTL tests on `MatrixView` + `SplitPanel` FIRST (we have the test runner now → converts the "unverifiable refactor" into a test-guaranteed one, replacing "eyeball the running app"); lift pure logic (`matrixCsvCell`, `licStatus`, date-shaping, matrix transform) into a tested `staff/lib` module. Independent — can start anytime _(added 2026-06-30)_
+- [ ] **E — Extract StaffPage components** — move `MatrixView`/`SplitPanel` + shared `s`/helpers into `staff/` modules, split along data/logic/view seams (not just "smaller files"). Depends on C (de-hexed) + D (test-guarded) _(added 2026-06-30)_
+- [ ] **F — Scoped blocking `no-raw-hex` rule** — flip warn→error WITH an allowlist (`*.palette.ts`, chart configs, `email/`) + a "token-or-justify-with-reason" path, not a blanket wall (a wall just trains more `eslint-disable` — how 155 accumulated). The ratchet that holds the gain. Depends on C _(added 2026-06-30)_
+
+### ▶ zaap anon class-closure (eq-field — residual of the done #379 revoke)
+
+PR #379 revoked the 4 worker-PII tables (the instances). The *class* + ratchet are still open — without them a new zaap `public.*` table re-introduces an anon grant within weeks. Parallel/independent of the design-system chain:
+
+- [ ] **Audit + classify the remaining anon-CRUD zaap `public.*` tables** — live audit this session found 7 anon-CRUD tables; #379 closed 4, leaving `app_config`, `organisations`, `ts_reminders_sent`. Classify each: keep-and-DOCUMENT the intentional ones (`organisations` is almost certainly the login-page org bootstrap read) vs revoke the rest _(added 2026-06-30)_
+- [ ] **`ALTER DEFAULT PRIVILEGES REVOKE anon/authenticated` on zaap `public`** — born-closed, mirroring the 2026-06-07 control-plane lockdown; stops the next new table re-introducing the grant _(added 2026-06-30)_
+- [ ] **Drift-gate CHECK: fail if any zaap `public.*` grants anon outside an explicit allowlist** — encode the invariant so it can't regress silently, instead of re-verifying by hand _(added 2026-06-30)_
 
 ---
 
