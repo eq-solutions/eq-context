@@ -26,7 +26,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 **Decided (Royce):** when main is build-broken, prefer a minimal build-unblock over merging a feature-bundled fix (#571 bundled field-deep-linking). (In the end the concurrent agent's split fixes landed first.)
 
 **Deferred (added 2026-07-01):**
-- [ ] **Enable "Require branches to be up to date before merging"** on `main` branch protection _(needs Royce's call)_ — today's outage cause: two independently-green PRs merged in an order that combined to break the build; the PR `typecheck·test·lint` gate doesn't re-run against latest main, and main has no post-merge typecheck. This setting forces a re-run against current main before merge. _(added 2026-07-01)_
+- [x] **Enabled "Require branches to be up to date before merging"** on `main` branch protection (`required_status_checks.strict=true`, both required checks preserved). **Verified working** — a throwaway PR from a branch 3 behind main returned `mergeStateStatus: BEHIND` and merge was refused ("head branch is not up to date with the base branch"). This is the gate that would have caught today's interleaved-merge outage. _(done 2026-07-01)_
 
 ---
 
