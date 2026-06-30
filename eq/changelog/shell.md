@@ -9,6 +9,12 @@ status: live
 
 # Changelog — EQ Shell
 
+## [2026-06-30] Attachments bucket private + Issues table (PRs #549 #555)
+- `attachments` storage bucket on ehow flipped to private (`public: false`); `tenant_signed_url` RLS policy on `storage.objects` enforces tenant folder isolation.
+- `list-attachments.ts` + `upload-attachment.ts` use `createSignedUrl` (1-hour TTL) instead of `getPublicUrl`.
+- Migrations 0147–0151 applied to ehow: issues table + RPCs, attachments index, bucket private, field_teams no-op.
+- PR #555: `0151_field_teams_rls.sql` replaced with `SELECT 1` no-op — `field_teams`/`field_team_members` are `security_invoker=true` views; can't enable RLS on a view.
+
 ## [2026-06-30] Audit log team events + stub-match block + training matrix (PR #553)
 - Activity Log now includes team & access events: invites, role changes, group membership — `writeTenantAudit()` writes `source='app'` rows via `invite-user`, `invite-users-batch`, `edit-user`, `security-groups`.
 - Link-event name resolution: Activity Log resolves contact/customer/site names for link-table rows (shows "Alex Smith ↔ Acme Corp" not raw IDs).

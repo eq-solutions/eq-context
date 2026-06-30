@@ -14,6 +14,19 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-06-30 (part h) — Attachments bucket private + migration dispatch
+
+**Completed (eq-shell, merged + deployed to ehow):**
+- [x] **PR #549 merged** — Issues/Attachments Phase 1: `0147_issues_table.sql`, `0148_eq_issue_rpcs.sql`, `0149_attachments_entity_index.sql`, `0150_attachments_bucket_private.sql`, `0151_field_teams_rls.sql` (no-op). `list-attachments.ts` + `upload-attachment.ts` switched from `getPublicUrl` to `createSignedUrl` (1-hour TTL). Bucket RLS policy `tenant_signed_url` on `storage.objects`.
+- [x] **PR #555 merged** — 0151 fixed: `field_teams` + `field_team_members` on ehow are `security_invoker=true` views over `app_data.teams/team_members` (both tables have RLS on). `ALTER TABLE ... ENABLE ROW LEVEL SECURITY` fails on views (PG 42809). Replaced with `SELECT 1` no-op. `check-tenant-drift.mjs` already lists both views in `KNOWN_LEGACY_ANON` for ehow (merged with PR #549).
+- [x] **Migrations 0147–0151 applied to ehow** via tenant-migrate.yml (sks slug, allow_checksum_drift=true). `attachments` bucket confirmed `public: false`.
+
+**Deferred (added 2026-06-30):**
+- [ ] **Issues/Attachments Phase 2** — dispatch 0147_issues_table to zaap when EQ Ops goes live on the EQ plane; flip `issues.*` PermKeys from deferred to active _(added 2026-06-30)_
+- [ ] **Signed URL refresh** — attachment URLs are 1-hour TTL; long-running sessions will show broken images silently; no refresh mechanism built _(added 2026-06-30)_
+
+---
+
 ## ⏩ Session close — 2026-06-30 (part g) — Cards admin-console + labour-hire pilot (discussion only)
 
 **Decided (Royce):**
@@ -161,7 +174,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [ ] **Realtime publication** — add app_data.schedule_entries/leave_requests to supabase_realtime (verify realtime.js channel target first) _(added 2026-06-30)_
 - [ ] **app_data.staff.user_id backfill** — ~61 SKS staff unresolved (14/75 via field_person_by_user_id); may need a Core account→staff_id mapping _(added 2026-06-30)_
 - [x] **worker_id link mirror removal** — dead PATCH removed from syncAllToCanonical() _(done v3.5.211 2026-06-30)_
-- [x] **SKS audit-log fix** — AUDIT_SB_KEY updated to ehow service_role (done 2026-06-30); stamp org_id in verify-pin.js/eq-agent.js body is a separate pending code change
+- [x] **SKS audit-log fix** — AUDIT_SB_KEY updated to ehow service_role; org_id stamp + manager_name fix in both functions _(fully done v3.5.212 2026-06-30)_
 - [ ] **frame-ancestors tightening** — drop `*.netlify.app` (clickjacking surface; declined once) _(added 2026-06-30)_
 - [ ] **app_config PIN key-scoping** — hygiene (PINs gate nothing now but still anon-readable) _(added 2026-06-30)_
 
