@@ -9,6 +9,10 @@ status: live
 
 # Changelog — EQ Shell
 
+## [2026-06-30] Brand-hex → @eq tokens, phase 1 + CI check required (PR #562)
+- PR #562: 105 single-quoted brand-hex literals → `var(--eq-sky/-deep/-ink)` across 19 component files. Value-identical (fixed base tokens — `BrandProvider` overrides `--eq-brand`, not `--eq-sky`), zero visual change. Single-quote targeting structurally skipped the var()-incompatible double-quoted `fill=`/alpha cases.
+- Made the CI `typecheck · test · lint` check a **required** status check on main (branch protection now requires it alongside `Schema drift + anon-grant + policy-lint`).
+
 ## [2026-06-30] EQ Ops pipeline: age badge, attachment types, 0152 migration, PR #552 (PRs #552 #560)
 - PR #560: `status_changed_at` on `app_data.quote` (migration 0152 + backfill + RPC rebuild); board time-in-stage badge (amber ≥14d); attachment types `supplier_quote`/`drawing`/`quality_doc` with type picker + TypeBadge; `workbench_job_no` in canonical-api WRITABLE_FIELDS.jobs + syncJobToCanonical. Migrations 0147–0152 applied to both planes.
 - PR #552: training matrix licence numbers + CSV export + employment-type select (was blocked by `field_teams`/`field_team_members` not in KNOWN_LEGACY_ANON on branch; fixed `3fa4e5e`).
