@@ -69,7 +69,9 @@ _If this file is >48h old, the cron is broken._
 - #363 fix(docs): update LOCAL_DEV.md project ID — urjh deleted, use ehow
 
 **eq-shell:**
-- #571 fix(staff): destructure rejection_reason — unblock production build
+- #575 feat(staff): training matrix — filter, sort, selection, column fixes
+- #574 fix(staff): destructure rejection_reason in handleApplication — unblock prod build
+- #572 chore(equipment): remove dead synchronous cert-import-parse function
 - #570 fix(env): Google Maps key prefix + dead NETLIFY_CONTEXT Sentry fallback
 
 ---
