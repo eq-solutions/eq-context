@@ -69,6 +69,7 @@ _If this file is >48h old, the cron is broken._
 - #363 fix(docs): update LOCAL_DEV.md project ID — urjh deleted, use ehow
 
 **eq-shell:**
+- #556 fix(attachments): extend signed URL TTL from 1hr to 7 days
 - #552 fix(staff): training matrix licence numbers + CSV export + employment type select
 
 ---
