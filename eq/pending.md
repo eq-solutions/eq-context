@@ -14,6 +14,33 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-06-30 (ARMADA trial) — pre-baked Calum's fleet on eq-service
+
+**Completed:**
+- [x] **Evaluated ARMADA** (calumjs/ARMADA — fleet of Claude Code skills: GitHub issue → build → review → merge-ready PR). Verified `merge-gate.mjs` respects branch protection with no force path; commission's stack-agnostic build detection; the drop-in route's limits.
+- [x] **Pre-baked ARMADA onto eq-service** — vendored skills + scripts into local `.claude/` (gitignored), repo-tuned `.armada/config.json` + `SETUP-NOTES.md`. eq-service **PR #375 merged** to main (config/docs only; Netlify Pages deploy skipped — no deployable change).
+- [x] **10 ARMADA labels created** on eq-solutions/eq-service (`armada`, `armada:*`, `fleet-defect`).
+- [x] **Seed issue eq-service #377** — branded 404 (`app/not-found.tsx`), filed **unarmed** (enhancement label only).
+- [x] **Feedback to Calum** — calumjs/ARMADA **#95** (fleet-defect): drop-in route gaps (`${CLAUDE_PLUGIN_ROOT}` unset off-plugin; `.claude/` gitignore silent no-op).
+- [x] **suite-state.md corrected** — EQ Cards `In build → Live` (real self-signup traffic, live-verified). eq-context **PR #56 merged**.
+
+**Config tuning (eq-service `.armada/config.json`):**
+- `autoMerge: false` (HARD — main is unprotected + Netlify auto-deploys on push to main; sole rail vs a prod deploy)
+- gate = `npm run check` (tsc + next build); `test` omitted (integration suite is a known pre-existing CI failure)
+- `armadaRepo: calumjs/ARMADA`; `publicIntake` + `lighthouse` auto-dispatch off
+
+**Deferred (added 2026-06-30):**
+- [ ] **Run first `shipwright` build** of #377 — in a dedicated Claude Code session rooted in eq-service (skills load from its `.claude/skills/`; can't be driven from another repo's session). Runbook in SETUP-NOTES + today's session log _(added 2026-06-30)_
+- [ ] **crows-nest `/loop`** — needs `CLAUDE_PLUGIN_ROOT` (plugin install, or `export CLAUDE_PLUGIN_ROOT=.claude/armada`); don't arm until one clean manual cycle is observed _(added 2026-06-30)_
+- [ ] **Add `test: vitest run`** to eq-service `.armada/config.json` once a clean cycle is seen + unit-test green verified _(added 2026-06-30)_
+- [ ] **eq-context frontmatter-validation CI** red on main since 2026-06-28 (a `.md` missing the `status:` key) — flagged as a spawn_task chip; a `fix/frontmatter-bootstrap-status` branch was already in flight in the root checkout at close time _(added 2026-06-30)_
+
+**Notes (load-bearing):**
+- eq-service: GitHub repo = `eq-solutions/eq-service`, local folder = `eq-solves-service`; `.claude/` is gitignored, so vendored skills are **local-only** (not committed — correct for a vendored plugin).
+- ARMADA drop-in: `charter`/`shipwright`/`muster`/`lighthouse` are path-clean (work without the plugin); `crows-nest`'s pipeline + foghorn/logbook/spyglass need `${CLAUDE_PLUGIN_ROOT}`, which only the plugin installer sets.
+
+---
+
 ## ⏩ Session close — 2026-06-30 (handoff hardening) — Shell→Service: shared contract + canaries + secret probe
 
 **Completed (merged + deployed):**
