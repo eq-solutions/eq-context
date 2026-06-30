@@ -37,9 +37,12 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **5 orphaned worktree dirs removed** — `determined-edison/gauss`, `eager-elion`, `sharp-gauss`, `wonderful-dubinsky` under `.claude/worktrees/` (empty 8K husks + one vendored `eq-intake/node_modules`, no `.git` link, no unique work). `git worktree prune` run; only `clever-wilson-161a7a` remains registered.
 - [x] **`worktree-registry.md` updated** — cleared the stale Active row, logged the prune + dir removals.
 
-**Deferred (added 2026-06-30):**
-- [ ] **Review the 43 stale-for-review local branches** — no merge record, left untouched for an eyeball before pruning. Includes **14 closed-unmerged PRs whose remotes still exist** (`cert-import-timeout-fix2` #508, `drift-allowlist-rcd-views` #443, `field-handoff-docs` #442, `sec-workers-tenant-scope` #444, `crm-customers-polish` #415, `cards-api-invite-ip-throttle` #379, `quotes-sync-sks-canonical` #321, `crm-customers-hub-area2` #213, `etl-complete-apply` #220, `security-groups-page-legibility` #208, `sks-field-host` #194, `field-f1-prep` #177, `c3-auth-spike` #72, `affectionate-yonath` #62) + agent-name/rebase/docs leftovers _(added 2026-06-30)_
-- [ ] **2 remote-only branches** never in local set — `fix/canonical-wiring-migration-rename`, `fix/check6-find-invites-allow`; left alone (possibly another agent's), verify before deleting _(added 2026-06-30)_
+**Deferred (added 2026-06-30) → RESOLVED same day:**
+- [x] **Reviewed + pruned the 43 stale-for-review branches** — content-checked each vs `origin/main` (distinctive-line grep) + cross-referenced closed-PR status. **42 safe-deleted: 39 local + 10 remote** (8 closed-PR remotes + 2 remote-only). Safe = content already in main, no-code husk, or explicitly-closed PR (human-rejected). _(done 2026-06-30)_
+- [x] **2 remote-only branches deleted** — `fix/canonical-wiring-migration-rename` (23d stale; canonical wiring shipped via other PRs, files all in main) + `fix/check6-find-invites-allow` (closed PR #489, no-code). Royce confirmed remote deletion. _(done 2026-06-30)_
+- [ ] **3 docs-spike branches KEPT — Royce's call to delete** — `claude/design-system-tokens` (41d; early @eq/tokens design spec + design-audit-2026-05-20.md), `claude/epic-ellis-987f75` (23d; single SCHEMA-GOVERNANCE.md note), `claude/vigilant-cray-4e074e` (36d; HANDOFF-*.md session notes). These hold **unique unmerged docs not in main** — superseded, but deleting unmerged work needs your sign-off. Likely all 3 safe to `git branch -D` _(added 2026-06-30)_
+
+**Final state:** eq-shell local branches **49 → 9** (6 active + 3 docs-spikes pending your call); remote **14 → 5** (only active: main, ops-pipeline-enhancements, staff-matrix-fixes, audit-team-access-events, hex-burndown-staff).
 
 ---
 
