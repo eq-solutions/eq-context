@@ -1,7 +1,7 @@
 ---
 title: Chat Bootstrap Prompt
 owner: Royce Milmlow
-last_updated: 2026-06-28
+last_updated: 2026-06-30
 scope: Paste at the start of every Claude Chat (claude.ai) session. Replaces the old Supabase context cache approach (retired 2026-06-22).
 read_priority: reference
 status: live
