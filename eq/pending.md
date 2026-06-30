@@ -14,6 +14,35 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-06-30 (part i) — Licence-expiry config + CI/auth-test hardening + platform audit + security re-verify
+
+**Completed (eq-shell, merged + deployed):**
+- [x] **PR #557 merged** (`46a855e`) — training matrix licence numbers + CSV export + employment-type select. It "didn't work" because the commit (42cd2ed) was a **stranded unpushed worktree commit** — never PR'd. Rebased onto main, shipped. (Root-cause pattern: worktree commits invisible to prod until merged to main.)
+- [x] **PR #559 merged** (`8618d2a`) — **real CI gate** `.github/workflows/ci.yml` (vite-free `tsc -b` + `pnpm test` + advisory lint on every PR; was build-only) + **auth-hub test suite** (`token.test.ts` 11 + `supabase-jwt.test.ts` 8 → suite 66→85): session/handoff round-trip, per-consumer key isolation, alg-confusion, tamper, trusted-device binding. Gate caught its own first-run type error. eslint warn-level no-raw-hex rule on `src/**/*.tsx`.
+
+**Completed (live DB — jvkn, verified):**
+- [x] **SKS compliance email SET** — `notification_email = royce.milmlow@sks.com.au` → activates employer 7-day licence-expiry alert for SKS.
+- [x] **demo-trades + melbourne DEACTIVATED** (`active=false`) — 0 users / 0 Cards orgs each; killed the "4 active tenants" confusion. Active non-personal tenants now = sks + eq only. Reversible (not hard-deleted).
+
+**Security re-verify (read-only) — EQ-side exposures CLOSED; 3 stale memories corrected:**
+- [x] **zaap** PII tables RLS owner-scoped (`auth.uid()=user_id`) → anon 0 rows; no anon-readable views (no SECDEF bypass).
+- [x] **ehow** — no anon PII tables/views.
+- [x] **jvkn** — `eq_get_org_licences` + `eq_field_get_worker_summary` (SECDEF) now have anon AND authenticated EXECUTE **revoked** (service-role-only). The prior "most severe, unfixed, LIVE" worker-PII reads are CLOSED.
+
+**Housekeep:**
+- [x] Confirmed **PR #552 is a byte-identical DUPLICATE of #557** (StaffPage diff empty). Branch-prune chip spawned (214 local / 128 remote branches).
+
+**Deferred (added 2026-06-30):**
+- [ ] **Close duplicate PR #552** — identical to merged #557; auto-close was blocked (your own PR) _(needs Royce's call) (added 2026-06-30)_
+- [ ] **Make CI `verify` check REQUIRED** in eq-shell branch protection (Settings → Branches) — else the gate runs but doesn't block _(needs Royce's call) (added 2026-06-30)_
+- [ ] **Defense-in-depth: REVOKE anon grants** on zaap PII tables (workers/worker_credentials/worker_inductions/worker_assignments) via a One-Pipe migration — RLS neutralizes them, but they'd expose instantly if RLS were ever dropped _(added 2026-06-30)_
+- [ ] **nspbmir anon-PII audit** — couldn't verify (eq-guard blocks SKS-live from EQ sessions); needs a dedicated SKS-context session _(added 2026-06-30)_
+- [ ] **God-component extraction** (StaffPage MatrixView/SplitPanel out of the 2,094-line file) — deferred: blind refactor unverifiable without a running app _(added 2026-06-30)_
+- [ ] **Broad hex burndown → flip lint blocking** — blocked on adding slate/semantic tokens to eq-design-tokens (cross-repo design call) + reconciling published `eq-tokens.css` names vs loaded `@eq-solutions/ui/styles` names _(added 2026-06-30)_
+- [ ] **PR or batch the StaffPage hex slice** — branch `claude/hex-burndown-staff` (`0c4a43b`), 31 brand-hex→token conversions, not pushed _(added 2026-06-30)_
+
+---
+
 ## ⏩ Session close — 2026-06-30 (part h) — Attachments bucket private + migration dispatch
 
 **Completed (eq-shell, merged + deployed to ehow):**
@@ -219,7 +248,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 **Deferred:**
 - [x] **Set Twilio env on eq-shell Netlify** — `EQ_SMS_PROVIDER=twilio` + `TWILIO_ACCOUNT_SID/AUTH_TOKEN/FROM_NUMBER`; done + test endpoint confirmed both channels delivered _(done 2026-06-30)_
 - [x] **Set `SCHEDULER_TEST_SECRET`** on eq-shell Netlify to use the test endpoint _(done 2026-06-30)_
-- [ ] **Set SKS compliance email** at core.eq.solutions/sks/settings to activate the employer 7-day alert _(added 2026-06-29)_
+- [x] **Set SKS compliance email** to activate the employer 7-day alert — `shell_control.tenants.notification_email = royce.milmlow@sks.com.au` set on jvkn, verified live _(done 2026-06-30 part i)_
 - [ ] **Field-only workers** (ehow `app_data.licences`, no Cards wallet) not covered by the scheduler _(added 2026-06-29)_
 - [ ] **Employer 7-day alert still exact-day** (worker path hardened to range-based; Monday digest is the backstop) _(added 2026-06-29)_
 - [ ] **Worker→new-company bridge** (worker-vouched provision token + Cards "invite my employer" screen) — Phase 3, only if companies pull; touches provisioning/auth (Royce sign-off) _(added 2026-06-29)_

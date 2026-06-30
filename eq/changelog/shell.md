@@ -9,6 +9,10 @@ status: live
 
 # Changelog — EQ Shell
 
+## [2026-06-30] CI gate + auth-hub tests; training matrix (PRs #557 #559)
+
+PR #557 — training matrix: licence numbers on cells, CSV export, employment-type select (constrained dropdown). PR #559 — first real CI gate (`.github/workflows/ci.yml`: `tsc -b` + `pnpm test` + advisory lint on every PR; repo previously gated only on the Netlify build) and the auth-hub test suite (`token.test.ts`, `supabase-jwt.test.ts` — session/handoff round-trip, per-consumer key isolation, alg-confusion defence, trusted-device binding; suite 66→85). Added a warn-level no-raw-hex eslint rule on `src/**/*.tsx`. Also: set SKS `notification_email` (activates the employer 7-day licence-expiry alert) and deactivated the demo-trades/melbourne tenants.
+
 ## [2026-06-30] Attachments bucket private + Issues table (PRs #549 #555)
 - `attachments` storage bucket on ehow flipped to private (`public: false`); `tenant_signed_url` RLS policy on `storage.objects` enforces tenant folder isolation.
 - `list-attachments.ts` + `upload-attachment.ts` use `createSignedUrl` (1-hour TTL) instead of `getPublicUrl`.
