@@ -9,6 +9,9 @@ status: live
 
 # Changelog — EQ Shell
 
+## [2026-06-30] Tenant Activity Log → link tables (PR #547)
+- Migration 0147 adds audit triggers to `contact_customer_links` + `contact_site_links` (reuses `fn_audit('link_id')` from 0146). "Linked/unlinked contact to customer/site" now shows in the Activity log. Dispatched + verified both planes. Link events labelled "Contact ↔ customer/site" (id-only; name resolution deferred).
+
 ## [2026-06-30] Gate the Service mint with @eq-solutions/contracts (PR #543)
 - `token-exchange` (aud=service) now builds the handoff `app_metadata` as the shared `ShellHandoffClaims` and runtime-validates it (`validateHandoffClaims`) before signing — fails closed (500) rather than minting a token eq-service would reject. With eq-service consuming the same type, `tsc` fails on either repo if the contract drifts. Field path + the generic `SupabaseJwtClaims` shape untouched. Dep pinned `github:eq-solutions/eq-contracts#v0.1.0`.
 
