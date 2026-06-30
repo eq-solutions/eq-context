@@ -8,7 +8,7 @@ status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-06-29 (nightly cron)_
+_Last verified: 2026-06-30 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -58,7 +58,7 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-06-29)
+## Open PRs (as of 2026-06-30)
 
 **eq-service:**
 - #370 chore(deps): bump react and @types/react
@@ -70,7 +70,7 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## System Health (as of 2026-06-29)
+## System Health (as of 2026-06-30)
 
 **CI on main:**
 
