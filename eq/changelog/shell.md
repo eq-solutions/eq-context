@@ -13,6 +13,9 @@ status: live
 - Multi-cert import failed with "Import failed (500): Internal Error. ID: …". Root cause: `cert-import-parse-background` is a `-background` function (async Lambda invoke, ~256 KB payload limit vs 6 MB sync); POSTing multipart PDF bytes made Netlify reject the invocation before the handler ran (no function logs; the ID is a Netlify request id, not Sentry).
 - Fix: browser uploads each PDF via the synchronous `upload-asset-cert` endpoint, then hands the background parser only JSON `{ url, fileName }`; parser fetches bytes server-side (SSRF-guarded to `SUPABASE_URL`). Parse-time URLs reused at commit so each PDF uploads once.
 
+## [2026-07-01] Invite-path rejection email (PR #569)
+- `cards_field_approvals` reject (bulk-imported staff / invite path) now emails the worker. Opens tenant DB, fetches `app_data.staff` email + name by `staff_id`, sends "not approved at this time". Fire-and-forget, non-fatal. Completes the rejection notification coverage started in PR #568 (application path).
+
 ## [2026-07-01] Pending connections: blank name fix, rejection email, phone lookup fix (PRs #565 #567 #568)
 - PR #565: training matrix column headers show full licence names rotated vertically; pending connection cards stack name + buttons vertically on mobile; employment type shows human label not slug; iOS safe-area footer clearance.
 - PR #567: `staff-pending-connections.ts` — fallback to `app_data.staff` on ehow by phone for workers with null names in `public.workers` (phone-only Cards sign-up).

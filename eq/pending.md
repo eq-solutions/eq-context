@@ -63,7 +63,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - Admin notifications already live via `notify-connection-request` Supabase Edge Function (pg_net trigger on INSERT to `org_access_requests`). Bidirectional (worker→employer + employer→worker). Do not duplicate in eq-shell.
 
 **Deferred (added 2026-07-01):**
-- [ ] **Invite-path rejection email** — `cards_field_approvals` reject (bulk-imported staff) sends no worker notification; the PR #568 fix only covers the application path (self-signup via QR) _(added 2026-07-01)_
+- [x] **Invite-path rejection email** — `cards_field_approvals` reject now notifies the worker; PR #569 merged 2026-07-01 _(done 2026-07-01)_
 
 ---
 
