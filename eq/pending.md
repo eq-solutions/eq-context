@@ -14,6 +14,30 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-06-30 (ARMADA on eq-intake) — pre-bake + 4 clean fleet cycles
+
+**Completed (eq-intake / repo `eq-solutions/eq-solves-intake`, all merged to main):**
+- [x] **Pre-baked ARMADA** (PR #45) — vendored 10 skills + scripts into main checkout `.claude/` (local-only, gitignored + `.git/info/exclude`), `.armada/config.json` + `SETUP-NOTES.md`, 10 `armada*`/`fleet-defect` labels. Mirrors the eq-service pre-bake.
+- [x] **Cycle 1 — PR #48 (#47)** — eq-confirm-ui tests resolved `@eq/intake` via gitignored/stale `dist`; added vitest `resolve.alias` → `@eq/*` source (green from fresh checkout, no build), an `augment()` dependency-surface guard that surfaces missing exports instead of silently degrading, fixed 2 masked type errors in `FlaggedRowsTable.tsx` (the #13 `ai_enrichment`/`duplicate` flag kinds), + a regression test. 58 tests pass.
+- [x] **Cycle 2 — PR #50 (#49)** — fleet gate was `pnpm -C eq-platform check` over the whole workspace (red on stale `apps/*`). Added `check:packages` script; pointed `.armada/config.json` `commands.build` at it.
+- [x] **Cycle 3 — PR #51 (#46)** — **removed stale `apps/eq-service` + `apps/eq-shell`** (675 files) + dropped `apps/*` from `pnpm-workspace.yaml` + pruned lockfile. Investigation: PHASE-0 monorepo migration was abandoned (its Maximo-demo driver is parked); real apps ship from their own standalone repos. Full-workspace `check` is green again.
+- [x] **Polish — PR #52** — doc-rot follow-through: superseded banner on `PHASE-0-EQ-SERVICE-MONOREPO-MIGRATION.md`; fixed stale `apps/eq-shell/.env.local` ref in `EQ-TENANCY-MODEL.md`.
+
+**Decided (Royce):** set ARMADA up on eq-intake; hand-merge the cycle output as it goes; on #46, investigate-then-remove the app duplicates (not fix); wrap polishing once library verified clean.
+
+**Deferred (added 2026-06-30):**
+- [ ] **Arm crows-nest `/loop` on eq-intake** — 4 clean manual cycles now observed; still needs `CLAUDE_PLUGIN_ROOT` (plugin install, or `export CLAUDE_PLUGIN_ROOT=.claude/armada`) + Royce's go _(added 2026-06-30)_
+- [ ] **Add `test:` gate** to eq-intake `.armada/config.json` (e.g. `pnpm -C eq-platform test`) — unit tests green across packages, just not wired into the fleet gate yet _(added 2026-06-30)_
+- [ ] **(optional, needs your call)** Harden build-before-test workspace-wide so the stale-dist bug class (root of #47) can't recur — source-resolution or build-ordering across all packages _(added 2026-06-30)_
+- [ ] **(optional, needs your taste)** Archive stale root planning docs (`PLAN-*`, `OVERNIGHT-REVIEW-*`, `CONDUIT-AUDIT-*`) into `_archive/` _(added 2026-06-30)_
+
+**Notes (load-bearing):**
+- eq-intake has **no root `package.json`** — the pnpm workspace lives in `eq-platform/`; fleet gate = `pnpm -C eq-platform check:packages`. No CI workflows in the repo.
+- Vendored ARMADA skills are **local-only in the main checkout** `C:\Projects\eq-intake\.claude\` — run ARMADA from a session rooted at the repo root, NOT a `*-wt` worktree, or `/lighthouse` etc. won't resolve.
+- PHASE-0 monorepo migration is **abandoned**; `apps/eq-service`/`apps/eq-shell` are gone from eq-intake. eq-service = `eq-solves-service` repo, eq-shell = `eq-shell` repo (live, shipping daily).
+
+---
+
 ## ⏩ Session close — 2026-07-01 (part b) — Cert-import 500 root-caused + fixed (async payload wall)
 
 **Completed (eq-shell, MERGED + deploying):**
