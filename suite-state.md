@@ -61,7 +61,6 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-06-30)
 
 **eq-service:**
-- #383 feat(app): branded public 'What's New' page (/whats-new)
 - #370 chore(deps): bump react and @types/react
 - #369 chore(deps): bump docx from 9.6.1 to 9.7.1
 - #368 chore(deps-dev): bump @netlify/functions from 5.2.0 to 5.3.0
@@ -70,7 +69,7 @@ _If this file is >48h old, the cron is broken._
 - #363 fix(docs): update LOCAL_DEV.md project ID — urjh deleted, use ehow
 
 **eq-shell:**
-- #553 feat(audit): team & access events in tenant Activity Log
+- #554 chore(armada): pre-bake ARMADA config for eq-shell (autoMerge off)
 - #552 fix(staff): training matrix licence numbers + CSV export + employment type select
 
 ---
