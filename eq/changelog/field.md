@@ -1,7 +1,7 @@
 ---
 title: Changelog — EQ Solves Field
 owner: Royce Milmlow
-last_updated: 2026-06-26
+last_updated: 2026-06-30
 scope: Append-only history of changes to the EQ Solves Field product
 read_priority: reference
 status: live
