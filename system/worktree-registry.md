@@ -32,7 +32,7 @@ Check this file first — if your target repo/area is already claimed, coordinat
 
 | Folder | Branch | Agent / Session | Notes |
 |--------|--------|-----------------|-------|
-| .claude/worktrees/peaceful-golick-d78f88 (eq-solves-service) | main | housekeep session 2026-06-28 | Session worktree for PR #362. Git ref deregistered. Physical dir still exists — will auto-remove when session closes. |
+| _(none)_ | — | — | — |
 
 ---
 

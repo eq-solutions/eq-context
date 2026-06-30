@@ -38,8 +38,8 @@ supabase_projects:
     role: EQ Service + Field live DB
   - label: eq-solves-field
     ref: ktmjmdzqrogauaevbktn
-    status: live
-    role: EQ Field Supabase
+    status: deleted
+    role: Former EQ Field demo Supabase — cold backup since 2026-06-02, confirmed gone 2026-06-30 (not in Supabase project list; was never explicitly deleted by Royce but is no longer accessible)
   - label: eq-substrate (urjh)
     ref: urjhmkhbgaxrofurpbgc
     status: deleted
