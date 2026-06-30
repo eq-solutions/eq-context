@@ -70,6 +70,7 @@ _If this file is >48h old, the cron is broken._
 - #363 fix(docs): update LOCAL_DEV.md project ID — urjh deleted, use ehow
 
 **eq-shell:**
+- #552 fix(staff): training matrix licence numbers + CSV export + employment type select
 - #549 feat(ops): Phase 1 — Issues & Attachments on the canonical record
 
 ---
@@ -89,7 +90,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 164 (latest: 0162) applied
+**Migrations:** eq-service has 165 (latest: 0163) applied
 
 ---
 
