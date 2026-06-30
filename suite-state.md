@@ -61,6 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-06-30)
 
 **eq-service:**
+- #383 feat(app): branded public 'What's New' page (/whats-new)
 - #380 feat(app): add branded error boundaries (error.tsx + global-error.tsx)
 - #370 chore(deps): bump react and @types/react
 - #369 chore(deps): bump docx from 9.6.1 to 9.7.1
@@ -71,7 +72,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #552 fix(staff): training matrix licence numbers + CSV export + employment type select
-- #549 feat(ops): Phase 1 — Issues & Attachments on the canonical record
 
 ---
 
