@@ -14,6 +14,20 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-06-30 (part g) — Cards admin-console + labour-hire pilot (discussion only)
+
+**Decided (Royce):**
+- [x] **No admin console in Cards** — Core (Shell) stays the employer admin surface. Reasons: canonical records live in `app_data.*` owned by Shell (a Cards console would duplicate/couple them); Cards' value is worker-owned, an employer admin inside it breaks portability; two admin surfaces = double auth/audit. Re-confirms the 2026-06-15 "Core = employer only" call.
+- [x] **Labour-hire firm = the strongest wedge** — their product *is* workers, so Cards→Core→Field is their operating system, not a nice-to-have. Deeper hook than a general SMB. Pilot = firm-centric (Core + Field), Cards as the worker on-ramp; don't dilute Cards with admin to get there.
+- [x] **Pilot motion** — onboard the labour-hire firm SKS currently uses INTO Cards now; once profiles are populated, do a coffee + open Core > tenant and show them their own roster's compliance view live. Convert with a concrete pilot ask ("run your next N placements through it"), not "what do you think?".
+
+**Deferred (added 2026-06-30):**
+- [ ] **Onboard current labour-hire firm's workers to Cards** — Royce in progress; "need to fill up the info first" before any demo _(added 2026-06-30)_
+- [ ] **Dry-run Core > tenant view before the coffee demo** — verify what the tenant admin view actually renders + scope out anything not appropriate for the firm to see; offered, deferred until data is in _(added 2026-06-30)_
+- [ ] **Decide the pilot offer** — firm as guest in existing tenant vs their own tenant (changes the demo + the portability framing) _(needs Royce's call) (added 2026-06-30)_
+
+---
+
 ## ⏩ Session close — 2026-06-30 (part f) — Audit log team events + stub-match block + training matrix
 
 **Completed (eq-shell, PR #553 merged):**
