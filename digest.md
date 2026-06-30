@@ -8,38 +8,53 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-06-30 17:29 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-06-30 18:22 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-06-30 17:08 UTC → 2026-06-30 17:29 UTC)
+## Since last refresh (2026-06-30 17:29 UTC → 2026-06-30 18:22 UTC)
 
-- Merged: eq-shell [#568](https://github.com/eq-solutions/eq-shell/pull/568) fix(staff): pending connections — admin notify, reject email
-- Merged: eq-shell [#567](https://github.com/eq-solutions/eq-shell/pull/567) fix(staff): show name for existing staff in pending connecti
-- Merged: eq-shell [#564](https://github.com/eq-solutions/eq-shell/pull/564) refactor(pdf): @react-pdf/renderer replaces Puppeteer + chro
-- Merged: eq-shell [#513](https://github.com/eq-solutions/eq-shell/pull/513) fix(docs): correct stale EQ_SECRET_SALT guidance — HMAC reti
-- Merged: eq-shell [#474](https://github.com/eq-solutions/eq-shell/pull/474) fix(transport): iframe origin hardening — SKS token refresh,
-- Merged: eq-shell [#469](https://github.com/eq-solutions/eq-shell/pull/469) fix(auth): phone OTP login no longer requires a second TOTP 
-- Merged: eq-shell [#467](https://github.com/eq-solutions/eq-shell/pull/467) fix(auth): provision shell_control.users on Cards worker app
-- Merged: eq-shell [#455](https://github.com/eq-solutions/eq-shell/pull/455) fix(vendor): repair eq-intake PR #449 build regressions
-- ✅ Needs you: 1 → 0
+- Merged: eq-shell [#576](https://github.com/eq-solutions/eq-shell/pull/576) fix(staff): PostgrestBuilder→Promise cast via unknown — unbl
+- Merged: eq-shell [#571](https://github.com/eq-solutions/eq-shell/pull/571) fix(staff): destructure rejection_reason — unblock productio
+- Merged: eq-shell [#569](https://github.com/eq-solutions/eq-shell/pull/569) fix(staff): invite-path rejection email
+- Merged: eq-shell [#453](https://github.com/eq-solutions/eq-shell/pull/453) fix(staff): licence labels + photo CSP
+- Merged: eq-shell [#451](https://github.com/eq-solutions/eq-shell/pull/451) fix(jvkn): re-gate eq_field_get_worker_summary with org-memb
+- Merged: eq-shell [#447](https://github.com/eq-solutions/eq-shell/pull/447) fix(intake): mint-sks-jwt tenant check breaks platform admin
+- Merged: eq-solves-service [#383](https://github.com/eq-solutions/eq-service/pull/383) feat(app): branded public 'What's New' page (/whats-new)
+- Merged: eq-field [#381](https://github.com/eq-solutions/eq-field/pull/381) v3.5.217 — URL-per-tab deep-link support (Field side)
+- ⚠ Needs you: 0 → 1 (new items)
 
-## ✓ Needs you (0)
+## ⚠ Needs you (1)
 
-**Nothing flagged — every EQ repo green, no aging PRs, substrate honest.** ✓
+- 🟠 **Sentry new error** — `eq-cards` [minified:I3: Exception: Could not load Blob from its URL. Ha](https://eq-solutions.sentry.io/issues/131122766/)
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 0 | — |
+| eq-shell | ? unknown | ? | 3 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 6 | 2d |
 | eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ? unknown | ? | 0 | — |
 
+## Live errors (Sentry)
+
+| Project | Error | Events | Last seen |
+|---------|-------|--------|-----------|
+| eq-cards | [minified:I3: Exception: Could not load Blob from its URL. Has it been revoked?](https://eq-solutions.sentry.io/issues/131122766/) | 3 | 2026-06-30 |
+| eq-shell | [UnhandledRejection: Non-Error promise rejection captured with value: Object Not ](https://eq-solutions.sentry.io/issues/129495069/) | 2 | 2026-06-30 |
+| eq-shell | [Cards iframe did not fire onLoad within 30s](https://eq-solutions.sentry.io/issues/130446042/) | 2 | 2026-06-29 |
+| eq-shell | [captureServerError](https://eq-solutions.sentry.io/issues/130413967/) | 2 | 2026-06-29 |
+| eq-shell | [EQ Service iframe did not load within timeout](https://eq-solutions.sentry.io/issues/130169257/) | 2 | 2026-06-29 |
+| eq-shell | [EQ Field handoff network error: Load failed](https://eq-solutions.sentry.io/issues/130061083/) | 2 | 2026-06-29 |
+_[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunresolved)_
+
 ## Recently built (last 7 days)
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-06-30 | eq-shell | [#576](https://github.com/eq-solutions/eq-shell/pull/576) fix(staff): PostgrestBuilder→Promise cast via unknown — unblock t |
+| 2026-06-30 | eq-shell | [#571](https://github.com/eq-solutions/eq-shell/pull/571) fix(staff): destructure rejection_reason — unblock production bui |
+| 2026-06-30 | eq-shell | [#569](https://github.com/eq-solutions/eq-shell/pull/569) fix(staff): invite-path rejection email |
 | 2026-06-30 | eq-shell | [#568](https://github.com/eq-solutions/eq-shell/pull/568) fix(staff): pending connections — admin notify, reject email, pho |
 | 2026-06-30 | eq-shell | [#567](https://github.com/eq-solutions/eq-shell/pull/567) fix(staff): show name for existing staff in pending connections |
 | 2026-06-30 | eq-shell | [#566](https://github.com/eq-solutions/eq-shell/pull/566) fix(ui): iOS spinner animation — will-change: transform on all CS |
@@ -52,24 +67,21 @@ _2026-06-30 17:29 UTC · what needs your attention. Full snapshot: [suite-state.
 | 2026-06-30 | eq-solves-service | [#380](https://github.com/eq-solutions/eq-service/pull/380) feat(app): add branded error boundaries (error.tsx + global-error |
 | 2026-06-30 | eq-solves-service | [#381](https://github.com/eq-solutions/eq-service/pull/381) fix(canonical): filter service.sites view by active = true |
 | 2026-06-30 | eq-solves-service | [#378](https://github.com/eq-solutions/eq-service/pull/378) feat(ui): branded 404 page — app/not-found.tsx |
-| 2026-06-30 | eq-field | [#380](https://github.com/eq-solutions/eq-field/pull/380) v3.5.216 — edge function canonical rewrite (ehow compatibility) |
-| 2026-06-30 | eq-field | [#379](https://github.com/eq-solutions/eq-field/pull/379) security(zaap): revoke residual anon grants on worker-PII tables |
-| 2026-06-30 | eq-field | [#378](https://github.com/eq-solutions/eq-field/pull/378) v3.5.215 — Supervisor Notes live on SKS + Teams realtime |
-_Showing 15 of 107 · full record in [sessions/](sessions/)_
+_Showing 15 of 108 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- EQ Cards: ARMADA lighthouse — PR #109 was merged before `armada:lighthouse` label applied; Calum's system likely needs an open PR. New open PR with label OR Calum runs manually _(added 2026-06-30)_
-- EQ Cards: Contact John Angangan to retry signup — duplicate-worker fix (migrations 0062/0063) is now live _(added 2026-06-30)_
-- EQ Cards: Wrap `eq_cards_find_pending_invite` RPC call (`otp_screen.dart:163`) into `WorkerSelfRepository` data layer — low priority, no behaviour change _(added 2026-06-30)_
-- **EQ Ops active jobs view** — roster tab pulling from `app_data.jobs` (customer, site, job no, days active, value); not built _(added 2026-06-30)_
-- **EQ Ops home tile** — Shell home tile with overdue follow-ups, stale quotes, active jobs; not built _(added 2026-06-30)_
-- **Field crew on job** — workers in Field see their assigned job; requires eq-field repo changes _(added 2026-06-30)_
-- **`issues.*` PermKeys activation** — Phase 3 when Issues UI ships for EQ plane; currently deferred constants _(added 2026-06-30)_
-- **3 docs-spike branches KEPT — Royce's call to delete** — `claude/design-system-tokens` (41d; early @eq/tokens design spec + design-audit-2026-05-20.md), `claude/epic-ellis-987f75` (23d; single SCHEMA-GOVERNANCE.md note), `claude/vigilant-cray-4e074e` (36d; HANDOFF-*.md session notes). These hold **unique unmerged docs not in main** — superseded, but deleting unmerged work needs your sign-off. Likely all 3 safe to `git branch -D` _(added 2026-06-30)_
-- **nspbmir anon-PII audit** — NOT done (per Royce "don't touch nspbmir"); eq-guard blocks SKS-live from EQ sessions anyway → needs a dedicated SKS-context session _(added 2026-06-30)_
-- **God-component extraction** (StaffPage MatrixView/SplitPanel out of the 2,094-line file) — still deferred: needs a running-app session to verify layout (tsc catches imports, not render); the #562 same-file conflict is now cleared (merged) _(added 2026-06-30)_
-_…and 149 more · [eq/pending.md](eq/pending.md)_
+- **Add `TENANT_UUID = 7dee117c-98bd-4d39-af8c-2c81d02a1e85` to ehow edge function secrets** — Supabase dashboard → Project Settings → Edge Functions → Secrets. All 4 functions 500 without it. _(Royce action) (added 2026-07-01)_
+- **Update pg_cron digest cron URL** — check ehow pg_cron; if referencing `supervisor-digest-v2`, update to `supervisor-digest`. _(added 2026-07-01)_
+- **Shell-side URL-per-tab PR** (eq-shell repo) — Shell reads `?tab=` from its own URL → appends `&tab=<slug>` to Field iframe src; listens for `EQ_TAB_CHANGE` → `history.pushState`. Prompt written. _(added 2026-07-01)_
+- **Arm crows-nest `/loop` on eq-intake** — 4 clean manual cycles now observed; still needs `CLAUDE_PLUGIN_ROOT` (plugin install, or `export CLAUDE_PLUGIN_ROOT=.claude/armada`) + Royce's go _(added 2026-06-30)_
+- **Add `test:` gate** to eq-intake `.armada/config.json` (e.g. `pnpm -C eq-platform test`) — unit tests green across packages, just not wired into the fleet gate yet _(added 2026-06-30)_
+- **(optional, needs your call)** Harden build-before-test workspace-wide so the stale-dist bug class (root of #47) can't recur — source-resolution or build-ordering across all packages _(added 2026-06-30)_
+- **(optional, needs your taste)** Archive stale root planning docs (`PLAN-*`, `OVERNIGHT-REVIEW-*`, `CONDUIT-AUDIT-*`) into `_archive/` _(added 2026-06-30)_
+- **Verify cert import live** — once deploy goes green, import multiple certs at core.eq.solutions (hard-refresh for new panel JS); parser now writes a real failure reason to job status if a download fails _(added 2026-07-01)_
+- **Merge + smoke PR #573** — Netlify preview at deploy-preview-573--eq-shell.netlify.app. Smoke: navigate tabs → URL updates; bookmark `?tab=timesheets` → reload lands on Timesheets _(added 2026-07-01)_
+- **Clean up `fix/remove-dead-cert-parse` local branch** — has a stray deep-link commit from branch confusion; `git -C C:\Projects\eq-shell reset --hard f6a0a90` once ready _(added 2026-07-01, needs your call)_
+_…and 166 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -89,11 +101,11 @@ _…and 15 more · [sks/pending.md](sks/pending.md)_
 
 | Date | Session |
 |------|---------|
+| 2026-07-01 | [Pending connections audit + 3 gap fixes merged](sessions/2026-07-01.md) |
 | 2026-06-30 | [EQ Field canonical sprint complete (v3.5.207–212)](sessions/2026-06-30.md) |
 | 2026-06-30 | [2026-06-30 (part g) — Field canonical wiring sprint: v3.5.207–v3.5.211](sessions/2026-06-30-field-canonical-sprint-g.md) |
 | 2026-06-29 | [SKS data reset + maintenance check page parallelization](sessions/2026-06-29.md) |
 | 2026-06-28 | [Brain 10/10: substrate coherence + automation layer](sessions/2026-06-28-brain-10-10.md) |
-| 2026-06-28 | [EQ Service batch-create fix](sessions/2026-06-28-batch-create-fix.md) |
 _[sessions/](sessions/) · 5 shown_
 
 ## Substrate honesty
@@ -101,4 +113,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-06-30 17:29 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-06-30 18:22 UTC._
