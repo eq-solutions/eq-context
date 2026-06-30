@@ -14,6 +14,20 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-06-30 (part j) — eq-shell branch prune (215→49) + worktree cleanup
+
+**Completed (eq-shell git hygiene — no product code touched):**
+- [x] **Branch audit + prune** — 215 local → **49**; remote pruned to **14**. Method: each branch's PR merge-state from GitHub (`mergedAt`, authoritative squash record), then **content-verified** — for the 27 merged branches carrying post-merge-dated commits, grepped their distinctive added strings against `origin/main` and confirmed every feature identifier shipped (`sks_comms_materials`, `invoiced_amount`, `tender_phases`, `notify-substrate.yml`, etc.). No branch judged by SHA-ancestry (squash makes SHAs look stranded). Deleted 166 local (160 squash-merged + 6 no-PR-but-content-in-main) + 96 remote.
+- [x] **Caught a stale registry row** — `claude/sharp-gauss-e31cdd` was listed *Active* (Phase 1 Issues & Attachments) in `worktree-registry.md`, but it had actually merged twice that day (PR #549 09:04 + #553 09:38). GitHub ground-truth (which the prune used) correctly removed it; registry was lagging.
+- [x] **5 orphaned worktree dirs removed** — `determined-edison/gauss`, `eager-elion`, `sharp-gauss`, `wonderful-dubinsky` under `.claude/worktrees/` (empty 8K husks + one vendored `eq-intake/node_modules`, no `.git` link, no unique work). `git worktree prune` run; only `clever-wilson-161a7a` remains registered.
+- [x] **`worktree-registry.md` updated** — cleared the stale Active row, logged the prune + dir removals.
+
+**Deferred (added 2026-06-30):**
+- [ ] **Review the 43 stale-for-review local branches** — no merge record, left untouched for an eyeball before pruning. Includes **14 closed-unmerged PRs whose remotes still exist** (`cert-import-timeout-fix2` #508, `drift-allowlist-rcd-views` #443, `field-handoff-docs` #442, `sec-workers-tenant-scope` #444, `crm-customers-polish` #415, `cards-api-invite-ip-throttle` #379, `quotes-sync-sks-canonical` #321, `crm-customers-hub-area2` #213, `etl-complete-apply` #220, `security-groups-page-legibility` #208, `sks-field-host` #194, `field-f1-prep` #177, `c3-auth-spike` #72, `affectionate-yonath` #62) + agent-name/rebase/docs leftovers _(added 2026-06-30)_
+- [ ] **2 remote-only branches** never in local set — `fix/canonical-wiring-migration-rename`, `fix/check6-find-invites-allow`; left alone (possibly another agent's), verify before deleting _(added 2026-06-30)_
+
+---
+
 ## ⏩ Session close — 2026-06-30 (part i) — Licence-expiry config + CI/auth-test hardening + platform audit + security re-verify
 
 **Completed (eq-shell, merged + deployed):**

@@ -1,7 +1,7 @@
 ---
 title: Worktree Registry
 owner: Royce Milmlow
-last_updated: 2026-06-30
+last_updated: 2026-06-30 (branch prune + worktree cleanup)
 scope: Active and stale git worktrees — check before creating a new one
 read_priority: critical
 status: live
@@ -33,6 +33,20 @@ Check this file first — if your target repo/area is already claimed, coordinat
 | Folder | Branch | Agent / Session | Notes |
 |--------|--------|-----------------|-------|
 | _(none)_ | — | — | — |
+
+---
+
+## Recently pruned (2026-06-30)
+
+Branch audit + prune: 166 local + 96 remote merged/redundant branches deleted (215→49 local). 5 orphaned worktree dirs removed + `git worktree prune`. Only `clever-wilson-161a7a` remains registered.
+
+| Folder | Branch | Notes |
+|--------|--------|-------|
+| .claude/worktrees/sharp-gauss-e31cdd (eq-shell) | claude/sharp-gauss-e31cdd | **Stale Active row — branch actually merged via PR #549 + #553 (2026-06-30).** Dir held only vendored eq-intake/node_modules, no unique work. Branch deleted; directory removed 2026-06-30. |
+| .claude/worktrees/determined-gauss-626b33 (eq-shell) | — | Empty husk (8K), no .git link, no matching branch. Directory removed 2026-06-30. |
+| .claude/worktrees/eager-elion-6ebfcb (eq-shell) | — | Empty husk (8K), no .git link, no matching branch. Directory removed 2026-06-30. |
+| .claude/worktrees/wonderful-dubinsky-41d96f (eq-shell) | claude/wonderful-dubinsky-41d96f | Empty husk (8K); **branch KEPT (active, unmerged)** — commits safe in object store, dir was just leftover. Directory removed 2026-06-30. |
+| .claude/worktrees/determined-edison-d6f176 (eq-shell) | — | Re-appeared empty husk (8K); previously listed pruned 2026-06-28. Directory removed 2026-06-30. |
 
 ---
 
