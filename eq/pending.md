@@ -14,6 +14,34 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-06-30 (handoff hardening) — Shell→Service: shared contract + canaries + secret probe
+
+**Completed (merged + deployed):**
+- [x] **New package `@eq-solutions/contracts` v0.1.0** — single source of truth for the Shell→Service handoff JWT `app_metadata` (`ShellHandoffClaims` type + dependency-free `validateHandoffClaims`). Mirrors the eq-roles packaging model (ships `index.ts` + built `index.js`, consumed via `github:eq-solutions/eq-contracts#v0.1.0`, no transpilePackages).
+- [x] **eq-service #371** — RPC return-shape drift added to `canonical-types-drift`; inbound JWT type deduped onto `ServiceJwtClaims`.
+- [x] **eq-service #373** — structured auth-handoff Sentry canaries (`captureAuthHandoff`): secret_mismatch/no_email/slug_unresolved = error, expired/malformed/cookie_unusable = warning. `validateSupabaseJwt` returns a discriminated reason (sig checked before expiry).
+- [x] **eq-service #374 + eq-shell #543** — both repos adopt `ShellHandoffClaims`: Service consumes it + runtime-validates; Shell validates the service-mint before signing. **tsc now fails on either side if the contract drifts** — drift is impossible, not just detected.
+- [x] **eq-service #376** — fail closed on unresolved tenant slug: 403 `service-account-not-found` (the code the /shell client already surfaces) instead of minting a JWT with Shell's UUID → blank app. Verified ehow has one active row (slug `sks`) → SKS unaffected.
+- [x] **eq-context #53** — cross-repo JWT contract drift canary (scheduled key-diff). Largely superseded by the compile gate; kept as defense-in-depth.
+- [x] **eq-context #54** — md-health rule 17.4 stops false-flagging the generated `sessions/INDEX.md` (+ aligned the duplicated check in `md-health-daily.py`). `health` is green again.
+- [x] **eq-context #55** — synthetic Shell→Service handoff probe (every 30 min): mints a test JWT, POSTs to `/api/shell-auth`, alerts on 401 (secret drift). **Armed** — `EQ_SHELL_JWT_SECRET` added to eq-context GH secrets; first run green = real login confirmed working end-to-end.
+
+**Decided (Royce):**
+- The handoff contract is a shared compile-time + runtime-enforced package (the "ultimate solution") — chosen over keeping only the daily drift canary. New repo `eq-contracts`, not folded into eq-roles.
+- Enforcement = type + dependency-free validator on both ends (not Zod, to keep eq-shell dep-free).
+
+**Deferred (added 2026-06-30):**
+- [ ] **auth_handoff Sentry alert** — native rule on `canary=auth_handoff` AND `level=error` (catches real-user slug_unresolved/no_email; the probe already covers secret drift). MCP is read-only for alert rules → 2-min UI action (recipe on file), or build the watcher-as-code _(added 2026-06-30)_
+- [ ] **Contracts versioning discipline** — both repos pin `#v0.1.0`; on any contract change, bump the package + tag + update BOTH consumer pins together. The compile gate only holds when the pins match _(added 2026-06-30)_
+- [ ] **Add eq-contracts to the suite-state cron** repo list so the new package shows in the nightly snapshot _(added 2026-06-30)_
+
+**Notes / gotchas (load-bearing):**
+- **Handoff secret now lives in 3 places** — eq-shell `SUPABASE_JWT_SECRET`, eq-service `EQ_SHELL_JWT_SECRET`, eq-context probe GH secret `EQ_SHELL_JWT_SECRET`. Rotate all three together or the handoff breaks / the probe false-alarms.
+- **Stacked-PR trap:** merging a base PR with `--delete-branch` auto-CLOSES a stacked child PR. Recover by rebasing the child's commit onto main + opening a fresh PR. Don't `--delete-branch` a base that has an open stacked child.
+- **Sentry project slug = `eq-solves-service`** (folder name), not the GitHub repo name `eq-service`. Netlify projects = `eq-service` (`service.eq.solutions`) + `eq-shell` (`core.eq.solutions`).
+
+---
+
 ## ⏩ Session close — 2026-06-30 (part c) — Staff licence-review fixes + duplicate-stub root cause
 
 **Completed (eq-shell, merged + deployed):**

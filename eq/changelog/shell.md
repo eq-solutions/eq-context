@@ -9,6 +9,9 @@ status: live
 
 # Changelog — EQ Shell
 
+## [2026-06-30] Gate the Service mint with @eq-solutions/contracts (PR #543)
+- `token-exchange` (aud=service) now builds the handoff `app_metadata` as the shared `ShellHandoffClaims` and runtime-validates it (`validateHandoffClaims`) before signing — fails closed (500) rather than minting a token eq-service would reject. With eq-service consuming the same type, `tsc` fails on either repo if the contract drifts. Field path + the generic `SupabaseJwtClaims` shape untouched. Dep pinned `github:eq-solutions/eq-contracts#v0.1.0`.
+
 ## [2026-06-30] Staff licence-review fixes (PRs #544, #545, #546)
 - **#544** — review badge stops flipping to "re-review" for licences that predate the review (`reviewBadgeFor` compares licence `created_at` vs `reviewed_at`).
 - **#545** — Cards onboarding matches an existing staff stub (worker-link → exact email → phone) instead of creating a duplicate. Closes the email gap in the auto-detect path.

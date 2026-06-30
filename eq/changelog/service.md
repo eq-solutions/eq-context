@@ -1,13 +1,19 @@
 ---
 title: Changelog — EQ Solves Service
 owner: Royce Milmlow
-last_updated: 2026-06-10
+last_updated: 2026-06-30
 scope: Append-only history of changes to the EQ Solves Service product
 read_priority: reference
 status: live
 ---
 
 # Changelog — EQ Solves Service
+
+## [2026-06-30] Shell→Service handoff: shared contract + auth canaries + fail-closed (PRs #371, #373, #374, #376)
+- **Adopted `@eq-solutions/contracts`** (#374) — `ServiceJwtClaims.app_metadata` is now the shared `ShellHandoffClaims` type; `verifyServiceJwt` + `validateSupabaseJwt` runtime-validate the full contract (was email-only). `tsc` now fails if the Shell→Service claim shape drifts.
+- **Auth-handoff Sentry canaries** (#373) — `captureAuthHandoff(reason)` on every handoff failure; `validateSupabaseJwt` returns a discriminated reason (signature checked before expiry → distinguishes a rotated secret from a stale token). `layout.tsx` flags `cookie_unusable`.
+- **Fail closed on unresolved tenant slug** (#376) — 403 `service-account-not-found` instead of minting a JWT with Shell's tenant UUID (which matched no RLS rows → blank app). Reuses the existing `/shell` client error surface.
+- **RPC return-shape drift gate + JWT type dedupe** (#371) — `canonical-types-drift` also diffs `Functions` return columns; the inbound JWT interface deduped onto `ServiceJwtClaims`.
 
 ## [2026-06-29] Parallelize maintenance check detail page (PR #365)
 
