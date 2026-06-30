@@ -1,13 +1,17 @@
 ---
 title: Changelog — EQ Solves Field
 owner: Royce Milmlow
-last_updated: 2026-06-30
+last_updated: 2026-07-01
 scope: Append-only history of changes to the EQ Solves Field product
 read_priority: reference
 status: live
 ---
 
 # Changelog — EQ Solves Field
+
+## [2026-07-01] v3.5.216–v3.5.217 — Canonical edge fn rewrite + URL-per-tab Field side
+- **v3.5.216 (PR #380)** — 4 Supabase edge functions rewritten for `app_data.*` canonical schema (ehow compatibility): `supervisor-digest`, `ts-reminder`, `tafe-weekly-fill`, `shift-events`. All 4 deployed to ehow for the first time (were not previously deployed there). `ts_reminders_sent` table created on ehow.
+- **v3.5.217 (PR #381)** — URL-per-tab Field side: `showPage()` emits `{ type: 'EQ_TAB_CHANGE', tab: <slug> }` postMessage to Shell on every tab switch; `initApp()` reads `?tab=` from the iframe src and activates the named tab after role routing. Feature is inert until the Shell-side PR lands.
 
 ## [2026-06-30] Security — zaap worker-PII anon-grant revoke (no version bump — DB migration)
 - **PR #379** (`18b17b8`) — defense-in-depth on the Field data plane (`zaapmfdkgedqupfjtchl`, eq-canonical-internal). `REVOKE ALL FROM anon` on `public.workers`, `worker_credentials`, `worker_inductions`, `worker_assignments`. Migration `supabase/migrations/20260630_zaap_worker_cluster_anon_revoke.sql`, applied live via Supabase MCP (`zaap_worker_cluster_anon_revoke`). DB-only, no app version bump.
