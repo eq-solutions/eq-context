@@ -25,11 +25,17 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 **Audit truth (reconciled):**
 - Site selection in **both** Field and Service ALREADY honors the activation flags — `service.sites` filters `service_enabled`, `field_sites` filters `field_enabled`. Earlier "Field not wired" was a STALE-CHECKOUT error (local eq-field was 11 commits behind origin). Defaults clean: `active`/`field_enabled`/`service_enabled` all default `true`, NOT NULL → new sites visible in both apps automatically.
 
-**Deferred (added 2026-06-30):**
-- [ ] **`service.sites` filter `active`** — mirror the field_sites fix in eq-solves-service (`AND s.active = true`). Spawned as task chip. Latent leak (0 rows today) _(added 2026-06-30)_
-- [ ] **Merge eq-field `claude/field-sites-active-filter`** to record the field_sites migration (DB already applied) _(added 2026-06-30)_
+**Also completed (part e — continued):**
+- [x] **`service.sites` filter `active`** — DONE; applied to ehow + migration `0163_service_sites_filter_active.sql` in eq-service (task chip actioned).
+- [x] **Merged eq-field `claude/field-sites-active-filter`** — PR #367 merged; field_sites migration recorded.
+- [x] **x-eq-actor capture VERIFIED working** — real shell edits carry `source='shell'` + populated `actor_id` on ehow `app_data.audit_log`.
+- [x] **PR #551 merged** — actor coverage gap closed: `update-data-activation` (F/S toggles) + `asset-calibration` mutated the spine via the NON-audited client → logged as `source='system'`. Swapped both to `getAuditedTenantDataClientById(tenant_id, session.user_id)`.
+
+**Deferred (added 2026-06-30) — next session (prompt written in sessions/2026-06-30.md part e):**
+- [ ] **Activity Log — team & access events** — invites/role-changes/group membership mutate shell_control (jvkn) not the spine → need APP-LEVEL writes to app_data.audit_log at invite-user/edit-user/security-groups (domain-not-storage) _(added 2026-06-30)_
 - [ ] **Activity Log — name resolution for link events** (link rows carry only ids; feed shows "Contact ↔ site" without names) _(added 2026-06-30)_
-- [ ] **Onboarding name-only stub match panel** — force admin confirmation when a name_close candidate exists (null-email/no-phone stubs can't auto-match) _(added 2026-06-30)_
+- [ ] **Onboarding name-only stub match panel** — force admin confirmation when a name_close candidate exists (null-email/no-phone stubs can't auto-match); NEEDS block-vs-warn UX call _(added 2026-06-30)_
+- [ ] **Platform Security Log / operator console** — sign-ins/2FA audit (jvkn, admin-audit.ts reads it); deferred by decision _(added 2026-06-30)_
 
 ---
 

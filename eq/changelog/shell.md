@@ -14,6 +14,9 @@ status: live
 - "Apply to all sites" button in customer header: propagates customer-level Field/Service settings to every site in one click (manager-gated, ≥2 sites).
 - Contact picker dropdowns in Edit Site and Add Site modals sorted A-Z.
 
+## [2026-06-30] Activity Log: actor coverage for F/S toggles + calibration (PR #551)
+- `x-eq-actor` capture verified working (real shell edits carry `source='shell'` + actor). Closed a coverage gap: `update-data-activation` (per-site/customer Field/Service toggles) and `asset-calibration` mutated the spine via the non-audited client → logged as `source='system'` with no actor. Both swapped to `getAuditedTenantDataClientById(tenant_id, session.user_id)`.
+
 ## [2026-06-30] Tenant Activity Log → link tables (PR #547)
 - Migration 0147 adds audit triggers to `contact_customer_links` + `contact_site_links` (reuses `fn_audit('link_id')` from 0146). "Linked/unlinked contact to customer/site" now shows in the Activity log. Dispatched + verified both planes. Link events labelled "Contact ↔ customer/site" (id-only; name resolution deferred).
 

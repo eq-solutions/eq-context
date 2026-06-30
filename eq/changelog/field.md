@@ -10,7 +10,7 @@ status: live
 # Changelog — EQ Solves Field
 
 ## [2026-06-30] field_sites honours `active` (archived sites retire from Field)
-- `app_data.field_sites` view tightened to `WHERE field_enabled = true AND active = true` (was `field_enabled` only). An archived site (active=false) now drops out of EQ Field even if field_enabled is still true. Applied live to ehow; migration `20260630_field_sites_filter_active.sql` on branch `claude/field-sites-active-filter` (not yet merged to main). Zero rows affected at apply time. Mirror fix for `service.sites` pending in eq-solves-service.
+- `app_data.field_sites` view tightened to `WHERE field_enabled = true AND active = true` (was `field_enabled` only). An archived site (active=false) now drops out of EQ Field even if field_enabled is still true. Applied live to ehow; migration `20260630_field_sites_filter_active.sql` merged via PR #367. Zero rows affected at apply time. Mirror fix for `service.sites` also done (eq-service migration 0163).
 
 ## [2026-06-30] v3.5.199 → v3.5.206 — Overnight security audit + canonical-wiring execution
 **Built by:** Royce Milmlow + Claude Code
