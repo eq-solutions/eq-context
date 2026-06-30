@@ -14,6 +14,21 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-06-30 (part k) — EQ Ops pipeline: age badge + attachment types + 0152 + PR #552 merge
+
+**Completed (eq-shell, merged + deployed):**
+- [x] **PR #560 merged** — EQ Ops pipeline enhancements: migration `0152_quote_status_changed_at.sql` (adds `status_changed_at timestamptz` to `app_data.quote`, backfill from `quote_status_history`, stamps on every `eq_update_quote_status` call, `eq_list_quotes`/`eq_get_quote_detail` RPCs rebuilt with DROP+CREATE); board age-in-stage chip (`stageAge()` → `3d`/`2w`/`1mo`, amber ≥14d); attachment types `supplier_quote`/`drawing`/`quality_doc` added to `VALID_ATTACHMENT_TYPES` and `AttachmentList` (type picker + `TypeBadge`); `workbench_job_no` added to `WRITABLE_FIELDS.jobs` in `canonical-api.ts`; `syncJobToCanonical` forwards it on save.
+- [x] **PR #552 merged** (`6ee18e2`) — training matrix licence numbers + CSV export + employment-type select (was blocked by drift check: `field_teams`/`field_team_members` missing from `KNOWN_LEGACY_ANON` on branch `claude/staff-matrix-fixes`; added `3fa4e5e`, CI passed)
+- [x] **Migrations 0147–0152 applied to both planes** — zaap (eq, run `28440001680`) + ehow (sks, run `28440004156`); both required `allow_checksum_drift=true`
+
+**Deferred (added 2026-06-30):**
+- [ ] **EQ Ops active jobs view** — roster tab pulling from `app_data.jobs` (customer, site, job no, days active, value); not built _(added 2026-06-30)_
+- [ ] **EQ Ops home tile** — Shell home tile with overdue follow-ups, stale quotes, active jobs; not built _(added 2026-06-30)_
+- [ ] **Field crew on job** — workers in Field see their assigned job; requires eq-field repo changes _(added 2026-06-30)_
+- [ ] **`issues.*` PermKeys activation** — Phase 3 when Issues UI ships for EQ plane; currently deferred constants _(added 2026-06-30)_
+
+---
+
 ## ⏩ Session close — 2026-06-30 (part j) — eq-shell branch prune (215→49) + worktree cleanup
 
 **Completed (eq-shell git hygiene — no product code touched):**
@@ -44,10 +59,10 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **jvkn** — `eq_get_org_licences` + `eq_field_get_worker_summary` (SECDEF) now have anon AND authenticated EXECUTE **revoked** (service-role-only). The prior "most severe, unfixed, LIVE" worker-PII reads are CLOSED.
 
 **Housekeep:**
-- [x] Confirmed **PR #552 is a byte-identical DUPLICATE of #557** (StaffPage diff empty). Branch-prune chip spawned (214 local / 128 remote branches).
+- [x] Confirmed **PR #552 is a byte-identical DUPLICATE of #557** (StaffPage diff empty). Branch-prune chip spawned (214 local / 128 remote branches). **CORRECTION (part k): was NOT a duplicate — had real changes; merged `6ee18e2` 2026-06-30 after fixing drift check.**
 
 **Deferred (added 2026-06-30):**
-- [ ] **Close duplicate PR #552** — identical to merged #557; auto-close was blocked (your own PR) _(needs Royce's call) (added 2026-06-30)_
+- [x] **Close duplicate PR #552** — NOT a duplicate; real training-matrix changes. Drift check blocked merge (field_teams/field_team_members missing from KNOWN_LEGACY_ANON on branch). Fixed `3fa4e5e`, merged `6ee18e2` _(done 2026-06-30)_
 - [ ] **Make CI `verify` check REQUIRED** in eq-shell branch protection (Settings → Branches) — else the gate runs but doesn't block _(needs Royce's call) (added 2026-06-30)_
 - [ ] **Defense-in-depth: REVOKE anon grants** on zaap PII tables (workers/worker_credentials/worker_inductions/worker_assignments) via a One-Pipe migration — RLS neutralizes them, but they'd expose instantly if RLS were ever dropped _(added 2026-06-30)_
 - [ ] **nspbmir anon-PII audit** — couldn't verify (eq-guard blocks SKS-live from EQ sessions); needs a dedicated SKS-context session _(added 2026-06-30)_
@@ -65,8 +80,8 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **Migrations 0147–0151 applied to ehow** via tenant-migrate.yml (sks slug, allow_checksum_drift=true). `attachments` bucket confirmed `public: false`.
 
 **Deferred (added 2026-06-30):**
-- [ ] **Issues/Attachments Phase 2** — dispatch 0147_issues_table to zaap when EQ Ops goes live on the EQ plane; flip `issues.*` PermKeys from deferred to active _(added 2026-06-30)_
-- [ ] **Signed URL refresh** — attachment URLs are 1-hour TTL; long-running sessions will show broken images silently; no refresh mechanism built _(added 2026-06-30)_
+- [x] **Issues/Attachments Phase 2** — 0147–0152 dispatched to zaap (eq plane, run `28440001680`, allow_checksum_drift=true) _(done 2026-06-30 part k)_; `issues.*` PermKeys deferred Phase 3
+- [ ] **Signed URL refresh** — URLs now 7-day TTL (PR #556 raised from 1hr); no auto-refresh mechanism _(updated 2026-06-30)_
 
 ---
 

@@ -9,6 +9,10 @@ status: live
 
 # Changelog — EQ Shell
 
+## [2026-06-30] EQ Ops pipeline: age badge, attachment types, 0152 migration, PR #552 (PRs #552 #560)
+- PR #560: `status_changed_at` on `app_data.quote` (migration 0152 + backfill + RPC rebuild); board time-in-stage badge (amber ≥14d); attachment types `supplier_quote`/`drawing`/`quality_doc` with type picker + TypeBadge; `workbench_job_no` in canonical-api WRITABLE_FIELDS.jobs + syncJobToCanonical. Migrations 0147–0152 applied to both planes.
+- PR #552: training matrix licence numbers + CSV export + employment-type select (was blocked by `field_teams`/`field_team_members` not in KNOWN_LEGACY_ANON on branch; fixed `3fa4e5e`).
+
 ## [2026-06-30] CI gate + auth-hub tests; training matrix (PRs #557 #559)
 
 PR #557 — training matrix: licence numbers on cells, CSV export, employment-type select (constrained dropdown). PR #559 — first real CI gate (`.github/workflows/ci.yml`: `tsc -b` + `pnpm test` + advisory lint on every PR; repo previously gated only on the Netlify build) and the auth-hub test suite (`token.test.ts`, `supabase-jwt.test.ts` — session/handoff round-trip, per-consumer key isolation, alg-confusion defence, trusted-device binding; suite 66→85). Added a warn-level no-raw-hex eslint rule on `src/**/*.tsx`. Also: set SKS `notification_email` (activates the employer 7-day licence-expiry alert) and deactivated the demo-trades/melbourne tenants.
