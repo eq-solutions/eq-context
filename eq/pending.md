@@ -14,6 +14,35 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-06-30 (EQ Field) — Overnight security audit + canonical-wiring execution
+
+**Completed (eq-field, merged + deployed — v3.5.199 → v3.5.206 + migrations):**
+- [x] **Overnight security audit** — closed CRITICAL anon read/write/DELETE on live `public.tenders` (366 rows) + cluster via **Option A** (canonical org `000…002` scoping; the established SKS `public.*` standard); `field_people` definer→invoker; `job_numbers` hardened; neutralised the stale `20260618_acknowledgments.sql` (anon-grant footgun). Verified anon→401, authenticated→366.
+- [x] **SKS = Core-only auth** (v3.5.200) — standalone PIN gate disabled for SKS (was reachable via iframe→handoff-fail→leaked-PIN + `frame-ancestors *.netlify.app`). Whole PIN subsystem retired (v3.5.203).
+- [x] **Incident fix: SKS Contacts/roster blank** (v3.5.201–202) — `window.TENANT` was never exposed, so canonical adapters couldn't detect the tenant → schedule reads 400 → `Promise.all` cascade blanked the directory. Fixed: expose `window.TENANT` + adapter allow-list authoritative (missing PostHog flag no longer disables) + per-fetch load resilience.
+- [x] **Full canonical-wiring audit** (12 features, verified live) → repo `FIELD-CANONICAL-AUDIT-2026-06-30.md` (local-only).
+- [x] **#1 unlock (v3.5.203)** — granted authenticated CRUD on `app_data.schedule_entries/timesheets/leave_requests` (+ `hours_planned` DEFAULT 0); were service_role-only → JWT 401'd before RLS. **Roster/Timesheets/Leave now write-capable.** Proven via authenticated-JWT insert.
+- [x] **Tender writes (v3.5.204)** — `tender_enrichment` hardened to canonical org + enrichment/nominations/tender_phases added to `ORG_TABLES` (were 403 on write).
+- [x] **Dead surfaces retired (v3.5.205)** — Presence + Supervisor Notes off for SKS.
+- [x] **Managers + Sites read-only for SKS (v3.5.206)** — Shell-owned; 8 write entry points gated.
+- [x] **Digest opt-out (PR #365)** — backfilled 19 supervisors opted-in; `field_managers.digest_opt_in` made writable via a digest-only INSTEAD OF trigger. Toggle works; everyone preserved.
+- [x] **Job Numbers** — removed dead `populateJobNumberDatalist()` calls (spurious "Save failed").
+
+**Decided (Royce):** managers/sites = read-only in Field (Shell-owned); supervisor notes = retire (worker-first); teams = wire; presence = off; digest = opt-out (keep everyone). EQ Field operational status: "not live yet" stands for the operational surface (schedule/timesheets/safety empty), but the **shared deploy + directory data are real** — treat changes touching them as live.
+
+**Deferred (added 2026-06-30):**
+- [ ] **Teams wire** — field_teams/field_team_members twins + grants + RLS + JWT routing (0-row unused feature; lowest value) _(added 2026-06-30)_
+- [ ] **Safety canonical wiring** — grant the 3 `field_*` twins (per-twin base: prestarts→public.prestarts, toolbox/diary→app_data.*) + **CREATE site_audits/site_audit_items** (don't exist despite the v3.5.193 changelog claim) matching audits.js schema _(added 2026-06-30)_
+- [ ] **Apprentices cluster** — create missing tables (competencies/feedback_requests/apprentice_journal) + field_* twins + JWT routing + grants + org RLS + migrate 2 orphan apprentice_profiles rows (largest debt — dedicated session) _(added 2026-06-30)_
+- [ ] **Realtime publication** — add app_data.schedule_entries/leave_requests to supabase_realtime (verify realtime.js channel target first) _(added 2026-06-30)_
+- [ ] **app_data.staff.user_id backfill** — ~61 SKS staff unresolved (14/75 via field_person_by_user_id); may need a Core account→staff_id mapping _(added 2026-06-30)_
+- [ ] **worker_id link mirror removal** — dead `_tryLinkPersonToWorker` PATCH (400s, swallowed) _(added 2026-06-30)_
+- [ ] **SKS audit-log fix** — AUDIT_SB_KEY → ehow service_role + stamp org_id in verify-pin.js/eq-agent.js (Royce sets the env secret) _(added 2026-06-30)_
+- [ ] **frame-ancestors tightening** — drop `*.netlify.app` (clickjacking surface; declined once) _(added 2026-06-30)_
+- [ ] **app_config PIN key-scoping** — hygiene (PINs gate nothing now but still anon-readable) _(added 2026-06-30)_
+
+---
+
 ## ⏩ Session close — 2026-06-30 — Tenant Activity Log + polish fixes
 
 **Completed (eq-shell, merged + deployed):**

@@ -9,6 +9,20 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-06-30] v3.5.199 → v3.5.206 — Overnight security audit + canonical-wiring execution
+**Built by:** Royce Milmlow + Claude Code
+**Security (migrations on ehow):**
+- Closed CRITICAL anon read/write/DELETE on live `public.tenders` (366 rows) + the tender cluster — Option A canonical-org (`000…002`) scoping, anon torn down, authenticated CRUD. `field_people` definer→invoker; `job_numbers` hardened; stale `20260618_acknowledgments.sql` neutralised.
+- **SKS = Core-only auth** (v3.5.200): standalone PIN gate + whole PIN subsystem retired for SKS.
+**Incident fix (v3.5.201–202):** SKS Contacts/roster blanked — `window.TENANT` was never exposed so the canonical adapters couldn't detect the tenant → schedule reads 400 → boot cascade. Fixed (expose `window.TENANT`, adapter allow-list authoritative, per-fetch load resilience).
+**Canonical wiring (from the 12-feature audit):**
+- v3.5.203 — **#1 unlock:** authenticated CRUD granted on `app_data.schedule_entries/timesheets/leave_requests` (+ `hours_planned` DEFAULT 0) → Roster/Timesheets/Leave write-capable. Job Numbers dead-call fix.
+- v3.5.204 — Tender Pipeline enrichment/nominations/phases writes unblocked (`tender_enrichment` hardened + `ORG_TABLES` stamping).
+- v3.5.205 — Presence + Supervisor Notes retired for SKS (dead/absent surfaces).
+- v3.5.206 — Managers + Sites read-only for SKS (Shell-owned; write entry points gated).
+- Digest opt-out (DB migration, no version bump): `field_managers.digest_opt_in` writable via a digest-only INSTEAD OF trigger; 19 supervisors backfilled opted-in.
+**Deferred:** Teams wire, Safety grants + create `site_audits`, Apprentices cluster, realtime publication, `user_id` backfill (see `eq/pending.md`).
+
 ## [2026-06-26] v3.5.191 — Safety docs: footer parity (page numbers + EQ Solves credit)
 **Built by:** Royce Milmlow + Claude Code
 **Changes:**
