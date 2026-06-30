@@ -9,6 +9,10 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-06-30] Security — zaap worker-PII anon-grant revoke (no version bump — DB migration)
+- **PR #379** (`18b17b8`) — defense-in-depth on the Field data plane (`zaapmfdkgedqupfjtchl`, eq-canonical-internal). `REVOKE ALL FROM anon` on `public.workers`, `worker_credentials`, `worker_inductions`, `worker_assignments`. Migration `supabase/migrations/20260630_zaap_worker_cluster_anon_revoke.sql`, applied live via Supabase MCP (`zaap_worker_cluster_anon_revoke`). DB-only, no app version bump.
+- These tables already had RLS on with `auth.uid()`-scoped owner policies (anon got 0 rows; all empty) — the anon GRANT was latent risk only. Now closed-by-default at the privilege layer. `authenticated` (worker self-service) + `service_role` retained; RLS/policies untouched. Verified anon→permission-denied post-apply. eq-shell drift baseline unchanged (tables were never anon-reachable per the drift checker).
+
 ## [2026-06-30] v3.5.212 — audit_log: org_id stamp + manager_name fix
 - **verify-pin.js** `logAttempt()`: stamps `org_id: TENANT_ORG_UUID` in the POST body. `org_id` is NOT NULL on `audit_log` — the missing field caused every auth sign-in row to 401 silently and be dropped. Guard: skipped when `TENANT_ORG_UUID` is null (fallback deployments keep working).
 - **eq-agent.js** `logAgentCall()`: same `org_id` fix. Also renames wrong column `who` → `manager_name` (`audit_log` schema uses `manager_name` throughout — the mismatch caused agent-call rows to also drop). Added `TENANT_ORG_UUID` env var read.

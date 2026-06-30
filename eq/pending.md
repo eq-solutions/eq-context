@@ -14,6 +14,19 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-06-30 (eq-field) — zaap worker-PII anon-grant revoke (defense-in-depth)
+
+**Completed (eq-field, merged + applied live):**
+- [x] **PR #379 merged** (`18b17b8`) — `REVOKE ALL FROM anon` on the four worker-PII tables on **zaap** (`zaapmfdkgedqupfjtchl`, eq-canonical-internal / Field data plane): `public.workers`, `worker_credentials`, `worker_inductions`, `worker_assignments`. Closed-by-default at the privilege layer. Applied live via Supabase MCP (`zaap_worker_cluster_anon_revoke`); repo record `supabase/migrations/20260630_zaap_worker_cluster_anon_revoke.sql`. DB-only, no app deploy.
+- [x] **Verified pre + post** — pre: anon held SELECT/INSERT/UPDATE/DELETE but RLS-on + `auth.uid()`-scoped owner policies → anon already 0 rows (latent risk, not active breach); all 4 tables empty. Post: anon zero table privilege (permission-denied / 401), `authenticated` keeps SELECT/INSERT (self-service via owner policies), `service_role` full, RLS + policies intact (3/4/4/3).
+- [x] **eq-shell drift baseline** — NO `KNOWN_LEGACY_ANON` edit needed. `check-tenant-drift.mjs` only flags anon-*reachable* tables (RLS off OR bare-`true` policy); these are RLS-on + `auth.uid()`-gated → `reachable=false` → never on the tracked anon-exposed list. Confirmed against the detection SQL.
+
+**Deferred:** none.
+
+**Notes:** Same hardening channel as the 2026-06-29 tender-cluster anon teardown. Cards onboarding writes (`eq_cards_claim_invite` etc.) run via SECURITY DEFINER RPCs (execute as owner) → unaffected by role grants. The separate `eq_field_get_worker_summary` SECDEF PII path was already anon/authenticated-revoked in eq-shell 2026-06-27 — out of scope here.
+
+---
+
 ## ⏩ Session close — 2026-06-30 (EQ Cards blob fix) — Sentry EQ-CARDS-W CanvasKit blob URL revocation
 
 **Completed (eq-cards):**
@@ -75,7 +88,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **Close duplicate PR #552** — NOT a duplicate; real training-matrix changes. Drift check blocked merge (field_teams/field_team_members missing from KNOWN_LEGACY_ANON on branch). Fixed `3fa4e5e`, merged `6ee18e2` _(done 2026-06-30)_
 - [x] **Made CI `verify` check REQUIRED** — branch protection on eq-shell main now requires both `typecheck · test · lint` AND `Schema drift + anon-grant + policy-lint` (via `gh api`) _(done 2026-06-30 part i)_
 - [x] **Brand-hex burndown phase 1 — PR #562 merged** (`01718a4`): 105 single-quoted brand-hex literals → `var(--eq-sky/-deep/-ink)` across 19 files. Value-identical (those are the FIXED base tokens; BrandProvider overrides `--eq-brand` not `--eq-sky`, verified `brand.tsx:54`). Single-quote targeting structurally skipped the var()-incompatible double-quoted `fill=`/alpha cases. _(done 2026-06-30 part i)_
-- [→] **Defense-in-depth: REVOKE anon grants on zaap PII tables** — HANDED TO eq-field via task chip (`task_3c021ad3`). It's EQ Field's `public.*` schema, not eq-shell's to migrate (cross-repo rule); pure defense-in-depth (RLS already → anon 0 rows) _(handoff 2026-06-30 part i)_
+- [x] **Defense-in-depth: REVOKE anon grants on zaap PII tables** — DONE in eq-field (PR #379, merged `18b17b8`). `REVOKE ALL FROM anon` on `public.workers`/`worker_credentials`/`worker_inductions`/`worker_assignments`; authenticated + service_role retained; RLS/owner policies intact; verified anon→permission-denied. eq-shell `KNOWN_LEGACY_ANON` needed no change (RLS-on + auth.uid()-gated → never anon-reachable on the drift checker) _(done 2026-06-30)_
 - [ ] **nspbmir anon-PII audit** — NOT done (per Royce "don't touch nspbmir"); eq-guard blocks SKS-live from EQ sessions anyway → needs a dedicated SKS-context session _(added 2026-06-30)_
 - [ ] **God-component extraction** (StaffPage MatrixView/SplitPanel out of the 2,094-line file) — still deferred: needs a running-app session to verify layout (tsc catches imports, not render); the #562 same-file conflict is now cleared (merged) _(added 2026-06-30)_
 - [ ] **Flip lint `no-raw-hex` to blocking** — still gated: ~770 slate/semantic hexes have no loadable token; needs tokens ADDED in eq-design-tokens (cross-repo design call) + reconciling published `eq-tokens.css` names vs loaded `@eq-solutions/ui/styles` (`--eq-danger` vs `--eq-err`) _(added 2026-06-30)_
