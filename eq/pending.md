@@ -41,7 +41,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **Training Matrix overhaul** — full licence names rotated 90° in column headers; `empTypeLabel()` + `minHeight` fix subtitle alignment; tooltip shows proper name not schema key; Export Excel button writes `.xlsx` via SheetJS
 
 **Deferred (added 2026-06-30):**
-- [ ] **Dispatch tenant migrations 0147_issues_table → 0151_field_teams_rls to ehow** (sks slug, `allow_checksum_drift=true`) via tenant-migrate.yml — Royce triggers in GitHub Actions _(added 2026-06-30)_
+- [x] **Dispatch tenant migrations 0147_issues_table → 0151_field_teams_rls to ehow** (sks slug, `allow_checksum_drift=true`) via tenant-migrate.yml _(done 2026-06-30 — ehow at 0151; PR #555 merged no-op fix for field_teams views)_
 
 ---
 
