@@ -8,33 +8,33 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-06-30 00:03 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-06-30 08:18 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-06-29 23:29 UTC → 2026-06-30 00:03 UTC)
+## Since last refresh (2026-06-30 00:03 UTC → 2026-06-30 08:18 UTC)
 
-- Merged: eq-shell [#528](https://github.com/eq-solutions/eq-shell/pull/528) fix(cards): overwrite stale workers.staff_id on approval
-- Merged: eq-shell [#527](https://github.com/eq-solutions/eq-shell/pull/527) feat(gm-reports): carry forward invoice run statuses to new 
-- Merged: eq-shell [#526](https://github.com/eq-solutions/eq-shell/pull/526) fix(gm-reports): clamp invoice popover to viewport right edg
-- Merged: eq-shell [#520](https://github.com/eq-solutions/eq-shell/pull/520) fix(build): TS errors blocking Netlify — SMS fields + mapSit
-- Merged: eq-shell [#519](https://github.com/eq-solutions/eq-shell/pull/519) fix(staff): employment type dropdown + hide retired quotes m
-- Merged: eq-shell [#518](https://github.com/eq-solutions/eq-shell/pull/518) feat(admin): EQ Service admin tiles in Shell Admin hub
-- Merged: eq-shell [#513](https://github.com/eq-solutions/eq-shell/pull/513) fix(docs): correct stale EQ_SECRET_SALT guidance — HMAC reti
-- Merged: eq-solves-service [#376](https://github.com/eq-solutions/eq-service/pull/376) Fail closed on unresolved Shell→Service tenant slug (audit g
+- Merged: eq-shell [#551](https://github.com/eq-solutions/eq-shell/pull/551) fix(audit): stamp actor on Field/Service toggle + calibratio
+- Merged: eq-shell [#550](https://github.com/eq-solutions/eq-shell/pull/550) feat(crm): sites inline toggle table + apply-all + A-Z conta
+- Merged: eq-shell [#547](https://github.com/eq-solutions/eq-shell/pull/547) feat(audit): extend Tenant Activity Log to contact link tabl
+- Merged: eq-shell [#532](https://github.com/eq-solutions/eq-shell/pull/532) fix(iframes): suppress Sentry errors from background pre-war
+- Merged: eq-shell [#531](https://github.com/eq-solutions/eq-shell/pull/531) fix(auth): resend Shell invite instead of blocking
+- Merged: eq-shell [#530](https://github.com/eq-solutions/eq-shell/pull/530) fix(auth): promote Cards-worker stub on invite accept
+- Merged: eq-shell [#529](https://github.com/eq-solutions/eq-shell/pull/529) feat(eq-ops): clickable status badge in quote detail panel
+- Merged: eq-shell [#525](https://github.com/eq-solutions/eq-shell/pull/525) fix(gm-reports): refresh uploaded_at on re-upload
+- ✅ Needs you: 4 → 3
 
-## ⚠ Needs you (4)
+## ⚠ Needs you (3)
 
-- 🔴 **Substrate drift** — DRIFT: supabase eq-solves-field (ktmjmdzqrogauaevbktn): claimed LIVE but reality looks DEAD
 - 🟠 **Sentry new error** — `eq-cards` [minified:iF: ServerFailure(42883): operator does not exist: ](https://eq-solutions.sentry.io/issues/131103567/)
 - 🟠 **Sentry new error** — `eq-shell` [EQ Field handoff HTTP 403](https://eq-solutions.sentry.io/issues/130938311/)
-- 🟡 **1 stale worktree** need cleanup — [worktree-registry.md](system/worktree-registry.md)
+- 🟠 **Sentry new error** — `eq-cards` [LateInitializationError: Field '' has not been initialized.](https://eq-solutions.sentry.io/issues/131100659/)
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 0 | — |
-| eq-solves-service | ✓ success | 0d ago | 6 | 1d |
-| eq-field | ✓ success | 26d ago | 0 | — |
+| eq-shell | ? unknown | ? | 1 | 0d |
+| eq-solves-service | ✓ success | 0d ago | 7 | 2d |
+| eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ? unknown | ? | 0 | — |
 
@@ -44,18 +44,25 @@ _2026-06-30 00:03 UTC · what needs your attention. Full snapshot: [suite-state.
 |---------|-------|--------|-----------|
 | eq-cards | [minified:iF: ServerFailure(42883): operator does not exist: uuid = text](https://eq-solutions.sentry.io/issues/131103567/) | 6 | 2026-06-29 |
 | eq-shell | [EQ Field handoff HTTP 403](https://eq-solutions.sentry.io/issues/130938311/) | 3 | 2026-06-29 |
+| eq-cards | [LateInitializationError: Field '' has not been initialized.](https://eq-solutions.sentry.io/issues/131100659/) | 2 | 2026-06-30 |
+| eq-cards | [LateInitializationError: Field '' has not been initialized.](https://eq-solutions.sentry.io/issues/131100658/) | 2 | 2026-06-30 |
 | eq-shell | [Cards iframe did not fire onLoad within 30s](https://eq-solutions.sentry.io/issues/130446042/) | 2 | 2026-06-29 |
 | eq-shell | [captureServerError](https://eq-solutions.sentry.io/issues/130413967/) | 2 | 2026-06-29 |
 | eq-shell | [EQ Service iframe did not load within timeout](https://eq-solutions.sentry.io/issues/130169257/) | 2 | 2026-06-29 |
 | eq-shell | [EQ Field handoff network error: Load failed](https://eq-solutions.sentry.io/issues/130061083/) | 2 | 2026-06-29 |
-| eq-cards | [<unknown>](https://eq-solutions.sentry.io/issues/131104929/) | 1 | 2026-06-29 |
-| eq-cards | [LateInitializationError: Field '' has not been initialized.](https://eq-solutions.sentry.io/issues/131100659/) | 1 | 2026-06-29 |
 _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunresolved)_
 
 ## Recently built (last 7 days)
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-06-30 | eq-shell | [#551](https://github.com/eq-solutions/eq-shell/pull/551) fix(audit): stamp actor on Field/Service toggle + calibration edi |
+| 2026-06-30 | eq-shell | [#550](https://github.com/eq-solutions/eq-shell/pull/550) feat(crm): sites inline toggle table + apply-all + A-Z contacts |
+| 2026-06-30 | eq-shell | [#547](https://github.com/eq-solutions/eq-shell/pull/547) feat(audit): extend Tenant Activity Log to contact link tables |
+| 2026-06-30 | eq-solves-service | [#378](https://github.com/eq-solutions/eq-service/pull/378) feat(ui): branded 404 page — app/not-found.tsx |
+| 2026-06-30 | eq-field | [#368](https://github.com/eq-solutions/eq-field/pull/368) v3.5.208 — canonical wiring: Safety module fully wired for SKS |
+| 2026-06-30 | eq-field | [#367](https://github.com/eq-solutions/eq-field/pull/367) fix(canonical): field_sites filters active too (archived sites re |
+| 2026-06-30 | eq-field | [#366](https://github.com/eq-solutions/eq-field/pull/366) v3.5.207 — canonical wiring: Roster/Leave realtime + Teams wire + |
 | 2026-06-30 | eq-field | [#365](https://github.com/eq-solutions/eq-field/pull/365) chore(canonical): record digest opt-out migration (field_managers |
 | 2026-06-29 | eq-shell | [#546](https://github.com/eq-solutions/eq-shell/pull/546) fix(staff): profile review state matches the table badge |
 | 2026-06-29 | eq-shell | [#545](https://github.com/eq-solutions/eq-shell/pull/545) fix(staff): match existing staff stub on Cards approval instead o |
@@ -64,28 +71,21 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-06-29 | eq-shell | [#542](https://github.com/eq-solutions/eq-shell/pull/542) feat(customers): customer-level Field/Service toggles in the head |
 | 2026-06-29 | eq-shell | [#541](https://github.com/eq-solutions/eq-shell/pull/541) feat(customers): site street address + Field/Service toggles per  |
 | 2026-06-29 | eq-shell | [#540](https://github.com/eq-solutions/eq-shell/pull/540) fix(customers): Add Site 500 — remove non-existent site_contact_i |
-| 2026-06-29 | eq-shell | [#539](https://github.com/eq-solutions/eq-shell/pull/539) feat(audit): Tenant Activity Log — who changed what on the canoni |
-| 2026-06-29 | eq-shell | [#536](https://github.com/eq-solutions/eq-shell/pull/536) fix: staff edit 500, audit log, employment type, Add Site modal |
-| 2026-06-29 | eq-shell | [#538](https://github.com/eq-solutions/eq-shell/pull/538) feat(notifications): range-based worker reminders + SMS opt-out |
-| 2026-06-29 | eq-shell | [#537](https://github.com/eq-solutions/eq-shell/pull/537) fix(notifications): repoint licence-expiry scheduler to eq-canoni |
-| 2026-06-29 | eq-shell | [#534](https://github.com/eq-solutions/eq-shell/pull/534) polish(shell): staff approval fixes, compliance pack, site/custom |
-| 2026-06-29 | eq-shell | [#535](https://github.com/eq-solutions/eq-shell/pull/535) fix(equipment): cert-import 500 — read body before waitUntil + ad |
-| 2026-06-29 | eq-shell | [#533](https://github.com/eq-solutions/eq-shell/pull/533) fix(auth): upsert membership to handle existing inactive rows |
 _Showing 15 of 110 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **Verify header→GUC actor capture** — confirm `actor_id` populates on the first real UI edit; if it shows "Automatic", the change still logs but who-attribution needs a follow-up _(added 2026-06-30)_
-- **Activity Log — team & access events** — invites / role-changes as app-level writes to the tenant plane (no spine row to trigger on) _(added 2026-06-30)_
-- **Activity Log — link-table triggers** — contact_customer_links, contact_site_links _(added 2026-06-30)_
-- **Platform Security Log / operator console** — sign-ins/2FA audit (jvkn), operator-only, separate from the tenant page _(added 2026-06-30)_
-- **Set Twilio env on eq-shell Netlify** — `EQ_SMS_PROVIDER=twilio` + `TWILIO_ACCOUNT_SID/AUTH_TOKEN/FROM_NUMBER`; SMS is log-only until then (email works) _(added 2026-06-29)_
-- **Set `SCHEDULER_TEST_SECRET`** on eq-shell Netlify to use the test endpoint _(added 2026-06-29)_
-- **Set SKS compliance email** at core.eq.solutions/sks/settings to activate the employer 7-day alert _(added 2026-06-29)_
-- **Field-only workers** (ehow `app_data.licences`, no Cards wallet) not covered by the scheduler _(added 2026-06-29)_
-- **Employer 7-day alert still exact-day** (worker path hardened to range-based; Monday digest is the backstop) _(added 2026-06-29)_
-- **Worker→new-company bridge** (worker-vouched provision token + Cards "invite my employer" screen) — Phase 3, only if companies pull; touches provisioning/auth (Royce sign-off) _(added 2026-06-29)_
-_…and 129 more · [eq/pending.md](eq/pending.md)_
+- **`service.sites` filter `active`** — mirror the field_sites fix in eq-solves-service (`AND s.active = true`). Spawned as task chip. Latent leak (0 rows today) _(added 2026-06-30)_
+- **Merge eq-field `claude/field-sites-active-filter`** to record the field_sites migration (DB already applied) _(added 2026-06-30)_
+- **Activity Log — name resolution for link events** (link rows carry only ids; feed shows "Contact ↔ site" without names) _(added 2026-06-30)_
+- **Onboarding name-only stub match panel** — force admin confirmation when a name_close candidate exists (null-email/no-phone stubs can't auto-match) _(added 2026-06-30)_
+- **Run first `shipwright` build** of #377 — in a dedicated Claude Code session rooted in eq-service (skills load from its `.claude/skills/`; can't be driven from another repo's session). Runbook in SETUP-NOTES + today's session log _(added 2026-06-30)_
+- **crows-nest `/loop`** — needs `CLAUDE_PLUGIN_ROOT` (plugin install, or `export CLAUDE_PLUGIN_ROOT=.claude/armada`); don't arm until one clean manual cycle is observed _(added 2026-06-30)_
+- **Add `test: vitest run`** to eq-service `.armada/config.json` once a clean cycle is seen + unit-test green verified _(added 2026-06-30)_
+- **auth_handoff Sentry alert** — native rule on `canary=auth_handoff` AND `level=error` (catches real-user slug_unresolved/no_email; the probe already covers secret drift). MCP is read-only for alert rules → 2-min UI action (recipe on file), or build the watcher-as-code _(added 2026-06-30)_
+- **Contracts versioning discipline** — both repos pin `#v0.1.0`; on any contract change, bump the package + tag + update BOTH consumer pins together. The compile gate only holds when the pins match _(added 2026-06-30)_
+- **Add eq-contracts to the suite-state cron** repo list so the new package shows in the nightly snapshot _(added 2026-06-30)_
+_…and 146 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -114,7 +114,7 @@ _[sessions/](sessions/) · 5 shown_
 
 ## Substrate honesty
 
-✗ Drift detected — see **Needs you** above. Source: `scripts/substrate_honesty.py`.
+✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-06-30 00:03 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-06-30 08:18 UTC._

@@ -1,10 +1,11 @@
 # Session Index
-_42 logs · reverse-chronological · auto-generated_
+_43 logs · reverse-chronological · auto-generated_
 
 | Date | Session |
 |------|---------|
 | 2026-06-30 | [Tenant Activity Log shipped (audit by domain, not storage)](sessions/2026-06-30.md) |
 | 2026-06-29 | [SKS data reset + maintenance check page parallelization](sessions/2026-06-29.md) |
+| 2026-06-29 | [2026-06-29-field-overnight-audit](sessions/2026-06-29-field-overnight-audit.md) |
 | 2026-06-28 | [2026-06-28](sessions/2026-06-28.md) |
 | 2026-06-28 | [2026-06-28-types-copy-audit](sessions/2026-06-28-types-copy-audit.md) |
 | 2026-06-28 | [Brain 10/10: substrate coherence + automation layer](sessions/2026-06-28-brain-10-10.md) |
