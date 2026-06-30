@@ -68,12 +68,6 @@ _If this file is >48h old, the cron is broken._
 - #366 chore(deps): bump @eq-solutions/ui from v1.8.0 to v1.9.0 in the eq-design-system group across 1 directory
 - #363 fix(docs): update LOCAL_DEV.md project ID — urjh deleted, use ehow
 
-**eq-shell:**
-- #575 feat(staff): training matrix — filter, sort, selection, column fixes
-- #574 fix(staff): destructure rejection_reason in handleApplication — unblock prod build
-- #572 chore(equipment): remove dead synchronous cert-import-parse function
-- #570 fix(env): Google Maps key prefix + dead NETLIFY_CONTEXT Sentry fallback
-
 ---
 
 ## System Health (as of 2026-06-30)
