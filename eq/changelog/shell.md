@@ -9,6 +9,11 @@ status: live
 
 # Changelog — EQ Shell
 
+## [2026-06-30] CRM: sites inline toggle table + apply-all button + A-Z contacts (PR #550)
+- Sites section on the customer detail panel replaced with a compact 5-column table (name, address, Field, Service, actions). Field/Service toggles are inline — click fires immediately, no modal or Save button required. Row click still filters contacts. Delete confirm expands as a full-width inline row.
+- "Apply to all sites" button in customer header: propagates customer-level Field/Service settings to every site in one click (manager-gated, ≥2 sites).
+- Contact picker dropdowns in Edit Site and Add Site modals sorted A-Z.
+
 ## [2026-06-30] Tenant Activity Log → link tables (PR #547)
 - Migration 0147 adds audit triggers to `contact_customer_links` + `contact_site_links` (reuses `fn_audit('link_id')` from 0146). "Linked/unlinked contact to customer/site" now shows in the Activity log. Dispatched + verified both planes. Link events labelled "Contact ↔ customer/site" (id-only; name resolution deferred).
 
