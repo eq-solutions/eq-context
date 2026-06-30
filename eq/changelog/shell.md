@@ -9,6 +9,11 @@ status: live
 
 # Changelog — EQ Shell
 
+## [2026-07-01] Sentry fixes — approval dedup, Cards timer race, PDF fetch catch (PR #579)
+- `cards_field_approvals` insert → upsert to prevent 23505 on re-approval (EQ-SHELL-E)
+- `CardsIframe` 30s timer: `activeRef` guard stops false-positive capture when user navigates away (EQ-SHELL-F)
+- `handleDownloadPdf`: added catch so Mobile Safari "Load failed" shows error in UI instead of unhandled rejection (EQ-SHELL-J)
+
 ## [2026-07-01] PR batch: URL-per-tab + tsc fixes + training matrix + cleanup (PRs #571 #572 #575 #576)
 - **PR #571** (`80c904c`) — Shell URL reflects active Field tab (`?tab=<slug>`). `buildFieldSrc`/`buildFieldCookieSrc` accept `tab` param; `FieldIframe` reads `?tab=` on mount + listens for `EQ_TAB_CHANGE` postMessage → `history.pushState`. Also fixed: `rejection_reason` destructure in `handleApplication`.
 - **PR #576** — `PostgrestBuilder as unknown as Promise<...>` hotfix in `cards-approve-staff.ts:131`; unblocked all downstream CI.

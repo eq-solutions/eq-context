@@ -14,6 +14,23 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-01 (part e) — Sentry triage + 3 fixes + branch cleanup
+
+**Completed (eq-shell):**
+- [x] **Sentry EQ-SHELL-E fixed** — `cards_field_approvals` `.insert()` → `.upsert()` with `onConflict: 'staff_id,tenant_id', ignoreDuplicates: true` on both invite and application paths. Re-approving a previously-approved staff member was 23505ing. → PR #579
+- [x] **Sentry EQ-SHELL-F fixed** — `CardsIframe` 30s load-timeout: added `activeRef` guard inside callback to handle React cleanup race when user navigates away before timer fires. → PR #579
+- [x] **Sentry EQ-SHELL-J fixed** — `handleDownloadPdf` had `try/finally` but no `catch`; Mobile Safari `fetch` throws `TypeError: Load failed` → leaked as unhandled rejection. Added catch → `setPdfErr`. → PR #579
+- [x] **Sentry EQ-SHELL-A/B ignored (forever)** — same iOS Safari session (2026-06-29), identical trace, simultaneous Field+Service timeout — iOS backgrounding killed network. Not a code bug.
+- [x] **Sentry EQ-SHELL-8 ignored (forever)** — Chrome DevTools Protocol extension message, no stacktrace, not app code.
+- [x] **`claude/field-deep-link` deleted** — local + remote. Feature already shipped in PR #571 (`80c904c`).
+
+**Deferred (added 2026-07-01):**
+- [ ] **Merge PR #579** — 3 Sentry fixes (approval dedup, Cards timer, PDF fetch). Build green. _(Royce to merge)_
+- [ ] **Netlify: rename `NEXT_PUBLIC_GOOGLE_MAPS_KEY` → `VITE_GOOGLE_MAPS_KEY`** — PR #570 changed the code; Netlify dashboard var still has old name. _(Royce action)_
+- [ ] **Netlify: remove stale env vars** — `EQ_FIELD_HANDOFF_KEY`, `EQ_FIELD_HANDOFF_KEY_NEXT`, `EQ_SECRET_SALT`, `EQ_SECRET_SALT_NEXT` no longer have consumers. _(Royce action)_
+
+---
+
 ## ⏩ Session close — 2026-07-01 (part c) — Dead cert-parse removed + main build-outage navigated
 
 **Completed (eq-shell, merged):**
