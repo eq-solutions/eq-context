@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-06-30 14:09 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-06-30 15:56 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-06-30 11:49 UTC → 2026-06-30 14:09 UTC)
+## Since last refresh (2026-06-30 14:09 UTC → 2026-06-30 15:56 UTC)
 
-- Merged: eq-shell [#563](https://github.com/eq-solutions/eq-shell/pull/563) fix(equipment): cert import 500 — send cert URLs, not bytes,
-- Merged: eq-shell [#513](https://github.com/eq-solutions/eq-shell/pull/513) fix(docs): correct stale EQ_SECRET_SALT guidance — HMAC reti
-- Merged: eq-shell [#474](https://github.com/eq-solutions/eq-shell/pull/474) fix(transport): iframe origin hardening — SKS token refresh,
-- Merged: eq-shell [#469](https://github.com/eq-solutions/eq-shell/pull/469) fix(auth): phone OTP login no longer requires a second TOTP 
-- Merged: eq-shell [#467](https://github.com/eq-solutions/eq-shell/pull/467) fix(auth): provision shell_control.users on Cards worker app
-- Merged: eq-shell [#466](https://github.com/eq-solutions/eq-shell/pull/466) feat(identity): staff-org-roster endpoint
-- Merged: eq-shell [#465](https://github.com/eq-solutions/eq-shell/pull/465) feat(canonical-api): customer_id + quote_id resource filters
-- Merged: eq-shell [#455](https://github.com/eq-solutions/eq-shell/pull/455) fix(vendor): repair eq-intake PR #449 build regressions
+- Merged: eq-shell [#565](https://github.com/eq-solutions/eq-shell/pull/565) fix(staff): matrix full licence names in headers + mobile po
+- Merged: eq-shell [#453](https://github.com/eq-solutions/eq-shell/pull/453) fix(staff): licence labels + photo CSP
+- Merged: eq-shell [#451](https://github.com/eq-solutions/eq-shell/pull/451) fix(jvkn): re-gate eq_field_get_worker_summary with org-memb
+- Merged: eq-shell [#447](https://github.com/eq-solutions/eq-shell/pull/447) fix(intake): mint-sks-jwt tenant check breaks platform admin
+- Merged: eq-solves-service [#383](https://github.com/eq-solutions/eq-service/pull/383) feat(app): branded public 'What's New' page (/whats-new)
+- Merged: eq-solves-service [#381](https://github.com/eq-solutions/eq-service/pull/381) fix(canonical): filter service.sites view by active = true
+- Merged: eq-solves-service [#380](https://github.com/eq-solutions/eq-service/pull/380) feat(app): add branded error boundaries (error.tsx + global-
+- Merged: eq-solves-service [#378](https://github.com/eq-solutions/eq-service/pull/378) feat(ui): branded 404 page — app/not-found.tsx
 
 ## ⚠ Needs you (1)
 
@@ -29,7 +29,7 @@ _2026-06-30 14:09 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 2 | 0d |
+| eq-shell | ? unknown | ? | 1 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 6 | 2d |
 | eq-field | ? unknown | ? | 1 | 0d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
@@ -51,6 +51,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-06-30 | eq-shell | [#565](https://github.com/eq-solutions/eq-shell/pull/565) fix(staff): matrix full licence names in headers + mobile polish |
 | 2026-06-30 | eq-shell | [#563](https://github.com/eq-solutions/eq-shell/pull/563) fix(equipment): cert import 500 — send cert URLs, not bytes, to b |
 | 2026-06-30 | eq-shell | [#562](https://github.com/eq-solutions/eq-shell/pull/562) refactor(ui): route brand hexes through @eq tokens (105 across 19 |
 | 2026-06-30 | eq-shell | [#552](https://github.com/eq-solutions/eq-shell/pull/552) fix(staff): training matrix licence numbers + CSV export + employ |
@@ -65,7 +66,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-06-30 | eq-field | [#375](https://github.com/eq-solutions/eq-field/pull/375) v3.5.212 — audit_log: stamp org_id + fix manager_name in server f |
 | 2026-06-30 | eq-field | [#374](https://github.com/eq-solutions/eq-field/pull/374) feat: branded 404.html for unmatched routes |
 | 2026-06-30 | eq-field | [#371](https://github.com/eq-solutions/eq-field/pull/371) chore(armada): pre-bake ARMADA config for eq-field (autoMerge off |
-| 2026-06-30 | eq-field | [#372](https://github.com/eq-solutions/eq-field/pull/372) v3.5.211 — canonical cleanup: pending_schedule, nav gates, dead c |
 _Showing 15 of 104 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -112,4 +112,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-06-30 14:09 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-06-30 15:56 UTC._
