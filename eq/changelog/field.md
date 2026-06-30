@@ -9,6 +9,18 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-06-30] v3.5.207 → v3.5.211 — Canonical wiring sprint (Roster/Teams/Safety/Apprentices/cleanup)
+**Built by:** Royce Milmlow + Claude Code
+**Sprint covered:** 2026-06-30 (full day, continuation of v3.5.199–206 wiring execution)
+
+- **v3.5.207** — Roster/Leave realtime + Teams canonical wire + worker_id column cleanup. `field_teams`/`field_team_members` views created on ehow (org_id RLS, INSTEAD OF triggers). Realtime publication populated (schedule_entries + leave_requests). `realtime.js` subscribes by canonical base-table name.
+- **v3.5.208** — Safety module fully wired for SKS. `prestarts`/`toolbox_talks`/`site_diaries`/`site_audits`/`site_audit_items` granted authenticated CRUD; `site_audits`+`site_audit_items` created on ehow; JWT_INPLACE routing wired; BEFORE INSERT trigger fills tenant_id on the 3 public.* safety tables.
+- **v3.5.209** — JWT routing gaps fixed. Bucket-B tables (`job_numbers`, `regions`, `projects`, `project_targets`, `roster_presence`) restored to JWT_TABLES (v3.5.195 regression). `tender_phases`/`nomination_clashes` added; `GRANT SELECT ON nomination_clashes TO authenticated`.
+- **v3.5.210** — Apprentice cluster fully wired. 7 new `public.*` tables on ehow (`competencies`, `skills_ratings`, `feedback_entries`, `feedback_requests`, `rotations`, `quarterly_reviews`, `apprentice_journal`); `apprentice_profiles` granted + org_id RLS; 6 electrical competencies seeded; two direct anon-fetch calls in `apprentices.js` replaced with sbFetch.
+- **v3.5.211** — Canonical cleanup. `public.pending_schedule` created on ehow (Tender Pipeline Push-to-Roster staging table). `field_schedule`/`field_timesheets`/`field_leave_requests` converted to SECURITY INVOKER (DEFINER with no role grants was silently blocking Roster/Timesheets/Leave). Data tab gated off for SKS (nav-data + ditem-data hidden — import/restore would overwrite canonical data). Dead `worker_id` mirror PATCH removed; `roster_presence` removed from ORG_TABLES.
+
+**Action required (Royce):** update `AUDIT_SB_KEY` in Netlify eq-solves-field to the ehow service_role key so auth audit rows land in `audit_log`.
+
 ## [2026-06-30] field_sites honours `active` (archived sites retire from Field)
 - `app_data.field_sites` view tightened to `WHERE field_enabled = true AND active = true` (was `field_enabled` only). An archived site (active=false) now drops out of EQ Field even if field_enabled is still true. Applied live to ehow; migration `20260630_field_sites_filter_active.sql` merged via PR #367. Zero rows affected at apply time. Mirror fix for `service.sites` also done (eq-service migration 0163).
 

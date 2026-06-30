@@ -142,11 +142,11 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 **Deferred (added 2026-06-30):**
 - [ ] **Teams wire** — field_teams/field_team_members twins + grants + RLS + JWT routing (0-row unused feature; lowest value) _(added 2026-06-30)_
-- [ ] **Safety canonical wiring** — grant the 3 `field_*` twins (per-twin base: prestarts→public.prestarts, toolbox/diary→app_data.*) + **CREATE site_audits/site_audit_items** (don't exist despite the v3.5.193 changelog claim) matching audits.js schema _(added 2026-06-30)_
+- [x] **Safety canonical wiring** — granted auth CRUD on all 5 safety tables; created site_audits/site_audit_items on ehow; JWT_INPLACE routing wired _(done v3.5.208 2026-06-30)_
 - [ ] **Apprentices cluster** — create missing tables (competencies/feedback_requests/apprentice_journal) + field_* twins + JWT routing + grants + org RLS + migrate 2 orphan apprentice_profiles rows (largest debt — dedicated session) _(added 2026-06-30)_
 - [ ] **Realtime publication** — add app_data.schedule_entries/leave_requests to supabase_realtime (verify realtime.js channel target first) _(added 2026-06-30)_
 - [ ] **app_data.staff.user_id backfill** — ~61 SKS staff unresolved (14/75 via field_person_by_user_id); may need a Core account→staff_id mapping _(added 2026-06-30)_
-- [ ] **worker_id link mirror removal** — dead `_tryLinkPersonToWorker` PATCH (400s, swallowed) _(added 2026-06-30)_
+- [x] **worker_id link mirror removal** — dead PATCH removed from syncAllToCanonical() _(done v3.5.211 2026-06-30)_
 - [ ] **SKS audit-log fix** — AUDIT_SB_KEY → ehow service_role + stamp org_id in verify-pin.js/eq-agent.js (Royce sets the env secret) _(added 2026-06-30)_
 - [ ] **frame-ancestors tightening** — drop `*.netlify.app` (clickjacking surface; declined once) _(added 2026-06-30)_
 - [ ] **app_config PIN key-scoping** — hygiene (PINs gate nothing now but still anon-readable) _(added 2026-06-30)_

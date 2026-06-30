@@ -1,7 +1,7 @@
 ---
 title: EQ Field — Active State (Rolling)
 owner: Royce Milmlow
-last_updated: 2026-06-26
+last_updated: 2026-06-30
 scope: Current live state of EQ Field product
 read_priority: critical
 status: live
@@ -9,7 +9,7 @@ status: live
 
 # EQ Field — Active State
 
-**Current version:** v3.5.191 · **Deployed:** `field.eq.solutions` + `core.eq.solutions/sks/field`
+**Current version:** v3.5.211 · **Deployed:** `field.eq.solutions` + `core.eq.solutions/sks/field`
 **Repo:** `eq-solutions/eq-field` (main branch, auto-deploy via Netlify)
 
 ---
