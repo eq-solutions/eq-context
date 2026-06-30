@@ -14,6 +14,22 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-01 (part c) — Dead cert-parse removed + main build-outage navigated
+
+**Completed (eq-shell, merged):**
+- [x] **PR #572 merged** (`003aad4`) — removed dead synchronous `cert-import-parse.ts` (superseded by the #563 background + upload-URL flow); corrected the panel flow comment. Ticks the part-b deferred "remove dead cert-import-parse.ts".
+- [x] **Unblocked the cert-import fix deploy** — #563 had been stuck because `main` was build-broken; once main went green, #563 + #572 deployed. Prod verified alive (`verify-shell-session` → 401).
+
+**Build-outage navigated (resolved by a concurrent agent; converged):**
+- `main` was build-red — two type errors in `cards-approve-staff.ts` (missing `rejection_reason` destructure + a `PostgrestBuilder→Promise` cast that needed `as unknown as`). Fixed by **#571** + **#576** (concurrent agent). My redundant 1-line hotfix **#574 was closed**. Lesson: don't race main-unblock when another agent is already on it.
+
+**Decided (Royce):** when main is build-broken, prefer a minimal build-unblock over merging a feature-bundled fix (#571 bundled field-deep-linking). (In the end the concurrent agent's split fixes landed first.)
+
+**Deferred (added 2026-07-01):**
+- [ ] **Enable "Require branches to be up to date before merging"** on `main` branch protection _(needs Royce's call)_ — today's outage cause: two independently-green PRs merged in an order that combined to break the build; the PR `typecheck·test·lint` gate doesn't re-run against latest main, and main has no post-merge typecheck. This setting forces a re-run against current main before merge. _(added 2026-07-01)_
+
+---
+
 ## ⏩ Session close — 2026-07-01 (part d) — eq-shell PR batch: URL-per-tab + tsc fixes + cleanup
 
 **Completed (eq-shell, all merged):**
