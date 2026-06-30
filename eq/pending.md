@@ -92,7 +92,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **PR #573 open** — Shell-side URL-per-tab deep linking for the Field iframe. `buildFieldSrc` / `buildFieldCookieSrc` accept optional `tab` param (`&tab=<slug>` before hash). `FieldIframe` reads `?tab=` from Shell URL on mount (`initialTabRef`), listens for `EQ_TAB_CHANGE` postMessages (origin-validated), calls `history.pushState` to keep Shell URL in sync. `pickTenant` clears `?tab=` on workspace switch.
 
 **Deferred (added 2026-07-01):**
-- [ ] **eq-field matching PR** — Field must (a) read `?tab=` from its own `window.location.search` on load and call `showTab(slug)`, and (b) `postMessage({ type: 'EQ_TAB_CHANGE', tab: slug }, parentOrigin)` on every tab switch. Without this, the Shell URL updates but Field doesn't respond _(added 2026-07-01)_
+- [x] **eq-field matching PR** — DONE: v3.5.217 (PR #381, merged 2026-07-01). `showPage()` emits `EQ_TAB_CHANGE` postMessage; `initApp()` reads `?tab=` on load _(done 2026-07-01)_
 - [ ] **Merge + smoke PR #573** — Netlify preview at deploy-preview-573--eq-shell.netlify.app. Smoke: navigate tabs → URL updates; bookmark `?tab=timesheets` → reload lands on Timesheets _(added 2026-07-01)_
 - [ ] **Clean up `fix/remove-dead-cert-parse` local branch** — has a stray deep-link commit from branch confusion; `git -C C:\Projects\eq-shell reset --hard f6a0a90` once ready _(added 2026-07-01, needs your call)_
 
