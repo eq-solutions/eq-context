@@ -9,6 +9,9 @@ status: live
 
 # Changelog — EQ Shell
 
+## [2026-06-30] iOS CSS spinner fix — will-change: transform (PR #566)
+- PR #566 (squash merged 17:08 UTC): `will-change: transform` added to 4 spinner selectors across 3 files — `.eq-error__spinner` (`src/App.css`), `.eq-spinner__dot` + `.eq-intake-spinner` (`eq-intake-demo/src/styles.css`), `.spinner` (`eq-format-ui/src/styles.css`). Forces GPU compositing layer on iOS Safari; prevents CSS `@keyframes rotate` from freezing on the main thread. 3 files, 4 insertions only.
+
 ## [2026-06-30] Brand-hex → @eq tokens, phase 1 + CI check required (PR #562)
 - PR #562: 105 single-quoted brand-hex literals → `var(--eq-sky/-deep/-ink)` across 19 component files. Value-identical (fixed base tokens — `BrandProvider` overrides `--eq-brand`, not `--eq-sky`), zero visual change. Single-quote targeting structurally skipped the var()-incompatible double-quoted `fill=`/alpha cases.
 - Made the CI `typecheck · test · lint` check a **required** status check on main (branch protection now requires it alongside `Schema drift + anon-grant + policy-lint`).
