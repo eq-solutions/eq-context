@@ -9,6 +9,10 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-06-30] v3.5.212 — audit_log: org_id stamp + manager_name fix
+- **verify-pin.js** `logAttempt()`: stamps `org_id: TENANT_ORG_UUID` in the POST body. `org_id` is NOT NULL on `audit_log` — the missing field caused every auth sign-in row to 401 silently and be dropped. Guard: skipped when `TENANT_ORG_UUID` is null (fallback deployments keep working).
+- **eq-agent.js** `logAgentCall()`: same `org_id` fix. Also renames wrong column `who` → `manager_name` (`audit_log` schema uses `manager_name` throughout — the mismatch caused agent-call rows to also drop). Added `TENANT_ORG_UUID` env var read.
+
 ## [2026-06-30] v3.5.207 → v3.5.211 — Canonical wiring sprint (Roster/Teams/Safety/Apprentices/cleanup)
 **Built by:** Royce Milmlow + Claude Code
 **Sprint covered:** 2026-06-30 (full day, continuation of v3.5.199–206 wiring execution)
