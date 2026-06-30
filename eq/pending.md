@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-06-30
+last_updated: 2026-07-01
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -11,6 +11,35 @@ status: live
 
 EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## ⏩ Session close — 2026-07-01 (part b) — Cert-import 500 root-caused + fixed (async payload wall)
+
+**Completed (eq-shell, MERGED + deploying):**
+- [x] **PR #563 merged** (`b729eed`) — calibration cert import "Import failed (500): Internal Error. ID: …" fixed. **Root cause:** `cert-import-parse-background` is a `-background` function → Netlify invokes it **asynchronously**, and the async (Lambda) event-payload limit is ~256 KB vs 6 MB synchronous. The panel POSTed multipart PDF **bytes** → platform rejected the invocation **before the handler ran** (zero handler logs in 24h, confirmed via `netlify logs`; the `01KW…` ID is a Netlify request id, not Sentry). The async rework (#509) fixed the 26s timeout but introduced this wall — 7th in the #506–#535 cert-import-500 chain.
+- [x] **Fix:** browser uploads each PDF via the proven **synchronous** `upload-asset-cert` (5-wide pool), then hands the background parser only JSON `{ files:[{url,fileName}] }`. Parser **fetches bytes server-side** (no payload limit) with an SSRF guard (only fetches our `SUPABASE_URL` origin). Parse-time URLs cached + reused at commit → each PDF uploads once, not per row.
+- [x] Verified: `build:packages` + `tsc -b` (functions covered via `tsconfig.netlify.json`) + eslint on both files — clean.
+
+**Deferred (added 2026-07-01):**
+- [ ] **Remove dead `cert-import-parse.ts`** — the old synchronous parser is now unused by the panel (left in place per no-delete rule); drop in a follow-up _(added 2026-07-01)_
+- [ ] **Verify cert import live** — once deploy goes green, import multiple certs at core.eq.solutions (hard-refresh for new panel JS); parser now writes a real failure reason to job status if a download fails _(added 2026-07-01)_
+
+---
+
+## ⏩ Session close — 2026-07-01 — Pending connections audit + 3 gap fixes
+
+**Completed (eq-shell, merged):**
+- [x] **PR #565 merged** (`8987990`) — training matrix full licence names in column headers + mobile polish (pending cards layout, employment type labels, iOS safe-area footer)
+- [x] **PR #567 merged** — blank name fix: `staff-pending-connections.ts` falls back to `app_data.staff` on ehow by phone for workers with null names in `public.workers`
+- [x] **PR #568 merged** — pending connections: worker rejection email (application path), rejection reason written to `org_access_requests.note`, phone suffix lookup bug fixed
+- [x] **Migration `2026_07_01_org_access_requests_notification.sql`** — `notification_sent_at` column added to `org_access_requests` on jvkn (reserved; notify-connection-request edge fn handles actual notifications)
+
+**Decided:**
+- Admin notifications already live via `notify-connection-request` Supabase Edge Function (pg_net trigger on INSERT to `org_access_requests`). Bidirectional (worker→employer + employer→worker). Do not duplicate in eq-shell.
+
+**Deferred (added 2026-07-01):**
+- [ ] **Invite-path rejection email** — `cards_field_approvals` reject (bulk-imported staff) sends no worker notification; the PR #568 fix only covers the application path (self-signup via QR) _(added 2026-07-01)_
 
 ---
 

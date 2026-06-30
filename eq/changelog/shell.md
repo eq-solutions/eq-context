@@ -1,13 +1,18 @@
 ---
 title: Changelog — EQ Shell
 owner: Royce Milmlow
-last_updated: 2026-06-30
+last_updated: 2026-07-01
 scope: Append-only history of changes to EQ Shell (core.eq.solutions)
 read_priority: reference
 status: live
 ---
 
 # Changelog — EQ Shell
+
+## [2026-07-01] Pending connections: blank name fix, rejection email, phone lookup fix (PRs #565 #567 #568)
+- PR #565: training matrix column headers show full licence names rotated vertically; pending connection cards stack name + buttons vertically on mobile; employment type shows human label not slug; iOS safe-area footer clearance.
+- PR #567: `staff-pending-connections.ts` — fallback to `app_data.staff` on ehow by phone for workers with null names in `public.workers` (phone-only Cards sign-up).
+- PR #568: application-path reject now emails worker ("not approved at this time"); `rejection_reason` written to `org_access_requests.note`; phone suffix map lookup bug fixed (was looking up raw phone in a suffix-keyed map). Migration `2026_07_01` adds `notification_sent_at` column to `org_access_requests` on jvkn (reserved).
 
 ## [2026-06-30] iOS CSS spinner fix — will-change: transform (PR #566)
 - PR #566 (squash merged 17:08 UTC): `will-change: transform` added to 4 spinner selectors across 3 files — `.eq-error__spinner` (`src/App.css`), `.eq-spinner__dot` + `.eq-intake-spinner` (`eq-intake-demo/src/styles.css`), `.spinner` (`eq-format-ui/src/styles.css`). Forces GPU compositing layer on iOS Safari; prevents CSS `@keyframes rotate` from freezing on the main thread. 3 files, 4 insertions only.
