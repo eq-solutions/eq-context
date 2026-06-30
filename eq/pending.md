@@ -141,9 +141,9 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **Google Maps API key live** — browser-restricted to `core.eq.solutions/*`, Maps JavaScript API only. `NEXT_PUBLIC_GOOGLE_MAPS_KEY` set in Netlify. Autocomplete active.
 
 **Deferred:**
-- [ ] Shell: active toggle on sites — no UI to flip `active` boolean; Field filters on it but no admin write-path _(added 2026-06-29)_
-- [ ] Shell: billing contact on customer — `is_default_invoice_contact` exists in DB, no UI _(added 2026-06-29)_
-- [ ] Shell: customer list active filter — default active-only + "include archived" toggle _(added 2026-06-29)_
+- [x] Shell: active toggle on sites — no UI to flip `active` boolean; Field filters on it but no admin write-path _(added 2026-06-29)_
+- [x] Shell: billing contact on customer — `is_default_invoice_contact` exists in DB, no UI _(added 2026-06-29)_
+- [x] Shell: customer list active filter — default active-only + "include archived" toggle _(added 2026-06-29)_
 - [ ] Google Maps: add Distance Matrix + Air Quality to API key when dispatch travel times / site safety features are built _(added 2026-06-29)_
 
 ---
