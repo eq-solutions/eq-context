@@ -71,7 +71,6 @@ _If this file is >48h old, the cron is broken._
 **eq-shell:**
 - #571 fix(staff): destructure rejection_reason — unblock production build
 - #570 fix(env): Google Maps key prefix + dead NETLIFY_CONTEXT Sentry fallback
-- #569 fix(staff): invite-path rejection email
 
 ---
 
