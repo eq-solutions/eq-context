@@ -14,6 +14,25 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-06-30 (part d) — Activity-log link triggers + Field/Service site-view reconcile
+
+**Completed (eq-shell, merged + deployed):**
+- [x] **PR #547 merged** — Tenant Activity Log extended to link tables. Migration `0147` adds audit triggers on `contact_customer_links` + `contact_site_links` (reuses `fn_audit('link_id')` from 0146). Dispatched + verified on both planes (ehow + zaap). Friendly labels in the feed.
+
+**Completed (eq-field + DB):**
+- [x] **`app_data.field_sites` hardened** — now `WHERE field_enabled = true AND active = true` (was `field_enabled` only). Archived sites now drop out of EQ Field. Applied to ehow live; recorded on branch `claude/field-sites-active-filter` (migration `20260630_field_sites_filter_active.sql`) — NOT merged to eq-field main (no Field deploy without explicit go). Zero rows affected.
+
+**Audit truth (reconciled):**
+- Site selection in **both** Field and Service ALREADY honors the activation flags — `service.sites` filters `service_enabled`, `field_sites` filters `field_enabled`. Earlier "Field not wired" was a STALE-CHECKOUT error (local eq-field was 11 commits behind origin). Defaults clean: `active`/`field_enabled`/`service_enabled` all default `true`, NOT NULL → new sites visible in both apps automatically.
+
+**Deferred (added 2026-06-30):**
+- [ ] **`service.sites` filter `active`** — mirror the field_sites fix in eq-solves-service (`AND s.active = true`). Spawned as task chip. Latent leak (0 rows today) _(added 2026-06-30)_
+- [ ] **Merge eq-field `claude/field-sites-active-filter`** to record the field_sites migration (DB already applied) _(added 2026-06-30)_
+- [ ] **Activity Log — name resolution for link events** (link rows carry only ids; feed shows "Contact ↔ site" without names) _(added 2026-06-30)_
+- [ ] **Onboarding name-only stub match panel** — force admin confirmation when a name_close candidate exists (null-email/no-phone stubs can't auto-match) _(added 2026-06-30)_
+
+---
+
 ## ⏩ Session close — 2026-06-30 (ARMADA trial) — pre-baked Calum's fleet on eq-service
 
 **Completed:**
@@ -33,7 +52,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [ ] **Run first `shipwright` build** of #377 — in a dedicated Claude Code session rooted in eq-service (skills load from its `.claude/skills/`; can't be driven from another repo's session). Runbook in SETUP-NOTES + today's session log _(added 2026-06-30)_
 - [ ] **crows-nest `/loop`** — needs `CLAUDE_PLUGIN_ROOT` (plugin install, or `export CLAUDE_PLUGIN_ROOT=.claude/armada`); don't arm until one clean manual cycle is observed _(added 2026-06-30)_
 - [ ] **Add `test: vitest run`** to eq-service `.armada/config.json` once a clean cycle is seen + unit-test green verified _(added 2026-06-30)_
-- [ ] **eq-context frontmatter-validation CI** red on main since 2026-06-28 (a `.md` missing the `status:` key) — flagged as a spawn_task chip; a `fix/frontmatter-bootstrap-status` branch was already in flight in the root checkout at close time _(added 2026-06-30)_
+- [x] **eq-context frontmatter-validation CI** red on main since 2026-06-28 — FIXED. Root cause: `system/chat-bootstrap.md` + `system/cowork-bootstrap.md` (added in `cf3c781`, 2026-06-28) shipped without the required `status` + `read_priority` frontmatter keys. Added `read_priority: reference` / `status: live` to both. **PR #57 merged** (commit `5100b9b`); all checks green _(done 2026-06-30)_
 
 **Notes (load-bearing):**
 - eq-service: GitHub repo = `eq-solutions/eq-service`, local folder = `eq-solves-service`; `.claude/` is gitignored, so vendored skills are **local-only** (not committed — correct for a vendored plugin).
