@@ -14,6 +14,19 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-06-30 (part c) — Staff licence-review fixes + duplicate-stub root cause
+
+**Completed (eq-shell, merged + deployed):**
+- [x] **PR #544 merged** — licence-review badge no longer flips to "re-review" for licences that PREDATE the review. `reviewBadgeFor` only re-flags licences with `created_at > reviewed_at`; `staff-canonical-licences` returns `created_at`. (Cards licences import progressively, so reviewing mid-import used to reset a completed review.)
+- [x] **PR #545 merged** — Cards onboarding now matches an existing staff stub instead of duplicating. `cards-approve-staff` `handleApplication` unified to one `findExistingStaff` matcher: cards_worker_id → exact email (exactly-one active) → phone (exactly-one). Gap was: auto-detect path (admin skipped match panel) matched worker-link+phone but NOT email → same-email/different-phone stubs duplicated.
+- [x] **PR #546 merged** — profile review state now matches the table badge ("reviewed by Ben · N new since — re-review needed" instead of a misleading green tick).
+- [x] **Data cleanup (live, ehow sks)** — archived 4 empty duplicate staff stubs: Vincent Costa ×2, Rhys Scott ×1, John Angangan ×1 (set active=false; reversible; kept the Cards-linked record each).
+
+**Deferred (added 2026-06-30):**
+- [ ] **Name-only stub match panel** — stubs with null email + no phone (e.g. John Angangan) can't auto-match; force admin confirmation when a `name_close` candidate exists instead of silently creating new _(added 2026-06-30)_
+
+---
+
 ## ⏩ Session close — 2026-06-30 (EQ Field) — Overnight security audit + canonical-wiring execution
 
 **Completed (eq-field, merged + deployed — v3.5.199 → v3.5.206 + migrations):**

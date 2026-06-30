@@ -9,6 +9,12 @@ status: live
 
 # Changelog — EQ Shell
 
+## [2026-06-30] Staff licence-review fixes (PRs #544, #545, #546)
+- **#544** — review badge stops flipping to "re-review" for licences that predate the review (`reviewBadgeFor` compares licence `created_at` vs `reviewed_at`).
+- **#545** — Cards onboarding matches an existing staff stub (worker-link → exact email → phone) instead of creating a duplicate. Closes the email gap in the auto-detect path.
+- **#546** — profile review state matches the table badge (no more "reviewed by Ben" green tick contradicting a "re-review" table).
+- Live: archived 4 empty duplicate staff stubs on ehow (Vincent Costa ×2, Rhys Scott, John Angangan).
+
 ## [2026-06-30] Customers page — Add Site fix + Field/Service activation (PRs #540, #541, #542)
 - **Add Site 500 fixed** (#540) — non-existent `site_contact_id` column removed from the insert; site + address save again.
 - **Site street address + per-site Field/Service toggles** (#541) — address was hidden behind suburb/state; the F/S UI had been built in the unrouted CustomersHubPage. Both now on the live CustomersPage, manager-gated.
