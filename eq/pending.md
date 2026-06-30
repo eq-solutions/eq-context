@@ -147,7 +147,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [ ] **Realtime publication** — add app_data.schedule_entries/leave_requests to supabase_realtime (verify realtime.js channel target first) _(added 2026-06-30)_
 - [ ] **app_data.staff.user_id backfill** — ~61 SKS staff unresolved (14/75 via field_person_by_user_id); may need a Core account→staff_id mapping _(added 2026-06-30)_
 - [x] **worker_id link mirror removal** — dead PATCH removed from syncAllToCanonical() _(done v3.5.211 2026-06-30)_
-- [ ] **SKS audit-log fix** — AUDIT_SB_KEY → ehow service_role + stamp org_id in verify-pin.js/eq-agent.js (Royce sets the env secret) _(added 2026-06-30)_
+- [x] **SKS audit-log fix** — AUDIT_SB_KEY updated to ehow service_role (done 2026-06-30); stamp org_id in verify-pin.js/eq-agent.js body is a separate pending code change
 - [ ] **frame-ancestors tightening** — drop `*.netlify.app` (clickjacking surface; declined once) _(added 2026-06-30)_
 - [ ] **app_config PIN key-scoping** — hygiene (PINs gate nothing now but still anon-readable) _(added 2026-06-30)_
 
