@@ -9,6 +9,13 @@ status: live
 
 # Changelog — EQ Shell
 
+## [2026-06-30] Audit log team events + stub-match block + training matrix (PR #553)
+- Activity Log now includes team & access events: invites, role changes, group membership — `writeTenantAudit()` writes `source='app'` rows via `invite-user`, `invite-users-batch`, `edit-user`, `security-groups`.
+- Link-event name resolution: Activity Log resolves contact/customer/site names for link-table rows (shows "Alex Smith ↔ Acme Corp" not raw IDs).
+- Onboarding stub-match block: `cards-approve-staff` returns 422 + candidates when name bigram similarity ≥ 0.5 and `confirmed_staff_id` not sent; `StaffPage` shows `MatchConfirmModal`.
+- Compliance pack downloads: descriptive filenames ("Name - Org - date.zip" / "Org Compliance - date.zip") via `a.download`.
+- Training Matrix: full licence names rotated 90°, subtitle alignment fix, tooltip uses human name, Export Excel button (SheetJS `.xlsx`).
+
 ## [2026-06-30] Licence expiry SMS reminders live
 - Twilio env vars set on eq-shell Netlify (`EQ_SMS_PROVIDER=twilio`, `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_FROM_NUMBER`, `SCHEDULER_TEST_SECRET`). Both email and SMS confirmed delivered via test endpoint. Scheduler runs daily 08:00 AEST.
 
