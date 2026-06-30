@@ -14,6 +14,23 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-06-30 (part f) — Audit log team events + stub-match block + training matrix
+
+**Completed (eq-shell, PR #553 merged):**
+- [x] **writeTenantAudit() helper** — fire-and-forget app-level audit writes to `app_data.audit_log` (`source='app'`) in `tenant-routing.ts`
+- [x] **invite-user + invite-users-batch** — emit `user_invite` (INSERT) on new invites, `user_membership` (INSERT) when existing user added to tenant
+- [x] **edit-user** — emit `user_role` (UPDATE) with old/new role/active/name after successful mutation
+- [x] **security-groups** — emit `group_membership` (INSERT/DELETE) for add_member/remove_member
+- [x] **tenant-audit.ts link-event name resolution** — batch-fetches contact/customer/site names; Activity Log shows "Alex Smith ↔ Acme Corp" instead of raw UUIDs; `recordLabel` extended for app-level event types
+- [x] **Onboarding stub-match block** — `cards-approve-staff` returns 422 + candidates when name similarity ≥ 0.5 and admin hasn't confirmed; `StaffPage` shows `MatchConfirmModal` (Link / Add as new person)
+- [x] **Compliance pack descriptive filenames** — individual: "Name - Org - date.zip"; bulk: "Org Compliance - date.zip"; backend sets filename in blob, status endpoint passes through, frontend sets `a.download`
+- [x] **Training Matrix overhaul** — full licence names rotated 90° in column headers; `empTypeLabel()` + `minHeight` fix subtitle alignment; tooltip shows proper name not schema key; Export Excel button writes `.xlsx` via SheetJS
+
+**Deferred (added 2026-06-30):**
+- [ ] **Dispatch tenant migrations 0147_issues_table → 0151_field_teams_rls to ehow** (sks slug, `allow_checksum_drift=true`) via tenant-migrate.yml — Royce triggers in GitHub Actions _(added 2026-06-30)_
+
+---
+
 ## ⏩ Session close — 2026-06-30 (part d) — Activity-log link triggers + Field/Service site-view reconcile
 
 **Completed (eq-shell, merged + deployed):**
@@ -32,9 +49,9 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **PR #551 merged** — actor coverage gap closed: `update-data-activation` (F/S toggles) + `asset-calibration` mutated the spine via the NON-audited client → logged as `source='system'`. Swapped both to `getAuditedTenantDataClientById(tenant_id, session.user_id)`.
 
 **Deferred (added 2026-06-30) — next session (prompt written in sessions/2026-06-30.md part e):**
-- [ ] **Activity Log — team & access events** — invites/role-changes/group membership mutate shell_control (jvkn) not the spine → need APP-LEVEL writes to app_data.audit_log at invite-user/edit-user/security-groups (domain-not-storage) _(added 2026-06-30)_
-- [ ] **Activity Log — name resolution for link events** (link rows carry only ids; feed shows "Contact ↔ site" without names) _(added 2026-06-30)_
-- [ ] **Onboarding name-only stub match panel** — force admin confirmation when a name_close candidate exists (null-email/no-phone stubs can't auto-match); NEEDS block-vs-warn UX call _(added 2026-06-30)_
+- [x] **Activity Log — team & access events** — invites/role-changes/group membership mutate shell_control (jvkn) not the spine → need APP-LEVEL writes to app_data.audit_log at invite-user/edit-user/security-groups (domain-not-storage) _(done PR #553 2026-06-30)_
+- [x] **Activity Log — name resolution for link events** (link rows carry only ids; feed shows "Contact ↔ site" without names) _(done PR #553 2026-06-30)_
+- [x] **Onboarding name-only stub match panel** — force admin confirmation when a name_close candidate exists (null-email/no-phone stubs can't auto-match); BLOCK confirmed _(done PR #553 2026-06-30)_
 - [ ] **Platform Security Log / operator console** — sign-ins/2FA audit (jvkn, admin-audit.ts reads it); deferred by decision _(added 2026-06-30)_
 
 ---
@@ -103,7 +120,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **Data cleanup (live, ehow sks)** — archived 4 empty duplicate staff stubs: Vincent Costa ×2, Rhys Scott ×1, John Angangan ×1 (set active=false; reversible; kept the Cards-linked record each).
 
 **Deferred (added 2026-06-30):**
-- [ ] **Name-only stub match panel** — stubs with null email + no phone (e.g. John Angangan) can't auto-match; force admin confirmation when a `name_close` candidate exists instead of silently creating new _(added 2026-06-30)_
+- [x] **Name-only stub match panel** — stubs with null email + no phone can't auto-match; 422 + MatchConfirmModal blocks silent duplicate _(done PR #553 2026-06-30)_
 
 ---
 
@@ -144,8 +161,8 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 **Deferred (added 2026-06-30):**
 - [ ] **Verify header→GUC actor capture** — confirm `actor_id` populates on the first real UI edit; if it shows "Automatic", the change still logs but who-attribution needs a follow-up _(added 2026-06-30)_
-- [ ] **Activity Log — team & access events** — invites / role-changes as app-level writes to the tenant plane (no spine row to trigger on) _(added 2026-06-30)_
-- [ ] **Activity Log — link-table triggers** — contact_customer_links, contact_site_links _(added 2026-06-30)_
+- [x] **Activity Log — team & access events** — invites / role-changes as app-level writes to the tenant plane _(done PR #553 2026-06-30)_
+- [x] **Activity Log — link-table triggers** — contact_customer_links, contact_site_links _(done PR #547 2026-06-30)_
 - [ ] **Platform Security Log / operator console** — sign-ins/2FA audit (jvkn), operator-only, separate from the tenant page _(added 2026-06-30)_
 
 ---
@@ -173,8 +190,8 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 **Decided (GTM — Cards as wedge):** activate SKS roster first (14→50 active) → polish → package Core (already a Cards admin console) into SKS's labour-hire network → worker→new-company bridge LAST. Rationale in memory `cards_wedge_gtm`.
 
 **Deferred:**
-- [ ] **Set Twilio env on eq-shell Netlify** — `EQ_SMS_PROVIDER=twilio` + `TWILIO_ACCOUNT_SID/AUTH_TOKEN/FROM_NUMBER`; SMS is log-only until then (email works) _(added 2026-06-29)_
-- [ ] **Set `SCHEDULER_TEST_SECRET`** on eq-shell Netlify to use the test endpoint _(added 2026-06-29)_
+- [x] **Set Twilio env on eq-shell Netlify** — `EQ_SMS_PROVIDER=twilio` + `TWILIO_ACCOUNT_SID/AUTH_TOKEN/FROM_NUMBER`; done + test endpoint confirmed both channels delivered _(done 2026-06-30)_
+- [x] **Set `SCHEDULER_TEST_SECRET`** on eq-shell Netlify to use the test endpoint _(done 2026-06-30)_
 - [ ] **Set SKS compliance email** at core.eq.solutions/sks/settings to activate the employer 7-day alert _(added 2026-06-29)_
 - [ ] **Field-only workers** (ehow `app_data.licences`, no Cards wallet) not covered by the scheduler _(added 2026-06-29)_
 - [ ] **Employer 7-day alert still exact-day** (worker path hardened to range-based; Monday digest is the backstop) _(added 2026-06-29)_

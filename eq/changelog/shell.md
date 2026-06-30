@@ -9,6 +9,9 @@ status: live
 
 # Changelog — EQ Shell
 
+## [2026-06-30] Licence expiry SMS reminders live
+- Twilio env vars set on eq-shell Netlify (`EQ_SMS_PROVIDER=twilio`, `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_FROM_NUMBER`, `SCHEDULER_TEST_SECRET`). Both email and SMS confirmed delivered via test endpoint. Scheduler runs daily 08:00 AEST.
+
 ## [2026-06-30] CRM: sites inline toggle table + apply-all button + A-Z contacts (PR #550)
 - Sites section on the customer detail panel replaced with a compact 5-column table (name, address, Field, Service, actions). Field/Service toggles are inline — click fires immediately, no modal or Save button required. Row click still filters contacts. Delete confirm expands as a full-width inline row.
 - "Apply to all sites" button in customer header: propagates customer-level Field/Service settings to every site in one click (manager-gated, ≥2 sites).
