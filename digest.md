@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-06-30 09:51 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-06-30 09:56 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-06-30 09:24 UTC → 2026-06-30 09:51 UTC)
+## Since last refresh (2026-06-30 09:51 UTC → 2026-06-30 09:56 UTC)
 
-- Merged: eq-shell [#554](https://github.com/eq-solutions/eq-shell/pull/554) chore(armada): pre-bake ARMADA config for eq-shell (autoMerg
-- Merged: eq-shell [#553](https://github.com/eq-solutions/eq-shell/pull/553) feat(audit): team & access events in tenant Activity Log
-- Merged: eq-shell [#546](https://github.com/eq-solutions/eq-shell/pull/546) fix(staff): profile review state matches the table badge
-- Merged: eq-shell [#545](https://github.com/eq-solutions/eq-shell/pull/545) fix(staff): match existing staff stub on Cards approval inst
-- Merged: eq-shell [#544](https://github.com/eq-solutions/eq-shell/pull/544) fix(staff): licence review stops flipping back to re-review 
-- Merged: eq-shell [#543](https://github.com/eq-solutions/eq-shell/pull/543) Gate the Service mint with @eq-solutions/contracts (mint sid
-- Merged: eq-shell [#541](https://github.com/eq-solutions/eq-shell/pull/541) feat(customers): site street address + Field/Service toggles
-- Merged: eq-shell [#540](https://github.com/eq-solutions/eq-shell/pull/540) fix(customers): Add Site 500 — remove non-existent site_cont
+- Merged: eq-shell [#555](https://github.com/eq-solutions/eq-shell/pull/555) fix(migrations): 0151 field_teams no-op — views can't have R
+- Merged: eq-shell [#542](https://github.com/eq-solutions/eq-shell/pull/542) feat(customers): customer-level Field/Service toggles in the
+- Merged: eq-shell [#539](https://github.com/eq-solutions/eq-shell/pull/539) feat(audit): Tenant Activity Log — who changed what on the c
+- Merged: eq-shell [#538](https://github.com/eq-solutions/eq-shell/pull/538) feat(notifications): range-based worker reminders + SMS opt-
+- Merged: eq-shell [#537](https://github.com/eq-solutions/eq-shell/pull/537) fix(notifications): repoint licence-expiry scheduler to eq-c
+- Merged: eq-shell [#536](https://github.com/eq-solutions/eq-shell/pull/536) fix: staff edit 500, audit log, employment type, Add Site mo
+- Merged: eq-shell [#535](https://github.com/eq-solutions/eq-shell/pull/535) fix(equipment): cert-import 500 — read body before waitUntil
+- Merged: eq-shell [#534](https://github.com/eq-solutions/eq-shell/pull/534) polish(shell): staff approval fixes, compliance pack, site/c
 
 ## ⚠ Needs you (2)
 
@@ -30,7 +30,7 @@ _2026-06-30 09:51 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 2 | 0d |
+| eq-shell | ? unknown | ? | 1 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 6 | 2d |
 | eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
@@ -54,6 +54,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-06-30 | eq-shell | [#555](https://github.com/eq-solutions/eq-shell/pull/555) fix(migrations): 0151 field_teams no-op — views can't have RLS en |
 | 2026-06-30 | eq-shell | [#554](https://github.com/eq-solutions/eq-shell/pull/554) chore(armada): pre-bake ARMADA config for eq-shell (autoMerge off |
 | 2026-06-30 | eq-shell | [#553](https://github.com/eq-solutions/eq-shell/pull/553) feat(audit): team & access events in tenant Activity Log |
 | 2026-06-30 | eq-shell | [#549](https://github.com/eq-solutions/eq-shell/pull/549) feat(ops): Phase 1 — Issues & Attachments on the canonical record |
@@ -68,7 +69,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-06-30 | eq-field | [#371](https://github.com/eq-solutions/eq-field/pull/371) chore(armada): pre-bake ARMADA config for eq-field (autoMerge off |
 | 2026-06-30 | eq-field | [#372](https://github.com/eq-solutions/eq-field/pull/372) v3.5.211 — canonical cleanup: pending_schedule, nav gates, dead c |
 | 2026-06-30 | eq-field | [#370](https://github.com/eq-solutions/eq-field/pull/370) v3.5.210 — canonical wiring: Apprentice cluster fully wired for S |
-| 2026-06-30 | eq-field | [#369](https://github.com/eq-solutions/eq-field/pull/369) v3.5.209 — JWT routing gaps: Bucket-B + tender phases + nominatio |
 _Showing 15 of 110 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -83,7 +83,7 @@ _Showing 15 of 110 · full record in [sessions/](sessions/)_
 - **Add eq-contracts to the suite-state cron** repo list so the new package shows in the nightly snapshot _(added 2026-06-30)_
 - **Teams wire** — field_teams/field_team_members twins + grants + RLS + JWT routing (0-row unused feature; lowest value) _(added 2026-06-30)_
 - **Apprentices cluster** — create missing tables (competencies/feedback_requests/apprentice_journal) + field_* twins + JWT routing + grants + org RLS + migrate 2 orphan apprentice_profiles rows (largest debt — dedicated session) _(added 2026-06-30)_
-_…and 137 more · [eq/pending.md](eq/pending.md)_
+_…and 136 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -115,4 +115,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-06-30 09:51 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-06-30 09:56 UTC._
