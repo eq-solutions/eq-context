@@ -69,7 +69,7 @@ _If this file is >48h old, the cron is broken._
 - #363 fix(docs): update LOCAL_DEV.md project ID — urjh deleted, use ehow
 
 **eq-shell:**
-- #564 refactor(pdf): @react-pdf/renderer replaces Puppeteer + chromium
+- #567 fix(staff): show name for existing staff in pending connections
 
 ---
 
