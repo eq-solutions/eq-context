@@ -60,10 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-06-30)
 
-**eq-cards:**
-- #105 fix(onboarding): reversible cleanup of duplicate worker orphans (0063)
-- #104 fix(onboarding): adopt-or-create worker — stop duplicate records (0062)
-
 **eq-service:**
 - #370 chore(deps): bump react and @types/react
 - #369 chore(deps): bump docx from 9.6.1 to 9.7.1
@@ -86,7 +82,7 @@ _If this file is >48h old, the cron is broken._
 | eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
-| eq-cards | ✓ success |
+| eq-cards | ? queued |
 | eq-solves-intake | ? unknown |
 
 **Deploys:**
