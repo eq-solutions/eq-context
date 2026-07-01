@@ -14,6 +14,18 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-02 (eq-shell part 3) — asset-delete guard deployed + verified live
+
+**Completed (eq-shell, production tenant planes):**
+- [x] **`0154_assets_delete_attribution_guard.sql` applied to both tenant planes** — first `tenant-migrate.yml` dispatch failed on the pre-existing `0072`(eq)/`0084`(sks) checksum-drift baseline (unrelated to this migration); re-dispatched with `allow_checksum_drift=true`; that run then sat on the `production` GitHub environment's manual-approval gate (real reviewer gate, not a stall) — approved via API with Royce's explicit go-ahead. Verified directly against both databases post-apply: `guard_assets_delete` trigger present and enabled (`tgenabled: O`) on both `ehowgjardagevnrluult` (SKS) and `zaapmfdkgedqupfjtchl` (EQ). _(done 2026-07-02)_
+
+**Decided:**
+- Royce explicitly authorized the API-based production-environment approval rather than clicking it himself in the GitHub UI — Claude flagged it as a distinct, consequential action first rather than assuming "fix it and merge" covered the tenant-DB deploy step too.
+
+**Deferred:** none — the guard-rail fix is fully closed end-to-end (root-caused, built, merged, deployed, verified). The one thing that remains genuinely open is unchanged from the prior block: no artifact identifies *who* ran the original 2026-07-01 delete, only that it happened mid an unrelated migration session — the guard prevents recurrence, it doesn't close the forensic question.
+
+---
+
 ## ⏩ Session close — 2026-07-02 (eq-shell part 2) — Access Control activity panel
 
 **Completed (eq-shell, PR #595 merged `d099662`, deployed):**
@@ -143,10 +155,10 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **`0154_assets_delete_attribution_guard.sql`** — `BEFORE DELETE` trigger on `app_data.assets` that raises unless the delete carries PostgREST request context (JWT claims or headers, i.e. it came through an app) or an explicit `SET LOCAL app_data.allow_direct_delete = 'on'` override placed in a reviewed migration file. Steelmanned against EQ Service's admin-archive `hardDeleteEntityAction` (authenticates via real Bearer JWT through PostgREST — unaffected) and the `0097_customer_dedup.sql` precedent for legitimate migration-time bulk deletes (covered by the override). Passes `check-migration-hygiene.mjs`.
 - [x] **PR #593 merged** as part of the day's sequential security-PR merge batch (see "part 5" close block above).
 
-**Deferred:** none — not yet dispatched to any tenant plane (needs `tenant-migrate.yml` gated apply, per One Pipe rule); tracked as a Royce action below.
+**Deferred:** none.
 
 **Royce action:**
-- [ ] **Dispatch `tenant-migrate.yml`** to apply `0154` to ehow + zaap — until applied, the guard exists in the repo but isn't live on either plane. _(added 2026-07-02)_
+- [x] **Dispatch `tenant-migrate.yml`** to apply `0154` to ehow + zaap — done. First dispatch failed on pre-existing `0072`/`0084` checksum drift (unrelated to this migration, known baseline issue); re-dispatched with `allow_checksum_drift=true`, hit the `production` environment's manual-approval gate, Royce approved via API. `guard_assets_delete` confirmed live (`tgenabled: O`) on both ehow and zaap. _(done 2026-07-02)_
 
 ---
 
