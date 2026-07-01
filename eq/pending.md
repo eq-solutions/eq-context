@@ -57,7 +57,21 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - Royce chose immediate restore-from-audit-log over holding off to investigate the delete first — data recovery prioritized over forensics, investigation spun off separately.
 
 **Deferred (added 2026-07-02):**
-- [ ] **Find source of the unattributed `app_data.assets` delete on ehow** — background investigation session (`local_9c384ff7`, chip `task_9b113311`) was still running at session close; check Supabase logs/advisors around 2026-07-01 09:30–09:40 UTC and any hand-run script for the actor. Recommend a lightweight guard against unattributed service-role DELETEs on `app_data.assets` per eq-shell's One Pipe governance. _(needs your call once the investigation reports back)_
+- [x] **Find source of the unattributed `app_data.assets` delete on ehow** — root-caused: the 13 deletes (single statement, `actor_id=null`/`source='system'`, 09:37:18 UTC) fell exactly between migrations 0164 (applied 02:51:55 UTC) and 0165 (applied 09:52:29 UTC) in that same 2026-07-01 session — an ad-hoc direct-SQL cleanup of the orphaned `plant_equipment` rows that session's own notes had flagged ("Shell-side task; chip created"), run by hand instead of through a migration. No app code, cron job, or committed script was responsible — checked eq-shell, eq-solves-service (+ worktrees), and live `cron.job`/`pg_proc` on ehow, all negative. Guard trigger built + merged (PR #593, below). _(done 2026-07-02)_
+
+---
+
+## ⏩ Session close — 2026-07-02 (eq-shell) — asset-delete attribution guard (root-cause + fix)
+
+**Completed (eq-shell, PR #593 merged):**
+- [x] **Root-caused the 2026-07-01 unattributed `app_data.assets` delete** (see resolved deferred item above) via `app_data.audit_log` timestamp correlation against the 0164/0165 migration-apply timestamps on ehow — no repo artifact named the actor, but the timing pins it to a hand-run cleanup mid-migration-session.
+- [x] **`0154_assets_delete_attribution_guard.sql`** — `BEFORE DELETE` trigger on `app_data.assets` that raises unless the delete carries PostgREST request context (JWT claims or headers, i.e. it came through an app) or an explicit `SET LOCAL app_data.allow_direct_delete = 'on'` override placed in a reviewed migration file. Steelmanned against EQ Service's admin-archive `hardDeleteEntityAction` (authenticates via real Bearer JWT through PostgREST — unaffected) and the `0097_customer_dedup.sql` precedent for legitimate migration-time bulk deletes (covered by the override). Passes `check-migration-hygiene.mjs`.
+- [x] **PR #593 merged** as part of the day's sequential security-PR merge batch (see "part 5" close block above).
+
+**Deferred:** none — not yet dispatched to any tenant plane (needs `tenant-migrate.yml` gated apply, per One Pipe rule); tracked as a Royce action below.
+
+**Royce action:**
+- [ ] **Dispatch `tenant-migrate.yml`** to apply `0154` to ehow + zaap — until applied, the guard exists in the repo but isn't live on either plane. _(added 2026-07-02)_
 
 ---
 
