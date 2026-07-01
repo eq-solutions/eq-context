@@ -61,12 +61,9 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-01)
 
 **eq-service:**
-- #370 chore(deps): bump react and @types/react
 - #369 chore(deps): bump docx from 9.6.1 to 9.7.1
-- #368 chore(deps-dev): bump @netlify/functions from 5.2.0 to 5.3.0
 - #367 chore(deps): bump lucide-react from 1.17.0 to 1.22.0
 - #366 chore(deps): bump @eq-solutions/ui from v1.8.0 to v1.9.0 in the eq-design-system group across 1 directory
-- #363 fix(docs): update LOCAL_DEV.md project ID — urjh deleted, use ehow
 
 ---
 
@@ -76,7 +73,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ✗ failure |
+| eq-service | ? in_progress |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
