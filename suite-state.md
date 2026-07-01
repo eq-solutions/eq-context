@@ -68,9 +68,6 @@ _If this file is >48h old, the cron is broken._
 - #366 chore(deps): bump @eq-solutions/ui from v1.8.0 to v1.9.0 in the eq-design-system group across 1 directory
 - #363 fix(docs): update LOCAL_DEV.md project ID — urjh deleted, use ehow
 
-**eq-shell:**
-- #579 fix(sentry): 3 production errors — approval dedup, Cards timer race, PDF fetch catch
-
 ---
 
 ## System Health (as of 2026-07-01)
@@ -88,7 +85,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 165 (latest: 0163) applied
+**Migrations:** eq-service has 167 (latest: 0165) applied
 
 ---
 
