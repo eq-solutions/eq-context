@@ -9,6 +9,13 @@ status: live
 
 # Changelog — EQ Shell
 
+## [2026-07-01] Warm Sand neutrals + StaffPage Phase D + forecasts mark-done + PDF import fixes (PRs #578 #580 #581 #582 #583 #584)
+- **#580 / #581 / #582** — Warm Sand (Direction-D) neutral migration: cool-slate hexes → the warm `--eq-gray` ramp. StaffPage pilot (#580) → repo-wide .tsx (#581, 242 refs/21 files) → CSS incl. mobile chrome (#582, 121 refs/7 files: MobileTabBar.css, MobileRecordsDrawer.css, App.css…). Neutrals fully warm desktop + mobile; brand + status unchanged.
+- **#578** — StaffPage Phase D: pure logic (`licStatus`/`matrixCsvCell`/`buildMatrixCsv`) lifted to `src/pages/staff/staffLib.ts` + 9 tests (suite 85→94). Behaviour-identical; unblocks component extraction.
+- **#583** — GM Reports forecasts tab: per-job manual "Mark done" self-report. New `app_data.gm_forecast_status` (0153, mirrors gm_invoice_run) + `gm-forecast-status.ts` (GET/PATCH, reports.view). Done = Workbench-derived OR manual. Migration applies via One Pipe (sks slug) — pending Royce dispatch.
+- **#584** — EQ Ops "From PDF" import: real `Loader2` spinner while parsing (both entry points); both PDF paths now auto-apply the tenant `defaultMaterialMarkup` (were adding lines at cost with no markup).
+
+
 ## [2026-07-01] Sentry fixes — approval dedup, Cards timer race, PDF fetch catch (PR #579)
 - `cards_field_approvals` insert → upsert to prevent 23505 on re-approval (EQ-SHELL-E)
 - `CardsIframe` 30s timer: `activeRef` guard stops false-positive capture when user navigates away (EQ-SHELL-F)

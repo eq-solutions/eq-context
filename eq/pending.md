@@ -16,6 +16,21 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+---
+
+## ⏩ Session close — 2026-07-01 (part c) — Warm Sand migration + Phase D + PDF import fixes
+
+**Completed (eq-shell, merged + deployed):**
+- [x] **Warm Sand neutrals — DONE desktop + mobile.** PR #580 (StaffPage pilot) + #581 (repo-wide .tsx, 242/21 files) + #582 (CSS + mobile chrome: MobileTabBar/Drawer + App/comms/gm-reports/CoreHome, 121 refs). Cool-slate → `--eq-gray` warm ramp; brand + status unchanged.
+- [x] **StaffPage Phase D — PR #578** — pure logic → `staff/staffLib.ts` + 9 tests (suite 85→94). Phase E now test-guarded/unblocked.
+- [x] **PDF import fixes — PR #584** — real Loader2 spinner + auto-apply default markup on both PDF paths (were markup:'' rate=cost). Forward-only: the already-imported quote needs markup set on its existing lines.
+
+**Deferred (added 2026-07-01):**
+- [ ] **Semantics pass** (Warm Sand) — reds/greens/ambers + status-chip pastels shift shade → needs a before/after sign-off; unblocks flipping the lint no-raw-hex ratchet (F) _(needs Royce's call) (added 2026-07-01)_
+- [ ] **StaffPage Phase E** — extract MatrixView/SplitPanel into staff/ modules (now Phase-D-test-guarded) _(added 2026-07-01)_
+- [ ] **Token source unification (A)** + eslint-runnable env — eslint won't run in the work checkout, blocking a lint-config change / the blocking ratchet _(added 2026-07-01)_
+
+
 ## ⏩ Session close — 2026-07-01 (part b) — Forecasts tab: manual "mark done"
 
 **Completed (eq-shell, PR #583 merged `16fabd3`, deployed):**
