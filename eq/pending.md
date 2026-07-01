@@ -14,6 +14,16 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+---
+
+## ⏩ Session close — 2026-07-01 (part b) — Forecasts tab: manual "mark done"
+
+**Completed (eq-shell, PR #583 merged `16fabd3`, deployed):**
+- [x] **GM Reports forecasts tab — per-job "Mark done" self-report.** The tab derived "done" only from the Workbench import (lags); PMs can now mark a forecast done manually (optimistic, undoable). Done = derived OR manually marked; counts/progress honour both. Mirrors the gm-invoice-run pattern: `0153_gm_forecast_status.sql` (`app_data.gm_forecast_status` on ehow, keyed period_id+job_code, tenant RLS + grants), `gm-forecast-status.ts` (GET/PATCH, reports.view-gated), `ForecastView` UI. tsc + 94 tests green.
+
+**Royce action (activates persistence):**
+- [ ] **Dispatch `tenant-migrate.yml`** (workflow_dispatch, `sks` slug, production-gated, `allow_checksum_drift=true` per usual) to apply **0153** to ehow. Until then the Mark-done buttons render but a click reverts (table absent → PATCH 500s). _(added 2026-07-01)_
+
 ## ⏩ Session close — 2026-07-01 (part f) — EQ Ops: material markup default + rate library sticky
 
 **Completed (eq-shell, committed to worktree `quirky-cerf-fbbdb9`):**
