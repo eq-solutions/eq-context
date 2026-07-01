@@ -14,6 +14,26 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-02 (eq-service) — lighthouse budget bump + 2nd recon pass, 9 issues built + merged
+
+**Completed (eq-service, all merged + deployed):**
+- [x] **Lighthouse budget increased** (eq-service + eq-shell) — `maxIssuesPerRun` 3→6, `maxRuntimeSec` 300→600, `maxFindings` 20→30. PR #397 (eq-service) + PR #589 (eq-shell) merged. _(done 2026-07-02)_
+- [x] **eq-shell lighthouse scheduled** — daily 8am task `eq-shell-lighthouse`, explicitly `cd`s to `C:\Projects\eq-shell` (main checkout, not a worktree) before running `/lighthouse`. First scheduled fire pending verification. _(done 2026-07-02)_
+- [x] **In-flight lighthouse batch #1 completed + merged** — PR #394 (dead `/api/shell-sso` path removed), #395 (Zod validation on `updateReportSettingsAction`), #396 (7 idempotency unit tests). _(done 2026-07-02)_
+- [x] **3 pre-existing open PRs merged** — #363 (docs: `urjh`→`ehow` project ID fix), #368 (`@netlify/functions` dev-dep bump), #370 (React 19.2.4→19.2.7 patch — fixes a `FormData` regression in Server Actions introduced in 19.2.6). _(done 2026-07-02)_
+- [x] **2nd lighthouse recon pass** (post budget-bump) — 6 new issues chartered unarmed: #398–403, all Sentry-coverage gaps + 1 test-coverage gap (`lib/actions/audit.ts`). _(done 2026-07-02)_
+- [x] **All 6 issues armed, built, verified, merged** — PRs #404–409. Two issue specs were corrected mid-build against live source rather than built blind: **#406** (generate-and-store) — Sentry `pipeline` tags corrected from the issue's guessed `maintenance`/`pm-asset` labels to the actual function names `pm-check-report`/`work-order-details`. **#408** (server action helpers) — `check-completion.ts` already had `Sentry.captureException` wired from an earlier PR; removed the redundant duplicate `console.error` instead of adding a second Sentry call. **#409** (audit.ts tests) — issue spec guessed `isMutationProcessed` used a count query; actual implementation uses `.maybeSingle()` — tests written against the real code, 7/7 passing. _(done 2026-07-02)_
+- [x] **9 worktrees cleaned up** — `eq-solves-service-wt-{391,392,393,398,399,400,401,402,403}` removed post-merge. _(done 2026-07-02)_
+
+**Decided:**
+- Lighthouse budget of 6 issues/600s runtime confirmed as the standing config for both eq-service and eq-shell.
+- Merge-all-immediately is Royce's preferred pattern for lighthouse-sourced fixes once tsc/tests are clean — no separate review gate for small, scoped, mechanical fixes (Sentry wiring, Zod validation, test coverage).
+
+**Deferred (added 2026-07-02):**
+- [ ] **Verify `eq-shell-lighthouse` scheduled task's first live fire** — created this session (8am daily), not yet observed running end-to-end _(added 2026-07-02)_
+
+---
+
 ## ⏩ Session close — 2026-07-02 (eq-shell) — token lint ratchet + staff licence resync
 
 **Completed (eq-shell, all merged + deployed):**
@@ -24,7 +44,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **Jack Cluff 6 licences backfilled** — direct SQL to ehow `app_data.licences` (post-approval upload gap: white_card, working_at_heights, driver_licence, ewp, electrical_licence, open_cabling). _(done 2026-07-02)_
 
 **Deferred (added 2026-07-02):**
-- [ ] **Armada/Lighthouse on eq-shell** — Armada IS already set up (commit `f5ede5f` on main). `/lighthouse` fails in worktree sessions — must run from `C:\Projects\eq-shell` main checkout. Pending Royce providing Calum's repo URL to wire Lighthouse audit. _(added 2026-07-02)_
+- [x] **Armada/Lighthouse on eq-shell** — worktree-resolution problem routed around: daily scheduled task `eq-shell-lighthouse` explicitly `cd`s to the main checkout before invoking `/lighthouse`, so the skill resolves regardless of what session type fires it. Budget bumped to match eq-service (6 issues/600s). Calum's repo URL for deeper wiring still optional/not required for this to work. _(done 2026-07-02 — see lighthouse session-close block above)_
 - [ ] **Cicero: click "Re-review licences"** in Staff panel — June 29 bulk approval was programmatic; "Re-review" badge is correct, Royce needs to trigger manually. _(added 2026-07-02)_
 
 ---

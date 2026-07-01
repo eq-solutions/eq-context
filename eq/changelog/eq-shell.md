@@ -1,6 +1,7 @@
 # eq-shell changelog
 
 ## 2026-07-02
+- PR #589: ARMADA lighthouse budget bump (`maxIssuesPerRun` 3→6, `maxRuntimeSec` 300→600, `maxFindings` 20→30). Config-only, no code change. Daily 8am scheduled lighthouse task added, routed through the main checkout to avoid the worktree skill-resolution gap.
 - PR #588: token lint ratchet (no-restricted-syntax warn→error); 24 legacy file-level eslint-disable markers; `staff-resync-licences.ts` endpoint; SplitPanel "Re-sync from Cards" button
 - PR #587: `worker_dedup_archive_20260630` RLS lockdown on jvkn
 - PR #586: semantics pass — raw semantic hex → CSS token vars
