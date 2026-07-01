@@ -41,7 +41,7 @@ _If this file is >48h old, the cron is broken._
 | Tenants | 1 (SKS Technologies) | service.tenants |
 | Users | 5 | service.tenant_members |
 | Maintenance checks | 4 | service.maintenance_checks |
-| Defects | 15 | service.defects |
+| Defects | 7 | service.defects |
 
 **SKS tenant ID on ehow:** `7dee117c-98bd-4d39-af8c-2c81d02a1e85`
 **Demo tenant ID:** `a0000000-0000-0000-0000-000000000001`
@@ -64,6 +64,11 @@ _If this file is >48h old, the cron is broken._
 - #369 chore(deps): bump docx from 9.6.1 to 9.7.1
 - #367 chore(deps): bump lucide-react from 1.17.0 to 1.22.0
 - #366 chore(deps): bump @eq-solutions/ui from v1.8.0 to v1.9.0 in the eq-design-system group across 1 directory
+
+**eq-shell:**
+- #593 fix(security): block unattributed direct DELETE on app_data.assets
+- #592 Equipment: inline assign-to-staff dropdown
+- #590 fix(security): close access-control escalation + CSRF gaps
 
 ---
 
