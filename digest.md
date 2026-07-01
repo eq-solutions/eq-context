@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-01 18:36 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-01 18:55 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-01 18:34 UTC → 2026-07-01 18:36 UTC)
+## Since last refresh (2026-07-01 18:36 UTC → 2026-07-01 18:55 UTC)
 
-- Merged: eq-shell [#593](https://github.com/eq-solutions/eq-shell/pull/593) fix(security): block unattributed direct DELETE on app_data.
-- Merged: eq-shell [#590](https://github.com/eq-solutions/eq-shell/pull/590) fix(security): close access-control escalation + CSRF gaps
-- Merged: eq-shell [#580](https://github.com/eq-solutions/eq-shell/pull/580) style(staff): Warm Sand neutrals pilot on StaffPage (Directi
-- Merged: eq-shell [#578](https://github.com/eq-solutions/eq-shell/pull/578) refactor(staff): extract + unit-test pure StaffPage logic (P
-- Merged: eq-shell [#575](https://github.com/eq-solutions/eq-shell/pull/575) feat(staff): training matrix — filter, sort, selection, colu
-- Merged: eq-shell [#571](https://github.com/eq-solutions/eq-shell/pull/571) fix(staff): destructure rejection_reason — unblock productio
-- Merged: eq-shell [#568](https://github.com/eq-solutions/eq-shell/pull/568) fix(staff): pending connections — admin notify, reject email
-- Merged: eq-shell [#566](https://github.com/eq-solutions/eq-shell/pull/566) fix(ui): iOS spinner animation — will-change: transform on a
+- Merged: eq-shell [#581](https://github.com/eq-solutions/eq-shell/pull/581) style(ui): roll Warm Sand neutrals repo-wide (Direction-D)
+- Merged: eq-shell [#576](https://github.com/eq-solutions/eq-shell/pull/576) fix(staff): PostgrestBuilder→Promise cast via unknown — unbl
+- Merged: eq-shell [#572](https://github.com/eq-solutions/eq-shell/pull/572) chore(equipment): remove dead synchronous cert-import-parse 
+- Merged: eq-shell [#570](https://github.com/eq-solutions/eq-shell/pull/570) fix(env): Google Maps key prefix + dead NETLIFY_CONTEXT Sent
+- Merged: eq-shell [#569](https://github.com/eq-solutions/eq-shell/pull/569) fix(staff): invite-path rejection email
+- Merged: eq-shell [#567](https://github.com/eq-solutions/eq-shell/pull/567) fix(staff): show name for existing staff in pending connecti
+- Merged: eq-shell [#565](https://github.com/eq-solutions/eq-shell/pull/565) fix(staff): matrix full licence names in headers + mobile po
+- Merged: eq-shell [#564](https://github.com/eq-solutions/eq-shell/pull/564) refactor(pdf): @react-pdf/renderer replaces Puppeteer + chro
 
 ## ⚠ Needs you (1)
 
@@ -29,7 +29,7 @@ _2026-07-01 18:36 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 0 | — |
+| eq-shell | ? unknown | ? | 2 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 3 | 2d |
 | eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
@@ -49,9 +49,9 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-01 | eq-shell | [#592](https://github.com/eq-solutions/eq-shell/pull/592) Equipment: inline assign-to-staff dropdown |
 | 2026-07-01 | eq-shell | [#590](https://github.com/eq-solutions/eq-shell/pull/590) fix(security): close access-control escalation + CSRF gaps |
 | 2026-07-01 | eq-shell | [#593](https://github.com/eq-solutions/eq-shell/pull/593) fix(security): block unattributed direct DELETE on app_data.asset |
-| 2026-07-01 | eq-shell | [#592](https://github.com/eq-solutions/eq-shell/pull/592) Equipment: inline assign-to-staff dropdown |
 | 2026-07-01 | eq-shell | [#591](https://github.com/eq-solutions/eq-shell/pull/591) chore: remove profile settings page |
 | 2026-07-01 | eq-shell | [#589](https://github.com/eq-solutions/eq-shell/pull/589) chore(armada): increase lighthouse budget to 6 issues / 600s |
 | 2026-07-01 | eq-shell | [#588](https://github.com/eq-solutions/eq-shell/pull/588) style(tokens): promote hex-colour lint rule to error; add staff l |
@@ -64,10 +64,13 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-01 | eq-shell | [#582](https://github.com/eq-solutions/eq-shell/pull/582) style(ui): Warm Sand neutrals in CSS files — closes the mobile ga |
 | 2026-07-01 | eq-solves-service | [#409](https://github.com/eq-solutions/eq-service/pull/409) test: add unit tests for lib/actions/audit.ts |
 | 2026-07-01 | eq-solves-service | [#408](https://github.com/eq-solutions/eq-service/pull/408) fix: replace console.error with Sentry in server action helpers |
-_Showing 15 of 116 · full record in [sessions/](sessions/)_
+_Showing 15 of 118 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **Decide where Access Control audit events surface** — `shell_control.audit_log` has 2 rows ever (both diagnostics); even a working write has nowhere to go: `admin-audit.ts` reads it but is called from zero pages (dead code), and the real "Audit log" nav tile reads a *different* table (`app_data.audit_log` on the tenant's own Field/Service plane) with no knowledge of role/group changes. Needs a product call: extend the existing tile, or build a new panel. _(needs your call)_
+- **Flip `ENFORCE_IFRAME_ORIGIN=true`** once a few days of `[origin-check]` Netlify function logs confirm no false positives on the 5 new call sites. _(needs your call — requires watching logs)_
+- **Dispatch `tenant-migrate.yml`** to apply `0154` to ehow + zaap — until applied, the guard exists in the repo but isn't live on either plane. _(added 2026-07-02)_
 - **Verify `eq-shell-lighthouse` scheduled task's first live fire** — created this session (8am daily), not yet observed running end-to-end _(added 2026-07-02)_
 - **Cicero: click "Re-review licences"** in Staff panel — June 29 bulk approval was programmatic; "Re-review" badge is correct, Royce needs to trigger manually. _(added 2026-07-02)_
 - **Token source unification (A)** + eslint-runnable env — eslint won't run in the work checkout, blocking a lint-config change / the blocking ratchet _(added 2026-07-01)_
@@ -75,10 +78,7 @@ _Showing 15 of 116 · full record in [sessions/](sessions/)_
 - **Add `TENANT_UUID = 7dee117c-98bd-4d39-af8c-2c81d02a1e85` to ehow edge function secrets** — Supabase dashboard → Project Settings → Edge Functions → Secrets. All 4 functions 500 without it. _(Royce action) (added 2026-07-01)_
 - **Update pg_cron digest cron URL** — check ehow pg_cron; if referencing `supervisor-digest-v2`, update to `supervisor-digest`. _(added 2026-07-01)_
 - **Arm crows-nest `/loop` on eq-intake** — 4 clean manual cycles now observed; still needs `CLAUDE_PLUGIN_ROOT` (plugin install, or `export CLAUDE_PLUGIN_ROOT=.claude/armada`) + Royce's go _(added 2026-06-30)_
-- **Add `test:` gate** to eq-intake `.armada/config.json` (e.g. `pnpm -C eq-platform test`) — unit tests green across packages, just not wired into the fleet gate yet _(added 2026-06-30)_
-- **(optional, needs your call)** Harden build-before-test workspace-wide so the stale-dist bug class (root of #47) can't recur — source-resolution or build-ordering across all packages _(added 2026-06-30)_
-- **(optional, needs your taste)** Archive stale root planning docs (`PLAN-*`, `OVERNIGHT-REVIEW-*`, `CONDUIT-AUDIT-*`) into `_archive/` _(added 2026-06-30)_
-_…and 162 more · [eq/pending.md](eq/pending.md)_
+_…and 165 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -110,4 +110,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-01 18:36 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-01 18:55 UTC._
