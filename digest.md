@@ -8,32 +8,31 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-01 14:25 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-01 18:11 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-01 11:10 UTC → 2026-07-01 14:25 UTC)
+## Since last refresh (2026-07-01 14:25 UTC → 2026-07-01 18:11 UTC)
 
-- 🔴 CI eq-solves-service: success → failure
-- Merged: eq-shell [#576](https://github.com/eq-solutions/eq-shell/pull/576) fix(staff): PostgrestBuilder→Promise cast via unknown — unbl
-- Merged: eq-shell [#572](https://github.com/eq-solutions/eq-shell/pull/572) chore(equipment): remove dead synchronous cert-import-parse 
-- Merged: eq-shell [#570](https://github.com/eq-solutions/eq-shell/pull/570) fix(env): Google Maps key prefix + dead NETLIFY_CONTEXT Sent
-- Merged: eq-shell [#569](https://github.com/eq-solutions/eq-shell/pull/569) fix(staff): invite-path rejection email
-- Merged: eq-shell [#567](https://github.com/eq-solutions/eq-shell/pull/567) fix(staff): show name for existing staff in pending connecti
-- Merged: eq-shell [#566](https://github.com/eq-solutions/eq-shell/pull/566) fix(ui): iOS spinner animation — will-change: transform on a
-- Merged: eq-shell [#565](https://github.com/eq-solutions/eq-shell/pull/565) fix(staff): matrix full licence names in headers + mobile po
-- Merged: eq-shell [#564](https://github.com/eq-solutions/eq-shell/pull/564) refactor(pdf): @react-pdf/renderer replaces Puppeteer + chro
-- ⚠ Needs you: 1 → 2 (new items)
+- ✅ CI eq-solves-service: failure → success
+- Merged: eq-shell [#589](https://github.com/eq-solutions/eq-shell/pull/589) chore(armada): increase lighthouse budget to 6 issues / 600s
+- Merged: eq-shell [#588](https://github.com/eq-solutions/eq-shell/pull/588) style(tokens): promote hex-colour lint rule to error; add st
+- Merged: eq-shell [#580](https://github.com/eq-solutions/eq-shell/pull/580) style(staff): Warm Sand neutrals pilot on StaffPage (Directi
+- Merged: eq-shell [#578](https://github.com/eq-solutions/eq-shell/pull/578) refactor(staff): extract + unit-test pure StaffPage logic (P
+- Merged: eq-shell [#575](https://github.com/eq-solutions/eq-shell/pull/575) feat(staff): training matrix — filter, sort, selection, colu
+- Merged: eq-shell [#571](https://github.com/eq-solutions/eq-shell/pull/571) fix(staff): destructure rejection_reason — unblock productio
+- Merged: eq-shell [#568](https://github.com/eq-solutions/eq-shell/pull/568) fix(staff): pending connections — admin notify, reject email
+- Merged: eq-shell [#563](https://github.com/eq-solutions/eq-shell/pull/563) fix(equipment): cert import 500 — send cert URLs, not bytes,
+- ✅ Needs you: 2 → 1
 
-## ⚠ Needs you (2)
+## ⚠ Needs you (1)
 
-- 🔴 **CI failure** — eq-solves-service `main`
 - 🟠 **Sentry new error** — `eq-cards` [minified:I3: Exception: Could not load Blob from its URL. Ha](https://eq-solutions.sentry.io/issues/131122766/)
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 1 | 0d |
-| eq-solves-service | ✗ failure | 0d ago | 6 | 3d |
+| eq-shell | ? unknown | ? | 0 | — |
+| eq-solves-service | ✓ success | 0d ago | 3 | 2d |
 | eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ? unknown | ? | 0 | — |
@@ -52,6 +51,8 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-01 | eq-shell | [#589](https://github.com/eq-solutions/eq-shell/pull/589) chore(armada): increase lighthouse budget to 6 issues / 600s |
+| 2026-07-01 | eq-shell | [#588](https://github.com/eq-solutions/eq-shell/pull/588) style(tokens): promote hex-colour lint rule to error; add staff l |
 | 2026-07-01 | eq-shell | [#586](https://github.com/eq-solutions/eq-shell/pull/586) style(tokens): semantics pass — raw semantic hex → CSS token vars |
 | 2026-07-01 | eq-shell | [#587](https://github.com/eq-solutions/eq-shell/pull/587) fix(security): lock down worker_dedup_archive_20260630 on jvkn |
 | 2026-07-01 | eq-shell | [#585](https://github.com/eq-solutions/eq-shell/pull/585) refactor(staff): Phase E — extract MatrixView + SplitPanel into s |
@@ -59,19 +60,18 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-01 | eq-shell | [#584](https://github.com/eq-solutions/eq-shell/pull/584) fix(ops): PDF import — real spinner + apply default markup |
 | 2026-07-01 | eq-shell | [#583](https://github.com/eq-solutions/eq-shell/pull/583) feat(reports): manual "mark done" on the forecasts tab |
 | 2026-07-01 | eq-shell | [#582](https://github.com/eq-solutions/eq-shell/pull/582) style(ui): Warm Sand neutrals in CSS files — closes the mobile ga |
-| 2026-07-01 | eq-solves-service | [#395](https://github.com/eq-solutions/eq-service/pull/395) fix(validation): add Zod schema to updateReportSettingsAction |
-| 2026-07-01 | eq-solves-service | [#394](https://github.com/eq-solutions/eq-service/pull/394) fix(auth): remove dead /api/shell-sso from PUBLIC_PATHS |
-| 2026-07-01 | eq-solves-service | [#396](https://github.com/eq-solutions/eq-service/pull/396) test(idempotency): unit tests for withIdempotency |
-| 2026-07-01 | eq-solves-service | [#390](https://github.com/eq-solutions/eq-service/pull/390) refactor: consolidate ReportComplexity into a single canonical ty |
-| 2026-07-01 | eq-solves-service | [#389](https://github.com/eq-solutions/eq-service/pull/389) fix: replace console.error with Sentry.captureException in site-c |
-| 2026-07-01 | eq-solves-service | [#388](https://github.com/eq-solutions/eq-service/pull/388) fix: remove dead /auth/shell-bridge exemption from PUBLIC_PATHS |
-| 2026-07-01 | eq-solves-service | [#384](https://github.com/eq-solutions/eq-service/pull/384) feat(testing): instrument selection on ACB/NSX tests + clean inst |
-| 2026-06-30 | eq-shell | [#581](https://github.com/eq-solutions/eq-shell/pull/581) style(ui): roll Warm Sand neutrals repo-wide (Direction-D) |
-_Showing 15 of 113 · full record in [sessions/](sessions/)_
+| 2026-07-01 | eq-solves-service | [#409](https://github.com/eq-solutions/eq-service/pull/409) test: add unit tests for lib/actions/audit.ts |
+| 2026-07-01 | eq-solves-service | [#408](https://github.com/eq-solutions/eq-service/pull/408) fix: replace console.error with Sentry in server action helpers |
+| 2026-07-01 | eq-solves-service | [#407](https://github.com/eq-solutions/eq-service/pull/407) fix: replace console.error with Sentry in cron dispatch-notificat |
+| 2026-07-01 | eq-solves-service | [#406](https://github.com/eq-solutions/eq-service/pull/406) fix: replace console.error with Sentry in generate-and-store PDF  |
+| 2026-07-01 | eq-solves-service | [#405](https://github.com/eq-solutions/eq-service/pull/405) fix: replace console.error with Sentry in canonical pipeline |
+| 2026-07-01 | eq-solves-service | [#404](https://github.com/eq-solutions/eq-service/pull/404) fix: replace console.error with Sentry in report-generation API r |
+_Showing 15 of 117 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **Semantics pass** (Warm Sand) — reds/greens/ambers + status-chip pastels shift shade → needs a before/after sign-off; unblocks flipping the lint no-raw-hex ratchet (F) _(needs Royce's call) (added 2026-07-01)_
+- **Armada/Lighthouse on eq-shell** — Armada IS already set up (commit `f5ede5f` on main). `/lighthouse` fails in worktree sessions — must run from `C:\Projects\eq-shell` main checkout. Pending Royce providing Calum's repo URL to wire Lighthouse audit. _(added 2026-07-02)_
+- **Cicero: click "Re-review licences"** in Staff panel — June 29 bulk approval was programmatic; "Re-review" badge is correct, Royce needs to trigger manually. _(added 2026-07-02)_
 - **Token source unification (A)** + eslint-runnable env — eslint won't run in the work checkout, blocking a lint-config change / the blocking ratchet _(added 2026-07-01)_
 - **Dispatch `tenant-migrate.yml`** (workflow_dispatch, `sks` slug, production-gated, `allow_checksum_drift=true` per usual) to apply **0153** to ehow. Until then the Mark-done buttons render but a click reverts (table absent → PATCH 500s). _(added 2026-07-01)_
 - **Add `TENANT_UUID = 7dee117c-98bd-4d39-af8c-2c81d02a1e85` to ehow edge function secrets** — Supabase dashboard → Project Settings → Edge Functions → Secrets. All 4 functions 500 without it. _(Royce action) (added 2026-07-01)_
@@ -80,7 +80,6 @@ _Showing 15 of 113 · full record in [sessions/](sessions/)_
 - **Add `test:` gate** to eq-intake `.armada/config.json` (e.g. `pnpm -C eq-platform test`) — unit tests green across packages, just not wired into the fleet gate yet _(added 2026-06-30)_
 - **(optional, needs your call)** Harden build-before-test workspace-wide so the stale-dist bug class (root of #47) can't recur — source-resolution or build-ordering across all packages _(added 2026-06-30)_
 - **(optional, needs your taste)** Archive stale root planning docs (`PLAN-*`, `OVERNIGHT-REVIEW-*`, `CONDUIT-AUDIT-*`) into `_archive/` _(added 2026-06-30)_
-- **Verify cert import live** — once deploy goes green, import multiple certs at core.eq.solutions (hard-refresh for new panel JS); parser now writes a real failure reason to job status if a download fails _(added 2026-07-01)_
 _…and 162 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
@@ -101,11 +100,11 @@ _…and 15 more · [sks/pending.md](sks/pending.md)_
 
 | Date | Session |
 |------|---------|
+| 2026-07-02 | [Token lint ratchet merged; staff licence resync endpoint shipped](sessions/2026-07-02.md) |
 | 2026-06-30 | [EQ Field canonical sprint complete (v3.5.207–212)](sessions/2026-06-30.md) |
 | 2026-06-30 | [2026-06-30 (part g) — Field canonical wiring sprint: v3.5.207–v3.5.211](sessions/2026-06-30-field-canonical-sprint-g.md) |
 | 2026-06-29 | [SKS data reset + maintenance check page parallelization](sessions/2026-06-29.md) |
 | 2026-06-28 | [Brain 10/10: substrate coherence + automation layer](sessions/2026-06-28-brain-10-10.md) |
-| 2026-06-28 | [EQ Service batch-create fix](sessions/2026-06-28-batch-create-fix.md) |
 _[sessions/](sessions/) · 5 shown_
 
 ## Substrate honesty
@@ -113,4 +112,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-01 14:25 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-01 18:11 UTC._

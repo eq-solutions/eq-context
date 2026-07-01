@@ -1,8 +1,9 @@
 # Session Index
-_45 logs · reverse-chronological · auto-generated_
+_46 logs · reverse-chronological · auto-generated_
 
 | Date | Session |
 |------|---------|
+| 2026-07-02 | [Token lint ratchet merged; staff licence resync endpoint shipped](sessions/2026-07-02.md) |
 | 2026-07-01 | [Pending connections audit + 3 gap fixes merged](sessions/2026-07-01.md) |
 | 2026-06-30 | [EQ Field canonical sprint complete (v3.5.207–212)](sessions/2026-06-30.md) |
 | 2026-06-30 | [2026-06-30 (part g) — Field canonical wiring sprint: v3.5.207–v3.5.211](sessions/2026-06-30-field-canonical-sprint-g.md) |
