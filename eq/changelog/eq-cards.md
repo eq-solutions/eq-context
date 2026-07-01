@@ -9,3 +9,6 @@
 - deploy: run 28489589899 — all 2026-07-01 fixes live
 - feat(onboarding): first-scan screen shown once on empty wallet (commit 37f8eb3, run 28509766188)
 - feat(onboarding): rich empty state — updated headline + employer context copy for connected workers
+- feat(onboarding): explicit camera+gallery buttons in FirstScanScreen; worker card hidden on empty wallet; CTAs at top (commit 493d895, run 28511411215)
+- feat(onboarding): first-licence success sheet + connection confirmation snackbar + PostHog signup_completed fix (commit 1a141a6, run 28512783582)
+- fix(ui): CircularProgressIndicator.adaptive → plain in EqButton + NotProvisionedScreen; worker ID card moved to wallet bottom (commit 9f2b408, run 28513226954)

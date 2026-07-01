@@ -14,6 +14,20 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-01 (eq-cards part ii) — onboarding UX polish + activation moments + spinner fix
+
+**Completed (eq-cards, deployed):**
+- [x] **Android camera/gallery** — `FirstScanScreen` rewritten: explicit "Take a photo" + "Upload from album" buttons popping `ImageSource` directly; pops null for "Set up later". Bypasses OS routing ambiguity. Worker ID card hidden on empty wallet; `_IllustrationEmpty` CTAs moved to top. `_captureFlow` accepts `{ImageSource? source}`. Commit `493d895`, run 28511411215. _(done 2026-07-01)_
+- [x] **First-licence success sheet** — one-time bottom sheet on first credential saved: checkmark, "You're ready for site.", employer context if connected. `eq_cards.first_licence_shown` pref gate. Commit `1a141a6`, run 28512783582. _(done 2026-07-01)_
+- [x] **Connection confirmation** — one-time snackbar "Connected to [Org]" on first non-personal tenant activation (post claim/join). `eq_cards.last_known_tenant` pref gate per slug. _(done 2026-07-01)_
+- [x] **PostHog `signup_completed` fix** — fires only when `user.createdAt` within 5 min (new user only); method corrected `'email'` → `'phone'`. _(done 2026-07-01)_
+- [x] **iOS spinner fix** — `CircularProgressIndicator.adaptive` replaced with plain `CircularProgressIndicator(color: ...)` in `EqButton` + `NotProvisionedScreen`. `.adaptive` on iOS web → `CupertinoActivityIndicator` which ignores `valueColor` and may not animate in HTML renderer. _(done 2026-07-01)_
+- [x] **Worker card to bottom** — non-empty wallet ListView: `_WalletIdCard` moved from top to after all licence tiles with `EqSpacing.lg` gap above. Credentials visible immediately on open. Commit `9f2b408`, run 28513226954. _(done 2026-07-01)_
+
+**Deferred:** none.
+
+---
+
 ## ⏩ Session close — 2026-07-01 (eq-shell part j) — staff-resync-licences + MobileSheet parity
 
 **Completed (eq-shell, branch `claude/worker-dedup-archive-lockdown`):**
