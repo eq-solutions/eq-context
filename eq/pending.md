@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-07-01
+last_updated: 2026-07-02
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -11,6 +11,21 @@ status: live
 
 EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## ⏩ Session close — 2026-07-02 (eq-shell) — token lint ratchet + staff licence resync
+
+**Completed (eq-shell, all merged + deployed):**
+- [x] **PR #585 merged** — StaffPage Phase E: MatrixView/SplitPanel extracted to `staff/` sub-modules. _(done 2026-07-02)_
+- [x] **PR #586 merged** — Semantics pass: raw semantic hex → CSS token vars (SplitPanel + codebase). Unblocked lint ratchet. _(done 2026-07-02)_
+- [x] **PR #587 merged** — Security: `worker_dedup_archive_20260630` on jvkn — RLS enabled, all policies locked to service_role. _(done 2026-07-02)_
+- [x] **PR #588 merged** — Token lint ratchet + staff licence resync: `no-restricted-syntax` warn → error; 24 legacy files patched with file-level eslint-disable markers; 3 incorrect inline disables replaced; `netlify/functions/staff-resync-licences.ts` (new POST endpoint, `admin.review_cards` gate, jvkn→ehow licence re-sync); SplitPanel "Re-sync from Cards" button + LicGroup token var fixes. _(done 2026-07-02)_
+- [x] **Jack Cluff 6 licences backfilled** — direct SQL to ehow `app_data.licences` (post-approval upload gap: white_card, working_at_heights, driver_licence, ewp, electrical_licence, open_cabling). _(done 2026-07-02)_
+
+**Deferred (added 2026-07-02):**
+- [ ] **Armada/Lighthouse on eq-shell** — Armada IS already set up (commit `f5ede5f` on main). `/lighthouse` fails in worktree sessions — must run from `C:\Projects\eq-shell` main checkout. Pending Royce providing Calum's repo URL to wire Lighthouse audit. _(added 2026-07-02)_
+- [ ] **Cicero: click "Re-review licences"** in Staff panel — June 29 bulk approval was programmatic; "Re-review" badge is correct, Royce needs to trigger manually. _(added 2026-07-02)_
 
 ---
 
@@ -103,7 +118,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **PDF import fixes — PR #584** — real Loader2 spinner + auto-apply default markup on both PDF paths (were markup:'' rate=cost). Forward-only: the already-imported quote needs markup set on its existing lines.
 
 **Deferred (added 2026-07-01):**
-- [ ] **Semantics pass** (Warm Sand) — reds/greens/ambers + status-chip pastels shift shade → needs a before/after sign-off; unblocks flipping the lint no-raw-hex ratchet (F) _(needs Royce's call) (added 2026-07-01)_
+- [x] **Semantics pass** (Warm Sand) — reds/greens/ambers + status-chip pastels shift shade → needs a before/after sign-off; unblocks flipping the lint no-raw-hex ratchet (F) _(done 2026-07-02 — PR #586)_
 - [x] **StaffPage Phase E** — extract MatrixView/SplitPanel into staff/ modules (now Phase-D-test-guarded) _(done 2026-07-01 — PR #585 merged)_
 - [ ] **Token source unification (A)** + eslint-runnable env — eslint won't run in the work checkout, blocking a lint-config change / the blocking ratchet _(added 2026-07-01)_
 
@@ -383,10 +398,10 @@ These two were listed as independent deferreds; they're one coupled chain. De-he
 
 - [ ] **A — Unify the token source of truth** (eq-design-tokens) — TWO divergent sets exist: the loaded `@import "@eq-solutions/ui/styles"` (`--eq-err`, `--eq-gray-*`) vs the orphaned, NOT-imported `public/eq-tokens.css` (`--eq-danger`, `--eq-sky`). Collapse to one generated package, one name set, imported everywhere; `public/eq-tokens.css` becomes a pure build artifact (or dies). Adding tokens before this just forks further _(added 2026-06-30)_
 - [x] **B — DECIDED 2026-07-01: Warm Sand (Direction-D).** The neutral+semantic ramp ALREADY existed in @eq-solutions/tokens (--eq-gray-50..600 warm + --eq-success/-warning/-error, loaded via ui/styles → tokens.css) — the earlier "no loadable token" claim was WRONG. So B was not from-scratch design: Royce approved migrating components' cool-slate onto the existing warm ramp (deliberate cool→warm) via a before/after preview + StaffPage pilot. _(decided 2026-07-01)_
-- [~] **C — Codemod hexes → tokens: NEUTRALS DONE, semantics remain.** Pilot PR #580 (StaffPage, 110) + repo-wide rollout PR #581 (242 across 21 files) merged → all cool-slate neutrals (#E2E8F0→gray-200, #64748B→gray-500, #94A3B8→gray-400, etc.) on the warm --eq-gray ramp. Bare-hex sed; fill=/alpha landmines confirmed absent repo-wide. STILL TODO: semantic reds/greens/ambers + status-chip pastels (each SHIFTS shade → needs its own before/after) _(neutrals done 2026-07-01)_
+- [x] **C — Codemod hexes → tokens: DONE.** Neutrals: PRs #580 (pilot) + #581 (repo-wide, 242 files). Semantics: PR #586 (SplitPanel LicGroup + codebase semantic colours → token vars). _(done 2026-07-02)_
 - [x] **D — Characterization tests + logic lift (StaffPage)** — snapshot/RTL tests on `MatrixView` + `SplitPanel` FIRST (we have the test runner now → converts the "unverifiable refactor" into a test-guaranteed one, replacing "eyeball the running app"); lift pure logic (`matrixCsvCell`, `licStatus`, date-shaping, matrix transform) into a tested `staff/lib` module. Independent — can start anytime _(added 2026-06-30)_ ✅ DONE 2026-07-01 — PR #578 (`b79af65`): `src/pages/staff/staffLib.ts` (licStatus/matrixCsvCell/buildMatrixCsv) + 9 tests, suite 85→94, tsc clean, behaviour-identical. Unblocks E.
 - [x] **E — Extract StaffPage components** — move `MatrixView`/`SplitPanel` + shared `s`/helpers into `staff/` modules, split along data/logic/view seams (not just "smaller files"). Depends on C (de-hexed) + D (test-guarded) _(done 2026-07-01 — PR #585)_
-- [ ] **F — Scoped blocking `no-raw-hex` rule** — flip warn→error WITH an allowlist (`*.palette.ts`, chart configs, `email/`) + a "token-or-justify-with-reason" path, not a blanket wall (a wall just trains more `eslint-disable` — how 155 accumulated). The ratchet that holds the gain. Depends on C _(added 2026-06-30)_
+- [x] **F — Scoped blocking `no-raw-hex` rule** — warn → error; 24 legacy files get file-level eslint-disable markers (migration note attached); new code must use tokens. PR #588 _(done 2026-07-02)_
 
 ### ▶ zaap anon class-closure (eq-field — residual of the done #379 revoke)
 
