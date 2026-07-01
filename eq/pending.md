@@ -78,6 +78,16 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-01 (part g) — Netlify env cleanup
+
+**Completed:**
+- [x] **`EQ_FIELD_HANDOFF_KEY` deleted from Netlify** — Field HMAC handoff dead since JWT migration; confirmed no live consumer. Done via Netlify MCP. _(done 2026-07-01)_
+
+**Royce action (blocked by Netlify secret masking):**
+- [ ] **Rename `NEXT_PUBLIC_GOOGLE_MAPS_KEY` → `VITE_GOOGLE_MAPS_KEY`** — API returns masked value only; can't copy programmatically. Netlify dashboard → eq-shell → Environment variables: copy value, add `VITE_GOOGLE_MAPS_KEY`, delete old key. Address autocomplete broken in prod until done. _(Royce action) (added 2026-07-01)_
+
+---
+
 ## ⏩ Session close — 2026-07-01 (part e) — Sentry triage + 3 fixes + branch cleanup
 
 **Completed (eq-shell):**
@@ -91,7 +101,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 **Deferred (added 2026-07-01):**
 - [ ] **Merge PR #579** — 3 Sentry fixes (approval dedup, Cards timer, PDF fetch). Build green. _(Royce to merge)_
 - [ ] **Netlify: rename `NEXT_PUBLIC_GOOGLE_MAPS_KEY` → `VITE_GOOGLE_MAPS_KEY`** — PR #570 changed the code; Netlify dashboard var still has old name. _(Royce action)_
-- [ ] **Netlify: remove stale env vars** — `EQ_FIELD_HANDOFF_KEY`, `EQ_FIELD_HANDOFF_KEY_NEXT`, `EQ_SECRET_SALT`, `EQ_SECRET_SALT_NEXT` no longer have consumers. _(Royce action)_
+- [x] **Netlify: delete `EQ_FIELD_HANDOFF_KEY`** — deleted 2026-07-01 (Field HMAC handoff dead since JWT migration). `EQ_FIELD_HANDOFF_KEY_NEXT`/`EQ_SECRET_SALT_NEXT` were never set. `EQ_SECRET_SALT` must NOT be removed — still the active session-signing fallback in `token.ts`. _(done 2026-07-01)_
 
 ---
 
