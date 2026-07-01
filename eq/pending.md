@@ -14,6 +14,23 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-02 (eq-shell part 2) — Access Control activity panel
+
+**Completed (eq-shell, PR #595 merged `d099662`, deployed):**
+- [x] **"Recent activity" panel added to `/admin/access-control`** — resolves the audit-trail deferred item from the earlier PR #590 sprint. Reused the previously-dead-code `admin-audit.ts` (zero callers anywhere in the app) instead of extending the unrelated "Audit log" nav tile, which reads a different table on a different Supabase project (tenant plane, not control plane). Added an optional `prefix` query param so the panel only shows `access.*`/`security_group.*` events, in plain English (role + permission labels via the existing `@eq-solutions/roles` `labelFor`), not raw event strings or perm keys. _(done 2026-07-02)_
+- [x] **`checkShellOrigin` added to `admin-audit.ts`** — it's now real attack surface for the first time (previously unreachable); same report-only treatment as the 5 endpoints from PR #590. _(done 2026-07-02)_
+- [x] **CI green + merged** — tsc/build clean; verified the new `prefix` filter's ilike/or logic directly against live jvkn data before merging (0 rows currently, matching the panel's empty state — no admin has toggled anything since #590 shipped). _(done 2026-07-02)_
+
+**Decided:**
+- Royce steelmanned both deferred items from the prior close and asked "what would Claude do" — recommendation given for each, then Royce said "continue" to build the activity panel (deferred item #1) and separately confirmed the merge.
+- Chose reuse of `admin-audit.ts` + a page-level panel over extending the existing "Audit log" tile — smaller, reversible, no cross-plane query.
+
+**Deferred (added 2026-07-02):**
+- [ ] **Flip `ENFORCE_IFRAME_ORIGIN=true`** once real usage is observed with a clean `[origin-check]` grep in Netlify function logs — now applies to 6 endpoints total (the 5 from PR #590 + `admin-audit.ts`). Still needs Royce to pull the logs; no Netlify function-log reader available in-session. _(needs your call)_
+- [ ] **Confirm the activity panel actually shows an event** — toggle a role permission or edit a group on `/admin/access-control` and check the new "Recent activity" section renders it. _(needs your call)_
+
+---
+
 ## ⏩ Session close — 2026-07-02 (eq-intake) — dashboard audit + marketing brief + health-score fix
 
 **Completed (eq-intake, repo `eq-solves-intake`, PR #53 merged to main):**

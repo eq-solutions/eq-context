@@ -1,6 +1,7 @@
 # eq-shell changelog
 
 ## 2026-07-02
+- PR #595: Access Control "Recent activity" panel — reuses previously-dead-code `admin-audit.ts` (added optional `prefix` filter + `checkShellOrigin`) to show `access.*`/`security_group.*` events in plain English at the bottom of `/admin/access-control`
 - PR #591: profile settings page removed — `ProfileSettings.tsx`, `netlify/functions/update-profile.ts`, route `settings/profile`, and "Your profile" sidebar link all deleted; names are admin-managed via Staff page
 - PRs #590/#592/#593 merged (sequential rebase; #592 worktree conflict resolved by rebasing from `.claude/worktrees/objective-bell-bc744d`)
 - PR #593: `0154_assets_delete_attribution_guard.sql` — `BEFORE DELETE` trigger on `app_data.assets` blocking hard-deletes with no PostgREST request context (JWT/headers), with an explicit `SET LOCAL app_data.allow_direct_delete = 'on'` override for reviewed migration-time bulk deletes. Root-caused the 2026-07-01 unattributed 13-row delete to a hand-run direct-SQL cleanup mid-migration-session (falls between the 0164/0165 migration-apply timestamps on ehow), not any app/cron/script. Not yet dispatched to any tenant plane.
