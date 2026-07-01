@@ -14,6 +14,19 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-01 (eq-cards part h) — onboarding activation: first-scan screen + rich empty state
+
+**Completed (eq-cards, pushed to main; deploy pending):**
+- [x] **`FirstScanScreen` built** — new `lib/features/onboarding/first_scan_screen.dart`. Full-screen dark modal (ink bg) with animated mock card, "Add your first credential" headline, "Scan now" → pops `true` to launch capture flow, "Set up later" → pops `false`. Shown once via `SharedPreferences` flag `eq_cards.first_scan_shown`. Commit `37f8eb3`. _(done 2026-07-01)_
+- [x] **`LicencesListScreen` wired** — postFrameCallback triggers `_maybeShowFirstScan()` when `items.isEmpty && !_firstScanLaunched`. Wallet empties → first-login screen fires on next frame. _(done 2026-07-01)_
+- [x] **Rich empty state** — `_EmptyState` + `_IllustrationEmpty` accept `orgName`. Headline: "Your digital wallet is empty". Non-Personal tenants get employer context: "`<OrgName>` checks your credentials are current — add them now so you're ready for site." Commit `37f8eb3`. _(done 2026-07-01)_
+- [x] **Option C task chip spawned** — employer SMS on worker connection approval (Shell repo) — separate worktree chip created. _(done 2026-07-01)_
+
+**Deferred (added 2026-07-01):**
+- [ ] **Deploy eq-cards** — onboarding activation (first-scan screen + rich empty state). `gh workflow run deploy.yml --ref main` _(Royce action) (added 2026-07-01)_
+
+---
+
 ## ⏩ Session close — 2026-07-01 (eq-service) — instruments decoupled from assets
 
 **Completed:**
