@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-01 01:30 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-01 01:41 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-01 00:52 UTC → 2026-07-01 01:30 UTC)
+## Since last refresh (2026-07-01 01:30 UTC → 2026-07-01 01:41 UTC)
 
-- Merged: eq-shell [#565](https://github.com/eq-solutions/eq-shell/pull/565) fix(staff): matrix full licence names in headers + mobile po
-- Merged: eq-shell [#564](https://github.com/eq-solutions/eq-shell/pull/564) refactor(pdf): @react-pdf/renderer replaces Puppeteer + chro
-- Merged: eq-shell [#563](https://github.com/eq-solutions/eq-shell/pull/563) fix(equipment): cert import 500 — send cert URLs, not bytes,
+- Merged: eq-shell [#562](https://github.com/eq-solutions/eq-shell/pull/562) refactor(ui): route brand hexes through @eq tokens (105 acro
 - Merged: eq-solves-service [#383](https://github.com/eq-solutions/eq-service/pull/383) feat(app): branded public 'What's New' page (/whats-new)
 - Merged: eq-solves-service [#381](https://github.com/eq-solutions/eq-service/pull/381) fix(canonical): filter service.sites view by active = true
-- Merged: eq-field [#381](https://github.com/eq-solutions/eq-field/pull/381) v3.5.217 — URL-per-tab deep-link support (Field side)
+- Merged: eq-field [#380](https://github.com/eq-solutions/eq-field/pull/380) v3.5.216 — edge function canonical rewrite (ehow compatibili
 - Merged: eq-solves-service [#380](https://github.com/eq-solutions/eq-service/pull/380) feat(app): add branded error boundaries (error.tsx + global-
-- Merged: eq-field [#379](https://github.com/eq-solutions/eq-field/pull/379) security(zaap): revoke residual anon grants on worker-PII ta
+- Merged: eq-field [#378](https://github.com/eq-solutions/eq-field/pull/378) v3.5.215 — Supervisor Notes live on SKS + Teams realtime
+- Merged: eq-solves-service [#378](https://github.com/eq-solutions/eq-service/pull/378) feat(ui): branded 404 page — app/not-found.tsx
+- Merged: eq-field [#377](https://github.com/eq-solutions/eq-field/pull/377) v3.5.214 — SKS write-path unblock (ultra-audit fixes)
 
 ## ⚠ Needs you (1)
 
@@ -110,4 +110,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-01 01:30 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-01 01:41 UTC._
