@@ -63,7 +63,6 @@ _If this file is >48h old, the cron is broken._
 **eq-service:**
 - #409 test: add unit tests for lib/actions/audit.ts
 - #408 fix: replace console.error with Sentry in server action helpers
-- #407 fix: replace console.error with Sentry in cron dispatch-notifications
 - #369 chore(deps): bump docx from 9.6.1 to 9.7.1
 - #367 chore(deps): bump lucide-react from 1.17.0 to 1.22.0
 - #366 chore(deps): bump @eq-solutions/ui from v1.8.0 to v1.9.0 in the eq-design-system group across 1 directory
@@ -76,7 +75,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ? queued |
+| eq-service | ? in_progress |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
