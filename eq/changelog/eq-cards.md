@@ -1,5 +1,10 @@
 # EQ Cards — Changelog
 
+## 2026-07-02
+- fix(ocr): web compression no longer blocks the main thread — `canvas.toDataURL()` swapped for `canvas.toBlob()` in a new web-only `_compressForWeb`, fixing the frozen OCR spinner on iOS Safari/PWA; native iOS/Android untouched (commit `d9d87a3`, PR #110, run 28540590608)
+- fix(ocr): "Fill manually" escape hatch when OCR can't read a photo (e.g. back of card) — was a dead end with only a snackbar
+- chore(data): deleted demo/trial account `0466118646` — standalone empty signup, no org/licence data
+
 ## 2026-07-01
 - fix(auth): `handle_phone_dedup` SECURITY DEFINER — all new signups were 500ing (migration 0066, applied live)
 - fix(auth): "No internet connection" → "Unable to connect…" + Sentry capture for NetworkFailure

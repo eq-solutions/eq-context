@@ -14,6 +14,55 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-02 (eq-intake) — dashboard audit + marketing brief + health-score fix
+
+**Completed (eq-intake, repo `eq-solves-intake`, PR #53 merged to main):**
+- [x] **Full audit of the live `core.eq.solutions/sks/intake` dashboard (Health/Import/Reconcile/Ask tabs)** — read every underlying module (`health-score.ts`, `compliance-metrics.ts`, `orphan-check.ts`, `licence-expiry-check.ts`, `duplicate-detect.ts`, `decay-detect.ts`, `reconcile.ts`, `ask-canonical.ts`, the `eq-ai-assist` Edge Function source) and confirmed every badge/score is real, wired logic — no stubs, no canned data. Confirmed Ask genuinely calls Claude Haiku (`claude-haiku-4-5-20251001`) via a live Edge Function on ehow. _(done 2026-07-02)_
+- [x] **Found 2 orphaned modules** — `enrich.ts` (AI asset field inference) and `dedup.ts` (asset-only exact-match dedup) are exported from `@eq/intake`'s `index.ts` but called by nothing in the demo UI. _(found 2026-07-02)_
+- [x] **10 improvement ideas generated, scored against a 10-question rubric** (trust impact, user value, effort, regression risk, dependency risk, code reuse, strategic alignment, reversibility, urgency, composability), ranked together with Royce before building. _(done 2026-07-02)_
+- [x] **PR #53 merged** — fixed the top-ranked idea: an entity with zero rows (e.g. Assets before anyone's added one) was scoring 100% complete, silently inflating Reachability/Serviceability and the composite health score. Added a `started` flag on `HealthScore` distinguishing "no data yet" from "fully complete"; `computeDimensions` now excludes not-started entities from dimension averages instead of counting them as full marks; the entity card shows "No records yet" instead of a misleading 100% bar. `tsc --noEmit` clean on `@eq/intake` + `eq-intake-demo` (pre-existing unrelated `EntityDrillDown.tsx` errors untouched); `@eq/intake` dist rebuilt via tsup so the demo picks up the new field. _(done 2026-07-02)_
+
+**Decided:**
+- Royce chose the "commit fix #1, then live-test #2" path over building further ideas blind.
+- Rubric-ranked idea #9 (cross-app "Dispatch Readiness" dimension pulling in Field data) scored lowest despite highest strategic alignment — blocked by Field's schedule/timesheet tables being empty and by cross-repo/cross-schema scope; not worth building yet.
+
+**Deferred (added 2026-07-02):**
+- [ ] **Verify `ANTHROPIC_API_KEY` is actually live on sks-canonical for the Ask tab** — code is real and correctly wired, but no Edge Function invocations in the last 24h of logs; needs Royce to type one question into the live Ask tab and report back. _(needs your call)_
+- [ ] **Fuzzy-match Reconcile** — conflict detection in `reconcile.ts` is exact-string only; the Dice-coefficient matcher already built for `duplicate-detect.ts` could be reused so near-matches ("Acme Pty Ltd" vs "ACME P/L") don't show as unrelated new+conflict. _(added 2026-07-02)_
+- [ ] **Wire up or delete `enrich.ts` / `dedup.ts`** — both fully built, exported, unused. _(added 2026-07-02)_
+- [ ] **Health score history/trend** — no time-series snapshot exists; score is point-in-time only, no way to show "up/down since last week." _(added 2026-07-02)_
+- [ ] **Confidence-weight small-n entities** — a 3-record entity at 100% reads identically to a 300-record entity at 100% on the health cards. _(added 2026-07-02)_
+- [ ] **Lineage/provenance in EntityDrillDown** — `commitBundleToCanonical` already captures `sourceFilename`; not surfaced in the UI. _(added 2026-07-02)_
+- [ ] **(big swing) Nightly digest cron** — reuse the `PRE_VISIT_BRIEF_CRON` pattern to push a daily score-delta + top-3-actions email instead of requiring the dashboard to be opened. _(added 2026-07-02)_
+- [ ] **(big swing) Autopilot batch gap-fill** — `gap-suggest.ts` already does AI per-field suggestions one row at a time via `EntityDrillDown`; batch it so e.g. "68 staff missing trade" can be approved in one sitting. _(added 2026-07-02)_
+- [ ] **(big swing, lowest-ranked) Cross-app "Dispatch Readiness" dimension** — extend the health score past Intake's own tables to include Field's schedule/availability emptiness; also the natural next step for suite-wide "ask anything" via the same Edge Function pattern. _(added 2026-07-02)_
+
+**Notes (load-bearing):**
+- **eq-solves-intake has at least 3 live working trees**: the main checkout `C:\Projects\eq-intake`, worktree `jovial-rubin-0d0004`, and worktree `nifty-feynman-7e97ce` (this session's). Mid-session I accidentally edited the main checkout instead of the assigned worktree — caught it before committing (the main checkout had unrelated uncommitted work from another process on `feat/armada-sprint-polish`: `.armada/config.json`, several `vite.config.ts`/`vitest.config.ts` files, a new untracked `eq-platform/apps/` — none of it mine, all left untouched), reverted my two accidental edits there, redid them in the correct worktree. Future eq-intake sessions should double-check `pwd`/git branch before editing when multiple worktrees are active.
+- **`@eq/intake`'s published types come from `dist/index.d.ts` (tsup build), not source** — editing `src/*.ts` in this package requires an `npx tsup` rebuild before consuming packages like `eq-intake-demo` will see the new types; the package `node_modules/@eq/intake` is a workspace symlink to source, but `package.json#types` points at `dist`.
+- **This worktree (`nifty-feynman-7e97ce`) had no `node_modules` installed at all** — needed a temporary (accidentally non-symlink, actual-copy) `node_modules` to typecheck; cleaned up after. If revisiting this worktree, either run `pnpm install` properly or symlink carefully (confirm with `fsutil reparsepoint query` that `ln -s` actually produced a link, not a copy, on this machine).
+
+---
+
+## ⏩ Session close — 2026-07-02 (eq-cards) — OCR spinner freeze root-caused + fixed, demo account cleaned up
+
+**Completed (eq-cards, PR #110 merged `d9d87a3`, deployed run 28540590608):**
+- [x] **Root-caused "photo scanned but didn't populate, had to repeat" report.** Not the rear-of-card OCR-empty path (fixed anyway, see below) — the real cause: `flutter_image_compress_web`'s web implementation encodes via `canvas.toDataURL()`, a **synchronous** call that blocks the main thread for the full JPEG encode. On iOS Safari/PWA this freezes `OcrLoadingDialog`'s spinner (and the whole page) for however long that takes, reading as "stuck" — user backs out and retries, second attempt looks fine because nothing was ever actually broken server-side (edge function logs showed 100% success, 6.5–9.8s, zero errors the whole time). Confirmed via reading the vendored package source directly (`flutter_image_compress_web-0.1.5/lib/src/compressor.dart`), not guesswork.
+- [x] **Fix:** `lib/core/utils/photo_upload.dart` — `stripExifAndCompress` now branches on `kIsWeb`; web path uses a new `_compressForWeb` (same resize/JPEG logic, swaps `toDataURL()`+base64 round-trip for `canvas.toBlob()` + `Blob.arrayBuffer()`, which encode off the main thread). Native iOS/Android untouched — still the existing plugin call. Added `web: ^1.1.0` as a direct dependency (was transitive-only).
+- [x] **Secondary fix (real but not root cause):** `licences_list_screen.dart` — when OCR returns nothing usable (e.g. back of card), the flow used to strand the user with just a snackbar and no way forward except a full retake. Added a "Fill manually" `SnackBarAction` that continues to the form with the photo attached.
+- [x] **Verified:** `flutter analyze` clean; `flutter build web --release` compiled clean (dart2js — the actual target this bug lives in) and passed the `--wasm` dry-run check as a bonus portability signal. Could not get a live iOS Safari repro — sandboxed preview browser stuck on Flutter's own boot loader before rendering.
+- [x] **Deleted demo/trial account `0466118646`** (`auth.users` id `a248470c-bd2d-4063-a4c3-a5c006bc3e36`) on jvkn at Royce's request, after triple-checking scope: standalone synthetic personal tenant (not SKS/Demo Trades/Melbourne/EQ Solutions), empty profile, 0 workers/org_memberships/licences, exactly 1 `ocr_usage` row (the one failed scan). Confirmed 0 rows remain matching that phone post-delete.
+
+**Notes (load-bearing):**
+- Investigated via a live-browser test setup (Flutter web dev server + Claude Preview MCP) but hit two dead ends worth remembering next time: (1) code generation (`build_runner`) must run before `flutter run -d web-server` will even compile — the repo doesn't ship `.g.dart`/`.freezed.dart` files; (2) the sandboxed headless browser got stuck on the app's own boot loader (never fired `flutter-first-frame`), so full iOS-Safari-in-browser repro isn't currently possible in this environment — static analysis + real build compilation was the fallback verification path.
+- Mid-session both GitHub and Supabase MCP hit a genuine sandbox-wide network outage (DNS resolution itself failing) — correctly identified as infra, not app-specific, and paused rather than worked around; retried clean once connectivity returned.
+- A prior commit (`c159717`, 2026-07-01) had already partially diagnosed a related-but-distinct issue — CanvasKit's WebGL loop throttled by iOS Safari — and fixed it via `renderer: 'auto'` in `web/index.html`. A same-day follow-up commit (`9f2b408`) reverted part of that fix's spinner-widget change for an unrelated, also-valid reason. Neither commit touched the actual root cause found this session (the `toDataURL()` block), which is why the freeze persisted after both.
+
+**Deferred (added 2026-07-02):**
+- [ ] **Manual verification on a real iOS Safari session post-deploy** — confirm the spinner now animates smoothly through a real scan; couldn't be verified live in this sandbox. _(added 2026-07-02)_
+
+---
+
 ## ⏩ Session close — 2026-07-02 (eq-field) — Schedule page 404 fix (canonical roster read path)
 
 **Completed (eq-field, pushed to main `2c374cb`, Netlify auto-deploy triggered):**
