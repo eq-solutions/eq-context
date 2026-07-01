@@ -61,6 +61,8 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-01)
 
 **eq-service:**
+- #395 fix(validation): add Zod schema to updateReportSettingsAction
+- #394 fix(auth): remove dead /api/shell-sso from PUBLIC_PATHS
 - #370 chore(deps): bump react and @types/react
 - #369 chore(deps): bump docx from 9.6.1 to 9.7.1
 - #368 chore(deps-dev): bump @netlify/functions from 5.2.0 to 5.3.0
@@ -76,7 +78,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ? in_progress |
+| eq-service | ✗ failure |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
