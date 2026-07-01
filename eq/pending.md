@@ -18,6 +18,21 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-01 (eq-cards) — signup 500 + error copy + photo picker + worker dedup
+
+**Completed (eq-cards, pushed to main; deploy pending):**
+- [x] **Migration 0066 — `handle_phone_dedup` SECURITY DEFINER** — ALL new signups 500ing since 0065 landed. Trigger ran as `authenticator` → `permission denied for schema shell_control`. Applied live to jvkn + committed. _(fixed 2026-07-01)_
+- [x] **Auth error copy** — "No internet connection" → "Unable to connect…" + Sentry capture for NetworkFailure. `AuthRetryableFetchException` also fires on 5xx, not just true offline. (commit `60de9d1`) _(fixed 2026-07-01)_
+- [x] **Android photo picker** — `pickImageWithSourceChoice` helper: bottom sheet on web (Take a photo / Choose from library). Applied to licences list, licence edit, certificates. (commit `f42376e`) _(fixed 2026-07-01)_
+- [x] **Migration 0067 — `eq_cards_upsert_my_worker` orphan adoption** — profile-save was creating duplicate workers when admin pre-created a shell (`user_id=null`). Now calls `eq_cards_link_or_create_worker` first. Applied live + committed. _(fixed 2026-07-01)_
+- [x] **William Brown orphan row deleted** — `61691bf9` (admin shell, no licences). Kept `650f0a4b` (auth-linked). _(done 2026-07-01)_
+
+**Deferred (added 2026-07-01):**
+- [ ] **Deploy eq-cards** — error copy + photo picker on main. `gh workflow run deploy.yml --ref main` _(Royce action) (added 2026-07-01)_
+- [ ] **Sweep workers table for local-format phone duplicates** — `0412...` shells + `+61412...` signups; adopt logic now handles future cases but existing dupes need a one-time audit _(added 2026-07-01)_
+
+---
+
 ## ⏩ Session close — 2026-07-01 (part c) — Warm Sand migration + Phase D + PDF import fixes
 
 **Completed (eq-shell, merged + deployed):**
