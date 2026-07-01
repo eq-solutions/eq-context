@@ -14,6 +14,15 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-02 (eq-field) — Schedule page 404 fix (canonical roster read path)
+
+**Completed (eq-field, pushed to main `2c374cb`, Netlify auto-deploy triggered):**
+- [x] **Fixed PGRST205 404 on every Schedule page load for SKS tenant** — `roster-adapter.js`'s `rewriteReadPath()` translated the wide `week=`/`id=` query filters for canonical (SKS) roster reads but left the table segment as `schedule`, which doesn't exist in `app_data` (only `app_data.schedule_entries` does). Writes already correctly targeted `schedule_entries` (`supabase.js:1028`) — only GET reads were broken. Fix: `rewriteReadPath` now always returns `schedule_entries` as the table. Updated 2 stale test assertions in `tests/roster-adapter.test.js` that had encoded the buggy behaviour. 79/79 tests pass. _(done 2026-07-02)_
+
+**Deferred:** none.
+
+---
+
 ## ⏩ Session close — 2026-07-02 (eq-shell part 5) — profile settings removal + sequential merge sweep
 
 **Completed (eq-shell, all merged + deployed):**
