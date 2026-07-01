@@ -1,25 +1,25 @@
 ---
 title: EQ Suite — Health Digest
 owner: Royce Milmlow
-last_updated: 2026-06-30
+last_updated: 2026-07-01
 scope: Push-style 'what needs your attention' feed across the EQ suite. Regenerated on merge (repository_dispatch: suite-state-changed) and nightly. Full snapshot in suite-state.md.
 read_priority: high
 status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-06-30 21:14 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-01 00:52 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-06-30 19:19 UTC → 2026-06-30 21:14 UTC)
+## Since last refresh (2026-06-30 21:14 UTC → 2026-07-01 00:52 UTC)
 
-- Merged: eq-shell [#581](https://github.com/eq-solutions/eq-shell/pull/581) style(ui): roll Warm Sand neutrals repo-wide (Direction-D)
-- Merged: eq-shell [#580](https://github.com/eq-solutions/eq-shell/pull/580) style(staff): Warm Sand neutrals pilot on StaffPage (Directi
-- Merged: eq-shell [#453](https://github.com/eq-solutions/eq-shell/pull/453) fix(staff): licence labels + photo CSP
+- Merged: eq-shell [#584](https://github.com/eq-solutions/eq-shell/pull/584) fix(ops): PDF import — real spinner + apply default markup
+- Merged: eq-shell [#583](https://github.com/eq-solutions/eq-shell/pull/583) feat(reports): manual "mark done" on the forecasts tab
+- Merged: eq-shell [#582](https://github.com/eq-solutions/eq-shell/pull/582) style(ui): Warm Sand neutrals in CSS files — closes the mobi
+- Merged: eq-shell [#562](https://github.com/eq-solutions/eq-shell/pull/562) refactor(ui): route brand hexes through @eq tokens (105 acro
 - Merged: eq-solves-service [#383](https://github.com/eq-solutions/eq-service/pull/383) feat(app): branded public 'What's New' page (/whats-new)
 - Merged: eq-solves-service [#381](https://github.com/eq-solutions/eq-service/pull/381) fix(canonical): filter service.sites view by active = true
-- Merged: eq-field [#381](https://github.com/eq-solutions/eq-field/pull/381) v3.5.217 — URL-per-tab deep-link support (Field side)
+- Merged: eq-field [#380](https://github.com/eq-solutions/eq-field/pull/380) v3.5.216 — edge function canonical rewrite (ehow compatibili
 - Merged: eq-solves-service [#380](https://github.com/eq-solutions/eq-service/pull/380) feat(app): add branded error boundaries (error.tsx + global-
-- Merged: eq-field [#379](https://github.com/eq-solutions/eq-field/pull/379) security(zaap): revoke residual anon grants on worker-PII ta
 
 ## ⚠ Needs you (1)
 
@@ -49,6 +49,9 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-01 | eq-shell | [#584](https://github.com/eq-solutions/eq-shell/pull/584) fix(ops): PDF import — real spinner + apply default markup |
+| 2026-07-01 | eq-shell | [#583](https://github.com/eq-solutions/eq-shell/pull/583) feat(reports): manual "mark done" on the forecasts tab |
+| 2026-07-01 | eq-shell | [#582](https://github.com/eq-solutions/eq-shell/pull/582) style(ui): Warm Sand neutrals in CSS files — closes the mobile ga |
 | 2026-06-30 | eq-shell | [#581](https://github.com/eq-solutions/eq-shell/pull/581) style(ui): roll Warm Sand neutrals repo-wide (Direction-D) |
 | 2026-06-30 | eq-shell | [#580](https://github.com/eq-solutions/eq-shell/pull/580) style(staff): Warm Sand neutrals pilot on StaffPage (Direction-D) |
 | 2026-06-30 | eq-shell | [#578](https://github.com/eq-solutions/eq-shell/pull/578) refactor(staff): extract + unit-test pure StaffPage logic (Phase  |
@@ -61,13 +64,11 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-06-30 | eq-shell | [#568](https://github.com/eq-solutions/eq-shell/pull/568) fix(staff): pending connections — admin notify, reject email, pho |
 | 2026-06-30 | eq-shell | [#567](https://github.com/eq-solutions/eq-shell/pull/567) fix(staff): show name for existing staff in pending connections |
 | 2026-06-30 | eq-shell | [#566](https://github.com/eq-solutions/eq-shell/pull/566) fix(ui): iOS spinner animation — will-change: transform on all CS |
-| 2026-06-30 | eq-shell | [#564](https://github.com/eq-solutions/eq-shell/pull/564) refactor(pdf): @react-pdf/renderer replaces Puppeteer + chromium |
-| 2026-06-30 | eq-shell | [#565](https://github.com/eq-solutions/eq-shell/pull/565) fix(staff): matrix full licence names in headers + mobile polish |
-| 2026-06-30 | eq-shell | [#563](https://github.com/eq-solutions/eq-shell/pull/563) fix(equipment): cert import 500 — send cert URLs, not bytes, to b |
-_Showing 15 of 109 · full record in [sessions/](sessions/)_
+_Showing 15 of 110 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **Dispatch `tenant-migrate.yml`** (workflow_dispatch, `sks` slug, production-gated, `allow_checksum_drift=true` per usual) to apply **0153** to ehow. Until then the Mark-done buttons render but a click reverts (table absent → PATCH 500s). _(added 2026-07-01)_
 - **Merge PR #579** — 3 Sentry fixes (approval dedup, Cards timer, PDF fetch). Build green. _(Royce to merge)_
 - **Netlify: rename `NEXT_PUBLIC_GOOGLE_MAPS_KEY` → `VITE_GOOGLE_MAPS_KEY`** — PR #570 changed the code; Netlify dashboard var still has old name. _(Royce action)_
 - **Netlify: remove stale env vars** — `EQ_FIELD_HANDOFF_KEY`, `EQ_FIELD_HANDOFF_KEY_NEXT`, `EQ_SECRET_SALT`, `EQ_SECRET_SALT_NEXT` no longer have consumers. _(Royce action)_
@@ -77,8 +78,7 @@ _Showing 15 of 109 · full record in [sessions/](sessions/)_
 - **Add `test:` gate** to eq-intake `.armada/config.json` (e.g. `pnpm -C eq-platform test`) — unit tests green across packages, just not wired into the fleet gate yet _(added 2026-06-30)_
 - **(optional, needs your call)** Harden build-before-test workspace-wide so the stale-dist bug class (root of #47) can't recur — source-resolution or build-ordering across all packages _(added 2026-06-30)_
 - **(optional, needs your taste)** Archive stale root planning docs (`PLAN-*`, `OVERNIGHT-REVIEW-*`, `CONDUIT-AUDIT-*`) into `_archive/` _(added 2026-06-30)_
-- **Verify cert import live** — once deploy goes green, import multiple certs at core.eq.solutions (hard-refresh for new panel JS); parser now writes a real failure reason to job status if a download fails _(added 2026-07-01)_
-_…and 165 more · [eq/pending.md](eq/pending.md)_
+_…and 164 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -110,4 +110,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-06-30 21:14 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-01 00:52 UTC._
