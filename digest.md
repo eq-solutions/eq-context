@@ -8,29 +8,32 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-01 11:10 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-01 14:25 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-01 11:02 UTC → 2026-07-01 11:10 UTC)
+## Since last refresh (2026-07-01 11:10 UTC → 2026-07-01 14:25 UTC)
 
-- Merged: eq-shell [#571](https://github.com/eq-solutions/eq-shell/pull/571) fix(staff): destructure rejection_reason — unblock productio
-- Merged: eq-shell [#568](https://github.com/eq-solutions/eq-shell/pull/568) fix(staff): pending connections — admin notify, reject email
-- Merged: eq-shell [#562](https://github.com/eq-solutions/eq-shell/pull/562) refactor(ui): route brand hexes through @eq tokens (105 acro
-- Merged: eq-solves-service [#390](https://github.com/eq-solutions/eq-service/pull/390) refactor: consolidate ReportComplexity into a single canonic
-- Merged: eq-solves-service [#389](https://github.com/eq-solutions/eq-service/pull/389) fix: replace console.error with Sentry.captureException in s
-- Merged: eq-solves-service [#388](https://github.com/eq-solutions/eq-service/pull/388) fix: remove dead /auth/shell-bridge exemption from PUBLIC_PA
-- Merged: eq-solves-service [#384](https://github.com/eq-solutions/eq-service/pull/384) feat(testing): instrument selection on ACB/NSX tests + clean
-- Merged: eq-solves-service [#383](https://github.com/eq-solutions/eq-service/pull/383) feat(app): branded public 'What's New' page (/whats-new)
+- 🔴 CI eq-solves-service: success → failure
+- Merged: eq-shell [#576](https://github.com/eq-solutions/eq-shell/pull/576) fix(staff): PostgrestBuilder→Promise cast via unknown — unbl
+- Merged: eq-shell [#572](https://github.com/eq-solutions/eq-shell/pull/572) chore(equipment): remove dead synchronous cert-import-parse 
+- Merged: eq-shell [#570](https://github.com/eq-solutions/eq-shell/pull/570) fix(env): Google Maps key prefix + dead NETLIFY_CONTEXT Sent
+- Merged: eq-shell [#569](https://github.com/eq-solutions/eq-shell/pull/569) fix(staff): invite-path rejection email
+- Merged: eq-shell [#567](https://github.com/eq-solutions/eq-shell/pull/567) fix(staff): show name for existing staff in pending connecti
+- Merged: eq-shell [#566](https://github.com/eq-solutions/eq-shell/pull/566) fix(ui): iOS spinner animation — will-change: transform on a
+- Merged: eq-shell [#565](https://github.com/eq-solutions/eq-shell/pull/565) fix(staff): matrix full licence names in headers + mobile po
+- Merged: eq-shell [#564](https://github.com/eq-solutions/eq-shell/pull/564) refactor(pdf): @react-pdf/renderer replaces Puppeteer + chro
+- ⚠ Needs you: 1 → 2 (new items)
 
-## ⚠ Needs you (1)
+## ⚠ Needs you (2)
 
+- 🔴 **CI failure** — eq-solves-service `main`
 - 🟠 **Sentry new error** — `eq-cards` [minified:I3: Exception: Could not load Blob from its URL. Ha](https://eq-solutions.sentry.io/issues/131122766/)
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 0 | — |
-| eq-solves-service | ✓ success | 0d ago | 6 | 3d |
+| eq-shell | ? unknown | ? | 1 | 0d |
+| eq-solves-service | ✗ failure | 0d ago | 6 | 3d |
 | eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ? unknown | ? | 0 | — |
@@ -56,15 +59,15 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-01 | eq-shell | [#584](https://github.com/eq-solutions/eq-shell/pull/584) fix(ops): PDF import — real spinner + apply default markup |
 | 2026-07-01 | eq-shell | [#583](https://github.com/eq-solutions/eq-shell/pull/583) feat(reports): manual "mark done" on the forecasts tab |
 | 2026-07-01 | eq-shell | [#582](https://github.com/eq-solutions/eq-shell/pull/582) style(ui): Warm Sand neutrals in CSS files — closes the mobile ga |
+| 2026-07-01 | eq-solves-service | [#395](https://github.com/eq-solutions/eq-service/pull/395) fix(validation): add Zod schema to updateReportSettingsAction |
+| 2026-07-01 | eq-solves-service | [#394](https://github.com/eq-solutions/eq-service/pull/394) fix(auth): remove dead /api/shell-sso from PUBLIC_PATHS |
+| 2026-07-01 | eq-solves-service | [#396](https://github.com/eq-solutions/eq-service/pull/396) test(idempotency): unit tests for withIdempotency |
 | 2026-07-01 | eq-solves-service | [#390](https://github.com/eq-solutions/eq-service/pull/390) refactor: consolidate ReportComplexity into a single canonical ty |
 | 2026-07-01 | eq-solves-service | [#389](https://github.com/eq-solutions/eq-service/pull/389) fix: replace console.error with Sentry.captureException in site-c |
 | 2026-07-01 | eq-solves-service | [#388](https://github.com/eq-solutions/eq-service/pull/388) fix: remove dead /auth/shell-bridge exemption from PUBLIC_PATHS |
 | 2026-07-01 | eq-solves-service | [#384](https://github.com/eq-solutions/eq-service/pull/384) feat(testing): instrument selection on ACB/NSX tests + clean inst |
 | 2026-06-30 | eq-shell | [#581](https://github.com/eq-solutions/eq-shell/pull/581) style(ui): roll Warm Sand neutrals repo-wide (Direction-D) |
-| 2026-06-30 | eq-shell | [#580](https://github.com/eq-solutions/eq-shell/pull/580) style(staff): Warm Sand neutrals pilot on StaffPage (Direction-D) |
-| 2026-06-30 | eq-shell | [#578](https://github.com/eq-solutions/eq-shell/pull/578) refactor(staff): extract + unit-test pure StaffPage logic (Phase  |
-| 2026-06-30 | eq-shell | [#575](https://github.com/eq-solutions/eq-shell/pull/575) feat(staff): training matrix — filter, sort, selection, column fi |
-_Showing 15 of 115 · full record in [sessions/](sessions/)_
+_Showing 15 of 113 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
@@ -110,4 +113,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-01 11:10 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-01 14:25 UTC._
