@@ -14,6 +14,18 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-01 (eq-shell part j) — staff-resync-licences + MobileSheet parity
+
+**Completed (eq-shell, branch `claude/worker-dedup-archive-lockdown`):**
+- [x] **`netlify/functions/staff-resync-licences.ts`** (new) — POST; re-syncs licences from jvkn `public.licences` → ehow `app_data.licences` for a staff member who uploaded licences after their approval event. Manager-gated (`admin.review_cards`). Looks up `cards_worker_id` server-side, resolves `workers.user_id`, fetches `public.licences` (same filter as `cards-approve-staff`), upserts with `ON CONFLICT cards_credential_id DO NOTHING` + `.select()` so `synced` count = rows actually inserted (not just found). Returns `{ ok, synced }`. _(done 2026-07-01)_
+- [x] **`SplitPanel.tsx`** — "Re-sync from Cards" button in the empty-licences state; `handleResync`; inline result message; `onLicencesResynced` prop → `handleMutated`. State resets on staff selection change. _(done 2026-07-01)_
+- [x] **`StaffPage.tsx` `MobileSheet`** — same button + handler + prop for mobile parity. _(done 2026-07-01)_
+- [x] **Build clean** — `pnpm run build` passes, 0 type errors. _(done 2026-07-01)_
+
+**Deferred:** none.
+
+---
+
 ## ⏩ Session close — 2026-07-01 (eq-shell) — SMS approval notification + StaffPage Phase E
 
 **Completed (eq-shell, pushed + deployed):**

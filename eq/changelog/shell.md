@@ -9,6 +9,10 @@ status: live
 
 # Changelog — EQ Shell
 
+## [2026-07-01] staff-resync-licences: on-demand post-approval licence sync from Cards
+- New `netlify/functions/staff-resync-licences.ts` — re-syncs `public.licences` (jvkn) → `app_data.licences` (ehow) for a staff member who uploaded licences after approval
+- "Re-sync from Cards" button in `SplitPanel` + `MobileSheet` zero-licence empty state; calls `handleMutated` on success to refresh the roster
+
 ## [2026-07-01] SMS worker on connection approval + StaffPage Phase E (PR #585, commit 2720f49)
 - `cards-approve-staff.ts`: fire-and-forget Twilio SMS on both invite path and application path. Phone from existing row data; tenant name fetched inline for invite path; 24h guard prevents retroactive sends; non-fatal (approval committed first).
 - PR #585: StaffPage Phase E — `MatrixView.tsx`, `SplitPanel.tsx`, `staffHelpers.ts`, `staffTypes.ts` extracted into `src/pages/staff/`. StaffPage.tsx slims from 2252 to ~300 net lines; all CI green; deployed.
