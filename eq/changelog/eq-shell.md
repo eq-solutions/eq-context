@@ -1,6 +1,8 @@
 # eq-shell changelog
 
 ## 2026-07-02
+- PR #592: equipment table "Assigned to" column gets an inline dropdown (editors only) for reassigning custodians without opening the detail drawer; drawer button relabelled "Reassign custodian" → "Assign to staff member"
+- Data recovery: 13 `app_data.assets` (plant_equipment) rows on ehow/SKS restored from `audit_log.old_record` after an unattributed direct-SQL delete on 2026-07-01 — not a code change, noted here for the record
 - PR #589: ARMADA lighthouse budget bump (`maxIssuesPerRun` 3→6, `maxRuntimeSec` 300→600, `maxFindings` 20→30). Config-only, no code change. Daily 8am scheduled lighthouse task added, routed through the main checkout to avoid the worktree skill-resolution gap.
 - PR #588: token lint ratchet (no-restricted-syntax warn→error); 24 legacy file-level eslint-disable markers; `staff-resync-licences.ts` endpoint; SplitPanel "Re-sync from Cards" button
 - PR #587: `worker_dedup_archive_20260630` RLS lockdown on jvkn

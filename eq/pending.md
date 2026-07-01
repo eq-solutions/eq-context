@@ -14,6 +14,20 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-02 (eq-shell) — equipment cert-delete recovery + assign-to-staff dropdown
+
+**Completed (eq-shell, merged + deployed):**
+- [x] **13 plant & equipment certs restored on ehow (SKS tenant)** — `app_data.assets` rows (calibration meters/testers, uploaded via the Shell cert-import flow 2026-06-30/07-01) were hard-deleted by an unattributed direct SQL `DELETE` at 2026-07-01 09:37:18 UTC (`actor_id: null`, `source: 'system'` — not the app, not a tracked migration). Restored verbatim from `app_data.audit_log.old_record` (names, sites, calibration dates, `cert_url`s all intact — underlying PDFs untouched in the `asset-certs` bucket). Verified live on `/sks/equipment`. _(done 2026-07-02)_
+- [x] **PR #592 merged** — Equipment table "Assigned to" column is now an inline dropdown for editors (`equipment.edit`) to reassign a custodian without opening the detail drawer; optimistic update via the existing `asset-calibration` endpoint, reverts on failed write. Detail-drawer button relabelled "Reassign custodian" → "Assign to staff member". `tsc` clean; CI (typecheck·test·lint, schema drift, migration ledger hygiene, deploy-preview) all green. _(done 2026-07-02)_
+
+**Decided:**
+- Royce chose immediate restore-from-audit-log over holding off to investigate the delete first — data recovery prioritized over forensics, investigation spun off separately.
+
+**Deferred (added 2026-07-02):**
+- [ ] **Find source of the unattributed `app_data.assets` delete on ehow** — background investigation session (`local_9c384ff7`, chip `task_9b113311`) was still running at session close; check Supabase logs/advisors around 2026-07-01 09:30–09:40 UTC and any hand-run script for the actor. Recommend a lightweight guard against unattributed service-role DELETEs on `app_data.assets` per eq-shell's One Pipe governance. _(needs your call once the investigation reports back)_
+
+---
+
 ## ⏩ Session close — 2026-07-02 (eq-service) — lighthouse budget bump + 2nd recon pass, 9 issues built + merged
 
 **Completed (eq-service, all merged + deployed):**
