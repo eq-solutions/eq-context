@@ -8,38 +8,40 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-01 02:41 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-01 10:08 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-01 02:28 UTC → 2026-07-01 02:41 UTC)
+## Since last refresh (2026-07-01 02:41 UTC → 2026-07-01 10:08 UTC)
 
-- Merged: eq-shell [#565](https://github.com/eq-solutions/eq-shell/pull/565) fix(staff): matrix full licence names in headers + mobile po
-- Merged: eq-shell [#564](https://github.com/eq-solutions/eq-shell/pull/564) refactor(pdf): @react-pdf/renderer replaces Puppeteer + chro
-- Merged: eq-shell [#563](https://github.com/eq-solutions/eq-shell/pull/563) fix(equipment): cert import 500 — send cert URLs, not bytes,
+- Merged: eq-shell [#579](https://github.com/eq-solutions/eq-shell/pull/579) fix(sentry): 3 production errors — approval dedup, Cards tim
+- Merged: eq-shell [#562](https://github.com/eq-solutions/eq-shell/pull/562) refactor(ui): route brand hexes through @eq tokens (105 acro
+- Merged: eq-solves-service [#384](https://github.com/eq-solutions/eq-service/pull/384) feat(testing): instrument selection on ACB/NSX tests + clean
 - Merged: eq-solves-service [#383](https://github.com/eq-solutions/eq-service/pull/383) feat(app): branded public 'What's New' page (/whats-new)
 - Merged: eq-solves-service [#381](https://github.com/eq-solutions/eq-service/pull/381) fix(canonical): filter service.sites view by active = true
-- Merged: eq-field [#381](https://github.com/eq-solutions/eq-field/pull/381) v3.5.217 — URL-per-tab deep-link support (Field side)
 - Merged: eq-solves-service [#380](https://github.com/eq-solutions/eq-service/pull/380) feat(app): add branded error boundaries (error.tsx + global-
-- Merged: eq-field [#379](https://github.com/eq-solutions/eq-field/pull/379) security(zaap): revoke residual anon grants on worker-PII ta
+- Merged: eq-field [#380](https://github.com/eq-solutions/eq-field/pull/380) v3.5.216 — edge function canonical rewrite (ehow compatibili
+- Merged: eq-solves-service [#378](https://github.com/eq-solutions/eq-service/pull/378) feat(ui): branded 404 page — app/not-found.tsx
+- ⚠ Needs you: 1 → 2 (new items)
 
-## ⚠ Needs you (1)
+## ⚠ Needs you (2)
 
+- 🔴 **CI failure** — eq-cards `main`
 - 🟠 **Sentry new error** — `eq-cards` [minified:I3: Exception: Could not load Blob from its URL. Ha](https://eq-solutions.sentry.io/issues/131122766/)
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 1 | 0d |
-| eq-solves-service | ✓ success | 0d ago | 6 | 2d |
+| eq-shell | ? unknown | ? | 0 | — |
+| eq-solves-service | ✓ success | 0d ago | 6 | 3d |
 | eq-field | ? unknown | ? | 0 | — |
-| eq-cards | ✓ success | 0d ago | 0 | — |
+| eq-cards | ✗ failure | 0d ago | 0 | — |
 | eq-solves-intake | ? unknown | ? | 0 | — |
 
 ## Live errors (Sentry)
 
 | Project | Error | Events | Last seen |
 |---------|-------|--------|-----------|
-| eq-cards | [minified:I3: Exception: Could not load Blob from its URL. Has it been revoked?](https://eq-solutions.sentry.io/issues/131122766/) | 3 | 2026-06-30 |
+| eq-cards | [minified:I3: Exception: Could not load Blob from its URL. Has it been revoked?](https://eq-solutions.sentry.io/issues/131122766/) | 4 | 2026-07-01 |
 | eq-shell | [Cards iframe did not fire onLoad within 30s](https://eq-solutions.sentry.io/issues/130446042/) | 2 | 2026-06-29 |
 | eq-shell | [captureServerError](https://eq-solutions.sentry.io/issues/130413967/) | 2 | 2026-06-29 |
 | eq-shell | [TypeError: Load failed](https://eq-solutions.sentry.io/issues/131334219/) | 1 | 2026-06-30 |
@@ -49,9 +51,11 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-01 | eq-shell | [#579](https://github.com/eq-solutions/eq-shell/pull/579) fix(sentry): 3 production errors — approval dedup, Cards timer ra |
 | 2026-07-01 | eq-shell | [#584](https://github.com/eq-solutions/eq-shell/pull/584) fix(ops): PDF import — real spinner + apply default markup |
 | 2026-07-01 | eq-shell | [#583](https://github.com/eq-solutions/eq-shell/pull/583) feat(reports): manual "mark done" on the forecasts tab |
 | 2026-07-01 | eq-shell | [#582](https://github.com/eq-solutions/eq-shell/pull/582) style(ui): Warm Sand neutrals in CSS files — closes the mobile ga |
+| 2026-07-01 | eq-solves-service | [#384](https://github.com/eq-solutions/eq-service/pull/384) feat(testing): instrument selection on ACB/NSX tests + clean inst |
 | 2026-06-30 | eq-shell | [#581](https://github.com/eq-solutions/eq-shell/pull/581) style(ui): roll Warm Sand neutrals repo-wide (Direction-D) |
 | 2026-06-30 | eq-shell | [#580](https://github.com/eq-solutions/eq-shell/pull/580) style(staff): Warm Sand neutrals pilot on StaffPage (Direction-D) |
 | 2026-06-30 | eq-shell | [#578](https://github.com/eq-solutions/eq-shell/pull/578) refactor(staff): extract + unit-test pure StaffPage logic (Phase  |
@@ -62,23 +66,21 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-06-30 | eq-shell | [#571](https://github.com/eq-solutions/eq-shell/pull/571) fix(staff): destructure rejection_reason — unblock production bui |
 | 2026-06-30 | eq-shell | [#569](https://github.com/eq-solutions/eq-shell/pull/569) fix(staff): invite-path rejection email |
 | 2026-06-30 | eq-shell | [#568](https://github.com/eq-solutions/eq-shell/pull/568) fix(staff): pending connections — admin notify, reject email, pho |
-| 2026-06-30 | eq-shell | [#567](https://github.com/eq-solutions/eq-shell/pull/567) fix(staff): show name for existing staff in pending connections |
-| 2026-06-30 | eq-shell | [#566](https://github.com/eq-solutions/eq-shell/pull/566) fix(ui): iOS spinner animation — will-change: transform on all CS |
-_Showing 15 of 110 · full record in [sessions/](sessions/)_
+_Showing 15 of 111 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **Deploy eq-cards** — error copy + photo picker on main. `gh workflow run deploy.yml --ref main` _(Royce action) (added 2026-07-01)_
-- **Sweep workers table for local-format phone duplicates** — `0412...` shells + `+61412...` signups; adopt logic now handles future cases but existing dupes need a one-time audit _(added 2026-07-01)_
+- **Deploy eq-cards** — onboarding activation (first-scan screen + rich empty state). `gh workflow run deploy.yml --ref main` _(Royce action) (added 2026-07-01)_
 - **Semantics pass** (Warm Sand) — reds/greens/ambers + status-chip pastels shift shade → needs a before/after sign-off; unblocks flipping the lint no-raw-hex ratchet (F) _(needs Royce's call) (added 2026-07-01)_
 - **StaffPage Phase E** — extract MatrixView/SplitPanel into staff/ modules (now Phase-D-test-guarded) _(added 2026-07-01)_
 - **Token source unification (A)** + eslint-runnable env — eslint won't run in the work checkout, blocking a lint-config change / the blocking ratchet _(added 2026-07-01)_
 - **Dispatch `tenant-migrate.yml`** (workflow_dispatch, `sks` slug, production-gated, `allow_checksum_drift=true` per usual) to apply **0153** to ehow. Until then the Mark-done buttons render but a click reverts (table absent → PATCH 500s). _(added 2026-07-01)_
+- **Rename `NEXT_PUBLIC_GOOGLE_MAPS_KEY` → `VITE_GOOGLE_MAPS_KEY`** — API returns masked value only; can't copy programmatically. Netlify dashboard → eq-shell → Environment variables: copy value, add `VITE_GOOGLE_MAPS_KEY`, delete old key. Address autocomplete broken in prod until done. _(Royce action) (added 2026-07-01)_
 - **Merge PR #579** — 3 Sentry fixes (approval dedup, Cards timer, PDF fetch). Build green. _(Royce to merge)_
 - **Netlify: rename `NEXT_PUBLIC_GOOGLE_MAPS_KEY` → `VITE_GOOGLE_MAPS_KEY`** — PR #570 changed the code; Netlify dashboard var still has old name. _(Royce action)_
-- **Netlify: remove stale env vars** — `EQ_FIELD_HANDOFF_KEY`, `EQ_FIELD_HANDOFF_KEY_NEXT`, `EQ_SECRET_SALT`, `EQ_SECRET_SALT_NEXT` no longer have consumers. _(Royce action)_
 - **Add `TENANT_UUID = 7dee117c-98bd-4d39-af8c-2c81d02a1e85` to ehow edge function secrets** — Supabase dashboard → Project Settings → Edge Functions → Secrets. All 4 functions 500 without it. _(Royce action) (added 2026-07-01)_
-_…and 169 more · [eq/pending.md](eq/pending.md)_
+- **Update pg_cron digest cron URL** — check ehow pg_cron; if referencing `supervisor-digest-v2`, update to `supervisor-digest`. _(added 2026-07-01)_
+_…and 168 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -98,11 +100,11 @@ _…and 15 more · [sks/pending.md](sks/pending.md)_
 
 | Date | Session |
 |------|---------|
-| 2026-07-01 | [Pending connections audit + 3 gap fixes merged](sessions/2026-07-01.md) |
 | 2026-06-30 | [EQ Field canonical sprint complete (v3.5.207–212)](sessions/2026-06-30.md) |
 | 2026-06-30 | [2026-06-30 (part g) — Field canonical wiring sprint: v3.5.207–v3.5.211](sessions/2026-06-30-field-canonical-sprint-g.md) |
 | 2026-06-29 | [SKS data reset + maintenance check page parallelization](sessions/2026-06-29.md) |
 | 2026-06-28 | [Brain 10/10: substrate coherence + automation layer](sessions/2026-06-28-brain-10-10.md) |
+| 2026-06-28 | [EQ Service batch-create fix](sessions/2026-06-28-batch-create-fix.md) |
 _[sessions/](sessions/) · 5 shown_
 
 ## Substrate honesty
@@ -110,4 +112,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-01 02:41 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-01 10:08 UTC._
