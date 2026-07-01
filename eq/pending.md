@@ -14,6 +14,16 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-01 (eq-service) — instruments decoupled from assets
+
+**Completed:**
+- [x] **Migration 0164 applied** — dropped `canonical_id`/`canonical_synced_at` from `app_data.instruments`, rebuilt `service.instruments` view + INSTEAD OF trigger. Reverses the incorrect 0158 asset wiring.
+- [x] **`pullCanonicalInstrumentsAction` removed** — was pulling from `app_data.assets WHERE asset_type='plant_equipment'` (wrong source). Action + "Sync from Shell" button gone from instruments module.
+
+**Deferred (added 2026-07-01):**
+- [ ] **Remove 13 `plant_equipment` rows from `app_data.assets`** — orphaned after 0164; all tied to same site_id. Shell-side cleanup, not Service. _(added 2026-07-01)_
+- [ ] **ACB/NSX instrument selection UI** — no `equipment_used` field on `acb_tests`/`nsx_tests` yet. When built: add field to DB + workflows + picker from `service.instruments`. _(added 2026-07-01)_
+
 ---
 
 ---
