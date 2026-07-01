@@ -1,6 +1,7 @@
 # eq-shell changelog
 
 ## 2026-07-02
+- PR #590: Access Control security sprint — blocked admin/audit perm-key escalation in role overrides (`OVERRIDABLE_PERM_KEYS` allowlist), added `checkShellOrigin` CSRF guard (report-only) to `security-groups.ts`/`tenant-role-perms.ts`/`admin-tenants.ts`/`cards-export-licences.ts`/`comms-jobs.ts`, fixed un-awaited audit-log writes, fixed permission-preview panel to include live `tenant_role_overrides`
 - PR #592: equipment table "Assigned to" column gets an inline dropdown (editors only) for reassigning custodians without opening the detail drawer; drawer button relabelled "Reassign custodian" → "Assign to staff member"
 - Data recovery: 13 `app_data.assets` (plant_equipment) rows on ehow/SKS restored from `audit_log.old_record` after an unattributed direct-SQL delete on 2026-07-01 — not a code change, noted here for the record
 - PR #589: ARMADA lighthouse budget bump (`maxIssuesPerRun` 3→6, `maxRuntimeSec` 300→600, `maxFindings` 20→30). Config-only, no code change. Daily 8am scheduled lighthouse task added, routed through the main checkout to avoid the worktree skill-resolution gap.

@@ -14,6 +14,26 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-02 (eq-shell) — Access Control security audit + sprint 1
+
+**Completed (eq-shell, PR #590 merged `157749f`, deployed):**
+- [x] **Full audit of `/admin/access-control`** — role matrix, custom groups, permission preview all traced end-to-end against live code + live jvkn DB. Confirmed `roles.json` v2.3.0 is a single source of truth with zero drift across client/server/package. _(done 2026-07-02)_
+- [x] **Critical fix — perm-key escalation closed** — `tenant-role-perms.ts` accepted any of the 29 perm keys for a role override, including `admin.manage_groups`/`admin.deactivate_user`/`audit.rollback`, even though the matrix UI never rendered admin/audit as toggleable. A crafted POST could silently promote any role to group-manager with zero UI trace. Added `OVERRIDABLE_PERM_KEYS` server-side allowlist (app-module keys only). Verified live first — zero existing overrides used admin/audit keys, so no live impact. _(done 2026-07-02)_
+- [x] **High fix — CSRF via shared cookie domain** — `eq_shell_session` is `Domain=.eq.solutions` + `SameSite=Lax`, so any sibling `*.eq.solutions` subdomain (or an XSS on one) can call cookie-authed endpoints. Added the existing `checkShellOrigin` helper (report-only, `ENFORCE_IFRAME_ORIGIN` env-gated — same rollout as the mint-* endpoints) to `security-groups.ts`, `tenant-role-perms.ts`, `admin-tenants.ts`, `cards-export-licences.ts`, `comms-jobs.ts`. `canonical-api.ts` intentionally excluded — Bearer-key auth, not cookie-based. _(done 2026-07-02)_
+- [x] **Fixed un-awaited audit-log writes** in `security-groups.ts` — fire-and-forget under Netlify serverless can drop the write mid-flight. _(done 2026-07-02)_
+- [x] **Fixed permission-preview panel** — it computed role-defaults ∪ group-grants only, ignoring live `tenant_role_overrides`, so it disagreed with the matrix on the same page whenever a role had a live override (10 exist on SKS today). Now mirrors `verify-shell-session`'s grant/deny merge. _(done 2026-07-02)_
+- [x] **CI green + merged** — tsc/tests/lint, schema-drift, migration-hygiene all passed; squash-merged to main, branch deleted. _(done 2026-07-02)_
+
+**Decided:**
+- Royce chose sprint scope "1+2+4" (perm-key fix + origin-check + widen origin-check to the 4 other cookie-authed endpoints found) over a narrower fix.
+- Royce explicitly confirmed the merge of PR #590.
+
+**Deferred (added 2026-07-02):**
+- [ ] **Decide where Access Control audit events surface** — `shell_control.audit_log` has 2 rows ever (both diagnostics); even a working write has nowhere to go: `admin-audit.ts` reads it but is called from zero pages (dead code), and the real "Audit log" nav tile reads a *different* table (`app_data.audit_log` on the tenant's own Field/Service plane) with no knowledge of role/group changes. Needs a product call: extend the existing tile, or build a new panel. _(needs your call)_
+- [ ] **Flip `ENFORCE_IFRAME_ORIGIN=true`** once a few days of `[origin-check]` Netlify function logs confirm no false positives on the 5 new call sites. _(needs your call — requires watching logs)_
+
+---
+
 ## ⏩ Session close — 2026-07-02 (eq-shell) — equipment cert-delete recovery + assign-to-staff dropdown
 
 **Completed (eq-shell, merged + deployed):**
