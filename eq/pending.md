@@ -28,8 +28,8 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **William Brown orphan row deleted** — `61691bf9` (admin shell, no licences). Kept `650f0a4b` (auth-linked). _(done 2026-07-01)_
 
 **Deferred (added 2026-07-01):**
-- [ ] **Deploy eq-cards** — error copy + photo picker on main. `gh workflow run deploy.yml --ref main` _(Royce action) (added 2026-07-01)_
-- [ ] **Sweep workers table for local-format phone duplicates** — `0412...` shells + `+61412...` signups; adopt logic now handles future cases but existing dupes need a one-time audit _(added 2026-07-01)_
+- [x] **Deploy eq-cards** — deployed run 28489589899, succeeded 2m41s. _(done 2026-07-01)_
+- [x] **Sweep workers table for orphan/duplicate workers** — 0 phone dupes, 0 email dupes; 4 at-risk orphans found and resolved (migration 0068 applied live 2026-07-01): John Angangan orphan deleted, Cicero/Zemi/Marcus proactively linked. _(done 2026-07-01)_
 
 ---
 
