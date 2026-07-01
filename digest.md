@@ -10,17 +10,16 @@ status: live
 # EQ Suite — Health Digest
 _2026-07-01 11:02 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-01 10:36 UTC → 2026-07-01 11:02 UTC)
+## Since last refresh (2026-07-01 11:02 UTC → 2026-07-01 11:02 UTC)
 
-- Merged: eq-shell [#587](https://github.com/eq-solutions/eq-shell/pull/587) fix(security): lock down worker_dedup_archive_20260630 on jv
-- Merged: eq-shell [#568](https://github.com/eq-solutions/eq-shell/pull/568) fix(staff): pending connections — admin notify, reject email
-- Merged: eq-shell [#562](https://github.com/eq-solutions/eq-shell/pull/562) refactor(ui): route brand hexes through @eq tokens (105 acro
+- Merged: eq-shell [#586](https://github.com/eq-solutions/eq-shell/pull/586) style(tokens): semantics pass — raw semantic hex → CSS token
+- Merged: eq-shell [#569](https://github.com/eq-solutions/eq-shell/pull/569) fix(staff): invite-path rejection email
+- Merged: eq-shell [#567](https://github.com/eq-solutions/eq-shell/pull/567) fix(staff): show name for existing staff in pending connecti
+- Merged: eq-shell [#566](https://github.com/eq-solutions/eq-shell/pull/566) fix(ui): iOS spinner animation — will-change: transform on a
+- Merged: eq-shell [#565](https://github.com/eq-solutions/eq-shell/pull/565) fix(staff): matrix full licence names in headers + mobile po
+- Merged: eq-shell [#564](https://github.com/eq-solutions/eq-shell/pull/564) refactor(pdf): @react-pdf/renderer replaces Puppeteer + chro
+- Merged: eq-shell [#563](https://github.com/eq-solutions/eq-shell/pull/563) fix(equipment): cert import 500 — send cert URLs, not bytes,
 - Merged: eq-solves-service [#384](https://github.com/eq-solutions/eq-service/pull/384) feat(testing): instrument selection on ACB/NSX tests + clean
-- Merged: eq-solves-service [#383](https://github.com/eq-solutions/eq-service/pull/383) feat(app): branded public 'What's New' page (/whats-new)
-- Merged: eq-field [#381](https://github.com/eq-solutions/eq-field/pull/381) v3.5.217 — URL-per-tab deep-link support (Field side)
-- Merged: eq-solves-service [#381](https://github.com/eq-solutions/eq-service/pull/381) fix(canonical): filter service.sites view by active = true
-- Merged: eq-solves-service [#380](https://github.com/eq-solutions/eq-service/pull/380) feat(app): add branded error boundaries (error.tsx + global-
-- ✅ Needs you: 2 → 1
 
 ## ⚠ Needs you (1)
 
@@ -30,7 +29,7 @@ _2026-07-01 11:02 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 1 | 0d |
+| eq-shell | ? unknown | ? | 0 | — |
 | eq-solves-service | ✓ success | 0d ago | 9 | 3d |
 | eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
@@ -50,6 +49,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-01 | eq-shell | [#586](https://github.com/eq-solutions/eq-shell/pull/586) style(tokens): semantics pass — raw semantic hex → CSS token vars |
 | 2026-07-01 | eq-shell | [#587](https://github.com/eq-solutions/eq-shell/pull/587) fix(security): lock down worker_dedup_archive_20260630 on jvkn |
 | 2026-07-01 | eq-shell | [#585](https://github.com/eq-solutions/eq-shell/pull/585) refactor(staff): Phase E — extract MatrixView + SplitPanel into s |
 | 2026-07-01 | eq-shell | [#579](https://github.com/eq-solutions/eq-shell/pull/579) fix(sentry): 3 production errors — approval dedup, Cards timer ra |
@@ -64,8 +64,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-06-30 | eq-shell | [#572](https://github.com/eq-solutions/eq-shell/pull/572) chore(equipment): remove dead synchronous cert-import-parse funct |
 | 2026-06-30 | eq-shell | [#570](https://github.com/eq-solutions/eq-shell/pull/570) fix(env): Google Maps key prefix + dead NETLIFY_CONTEXT Sentry fa |
 | 2026-06-30 | eq-shell | [#576](https://github.com/eq-solutions/eq-shell/pull/576) fix(staff): PostgrestBuilder→Promise cast via unknown — unblock t |
-| 2026-06-30 | eq-shell | [#571](https://github.com/eq-solutions/eq-shell/pull/571) fix(staff): destructure rejection_reason — unblock production bui |
-_Showing 15 of 113 · full record in [sessions/](sessions/)_
+_Showing 15 of 114 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
