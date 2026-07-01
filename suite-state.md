@@ -8,7 +8,7 @@ status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-06-30 (nightly cron)_
+_Last verified: 2026-07-01 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -37,7 +37,7 @@ _If this file is >48h old, the cron is broken._
 |--------|-------|--------|
 | Sites | 271 | app_data.sites |
 | Customers | 42 | app_data.customers |
-| Assets | 0 | app_data.assets |
+| Assets | 1 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
 | Users | 5 | service.tenant_members |
 | Maintenance checks | 4 | service.maintenance_checks |
@@ -58,7 +58,7 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-06-30)
+## Open PRs (as of 2026-07-01)
 
 **eq-service:**
 - #370 chore(deps): bump react and @types/react
@@ -73,7 +73,7 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## System Health (as of 2026-06-30)
+## System Health (as of 2026-07-01)
 
 **CI on main:**
 
