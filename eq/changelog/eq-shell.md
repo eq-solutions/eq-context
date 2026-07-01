@@ -1,6 +1,8 @@
 # eq-shell changelog
 
 ## 2026-07-02
+- PR #591: profile settings page removed — `ProfileSettings.tsx`, `netlify/functions/update-profile.ts`, route `settings/profile`, and "Your profile" sidebar link all deleted; names are admin-managed via Staff page
+- PRs #590/#592/#593 merged (sequential rebase; #592 worktree conflict resolved by rebasing from `.claude/worktrees/objective-bell-bc744d`)
 - PR #590: Access Control security sprint — blocked admin/audit perm-key escalation in role overrides (`OVERRIDABLE_PERM_KEYS` allowlist), added `checkShellOrigin` CSRF guard (report-only) to `security-groups.ts`/`tenant-role-perms.ts`/`admin-tenants.ts`/`cards-export-licences.ts`/`comms-jobs.ts`, fixed un-awaited audit-log writes, fixed permission-preview panel to include live `tenant_role_overrides`
 - PR #592: equipment table "Assigned to" column gets an inline dropdown (editors only) for reassigning custodians without opening the detail drawer; drawer button relabelled "Reassign custodian" → "Assign to staff member"
 - Data recovery: 13 `app_data.assets` (plant_equipment) rows on ehow/SKS restored from `audit_log.old_record` after an unattributed direct-SQL delete on 2026-07-01 — not a code change, noted here for the record

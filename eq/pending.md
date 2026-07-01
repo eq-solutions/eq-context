@@ -14,6 +14,19 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-02 (eq-shell part 5) — profile settings removal + sequential merge sweep
+
+**Completed (eq-shell, all merged + deployed):**
+- [x] **PR #591 merged** — removed `ProfileSettings.tsx`, `netlify/functions/update-profile.ts`, route `settings/profile`, and "Your profile" sidebar link. Staff names owned by admin via Staff page; self-serve edit was unused and a liability. tsc clean. _(done 2026-07-02)_
+- [x] **PRs #590 / #592 / #593 merged** — sequential safe merge: rebased all three, waited for CI, merged security PRs first (CSRF + access-control escalation + asset DELETE guard), then equipment feature. Worktree conflict on #592 resolved by rebasing from within `.claude/worktrees/objective-bell-bc744d`. _(done 2026-07-02)_
+
+**Decided:**
+- Profile settings page is not needed — names come from admin-managed staff records, not self-service
+
+**Deferred:** none new (Armada/Lighthouse + Cicero re-review carried from earlier close)
+
+---
+
 ## ⏩ Session close — 2026-07-02 (eq-shell) — Access Control security audit + sprint 1
 
 **Completed (eq-shell, PR #590 merged `157749f`, deployed):**
