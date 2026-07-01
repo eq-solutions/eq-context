@@ -23,7 +23,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **Option C task chip spawned** — employer SMS on worker connection approval (Shell repo) — separate worktree chip created. _(done 2026-07-01)_
 
 **Deferred (added 2026-07-01):**
-- [ ] **Deploy eq-cards** — onboarding activation (first-scan screen + rich empty state). `gh workflow run deploy.yml --ref main` _(Royce action) (added 2026-07-01)_
+- [x] **Deploy eq-cards** — onboarding activation (first-scan screen + rich empty state). Run 28509766188, 2m29s. _(done 2026-07-01)_
 
 ---
 
