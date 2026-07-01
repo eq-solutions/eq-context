@@ -66,8 +66,6 @@ _If this file is >48h old, the cron is broken._
 - #366 chore(deps): bump @eq-solutions/ui from v1.8.0 to v1.9.0 in the eq-design-system group across 1 directory
 
 **eq-shell:**
-- #593 fix(security): block unattributed direct DELETE on app_data.assets
-- #592 Equipment: inline assign-to-staff dropdown
 - #590 fix(security): close access-control escalation + CSRF gaps
 
 ---
