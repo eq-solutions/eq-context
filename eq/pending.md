@@ -33,6 +33,11 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **Migration 0164 applied** — dropped `canonical_id`/`canonical_synced_at` from `app_data.instruments`, rebuilt `service.instruments` view + INSTEAD OF trigger. Reverses the incorrect 0158 asset wiring.
 - [x] **`pullCanonicalInstrumentsAction` removed** — was pulling from `app_data.assets WHERE asset_type='plant_equipment'` (wrong source). Action + "Sync from Shell" button gone from instruments module.
 
+- [x] **Migration 0165 applied** — `instrument_id uuid FK` added to `app_data.acb_tests` + `app_data.nsx_tests`. Rebuilt `service.acb_tests` + `service.nsx_tests` views and INSTEAD OF trigger functions.
+- [x] **ACB/NSX instrument picker built** — Step 1 of both workflows now shows a dropdown populated from the instruments register (active, ordered by name, shows serial number). `instrument_id` wired through page → client wrapper → workflow → action.
+- [x] **Types + actions updated** — `AcbTest`, `NsxTest` gain `instrument_id: string | null`; `updateAcbDetailsAction` + `updateNsxDetailsAction` accept `instrument_id`. tsc 0 errors.
+- [x] **Committed** — 14 files, commit `042aa66` on `claude/heuristic-goldberg-ae3086`.
+
 **Deferred:** none.
 
 ---
