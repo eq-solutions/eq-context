@@ -16,6 +16,10 @@ status: live
 - **#584** — EQ Ops "From PDF" import: real `Loader2` spinner while parsing (both entry points); both PDF paths now auto-apply the tenant `defaultMaterialMarkup` (were adding lines at cost with no markup).
 
 
+## [2026-07-01] Netlify env cleanup — Maps key rename + stale var removal
+- `VITE_GOOGLE_MAPS_KEY` set (new key, eq-cards GCP project, HTTP referrer restricted); `NEXT_PUBLIC_GOOGLE_MAPS_KEY` deleted. Address autocomplete now live on next deploy.
+- `EQ_FIELD_HANDOFF_KEY` deleted (Field HMAC handoff dead since JWT migration). `EQ_SECRET_SALT` retained — still active session-signing fallback in token.ts.
+
 ## [2026-07-01] Sentry fixes — approval dedup, Cards timer race, PDF fetch catch (PR #579)
 - `cards_field_approvals` insert → upsert to prevent 23505 on re-approval (EQ-SHELL-E)
 - `CardsIframe` 30s timer: `activeRef` guard stops false-positive capture when user navigates away (EQ-SHELL-F)
