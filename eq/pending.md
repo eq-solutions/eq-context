@@ -14,6 +14,16 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-01 (eq-shell) — SMS approval notification + StaffPage Phase E
+
+**Completed (eq-shell, pushed + deployed):**
+- [x] **SMS worker on connection approval** — `cards-approve-staff.ts`: fire-and-forget `sendSms` on both invite path (`staffRow.phone`) and application path (`workerPhone`). 24h guard against retroactive batch approvals. Tenant name fetched inline for invite path. Non-fatal — approval committed before SMS fires. Commit `2720f49`, deployed. _(done 2026-07-01)_
+- [x] **PR #585 merged** — StaffPage Phase E: `MatrixView.tsx`, `SplitPanel.tsx`, `staffHelpers.ts`, `staffTypes.ts` extracted to `src/pages/staff/` sub-modules. StaffPage.tsx 2252→~300 lines net; all CI green (tsc + 94 tests pass); fast-forward to main, deployed. _(done 2026-07-01)_
+
+**Deferred:** none.
+
+---
+
 ## ⏩ Session close — 2026-07-01 (eq-cards part h) — onboarding activation: first-scan screen + rich empty state
 
 **Completed (eq-cards, pushed to main; deploy pending):**
@@ -68,7 +78,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 **Deferred (added 2026-07-01):**
 - [ ] **Semantics pass** (Warm Sand) — reds/greens/ambers + status-chip pastels shift shade → needs a before/after sign-off; unblocks flipping the lint no-raw-hex ratchet (F) _(needs Royce's call) (added 2026-07-01)_
-- [ ] **StaffPage Phase E** — extract MatrixView/SplitPanel into staff/ modules (now Phase-D-test-guarded) _(added 2026-07-01)_
+- [x] **StaffPage Phase E** — extract MatrixView/SplitPanel into staff/ modules (now Phase-D-test-guarded) _(done 2026-07-01 — PR #585 merged)_
 - [ ] **Token source unification (A)** + eslint-runnable env — eslint won't run in the work checkout, blocking a lint-config change / the blocking ratchet _(added 2026-07-01)_
 
 
@@ -349,7 +359,7 @@ These two were listed as independent deferreds; they're one coupled chain. De-he
 - [x] **B — DECIDED 2026-07-01: Warm Sand (Direction-D).** The neutral+semantic ramp ALREADY existed in @eq-solutions/tokens (--eq-gray-50..600 warm + --eq-success/-warning/-error, loaded via ui/styles → tokens.css) — the earlier "no loadable token" claim was WRONG. So B was not from-scratch design: Royce approved migrating components' cool-slate onto the existing warm ramp (deliberate cool→warm) via a before/after preview + StaffPage pilot. _(decided 2026-07-01)_
 - [~] **C — Codemod hexes → tokens: NEUTRALS DONE, semantics remain.** Pilot PR #580 (StaffPage, 110) + repo-wide rollout PR #581 (242 across 21 files) merged → all cool-slate neutrals (#E2E8F0→gray-200, #64748B→gray-500, #94A3B8→gray-400, etc.) on the warm --eq-gray ramp. Bare-hex sed; fill=/alpha landmines confirmed absent repo-wide. STILL TODO: semantic reds/greens/ambers + status-chip pastels (each SHIFTS shade → needs its own before/after) _(neutrals done 2026-07-01)_
 - [x] **D — Characterization tests + logic lift (StaffPage)** — snapshot/RTL tests on `MatrixView` + `SplitPanel` FIRST (we have the test runner now → converts the "unverifiable refactor" into a test-guaranteed one, replacing "eyeball the running app"); lift pure logic (`matrixCsvCell`, `licStatus`, date-shaping, matrix transform) into a tested `staff/lib` module. Independent — can start anytime _(added 2026-06-30)_ ✅ DONE 2026-07-01 — PR #578 (`b79af65`): `src/pages/staff/staffLib.ts` (licStatus/matrixCsvCell/buildMatrixCsv) + 9 tests, suite 85→94, tsc clean, behaviour-identical. Unblocks E.
-- [ ] **E — Extract StaffPage components** — move `MatrixView`/`SplitPanel` + shared `s`/helpers into `staff/` modules, split along data/logic/view seams (not just "smaller files"). Depends on C (de-hexed) + D (test-guarded) _(added 2026-06-30)_
+- [x] **E — Extract StaffPage components** — move `MatrixView`/`SplitPanel` + shared `s`/helpers into `staff/` modules, split along data/logic/view seams (not just "smaller files"). Depends on C (de-hexed) + D (test-guarded) _(done 2026-07-01 — PR #585)_
 - [ ] **F — Scoped blocking `no-raw-hex` rule** — flip warn→error WITH an allowlist (`*.palette.ts`, chart configs, `email/`) + a "token-or-justify-with-reason" path, not a blanket wall (a wall just trains more `eslint-disable` — how 155 accumulated). The ratchet that holds the gain. Depends on C _(added 2026-06-30)_
 
 ### ▶ zaap anon class-closure (eq-field — residual of the done #379 revoke)

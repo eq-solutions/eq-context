@@ -9,6 +9,10 @@ status: live
 
 # Changelog — EQ Shell
 
+## [2026-07-01] SMS worker on connection approval + StaffPage Phase E (PR #585, commit 2720f49)
+- `cards-approve-staff.ts`: fire-and-forget Twilio SMS on both invite path and application path. Phone from existing row data; tenant name fetched inline for invite path; 24h guard prevents retroactive sends; non-fatal (approval committed first).
+- PR #585: StaffPage Phase E — `MatrixView.tsx`, `SplitPanel.tsx`, `staffHelpers.ts`, `staffTypes.ts` extracted into `src/pages/staff/`. StaffPage.tsx slims from 2252 to ~300 net lines; all CI green; deployed.
+
 ## [2026-07-01] Warm Sand neutrals + StaffPage Phase D + forecasts mark-done + PDF import fixes (PRs #578 #580 #581 #582 #583 #584)
 - **#580 / #581 / #582** — Warm Sand (Direction-D) neutral migration: cool-slate hexes → the warm `--eq-gray` ramp. StaffPage pilot (#580) → repo-wide .tsx (#581, 242 refs/21 files) → CSS incl. mobile chrome (#582, 121 refs/7 files: MobileTabBar.css, MobileRecordsDrawer.css, App.css…). Neutrals fully warm desktop + mobile; brand + status unchanged.
 - **#578** — StaffPage Phase D: pure logic (`licStatus`/`matrixCsvCell`/`buildMatrixCsv`) lifted to `src/pages/staff/staffLib.ts` + 9 tests (suite 85→94). Behaviour-identical; unblocks component extraction.
