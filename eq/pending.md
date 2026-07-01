@@ -14,6 +14,22 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-01 (part f) — EQ Ops: material markup default + rate library sticky
+
+**Completed (eq-shell, committed to worktree `quirky-cerf-fbbdb9`):**
+- [x] **`QuotesSetup.tsx` `DEFAULT_CONFIG.material_markup`** changed from `"15"` → `"10"` — fallback shown in Setup → Rates when no DB config exists
+- [x] **`QuotesModule.tsx` PDF import paths** (3 locations) — `confirmPdfImport`, `handlePdfFileStart`, header-parse result: all now inherit `defaultMaterialMarkup` (loaded from `eq_get_pricing_config`, i.e. rate library setting); sell rate computed as `cost × (1 + markup%)` instead of `= supplier_price`
+- [x] **Labour markup untouched** — `addLineItem("labour")` still returns `""` per Royce decision
+
+**Decided:**
+- Labour markup stays blank/separate — labour rates are priced differently
+- Material/subcontractor/one-off line items should inherit the rate library's markup value
+- The "sticky" flow already existed via `eq_get_pricing_config` → `defaultMaterialMarkup`; only PDF imports were bypassing it
+
+**Deferred:** none.
+
+---
+
 ## ⏩ Session close — 2026-07-01 (part e) — Sentry triage + 3 fixes + branch cleanup
 
 **Completed (eq-shell):**
