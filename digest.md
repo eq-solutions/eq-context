@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-02 11:48 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-02 13:48 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-02 11:33 UTC → 2026-07-02 11:48 UTC)
+## Since last refresh (2026-07-02 11:48 UTC → 2026-07-02 13:48 UTC)
 
-- Merged: eq-shell [#603](https://github.com/eq-solutions/eq-shell/pull/603) fix(customers): Places address widget mounts reliably on fir
-- Merged: eq-shell [#602](https://github.com/eq-solutions/eq-shell/pull/602) Pending-count badge on the Number-reuse-checks admin tile
-- Merged: eq-shell [#592](https://github.com/eq-solutions/eq-shell/pull/592) Equipment: inline assign-to-staff dropdown
-- Merged: eq-shell [#589](https://github.com/eq-solutions/eq-shell/pull/589) chore(armada): increase lighthouse budget to 6 issues / 600s
-- Merged: eq-shell [#588](https://github.com/eq-solutions/eq-shell/pull/588) style(tokens): promote hex-colour lint rule to error; add st
-- Merged: eq-shell [#587](https://github.com/eq-solutions/eq-shell/pull/587) fix(security): lock down worker_dedup_archive_20260630 on jv
-- Merged: eq-shell [#586](https://github.com/eq-solutions/eq-shell/pull/586) style(tokens): semantics pass — raw semantic hex → CSS token
-- Merged: eq-shell [#585](https://github.com/eq-solutions/eq-shell/pull/585) refactor(staff): Phase E — extract MatrixView + SplitPanel i
+- Merged: eq-shell [#595](https://github.com/eq-solutions/eq-shell/pull/595) feat(access-control): recent-activity panel on the page itse
+- Merged: eq-shell [#594](https://github.com/eq-solutions/eq-shell/pull/594) Simpler worker onboarding + stop duplicate stubs
+- Merged: eq-shell [#593](https://github.com/eq-solutions/eq-shell/pull/593) fix(security): block unattributed direct DELETE on app_data.
+- Merged: eq-shell [#591](https://github.com/eq-solutions/eq-shell/pull/591) chore: remove profile settings page
+- Merged: eq-shell [#590](https://github.com/eq-solutions/eq-shell/pull/590) fix(security): close access-control escalation + CSRF gaps
+- Merged: eq-shell [#584](https://github.com/eq-solutions/eq-shell/pull/584) fix(ops): PDF import — real spinner + apply default markup
+- Merged: eq-shell [#583](https://github.com/eq-solutions/eq-shell/pull/583) feat(reports): manual "mark done" on the forecasts tab
+- Merged: eq-shell [#582](https://github.com/eq-solutions/eq-shell/pull/582) style(ui): Warm Sand neutrals in CSS files — closes the mobi
 
 ## ⚠ Needs you (3)
 
@@ -32,10 +32,10 @@ _2026-07-02 11:48 UTC · what needs your attention. Full snapshot: [suite-state.
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
 | eq-shell | ? unknown | ? | 0 | — |
-| eq-solves-service | ✓ success | 0d ago | 3 | 3d |
+| eq-solves-service | ✓ success | 0d ago | 5 | 3d |
 | eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
-| eq-solves-intake | ? unknown | ? | 1 | 0d |
+| eq-solves-intake | ? unknown | ? | 2 | 0d |
 
 ## Live errors (Sentry)
 
@@ -66,22 +66,22 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-02 | eq-cards | [#115](https://github.com/eq-solutions/eq-cards/pull/115) fix(connections): source worker name from the workers table acros |
 | 2026-07-02 | eq-cards | [#114](https://github.com/eq-solutions/eq-cards/pull/114) fix(ci): move web image-compress behind a conditional import |
 | 2026-07-02 | eq-cards | [#112](https://github.com/eq-solutions/eq-cards/pull/112) fix(cards): connection-email deep-link + unblock profile save RPC |
-| 2026-07-02 | eq-solves-intake | [#54](https://github.com/eq-solutions/eq-solves-intake/pull/54) fix(intake): flag low-sample entities on the health dashboard |
-_Showing 15 of 120 · full record in [sessions/](sessions/)_
+| 2026-07-02 | eq-solves-intake | [#56](https://github.com/eq-solutions/eq-solves-intake/pull/56) fix(intake): licence strip fail-open — expired licences must surf |
+_Showing 15 of 121 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **Merge PR #603** (first-open mount-race fix) — CI green, one-function change; production deploy is Royce's click (classifier blocks agent merge of the auth hub). Without it autocomplete still works, just occasionally needs a modal reopen on first use after a page load. _(added 2026-07-02, needs your call)_
+- **Send Huon** the connection-email reply + before/after graphic. _(added 2026-07-02)_
+- **Resolve the pending "432470463 · No licences yet" connection request** on core.eq.solutions/sks/staff — nameless self-signup from before the name-gate; approve/decline + nudge to add details. _(added 2026-07-02)_
+- **Define the required-credential policy** (what SKS actually requires) + decide whether to add a worker **trade field** — the two blockers before the gaps engine can ship. _(added 2026-07-02)_
 - **Migration runbook** — load order (staff+sites → teams → team_members → schedule_entries → timesheets → leave/locks), crosswalk-completion checklist, the two unpivot specs, two-gate reconciliation. Offered, not built. _(added 2026-07-02)_
 - **Complete the identity crosswalk** — 25 unlinked people + 11 unlinked sites + 9/6/6 unmatched names need a human who knows these people; pay-critical, no automation. _(added 2026-07-02, needs your call)_
 - **Build the canonical reconciliation gate** — name-resolution report (0 red before load) + pay reconciliation (hours/person/week source-vs-canonical identical through one full pay cycle). The `migration_baseline`/`eq_migration_counts` machinery already exists to hang this on. _(added 2026-07-02)_
 - **Verify SKS `tenant_id` live** (`7dee117c-98bd-4d39-af8c-2c81d02a1e85` per suite-state) before any load — must be stamped explicitly on every row (JWT default won't resolve on a service-role insert). _(added 2026-07-02)_
 - **Agenda for tomorrow's meeting with the 7 Claude-using guys** — decide champions vs builders vs testers, guardrails before keys. Offered, not built. _(added 2026-07-02, needs your call)_
 - **Name the EQ↔SKS data-ownership arrangement** before Cards runs all of SKS NSW — whose worker data, under what arrangement, what happens if Royce leaves. Cross-entity governance landmine; name it while it's friendly. _(added 2026-07-02, needs your call)_
-- **Confirm the activity panel actually renders an event** — needs Royce to make one real change on `/admin/access-control` and check the panel. Can't be faked or tested without a real user action (see the zero-exceptions rule above). _(needs your call)_
-- **Live-verify `cards-export-licences`, `comms-jobs`, `admin-audit` return 403 on a disallowed Origin** — 3 of 6 endpoints confirmed by curl/real-traffic already; these 3 hit a sandbox DNS failure mid-check. Same code as the confirmed 3, not suspected broken, just not directly proven. _(low priority, needs a retry)_
-- **Verify Add-site autocomplete live** after the #600 deploy — the real fix was migrating off the legacy `google.maps.places.Autocomplete` (un-enableable on the 2026 GCP project) to `PlaceAutocompleteElement` / Places API New (PR #600 MERGED; supersedes the #596 loader fix + the key-set steps). On core.eq.solutions → Add site, type an address, confirm the dropdown + Suburb/State fill. If empty, check the key's HTTP-referrer allows `core.eq.solutions/*`. _(added 2026-07-02)_
-- **Fix `AdminWorkerQR` QR-colour crash** — Sentry `Error: Invalid hex color: var(--eq-ink)` (eq-shell, 4 events 2026-07-02) is the `qrcode` lib being passed `color.dark: 'var(--eq-ink)'` (a CSS var, not hex) in `AdminWorkerQR.tsx`. More frequent now #594 made that page the primary "Add workers" landing. Fix = pass a real hex (e.g. `#1A1A2E`). _(added 2026-07-02)_
-_…and 187 more · [eq/pending.md](eq/pending.md)_
+_…and 191 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -113,4 +113,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-02 11:48 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-02 13:48 UTC._
