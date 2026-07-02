@@ -80,7 +80,7 @@ twins (`field_schedule`, `field_timesheets`, `field_prestarts`…) correctly poi
 | Asset | `assets` (4808) | — | `service.assets` view | — | — | ✅ DONE — single SoR |
 | Site | `sites` (633) | `field_sites` view; `public.sites`=0 (dead) | `service.sites` view | — | — | ✅ CLEAN — both apps via views |
 | Customer | `customers` (266) | — | `service.customers` view | `sks_quotes_customers` (522 raw, ~121 distinct) | — | ⚠️ Service done; Quotes unconsolidated |
-| Contact | `contacts` (343) + `contact_customer_links` (350) | — | `service.contacts`/`customer_contacts` (109) views | `sks_quotes_contacts` (338) + `_contact_links` (13,936) | — | ⚠️ Service done; Quotes unconsolidated; `public.sks_contacts` bridge view exists |
+| Contact | `contacts` (230) + `contact_customer_links` + `contact_site_links` | — | 🔴 `service.contacts` VIEW exists but **UNUSED** — `/contacts` + edit flows read/write service-local **base tables** `customer_contacts` (109) + `site_contacts` (0); no triggers, no sync. NB `customer_contacts` is a BASE TABLE, not a view | `sks_quotes_contacts` (338) + `_contact_links` (13,936) | — | 🔴 NOT DONE — Service reads a local fork. Step 1 data reconcile done 2026-07-02 (208→230); read/write cutover (views+triggers, notif-prefs FK remap, repoint, drop) is a dedicated PR. Quotes unconsolidated; `public.sks_contacts` bridge view exists |
 | Tender | `tenders` (51) | `public.tenders` (366, in-place via `JWT_INPLACE_TABLES`) | — | — | — | ⚠️ SPLIT — no `app_data.field_tenders` twin |
 | Person/Staff | `staff` (74) | `public.people` (75, legacy) + `field_people`/`field_managers` views | `profiles`/`tenant_members` (5) | — | `jvkn.workers` pool → `cards-approve-staff` photocopy | 🔴 MESSIEST — 3 person tables + pool |
 | Licence | `licences` (0) | — | — | — | `worker_credentials` (jvkn) | ⬜ NOT STARTED — greenfield |
@@ -151,6 +151,7 @@ go through one audited gateway.**
 | **B** | Field's canonical write path | **canonical-api gateway now.** Reads + tenant-local writes stay direct on the proven JWT-twin; identity/licence writes route through eq-shell `canonical-api` (per-app bearer, `external_id` idempotent, central audit). Chosen over the lighter pool-RPC to stand the clean multi-app boundary up *before* a second app contends. | Phase 2, 3 |
 | **C** | `public.people` (75) | **Retire — Phase 3, after the pool repoint** (moved from Phase 1). Verified: all 75 rows are in a *dead id space* — `canonical_id` matches **no** `app_data.staff.staff_id`; the pool back-references them via `jvkn.workers.staff_id → people.canonical_id`. So the safe path is repoint `workers.staff_id` → `app_data.staff.staff_id` (the badge), then snapshot + drop. | Phase 3 |
 | **D** | Licence / credential SoR | **Pool (`worker_credentials`).** Worker-owned, follows the worker; tenants reference via the gateway. `app_data.licences` is empty (greenfield) — no migration. Genuinely site-specific inductions may stay tenant-scoped referencing the pool credential. | Phase 2 |
+| **E** | Calendar / schedule SoR | **UNIFY on canonical — one calendar across all EQ apps** (Royce, 2026-07-02). Target end-state: a single canonical schedule entity every app reads/writes via views, spanning Service PM planning (`service.pm_calendar`, 0 rows) and Field dispatch (`app_data.schedule_entries`, Field's new canonical schedule as of 2026-07-02). Not "link two calendars" — one calendar. Workflow-scale; Field's `schedule_entries` is brand-new so the spine is still settling. Sequence after contacts + the person/staff consolidation land. | Future phase |
 
 **Two sequencing corrections from these decisions:** (B) adds gateway provisioning +
 an identity-write contract as explicit tasks; (C) moves from Phase 1 to Phase 3 because
@@ -202,8 +203,14 @@ leads every phase — it's the only tenant with the spine.
       tenants reference by `worker_id` and read via the gateway; site-specific inductions
       may stay tenant-scoped referencing the pool credential. `app_data.licences` is empty
       = do it right once, no migration pain.
-- [ ] **Service**: already consolidated (customer/site/asset/contact) — add a drift
-      check that no local copy is silently diverging.
+- [x] **Service**: customer/site/asset consolidated (view + INSTEAD OF triggers). **Contact is NOT** —
+      `service.contacts` canonical view exists but the app reads/writes service-local base tables
+      `customer_contacts`/`site_contacts` (found 2026-07-02 live audit; roadmap's "contact done" was wrong).
+      Step 1 (data reconcile) done; read/write cutover is a dedicated PR (notif-prefs FK remap is the blocker).
+- [x] **Drift check BUILT** (2026-07-02) — `consistency.sor_drift.shadow_contact_tables` in eq-service
+      `audits/run.sql`: flags any `service.*` base table with an `email` column shadowing a canonical entity.
+      Fires 2 (the contact forks); WARN → ERROR once contacts consolidated. This is the check this line asked
+      for — it was never built, which is exactly why the contact fork went undetected for weeks.
 - **Done when:** customer, contact, asset, site, licence each have exactly one SoR in
   `app_data`, every app reads via views/triggers, no raw second copy.
 
