@@ -27,7 +27,8 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - Connection work owned by this session; worker-name/gate fix left to the concurrent chip session (constraints relayed: use `0070`, preserve `org_slug`).
 
 **Deferred (added 2026-07-02):**
-- [ ] **Merge PR #112** once CI green (won't deploy — Cards is gated). _(needs your call)_
+- [x] **PR #112 merged** (squash, `--admin`, branch deleted) — merged despite a red "Analyze and test" check that is **pre-existing on `main` since #110** (2026-07-01), NOT from this PR: #110 added `dart:js_interop`/`package:web` to `photo_upload.dart`, which a VM test imports transitively and can't compile. eq-cards has no branch protection so merge was unblocked; Cards gated so no deploy. _(done 2026-07-02)_
+- [ ] **Fix eq-cards CI** — `photo_upload.dart` `js_interop` breaks VM test compilation; every eq-cards PR shows red until fixed. Chip `task_468d5ba8`. Prefer a conditional import + VM stub. _(added 2026-07-02)_
 - [ ] **Send Huon** the connection-email reply + before/after graphic. _(needs your call)_
 - [ ] **App-side `P0023` message polish (chip session)** — the name-gate on `eq_cards_submit_access_request` is live server-side, but the Flutter mapping of `P0023`→friendly message was drafted then rolled back; a blocked worker currently sees raw `ServerFailure(500): Add your name…`. Rides the next gated Cards deploy. _(added 2026-07-02)_
 
