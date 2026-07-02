@@ -5,6 +5,8 @@
 - fix(profile): `eq_cards_upsert_my_worker` gained 3 no-default params in `0067`, breaking its 12-arg callers → Profile tab "function does not exist" 500. Migration `0071` defaults the trailing params. Live + verified (impersonated upsert, rolled back). Also unblocks credential-save + invite-link. PR #112
 - fix(ocr): web compression no longer blocks the main thread — `canvas.toDataURL()` swapped for `canvas.toBlob()` in a new web-only `_compressForWeb`, fixing the frozen OCR spinner on iOS Safari/PWA; native iOS/Android untouched (commit `d9d87a3`, PR #110, run 28540590608)
 - fix(ocr): "Fill manually" escape hatch when OCR can't read a photo (e.g. back of card) — was a dead end with only a snackbar
+- fix(onboarding): first-scan "welcome" screen now picks the photo synchronously in the tap handler instead of after a Navigator round-trip — browsers were silently refusing to open the camera on the first attempt (commit `617b8de`, PR #111, run 28541424467)
+- fix(ocr): OCR loading dialog's "taking longer than usual" message no longer fires at 5s when the same dialog says scans normally take 5–10s — threshold raised to 9s, copy softened
 - chore(data): deleted demo/trial account `0466118646` — standalone empty signup, no org/licence data
 
 ## 2026-07-01

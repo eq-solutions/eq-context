@@ -14,6 +14,22 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-02 (eq-cards part 2) — first-scan photo-pick wiring fixed + spinner copy softened
+
+**Completed (eq-cards, PR #111 merged, deployed run 28541424467):**
+- [x] **Root-caused "take 1 photo, it loops around, take a second photo and it works."** The welcome "scan a photo to start" flow (`FirstScanScreen`) closed itself first via `Navigator.push().then()`, then a `SharedPreferences` await, before the parent screen finally called the image picker — two async hops removed from the original tap. Browsers (iOS Safari especially) require the camera/file-picker call to happen essentially synchronously with the user gesture or they silently refuse to open it. The normal "+" capture button calls the picker directly from `onPressed` with zero hops, which is why it always worked — confirmed by comparing the two code paths directly, not guessing.
+- [x] **Fix:** `FirstScanScreen` now picks the photo itself, as the first line of each button's tap handler, and pops with the `XFile` instead of an `ImageSource` enum. `_captureFlow` gained a `prePicked` param so it skips its own pick step when handed an already-picked file. `_maybeShowFirstScan` updated to match.
+- [x] **Fixed misleading spinner copy** — `OcrLoadingDialog`'s "Taking longer than usual" message flipped at 5s, but its own copy above it says scans normally take 5–10s (edge function logs: 6.5–9.8s typical) — so most completely normal scans were flagged as abnormally slow. Threshold raised to 9s; copy softened from "taking longer than usual" to a neutral "still reading" framing.
+- [x] **Verified:** `flutter analyze` clean, `flutter build web --release` clean.
+
+**Deferred (added 2026-07-02):**
+- [ ] **Manual verification on a real device** that the welcome-scan flow now succeeds on the first attempt (not just on retry). _(added 2026-07-02)_
+
+**Notes (load-bearing):**
+- This session's earlier PR #110 (`toBlob()` compression fix) is the cause of the eq-cards CI break a concurrent session found and chipped (`task_468d5ba8`, see the "connection-email deep-link" block below) — `dart:js_interop`/`package:web` in `photo_upload.dart` breaks VM test compilation. Flagging the link here so it isn't mistaken for an unrelated regression.
+
+---
+
 ## ⏩ Session close — 2026-07-02 (eq-cards) — connection-email deep-link + Profile-tab 500 fix
 
 **Completed (eq-cards, both live on eq-canonical `jvknxcmbtrfnxfrwfimn`, source in PR #112):**
