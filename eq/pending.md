@@ -14,6 +14,25 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-02 (eq-cards) — connection-email deep-link + Profile-tab 500 fix
+
+**Completed (eq-cards, both live on eq-canonical `jvknxcmbtrfnxfrwfimn`, source in PR #112):**
+- [x] **Connection-request email: deep-link CTA + drop "EQ Shell" jargon** — worker→employer email said `Review in EQ Shell` → bare `core.eq.solutions` homepage. Migration `0069` adds `org_slug` to `eq_notify_connection_request_targets`; edge fn (v4) CTA now `Review the request` → `core.eq.solutions/<slug>/staff`. Verified with a real SKS request + live test send (`sent:1`). _(done 2026-07-02)_
+- [x] **Profile tab 500 — `eq_cards_upsert_my_worker` arg mismatch** — migration `0067` (07-01) added `p_preferred_name`/`p_right_to_work_type`/`p_right_to_work_expiry` with NO defaults, but callers (`eq_cards_upsert_my_profile` x2, `eq_cards_upsert_my_credential`, `link_pending_invites`) still pass the original 12 named args → "function does not exist" → "Could not load profile". Migration `0071` adds `DEFAULT NULL` to the trailing params. Verified via impersonated `eq_cards_upsert_my_profile` call (rolled back). Also unblocks credential-save + invite-link paths. _(done 2026-07-02)_
+- [x] **PR #112 opened** — clean 3-file diff off current `main` (avoided merging the stale worktree branch, which carried a duplicate licence commit + old Dart files that would conflict with `main` #110/#111). Mergeable; merge does not deploy (Cards gated). _(done 2026-07-02)_
+- [x] **Cross-session integrity confirmed** — the shared `eq_notify_connection_request_targets` carries BOTH my `org_slug` and the concurrent chip session's name-from-`workers` + `eq_format_au_mobile` fallback. No clobber. _(verified 2026-07-02)_
+
+**Decided:**
+- Royce approved the live migration applies + edge-fn deploy step-by-step (audit-first each time). Chose the clean cherry-picked PR over merging the messy worktree branch.
+- Connection work owned by this session; worker-name/gate fix left to the concurrent chip session (constraints relayed: use `0070`, preserve `org_slug`).
+
+**Deferred (added 2026-07-02):**
+- [ ] **Merge PR #112** once CI green (won't deploy — Cards is gated). _(needs your call)_
+- [ ] **Send Huon** the connection-email reply + before/after graphic. _(needs your call)_
+- [ ] **App-side `P0023` message polish (chip session)** — the name-gate on `eq_cards_submit_access_request` is live server-side, but the Flutter mapping of `P0023`→friendly message was drafted then rolled back; a blocked worker currently sees raw `ServerFailure(500): Add your name…`. Rides the next gated Cards deploy. _(added 2026-07-02)_
+
+---
+
 ## ⏩ Session close — 2026-07-02 (eq-shell part 3) — asset-delete guard deployed + verified live
 
 **Completed (eq-shell, production tenant planes):**

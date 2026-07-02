@@ -1,6 +1,8 @@
 # EQ Cards — Changelog
 
 ## 2026-07-02
+- fix(notify): connection-request email CTA now "Review the request" → `core.eq.solutions/<slug>/staff` (was "Review in EQ Shell" → homepage); migration `0069` adds `org_slug` to `eq_notify_connection_request_targets`; edge fn v4. Live + verified (test send `sent:1`). PR #112
+- fix(profile): `eq_cards_upsert_my_worker` gained 3 no-default params in `0067`, breaking its 12-arg callers → Profile tab "function does not exist" 500. Migration `0071` defaults the trailing params. Live + verified (impersonated upsert, rolled back). Also unblocks credential-save + invite-link. PR #112
 - fix(ocr): web compression no longer blocks the main thread — `canvas.toDataURL()` swapped for `canvas.toBlob()` in a new web-only `_compressForWeb`, fixing the frozen OCR spinner on iOS Safari/PWA; native iOS/Android untouched (commit `d9d87a3`, PR #110, run 28540590608)
 - fix(ocr): "Fill manually" escape hatch when OCR can't read a photo (e.g. back of card) — was a dead end with only a snackbar
 - chore(data): deleted demo/trial account `0466118646` — standalone empty signup, no org/licence data
