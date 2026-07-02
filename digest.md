@@ -8,19 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-02 11:06 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-02 11:31 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-01 18:55 UTC → 2026-07-02 11:06 UTC)
+## Since last refresh (2026-07-02 11:06 UTC → 2026-07-02 11:31 UTC)
 
-- Merged: eq-shell [#599](https://github.com/eq-solutions/eq-shell/pull/599) fix(staff): "Has gaps" chip → "Has expired" (expired-only)
-- Merged: eq-shell [#598](https://github.com/eq-solutions/eq-shell/pull/598) Admin screen: number-reuse checks (recycled-phone review que
-- Merged: eq-shell [#597](https://github.com/eq-solutions/eq-shell/pull/597) Route create-worker-invite through the canonical worker reso
-- Merged: eq-shell [#596](https://github.com/eq-solutions/eq-shell/pull/596) fix(customers): Add-site address autocomplete fills suburb/s
-- Merged: eq-shell [#595](https://github.com/eq-solutions/eq-shell/pull/595) feat(access-control): recent-activity panel on the page itse
-- Merged: eq-shell [#594](https://github.com/eq-solutions/eq-shell/pull/594) Simpler worker onboarding + stop duplicate stubs
-- Merged: eq-shell [#580](https://github.com/eq-solutions/eq-shell/pull/580) style(staff): Warm Sand neutrals pilot on StaffPage (Directi
-- Merged: eq-shell [#578](https://github.com/eq-solutions/eq-shell/pull/578) refactor(staff): extract + unit-test pure StaffPage logic (P
-- ⚠ Needs you: 1 → 3 (new items)
+- Merged: eq-shell [#600](https://github.com/eq-solutions/eq-shell/pull/600) fix(customers): migrate address autocomplete to new Places A
+- Merged: eq-shell [#589](https://github.com/eq-solutions/eq-shell/pull/589) chore(armada): increase lighthouse budget to 6 issues / 600s
+- Merged: eq-shell [#588](https://github.com/eq-solutions/eq-shell/pull/588) style(tokens): promote hex-colour lint rule to error; add st
+- Merged: eq-shell [#587](https://github.com/eq-solutions/eq-shell/pull/587) fix(security): lock down worker_dedup_archive_20260630 on jv
+- Merged: eq-shell [#586](https://github.com/eq-solutions/eq-shell/pull/586) style(tokens): semantics pass — raw semantic hex → CSS token
+- Merged: eq-shell [#585](https://github.com/eq-solutions/eq-shell/pull/585) refactor(staff): Phase E — extract MatrixView + SplitPanel i
+- Merged: eq-shell [#584](https://github.com/eq-solutions/eq-shell/pull/584) fix(ops): PDF import — real spinner + apply default markup
+- Merged: eq-shell [#583](https://github.com/eq-solutions/eq-shell/pull/583) feat(reports): manual "mark done" on the forecasts tab
 
 ## ⚠ Needs you (3)
 
@@ -32,10 +31,10 @@ _2026-07-02 11:06 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 0 | — |
+| eq-shell | ? unknown | ? | 2 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 3 | 3d |
 | eq-field | ? unknown | ? | 0 | — |
-| eq-cards | ✓ success | 0d ago | 1 | 0d |
+| eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ? unknown | ? | 1 | 0d |
 
 ## Live errors (Sentry)
@@ -53,10 +52,13 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-02 | eq-shell | [#600](https://github.com/eq-solutions/eq-shell/pull/600) fix(customers): migrate address autocomplete to new Places API (f |
 | 2026-07-02 | eq-shell | [#598](https://github.com/eq-solutions/eq-shell/pull/598) Admin screen: number-reuse checks (recycled-phone review queue) |
 | 2026-07-02 | eq-shell | [#597](https://github.com/eq-solutions/eq-shell/pull/597) Route create-worker-invite through the canonical worker resolver |
 | 2026-07-02 | eq-shell | [#599](https://github.com/eq-solutions/eq-shell/pull/599) fix(staff): "Has gaps" chip → "Has expired" (expired-only) |
 | 2026-07-02 | eq-shell | [#596](https://github.com/eq-solutions/eq-shell/pull/596) fix(customers): Add-site address autocomplete fills suburb/state |
+| 2026-07-02 | eq-cards | [#117](https://github.com/eq-solutions/eq-cards/pull/117) Migration hygiene: dup-number CI guard + apply runbook; clear 007 |
+| 2026-07-02 | eq-cards | [#113](https://github.com/eq-solutions/eq-cards/pull/113) Track B: unify worker-identity resolution (jvkn control-plane) |
 | 2026-07-02 | eq-cards | [#116](https://github.com/eq-solutions/eq-cards/pull/116) chore(share-licence): drop stale NOT YET DEPLOYED note |
 | 2026-07-02 | eq-cards | [#115](https://github.com/eq-solutions/eq-cards/pull/115) fix(connections): source worker name from the workers table acros |
 | 2026-07-02 | eq-cards | [#114](https://github.com/eq-solutions/eq-cards/pull/114) fix(ci): move web image-compress behind a conditional import |
@@ -65,24 +67,21 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-01 | eq-shell | [#594](https://github.com/eq-solutions/eq-shell/pull/594) Simpler worker onboarding + stop duplicate stubs |
 | 2026-07-01 | eq-shell | [#595](https://github.com/eq-solutions/eq-shell/pull/595) feat(access-control): recent-activity panel on the page itself |
 | 2026-07-01 | eq-shell | [#592](https://github.com/eq-solutions/eq-shell/pull/592) Equipment: inline assign-to-staff dropdown |
-| 2026-07-01 | eq-shell | [#590](https://github.com/eq-solutions/eq-shell/pull/590) fix(security): close access-control escalation + CSRF gaps |
-| 2026-07-01 | eq-shell | [#593](https://github.com/eq-solutions/eq-shell/pull/593) fix(security): block unattributed direct DELETE on app_data.asset |
-| 2026-07-01 | eq-shell | [#591](https://github.com/eq-solutions/eq-shell/pull/591) chore: remove profile settings page |
-_Showing 15 of 117 · full record in [sessions/](sessions/)_
+_Showing 15 of 119 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **Migration runbook** — load order (staff+sites → teams → team_members → schedule_entries → timesheets → leave/locks), crosswalk-completion checklist, the two unpivot specs, two-gate reconciliation. Offered, not built. _(added 2026-07-02)_
+- **Complete the identity crosswalk** — 25 unlinked people + 11 unlinked sites + 9/6/6 unmatched names need a human who knows these people; pay-critical, no automation. _(added 2026-07-02, needs your call)_
+- **Build the canonical reconciliation gate** — name-resolution report (0 red before load) + pay reconciliation (hours/person/week source-vs-canonical identical through one full pay cycle). The `migration_baseline`/`eq_migration_counts` machinery already exists to hang this on. _(added 2026-07-02)_
+- **Verify SKS `tenant_id` live** (`7dee117c-98bd-4d39-af8c-2c81d02a1e85` per suite-state) before any load — must be stamped explicitly on every row (JWT default won't resolve on a service-role insert). _(added 2026-07-02)_
+- **Agenda for tomorrow's meeting with the 7 Claude-using guys** — decide champions vs builders vs testers, guardrails before keys. Offered, not built. _(added 2026-07-02, needs your call)_
+- **Name the EQ↔SKS data-ownership arrangement** before Cards runs all of SKS NSW — whose worker data, under what arrangement, what happens if Royce leaves. Cross-entity governance landmine; name it while it's friendly. _(added 2026-07-02, needs your call)_
+- **Confirm the activity panel actually renders an event** — needs Royce to make one real change on `/admin/access-control` and check the panel. Can't be faked or tested without a real user action (see the zero-exceptions rule above). _(needs your call)_
+- **Live-verify `cards-export-licences`, `comms-jobs`, `admin-audit` return 403 on a disallowed Origin** — 3 of 6 endpoints confirmed by curl/real-traffic already; these 3 hit a sandbox DNS failure mid-check. Same code as the confirmed 3, not suspected broken, just not directly proven. _(low priority, needs a retry)_
 - **Verify Add-site autocomplete live** after the #596 deploy — on core.eq.solutions → Add site, type an address, confirm Suburb/State fill. If not, clear-cache redeploy. _(added 2026-07-02)_
 - **EQ Cards address autocomplete = greenfield** — Cards worker address entry (`profile_edit_screen.dart` + `profile_fill_from_licence_screen.dart`) is manual text + static state dropdown; NO Places, no package, no key. "Should already be done" = it isn't. Flutter web, so the Shell JS pattern doesn't port directly. _(added 2026-07-02)_
-- **Track B (worker identity resolver)** — being shipped by a concurrent session (eq-cards PR #113 migrations 0070–0073 + eq-shell PRs #597/#598). DEPLOY ORDER: apply eq-cards `0073` via the governed pipeline BEFORE eq-shell #597 ships (else the new RPC 404s). Needs Royce deploy approval. _(added 2026-07-02)_
-- **Manual verification on a real device** that the welcome-scan flow now succeeds on the first attempt (not just on retry). _(added 2026-07-02)_
-- **Send Huon** the connection-email reply + before/after graphic. _(needs your call)_
-- **App-side `P0023` message polish (chip session)** — the name-gate on `eq_cards_submit_access_request` is live server-side, but the Flutter mapping of `P0023`→friendly message was drafted then rolled back; a blocked worker currently sees raw `ServerFailure(500): Add your name…`. Rides the next gated Cards deploy. _(added 2026-07-02)_
-- **Live-verify `cards-export-licences`, `comms-jobs`, `admin-audit` actually 403 on a disallowed Origin** — blocked this session by a sandbox DNS failure, not urgent (same code as 2 already-confirmed endpoints) but not yet directly proven. _(needs a retry, low priority)_
-- **Confirm the activity panel actually shows an event** — carried over unchanged from the prior close; still needs Royce to make one real change on `/admin/access-control` and check the panel. _(needs your call)_
-- **Confirm the activity panel actually shows an event** — toggle a role permission or edit a group on `/admin/access-control` and check the new "Recent activity" section renders it. _(needs your call — still open)_
-- **Verify `ANTHROPIC_API_KEY` is actually live on sks-canonical for the Ask tab** — code is real and correctly wired, but no Edge Function invocations in the last 24h of logs; needs Royce to type one question into the live Ask tab and report back. _(needs your call)_
-_…and 183 more · [eq/pending.md](eq/pending.md)_
+_…and 186 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -114,4 +113,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-02 11:06 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-02 11:31 UTC._
