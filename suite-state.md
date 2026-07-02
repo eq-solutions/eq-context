@@ -68,6 +68,10 @@ _If this file is >48h old, the cron is broken._
 - #367 chore(deps): bump lucide-react from 1.17.0 to 1.22.0
 - #366 chore(deps): bump @eq-solutions/ui from v1.8.0 to v1.9.0 in the eq-design-system group across 1 directory
 
+**eq-shell:**
+- #598 Admin screen: number-reuse checks (recycled-phone review queue)
+- #597 Route create-worker-invite through the canonical worker resolver
+
 **eq-solves-intake:**
 - #55 feat(intake): fold validity and timeliness into the composite health score
 
