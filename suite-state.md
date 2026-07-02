@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-02)
 
-**eq-cards:**
-- #113 Track B: unify worker-identity resolution (jvkn control-plane)
-
 **eq-service:**
 - #369 chore(deps): bump docx from 9.6.1 to 9.7.1
 - #367 chore(deps): bump lucide-react from 1.17.0 to 1.22.0
