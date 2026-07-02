@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-07-02
+last_updated: 2026-07-03
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -11,6 +11,41 @@ status: live
 
 EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## ⏩ Session close — 2026-07-03 (eq-intake) — licence strip "all current" trust failure root-caused + fixed (PRs #56 + #57 merged; go-live needs Royce)
+
+**Completed (eq-intake, repo `eq-solves-intake`, both PRs merged to main):**
+- [x] **Root-caused "All 55 licences current" shown over Huon Henne's 9-months-expired LVR** (verified live on ehow, read-only first). NOT a read-filter bug: `eq_tidy_read_entity` returns every row (repo + deployed definitions identical); 55 vs 71 was just table growth — all 71 SKS licence rows were created 2026-06-25→07-02 by Cards imports. Real cause, two stacked defects: (1) `eq_quality_upsert_alert` had **no EXECUTE grant for `authenticated`** (053 shipped no GRANT), so every dashboard-side alert upsert failed permission-denied — `app_data.eq_quality_alerts` has zero rows ever; (2) `runLicenceExpiryCheck` only incremented severity counters AFTER a successful upsert, so 100% upsert failure returned all-zeros and the strip rendered the `total===0` "all current" branch. Alert-store failure was indistinguishable from a clean bill of health. _(done 2026-07-03)_
+- [x] **PR #56 merged** — counters now computed from the licence data before persistence; new `alerts_failed` field on `LicenceExpiryAlertSummary`; same fail-open fix in the quality-guardian inline copy; `sql/058` = migration-030-style caller-tenant guard + `authenticated` grant on the upsert (it trusted `p_tenant_id` outright — a bare grant would have allowed cross-tenant alert writes); 4 regression tests, full @eq/intake suite 77 green, tsc clean. _(done 2026-07-03)_
+- [x] **PR #57 merged** (built by the spawned "revive quality-guardian" session, reviewed + merge-confirmed here) — the guardian Edge Function has NEVER produced a run: cron never registered, tenant context was a no-op (service key + `x-tenant-id` header nothing reads), run bookkeeping wrote to a nonexistent PostgREST path, tenant listing queried tables that don't exist on ehow. Fix: `sql/059` five service-role-only RPCs (admin tidy variants inject a transaction-local JWT tenant claim and delegate — no logic duplication), `sql/060` Vault-keyed pg_cron registration, and the handler now requires the exact service-role key (platform `verify_jwt` admits any project JWT, so previously any tenant user could trigger cross-tenant runs). _(done 2026-07-03)_
+
+**Decided (Royce):**
+- "merge" ×2 → #56 then #57 straight to main. Merging applies/deploys nothing — go-live is a separate explicit step.
+
+**Deferred (added 2026-07-03):**
+- [ ] **Guardian go-live on ehow, in order:** apply `sql/058` → apply `sql/059` → `supabase functions deploy quality-guardian` → `select vault.create_secret('<service_role key>','edge_service_role_key')` → apply `sql/060` (registers the nightly cron) → optional manual POST smoke + check `eq_quality_runs`. Auto-mode classifier correctly blocks agent-applied prod SQL; until 058 lands, the strip shows correct counts but `alerts_failed` stays non-zero. _(added 2026-07-03, needs your call)_
+- [ ] **Cron hour check before applying 060** — registers 01:00 UTC = 11:00 AEST (midday-ish); pre-dawn alternative `0 17 * * *` = 03:00 AEST offered — say which. _(added 2026-07-03, needs your call)_
+- [ ] **Renew Huon Henne's LVR** — ops action, not code: expiry 2025-10-08, staff active + on-roster. The dashboard will now show it as critical; the ticket itself is the safety issue. _(added 2026-07-03, needs your call)_
+
+**Notes (load-bearing):**
+- **053's sibling RPCs (`eq_quality_open_alerts`/`eq_quality_resolve_alert`) have `authenticated` grants on live but 053 contains no GRANT lines** — they were granted out-of-band at some point. Any function shipped without an explicit GRANT block should be assumed locked-down on ehow; check `has_function_privilege` before wiring a browser caller.
+- **`app_data._eq_migrations` on ehow already holds `057_remediation_queue` with no matching `sql/057` file in the repo** — allocate migration numbers from the live ledger, not the sql/ folder listing (hence this session used 058/059/060).
+- **Live `eq_quality_upsert_alert` on ehow is still the ungranted 053 version** until 058 is applied — merged ≠ applied.
+
+---
+
+## ⏩ Addendum — 2026-07-03 (eq-intake) — guardian-builder session deltas (PR #57 detail lives in the block above)
+
+*The spawned "revive quality-guardian" session that built PR #57. Build/merge/go-live items are already captured in the licence-strip block above — this is only what that block doesn't carry.*
+
+**Deferred (added 2026-07-03):**
+- [ ] **eq-quotes-embed-quotes cron is firing hourly with a NULL Authorization header** — its Vault secret `quotes_cron_secret` is gone (ehow Vault is completely EMPTY), and `'Bearer ' || NULL` nulls the whole header, so the hourly POST to eq-quotes-sks.fly.dev has been going out unauthenticated. Restore the secret or unschedule the job (Quotes is retired → EQ Ops). Chip `task_9aec631d` filed. _(added 2026-07-03, needs your call)_
+
+**Notes (load-bearing):**
+- **ehow's `auth.jwt()` coalesces `request.jwt.claim` (singular) BEFORE `request.jwt.claims`** — any claim-injection must `set_config` BOTH GUCs or the override can lose (059's admin RPCs do).
+- **MCP `execute_sql` honours multi-statement transactions** — `BEGIN; <migration DDL>; DO $$ … RAISE EXCEPTION 'SMOKE_OK %', results $$;` gives a full dry-run against the live schema with guaranteed rollback, smuggling the smoke results out in the error message. This is how 059 was validated on ehow with zero residue (0 functions / 0 rows / 0 ledger records after). Reusable for any prod-held migration.
 
 ---
 
