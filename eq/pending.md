@@ -14,6 +14,19 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Crumb sweep — 2026-07-02 (eq-cards + eq-shell tail)
+
+**Shipped live this session (verified):**
+- [x] **eq-shell: Staff "Has gaps" chip → "Has expired"** (expired-only) + reordered before "Has expiring" (severity ladder, matches Matrix tab). PR #599 merged, **deployed + verified against live core.eq.solutions bundle**. Answers "why does it say gaps?" — it was mislabelled; nothing was missing.
+- [x] **Required-credentials "real gaps" engine** — built + demoed on live SKS data (4 workers missing White Card), then **removed** (Royce deferred the feature). Design captured in `~/.claude` memory `required_credentials_feature.md` for a 10-min rebuild. Key facts: held-truth = `licences` not `worker_credentials`; no trade field; 24 connected vs 67 Shell staff.
+
+**Crumbs needing Royce (surfaced so they're not forgotten):**
+- [ ] **Send Huon** the connection-email reply + before/after graphic. _(added 2026-07-02)_
+- [ ] **Resolve the pending "432470463 · No licences yet" connection request** on core.eq.solutions/sks/staff — nameless self-signup from before the name-gate; approve/decline + nudge to add details. _(added 2026-07-02)_
+- [ ] **Define the required-credential policy** (what SKS actually requires) + decide whether to add a worker **trade field** — the two blockers before the gaps engine can ship. _(added 2026-07-02)_
+
+---
+
 ## ⏩ Session close — 2026-07-02 (eq-cards) — connection-request worker-name fix, end-to-end (deployed + verified live)
 
 *Continuation of the "connection-email deep-link" thread (block below) — root-caused why the name was still sometimes wrong after that fix, chased it to a class of bugs, and closed the whole chain out to a live, verified deploy.*
