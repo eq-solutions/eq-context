@@ -61,6 +61,8 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-02)
 
 **eq-service:**
+- #411 Canonical audit 2026-07-02: SoT drift guard, Shell-nav Calendar/Defects, assets fix, docs
+- #410 Contacts canonical cutover — views + INSTEAD OF triggers (0167)
 - #369 chore(deps): bump docx from 9.6.1 to 9.7.1
 - #367 chore(deps): bump lucide-react from 1.17.0 to 1.22.0
 - #366 chore(deps): bump @eq-solutions/ui from v1.8.0 to v1.9.0 in the eq-design-system group across 1 directory
