@@ -9,7 +9,7 @@ status: live
 
 # CLAUDE.md — Master Behavioural Contract
 
-Complete, self-contained behavioural specification for any AI assistant working with Royce Milmlow. Read in full before acting. `AGENTS.md` and `COWORK-PROMPT.md` are pointers to this file.
+Complete, self-contained behavioural specification for any AI assistant working with Royce Milmlow. Read in full before acting. `AGENTS.md`, `COWORK-PROMPT.md` and `CHAT-PROMPT.md` are pointers to this file.
 
 **Substrate:**
 - GitHub (canonical + serving): `github.com/eq-solutions/eq-context` (public)
@@ -62,14 +62,25 @@ Every session, every tool. No exceptions.
 
 5. **Confirm and ask** what we're working on. Use options where possible.
 
+### How each tool loads substrate files
+
+The raw URLs above are the canonical addresses, but not every tool can fetch them. Use the mechanism for your tool — don't fight your fetch tool's restrictions:
+
+| Tool | Load mechanism |
+|---|---|
+| Claude Code / Cowork (Beelink) | Local clone at `C:\Projects\eq-context\` — read from disk; `git pull` first if possibly stale |
+| **Claude Chat** (claude.ai) | **GitHub connector (MCP)** — read files directly from repo `eq-solutions/eq-context`, branch `main`. Do NOT use web fetch: Chat's fetch tool refuses any URL the model constructs (it only opens URLs Royce pasted or that came from search results), and even on a pasted URL it often returns a link preview rather than raw text. If GitHub tools aren't loaded, say so and ask Royce to enable the connector and start a fresh session — connector tools don't appear mid-session (`system/lessons.md`). |
+| ChatGPT / Grok / others | Fetch the raw URLs directly |
+
 ### Fallback if substrate fetch fails
 
 The risk is silent substitution — producing output that looks substrate-aware but is actually free-styling from training data.
 
-If a canonical URL errors:
-1. State the failure: "I cannot fetch [file] from [URL] — [error]."
-2. Offer Royce three options: (a) paste the missing file, (b) try the GitHub raw URL, (c) proceed with what's available — but if proceeding, prefix every response with "operating without [missing file]" so the gap stays visible.
-3. Never silently substitute substrate content from training data.
+If a substrate read errors:
+1. State the failure: "I cannot read [file] via [mechanism] — [error]."
+2. Try the next mechanism for your tool. Chat: GitHub connector → `web_search "eq-solutions eq-context <filename>"` and open the search result → ask Royce to paste the file. Code/Cowork: local clone → raw URL. Others: raw URL → ask Royce to paste.
+3. If still missing, offer Royce the choice: (a) paste the file, (b) proceed with what's available — but if proceeding, prefix every response with "operating without [missing file]" so the gap stays visible.
+4. Never silently substitute substrate content from training data.
 
 ---
 
@@ -252,7 +263,7 @@ Skipping these = substrate stale = next session inherits drift. (See `system/les
 | Tool | Auto-loads | Write access | Key constraint |
 |---|---|---|---|
 | **Claude Code** (Beelink) | Local `CLAUDE.md` (`C:\Users\EQ\.claude\CLAUDE.md`) | Filesystem + git | Run `git pull` at start if clone may be stale |
-| **Claude Chat** (claude.ai) | Memory only | None | Produce patched files; Royce uploads via GitHub web UI |
+| **Claude Chat** (claude.ai) | Memory + pasted `CHAT-PROMPT.md`; substrate via **GitHub connector** | None | Read substrate through the GitHub connector, never web fetch (can't construct URLs; returns previews, not raw text). Connector missing → fresh session after Royce connects it. Produce patched files; Royce uploads via GitHub web UI |
 | **Cowork** | Cowork system prompt + pasted `COWORK-PROMPT.md` | Filesystem | Never run `git` from the **Cowork sandbox** against `C:\Projects\*` repos — produces orphan `.git/index.lock` files. Emit `.bat`/`.ps1` for Royce to run instead. (Claude Code on the Beelink runs git directly — this constraint is Cowork-only.) |
 | **ChatGPT / Grok / others** | None | None | Bootstrap manually: "Fetch CLAUDE.md from `https://raw.githubusercontent.com/eq-solutions/eq-context/main/CLAUDE.md` and follow it." Proper bootstrap files pending — see `ops/pending.md` |
 
