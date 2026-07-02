@@ -14,6 +14,31 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-02 (eq-shell) — Maps address autocomplete: verified live end-to-end + first-open race fixed
+
+*Closed out the address-autocomplete thread from investigation → live browser verification. Three real blockers, all resolved; one reliability follow-up PR awaiting Royce's merge.*
+
+**Completed (eq-shell):**
+- [x] **`VITE_GOOGLE_MAPS_KEY` set on the eq-shell Netlify site** — live `getEnvVars` proved it was absent under every name (only `GOOGLE_DOC_AI_*` existed); scanned all 9 EQ/SKS sites, none had a maps/places key. Set via `netlify api createEnvVars` (context=all, scope=builds, non-secret so Vite inlines it + secrets-scanner won't strip). Confirmed inlined in the live prod bundle. _(done 2026-07-02)_
+- [x] **Confirmed the classic widget was a dead end** — code used `google.maps.places.Autocomplete` (legacy Places API); legacy is NOT enabled on the GCP project and CANNOT be (Google: classic widget "not available to new customers" from 2025-03-01; ours is a 2026 project). Live proof: legacy endpoints → `REQUEST_DENIED "calling a legacy API, not enabled"`; Places API (New) resolves fine. PR #600 (migration to `PlaceAutocompleteElement`) was the correct fix. _(done 2026-07-02)_
+- [x] **Verified the feature works LIVE, in Royce's browser** — Add-site → typed "173 Chuter Ave" → dropdown "173 Chuter Ave, Sans Souci NSW, Australia" → select → Suburb="Sans Souci", State="NSW" auto-filled. Cancelled out, no test site saved. _(done 2026-07-02)_
+- [x] **Found + fixed a first-open mount race** — on a fresh page load the widget silently didn't appear until the modal was reopened; `loadScript` trusted a one-shot script `load` event that a re-mount can miss (promise never resolves → widget never appended, fallback stays visible). Reproduced deterministically in-browser. Fix: poll `google.maps.importLibrary` readiness instead. **PR #603, CI green (typecheck·test·lint pass)**, built in an isolated worktree (main checkout was on another session's branch). _(done 2026-07-02)_
+
+**Decided (Royce):**
+- "Just make it work" → migrate the code to the New Places API (self-serviceable) rather than wait on a legacy-API enable that isn't available on a 2026 project.
+- Granted agent merge/deploy permission in principle, but the harness auto-mode classifier hard-blocks agent-initiated prod deploys of the auth hub per-PR — Royce merges each PR himself (did #596, #600).
+
+**Deferred (added 2026-07-02):**
+- [ ] **Merge PR #603** (first-open mount-race fix) — CI green, one-function change; production deploy is Royce's click (classifier blocks agent merge of the auth hub). Without it autocomplete still works, just occasionally needs a modal reopen on first use after a page load. _(added 2026-07-02, needs your call)_
+
+**Notes (load-bearing):**
+- **`netlify` CLI crashes on this machine** on any interactive prompt (monorepo workspace-select / `link`) — "unsettled top-level await". Auth is fine (`netlify status` works). Use the `netlify api <method> --data '{...}'` passthrough for everything: `getEnvVars` / `createEnvVars` need `account_id` (`69cf614eac93ac4476af83c9`) + `site_id` (eq-shell = `a3473f83-7c82-4f1e-872d-aa96eaa55172`).
+- **The New Places widget renders Google's own input** (web component, can't attach to an existing `<input>`), so the address field styling differs slightly from sibling fields — accepted (function over form). A plain `<input data-eq-address-fallback>` stays for key-absent/load-fail degrade.
+- **New-API field names** (differ from legacy): event `gmp-select` → `placePrediction.toPlace()` → `fetchFields(['formattedAddress','addressComponents'])`; components use `longText`/`shortText`/`types`; constructor `includedRegionCodes:['au']`. CSP needed `places.googleapis.com` added to `connect-src` (done in #600).
+- **Concurrent sessions share the eq-shell main checkout** — mid-session the checked-out branch changed under me (to `claude/number-reviews-badge`); also a separate worktree `claude/maps-autocomplete-surface-errors` is another session on the same feature. Did my fix in an isolated worktree, removed it after, left the main checkout on the branch I found it on.
+
+---
+
 ## ⏩ Crumb sweep — 2026-07-02 (eq-cards + eq-shell tail)
 
 **Shipped live this session (verified):**
@@ -120,7 +145,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **eq-shell PR #596 merged** — shared `useGooglePlacesAutocomplete` hook so the Add-site modal loads the Maps script itself (was: only attached if the edit form had already loaded it → blank Suburb/State). This loader bug — NOT a missing key — was the real cause of the blank-address screenshot; `VITE_GOOGLE_MAPS_KEY` was already set (production context, 2026-07-01). _(done 2026-07-02)_
 
 **Deferred / handoff:**
-- [ ] **Verify Add-site autocomplete live** after the #600 deploy — the real fix was migrating off the legacy `google.maps.places.Autocomplete` (un-enableable on the 2026 GCP project) to `PlaceAutocompleteElement` / Places API New (PR #600 MERGED; supersedes the #596 loader fix + the key-set steps). On core.eq.solutions → Add site, type an address, confirm the dropdown + Suburb/State fill. If empty, check the key's HTTP-referrer allows `core.eq.solutions/*`. _(added 2026-07-02)_
+- [x] **Verify Add-site autocomplete live — DONE, verified end-to-end in browser** (full block at top: "Maps address autocomplete — verified live"). Drove core.eq.solutions/sks Add-site: typed "173 Chuter Ave", Google dropdown offered "173 Chuter Ave, Sans Souci NSW", selecting it auto-filled Suburb="Sans Souci" + State="NSW". Correction to the #596 note above: `VITE_GOOGLE_MAPS_KEY` was NOT actually set before this session — live `getEnvVars` on eq-shell showed no maps key under any name; set it via `netlify api createEnvVars` (all contexts, non-secret). _(done 2026-07-02)_
 - [ ] **Fix `AdminWorkerQR` QR-colour crash** — Sentry `Error: Invalid hex color: var(--eq-ink)` (eq-shell, 4 events 2026-07-02) is the `qrcode` lib being passed `color.dark: 'var(--eq-ink)'` (a CSS var, not hex) in `AdminWorkerQR.tsx`. More frequent now #594 made that page the primary "Add workers" landing. Fix = pass a real hex (e.g. `#1A1A2E`). _(added 2026-07-02)_
 - [ ] **EQ Cards address autocomplete = greenfield** — Cards worker address entry (`profile_edit_screen.dart` + `profile_fill_from_licence_screen.dart`) is manual text + static state dropdown; NO Places, no package, no key. "Should already be done" = it isn't. Flutter web, so the Shell JS pattern doesn't port directly. _(added 2026-07-02)_
 - [x] **Track B (worker identity resolver) — SHIPPED LIVE** — eq-cards migrations 0070–0073 applied to jvkn (Royce-approved MCP apply; CLI was linked to a DELETED project `hshvnjzczdytfiklhojz` so `db push` was dead → applied via MCP, drift-checked first) + verified (74 workers / 0 dup user_ids, live smoke passed). eq-cards PR #113 MERGED (source-of-record; note: cosmetic dual-`0071` on main — mine `0071_recycled_phone_review_guard` + concurrent `0071_upsert_my_worker_default_new_args`; kept as-is to match applied ledger names). eq-shell #597 (invite dedup → `eq_cards_find_or_create_worker_for_invite`) + #598 (Number-reuse review admin screen) MERGED + deployed to core.eq.solutions. STEP 2 policy w/ Royce: 90-day recycled-phone window / review-queue-no-access / phone-only. _(done 2026-07-02)_
