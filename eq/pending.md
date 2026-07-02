@@ -14,6 +14,39 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-02 (strategy + migration recon) — SKS Labour→canonical feasibility (READ-ONLY, no code)
+
+*Advisory session (TRAiDMIN meeting prep + EQ progress read) plus a read-only feasibility recon of the SKS NSW Labour → EQ canonical migration. Nothing written to any DB. Full narrative in `sessions/2026-07-02.md` (search "migration recon").*
+
+**Completed (read-only):**
+- [x] **Migration feasibility verdict: SKS NSW Labour (`nspbmirochztcjijmcrx`) → EQ canonical (ehow `app_data`) is tractable — ~1 week, risk bounded, tooling already built.** Payload ≈1,500 rows across near-1:1-named tables.
+- [x] **Confirmed all 4 DBs are in ONE Supabase org (EQ Solutions `sqjyblkiqonyrdobaucn`), same region (ap-southeast-2)** — sks-labour, ehow/sks-canonical, eq-canonical (jvkn), eq-canonical-internal (zaap). Same-org/region → replication is trivial.
+- [x] **Column-level mapping of 9 table pairs done** (subagent, both schema dumps read in full). Two HARD (`timesheets`, `schedule`→`schedule_entries` — wide→tall unpivot + week-string→date + name→staff_id); rest MODERATE/TRIVIAL.
+- [x] **Live crosswalk fill-rates queried:** people 48/73 canonical-linked, sites 24/35; unmatched worker names: 9 timesheets (PAY), 6 schedule, 6 leave; 12 distinct `week` string formats; 62/335 timesheets approved.
+- [x] **Corrected a suite-state misread** — real PostHog usage (210d): EQ Cards ~253 users / **213 MAU**, SKS Labour 311, Core 111, Service 33. The "EQ Cards = 5 users" figure was `tenant_members`, not traffic.
+
+**Decided (Royce):**
+- Focus = **EQ Cards for all of SKS NSW** + **EQ Core/Shell as the daily driver.**
+- Migration approach = **shadow/parallel-run**: mirror sks-labour into canonical, reconcile until it matches, cut over crew-by-crew; SKS NSW Labour stays warm as the rollback until the last user is happily migrated.
+- Sequence: prove at SKS scale → migrate → grow NSW branch to 200+ → *then* market.
+- TRAiDMIN (Sally) meeting: attend to **learn**, abundance out loud, hold the crown jewels (the "why the systems fail" synthesis + canonical/data model), soft referral handshake only — treat as relationship, not a commercial term.
+
+**Deferred (added 2026-07-02):**
+- [ ] **Migration runbook** — load order (staff+sites → teams → team_members → schedule_entries → timesheets → leave/locks), crosswalk-completion checklist, the two unpivot specs, two-gate reconciliation. Offered, not built. _(added 2026-07-02)_
+- [ ] **Complete the identity crosswalk** — 25 unlinked people + 11 unlinked sites + 9/6/6 unmatched names need a human who knows these people; pay-critical, no automation. _(added 2026-07-02, needs your call)_
+- [ ] **Build the canonical reconciliation gate** — name-resolution report (0 red before load) + pay reconciliation (hours/person/week source-vs-canonical identical through one full pay cycle). The `migration_baseline`/`eq_migration_counts` machinery already exists to hang this on. _(added 2026-07-02)_
+- [ ] **Verify SKS `tenant_id` live** (`7dee117c-98bd-4d39-af8c-2c81d02a1e85` per suite-state) before any load — must be stamped explicitly on every row (JWT default won't resolve on a service-role insert). _(added 2026-07-02)_
+- [ ] **Agenda for tomorrow's meeting with the 7 Claude-using guys** — decide champions vs builders vs testers, guardrails before keys. Offered, not built. _(added 2026-07-02, needs your call)_
+- [ ] **Name the EQ↔SKS data-ownership arrangement** before Cards runs all of SKS NSW — whose worker data, under what arrangement, what happens if Royce leaves. Cross-entity governance landmine; name it while it's friendly. _(added 2026-07-02, needs your call)_
+
+**Notes (load-bearing):**
+- **Migration tooling is already scaffolded** — `scripts/migrate-tenants.mjs`, `app_data.migration_baseline` (expected = legacy source count, diffed against landed `eq_migration_counts`, read by an admin reconciliation view). The migration is a thing to *run and watch*, not invent.
+- **`people.canonical_id` (48/73) and `sites.canonical_id` (24/35) are the intended crosswalk anchors** — match/upsert against the already-populated canonical `staff` (84) / `sites` (272), do NOT blind-insert duplicates. Sites are Shell-owned canonical — write path goes through Shell.
+- **Source references workers by TEXT NAME, not id**, in `timesheets.name` / `schedule.name` / `leave_requests.requester_name` — the single biggest data-quality risk, on pay data. Only `leave_balances.person_id` + `team_members.person_id` carry a real integer id.
+- **Scope boundary:** sks-labour also holds a full SKS Quotes suite (`sks_quotes_*`, 518 customers, 13,929 contact_links), `tenders` (422), `nominations`, `pending_schedule` — NONE of that migrates into canonical (Quotes retired→Ops; tenders = SKS pipeline). Migrate only the labour/roster subset.
+
+---
+
 ## ⏩ Session close — 2026-07-02 (eq-shell) — Access Control security hardening (PR #590 + #595, consolidated)
 
 *Three separate session-close blocks for this thread were merged into one here 2026-07-02 — full narrative (including the mid-thread correction below) lives in `sessions/2026-07-02.md`, search "Access Control".*
@@ -46,7 +79,9 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 **Deferred / handoff:**
 - [ ] **Verify Add-site autocomplete live** after the #596 deploy — on core.eq.solutions → Add site, type an address, confirm Suburb/State fill. If not, clear-cache redeploy. _(added 2026-07-02)_
 - [ ] **EQ Cards address autocomplete = greenfield** — Cards worker address entry (`profile_edit_screen.dart` + `profile_fill_from_licence_screen.dart`) is manual text + static state dropdown; NO Places, no package, no key. "Should already be done" = it isn't. Flutter web, so the Shell JS pattern doesn't port directly. _(added 2026-07-02)_
-- [ ] **Track B (worker identity resolver)** — being shipped by a concurrent session (eq-cards PR #113 migrations 0070–0073 + eq-shell PRs #597/#598). DEPLOY ORDER: apply eq-cards `0073` via the governed pipeline BEFORE eq-shell #597 ships (else the new RPC 404s). Needs Royce deploy approval. _(added 2026-07-02)_
+- [x] **Track B (worker identity resolver) — SHIPPED LIVE** — eq-cards migrations 0070–0073 applied to jvkn (Royce-approved MCP apply; CLI was linked to a DELETED project `hshvnjzczdytfiklhojz` so `db push` was dead → applied via MCP, drift-checked first) + verified (74 workers / 0 dup user_ids, live smoke passed). eq-cards PR #113 MERGED (source-of-record; note: cosmetic dual-`0071` on main — mine `0071_recycled_phone_review_guard` + concurrent `0071_upsert_my_worker_default_new_args`; kept as-is to match applied ledger names). eq-shell #597 (invite dedup → `eq_cards_find_or_create_worker_for_invite`) + #598 (Number-reuse review admin screen) MERGED + deployed to core.eq.solutions. STEP 2 policy w/ Royce: 90-day recycled-phone window / review-queue-no-access / phone-only. _(done 2026-07-02)_
+- [ ] **Recycled-phone review queue starts empty** — `shell_control.identity_recycle_review` only fills when a >90-day-stale number is reused (0 of 37 current live sources qualify). Admin surface live at core.eq.solutions → Admin → "Number reuse checks". No action; watch that entries get actioned once real ones appear. _(added 2026-07-02)_
+- [ ] **eq-cards migration numbering is diverging across concurrent branches** — repo has missing 0064, two `0071_*`, and ad-hoc timestamp-versioned ledger entries not matching repo files. `supabase db push` is not the apply path (CLI linked to a deleted project; no CI apply). Consider a One-Pipe-style governed apply for jvkn control-plane migrations so numbering + ledger stay coherent. _(added 2026-07-02, needs Royce's call)_
 
 ---
 
@@ -1664,3 +1699,14 @@ Diagnosed 2026-05-19. 17 advisor warnings, fix drafted but not applied.
 ## EQ Cards — canonical flip follow-ups (shipped 2026-05-21)
 
 - [ ] **Licence p
+
+---
+
+## EQ Service — canonical audit + contacts consolidation (2026-07-02)
+
+- [ ] **Contacts Steps 2-5** — build read/write `service.contacts` views + INSTEAD OF triggers (many-to-many link tables are the hard part), repoint `/contacts` + customer/site edit flows to canonical, soak, drop local `customer_contacts`/`site_contacts`, flip drift guard `consistency.sor_drift.shadow_contact_tables` WARN→ERROR. Step 1 (data reconcile, 208→230) DONE. Plan: `docs/proposals/contacts-canonical-consolidation.md`. _(added 2026-07-02)_
+- [ ] **Substrate correction (gated by /brief eq-context)** — fix `canonical-consolidation-roadmap-2026-06-25.md` Contact matrix row (line 83, says "Service done" + mislabels `customer_contacts` as a view) + Phase-2 line 205. Ready-to-paste text in session log. _(added 2026-07-02)_
+- [ ] **Substrate annotation (gated)** — note in `contract-scope-canonical-design-2026-06-15.md` that D2's "job_plans stays Service-local" was superseded (job_plans went canonical); jp_code linkage still holds. _(added 2026-07-02)_
+- [ ] **Calendar ↔ EQ Field scheduling architecture** — PM planning (service.pm_calendar, 0 rows) vs Field staff dispatch (app_data.field_schedule). Decision: link vs unify. **(needs Royce's call)** _(added 2026-07-02)_
+- [ ] **`docs/FEATURES.md` stale** — missing the hub pages added post-2026-04-28: /today, /do, /insights, /records, /admin, /dashboard. _(added 2026-07-02)_
+- [ ] **eq-field: `app_data.schedule` → `field_schedule` 404** — weekly schedule fetch queries a nonexistent table. Spawned as background task `task_cc94a9de` (ran separate session — verify it landed). _(added 2026-07-02)_

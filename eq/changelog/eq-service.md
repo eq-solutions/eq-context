@@ -1,6 +1,13 @@
 # EQ Service — Changelog
 
 ## 2026-07-02
+- **Contacts Step 1 → canonical.** 22 real Service-local contacts (+links) merged into canonical `app_data.contacts` (208→230); 4 links added for already-canonical people; junk/dups/typo excluded; all tagged for rollback. `/contacts` still reads local tables until Step 3 (repoint). The 2026-06-25 roadmap's "contacts Service done" was false — local `customer_contacts` (base table, 109) was shadowing canonical.
+- **Source-of-truth drift guard** (`audits/run.sql` + `CHECKS.md`) — flags any service base table shadowing a canonical entity; fires 2 (contact forks), WARN→ERROR once consolidated. The guard the roadmap asked for but never built.
+- **Migration 0166** — `service.assets` view excludes `asset_type='plant_equipment'` (13 test instruments were surfacing as maintainable assets). app_data untouched.
+- **Shell nav fix** — Calendar + Defects added to the Shell-embedded nav bar (`app/(app)/layout.tsx`); both were built + enabled but unreachable from Shell.
+- **Spinner** "EQ Solves Service"→"EQ Service"; root `<html>` `suppressHydrationWarning` (React #418 forced full client re-render on Shell-embedded dashboard).
+- **Debris dropped** — `app_data.pm_calendar`/`contract_variations`/`contract_scopes_history` (force-push orphans); 154 history rows backed up first.
+- **Docs** — CLAUDE.md canonical scope corrected 3→~20 entities; D2 resolved (job_plans canonical).
 - **ARMADA lighthouse — 2 recon passes, 9 issues shipped.** Budget bumped to 6 issues/600s runtime (PR #397). PRs #394–396 (dead shell-sso path, Zod validation on report settings, idempotency tests) + #404–409 (Sentry captureException wired across report-generation routes, canonical outbox/sync/members, generate-and-store PDF pipeline, cron dispatch-notifications, and server action helpers; unit tests for `lib/actions/audit.ts`) all merged.
 - **3 dependency/docs PRs merged** — #363 (LOCAL_DEV.md `urjh`→`ehow`), #368 (`@netlify/functions` 5.2.0→5.3.0), #370 (React 19.2.4→19.2.7 — fixes a `FormData` regression in Server Actions from 19.2.6).
 
