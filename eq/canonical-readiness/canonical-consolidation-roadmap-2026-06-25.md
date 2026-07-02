@@ -1,7 +1,7 @@
 ---
 title: Canonical Consolidation Roadmap — the EQ suite onto one defined spine
 owner: Royce Milmlow
-last_updated: 2026-06-25
+last_updated: 2026-07-02
 scope: The sequenced, verified to-do list to reach "canonical layer of truth, referenced throughout" + the portable worker-owned Cards vision
 read_priority: high
 builds_on: canonical-target-model-2026-06-24.md, service-consumes-canonical-spine-2026-06-16.md

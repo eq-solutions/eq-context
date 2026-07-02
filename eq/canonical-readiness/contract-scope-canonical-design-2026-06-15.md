@@ -1,7 +1,7 @@
 ---
 title: Contract Scope → Canonical — Design
 owner: Royce Milmlow
-last_updated: 2026-06-22
+last_updated: 2026-07-02
 scope: Design doc for canonicalising contract_scopes via Intake commit door — Phase 3 delivered 2026-06-16
 read_priority: reference
 status: archived
