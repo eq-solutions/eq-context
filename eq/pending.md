@@ -16,7 +16,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ## ⏩ Session close — 2026-07-02 (eq-shell) — Maps address autocomplete: verified live end-to-end + first-open race fixed
 
-*Closed out the address-autocomplete thread from investigation → live browser verification. Three real blockers, all resolved; one reliability follow-up PR awaiting Royce's merge.*
+*Closed out the address-autocomplete thread from investigation → live browser verification. Three real blockers, all resolved; the reliability follow-up (#603) is now merged, deployed, and verified live.*
 
 **Completed (eq-shell):**
 - [x] **`VITE_GOOGLE_MAPS_KEY` set on the eq-shell Netlify site** — live `getEnvVars` proved it was absent under every name (only `GOOGLE_DOC_AI_*` existed); scanned all 9 EQ/SKS sites, none had a maps/places key. Set via `netlify api createEnvVars` (context=all, scope=builds, non-secret so Vite inlines it + secrets-scanner won't strip). Confirmed inlined in the live prod bundle. _(done 2026-07-02)_
@@ -28,8 +28,8 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - "Just make it work" → migrate the code to the New Places API (self-serviceable) rather than wait on a legacy-API enable that isn't available on a 2026 project.
 - Granted agent merge/deploy permission in principle, but the harness auto-mode classifier hard-blocks agent-initiated prod deploys of the auth hub per-PR — Royce merges each PR himself (did #596, #600).
 
-**Deferred (added 2026-07-02):**
-- [ ] **Merge PR #603** (first-open mount-race fix) — CI green, one-function change; production deploy is Royce's click (classifier blocks agent merge of the auth hub). Without it autocomplete still works, just occasionally needs a modal reopen on first use after a page load. _(added 2026-07-02, needs your call)_
+**Deferred:** none — chain fully closed.
+- [x] **PR #603 merged + deployed + verified live** — Royce merged it; production rebuilt (`index-BCU-wcSP.js`). Verified the fix in-browser: fresh page load (Google unloaded) → open Add site *once* → widget mounts on first open (`widgetMounted:true`, fallback hidden); pre-#603 this was `false`. First-open race gone. _(done 2026-07-02)_
 
 **Notes (load-bearing):**
 - **`netlify` CLI crashes on this machine** on any interactive prompt (monorepo workspace-select / `link`) — "unsettled top-level await". Auth is fine (`netlify status` works). Use the `netlify api <method> --data '{...}'` passthrough for everything: `getEnvVars` / `createEnvVars` need `account_id` (`69cf614eac93ac4476af83c9`) + `site_id` (eq-shell = `a3473f83-7c82-4f1e-872d-aa96eaa55172`).
