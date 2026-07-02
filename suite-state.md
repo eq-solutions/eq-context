@@ -69,6 +69,7 @@ _If this file is >48h old, the cron is broken._
 - #366 chore(deps): bump @eq-solutions/ui from v1.8.0 to v1.9.0 in the eq-design-system group across 1 directory
 
 **eq-shell:**
+- #599 fix(staff): "Has gaps" chip → "Has expired" (expired-only)
 - #598 Admin screen: number-reuse checks (recycled-phone review queue)
 - #597 Route create-worker-invite through the canonical worker resolver
 
