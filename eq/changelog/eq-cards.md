@@ -1,6 +1,7 @@
 # EQ Cards — Changelog
 
 ## 2026-07-02
+- fix(licences): crop screen no longer reallocates a blob URL on every drag-gesture rebuild — `Image.memory()` inline in `build()` swapped for a single `MemoryImage` held in State (same pattern as `_PhotoSlot` in `licence_edit_screen.dart`). Fixes recurring "Could not load Blob from its URL" (Sentry EQ-CARDS-W). Commit `caf91d1`, deployed via manual `deploy.yml` dispatch (run 28579115186)
 - fix(ci): web image-compress moved behind a conditional import (`photo_compress_web.dart` + `_io` stub via `if (dart.library.html)`); `photo_upload.dart` no longer pulls `dart:js_interop`/`package:web` into the VM test graph. Fixes "Analyze and test" red since #110. Verified Flutter 3.41.9: analyze clean, 207 tests pass. PR #114 merged, CI green
 - fix(notify): connection-request email CTA now "Review the request" → `core.eq.solutions/<slug>/staff` (was "Review in EQ Shell" → homepage); migration `0069` adds `org_slug` to `eq_notify_connection_request_targets`; edge fn v4. Live + verified (test send `sent:1`). PR #112
 - fix(profile): `eq_cards_upsert_my_worker` gained 3 no-default params in `0067`, breaking its 12-arg callers → Profile tab "function does not exist" 500. Migration `0071` defaults the trailing params. Live + verified (impersonated upsert, rolled back). Also unblocks credential-save + invite-link. PR #112

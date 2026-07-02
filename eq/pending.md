@@ -14,6 +14,27 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-02 (Sentry sweep) — 5-project audit, 4 issues triaged, 1 real bug found + fixed + deployed
+
+**Completed:**
+- [x] **Audited all 5 Sentry projects** (eq-cards, eq-field, eq-quotes, eq-shell, eq-solves-service) for unresolved issues, 30d window. eq-field + eq-solves-service clean (0 unresolved). Found 5 unresolved across eq-shell/eq-cards/eq-quotes. _(done 2026-07-02)_
+- [x] **EQ-SHELL-E, EQ-SHELL-F, EQ-SHELL-J marked resolved** — verified live source (not just memory) that PR #579 (merged 2026-07-01T10:08:34Z) actually covers each failing code path (cards_field_approvals upsert on both write sites; CardsIframe activeRef guard; handleDownloadPdf catch block). All three issues' last events predate the fix — stale pre-deploy noise, not recurrence. _(done 2026-07-02)_
+- [x] **EQ-QUOTES-F set to ignored (forever)**, not resolved — `auth.pick_estimator` queries a dropped `public.sks_staff` table; retired EQ Quotes app kept live for emergencies only (Royce confirmed, not being worked on); 0 real users impacted, sampled events are crawler traffic. Noted the intended replacement table `app_data.quote_estimators` exists on ehow but is empty — a half-finished migration, not touched. _(done 2026-07-02)_
+- [x] **EQ-CARDS-W root-caused and fixed** — `licence_crop_screen.dart` called `Image.memory()` inline in `build()`, which rebuilds on every pixel of drag-gesture movement while framing a licence photo; each rebuild reallocated a fresh blob URL even though the bytes never changed, and rapid churn revoked one still referenced by an in-flight decode → "Could not load Blob from its URL." Same anti-pattern already fixed in `licence_edit_screen.dart`'s `_PhotoSlot` (2026-07-01) but missed here — applied the identical single-MemoryImage-in-State pattern. Commit `caf91d1`, merged to main, deployed via manual `workflow_dispatch` of `deploy.yml` (run 28579115186, success) — new deploy live at cards.eq.solutions. _(done 2026-07-02)_
+
+**Decided:**
+- quotes.eq.solutions stays live (retired, emergency-only) — do not fix or decommission without a separate explicit call.
+- Ignore ≠ resolve in Sentry: use ignore for "known, not acting on it" (EQ-QUOTES-F) vs resolve for "verified fixed" (the other three).
+
+**Deferred:** none.
+
+**Notes (load-bearing):**
+- **eq-cards `deploy.yml` is `workflow_dispatch`-only** (plus release-tag push) — deliberately decoupled from `git push` to `main` so merging never silently ships to prod. A push alone does nothing; deploying requires an explicit `gh workflow run deploy.yml` dispatch. This is already the correct governance pattern, just easy to miss if you expect Netlify's usual push-to-deploy.
+- **eq-cards' "CI" workflow test job has been failing on every recent commit** (`caf91d1`, `2172900`, `1ee7d36`) — a `package:web` v1.1.1 API-surface mismatch (`JSObject`/`JSAny`/`.toJS` errors) in test compilation, unrelated to any of these changes and does NOT block `Build & Deploy` (separate workflow, not gated on CI). Pre-existing, not fixed this session — worth a dedicated look if it keeps failing.
+- **eq-cards' main checkout is being shared by multiple concurrent sessions right now** — mid-session the working directory's checked-out branch changed under me (from `main` to `claude/worker-identity-track-b`, another session's WIP), with uncommitted changes to `supabase_error_handler.dart`/`connect_to_company_screen.dart` and two new untracked migrations (0069, 0070). Stashed with a labelled message (`concurrent-session-wip-preserve`) and left untouched; did the actual rebase+push for this session's fix in an isolated temporary `git worktree` instead of touching the shared checkout's branch, to avoid disrupting the other session. If you see that stash later, it's not mine to pop — it belongs to whichever session was on `claude/worker-identity-track-b`.
+
+---
+
 ## ⏩ Session close — 2026-07-02 (eq-cards part 2) — first-scan photo-pick wiring fixed + spinner copy softened
 
 **Completed (eq-cards, PR #111 merged, deployed run 28541424467):**
