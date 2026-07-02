@@ -1,6 +1,8 @@
 # eq-shell changelog
 
 ## 2026-07-02
+- PR #596: shared `useGooglePlacesAutocomplete` hook — the Add-site modal now loads the Google Maps script itself instead of only attaching when `window.google` already existed (which left Suburb/State blank on a fresh page load). Both Add-site and Edit-site forms use the hook. `VITE_GOOGLE_MAPS_KEY` was already set (2026-07-01, production context); this loader bug — not a missing key — was the real cause of the blank-address report.
+- PR #594: worker onboarding — mobile-only phone normaliser (rejects landlines, the root cause of duplicate worker stubs) across `_shared/phone.ts` + 4 auth doors + `LoginPage` + new `phone.test.ts`; `confirmed_staff_id` tenant/active guard in `cards-approve-staff`; collapsed the three admin worker doors into one "Add workers" surface (QR self-serve + connect-by-phone), retired the name+phone create-worker form (the stub-minter), nav "Worker invites" → "Add workers". Model: worker owns their Cards identity, employer only asks. Also cleaned the live Anthony Hartley duplicate (soft-deleted the landline `app_data.staff` row on ehow).
 - PR #595: Access Control "Recent activity" panel — reuses previously-dead-code `admin-audit.ts` (added optional `prefix` filter + `checkShellOrigin`) to show `access.*`/`security_group.*` events in plain English at the bottom of `/admin/access-control`
 - PR #591: profile settings page removed — `ProfileSettings.tsx`, `netlify/functions/update-profile.ts`, route `settings/profile`, and "Your profile" sidebar link all deleted; names are admin-managed via Staff page
 - PRs #590/#592/#593 merged (sequential rebase; #592 worktree conflict resolved by rebasing from `.claude/worktrees/objective-bell-bc744d`)

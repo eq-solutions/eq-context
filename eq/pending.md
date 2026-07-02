@@ -14,6 +14,20 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-02 (worker onboarding + Maps autocomplete) — dup-stub prevention shipped, one "Add workers" surface, Add-site Maps fix
+
+**Completed:**
+- [x] **eq-shell PR #594 merged** — Track A: mobile-only phone normaliser rejecting landlines (`_shared/phone.ts` + 4 auth doors + `LoginPage` + new `phone.test.ts`) — landlines were the root cause of duplicate worker stubs; `confirmed_staff_id` tenant/active guard in `cards-approve-staff`. Track C: one "Add workers" surface (QR self-serve + connect-by-phone), retired the name+phone create-worker form (the stub-minter), nav "Worker invites" → "Add workers". Model: worker owns their Cards identity, employer only asks. _(done 2026-07-02)_
+- [x] **Live Anthony Hartley duplicate cleaned** — soft-deleted the landline `app_data.staff` row `d53459a2` on ehow (`active=false`); kept mobile row `00859431`. Reversible. _(done 2026-07-02)_
+- [x] **eq-shell PR #596 merged** — shared `useGooglePlacesAutocomplete` hook so the Add-site modal loads the Maps script itself (was: only attached if the edit form had already loaded it → blank Suburb/State). This loader bug — NOT a missing key — was the real cause of the blank-address screenshot; `VITE_GOOGLE_MAPS_KEY` was already set (production context, 2026-07-01). _(done 2026-07-02)_
+
+**Deferred / handoff:**
+- [ ] **Verify Add-site autocomplete live** after the #596 deploy — on core.eq.solutions → Add site, type an address, confirm Suburb/State fill. If not, clear-cache redeploy. _(added 2026-07-02)_
+- [ ] **EQ Cards address autocomplete = greenfield** — Cards worker address entry (`profile_edit_screen.dart` + `profile_fill_from_licence_screen.dart`) is manual text + static state dropdown; NO Places, no package, no key. "Should already be done" = it isn't. Flutter web, so the Shell JS pattern doesn't port directly. _(added 2026-07-02)_
+- [ ] **Track B (worker identity resolver)** — being shipped by a concurrent session (eq-cards PR #113 migrations 0070–0073 + eq-shell PRs #597/#598). DEPLOY ORDER: apply eq-cards `0073` via the governed pipeline BEFORE eq-shell #597 ships (else the new RPC 404s). Needs Royce deploy approval. _(added 2026-07-02)_
+
+---
+
 ## ⏩ Session close — 2026-07-02 (Sentry sweep) — 5-project audit, 4 issues triaged, 1 real bug found + fixed + deployed
 
 **Completed:**
