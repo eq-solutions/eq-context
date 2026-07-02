@@ -11,6 +11,10 @@
 - fix(onboarding): first-scan "welcome" screen now picks the photo synchronously in the tap handler instead of after a Navigator round-trip — browsers were silently refusing to open the camera on the first attempt (commit `617b8de`, PR #111, run 28541424467)
 - fix(ocr): OCR loading dialog's "taking longer than usual" message no longer fires at 5s when the same dialog says scans normally take 5–10s — threshold raised to 9s, copy softened
 - chore(data): deleted demo/trial account `0466118646` — standalone empty signup, no org/licence data
+- fix(notify): connection-request email worker name now sourced from `workers` (was `profiles.full_name`, which self-signup workers never populate) — was rendering as "A worker". Falls back to formatted AU mobile, then "A new worker". Migration `0074`, applied live + verified. PR #115
+- fix(licences): `share-licence` edge fn `holder_name` had the same wrong-table bug — sourced from `workers` first, `profiles` fallback. Deployed v8, verified live via curl. PR #115
+- chore(data): `0075` backfilled `profiles.full_name` from `workers` for 6 NULL rows (0 conflicts). Applied live
+- fix(connections): `P0023` name-gate error (`eq_cards_submit_access_request`) now shows a clean "Add your name…" message instead of `ServerFailure(500): ...`. PR #115, deployed run `28585818154`
 
 ## 2026-07-01
 - fix(auth): `handle_phone_dedup` SECURITY DEFINER — all new signups were 500ing (migration 0066, applied live)

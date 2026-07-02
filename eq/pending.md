@@ -14,6 +14,36 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-02 (eq-cards) — connection-request worker-name fix, end-to-end (deployed + verified live)
+
+*Continuation of the "connection-email deep-link" thread (block below) — root-caused why the name was still sometimes wrong after that fix, chased it to a class of bugs, and closed the whole chain out to a live, verified deploy.*
+
+**Completed (eq-cards, all live on eq-canonical `jvknxcmbtrfnxfrwfimn`, PRs #115 + #116 merged to main):**
+- [x] **Root cause: Cards writes worker names to `workers`, not `profiles`** — `eq_notify_connection_request_targets` sourced `profiles.full_name`, which self-signup workers never populate (`eq_cards_upsert_my_worker` only writes `workers`). Live at time of fix: `workers` 74/74 named, `profiles` 21/35. Confirmed on live request `d9b578a7` (org SKS).
+- [x] **`0074_notify_worker_name_source.sql`** — reconstructed into the repo two changes a concurrent session had already applied live with no migration file (`org_slug` column + name-source fix). Name resolution now `workers` → `profiles.full_name` → formatted AU mobile (new `eq_format_au_mobile` helper) → literal `"A new worker"`. Applied live + verified (reported request now renders `+61 432 470 463`; a named worker renders correctly).
+- [x] **Synced stale `notify-connection-request` edge fn repo copy** to match deployed v4 (`org_slug` deep-link to `<shell>/<slug>/staff`) — repo would have regressed the deep-link on a future redeploy.
+- [x] **Same wrong-table bug found in `share-licence` edge fn** — `holder_name` also read `profiles.full_name` only, leaving shared-licence pages blank for self-signup workers. Fixed to read `workers` first, `profiles` fallback. **Deployed as v8 and verified live via curl** (`holder_name: "Royce Wayne MILMLOW"`, CORS correctly fail-closed on a disallowed origin).
+- [x] **`0075_backfill_profile_full_name.sql`** — one-time backfill of `profiles.full_name` from `workers` for the 6 rows that were NULL (0 name conflicts, verified safe before writing). Applied live.
+- [x] **App-side `P0023` polish shipped** — `ServerFailure(500): Add your name…` → clean `ValidationFailure` message via `userMessageForError`, closing the deferred item from the predecessor session.
+- [x] **PR #115 de-contaminated mid-session** — branch had been cut from the (unmerged) Track B identity-resolver tip, so the PR initially carried 6 commits that weren't mine. Rebased onto `origin/main`, force-pushed, re-scoped the PR to just this fix.
+- [x] **Production Cards deploy fired and confirmed green** — `gh workflow run deploy.yml --ref main`, run `28585818154`, watched to completion: `success`. The `P0023` friendly message is live at cards.eq.solutions.
+
+**Decided (Royce):**
+- Fallback for a genuinely nameless worker (name nowhere in the system): formatted phone, then `"A new worker"` — not a bare generic string, chosen for admin actionability.
+- Prevention: gate `eq_cards_submit_access_request` on requiring a name before applying (SQLSTATE `P0023`) rather than relying on the fallback alone.
+- PR #115 base contamination: rebase onto `main` to isolate — cleanest option since nobody else was building on that branch.
+- Proceed with all three follow-ups (share-licence fix, app polish, backfill) rather than stopping at the email fix alone.
+- Fire the Cards deploy now rather than defer it — the gate was already confirmed live, so the deploy only needed to ship the cosmetic message.
+
+**Deferred:** none — chain closed end-to-end (root cause → fix → live DB → live edge fn → live app deploy, each step verified against the running system, not just code review).
+
+**Notes (load-bearing):**
+- **Track B's `0072`/`0073` (the `submit_access_request` name gate + identity resolver) were confirmed live and merged to `main` via PR #113** during this session (by a separate concurrent session) — resolves what looked mid-session like a live/repo reproducibility gap. No action needed from this thread.
+- **`share-licence`'s deployed source had drifted from the repo independently of this bug** (repo uses shared `_shared/cors.ts`, deployed v7 had inline CORS) — deployed the repo's version via MCP (mirroring the real multi-file layout: `share-licence/index.ts` + `_shared/cors.ts`) rather than patching the stale inline version, so repo and live are now aligned, not re-forked.
+- **`sync_profile_to_worker` is one-directional** (profile → worker only) — this is the structural reason `profiles.full_name` drifts NULL. The durable fix is reading from `workers` everywhere (done for both readers found this session), not adding a reverse sync.
+
+---
+
 ## ⏩ Session close — 2026-07-02 (strategy + migration recon) — SKS Labour→canonical feasibility (READ-ONLY, no code)
 
 *Advisory session (TRAiDMIN meeting prep + EQ progress read) plus a read-only feasibility recon of the SKS NSW Labour → EQ canonical migration. Nothing written to any DB. Full narrative in `sessions/2026-07-02.md` (search "migration recon").*
@@ -138,7 +168,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **PR #112 merged** (squash, `--admin`, branch deleted) — merged despite a red "Analyze and test" check that is **pre-existing on `main` since #110** (2026-07-01), NOT from this PR: #110 added `dart:js_interop`/`package:web` to `photo_upload.dart`, which a VM test imports transitively and can't compile. eq-cards has no branch protection so merge was unblocked; Cards gated so no deploy. _(done 2026-07-02)_
 - [x] **eq-cards CI fixed** — `photo_upload.dart`'s web-only `dart:js_interop`/`package:web` (from #110) broke VM test compilation → every PR red since 2026-07-01. Extracted the web compress into `photo_compress_web.dart` + `photo_compress_io.dart` stub behind `if (dart.library.html)` (mirrors `wallet_cache_service`). Verified on Flutter 3.41.9: analyze clean, 207 tests pass. **PR #114 merged, CI green** (first green since #110). NOTE: chip `task_468d5ba8` was independently started in a separate session — safe to close, PR #114 superseded it. _(done 2026-07-02)_
 - [ ] **Send Huon** the connection-email reply + before/after graphic. _(needs your call)_
-- [ ] **App-side `P0023` message polish (chip session)** — the name-gate on `eq_cards_submit_access_request` is live server-side, but the Flutter mapping of `P0023`→friendly message was drafted then rolled back; a blocked worker currently sees raw `ServerFailure(500): Add your name…`. Rides the next gated Cards deploy. _(added 2026-07-02)_
+- [x] **App-side `P0023` message polish** — shipped. Full chain closed out in a follow-on session — see "connection-request worker-name fix, end-to-end" block below. _(done 2026-07-02)_
 
 ---
 
