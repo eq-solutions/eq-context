@@ -8,19 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-03 06:08 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-03 06:26 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-03 05:34 UTC → 2026-07-03 06:08 UTC)
+## Since last refresh (2026-07-03 06:08 UTC → 2026-07-03 06:26 UTC)
 
-- Merged: eq-shell [#617](https://github.com/eq-solutions/eq-shell/pull/617) Harden self-serve tenant provisioning: transactional RPC, ph
-- Merged: eq-shell [#599](https://github.com/eq-solutions/eq-shell/pull/599) fix(staff): "Has gaps" chip → "Has expired" (expired-only)
-- Merged: eq-shell [#598](https://github.com/eq-solutions/eq-shell/pull/598) Admin screen: number-reuse checks (recycled-phone review que
-- Merged: eq-shell [#597](https://github.com/eq-solutions/eq-shell/pull/597) Route create-worker-invite through the canonical worker reso
-- Merged: eq-shell [#596](https://github.com/eq-solutions/eq-shell/pull/596) fix(customers): Add-site address autocomplete fills suburb/s
-- Merged: eq-shell [#592](https://github.com/eq-solutions/eq-shell/pull/592) Equipment: inline assign-to-staff dropdown
-- Merged: eq-shell [#591](https://github.com/eq-solutions/eq-shell/pull/591) chore: remove profile settings page
-- Merged: eq-shell [#590](https://github.com/eq-solutions/eq-shell/pull/590) fix(security): close access-control escalation + CSRF gaps
-- ⚠ Needs you: 2 → 3 (new items)
+- Merged: eq-shell [#616](https://github.com/eq-solutions/eq-shell/pull/616) feat(ops): create and edit sites from the EQ Ops quote form
+- Merged: eq-shell [#615](https://github.com/eq-solutions/eq-shell/pull/615) fix(ops): quote PDF download/email returned 404 for every qu
+- Merged: eq-shell [#612](https://github.com/eq-solutions/eq-shell/pull/612) fix(governance): adopt quality-guardian tables — tenant-JWT 
+- Merged: eq-shell [#601](https://github.com/eq-solutions/eq-shell/pull/601) Customers/Staff legibility + EQ Ops board fixes + design-tok
+- Merged: eq-shell [#600](https://github.com/eq-solutions/eq-shell/pull/600) fix(customers): migrate address autocomplete to new Places A
+- Merged: eq-shell [#595](https://github.com/eq-solutions/eq-shell/pull/595) feat(access-control): recent-activity panel on the page itse
+- Merged: eq-shell [#594](https://github.com/eq-solutions/eq-shell/pull/594) Simpler worker onboarding + stop duplicate stubs
+- Merged: eq-shell [#593](https://github.com/eq-solutions/eq-shell/pull/593) fix(security): block unattributed direct DELETE on app_data.
 
 ## ⚠ Needs you (3)
 
@@ -32,8 +31,8 @@ _2026-07-03 06:08 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 5 | 0d |
-| eq-solves-service | ✓ success | 0d ago | 4 | 3d |
+| eq-shell | ? unknown | ? | 2 | 0d |
+| eq-solves-service | ✓ success | 0d ago | 6 | 3d |
 | eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ? unknown | ? | 1 | 0d |
@@ -53,6 +52,9 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-03 | eq-shell | [#616](https://github.com/eq-solutions/eq-shell/pull/616) feat(ops): create and edit sites from the EQ Ops quote form |
+| 2026-07-03 | eq-shell | [#615](https://github.com/eq-solutions/eq-shell/pull/615) fix(ops): quote PDF download/email returned 404 for every quote — |
+| 2026-07-03 | eq-shell | [#612](https://github.com/eq-solutions/eq-shell/pull/612) fix(governance): adopt quality-guardian tables — tenant-JWT polic |
 | 2026-07-03 | eq-shell | [#617](https://github.com/eq-solutions/eq-shell/pull/617) Harden self-serve tenant provisioning: transactional RPC, phone-b |
 | 2026-07-03 | eq-shell | [#606](https://github.com/eq-solutions/eq-shell/pull/606) feat(intake): review-queue tab (port from eq-intake #55) |
 | 2026-07-03 | eq-shell | [#610](https://github.com/eq-solutions/eq-shell/pull/610) fix(audit): grant audit_log id-sequence to service_role; surface  |
@@ -65,9 +67,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-03 | eq-solves-intake | [#61](https://github.com/eq-solutions/eq-solves-intake/pull/61) fix(guardian): health-score field lists use real app_data columns |
 | 2026-07-03 | eq-solves-intake | [#60](https://github.com/eq-solutions/eq-solves-intake/pull/60) fix(guardian): auth by privilege probe, not service-key string eq |
 | 2026-07-03 | eq-solves-intake | [#59](https://github.com/eq-solutions/eq-solves-intake/pull/59) chore(guardian): nightly cron 17:00 UTC (03:00 AEST) per Royce 20 |
-| 2026-07-03 | eq-solves-intake | [#55](https://github.com/eq-solutions/eq-solves-intake/pull/55) feat(intake): DAMA composite score + steward run 001 + review-que |
-| 2026-07-02 | eq-shell | [#603](https://github.com/eq-solutions/eq-shell/pull/603) fix(customers): Places address widget mounts reliably on first op |
-| 2026-07-02 | eq-shell | [#602](https://github.com/eq-solutions/eq-shell/pull/602) Pending-count badge on the Number-reuse-checks admin tile |
 _Showing 15 of 129 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -114,4 +113,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-03 06:08 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-03 06:26 UTC._
