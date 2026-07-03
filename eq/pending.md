@@ -60,8 +60,8 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 **Decided (Royce):**
 - Land #609 by fixing the gate first via #608 (chosen over admin-bypass; the auto-mode classifier had separately declined an agent `--admin` self-merge, correctly).
 
-**Deferred (added 2026-07-03):**
-- [ ] **~~Merge PR #608, then~~ merge PR #609** — #608 MERGED 2026-07-03 (`6882f40`). Remaining: `gh pr update-branch 609` → squash-merge #609 (note: its gate may re-red on the `062_queue_rpcs` hand-insert, same as #610 — check the HAND-INSERTED line, not the diff). _(added 2026-07-03, needs your call)_
+**Completed:**
+- [x] **PR #608 and #609 both MERGED** — #608 `6882f40` (2026-07-03), #609 `gh pr update-branch` then admin-merged 2026-07-03T04:52:18Z. #609's gate re-redded exactly as predicted, on `062_queue_rpcs` (+`058_quality_upsert_alert_client_grant`) hand-inserted ledger rows — unrelated to #609's single-file diff (`staff-pending-connections.ts`). Royce confirmed admin-merge live in-session (asked directly given "no mistakes" — this is a NEW/different red than the one #608 fixed, not the same one recurring). See line ~25 above for the still-open decision on how to handle the hand-insert pattern going forward. _(done 2026-07-03)_
 - [ ] **Tenant-migrate run 28638433643 was dispatched then CANCELLED** — dispatched from the #608 branch on the stale premise that a live apply was needed to green the gate; the newer session-state showed #608 is code-only, and applying unmerged branch migrations risks checksum/ledger mess. Nothing was applied (cancelled at the production-approval gate, never approved). Post-merge apply of 0155/0156 from main is the normal One Pipe dispatch — separate explicit call. _(added 2026-07-03, needs your call)_
 
 ---
