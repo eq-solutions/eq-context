@@ -66,7 +66,6 @@ _If this file is >48h old, the cron is broken._
 - #366 chore(deps): bump @eq-solutions/ui from v1.8.0 to v1.9.0 in the eq-design-system group across 1 directory
 
 **eq-shell:**
-- #624 fix(provisioning): tenant_routing NOT NULL columns block every Provision click
 - #623 fix(intake): re-vendor field-name + plain-English fixes from eq-solves-intake #62
 
 **eq-solves-intake:**
