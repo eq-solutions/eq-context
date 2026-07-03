@@ -14,6 +14,16 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-03 (eq-shell) — Ops site create/edit shipped (PR #616 open)
+
+**Completed (eq-shell, branch `claude/ops-site-create-edit`, worktree):**
+- [x] **Site create/edit wired into EQ Ops quote form** — Customers Add/Edit-site modals extracted to shared `src/components/SiteModals.tsx` (Places autocomplete + contact_site_links handling ride along); "New site"/"Edit site" beside the Ops site picker; `crm-write add_site` returns new `site_id` for auto-select; UI gates reuse `entity.create/edit/delete` (same keys the server checks — deliberately no `quotes.sites.*`); Ops edit pre-resolves the current site contact so update_site can't clear it. Contracts untouched (scoped out). Build + 97/97 tests + scoped-lint clean vs base. _(done 2026-07-03)_
+
+**Deferred (added 2026-07-03):**
+- [ ] **Merge eq-shell PR #616** (Ops site create/edit) — merge auto-deploys core.eq.solutions; remove worktree `.claude/worktrees/ops-site-create-edit` after merge. _(added 2026-07-03, needs your call)_
+
+---
+
 ## ⏩ Session close — 2026-07-03 (eq-shell) — steward-drift audit closed out: PR #608 MERGED (gate green, code-only)
 
 **Completed (eq-shell, PR #608 merged `6882f40` → auto-deploy core.eq.solutions):**

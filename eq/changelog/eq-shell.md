@@ -65,3 +65,6 @@
 - PR #537: Contacts UX overhaul — inline delete for sites + contacts
 - PR #534: Cert import async rework (background fn + Blobs polling)
 - PR #562: Brand-hex burndown phase 1 — 105 brand hexes → CSS vars (19 files)
+
+## 2026-07-03
+- Site create/edit from the EQ Ops quote form (PR #616, open): shared SiteModals extraction (one site editor for Customers + Ops), crm-write add_site returns site_id, entity.* perm-gated buttons beside the Ops site picker.
