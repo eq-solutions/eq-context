@@ -1,6 +1,7 @@
 # eq-shell changelog
 
 ## 2026-07-03
+- **PR #618 opened** — fixes 2 SECURITY DEFINER views (`app_data.field_managers`, `public.nomination_clashes`) flagged ERROR by a security-advisor audit run from an eq-solves-service session; both were a real cross-tenant/org RLS bypass (live-verified: `reloptions=NONE`, both granted `authenticated`). `0157_field_views_reassert_security_invoker.sql`. Not yet merged/dispatched.
 - PR #615 (MERGED 2026-07-03T06:25:38Z): quote-PDF export in EQ Ops (`Download PDF`/`Email PDF`) fixed — broken for every quote since the react-pdf refactor (#564). `loadQuotePdfData` called `eq_get_quote_detail`, a SECDEF RPC that resolves the tenant from the caller's JWT claims; the Netlify functions call it with the service-role key (no claims) → tenant filter always empty → 404. Rewrote to read `app_data.quote`/`quote_line_item`/`customers`/`contacts` directly with an explicit `tenant_id` filter passed from the session.
 - PR #605 (MERGED `ef82401`, 2026-07-03T05:06:12Z): also fixed, beyond the 404-copy change already noted below — the approval-path audit upsert used `ignoreDuplicates: true`, silently discarding the admin's just-completed licence review whenever the approved worker linked to an existing bulk-import staff stub (reproduced live on the Mohammed Hussain approval). Switched to merge-on-conflict.
 - PR #613 (MERGED 2026-07-03T06:37:35Z): batch delete/archive for sites — reuses the batch-contacts pattern. Rebased through a real conflict with #616 in `CustomersPage.tsx` (both edited the site-modal import block).
