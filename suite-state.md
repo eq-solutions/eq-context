@@ -69,8 +69,6 @@ _If this file is >48h old, the cron is broken._
 - #366 chore(deps): bump @eq-solutions/ui from v1.8.0 to v1.9.0 in the eq-design-system group across 1 directory
 
 **eq-shell:**
-- #616 feat(ops): create and edit sites from the EQ Ops quote form
-- #615 fix(ops): quote PDF download/email returned 404 for every quote — explicit tenant filter
 - #614 feat(staff): Add-to-roster action — dedupe-first roster-only create
 - #613 feat(customers): batch delete/archive for sites
 
