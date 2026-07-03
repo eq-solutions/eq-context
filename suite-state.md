@@ -8,7 +8,7 @@ status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-07-03 (nightly cron)_
+_Last verified: 2026-07-04 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -58,7 +58,7 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-07-03)
+## Open PRs (as of 2026-07-04)
 
 **eq-service:**
 - #369 chore(deps): bump docx from 9.6.1 to 9.7.1
@@ -124,6 +124,14 @@ _Auto-refreshed nightly. ✓ = has data · ⚠ = empty (no data yet) · ✗ = ta
 ---
 
 ## Key Decisions (auto-derived from merged PRs + manual)
+- Contacts joined the canonical view+INSTEAD OF trigger model — service.contacts is a view over app_data, DML routed to canonical (0167) (merged PR #410, 2026-07-02)
+- Governed migration-apply pipeline + service invariants gate — migrations now apply through a checked pipeline, not ad-hoc (0168/0169) (merged PR #412, 2026-07-03)
+- Dead auth exemptions removed from PUBLIC_PATHS — /api/shell-sso (merged PR #394) and /auth/shell-bridge (merged PR #388), 2026-07-01
+- Fail closed on unresolved Shell→Service tenant slug — no silent fallthrough on handoff (merged PR #376, 2026-06-29)
+- Shell: create-worker-invite routed through the canonical worker resolver (merged shell PR #597, 2026-07-02)
+- Shell: anon RPC grants closed + tenant-JWT policies on quality-guardian tables (0157) (merged shell PR #612, 2026-07-03)
+- Shell: self-serve tenant provisioning hardened — transactional RPC, phone-bound links, runs as a background function (merged shell PRs #617/#627, 2026-07-03)
+- Field: edge functions rewritten for canonical/ehow compatibility (merged field PR #380, 2026-06-30)
 - Shell user_id is now the canonical join key between Shell identity and Field roster person (via app_data.staff.user_id → field_person_by_user_id RPC) (PR #352, 2026-06-27)
 - CLAUDE.md project ID corrected from deleted urjh to live ehow (ehowgjardagevnrluult) (PR #332, 2026-06-22)
 - Auto-defect trigger ON CONFLICT regression rule moved from memory to CLAUDE.md (PR #332, 2026-06-22)
