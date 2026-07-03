@@ -61,7 +61,6 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-03)
 
 **eq-service:**
-- #415 docs: scope brief for commercial-sheet asset creation
 - #414 feat: batch-resolve on /defects
 - #413 fix: dashboard asset count (0170) + plain-English commercial-sheet copy
 - #369 chore(deps): bump docx from 9.6.1 to 9.7.1
