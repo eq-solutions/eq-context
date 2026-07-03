@@ -60,7 +60,9 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-03)
 
-_No open PRs_
+**eq-shell:**
+- #634 fix(sync-quotes-nightly): check errors on Flask write-back + line-item delete
+- #633 docs: correct CLAUDE.md — EQ_SECRET_SALT is the fallback signing key, not retired
 
 ---
 
