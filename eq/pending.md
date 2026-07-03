@@ -120,6 +120,27 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-03 (eq-shell) — batch merge/deploy: #607 flow closed out, 0155 applied, 4 more PRs landed
+
+*Continuation of the block above, same session — Royce said "merge and get everything we are working on live."*
+
+**Completed (all live on core.eq.solutions, this session's own actions):**
+- [x] **Dispatched `tenant-migrate.yml` for migration 0155 (sks slug, `allow_checksum_drift=true`), run `28638730072`** — sat at the `production` environment approval gate; Royce approved directly on GitHub; apply succeeded. Verified: `sks-canonical` anon-grant invariant now **clean** (was the `service.customer_contacts`/`service.site_contacts` red). _(done 2026-07-03)_
+- [x] **Admin-merged PR #605, #610, #606** (squash, branch deleted) — all had green `typecheck·test·lint`; the drift gate was still red at merge time for a *different*, newly-surfaced reason (see below), Royce explicitly authorized bypassing it per-PR. PR #609 was found already merged by its own session on arrival. _(done 2026-07-03)_
+- [x] **Confirmed production deploy `e0455deb9` reached `ready`** and smoke-checked (`verify-shell-session` → 401 unauthed) after all 4 merges landed. _(done 2026-07-03)_
+
+**Decided (Royce):**
+- "Admin-merge all 4 now" for #605/#606/#609/#610 rather than wait on the newly-found hand-insert-ledger issue (below) to resolve first.
+- Stood down from actually fixing the hand-insert-ledger issue in this session — Royce had already started a separate session on the identical spawned task (`task_53d12ac0`); chose to let that session own it rather than risk two sessions writing to the same `app_data._eq_migrations` ledger concurrently.
+
+**Deferred:** none new — the hand-insert-ledger item is the same one already tracked above (line ~116, chip `task_02f3f8d0` for the structural fix) plus the in-progress session on `task_53d12ac0` for the immediate reconcile; not duplicating here.
+
+**Notes (load-bearing):**
+- **The drift gate went red a *second* time mid-session for an unrelated reason**: #608 itself shipped a hand-insert ledger detector (CHECK 3) that correctly caught 4 NULL-checksum rows (`058`/`059`/`060`/`062`) from the concurrent eq-intake guardian go-live — confirms the "expect gate reds on unrelated PRs while the guardian go-live is in flight" note elsewhere in this file. Cost real time diagnosing before realizing it wasn't a new regression from any of the 4 PRs' own diffs.
+- **Netlify showed one deploy as `error` immediately after #610 merged** — turned out to be `error_message: "Skipped"` (superseded by #606's merge landing seconds later), not a real build failure. Worth remembering: an `error` state on `listSiteDeploys` isn't always a broken build — check `error_message` before treating it as one.
+
+---
+
 ## ⏩ Session close — 2026-07-03 (eq-intake) — licence strip "all current" trust failure root-caused + fixed (PRs #56 + #57 merged; go-live needs Royce)
 
 **Completed (eq-intake, repo `eq-solves-intake`, both PRs merged to main):**
