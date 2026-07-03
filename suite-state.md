@@ -71,7 +71,6 @@ _If this file is >48h old, the cron is broken._
 - #614 feat(staff): Add-to-roster action — dedupe-first roster-only create
 - #613 feat(customers): batch delete/archive for sites
 - #612 fix(governance): adopt quality-guardian tables — tenant-JWT policies, close anon RPC grants (0157)
-- #610 fix(audit): grant audit_log id-sequence to service_role; surface insert errors
 - #606 feat(intake): review-queue tab (port from eq-intake #55)
 
 **eq-solves-intake:**
