@@ -26,10 +26,14 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 **Deferred (added 2026-07-03):**
 - [ ] **Admin-merge PR #610 in the GitHub UI** — only red is the pre-existing drift gate (#608 fixes it); merge auto-deploys core.eq.solutions with the error-logging change. _(added 2026-07-03, needs your call)_
-- [ ] **Apply `2026_07_03_grant_audit_log_seq_to_service_role` to jvkn after #610 lands** (named-migration convention, same as the rest of the control-plane history) — then verify: sign in at core.eq.solutions → `select event, at from shell_control.audit_log order by at desc limit 5` shows a fresh `login.success`; API logs show 201 on `POST /rest/v1/audit_log`. Say "apply" and the session agent runs it. _(added 2026-07-03, needs your call)_
+- [x] **Apply `2026_07_03_grant_audit_log_seq_to_service_role` to jvkn** — ✅ APPLIED 2026-07-03 (Royce: "merge and apply"), before the merge since the two are independent (jvkn isn't drift-gate-covered, migration content final in the PR). Verified as `service_role` in a rolled-back transaction: `has_sequence_privilege` true + `nextval()` succeeds. **Audit writes are live NOW — the grant needed no deploy.** Remaining verify: after Royce's next sign-in, newest `shell_control.audit_log` row should be `login.success`. _(done 2026-07-03)_
+
+**Update (2026-07-03, "merge and apply" follow-up):**
+- After #608 merged, ran `gh pr update-branch 610` → drift gate went red AGAIN for a **new, different** reason: #608's hand-insert detector correctly caught `062_queue_rpcs` (NULL-checksum ledger row on ehow, applied 04:30 UTC by the concurrent eq-intake guardian go-live — the exact collision the quality-guardian-adoption memory predicted). Unrelated to #610. Classifier again blocked agent `--admin` self-merge → **the #610 merge click remains with Royce** (typecheck·test·lint green, ledger hygiene green).
 
 **Notes (load-bearing):**
 - **403 on a service-key POST ≠ RLS** — service_role bypasses RLS; check sequence/identity-column grants (`has_sequence_privilege`) before policies. SECURITY DEFINER RPCs mask missing grants; any RPC→direct-write conversion needs a grant audit of every object the column defaults touch.
+- **#608's CHECK 3 detector is now a live tripwire for ANY concurrent out-of-band ehow apply** — every eq-intake MCP apply that self-inserts a ledger row turns the gate red repo-wide until the row is checksummed/reconciled. Expect gate reds on unrelated PRs while the guardian go-live is in flight; check the `HAND-INSERTED` line in the gate log before assuming your PR caused it.
 
 ---
 
@@ -93,7 +97,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 *The spawned "revive quality-guardian" session that built PR #57. Build/merge/go-live items are already captured in the licence-strip block above — this is only what that block doesn't carry.*
 
 **Deferred (added 2026-07-03):**
-- [ ] **eq-quotes-embed-quotes cron is firing hourly with a NULL Authorization header** — its Vault secret `quotes_cron_secret` is gone (ehow Vault is completely EMPTY), and `'Bearer ' || NULL` nulls the whole header, so the hourly POST to eq-quotes-sks.fly.dev has been going out unauthenticated. Restore the secret or unschedule the job (Quotes is retired → EQ Ops). Chip `task_9aec631d` filed. _(added 2026-07-03, needs your call)_
+- [x] **eq-quotes-embed-quotes cron — investigated + CANCELLED on Royce's "cancel it"** (`cron.unschedule` returned true, 2026-07-03). Investigation found NO exposure: the Flask endpoint fail-closes (live-verified 401 on missing auth, no work performed), and the job never completed a single call anyway — the Fly machine cold-boots in ~5.8s while pg_net times out at 5s, so all 647 hourly runs since 2026-06-06 timed out regardless of auth. Nothing feeds it either: new quotes are created in EQ Ops, not the retired Flask app. To revive (needs `quotes_cron_secret` in ehow Vault from the Fly env `CRON_SECRET` + a `timeout_milliseconds` bump): `select cron.schedule('eq-quotes-embed-quotes', '17 * * * *', $$select net.http_post(url := 'https://eq-quotes-sks.fly.dev/api/cron/embed-quotes', body := '{"limit": 10}'::jsonb, headers := jsonb_build_object('Content-Type','application/json','Authorization','Bearer ' || (select decrypted_secret from vault.decrypted_secrets where name = 'quotes_cron_secret')), timeout_milliseconds := 30000)$$);` _(done 2026-07-03)_
 
 **Notes (load-bearing):**
 - **ehow's `auth.jwt()` coalesces `request.jwt.claim` (singular) BEFORE `request.jwt.claims`** — any claim-injection must `set_config` BOTH GUCs or the override can lose (059's admin RPCs do).
