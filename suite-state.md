@@ -8,7 +8,7 @@ status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-07-02 (nightly cron)_
+_Last verified: 2026-07-03 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -35,7 +35,7 @@ _If this file is >48h old, the cron is broken._
 
 | Entity | Count | Schema |
 |--------|-------|--------|
-| Sites | 272 | app_data.sites |
+| Sites | 267 | app_data.sites |
 | Customers | 42 | app_data.customers |
 | Assets | 13 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
@@ -58,7 +58,7 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-07-02)
+## Open PRs (as of 2026-07-03)
 
 **eq-service:**
 - #369 chore(deps): bump docx from 9.6.1 to 9.7.1
@@ -66,14 +66,14 @@ _If this file is >48h old, the cron is broken._
 - #366 chore(deps): bump @eq-solutions/ui from v1.8.0 to v1.9.0 in the eq-design-system group across 1 directory
 
 **eq-shell:**
-- #605 fix(staff): clearer approve error when applicant hasn't finished their EQ Cards profile
-
-**eq-solves-intake:**
-- #55 feat(intake): fold validity and timeliness into the composite health score
+- #610 fix(audit): grant audit_log id-sequence to service_role; surface insert errors
+- #609 fix(staff): pending-connections roster-name fallback never matched
+- #606 feat(intake): review-queue tab (port from eq-intake #55)
+- #605 fix(staff): approve-path fixes — clearer 404 + don't drop the licence review when linking an existing staff record
 
 ---
 
-## System Health (as of 2026-07-02)
+## System Health (as of 2026-07-03)
 
 **CI on main:**
 
