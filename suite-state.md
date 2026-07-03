@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-03)
 
-**eq-field:**
-- #385 v3.5.222 — surface render exceptions in showPage() properly
-
 **eq-service:**
 - #369 chore(deps): bump docx from 9.6.1 to 9.7.1
 - #367 chore(deps): bump lucide-react from 1.17.0 to 1.22.0
@@ -70,9 +67,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #623 fix(intake): re-vendor field-name + plain-English fixes from eq-solves-intake #62
-
-**eq-solves-intake:**
-- #62 fix(intake): field-name mismatches + raw schema-code leaks in Health/Tidy dashboard
 
 ---
 
@@ -82,7 +76,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ? in_progress |
+| eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
