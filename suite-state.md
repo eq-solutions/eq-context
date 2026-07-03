@@ -62,7 +62,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-service:**
 - #414 feat: batch-resolve on /defects
-- #413 fix: dashboard asset count (0170) + plain-English commercial-sheet copy
 - #369 chore(deps): bump docx from 9.6.1 to 9.7.1
 - #367 chore(deps): bump lucide-react from 1.17.0 to 1.22.0
 - #366 chore(deps): bump @eq-solutions/ui from v1.8.0 to v1.9.0 in the eq-design-system group across 1 directory
@@ -91,7 +90,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 173 (latest: 0169) applied
+**Migrations:** eq-service has 174 (latest: 0170) applied
 
 ---
 
