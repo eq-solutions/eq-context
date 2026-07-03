@@ -66,10 +66,17 @@ _If this file is >48h old, the cron is broken._
 - #366 chore(deps): bump @eq-solutions/ui from v1.8.0 to v1.9.0 in the eq-design-system group across 1 directory
 
 **eq-shell:**
+- #616 feat(ops): create and edit sites from the EQ Ops quote form
+- #615 fix(ops): quote PDF download/email returned 404 for every quote — explicit tenant filter
+- #614 feat(staff): Add-to-roster action — dedupe-first roster-only create
+- #613 feat(customers): batch delete/archive for sites
+- #612 fix(governance): adopt quality-guardian tables — tenant-JWT policies, close anon RPC grants (0157)
 - #610 fix(audit): grant audit_log id-sequence to service_role; surface insert errors
-- #609 fix(staff): pending-connections roster-name fallback never matched
 - #606 feat(intake): review-queue tab (port from eq-intake #55)
 - #605 fix(staff): approve-path fixes — clearer 404 + don't drop the licence review when linking an existing staff record
+
+**eq-solves-intake:**
+- #58 fix(sql): stamp checksum on ledger self-inserts (gate-red fix)
 
 ---
 
