@@ -4,7 +4,7 @@ owner: Royce Milmlow
 last_updated: 2026-07-03
 scope: Findings + recommendation for closing the apply-governance gap in eq-solves-service's supabase/migrations/ lineage (writes to ehow, same tenant plane eq-shell's One Pipe governs)
 read_priority: high
-status: proposal — awaiting Royce's decision, nothing implemented
+status: APPROVED (D1+D2 as written, Royce 2026-07-03) and BUILT same day — eq-service PR #412 merged. service._eq_migrations ledger live on ehow (172 grandfathered rows), migrate-service.mjs + apply-service-migrations.yml (production-env gated, reviewer Milmlow) + check-service-invariants.mjs + service-invariants.yml all on main. Bonus finds during reconciliation: 2 applied-but-never-committed migrations backfilled (0146b, 0158b) and a live security regression fixed (0166's C.O.R.V. had reset security_invoker on service.assets → 0169, the first migration through the pipe). D3 = keep separate, unchanged.
 relates_to: SCHEMA-GOVERNANCE.md (eq-shell), eq-intake/CLAUDE.md Rule 2 (schema ownership table), plan-control-plane-governance-and-card-read-2026-06-25.md (same shape of problem, jvkn control plane instead of ehow tenant plane), sessions/2026-07-03.md
 ---
 
