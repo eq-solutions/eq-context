@@ -1,5 +1,8 @@
 # eq-shell changelog
 
+## 2026-07-03
+- PR #607: `LicenceReviewModal` (Staff page) discard-confirmation guard — dismissing via ✕/overlay/Cancel with unsaved decisions now asks "Your review hasn't been saved yet" (Keep reviewing / Discard) instead of silently dropping the review; summary banner reworded from "All N licences verified" to "N licences checked — save to finish" so it doesn't read as already-saved. Merged + deployed live (admin-merge over a pre-existing, unrelated red drift-gate on main).
+
 ## 2026-07-02
 - Maps address autocomplete **verified working live end-to-end** (browser, core.eq.solutions/sks Add-site): typed address → New Places dropdown → Suburb + State auto-fill. Correction to the #600/#596 notes below: `VITE_GOOGLE_MAPS_KEY` was NOT set before this session — live `getEnvVars` on eq-shell (and all 9 EQ/SKS sites) showed no maps/places key; set it this session via `netlify api createEnvVars` (context=all, non-secret). The #600 migration + this key together are what made it work.
 - PR #603 (merged + deployed + verified live): fix first-open mount race in `useGooglePlacesAutocomplete` — `loadScript` polls `google.maps.importLibrary` readiness instead of a one-shot `load` event a re-mount can miss (widget silently didn't appear until the modal was reopened on a fresh page load). Verified in-browser: on a fresh page the widget now mounts on the first Add-site open.

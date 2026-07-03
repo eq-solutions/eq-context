@@ -14,6 +14,23 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-03 (eq-shell) — licence-review discard guard shipped; RLS drift fix in flight
+
+**Completed (eq-shell, PR #607 merged + deployed live):**
+- [x] **Fixed "review not saved" loop on `/staff` licence review** — admins tapping through licences to the green "All N licences verified" summary, then closing via ✕/overlay, silently discarded the review (only "Save review" persisted it), so the re-review badge never cleared. `LicenceReviewModal` now confirms before discarding any recorded decisions ("Your review hasn't been saved yet" — Keep reviewing / Discard), and the summary banner no longer reads as complete before save ("N licences checked — save to finish"). Fixed a pre-existing `react-hooks/set-state-in-effect` lint error in `MobileSheet` in the same diff. Build/test/lint all green. _(done 2026-07-03)_
+- [x] **PR #607 merged to main + deployed live** — admin-merge (`--admin`) explicitly authorized by Royce because the required "Schema drift" gate was already red on `main` itself (pre-existing ehow RLS issue, unrelated to this diff — see below), not from this change. Verified live: production deploy state `ready`, `verify-shell-session` 401 smoke check passed. _(done 2026-07-03)_
+
+**Decided (Royce):**
+- Admin-merge PR #607 now rather than block the UI fix on an unrelated pre-existing red gate; spawn a separate task to fix the gate instead of holding this PR.
+
+**Deferred (added 2026-07-03):**
+- [ ] **Red "Schema drift" gate on eq-shell main** — ABSOLUTE anon-grant failure: `service.customer_contacts` / `service.site_contacts` on ehow (sks-canonical) have RLS disabled, `authenticated` grantee with DELETE/INSERT/SELECT/UPDATE (created during the June contact-tables work). Spawned as chip `task_0ee9a799`; a separate session opened **PR #608** (`claude/restore-contact-tables-rls`) to fix it — as of this session's close, #608 is still OPEN, `typecheck·test·lint` green but the drift gate itself is still red (migration not yet dispatched to live tenants) and merge/apply has not happened. _(added 2026-07-03, needs your call — review/merge #608, then dispatch `tenant-migrate.yml` to ehow)_
+
+**Notes (load-bearing):**
+- The drift gate's failure mode on #607 was legitimate signal about *main*, not a false positive on the diff — worth remembering next time a required check is red before a PR is even opened: check whether it's pre-existing on `main` (as here) before reaching for `--admin`.
+
+---
+
 ## ⏩ Session close — 2026-07-03 (eq-intake) — licence strip "all current" trust failure root-caused + fixed (PRs #56 + #57 merged; go-live needs Royce)
 
 **Completed (eq-intake, repo `eq-solves-intake`, both PRs merged to main):**
