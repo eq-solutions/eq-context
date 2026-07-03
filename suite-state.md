@@ -65,9 +65,6 @@ _If this file is >48h old, the cron is broken._
 - #367 chore(deps): bump lucide-react from 1.17.0 to 1.22.0
 - #366 chore(deps): bump @eq-solutions/ui from v1.8.0 to v1.9.0 in the eq-design-system group across 1 directory
 
-**eq-shell:**
-- #623 fix(intake): re-vendor field-name + plain-English fixes from eq-solves-intake #62
-
 ---
 
 ## System Health (as of 2026-07-03)
