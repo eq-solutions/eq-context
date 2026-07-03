@@ -1,0 +1,257 @@
+name: Backup ehow (canonical DB → R2)
+
+# Platform-level offsite backup of the SHARED canonical database (ehow /
+# ehowgjardagevnrluult) to Cloudflare R2. This is the ONE authoritative offsite
+# backup for the shared substrate — it lives here (eq-context) because DR of the
+# shared DB is a platform concern, not a per-app one. It supersedes the copy that
+# used to run inside eq-service (eq-service/.github/workflows/backup.yml), which
+# is being retired once this job has run green once.  (issue eq-context #60)
+#
+# What it captures (a COMPLETE logical backup, per Supabase's own recipe):
+#   - roles.sql   (--role-only)
+#   - schema.sql  (DDL for all schemas)
+#   - data.sql    (--data-only --use-copy — the actual ROWS)
+#   NOTE: a bare `supabase db dump` is SCHEMA-ONLY. The retired eq-service job used
+#   the bare form, so it never captured rows. The three-file form below is the fix.
+#   Auth-schema coverage (auth.users) is verified by the restore drill — Supabase's
+#   own managed daily backup is the secondary safety net for auth.
+#   Plus: every storage bucket (recursively), not just attachments/logos.
+#
+# Read-only against live: dump = pg_dump (SELECT), storage = GET. Nothing is written
+# back to any live Supabase project. R2 is our own backup bucket.
+#
+# Schedule: every Sunday 02:00 UTC (~12:00 AEST). Manual: workflow_dispatch.
+#
+# Secrets (add to the `production-ops` GitHub Environment — see setup in
+# system/dr-backups.md). Already present in eq-context repo secrets:
+#   SUPABASE_SERVICE_ROLE_KEY  - ehow service-role key (storage API access)
+#   SUPABASE_ACCESS_TOKEN      - Supabase personal access token (sbp_…)
+#   SENTRY_DSN                 - client ingest DSN for the cron monitor (ADD to arm alerting)
+# Must be ADDED (ehow-scoped, production-grade sensitive — contains auth.users):
+#   SUPABASE_DB_URL            - ehow session-pooler URI
+#                                (postgresql://postgres.ehowgjardagevnrluult:[pass]@aws-…-pooler.supabase.com:5432/postgres)
+#   R2_ACCESS_KEY_ID / R2_SECRET_ACCESS_KEY / R2_ENDPOINT / R2_BUCKET_NAME
+#
+# Alerting: a Sentry cron check-in monitor (slug `ehow-weekly-backup`). It checks
+# in `in_progress` at start and `ok`/`error` at end, and declares its own crontab
+# schedule — so Sentry pages BOTH on a failed run AND on a run that never happens
+# (the exact silent-gap failure mode that hid a 7-week outage). Skips cleanly with a
+# loud warning until SENTRY_DSN is set, so the backup itself is never blocked on it.
+
+on:
+  schedule:
+    # Every Sunday 02:00 UTC (~12:00 AEST)
+    - cron: '0 2 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  backup:
+    name: ehow → R2 (db + storage)
+    runs-on: ubuntu-latest
+    # Privileged secrets (DB URL, R2 keys, service-role key) are scoped to this
+    # GitHub Environment. Configure Settings → Environments → production-ops with a
+    # deployment-branch rule = main only and NO required reviewers (this job runs on
+    # schedule/dispatch from main, never on PRs), so the secrets can't be used from
+    # any other ref and the cron is never paused waiting for an approval.
+    environment: production-ops
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      MONITOR_SLUG: ehow-weekly-backup
+      SUPABASE_URL: https://ehowgjardagevnrluult.supabase.co
+    steps:
+      # ── Sentry cron: check in "in_progress" (upserts the monitor incl. schedule) ──
+      - name: Sentry check-in (start)
+        env:
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+        run: |
+          set -uo pipefail
+          if [ -z "${SENTRY_DSN:-}" ]; then
+            echo "::warning::SENTRY_DSN not set — this backup run is UNMONITORED. Add SENTRY_DSN (production-ops) to arm cron alerting."
+            exit 0
+          fi
+          # Parse DSN: https://<public_key>@<host>/<project_id>
+          KEY="${SENTRY_DSN#https://}"; KEY="${KEY%%@*}"
+          REST="${SENTRY_DSN#*@}"; HOST="${REST%%/*}"; PID="${REST##*/}"
+          BASE="https://${HOST}/api/${PID}/cron/${MONITOR_SLUG}/${KEY}"
+          CID=$(curl -sS -X POST "${BASE}/" \
+            -H 'Content-Type: application/json' \
+            -d '{"status":"in_progress","monitor_config":{"schedule":{"type":"crontab","value":"0 2 * * 0"},"checkin_margin":120,"max_runtime":45,"timezone":"UTC"}}' \
+            | jq -r '.id // empty') || true
+          echo "SENTRY_BASE=$BASE" >> "$GITHUB_ENV"
+          echo "SENTRY_CID=$CID"  >> "$GITHUB_ENV"
+          echo "Sentry monitor '${MONITOR_SLUG}' checked in (in_progress), id=${CID:-none}"
+
+      - name: Set backup date
+        run: echo "BACKUP_DATE=$(date -u +%Y-%m-%d_%H%M)" >> "$GITHUB_ENV"
+
+      - name: Install Supabase CLI + AWS CLI + jq
+        run: |
+          set -euo pipefail
+          curl -fsSL https://github.com/supabase/cli/releases/latest/download/supabase_linux_amd64.tar.gz | tar xz
+          sudo mv supabase /usr/local/bin/
+          supabase --version
+          pip install awscli --quiet
+          jq --version
+
+      # ── Complete logical DB dump (roles + schema + data) → tar.gz → R2 ──
+      - name: Dump database (complete) via Supabase CLI
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          set -euo pipefail
+          if [ -z "${SUPABASE_DB_URL:-}" ]; then
+            echo "::error::SUPABASE_DB_URL is not set — cannot back up the database."
+            exit 1
+          fi
+          supabase db dump --db-url "$SUPABASE_DB_URL" -f roles.sql  --role-only
+          supabase db dump --db-url "$SUPABASE_DB_URL" -f schema.sql
+          supabase db dump --db-url "$SUPABASE_DB_URL" -f data.sql \
+            --use-copy --data-only \
+            -x "storage.buckets_vectors" -x "storage.vector_indexes"
+
+          # Silent-empty guard: a real dump has rows. Fail loudly rather than
+          # upload an empty "backup" and report success (the trap issue #60 names).
+          DATA_BYTES=$(wc -c < data.sql)
+          echo "roles.sql=$(wc -c < roles.sql)B schema.sql=$(wc -c < schema.sql)B data.sql=${DATA_BYTES}B"
+          if [ ! -s roles.sql ] || [ ! -s schema.sql ] || [ "$DATA_BYTES" -lt 2048 ]; then
+            echo "::error::Dump looks empty/partial (data.sql=${DATA_BYTES} bytes) — refusing to upload."
+            exit 1
+          fi
+          tar czf "db_backup_${BACKUP_DATE}.tar.gz" roles.sql schema.sql data.sql
+          ls -lh "db_backup_${BACKUP_DATE}.tar.gz"
+
+      - name: Upload database backup to R2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+          R2_BUCKET: ${{ secrets.R2_BUCKET_NAME }}
+        run: |
+          set -euo pipefail
+          aws s3 cp \
+            "db_backup_${BACKUP_DATE}.tar.gz" \
+            "s3://${R2_BUCKET}/${BACKUP_DATE}/db_backup.tar.gz" \
+            --endpoint-url "${{ secrets.R2_ENDPOINT }}"
+          echo "✅ DB backup uploaded: ${BACKUP_DATE}/db_backup.tar.gz"
+
+      # ── Every storage bucket, recursively (fixes the old 2-of-6-buckets gap) ──
+      - name: Sync ALL storage buckets
+        env:
+          SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          set -euo pipefail
+          mkdir -p storage_sync
+
+          # Recursively download every object under a bucket prefix. Storage `list`
+          # is one level deep; folders come back with a null id, so we recurse.
+          download_prefix () {
+            local bucket="$1" prefix="$2" resp
+            resp=$(curl -sS \
+              -H "Authorization: Bearer ${SERVICE_ROLE_KEY}" \
+              -H "Content-Type: application/json" \
+              -X POST "${SUPABASE_URL}/storage/v1/object/list/${bucket}" \
+              -d "{\"prefix\":\"${prefix}\",\"limit\":10000,\"sortBy\":{\"column\":\"name\",\"order\":\"asc\"}}")
+            local files dirs name path folder
+            mapfile -t files < <(echo "$resp" | jq -r '.[] | select(.id != null) | .name')
+            mapfile -t dirs  < <(echo "$resp" | jq -r '.[] | select(.id == null) | .name')
+            for name in "${files[@]}"; do
+              [ -z "$name" ] && continue
+              path="${prefix}${name}"
+              mkdir -p "storage_sync/${bucket}/$(dirname "$path")"
+              curl -sS -H "Authorization: Bearer ${SERVICE_ROLE_KEY}" \
+                -o "storage_sync/${bucket}/${path}" \
+                "${SUPABASE_URL}/storage/v1/object/${bucket}/${path}"
+            done
+            for folder in "${dirs[@]}"; do
+              [ -z "$folder" ] && continue
+              download_prefix "$bucket" "${prefix}${folder}/"
+            done
+          }
+
+          # Discover buckets dynamically so a newly-added bucket is never silently missed.
+          mapfile -t BUCKETS < <(curl -sS \
+            -H "Authorization: Bearer ${SERVICE_ROLE_KEY}" \
+            "${SUPABASE_URL}/storage/v1/bucket" | jq -r '.[].id')
+          echo "Buckets discovered: ${BUCKETS[*]:-<none>}"
+          if [ "${#BUCKETS[@]}" -eq 0 ]; then
+            echo "::error::No storage buckets returned — service-role key or endpoint wrong. Refusing to report success."
+            exit 1
+          fi
+          for b in "${BUCKETS[@]}"; do
+            [ -z "$b" ] && continue
+            echo "--- Syncing bucket: $b ---"
+            download_prefix "$b" ""
+            COUNT=$(find "storage_sync/${b}" -type f 2>/dev/null | wc -l)
+            echo "  ${COUNT} files from ${b}"
+          done
+
+          TOTAL=$(find storage_sync -type f | wc -l)
+          echo "Total storage objects backed up: ${TOTAL}"
+          # Silent-empty guard: ehow holds live objects; 0 means a broken sync.
+          if [ "$TOTAL" -eq 0 ]; then
+            echo "::error::Storage sync produced 0 files — treating as failure."
+            exit 1
+          fi
+
+      - name: Upload storage to R2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+        run: |
+          set -euo pipefail
+          aws s3 sync \
+            storage_sync/ \
+            "s3://${{ secrets.R2_BUCKET_NAME }}/${BACKUP_DATE}/storage/" \
+            --endpoint-url "${{ secrets.R2_ENDPOINT }}"
+          echo "✅ Storage synced: ${BACKUP_DATE}/storage/"
+
+      - name: Prune old backups (keep last 8 weeks)
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+        run: |
+          set -euo pipefail
+          CUTOFF=$(date -u -d '56 days ago' +%Y-%m-%d)
+          aws s3 ls "s3://${{ secrets.R2_BUCKET_NAME }}/" \
+            --endpoint-url "${{ secrets.R2_ENDPOINT }}" \
+            | awk '{print $NF}' | tr -d '/' \
+            | while read -r prefix; do
+                DATE_PART=$(echo "$prefix" | cut -d_ -f1)
+                if [[ "$DATE_PART" < "$CUTOFF" ]]; then
+                  echo "Pruning old backup: $prefix"
+                  aws s3 rm "s3://${{ secrets.R2_BUCKET_NAME }}/$prefix/" \
+                    --recursive \
+                    --endpoint-url "${{ secrets.R2_ENDPOINT }}"
+                fi
+              done
+          echo "✅ Pruning complete (kept last 8 weeks)"
+
+      # ── Sentry cron: report terminal status ──
+      - name: Sentry check-in (ok)
+        if: success() && env.SENTRY_BASE != ''
+        run: |
+          set -uo pipefail
+          if [ -n "${SENTRY_CID:-}" ]; then
+            curl -sS -X PUT "${SENTRY_BASE}/${SENTRY_CID}/" \
+              -H 'Content-Type: application/json' -d '{"status":"ok"}' >/dev/null || true
+          else
+            curl -sS "${SENTRY_BASE}/?status=ok" >/dev/null || true
+          fi
+          echo "Sentry monitor checked in: ok"
+
+      - name: Sentry check-in (error)
+        if: failure() && env.SENTRY_BASE != ''
+        run: |
+          set -uo pipefail
+          if [ -n "${SENTRY_CID:-}" ]; then
+            curl -sS -X PUT "${SENTRY_BASE}/${SENTRY_CID}/" \
+              -H 'Content-Type: application/json' -d '{"status":"error"}' >/dev/null || true
+          else
+            curl -sS "${SENTRY_BASE}/?status=error" >/dev/null || true
+          fi
+          echo "Sentry monitor checked in: error"
