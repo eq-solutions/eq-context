@@ -60,10 +60,9 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-03)
 
-**eq-cards:**
-- #118 Provision screen: capture admin name/email, surface email-in-use
-
 **eq-service:**
+- #415 docs: scope brief for commercial-sheet asset creation
+- #414 feat: batch-resolve on /defects
 - #413 fix: dashboard asset count (0170) + plain-English commercial-sheet copy
 - #369 chore(deps): bump docx from 9.6.1 to 9.7.1
 - #367 chore(deps): bump lucide-react from 1.17.0 to 1.22.0
@@ -74,7 +73,6 @@ _If this file is >48h old, the cron is broken._
 - #615 fix(ops): quote PDF download/email returned 404 for every quote — explicit tenant filter
 - #614 feat(staff): Add-to-roster action — dedupe-first roster-only create
 - #613 feat(customers): batch delete/archive for sites
-- #612 fix(governance): adopt quality-guardian tables — tenant-JWT policies, close anon RPC grants (0157)
 
 **eq-solves-intake:**
 - #58 fix(sql): stamp checksum on ledger self-inserts (gate-red fix)
