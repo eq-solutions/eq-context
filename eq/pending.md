@@ -14,6 +14,32 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-03 (eq-intake) — guardian go-live EXECUTED on ehow; alert pipeline live end-to-end (PRs #59/#60/#61)
+
+*Second close for this thread — the earlier block below ("licence strip trust failure") built the fixes; this one ran the production go-live and hardened it live.*
+
+**Completed (all live on ehow, each step verified):**
+- [x] **Go-live chain executed** (Royce authorized via AskUserQuestion after the classifier correctly refused the generic "finish the deferred items"): `sql/058` applied (authenticated grant verified `true`) → `sql/059` applied (5 RPCs live, service_role-only verified) → Edge Function deployed (**first-ever deploy**) → Vault secret created by Royce → `sql/060` applied with `0 17 * * *` = **03:00 AEST** → cron `quality-guardian-nightly` active. Repo matched to the live hour via **PR #59**. _(done 2026-07-03)_
+- [x] **Auth bug found + fixed live (PR #60, deployed v2)** — the handler's exact-string check against the injected `SUPABASE_SERVICE_ROLE_KEY` 401'd a GENUINE service key (proved: the same Vault key executed a service_role-only RPC via PostgREST while the function rejected it). Handler now proves privilege: keys a client with the caller's own bearer and requires `eq_quality_list_tenants` (service_role-only) to succeed; probe result doubles as the tenant list. _(done 2026-07-03)_
+- [x] **Health-score false zeros fixed (chip → PR #61, deployed v3)** — inline ENTITIES checked nonexistent columns (`site_name`/`address`/`full_name`/`asset_name`/customers `phone`) → sites 0/267, contacts 0/218 in run summaries. Lists now mirror `@eq/intake` health-score.ts, every column re-verified against live information_schema. Smoke: **sites 267/267, contacts 206/218, customers 44/44, staff 81/81, assets 13/13, errors []**. _(done 2026-07-03)_
+- [x] **Live outcome:** 5 open licence alerts persisted — critical **LVR expired 268d** (Huon) + warnings **LVR 29d**, **electrical_licence 25d** + 2 info; `eq_quality_runs` logging with full summaries. First rows ever in both tables. _(done 2026-07-03)_
+
+**Decided (Royce):**
+- "Authorize me here" → agent runs the prod applies/deploys for this chain (per-action classifier sign-off pattern worked: each new prod action re-asked).
+- Nightly cron at **03:00 AEST** (pre-dawn, results ready before the workday).
+- Deploy v3 + re-smoke: approved.
+
+**Deferred (added 2026-07-03):**
+- [ ] **Fix 12 contacts missing first/last name** — surfaced by the first accurate health run (contacts 206/218 complete); the dashboard tidy flow can fix them one by one. _(added 2026-07-03)_
+- **Note, not a new item:** the go-live applies added three more hand-inserted `_eq_migrations` rows (**058/059/060**, via the INSERTs inside the merged migration files) to the set covered by the already-open decision item in the steward-drift block below ("Decide handling for guardian go-live hand-inserted ledger rows") — same options, now 058–060 + 062.
+
+**Notes (load-bearing):**
+- **ehow gotcha:** the platform-injected `SUPABASE_SERVICE_ROLE_KEY` inside Edge Functions is NOT byte-identical to the dashboard's legacy service_role key on this project. Never gate on string equality with it — prove privilege via a service_role-only RPC (pattern now in quality-guardian).
+- **Key-safe smoke pattern:** fire the same `net.http_post` the cron runs (Authorization read from `vault.decrypted_secrets` inside the DB) via MCP `execute_sql` with `{"triggered_by":"manual"}` — prod keys never pass through chat/transcript.
+- The dashboard-side `health-score.ts` field lists were already correct (verified 2026-06-24) — the guardian's inline copy had drifted from day one (PR #33).
+
+---
+
 ## ⏩ Session close — 2026-07-03 (eq-shell) — Ops site create/edit shipped (PR #616 open)
 
 **Completed (eq-shell, branch `claude/ops-site-create-edit`, worktree):**
