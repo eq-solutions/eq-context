@@ -14,6 +14,25 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-03 (eq-shell) — jvkn audit_log 403s root-caused: missing sequence grant (PR #610, awaiting Royce admin-merge)
+
+**Completed (eq-shell, PR #610 open — build green, 97/97 tests; nothing applied to any DB):**
+- [x] **Root-caused the `POST /rest/v1/audit_log` 403s on jvkn** — every `writeAuditLog()` insert into `shell_control.audit_log` fails because `service_role` has table INSERT but **no USAGE on `shell_control.audit_log_id_seq`** (`has_sequence_privilege` = false, sequence ACL NULL/owner-only) → `nextval()` permission-denied → PostgREST 403. NOT RLS (service_role bypasses it) and NOT the 2026-06-07 default-priv lockdown or 2026-07-01b worker_dedup_archive_lockdown — the `add_shell_control_audit_log` migration (2026-05-23) simply never granted the sequence. Masked while writes went through the `eq_write_audit_log` SECDEF RPC (owner postgres); PR #536 (`a71859f`, 2026-06-29) switched to a direct service-client INSERT, which has **never** succeeded. Table has **2 rows ever** (both 06-29 09:38 UTC, via the RPC minutes before that deploy) — Shell auth auditing has effectively never captured events. _(done 2026-07-03)_
+- [x] **PR #610 opened** — `supabase/migrations/2026_07_03_grant_audit_log_seq_to_service_role.sql` (`GRANT USAGE, SELECT ON SEQUENCE … TO service_role`) + `writeAuditLog()` now logs the returned supabase-js error (insert errors are returned, not thrown — the try/catch never saw the 403s, so failures were invisible in function logs too). _(done 2026-07-03)_
+- [x] **Non-faults ruled out:** `public.audit_log` on jvkn is the legacy Cards-plane table (different shape), not this writer's target; `shell_control.mint_audit_log` rows stopping 2026-06-11 = browser JWT minting moved to tenant-plane `mint-tenant-jwt`, not a bug. _(done 2026-07-03)_
+
+**Decided (Royce):**
+- "merge" #610 → plain squash-merge blocked by branch protection (required drift gate red for the pre-existing ehow contact-tables reason, unrelated to this PR; auto-mode classifier separately declined an agent `--admin` self-merge). Royce chose: **he admin-merges #610 himself in the GitHub UI.**
+
+**Deferred (added 2026-07-03):**
+- [ ] **Admin-merge PR #610 in the GitHub UI** — only red is the pre-existing drift gate (#608 fixes it); merge auto-deploys core.eq.solutions with the error-logging change. _(added 2026-07-03, needs your call)_
+- [ ] **Apply `2026_07_03_grant_audit_log_seq_to_service_role` to jvkn after #610 lands** (named-migration convention, same as the rest of the control-plane history) — then verify: sign in at core.eq.solutions → `select event, at from shell_control.audit_log order by at desc limit 5` shows a fresh `login.success`; API logs show 201 on `POST /rest/v1/audit_log`. Say "apply" and the session agent runs it. _(added 2026-07-03, needs your call)_
+
+**Notes (load-bearing):**
+- **403 on a service-key POST ≠ RLS** — service_role bypasses RLS; check sequence/identity-column grants (`has_sequence_privilege`) before policies. SECURITY DEFINER RPCs mask missing grants; any RPC→direct-write conversion needs a grant audit of every object the column defaults touch.
+
+---
+
 ## ⏩ Session close — 2026-07-03 (eq-shell) — staff pending-connections roster-name fallback fixed (PR #609, blocked on gate)
 
 **Completed (eq-shell, PR #609 open — CI green except the pre-existing red drift gate):**
