@@ -14,6 +14,30 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-03 (eq-intake, steward session) — steward run 001 + review-queue tab SHIPPED end-to-end (PRs #54/#55 + shell #606, live on core.eq.solutions)
+
+*Same thread as the 2026-07-02 "dashboard audit + health-score fix" block below — continued through the steward remediation run, the queue build, and the production ship.*
+
+**Completed (all live and verified):**
+- [x] **Composite health score rebuilt on DAMA-UK dimensions (PR #54 merged)** — compliance 30 / serviceability 25 / completeness 15 / validity 12 / consistency 10 / timeliness 8, plus the low-sample flag on entity cards. _(done 2026-07-03)_
+- [x] **Steward run 001 executed on ehow** — 21 candidate fixes adjudicated by a 69-agent adversarial workflow (3 lenses each, ≥2/3 to commit); **19 committed live** (13 staff trades, 5 contact formats, 1 customer link), every row intake-stamped for rollback; **137 items queued** (not auto-fixable: emergency contacts, ambiguous emails, duplicates — flag-only per steward rules) into `app_data.eq_remediation_queue` (migration 057). Full report `REMEDIATION-DRYRUN-2026-07-02.md`. _(done 2026-07-03)_
+- [x] **Review-queue tab shipped** — approve/dismiss UI over the 137 items (trade dropdowns, link pickers, prefilled format fixes; approvals flow open-event → `eq_tidy_commit_fixes` → close-event → resolve, full lineage). eq-intake **PR #55 merged**; sql/062 (4 queue RPCs + per-(table:field) whitelist rebuild of `eq_tidy_commit_fixes`) **applied to ehow + verified** (137 rows under tenant JWT); eq-shell port **PR #606 merged (Royce, 05:08Z) + deployed 05:13Z** — live at core.eq.solutions/sks/intake. _(done 2026-07-03)_
+- [x] **Drift-gate red diagnosed + cleared** — traced #606's failing gate to #608's hand-insert detector (4 NULL-checksum ehow ledger rows from the day's authorized go-lives, NOT the PR diffs); classifier blocked the agent backfill (correctly — shared prod state); **Royce ran the PR #58 backfill**; gate re-run on main = **green** (run 28640758046). Queue RPCs re-verified working after 0156's service-role-only lockdown (SECURITY DEFINER path = the 0156-sanctioned opt-in). _(done 2026-07-03)_
+
+**Decided (Royce):**
+- Steward authority: fix-or-queue, one-sentence-defensible commits only, never merge/delete duplicates — 19/21 committed, 2 dropped by adversarial review.
+- "You do the SQL yourself / merge the rest / no mistakes" → agent applied 062 + merged PR #55; Royce merged #606 himself over the (diagnosed-unrelated) red gate and ran the ledger backfill when the classifier held the agent out.
+
+**Deferred (added 2026-07-03):**
+- [ ] **Work the 137-item review queue** — the tab is live; trades/links/formats are one-click, emergency contacts need info Royce has to source. _(added 2026-07-03, needs your call)_
+- [ ] **sql/061_steward_commit_batch.sql — staged, NOT applied** — server-side `eq_steward_commit_batch` RPC (service-role-only, whitelist + event lifecycle inside) for steward run 002; apply when a second run is wanted. _(added 2026-07-03)_
+
+**Notes (load-bearing):**
+- **After 0156, `app_data.eq_remediation_queue` is service-role-only (no browser grants/policies)** — the queue UI works ONLY through the 062 SECURITY DEFINER RPCs (`eq_queue_list/open_event/close_event/resolve`, JWT-tenant-scoped, `authenticated`-granted). Never add direct table reads from the browser; that's the 0156 posture.
+- **eq-intake ledger self-inserts must stamp `checksum='eq-intake-lineage'`** (PR #58 convention) or every eq-shell PR goes red via #608's CHECK 3.
+
+---
+
 ## ⏩ Session close — 2026-07-03 (eq-intake) — guardian go-live EXECUTED on ehow; alert pipeline live end-to-end (PRs #59/#60/#61)
 
 *Second close for this thread — the earlier block below ("licence strip trust failure") built the fixes; this one ran the production go-live and hardened it live.*
@@ -58,7 +82,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **eq-intake/CLAUDE.md written** — DML-only steward rule, schema-ownership table (`app_data.*`→eq-shell, `service.*`→eq-service, one object one lineage), ledger-numbering rule. _(done 2026-07-03)_
 
 **Deferred (added 2026-07-03):**
-- [ ] **Decide handling for guardian go-live hand-inserted ledger rows** — `062_queue_rpcs` (and any further 058–062 applies) trip #608's detector → gate red repo-wide (#610 currently affected). Options: eq-intake stops self-inserting mid-go-live (per its new CLAUDE.md), delete the hand rows once go-live settles, or bump `LEDGER_INTEGRITY_CUTOFF` in `check-tenant-drift.mjs`. _(added 2026-07-03, needs your call)_
+- [x] **Decide handling for guardian go-live hand-inserted ledger rows — RESOLVED 2026-07-03**: Royce ran the eq-intake PR #58 backfill (`checksum='eq-intake-lineage'` on 058/059/060/062, ehow) after the steward session's classifier-blocked attempt; drift gate re-run on main = **green** (run 28640758046). Convention for future self-inserts lands via PR #58. _(done 2026-07-03)_
 - [ ] **Commit eq-intake/CLAUDE.md** — left untracked (eq-intake tree dirty on `feat/armada-sprint-polish`); fold into whichever branch lands next. _(added 2026-07-03)_
 - [ ] **Coordinated `--reconcile-ledger`** — after go-live settles: renames/stamps the 16 bare 0103–0116/0141 rows, drops `057` + go-live hand rows. Run only WITH eq-intake (their numbering reads the live ledger). _(added 2026-07-03)_
 
@@ -403,7 +427,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [ ] **Fuzzy-match Reconcile** — conflict detection in `reconcile.ts` is exact-string only; the Dice-coefficient matcher already built for `duplicate-detect.ts` could be reused so near-matches ("Acme Pty Ltd" vs "ACME P/L") don't show as unrelated new+conflict. _(added 2026-07-02)_
 - [ ] **Wire up or delete `enrich.ts` / `dedup.ts`** — both fully built, exported, unused. _(added 2026-07-02)_
 - [ ] **Health score history/trend** — no time-series snapshot exists; score is point-in-time only, no way to show "up/down since last week." _(added 2026-07-02)_
-- [ ] **Confidence-weight small-n entities** — a 3-record entity at 100% reads identically to a 300-record entity at 100% on the health cards. _(added 2026-07-02)_
+- [x] **Confidence-weight small-n entities** — shipped in PR #54 (low-sample flag on health cards) same thread, 2026-07-03. _(done 2026-07-03)_
 - [ ] **Lineage/provenance in EntityDrillDown** — `commitBundleToCanonical` already captures `sourceFilename`; not surfaced in the UI. _(added 2026-07-02)_
 - [ ] **(big swing) Nightly digest cron** — reuse the `PRE_VISIT_BRIEF_CRON` pattern to push a daily score-delta + top-3-actions email instead of requiring the dashboard to be opened. _(added 2026-07-02)_
 - [ ] **(big swing) Autopilot batch gap-fill** — `gap-suggest.ts` already does AI per-field suggestions one row at a time via `EntityDrillDown`; batch it so e.g. "68 staff missing trade" can be approved in one sitting. _(added 2026-07-02)_
