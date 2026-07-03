@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-03 07:41 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-03 07:54 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-03 07:41 UTC → 2026-07-03 07:41 UTC)
+## Since last refresh (2026-07-03 07:41 UTC → 2026-07-03 07:54 UTC)
 
-- Merged: eq-shell [#618](https://github.com/eq-solutions/eq-shell/pull/618) fix(security): reassert security_invoker on field_managers +
-- Merged: eq-shell [#601](https://github.com/eq-solutions/eq-shell/pull/601) Customers/Staff legibility + EQ Ops board fixes + design-tok
-- Merged: eq-shell [#600](https://github.com/eq-solutions/eq-shell/pull/600) fix(customers): migrate address autocomplete to new Places A
-- Merged: eq-shell [#596](https://github.com/eq-solutions/eq-shell/pull/596) fix(customers): Add-site address autocomplete fills suburb/s
-- Merged: eq-shell [#595](https://github.com/eq-solutions/eq-shell/pull/595) feat(access-control): recent-activity panel on the page itse
-- Merged: eq-shell [#594](https://github.com/eq-solutions/eq-shell/pull/594) Simpler worker onboarding + stop duplicate stubs
-- Merged: eq-shell [#593](https://github.com/eq-solutions/eq-shell/pull/593) fix(security): block unattributed direct DELETE on app_data.
-- Merged: eq-shell [#592](https://github.com/eq-solutions/eq-shell/pull/592) Equipment: inline assign-to-staff dropdown
+- Merged: eq-shell [#620](https://github.com/eq-solutions/eq-shell/pull/620) fix(ci): check-migration-hygiene.mjs skips SQL line comments
+- Merged: eq-shell [#607](https://github.com/eq-solutions/eq-shell/pull/607) fix(staff): confirm before discarding an unsaved licence rev
+- Merged: eq-shell [#603](https://github.com/eq-solutions/eq-shell/pull/603) fix(customers): Places address widget mounts reliably on fir
+- Merged: eq-shell [#602](https://github.com/eq-solutions/eq-shell/pull/602) Pending-count badge on the Number-reuse-checks admin tile
+- Merged: eq-shell [#599](https://github.com/eq-solutions/eq-shell/pull/599) fix(staff): "Has gaps" chip → "Has expired" (expired-only)
+- Merged: eq-shell [#598](https://github.com/eq-solutions/eq-shell/pull/598) Admin screen: number-reuse checks (recycled-phone review que
+- Merged: eq-shell [#597](https://github.com/eq-solutions/eq-shell/pull/597) Route create-worker-invite through the canonical worker reso
+- Merged: eq-shell [#590](https://github.com/eq-solutions/eq-shell/pull/590) fix(security): close access-control escalation + CSRF gaps
 
 ## ⚠ Needs you (3)
 
@@ -31,7 +31,7 @@ _2026-07-03 07:41 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 1 | 0d |
+| eq-shell | ? unknown | ? | 0 | — |
 | eq-solves-service | ✓ success | 0d ago | 3 | 3d |
 | eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
@@ -53,6 +53,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-03 | eq-shell | [#620](https://github.com/eq-solutions/eq-shell/pull/620) fix(ci): check-migration-hygiene.mjs skips SQL line comments |
 | 2026-07-03 | eq-shell | [#618](https://github.com/eq-solutions/eq-shell/pull/618) fix(security): reassert security_invoker on field_managers + nomi |
 | 2026-07-03 | eq-shell | [#622](https://github.com/eq-solutions/eq-shell/pull/622) Tenants page: edit tier/modules, archive/reactivate |
 | 2026-07-03 | eq-shell | [#621](https://github.com/eq-solutions/eq-shell/pull/621) fix(ops): remove broken per-column Status filter in table view |
@@ -67,11 +68,12 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-03 | eq-shell | [#610](https://github.com/eq-solutions/eq-shell/pull/610) fix(audit): grant audit_log id-sequence to service_role; surface  |
 | 2026-07-03 | eq-shell | [#605](https://github.com/eq-solutions/eq-shell/pull/605) fix(staff): approve-path fixes — clearer 404 + don't drop the lic |
 | 2026-07-03 | eq-shell | [#609](https://github.com/eq-solutions/eq-shell/pull/609) fix(staff): pending-connections roster-name fallback never matche |
-| 2026-07-03 | eq-shell | [#608](https://github.com/eq-solutions/eq-shell/pull/608) fix(governance): contact-tables gate red — relkind-aware 0155, qu |
 _Showing 15 of 130 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **Mandatory prod dry run** — `shell_control.provision_tokens` is still 0 rows ever as of session close. Generate a real link (test org + spare phone) through Admin → Tenants, walk it through Cards including the phone-mismatch rejection, confirm the workspace lands correctly and the `tenant_slug` handoff opens the right tenant, then archive the test tenant via the new #622 UI. **Do this before sending a link to a real prospect.** _(added 2026-07-03, needs your call)_
+- **`EQ_PLATFORM_NOTIFY_EMAIL`** — optional Netlify env var, not yet set. If set, you get an email whenever a provision link is redeemed. No redeploy needed — functions read it live. _(added 2026-07-03, needs your call)_
 - **Delete stale remote branch `claude/staff-add-to-roster`** — a concurrent session's branch-switch in the shared checkout caused the first push attempt to land on the wrong branch pointing at an unrelated commit; recovered by opening the PR from `-v2` instead, but the stale remote ref is still there (`git push origin --delete claude/staff-add-to-roster`) and the classifier blocked the agent from deleting it. _(added 2026-07-03, needs your call)_
 - **Merge eq-intake #58** — ledger checksum convention (the live rows are already backfilled by hand; merging just lands the convention in the repo so future self-inserts don't regress). Still open, mergeable, not blocking anything now the gate is clean. _(added 2026-07-03, needs your call)_
 - **Work the 137-item review queue** — the tab is live; trades/links/formats are one-click, emergency contacts need info Royce has to source. _(added 2026-07-03, needs your call)_
@@ -80,9 +82,7 @@ _Showing 15 of 130 · full record in [sessions/](sessions/)_
 - **Remove worktree `.claude/worktrees/ops-site-create-edit`** — now that #616 is merged, safe to `git -C C:\Projects\eq-shell worktree remove .claude/worktrees/ops-site-create-edit`. _(added 2026-07-03)_
 - **Commit eq-intake/CLAUDE.md** — left untracked (eq-intake tree dirty on `feat/armada-sprint-polish`); fold into whichever branch lands next. _(added 2026-07-03)_
 - **Coordinated `--reconcile-ledger`** — after go-live settles: renames/stamps the 16 bare 0103–0116/0141 rows, drops `057` + go-live hand rows. Run only WITH eq-intake (their numbering reads the live ledger). _(added 2026-07-03)_
-- **Tenant-migrate run 28638433643 was dispatched then CANCELLED** — dispatched from the #608 branch on the stale premise that a live apply was needed to green the gate; the newer session-state showed #608 is code-only, and applying unmerged branch migrations risks checksum/ledger mess. Nothing was applied (cancelled at the production-approval gate, never approved). Post-merge apply of 0155/0156 from main is the normal One Pipe dispatch — separate explicit call. _(added 2026-07-03, needs your call)_
-- **Renew Huon Henne's LVR** — ops action, not code: expired 2025-10-08 (268 days), staff active + on-roster. The dashboard + alerts panel now show it as critical; the ticket itself is the safety issue. **Also surfaced by the first guardian run: a second LVR expires in 29 days and an electrical licence in 25 days.** _(added 2026-07-03, needs your call)_
-_…and 199 more · [eq/pending.md](eq/pending.md)_
+_…and 201 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -114,4 +114,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-03 07:41 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-03 07:54 UTC._
