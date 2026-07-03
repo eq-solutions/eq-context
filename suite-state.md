@@ -61,6 +61,8 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-03)
 
 **eq-shell:**
+- #637 docs: pnpm-workspace.yaml — packages are vendored, not a git submodule
+- #636 build: pin @eq-solutions/ui to release tag v1.10.0 for reproducible builds
 - #635 feat(canonical-api): move APP_TENANT_SCOPE allow-list to a shell_control table
 - #634 fix(sync-quotes-nightly): check errors on Flask write-back + line-item delete
 - #633 docs: correct CLAUDE.md — EQ_SECRET_SALT is the fallback signing key, not retired
