@@ -24,8 +24,9 @@ Check this file first — if your target repo/area is already claimed, coordinat
 
 | Folder | Branch | Agent / Session | Claimed | Status |
 |--------|--------|-----------------|---------|--------|
-| .claude/worktrees/dreamy-meninsky-7082ba (eq-shell) | claude/dreamy-meninsky-7082ba | Claude (tenant self-provision hardening) | 2026-07-03 | DONE — PR #617 open; dir removable after merge |
-| .claude/worktrees/provision-identity (eq-cards) | claude/provision-identity | Claude (chip task_28defc38, Cards provision name/email) | 2026-07-03 | ACTIVE |
+| .claude/worktrees/tenant-page-admin-actions (eq-shell) | claude/tenant-page-admin-actions | Claude (Tenants page: archive/reactivate, edit, data-plane errors) | 2026-07-03 | DONE — PR #622 open; dir removable after merge |
+| .claude/worktrees/dreamy-meninsky-7082ba (eq-shell) | claude/dreamy-meninsky-7082ba | STALE ROW — dir was reused by another session (now on claude/field-nomination-views-security-invoker); this row no longer describes its contents | 2026-07-03 | reused — do not trust folder name |
+| .claude/worktrees/provision-identity (eq-cards) | claude/provision-identity | Claude (chip task_28defc38, Cards provision name/email) | 2026-07-03 | DONE — PR #118 open; dir removable after merge |
 | .claude/worktrees/quote-pdf-fix (eq-shell) | claude/quote-pdf-fix | Claude (chip task_d40bcb24, Ops PDF export) | 2026-07-03 | DONE — PR #615 open; dir removable after merge |
 | .claude/worktrees/ops-site-create-edit (eq-shell) | claude/ops-site-create-edit | Claude (Ops site create/edit session a81fe5c3) | 2026-07-03 | DONE — PR #616 open; dir removable after merge |
 

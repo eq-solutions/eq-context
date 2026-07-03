@@ -14,6 +14,31 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-03 (eq-shell + eq-cards) — self-serve tenant provisioning hardened + deployed; Tenants admin page gained edit/archive
+
+*Started from Royce asking how to hand EQ Cards + a core login to a new prospect. Audit of the existing self-serve provision flow found 5 defects (never fired in prod — 0 rows ever). Full plan written, built, and shipped same session; then extended into Tenants-page admin actions Royce asked for after reviewing the live page.*
+
+**Completed — provisioning hardening:**
+- [x] **Plan written**: `C:\Users\EQ\.claude\plans\new-tenant-onboarding.md` — decisions D1–D5 (cards-only entitlements, tier trial, phone-bound links, name/email capture, copy-paste link phase 1), full edge-case matrix. _(done 2026-07-03)_
+- [x] **jvkn migration applied to production**: `shell_control.provision_tenant()` — one transaction for all 9 provisioning writes, token consumed LAST (failure = link stays retryable), reserved-slug deny-list, atomic slug-collision handling, existing-user branch (recycled phone numbers get a membership added, account never clobbered). `supabase/migrations/2026_07_03_provision_tenant_rpc.sql`. Verified: correct grants (service_role-only), no new security advisories. _(done 2026-07-03)_
+- [x] **eq-shell PR #617 merged + live** (`7d9acb0`, core.eq.solutions) — `shell-provision-tenant`/`shell-create-provision-token`/`shell-handoff-provision` rewired onto the RPC; provision links now bound to the prospect's mobile (wrong number rejected without burning the token); Admin → Tenants provision-link form + pending/used/expired list + revoke. Follow-up commit fixed `App.tsx` to pass `tenant_slug` through the `#sh=` handoff (closes existing-user-lands-in-wrong-workspace gap). _(done 2026-07-03)_
+- [x] **eq-cards PR #118 merged + live** (`91ab7df`, cards.eq.solutions — required a manual `workflow_dispatch` deploy trigger, see Notes) — provision screen gained name (required) + email (optional) fields; `provisionTenantExchange` return type changed to a named record so the new `emailInUse` flag can't be silently dropped; OTP screen shows a non-blocking snackbar when the email was already on another account. _(done 2026-07-03)_
+
+**Completed — Tenants admin page (Royce reviewed the live page, asked "how do we delete tenants / what else could be here"):**
+- [x] **eq-shell PR #622 merged + live** — new `PATCH /.netlify/functions/admin-tenants`: edit tier/brand_color/modules, archive/reactivate. **Soft delete only** (`active=false`, fully reversible, no cascading DELETE — scoped with Royce before building since this touches real customer data). Self-lockout guard: a platform admin can't archive the tenant their own session is in (409 + disabled button). `GET` now also returns each tenant's enabled modules for the edit-panel prefill. Confirmed `tenant_routing.last_error` surfacing was already live from an earlier PR — no gap there. _(done 2026-07-03)_
+- [x] **Drive-by fix bundled into #622**: Staff page "Type" column showed inconsistent casing ("Direct" vs "supervisor") — raw `employment_type` rendered with no label lookup at one call site, case-sensitive lookup at the other. Added `employmentTypeLabel()` (case-insensitive, `staffTypes.ts`) used at both sites — fixes display regardless of what casing ends up stored, no data backfill needed. _(done 2026-07-03)_
+
+**Deferred (needs Royce):**
+- [ ] **Mandatory prod dry run** — `shell_control.provision_tokens` is still 0 rows ever as of session close. Generate a real link (test org + spare phone) through Admin → Tenants, walk it through Cards including the phone-mismatch rejection, confirm the workspace lands correctly and the `tenant_slug` handoff opens the right tenant, then archive the test tenant via the new #622 UI. **Do this before sending a link to a real prospect.** _(added 2026-07-03, needs your call)_
+- [ ] **`EQ_PLATFORM_NOTIFY_EMAIL`** — optional Netlify env var, not yet set. If set, you get an email whenever a provision link is redeemed. No redeploy needed — functions read it live. _(added 2026-07-03, needs your call)_
+
+**Notes (load-bearing):**
+- **eq-cards does NOT auto-deploy on merge** — `.github/workflows/deploy.yml` is `workflow_dispatch` / release-tag only, by deliberate design (its own comment: merging used to silently ship to prod, which conflicted with the "never deploy without explicit instruction" rule). Merging an eq-cards PR only lands it on `main`; a separate dispatch is required to actually deploy cards.eq.solutions. Verified via the deploy record (`manual_deploy: true`, `commit_ref: null` — it's an API zip-upload, not a Git-linked build) before trusting anything was live.
+- **Worktree reuse gotcha, again**: the `dreamy-meninsky-7082ba` worktree used for #617 was marked "DONE — dir removable after merge" in `worktree-registry.md`, and another session silently reused it for unrelated work (branch switched underneath) before the #622 task started. Verify `git branch` against expectation before trusting a worktree dir by name — see [[shared-checkout-branch-race]]. A fresh worktree (`tenant-page-admin-actions`) was created instead of risking the stale one.
+- Full detail in `~/.claude` memory: `tenant-self-provision-hardening.md`, `tenants-page-admin-actions.md`.
+
+---
+
 ## ⏩ Session close — 2026-07-03 (eq-shell) — Add-to-roster built end-to-end (PR #614 open, merge blocked on classifier)
 
 *Own thread: built the "Add to roster" action from the brief through to a PR, then attempted to merge it on Royce's "merge" instruction — blocked twice, needs Royce's hand.*
