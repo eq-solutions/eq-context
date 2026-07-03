@@ -60,12 +60,17 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-03)
 
+**eq-field:**
+- #385 v3.5.222 — surface render exceptions in showPage() properly
+
 **eq-service:**
+- #419 fix(validations): job_plan_id rejected by Zod .uuid() for 4 real job plans
 - #369 chore(deps): bump docx from 9.6.1 to 9.7.1
 - #367 chore(deps): bump lucide-react from 1.17.0 to 1.22.0
 - #366 chore(deps): bump @eq-solutions/ui from v1.8.0 to v1.9.0 in the eq-design-system group across 1 directory
 
 **eq-shell:**
+- #625 feat(security): view security_invoker invariant (CHECK 7) + field_people fix
 - #623 fix(intake): re-vendor field-name + plain-English fixes from eq-solves-intake #62
 
 **eq-solves-intake:**
