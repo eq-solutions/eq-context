@@ -60,8 +60,7 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-03)
 
-**eq-service:**
-- #366 chore(deps): bump @eq-solutions/ui from v1.8.0 to v1.9.0 in the eq-design-system group across 1 directory
+_No open PRs_
 
 ---
 
