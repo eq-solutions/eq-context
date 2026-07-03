@@ -1,7 +1,7 @@
 ---
 title: CLAUDE.md — Master Behavioural Contract
 owner: Royce Milmlow
-last_updated: 2026-06-27
+last_updated: 2026-07-03
 scope: Single source of truth for how every assistant (Chat, Cowork, Code, ChatGPT, Grok, any future tool) must behave when working with Royce
 read_priority: critical
 status: live
