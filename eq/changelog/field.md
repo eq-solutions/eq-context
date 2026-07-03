@@ -9,6 +9,14 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-03] v3.5.218–v3.5.222 — SKS QA batch: leave/timesheets/roster/safety fixes
+- **v3.5.218 (PR #382)** — leave submit's real error now logged (console + Sentry) instead of a generic toast; person names in Roster/Editor/mobile/batch-fill display "First Last" only (new `shortName()` helper, display-only); removed a duplicate static "Pre-fill from Roster" button on Timesheets.
+- **v3.5.219 (PR #383)** — Timesheets "Weekends" toggle now actually shows Sat/Sun columns (was wired to a table renderer superseded by the live "spans" renderer, which never read the toggle at all); Roster no longer shows "(unknown)" staff names on cold boot (staff-map load-order race — `loadCanonicalStaffMap()` moved ahead of the schedule fetch in `loadFromSupabase()`).
+- **v3.5.220–221 (PR #384)** — Prestarts: `sks_rep`→`site_rep` client column typo fixed (every prestart save had been failing with PGRST204). Toolbox Talks: migration `toolbox_talks_add_missing_form_columns` applied to ehow — 4 real form fields (Key safety message, Hazards discussed, SWMS references, Next meeting) had no matching DB columns. Site Audits audited, already correct. Leave: pre-check staff_id resolvability before the network call so the specific "no matching staff record" toast survives instead of being overwritten.
+- **v3.5.222 (PR #385)** — `showPage()`'s error handling split: a failed lazy-load script vs. a thrown render exception were previously conflated under one misleading label with a blind retry; now reported distinctly via console + Sentry.
+- **eq-shell PR #619** (separate repo) — `FieldIframe.tsx`'s tenant auto-select was clearing a deep-linked `?tab=` param before first use; `?tab=person-wizard` and similar deep links now correctly hold instead of falling back to Dashboard.
+- Known open issue: person-wizard still renders blank content on a cold `?tab=person-wizard` deep link specifically (works via normal in-app navigation) — root cause not yet found, see `sks/pending.md` 2026-07-03 block.
+
 ## [2026-07-01] v3.5.216–v3.5.217 — Canonical edge fn rewrite + URL-per-tab Field side
 - **v3.5.216 (PR #380)** — 4 Supabase edge functions rewritten for `app_data.*` canonical schema (ehow compatibility): `supervisor-digest`, `ts-reminder`, `tafe-weekly-fill`, `shift-events`. All 4 deployed to ehow for the first time (were not previously deployed there). `ts_reminders_sent` table created on ehow.
 - **v3.5.217 (PR #381)** — URL-per-tab Field side: `showPage()` emits `{ type: 'EQ_TAB_CHANGE', tab: <slug> }` postMessage to Shell on every tab switch; `initApp()` reads `?tab=` from the iframe src and activates the named tab after role routing. Feature is inert until the Shell-side PR lands.

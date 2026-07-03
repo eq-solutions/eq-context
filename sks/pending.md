@@ -63,6 +63,26 @@ _Nothing pending — migrations 001–023 all applied._
 - [ ] **eq-shell** — ~~converge `c2-shell-roles` + `sks-field-host` branches~~ — `c2-shell-roles` no longer exists in eq-shell repo (deleted). Re-assess: verify whether the security-groups work from `sks-live-sprint-2026-06-07.md` Prompt A was folded into main or abandoned before reopening this track.
 - [ ] **Security groups Phase 2–5** — wire group perms into session, `AdminSecurityGroups` page, first real `user_security_groups` row for a SKS user.
 
+## ⏩ SKS Field — session 2026-07-03 (QA batch: 9 live bug reports)
+
+**Completed (eq-field v3.5.218–222 + eq-shell PR #619, all merged and live):**
+- [x] Leave submit — real error now logged (console + Sentry) instead of generic "check connection"; adapter's specific "no matching staff record" toast no longer gets overwritten
+- [x] Timesheets — duplicate "Pre-fill from Roster" button removed
+- [x] Timesheets — "Weekends" toggle actually shows Sat/Sun columns now (was wired to a dead renderer)
+- [x] Roster — "(unknown)" staff names on cold boot fixed (staff-map load-order race)
+- [x] Middle names — display-only strip everywhere (roster/editor/mobile/batch-fill); Editor name-column misalignment fixed alongside it
+- [x] Prestarts not saving — `sks_rep`/`site_rep` column typo fixed
+- [x] Toolbox Talks not saving — migration applied to ehow adding 4 missing form columns
+- [x] `?tab=person-wizard` deep link — Shell-side tab-forwarding race fixed (PR #619); URL correctly holds now
+- [x] Site Audits — audited, already correct, no bug
+- [x] Document branding — confirmed already shipped v3.5.191, no action needed
+- [x] Acknowledgments — confirmed live and working, no action needed
+
+**Deferred (added 2026-07-03):**
+- [ ] Person-wizard renders blank content specifically on a cold `?tab=person-wizard` deep-link boot (normal in-app "Add Person" nav works fine) — root cause not found despite exhaustive code trace + live Sentry/entitlement checks; needs Royce's own DevTools session with the Field-iframe console context selected _(added 2026-07-03)_
+- [ ] At least one SKS person ("Collin ... Toohey") has no record in canonical `app_data.staff`, blocking their leave submissions — data-ops backfill needed, not a code fix _(added 2026-07-03)_
+- [ ] Royce to independently click-through-confirm the Weekends toggle, roster names, and both safety forms live (smoke-tested remotely, not yet confirmed by Royce beyond the original repros) _(added 2026-07-03)_
+
 ---
 
 ## Done (this session — 2026-06-01)
