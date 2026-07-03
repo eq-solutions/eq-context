@@ -1,6 +1,7 @@
 # EQ Service — Changelog
 
 ## 2026-07-02
+- **PRs #410 + #411 MERGED → deployed** (2026-07-02 20:13/20:16 UTC). Contacts cutover + canonical-audit branch on main; Netlify auto-deploy. Also fixed the repo-wide-red canonical-types-drift gate (instrument_id types from 0164/0165 never synced; stale instruments canonical cols removed).
 - **Contacts canonical cutover LIVE (migration 0167, PR #410).** service.customer_contacts/site_contacts became per-link security_invoker views over app_data.contacts + link tables with INSTEAD OF triggers — one source of truth with Shell/Quotes. Same names/shapes = zero app-page changes; 3 FK-hint embeds rewritten. Legacy tables renamed *_legacy_20260702 for the soak; drop + drift-guard ERROR flip = Steps 4-5. RLS read now 224/23 rows (was 109/0 on the fork). PR #411 = the day's canonical-audit branch.
 - **Contacts Step 1 → canonical.** 22 real Service-local contacts (+links) merged into canonical `app_data.contacts` (208→230); 4 links added for already-canonical people; junk/dups/typo excluded; all tagged for rollback. `/contacts` still reads local tables until Step 3 (repoint). The 2026-06-25 roadmap's "contacts Service done" was false — local `customer_contacts` (base table, 109) was shadowing canonical.
 - **Source-of-truth drift guard** (`audits/run.sql` + `CHECKS.md`) — flags any service base table shadowing a canonical entity; fires 2 (contact forks), WARN→ERROR once consolidated. The guard the roadmap asked for but never built.
