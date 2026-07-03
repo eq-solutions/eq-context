@@ -1,8 +1,9 @@
 # Session Index
-_46 logs · reverse-chronological · auto-generated_
+_47 logs · reverse-chronological · auto-generated_
 
 | Date | Session |
 |------|---------|
+| 2026-07-03 | [quality-guardian resurrected: tenant context + cron fix built, PR #57 merged (production go pending)](sessions/2026-07-03.md) |
 | 2026-07-02 | [Token lint ratchet merged; staff licence resync endpoint shipped](sessions/2026-07-02.md) |
 | 2026-07-01 | [Pending connections audit + 3 gap fixes merged](sessions/2026-07-01.md) |
 | 2026-06-30 | [EQ Field canonical sprint complete (v3.5.207–212)](sessions/2026-06-30.md) |
