@@ -1,6 +1,7 @@
 # eq-shell changelog
 
 ## 2026-07-03
+- PR #609 (OPEN — blocked on the drift gate, merge after #608): `staff-pending-connections.ts` nameless-signup roster-name fallback fixed — `app_data.staff` select used `id` (PK is `staff_id`) → PostgREST 400 swallowed by try/catch, fallback silently dead; phone match also format-naive (bare request phone vs stored `04xx`/`+614xx`) → normalised both sides via `normalizeAuPhone`. `cards-staff-matches.ts` verified unaffected (`public.workers` has `id`).
 - PR #607: `LicenceReviewModal` (Staff page) discard-confirmation guard — dismissing via ✕/overlay/Cancel with unsaved decisions now asks "Your review hasn't been saved yet" (Keep reviewing / Discard) instead of silently dropping the review; summary banner reworded from "All N licences verified" to "N licences checked — save to finish" so it doesn't read as already-saved. Merged + deployed live (admin-merge over a pre-existing, unrelated red drift-gate on main).
 
 ## 2026-07-02

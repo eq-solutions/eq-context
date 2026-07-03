@@ -14,6 +14,21 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-03 (eq-shell) — staff pending-connections roster-name fallback fixed (PR #609, blocked on gate)
+
+**Completed (eq-shell, PR #609 open — CI green except the pre-existing red drift gate):**
+- [x] **Fixed the nameless-signup roster-name fallback in `staff-pending-connections.ts`** — the select used `id` but `app_data.staff`'s PK is `staff_id`, so PostgREST 400'd on every load with a nameless pending connection (verified live in ehow logs) and the try/catch swallowed it — the fallback silently never worked. Also fixed the doubly-broken phone match: request phones arrive bare (`432470463`) while ehow staff rows store a mix of `04xx…` (49) and `+614xx…` (33), so the exact `.in('phone', …)` could never hit either — now normalises both sides via `_shared/phone.ts` `normalizeAuPhone`, queries both stored variants, keys the map by E.164. This is the fix behind the "432470463 · No licences yet" nameless request (crumb below). _(done 2026-07-03)_
+- [x] **`cards-staff-matches.ts:107` checked — NOT affected** — same-looking `'id, first_name, …'` select but it queries `public.workers` on jvkn, which DOES have `id` (verified via information_schema); its own `app_data.staff` query already used `staff_id`. _(done 2026-07-03)_
+
+**Decided (Royce):**
+- Land #609 by fixing the gate first via #608 (chosen over admin-bypass; the auto-mode classifier had separately declined an agent `--admin` self-merge, correctly).
+
+**Deferred (added 2026-07-03):**
+- [ ] **Merge PR #608, then PR #609, in that order** — #608's gate is green on its branch (code-only fix, see block below); after #608 lands, run `gh pr update-branch 609` to retrigger #609's checks against updated main (base merges don't auto-rerun PR checks), then squash-merge #609. Both merges → Netlify auto-deploy of core.eq.solutions. _(added 2026-07-03, needs your call)_
+- [ ] **Tenant-migrate run 28638433643 was dispatched then CANCELLED** — dispatched from the #608 branch on the stale premise that a live apply was needed to green the gate; the newer session-state showed #608 is code-only, and applying unmerged branch migrations risks checksum/ledger mess. Nothing was applied (cancelled at the production-approval gate, never approved). Post-merge apply of 0155/0156 from main is the normal One Pipe dispatch — separate explicit call. _(added 2026-07-03, needs your call)_
+
+---
+
 ## ⏩ Session close — 2026-07-03 (eq-shell) — licence-review discard guard shipped; RLS drift fix in flight
 
 **Completed (eq-shell, PR #607 merged + deployed live):**
