@@ -1,0 +1,192 @@
+name: Verify eq-canonical backup (R2 artifact integrity + content)
+
+# Proves the eq-canonical (identity/control plane, jvknxcmbtrfnxfrwfimn) offsite backup is
+# COMPLETE and NON-HOLLOW every day — automatically. Clone of verify-backup-ehow.yml,
+# parameterised per project (same isolation + guarantees). Pulls the freshest
+# `eq-canonical/` db_backup.tar.gz from R2, checks the archive is intact, and asserts the
+# dump contains real ROWS (shell_control.users / public.workers) and auth.users (50 live).
+# A schema-only/hollow dump, a truncated upload, or a dropped auth capture turns this job
+# RED (→ Sentry `eq-canonical-backup-verify`) the next morning, not at incident time.
+#
+# What it deliberately does NOT do: execute the SQL into a live database — that's the rare
+# manual "game-day" (system/runbooks/supabase-restore-drill.md), which needs a Supabase-
+# parity target (a bare Postgres container lacks the managed `auth` schema).
+#
+# Isolation: NEVER touches any live Supabase project — it only GETs the R2 artifact.
+# Needs R2_* + SENTRY_DSN only (no DB URL, no service-role key) — least-privilege.
+#
+# Schedule: daily 05:15 UTC (~15:15 AEST) — after ehow-verify (05:00). Manual: workflow_dispatch.
+# Secrets (production-ops Environment): R2_ACCESS_KEY_ID / R2_SECRET_ACCESS_KEY /
+# R2_ENDPOINT / R2_BUCKET_NAME, SENTRY_DSN. All already present from the backup arming.
+
+on:
+  schedule:
+    # Every day 05:15 UTC (~15:15 AEST)
+    - cron: '15 5 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: eq-canonical R2 backup → integrity + content assertions
+    runs-on: ubuntu-latest
+    # R2 keys + SENTRY_DSN are scoped to this Environment (main-only branch rule).
+    environment: production-ops
+    env:
+      MONITOR_SLUG: eq-canonical-backup-verify
+      R2_PREFIX: 'eq-canonical'                        # eq-canonical writes under this prefix
+      EXPECT_AUTH: 'true'                              # identity plane — 50 live auth.users
+      EXPECT_ROWS: 'shell_control.users,public.workers'  # must show real COPY rows
+    steps:
+      # ── Sentry cron: check in "in_progress" (upserts the monitor incl. schedule) ──
+      - name: Sentry check-in (start)
+        env:
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+        run: |
+          set -uo pipefail
+          if [ -z "${SENTRY_DSN:-}" ]; then
+            echo "::warning::SENTRY_DSN not set — this verify run is UNMONITORED. Add SENTRY_DSN (production-ops) to arm cron alerting."
+            exit 0
+          fi
+          KEY="${SENTRY_DSN#https://}"; KEY="${KEY%%@*}"
+          REST="${SENTRY_DSN#*@}"; HOST="${REST%%/*}"; PID="${REST##*/}"
+          BASE="https://${HOST}/api/${PID}/cron/${MONITOR_SLUG}/${KEY}"
+          CID=$(curl -sS -X POST "${BASE}/" \
+            -H 'Content-Type: application/json' \
+            -d '{"status":"in_progress","monitor_config":{"schedule":{"type":"crontab","value":"15 5 * * *"},"checkin_margin":120,"max_runtime":20,"timezone":"UTC"}}' \
+            | jq -r '.id // empty') || true
+          echo "SENTRY_BASE=$BASE" >> "$GITHUB_ENV"
+          echo "SENTRY_CID=$CID"  >> "$GITHUB_ENV"
+          echo "Sentry monitor '${MONITOR_SLUG}' checked in (in_progress), id=${CID:-none}"
+
+      - name: Install tools
+        run: |
+          set -euo pipefail
+          pip install awscli --quiet
+          jq --version
+
+      # ── Pull the freshest backup for this project from R2 ──
+      - name: Download latest backup tarball
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+          R2_BUCKET: ${{ secrets.R2_BUCKET_NAME }}
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+        run: |
+          set -euo pipefail
+          # eq-canonical writes under a prefix; ehow writes at the bucket root (R2_PREFIX='').
+          LIST_PATH="s3://${R2_BUCKET}/${R2_PREFIX:+${R2_PREFIX}/}"
+          LATEST=$(aws s3 ls "$LIST_PATH" --endpoint-url "$R2_ENDPOINT" \
+            | awk '{print $NF}' | tr -d '/' \
+            | grep -E '^[0-9]{4}-[0-9]{2}-[0-9]{2}' | sort | tail -1)
+          if [ -z "${LATEST:-}" ]; then
+            echo "::error::No dated backup folder found under ${LIST_PATH} — nothing to verify (backup may never have run)."
+            exit 1
+          fi
+          echo "Latest backup folder: ${LATEST}"
+          aws s3 cp \
+            "s3://${R2_BUCKET}/${R2_PREFIX:+${R2_PREFIX}/}${LATEST}/db_backup.tar.gz" \
+            db_backup.tar.gz \
+            --endpoint-url "$R2_ENDPOINT"
+          echo "LATEST=$LATEST" >> "$GITHUB_ENV"
+          ls -lh db_backup.tar.gz
+
+      # ── Assert the artifact is intact AND contains real rows (incl. auth) ──
+      - name: Verify integrity + content
+        run: |
+          set -euo pipefail
+
+          # 1. Archive is intact (catches a truncated/corrupt upload).
+          gzip -t db_backup.tar.gz
+          tar tzf db_backup.tar.gz >/dev/null
+          mkdir -p unpack
+          tar xzf db_backup.tar.gz -C unpack
+          cd unpack
+          echo "Members: $(ls -1)"
+
+          # 2. Required members present and non-trivial.
+          for f in roles.sql schema.sql data.sql; do
+            if [ ! -s "$f" ]; then
+              echo "::error::backup member '${f}' is missing or empty — incomplete dump."
+              exit 1
+            fi
+          done
+
+          # 3. data.sql must be a real data dump, not schema-only (the retired eq-service
+          #    job's exact defect: a bare `supabase db dump` shipped zero COPY blocks).
+          if ! grep -q '^COPY ' data.sql; then
+            echo "::error::data.sql contains no COPY blocks — this is a schema-only / hollow backup."
+            exit 1
+          fi
+
+          # Count data rows for a table across BOTH dump formats: a COPY block (data.sql
+          # is dumped with --use-copy) OR INSERT statements. pg_dump only quotes identifiers
+          # that need it, so the "?/[.] pattern matches quoted and unquoted; the [ (] tail
+          # avoids prefix collisions (sites vs sites_history, users vs user_roles).
+          count_rows () {  # $1=file $2=schema $3=table
+            local copyc insertc
+            copyc=$(awk -v s="$2" -v t="$3" '
+              BEGIN { pat = "^COPY \"?" s "\"?[.]\"?" t "\"?[ (]" }
+              $0 ~ pat {inblk=1; next}
+              inblk && /^\\\.$/ {inblk=0; next}
+              inblk {c++}
+              END{print c+0}' "$1")
+            insertc=$(grep -cE "^INSERT INTO \"?$2\"?[.]\"?$3\"?[ (]" "$1" || true)
+            echo $((copyc + insertc))
+          }
+
+          # 4. Every EXPECT_ROWS table must have restored with real rows.
+          IFS=',' read -ra TBLS <<< "${EXPECT_ROWS}"
+          for qt in "${TBLS[@]}"; do
+            sch="${qt%%.*}"; tbl="${qt#*.}"
+            n=$(count_rows data.sql "$sch" "$tbl")
+            echo "  ${sch}.${tbl}: ${n} rows in dump"
+            if [ "$n" -le 0 ]; then
+              echo "::error::table ${sch}.${tbl} has 0 rows in the backup — data missing or table renamed."
+              exit 1
+            fi
+          done
+
+          # 5. Auth capture (the crown jewel) where the project has users.
+          if [ "${EXPECT_AUTH}" = "true" ]; then
+            if [ ! -s auth_data.sql ]; then
+              echo "::error::auth_data.sql is missing/empty but this project has live users — auth capture regressed."
+              exit 1
+            fi
+            na=$(count_rows auth_data.sql auth users)
+            echo "  auth.users: ${na} rows in dump"
+            if [ "$na" -le 0 ]; then
+              echo "::error::auth_data.sql present but 0 auth.users rows — hollow auth capture."
+              exit 1
+            fi
+          fi
+
+          echo "✅ eq-canonical backup ${LATEST} verified: archive intact, expected data + auth rows present."
+
+      # ── Sentry cron: report terminal status ──
+      - name: Sentry check-in (ok)
+        if: success() && env.SENTRY_BASE != ''
+        run: |
+          set -uo pipefail
+          if [ -n "${SENTRY_CID:-}" ]; then
+            curl -sS -X PUT "${SENTRY_BASE}/${SENTRY_CID}/" \
+              -H 'Content-Type: application/json' -d '{"status":"ok"}' >/dev/null || true
+          else
+            curl -sS "${SENTRY_BASE}/?status=ok" >/dev/null || true
+          fi
+          echo "Sentry monitor checked in: ok"
+
+      - name: Sentry check-in (error)
+        if: failure() && env.SENTRY_BASE != ''
+        run: |
+          set -uo pipefail
+          if [ -n "${SENTRY_CID:-}" ]; then
+            curl -sS -X PUT "${SENTRY_BASE}/${SENTRY_CID}/" \
+              -H 'Content-Type: application/json' -d '{"status":"error"}' >/dev/null || true
+          else
+            curl -sS "${SENTRY_BASE}/?status=error" >/dev/null || true
+          fi
+          echo "Sentry monitor checked in: error"
