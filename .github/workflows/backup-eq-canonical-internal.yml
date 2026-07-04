@@ -185,16 +185,18 @@ jobs:
               -H "Content-Type: application/json" \
               -X POST "${SUPABASE_URL}/storage/v1/object/list/${bucket}" \
               -d "{\"prefix\":\"${prefix}\",\"limit\":10000,\"sortBy\":{\"column\":\"name\",\"order\":\"asc\"}}")
-            local files dirs name path folder
+            local files dirs name path folder encpath
             mapfile -t files < <(echo "$resp" | jq -r '.[] | select(.id != null) | .name')
             mapfile -t dirs  < <(echo "$resp" | jq -r '.[] | select(.id == null) | .name')
             for name in "${files[@]}"; do
               [ -z "$name" ] && continue
               path="${prefix}${name}"
+              # URL-encode the object path (spaces/special chars) but keep the slashes.
+              encpath=$(python3 -c 'import urllib.parse,sys;print(urllib.parse.quote(sys.argv[1]))' "$path")
               mkdir -p "storage_sync/${bucket}/$(dirname "$path")"
-              curl -sS -H "Authorization: Bearer ${SERVICE_ROLE_KEY}" \
+              curl -fsS -H "Authorization: Bearer ${SERVICE_ROLE_KEY}" \
                 -o "storage_sync/${bucket}/${path}" \
-                "${SUPABASE_URL}/storage/v1/object/${bucket}/${path}"
+                "${SUPABASE_URL}/storage/v1/object/${bucket}/${encpath}"
             done
             for folder in "${dirs[@]}"; do
               [ -z "$folder" ] && continue
@@ -221,8 +223,9 @@ jobs:
           for b in "${BUCKETS[@]}"; do
             [ -z "$b" ] && continue
             echo "--- Syncing bucket: $b ---"
+            mkdir -p "storage_sync/${b}"   # ensure dir exists even for empty buckets (else find fails under set -e)
             download_prefix "$b" ""
-            COUNT=$(find "storage_sync/${b}" -type f 2>/dev/null | wc -l)
+            COUNT=$(find "storage_sync/${b}" -type f | wc -l)
             echo "  ${COUNT} files from ${b}"
           done
 
