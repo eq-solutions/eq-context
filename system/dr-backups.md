@@ -10,7 +10,7 @@ status: live
 # Disaster Recovery — platform backups
 
 **Owner:** Royce
-**Status:** ✅ LIVE — all three backups green daily (data + COPY-format auth); **automated daily restore-verify green** (`verify-backup-ehow` asserts archive intact + exact rows: 241 sites / 44 customers / auth.users 5); eq-service copy **retired** ([PR #438](https://github.com/eq-solutions/eq-service/pull/438) merged 2026-07-04). Data-integrity is proven daily; the full manual restore **game-day** (executability + app-repoint) is the only remaining human step.
+**Status:** ✅ LIVE + **restore-proven** — all three backups green daily (data + COPY-format auth); **automated daily restore-verify** green (`verify-backup-ehow`: archive intact + exact rows); **automated quarterly restore-drill** green (`restore-drill-ehow` actually restored the 2026-07-04 tarball into an ephemeral Postgres — 241 sites / 44 customers / 4 checks, RLS intact, **RTO 6 s**); eq-service copy **retired** ([PR #438](https://github.com/eq-solutions/eq-service/pull/438) merged). Only auth-data restore into a real Supabase target + the app-repoint smoke test remain a rare human game-day.
 **Scope:** the shared EQ platform substrate. SKS-only DBs are out of scope (SKS owns their DR).
 **Last reviewed:** 2026-07-04 (issue [#60](https://github.com/eq-solutions/eq-context/issues/60), verified live)
 
@@ -168,11 +168,18 @@ is proven in **two layers**, rather than relying on a human remembering a quarte
   R2 keys + `SENTRY_DSN`, nothing else — the least-privilege jobs in the set). All three **green**;
   live counts match (ehow auth 5 · eq-canonical users 49/workers 74/auth 50 · internal customers
   50/sites 30).
-- **Rare, manual — executability + operational RTO.** The full restore-into-a-real-target drill
-  ([`runbooks/supabase-restore-drill.md`](runbooks/supabase-restore-drill.md)) proves the SQL
-  actually executes and the app comes back. It needs a Supabase-parity target (a bare Postgres
-  container lacks the managed `auth` schema), so it stays a human **game-day** — now the *only*
-  part that needs a calendar entry, and far less often.
+- **Automated, quarterly — executability.**
+  [`restore-drill-ehow.yml`](../.github/workflows/restore-drill-ehow.yml) (Sentry `ehow-restore-drill`)
+  actually **restores** the freshest tarball into an ephemeral `supabase/postgres` container and
+  verifies the app-data comes back — reporting a real **RTO**. First run 2026-07-04: ✅ 241 sites /
+  44 customers / 4 checks restored, 210 tables, RLS coverage = live baseline, **RTO 6 s**. (It seeds
+  the `auth.jwt()`/`uid()` stubs the schema depends on, as `supabase_admin`, before restoring.)
+- **Rare, manual — auth-data restore + app-repoint.** Two things automation can't cheaply cover:
+  restoring **auth data** into a true Supabase target (the dump excludes the managed auth *schema*,
+  so auth rows load only where Supabase provisions it — a fresh project/branch, not a bare
+  container), and the **app-repoint** smoke test. The runbook
+  ([`runbooks/supabase-restore-drill.md`](runbooks/supabase-restore-drill.md)) is now scoped to just
+  these — far rarer, and no longer the only thing standing between us and knowing data is recoverable.
 
 The automated layer converts DR from "we hope it works" into "proven fresh daily, alarmed if it
 breaks." **Live + green** (PRs #63/#64/#65) — reports exact `auth.users` counts after the auth dump
