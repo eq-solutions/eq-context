@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-04 06:36 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-04 07:05 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-04 06:31 UTC → 2026-07-04 06:36 UTC)
+## Since last refresh (2026-07-04 06:36 UTC → 2026-07-04 07:05 UTC)
 
-- Merged: eq-shell [#625](https://github.com/eq-solutions/eq-shell/pull/625) feat(security): view security_invoker invariant (CHECK 7) + 
-- Merged: eq-shell [#623](https://github.com/eq-solutions/eq-shell/pull/623) fix(intake): re-vendor field-name + plain-English fixes from
-- Merged: eq-shell [#622](https://github.com/eq-solutions/eq-shell/pull/622) Tenants page: edit tier/modules, archive/reactivate
-- Merged: eq-shell [#621](https://github.com/eq-solutions/eq-shell/pull/621) fix(ops): remove broken per-column Status filter in table vi
-- Merged: eq-shell [#620](https://github.com/eq-solutions/eq-shell/pull/620) fix(ci): check-migration-hygiene.mjs skips SQL line comments
-- Merged: eq-shell [#619](https://github.com/eq-solutions/eq-shell/pull/619) fix(field-iframe): preserve deep-linked ?tab= on initial ten
-- Merged: eq-shell [#616](https://github.com/eq-solutions/eq-shell/pull/616) feat(ops): create and edit sites from the EQ Ops quote form
-- Merged: eq-shell [#615](https://github.com/eq-solutions/eq-shell/pull/615) fix(ops): quote PDF download/email returned 404 for every qu
+- Merged: eq-shell [#643](https://github.com/eq-solutions/eq-shell/pull/643) feat(branding): self-serve tenant document branding editor
+- Merged: eq-shell [#626](https://github.com/eq-solutions/eq-shell/pull/626) fix(admin): resolve --eq-ink to a real hex value for the wor
+- Merged: eq-shell [#624](https://github.com/eq-solutions/eq-shell/pull/624) fix(provisioning): tenant_routing NOT NULL columns block eve
+- Merged: eq-shell [#618](https://github.com/eq-solutions/eq-shell/pull/618) fix(security): reassert security_invoker on field_managers +
+- Merged: eq-shell [#617](https://github.com/eq-solutions/eq-shell/pull/617) Harden self-serve tenant provisioning: transactional RPC, ph
+- Merged: eq-shell [#614](https://github.com/eq-solutions/eq-shell/pull/614) feat(staff): Add-to-roster action — dedupe-first roster-only
+- Merged: eq-shell [#613](https://github.com/eq-solutions/eq-shell/pull/613) feat(customers): batch delete/archive for sites
+- Merged: eq-shell [#612](https://github.com/eq-solutions/eq-shell/pull/612) fix(governance): adopt quality-guardian tables — tenant-JWT 
 
 ## ⚠ Needs you (4)
 
@@ -32,7 +32,7 @@ _2026-07-04 06:36 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 4 | 0d |
+| eq-shell | ? unknown | ? | 3 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 0 | — |
 | eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
@@ -55,9 +55,13 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-04 | eq-shell | [#643](https://github.com/eq-solutions/eq-shell/pull/643) feat(branding): self-serve tenant document branding editor |
 | 2026-07-04 | eq-shell | [#641](https://github.com/eq-solutions/eq-shell/pull/641) fix: clear a stuck data-plane provisioning job from the Tenants p |
 | 2026-07-04 | eq-shell | [#642](https://github.com/eq-solutions/eq-shell/pull/642) Tenants page: permanently delete an archived tenant |
+| 2026-07-04 | eq-solves-service | [#432](https://github.com/eq-solutions/eq-service/pull/432) chore: drop dead GOTENBERG_URL from .env.example (Fly.io retired) |
 | 2026-07-04 | eq-solves-service | [#431](https://github.com/eq-solutions/eq-service/pull/431) fix: restore public.canonical_outbox, dropped by mistake on 2026- |
+| 2026-07-04 | eq-field | [#398](https://github.com/eq-solutions/eq-field/pull/398) v3.5.234 — route app_config writes through the authenticated data |
+| 2026-07-04 | eq-field | [#397](https://github.com/eq-solutions/eq-field/pull/397) chore: remove retired-Quotes CORS origins (Fly.io retired) |
 | 2026-07-04 | eq-field | [#396](https://github.com/eq-solutions/eq-field/pull/396) v3.5.233 — QA row 28: prestart 'use last for this site' |
 | 2026-07-04 | eq-field | [#395](https://github.com/eq-solutions/eq-field/pull/395) v3.5.232 — QA row 27: audit form canonical Site dropdown |
 | 2026-07-04 | eq-field | [#394](https://github.com/eq-solutions/eq-field/pull/394) v3.5.231 — QA rows 7/14: middle-name display sweep |
@@ -66,25 +70,21 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-04 | eq-field | [#391](https://github.com/eq-solutions/eq-field/pull/391) v3.5.228 — QA sheet: leave back nav + managers out of contacts (r |
 | 2026-07-04 | eq-field | [#390](https://github.com/eq-solutions/eq-field/pull/390) v3.5.227 — QA sheet: middle-name linking + remove 3 redundant but |
 | 2026-07-04 | eq-field | [#389](https://github.com/eq-solutions/eq-field/pull/389) v3.5.225 — prestart: full SKS template (export + form capture) |
-| 2026-07-03 | eq-shell | [#634](https://github.com/eq-solutions/eq-shell/pull/634) fix(sync-quotes-nightly): check errors on Flask write-back + line |
-| 2026-07-03 | eq-shell | [#633](https://github.com/eq-solutions/eq-shell/pull/633) docs: correct CLAUDE.md — EQ_SECRET_SALT is the fallback signing  |
-| 2026-07-03 | eq-shell | [#638](https://github.com/eq-solutions/eq-shell/pull/638) fix(provisioning): shell_control.provision_tenant never actually  |
-| 2026-07-03 | eq-shell | [#627](https://github.com/eq-solutions/eq-shell/pull/627) fix(provisioning): convert provision-tenant to a background funct |
 _Showing 15 of 126 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **Row 29 — auto-fill customer from site (prestart)** — blocked: the Shell-owned `app_data.field_sites` view exposes `customer_id` but not the customer NAME. Needs the name surfaced in that view (+ SKS site→customer data confirmed) first; then the prestart prefill is a small client change. **(needs the canonical/Shell-side view change — your call)** _(added 2026-07-04)_
+- **Row 21 sub-bug — `app_config` writes 401 on SKS** — saving the leave CC list (and likely digest settings) uses the anon role, which has only SELECT on ehow `app_config` (authenticated has UPDATE). Fix = route app_config writes via the authenticated JWT (add to JWT_TABLES + JWT_INPLACE_TABLES). Running as spawned task **`task_9942e427`**. The leave email itself sends fine (server-side send-email fn). _(added 2026-07-04)_
+- **Row 30 — talk-to-text on the audit form** — prestart + toolbox have the mic; the audit is a Y/N/NA checklist with short comment inputs where dictation is low-value and the helper isn't cleanly reusable. Offered to add to the audit comment fields if Royce wants it. _(added 2026-07-04)_
+- **Rows 4 & 8 — resolved by verification, reopen only if they recur** — row 4 (duplicate "From Roster"): structurally only one button exists (the "twice" was the button + a muted-cell "from roster" label); row 8 (`?tab=person-wizard` blank): moot on SKS now that Add Person is hidden. Need a screenshot/repro to reopen either. _(added 2026-07-04)_
 - **Tenant logo/branding editor in EQ Shell** — upload-or-link → store in R2 → write canonical `organisations.branding.{gateLogo,palette}`; every app inherits. Running as spawned task `task_925f8842`. _(added 2026-07-04)_
 - **eq demo tenant is logo-less in docs until the Shell editor ships** — or seed `eq`'s `branding.gateLogo` with a `.png` URL as a stopgap (Royce's call). _(added 2026-07-04)_
-- Commit + push the two stale-ref edits (eq-field auto-deploys on push to main) _(added 2026-07-04)_
 - **Manual click-through of PR #641 once deployed** — load `/_platform/tenants`, confirm no regression on Provision/Retry/Archive/Reactivate **and** the new hard-delete action from PR #642, and (if a stuck row exists, or one is forced) confirm "Stuck — Cancel" appears only past 20 min and Retry re-provisions cleanly afterward. _(added 2026-07-04)_
 - **Merge eq-context PR #62.** _(added 2026-07-04)_
 - **Arm the Phase 1 + Phase 2 backups (needs Royce)** — supplementary detail verified live via `gh` just now: eq-context's `production-ops` **GitHub Environment does not exist yet** (Phase 1 isn't armed either, not just Phase 2). Repo secrets currently present: `EQ_CONTEXT_PAT`, `EQ_SHELL_JWT_SECRET`, `SENTRY_AUTH_TOKEN`, `SUPABASE_ACCESS_TOKEN`, `SUPABASE_SERVICE_ROLE_KEY` (= ehow key) — that's all. None of `R2_ACCESS_KEY_ID/SECRET/ENDPOINT/BUCKET_NAME`, `SENTRY_DSN`, ehow's `SUPABASE_DB_URL`, or the 4 `EQ_CANONICAL*`/`EQ_CANONICAL_INTERNAL*` secrets exist in eq-context yet. **`eq-service` repo already has live `R2_ACCESS_KEY_ID`/`R2_SECRET_ACCESS_KEY`/`R2_ENDPOINT`/`R2_BUCKET_NAME` + its own `SUPABASE_DB_URL`** — reusable by copying the values across, no Cloudflare-dashboard trip needed for R2. `SENTRY_DSN` doesn't exist anywhere yet — genuinely needs creating fresh in Sentry. _(supplementary detail added 2026-07-04, needs your call)_
 - **Orphaned Supabase project `eq-tenant-favour-perfect` (`jzjzpgaablnppoimdnip`)** — DB rows are gone (above), but the project itself is still `ACTIVE_HEALTHY`. No MCP tool can delete/pause it (`pause_project` failed again: "not free-tier, downgrade first"); needs Royce via the Supabase dashboard directly — org `sqjyblkiqonyrdobaucn` → project "eq-tenant-favour-perfect" → Settings → General → Delete project. _(added 2026-07-04, needs your call)_
-- **Test the Add-tenant → data-plane Provision button flow fresh** — this session verified the *self-serve invite-link* path end-to-end; the *admin manually creates a tenant, then clicks Provision* path (same PR #627 fix) was never independently walked start-to-finish on a brand-new tenant. _(added 2026-07-04)_
-- **Leave submit-path** — never load-tested a real leave submission this session (real-email side effect); still open ahead of Royce's stress-testing week. _(added 2026-07-04)_
-- **QR/join-code worker flow** — `JoinContextNotifier`'s keepalive fix (PR #120) was applied by exact code-pattern match to the provision-context bug, not independently reproduced/verified live. Worth a live pass before the 15th. _(added 2026-07-04)_
-_…and 223 more · [eq/pending.md](eq/pending.md)_
+_…and 226 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -116,4 +116,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-04 06:36 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-04 07:05 UTC._
