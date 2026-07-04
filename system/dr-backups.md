@@ -10,7 +10,7 @@ status: live
 # Disaster Recovery — platform backups
 
 **Owner:** Royce
-**Status:** ✅ ARMED — all three jobs (ehow / eq-canonical / eq-canonical-internal) **green on their first manual runs 2026-07-04**; `production-ops` Environment + secrets + Sentry monitors live. **Not yet drilled** — restore drill due 2026-07-06.
+**Status:** ✅ LIVE — all three backups green daily (data + COPY-format auth); **automated daily restore-verify green** (`verify-backup-ehow` asserts archive intact + exact rows: 241 sites / 44 customers / auth.users 5); eq-service copy **retired** ([PR #438](https://github.com/eq-solutions/eq-service/pull/438) merged 2026-07-04). Data-integrity is proven daily; the full manual restore **game-day** (executability + app-repoint) is the only remaining human step.
 **Scope:** the shared EQ platform substrate. SKS-only DBs are out of scope (SKS owns their DR).
 **Last reviewed:** 2026-07-04 (issue [#60](https://github.com/eq-solutions/eq-context/issues/60), verified live)
 
@@ -173,7 +173,8 @@ is proven in **two layers**, rather than relying on a human remembering a quarte
   part that needs a calendar entry, and far less often.
 
 The automated layer converts DR from "we hope it works" into "proven fresh daily, alarmed if it
-breaks." (Added PR #63 — verifies live once merged, since `production-ops` is main-only.)
+breaks." **Live + green** (PRs #63/#64/#65) — reports exact `auth.users` counts after the auth dump
+moved to `--use-copy`.
 
 ---
 

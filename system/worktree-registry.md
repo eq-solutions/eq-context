@@ -24,7 +24,7 @@ Check this file first — if your target repo/area is already claimed, coordinat
 
 | Folder | Branch | Agent / Session | Claimed | Status |
 |--------|--------|-----------------|---------|--------|
-| C:\Projects\eqsvc-retire-wt (eq-solves-service) | chore/retire-offsite-backup | Claude (issue #60 — retire eq-service backup.yml, superseded by eq-context) | 2026-07-04 | off origin/main; delete + PR, prune after merge |
+| C:\Projects\eqsvc-retire-wt (eq-solves-service) | chore/retire-offsite-backup | Claude (issue #60 — retire eq-service backup.yml, superseded by eq-context) | 2026-07-04 | DONE — eq-service PR #438 MERGED; worktree + branch pruned |
 | .claude/worktrees/tenant-hard-delete (eq-shell) | claude/tenant-hard-delete | Claude (Tenants page — hard-delete archived tenants) | 2026-07-04 | DONE — PR #642 MERGED `b7e87ad`, deployed + verified live; dir removable |
 | .claude/worktrees/provision-stuck-cancel (eq-shell) | claude/provision-stuck-cancel | Claude (Tenants page — cancel/clear a stuck data-plane provisioning job) | 2026-07-04 | DONE — PR #641 MERGED (rebased on top of the concurrent hard-delete PR #642); dir removed |
 | .claude/worktrees/tenant-page-admin-actions (eq-shell) | claude/provision-tenant-background-fn | Claude (fix: provision-tenant 504 — convert to background fn) | 2026-07-03 | DONE — PR #627 MERGED 09:47:09Z; dir removable |
