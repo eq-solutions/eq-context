@@ -1,13 +1,20 @@
 ---
 title: Changelog — EQ Solves Field
 owner: Royce Milmlow
-last_updated: 2026-07-01
+last_updated: 2026-07-04
 scope: Append-only history of changes to the EQ Solves Field product
 read_priority: reference
 status: live
 ---
 
 # Changelog — EQ Solves Field
+
+## [2026-07-04] v3.5.236–v3.5.238 + TAFE enablement — QA sheet part 2 (rows 30/31/34/36)
+- **TAFE weekly autofill ENABLED on SKS (PR #399, backend-only, no version bump)** — Row 34. The `tafe-weekly-fill` Edge Function was deployed on ehow since v3.5.216 but never switched on (no pg_cron, no `app_config` config) — so the manual "Apply TAFE Day" button was the only trigger, and it 500'd on a missing `TENANT_UUID` secret. Redeployed the function to read the tenant from `body.tenantId` (env fallback kept), set `app_config` `tafe_fn_url` + `tafe_fn_token` (**public anon key** — app_config has an anon SELECT grant so a secret there would leak; the function writes with its own service-role env, gateway `verify_jwt=false`), and scheduled the cron (Sunday 06:00 UTC = 16:00 AEST) with the tenant in the body. Dry-runs verified: fills apprentices on clear weeks, skips holiday weeks. Reversible via `cron.unschedule`.
+- **v3.5.236 (PR #401)** — Row 30: voice input (🎤) on every Site Audit comment field, matching prestart/toolbox. Self-contained `_auMicBtn`/`_auSpeechToggle` in audits.js (mirrors `_auSiteDatalist`); en-AU SpeechRecognition, one recogniser at a time, hidden where unsupported or on submitted audits. Live-updates the input (no full re-render). Pure client change.
+- **v3.5.237 (PR #402, concurrent session)** — Row 29: prestart auto-fills the customer from the selected site's canonical `customer_name` (blank-only). Dormant until Shell migration 0159 applies on the tenant planes.
+- **v3.5.238 (PR #403)** — Row 31: prestart + toolbox photo **bytes** now persist to a private `safety-photos` Storage bucket instead of inline base64 in the row JSON (keeps rows small as usage grows). base64 stays the in-memory format so the photo grid + the .docx embed are **unchanged**; save uploads + stores `{storage_path}` (base64 stripped from the DB payload), open/export hydrates the bytes back. Bucket RLS scopes every object to the caller's own `{tenant_id}/` folder via the data-JWT claim (private, no anon). **Graceful fallback + timeout-bounded**: no data JWT / offline / RLS deny / slow network → photo stays inline base64 exactly as before and the save never hangs. Bucket + policies applied to ehow + zaap (migration `2026-07-04_safety_photos_storage.sql`). No-regression path + infra verified live; the SKS authenticated round-trip activates only with the Shell JWT (protected by the fallback).
+- **Decided:** rows 26/36 (job numbers → Ops) — "Comms is very much a trial now, only worried about ops"; NO Field change (`public.job_numbers` stays local). "Ops" = the in-Shell Quotes replacement (`EqOps → QuotesNative`), not a jobs hub. Linking prompt banked (`task_1a8e00fd`).
 
 ## [2026-07-04] v3.5.234–v3.5.235 — Row 21: app_config writes 401 on SKS (leave CC list)
 - **v3.5.234 (PR #398)** — `app_config` writes (leave CC list, TAFE holidays) 401'd on SKS (`42501 permission denied`): the table wasn't in `JWT_TABLES`/`JWT_INPLACE_TABLES`, so writes used the anon path where anon has SELECT-only. Two premises in the brief were wrong (verified live): (1) a **DB change WAS required** — RLS was enabled with a SELECT-only policy, so authenticated writes would still fail; (2) the eq tenant is **NOT on the anon path** — it runs the authenticated JWT twin path on zaap, so the global client change had to cover both DBs. Fix: added `app_config` to both JWT sets (client), plus governed migration `app_config_authenticated_write` applied to **both** provisioned DBs (ehow/SKS org `000…002`+tenant `7dee117c…`; zaap/EQ org `a0000000-…-001`+tenant `dcb71d03…`) — authenticated `ALL` policy scoped by org_id + JWT `app_metadata.tenant_id` (acknowledgments/audit_log template), `org_id` column DEFAULT for inserts, service_role parity. RLS-verified on both DBs (correct-tenant writes pass, wrong-tenant blocked, anon gate reads intact). demo-trades/melbourne (anon-only seed orgs in zaap) unaffected.
