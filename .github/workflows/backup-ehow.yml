@@ -14,7 +14,7 @@ name: Backup ehow (canonical DB → R2)
 #   NOTE: a bare `supabase db dump` is SCHEMA-ONLY. The retired eq-service job used
 #   the bare form, so it never captured rows. The three-file form below is the fix.
 #   Auth is captured explicitly: `--data-only --schema auth` → auth_data.sql (the default
-#   dump EXCLUDES the managed auth schema). ehow holds 50 live auth.users, and Tier-1
+#   dump EXCLUDES the managed auth schema). ehow holds 5 live auth.users, and Tier-1
 #   managed-daily dies WITH the account in the disaster Tier-2 exists for, so auth must be
 #   in the offsite copy. Mirrors backup-eq-canonical.yml (issue #60 Phase 2).
 #   Plus: every storage bucket (recursively), not just attachments/logos.
@@ -63,7 +63,7 @@ jobs:
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
       MONITOR_SLUG: ehow-weekly-backup
       SUPABASE_URL: https://ehowgjardagevnrluult.supabase.co
-      CAPTURE_AUTH: 'true'   # ehow has 50 live auth.users — capture the managed auth schema
+      CAPTURE_AUTH: 'true'   # ehow has 5 live auth.users — capture the managed auth schema
     steps:
       # ── Sentry cron: check in "in_progress" (upserts the monitor incl. schedule) ──
       - name: Sentry check-in (start)
@@ -126,7 +126,7 @@ jobs:
           TAR_FILES="roles.sql schema.sql data.sql"
 
           # Identity capture: the default dump above EXCLUDES the managed `auth` schema.
-          # Naming --schema auth explicitly overrides that. ehow holds 50 live auth.users
+          # Naming --schema auth explicitly overrides that. ehow holds 5 live auth.users
           # (Service/Field users) — omitting them would ship a hollow backup, and Tier-1
           # (managed daily) dies WITH the account in the total-loss disaster Tier-2 exists
           # for. Mirrors backup-eq-canonical.yml.
