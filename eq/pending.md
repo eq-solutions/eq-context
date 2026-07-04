@@ -14,6 +14,25 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-04 (Fly.io retired) — account deleted, stale references stripped
+
+*Royce: "can i stop my fly.io subscription?" Verified nothing live depended on Fly.io; Royce then deleted the account.*
+
+**Completed:**
+- [x] Confirmed no live EQ dependency on Fly.io — EQ Service is DOCX-only (`GOTENBERG_URL` unset → PDF skipped gracefully in `lib/reports/pdf-conversion.ts`), EQ Quotes retired. Both Fly apps (`eq-solves-gotenberg`, `eq-quotes-sks`) dead. _(done 2026-07-04)_
+- [x] Stripped stale Fly references: eq-field `eq-service-sites.js` CORS allow-list (both retired-Quotes origins) + eq-solves-service `.env.example` (`GOTENBERG_URL`). **Both edits uncommitted — working tree only, pending Royce's push.** _(done 2026-07-04)_
+- [x] Royce deleted the entire Fly.io account. _(done 2026-07-04)_
+
+**Decided:**
+- Fly.io fully out of the EQ stack as of 2026-07-04. **Supersedes the 2026-07-02 "quotes.eq.solutions stays live (emergency-only)" note below** — the host is deleted, the URL no longer resolves. EQ-QUOTES-F Sentry issue (ignored-forever) now moot.
+- Left `eq-solves-service/infra/gotenberg/` (fly.toml + README) as revival reference — not a live pointer.
+
+**Deferred:**
+- [ ] Commit + push the two stale-ref edits (eq-field auto-deploys on push to main) _(added 2026-07-04)_
+- [ ] Remove the dangling `quotes.eq.solutions` Cloudflare CNAME → `eq-quotes-sks.fly.dev` (target Fly app deleted; mild subdomain-takeover vector) — spawned as a task _(added 2026-07-04)_
+
+---
+
 ## ⏩ Session close — 2026-07-04 (Tenants page — permanently delete an archived tenant) — eq-shell PR #642 merged + deployed + verified live
 
 *Royce, looking at the live Tenants page: "can we have a hard delete button - i hate having mess in lists." Archived tenants (test/junk orgs) had no way to actually leave the list.*

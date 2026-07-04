@@ -1,4 +1,5 @@
 ## 2026-07-04
+- Removed both retired-Quotes origins (`quotes.eq.solutions`, `eq-quotes-sks.fly.dev`) from `netlify/functions/eq-service-sites.js` `ALLOWED_ORIGINS` after Royce deleted the Fly.io account hosting the Quotes app. Default CORS fallback is now `localhost:5000` (fail-closed). _(working tree — pending push)_
 - **PR #386 (MERGED, deployed live)**: Roster cell popover (pill remove, Clear button, site search/select) was fully dead — built on `innerHTML` + inline `onclick=""` string construction, which silently no-ops on this page. Rewritten with `document.createElement`/`appendChild`/`addEventListener` throughout. Found during a pre-pass bug sweep ahead of Royce's planned week of personally stress-testing Roster/Timesheets/Leave.
 
 ## 2026-07-02
