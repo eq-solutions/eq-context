@@ -61,10 +61,10 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-04)
 
 **eq-service:**
-- #438 chore(dr): retire eq-service offsite backup — platform DR moved to eq-context (#60)
 - #437 fix: audit-log attachment upload + delete mutations (+ Zod validation)
 
 **eq-shell:**
+- #646 feat(entitlements): app tiles → canonical, Stage A (readers)
 - #644 refactor(branding): one canonical copy in organisations.branding (Phase 1)
 - #637 docs: pnpm-workspace.yaml — packages are vendored, not a git submodule
 - #636 build: pin @eq-solutions/ui to release tag v1.10.0 for reproducible builds
@@ -129,6 +129,7 @@ _Auto-refreshed nightly. ✓ = has data · ⚠ = empty (no data yet) · ✗ = ta
 ---
 
 ## Key Decisions (auto-derived from merged PRs + manual)
+- Field: prestart auto-fills customer from the chosen site (QA row 29) — reads canonical `customer_name` off `field_sites` (blank-only, no-op for unlinked sites). Client shipped v3.5.237 (merged field PR #402, 2026-07-04). eq-shell PR #645 (migration `0159_field_sites_customer_name.sql`) **MERGED 07:41Z but 0159 NOT yet applied** — auto One Pipe run cancelled; manual re-dispatch stuck behind a ~23h `in_progress` One Pipe run holding the concurrency lock. Row 29 **dormant** until 0159 lands on ehow+zaap (verified: `customer_name` still absent from `app_data.field_sites` on ehow). ehow: 30 field sites, 11 linked / 19 blank.
 - Contacts joined the canonical view+INSTEAD OF trigger model — service.contacts is a view over app_data, DML routed to canonical (0167) (merged PR #410, 2026-07-02)
 - Governed migration-apply pipeline + service invariants gate — migrations now apply through a checked pipeline, not ad-hoc (0168/0169) (merged PR #412, 2026-07-03)
 - Dead auth exemptions removed from PUBLIC_PATHS — /api/shell-sso (merged PR #394) and /auth/shell-bridge (merged PR #388), 2026-07-01
