@@ -61,6 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-04)
 
 **eq-shell:**
+- #643 feat(branding): self-serve tenant document branding editor
 - #637 docs: pnpm-workspace.yaml — packages are vendored, not a git submodule
 - #636 build: pin @eq-solutions/ui to release tag v1.10.0 for reproducible builds
 - #635 feat(canonical-api): move APP_TENANT_SCOPE allow-list to a shell_control table
@@ -73,7 +74,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ✗ failure |
+| eq-service | ? in_progress |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
