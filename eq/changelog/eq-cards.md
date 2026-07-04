@@ -1,5 +1,9 @@
 # EQ Cards — Changelog
 
+## 2026-07-04
+- **PR #119 (MERGED, deployed live)**: licence-photo download revoked its blob URL immediately after triggering the download in `image_download_web.dart`, racing the browser's own read of it on slower connections. Delayed the `revokeObjectUrl` call by 1s.
+- **PR #120 (MERGED, deployed live)**: root cause of self-serve tenant provisioning's 0-ever-redemptions history, bug #1 of 3 (see eq-shell #638 for #2/#3) — `ProvisionContextNotifier`/`JoinContextNotifier` were plain `@riverpod` (autoDispose) but only ever read via `ref.read()`, with no `watch`/`listen` anywhere keeping them alive. Riverpod disposed the provisioning context between the phone-verify screen and the name/email screen, silently dropping the invite token. Both switched to `@Riverpod(keepAlive: true)`.
+
 ## 2026-07-03
 - **PR #118 (MERGED, deployed live to cards.eq.solutions via manual `workflow_dispatch`)**: self-serve tenant provision screen gained name (required) + email (optional) fields, sent through to `shell-provision-tenant` (eq-shell #617). `provisionTenantExchange`'s return type changed from a positional tuple to a named record so the new `emailInUse` flag can't be silently dropped at the call site. Non-blocking snackbar when the entered email already belongs to another account (workspace still created, phone-only sign-in). Note: eq-cards does NOT auto-deploy on merge — `deploy.yml` is `workflow_dispatch`/release-tag only by design; this required an explicit dispatch after the merge to actually ship.
 

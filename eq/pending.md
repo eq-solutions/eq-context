@@ -14,6 +14,35 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-04 (15 July CEO presentation prep) — pre-pass bug sweep across Field/Shell/Cards; self-serve tenant provisioning fully hardened + verified live end-to-end for the first time ever
+
+*Royce presents EQ Solutions to his CEO 15 July. Philosophy: "a working product is our best marketing strategy" — built on real verified functionality, not a staged demo. Two levers picked: (1) run the self-serve tenant-provisioning dry run — flagged all session as never having had a real redemption (0 rows ever) — and (2) a canonical-layer visual for the pitch. Also did a pre-pass bug sweep on `core.eq.solutions/sks/field` ahead of Royce's planned week of personally stress-testing Roster/Timesheets/Leave ("human use is the truest form of debugging").*
+
+**Completed (merged + deployed live):**
+- [x] **eq-field PR #386** — Roster cell popover (pill remove, Clear button, site search/select) was fully dead — built on `innerHTML` + inline `onclick=""` string construction, which silently no-ops on this page. Rewritten with `createElement`/`addEventListener` throughout. _(done 2026-07-04)_
+- [x] **eq-shell PR #626** — `/sks/admin/workers` QR code generation crashed for every worker — `QRCode.toDataURL` was passed `var(--eq-ink)` as a color, which the qrcode library can't parse (needs a literal hex). Hardcoded `#1A1A2E` + added the missing `.catch()` so a future failure shows an error instead of an infinite spinner. _(done 2026-07-04)_
+- [x] **eq-cards PR #119** — licence-photo download revoked its blob URL immediately after triggering the download, racing the browser's own read of it on slower connections. Delayed revoke by 1s. _(done 2026-07-04)_
+- [x] **eq-cards PR #120** — **root cause of self-serve provisioning's 0-redemptions history, bug #1 of 3**: `ProvisionContextNotifier`/`JoinContextNotifier` were plain `@riverpod` (autoDispose) but only ever read via `ref.read()` — no `watch`/`listen` anywhere kept them alive, so Riverpod disposed the provisioning context between the phone-verify screen and the name/email screen, silently dropping the invite token. Both switched to `@Riverpod(keepAlive: true)`. _(done 2026-07-04)_
+- [x] **eq-shell PR #638 + migration `2026_07_04_fix_provision_tenant_tier` applied live to jvkn** — bugs #2 and #3, found only by re-running the flow live after each prior fix: (2) `shell_control.provision_tenant()` hardcoded `tier='trial'` on insert, but `'trial'` isn't a valid value under `tenants_tier_check` — every provision failed at the DB regardless of the client fix; (3) the function's `ON CONFLICT (org_id, user_id)` had no matching UNIQUE constraint to target (`42P10`) — added `org_memberships_org_user_unique`. _(done 2026-07-04)_
+- [x] **Full self-serve provisioning flow verified end-to-end live for the first time** — real phone number, real OTP, three attempts across the session as each bug was found and fixed in turn (first: silent failure before any fix; second: "Failed to create workspace" after fix #1 alone; third: fully successful after fixes #2+#3 landed). This flow has existed since PR #617 (2026-07-03) with zero real redemptions until tonight.
+- [x] **Test-tenant cleanup** — "Provisioning Retest" and "Favour Perfect" (both created during live testing) archived via the Tenants admin page (soft-delete, reversible — confirmed via screenshot, both show `ARCHIVED`).
+- [x] **Canonical-layer visual artifact** built for the presentation (one-page, EQ-branded) — shows the shared canonical layer + how it reduces per-app licence/worker management.
+- [x] **PR #61 merged** (`eq-context`, squash `0ce23fc`) — Phase 2 offsite backups (eq-canonical + eq-canonical-internal), on Royce's go-ahead. Built by a concurrent session (`task_625d5885`), not this one — merged via GitHub API directly (not `gh pr merge`) since the shared `eq-context` working tree had uncommitted edits from that same concurrent session in flight and a local branch-switch would have collided with them.
+
+**Deferred:**
+- [ ] **Orphaned Supabase project `eq-tenant-favour-perfect` (`jzjzpgaablnppoimdnip`)** — created during the "Favour Perfect" test, still `ACTIVE_HEALTHY`. No MCP tool can delete/pause it (`pause_project` failed: "not free-tier, downgrade first"); needs Royce via the Supabase dashboard directly. _(added 2026-07-04, needs your call)_
+- [ ] **Test the Add-tenant → data-plane Provision button flow fresh** — this session verified the *self-serve invite-link* path end-to-end; the *admin manually creates a tenant, then clicks Provision* path (same PR #627 fix) was never independently walked start-to-finish on a brand-new tenant. _(added 2026-07-04)_
+- [ ] **Leave submit-path** — never load-tested a real leave submission this session (real-email side effect); still open ahead of Royce's stress-testing week. _(added 2026-07-04)_
+- [ ] **QR/join-code worker flow** — `JoinContextNotifier`'s keepalive fix (PR #120) was applied by exact code-pattern match to the provision-context bug, not independently reproduced/verified live. Worth a live pass before the 15th. _(added 2026-07-04)_
+- [ ] **Set a code-freeze date before 15 July** — not yet decided. _(added 2026-07-04, needs your call)_
+- [ ] **206 Supabase security advisories on ehow** — Royce's call from earlier this session: keep for a dedicated session, not folded into this one. _(added 2026-07-03, needs your call)_
+
+**Notes (load-bearing):**
+- **Self-serve tenant provisioning had never worked, ever, in production** — 0 rows in the redemption table since PR #617 shipped 2026-07-03. All 3 stacked bugs (client Riverpod, server tier constraint, server missing unique constraint) were each found only by actually re-running the live flow after the prior fix, not by code inspection alone — inspection alone had already missed all three once (PR #617's own review).
+- `eq-context`'s working tree is shared across concurrent sessions with no per-session isolation (unlike the per-app `.claude/worktrees/*`) — `system/dr-backups.md` had live uncommitted edits from another session mid-turn tonight. Merging a PR whose branch happens to be the currently-checked-out one needs `gh api ... /merge` directly, not `gh pr merge` (which tries a local branch-switch afterward and will collide with a concurrent session's in-progress edits).
+
+---
+
 ## ⏩ Session close — 2026-07-04 (platform DR / backups, issue #60) — ehow offsite backup moved into eq-context; three real defects fixed; Phase 2 + arming deferred
 
 *Own disaster recovery at the platform level: move the shared canonical DB (ehow) offsite backup out of a consuming app (eq-service) and into eq-context. Verified live against Supabase before building.*
@@ -28,7 +57,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [ ] **Retire `eq-service/.github/workflows/backup.yml`** — separate eq-service PR, only after the eq-context job runs green once (avoid double-backup). _(added 2026-07-04)_
 - [ ] **Repoint eq-service `SUPABASE_DB_URL`** (env `production-ops`) urjh→ehow if keeping the old job alive during cutover — Royce owns the secret; moot once eq-context is green. _(added 2026-07-04)_
 - [ ] **Run the first restore drill** per `system/runbooks/supabase-restore-drill.md`; record achieved RTO/RPO in the drill log. _(added 2026-07-04)_
-- [ ] **Phase 2 — offsite for eq-canonical + eq-canonical-internal** — both hold real data with no offsite copy (eq-canonical is the identity plane, 50 `auth.users`). Same workflow, per project. Running in a separate session (`task_625d5885`); Royce opening fresh. _(added 2026-07-04)_
+- [x] **Phase 2 — offsite for eq-canonical + eq-canonical-internal** — PR #61 merged to `main` (squash `0ce23fc`, 2026-07-04). Same `backup-ehow.yml` pattern, parameterised per project; eq-canonical also captures `auth_data.sql` explicitly (`supabase db dump` excludes `auth` by default — would've shipped a hollow backup of the identity plane's 50 `auth.users`). Read-only, inert until Royce adds the 4 new secrets (`EQ_CANONICAL_DB_URL`/`SERVICE_ROLE_KEY`, `EQ_CANONICAL_INTERNAL_*`) to `production-ops`. _(done 2026-07-04)_
 
 **Notes (load-bearing, verified live 2026-07-04):**
 - Org `sqjyblkiqonyrdobaucn` has **5** live Supabase projects, not 6 — issue #60's list included `vjvamvfpbwcqfudousmg` ("EQ Context"), which is **gone**. Treat that line as stale.
