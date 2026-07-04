@@ -14,6 +14,24 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-04 (eq-tenant prestart fix + tenant branding model) — zaap column renamed, Shell branding editor spun off
+
+*Follow-on to v3.5.220's client `sks_rep`→`site_rep` fix (PR #384, 2026-07-03): that fixed the client + ehow/SKS, but the **eq demo tenant DB (zaap)** still had the old `sks_rep` column, so prestart saves on `?tenant=eq` kept 400ing. Then Royce asked to confirm the safety-doc templates carry per-tenant logo + colour.*
+
+**Completed (live + verified):**
+- [x] **zaap `public.prestarts.sks_rep` → `site_rep`** renamed (migration `rename_prestarts_sks_rep_to_site_rep`, applied to eq tenant DB `zaapmfdkgedqupfjtchl`). Pre-checked for dependents first: no views, triggers, functions, or column-referencing policies (only a `deny_all` policy). Verified with a rolled-back insert+select round-trip through `site_rep`. ehow/SKS was already correct — zaap-only. The 6 SKS-template columns (project_number, affects_trades, controls, other_hazards, permits_selected, measures) were already added to zaap in v3.5.225. _(done 2026-07-04)_
+- [x] **Confirmed the safety-doc branding model is already fully tenant-driven** — `site-reports-shared.js` reads `branding.palette` (setPalette + fail-fast guard) + `branding.gateLogo` from canonical `organisations` per tenant at export time. SKS = navy + R2-hosted logo (fully branded); eq = sky palette, logo-less (no PNG seeded); provisioning-retest = neither (EQ-default fallback). Field is a pure consumer — no Field code change needed. _(verified 2026-07-04)_
+
+**Decided:**
+- Royce: each tenant should own its logo + colour scheme, read by Field (and every app) when producing documents — via a **Shell-based branding editor** (upload a file or paste a link), canonical `organisations.branding` = single source of truth. Field's consumer side is done; the editor is the missing piece and belongs in eq-shell (Shell owns tenant admin + canonical writes).
+- **Field docx contract constraint**: the doc builder extracts the `src` from the gateLogo `<img>` and REQUIRES a `.png` (`site-reports-shared.js:699`); SVG/JPG won't embed in a .docx. The Shell uploader must enforce/convert to PNG. Palette hexes stay bare 6-digit.
+
+**Deferred:**
+- [ ] **Tenant logo/branding editor in EQ Shell** — upload-or-link → store in R2 → write canonical `organisations.branding.{gateLogo,palette}`; every app inherits. Running as spawned task `task_925f8842`. _(added 2026-07-04)_
+- [ ] **eq demo tenant is logo-less in docs until the Shell editor ships** — or seed `eq`'s `branding.gateLogo` with a `.png` URL as a stopgap (Royce's call). _(added 2026-07-04)_
+
+---
+
 ## ⏩ Session close — 2026-07-04 (Fly.io retired) — account deleted, stale references stripped
 
 *Royce: "can i stop my fly.io subscription?" Verified nothing live depended on Fly.io; Royce then deleted the account.*
