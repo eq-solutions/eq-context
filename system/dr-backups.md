@@ -138,7 +138,8 @@ Every job produces a **complete logical DB dump** — three files per Supabase's
 
 **One Sentry cron check-in monitor per job** (org `eq-solutions`), slugs:
 `ehow-daily-backup`, `eq-canonical-daily-backup`, `eq-canonical-internal-daily-backup`,
-plus `ehow-backup-verify` (the automated restore-verify — see next section).
+plus one **restore-verify** monitor per plane — `ehow-backup-verify` / `eq-canonical-backup-verify` /
+`eq-canonical-internal-backup-verify` (see next section).
 Each job checks in `in_progress` → `ok`/`error` and declares its own crontab schedule, so Sentry
 alerts on **both**:
 
@@ -158,14 +159,15 @@ the monitor slug differs.
 A backup nobody restores fails silently — that is the whole reason #60 exists. So restorability
 is proven in **two layers**, rather than relying on a human remembering a quarterly drill:
 
-- **Automated, daily — data integrity.**
-  [`verify-backup-ehow.yml`](../.github/workflows/verify-backup-ehow.yml) pulls the freshest ehow
-  tarball from R2, checks the archive is intact, and asserts the dump holds real **rows**
-  (`app_data.sites` / `customers`) and **`auth.users`** — so a hollow/schema-only dump, a
-  truncated upload, or a dropped auth capture goes **red** (Sentry `ehow-backup-verify`) the next
-  morning, not at incident time. It only **GETs** the R2 artifact — never touches a live DB (needs
-  R2 keys + `SENTRY_DSN`, nothing else — the least-privilege job in the set). Parameterised like
-  the backup jobs, so eq-canonical / -internal verifies are a copy away.
+- **Automated, daily — data integrity.** One `verify-backup-*.yml` per plane
+  (`verify-backup-{ehow,eq-canonical,eq-canonical-internal}.yml`, staggered **05:00 / 05:15 / 05:30
+  UTC**) pulls the freshest tarball from R2, checks the archive is intact, and asserts the dump holds
+  real **rows** and — where the plane has users — **`auth.users`**. So a hollow/schema-only dump, a
+  truncated upload, or a dropped auth capture goes **red** (Sentry `*-backup-verify`) the next
+  morning, not at incident time. Each only **GETs** the R2 artifact — never touches a live DB (needs
+  R2 keys + `SENTRY_DSN`, nothing else — the least-privilege jobs in the set). All three **green**;
+  live counts match (ehow auth 5 · eq-canonical users 49/workers 74/auth 50 · internal customers
+  50/sites 30).
 - **Rare, manual — executability + operational RTO.** The full restore-into-a-real-target drill
   ([`runbooks/supabase-restore-drill.md`](runbooks/supabase-restore-drill.md)) proves the SQL
   actually executes and the app comes back. It needs a Supabase-parity target (a bare Postgres
