@@ -14,6 +14,32 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-04 (platform DR / backups, issue #60) — ehow offsite backup moved into eq-context; three real defects fixed; Phase 2 + arming deferred
+
+*Own disaster recovery at the platform level: move the shared canonical DB (ehow) offsite backup out of a consuming app (eq-service) and into eq-context. Verified live against Supabase before building.*
+
+**Completed (merged to `main`, `ca9ae0c`):**
+- [x] `.github/workflows/backup-ehow.yml` — weekly ehow → R2, read-only. Fixes 3 defects vs the retired eq-service job: (1) complete 3-file logical dump (roles+schema+**data**) — old bare `supabase db dump` was schema-only, never captured rows; (2) all 6 storage buckets, discovered dynamically + walked recursively — old job synced only 2 (`attachments`, `logos`); (3) Sentry cron check-in monitor — alerts on a failed run AND a run that never happens. Silent-empty guards, `production-ops` env scoping, arms cleanly until `SENTRY_DSN` set. _(done 2026-07-04)_
+- [x] `system/dr-backups.md` — DR decision doc: per-project inventory, two recovery tiers (Supabase daily RPO 24h / R2 weekly RPO ≤7d), RTO 4h/8h, ownership, arming checklist. _(done 2026-07-04)_
+- [x] `system/runbooks/supabase-restore-drill.md` — re-homed from eq-service, retargeted deleted urjh → ehow, added R2-tarball restore path + row-count presence check, scheduled quarterly. _(done 2026-07-04)_
+
+**Deferred:**
+- [ ] **Arm the ehow backup (needs Royce)** — create eq-context `production-ops` env (main-only, no reviewers) + add secrets `SUPABASE_DB_URL` (ehow pooler), `R2_ACCESS_KEY_ID/SECRET/ENDPOINT/BUCKET_NAME`, `SENTRY_DSN`; run once via `workflow_dispatch`; confirm green + R2 contents + Sentry check-in. _(added 2026-07-04)_
+- [ ] **Retire `eq-service/.github/workflows/backup.yml`** — separate eq-service PR, only after the eq-context job runs green once (avoid double-backup). _(added 2026-07-04)_
+- [ ] **Repoint eq-service `SUPABASE_DB_URL`** (env `production-ops`) urjh→ehow if keeping the old job alive during cutover — Royce owns the secret; moot once eq-context is green. _(added 2026-07-04)_
+- [ ] **Run the first restore drill** per `system/runbooks/supabase-restore-drill.md`; record achieved RTO/RPO in the drill log. _(added 2026-07-04)_
+- [ ] **Phase 2 — offsite for eq-canonical + eq-canonical-internal** — both hold real data with no offsite copy (eq-canonical is the identity plane, 50 `auth.users`). Same workflow, per project. Running in a separate session (`task_625d5885`); Royce opening fresh. _(added 2026-07-04)_
+
+**Notes (load-bearing, verified live 2026-07-04):**
+- Org `sqjyblkiqonyrdobaucn` has **5** live Supabase projects, not 6 — issue #60's list included `vjvamvfpbwcqfudousmg` ("EQ Context"), which is **gone**. Treat that line as stale.
+- **eq-canonical (`jvknxcmbtrfnxfrwfimn`) is a live identity/control plane** — 50 `auth.users`, `shell_control` tenants/memberships, 2454 token-mint audit rows, 213 storage objects, 6 buckets. **No offsite backup** today.
+- **eq-canonical-internal (`zaapmfdkgedqupfjtchl`)** holds real operational data (500 schedule entries, 323 tenders, timesheets, customers, sites). No offsite.
+- **eq-tenant-favour-perfect (`jzjzpgaablnppoimdnip`)** — empty, system migrations only (created 2026-07-03).
+- ehow storage = **6** buckets: `attachments`, `logos`, `licence-photos`, `sks-quote-attachments`, `job-plan-references`, `compliance-packs`.
+- The retired eq-service Weekly Backup **failed 6 consecutive runs since 2026-05-24** (last green 2026-05-17), predating the urjh deletion (2026-06-22) — no alert. Its dump was also schema-only.
+
+---
+
 ## ⏩ Session close — 2026-07-04 (ehow live DB) — Security advisor review: WARN count 206 → 145 + 2 additional real cross-tenant bugs found and closed in the `authenticated`-only bucket the advisor count alone couldn't distinguish from noise
 
 *Scoped security review of `ehow` (ehowgjardagevnrluult) — the live DB behind EQ Service + EQ Field for SKS — triggered by 206 WARN-level Supabase advisor findings. Read every anon-executable `SECURITY DEFINER` function body and cross-checked real call sites in eq-shell/eq-field/eq-solves-service before changing any live grants.*
