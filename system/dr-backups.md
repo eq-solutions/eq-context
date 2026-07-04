@@ -74,16 +74,16 @@ RPO/RTO are **targets until a drill proves them.** The first drill records achie
 
 | Project | Tier-1 (managed daily) | Tier-2 (offsite R2, weekly) | Notes |
 |---|---|---|---|
-| ehow | ✓ all schemas | ✓ `db_backup.tar.gz` + 6 buckets | `auth.users` here is verified by the drill; managed-daily is the secondary net for auth |
+| ehow | ✓ all schemas | ✓ `db_backup.tar.gz` (incl. **`auth_data.sql`**) + 6 buckets | **auth.users captured in the offsite dump** (50 live users) — same rationale as eq-canonical below |
 | eq-canonical | ✓ all schemas | ✓ `db_backup.tar.gz` (incl. **`auth_data.sql`**) + 6 buckets / 213 objects | **auth.users is captured in the offsite dump on purpose** — see below |
 | eq-canonical-internal | ✓ all schemas | ✓ `db_backup.tar.gz` (no auth — 0 users) + storage when present | Storage tolerated-empty today (2 buckets, 0 objects) |
 
-⚠️ **Why eq-canonical's offsite copy explicitly includes `auth`.** `supabase db dump` **excludes
-the managed `auth` schema by default**, so a plain three-file dump of an identity plane silently
-omits `auth.users` — its crown jewel. Tier-1 (Supabase managed daily) dies **with** the account
-in the exact total-account-loss disaster Tier-2 exists for; relying on it for auth would leave the
-identity plane with **no** account-loss recovery. So the eq-canonical job adds an explicit
-`--schema auth --data-only` capture (`auth_data.sql`), guarded to be non-empty (50 live users).
+⚠️ **Why eq-canonical and ehow explicitly include `auth` in the offsite copy.** `supabase db dump`
+**excludes the managed `auth` schema by default**, so a plain three-file dump silently omits
+`auth.users` — the crown jewel of any DB that has real users. Tier-1 (Supabase managed daily) dies
+**with** the account in the exact total-account-loss disaster Tier-2 exists for; relying on it for
+auth would leave those users with **no** account-loss recovery. So both jobs (each carrying 50 live
+users) add an explicit `--schema auth --data-only` capture (`auth_data.sql`), guarded to be non-empty.
 Auth **restore** mechanics (the auth schema is Supabase-managed) are worked out and recorded by the
 drill — but the data is now offsite either way, which is the point.
 

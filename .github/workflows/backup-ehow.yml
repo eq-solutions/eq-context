@@ -13,8 +13,10 @@ name: Backup ehow (canonical DB → R2)
 #   - data.sql    (--data-only --use-copy — the actual ROWS)
 #   NOTE: a bare `supabase db dump` is SCHEMA-ONLY. The retired eq-service job used
 #   the bare form, so it never captured rows. The three-file form below is the fix.
-#   Auth-schema coverage (auth.users) is verified by the restore drill — Supabase's
-#   own managed daily backup is the secondary safety net for auth.
+#   Auth is captured explicitly: `--data-only --schema auth` → auth_data.sql (the default
+#   dump EXCLUDES the managed auth schema). ehow holds 50 live auth.users, and Tier-1
+#   managed-daily dies WITH the account in the disaster Tier-2 exists for, so auth must be
+#   in the offsite copy. Mirrors backup-eq-canonical.yml (issue #60 Phase 2).
 #   Plus: every storage bucket (recursively), not just attachments/logos.
 #
 # Read-only against live: dump = pg_dump (SELECT), storage = GET. Nothing is written
@@ -61,6 +63,7 @@ jobs:
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
       MONITOR_SLUG: ehow-weekly-backup
       SUPABASE_URL: https://ehowgjardagevnrluult.supabase.co
+      CAPTURE_AUTH: 'true'   # ehow has 50 live auth.users — capture the managed auth schema
     steps:
       # ── Sentry cron: check in "in_progress" (upserts the monitor incl. schedule) ──
       - name: Sentry check-in (start)
@@ -120,7 +123,25 @@ jobs:
             echo "::error::Dump looks empty/partial (data.sql=${DATA_BYTES} bytes) — refusing to upload."
             exit 1
           fi
-          tar czf "db_backup_${BACKUP_DATE}.tar.gz" roles.sql schema.sql data.sql
+          TAR_FILES="roles.sql schema.sql data.sql"
+
+          # Identity capture: the default dump above EXCLUDES the managed `auth` schema.
+          # Naming --schema auth explicitly overrides that. ehow holds 50 live auth.users
+          # (Service/Field users) — omitting them would ship a hollow backup, and Tier-1
+          # (managed daily) dies WITH the account in the total-loss disaster Tier-2 exists
+          # for. Mirrors backup-eq-canonical.yml.
+          if [ "${CAPTURE_AUTH:-}" = "true" ]; then
+            supabase db dump --db-url "$SUPABASE_DB_URL" -f auth_data.sql --data-only --schema auth
+            AUTH_BYTES=$(wc -c < auth_data.sql)
+            echo "auth_data.sql=${AUTH_BYTES}B"
+            if [ "$AUTH_BYTES" -lt 512 ]; then
+              echo "::error::auth_data.sql looks empty (${AUTH_BYTES}B) but ehow has live users — refusing to ship a hollow backup. Confirm the --schema auth dump on the first armed run."
+              exit 1
+            fi
+            TAR_FILES="$TAR_FILES auth_data.sql"
+          fi
+
+          tar czf "db_backup_${BACKUP_DATE}.tar.gz" $TAR_FILES
           ls -lh "db_backup_${BACKUP_DATE}.tar.gz"
 
       - name: Upload database backup to R2
