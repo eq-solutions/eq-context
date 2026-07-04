@@ -132,17 +132,22 @@ jobs:
             exit 1
           fi
 
-          # Count data rows in a table's COPY block (up to the \. terminator). pg_dump
-          # only quotes identifiers that need it, so lowercase names come out UNQUOTED
-          # (COPY app_data.sites ...) — the "?/[.] pattern matches quoted and unquoted,
-          # and the [ (] tail avoids prefix collisions (sites vs sites_history).
+          # Count data rows for a table across BOTH dump formats: a COPY block (data.sql
+          # is dumped with --use-copy) OR INSERT statements (auth_data.sql is dumped
+          # WITHOUT --use-copy, so auth.users lands as INSERTs — that mismatch turned the
+          # first live run red). pg_dump only quotes identifiers that need it, so the
+          # "?/[.] pattern matches quoted and unquoted; the [ (] tail avoids prefix
+          # collisions (sites vs sites_history, users vs user_roles).
           count_rows () {  # $1=file $2=schema $3=table
-            awk -v s="$2" -v t="$3" '
+            local copyc insertc
+            copyc=$(awk -v s="$2" -v t="$3" '
               BEGIN { pat = "^COPY \"?" s "\"?[.]\"?" t "\"?[ (]" }
               $0 ~ pat {inblk=1; next}
               inblk && /^\\\.$/ {inblk=0; next}
               inblk {c++}
-              END{print c+0}' "$1"
+              END{print c+0}' "$1")
+            insertc=$(grep -cE "^INSERT INTO \"?$2\"?[.]\"?$3\"?[ (]" "$1" || true)
+            echo $((copyc + insertc))
           }
 
           # 4. Every EXPECT_ROWS table must have restored with real rows.
