@@ -12,10 +12,10 @@ status: live
 **Owner:** Royce
 **Applies to:** ehow / `ehowgjardagevnrluult` (shared canonical DB) — the offsite backup produced by
 [`.github/workflows/backup-ehow.yml`](../../.github/workflows/backup-ehow.yml).
-**Cadence:** Quarterly (first week of each quarter).
-**Last drill:** _not yet run._
-**Next drill due:** 2026-07-06.
-**Estimated time:** 60–90 minutes end to end.
+**Cadence:** **Automated quarterly** ([`restore-drill-ehow.yml`](../../.github/workflows/restore-drill-ehow.yml), Sentry `ehow-restore-drill`; 1st of Jan/Apr/Jul/Oct). This manual runbook is the deeper, occasional variant.
+**Last drill:** 2026-07-04 — automated, ✅ **pass**, **RTO 6 s** (241 sites / 44 customers / 4 checks restored, RLS intact; auth-data restore is a Supabase-parity step — see the callout below).
+**Next drill (automated):** 2026-10-01.
+**Estimated time:** automated run ~1 min; the full manual game-day below is 60–90 minutes end to end.
 **Severity if this fails in a real incident:** Critical — the whole platform depends on ehow.
 
 > Re-homed to eq-context from eq-service and retargeted from the **deleted** `urjhmkhbgaxrofurpbgc`
@@ -23,13 +23,18 @@ status: live
 
 ---
 
-> **This is now the rare "game-day", not the everyday check.** The backup's **data integrity**
-> (archive intact, real rows present, `auth.users` captured) is verified **automatically every day**
-> by [`.github/workflows/verify-backup-ehow.yml`](../../.github/workflows/verify-backup-ehow.yml)
-> (Sentry monitor `ehow-backup-verify`). This manual drill exists to prove the part automation
-> can't cheaply cover: that the dump **executes** into a real Supabase-parity target and the **app
-> comes back** within RTO. Run it occasionally as a game-day — it is no longer the only thing
-> standing between us and knowing the data is recoverable.
+> **Two automated layers now cover most of this — this manual runbook is the deepest, rarest variant.**
+> **Daily**, [`verify-backup-ehow.yml`](../../.github/workflows/verify-backup-ehow.yml) (Sentry
+> `ehow-backup-verify`) checks the backup's **data integrity** — archive intact, real rows,
+> `auth.users` captured. **Quarterly**, [`restore-drill-ehow.yml`](../../.github/workflows/restore-drill-ehow.yml)
+> (Sentry `ehow-restore-drill`) proves **executability** — it actually restores the tarball into an
+> ephemeral Supabase-parity Postgres and verifies the app-data comes back (241 sites / 44 customers,
+> RLS intact) with an RTO number.
+>
+> What automation still can't cheaply cover, and this runbook is for: (1) restoring **auth data** into
+> a true Supabase target — `supabase db dump` excludes the managed auth *schema*, so auth rows only
+> load where Supabase provisions that schema (a fresh project/branch), not a bare container; and
+> (2) the **app-repoint** smoke test. Run this occasionally to close those two gaps.
 
 ## Why this runbook exists
 
@@ -179,6 +184,7 @@ Add a row to the **Drill log** below with the achieved RTO/RPO. Open an issue fo
 | Date | Tier | Backup timestamp | Target | Outcome | Elapsed (RTO) | Rows present? | Findings | Operator |
 |---|---|---|---|---|---|---|---|---|
 | _example_ | 2 (R2) | 2026-07-05 02:00 UTC | branch `drill-20260706` | ✅ clean, rows present | 52 min | yes | none | Royce |
+| 2026-07-04 | 2 (R2) | `2026-07-04_0812` | ephemeral `supabase/postgres:17.6` (CI) | ✅ app-data restored & sound | **6 s** | yes — 241 sites / 44 customers / 4 checks; 210 tables; public-no-RLS 1 = baseline | auth.users 0/5: the dump excludes the managed auth **schema**, so auth **data** loads only into a real Supabase target (capture proven daily by `verify-backup-ehow`). App-data fully restorable. | Claude — automated `restore-drill-ehow.yml` |
 
 _(Fill in after each drill. Never delete old rows.)_
 

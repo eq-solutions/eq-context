@@ -206,6 +206,17 @@ jobs:
           echo "  RTO (pull + restore + verify): ${RTO}s"
           echo "──────────────────────────────────────────────────────────────"
 
+          # Auth note: the dump captures auth DATA (auth_data.sql) but NOT the managed auth
+          # SCHEMA (supabase db dump excludes it). auth rows therefore only load into a real
+          # Supabase-parity target — which provisions the current auth schema — not this bare
+          # container (whose auth schema is a different version). This is NOT a backup gap:
+          # verify-backup-ehow proves auth.users is captured (=5) daily. A real DR restores
+          # into a fresh Supabase project, which supplies the schema. So this drill gates on
+          # APP-DATA restorability; auth-data restore is validated on a Supabase target.
+          if [ "$AUTH" != "ERR" ] && [ "${AUTH:-0}" -lt "$EXPECT_AUTH" ]; then
+            echo "  note: auth.users restored ${AUTH}/${EXPECT_AUTH} — expected in a bare container (auth SCHEMA is managed/excluded from the dump; auth DATA restores into a real Supabase target). Auth capture is proven daily by verify-backup-ehow."
+          fi
+
           # Gate: the canonical core must be present and queryable — that is "restorable".
           if [ "$SITES" = "ERR" ] || [ "$CUST" = "ERR" ]; then
             echo "::error::core tables not queryable after restore — schema restore failed."

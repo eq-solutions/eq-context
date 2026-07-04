@@ -50,7 +50,8 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **eq-service backup retired** — eq-service PR #438 merged: deleted `backup.yml` + tombstoned its runbook → pointer to eq-context. Worktree pruned. _(done 2026-07-04)_
 
 **Still open (your call):**
-- [ ] **Run the first manual restore game-day** — full restore into a Supabase-parity target + app repoint (proves executability + operational RTO). Data-integrity is covered daily by the automated verify; this is the rarer human drill. _(carried 2026-07-04)_
+- [x] **Game-day restore drill — automated + first run passed** — built `restore-drill-ehow.yml` (PRs #69–#72): restores the freshest R2 tarball into an ephemeral `supabase/postgres:17.6`, verifies app-data, reports RTO. First run ✅ **RTO 6 s** (241 sites / 44 customers / 4 checks restored, RLS = baseline). Quarterly cron + Sentry `ehow-restore-drill`. Took 4 runs to green (surfaced real findings: `auth.jwt()` dependency, `supabase_admin`-only seed). _(done 2026-07-04)_
+- [ ] **Occasional deep game-day (rare, human)** — restore **auth data** into a real Supabase target (the dump excludes the managed auth *schema*, so auth rows only load where Supabase provisions it) + app-repoint smoke test. Not automatable cheaply; do when convenient. _(carried 2026-07-04)_
 - [x] **Cloned the verify to eq-canonical + eq-canonical-internal** — `verify-backup-eq-canonical{,-internal}.yml` (PR #67, merged); both dispatched **green** (eq-canonical: users 49 / workers 74 / auth 50; internal: customers 50 / sites 30). All three planes now self-verify daily, staggered 05:00 / 05:15 / 05:30 UTC. _(done 2026-07-04)_
 
 **Notes:**
