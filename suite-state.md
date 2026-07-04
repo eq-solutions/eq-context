@@ -61,7 +61,8 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-04)
 
 **eq-shell:**
-- #647 fix(tenants): auto-join creating admin so new tenants are reachable
+- #652 0161: reassert security_invoker on app_data.field_job_numbers (RLS bypass fix)
+- #651 0160: eq_merge_sites RPC — governed site-dedup (QA row 29 follow-up)
 - #637 docs: pnpm-workspace.yaml — packages are vendored, not a git submodule
 - #636 build: pin @eq-solutions/ui to release tag v1.10.0 for reproducible builds
 - #635 feat(canonical-api): move APP_TENANT_SCOPE allow-list to a shell_control table
@@ -74,7 +75,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ? in_progress |
+| eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
