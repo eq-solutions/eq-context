@@ -142,7 +142,10 @@ jobs:
           # dump above EXCLUDES. Naming --schema auth explicitly overrides the exclusion.
           # Omitting it would ship a hollow backup of the crown jewel (auth.users).
           if [ "${CAPTURE_AUTH}" = "true" ]; then
-            supabase db dump --db-url "$SUPABASE_DB_URL" -f auth_data.sql --data-only --schema auth
+            # --use-copy so auth lands as a COPY block like data.sql (one consistent format
+            # across the dump, and the verify job counts exact auth.users rows, not just
+            # presence — a bare dump emits one multi-row INSERT that reads as "1").
+            supabase db dump --db-url "$SUPABASE_DB_URL" -f auth_data.sql --data-only --schema auth --use-copy
             AUTH_BYTES=$(wc -c < auth_data.sql)
             echo "auth_data.sql=${AUTH_BYTES}B"
             # This project has live auth.users (50 verified 2026-07-04). An empty auth
