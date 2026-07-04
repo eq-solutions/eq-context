@@ -14,6 +14,22 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-04 (branding + entitlements canonicalised — one tenant record; SKS Field leak found + closed) — 3 eq-shell PRs, 6 migrations, legacy dropped
+
+*Royce directive: branding + app-tile entitlements are canonical concepts — one copy, org-keyed, not duplicated in shell_control. Steelmanned the north star (organisations = the tenant's identity + capabilities; shell_control = routing/auth/session mechanics), verified live, built in safe phases with a sync-trigger bridge.*
+
+**Completed:**
+- [x] **Branding → canonical** (eq-shell #644 merged+deployed; migrations `2026_07_04b` M1 + `2026_07_04c` M2 applied): collapsed the duplicate `shell_control.tenants.brand_color/brand_logo_url` into `public.organisations.branding` (palette + hubLogo). Session/JWT shape unchanged — brand fields still transported, now DERIVED via `_shared/supabase.ts getTenantBranding`. 12 mint/verify/token-exchange fns repointed; AdminTenantSettings merged to one Branding section; brand columns dropped. _(done 2026-07-04)_
+- [x] **App-tile entitlements → canonical** (Stage A #648 readers + Stage B #650 writers/RPCs; migrations `2026_07_04d` M1, `2026_07_04e` M2a, `2026_07_04f` M2b applied): new born-closed `public.org_module_entitlements` (org-keyed) replaces tenant-keyed `shell_control.module_entitlements`. 10 session-mint readers + 7 writers + 3 RPCs (provision_tenant, eq_get/update_tenant_settings) repointed; legacy→canonical sync trigger bridged the cutover then dropped with the legacy table. Verified canon==legacy==18. _(done 2026-07-04)_
+- [x] **field_job_numbers SKS cross-tenant leak closed** (eq-shell #653 + eq-field #405 merged, `20260704b` applied to ehow): an out-of-band definer-view leaked SKS quote/customer/site data to any authed user (surfaced while unblocking the drift gate). Fix = security_invoker view over a SECDEF fn returning only the 11 safe columns; `app_data.quote` financials stay unreachable. Verified live: board reads 23 rows, authenticated can't touch quote. _(done 2026-07-04)_
+
+**Deferred:**
+- [ ] **field_job_numbers provenance** — the view was created out-of-band (not originally in a repo migration); who made it + whether other planes need it tracked as `task_0467f68c`. _(added 2026-07-04)_
+
+**Mistake logged:** my first field_job_numbers remediation (`revoke authenticated`) broke the SKS Field board live — I acted on a background grep I read mid-run ("no consumer") before it finished. Concurrent session's invoker-over-SECDEF fix restored it. Memory lesson: never act on a mid-run background result before a security/prod call.
+
+---
+
 ## ⏩ Session close — 2026-07-04 (eq-field live errors triaged + fixed) — v3.5.240 lazy-loader double-load guard shipped; 3 Sentry issues cleared
 
 *Post-DR, asked "what's next" → filtered through TODAY.md (Q3 outcome 1: NSW using the product) + the digest's "Needs you": 3 live eq-field Sentry errors. Triaged each against authoritative Sentry data (release / env / recurrence).*
