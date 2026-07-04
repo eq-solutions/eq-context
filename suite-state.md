@@ -61,7 +61,6 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-04)
 
 **eq-service:**
-- #438 chore(dr): retire eq-service offsite backup — platform DR moved to eq-context (#60)
 - #437 fix: audit-log attachment upload + delete mutations (+ Zod validation)
 
 **eq-shell:**
