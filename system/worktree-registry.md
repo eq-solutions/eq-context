@@ -24,7 +24,9 @@ Check this file first — if your target repo/area is already claimed, coordinat
 
 | Folder | Branch | Agent / Session | Claimed | Status |
 |--------|--------|-----------------|---------|--------|
-| .claude/worktrees/tenant-page-admin-actions (eq-shell) | claude/tenant-page-admin-actions | Claude (Tenants page: archive/reactivate, edit, data-plane errors) | 2026-07-03 | DONE — PR #622 open; dir removable after merge |
+| .claude/worktrees/tenant-hard-delete (eq-shell) | claude/tenant-hard-delete | Claude (Tenants page — hard-delete archived tenants) | 2026-07-04 | in progress |
+| .claude/worktrees/provision-stuck-cancel (eq-shell) | claude/provision-stuck-cancel | Claude (Tenants page — cancel/clear a stuck data-plane provisioning job) | 2026-07-04 | DONE — PR #641 open; dir removable after merge |
+| .claude/worktrees/tenant-page-admin-actions (eq-shell) | claude/provision-tenant-background-fn | Claude (fix: provision-tenant 504 — convert to background fn) | 2026-07-03 | DONE — PR #627 MERGED 09:47:09Z; dir removable |
 | .claude/worktrees/dreamy-meninsky-7082ba (eq-shell) | claude/dreamy-meninsky-7082ba | STALE ROW — dir was reused by another session (now on claude/field-nomination-views-security-invoker); this row no longer describes its contents | 2026-07-03 | reused — do not trust folder name |
 | .claude/worktrees/provision-identity (eq-cards) | claude/provision-identity | Claude (chip task_28defc38, Cards provision name/email) | 2026-07-03 | DONE — PR #118 open; dir removable after merge |
 | .claude/worktrees/quote-pdf-fix (eq-shell) | claude/quote-pdf-fix | Claude (chip task_d40bcb24, Ops PDF export) | 2026-07-03 | DONE — PR #615 open; dir removable after merge |
