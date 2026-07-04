@@ -8,7 +8,7 @@ status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-07-03 (nightly cron)_
+_Last verified: 2026-07-04 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -58,7 +58,7 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-07-03)
+## Open PRs (as of 2026-07-04)
 
 **eq-shell:**
 - #637 docs: pnpm-workspace.yaml — packages are vendored, not a git submodule
@@ -67,7 +67,7 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## System Health (as of 2026-07-03)
+## System Health (as of 2026-07-04)
 
 **CI on main:**
 
@@ -82,7 +82,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 174 (latest: 0170) applied
+**Migrations:** eq-service has 175 (latest: 0171) applied
 
 ---
 
