@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-04 07:05 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-04 07:16 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-04 06:36 UTC → 2026-07-04 07:05 UTC)
+## Since last refresh (2026-07-04 07:05 UTC → 2026-07-04 07:16 UTC)
 
-- Merged: eq-shell [#643](https://github.com/eq-solutions/eq-shell/pull/643) feat(branding): self-serve tenant document branding editor
-- Merged: eq-shell [#626](https://github.com/eq-solutions/eq-shell/pull/626) fix(admin): resolve --eq-ink to a real hex value for the wor
-- Merged: eq-shell [#624](https://github.com/eq-solutions/eq-shell/pull/624) fix(provisioning): tenant_routing NOT NULL columns block eve
-- Merged: eq-shell [#618](https://github.com/eq-solutions/eq-shell/pull/618) fix(security): reassert security_invoker on field_managers +
-- Merged: eq-shell [#617](https://github.com/eq-solutions/eq-shell/pull/617) Harden self-serve tenant provisioning: transactional RPC, ph
-- Merged: eq-shell [#614](https://github.com/eq-solutions/eq-shell/pull/614) feat(staff): Add-to-roster action — dedupe-first roster-only
-- Merged: eq-shell [#613](https://github.com/eq-solutions/eq-shell/pull/613) feat(customers): batch delete/archive for sites
-- Merged: eq-shell [#612](https://github.com/eq-solutions/eq-shell/pull/612) fix(governance): adopt quality-guardian tables — tenant-JWT 
+- Merged: eq-shell [#638](https://github.com/eq-solutions/eq-shell/pull/638) fix(provisioning): shell_control.provision_tenant never actu
+- Merged: eq-shell [#634](https://github.com/eq-solutions/eq-shell/pull/634) fix(sync-quotes-nightly): check errors on Flask write-back +
+- Merged: eq-shell [#633](https://github.com/eq-solutions/eq-shell/pull/633) docs: correct CLAUDE.md — EQ_SECRET_SALT is the fallback sig
+- Merged: eq-shell [#627](https://github.com/eq-solutions/eq-shell/pull/627) fix(provisioning): convert provision-tenant to a background 
+- Merged: eq-shell [#625](https://github.com/eq-solutions/eq-shell/pull/625) feat(security): view security_invoker invariant (CHECK 7) + 
+- Merged: eq-shell [#623](https://github.com/eq-solutions/eq-shell/pull/623) fix(intake): re-vendor field-name + plain-English fixes from
+- Merged: eq-shell [#622](https://github.com/eq-solutions/eq-shell/pull/622) Tenants page: edit tier/modules, archive/reactivate
+- Merged: eq-shell [#621](https://github.com/eq-solutions/eq-shell/pull/621) fix(ops): remove broken per-column Status filter in table vi
 
 ## ⚠ Needs you (4)
 
@@ -33,7 +33,7 @@ _2026-07-04 07:05 UTC · what needs your attention. Full snapshot: [suite-state.
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
 | eq-shell | ? unknown | ? | 3 | 0d |
-| eq-solves-service | ✓ success | 0d ago | 0 | — |
+| eq-solves-service | ✓ success | 0d ago | 3 | 0d |
 | eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ? unknown | ? | 0 | — |
@@ -60,6 +60,8 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-04 | eq-shell | [#642](https://github.com/eq-solutions/eq-shell/pull/642) Tenants page: permanently delete an archived tenant |
 | 2026-07-04 | eq-solves-service | [#432](https://github.com/eq-solutions/eq-service/pull/432) chore: drop dead GOTENBERG_URL from .env.example (Fly.io retired) |
 | 2026-07-04 | eq-solves-service | [#431](https://github.com/eq-solutions/eq-service/pull/431) fix: restore public.canonical_outbox, dropped by mistake on 2026- |
+| 2026-07-04 | eq-field | [#400](https://github.com/eq-solutions/eq-field/pull/400) v3.5.235 — leave CC list: refresh panel from DB on open |
+| 2026-07-04 | eq-field | [#399](https://github.com/eq-solutions/eq-field/pull/399) v3.5.235 — enable weekly TAFE auto-fill on SKS (QA row 34) |
 | 2026-07-04 | eq-field | [#398](https://github.com/eq-solutions/eq-field/pull/398) v3.5.234 — route app_config writes through the authenticated data |
 | 2026-07-04 | eq-field | [#397](https://github.com/eq-solutions/eq-field/pull/397) chore: remove retired-Quotes CORS origins (Fly.io retired) |
 | 2026-07-04 | eq-field | [#396](https://github.com/eq-solutions/eq-field/pull/396) v3.5.233 — QA row 28: prestart 'use last for this site' |
@@ -68,8 +70,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-04 | eq-field | [#393](https://github.com/eq-solutions/eq-field/pull/393) v3.5.230 — QA row 19: bridge Weekly Roster → Edit Roster |
 | 2026-07-04 | eq-field | [#392](https://github.com/eq-solutions/eq-field/pull/392) v3.5.229 — QA: labour-hire DID NOT WORK + hide Add Person on SKS  |
 | 2026-07-04 | eq-field | [#391](https://github.com/eq-solutions/eq-field/pull/391) v3.5.228 — QA sheet: leave back nav + managers out of contacts (r |
-| 2026-07-04 | eq-field | [#390](https://github.com/eq-solutions/eq-field/pull/390) v3.5.227 — QA sheet: middle-name linking + remove 3 redundant but |
-| 2026-07-04 | eq-field | [#389](https://github.com/eq-solutions/eq-field/pull/389) v3.5.225 — prestart: full SKS template (export + form capture) |
 _Showing 15 of 126 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -116,4 +116,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-04 07:05 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-04 07:16 UTC._
