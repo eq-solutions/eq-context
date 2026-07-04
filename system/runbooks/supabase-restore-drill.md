@@ -1,3 +1,12 @@
+---
+title: Runbook — Supabase backup restoration drill (ehow)
+owner: Royce Milmlow
+last_updated: 2026-07-04
+scope: Manual restore game-day for the ehow offsite backup — executability + RTO/RPO validation
+read_priority: high
+status: live
+---
+
 # Runbook — Supabase backup restoration drill (ehow)
 
 **Owner:** Royce
@@ -14,9 +23,17 @@
 
 ---
 
+> **This is now the rare "game-day", not the everyday check.** The backup's **data integrity**
+> (archive intact, real rows present, `auth.users` captured) is verified **automatically every day**
+> by [`.github/workflows/verify-backup-ehow.yml`](../../.github/workflows/verify-backup-ehow.yml)
+> (Sentry monitor `ehow-backup-verify`). This manual drill exists to prove the part automation
+> can't cheaply cover: that the dump **executes** into a real Supabase-parity target and the **app
+> comes back** within RTO. Run it occasionally as a game-day — it is no longer the only thing
+> standing between us and knowing the data is recoverable.
+
 ## Why this runbook exists
 
-Supabase takes automatic daily backups, and this repo takes a weekly offsite copy to R2 — but
+Supabase takes automatic daily backups, and this repo takes a daily offsite copy to R2 — but
 **a backup is not a backup until it has been restored successfully at least once.** This runbook
 proves, on a recurring basis, that:
 
@@ -26,7 +43,7 @@ proves, on a recurring basis, that:
 4. The restore completes inside the recovery objectives we commit to.
 
 **RTO target:** 4 h (Tier 1, Supabase managed) / 8 h (Tier 2, offsite R2 → fresh project).
-**RPO target:** 24 h (Tier 1 daily) / ≤ 7 days (Tier 2 weekly).
+**RPO target:** 24 h (Tier 1 daily) / ≤ 24 h (Tier 2 daily).
 Full rationale + tier table: [`system/dr-backups.md`](../dr-backups.md).
 
 > **Data-presence check is not optional.** The retired eq-service job dumped **schema only** (bare
@@ -67,8 +84,8 @@ Start-Process "https://supabase.com/dashboard/project/ehowgjardagevnrluult/datab
 ```
 Expected: a daily backup within the last 24 h. Note its timestamp.
 
-**Tier 2 (offsite R2):** confirm the most recent weekly folder holds both `db_backup.tar.gz` and a
-`storage/` tree, and that the Sentry monitor `ehow-weekly-backup` is green. If either the R2 copy or
+**Tier 2 (offsite R2):** confirm the most recent daily folder holds both `db_backup.tar.gz` and a
+`storage/` tree, and that the Sentry monitor `ehow-daily-backup` is green. If either the R2 copy or
 the Sentry monitor is missing/stale, **that itself is an incident** — the schedule is broken.
 
 Pick which tier you are drilling this quarter (alternate: Tier 1 one quarter, Tier 2 the next).
@@ -94,7 +111,7 @@ Record the target ref.
 aws s3 cp "s3://<R2_BUCKET>/<YYYY-MM-DD_HHMM>/db_backup.tar.gz" `
   "C:\Projects\eq-context\drill-backup.tar.gz" `
   --endpoint-url "<R2_ENDPOINT>"
-tar xzf "C:\Projects\eq-context\drill-backup.tar.gz"   # → roles.sql schema.sql data.sql
+tar xzf "C:\Projects\eq-context\drill-backup.tar.gz"   # → roles.sql schema.sql data.sql auth_data.sql
 ```
 
 **Tier 1 (Supabase managed):** download the daily `.backup`/`.sql.gz` from the dashboard backups page.
@@ -109,6 +126,11 @@ $env:DRILL_DB_URL = "postgresql://postgres:<password>@db.<drill-ref>.supabase.co
 psql $env:DRILL_DB_URL -f roles.sql
 psql $env:DRILL_DB_URL -f schema.sql
 psql $env:DRILL_DB_URL -f data.sql
+# auth users — the tarball now ships auth_data.sql (--data-only over the managed
+# `auth` schema, which already exists on a fresh Supabase target). Expect a few COPY
+# conflicts on Supabase's own built-in rows; the real user rows are what matter.
+# Proving THIS path clean is a primary goal of the drill for any DB with real users.
+psql $env:DRILL_DB_URL -f auth_data.sql
 ```
 A healthy restore is mostly `CREATE` / `ALTER` / `COPY` and finishes without `ROLLBACK`.
 
@@ -130,12 +152,11 @@ select count(*) from pg_class c join pg_namespace n on n.oid=c.relnamespace
 where n.nspname='public' and c.relkind='r' and not c.relrowsecurity;
 ```
 Expected: table count ≈ production; **row counts non-zero** for sites/customers/checks; `auth.users`
-present (or explicitly noted as not covered by Tier 2 → recover auth via Tier 1). Zero unprotected
-public tables.
+present (ehow ships ~5, whatever the live count is at backup time). Zero unprotected public tables.
 
-> If `auth.users` comes back empty on a Tier-2 restore, that is a **finding**: the offsite dump is
-> not capturing auth data and the workflow needs an explicit `--schema auth` data dump added. Record
-> it below and open an issue.
+> The Tier-2 dump **does** capture `auth` (`backup-ehow.yml` sets `CAPTURE_AUTH=true` →
+> `auth_data.sql`). So if `auth.users` comes back empty after restoring `auth_data.sql`, that is a
+> **regression finding** — the auth capture or its restore broke. Record it below and open an issue.
 
 ### Step 6 — Tear down
 
@@ -187,6 +208,10 @@ _(Fill in after each drill. Never delete old rows.)_
 
 ## Change log
 
+- 2026-07-04 (later) — Backups flipped weekly → **daily** and armed green; runbook updated to match:
+  RPO ≤ 24 h (Tier 2), monitor slug `ehow-daily-backup`, and an explicit `auth_data.sql` restore step
+  (the offsite dump now captures `auth`, so auth-empty-on-restore is a regression, not a gap). Same
+  procedure applies to `eq-canonical` / `eq-canonical-internal` under their R2 prefixes. Not yet drilled.
 - 2026-07-04 — Re-homed to eq-context, retargeted urjh → ehow, added Tier-2 (R2 tarball) restore path
   and a row-count presence check (catches the schema-only-dump class of failure). Not yet drilled.
 - 2026-04-16 — Original runbook created in eq-service (roadmap item 14). Never drilled.

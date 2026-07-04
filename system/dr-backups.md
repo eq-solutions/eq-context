@@ -1,7 +1,16 @@
+---
+title: Disaster Recovery — platform backups
+owner: Royce Milmlow
+last_updated: 2026-07-04
+scope: Platform-level DR — offsite backups + restore verification for the shared EQ Supabase DBs
+read_priority: high
+status: live
+---
+
 # Disaster Recovery — platform backups
 
 **Owner:** Royce
-**Status:** ⚠️ DRAFT — ehow + eq-canonical + eq-canonical-internal jobs authored, **none armed** (secrets + Sentry monitors pending)
+**Status:** ✅ ARMED — all three jobs (ehow / eq-canonical / eq-canonical-internal) **green on their first manual runs 2026-07-04**; `production-ops` Environment + secrets + Sentry monitors live. **Not yet drilled** — restore drill due 2026-07-06.
 **Scope:** the shared EQ platform substrate. SKS-only DBs are out of scope (SKS owns their DR).
 **Last reviewed:** 2026-07-04 (issue [#60](https://github.com/eq-solutions/eq-context/issues/60), verified live)
 
@@ -16,7 +25,8 @@ backup for the whole shared database.
 **eq-context owns platform DR.** It runs one offsite backup **per irreplaceable platform DB**
 — **ehow** (shared canonical), **eq-canonical** (identity/control plane) and
 **eq-canonical-internal** (tenant data plane) — to Cloudflare R2, daily, each monitored by
-Sentry. The per-app copy in eq-service is retired once the ehow job is proven green. Other
+Sentry. The per-app copy in eq-service is being retired now the ehow job is green
+([eq-service PR #438](https://github.com/eq-solutions/eq-service/pull/438)). Other
 live DBs are assessed per-project below.
 
 ---
@@ -127,7 +137,8 @@ Every job produces a **complete logical DB dump** — three files per Supabase's
 ## Monitoring / alerting
 
 **One Sentry cron check-in monitor per job** (org `eq-solutions`), slugs:
-`ehow-daily-backup`, `eq-canonical-daily-backup`, `eq-canonical-internal-daily-backup`.
+`ehow-daily-backup`, `eq-canonical-daily-backup`, `eq-canonical-internal-daily-backup`,
+plus `ehow-backup-verify` (the automated restore-verify — see next section).
 Each job checks in `in_progress` → `ok`/`error` and declares its own crontab schedule, so Sentry
 alerts on **both**:
 
@@ -137,8 +148,32 @@ alerts on **both**:
   2026-05-17; nobody paged).
 
 Until `SENTRY_DSN` is set the jobs run but print a loud `UNMONITORED` warning (arm cleanly, like
-`handoff-probe.yml`). All three reuse the **same** `SENTRY_DSN` (eq-context Sentry project); only
+`handoff-probe.yml`). All jobs reuse the **same** `SENTRY_DSN` (eq-context Sentry project); only
 the monitor slug differs.
+
+---
+
+## Proving restorability — automated verify + rare game-day
+
+A backup nobody restores fails silently — that is the whole reason #60 exists. So restorability
+is proven in **two layers**, rather than relying on a human remembering a quarterly drill:
+
+- **Automated, daily — data integrity.**
+  [`verify-backup-ehow.yml`](../.github/workflows/verify-backup-ehow.yml) pulls the freshest ehow
+  tarball from R2, checks the archive is intact, and asserts the dump holds real **rows**
+  (`app_data.sites` / `customers`) and **`auth.users`** — so a hollow/schema-only dump, a
+  truncated upload, or a dropped auth capture goes **red** (Sentry `ehow-backup-verify`) the next
+  morning, not at incident time. It only **GETs** the R2 artifact — never touches a live DB (needs
+  R2 keys + `SENTRY_DSN`, nothing else — the least-privilege job in the set). Parameterised like
+  the backup jobs, so eq-canonical / -internal verifies are a copy away.
+- **Rare, manual — executability + operational RTO.** The full restore-into-a-real-target drill
+  ([`runbooks/supabase-restore-drill.md`](runbooks/supabase-restore-drill.md)) proves the SQL
+  actually executes and the app comes back. It needs a Supabase-parity target (a bare Postgres
+  container lacks the managed `auth` schema), so it stays a human **game-day** — now the *only*
+  part that needs a calendar entry, and far less often.
+
+The automated layer converts DR from "we hope it works" into "proven fresh daily, alarmed if it
+breaks." (Added PR #63 — verifies live once merged, since `production-ops` is main-only.)
 
 ---
 
@@ -162,12 +197,14 @@ the monitor slug differs.
 5. **Run each once manually** (`workflow_dispatch`) → confirm green, confirm `db_backup.tar.gz`
    and `storage/` land under the right R2 prefix, confirm each Sentry monitor shows a check-in.
    - **eq-canonical first run — confirm `auth_data.sql` is present and non-empty in the tarball.**
-     This is the one part not yet proven against live (no armed run): if `supabase db dump
-     --schema auth` behaves unexpectedly, the guard fails the run loudly (read-only, no damage).
+     ✅ Proven on the first armed run (2026-07-04): `--schema auth` captured `auth.users` and the
+     non-empty guard passed on all three jobs. The auth *restore* path is still validated by the drill.
 6. **Run the first restore drill** (`system/runbooks/supabase-restore-drill.md`) — record RTO/RPO;
    for eq-canonical specifically, verify the **auth restore** path.
 7. **Retire the eq-service copy** — delete `eq-service/.github/workflows/backup.yml` in a separate
    eq-service PR **after** the ehow run is green (avoid the double-backup trap). Not done from eq-context.
+   ✅ [eq-service PR #438](https://github.com/eq-solutions/eq-service/pull/438) open 2026-07-04 (delete
+   workflow + tombstone the old runbook → pointer to this repo).
 
 ---
 
