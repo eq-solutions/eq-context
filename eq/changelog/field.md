@@ -9,6 +9,18 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-04] v3.5.225–v3.5.233 — QA sheet (EQ Field 4.7.26.xlsx): all 35 rows worked through
+- **v3.5.225 (PR #389)** — Prestart .docx rebuilt to match the SKS template exactly (12 sections); logo + palette + "<TENANT> DAILY PRE-START" title all canonical-driven. Form now captures every section (project#, affects-trades, Controls repeater, 8 tickable Measures Yes/No/NA, Other-Hazards repeater, Permit checkboxes). +6 nullable columns on `public.prestarts` on **ehow AND zaap** (project_number, affects_trades, controls, other_hazards, permits_selected, measures). Row 32.
+- **v3.5.226 (PR #390)** — Middle-name approver linking: canonical full legal names never matched the first+last staff index, so leave approvals silently unlinked. `leave-adapter.js nameToStaffId` now indexes + looks up a middle-dropped form both directions (covers leave/timesheets/roster). Rows 7/10/14.
+- **v3.5.227 (PR #390)** — Removed 3 redundant buttons: Contacts "⬆ Canonical", Sites "🧹 Clean Up Codes" (also kills the `openCleanupCodes is not defined` console error), Edit-Roster "🖨 Weekly Site Report". Rows 16/17/33.
+- **v3.5.228 (PR #391)** — Leave "← Back to Leave" bar on the View-All-Requests list; Contacts now excludes anyone in the Supervision list (email-then-name match) via shared `_peopleExMgrs`/`_contactsCount` in utils.js (always-loaded; badge runs at boot before people.js). Rows 22/11.
+- **v3.5.229 (PR #392)** — Labour-hire "DID NOT WORK" pill fills Mon–Fri with `DNW` (added to the **spans renderer** — the 5-col table in timesheets.js is dead-code fallback); Add Person/Contact hidden on SKS via `body.tenant-sks .js-add-person`. Rows 24/37.
+- **v3.5.230 (PR #393)** — Supervisor-only "✏ Edit Roster" button bridges the read-only Weekly Roster to the editor. Row 19.
+- **v3.5.231 (PR #394)** — Middle-name display sweep across the remaining surfaces (timesheet name col, Contacts card+table, Leave list/table + CC chips); display-only, data keeps full name. Rows 7/14.
+- **v3.5.232 (PR #395)** — Site Audit "Project/Site" field is now a canonical site dropdown + free-type (self-contained `_auSiteDatalist`), matching prestart/toolbox. Row 27.
+- **v3.5.233 (PR #396)** — Prestart "↺ Use last for <SITE>" fills standing setup (contractor/project#/SWMS/HRCW/Controls/Hazards/Permits) from the most recent prestart at the selected site; not per-day content or crew. Row 28.
+- Deferred: Row 29 (auto-fill customer from site — needs the customer name in the Shell-owned `field_sites` view); Row 21 sub-bug (`app_config` writes 401 on SKS — anon lacks UPDATE; route via authenticated JWT, spawned `task_9942e427`); Row 30 (audit talk-to-text). Resolved by verification: row 4 (one "From Roster" button), row 8 (person-wizard moot on SKS now Add Person is hidden), row 23 (spans renderer already preserves scroll). Deliverable: annotated `EQ Field 4.7.26 - outcomes.xlsx`.
+
 ## [2026-07-03] v3.5.218–v3.5.222 — SKS QA batch: leave/timesheets/roster/safety fixes
 - **v3.5.218 (PR #382)** — leave submit's real error now logged (console + Sentry) instead of a generic toast; person names in Roster/Editor/mobile/batch-fill display "First Last" only (new `shortName()` helper, display-only); removed a duplicate static "Pre-fill from Roster" button on Timesheets.
 - **v3.5.219 (PR #383)** — Timesheets "Weekends" toggle now actually shows Sat/Sun columns (was wired to a table renderer superseded by the live "spans" renderer, which never read the toggle at all); Roster no longer shows "(unknown)" staff names on cold boot (staff-map load-order race — `loadCanonicalStaffMap()` moved ahead of the schedule fetch in `loadFromSupabase()`).

@@ -14,6 +14,43 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-04 (EQ Field QA sheet — worked through all 35 rows) — v3.5.225 → v3.5.233 shipped, sheet fully actioned
+
+*Royce handed a QA spreadsheet (`EQ Field 4.7.26.xlsx`, 35 rows) + a leave-console log + the SKS prestart .docx template. Worked every row to a resolved state; produced an annotated `EQ Field 4.7.26 - outcomes.xlsx` (Status + Outcome per row) in Royce's Downloads. Final tally: 24 done/verified, 9 answered, 1 deferred, 1 out-of-scope, 0 open.*
+
+**Built (all merged to main + live in prod, each live-verified on its preview):**
+- [x] **v3.5.225 — prestart = full SKS template** (PR #389): 12-section .docx matching the SKS template exactly; logo+palette+"<TENANT> DAILY PRE-START" title all canonical-driven; form now captures every section (project#, affects-trades, Controls repeater, 8 tickable Measures Yes/No/NA, Other-Hazards repeater, Permit checkboxes). Added 6 nullable cols to `public.prestarts` on **ehow AND zaap** (project_number, affects_trades, controls, other_hazards, permits_selected, measures). Row 32. _(done 2026-07-04)_
+- [x] **v3.5.226 — middle-name approver linking** (PR #390): canonical full legal names never matched the first+last staff index → leave approvals silently unlinked. `leave-adapter.js nameToStaffId` now indexes+looks up a middle-dropped form both directions (covers leave/timesheets/roster). Rows 7/10/14. _(done)_
+- [x] **v3.5.227 — removed 3 redundant buttons** (PR #390): Contacts "⬆ Canonical", Sites "🧹 Clean Up Codes" (also kills the `openCleanupCodes is not defined` console error), Edit-Roster "🖨 Weekly Site Report". Rows 16/17/33. _(done)_
+- [x] **v3.5.228 — leave "← Back to Leave" bar + managers out of Contacts** (PR #391): Contacts excludes anyone in the Supervision list (email-then-name match), shared helper `_peopleExMgrs`/`_contactsCount` in **utils.js** (always-loaded — badge runs at boot before people.js). Rows 22/11. _(done)_
+- [x] **v3.5.229 — labour-hire "DID NOT WORK" pill + hide Add Person on SKS** (PR #392): DNW fills Mon–Fri with `DNW` (in the **spans renderer** — the fallback table is dead code, caught by live smoke); Add Person/Contact hidden on SKS via `body.tenant-sks .js-add-person`. Rows 24/37. _(done)_
+- [x] **v3.5.230 — roster bridge** (PR #393): supervisor-only "✏ Edit Roster" button on the read-only Weekly Roster → jumps to the editor. Row 19 (Royce chose "bridge them"). _(done)_
+- [x] **v3.5.231 — middle-name display sweep** (PR #394): shortName() on the remaining display surfaces (timesheet name col, Contacts card+table, Leave list/table + CC chips); data attrs/values keep the full name. Rows 7/14. _(done)_
+- [x] **v3.5.232 — audit form canonical Site dropdown** (PR #395): Site Audit "Project/Site" now a canonical site datalist + free-type, matching prestart/toolbox; self-contained `_auSiteDatalist` so it works standalone. Row 27. _(done)_
+- [x] **v3.5.233 — prestart "↺ Use last for <SITE>"** (PR #396): fills standing setup (contractor/project#/SWMS/HRCW/Controls/Hazards/Permits) from the most recent prestart at the selected site; not per-day content or crew. Row 28. _(done)_
+
+**Decided (Royce):**
+- Measures = per-item tickable Yes/No/NA; wire ALL four new prestart sections into form+DB. (v3.5.225)
+- Row 25 (office-approved marker): the existing per-row approval chip (`toggleTsApproval`, v3.5.30) is enough — no new marker.
+- Row 19: bridge the two roster views (keep both + Edit button), not collapse.
+- Row 37: hide Add Person on SKS (people flow from Cards → canonical).
+- Row 29: keep deferred for the canonical work.
+
+**Deferred:**
+- [ ] **Row 29 — auto-fill customer from site (prestart)** — blocked: the Shell-owned `app_data.field_sites` view exposes `customer_id` but not the customer NAME. Needs the name surfaced in that view (+ SKS site→customer data confirmed) first; then the prestart prefill is a small client change. **(needs the canonical/Shell-side view change — your call)** _(added 2026-07-04)_
+- [ ] **Row 21 sub-bug — `app_config` writes 401 on SKS** — saving the leave CC list (and likely digest settings) uses the anon role, which has only SELECT on ehow `app_config` (authenticated has UPDATE). Fix = route app_config writes via the authenticated JWT (add to JWT_TABLES + JWT_INPLACE_TABLES). Running as spawned task **`task_9942e427`**. The leave email itself sends fine (server-side send-email fn). _(added 2026-07-04)_
+- [ ] **Row 30 — talk-to-text on the audit form** — prestart + toolbox have the mic; the audit is a Y/N/NA checklist with short comment inputs where dictation is low-value and the helper isn't cleanly reusable. Offered to add to the audit comment fields if Royce wants it. _(added 2026-07-04)_
+- [ ] **Rows 4 & 8 — resolved by verification, reopen only if they recur** — row 4 (duplicate "From Roster"): structurally only one button exists (the "twice" was the button + a muted-cell "from roster" label); row 8 (`?tab=person-wizard` blank): moot on SKS now that Add Person is hidden. Need a screenshot/repro to reopen either. _(added 2026-07-04)_
+
+**Notes:**
+- Annotated deliverable: `C:\Users\EQ\Downloads\EQ Field 4.7.26 - outcomes.xlsx` (Status + Outcome per row; source tracker at scratchpad `qa-tracker.json`).
+- ehow `public.app_config` grants (verified 2026-07-04): anon = SELECT only; authenticated = full CRUD; service_role = full. This is why anon-path config writes 401 on SKS (see row 21 deferred).
+- The DNW button and any timesheet name-cell change belong in **timesheets-spans.js** (`renderTimesheetsSpans`, Direction-B) — the 5-col table in timesheets.js is a fallback that only renders if the spans module fails to load. Editing the fallback is dead code on the live app.
+- Timesheet scroll (row 23) already preserved on v3.5.229 — the spans renderer restores `#page-timesheets` scrollTop (that element scrolls, not the window). No fix needed; verified live.
+- Brief-gate flag was cleared mid-session twice by concurrent `/close` runs (Step 6 deletes the day flag) — had to restore `eq-brief-<today>.flag` to keep editing eq-field. Not a wrong-repo block.
+
+---
+
 ## ⏩ Session close — 2026-07-04 (eq-tenant prestart fix + tenant branding model) — zaap column renamed, Shell branding editor spun off
 
 *Follow-on to v3.5.220's client `sks_rep`→`site_rep` fix (PR #384, 2026-07-03): that fixed the client + ehow/SKS, but the **eq demo tenant DB (zaap)** still had the old `sks_rep` column, so prestart saves on `?tenant=eq` kept 400ing. Then Royce asked to confirm the safety-doc templates carry per-tenant logo + colour.*
