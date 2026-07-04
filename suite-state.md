@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-04)
 
-**eq-service:**
-- #437 fix: audit-log attachment upload + delete mutations (+ Zod validation)
-
 **eq-shell:**
 - #647 fix(tenants): auto-join creating admin so new tenants are reachable
 - #637 docs: pnpm-workspace.yaml — packages are vendored, not a git submodule
@@ -77,7 +74,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ✓ success |
+| eq-service | ? in_progress |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
