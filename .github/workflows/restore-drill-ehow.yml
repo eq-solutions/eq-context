@@ -1,0 +1,203 @@
+name: Restore-drill ehow (R2 tarball → ephemeral Postgres → sanity-check)
+
+# The automated GAME-DAY: proves the ehow offsite backup actually RESTORES and the
+# restored database is sound — the *executability* half that the daily verify
+# (verify-backup-ehow.yml, artifact integrity) deliberately does not cover.
+#
+# It pulls the freshest ehow db_backup.tar.gz from R2 and restores roles → schema → data
+# → auth into an ephemeral `supabase/postgres` container (Supabase-parity: it ships the
+# extensions + managed schemas the dump needs, which a vanilla postgres image lacks), then
+# runs the runbook's sanity checks (core row counts, table count, RLS coverage, auth) and
+# reports the achieved RTO. This is system/runbooks/supabase-restore-drill.md, automated.
+#
+# Read-only against live: it only GETs the R2 artifact. The restore target is a throwaway
+# container that dies with the job — nothing live is ever touched or written.
+#
+# Restore tolerance: roles.sql/schema.sql are replayed onto an already-initialised Supabase
+# image, so some statements (role/extension/schema already exists) error harmlessly — we run
+# with ON_ERROR_STOP=0 and gate on the OUTCOME (are the rows actually queryable?), not on
+# restore stderr. A genuinely unrestorable backup shows up as empty core tables → RED.
+#
+# Schedule: quarterly (06:00 UTC on the 1st of Jan/Apr/Jul/Oct) + workflow_dispatch.
+# Sentry monitor: `ehow-restore-drill` — pages if the quarterly drill fails OR never runs.
+# Secrets (production-ops): R2_* + SENTRY_DSN (already present). No DB URL / service-role key.
+
+on:
+  schedule:
+    # 06:00 UTC on the 1st of each quarter (~16:00 AEST)
+    - cron: '0 6 1 1,4,7,10 *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  drill:
+    name: ehow backup → restore into ephemeral Postgres → verify
+    runs-on: ubuntu-latest
+    # R2 keys + SENTRY_DSN are scoped to this Environment (main-only branch rule).
+    environment: production-ops
+    services:
+      # Supabase-parity Postgres (matches ehow's PG 17 line) as a throwaway restore target.
+      db:
+        image: supabase/postgres:17.6.1.142
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 40
+    env:
+      MONITOR_SLUG: ehow-restore-drill
+      R2_PREFIX: ''                                  # ehow writes at the bucket root
+      DRILL_DB_URL: postgresql://postgres:postgres@localhost:5432/postgres
+      RLS_BASELINE: '1'                              # ehow live has 1 public table w/o RLS (2026-07-04)
+      # Reference counts (live 2026-07-04) — reported vs restored; gate is >0 on the canonical core.
+      EXPECT_SITES: '241'
+      EXPECT_CUSTOMERS: '44'
+      EXPECT_CHECKS: '4'
+      EXPECT_AUTH: '5'
+    steps:
+      # ── Sentry cron: check in "in_progress" (upserts the monitor incl. schedule) ──
+      - name: Sentry check-in (start)
+        env:
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+        run: |
+          set -uo pipefail
+          if [ -z "${SENTRY_DSN:-}" ]; then
+            echo "::warning::SENTRY_DSN not set — this drill run is UNMONITORED."
+            exit 0
+          fi
+          KEY="${SENTRY_DSN#https://}"; KEY="${KEY%%@*}"
+          REST="${SENTRY_DSN#*@}"; HOST="${REST%%/*}"; PID="${REST##*/}"
+          BASE="https://${HOST}/api/${PID}/cron/${MONITOR_SLUG}/${KEY}"
+          CID=$(curl -sS -X POST "${BASE}/" \
+            -H 'Content-Type: application/json' \
+            -d '{"status":"in_progress","monitor_config":{"schedule":{"type":"crontab","value":"0 6 1 1,4,7,10 *"},"checkin_margin":720,"max_runtime":30,"timezone":"UTC"}}' \
+            | jq -r '.id // empty') || true
+          echo "SENTRY_BASE=$BASE" >> "$GITHUB_ENV"
+          echo "SENTRY_CID=$CID"  >> "$GITHUB_ENV"
+          echo "Sentry monitor '${MONITOR_SLUG}' checked in (in_progress), id=${CID:-none}"
+
+      - name: Install tools
+        run: |
+          set -euo pipefail
+          pip install awscli --quiet
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq postgresql-client >/dev/null
+          psql --version
+          jq --version
+
+      # ── Pull the freshest ehow backup from R2 (start of the RTO clock) ──
+      - name: Download latest backup tarball
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+          R2_BUCKET: ${{ secrets.R2_BUCKET_NAME }}
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+        run: |
+          set -euo pipefail
+          echo "T0=$(date -u +%s)" >> "$GITHUB_ENV"   # RTO clock: begin recovery
+          LIST_PATH="s3://${R2_BUCKET}/${R2_PREFIX:+${R2_PREFIX}/}"
+          LATEST=$(aws s3 ls "$LIST_PATH" --endpoint-url "$R2_ENDPOINT" \
+            | awk '{print $NF}' | tr -d '/' \
+            | grep -E '^[0-9]{4}-[0-9]{2}-[0-9]{2}' | sort | tail -1)
+          if [ -z "${LATEST:-}" ]; then
+            echo "::error::No dated ehow backup folder in R2 — nothing to drill."
+            exit 1
+          fi
+          echo "Restoring from backup: ${LATEST}"
+          aws s3 cp \
+            "s3://${R2_BUCKET}/${R2_PREFIX:+${R2_PREFIX}/}${LATEST}/db_backup.tar.gz" \
+            db_backup.tar.gz --endpoint-url "$R2_ENDPOINT"
+          mkdir -p unpack && tar xzf db_backup.tar.gz -C unpack
+          echo "Members: $(ls -1 unpack | tr '\n' ' ')"
+          echo "LATEST=$LATEST" >> "$GITHUB_ENV"
+
+      # ── Restore into the throwaway container (tolerant; gate on outcome, not stderr) ──
+      - name: Restore roles → schema → data → auth
+        run: |
+          set -uo pipefail
+          run_sql () {  # $1 = file; replay tolerantly, summarise errors
+            local f="$1" log="${1##*/}.log"
+            if [ ! -f "$f" ]; then echo "  (skip $f — not in tarball)"; return 0; fi
+            psql "$DRILL_DB_URL" -v ON_ERROR_STOP=0 -q -f "$f" >"unpack/${log}" 2>&1 || true
+            echo "  $(basename "$f"): $(grep -c '^ERROR' "unpack/${log}" || true) statement error(s) (benign on a pre-initialised image)"
+          }
+          echo "Restoring into throwaway supabase/postgres…"
+          run_sql unpack/roles.sql
+          run_sql unpack/schema.sql
+          run_sql unpack/data.sql
+          run_sql unpack/auth_data.sql
+
+      # ── Sanity-check the restored DB (the runbook's checks) + compute RTO ──
+      - name: Verify restored database
+        run: |
+          set -euo pipefail
+          q () { psql "$DRILL_DB_URL" -tAc "$1" 2>/dev/null || echo "ERR"; }
+          SITES=$(q "select count(*) from app_data.sites")
+          CUST=$(q "select count(*) from app_data.customers")
+          CHECKS=$(q "select count(*) from service.maintenance_checks")
+          AUTH=$(q "select count(*) from auth.users")
+          TABLES=$(q "select count(*) from information_schema.tables where table_schema in ('public','app_data','service')")
+          NORLS=$(q "select count(*) from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname='public' and c.relkind='r' and not c.relrowsecurity")
+          T1=$(date -u +%s); RTO=$(( T1 - ${T0} ))
+
+          echo "──────── ehow restore-drill result (backup ${LATEST}) ────────"
+          printf '  %-22s restored=%-6s expected=%s\n' "app_data.sites"  "$SITES"  "$EXPECT_SITES"
+          printf '  %-22s restored=%-6s expected=%s\n' "app_data.customers" "$CUST" "$EXPECT_CUSTOMERS"
+          printf '  %-22s restored=%-6s expected=%s\n' "service.maintenance_checks" "$CHECKS" "$EXPECT_CHECKS"
+          printf '  %-22s restored=%-6s expected=%s\n' "auth.users" "$AUTH" "$EXPECT_AUTH"
+          echo "  tables(public,app_data,service)=${TABLES}   public-tables-without-RLS=${NORLS} (baseline ${RLS_BASELINE})"
+          echo "  RTO (pull + restore + verify): ${RTO}s"
+          echo "──────────────────────────────────────────────────────────────"
+
+          # Gate: the canonical core must be present and queryable — that is "restorable".
+          if [ "$SITES" = "ERR" ] || [ "$CUST" = "ERR" ]; then
+            echo "::error::core tables not queryable after restore — schema restore failed."
+            exit 1
+          fi
+          if [ "$SITES" -le 0 ] || [ "$CUST" -le 0 ]; then
+            echo "::error::core tables empty after restore (sites=$SITES customers=$CUST) — backup not restorable."
+            exit 1
+          fi
+          # RLS must not be WORSE than the live baseline (restore must not silently drop RLS).
+          if [ "$NORLS" != "ERR" ] && [ "$NORLS" -gt "$RLS_BASELINE" ]; then
+            echo "::error::restore left $((NORLS - RLS_BASELINE)) extra public table(s) without RLS vs baseline ${RLS_BASELINE}."
+            exit 1
+          fi
+          echo "DRILL_SUMMARY=sites=$SITES customers=$CUST checks=$CHECKS auth=$AUTH tables=$TABLES norls=$NORLS RTO=${RTO}s from=${LATEST}" >> "$GITHUB_ENV"
+          echo "✅ ehow backup ${LATEST} RESTORED and verified sound in ${RTO}s."
+
+      - name: Print drill summary
+        if: always()
+        run: echo "${DRILL_SUMMARY:-<drill did not reach summary>}"
+
+      # ── Sentry cron: report terminal status ──
+      - name: Sentry check-in (ok)
+        if: success() && env.SENTRY_BASE != ''
+        run: |
+          set -uo pipefail
+          if [ -n "${SENTRY_CID:-}" ]; then
+            curl -sS -X PUT "${SENTRY_BASE}/${SENTRY_CID}/" \
+              -H 'Content-Type: application/json' -d '{"status":"ok"}' >/dev/null || true
+          else
+            curl -sS "${SENTRY_BASE}/?status=ok" >/dev/null || true
+          fi
+          echo "Sentry monitor checked in: ok"
+
+      - name: Sentry check-in (error)
+        if: failure() && env.SENTRY_BASE != ''
+        run: |
+          set -uo pipefail
+          if [ -n "${SENTRY_CID:-}" ]; then
+            curl -sS -X PUT "${SENTRY_BASE}/${SENTRY_CID}/" \
+              -H 'Content-Type: application/json' -d '{"status":"error"}' >/dev/null || true
+          else
+            curl -sS "${SENTRY_BASE}/?status=error" >/dev/null || true
+          fi
+          echo "Sentry monitor checked in: error"
