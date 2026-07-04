@@ -22,8 +22,8 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **eq-shell PR #641 opened** — new `provision-cancel.ts` flips a `tenant_routing` row stuck at `status='provisioning'` to the already-supported `provisioning_failed` state once `status_changed_at` is >20 min stale (server-enforced, not just UI-hidden) — the existing Retry button then picks it up with zero changes to retry logic. `AdminTenantsPage.tsx` shows a "Stuck — Cancel" action next to the spinner once that threshold passes. Also tightened `provision-tenant-background.ts`'s retry-reset branch to require `status='provisioning_failed'` specifically, closing a latent race where a raw API call could reset an already-in-flight job. Verified via `tsc -p tsconfig.netlify.json --noEmit` and `tsc -p tsconfig.app.json --noEmit`, both clean. **Not yet merged, not yet clicked live.** _(done 2026-07-04)_
 
 **Deferred:**
-- [ ] **Merge eq-shell PR #641.** _(added 2026-07-04)_
-- [ ] **Manual click-through of PR #641 once deployed** — load `/_platform/tenants`, confirm no regression on Provision/Retry/Archive/Reactivate, and (if a stuck row exists, or one is forced) confirm "Stuck — Cancel" appears only past 20 min and Retry re-provisions cleanly afterward. _(added 2026-07-04)_
+- [x] **Merge eq-shell PR #641** — merged `e862ed1` (squash), auto-deploying to core.eq.solutions via Netlify. Had drifted against `main` (the concurrent hard-delete PR #642 merged first, same file); rebased, resolved 3 conflicting blocks in `AdminTenantsPage.tsx` (both features' additions landed side-by-side, no logical overlap), re-verified `tsc` clean on both configs before pushing. _(done 2026-07-04)_
+- [ ] **Manual click-through of PR #641 once deployed** — load `/_platform/tenants`, confirm no regression on Provision/Retry/Archive/Reactivate **and** the new hard-delete action from PR #642, and (if a stuck row exists, or one is forced) confirm "Stuck — Cancel" appears only past 20 min and Retry re-provisions cleanly afterward. _(added 2026-07-04)_
 
 ---
 
