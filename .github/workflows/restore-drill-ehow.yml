@@ -129,6 +129,9 @@ jobs:
         run: |
           set -euo pipefail
           cat > auth_stubs.sql <<'SQL'
+          -- The `auth` schema is owned by supabase_admin; the postgres login can't create
+          -- in it. postgres is a member of the supabase_admin superuser role, so elevate.
+          set role supabase_admin;
           create schema if not exists auth;
           create or replace function auth.jwt() returns jsonb language sql stable as $fn$
             select coalesce(
