@@ -14,9 +14,9 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## ⏩ Session close — 2026-07-04 (EQ Field QA sheet — worked through all 35 rows) — v3.5.225 → v3.5.233 shipped, sheet fully actioned
+## ⏩ Session close — 2026-07-04 (EQ Field QA sheet — worked through all 35 rows) — v3.5.225 → v3.5.237 shipped, sheet fully actioned
 
-*Royce handed a QA spreadsheet (`EQ Field 4.7.26.xlsx`, 35 rows) + a leave-console log + the SKS prestart .docx template. Worked every row to a resolved state; produced an annotated `EQ Field 4.7.26 - outcomes.xlsx` (Status + Outcome per row) in Royce's Downloads. Final tally: 24 done/verified, 9 answered, 1 deferred, 1 out-of-scope, 0 open.*
+*Royce handed a QA spreadsheet (`EQ Field 4.7.26.xlsx`, 35 rows) + a leave-console log + the SKS prestart .docx template. Worked every row to a resolved state; produced an annotated `EQ Field 4.7.26 - outcomes.xlsx` (Status + Outcome per row) in Royce's Downloads. Final tally: 25 done/verified, 9 answered, 0 deferred, 1 out-of-scope, 0 open (Row 29 built dormant, awaiting Shell PR #645).*
 
 **Built (all merged to main + live in prod, each live-verified on its preview):**
 - [x] **v3.5.225 — prestart = full SKS template** (PR #389): 12-section .docx matching the SKS template exactly; logo+palette+"<TENANT> DAILY PRE-START" title all canonical-driven; form now captures every section (project#, affects-trades, Controls repeater, 8 tickable Measures Yes/No/NA, Other-Hazards repeater, Permit checkboxes). Added 6 nullable cols to `public.prestarts` on **ehow AND zaap** (project_number, affects_trades, controls, other_hazards, permits_selected, measures). Row 32. _(done 2026-07-04)_
@@ -28,16 +28,17 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **v3.5.231 — middle-name display sweep** (PR #394): shortName() on the remaining display surfaces (timesheet name col, Contacts card+table, Leave list/table + CC chips); data attrs/values keep the full name. Rows 7/14. _(done)_
 - [x] **v3.5.232 — audit form canonical Site dropdown** (PR #395): Site Audit "Project/Site" now a canonical site datalist + free-type, matching prestart/toolbox; self-contained `_auSiteDatalist` so it works standalone. Row 27. _(done)_
 - [x] **v3.5.233 — prestart "↺ Use last for <SITE>"** (PR #396): fills standing setup (contractor/project#/SWMS/HRCW/Controls/Hazards/Permits) from the most recent prestart at the selected site; not per-day content or crew. Row 28. _(done)_
+- [x] **v3.5.237 — prestart auto-fills customer from site** (PR #402): site-select pre-fills the "Principal Contractor / Customer" field from the site's canonical `customer_name` (blank-only; no-op for unlinked sites). `customer_name` threaded through the `STATE.sites` map + `_psFillCustomerFromSite` in safety.js. **Dormant until eq-shell PR #645 + One Pipe migration 0159 land** on ehow/zaap. Row 29 (was deferred; now built ahead of the Shell view change). _(done 2026-07-04)_
 
 **Decided (Royce):**
 - Measures = per-item tickable Yes/No/NA; wire ALL four new prestart sections into form+DB. (v3.5.225)
 - Row 25 (office-approved marker): the existing per-row approval chip (`toggleTsApproval`, v3.5.30) is enough — no new marker.
 - Row 19: bridge the two roster views (keep both + Edit button), not collapse.
 - Row 37: hide Add Person on SKS (people flow from Cards → canonical).
-- Row 29: keep deferred for the canonical work.
+- Row 29: ~~keep deferred for the canonical work~~ → built ahead of the Shell change (v3.5.237, dormant until PR #645/0159 land).
 
 **Deferred:**
-- [ ] **Row 29 — auto-fill customer from site (prestart)** — blocked: the Shell-owned `app_data.field_sites` view exposes `customer_id` but not the customer NAME. Needs the name surfaced in that view (+ SKS site→customer data confirmed) first; then the prestart prefill is a small client change. **(needs the canonical/Shell-side view change — your call)** _(added 2026-07-04)_
+- [x] **Row 29 — auto-fill customer from site (prestart)** — **Field client side DONE + merged** (v3.5.237, PR #402, live). Selecting a site pre-fills the "Principal Contractor / Customer" field from the site's canonical `customer_name` (blank-only, never clobbers typed/"Copy last" values; no-op for unlinked sites). Two-part wiring: `customer_name` threaded through the `STATE.sites` map in `index.html` (the explicit field list was dropping it) + `_psFillCustomerFromSite` in `safety.js`. **Dormant until the Shell side lands:** eq-shell **PR #645** (migration `0159_field_sites_customer_name.sql` — surfaces `customer_name` on `app_data.field_sites` via LEFT JOIN `app_data.customers`) is still **OPEN**; once it merges and One Pipe applies 0159 to ehow + zaap the prefill lights up automatically (reads `''` until then). Verified live on ehow: 30 field sites, **11 linked / 19 blank**. _(built 2026-07-04)_
 - [x] **Row 21 sub-bug — `app_config` writes 401 on SKS** — DONE 2026-07-04 (v3.5.234 PR #398 + v3.5.235 PR #400, both live). Routed `app_config` via the authenticated JWT (added to JWT_TABLES + JWT_INPLACE_TABLES). Brief was wrong on two counts: a DB change WAS required (RLS had a SELECT-only policy, so authenticated writes still failed) and the eq tenant runs the JWT path (not anon) — so governed migration `app_config_authenticated_write` applied to BOTH ehow/SKS and zaap/EQ (authenticated ALL policy scoped by org_id + JWT tenant claim, org_id column DEFAULT, service_role parity). v3.5.235 follow-up: leave CC panel now re-reads on open (was rendering a stale in-memory list). RLS-verified on both DBs. The leave email itself sends fine (server-side send-email fn). _(added 2026-07-04)_
 - [ ] **Row 30 — talk-to-text on the audit form** — prestart + toolbox have the mic; the audit is a Y/N/NA checklist with short comment inputs where dictation is low-value and the helper isn't cleanly reusable. Offered to add to the audit comment fields if Royce wants it. _(added 2026-07-04)_
 - [ ] **Rows 4 & 8 — resolved by verification, reopen only if they recur** — row 4 (duplicate "From Roster"): structurally only one button exists (the "twice" was the button + a muted-cell "from roster" label); row 8 (`?tab=person-wizard` blank): moot on SKS now that Add Person is hidden. Need a screenshot/repro to reopen either. _(added 2026-07-04)_
