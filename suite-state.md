@@ -60,11 +60,15 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-04)
 
+**eq-field:**
+- #403 v3.5.237 — safety photos to Storage, not inline base64 (QA row 31)
+
 **eq-service:**
 - #438 chore(dr): retire eq-service offsite backup — platform DR moved to eq-context (#60)
 - #437 fix: audit-log attachment upload + delete mutations (+ Zod validation)
 
 **eq-shell:**
+- #646 feat(entitlements): app tiles → canonical, Stage A (readers)
 - #644 refactor(branding): one canonical copy in organisations.branding (Phase 1)
 - #637 docs: pnpm-workspace.yaml — packages are vendored, not a git submodule
 - #636 build: pin @eq-solutions/ui to release tag v1.10.0 for reproducible builds
