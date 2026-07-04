@@ -8,24 +8,24 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-04 10:56 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-04 13:14 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-04 08:49 UTC → 2026-07-04 10:56 UTC)
+## Since last refresh (2026-07-04 10:56 UTC → 2026-07-04 13:14 UTC)
 
-- Merged: eq-shell [#653](https://github.com/eq-solutions/eq-shell/pull/653) chore(drift): allow-list field_job_numbers (security_invoker
-- Merged: eq-shell [#652](https://github.com/eq-solutions/eq-shell/pull/652) 0161: reassert security_invoker on app_data.field_job_number
-- Merged: eq-shell [#651](https://github.com/eq-solutions/eq-shell/pull/651) 0160: eq_merge_sites RPC — governed site-dedup (QA row 29 fo
-- Merged: eq-shell [#650](https://github.com/eq-solutions/eq-shell/pull/650) feat(entitlements): writers → canonical + drop legacy (Phase
-- Merged: eq-shell [#647](https://github.com/eq-solutions/eq-shell/pull/647) fix(tenants): auto-join creating admin so new tenants are re
-- Merged: eq-shell [#638](https://github.com/eq-solutions/eq-shell/pull/638) fix(provisioning): shell_control.provision_tenant never actu
-- Merged: eq-shell [#634](https://github.com/eq-solutions/eq-shell/pull/634) fix(sync-quotes-nightly): check errors on Flask write-back +
-- Merged: eq-shell [#633](https://github.com/eq-solutions/eq-shell/pull/633) docs: correct CLAUDE.md — EQ_SECRET_SALT is the fallback sig
+- Merged: eq-shell [#627](https://github.com/eq-solutions/eq-shell/pull/627) fix(provisioning): convert provision-tenant to a background 
+- Merged: eq-shell [#626](https://github.com/eq-solutions/eq-shell/pull/626) fix(admin): resolve --eq-ink to a real hex value for the wor
+- Merged: eq-shell [#625](https://github.com/eq-solutions/eq-shell/pull/625) feat(security): view security_invoker invariant (CHECK 7) + 
+- Merged: eq-shell [#624](https://github.com/eq-solutions/eq-shell/pull/624) fix(provisioning): tenant_routing NOT NULL columns block eve
+- Merged: eq-shell [#623](https://github.com/eq-solutions/eq-shell/pull/623) fix(intake): re-vendor field-name + plain-English fixes from
+- Merged: eq-shell [#622](https://github.com/eq-solutions/eq-shell/pull/622) Tenants page: edit tier/modules, archive/reactivate
+- Merged: eq-shell [#621](https://github.com/eq-solutions/eq-shell/pull/621) fix(ops): remove broken per-column Status filter in table vi
+- Merged: eq-shell [#620](https://github.com/eq-solutions/eq-shell/pull/620) fix(ci): check-migration-hygiene.mjs skips SQL line comments
 
 ## ⚠ Needs you (4)
 
-- 🟠 **Sentry new error** — `eq-field` [SyntaxError: Identifier 'AUDIT_SECTIONS' has already been de](https://eq-solutions.sentry.io/issues/132112850/)
 - 🟠 **Sentry new error** — `eq-cards` [provisionTenantExchange: unexpected HTTP 500](https://eq-solutions.sentry.io/issues/132064194/)
 - 🟠 **Sentry new error** — `eq-field` [Error: 400: {"code":"23502","details":null,"hint":null,"mess](https://eq-solutions.sentry.io/issues/131921038/)
+- 🟠 **Sentry new error** — `eq-cards` [: Unable to load asset: "NOTICES".](https://eq-solutions.sentry.io/issues/131717362/)
 - 🟡 **1 stale worktree** need cleanup — [worktree-registry.md](system/worktree-registry.md)
 
 ## Pulse
@@ -42,7 +42,6 @@ _2026-07-04 10:56 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Project | Error | Events | Last seen |
 |---------|-------|--------|-----------|
-| eq-field | [SyntaxError: Identifier 'AUDIT_SECTIONS' has already been declared](https://eq-solutions.sentry.io/issues/132112850/) | 1 | 2026-07-04 |
 | eq-cards | [provisionTenantExchange: unexpected HTTP 500](https://eq-solutions.sentry.io/issues/132064194/) | 1 | 2026-07-03 |
 | eq-field | [Error: 400: {"code":"23502","details":null,"hint":null,"message":"null value in ](https://eq-solutions.sentry.io/issues/131921038/) | 1 | 2026-07-03 |
 | eq-cards | [: Unable to load asset: "NOTICES".](https://eq-solutions.sentry.io/issues/131717362/) | 1 | 2026-07-02 |
@@ -115,4 +114,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-04 10:56 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-04 13:14 UTC._
