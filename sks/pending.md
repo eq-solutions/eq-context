@@ -83,6 +83,18 @@ _Nothing pending — migrations 001–023 all applied._
 - [ ] At least one SKS person ("Collin ... Toohey") has no record in canonical `app_data.staff`, blocking their leave submissions — data-ops backfill needed, not a code fix _(added 2026-07-03)_
 - [ ] Royce to independently click-through-confirm the Weekends toggle, roster names, and both safety forms live (smoke-tested remotely, not yet confirmed by Royce beyond the original repros) _(added 2026-07-03)_
 
+## ⏩ SKS Field — session 2026-07-04 (Cards→Field migration path verified, read-only)
+
+**Verified live (eq-canonical `jvknxcmbtrfnxfrwfimn` + eq-field repo) — no code changed:**
+- New **eq-field reads eq-canonical directly** (app-state.js:27-28). Write-through: editing a Field person looks up canonical `workers` by email, creates a stub if absent, stores `worker_id` back (people.js:1032-1050). Licences **live-read** from canonical via RPC `eq_get_org_licences(p_org_id)` (canon-read.js:142). This validates Royce's migration model: set up in canonical → Field reads it → licences flow through, no re-keying.
+- **No-dup dedup** = `eq_cards_link_or_create_worker` adopts an unlinked stub by **normalised phone OR email** (phone = last-9 AU digits; prefers most-credentialed stub; single stub). Mobile is the load-bearing key (Cards = phone-OTP, email often blank).
+- **Apply-to-SKS** = `eq_cards_submit_access_request` → `org_access_requests`; SKS org (`00000000-…-0002`, tenant `7dee117c`) has **accepts_applications=true**.
+- **Licence review** = admin approval writes `shell_control.cards_field_approvals` (`licence_verifications` jsonb + `licences_verified_at`). Credential enum has NO review state — review lives on the approval row.
+
+**Deferred / next:**
+- [ ] First **Cards→Field approval for SKS never run** — `cards_field_approvals` has 79 rows across other tenants, **0 for SKS**. When the first SKS worker signs up to Cards + applies, exercise the admin approve + licence-verify path end-to-end (machinery proven elsewhere, unproven for this tenant) _(added 2026-07-04)_
+- [ ] **SKS staff data-entry rule** — enter each person **once** with an accurate mobile (+ email where held); no DB uniqueness on `workers.phone`, so two stubs sharing a number = only the best-credentialed one gets adopted, the other dangles. 0 phones on multiple worker rows today — keep it that way _(added 2026-07-04)_
+
 ---
 
 ## Done (this session — 2026-06-01)
