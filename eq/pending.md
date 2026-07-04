@@ -46,7 +46,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - Left `eq-solves-service/infra/gotenberg/` (fly.toml + README) as revival reference — not a live pointer.
 
 **Deferred:**
-- [ ] Commit + push the two stale-ref edits (eq-field auto-deploys on push to main) _(added 2026-07-04)_
+- [x] Made the two stale-ref edits durable via branch + PR (not a direct push — both repos auto-deploy on push to main): eq-field [PR #397](https://github.com/eq-solutions/eq-field/pull/397) (CORS origins; CLEAN, mergeable) + eq-service [PR #432](https://github.com/eq-solutions/eq-service/pull/432) (`.env.example`; mergeable, UNSTABLE = pre-existing eq-service CI only, docs-only change). Shared checkouts restored to main. Royce to review + merge. _(done 2026-07-04)_
 - [x] Removed the dangling `quotes.eq.solutions` DNS records — live check found not the predicted CNAME but an **A (`66.241.125.216`) + AAAA (`2a09:8280:1::117:7ed1:0`) pair pointing at Fly.io anycast**, both dangling since the Fly account was deleted. Deleted both via Cloudflare API (Royce approved); verified 0 records remain for the name. Closes the subdomain-takeover vector. _(done 2026-07-04)_
 
 ---
