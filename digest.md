@@ -8,32 +8,32 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-04 07:16 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-04 08:49 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-04 07:05 UTC → 2026-07-04 07:16 UTC)
+## Since last refresh (2026-07-04 07:16 UTC → 2026-07-04 08:49 UTC)
 
-- Merged: eq-shell [#638](https://github.com/eq-solutions/eq-shell/pull/638) fix(provisioning): shell_control.provision_tenant never actu
-- Merged: eq-shell [#634](https://github.com/eq-solutions/eq-shell/pull/634) fix(sync-quotes-nightly): check errors on Flask write-back +
-- Merged: eq-shell [#633](https://github.com/eq-solutions/eq-shell/pull/633) docs: correct CLAUDE.md — EQ_SECRET_SALT is the fallback sig
-- Merged: eq-shell [#627](https://github.com/eq-solutions/eq-shell/pull/627) fix(provisioning): convert provision-tenant to a background 
-- Merged: eq-shell [#625](https://github.com/eq-solutions/eq-shell/pull/625) feat(security): view security_invoker invariant (CHECK 7) + 
-- Merged: eq-shell [#623](https://github.com/eq-solutions/eq-shell/pull/623) fix(intake): re-vendor field-name + plain-English fixes from
-- Merged: eq-shell [#622](https://github.com/eq-solutions/eq-shell/pull/622) Tenants page: edit tier/modules, archive/reactivate
-- Merged: eq-shell [#621](https://github.com/eq-solutions/eq-shell/pull/621) fix(ops): remove broken per-column Status filter in table vi
+- Merged: eq-shell [#648](https://github.com/eq-solutions/eq-shell/pull/648) feat(entitlements): app tiles → canonical, Stage A (readers)
+- Merged: eq-shell [#645](https://github.com/eq-solutions/eq-shell/pull/645) feat(field): surface customer name on field_sites + drop dea
+- Merged: eq-shell [#644](https://github.com/eq-solutions/eq-shell/pull/644) refactor(branding): one canonical copy in organisations.bran
+- Merged: eq-shell [#626](https://github.com/eq-solutions/eq-shell/pull/626) fix(admin): resolve --eq-ink to a real hex value for the wor
+- Merged: eq-shell [#624](https://github.com/eq-solutions/eq-shell/pull/624) fix(provisioning): tenant_routing NOT NULL columns block eve
+- Merged: eq-shell [#620](https://github.com/eq-solutions/eq-shell/pull/620) fix(ci): check-migration-hygiene.mjs skips SQL line comments
+- Merged: eq-shell [#619](https://github.com/eq-solutions/eq-shell/pull/619) fix(field-iframe): preserve deep-linked ?tab= on initial ten
+- Merged: eq-shell [#618](https://github.com/eq-solutions/eq-shell/pull/618) fix(security): reassert security_invoker on field_managers +
 
 ## ⚠ Needs you (4)
 
 - 🟠 **Sentry new error** — `eq-field` [SyntaxError: Unexpected end of input](https://eq-solutions.sentry.io/issues/131931795/)
+- 🟠 **Sentry new error** — `eq-field` [SyntaxError: Identifier 'AUDIT_SECTIONS' has already been de](https://eq-solutions.sentry.io/issues/132112850/)
 - 🟠 **Sentry new error** — `eq-field` [ReferenceError: openCleanupCodes is not defined](https://eq-solutions.sentry.io/issues/132094727/)
-- 🟠 **Sentry new error** — `eq-cards` [provisionTenantExchange: unexpected HTTP 500](https://eq-solutions.sentry.io/issues/132064194/)
 - 🟡 **1 stale worktree** need cleanup — [worktree-registry.md](system/worktree-registry.md)
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 3 | 0d |
-| eq-solves-service | ✓ success | 0d ago | 3 | 0d |
+| eq-shell | ? unknown | ? | 4 | 0d |
+| eq-solves-service | ✓ success | 0d ago | 1 | 0d |
 | eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ? unknown | ? | 0 | — |
@@ -43,6 +43,7 @@ _2026-07-04 07:16 UTC · what needs your attention. Full snapshot: [suite-state.
 | Project | Error | Events | Last seen |
 |---------|-------|--------|-----------|
 | eq-field | [SyntaxError: Unexpected end of input](https://eq-solutions.sentry.io/issues/131931795/) | 2 | 2026-07-03 |
+| eq-field | [SyntaxError: Identifier 'AUDIT_SECTIONS' has already been declared](https://eq-solutions.sentry.io/issues/132112850/) | 1 | 2026-07-04 |
 | eq-field | [ReferenceError: openCleanupCodes is not defined](https://eq-solutions.sentry.io/issues/132094727/) | 1 | 2026-07-04 |
 | eq-cards | [provisionTenantExchange: unexpected HTTP 500](https://eq-solutions.sentry.io/issues/132064194/) | 1 | 2026-07-03 |
 | eq-field | [Error: 400: {"code":"23502","details":null,"hint":null,"message":"null value in ](https://eq-solutions.sentry.io/issues/131921038/) | 1 | 2026-07-03 |
@@ -55,29 +56,29 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-04 | eq-shell | [#648](https://github.com/eq-solutions/eq-shell/pull/648) feat(entitlements): app tiles → canonical, Stage A (readers) |
+| 2026-07-04 | eq-shell | [#644](https://github.com/eq-solutions/eq-shell/pull/644) refactor(branding): one canonical copy in organisations.branding  |
+| 2026-07-04 | eq-shell | [#645](https://github.com/eq-solutions/eq-shell/pull/645) feat(field): surface customer name on field_sites + drop dead cus |
 | 2026-07-04 | eq-shell | [#643](https://github.com/eq-solutions/eq-shell/pull/643) feat(branding): self-serve tenant document branding editor |
 | 2026-07-04 | eq-shell | [#641](https://github.com/eq-solutions/eq-shell/pull/641) fix: clear a stuck data-plane provisioning job from the Tenants p |
 | 2026-07-04 | eq-shell | [#642](https://github.com/eq-solutions/eq-shell/pull/642) Tenants page: permanently delete an archived tenant |
+| 2026-07-04 | eq-solves-service | [#438](https://github.com/eq-solutions/eq-service/pull/438) chore(dr): retire eq-service offsite backup — platform DR moved t |
+| 2026-07-04 | eq-solves-service | [#436](https://github.com/eq-solutions/eq-service/pull/436) test: add unit tests for lib/api/platform-admin.ts (timing-safe p |
+| 2026-07-04 | eq-solves-service | [#435](https://github.com/eq-solutions/eq-service/pull/435) test: add unit tests for propagateCheckCompletionIfReady (check-c |
+| 2026-07-04 | eq-solves-service | [#434](https://github.com/eq-solutions/eq-service/pull/434) docs: fix stale role names and add RCD testing to README |
+| 2026-07-04 | eq-solves-service | [#433](https://github.com/eq-solutions/eq-service/pull/433) docs: document CLOUDCONVERT_API_KEY and IDENTITY_CLAIMS_ENABLED i |
 | 2026-07-04 | eq-solves-service | [#432](https://github.com/eq-solutions/eq-service/pull/432) chore: drop dead GOTENBERG_URL from .env.example (Fly.io retired) |
 | 2026-07-04 | eq-solves-service | [#431](https://github.com/eq-solutions/eq-service/pull/431) fix: restore public.canonical_outbox, dropped by mistake on 2026- |
-| 2026-07-04 | eq-field | [#400](https://github.com/eq-solutions/eq-field/pull/400) v3.5.235 — leave CC list: refresh panel from DB on open |
-| 2026-07-04 | eq-field | [#399](https://github.com/eq-solutions/eq-field/pull/399) v3.5.235 — enable weekly TAFE auto-fill on SKS (QA row 34) |
-| 2026-07-04 | eq-field | [#398](https://github.com/eq-solutions/eq-field/pull/398) v3.5.234 — route app_config writes through the authenticated data |
-| 2026-07-04 | eq-field | [#397](https://github.com/eq-solutions/eq-field/pull/397) chore: remove retired-Quotes CORS origins (Fly.io retired) |
-| 2026-07-04 | eq-field | [#396](https://github.com/eq-solutions/eq-field/pull/396) v3.5.233 — QA row 28: prestart 'use last for this site' |
-| 2026-07-04 | eq-field | [#395](https://github.com/eq-solutions/eq-field/pull/395) v3.5.232 — QA row 27: audit form canonical Site dropdown |
-| 2026-07-04 | eq-field | [#394](https://github.com/eq-solutions/eq-field/pull/394) v3.5.231 — QA rows 7/14: middle-name display sweep |
-| 2026-07-04 | eq-field | [#393](https://github.com/eq-solutions/eq-field/pull/393) v3.5.230 — QA row 19: bridge Weekly Roster → Edit Roster |
-| 2026-07-04 | eq-field | [#392](https://github.com/eq-solutions/eq-field/pull/392) v3.5.229 — QA: labour-hire DID NOT WORK + hide Add Person on SKS  |
-| 2026-07-04 | eq-field | [#391](https://github.com/eq-solutions/eq-field/pull/391) v3.5.228 — QA sheet: leave back nav + managers out of contacts (r |
-_Showing 15 of 126 · full record in [sessions/](sessions/)_
+| 2026-07-04 | eq-field | [#404](https://github.com/eq-solutions/eq-field/pull/404) v3.5.239 — job numbers: one board, EQ Ops is the source of truth |
+| 2026-07-04 | eq-field | [#403](https://github.com/eq-solutions/eq-field/pull/403) v3.5.237 — safety photos to Storage, not inline base64 (QA row 31 |
+_Showing 15 of 124 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **Row 29 — auto-fill customer from site (prestart)** — blocked: the Shell-owned `app_data.field_sites` view exposes `customer_id` but not the customer NAME. Needs the name surfaced in that view (+ SKS site→customer data confirmed) first; then the prestart prefill is a small client change. **(needs the canonical/Shell-side view change — your call)** _(added 2026-07-04)_
-- **Row 21 sub-bug — `app_config` writes 401 on SKS** — saving the leave CC list (and likely digest settings) uses the anon role, which has only SELECT on ehow `app_config` (authenticated has UPDATE). Fix = route app_config writes via the authenticated JWT (add to JWT_TABLES + JWT_INPLACE_TABLES). Running as spawned task **`task_9942e427`**. The leave email itself sends fine (server-side send-email fn). _(added 2026-07-04)_
-- **Row 30 — talk-to-text on the audit form** — prestart + toolbox have the mic; the audit is a Y/N/NA checklist with short comment inputs where dictation is low-value and the helper isn't cleanly reusable. Offered to add to the audit comment fields if Royce wants it. _(added 2026-07-04)_
+- **Run the first manual restore game-day** — full restore into a Supabase-parity target + app repoint (proves executability + operational RTO). Data-integrity is covered daily by the automated verify; this is the rarer human drill. _(carried 2026-07-04)_
 - **Rows 4 & 8 — resolved by verification, reopen only if they recur** — row 4 (duplicate "From Roster"): structurally only one button exists (the "twice" was the button + a muted-cell "from roster" label); row 8 (`?tab=person-wizard` blank): moot on SKS now that Add Person is hidden. Need a screenshot/repro to reopen either. _(added 2026-07-04)_
+- **Rows 26/36 — link Field job numbers to the canonical jobs board** — banked as `task_1a8e00fd` (running). Field's `public.job_numbers` (14) and the Shell comms board `app_data.sks_comms_jobs` (20) are two non-syncing lists of the same SKS jobs, **zero overlap**, same 5-digit format → drift. Recommended: reconcile the 28, expose `app_data.field_job_numbers` view over `sks_comms_jobs`, Field reads it (read-only). **Gated on Royce confirming which board is source-of-truth** (comms is a trial today) _(needs your call — added 2026-07-04)_
+- **Row 31 — confirm the SKS authenticated Storage round-trip live** — the photo upload/download activates only with the Shell data JWT (couldn't drive standalone; browser preview uncooperative). Fully protected by the verified graceful fallback (fails → stays base64, zero regression). Confirm next time in an SKS Shell session, or by checking `public.prestarts.photos` rows gain `storage_path` after a photo is added. _(added 2026-07-04)_
 - **Tenant logo/branding editor in EQ Shell** — upload-or-link → store in R2 → write canonical `organisations.branding.{gateLogo,palette}`; every app inherits. Running as spawned task `task_925f8842`. _(added 2026-07-04)_
 - **eq demo tenant is logo-less in docs until the Shell editor ships** — or seed `eq`'s `branding.gateLogo` with a `.png` URL as a stopgap (Royce's call). _(added 2026-07-04)_
 - **Manual click-through of PR #641 once deployed** — load `/_platform/tenants`, confirm no regression on Provision/Retry/Archive/Reactivate **and** the new hard-delete action from PR #642, and (if a stuck row exists, or one is forced) confirm "Stuck — Cancel" appears only past 20 min and Retry re-provisions cleanly afterward. _(added 2026-07-04)_
@@ -116,4 +117,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-04 07:16 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-04 08:49 UTC._
