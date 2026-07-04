@@ -14,6 +14,28 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-04 (platform DR completed, issue #60) — armed + green, optimised, self-verifying; eq-service backup retired
+
+*Final leg of the platform-DR arc ("continue on this path / retire / look at the restore drill / optimise" → armed the secrets → "merge and dispatch to green" → "add --use-copy and re-verify" → "merge 438 and close out"). DR is now live, green, and proves itself every day.*
+
+**Completed — closes the open DR deferrals from the earlier #60 close sections below:**
+- [x] **All three offsite backups ARMED + green** — ehow / eq-canonical / eq-canonical-internal → Cloudflare R2, daily, Sentry-monitored. `production-ops` GitHub Environment created (main-only), 10 secrets added, DB passwords reset (verified safe first). First real backups landed in R2. _(done 2026-07-04)_
+- [x] **Automated daily restore-verify** — `verify-backup-ehow.yml` (eq-context PRs #63/#64/#65): pulls the freshest R2 tarball, asserts archive intact + exact rows (241 sites / 44 customers / **auth.users 5**), Sentry `ehow-backup-verify`. GETs the R2 artifact only. The manual drill is now a rare game-day. _(done 2026-07-04)_
+- [x] **eq-canonical storage sync optimised** — ~15 min → ~5 min (8-wide parallel download, 213/213 objects); PR #63. _(done 2026-07-04)_
+- [x] **auth dumped with `--use-copy`** — auth_data.sql now COPY-format (consistent + exact verify counts); PR #65. _(done 2026-07-04)_
+- [x] **eq-service backup retired** — eq-service PR #438 merged: deleted `backup.yml` + tombstoned its runbook → pointer to eq-context. Worktree pruned. _(done 2026-07-04)_
+
+**Still open (your call):**
+- [ ] **Run the first manual restore game-day** — full restore into a Supabase-parity target + app repoint (proves executability + operational RTO). Data-integrity is covered daily by the automated verify; this is the rarer human drill. _(carried 2026-07-04)_
+- [ ] **Optionally clone the verify to eq-canonical / -internal** — one-file parameterised copy. _(added 2026-07-04)_
+
+**Notes:**
+- `production-ops` is **main-only** → DR-workflow changes only run/verify after merge (every DR change this session went branch→PR→merge→dispatch-on-main).
+- `supabase/postgres` ships **without** the managed `auth` schema, so a full in-CI auth restore isn't possible in a bare container — hence the two-layer design (automated artifact-integrity verify + rare Supabase-parity game-day).
+- eq-service integration tests are the known pre-existing CI failure (project CLAUDE.md #6); #438 merged on the green `tsc + next build` gate.
+
+---
+
 ## ⏩ Session close — 2026-07-04 (EQ Field QA sheet — worked through all 35 rows) — v3.5.225 → v3.5.233 shipped, sheet fully actioned
 
 *Royce handed a QA spreadsheet (`EQ Field 4.7.26.xlsx`, 35 rows) + a leave-console log + the SKS prestart .docx template. Worked every row to a resolved state; produced an annotated `EQ Field 4.7.26 - outcomes.xlsx` (Status + Outcome per row) in Royce's Downloads. Final tally: 24 done/verified, 9 answered, 1 deferred, 1 out-of-scope, 0 open.*
