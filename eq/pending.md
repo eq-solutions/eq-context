@@ -14,6 +14,18 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-04 (eq-field live errors triaged + fixed) — v3.5.240 lazy-loader double-load guard shipped; 3 Sentry issues cleared
+
+*Post-DR, asked "what's next" → filtered through TODAY.md (Q3 outcome 1: NSW using the product) + the digest's "Needs you": 3 live eq-field Sentry errors. Triaged each against authoritative Sentry data (release / env / recurrence).*
+
+**Completed:**
+- [x] **eq-field v3.5.240 — lazy-loader double-inject guard** (PR #406, merged + **deployed** to field.eq.solutions, verified `sw.js` = v3.5.240). Fixes **EQ-FIELD-Q** (`AUDIT_SECTIONS already declared`): `audits.js` is the one script in two lazy groups (audits + safety), so a double-eval crashed the audit/safety module. `loadScript` now skips injecting a src whose `<script>` is already in the DOM. _(done 2026-07-04)_
+- [x] **Resolved 2 stale Sentry issues** — **EQ-FIELD-P** (`openCleanupCodes`, fixed v3.5.227, cached 3.5.223 bundle) + **EQ-FIELD-N** (`Unexpected end of input`, old release 3.5.221, transient/no recurrence). _(done 2026-07-04)_
+
+**Deferred:** none new — eq-field digest "Needs you" errors are cleared.
+
+---
+
 ## ⏩ Session close — 2026-07-04 (tenant provisioning stuck-spinner root-caused + fixed live) — Favour Perfect provisioned, migrated to 0159, Royce added as its admin
 
 *Royce hit a stuck "Provisioning…" spinner on a new tenant "Favour Perfect", then an HTTP 400 baseline-schema fail. Two stacked bugs in the data-plane provisioner; fixed + deployed. Then the tenant had zero users (built via admin "Add tenant"), so added Royce as its manager, and dispatched the fleet tenant-migrate to build its schema — which also cleared the pending 0159 rollout across the fleet.*
