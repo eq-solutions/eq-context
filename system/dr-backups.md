@@ -65,7 +65,7 @@ Two independent tiers. Restore from the cheapest that covers the incident.
 | Tier | Mechanism | Covers | RPO (max data loss) | RTO (target) |
 |---|---|---|---|---|
 | **1 — Supabase managed** | Supabase automatic **daily** backup (dashboard restore / PITR if enabled) | Accidental delete, bad migration, table corruption | **24 h** (daily cadence; PITR is a paid add-on, currently **off**) | **4 h** |
-| **2 — Offsite R2** | The weekly workflows' `db_backup.tar.gz` + storage, restored into a fresh project | **Supabase account/project loss**, provider-side disaster | **≤ 24 h** (daily cadence) | **8 h** (manual restore into new project + repoint apps) |
+| **2 — Offsite R2** | The daily workflows' `db_backup.tar.gz` + storage, restored into a fresh project | **Supabase account/project loss**, provider-side disaster | **≤ 24 h** (daily cadence) | **8 h** (manual restore into new project + repoint apps) |
 
 RPO/RTO are **targets until a drill proves them.** The first drill records achieved figures in
 `system/runbooks/supabase-restore-drill.md`.
