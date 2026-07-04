@@ -1,3 +1,12 @@
+---
+title: EQ Service — Changelog
+owner: Royce Milmlow
+last_updated: 2026-07-03
+scope: Per-product change history — EQ Service
+read_priority: reference
+status: live
+---
+
 # EQ Service — Changelog
 
 ## 2026-07-03

@@ -1,3 +1,12 @@
+---
+title: EQ Shell — Changelog
+owner: Royce Milmlow
+last_updated: 2026-07-04
+scope: Per-product change history — EQ Shell
+read_priority: reference
+status: live
+---
+
 # eq-shell changelog
 
 ## 2026-07-04

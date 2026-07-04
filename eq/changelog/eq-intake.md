@@ -1,3 +1,12 @@
+---
+title: EQ Intake — Changelog
+owner: Royce Milmlow
+last_updated: 2026-07-03
+scope: Per-product change history — EQ Intake
+read_priority: reference
+status: live
+---
+
 # EQ Intake — Changelog
 
 ## 2026-07-03
