@@ -14,6 +14,14 @@
 
 ---
 
+> **This is now the rare "game-day", not the everyday check.** The backup's **data integrity**
+> (archive intact, real rows present, `auth.users` captured) is verified **automatically every day**
+> by [`.github/workflows/verify-backup-ehow.yml`](../../.github/workflows/verify-backup-ehow.yml)
+> (Sentry monitor `ehow-backup-verify`). This manual drill exists to prove the part automation
+> can't cheaply cover: that the dump **executes** into a real Supabase-parity target and the **app
+> comes back** within RTO. Run it occasionally as a game-day — it is no longer the only thing
+> standing between us and knowing the data is recoverable.
+
 ## Why this runbook exists
 
 Supabase takes automatic daily backups, and this repo takes a daily offsite copy to R2 — but

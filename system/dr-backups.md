@@ -128,7 +128,8 @@ Every job produces a **complete logical DB dump** — three files per Supabase's
 ## Monitoring / alerting
 
 **One Sentry cron check-in monitor per job** (org `eq-solutions`), slugs:
-`ehow-daily-backup`, `eq-canonical-daily-backup`, `eq-canonical-internal-daily-backup`.
+`ehow-daily-backup`, `eq-canonical-daily-backup`, `eq-canonical-internal-daily-backup`,
+plus `ehow-backup-verify` (the automated restore-verify — see next section).
 Each job checks in `in_progress` → `ok`/`error` and declares its own crontab schedule, so Sentry
 alerts on **both**:
 
@@ -138,8 +139,32 @@ alerts on **both**:
   2026-05-17; nobody paged).
 
 Until `SENTRY_DSN` is set the jobs run but print a loud `UNMONITORED` warning (arm cleanly, like
-`handoff-probe.yml`). All three reuse the **same** `SENTRY_DSN` (eq-context Sentry project); only
+`handoff-probe.yml`). All jobs reuse the **same** `SENTRY_DSN` (eq-context Sentry project); only
 the monitor slug differs.
+
+---
+
+## Proving restorability — automated verify + rare game-day
+
+A backup nobody restores fails silently — that is the whole reason #60 exists. So restorability
+is proven in **two layers**, rather than relying on a human remembering a quarterly drill:
+
+- **Automated, daily — data integrity.**
+  [`verify-backup-ehow.yml`](../.github/workflows/verify-backup-ehow.yml) pulls the freshest ehow
+  tarball from R2, checks the archive is intact, and asserts the dump holds real **rows**
+  (`app_data.sites` / `customers`) and **`auth.users`** — so a hollow/schema-only dump, a
+  truncated upload, or a dropped auth capture goes **red** (Sentry `ehow-backup-verify`) the next
+  morning, not at incident time. It only **GETs** the R2 artifact — never touches a live DB (needs
+  R2 keys + `SENTRY_DSN`, nothing else — the least-privilege job in the set). Parameterised like
+  the backup jobs, so eq-canonical / -internal verifies are a copy away.
+- **Rare, manual — executability + operational RTO.** The full restore-into-a-real-target drill
+  ([`runbooks/supabase-restore-drill.md`](runbooks/supabase-restore-drill.md)) proves the SQL
+  actually executes and the app comes back. It needs a Supabase-parity target (a bare Postgres
+  container lacks the managed `auth` schema), so it stays a human **game-day** — now the *only*
+  part that needs a calendar entry, and far less often.
+
+The automated layer converts DR from "we hope it works" into "proven fresh daily, alarmed if it
+breaks." (Added PR #63 — verifies live once merged, since `production-ops` is main-only.)
 
 ---
 
