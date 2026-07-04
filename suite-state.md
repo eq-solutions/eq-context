@@ -65,7 +65,6 @@ _If this file is >48h old, the cron is broken._
 - #437 fix: audit-log attachment upload + delete mutations (+ Zod validation)
 
 **eq-shell:**
-- #645 feat(field): surface customer name on field_sites + drop dead customer Field toggle
 - #644 refactor(branding): one canonical copy in organisations.branding (Phase 1)
 - #637 docs: pnpm-workspace.yaml — packages are vendored, not a git submodule
 - #636 build: pin @eq-solutions/ui to release tag v1.10.0 for reproducible builds
@@ -79,7 +78,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ? in_progress |
+| eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
