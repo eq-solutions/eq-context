@@ -14,6 +14,28 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-04 (tenant provisioning stuck-spinner root-caused + fixed live) — Favour Perfect provisioned, migrated to 0159, Royce added as its admin
+
+*Royce hit a stuck "Provisioning…" spinner on a new tenant "Favour Perfect", then an HTTP 400 baseline-schema fail. Two stacked bugs in the data-plane provisioner; fixed + deployed. Then the tenant had zero users (built via admin "Add tenant"), so added Royce as its manager, and dispatched the fleet tenant-migrate to build its schema — which also cleared the pending 0159 rollout across the fleet.*
+
+**Completed:**
+- [x] **eq-shell `7e760f2` → main (deployed live)** — `provision-tenant-background.ts` step 4 had two stacked bugs: (1) fresh **Postgres-17** tenant projects don't ship the `supabase_migrations` schema, so `CREATE TABLE IF NOT EXISTS supabase_migrations.schema_migrations` errored `3F000` (`IF NOT EXISTS` guards the table, not the schema); (2) the Management API reports `ACTIVE_HEALTHY` a few seconds before Postgres accepts connections, so the first query raced to `ECONNREFUSED`. Fix creates the schema first + retries transient connection failures (~2 min / 8s backoff, fail-fast on real SQL errors). Plus an `AdminTenantsPage` reassurance banner while any tenant is provisioning. _(done 2026-07-04)_
+- [x] **Royce added as `manager` of `favour-perfect`** — the tenant was created via admin "Add tenant" so it had zero users/memberships and was unreachable; inserted the control-plane membership on jvkn. Appears in his switcher after one workspace-switch/re-login. _(done 2026-07-04)_
+- [x] **Favour Perfect fully migrated** — fleet `tenant-migrate.yml` dispatch (`allow_checksum_drift=true`) applied `0001→0159`; verified live: **85 `app_data` base tables = the complete tenant template** (strict subset of EQ's, differing only by EQ's 19 legacy `field_*` tables which aren't part of the template). _(done 2026-07-04)_
+- [x] **Fleet 0158+0159 rollout DONE** — the same dispatch applied `0158`+`0159` to **eq** and **sks** (both were at 0157). This clears the pending "`field_sites.customer_name` (0159) fleet dispatch" — **Row 29 / eq-field v3.5.237 customer→site prefill is now LIVE on ehow/zaap, no longer dormant.** _(done 2026-07-04)_
+
+**Still open (your call):**
+- [ ] **Favour Perfect first-run config** — switch into it (after one workspace-switch or re-login), configure it, and invite its real customer admin from inside `/favour-perfect/admin/users`. _(added 2026-07-04, needs your call)_
+- [ ] **Optional: `reconcile_ledger` tidy for `favour-perfect`** — its `_eq_migrations` ledger has 204 rows incl. 39 null-checksum entries (cruft from a messy apply sequence: an 08:14 reconcile-path run stamped rows then failed; the 08:25 apply finished it). Schema is correct — purely cosmetic. A `reconcile_ledger=true` dispatch scoped to `favour-perfect` would tidy it. _(added 2026-07-04, needs your call)_
+- [ ] **Admin-create zero-member gap** — admin "Add tenant" builds member-less, UI-unreachable tenants (no way to add a first user without a hand-inserted membership). Fix (auto-add creator as manager, or an "Add me as admin" button) running as `task_4f5989fb`. _(added 2026-07-04)_
+
+**Notes:**
+- Fresh **PG-17** Supabase projects don't ship the `supabase_migrations` schema; `ACTIVE_HEALTHY` races Postgres connection readiness — both now handled in the provisioner.
+- The auto-mode classifier correctly blocked hand-applying schema via the Supabase MCP, `gh workflow run` (production dispatch), and `gh run cancel` — deploy + Royce's own actions were the clean unblocks each time. Don't fight the classifier.
+- A stale **23-hour** `in_progress` tenant-migrate run (`28650361945`, a fleet dispatch left unapproved yesterday) was holding the per-branch concurrency slot and blocking the new run; Royce cancelled it. Its `apply` job showed `in_progress` only because a job waiting at the `production` gate doesn't count against the job timeout.
+
+---
+
 ## ⏩ Session close — 2026-07-04 (platform DR completed, issue #60) — armed + green, optimised, self-verifying; eq-service backup retired
 
 *Final leg of the platform-DR arc ("continue on this path / retire / look at the restore drill / optimise" → armed the secrets → "merge and dispatch to green" → "add --use-copy and re-verify" → "merge 438 and close out"). DR is now live, green, and proves itself every day.*
