@@ -14,6 +14,24 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-04 (frontmatter CI green + DR-arming prep) — PR #62 fixes the repo-wide frontmatter check; verified exact live-secret state ahead of arming
+
+*Follow-on within the same day's platform-DR arc. Royce flagged `Frontmatter validation` had been red on `main` for days (masks real regressions) and asked for it fixed; separately walked through what "arming" the Phase 1+2 backups actually requires, then a concurrent console (different tool) surfaced its own arming checklist — verified live-secret state to reconcile the two and drafted a coordination handoff.*
+
+**Completed:**
+- [x] **eq-context PR #62 opened** — `Frontmatter validation` fixed for every violation on `main` (exact-mirror local simulation = 0 remaining): exempted `CHAT-PROMPT.md` (paste-into-chat pointer, same class as already-exempt `COWORK-PROMPT.md`/`AGENTS.md`); added frontmatter to the 5 product changelogs + the DR docset (`dr-backups.md`, `supabase-restore-drill.md`); fixed 2 violations outside the original report — `eq/changelog/cards.md` was missing `last_updated`/`scope`, and `eq/canonical-readiness/plan-eq-service-migration-apply-gate-2026-07-03.md`'s `status:` field held a full approval paragraph instead of a valid enum (moved verbatim to a new `status_note:` key). All 4 CI checks pass on the PR. **Not yet merged.** _(done 2026-07-04)_
+
+**Deferred:**
+- [ ] **Merge eq-context PR #62.** _(added 2026-07-04)_
+- [ ] **Arm the Phase 1 + Phase 2 backups (needs Royce)** — supplementary detail verified live via `gh` just now: eq-context's `production-ops` **GitHub Environment does not exist yet** (Phase 1 isn't armed either, not just Phase 2). Repo secrets currently present: `EQ_CONTEXT_PAT`, `EQ_SHELL_JWT_SECRET`, `SENTRY_AUTH_TOKEN`, `SUPABASE_ACCESS_TOKEN`, `SUPABASE_SERVICE_ROLE_KEY` (= ehow key) — that's all. None of `R2_ACCESS_KEY_ID/SECRET/ENDPOINT/BUCKET_NAME`, `SENTRY_DSN`, ehow's `SUPABASE_DB_URL`, or the 4 `EQ_CANONICAL*`/`EQ_CANONICAL_INTERNAL*` secrets exist in eq-context yet. **`eq-service` repo already has live `R2_ACCESS_KEY_ID`/`R2_SECRET_ACCESS_KEY`/`R2_ENDPOINT`/`R2_BUCKET_NAME` + its own `SUPABASE_DB_URL`** — reusable by copying the values across, no Cloudflare-dashboard trip needed for R2. `SENTRY_DSN` doesn't exist anywhere yet — genuinely needs creating fresh in Sentry. _(supplementary detail added 2026-07-04, needs your call)_
+
+**Notes:**
+- A concurrent console (different tool, screenshot shared mid-session) was independently working the exact same arming task with its own checklist. Drafted Royce a coordination prompt handing that console the just-verified live-secret facts and standing this session's Code instance down from touching any secrets/environments, so the two consoles don't race on creating the same GitHub Environment or setting conflicting values.
+- Steelmanned "should we arm this" on request — recommended yes (asymmetric cost: ~15 minutes of copy-paste vs. total/permanent loss of platform identity if eq-canonical is ever lost with no offsite copy); named real counterpoints (R2 becomes a second location holding auth-adjacent data, deserves real key hygiene; the `auth_data.sql` capture is guarded but unproven until a live run). **Not yet a decision** — Royce hasn't confirmed arming in words.
+- Rebased eq-context PR #61 (Phase 2) mid-session after discovering Phase 1 had landed on `main` under a different commit SHA than the one this branch was originally stacked on — dropped the resulting duplicate commit, re-pushed as Phase-2-only before it merged.
+
+---
+
 ## ⏩ Session close — 2026-07-04 (15 July CEO presentation prep) — pre-pass bug sweep across Field/Shell/Cards; self-serve tenant provisioning fully hardened + verified live end-to-end for the first time ever
 
 *Royce presents EQ Solutions to his CEO 15 July. Philosophy: "a working product is our best marketing strategy" — built on real verified functionality, not a staged demo. Two levers picked: (1) run the self-serve tenant-provisioning dry run — flagged all session as never having had a real redemption (0 rows ever) — and (2) a canonical-layer visual for the pitch. Also did a pre-pass bug sweep on `core.eq.solutions/sks/field` ahead of Royce's planned week of personally stress-testing Roster/Timesheets/Leave ("human use is the truest form of debugging").*
