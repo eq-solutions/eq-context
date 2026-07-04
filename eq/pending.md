@@ -27,7 +27,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 **Still open (your call):**
 - [ ] **Run the first manual restore game-day** — full restore into a Supabase-parity target + app repoint (proves executability + operational RTO). Data-integrity is covered daily by the automated verify; this is the rarer human drill. _(carried 2026-07-04)_
-- [ ] **Optionally clone the verify to eq-canonical / -internal** — one-file parameterised copy. _(added 2026-07-04)_
+- [x] **Cloned the verify to eq-canonical + eq-canonical-internal** — `verify-backup-eq-canonical{,-internal}.yml` (PR #67, merged); both dispatched **green** (eq-canonical: users 49 / workers 74 / auth 50; internal: customers 50 / sites 30). All three planes now self-verify daily, staggered 05:00 / 05:15 / 05:30 UTC. _(done 2026-07-04)_
 
 **Notes:**
 - `production-ops` is **main-only** → DR-workflow changes only run/verify after merge (every DR change this session went branch→PR→merge→dispatch-on-main).
