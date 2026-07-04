@@ -171,39 +171,44 @@ jobs:
             --endpoint-url "${{ secrets.R2_ENDPOINT }}"
           echo "✅ DB backup uploaded: ${R2_PREFIX}/${BACKUP_DATE}/db_backup.tar.gz"
 
-      # ── Every storage bucket, recursively ──
+      # ── Every storage bucket, recursively — enumerate, then download in parallel ──
+      # This project holds ~213 objects across ~134 nested folders. The old sequential
+      # loop downloaded one file at a time and spawned a python3 process per file just
+      # to URL-encode — it took ~15 min. We now (1) enumerate every object into a
+      # manifest, encoding the URL in jq per path segment as we go, then (2) fan the
+      # downloads out 8-wide with xargs. The ehow / eq-canonical-internal templates keep
+      # the simpler sequential form — they hold <10 / 0 objects, so this machinery would
+      # be cost without payoff there.
       - name: Sync ALL storage buckets
         env:
           SERVICE_ROLE_KEY: ${{ secrets.EQ_CANONICAL_SERVICE_ROLE_KEY }}
         run: |
           set -euo pipefail
           mkdir -p storage_sync
+          : > downloads.tsv   # one line per object: <local path>\t<download URL>
 
-          # Recursively download every object under a bucket prefix. Storage `list` is
-          # one level deep; folders come back with a null id, so we recurse.
-          download_prefix () {
+          # Enumerate every object under a bucket prefix (storage `list` is one level
+          # deep; folders come back with a null id, so recurse). ENUMERATE ONLY here —
+          # each object is appended to the manifest with its URL already percent-encoded
+          # per path segment (spaces/specials handled, slashes preserved). The downloads
+          # themselves run in parallel afterwards.
+          enumerate_prefix () {
             local bucket="$1" prefix="$2" resp
             resp=$(curl -sS \
               -H "Authorization: Bearer ${SERVICE_ROLE_KEY}" \
               -H "Content-Type: application/json" \
               -X POST "${SUPABASE_URL}/storage/v1/object/list/${bucket}" \
               -d "{\"prefix\":\"${prefix}\",\"limit\":10000,\"sortBy\":{\"column\":\"name\",\"order\":\"asc\"}}")
-            local files dirs name path folder encpath
-            mapfile -t files < <(echo "$resp" | jq -r '.[] | select(.id != null) | .name')
-            mapfile -t dirs  < <(echo "$resp" | jq -r '.[] | select(.id == null) | .name')
-            for name in "${files[@]}"; do
-              [ -z "$name" ] && continue
-              path="${prefix}${name}"
-              # URL-encode the object path (spaces/special chars) but keep the slashes.
-              encpath=$(python3 -c 'import urllib.parse,sys;print(urllib.parse.quote(sys.argv[1]))' "$path")
-              mkdir -p "storage_sync/${bucket}/$(dirname "$path")"
-              curl -fsS -H "Authorization: Bearer ${SERVICE_ROLE_KEY}" \
-                -o "storage_sync/${bucket}/${path}" \
-                "${SUPABASE_URL}/storage/v1/object/${bucket}/${encpath}"
-            done
+            echo "$resp" | jq -r \
+              --arg b "$bucket" --arg p "$prefix" --arg base "$SUPABASE_URL" '
+                .[] | select(.id != null) | ($p + .name) as $o
+                | "storage_sync/\($b)/\($o)\t\($base)/storage/v1/object/\($b)/\($o | split("/") | map(@uri) | join("/"))"
+              ' >> downloads.tsv
+            local dirs folder
+            mapfile -t dirs < <(echo "$resp" | jq -r '.[] | select(.id == null) | .name')
             for folder in "${dirs[@]}"; do
               [ -z "$folder" ] && continue
-              download_prefix "$bucket" "${prefix}${folder}/"
+              enumerate_prefix "$bucket" "${prefix}${folder}/"
             done
           }
 
@@ -225,22 +230,46 @@ jobs:
 
           for b in "${BUCKETS[@]}"; do
             [ -z "$b" ] && continue
-            echo "--- Syncing bucket: $b ---"
-            mkdir -p "storage_sync/${b}"   # ensure dir exists even for empty buckets (else find fails under set -e)
-            download_prefix "$b" ""
-            COUNT=$(find "storage_sync/${b}" -type f | wc -l)
-            echo "  ${COUNT} files from ${b}"
+            echo "--- Enumerating bucket: $b ---"
+            enumerate_prefix "$b" ""
           done
 
-          TOTAL=$(find storage_sync -type f | wc -l)
-          echo "Total storage objects backed up: ${TOTAL}"
-          if [ "$TOTAL" -eq 0 ]; then
+          OBJ_COUNT=$(wc -l < downloads.tsv | tr -d '[:space:]')
+          echo "Objects enumerated: ${OBJ_COUNT}"
+          if [ "${OBJ_COUNT}" -eq 0 ]; then
             if [ "${EXPECT_STORAGE}" = "true" ]; then
-              echo "::error::Storage sync produced 0 files but this project holds live objects — treating as failure."
+              echo "::error::Enumerated 0 objects but this project holds live objects — treating as failure."
               exit 1
             fi
             echo "::warning::Buckets present (${BUCKETS[*]}) but empty — no objects to upload. Skipping storage upload."
             echo "STORAGE_UPLOAD=skip" >> "$GITHUB_ENV"
+            exit 0
+          fi
+
+          # Pre-create target dirs once, single-threaded — no mkdir races during fan-out.
+          cut -f1 downloads.tsv | while IFS= read -r lp; do mkdir -p "$(dirname "$lp")"; done
+
+          # Fan the downloads out 8-wide. Records are NUL-delimited so object names with
+          # spaces survive; the worker splits on the first tab. curl -fsS means any failed
+          # object exits non-zero → xargs returns non-zero → set -e fails the whole job
+          # (no silent partial backups).
+          cat > dl_worker.sh <<'WORKER'
+          #!/usr/bin/env bash
+          set -euo pipefail
+          rec="$1"
+          lp="${rec%%$'\t'*}"
+          url="${rec#*$'\t'}"
+          curl -fsS -H "Authorization: Bearer ${SERVICE_ROLE_KEY}" -o "$lp" "$url"
+          WORKER
+          chmod +x dl_worker.sh
+          export SERVICE_ROLE_KEY
+          tr '\n' '\0' < downloads.tsv | xargs -0 -P 8 -n 1 ./dl_worker.sh
+
+          TOTAL=$(find storage_sync -type f | wc -l)
+          echo "Total storage objects backed up: ${TOTAL} (expected ${OBJ_COUNT})"
+          if [ "$TOTAL" -ne "$OBJ_COUNT" ]; then
+            echo "::error::Downloaded ${TOTAL} files but enumerated ${OBJ_COUNT} — partial backup, treating as failure."
+            exit 1
           fi
 
       - name: Upload storage to R2
