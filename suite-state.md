@@ -64,6 +64,7 @@ _If this file is >48h old, the cron is broken._
 - #437 fix: audit-log attachment upload + delete mutations (+ Zod validation)
 
 **eq-shell:**
+- #647 fix(tenants): auto-join creating admin so new tenants are reachable
 - #637 docs: pnpm-workspace.yaml — packages are vendored, not a git submodule
 - #636 build: pin @eq-solutions/ui to release tag v1.10.0 for reproducible builds
 - #635 feat(canonical-api): move APP_TENANT_SCOPE allow-list to a shell_control table
