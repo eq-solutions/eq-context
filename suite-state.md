@@ -60,6 +60,14 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-04)
 
+**eq-field:**
+- #400 v3.5.235 — leave CC list: refresh panel from DB on open
+
+**eq-service:**
+- #435 test: add unit tests for propagateCheckCompletionIfReady (check-completion rollup)
+- #434 docs: fix stale role names and add RCD testing to README
+- #433 docs: document CLOUDCONVERT_API_KEY and IDENTITY_CLAIMS_ENABLED in .env.example
+
 **eq-shell:**
 - #637 docs: pnpm-workspace.yaml — packages are vendored, not a git submodule
 - #636 build: pin @eq-solutions/ui to release tag v1.10.0 for reproducible builds
