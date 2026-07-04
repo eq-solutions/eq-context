@@ -1,3 +1,12 @@
+---
+title: Disaster Recovery — platform backups
+owner: Royce Milmlow
+last_updated: 2026-07-04
+scope: Offsite backup + recovery decision for platform Supabase DBs (ehow, eq-canonical, eq-canonical-internal)
+read_priority: standard
+status: live
+---
+
 # Disaster Recovery — platform backups
 
 **Owner:** Royce

@@ -1,3 +1,12 @@
+---
+title: Runbook — Supabase backup restoration drill (ehow)
+owner: Royce Milmlow
+last_updated: 2026-07-04
+scope: Quarterly restore-drill procedure for the ehow offsite backup
+read_priority: reference
+status: live
+---
+
 # Runbook — Supabase backup restoration drill (ehow)
 
 **Owner:** Royce

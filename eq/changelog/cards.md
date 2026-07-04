@@ -1,6 +1,8 @@
 ---
 title: EQ Cards — Changelog
 owner: Royce Milmlow
+last_updated: 2026-06-30
+scope: Per-product change history — EQ Cards
 read_priority: reference
 status: live
 ---
