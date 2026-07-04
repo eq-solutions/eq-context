@@ -61,14 +61,17 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-04)
 
 **eq-field:**
-- #400 v3.5.235 — leave CC list: refresh panel from DB on open
+- #401 v3.5.236 — voice input on Site Audit comments (QA row 30)
 
 **eq-service:**
+- #437 fix: audit-log attachment upload + delete mutations (+ Zod validation)
+- #436 test: add unit tests for lib/api/platform-admin.ts (timing-safe provisioning guard)
 - #435 test: add unit tests for propagateCheckCompletionIfReady (check-completion rollup)
 - #434 docs: fix stale role names and add RCD testing to README
 - #433 docs: document CLOUDCONVERT_API_KEY and IDENTITY_CLAIMS_ENABLED in .env.example
 
 **eq-shell:**
+- #644 refactor(branding): one canonical copy in organisations.branding (Phase 1)
 - #637 docs: pnpm-workspace.yaml — packages are vendored, not a git submodule
 - #636 build: pin @eq-solutions/ui to release tag v1.10.0 for reproducible builds
 - #635 feat(canonical-api): move APP_TENANT_SCOPE allow-list to a shell_control table
