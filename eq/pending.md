@@ -14,6 +14,23 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-04 (Tenants page — permanently delete an archived tenant) — eq-shell PR #642 merged + deployed + verified live
+
+*Royce, looking at the live Tenants page: "can we have a hard delete button - i hate having mess in lists." Archived tenants (test/junk orgs) had no way to actually leave the list.*
+
+**Completed (merged `b7e87ad`, deployed live, verified live):**
+- [x] **`shell_control.hard_delete_tenant(tenant_id, confirm_slug)`** applied to jvkn — the only place the actual guard logic lives, not just the UI. Refuses unless: (1) the tenant is already archived (`active=false`) — hard delete is a deliberate second step after archive, never a shortcut around it; (2) `confirm_slug` matches exactly; (3) **zero real users are homed in that tenant** (`shell_control.users.tenant_id`). That last guard is the one that matters — verified live before building that `__personal__` still homes 18 real users post the 2026-06-29 identity cleanup, and it would be hard-refused by this function while genuinely-empty test tenants (`provisioning-retest`, `melbourne`, `demo-trades`) are deletable. Everything else (module entitlements, security groups, tenant_config, routing, `public.organisations`) is removed in one transaction — a real downstream referrer (e.g. `public.licences.source_org_id`, which is `NO ACTION` not `CASCADE`) would abort the whole delete cleanly rather than leaving a half-deleted tenant.
+- [x] **`DELETE /.netlify/functions/admin-tenants`** — calls the RPC; also blocks deleting the tenant your own session is currently active in.
+- [x] **Tenants page UI** — archived rows get a trash-icon action that opens a type-the-slug confirm panel; the delete button stays disabled until the typed text matches the slug exactly.
+- [x] **Live end-to-end verification via browser** (not just code review): clicked delete on "Provisioning Retest," typed the slug, confirmed the row disappeared from the UI, then confirmed independently via SQL that the `shell_control.tenants` row was actually gone. This is the first real click-through of the feature, not just a build-and-hope.
+- [x] Migration apply + the initial build step were each blocked once by the auto-mode classifier (irreversible prod DDL / cascading-delete UI without specific sign-off on this exact design) — stopped, explained the guardrail design to Royce, got explicit "yes, build + apply + merge" before proceeding either time.
+
+**Notes (load-bearing):**
+- 11 tables FK to `shell_control.tenants.id`. Three matter: `users.tenant_id`/`users.last_active_tenant_id` (`NO ACTION` — the home-users guard exists because of this), `tenant_routing` (`RESTRICT` — deleted explicitly before the tenant row), and everything else is either `CASCADE` or explicitly cleaned in the function body.
+- `favour-perfect` (the test tenant this feature was originally going to be tested against) had already been hard-deleted via direct SQL by a concurrent session before this session's live test ran — see the "15 July CEO presentation prep" session-close entry below for that story. This session's live verification used `provisioning-retest` instead.
+
+---
+
 ## ⏩ Session close — 2026-07-04 (Tenants page — cancel a stuck provisioning job) — eq-shell PR #641 open
 
 *Follow-on to the Favour Perfect hard-delete: closes the "no cancel/clear path exists in the admin UI today" gap flagged as a real issue in that close.*
