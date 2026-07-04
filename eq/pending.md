@@ -14,6 +14,19 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-04 (Tenants page — cancel a stuck provisioning job) — eq-shell PR #641 open
+
+*Follow-on to the Favour Perfect hard-delete: closes the "no cancel/clear path exists in the admin UI today" gap flagged as a real issue in that close.*
+
+**Completed:**
+- [x] **eq-shell PR #641 opened** — new `provision-cancel.ts` flips a `tenant_routing` row stuck at `status='provisioning'` to the already-supported `provisioning_failed` state once `status_changed_at` is >20 min stale (server-enforced, not just UI-hidden) — the existing Retry button then picks it up with zero changes to retry logic. `AdminTenantsPage.tsx` shows a "Stuck — Cancel" action next to the spinner once that threshold passes. Also tightened `provision-tenant-background.ts`'s retry-reset branch to require `status='provisioning_failed'` specifically, closing a latent race where a raw API call could reset an already-in-flight job. Verified via `tsc -p tsconfig.netlify.json --noEmit` and `tsc -p tsconfig.app.json --noEmit`, both clean. **Not yet merged, not yet clicked live.** _(done 2026-07-04)_
+
+**Deferred:**
+- [ ] **Merge eq-shell PR #641.** _(added 2026-07-04)_
+- [ ] **Manual click-through of PR #641 once deployed** — load `/_platform/tenants`, confirm no regression on Provision/Retry/Archive/Reactivate, and (if a stuck row exists, or one is forced) confirm "Stuck — Cancel" appears only past 20 min and Retry re-provisions cleanly afterward. _(added 2026-07-04)_
+
+---
+
 ## ⏩ Session close — 2026-07-04 (frontmatter CI green + DR-arming prep) — PR #62 fixes the repo-wide frontmatter check; verified exact live-secret state ahead of arming
 
 *Follow-on within the same day's platform-DR arc. Royce flagged `Frontmatter validation` had been red on `main` for days (masks real regressions) and asked for it fixed; separately walked through what "arming" the Phase 1+2 backups actually requires, then a concurrent console (different tool) surfaced its own arming checklist — verified live-secret state to reconcile the two and drafted a coordination handoff.*
