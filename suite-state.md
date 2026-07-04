@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-04)
 
-**eq-field:**
-- #401 v3.5.236 — voice input on Site Audit comments (QA row 30)
-
 **eq-service:**
 - #437 fix: audit-log attachment upload + delete mutations (+ Zod validation)
 - #436 test: add unit tests for lib/api/platform-admin.ts (timing-safe provisioning guard)
