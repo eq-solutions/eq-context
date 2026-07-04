@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-04)
 
-**eq-field:**
-- #405 fix(field): field_job_numbers — restore Field read, keep quote unreachable
-
 **eq-shell:**
 - #637 docs: pnpm-workspace.yaml — packages are vendored, not a git submodule
 - #636 build: pin @eq-solutions/ui to release tag v1.10.0 for reproducible builds
