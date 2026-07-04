@@ -1,31 +1,31 @@
 ---
 title: EQ Suite — Health Digest
 owner: Royce Milmlow
-last_updated: 2026-07-03
+last_updated: 2026-07-04
 scope: Push-style 'what needs your attention' feed across the EQ suite. Regenerated on merge (repository_dispatch: suite-state-changed) and nightly. Full snapshot in suite-state.md.
 read_priority: high
 status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-03 20:26 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-04 05:19 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-03 20:19 UTC → 2026-07-03 20:26 UTC)
+## Since last refresh (2026-07-03 20:26 UTC → 2026-07-04 05:19 UTC)
 
-- Merged: eq-shell [#608](https://github.com/eq-solutions/eq-shell/pull/608) fix(governance): contact-tables gate red — relkind-aware 015
-- Merged: eq-shell [#601](https://github.com/eq-solutions/eq-shell/pull/601) Customers/Staff legibility + EQ Ops board fixes + design-tok
-- Merged: eq-shell [#600](https://github.com/eq-solutions/eq-shell/pull/600) fix(customers): migrate address autocomplete to new Places A
-- Merged: eq-shell [#599](https://github.com/eq-solutions/eq-shell/pull/599) fix(staff): "Has gaps" chip → "Has expired" (expired-only)
-- Merged: eq-shell [#598](https://github.com/eq-solutions/eq-shell/pull/598) Admin screen: number-reuse checks (recycled-phone review que
-- Merged: eq-shell [#597](https://github.com/eq-solutions/eq-shell/pull/597) Route create-worker-invite through the canonical worker reso
-- Merged: eq-shell [#596](https://github.com/eq-solutions/eq-shell/pull/596) fix(customers): Add-site address autocomplete fills suburb/s
-- Merged: eq-solves-service [#419](https://github.com/eq-solutions/eq-service/pull/419) fix(validations): job_plan_id rejected by Zod .uuid() for 4 
+- Merged: eq-shell [#642](https://github.com/eq-solutions/eq-shell/pull/642) Tenants page: permanently delete an archived tenant
+- Merged: eq-shell [#641](https://github.com/eq-solutions/eq-shell/pull/641) fix: clear a stuck data-plane provisioning job from the Tena
+- Merged: eq-shell [#638](https://github.com/eq-solutions/eq-shell/pull/638) fix(provisioning): shell_control.provision_tenant never actu
+- Merged: eq-shell [#634](https://github.com/eq-solutions/eq-shell/pull/634) fix(sync-quotes-nightly): check errors on Flask write-back +
+- Merged: eq-shell [#633](https://github.com/eq-solutions/eq-shell/pull/633) docs: correct CLAUDE.md — EQ_SECRET_SALT is the fallback sig
+- Merged: eq-shell [#617](https://github.com/eq-solutions/eq-shell/pull/617) Harden self-serve tenant provisioning: transactional RPC, ph
+- Merged: eq-shell [#610](https://github.com/eq-solutions/eq-shell/pull/610) fix(audit): grant audit_log id-sequence to service_role; sur
+- Merged: eq-shell [#609](https://github.com/eq-solutions/eq-shell/pull/609) fix(staff): pending-connections roster-name fallback never m
 
 ## ⚠ Needs you (4)
 
 - 🟠 **Sentry new error** — `eq-field` [SyntaxError: Unexpected end of input](https://eq-solutions.sentry.io/issues/131931795/)
-- 🟠 **Sentry new error** — `eq-field` [Error: 400: {"code":"23502","details":null,"hint":null,"mess](https://eq-solutions.sentry.io/issues/131921038/)
-- 🟠 **Sentry new error** — `eq-cards` [: Unable to load asset: "NOTICES".](https://eq-solutions.sentry.io/issues/131717362/)
+- 🟠 **Sentry new error** — `eq-field` [ReferenceError: openCleanupCodes is not defined](https://eq-solutions.sentry.io/issues/132094727/)
+- 🟠 **Sentry new error** — `eq-cards` [provisionTenantExchange: unexpected HTTP 500](https://eq-solutions.sentry.io/issues/132064194/)
 - 🟡 **1 stale worktree** need cleanup — [worktree-registry.md](system/worktree-registry.md)
 
 ## Pulse
@@ -34,7 +34,7 @@ _2026-07-03 20:26 UTC · what needs your attention. Full snapshot: [suite-state.
 |------|-----------|--------|----------|-----------|
 | eq-shell | ? unknown | ? | 3 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 0 | — |
-| eq-field | ? unknown | ? | 1 | 0d |
+| eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ? unknown | ? | 0 | — |
 
@@ -43,6 +43,8 @@ _2026-07-03 20:26 UTC · what needs your attention. Full snapshot: [suite-state.
 | Project | Error | Events | Last seen |
 |---------|-------|--------|-----------|
 | eq-field | [SyntaxError: Unexpected end of input](https://eq-solutions.sentry.io/issues/131931795/) | 2 | 2026-07-03 |
+| eq-field | [ReferenceError: openCleanupCodes is not defined](https://eq-solutions.sentry.io/issues/132094727/) | 1 | 2026-07-04 |
+| eq-cards | [provisionTenantExchange: unexpected HTTP 500](https://eq-solutions.sentry.io/issues/132064194/) | 1 | 2026-07-03 |
 | eq-field | [Error: 400: {"code":"23502","details":null,"hint":null,"message":"null value in ](https://eq-solutions.sentry.io/issues/131921038/) | 1 | 2026-07-03 |
 | eq-cards | [: Unable to load asset: "NOTICES".](https://eq-solutions.sentry.io/issues/131717362/) | 1 | 2026-07-02 |
 | eq-cards | [<unknown>](https://eq-solutions.sentry.io/issues/131636027/) | 1 | 2026-07-02 |
@@ -53,6 +55,14 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-04 | eq-shell | [#641](https://github.com/eq-solutions/eq-shell/pull/641) fix: clear a stuck data-plane provisioning job from the Tenants p |
+| 2026-07-04 | eq-shell | [#642](https://github.com/eq-solutions/eq-shell/pull/642) Tenants page: permanently delete an archived tenant |
+| 2026-07-04 | eq-solves-service | [#431](https://github.com/eq-solutions/eq-service/pull/431) fix: restore public.canonical_outbox, dropped by mistake on 2026- |
+| 2026-07-04 | eq-field | [#390](https://github.com/eq-solutions/eq-field/pull/390) v3.5.227 — QA sheet: middle-name linking + remove 3 redundant but |
+| 2026-07-04 | eq-field | [#389](https://github.com/eq-solutions/eq-field/pull/389) v3.5.225 — prestart: full SKS template (export + form capture) |
+| 2026-07-03 | eq-shell | [#634](https://github.com/eq-solutions/eq-shell/pull/634) fix(sync-quotes-nightly): check errors on Flask write-back + line |
+| 2026-07-03 | eq-shell | [#633](https://github.com/eq-solutions/eq-shell/pull/633) docs: correct CLAUDE.md — EQ_SECRET_SALT is the fallback signing  |
+| 2026-07-03 | eq-shell | [#638](https://github.com/eq-solutions/eq-shell/pull/638) fix(provisioning): shell_control.provision_tenant never actually  |
 | 2026-07-03 | eq-shell | [#627](https://github.com/eq-solutions/eq-shell/pull/627) fix(provisioning): convert provision-tenant to a background funct |
 | 2026-07-03 | eq-shell | [#626](https://github.com/eq-solutions/eq-shell/pull/626) fix(admin): resolve --eq-ink to a real hex value for the worker Q |
 | 2026-07-03 | eq-shell | [#623](https://github.com/eq-solutions/eq-shell/pull/623) fix(intake): re-vendor field-name + plain-English fixes from eq-s |
@@ -60,29 +70,21 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-03 | eq-shell | [#624](https://github.com/eq-solutions/eq-shell/pull/624) fix(provisioning): tenant_routing NOT NULL columns block every Pr |
 | 2026-07-03 | eq-shell | [#620](https://github.com/eq-solutions/eq-shell/pull/620) fix(ci): check-migration-hygiene.mjs skips SQL line comments |
 | 2026-07-03 | eq-shell | [#618](https://github.com/eq-solutions/eq-shell/pull/618) fix(security): reassert security_invoker on field_managers + nomi |
-| 2026-07-03 | eq-shell | [#622](https://github.com/eq-solutions/eq-shell/pull/622) Tenants page: edit tier/modules, archive/reactivate |
-| 2026-07-03 | eq-shell | [#621](https://github.com/eq-solutions/eq-shell/pull/621) fix(ops): remove broken per-column Status filter in table view |
-| 2026-07-03 | eq-shell | [#619](https://github.com/eq-solutions/eq-shell/pull/619) fix(field-iframe): preserve deep-linked ?tab= on initial tenant a |
-| 2026-07-03 | eq-shell | [#613](https://github.com/eq-solutions/eq-shell/pull/613) feat(customers): batch delete/archive for sites |
-| 2026-07-03 | eq-shell | [#614](https://github.com/eq-solutions/eq-shell/pull/614) feat(staff): Add-to-roster action — dedupe-first roster-only crea |
-| 2026-07-03 | eq-shell | [#616](https://github.com/eq-solutions/eq-shell/pull/616) feat(ops): create and edit sites from the EQ Ops quote form |
-| 2026-07-03 | eq-shell | [#615](https://github.com/eq-solutions/eq-shell/pull/615) fix(ops): quote PDF download/email returned 404 for every quote — |
-| 2026-07-03 | eq-shell | [#612](https://github.com/eq-solutions/eq-shell/pull/612) fix(governance): adopt quality-guardian tables — tenant-JWT polic |
-_Showing 15 of 129 · full record in [sessions/](sessions/)_
+_Showing 15 of 127 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **12 contacts missing first/last name, categorized** — 2 safely inferable from email pattern (Pashon Jima at ap.equinix.com → last name "Jima"; Benoit Kon at digi-co.com.au → last name "Kon"), 1 data-import bug (company name "Metronode" landed in `first_name` with a garbled fragment in `position` — needs a real fix, not a name), 1 unrecoverable ("Rafael", no email/signal), 8 are role/department mailboxes ("Accounts", "Payables", "Reception") not people — filling a `last_name` for those would be fabricating data. Declined to hand-write any of this via raw SQL (bypasses the governed audit path this whole day's work has been about) — needs your call on fix path (dashboard tidy flow, once the Tidy-tab Edit lands live, is now a real option for the 2 inferable ones). _(added 2026-07-03, needs your call)_
-- **Licence renewals surfaced by the quality-guardian run** — Huon Henne's LVR (CRT850747) expired 2025-10-08, 268 days overdue, critical; Rhys Scott's electrical licence (371332C) expires in 25 days; Brian Griffin-Colls' LVR (UETDRMP007) expires in 29 days. Can't action from here — needs the actual updated licence documents from each person. _(added 2026-07-03, needs your call)_
-- **137-item review queue is not agent-workable** — checked before bulk-approving anything: every item across every category, including the "one-click" trade/link/format ones, is explicitly low/medium confidence with the adjudication panel that built the queue having already declined to auto-commit ("per-person trade unproven, confirm," "adjudication panel rejected auto-commit 0/3," "not resolvable from canonical data"). There's no genuinely mechanical subset — every item needs someone who knows the specific person/customer. _(added 2026-07-03, needs your call)_
-- **Browser verification of the new Tidy-tab Edit/Suggest + Dupes multi-group fix** — no component-test infra exists for `@eq/intake-demo` (no testing-library/jsdom), and no live authenticated session was available to click through it. Verified via strict `tsc -b` + full existing test suites + careful code tracing only. Next session with a live login: open a Tidy tab with gaps, Edit one inline, Suggest one, confirm only the intended row changes; open Dupes and confirm more than one duplicate group can now show per field; confirm Site Name renders on the Sites Gaps/All view. _(added 2026-07-03, needs your call)_
-- **Mandatory prod dry run** — `shell_control.provision_tokens` is still 0 rows ever as of session close. Generate a real link (test org + spare phone) through Admin → Tenants, walk it through Cards including the phone-mismatch rejection, confirm the workspace lands correctly and the `tenant_slug` handoff opens the right tenant, then archive the test tenant via the new #622 UI. **Do this before sending a link to a real prospect.** _(added 2026-07-03, needs your call)_
-- **`EQ_PLATFORM_NOTIFY_EMAIL`** — optional Netlify env var, not yet set. If set, you get an email whenever a provision link is redeemed. No redeploy needed — functions read it live. _(added 2026-07-03, needs your call)_
-- **Delete stale remote branch `claude/staff-add-to-roster`** — a concurrent session's branch-switch in the shared checkout caused the first push attempt to land on the wrong branch pointing at an unrelated commit; recovered by opening the PR from `-v2` instead, but the stale remote ref is still there (`git push origin --delete claude/staff-add-to-roster`) and the classifier blocked the agent from deleting it. _(added 2026-07-03, needs your call)_
-- **Merge eq-intake #58** — ledger checksum convention (the live rows are already backfilled by hand; merging just lands the convention in the repo so future self-inserts don't regress). Still open, mergeable, not blocking anything now the gate is clean. _(added 2026-07-03, needs your call)_
-- **Work the 137-item review queue** — the tab is live; trades/links/formats are one-click, emergency contacts need info Royce has to source. _(added 2026-07-03, needs your call)_
-- **sql/061_steward_commit_batch.sql — staged, NOT applied** — server-side `eq_steward_commit_batch` RPC (service-role-only, whitelist + event lifecycle inside) for steward run 002; apply when a second run is wanted. _(added 2026-07-03)_
-_…and 207 more · [eq/pending.md](eq/pending.md)_
+- **Manual click-through of PR #641 once deployed** — load `/_platform/tenants`, confirm no regression on Provision/Retry/Archive/Reactivate **and** the new hard-delete action from PR #642, and (if a stuck row exists, or one is forced) confirm "Stuck — Cancel" appears only past 20 min and Retry re-provisions cleanly afterward. _(added 2026-07-04)_
+- **Merge eq-context PR #62.** _(added 2026-07-04)_
+- **Arm the Phase 1 + Phase 2 backups (needs Royce)** — supplementary detail verified live via `gh` just now: eq-context's `production-ops` **GitHub Environment does not exist yet** (Phase 1 isn't armed either, not just Phase 2). Repo secrets currently present: `EQ_CONTEXT_PAT`, `EQ_SHELL_JWT_SECRET`, `SENTRY_AUTH_TOKEN`, `SUPABASE_ACCESS_TOKEN`, `SUPABASE_SERVICE_ROLE_KEY` (= ehow key) — that's all. None of `R2_ACCESS_KEY_ID/SECRET/ENDPOINT/BUCKET_NAME`, `SENTRY_DSN`, ehow's `SUPABASE_DB_URL`, or the 4 `EQ_CANONICAL*`/`EQ_CANONICAL_INTERNAL*` secrets exist in eq-context yet. **`eq-service` repo already has live `R2_ACCESS_KEY_ID`/`R2_SECRET_ACCESS_KEY`/`R2_ENDPOINT`/`R2_BUCKET_NAME` + its own `SUPABASE_DB_URL`** — reusable by copying the values across, no Cloudflare-dashboard trip needed for R2. `SENTRY_DSN` doesn't exist anywhere yet — genuinely needs creating fresh in Sentry. _(supplementary detail added 2026-07-04, needs your call)_
+- **Orphaned Supabase project `eq-tenant-favour-perfect` (`jzjzpgaablnppoimdnip`)** — DB rows are gone (above), but the project itself is still `ACTIVE_HEALTHY`. No MCP tool can delete/pause it (`pause_project` failed again: "not free-tier, downgrade first"); needs Royce via the Supabase dashboard directly — org `sqjyblkiqonyrdobaucn` → project "eq-tenant-favour-perfect" → Settings → General → Delete project. _(added 2026-07-04, needs your call)_
+- **Test the Add-tenant → data-plane Provision button flow fresh** — this session verified the *self-serve invite-link* path end-to-end; the *admin manually creates a tenant, then clicks Provision* path (same PR #627 fix) was never independently walked start-to-finish on a brand-new tenant. _(added 2026-07-04)_
+- **Leave submit-path** — never load-tested a real leave submission this session (real-email side effect); still open ahead of Royce's stress-testing week. _(added 2026-07-04)_
+- **QR/join-code worker flow** — `JoinContextNotifier`'s keepalive fix (PR #120) was applied by exact code-pattern match to the provision-context bug, not independently reproduced/verified live. Worth a live pass before the 15th. _(added 2026-07-04)_
+- **Set a code-freeze date before 15 July** — not yet decided. _(added 2026-07-04, needs your call)_
+- **206 Supabase security advisories on ehow** — Royce's call from earlier this session: keep for a dedicated session, not folded into this one. _(added 2026-07-03, needs your call)_
+- **Arm the ehow backup (needs Royce)** — create eq-context `production-ops` env (main-only, no reviewers) + add secrets `SUPABASE_DB_URL` (ehow pooler), `R2_ACCESS_KEY_ID/SECRET/ENDPOINT/BUCKET_NAME`, `SENTRY_DSN`; run once via `workflow_dispatch`; confirm green + R2 contents + Sentry check-in. _(added 2026-07-04)_
+_…and 220 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -114,4 +116,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-03 20:26 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-04 05:19 UTC._
