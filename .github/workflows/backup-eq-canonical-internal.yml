@@ -26,7 +26,7 @@ name: Backup eq-canonical-internal (tenant data plane DB → R2)
 # Read-only against live: dump = pg_dump (SELECT), storage = GET. Nothing is written
 # back to any live Supabase project. R2 is our own backup bucket.
 #
-# Schedule: every Sunday 04:00 UTC (~14:00 AEST) — staggered 2h after ehow (02:00) and
+# Schedule: every day 04:00 UTC (~14:00 AEST) — staggered 2h after ehow (02:00) and
 # 1h after eq-canonical (03:00). Manual: workflow_dispatch.
 #
 # Secrets (add to the `production-ops` GitHub Environment — same environment as the
@@ -45,15 +45,15 @@ name: Backup eq-canonical-internal (tenant data plane DB → R2)
 # R2 layout: everything for this project lives under the `eq-canonical-internal/` prefix,
 # so the three backup jobs can share one R2 bucket without colliding. Prune is scoped to it.
 #
-# Alerting: a Sentry cron check-in monitor (slug `eq-canonical-internal-weekly-backup`).
+# Alerting: a Sentry cron check-in monitor (slug `eq-canonical-internal-daily-backup`).
 # It checks in `in_progress` at start and `ok`/`error` at end, and declares its own crontab
 # schedule — so Sentry pages BOTH on a failed run AND on a run that never happens. Skips
 # cleanly with a loud warning until SENTRY_DSN is set, so the backup is never blocked on it.
 
 on:
   schedule:
-    # Every Sunday 04:00 UTC (~14:00 AEST)
-    - cron: '0 4 * * 0'
+    # Every day 04:00 UTC (~14:00 AEST)
+    - cron: '0 4 * * *'
   workflow_dispatch:
 
 permissions:
@@ -71,7 +71,7 @@ jobs:
     environment: production-ops
     env:
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-      MONITOR_SLUG: eq-canonical-internal-weekly-backup
+      MONITOR_SLUG: eq-canonical-internal-daily-backup
       SUPABASE_URL: https://zaapmfdkgedqupfjtchl.supabase.co
       R2_PREFIX: eq-canonical-internal
       EXPECT_STORAGE: 'false'
@@ -93,7 +93,7 @@ jobs:
           BASE="https://${HOST}/api/${PID}/cron/${MONITOR_SLUG}/${KEY}"
           CID=$(curl -sS -X POST "${BASE}/" \
             -H 'Content-Type: application/json' \
-            -d '{"status":"in_progress","monitor_config":{"schedule":{"type":"crontab","value":"0 4 * * 0"},"checkin_margin":120,"max_runtime":45,"timezone":"UTC"}}' \
+            -d '{"status":"in_progress","monitor_config":{"schedule":{"type":"crontab","value":"0 4 * * *"},"checkin_margin":120,"max_runtime":45,"timezone":"UTC"}}' \
             | jq -r '.id // empty') || true
           echo "SENTRY_BASE=$BASE" >> "$GITHUB_ENV"
           echo "SENTRY_CID=$CID"  >> "$GITHUB_ENV"

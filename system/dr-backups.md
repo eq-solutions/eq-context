@@ -15,7 +15,7 @@ backup for the whole shared database.
 
 **eq-context owns platform DR.** It runs one offsite backup **per irreplaceable platform DB**
 — **ehow** (shared canonical), **eq-canonical** (identity/control plane) and
-**eq-canonical-internal** (tenant data plane) — to Cloudflare R2, weekly, each monitored by
+**eq-canonical-internal** (tenant data plane) — to Cloudflare R2, daily, each monitored by
 Sentry. The per-app copy in eq-service is retired once the ehow job is proven green. Other
 live DBs are assessed per-project below.
 
@@ -65,14 +65,14 @@ Two independent tiers. Restore from the cheapest that covers the incident.
 | Tier | Mechanism | Covers | RPO (max data loss) | RTO (target) |
 |---|---|---|---|---|
 | **1 — Supabase managed** | Supabase automatic **daily** backup (dashboard restore / PITR if enabled) | Accidental delete, bad migration, table corruption | **24 h** (daily cadence; PITR is a paid add-on, currently **off**) | **4 h** |
-| **2 — Offsite R2** | The weekly workflows' `db_backup.tar.gz` + storage, restored into a fresh project | **Supabase account/project loss**, provider-side disaster | **≤ 7 days** (weekly cadence) | **8 h** (manual restore into new project + repoint apps) |
+| **2 — Offsite R2** | The weekly workflows' `db_backup.tar.gz` + storage, restored into a fresh project | **Supabase account/project loss**, provider-side disaster | **≤ 24 h** (daily cadence) | **8 h** (manual restore into new project + repoint apps) |
 
 RPO/RTO are **targets until a drill proves them.** The first drill records achieved figures in
 `system/runbooks/supabase-restore-drill.md`.
 
 ### Per-project recovery ownership
 
-| Project | Tier-1 (managed daily) | Tier-2 (offsite R2, weekly) | Notes |
+| Project | Tier-1 (managed daily) | Tier-2 (offsite R2, daily) | Notes |
 |---|---|---|---|
 | ehow | ✓ all schemas | ✓ `db_backup.tar.gz` (incl. **`auth_data.sql`**) + 6 buckets / 10 objects | **auth.users captured in the offsite dump** (5 live users) — same rationale as eq-canonical below |
 | eq-canonical | ✓ all schemas | ✓ `db_backup.tar.gz` (incl. **`auth_data.sql`**) + 6 buckets / 213 objects | **auth.users is captured in the offsite dump on purpose** — see below |
@@ -92,15 +92,15 @@ drill — but the data is now offsite either way, which is the point.
 
 ## What the backups capture
 
-Workflows (all weekly, read-only against live — dump = `pg_dump`, storage = GET):
+Workflows (all daily, read-only against live — dump = `pg_dump`, storage = GET):
 
 | Project | Workflow | Schedule | Sentry monitor slug | R2 prefix |
 |---|---|---|---|---|
-| ehow | [`backup-ehow.yml`](../.github/workflows/backup-ehow.yml) | Sun 02:00 UTC | `ehow-weekly-backup` | _(bucket root)_ |
-| eq-canonical | [`backup-eq-canonical.yml`](../.github/workflows/backup-eq-canonical.yml) | Sun 03:00 UTC | `eq-canonical-weekly-backup` | `eq-canonical/` |
-| eq-canonical-internal | [`backup-eq-canonical-internal.yml`](../.github/workflows/backup-eq-canonical-internal.yml) | Sun 04:00 UTC | `eq-canonical-internal-weekly-backup` | `eq-canonical-internal/` |
+| ehow | [`backup-ehow.yml`](../.github/workflows/backup-ehow.yml) | daily 02:00 UTC | `ehow-daily-backup` | _(bucket root)_ |
+| eq-canonical | [`backup-eq-canonical.yml`](../.github/workflows/backup-eq-canonical.yml) | daily 03:00 UTC | `eq-canonical-daily-backup` | `eq-canonical/` |
+| eq-canonical-internal | [`backup-eq-canonical-internal.yml`](../.github/workflows/backup-eq-canonical-internal.yml) | daily 04:00 UTC | `eq-canonical-internal-daily-backup` | `eq-canonical-internal/` |
 
-Jobs are **staggered an hour apart** so the three weekly runs don't contend on the runner/R2.
+Jobs are **staggered an hour apart** so the three daily runs don't contend on the runner/R2.
 The Phase-2 jobs share ehow's R2 bucket, separated by a per-project **key prefix** (so one bucket
 holds all three without collision); each job's prune is scoped to its own prefix. Point
 `R2_BUCKET_NAME` at separate buckets instead if you prefer hard isolation — the prefix is harmless
@@ -127,7 +127,7 @@ Every job produces a **complete logical DB dump** — three files per Supabase's
 ## Monitoring / alerting
 
 **One Sentry cron check-in monitor per job** (org `eq-solutions`), slugs:
-`ehow-weekly-backup`, `eq-canonical-weekly-backup`, `eq-canonical-internal-weekly-backup`.
+`ehow-daily-backup`, `eq-canonical-daily-backup`, `eq-canonical-internal-daily-backup`.
 Each job checks in `in_progress` → `ok`/`error` and declares its own crontab schedule, so Sentry
 alerts on **both**:
 
@@ -179,4 +179,4 @@ the monitor slug differs.
   at the deleted `urjh` pooler host; repoint to ehow if you want the old job alive during cutover.
   Royce owns this secret. Once eq-context is green, the eq-service job is retired regardless.
 - **PITR:** if a project moves to the paid plan, add a PITR section here (tightens Tier-1 RPO below 24 h).
-  Most valuable for the identity plane (eq-canonical) if account-loss RPO ever needs to be < 7 days.
+  Most valuable for the identity plane (eq-canonical) if account-loss RPO ever needs to be tighter than the daily offsite copy.

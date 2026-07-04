@@ -22,7 +22,7 @@ name: Backup ehow (canonical DB → R2)
 # Read-only against live: dump = pg_dump (SELECT), storage = GET. Nothing is written
 # back to any live Supabase project. R2 is our own backup bucket.
 #
-# Schedule: every Sunday 02:00 UTC (~12:00 AEST). Manual: workflow_dispatch.
+# Schedule: every day 02:00 UTC (~12:00 AEST). Manual: workflow_dispatch.
 #
 # Secrets (add to the `production-ops` GitHub Environment — see setup in
 # system/dr-backups.md). Already present in eq-context repo secrets:
@@ -34,7 +34,7 @@ name: Backup ehow (canonical DB → R2)
 #                                (postgresql://postgres.ehowgjardagevnrluult:[pass]@aws-…-pooler.supabase.com:5432/postgres)
 #   R2_ACCESS_KEY_ID / R2_SECRET_ACCESS_KEY / R2_ENDPOINT / R2_BUCKET_NAME
 #
-# Alerting: a Sentry cron check-in monitor (slug `ehow-weekly-backup`). It checks
+# Alerting: a Sentry cron check-in monitor (slug `ehow-daily-backup`). It checks
 # in `in_progress` at start and `ok`/`error` at end, and declares its own crontab
 # schedule — so Sentry pages BOTH on a failed run AND on a run that never happens
 # (the exact silent-gap failure mode that hid a 7-week outage). Skips cleanly with a
@@ -42,8 +42,8 @@ name: Backup ehow (canonical DB → R2)
 
 on:
   schedule:
-    # Every Sunday 02:00 UTC (~12:00 AEST)
-    - cron: '0 2 * * 0'
+    # Every day 02:00 UTC (~12:00 AEST)
+    - cron: '0 2 * * *'
   workflow_dispatch:
 
 permissions:
@@ -61,7 +61,7 @@ jobs:
     environment: production-ops
     env:
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-      MONITOR_SLUG: ehow-weekly-backup
+      MONITOR_SLUG: ehow-daily-backup
       SUPABASE_URL: https://ehowgjardagevnrluult.supabase.co
       CAPTURE_AUTH: 'true'   # ehow has 5 live auth.users — capture the managed auth schema
     steps:
@@ -81,7 +81,7 @@ jobs:
           BASE="https://${HOST}/api/${PID}/cron/${MONITOR_SLUG}/${KEY}"
           CID=$(curl -sS -X POST "${BASE}/" \
             -H 'Content-Type: application/json' \
-            -d '{"status":"in_progress","monitor_config":{"schedule":{"type":"crontab","value":"0 2 * * 0"},"checkin_margin":120,"max_runtime":45,"timezone":"UTC"}}' \
+            -d '{"status":"in_progress","monitor_config":{"schedule":{"type":"crontab","value":"0 2 * * *"},"checkin_margin":120,"max_runtime":45,"timezone":"UTC"}}' \
             | jq -r '.id // empty') || true
           echo "SENTRY_BASE=$BASE" >> "$GITHUB_ENV"
           echo "SENTRY_CID=$CID"  >> "$GITHUB_ENV"
