@@ -1,3 +1,12 @@
+---
+title: Disaster Recovery — platform backups
+owner: Royce Milmlow
+last_updated: 2026-07-04
+scope: Platform-level DR — offsite backups + restore verification for the shared EQ Supabase DBs
+read_priority: high
+status: live
+---
+
 # Disaster Recovery — platform backups
 
 **Owner:** Royce
