@@ -14,6 +14,22 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-05 (Field job-number retirement — auto + manual hide-only) — SHIPPED + LIVE-VERIFIED
+
+*Workshop → build → ship the full arc. Royce: "invoiced = retire, plus an option within Field, all canonical." Investigation corrected a stale premise (invoicing does NOT auto-retire in code — only manual `eq_trash_quote` sets `deleted_at`; the "invoiced=gone" was a manual habit). Decision: build BOTH — auto-retire on invoice (view rule) + a hide-only manual Retire/Restore in Field that never touches the Ops quote.*
+
+**Shipped + live on ehow/field.eq.solutions:**
+- [x] **eq-shell #669 → `0163_field_job_number_retire.sql`** (One Pipe, applied to ehow). New `public.field_job_number_overrides` (tenant-gated RLS mirroring `job_numbers`; authenticated SELECT/INSERT/DELETE only, no anon) + body-only `CREATE OR REPLACE` of `field_job_numbers_src()` adding `status <> 'invoiced'` (auto-retire) and overloading `status → 'Retired'` when an override row exists — so all 9 `status==='Active'` Field pickers exclude retired jobs with zero per-consumer edits. ehow-guarded (no-op on zaap). _(done 2026-07-05)_
+- [x] **eq-field #409/#410/#411 (v3.5.242→244)** — Retire button on every board row incl. Ops (the one sanctioned action there), Restore, "Show retired (N)" toggle; hide-only, reuses the existing `public.*` data-JWT write path (no new RPC). _(done 2026-07-05)_
+- [x] **Live smoke caught + fixed a real bug** (#410): Retire 403'd — `Prefer: resolution=merge-duplicates` → `ON CONFLICT DO UPDATE` needs UPDATE priv authenticated lacks. Switched to `ignore-duplicates` (`DO NOTHING`, INSERT-only; also correct semantics). _(done 2026-07-05)_
+- [x] **`retired_by` follow-up (#411, v3.5.244)** — was writing NULL from nonexistent `STATE.me`; fixed to `currentManagerName` (same actor `auditLog` stamps). Live-verified: retire wrote `retired_by = "Royce Milmlow"`, restore cleaned up (0 rows). _(done 2026-07-05)_
+
+**Notes:**
+- Filename trap: `0162` was already taken by the labour-hire migration mid-session → renumbered mine to `0163`. Always re-check `app_data._eq_migrations` before assigning a migration number.
+- Lesson: when RLS-testing a write, simulate the EXACT PostgREST verb incl. the `Prefer` upsert mode, not just a plain INSERT (the plain-INSERT test passed; the upsert path was the 403). And 401=anon(no grant) vs 403=authenticated(RLS/priv) is the key discriminator for "did the JWT attach."
+
+---
+
 ## ⏩ Session close — 2026-07-05 (labour hire rates — canonical design approved, lean build staged) — not applied
 
 *Where to store the cost rates for the labour hire firms SKS uses, viewable by project / upper management. Landed on: two new canonical tables in `app_data` on ehow (`labour_hire_companies` + `labour_hire_rates`), a simple EQ Ops read tab (two flat eq-ui tables), fed eventually by EQ Intake. Grounded in 3 real agency PDFs + a full canonical audit (passed). Build path = LEAN: tables + tab + manual seed first; Intake auto-upload deferred.*
@@ -229,7 +245,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **Row 30 — talk-to-text on the audit form** — DONE (v3.5.236, PR #401, live). Royce said "keep improving — 100/100 solution", so shipped the 🎤 on every Site Audit comment field (self-contained `_auMicBtn`/`_auSpeechToggle` in audits.js, mirrors `_auSiteDatalist`; en-AU SpeechRecognition, one recogniser at a time; hidden where unsupported/submitted). Live-verified on preview: button renders with correct 34px flex geometry in the comment row. _(done 2026-07-04)_
 - [ ] **Rows 4 & 8 — resolved by verification, reopen only if they recur** — row 4 (duplicate "From Roster"): structurally only one button exists (the "twice" was the button + a muted-cell "from roster" label); row 8 (`?tab=person-wizard` blank): moot on SKS now that Add Person is hidden. Need a screenshot/repro to reopen either. _(added 2026-07-04)_
 - [x] **Rows 26/36 — link Field job numbers to the canonical jobs board** — DONE (v3.5.239, PR #404, merged + live; was `task_1a8e00fd`). Royce's call: **comms is NOT the source ("its in beta"); EQ Ops is where job numbers live** — so the recommended comms plan was dropped. Verified live: Field's 14 `public.job_numbers` are a **strict subset** of Ops's 32 `app_data.quote.workbench_job_no`s (comms was a disjoint Microsoft-only workstream, ignored). Built `app_data.field_job_numbers` (SECURITY DEFINER, column-limited — no quote financials) = Ops workbench numbers ∪ Field-local manual not on any Ops quote; Field GET routes to it (SKS-scoped), writes stay local (Ops rows read-only + "OPS" badge). Live: 23 rows, all Ops-sourced, zero duplicates. _(done 2026-07-04)_
-  - [ ] **Visual SKS click-through** of the Job Numbers screen (OPS badge on Ops rows, manual-add still works) — needs a live `?tenant=sks#sh=` Shell session (can't mint headless). DB + routing verified. _(added 2026-07-04)_
+  - [x] **Visual SKS click-through** of the Job Numbers screen — DONE 2026-07-05 in a live Royce SKS session: board renders 23 Ops rows with lock+OPS indicators; retire/restore round-trip verified end-to-end. _(done 2026-07-05)_
 - [x] **Row 31 — SKS authenticated Storage round-trip CONFIRMED** (2026-07-04) — verified server-side by simulating the data-JWT claims (`role=authenticated`, `app_metadata.tenant_id=7dee117c…`) against the live `safety-photos` RLS in a rolled-back tx on ehow: own-folder upload ALLOWED, own-folder readback ALLOWED (count=1), cross-tenant upload BLOCKED. Tests the only custom piece (the RLS policy); storage-api HTTP + JWT parsing are standard Supabase infra. Browser `fetch`-evals kept freezing the renderer → the SQL simulation is the reliable path. Photo Storage now fully validated (graceful fallback + authenticated path). See memory `project_field_photo_storage`. _(done 2026-07-04)_
 
 **Notes:**
