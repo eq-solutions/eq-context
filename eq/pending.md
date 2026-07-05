@@ -14,6 +14,28 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-06 (eq-cards) — mobile-view audit + security audit; 3 layout fixes shipped, merged, deployed live
+
+*Royce asked for a mobile-view review, outstanding-items audit, and security audit on eq-cards. Security audit came back clean (one stale-doc finding on the service worker). Mobile audit (live preview hung in the sandbox web-server debug mode; fell back to static review + a follow-up subagent) found 3 concrete narrow-phone issues. Royce asked to fix, commit, push, PR, merge, and deploy — all done same session, then verified live.*
+
+**Completed:**
+- [x] Fixed sub-44px tap targets — licence privacy-lock toggle (`licences_list_screen.dart:1180`, hit area grown to 44×44) and profile disconnect/open-portal buttons (`profile_screen.dart:535`, explicit 44×44 constraints instead of compact density).
+- [x] Constrained licence detail photos to the ID-1 card aspect ratio (1.586) — `licence_detail_screen.dart:472`, previously rendered at whatever size was uploaded, could distort or dominate the scroll.
+- [x] Added `maxLines`/ellipsis to long display names — ID card (`card_screen.dart:304`), profile header (`profile_screen.dart:377`), join-tenant heading (`join_tenant_screen.dart:129`, 2-line cap).
+- [x] PR #122 merged (squash, `d9fbce3`) and deployed live via `deploy.yml` (run `28751868975`), all steps green. `flutter analyze` clean, 207/207 tests passing pre-merge.
+- [x] Verified the join-tenant ellipsis fix live on `cards.eq.solutions/join?tenant=...&name=<long>` (public route, no auth needed) — heading wraps to 2 lines + ellipsis exactly as coded, zero console errors. The other two fixes sit behind phone-OTP auth on real worker accounts — not exercised live to avoid touching production auth/user data; covered by pre-deploy analyze+test instead.
+- [x] Full-codebase security audit (clean branch, no diff to review) — clean across secrets, CSP, auth flows, RPC calls, PII/token logging, deep-link handling, storage upload paths.
+
+**Deferred:**
+- [ ] **STATUS.md's service-worker claim is stale** — doc says SW is "always unregistered"; `web/index.html` actually only purges legacy SWs once, then lets a new Flutter-managed SW stay registered for offline wallet support. Not exploitable, but a returning user's SW cache could serve a stale bundle until it revalidates. Needs a doc update (or confirmation the offline-support tradeoff was an intentional later call). _(added 2026-07-06)_
+- [ ] STATUS.md's 3 pre-existing "What's next" items still open (unrelated to this session): Supabase Email OTP dashboard mode check, GitHub→Netlify CI auto-deploy wiring, GTM `copy_field` tracking validation for the 5 outside-SKS tradies. _(carried, not added by this session)_
+
+**Notes:**
+- Live Flutter web preview (`flutter run -d web-server`) hung at the boot spinner in this sandbox — zero JS errors, zero pending network calls, just never mounted. Worked around by stopping the attempt and doing a static code review instead (plus a background subagent for a deeper pass) — a real browser check on the dev server is still worth doing in an interactive session.
+- Zero open PRs/issues on `eq-solutions/eq-cards` going into this session.
+
+---
+
 ## ⏩ Session close — 2026-07-06 (eq-service) — contract-scope import tie-out column fixed live; subcontractor-label duplicate cleanly deduped
 
 *Royce reported the commercial-sheet import wizard's "Linked assets" tie-out column always showing 0. Verified live against ehow/CA1 before touching code: `previewAssetCountsAction` matched `contract_scopes.jp_code` against `job_plans.code` — but `code` is an internal short type key ("LVACB"), the commercial-sheet code ("E1.25") lives in `job_plans.name`. Every commit, every site, always showed a false 0.*
