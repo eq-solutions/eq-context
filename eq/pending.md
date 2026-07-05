@@ -108,9 +108,8 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 **Also done 2026-07-05:**
 - [x] **EQ Intake PDF upload shipped** (eq-shell PR #671 merged, `718688e`) — upload a rate card / invoice PDF → Claude vision parse (mirrors the proven `quote-parse-subcontractor` pattern, not the CSV-only generic intake) → editable review → commit to the tenant's own plane (manager/supervisor gated, service-role). Includes supersede (re-upload retires prior rates; label-aware, insert-before-retire) + the weekly-cost "Fares" tidy. Steelman review caught + fixed a parse token-cost gap and a NUL-byte separator.
 - [x] **Visual click-through confirmed** — Royce verified the tab renders ("looks good").
-
-**Still open:**
-- [ ] **Confirm PDF extraction accuracy** on the first real upload — mechanism is the proven quote parser, but accuracy on these matrix rate-cards / role-in-description invoices is unverified headless. Upload a sample PDF; the review table shows exactly what Claude got before anything commits. _(added 2026-07-05)_
+- [x] **PDF extraction confirmed working** (Royce, 2026-07-06) — "pdf works". The review table shows the extraction before commit; verified on a real upload.
+- [x] **Manual manage shipped** (eq-shell PR #672 merged `f272d83`, live 2026-07-06) — add/edit/delete on both Agencies + Rates in-tab via `labour-hire-mutate` (role-gated, tenant-plane service-role); eq-ui Modal editor + Table `onDelete`. Rate delete = hard; agency delete refused while it still has rates. **Labour hire rates feature complete — nothing open.**
 - [x] **`0084/0072` checksum drift reconciled** — `reconcile_ledger` fleet dispatch re-stamped the ledgers; verified `0084` on ehow flipped to `8c3f8d05…`. Applies no longer need the `allow_checksum_drift` bypass.
 - [x] **Weekly-cost rollup shipped** (eq-shell PR #670) — standard-week cost per (agency, role), allowances included, Excess Travel flags "+ fares".
 
