@@ -1,6 +1,7 @@
 # eq-shell changelog
 
 ## 2026-07-05
+- **PR #657 (MERGED, deployed live, `57e0a32`)**: added a "Cards metrics" link to the platform-admin Tenants page toolbar (`AdminTenantsPage.tsx`) pointing at the new EQ Cards adoption dashboard in PostHog. No backend/auth/schema change — one `Button` + one URL constant.
 - **PR #656 (MERGED, deployed live)**: root-caused Sentry `EQ-SHELL-M` (`quote-job-consumer` `events GET 500` on tenant `favour-perfect`) — `favour-perfect` is the first tenant provisioned through the newer self-serve `provision-tenant-background.ts` flow, which creates the `app_data` schema via SQL but never added it to the project's PostgREST exposed-schemas list (defaults to `public` only). Every `canonical-api.ts` call using `.schema('app_data')` 406'd (PGRST106) for this tenant since it went active 2026-07-04 — confirmed via live API logs, every 15-min `quote-job-consumer` tick failing. Added `ensureExposedSchema()` to provisioning Step 4 (Management API GET+PATCH `/projects/{ref}/postgrest`, idempotent) so every future self-provisioned tenant is covered automatically. Royce separately added `app_data` to `favour-perfect`'s live project via the Supabase Dashboard (the code fix only covers future tenants; the Supabase MCP connector has no tool for this project-settings endpoint). `EQ-SHELL-J` (`TypeError: Load failed`, `/sks/ops`) was already fixed in `d278a9b3` (PR #579, 2026-07-01) — confirmed on main and marked resolved in Sentry, no code change needed.
 
 ## 2026-07-04

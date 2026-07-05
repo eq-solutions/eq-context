@@ -14,6 +14,32 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-05 (Cards/Field/Service PostHog adoption dashboards + eq-cards Sentry cleanup)
+
+*Asked "how would we track Cards adoption" → built a North Star + AARRR PostHog dashboard for Cards, then extended the same pattern to Field and Service. Then asked to build "the next thing" on eq-cards → cleared the live Sentry backlog and audited the repo.*
+
+**Completed:**
+- [x] **EQ Cards — Adoption** dashboard built in PostHog (id `794417`): North Star (weekly active wallets), acquisition, activation funnel (real numbers: 49 signups → 22 profile completions → 13 first-credential-adds in 30d), retention, stickiness, caveats note. Fixed a double-scaled stickiness formula bug (`A/B*100` paired with `percentage_scaled`, which already multiplies by 100) and reordered tiles so North Star leads instead of being buried. _(done 2026-07-05)_
+- [x] **"Cards metrics" link** added to eq-shell `/_platform/tenants` (`AdminTenantsPage.tsx`) pointing at the dashboard — PR #656/#657 merged to main, deployed live to core.eq.solutions (commit `57e0a32`, confirmed via Netlify deploy API). _(done 2026-07-05)_
+- [x] **EQ Field — Adoption (SKS)** dashboard built (id `794501`), correctly host-scoped to `$host = sks-nsw-labour.netlify.app` — confirmed via live event counts that this carries the real production traffic, NOT `field.eq.solutions`/`eq-solves-field.netlify.app` (deploy-preview noise only), reconfirming the repo-map's "dead since ~mid-2026" note. _(done 2026-07-05)_
+- [x] **EQ Service — Adoption** dashboard built (id `794503`), combined-host (`service.eq.solutions` + `eq-solves-service.netlify.app` — same production site, two hostnames). _(done 2026-07-05)_
+- [x] **Misattribution bug caught + fixed on the Cards dashboard**: `error_thrown`/`unlock_failed` turned out to be eq-shell/eq-solves-service/eq-field events (shared PostHog project `eq-production`), not Cards — removed the false "Health" tile. Lesson applied from the start on the Field/Service builds: every tile filters on `$host`.
+- [x] **Root-caused the EQ Service `error_thrown` spike** (382/week, ~100% of active users hitting it) — React 19 hydration mismatch (browser extensions injecting DOM attrs pre-hydration) tripping a global `window.onerror` listener that PostHog captures before Sentry's own handler ever sees it. **Not actively blocking users.** Sentry (`eq-solves-service`) shows zero issues ever — confirmed monitoring blind spot.
+- [x] **eq-cards Sentry backlog cleared**: EQ-CARDS-X ("Script error.", opaque cross-origin noise) and EQ-CARDS-Y ("Unable to load asset: NOTICES", Flutter web engine internal, app never shows a license page) resolved — both now filtered at source via `main.dart`'s `beforeSend`. EQ-CARDS-Z (`provisionTenantExchange` 500, real server-side bug in Shell's `shell-provision-tenant.ts`) left open (root cause is Shell-side, not Cards) but now logs the actual server error string instead of just the HTTP status. Commit `0ce536c` on branch `claude/blissful-wing-44892b`. _(done 2026-07-05)_
+- [x] **Full eq-cards audit**: `flutter analyze` — 0 issues repo-wide. `flutter test` — 207/207 passing (incl. goldens). CI on `main` — green (Build & Deploy, CI, Token & analysis gate). _(done 2026-07-05)_
+
+**Decided:**
+- Cards metrics dashboard surfaces via a plain link on Shell's tenants page, not a full iframe embed — cheaper, no auth/token plumbing; revisit iframe only once the metric set is stable.
+- Worth extending the North-Star + AARRR dashboard pattern suite-wide — it earned its keep twice in one session: caught a false alarm (Cards) and a real one (Service).
+- Royce feedback (2026-07-05): stop spiraling into unprompted metrics/adoption-anxiety investigation loops — build when asked, report findings once, don't re-litigate "is this working" across turns. Saved as memory (`feedback_metrics_anxiety_scope.md`, eq-cards project memory) so future sessions inherit it.
+
+**Deferred:**
+- [ ] Add a hydration-error pattern (e.g. `Hydration failed|mismatch|missing attribute`) to `NOISE_PATTERNS` in `eq-solves-service/app/providers.tsx` to quiet the (confirmed non-blocking) `error_thrown` noise. _(added 2026-07-05)_
+- [ ] **EQ Service core workflow has gone quiet since ~May** — `check_created`/`check_completed`/`report_generated`/`delta_import_committed` are near-zero despite ongoing sessions/dashboard views. Tracking code confirmed intact and correctly wired (`lib/analytics.ts`, real call sites) — this is real disuse, not a broken pipe. Needs Royce's read on why: expected lull, stalled rollout, workflow friction, or churned users. _(added 2026-07-05, needs your call)_
+- [ ] eq-cards branch `claude/blissful-wing-44892b` (commit `0ce536c`, the Sentry real-error-surfacing + noise-filter fix) is committed but not yet pushed/PR'd/merged. _(added 2026-07-05)_
+
+---
+
 ## ⏩ Session close — 2026-07-05 (Favour Perfect verified live — provisioning fix confirmed end-to-end)
 
 *Continuation of the 2026-07-04 provisioning-fix session. Explained the fix + test plan in plain terms; Royce then confirmed **"favour perfect loaded"** — the new tenant now opens in his switcher and renders.*
