@@ -1,5 +1,9 @@
 # EQ Service — Changelog
 
+## 2026-07-05
+- **"EQ Service — Adoption" PostHog dashboard built** (id `794503`, combined-host `service.eq.solutions` + `eq-solves-service.netlify.app`). Root-caused the `error_thrown` spike it surfaced (382/week, ~100% of active users) — React 19 hydration mismatch from browser extensions injecting DOM attrs pre-hydration, not app-breaking (Sentry `eq-solves-service` shows zero issues ever — confirmed monitoring blind spot, not a broken pipe).
+- **PR #441 (MERGED, deployed live, `067bf38`)**: added `/Minified React error #418/` to `NOISE_PATTERNS` in `app/providers.tsx` to quiet the confirmed non-blocking hydration noise from the `error_thrown` PostHog stream. Merged past one pre-existing unrelated integration-test failure (`app_config` relation missing — a schema-completeness gap, nothing to do with this change).
+
 ## 2026-07-03
 - **Governed migration-apply pipeline LIVE (PR #412).** `service._eq_migrations` ledger (172-row grandfather seed) + `migrate-service.mjs` (atomic per-file apply, one transaction per migration) + `apply-service-migrations.yml` (dispatch gated behind a new `production` GitHub Environment, Milmlow required reviewer) + `check-service-invariants.mjs`/`service-invariants.yml` (anon zero-grant, view-invoker, table-isolation checks + app_data grant diff-scan on PRs). Closes the gap that let 0167 reach production with zero apply-time audit trail.
 - **Security regression found + fixed (0169).** The 2026-07-01 hand-apply that excluded plant_equipment from `service.assets` used `CREATE OR REPLACE VIEW` without repeating `security_invoker` — Postgres resets the option list, so the view had been reading `app_data` with definer rights (RLS bypass on reads) since then. Fixed as the first migration through the new pipe; verified live, invariants gate now fully green.

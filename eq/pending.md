@@ -33,10 +33,10 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - Worth extending the North-Star + AARRR dashboard pattern suite-wide — it earned its keep twice in one session: caught a false alarm (Cards) and a real one (Service).
 - Royce feedback (2026-07-05): stop spiraling into unprompted metrics/adoption-anxiety investigation loops — build when asked, report findings once, don't re-litigate "is this working" across turns. Saved as memory (`feedback_metrics_anxiety_scope.md`, eq-cards project memory) so future sessions inherit it.
 
-**Deferred:**
-- [ ] Add a hydration-error pattern (e.g. `Hydration failed|mismatch|missing attribute`) to `NOISE_PATTERNS` in `eq-solves-service/app/providers.tsx` to quiet the (confirmed non-blocking) `error_thrown` noise. _(added 2026-07-05)_
+**Deferred (closed out same day — see follow-on below):**
+- [x] Add a hydration-error pattern (`/Minified React error #418/`) to `NOISE_PATTERNS` in `eq-solves-service/app/providers.tsx` — PR #441 merged (commit `b9dd098`), deployed live (`067bf38`, confirmed via Netlify). _(done 2026-07-05)_
 - [x] **EQ Service core workflow gone quiet since ~May** — `check_created`/`check_completed`/`report_generated`/`delta_import_committed` near-zero despite ongoing sessions. Tracking confirmed intact and correctly wired, so it's real disuse not a broken pipe. **Royce (2026-07-05): expected, a known lull — not worried.** Closed as understood, no action taken.
-- [ ] eq-cards branch `claude/blissful-wing-44892b` (commit `0ce536c`, the Sentry real-error-surfacing + noise-filter fix) is committed but not yet pushed/PR'd/merged. _(added 2026-07-05)_
+- [x] eq-cards branch `claude/blissful-wing-44892b` (commit `0ce536c`, Sentry real-error-surfacing + noise-filter fix) — PR #121 merged (fast-forward `fb03a83`), deployed live via `deploy.yml` (deploy `6a4a1af4`, confirmed `commit_ref: fb03a83`). Smoke-tested live on `cards.eq.solutions`: app loads, no blank screen, 37/37 network requests 200, zero console errors across Wallet/Profile/licence-detail/QR-share flows. **PASS.** _(done 2026-07-05)_
 
 ---
 
@@ -201,7 +201,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - **Field docx contract constraint**: the doc builder extracts the `src` from the gateLogo `<img>` and REQUIRES a `.png` (`site-reports-shared.js:699`); SVG/JPG won't embed in a .docx. The Shell uploader must enforce/convert to PNG. Palette hexes stay bare 6-digit.
 
 **Deferred:**
-- [ ] **Tenant logo/branding editor in EQ Shell** — upload-or-link → store in R2 → write canonical `organisations.branding.{gateLogo,palette}`; every app inherits. Running as spawned task `task_925f8842`. _(added 2026-07-04)_
+- [x] **Tenant logo/branding editor in EQ Shell** — built, consolidated onto canonical `organisations.branding`, then reworked to one-logo-upload + auto-PNG + logo colour-detection + live preview + contrast warnings. See 2026-07-05 session close above. _(done 2026-07-05)_
 - [ ] **eq demo tenant is logo-less in docs until the Shell editor ships** — or seed `eq`'s `branding.gateLogo` with a `.png` URL as a stopgap (Royce's call). _(added 2026-07-04)_
 
 ---
