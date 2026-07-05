@@ -22,6 +22,17 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  # Serialize every substrate-committing run. digest-refresh AND
+  # suite-state-refresh share this group so no two ever push to main at once —
+  # the concurrent-push race that silently left digest.md stale after bursts of
+  # merges (each run regenerated fine but lost the `git push` to a sibling run).
+  # cancel-in-progress: false — queue each so it applies in turn; a queued run
+  # checks out after the prior one pushed, so it regenerates from full current
+  # state and pushes cleanly.
+  group: eq-context-substrate-push
+  cancel-in-progress: false
+
 jobs:
   digest:
     runs-on: ubuntu-latest
@@ -50,5 +61,21 @@ jobs:
           git config user.name  "eq-suite-bot"
           git config user.email "bot@eq.solutions"
           git add digest.md sessions/INDEX.md
-          git diff --staged --quiet && echo "No changes" || \
-            git commit -m "chore: nightly health digest $(date -u +%Y-%m-%d) [skip ci]" && git push
+          if git diff --staged --quiet; then
+            echo "No changes"
+            exit 0
+          fi
+          git commit -m "chore: nightly health digest $(date -u +%Y-%m-%d) [skip ci]"
+          # The concurrency group above serializes the bots, but a human push to
+          # main can still land mid-run — rebase onto latest and retry rather
+          # than fail and leave digest.md stale.
+          for attempt in 1 2 3; do
+            if git push; then
+              echo "Pushed on attempt $attempt"
+              exit 0
+            fi
+            echo "Push rejected (attempt $attempt) — rebasing on latest origin/main"
+            git pull --rebase --autostash origin main || git rebase --abort || true
+          done
+          echo "Push failed after 3 attempts" >&2
+          exit 1
