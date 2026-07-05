@@ -1742,7 +1742,7 @@ PR #379 revoked the 4 worker-PII tables (the instances). The *class* + ratchet a
 - [x] **Design B adapters confirmed LIVE** — `DATA_JWT_ENABLED=on`, `SKS_JWT_SECRET` set. leave-adapter.js / roster-adapter.js / timesheets-adapter.js all enabled for SKS tenant. Schedule/leave/timesheets write to ehow `app_data.*` via JWT.
 
 **Architecture clarifications (verified 2026-06-15):**
-- ktmj = EQ demo/operational DB only. Not relevant to canonical architecture.
+- ktmj = EQ demo/operational DB only. Not relevant to canonical architecture. **(DELETED 2026-07-05 — eq migrated to zaap; see the ktmj decommission item below.)**
 - jvkn.workers = identity stubs (38 rows). Field reads for cross-app correlation ID; v3.5.147 creates stubs as transition scaffolding only.
 - ehow = THE canonical data platform. `app_data.staff` (40 rows) is source of truth for worker profiles.
 - Tenant boot path: Field → jvkn.organisations → gets SB_URL (= ehow for SKS) + module entitlements.
@@ -1857,7 +1857,7 @@ PR #379 revoked the 4 worker-PII tables (the instances). The *class* + ratchet a
 
 **Deferred:**
 - [ ] **WS1 remainder** — 481 ambiguous customers need human dedup via EQ Intake (Tier A 26 supervised + Tier C 50 ambiguous + quotes-side N:1)
-- [ ] **ktmj decommission** — parked ("leave it running")
+- [x] **ktmj decommission** — DONE. `ktmjmdzqrogauaevbktn` is deleted (absent from `list_projects`, verified 2026-07-05); the eq→zaap migration completed (`eq` now live on zaap: 26 people / 30 sites). Stale "ktmj is the live EQ DB" refs corrected across eq-field CLAUDE.md / DATA-PLANES-SOURCE-OF-TRUTH.md / code comments + ~/.claude memory (PR #407). _(done 2026-07-05)_
 - [ ] **Delete `C:\Users\EQ\eq-credentials-ref.html`** after importing to password manager
 
 ---

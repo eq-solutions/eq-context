@@ -9,6 +9,9 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-05] docs — stale-tenant-reference audit (no version, PR #407)
+- Corrected repo docs/comments that described a defunct tenant topology (verified live: canonical `organisations` = eq/sks/favour-perfect; `eq`→zaap live; `ktmj` deleted; demo-trades/melbourne gone). `CLAUDE.md` (tenant list, the inverted "ktmj is live" correction, Stack DB map, resolution wording), `DATA-PLANES-SOURCE-OF-TRUTH.md` (SUPERSEDED banner), two code comments. No runtime change.
+
 ## [2026-07-04] v3.5.240 — lazy-loader: never evaluate a lazy script twice (Sentry EQ-FIELD-Q)
 - **PR #406, merged + live** (verified `field.eq.solutions/sw.js` = v3.5.240). `scripts/audits.js` is the only script referenced by **two** lazy-load tab groups (`audits` + `safety`), so a double-injection re-ran its top-level `const AUDIT_SECTIONS` (+4 more `const`/`let`) → `SyntaxError: Identifier already declared`, which aborts the whole audit/safety module (the safety area is the flagged-empty Q3 gap).
 - **Fix:** `lazy-loader.js loadScript` now skips injection when a `<script>` for that src is already in the DOM — not only when its in-memory `_loaded`/`_loading` maps say so — covering the map-reset / cross-instance races the maps miss. Pure guard, no normal-path behaviour change; protects every lazy script.
