@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-05 07:27 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-05 07:46 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-05 05:16 UTC → 2026-07-05 07:27 UTC)
+## Since last refresh (2026-07-05 07:27 UTC → 2026-07-05 07:46 UTC)
 
-- Merged: eq-shell [#660](https://github.com/eq-solutions/eq-shell/pull/660) fix(staff): decline a worker-initiated application actually 
-- Merged: eq-shell [#659](https://github.com/eq-solutions/eq-shell/pull/659) fix(entitlements): qualify ambiguous `id` in eq_update_tenan
-- Merged: eq-shell [#627](https://github.com/eq-solutions/eq-shell/pull/627) fix(provisioning): convert provision-tenant to a background 
-- Merged: eq-shell [#626](https://github.com/eq-solutions/eq-shell/pull/626) fix(admin): resolve --eq-ink to a real hex value for the wor
-- Merged: eq-shell [#625](https://github.com/eq-solutions/eq-shell/pull/625) feat(security): view security_invoker invariant (CHECK 7) + 
-- Merged: eq-shell [#624](https://github.com/eq-solutions/eq-shell/pull/624) fix(provisioning): tenant_routing NOT NULL columns block eve
-- Merged: eq-shell [#623](https://github.com/eq-solutions/eq-shell/pull/623) fix(intake): re-vendor field-name + plain-English fixes from
-- Merged: eq-shell [#622](https://github.com/eq-solutions/eq-shell/pull/622) Tenants page: edit tier/modules, archive/reactivate
+- Merged: eq-shell [#661](https://github.com/eq-solutions/eq-shell/pull/661) feat(branding): one logo + auto-PNG for docs + logo colour d
+- Merged: eq-shell [#642](https://github.com/eq-solutions/eq-shell/pull/642) Tenants page: permanently delete an archived tenant
+- Merged: eq-shell [#641](https://github.com/eq-solutions/eq-shell/pull/641) fix: clear a stuck data-plane provisioning job from the Tena
+- Merged: eq-shell [#638](https://github.com/eq-solutions/eq-shell/pull/638) fix(provisioning): shell_control.provision_tenant never actu
+- Merged: eq-shell [#634](https://github.com/eq-solutions/eq-shell/pull/634) fix(sync-quotes-nightly): check errors on Flask write-back +
+- Merged: eq-shell [#633](https://github.com/eq-solutions/eq-shell/pull/633) docs: correct CLAUDE.md — EQ_SECRET_SALT is the fallback sig
+- Merged: eq-shell [#621](https://github.com/eq-solutions/eq-shell/pull/621) fix(ops): remove broken per-column Status filter in table vi
+- Merged: eq-shell [#620](https://github.com/eq-solutions/eq-shell/pull/620) fix(ci): check-migration-hygiene.mjs skips SQL line comments
 
 ## ⚠ Needs you (4)
 
@@ -53,6 +53,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-05 | eq-shell | [#661](https://github.com/eq-solutions/eq-shell/pull/661) feat(branding): one logo + auto-PNG for docs + logo colour detect |
 | 2026-07-05 | eq-shell | [#660](https://github.com/eq-solutions/eq-shell/pull/660) fix(staff): decline a worker-initiated application actually persi |
 | 2026-07-05 | eq-shell | [#659](https://github.com/eq-solutions/eq-shell/pull/659) fix(entitlements): qualify ambiguous `id` in eq_update_tenant_set |
 | 2026-07-05 | eq-shell | [#657](https://github.com/eq-solutions/eq-shell/pull/657) feat(tenants): link to EQ Cards adoption dashboard (PostHog) |
@@ -67,7 +68,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-04 | eq-shell | [#648](https://github.com/eq-solutions/eq-shell/pull/648) feat(entitlements): app tiles → canonical, Stage A (readers) |
 | 2026-07-04 | eq-shell | [#644](https://github.com/eq-solutions/eq-shell/pull/644) refactor(branding): one canonical copy in organisations.branding  |
 | 2026-07-04 | eq-shell | [#645](https://github.com/eq-solutions/eq-shell/pull/645) feat(field): surface customer name on field_sites + drop dead cus |
-| 2026-07-04 | eq-shell | [#643](https://github.com/eq-solutions/eq-shell/pull/643) feat(branding): self-serve tenant document branding editor |
 _Showing 15 of 122 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -114,4 +114,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-05 07:27 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-05 07:46 UTC._
