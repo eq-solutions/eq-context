@@ -54,7 +54,8 @@ _Nothing pending — migrations 001–023 all applied._
 
 **Pending (Royce-gated):**
 - [x] **Roster data entry on ehow — DECISION 2026-06-15** — start fresh on ehow. Do not migrate from nspb. New entries go direct to ehow from now.
-- [ ] **Standalone `sks-nsw-labour` retirement** — NOTE: app is still receiving active feature work as of 2026-06-26 (PRs #32–#54 merged in June). 'Keep warm' understates current investment. Retirement gating question is still open — confirm with Royce whether ehow Field has superseded the standalone app before setting a retirement date.
+- [ ] **Standalone `sks-nsw-labour` retirement** — NOTE: app is still receiving active feature work as of 2026-06-26 (PRs #32–#54 merged in June). 'Keep warm' understates current investment. Retirement gating question is still open — confirm with Royce whether ehow Field has superseded the standalone app before setting a retirement date. **PIN audit 2026-07-05 (Royce-confirmed):** this repo has its own independent login/PIN system, still actively used — a completely different codebase from eq-field, not affected by eq-field's own PIN-gate retirement below.
+- [x] **eq-field's standalone PIN gate — retired in practice for SKS (confirmed 2026-07-05).** Three legacy pieces (~1,271 lines): tenant-wide STAFF_CODE/MANAGER_CODE gate, per-worker 4-digit staff-timesheet PIN, supervisor PIN-management UI. All explicitly code-blocked for SKS (`_lockGateForCoreOnly()` + matching guards) — SKS authenticates exclusively via the Shell JWT/cookie handoff. **Cannot be physically deleted yet** — the `eq` demo tenant has no Shell/JWT integration and depends on this gate as its only way in. Full detail: IDENTITY-MODEL.md §7.1.
 - [ ] **Track 2 RLS STEP 2** — anon SELECT lockdown on ehow. DEFERRED until standalone retired.
 - [ ] **SKS anon-remediation (nspb)** — exact policy worklist in `cross-app-linkage-remediation-plan-2026-06-07.md` §7a. Separate from ehow work. SKS-live gated.
 
