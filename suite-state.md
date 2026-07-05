@@ -60,7 +60,11 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-05)
 
+**eq-service:**
+- #440 feat(roles): bump eq-roles to v2.4.0, wire subcontractor
+
 **eq-shell:**
+- #663 feat(ops): labour hire rates — canonical tables + read-only tab
 - #658 fix(dashboard): surface pending staff connections on home sidebar
 - #637 docs: pnpm-workspace.yaml — packages are vendored, not a git submodule
 - #636 build: pin @eq-solutions/ui to release tag v1.10.0 for reproducible builds
