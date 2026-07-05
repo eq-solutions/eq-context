@@ -14,6 +14,29 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-05 (EQ Service generic UI sweep + subcontractor role landed + substrate refresh race fixed) — SHIPPED
+
+*Royce: "we want everything to be generic not company specific" — started as removing "DELTA ELCOM" from the commercial-sheet importer, expanded to a full generic sweep (Royce's choice) across every import screen, then to the "Maximo ID"/"Jemena ID" field labels ("just say ID"). Full high-effort code review run on the combined diff before merge. Also root-caused + fixed why the digest went stale after merge bursts.*
+
+**Shipped:**
+- [x] **eq-service PR #440 merged** — `@eq-solutions/roles` bumped to v2.4.0, `subcontractor` role wired (`UserSettingsForm.tsx` label + `roles.test.ts`). Found already open (an earlier session's fix) while investigating a reported tsc break on `main` — merged it instead of duplicating.
+- [x] **eq-service PR #442 merged** — removed "DELTA ELCOM" / Equinix / Jemena / Maximo branding from every import screen (commercial-sheet, work-order, RCD, ACB) + onboarding/setup-checklist/media-library placeholders. Parser `extractSiteHint` regex widened (`[<prefix>_]<SITE> Elec…`) — verified empirically it still resolves real legacy `DELTA ELCOM_*` filenames alongside generic ones.
+- [x] **eq-service PR #443 merged** — "Maximo ID" / "Jemena ID" / "JM #" → generic "ID" across asset form/list/detail, check forms, import previews, search hint — **and** (caught by the review pass, not the original ask) the customer-facing DOCX report generators (`pm-asset-report.ts`, `maintenance-checklist.ts`) that still printed the old labels.
+- [x] **eq-context PR #78 merged** — fixed a `digest-refresh.yml` / `suite-state-refresh.yml` concurrent-push race (both fire on the same `repository_dispatch` and both push to `main`; a merge burst = collided pushes = silently stale digest). Fix: shared `concurrency` group across both workflows + rebase-retry push loop. Root-caused via a failed-run log read (not guessed); verified live post-merge by dispatching both workflows back-to-back and confirming the second queued instead of racing.
+
+**Decided:**
+- Royce: full generic sweep, not just the one importer — extend to every screen with a customer/vendor name, including the ID field labels.
+- Royce: eq-context's own PRs stay OUT of `digest.md`'s "Recently built" (scoped to the 5 product repos by design in `refresh_digest.py`'s `REPOS` list) — leave as-is, don't extend the scan to eq-context.
+
+**Deferred:**
+- [ ] **Commercial-sheet → create-assets feature** (`docs/proposals/commercial-sheet-asset-import.md` in eq-solves-service) — brief only, not started. Sheet has counts not identities, so any build creates placeholder stubs, not real imports. Option B (opt-in "create N stub assets for the gap" checkbox) recommended. Needs Royce's shape pick (A/B/C) before any build. _(added 2026-07-05)_
+
+**Notes:**
+- Real finding, not assumption: the reported "subcontractor tsc break" was a false alarm caused by drifted `node_modules` in Royce's main eq-solves-service checkout (had v2.4.0 installed locally — from checking out PR #440's branch earlier — while the checked-out `main` branch's own committed lockfile still pinned v2.3.0). A speculative fix would have collided with the already-open #440. Lesson: verify a reported tsc/build error against a clean `npm ci` before trusting it, especially when `node_modules` could be stale/hoisted from a sibling checkout.
+- `maximo_id` / `jemena_asset_id` DB columns, code identifiers, and DB enum values (`source_system='delta'`, `contract_template='au_smca_v1'`) deliberately untouched throughout — every rename in #442/#443 is label-only, no migration.
+
+---
+
 ## ⏩ Session close — 2026-07-05 (Field job-number retirement — auto + manual hide-only) — SHIPPED + LIVE-VERIFIED
 
 *Workshop → build → ship the full arc. Royce: "invoiced = retire, plus an option within Field, all canonical." Investigation corrected a stale premise (invoicing does NOT auto-retire in code — only manual `eq_trash_quote` sets `deleted_at`; the "invoiced=gone" was a manual habit). Decision: build BOTH — auto-retire on invoice (view rule) + a hide-only manual Retire/Restore in Field that never touches the Ops quote.*
