@@ -8,24 +8,24 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-05 10:37 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-05 11:19 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-05 10:27 UTC → 2026-07-05 10:37 UTC)
+## Since last refresh (2026-07-05 10:37 UTC → 2026-07-05 11:19 UTC)
 
-- Merged: eq-shell [#652](https://github.com/eq-solutions/eq-shell/pull/652) 0161: reassert security_invoker on app_data.field_job_number
-- Merged: eq-shell [#650](https://github.com/eq-solutions/eq-shell/pull/650) feat(entitlements): writers → canonical + drop legacy (Phase
-- Merged: eq-shell [#648](https://github.com/eq-solutions/eq-shell/pull/648) feat(entitlements): app tiles → canonical, Stage A (readers)
-- Merged: eq-shell [#647](https://github.com/eq-solutions/eq-shell/pull/647) fix(tenants): auto-join creating admin so new tenants are re
-- Merged: eq-shell [#645](https://github.com/eq-solutions/eq-shell/pull/645) feat(field): surface customer name on field_sites + drop dea
-- Merged: eq-shell [#634](https://github.com/eq-solutions/eq-shell/pull/634) fix(sync-quotes-nightly): check errors on Flask write-back +
-- Merged: eq-shell [#633](https://github.com/eq-solutions/eq-shell/pull/633) docs: correct CLAUDE.md — EQ_SECRET_SALT is the fallback sig
-- Merged: eq-shell [#627](https://github.com/eq-solutions/eq-shell/pull/627) fix(provisioning): convert provision-tenant to a background 
+- Merged: eq-shell [#671](https://github.com/eq-solutions/eq-shell/pull/671) feat(ops): labour hire rates — PDF import + weekly-cost Fare
+- Merged: eq-shell [#653](https://github.com/eq-solutions/eq-shell/pull/653) chore(drift): allow-list field_job_numbers (security_invoker
+- Merged: eq-shell [#651](https://github.com/eq-solutions/eq-shell/pull/651) 0160: eq_merge_sites RPC — governed site-dedup (QA row 29 fo
+- Merged: eq-shell [#644](https://github.com/eq-solutions/eq-shell/pull/644) refactor(branding): one canonical copy in organisations.bran
+- Merged: eq-shell [#643](https://github.com/eq-solutions/eq-shell/pull/643) feat(branding): self-serve tenant document branding editor
+- Merged: eq-shell [#642](https://github.com/eq-solutions/eq-shell/pull/642) Tenants page: permanently delete an archived tenant
+- Merged: eq-shell [#641](https://github.com/eq-solutions/eq-shell/pull/641) fix: clear a stuck data-plane provisioning job from the Tena
+- Merged: eq-shell [#638](https://github.com/eq-solutions/eq-shell/pull/638) fix(provisioning): shell_control.provision_tenant never actu
 
 ## ⚠ Needs you (4)
 
+- 🟠 **Sentry new error** — `eq-field` [ReferenceError: isLeave is not defined](https://eq-solutions.sentry.io/issues/132270778/)
+- 🟠 **Sentry new error** — `eq-shell` [Error: HTTP 400](https://eq-solutions.sentry.io/issues/132270381/)
 - 🟠 **Sentry new error** — `eq-shell` [Error: events GET 500: internal_error](https://eq-solutions.sentry.io/issues/132197414/)
-- 🟠 **Sentry new error** — `eq-cards` [provisionTenantExchange: unexpected HTTP 500](https://eq-solutions.sentry.io/issues/132064194/)
-- 🟠 **Sentry new error** — `eq-field` [Error: 400: {"code":"23502","details":null,"hint":null,"mess](https://eq-solutions.sentry.io/issues/131921038/)
 - 🟡 **1 stale worktree** need cleanup — [worktree-registry.md](system/worktree-registry.md)
 
 ## Pulse
@@ -42,6 +42,8 @@ _2026-07-05 10:37 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Project | Error | Events | Last seen |
 |---------|-------|--------|-----------|
+| eq-field | [ReferenceError: isLeave is not defined](https://eq-solutions.sentry.io/issues/132270778/) | 1 | 2026-07-05 |
+| eq-shell | [Error: HTTP 400](https://eq-solutions.sentry.io/issues/132270381/) | 1 | 2026-07-05 |
 | eq-shell | [Error: events GET 500: internal_error](https://eq-solutions.sentry.io/issues/132197414/) | 1 | 2026-07-04 |
 | eq-cards | [provisionTenantExchange: unexpected HTTP 500](https://eq-solutions.sentry.io/issues/132064194/) | 1 | 2026-07-03 |
 | eq-field | [Error: 400: {"code":"23502","details":null,"hint":null,"message":"null value in ](https://eq-solutions.sentry.io/issues/131921038/) | 1 | 2026-07-03 |
@@ -51,6 +53,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-05 | eq-shell | [#671](https://github.com/eq-solutions/eq-shell/pull/671) feat(ops): labour hire rates — PDF import + weekly-cost Fares tid |
 | 2026-07-05 | eq-shell | [#670](https://github.com/eq-solutions/eq-shell/pull/670) feat(ops): labour hire rates — weekly-cost rollup |
 | 2026-07-05 | eq-shell | [#669](https://github.com/eq-solutions/eq-shell/pull/669) feat(field): job-number retire — auto (invoiced) + manual (hide-o |
 | 2026-07-05 | eq-shell | [#666](https://github.com/eq-solutions/eq-shell/pull/666) feat(branding): live preview + contrast warnings + detection & sa |
@@ -65,11 +68,11 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-05 | eq-shell | [#657](https://github.com/eq-solutions/eq-shell/pull/657) feat(tenants): link to EQ Cards adoption dashboard (PostHog) |
 | 2026-07-05 | eq-shell | [#656](https://github.com/eq-solutions/eq-shell/pull/656) fix(provisioning): expose app_data schema over PostgREST for new  |
 | 2026-07-05 | eq-solves-service | [#443](https://github.com/eq-solutions/eq-service/pull/443) chore(copy): rename customer-specific ID labels to generic "ID" |
-| 2026-07-05 | eq-solves-service | [#442](https://github.com/eq-solutions/eq-service/pull/442) chore(copy): genericize import + placeholder text — no customer n |
 _Showing 15 of 123 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **Commercial-sheet → create-assets feature** (`docs/proposals/commercial-sheet-asset-import.md` in eq-solves-service) — brief only, not started. Sheet has counts not identities, so any build creates placeholder stubs, not real imports. Option B (opt-in "create N stub assets for the gap" checkbox) recommended. Needs Royce's shape pick (A/B/C) before any build. _(added 2026-07-05)_
 - **Fast-follow:** wire EQ Intake upload (2 schemas ready) — deferred, unproven for this doc type. _(added 2026-07-05)_
 - **field_job_numbers provenance** — the view was created out-of-band (not originally in a repo migration); who made it + whether other planes need it tracked as `task_0467f68c`. _(added 2026-07-04)_
 - **Favour Perfect first-run config** — switch into it (after one workspace-switch or re-login), configure it, and invite its real customer admin from inside `/favour-perfect/admin/users`. _(added 2026-07-04, needs your call)_
@@ -78,7 +81,6 @@ _Showing 15 of 123 · full record in [sessions/](sessions/)_
 - **Link the 19 field-enabled SKS sites with no `customer_id`** — Row 29 prestart prefill resolves the customer name only for the 11 (of 30) field-visible ehow sites that have a `customer_id`. The other 19 (Amazon SYD53, Woolworths, Microsoft SYD05/27, Western Sydney Airport, St Vincents, etc.) prefill blank. NOT auto-derivable — `sites.client_name`/`external_customer_id` are null/junk, zero name-matches to `customers.company_name`. Needs a manual ops pass (assign each site its customer in the Customers/Sites editor). Degrades gracefully (blank field) until done. _(added 2026-07-04, needs your call)_
 - **Occasional deep game-day (rare, human)** — restore **auth data** into a real Supabase target (the dump excludes the managed auth *schema*, so auth rows only load where Supabase provisions it) + app-repoint smoke test. Not automatable cheaply; do when convenient. _(carried 2026-07-04)_
 - **Rows 4 & 8 — resolved by verification, reopen only if they recur** — row 4 (duplicate "From Roster"): structurally only one button exists (the "twice" was the button + a muted-cell "from roster" label); row 8 (`?tab=person-wizard` blank): moot on SKS now that Add Person is hidden. Need a screenshot/repro to reopen either. _(added 2026-07-04)_
-- **Visual SKS click-through** of the Job Numbers screen (OPS badge on Ops rows, manual-add still works) — needs a live `?tenant=sks#sh=` Shell session (can't mint headless). DB + routing verified. _(added 2026-07-04)_
 - **eq demo tenant is logo-less in docs until the Shell editor ships** — or seed `eq`'s `branding.gateLogo` with a `.png` URL as a stopgap (Royce's call). _(added 2026-07-04)_
 _…and 229 more · [eq/pending.md](eq/pending.md)_
 
@@ -112,4 +114,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-05 10:37 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-05 11:19 UTC._
