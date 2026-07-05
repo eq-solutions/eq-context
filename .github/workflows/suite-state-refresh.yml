@@ -14,6 +14,14 @@ on:
 permissions:
   contents: write   # commit suite-state.md back to main
 
+concurrency:
+  # Shared with digest-refresh — both fire on the same repository_dispatch and
+  # both push to main, so they must not run concurrently or one loses its
+  # `git push` to the other (fetch-first rejection). cancel-in-progress: false
+  # queues each; every run regenerates from full current state.
+  group: eq-context-substrate-push
+  cancel-in-progress: false
+
 jobs:
   refresh:
     runs-on: ubuntu-latest
@@ -41,5 +49,20 @@ jobs:
           git config user.name  "eq-suite-bot"
           git config user.email "bot@eq.solutions"
           git add suite-state.md
-          git diff --staged --quiet && echo "No changes" || \
-            git commit -m "chore: nightly suite state refresh $(date -u +%Y-%m-%d)" && git push
+          if git diff --staged --quiet; then
+            echo "No changes"
+            exit 0
+          fi
+          git commit -m "chore: nightly suite state refresh $(date -u +%Y-%m-%d)"
+          # Concurrency group serializes the bots; retry-with-rebase covers a
+          # human push to main landing mid-run so we never fail stale.
+          for attempt in 1 2 3; do
+            if git push; then
+              echo "Pushed on attempt $attempt"
+              exit 0
+            fi
+            echo "Push rejected (attempt $attempt) — rebasing on latest origin/main"
+            git pull --rebase --autostash origin main || git rebase --abort || true
+          done
+          echo "Push failed after 3 attempts" >&2
+          exit 1
