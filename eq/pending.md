@@ -28,9 +28,12 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **Seed loaded + verified** — Madagins rate card (12) + Core invoice (6) = 18 rates, 2 agencies, all current; values match the PDFs. Tab: sidebar → Admin → Labour hire rates, or `/{tenant}/ops/labour-hire-rates`.
 
 **Still open:**
-- [ ] **Visual click-through** on core.eq.solutions (manager Shell session) to confirm the tab renders — can't mint headless. _(added 2026-07-05)_
 - [ ] **Fast-follow:** wire EQ Intake upload (2 schemas ready) — deferred, unproven for this doc type. _(added 2026-07-05)_
-- [ ] **Platform hygiene:** reconcile the 0084/0072 checksum drift (`reconcile_ledger`) so future applies don't need the `allow_checksum_drift` bypass. _(added 2026-07-05)_
+
+**Also done 2026-07-05:**
+- [x] **Visual click-through confirmed** — Royce verified the tab renders ("looks good").
+- [x] **`0084/0072` checksum drift reconciled** — `reconcile_ledger` fleet dispatch re-stamped the ledgers; verified `0084` on ehow flipped to `8c3f8d05…`. Applies no longer need the `allow_checksum_drift` bypass.
+- [x] **Weekly-cost rollup shipped** (eq-shell PR #670) — standard-week cost per (agency, role), allowances included, Excess Travel flags "+ fares".
 
 **Notes:**
 - Cost-only (no charge-out/margin). Rate matrix (`rate_type`: normal/T½/double/allowance) + `source_doc_type` (rate_card/invoice/manual, invoice superseded by card). Grant model = SELECT-only to authenticated, writes via service_role (matches `0147_issues`).
