@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.eq.solutions/ops/labour-hire-rate/v1.json",
+  "title": "Labour Hire Rate",
+  "description": "A locked-in cost rate for a role supplied by a labour hire company. One row per company x role x rate_type x effective period. Cost only — what we pay the agency. A rate card with Normal/Time-and-half/Double columns expands to one row per rate_type.",
+  "type": "object",
+  "x-eq-entity": "labour_hire_rate",
+  "x-eq-module": "ops",
+  "x-eq-version": "1.0.0",
+  "x-eq-table": "labour_hire_rates",
+  "required": ["rate_id", "tenant_id", "company_id", "role", "rate_type", "cost_rate", "effective_from"],
+  "properties": {
+    "rate_id": {
+      "type": "string", "format": "uuid",
+      "description": "Internal canonical ID. Generated on import if not provided.",
+      "x-eq-source-aliases": ["id", "rate_id"],
+      "x-eq-required-on-import": false
+    },
+    "tenant_id": {
+      "type": "string", "format": "uuid",
+      "description": "Stamped from the tenant JWT on import.",
+      "x-eq-required-on-import": false
+    },
+    "company_id": {
+      "type": ["string", "null"], "format": "uuid",
+      "description": "The labour hire company this rate is from. Normally set once at upload (one rate card per firm) and stamped onto every row; if a company column is present it is FK-resolved by name.",
+      "x-eq-source-aliases": ["company", "agency", "supplier", "labour_hire_company", "firm", "vendor", "hire_company"],
+      "x-eq-foreign-key": "labour_hire_company.company_id",
+      "x-eq-fk-fuzzy-match-on": ["labour_hire_company.name"]
+    },
+    "role": {
+      "type": "string",
+      "description": "Trade / classification the rate applies to. On invoices this is often inside a free-text line description (e.g. 'CORE EL - Mascot DC' → 'Electrician') — extract it.",
+      "x-eq-source-aliases": ["role", "trade", "classification", "position", "type", "skill", "category", "description", "item"],
+      "x-eq-suggested-values": ["Licensed Electrician", "Tradesperson", "Electrician", "Labourer", "Mechanical Fitter", "Cable Hand", "Leading Hand", "Apprentice", "Supervisor", "Rigger", "Trade Assistant"]
+    },
+    "rate_type": {
+      "type": "string", "enum": ["normal", "time_and_half", "double", "allowance"], "default": "normal",
+      "description": "Which cell of the rate matrix. Rate cards give Normal / Time-and-a-half / Double per role — emit one row per column. Allowances (Travel, Productivity, etc.) are rate_type='allowance'.",
+      "x-eq-source-aliases": ["rate_type", "time_type", "penalty"],
+      "x-eq-enum-aliases": {
+        "normal": ["normal time", "ordinary", "nt", "ot0", "flat", "base", "standard"],
+        "time_and_half": ["time and a half", "time & a half", "t1.5", "ot1.5", "overtime 1.5", "1.5x", "time-and-a-half"],
+        "double": ["double time", "dt", "t2.0", "ot2.0", "overtime 2.0", "2x"],
+        "allowance": ["allowance", "travel", "productivity", "site allowance"]
+      }
+    },
+    "rate_label": {
+      "type": ["string", "null"],
+      "description": "Name of the allowance when rate_type='allowance' (e.g. 'Travel', 'Productivity', 'Excess Travel'). Null for hourly role rates.",
+      "x-eq-source-aliases": ["allowance", "allowance_type", "label", "line_item"]
+    },
+    "cost_rate": {
+      "type": "number", "minimum": 0,
+      "description": "Cost rate we pay the agency, AUD, GST-exclusive. On invoices this is the Unit Cost / Unit Price column. Sensitive — hidden from non-manager roles. Strip currency symbols on import.",
+      "x-eq-source-aliases": ["rate", "cost", "cost_rate", "hourly_rate", "pay_rate", "amount", "price", "unit_rate", "unit cost", "unit price"],
+      "x-eq-sensitive": true
+    },
+    "unit": {
+      "type": "string", "enum": ["hour", "day", "each"], "default": "hour",
+      "description": "Basis of the rate. Allowances are often per-occurrence ('each').",
+      "x-eq-source-aliases": ["unit", "per", "basis", "uom", "qty type"],
+      "x-eq-enum-aliases": {
+        "hour": ["hr", "hourly", "/hr", "per hour", "p/h", "ph"],
+        "day":  ["daily", "/day", "per day", "day rate"],
+        "each": ["ea", "unit", "per unit", "occurrence", "each"]
+      }
+    },
+    "source_doc_type": {
+      "type": "string", "enum": ["rate_card", "invoice", "manual"], "default": "rate_card",
+      "description": "Provenance of the rate. 'rate_card' = a locked quote/rate sheet (authoritative). 'invoice' = observed on an invoice line (point-in-time, role may be inferred — lower trust). Set at upload from the document class.",
+      "x-eq-required-on-import": false
+    },
+    "effective_from": {
+      "type": "string", "format": "date",
+      "description": "Date this locked rate takes effect. Parse AU dd/mm/yyyy.",
+      "x-eq-source-aliases": ["effective_from", "effective", "valid_from", "start", "from", "date", "effective_date", "commencing"]
+    },
+    "effective_to": {
+      "type": ["string", "null"], "format": "date",
+      "description": "Date the rate expires. Null = current / open-ended.",
+      "x-eq-source-aliases": ["effective_to", "valid_to", "expiry", "expires", "until", "to", "end"]
+    }
+  },
+  "x-eq-cross-field-rules": [
+    {
+      "id": "effective_window_valid",
+      "rule": "effective_to == null OR effective_from == null OR effective_to >= effective_from",
+      "message": "Effective-to is before effective-from. Confirm the dates.",
+      "severity": "warning"
+    },
+    {
+      "id": "allowance_has_label",
+      "rule": "rate_type != 'allowance' OR rate_label != null",
+      "message": "Allowance rows should carry a rate_label (e.g. 'Travel').",
+      "severity": "warning"
+    }
+  ]
+}

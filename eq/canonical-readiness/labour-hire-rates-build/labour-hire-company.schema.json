@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.eq.solutions/ops/labour-hire-company/v1.json",
+  "title": "Labour Hire Company",
+  "description": "A labour hire firm we source workers from. Vendor entity that rate cards hang off. Contact + terms surface on the EQ Ops labour-hire tab.",
+  "type": "object",
+  "x-eq-entity": "labour_hire_company",
+  "x-eq-module": "ops",
+  "x-eq-version": "1.0.0",
+  "x-eq-table": "labour_hire_companies",
+  "required": ["company_id", "tenant_id", "name", "active"],
+  "properties": {
+    "company_id": {
+      "type": "string", "format": "uuid",
+      "x-eq-source-aliases": ["id", "company_id"], "x-eq-required-on-import": false
+    },
+    "tenant_id": { "type": "string", "format": "uuid", "x-eq-required-on-import": false },
+    "name": {
+      "type": "string", "description": "Trading name of the labour hire firm.",
+      "x-eq-source-aliases": ["name", "company", "agency", "supplier", "vendor", "firm", "business_name"]
+    },
+    "abn": {
+      "type": ["string", "null"],
+      "description": "ABN of the agency. Some invoices label a single number 'ACN / ABN' — capture verbatim and flag if ambiguous.",
+      "x-eq-source-aliases": ["abn", "acn", "business_number"]
+    },
+    "primary_contact": {
+      "type": ["string", "null"], "description": "Account manager / main contact at the agency.",
+      "x-eq-source-aliases": ["contact", "account_manager", "attention", "rep", "primary_contact"]
+    },
+    "contact_email": {
+      "type": ["string", "null"], "format": "email",
+      "x-eq-source-aliases": ["email", "contact_email", "e-mail", "accounts_email"]
+    },
+    "contact_phone": {
+      "type": ["string", "null"],
+      "x-eq-source-aliases": ["phone", "tel", "telephone", "mobile", "contact_phone"]
+    },
+    "address": {
+      "type": ["string", "null"],
+      "x-eq-source-aliases": ["address", "office", "registered_office"]
+    },
+    "payment_terms": {
+      "type": ["string", "null"],
+      "x-eq-source-aliases": ["terms", "payment_terms", "payment terms"]
+    },
+    "active": { "type": "boolean", "default": true },
+    "notes": {
+      "type": ["string", "null"],
+      "description": "Min hours, GST treatment, site-allowance conditions, EFT/bank details if needed.",
+      "x-eq-source-aliases": ["notes", "comment", "remarks"]
+    }
+  }
+}

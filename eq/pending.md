@@ -14,6 +14,29 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-05 (labour hire rates — canonical design approved, lean build staged) — not applied
+
+*Where to store the cost rates for the labour hire firms SKS uses, viewable by project / upper management. Landed on: two new canonical tables in `app_data` on ehow (`labour_hire_companies` + `labour_hire_rates`), a simple EQ Ops read tab (two flat eq-ui tables), fed eventually by EQ Intake. Grounded in 3 real agency PDFs + a full canonical audit (passed). Build path = LEAN: tables + tab + manual seed first; Intake auto-upload deferred.*
+
+**Staged (nothing applied — `eq/canonical-readiness/labour-hire-rates-build/`):**
+- [x] Spec `labour-hire-rates-canonical-design-2026-07-04.md` — APPROVED, lean build.
+- [x] `0162_labour_hire_rates.sql` (0147-style; next free number), `seed_madagins_core.sql` (Madagins card + Core invoice), `LabourHireRates.tsx` (eq-ui tab), 2 Intake schemas (deferred), README.
+
+**LIVE (2026-07-05):**
+- [x] **eq-shell PR #663 merged** (`fbf99b0`) — `0162` migration + `LabourHireRates.tsx` tab + `ops.view_rates` (manager+supervisor) + route + HubSidebar nav. Verified `tsc -b` + `check:perms`. (Auto-merge landed it past a branch-behind race with the branding session; +subcontractor matrix fix for #664.)
+- [x] **`0162` applied to ehow** — One-Pipe dispatch `allow_checksum_drift=true` (fleet). 2 tables + view + RLS confirmed.
+- [x] **Seed loaded + verified** — Madagins rate card (12) + Core invoice (6) = 18 rates, 2 agencies, all current; values match the PDFs. Tab: sidebar → Admin → Labour hire rates, or `/{tenant}/ops/labour-hire-rates`.
+
+**Still open:**
+- [ ] **Visual click-through** on core.eq.solutions (manager Shell session) to confirm the tab renders — can't mint headless. _(added 2026-07-05)_
+- [ ] **Fast-follow:** wire EQ Intake upload (2 schemas ready) — deferred, unproven for this doc type. _(added 2026-07-05)_
+- [ ] **Platform hygiene:** reconcile the 0084/0072 checksum drift (`reconcile_ledger`) so future applies don't need the `allow_checksum_drift` bypass. _(added 2026-07-05)_
+
+**Notes:**
+- Cost-only (no charge-out/margin). Rate matrix (`rate_type`: normal/T½/double/allowance) + `source_doc_type` (rate_card/invoice/manual, invoice superseded by card). Grant model = SELECT-only to authenticated, writes via service_role (matches `0147_issues`).
+
+---
+
 ## ⏩ Session close — 2026-07-05 (eq-shell branding editor — live-verification P1 caught + fixed, then rebuilt on review + polished) — 5 PRs merged+deployed, 1 unrelated drift-gate false-positive fixed clean
 
 *Continuation of the 2026-07-04 branding+entitlements canonicalisation. Asked to comprehensively test what was built — live browser verification (not just build-green) caught a real P1 in the Stage B RPC cutover. Then asked to steelman/critique the branding editor's UX, which surfaced three real papercuts; built the fixes, ported a feature from EQ Service, benchmarked against world leaders, then polished further on request. Along the way, hit and cleanly fixed an unrelated drift-gate false positive blocking every open PR.*
