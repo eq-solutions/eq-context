@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-05)
 
-**eq-field:**
-- #412 v3.5.245 — version stamp for Calendar isLeave lazy-load fix (Sentry EQ-FIELD-R)
-
 **eq-shell:**
 - #658 fix(dashboard): surface pending staff connections on home sidebar
 - #637 docs: pnpm-workspace.yaml — packages are vendored, not a git submodule
