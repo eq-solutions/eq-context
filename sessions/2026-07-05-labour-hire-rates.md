@@ -61,6 +61,11 @@ clean, `check:perms` in sync. Worktree removed after push.
 - ✅ **Seed loaded + verified through the view:** Madagins rate card (12 rows) + Core invoice (6 rows) = **18 rates,
   2 agencies**, all `is_current`; values match the source PDFs.
 - Tab reachable: sidebar → Admin → **Labour hire rates** (manager/supervisor), or `/{tenant}/ops/labour-hire-rates`.
+- ✅ **Weekly-cost rollup added** (eq-shell PR #670 merged, `494215e`). Standard-week cost per (agency, role) —
+  40h/5d normal time; Productivity hourly (×40), Travel + Excess Travel daily (×5), Excess Travel shows "+ fares"
+  (actual fares vary per trip, not costed). Client-side derivation over the existing view — no schema change. Also
+  corrected the Travel allowance unit (`each`→`day`) in the live seed. Verified vs live data (e.g. Madagins Licensed
+  Electrician $3,231.60/wk; Core Electrician $3,132.80 + fares).
 
 ## Remaining
 - Visual click-through on core.eq.solutions (needs a manager Shell session — can't mint headless) to confirm the tab
