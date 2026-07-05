@@ -66,11 +66,12 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **`0162` applied to ehow** — One-Pipe dispatch `allow_checksum_drift=true` (fleet). 2 tables + view + RLS confirmed.
 - [x] **Seed loaded + verified** — Madagins rate card (12) + Core invoice (6) = 18 rates, 2 agencies, all current; values match the PDFs. Tab: sidebar → Admin → Labour hire rates, or `/{tenant}/ops/labour-hire-rates`.
 
-**Still open:**
-- [ ] **Fast-follow:** wire EQ Intake upload (2 schemas ready) — deferred, unproven for this doc type. _(added 2026-07-05)_
-
 **Also done 2026-07-05:**
+- [x] **EQ Intake PDF upload shipped** (eq-shell PR #671 merged, `718688e`) — upload a rate card / invoice PDF → Claude vision parse (mirrors the proven `quote-parse-subcontractor` pattern, not the CSV-only generic intake) → editable review → commit to the tenant's own plane (manager/supervisor gated, service-role). Includes supersede (re-upload retires prior rates; label-aware, insert-before-retire) + the weekly-cost "Fares" tidy. Steelman review caught + fixed a parse token-cost gap and a NUL-byte separator.
 - [x] **Visual click-through confirmed** — Royce verified the tab renders ("looks good").
+
+**Still open:**
+- [ ] **Confirm PDF extraction accuracy** on the first real upload — mechanism is the proven quote parser, but accuracy on these matrix rate-cards / role-in-description invoices is unverified headless. Upload a sample PDF; the review table shows exactly what Claude got before anything commits. _(added 2026-07-05)_
 - [x] **`0084/0072` checksum drift reconciled** — `reconcile_ledger` fleet dispatch re-stamped the ledgers; verified `0084` on ehow flipped to `8c3f8d05…`. Applies no longer need the `allow_checksum_drift` bypass.
 - [x] **Weekly-cost rollup shipped** (eq-shell PR #670) — standard-week cost per (agency, role), allowances included, Excess Travel flags "+ fares".
 
