@@ -1,7 +1,7 @@
 ---
 title: Disaster Recovery — platform backups
 owner: Royce Milmlow
-last_updated: 2026-07-04
+last_updated: 2026-07-05
 scope: Platform-level DR — offsite backups + restore verification for the shared EQ Supabase DBs
 read_priority: high
 status: live
@@ -147,6 +147,15 @@ alerts on **both**:
 - a run that **never happens** (missed check-in past the margin) — the exact failure mode that hid a
   **7-week silent outage** on the old ehow job (6 consecutive failed runs from 2026-05-24; last green
   2026-05-17; nobody paged).
+
+**Check-in margin = 5 h (`checkin_margin: 300`).** GitHub Actions cron is **best-effort** — it delays
+scheduled runs by hours and occasionally drops a tick entirely (observed 2026-07-05: the ehow backup
+fired ~3 h 50 m after its 02:00 slot; sibling jobs ran hours late or not at all). The margin was
+originally 120 min and **cried wolf** on ordinary GitHub lag, so it is now wide enough to absorb a
+multi-hour delay without a false "missed" alert. The trade-off: a genuinely dropped run is flagged up
+to 5 h after its slot, not at it. **If GitHub drops a run, re-run it with `workflow_dispatch`** to
+cover that day — the missed-check-in monitor is the backstop that tells you to. (If drops become
+frequent, move triggering off GitHub cron to an external scheduler -> `repository_dispatch`.)
 
 Until `SENTRY_DSN` is set the jobs run but print a loud `UNMONITORED` warning (arm cleanly, like
 `handoff-probe.yml`). All jobs reuse the **same** `SENTRY_DSN` (eq-context Sentry project); only

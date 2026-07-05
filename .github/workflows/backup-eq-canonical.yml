@@ -93,7 +93,7 @@ jobs:
           BASE="https://${HOST}/api/${PID}/cron/${MONITOR_SLUG}/${KEY}"
           CID=$(curl -sS -X POST "${BASE}/" \
             -H 'Content-Type: application/json' \
-            -d '{"status":"in_progress","monitor_config":{"schedule":{"type":"crontab","value":"0 3 * * *"},"checkin_margin":120,"max_runtime":45,"timezone":"UTC"}}' \
+            -d '{"status":"in_progress","monitor_config":{"schedule":{"type":"crontab","value":"0 3 * * *"},"checkin_margin":300,"max_runtime":45,"timezone":"UTC"}}' \
             | jq -r '.id // empty') || true
           echo "SENTRY_BASE=$BASE" >> "$GITHUB_ENV"
           echo "SENTRY_CID=$CID"  >> "$GITHUB_ENV"
