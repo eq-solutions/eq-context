@@ -35,7 +35,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 **Deferred:**
 - [ ] Add a hydration-error pattern (e.g. `Hydration failed|mismatch|missing attribute`) to `NOISE_PATTERNS` in `eq-solves-service/app/providers.tsx` to quiet the (confirmed non-blocking) `error_thrown` noise. _(added 2026-07-05)_
-- [ ] **EQ Service core workflow has gone quiet since ~May** — `check_created`/`check_completed`/`report_generated`/`delta_import_committed` are near-zero despite ongoing sessions/dashboard views. Tracking code confirmed intact and correctly wired (`lib/analytics.ts`, real call sites) — this is real disuse, not a broken pipe. Needs Royce's read on why: expected lull, stalled rollout, workflow friction, or churned users. _(added 2026-07-05, needs your call)_
+- [x] **EQ Service core workflow gone quiet since ~May** — `check_created`/`check_completed`/`report_generated`/`delta_import_committed` near-zero despite ongoing sessions. Tracking confirmed intact and correctly wired, so it's real disuse not a broken pipe. **Royce (2026-07-05): expected, a known lull — not worried.** Closed as understood, no action taken.
 - [ ] eq-cards branch `claude/blissful-wing-44892b` (commit `0ce536c`, the Sentry real-error-surfacing + noise-filter fix) is committed but not yet pushed/PR'd/merged. _(added 2026-07-05)_
 
 ---
