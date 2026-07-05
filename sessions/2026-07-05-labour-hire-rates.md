@@ -48,11 +48,17 @@ schema-registry mirror should be confirmed not to clash at build.
   - `labour-hire-rate.schema.json` / `labour-hire-company.schema.json` — Intake schemas (deferred).
   - `README.md` — lean apply order + blocker.
 
-## Critical path / next
-1. eq-shell session clears the **checksum-drift** blocker → `0162` applies to ehow via the governed pipeline.
-2. Run `seed_madagins_core.sql` → tab has content.
-3. Drop `LabourHireRates.tsx` into `eq-shell/src/modules/ops/`, add `ops.view_rates` to matrix, wire route.
-4. (Fast-follow) wire EQ Intake upload.
+## Built & PR'd — eq-shell PR #663
+`0162` migration + `src/pages/LabourHireRates.tsx` (two flat eq-ui tables) + `ops.view_rates` (manager + supervisor)
++ route `/ops/labour-hire-rates` + HubSidebar nav entry. Verified in a throwaway worktree: `build:packages` + `tsc -b`
+clean, `check:perms` in sync. Worktree removed after push.
 
-Nothing was applied to any live DB or code repo. Design + staged artifacts only, on branch
-`claude/pensive-burnell-fca8d9`.
+## Remaining (Royce / pipeline — not code)
+1. Apply `0162` to ehow via the governed migration pipeline (blocked on checksum drift 0084/0072, parked to the
+   concurrent eq-shell session).
+2. Run `seed_madagins_core.sql` on ehow → the tab has content.
+3. Merge eq-shell PR #663 (Netlify deploy) — apply `0162` first so `labour_hire_rates_view` exists.
+4. Fast-follow: wire EQ Intake upload (2 schemas staged).
+
+No live DB change, nothing deployed. Design + staged artifacts on eq-context PR #76 (branch
+`claude/pensive-burnell-fca8d9`); build on eq-shell PR #663 (branch `claude/labour-hire-rates-ops`, verified).

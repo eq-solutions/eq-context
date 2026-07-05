@@ -22,9 +22,12 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] Spec `labour-hire-rates-canonical-design-2026-07-04.md` — APPROVED, lean build.
 - [x] `0162_labour_hire_rates.sql` (0147-style; next free number), `seed_madagins_core.sql` (Madagins card + Core invoice), `LabourHireRates.tsx` (eq-ui tab), 2 Intake schemas (deferred), README.
 
+**Built & PR'd:**
+- [x] **eq-shell PR #663** (`claude/labour-hire-rates-ops`) — `0162` migration + `LabourHireRates.tsx` tab + `ops.view_rates` (manager+supervisor) + route + HubSidebar nav. Verified: `build:packages` + `tsc -b` clean, `check:perms` in sync. _(2026-07-05)_
+
 **Still open (your call / dependency):**
 - [ ] **Land `0162` on ehow** — needs the eq-shell governed migration pipeline, currently **blocked on checksum drift (0084 sks / 0072 eq)** parked to the concurrent eq-shell session. Until that clears, v1 can't ship. Do NOT hand-apply via MCP (bypasses governance + dirties ledger). _(added 2026-07-05)_
-- [ ] **After 0162 applies:** run the seed, drop `LabourHireRates.tsx` into eq-shell `src/modules/ops/`, add `ops.view_rates` to `matrix.ts`, wire the Ops route. _(added 2026-07-05)_
+- [ ] **Run the seed + merge PR #663** — after `0162` applies: run `seed_madagins_core.sql` on ehow, then merge PR #663 (Netlify deploy). Apply the migration first so `labour_hire_rates_view` exists. _(added 2026-07-05)_
 - [ ] **Fast-follow:** wire EQ Intake upload (2 schemas ready) — deferred, unproven for this doc type. _(added 2026-07-05)_
 
 **Notes:**
