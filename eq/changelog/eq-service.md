@@ -1,5 +1,9 @@
 # EQ Service — Changelog
 
+## 2026-07-06
+- **Contract-scope import tie-out fix (`cd7eb08`, live).** `previewAssetCountsAction` was matching `contract_scopes.jp_code` against `job_plans.code` instead of `job_plans.name` — `code` is an internal short type key ("LVACB"), the commercial-sheet code ("E1.25") lives in `name`. The wizard's "Linked assets" column had shown 0 for every commit, every site, since it was written. Verified live against CA1 (SKS tenant) pre/post-fix: 0/19 jp_codes resolved before, 19/19 after.
+- **Found (not fixed): duplicate `job_plans` row** for `name='E1.25'`/`code='LVACB'` — a stray seed row (fixture-pattern id, created 2026-04-12) alongside the real one (2026-04-08). Asset counts sum across both ids as a stopgap; cleanup is Royce-gated.
+
 ## 2026-07-05
 - **"EQ Service — Adoption" PostHog dashboard built** (id `794503`, combined-host `service.eq.solutions` + `eq-solves-service.netlify.app`). Root-caused the `error_thrown` spike it surfaced (382/week, ~100% of active users) — React 19 hydration mismatch from browser extensions injecting DOM attrs pre-hydration, not app-breaking (Sentry `eq-solves-service` shows zero issues ever — confirmed monitoring blind spot, not a broken pipe).
 - **PR #441 (MERGED, deployed live, `067bf38`)**: added `/Minified React error #418/` to `NOISE_PATTERNS` in `app/providers.tsx` to quiet the confirmed non-blocking hydration noise from the `error_thrown` PostHog stream. Merged past one pre-existing unrelated integration-test failure (`app_config` relation missing — a schema-completeness gap, nothing to do with this change).

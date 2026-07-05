@@ -14,6 +14,23 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-06 (eq-service) — contract-scope import tie-out column fixed live; subcontractor-label duplicate cleanly deduped
+
+*Royce reported the commercial-sheet import wizard's "Linked assets" tie-out column always showing 0. Verified live against ehow/CA1 before touching code: `previewAssetCountsAction` matched `contract_scopes.jp_code` against `job_plans.code` — but `code` is an internal short type key ("LVACB"), the commercial-sheet code ("E1.25") lives in `job_plans.name`. Every commit, every site, always showed a false 0.*
+
+**Shipped:**
+- [x] **eq-service `cd7eb08` (pushed to main, Netlify auto-deploy)** — `previewAssetCountsAction` now resolves job plans via `.in('name', codes)` instead of `.in('code', codes)`. Verified live pre/post-fix at CA1: 0/19 jp_codes matched before, 19/19 match after.
+- [x] **Subcontractor tsc-break fix — deduped, not duplicated.** Spawned a task chip for the pre-existing `UserSettingsForm.tsx` missing-`subcontractor`-key tsc error found mid-session; user also asked for it directly in-thread. Applied the fix locally, but on push discovered a concurrent session had already merged the identical change as PR #440. `git rebase origin/main` detected the local commit's "patch contents already upstream" and dropped it automatically — zero duplicate/conflict.
+
+**Deferred:**
+- [ ] **Duplicate `job_plans` row, SKS tenant** — `name='E1.25'`, `code='LVACB'` has two active rows: one real (`09b028b9-...`, created 2026-04-08) and one stray seed row with a fixture-pattern id (`e0000000-0000-0000-0000-000000000001`, created 2026-04-12, slightly different `type` string). The asset-count fix sums across both ids as a stopgap; the duplicate itself needs Royce's call (delete vs merge) before any cleanup migration. _(added 2026-07-06)_
+
+**Notes:**
+- Corrected a stale claim in memory (`project_contract_scope_canonical.md`): `service.contract_scopes` does NOT derive `job_plan_id` in-view — `pg_get_viewdef` shows a straight passthrough of `app_data.contract_scopes` with no such column. Resolution happens app-side only, which is where the bug actually lived.
+- `npm run check` was failing repo-wide on the subcontractor-label gap when this session started; confirmed 0 errors on both `tsc --noEmit` and full `next build` before pushing.
+
+---
+
 ## ⏩ Session close — 2026-07-05 (EQ Service generic UI sweep + subcontractor role landed + substrate refresh race fixed) — SHIPPED
 
 *Royce: "we want everything to be generic not company specific" — started as removing "DELTA ELCOM" from the commercial-sheet importer, expanded to a full generic sweep (Royce's choice) across every import screen, then to the "Maximo ID"/"Jemena ID" field labels ("just say ID"). Full high-effort code review run on the combined diff before merge. Also root-caused + fixed why the digest went stale after merge bursts.*
