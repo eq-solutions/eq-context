@@ -173,7 +173,9 @@ The following tests belong to eq-quotes-port (Flask), which is retired as of 202
 ## Added 2026-07-05
 
 - [ ] David Boyd charter — confirm qualification path (electrical licence / Cert IV / Diploma PM / senior-title move) and sharpen the "Where you're growing" section
-- [ ] sks-charters generator — Royce to review generate.js before the code repo is committed
+- [x] sks-charters generator — reviewed, built, and committed locally (`59ec109`)
+- [ ] sks-charters has no GitHub remote — decide whether it gets pushed to `eq-solutions` org or stays local-only _(added 2026-07-05)_
+- [ ] `npm run check` (blank-trailing-page regression check) needs LibreOffice (`soffice`) + poppler (`pdftoppm`) installed on the Beelink — currently neither is on PATH, script degrades gracefully but doesn't actually validate _(added 2026-07-05)_
 
 ## Untouched substrate items
 
