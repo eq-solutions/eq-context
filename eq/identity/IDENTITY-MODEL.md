@@ -1,7 +1,7 @@
 ---
 title: EQ Solutions — Unified Identity & Permissions Model
 owner: Royce Milmlow
-last_updated: 2026-06-24
+last_updated: 2026-07-05
 scope: Authoritative cross-product reference. Every present and future EQ Solutions product (Field, Quotes, Cards, Service, Intake, Tender Pipeline, anything that follows) conforms to this model. Governs the 5-tier role system, the platform-admin escape hatch, naming conventions for roles and permission keys, the invite flow, session lifecycle, and the JWT shape that lets modules talk directly to Supabase.
 read_priority: critical
 status: live
@@ -10,6 +10,8 @@ status: live
 # EQ Solutions — Unified Identity & Permissions Model
 
 **Status:** Live v1, 2026-05-20. (Promoted from Draft when Phase 1.F shipped — see commit history on `claude/phase-1f-identity-foundation`.)
+
+**Tenant slug update 2026-06-29:** EQ Solutions company tenant slug renamed from `core` to `eq` (jvkn `shell_control.tenants`). Shell and Service now agree on `eq`. Any reference to Shell slug `core` for the EQ Solutions tenant is stale. `__personal__` ghost tenant retired — all users homed in their primary employer tenant. Worker identity anchors (Cards stubs with no Shell credentials) remain in `shell_control.users` but are excluded from the admin users RPC by `email IS NOT NULL` filter.
 **Implementation owner (shell side):** see [eq/identity/PHASE-1F-PLAN.md](./PHASE-1F-PLAN.md).
 **Scope:** Authoritative reference for every present and future EQ Solutions product (Field, Quotes, Cards, Service, Intake, Tender Pipeline, and anything that follows). Every new module shipped under the EQ shell must conform to this document.
 
@@ -195,7 +197,13 @@ Three surfaces predate or co-exist with this model and need explicit bridges:
 > - `cid` (correlation id) rides **alongside** `#sh=` (never inside the signed token) for Shell→Field Sentry threading.
 > - The 5-tier → 2-tier role mapping below still applies, but it is carried in the JWT's `app_metadata`, not in `mint-iframe-token.ts`.
 >
-> **Still stale elsewhere:** the repo `CLAUDE.md` in both eq-shell and eq-solves-field also describe the HMAC `mint-iframe-token` path and need the same correction.
+> **Correction 2026-07-05:** the line below ("still stale elsewhere") is itself now stale — checked both named files directly. eq-shell's `CLAUDE.md` already correctly states the Field HMAC handoff is retired dead code (its own "don't touch without checking downstream" table names `token-exchange.ts` as the replacement). eq-field's `CLAUDE.md` doesn't describe the old `mint-iframe-token` path at all — its only HMAC mention is the unrelated, still-current session-cookie signing. Neither needs a correction.
+
+> **⚠️ Added 2026-07-05 (live-verified against eq-field source) — a THIRD, separate PIN system exists and was being conflated with §11.1's Shell PIN.** §11.1 below ("PIN stays for v1") is Shell/Core's own bcrypt-hashed `users.pin_hash` login — correct, current, unrelated to this note. This note is about **eq-field's standalone tenant-wide PIN gate** — a pre-SSO legacy mechanism, ~1,271 lines across `scripts/auth.js` (`checkPin`, `checkStaffTsLogin`), `scripts/people.js` (PIN management admin UI), `verify-pin.js`, and `index.html`. Three parts: (1) shared STAFF_CODE/MANAGER_CODE + name-picker gate, (2) per-worker 4-digit staff-timesheet PIN, (3) supervisor PIN-management screen.
+> - **Status for SKS: retired in practice.** All three parts are explicitly code-blocked for the SKS tenant (`_lockGateForCoreOnly()` in auth.js, matching guards in the staff-TS and PIN-management paths) — SKS authenticates exclusively via the JWT/cookie handoff described above. Confirmed live 2026-07-05.
+> - **Status for the `eq` demo tenant: still the ONLY way in.** Demo has no Shell/JWT integration configured, so it depends entirely on this legacy PIN gate. **The code cannot be physically deleted without first giving demo an alternative auth path (or accepting demo breaks).** This is the actual blocker on a full code-level retirement, not a decision that's still open — the SKS-facing retirement is already done; the demo-tenant dependency is the remaining piece.
+> - `demo-trades` / `melbourne` tenants were removed from canonical 2026-06-28 and no longer reach any of this.
+> - **Distinct from `sks-nsw-labour` the standalone repo** (`eq-solutions/sks-nsw-labour`, deploys `sks-nsw-labour.netlify.app`) — a completely separate codebase (pre-2026-05-20 split) with its **own independent PIN implementation, still actively used in production today.** Retiring eq-field's gate has no bearing on that repo. See `eq/active.md` and `sks/pending.md` for that retirement's own (separate, still-open) status.
 
 *Historical (2026-05-24 plan — see callout above for live state):*
 

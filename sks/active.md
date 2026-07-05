@@ -1,7 +1,7 @@
 ---
 title: SKS — Active Projects (Rolling)
 owner: Royce Milmlow
-last_updated: 2026-06-01
+last_updated: 2026-07-05
 scope: Current SKS NSW projects, refreshed when projects start/finish
 read_priority: critical
 status: live
@@ -78,8 +78,8 @@ Client", "Healthcare Client").
 
 | Person | Conversation | Owner | Stage |
 |---|---|---|---|
-| Simon Bramall | Equinix Account Lead formal title + pay | Royce | Book |
-| Luke Wheeler | Schneider Account Lead formalise | Royce | Book |
+| Simon Bramall | Equinix Account Lead formal title + pay | Royce | Charter drafted 2026-07-05 |
+| Luke Wheeler | Field Service Manager promotion | Royce | Charter drafted 2026-07-05 |
 | Koos Otto | HV Technical Lead role redesign | Royce | Book |
 | Leif Lundberg | Senior Comms Advisor reframe | Royce | Book |
 | Huon Henne | Comms shadow pairing | Royce | Book |

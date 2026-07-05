@@ -127,7 +127,14 @@ jobs:
       # real restore proceed. This is the container standing in for a Supabase-parity target.
       - name: Prepare parity (auth helper functions)
         run: |
-          set -euo pipefail
+          set -uo pipefail
+          echo "── role landscape ──"
+          psql "$DRILL_DB_URL" -v ON_ERROR_STOP=0 \
+            -c "select current_user, current_setting('is_superuser') as is_super" \
+            -c "select rolname, rolsuper, rolcanlogin from pg_roles where rolsuper or rolname like 'supabase%' or rolname='postgres' order by rolname" \
+            -c "select nspname, nspowner::regrole::text as owner from pg_namespace where nspname in ('auth','app_data')" \
+            -c "select coalesce(string_agg(r.rolname,','),'(none)') as postgres_member_of from pg_auth_members m join pg_roles r on r.oid=m.roleid where m.member=(select oid from pg_roles where rolname='postgres')" || true
+
           cat > auth_stubs.sql <<'SQL'
           create schema if not exists auth;
           create or replace function auth.jwt() returns jsonb language sql stable as $fn$
@@ -142,8 +149,24 @@ jobs:
           create or replace function auth.email() returns text language sql stable as $fn$
             select nullif(current_setting('request.jwt.claim.email', true), '') $fn$;
           SQL
-          psql "$DRILL_DB_URL" -v ON_ERROR_STOP=1 -q -f auth_stubs.sql
-          echo "Seeded auth.jwt() / auth.uid() / auth.role() / auth.email()"
+
+          # The auth schema is owned by a managed superuser (supabase_admin /
+          # supabase_auth_admin) that the postgres login can neither assume nor create in.
+          # Seed as a role that CAN — try the likely owners with the container password;
+          # gate on auth.jwt() actually existing afterwards.
+          seeded=no
+          for U in supabase_admin supabase_auth_admin postgres; do
+            if psql "postgresql://${U}:postgres@localhost:5432/postgres" -v ON_ERROR_STOP=1 -q -f auth_stubs.sql 2>seed_err.log; then
+              echo "Seeded auth stubs as ${U}"; seeded=yes; break
+            fi
+            echo "  seed as ${U}: $(tail -1 seed_err.log 2>/dev/null || echo 'failed')"
+          done
+          if psql "$DRILL_DB_URL" -tAc "select 1 from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='auth' and p.proname='jwt'" 2>/dev/null | grep -q 1; then
+            echo "✅ auth.jwt() present — restore can proceed"
+          else
+            echo "::error::could not seed auth.jwt() as any candidate role (see role landscape above)."
+            exit 1
+          fi
 
       # ── Restore into the throwaway container (tolerant; gate on outcome, not stderr) ──
       - name: Restore roles → schema → data → auth
@@ -182,6 +205,17 @@ jobs:
           echo "  tables(public,app_data,service)=${TABLES}   public-tables-without-RLS=${NORLS} (baseline ${RLS_BASELINE})"
           echo "  RTO (pull + restore + verify): ${RTO}s"
           echo "──────────────────────────────────────────────────────────────"
+
+          # Auth note: the dump captures auth DATA (auth_data.sql) but NOT the managed auth
+          # SCHEMA (supabase db dump excludes it). auth rows therefore only load into a real
+          # Supabase-parity target — which provisions the current auth schema — not this bare
+          # container (whose auth schema is a different version). This is NOT a backup gap:
+          # verify-backup-ehow proves auth.users is captured (=5) daily. A real DR restores
+          # into a fresh Supabase project, which supplies the schema. So this drill gates on
+          # APP-DATA restorability; auth-data restore is validated on a Supabase target.
+          if [ "$AUTH" != "ERR" ] && [ "${AUTH:-0}" -lt "$EXPECT_AUTH" ]; then
+            echo "  note: auth.users restored ${AUTH}/${EXPECT_AUTH} — expected in a bare container (auth SCHEMA is managed/excluded from the dump; auth DATA restores into a real Supabase target). Auth capture is proven daily by verify-backup-ehow."
+          fi
 
           # Gate: the canonical core must be present and queryable — that is "restorable".
           if [ "$SITES" = "ERR" ] || [ "$CUST" = "ERR" ]; then

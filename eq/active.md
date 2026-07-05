@@ -1,7 +1,7 @@
 ---
 title: EQ Field — Active State (Rolling)
 owner: Royce Milmlow
-last_updated: 2026-06-30
+last_updated: 2026-07-05
 scope: Current live state of EQ Field product
 read_priority: critical
 status: live
@@ -81,6 +81,6 @@ Shell embed uses cookie SSO (`verify-shell-cookie`).
 ## Gated (Royce-gated, not yet active)
 
 1. **Roster data entry on ehow** — schedule/timesheets/leave are empty; start fresh or migrate from nspb standalone
-2. **Standalone `sks-nsw-labour` retirement** — after soak confirmation
+2. **Standalone `sks-nsw-labour` retirement** — after soak confirmation. Confirmed live 2026-07-05: this is a *separate repo/codebase* (`eq-solutions/sks-nsw-labour`, pre-2026-05-20 split) with its own independent PIN login, still actively used in production today — NOT the same as eq-field's standalone PIN gate (that one IS already retired in practice for SKS, see IDENTITY-MODEL.md §7.1). Royce confirmed sks-nsw-labour still uses its own PIN.
 3. **Track 2 RLS STEP 2** — anon SELECT lockdown; after standalone retired
 4. **Collin Toohey fresh invite** — jvkn duplicate `3d18422d` deleted (2026-06-13); original `7514e57d` retained; needs a new Cards/Shell invite sent

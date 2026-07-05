@@ -9,6 +9,11 @@ status: live
 
 # Changelog — EQ Shell
 
+## [2026-07-04] eq_merge_sites RPC (0160) — governed canonical site dedup
+- New `public.eq_merge_sites(p_keep_site_id, p_dupe_site_id, p_move_customer)` (tenant-migration `0160`, PR #651) — twin of `eq_merge_customers`. Tenant-scoped SECURITY DEFINER; catalog-driven repoint of all 28 `app_data.sites(site_id)` FKs (Field + Service), dedup for `contact_site_links`/`service.site_local`, soft-retire the dupe (`active=false, field_enabled=false`). `authenticated` execute only.
+- Used to merge 4 duplicate SKS field sites (QA row 29 residual): DigiCo REIT/Schneider moved onto coded DIGI/WSA survivors; SY9-Hyperscale-2 + Equinix-SY5-Erilyan dups retired. Applied via One Pipe (`allow_checksum_drift=true`).
+- Also shipped `0161` (PR #652) = `field_job_numbers` `security_invoker` reassert — **redundant** with the concurrent session's thorough #653 (`field_job_numbers_src()` invoker-over-SECDEF); harmless idempotent overlap. #653 owns the view.
+
 ## [2026-07-01] staff-resync-licences: on-demand post-approval licence sync from Cards
 - New `netlify/functions/staff-resync-licences.ts` — re-syncs `public.licences` (jvkn) → `app_data.licences` (ehow) for a staff member who uploaded licences after approval
 - "Re-sync from Cards" button in `SplitPanel` + `MobileSheet` zero-licence empty state; calls `handleMutated` on success to refresh the roster

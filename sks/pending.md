@@ -1,7 +1,7 @@
 ---
 title: SKS — Pending
 owner: Royce Milmlow
-last_updated: 2026-06-15
+last_updated: 2026-07-05
 scope: SKS Technologies operational TODO list
 read_priority: critical
 status: live
@@ -54,7 +54,8 @@ _Nothing pending — migrations 001–023 all applied._
 
 **Pending (Royce-gated):**
 - [x] **Roster data entry on ehow — DECISION 2026-06-15** — start fresh on ehow. Do not migrate from nspb. New entries go direct to ehow from now.
-- [ ] **Standalone `sks-nsw-labour` retirement** — NOTE: app is still receiving active feature work as of 2026-06-26 (PRs #32–#54 merged in June). 'Keep warm' understates current investment. Retirement gating question is still open — confirm with Royce whether ehow Field has superseded the standalone app before setting a retirement date.
+- [ ] **Standalone `sks-nsw-labour` retirement** — NOTE: app is still receiving active feature work as of 2026-06-26 (PRs #32–#54 merged in June). 'Keep warm' understates current investment. Retirement gating question is still open — confirm with Royce whether ehow Field has superseded the standalone app before setting a retirement date. **PIN audit 2026-07-05 (Royce-confirmed):** this repo has its own independent login/PIN system, still actively used — a completely different codebase from eq-field, not affected by eq-field's own PIN-gate retirement below.
+- [x] **eq-field's standalone PIN gate — retired in practice for SKS (confirmed 2026-07-05).** Three legacy pieces (~1,271 lines): tenant-wide STAFF_CODE/MANAGER_CODE gate, per-worker 4-digit staff-timesheet PIN, supervisor PIN-management UI. All explicitly code-blocked for SKS (`_lockGateForCoreOnly()` + matching guards) — SKS authenticates exclusively via the Shell JWT/cookie handoff. **Cannot be physically deleted yet** — the `eq` demo tenant has no Shell/JWT integration and depends on this gate as its only way in. Full detail: IDENTITY-MODEL.md §7.1.
 - [ ] **Track 2 RLS STEP 2** — anon SELECT lockdown on ehow. DEFERRED until standalone retired.
 - [ ] **SKS anon-remediation (nspb)** — exact policy worklist in `cross-app-linkage-remediation-plan-2026-06-07.md` §7a. Separate from ehow work. SKS-live gated.
 
@@ -82,6 +83,33 @@ _Nothing pending — migrations 001–023 all applied._
 - [ ] Person-wizard renders blank content specifically on a cold `?tab=person-wizard` deep-link boot (normal in-app "Add Person" nav works fine) — root cause not found despite exhaustive code trace + live Sentry/entitlement checks; needs Royce's own DevTools session with the Field-iframe console context selected _(added 2026-07-03)_
 - [ ] At least one SKS person ("Collin ... Toohey") has no record in canonical `app_data.staff`, blocking their leave submissions — data-ops backfill needed, not a code fix _(added 2026-07-03)_
 - [ ] Royce to independently click-through-confirm the Weekends toggle, roster names, and both safety forms live (smoke-tested remotely, not yet confirmed by Royce beyond the original repros) _(added 2026-07-03)_
+
+## ⏩ SKS Field — session 2026-07-05 (3-way reconciliation: legacy roster vs canonical vs Cards)
+
+**Verified live** (eq-canonical `jvknxcmbtrfnxfrwfimn` vs sks-labour `nspbmirochztcjijmcrx` legacy live-prod roster, matched by phone):
+- 10 real people active in the legacy roster had NO canonical worker record — **created as stubs 2026-07-05** (unclaimed, `+61` phone, role mapped from legacy `group`): Ali Alsalman, Bob Sheather, Carl Waru, Charlie Eyiam-Rowe, Dean Francis, Glen Dwyer, Isaac Hussein, Matthew Dang, Richard Brooks, Walid Hijazi. Ready for the invite batch (Task #1).
+- 10 more legacy rows (Kyle Peters, Liam Foster, Mia Thompson, Noah Evans, Oscar Wright, Patrick Hall, Quinn Murphy, Ryan Brooks, Sam Taylor, Tyler James) carry obviously sequential fake phones (`4112000xx`/`4113000xx`) — flagged as legacy seed/demo data, NOT onboarded. Confirm with Royce if in doubt before ever creating stubs for these.
+- John Angangan phone mismatch RESOLVED: his real auth account (created 2026-07-01, active login) uses `447444250`, matching the legacy roster — canonical `workers.phone` had the wrong number (`439842416`, likely a data-entry error). **Corrected to `+61447444250`.**
+- **Andrew Murphy + Thomas Cavanough — EXCLUDE from the SKS invite batch and any future roster work.** Legacy roster marks both `archived=true` (left the company); canonical `workers` has no equivalent status field (structural gap — worth a future `active`/`left_at` column). Their canonical stubs stay as historical record only.
+- **Anthony Hartley duplicate — resolved by exclusion, not deletion.** Keep stub `48a884e9-…` (role=supervisor, has the live invite, stamped 2026-07-04). Stub `098e4bff-…` (role=employee, different phone, no invite) is dead weight — exclude it from the batch; no schema field exists to hard-archive it, so it's just never touched/never invited.
+- 10 people exist in canonical/Cards with NO match in the legacy roster — **RESOLVED by Royce 2026-07-05:**
+  - **Daniel Bower, Jack Fitzpatrick, Ross Davidson — no longer work at SKS.** Same treatment as Andrew Murphy/Thomas Cavanough above: exclude from the invite batch and any future roster work; canonical stubs stay as historical record only.
+  - **Ian Marston, Johannes Otto, John McKee, Jonathan Ryan — all managers.** Role corrected `employee` → `manager` (Leif Lundberg + Mark Brame were already `manager`, no change needed).
+  - **Mitchell Forsyrh — subcontractor.** Role left NULL: `'subcontractor'` is **not a valid `eq_role` enum value** (only manager/supervisor/employee/apprentice/labour_hire exist), even though `cards-approve-staff.ts`'s `WORKER_ROLES` JS Set includes it — same class of app-vs-DB vocabulary drift the 2026-07-04 role audit found elsewhere. **Needs a decision: add `subcontractor` to the enum, or map him to an existing role** (`labour_hire` is the closest semantic fit but isn't accurate — a subcontractor runs their own business, unlike agency labour hire).
+- Sharon Maroni's canonical phone (`296599199`) looks like a landline (02-prefix), not a mobile — worth a data check before she's included in any phone-OTP invite.
+- [ ] **Reverse-angle gap (independent read-only pass 2026-07-05):** 9 legacy `people` rows have a canonical twin already but `people.canonical_id` is still NULL — matched live by phone+email vs jvkn `workers`: Louisa Cardinale, Matthew Khreich, Andre de Biasi, Damon Francis, Timothy Chapman, Bruno Pedrosa, Eric Nguyen (phone-only), Liam Holmgreen, Sam Powell. Back-link write not yet run; handed to the concurrent console actioning this batch (Royce copy-pasted the id list). Low-risk `UPDATE people SET canonical_id=… WHERE id=…` on nspb _(added 2026-07-05)_
+
+## ⏩ SKS Field — session 2026-07-04 (Cards→Field migration path verified, read-only)
+
+**Verified live (eq-canonical `jvknxcmbtrfnxfrwfimn` + eq-field repo) — no code changed:**
+- New **eq-field reads eq-canonical directly** (app-state.js:27-28). Write-through: editing a Field person looks up canonical `workers` by email, creates a stub if absent, stores `worker_id` back (people.js:1032-1050). Licences **live-read** from canonical via RPC `eq_get_org_licences(p_org_id)` (canon-read.js:142). This validates Royce's migration model: set up in canonical → Field reads it → licences flow through, no re-keying.
+- **No-dup dedup** = `eq_cards_link_or_create_worker` adopts an unlinked stub by **normalised phone OR email** (phone = last-9 AU digits; prefers most-credentialed stub; single stub). Mobile is the load-bearing key (Cards = phone-OTP, email often blank).
+- **Apply-to-SKS** = `eq_cards_submit_access_request` → `org_access_requests`; SKS org (`00000000-…-0002`, tenant `7dee117c`) has **accepts_applications=true**.
+- **Licence review** = admin approval writes `shell_control.cards_field_approvals` (`licence_verifications` jsonb + `licences_verified_at`). Credential enum has NO review state — review lives on the approval row.
+
+**Deferred / next:**
+- [ ] First **Cards→Field approval for SKS never run** — `cards_field_approvals` has 79 rows across other tenants, **0 for SKS**. When the first SKS worker signs up to Cards + applies, exercise the admin approve + licence-verify path end-to-end (machinery proven elsewhere, unproven for this tenant) _(added 2026-07-04)_
+- [ ] **SKS staff data-entry rule** — enter each person **once** with an accurate mobile (+ email where held); no DB uniqueness on `workers.phone`, so two stubs sharing a number = only the best-credentialed one gets adopted, the other dangles. 0 phones on multiple worker rows today — keep it that way _(added 2026-07-04)_
 
 ---
 
@@ -158,6 +186,13 @@ The following tests belong to eq-quotes-port (Flask), which is retired as of 202
 2. **Invoice email blank for Ramsay, Schneider, Metronode, 3/9 Equinix** — same path
 3. **Cost data NULL on quotes before v62** — estimators should re-enter Cost values when editing older quotes
 
+## Added 2026-07-05
+
+- [ ] David Boyd charter — confirm qualification path (electrical licence / Cert IV / Diploma PM / senior-title move) and sharpen the "Where you're growing" section
+- [x] sks-charters generator — reviewed, built, and committed locally (`59ec109`)
+- [ ] sks-charters has no GitHub remote — decide whether it gets pushed to `eq-solutions` org or stays local-only _(added 2026-07-05)_
+- [ ] `npm run check` (blank-trailing-page regression check) needs LibreOffice (`soffice`) + poppler (`pdftoppm`) installed on the Beelink — currently neither is on PATH, script degrades gracefully but doesn't actually validate _(added 2026-07-05)_
+
 ## Untouched substrate items
 
 (Separate from EQ Quotes — preserve)
@@ -166,5 +201,5 @@ The following tests belong to eq-quotes-port (Flask), which is retired as of 202
 - [ ] Scale EQ Field App for Melbourne office demo
 - [ ] R2 backup audit/download from Beelink desktop
 - [ ] Scott Hotson hire finalisation
-- [ ] One-on-one catch-up sessions with 8 key staff
+- [ ] One-on-one catch-up sessions with 8 key staff — 7 Role Step-Up Charters drafted 2026-07-05 (Collin, Rhys, William, Simon, Matt, David, Luke) as supporting artefacts for these conversations
 - [ ] Comms portfolio growth under Royce

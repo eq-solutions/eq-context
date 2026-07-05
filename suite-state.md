@@ -8,7 +8,7 @@ status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-07-04 (nightly cron)_
+_Last verified: 2026-07-05 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -35,7 +35,7 @@ _If this file is >48h old, the cron is broken._
 
 | Entity | Count | Schema |
 |--------|-------|--------|
-| Sites | 241 | app_data.sites |
+| Sites | 246 | app_data.sites |
 | Customers | 41 | app_data.customers |
 | Assets | 13 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
@@ -58,23 +58,23 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-07-04)
+## Open PRs (as of 2026-07-05)
 
 **eq-shell:**
-- #647 fix(tenants): auto-join creating admin so new tenants are reachable
+- #658 fix(dashboard): surface pending staff connections on home sidebar
 - #637 docs: pnpm-workspace.yaml — packages are vendored, not a git submodule
 - #636 build: pin @eq-solutions/ui to release tag v1.10.0 for reproducible builds
 - #635 feat(canonical-api): move APP_TENANT_SCOPE allow-list to a shell_control table
 
 ---
 
-## System Health (as of 2026-07-04)
+## System Health (as of 2026-07-05)
 
 **CI on main:**
 
 | Repo | Status |
 |------|--------|
-| eq-service | ? in_progress |
+| eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
@@ -125,6 +125,11 @@ _Auto-refreshed nightly. ✓ = has data · ⚠ = empty (no data yet) · ✗ = ta
 ---
 
 ## Key Decisions (auto-derived from merged PRs + manual)
+- eq-service offsite backup RETIRED — platform DR (ehow + eq-canonical + eq-canonical-internal) now owned by eq-context, not baked into a consuming app; old job was schema-only + 2/6 buckets, replacement is full logical dump + all buckets + Sentry cron check-in (merged PR #438, 2026-07-04)
+- Fly.io account deleted 2026-07-04 — EQ Quotes (quotes.eq.solutions) and the Gotenberg HTML→PDF host retired; dead CORS origins + env refs removed (merged service PRs #397/#432, 2026-07-04)
+- Shell: app-tile entitlements moved from tenant-keyed `shell_control.module_entitlements` to canonical org-keyed `public.org_module_entitlements`; legacy table + sync trigger dropped (readers Stage A #648, writers + drop Stage B #650, 2026-07-04)
+- Shell: tenant branding collapsed to one canonical copy in `public.organisations.branding`; `shell_control.tenants.brand_color/brand_logo_url` dropped — session/JWT shape unchanged, source moved (merged shell PR #644, 2026-07-04)
+- Shell: view security_invoker invariant (CHECK 7, no allow-list) added to `check-tenant-drift.mjs` — every anon/authenticated-reachable canonical view must carry security_invoker or the tenant-migration gate blocks (merged shell PR #625, 2026-07-03)
 - Field: prestart auto-fills customer from the chosen site (QA row 29) — reads canonical `customer_name` off `field_sites` (blank-only, no-op for unlinked sites). Client shipped v3.5.237 (merged field PR #402, 2026-07-04). eq-shell PR #645 (`tenant-migrations/0159_field_sites_customer_name.sql`) **MERGED 07:41Z but 0159 NOT yet applied** — One Pipe apply aborts on known **checksum drift** (0084 sks / 0072 eq) before reaching 0159 (run 28650361945, exit 2), so 0 applied on both planes. Fix = re-run with `allow_checksum_drift=true` (or `reconcile_ledger` mode). Royce 2026-07-04: leave the apply to the concurrent eq-shell session. Row 29 **dormant** until 0159 lands on ehow+zaap (verified: `customer_name` still absent from `app_data.field_sites` on ehow). ehow: 30 field sites, 11 linked / 19 blank.
 - Contacts joined the canonical view+INSTEAD OF trigger model — service.contacts is a view over app_data, DML routed to canonical (0167) (merged PR #410, 2026-07-02)
 - Governed migration-apply pipeline + service invariants gate — migrations now apply through a checked pipeline, not ad-hoc (0168/0169) (merged PR #412, 2026-07-03)
