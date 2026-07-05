@@ -125,6 +125,10 @@ _Auto-refreshed nightly. ✓ = has data · ⚠ = empty (no data yet) · ✗ = ta
 ---
 
 ## Key Decisions (auto-derived from merged PRs + manual)
+- Field job numbers: **EQ Ops is the single source of truth** — Field reads a canonical `app_data.field_job_numbers` view (SECURITY DEFINER, financials never exposed); Field-local manual numbers still allowed and Ops wins on overlap. Invoiced quotes auto-retire off the board by rule; new `public.field_job_number_overrides` table backs manual hide/restore (field PRs #404/#405/#409/#410/#411, shell PRs #651/#652/#653/#669, 2026-07-04→05)
+- **Subcontractor role** added to the canonical role model (eq-roles v2.4.0) — exposed as a selectable role (safe subset) across Shell + Service (service PR #440, shell PRs #662/#664, 2026-07-05)
+- Labour hire rates went **canonical** — new canonical tables + read-only Ops tab with a weekly-cost rollup (shell PRs #663/#670, 2026-07-05)
+- New-tenant provisioning hardened — `app_data` schema now exposed over PostgREST for new tenants (EQ-SHELL-M), and the creating admin is auto-joined so a fresh tenant is reachable (shell PRs #656/#647, 2026-07-04→05)
 - eq-service offsite backup RETIRED — platform DR (ehow + eq-canonical + eq-canonical-internal) now owned by eq-context, not baked into a consuming app; old job was schema-only + 2/6 buckets, replacement is full logical dump + all buckets + Sentry cron check-in (merged PR #438, 2026-07-04)
 - Fly.io account deleted 2026-07-04 — EQ Quotes (quotes.eq.solutions) and the Gotenberg HTML→PDF host retired; dead CORS origins + env refs removed (merged service PRs #397/#432, 2026-07-04)
 - Shell: app-tile entitlements moved from tenant-keyed `shell_control.module_entitlements` to canonical org-keyed `public.org_module_entitlements`; legacy table + sync trigger dropped (readers Stage A #648, writers + drop Stage B #650, 2026-07-04)
