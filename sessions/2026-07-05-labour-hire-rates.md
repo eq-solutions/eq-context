@@ -53,12 +53,21 @@ schema-registry mirror should be confirmed not to clash at build.
 + route `/ops/labour-hire-rates` + HubSidebar nav entry. Verified in a throwaway worktree: `build:packages` + `tsc -b`
 clean, `check:perms` in sync. Worktree removed after push.
 
-## Remaining (Royce / pipeline — not code)
-1. Apply `0162` to ehow via the governed migration pipeline (blocked on checksum drift 0084/0072, parked to the
-   concurrent eq-shell session).
-2. Run `seed_madagins_core.sql` on ehow → the tab has content.
-3. Merge eq-shell PR #663 (Netlify deploy) — apply `0162` first so `labour_hire_rates_view` exists.
-4. Fast-follow: wire EQ Intake upload (2 schemas staged).
+## LIVE — 2026-07-05
+- ✅ eq-shell **PR #663 merged** (`fbf99b0` on main; squash auto-merge after a branch-behind race with the concurrent
+  branding session — auto-merge landed it once current+green). Tab deployed via Netlify.
+- ✅ **`0162` applied to ehow** via the One-Pipe dispatch (`allow_checksum_drift=true`, whole fleet) — 2 tables + view
+  + 2 RLS policies + 6 key columns confirmed.
+- ✅ **Seed loaded + verified through the view:** Madagins rate card (12 rows) + Core invoice (6 rows) = **18 rates,
+  2 agencies**, all `is_current`; values match the source PDFs.
+- Tab reachable: sidebar → Admin → **Labour hire rates** (manager/supervisor), or `/{tenant}/ops/labour-hire-rates`.
 
-No live DB change, nothing deployed. Design + staged artifacts on eq-context PR #76 (branch
-`claude/pensive-burnell-fca8d9`); build on eq-shell PR #663 (branch `claude/labour-hire-rates-ops`, verified).
+## Remaining
+- Visual click-through on core.eq.solutions (needs a manager Shell session — can't mint headless) to confirm the tab
+  renders the rows.
+- Fast-follow: wire EQ Intake upload (2 schemas staged) — deferred, unproven for this doc type.
+- Platform hygiene (not this feature): reconcile the 0084/0072 checksum drift (`reconcile_ledger`) so future applies
+  don't need the `allow_checksum_drift` bypass every time.
+
+eq-context PR #76 (design + staged artifacts); eq-shell #663 merged (build). During the apply saga, main also merged
+#664 (subcontractor role — required a matrix fix on the branch) and #665 (branding).

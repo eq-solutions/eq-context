@@ -22,13 +22,15 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] Spec `labour-hire-rates-canonical-design-2026-07-04.md` — APPROVED, lean build.
 - [x] `0162_labour_hire_rates.sql` (0147-style; next free number), `seed_madagins_core.sql` (Madagins card + Core invoice), `LabourHireRates.tsx` (eq-ui tab), 2 Intake schemas (deferred), README.
 
-**Built & PR'd:**
-- [x] **eq-shell PR #663** (`claude/labour-hire-rates-ops`) — `0162` migration + `LabourHireRates.tsx` tab + `ops.view_rates` (manager+supervisor) + route + HubSidebar nav. Verified: `build:packages` + `tsc -b` clean, `check:perms` in sync. _(2026-07-05)_
+**LIVE (2026-07-05):**
+- [x] **eq-shell PR #663 merged** (`fbf99b0`) — `0162` migration + `LabourHireRates.tsx` tab + `ops.view_rates` (manager+supervisor) + route + HubSidebar nav. Verified `tsc -b` + `check:perms`. (Auto-merge landed it past a branch-behind race with the branding session; +subcontractor matrix fix for #664.)
+- [x] **`0162` applied to ehow** — One-Pipe dispatch `allow_checksum_drift=true` (fleet). 2 tables + view + RLS confirmed.
+- [x] **Seed loaded + verified** — Madagins rate card (12) + Core invoice (6) = 18 rates, 2 agencies, all current; values match the PDFs. Tab: sidebar → Admin → Labour hire rates, or `/{tenant}/ops/labour-hire-rates`.
 
-**Still open (your call / dependency):**
-- [ ] **Land `0162` on ehow** — needs the eq-shell governed migration pipeline, currently **blocked on checksum drift (0084 sks / 0072 eq)** parked to the concurrent eq-shell session. Until that clears, v1 can't ship. Do NOT hand-apply via MCP (bypasses governance + dirties ledger). _(added 2026-07-05)_
-- [ ] **Run the seed + merge PR #663** — after `0162` applies: run `seed_madagins_core.sql` on ehow, then merge PR #663 (Netlify deploy). Apply the migration first so `labour_hire_rates_view` exists. _(added 2026-07-05)_
+**Still open:**
+- [ ] **Visual click-through** on core.eq.solutions (manager Shell session) to confirm the tab renders — can't mint headless. _(added 2026-07-05)_
 - [ ] **Fast-follow:** wire EQ Intake upload (2 schemas ready) — deferred, unproven for this doc type. _(added 2026-07-05)_
+- [ ] **Platform hygiene:** reconcile the 0084/0072 checksum drift (`reconcile_ledger`) so future applies don't need the `allow_checksum_drift` bypass. _(added 2026-07-05)_
 
 **Notes:**
 - Cost-only (no charge-out/margin). Rate matrix (`rate_type`: normal/T½/double/allowance) + `source_doc_type` (rate_card/invoice/manual, invoice superseded by card). Grant model = SELECT-only to authenticated, writes via service_role (matches `0147_issues`).
