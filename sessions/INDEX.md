@@ -1,8 +1,9 @@
 # Session Index
-_51 logs · reverse-chronological · auto-generated_
+_52 logs · reverse-chronological · auto-generated_
 
 | Date | Session |
 |------|---------|
+| 2026-07-06 | [Labour hire rates: PDF import + supersede shipped; feature complete & live](sessions/2026-07-06.md) |
 | 2026-07-05 | [eq-shell Sentry triage: tenant PostgREST exposure gap root-caused + fixed live](sessions/2026-07-05.md) |
 | 2026-07-05 | [Session — Role Step-Up Charters + generator](sessions/2026-07-05-role-step-up-charters.md) |
 | 2026-07-05 | [Session — Labour Hire Rates (canonical design + staged lean build)](sessions/2026-07-05-labour-hire-rates.md) |
