@@ -14,6 +14,21 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-05 (eq-shell Sentry triage — tenant PostgREST exposure gap root-caused + fixed live) — PR #656 merged, favour-perfect unblocked
+
+*Asked to check Sentry and fix all issues on eq-shell. Two unresolved: EQ-SHELL-M (new, `quote-job-consumer` 500 on tenant `favour-perfect`) and EQ-SHELL-J (`TypeError: Load failed` on `/sks/ops`, 4 days old).*
+
+**Completed:**
+- [x] **EQ-SHELL-M root-caused + fixed** (eq-shell #656 merged → main, deployed) — `favour-perfect` is the first tenant provisioned through the newer self-serve `provision-tenant-background.ts` flow; that flow creates the `app_data` schema via SQL but never added it to the project's PostgREST exposed-schemas list (defaults to `public` only). Every `canonical-api.ts` call using `.schema('app_data')` 406'd (PGRST106) for this tenant from go-live — confirmed via live API logs, every 15-min `quote-job-consumer` tick failing since 2026-07-04. Added `ensureExposedSchema()` to Step 4 of provisioning (Management API GET+PATCH `/projects/{ref}/postgrest`, idempotent) so every future self-provisioned tenant gets this automatically. _(done 2026-07-05)_
+- [x] **favour-perfect live fix** — Royce manually added `app_data` to `nxojbntrpxfnbhbyaspp`'s exposed schemas in the Supabase Dashboard (Settings → API → Data API settings) — the code fix only covers future tenants; the Supabase MCP connector here has no tool for this project-settings endpoint (DB-level ops only), so Dashboard was the only path in-session. _(done 2026-07-05)_
+- [x] **EQ-SHELL-J resolved in Sentry** — already fixed in code (`d278a9b3`, PR #579, 2026-07-01: `handleDownloadPdf` catch block). Confirmed present on main; this Sentry event predated the fix. Marked resolved, no code change. _(done 2026-07-05)_
+
+**Deferred:** none — both issues fully closed (code + live state + Sentry status).
+
+**Note for next tenant provisioned:** a full checklist (provision → run `migrate-tenants.mjs` → check membership → note Retry-safety) is now in memory `tenant-postgrest-schema-exposure-gap.md`.
+
+---
+
 ## ⏩ Session close — 2026-07-04 (branding + entitlements canonicalised — one tenant record; SKS Field leak found + closed) — 3 eq-shell PRs, 6 migrations, legacy dropped
 
 *Royce directive: branding + app-tile entitlements are canonical concepts — one copy, org-keyed, not duplicated in shell_control. Steelmanned the north star (organisations = the tenant's identity + capabilities; shell_control = routing/auth/session mechanics), verified live, built in safe phases with a sync-trigger bridge.*
