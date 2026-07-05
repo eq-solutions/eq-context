@@ -35,7 +35,7 @@ _If this file is >48h old, the cron is broken._
 
 | Entity | Count | Schema |
 |--------|-------|--------|
-| Sites | 237 | app_data.sites |
+| Sites | 246 | app_data.sites |
 | Customers | 41 | app_data.customers |
 | Assets | 13 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
@@ -64,7 +64,7 @@ _If this file is >48h old, the cron is broken._
 - #440 feat(roles): bump eq-roles to v2.4.0, wire subcontractor
 
 **eq-shell:**
-- #666 feat(branding): live preview + contrast warnings + detection & save polish
+- #669 feat(field): job-number retire — auto (invoiced) + manual (hide-only)
 - #658 fix(dashboard): surface pending staff connections on home sidebar
 - #637 docs: pnpm-workspace.yaml — packages are vendored, not a git submodule
 - #636 build: pin @eq-solutions/ui to release tag v1.10.0 for reproducible builds
