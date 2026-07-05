@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-05)
 
-**eq-service:**
-- #444 feat(commercials): asset reconciliation screen for contract-scope gaps
-
 **eq-shell:**
 - #658 fix(dashboard): surface pending staff connections on home sidebar
 - #637 docs: pnpm-workspace.yaml — packages are vendored, not a git submodule
@@ -86,7 +83,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 175 (latest: 0171) applied
+**Migrations:** eq-service has 176 (latest: 0172) applied
 
 ---
 
