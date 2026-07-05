@@ -14,6 +14,24 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-05 (labour hire rates — canonical design approved, lean build staged) — not applied
+
+*Where to store the cost rates for the labour hire firms SKS uses, viewable by project / upper management. Landed on: two new canonical tables in `app_data` on ehow (`labour_hire_companies` + `labour_hire_rates`), a simple EQ Ops read tab (two flat eq-ui tables), fed eventually by EQ Intake. Grounded in 3 real agency PDFs + a full canonical audit (passed). Build path = LEAN: tables + tab + manual seed first; Intake auto-upload deferred.*
+
+**Staged (nothing applied — `eq/canonical-readiness/labour-hire-rates-build/`):**
+- [x] Spec `labour-hire-rates-canonical-design-2026-07-04.md` — APPROVED, lean build.
+- [x] `0162_labour_hire_rates.sql` (0147-style; next free number), `seed_madagins_core.sql` (Madagins card + Core invoice), `LabourHireRates.tsx` (eq-ui tab), 2 Intake schemas (deferred), README.
+
+**Still open (your call / dependency):**
+- [ ] **Land `0162` on ehow** — needs the eq-shell governed migration pipeline, currently **blocked on checksum drift (0084 sks / 0072 eq)** parked to the concurrent eq-shell session. Until that clears, v1 can't ship. Do NOT hand-apply via MCP (bypasses governance + dirties ledger). _(added 2026-07-05)_
+- [ ] **After 0162 applies:** run the seed, drop `LabourHireRates.tsx` into eq-shell `src/modules/ops/`, add `ops.view_rates` to `matrix.ts`, wire the Ops route. _(added 2026-07-05)_
+- [ ] **Fast-follow:** wire EQ Intake upload (2 schemas ready) — deferred, unproven for this doc type. _(added 2026-07-05)_
+
+**Notes:**
+- Cost-only (no charge-out/margin). Rate matrix (`rate_type`: normal/T½/double/allowance) + `source_doc_type` (rate_card/invoice/manual, invoice superseded by card). Grant model = SELECT-only to authenticated, writes via service_role (matches `0147_issues`).
+
+---
+
 ## ⏩ Session close — 2026-07-04 (tenant provisioning stuck-spinner root-caused + fixed live) — Favour Perfect provisioned, migrated to 0159, Royce added as its admin
 
 *Royce hit a stuck "Provisioning…" spinner on a new tenant "Favour Perfect", then an HTTP 400 baseline-schema fail. Two stacked bugs in the data-plane provisioner; fixed + deployed. Then the tenant had zero users (built via admin "Add tenant"), so added Royce as its manager, and dispatched the fleet tenant-migrate to build its schema — which also cleared the pending 0159 rollout across the fleet.*
