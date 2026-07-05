@@ -1,7 +1,7 @@
 ---
 title: SKS — Pending
 owner: Royce Milmlow
-last_updated: 2026-06-15
+last_updated: 2026-07-05
 scope: SKS Technologies operational TODO list
 read_priority: critical
 status: live
@@ -170,6 +170,11 @@ The following tests belong to eq-quotes-port (Flask), which is retired as of 202
 2. **Invoice email blank for Ramsay, Schneider, Metronode, 3/9 Equinix** — same path
 3. **Cost data NULL on quotes before v62** — estimators should re-enter Cost values when editing older quotes
 
+## Added 2026-07-05
+
+- [ ] David Boyd charter — confirm qualification path (electrical licence / Cert IV / Diploma PM / senior-title move) and sharpen the "Where you're growing" section
+- [ ] sks-charters generator — Royce to review generate.js before the code repo is committed
+
 ## Untouched substrate items
 
 (Separate from EQ Quotes — preserve)
@@ -178,5 +183,5 @@ The following tests belong to eq-quotes-port (Flask), which is retired as of 202
 - [ ] Scale EQ Field App for Melbourne office demo
 - [ ] R2 backup audit/download from Beelink desktop
 - [ ] Scott Hotson hire finalisation
-- [ ] One-on-one catch-up sessions with 8 key staff
+- [ ] One-on-one catch-up sessions with 8 key staff — 7 Role Step-Up Charters drafted 2026-07-05 (Collin, Rhys, William, Simon, Matt, David, Luke) as supporting artefacts for these conversations
 - [ ] Comms portfolio growth under Royce
