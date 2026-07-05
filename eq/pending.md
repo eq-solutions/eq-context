@@ -14,6 +14,17 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-05 (Favour Perfect verified live — provisioning fix confirmed end-to-end)
+
+*Continuation of the 2026-07-04 provisioning-fix session. Explained the fix + test plan in plain terms; Royce then confirmed **"favour perfect loaded"** — the new tenant now opens in his switcher and renders.*
+
+**Completed:**
+- [x] **Provisioning fix verified end-to-end** — Royce confirmed Favour Perfect loads in production. This closes the loop on eq-shell `7e760f2` (baseline-schema race + missing `supabase_migrations` schema) **and** the membership add (Royce as `manager` on jvkn) from the 2026-07-04 session — the tenant is now reachable and rendering. Alongside the concurrent 2026-07-05 PostgREST-exposure fix (PR #656), Favour Perfect is fully operational. No code change this session. _(done 2026-07-05)_
+
+**Deferred:** none new. Favour Perfect first-run config (invite its real customer admin) + the optional `reconcile_ledger` tidy remain open from 2026-07-04 (your call); admin-create zero-member gap still tracked as `task_4f5989fb`.
+
+---
+
 ## ⏩ Session close — 2026-07-05 (eq-shell Sentry triage — tenant PostgREST exposure gap root-caused + fixed live) — PR #656 merged, favour-perfect unblocked
 
 *Asked to check Sentry and fix all issues on eq-shell. Two unresolved: EQ-SHELL-M (new, `quote-job-consumer` 500 on tenant `favour-perfect`) and EQ-SHELL-J (`TypeError: Load failed` on `/sks/ops`, 4 days old).*
