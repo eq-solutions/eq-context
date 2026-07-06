@@ -61,8 +61,8 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-06)
 
 **eq-shell:**
+- #682 fix(provisioning): profiles insert can hit an FK violation on stale user match
 - #681 fix(staff): eq_update_staff silently cleared email/phone/trade/level/employment_type
-- #680 Admin: one-spot app activation view + canonical entitlement merge
 - #658 fix(dashboard): surface pending staff connections on home sidebar
 - #637 docs: pnpm-workspace.yaml — packages are vendored, not a git submodule
 - #636 build: pin @eq-solutions/ui to release tag v1.10.0 for reproducible builds
@@ -76,7 +76,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ✓ success |
+| eq-service | ✗ failure |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
