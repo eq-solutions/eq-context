@@ -14,6 +14,58 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-06 (eq-shell) — App activation: one-spot Field/Service status view, canonical entitlement merge, bulk toggle, collapsible sites
+
+*Royce's opening complaint: the current way to see what's active for Field/Service from `/sks/customers?tab=dashboard` "is not scalable" — no one spot to check, no bulk action. Investigation found that dashboard doesn't really exist as a route; the nearest thing was an orphaned, never-routed `AdminDataActivationPage.tsx`. Routed it (quick fix), then designed and shipped the real fix (canonical rollup + cross-plane entitlement merge), then two rounds of follow-up: Royce hit a live nav bug (no way back off the page) and asked for bulk on/off + collapsible sites, plus a separate nav-declutter side-quest (move Reports off the sidebar).*
+
+**Shipped:**
+- [x] **PR #680 merged, live** — routed `AdminDataActivationPage.tsx` into `App.tsx` (`/admin/data-activation`) + Admin hub tile; `0165_data_activation_status.sql` (renumbered from a same-day 0164 collision with concurrent PR #677) rolls up `app_data.customers` ⋃ `app_data.sites` per tenant plane; new `get-data-activation-status.ts` merges that with the canonical `org_module_entitlements` table on the control plane (jvkn) — confirmed via reading the actual `CREATE TABLE` statements that these are two physically separate Supabase projects, so a real SQL join is impossible; the merge happens in this one function instead. Migration dispatched via One Pipe (Royce's production-environment approval click), applied live to all three tenants: eq, favour-perfect, sks.
+- [x] **PR #686 merged, live** — fixed a real bug Royce hit live: the page was missing its `HubLayout` wrapper (inherited from when it was still unrouted), so landing on `/admin/data-activation` had no sidebar and no way back. Also shipped both feature requests: `update-data-activation.ts` now accepts `ids: string[]` for a real single-query batch update (`.in(pkCol, ids)`, not a loop) powering "Field/Service: All on / All off" buttons scoped to the current search/filter; sites now group under their customer (by `customer_id`, not name-string matching) with per-group + all-group collapse/expand.
+- [x] **Nav declutter** — moved the sidebar's flat "Reports" row into the Admin Overview tile grid (`reports.view` is manager-only, same population as the page's own `admin.list_users` gate, so no access change). Checked first: Import (`intake.view`) and Labour hire rates (`ops.view_rates`) are held by supervisors/employees/apprentices too, so moving those the same way would have silently locked them out — left in the sidebar per Royce's choice.
+
+**Decided:**
+- Royce: route the orphaned page first (quick win), then build the canonical-join real fix — confirmed both steps before building.
+- Royce: dispatch the One Pipe migration himself via the `production` environment approval click (Claude cannot click-approve).
+- Royce: "move Reports only, leave Import and Labour hire rates in the sidebar" — the access-safe option, over "move all three" or "manager-only from now on."
+- Royce: merge #680 and #686 himself, each time after confirming CI was green (required 2 rebases on #680 due to main moving fast the same day — a migration-number collision with concurrent PR #677 needed a rename from 0164→0165).
+
+**Deferred:**
+- [ ] **No live browser click-through of PR #686's changes** — bulk "All on/off" buttons and the collapsible customer/site grouping have only been typecheck/lint-verified, never clicked in a real browser session. _(added 2026-07-06, needs your call — or hand it to a session with live credentials)_
+
+**Notes:**
+- `org_module_entitlements` (control plane, jvkn) and `app_data.customers`/`sites` (tenant planes, zaap/ehow) are physically separate Supabase projects — no FDW/dblink exists between them. Any future "join canonical + tenant data" ask in this repo needs an application-layer merge (a Netlify function reading both), never a database-level JOIN or view.
+- Confirmed a benign gap from this session: 0165 wasn't registered in `check-tenant-drift.mjs`'s `KNOWN_LEGACY_ANON` allowlist convention when it first landed — a separate session (PR #685) caught and fixed it, live-verifying it was never a real anon exposure (RLS-on with tenant_id policies on both planes) before allowlisting. Worth registering the allowlist entry in the SAME PR as any new `security_invoker` view going forward, not after the drift gate complains.
+
+---
+
+## ⏩ Session close — 2026-07-06 (eq-field + eq-shell) — canonical link redesigned + shipped, job_title added tenant-wide, root-caused Liam Holmgreen's stuck supervisor status, Batch Fill filters
+
+*Continuation of an earlier compacted eq-field audit session. Royce pushed back on the canonical-link button ("manual buttons feel clunky in time") — redesigned to auto-link-on-save, then found and fixed a real persistence bug in what had just shipped (button produced a success toast but the write never reached the DB). Royce then flagged Liam Holmgreen was still showing as a supervisor despite "we fixed this" — investigation surfaced three separate, unconnected "supervisor" signals across eq-field/eq-shell and a live mobile-Contacts bug that was silently hiding people with an unrecognized Type value. Session closed with a requested Batch Fill usability improvement.*
+
+**Shipped:**
+- [x] **eq-field v3.5.251 — dead canonical bulk-link button removed.** Auto-link-on-save (shipped just prior) means every save links itself; verified live that all 80 field-approved SKS staff already carry `cards_worker_id` — zero backlog for the manual button to catch up on. Removed the button + its `syncAllToCanonical()` loop; kept the shared link helpers since auto-link-on-save still calls them.
+- [x] **eq-field v3.5.252 + eq-shell PR #678 (merged, live) — `job_title` added tenant-wide.** New nullable `app_data.staff.job_title` column (ehow), independent of `supervisor_role`/`supervisor_category` (which stay scoped to Supervision's management-hierarchy grouping). Backfilled from `supervisor_role` for existing supervisors. Added to `field_people` view, eq-field's Contacts table + wizard, and eq-shell's Staff dashboard (new column next to Type, both edit surfaces). Caught mid-build: `job_title` was missing from `savePersonToSB`'s column whitelist in `supabase.js` — would have silently never persisted.
+- [x] **Root-caused + fixed Liam Holmgreen's stuck supervisor status.** `app_data.staff.is_supervisor` was still `true` with zero audit-log trace of any prior fix attempt. Found three unconnected "supervisor" signals: `is_supervisor` (the real one, drives Field's Supervision/Contacts split), eq-shell's `eq_role='supervisor'` (a login permission tier, edited via Shell's Users page — looks like the right lever, isn't), and `employment_type='supervisor'` (a third accidental signal — same free-text column eq-field and eq-shell write with two different, non-overlapping vocabularies). Fixed his row directly (`is_supervisor=false`, `supervisor_role`/`category` cleared, `employment_type` reverted to `Direct` after it changed to `employee` mid-investigation from a Shell edit attempt).
+- [x] **eq-field v3.5.253 — mobile Contacts "Other" bucket.** That investigation found mobile Contacts only ever rendered 3 hardcoded Group values (Direct/Apprentice/Labour Hire) — anyone else's `employment_type` (e.g. Mitchell Forsyrh's `subcontractor`, Liam's temporary `employee`) silently vanished from the list with zero trace. Added a catch-all "Other" bucket with a chip showing the raw unrecognized value. Desktop table was already unaffected.
+- [x] **eq-field v3.5.254 — Timesheet Batch Fill Group + Team filters.** The "Apply To" list was a flat 78-person checklist (Select All/Clear All only). Added Group + Team dropdowns that filter the visible checklist; Team reuses `teams.js`'s own `_peopleInTeam` membership cache. Selections live in a checked-id Set that survives switching filters, so a combined multi-group/multi-team selection can be built up incrementally. `teams.js` added as a `timesheets` tab prerequisite in `lazy-loader.js` (the Team dropdown's helpers weren't guaranteed loaded on a direct deep-link).
+- [x] Two Artifacts built: an updated eq-field wiring map (canonical link redesign + shell_control RLS fix + test steps) and a new "Role, Type & Supervisor Wiring" diagram tracing all four apps'/tables' overlapping role concepts end-to-end.
+
+**Decided:**
+- Royce: auto-link-on-save, not a manual button — the original objection (duplicate worker stubs) no longer holds now the email→phone dedup is proven.
+- Royce: fix Liam's DB record directly now (is_supervisor + employment_type), confirmed via AskUserQuestion.
+- Not yet decided: how to close the systemic gap — no live UI can set `is_supervisor` for SKS at all (Field blocked it in 2026-06 "managed in Core"; Core never built a replacement). Two options on the table: re-open Field's own already-working Supervision CRUD for SKS (cheap, no new build), or build a real Shell-side surface. Royce was mid-conversation on this when the session closed — **needs his call next session**.
+
+**Deferred:**
+- [ ] **Decide + build the SKS Supervision management fix** (re-open Field's CRUD vs build Shell surface — see above). _(added 2026-07-06)_
+- [ ] **Unify `employment_type` vocabulary between eq-field and eq-shell** — no shared enum/constraint; same root cause as the existing "add subcontractor as a real role" item below. The v3.5.253 Other-bucket fix makes the symptom visible instead of hiding it, it doesn't fix the underlying mismatch. _(added 2026-07-06)_
+- [ ] **Live click-through of v3.5.253 (mobile Other bucket) and v3.5.254 (Batch Fill Group/Team filters)** — both deployed and verified via Netlify (commit match, no errors, secret scan clean), but not exercised through a real authenticated SKS session — eq-field's Shell-JWT handoff auth isn't reproducible in a local dev server. _(added 2026-07-06)_
+
+**Notes:**
+- Repeated pattern this session, worth remembering: a shipped feature that produces a success toast is not proof the write reached the DB — the canonical-link button's v3.5.248 persistence bug and the `job_title` whitelist gap were both caught by explicitly checking the table, not by trusting the UI.
+- The "three unconnected supervisor signals" finding generalizes: anywhere a word/concept ("supervisor", "role", "type") appears in more than one of eq-field/eq-shell's UIs, check whether they're actually reading/writing the same column before assuming a fix in one place propagates to the other.
+
+---
+
 ## ⏩ Session close — 2026-07-06 (eq-service + eq-field + eq-shell) — migration 0172/0173 dispatched + verified live, cross-repo Sentry sweep, and a new "create assets from the sheet upload" feature
 
 *Continuation of the earlier same-day eq-service session (tie-out fix + subcontractor dedup, entry below). Royce asked to dispatch the pending migration and "fix sentry" — both spanned into eq-field and eq-shell. Then Royce clarified the asset-reconciliation screen (built by a concurrent session, see the other 2026-07-06 eq-service entry) was the wrong shape for his actual workflow ("it's not a reconciliation — it's creating assets from scratch") — built a proper one-step alternative instead of asking him to use the two-screen flow.*
