@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-06)
 
-**eq-cards:**
-- #127 fix(onboarding): stop screens stacking, ask for a name inline before applying
-
 **eq-field:**
 - #414 v3.5.256 — Teams: fix silent delete-button failure + unique default colours
 
