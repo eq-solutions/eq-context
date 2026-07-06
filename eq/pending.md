@@ -14,6 +14,29 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-06 (eq-shell) — command palette + skeleton loading + optimistic archive shipped, live; unrelated drift fixed same session
+
+*Royce asked for creative, industry-leading nav/login/UX ideas, then a steelman, then to scope and build the highest-value "Overall UX" items ("everything must get completed"). Session first surveyed the real nav/iframe-auth architecture (found pre-warm + persistent iframes + reactive token refresh already solved most of the perceived login-speed problem — no build needed there) before scoping a command palette + two smaller UX fixes. Build hit a genuinely unrelated blocked-merge (a pre-existing security-drift gate failure), fixed via the governed One Pipe migration path rather than an admin bypass, then both PRs merged and deployed live same session.*
+
+**Shipped:**
+- [x] **PR #676 merged, live** — Cmd/Ctrl+K command palette (Apps/Records/Admin + per-tenant recents), reusing eq-ui's `Modal` (no eq-ui changes); Field/Service iframe loading overlays swapped from plain text to a content-shaped skeleton; Staff bulk-archive made optimistic (instant row removal, rollback + toast on failure, success toast added where none existed).
+- [x] **PR #677 merged, live** — `0164_field_people_reassert_security_invoker_ehow.sql`, fixing a live definer-rights view drift on ehow (SKS) found only because it was blocking #676's merge. Live-verified before (`reloptions=NULL`) and after (`security_invoker=on`) writing the fix — not just a green CI job.
+
+**Decided:**
+- Royce: fix the drift via the governed migration path first, not an admin-bypass merge, even though the failure was confirmed pre-existing and unrelated to the UX diff.
+- Royce approved the `production`-gated migration dispatch himself (scoped to `slug=sks`) — Claude dispatched, could not click-approve.
+
+**Deferred:**
+- [ ] **Live authenticated click-through of PR #676's changes** — Cmd+K palette, Field/Service skeleton, Staff optimistic archive. Build-verified (`pnpm run build` clean) and code-reviewed, but no real browser session/credentials were available in this environment to click through it. Royce has a CEO demo in ~2 weeks — worth doing before then. _(added 2026-07-06)_
+- [ ] **`field_people` out-of-band regression provenance** — same open question as the already-tracked `field_job_numbers provenance` item below: migration `0158` confirmed ehow's `field_people` was safe as of 2026-07, and no repo migration touched it since, meaning something changed it live outside the One Pipe. Not investigated this session (scope was the fix, not the "who/what" — same pattern, could be the same root cause as the `field_job_numbers` provenance question). _(added 2026-07-06)_
+
+**Notes:**
+- The perceived "app login is slow" concern turned out to be mostly already solved: iframes for Field/Service/Cards pre-warm 2.5s after session load and never unmount for the session (App.tsx keeper-div pattern), and token refresh is reactive to the child app's own expiry timer, not per-navigation. No architecture change was needed there — this matches the general lesson in this file's "verify before building" rule.
+- **CI drift-check results can be stale relative to a just-completed live fix within the same PR-check window** — after dispatching+applying the `0164` migration, the PR's own "Schema drift" check still showed the pre-fix "fail" result because it had run before the apply completed. `gh run rerun <run-id> --failed` re-queries live state and turns green; don't assume a red required check is still accurate without checking the run's timestamp against when the underlying fix actually landed.
+- Force-pushing a rebased branch to bring it up to date with `main` was correctly blocked by the auto-mode classifier (rewrites a just-merged, deleted-on-GitHub branch's history) — used a plain `git merge origin/main` + regular push instead, which achieved the same "branch is up to date" result without rewriting shared history.
+
+---
+
 ## ⏩ Session close — 2026-07-06 (eq-solves-service) — asset reconciliation screen built, shipped, migrated live, pilot-verified
 
 *Royce: "important that the commercial sheet adds in the assets" — commercial-sheet imports write contracted job-plan quantities into `app_data.contract_scopes` but had never created a single real asset (verified live: 3,605 contracted units across 4 sites, zero linked assets). Royce picked shape C: a full reconciliation screen, not just an opt-in checkbox. Built, reviewed, fixed, shipped, migrated live, and pilot-verified end-to-end same session.*
