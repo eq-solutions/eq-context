@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-06 08:10 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-06 08:20 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-06 08:02 UTC → 2026-07-06 08:10 UTC)
+## Since last refresh (2026-07-06 08:10 UTC → 2026-07-06 08:20 UTC)
 
-- Merged: eq-shell [#679](https://github.com/eq-solutions/eq-shell/pull/679) feat(ops): labour hire rates — PDF import confirms update vs
-- Merged: eq-shell [#663](https://github.com/eq-solutions/eq-shell/pull/663) feat(ops): labour hire rates — canonical tables + read-only 
-- Merged: eq-shell [#662](https://github.com/eq-solutions/eq-shell/pull/662) feat(roles): expose subcontractor as a selectable role (safe
-- Merged: eq-shell [#660](https://github.com/eq-solutions/eq-shell/pull/660) fix(staff): decline a worker-initiated application actually 
-- Merged: eq-shell [#657](https://github.com/eq-solutions/eq-shell/pull/657) feat(tenants): link to EQ Cards adoption dashboard (PostHog)
-- Merged: eq-shell [#656](https://github.com/eq-solutions/eq-shell/pull/656) fix(provisioning): expose app_data schema over PostgREST for
-- Merged: eq-shell [#653](https://github.com/eq-solutions/eq-shell/pull/653) chore(drift): allow-list field_job_numbers (security_invoker
-- Merged: eq-shell [#651](https://github.com/eq-solutions/eq-shell/pull/651) 0160: eq_merge_sites RPC — governed site-dedup (QA row 29 fo
+- Merged: eq-shell [#680](https://github.com/eq-solutions/eq-shell/pull/680) Admin: one-spot app activation view + canonical entitlement 
+- Merged: eq-shell [#668](https://github.com/eq-solutions/eq-shell/pull/668) chore(drift): allow-list labour_hire_rates_view (security_in
+- Merged: eq-shell [#665](https://github.com/eq-solutions/eq-shell/pull/665) fix(branding): bound logo colour-detection with a load timeo
+- Merged: eq-shell [#664](https://github.com/eq-solutions/eq-shell/pull/664) feat(roles): bump eq-roles to v2.4.0, wire subcontractor eve
+- Merged: eq-shell [#661](https://github.com/eq-solutions/eq-shell/pull/661) feat(branding): one logo + auto-PNG for docs + logo colour d
+- Merged: eq-shell [#659](https://github.com/eq-solutions/eq-shell/pull/659) fix(entitlements): qualify ambiguous `id` in eq_update_tenan
+- Merged: eq-shell [#652](https://github.com/eq-solutions/eq-shell/pull/652) 0161: reassert security_invoker on app_data.field_job_number
+- Merged: eq-shell [#650](https://github.com/eq-solutions/eq-shell/pull/650) feat(entitlements): writers → canonical + drop legacy (Phase
 
 ## ⚠ Needs you (4)
 
@@ -53,6 +53,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-06 | eq-shell | [#680](https://github.com/eq-solutions/eq-shell/pull/680) Admin: one-spot app activation view + canonical entitlement merge |
 | 2026-07-06 | eq-shell | [#679](https://github.com/eq-solutions/eq-shell/pull/679) feat(ops): labour hire rates — PDF import confirms update vs add- |
 | 2026-07-06 | eq-shell | [#678](https://github.com/eq-solutions/eq-shell/pull/678) feat(staff): show and edit job_title on the Staff dashboard |
 | 2026-07-06 | eq-shell | [#676](https://github.com/eq-solutions/eq-shell/pull/676) feat(shell): command palette, skeleton loading, optimistic staff  |
@@ -67,7 +68,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-05 | eq-shell | [#671](https://github.com/eq-solutions/eq-shell/pull/671) feat(ops): labour hire rates — PDF import + weekly-cost Fares tid |
 | 2026-07-05 | eq-shell | [#670](https://github.com/eq-solutions/eq-shell/pull/670) feat(ops): labour hire rates — weekly-cost rollup |
 | 2026-07-05 | eq-shell | [#669](https://github.com/eq-solutions/eq-shell/pull/669) feat(field): job-number retire — auto (invoiced) + manual (hide-o |
-| 2026-07-05 | eq-shell | [#666](https://github.com/eq-solutions/eq-shell/pull/666) feat(branding): live preview + contrast warnings + detection & sa |
 _Showing 15 of 127 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -114,4 +114,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-06 08:10 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-06 08:20 UTC._
