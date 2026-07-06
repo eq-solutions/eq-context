@@ -60,6 +60,9 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-06)
 
+**eq-service:**
+- #454 fix(onboarding): disable the first-run wizard permanently
+
 **eq-shell:**
 - #682 fix(provisioning): profiles insert can hit an FK violation on stale user match
 - #681 fix(staff): eq_update_staff silently cleared email/phone/trade/level/employment_type
