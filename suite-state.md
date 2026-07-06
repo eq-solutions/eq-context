@@ -61,7 +61,6 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-06)
 
 **eq-service:**
-- #453 fix(onboarding): backfill setup_completed_at for the SKS tenant
 - #452 feat(commercials): create assets directly from the sheet upload
 
 **eq-shell:**
@@ -88,7 +87,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 177 (latest: 0173) applied
+**Migrations:** eq-service has 178 (latest: 0174) applied
 
 ---
 
