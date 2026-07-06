@@ -34,10 +34,11 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [ ] **Minimum-requirements model** — undecided. Options presented: soft per-org checklist (recommended) / manager-view-only / hard gate / leave-as-is. _(added 2026-07-07)_
 - [ ] **Offline photo caching** — cache licence photo BYTES so images show offline / past the 1h signed-URL expiry. Deliberate fast-follow to PR #129. _(added 2026-07-07)_
 - [ ] **Onboarding order #5 fork** — scan-first shipped; identity-first is the fallback if it tests poorly. _(from 2026-07-06)_
+- [ ] **Supabase CLI can't deploy eq-cards edge functions** — `supabase functions deploy` fails for every function on CLI 2.95.4 (mis-resolves `config.toml` email-template paths). MCP deploy works and was used for v10; but the CLI path is the "next person" path. Fix = upgrade CLI (2.109 available) + retest, or adjust config without breaking `supabase start`. Task chip `task_61ff8686`. _(added 2026-07-07)_
 
 **Notes:**
 - Sessions are already effectively **permanent** — 132 live, oldest 48 days, `not_after` timebox on none; no code path signs out except genuine refresh failure or user tap. "Log in once, stay in" needed no auth change — only the install nudge.
-- **ocr-licence repo/deploy CORS drift** (deployed v9 = inline CORS; repo = `_shared/cors.ts` import) — spawned reconcile task `task_df55614d` (running in a separate session at close).
+- **ocr-licence repo/deploy CORS drift — RESOLVED 2026-07-07.** Redeployed `ocr-licence` **v10** on the shared `_shared/cors.ts` module (fail-closed; Netlify deploy-preview origins restored) via Supabase MCP (both files in the array — sibling import resolves). Live-verified: deploy-preview + cards echoed, unknown origin gets no allow-origin header. Repo `main` == deployed (PR #130 merged, `75e0416`). The CLI deploy path is separately blocked — see deferred below.
 - Onsite "login" is the wrong frame for the gate-check job: showing credentials is read-only and should need no login (offline + device lock); reserve auth for writes, do it once, keep it.
 
 ---
