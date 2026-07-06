@@ -60,11 +60,9 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-06)
 
-**eq-service:**
-- #452 feat(commercials): create assets directly from the sheet upload
-
 **eq-shell:**
-- #678 feat(staff): show and edit job_title on the Staff dashboard
+- #680 Admin: one-spot app activation view + canonical entitlement merge
+- #679 feat(ops): labour hire rates — PDF import confirms update vs add-new
 - #658 fix(dashboard): surface pending staff connections on home sidebar
 - #637 docs: pnpm-workspace.yaml — packages are vendored, not a git submodule
 - #636 build: pin @eq-solutions/ui to release tag v1.10.0 for reproducible builds
