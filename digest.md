@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-06 09:45 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-06 09:50 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-06 09:30 UTC → 2026-07-06 09:45 UTC)
+## Since last refresh (2026-07-06 09:45 UTC → 2026-07-06 09:50 UTC)
 
-- Merged: eq-shell [#674](https://github.com/eq-solutions/eq-shell/pull/674) fix(users): add subcontractor to stale VALID_ROLES lists
-- Merged: eq-shell [#672](https://github.com/eq-solutions/eq-shell/pull/672) feat(ops): labour hire rates — manual manage (add/edit/delet
-- Merged: eq-shell [#670](https://github.com/eq-solutions/eq-shell/pull/670) feat(ops): labour hire rates — weekly-cost rollup
-- Merged: eq-shell [#669](https://github.com/eq-solutions/eq-shell/pull/669) feat(field): job-number retire — auto (invoiced) + manual (h
-- Merged: eq-shell [#668](https://github.com/eq-solutions/eq-shell/pull/668) chore(drift): allow-list labour_hire_rates_view (security_in
-- Merged: eq-shell [#665](https://github.com/eq-solutions/eq-shell/pull/665) fix(branding): bound logo colour-detection with a load timeo
-- Merged: eq-shell [#664](https://github.com/eq-solutions/eq-shell/pull/664) feat(roles): bump eq-roles to v2.4.0, wire subcontractor eve
-- Merged: eq-shell [#661](https://github.com/eq-solutions/eq-shell/pull/661) feat(branding): one logo + auto-PNG for docs + logo colour d
+- Merged: eq-shell [#687](https://github.com/eq-solutions/eq-shell/pull/687) fix(staff): unify employment_type vocabulary with eq-field
+- Merged: eq-shell [#673](https://github.com/eq-solutions/eq-shell/pull/673) fix(access-control): subcontractor role 400s on permission t
+- Merged: eq-shell [#671](https://github.com/eq-solutions/eq-shell/pull/671) feat(ops): labour hire rates — PDF import + weekly-cost Fare
+- Merged: eq-shell [#666](https://github.com/eq-solutions/eq-shell/pull/666) feat(branding): live preview + contrast warnings + detection
+- Merged: eq-shell [#663](https://github.com/eq-solutions/eq-shell/pull/663) feat(ops): labour hire rates — canonical tables + read-only 
+- Merged: eq-shell [#662](https://github.com/eq-solutions/eq-shell/pull/662) feat(roles): expose subcontractor as a selectable role (safe
+- Merged: eq-shell [#660](https://github.com/eq-solutions/eq-shell/pull/660) fix(staff): decline a worker-initiated application actually 
+- Merged: eq-shell [#659](https://github.com/eq-solutions/eq-shell/pull/659) fix(entitlements): qualify ambiguous `id` in eq_update_tenan
 
 ## ⚠ Needs you (4)
 
@@ -32,10 +32,10 @@ _2026-07-06 09:45 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 6 | 2d |
+| eq-shell | ? unknown | ? | 5 | 2d |
 | eq-solves-service | ✓ success | 0d ago | 5 | 0d |
 | eq-field | ? unknown | ? | 1 | 0d |
-| eq-cards | ✓ success | 0d ago | 1 | 0d |
+| eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ? unknown | ? | 0 | — |
 
 ## Live errors (Sentry)
@@ -54,6 +54,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-06 | eq-shell | [#687](https://github.com/eq-solutions/eq-shell/pull/687) fix(staff): unify employment_type vocabulary with eq-field |
 | 2026-07-06 | eq-shell | [#686](https://github.com/eq-solutions/eq-shell/pull/686) Fix: app-activation nav bug + bulk toggle + collapsible sites; mo |
 | 2026-07-06 | eq-shell | [#682](https://github.com/eq-solutions/eq-shell/pull/682) fix(provisioning): profiles insert can hit an FK violation on sta |
 | 2026-07-06 | eq-shell | [#685](https://github.com/eq-solutions/eq-shell/pull/685) fix(drift-check): add app_data.activation_status to KNOWN_LEGACY_ |
@@ -68,8 +69,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-06 | eq-solves-service | [#462](https://github.com/eq-solutions/eq-service/pull/462) test: cover the commercial-sheet XLSX parser (contract-scope impo |
 | 2026-07-06 | eq-solves-service | [#461](https://github.com/eq-solutions/eq-service/pull/461) test: cover the Jemena RCD multi-tab workbook parser |
 | 2026-07-06 | eq-solves-service | [#460](https://github.com/eq-solutions/eq-service/pull/460) fix(observability): capture audit-log write failures to Sentry (# |
-| 2026-07-06 | eq-solves-service | [#454](https://github.com/eq-solutions/eq-service/pull/454) fix(onboarding): disable the first-run wizard permanently |
-_Showing 15 of 129 · full record in [sessions/](sessions/)_
+_Showing 15 of 130 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
@@ -115,4 +115,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-06 09:45 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-06 09:50 UTC._
