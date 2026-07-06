@@ -14,6 +14,27 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-06 (eq-shell) — Embedded pages get the full sidebar (collapsed), IconRail retired, mobile nav polished
+
+*Royce: the nav on embedded-app pages (Field/Service/Cards/Quotes) looked "average" — a thin 48px icon strip missing most of the nav. Chose Option A: reuse the full hub sidebar, defaulted collapsed. A background task Royce started ("remove dead IconRail") expanded scope and shipped the core feature as PR #688 while this session was building a parallel version (#689) — closed #689 as a duplicate rather than clobber the already-merged one. Royce then delegated the mobile pass ("do a mobile polish yourself"): #688's mobile hamburger overlapped the embedded app's own header AND left a 681–767px dead zone with no navigation at all; replaced it with the purpose-built bottom-tab bar.*
+
+**Shipped:**
+- [x] **PR #691 merged (`7c57cbf`), deploying** — embedded mobile nav: restored `MobileTabBar` (slim top bar with Apps-back + app name + account, plus a bottom app-switcher) for Field/Service/Cards/Quotes; retired #688's floating hamburger/drawer; moved the desktop-rail breakpoint 681→768px to close a dead zone where tablet-portrait embedded pages had no nav. Verified in-browser at 375/720/1280px; desktop collapsed rail (52px, hover-peek to 260px) unchanged. `tsc -b` green.
+- [x] **IconRail retired** — the old 48px embedded rail component + CSS deleted (landed via #688; also in the closed #689). Embedded pages now render the same `HubSidebar` as the hub, defaulted collapsed.
+- [x] **PR #689 closed as duplicate** — a parallel implementation of the same feature #688 already merged; closed rather than force-merge over a live implementation.
+
+**Decided:**
+- Royce: Option A (reuse the full sidebar, default collapsed) over syncing the old icon rail's list (Option B) or a per-view toggle (Option C).
+- Royce: delete IconRail.
+- Royce: "do a mobile polish yourself" — delegated the mobile-chrome call; chose `MobileTabBar` over refining #688's hamburger drawer.
+- Royce: merge #691 (production deploy to core.eq.solutions).
+
+**Notes:**
+- eq-ui is a pinned git-tarball dependency, not a workspace source link — changing `AppSidebar`/`AppShell` behaviour needs a republish + bump; the default-collapsed behaviour was done entirely at the eq-shell layer instead.
+- A spawned background task can expand scope and ship the whole feature (#688) while you build the same thing on another branch — check `origin/main` before merging parallel branch work; two agents on one feature nearly collided this session.
+- The preview-tool screenshots flaked all session on the full-height `100svh` layout; `getBoundingClientRect`/`getComputedStyle` measurements were the reliable fallback.
+---
+
 ## ⏩ Session close — 2026-07-06 (eq-shell) — App activation: one-spot Field/Service status view, canonical entitlement merge, bulk toggle, collapsible sites
 
 *Royce's opening complaint: the current way to see what's active for Field/Service from `/sks/customers?tab=dashboard` "is not scalable" — no one spot to check, no bulk action. Investigation found that dashboard doesn't really exist as a route; the nearest thing was an orphaned, never-routed `AdminDataActivationPage.tsx`. Routed it (quick fix), then designed and shipped the real fix (canonical rollup + cross-plane entitlement merge), then two rounds of follow-up: Royce hit a live nav bug (no way back off the page) and asked for bulk on/off + collapsible sites, plus a separate nav-declutter side-quest (move Reports off the sidebar).*
