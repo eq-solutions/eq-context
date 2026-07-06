@@ -200,6 +200,18 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-06 (labour hire rates — PDF import now confirms update-vs-add-new) — merged + deployed
+
+*Follow-up to the 2026-07-05 build. The PDF-import commit path (`labour-hire-commit.ts`) silently superseded any current rate matching role+rate_type+label on every re-upload — no confirmation. Royce asked for an explicit check-and-confirm step before writing.*
+
+- [x] **eq-shell PR #679 merged** (`005e252`, live 2026-07-06) — PDF review step now cross-checks each extracted rate against current rates on file (agency + role + rate_type + label) and shows "Currently $X/unit (from date)" when matched, with a per-row choice: **Update this rate** (supersede, default) or **Add as new** (keep both, existing left untouched). `labour-hire-commit.ts` only retires a matched rate when the caller marks `supersede: true`. Build verified (`tsc -b` + `vite build`) both pre- and post- a main-branch merge (3 unrelated PRs landed mid-session: #676 command palette/skeleton/staff-archive, #677 field_people security_invoker drift fix, #678 Staff job_title).
+- [x] **Manual manage (#672) reconfirmed working** — no changes needed this session, already live.
+
+**Notes:**
+- "Add as new" intentionally allows two rows both `is_current=true` for the same (agency, role, rate_type, label) — an edge case the user manages manually via the existing rate-delete action; not auto-resolved.
+
+---
+
 ## ⏩ Session close — 2026-07-05 (eq-shell branding editor — live-verification P1 caught + fixed, then rebuilt on review + polished) — 5 PRs merged+deployed, 1 unrelated drift-gate false-positive fixed clean
 
 *Continuation of the 2026-07-04 branding+entitlements canonicalisation. Asked to comprehensively test what was built — live browser verification (not just build-green) caught a real P1 in the Stage B RPC cutover. Then asked to steelman/critique the branding editor's UX, which surfaced three real papercuts; built the fixes, ported a feature from EQ Service, benchmarked against world leaders, then polished further on request. Along the way, hit and cleanly fixed an unrelated drift-gate false positive blocking every open PR.*
