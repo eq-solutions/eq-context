@@ -14,6 +14,29 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-06 (eq-cards) — Scan-first onboarding, OCR auto-fills the worker's name, pending-application UX, top Sentry noise fixed
+
+*Royce live-tested the new company picker (from #126/#127) and asked two things: can OCR populate empty personal fields, and "what ways can we improve this process". Chose scan-first ordering with a manual fallback, OCR name-fill on every card type, an escape hatch for unlisted employers, and a pending-application banner. Then "fix sentry — polish and /close": the top live issue EQ-CARDS-10 was the picker reporting the expected "add your name" validation as a crash.*
+
+**Shipped (PR #128 — open, NOT merged/deployed):**
+- [x] **OCR reads the worker's name off any card**, not just driver licences (DOB/address stay driver-licence-only). On a non-DL scan the empty profile name is filled silently — so the ID card populates itself and the "What should we call you?" prompt self-skips.
+- [x] **Scan-first onboarding** — the "add your first licence" screen now comes before the company picker, and gains a **"No card on you? Enter what you know"** manual path into a blank profile-fill form. Both onboarding steps are now `ModalRoute.isCurrent`-guarded — the root-cause fix for the screen-stacking bug (list rebuilds under pushed child routes in the indexedStack shell).
+- [x] **"Can't find your company?" escape hatch** in the picker so an unlisted employer no longer dead-ends.
+- [x] **Pending-application banner** in the wallet (`OutgoingRequestsBanner`) — surfaces the worker's own outgoing request so it's clear it went through.
+- [x] **Sentry EQ-CARDS-10 fixed** — the picker no longer captures the expected `ValidationFailure` (name gate P0023 / duplicate P0022) as an exception; shows the real message instead.
+
+**Verification:** `flutter analyze` clean on all touched files; widget tests green (company picker 7 incl. new hatch test, FirstScanScreen 2).
+
+**Deferred / needs Royce:**
+- [ ] **Deploy PR #128** — needs (a) `ocr-licence` edge-function redeploy (holder_name change is server-side) + (b) Cards Build & Deploy for the app. Explicit-only; not done. _(added 2026-07-06)_
+- [ ] **Onboarding order #5 fork settled as scan-first** — identity-first was the runner-up if scan-first tests poorly with real users. _(added 2026-07-06)_
+
+**Notes:**
+- Root cause of the historical onboarding screen-stacking: `/licences/new` + `/fill-profile` are child routes pushed **on top** of the list within the same `StatefulShellRoute.indexedStack` branch, so `LicencesListScreen` keeps rebuilding underneath and its post-frame gates fire while another screen is open. Guarding every once-ever onboarding gate on `ModalRoute.of(context)?.isCurrent == true` is the durable fix — reach for it before adding more in-memory "launched" flags.
+- Silent profile name-fill is name-only and empty-only (never overwrites); DOB/address auto-fill remains the richer driver-licence confirm screen.
+
+---
+
 ## ⏩ Session close — 2026-07-06 (eq-shell) — Embedded pages get the full sidebar (collapsed), IconRail retired, mobile nav polished
 
 *Royce: the nav on embedded-app pages (Field/Service/Cards/Quotes) looked "average" — a thin 48px icon strip missing most of the nav. Chose Option A: reuse the full hub sidebar, defaulted collapsed. A background task Royce started ("remove dead IconRail") expanded scope and shipped the core feature as PR #688 while this session was building a parallel version (#689) — closed #689 as a duplicate rather than clobber the already-merged one. Royce then delegated the mobile pass ("do a mobile polish yourself"): #688's mobile hamburger overlapped the embedded app's own header AND left a 681–767px dead zone with no navigation at all; replaced it with the purpose-built bottom-tab bar.*
