@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-07-06
+last_updated: 2026-07-07
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -11,6 +11,34 @@ status: live
 
 EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## ⏩ Session close — 2026-07-07 (eq-cards) — Onboarding shipped live, approval-flow audit, offline ID card + install nudge (super-easy onsite login)
+
+*Continuation of the 2026-07-06 onboarding session. Royce deployed the onboarding/OCR work, then asked a chain of product questions: can a manager approve a worker with no licence (audit), and how to get "minimum requirements from all workers" without friction — which he then steered into "make it super-easy for workers onsite to login". Chose the offline-ID-card + install-nudge slice and shipped it.*
+
+**Shipped + LIVE:**
+- [x] **PR #128 deployed** (`71889a3`) — scan-first onboarding + OCR name auto-fill + pending-application banner + "can't find your company" hatch + Sentry EQ-CARDS-10 fix. `ocr-licence` edge fn redeployed **v9** (holder_name from any card; `verify_jwt:false` preserved), Cards Build & Deploy green.
+- [x] **Live-verified** the from-scratch flow (dummy phone → name captured → pending application to SKS, correct org). Edge logs clean, no new Sentry errors. **Resolved EQ-CARDS-10** in Sentry (fix confirmed quiet).
+
+**Shipped + LIVE (PR #129 `a7808cf`, Build & Deploy green):**
+- [x] **Offline ID card** — profile now cached to localStorage alongside licences/certs, so the worker's **name** shows on the ID card with no signal (role/org/worker-id already ride in the JWT). `ProfileNotifier` mirrors the licences cache-aware fetch. Photos stay online-only (signed URLs expire 1h).
+- [x] **"Add to Home Screen" nudge** — once-only, dismissible, web + not-installed only; iOS/Android steps auto-detected via a conditional-import `pwa_env` probe. Installed PWA = durable storage + one-tap launch.
+
+**Audit finding (worker approval / minimum requirements):**
+- A manager **can** approve a worker with **zero licences** — the only gate anywhere is "must have a name" (P0023). Core shows the manager name + phone + licence **count** ("No licences yet") and a "Continue without licences" step; the licence-review modal shows photos/expiry.
+- **No per-org "required credentials" concept exists** anywhere (no RPC, no table, not in Core) — the parked feature. Recommended model if resurrected: soft per-org checklist (visible "0/2 met" at approval, non-blocking) + worker nudge, NOT a hard gate. Royce steered to login instead; requirements model still undecided.
+
+**Deferred / needs Royce:**
+- [ ] **Minimum-requirements model** — undecided. Options presented: soft per-org checklist (recommended) / manager-view-only / hard gate / leave-as-is. _(added 2026-07-07)_
+- [ ] **Offline photo caching** — cache licence photo BYTES so images show offline / past the 1h signed-URL expiry. Deliberate fast-follow to PR #129. _(added 2026-07-07)_
+- [ ] **Onboarding order #5 fork** — scan-first shipped; identity-first is the fallback if it tests poorly. _(from 2026-07-06)_
+
+**Notes:**
+- Sessions are already effectively **permanent** — 132 live, oldest 48 days, `not_after` timebox on none; no code path signs out except genuine refresh failure or user tap. "Log in once, stay in" needed no auth change — only the install nudge.
+- **ocr-licence repo/deploy CORS drift** (deployed v9 = inline CORS; repo = `_shared/cors.ts` import) — spawned reconcile task `task_df55614d` (running in a separate session at close).
+- Onsite "login" is the wrong frame for the gate-check job: showing credentials is read-only and should need no login (offline + device lock); reserve auth for writes, do it once, keep it.
 
 ---
 
@@ -28,7 +56,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 **Verification:** `flutter analyze` clean on all touched files; widget tests green (company picker 7 incl. new hatch test, FirstScanScreen 2).
 
 **Deferred / needs Royce:**
-- [ ] **Deploy PR #128** — needs (a) `ocr-licence` edge-function redeploy (holder_name change is server-side) + (b) Cards Build & Deploy for the app. Explicit-only; not done. _(added 2026-07-06)_
+- [x] **Deploy PR #128** — DONE 2026-07-07: merged `71889a3`, `ocr-licence` edge fn redeployed (v9, verify_jwt preserved), Cards Build & Deploy succeeded, live-verified.
 - [ ] **Onboarding order #5 fork settled as scan-first** — identity-first was the runner-up if scan-first tests poorly with real users. _(added 2026-07-06)_
 
 **Notes:**
