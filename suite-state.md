@@ -1,7 +1,7 @@
 ---
 title: EQ Suite — Current State
 owner: Royce Milmlow
-last_updated: 2026-07-05
+last_updated: 2026-07-06
 scope: Live suite state — app lineup, DB counts, open PRs, architectural decisions. Auto-refreshed nightly by GitHub Action.
 read_priority: critical
 status: live
@@ -133,6 +133,10 @@ _Auto-refreshed nightly. ✓ = has data · ⚠ = empty (no data yet) · ✗ = ta
 ---
 
 ## Key Decisions (auto-derived from merged PRs + manual)
+- Onboarding first-run wizard **retired permanently** — disabled outright and `setup_completed_at` backfilled for the SKS tenant so it never re-triggers (service PRs #453/#454, 2026-07-06)
+- Contract-scope commercial-sheet import now **creates and reconciles canonical assets directly from the sheet upload** — new asset-reconciliation screen fills contract-scope asset gaps; assets route to `app_data.assets` via the canonical write layer (service PRs #444/#445/#452, 2026-07-05→06)
+- Staff `employment_type` **locked to a canonical vocabulary unified with eq-field** — stops role→type conflation; type is now a controlled field, not inferred from role (shell PRs #687/#690, 2026-07-06)
+- Shell admin: **one-spot app-activation view with canonical entitlement merge** — app activation/entitlements managed from a single admin surface against canonical org-keyed entitlements (shell PR #680, 2026-07-06)
 - Field job numbers: **EQ Ops is the single source of truth** — Field reads a canonical `app_data.field_job_numbers` view (SECURITY DEFINER, financials never exposed); Field-local manual numbers still allowed and Ops wins on overlap. Invoiced quotes auto-retire off the board by rule; new `public.field_job_number_overrides` table backs manual hide/restore (field PRs #404/#405/#409/#410/#411, shell PRs #651/#652/#653/#669, 2026-07-04→05)
 - **Subcontractor role** added to the canonical role model (eq-roles v2.4.0) — exposed as a selectable role (safe subset) across Shell + Service (service PR #440, shell PRs #662/#664, 2026-07-05)
 - Labour hire rates went **canonical** — new canonical tables + read-only Ops tab with a weekly-cost rollup (shell PRs #663/#670, 2026-07-05)
