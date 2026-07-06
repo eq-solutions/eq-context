@@ -1,13 +1,27 @@
 ---
 title: Changelog — EQ Solves Field
 owner: Royce Milmlow
-last_updated: 2026-07-04
+last_updated: 2026-07-07
 scope: Append-only history of changes to the EQ Solves Field product
 read_priority: reference
 status: live
 ---
 
 # Changelog — EQ Solves Field
+
+## [2026-07-07] v3.5.262 — voice-to-text back on safety-form freeform fields (PR #419)
+- 🎤 dictation re-added to the FREEFORM textareas of Prestart, Toolbox and Diary (11 fields). The feature existed in the old `safety.js` forms but was lost when those were rewritten into `site-reports.js`; it had survived only on Site Audits (`audits.js`, v3.5.236).
+- New shared `SiteReportsShared.voice` helper (mirrors the audits recogniser): `en-AU`, feature-detected (no mic where unsupported), one recogniser at a time, transcript **appends + stays editable**, draft syncs via the field's own `onchange`, hidden on locked/submitted forms. NOT on structured/code fields (SWMS refs, site/date).
+- Needs the Shell iframe mic grant to work in core > field — see eq-shell changelog same date.
+
+## [2026-07-07] v3.5.260 — mobile section nav unified to Lucide line icons (PR #417)
+- The mobile nav mixed monochrome symbol glyphs (Home/Schedule/Roster/More) with colour emoji (`⏱` Hours, `🏖` Leave) that stuck out and never tinted on the active item. Replaced all six with inline Lucide line icons; `stroke:currentColor` greys when idle, tints navy when active.
+
+## [2026-07-07] v3.5.259 — all modal footers clear Shell's bottom bar (PR #416)
+- Generalised v3.5.258's report-modal fix to EVERY modal in shell-mode. Shell paints its persistent bottom app bar (parent window, above the iframe z-index) over the bottom ~76px, so bottom-sheet footers (Submit/Approve/Save/Done) were hidden. `@media (pointer:coarse)`: overlays bottom-pin + lift 76px, sheet capped to `calc(100dvh - 76px)`.
+
+## [2026-07-07] v3.5.258 — Leave dashboard mobile polish + report-modal footers (PR #415)
+- Leave supervisor toolbar (`.eqf-toolbar`) wraps on mobile instead of running its action buttons off the right edge; stat row 4-across → 2×2 at ≤560px; Prestart/Toolbox/Diary sticky Save/Submit footers lifted clear of Shell's bottom app bar.
 
 ## [2026-07-05] docs — stale-tenant-reference audit (no version, PR #407)
 - Corrected repo docs/comments that described a defunct tenant topology (verified live: canonical `organisations` = eq/sks/favour-perfect; `eq`→zaap live; `ktmj` deleted; demo-trades/melbourne gone). `CLAUDE.md` (tenant list, the inverted "ktmj is live" correction, Stack DB map, resolution wording), `DATA-PLANES-SOURCE-OF-TRUTH.md` (SUPERSEDED banner), two code comments. No runtime change.

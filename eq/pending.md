@@ -14,6 +14,32 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-07 (eq-field + eq-shell) — Mobile polish (Leave, modals, nav) + voice-to-text back on safety forms
+
+*Royce: "polish mobile view from core > field" (screenshots of Prestart/Leave embedded in Shell), then "merge and continue". Then asked me to steelman voice-to-text for safety forms — found it had been built into the OLD safety.js prestart/toolbox but LOST when those were rewritten into site-reports.js (it survived only on Site Audits). Chose freeform-fields-only, then "ship both together", and explicitly approved the auth-hub deploy for the mic permission.*
+
+**Shipped + LIVE (eq-field, field.eq.solutions):**
+- [x] **v3.5.258** (PR #415) — Leave supervisor dashboard mobile: toolbar wraps instead of running its buttons off the right edge; stat cards 4-across → 2×2 at ≤560px; Prestart/Toolbox/Diary modal footers no longer hidden behind Shell's bottom app bar.
+- [x] **v3.5.259** (PR #416) — generalised that modal-footer fix to EVERY modal in shell-mode (Submit/Approve/Save/Done were all sitting behind Shell's bar). Footer now lands exactly at the bar's top edge.
+- [x] **v3.5.260** (PR #417) — mobile section nav unified to Lucide line icons (Hours ⏱ / Leave 🏖 were colour emoji that stuck out and never tinted on the active item).
+- [x] **v3.5.262** (PR #419) — voice-to-text (🎤) back on the FREEFORM textareas of Prestart (prev-day issues, works scope, hazards, permits), Toolbox (safety message, items reviewed, open actions, hazards), Diary (materials, equipment, notes) — 11 fields. Shared `SiteReportsShared.voice` helper mirrors audits.js: en-AU, feature-detected, appends + always editable, hidden on locked forms, draft syncs via the field's own onchange (synthetic change event — no per-form wiring). NOT on structured/code fields (SWMS refs, site/date).
+
+**Shipped + LIVE (eq-shell, PR #693, core.eq.solutions):**
+- [x] Granted microphone to the Field iframe origins only — `netlify.toml` `microphone=()` → `microphone=(self "https://field.eq.solutions" "https://eq-field.netlify.app")` + `FieldIframe` `allow=""` → `allow="microphone"`. Camera/geo still off; Cards/Quotes/Service iframes keep `allow=""`. Live header on core.eq.solutions verified.
+
+**Deferred / needs Royce:**
+- [ ] **Live signed-in smoke of Field voice on SKS** — can't test programmatically (needs a browser + physical mic). Sign in → /sks/field → open a report → tap 🎤 → allow mic → dictate into a freeform field. _(added 2026-07-07)_
+- [ ] **Field mobile polish — remaining screens** — prestart form top grid (Site/Supervisor/Date/Time) and the roster grid at 375px still un-eyeballed. _(added 2026-07-07)_
+
+**Notes:**
+- Voice was NOT pulled after a problem — it was dropped in the safety.js → site-reports.js prestart/toolbox rewrite; still lives on Site Audits (audits.js, v3.5.236).
+- **Shell embeds Field via iframe; Shell's persistent bottom app bar (parent window, above the iframe's z-index) overlays the bottom ~76px** — that's why every modal footer was hidden in core > field. Fix = lift shell-mode modals 76px + cap height (mobile.css `@media (pointer:coarse)`).
+- **SKS Field iframe origin = `eq-field.netlify.app`** (token-auth via `#sh=`, must be a non-.eq.solutions host); EQ = `field.eq.solutions`. Both had to be in the mic allowlist.
+- CSS load-order gotcha: `mobile.css` loads BEFORE `field-v8.css`, so equal-specificity rules in field-v8 win the cascade — use 2-class selectors or `!important` (the file already documents this for `.eqf-side`).
+- Version-stamp drift persists: file `APP_VERSION` runs ahead of commit-message labels; trust the file. v3.5.261 was a concurrent Roles PR by another agent, not this session.
+
+---
+
 ## ⏩ Session close — 2026-07-07 (eq-cards) — Onboarding shipped live, approval-flow audit, offline ID card + install nudge (super-easy onsite login)
 
 *Continuation of the 2026-07-06 onboarding session. Royce deployed the onboarding/OCR work, then asked a chain of product questions: can a manager approve a worker with no licence (audit), and how to get "minimum requirements from all workers" without friction — which he then steered into "make it super-easy for workers onsite to login". Chose the offline-ID-card + install-nudge slice and shipped it.*

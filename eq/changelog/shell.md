@@ -1,13 +1,18 @@
 ---
 title: Changelog — EQ Shell
 owner: Royce Milmlow
-last_updated: 2026-07-01
+last_updated: 2026-07-07
 scope: Append-only history of changes to EQ Shell (core.eq.solutions)
 read_priority: reference
 status: live
 ---
 
 # Changelog — EQ Shell
+
+## [2026-07-07] Grant microphone to the Field iframe (PR #693)
+- Enables eq-field v3.5.262's voice-to-text in core > field. Two blockers removed: top-level `Permissions-Policy` was `microphone=()` (disabled for everyone) and `FieldIframe` had `allow=""`.
+- `netlify.toml`: `microphone=()` → `microphone=(self "https://field.eq.solutions" "https://eq-field.netlify.app")` — the two Field iframe origins only (`eq` + `sks`). Camera + geolocation stay disabled; Cards/Quotes/Service iframes keep `allow=""`.
+- `FieldIframe.tsx`: `allow="" `→ `allow="microphone"`. Mic still gated by the per-use browser permission prompt — this only makes the prompt reachable inside the Field frame. Live header on core.eq.solutions verified.
 
 ## [2026-07-04] eq_merge_sites RPC (0160) — governed canonical site dedup
 - New `public.eq_merge_sites(p_keep_site_id, p_dupe_site_id, p_move_customer)` (tenant-migration `0160`, PR #651) — twin of `eq_merge_customers`. Tenant-scoped SECURITY DEFINER; catalog-driven repoint of all 28 `app_data.sites(site_id)` FKs (Field + Service), dedup for `contact_site_links`/`service.site_local`, soft-retire the dupe (`active=false, field_enabled=false`). `authenticated` execute only.
