@@ -63,6 +63,9 @@ _If this file is >48h old, the cron is broken._
 **eq-cards:**
 - #127 fix(onboarding): stop screens stacking, ask for a name inline before applying
 
+**eq-field:**
+- #414 v3.5.256 — Teams: fix silent delete-button failure + unique default colours
+
 **eq-service:**
 - #459 chore(deps-dev): bump @vitejs/plugin-react from 6.0.1 to 6.0.3
 - #458 chore(deps): bump tailwind-merge from 3.5.0 to 3.6.0
