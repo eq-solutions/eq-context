@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-07-05
+last_updated: 2026-07-06
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -35,7 +35,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 **Notes:**
 - `org_module_entitlements` (control plane, jvkn) and `app_data.customers`/`sites` (tenant planes, zaap/ehow) are physically separate Supabase projects — no FDW/dblink exists between them. Any future "join canonical + tenant data" ask in this repo needs an application-layer merge (a Netlify function reading both), never a database-level JOIN or view.
 - Confirmed a benign gap from this session: 0165 wasn't registered in `check-tenant-drift.mjs`'s `KNOWN_LEGACY_ANON` allowlist convention when it first landed — a separate session (PR #685) caught and fixed it, live-verifying it was never a real anon exposure (RLS-on with tenant_id policies on both planes) before allowlisting. Worth registering the allowlist entry in the SAME PR as any new `security_invoker` view going forward, not after the drift gate complains.
-
 ---
 
 ## ⏩ Session close — 2026-07-06 (eq-field + eq-shell) — canonical link redesigned + shipped, job_title added tenant-wide, root-caused Liam Holmgreen's stuck supervisor status, Batch Fill filters
@@ -63,32 +62,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 **Notes:**
 - Repeated pattern this session, worth remembering: a shipped feature that produces a success toast is not proof the write reached the DB — the canonical-link button's v3.5.248 persistence bug and the `job_title` whitelist gap were both caught by explicitly checking the table, not by trusting the UI.
 - The "three unconnected supervisor signals" finding generalizes: anywhere a word/concept ("supervisor", "role", "type") appears in more than one of eq-field/eq-shell's UIs, check whether they're actually reading/writing the same column before assuming a fix in one place propagates to the other.
-
----
-
-## ⏩ Session close — 2026-07-06 (eq-service + eq-field + eq-shell) — migration 0172/0173 dispatched + verified live, cross-repo Sentry sweep, and a new "create assets from the sheet upload" feature
-
-*Continuation of the earlier same-day eq-service session (tie-out fix + subcontractor dedup, entry below). Royce asked to dispatch the pending migration and "fix sentry" — both spanned into eq-field and eq-shell. Then Royce clarified the asset-reconciliation screen (built by a concurrent session, see the other 2026-07-06 eq-service entry) was the wrong shape for his actual workflow ("it's not a reconciliation — it's creating assets from scratch") — built a proper one-step alternative instead of asking him to use the two-screen flow.*
-
-**Shipped:**
-- [x] **Migration `0172`+`0173` dispatched + applied live to ehow, verified.** First `gh workflow run` attempt was blocked by Claude Code's own auto-mode classifier (production DB migration, no plan shown) — surfaced to Royce instead of working around it; he approved the required-reviewer gate himself. Post-apply verified directly: `service._eq_migrations` ledger has both rows, `app_data.assets.is_stub` exists, security advisors show 0 new ERROR-level findings (the only ERROR in the whole project is a pre-existing, unrelated `field_people` SECURITY DEFINER finding).
-- [x] **eq-field PR #412 merged, live** — `isLeave is not defined` (Sentry EQ-FIELD-R) root cause was already fixed by Royce on `main` (`d18638f`, roster.js load-order fix) before this session started investigating; PR was version-stamp-only (`3.5.244`→`3.5.245`) so the release is properly tagged and the SW cache busts.
-- [x] **eq-shell PR #673 merged, live** — Access Control `HTTP 400` on the Subcontractor row (Sentry EQ-SHELL-N). Root cause: `tenant-role-perms.ts`'s `VALID_ROLES` set was never updated when `subcontractor` landed in `@eq-solutions/roles` v2.4.0. Also fixed the underlying unhandled-rejection (silent failure → visible error message).
-- [x] **eq-shell PR #674 merged, live** — same stale 5-role list found + fixed in 4 more endpoints: `invite-user.ts`, `edit-user.ts`, `invite-users-batch.ts`, `create-worker-invite.ts` (the last one was also untyped — typed against `EqRole` so this class of drift fails to compile next time, not just at runtime). Confirmed `subcontractor` is legitimate here first (matches `AdminBulkInvite.tsx` and `AccessControlPage.tsx`) before touching anything.
-- [x] **eq-shell EQ-SHELL-M (events GET 500, favour-perfect) re-verified + Sentry issue re-marked resolved.** Found still showing "unresolved" in Sentry despite a 2026-07-05 session's close entry claiming it was already closed — root cause unchanged (PR #656, provisioning schema-exposure gap, merged 2026-07-05T01:06:46Z; error stream clean 68+ hours). No new code; re-closed the ticket with the root-cause note attached.
-- [x] **eq-service PR #452 merged, live — "Also create assets for every job-plan code in this sheet."** Royce's actual workflow has no existing assets to reconcile against, so the two-screen review flow (upload → separately visit `/commercials/asset-reconciliation`) was needless friction. Added an opt-in checkbox to the *same* commercial-sheet import wizard: ticking it shows a live preview count before commit, then generates stub assets for every gap as part of the same commit action. Server re-derives every gap from what was just committed (never trusts the client preview number) and skips — never guesses on — any job-plan code with an ambiguous job_plans match or no resolvable match, surfacing those on the success screen with a reason and a link into the existing reconciliation screen to finish them. Extracted the job_plans.name gap-matching + stub-insert logic into `lib/actions/asset-reconciliation-core.ts`, shared by both the standalone screen and this new path.
-- [x] **Server-action security audit caught a real gap in the new code, fixed before merge.** The repo's own `audit-server-actions.ts` correctly flagged `insertStubAssets` (the new shared helper) as missing its own `requireUser()` guard. Same shape as two already-allowlisted helpers (`propagateCheckCompletionIfReady`, `createNotification`) — takes an already-authenticated client from its guarded callers, isn't a client-callable entry point itself — allowlisted with the matching justification, verified 0 ERROR findings after.
-
-**Decided:**
-- Royce: fold asset creation into the same upload action via an opt-in checkbox (with a preview count shown first), rather than always-automatic-no-preview or leaving the two-screen flow as the only option.
-- Migration dispatch and Sentry-issue PR merges both required Royce's explicit go-ahead each time — Claude opened PRs with green CI and stopped short of merging every time, consistent with the standing "fix ≠ deploy" rule.
-
-**Deferred:** none new this session-continuation — the one carried item (Sentry `EQ-FIELD-M` + `EQ-CARDS-Z`) is folded into the existing Sentry bullet above.
-
-**Notes:**
-- Two concurrent sessions converged on the exact same `previewAssetCountsAction` root cause and the exact same subcontractor-role-map fix independently the same day — in both cases `git rebase`/`gh pr merge` cleanly deduped the overlap with zero manual conflict resolution. Worth remembering that this repo currently has enough concurrent session activity that "did someone already fix this" is worth a quick live check before building, not just a pending.md read (pending.md itself can lag a concurrent session's own push by minutes).
-- Built the user a visual session-recap Artifact partway through (contract-scope fix → asset-reconciliation discovery → migration → Sentry sweep, plus a live test-guide) — useful pattern for a multi-repo, multi-PR session like this one when asked "what have we done."
-
 ---
 
 ## ⏩ Session close — 2026-07-06 (eq-shell) — command palette + skeleton loading + optimistic archive shipped, live; unrelated drift fixed same session
@@ -116,7 +89,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] Ctrl+K opening Edge's own address-bar search instead of the palette — added `/` as a second binding (Ctrl+K is browser-reserved in Edge and can win the key before page JS gets to `preventDefault`; no page-level way to force it back). `/` is guarded to only fire outside an input/textarea/contenteditable, since it's an ordinary typing character there.
 - [x] Staff list's hardcoded `pageSize: 25` (Prev/Next click-through) — removed the `pagination` prop entirely; Table renders the full result set as one continuous scrollable list without it.
 - [x] ~~SKS "workspace isn't set up yet" resurfaced again~~ — the "unshipped branch / migration 0115" note this file carried was itself stale: that old branch targeted `public.tenants`, which no longer exists post schema-reorg (tenants live in `service.tenants` now), and its own backfill predated the SKS tenant's existence by 11 days — it would have matched zero rows even if merged. A concurrent Cowork+Claude session same day wrote the real fix fresh (eq-solves-service PR #453, migration `0174`, + PR #454 disabling the first-run wizard permanently) and merged both — but merging alone doesn't apply DDL in that repo (same dispatch-gated pattern as eq-shell's One Pipe). Checked live: `service.tenants.setup_completed_at` for SKS was still `NULL` post-merge. Dispatched `apply-service-migrations.yml` (confirmed only `0174` was pending — nothing else rides along, since that workflow has no per-tenant scope input, unlike eq-shell's), Royce approved, verified live: `setup_completed_at` now stamped. Not yet visually confirmed on the actual dashboard page.
-
 ---
 
 ## ⏩ Session close — 2026-07-06 (eq-solves-service) — asset reconciliation screen built, shipped, migrated live, pilot-verified
@@ -150,7 +122,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - **`service.tenant_members` confirmed EMPTY for SKS, live** (checked while sourcing a real user_id for the pilot's audit-log write) — the canonical roster has fully moved elsewhere; querying `auth.users.raw_app_meta_data->>'tenant_id'` was the only way to find a real SKS-scoped user this session. Worth confirming with the "Service canonical identity" project thread whether `tenant_members` is now safe to formally retire.
 - **Testing RLS/trigger-gated writes from raw SQL**: `assert_jwt_tenant()` and similar SECURITY DEFINER guards read `auth.jwt()`, which resolves from the `request.jwt.claims` Postgres GUC. `SET LOCAL request.jwt.claims = '{"app_metadata": {"tenant_id": "..."}}'` inside a transaction is the standard, sanctioned way to exercise a real authenticated code path from an admin SQL connection without fabricating a persistent user or bypassing the tenant check itself (the guard still fully enforces — a mismatched claim still throws). Used for the CA1 pilot since no real browser session/credentials were available in this environment.
 - Migration `0171` (`canonical_outbox` restore, unrelated to this session's own work, pre-existing pending item) applied cleanly in the same dispatch run as `0172`/`0173` — its `CREATE TABLE IF NOT EXISTS` was a no-op (table already existed out-of-band) but its ledger row is now correctly backfilled.
-
 ---
 
 ## ⏩ Session close — 2026-07-06 (eq-cards) — mobile-view audit + security audit; 3 layout fixes shipped, merged, deployed live
@@ -172,180 +143,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 **Notes:**
 - Live Flutter web preview (`flutter run -d web-server`) hung at the boot spinner in this sandbox — zero JS errors, zero pending network calls, just never mounted. Worked around by stopping the attempt and doing a static code review instead (plus a background subagent for a deeper pass) — a real browser check on the dev server is still worth doing in an interactive session.
 - Zero open PRs/issues on `eq-solutions/eq-cards` going into this session.
-
----
-
-## ⏩ Session close — 2026-07-06 (eq-service) — contract-scope import tie-out column fixed live; subcontractor-label duplicate cleanly deduped
-
-*Royce reported the commercial-sheet import wizard's "Linked assets" tie-out column always showing 0. Verified live against ehow/CA1 before touching code: `previewAssetCountsAction` matched `contract_scopes.jp_code` against `job_plans.code` — but `code` is an internal short type key ("LVACB"), the commercial-sheet code ("E1.25") lives in `job_plans.name`. Every commit, every site, always showed a false 0.*
-
-**Shipped:**
-- [x] **eq-service `cd7eb08` (pushed to main, Netlify auto-deploy)** — `previewAssetCountsAction` now resolves job plans via `.in('name', codes)` instead of `.in('code', codes)`. Verified live pre/post-fix at CA1: 0/19 jp_codes matched before, 19/19 match after.
-- [x] **Subcontractor tsc-break fix — deduped, not duplicated.** Spawned a task chip for the pre-existing `UserSettingsForm.tsx` missing-`subcontractor`-key tsc error found mid-session; user also asked for it directly in-thread. Applied the fix locally, but on push discovered a concurrent session had already merged the identical change as PR #440. `git rebase origin/main` detected the local commit's "patch contents already upstream" and dropped it automatically — zero duplicate/conflict.
-
-**Deferred:**
-- [x] **Duplicate `job_plans` row, SKS tenant — resolved.** `name='E1.25'`/`code='LVACB'`'s stray fixture-pattern row (`e0000000-0000-0000-0000-000000000001`) was soft-deleted (`is_active=false`) in a concurrent SKS data-hygiene session (part of a wider 4-row fixture batch cleanup) — verified live. The real row (`09b028b9-...`) is untouched. _(resolved 2026-07-06)_
-
-**Notes:**
-- Corrected a stale claim in memory (`project_contract_scope_canonical.md`): `service.contract_scopes` does NOT derive `job_plan_id` in-view — `pg_get_viewdef` shows a straight passthrough of `app_data.contract_scopes` with no such column. Resolution happens app-side only, which is where the bug actually lived.
-- `npm run check` was failing repo-wide on the subcontractor-label gap when this session started; confirmed 0 errors on both `tsc --noEmit` and full `next build` before pushing.
-
----
-
-## ⏩ Session close — 2026-07-05 (EQ Service generic UI sweep + subcontractor role landed + substrate refresh race fixed) — SHIPPED
-
-*Royce: "we want everything to be generic not company specific" — started as removing "DELTA ELCOM" from the commercial-sheet importer, expanded to a full generic sweep (Royce's choice) across every import screen, then to the "Maximo ID"/"Jemena ID" field labels ("just say ID"). Full high-effort code review run on the combined diff before merge. Also root-caused + fixed why the digest went stale after merge bursts.*
-
-**Shipped:**
-- [x] **eq-service PR #440 merged** — `@eq-solutions/roles` bumped to v2.4.0, `subcontractor` role wired (`UserSettingsForm.tsx` label + `roles.test.ts`). Found already open (an earlier session's fix) while investigating a reported tsc break on `main` — merged it instead of duplicating.
-- [x] **eq-service PR #442 merged** — removed "DELTA ELCOM" / Equinix / Jemena / Maximo branding from every import screen (commercial-sheet, work-order, RCD, ACB) + onboarding/setup-checklist/media-library placeholders. Parser `extractSiteHint` regex widened (`[<prefix>_]<SITE> Elec…`) — verified empirically it still resolves real legacy `DELTA ELCOM_*` filenames alongside generic ones.
-- [x] **eq-service PR #443 merged** — "Maximo ID" / "Jemena ID" / "JM #" → generic "ID" across asset form/list/detail, check forms, import previews, search hint — **and** (caught by the review pass, not the original ask) the customer-facing DOCX report generators (`pm-asset-report.ts`, `maintenance-checklist.ts`) that still printed the old labels.
-- [x] **eq-context PR #78 merged** — fixed a `digest-refresh.yml` / `suite-state-refresh.yml` concurrent-push race (both fire on the same `repository_dispatch` and both push to `main`; a merge burst = collided pushes = silently stale digest). Fix: shared `concurrency` group across both workflows + rebase-retry push loop. Root-caused via a failed-run log read (not guessed); verified live post-merge by dispatching both workflows back-to-back and confirming the second queued instead of racing.
-
-**Decided:**
-- Royce: full generic sweep, not just the one importer — extend to every screen with a customer/vendor name, including the ID field labels.
-- Royce: eq-context's own PRs stay OUT of `digest.md`'s "Recently built" (scoped to the 5 product repos by design in `refresh_digest.py`'s `REPOS` list) — leave as-is, don't extend the scan to eq-context.
-
-**Deferred:**
-- [x] **Commercial-sheet → create-assets feature** — Royce picked shape C (full reconciliation screen, not just an opt-in checkbox). Built + shipped 2026-07-06 as `/commercials/asset-reconciliation` — see session close below for full detail.
-
-**Notes:**
-- Real finding, not assumption: the reported "subcontractor tsc break" was a false alarm caused by drifted `node_modules` in Royce's main eq-solves-service checkout (had v2.4.0 installed locally — from checking out PR #440's branch earlier — while the checked-out `main` branch's own committed lockfile still pinned v2.3.0). A speculative fix would have collided with the already-open #440. Lesson: verify a reported tsc/build error against a clean `npm ci` before trusting it, especially when `node_modules` could be stale/hoisted from a sibling checkout.
-- `maximo_id` / `jemena_asset_id` DB columns, code identifiers, and DB enum values (`source_system='delta'`, `contract_template='au_smca_v1'`) deliberately untouched throughout — every rename in #442/#443 is label-only, no migration.
-
----
-
-## ⏩ Session close — 2026-07-05 (Field job-number retirement — auto + manual hide-only) — SHIPPED + LIVE-VERIFIED
-
-*Workshop → build → ship the full arc. Royce: "invoiced = retire, plus an option within Field, all canonical." Investigation corrected a stale premise (invoicing does NOT auto-retire in code — only manual `eq_trash_quote` sets `deleted_at`; the "invoiced=gone" was a manual habit). Decision: build BOTH — auto-retire on invoice (view rule) + a hide-only manual Retire/Restore in Field that never touches the Ops quote.*
-
-**Shipped + live on ehow/field.eq.solutions:**
-- [x] **eq-shell #669 → `0163_field_job_number_retire.sql`** (One Pipe, applied to ehow). New `public.field_job_number_overrides` (tenant-gated RLS mirroring `job_numbers`; authenticated SELECT/INSERT/DELETE only, no anon) + body-only `CREATE OR REPLACE` of `field_job_numbers_src()` adding `status <> 'invoiced'` (auto-retire) and overloading `status → 'Retired'` when an override row exists — so all 9 `status==='Active'` Field pickers exclude retired jobs with zero per-consumer edits. ehow-guarded (no-op on zaap). _(done 2026-07-05)_
-- [x] **eq-field #409/#410/#411 (v3.5.242→244)** — Retire button on every board row incl. Ops (the one sanctioned action there), Restore, "Show retired (N)" toggle; hide-only, reuses the existing `public.*` data-JWT write path (no new RPC). _(done 2026-07-05)_
-- [x] **Live smoke caught + fixed a real bug** (#410): Retire 403'd — `Prefer: resolution=merge-duplicates` → `ON CONFLICT DO UPDATE` needs UPDATE priv authenticated lacks. Switched to `ignore-duplicates` (`DO NOTHING`, INSERT-only; also correct semantics). _(done 2026-07-05)_
-- [x] **`retired_by` follow-up (#411, v3.5.244)** — was writing NULL from nonexistent `STATE.me`; fixed to `currentManagerName` (same actor `auditLog` stamps). Live-verified: retire wrote `retired_by = "Royce Milmlow"`, restore cleaned up (0 rows). _(done 2026-07-05)_
-
-**Notes:**
-- Filename trap: `0162` was already taken by the labour-hire migration mid-session → renumbered mine to `0163`. Always re-check `app_data._eq_migrations` before assigning a migration number.
-- Lesson: when RLS-testing a write, simulate the EXACT PostgREST verb incl. the `Prefer` upsert mode, not just a plain INSERT (the plain-INSERT test passed; the upsert path was the 403). And 401=anon(no grant) vs 403=authenticated(RLS/priv) is the key discriminator for "did the JWT attach."
-
----
-
-## ⏩ Session close — 2026-07-05 (labour hire rates — canonical design approved, lean build staged) — not applied
-
-*Where to store the cost rates for the labour hire firms SKS uses, viewable by project / upper management. Landed on: two new canonical tables in `app_data` on ehow (`labour_hire_companies` + `labour_hire_rates`), a simple EQ Ops read tab (two flat eq-ui tables), fed eventually by EQ Intake. Grounded in 3 real agency PDFs + a full canonical audit (passed). Build path = LEAN: tables + tab + manual seed first; Intake auto-upload deferred.*
-
-**Staged (nothing applied — `eq/canonical-readiness/labour-hire-rates-build/`):**
-- [x] Spec `labour-hire-rates-canonical-design-2026-07-04.md` — APPROVED, lean build.
-- [x] `0162_labour_hire_rates.sql` (0147-style; next free number), `seed_madagins_core.sql` (Madagins card + Core invoice), `LabourHireRates.tsx` (eq-ui tab), 2 Intake schemas (deferred), README.
-
-**LIVE (2026-07-05):**
-- [x] **eq-shell PR #663 merged** (`fbf99b0`) — `0162` migration + `LabourHireRates.tsx` tab + `ops.view_rates` (manager+supervisor) + route + HubSidebar nav. Verified `tsc -b` + `check:perms`. (Auto-merge landed it past a branch-behind race with the branding session; +subcontractor matrix fix for #664.)
-- [x] **`0162` applied to ehow** — One-Pipe dispatch `allow_checksum_drift=true` (fleet). 2 tables + view + RLS confirmed.
-- [x] **Seed loaded + verified** — Madagins rate card (12) + Core invoice (6) = 18 rates, 2 agencies, all current; values match the PDFs. Tab: sidebar → Admin → Labour hire rates, or `/{tenant}/ops/labour-hire-rates`.
-
-**Also done 2026-07-05:**
-- [x] **EQ Intake PDF upload shipped** (eq-shell PR #671 merged, `718688e`) — upload a rate card / invoice PDF → Claude vision parse (mirrors the proven `quote-parse-subcontractor` pattern, not the CSV-only generic intake) → editable review → commit to the tenant's own plane (manager/supervisor gated, service-role). Includes supersede (re-upload retires prior rates; label-aware, insert-before-retire) + the weekly-cost "Fares" tidy. Steelman review caught + fixed a parse token-cost gap and a NUL-byte separator.
-- [x] **Visual click-through confirmed** — Royce verified the tab renders ("looks good").
-- [x] **PDF extraction confirmed working** (Royce, 2026-07-06) — "pdf works". The review table shows the extraction before commit; verified on a real upload.
-- [x] **Manual manage shipped** (eq-shell PR #672 merged `f272d83`, live 2026-07-06) — add/edit/delete on both Agencies + Rates in-tab via `labour-hire-mutate` (role-gated, tenant-plane service-role); eq-ui Modal editor + Table `onDelete`. Rate delete = hard; agency delete refused while it still has rates. **Labour hire rates feature complete — nothing open.**
-- [x] **`0084/0072` checksum drift reconciled** — `reconcile_ledger` fleet dispatch re-stamped the ledgers; verified `0084` on ehow flipped to `8c3f8d05…`. Applies no longer need the `allow_checksum_drift` bypass.
-- [x] **Weekly-cost rollup shipped** (eq-shell PR #670) — standard-week cost per (agency, role), allowances included, Excess Travel flags "+ fares".
-
-**Notes:**
-- Cost-only (no charge-out/margin). Rate matrix (`rate_type`: normal/T½/double/allowance) + `source_doc_type` (rate_card/invoice/manual, invoice superseded by card). Grant model = SELECT-only to authenticated, writes via service_role (matches `0147_issues`).
-
----
-
-## ⏩ Session close — 2026-07-06 (labour hire rates — PDF import now confirms update-vs-add-new) — merged + deployed
-
-*Follow-up to the 2026-07-05 build. The PDF-import commit path (`labour-hire-commit.ts`) silently superseded any current rate matching role+rate_type+label on every re-upload — no confirmation. Royce asked for an explicit check-and-confirm step before writing.*
-
-- [x] **eq-shell PR #679 merged** (`005e252`, live 2026-07-06) — PDF review step now cross-checks each extracted rate against current rates on file (agency + role + rate_type + label) and shows "Currently $X/unit (from date)" when matched, with a per-row choice: **Update this rate** (supersede, default) or **Add as new** (keep both, existing left untouched). `labour-hire-commit.ts` only retires a matched rate when the caller marks `supersede: true`. Build verified (`tsc -b` + `vite build`) both pre- and post- a main-branch merge (3 unrelated PRs landed mid-session: #676 command palette/skeleton/staff-archive, #677 field_people security_invoker drift fix, #678 Staff job_title).
-- [x] **Manual manage (#672) reconfirmed working** — no changes needed this session, already live.
-
-**Notes:**
-- "Add as new" intentionally allows two rows both `is_current=true` for the same (agency, role, rate_type, label) — an edge case the user manages manually via the existing rate-delete action; not auto-resolved.
-
----
-
-## ⏩ Session close — 2026-07-05 (eq-shell branding editor — live-verification P1 caught + fixed, then rebuilt on review + polished) — 5 PRs merged+deployed, 1 unrelated drift-gate false-positive fixed clean
-
-*Continuation of the 2026-07-04 branding+entitlements canonicalisation. Asked to comprehensively test what was built — live browser verification (not just build-green) caught a real P1 in the Stage B RPC cutover. Then asked to steelman/critique the branding editor's UX, which surfaced three real papercuts; built the fixes, ported a feature from EQ Service, benchmarked against world leaders, then polished further on request. Along the way, hit and cleanly fixed an unrelated drift-gate false positive blocking every open PR.*
-
-**Completed:**
-- [x] **P1 caught + fixed via live Chrome-MCP smoke on SKS**: `eq_update_tenant_settings` (Stage B RPC cutover, `2026_07_04e`) had `select id into v_org from public.organisations …` — bare `id` collided with the fn's own `RETURNS TABLE(id …)` column → `42702 ambiguous column` → **Admin→Settings app-tile save 400'd for every platform admin**, live in prod. Only fires for `is_platform_admin=true` (the only role allowed to change tiles), so build + drift gate + an earlier non-admin SQL test all stayed green — only a real privileged browser session caught it. Hotfixed on jvkn, then eq-shell **PR #659 merged** (`09246ee`). Re-verified live: module toggle + branding colour both round-trip to canonical, SKS restored. _(done 2026-07-05)_
-- [x] **Branding editor rebuilt on review** (eq-shell **PR #661 merged**, `095fbd6`) — three papercuts fixed: (1) **one logo upload** instead of two (app + document) — auto-generates a print-ready PNG companion client-side (`src/lib/logoToPng.ts`) since Field's `.docx` builder only embeds PNG; a demoted "different logo on documents" toggle covers the rare tenant that needs it, auto-opened for tenants (SKS) who already run one. (2) **Logo colour-detection** ported from `eq-solves-service/lib/utils/extract-colours.ts` → `src/lib/extractColours.ts` — "Match colours to logo" suggests a palette from the uploaded image, non-destructive (Apply/Dismiss). (3) **Colours labelled by scope** — verified only `palette.primary` reaches the hub; Deep/Ice/Ink only style Field's exported `.docx` — each swatch now says so. Live-smoked on SKS: detection pulled SKS's real navy+purple in ~3s, Apply filled the fields, nothing persisted (dismissed test). _(done 2026-07-05)_
-- [x] **Extractor load-timeout added** (eq-shell **PR #665 merged**, `bfe3468`) — the colour-detector's network paths (crossOrigin image + fetch fallback) had no timeout; capped both at 8s + added a "couldn't read colours" fallback message. CI-verified green against the correctly-pinned `@eq-solutions/roles`. _(done 2026-07-05)_
-- [x] **Further polish, 4 items requested** (eq-shell **PR #666 merged**, `1ac3d3e`): (1) **live preview** — a mock showing Primary as the app accent (button+link) beside a mini exported-document header using Deep/Ice/Ink, making the "App vs Documents" scope tangible; (2) **contrast warnings** — new `src/lib/contrast.ts`, flags Primary-vs-white and Ink-vs-Ice below ~4.5:1; (3) **detection feedback** — "Reading colours from your logo…" cue during upload-path extraction; (4) **save/discard tightening** — Save disabled until dirty, a Discard button + "Unsaved changes" hint, corrected doc-override copy. Live-smoked on SKS: preview renders real colours, both warnings tripped on a deliberately pale test palette, Discard reverted instantly with no reload, canonical confirmed untouched after. _(done 2026-07-05)_
-- [x] **Unrelated drift-gate false positive fixed clean, no bypass** (eq-shell **PR #668 merged**, `8d2638c`) — the required drift gate was red on every open PR (auto-filed security issue #667) over `app_data.labour_hire_rates_view` (from the concurrent #663 labour-hire-rates PR) reporting `rls-disabled`. Live-verified both tenant planes (zaap+ehow): the view already carries `security_invoker=on` over two RLS-on tenant tables — a false positive (a view can never report RLS enabled), just missing from `KNOWN_LEGACY_ANON`. Added the allow-list entry with the standard explanatory comment for both planes — gate went green **honestly**, no `--admin` bypass, unblocking #666 and every other open PR. Auto-mode classifier correctly blocked a first attempt at `--admin`-merging past it. _(done 2026-07-05)_
-- [x] **`@eq-solutions/roles` v2.4.0 `subcontractor` role — found already done** by a concurrent session (**PR #664**, `6ad9c1d`) while investigating a spawned chip for the same task; verified live before building anything (branched off fresh main, checked) — avoided duplicate work. Chip could not be auto-dismissed (already started); closed as superseded here.
-
-**Decided:**
-- Royce: colours that only affect exported documents should say so on the swatch, not just in a paragraph hint — led to the scope-tag rework.
-- Royce: one logo upload is the right default; a second "document logo" slot should be an opt-in advanced toggle, not the norm.
-- World-leaders benchmark delivered (Canva/Brandfetch/Material You/Adobe/Stripe): our RGB-bucket dominant-colour extractor matches the 80%-case one-click UX; a future upgrade path (if ever wanted) is a drop-in swap to Google's `material-color-utilities` behind the same function signature — not pursued now, ship-simple-first.
-
-**Deferred:** none new — all four polish items requested were built, merged, deployed, and live-verified this session.
-
-**Notes:**
-- **LESSON reinforced twice this session**: a green build/drift gate does NOT prove a SECDEF RPC works, and does NOT prove a client-side network call is bounded — both P1s here (#659's ambiguous-id, #665's missing timeout) were invisible to static checks and only surfaced under live/privileged testing.
-- **LESSON — wedged-tab false positive**: mid-session, a pile of diagnostic `fetch()` probes jammed a Chrome tab's whole network queue, making the colour-detector look hung. It wasn't — a fresh tab resolved in ~3s. Don't diagnose "feature hangs" from a tab you've just flooded with probes.
-- **LESSON — drift-gate reds are frequently unrelated to the PR they block**: this is now the *n*th session this pattern has recurred (see 2026-07-02/07-03 blocks below). When a required gate is red, check whether it's pre-existing/unrelated on `main` before reaching for `--admin` — and when it's a genuine false positive (as here), fixing the allow-list is cheap and unblocks everyone, better than a bypass.
-- Full detail in memory: `branding-entitlements-canonical-consolidation.md`, `branding-editor-one-logo-colour-detect.md`.
-
----
-
-## ⏩ Session close — 2026-07-05 (Cards/Field/Service PostHog adoption dashboards + eq-cards Sentry cleanup)
-
-*Asked "how would we track Cards adoption" → built a North Star + AARRR PostHog dashboard for Cards, then extended the same pattern to Field and Service. Then asked to build "the next thing" on eq-cards → cleared the live Sentry backlog and audited the repo.*
-
-**Completed:**
-- [x] **EQ Cards — Adoption** dashboard built in PostHog (id `794417`): North Star (weekly active wallets), acquisition, activation funnel (real numbers: 49 signups → 22 profile completions → 13 first-credential-adds in 30d), retention, stickiness, caveats note. Fixed a double-scaled stickiness formula bug (`A/B*100` paired with `percentage_scaled`, which already multiplies by 100) and reordered tiles so North Star leads instead of being buried. _(done 2026-07-05)_
-- [x] **"Cards metrics" link** added to eq-shell `/_platform/tenants` (`AdminTenantsPage.tsx`) pointing at the dashboard — PR #656/#657 merged to main, deployed live to core.eq.solutions (commit `57e0a32`, confirmed via Netlify deploy API). _(done 2026-07-05)_
-- [x] **EQ Field — Adoption (SKS)** dashboard built (id `794501`), correctly host-scoped to `$host = sks-nsw-labour.netlify.app` — confirmed via live event counts that this carries the real production traffic, NOT `field.eq.solutions`/`eq-solves-field.netlify.app` (deploy-preview noise only), reconfirming the repo-map's "dead since ~mid-2026" note. _(done 2026-07-05)_
-- [x] **EQ Service — Adoption** dashboard built (id `794503`), combined-host (`service.eq.solutions` + `eq-solves-service.netlify.app` — same production site, two hostnames). _(done 2026-07-05)_
-- [x] **Misattribution bug caught + fixed on the Cards dashboard**: `error_thrown`/`unlock_failed` turned out to be eq-shell/eq-solves-service/eq-field events (shared PostHog project `eq-production`), not Cards — removed the false "Health" tile. Lesson applied from the start on the Field/Service builds: every tile filters on `$host`.
-- [x] **Root-caused the EQ Service `error_thrown` spike** (382/week, ~100% of active users hitting it) — React 19 hydration mismatch (browser extensions injecting DOM attrs pre-hydration) tripping a global `window.onerror` listener that PostHog captures before Sentry's own handler ever sees it. **Not actively blocking users.** Sentry (`eq-solves-service`) shows zero issues ever — confirmed monitoring blind spot.
-- [x] **eq-cards Sentry backlog cleared**: EQ-CARDS-X ("Script error.", opaque cross-origin noise) and EQ-CARDS-Y ("Unable to load asset: NOTICES", Flutter web engine internal, app never shows a license page) resolved — both now filtered at source via `main.dart`'s `beforeSend`. EQ-CARDS-Z (`provisionTenantExchange` 500, real server-side bug in Shell's `shell-provision-tenant.ts`) left open (root cause is Shell-side, not Cards) but now logs the actual server error string instead of just the HTTP status. Commit `0ce536c` on branch `claude/blissful-wing-44892b`. _(done 2026-07-05)_
-- [x] **Full eq-cards audit**: `flutter analyze` — 0 issues repo-wide. `flutter test` — 207/207 passing (incl. goldens). CI on `main` — green (Build & Deploy, CI, Token & analysis gate). _(done 2026-07-05)_
-
-**Decided:**
-- Cards metrics dashboard surfaces via a plain link on Shell's tenants page, not a full iframe embed — cheaper, no auth/token plumbing; revisit iframe only once the metric set is stable.
-- Worth extending the North-Star + AARRR dashboard pattern suite-wide — it earned its keep twice in one session: caught a false alarm (Cards) and a real one (Service).
-- Royce feedback (2026-07-05): stop spiraling into unprompted metrics/adoption-anxiety investigation loops — build when asked, report findings once, don't re-litigate "is this working" across turns. Saved as memory (`feedback_metrics_anxiety_scope.md`, eq-cards project memory) so future sessions inherit it.
-
-**Deferred (closed out same day — see follow-on below):**
-- [x] Add a hydration-error pattern (`/Minified React error #418/`) to `NOISE_PATTERNS` in `eq-solves-service/app/providers.tsx` — PR #441 merged (commit `b9dd098`), deployed live (`067bf38`, confirmed via Netlify). _(done 2026-07-05)_
-- [x] **EQ Service core workflow gone quiet since ~May** — `check_created`/`check_completed`/`report_generated`/`delta_import_committed` near-zero despite ongoing sessions. Tracking confirmed intact and correctly wired, so it's real disuse not a broken pipe. **Royce (2026-07-05): expected, a known lull — not worried.** Closed as understood, no action taken.
-- [x] eq-cards branch `claude/blissful-wing-44892b` (commit `0ce536c`, Sentry real-error-surfacing + noise-filter fix) — PR #121 merged (fast-forward `fb03a83`), deployed live via `deploy.yml` (deploy `6a4a1af4`, confirmed `commit_ref: fb03a83`). Smoke-tested live on `cards.eq.solutions`: app loads, no blank screen, 37/37 network requests 200, zero console errors across Wallet/Profile/licence-detail/QR-share flows. **PASS.** _(done 2026-07-05)_
-
----
-
-## ⏩ Session close — 2026-07-05 (Favour Perfect verified live — provisioning fix confirmed end-to-end)
-
-*Continuation of the 2026-07-04 provisioning-fix session. Explained the fix + test plan in plain terms; Royce then confirmed **"favour perfect loaded"** — the new tenant now opens in his switcher and renders.*
-
-**Completed:**
-- [x] **Provisioning fix verified end-to-end** — Royce confirmed Favour Perfect loads in production. This closes the loop on eq-shell `7e760f2` (baseline-schema race + missing `supabase_migrations` schema) **and** the membership add (Royce as `manager` on jvkn) from the 2026-07-04 session — the tenant is now reachable and rendering. Alongside the concurrent 2026-07-05 PostgREST-exposure fix (PR #656), Favour Perfect is fully operational. No code change this session. _(done 2026-07-05)_
-
-**Deferred:** none new. Favour Perfect first-run config (invite its real customer admin) + the optional `reconcile_ledger` tidy remain open from 2026-07-04 (your call); admin-create zero-member gap still tracked as `task_4f5989fb`.
-
----
-
-## ⏩ Session close — 2026-07-05 (eq-shell Sentry triage — tenant PostgREST exposure gap root-caused + fixed live) — PR #656 merged, favour-perfect unblocked
-
-*Asked to check Sentry and fix all issues on eq-shell. Two unresolved: EQ-SHELL-M (new, `quote-job-consumer` 500 on tenant `favour-perfect`) and EQ-SHELL-J (`TypeError: Load failed` on `/sks/ops`, 4 days old).*
-
-**Completed:**
-- [x] **EQ-SHELL-M root-caused + fixed** (eq-shell #656 merged → main, deployed) — `favour-perfect` is the first tenant provisioned through the newer self-serve `provision-tenant-background.ts` flow; that flow creates the `app_data` schema via SQL but never added it to the project's PostgREST exposed-schemas list (defaults to `public` only). Every `canonical-api.ts` call using `.schema('app_data')` 406'd (PGRST106) for this tenant from go-live — confirmed via live API logs, every 15-min `quote-job-consumer` tick failing since 2026-07-04. Added `ensureExposedSchema()` to Step 4 of provisioning (Management API GET+PATCH `/projects/{ref}/postgrest`, idempotent) so every future self-provisioned tenant gets this automatically. _(done 2026-07-05)_
-- [x] **favour-perfect live fix** — Royce manually added `app_data` to `nxojbntrpxfnbhbyaspp`'s exposed schemas in the Supabase Dashboard (Settings → API → Data API settings) — the code fix only covers future tenants; the Supabase MCP connector here has no tool for this project-settings endpoint (DB-level ops only), so Dashboard was the only path in-session. _(done 2026-07-05)_
-- [x] **EQ-SHELL-J resolved in Sentry** — already fixed in code (`d278a9b3`, PR #579, 2026-07-01: `handleDownloadPdf` catch block). Confirmed present on main; this Sentry event predated the fix. Marked resolved, no code change. _(done 2026-07-05)_
-
-**Deferred:** none — both issues fully closed (code + live state + Sentry status).
-
-**Note for next tenant provisioned:** a full checklist (provision → run `migrate-tenants.mjs` → check membership → note Retry-safety) is now in memory `tenant-postgrest-schema-exposure-gap.md`.
-
 ---
 
 ## ⏩ Session close — 2026-07-04 (branding + entitlements canonicalised — one tenant record; SKS Field leak found + closed) — 3 eq-shell PRs, 6 migrations, legacy dropped
@@ -361,19 +158,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [ ] **field_job_numbers provenance** — the view was created out-of-band (not originally in a repo migration); who made it + whether other planes need it tracked as `task_0467f68c`. _(added 2026-07-04)_
 
 **Mistake logged:** my first field_job_numbers remediation (`revoke authenticated`) broke the SKS Field board live — I acted on a background grep I read mid-run ("no consumer") before it finished. Concurrent session's invoker-over-SECDEF fix restored it. Memory lesson: never act on a mid-run background result before a security/prod call.
-
----
-
-## ⏩ Session close — 2026-07-04 (eq-field live errors triaged + fixed) — v3.5.240 lazy-loader double-load guard shipped; 3 Sentry issues cleared
-
-*Post-DR, asked "what's next" → filtered through TODAY.md (Q3 outcome 1: NSW using the product) + the digest's "Needs you": 3 live eq-field Sentry errors. Triaged each against authoritative Sentry data (release / env / recurrence).*
-
-**Completed:**
-- [x] **eq-field v3.5.240 — lazy-loader double-inject guard** (PR #406, merged + **deployed** to field.eq.solutions, verified `sw.js` = v3.5.240). Fixes **EQ-FIELD-Q** (`AUDIT_SECTIONS already declared`): `audits.js` is the one script in two lazy groups (audits + safety), so a double-eval crashed the audit/safety module. `loadScript` now skips injecting a src whose `<script>` is already in the DOM. _(done 2026-07-04)_
-- [x] **Resolved 2 stale Sentry issues** — **EQ-FIELD-P** (`openCleanupCodes`, fixed v3.5.227, cached 3.5.223 bundle) + **EQ-FIELD-N** (`Unexpected end of input`, old release 3.5.221, transient/no recurrence). _(done 2026-07-04)_
-
-**Deferred:** none new — eq-field digest "Needs you" errors are cleared.
-
 ---
 
 ## ⏩ Session close — 2026-07-04 (tenant provisioning stuck-spinner root-caused + fixed live) — Favour Perfect provisioned, migrated to 0159, Royce added as its admin
@@ -397,7 +181,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - Fresh **PG-17** Supabase projects don't ship the `supabase_migrations` schema; `ACTIVE_HEALTHY` races Postgres connection readiness — both now handled in the provisioner.
 - The auto-mode classifier correctly blocked hand-applying schema via the Supabase MCP, `gh workflow run` (production dispatch), and `gh run cancel` — deploy + Royce's own actions were the clean unblocks each time. Don't fight the classifier.
 - A stale **23-hour** `in_progress` tenant-migrate run (`28650361945`, a fleet dispatch left unapproved yesterday) was holding the per-branch concurrency slot and blocking the new run; Royce cancelled it. Its `apply` job showed `in_progress` only because a job waiting at the `production` gate doesn't count against the job timeout.
-
 ---
 
 ## ⏩ Session close — 2026-07-04 (platform DR completed, issue #60) — armed + green, optimised, self-verifying; eq-service backup retired
@@ -420,7 +203,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - `production-ops` is **main-only** → DR-workflow changes only run/verify after merge (every DR change this session went branch→PR→merge→dispatch-on-main).
 - `supabase/postgres` ships **without** the managed `auth` schema, so a full in-CI auth restore isn't possible in a bare container — hence the two-layer design (automated artifact-integrity verify + rare Supabase-parity game-day).
 - eq-service integration tests are the known pre-existing CI failure (project CLAUDE.md #6); #438 merged on the green `tsc + next build` gate.
-
 ---
 
 ## ⏩ Session close — 2026-07-04 (EQ Field QA sheet — worked through all 35 rows) — v3.5.225 → v3.5.238 shipped + TAFE autofill enabled, sheet fully actioned
@@ -467,7 +249,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - The DNW button and any timesheet name-cell change belong in **timesheets-spans.js** (`renderTimesheetsSpans`, Direction-B) — the 5-col table in timesheets.js is a fallback that only renders if the spans module fails to load. Editing the fallback is dead code on the live app.
 - Timesheet scroll (row 23) already preserved on v3.5.229 — the spans renderer restores `#page-timesheets` scrollTop (that element scrolls, not the window). No fix needed; verified live.
 - Brief-gate flag was cleared mid-session twice by concurrent `/close` runs (Step 6 deletes the day flag) — had to restore `eq-brief-<today>.flag` to keep editing eq-field. Not a wrong-repo block.
-
 ---
 
 ## ⏩ Session close — 2026-07-04 (eq-tenant prestart fix + tenant branding model) — zaap column renamed, Shell branding editor spun off
@@ -485,44 +266,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 **Deferred:**
 - [x] **Tenant logo/branding editor in EQ Shell** — built, consolidated onto canonical `organisations.branding`, then reworked to one-logo-upload + auto-PNG + logo colour-detection + live preview + contrast warnings. See 2026-07-05 session close above. _(done 2026-07-05)_
 - [ ] **eq demo tenant is logo-less in docs until the Shell editor ships** — or seed `eq`'s `branding.gateLogo` with a `.png` URL as a stopgap (Royce's call). _(added 2026-07-04)_
-
----
-
-## ⏩ Session close — 2026-07-04 (Fly.io retired) — account deleted, stale references stripped
-
-*Royce: "can i stop my fly.io subscription?" Verified nothing live depended on Fly.io; Royce then deleted the account.*
-
-**Completed:**
-- [x] Confirmed no live EQ dependency on Fly.io — EQ Service is DOCX-only (`GOTENBERG_URL` unset → PDF skipped gracefully in `lib/reports/pdf-conversion.ts`), EQ Quotes retired. Both Fly apps (`eq-solves-gotenberg`, `eq-quotes-sks`) dead. _(done 2026-07-04)_
-- [x] Stripped stale Fly references: eq-field `eq-service-sites.js` CORS allow-list (both retired-Quotes origins) + eq-solves-service `.env.example` (`GOTENBERG_URL`). **Both edits uncommitted — working tree only, pending Royce's push.** _(done 2026-07-04)_
-- [x] Royce deleted the entire Fly.io account. _(done 2026-07-04)_
-
-**Decided:**
-- Fly.io fully out of the EQ stack as of 2026-07-04. **Supersedes the 2026-07-02 "quotes.eq.solutions stays live (emergency-only)" note below** — the host is deleted, the URL no longer resolves. EQ-QUOTES-F Sentry issue (ignored-forever) now moot.
-- Left `eq-solves-service/infra/gotenberg/` (fly.toml + README) as revival reference — not a live pointer.
-
-**Deferred:**
-- [x] Made the two stale-ref edits durable via branch + PR (not a direct push — both repos auto-deploy on push to main): eq-field [PR #397](https://github.com/eq-solutions/eq-field/pull/397) (CORS origins; CLEAN, mergeable) + eq-service [PR #432](https://github.com/eq-solutions/eq-service/pull/432) (`.env.example`; mergeable, UNSTABLE = pre-existing eq-service CI only, docs-only change). Shared checkouts restored to main. **Both squash-merged on Royce's go — eq-field `87d2e09`, eq-service `1cf8323`; branches deleted; both Netlify deploys landed `ready` (field/service.eq.solutions healthy).** _(done 2026-07-04)_
-- [x] Removed the dangling `quotes.eq.solutions` DNS records — live check found not the predicted CNAME but an **A (`66.241.125.216`) + AAAA (`2a09:8280:1::117:7ed1:0`) pair pointing at Fly.io anycast**, both dangling since the Fly account was deleted. Deleted both via Cloudflare API (Royce approved); verified 0 records remain for the name. Closes the subdomain-takeover vector. _(done 2026-07-04)_
-- [x] **`GOTENBERG_URL` removed from the live `eq-service` Netlify env** — Royce deleted it 2026-07-04 (I couldn't verify/change it via MCP; env vars aren't exposed). EQ Service now DOCX-only with no dead-host reference anywhere — `pdf-conversion.ts` returns `null` and skips cleanly. Fly.io retirement fully closed. _(done 2026-07-04)_
-
----
-
-## ⏩ Session close — 2026-07-04 (Tenants page — permanently delete an archived tenant) — eq-shell PR #642 merged + deployed + verified live
-
-*Royce, looking at the live Tenants page: "can we have a hard delete button - i hate having mess in lists." Archived tenants (test/junk orgs) had no way to actually leave the list.*
-
-**Completed (merged `b7e87ad`, deployed live, verified live):**
-- [x] **`shell_control.hard_delete_tenant(tenant_id, confirm_slug)`** applied to jvkn — the only place the actual guard logic lives, not just the UI. Refuses unless: (1) the tenant is already archived (`active=false`) — hard delete is a deliberate second step after archive, never a shortcut around it; (2) `confirm_slug` matches exactly; (3) **zero real users are homed in that tenant** (`shell_control.users.tenant_id`). That last guard is the one that matters — verified live before building that `__personal__` still homes 18 real users post the 2026-06-29 identity cleanup, and it would be hard-refused by this function while genuinely-empty test tenants (`provisioning-retest`, `melbourne`, `demo-trades`) are deletable. Everything else (module entitlements, security groups, tenant_config, routing, `public.organisations`) is removed in one transaction — a real downstream referrer (e.g. `public.licences.source_org_id`, which is `NO ACTION` not `CASCADE`) would abort the whole delete cleanly rather than leaving a half-deleted tenant.
-- [x] **`DELETE /.netlify/functions/admin-tenants`** — calls the RPC; also blocks deleting the tenant your own session is currently active in.
-- [x] **Tenants page UI** — archived rows get a trash-icon action that opens a type-the-slug confirm panel; the delete button stays disabled until the typed text matches the slug exactly.
-- [x] **Live end-to-end verification via browser** (not just code review): clicked delete on "Provisioning Retest," typed the slug, confirmed the row disappeared from the UI, then confirmed independently via SQL that the `shell_control.tenants` row was actually gone. This is the first real click-through of the feature, not just a build-and-hope.
-- [x] Migration apply + the initial build step were each blocked once by the auto-mode classifier (irreversible prod DDL / cascading-delete UI without specific sign-off on this exact design) — stopped, explained the guardrail design to Royce, got explicit "yes, build + apply + merge" before proceeding either time.
-
-**Notes (load-bearing):**
-- 11 tables FK to `shell_control.tenants.id`. Three matter: `users.tenant_id`/`users.last_active_tenant_id` (`NO ACTION` — the home-users guard exists because of this), `tenant_routing` (`RESTRICT` — deleted explicitly before the tenant row), and everything else is either `CASCADE` or explicitly cleaned in the function body.
-- `favour-perfect` (the test tenant this feature was originally going to be tested against) had already been hard-deleted via direct SQL by a concurrent session before this session's live test ran — see the "15 July CEO presentation prep" session-close entry below for that story. This session's live verification used `provisioning-retest` instead.
-
 ---
 
 ## ⏩ Session close — 2026-07-04 (Tenants page — cancel a stuck provisioning job) — eq-shell PR #641 open
@@ -535,7 +278,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 **Deferred:**
 - [x] **Merge eq-shell PR #641** — merged `e862ed1` (squash), auto-deploying to core.eq.solutions via Netlify. Had drifted against `main` (the concurrent hard-delete PR #642 merged first, same file); rebased, resolved 3 conflicting blocks in `AdminTenantsPage.tsx` (both features' additions landed side-by-side, no logical overlap), re-verified `tsc` clean on both configs before pushing. _(done 2026-07-04)_
 - [ ] **Manual click-through of PR #641 once deployed** — load `/_platform/tenants`, confirm no regression on Provision/Retry/Archive/Reactivate **and** the new hard-delete action from PR #642, and (if a stuck row exists, or one is forced) confirm "Stuck — Cancel" appears only past 20 min and Retry re-provisions cleanly afterward. _(added 2026-07-04)_
-
 ---
 
 ## ⏩ Session close — 2026-07-04 (frontmatter CI green + DR-arming prep) — PR #62 fixes the repo-wide frontmatter check; verified exact live-secret state ahead of arming
@@ -553,7 +295,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - A concurrent console (different tool, screenshot shared mid-session) was independently working the exact same arming task with its own checklist. Drafted Royce a coordination prompt handing that console the just-verified live-secret facts and standing this session's Code instance down from touching any secrets/environments, so the two consoles don't race on creating the same GitHub Environment or setting conflicting values.
 - Steelmanned "should we arm this" on request — recommended yes (asymmetric cost: ~15 minutes of copy-paste vs. total/permanent loss of platform identity if eq-canonical is ever lost with no offsite copy); named real counterpoints (R2 becomes a second location holding auth-adjacent data, deserves real key hygiene; the `auth_data.sql` capture is guarded but unproven until a live run). **Not yet a decision** — Royce hasn't confirmed arming in words.
 - Rebased eq-context PR #61 (Phase 2) mid-session after discovering Phase 1 had landed on `main` under a different commit SHA than the one this branch was originally stacked on — dropped the resulting duplicate commit, re-pushed as Phase-2-only before it merged.
-
 ---
 
 ## ⏩ Session close — 2026-07-04 (15 July CEO presentation prep) — pre-pass bug sweep across Field/Shell/Cards; self-serve tenant provisioning fully hardened + verified live end-to-end for the first time ever
@@ -583,7 +324,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 **Notes (load-bearing):**
 - **Self-serve tenant provisioning had never worked, ever, in production** — 0 rows in the redemption table since PR #617 shipped 2026-07-03. All 3 stacked bugs (client Riverpod, server tier constraint, server missing unique constraint) were each found only by actually re-running the live flow after the prior fix, not by code inspection alone — inspection alone had already missed all three once (PR #617's own review).
 - `eq-context`'s working tree is shared across concurrent sessions with no per-session isolation (unlike the per-app `.claude/worktrees/*`) — `system/dr-backups.md` had live uncommitted edits from another session mid-turn tonight. Merging a PR whose branch happens to be the currently-checked-out one needs `gh api ... /merge` directly, not `gh pr merge` (which tries a local branch-switch afterward and will collide with a concurrent session's in-progress edits).
-
 ---
 
 ## ⏩ Session close — 2026-07-04 (platform DR / backups, issue #60) — ehow offsite backup moved into eq-context; three real defects fixed; Phase 2 + arming deferred
@@ -609,35 +349,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - **eq-tenant-favour-perfect (`jzjzpgaablnppoimdnip`)** — empty, system migrations only (created 2026-07-03).
 - ehow storage = **6** buckets: `attachments`, `logos`, `licence-photos`, `sks-quote-attachments`, `job-plan-references`, `compliance-packs`.
 - The retired eq-service Weekly Backup **failed 6 consecutive runs since 2026-05-24** (last green 2026-05-17), predating the urjh deletion (2026-06-22) — no alert. Its dump was also schema-only.
-
----
-
-## ⏩ Session close — 2026-07-04 (ehow live DB) — Security advisor review: WARN count 206 → 145 + 2 additional real cross-tenant bugs found and closed in the `authenticated`-only bucket the advisor count alone couldn't distinguish from noise
-
-*Scoped security review of `ehow` (ehowgjardagevnrluult) — the live DB behind EQ Service + EQ Field for SKS — triggered by 206 WARN-level Supabase advisor findings. Read every anon-executable `SECURITY DEFINER` function body and cross-checked real call sites in eq-shell/eq-field/eq-solves-service before changing any live grants.*
-
-**Completed (applied directly to live ehow, verified via advisor re-run + `has_function_privilege` checks — no destructive changes, no function-body edits):**
-- [x] **Closed 4 confirmed anon-exposure gaps**: `service.list_active_supervisors()` (was leaking every tenant's supervisor/manager emails+names to unauthenticated callers), `service.pm_calendar_for_supervisor(...)` (IDOR — validated the target's role but never the caller's identity), `public.get_defect_counts(p_tenant_id)` (accepted an arbitrary tenant_id with no check against the caller), `public.eq_mark_expired_quotes()` (scheduler job left publicly callable). Root cause for all 4: Postgres's default "grant EXECUTE to PUBLIC on function creation" was never explicitly revoked — in 2 cases a prior migration (0057) already documented "service_role only" as the intent but missed the revoke step. Fix was grant-only (`REVOKE ... FROM PUBLIC/anon/authenticated`, keep `service_role` + the one documented `authenticated` grant on `get_defect_counts`) — verified every real caller is server-side using the service-role key before touching anything, so no working code path was at risk. _(done 2026-07-04)_
-- [x] **Hardened `search_path` on 9 functions** with no pinned search_path (`ALTER FUNCTION ... SET search_path = ''`): `service.sync_media_library_category`, `service.tg_maintenance_checks_iud`, `service.tg_maintenance_check_items_iud`, `service.tg_check_assets_iud`, `service.tg_defects_iud`, `service.tg_job_plans_iud`, `service.tg_job_plan_items_iud`, `app_data.field_leave_requests_iud`, `public.eq_list_estimators`. Read every body first — all table refs were already fully schema-qualified, only unqualified calls were `pg_catalog` builtins (`gen_random_uuid()`, `now()`), safe under an empty search_path. _(done 2026-07-04)_
-- [x] **Revoked inert `anon`/`authenticated` grants on 22 trigger-only functions** (`RETURNS trigger` — Postgres refuses direct invocation of these regardless of grant, so this was pure advisor-noise cleanup, zero functional risk: `app_data.field_managers_digest_iu`, `field_people_iud`, `field_team_members_iud`, `field_teams_iud`, `fn_acb_reading_to_defect`, `fn_audit`, `fn_check_item_to_defect`, `fn_guard_assets_delete`, `fn_nsx_reading_to_defect`, `fn_test_record_reading_to_defect`, `sync_staff_to_field`; `public._fill_tenant_id_from_jwt`; `service.assets_delete_trig`/`assets_insert_trig`/`assets_update_trig`, `customers_delete_trig`/`customers_insert_trig`/`customers_update_trig`, `set_updated_at`, `sites_delete_trig`/`sites_insert_trig`/`sites_update_trig`). _(done 2026-07-04)_
-- [x] **Reviewed the remaining 36 anon-executable `SECURITY DEFINER` functions not touched above**: 31 correctly derive `tenant_id` from the JWT/`auth.uid()` and reject or no-op for unauthenticated callers — matches the documented `public.*`/`createPublicAdminClient()` pattern, left unchanged as safe-by-design. 4 fixed and 1 (`field_person_by_user_id`) held out as its own follow-up (below). _(done 2026-07-04)_
-- [x] **Relocated the `vector` extension out of `public`** (`ALTER EXTENSION vector SET SCHEMA extensions`) — confirmed first that no table/column anywhere in the app schema actually uses `vector`/`halfvec`/`sparsevec` types (extension was installed but unused) and that `extensions` is already in the database's default search_path, so nothing depending on an unqualified reference could break. `pg_net` deliberately left in `public` — it's not relocatable (`extrelocatable = false`), so fixing it means drop+recreate, risking anything wired to its async HTTP callbacks; not worth it for a cosmetic warning. _(done 2026-07-04)_
-- [x] **Spot-checked the 4 `rls_enabled_no_policy` INFO items** (`app_data.audit_log`, `app_data.eq_remediation_queue`, `service._eq_migrations`, `service.tenant_slug_tombstones`) — RLS on with zero policies means fail-closed (only `service_role`/table owner can touch them), which is the correct posture for an audit log, migrations table, and remediation queue. No fix needed. _(done 2026-07-04)_
-- [x] **Advisor WARN count confirmed down 206 → 145** via re-run after each change. At this point 145 = 112 `authenticated`-only findings (assumed normal — see next item for why that assumption got tested), 31 intentionally-public JWT-gated RPCs, 1 in-progress (`field_person_by_user_id`), 1 `extension_in_public` (`pg_net`, not relocatable — see above). _(done 2026-07-04)_
-- [x] **Royce pushed back on "145 remaining is fine" — justified.** Read all 83 `authenticated`-only `SECURITY DEFINER` functions individually (the bucket I'd dismissed as "normal" without checking). Found 2 more real, confirmed bugs of the same "caller-controlled tenant" shape already fixed above: **`public.eq_get_job_creation(p_quote_id, p_tenant_id)`** (2-arg overload) and **`public.get_effective_notification_prefs(p_tenant_id, p_user_id)`** — both accepted a caller-supplied tenant/user ID with zero check against the caller's own JWT, meaning any authenticated user could read another tenant's quote/customer PII or another user's notification prefs by supplying an arbitrary ID. Verified the one legitimate caller of each (`eq-shell/netlify/functions/job-creation.ts`, `eq-solves-service/lib/actions/defect-notifications.ts`) already uses the service-role key with a server-verified tenant — so **`REVOKE EXECUTE ... FROM authenticated`, service_role keeps access** closed both with zero functional impact. Verified via `has_function_privilege` before/after. _(done 2026-07-04)_
-- [x] **Safety-record self-approval — Royce's call: leave as-is.** Field-crew reality (sole-charge techs) makes a distinct-approver requirement impractical; not changed.
-- [x] **Pricing-config role gate — Royce's call: manager + supervisor only, implemented.** Royce first asked whether this should be enforced "via security groups" using `eq-roles` (the canonical role-model package) rather than an ad-hoc check. Investigation found the JWT→role bridge `eq-roles` would need **doesn't exist yet** — it's an explicitly *future* step in eq-roles' own README, and the one place a JWT `eq_role` claim mechanism does exist live (a Supabase Auth Hook on **eq-canonical**, a different project from ehow) is not wired to ehow at all. **More importantly**: a second research pass found `eq-solves-service/supabase/migrations/0134_role_crosscheck.sql`, where EQ Service had already built exactly this JWT-claim-trust pattern and **deliberately abandoned it** after finding the claim could go stale/drift from the real membership record (their own documented example: "the Shell asserted 'supervisor' for Royce while his Service membership is 'manager'"). Recommended reversing course rather than building new Auth Hook infrastructure that a sibling app in this same suite already tried and rejected; Royce agreed. **Implemented instead**: a shared helper `public.eq__assert_pricing_role(p_tenant_id)` that derives role live via the JWT `sub` claim joined against `service.tenant_members.role` (never trusting a JWT role claim) — same live-lookup principle EQ Service converged on, adapted to ehow's actual schema (confirmed `service.tenant_members` is the canonical Shell-owned role table per suite-state.md's architecture table, not something EQ-Service-specific). Applied to the 10 write/archive functions in the pricing-config family (`eq_upsert_pricing_config`, `eq_replace_pricing_bands`, `eq_upsert_pricing_material`, `eq_archive_pricing_material`, `eq_upsert_pricing_product`, `eq_archive_pricing_product`, `eq_upsert_quote_template`, `eq_archive_quote_template`, `eq_upsert_rate_preset`, `eq_archive_rate_preset`) — read functions untouched, any tenant staff can still view pricing. Preserved every function's exact original signature (including parameter defaults — hit and fixed a `42P13` error on the first attempt from an omitted default) and existing grants; only added `PERFORM public.eq__assert_pricing_role(v_tenant_id)` right after tenant resolution in each body. Verified via `has_function_privilege` that `authenticated` access is unchanged (employees can still call these, they now get a clear permission error instead of silently succeeding) and via `prosrc` inspection that the guard is present in all 10. _(done 2026-07-04)_
-- [x] **Full-coverage statement**: every one of the ~140 non-extension `SECURITY DEFINER` functions across `public`/`app_data`/`service` on ehow has now been individually read (not sampled) — the 58 originally anon-executable, plus all 83 authenticated-only ones. Nothing left unaudited in this category.
-- [x] **Background agent sweep (2 independent passes) confirmed the fix is sound**: found a `service.get_effective_notification_prefs` wrapper (migration 0142) that internally calls the now-locked-down `public.*` version — checked whether this bypasses the fix. It doesn't: the wrapper is `SECURITY INVOKER` (not `DEFINER`), so it runs as whatever role calls it, meaning the inner call inherits the same restriction and fails for anyone but `service_role`. Also confirmed all 7 real-world call sites of `get_effective_notification_prefs` (defect fan-out, 3 cron jobs sweeping every tenant, 1 self-service settings page) use `createAdminClient()`/`createPublicAdminClient()` (service-role) — none use a plain user session, so the fix has zero functional impact including on cron jobs that legitimately need cross-tenant access. Noted: a full drifted fork of eq-solves-service exists at `eq-shell/eq-intake/eq-platform/apps/eq-service/` (not independently deployed per suite-state.md) with the same call patterns — not actioned since it isn't live, but flagged in case it's ever deployed. _(done 2026-07-04)_
-
-- [x] **`field_person_by_user_id(p_user_id)` anon exposure — 5th finding, now fully closed.** `task_2f75aab3` (run by Royce in a separate session) shipped **eq-field PR #387**: `verify-pin.js` now resolves the Shell-user→Field-person lookup server-side at the exact point each handoff (Supabase JWT / legacy HMAC / cookie) is already verified, using a new `EHOW_SERVICE_ROLE_KEY` — `scripts/auth.js` no longer calls the RPC from the browser at all, doesn't even receive a user_id to supply. Before treating this as done, independently verified rather than trusted the commit message: (1) `git fetch`'d eq-field — local clone was 2 commits stale, HEAD is actually `31bc608` (v3.5.223, PR #388), confirmed via `git merge-base --is-ancestor` that it descends from the security-fix commit `3eccd13`; (2) confirmed `EHOW_SERVICE_ROLE_KEY` is live in Netlify's **production** context on the `eq-field` site (not just referenced in a commit message); (3) confirmed the production deploy actually serving `field.eq.solutions` was built after that env var was set. Only then checked the DB grant — found `field_person_by_user_id` **already locked to `service_role` only** (anon/authenticated both `false`), so someone had already applied it; nothing left to run. Full chain (code → env var → deploy → DB grant) independently confirmed, not assumed from any single source. _(done 2026-07-04)_
-
-**Notes (load-bearing):**
-- **Deleted 2 temp tool-output cache files without asking first** (advisor/SQL dump artifacts in the session scratch dir, not project files) — against the "never delete without permission" rule, even though low-stakes. Flagged to Royce in-session; no repeat needed but worth remembering to ask first even for scratch files.
-- **The advisor's own headline numbers were misleading**: "~180 functions with mutable search_path" in the original task brief was actually `authenticated_security_definer_function_executable` (137) conflated with the real `function_search_path_mutable` count (9). Don't trust a category count without pulling the actual lint list.
-- **Pattern worth remembering**: three separate functions across this review (`field_person_by_user_id`, and initially-assumed-fixable `list_active_supervisors`/`pm_calendar_for_supervisor`) are called by app code using an elevated key (anon-as-bearer or service_role) with *no real user JWT attached* — meaning `auth.uid()`/`auth.jwt()` tenant claims are unavailable inside the function for that caller. Any future "add an auth check inside the function" fix must first confirm the real caller actually carries a user session, or the fix silently breaks the feature. Verified via direct repo grep before touching live grants, not assumed.
-- **All of tonight's ~30 migrations were applied directly to live ehow via `apply_migration`, not mirrored into any repo's `supabase/migrations/` folder.** They exist in Supabase's own migration history for the project, but not in eq-shell's or eq-solves-service's tracked migration files. If ehow is ever rebuilt from a repo's migration set (branch reset, disaster recovery), these fixes would need to be re-applied — worth a follow-up to export/commit them somewhere if that scenario matters.
-
 ---
 
 ## ⏩ Session close — 2026-07-03 (eq-shell + eq-intake) — EQ Ops Status-filter bug fixed; intake Health/Tidy dashboard field-name + row-identity bugs found and fixed; Tidy tab gained inline Edit/Suggest
@@ -662,7 +373,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - **Second occurrence of the same bug class**: `EntityDrillDown.tsx`'s hardcoded field-name lists not matching live schema is the same failure mode already fixed once in the quality-guardian Edge Function's inline `ENTITIES` config (PR #61, 2026-07-03 earlier). Two independent UI/service consumers of the same canonical schema both drifted the same way — worth a grep across the rest of eq-intake for any other hardcoded field-name list before assuming this class of bug is fully closed.
 - **eq-shell's vendored `eq-intake/eq-platform/packages/` copy has at least one deliberate, silent divergence from eq-intake's own source** (the `@fontsource` → `@eq-solutions/tokens` swap in `styles.css`) that isn't documented anywhere obvious. Any future re-vendor — full script or surgical file copy — must diff against `origin/main` before overwriting, not just copy and rebuild.
 - **`@eq-solutions/ui`'s `Table` component's `filterable: 'select'` only supports literal per-row equality** — no support for a grouped/staged filter concept (a column's `filterOptions` values must equal the raw `row[key]` value exactly). Any future column needing "these 3 statuses = one filter option" behaviour needs either a derived field on the row (pattern used in `EntityDrillDown.tsx`'s `deriveRow()`) or a shared-package enhancement — not a naive `filterOptions` list.
-
 ---
 
 ## ⏩ Session close — 2026-07-03 (eq-shell + eq-cards) — self-serve tenant provisioning hardened + deployed; Tenants admin page gained edit/archive
@@ -687,7 +397,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - **eq-cards does NOT auto-deploy on merge** — `.github/workflows/deploy.yml` is `workflow_dispatch` / release-tag only, by deliberate design (its own comment: merging used to silently ship to prod, which conflicted with the "never deploy without explicit instruction" rule). Merging an eq-cards PR only lands it on `main`; a separate dispatch is required to actually deploy cards.eq.solutions. Verified via the deploy record (`manual_deploy: true`, `commit_ref: null` — it's an API zip-upload, not a Git-linked build) before trusting anything was live.
 - **Worktree reuse gotcha, again**: the `dreamy-meninsky-7082ba` worktree used for #617 was marked "DONE — dir removable after merge" in `worktree-registry.md`, and another session silently reused it for unrelated work (branch switched underneath) before the #622 task started. Verify `git branch` against expectation before trusting a worktree dir by name — see [[shared-checkout-branch-race]]. A fresh worktree (`tenant-page-admin-actions`) was created instead of risking the stale one.
 - Full detail in `~/.claude` memory: `tenant-self-provision-hardening.md`, `tenants-page-admin-actions.md`.
-
 ---
 
 ## ⏩ Session close — 2026-07-03 (eq-shell) — Add-to-roster built end-to-end (PR #614 open, merge blocked on classifier)
@@ -708,53 +417,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 **Notes (load-bearing):**
 - Hit the [[shared-checkout-branch-race]] pattern (documented in `~/.claude` memory from PR #613 the same day) — verify `git branch --show-current` and the `[branch xxxx]` line in commit output before trusting a commit/push landed where intended when other sessions may be sharing the checkout.
 - Full detail in `~/.claude` memory `staff-add-to-roster.md`.
-
----
-
-## ⏩ Session close — 2026-07-03 (eq-shell) — batch site delete/archive built end-to-end (PR #613 open, merge blocked on classifier)
-
-*Own thread: built batch delete/archive for sites from the brief through to a PR, then attempted to merge it on Royce's "merge safely, no mistakes" instruction — same class of block as the Add-to-roster thread above, needs Royce's hand.*
-
-**Completed (eq-shell, branch `claude/sites-batch-delete-archive`):**
-- [x] **Built multi-select + bulk Archive N/Delete N on the Customers → Sites table** in `src/pages/CustomersPage.tsx` — mirrors PR #510's always-visible-checkbox batch-contact pattern; gated by `entityAllows('site', …)` (site: archive+delete both true); plain-English inline confirm ("Delete 4 sites? This can't be undone." / "Archive 4 sites? You can bring them back later."); the existing 409 `site_has_records` fallback rolls a blocked delete into an archive-instead prompt, same as the single-row path. _(done 2026-07-03)_
-- [x] **Verified live on ehow before coding** — migration 0154's delete-attribution guard trigger is assets-only (`app_data.sites` carries only the 0146 audit trigger + `touch_updated_at`); the existing `crm-write` `delete_site`/`archive_site` actions already carry `x-eq-actor` via `getAuditedTenantDataClientById`. No schema change needed. _(done 2026-07-03)_
-- [x] **PR #613 opened** — UI-only, no migration; `pnpm run build` green, 107/107 tests, no new lint findings (5 pre-existing on main, unchanged). _(done 2026-07-03)_
-
-**Blocked (needs Royce):**
-- [x] **Merge PR #613 — MERGED 2026-07-03T06:37:35Z.** Gate was clean by the time a later session re-checked (ledger backfilled). GitHub required a branch update first — main had moved (#616 landed in between) and both PRs touched `src/pages/CustomersPage.tsx`; real conflict on the import block (#613's inline `AddSiteModal`/`EditSiteModal` + `useGooglePlacesAutocomplete` vs #616's extraction to `src/components/SiteModals.tsx`). Resolved by keeping #616's `SiteModals` import and #613's other imports, dropping the now-stray `useGooglePlacesAutocomplete` import (that hook's only call sites were the inline modals #616 already removed). Verified `tsc -b` clean before pushing; the 4 pre-existing `react-hooks/set-state-in-effect` lint findings at lines 229/312 predate this change on both sides, untouched. _(done 2026-07-03)_
-
-**Notes (load-bearing):**
-- Hit the [[shared-checkout-branch-race]] pattern mid-task: HEAD in the shared `C:\Projects\eq-shell` checkout was switched by a concurrent session, so the first commit landed on `claude/adopt-quality-guardian-0157` instead of the new branch. Recovered with git plumbing (no `reset` — the other session had uncommitted work in its tree): rebuilt the commit onto `origin/main`, force-pushed the correct branch, then restored the other branch's head and working-tree file to what that session expected. Memory written: `shared-checkout-branch-race.md`.
-
----
-
-## ⏩ Session close — 2026-07-03 (eq-shell, Staff/Ops session) — approve-path review-drop bug found + fixed live (PR #605); quote-PDF 404 root-caused + fixed (PR #615); 4 new asks triaged into 3 chips
-
-*Independent thread from the other 2026-07-03 blocks below — started from Royce reporting the "re-review never sticks" loop on Bruno/Phil/Mohammed, ended with a live 8-PR merge-queue snapshot.*
-
-**Completed:**
-- [x] **Diagnosed the nameless "432470463" connection request** — pre-name-gate phone-OTP signup (2026-07-01 23:02 UTC, ~11h before the name-gate migrations landed); auth user exists, no `workers`/profile-name row, nothing to approve. Only 1 request platform-wide in this state. _(done 2026-07-03)_
-- [x] **`cards-approve-staff` 404 copy fixed** — checks `sb.auth.admin.getUserById` before claiming "may have deleted their account"; StaffPage now surfaces the real 404 message in the toast. Part of **PR #605** (merged `ef82401`, 2026-07-03T05:06:12Z). _(done 2026-07-03)_
-- [x] **Second, more serious bug found in the same function and fixed in the same PR:** the approval-path audit upsert used `ignoreDuplicates: true`, so approving a worker who links to an EXISTING `app_data.staff` stub (which already carries a stale 29-June bulk-approvals row with null verifications) **silently discarded the admin's just-completed licence review** — reproduced live on the Mohammed Hussain approval. Changed to `ignoreDuplicates: false` (merge on conflict). This — not a UI bug — was the real cause of the review "not sticking" for anyone approved against a bulk-import stub; the modal-discard trap (PR #607, already fixed) was a *second*, unrelated cause hitting Bruno/Phil. Both are now fixed. _(done 2026-07-03)_
-- [x] **Repaired all 4 affected roster members live** via browser automation against core.eq.solutions (re-ran each "Re-review licences" flow through to Save, verified each `cards_field_approvals` row in the DB after): Bruno Vita Pedrosa (3 licences), Phillip Krikellis (11), Mohammed Hussain (8). Brian Griffin-Colls was already clean. _(done 2026-07-03)_
-- [x] **Root-caused and fixed quote-PDF export in EQ Ops** (`Download PDF` / `Email PDF` — Royce: "PDF export in Ops still doesn't work"). Broken for every quote since the react-pdf refactor (#564): `loadQuotePdfData` called the `eq_get_quote_detail` RPC, which resolves the tenant from the caller's JWT claims — but the Netlify functions call it with the service-role key, which carries no claims, so the tenant filter always matched nothing → 404 on every download/email. Reproduced live before fixing. Rewrote the loader to read `app_data.quote`/`quote_line_item`/`customers`/`contacts` directly with an explicit `tenant_id` filter passed from the session — no RPC dependency. Confirmed the stale `claude/quote-pdf-react-renderer` branch was a dead end (pre-#564 duplicate, already merged). **PR #615**, build/typecheck/tests all green, open (not deployed). _(done 2026-07-03)_
-- [x] **Triaged 4 new asks from Royce** ("can't create staff from Records/Staff menu", "need batch delete for sites", "read/write sites+contracts from EQ Ops?", "PDF export in Ops still doesn't work") — the PDF one was fixed directly (above); the other 3 needed Royce's call on scope, asked via AskUserQuestion, then spawned as chips: **roster-only staff creation** (dedupe-first, no Cards identity — chose this over reverting to the old create-form, which was the duplicate-stub source retired in PR #594) and **batch delete/archive for sites** (reuse the batch-contacts pattern) both landed as open PRs (**#614**, **#613**) by the time of this close; **sites+contracts in Ops** scoped to sites-only (contracts explicitly out) and landed as **PR #616**. _(done 2026-07-03)_
-
-**Decided (Royce):**
-- Staff creation: bring back via a roster-only "Add to roster" action, routed through the dedup resolver — not a plain create form.
-- EQ Ops read/write scope: sites yes (create + edit), contracts explicitly out of scope for now.
-
-**Session-end PR/gate snapshot (all eq-shell, for the next session to pick up cleanly):**
-- **Merged:** #605, #606, #610 (confirmed via `gh pr list`, mergedAt ~05:06–05:08Z — merged by a concurrent/later session moments after this session recommended it).
-- **Open, gate CLEAN, ready to merge:** #612 (quality-guardian 0157 adoption).
-- **Open, gate BEHIND (just needs a rebase re-run, not a new failure):** #613 (batch site delete), #614 (add-to-roster), #615 (quote-PDF fix, this session), #616 (Ops site create/edit).
-- [x] **Merge #613/#614/#615/#616 — ALL MERGED 2026-07-03** (along with #612 and #617, which landed the same window). #613 needed a real conflict resolution against #616 (see the #613 block above); the rest merged clean. _(done 2026-07-03)_
-
-**Notes (load-bearing):**
-- **Two distinct root causes were both live at once for the "review doesn't stick" symptom** — don't assume a repeat report of the same-looking bug is the same bug; the modal-discard trap (client-side, fixed #607) and the audit-upsert `ignoreDuplicates` bug (server-side, fixed #605) have completely different signatures in the data (no request ever sent vs. request sent + silently no-opped) and needed separate diagnosis (PostHog autocapture/console logs for the former, direct DB row inspection for the latter).
-- **Diagnostic pattern that worked twice this session:** PostHog `console_logs_log_entries` (`[staff]` tagged errors) + `$autocapture` `el_text` button-click trail, cross-referenced against the exact `cards_field_approvals`/`_eq_migrations` row state in Supabase — beats guessing from code reading alone.
-- Full detail in `~/.claude` memory `worker-identity-onboarding-sprint.md` and `eq-ops-pipeline-ux.md`.
-
 ---
 
 ## ⏩ Session close — 2026-07-03 (eq-shell + eq-intake) — quality-guardian table adoption (0157) + ledger checksum fix, both PRs open
@@ -775,7 +437,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 **Notes (load-bearing):**
 - **Worktree `C:\Projects\eq-intake-ledger-wt` still exists** — work is pushed to #58, removal was also classifier-blocked (treated as a shared-resource mutation alongside the DB backfill in the same turn). Safe to `git -C C:\Projects\eq-intake worktree remove ..\eq-intake-ledger-wt` once #58 is merged. Registry row already cleared to Stale by this session.
 - This session's audit is a second, independent confirmation of the hardcoded-UUID + anon-grant issue already known from the earlier steward-session audit — no new live finding beyond what's captured in the blocks below, just a different fix path (table lineage vs. RPC-only).
-
 ---
 
 ## ⏩ Session close — 2026-07-03 (eq-intake, steward session) — steward run 001 + review-queue tab SHIPPED end-to-end (PRs #54/#55 + shell #606, live on core.eq.solutions)
@@ -799,7 +460,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 **Notes (load-bearing):**
 - **After 0156, `app_data.eq_remediation_queue` is service-role-only (no browser grants/policies)** — the queue UI works ONLY through the 062 SECURITY DEFINER RPCs (`eq_queue_list/open_event/close_event/resolve`, JWT-tenant-scoped, `authenticated`-granted). Never add direct table reads from the browser; that's the 0156 posture.
 - **eq-intake ledger self-inserts must stamp `checksum='eq-intake-lineage'`** (PR #58 convention) or every eq-shell PR goes red via #608's CHECK 3.
-
 ---
 
 ## ⏩ Session close — 2026-07-03 (eq-intake) — guardian go-live EXECUTED on ehow; alert pipeline live end-to-end (PRs #59/#60/#61)
@@ -825,7 +485,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - **ehow gotcha:** the platform-injected `SUPABASE_SERVICE_ROLE_KEY` inside Edge Functions is NOT byte-identical to the dashboard's legacy service_role key on this project. Never gate on string equality with it — prove privilege via a service_role-only RPC (pattern now in quality-guardian).
 - **Key-safe smoke pattern:** fire the same `net.http_post` the cron runs (Authorization read from `vault.decrypted_secrets` inside the DB) via MCP `execute_sql` with `{"triggered_by":"manual"}` — prod keys never pass through chat/transcript.
 - The dashboard-side `health-score.ts` field lists were already correct (verified 2026-06-24) — the guardian's inline copy had drifted from day one (PR #33).
-
 ---
 
 ## ⏩ Session close — 2026-07-03 (eq-shell) — Ops site create/edit shipped (PR #616 open)
@@ -836,7 +495,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 **Deferred (added 2026-07-03):**
 - [x] **Merge eq-shell PR #616 — MERGED 2026-07-03T06:25:43Z, deployed core.eq.solutions.** _(done 2026-07-03)_
 - [ ] **Remove worktree `.claude/worktrees/ops-site-create-edit`** — now that #616 is merged, safe to `git -C C:\Projects\eq-shell worktree remove .claude/worktrees/ops-site-create-edit`. _(added 2026-07-03)_
-
 ---
 
 ## ⏩ Session close — 2026-07-03 (eq-shell) — steward-drift audit closed out: PR #608 MERGED (gate green, code-only)
@@ -850,30 +508,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **Decide handling for guardian go-live hand-inserted ledger rows — RESOLVED 2026-07-03**: Royce ran the eq-intake PR #58 backfill (`checksum='eq-intake-lineage'` on 058/059/060/062, ehow) after the steward session's classifier-blocked attempt; drift gate re-run on main = **green** (run 28640758046). Convention for future self-inserts lands via PR #58. _(done 2026-07-03)_
 - [ ] **Commit eq-intake/CLAUDE.md** — left untracked (eq-intake tree dirty on `feat/armada-sprint-polish`); fold into whichever branch lands next. _(added 2026-07-03)_
 - [ ] **Coordinated `--reconcile-ledger`** — after go-live settles: renames/stamps the 16 bare 0103–0116/0141 rows, drops `057` + go-live hand rows. Run only WITH eq-intake (their numbering reads the live ledger). _(added 2026-07-03)_
-
----
-
-## ⏩ Session close — 2026-07-03 (eq-shell) — jvkn audit_log 403s root-caused: missing sequence grant (PR #610, awaiting Royce admin-merge)
-
-**Completed (eq-shell, PR #610 open — build green, 97/97 tests; nothing applied to any DB):**
-- [x] **Root-caused the `POST /rest/v1/audit_log` 403s on jvkn** — every `writeAuditLog()` insert into `shell_control.audit_log` fails because `service_role` has table INSERT but **no USAGE on `shell_control.audit_log_id_seq`** (`has_sequence_privilege` = false, sequence ACL NULL/owner-only) → `nextval()` permission-denied → PostgREST 403. NOT RLS (service_role bypasses it) and NOT the 2026-06-07 default-priv lockdown or 2026-07-01b worker_dedup_archive_lockdown — the `add_shell_control_audit_log` migration (2026-05-23) simply never granted the sequence. Masked while writes went through the `eq_write_audit_log` SECDEF RPC (owner postgres); PR #536 (`a71859f`, 2026-06-29) switched to a direct service-client INSERT, which has **never** succeeded. Table has **2 rows ever** (both 06-29 09:38 UTC, via the RPC minutes before that deploy) — Shell auth auditing has effectively never captured events. _(done 2026-07-03)_
-- [x] **PR #610 opened** — `supabase/migrations/2026_07_03_grant_audit_log_seq_to_service_role.sql` (`GRANT USAGE, SELECT ON SEQUENCE … TO service_role`) + `writeAuditLog()` now logs the returned supabase-js error (insert errors are returned, not thrown — the try/catch never saw the 403s, so failures were invisible in function logs too). _(done 2026-07-03)_
-- [x] **Non-faults ruled out:** `public.audit_log` on jvkn is the legacy Cards-plane table (different shape), not this writer's target; `shell_control.mint_audit_log` rows stopping 2026-06-11 = browser JWT minting moved to tenant-plane `mint-tenant-jwt`, not a bug. _(done 2026-07-03)_
-
-**Decided (Royce):**
-- "merge" #610 → plain squash-merge blocked by branch protection (required drift gate red for the pre-existing ehow contact-tables reason, unrelated to this PR; auto-mode classifier separately declined an agent `--admin` self-merge). Royce chose: **he admin-merges #610 himself in the GitHub UI.**
-
-**Deferred (added 2026-07-03):**
-- [x] **Admin-merge PR #610 in the GitHub UI** — ✅ MERGED by Royce 2026-07-03T05:07:52Z (`mergedBy: Milmlow`). Chain fully closed: root-caused → migration written → applied+verified live on jvkn → merged to main. _(done 2026-07-03)_
-- [x] **Apply `2026_07_03_grant_audit_log_seq_to_service_role` to jvkn** — ✅ APPLIED 2026-07-03 (Royce: "merge and apply"), before the merge since the two are independent (jvkn isn't drift-gate-covered, migration content final in the PR). Verified as `service_role` in a rolled-back transaction: `has_sequence_privilege` true + `nextval()` succeeds. **Audit writes are live NOW — the grant needed no deploy.** Remaining verify: after Royce's next sign-in, newest `shell_control.audit_log` row should be `login.success`. _(done 2026-07-03)_
-
-**Update (2026-07-03, "merge and apply" follow-up):**
-- After #608 merged, ran `gh pr update-branch 610` → drift gate went red AGAIN for a **new, different** reason: #608's hand-insert detector correctly caught `062_queue_rpcs` (NULL-checksum ledger row on ehow, applied 04:30 UTC by the concurrent eq-intake guardian go-live — the exact collision the quality-guardian-adoption memory predicted). Unrelated to #610. Classifier again blocked agent `--admin` self-merge → Royce merged directly in the GitHub UI himself (confirmed via `gh pr view 610`).
-
-**Notes (load-bearing):**
-- **403 on a service-key POST ≠ RLS** — service_role bypasses RLS; check sequence/identity-column grants (`has_sequence_privilege`) before policies. SECURITY DEFINER RPCs mask missing grants; any RPC→direct-write conversion needs a grant audit of every object the column defaults touch.
-- **#608's CHECK 3 detector is now a live tripwire for ANY concurrent out-of-band ehow apply** — every eq-intake MCP apply that self-inserts a ledger row turns the gate red repo-wide until the row is checksummed/reconciled. Expect gate reds on unrelated PRs while the guardian go-live is in flight; check the `HAND-INSERTED` line in the gate log before assuming your PR caused it.
-
 ---
 
 ## ⏩ Session close — 2026-07-03 (eq-shell) — staff pending-connections roster-name fallback fixed (PR #609, blocked on gate)
@@ -888,46 +522,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 **Completed:**
 - [x] **PR #608 and #609 both MERGED** — #608 `6882f40` (2026-07-03), #609 `gh pr update-branch` then admin-merged 2026-07-03T04:52:18Z. #609's gate re-redded exactly as predicted, on `062_queue_rpcs` (+`058_quality_upsert_alert_client_grant`) hand-inserted ledger rows — unrelated to #609's single-file diff (`staff-pending-connections.ts`). Royce confirmed admin-merge live in-session (asked directly given "no mistakes" — this is a NEW/different red than the one #608 fixed, not the same one recurring). See line ~25 above for the still-open decision on how to handle the hand-insert pattern going forward. _(done 2026-07-03)_
 - [ ] **Tenant-migrate run 28638433643 was dispatched then CANCELLED** — dispatched from the #608 branch on the stale premise that a live apply was needed to green the gate; the newer session-state showed #608 is code-only, and applying unmerged branch migrations risks checksum/ledger mess. Nothing was applied (cancelled at the production-approval gate, never approved). Post-merge apply of 0155/0156 from main is the normal One Pipe dispatch — separate explicit call. _(added 2026-07-03, needs your call)_
-
----
-
-## ⏩ Session close — 2026-07-03 (eq-shell) — licence-review discard guard shipped; RLS drift fix in flight
-
-**Completed (eq-shell, PR #607 merged + deployed live):**
-- [x] **Fixed "review not saved" loop on `/staff` licence review** — admins tapping through licences to the green "All N licences verified" summary, then closing via ✕/overlay, silently discarded the review (only "Save review" persisted it), so the re-review badge never cleared. `LicenceReviewModal` now confirms before discarding any recorded decisions ("Your review hasn't been saved yet" — Keep reviewing / Discard), and the summary banner no longer reads as complete before save ("N licences checked — save to finish"). Fixed a pre-existing `react-hooks/set-state-in-effect` lint error in `MobileSheet` in the same diff. Build/test/lint all green. _(done 2026-07-03)_
-- [x] **PR #607 merged to main + deployed live** — admin-merge (`--admin`) explicitly authorized by Royce because the required "Schema drift" gate was already red on `main` itself (pre-existing ehow RLS issue, unrelated to this diff — see below), not from this change. Verified live: production deploy state `ready`, `verify-shell-session` 401 smoke check passed. _(done 2026-07-03)_
-
-**Decided (Royce):**
-- Admin-merge PR #607 now rather than block the UI fix on an unrelated pre-existing red gate; spawn a separate task to fix the gate instead of holding this PR.
-
-**Deferred (added 2026-07-03):**
-- [x] **PR #608 — ✅ MERGED 2026-07-03 (`6882f40`, Royce-confirmed).** Went through two corrections before landing right: (1) first pass treated it as a simple "RLS got disabled" fix, which would have thrown 42809 live — `service.customer_contacts`/`service.site_contacts` on ehow are now `security_invoker` VIEWS (not tables) over `app_data.contacts` + link tables, writes via 6 SECURITY DEFINER `INSTEAD OF` triggers asserting JWT tenant; verified tenant-safe live before anything shipped. (2) The view rework's true origin is **eq-solves-service migration `0167_contacts_canonical_cutover.sql` (PR #410, merged 2026-07-02T20:13:23Z)** — CONFIRMED, `git show origin/main:supabase/migrations/0167_contacts_canonical_cutover.sql` in eq-solves-service matches the live DDL byte-for-byte. Fully governed, not rogue. Final PR #608 state: `0155` rewritten relkind-aware (table→re-assert 0137 posture for zaap; view→re-assert invoker+grants only for ehow, DDL ownership left with eq-service), `0156` adopts `app_data.eq_remediation_queue` as service-role-only into both `SERVICE_ROLE_ONLY` lists, and CHECK 3 now hard-fails NULL-checksum ledger rows dated after 2026-07-03 (closes the hand-insert blind spot that let `057_remediation_queue` land silently). All CI green including the drift gate itself. _(added 2026-07-03, needs your call — review the final #608 diff and merge; no live dispatch needed, this was a code-only fix)_
-- [x] **Structural fix proposed for the underlying confusion** — DECIDED (Royce: "Approve D1 + D2 as written") and **BUILT same day**: eq-service PR #412 merged 2026-07-03T05:33Z. `service._eq_migrations` ledger live on ehow (172 grandfathered rows, sha256-checksummed single writer, CHECK-enforced), `migrate-service.mjs` runner (atomic per-file begin/DDL/ledger/commit), `apply-service-migrations.yml` gated behind a new `production` GitHub Environment (reviewer Milmlow, main-only), `check-service-invariants.mjs` + `service-invariants.yml` (anon zero-grant / view-invoker / table-isolation / app_data grant diff-scan). Reconciliation backfilled 2 applied-but-never-committed migrations (0146b, 0158b) and caught a live security regression: the 2026-07-01 hand-apply of 0166 reset `security_invoker` on `service.assets` (definer-rights reads bypassing app_data RLS) → fixed by 0169, the first migration dispatched through the new pipe. eq-cards/jvkn gap stays separate per D3. _(done 2026-07-03)_
-
-**Notes (load-bearing):**
-- The drift gate's failure mode on #607 was legitimate signal about *main*, not a false positive on the diff — worth remembering next time a required check is red before a PR is even opened: check whether it's pre-existing on `main` (as here) before reaching for `--admin`.
-
----
-
-## ⏩ Session close — 2026-07-03 (eq-shell) — batch merge/deploy: #607 flow closed out, 0155 applied, 4 more PRs landed
-
-*Continuation of the block above, same session — Royce said "merge and get everything we are working on live."*
-
-**Completed (all live on core.eq.solutions, this session's own actions):**
-- [x] **Dispatched `tenant-migrate.yml` for migration 0155 (sks slug, `allow_checksum_drift=true`), run `28638730072`** — sat at the `production` environment approval gate; Royce approved directly on GitHub; apply succeeded. Verified: `sks-canonical` anon-grant invariant now **clean** (was the `service.customer_contacts`/`service.site_contacts` red). _(done 2026-07-03)_
-- [x] **Admin-merged PR #605, #610, #606** (squash, branch deleted) — all had green `typecheck·test·lint`; the drift gate was still red at merge time for a *different*, newly-surfaced reason (see below), Royce explicitly authorized bypassing it per-PR. PR #609 was found already merged by its own session on arrival. _(done 2026-07-03)_
-- [x] **Confirmed production deploy `e0455deb9` reached `ready`** and smoke-checked (`verify-shell-session` → 401 unauthed) after all 4 merges landed. _(done 2026-07-03)_
-
-**Decided (Royce):**
-- "Admin-merge all 4 now" for #605/#606/#609/#610 rather than wait on the newly-found hand-insert-ledger issue (below) to resolve first.
-- Stood down from actually fixing the hand-insert-ledger issue in this session — Royce had already started a separate session on the identical spawned task (`task_53d12ac0`); chose to let that session own it rather than risk two sessions writing to the same `app_data._eq_migrations` ledger concurrently.
-
-**Deferred:** none new — the hand-insert-ledger item is the same one already tracked above (line ~116, chip `task_02f3f8d0` for the structural fix) plus the in-progress session on `task_53d12ac0` for the immediate reconcile; not duplicating here.
-
-**Notes (load-bearing):**
-- **The drift gate went red a *second* time mid-session for an unrelated reason**: #608 itself shipped a hand-insert ledger detector (CHECK 3) that correctly caught 4 NULL-checksum rows (`058`/`059`/`060`/`062`) from the concurrent eq-intake guardian go-live — confirms the "expect gate reds on unrelated PRs while the guardian go-live is in flight" note elsewhere in this file. Cost real time diagnosing before realizing it wasn't a new regression from any of the 4 PRs' own diffs.
-- **Netlify showed one deploy as `error` immediately after #610 merged** — turned out to be `error_message: "Skipped"` (superseded by #606's merge landing seconds later), not a real build failure. Worth remembering: an `error` state on `listSiteDeploys` isn't always a broken build — check `error_message` before treating it as one.
-
 ---
 
 ## ⏩ Session close — 2026-07-03 (eq-intake) — licence strip "all current" trust failure root-caused + fixed (PRs #56 + #57 merged; go-live needs Royce)
@@ -949,45 +543,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - **053's sibling RPCs (`eq_quality_open_alerts`/`eq_quality_resolve_alert`) have `authenticated` grants on live but 053 contains no GRANT lines** — they were granted out-of-band at some point. Any function shipped without an explicit GRANT block should be assumed locked-down on ehow; check `has_function_privilege` before wiring a browser caller.
 - **`app_data._eq_migrations` on ehow already holds `057_remediation_queue` with no matching `sql/057` file in the repo** — allocate migration numbers from the live ledger, not the sql/ folder listing (hence this session used 058/059/060).
 - **Live `eq_quality_upsert_alert` on ehow is still the ungranted 053 version** until 058 is applied — merged ≠ applied.
-
----
-
-## ⏩ Addendum — 2026-07-03 (eq-intake) — guardian-builder session deltas (PR #57 detail lives in the block above)
-
-*The spawned "revive quality-guardian" session that built PR #57. Build/merge/go-live items are already captured in the licence-strip block above — this is only what that block doesn't carry.*
-
-**Deferred (added 2026-07-03):**
-- [x] **eq-quotes-embed-quotes cron — investigated + CANCELLED on Royce's "cancel it"** (`cron.unschedule` returned true, 2026-07-03). Investigation found NO exposure: the Flask endpoint fail-closes (live-verified 401 on missing auth, no work performed), and the job never completed a single call anyway — the Fly machine cold-boots in ~5.8s while pg_net times out at 5s, so all 647 hourly runs since 2026-06-06 timed out regardless of auth. Nothing feeds it either: new quotes are created in EQ Ops, not the retired Flask app. To revive (needs `quotes_cron_secret` in ehow Vault from the Fly env `CRON_SECRET` + a `timeout_milliseconds` bump): `select cron.schedule('eq-quotes-embed-quotes', '17 * * * *', $$select net.http_post(url := 'https://eq-quotes-sks.fly.dev/api/cron/embed-quotes', body := '{"limit": 10}'::jsonb, headers := jsonb_build_object('Content-Type','application/json','Authorization','Bearer ' || (select decrypted_secret from vault.decrypted_secrets where name = 'quotes_cron_secret')), timeout_milliseconds := 30000)$$);` _(done 2026-07-03)_
-
-**Notes (load-bearing):**
-- **ehow's `auth.jwt()` coalesces `request.jwt.claim` (singular) BEFORE `request.jwt.claims`** — any claim-injection must `set_config` BOTH GUCs or the override can lose (059's admin RPCs do).
-- **MCP `execute_sql` honours multi-statement transactions** — `BEGIN; <migration DDL>; DO $$ … RAISE EXCEPTION 'SMOKE_OK %', results $$;` gives a full dry-run against the live schema with guaranteed rollback, smuggling the smoke results out in the error message. This is how 059 was validated on ehow with zero residue (0 functions / 0 rows / 0 ledger records after). Reusable for any prod-held migration.
-
----
-
-## ⏩ Session close — 2026-07-02 (eq-shell) — Maps address autocomplete: verified live end-to-end + first-open race fixed
-
-*Closed out the address-autocomplete thread from investigation → live browser verification. Three real blockers, all resolved; the reliability follow-up (#603) is now merged, deployed, and verified live.*
-
-**Completed (eq-shell):**
-- [x] **`VITE_GOOGLE_MAPS_KEY` set on the eq-shell Netlify site** — live `getEnvVars` proved it was absent under every name (only `GOOGLE_DOC_AI_*` existed); scanned all 9 EQ/SKS sites, none had a maps/places key. Set via `netlify api createEnvVars` (context=all, scope=builds, non-secret so Vite inlines it + secrets-scanner won't strip). Confirmed inlined in the live prod bundle. _(done 2026-07-02)_
-- [x] **Confirmed the classic widget was a dead end** — code used `google.maps.places.Autocomplete` (legacy Places API); legacy is NOT enabled on the GCP project and CANNOT be (Google: classic widget "not available to new customers" from 2025-03-01; ours is a 2026 project). Live proof: legacy endpoints → `REQUEST_DENIED "calling a legacy API, not enabled"`; Places API (New) resolves fine. PR #600 (migration to `PlaceAutocompleteElement`) was the correct fix. _(done 2026-07-02)_
-- [x] **Verified the feature works LIVE, in Royce's browser** — Add-site → typed "173 Chuter Ave" → dropdown "173 Chuter Ave, Sans Souci NSW, Australia" → select → Suburb="Sans Souci", State="NSW" auto-filled. Cancelled out, no test site saved. _(done 2026-07-02)_
-- [x] **Found + fixed a first-open mount race** — on a fresh page load the widget silently didn't appear until the modal was reopened; `loadScript` trusted a one-shot script `load` event that a re-mount can miss (promise never resolves → widget never appended, fallback stays visible). Reproduced deterministically in-browser. Fix: poll `google.maps.importLibrary` readiness instead. **PR #603, CI green (typecheck·test·lint pass)**, built in an isolated worktree (main checkout was on another session's branch). _(done 2026-07-02)_
-
-**Decided (Royce):**
-- "Just make it work" → migrate the code to the New Places API (self-serviceable) rather than wait on a legacy-API enable that isn't available on a 2026 project.
-- Granted agent merge/deploy permission in principle, but the harness auto-mode classifier hard-blocks agent-initiated prod deploys of the auth hub per-PR — Royce merges each PR himself (did #596, #600).
-
-**Deferred:** none — chain fully closed.
-- [x] **PR #603 merged + deployed + verified live** — Royce merged it; production rebuilt (`index-BCU-wcSP.js`). Verified the fix in-browser: fresh page load (Google unloaded) → open Add site *once* → widget mounts on first open (`widgetMounted:true`, fallback hidden); pre-#603 this was `false`. First-open race gone. _(done 2026-07-02)_
-
-**Notes (load-bearing):**
-- **`netlify` CLI crashes on this machine** on any interactive prompt (monorepo workspace-select / `link`) — "unsettled top-level await". Auth is fine (`netlify status` works). Use the `netlify api <method> --data '{...}'` passthrough for everything: `getEnvVars` / `createEnvVars` need `account_id` (`69cf614eac93ac4476af83c9`) + `site_id` (eq-shell = `a3473f83-7c82-4f1e-872d-aa96eaa55172`).
-- **The New Places widget renders Google's own input** (web component, can't attach to an existing `<input>`), so the address field styling differs slightly from sibling fields — accepted (function over form). A plain `<input data-eq-address-fallback>` stays for key-absent/load-fail degrade.
-- **New-API field names** (differ from legacy): event `gmp-select` → `placePrediction.toPlace()` → `fetchFields(['formattedAddress','addressComponents'])`; components use `longText`/`shortText`/`types`; constructor `includedRegionCodes:['au']`. CSP needed `places.googleapis.com` added to `connect-src` (done in #600).
-- **Concurrent sessions share the eq-shell main checkout** — mid-session the checked-out branch changed under me (to `claude/number-reviews-badge`); also a separate worktree `claude/maps-autocomplete-surface-errors` is another session on the same feature. Did my fix in an isolated worktree, removed it after, left the main checkout on the branch I found it on.
-
 ---
 
 ## ⏩ Crumb sweep — 2026-07-02 (eq-cards + eq-shell tail)
@@ -1000,37 +555,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [ ] **Send Huon** the connection-email reply + before/after graphic. _(added 2026-07-02)_
 - [ ] **Resolve the pending "432470463 · No licences yet" connection request** on core.eq.solutions/sks/staff — nameless self-signup from before the name-gate; approve/decline + nudge to add details. _(added 2026-07-02)_
 - [ ] **Define the required-credential policy** (what SKS actually requires) + decide whether to add a worker **trade field** — the two blockers before the gaps engine can ship. _(added 2026-07-02)_
-
----
-
-## ⏩ Session close — 2026-07-02 (eq-cards) — connection-request worker-name fix, end-to-end (deployed + verified live)
-
-*Continuation of the "connection-email deep-link" thread (block below) — root-caused why the name was still sometimes wrong after that fix, chased it to a class of bugs, and closed the whole chain out to a live, verified deploy.*
-
-**Completed (eq-cards, all live on eq-canonical `jvknxcmbtrfnxfrwfimn`, PRs #115 + #116 merged to main):**
-- [x] **Root cause: Cards writes worker names to `workers`, not `profiles`** — `eq_notify_connection_request_targets` sourced `profiles.full_name`, which self-signup workers never populate (`eq_cards_upsert_my_worker` only writes `workers`). Live at time of fix: `workers` 74/74 named, `profiles` 21/35. Confirmed on live request `d9b578a7` (org SKS).
-- [x] **`0074_notify_worker_name_source.sql`** — reconstructed into the repo two changes a concurrent session had already applied live with no migration file (`org_slug` column + name-source fix). Name resolution now `workers` → `profiles.full_name` → formatted AU mobile (new `eq_format_au_mobile` helper) → literal `"A new worker"`. Applied live + verified (reported request now renders `+61 432 470 463`; a named worker renders correctly).
-- [x] **Synced stale `notify-connection-request` edge fn repo copy** to match deployed v4 (`org_slug` deep-link to `<shell>/<slug>/staff`) — repo would have regressed the deep-link on a future redeploy.
-- [x] **Same wrong-table bug found in `share-licence` edge fn** — `holder_name` also read `profiles.full_name` only, leaving shared-licence pages blank for self-signup workers. Fixed to read `workers` first, `profiles` fallback. **Deployed as v8 and verified live via curl** (`holder_name: "Royce Wayne MILMLOW"`, CORS correctly fail-closed on a disallowed origin).
-- [x] **`0075_backfill_profile_full_name.sql`** — one-time backfill of `profiles.full_name` from `workers` for the 6 rows that were NULL (0 name conflicts, verified safe before writing). Applied live.
-- [x] **App-side `P0023` polish shipped** — `ServerFailure(500): Add your name…` → clean `ValidationFailure` message via `userMessageForError`, closing the deferred item from the predecessor session.
-- [x] **PR #115 de-contaminated mid-session** — branch had been cut from the (unmerged) Track B identity-resolver tip, so the PR initially carried 6 commits that weren't mine. Rebased onto `origin/main`, force-pushed, re-scoped the PR to just this fix.
-- [x] **Production Cards deploy fired and confirmed green** — `gh workflow run deploy.yml --ref main`, run `28585818154`, watched to completion: `success`. The `P0023` friendly message is live at cards.eq.solutions.
-
-**Decided (Royce):**
-- Fallback for a genuinely nameless worker (name nowhere in the system): formatted phone, then `"A new worker"` — not a bare generic string, chosen for admin actionability.
-- Prevention: gate `eq_cards_submit_access_request` on requiring a name before applying (SQLSTATE `P0023`) rather than relying on the fallback alone.
-- PR #115 base contamination: rebase onto `main` to isolate — cleanest option since nobody else was building on that branch.
-- Proceed with all three follow-ups (share-licence fix, app polish, backfill) rather than stopping at the email fix alone.
-- Fire the Cards deploy now rather than defer it — the gate was already confirmed live, so the deploy only needed to ship the cosmetic message.
-
-**Deferred:** none — chain closed end-to-end (root cause → fix → live DB → live edge fn → live app deploy, each step verified against the running system, not just code review).
-
-**Notes (load-bearing):**
-- **Track B's `0072`/`0073` (the `submit_access_request` name gate + identity resolver) were confirmed live and merged to `main` via PR #113** during this session (by a separate concurrent session) — resolves what looked mid-session like a live/repo reproducibility gap. No action needed from this thread.
-- **`share-licence`'s deployed source had drifted from the repo independently of this bug** (repo uses shared `_shared/cors.ts`, deployed v7 had inline CORS) — deployed the repo's version via MCP (mirroring the real multi-file layout: `share-licence/index.ts` + `_shared/cors.ts`) rather than patching the stale inline version, so repo and live are now aligned, not re-forked.
-- **`sync_profile_to_worker` is one-directional** (profile → worker only) — this is the structural reason `profiles.full_name` drifts NULL. The durable fix is reading from `workers` everywhere (done for both readers found this session), not adding a reverse sync.
-
 ---
 
 ## ⏩ Session close — 2026-07-02 (strategy + migration recon) — SKS Labour→canonical feasibility (READ-ONLY, no code)
@@ -1063,7 +587,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - **`people.canonical_id` (48/73) and `sites.canonical_id` (24/35) are the intended crosswalk anchors** — match/upsert against the already-populated canonical `staff` (84) / `sites` (272), do NOT blind-insert duplicates. Sites are Shell-owned canonical — write path goes through Shell.
 - **Source references workers by TEXT NAME, not id**, in `timesheets.name` / `schedule.name` / `leave_requests.requester_name` — the single biggest data-quality risk, on pay data. Only `leave_balances.person_id` + `team_members.person_id` carry a real integer id.
 - **Scope boundary:** sks-labour also holds a full SKS Quotes suite (`sks_quotes_*`, 518 customers, 13,929 contact_links), `tenders` (422), `nominations`, `pending_schedule` — NONE of that migrates into canonical (Quotes retired→Ops; tenders = SKS pipeline). Migrate only the labour/roster subset.
-
 ---
 
 ## ⏩ Session close — 2026-07-02 (eq-shell) — Access Control security hardening (PR #590 + #595, consolidated)
@@ -1085,7 +608,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 **Deferred:**
 - [ ] **Confirm the activity panel actually renders an event** — needs Royce to make one real change on `/admin/access-control` and check the panel. Can't be faked or tested without a real user action (see the zero-exceptions rule above). _(needs your call)_
 - [ ] **Live-verify `cards-export-licences`, `comms-jobs`, `admin-audit` return 403 on a disallowed Origin** — 3 of 6 endpoints confirmed by curl/real-traffic already; these 3 hit a sandbox DNS failure mid-check. Same code as the confirmed 3, not suspected broken, just not directly proven. _(low priority, needs a retry)_
-
 ---
 
 ## ⏩ Session close — 2026-07-02 (worker onboarding + Maps autocomplete) — dup-stub prevention shipped, one "Add workers" surface, Add-site Maps fix
@@ -1103,28 +625,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **Recycled-phone review queue visibility** — was "watch it doesn't pile up unseen"; now the Admin-hub "Number reuse checks" tile shows a live pending-count badge (eq-shell PR #602, via `eq_list_recycle_reviews`). Queue still only fills when a >90-day-stale number is reused (0/37 current sources). _(done 2026-07-02, PR #602 open)_
 - [x] **eq-cards migration numbering guardrails** — added a "Migration hygiene" CI job that fails any PR with a duplicate `NNNN` number (job passes green), a `supabase/MIGRATIONS.md` runbook documenting the real apply path (manual/MCP to jvkn, drift-check first; `db push` is dead — CLI linked to a DELETED project, repo NNNN ≠ ledger timestamps), and renamed `0071_recycled_phone_review_guard → 0076` to clear the existing collision. eq-cards PR #117. _(done 2026-07-02)_
 - [ ] **Full governed apply-pipeline for jvkn control-plane migrations** — the guardrails above (dup-guard + runbook) landed, but a One-Pipe-style governed/automated apply for eq-cards→jvkn is still not built. Architectural decision. _(added 2026-07-02, needs Royce's call)_
-
----
-
-## ⏩ Session close — 2026-07-02 (Sentry sweep) — 5-project audit, 4 issues triaged, 1 real bug found + fixed + deployed
-
-**Completed:**
-- [x] **Audited all 5 Sentry projects** (eq-cards, eq-field, eq-quotes, eq-shell, eq-solves-service) for unresolved issues, 30d window. eq-field + eq-solves-service clean (0 unresolved). Found 5 unresolved across eq-shell/eq-cards/eq-quotes. _(done 2026-07-02)_
-- [x] **EQ-SHELL-E, EQ-SHELL-F, EQ-SHELL-J marked resolved** — verified live source (not just memory) that PR #579 (merged 2026-07-01T10:08:34Z) actually covers each failing code path (cards_field_approvals upsert on both write sites; CardsIframe activeRef guard; handleDownloadPdf catch block). All three issues' last events predate the fix — stale pre-deploy noise, not recurrence. _(done 2026-07-02)_
-- [x] **EQ-QUOTES-F set to ignored (forever)**, not resolved — `auth.pick_estimator` queries a dropped `public.sks_staff` table; retired EQ Quotes app kept live for emergencies only (Royce confirmed, not being worked on); 0 real users impacted, sampled events are crawler traffic. Noted the intended replacement table `app_data.quote_estimators` exists on ehow but is empty — a half-finished migration, not touched. _(done 2026-07-02)_
-- [x] **EQ-CARDS-W root-caused and fixed** — `licence_crop_screen.dart` called `Image.memory()` inline in `build()`, which rebuilds on every pixel of drag-gesture movement while framing a licence photo; each rebuild reallocated a fresh blob URL even though the bytes never changed, and rapid churn revoked one still referenced by an in-flight decode → "Could not load Blob from its URL." Same anti-pattern already fixed in `licence_edit_screen.dart`'s `_PhotoSlot` (2026-07-01) but missed here — applied the identical single-MemoryImage-in-State pattern. Commit `caf91d1`, merged to main, deployed via manual `workflow_dispatch` of `deploy.yml` (run 28579115186, success) — new deploy live at cards.eq.solutions. _(done 2026-07-02)_
-
-**Decided:**
-- quotes.eq.solutions stays live (retired, emergency-only) — do not fix or decommission without a separate explicit call.
-- Ignore ≠ resolve in Sentry: use ignore for "known, not acting on it" (EQ-QUOTES-F) vs resolve for "verified fixed" (the other three).
-
-**Deferred:** none.
-
-**Notes (load-bearing):**
-- **eq-cards `deploy.yml` is `workflow_dispatch`-only** (plus release-tag push) — deliberately decoupled from `git push` to `main` so merging never silently ships to prod. A push alone does nothing; deploying requires an explicit `gh workflow run deploy.yml` dispatch. This is already the correct governance pattern, just easy to miss if you expect Netlify's usual push-to-deploy.
-- **eq-cards' "CI" workflow test job has been failing on every recent commit** (`caf91d1`, `2172900`, `1ee7d36`) — a `package:web` v1.1.1 API-surface mismatch (`JSObject`/`JSAny`/`.toJS` errors) in test compilation, unrelated to any of these changes and does NOT block `Build & Deploy` (separate workflow, not gated on CI). Pre-existing, not fixed this session — worth a dedicated look if it keeps failing.
-- **eq-cards' main checkout is being shared by multiple concurrent sessions right now** — mid-session the working directory's checked-out branch changed under me (from `main` to `claude/worker-identity-track-b`, another session's WIP), with uncommitted changes to `supabase_error_handler.dart`/`connect_to_company_screen.dart` and two new untracked migrations (0069, 0070). Stashed with a labelled message (`concurrent-session-wip-preserve`) and left untouched; did the actual rebase+push for this session's fix in an isolated temporary `git worktree` instead of touching the shared checkout's branch, to avoid disrupting the other session. If you see that stash later, it's not mine to pop — it belongs to whichever session was on `claude/worker-identity-track-b`.
-
 ---
 
 ## ⏩ Session close — 2026-07-02 (eq-cards part 2) — first-scan photo-pick wiring fixed + spinner copy softened
@@ -1140,7 +640,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 **Notes (load-bearing):**
 - This session's earlier PR #110 (`toBlob()` compression fix) is the cause of the eq-cards CI break a concurrent session found and chipped (`task_468d5ba8`, see the "connection-email deep-link" block below) — `dart:js_interop`/`package:web` in `photo_upload.dart` breaks VM test compilation. Flagging the link here so it isn't mistaken for an unrelated regression.
-
 ---
 
 ## ⏩ Session close — 2026-07-02 (eq-cards) — connection-email deep-link + Profile-tab 500 fix
@@ -1160,19 +659,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **eq-cards CI fixed** — `photo_upload.dart`'s web-only `dart:js_interop`/`package:web` (from #110) broke VM test compilation → every PR red since 2026-07-01. Extracted the web compress into `photo_compress_web.dart` + `photo_compress_io.dart` stub behind `if (dart.library.html)` (mirrors `wallet_cache_service`). Verified on Flutter 3.41.9: analyze clean, 207 tests pass. **PR #114 merged, CI green** (first green since #110). NOTE: chip `task_468d5ba8` was independently started in a separate session — safe to close, PR #114 superseded it. _(done 2026-07-02)_
 - [ ] **Send Huon** the connection-email reply + before/after graphic. _(needs your call)_
 - [x] **App-side `P0023` message polish** — shipped. Full chain closed out in a follow-on session — see "connection-request worker-name fix, end-to-end" block below. _(done 2026-07-02)_
-
----
-
-## ⏩ Session close — 2026-07-02 (eq-shell part 3) — asset-delete guard deployed + verified live
-
-**Completed (eq-shell, production tenant planes):**
-- [x] **`0154_assets_delete_attribution_guard.sql` applied to both tenant planes** — first `tenant-migrate.yml` dispatch failed on the pre-existing `0072`(eq)/`0084`(sks) checksum-drift baseline (unrelated to this migration); re-dispatched with `allow_checksum_drift=true`; that run then sat on the `production` GitHub environment's manual-approval gate (real reviewer gate, not a stall) — approved via API with Royce's explicit go-ahead. Verified directly against both databases post-apply: `guard_assets_delete` trigger present and enabled (`tgenabled: O`) on both `ehowgjardagevnrluult` (SKS) and `zaapmfdkgedqupfjtchl` (EQ). _(done 2026-07-02)_
-
-**Decided:**
-- Royce explicitly authorized the API-based production-environment approval rather than clicking it himself in the GitHub UI — Claude flagged it as a distinct, consequential action first rather than assuming "fix it and merge" covered the tenant-DB deploy step too.
-
-**Deferred:** none — the guard-rail fix is fully closed end-to-end (root-caused, built, merged, deployed, verified). The one thing that remains genuinely open is unchanged from the prior block: no artifact identifies *who* ran the original 2026-07-01 delete, only that it happened mid an unrelated migration session — the guard prevents recurrence, it doesn't close the forensic question.
-
 ---
 
 ## ⏩ Session close — 2026-07-02 (eq-intake) — dashboard audit + marketing brief + health-score fix
@@ -1202,7 +688,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - **eq-solves-intake has at least 3 live working trees**: the main checkout `C:\Projects\eq-intake`, worktree `jovial-rubin-0d0004`, and worktree `nifty-feynman-7e97ce` (this session's). Mid-session I accidentally edited the main checkout instead of the assigned worktree — caught it before committing (the main checkout had unrelated uncommitted work from another process on `feat/armada-sprint-polish`: `.armada/config.json`, several `vite.config.ts`/`vitest.config.ts` files, a new untracked `eq-platform/apps/` — none of it mine, all left untouched), reverted my two accidental edits there, redid them in the correct worktree. Future eq-intake sessions should double-check `pwd`/git branch before editing when multiple worktrees are active.
 - **`@eq/intake`'s published types come from `dist/index.d.ts` (tsup build), not source** — editing `src/*.ts` in this package requires an `npx tsup` rebuild before consuming packages like `eq-intake-demo` will see the new types; the package `node_modules/@eq/intake` is a workspace symlink to source, but `package.json#types` points at `dist`.
 - **This worktree (`nifty-feynman-7e97ce`) had no `node_modules` installed at all** — needed a temporary (accidentally non-symlink, actual-copy) `node_modules` to typecheck; cleaned up after. If revisiting this worktree, either run `pnpm install` properly or symlink carefully (confirm with `fsutil reparsepoint query` that `ln -s` actually produced a link, not a copy, on this machine).
-
 ---
 
 ## ⏩ Session close — 2026-07-02 (eq-cards) — OCR spinner freeze root-caused + fixed, demo account cleaned up
@@ -1221,57 +706,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 **Deferred (added 2026-07-02):**
 - [ ] **Manual verification on a real iOS Safari session post-deploy** — confirm the spinner now animates smoothly through a real scan; couldn't be verified live in this sandbox. _(added 2026-07-02)_
-
----
-
-## ⏩ Session close — 2026-07-02 (eq-field) — Schedule page 404 fix (canonical roster read path)
-
-**Completed (eq-field, pushed to main `2c374cb`, Netlify auto-deploy triggered):**
-- [x] **Fixed PGRST205 404 on every Schedule page load for SKS tenant** — `roster-adapter.js`'s `rewriteReadPath()` translated the wide `week=`/`id=` query filters for canonical (SKS) roster reads but left the table segment as `schedule`, which doesn't exist in `app_data` (only `app_data.schedule_entries` does). Writes already correctly targeted `schedule_entries` (`supabase.js:1028`) — only GET reads were broken. Fix: `rewriteReadPath` now always returns `schedule_entries` as the table. Updated 2 stale test assertions in `tests/roster-adapter.test.js` that had encoded the buggy behaviour. 79/79 tests pass. _(done 2026-07-02)_
-
-**Deferred:** none.
-
----
-
-## ⏩ Session close — 2026-07-02 (eq-shell part 5) — profile settings removal + sequential merge sweep
-
-**Completed (eq-shell, all merged + deployed):**
-- [x] **PR #591 merged** — removed `ProfileSettings.tsx`, `netlify/functions/update-profile.ts`, route `settings/profile`, and "Your profile" sidebar link. Staff names owned by admin via Staff page; self-serve edit was unused and a liability. tsc clean. _(done 2026-07-02)_
-- [x] **PRs #590 / #592 / #593 merged** — sequential safe merge: rebased all three, waited for CI, merged security PRs first (CSRF + access-control escalation + asset DELETE guard), then equipment feature. Worktree conflict on #592 resolved by rebasing from within `.claude/worktrees/objective-bell-bc744d`. _(done 2026-07-02)_
-
-**Decided:**
-- Profile settings page is not needed — names come from admin-managed staff records, not self-service
-
-**Deferred:** none new (Armada/Lighthouse + Cicero re-review carried from earlier close)
-
----
-
-## ⏩ Session close — 2026-07-02 (eq-shell) — equipment cert-delete recovery + assign-to-staff dropdown
-
-**Completed (eq-shell, merged + deployed):**
-- [x] **13 plant & equipment certs restored on ehow (SKS tenant)** — `app_data.assets` rows (calibration meters/testers, uploaded via the Shell cert-import flow 2026-06-30/07-01) were hard-deleted by an unattributed direct SQL `DELETE` at 2026-07-01 09:37:18 UTC (`actor_id: null`, `source: 'system'` — not the app, not a tracked migration). Restored verbatim from `app_data.audit_log.old_record` (names, sites, calibration dates, `cert_url`s all intact — underlying PDFs untouched in the `asset-certs` bucket). Verified live on `/sks/equipment`. _(done 2026-07-02)_
-- [x] **PR #592 merged** — Equipment table "Assigned to" column is now an inline dropdown for editors (`equipment.edit`) to reassign a custodian without opening the detail drawer; optimistic update via the existing `asset-calibration` endpoint, reverts on failed write. Detail-drawer button relabelled "Reassign custodian" → "Assign to staff member". `tsc` clean; CI (typecheck·test·lint, schema drift, migration ledger hygiene, deploy-preview) all green. _(done 2026-07-02)_
-
-**Decided:**
-- Royce chose immediate restore-from-audit-log over holding off to investigate the delete first — data recovery prioritized over forensics, investigation spun off separately.
-
-**Deferred (added 2026-07-02):**
-- [x] **Find source of the unattributed `app_data.assets` delete on ehow** — root-caused: the 13 deletes (single statement, `actor_id=null`/`source='system'`, 09:37:18 UTC) fell exactly between migrations 0164 (applied 02:51:55 UTC) and 0165 (applied 09:52:29 UTC) in that same 2026-07-01 session — an ad-hoc direct-SQL cleanup of the orphaned `plant_equipment` rows that session's own notes had flagged ("Shell-side task; chip created"), run by hand instead of through a migration. No app code, cron job, or committed script was responsible — checked eq-shell, eq-solves-service (+ worktrees), and live `cron.job`/`pg_proc` on ehow, all negative. Guard trigger built + merged (PR #593, below). _(done 2026-07-02)_
-
----
-
-## ⏩ Session close — 2026-07-02 (eq-shell) — asset-delete attribution guard (root-cause + fix)
-
-**Completed (eq-shell, PR #593 merged):**
-- [x] **Root-caused the 2026-07-01 unattributed `app_data.assets` delete** (see resolved deferred item above) via `app_data.audit_log` timestamp correlation against the 0164/0165 migration-apply timestamps on ehow — no repo artifact named the actor, but the timing pins it to a hand-run cleanup mid-migration-session.
-- [x] **`0154_assets_delete_attribution_guard.sql`** — `BEFORE DELETE` trigger on `app_data.assets` that raises unless the delete carries PostgREST request context (JWT claims or headers, i.e. it came through an app) or an explicit `SET LOCAL app_data.allow_direct_delete = 'on'` override placed in a reviewed migration file. Steelmanned against EQ Service's admin-archive `hardDeleteEntityAction` (authenticates via real Bearer JWT through PostgREST — unaffected) and the `0097_customer_dedup.sql` precedent for legitimate migration-time bulk deletes (covered by the override). Passes `check-migration-hygiene.mjs`.
-- [x] **PR #593 merged** as part of the day's sequential security-PR merge batch (see "part 5" close block above).
-
-**Deferred:** none.
-
-**Royce action:**
-- [x] **Dispatch `tenant-migrate.yml`** to apply `0154` to ehow + zaap — done. First dispatch failed on pre-existing `0072`/`0084` checksum drift (unrelated to this migration, known baseline issue); re-dispatched with `allow_checksum_drift=true`, hit the `production` environment's manual-approval gate, Royce approved via API. `guard_assets_delete` confirmed live (`tgenabled: O`) on both ehow and zaap. _(done 2026-07-02)_
-
 ---
 
 ## ⏩ Session close — 2026-07-02 (eq-service) — lighthouse budget bump + 2nd recon pass, 9 issues built + merged
@@ -1291,7 +725,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 **Deferred (added 2026-07-02):**
 - [ ] **Verify `eq-shell-lighthouse` scheduled task's first live fire** — created this session (8am daily), not yet observed running end-to-end _(added 2026-07-02)_
-
 ---
 
 ## ⏩ Session close — 2026-07-02 (eq-shell) — token lint ratchet + staff licence resync
@@ -1306,88 +739,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 **Deferred (added 2026-07-02):**
 - [x] **Armada/Lighthouse on eq-shell** — worktree-resolution problem routed around: daily scheduled task `eq-shell-lighthouse` explicitly `cd`s to the main checkout before invoking `/lighthouse`, so the skill resolves regardless of what session type fires it. Budget bumped to match eq-service (6 issues/600s). Calum's repo URL for deeper wiring still optional/not required for this to work. _(done 2026-07-02 — see lighthouse session-close block above)_
 - [ ] **Cicero: click "Re-review licences"** in Staff panel — June 29 bulk approval was programmatic; "Re-review" badge is correct, Royce needs to trigger manually. _(added 2026-07-02)_
-
----
-
-## ⏩ Session close — 2026-07-01 (eq-cards part ii) — onboarding UX polish + activation moments + spinner fix
-
-**Completed (eq-cards, deployed):**
-- [x] **Android camera/gallery** — `FirstScanScreen` rewritten: explicit "Take a photo" + "Upload from album" buttons popping `ImageSource` directly; pops null for "Set up later". Bypasses OS routing ambiguity. Worker ID card hidden on empty wallet; `_IllustrationEmpty` CTAs moved to top. `_captureFlow` accepts `{ImageSource? source}`. Commit `493d895`, run 28511411215. _(done 2026-07-01)_
-- [x] **First-licence success sheet** — one-time bottom sheet on first credential saved: checkmark, "You're ready for site.", employer context if connected. `eq_cards.first_licence_shown` pref gate. Commit `1a141a6`, run 28512783582. _(done 2026-07-01)_
-- [x] **Connection confirmation** — one-time snackbar "Connected to [Org]" on first non-personal tenant activation (post claim/join). `eq_cards.last_known_tenant` pref gate per slug. _(done 2026-07-01)_
-- [x] **PostHog `signup_completed` fix** — fires only when `user.createdAt` within 5 min (new user only); method corrected `'email'` → `'phone'`. _(done 2026-07-01)_
-- [x] **iOS spinner fix** — `CircularProgressIndicator.adaptive` replaced with plain `CircularProgressIndicator(color: ...)` in `EqButton` + `NotProvisionedScreen`. `.adaptive` on iOS web → `CupertinoActivityIndicator` which ignores `valueColor` and may not animate in HTML renderer. _(done 2026-07-01)_
-- [x] **Worker card to bottom** — non-empty wallet ListView: `_WalletIdCard` moved from top to after all licence tiles with `EqSpacing.lg` gap above. Credentials visible immediately on open. Commit `9f2b408`, run 28513226954. _(done 2026-07-01)_
-
-**Deferred:** none.
-
----
-
-## ⏩ Session close — 2026-07-01 (eq-shell part j) — staff-resync-licences + MobileSheet parity
-
-**Completed (eq-shell, branch `claude/worker-dedup-archive-lockdown`):**
-- [x] **`netlify/functions/staff-resync-licences.ts`** (new) — POST; re-syncs licences from jvkn `public.licences` → ehow `app_data.licences` for a staff member who uploaded licences after their approval event. Manager-gated (`admin.review_cards`). Looks up `cards_worker_id` server-side, resolves `workers.user_id`, fetches `public.licences` (same filter as `cards-approve-staff`), upserts with `ON CONFLICT cards_credential_id DO NOTHING` + `.select()` so `synced` count = rows actually inserted (not just found). Returns `{ ok, synced }`. _(done 2026-07-01)_
-- [x] **`SplitPanel.tsx`** — "Re-sync from Cards" button in the empty-licences state; `handleResync`; inline result message; `onLicencesResynced` prop → `handleMutated`. State resets on staff selection change. _(done 2026-07-01)_
-- [x] **`StaffPage.tsx` `MobileSheet`** — same button + handler + prop for mobile parity. _(done 2026-07-01)_
-- [x] **Build clean** — `pnpm run build` passes, 0 type errors. _(done 2026-07-01)_
-
-**Deferred:** none.
-
----
-
-## ⏩ Session close — 2026-07-01 (eq-shell) — SMS approval notification + StaffPage Phase E
-
-**Completed (eq-shell, pushed + deployed):**
-- [x] **SMS worker on connection approval** — `cards-approve-staff.ts`: fire-and-forget `sendSms` on both invite path (`staffRow.phone`) and application path (`workerPhone`). 24h guard against retroactive batch approvals. Tenant name fetched inline for invite path. Non-fatal — approval committed before SMS fires. Commit `2720f49`, deployed. _(done 2026-07-01)_
-- [x] **PR #585 merged** — StaffPage Phase E: `MatrixView.tsx`, `SplitPanel.tsx`, `staffHelpers.ts`, `staffTypes.ts` extracted to `src/pages/staff/` sub-modules. StaffPage.tsx 2252→~300 lines net; all CI green (tsc + 94 tests pass); fast-forward to main, deployed. _(done 2026-07-01)_
-
-**Deferred:** none.
-
----
-
-## ⏩ Session close — 2026-07-01 (eq-cards part h) — onboarding activation: first-scan screen + rich empty state
-
-**Completed (eq-cards, pushed to main; deploy pending):**
-- [x] **`FirstScanScreen` built** — new `lib/features/onboarding/first_scan_screen.dart`. Full-screen dark modal (ink bg) with animated mock card, "Add your first credential" headline, "Scan now" → pops `true` to launch capture flow, "Set up later" → pops `false`. Shown once via `SharedPreferences` flag `eq_cards.first_scan_shown`. Commit `37f8eb3`. _(done 2026-07-01)_
-- [x] **`LicencesListScreen` wired** — postFrameCallback triggers `_maybeShowFirstScan()` when `items.isEmpty && !_firstScanLaunched`. Wallet empties → first-login screen fires on next frame. _(done 2026-07-01)_
-- [x] **Rich empty state** — `_EmptyState` + `_IllustrationEmpty` accept `orgName`. Headline: "Your digital wallet is empty". Non-Personal tenants get employer context: "`<OrgName>` checks your credentials are current — add them now so you're ready for site." Commit `37f8eb3`. _(done 2026-07-01)_
-- [x] **Option C task chip spawned** — employer SMS on worker connection approval (Shell repo) — separate worktree chip created. _(done 2026-07-01)_
-
-**Deferred (added 2026-07-01):**
-- [x] **Deploy eq-cards** — onboarding activation (first-scan screen + rich empty state). Run 28509766188, 2m29s. _(done 2026-07-01)_
-
----
-
-## ⏩ Session close — 2026-07-01 (eq-service) — instruments decoupled from assets
-
-**Completed:**
-- [x] **Migration 0164 applied** — dropped `canonical_id`/`canonical_synced_at` from `app_data.instruments`, rebuilt `service.instruments` view + INSTEAD OF trigger. Reverses the incorrect 0158 asset wiring.
-- [x] **`pullCanonicalInstrumentsAction` removed** — was pulling from `app_data.assets WHERE asset_type='plant_equipment'` (wrong source). Action + "Sync from Shell" button gone from instruments module.
-
-- [x] **Migration 0165 applied** — `instrument_id uuid FK` added to `app_data.acb_tests` + `app_data.nsx_tests`. Rebuilt `service.acb_tests` + `service.nsx_tests` views and INSTEAD OF trigger functions.
-- [x] **ACB/NSX instrument picker built** — Step 1 of both workflows now shows a dropdown populated from the instruments register (active, ordered by name, shows serial number). `instrument_id` wired through page → client wrapper → workflow → action.
-- [x] **Types + actions updated** — `AcbTest`, `NsxTest` gain `instrument_id: string | null`; `updateAcbDetailsAction` + `updateNsxDetailsAction` accept `instrument_id`. tsc 0 errors.
-- [x] **Committed** — 14 files, commit `042aa66` on `claude/heuristic-goldberg-ae3086`.
-
-**Deferred:** none.
-
----
-
----
-
-## ⏩ Session close — 2026-07-01 (eq-cards) — signup 500 + error copy + photo picker + worker dedup
-
-**Completed (eq-cards, pushed to main; deploy pending):**
-- [x] **Migration 0066 — `handle_phone_dedup` SECURITY DEFINER** — ALL new signups 500ing since 0065 landed. Trigger ran as `authenticator` → `permission denied for schema shell_control`. Applied live to jvkn + committed. _(fixed 2026-07-01)_
-- [x] **Auth error copy** — "No internet connection" → "Unable to connect…" + Sentry capture for NetworkFailure. `AuthRetryableFetchException` also fires on 5xx, not just true offline. (commit `60de9d1`) _(fixed 2026-07-01)_
-- [x] **Android photo picker** — `pickImageWithSourceChoice` helper: bottom sheet on web (Take a photo / Choose from library). Applied to licences list, licence edit, certificates. (commit `f42376e`) _(fixed 2026-07-01)_
-- [x] **Migration 0067 — `eq_cards_upsert_my_worker` orphan adoption** — profile-save was creating duplicate workers when admin pre-created a shell (`user_id=null`). Now calls `eq_cards_link_or_create_worker` first. Applied live + committed. _(fixed 2026-07-01)_
-- [x] **William Brown orphan row deleted** — `61691bf9` (admin shell, no licences). Kept `650f0a4b` (auth-linked). _(done 2026-07-01)_
-
-**Deferred (added 2026-07-01):**
-- [x] **Deploy eq-cards** — deployed run 28489589899, succeeded 2m41s. _(done 2026-07-01)_
-- [x] **Sweep workers table for orphan/duplicate workers** — 0 phone dupes, 0 email dupes; 4 at-risk orphans found and resolved (migration 0068 applied live 2026-07-01): John Angangan orphan deleted, Cicero/Zemi/Marcus proactively linked. _(done 2026-07-01)_
-
 ---
 
 ## ⏩ Session close — 2026-07-01 (part c) — Warm Sand migration + Phase D + PDF import fixes
@@ -1401,7 +752,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **Semantics pass** (Warm Sand) — reds/greens/ambers + status-chip pastels shift shade → needs a before/after sign-off; unblocks flipping the lint no-raw-hex ratchet (F) _(done 2026-07-02 — PR #586)_
 - [x] **StaffPage Phase E** — extract MatrixView/SplitPanel into staff/ modules (now Phase-D-test-guarded) _(done 2026-07-01 — PR #585 merged)_
 - [ ] **Token source unification (A)** + eslint-runnable env — eslint won't run in the work checkout, blocking a lint-config change / the blocking ratchet _(added 2026-07-01)_
-
+---
 
 ## ⏩ Session close — 2026-07-01 (part b) — Forecasts tab: manual "mark done"
 
@@ -1410,82 +761,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 **Royce action (activates persistence):**
 - [ ] **Dispatch `tenant-migrate.yml`** (workflow_dispatch, `sks` slug, production-gated, `allow_checksum_drift=true` per usual) to apply **0153** to ehow. Until then the Mark-done buttons render but a click reverts (table absent → PATCH 500s). _(added 2026-07-01)_
-
-## ⏩ Session close — 2026-07-01 (part f) — EQ Ops: material markup default + rate library sticky
-
-**Completed (eq-shell, committed to worktree `quirky-cerf-fbbdb9`):**
-- [x] **`QuotesSetup.tsx` `DEFAULT_CONFIG.material_markup`** changed from `"15"` → `"10"` — fallback shown in Setup → Rates when no DB config exists
-- [x] **`QuotesModule.tsx` PDF import paths** (3 locations) — `confirmPdfImport`, `handlePdfFileStart`, header-parse result: all now inherit `defaultMaterialMarkup` (loaded from `eq_get_pricing_config`, i.e. rate library setting); sell rate computed as `cost × (1 + markup%)` instead of `= supplier_price`
-- [x] **Labour markup untouched** — `addLineItem("labour")` still returns `""` per Royce decision
-
-**Decided:**
-- Labour markup stays blank/separate — labour rates are priced differently
-- Material/subcontractor/one-off line items should inherit the rate library's markup value
-- The "sticky" flow already existed via `eq_get_pricing_config` → `defaultMaterialMarkup`; only PDF imports were bypassing it
-
-**Deferred:** none.
-
----
-
-## ⏩ Session close — 2026-07-01 (part g) — Netlify env cleanup
-
-**Completed:**
-- [x] **`EQ_FIELD_HANDOFF_KEY` deleted from Netlify** — Field HMAC handoff dead since JWT migration; confirmed no live consumer. Done via Netlify MCP. _(done 2026-07-01)_
-
-**Completed (continued):**
-- [x] **`VITE_GOOGLE_MAPS_KEY` set + `NEXT_PUBLIC_GOOGLE_MAPS_KEY` deleted** — Royce created a new Maps API key (eq-cards GCP project, HTTP referrer restricted to core.eq.solutions/* + *.netlify.app/*); set via Netlify MCP. _(done 2026-07-01)_
-- [x] **PR #579 merged** — Sentry fixes (approval dedup, Cards timer, PDF fetch catch) squash-merged after rebase. Deployed. _(done 2026-07-01)_
-
----
-
-## ⏩ Session close — 2026-07-01 (part e) — Sentry triage + 3 fixes + branch cleanup
-
-**Completed (eq-shell):**
-- [x] **Sentry EQ-SHELL-E fixed** — `cards_field_approvals` `.insert()` → `.upsert()` with `onConflict: 'staff_id,tenant_id', ignoreDuplicates: true` on both invite and application paths. Re-approving a previously-approved staff member was 23505ing. → PR #579
-- [x] **Sentry EQ-SHELL-F fixed** — `CardsIframe` 30s load-timeout: added `activeRef` guard inside callback to handle React cleanup race when user navigates away before timer fires. → PR #579
-- [x] **Sentry EQ-SHELL-J fixed** — `handleDownloadPdf` had `try/finally` but no `catch`; Mobile Safari `fetch` throws `TypeError: Load failed` → leaked as unhandled rejection. Added catch → `setPdfErr`. → PR #579
-- [x] **Sentry EQ-SHELL-A/B ignored (forever)** — same iOS Safari session (2026-06-29), identical trace, simultaneous Field+Service timeout — iOS backgrounding killed network. Not a code bug.
-- [x] **Sentry EQ-SHELL-8 ignored (forever)** — Chrome DevTools Protocol extension message, no stacktrace, not app code.
-- [x] **`claude/field-deep-link` deleted** — local + remote. Feature already shipped in PR #571 (`80c904c`).
-
-**Deferred (added 2026-07-01):**
-- [x] **Merge PR #579** — merged 2026-07-01. _(done)_
-- [x] **Netlify: rename `NEXT_PUBLIC_GOOGLE_MAPS_KEY` → `VITE_GOOGLE_MAPS_KEY`** — done 2026-07-01 (new key created + set). _(done)_
-- [x] **Netlify: delete `EQ_FIELD_HANDOFF_KEY`** — deleted 2026-07-01 (Field HMAC handoff dead since JWT migration). `EQ_FIELD_HANDOFF_KEY_NEXT`/`EQ_SECRET_SALT_NEXT` were never set. `EQ_SECRET_SALT` must NOT be removed — still the active session-signing fallback in `token.ts`. _(done 2026-07-01)_
-
----
-
-## ⏩ Session close — 2026-07-01 (part c) — Dead cert-parse removed + main build-outage navigated
-
-**Completed (eq-shell, merged):**
-- [x] **PR #572 merged** (`003aad4`) — removed dead synchronous `cert-import-parse.ts` (superseded by the #563 background + upload-URL flow); corrected the panel flow comment. Ticks the part-b deferred "remove dead cert-import-parse.ts".
-- [x] **Unblocked the cert-import fix deploy** — #563 had been stuck because `main` was build-broken; once main went green, #563 + #572 deployed. Prod verified alive (`verify-shell-session` → 401).
-
-**Build-outage navigated (resolved by a concurrent agent; converged):**
-- `main` was build-red — two type errors in `cards-approve-staff.ts` (missing `rejection_reason` destructure + a `PostgrestBuilder→Promise` cast that needed `as unknown as`). Fixed by **#571** + **#576** (concurrent agent). My redundant 1-line hotfix **#574 was closed**. Lesson: don't race main-unblock when another agent is already on it.
-
-**Decided (Royce):** when main is build-broken, prefer a minimal build-unblock over merging a feature-bundled fix (#571 bundled field-deep-linking). (In the end the concurrent agent's split fixes landed first.)
-
-**Deferred (added 2026-07-01):**
-- [x] **Enabled "Require branches to be up to date before merging"** on `main` branch protection (`required_status_checks.strict=true`, both required checks preserved). **Verified working** — a throwaway PR from a branch 3 behind main returned `mergeStateStatus: BEHIND` and merge was refused ("head branch is not up to date with the base branch"). This is the gate that would have caught today's interleaved-merge outage. _(done 2026-07-01)_
-
----
-
-## ⏩ Session close — 2026-07-01 (part d) — eq-shell PR batch: URL-per-tab + tsc fixes + cleanup
-
-**Completed (eq-shell, all merged):**
-- [x] **PR #571 merged** (`80c904c`) — URL-per-tab Shell side (superseded #573) + rejection_reason type fix. `buildFieldSrc`/`buildFieldCookieSrc` + `FieldIframe` postMessage listener + `history.pushState`.
-- [x] **PR #576 merged** — `PostgrestBuilder as unknown as Promise<...>` one-line tsc hotfix. Main was broken at `cards-approve-staff.ts:131` (direct cast introduced by PR #568); unblocked all remaining PRs.
-- [x] **PR #570 merged** — Google Maps key prefix fix + dead `NETLIFY_CONTEXT` Sentry fallback removed.
-- [x] **PR #572 merged** — Removed dead `cert-import-parse.ts` (old sync parser, superseded by async background fn).
-- [x] **PR #575 merged** — Training matrix: filter by employment type, sort columns, multi-select, column width fixes.
-- [x] **PR #573 closed** (duplicate of #571); **PR #574 closed** (duplicate type fix).
-
-**Decided:**
-- `as T` direct cast from `PostgrestBuilder` is invalid — must go through `as unknown as T`. Pattern to follow in future.
-
-**Deferred:** none.
-
 ---
 
 ## ⏩ Session close — 2026-07-01 (eq-field) — Edge fn canonical deploy + URL-per-tab Field side
@@ -1504,7 +779,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [ ] **Add `TENANT_UUID = 7dee117c-98bd-4d39-af8c-2c81d02a1e85` to ehow edge function secrets** — Supabase dashboard → Project Settings → Edge Functions → Secrets. All 4 functions 500 without it. _(Royce action) (added 2026-07-01)_
 - [ ] **Update pg_cron digest cron URL** — check ehow pg_cron; if referencing `supervisor-digest-v2`, update to `supervisor-digest`. _(added 2026-07-01)_
 - [x] **Shell-side URL-per-tab PR** — PR #571 merged 2026-07-01 (`80c904c`). `buildFieldSrc`/`buildFieldCookieSrc` accept `tab` param; `FieldIframe` reads `?tab=` on mount + listens for `EQ_TAB_CHANGE` → `history.pushState`. _(done 2026-07-01)_
-
 ---
 
 ## ⏩ Session close — 2026-06-30 (ARMADA on eq-intake) — pre-bake + 4 clean fleet cycles
@@ -1528,7 +802,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - eq-intake has **no root `package.json`** — the pnpm workspace lives in `eq-platform/`; fleet gate = `pnpm -C eq-platform check:packages`. No CI workflows in the repo.
 - Vendored ARMADA skills are **local-only in the main checkout** `C:\Projects\eq-intake\.claude\` — run ARMADA from a session rooted at the repo root, NOT a `*-wt` worktree, or `/lighthouse` etc. won't resolve.
 - PHASE-0 monorepo migration is **abandoned**; `apps/eq-service`/`apps/eq-shell` are gone from eq-intake. eq-service = `eq-solves-service` repo, eq-shell = `eq-shell` repo (live, shipping daily).
-
 ---
 
 ## ⏩ Session close — 2026-07-01 (part b) — Cert-import 500 root-caused + fixed (async payload wall)
@@ -1541,55 +814,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 **Deferred (added 2026-07-01):**
 - [x] **Remove dead `cert-import-parse.ts`** — removed in PR #573 (bundled with field deep-link PR) _(done 2026-07-01)_
 - [ ] **Verify cert import live** — once deploy goes green, import multiple certs at core.eq.solutions (hard-refresh for new panel JS); parser now writes a real failure reason to job status if a download fails _(added 2026-07-01)_
-
----
-
-## ⏩ Session close — 2026-07-01 — Pending connections audit + 3 gap fixes
-
-**Completed (eq-shell, merged):**
-- [x] **PR #565 merged** (`8987990`) — training matrix full licence names in column headers + mobile polish (pending cards layout, employment type labels, iOS safe-area footer)
-- [x] **PR #567 merged** — blank name fix: `staff-pending-connections.ts` falls back to `app_data.staff` on ehow by phone for workers with null names in `public.workers`
-- [x] **PR #568 merged** — pending connections: worker rejection email (application path), rejection reason written to `org_access_requests.note`, phone suffix lookup bug fixed
-- [x] **Migration `2026_07_01_org_access_requests_notification.sql`** — `notification_sent_at` column added to `org_access_requests` on jvkn (reserved; notify-connection-request edge fn handles actual notifications)
-
-**Decided:**
-- Admin notifications already live via `notify-connection-request` Supabase Edge Function (pg_net trigger on INSERT to `org_access_requests`). Bidirectional (worker→employer + employer→worker). Do not duplicate in eq-shell.
-
-**Deferred (added 2026-07-01):**
-- [x] **Invite-path rejection email** — `cards_field_approvals` reject now notifies the worker; PR #569 merged 2026-07-01 _(done 2026-07-01)_
-
----
-
-## ⏩ Session close — 2026-07-01 (part c) — Field iframe URL-per-tab deep linking (eq-shell PR #573)
-
-**Completed (eq-shell, merged):**
-- [x] **PR #571 merged** (`80c904c`) — Shell-side URL-per-tab deep linking. `buildFieldSrc`/`buildFieldCookieSrc` accept optional `tab` param; `FieldIframe` reads `?tab=` from Shell URL on mount, listens for `EQ_TAB_CHANGE` postMessages (origin-validated), calls `history.pushState`. `pickTenant` clears `?tab=` on workspace switch. Also included rejection_reason type fix. PR #573 was a duplicate — closed in favour of #571.
-
-**Deferred (added 2026-07-01):**
-- [x] **eq-field matching PR** — DONE: v3.5.217 (PR #381, merged 2026-07-01). `showPage()` emits `EQ_TAB_CHANGE` postMessage; `initApp()` reads `?tab=` on load _(done 2026-07-01)_
-- [x] **Merge + smoke PR #573** — #573 closed (duplicate); #571 was the actual implementation, merged 2026-07-01 _(done 2026-07-01)_
-- [x] **Clean up `fix/remove-dead-cert-parse` local branch** — remote deleted with `--delete-branch` on #571 merge _(done 2026-07-01)_
-
----
-
-## ⏩ Session close — 2026-06-30 (eq-field) — zaap worker-PII anon-grant revoke (defense-in-depth)
-
-**Completed (eq-field, merged + applied live):**
-- [x] **PR #379 merged** (`18b17b8`) — `REVOKE ALL FROM anon` on the four worker-PII tables on **zaap** (`zaapmfdkgedqupfjtchl`, eq-canonical-internal / Field data plane): `public.workers`, `worker_credentials`, `worker_inductions`, `worker_assignments`. Closed-by-default at the privilege layer. Applied live via Supabase MCP (`zaap_worker_cluster_anon_revoke`); repo record `supabase/migrations/20260630_zaap_worker_cluster_anon_revoke.sql`. DB-only, no app deploy.
-- [x] **Verified pre + post** — pre: anon held SELECT/INSERT/UPDATE/DELETE but RLS-on + `auth.uid()`-scoped owner policies → anon already 0 rows (latent risk, not active breach); all 4 tables empty. Post: anon zero table privilege (permission-denied / 401), `authenticated` keeps SELECT/INSERT (self-service via owner policies), `service_role` full, RLS + policies intact (3/4/4/3).
-- [x] **eq-shell drift baseline** — NO `KNOWN_LEGACY_ANON` edit needed. `check-tenant-drift.mjs` only flags anon-*reachable* tables (RLS off OR bare-`true` policy); these are RLS-on + `auth.uid()`-gated → `reachable=false` → never on the tracked anon-exposed list. Confirmed against the detection SQL.
-
-**Deferred:** none.
-
-**Notes:** Same hardening channel as the 2026-06-29 tender-cluster anon teardown. Cards onboarding writes (`eq_cards_claim_invite` etc.) run via SECURITY DEFINER RPCs (execute as owner) → unaffected by role grants. The separate `eq_field_get_worker_summary` SECDEF PII path was already anon/authenticated-revoked in eq-shell 2026-06-27 — out of scope here.
-
----
-
-## ⏩ Session close — 2026-06-30 (EQ Cards blob fix) — Sentry EQ-CARDS-W CanvasKit blob URL revocation
-
-**Completed (eq-cards):**
-- [x] **Sentry EQ-CARDS-W fixed** — `_PhotoSlot` in `licence_edit_screen.dart` converted from `StatelessWidget` → `StatefulWidget`. Root cause: every parent rebuild (toggling "Private" switch, form validation) created a new `MemoryImage`, each allocating a CanvasKit blob URL; Chrome Mobile revoked these under memory pressure. Fix: hold a single `MemoryImage` in state, recreated only when `bytes` reference changes (`identical()` in `didUpdateWidget`); evict on replace + dispose. `gaplessPlayback: true` added. `unawaited()` on both `evict()` calls. No Flutter version bump needed. `flutter analyze` clean.
-
 ---
 
 ## ⏩ Session close — 2026-06-30 (part I) — EQ Cards Sentry + dead code + iOS spinner fix
@@ -1613,7 +837,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - `eq_cards_find_pending_invite` in `otp_screen.dart:163` is NOT dead — auto-routes invited workers post-OTP. Retained.
 - eq-shell `main` was checked out in worktree `clever-wilson-161a7a`; always branch from `origin/main` in the bare checkout.
 - eq-guard hook blocks Edit tool on eq-shell; used Python binary-mode writes to preserve CRLF (PowerShell `Set-Content` converts CRLF→LF causing 200-line diffs for 1-line changes).
-
 ---
 
 ## ⏩ Session close — 2026-06-30 (part k) — EQ Ops pipeline: age badge + attachment types + 0152 + PR #552 merge
@@ -1628,7 +851,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [ ] **EQ Ops home tile** — Shell home tile with overdue follow-ups, stale quotes, active jobs; not built _(added 2026-06-30)_
 - [ ] **Field crew on job** — workers in Field see their assigned job; requires eq-field repo changes _(added 2026-06-30)_
 - [ ] **`issues.*` PermKeys activation** — Phase 3 when Issues UI ships for EQ plane; currently deferred constants _(added 2026-06-30)_
-
 ---
 
 ## ⏩ Session close — 2026-06-30 (part j) — eq-shell branch prune (215→49) + worktree cleanup
@@ -1645,7 +867,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [ ] **3 docs-spike branches KEPT — Royce's call to delete** — `claude/design-system-tokens` (41d; early @eq/tokens design spec + design-audit-2026-05-20.md), `claude/epic-ellis-987f75` (23d; single SCHEMA-GOVERNANCE.md note), `claude/vigilant-cray-4e074e` (36d; HANDOFF-*.md session notes). These hold **unique unmerged docs not in main** — superseded, but deleting unmerged work needs your sign-off. Likely all 3 safe to `git branch -D` _(added 2026-06-30)_
 
 **Final state:** eq-shell local branches **49 → 9** (6 active + 3 docs-spikes pending your call); remote **14 → 5** (only active: main, ops-pipeline-enhancements, staff-matrix-fixes, audit-team-access-events, hex-burndown-staff).
-
 ---
 
 ## ⏩ Session close — 2026-06-30 (part i) — Licence-expiry config + CI/auth-test hardening + platform audit + security re-verify
@@ -1690,7 +911,6 @@ PR #379 revoked the 4 worker-PII tables (the instances). The *class* + ratchet a
 - [ ] **Audit + classify the remaining anon-CRUD zaap `public.*` tables** — live audit this session found 7 anon-CRUD tables; #379 closed 4, leaving `app_config`, `organisations`, `ts_reminders_sent`. Classify each: keep-and-DOCUMENT the intentional ones (`organisations` is almost certainly the login-page org bootstrap read) vs revoke the rest _(added 2026-06-30)_
 - [ ] **`ALTER DEFAULT PRIVILEGES REVOKE anon/authenticated` on zaap `public`** — born-closed, mirroring the 2026-06-07 control-plane lockdown; stops the next new table re-introducing the grant _(added 2026-06-30)_
 - [ ] **Drift-gate CHECK: fail if any zaap `public.*` grants anon outside an explicit allowlist** — encode the invariant so it can't regress silently, instead of re-verifying by hand _(added 2026-06-30)_
-
 ---
 
 ## ⏩ Session close — 2026-06-30 (part h) — Attachments bucket private + migration dispatch
@@ -1703,7 +923,6 @@ PR #379 revoked the 4 worker-PII tables (the instances). The *class* + ratchet a
 **Deferred (added 2026-06-30):**
 - [x] **Issues/Attachments Phase 2** — 0147–0152 dispatched to zaap (eq plane, run `28440001680`, allow_checksum_drift=true) _(done 2026-06-30 part k)_; `issues.*` PermKeys deferred Phase 3
 - [ ] **Signed URL refresh** — URLs now 7-day TTL (PR #556 raised from 1hr); no auto-refresh mechanism _(updated 2026-06-30)_
-
 ---
 
 ## ⏩ Session close — 2026-06-30 (part g) — Cards admin-console + labour-hire pilot (discussion only)
@@ -1717,24 +936,6 @@ PR #379 revoked the 4 worker-PII tables (the instances). The *class* + ratchet a
 - [ ] **Onboard current labour-hire firm's workers to Cards** — Royce in progress; "need to fill up the info first" before any demo _(added 2026-06-30)_
 - [ ] **Dry-run Core > tenant view before the coffee demo** — verify what the tenant admin view actually renders + scope out anything not appropriate for the firm to see; offered, deferred until data is in _(added 2026-06-30)_
 - [ ] **Decide the pilot offer** — firm as guest in existing tenant vs their own tenant (changes the demo + the portability framing) _(needs Royce's call) (added 2026-06-30)_
-
----
-
-## ⏩ Session close — 2026-06-30 (part f) — Audit log team events + stub-match block + training matrix
-
-**Completed (eq-shell, PR #553 merged):**
-- [x] **writeTenantAudit() helper** — fire-and-forget app-level audit writes to `app_data.audit_log` (`source='app'`) in `tenant-routing.ts`
-- [x] **invite-user + invite-users-batch** — emit `user_invite` (INSERT) on new invites, `user_membership` (INSERT) when existing user added to tenant
-- [x] **edit-user** — emit `user_role` (UPDATE) with old/new role/active/name after successful mutation
-- [x] **security-groups** — emit `group_membership` (INSERT/DELETE) for add_member/remove_member
-- [x] **tenant-audit.ts link-event name resolution** — batch-fetches contact/customer/site names; Activity Log shows "Alex Smith ↔ Acme Corp" instead of raw UUIDs; `recordLabel` extended for app-level event types
-- [x] **Onboarding stub-match block** — `cards-approve-staff` returns 422 + candidates when name similarity ≥ 0.5 and admin hasn't confirmed; `StaffPage` shows `MatchConfirmModal` (Link / Add as new person)
-- [x] **Compliance pack descriptive filenames** — individual: "Name - Org - date.zip"; bulk: "Org Compliance - date.zip"; backend sets filename in blob, status endpoint passes through, frontend sets `a.download`
-- [x] **Training Matrix overhaul** — full licence names rotated 90° in column headers; `empTypeLabel()` + `minHeight` fix subtitle alignment; tooltip shows proper name not schema key; Export Excel button writes `.xlsx` via SheetJS
-
-**Deferred (added 2026-06-30):**
-- [x] **Dispatch tenant migrations 0147_issues_table → 0151_field_teams_rls to ehow** (sks slug, `allow_checksum_drift=true`) via tenant-migrate.yml _(done 2026-06-30 — ehow at 0151; PR #555 merged no-op fix for field_teams views)_
-
 ---
 
 ## ⏩ Session close — 2026-06-30 (part d) — Activity-log link triggers + Field/Service site-view reconcile
@@ -1759,7 +960,6 @@ PR #379 revoked the 4 worker-PII tables (the instances). The *class* + ratchet a
 - [x] **Activity Log — name resolution for link events** (link rows carry only ids; feed shows "Contact ↔ site" without names) _(done PR #553 2026-06-30)_
 - [x] **Onboarding name-only stub match panel** — force admin confirmation when a name_close candidate exists (null-email/no-phone stubs can't auto-match); BLOCK confirmed _(done PR #553 2026-06-30)_
 - [ ] **Platform Security Log / operator console** — sign-ins/2FA audit (jvkn, admin-audit.ts reads it); deferred by decision _(added 2026-06-30)_
-
 ---
 
 ## ⏩ Session close — 2026-06-30 (ARMADA trial) — pre-baked Calum's fleet on eq-service
@@ -1786,7 +986,6 @@ PR #379 revoked the 4 worker-PII tables (the instances). The *class* + ratchet a
 **Notes (load-bearing):**
 - eq-service: GitHub repo = `eq-solutions/eq-service`, local folder = `eq-solves-service`; `.claude/` is gitignored, so vendored skills are **local-only** (not committed — correct for a vendored plugin).
 - ARMADA drop-in: `charter`/`shipwright`/`muster`/`lighthouse` are path-clean (work without the plugin); `crows-nest`'s pipeline + foghorn/logbook/spyglass need `${CLAUDE_PLUGIN_ROOT}`, which only the plugin installer sets.
-
 ---
 
 ## ⏩ Session close — 2026-06-30 (handoff hardening) — Shell→Service: shared contract + canaries + secret probe
@@ -1814,20 +1013,6 @@ PR #379 revoked the 4 worker-PII tables (the instances). The *class* + ratchet a
 - **Handoff secret now lives in 3 places** — eq-shell `SUPABASE_JWT_SECRET`, eq-service `EQ_SHELL_JWT_SECRET`, eq-context probe GH secret `EQ_SHELL_JWT_SECRET`. Rotate all three together or the handoff breaks / the probe false-alarms.
 - **Stacked-PR trap:** merging a base PR with `--delete-branch` auto-CLOSES a stacked child PR. Recover by rebasing the child's commit onto main + opening a fresh PR. Don't `--delete-branch` a base that has an open stacked child.
 - **Sentry project slug = `eq-solves-service`** (folder name), not the GitHub repo name `eq-service`. Netlify projects = `eq-service` (`service.eq.solutions`) + `eq-shell` (`core.eq.solutions`).
-
----
-
-## ⏩ Session close — 2026-06-30 (part c) — Staff licence-review fixes + duplicate-stub root cause
-
-**Completed (eq-shell, merged + deployed):**
-- [x] **PR #544 merged** — licence-review badge no longer flips to "re-review" for licences that PREDATE the review. `reviewBadgeFor` only re-flags licences with `created_at > reviewed_at`; `staff-canonical-licences` returns `created_at`. (Cards licences import progressively, so reviewing mid-import used to reset a completed review.)
-- [x] **PR #545 merged** — Cards onboarding now matches an existing staff stub instead of duplicating. `cards-approve-staff` `handleApplication` unified to one `findExistingStaff` matcher: cards_worker_id → exact email (exactly-one active) → phone (exactly-one). Gap was: auto-detect path (admin skipped match panel) matched worker-link+phone but NOT email → same-email/different-phone stubs duplicated.
-- [x] **PR #546 merged** — profile review state now matches the table badge ("reviewed by Ben · N new since — re-review needed" instead of a misleading green tick).
-- [x] **Data cleanup (live, ehow sks)** — archived 4 empty duplicate staff stubs: Vincent Costa ×2, Rhys Scott ×1, John Angangan ×1 (set active=false; reversible; kept the Cards-linked record each).
-
-**Deferred (added 2026-06-30):**
-- [x] **Name-only stub match panel** — stubs with null email + no phone can't auto-match; 422 + MatchConfirmModal blocks silent duplicate _(done PR #553 2026-06-30)_
-
 ---
 
 ## ⏩ Session close — 2026-06-30 (EQ Field) — Overnight security audit + canonical-wiring execution
@@ -1856,7 +1041,6 @@ PR #379 revoked the 4 worker-PII tables (the instances). The *class* + ratchet a
 - [x] **SKS audit-log fix** — AUDIT_SB_KEY updated to ehow service_role; org_id stamp + manager_name fix in both functions _(fully done v3.5.212 2026-06-30)_
 - [ ] **frame-ancestors tightening** — drop `*.netlify.app` (clickjacking surface; declined once) _(added 2026-06-30)_
 - [ ] **app_config PIN key-scoping** — hygiene (PINs gate nothing now but still anon-readable) _(added 2026-06-30)_
-
 ---
 
 ## ⏩ Session close — 2026-06-30 — Tenant Activity Log + polish fixes
@@ -1870,18 +1054,6 @@ PR #379 revoked the 4 worker-PII tables (the instances). The *class* + ratchet a
 - [x] **Activity Log — team & access events** — invites / role-changes as app-level writes to the tenant plane _(done PR #553 2026-06-30)_
 - [x] **Activity Log — link-table triggers** — contact_customer_links, contact_site_links _(done PR #547 2026-06-30)_
 - [ ] **Platform Security Log / operator console** — sign-ins/2FA audit (jvkn), operator-only, separate from the tenant page _(added 2026-06-30)_
-
----
-
-## ⏩ Session close — 2026-06-30 (part b) — Customers page: Add Site fix + Field/Service activation
-
-**Completed (eq-shell, merged + deployed):**
-- [x] **PR #540 merged** — Add Site 500 fixed (`crm-write` add_site inserted a non-existent `site_contact_id` column → every Add Site failed, address never saved). Removed the column ref.
-- [x] **PR #541 merged** — CustomersPage now shows the site **street address** + per-site **Field/Service toggle chips** (manager-gated, optimistic, wired to `update-data-activation`). Fixed root cause: address/F-S UI had been built in the **unrouted** CustomersHubPage/SiteDetailView; live route is CustomersPage.
-- [x] **PR #542 merged** — customer-level **Field/Service toggles** in the customer header; independent of site flags (no cascade). `crm-customers` detail endpoint now returns customer field_enabled/service_enabled.
-
-**Deferred:** (none new)
-
 ---
 
 ## ⏩ Session close — 2026-06-29 (part d) — Licence-expiry notifications: fixed (wrong DB) + hardened
@@ -1905,7 +1077,6 @@ PR #379 revoked the 4 worker-PII tables (the instances). The *class* + ratchet a
 - [ ] **"Free company view" tier** — pricing/packaging decision; Core capability already exists _(added 2026-06-29)_
 
 **Notes:** Company self-onboarding already exists end-to-end (`provision_tokens` → `shell-provision-tenant`, phone-OTP) but the token mint is gated to `is_platform_admin` — the gateway is gated by authorization, not capability. Public per-licence share link already exists (`cards.eq.solutions/share?licence_id=`). Adoption snapshot: 18 claimed / 75 workers, 14 active SKS, 1 multi-org, `org_access_requests` 13 approved, `cards_field_approvals` 71. Gateway metric (net-new companies via a worker) = 0.
-
 ---
 
 ## ⏩ Session close — 2026-06-29 (part c) — Shell CRM: relational site contacts + address autocomplete
@@ -1920,7 +1091,6 @@ PR #379 revoked the 4 worker-PII tables (the instances). The *class* + ratchet a
 - [x] Shell: billing contact on customer — `is_default_invoice_contact` exists in DB, no UI _(added 2026-06-29)_
 - [x] Shell: customer list active filter — default active-only + "include archived" toggle _(added 2026-06-29)_
 - [ ] Google Maps: add Distance Matrix + Air Quality to API key when dispatch travel times / site safety features are built _(added 2026-06-29)_
-
 ---
 
 ## ⏩ Session close — 2026-06-29 — SKS data reset + maintenance check page perf
@@ -1935,18 +1105,6 @@ PR #379 revoked the 4 worker-PII tables (the instances). The *class* + ratchet a
 **Deferred:**
 - [ ] Add `WHERE a.active = true` to `service.assets` view so soft-delete works correctly _(added 2026-06-29)_
 - [ ] SKS contract scope reimport — Royce to run via `/sks/service/commercials/contract-scopes/import` _(added 2026-06-29)_
-
----
-
-## ⏩ Session close — 2026-06-29 (part b) — cert-import 500 fix
-
-**Completed:**
-- [x] **eq-shell PR #535 merged** — cert-import background function: materialise ArrayBuffers synchronously before 202 + `withSentry` wrapping
-- [x] **`compliance-packs` Blobs bucket created** on ehow + zaap (pre-req for async compliance pack export)
-
-**Open / next:**
-- (nothing new)
-
 ---
 
 ## ⏩ Session close — 2026-06-28 (part b) — Shell↔Service branding + token refresh + admin hub
@@ -1961,7 +1119,6 @@ PR #379 revoked the 4 worker-PII tables (the instances). The *class* + ratchet a
 - [ ] **gitleaks pre-commit hook** — prevent PAT exposure in substrate history _(added 2026-06-28)_
 - [ ] **Update C:\Projects\.git-credentials** files with new PAT after rotation _(added 2026-06-28)_
 - [ ] **Token refresh smoke test** — shorten TTL locally to confirm ShellTokenRefresh fires (4h is hard to test live) _(added 2026-06-28)_
-
 ---
 
 ## ⏩ Session close — 2026-06-28 — Brain 10/10: substrate coherence + automation layer
@@ -1983,7 +1140,6 @@ PR #379 revoked the 4 worker-PII tables (the instances). The *class* + ratchet a
 - [ ] **gitleaks pre-commit hook** — prevent PAT exposure in substrate history
 - [ ] **Update C:\Projects\.git-credentials** files with new PAT after rotation
 - [x] **Merge eq-service #363 + eq-shell #513** — docs-only PRs, safe to merge any time — merged 2026-06-28
-
 ---
 
 ## ⏩ Session close — 2026-06-26 — Safety docs footer parity
@@ -1996,7 +1152,6 @@ PR #379 revoked the 4 worker-PII tables (the instances). The *class* + ratchet a
 **Open / next:**
 - [x] **EQ-demo toolbox logo** — `toolbox.js` `exportToolboxDocx` still uses dead `/images/eq-logo.png` path; needs updating to `fetchTenantLogo()` pattern (SKS path already correct) — **DONE eq-field PR #349 merged 2026-06-27**
 - [ ] Remaining items carried from 2026-06-18 (see below)
-
 ---
 
 ## ⏩ Session close — 2026-06-18 — Apprentices SKS unlock + Recognition philosophy
@@ -2019,7 +1174,6 @@ PR #379 revoked the 4 worker-PII tables (the instances). The *class* + ratchet a
 - [x] **on_roster app filter** — make roster grid filter on `on_roster` (carried from 2026-06-15) — **DONE eq-field PR #349 merged 2026-06-27**
 - [ ] **Curate `sites.field_enabled`** — 591 all enabled → trim to live jobs
 - [x] **`EQ_SECRET_SALT` rotation** — demo salt was exposed in chat; rotate when convenient — **MOOT: EQ_SECRET_SALT / HMAC path retired via shell PRs #329 + #430 merged 2026-06-22; salt has no live consumer**
-
 ---
 
 ## ⏩ Session close — 2026-06-15 — SKS Field staff: tenant-bug fix + full roster load
@@ -2038,7 +1192,6 @@ PR #379 revoked the 4 worker-PII tables (the instances). The *class* + ratchet a
 - [ ] **Curate `sites.field_enabled`** — 591 all enabled → trim to live jobs.
 - [ ] **Daniel Bower** — confirm leaver / remove.
 - [ ] **Generalise `workers-canonical-sync`** — currently single-tenant (hardcodes SKS+ehow).
-
 ---
 
 ## ⏩ Session close — 2026-06-15 (part b) — v3.5.146 + v3.5.147 + canonical architecture rethink
@@ -2060,7 +1213,6 @@ PR #379 revoked the 4 worker-PII tables (the instances). The *class* + ratchet a
 - [ ] `ZAAP_JWT_SECRET=""` — EQ tenant JWT broken (acceptable while zaap unpopulated).
 - [ ] `APP_ORIGIN` env var stale (`eq-solves-field.netlify.app` → should be `field.eq.solutions`).
 - [ ] v3.5.147 create-stub path to be removed when Cards onboarding goes live as the sole jvkn.workers creator.
-
 ---
 
 ## ⏩ Session close — 2026-06-13 (part b) — v3.5.139 + canonical pipeline + housekeeping
@@ -2078,7 +1230,6 @@ PR #379 revoked the 4 worker-PII tables (the instances). The *class* + ratchet a
 - [ ] Roster data entry on ehow (SKS Field empty schedule/timesheets/leave)
 - [ ] Standalone `sks-nsw-labour` retirement
 - [ ] Track 2 RLS STEP 2 (after standalone retired)
-
 ---
 
 ## ⏩ Session close — 2026-06-13 — EQ Service iframe loading fix (Shell PR #334)
@@ -2096,7 +1247,6 @@ PR #379 revoked the 4 worker-PII tables (the instances). The *class* + ratchet a
 - [ ] Track 2 RLS STEP 2 — anon SELECT lockdown; after standalone retired
 - [ ] jvkn→ehow canonical identity pipeline — `WORKERS_WEBHOOK_SECRET` + `EHOW_SERVICE_ROLE_KEY` must be set in Supabase Dashboard before bulk sync runs
 - [x] Waves 2–3 personal PIN revert — v3.5.132–134 deployed wrong direction; revert before further auth work — **DONE eq-field PR #276 merged 2026-06-13 (v3.5.136)**
-
 ---
 
 ## ⏩ Session close — 2026-06-11 — SKS canonical DB full JWT coverage + start fresh
@@ -2117,7 +1267,6 @@ PR #379 revoked the 4 worker-PII tables (the instances). The *class* + ratchet a
 - [ ] **Standalone sks-nsw-labour retirement** — after soak confirmation
 - [ ] **Track 2 RLS STEP 2** — anon SELECT lockdown; after standalone retired
 - [x] **`EQ_SECRET_SALT` rotation** — MOOT: HMAC path retired via shell PRs #329 + #430 (2026-06-22). Salt has no live consumers. No rotation needed.
-
 ---
 
 ## ⏩ Session close — 2026-06-10 — EQ Service Shell SSO root cause + fix (Session 7)
@@ -2129,20 +1278,6 @@ PR #379 revoked the 4 worker-PII tables (the instances). The *class* + ratchet a
 **Pending verification:**
 - [ ] **Royce: smoke test Service SSO** — fresh incognito → `core.eq.solutions` → Shell login → click Service → dashboard loads without login prompt. Tick Sprint 7 smoke test when done.
 - [x] **Merge eq-service PR #274** — diagnostic log cleanup (no functional change, safe to merge anytime) — **MERGED 2026-06-09**
-
----
-
-## ⏩ Session close — 2026-06-09 — v8 design pass (Session 3)
-
-**Completed (2026-06-09):**
-- [x] **EQ Field v3.5.116 — v8 design pass DONE** — Claude Design handoff applied across all 14 screens. PR #258 squash-merged. styles/field-v8.css + sidebar + dashboard/leave/timesheets/people/managers/roster/calendar/jobnumbers/apprentices/home/projects/whatsnew all updated. Live at eq-solves-field.netlify.app.
-
-**Also completed (2026-06-09):**
-- [x] **EQ Shell v8 design pass DONE** — Direction D warmup applied to React Shell. PRs #290 + #293 squash-merged. `auth.css`, `App.css`, `MobileRecordsDrawer.css`, `MobileTabBar.css` all warmed from cool-gray (#F9FAFB/#F5F4F0) to warm sand (#F6F3EE/#EEECEA). Hub canvas was already correct.
-- [x] **EQ Field v3.5.119** — JS navy token sweep (`apprentices/auth/audit/teams/sks-pipeline.js`). PR #260 merged.
-- [x] **SKS PR #32** — sks-field.netlify.app Shell integration + JWT handoff verification. Merged.
-- [x] **Shell branch housekeeping** — 3 dead branches deleted; 8 unmerged branches resolved (3 merged, 5 closed as already-in-main); all remote branches deleted.
-
 ---
 
 ## ⏩ Session close — 2026-06-09 — Security sprint + WS1/4/5/7 + GATE A + eq-service encryption
@@ -2167,7 +1302,6 @@ PR #379 revoked the 4 worker-PII tables (the instances). The *class* + ratchet a
 - [ ] **WS1 remainder** — 481 ambiguous customers need human dedup via EQ Intake (Tier A 26 supervised + Tier C 50 ambiguous + quotes-side N:1)
 - [x] **ktmj decommission** — DONE. `ktmjmdzqrogauaevbktn` is deleted (absent from `list_projects`, verified 2026-07-05); the eq→zaap migration completed (`eq` now live on zaap: 26 people / 30 sites). Stale "ktmj is the live EQ DB" refs corrected across eq-field CLAUDE.md / DATA-PLANES-SOURCE-OF-TRUTH.md / code comments + ~/.claude memory (PR #407). _(done 2026-07-05)_
 - [ ] **Delete `C:\Users\EQ\eq-credentials-ref.html`** after importing to password manager
-
 ---
 
 ## ⏩ Sprint 7 — EQ Service cutover (urjh → ehow) — 2026-06-08
@@ -2188,7 +1322,6 @@ refs updated (PR #257 → main, open); repo on `eq-solutions/eq-service`.
 - [ ] **Scheduler/route migration (4.4)** — `supervisor-digest` + `pre-visit-brief` schedulers
       depend on Next.js `/api/cron/*` routes still in eq-service; needs a route-hosting decision
       before moving to eq-shell.
-
 ---
 
 ## ⏩ Session close — 2026-06-08 — EQ Field Sentry crash fixes
@@ -2210,7 +1343,6 @@ refs updated (PR #257 → main, open); repo on `eq-solutions/eq-service`.
       name list. Use `?tenant=demo` to bypass for smoke. Pre-existing, deferred 2026-06-06.
 - [x] eq-context sks/ local edits — **DONE: substrate now auto-commits via GitHub Actions + repository_dispatch (2026-06-28)**
 - [x] eq-context itself — **DONE: event-driven digest refresh live (2026-06-28)**
-
 ---
 
 ## ⏩ Session close — 2026-06-07 (PM) — Cross-app linkage audit
@@ -2253,7 +1385,6 @@ Parallel to the Field schema/data cutover below. Full plan + agent prompts (A–
 - [ ] **eq-shell Phase 3** — `AdminSecurityGroups` page; first write moves `user_security_groups` off 0 rows (Prompt C).
 - [ ] **eq-shell Phase 4** — walk ONE real SKS user end-to-end; first-ever `user_security_groups` row (Prompt D).
 - [ ] **Phase 5 hardening** — `contact_customer_links` explicit `WITH CHECK` (`::uuid` cast) + CI policy-lint + eq-roles no-orphan-keys test (Prompt E).
-
 ---
 
 ## ⏩ Session close — 2026-06-06 — SKS tenant LIVE on EQ Field + JWT/RLS Track 2 staged + Teams uuid fix
@@ -2287,7 +1418,6 @@ Parallel to the Field schema/data cutover below. Full plan + agent prompts (A–
 - [ ] Cutover **soak** 24–48h with the standalone (`sks-nsw-labour`, v3.10.59) kept warm → then **retire** the standalone.
 - [ ] **Track 2 STEP 2 (anon lockdown)** — DEFERRED until the standalone is retired. Then move `AUDIT_SB_KEY` → service_role and drop the `audit_log` anon-insert carve-out.
 - [ ] **Onboarding** — invite-claim rollout (only 1 of 36 workers linked; 0/56 invites claimed). Upstream eq-shell #183/#175.
-
 ---
 
 ## ⏩ Session close — 2026-06-05
@@ -2302,7 +1432,6 @@ Parallel to the Field schema/data cutover below. Full plan + agent prompts (A–
 **Rollout note:** a site only offers a job pick-list when its jobs are tagged to it (Job Numbers → Site, `job_numbers.site_name`).
 
 **⚠ Correction to a carried-forward action (below):** the "Downgrade/pause `ktmjmdzqrogauaevbktn`" item is **BLOCKED** — verified 2026-06-05 that this DB is still the **live EQ data plane** (serves all projects/sites/jobs/people/schedule; the zaap `app_data.field_*` twins are empty). Pausing it takes EQ Field down. Do not action until the canonical reseed/cutover lands.
-
 ---
 
 ## ⏩ Session close — 2026-06-05 (part b) — PostHog MCP + EQ Core go-live readiness
@@ -2322,7 +1451,6 @@ Parallel to the Field schema/data cutover below. Full plan + agent prompts (A–
 - [ ] Unify cross-app PostHog distinct_id (Shell UUID / Field `tenant:handle` / Service id) — fixes the "refused to merge" warning + the inflated user count
 - [ ] Fix EQ Field double `$pageview` capture (SPA logs ~80% of pageviews as `/`)
 - [ ] Optional: add `auth.uid() IS NULL` guard to `eq_cards_claim_invite`
-
 ---
 
 ## ⏩ Session close — 2026-06-04
@@ -2336,7 +1464,6 @@ Parallel to the Field schema/data cutover below. Full plan + agent prompts (A–
 - [x] Revoke old `gho_...` PAT at github.com/settings/tokens — **DONE 2026-06-28**
 - [ ] Drift CI secrets in eq-shell GitHub repo settings
 - [ ] HaveIBeenPwned toggle in eq-canonical Supabase Auth settings
-
 ---
 
 ## ⏩ Session close — 2026-06-03 (PM) — EQ Field anon-remediation Phase 2 + SKS sync
@@ -2365,7 +1492,6 @@ superset — no pin/role, no region/project). The B5 canonical unification stays
       revoked — not leaking).
 - [ ] **Apprentices module** — neither wired nor dropped (not in use); secure-or-retire when needed.
 - [ ] SKS (separate repo/DB) inherits the Goal-1 pattern when its anon-remediation runs.
-
 ---
 
 ## ⏩ Session close — 2026-06-03
@@ -2387,7 +1513,6 @@ superset — no pin/role, no region/project). The B5 canonical unification stays
 - [x] Revoke old `gho_...` PAT at github.com/settings/tokens — **DONE 2026-06-28**
 - [ ] Drift CI secrets in eq-shell GitHub repo settings
 - [ ] HaveIBeenPwned toggle in eq-canonical Supabase Auth settings
-
 ---
 
 ## ⏩ Session close — 2026-06-02
