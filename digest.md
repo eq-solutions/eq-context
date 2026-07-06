@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-06 20:26 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-06 20:27 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-06 19:58 UTC → 2026-07-06 20:26 UTC)
+## Since last refresh (2026-07-06 20:26 UTC → 2026-07-06 20:27 UTC)
 
-- Merged: eq-shell [#673](https://github.com/eq-solutions/eq-shell/pull/673) fix(access-control): subcontractor role 400s on permission t
-- Merged: eq-shell [#671](https://github.com/eq-solutions/eq-shell/pull/671) feat(ops): labour hire rates — PDF import + weekly-cost Fare
-- Merged: eq-shell [#666](https://github.com/eq-solutions/eq-shell/pull/666) feat(branding): live preview + contrast warnings + detection
-- Merged: eq-shell [#663](https://github.com/eq-solutions/eq-shell/pull/663) feat(ops): labour hire rates — canonical tables + read-only 
-- Merged: eq-shell [#662](https://github.com/eq-solutions/eq-shell/pull/662) feat(roles): expose subcontractor as a selectable role (safe
-- Merged: eq-shell [#661](https://github.com/eq-solutions/eq-shell/pull/661) feat(branding): one logo + auto-PNG for docs + logo colour d
-- Merged: eq-shell [#660](https://github.com/eq-solutions/eq-shell/pull/660) fix(staff): decline a worker-initiated application actually 
-- Merged: eq-shell [#659](https://github.com/eq-solutions/eq-shell/pull/659) fix(entitlements): qualify ambiguous `id` in eq_update_tenan
+- Merged: eq-shell [#674](https://github.com/eq-solutions/eq-shell/pull/674) fix(users): add subcontractor to stale VALID_ROLES lists
+- Merged: eq-shell [#672](https://github.com/eq-solutions/eq-shell/pull/672) feat(ops): labour hire rates — manual manage (add/edit/delet
+- Merged: eq-shell [#670](https://github.com/eq-solutions/eq-shell/pull/670) feat(ops): labour hire rates — weekly-cost rollup
+- Merged: eq-shell [#669](https://github.com/eq-solutions/eq-shell/pull/669) feat(field): job-number retire — auto (invoiced) + manual (h
+- Merged: eq-shell [#668](https://github.com/eq-solutions/eq-shell/pull/668) chore(drift): allow-list labour_hire_rates_view (security_in
+- Merged: eq-shell [#665](https://github.com/eq-solutions/eq-shell/pull/665) fix(branding): bound logo colour-detection with a load timeo
+- Merged: eq-shell [#664](https://github.com/eq-solutions/eq-shell/pull/664) feat(roles): bump eq-roles to v2.4.0, wire subcontractor eve
+- Merged: eq-solves-service [#466](https://github.com/eq-solutions/eq-service/pull/466) docs(canonical): correct contacts note + record verified wir
 
 ## ⚠ Needs you (4)
 
@@ -35,7 +35,7 @@ _2026-07-06 20:26 UTC · what needs your attention. Full snapshot: [suite-state.
 | eq-shell | ? unknown | ? | 5 | 3d |
 | eq-solves-service | ✓ success | 0d ago | 5 | 0d |
 | eq-field | ? unknown | ? | 0 | — |
-| eq-cards | ✓ success | 0d ago | 1 | 0d |
+| eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ? unknown | ? | 0 | — |
 
 ## Live errors (Sentry)
@@ -68,7 +68,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-06 | eq-shell | [#676](https://github.com/eq-solutions/eq-shell/pull/676) feat(shell): command palette, skeleton loading, optimistic staff  |
 | 2026-07-06 | eq-shell | [#677](https://github.com/eq-solutions/eq-shell/pull/677) fix(drift): 0164 — reassert security_invoker on app_data.field_pe |
 | 2026-07-06 | eq-solves-service | [#466](https://github.com/eq-solutions/eq-service/pull/466) docs(canonical): correct contacts note + record verified wiring s |
-_Showing 15 of 131 · full record in [sessions/](sessions/)_
+_Showing 15 of 132 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
@@ -114,4 +114,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-06 20:26 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-06 20:27 UTC._
