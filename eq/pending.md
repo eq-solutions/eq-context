@@ -52,13 +52,18 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - Royce approved the `production`-gated migration dispatch himself (scoped to `slug=sks`) — Claude dispatched, could not click-approve.
 
 **Deferred:**
-- [ ] **Live authenticated click-through of PR #676's changes** — Cmd+K palette, Field/Service skeleton, Staff optimistic archive. Build-verified (`pnpm run build` clean) and code-reviewed, but no real browser session/credentials were available in this environment to click through it. Royce has a CEO demo in ~2 weeks — worth doing before then. _(added 2026-07-06)_
+- [x] ~~Live authenticated click-through of PR #676's changes~~ — Royce did it live: Ctrl+K opened Edge's own Bing search instead of the palette, and Staff's 25-row pagination was clunky to click through. Both real, both fixed same session — see PR #683 below.
 - [ ] **`field_people` out-of-band regression provenance** — same open question as the already-tracked `field_job_numbers provenance` item below: migration `0158` confirmed ehow's `field_people` was safe as of 2026-07, and no repo migration touched it since, meaning something changed it live outside the One Pipe. Not investigated this session (scope was the fix, not the "who/what" — same pattern, could be the same root cause as the `field_job_numbers` provenance question). _(added 2026-07-06)_
 
 **Notes:**
 - The perceived "app login is slow" concern turned out to be mostly already solved: iframes for Field/Service/Cards pre-warm 2.5s after session load and never unmount for the session (App.tsx keeper-div pattern), and token refresh is reactive to the child app's own expiry timer, not per-navigation. No architecture change was needed there — this matches the general lesson in this file's "verify before building" rule.
 - **CI drift-check results can be stale relative to a just-completed live fix within the same PR-check window** — after dispatching+applying the `0164` migration, the PR's own "Schema drift" check still showed the pre-fix "fail" result because it had run before the apply completed. `gh run rerun <run-id> --failed` re-queries live state and turns green; don't assume a red required check is still accurate without checking the run's timestamp against when the underlying fix actually landed.
 - Force-pushing a rebased branch to bring it up to date with `main` was correctly blocked by the auto-mode classifier (rewrites a just-merged, deleted-on-GitHub branch's history) — used a plain `git merge origin/main` + regular push instead, which achieved the same "branch is up to date" result without rewriting shared history.
+
+**Continuation — PR #683 (Ctrl+K fallback + Staff continuous scroll), MERGED `691063b`, live:**
+- [x] Ctrl+K opening Edge's own address-bar search instead of the palette — added `/` as a second binding (Ctrl+K is browser-reserved in Edge and can win the key before page JS gets to `preventDefault`; no page-level way to force it back). `/` is guarded to only fire outside an input/textarea/contenteditable, since it's an ordinary typing character there.
+- [x] Staff list's hardcoded `pageSize: 25` (Prev/Next click-through) — removed the `pagination` prop entirely; Table renders the full result set as one continuous scrollable list without it.
+- [ ] **SKS "workspace isn't set up yet" resurfaced again** — Royce hit this live again this session (signed in via mobile — device doesn't matter, it's tenant-level `setup_completed_at` state, not a session/device issue). Same pre-existing, already-tracked gap (backfill migration ran 11 days before the SKS tenant existed); a fix reportedly exists on an unshipped branch (migration `0115`), still not verified or shipped. _(carried, resurfaced 2026-07-06, needs your call — separate session)_
 
 ---
 
