@@ -1,7 +1,7 @@
 ---
 title: SKS — Pending
 owner: Royce Milmlow
-last_updated: 2026-07-05
+last_updated: 2026-07-06
 scope: SKS Technologies operational TODO list
 read_priority: critical
 status: live
@@ -81,7 +81,7 @@ _Nothing pending — migrations 001–023 all applied._
 
 **Deferred (added 2026-07-03):**
 - [ ] Person-wizard renders blank content specifically on a cold `?tab=person-wizard` deep-link boot (normal in-app "Add Person" nav works fine) — root cause not found despite exhaustive code trace + live Sentry/entitlement checks; needs Royce's own DevTools session with the Field-iframe console context selected _(added 2026-07-03)_
-- [ ] At least one SKS person ("Collin ... Toohey") has no record in canonical `app_data.staff`, blocking their leave submissions — data-ops backfill needed, not a code fix _(added 2026-07-03)_
+- [x] At least one SKS person ("Collin ... Toohey") has no record in canonical `app_data.staff`, blocking their leave submissions — data-ops backfill needed, not a code fix _(added 2026-07-03)_ — **RESOLVED, confirmed live 2026-07-06**: `app_data.staff` row exists (`3c9714bd-…`, email `collin.toohey@sks.com.au`, trade `electrical`). Not built this session — found already-fixed during the remediation-queue audit below, likely landed via the 2026-07-02/03 EQ Intake steward-run. Worth confirming his leave submissions actually work end-to-end now that the record exists.
 - [ ] Royce to independently click-through-confirm the Weekends toggle, roster names, and both safety forms live (smoke-tested remotely, not yet confirmed by Royce beyond the original repros) _(added 2026-07-03)_
 
 ## ⏩ SKS Field — session 2026-07-05 (3-way reconciliation: legacy roster vs canonical vs Cards)
@@ -98,6 +98,24 @@ _Nothing pending — migrations 001–023 all applied._
   - **Mitchell Forsyrh — subcontractor.** Role left NULL: `'subcontractor'` is **not a valid `eq_role` enum value** (only manager/supervisor/employee/apprentice/labour_hire exist), even though `cards-approve-staff.ts`'s `WORKER_ROLES` JS Set includes it — same class of app-vs-DB vocabulary drift the 2026-07-04 role audit found elsewhere. **Needs a decision: add `subcontractor` to the enum, or map him to an existing role** (`labour_hire` is the closest semantic fit but isn't accurate — a subcontractor runs their own business, unlike agency labour hire).
 - Sharon Maroni's canonical phone (`296599199`) looks like a landline (02-prefix), not a mobile — worth a data check before she's included in any phone-OTP invite.
 - [ ] **Reverse-angle gap (independent read-only pass 2026-07-05):** 9 legacy `people` rows have a canonical twin already but `people.canonical_id` is still NULL — matched live by phone+email vs jvkn `workers`: Louisa Cardinale, Matthew Khreich, Andre de Biasi, Damon Francis, Timothy Chapman, Bruno Pedrosa, Eric Nguyen (phone-only), Liam Holmgreen, Sam Powell. Back-link write not yet run; handed to the concurrent console actioning this batch (Royce copy-pasted the id list). Low-risk `UPDATE people SET canonical_id=… WHERE id=…` on nspb _(added 2026-07-05)_
+
+## ⏩ SKS Field/Service — session 2026-07-06 (job_plans/defects fixture cleanup + remediation-queue audit)
+
+**Completed (ehow live, SKS tenant, all via direct SQL with Royce's go-ahead at each destructive step):**
+- [x] **job_plans duplicate resolved** — closes the "Duplicate job_plans row, SKS tenant" item from the earlier eq-service contract-scope session today (`sessions/2026-07-06.md`). Turned out to be a batch of 4 hand-seeded fixture rows (`e0000000-…0001-0004`, all same timestamp 2026-04-12, zero FK references anywhere), not just the one E1.25 duplicate. `e0000000-…0002` (E1.30/LVNSX) was a second, worse landmine: a NAME collision (not code) against a real, different job plan (E1.30/PFC) — `previewAssetCountsAction` matches by name, so this would have silently conflated two different asset populations on a future import. All 4 soft-deleted (`is_active=false`).
+- [x] **defects fixture batch found + hard-deleted** — 7 more hand-seeded rows (`dd000000-…`/`30000000-…`, two sub-batches, shared fake `raised_by` user id absent from both `auth.users` and `profiles`), zero FK references anywhere (confirmed via `pg_constraint` — no formal FK targets `app_data.defects` at all). `defects`' DELETE trigger is a hard delete (unlike `job_plans`, no soft-delete state exists for this table) — flagged and confirmed with Royce before executing.
+- [x] **Swept all 21 other canonical `service.*` tables** for the same fixture-UUID pattern (non-RFC-4122 version nibble, not just prefix-guessing) — zero hits. `job_plans` + `defects` were the only two affected tables.
+- [x] **Traced the "who resolved this fixture defect" mystery** — actor `85e30693-…` is Royce's own canonical Shell identity (confirmed against eq-canonical `auth.users` = royce.milmlow@sks.com.au), not a rogue process. Looks orphaned only because Plan B JWT sessions never create a Service-local `auth.users` row — the known, documented Phase-2 identity-convergence gap (migration `0132_current_service_uid.sql`).
+- [x] **Audited all 16 `eq_remediation_queue` commits** (EQ Intake's "steward-run-001-2026-07-02" data-quality pass, reviewed by Royce 2026-07-03) against live data:
+  - 3 `trade` fixes — clean, untouched since commit.
+  - 4 `customer_id` link fixes — clean; the one that later changed (Ben Cheam's Equinix contact, deleted 2026-07-06) was a legitimate, attributed action by Simon Bramall (Equinix account lead) through the app, not a bug.
+  - 4 of 8 `email` fixes were silently reverted 2 days later (2026-07-05 07:44:07) as a side effect of that same day's SKS roster-reconciliation session (see below — same 4 people: Ian Marston, Johannes Otto, John McKee, Jonathan Ryan). Traced via `app_data.audit_log`: surgical single-field nulls, `actor_id=null`/`source='system'` (direct-SQL, not through the app). **All 4 emails restored** with Royce's confirmation.
+- [x] **Broader activity audit** (all contacts/customers/sites/staff writes, by source) — Royce's own 31-site + 17-contact purge (Erilyan Pty Ltd, DigiCo Infrastructure REIT, 2026-07-03) confirmed legitimate: both customers remain active, nothing duplicated/lost. All 6 "system"-sourced staff hard-deletes (2026-07-05) confirmed safe — every one has a live, current staff record for the same person under a different `staff_id`; stale duplicate stubs, not data loss.
+
+**Deferred:**
+- [ ] **Unattributed "system" writes to `app_data.staff` have no traceable source** — 175 updates + 27 inserts + 6 deletes all carry `actor_id=null`/`source='system'` (direct-SQL/service-role, no `x-eq-actor` header). Same signature as the email-nulling side effect above. A task chip is already queued (`task_bcd0d877`, originally scoped to the fake-resolver mystery) — broaden it to cover this rather than opening a second thread. Whatever SKS roster-reconciliation mechanism runs this should stamp its own `x-eq-source` for future auditability. _(added 2026-07-06)_
+- [ ] **Anthony Hartley's duplicate stub was hard-deleted despite the 2026-07-05 plan to never touch it** — that section (above) explicitly says "no schema field exists to hard-archive it, so it's just never touched/never invited," but one of his duplicate rows was hard-deleted anyway, in the same unattributed "system" batch. Outcome is safe (his live record is untouched and active) but the mechanism didn't follow the documented plan. _(added 2026-07-06)_
+- [ ] **121 items still pending in `eq_remediation_queue`** (steward-run-001) — unreviewed AI data-quality suggestions for staff/contacts, sitting in EQ Intake's review queue. Informational, surfaced while auditing the 16 already-committed rows. _(added 2026-07-06)_
 
 ## ⏩ SKS Field — session 2026-07-04 (Cards→Field migration path verified, read-only)
 
