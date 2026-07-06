@@ -65,7 +65,7 @@ _If this file is >48h old, the cron is broken._
 - #452 feat(commercials): create assets directly from the sheet upload
 
 **eq-shell:**
-- #676 feat(shell): command palette, skeleton loading, optimistic staff archive
+- #678 feat(staff): show and edit job_title on the Staff dashboard
 - #658 fix(dashboard): surface pending staff connections on home sidebar
 - #637 docs: pnpm-workspace.yaml — packages are vendored, not a git submodule
 - #636 build: pin @eq-solutions/ui to release tag v1.10.0 for reproducible builds
