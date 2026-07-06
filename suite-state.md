@@ -61,10 +61,10 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-06)
 
 **eq-service:**
+- #453 fix(onboarding): backfill setup_completed_at for the SKS tenant
 - #452 feat(commercials): create assets directly from the sheet upload
 
 **eq-shell:**
-- #677 fix(drift): 0164 — reassert security_invoker on app_data.field_people (ehow)
 - #676 feat(shell): command palette, skeleton loading, optimistic staff archive
 - #658 fix(dashboard): surface pending staff connections on home sidebar
 - #637 docs: pnpm-workspace.yaml — packages are vendored, not a git submodule
