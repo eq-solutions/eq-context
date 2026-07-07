@@ -9,6 +9,11 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-08] v3.5.268 — Timesheets: filter by labour-hire agency (SKS lane v3.10.86)
+- New **Agency** dropdown on the Timesheets filter bar (next to Group). Pick a labour-hire business and the list narrows to just their people — so you can print or export that agency's sheet and send it to them. Options are built from the `agency` tag on active Labour Hire workers (case-folded to merge stray case variants); the selection persists across re-renders.
+- **Exports now honour the on-screen filters.** `↓ Export CSV` and `↓ Payroll Report` previously dumped everyone; both now use the filtered set (group / agency / search on eq-field; + team on SKS), and the filename gains an agency suffix (e.g. `EQ_Timesheets_06-07-26_Atom.csv`). The eq-field exports were unified onto the filtered set and now also include Direct (matching the on-screen view + SKS). Top-right Print already prints the filtered view.
+- SKS data tidy: merged two look-alike agency tags — `Madigans`→`Madagins` and `core`→`Core`.
+
 ## [2026-07-08] v3.5.263→267 — Timesheets: TAFE days prefilled but editable (SKS lane v3.10.82→85)
 Four iterative ships turning apprentice TAFE days from a locked cell into a prepopulated-but-editable one. Shipped to both the eq-field product (v3.5.263→267) and the standalone SKS lane (`sks-nsw-labour` v3.10.82→85).
 - **v3.5.263** — the timesheet stopped muting an apprentice's TAFE day during a configured TAFE holiday, so payroll could enter real on-site hours (apprentices work through school breaks). `_tsDayStatus` made holiday-aware.

@@ -128,6 +128,10 @@ _Nothing pending — migrations 001–023 all applied._
 
 **Verified live (nspb `nspbmirochztcjijmcrx`):** `app_config.tafe_holidays` correct (winter break 06→17 Jul, anon-readable); **NO `tafe-weekly-fill` cron on the nspb project** (the PR #399 cron enablement was on ehow/canonical — the eq-field data plane — a separate lane). Apprentice nominated `tafe_day`s captured; Terry Su has none (had TAFE hand-typed on 3 roster days); Aiden Crowley nominated=tue but rostered SYD55 that Tue.
 
+**Also completed (same day, after the TAFE work — sks-nsw-labour v3.10.86 / eq-field v3.5.268, merged + deployed):**
+- [x] **Labour-hire agency filter on Timesheets** — new Agency dropdown next to Group; pick a business → list narrows to that agency's people so their sheet can be printed/exported and sent. Built from the `people.agency` tag on active LH workers (case-folded); selection persists. `↓ Export CSV` / `↓ Payroll Report` now honour the on-screen filters (were dumping everyone) and the filename carries an agency suffix. eq-field exports unified onto `_getTsFilteredPeople()` (now also include Direct, matching the on-screen view + SKS).
+- [x] **Agency data tidy (nspb, 2 rows)** — merged look-alike tags: `Madigans`→`Madagins` (Ali Alsalman) and `core`→`Core` (Zemi Asri). Now 7 clean agencies (Atom×7, Core×2, Cranfield×2, DL Electrical×2, Carter & Osbourne×1, IVI×1, Madagins×3). Royce confirmed spelling = "Madagins".
+
 **Deferred:**
 - [ ] `isTafeHolidayCell()` in `scripts/tafe.js` (both apps) is now **dead code** — the timesheet stopped consulting the holiday config at v3.10.84; writers use `tafeIsHolidayForDay` directly. Low-pri cleanup (leave or remove next timesheet touch). _(added 2026-07-08)_
 - [ ] Terry Su has no nominated `tafe_day` → won't auto-prefill going forward; Royce to set it in his profile if he attends TAFE regularly (operational data, not a code fix). _(added 2026-07-08)_
