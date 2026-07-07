@@ -1,13 +1,20 @@
 ---
 title: Changelog — EQ Solves Field
 owner: Royce Milmlow
-last_updated: 2026-07-07
+last_updated: 2026-07-08
 scope: Append-only history of changes to the EQ Solves Field product
 read_priority: reference
 status: live
 ---
 
 # Changelog — EQ Solves Field
+
+## [2026-07-08] v3.5.263→267 — Timesheets: TAFE days prefilled but editable (SKS lane v3.10.82→85)
+Four iterative ships turning apprentice TAFE days from a locked cell into a prepopulated-but-editable one. Shipped to both the eq-field product (v3.5.263→267) and the standalone SKS lane (`sks-nsw-labour` v3.10.82→85).
+- **v3.5.263** — the timesheet stopped muting an apprentice's TAFE day during a configured TAFE holiday, so payroll could enter real on-site hours (apprentices work through school breaks). `_tsDayStatus` made holiday-aware.
+- **v3.5.264** — soft "TAFE break" hint so the unmuted holiday cell didn't look like the prefill had vanished.
+- **v3.5.266** — superseded the above: **every** apprentice TAFE day renders as an editable cell pre-filled with `TAFE`/8h — looks done, counts 8h to the 40h week, reads complete untouched, but you can type a real job straight over it. Stays `workable:false` so completion logic is unchanged; the 8h count (`_tafeHrs`) is entry-aware so overwriting never double-counts.
+- **v3.5.267** — the prefill is driven by each apprentice's **nominated TAFE day** (`people.tafe_day`), not just cells where a manager hand-typed TAFE — so their TAFE day prepopulates **every** week, including future weeks the roster isn't built for. Roster content still wins (rostered to a site → shows the site; on leave → mutes); the nominated-day default only fills an empty cell.
 
 ## [2026-07-07] v3.5.265 — Prestart Word export back + SW resilience + iOS export (PR #420)
 - **Prestart Word export re-added** (`site-reports.js exportPrestartDocx`). It was dropped when Prestart moved from `safety.js` into `site-reports.js` (same rewrite that dropped voice) — the live Prestart had NO Word export on any device. Rebuilt on the shared `SiteReportsShared.docx` builder, mirroring Toolbox: "↓ Word" button in a submitted prestart's locked footer; doc includes site/date/supervisor, prev-day issues, works scope, HRCW, SWMS refs, hazards, permits, crew sign-off (signatures), photos, tenant logo + palette. (Diary export still absent.)
