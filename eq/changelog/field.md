@@ -9,6 +9,11 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-07] v3.5.265 — Prestart Word export back + SW resilience + iOS export (PR #420)
+- **Prestart Word export re-added** (`site-reports.js exportPrestartDocx`). It was dropped when Prestart moved from `safety.js` into `site-reports.js` (same rewrite that dropped voice) — the live Prestart had NO Word export on any device. Rebuilt on the shared `SiteReportsShared.docx` builder, mirroring Toolbox: "↓ Word" button in a submitted prestart's locked footer; doc includes site/date/supervisor, prev-day issues, works scope, HRCW, SWMS refs, hazards, permits, crew sign-off (signatures), photos, tenant logo + palette. (Diary export still absent.)
+- **Service worker hardened** (`sw.js`) after a stuck-loading report: precache is now per-file (`Promise.allSettled`) not atomic `addAll` — one file's 404/mobile blip can no longer wipe the whole offline cache and strand the app on a dead loader; navigation fallback serves the cached `/index.html` shell when a page request fails.
+- **iOS export fallback** (`site-reports-shared.js buildPackage`): installed iOS app (standalone) silently no-ops `<a download>` — now routes the `.docx` to the Web Share sheet, else opens it. Android/desktop/iOS-Safari-tab download unchanged.
+
 ## [2026-07-07] v3.5.262 — voice-to-text back on safety-form freeform fields (PR #419)
 - 🎤 dictation re-added to the FREEFORM textareas of Prestart, Toolbox and Diary (11 fields). The feature existed in the old `safety.js` forms but was lost when those were rewritten into `site-reports.js`; it had survived only on Site Audits (`audits.js`, v3.5.236).
 - New shared `SiteReportsShared.voice` helper (mirrors the audits recogniser): `en-AU`, feature-detected (no mic where unsupported), one recogniser at a time, transcript **appends + stays editable**, draft syncs via the field's own `onchange`, hidden on locked/submitted forms. NOT on structured/code fields (SWMS refs, site/date).

@@ -14,6 +14,26 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-07 (eq-field) — Prestart Word export back + service-worker resilience + iOS export fallback
+
+*Royce reported a live mobile incident: stuck on a loading screen (spinner frozen) and "I don't think the mobile UI allows for the export". Checked the live deploy — HEALTHY (all assets 200, consistent version, no skew). The stuck screen was client-side (SW wedged after 5 rapid cache-bump deploys + a network blip). The export instinct was right: the live Prestart had no Word export at all — dropped in the same safety.js → site-reports.js rewrite that dropped voice. Royce picked "prestart export back" (over prestart+diary or neither), plus the two fixes.*
+
+**Shipped + LIVE (v3.5.265, PR #420, field.eq.solutions):**
+- [x] **Prestart Word export re-added** (`site-reports.js` `exportPrestartDocx`) — built on the shared `SiteReportsShared.docx` builder, mirrors `exportToolboxDocx`. "↓ Word" button now shows in a **submitted** prestart's locked footer. Doc = site/date/supervisor, previous-day issues, works scope, HRCW, SWMS refs, hazards, permits, crew sign-off (signatures), photos, tenant logo + palette. Verified: assembles to a valid .docx zip (harness, real JSZip).
+- [x] **Service worker hardened** (`sw.js`) — precache is now per-file (`Promise.allSettled`) not atomic `addAll` (one file's 404/mobile blip could reject the whole precache; activate then deletes the old cache → app falls back to an EMPTY cache → stuck on a dead loader). Plus a navigation fallback: page request fails network + not cached → serve the cached `/index.html` shell so the app always boots.
+- [x] **iOS export fallback** (`site-reports-shared.js` `buildPackage`) — installed iOS app (standalone) silently no-ops `<a download>`; now routes the `.docx` to the Web Share sheet, else opens it. Android/desktop/iOS-Safari-tab download unchanged.
+
+**Deferred / needs Royce:**
+- [ ] **One more hard-reload on Royce's phone** to land on the hardened SW (v3.5.265) — the resilience only protects from the next clean load onward; this release bumped the cache once more. _(added 2026-07-07)_
+- [ ] **Diary Word export** — Diary still has no Word export (never had one). Left out per Royce's "prestart only" pick; toolbox/audits/prestart now have it. _(added 2026-07-07)_
+
+**Notes:**
+- **The safety.js → site-reports.js rewrite dropped BOTH voice AND Word export** for Prestart (and Diary never had export). Toolbox + Site Audits kept theirs. When auditing "missing" site-report features, check the old `safety.js` first — it's the superseded source of truth for what prestart used to do.
+- **SW fragility root cause:** network-first + atomic `addAll` + old-cache-deletion-on-activate = a single precache miss can strand the app on an empty cache. Fixed now, but the lesson: never let a partial precache failure nuke the whole cache; always give navigations a shell fallback.
+- Live deploy was healthy throughout — the incident was purely client SW state. Diagnosis before code: curl the live assets for 200s + version consistency before assuming a bad release.
+
+---
+
 ## ⏩ Session close — 2026-07-07 (eq-field + eq-shell) — Mobile polish (Leave, modals, nav) + voice-to-text back on safety forms
 
 *Royce: "polish mobile view from core > field" (screenshots of Prestart/Leave embedded in Shell), then "merge and continue". Then asked me to steelman voice-to-text for safety forms — found it had been built into the OLD safety.js prestart/toolbox but LOST when those were rewritten into site-reports.js (it survived only on Site Audits). Chose freeform-fields-only, then "ship both together", and explicitly approved the auth-hub deploy for the mic permission.*
