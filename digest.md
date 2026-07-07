@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-07 19:03 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-07 19:06 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-07 14:21 UTC → 2026-07-07 19:03 UTC)
+## Since last refresh (2026-07-07 19:03 UTC → 2026-07-07 19:06 UTC)
 
-- Merged: eq-shell [#676](https://github.com/eq-solutions/eq-shell/pull/676) feat(shell): command palette, skeleton loading, optimistic s
-- Merged: eq-shell [#674](https://github.com/eq-solutions/eq-shell/pull/674) fix(users): add subcontractor to stale VALID_ROLES lists
-- Merged: eq-shell [#672](https://github.com/eq-solutions/eq-shell/pull/672) feat(ops): labour hire rates — manual manage (add/edit/delet
-- Merged: eq-shell [#670](https://github.com/eq-solutions/eq-shell/pull/670) feat(ops): labour hire rates — weekly-cost rollup
-- Merged: eq-shell [#669](https://github.com/eq-solutions/eq-shell/pull/669) feat(field): job-number retire — auto (invoiced) + manual (h
-- Merged: eq-shell [#668](https://github.com/eq-solutions/eq-shell/pull/668) chore(drift): allow-list labour_hire_rates_view (security_in
-- Merged: eq-shell [#665](https://github.com/eq-solutions/eq-shell/pull/665) fix(branding): bound logo colour-detection with a load timeo
-- Merged: eq-shell [#664](https://github.com/eq-solutions/eq-shell/pull/664) feat(roles): bump eq-roles to v2.4.0, wire subcontractor eve
+- Merged: eq-shell [#678](https://github.com/eq-solutions/eq-shell/pull/678) feat(staff): show and edit job_title on the Staff dashboard
+- Merged: eq-shell [#677](https://github.com/eq-solutions/eq-shell/pull/677) fix(drift): 0164 — reassert security_invoker on app_data.fie
+- Merged: eq-shell [#673](https://github.com/eq-solutions/eq-shell/pull/673) fix(access-control): subcontractor role 400s on permission t
+- Merged: eq-shell [#671](https://github.com/eq-solutions/eq-shell/pull/671) feat(ops): labour hire rates — PDF import + weekly-cost Fare
+- Merged: eq-shell [#666](https://github.com/eq-solutions/eq-shell/pull/666) feat(branding): live preview + contrast warnings + detection
+- Merged: eq-shell [#663](https://github.com/eq-solutions/eq-shell/pull/663) feat(ops): labour hire rates — canonical tables + read-only 
+- Merged: eq-shell [#662](https://github.com/eq-solutions/eq-shell/pull/662) feat(roles): expose subcontractor as a selectable role (safe
+- Merged: eq-shell [#661](https://github.com/eq-solutions/eq-shell/pull/661) feat(branding): one logo + auto-PNG for docs + logo colour d
 
 ## ⚠ Needs you (4)
 
@@ -116,4 +116,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-07 19:03 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-07 19:06 UTC._
