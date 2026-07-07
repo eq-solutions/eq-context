@@ -8,19 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-07 06:38 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-07 06:56 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-07 06:23 UTC → 2026-07-07 06:38 UTC)
+## Since last refresh (2026-07-07 06:38 UTC → 2026-07-07 06:56 UTC)
 
-- Merged: eq-shell [#677](https://github.com/eq-solutions/eq-shell/pull/677) fix(drift): 0164 — reassert security_invoker on app_data.fie
-- Merged: eq-shell [#673](https://github.com/eq-solutions/eq-shell/pull/673) fix(access-control): subcontractor role 400s on permission t
-- Merged: eq-shell [#671](https://github.com/eq-solutions/eq-shell/pull/671) feat(ops): labour hire rates — PDF import + weekly-cost Fare
-- Merged: eq-shell [#666](https://github.com/eq-solutions/eq-shell/pull/666) feat(branding): live preview + contrast warnings + detection
-- Merged: eq-shell [#663](https://github.com/eq-solutions/eq-shell/pull/663) feat(ops): labour hire rates — canonical tables + read-only 
-- Merged: eq-shell [#662](https://github.com/eq-solutions/eq-shell/pull/662) feat(roles): expose subcontractor as a selectable role (safe
-- Merged: eq-shell [#661](https://github.com/eq-solutions/eq-shell/pull/661) feat(branding): one logo + auto-PNG for docs + logo colour d
-- Merged: eq-shell [#660](https://github.com/eq-solutions/eq-shell/pull/660) fix(staff): decline a worker-initiated application actually 
-- ⚠ Needs you: 1 → 4 (new items)
+- Merged: eq-shell [#676](https://github.com/eq-solutions/eq-shell/pull/676) feat(shell): command palette, skeleton loading, optimistic s
+- Merged: eq-shell [#674](https://github.com/eq-solutions/eq-shell/pull/674) fix(users): add subcontractor to stale VALID_ROLES lists
+- Merged: eq-shell [#672](https://github.com/eq-solutions/eq-shell/pull/672) feat(ops): labour hire rates — manual manage (add/edit/delet
+- Merged: eq-shell [#670](https://github.com/eq-solutions/eq-shell/pull/670) feat(ops): labour hire rates — weekly-cost rollup
+- Merged: eq-shell [#669](https://github.com/eq-solutions/eq-shell/pull/669) feat(field): job-number retire — auto (invoiced) + manual (h
+- Merged: eq-shell [#668](https://github.com/eq-solutions/eq-shell/pull/668) chore(drift): allow-list labour_hire_rates_view (security_in
+- Merged: eq-shell [#665](https://github.com/eq-solutions/eq-shell/pull/665) fix(branding): bound logo colour-detection with a load timeo
+- Merged: eq-shell [#664](https://github.com/eq-solutions/eq-shell/pull/664) feat(roles): bump eq-roles to v2.4.0, wire subcontractor eve
 
 ## ⚠ Needs you (4)
 
@@ -75,6 +74,8 @@ _Showing 15 of 133 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **One more hard-reload on Royce's phone** to land on the hardened SW (v3.5.265) — the resilience only protects from the next clean load onward; this release bumped the cache once more. _(added 2026-07-07)_
+- **Diary Word export** — Diary still has no Word export (never had one). Left out per Royce's "prestart only" pick; toolbox/audits/prestart now have it. _(added 2026-07-07)_
 - **Live signed-in smoke of Field voice on SKS** — can't test programmatically (needs a browser + physical mic). Sign in → /sks/field → open a report → tap 🎤 → allow mic → dictate into a freeform field. _(added 2026-07-07)_
 - **Field mobile polish — remaining screens** — prestart form top grid (Site/Supervisor/Date/Time) and the roster grid at 375px still un-eyeballed. _(added 2026-07-07)_
 - **Minimum-requirements model** — undecided. Options presented: soft per-org checklist (recommended) / manager-view-only / hard gate / leave-as-is. _(added 2026-07-07)_
@@ -83,9 +84,7 @@ _Showing 15 of 133 · full record in [sessions/](sessions/)_
 - **Supabase CLI can't deploy eq-cards edge functions** — `supabase functions deploy` fails for every function on CLI 2.95.4 (mis-resolves `config.toml` email-template paths). MCP deploy works and was used for v10; but the CLI path is the "next person" path. Fix = upgrade CLI (2.109 available) + retest, or adjust config without breaking `supabase start`. Task chip `task_61ff8686`. _(added 2026-07-07)_
 - **Onboarding order #5 fork settled as scan-first** — identity-first was the runner-up if scan-first tests poorly with real users. _(added 2026-07-06)_
 - **No live browser click-through of PR #686's changes** — bulk "All on/off" buttons and the collapsible customer/site grouping have only been typecheck/lint-verified, never clicked in a real browser session. _(added 2026-07-06, needs your call — or hand it to a session with live credentials)_
-- **Decide + build the SKS Supervision management fix** (re-open Field's CRUD vs build Shell surface — see above). _(added 2026-07-06)_
-- **Unify `employment_type` vocabulary between eq-field and eq-shell** — no shared enum/constraint; same root cause as the existing "add subcontractor as a real role" item below. The v3.5.253 Other-bucket fix makes the symptom visible instead of hiding it, it doesn't fix the underlying mismatch. _(added 2026-07-06)_
-_…and 245 more · [eq/pending.md](eq/pending.md)_
+_…and 247 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -117,4 +116,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-07 06:38 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-07 06:56 UTC._
