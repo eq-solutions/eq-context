@@ -18,6 +18,17 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 *Royce asked whether caching photos is a show-stopper at scale; answered no (grounded in live storage stats), then "build it now". Completes the offline wallet: ID card + tickets + now photos all work with no signal.*
 
+---
+
+## ⏩ Session close — 2026-07-08 (eq-service) — RCD checks seeded from contract import + full canonical wiring re-verified
+
+*Read the RCD-from-import proposal, then shipped it: commercial-sheet import now seeds unscheduled RCD checks so contracted RCD testing stops vanishing into a dollar line. Then re-audited + live-verified the whole import → check/report → ACB/NSX/RCD chain end-to-end, corrected the stale "contacts fragmented" note (contacts are canonical now), and built a Shell/Service/Canonical wiring infographic with a verification panel.*
+
+- [x] **RCD scheduled checks from commercial-sheet import** (eq-service PR #465) — new `seedRcdScheduledChecks` seeds header-only `kind='rcd'` scheduled checks on import. Cadence comes from the sheet's interval text ("Annual"/"Semi-Annual"), NOT a hardcoded month; due dates are editable May/Nov defaults (next occurrence, always future so the overdue cron never false-flags them); unassigned (date+assignee set at time of work); data-gated (no RCD job plan → no-op) and idempotent (wipe/reimport-safe). Header-only, matching how RCD results are entered via the Jemena import. 10 unit tests, full build green. _(done 2026-07-08)_
+- [x] **Canonical wiring re-verified correct** (eq-service PR #466, docs) — traced + LIVE-verified import → check/report and ACB/NSX/RCD → report: every domain write/read routes through canonical; only branding/identity metadata (`tenant_settings`/`tenants`/`profiles`) + trigger-populated `scope_coverage_gaps` stay service-local (intentional). Structural correctness pass on ehow: 25/25 objects have the full INSERT/UPDATE/DELETE trigger set, `security_invoker` views, correct `app_data` routing, RLS+policy, and a write-path tenant fence (5 SECURITY DEFINER via `assert_jwt_tenant()`, 20 SECURITY INVOKER via RLS `WITH CHECK`); 0 ERROR advisors. Corrected the stale CLAUDE.md "contacts FRAGMENTED" note → contacts are canonical (25 objects). _(done 2026-07-08)_
+- [x] **Shell/Service/Canonical wiring infographic** — published as a shareable claude.ai artifact (EQ-branded, topology map + 25-object catalog + operational chain + write/auth mechanism + boundary + a live verification panel). _(done 2026-07-08)_
+- [ ] **Site→customer backfill (SKS)** — only 117/250 SKS canonical sites carry a `customer_id`, so Service report customer-rollups are blank for the rest. The Service side is wired correctly; this is a Shell/canonical-spine data backfill, not a Service wiring gap. _(added 2026-07-08)_
+
 **Shipped + LIVE (PR #131 `5653093`, Build & Deploy green):**
 - [x] **Offline licence/cert photos** — `OfflineCachedImage` (drop-in for `Image.network` at wallet thumbnail, licence card, licence detail): online shows the live image + best-effort stashes the bytes; offline shows cached bytes via `Image.memory`, else the existing placeholder. Cache keyed by the signed URL's stable path (query stripped).
 - [x] **`photo_cache`** — IndexedDB byte-store (web) on `package:web` + `dart:js_interop` (SDK removed `dart:indexed_db`); base64 values, localStorage size ledger, 25 MB cap + oldest-first eviction, requests `navigator.storage.persist()`. No-op on native/VM via conditional import.
