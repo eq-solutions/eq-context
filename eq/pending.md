@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-07-07
+last_updated: 2026-07-08
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -11,6 +11,22 @@ status: live
 
 EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## ⏩ Session close — 2026-07-08 (eq-cards) — Offline licence photos (finishes the super-easy-onsite set)
+
+*Royce asked whether caching photos is a show-stopper at scale; answered no (grounded in live storage stats), then "build it now". Completes the offline wallet: ID card + tickets + now photos all work with no signal.*
+
+**Shipped + LIVE (PR #131 `5653093`, Build & Deploy green):**
+- [x] **Offline licence/cert photos** — `OfflineCachedImage` (drop-in for `Image.network` at wallet thumbnail, licence card, licence detail): online shows the live image + best-effort stashes the bytes; offline shows cached bytes via `Image.memory`, else the existing placeholder. Cache keyed by the signed URL's stable path (query stripped).
+- [x] **`photo_cache`** — IndexedDB byte-store (web) on `package:web` + `dart:js_interop` (SDK removed `dart:indexed_db`); base64 values, localStorage size ledger, 25 MB cap + oldest-first eviction, requests `navigator.storage.persist()`. No-op on native/VM via conditional import.
+
+**Notes:**
+- **Scale is a non-issue:** cost is per-device and bounded to the worker's OWN photos (avg 183 KB, p95 363 KB; whole fleet only 33 MB / 185 objects). A phone caches its own few MB, never the fleet; server storage unchanged (Storage already holds originals).
+- **`dart:indexed_db` was removed from the current Dart SDK** — use `package:web` + `dart:js_interop` for IndexedDB now (dart:html still works for localStorage, as `WalletCacheService` uses).
+- Cache keyed by storage path not content → offline copy can be stale if a photo is replaced at the same path (online always fresh via Image.network). Acceptable given photos rarely change.
+- CORS-reconcile task `task_df55614d` landed: `ocr-licence` repo now imports `_shared/cors.ts` with the holder_name change folded in — the deploy/repo drift is closed.
 
 ---
 
@@ -78,7 +94,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 **Deferred / needs Royce:**
 - [ ] **Minimum-requirements model** — undecided. Options presented: soft per-org checklist (recommended) / manager-view-only / hard gate / leave-as-is. _(added 2026-07-07)_
-- [ ] **Offline photo caching** — cache licence photo BYTES so images show offline / past the 1h signed-URL expiry. Deliberate fast-follow to PR #129. _(added 2026-07-07)_
+- [x] **Offline photo caching** — DONE + LIVE 2026-07-08 (PR #131 `5653093`): `OfflineCachedImage` + IndexedDB byte-cache. Licence/cert photos now show offline too.
 - [ ] **Onboarding order #5 fork** — scan-first shipped; identity-first is the fallback if it tests poorly. _(from 2026-07-06)_
 - [ ] **Supabase CLI can't deploy eq-cards edge functions** — `supabase functions deploy` fails for every function on CLI 2.95.4 (mis-resolves `config.toml` email-template paths). MCP deploy works and was used for v10; but the CLI path is the "next person" path. Fix = upgrade CLI (2.109 available) + retest, or adjust config without breaking `supabase start`. Task chip `task_61ff8686`. _(added 2026-07-07)_
 
