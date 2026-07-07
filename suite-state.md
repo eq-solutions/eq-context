@@ -1,14 +1,14 @@
 ---
 title: EQ Suite — Current State
 owner: Royce Milmlow
-last_updated: 2026-07-06
+last_updated: 2026-07-08
 scope: Live suite state — app lineup, DB counts, open PRs, architectural decisions. Auto-refreshed nightly by GitHub Action.
 read_priority: critical
 status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-07-07 (nightly cron)_
+_Last verified: 2026-07-08 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -58,7 +58,7 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-07-07)
+## Open PRs (as of 2026-07-08)
 
 **eq-service:**
 - #459 chore(deps-dev): bump @vitejs/plugin-react from 6.0.1 to 6.0.3
@@ -133,6 +133,8 @@ _Auto-refreshed nightly. ✓ = has data · ⚠ = empty (no data yet) · ✗ = ta
 ---
 
 ## Key Decisions (auto-derived from merged PRs + manual)
+- Contract-scope commercial-sheet import now **also seeds unscheduled RCD maintenance checks** — RCD Testing scope lines create header-only `maintenance_checks` (`kind='rcd'`, scheduled, unassigned) so contracted RCD visits surface in the queue/calendar instead of living only as dollar line items; cadence read from `intervals_text`, editable default dates (service PR #465, 2026-07-06)
+- Shell delegates **microphone capability to the Field iframe only** — `netlify.toml` Permissions-Policy opens `microphone` to the two Field origins + `FieldIframe` gets `allow="microphone"`; enables voice-to-text on Field safety forms embedded in core.eq.solutions (camera/geo stay disabled) (shell PR #693, 2026-07-06)
 - Onboarding first-run wizard **retired permanently** — disabled outright and `setup_completed_at` backfilled for the SKS tenant so it never re-triggers (service PRs #453/#454, 2026-07-06)
 - Contract-scope commercial-sheet import now **creates and reconciles canonical assets directly from the sheet upload** — new asset-reconciliation screen fills contract-scope asset gaps; assets route to `app_data.assets` via the canonical write layer (service PRs #444/#445/#452, 2026-07-05→06)
 - Staff `employment_type` **locked to a canonical vocabulary unified with eq-field** — stops role→type conflation; type is now a controlled field, not inferred from role (shell PRs #687/#690, 2026-07-06)
