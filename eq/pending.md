@@ -14,6 +14,19 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-08 (eq-shell) — Branded print-to-PDF export for labour hire weekly cost, deployed live
+
+*Follow-up to the same-day labour-hire session. Royce asked how hard a tenant-branded export of the weekly-cost table would be for distribution; compared the print-to-PDF vs server-generated-PDF options, then asked to build the cheaper one.*
+
+- [x] **"Export PDF" on the Weekly cost table** (eq-shell PR #702 `1b2a7db`, merged to main → deployed to core.eq.solutions) — button opens the browser print dialog on a branded, print-only sheet (tenant logo + name via the existing `useBrand()` hook, generated date, the weekly-cost table). A `@media print` rule hides the rest of the app so the sheet prints standalone. No new dependencies, no backend/DB changes. _(done 2026-07-08)_
+- [x] **CI caught a real bug before it reached prod** — `tsc --noEmit -p .` (used for local verification) missed a null-safety issue that `tsc -b` (the actual CI command, project-references mode) caught: `WeeklyCostRow.normal` is typed `number | null` and the print sheet's cell rendered it without the same null-guard the on-screen column already had. Fixed, verified with the exact CI command locally, merged. _(done 2026-07-08)_
+
+**Notes:**
+- Merge required two branch updates mid-flight — `main` moved twice while CI was running (busy day on eq-shell) — each time re-ran checks clean before merging.
+- Full live verification (real tenant logo/name rendering in the actual print preview) still needs a manual check by Royce once deployed — branding only resolves inside a logged-in session, so it couldn't be exercised end-to-end from this session.
+
+---
+
 ## ⏩ Session close — 2026-07-08 (eq-field) — SKS tenant logo unblocked (v3.5.270, shipped + live)
 
 *Royce reported the SKS logo not rendering on `field.eq.solutions/?tenant=sks`. Root cause: the Content-Security-Policy `img-src` directive never listed the canonical Supabase host, so the browser refused the logo image. Fixed, merged, and deployed to production this session.*
