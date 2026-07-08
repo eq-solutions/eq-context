@@ -8,19 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-08 09:24 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-08 09:28 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-08 09:13 UTC → 2026-07-08 09:24 UTC)
+## Since last refresh (2026-07-08 09:24 UTC → 2026-07-08 09:28 UTC)
 
-- Merged: eq-shell [#693](https://github.com/eq-solutions/eq-shell/pull/693) Grant microphone to the Field iframe (voice-to-text on safet
-- Merged: eq-shell [#690](https://github.com/eq-solutions/eq-shell/pull/690) fix(staff): lock employment_type to canonical vocabulary; st
-- Merged: eq-shell [#688](https://github.com/eq-solutions/eq-shell/pull/688) refactor(shell): retire IconRail, embedded pages use collaps
-- Merged: eq-shell [#687](https://github.com/eq-solutions/eq-shell/pull/687) fix(staff): unify employment_type vocabulary with eq-field
-- Merged: eq-shell [#683](https://github.com/eq-solutions/eq-shell/pull/683) fix(shell): palette Ctrl+K fallback + Staff continuous scrol
-- Merged: eq-shell [#682](https://github.com/eq-solutions/eq-shell/pull/682) fix(provisioning): profiles insert can hit an FK violation o
-- Merged: eq-shell [#679](https://github.com/eq-solutions/eq-shell/pull/679) feat(ops): labour hire rates — PDF import confirms update vs
-- Merged: eq-shell [#678](https://github.com/eq-solutions/eq-shell/pull/678) feat(staff): show and edit job_title on the Staff dashboard
-- ✅ Needs you: 5 → 4
+- Merged: eq-shell [#704](https://github.com/eq-solutions/eq-shell/pull/704) feat(access): pull in @eq-solutions/roles v2.5.0 (access-mod
+- Merged: eq-shell [#692](https://github.com/eq-solutions/eq-shell/pull/692) feat(staff): manage supervisor status from Shell's staff edi
+- Merged: eq-shell [#691](https://github.com/eq-solutions/eq-shell/pull/691) fix(shell): embedded mobile nav — restore MobileTabBar, reti
+- Merged: eq-shell [#686](https://github.com/eq-solutions/eq-shell/pull/686) Fix: app-activation nav bug + bulk toggle + collapsible site
+- Merged: eq-shell [#685](https://github.com/eq-solutions/eq-shell/pull/685) fix(drift-check): add app_data.activation_status to KNOWN_LE
+- Merged: eq-shell [#680](https://github.com/eq-solutions/eq-shell/pull/680) Admin: one-spot app activation view + canonical entitlement 
+- Merged: eq-shell [#677](https://github.com/eq-solutions/eq-shell/pull/677) fix(drift): 0164 — reassert security_invoker on app_data.fie
+- Merged: eq-shell [#676](https://github.com/eq-solutions/eq-shell/pull/676) feat(shell): command palette, skeleton loading, optimistic s
 
 ## ⚠ Needs you (4)
 
@@ -33,7 +32,7 @@ _2026-07-08 09:24 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 6 | 4d |
+| eq-shell | ? unknown | ? | 5 | 4d |
 | eq-solves-service | ✓ success | 0d ago | 6 | 2d |
 | eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ✓ success | 1d ago | 1 | 0d |
@@ -57,6 +56,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-08 | eq-shell | [#704](https://github.com/eq-solutions/eq-shell/pull/704) feat(access): pull in @eq-solutions/roles v2.5.0 (access-model Ph |
 | 2026-07-08 | eq-shell | [#703](https://github.com/eq-solutions/eq-shell/pull/703) fix(shell): report native-pipeline query failures instead of swal |
 | 2026-07-08 | eq-shell | [#702](https://github.com/eq-solutions/eq-shell/pull/702) feat(ops): branded print-to-PDF export for labour hire weekly cos |
 | 2026-07-08 | eq-shell | [#701](https://github.com/eq-solutions/eq-shell/pull/701) fix(shell): stop iOS auto-zoom on login inputs |
@@ -71,7 +71,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-08 | eq-field | [#421](https://github.com/eq-solutions/eq-field/pull/421) v3.5.270 — CSP: allow canonical Supabase host in img-src (tenant  |
 | 2026-07-07 | eq-shell | [#696](https://github.com/eq-solutions/eq-shell/pull/696) fix(shell): embedded rail — un-clip EQ logo, lift icon contrast |
 | 2026-07-07 | eq-solves-service | [#469](https://github.com/eq-solutions/eq-service/pull/469) fix(shell-embed): self-heal a lapsed Shell→Service session |
-| 2026-07-07 | eq-field | [#420](https://github.com/eq-solutions/eq-field/pull/420) v3.5.265 — Prestart Word export back + SW resilience + iOS export |
 _Showing 15 of 121 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -118,4 +117,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-08 09:24 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-08 09:28 UTC._
