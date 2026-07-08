@@ -14,12 +14,25 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-08 (eq-cards) — Duplicate-worker phone gap root-caused + fixed live; pending-review "silent update" gap found + partially closed
+
+*Started from "did Sam Powell upload a photo" — found two unlinked "Sam Powell" worker records because a name-splitting bug (middle name folded into `last_name`) meant a name-based search missed the real one, and their phone numbers were never actually linked even though both had the same number. Root cause: `auth.users.phone` is always populated for phone-OTP sign-ups, but the client's scan-first onboarding screen never carried it into the first `profiles` write, so `profiles.mobile`/`workers.phone` could stay null forever — silently breaking phone-based dedup for any worker onboarded that way.*
+
+- [x] **eq-cards commit `34e1b5f` (branch `claude/jovial-tu-de6995`, PR not yet opened).** Client fix: scan-first onboarding now passes the session's authenticated phone into the first profile write.
+- [x] **Migration 0080 (applied live, eq-canonical) — DB-side belt-and-braces + backfill.** `eq_cards_upsert_my_profile` now falls back to `auth.users.phone` when mobile is missing on both insert and update; existing null `profiles.mobile` rows backfilled from `auth.users.phone` in the same migration (cascades to `workers.phone` via the existing sync trigger). Verified live against the real duplicate: both "Sam Powell" records now carry the same phone.
+- [x] **Migration 0081 (applied live, eq-canonical) — pending-review "silent update" gap.** Confirmed live that nothing notifies an admin when a worker's licence changes (e.g. adds a photo) while their connection request is still pending — `shell_control.cards_field_approvals` only ever gets a row at approval/rejection time (0 pending rows exist there, ever), and `public.licences` had no trigger beyond audit-log + `updated_at`. Added a nullable `licence_last_changed_at` on `org_access_requests`, bumped by a new trigger (`mark_pending_requests_licence_changed`, fires on `public.licences` insert/update) for any worker with a `status = 'pending'` request. **Royce's call: UI badge only, no email/webhook re-notify (that path is deliberately deferred, separate from this).**
+- [ ] **eq-shell UI badge wiring — running now as its own session (`task_309c92e5`).** Needs to read `org_access_requests.licence_last_changed_at` and badge the review card/modal. DB side is fully done; this is UI-only.
+- [ ] **`mark_pending_requests_licence_changed()` needs allow-listing in eq-shell's CI security gate** — it's a new anon-executable-adjacent SECURITY DEFINER function and is already blocking eq-shell PRs (see the corrected note in the eq-shell entry above; same underlying chip, `task_f1292bdf`).
+- [ ] **eq-cards PR not yet opened for commit `34e1b5f`** — migrations are live, code is committed to the branch, but no PR has been raised yet.
+
+---
+
 ## ⏩ Session close — 2026-07-08 (eq-shell) — Mobile "have to keep zooming" bug root-caused + fixed live; unrelated security gate surfaced on merge
 
 *Royce showed a mate the app on his phone and got a "the zooming still isn't fixed" complaint. Ruled out viewport meta tags (all four apps — Field, Shell, Service, Cards — already ship them correctly) and ruled out fixed-width layout overflow (the suite's CSS already handles this well; the few `min-width` table cases in eq-shell/eq-ui are deliberate horizontal-scroll fallbacks, not bugs). Root cause: iOS Safari auto-zooms the page on focus for any `<input>` under 16px font-size, and never auto-zooms back out — eq-shell's login page inputs were 14px. eq-field already had this exact fix; eq-shell never got it.*
 
 - [x] **eq-shell PR #701 (merged → live on core.eq.solutions).** `.eq-login-input` bumped 14px→16px in both `src/App.css` and `src/pages/auth.css` (duplicated rule, both fixed). Stops the persistent zoom on the login screen — the first thing every phone visitor touches. _(done 2026-07-08)_
-- [ ] **Unrelated pre-existing CI gate failing on eq-shell main — `mark_pending_requests_licence_changed()` is a new anon-executable SECURITY DEFINER function on eq-canonical, not allow-listed.** Surfaced only because it blocked this PR's merge (had to `--admin` bypass branch protection to land the CSS fix); the gap itself predates this session and is unrelated to the mobile fix. Every eq-shell PR will need an admin bypass until this is resolved. Fix chip filed: `task_f1292bdf`. _(added 2026-07-08)_
+- [ ] **CORRECTION (2026-07-08, eq-cards session): `mark_pending_requests_licence_changed()` is NOT pre-existing — it's the trigger function from eq-cards migration 0081, created in this same session (see the eq-cards entry below). Every eq-shell PR needing an admin bypass is a direct side-effect of that migration, not an unrelated gap.** Fix chip `task_f1292bdf` still applies — allow-list the function — just correcting the "predates this session" note above.
 
 ---
 
