@@ -14,6 +14,19 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-08 (eq-service) — Contract-import wiring audit + job-plan coverage report shipped
+
+*Full review of the import → asset-list pipeline (job plans, assets, RCD checks, canonical adherence), with an infographic of what's broken/missing. Shipped the one clear code fix (coverage reporting); the reconcile items (site enablement, missing contracts) Royce is handling directly, not delegated.*
+
+- [x] **eq-service PR #473 (merged) — job-plan coverage report on commercial-sheet import.** Every import now reports, unconditionally, which contracted job-plan codes couldn't become work: unmapped (no plan), ambiguous (>1 plan), empty plan (plan exists but has zero tasks — a check off it opens blank). Surfaced on `CommitResult`, the audit log, and a green/amber card in the importer UI. No schema change; full build + tests green. _(done 2026-07-08)_
+- [x] **Contract-import audit infographic published** (claude.ai artifact) — site-coverage funnel (242 SKS sites → 6 enabled via core → 4 with an imported contract → 1 with any actual work), asset funnel (1,367 contracted units → 345 stubs → 0 real assets), canonical-adherence check (all 7 import paths confirmed writing through canonical — no bypass). _(done 2026-07-08)_
+- [x] **Decided (Royce):** PPM auto-scheduling from contract intervals is explicitly NOT wanted — the maintenance schedule comes from an approved Excel added to the calendar manually; don't build auto-scheduling. The two Equinix customer records are correct, separate entities — not a duplicate, don't merge.
+- [ ] **Reconcile (Royce doing directly):** enable CA1 via core (has a contract, currently disabled — 163 contracted units invisible in-app); import approved sheets for SY2/SY6/SY7 (enabled via core, no contract imported yet). _(added 2026-07-08, Royce-owned)_
+- [ ] **RCD checks can't seed for Equinix** — 0/4 contracted sites have an RCD check because the RCD-seed feature (PR #465) needs an RCD job plan for the customer, and Equinix has none (only Jemena does). Needs an Equinix (or global) RCD job plan created before re-import will help. _(added 2026-07-08, needs a job-plan decision)_
+- [ ] **2 SKS job plans have zero tasks** — `ELGLV` (E1.37) and `SCADA/PLC` (E1.40). Now caught by the new coverage report if a contract matches them, but the plans themselves still have no checklist. _(added 2026-07-08, needs job-plan content)_
+
+---
+
 ## ⏩ Session close — 2026-07-08 (eq-shell) — Embedded rail chrome fixed + live; schema-mismatch bug hunt found 9 broken queries across 3 repos, fixes now running
 
 *Royce flagged 3 embedded-chrome visual bugs from a screenshot; 2 fixed and shipped same session, 1 correctly identified as belonging to eq-service (not eq-shell — left alone). Then Royce reported real stuck-spinner bugs on Field and Service. Investigation had two false leads that were chased, caught, and explicitly retracted before finding the real root cause live. That root cause led to an approved 3-repo multi-agent audit for the same bug class, which found 8 more real instances — fix chips filed per repo, all three now started and running independently.*
