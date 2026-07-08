@@ -14,6 +14,35 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-08 (eq-cards) — homepage decluttered + OTP screen re-branded + licence-scan telemetry added; PR #132 merged + deployed live
+
+*Continuation of the same-day phone-dedup session. Royce reported the Cards homepage as "busy, doesn't match the new design" and a licence-photo scan silently failing. Investigated both properly before touching code — ruled out a red-herring Sentry error and a wrong assumption about a native mobile OCR path (Cards is browser-PWA only) before finding the real gaps.*
+
+- [x] **eq-cards commit `ffb6a03` — licence-scan silent-failure telemetry.** Reported "photo taken, then back to home screen, no crop screen" had zero error handling and zero Sentry breadcrumbs anywhere before the crop step. Added a breadcrumb right before invoking the camera/gallery picker and a visible "Didn't get a photo — try again" SnackBar if it returns null. Root cause still not confirmed — leading theory is a mobile-PWA page reload during the OS camera handoff (a known browser gotcha), but deliberately shipped diagnostics first rather than guessing at a fix. **Next occurrence of this bug will have real evidence to work from.**
+- [x] **eq-cards commit `7dc1def` — Wallet home screen decluttered.** The "Licence health" stat card now collapses to a single "N licences, all valid" line when nothing needs attention (was the single largest block on screen for the common zero-issues case). "Add to your site profile" suggestion chips moved from a wrapping multi-line block to one horizontally-scrollable row.
+- [x] **eq-cards commit `c1e39f3` — OTP screen re-branded to match sign-in.** Root cause of "doesn't match the new design": the sign-in screen has a dark branded header card (`AuthHeaderBanner`); the very next screen in the same flow (OTP verify) was a bare white Scaffold with no branding at all — a jarring drop mid-flow. Rebuilt the OTP screen onto the same card/header/button styling, no auth logic touched.
+- [x] **Profile screen deliberately left unchanged** — its repeated copy-icon rows are one consistent tap-to-copy affordance (whole row is a copy target), not visual clutter. Didn't force a change where there wasn't a real problem.
+- [x] **PR #132 merged (squash, `7cecddb`) and deployed live** (`gh workflow run deploy.yml --ref main`, run `28932819692`, success in 2m38s) — both this session's UI fixes and the earlier phone-dedup migrations (0080/0081) are now live on cards.eq.solutions.
+
+## ⏩ Session close — 2026-07-08 (eq-field) — chip audit across all 3 same-day schema-mismatch findings: all merged/live; PR #477 merged; 2 chips flagged stale, 1 confirmed still genuinely open
+
+*Royce asked for a status audit of every chip opened from the earlier 3-repo schema-mismatch audit, then to keep pushing them forward. Cross-referenced `eq-context` against live session state (`list_sessions`, `search_session_transcripts`, direct `gh pr view` calls) rather than trusting the substrate notes alone — several had already moved since they were last written up.*
+
+**Confirmed shipped (all 3 sibling audit chips, build side fully closed):**
+- [x] `task_3e6d4e89` (eq-field) — the 4 schedule/roster fixes from this session's earlier close had already been picked up, committed, and merged by a concurrent session while this session was doing the chip audit — **PR #422, merged, live as v3.5.271** (verified via `curl https://field.eq.solutions/sw.js`). That same concurrent session also resolved the one open question from my session (whether `AUDIT_SB_KEY` has grant on `app_data.field_sites`) — confirmed live it's the `service_role` key, `app_data.field_sites` returns 40 active SKS sites. _(done 2026-07-08)_
+- [x] `task_a12e9a25` (eq-shell, SKS-missing tenders table breaking AI briefings) — confirmed merged, **PR #703**. _(done 2026-07-08)_
+- [x] `task_7f161abb` (eq-solves-service, 4 broken Supabase queries + type-bypass audit) — checked in on the session directly (it was holding off on committing per its own standing instruction not to commit unless asked); relayed Royce's go-ahead. It committed, opened **PR #477**, then found 3 MORE instances of the same bypass pattern on a follow-up sweep (Customer Portal "Your Reports" page silently empty for every customer since it shipped; a customer notification type that has silently never sent; the ACB/NSX "assign to" picker always empty) and pushed those onto the same PR. **Verified CI (one pre-existing flaky check — `Integration tests (Supabase local)`, confirmed also failing on 2 other already-merged PRs #465/#469, unrelated to this PR's changes; everything else green) and squash-merged — `8cf97d2`, deploying to service.eq.solutions.** _(done 2026-07-08)_
+
+**Investigated the 3 other chips flagged as loose ends earlier today:**
+- [x] `task_309c92e5` (badge wiring) and `task_f1292bdf` (CI gate) — both already confirmed done+deployed by the eq-cards session; no action needed.
+- [ ] **Recommend Royce kill `task_2911c80d` and `task_abbb7fd0`** (EQ Service "session expired" stuck screen, built on two theories that were retracted before the chips were even created). Found the actual reason these theories were already moot: **eq-service PR #469 (merged 2026-07-07, a full day before these 2 chips were opened) already shipped the real fix** — a `ShellSessionRecovery` component that self-heals a lapsed Shell→Service auth cookie. Whatever these 2 chips are doing now is very likely wasted motion chasing an already-fixed problem. Not killed by this session — recommending only, Royce's call to actually stop them. _(added 2026-07-08)_
+- [ ] **`task_14031bea` (EQ Service sidebar-header tenant logo clipped, in `ShellSessionRecovery`'s fallback UI) is still genuinely open** — confirmed PR #469 explicitly scoped this out ("does not touch the eq-shell embedded chrome... separate repo, tracked separately"). No session currently confirmed working it. _(added 2026-07-08)_
+
+**Still open, needs Royce's design call (unchanged from earlier today, not attempted):**
+- [ ] Revert is structurally non-functional for every SKS roster edit in eq-field (`target_id` always null on reconstructed canonical week-rows) — see the earlier 2026-07-08 eq-field entry for full detail. Not part of PR #422; deliberately left out.
+
+---
+
 ## ⏩ Session close — 2026-07-08 (eq-service) — RCD job-plan self-provisioning made sticky for all future tenants
 
 *Continuation of the same-day import-audit + Equinix RCD-seed session. Royce: "correct - can this be sticky to service for all future tenants" — turned the manual data fix into a durable code guarantee instead.*
