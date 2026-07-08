@@ -16,6 +16,9 @@ status: live
 - Fix (pending review): `/api/eq-service/sites` (EQ Quotes/Service's site-data pull from Field) was completely dead — pointed at ehow (SKS) but queried a `public.sites` table that doesn't exist there at all. Rewired to `app_data.field_sites`. `eq-service-sites.js`.
 - Found, not yet fixed: Revert is structurally non-functional for every SKS roster edit (not just the 400 above) — `target_id` is always null because reconstructed wide week-rows have no single id to point at. Needs a design decision. See `eq/pending.md` 2026-07-08 (eq-field) entry.
 
+## [2026-07-08] v3.5.270 — CSP: canonical Supabase host allowed in img-src (SKS logo renders)
+- Fix: the SKS tenant logo (canonical branding, served from `jvknxcmbtrfnxfrwfimn.supabase.co/storage/.../tenant-logos`) was blocked by Content-Security-Policy — `img-src` never listed the canonical Supabase host, so the browser refused the image on `field.eq.solutions/?tenant=sks`. Added the specific host to `img-src` in both `netlify.toml` and `_headers` (the host was already trusted in `connect-src`; this extends it to `<img>` loads). Not a wildcard: Field's only Supabase-hosted images are canonical logos. Verified live on production. PR #421.
+
 ## [2026-07-08] v3.5.269 — People: agency is Labour-Hire-only (SKS lane v3.10.87)
 - Fix: an `agency` / hire-company tag no longer lingers when someone is moved off Labour Hire. Saving a person as any other group now clears it, so a former labour-hire worker no longer still reads as labour hire (shown against them + leaking into the v3.5.268 Timesheets agency filter). Guarded at the single write path (`savePersonToSB`) so it covers both the Add-Person modal and the person wizard; the Agency field is also hidden + cleared for non-LH groups on both forms. Surfaced by Jose Quintanilla (was moved to Direct but kept "Madagins" — record cleared, EQ/canonical was already correct).
 
