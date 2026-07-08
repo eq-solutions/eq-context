@@ -14,6 +14,17 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-08 (eq-field) — SKS tenant logo unblocked (v3.5.270, shipped + live)
+
+*Royce reported the SKS logo not rendering on `field.eq.solutions/?tenant=sks`. Root cause: the Content-Security-Policy `img-src` directive never listed the canonical Supabase host, so the browser refused the logo image. Fixed, merged, and deployed to production this session.*
+
+- [x] Added `https://jvknxcmbtrfnxfrwfimn.supabase.co` to `img-src` in **both** `netlify.toml` and `_headers` (netlify.toml wins at runtime; both kept in sync per repo convention). Specific host, not `*.supabase.co` — Field's only Supabase-hosted `<img>` sources are canonical logos; ehow safety photos load via `fetch()`→`connect-src` and render as `data:` URIs, so a wildcard would needlessly widen the policy.
+- [x] Verified: blocked logo URL returns 200/image/png; local `netlify dev` + the deploy preview + **production** all serve the corrected CSP. Prod `sw.js` now shows `eq-field-v3.5.270`.
+- [x] Shipped via PR #421 (squash-merged `c0719ef`), version bump v3.5.269 → v3.5.270. Nothing pending.
+- **Note:** the 3 unrelated files from the earlier eq-field session (`sks-pipeline-resource.js`, `audit.js`, `eq-service-sites.js`) were deliberately left uncommitted — this PR touched only the 5 CSP/version files.
+
+---
+
 ## ⏩ Session close — 2026-07-08 (eq-field) — chip `task_3e6d4e89` executed: schedule-shim bug class fixed in 4 spots, 1 deeper Revert bug newly found; nothing committed/deployed yet
 
 *Follow-up execution of the fix chip filed in the same day's earlier eq-shell/eq-field/eq-solves-service audit session. Live-verified ehow schema before any edit (per standing rule). Confirmed and fixed the eq-field findings from that audit, corrected one wrong premise in the audit itself, found and fixed one additional instance the audit had flagged as unconfirmed, and surfaced a second, deeper bug in the same feature area that the audit missed entirely. All changes are sitting in the eq-field working tree — no commit, no PR, no deploy.*
@@ -48,8 +59,8 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **eq-cards commit `34e1b5f` (branch `claude/jovial-tu-de6995`, PR not yet opened).** Client fix: scan-first onboarding now passes the session's authenticated phone into the first profile write.
 - [x] **Migration 0080 (applied live, eq-canonical) — DB-side belt-and-braces + backfill.** `eq_cards_upsert_my_profile` now falls back to `auth.users.phone` when mobile is missing on both insert and update; existing null `profiles.mobile` rows backfilled from `auth.users.phone` in the same migration (cascades to `workers.phone` via the existing sync trigger). Verified live against the real duplicate: both "Sam Powell" records now carry the same phone.
 - [x] **Migration 0081 (applied live, eq-canonical) — pending-review "silent update" gap.** Confirmed live that nothing notifies an admin when a worker's licence changes (e.g. adds a photo) while their connection request is still pending — `shell_control.cards_field_approvals` only ever gets a row at approval/rejection time (0 pending rows exist there, ever), and `public.licences` had no trigger beyond audit-log + `updated_at`. Added a nullable `licence_last_changed_at` on `org_access_requests`, bumped by a new trigger (`mark_pending_requests_licence_changed`, fires on `public.licences` insert/update) for any worker with a `status = 'pending'` request. **Royce's call: UI badge only, no email/webhook re-notify (that path is deliberately deferred, separate from this).**
-- [ ] **eq-shell UI badge wiring — running now as its own session (`task_309c92e5`).** Needs to read `org_access_requests.licence_last_changed_at` and badge the review card/modal. DB side is fully done; this is UI-only.
-- [ ] **`mark_pending_requests_licence_changed()` needs allow-listing in eq-shell's CI security gate** — it's a new anon-executable-adjacent SECURITY DEFINER function and is already blocking eq-shell PRs (see the corrected note in the eq-shell entry above; same underlying chip, `task_f1292bdf`).
+- [x] **eq-shell UI badge wiring — DONE + DEPLOYED (`task_309c92e5`, commit `b219fe2`, pushed → live on core.eq.solutions).** Reads `org_access_requests.licence_last_changed_at`; shows an "Updated" badge on the pending-connections card and in the Review & add modal header when a worker edits a licence after the request was seen. UI-only, no new writes. _(done 2026-07-08)_
+- [x] **`mark_pending_requests_licence_changed()` CI security gate — FIXED (2026-07-08), not allow-listed.** Investigated further and found a better fix than allow-listing: revoked `EXECUTE` from `anon`/`authenticated` on the eq-canonical control plane (migration `revoke_anon_licence_change_badge_trigger`), matching the existing convention for its sibling trigger `log_licence_change` on the same table. Trigger firing isn't gated by the invoking role's `EXECUTE` privilege, so the "Updated" badge (item above) is unaffected — verified the trigger is still enabled post-revoke, and confirmed the CI check (`Schema drift + anon-grant + policy-lint`) is green again via a manual `workflow_dispatch` run. `task_f1292bdf` closed.
 - [ ] **eq-cards PR not yet opened for commit `34e1b5f`** — migrations are live, code is committed to the branch, but no PR has been raised yet.
 
 ---
@@ -59,7 +70,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 *Royce showed a mate the app on his phone and got a "the zooming still isn't fixed" complaint. Ruled out viewport meta tags (all four apps — Field, Shell, Service, Cards — already ship them correctly) and ruled out fixed-width layout overflow (the suite's CSS already handles this well; the few `min-width` table cases in eq-shell/eq-ui are deliberate horizontal-scroll fallbacks, not bugs). Root cause: iOS Safari auto-zooms the page on focus for any `<input>` under 16px font-size, and never auto-zooms back out — eq-shell's login page inputs were 14px. eq-field already had this exact fix; eq-shell never got it.*
 
 - [x] **eq-shell PR #701 (merged → live on core.eq.solutions).** `.eq-login-input` bumped 14px→16px in both `src/App.css` and `src/pages/auth.css` (duplicated rule, both fixed). Stops the persistent zoom on the login screen — the first thing every phone visitor touches. _(done 2026-07-08)_
-- [ ] **CORRECTION (2026-07-08, eq-cards session): `mark_pending_requests_licence_changed()` is NOT pre-existing — it's the trigger function from eq-cards migration 0081, created in this same session (see the eq-cards entry below). Every eq-shell PR needing an admin bypass is a direct side-effect of that migration, not an unrelated gap.** Fix chip `task_f1292bdf` still applies — allow-list the function — just correcting the "predates this session" note above.
+- [x] **CORRECTION (2026-07-08, eq-cards session): `mark_pending_requests_licence_changed()` is NOT pre-existing — it's the trigger function from eq-cards migration 0081, created in this same session (see the eq-cards entry below). Every eq-shell PR needing an admin bypass was a direct side-effect of that migration, not an unrelated gap.** Now fixed — see the ticked item in the eq-cards entry above (`task_f1292bdf` closed, revoke-not-allow-list).
 
 ---
 
