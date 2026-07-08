@@ -14,6 +14,15 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-08 (eq-shell) — Brett Kilpatrick duplicate profile merged live + Cards-onboarding dedup root-caused and fixed
+
+*Royce reported a duplicate profile after a worker signed up via Cards despite already being in the tenant. Found + merged the live duplicate (no data loss — original record's roster history is what survived), then fixed the root cause so it stops recurring.*
+
+- [x] **Duplicate merged live (SKS tenant)** — Brett Kilpatrick's new Cards login re-attached to his original staff record (2026-06-12 bulk-import stub, holds all schedule/timesheet/leave history); empty duplicate deactivated on both the tenant plane (ehow) and canonical (jvkn). No hard deletes. _(done 2026-07-08)_
+- [x] **Root cause fixed** (eq-shell PR #698, merged `998f19f`, deployed live) — `shell-join-tenant.ts`'s phone-OTP self-join dedup only matched the normalized phone format; bulk-imported stubs store the raw format, so the lookup always missed and created a duplicate. Now matches all phone-format variants for both the login and worker-record lookups. _(done 2026-07-08)_
+
+---
+
 ## ⏩ Session close — 2026-07-08 (eq-shell) — Labour hire weekly costs bug fixed + agency data cleaned up + deployed live
 
 *Royce reported Cranfield's daily travel allowance wasn't showing up in the SKS Ops labour-hire weekly-cost table, plus asked for a Core Talent duplicate-account merge and a Madagins contact update.*
