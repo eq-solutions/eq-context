@@ -14,6 +14,17 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-08 (eq-service) — Generic RCD job plan created + Equinix RCD checks seeded live
+
+*Follow-on from the earlier import-audit session, which found Equinix's 4 contracted sites carry RCD scope but zero RCD checks (the RCD-seed feature needs a customer RCD job plan, and only Jemena had one). Royce: "we need to create generic RCD testing... common task" then "seed the RCD checks for Equinix now" — both done live, no code change (data-only, verified via the canonical write path).*
+
+- [x] **Created a tenant-wide generic RCD job plan** (`RCD Testing` / `RCD-TEST`, `customer_id=NULL`) mirroring Jemena's proven working shape (annual time-trip test + six-monthly push-button test). Verified it resolves as the RCD-lookup fallback for all 5 Equinix customer records without disturbing Jemena's own plan (customer match still wins first). No schema change; written through the canonical `service.*`→`app_data.*` trigger path. _(done 2026-07-08)_
+- [x] **Seeded 8 RCD checks live** for CA1, SY1, SY3, Equinix HO (Mascot) — 2 each (annual + semi-annual), unassigned, `scheduled`, dated 2027-05 / 2027-11 (next occurrence per the seeder's own future-dating rule). Matching `audit_logs` entry written so the change is traceable, not silent. 0 new security-advisor findings before/after. _(done 2026-07-08)_
+- [ ] **CA1 still not enabled via core** — its 2 new RCD checks exist but are invisible in the app until `service_enabled` is flipped. Royce is handling this himself. _(carried, Royce-owned)_
+- [ ] **Whether the EQ tenant (zaap) also needs a generic RCD plan** — not asked, not built. _(added 2026-07-08, needs a decision if EQ ever contracts RCD work)_
+
+---
+
 ## ⏩ Session close — 2026-07-08 (eq-shell) — Branded print-to-PDF export for labour hire weekly cost, deployed live
 
 *Follow-up to the same-day labour-hire session. Royce asked how hard a tenant-branded export of the weekly-cost table would be for distribution; compared the print-to-PDF vs server-generated-PDF options, then asked to build the cheaper one.*
@@ -2182,3 +2193,17 @@ Diagnosed 2026-05-19. 17 advisor warnings, fix drafted but not applied.
 ## Deferred (added 2026-07-03)
 - [ ] **Approve eq-shell fleet dispatch for 0158 (`field_people` fix)** — dispatched (run visible in eq-shell Actions), paused on the `production` environment's human-approval gate. _(needs your call — approve, then verify `app_data.field_people` shows `security_invoker=on` on zaap)_
 - [ ] **E2E/integration test coverage for the flows that broke today** — recommended as the "deeper fix" alternative to the live-audit path (which Royce chose instead: "yes" to the quick audit, not this). None of today's ~6 shipped bugs (0170 semicolon, notify race, batch-resolve UUID strictness, job_plan_id UUID strictness, the 3 security_invoker regressions) were caught by `tsc`/`next build`/CI — every one needed a human to click through the real feature or an agent to run a live-data audit. Worth a scoped decision on whether to build real E2E coverage (at minimum: create→resolve defect, create→assign job-plan) so this class of regression is caught automatically next time, not just audited reactively. _(needs your call on scope/priority)_
+
+## Built (eq-solves-service, 2026-07-08)
+- [x] **Type-bypass column-name audit — 4 reported live bugs + several more of the same class found and fixed.** A multi-agent audit found 4 places where a query asked the live DB for columns that don't exist, hidden behind code that bypasses the generated TypeScript types. Re-verified every one against the live database before touching anything.
+  - Customers API (`/api/customers`) was querying a `phone` column that doesn't exist — fixed by routing through the same canonical view the rest of the app already uses (which has the right column name built in).
+  - Same root-cause bypass, once removed, revealed that **creating a new site or a new asset through this API has likely never worked** — the create forms send field names that don't match the raw database columns being hit. Fixed the same way as the customers fix.
+  - The Compliance Report was silently generating with its maintenance/testing/ACB/NSX sections completely empty on every single report, for every tenant — one wrong column name (`active` instead of `is_active`) in four places. Fixed.
+  - Pre-visit tech briefs were failing "Check not found" for every check since an unrelated database change on 2026-06-23 broke a shortcut query — fixed to fetch the site and job-plan info the same safer way its sibling reports already do.
+  - The admin data-export tool's customer and contract-terms exports were emitting rows of nulls under a "fully working" label. Customer export now pulls the fields that actually exist; contract-terms export is now honestly marked "partial — most fields aren't captured in the database yet" instead of silently lying.
+  - Dashboard: the "dismiss the welcome card" / "dismiss the setup checklist" buttons were silently failing on every click, and the dashboard was silently defaulting to the wrong role/workspace state on a DB error. Root cause: two database columns that were supposed to exist (from a 2026-06+ feature) never actually got added. Added them via a small, safe database change (applied live with Royce's confirmation) and wired the dashboard + buttons to use them properly, with failures now visible instead of invisible.
+  - Verified clean: full type-check, production build, full test suite (311 tests), lint — all pass.
+
+## Deferred (added 2026-07-08)
+- [ ] **Customer contract/SLA/rate fields (CPI, hourly rates, SLA response times, service credits) still don't exist anywhere in the database** — the migration that would have added them was written a while back but never applied, and targets an old table name that no longer matches how the database is organised today. Needs a decision: build it properly against the current setup, or leave the export honestly marked "not available yet" (current state). Touches the shared customer records Shell owns, not something to just build silently. _(needs your call)_
+- [ ] **The database-column-name bug above may have other hidden instances** — a change to how sites/checks/tests are queried on 2026-06-23 broke "shortcut" lookups repo-wide; only one broken instance (pre-visit briefs) was found and fixed this session, inside the scope of the audit that was actually requested. A dedicated sweep for the same shortcut pattern elsewhere in the codebase hasn't been done. _(worth a follow-up session)_
