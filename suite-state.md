@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-08)
 
-**eq-cards:**
-- #132 fix(worker-identity): carry phone into first profile write; badge pending-review licence changes
-
 **eq-service:**
 - #477 fix(data-integrity): remove app_data type-bypass hiding wrong column names
 - #459 chore(deps-dev): bump @vitejs/plugin-react from 6.0.1 to 6.0.3
