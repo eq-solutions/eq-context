@@ -8,21 +8,23 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-08 09:10 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-08 09:13 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-08 08:44 UTC → 2026-07-08 09:10 UTC)
+## Since last refresh (2026-07-08 09:10 UTC → 2026-07-08 09:13 UTC)
 
-- Merged: eq-shell [#690](https://github.com/eq-solutions/eq-shell/pull/690) fix(staff): lock employment_type to canonical vocabulary; st
-- Merged: eq-shell [#688](https://github.com/eq-solutions/eq-shell/pull/688) refactor(shell): retire IconRail, embedded pages use collaps
-- Merged: eq-shell [#687](https://github.com/eq-solutions/eq-shell/pull/687) fix(staff): unify employment_type vocabulary with eq-field
-- Merged: eq-shell [#683](https://github.com/eq-solutions/eq-shell/pull/683) fix(shell): palette Ctrl+K fallback + Staff continuous scrol
-- Merged: eq-shell [#682](https://github.com/eq-solutions/eq-shell/pull/682) fix(provisioning): profiles insert can hit an FK violation o
-- Merged: eq-shell [#679](https://github.com/eq-solutions/eq-shell/pull/679) feat(ops): labour hire rates — PDF import confirms update vs
-- Merged: eq-shell [#678](https://github.com/eq-solutions/eq-shell/pull/678) feat(staff): show and edit job_title on the Staff dashboard
-- Merged: eq-shell [#677](https://github.com/eq-solutions/eq-shell/pull/677) fix(drift): 0164 — reassert security_invoker on app_data.fie
+- Merged: eq-shell [#692](https://github.com/eq-solutions/eq-shell/pull/692) feat(staff): manage supervisor status from Shell's staff edi
+- Merged: eq-shell [#691](https://github.com/eq-solutions/eq-shell/pull/691) fix(shell): embedded mobile nav — restore MobileTabBar, reti
+- Merged: eq-shell [#686](https://github.com/eq-solutions/eq-shell/pull/686) Fix: app-activation nav bug + bulk toggle + collapsible site
+- Merged: eq-shell [#685](https://github.com/eq-solutions/eq-shell/pull/685) fix(drift-check): add app_data.activation_status to KNOWN_LE
+- Merged: eq-shell [#680](https://github.com/eq-solutions/eq-shell/pull/680) Admin: one-spot app activation view + canonical entitlement 
+- Merged: eq-shell [#676](https://github.com/eq-solutions/eq-shell/pull/676) feat(shell): command palette, skeleton loading, optimistic s
+- Merged: eq-shell [#674](https://github.com/eq-solutions/eq-shell/pull/674) fix(users): add subcontractor to stale VALID_ROLES lists
+- Merged: eq-shell [#673](https://github.com/eq-solutions/eq-shell/pull/673) fix(access-control): subcontractor role 400s on permission t
+- ⚠ Needs you: 4 → 5 (new items)
 
-## ⚠ Needs you (4)
+## ⚠ Needs you (5)
 
+- 🔴 **CI failure** — eq-solves-service `main`
 - 🔴 **Sentry new error** — `eq-solves-service` [auth handoff: cookie_absent](https://eq-solutions.sentry.io/issues/132832684/)
 - 🟠 **Sentry new error** — `eq-cards` [LateInitializationError: Field '' has not been initialized.](https://eq-solutions.sentry.io/issues/132643934/)
 - 🟠 **Sentry new error** — `eq-solves-service` [Error: COALESCE types uuid and text cannot be matched](https://eq-solutions.sentry.io/issues/132618557/)
@@ -33,7 +35,7 @@ _2026-07-08 09:10 UTC · what needs your attention. Full snapshot: [suite-state.
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
 | eq-shell | ? unknown | ? | 6 | 4d |
-| eq-solves-service | ✓ success | 0d ago | 6 | 2d |
+| eq-solves-service | ✗ failure | -1d ago | 6 | 2d |
 | eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ✓ success | 1d ago | 1 | 0d |
 | eq-solves-intake | ? unknown | ? | 0 | — |
@@ -62,6 +64,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-08 | eq-shell | [#700](https://github.com/eq-solutions/eq-shell/pull/700) fix(ops): weekly labour-hire costs miss company-wide allowances |
 | 2026-07-08 | eq-shell | [#699](https://github.com/eq-solutions/eq-shell/pull/699) fix(ops): stop stray 'n' keystroke wiping in-progress quote |
 | 2026-07-08 | eq-shell | [#698](https://github.com/eq-solutions/eq-shell/pull/698) fix(shell): match all phone formats when self-joining a tenant vi |
+| 2026-07-08 | eq-solves-service | [#476](https://github.com/eq-solutions/eq-service/pull/476) feat(rcd): self-provision the standard RCD plan for every tenant |
 | 2026-07-08 | eq-solves-service | [#474](https://github.com/eq-solutions/eq-service/pull/474) fix(shell-embed): CHIPS-partition the Shell handoff cookies (Beel |
 | 2026-07-08 | eq-solves-service | [#473](https://github.com/eq-solutions/eq-service/pull/473) feat(import): show job-plan coverage on commercial-sheet import |
 | 2026-07-08 | eq-field | [#422](https://github.com/eq-solutions/eq-field/pull/422) v3.5.271 — SKS roster/site schema-mismatch fixes |
@@ -70,22 +73,21 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-07 | eq-solves-service | [#469](https://github.com/eq-solutions/eq-service/pull/469) fix(shell-embed): self-heal a lapsed Shell→Service session |
 | 2026-07-07 | eq-field | [#420](https://github.com/eq-solutions/eq-field/pull/420) v3.5.265 — Prestart Word export back + SW resilience + iOS export |
 | 2026-07-07 | eq-cards | [#131](https://github.com/eq-solutions/eq-cards/pull/131) feat(offline): cache licence photos on-device so they show with n |
-| 2026-07-06 | eq-shell | [#693](https://github.com/eq-solutions/eq-shell/pull/693) Grant microphone to the Field iframe (voice-to-text on safety for |
 _Showing 15 of 121 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **Merge eq-shell PR #704** to fully close Phase 0. _(added 2026-07-08, needs Royce)_
+- **Mitchell Forsyrh + Taya Moody** have Cards + roster identity but no Shell login (no PIN set) — need to sign up via the invite run, not fixable from the backend. _(added 2026-07-08)_
+- **Calum + Mohamed Zemi Asri** — login-only, no Cards org-link. Calum's email is an external domain (`@ssw.com.au`) and never logged in — needs identity verification before any fix, not auto-resolved. _(added 2026-07-08)_
+- **Access-model Phase 1** — convert ~10 Shell `role === '...'` enforcement checks to `can()`; add a lint ratchet. Pre-cutover-safe, Shell-only. _(added 2026-07-08)_
+- **Access-model Phase 2 — one admin concept** — retire `org_memberships.role='admin'` as a gate; migrate its 3 known readers (Cards admin UI, jvkn licence-photo RLS, connection-request email lookup). **POST-CUTOVER ONLY** — auth-touching. _(added 2026-07-08)_
+- **Access-model Phase 3 — guardrails** — Field/Cards convert to the canonical model properly; split the overloaded `service.create`/`service.close` PermKey by app; fix `check-perm-sync.mjs`'s blind spot (it can't catch a local module *under*-granting vs canonical, only over-granting — found this session); delete "Test - Royce" group; build `why_can()`. _(added 2026-07-08)_
+- **`supervisor_category` vocab-lock** — the next drift candidate after `employment_type`, still free text. _(added 2026-07-08)_
 - **CA1 still not enabled via core** — its 2 new RCD checks exist but are invisible in the app until `service_enabled` is flipped. Royce is handling this himself. _(carried, Royce-owned)_
 - **Whether the EQ tenant (zaap) also needs a generic RCD plan** — not asked, not built. _(added 2026-07-08, needs a decision if EQ ever contracts RCD work)_
 - **Revert is completely non-functional for every SKS roster edit — not "clicking Revert 400s," but "the button always says can't be reverted," silently.** Queried live `audit_log`: every SKS roster entry has `target_id: null`. Root cause is structural, not the select-list bug: `roster-adapter.js`'s wide-row reconstruction (`toWideList`) never assigns an `id` to a rebuilt week-row, because a wide week-row is built by grouping up to 7 separate `schedule_entries` rows (one per day, each with its own `schedule_id`) — there's no single id that represents "the week." `revertAuditEntry()`'s own guard (`if (!row.target_id) ...`) trips before it ever reaches the query I fixed above, for every single SKS roster edit, always. Needs a decision on how (or whether) to give canonical week-rows a usable revert-target identity — not attempted here. _(added 2026-07-08)_
-- **Reconcile (Royce doing directly):** enable CA1 via core (has a contract, currently disabled — 163 contracted units invisible in-app); import approved sheets for SY2/SY6/SY7 (enabled via core, no contract imported yet). _(added 2026-07-08, Royce-owned)_
-- **RCD checks can't seed for Equinix** — 0/4 contracted sites have an RCD check because the RCD-seed feature (PR #465) needs an RCD job plan for the customer, and Equinix has none (only Jemena does). Needs an Equinix (or global) RCD job plan created before re-import will help. _(added 2026-07-08, needs a job-plan decision)_
-- **2 SKS job plans have zero tasks** — `ELGLV` (E1.37) and `SCADA/PLC` (E1.40). Now caught by the new coverage report if a contract matches them, but the plans themselves still have no checklist. _(added 2026-07-08, needs job-plan content)_
-- **EQ Service "session expired, please reconnect" stuck screen — root cause still genuinely unknown.** Two chased theories were investigated and explicitly REFUTED with hard evidence: React error #418 (hydration mismatch) is a dated, known, confirmed-non-blocking noise pattern (2026-07-05 team note, 705 events/14d, essentially every active user) — NOT the cause. A suspected hanging `token-exchange` call was also refuted — real Netlify function logs showed every invocation completing in under 4s with zero errors; the "pending forever" read came from a flaky automated browser tab (same tab independently threw an unrelated CDP "renderer frozen" error). Two chips built on these now-retracted theories (`task_2911c80d`, `task_abbb7fd0`) were already started by Royce before the retraction landed — worth redirecting or discarding. The actual cause of the stuck-reconnect screen is still open. _(added 2026-07-08)_
-- **EQ Service sidebar-header tenant logo clipped** (in `ShellSessionRecovery`'s fallback UI specifically, not the top bar — top bar renders fine live) — chip `task_14031bea` was already started by Royce before this correction landed; built on a stale "top-bar alignment" framing. _(added 2026-07-08)_
-- Core Talent now shows both an `"Electrician"` role (older invoice, 21 Jun) and a `"NSW Licensed Electrician"` role (newer rate card, 1 Jul) — may be the same job under two labels, inflating the weekly-cost table with a stale row. Left for Royce's own sanity-check pass before the Atom agency upload. _(added 2026-07-08)_
-- **Site→customer backfill (SKS)** — only 117/250 SKS canonical sites carry a `customer_id`, so Service report customer-rollups are blank for the rest. The Service side is wired correctly; this is a Shell/canonical-spine data backfill, not a Service wiring gap. _(added 2026-07-08)_
-_…and 258 more · [eq/pending.md](eq/pending.md)_
+_…and 263 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -117,4 +119,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-08 09:10 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-08 09:13 UTC._
