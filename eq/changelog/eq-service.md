@@ -56,3 +56,8 @@
 
 ## 2026-06-30
 - **Migration 0163** — `service.sites` view now filters `active = true` (was `service_enabled` only). Archived sites retire from Service at the view layer. PR #381 merged to main.
+
+## 2026-07-08
+- Fixed a live-database-column-mismatch bug class across the customers/sites/assets API routes, the compliance report, the pre-visit tech brief, the admin canonical export tool, and the dashboard's onboarding-dismiss actions. Root cause was code that bypassed the generated TypeScript types (an untyped Supabase client pointed at the raw app_data schema instead of the canonical service views) so the wrong column names were never caught at compile time. Site and asset creation via the API had likely never worked; the compliance report's maintenance/testing/ACB/NSX sections were silently always empty; pre-visit briefs were failing "Check not found" for every check since migration 0147.
+- Migration 0175 applied live: adds tech_onboarded_at and setup_checklist_dismissed_at to service.tenant_members, restoring the dashboard welcome-card and setup-checklist dismiss buttons (previously silently failing on every click since the columns never actually existed).
+- Not yet committed/pushed — code changes are local pending Royce's review.
