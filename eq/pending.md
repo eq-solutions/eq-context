@@ -25,6 +25,15 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-08 (eq-shell) — AI briefing SKS-pipeline silent-failure fixed, deployed live
+
+*Multi-agent audit found the AI briefing's fast DB-read path for tender pipeline data always silently fails for SKS. Steelmanned a fix, got redirected away from building against SKS's own app, shipped a small correct one instead.*
+
+- [x] **`fetchNativePipeline()` now reports real query faults to Sentry** instead of swallowing everything (eq-shell PR #703, `eb0887e`, merged + deployed to core.eq.solutions). The expected "this tenant doesn't have this table yet" case (SKS) still fails silently by design — only genuine unexpected errors are now visible. Verified live: production deploy confirmed on this exact commit, Sentry checked clean (0 new errors, 24h). _(done 2026-07-08)_
+- [x] **Decided: do not build eq-shell code against sks-nsw-labour or its data**, even indirectly via legacy tables on SKS's own database — recorded as a durable rule so it isn't re-attempted. SKS's tender pipeline keeps using its existing (working, just slower) path. _(decided 2026-07-08)_
+
+---
+
 ## ⏩ Session close — 2026-07-08 (eq-shell) — Branded print-to-PDF export for labour hire weekly cost, deployed live
 
 *Follow-up to the same-day labour-hire session. Royce asked how hard a tenant-branded export of the weekly-cost table would be for distribution; compared the print-to-PDF vs server-generated-PDF options, then asked to build the cheaper one.*
