@@ -64,7 +64,7 @@ _If this file is >48h old, the cron is broken._
 - #132 fix(worker-identity): carry phone into first profile write; badge pending-review licence changes
 
 **eq-service:**
-- #475 fix(shell-embed): detect iframe embedding via Sec-Fetch-Dest header
+- #477 fix(data-integrity): remove app_data type-bypass hiding wrong column names
 - #459 chore(deps-dev): bump @vitejs/plugin-react from 6.0.1 to 6.0.3
 - #458 chore(deps): bump tailwind-merge from 3.5.0 to 3.6.0
 - #457 chore(deps): bump resend from 6.12.4 to 6.17.1
