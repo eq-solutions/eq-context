@@ -9,12 +9,12 @@ status: live
 
 # Changelog — EQ Solves Field
 
-## [2026-07-08] UNRELEASED (not committed, no PR, no version bump yet) — SKS schedule/roster schema-mismatch fixes
-- Fix (pending review): Resource Allocation's "deployed this week" stat silently showed 0 for SKS — a `schedule_entries` query asked for wide-table-only columns (`name,mon,tue,wed,thu,fri`) that don't exist on the normalized table. `sks-pipeline-resource.js`.
-- Fix (pending review): clicking Revert on an SKS roster audit entry would 400 — same narrow-select bug on the pre-revert read. `audit.js`.
-- Fix (pending review): pushing a job to the SKS roster from Resource Allocation would 400 — a `name=in.(...)` filter on `schedule_entries` has no matching column (the canonical routing shim only translates `week=`/`id=`, not `name=`). `sks-pipeline-resource.js`.
-- Fix (pending review): `/api/eq-service/sites` (EQ Quotes/Service's site-data pull from Field) was completely dead — pointed at ehow (SKS) but queried a `public.sites` table that doesn't exist there at all. Rewired to `app_data.field_sites`. `eq-service-sites.js`.
-- Found, not yet fixed: Revert is structurally non-functional for every SKS roster edit (not just the 400 above) — `target_id` is always null because reconstructed wide week-rows have no single id to point at. Needs a design decision. See `eq/pending.md` 2026-07-08 (eq-field) entry.
+## [2026-07-08] v3.5.271 — SKS roster/site schema-mismatch fixes (SHIPPED, PR #422, live)
+- Fix: Resource Allocation's "deployed this week" stat silently showed 0 for SKS — a `schedule_entries` query asked for wide-table-only columns (`name,mon,tue,wed,thu,fri`) that don't exist on the normalized table. Now `select=*`; the roster adapter rebuilds the wide shape. `sks-pipeline-resource.js`.
+- Fix: clicking Revert on an SKS roster audit entry would 400 — same narrow-select bug on the pre-revert read. Now `select=*`. `audit.js`.
+- Fix: pushing a job to the SKS roster from Resource Allocation would 400 — a `name=in.(...)` filter on `schedule_entries` has no matching column (the canonical routing shim only translates `week=`/`id=`, not `name=`). Now filters names client-side. `sks-pipeline-resource.js`.
+- Fix: `/api/eq-service/sites` (EQ Quotes/Service's site-data pull from Field) was completely dead — pointed at ehow (SKS) but queried a `public.sites` table that doesn't exist there at all (every call 404'd, PGRST205). Rewired to the canonical `app_data.field_sites` adapter view via `Accept-Profile: app_data`. `eq-service-sites.js`. **Verified live:** `AUDIT_SB_KEY` is the ehow service_role key; the view returns 40 active SKS sites. Endpoint deploys clean (401 on unauthenticated smoke, not 500).
+- Found, not fixed: Revert is structurally non-functional for every SKS roster edit (not just the 400 above) — `target_id` is always null because reconstructed wide week-rows have no single id to point at. Needs a design decision. See `eq/pending.md` 2026-07-08 (eq-field) entry.
 
 ## [2026-07-08] v3.5.270 — CSP: canonical Supabase host allowed in img-src (SKS logo renders)
 - Fix: the SKS tenant logo (canonical branding, served from `jvknxcmbtrfnxfrwfimn.supabase.co/storage/.../tenant-logos`) was blocked by Content-Security-Policy — `img-src` never listed the canonical Supabase host, so the browser refused the image on `field.eq.solutions/?tenant=sks`. Added the specific host to `img-src` in both `netlify.toml` and `_headers` (the host was already trusted in `connect-src`; this extends it to `<img>` loads). Not a wildcard: Field's only Supabase-hosted images are canonical logos. Verified live on production. PR #421.

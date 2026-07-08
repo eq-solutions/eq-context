@@ -14,6 +14,43 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-08 (eq-shell/eq-field/eq-roles) — employment_type + Supervision fixes shipped live; access-model foundation designed + Phase 0 built
+
+*Continuation of the 2026-07-06/07 audit session. Closed both deferred items from that session (Supervision fix, employment_type unification), then Royce asked to complete the shared roles rulebook for consistency — which surfaced a bigger, real gotcha (5 separate access-grant paths + Cards represented 4 ways). Ran a Fable-tier adversarial design review, locked a 4-decision/4-phase foundation plan fenced around the 13 Jul SKS cutover, and built Phase 0.*
+
+**Shipped:**
+- [x] **`employment_type` locked at the DB layer** — ehow migration adds a normalising `BEFORE` trigger + `CHECK` constraint pinning `app_data.staff.employment_type` to exactly Direct/Apprentice/Labour Hire/Subcontractor. Root cause (eq-shell's `cards-approve-staff` writing the Cards *role* straight into this column) fixed in PR #690 (merged). The SKS `groupAliases` write-alias that would've broken the CHECK was found and removed first. Proven live: `supervisor`→coerced to `Direct`, `plumber`→rejected. _(done 2026-07-06)_
+- [x] **Supervision management fix** — Shell's existing staff editor (desktop + mobile) gained a Supervisor toggle + category picker, writing `is_supervisor`/`supervisor_role`/`supervisor_category` through the existing `entity-patch`/`field.dispatch` gate. No new surface. eq-shell PR #692, merged, deploy verified live. _(done 2026-07-07)_
+- [x] **eq-roles PR #9** — fixed stale "5-tier" doc references to 6-tier; documented Field's real adoption state. Merged.
+- [x] **eq-field PR #418 (v3.5.261)** — warn-only startup guard: Field's role keys must stay a subset of canonical `EqRole`. Zero false positives verified against live data; fires correctly on injected drift. Merged, deploy verified live.
+- [x] **Live SKS roster health check** — 80 approved staff, 0 bad employment types, Liam Holmgreen's fix held live, all 80 linked to Cards. Found + fixed Scott Hotson's missing Cards org-link. **"Bob Smith" on the roster = Royce's own dev account, not a stray row** (saved to memory).
+- [x] **Access-model foundation plan designed** — Fable-tier adversarial review caught a real landmine (a naive fix would've silently given every employee asset-edit rights in EQ Service via an overloaded `service.create` PermKey) before it was built. 4 decisions locked (manager stays top role; conservative override promotion; canonical-groups-only; un-smear Cards via entitlement + `admin.review_cards`). Plan doc: `eq-context/eq/identity/ACCESS-MODEL-PLAN.md`.
+- [x] **Access-model Phase 0 built + merged**: parity harness (baseline + "after" snapshots, byte-identical — 0 live users hold the `apprentice` role today, so 0 live blast radius from this phase); enforcement-site inventory (`enforcement-site-inventory-2026-07-08.md`); **eq-roles v2.5.0** (apprentice gains `equipment.view`, `cards.view`/`cards.onboard` marked deprecated, new canonical `project_managers` group, `roles.dart` emit verified with `dart analyze`, an `executive-scaffold.test.ts` proving one-file role extensibility) — merged + tagged. **eq-shell PR #704** (dependency bump, `AccessControlPage`'s `ROLE_DEFAULTS` now *derived* from the package instead of hand-copied, local mirrors updated) — open, all checks green, awaiting merge.
+
+**Decided (Royce):**
+- Manager stays the top tenant role — do not rename to Executive. Owner/Executive is a proven one-file add-later (scaffold-tested), not built today.
+- Override-promotion criterion = "what scales best" (right defaults), not "fewest overrides." `service.create`/`quotes.approve` stay tenant-local — confirmed cross-app overloaded, unsafe to broaden blind.
+- Canonical security groups only going forward — no free-form per-tenant groups. SKS's "Project Managers" promoted to canonical; "Test - Royce" group flagged for deletion.
+- Cards un-smeared: the app is worker-facing (entitlement-gated), not a per-user employer permission. `cards.*` matrix perms deprecated, not deleted yet (existing tenant overrides still depend on them).
+- `subcontractor` explicitly stays a roster `employment_type` — never a Field login role.
+- Foundations (permission-gating, one admin concept, Cards un-smearing) are worth doing NOW, in infancy, while migration is 1-tenant cheap — not deferred to "when it scales." Auth-touching pieces (Phase 2) still fenced to post-13-July.
+
+**Deferred:**
+- [ ] **Merge eq-shell PR #704** to fully close Phase 0. _(added 2026-07-08, needs Royce)_
+- [ ] **Mitchell Forsyrh + Taya Moody** have Cards + roster identity but no Shell login (no PIN set) — need to sign up via the invite run, not fixable from the backend. _(added 2026-07-08)_
+- [ ] **Calum + Mohamed Zemi Asri** — login-only, no Cards org-link. Calum's email is an external domain (`@ssw.com.au`) and never logged in — needs identity verification before any fix, not auto-resolved. _(added 2026-07-08)_
+- [ ] **Access-model Phase 1** — convert ~10 Shell `role === '...'` enforcement checks to `can()`; add a lint ratchet. Pre-cutover-safe, Shell-only. _(added 2026-07-08)_
+- [ ] **Access-model Phase 2 — one admin concept** — retire `org_memberships.role='admin'` as a gate; migrate its 3 known readers (Cards admin UI, jvkn licence-photo RLS, connection-request email lookup). **POST-CUTOVER ONLY** — auth-touching. _(added 2026-07-08)_
+- [ ] **Access-model Phase 3 — guardrails** — Field/Cards convert to the canonical model properly; split the overloaded `service.create`/`service.close` PermKey by app; fix `check-perm-sync.mjs`'s blind spot (it can't catch a local module *under*-granting vs canonical, only over-granting — found this session); delete "Test - Royce" group; build `why_can()`. _(added 2026-07-08)_
+- [ ] **`supervisor_category` vocab-lock** — the next drift candidate after `employment_type`, still free text. _(added 2026-07-08)_
+
+**Notes:**
+- **Repeated collision this session**: substrate writes to this same non-worktree `eq-context` checkout got clobbered twice by concurrent sibling sessions' own `/close` git activity (rebase-based syncs discarding another session's un-pushed local commits). Content was recovered both times (verified via hash match against the original), but this is a real, repeated operational risk from many parallel sessions sharing one checkout with no worktree isolation — worth Royce's attention if it keeps happening. Lesson applied: commit substrate writes immediately, in their own step, never batched with later work.
+- `git checkout main` failed twice this session with "already used by worktree" (a concurrent session had it checked out) — worked around cleanly both times by branching directly off `origin/main` instead.
+- The enforcement-site inventory corrected two of this session's own earlier plan assumptions before they shipped: apprentice's `intake.view` grant is deliberately broad by design (Shell's own code says so) — left alone, not removed as originally planned; and the EQ Ops/quotes module turned out to be real and live, not unbuilt as an earlier session's notes assumed.
+
+---
+
 ## ⏩ Session close — 2026-07-08 (eq-service) — Generic RCD job plan created + Equinix RCD checks seeded live
 
 *Follow-on from the earlier import-audit session, which found Equinix's 4 contracted sites carry RCD scope but zero RCD checks (the RCD-seed feature needs a customer RCD job plan, and only Jemena had one). Royce: "we need to create generic RCD testing... common task" then "seed the RCD checks for Equinix now" — both done live, no code change (data-only, verified via the canonical write path).*
@@ -77,7 +114,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] One loose end chased down at Royce's request: `netlify/functions/send-email.js`'s legacy leave-magic-link path has the same untranslated-query shape (`leave_requests?select=id,requester_name,approver_name,status`). Checked live Netlify prod env directly: `LEAVE_CANONICAL` and `LEAVE_SB_URL` are **both unset** → the canonical branch never runs AND the legacy branch's own guard short-circuits before ever reaching the query. Net effect: the Approve/Reject magic-link buttons feature is entirely dormant in production for every tenant (emails send, fall back to plain HTML, no buttons) — an unlaunched feature, not a live bug. Nothing to fix.
 
 **Open items:**
-- Nothing from this session is committed — 3 files (`sks-pipeline-resource.js`, `audit.js`, `eq-service-sites.js`) modified in the eq-field working tree, no PR opened, no deploy.
+- ~~Nothing from this session is committed — 3 files modified in the eq-field working tree, no PR, no deploy.~~ **SHIPPED 2026-07-08** (later session): all 3 files merged as **v3.5.271** (PR #422, squash `7642bb6`), live on `field.eq.solutions`. `eq-service-sites.js` verified live (AUDIT_SB_KEY = service_role, view returns 40 SKS sites; deploys clean). The Revert-for-SKS structural bug below remains open.
 - ~~`AUDIT_SB_KEY`'s grant on `app_data.field_sites` unconfirmed — check before merge.~~ **RESOLVED 2026-07-08** (later session): `AUDIT_SB_KEY` = ehow service_role (has full read on the view; 40 active SKS sites present). See the strikethrough detail in the eq-service-sites bullet above. No longer a merge blocker.
 - The Revert-for-SKS structural bug needs Royce's call on approach before anyone builds it.
 
@@ -374,8 +411,8 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - Not yet decided: how to close the systemic gap — no live UI can set `is_supervisor` for SKS at all (Field blocked it in 2026-06 "managed in Core"; Core never built a replacement). Two options on the table: re-open Field's own already-working Supervision CRUD for SKS (cheap, no new build), or build a real Shell-side surface. Royce was mid-conversation on this when the session closed — **needs his call next session**.
 
 **Deferred:**
-- [ ] **Decide + build the SKS Supervision management fix** (re-open Field's CRUD vs build Shell surface — see above). _(added 2026-07-06)_
-- [ ] **Unify `employment_type` vocabulary between eq-field and eq-shell** — no shared enum/constraint; same root cause as the existing "add subcontractor as a real role" item below. The v3.5.253 Other-bucket fix makes the symptom visible instead of hiding it, it doesn't fix the underlying mismatch. _(added 2026-07-06)_
+- [x] **Decide + build the SKS Supervision management fix** — built Option B: un-redirected Shell's existing generic staff editor (desktop `SplitPanel` + mobile sheet), added a Supervisor toggle + Supervision-category picker writing `is_supervisor`/`supervisor_role`/`supervisor_category` through `entity-patch` (same `field.dispatch` gate as every other staff edit, no new surface). `supervisor_role` mirrors `job_title`; clearing the toggle nulls both. eq-shell PR #692, merged, deploy verified live. Proven end-to-end against ehow: promoting a staffer surfaces them in `field_managers` (the Supervision list). _(done 2026-07-07)_
+- [x] **Unify `employment_type` vocabulary between eq-field and eq-shell** — went further than a shared enum: locked it at the DATA layer on ehow. `app_data.staff.employment_type` now has a normalising `BEFORE` trigger (coerces legacy/role/alias values → canonical) + a `CHECK` constraint pinning it to exactly Direct/Apprentice/Labour Hire/Subcontractor. Root cause was eq-shell's `cards-approve-staff` writing the Cards **role** straight into this column (fixed, PR #690, merged) — the SKS `groupAliases` write-alias that would've broken a naive CHECK was found and removed first. Proven live: `supervisor`→coerced to `Direct`, `plumber`→rejected (23514), both in rollback/error, nothing persisted. _(done 2026-07-06)_
 - [ ] **Live click-through of v3.5.253 (mobile Other bucket) and v3.5.254 (Batch Fill Group/Team filters)** — both deployed and verified via Netlify (commit match, no errors, secret scan clean), but not exercised through a real authenticated SKS session — eq-field's Shell-JWT handoff auth isn't reproducible in a local dev server. _(added 2026-07-06)_
 
 **Notes:**
