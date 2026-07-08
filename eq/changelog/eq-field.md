@@ -1,3 +1,6 @@
+## 2026-07-08
+- **PR #418 (MERGED, live `b71fa16`, v3.5.261) — consistency guard vs canonical `@eq-solutions/roles`.** Field's own `permission-matrix.js` is Field-owned (~50 fine-grained perms) but its role keys must stay a subset of the canonical `EqRole` enum. Added a warn-only startup guard — flags a role Field invented, or a canonical role Field is missing, in the console; never throws, never changes a permission decision. Verified zero false positives against the live matrix; fires correctly on injected drift (tested both directions). `subcontractor` recorded as intentionally excluded from Field (roster `employment_type` only, never a Field login role).
+
 ## 2026-07-06
 - **PR #412 (MERGED, live) — version-stamp catch-up for the Calendar `isLeave` crash (Sentry EQ-FIELD-R).** The actual bug (script load-order race — `calendar.js` could execute before `roster.js`, where `isLeave()` lives) was already fixed on `main` by Royce (`d18638f`) before this PR; that fix shipped without a version bump. PR bumps `3.5.244`→`3.5.245` (APP_VERSION + sw.js CACHE + changelog banner) so the release is properly tagged and the service-worker cache busts.
 - **v3.5.251 (merged, live)** — removed the dead canonical bulk-link button; auto-link-on-save (shipped just prior) already covers every case, verified 0 unlinked staff.
