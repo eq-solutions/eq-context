@@ -32,6 +32,7 @@ Check this file first — if your target repo/area is already claimed, coordinat
 | .claude/worktrees/provision-identity (eq-cards) | claude/provision-identity | Claude (chip task_28defc38, Cards provision name/email) | 2026-07-03 | DONE — PR #118 open; dir removable after merge |
 | .claude/worktrees/quote-pdf-fix (eq-shell) | claude/quote-pdf-fix | Claude (chip task_d40bcb24, Ops PDF export) | 2026-07-03 | DONE — PR #615 open; dir removable after merge |
 | .claude/worktrees/ops-site-create-edit (eq-shell) | claude/ops-site-create-edit | Claude (Ops site create/edit session a81fe5c3) | 2026-07-03 | DONE — PR #616 open; dir removable after merge |
+| .claude/worktrees/objective-pike-977d2a (eq-cards) | claude/fix-onboarding-flags-and-ocr-signal | Claude (eq-cards session, phone-dedup + UI polish + onboarding-flag fix) | 2026-07-09 | ACTIVE — found this dir's reflog carrying unrelated branches (worker-identity-track-b, notify-connection-name, share-licence-comment) from a concurrent session sharing the same folder; re-based own work onto a fresh branch off origin/main to avoid collision. Flagging for visibility — this folder is NOT exclusively this session's. |
 
 ---
 
