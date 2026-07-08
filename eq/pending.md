@@ -14,6 +14,33 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-08 (eq-shell) — Labour hire weekly costs bug fixed + agency data cleaned up + deployed live
+
+*Royce reported Cranfield's daily travel allowance wasn't showing up in the SKS Ops labour-hire weekly-cost table, plus asked for a Core Talent duplicate-account merge and a Madagins contact update.*
+
+- [x] **Weekly-cost rollup was dropping company-wide travel allowances** (eq-shell PR #700 `ca682a3`, merged to main → deployed to core.eq.solutions) — the formula only matched an allowance (Travel/Fares/Productivity) to a role when the allowance's `role` field exactly matched the base rate's role. Cranfield and Core Talent both file their travel allowance under a role-agnostic placeholder (`role = "All"`/`"All trades"`) rather than repeating it per role, so it silently vanished from every role's weekly total for **both** agencies, not just Cranfield. Fixed: allowances filed under a role-agnostic token now fall back to apply across every role for that company. _(done 2026-07-08)_
+- [x] **Live data cleanup on ehow** — Cranfield's stale duplicate Jan-dated travel row properly superseded; Cranfield's and Core Talent's allowance labels renamed (`"Travel & Fares"`/`"Daily Travel"` → `"Travel"`) so they actually match the weekly-cost column; Madagins contact updated to Aditi Rajbhandari (aditi@madagins.com.au / 0499 785 135); "Core Talent" + "Core Talent Pty Ltd" duplicate companies merged into one (Phil McCoy kept as contact, address/EFT/factoring notes folded in), duplicate deleted. _(done 2026-07-08)_
+
+**Deferred:**
+- [ ] Core Talent now shows both an `"Electrician"` role (older invoice, 21 Jun) and a `"NSW Licensed Electrician"` role (newer rate card, 1 Jul) — may be the same job under two labels, inflating the weekly-cost table with a stale row. Left for Royce's own sanity-check pass before the Atom agency upload. _(added 2026-07-08)_
+
+**Notes:**
+- Root cause of the Core Talent duplicate company: the import commit function matches agencies by exact-string name (`"Core Talent"` vs `"Core Talent Pty Ltd"`), so a rate-card upload and an invoice upload with slightly different letterhead names create two companies. Not code-fixed — fuzzy name matching on import risks false-merging genuinely different agencies; safer to catch and merge manually as it comes up.
+- Royce flagged he'll do a full formula/data sanity check before uploading a new agency ("Atom") — the deferred item above is exactly the kind of thing that pass should catch.
+
+---
+
+## ⏩ Session close — 2026-07-08 (eq-shell) — EQ Ops "lost my quote" bug fixed + merged live
+
+*Royce reported: adding a site mid-quote in EQ Ops completely wiped the quote he was building. Root-caused (not a site-save bug at all) and shipped same session.*
+
+- [x] **Stray keystroke was wiping in-progress quotes** (eq-shell PR #699 `52aeed6`, merged to main → deploying to core.eq.solutions) — the global "N = new quote" keyboard shortcut in EQ Ops only checked that no quote-detail panel was open, not whether the create/edit form was already open. After the "Add site" modal closes, focus drops to the page body; the next stray "n" keystroke typed anywhere (e.g. mid-word in a site/customer name) silently reset the whole in-progress quote. Fixed by also requiring the pipeline list view to be active before the shortcut can fire. _(done 2026-07-08)_
+
+**Notes:**
+- Confirmed via Royce's own repro (form stayed on-screen but blank, right after saving a brand-new site) before touching code — matched the "stray keystroke, no input focused" theory exactly.
+
+---
+
 ## ⏩ Session close — 2026-07-08 (eq-cards) — Offline licence photos (finishes the super-easy-onsite set)
 
 *Royce asked whether caching photos is a show-stopper at scale; answered no (grounded in live storage stats), then "build it now". Completes the offline wallet: ID card + tickets + now photos all work with no signal.*
