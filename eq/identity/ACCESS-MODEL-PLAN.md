@@ -1,7 +1,7 @@
 # Access-Model Foundation Plan — decided 2026-07-08
 
 Companion to `IDENTITY-MODEL.md`. Decisions made by Royce on Fable-tier design review.
-Status: **Phase 0 in progress.** Build sessions: read this, don't re-derive.
+Status: **Phase 0 complete.** eq-shell PR #704 merged `82c97cb` 2026-07-08. Phase 1 unblocked. Build sessions: read this, don't re-derive.
 
 ## Why (one paragraph)
 The 5-role model is consistent across all apps (audited 2026-07-07/08: Shell, Field, Service, Cards, DB/JWT/RLS all canonical). The scale trap is what's layered on top: **five grant paths** (base matrix, tenant_role_overrides, free-form security groups, is_platform_admin, `org_memberships.role='admin'`) and **Cards represented four ways**. Fix now, in infancy, while migration is trivial (1 tenant, ~30 users).
@@ -40,7 +40,7 @@ The 5-role model is consistent across all apps (audited 2026-07-07/08: Shell, Fi
 - **Parity harness first**: snapshot effective perms for every user on all 3 tenants (role → package matrix ∪ overrides ∪ group perms) before/after every phase. Any diff = hold. Baseline captured 2026-07-08, hash `37300a13c30ca0598bbad675dbf4eedc5245edcd5e87cecae2c833065f77eee0` (see `parity-harness/`). **"After" snapshot (post eq-shell PR) is byte-identical to baseline** — zero live users hold `apprentice` today (32 employee, 14 manager, 3 supervisor, 0 apprentice), so the one real grant change this phase made has zero live blast radius yet; it activates automatically the moment an apprentice-role user exists.
 - **Perm→enforcement-site inventory** across Shell/Field/Service/Cards/RLS — done, see `enforcement-site-inventory-2026-07-08.md`.
 - eq-roles: D2 tuning (apprentice→equipment.view only — intake.view left alone per the reversal above), D4 deprecation markers on cards.view/cards.onboard (new optional `deprecated` field on PermissionMeta), D3 canonical `defaultGroups` (+Project Managers), `roles.dart` emit (Dart 2.17+, verified with `dart analyze`, 0 issues), executive scaffold test. Version 2.4.0 → 2.5.0. **eq-roles PR #10 merged, tagged `v2.5.0`.** 96/96 tests green.
-- eq-shell: dependency bumped to `v2.5.0`; `EQUIPMENT_MATRIX` + `default-groups.ts` mirrors updated; `AccessControlPage.tsx` `ROLE_DEFAULTS` now **derives** from the package's `MATRIX` instead of a hand-copied literal. **eq-shell PR #704**, `check-perm-sync.mjs` green, tsc/build/116 tests clean.
+- eq-shell: dependency bumped to `v2.5.0`; `EQUIPMENT_MATRIX` + `default-groups.ts` mirrors updated; `AccessControlPage.tsx` `ROLE_DEFAULTS` now **derives** from the package's `MATRIX` instead of a hand-copied literal. **eq-shell PR #704 merged `82c97cb` 2026-07-08**, `check-perm-sync.mjs` green, tsc/build/116 tests clean.
 - **New finding, tracked for Phase 3**: `check-perm-sync.mjs` merges the full package matrix into `clientGrants` before diffing, which makes it structurally blind to a local module file *under*-granting versus canonical (it only catches local *over*-grants, never omissions). This is why the guard didn't flag `EQUIPMENT_MATRIX.apprentice` being stale even though it clearly was — worth tightening the checker itself, not in scope for this phase.
 
 **Phase 1 — Gate on permissions (pre-cutover, Shell only, parity-gated)**
