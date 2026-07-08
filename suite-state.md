@@ -40,7 +40,7 @@ _If this file is >48h old, the cron is broken._
 | Assets | 361 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
 | Users | 5 | service.tenant_members |
-| Maintenance checks | 5 | service.maintenance_checks |
+| Maintenance checks | 13 | service.maintenance_checks |
 | Defects | 0 | service.defects |
 
 **SKS tenant ID on ehow:** `7dee117c-98bd-4d39-af8c-2c81d02a1e85`
@@ -61,6 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-08)
 
 **eq-service:**
+- #475 fix(shell-embed): detect iframe embedding via Sec-Fetch-Dest header
 - #459 chore(deps-dev): bump @vitejs/plugin-react from 6.0.1 to 6.0.3
 - #458 chore(deps): bump tailwind-merge from 3.5.0 to 3.6.0
 - #457 chore(deps): bump resend from 6.12.4 to 6.17.1
@@ -68,7 +69,6 @@ _If this file is >48h old, the cron is broken._
 - #455 chore(deps): bump @eq-solutions/ui from v1.9.0 to v1.10.0 in the eq-design-system group
 
 **eq-shell:**
-- #702 feat(ops): branded print-to-PDF export for labour hire weekly cost
 - #681 fix(staff): eq_update_staff silently cleared email/phone/trade/level/employment_type
 - #658 fix(dashboard): surface pending staff connections on home sidebar
 - #637 docs: pnpm-workspace.yaml — packages are vendored, not a git submodule
