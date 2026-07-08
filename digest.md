@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-08 09:36 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-08 09:38 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-08 09:28 UTC → 2026-07-08 09:36 UTC)
+## Since last refresh (2026-07-08 09:36 UTC → 2026-07-08 09:38 UTC)
 
-- Merged: eq-shell [#693](https://github.com/eq-solutions/eq-shell/pull/693) Grant microphone to the Field iframe (voice-to-text on safet
-- Merged: eq-shell [#690](https://github.com/eq-solutions/eq-shell/pull/690) fix(staff): lock employment_type to canonical vocabulary; st
-- Merged: eq-shell [#688](https://github.com/eq-solutions/eq-shell/pull/688) refactor(shell): retire IconRail, embedded pages use collaps
-- Merged: eq-shell [#687](https://github.com/eq-solutions/eq-shell/pull/687) fix(staff): unify employment_type vocabulary with eq-field
-- Merged: eq-shell [#683](https://github.com/eq-solutions/eq-shell/pull/683) fix(shell): palette Ctrl+K fallback + Staff continuous scrol
-- Merged: eq-shell [#682](https://github.com/eq-solutions/eq-shell/pull/682) fix(provisioning): profiles insert can hit an FK violation o
-- Merged: eq-shell [#679](https://github.com/eq-solutions/eq-shell/pull/679) feat(ops): labour hire rates — PDF import confirms update vs
-- Merged: eq-shell [#678](https://github.com/eq-solutions/eq-shell/pull/678) feat(staff): show and edit job_title on the Staff dashboard
+- Merged: eq-shell [#692](https://github.com/eq-solutions/eq-shell/pull/692) feat(staff): manage supervisor status from Shell's staff edi
+- Merged: eq-shell [#691](https://github.com/eq-solutions/eq-shell/pull/691) fix(shell): embedded mobile nav — restore MobileTabBar, reti
+- Merged: eq-shell [#686](https://github.com/eq-solutions/eq-shell/pull/686) Fix: app-activation nav bug + bulk toggle + collapsible site
+- Merged: eq-shell [#685](https://github.com/eq-solutions/eq-shell/pull/685) fix(drift-check): add app_data.activation_status to KNOWN_LE
+- Merged: eq-shell [#680](https://github.com/eq-solutions/eq-shell/pull/680) Admin: one-spot app activation view + canonical entitlement 
+- Merged: eq-shell [#677](https://github.com/eq-solutions/eq-shell/pull/677) fix(drift): 0164 — reassert security_invoker on app_data.fie
+- Merged: eq-shell [#676](https://github.com/eq-solutions/eq-shell/pull/676) feat(shell): command palette, skeleton loading, optimistic s
+- Merged: eq-shell [#674](https://github.com/eq-solutions/eq-shell/pull/674) fix(users): add subcontractor to stale VALID_ROLES lists
 
 ## ⚠ Needs you (4)
 
@@ -33,7 +33,7 @@ _2026-07-08 09:36 UTC · what needs your attention. Full snapshot: [suite-state.
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
 | eq-shell | ? unknown | ? | 5 | 4d |
-| eq-solves-service | ✓ success | 0d ago | 6 | 2d |
+| eq-solves-service | ✓ success | 0d ago | 5 | 2d |
 | eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ✓ success | 1d ago | 0 | — |
 | eq-solves-intake | ? unknown | ? | 0 | — |
@@ -63,6 +63,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-08 | eq-shell | [#700](https://github.com/eq-solutions/eq-shell/pull/700) fix(ops): weekly labour-hire costs miss company-wide allowances |
 | 2026-07-08 | eq-shell | [#699](https://github.com/eq-solutions/eq-shell/pull/699) fix(ops): stop stray 'n' keystroke wiping in-progress quote |
 | 2026-07-08 | eq-shell | [#698](https://github.com/eq-solutions/eq-shell/pull/698) fix(shell): match all phone formats when self-joining a tenant vi |
+| 2026-07-08 | eq-solves-service | [#477](https://github.com/eq-solutions/eq-service/pull/477) fix(data-integrity): remove app_data type-bypass hiding wrong col |
 | 2026-07-08 | eq-solves-service | [#475](https://github.com/eq-solutions/eq-service/pull/475) fix(shell-embed): detect iframe embedding via Sec-Fetch-Dest head |
 | 2026-07-08 | eq-solves-service | [#476](https://github.com/eq-solutions/eq-service/pull/476) feat(rcd): self-provision the standard RCD plan for every tenant |
 | 2026-07-08 | eq-solves-service | [#474](https://github.com/eq-solutions/eq-service/pull/474) fix(shell-embed): CHIPS-partition the Shell handoff cookies (Beel |
@@ -70,7 +71,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-08 | eq-field | [#422](https://github.com/eq-solutions/eq-field/pull/422) v3.5.271 — SKS roster/site schema-mismatch fixes |
 | 2026-07-08 | eq-field | [#421](https://github.com/eq-solutions/eq-field/pull/421) v3.5.270 — CSP: allow canonical Supabase host in img-src (tenant  |
 | 2026-07-08 | eq-cards | [#132](https://github.com/eq-solutions/eq-cards/pull/132) fix(worker-identity): carry phone into first profile write; badge |
-| 2026-07-07 | eq-shell | [#696](https://github.com/eq-solutions/eq-shell/pull/696) fix(shell): embedded rail — un-clip EQ logo, lift icon contrast |
 _Showing 15 of 122 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -117,4 +117,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-08 09:36 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-08 09:38 UTC._
