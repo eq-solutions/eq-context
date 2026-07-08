@@ -9,6 +9,13 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-08] UNRELEASED (not committed, no PR, no version bump yet) — SKS schedule/roster schema-mismatch fixes
+- Fix (pending review): Resource Allocation's "deployed this week" stat silently showed 0 for SKS — a `schedule_entries` query asked for wide-table-only columns (`name,mon,tue,wed,thu,fri`) that don't exist on the normalized table. `sks-pipeline-resource.js`.
+- Fix (pending review): clicking Revert on an SKS roster audit entry would 400 — same narrow-select bug on the pre-revert read. `audit.js`.
+- Fix (pending review): pushing a job to the SKS roster from Resource Allocation would 400 — a `name=in.(...)` filter on `schedule_entries` has no matching column (the canonical routing shim only translates `week=`/`id=`, not `name=`). `sks-pipeline-resource.js`.
+- Fix (pending review): `/api/eq-service/sites` (EQ Quotes/Service's site-data pull from Field) was completely dead — pointed at ehow (SKS) but queried a `public.sites` table that doesn't exist there at all. Rewired to `app_data.field_sites`. `eq-service-sites.js`.
+- Found, not yet fixed: Revert is structurally non-functional for every SKS roster edit (not just the 400 above) — `target_id` is always null because reconstructed wide week-rows have no single id to point at. Needs a design decision. See `eq/pending.md` 2026-07-08 (eq-field) entry.
+
 ## [2026-07-08] v3.5.269 — People: agency is Labour-Hire-only (SKS lane v3.10.87)
 - Fix: an `agency` / hire-company tag no longer lingers when someone is moved off Labour Hire. Saving a person as any other group now clears it, so a former labour-hire worker no longer still reads as labour hire (shown against them + leaking into the v3.5.268 Timesheets agency filter). Guarded at the single write path (`savePersonToSB`) so it covers both the Add-Person modal and the person wizard; the Agency field is also hidden + cleared for non-LH groups on both forms. Surfaced by Jose Quintanilla (was moved to Direct but kept "Madagins" — record cleared, EQ/canonical was already correct).
 
