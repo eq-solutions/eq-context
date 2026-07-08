@@ -1,13 +1,16 @@
 ---
 title: Changelog — EQ Shell
 owner: Royce Milmlow
-last_updated: 2026-07-07
+last_updated: 2026-07-08
 scope: Append-only history of changes to EQ Shell (core.eq.solutions)
 read_priority: reference
 status: live
 ---
 
 # Changelog — EQ Shell
+
+## [2026-07-08] Fix iOS auto-zoom on login inputs (PR #701)
+- `.eq-login-input` font-size bumped 14px→16px in `src/App.css` and `src/pages/auth.css`. Inputs under 16px trigger Safari's focus-zoom on mobile, which never un-zooms — was causing a persistent "have to zoom in and out" experience on the login screen.
 
 ## [2026-07-07] Grant microphone to the Field iframe (PR #693)
 - Enables eq-field v3.5.262's voice-to-text in core > field. Two blockers removed: top-level `Permissions-Policy` was `microphone=()` (disabled for everyone) and `FieldIframe` had `allow=""`.
