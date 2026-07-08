@@ -9,6 +9,9 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-08] v3.5.269 — People: agency is Labour-Hire-only (SKS lane v3.10.87)
+- Fix: an `agency` / hire-company tag no longer lingers when someone is moved off Labour Hire. Saving a person as any other group now clears it, so a former labour-hire worker no longer still reads as labour hire (shown against them + leaking into the v3.5.268 Timesheets agency filter). Guarded at the single write path (`savePersonToSB`) so it covers both the Add-Person modal and the person wizard; the Agency field is also hidden + cleared for non-LH groups on both forms. Surfaced by Jose Quintanilla (was moved to Direct but kept "Madagins" — record cleared, EQ/canonical was already correct).
+
 ## [2026-07-08] v3.5.268 — Timesheets: filter by labour-hire agency (SKS lane v3.10.86)
 - New **Agency** dropdown on the Timesheets filter bar (next to Group). Pick a labour-hire business and the list narrows to just their people — so you can print or export that agency's sheet and send it to them. Options are built from the `agency` tag on active Labour Hire workers (case-folded to merge stray case variants); the selection persists across re-renders.
 - **Exports now honour the on-screen filters.** `↓ Export CSV` and `↓ Payroll Report` previously dumped everyone; both now use the filtered set (group / agency / search on eq-field; + team on SKS), and the filename gains an agency suffix (e.g. `EQ_Timesheets_06-07-26_Atom.csv`). The eq-field exports were unified onto the filtered set and now also include Direct (matching the on-screen view + SKS). Top-right Print already prints the filtered view.
