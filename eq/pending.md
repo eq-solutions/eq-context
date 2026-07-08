@@ -14,6 +14,16 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-08 (eq-service) — RCD job-plan self-provisioning made sticky for all future tenants
+
+*Continuation of the same-day import-audit + Equinix RCD-seed session. Royce: "correct - can this be sticky to service for all future tenants" — turned the manual data fix into a durable code guarantee instead.*
+
+- [x] **eq-service PR #476 (merged) — RCD plan self-provisioning.** `seedRcdScheduledChecks()` now creates the tenant's copy of the existing `STARTER-RCD-BIANNUAL` starter plan automatically the first time any customer needs RCD checks and none exists yet — no admin action, no per-tenant hardcode, works for every tenant from day one. Reuses the app's existing starter-template catalogue (found it already had the right content, just never auto-applied) rather than inventing new content. A customer's own RCD plan is unaffected. 3 tests, full build green. _(done 2026-07-08)_
+- [x] **Live reconciliation (SKS, no schema change)** — retired the earlier ad-hoc RCD plan, replaced it with a live row of the proper canonical starter plan (richer, 4 tasks not 2), re-pointed all 8 Equinix RCD checks onto it. Verified no ambiguity, 0 new security-advisor findings. _(done 2026-07-08)_
+- [x] **Decided (Royce):** Jemena's own RCD plan isn't a protected/special business requirement — it was just the real uploaded data used as the reference example when building the feature. Not touched, just no longer treated as sacred.
+
+---
+
 ## ⏩ Session close — 2026-07-08 (eq-shell/eq-field/eq-roles) — employment_type + Supervision fixes shipped live; access-model foundation designed + Phase 0 built
 
 *Continuation of the 2026-07-06/07 audit session. Closed both deferred items from that session (Supervision fix, employment_type unification), then Royce asked to complete the shared roles rulebook for consistency — which surfaced a bigger, real gotcha (5 separate access-grant paths + Cards represented 4 ways). Ran a Fable-tier adversarial design review, locked a 4-decision/4-phase foundation plan fenced around the 13 Jul SKS cutover, and built Phase 0.*
