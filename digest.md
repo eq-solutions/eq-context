@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-09 22:24 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-09 23:13 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-09 22:02 UTC → 2026-07-09 22:24 UTC)
+## Since last refresh (2026-07-09 22:24 UTC → 2026-07-09 23:13 UTC)
 
-- Merged: eq-shell [#692](https://github.com/eq-solutions/eq-shell/pull/692) feat(staff): manage supervisor status from Shell's staff edi
-- Merged: eq-shell [#691](https://github.com/eq-solutions/eq-shell/pull/691) fix(shell): embedded mobile nav — restore MobileTabBar, reti
-- Merged: eq-shell [#686](https://github.com/eq-solutions/eq-shell/pull/686) Fix: app-activation nav bug + bulk toggle + collapsible site
-- Merged: eq-shell [#685](https://github.com/eq-solutions/eq-shell/pull/685) fix(drift-check): add app_data.activation_status to KNOWN_LE
-- Merged: eq-shell [#680](https://github.com/eq-solutions/eq-shell/pull/680) Admin: one-spot app activation view + canonical entitlement 
-- Merged: eq-shell [#678](https://github.com/eq-solutions/eq-shell/pull/678) feat(staff): show and edit job_title on the Staff dashboard
-- Merged: eq-shell [#677](https://github.com/eq-solutions/eq-shell/pull/677) fix(drift): 0164 — reassert security_invoker on app_data.fie
-- Merged: eq-shell [#676](https://github.com/eq-solutions/eq-shell/pull/676) feat(shell): command palette, skeleton loading, optimistic s
+- Merged: eq-shell [#706](https://github.com/eq-solutions/eq-shell/pull/706) fix(quotes): estimator signature on quote docs + master mark
+- Merged: eq-shell [#696](https://github.com/eq-solutions/eq-shell/pull/696) fix(shell): embedded rail — un-clip EQ logo, lift icon contr
+- Merged: eq-shell [#693](https://github.com/eq-solutions/eq-shell/pull/693) Grant microphone to the Field iframe (voice-to-text on safet
+- Merged: eq-shell [#690](https://github.com/eq-solutions/eq-shell/pull/690) fix(staff): lock employment_type to canonical vocabulary; st
+- Merged: eq-shell [#688](https://github.com/eq-solutions/eq-shell/pull/688) refactor(shell): retire IconRail, embedded pages use collaps
+- Merged: eq-shell [#687](https://github.com/eq-solutions/eq-shell/pull/687) fix(staff): unify employment_type vocabulary with eq-field
+- Merged: eq-shell [#683](https://github.com/eq-solutions/eq-shell/pull/683) fix(shell): palette Ctrl+K fallback + Staff continuous scrol
+- Merged: eq-shell [#682](https://github.com/eq-solutions/eq-shell/pull/682) fix(provisioning): profiles insert can hit an FK violation o
 
 ## ⚠ Needs you (4)
 
@@ -43,7 +43,7 @@ _2026-07-09 22:24 UTC · what needs your attention. Full snapshot: [suite-state.
 | Project | Error | Events | Last seen |
 |---------|-------|--------|-----------|
 | eq-solves-service | [auth handoff: cookie_absent](https://eq-solutions.sentry.io/issues/132832684/) | 19 | 2026-07-08 |
-| eq-shell | [Error: native pipeline query failed: Could not find the table 'app_data.tenders'](https://eq-solutions.sentry.io/issues/132948690/) | 12 | 2026-07-09 |
+| eq-shell | [Error: native pipeline query failed: Could not find the table 'app_data.tenders'](https://eq-solutions.sentry.io/issues/132948690/) | 13 | 2026-07-09 |
 | eq-cards | [LateInitializationError: Field '' has not been initialized.](https://eq-solutions.sentry.io/issues/132643934/) | 2 | 2026-07-07 |
 | eq-solves-service | [Error: COALESCE types uuid and text cannot be matched](https://eq-solutions.sentry.io/issues/132618557/) | 1 | 2026-07-07 |
 | eq-shell | [EQ Field handoff rejected](https://eq-solutions.sentry.io/issues/132381163/) | 1 | 2026-07-06 |
@@ -56,6 +56,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-09 | eq-shell | [#706](https://github.com/eq-solutions/eq-shell/pull/706) fix(quotes): estimator signature on quote docs + master markup dr |
 | 2026-07-09 | eq-field | [#424](https://github.com/eq-solutions/eq-field/pull/424) v3.5.273 — Revert now works for SKS roster edits |
 | 2026-07-09 | eq-field | [#423](https://github.com/eq-solutions/eq-field/pull/423) fix: roster — self-heal duplicate-key race on first save of a wee |
 | 2026-07-08 | eq-shell | [#704](https://github.com/eq-solutions/eq-shell/pull/704) feat(access): pull in @eq-solutions/roles v2.5.0 (access-model Ph |
@@ -70,7 +71,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-08 | eq-solves-service | [#475](https://github.com/eq-solutions/eq-service/pull/475) fix(shell-embed): detect iframe embedding via Sec-Fetch-Dest head |
 | 2026-07-08 | eq-solves-service | [#476](https://github.com/eq-solutions/eq-service/pull/476) feat(rcd): self-provision the standard RCD plan for every tenant |
 | 2026-07-08 | eq-solves-service | [#474](https://github.com/eq-solutions/eq-service/pull/474) fix(shell-embed): CHIPS-partition the Shell handoff cookies (Beel |
-| 2026-07-08 | eq-solves-service | [#473](https://github.com/eq-solutions/eq-service/pull/473) feat(import): show job-plan coverage on commercial-sheet import |
 _Showing 15 of 111 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -117,4 +117,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-09 22:24 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-09 23:13 UTC._
