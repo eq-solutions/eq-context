@@ -137,6 +137,20 @@ _Nothing pending — migrations 001–023 all applied._
 - [ ] `isTafeHolidayCell()` in `scripts/tafe.js` (both apps) is now **dead code** — the timesheet stopped consulting the holiday config at v3.10.84; writers use `tafeIsHolidayForDay` directly. Low-pri cleanup (leave or remove next timesheet touch). _(added 2026-07-08)_
 - [ ] Terry Su has no nominated `tafe_day` → won't auto-prefill going forward; Royce to set it in his profile if he attends TAFE regularly (operational data, not a code fix). _(added 2026-07-08)_
 
+## ⏩ SKS Field — session 2026-07-08 (schedule_entries duplicate root-cause + fix)
+
+**Flagged by a concurrent eq-field session** (auditing a roster Revert bug): 6 `(staff_id, date)` duplicate pairs in `app_data.schedule_entries` on ehow, all involving the `nspb-phase3-2026-07-05` import writing a near-blank second row over an existing real one.
+
+**Completed (with Royce's explicit go-ahead — "fix fully now"):**
+- [x] **Confirmed exhaustively** — exactly 6 duplicate pairs exist (not a sample; `GROUP BY staff_id, date HAVING count(*) > 1` returns exactly these 6). No unique constraint existed on `(staff_id, date)` (confirmed via `pg_constraint` — only the `schedule_id` PK).
+- [x] **Root cause**: the `nspb-phase3-2026-07-05` import (1,006 rows, 63 staff, dates 2026-06-22→2026-10-30) always did a plain INSERT with no existing-row check. **The actual import script was never found in any repo** — ruled out eq-shell's `etl-nspbmir-to-ehow.mjs` specifically (different `imported_from` tag; its deterministic-UUID formula doesn't match the live duplicate rows' actual `schedule_id`s). If anyone knows what actually ran this (manual script, SQL editor, one-off local file), worth checking directly — the root cause here is a well-evidenced inference from data shape, not a confirmed code read.
+- [x] **Live-display risk found**: `eq-field/scripts/roster-adapter.js`'s `toWideList` currently shows the correct real data for all 6 people, but only because an *unordered* query happens to return the real row first (heap/physical storage order) — not a guaranteed contract. A VACUUM, new index, or query-plan change could silently flip 6 people's roster cells to blank with zero error anywhere. The function's own inline comment ("last writer wins") is backwards from what the code actually does (first-non-empty wins) — small separate bug, not yet fixed, flagged for whoever's next in that file.
+- [x] **Fixed live on ehow**: deleted the 6 stub rows after confirming each was a pure subset of its real-row counterpart (every field null or identical — nothing lost). Added `UNIQUE (staff_id, date)` on `app_data.schedule_entries` (migration `schedule_entries_staff_date_uniq`) so this can't silently recur regardless of what wrote it or whether it runs again. Verified: 0 duplicates remain, all 6 real rows intact, 1000 of the original 1006 import rows untouched.
+
+**Deferred:**
+- [ ] `toWideList`'s "first non-empty wins" logic (and its backwards comment) in `eq-field/scripts/roster-adapter.js` — not fixed (another session was already active in this file; avoided a concurrent edit). Worth a defensive tiebreak (prefer non-`imported_from` rows) as belt-and-suspenders now that the constraint prevents new duplicates. _(added 2026-07-08)_
+- [ ] Source of the `nspb-phase3-2026-07-05` import itself is still unknown — no `nspb-phase1`/`nspb-phase2` tag exists anywhere either, so it's unclear if this was a manual one-off or part of a larger unlogged migration effort. _(added 2026-07-08)_
+
 ## ⏩ SKS Field — session 2026-07-04 (Cards→Field migration path verified, read-only)
 
 **Verified live (eq-canonical `jvknxcmbtrfnxfrwfimn` + eq-field repo) — no code changed:**
