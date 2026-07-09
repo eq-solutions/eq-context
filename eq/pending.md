@@ -14,6 +14,15 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-10 (eq-field) — spinner-of-death on tab-return root-caused to eq-shell, not Field; no Field code changes; eq-shell fix task spawned and started
+
+*Royce reported a stuck loading spinner when returning to a backgrounded browser tab after logging into Field via the Shell iframe (`core.eq.solutions/sks/field`). Investigated Field's boot sequence, loading-overlay show/hide paths, and realtime reconnect logic — all clean (no `visibilitychange` handlers in Field at all; every `showLoadingOverlay` call has a paired hide on both success and error paths; realtime reconnect has proper capped exponential backoff, 1s→30s). The console log showed a `React error #418` (hydration mismatch) thrown from Shell's own React bundle at the moment the tab regained focus — consistent with a focus-triggered refetch/re-render on the component that owns the Field iframe wrapper, crashing before its own spinner state clears. Root cause and fix scope handed to `eq-shell` via spawned task `task_b2cf81ea`, which Royce has already started in a separate session.*
+
+- [x] Root-cause investigation for tab-return spinner bug — confirmed Field-side code is not the cause _(2026-07-10)_
+- [ ] eq-shell: fix focus-triggered refetch/hydration crash on Field iframe wrapper so spinner doesn't get stuck on tab return _(added 2026-07-10, in progress in separate eq-shell session — task_b2cf81ea)_
+
+---
+
 ## ⏩ Session close — 2026-07-07/08 (eq-service) — Shell-embed session bug fully root-caused across 4 shipped PRs; dashboard duration canary added; a live CI-trigger outage found and fixed along the way
 
 *Royce reported the exact "workspace isn't set up" + wrong-chrome screenshot that an earlier same-day session (see the eq-shell chrome-fix entry below) had already partly traced. Ran it to ground across 4 separate deployed fixes, each confirmed live before moving to the next, rather than shipping one guess and declaring victory.*
