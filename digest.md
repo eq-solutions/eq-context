@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-10 09:21 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-10 09:23 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-10 09:11 UTC → 2026-07-10 09:21 UTC)
+## Since last refresh (2026-07-10 09:21 UTC → 2026-07-10 09:23 UTC)
 
-- Merged: eq-shell [#720](https://github.com/eq-solutions/eq-shell/pull/720) fix(briefing): swallow PGRST205 for dropped app_data.tenders
-- Merged: eq-shell [#704](https://github.com/eq-solutions/eq-shell/pull/704) feat(access): pull in @eq-solutions/roles v2.5.0 (access-mod
-- Merged: eq-shell [#702](https://github.com/eq-solutions/eq-shell/pull/702) feat(ops): branded print-to-PDF export for labour hire weekl
-- Merged: eq-shell [#700](https://github.com/eq-solutions/eq-shell/pull/700) fix(ops): weekly labour-hire costs miss company-wide allowan
-- Merged: eq-shell [#698](https://github.com/eq-solutions/eq-shell/pull/698) fix(shell): match all phone formats when self-joining a tena
-- Merged: eq-shell [#696](https://github.com/eq-solutions/eq-shell/pull/696) fix(shell): embedded rail — un-clip EQ logo, lift icon contr
-- Merged: eq-shell [#693](https://github.com/eq-solutions/eq-shell/pull/693) Grant microphone to the Field iframe (voice-to-text on safet
-- Merged: eq-shell [#692](https://github.com/eq-solutions/eq-shell/pull/692) feat(staff): manage supervisor status from Shell's staff edi
+- Merged: eq-shell [#718](https://github.com/eq-solutions/eq-shell/pull/718) fix(field-iframe): self-healing handoff — grace window + one
+- Merged: eq-shell [#706](https://github.com/eq-solutions/eq-shell/pull/706) fix(quotes): estimator signature on quote docs + master mark
+- Merged: eq-shell [#703](https://github.com/eq-solutions/eq-shell/pull/703) fix(shell): report native-pipeline query failures instead of
+- Merged: eq-shell [#701](https://github.com/eq-solutions/eq-shell/pull/701) fix(shell): stop iOS auto-zoom on login inputs
+- Merged: eq-shell [#699](https://github.com/eq-solutions/eq-shell/pull/699) fix(ops): stop stray 'n' keystroke wiping in-progress quote
+- Merged: eq-shell [#691](https://github.com/eq-solutions/eq-shell/pull/691) fix(shell): embedded mobile nav — restore MobileTabBar, reti
+- Merged: eq-shell [#690](https://github.com/eq-solutions/eq-shell/pull/690) fix(staff): lock employment_type to canonical vocabulary; st
+- Merged: eq-shell [#688](https://github.com/eq-solutions/eq-shell/pull/688) refactor(shell): retire IconRail, embedded pages use collaps
 
 ## ⚠ Needs you (2)
 
@@ -30,9 +30,9 @@ _2026-07-10 09:21 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 8 | 6d |
+| eq-shell | ? unknown | ? | 7 | 6d |
 | eq-solves-service | ✓ success | 0d ago | 6 | 4d |
-| eq-field | ? unknown | ? | 2 | 0d |
+| eq-field | ? unknown | ? | 1 | 0d |
 | eq-cards | ✓ success | 1d ago | 1 | 1d |
 | eq-solves-intake | ? unknown | ? | 0 | — |
 
@@ -54,6 +54,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-10 | eq-shell | [#718](https://github.com/eq-solutions/eq-shell/pull/718) fix(field-iframe): self-healing handoff — grace window + one-shot |
 | 2026-07-10 | eq-shell | [#720](https://github.com/eq-solutions/eq-shell/pull/720) fix(briefing): swallow PGRST205 for dropped app_data.tenders |
 | 2026-07-10 | eq-shell | [#719](https://github.com/eq-solutions/eq-shell/pull/719) fix(staff): normalize phone before dedup match on Cards approval |
 | 2026-07-10 | eq-shell | [#717](https://github.com/eq-solutions/eq-shell/pull/717) fix(customers): don't lose a typed site/contact on Continue/Finis |
@@ -63,12 +64,11 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-10 | eq-solves-service | [#486](https://github.com/eq-solutions/eq-service/pull/486) fix(customers): service.customers site-driven — unbreak the empty |
 | 2026-07-10 | eq-solves-service | [#485](https://github.com/eq-solutions/eq-service/pull/485) fix(dashboard): Customers + Assets tiles respect the service_enab |
 | 2026-07-10 | eq-solves-service | [#484](https://github.com/eq-solutions/eq-service/pull/484) fix(dashboard): Sites tile + map respect the service_enabled acti |
+| 2026-07-10 | eq-field | [#431](https://github.com/eq-solutions/eq-field/pull/431) v3.5.280 — Shell handoff self-heals on iframe restore (kills the  |
 | 2026-07-10 | eq-field | [#430](https://github.com/eq-solutions/eq-field/pull/430) v3.5.278 — Contacts: segment-aware columns + Columns picker |
 | 2026-07-10 | eq-field | [#429](https://github.com/eq-solutions/eq-field/pull/429) v3.5.278 — render migrated SKS site deployments on the roster |
 | 2026-07-10 | eq-field | [#428](https://github.com/eq-solutions/eq-field/pull/428) v3.5.277 — paginate the remaining capped reads that should be com |
 | 2026-07-10 | eq-field | [#427](https://github.com/eq-solutions/eq-field/pull/427) fix: SKS pipeline — paginate tender_enrichment/nominations/pendin |
-| 2026-07-10 | eq-field | [#426](https://github.com/eq-solutions/eq-field/pull/426) v3.5.274 — instrument dashboard anniversaries widget |
-| 2026-07-10 | eq-field | [#425](https://github.com/eq-solutions/eq-field/pull/425) v3.5.274 — paginate unbounded full-table fetches (1000-row cap fi |
 _Showing 15 of 104 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -115,4 +115,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-10 09:21 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-10 09:23 UTC._
