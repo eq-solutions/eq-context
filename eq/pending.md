@@ -14,6 +14,22 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-10 (eq-cards) — storage/security review: worker sync made reconcilable (enterprise-grade); Kurt's photos actually fixed; licence-photo admin RLS tightened
+
+*Royce asked about storage limits, then the real risks (photos on the control layer; tenant↔control wiring redundancy / weak link). Review found the sync had no reconciliation backstop and Kurt's photos were silently un-viewable. Both fixed + a loose RLS policy tightened — all live-verified.*
+
+**Done this session:**
+- [x] **eq-cards 0084 + PR #136 (MERGED, LIVE) — nightly reconciliation + dead-letter audit for the Cards→canonical worker sync.** The write-through sync was fire-and-forget (no retry, no reconciliation) → dropped webhook = permanent silent drift (root of the duplicate/stale-staff class). `eq_reconcile_worker_sync()` nightly re-projects the 90 SKS-linked workers idempotently (excludes unlinked/personal so no junk staff rows); `eq_audit_worker_sync_dispatch()` stamps each webhook from `net._http_response` = queryable dead-letter. Verified live: 90 dispatched, all 200, 0 timeouts.
+- [x] **Kurt Sticker's photos corrected (were NOT viewable).** Cards mints signed URLs client-side so storage RLS applies at view time; the hand-uploaded `{user}/{licence}/{side}` path failed the owner policy (`foldername[2]`=licence id, not uid). Moved all 3 to `{tenant}/{user}/{licence}/{side}`, repointed DB, deleted old. Verified RLS-matching + DB↔storage consistent.
+- [x] **eq-cards 0085 + PR #137 (MERGED, LIVE) — `org_admins_read_member_licence_photos` scoped `public`→`authenticated`** (same predicate; verified `roles={authenticated}`).
+
+**Follow-ups flagged, NOT built (surfaced in the review):**
+- [ ] **Storage concentration risk (design):** every worker's licence image for every tenant lives in one private bucket in jvkn — jvkn's service-role key / RLS is the platform's crown-jewels blast radius. Inherent to the worker-owned model. Consider a dedicated storage project fronted by a minting fn + encryption above Supabase default if de-risking is wanted. _(added 2026-07-10)_
+- [ ] **`WORKERS_WEBHOOK_SECRET` (verify_jwt off):** if leaked, arbitrary worker records could be POSTed into ehow `app_data.staff`. Rotate on any suspicion; keep out of logs. _(added 2026-07-10)_
+- [ ] **Generalise `workers-canonical-sync` beyond SKS/ehow** (still hardcodes `SKS_TENANT_ID` + ehow) before a second tenant onboards — the reconcile is likewise SKS-scoped. _(added 2026-07-10)_
+
+---
+
 ## ⏩ Session close — 2026-07-10 (eq-cards + eq-shell) — duplicate-staff class killed at BOTH writers; Kurt onboarded by hand (licences + photos); admin photo-upload primitive built
 
 *Continuation of the 07-08 eq-cards session. Royce hit a run of duplicate "staff" rows in Shell (Brett Kilpatrick, Kurt Sticker, Sam Powell) plus a "can we enter a worker's licences for them / attach the photos they emailed" ask. Root-caused the duplicates to TWO independent writers, fixed both, cleaned the existing backlog to zero, and built the missing admin photo-upload path — all live and verified.*
