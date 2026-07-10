@@ -14,6 +14,24 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-10 (eq-field) — SKS leave "showed 0" root-caused + fixed; leave made single-source-of-truth (roster overlays it live)
+
+*Royce noticed the SKS Leave dashboard (Core → Field) showed "0 / all caught up" while 31 real approved/pending leave records sat in the DB. Investigated exhaustively — the leave read is fine at the DB layer (data, grants, RLS, tenant isolation all correct; the authenticated JWT reads all 31 rows). Root cause was a client read-routing miss. Then, per Royce's decision, restructured leave to a single-source-of-truth model. Both fixes shipped live (prod verified v3.5.282).*
+
+- [x] **eq-field PR #432 (v3.5.281, MERGED, live) — SKS leave "showed 0" fix.** Root cause: the canonical adapters (`leave-adapter.js`/`timesheets-adapter.js`/`roster-adapter.js`) were NOT in the service-worker precache (network-only). When `leave-adapter.js` failed to execute, `EQ_LEAVE_ADAPTER` was undefined → `supabase.js`'s leave read silently fell through to the `app_data.field_leave_requests` twin, which is **service_role-only** (`authenticated` → 401) → empty surface, no error. Fix: precache all three adapters + a loud `canonical-adapter-missing` breadcrumb in supabase.js so this can never be silent again. No DB change.
+- [x] **eq-field PR #433 (v3.5.282, MERGED, live) — leave_requests = single source of truth.** Royce chose the "live overlay" model. Retired the approve→`writeLeaveToSchedule` write-back; the roster + dashboard now COMPUTE approved leave at render from `leave_requests` (new `overlayApprovedLeave()` in roster.js, read-only — never mutates STATE.schedule). Leave wins for display; a site rostered under approved leave shows a ⚠ conflict marker. Fixes the SKS symptom where 30 bulk-imported approved-leave records never reached the roster (old write-back only fired on UI approval).
+
+**Decision (Royce):** leave_requests is the single source of truth for time off; roster/dashboard overlay it live rather than storing it. _(2026-07-10)_
+
+**Leave audit — still open (found while fixing, none blocking):**
+- [ ] **`leave_approval_logs` empty (0 rows) on SKS** — approve/reject decisions aren't being written to the audit-log table. Confirm if an approval audit trail is wanted. _(added 2026-07-10)_
+- [ ] **All 31 imported SKS leave rows have `approver_id = NULL`** — approver names won't render. Fine if pre-approved historical; backfill if attribution matters. _(added 2026-07-10)_
+- [ ] **Timesheets don't yet share the leave overlay** — only roster + dashboard read leave_requests live. If timesheets should reflect approved leave, extend the overlay. _(added 2026-07-10)_
+- [ ] **Three dead RLS-bypassing twins** (`app_data.field_prestarts`/`field_site_diaries`/`field_toolbox_talks`, `security_invoker` NOT SET, service_role-only, unused — safety reads go to `public.*`) — inert today but a latent cross-tenant leak if ever granted to `authenticated`. Cleanup candidates (drop them). _(added 2026-07-10)_
+- [ ] **Retire the leave/roster/timesheets `field_*` twins?** They're bypassed by the adapters and (for leave/schedule/timesheets) are `security_invoker` but service_role-only. The silent fallback to them is what made the "showed 0" bug possible; #432 makes it loud, but dropping the dead twins would remove the failure class entirely. _(added 2026-07-10)_
+
+---
+
 ## ⏩ Session close — 2026-07-10 (eq-shell + eq-field) — /sks/field "spinner of death" root-caused + fixed (both apps), Contacts columns made segment-aware
 
 *Two threads. (1) The recurring /sks/field "EQ Field didn't load" card on tab-return: the FIRST fix this session (overlay stacking, eq-shell #714) proved the earlier hypothesis (React #418 hydration crash) was a false premise — Sentry has ZERO #418 events and Shell is a client-only SPA (no SSR, no hydration). Royce then hit the real bug live and screenshotted it: Field was fully working BEHIND the error card. Root-caused end-to-end across both repos and shipped a self-healing handshake. (2) Royce's Contacts observation ("Agency only relevant for labour hire; can columns be customisable?") → segment-aware columns + a Columns picker.*

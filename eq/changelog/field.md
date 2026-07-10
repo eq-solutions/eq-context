@@ -9,6 +9,15 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-10] v3.5.282 — leave_requests is the single source of truth; roster overlays it live (SHIPPED, PR #433, live)
+- Model change: retired the approve→`writeLeaveToSchedule` write-back. The roster and dashboard now COMPUTE approved leave at render from `leave_requests` (new `overlayApprovedLeave()` in roster.js — read-only, never mutates STATE.schedule). Leave wins for display; a site rostered under approved leave shows a ⚠ conflict marker instead of being silently hidden.
+- `dashboard.js` "Leave & Absences This Week" reads `leave_requests` (approved, overlapping the week), unioned with manual roster absences so typed A/L/OFF still show.
+- Fixes the SKS symptom where 30 bulk-imported approved-leave records never appeared on the roster (the old write-back only fired on UI approval). No DB change.
+
+## [2026-07-10] v3.5.281 — SKS leave showed 0: precache the canonical adapters (SHIPPED, PR #432, live)
+- Root cause: `leave-adapter.js`/`timesheets-adapter.js`/`roster-adapter.js` were network-only (not in the SW precache). When `leave-adapter.js` failed to execute, `EQ_LEAVE_ADAPTER` was undefined → supabase.js's leave read silently fell through to the `app_data.field_leave_requests` twin, which is service_role-only (`authenticated` → 401) → empty Leave surface with no error, while 31 real records sat in the DB.
+- Fix: precache all three adapters so their globals can never be missing; add a loud `canonical-adapter-missing` breadcrumb in supabase.js if a leave/timesheets/schedule read ever runs without its adapter. Verified live: the authenticated JWT reads all 31 rows from `app_data.leave_requests` directly (data, grants, RLS, tenant isolation all correct). No DB change.
+
 ## [2026-07-10] v3.5.278 — migrated SKS site deployments now render their code (SHIPPED, PR #429, live)
 - Fix: 704 real SKS roster deployments (across 19 sites) were invisible — blank cells. The canonical migration wrote `schedule_entries` rows with a real `site_id` but no free-text `task`, and `roster-adapter.js` reads the wide cell text from `task` with no `site_id`→code resolver wired (the documented `_warnSiteGapOnce` "site linkage is a follow-up" gap). Built the read-side resolver: `app_data.sites` (site_id→short code) is loaded alongside the staff map on the same JWT, and `cellFromRow()` renders the site's code (SYD53/ARN/STG/…) for a row with a site_id but no task. `scripts/roster-adapter.js`, `scripts/supabase.js`.
 - Precedence preserved + tested (8 new golden tests, 87 pass): typed `task` still wins (lossless carrier), leave markers still win (on-leave ≠ deployed), unresolved/codeless site_id → blank as before. Site read is non-fatal (failure leaves cells blank, never breaks the staff map or boot).
