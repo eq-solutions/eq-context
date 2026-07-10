@@ -30,14 +30,14 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **Attached the actual licence photos** — no admin-side Storage upload exists anywhere in Cards or Shell. Did it cleanly via the **Supabase CLI** (`supabase storage cp`, its own project auth — no secret handling) after several secret-moving approaches were correctly blocked by guardrails.
 - [x] **Built a reusable primitive:** `admin-attach-licence-photo` edge function (migration 0083 = vault secret + verifier; both live on jvkn). Source on branch `feat/admin-attach-licence-photo` (pushed, **no PR opened yet**). Secret-gated, service-role, writes to the `licence-photos` bucket at Cards' `{user_id}/{licence_id}/{side}.jpg` convention. Wasn't needed for Kurt (CLI won) but is the repeatable path for the next emailed-licence.
 
-- [ ] **eq-cards PR #134 (OPEN, not merged) — onboarding flags scoped to account + honest "OCR found nothing".** From the 07-08 continuation: onboarding "shown once" flags were device-local (a reused demo phone silently skipped onboarding on re-signup); now keyed by user id. Plus the licence-scan "found nothing" message no longer falsely claims "that's the back of the card". `flutter analyze` clean; needs review/merge/deploy. _(added 2026-07-10)_
+- [x] **eq-cards PR #134 (MERGED + deployed live) — onboarding flags scoped to account + honest "OCR found nothing".** From the 07-08 continuation: onboarding "shown once" flags were device-local (a reused demo phone silently skipped onboarding on re-signup); now keyed by user id. Plus the licence-scan "found nothing" message no longer falsely claims "that's the back of the card". `flutter analyze` clean. Merged 2026-07-10; deploy run 29085159792 success.
 
 **Design call (Royce) — did NOT build:**
 - [ ] **Duplicate prevention beyond the two writer fixes: leave it.** Steelmanned a unique normalized-phone index and a detection cron; concluded (with Royce) that for ~85 staff a hard constraint on phone is the wrong tool (phone recycles — see eq-cards 0076 — and gets shared; converts silent dups into blocking 500s). The 80/20 that leading teams do — one identity key + normalize-and-match at write + a merge tool for stragglers — is now in place via #719 + #724. Revisit a merge-UI or constraint ONLY if dups recur after these. _(added 2026-07-10)_
 
 **Follow-ups flagged, not built:**
 - [ ] **Timesheets/other paths that write `app_data.staff`** — audit that every remaining writer routes phone through the shared normalizer (not just the two fixed). Low priority now the two main writers are fixed. _(added 2026-07-10)_
-- [ ] **`admin-attach-licence-photo` — open a PR** for the `feat/admin-attach-licence-photo` branch (0083 + the function) so live infra isn't untracked drift; or tear it down if the CLI path is preferred. _(added 2026-07-10)_
+- [x] **`admin-attach-licence-photo` — PR opened + MERGED (eq-cards #135).** The `feat/admin-attach-licence-photo` branch (0083 + the function) is now tracked on main — CI green (Analyze and test + Migration hygiene), squash-merged 2026-07-10, branch deleted. Live infra no longer untracked drift.
 
 ---
 
