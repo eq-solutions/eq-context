@@ -25,14 +25,14 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 **Verified against LIVE DBs (read-only SELECTs — corrects suite-state drift):**
 - **SKS Labour (nspbmir) is very much ALIVE** — audit_log 1,127 actions/7d (~160/day), schedule 134/7d, timesheets 71/7d, prestarts 21/7d, all written 2026-07-10; **19 people onboarded in the last 30d**. The "dead runway" caution was WRONG for Field — it's the liveliest thing in the suite. (Tender import is the one stale piece: last run 2026-06-17.)
-- **EQ Field canonical is EMPTY** — ehow `app_data.field_schedule` / `field_timesheets` = 0 rows while nspbmir carries 100% of live load. **The retire-SKS-Labour cutover has NOT started in the data.** Field data is not reaching canonical = unwired seam.
+- **EQ Field canonical is EMPTY** — ehow `app_data.field_schedule` / `field_timesheets` = 0 rows while nspbmir carries 100% of live load. **The retire-SKS-Labour cutover has NOT started in the data.** This is the KNOWN, documented pre-cutover state — `SKS-CUTOVER-CRITICAL-PATH.md` (Phases D/E not done) + the 2026-06-07 linkage audit (finding #6, "nspb data not in the canonical plane"). NOT a new discovery; I re-derived it as a novel "sync/seam" gap, which was wrong (corrected 2026-07-11).
 - **EQ Service (ehow) is built-but-not-executed** — `app_data.maintenance_check_items` = 1,358 rows, **0 ever completed (max completed_at = NULL)**; maintenance_checks = 13. audit_log/job_notes active daily (someone administering) but ZERO field execution. (ehow staff/timesheets recency = bulk-import artifacts, not human use.)
 
 **Deferred (added 2026-07-11):**
-- [ ] Define the EQ Field "proven" checklist + stand up a parallel-run (one crew, full cycle, reconcile vs SKS Labour) before any nspbmir retire. _(added 2026-07-11)_
+- [ ] **Cutover strategy needs reconciling — doc vs current intent.** `SKS-CUTOVER-CRITICAL-PATH.md` (B5, 5-phase gated) describes an *automated* migration of SKS's live labour rows into `field_*` (Phase D) then parallel-run/soak (Phase E). Royce's current stated plan (2026-07-11) is *manual weekly re-entry* into EQ Field until N clean weeks, then cut — a lighter, different approach the doc does NOT describe. Decide which is live; if manual, the doc's Phase D is superseded and the doc needs updating so the next session doesn't plan an automated migration Royce no longer wants. _(added 2026-07-11)_
 - [ ] Verify where EQ Cards WRITES onboarding — must target canonical / EQ Field (the survivor), not nspbmir (the app being demolished). _(added 2026-07-11)_
-- [ ] Check the nspbmir→canonical sync bridge is live (people.canonical_synced_at recency). _(added 2026-07-11)_
-- [ ] Fix the unwired seam: Field (nspbmir) data not reaching the canonical field_* views on ehow. _(added 2026-07-11)_
+- [ ] If the manual approach stands: define the stop condition — N consecutive clean weeks across a full roster+timesheet cycle → cut. Put one supervisor + one crew on EQ Field during the run (solo hand-entry proves features, not adoption). Enter independently then compare — don't key EQ Field to force a match. _(added 2026-07-11)_
+- [ ] ~~Check nspbmir→canonical sync bridge / fix unwired seam~~ — WITHDRAWN 2026-07-11: no automated sync is part of the plan (Royce re-keys manually); the empty `field_*` state is the documented pre-cutover condition, not a gap to fix. _(added 2026-07-11)_
 - [ ] Get EQ Service from built → executed — 1,358 check-items defined, 0 completed; nothing being ticked in the field. _(added 2026-07-11)_
 - [ ] Compute the Cards "one number" for the CEO ask — onboarding time saved (time-to-site-ready × worker volume) + expiry/audit risk removed. Royce to supply volumes. _(added 2026-07-11)_
 
