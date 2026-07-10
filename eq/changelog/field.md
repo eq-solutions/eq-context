@@ -9,6 +9,18 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-11] v3.5.291/292 — ✅ THE leave-shows-0 fix: leave list was never fetched on a deep-linked open (SHIPPED, PRs #446/#447, live & VERIFIED)
+- **RESOLVED the multi-session "SKS leave shows 0" bug. Verified live on `core.eq.solutions/sks/field?tab=leave`: PENDING 1 / OFF THIS WEEK 10 / APPROVED 15; on-screen diagnostic confirmed `status:200, leaveCanon:true, rows:31`.**
+- **True root cause (proven, not inferred):** routing was correct all along (BOOT_DIAG banner read `slug=sks, SB_URL=ehow, canon=TRUE`). The leave READ never ran: `leave.js` is lazy-loaded so `initApp()`'s boot `loadLeaveRequests()` is skipped (undefined then); `renderLeave()` only renders; realtime does no initial read; the 30s poll is suppressed under realtime. On a deep-linked `?tab=leave` (how Core embeds Field) `leaveRequests` was never populated. The panel's "↺ Refresh" was `onclick=renderLeave()` — a pure re-render. 31 rows never lost, never fetched.
+- **Fix (v3.5.291, PR #446):** `renderLeave()` → `_ensureLeaveLoaded()`, a cached-promise one-shot that fetches on first tab open and re-renders when data lands.
+- **v3.5.292 (PR #447):** removed all temporary diagnostics (BOOT_DIAG/LEAVE_DIAG banners, `__eqDiag`, Sentry LEAVE_DIAG) — they were user-visible on the leave screen.
+- **Diagnostic method that finally worked:** an on-screen banner read off a screenshot — the only channel that pierces a cross-origin + storage-partitioned embedded iframe (console needs the user; localStorage is partitioned; Sentry is silent from the embedded frame).
+
+## [2026-07-11] v3.5.286/287 — canonical gate keyed on the resolved DB + window.SB_URL refresh (SHIPPED, PRs #439/#440, live) — necessary, not sufficient
+- **v3.5.286 (PR #439):** leave/roster/timesheets canonical-mode gates now return true when the resolved tenant DB (`window.SB_URL`) is the SKS plane (ehow), as well as when `TENANT.ORG_SLUG==='sks'`. Removes the single-point-of-failure slug dependency so an embedded-restore slug hiccup can't route SKS to the service_role-only twin (→401→empty). `window.SB_URL` exposed in app-state.js. `app_data.leave_requests` (with data) exists only on ehow so the DB match can't over-trigger on eq/zaap. (Verified in isolation: gate returns true for an ehow URL even with a broken slug.)
+- **v3.5.287 (PR #440):** `sbFetch` refreshes `window.SB_URL` from the lexical `SB_URL` on every call — closes any resolve-path that set SB_URL without re-exposing it.
+- These were real fragility fixes (canon WAS slug-fragile) but did not fix leave — because the read never fired (see v3.5.291). v3.5.288–290 were temporary diagnostics, all removed in v3.5.292.
+
 ## [2026-07-10] v3.5.283 — honor ?tenant= override whenever iframe-embedded (SHIPPED, PR #434, live) — DID NOT FIX SKS LEAVE
 - Intended as THE root-cause fix for "SKS leave shows 0": a live diagnostic showed the leave adapter was loaded but its canonical gate returned false (`TENANT.ORG_SLUG` ≠ 'sks'). Theory: Shell embeds Field at `eq-field.netlify.app` (matches no canonical tenant hostname) so `?tenant=sks` is the only thing making it SKS, and a backgrounded iframe reboots with the `#sh=` hash stripped → the override was rejected → session fell back to 'eq'. Fix honors the override whenever `window!==window.top`.
 - **STATUS: did NOT resolve the symptom.** Leave was still 0 after deploy + fresh reload. Root cause is confirmed (`canon:false`) but this fix didn't correct it — the exact reason ORG_SLUG lands wrong is still unknown (needs the runtime `TENANT.ORG_SLUG` value). See `eq/pending.md` 🔴 UNRESOLVED entry.

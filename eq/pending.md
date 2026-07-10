@@ -83,9 +83,33 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## 🔴 UNRESOLVED — SKS leave STILL shows 0 after 3 fixes; spinner-of-death recurred on SKS (2026-07-10, second close)
+## ✅ RESOLVED 2026-07-11 — SKS leave-shows-0 FIXED & VERIFIED LIVE (v3.5.291, prod-clean at v3.5.292)
 
-**⚠️ CORRECTION: the earlier 2026-07-10 close entry ("SKS leave showed 0 — FIXED") was WRONG. Leave is STILL 0 on SKS. Three fixes shipped this session; NONE resolved it. Do not trust "fixed".**
+**The Leave tab through Core now shows real data — verified live on `core.eq.solutions/sks/field?tab=leave`: PENDING 1 (Tadhg Byrne, A/L), OFF THIS WEEK 10, APPROVED 15, sidebar badge 1. Confirmed end-to-end via an on-screen diagnostic that read `status:200, leaveCanon:true, rows:31`.**
+
+**TRUE ROOT CAUSE (proven, not inferred — the earlier "canon:false / slug wrong" hypothesis was a RED HERRING):** routing was correct all along. An on-screen BOOT_DIAG banner (the only diagnostic channel that survives the embedded iframe's storage + Sentry partitioning — a screenshot captures rendered pixels) proved: `slug=sks`, `window.SB_URL=ehow`, `hasLeaveAdapter=true`, **`canon=TRUE`**. The leave READ simply **never ran**:
+1. `leave.js` is **lazy-loaded** → the boot-time `loadLeaveRequests()` at `initApp()` is skipped (`typeof loadLeaveRequests === 'undefined'` at that point).
+2. `renderLeave()` only rendered from the in-memory list — never triggered a load.
+3. realtime merges CHANGES but does no initial read.
+4. the 30s poll (`refreshData → loadLeaveRequests`) is suppressed while realtime is connected.
+Net: on a deep-linked `?tab=leave` view — exactly how Core embeds Field — `leaveRequests` was NEVER populated. The leave panel's "↺ Refresh" was `onclick=renderLeave()` (a pure re-render), so even a manual refresh never loaded it. The 31 rows were never lost — never fetched.
+
+**THE FIX (v3.5.291, PR #446):** `renderLeave()` now calls `_ensureLeaveLoaded()` — a cached-promise one-shot that fires `loadLeaveRequests()` the first time the Leave tab is shown and re-renders when the data lands. Refresh/realtime keep it fresh afterward.
+
+**Also shipped this session (necessary, not sufficient — keep them):**
+- **v3.5.286 (PR #439)** — canonical-mode gate (leave/roster/timesheets adapters) now keyed on the resolved tenant DB (`window.SB_URL` = ehow) as well as `TENANT.ORG_SLUG`, so a slug-resolution hiccup on the embedded restore path can't route SKS to the service_role-only twin (→401→empty). `window.SB_URL` exposed in app-state.js.
+- **v3.5.287 (PR #440)** — `sbFetch` refreshes `window.SB_URL` from the lexical `SB_URL` every call (closes any exposure-path gap).
+- **v3.5.288–290** — temporary diagnostics (Sentry LEAVE_DIAG, on-screen BOOT_DIAG/LEAVE_DIAG banners, `__eqDiag` trace). **All removed in v3.5.292 (PR #447).**
+
+**Server side re-verified (ehow):** `app_data.leave_requests` = 31 rows (30 approved / 1 pending), correct SKS `tenant_id 7dee117c…`, `authenticated` SELECT + tenant-isolation RLS. Simulated SKS-authenticated read → 31; different-tenant claim → 0. Data never lost or exposed — purely a client read-timing bug.
+
+**Process lesson (for next time):** the winning diagnostic was an **on-screen banner read off a screenshot** — the ONLY channel that pierces a cross-origin + storage-partitioned embedded iframe (console needs the user; localStorage is partitioned; Sentry is silent from the embedded frame). Reach for it early when debugging Shell-embedded Field.
+
+**Minor follow-up (not blocking, spawned):** the home Dashboard leave strip reads `leaveRequests` too and only self-loads via the roster-overlay fallback — consider `_ensureLeaveLoaded()` there, or load leave at boot regardless of lazy-load.
+
+<details><summary>Superseded 2026-07-10 investigation (kept for history — the canon:false / slug hypothesis was WRONG)</summary>
+
+**⚠️ The 2026-07-10 "canon:false / TENANT.ORG_SLUG wrong" diagnosis was a RED HERRING — see the RESOLVED note above. Routing was correct; the read never fired.**
 
 **Confirmed root cause (from a live diagnostic Royce ran in the Field frame on v3.5.282):**
 `{"adapter":true,"canon":false,"refetch":0}` — the leave adapter IS loaded, but `EQ_LEAVE_ADAPTER.isCanonicalLeaveTenant(true)` returns **false**, i.e. `TENANT.ORG_SLUG` is **not** `'sks'` at runtime on the SKS-embedded Field. So the canonical gate fails → leave reads the wrong/empty path → 0 rows (no error). The 31 real records are in `app_data.leave_requests` the whole time (DB re-verified: 30 approved + 1 pending, readable by the authenticated JWT).
@@ -103,6 +127,8 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 > ✅ **RESOLVED 2026-07-10 (later close) — the spinner was NOT SW-cache churn or the handoff.** Root cause found + fixed: `loadFromSupabase()` unconditionally shows the full-page overlay and has TWO callers — `initApp()` (boot) and `refreshData()` (30s + 5min polls, realtime, manual Sync). v3.5.255 moved the HIDE into `initApp()` only but left the SHOW in `loadFromSupabase`, so **every background poll re-stranded the overlay ~30s after any clean boot.** Fixed in two steps: v3.5.284 (PR #435) guarded the boot loaders + finally-hide + early `isLeave` fallback; v3.5.285 (PR #437) moved overlay ownership to the caller so the poll never shows it. Both LIVE on field.eq.solutions, verified serving. **This is a SEPARATE issue from leave-shows-0 above — that remains OPEN (my fixes didn't touch leave-data resolution; the slug-value diagnostic in the DEFINITIVE NEXT STEP is still the move).**
 
 **Process lesson: 4 deploys to LIVE SKS in one session, chasing a bug I kept mis-diagnosing (adapter-load → overlay-model → tenant-slug), each unverifiable on a preview (the bug only fires on the embedded-iframe-restore path). Should have gotten the runtime `TENANT.ORG_SLUG` value BEFORE shipping the first fix. Stop-and-look beats ship-and-hope.** _(added 2026-07-10)_
+
+</details>
 
 ---
 
