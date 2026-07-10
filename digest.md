@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-10 11:24 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-10 11:46 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-10 11:14 UTC → 2026-07-10 11:24 UTC)
+## Since last refresh (2026-07-10 11:24 UTC → 2026-07-10 11:46 UTC)
 
-- Merged: eq-shell [#726](https://github.com/eq-solutions/eq-shell/pull/726) ci(shell): control-plane migration reminder (close the merge
-- Merged: eq-shell [#706](https://github.com/eq-solutions/eq-shell/pull/706) fix(quotes): estimator signature on quote docs + master mark
-- Merged: eq-shell [#703](https://github.com/eq-solutions/eq-shell/pull/703) fix(shell): report native-pipeline query failures instead of
-- Merged: eq-shell [#701](https://github.com/eq-solutions/eq-shell/pull/701) fix(shell): stop iOS auto-zoom on login inputs
-- Merged: eq-shell [#699](https://github.com/eq-solutions/eq-shell/pull/699) fix(ops): stop stray 'n' keystroke wiping in-progress quote
-- Merged: eq-shell [#691](https://github.com/eq-solutions/eq-shell/pull/691) fix(shell): embedded mobile nav — restore MobileTabBar, reti
-- Merged: eq-shell [#690](https://github.com/eq-solutions/eq-shell/pull/690) fix(staff): lock employment_type to canonical vocabulary; st
-- Merged: eq-shell [#688](https://github.com/eq-solutions/eq-shell/pull/688) refactor(shell): retire IconRail, embedded pages use collaps
+- Merged: eq-shell [#704](https://github.com/eq-solutions/eq-shell/pull/704) feat(access): pull in @eq-solutions/roles v2.5.0 (access-mod
+- Merged: eq-shell [#702](https://github.com/eq-solutions/eq-shell/pull/702) feat(ops): branded print-to-PDF export for labour hire weekl
+- Merged: eq-shell [#700](https://github.com/eq-solutions/eq-shell/pull/700) fix(ops): weekly labour-hire costs miss company-wide allowan
+- Merged: eq-shell [#698](https://github.com/eq-solutions/eq-shell/pull/698) fix(shell): match all phone formats when self-joining a tena
+- Merged: eq-shell [#696](https://github.com/eq-solutions/eq-shell/pull/696) fix(shell): embedded rail — un-clip EQ logo, lift icon contr
+- Merged: eq-shell [#693](https://github.com/eq-solutions/eq-shell/pull/693) Grant microphone to the Field iframe (voice-to-text on safet
+- Merged: eq-shell [#692](https://github.com/eq-solutions/eq-shell/pull/692) feat(staff): manage supervisor status from Shell's staff edi
+- Merged: eq-shell [#687](https://github.com/eq-solutions/eq-shell/pull/687) fix(staff): unify employment_type vocabulary with eq-field
 
 ## ⚠ Needs you (2)
 
@@ -30,9 +30,9 @@ _2026-07-10 11:24 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 6 | 6d |
+| eq-shell | ? unknown | ? | 7 | 6d |
 | eq-solves-service | ✓ success | 0d ago | 5 | 4d |
-| eq-field | ✓ success | 0d ago | 0 | — |
+| eq-field | ✓ success | -1d ago | 1 | 0d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ? unknown | ? | 0 | — |
 
@@ -73,6 +73,8 @@ _Showing 15 of 107 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **DEFINITIVE NEXT STEP: get `TENANT.ORG_SLUG` (and `APP_VERSION`, `canon`, `SB_URL`) from the SKS Field frame.** Never obtained directly. One-liner to paste in the `eq-field.netlify.app` frame: `JSON.stringify({v:APP_VERSION,slug:(window.TENANT||{}).ORG_SLUG,sb:SB_URL,canon:EQ_LEAVE_ADAPTER.isCanonicalLeaveTenant(true),allow:[...EQ_LEAVE_ADAPTER._LEAVE_CANONICAL_TENANTS]})`. If `slug==='sks'` now → gate is fixed, bug is DOWNSTREAM in the read (chase there). If `slug!=='sks'` → v3.5.283 didn't fix resolution; the slug is landing wrong for a deeper reason. If `v!=='3.5.283'` → SW never updated, no fix loaded. _(added 2026-07-10)_
+- **`refetch:0` (200 empty, NOT 401) is unexplained** — with canon:false the read should hit the service_role-only `field_leave_requests` twin and 401, not return empty. So either the twin grant changed, or the read hits an empty in-place/public path. Resolve alongside the slug value. _(added 2026-07-10)_
 - **Storage concentration risk (design):** every worker's licence image for every tenant lives in one private bucket in jvkn — jvkn's service-role key / RLS is the platform's crown-jewels blast radius. Inherent to the worker-owned model. Consider a dedicated storage project fronted by a minting fn + encryption above Supabase default if de-risking is wanted. _(added 2026-07-10)_
 - **`WORKERS_WEBHOOK_SECRET` (verify_jwt off):** if leaked, arbitrary worker records could be POSTed into ehow `app_data.staff`. Rotate on any suspicion; keep out of logs. _(added 2026-07-10)_
 - **Generalise `workers-canonical-sync` beyond SKS/ehow** (still hardcodes `SKS_TENANT_ID` + ehow) before a second tenant onboards — the reconcile is likewise SKS-scoped. _(added 2026-07-10)_
@@ -81,9 +83,7 @@ _Showing 15 of 107 · full record in [sessions/](sessions/)_
 - **`leave_approval_logs` empty (0 rows) on SKS** — approve/reject decisions aren't being written to the audit-log table. Confirm if an approval audit trail is wanted. _(added 2026-07-10)_
 - **All 31 imported SKS leave rows have `approver_id = NULL`** — approver names won't render. Fine if pre-approved historical; backfill if attribution matters. _(added 2026-07-10)_
 - **Timesheets don't yet share the leave overlay** — only roster + dashboard read leave_requests live. If timesheets should reflect approved leave, extend the overlay. _(added 2026-07-10)_
-- **Three dead RLS-bypassing twins** (`app_data.field_prestarts`/`field_site_diaries`/`field_toolbox_talks`, `security_invoker` NOT SET, service_role-only, unused — safety reads go to `public.*`) — inert today but a latent cross-tenant leak if ever granted to `authenticated`. Cleanup candidates (drop them). _(added 2026-07-10)_
-- **Retire the leave/roster/timesheets `field_*` twins?** They're bypassed by the adapters and (for leave/schedule/timesheets) are `security_invoker` but service_role-only. The silent fallback to them is what made the "showed 0" bug possible; #432 makes it loud, but dropping the dead twins would remove the failure class entirely. _(added 2026-07-10)_
-_…and 287 more · [eq/pending.md](eq/pending.md)_
+_…and 289 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -103,11 +103,11 @@ _…and 30 more · [sks/pending.md](sks/pending.md)_
 
 | Date | Session |
 |------|---------|
-| 2026-07-10 | [SKS leave "showed 0" fixed; leave_requests made single source of truth (roster overlays it live)](sessions/2026-07-10.md) |
 | 2026-07-08 | [eq-shell: Brett Kilpatrick duplicate profile merged live + Cards-onboarding dedup root-caused and fixed](sessions/2026-07-08.md) |
 | 2026-07-07 | [eq-cards: onboarding shipped live, approval-flow audit, offline ID card + install nudge](sessions/2026-07-07.md) |
 | 2026-07-06 | [eq-shell: command palette + skeleton loading + optimistic archive shipped, live; unrelated drift fixed same session](sessions/2026-07-06.md) |
 | 2026-07-05 | [eq-shell Sentry triage: tenant PostgREST exposure gap root-caused + fixed live](sessions/2026-07-05.md) |
+| 2026-07-05 | [Session — Role Step-Up Charters + generator](sessions/2026-07-05-role-step-up-charters.md) |
 _[sessions/](sessions/) · 5 shown_
 
 ## Substrate honesty
@@ -115,4 +115,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-10 11:24 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-10 11:46 UTC._
