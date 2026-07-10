@@ -14,6 +14,17 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-10 (eq-field) — instrumented the dashboard Birthdays & Anniversaries widget (no usage signal since v3.4.16), shipped live v3.5.275
+
+*Royce noted start dates matter for celebrating career anniversaries and asked where Field already handled this — turned out the dashboard already had a "Birthdays & Anniversaries" widget (shipped v3.4.16) reading `start_date`/DOB off the people record, but it had zero usage tracking and no link to the Recognitions feature. Steelman discussion concluded the feature is plausible (real retention economics, cheap to build) but unvalidated (no one asked for it, no analytics, not surfaced to the worker themselves) — so before building anything further on top (e.g. auto-suggested acknowledgments on a work anniversary), instrumented it to find out if any supervisor actually uses it. Added two PostHog events and made each row clickable through to the person's profile (where a Recognition can be given). PR #426 merged as v3.5.275 (renumbered twice mid-session as two other PRs — #424, #425 — landed on main first); production confirmed serving v3.5.275.*
+
+- [x] `dashboard_anniversaries_viewed` + `dashboard_anniversary_person_clicked` PostHog events added; rows click through to `openPersonProfile()` _(2026-07-10)_
+- [x] Deploy preview smoke-tested (widget renders, click-through opens profile, no console errors) before merge _(2026-07-10)_
+- [ ] **Check PostHog in a few days for real supervisor usage** of the anniversaries widget — zero events fired as of merge time (too soon; only fires once a supervisor visits Contacts then Dashboard on the `eq`/`sks` tenant, not `demo`). This is the actual point of the instrumentation — don't skip checking it. _(added 2026-07-10)_
+- [ ] If usage shows up: consider auto-suggesting a Recognition acknowledgment on someone's work anniversary. If it doesn't: leave as-is, don't invest further. _(added 2026-07-10)_
+
+---
+
 ## ⏩ Session close — 2026-07-10 (eq-field) — paginated every unbounded full-table read (1000-row cap fix), shipped live v3.5.274
 
 *Closes the deferred bulk-export item from the same-day roster session (`task_69a6ff0f`) and extends it: audited the whole repo for unbounded `select=*` reads, not just the export path. Added `sbFetchAll(path, orderBy, pageSize)` to `scripts/supabase.js` (pattern ported from sks-nsw-labour v3.10.89) — pages through with an explicit order so a "full" fetch is actually full, instead of PostgREST silently truncating at its 1000-row default cap and dropping the newest (highest-id) rows. Every target table's order-by column verified against the live DB before wiring (schedule/timesheets/team_members via ehow `app_data.field_*` twins; project_targets/timesheet_locks/nominations by `id`; tender_enrichment by `tender_id` — no `id` PK). PR #425 merged, production confirmed serving v3.5.274.*

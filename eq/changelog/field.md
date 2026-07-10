@@ -9,6 +9,11 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-10] v3.5.275 — instrument dashboard anniversaries widget (SHIPPED, PR #426, live)
+- Added `dashboard_anniversaries_viewed` (fires once per distinct set of upcoming events, deduped against re-renders) and `dashboard_anniversary_person_clicked` PostHog events to the dashboard "Birthdays & Anniversaries" widget, which had zero usage instrumentation since it shipped in v3.4.16.
+- Rows are now clickable through to the person's profile modal (`openPersonProfile()`, same as the roster eye icon), landing on the Acknowledgments section.
+- Goal: get a real usage signal before investing further (e.g. auto-suggesting a Recognition on a work anniversary).
+
 ## [2026-07-10] v3.5.274 — paginate unbounded full-table fetches (1000-row cap fix) (SHIPPED, PR #425, live)
 - Added `sbFetchAll(path, orderBy, pageSize)` to `scripts/supabase.js` (pattern ported from sks-nsw-labour v3.10.89) — pages through with an explicit `order` so a full-table read is actually full, instead of PostgREST silently truncating at its 1000-row default cap and dropping the newest (highest-id) rows.
 - Swapped the 6 confirmed-unbounded `select=*` reads to it: `_loadFullDataForExport()` (schedule + timesheets) + `team_members` (index.html); `project_targets` (supabase.js); `timesheet_locks` (timesheets.js); `tender_enrichment` (order `tender_id`, no `id` PK) + `nominations` (tender-pipeline.js). `nomination_clashes` left as-is (view, no id-equivalent, absent live). No behaviour change below 1000 rows — pure headroom.
