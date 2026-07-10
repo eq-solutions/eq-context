@@ -69,7 +69,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #731 feat(comms): Move 1.5 — filters + list simplification
-- #730 docs(control-plane): tombstone 3 misfiled cross-plane migrations + ledger update
 - #715 feat(access): gate enforcement on can()/useCan() not role names (access-model Phase 1)
 - #681 fix(staff): eq_update_staff silently cleared email/phone/trade/level/employment_type
 - #658 fix(dashboard): surface pending staff connections on home sidebar
