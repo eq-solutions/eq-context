@@ -9,6 +9,14 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-10] v3.5.277 — paginate the remaining capped reads that should be complete (SHIPPED, PR #428, live)
+- Completes the pagination sweep (after v3.5.274's no-limit reads and v3.5.276/#427's pipeline tables). Split the `limit=N` reads by intent: paginate the completeness-critical ones, leave the deliberate recency caps.
+- Paginated via `sbFetchAll()`: `audit_log` (audit.js — full trail; order switched to `id.desc`, a monotonic bigint, so identical newest-first but stable across page boundaries; old limit=500 hid older history), safety dashboard `prestarts`+`toolbox_talks` (aggregate counts), import-reconciliation `tenders` (sks-pipeline-import.js), and pipeline board/resource `tenders`+`people` (sks-pipeline.js, sks-pipeline-resource.js). Non-unique orders got an `,id` tiebreaker for stable offset paging.
+- Left as-is (deliberate caps): tender_import_runs (latest/recent-10), tender_review_decisions (only slice(0,8) shown), scoped single/multi-week schedule reads, recent-history list screens (prestarts/toolbox/diary 200, site_audits 50). No behaviour change below the old caps.
+
+## [2026-07-10] v3.5.276 — SKS pipeline: paginate stopgap-capped table reads (SHIPPED, PR #427, live)
+- Swapped `tender_enrichment`/`nominations`/`pending_schedule`/`tender_phases` reads in sks-pipeline.js + sks-pipeline-resource.js from `limit=N` stopgaps to `sbFetchAll()` (`tender_enrichment` ordered by `tender_id` — no id column). Left `tenders`/`people` (bounded by a real filter). (Concurrent session; v3.5.277/#428 later extended this to tenders/people + audit_log + safety dashboard.)
+
 ## [2026-07-10] v3.5.275 — instrument dashboard anniversaries widget (SHIPPED, PR #426, live)
 - Added `dashboard_anniversaries_viewed` (fires once per distinct set of upcoming events, deduped against re-renders) and `dashboard_anniversary_person_clicked` PostHog events to the dashboard "Birthdays & Anniversaries" widget, which had zero usage instrumentation since it shipped in v3.4.16.
 - Rows are now clickable through to the person's profile modal (`openPersonProfile()`, same as the roster eye icon), landing on the Acknowledgments section.

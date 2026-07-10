@@ -22,6 +22,19 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-10 (eq-field) — finished the 1000-row pagination sweep across the capped reads, shipped live v3.5.277
+
+*Follow-up to the same-day v3.5.274 pass (which fixed the reads with NO limit). Royce asked why leave the already-capped reads flagged when the helper's built and we're in the files — fair, so audited every `limit=N` read and SPLIT them: paginate the ones where a truncated result silently corrupts a computed view, leave the deliberate "recent N" / "latest" caps alone. A concurrent session shipped an overlapping subset first (v3.5.276, #427 — paginated the SKS pipeline tables tender_enrichment/nominations/pending_schedule/tender_phases), so this PR (#428, v3.5.277) rebuilt additive on top of it. Production confirmed serving v3.5.277.*
+
+- [x] audit_log paginated (audit.js) — full trail; switched order to id.desc (monotonic bigint = same newest-first, stable paging). Old limit=500 hid older history at scale _(2026-07-10, #428)_
+- [x] Safety dashboard prestarts + toolbox_talks paginated (safety-dashboard.js) — aggregate counts, all-time range needs every row _(2026-07-10, #428)_
+- [x] Import reconciliation tenders paginated (sks-pipeline-import.js) — below_threshold filter only, genuinely unbounded _(2026-07-10, #428)_
+- [x] Pipeline board/resource tenders + people paginated (sks-pipeline.js, sks-pipeline-resource.js) — EXTENDS #427, which deliberately left these as "bounded by a filter"; paginated too since a filter bounds the what not the count (single page at SKS scale = zero behaviour change) _(2026-07-10, #428)_
+- [x] SKS pipeline tables (tender_enrichment/nominations/pending_schedule/tender_phases) paginated via concurrent PR #427 (v3.5.276) _(2026-07-10)_
+- [ ] Deliberate caps left UNPAGINATED by design (not a TODO, a decision record): tender_import_runs (latest/recent-10), tender_review_decisions (only slice(0,8) rendered), scoped single/multi-week schedule reads (also carry the canonical roster-adapter caveat), recent-history list screens (prestarts/toolbox/diary limit 200, site_audits 50 — those want server-side search, not a 5000-row DOM list) _(added 2026-07-10)_
+
+---
+
 ## ⏩ Session close — 2026-07-10 (eq-field) — instrumented the dashboard Birthdays & Anniversaries widget (no usage signal since v3.4.16), shipped live v3.5.275
 
 *Royce noted start dates matter for celebrating career anniversaries and asked where Field already handled this — turned out the dashboard already had a "Birthdays & Anniversaries" widget (shipped v3.4.16) reading `start_date`/DOB off the people record, but it had zero usage tracking and no link to the Recognitions feature. Steelman discussion concluded the feature is plausible (real retention economics, cheap to build) but unvalidated (no one asked for it, no analytics, not surfaced to the worker themselves) — so before building anything further on top (e.g. auto-suggested acknowledgments on a work anniversary), instrumented it to find out if any supervisor actually uses it. Added two PostHog events and made each row clickable through to the person's profile (where a Recognition can be given). PR #426 merged as v3.5.275 (renumbered twice mid-session as two other PRs — #424, #425 — landed on main first); production confirmed serving v3.5.275.*
