@@ -41,7 +41,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 **Open / needs Royce:**
 - [ ] **Eyeball v3.5.278 on a live SKS session** — confirm the 704 cells actually paint their codes (roster w/c 2026-07-06, `core.eq.solutions/sks/field`). Not verifiable in-session (no SKS creds); everything short of the actual render is verified. _(added 2026-07-10)_
 - [ ] **Full read+write canonical roster model** — the resolver is read-only sugar (write path still text; a first edit converts a site_id cell to a text cell, code preserved). The "proper" end-state is the roster reading AND writing `site_id` natively. Bigger piece, **post-cutover**. _(added 2026-07-10)_
-- [ ] **EQ Service sidebar-header logo clipped** (`task_14031bea`) — still genuinely open; handed to the ShellSessionRecovery session but unconfirmed. _(carried from 2026-07-08)_
+- [x] ~~**EQ Service sidebar-header logo clipped** (`task_14031bea`)~~ — **DROPPED as irrelevant (Royce, 2026-07-10).** No longer worth tracking; chip can be dismissed. _(closed 2026-07-10)_
 
 ---
 
