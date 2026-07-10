@@ -65,7 +65,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-field:**
 - #432 v3.5.280 — fix SKS leave showing 0 (precache canonical adapters)
-- #431 v3.5.280 — Shell handoff self-heals on iframe restore (kills the false 'didn't load' card)
 
 **eq-service:**
 - #487 fix(canonical): move ::uuid inside coalesce in service.tg_*_iud tenant resolver (42804)
