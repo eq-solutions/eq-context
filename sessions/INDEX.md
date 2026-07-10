@@ -3,7 +3,7 @@ _55 logs · reverse-chronological · auto-generated_
 
 | Date | Session |
 |------|---------|
-| 2026-07-10 | [Customer creation flow added to Shell Records (Customer → Sites → Contacts)](sessions/2026-07-10.md) |
+| 2026-07-10 | [SKS leave "showed 0" fixed; leave_requests made single source of truth (roster overlays it live)](sessions/2026-07-10.md) |
 | 2026-07-08 | [eq-shell: Brett Kilpatrick duplicate profile merged live + Cards-onboarding dedup root-caused and fixed](sessions/2026-07-08.md) |
 | 2026-07-07 | [eq-cards: onboarding shipped live, approval-flow audit, offline ID card + install nudge](sessions/2026-07-07.md) |
 | 2026-07-06 | [eq-shell: command palette + skeleton loading + optimistic archive shipped, live; unrelated drift fixed same session](sessions/2026-07-06.md) |
