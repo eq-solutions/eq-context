@@ -35,7 +35,7 @@ _If this file is >48h old, the cron is broken._
 
 | Entity | Count | Schema |
 |--------|-------|--------|
-| Sites | 242 | app_data.sites |
+| Sites | 243 | app_data.sites |
 | Customers | 42 | app_data.customers |
 | Assets | 361 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
@@ -64,7 +64,6 @@ _If this file is >48h old, the cron is broken._
 - #134 fix(onboarding): scope onboarding flags to the account, not just the device; be honest when OCR found nothing
 
 **eq-service:**
-- #486 fix(customers): service.customers site-driven — unbreak the empty SKS Customers list
 - #459 chore(deps-dev): bump @vitejs/plugin-react from 6.0.1 to 6.0.3
 - #458 chore(deps): bump tailwind-merge from 3.5.0 to 3.6.0
 - #457 chore(deps): bump resend from 6.12.4 to 6.17.1
@@ -96,7 +95,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 181 (latest: 0177) applied
+**Migrations:** eq-service has 182 (latest: 0178) applied
 
 ---
 
