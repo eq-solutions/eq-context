@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-10 09:11 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-10 09:21 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-10 09:10 UTC → 2026-07-10 09:11 UTC)
+## Since last refresh (2026-07-10 09:11 UTC → 2026-07-10 09:21 UTC)
 
-- Merged: eq-shell [#719](https://github.com/eq-solutions/eq-shell/pull/719) fix(staff): normalize phone before dedup match on Cards appr
-- Merged: eq-shell [#703](https://github.com/eq-solutions/eq-shell/pull/703) fix(shell): report native-pipeline query failures instead of
-- Merged: eq-shell [#701](https://github.com/eq-solutions/eq-shell/pull/701) fix(shell): stop iOS auto-zoom on login inputs
-- Merged: eq-shell [#699](https://github.com/eq-solutions/eq-shell/pull/699) fix(ops): stop stray 'n' keystroke wiping in-progress quote
-- Merged: eq-shell [#691](https://github.com/eq-solutions/eq-shell/pull/691) fix(shell): embedded mobile nav — restore MobileTabBar, reti
-- Merged: eq-shell [#690](https://github.com/eq-solutions/eq-shell/pull/690) fix(staff): lock employment_type to canonical vocabulary; st
-- Merged: eq-shell [#688](https://github.com/eq-solutions/eq-shell/pull/688) refactor(shell): retire IconRail, embedded pages use collaps
-- Merged: eq-shell [#687](https://github.com/eq-solutions/eq-shell/pull/687) fix(staff): unify employment_type vocabulary with eq-field
+- Merged: eq-shell [#720](https://github.com/eq-solutions/eq-shell/pull/720) fix(briefing): swallow PGRST205 for dropped app_data.tenders
+- Merged: eq-shell [#704](https://github.com/eq-solutions/eq-shell/pull/704) feat(access): pull in @eq-solutions/roles v2.5.0 (access-mod
+- Merged: eq-shell [#702](https://github.com/eq-solutions/eq-shell/pull/702) feat(ops): branded print-to-PDF export for labour hire weekl
+- Merged: eq-shell [#700](https://github.com/eq-solutions/eq-shell/pull/700) fix(ops): weekly labour-hire costs miss company-wide allowan
+- Merged: eq-shell [#698](https://github.com/eq-solutions/eq-shell/pull/698) fix(shell): match all phone formats when self-joining a tena
+- Merged: eq-shell [#696](https://github.com/eq-solutions/eq-shell/pull/696) fix(shell): embedded rail — un-clip EQ logo, lift icon contr
+- Merged: eq-shell [#693](https://github.com/eq-solutions/eq-shell/pull/693) Grant microphone to the Field iframe (voice-to-text on safet
+- Merged: eq-shell [#692](https://github.com/eq-solutions/eq-shell/pull/692) feat(staff): manage supervisor status from Shell's staff edi
 
 ## ⚠ Needs you (2)
 
@@ -30,8 +30,8 @@ _2026-07-10 09:11 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 7 | 6d |
-| eq-solves-service | ✓ success | 0d ago | 5 | 4d |
+| eq-shell | ? unknown | ? | 8 | 6d |
+| eq-solves-service | ✓ success | 0d ago | 6 | 4d |
 | eq-field | ? unknown | ? | 2 | 0d |
 | eq-cards | ✓ success | 1d ago | 1 | 1d |
 | eq-solves-intake | ? unknown | ? | 0 | — |
@@ -54,6 +54,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-10 | eq-shell | [#720](https://github.com/eq-solutions/eq-shell/pull/720) fix(briefing): swallow PGRST205 for dropped app_data.tenders |
 | 2026-07-10 | eq-shell | [#719](https://github.com/eq-solutions/eq-shell/pull/719) fix(staff): normalize phone before dedup match on Cards approval |
 | 2026-07-10 | eq-shell | [#717](https://github.com/eq-solutions/eq-shell/pull/717) fix(customers): don't lose a typed site/contact on Continue/Finis |
 | 2026-07-10 | eq-shell | [#716](https://github.com/eq-solutions/eq-shell/pull/716) feat(customers): add customer creation flow (Customer → Sites → C |
@@ -68,7 +69,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-10 | eq-field | [#427](https://github.com/eq-solutions/eq-field/pull/427) fix: SKS pipeline — paginate tender_enrichment/nominations/pendin |
 | 2026-07-10 | eq-field | [#426](https://github.com/eq-solutions/eq-field/pull/426) v3.5.274 — instrument dashboard anniversaries widget |
 | 2026-07-10 | eq-field | [#425](https://github.com/eq-solutions/eq-field/pull/425) v3.5.274 — paginate unbounded full-table fetches (1000-row cap fi |
-| 2026-07-09 | eq-shell | [#706](https://github.com/eq-solutions/eq-shell/pull/706) fix(quotes): estimator signature on quote docs + master markup dr |
 _Showing 15 of 104 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -103,7 +103,7 @@ _…and 30 more · [sks/pending.md](sks/pending.md)_
 
 | Date | Session |
 |------|---------|
-| 2026-07-10 | [Quote doc signature bug fixed (now signs as whoever's logged in), quote markup drift fixed](sessions/2026-07-10.md) |
+| 2026-07-10 | [Customer creation flow added to Shell Records (Customer → Sites → Contacts)](sessions/2026-07-10.md) |
 | 2026-07-08 | [eq-shell: Brett Kilpatrick duplicate profile merged live + Cards-onboarding dedup root-caused and fixed](sessions/2026-07-08.md) |
 | 2026-07-07 | [eq-cards: onboarding shipped live, approval-flow audit, offline ID card + install nudge](sessions/2026-07-07.md) |
 | 2026-07-06 | [eq-shell: command palette + skeleton loading + optimistic archive shipped, live; unrelated drift fixed same session](sessions/2026-07-06.md) |
@@ -115,4 +115,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-10 09:11 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-10 09:21 UTC._
