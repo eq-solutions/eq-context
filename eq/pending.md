@@ -14,6 +14,24 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-10 (eq-service) — dashboard + Customers page now respect the App Activation "Service" toggle (3 migrations, all live)
+
+*Continuation of the earlier same-day Shell-embed session. Royce, viewing the live SKS dashboard, asked why a switched-off customer (Jemena) still showed. Traced it to the dashboard's summary reads bypassing the `service_enabled` filter the rest of the app uses; fixed sites, then customers+assets, then discovered+fixed a hidden empty-Customers-page bug. Also confirmed the earlier eq-shell chrome fix is live and answered two architecture questions.*
+
+- [x] **PR #484 (migration 0176, live) — dashboard Sites tile + map respect `service_enabled`.** `get_dashboard_counts` + `get_sites_for_map` read `app_data.sites` with only `active=true`, bypassing the `service.sites` view (filters `service_enabled` since 0163). SKS tile 242→7, map 27→6 pins; Jemena's off-service sites gone.
+- [x] **PR #485 (migration 0177, live) — Customers + Assets tiles scoped too.** Site-driven: assets on service-enabled sites (mirrors `service.assets`); customers = distinct owners of service-enabled sites (the customer-level `service_enabled` flag is unused — 0 across all tenants). SKS customers 41→3, assets 345→345.
+- [x] **PR #486 (migration 0178, live) — `service.customers` made site-driven; unbroke the empty SKS Customers page.** The view filtered that unused customer flag, so the Customers list page + every picker/report showed **0** for SKS (only tenant with customers). Now 3 (Equinix Australia National/Pty Ltd, Metronode NSW), matching the dashboard. Column list/order/aliases + `security_invoker` + all 3 INSTEAD OF triggers reproduced exactly; advisors 0 ERROR. All 3 migrations applied live to ehow via MCP + committed via PR.
+- [x] **Confirmed eq-shell PR #696 merged + live** (embedded rail: un-clip EQ logo `44→32px`, lift icon opacity `0.5→0.82`; `f7080314`, in the live `7c05e6f7` prod deploy). 2 of 3 original chrome complaints fixed.
+- [x] **Answered (no work needed): the App Activation admin page is already fully canonical** — its Field/Service toggles write straight to `app_data.sites.field_enabled`/`service_enabled` (7 service-on, 40 field-on live); both apps read those columns.
+
+**Deferred / open:**
+- [ ] **Top-bar "SKS Technologies" logo alignment** (Shell chrome) — Royce's original complaint #2 from 2026-07-07, NOT covered by eq-shell #696 (which only touched the collapsed rail), never pixel-audited. Needs a fresh screenshot to trace. _(added 2026-07-10)_
+- [ ] **Canonical answer to record: "in-Service" is SITE-driven.** The `service_enabled` switch lives on `app_data.sites`. A customer/asset is in-Service iff it owns / sits on a service-enabled site. The customer-level `app_data.customers.service_enabled` flag is **dead** (0 rows, every tenant) — someday populate it or drop it, but nothing reads it meaningfully now. _(added 2026-07-10)_
+- [ ] **`service.assets` vs dashboard off-by-one on `active`:** the assets view has no `active` filter (would show 346 incl. 1 archived asset) while the dashboard tile keeps `active` (345). Cosmetic; noted in case a future "why 345 vs 346" question arises. _(added 2026-07-10)_
+- Dashboard slow-load duration canary (from the earlier close) is live — still awaiting its first real event before any optimisation.
+
+---
+
 ## ⚠ CORRECTION — the 2026-07-08 "Brett Kilpatrick duplicate merged live" entry was WRONG
 
 *That session's own summary claimed it "moved user_id + cards_worker_id onto the original record on ehow; deactivated + unlinked the duplicate." Live data on 2026-07-09/10 showed this never actually happened — instead a THIRD, brand-new empty `app_data.staff` row got the real Cards login attached to it, while the ORIGINAL record (15 schedule entries, 1 team membership, 1 leave request, created 2026-06-12) stayed active with `user_id = NULL`. Net effect: two active "Brett Kilpatrick" rows kept showing in Shell's Staff list, identical contact info, exactly the duplicate the July 8 session claimed to have fixed. Root-caused and actually fixed 2026-07-09: real login + correct `cards_worker_id` moved onto the original (history-bearing) record; the empty duplicate deactivated (`cards_worker_id` freed, `active = false`) — no hard deletes.**
