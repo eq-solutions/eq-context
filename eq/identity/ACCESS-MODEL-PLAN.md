@@ -1,7 +1,7 @@
 # Access-Model Foundation Plan — decided 2026-07-08
 
 Companion to `IDENTITY-MODEL.md`. Decisions made by Royce on Fable-tier design review.
-Status: **Phase 0 complete.** eq-shell PR #704 merged `82c97cb` 2026-07-10. Phase 1 unblocked. Build sessions: read this, don't re-derive.
+Status: **Phase 0 complete** (eq-shell PR #704 merged `82c97cb`). **Phase 1 BUILT** (eq-roles v2.5.1 merged+tagged; eq-shell PR #715 open, all CI green, awaiting Royce's merge — auto-deploys). Phase 2 still fenced to post-cutover. Build sessions: read this, don't re-derive.
 
 ## Why (one paragraph)
 The 5-role model is consistent across all apps (audited 2026-07-07/08: Shell, Field, Service, Cards, DB/JWT/RLS all canonical). The scale trap is what's layered on top: **five grant paths** (base matrix, tenant_role_overrides, free-form security groups, is_platform_admin, `org_memberships.role='admin'`) and **Cards represented four ways**. Fix now, in infancy, while migration is trivial (1 tenant, ~30 users).
@@ -43,10 +43,11 @@ The 5-role model is consistent across all apps (audited 2026-07-07/08: Shell, Fi
 - eq-shell: dependency bumped to `v2.5.0`; `EQUIPMENT_MATRIX` + `default-groups.ts` mirrors updated; `AccessControlPage.tsx` `ROLE_DEFAULTS` now **derives** from the package's `MATRIX` instead of a hand-copied literal. **eq-shell PR #704 merged `82c97cb` 2026-07-10**, `check-perm-sync.mjs` green, tsc/build/116 tests clean.
 - **New finding, tracked for Phase 3**: `check-perm-sync.mjs` merges the full package matrix into `clientGrants` before diffing, which makes it structurally blind to a local module file *under*-granting versus canonical (it only catches local *over*-grants, never omissions). This is why the guard didn't flag `EQUIPMENT_MATRIX.apprentice` being stale even though it clearly was — worth tightening the checker itself, not in scope for this phase.
 
-**Phase 1 — Gate on permissions (pre-cutover, Shell only, parity-gated)**
-- Convert ~10 Shell `role === '…'` enforcement checks → `can()` (labour-hire fns, data-activation, create-worker-invite, MobileTabBar, CustomersPage). `ops.*` perms: add to package or document exemption (currently Shell-only, no canonical home — decide in this phase).
-- Lint ratchet banning new role-name enforcement + allowlist for display reads.
-- **Zero Field changes. Zero Cards changes.**
+**Phase 1 — Gate on permissions (pre-cutover, parity-gated) — ✅ BUILT 2026-07-10 (eq-shell PR #715 open, all CI green, awaiting Royce's merge)**
+- **Correction to this plan's own scope**: the "~10 checks, Shell-only" estimate was wrong on both counts once verified against live code. Real count = **5 server enforcement sites** (`update-data-activation`, `get-data-activation-status`, `labour-hire-commit`/`-mutate`/`-parse`) + 1 client display mirror (`CustomersPage`). And it was **not Shell-only**: none of the 5 had a matching canonical PermKey, so **eq-roles v2.5.1** was a hard prerequisite (new `ops.view_rates`+`ops.manage_rates` — the `ops.*` "add to package" decision, resolved as ADD — and `entity.manage_activation`; all additive, each matching its hand-rolled check's grant set 1:1). `create-worker-invite`'s role check turned out to be invitee-entitlement defaulting (no `can()` equivalent), and `MobileTabBar`'s are display-only — both correctly suppressed, not converted.
+- **Ratchet built**: `scripts/check-role-literals.mjs` — bans new role-name enforcement comparisons (the 6 EqRole literals only, so non-role `role` uses don't false-positive). Empirical run found 8 pre-existing legit uses (3 display, 3 `'subcontractor'`-is-a-category collisions, 1 entitlement-default, 1 employment_type→role map) — all carry a documented `eq-role-literal-ok` suppression; **zero hidden enforcement anti-patterns**, confirming the 5 were the only real server gates. Both the ratchet AND `check:perms` (previously never run in CI) are now **blocking CI steps** in `ci.yml`.
+- **Parity: behaviour-preserving, verified two ways** (`parity-harness/phase1-parity-note-2026-07-10.md`): deterministic diff = exact per-role delta (managers +3 keys, supervisors +2, employees +0, nobody loses anything, every row matches expected); live check = no override/group references the new keys (base matrix is the only grant path). Hash changed (expected — live managers/supervisors exist) but no human's actual capability changed.
+- **Zero Field changes. Zero Cards changes.** Confirmed.
 
 **Phase 2 — One admin (POST-cutover, auth-touching, fenced)**
 - Migrate the 3 known readers of `org_memberships.role='admin'` → canonical manager/`can()` gates (Cards `org_admin_provider`, jvkn licence-photos RLS, connection-request edge fn). Re-grep for unknowns first.
