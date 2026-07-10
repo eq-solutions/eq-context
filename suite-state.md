@@ -63,6 +63,10 @@ _If this file is >48h old, the cron is broken._
 **eq-cards:**
 - #134 fix(onboarding): scope onboarding flags to the account, not just the device; be honest when OCR found nothing
 
+**eq-field:**
+- #432 v3.5.280 — fix SKS leave showing 0 (precache canonical adapters)
+- #431 v3.5.280 — Shell handoff self-heals on iframe restore (kills the false 'didn't load' card)
+
 **eq-service:**
 - #459 chore(deps-dev): bump @vitejs/plugin-react from 6.0.1 to 6.0.3
 - #458 chore(deps): bump tailwind-merge from 3.5.0 to 3.6.0
@@ -71,6 +75,7 @@ _If this file is >48h old, the cron is broken._
 - #455 chore(deps): bump @eq-solutions/ui from v1.9.0 to v1.10.0 in the eq-design-system group
 
 **eq-shell:**
+- #718 fix(field-iframe): self-healing handoff — grace window + one-shot auto-remint
 - #715 feat(access): gate enforcement on can()/useCan() not role names (access-model Phase 1)
 - #681 fix(staff): eq_update_staff silently cleared email/phone/trade/level/employment_type
 - #658 fix(dashboard): surface pending staff connections on home sidebar
