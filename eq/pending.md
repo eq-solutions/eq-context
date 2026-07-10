@@ -14,6 +14,15 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-10 (eq-shell) — customer creation flow added to Records (Customer → Sites → Contacts), both PRs merged + live
+
+*Royce couldn't find a way to add a customer from Shell's Records → Customers page — creation only existed inside EQ Ops (a downstream quoting tool), which is backwards since Shell owns the canonical customer/site/contact records. Built the front door, shipped it live, then fixed a UX trap he hit on the very first real use.*
+
+- [x] **PR #716 (MERGED `e1663bd`, live) — "New customer" button + Customer → Sites → Contacts wizard on Records → Customers.** Gated on `useCan('entity.create')`. Customer persisted at step 1 so sites/contacts have a parent; steps 2–3 skippable + repeatable. Every write reuses the existing `crm-write` actions (`add_customer`/`add_site`/`add_contact`, all `entity.create`-gated server-side) the per-record editors already call — no new endpoint, no schema change, so Records and Ops can't drift. Verified live end-to-end (created Sportsbet + Sydney site with address autocomplete).
+- [x] **PR #717 (MERGED `f98c6a8`, live) — fix: don't lose a typed site/contact on Continue/Finish.** The wizard only persisted a sub-form on the explicit "Add site"/"Add contact" click; filling the fields and hitting Continue/Finish silently discarded it. Caught live: Sportsbet was created with its site but 0 contacts (the contact was typed on the last step and lost on Finish — confirmed `contact_count=0` on ehow, so it was never written, not an Ops read bug). Continue/Finish now auto-commit a filled-but-unsaved sub-form before advancing. Re-verified live: Michael Rowlands contact now shows on Sportsbet.
+
+---
+
 ## ⏩ Session close — 2026-07-10 (eq-service) — dashboard + Customers page now respect the App Activation "Service" toggle (3 migrations, all live)
 
 *Continuation of the earlier same-day Shell-embed session. Royce, viewing the live SKS dashboard, asked why a switched-off customer (Jemena) still showed. Traced it to the dashboard's summary reads bypassing the `service_enabled` filter the rest of the app uses; fixed sites, then customers+assets, then discovered+fixed a hidden empty-Customers-page bug. Also confirmed the earlier eq-shell chrome fix is live and answered two architecture questions.*
