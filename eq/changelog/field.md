@@ -9,6 +9,11 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-11] v3.5.293 — Dashboard leave strip loads authoritative leave data (SHIPPED, PR #448, live & VERIFIED)
+- Follow-up to v3.5.291. The home Dashboard "Leave & Absences This Week" strip read the global `leaveRequests`, but that array was only populated by the Leave tab's `_ensureLeaveLoaded()` (leave.js is lazy → boot-time `loadLeaveRequests()` skipped). On a deep-linked `?tab=dashboard` (how Core lands users) the strip showed only the roster A/L overlay fallback, never the real `leave_requests`.
+- Fix: `renderDashboard()` kicks the SAME cached one-shot — lazy-loading leave.js first if needed — and re-renders when data lands. Once per session (`renderDashboard._leaveKicked`); shared `_leaveInitialLoad` promise = single fetch, no double-load with the Leave tab; degrades to the roster overlay on failure; leave.js stays lazy (no boot-parse regression).
+- **Verified live on `core.eq.solutions/sks/field?tab=dashboard`** (no Leave-tab visit first): full A/L/RDO/OFF absences list + a "PENDING LEAVE 1" card (Tadhg Byrne). Pending status comes only from `leave_requests`, so that card proves the authoritative data loaded.
+
 ## [2026-07-11] v3.5.291/292 — ✅ THE leave-shows-0 fix: leave list was never fetched on a deep-linked open (SHIPPED, PRs #446/#447, live & VERIFIED)
 - **RESOLVED the multi-session "SKS leave shows 0" bug. Verified live on `core.eq.solutions/sks/field?tab=leave`: PENDING 1 / OFF THIS WEEK 10 / APPROVED 15; on-screen diagnostic confirmed `status:200, leaveCanon:true, rows:31`.**
 - **True root cause (proven, not inferred):** routing was correct all along (BOOT_DIAG banner read `slug=sks, SB_URL=ehow, canon=TRUE`). The leave READ never ran: `leave.js` is lazy-loaded so `initApp()`'s boot `loadLeaveRequests()` is skipped (undefined then); `renderLeave()` only renders; realtime does no initial read; the 30s poll is suppressed under realtime. On a deep-linked `?tab=leave` (how Core embeds Field) `leaveRequests` was never populated. The panel's "↺ Refresh" was `onclick=renderLeave()` — a pure re-render. 31 rows never lost, never fetched.

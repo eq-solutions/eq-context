@@ -105,7 +105,7 @@ Net: on a deep-linked `?tab=leave` view — exactly how Core embeds Field — `l
 
 **Process lesson (for next time):** the winning diagnostic was an **on-screen banner read off a screenshot** — the ONLY channel that pierces a cross-origin + storage-partitioned embedded iframe (console needs the user; localStorage is partitioned; Sentry is silent from the embedded frame). Reach for it early when debugging Shell-embedded Field.
 
-**Minor follow-up (not blocking, spawned):** the home Dashboard leave strip reads `leaveRequests` too and only self-loads via the roster-overlay fallback — consider `_ensureLeaveLoaded()` there, or load leave at boot regardless of lazy-load.
+**Follow-up (DONE 2026-07-11, v3.5.293, PR #448):** the home Dashboard leave strip read `leaveRequests` too and only self-loaded via the roster-overlay fallback. Fixed — `renderDashboard()` now kicks the SAME cached `_ensureLeaveLoaded()` one-shot (lazy-loading leave.js first if needed) and re-renders when data lands; fires once per session, shares the `_leaveInitialLoad` promise with the Leave tab (single fetch, no double-load), degrades to the roster overlay on failure, and keeps leave.js lazy (no boot-parse regression). **Verified live on `core.eq.solutions/sks/field?tab=dashboard`** without visiting the Leave tab first: "Leave & Absences This Week" shows the real A/L/RDO/OFF list AND a "PENDING LEAVE 1" card (Tadhg Byrne) — pending status comes ONLY from `leave_requests`, so that card proves the authoritative data is loaded.
 
 <details><summary>Superseded 2026-07-10 investigation (kept for history — the canon:false / slug hypothesis was WRONG)</summary>
 
