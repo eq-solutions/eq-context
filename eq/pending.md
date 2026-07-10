@@ -22,6 +22,29 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-09/10 (eq-field) — SKS roster Revert fixed (v3.5.273) + migrated site deployments made visible (v3.5.278); both live. Long multi-day session continuing the schema-mismatch arc.
+
+*Continuation of the 2026-07-08 schema-mismatch chip audit. Closed the two remaining SKS-roster gaps that audit surfaced, plus root-caused a data-shape question that turned out to be the real seam. Every step spot-checked against live ehow before touching anything; caught one of my own wrong numbers before it caused a live delete.*
+
+**Shipped + LIVE:**
+- [x] **Revert now works for SKS roster edits (v3.5.273, PR #424, `065f3ee`).** Closes the "structurally non-functional" deferral from v3.5.271. SKS roster audit rows carry no `target_id` (a wide week-row spans up to 7 normalized rows); `revertAuditEntry()` now resolves staff_id+date from the row's own name/week/day and reuses `classifyCell()` for the write. **Adversarial self-review caught the fix shipping DEAD** — the button's visibility gate still hard-required `target_id`, so it never rendered for SKS; both now share one `_auditRowCanRevert()` gate. Revert-to-blank deliberately out of scope for SKS (risky DELETE-purge path). _(done 2026-07-09)_
+- [x] **Migrated SKS site deployments render their code (v3.5.278, PR #429, `b2fa9ab`).** 704 real deployments across 19 sites were invisible (blank cells) — the migration wrote canonical `site_id` rows with no `task` label, and the roster reads cell text from `task` with no site_id→code resolver (documented `_warnSiteGapOnce` gap). Built the read-side resolver in roster-adapter.js + site-map load in supabase.js (same JWT/timing as staff map, non-fatal). Precedence tested: task > leave > site_id > blank. 8 new golden tests (87 pass). _(done 2026-07-10)_
+
+**Investigation (no code — corrected the record):**
+- [x] **The "907 blank stub rows" was a FALSE ALARM I caught before deleting.** I'd flagged ~907 nspb-phase3 rows as blank noise (derived as 1000 − 93 with-a-task). Precise check before any DELETE: **0 truly blank.** All 1000 carry content — 93 task text, 203 leave_type markers (no text), **704 real site_id deployments (no text)**. Running `DELETE WHERE task IS NULL` on my own bad number would have destroyed 907 real records. This is what surfaced the resolver need. **Lesson: never act on a derived count without a precise predicate check first — "no task label" ≠ "blank".**
+- [x] The 6 `(staff_id, date)` duplicates I flagged 2026-07-08 are RESOLVED — a concurrent eq-shell session deleted the 6 stubs AND added a `UNIQUE (staff_id, date)` constraint on `app_data.schedule_entries` (migration `schedule_entries_staff_date_uniq`, `6b7d1ab`). My Revert + resolver writes are compatible with it (single staff+date PATCH; the constraint prevents recurrence). _(verified 2026-07-10)_
+
+**Coordination (this session):**
+- [x] Audited all 3 sibling chips from the 2026-07-08 audit → all merged (eq-field #422 was picked up + merged by a concurrent session incl. resolving my open `AUDIT_SB_KEY` question = service_role; eq-shell #703; **merged eq-solves-service #477 myself** after confirming the one failing CI check is pre-existing).
+- [x] Redirected the stalled EQ Service "session expired" investigation — the real fix (ShellSessionRecovery, #469) had shipped a day before the theory-chasing chips were created; flagged them to kill.
+
+**Open / needs Royce:**
+- [ ] **Eyeball v3.5.278 on a live SKS session** — confirm the 704 cells actually paint their codes (roster w/c 2026-07-06, `core.eq.solutions/sks/field`). Not verifiable in-session (no SKS creds); everything short of the actual render is verified. _(added 2026-07-10)_
+- [ ] **Full read+write canonical roster model** — the resolver is read-only sugar (write path still text; a first edit converts a site_id cell to a text cell, code preserved). The "proper" end-state is the roster reading AND writing `site_id` natively. Bigger piece, **post-cutover**. _(added 2026-07-10)_
+- [ ] **EQ Service sidebar-header logo clipped** (`task_14031bea`) — still genuinely open; handed to the ShellSessionRecovery session but unconfirmed. _(carried from 2026-07-08)_
+
+---
+
 ## ⏩ Session close — 2026-07-10 (eq-field) — finished the 1000-row pagination sweep across the capped reads, shipped live v3.5.277
 
 *Follow-up to the same-day v3.5.274 pass (which fixed the reads with NO limit). Royce asked why leave the already-capped reads flagged when the helper's built and we're in the files — fair, so audited every `limit=N` read and SPLIT them: paginate the ones where a truncated result silently corrupts a computed view, leave the deliberate "recent N" / "latest" caps alone. A concurrent session shipped an overlapping subset first (v3.5.276, #427 — paginated the SKS pipeline tables tender_enrichment/nominations/pending_schedule/tender_phases), so this PR (#428, v3.5.277) rebuilt additive on top of it. Production confirmed serving v3.5.277.*
