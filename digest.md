@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-10 22:38 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-10 22:48 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-10 22:35 UTC → 2026-07-10 22:38 UTC)
+## Since last refresh (2026-07-10 22:38 UTC → 2026-07-10 22:48 UTC)
 
-- Merged: eq-shell [#730](https://github.com/eq-solutions/eq-shell/pull/730) docs(control-plane): tombstone 3 misfiled cross-plane migrat
-- Merged: eq-shell [#706](https://github.com/eq-solutions/eq-shell/pull/706) fix(quotes): estimator signature on quote docs + master mark
-- Merged: eq-shell [#703](https://github.com/eq-solutions/eq-shell/pull/703) fix(shell): report native-pipeline query failures instead of
-- Merged: eq-shell [#701](https://github.com/eq-solutions/eq-shell/pull/701) fix(shell): stop iOS auto-zoom on login inputs
-- Merged: eq-shell [#699](https://github.com/eq-solutions/eq-shell/pull/699) fix(ops): stop stray 'n' keystroke wiping in-progress quote
-- Merged: eq-shell [#691](https://github.com/eq-solutions/eq-shell/pull/691) fix(shell): embedded mobile nav — restore MobileTabBar, reti
-- Merged: eq-shell [#690](https://github.com/eq-solutions/eq-shell/pull/690) fix(staff): lock employment_type to canonical vocabulary; st
-- Merged: eq-solves-service [#487](https://github.com/eq-solutions/eq-service/pull/487) fix(canonical): move ::uuid inside coalesce in service.tg_*_
+- Merged: eq-shell [#714](https://github.com/eq-solutions/eq-shell/pull/714) fix(shell): scope embedded-app handoff overlay to the iframe
+- Merged: eq-shell [#707](https://github.com/eq-solutions/eq-shell/pull/707) fix(quotes): sign quote docs with whoever is logged in
+- Merged: eq-shell [#704](https://github.com/eq-solutions/eq-shell/pull/704) feat(access): pull in @eq-solutions/roles v2.5.0 (access-mod
+- Merged: eq-shell [#702](https://github.com/eq-solutions/eq-shell/pull/702) feat(ops): branded print-to-PDF export for labour hire weekl
+- Merged: eq-shell [#700](https://github.com/eq-solutions/eq-shell/pull/700) fix(ops): weekly labour-hire costs miss company-wide allowan
+- Merged: eq-shell [#698](https://github.com/eq-solutions/eq-shell/pull/698) fix(shell): match all phone formats when self-joining a tena
+- Merged: eq-shell [#696](https://github.com/eq-solutions/eq-shell/pull/696) fix(shell): embedded rail — un-clip EQ logo, lift icon contr
+- Merged: eq-shell [#693](https://github.com/eq-solutions/eq-shell/pull/693) Grant microphone to the Field iframe (voice-to-text on safet
 
 ## ⚠ Needs you (5)
 
@@ -76,6 +76,9 @@ _Showing 15 of 109 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **Ledger action item 3 — `2026_06_16_cards_claim_explicit_user_id.sql` must NEVER be re-applied** (documented in the ledger). A replay hazard, not a to-do; flagged so no future apply run picks it up. _(added 2026-07-11)_
+- **Ledger action item 4 — cosmetic duplicate unique-index name on jvkn** (harmless, documented). Tidy only if convenient. _(added 2026-07-11)_
+- **Make eq-field "Tests + lint" a REQUIRED branch-protection check** — the net now catches undefined-name bugs, but the check isn't required-to-merge, so a red run doesn't block. Interacts with Netlify push-to-deploy; Royce's call. _(added 2026-07-11)_
 - Verify where EQ Cards WRITES onboarding — must target canonical / EQ Field (the survivor), not nspbmir (the app being demolished). _(added 2026-07-11)_
 - If the manual approach stands: define the stop condition — N consecutive clean weeks across a full roster+timesheet cycle → cut. Put one supervisor + one crew on EQ Field during the run (solo hand-entry proves features, not adoption). Enter independently then compare — don't key EQ Field to force a match. _(added 2026-07-11)_
 - ~~Check nspbmir→canonical sync bridge / fix unwired seam~~ — WITHDRAWN 2026-07-11: no automated sync is part of the plan (Royce re-keys manually); the empty `field_*` state is the documented pre-cutover condition, not a gap to fix. _(added 2026-07-11)_
@@ -83,10 +86,7 @@ _Showing 15 of 109 · full record in [sessions/](sessions/)_
 - Compute the Cards "one number" for the CEO ask — onboarding time saved (time-to-site-ready × worker volume) + expiry/audit risk removed. Royce to supply volumes. _(added 2026-07-11)_
 - **DEFINITIVE NEXT STEP: get `TENANT.ORG_SLUG` (and `APP_VERSION`, `canon`, `SB_URL`) from the SKS Field frame.** Never obtained directly. One-liner to paste in the `eq-field.netlify.app` frame: `JSON.stringify({v:APP_VERSION,slug:(window.TENANT||{}).ORG_SLUG,sb:SB_URL,canon:EQ_LEAVE_ADAPTER.isCanonicalLeaveTenant(true),allow:[...EQ_LEAVE_ADAPTER._LEAVE_CANONICAL_TENANTS]})`. If `slug==='sks'` now → gate is fixed, bug is DOWNSTREAM in the read (chase there). If `slug!=='sks'` → v3.5.283 didn't fix resolution; the slug is landing wrong for a deeper reason. If `v!=='3.5.283'` → SW never updated, no fix loaded. _(added 2026-07-10)_
 - **`refetch:0` (200 empty, NOT 401) is unexplained** — with canon:false the read should hit the service_role-only `field_leave_requests` twin and 401, not return empty. So either the twin grant changed, or the read hits an empty in-place/public path. Resolve alongside the slug value. _(added 2026-07-10)_
-- **Storage concentration risk (design):** every worker's licence image for every tenant lives in one private bucket in jvkn — jvkn's service-role key / RLS is the platform's crown-jewels blast radius. Inherent to the worker-owned model. Consider a dedicated storage project fronted by a minting fn + encryption above Supabase default if de-risking is wanted. _(added 2026-07-10)_
-- **`WORKERS_WEBHOOK_SECRET` (verify_jwt off):** if leaked, arbitrary worker records could be POSTed into ehow `app_data.staff`. Rotate on any suspicion; keep out of logs. _(added 2026-07-10)_
-- **Generalise `workers-canonical-sync` beyond SKS/ehow** (still hardcodes `SKS_TENANT_ID` + ehow) before a second tenant onboards — the reconcile is likewise SKS-scoped. _(added 2026-07-10)_
-_…and 294 more · [eq/pending.md](eq/pending.md)_
+_…and 297 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -118,4 +118,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-10 22:38 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-10 22:48 UTC._
