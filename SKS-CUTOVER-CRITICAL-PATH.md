@@ -1,8 +1,8 @@
 ---
 title: SKS Cutover — Critical-Path Plan
 owner: Royce Milmlow
-last_updated: 2026-06-07
-scope: Phased plan to move EQ Field onto the SKS tenant (schema + live-data migration)
+last_updated: 2026-07-11
+scope: Phased plan to move EQ Field onto the SKS tenant (schema + auth prerequisites; live-data cutover is now MANUAL re-entry — see 2026-07-11 update)
 read_priority: reference
 status: live
 ---
@@ -13,6 +13,25 @@ status: live
 **Verdict: NOT a weekend merge.** This is a multi-step migration of **live customer data** with real prerequisites. Schedule it as its own controlled project (multiple sessions), each phase gated, with backups and a single-tenant canary. Rushing it in a weekend window is the exact failure mode this whole program was built to avoid.
 
 > "Field on SKS" is not flipping a switch — it's: untie a half-finished schema migration on the EQ tenant → make the Field schema canonical → roll it to SKS → **migrate SKS's live labour data into it** → secure SKS's auth → repoint the app → decommission the old labour app.
+
+---
+
+## ⚠ UPDATE 2026-07-11 — cutover METHOD changed: MANUAL re-entry, not automated migration
+
+**Royce's decision (2026-07-11):** SKS NSW Labour stays the live system. EQ Field is proven by **manually re-entering each week's data into EQ Field in parallel** with SKS Labour, until it matches with no issues for a defined run, then cut over. This REPLACES the automated live-data migration in Phase D below.
+
+**What this changes:**
+- **Phase D (automated migration of live labour rows) is SUPERSEDED.** Do NOT build the row-migration job. Forward data lands in `field_*` by manual weekly entry during the parallel run.
+- **Historical SKS Labour data is NOT migrated.** The old app/DB (`nspbmirochztcjijmcrx`) is kept as a **read-only archive** after cutover; only forward weeks are re-keyed.
+- **Phases A–C still stand as prerequisites** — you can't hand-enter into tables that don't exist or aren't secured: canonicalize the `field_*` schema (A), roll it to the SKS tenant (B), secure SKS auth anon→authenticated (C). Unchanged.
+- **Phase E still stands** — the manual parallel entry IS the soak; decommission SKS Labour once the run proves out.
+
+**Proving discipline (the manual run is only as good as this):**
+- **Not solo.** Put one supervisor + one crew on EQ Field during the parallel weeks. One person hand-entering proves the *features* work, not that 53 staff / 15 supervisors will actually use it — SKS Labour runs ~160 user-actions/day (verified 2026-07-11), and that's the load the new app must carry. Solo entry never tests it.
+- **Enter independently, then compare** — don't key EQ Field to *force* a match, or you smooth over the exact divergences the parallel run exists to catch. Log every mismatch.
+- **Define the stop condition** — N consecutive clean weeks (recommend 3–4) across a full roster+timesheet cycle → cut. Open-ended dual-entry becomes permanent.
+
+_The Phase A–E plan below remains the reference for the schema/auth prerequisites; treat Phase D as history._
 
 ---
 
@@ -60,7 +79,7 @@ The EQ tenant is mid-migration between an old **un-prefixed** schema and the new
 1. Repeat the EQ remediation pattern on SKS: grant `authenticated` per surface behind tenant-isolation RLS; revoke anon; close the SKS `app_config`/codes exposure.
 2. Gate: SKS `app_data` anon-reachable = 0; authenticated surfaces work with a tenant-scoped JWT.
 
-### Phase D — Migrate SKS's live labour data
+### Phase D — Migrate SKS's live labour data  ⛔ SUPERSEDED 2026-07-11 (manual re-entry — see top note)
 1. **Snapshot SKS first** (Supabase PITR + a row-count baseline of all 7 labour tables).
 2. Migrate SKS's live labour rows (`timesheets`, `tenders`, `rotations`, `site_diaries`, `tafe_calendars`, `skills_ratings`, `weekly_reports`) into the corresponding `field_*` tables.
 3. Gate: row counts reconcile old→new; spot-check records; Field renders SKS's real data.
