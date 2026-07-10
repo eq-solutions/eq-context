@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-07-10
+last_updated: 2026-07-11
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -11,6 +11,34 @@ status: live
 
 EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## ⏩ Session close — 2026-07-11 (strategy + live verification) — Cards is the standout; EQ Field cutover NOT started; Service built-not-executed
+
+*Strategy conversation prepping Royce's CEO meeting about the SKS Labour app. No product code changed. Pressure-tested the whole suite; landed on Cards as the strategic standout. Verified the "runway" against live DBs (read-only) because Royce said "prove it".*
+
+**Decided / direction (Royce-confirmed):**
+- **Cards is the strategic standout.** Everything else (Field/Service/Ops/Shell) re-implements a solved category; Cards (worker-owned onboarding + compliance) is the one unsolved problem. Keep it SIMPLE: onboarding + compliance. **Irreducible core that must survive simplification = the worker OWNS the verified credential.** Drop that → commodity (Damstra / Rapid Global / Sitepass own employer-owned onboarding).
+- Positioning: integration = the wedge, ownership = the moat, AI makes the wedge cheap. "AI to bring existing SKS systems together" is a *how* — keep it backstage, sell outcomes. Canonical layer reframed as a thin ownership registry / referee (one owner per entity), NOT a replacement DB. APIs don't fix source-of-truth (ownership does); use APIs where they exist (Smartsheet has one), AI only at un-API-able edges.
+- SKS Labour (nspbmir) is the interim deploy — retire only when EQ Field (canonical trunk) is proven by a DATA bar (parallel-run a real crew's full cycle, reconcile vs SKS Labour, N weeks), not optimism. Working-before-refactoring holds.
+
+**Verified against LIVE DBs (read-only SELECTs — corrects suite-state drift):**
+- **SKS Labour (nspbmir) is very much ALIVE** — audit_log 1,127 actions/7d (~160/day), schedule 134/7d, timesheets 71/7d, prestarts 21/7d, all written 2026-07-10; **19 people onboarded in the last 30d**. The "dead runway" caution was WRONG for Field — it's the liveliest thing in the suite. (Tender import is the one stale piece: last run 2026-06-17.)
+- **EQ Field canonical is EMPTY** — ehow `app_data.field_schedule` / `field_timesheets` = 0 rows while nspbmir carries 100% of live load. **The retire-SKS-Labour cutover has NOT started in the data.** Field data is not reaching canonical = unwired seam.
+- **EQ Service (ehow) is built-but-not-executed** — `app_data.maintenance_check_items` = 1,358 rows, **0 ever completed (max completed_at = NULL)**; maintenance_checks = 13. audit_log/job_notes active daily (someone administering) but ZERO field execution. (ehow staff/timesheets recency = bulk-import artifacts, not human use.)
+
+**Deferred (added 2026-07-11):**
+- [ ] Define the EQ Field "proven" checklist + stand up a parallel-run (one crew, full cycle, reconcile vs SKS Labour) before any nspbmir retire. _(added 2026-07-11)_
+- [ ] Verify where EQ Cards WRITES onboarding — must target canonical / EQ Field (the survivor), not nspbmir (the app being demolished). _(added 2026-07-11)_
+- [ ] Check the nspbmir→canonical sync bridge is live (people.canonical_synced_at recency). _(added 2026-07-11)_
+- [ ] Fix the unwired seam: Field (nspbmir) data not reaching the canonical field_* views on ehow. _(added 2026-07-11)_
+- [ ] Get EQ Service from built → executed — 1,358 check-items defined, 0 completed; nothing being ticked in the field. _(added 2026-07-11)_
+- [ ] Compute the Cards "one number" for the CEO ask — onboarding time saved (time-to-site-ready × worker volume) + expiry/audit risk removed. Royce to supply volumes. _(added 2026-07-11)_
+
+**Artifact:** CEO meeting kit (one-page brief + talking-points card + 6-slide deck), SKS-branded — https://claude.ai/code/artifact/1b3c73a2-b584-4f1f-bcdd-cd4ce15322c6 (scratchpad source: `sks-labour-ceo-kit.html`). Dashed fields left for Royce (CEO name, date, hours saved, labour-hire $, run cost, the one ask).
+
+**Note (§7 discipline):** queried nspbmir (SKS live) read-only to verify liveness at Royce's explicit "prove it". SELECTs only — no writes, no DDL. §7 guards this project for writes; flagging the read for transparency.
 
 ---
 
