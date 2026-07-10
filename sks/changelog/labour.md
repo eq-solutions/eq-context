@@ -9,6 +9,12 @@ status: live
 
 # Changelog — SKS Labour
 
+## [2026-07-10] Roster save reliability — two bugs behind one "Save failed" toast + schedule retention
+**Built by:** assistant + Royce Milmlow
+- **v3.10.88 (PR #55, merged + live)** — roster save self-heals the duplicate-key (409) race. `saveCellToSB`'s POST-insert path now catches `UNIQUE(name,week,org_id)`, fetches the existing server row, and PATCHes the edited day onto it instead of showing "Save failed — check connection". Root cause of Collin Toohey's report — a stale local cache colliding with a server row it didn't know about.
+- **v3.10.89 (PR #56, merged + live)** — `schedule?select=*` initial load no longer silently truncated at 1000 rows. New `sbFetchAll()` pages through with explicit `order=id`. The table had crossed the PostgREST default cap (1,069 rows); the dropped rows were the newest inserts = far-future weeks, which is exactly what Simon Bramall reported (roster entries more than a month out failing/blank).
+- **Live retention (nspb, Royce-approved)** — new `schedule_archive` (RLS-locked, no app access); one-time archive-then-delete of 681 rows >4 weeks past (live table 1,069 → 388); recurring weekly cron `schedule-4wk-retention-archive` (Sun 03:00 UTC) enforces the 4-week window going forward. Keeps the live table permanently under the row cap (~142 rows/month growth).
+
 ## [2026-04-28] Add Contact button on Contacts page (cherry-picked from EQ Field demo)
 **Built by:** Royce Milmlow + assistant
 **Commit:** `4f03227` on `main` (cherry-pick of `f372a43`); originally PR #25 on Milmlow/eq-field-app
