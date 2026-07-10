@@ -67,7 +67,6 @@ _If this file is >48h old, the cron is broken._
 - #432 v3.5.280 — fix SKS leave showing 0 (precache canonical adapters)
 
 **eq-service:**
-- #487 fix(canonical): move ::uuid inside coalesce in service.tg_*_iud tenant resolver (42804)
 - #459 chore(deps-dev): bump @vitejs/plugin-react from 6.0.1 to 6.0.3
 - #458 chore(deps): bump tailwind-merge from 3.5.0 to 3.6.0
 - #457 chore(deps): bump resend from 6.12.4 to 6.17.1
@@ -76,7 +75,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #721 security(canonical): revoke anon/PUBLIC EXECUTE on Ops/Intake SECURITY DEFINER RPCs
-- #718 fix(field-iframe): self-healing handoff — grace window + one-shot auto-remint
 - #715 feat(access): gate enforcement on can()/useCan() not role names (access-model Phase 1)
 - #681 fix(staff): eq_update_staff silently cleared email/phone/trade/level/employment_type
 - #658 fix(dashboard): surface pending staff connections on home sidebar
@@ -92,7 +90,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ✓ success |
+| eq-service | ? in_progress |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
@@ -101,7 +99,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 182 (latest: 0178) applied
+**Migrations:** eq-service has 183 (latest: 0179) applied
 
 ---
 
