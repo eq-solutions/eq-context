@@ -1,7 +1,7 @@
 ---
 title: EQ Suite — Current State
 owner: Royce Milmlow
-last_updated: 2026-07-08
+last_updated: 2026-07-10
 scope: Live suite state — app lineup, DB counts, open PRs, architectural decisions. Auto-refreshed nightly by GitHub Action.
 read_priority: critical
 status: live
@@ -137,6 +137,15 @@ _Auto-refreshed nightly. ✓ = has data · ⚠ = empty (no data yet) · ✗ = ta
 ---
 
 ## Key Decisions (auto-derived from merged PRs + manual)
+- Shell→Service embedded-session handoff hardened — handoff cookies (`eq_service_jwt` / `eq_shell_bridge`) now `SameSite=None; Secure; Partitioned` (CHIPS), iframe embedding also detected via the `Sec-Fetch-Dest: iframe` header, and a `ShellSessionRecovery` component re-mints a fresh cookie from nothing — so a lapsed/partitioned cookie no longer forces standalone chrome or a false "workspace isn't set up" (service PRs #469/#474/#475, 2026-07-07→08)
+- **`app_data` type-bypass banned** — code queries the typed `service.*` canonical views, never the untyped `appDataFrom()` raw-schema bypass; the bypass was hiding wrong column names and had left customer/site/asset **create** completely broken (service PR #477, 2026-07-08)
+- Standard RCD job plan **self-provisions per tenant** — `seedRcdScheduledChecks` provisions the tenant's copy of the one canonical `STARTER-RCD-BIANNUAL` starter plan on first need instead of requiring each customer to own an RCD plan (was why every non-Jemena customer seeded zero RCD checks) (service PR #476, 2026-07-08)
+- **Product copy genericized** — no customer/vendor names in the UI: DELTA ELCOM / Equinix / Jemena / Maximo stripped from importers, asset/check labels, and customer-facing reports; external-ID labels read generic "ID" (DB values + code identifiers unchanged) (service PRs #442/#443, 2026-07-05)
+- Shell access-model **Phase 0** — `@eq-solutions/roles` → v2.5.0; the admin `AccessControlPage` now **derives** role defaults from the package `MATRIX` instead of a hand-copied literal, so displayed defaults can't silently disagree with enforced grants; apprentice gains `equipment.view` (shell PR #704, 2026-07-08)
+- Shell **embedded chrome unified** — bespoke `IconRail` retired; iframe pages (Field/Service/Cards/Quotes) render the full `HubSidebar` collapsed to a 52px hover rail (one sidebar to maintain), and `MobileTabBar` restored for embedded mobile nav (shell PRs #688/#691, 2026-07-06)
+- Shell **owns the staff supervisor flag** — a Supervisor toggle + Supervision category in Shell's staff editor writes `is_supervisor`/`supervisor_role`/`supervisor_category` through `entity-patch` (previously only fixable by hand in the DB) (shell PR #692, 2026-07-06)
+- Field↔Service **site pull rewired to canonical** — `/api/eq-service/sites` (dead: queried a non-existent `public.sites` → 404) now reads the canonical `app_data.field_sites` adapter view (field PR #422, 2026-07-08)
+- Field permission matrix **guarded against canonical role drift** — warn-only startup check flags any Field role key that isn't a subset of the `@eq-solutions/roles` enum (field PR #418, 2026-07-06)
 - Contract-scope commercial-sheet import now **also seeds unscheduled RCD maintenance checks** — RCD Testing scope lines create header-only `maintenance_checks` (`kind='rcd'`, scheduled, unassigned) so contracted RCD visits surface in the queue/calendar instead of living only as dollar line items; cadence read from `intervals_text`, editable default dates (service PR #465, 2026-07-06)
 - Shell delegates **microphone capability to the Field iframe only** — `netlify.toml` Permissions-Policy opens `microphone` to the two Field origins + `FieldIframe` gets `allow="microphone"`; enables voice-to-text on Field safety forms embedded in core.eq.solutions (camera/geo stay disabled) (shell PR #693, 2026-07-06)
 - Onboarding first-run wizard **retired permanently** — disabled outright and `setup_completed_at` backfilled for the SKS tenant so it never re-triggers (service PRs #453/#454, 2026-07-06)
