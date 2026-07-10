@@ -1,7 +1,7 @@
 ---
 title: Worktree Registry
 owner: Royce Milmlow
-last_updated: 2026-07-10
+last_updated: 2026-07-11
 scope: Active and stale git worktrees — check before creating a new one
 read_priority: critical
 status: live
