@@ -65,7 +65,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-field:**
 - #433 v3.5.281 — leave_requests as single source of truth (roster overlays it live)
-- #432 v3.5.280 — fix SKS leave showing 0 (precache canonical adapters)
 
 **eq-service:**
 - #459 chore(deps-dev): bump @vitejs/plugin-react from 6.0.1 to 6.0.3
