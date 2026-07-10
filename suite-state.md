@@ -61,7 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-10)
 
 **eq-cards:**
-- #138 feat(compliance): tenant minimum credential requirements — v1 data layer
+- #139 feat(wallet): 'required by your org' strip — worker-facing credential prompts
 
 **eq-service:**
 - #459 chore(deps-dev): bump @vitejs/plugin-react from 6.0.1 to 6.0.3
