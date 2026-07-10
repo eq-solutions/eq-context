@@ -1,14 +1,14 @@
 ---
 title: EQ Suite — Current State
 owner: Royce Milmlow
-last_updated: 2026-07-10
+last_updated: 2026-07-11
 scope: Live suite state — app lineup, DB counts, open PRs, architectural decisions. Auto-refreshed nightly by GitHub Action.
 read_priority: critical
 status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-07-10 (nightly cron)_
+_Last verified: 2026-07-11 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -58,7 +58,7 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-07-10)
+## Open PRs (as of 2026-07-11)
 
 **eq-service:**
 - #459 chore(deps-dev): bump @vitejs/plugin-react from 6.0.1 to 6.0.3
@@ -135,6 +135,11 @@ _Auto-refreshed nightly. ✓ = has data · ⚠ = empty (no data yet) · ✗ = ta
 ---
 
 ## Key Decisions (auto-derived from merged PRs + manual)
+- Shell gains an **end-to-end customer-creation flow** (Customer → Sites → Contacts, with contact→site links) — Shell owns customer creation, not just editing; typed sites/contacts survive Continue/Finish (shell PRs #716/#717/#722, 2026-07-10)
+- **Shell↔Field iframe handoff now self-heals** — grace window + one-shot auto-remint on iframe restore, `restore-failed` state reachable on repeat failure, and Field posts `accepted` on every silent restore path so a memory-saver reboot no longer throws a false "didn't load / not set up" card (shell PRs #718/#723 + field PR #431, 2026-07-10)
+- **Worker→staff canonical sync matches identity then coalesce-merges** instead of blind upsert — stops duplicate + null-clobbered SKS staff rows at the sync path (structural companion to the Cards approval-path fix #719) (shell PR #724, 2026-07-10)
+- **Field: `leave_requests` is the single source of truth for time off** — roster + dashboard overlay approved leave at render time (read-only) instead of writing A/L onto the schedule grid; a site rostered under approved leave is flagged as a conflict, not silently hidden (field PR #433, 2026-07-10)
+- **Service dashboard respects the `service_enabled` activation toggle** — Sites/Customers/Assets tiles + the site map only surface an entity once Service is activated for it; the Customers view is site-driven, a customer appears via its sites (service PRs #484/#485/#486, 2026-07-10)
 - **Control-plane migrations have NO CI apply path** — `eq-shell/supabase/migrations/*` (control plane jvkn: `shell_control`+`public`) are applied BY HAND (Supabase MCP / dashboard), unlike tenant-migrations (the governed One Pipe). This is why the `provision_tenant` profiles-FK fix (merged 07-06) sat unapplied and the Cards signup 500 stayed live until hand-applied **2026-07-10**. Rule: verify control-plane fixes against live (`pg_get_functiondef`/`schema_migrations`) — **merge ≠ applied**. Same 2026-07-10 session: anon/PUBLIC EXECUTE revoked on 12 Ops/Intake SECURITY DEFINER RPCs (tenant-migration `0168`); `service.tg_*_iud` COALESCE-42804 fixed across 14 INSTEAD OF triggers (service `0179`); briefing engine swallows `PGRST205` for the dropped `app_data.tenders` (shell PR #720). (2026-07-10)
 - Shell→Service embedded-session handoff hardened — handoff cookies (`eq_service_jwt` / `eq_shell_bridge`) now `SameSite=None; Secure; Partitioned` (CHIPS), iframe embedding also detected via the `Sec-Fetch-Dest: iframe` header, and a `ShellSessionRecovery` component re-mints a fresh cookie from nothing — so a lapsed/partitioned cookie no longer forces standalone chrome or a false "workspace isn't set up" (service PRs #469/#474/#475, 2026-07-07→08)
 - **`app_data` type-bypass banned** — code queries the typed `service.*` canonical views, never the untyped `appDataFrom()` raw-schema bypass; the bypass was hiding wrong column names and had left customer/site/asset **create** completely broken (service PR #477, 2026-07-08)
