@@ -61,10 +61,8 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-10)
 
 **eq-cards:**
+- #137 fix(rls): scope licence-photo admin-read policy to authenticated
 - #136 feat(sync): nightly reconciliation + dead-letter audit for worker canonical sync
-
-**eq-field:**
-- #436 ci(field): add the safety net — existing tests + lean ESLint gate
 
 **eq-service:**
 - #459 chore(deps-dev): bump @vitejs/plugin-react from 6.0.1 to 6.0.3
