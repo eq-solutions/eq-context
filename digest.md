@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-10 08:37 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-10 09:10 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-10 08:34 UTC → 2026-07-10 08:37 UTC)
+## Since last refresh (2026-07-10 08:37 UTC → 2026-07-10 09:10 UTC)
 
-- Merged: eq-shell [#703](https://github.com/eq-solutions/eq-shell/pull/703) fix(shell): report native-pipeline query failures instead of
-- Merged: eq-shell [#701](https://github.com/eq-solutions/eq-shell/pull/701) fix(shell): stop iOS auto-zoom on login inputs
-- Merged: eq-shell [#699](https://github.com/eq-solutions/eq-shell/pull/699) fix(ops): stop stray 'n' keystroke wiping in-progress quote
-- Merged: eq-shell [#688](https://github.com/eq-solutions/eq-shell/pull/688) refactor(shell): retire IconRail, embedded pages use collaps
-- Merged: eq-shell [#687](https://github.com/eq-solutions/eq-shell/pull/687) fix(staff): unify employment_type vocabulary with eq-field
-- Merged: eq-shell [#686](https://github.com/eq-solutions/eq-shell/pull/686) Fix: app-activation nav bug + bulk toggle + collapsible site
-- Merged: eq-shell [#685](https://github.com/eq-solutions/eq-shell/pull/685) fix(drift-check): add app_data.activation_status to KNOWN_LE
-- Merged: eq-shell [#683](https://github.com/eq-solutions/eq-shell/pull/683) fix(shell): palette Ctrl+K fallback + Staff continuous scrol
+- Merged: eq-shell [#717](https://github.com/eq-solutions/eq-shell/pull/717) fix(customers): don't lose a typed site/contact on Continue/
+- Merged: eq-shell [#704](https://github.com/eq-solutions/eq-shell/pull/704) feat(access): pull in @eq-solutions/roles v2.5.0 (access-mod
+- Merged: eq-shell [#702](https://github.com/eq-solutions/eq-shell/pull/702) feat(ops): branded print-to-PDF export for labour hire weekl
+- Merged: eq-shell [#700](https://github.com/eq-solutions/eq-shell/pull/700) fix(ops): weekly labour-hire costs miss company-wide allowan
+- Merged: eq-shell [#698](https://github.com/eq-solutions/eq-shell/pull/698) fix(shell): match all phone formats when self-joining a tena
+- Merged: eq-shell [#696](https://github.com/eq-solutions/eq-shell/pull/696) fix(shell): embedded rail — un-clip EQ logo, lift icon contr
+- Merged: eq-shell [#693](https://github.com/eq-solutions/eq-shell/pull/693) Grant microphone to the Field iframe (voice-to-text on safet
+- Merged: eq-shell [#692](https://github.com/eq-solutions/eq-shell/pull/692) feat(staff): manage supervisor status from Shell's staff edi
 
 ## ⚠ Needs you (2)
 
@@ -30,9 +30,9 @@ _2026-07-10 08:37 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 6 | 6d |
-| eq-solves-service | ✓ success | -1d ago | 5 | 3d |
-| eq-field | ? unknown | ? | 0 | — |
+| eq-shell | ? unknown | ? | 8 | 6d |
+| eq-solves-service | ✓ success | 0d ago | 5 | 4d |
+| eq-field | ? unknown | ? | 2 | 0d |
 | eq-cards | ✓ success | 1d ago | 1 | 1d |
 | eq-solves-intake | ? unknown | ? | 0 | — |
 
@@ -40,7 +40,7 @@ _2026-07-10 08:37 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Project | Error | Events | Last seen |
 |---------|-------|--------|-----------|
-| eq-shell | [Error: native pipeline query failed: Could not find the table 'app_data.tenders'](https://eq-solutions.sentry.io/issues/132948690/) | 29 | 2026-07-10 |
+| eq-shell | [Error: native pipeline query failed: Could not find the table 'app_data.tenders'](https://eq-solutions.sentry.io/issues/132948690/) | 31 | 2026-07-10 |
 | eq-solves-service | [auth handoff: cookie_absent](https://eq-solutions.sentry.io/issues/132832684/) | 19 | 2026-07-08 |
 | eq-cards | [LateInitializationError: Field '' has not been initialized.](https://eq-solutions.sentry.io/issues/132643934/) | 2 | 2026-07-07 |
 | eq-solves-service | [Error: COALESCE types uuid and text cannot be matched](https://eq-solutions.sentry.io/issues/132618557/) | 1 | 2026-07-07 |
@@ -54,6 +54,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-10 | eq-shell | [#717](https://github.com/eq-solutions/eq-shell/pull/717) fix(customers): don't lose a typed site/contact on Continue/Finis |
 | 2026-07-10 | eq-shell | [#716](https://github.com/eq-solutions/eq-shell/pull/716) feat(customers): add customer creation flow (Customer → Sites → C |
 | 2026-07-10 | eq-shell | [#714](https://github.com/eq-solutions/eq-shell/pull/714) fix(shell): scope embedded-app handoff overlay to the iframe pane |
 | 2026-07-10 | eq-shell | [#707](https://github.com/eq-solutions/eq-shell/pull/707) fix(quotes): sign quote docs with whoever is logged in |
@@ -68,11 +69,13 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-10 | eq-field | [#425](https://github.com/eq-solutions/eq-field/pull/425) v3.5.274 — paginate unbounded full-table fetches (1000-row cap fi |
 | 2026-07-09 | eq-shell | [#706](https://github.com/eq-solutions/eq-shell/pull/706) fix(quotes): estimator signature on quote docs + master markup dr |
 | 2026-07-09 | eq-field | [#424](https://github.com/eq-solutions/eq-field/pull/424) v3.5.273 — Revert now works for SKS roster edits |
-| 2026-07-09 | eq-field | [#423](https://github.com/eq-solutions/eq-field/pull/423) fix: roster — self-heal duplicate-key race on first save of a wee |
-_Showing 15 of 105 · full record in [sessions/](sessions/)_
+_Showing 15 of 104 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **Top-bar "SKS Technologies" logo alignment** (Shell chrome) — Royce's original complaint #2 from 2026-07-07, NOT covered by eq-shell #696 (which only touched the collapsed rail), never pixel-audited. Needs a fresh screenshot to trace. _(added 2026-07-10)_
+- **Canonical answer to record: "in-Service" is SITE-driven.** The `service_enabled` switch lives on `app_data.sites`. A customer/asset is in-Service iff it owns / sits on a service-enabled site. The customer-level `app_data.customers.service_enabled` flag is **dead** (0 rows, every tenant) — someday populate it or drop it, but nothing reads it meaningfully now. _(added 2026-07-10)_
+- **`service.assets` vs dashboard off-by-one on `active`:** the assets view has no `active` filter (would show 346 incl. 1 archived asset) while the dashboard tile keeps `active` (345). Cosmetic; noted in case a future "why 345 vs 346" question arises. _(added 2026-07-10)_
 - **Eyeball v3.5.278 on a live SKS session** — confirm the 704 cells actually paint their codes (roster w/c 2026-07-06, `core.eq.solutions/sks/field`). Not verifiable in-session (no SKS creds); everything short of the actual render is verified. _(added 2026-07-10)_
 - **Full read+write canonical roster model** — the resolver is read-only sugar (write path still text; a first edit converts a site_id cell to a text cell, code preserved). The "proper" end-state is the roster reading AND writing `site_id` natively. Bigger piece, **post-cutover**. _(added 2026-07-10)_
 - Deliberate caps left UNPAGINATED by design (not a TODO, a decision record): tender_import_runs (latest/recent-10), tender_review_decisions (only slice(0,8) rendered), scoped single/multi-week schedule reads (also carry the canonical roster-adapter caveat), recent-history list screens (prestarts/toolbox/diary limit 200, site_audits 50 — those want server-side search, not a 5000-row DOM list) _(added 2026-07-10)_
@@ -80,10 +83,7 @@ _Showing 15 of 105 · full record in [sessions/](sessions/)_
 - If usage shows up: consider auto-suggesting a Recognition acknowledgment on someone's work anniversary. If it doesn't: leave as-is, don't invest further. _(added 2026-07-10)_
 - Already-capped reads (`audit_log` limit 500, safety forms limit 200, sks-pipeline.js limit 1000–5000) — same truncation-at-scale pattern, not yet paginated; low priority, `sbFetchAll()` now available if/when they need it _(added 2026-07-10)_
 - eq-shell: fix focus-triggered refetch/hydration crash on Field iframe wrapper so spinner doesn't get stuck on tab return _(added 2026-07-10, in progress in separate eq-shell session — task_b2cf81ea)_
-- `task_14031bea` — a tenant-logo clip issue is still tracked against `ShellSessionRecovery`'s fallback UI. Correction: the component built in PR #469/#475 renders no logo at all (text + spinner + buttons only) — if a clip is still visible, it's the surrounding Sidebar/Shell chrome rendering around it, not this component itself. _(added 2026-07-08)_
-- **Netlify cold-start as a possible slow-dashboard cause** — proposed (a lightweight scheduled "warm ping", same pattern as the 3 existing Netlify scheduled functions in this repo) but not built; wait for the new duration canary's first real event before spending effort here. _(added 2026-07-08)_
-- **Further dashboard query consolidation** (fold the sequential site-name lookup + maybe upcoming/recent-checks into the counts RPC, one round-trip instead of several) — real DB-migration work, deferred pending real performance data from the new canary. _(added 2026-07-08)_
-_…and 273 more · [eq/pending.md](eq/pending.md)_
+_…and 276 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -115,4 +115,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-10 08:37 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-10 09:10 UTC._
