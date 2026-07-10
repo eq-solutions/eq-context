@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-10 11:14 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-10 11:24 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-10 11:11 UTC → 2026-07-10 11:14 UTC)
+## Since last refresh (2026-07-10 11:14 UTC → 2026-07-10 11:24 UTC)
 
-- Merged: eq-shell [#704](https://github.com/eq-solutions/eq-shell/pull/704) feat(access): pull in @eq-solutions/roles v2.5.0 (access-mod
-- Merged: eq-shell [#702](https://github.com/eq-solutions/eq-shell/pull/702) feat(ops): branded print-to-PDF export for labour hire weekl
-- Merged: eq-shell [#700](https://github.com/eq-solutions/eq-shell/pull/700) fix(ops): weekly labour-hire costs miss company-wide allowan
-- Merged: eq-shell [#698](https://github.com/eq-solutions/eq-shell/pull/698) fix(shell): match all phone formats when self-joining a tena
-- Merged: eq-shell [#696](https://github.com/eq-solutions/eq-shell/pull/696) fix(shell): embedded rail — un-clip EQ logo, lift icon contr
-- Merged: eq-shell [#693](https://github.com/eq-solutions/eq-shell/pull/693) Grant microphone to the Field iframe (voice-to-text on safet
-- Merged: eq-shell [#692](https://github.com/eq-solutions/eq-shell/pull/692) feat(staff): manage supervisor status from Shell's staff edi
-- Merged: eq-shell [#687](https://github.com/eq-solutions/eq-shell/pull/687) fix(staff): unify employment_type vocabulary with eq-field
+- Merged: eq-shell [#726](https://github.com/eq-solutions/eq-shell/pull/726) ci(shell): control-plane migration reminder (close the merge
+- Merged: eq-shell [#706](https://github.com/eq-solutions/eq-shell/pull/706) fix(quotes): estimator signature on quote docs + master mark
+- Merged: eq-shell [#703](https://github.com/eq-solutions/eq-shell/pull/703) fix(shell): report native-pipeline query failures instead of
+- Merged: eq-shell [#701](https://github.com/eq-solutions/eq-shell/pull/701) fix(shell): stop iOS auto-zoom on login inputs
+- Merged: eq-shell [#699](https://github.com/eq-solutions/eq-shell/pull/699) fix(ops): stop stray 'n' keystroke wiping in-progress quote
+- Merged: eq-shell [#691](https://github.com/eq-solutions/eq-shell/pull/691) fix(shell): embedded mobile nav — restore MobileTabBar, reti
+- Merged: eq-shell [#690](https://github.com/eq-solutions/eq-shell/pull/690) fix(staff): lock employment_type to canonical vocabulary; st
+- Merged: eq-shell [#688](https://github.com/eq-solutions/eq-shell/pull/688) refactor(shell): retire IconRail, embedded pages use collaps
 
 ## ⚠ Needs you (2)
 
@@ -32,8 +32,8 @@ _2026-07-10 11:14 UTC · what needs your attention. Full snapshot: [suite-state.
 |------|-----------|--------|----------|-----------|
 | eq-shell | ? unknown | ? | 6 | 6d |
 | eq-solves-service | ✓ success | 0d ago | 5 | 4d |
-| eq-field | ? unknown | ? | 0 | — |
-| eq-cards | ✓ success | 0d ago | 2 | 0d |
+| eq-field | ✓ success | 0d ago | 0 | — |
+| eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ? unknown | ? | 0 | — |
 
 ## Live errors (Sentry)
@@ -54,6 +54,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-10 | eq-shell | [#726](https://github.com/eq-solutions/eq-shell/pull/726) ci(shell): control-plane migration reminder (close the merge≠appl |
 | 2026-07-10 | eq-shell | [#725](https://github.com/eq-solutions/eq-shell/pull/725) fix(csp): allow Clarity's rotating collector subdomains (*.clarit |
 | 2026-07-10 | eq-shell | [#721](https://github.com/eq-solutions/eq-shell/pull/721) security(canonical): revoke anon/PUBLIC EXECUTE on Ops/Intake SEC |
 | 2026-07-10 | eq-shell | [#724](https://github.com/eq-solutions/eq-shell/pull/724) fix(sync): worker→staff sync matches identity + merges instead of |
@@ -68,11 +69,13 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-10 | eq-shell | [#707](https://github.com/eq-solutions/eq-shell/pull/707) fix(quotes): sign quote docs with whoever is logged in |
 | 2026-07-10 | eq-solves-service | [#487](https://github.com/eq-solutions/eq-service/pull/487) fix(canonical): move ::uuid inside coalesce in service.tg_*_iud t |
 | 2026-07-10 | eq-solves-service | [#486](https://github.com/eq-solutions/eq-service/pull/486) fix(customers): service.customers site-driven — unbreak the empty |
-| 2026-07-10 | eq-solves-service | [#485](https://github.com/eq-solutions/eq-service/pull/485) fix(dashboard): Customers + Assets tiles respect the service_enab |
-_Showing 15 of 105 · full record in [sessions/](sessions/)_
+_Showing 15 of 107 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **Storage concentration risk (design):** every worker's licence image for every tenant lives in one private bucket in jvkn — jvkn's service-role key / RLS is the platform's crown-jewels blast radius. Inherent to the worker-owned model. Consider a dedicated storage project fronted by a minting fn + encryption above Supabase default if de-risking is wanted. _(added 2026-07-10)_
+- **`WORKERS_WEBHOOK_SECRET` (verify_jwt off):** if leaked, arbitrary worker records could be POSTed into ehow `app_data.staff`. Rotate on any suspicion; keep out of logs. _(added 2026-07-10)_
+- **Generalise `workers-canonical-sync` beyond SKS/ehow** (still hardcodes `SKS_TENANT_ID` + ehow) before a second tenant onboards — the reconcile is likewise SKS-scoped. _(added 2026-07-10)_
 - **Duplicate prevention beyond the two writer fixes: leave it.** Steelmanned a unique normalized-phone index and a detection cron; concluded (with Royce) that for ~85 staff a hard constraint on phone is the wrong tool (phone recycles — see eq-cards 0076 — and gets shared; converts silent dups into blocking 500s). The 80/20 that leading teams do — one identity key + normalize-and-match at write + a merge tool for stragglers — is now in place via #719 + #724. Revisit a merge-UI or constraint ONLY if dups recur after these. _(added 2026-07-10)_
 - **Timesheets/other paths that write `app_data.staff`** — audit that every remaining writer routes phone through the shared normalizer (not just the two fixed). Low priority now the two main writers are fixed. _(added 2026-07-10)_
 - **`leave_approval_logs` empty (0 rows) on SKS** — approve/reject decisions aren't being written to the audit-log table. Confirm if an approval audit trail is wanted. _(added 2026-07-10)_
@@ -80,10 +83,7 @@ _Showing 15 of 105 · full record in [sessions/](sessions/)_
 - **Timesheets don't yet share the leave overlay** — only roster + dashboard read leave_requests live. If timesheets should reflect approved leave, extend the overlay. _(added 2026-07-10)_
 - **Three dead RLS-bypassing twins** (`app_data.field_prestarts`/`field_site_diaries`/`field_toolbox_talks`, `security_invoker` NOT SET, service_role-only, unused — safety reads go to `public.*`) — inert today but a latent cross-tenant leak if ever granted to `authenticated`. Cleanup candidates (drop them). _(added 2026-07-10)_
 - **Retire the leave/roster/timesheets `field_*` twins?** They're bypassed by the adapters and (for leave/schedule/timesheets) are `security_invoker` but service_role-only. The silent fallback to them is what made the "showed 0" bug possible; #432 makes it loud, but dropping the dead twins would remove the failure class entirely. _(added 2026-07-10)_
-- **Root-checkout collision on eq-field happened 3× in one day** — concurrent sessions committed onto each other's branches via the shared `C:\Projects\eq-field` checkout (forced two version re-stamps this session: 277→278→279). Recommend making worktrees mandatory for eq-field, or a pre-commit guard that refuses a commit when HEAD's branch != the session's intended branch. _(added 2026-07-10)_
-- **Top-bar "SKS Technologies" logo alignment** (Shell chrome) — Royce's original complaint #2 from 2026-07-07, NOT covered by eq-shell #696 (which only touched the collapsed rail), never pixel-audited. Needs a fresh screenshot to trace. _(added 2026-07-10)_
-- **Canonical answer to record: "in-Service" is SITE-driven.** The `service_enabled` switch lives on `app_data.sites`. A customer/asset is in-Service iff it owns / sits on a service-enabled site. The customer-level `app_data.customers.service_enabled` flag is **dead** (0 rows, every tenant) — someday populate it or drop it, but nothing reads it meaningfully now. _(added 2026-07-10)_
-_…and 284 more · [eq/pending.md](eq/pending.md)_
+_…and 287 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -115,4 +115,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-10 11:14 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-10 11:24 UTC._
