@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-10 23:18 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-10 23:26 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-10 23:17 UTC → 2026-07-10 23:18 UTC)
+## Since last refresh (2026-07-10 23:18 UTC → 2026-07-10 23:26 UTC)
 
-- Merged: eq-shell [#731](https://github.com/eq-solutions/eq-shell/pull/731) feat(comms): Move 1.5 + 2b — filters/simplification, and boo
-- Merged: eq-shell [#714](https://github.com/eq-solutions/eq-shell/pull/714) fix(shell): scope embedded-app handoff overlay to the iframe
-- Merged: eq-shell [#707](https://github.com/eq-solutions/eq-shell/pull/707) fix(quotes): sign quote docs with whoever is logged in
-- Merged: eq-shell [#704](https://github.com/eq-solutions/eq-shell/pull/704) feat(access): pull in @eq-solutions/roles v2.5.0 (access-mod
-- Merged: eq-shell [#702](https://github.com/eq-solutions/eq-shell/pull/702) feat(ops): branded print-to-PDF export for labour hire weekl
-- Merged: eq-shell [#700](https://github.com/eq-solutions/eq-shell/pull/700) fix(ops): weekly labour-hire costs miss company-wide allowan
-- Merged: eq-shell [#698](https://github.com/eq-solutions/eq-shell/pull/698) fix(shell): match all phone formats when self-joining a tena
-- Merged: eq-shell [#696](https://github.com/eq-solutions/eq-shell/pull/696) fix(shell): embedded rail — un-clip EQ logo, lift icon contr
+- Merged: eq-shell [#716](https://github.com/eq-solutions/eq-shell/pull/716) feat(customers): add customer creation flow (Customer → Site
+- Merged: eq-shell [#706](https://github.com/eq-solutions/eq-shell/pull/706) fix(quotes): estimator signature on quote docs + master mark
+- Merged: eq-shell [#703](https://github.com/eq-solutions/eq-shell/pull/703) fix(shell): report native-pipeline query failures instead of
+- Merged: eq-shell [#701](https://github.com/eq-solutions/eq-shell/pull/701) fix(shell): stop iOS auto-zoom on login inputs
+- Merged: eq-shell [#699](https://github.com/eq-solutions/eq-shell/pull/699) fix(ops): stop stray 'n' keystroke wiping in-progress quote
+- Merged: eq-shell [#693](https://github.com/eq-solutions/eq-shell/pull/693) Grant microphone to the Field iframe (voice-to-text on safet
+- Merged: eq-shell [#692](https://github.com/eq-solutions/eq-shell/pull/692) feat(staff): manage supervisor status from Shell's staff edi
+- Merged: eq-shell [#690](https://github.com/eq-solutions/eq-shell/pull/690) fix(staff): lock employment_type to canonical vocabulary; st
 
 ## ⚠ Needs you (6)
 
@@ -27,7 +27,7 @@ _2026-07-10 23:18 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🟠 **PR aging 7d** — eq-shell [#637](https://github.com/eq-solutions/eq-shell/pull/637) "docs: pnpm-workspace.yaml — packages are vendored, not a git submodule"
 - 🟠 **PR aging 7d** — eq-shell [#636](https://github.com/eq-solutions/eq-shell/pull/636) "build: pin @eq-solutions/ui to release tag v1.10.0 for reproducible bu"
 - 🟠 **PR aging 7d** — eq-shell [#635](https://github.com/eq-solutions/eq-shell/pull/635) "feat(canonical-api): move APP_TENANT_SCOPE allow-list to a shell_contr"
-- 🟠 **Sentry new error** — `eq-field` [Error: LEAVE_DIAG {"ver":"3.5.289","slug":"sks","winsb":"eho](https://eq-solutions.sentry.io/issues/133570956/)
+- 🟠 **Sentry new error** — `eq-field` [Error: LEAVE_DIAG {"ver":"3.5.290","slug":"sks","winsb":"eho](https://eq-solutions.sentry.io/issues/133570956/)
 - 🟡 **1 stale worktree** need cleanup — [worktree-registry.md](system/worktree-registry.md)
 
 ## Pulse
@@ -46,7 +46,7 @@ _2026-07-10 23:18 UTC · what needs your attention. Full snapshot: [suite-state.
 |---------|-------|--------|-----------|
 | eq-shell | [Error: native pipeline query failed: Could not find the table 'app_data.tenders'](https://eq-solutions.sentry.io/issues/132948690/) | 31 | 2026-07-10 |
 | eq-solves-service | [auth handoff: cookie_absent](https://eq-solutions.sentry.io/issues/132832684/) | 19 | 2026-07-08 |
-| eq-field | [Error: LEAVE_DIAG {"ver":"3.5.289","slug":"sks","winsb":"ehowgjardagevnrluult","](https://eq-solutions.sentry.io/issues/133570956/) | 2 | 2026-07-10 |
+| eq-field | [Error: LEAVE_DIAG {"ver":"3.5.290","slug":"sks","winsb":"ehowgjardagevnrluult","](https://eq-solutions.sentry.io/issues/133570956/) | 3 | 2026-07-10 |
 | eq-cards | [LateInitializationError: Field '' has not been initialized.](https://eq-solutions.sentry.io/issues/132643934/) | 2 | 2026-07-07 |
 | eq-field | [Error: LEAVE_DIAG_PIPETEST 1783724352017](https://eq-solutions.sentry.io/issues/133570134/) | 1 | 2026-07-10 |
 | eq-solves-service | [Error: COALESCE types uuid and text cannot be matched](https://eq-solutions.sentry.io/issues/132618557/) | 1 | 2026-07-07 |
@@ -119,4 +119,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-10 23:18 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-10 23:26 UTC._
