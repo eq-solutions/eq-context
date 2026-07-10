@@ -137,7 +137,7 @@ _Nothing pending — migrations 001–023 all applied._
 - [ ] `isTafeHolidayCell()` in `scripts/tafe.js` (both apps) is now **dead code** — the timesheet stopped consulting the holiday config at v3.10.84; writers use `tafeIsHolidayForDay` directly. Low-pri cleanup (leave or remove next timesheet touch). _(added 2026-07-08)_
 - [ ] Terry Su has no nominated `tafe_day` → won't auto-prefill going forward; Royce to set it in his profile if he attends TAFE regularly (operational data, not a code fix). _(added 2026-07-08)_
 
-## ⏩ SKS Field — session 2026-07-08 (schedule_entries duplicate root-cause + fix)
+## ⏩ SKS Field — session 2026-07-10 (schedule_entries duplicate root-cause + fix)
 
 **Flagged by a concurrent eq-field session** (auditing a roster Revert bug): 6 `(staff_id, date)` duplicate pairs in `app_data.schedule_entries` on ehow, all involving the `nspb-phase3-2026-07-05` import writing a near-blank second row over an existing real one.
 
@@ -148,8 +148,8 @@ _Nothing pending — migrations 001–023 all applied._
 - [x] **Fixed live on ehow**: deleted the 6 stub rows after confirming each was a pure subset of its real-row counterpart (every field null or identical — nothing lost). Added `UNIQUE (staff_id, date)` on `app_data.schedule_entries` (migration `schedule_entries_staff_date_uniq`) so this can't silently recur regardless of what wrote it or whether it runs again. Verified: 0 duplicates remain, all 6 real rows intact, 1000 of the original 1006 import rows untouched.
 
 **Deferred:**
-- [ ] `toWideList`'s "first non-empty wins" logic (and its backwards comment) in `eq-field/scripts/roster-adapter.js` — not fixed (another session was already active in this file; avoided a concurrent edit). Worth a defensive tiebreak (prefer non-`imported_from` rows) as belt-and-suspenders now that the constraint prevents new duplicates. _(added 2026-07-08)_
-- [ ] Source of the `nspb-phase3-2026-07-05` import itself is still unknown — no `nspb-phase1`/`nspb-phase2` tag exists anywhere either, so it's unclear if this was a manual one-off or part of a larger unlogged migration effort. _(added 2026-07-08)_
+- [ ] `toWideList`'s "first non-empty wins" logic (and its backwards comment) in `eq-field/scripts/roster-adapter.js` — not fixed (another session was already active in this file; avoided a concurrent edit). Worth a defensive tiebreak (prefer non-`imported_from` rows) as belt-and-suspenders now that the constraint prevents new duplicates. _(added 2026-07-10)_
+- [ ] Source of the `nspb-phase3-2026-07-05` import itself is still unknown — no `nspb-phase1`/`nspb-phase2` tag exists anywhere either, so it's unclear if this was a manual one-off or part of a larger unlogged migration effort. _(added 2026-07-10)_
 
 ## ⏩ SKS Field — session 2026-07-04 (Cards→Field migration path verified, read-only)
 
