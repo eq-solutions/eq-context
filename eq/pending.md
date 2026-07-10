@@ -14,6 +14,14 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⚠ CORRECTION — the 2026-07-08 "Brett Kilpatrick duplicate merged live" entry was WRONG
+
+*That session's own summary claimed it "moved user_id + cards_worker_id onto the original record on ehow; deactivated + unlinked the duplicate." Live data on 2026-07-09/10 showed this never actually happened — instead a THIRD, brand-new empty `app_data.staff` row got the real Cards login attached to it, while the ORIGINAL record (15 schedule entries, 1 team membership, 1 leave request, created 2026-06-12) stayed active with `user_id = NULL`. Net effect: two active "Brett Kilpatrick" rows kept showing in Shell's Staff list, identical contact info, exactly the duplicate the July 8 session claimed to have fixed. Root-caused and actually fixed 2026-07-09: real login + correct `cards_worker_id` moved onto the original (history-bearing) record; the empty duplicate deactivated (`cards_worker_id` freed, `active = false`) — no hard deletes.**
+
+**Lesson: a session's own "done" narrative is not proof of the outcome — re-verify against live data before trusting a prior merge/fix as closed, especially for identity-merge operations that touch multiple linked tables (`app_data.staff` ↔ `public.workers` ↔ `auth.users`).** _(added 2026-07-09)_
+
+---
+
 ## ⏩ Session close — 2026-07-10 (eq-field) — instrumented the dashboard Birthdays & Anniversaries widget (no usage signal since v3.4.16), shipped live v3.5.275
 
 *Royce noted start dates matter for celebrating career anniversaries and asked where Field already handled this — turned out the dashboard already had a "Birthdays & Anniversaries" widget (shipped v3.4.16) reading `start_date`/DOB off the people record, but it had zero usage tracking and no link to the Recognitions feature. Steelman discussion concluded the feature is plausible (real retention economics, cheap to build) but unvalidated (no one asked for it, no analytics, not surfaced to the worker themselves) — so before building anything further on top (e.g. auto-suggested acknowledgments on a work anniversary), instrumented it to find out if any supervisor actually uses it. Added two PostHog events and made each row clickable through to the person's profile (where a Recognition can be given). PR #426 merged as v3.5.275 (renumbered twice mid-session as two other PRs — #424, #425 — landed on main first); production confirmed serving v3.5.275.*
