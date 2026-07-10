@@ -36,7 +36,7 @@ _If this file is >48h old, the cron is broken._
 | Entity | Count | Schema |
 |--------|-------|--------|
 | Sites | 242 | app_data.sites |
-| Customers | 41 | app_data.customers |
+| Customers | 42 | app_data.customers |
 | Assets | 361 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
 | Users | 5 | service.tenant_members |
@@ -64,6 +64,7 @@ _If this file is >48h old, the cron is broken._
 - #134 fix(onboarding): scope onboarding flags to the account, not just the device; be honest when OCR found nothing
 
 **eq-service:**
+- #486 fix(customers): service.customers site-driven — unbreak the empty SKS Customers list
 - #459 chore(deps-dev): bump @vitejs/plugin-react from 6.0.1 to 6.0.3
 - #458 chore(deps): bump tailwind-merge from 3.5.0 to 3.6.0
 - #457 chore(deps): bump resend from 6.12.4 to 6.17.1
@@ -86,7 +87,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ? in_progress |
+| eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
