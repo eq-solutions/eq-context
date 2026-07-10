@@ -9,6 +9,12 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-11] v3.5.294 — mark "SKS leave shows 0" formally RESOLVED in the changelog banner (SHIPPED, PR #449, live)
+- Doc-only: added a ✅ RESOLVED status marker to the in-HTML changelog banner (the canonical changelog for v3.5+). No behaviour change. Prod verified serving the marker. Closes the multi-session leave-shows-0 saga in-repo.
+
+## [2026-07-11] Timesheets tab — checked, NO fix needed (no release)
+- Asked to apply the leave fix to timesheets. Verified it does NOT have the same gap: timesheets are fetched at BOOT inside `loadFromSupabase`'s main Promise.all (`sbFetch('timesheets?select=*'+weekFilter)`, index.html:8295) → `STATE.timesheets` is populated before any tab renders. Leave was the exception (moved out of the boot fetch into the lazy `loadLeaveRequests()`); timesheets never left the boot path. Verified live on `core.eq.solutions/sks/field?tab=timesheets` (deep-linked, no other tab first): full grid, 88 staff tracked, real hours/codes. No dead `_ensureTimesheetsLoaded` shipped.
+
 ## [2026-07-11] v3.5.293 — Dashboard leave strip loads authoritative leave data (SHIPPED, PR #448, live & VERIFIED)
 - Follow-up to v3.5.291. The home Dashboard "Leave & Absences This Week" strip read the global `leaveRequests`, but that array was only populated by the Leave tab's `_ensureLeaveLoaded()` (leave.js is lazy → boot-time `loadLeaveRequests()` skipped). On a deep-linked `?tab=dashboard` (how Core lands users) the strip showed only the roster A/L overlay fallback, never the real `leave_requests`.
 - Fix: `renderDashboard()` kicks the SAME cached one-shot — lazy-loading leave.js first if needed — and re-renders when data lands. Once per session (`renderDashboard._leaveKicked`); shared `_leaveInitialLoad` promise = single fetch, no double-load with the Leave tab; degrades to the roster overlay on failure; leave.js stays lazy (no boot-parse regression).
