@@ -9,6 +9,10 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-10] v3.5.274 — paginate unbounded full-table fetches (1000-row cap fix) (SHIPPED, PR #425, live)
+- Added `sbFetchAll(path, orderBy, pageSize)` to `scripts/supabase.js` (pattern ported from sks-nsw-labour v3.10.89) — pages through with an explicit `order` so a full-table read is actually full, instead of PostgREST silently truncating at its 1000-row default cap and dropping the newest (highest-id) rows.
+- Swapped the 6 confirmed-unbounded `select=*` reads to it: `_loadFullDataForExport()` (schedule + timesheets) + `team_members` (index.html); `project_targets` (supabase.js); `timesheet_locks` (timesheets.js); `tender_enrichment` (order `tender_id`, no `id` PK) + `nominations` (tender-pipeline.js). `nomination_clashes` left as-is (view, no id-equivalent, absent live). No behaviour change below 1000 rows — pure headroom.
+
 ## [2026-07-08] v3.5.271 — SKS roster/site schema-mismatch fixes (SHIPPED, PR #422, live)
 - Fix: Resource Allocation's "deployed this week" stat silently showed 0 for SKS — a `schedule_entries` query asked for wide-table-only columns (`name,mon,tue,wed,thu,fri`) that don't exist on the normalized table. Now `select=*`; the roster adapter rebuilds the wide shape. `sks-pipeline-resource.js`.
 - Fix: clicking Revert on an SKS roster audit entry would 400 — same narrow-select bug on the pre-revert read. Now `select=*`. `audit.js`.

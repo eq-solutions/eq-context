@@ -14,6 +14,26 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-10 (eq-field) — paginated every unbounded full-table read (1000-row cap fix), shipped live v3.5.274
+
+*Closes the deferred bulk-export item from the same-day roster session (`task_69a6ff0f`) and extends it: audited the whole repo for unbounded `select=*` reads, not just the export path. Added `sbFetchAll(path, orderBy, pageSize)` to `scripts/supabase.js` (pattern ported from sks-nsw-labour v3.10.89) — pages through with an explicit order so a "full" fetch is actually full, instead of PostgREST silently truncating at its 1000-row default cap and dropping the newest (highest-id) rows. Every target table's order-by column verified against the live DB before wiring (schedule/timesheets/team_members via ehow `app_data.field_*` twins; project_targets/timesheet_locks/nominations by `id`; tender_enrichment by `tender_id` — no `id` PK). PR #425 merged, production confirmed serving v3.5.274.*
+
+- [x] Bulk-export unbounded fetch (`_loadFullDataForExport()` — schedule + timesheets) paginated _(2026-07-10, was task_69a6ff0f)_
+- [x] team_members, project_targets, timesheet_locks, tender_enrichment, nominations reads paginated via `sbFetchAll()` _(2026-07-10)_
+- [ ] Already-capped reads (`audit_log` limit 500, safety forms limit 200, sks-pipeline.js limit 1000–5000) — same truncation-at-scale pattern, not yet paginated; low priority, `sbFetchAll()` now available if/when they need it _(added 2026-07-10)_
+
+---
+
+## ⏩ Session close — 2026-07-10 (eq-shell) — quote-doc signature bug fixed (now signs as whoever's logged in), quote markup drift fixed, both merged + live
+
+*Royce forwarded two PDFs showing a live quote signed "Royce Milmlow / NSW Operations Manager" regardless of who actually built the quote. Fixed in two passes: first made the signature use the quote's assigned estimator (with a Setup screen to configure each estimator's title/phone/email), then Royce asked for zero setup — so the signature now resolves from whoever is logged in when they click "Generate doc," via a lookup against their own staff record. Also checked and fixed markup-drift bugs in materials/subcontractor/one-off pricing while in the area.*
+
+- [x] **eq-shell PR #706 (merged `bfac78e`, migration 0166 dispatched+applied)** — first pass: quote doc signature block pulled from the quote's assigned estimator instead of hardcoded Royce Milmlow details; added title/phone/email columns to the estimator list in Quotes Setup. Also fixed two markup-drift bugs: quick-add presets and the direct-rate-entry cost back-fill both hardcoded a literal 10% markup instead of reading the tenant's configured master markup (`defaultMaterialMarkup`) — materials, subcontractors, and one-off items now consistently respect the master markup set in Quotes Setup.
+- [x] **eq-shell PR #707 (merged `9623c0b`, migration 0167 dispatched+applied)** — follow-up per Royce: signature now resolves the logged-in user's name/email from the Shell session (free, no lookup) and phone/job title from their own staff record via a new lookup, with no manual setup step. Falls back to the default Royce Milmlow signature only if the signed-in person has no matching staff record or no phone/title on file. Reverted the per-estimator title/phone/email Setup UI from #706 as superseded — the underlying (harmless, additive) DB columns from migration 0166 were left in place rather than dropped in a third migration.
+- [x] Resolved a live merge conflict mid-close: PR #707's branch, once #706 had already squash-merged to main, needed a real 3-way merge (not a clean fast-forward) — the auto-merge silently reintroduced the just-reverted Setup UI fields (net-zero local diff vs. base loses to a real edit on the other side in a 3-way merge). Caught it, manually re-applied the intended revert on top of the merge commit, verified typecheck/lint clean before pushing. Worth remembering for any future session juggling two sequential same-file PRs.
+
+---
+
 ## ⏩ Session close — 2026-07-10 (eq-field) — spinner-of-death on tab-return root-caused to eq-shell, not Field; no Field code changes; eq-shell fix task spawned and started
 
 *Royce reported a stuck loading spinner when returning to a backgrounded browser tab after logging into Field via the Shell iframe (`core.eq.solutions/sks/field`). Investigated Field's boot sequence, loading-overlay show/hide paths, and realtime reconnect logic — all clean (no `visibilitychange` handlers in Field at all; every `showLoadingOverlay` call has a paired hide on both success and error paths; realtime reconnect has proper capped exponential backoff, 1s→30s). The console log showed a `React error #418` (hydration mismatch) thrown from Shell's own React bundle at the moment the tab regained focus — consistent with a focus-triggered refetch/re-render on the component that owns the Field iframe wrapper, crashing before its own spinner state clears. Root cause and fix scope handed to `eq-shell` via spawned task `task_b2cf81ea`, which Royce has already started in a separate session.*
