@@ -14,6 +14,27 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## 🔴 UNRESOLVED — SKS leave STILL shows 0 after 3 fixes; spinner-of-death recurred on SKS (2026-07-10, second close)
+
+**⚠️ CORRECTION: the earlier 2026-07-10 close entry ("SKS leave showed 0 — FIXED") was WRONG. Leave is STILL 0 on SKS. Three fixes shipped this session; NONE resolved it. Do not trust "fixed".**
+
+**Confirmed root cause (from a live diagnostic Royce ran in the Field frame on v3.5.282):**
+`{"adapter":true,"canon":false,"refetch":0}` — the leave adapter IS loaded, but `EQ_LEAVE_ADAPTER.isCanonicalLeaveTenant(true)` returns **false**, i.e. `TENANT.ORG_SLUG` is **not** `'sks'` at runtime on the SKS-embedded Field. So the canonical gate fails → leave reads the wrong/empty path → 0 rows (no error). The 31 real records are in `app_data.leave_requests` the whole time (DB re-verified: 30 approved + 1 pending, readable by the authenticated JWT).
+
+**What shipped (all LIVE, none fixed the symptom — the first two were the wrong layer):**
+- [x] v3.5.281 (PR #432) — precache the canonical adapters. Adapter now loads (`adapter:true`) but that was NOT the cause.
+- [x] v3.5.282 (PR #433) — leave = single source of truth; roster/dashboard overlay it live; retired the write-back. Legit model change Royce approved, but doesn't fix the read. (Also MASKS the bug: the dashboard leave strip falls back to roster A/L markers, so it shows ~11 names while the Leave tab shows 0 — misleading.)
+- [x] v3.5.283 (PR #434) — honor `?tenant=` override whenever iframe-embedded (`window!==window.top`), not just when `#sh=`/referrer present. **HYPOTHESIS: the Shell embeds Field at `eq-field.netlify.app` (matches no canonical tenant hostname), so `?tenant=sks` is the only thing making it SKS; a backgrounded iframe reboots with `#sh=` stripped → old `isShellEmbedded` went false → override rejected → fell back to `eq` → ORG_SLUG='eq'. Plausible but UNCONFIRMED — after this shipped, leave was STILL 0 on a fresh reload (Contacts=71, so SKS data loads; leave still 0).**
+
+- [ ] **DEFINITIVE NEXT STEP: get `TENANT.ORG_SLUG` (and `APP_VERSION`, `canon`, `SB_URL`) from the SKS Field frame.** Never obtained directly. One-liner to paste in the `eq-field.netlify.app` frame: `JSON.stringify({v:APP_VERSION,slug:(window.TENANT||{}).ORG_SLUG,sb:SB_URL,canon:EQ_LEAVE_ADAPTER.isCanonicalLeaveTenant(true),allow:[...EQ_LEAVE_ADAPTER._LEAVE_CANONICAL_TENANTS]})`. If `slug==='sks'` now → gate is fixed, bug is DOWNSTREAM in the read (chase there). If `slug!=='sks'` → v3.5.283 didn't fix resolution; the slug is landing wrong for a deeper reason. If `v!=='3.5.283'` → SW never updated, no fix loaded. _(added 2026-07-10)_
+- [ ] **`refetch:0` (200 empty, NOT 401) is unexplained** — with canon:false the read should hit the service_role-only `field_leave_requests` twin and 401, not return empty. So either the twin grant changed, or the read hits an empty in-place/public path. Resolve alongside the slug value. _(added 2026-07-10)_
+
+**🔴 LIVE ISSUE at session end: spinner-of-death recurred on SKS Field.** Royce reported "eq field has spinner of death again now" right after the v3.5.283 merge/reload. Likely the rapid SW-cache churn (280→281→282→283 in one session, each bumps the SW cache) causing a Shell↔Field handoff stuck-state, NOT necessarily the v3.5.283 code (which only changes tenant resolution, not the handshake/accepted signal). Advised Royce: hard-reload (Ctrl+Shift+R) — the self-heal from PR #431/#718 should clear it. **If it persists → REVERT v3.5.283 immediately** to a known-stable build (Royce's call; not done). _(added 2026-07-10)_
+
+**Process lesson: 4 deploys to LIVE SKS in one session, chasing a bug I kept mis-diagnosing (adapter-load → overlay-model → tenant-slug), each unverifiable on a preview (the bug only fires on the embedded-iframe-restore path). Should have gotten the runtime `TENANT.ORG_SLUG` value BEFORE shipping the first fix. Stop-and-look beats ship-and-hope.** _(added 2026-07-10)_
+
+---
+
 ## ⏩ Session close — 2026-07-10 (eq-cards) — storage/security review: worker sync made reconcilable (enterprise-grade); Kurt's photos actually fixed; licence-photo admin RLS tightened
 
 *Royce asked about storage limits, then the real risks (photos on the control layer; tenant↔control wiring redundancy / weak link). Review found the sync had no reconciliation backstop and Kurt's photos were silently un-viewable. Both fixed + a loose RLS policy tightened — all live-verified.*

@@ -9,6 +9,11 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-10] v3.5.283 — honor ?tenant= override whenever iframe-embedded (SHIPPED, PR #434, live) — DID NOT FIX SKS LEAVE
+- Intended as THE root-cause fix for "SKS leave shows 0": a live diagnostic showed the leave adapter was loaded but its canonical gate returned false (`TENANT.ORG_SLUG` ≠ 'sks'). Theory: Shell embeds Field at `eq-field.netlify.app` (matches no canonical tenant hostname) so `?tenant=sks` is the only thing making it SKS, and a backgrounded iframe reboots with the `#sh=` hash stripped → the override was rejected → session fell back to 'eq'. Fix honors the override whenever `window!==window.top`.
+- **STATUS: did NOT resolve the symptom.** Leave was still 0 after deploy + fresh reload. Root cause is confirmed (`canon:false`) but this fix didn't correct it — the exact reason ORG_SLUG lands wrong is still unknown (needs the runtime `TENANT.ORG_SLUG` value). See `eq/pending.md` 🔴 UNRESOLVED entry.
+- ⚠️ Also: spinner-of-death recurred on SKS after this merge (likely rapid SW-cache churn across 4 same-day deploys, not this code). Revert candidate if it persists.
+
 ## [2026-07-10] v3.5.282 — leave_requests is the single source of truth; roster overlays it live (SHIPPED, PR #433, live)
 - Model change: retired the approve→`writeLeaveToSchedule` write-back. The roster and dashboard now COMPUTE approved leave at render from `leave_requests` (new `overlayApprovedLeave()` in roster.js — read-only, never mutates STATE.schedule). Leave wins for display; a site rostered under approved leave shows a ⚠ conflict marker instead of being silently hidden.
 - `dashboard.js` "Leave & Absences This Week" reads `leave_requests` (approved, overlapping the week), unioned with manual roster absences so typed A/L/OFF still show.
