@@ -14,6 +14,21 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-10 (eq-field + eq-shell) — spinner-of-death ROOT-CAUSED & killed; Clarity CSP fixed
+
+*Royce: "eq field keeps doing this" (stuck "Loading…" spinner over a rendered dashboard), "we worked on it all day". Traced it end-to-end. The recurring spinner was NOT the CSP noise and NOT React #418 (a browser extension). Found the real mechanism, shipped and merged three fixes, all live-verified.*
+
+**Done this session (all MERGED + DEPLOYED + live-verified):**
+- [x] **eq-shell PR #725 (v-live, squash `d63a3be`) — Clarity CSP console spam.** `connect-src` pinned `www`/`q.clarity.ms`; Clarity rotates its collector subdomain (`b.clarity.ms/collect` blocked) so it re-broke on each rotation. Now `https://*.clarity.ms` (Microsoft's documented wildcard). Live CSP header verified on core.eq.solutions.
+- [x] **eq-field PR #435 (v3.5.284, squash `b0bc2c7`) — boot-path spinner.** `initApp()` awaited 6 UNGUARDED secondary loaders after `loadFromSupabase()`; any throw (e.g. `isLeave is not defined`, a raw roster.js helper hit before roster.js lazy-loads) skipped `hideLoadingOverlay()`. Fix: per-loader try/catch + finally-guaranteed hide + `initApp().catch` + early global `isLeave` fallback.
+- [x] **eq-field PR #437 (v3.5.285, squash `52be9b4`) — THE recurring spinner (the one that kept coming back).** v3.5.284 only fixed boot; the ~30s-after-boot recurrence was `refreshData()` (30s/5min poll + realtime + Sync) calling `loadFromSupabase()`, which unconditionally shows the overlay but never hides on the refresh path (v3.5.255 moved the hide→`initApp` only). Fix: overlay ownership → the caller — `loadFromSupabase` shows nothing; `initApp` shows+finally-hides; the silent poll shows nothing. Live-verified serving v3.5.285.
+
+**Lesson:** spinner/overlay ownership must live in the CALLER, never in a helper shared by boot + background-refresh — and "fixed the boot path" ≠ "fixed the recurrence." Also: eq-field is static HTML with no build step, so `node --check` the extracted inline scripts before every commit.
+
+**Not touched (still open, separate issue):** SKS leave-shows-0 (the 🔴 section below) — these spinner fixes don't affect leave-data resolution. The `TENANT.ORG_SLUG` runtime diagnostic remains the definitive next step.
+
+---
+
 ## 🔴 UNRESOLVED — SKS leave STILL shows 0 after 3 fixes; spinner-of-death recurred on SKS (2026-07-10, second close)
 
 **⚠️ CORRECTION: the earlier 2026-07-10 close entry ("SKS leave showed 0 — FIXED") was WRONG. Leave is STILL 0 on SKS. Three fixes shipped this session; NONE resolved it. Do not trust "fixed".**
@@ -30,6 +45,8 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [ ] **`refetch:0` (200 empty, NOT 401) is unexplained** — with canon:false the read should hit the service_role-only `field_leave_requests` twin and 401, not return empty. So either the twin grant changed, or the read hits an empty in-place/public path. Resolve alongside the slug value. _(added 2026-07-10)_
 
 **🔴 LIVE ISSUE at session end: spinner-of-death recurred on SKS Field.** Royce reported "eq field has spinner of death again now" right after the v3.5.283 merge/reload. Likely the rapid SW-cache churn (280→281→282→283 in one session, each bumps the SW cache) causing a Shell↔Field handoff stuck-state, NOT necessarily the v3.5.283 code (which only changes tenant resolution, not the handshake/accepted signal). Advised Royce: hard-reload (Ctrl+Shift+R) — the self-heal from PR #431/#718 should clear it. **If it persists → REVERT v3.5.283 immediately** to a known-stable build (Royce's call; not done). _(added 2026-07-10)_
+
+> ✅ **RESOLVED 2026-07-10 (later close) — the spinner was NOT SW-cache churn or the handoff.** Root cause found + fixed: `loadFromSupabase()` unconditionally shows the full-page overlay and has TWO callers — `initApp()` (boot) and `refreshData()` (30s + 5min polls, realtime, manual Sync). v3.5.255 moved the HIDE into `initApp()` only but left the SHOW in `loadFromSupabase`, so **every background poll re-stranded the overlay ~30s after any clean boot.** Fixed in two steps: v3.5.284 (PR #435) guarded the boot loaders + finally-hide + early `isLeave` fallback; v3.5.285 (PR #437) moved overlay ownership to the caller so the poll never shows it. Both LIVE on field.eq.solutions, verified serving. **This is a SEPARATE issue from leave-shows-0 above — that remains OPEN (my fixes didn't touch leave-data resolution; the slug-value diagnostic in the DEFINITIVE NEXT STEP is still the move).**
 
 **Process lesson: 4 deploys to LIVE SKS in one session, chasing a bug I kept mis-diagnosing (adapter-load → overlay-model → tenant-slug), each unverifiable on a preview (the bug only fires on the embedded-iframe-restore path). Should have gotten the runtime `TENANT.ORG_SLUG` value BEFORE shipping the first fix. Stop-and-look beats ship-and-hope.** _(added 2026-07-10)_
 
