@@ -63,6 +63,9 @@ _If this file is >48h old, the cron is broken._
 **eq-cards:**
 - #134 fix(onboarding): scope onboarding flags to the account, not just the device; be honest when OCR found nothing
 
+**eq-field:**
+- #426 v3.5.274 — instrument dashboard anniversaries widget
+
 **eq-service:**
 - #459 chore(deps-dev): bump @vitejs/plugin-react from 6.0.1 to 6.0.3
 - #458 chore(deps): bump tailwind-merge from 3.5.0 to 3.6.0
