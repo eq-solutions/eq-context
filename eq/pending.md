@@ -14,6 +14,33 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-10 (eq-cards + eq-shell) — duplicate-staff class killed at BOTH writers; Kurt onboarded by hand (licences + photos); admin photo-upload primitive built
+
+*Continuation of the 07-08 eq-cards session. Royce hit a run of duplicate "staff" rows in Shell (Brett Kilpatrick, Kurt Sticker, Sam Powell) plus a "can we enter a worker's licences for them / attach the photos they emailed" ask. Root-caused the duplicates to TWO independent writers, fixed both, cleaned the existing backlog to zero, and built the missing admin photo-upload path — all live and verified.*
+
+**Duplicate root causes — both fixed + live:**
+- [x] **eq-shell PR #719 (MERGED + deployed live) — approval path.** `cards-approve-staff` rolled its own phone strip that removed `+61`/`0` but NOT a bare `61`, so a Cards worker stored `61432470463` never matched an existing SKS row stored `+61432470463` → new dup on every approval. Routed it through the shared `normalizeAuPhone` helper (11 other functions already use it). CI green, live on core.eq.solutions.
+- [x] **eq-shell PR #724 (deployed live as v8, verified; PR OPEN for review) — the `workers-canonical-sync` webhook.** This was the bigger villain. It upserted keyed ONLY on `cards_worker_id` (so a new worker never matched an existing SKS staff row → dup) AND overwrote every staff field from the worker (so a null Cards email/phone WIPED the richer SKS record — this is what clobbered Kurt's & Sam's data mid-merge). Rewrote to match-then-merge: find by cards_worker_id → user_id → normalized phone → email (adopt only unclaimed active rows), then coalesce (worker value wins only when non-null, never null-clobbers). **Verified live against the exact failure shape** — fired a null-email sync payload for Sam, staff email preserved + matched existing row (no clobber, no dup).
+
+**Existing backlog cleared (app_data.staff dup scan → 0 active dups):**
+- [x] Brett Kilpatrick, Kurt Sticker, Sam Powell all merged by hand (kept the history-bearing original, moved Cards login onto it, deactivated the empty dup — no hard deletes). Sam was tangled (dup at both worker + staff layer; the old sync fought back and briefly spawned a 3rd row before #724 landed).
+
+**Kurt Sticker onboarded manually + admin photo path built:**
+- [x] Kurt (real account, signed in once, never returned) had licences emailed to Royce. Entered his profile + DL + Electrical licence into Cards by hand (Royce's explicit confirmation for the PII write), tagged `admin_entered`.
+- [x] **Attached the actual licence photos** — no admin-side Storage upload exists anywhere in Cards or Shell. Did it cleanly via the **Supabase CLI** (`supabase storage cp`, its own project auth — no secret handling) after several secret-moving approaches were correctly blocked by guardrails.
+- [x] **Built a reusable primitive:** `admin-attach-licence-photo` edge function (migration 0083 = vault secret + verifier; both live on jvkn). Source on branch `feat/admin-attach-licence-photo` (pushed, **no PR opened yet**). Secret-gated, service-role, writes to the `licence-photos` bucket at Cards' `{user_id}/{licence_id}/{side}.jpg` convention. Wasn't needed for Kurt (CLI won) but is the repeatable path for the next emailed-licence.
+
+- [ ] **eq-cards PR #134 (OPEN, not merged) — onboarding flags scoped to account + honest "OCR found nothing".** From the 07-08 continuation: onboarding "shown once" flags were device-local (a reused demo phone silently skipped onboarding on re-signup); now keyed by user id. Plus the licence-scan "found nothing" message no longer falsely claims "that's the back of the card". `flutter analyze` clean; needs review/merge/deploy. _(added 2026-07-10)_
+
+**Design call (Royce) — did NOT build:**
+- [ ] **Duplicate prevention beyond the two writer fixes: leave it.** Steelmanned a unique normalized-phone index and a detection cron; concluded (with Royce) that for ~85 staff a hard constraint on phone is the wrong tool (phone recycles — see eq-cards 0076 — and gets shared; converts silent dups into blocking 500s). The 80/20 that leading teams do — one identity key + normalize-and-match at write + a merge tool for stragglers — is now in place via #719 + #724. Revisit a merge-UI or constraint ONLY if dups recur after these. _(added 2026-07-10)_
+
+**Follow-ups flagged, not built:**
+- [ ] **Timesheets/other paths that write `app_data.staff`** — audit that every remaining writer routes phone through the shared normalizer (not just the two fixed). Low priority now the two main writers are fixed. _(added 2026-07-10)_
+- [ ] **`admin-attach-licence-photo` — open a PR** for the `feat/admin-attach-licence-photo` branch (0083 + the function) so live infra isn't untracked drift; or tear it down if the CLI path is preferred. _(added 2026-07-10)_
+
+---
+
 ## ⏩ Session close — 2026-07-10 (eq-field) — SKS leave "showed 0" root-caused + fixed; leave made single-source-of-truth (roster overlays it live)
 
 *Royce noticed the SKS Leave dashboard (Core → Field) showed "0 / all caught up" while 31 real approved/pending leave records sat in the DB. Investigated exhaustively — the leave read is fine at the DB layer (data, grants, RLS, tenant isolation all correct; the authenticated JWT reads all 31 rows). Root cause was a client read-routing miss. Then, per Royce's decision, restructured leave to a single-source-of-truth model. Both fixes shipped live (prod verified v3.5.282).*
