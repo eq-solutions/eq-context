@@ -8,7 +8,7 @@ status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-07-11 (nightly cron)_
+_Last verified: 2026-07-10 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -58,7 +58,10 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-07-11)
+## Open PRs (as of 2026-07-10)
+
+**eq-cards:**
+- #138 feat(compliance): tenant minimum credential requirements — v1 data layer
 
 **eq-service:**
 - #459 chore(deps-dev): bump @vitejs/plugin-react from 6.0.1 to 6.0.3
@@ -68,7 +71,7 @@ _If this file is >48h old, the cron is broken._
 - #455 chore(deps): bump @eq-solutions/ui from v1.9.0 to v1.10.0 in the eq-design-system group
 
 **eq-shell:**
-- #727 feat(comms): Move 1 — job card catches up to the planner
+- #728 feat(staff): surface tenant required-credential gaps in the Training Matrix
 - #715 feat(access): gate enforcement on can()/useCan() not role names (access-model Phase 1)
 - #681 fix(staff): eq_update_staff silently cleared email/phone/trade/level/employment_type
 - #658 fix(dashboard): surface pending staff connections on home sidebar
