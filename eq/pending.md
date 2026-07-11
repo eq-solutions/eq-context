@@ -14,6 +14,27 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-11 (eq-shell perf) — Shell cold-open made ~3× faster (nav-speed Tier 1 shipped + verified live); Tier 2 investigated + declined
+
+*Same-day continuation. Royce's stated top priority: "speed between apps/windows … can be quite slow." Ruled out Chrome Remote Desktop (heavy on his PC directly too), then profiled the live logged-in Shell, shipped the free wins, verified on production.*
+
+**Built / shipped:**
+- [x] **eq-shell PR #740 (MERGED `3ef7fba`, DEPLOYED live) — Shell cold-open ~3× faster.** Live-profiled the logged-in SKS session: cold open ~3.2 s; **16 of 30 requests on open were trackers** (Clarity + PostHog, firing pre-login); hashed `/assets/*` bundle served `max-age=0, must-revalidate` (revalidation round-trip every load). Fix: (1) `netlify.toml` caches `/assets/*` `immutable`; (2) gate PostHog + Clarity to post-auth (`identifyUser`) + sample session-replay ~20%; Sentry stays early (boot error capture). **Verified live before/after:** logged-out login 14→5 req, 6 tracker origins→0, 3185→900 ms; logged-in steady open **3191→997 ms**, bundle served from cache, apps still mount (no regression), PostHog fires post-auth (analytics intact). tsc + build + eslint green. Worktree `eq-shell-perf-tier1-wt` (kept, registry). _(done 2026-07-11)_
+
+**Investigated + declined (evidence-led — working-before-refactoring):**
+- **Tier 2 "don't eager-mount all 3 apps" — already built.** `App.tsx` has a deliberate **deferred 2.5 s pre-warm** + persistent keepers → the mount is already off the cold-open critical path *and* is what makes switching instant. Changing it = high risk (the spinner-of-death iframe/token lineage), marginal reward. Not done.
+- **Data-cache lever (`staleTime:0`) — already handled.** The hot React-Query pages set their own staleTime (dashboard 60 s, customers 30 s, access-control 1–5 min); `staleTime:0` is a deliberate fresh-by-default for ops safety. A global flip would make roster/dispatch data stale — wrong. Not done.
+
+**Direction:**
+- Nav-speed is Royce's top near-term priority (memory [[perf-app-switching-priority]]). Tier 1 (~3×) banked; further Shell-side perf has hit the sensible floor — remaining weight is per-app *inside* the iframes (Field/Service/Cards boot their own code+data), separate work in those repos.
+
+**Notes:**
+- Deploy-done signal: production `/assets/*` `Cache-Control` flips to `immutable` when the new deploy is live (deterministic check).
+- Measurement discipline paid off twice more — both Tier 2 levers looked promising from the browser profile, but reading the CODE showed they were already well-built. Read the code before refactoring.
+- Housekeeping: cpledger + eq-field-net worktrees pruned (both merged); perf-tier1 worktree kept for any follow-up.
+
+---
+
 ## ⏩ Session close — 2026-07-11 (eq-shell control plane + eq-field) — Control-plane migration ledger reconciled + eq-field undefined-name safety net; Claude takes the standing "foreman" seat
 
 *Continuation later on 2026-07-11 (separate from the strategy session below). Two build threads landed, plus a standing role decision. Model run on Claude Fable 5 from mid-session.*
