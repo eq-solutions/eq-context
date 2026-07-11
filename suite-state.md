@@ -60,14 +60,11 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-11)
 
-**eq-cards:**
-- #145 fix(compliance): show org credential requirements while connecting, not only after join
-
 **eq-field:**
-- #452 perf(field): defer JSZip off the boot critical path + revalidate index.html (v3.5.296)
 - #451 v3.5.296 — Safety offline queue unwedged (stale sks_rep payload + poison-pill replay)
 
 **eq-service:**
+- #494 perf(service): lazy-load posthog-js off the boot critical path + trim Sentry SDK
 - #459 chore(deps-dev): bump @vitejs/plugin-react from 6.0.1 to 6.0.3
 - #458 chore(deps): bump tailwind-merge from 3.5.0 to 3.6.0
 - #457 chore(deps): bump resend from 6.12.4 to 6.17.1
