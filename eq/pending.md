@@ -14,6 +14,13 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## 📋 OPEN — Retire the EQ Field PIN gate (`eq` tenant → Core-only)
+- [ ] **Plan saved 2026-07-11:** [`eq/field-eq-core-only-plan.md`](field-eq-core-only-plan.md). 3-phase, single-repo (eq-field). Decided: role-based supervision, **full strip**; keep `?tenant=demo` in-memory slug.
+- **⚠ Phase 0 smoked live — the EQ Core door is BROKEN:** `core.eq.solutions/eq/field` falls back to EQ Field's **demo PIN gate** (`demo`/`demo1234`) with "sign-in lost" — `auth.js` hardwires `eq` to demo-mode so the shell handoff never runs. The demo gate is currently the ONLY working auth for `eq` → **do NOT strip the PIN first or you lock `eq` out.**
+- **Blocker = Phase 1:** wire the `eq` shell handoff in EQ Field (make `eq` accept `verify-shell-cookie`/`token` like SKS, stop short-circuiting to demo-mode). Core/canonical/shell are already `eq`-ready (verified live: tenant_routing active, 2 manager members, field-scoped, generic route — no eq-shell build). Then Phase 2 (Core-only guard) → Phase 3 (strip). Surfaced while fixing the v3.5.295 audit-org bug.
+
+---
+
 ## ⏩ Session close — 2026-07-11 (eq-shell perf) — Shell cold-open made ~3× faster (nav-speed Tier 1 shipped + verified live); Tier 2 investigated + declined
 
 *Same-day continuation. Royce's stated top priority: "speed between apps/windows … can be quite slow." Ruled out Chrome Remote Desktop (heavy on his PC directly too), then profiled the live logged-in Shell, shipped the free wins, verified on production.*
