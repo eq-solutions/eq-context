@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-11)
 
-**eq-field:**
-- #454 v3.5.299 — hide off-roster people from Roster + Timesheets
-
 **eq-service:**
 - #496 feat(import): asset-register import from the workbook's Assets tab (SY1 pilot)
 - #495 fix(shell-embed): stop Service's sidebar leaking into Shell + nav-speed polish
