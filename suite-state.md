@@ -8,7 +8,7 @@ status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-07-10 (nightly cron)_
+_Last verified: 2026-07-11 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -58,7 +58,7 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-07-10)
+## Open PRs (as of 2026-07-11)
 
 **eq-service:**
 - #459 chore(deps-dev): bump @vitejs/plugin-react from 6.0.1 to 6.0.3
@@ -77,7 +77,7 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## System Health (as of 2026-07-10)
+## System Health (as of 2026-07-11)
 
 **CI on main:**
 
