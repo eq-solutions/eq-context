@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-11 02:46 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-11 02:49 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-11 02:24 UTC → 2026-07-11 02:46 UTC)
+## Since last refresh (2026-07-11 02:46 UTC → 2026-07-11 02:49 UTC)
 
-- Merged: eq-shell [#746](https://github.com/eq-solutions/eq-shell/pull/746) chore(armada): set maxConcurrentBuilds=3 for parallel fleet 
-- Merged: eq-shell [#730](https://github.com/eq-solutions/eq-shell/pull/730) docs(control-plane): tombstone 3 misfiled cross-plane migrat
-- Merged: eq-shell [#729](https://github.com/eq-solutions/eq-shell/pull/729) docs(control-plane): verified applied-state ledger — 61 file
-- Merged: eq-shell [#726](https://github.com/eq-solutions/eq-shell/pull/726) ci(shell): control-plane migration reminder (close the merge
-- Merged: eq-shell [#722](https://github.com/eq-solutions/eq-shell/pull/722) feat(customers): link contacts to sites inside the New custo
-- Merged: eq-shell [#721](https://github.com/eq-solutions/eq-shell/pull/721) security(canonical): revoke anon/PUBLIC EXECUTE on Ops/Intak
-- Merged: eq-shell [#718](https://github.com/eq-solutions/eq-shell/pull/718) fix(field-iframe): self-healing handoff — grace window + one
-- Merged: eq-shell [#717](https://github.com/eq-solutions/eq-shell/pull/717) fix(customers): don't lose a typed site/contact on Continue/
+- Merged: eq-shell [#731](https://github.com/eq-solutions/eq-shell/pull/731) feat(comms): Move 1.5 + 2b — filters/simplification, and boo
+- Merged: eq-shell [#728](https://github.com/eq-solutions/eq-shell/pull/728) feat(staff): surface tenant required-credential gaps in the 
+- Merged: eq-shell [#727](https://github.com/eq-solutions/eq-shell/pull/727) feat(comms): Move 1 — job card catches up to the planner
+- Merged: eq-shell [#725](https://github.com/eq-solutions/eq-shell/pull/725) fix(csp): allow Clarity's rotating collector subdomains (*.c
+- Merged: eq-shell [#724](https://github.com/eq-solutions/eq-shell/pull/724) fix(sync): worker→staff sync matches identity + merges inste
+- Merged: eq-shell [#723](https://github.com/eq-solutions/eq-shell/pull/723) polish(field-iframe): make restore-failed reachable on repea
+- Merged: eq-shell [#720](https://github.com/eq-solutions/eq-shell/pull/720) fix(briefing): swallow PGRST205 for dropped app_data.tenders
+- Merged: eq-shell [#719](https://github.com/eq-solutions/eq-shell/pull/719) fix(staff): normalize phone before dedup match on Cards appr
 
 ## ⚠ Needs you (2)
 
@@ -33,7 +33,7 @@ _2026-07-11 02:46 UTC · what needs your attention. Full snapshot: [suite-state.
 | eq-shell | ✓ success | 0d ago | 4 | 5d |
 | eq-solves-service | ✓ success | 0d ago | 5 | 4d |
 | eq-field | ✓ success | 0d ago | 2 | 0d |
-| eq-cards | ✓ success | 0d ago | 1 | 0d |
+| eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ? unknown | ? | 0 | — |
 
 ## Live errors (Sentry)
@@ -66,10 +66,10 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-11 | eq-shell | [#741](https://github.com/eq-solutions/eq-shell/pull/741) feat(comms): Move 3 — roster is the single source for 'who's on a |
 | 2026-07-11 | eq-shell | [#739](https://github.com/eq-solutions/eq-shell/pull/739) chore(armada): enable cartography for eq-shell |
 | 2026-07-11 | eq-field | [#450](https://github.com/eq-solutions/eq-field/pull/450) v3.5.295 — SKS auth audit trail visible in-app (stamp canonical o |
+| 2026-07-11 | eq-cards | [#144](https://github.com/eq-solutions/eq-cards/pull/144) fix(ui): make loading spinners animate on iOS (Timer-driven EqSpi |
 | 2026-07-11 | eq-cards | [#143](https://github.com/eq-solutions/eq-cards/pull/143) chore(ocr): instrument capture->crop funnel to diagnose the first |
 | 2026-07-11 | eq-cards | [#142](https://github.com/eq-solutions/eq-cards/pull/142) fix(ocr): make the scanning wait read as active work |
-| 2026-07-10 | eq-shell | [#738](https://github.com/eq-solutions/eq-shell/pull/738) feat(comms): Move 2c — fortnight capacity grid |
-_Showing 15 of 111 · full record in [sessions/](sessions/)_
+_Showing 15 of 112 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
@@ -115,4 +115,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-11 02:46 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-11 02:49 UTC._
