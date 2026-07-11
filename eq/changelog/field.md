@@ -9,6 +9,14 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-11] v3.5.295 — SKS auth audit trail now visible in-app: stamp CANONICAL org_id (SHIPPED, PR #450, live)
+- **BUG:** every server-side auth event on SKS (`verify-pin` logins, `eq-agent` calls) was stored in `audit_log` but INVISIBLE in the in-app Audit view. The Netlify functions stamped `org_id = TENANT_ORG_UUID` (the legacy field_org_id `1eb831f9-…`), while `audit_log`'s RLS + the Audit view read as the SKS `authenticated` JWT filtered to the canonical org `000…002` — the org the client and every hardened `public.*` table use. Mismatch → 600+ login rows since 2026-06-30 landed (service_role bypasses RLS) yet never showed. Drift from the 06-25/06-30 canonical hardening: migrations moved SKS `public.*` to `000…002`; the Netlify env was never updated.
+- **The documented diagnosis was STALE** (verified live on ehow 2026-07-11): schema is complete, `AUDIT_SB_KEY` is already `service_role`, verify-pin DOES stamp org_id, writes land daily. The fault was the org_id *value*, not the key/columns. CLAUDE.md schema-gotcha note corrected in the same PR.
+- **FIX (code, per-tenant):** `logAttempt()`/`logAgentCall()` resolve `AUDIT_ORG_BY_TENANT` (`sks:000…002`) from the request's tenant slug and stamp THAT. Shell-handoff paths (token/cookie/supabase-jwt) pass the slug; the standalone PIN path (EQ sandbox) omits it → falls back to `TENANT_ORG_UUID`, so EQ behaviour is unchanged. One Netlify site serves both tenants, so this MUST resolve per-request — a single `TENANT_ORG_UUID` env flip was rejected because it would misroute the EQ demo gate's PIN lookup. Override via `AUDIT_ORG_BY_TENANT_JSON`.
+- **Forward-only (Royce's call):** the 743 historical mis-stamped rows are left as-is (stored, not lost). No env change, no data migration.
+- Bonus finding (not fixed, moot): the same wrong env makes `fetchPinCodesFromDB()` miss every `app_config` row (all `000…002`) → env-PIN fallback; harmless on SKS (Core-only, PIN gate disabled).
+- Prod verified serving v3.5.295. Runtime proof (a new `Auth` row on `000…002`) pending the first post-deploy SKS sign-in — deterministic map lookup; not yet observed live at time of merge.
+
 ## [2026-07-11] v3.5.294 — mark "SKS leave shows 0" formally RESOLVED in the changelog banner (SHIPPED, PR #449, live)
 - Doc-only: added a ✅ RESOLVED status marker to the in-HTML changelog banner (the canonical changelog for v3.5+). No behaviour change. Prod verified serving the marker. Closes the multi-session leave-shows-0 saga in-repo.
 
