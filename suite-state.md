@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-11)
 
-**eq-cards:**
-- #147 fix(onboarding): admin worker-upsert adopts existing person instead of blind insert
-
 **eq-field:**
 - #454 v3.5.299 — hide off-roster people from Roster + Timesheets
 
@@ -74,6 +71,7 @@ _If this file is >48h old, the cron is broken._
 - #455 chore(deps): bump @eq-solutions/ui from v1.9.0 to v1.10.0 in the eq-design-system group
 
 **eq-shell:**
+- #754 feat(comms): scannable job table — Start / Finish / Hours in columns
 - #753 feat(staff): labour-hire agency + roster on/off toggle on the Staff page
 - #751 fix(security): migrate eq-intake xlsx reader off vulnerable xlsx@0.18.5 to exceljs
 - #715 feat(access): gate enforcement on can()/useCan() not role names (access-model Phase 1)
