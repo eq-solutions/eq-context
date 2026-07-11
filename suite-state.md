@@ -37,10 +37,10 @@ _If this file is >48h old, the cron is broken._
 |--------|-------|--------|
 | Sites | 243 | app_data.sites |
 | Customers | 42 | app_data.customers |
-| Assets | 336 | app_data.assets |
+| Assets | 401 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
 | Users | 5 | service.tenant_members |
-| Maintenance checks | 13 | service.maintenance_checks |
+| Maintenance checks | 14 | service.maintenance_checks |
 | Defects | 0 | service.defects |
 
 **SKS tenant ID on ehow:** `7dee117c-98bd-4d39-af8c-2c81d02a1e85`
@@ -61,7 +61,6 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-11)
 
 **eq-service:**
-- #495 fix(shell-embed): stop Service's sidebar leaking into Shell + nav-speed polish
 - #459 chore(deps-dev): bump @vitejs/plugin-react from 6.0.1 to 6.0.3
 - #458 chore(deps): bump tailwind-merge from 3.5.0 to 3.6.0
 - #457 chore(deps): bump resend from 6.12.4 to 6.17.1
