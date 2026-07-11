@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-11 08:54 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-11 09:04 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-11 08:34 UTC → 2026-07-11 08:54 UTC)
+## Since last refresh (2026-07-11 08:54 UTC → 2026-07-11 09:04 UTC)
 
-- Merged: eq-shell [#762](https://github.com/eq-solutions/eq-shell/pull/762) feat(comms): the Melbourne door — import the Working Job Lis
-- Merged: eq-shell [#761](https://github.com/eq-solutions/eq-shell/pull/761) fix(staff): E.164 phone normalisation on edit + carry #681 e
-- Merged: eq-shell [#739](https://github.com/eq-solutions/eq-shell/pull/739) chore(armada): enable cartography for eq-shell
-- Merged: eq-shell [#731](https://github.com/eq-solutions/eq-shell/pull/731) feat(comms): Move 1.5 + 2b — filters/simplification, and boo
-- Merged: eq-shell [#728](https://github.com/eq-solutions/eq-shell/pull/728) feat(staff): surface tenant required-credential gaps in the 
-- Merged: eq-shell [#637](https://github.com/eq-solutions/eq-shell/pull/637) docs: pnpm-workspace.yaml — packages are vendored, not a git
-- Merged: eq-shell [#636](https://github.com/eq-solutions/eq-shell/pull/636) build: pin @eq-solutions/ui to release tag v1.10.0 for repro
-- Merged: eq-shell [#635](https://github.com/eq-solutions/eq-shell/pull/635) feat(canonical-api): move APP_TENANT_SCOPE allow-list to a s
+- Merged: eq-shell [#745](https://github.com/eq-solutions/eq-shell/pull/745) fix(crm-write): narrow bare catch on link-table writes to mi
+- Merged: eq-shell [#744](https://github.com/eq-solutions/eq-shell/pull/744) feat(comms): Move 5 — the comms crew (scope the grid + picke
+- Merged: eq-shell [#742](https://github.com/eq-solutions/eq-shell/pull/742) feat(comms): Move 4 — the fortnight job agenda (the Monday d
+- Merged: eq-shell [#741](https://github.com/eq-solutions/eq-shell/pull/741) feat(comms): Move 3 — roster is the single source for 'who's
+- Merged: eq-shell [#740](https://github.com/eq-solutions/eq-shell/pull/740) perf(nav): immutable-cache assets + gate/sample analytics (S
+- Merged: eq-shell [#738](https://github.com/eq-solutions/eq-shell/pull/738) feat(comms): Move 2c — fortnight capacity grid
+- Merged: eq-shell [#730](https://github.com/eq-solutions/eq-shell/pull/730) docs(control-plane): tombstone 3 misfiled cross-plane migrat
+- Merged: eq-shell [#729](https://github.com/eq-solutions/eq-shell/pull/729) docs(control-plane): verified applied-state ledger — 61 file
 
 ## ⚠ Needs you (2)
 
@@ -115,4 +115,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-11 08:54 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-11 09:04 UTC._
