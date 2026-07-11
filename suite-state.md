@@ -64,6 +64,8 @@ _If this file is >48h old, the cron is broken._
 - #454 v3.5.299 — hide off-roster people from Roster + Timesheets
 
 **eq-service:**
+- #496 feat(import): asset-register import from the workbook's Assets tab (SY1 pilot)
+- #495 fix(shell-embed): stop Service's sidebar leaking into Shell + nav-speed polish
 - #459 chore(deps-dev): bump @vitejs/plugin-react from 6.0.1 to 6.0.3
 - #458 chore(deps): bump tailwind-merge from 3.5.0 to 3.6.0
 - #457 chore(deps): bump resend from 6.12.4 to 6.17.1
@@ -71,6 +73,7 @@ _If this file is >48h old, the cron is broken._
 - #455 chore(deps): bump @eq-solutions/ui from v1.9.0 to v1.10.0 in the eq-design-system group
 
 **eq-shell:**
+- #757 fix(ci): move invite-users-batch.test.ts out of functions root so Netlify deploys
 - #755 fix(field-iframe): cookie-mode handoff falls back to token mode on rejected; silence background-prewarm noise
 - #753 feat(staff): labour-hire agency + roster on/off toggle on the Staff page
 - #751 fix(security): migrate eq-intake xlsx reader off vulnerable xlsx@0.18.5 to exceljs
