@@ -1166,3 +1166,6 @@ explicit Royce go-ahead.
 - EQ Field Ops commercialisation roadmap built (85-item Excel workbook)
 - White-label conversion estimated at 2-3 hours
 **Status:** Planning complete - not yet executed
+
+## 2026-07-11
+- v3.5.299 (PR #455) — Sidebar: hide the orphaned "Pipeline" section header in employee view. The section wrapper was ungated while all three children (Pipeline/Resources/Accounts) are manager-only, so employee logins saw an empty "Pipeline" label. Marked `#nav-section-pipeline` `.edit-only` + added a matching `.nav-section.edit-only` CSS rule. Live.
