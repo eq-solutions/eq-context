@@ -9,6 +9,17 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-11] v3.5.301 — Off-roster people hidden from Roster + Timesheets (SHIPPED, PR #454, live)
+- People turned off the roster in Core (Shell Staff page → "Show on roster") no longer appear in the **Roster** grid, the **Timesheets** grid, or the timesheet **completion stats** — they stay in Contacts. Lets office-based managers stay reachable without cluttering the roster.
+- Reads `app_data.staff.on_roster` via the existing `field_people` view (Shell owns the flag; Field only honours it). `NULL`/default `true` = on-roster, so every existing person is unaffected until explicitly toggled off. No schema change.
+- Re-stamped v3.5.299→301 at merge (version race with #455) and rebased through main; changelog reordered newest-first.
+
+## [2026-07-11] v3.5.300 — Add/Edit Person → compact modal; person-wizard retired (SHIPPED, PR #456, live)
+- **The full-page 3-step "person wizard" is removed** (`page-person-wizard` / `wizardSave` / `renderPersonWizard` / `pf-*`). Add/Edit Person now opens the compact `#modal-person`. The wizard was the only wired flow and its save was fire-and-forget with no error handling — a failed write showed "added" then the person vanished on refresh. This is the fix for Royce's "person wizard doesn't work".
+- **Reliable save:** `savePerson()` now awaits the write and only updates the roster + closes on success; on failure it keeps the modal open, shows "Save failed", and rolls back the optimistic edit. New rows get a real UUID (not the legacy numeric `max+1`).
+- **Adopt-before-create dedup:** adding someone already on the roster (matched by last-9 phone or lowercased email against loaded people) opens their record instead of minting a duplicate stub.
+- Modal reaches field parity: **Job Title, Emergency Contact, Subcontractor** added. Add stays hidden on SKS (staff come from Core/Cards, per Royce); Edit works on every tenant. Smoke-verified on the deploy preview (editPerson opens + prefills; dedup matches all AU phone formats).
+
 ## [2026-07-11] v3.5.298 — Safety offline queue unwedged: stale sks_rep payload + poison-pill replay (SHIPPED, PR #451, live)
 - **BUG:** Safety showed "1 pending offline write" permanently on SKS. A prestart queued offline ~25 June (pre-v3.5.220 build) still carried the old `sks_rep` field name; the live `prestarts` column is `site_rep` (renamed client-side in v3.5.220, but entries already in the queue kept the stale key). Every replay 400'd (`PGRST204: could not find the 'sks_rep' column`) and went straight back in the queue — a poison pill re-firing on every Safety open, with no exit because the replay loop treated all failures as retryable.
 - **FIX (`safety.js _qReplay`):** (1) queued payloads are normalised on replay (`sks_rep`→`site_rep`), so the stuck June prestart actually lands in the DB — the record is rescued, not discarded; (2) entries that fail with a permanent 400/404 are parked in a `<queueKey>_dead` localStorage key (payload + error + timestamp kept, Sentry-captured with the full payload) and removed from the live queue, so the pending pill can no longer wedge. Transient failures (network/401/403/5xx) still retry as before. Same permanent-4xx dead-letter guard added to `site-reports-shared.js replay()` (site_reports/diaries/toolbox v2 queues had the identical retry-forever flaw; no rename there — `site_reports` genuinely has an `sks_rep` column).

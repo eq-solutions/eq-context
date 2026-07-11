@@ -80,7 +80,7 @@ _Nothing pending — migrations 001–023 all applied._
 - [x] Acknowledgments — confirmed live and working, no action needed
 
 **Deferred (added 2026-07-03):**
-- [ ] Person-wizard renders blank content specifically on a cold `?tab=person-wizard` deep-link boot (normal in-app "Add Person" nav works fine) — root cause not found despite exhaustive code trace + live Sentry/entitlement checks; needs Royce's own DevTools session with the Field-iframe console context selected _(added 2026-07-03)_
+- [x] Person-wizard renders blank content on a cold `?tab=person-wizard` deep-link boot _(added 2026-07-03)_ — **RESOLVED 2026-07-11 (eq-field #456, v3.5.300)**: the person-wizard was **removed entirely** — Add/Edit Person is now the compact `#modal-person` (reliable save + adopt-before-create dedup), and the `page-person-wizard` route/DOM/`wizardSave`/`renderPersonWizard`/`pf-*` handlers no longer exist. The blank-render bug is moot; nothing deep-links there anymore.
 - [x] At least one SKS person ("Collin ... Toohey") has no record in canonical `app_data.staff`, blocking their leave submissions — data-ops backfill needed, not a code fix _(added 2026-07-03)_ — **RESOLVED, confirmed live 2026-07-06**: `app_data.staff` row exists (`3c9714bd-…`, email `collin.toohey@sks.com.au`, trade `electrical`). Not built this session — found already-fixed during the remediation-queue audit below, likely landed via the 2026-07-02/03 EQ Intake steward-run. Worth confirming his leave submissions actually work end-to-end now that the record exists.
 - [ ] Royce to independently click-through-confirm the Weekends toggle, roster names, and both safety forms live (smoke-tested remotely, not yet confirmed by Royce beyond the original repros) _(added 2026-07-03)_
 

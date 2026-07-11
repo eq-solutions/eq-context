@@ -9,6 +9,11 @@ status: live
 
 # Changelog — EQ Shell
 
+## [2026-07-11] Staff page: labour-hire agency + roster on/off toggle (PR #753)
+- **Agency:** surfaced `app_data.staff.agency` (labour-hire supplier name) on the Staff page — read + edit, shown only for Labour Hire staff. Was captured by eq-field but never visible in Core (canonical `workers` has no agency column). `StaffRow`/`mapStaff` read it; `entity-patch` staff allow-list writes it; default-hidden Agency list column.
+- **Roster toggle:** "Show on roster" toggle in both edit panels (`SplitPanel` + `MobileSheet`) writing `app_data.staff.on_roster`, plus an "Off roster" list marker. Companion eq-field v3.5.301 honours the flag (hides off-roster people from the roster/timesheets). Manager turns someone off in Core → Field hides them.
+- No migration — both columns already exist on `app_data.staff` and are already returned by `eq_browse_entity` (`to_jsonb(t.*)`). Rebased through #750's `entity-patch` 404 refactor (clean auto-merge, build green) before merge.
+
 ## [2026-07-08] Fix iOS auto-zoom on login inputs (PR #701)
 - `.eq-login-input` font-size bumped 14px→16px in `src/App.css` and `src/pages/auth.css`. Inputs under 16px trigger Safari's focus-zoom on mobile, which never un-zooms — was causing a persistent "have to zoom in and out" experience on the login screen.
 

@@ -21,6 +21,12 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ✅ Staff records — Field/Shell (2026-07-11, SHIPPED live)
+Agency field + roster on/off toggle in Core (#753), Field honours `on_roster` (#454, v3.5.301), person-wizard → compact edit modal with reliable save + adopt-before-create dedup (#456, v3.5.300). All merged + deployed. Feature complete end-to-end (manager toggles someone off the roster in Core → Field hides them from roster/timesheets). Adding staff → Cards/Core; Field = edit surface.
+- [ ] **Phone normalisation** — staff phones stored mixed (`04..` / `+61..` / `61..`). Low-stakes (matching already collapses AU-mobile formats to last-9), but a one-time backfill to `+61` E.164 + normalise on the two write paths that skip it (Shell `entity-patch` edit + Field person forms) would tidy the data. _(added 2026-07-11)_
+
+---
+
 ## ⏩ Session close — 2026-07-11 (eq-cards) — duplicate-staff LAST leak closed, residual data cleaned, Cards deployed
 
 *Royce handed the recurring SKS duplicate-staff problem as a root-cause task. Verify-first paid off: the main fix was already shipped — avoided rebuilding it — so the real work was the one remaining leak + data cleanup.*
