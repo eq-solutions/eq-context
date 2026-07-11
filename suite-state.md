@@ -70,7 +70,6 @@ _If this file is >48h old, the cron is broken._
 **eq-shell:**
 - #751 fix(security): migrate eq-intake xlsx reader off vulnerable xlsx@0.18.5 to exceljs
 - #715 feat(access): gate enforcement on can()/useCan() not role names (access-model Phase 1)
-- #681 fix(staff): eq_update_staff silently cleared email/phone/trade/level/employment_type
 - #658 fix(dashboard): surface pending staff connections on home sidebar
 
 ---
