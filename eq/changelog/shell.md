@@ -9,6 +9,10 @@ status: live
 
 # Changelog — EQ Shell
 
+## [2026-07-11] Staff phone normalisation on edit + carry #681 eq_update_staff fix (PR #761)
+- `entity-patch` now normalises a staff `phone` to canonical E.164 (`+61…`) on every edit via new `toAuE164` in `_shared/phone.ts` — a general AU normaliser that keeps landlines and leaves anything unrecognisable untouched (never wipes). Stops stored values drifting into a mix of `04…`/`+61…`/`61…`. Companion eq-field #457 does the same in Field; a one-time backfill of existing rows was run live.
+- Carried #681's `eq_update_staff` fix forward as migration **0172** (renumbered from 0165; #681's client-side `job_title` changes already reached main separately, so only the RPC hardening was carried — #681 closed as superseded). The RPC now `COALESCE`s email/phone/trade/level/employment_type against existing values instead of nulling them on a partial update. **Not yet applied — needs a governed `tenant-migrate` run.** The RPC has no live callers (defensive).
+
 ## [2026-07-11] Staff page: labour-hire agency + roster on/off toggle (PR #753)
 - **Agency:** surfaced `app_data.staff.agency` (labour-hire supplier name) on the Staff page — read + edit, shown only for Labour Hire staff. Was captured by eq-field but never visible in Core (canonical `workers` has no agency column). `StaffRow`/`mapStaff` read it; `entity-patch` staff allow-list writes it; default-hidden Agency list column.
 - **Roster toggle:** "Show on roster" toggle in both edit panels (`SplitPanel` + `MobileSheet`) writing `app_data.staff.on_roster`, plus an "Off roster" list marker. Companion eq-field v3.5.301 honours the flag (hides off-roster people from the roster/timesheets). Manager turns someone off in Core → Field hides them.

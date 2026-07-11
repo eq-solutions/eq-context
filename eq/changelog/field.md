@@ -9,6 +9,10 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-11] v3.5.302 — Person phone normalised to +61 (E.164) on save (SHIPPED, PR #457, live)
+- Editing a person now stores their phone in one canonical E.164 form (`+61…`) instead of a mix of `04…`/`+61…`/`61…`. New `toAuE164` (`scripts/utils.js`) is a general AU normaliser — handles mobiles AND landlines, and returns anything unrecognisable unchanged, so a save can never wipe or mangle a phone. Applied in `savePerson`.
+- Mirrors eq-shell's server-side `toAuE164` (#761) so Core and Field store the same form. Dedup unaffected (already keys on last-9 digits). A one-time backfill of existing rows to `+61` was run live alongside (ehow + zaap).
+
 ## [2026-07-11] v3.5.301 — Off-roster people hidden from Roster + Timesheets (SHIPPED, PR #454, live)
 - People turned off the roster in Core (Shell Staff page → "Show on roster") no longer appear in the **Roster** grid, the **Timesheets** grid, or the timesheet **completion stats** — they stay in Contacts. Lets office-based managers stay reachable without cluttering the roster.
 - Reads `app_data.staff.on_roster` via the existing `field_people` view (Shell owns the flag; Field only honours it). `NULL`/default `true` = on-roster, so every existing person is unaffected until explicitly toggled off. No schema change.
