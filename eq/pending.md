@@ -21,6 +21,31 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-11 (per-app nav-speed) — Field + Service boot lightened & shipped; Cards profiled + held
+
+*Continuation of the Shell nav-speed thread. Royce: "continue per-app speed work" + "steelman" + "use fable". Profiled all 3 apps LIVE (prod, logged-in) + code (Fable agents per repo). Scope chosen: **Field + Service, hold Cards** (live signup traffic).*
+
+**Built / shipped (both MERGED + deployed):**
+- [x] **eq-field PR #452 (MERGED `8d3eca6`, v3.5.296, deployed)** — Field was the slowest EQ app (~4.3 s to interactive; Service ~0.7 s, Cards ~0.2 s warm), bottlenecked on ~595 KB render-blocking `<head>` JS (NOT data — already parallelised + window-scoped). Shipped: JSZip (~95 KB, export-only, every callsite guards `typeof JSZip`) → requestIdleCallback load (**the real win — verified live: eager `<script>` gone**); print.css `media="print"`; jvkn preconnect. _(done 2026-07-11)_
+- [x] **eq-service PR #494 (MERGED `356d743`, deployed)** — Service's own boot is healthy (Next.js, already immutable-cached + route-split + batched dashboard); only weight = observability. Shipped: lazy-load posthog-js (~62 KB) off the critical bundle via dynamic `import()` (was static in root `providers.tsx` → shipped on every route incl login + `/shell`); drop unused `<PostHogProvider>` (zero consumers); Sentry `bundleSizeOptimizations` (errors-only → strip tracing/replay). `next build` green; `/shell` returns 200 post-deploy. _(done 2026-07-11)_
+
+**Decided (Royce):**
+- Scope = **Field + Service, hold Cards** — Cards takes live self-signup/claim traffic; even its safe perf wins wait for a quiet window.
+- **"merge them both"** — both deployed (branch+PR; Netlify auto-deploy on merge).
+
+**Deferred (added 2026-07-11):**
+- [ ] **Cards perf — HELD (live signup traffic).** Safe wins queued: preload/preconnect the boot chain, defer PostHog to `flutter-first-frame`, defer Cropper.js. Big lever = Flutter deferred-imports / `--wasm` / static-first claim page (architectural — do NOT rush on live traffic). _(added 2026-07-11)_
+- [ ] **Field structural cache lever (L-effort)** — fingerprint the ~40 non-hashed JS/CSS assets so the service worker can go cache-first (kills ~40 revalidation round-trips/boot). Higher-effort follow-up. _(added 2026-07-11)_
+- [ ] **Residual "switching feels slow" = Shell-side pre-warm TIMING**, not per-app boot. With persistent hidden iframes each app boots ~once/session (pre-warm ~2.5 s) + on memory-saver re-mount — measure that if these boot cuts don't resolve the feel. _(added 2026-07-11)_
+
+**Notes / substrate corrections:**
+- **Service is Next.js** (not Vite) and **Cards is Flutter/CanvasKit** (not Vite/React) — live-verified; prior docs were wrong.
+- **Field index.html `no-store`→`no-cache` was a NO-OP for boot** — the `for="/index.html"` rule doesn't apply to `/` (the path the Shell loads), which already gets Netlify default `public,max-age=0,must-revalidate` (304-capable). The profiling "698 KB re-downloads every boot" was a config misread. Lesson: verify the LIVE header on the ACTUAL request path. The jszip win (the real one) is live + verified.
+- **Cards OCR is server-side** (Claude Vision edge fn), not in the web bundle — killed the "eager OCR at boot" hypothesis.
+- **Guard friction:** EnterWorktree refuses cross-repo worktrees from an eq-context session, and `block-worktree-write` (un-skippable) pattern-matches `*-wt` → built in non-`-wt` worktree paths (Royce explicitly directed the build = CLAUDE.md "unless explicitly pointed at one" exception).
+
+---
+
 ## ⏩ Session close — 2026-07-11 (eq-shell ARMADA fleet run) — scheduled lighthouse fired, 6 issues chartered, 6 PRs shipped through the fleet + human merge
 
 *Scheduled `eq-shell-lighthouse` task's first live end-to-end fire. Recon filed 6 issues; then ran crows-nest by hand (manual ticks) with Royce merging as-we-go. autoMerge stayed hard-false — every merge human-gated.*
