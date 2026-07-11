@@ -21,6 +21,22 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-11 (eq-cards) — duplicate-staff LAST leak closed, residual data cleaned, Cards deployed
+
+*Royce handed the recurring SKS duplicate-staff problem as a root-cause task. Verify-first paid off: the main fix was already shipped — avoided rebuilding it — so the real work was the one remaining leak + data cleanup.*
+
+**Built / shipped:**
+- [x] **Found the worker→staff sync identity-match fix ALREADY LIVE** (eq-shell #724, deployed 2026-07-10). Did NOT rebuild. Root cause confirmed: duplicate `app_data.staff` = projection of duplicate `workers` (distinct `cards_worker_id` each). _(2026-07-11)_
+- [x] **eq-cards migration 0089 — the last blind-insert worker path fixed** (`eq_cards_admin_upsert_worker` now adopts an existing worker by normalised phone/email before inserting). **APPLIED LIVE** to eq-canonical + **PR #147 MERGED** (`92f9f94`). _(2026-07-11)_
+- [x] **Residual data cleaned** (Royce's go) — deleted 2 leftover duplicate stub workers (Brett, Sam) + 5 never-used orphan logins; kept 2 real provisioned SKS accounts (Mark Brame, Dino Cabal). **0 duplicate-worker groups remain.** _(2026-07-11)_
+- [x] **Cards frontend deployed + verified** — `gh workflow run deploy.yml --ref main` (run 29142327661, 2m58s); cards.eq.solutions loads (all assets 200, fresh version.json, 0 console errors). Shipped accumulated main #140–#147. _(2026-07-11)_
+
+**Decided (Royce):** scope = sync fallback + admin dedup; match key = phone-then-email within tenant; then approved apply + merge + full data cleanup + frontend deploy.
+
+**Notes:** the brief's "~18 dormant duplicate logins" was wrong — only 7 never-signed-in accounts, 0 phone-duplicates (phone-dedup trigger 0040 holding, 1 login/person). #724's phone/email fallback only adopts *unclaimed* staff rows, which is why the admin blind-insert still leaked; 0089 removes that trigger at the source. No new deferred items.
+
+---
+
 ## ⏩ Session close — 2026-07-11 (per-app nav-speed) — Field + Service boot lightened & shipped; Cards profiled + held
 
 *Continuation of the Shell nav-speed thread. Royce: "continue per-app speed work" + "steelman" + "use fable". Profiled all 3 apps LIVE (prod, logged-in) + code (Fable agents per repo). Scope chosen: **Field + Service, hold Cards** (live signup traffic).*
