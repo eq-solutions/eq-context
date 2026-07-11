@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-11 05:30 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-11 05:53 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-11 05:04 UTC → 2026-07-11 05:30 UTC)
+## Since last refresh (2026-07-11 05:30 UTC → 2026-07-11 05:53 UTC)
 
-- Merged: eq-shell [#752](https://github.com/eq-solutions/eq-shell/pull/752) feat(staff): capture a decline reason and deliver it to the 
-- Merged: eq-shell [#750](https://github.com/eq-solutions/eq-shell/pull/750) fix(crm-write/entity-patch): 404 on zero-row / cross-tenant 
-- Merged: eq-shell [#749](https://github.com/eq-solutions/eq-shell/pull/749) fix(invite-users-batch): await entitlement upsert so dropped
-- Merged: eq-shell [#738](https://github.com/eq-solutions/eq-shell/pull/738) feat(comms): Move 2c — fortnight capacity grid
-- Merged: eq-shell [#730](https://github.com/eq-solutions/eq-shell/pull/730) docs(control-plane): tombstone 3 misfiled cross-plane migrat
-- Merged: eq-shell [#729](https://github.com/eq-solutions/eq-shell/pull/729) docs(control-plane): verified applied-state ledger — 61 file
-- Merged: eq-shell [#726](https://github.com/eq-solutions/eq-shell/pull/726) ci(shell): control-plane migration reminder (close the merge
-- Merged: eq-shell [#722](https://github.com/eq-solutions/eq-shell/pull/722) feat(customers): link contacts to sites inside the New custo
+- Merged: eq-shell [#739](https://github.com/eq-solutions/eq-shell/pull/739) chore(armada): enable cartography for eq-shell
+- Merged: eq-shell [#731](https://github.com/eq-solutions/eq-shell/pull/731) feat(comms): Move 1.5 + 2b — filters/simplification, and boo
+- Merged: eq-shell [#728](https://github.com/eq-solutions/eq-shell/pull/728) feat(staff): surface tenant required-credential gaps in the 
+- Merged: eq-shell [#727](https://github.com/eq-solutions/eq-shell/pull/727) feat(comms): Move 1 — job card catches up to the planner
+- Merged: eq-shell [#725](https://github.com/eq-solutions/eq-shell/pull/725) fix(csp): allow Clarity's rotating collector subdomains (*.c
+- Merged: eq-shell [#724](https://github.com/eq-solutions/eq-shell/pull/724) fix(sync): worker→staff sync matches identity + merges inste
+- Merged: eq-shell [#723](https://github.com/eq-solutions/eq-shell/pull/723) polish(field-iframe): make restore-failed reachable on repea
+- Merged: eq-shell [#721](https://github.com/eq-solutions/eq-shell/pull/721) security(canonical): revoke anon/PUBLIC EXECUTE on Ops/Intak
 
 ## ⚠ Needs you (2)
 
@@ -30,9 +30,9 @@ _2026-07-11 05:30 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 4 | 6d |
+| eq-shell | ✓ success | 0d ago | 5 | 6d |
 | eq-solves-service | ✓ success | 0d ago | 5 | 4d |
-| eq-field | ✓ success | 0d ago | 0 | — |
+| eq-field | ✓ success | 0d ago | 1 | 0d |
 | eq-cards | ✓ success | 0d ago | 1 | 0d |
 | eq-solves-intake | ? unknown | ? | 0 | — |
 
@@ -115,4 +115,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-11 05:30 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-11 05:53 UTC._
