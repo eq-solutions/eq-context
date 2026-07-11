@@ -21,6 +21,34 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ⏩ Session close — 2026-07-11 (eq-shell ARMADA fleet run) — scheduled lighthouse fired, 6 issues chartered, 6 PRs shipped through the fleet + human merge
+
+*Scheduled `eq-shell-lighthouse` task's first live end-to-end fire. Recon filed 6 issues; then ran crows-nest by hand (manual ticks) with Royce merging as-we-go. autoMerge stayed hard-false — every merge human-gated.*
+
+**Built / shipped (all MERGED to main → deployed core.eq.solutions):**
+- [x] **Lighthouse recon** filed 6 issues #732–#737 (unarmed): tender-tables anon RLS hole, crm-write error-swallowing, quote-job-consumer event-window loss, RLS `(select)` wrapping, invite-users-batch entitlement drift, zero-row 404. _(done 2026-07-11)_
+- [x] **PR #739** — cartography turned ON in eq-shell `.armada/config.json`. _(done 2026-07-11)_
+- [x] **PR #635** — canonical-api per-app tenant allow-list moved from hardcoded map → `shell_control.app_tenant_scope` table (fail-closed). Migration applied to **eq-canonical (jvkn)** FIRST, then merged (no 403 window). _(done 2026-07-11)_
+- [x] **PR #745** (#733) — crm-write.ts: narrowed 4 bare catches to tolerate only `42P01`; `merge_contact` aborts before destructive archive on real errors; new `crm-link-errors.ts` helper + 9-test suite. _(done 2026-07-11)_
+- [x] **PR #743** (#732) — tender_enrichment/nominations/tender_phases anon lockdown migration (remove-anon). Applied live to **zaap** (dropped inert anon policies). _(done 2026-07-11)_
+- [x] **PR #636 / #637** — pinned `@eq-solutions/ui` v1.10.0; pnpm-workspace docs fix. _(done 2026-07-11)_
+
+**Decided:**
+- **Merge-as-you-go is the default** — merge clean code-only PRs immediately to avoid divergence; hold only migration- or security-bearing PRs for a deliberate migrate-then-merge pass. (Royce pushed this; corrected my earlier over-caution.)
+- Build #732 despite scope ambiguity — fleet chose remove-anon, verified against live before landing.
+
+**Deferred (added 2026-07-11):**
+- [ ] **Arm/build the queued fleet bugs** — #736 (invite-users-batch entitlements), #737 (zero-row 404), #705 (eq-intake xlsx) armed, not yet built. #734 (quote-job-consumer) + #735 (RLS `(select)` wrapping) filed UNARMED — Royce's call to arm. _(added 2026-07-11)_
+- [ ] **zaap tender tables are now service_role-only** (no `authenticated` tenant policies — the create migration's `field_authed_all_*` never reached zaap). Fine if the EQ app reads them via service_role; add the authenticated tenant policy if Field ever needs authed access there. _(added 2026-07-11)_
+
+**Notes / substrate corrections:**
+- **eq-shell canonical-api control-plane DB = eq-canonical (`jvknxcmbtrfnxfrwfimn`), NOT ehow** — confirmed by `shell_control.tenant_routing` living on jvkn, not ehow.
+- **eq-shell migrations are NOT auto-applied on merge** — merge ships code only; the DB migration must be applied to the live plane by hand (migrate-then-merge). Bit us on #635.
+- **Tender tables live on ehow (SKS) + zaap (EQ) public schema.** Live anon exposure was already closed by hand (anon grants revoked on both) BEFORE this session — #743 codified it + cleaned zaap's inert policies. Verify-live beat trusting the migration source.
+- eq-shell repo auto-merge disabled + branch protection requires up-to-date branches → update-branch + CI re-run before each merge.
+
+---
+
 ## ⏩ Session close — 2026-07-11 (eq-shell perf) — Shell cold-open made ~3× faster (nav-speed Tier 1 shipped + verified live); Tier 2 investigated + declined
 
 *Same-day continuation. Royce's stated top priority: "speed between apps/windows … can be quite slow." Ruled out Chrome Remote Desktop (heavy on his PC directly too), then profiled the live logged-in Shell, shipped the free wins, verified on production.*
@@ -1474,7 +1502,7 @@ Net: on a deep-linked `?tab=leave` view — exactly how Core embeds Field — `l
 - Merge-all-immediately is Royce's preferred pattern for lighthouse-sourced fixes once tsc/tests are clean — no separate review gate for small, scoped, mechanical fixes (Sentry wiring, Zod validation, test coverage).
 
 **Deferred (added 2026-07-02):**
-- [ ] **Verify `eq-shell-lighthouse` scheduled task's first live fire** — created this session (8am daily), not yet observed running end-to-end _(added 2026-07-02)_
+- [x] **Verify `eq-shell-lighthouse` scheduled task's first live fire** — created 2026-07-02 (8am daily); first end-to-end fire observed 2026-07-11: recon filed #732–#737, then a hand-run crows-nest built + merged the batch. _(done 2026-07-11 — see the ARMADA fleet-run close block above)_
 ---
 
 ## ⏩ Session close — 2026-07-02 (eq-shell) — token lint ratchet + staff licence resync
