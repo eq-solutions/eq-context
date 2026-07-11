@@ -68,11 +68,11 @@ _If this file is >48h old, the cron is broken._
 - #455 chore(deps): bump @eq-solutions/ui from v1.9.0 to v1.10.0 in the eq-design-system group
 
 **eq-shell:**
+- #744 feat(comms): Move 5 — the comms crew (scope the grid + picker to your ~12)
 - #743 fix(security): remove anon cross-tenant access on tender_enrichment / nominations / tender_phases
 - #715 feat(access): gate enforcement on can()/useCan() not role names (access-model Phase 1)
 - #681 fix(staff): eq_update_staff silently cleared email/phone/trade/level/employment_type
 - #658 fix(dashboard): surface pending staff connections on home sidebar
-- #635 feat(canonical-api): move APP_TENANT_SCOPE allow-list to a shell_control table
 
 ---
 
