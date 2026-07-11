@@ -1,7 +1,7 @@
 ---
 title: SKS — Pending
 owner: Royce Milmlow
-last_updated: 2026-07-10
+last_updated: 2026-07-11
 scope: SKS Technologies operational TODO list
 read_priority: critical
 status: live
@@ -271,6 +271,24 @@ The following tests belong to eq-quotes-port (Flask), which is retired as of 202
 **Deferred:**
 - [x] **Same pattern confirmed + fixed in eq-field, same day — RESOLVED.** `sks-pipeline.js`/`sks-pipeline-resource.js` had the identical stopgap-limit gap (plus `tender_phases`, not present in SKS's own version of these files). Confirmed live against the underlying database (not assumed from the SKS schema) that `tender_enrichment` has no `id` column there either, only `tender_id`. Fixed via `sbFetchAll()`, eq-field v3.5.276, PR **#427, merged, live**.
 - [ ] `audit_log`/`prestarts`/`toolbox_talks` recency caps (both apps) — not a bug, but if older history genuinely needs to be reachable, that's a pagination-UI or date-filter feature to design, not a copy of `sbFetchAll()`. _(added 2026-07-10)_
+
+## ⏩ SKS Field — session 2026-07-11 (Safety offline queue unwedge + Resource Allocation capacity panel + Sentry triage)
+
+**Completed (eq-field, all merged to main + live):**
+- [x] **Safety "1 pending offline write" stuck forever (v3.5.298, PR #451).** A prestart saved offline ~25 June (pre-v3.5.220 build) still carried the old `sks_rep` field name; the live `prestarts` column is `site_rep`, so every replay 400'd (`PGRST204`) and re-queued — a poison pill with no exit, re-firing on every Safety open. Fix in `safety.js _qReplay`: (1) normalise queued payloads on replay (`sks_rep`→`site_rep`) so the stuck June prestart actually lands in the DB, not discarded; (2) entries that fail with a permanent 400/404 are parked in a `<queueKey>_dead` localStorage key (payload + error kept, Sentry-captured) and removed from the live queue so the pending pill can't wedge. Transient failures (network/401/403/5xx) still retry. Same dead-letter guard added to `site-reports-shared.js replay()`. No DB change (live `prestarts` schema verified correct first). **Renumbered v3.5.296→298 at merge** — a concurrent session's JSZip perf PR #452 took 296, capacity panel took 297.
+- [x] **Resource Allocation capacity panel never rendered for labour-curve jobs (v3.5.297, PR #453).** The Capacity Planning panel stayed on the "Set start dates and worker counts…" empty state for phase-planned jobs (e.g. SKS-16310: start date + 3 phases, flat `peak_workers`/`duration_weeks` empty). The demand builder fully supported phases; only the render GATE checked the flat fields. New `_isAllocated()` gate matches the builder (start date + phases OR peak+duration). Also, per the reviewed "Mock B" design: panel now reads **roster-first** (THIS WEEK strip — N on roster · N free · N jobs live · N needed — above the stat tiles); chart **scales to demand not headcount** (with 90 on the books vs 4–12-crew jobs the old max(HC,demand) scale flattened every job; HC dashed line only draws when demand is within reach, else a legend chip); peak-demand tile names its week; WORKERS/WEEKS/timeline/colour derive from the curve when flat fields empty. **"Save phases" now rebuilds the unpushed labour plan** so "N to assign" tracks the current curve (SKS-16310 showed a stale "66 to assign" from its confirm-time curve while the edited curve implied 114); rows already pushed to the live roster are never touched. SKS-only surface, no DB change.
+- [x] **Sentry eq-field queue cleared to zero** — all 5 unresolved issues triaged + resolved, none needed new code: EQ-FIELD-R (`isLeave is not defined`, calendar — fixed by lazy-loader commit d18638f, event predated it); EQ-FIELD-M (null `staff_id` leave POST — fixed by v3.5.221 pre-check, event on v3.5.218); EQ-FIELD-T/S (`LEAVE_DIAG*` — leave-shows-0 diagnostics removed v3.5.292; T's payload actually confirms the fix, 31 rows ok); EQ-FIELD-V (`400: PGRST204` — my own deliberate smoke test of the new dead-letter Sentry capture on the preview).
+
+**Decided (Royce):**
+- Capacity panel design = **Mock B** (demand-scaled chart + roster-first strip), reviewed via live-data artifact before build.
+- Merge both PRs + fix Sentry errors.
+
+**Deferred — the "bridge pipeline into resources" vision (steelman, Royce liked it; staged so no rewrite):**
+- [ ] **Pipeline shadow — demand BEFORE it's won** (highest-leverage next step). Every live tender casts a probability-weighted demand shadow (stage→default win %, or a slider) rendered as a lighter band behind firm demand. Turns the panel from status display into a forward instrument: "if we win 2 of these 4 tenders, do we break?" Small schema touch (probability per tender or per stage); chart gains a second band. Brief was offered but not yet built. _(added 2026-07-11)_
+- [ ] **Supply is a curve too, not a flat HC line.** Draw committed-vs-available supply from assignment end-dates: when a job rolls off in week N, those people return to the bench in week N. Two curves (supply stepping down, demand stepping up); the crossover is the hire-or-redeploy trigger. Roster already holds the end dates; nobody reads them forward. Would also dissolve the "which 90 is headcount?" question below. _(added 2026-07-11)_
+- [ ] **Demand in roles, not headcount** — "3 electricians + 1 leading hand w/ EWP" vs "4 workers"; match on role + cert, flag "12 free but only 2 licenced". Field already holds roles/licences on people; labour curve needs a role column. Also enables worker-facing "your next 8 weeks" view (recognition angle — visibility forward, not just cost backward). _(added 2026-07-11)_
+- [ ] **What-if drag** — drag a start date, watch the curve re-flow ("client wants to push St George 3 weeks — do we still clear the Equinix peak?"). Client-side re-render with a ghost overlay; all inputs already present. _(added 2026-07-11)_
+- [ ] **"Which 90 is headcount?" decision** — HC = every unarchived person in People, incl. office/PM staff never rostered to a job, so BENCH and "N free" overstate deployable capacity. Options: keep as-is, filter by role/category, or use "deployed in the last N weeks" as the denominator. (Largely resolved by the supply-curve item above if that ships.) _(added 2026-07-11)_
 
 ## Untouched substrate items
 
