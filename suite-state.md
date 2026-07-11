@@ -37,7 +37,7 @@ _If this file is >48h old, the cron is broken._
 |--------|-------|--------|
 | Sites | 243 | app_data.sites |
 | Customers | 42 | app_data.customers |
-| Assets | 361 | app_data.assets |
+| Assets | 336 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
 | Users | 5 | service.tenant_members |
 | Maintenance checks | 13 | service.maintenance_checks |
@@ -60,6 +60,13 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-11)
 
+**eq-cards:**
+- #144 fix(ui): make loading spinners animate on iOS (Timer-driven EqSpinner)
+
+**eq-field:**
+- #452 perf(field): defer JSZip off the boot critical path + revalidate index.html (v3.5.296)
+- #451 v3.5.296 — Safety offline queue unwedged (stale sks_rep payload + poison-pill replay)
+
 **eq-service:**
 - #459 chore(deps-dev): bump @vitejs/plugin-react from 6.0.1 to 6.0.3
 - #458 chore(deps): bump tailwind-merge from 3.5.0 to 3.6.0
@@ -68,6 +75,7 @@ _If this file is >48h old, the cron is broken._
 - #455 chore(deps): bump @eq-solutions/ui from v1.9.0 to v1.10.0 in the eq-design-system group
 
 **eq-shell:**
+- #747 feat(comms): trim the fortnight view — this-week default + hide idle
 - #715 feat(access): gate enforcement on can()/useCan() not role names (access-model Phase 1)
 - #681 fix(staff): eq_update_staff silently cleared email/phone/trade/level/employment_type
 - #658 fix(dashboard): surface pending staff connections on home sidebar
