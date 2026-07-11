@@ -37,7 +37,7 @@ _If this file is >48h old, the cron is broken._
 |--------|-------|--------|
 | Sites | 243 | app_data.sites |
 | Customers | 42 | app_data.customers |
-| Assets | 336 | app_data.assets |
+| Assets | 721 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
 | Users | 5 | service.tenant_members |
 | Maintenance checks | 13 | service.maintenance_checks |
