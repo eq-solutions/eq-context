@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-11 02:19 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-11 02:24 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-11 02:10 UTC → 2026-07-11 02:19 UTC)
+## Since last refresh (2026-07-11 02:19 UTC → 2026-07-11 02:24 UTC)
 
-- Merged: eq-shell [#729](https://github.com/eq-solutions/eq-shell/pull/729) docs(control-plane): verified applied-state ledger — 61 file
-- Merged: eq-shell [#726](https://github.com/eq-solutions/eq-shell/pull/726) ci(shell): control-plane migration reminder (close the merge
-- Merged: eq-shell [#722](https://github.com/eq-solutions/eq-shell/pull/722) feat(customers): link contacts to sites inside the New custo
-- Merged: eq-shell [#721](https://github.com/eq-solutions/eq-shell/pull/721) security(canonical): revoke anon/PUBLIC EXECUTE on Ops/Intak
-- Merged: eq-shell [#718](https://github.com/eq-solutions/eq-shell/pull/718) fix(field-iframe): self-healing handoff — grace window + one
-- Merged: eq-shell [#717](https://github.com/eq-solutions/eq-shell/pull/717) fix(customers): don't lose a typed site/contact on Continue/
-- Merged: eq-shell [#714](https://github.com/eq-solutions/eq-shell/pull/714) fix(shell): scope embedded-app handoff overlay to the iframe
-- Merged: eq-shell [#707](https://github.com/eq-solutions/eq-shell/pull/707) fix(quotes): sign quote docs with whoever is logged in
+- Merged: eq-shell [#743](https://github.com/eq-solutions/eq-shell/pull/743) fix(security): remove anon cross-tenant access on tender_enr
+- Merged: eq-shell [#728](https://github.com/eq-solutions/eq-shell/pull/728) feat(staff): surface tenant required-credential gaps in the 
+- Merged: eq-shell [#727](https://github.com/eq-solutions/eq-shell/pull/727) feat(comms): Move 1 — job card catches up to the planner
+- Merged: eq-shell [#725](https://github.com/eq-solutions/eq-shell/pull/725) fix(csp): allow Clarity's rotating collector subdomains (*.c
+- Merged: eq-shell [#724](https://github.com/eq-solutions/eq-shell/pull/724) fix(sync): worker→staff sync matches identity + merges inste
+- Merged: eq-shell [#723](https://github.com/eq-solutions/eq-shell/pull/723) polish(field-iframe): make restore-failed reachable on repea
+- Merged: eq-shell [#720](https://github.com/eq-solutions/eq-shell/pull/720) fix(briefing): swallow PGRST205 for dropped app_data.tenders
+- Merged: eq-shell [#719](https://github.com/eq-solutions/eq-shell/pull/719) fix(staff): normalize phone before dedup match on Cards appr
 
 ## ⚠ Needs you (2)
 
@@ -30,7 +30,7 @@ _2026-07-11 02:19 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 4 | 5d |
+| eq-shell | ✓ success | 0d ago | 3 | 5d |
 | eq-solves-service | ✓ success | 0d ago | 5 | 4d |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
@@ -43,8 +43,8 @@ _2026-07-11 02:19 UTC · what needs your attention. Full snapshot: [suite-state.
 | eq-shell | [Error: native pipeline query failed: Could not find the table 'app_data.tenders'](https://eq-solutions.sentry.io/issues/132948690/) | 31 | 2026-07-10 |
 | eq-solves-service | [auth handoff: cookie_absent](https://eq-solutions.sentry.io/issues/132832684/) | 19 | 2026-07-08 |
 | eq-field | [Error: LEAVE_DIAG {"ver":"3.5.291","slug":"sks","winsb":"ehowgjardagevnrluult","](https://eq-solutions.sentry.io/issues/133570956/) | 5 | 2026-07-10 |
-| eq-shell | [EQ Field handoff auto-recovery exhausted (rejected)](https://eq-solutions.sentry.io/issues/133584982/) | 2 | 2026-07-11 |
-| eq-shell | [EQ Field handoff auto-recovery (rejected)](https://eq-solutions.sentry.io/issues/133584980/) | 2 | 2026-07-11 |
+| eq-shell | [EQ Field handoff auto-recovery exhausted (rejected)](https://eq-solutions.sentry.io/issues/133584982/) | 4 | 2026-07-11 |
+| eq-shell | [EQ Field handoff auto-recovery (rejected)](https://eq-solutions.sentry.io/issues/133584980/) | 4 | 2026-07-11 |
 | eq-cards | [LateInitializationError: Field '' has not been initialized.](https://eq-solutions.sentry.io/issues/132643934/) | 2 | 2026-07-07 |
 | eq-field | [Error: LEAVE_DIAG_PIPETEST 1783724352017](https://eq-solutions.sentry.io/issues/133570134/) | 1 | 2026-07-10 |
 | eq-solves-service | [Error: COALESCE types uuid and text cannot be matched](https://eq-solutions.sentry.io/issues/132618557/) | 1 | 2026-07-07 |
@@ -54,6 +54,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-11 | eq-shell | [#743](https://github.com/eq-solutions/eq-shell/pull/743) fix(security): remove anon cross-tenant access on tender_enrichme |
 | 2026-07-11 | eq-shell | [#745](https://github.com/eq-solutions/eq-shell/pull/745) fix(crm-write): narrow bare catch on link-table writes to missing |
 | 2026-07-11 | eq-shell | [#744](https://github.com/eq-solutions/eq-shell/pull/744) feat(comms): Move 5 — the comms crew (scope the grid + picker to  |
 | 2026-07-11 | eq-shell | [#635](https://github.com/eq-solutions/eq-shell/pull/635) feat(canonical-api): move APP_TENANT_SCOPE allow-list to a shell_ |
@@ -68,7 +69,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-11 | eq-cards | [#142](https://github.com/eq-solutions/eq-cards/pull/142) fix(ocr): make the scanning wait read as active work |
 | 2026-07-10 | eq-shell | [#738](https://github.com/eq-solutions/eq-shell/pull/738) feat(comms): Move 2c — fortnight capacity grid |
 | 2026-07-10 | eq-shell | [#731](https://github.com/eq-solutions/eq-shell/pull/731) feat(comms): Move 1.5 + 2b — filters/simplification, and book cre |
-| 2026-07-10 | eq-shell | [#730](https://github.com/eq-solutions/eq-shell/pull/730) docs(control-plane): tombstone 3 misfiled cross-plane migrations  |
 _Showing 15 of 111 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -115,4 +115,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-11 02:19 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-11 02:24 UTC._
