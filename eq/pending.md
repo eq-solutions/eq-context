@@ -24,7 +24,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ## ✅ Staff records — Field/Shell (2026-07-11, SHIPPED live)
 Agency field + roster on/off toggle in Core (#753), Field honours `on_roster` (#454, v3.5.301), person-wizard → compact edit modal with reliable save + adopt-before-create dedup (#456, v3.5.300). All merged + deployed. Feature complete end-to-end (manager toggles someone off the roster in Core → Field hides them from roster/timesheets). Adding staff → Cards/Core; Field = edit surface.
 - [x] **Phone normalisation** — DONE 2026-07-11: `toAuE164` (general AU→E.164, keeps landlines, never wipes) applied on write in Shell `entity-patch` (#761) + Field `savePerson` (#457, v3.5.302) — both MERGED; one-time backfill applied live (ehow 69 rows → 107 E.164, 2 empty, 0 odd; zaap 26). Staff phones now all `+61XXXXXXXXX`. _(added + closed 2026-07-11)_
-- [ ] **Apply migration 0172** (`eq_update_staff` field-clobber fix, carried from #681) via the governed `tenant-migrate` pipeline (workflow_dispatch, production-gated) on ehow + zaap — merged to main in #761 but NOT yet applied live. Defensive (the RPC has no live callers). _(added 2026-07-11)_
+- [x] **Apply migration 0172** (`eq_update_staff` field-clobber fix, carried from #681) — APPLIED 2026-07-11 via the tenant-migrate One Pipe (`allow_checksum_drift=true`; Royce-approved production gate). Verified live: ledger + COALESCE'd function on all 3 planes (ehow/zaap/nxoj). _(added + closed 2026-07-11)_
 
 ---
 
