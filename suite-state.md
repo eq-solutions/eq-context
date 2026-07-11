@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-11)
 
-**eq-cards:**
-- #144 fix(ui): make loading spinners animate on iOS (Timer-driven EqSpinner)
-
 **eq-field:**
 - #452 perf(field): defer JSZip off the boot critical path + revalidate index.html (v3.5.296)
 - #451 v3.5.296 — Safety offline queue unwedged (stale sks_rep payload + poison-pill replay)
