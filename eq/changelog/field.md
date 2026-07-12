@@ -1,13 +1,17 @@
 ---
 title: Changelog — EQ Solves Field
 owner: Royce Milmlow
-last_updated: 2026-07-11
+last_updated: 2026-07-12
 scope: Append-only history of changes to the EQ Solves Field product
 read_priority: reference
 status: live
 ---
 
 # Changelog — EQ Solves Field
+
+## [2026-07-12] v3.5.303 — Birthday + Start date columns; Supervision read-only on SKS (SHIPPED, PR #458, live)
+- Contacts gains two optional columns — **Birthday** (day + month, no year) and **Start date** — available from the Columns picker for every Group segment (hidden by default). The data already lived on each person and is edited in the Add/Edit Person modal; this just surfaces it in the table. Mirrors the same two columns added to Core's Staff list (eq-shell #771).
+- Supervision is now read-only on SKS: the "＋ Add Contact" button is hidden and `openAddManager` is guarded (row edit/archive/delete were already SKS-hidden). SKS supervisors are managed in Core (Shell Staff → Supervisor toggle); Field is view-only for them. EQ tenants unchanged.
 
 ## [2026-07-11] v3.5.302 — Person phone normalised to +61 (E.164) on save (SHIPPED, PR #457, live)
 - Editing a person now stores their phone in one canonical E.164 form (`+61…`) instead of a mix of `04…`/`+61…`/`61…`. New `toAuE164` (`scripts/utils.js`) is a general AU normaliser — handles mobiles AND landlines, and returns anything unrecognisable unchanged, so a save can never wipe or mangle a phone. Applied in `savePerson`.

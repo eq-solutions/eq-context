@@ -5,9 +5,14 @@ last_updated: 2026-07-08
 scope: Append-only history of changes to EQ Shell (core.eq.solutions)
 read_priority: reference
 status: live
+last_updated: 2026-07-12
 ---
 
 # Changelog — EQ Shell
+
+## [2026-07-12] Birthday + start date on the staff record (PR #771) · onboarding middle-name tidy (PR #774)
+- Staff records now carry **birthday** (day + month only — no birth year) and **start date**. Both already existed on `app_data.staff`; they're now editable in Core's Staff editor (desktop split panel + mobile sheet) and shown as optional, default-hidden columns in the Staff list. `dob_day`/`dob_month`/`start_date` added to `staffTypes` + the `entity-patch` staff allow-list. Companion eq-field #458 adds the same two columns to Field's Contacts list. (PR #771)
+- New `_shared/name.ts` `tidyOnboardSurname`: when an onboarding surname has an ALL-CAPS last token with a word in front (e.g. `Yash KHATRI`), the earlier words are a middle name and are dropped — returning just the title-cased surname. Applied where the operational staff record is created (`cards-approve-staff`, `staff-create`); the full legal name stays on the canonical worker record, and genuine compound surnames (title-case) are untouched. Existing rows cleaned by a one-time live backfill (5 supervisor + 6 staff rows on ehow). (PR #774)
 
 ## [2026-07-11] Staff phone normalisation on edit + carry #681 eq_update_staff fix (PR #761)
 - `entity-patch` now normalises a staff `phone` to canonical E.164 (`+61…`) on every edit via new `toAuE164` in `_shared/phone.ts` — a general AU normaliser that keeps landlines and leaves anything unrecognisable untouched (never wipes). Stops stored values drifting into a mix of `04…`/`+61…`/`61…`. Companion eq-field #457 does the same in Field; a one-time backfill of existing rows was run live.
