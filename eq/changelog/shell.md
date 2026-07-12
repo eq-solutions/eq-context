@@ -10,7 +10,10 @@ last_updated: 2026-07-12
 
 # Changelog — EQ Shell
 
-## [2026-07-12] Job numbers are canonical — `workbench_job_no` → `job_number` (PR #776 — open, not yet dispatched)
+## [2026-07-12] DB-level phone normalisation trigger (PR #778, migration 0174 — LIVE)
+- Phone normalisation is now a tenant-DB invariant, not app-code duplicated across `entity-patch`/`savePerson` (and absent from Field's direct PostgREST writes). `app_data.to_au_e164()` + `BEFORE INSERT/UPDATE OF` triggers on `staff` (`phone`, `emergency_contact_mobile`) + `contacts` (`mobile_phone`, `work_phone`) normalise every write to `+61` E.164 — every writer, no exceptions. A one-time backfill fixed the existing drift the app layer never caught (bare-`61`, local-`0`, mobiles parked in `work_phone`): ehow 54+28+103 → 0. Applied to all 3 planes (ehow/zaap/nxoj); dispatched + Royce-approved. Follows the `staff_normalise_employment_type` precedent. Phone only — the onboarding middle-name tidy stays app-side.
+
+## [2026-07-12] Job numbers are canonical — `workbench_job_no` → `job_number` (PR #776 — LIVE, applied all 3 planes)
 - "Workbench job numbers are just job numbers." One canonical name everywhere. Migration **0173** (plane-aware) renames `app_data.quote.workbench_job_no` + `app_data.jobs.workbench_job_no` → `job_number`, DROP+CREATEs `eq_list_quotes`/`eq_get_quote_detail` on both planes (grants re-applied), and — SKS-only, guarded on `field_job_number_overrides` (absent on zaap) — repoints `field_job_numbers_src`, adds `eq_set_job_number`, and keeps `eq_set_workbench_job_no` as a delegating wrapper for the cutover. 8 readers repointed (QuotesModule/QuotesReports, comms-jobs, quote-pdf, gm-reports, briefing-engine, canonical-api jobs allow-list). eq-field unchanged — `app_data.field_job_numbers` already outputs `job_number`.
 - UI: "Workbench Job No." → "Job No." across the Ops pipeline; GM-Reports "Workbench report" xlsx strings left as-is (real source-file name). Confirmed GM `job_code` = the same canonical job number (value-join for the invoice-run pre-tick).
 - **Not deployed.** Dispatch `0173` + merge #776 together, after #775 merges (it removes the dead `sync-quotes-nightly.ts` that still writes the old column). SKS-only, 44 rows; brief self-healing window at cutover.
