@@ -72,7 +72,6 @@ _If this file is >48h old, the cron is broken._
 - #455 chore(deps): bump @eq-solutions/ui from v1.9.0 to v1.10.0 in the eq-design-system group
 
 **eq-shell:**
-- #792 feat(comms): crew-gaps strip — where the labour issues are, by site
 - #715 feat(access): gate enforcement on can()/useCan() not role names (access-model Phase 1)
 - #658 fix(dashboard): surface pending staff connections on home sidebar
 
