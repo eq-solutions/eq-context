@@ -20,10 +20,12 @@ on:
     branches: [main]
     paths:
       - "hooks/**"
+      - ".github/workflows/adversarial-suite.yml"
   push:
     branches: [main]
     paths:
       - "hooks/**"
+      - ".github/workflows/adversarial-suite.yml"
   schedule:
     # 03:00 AEST — catches drift in the fixtures' own assumptions (e.g. if
     # CLAUDE.md or system/lessons.md ever shrinks under the hook's 200-line
