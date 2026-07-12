@@ -8,19 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-12 00:30 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-12 00:45 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-12 00:27 UTC → 2026-07-12 00:30 UTC)
+## Since last refresh (2026-07-12 00:30 UTC → 2026-07-12 00:45 UTC)
 
-- Merged: eq-shell [#769](https://github.com/eq-solutions/eq-shell/pull/769) fix(crm): normalise contact mobile to E.164 on every write p
-- Merged: eq-shell [#752](https://github.com/eq-solutions/eq-shell/pull/752) feat(staff): capture a decline reason and deliver it to the 
-- Merged: eq-shell [#747](https://github.com/eq-solutions/eq-shell/pull/747) feat(comms): trim the fortnight view — this-week default + h
-- Merged: eq-shell [#739](https://github.com/eq-solutions/eq-shell/pull/739) chore(armada): enable cartography for eq-shell
-- Merged: eq-shell [#637](https://github.com/eq-solutions/eq-shell/pull/637) docs: pnpm-workspace.yaml — packages are vendored, not a git
-- Merged: eq-shell [#636](https://github.com/eq-solutions/eq-shell/pull/636) build: pin @eq-solutions/ui to release tag v1.10.0 for repro
-- Merged: eq-shell [#635](https://github.com/eq-solutions/eq-shell/pull/635) feat(canonical-api): move APP_TENANT_SCOPE allow-list to a s
-- Merged: eq-solves-service [#499](https://github.com/eq-solutions/eq-service/pull/499) fix(scope): reconciliation to service-enabled sites; scope g
-- ✅ Needs you: 2 → 1
+- Merged: eq-shell [#770](https://github.com/eq-solutions/eq-shell/pull/770) fix(crm): add_site links the chosen site contact so it stick
+- Merged: eq-shell [#750](https://github.com/eq-solutions/eq-shell/pull/750) fix(crm-write/entity-patch): 404 on zero-row / cross-tenant 
+- Merged: eq-shell [#749](https://github.com/eq-solutions/eq-shell/pull/749) fix(invite-users-batch): await entitlement upsert so dropped
+- Merged: eq-shell [#748](https://github.com/eq-solutions/eq-shell/pull/748) feat(comms): crew = the Field "Comms" team (retire the paral
+- Merged: eq-shell [#746](https://github.com/eq-solutions/eq-shell/pull/746) chore(armada): set maxConcurrentBuilds=3 for parallel fleet 
+- Merged: eq-shell [#745](https://github.com/eq-solutions/eq-shell/pull/745) fix(crm-write): narrow bare catch on link-table writes to mi
+- Merged: eq-shell [#744](https://github.com/eq-solutions/eq-shell/pull/744) feat(comms): Move 5 — the comms crew (scope the grid + picke
+- Merged: eq-shell [#743](https://github.com/eq-solutions/eq-shell/pull/743) fix(security): remove anon cross-tenant access on tender_enr
 
 ## ⚠ Needs you (1)
 
@@ -51,10 +50,12 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-12 | eq-shell | [#770](https://github.com/eq-solutions/eq-shell/pull/770) fix(crm): add_site links the chosen site contact so it sticks wit |
 | 2026-07-12 | eq-shell | [#769](https://github.com/eq-solutions/eq-shell/pull/769) fix(crm): normalise contact mobile to E.164 on every write path |
 | 2026-07-12 | eq-shell | [#768](https://github.com/eq-solutions/eq-shell/pull/768) fix(field-iframe): retire cookie-mode handoff — token mode for ev |
 | 2026-07-12 | eq-shell | [#765](https://github.com/eq-solutions/eq-shell/pull/765) feat(comms): bulk-import from Ops — tick boxes + select all |
 | 2026-07-12 | eq-solves-service | [#499](https://github.com/eq-solutions/eq-service/pull/499) fix(scope): reconciliation to service-enabled sites; scope groupe |
+| 2026-07-12 | eq-cards | [#149](https://github.com/eq-solutions/eq-cards/pull/149) feat(connections): smart re-apply cooldown after a decline |
 | 2026-07-12 | eq-cards | [#148](https://github.com/eq-solutions/eq-cards/pull/148) fix(connections): dedup declined cards to latest per org |
 | 2026-07-11 | eq-shell | [#764](https://github.com/eq-solutions/eq-shell/pull/764) feat(comms): custom columns + tick-list crew picker — more power  |
 | 2026-07-11 | eq-shell | [#763](https://github.com/eq-solutions/eq-shell/pull/763) feat(comms): door polish — money across, Ops count, Melbourne PO  |
@@ -64,12 +65,12 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-11 | eq-shell | [#755](https://github.com/eq-solutions/eq-shell/pull/755) fix(field-iframe): cookie-mode handoff falls back to token mode o |
 | 2026-07-11 | eq-shell | [#759](https://github.com/eq-solutions/eq-shell/pull/759) fix(comms): job table fits its width — no cut-off columns |
 | 2026-07-11 | eq-shell | [#753](https://github.com/eq-solutions/eq-shell/pull/753) feat(staff): labour-hire agency + roster on/off toggle on the Sta |
-| 2026-07-11 | eq-shell | [#757](https://github.com/eq-solutions/eq-shell/pull/757) fix(ci): move invite-users-batch.test.ts out of functions root so |
-| 2026-07-11 | eq-shell | [#754](https://github.com/eq-solutions/eq-shell/pull/754) feat(comms): scannable job table — Start / Finish / Hours in colu |
-_Showing 15 of 115 · full record in [sessions/](sessions/)_
+_Showing 15 of 116 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **eq-shell #758 — CI guard for invalid `netlify/functions` filenames** (fail on dotted/`*.test.ts` at the functions root, which silently breaks all deploys). Filed, not built. _(added 2026-07-12)_
+- **Service-side SameSite gap** — SERVICE-9 `cookie_absent` is the Service twin of the Field cookie issue; Service already auths via token mode so it's residual canary noise, but worth confirming the canary can be muted/removed rather than left firing. _(added 2026-07-12)_
 - **Plan saved 2026-07-11:** [`eq/field-eq-core-only-plan.md`](field-eq-core-only-plan.md). 3-phase, single-repo (eq-field). Decided: role-based supervision, **full strip**; keep `?tenant=demo` in-memory slug.
 - **Cards perf — HELD (live signup traffic).** Safe wins queued: preload/preconnect the boot chain, defer PostHog to `flutter-first-frame`, defer Cropper.js. Big lever = Flutter deferred-imports / `--wasm` / static-first claim page (architectural — do NOT rush on live traffic). _(added 2026-07-11)_
 - **Field structural cache lever (L-effort)** — fingerprint the ~40 non-hashed JS/CSS assets so the service worker can go cache-first (kills ~40 revalidation round-trips/boot). Higher-effort follow-up. _(added 2026-07-11)_
@@ -78,9 +79,7 @@ _Showing 15 of 115 · full record in [sessions/](sessions/)_
 - **zaap tender tables are now service_role-only** (no `authenticated` tenant policies — the create migration's `field_authed_all_*` never reached zaap). Fine if the EQ app reads them via service_role; add the authenticated tenant policy if Field ever needs authed access there. _(added 2026-07-11)_
 - **Ledger action item 3 — `2026_06_16_cards_claim_explicit_user_id.sql` must NEVER be re-applied** (documented in the ledger). A replay hazard, not a to-do; flagged so no future apply run picks it up. _(added 2026-07-11)_
 - **Ledger action item 4 — cosmetic duplicate unique-index name on jvkn** (harmless, documented). Tidy only if convenient. _(added 2026-07-11)_
-- **Make eq-field "Tests + lint" a REQUIRED branch-protection check** — the net now catches undefined-name bugs, but the check isn't required-to-merge, so a red run doesn't block. Interacts with Netlify push-to-deploy; Royce's call. _(added 2026-07-11)_
-- Verify where EQ Cards WRITES onboarding — must target canonical / EQ Field (the survivor), not nspbmir (the app being demolished). _(added 2026-07-11)_
-_…and 302 more · [eq/pending.md](eq/pending.md)_
+_…and 304 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -100,11 +99,11 @@ _…and 34 more · [sks/pending.md](sks/pending.md)_
 
 | Date | Session |
 |------|---------|
+| 2026-07-12 | [Shell→Field handoff: cookie mode retired, recurring Sentry issues cleared](sessions/2026-07-12.md) |
 | 2026-07-11 | [CEO meeting prep for SKS Labour → Cards is the strategic standout](sessions/2026-07-11.md) |
 | 2026-07-08 | [eq-shell: Brett Kilpatrick duplicate profile merged live + Cards-onboarding dedup root-caused and fixed](sessions/2026-07-08.md) |
 | 2026-07-07 | [eq-cards: onboarding shipped live, approval-flow audit, offline ID card + install nudge](sessions/2026-07-07.md) |
 | 2026-07-06 | [eq-shell: command palette + skeleton loading + optimistic archive shipped, live; unrelated drift fixed same session](sessions/2026-07-06.md) |
-| 2026-07-05 | [eq-shell Sentry triage: tenant PostgREST exposure gap root-caused + fixed live](sessions/2026-07-05.md) |
 _[sessions/](sessions/) · 5 shown_
 
 ## Substrate honesty
@@ -112,4 +111,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-12 00:30 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-12 00:45 UTC._
