@@ -5,12 +5,23 @@ last_updated: 2026-07-11
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
+last_updated: 2026-07-12
 ---
 
 # EQ Tier — Pending
 
 EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## Shell→Field handoff — cookie mode retired, recurring Sentry issues cleared (2026-07-12)
+- [x] **eq-shell #755 (MERGED+DEPLOYED) — self-healing Field handoff.** Cookie-mode `rejected` fell back to token mode; background pre-warm frames stopped emitting error-level Sentry. _(done 2026-07-12)_
+- [x] **eq-shell #757 (MERGED+DEPLOYED) — unblocked frozen production deploys.** `invite-users-batch.test.ts` sat at the `netlify/functions/` root → Netlify rejected the dotted function name → EVERY eq-shell deploy errored since #749 while GitHub CI stayed green (prod was stuck ~2 releases behind main). Moved the test under `_shared/`. LESSON: eq-shell prod-deploy health ≠ GitHub CI — check the Netlify deploy state. _(done 2026-07-12)_
+- [x] **eq-shell #768 (MERGED+DEPLOYED, closes #756) — retired cookie-mode Field handoff.** Root cause of the recurring EQ-SHELL-R/S "handoff rejected": the `SameSite=Lax` session cookie isn't reliably delivered to the cross-origin `field.eq.solutions` iframe. Chose Path B (token mode for every tenant, reusing #755's `#sh=` JWT path) over the literal SameSite=None fix — recon found SameSite=None would strip the CSRF shield off ~50 unguarded mutating endpoints. Session cookie UNCHANGED. Live-smoked `/eq/field` + `/sks/field`. EQ-SHELL-R/S resolved. _(done 2026-07-12)_
+- [x] **Sentry triage** — EQ-SHELL-Q (31-event `app_data.tenders` PGRST205, already fixed by #720) resolved; EQ-SHELL-P resolved (retired); SERVICE-9 `cookie_absent` annotated (residual canary, Service already token mode). Daily watch task `eq-shell-field-handoff-fallback-watch` (08:30 Sydney) set as the R/S regression sentinel. _(done 2026-07-12)_
+- [ ] **eq-shell #758 — CI guard for invalid `netlify/functions` filenames** (fail on dotted/`*.test.ts` at the functions root, which silently breaks all deploys). Filed, not built. _(added 2026-07-12)_
+- [ ] **Service-side SameSite gap** — SERVICE-9 `cookie_absent` is the Service twin of the Field cookie issue; Service already auths via token mode so it's residual canary noise, but worth confirming the canary can be muted/removed rather than left firing. _(added 2026-07-12)_
 
 ---
 
