@@ -49,7 +49,7 @@ print("=== F2 - silent truncation on the mount (must BLOCK) ===")
 t("Edit 296-line CLAUDE.md", edit(CLAUDE_MD), 2)
 t("Edit CLAUDE.md via windows path", edit(r"C:\Projects\eq-context\CLAUDE.md"), 2)
 t("Edit unresolvable path (FAIL-CLOSED)", edit(r"C:\Projects\ghost\x.md"), 2)
-t("Write over 508-line lessons.md", {"tool_name": "Write", "tool_input": {"file_path": LESSONS}}, 2)
+t("Write over 200-line lessons.md", {"tool_name": "Write", "tool_input": {"file_path": LESSONS}}, 2)
 
 print("=== F6 - append (>>) NUL-fills on the mount (must BLOCK) ===")
 t("cat >> lessons.md", bash("cat >> system/lessons.md << EOF"), 2)

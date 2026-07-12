@@ -884,6 +884,8 @@ proven, no parallel maintenance.
 - After every eq-context push, run the verification SQL (see `system/lessons.md` "Substrate Audit Query") and confirm the expected files show today's date.
 - Stop using "done" as a status word in this repo unless the SQL has been run.
 
+> **Superseded (2026-07-12):** the SQL above targets `context_files`, a Supabase table deleted 2026-06-22 with the rest of the pre-GitHub substrate cache — this verification step is no longer executable as written. Current equivalent: fetch the raw GitHub URL for the changed file(s) and confirm the expected content is present. Full history moved to `archive/lessons-history.md` ("False-Implementation Pattern" / "Substrate Audit Query") — `system/lessons.md` no longer carries a heading by that name.
+
 ---
 
 ## 2026-04-17 — EQ Design Brief v1.3 Supersedes v1.2
