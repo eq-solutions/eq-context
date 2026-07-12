@@ -41,7 +41,7 @@ Consolidates **every** outstanding finding from the 2026-05-31 deep-dive + cross
 
 **P3 — housekeeping:** B10 ⛔ delete dead stubs (your permission) · Stream D asset-intake (in-flight) · migrate the 4 held plans → eq-context, then prune
 
-> **✅ SPRINT 1 + SPRINT 2 (Waves 1–2) COMPLETE — 2026-05-30.** Sprint 2 detail + all merged Wave-1/2 PRs are in [`SPRINT-2-BOARD.md`](SPRINT-2-BOARD.md); current per-repo reality is the [`STATE.md`](STATE.md) POST-SPRINT block. **Held for Royce:** 3 dormant-feature migrations (licence-expiry, timesheet-approval, audit-log-UI) + B4 canonical wiring + ⛔ C4 auth cutover + **B5 SKS-live cutover (LAST)**. The Sprint-1 fan-out record below is retained for history.
+> **✅ SPRINT 1 + SPRINT 2 (Waves 1–2) COMPLETE — 2026-05-30.** Sprint 2 detail + all merged Wave-1/2 PRs are in [`SPRINT-2-BOARD.md`](archive/sprints/SPRINT-2-BOARD.md); current per-repo reality is the [`STATE.md`](STATE.md) POST-SPRINT block. **Held for Royce:** 3 dormant-feature migrations (licence-expiry, timesheet-approval, audit-log-UI) + B4 canonical wiring + ⛔ C4 auth cutover + **B5 SKS-live cutover (LAST)**. The Sprint-1 fan-out record below is retained for history.
 >
 > **🧭 CONVERGENCE DIRECTIVE (2026-05-31, Royce) — collapse parallel consoles to ONE driver.**
 > Multiple consoles diverged onto the same roles/canonical/design questions today (see the four
