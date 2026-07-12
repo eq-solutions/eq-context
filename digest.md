@@ -8,32 +8,32 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-12 00:27 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-12 00:30 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-12 00:15 UTC → 2026-07-12 00:27 UTC)
+## Since last refresh (2026-07-12 00:27 UTC → 2026-07-12 00:30 UTC)
 
-- Merged: eq-shell [#748](https://github.com/eq-solutions/eq-shell/pull/748) feat(comms): crew = the Field "Comms" team (retire the paral
-- Merged: eq-shell [#746](https://github.com/eq-solutions/eq-shell/pull/746) chore(armada): set maxConcurrentBuilds=3 for parallel fleet 
-- Merged: eq-shell [#745](https://github.com/eq-solutions/eq-shell/pull/745) fix(crm-write): narrow bare catch on link-table writes to mi
-- Merged: eq-shell [#744](https://github.com/eq-solutions/eq-shell/pull/744) feat(comms): Move 5 — the comms crew (scope the grid + picke
-- Merged: eq-shell [#743](https://github.com/eq-solutions/eq-shell/pull/743) fix(security): remove anon cross-tenant access on tender_enr
-- Merged: eq-shell [#742](https://github.com/eq-solutions/eq-shell/pull/742) feat(comms): Move 4 — the fortnight job agenda (the Monday d
-- Merged: eq-shell [#741](https://github.com/eq-solutions/eq-shell/pull/741) feat(comms): Move 3 — roster is the single source for 'who's
-- Merged: eq-shell [#740](https://github.com/eq-solutions/eq-shell/pull/740) perf(nav): immutable-cache assets + gate/sample analytics (S
+- Merged: eq-shell [#769](https://github.com/eq-solutions/eq-shell/pull/769) fix(crm): normalise contact mobile to E.164 on every write p
+- Merged: eq-shell [#752](https://github.com/eq-solutions/eq-shell/pull/752) feat(staff): capture a decline reason and deliver it to the 
+- Merged: eq-shell [#747](https://github.com/eq-solutions/eq-shell/pull/747) feat(comms): trim the fortnight view — this-week default + h
+- Merged: eq-shell [#739](https://github.com/eq-solutions/eq-shell/pull/739) chore(armada): enable cartography for eq-shell
+- Merged: eq-shell [#637](https://github.com/eq-solutions/eq-shell/pull/637) docs: pnpm-workspace.yaml — packages are vendored, not a git
+- Merged: eq-shell [#636](https://github.com/eq-solutions/eq-shell/pull/636) build: pin @eq-solutions/ui to release tag v1.10.0 for repro
+- Merged: eq-shell [#635](https://github.com/eq-solutions/eq-shell/pull/635) feat(canonical-api): move APP_TENANT_SCOPE allow-list to a s
+- Merged: eq-solves-service [#499](https://github.com/eq-solutions/eq-service/pull/499) fix(scope): reconciliation to service-enabled sites; scope g
+- ✅ Needs you: 2 → 1
 
-## ⚠ Needs you (2)
+## ⚠ Needs you (1)
 
-- 🟠 **Sentry new error** — `eq-shell` [EQ Field handoff auto-recovery (rejected)](https://eq-solutions.sentry.io/issues/133584980/)
 - 🟡 **1 stale worktree** need cleanup — [worktree-registry.md](system/worktree-registry.md)
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 5 | 6d |
+| eq-shell | ? unknown | ? | 4 | 6d |
 | eq-solves-service | ✓ success | 0d ago | 5 | 5d |
 | eq-field | ✓ success | 0d ago | 0 | — |
-| eq-cards | ✓ success | 0d ago | 1 | 0d |
+| eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ? unknown | ? | 0 | — |
 
 ## Live errors (Sentry)
@@ -41,7 +41,6 @@ _2026-07-12 00:27 UTC · what needs your attention. Full snapshot: [suite-state.
 | Project | Error | Events | Last seen |
 |---------|-------|--------|-----------|
 | eq-solves-service | [auth handoff: cookie_absent](https://eq-solutions.sentry.io/issues/132832684/) | 19 | 2026-07-08 |
-| eq-shell | [EQ Field handoff auto-recovery (rejected)](https://eq-solutions.sentry.io/issues/133584980/) | 5 | 2026-07-11 |
 | eq-cards | [LateInitializationError: Field '' has not been initialized.](https://eq-solutions.sentry.io/issues/132643934/) | 2 | 2026-07-07 |
 | eq-solves-service | [Error: COALESCE types uuid and text cannot be matched](https://eq-solutions.sentry.io/issues/132618557/) | 1 | 2026-07-07 |
 | eq-shell | [Error: HTTP 400](https://eq-solutions.sentry.io/issues/132270381/) | 1 | 2026-07-05 |
@@ -52,9 +51,11 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-12 | eq-shell | [#769](https://github.com/eq-solutions/eq-shell/pull/769) fix(crm): normalise contact mobile to E.164 on every write path |
 | 2026-07-12 | eq-shell | [#768](https://github.com/eq-solutions/eq-shell/pull/768) fix(field-iframe): retire cookie-mode handoff — token mode for ev |
 | 2026-07-12 | eq-shell | [#765](https://github.com/eq-solutions/eq-shell/pull/765) feat(comms): bulk-import from Ops — tick boxes + select all |
 | 2026-07-12 | eq-solves-service | [#499](https://github.com/eq-solutions/eq-service/pull/499) fix(scope): reconciliation to service-enabled sites; scope groupe |
+| 2026-07-12 | eq-cards | [#148](https://github.com/eq-solutions/eq-cards/pull/148) fix(connections): dedup declined cards to latest per org |
 | 2026-07-11 | eq-shell | [#764](https://github.com/eq-solutions/eq-shell/pull/764) feat(comms): custom columns + tick-list crew picker — more power  |
 | 2026-07-11 | eq-shell | [#763](https://github.com/eq-solutions/eq-shell/pull/763) feat(comms): door polish — money across, Ops count, Melbourne PO  |
 | 2026-07-11 | eq-shell | [#762](https://github.com/eq-solutions/eq-shell/pull/762) feat(comms): the Melbourne door — import the Working Job List wor |
@@ -65,9 +66,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-11 | eq-shell | [#753](https://github.com/eq-solutions/eq-shell/pull/753) feat(staff): labour-hire agency + roster on/off toggle on the Sta |
 | 2026-07-11 | eq-shell | [#757](https://github.com/eq-solutions/eq-shell/pull/757) fix(ci): move invite-users-batch.test.ts out of functions root so |
 | 2026-07-11 | eq-shell | [#754](https://github.com/eq-solutions/eq-shell/pull/754) feat(comms): scannable job table — Start / Finish / Hours in colu |
-| 2026-07-11 | eq-shell | [#750](https://github.com/eq-solutions/eq-shell/pull/750) fix(crm-write/entity-patch): 404 on zero-row / cross-tenant write |
-| 2026-07-11 | eq-shell | [#749](https://github.com/eq-solutions/eq-shell/pull/749) fix(invite-users-batch): await entitlement upsert so dropped gran |
-_Showing 15 of 114 · full record in [sessions/](sessions/)_
+_Showing 15 of 115 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
@@ -113,4 +112,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-12 00:27 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-12 00:30 UTC._
