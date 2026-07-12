@@ -30,7 +30,7 @@ Reported: `core.eq.solutions/sks/field` throws "Minified React error #418" in co
 - [x] **Purged 23 test/duplicate staff rows from the SKS spine (ehow app_data.staff)** — Bob Smith ×3, Brett Kilpatrick ×3, ZZTest, Emma Curth ×2, etc. Sam Powell's real EWP licence merged onto his live record first (he had none). Spine → 83 active, 0 removed. Royce's go. _(done 2026-07-12)_
 - [x] **`canon-read` 500 fixed** — `CANONICAL_SERVICE_ROLE_KEY` (jvkn service_role) was missing on eq-field Netlify; Royce set it, verified live (401 past the misconfig gate). Canonical licence-badge / worker-summary reads work again. _(done 2026-07-12)_
 - [ ] **Rotate the jvkn (eq-canonical) service_role key** — pasted into chat this session to fix canon-read. Roll it (Supabase → jvkn → API), update everywhere used; same class as the EQ_SECRET_SALT-in-chat rotation item. _(added 2026-07-12)_
-- [ ] **One live "Bob Smith" test contact still in the active SKS Contacts (65)** — separate from the 23 purged (this one is active=true). Remove when convenient. _(added 2026-07-12)_
+- [x] **One live "Bob Smith" test contact removed from active SKS Contacts** — 0 refs (no licence/timesheet/schedule/leave/team history), safe delete. Spine → 82 active, 0 removed. _(done 2026-07-12)_
 - [ ] **Field gate PIN inputs not wrapped in a `<form>`** — browser "password field is not contained in a form" warning ×5; password-manager UX nit. Low priority. _(added 2026-07-12)_
 - [ ] **Timesheet "(unknown)" staff-map load-order race (v3.5.219)** — pre-existing; a timesheet row can render a beat before the canonical staff map is ready (verified 0 orphaned timesheets, data intact). Self-heals on re-render; fix only if it becomes visibly annoying. _(added 2026-07-12)_
 
