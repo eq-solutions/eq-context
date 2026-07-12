@@ -15,6 +15,21 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ✅ EQ Cards — decline-reason loop + tenant minimum licences + edge fixes (2026-07-12, ALL MERGED + DEPLOYED)
+Overhauled the worker connection flow so a declined worker isn't left in the dark, employers self-serve their minimum credentials, and edge cases don't dead-end. Everything shipped to cards.eq.solutions + core.eq.solutions and exercised end-to-end through the REAL UI (Bob test dummy + Emma).
+- [x] **iOS spinner fix** — Timer-driven `EqSpinner` replaces the indeterminate `CircularProgressIndicator` that froze on iOS Safari (throttles CanvasKit's WebGL loop); swept 28 spinners / 26 files. eq-cards #144. _(done 2026-07-12)_
+- [x] **Requirements shown while CONNECTING** — the "‹Org› asks its team for a White Card" wallet strip now fires for a worker with a PENDING connection, not just active members. eq-cards `0087` #145. _(done 2026-07-12)_
+- [x] **Decline-reason loop (both repos)** — employer decline UI captures a free-text reason (inline textarea, optional); stored in a dedicated `org_access_requests.decline_reason` (stopped clobbering the worker's note); reason in the decline email (HTML-escaped); worker's wallet shows a "Declined — reason given" card. eq-cards `0088` #146 + eq-shell #752. _(done 2026-07-12)_
+- [x] **Dedup + Dismiss declined cards** — only the latest declined per org shows (#148); worker can Dismiss it (`0091` #150 — stamps `worker_dismissed_at`, hides it, but the row stays 'declined' so the cooldown can't be dodged). _(done 2026-07-12)_
+- [x] **Smart re-apply cooldown** — 24h after a decline, WAIVED the moment the worker adds/updates a licence. eq-cards `0090` #149. _(done 2026-07-12)_
+- [x] **Employer requirements UI (self-serve)** — minimum credentials were seed-SQL only; now a manager-only "Required tickets" bar on the Training Matrix adds/removes them (POST/DELETE on org-credential-requirements, `admin.review_cards` gated, validated against `licence_types`, soft-remove). Drives BOTH the matrix required column AND the Cards nudge. eq-shell #773. _(done 2026-07-12)_
+- [x] **Pending no longer dead-ends to personal wallet** — company picker shows "Applied · pending" for orgs already applied to; tapping proceeds into the app instead of throwing P0022. eq-cards #151. _(done 2026-07-12)_
+- [x] **Dylan Lieu membership backfill** — approved 25 Jun but membership never created (pre-cutover class of 5 approved-no-membership: 4 ghosts + Dylan). _(done 2026-07-12)_
+- [ ] **Android OTP autofill (WebOTP)** — Cards is Flutter web (CanvasKit, no real DOM input), so Android's SMS autofill chip + paste don't work. Fix = append WebOTP binding line `@cards.eq.solutions #{{ .Code }}` to the GoTrue SMS template (Royce's auth-config change in Supabase + Android device test); optional JS shim. Template handed to Royce; deliberately NOT built (auth-config approval + device-only test). _(added 2026-07-12)_
+- [ ] **59 SKS staff_id-without-membership** — 53 are unclaimed roster (no login yet — normal backlog); rest logged-in-never-connected or declined. No action unless they surface. _(added 2026-07-12)_
+
+---
+
 ## Job numbers are canonical — "workbench job numbers are just job numbers" (2026-07-12, PR #776 OPEN — not merged/dispatched)
 Royce: kill the "Workbench" name; job numbers should be listed once everywhere (Ops, Field, Comms, GM). Verify-first found the number was ALREADY functionally unified — Ops master `quote.workbench_job_no`, read by Comms directly and by Field via the `app_data.field_job_numbers` view (which already outputs `job_number`) — so the real work was the NAME. Store relocation scoped OUT once verification showed it drags in eq-field's write path.
 - [x] **Language fix** — stripped "Workbench" from the 6 job-number UI spots in Ops (`QuotesModule.tsx`): detail label, the two won-job-created guards, two stage hints, the "Needs Job No." tooltip. GM-Reports "Workbench report" xlsx strings left alone (that's the real source-file name). PR #776 commit 1 (`229c586`). _(done 2026-07-12)_
