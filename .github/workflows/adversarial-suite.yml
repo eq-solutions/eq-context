@@ -6,14 +6,20 @@ name: Guard adversarial suite
 # on a REAL recurrence; this is what stops that recurrence from being the hook
 # itself breaking, undetected, until it fails for real again.
 #
-# Checkout path matters here, unusually: pre_tool_use.py's mount-detection
-# (targets_mount()) matches on a "/projects/" path segment — the production
-# convention is C:\Projects\eq-context. A default checkout lands at
-# /home/runner/work/eq-context/eq-context, which contains no such segment, so
-# the F2 fixtures (edit CLAUDE.md / system/lessons.md) would silently no-op
-# instead of exercising the guard at all — a quiet, wrong-for-the-wrong-reason
-# pass, not the loud failure this suite exists to produce. `path:` below
-# reproduces the "/projects/" segment so the fixtures test the real code path.
+# Checkout location matters here, unusually, and needs to satisfy TWO separate
+# mechanisms in pre_tool_use.py, not one:
+#   1. targets_mount() — a string match for a "/projects/" path segment.
+#   2. mount_roots() — an actual filesystem glob for /sessions/*/mnt/Projects,
+#      /mnt/Projects, or C:/Projects; resolve() needs ONE of these to genuinely
+#      exist so it can confirm "parent dir exists -> legitimately a new file"
+#      for the not-yet-created-file control case.
+# A default checkout (/home/runner/work/eq-context/eq-context) satisfies neither,
+# so the F2 fixtures would silently no-op — a quiet pass for the wrong reason.
+# Relocating the checkout to literally sit under /mnt/Projects satisfies both at
+# once (rather than a path segment trick that only satisfies #1 — that was tried
+# first here and made the "new file, parent exists" control fail for real: it
+# passed locally only because the dev machine's own real C:\Projects existed and
+# got picked up by mount_roots() instead of the intended simulated path).
 
 on:
   pull_request:
@@ -42,13 +48,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-        with:
-          path: Projects/eq-context
 
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
 
+      - name: Relocate checkout under /mnt/Projects (matches the guard's real mount detection)
+        run: |
+          mkdir -p /mnt/Projects
+          cp -r "$GITHUB_WORKSPACE" /mnt/Projects/eq-context
+
       - name: Run the adversarial suite
-        working-directory: Projects/eq-context
+        working-directory: /mnt/Projects/eq-context
         run: python hooks/adversarial_test.py
