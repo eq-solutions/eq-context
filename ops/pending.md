@@ -95,10 +95,27 @@ not urgent — "working before refactoring").
   calls `raise_for_status()` on the live DB read, so a failed query **aborts the job** rather
   than stamping today's date on a stale count. The F1 trap was already closed by existing
   engineering; building more would have been the opposite of the lean-cut direction.
-- [ ] **Wire `hooks/adversarial_test.py` into CI** — the hook suite (18/18) currently has no
-  CI regression test; a future hook edit could silently break it. _(added 2026-07-12)_
-- [ ] **Trim `system/lessons.md`** (508 lines) to durable rules + an archive of war-stories —
-  narrative volume was flagged as the substrate's main remaining overhead. _(added 2026-07-12)_
+- [x] **Wire `hooks/adversarial_test.py` into CI — DONE 2026-07-12 (cont.).** `.github/workflows/adversarial-suite.yml`
+  (PR #86). Took three iterations to get genuinely right — worth recording why. The naive fix
+  (checkout `path:` containing a "/projects/" string segment) satisfied the guard's string-match
+  check but not its filesystem check (`mount_roots()` globs for a REAL `/mnt/Projects` etc.);
+  real CI caught this at 17/18 where my own local test had shown a false 18/18 — because my dev
+  machine has a genuine `C:\Projects` that the guard found instead of my simulated path. Fixed by
+  actually creating `/mnt/Projects` in the CI job (needs `sudo` on hosted runners) and relocating
+  the checkout there for real. Confirmed on the real CI log (not just the checkmark): **18 passed,
+  0 failed**, both standalone and again after merging PR #87's lessons.md trim on top.
+- [x] **Trim `system/lessons.md` — DONE 2026-07-12 (cont.), 508 → 381 lines.** PR #87. Four
+  incidents (F1, F2/F6, F3, "first guard failed open") were told in full narrative here AND in
+  `system/failures.md`/`system/TODAY.md`/`hooks/README.md` — trimmed to a rule + pointer per the
+  repo's own "one fact, one home" rule (`AUTONOMOUS-SPRINT-RULES.md` §7); six dead pre-GitHub
+  Supabase-substrate entries got the same treatment. Full narratives preserved in new
+  `archive/lessons-history.md`, not deleted. Every standalone still-useful gotcha left untouched.
+  Caught fallout before committing: `ops/decisions.md:884` pointed at a heading that no longer
+  exists (added a superseded-note); `adversarial_test.py`'s fixture name said "508-line" (renamed
+  to "200-line" so it can't go stale again).
+- [x] **Housekeeping (shared checkout git divergence) — resolved on its own, 2026-07-12 (cont.).**
+  No action taken; a concurrent session's routine sync cleared it, exactly as flagged on the prior
+  session-close card.
 - [ ] **Branch protection on `main` — deliberately NOT done.** Nightly refresh crons push
   directly to `main` as `github-actions[bot]` (some with `[skip ci]`); naive required-checks
   would break them, and it wouldn't have caught F1/F3 anyway (both passed every green check).
