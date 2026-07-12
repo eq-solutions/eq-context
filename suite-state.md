@@ -37,7 +37,7 @@ _If this file is >48h old, the cron is broken._
 |--------|-------|--------|
 | Sites | 232 | app_data.sites |
 | Customers | 42 | app_data.customers |
-| Assets | 401 | app_data.assets |
+| Assets | 187 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
 | Users | 5 | service.tenant_members |
 | Maintenance checks | 18 | service.maintenance_checks |
@@ -61,6 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-12)
 
 **eq-field:**
+- #462 v3.5.306 — Contacts: in-app Remove / Restore / Delete lifecycle + spine cleanup
 - #461 feat(auth): EQ tenant is Core-only — close the demo login gate (v3.5.306)
 
 **eq-service:**
@@ -91,7 +92,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 184 (latest: 0180) applied
+**Migrations:** eq-service has 185 (latest: 0181) applied
 
 ---
 
