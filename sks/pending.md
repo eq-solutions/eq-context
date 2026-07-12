@@ -422,3 +422,23 @@ The following tests belong to eq-quotes-port (Flask), which is retired as of 202
 
 **Deferred:**
 - [ ] **Excel full-width mode (optional)** — if wrapping isn't enough, switch the table to natural-width columns + sideways scroll like a real spreadsheet. One-flag change; Royce trying the wrap version first. _(added 2026-07-12)_
+
+## ⏩ SKS Plant & Equipment — session 2026-07-13 (calibrated instruments wiped by a manual asset-register wipe → restored + guarded; 2FA grace re-checked)
+
+**Trigger:** Royce reported the plant & equipment items missing — suspected EQ Service had mistaken them for generic assets.
+
+**Root cause (verified live, ehow `app_data.assets` + `app_data.audit_log`):** a MANUAL service-role delete-all+reload of the whole SKS asset register at 2026-07-12 09:53 wiped every row not in the incoming feed — all **16 `plant_equipment` rows** (SKS's own calibrated test instruments: Fluke/Megger/Metrel/Kyoritsu/UNI-T meters, 2 torque wrenches, micro-ohmmeter) plus **817 customer asset rows**. The Plant & Equipment page filters `asset_type='plant_equipment'` server-side, so it went empty. NOT the eq-solves-service importer (which writes its own `service.assets`, never canonical `app_data.assets`) — the delete-all was a manual SQL/service-role run whose service-role JWT sailed past the older 0154 delete guard.
+
+**Completed:**
+- [x] **16 calibrated instruments RESTORED** — re-inserted from `audit_log.old_record` under their original IDs, all active, every calibration certificate still linked (cert PDFs live in the jvkn `asset-certs` bucket, untouched). P&E page shows them again. Live-verified: 16 plant_equipment rows, all active, all with certs.
+- [x] **DB guard hardened (eq-shell #790 / migration 0176, via spawned task `task_4bfeb34a`)** — a `plant_equipment` DELETE now requires a real user actor (`x-eq-actor`) or the reviewed override; blocks a service-role/manual wipe while leaving the equipment module's own Delete + customer-asset reconcile untouched. **APPLIED + LIVE both planes** (ehow + zaap, `tenant-migrate.yml` run `29196855141`, Royce-approved).
+- [x] **2FA enrolment grace re-checked** (`netlify/functions/_shared/totp.ts`) — still a **14-day** window, per-user from account creation, enforced only for manager/supervisor + platform admin; unenrolled + past 14 days ⇒ forced (fail-open on missing/invalid createdAt). Wired identically into all 6 login/session entry points; file matches `origin/main` (= production). No change made.
+
+**Decided (Royce):**
+- Restore only the 16 instruments; the **817 deleted customer rows = "not required, all good"** — closed, no restore.
+- P&E is **separate from EQ Service**; no importer hunt (the runs were manual).
+- Approved dispatching 0176 to both tenant planes.
+- 2FA enrolment grace stays at 14 days — no change.
+
+**Deferred:**
+- [ ] **2FA grace window is a one-line change** (`TOTP_GRACE_MS` in `totp.ts`) if Royce ever wants it shortened or dropped to force enrolment on first sign-in — auth-path change, left until he says go. Not requested now. _(added 2026-07-13)_
