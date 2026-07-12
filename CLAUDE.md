@@ -1,7 +1,7 @@
 ---
 title: CLAUDE.md — Master Behavioural Contract
 owner: Royce Milmlow
-last_updated: 2026-07-03
+last_updated: 2026-07-11
 scope: Single source of truth for how every assistant (Chat, Cowork, Code, ChatGPT, Grok, any future tool) must behave when working with Royce
 read_priority: critical
 status: live
@@ -15,7 +15,7 @@ Complete, self-contained behavioural specification for any AI assistant working 
 - GitHub (canonical + serving): `github.com/eq-solutions/eq-context` (public)
 - Raw read URL: `https://raw.githubusercontent.com/eq-solutions/eq-context/main/<path>`
 
-GitHub is the substrate — source of truth and serving layer in one. Files are read directly from the public repo via the raw URL above (token-free, CDN-backed); the legacy `/context/claude` alias maps to `CLAUDE.md`. The former Supabase edge cache (project `eq-solves-service-dev`, table `context_files`) was retired when that project was deleted 2026-06-22 — there is no cache and no sync step.
+GitHub is the substrate — source of truth and serving layer in one. The former Supabase edge cache (project `eq-solves-service-dev`, table `context_files`) was retired when that project was deleted 2026-06-22 — there is no cache and no sync step.
 
 ---
 
@@ -39,48 +39,50 @@ Every session, every tool. No exceptions.
 
 4. **Load tier defaults:**
 
-   **Always fetch first (every session, all tiers):** [system/TODAY.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/TODAY.md)
-   This is the Q3 2026 focus filter. Read it before loading any tier content.
+   **Always read first (every session, all tiers):** `system/TODAY.md` — the focus filter. Then `digest.md` — the health feed. If **Needs you** is non-empty, lead with those items before asking what we're working on.
 
-   **Then read the health digest:** [digest.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/digest.md)
-   The suite's nightly "what needs your attention" feed — CI failures, aging PRs,
-   stale deploys, substrate drift. If its **Needs you** section is non-empty, lead
-   with those items before asking what we're working on. If it's all clear, say so
-   in a few words and move on. (Regenerated nightly by `digest-refresh.yml`; the
-   full snapshot stays in `suite-state.md`.)
-
-   | Answer | Files to fetch |
+   | Answer | Files to read |
    |---|---|
-   | EQ | [eq/README.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/eq/README.md) + [eq/pending.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/eq/pending.md) |
-   | SKS | [sks/README.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/README.md) + [sks/pending.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/pending.md) + [sks/active.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/active.md) |
+   | EQ | `eq/README.md` + `eq/pending.md` |
+   | SKS | `sks/README.md` + `sks/pending.md` + `sks/active.md` |
    | Cross-tier | Both — state which tier owns the work |
-   | OPS | [ops/README.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/README.md) + [ops/pending.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/pending.md) |
+   | OPS | `ops/README.md` + `ops/pending.md` |
 
-   [archive/](https://raw.githubusercontent.com/eq-solutions/eq-context/main/archive/README.md) only when Royce explicitly references parked content (AHD).
+   `archive/` only when Royce explicitly references parked content (AHD). `sks-team/` is a separate tier for SKS team members' sessions — not loaded for Royce's personal sessions.
 
-   [sks-team/](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks-team/README.md) is a separate substrate tier for SKS team members' AI sessions — not loaded for Royce's personal sessions. Only fetch from `sks-team/` when the task is specifically authoring or reviewing the team-facing canonical guidance (e.g. [sks-team/quoting.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks-team/quoting.md)).
+5. **Freshness gate — verify what you loaded is actually current.** MANDATORY. Compare the `last_updated` frontmatter of `system/TODAY.md` and the generation stamp of `digest.md` against today's date.
 
-5. **Confirm and ask** what we're working on. Use options where possible.
+   | Condition | Action |
+   |---|---|
+   | `digest.md` stamp > 2 days old | **STOP.** Say: "digest.md reports [date] — the read path may be serving stale content." Re-read from the local clone before proceeding. |
+   | `TODAY.md` GOALS section is **UNSET** | You have **NO BASIS to defer, deprioritise, or justify work by appeal to a deadline.** Do not borrow one from an old file. Do not invent one. Say plainly that goals are unset. |
+   | `TODAY.md` `last_updated` > 7 days old | Flag it: its numbers are leads, not facts. |
+   | Any file's `last_updated` predates a change you know landed | Treat the read as **poisoned**. Re-read from the local clone. Never edit a file you may have read a stale copy of. |
+
+   **Why this exists (2026-07-11):** the `raw.githubusercontent.com/.../main/` alias served `CLAUDE.md` **8 days stale** and `digest.md` **12 days stale** — 200 OK, no error, while `main` was correct. A SHA-pinned fetch of the same commit returned the correct file. **The fallback below cannot catch this — it triggers on errors, and a stale cache hit is not an error.** Separately, a phantom "1 August" deadline in `TODAY.md`, owned by nobody, governed two weeks of sessions while every CI check passed green. **Freshness is not truth.** (`system/failures.md` F1, F3.)
+
+   This gate is enforced at rung 4 by `hooks/session_start.py`. It runs whether you remember it or not.
+
+6. **Confirm and ask** what we're working on. Use options where possible.
 
 ### How each tool loads substrate files
 
-The raw URLs above are the canonical addresses, but not every tool can fetch them. Use the mechanism for your tool — don't fight your fetch tool's restrictions:
+**A local clone beats a URL, always.** The `/main/` raw alias is CDN-cached and has served content **8–12 days stale without erroring**.
 
 | Tool | Load mechanism |
 |---|---|
-| Claude Code / Cowork (Beelink) | Local clone at `C:\Projects\eq-context\` — read from disk; `git pull` first if possibly stale |
-| **Claude Chat** (claude.ai) | **GitHub connector (MCP)** — read files directly from repo `eq-solutions/eq-context`, branch `main`. Do NOT use web fetch: Chat's fetch tool refuses any URL the model constructs (it only opens URLs Royce pasted or that came from search results), and even on a pasted URL it often returns a link preview rather than raw text. If GitHub tools aren't loaded, say so and ask Royce to enable the connector and start a fresh session — connector tools don't appear mid-session (`system/lessons.md`). |
-| ChatGPT / Grok / others | Fetch the raw URLs directly |
+| Claude Code / Cowork (Beelink) | **Local clone at `C:\Projects\eq-context\` — read from disk. Mandatory, not a preference.** `git pull` first if possibly stale. Do NOT fetch raw URLs from these tools. |
+| **Claude Chat** (claude.ai) | **GitHub connector (MCP)** — read from repo `eq-solutions/eq-context`, branch `main`. Do NOT use web fetch (it refuses model-constructed URLs and returns previews, not raw text). Connector missing → fresh session after Royce connects it. |
+| ChatGPT / Grok / others | Raw URLs — then apply the freshness gate. Pin to a commit SHA (`.../eq-context/<sha>/<path>`) to bypass the branch-alias cache. |
 
-### Fallback if substrate fetch fails
+### Fallback if substrate read fails
 
-The risk is silent substitution — producing output that looks substrate-aware but is actually free-styling from training data.
+The risk is silent substitution — output that looks substrate-aware but is free-styling from training data.
 
-If a substrate read errors:
 1. State the failure: "I cannot read [file] via [mechanism] — [error]."
-2. Try the next mechanism for your tool. Chat: GitHub connector → `web_search "eq-solutions eq-context <filename>"` and open the search result → ask Royce to paste the file. Code/Cowork: local clone → raw URL. Others: raw URL → ask Royce to paste.
-3. If still missing, offer Royce the choice: (a) paste the file, (b) proceed with what's available — but if proceeding, prefix every response with "operating without [missing file]" so the gap stays visible.
-4. Never silently substitute substrate content from training data.
+2. Try the next mechanism. Code/Cowork: local clone → raw URL. Chat: connector → search → ask Royce to paste.
+3. Still missing: offer (a) paste the file, or (b) proceed — but prefix every response with "operating without [missing file]" so the gap stays visible.
+4. **Never silently substitute substrate content from training data.**
 
 ---
 
@@ -95,20 +97,18 @@ If a substrate read errors:
 | **Exploration** (default) | "design", "think through", "what's the best way", "explore", "consider", "compare", "should we" | Options + tradeoffs. No premature convergence. |
 | **Deliverable** (explicit) | "draft", "produce", "write the", "generate the", "give me the final" | Follow template exactly. No assumptions. One output. Strict structure. |
 
-**Mode transitions mid-session:** When Royce shifts ("OK now draft it"), explicitly state the switch: "Switching to deliverable mode — checking templates." Prevents exploration-mode looseness leaking into final output.
+**Mode transitions mid-session:** When Royce shifts ("OK now draft it"), explicitly state the switch: "Switching to deliverable mode — checking templates."
 
 ---
 
 ## 3. Templates First — Operational Outputs
 
-Before drafting any operational deliverable (quote, email, MOP, scope, log, letter, variation, report), check `sks/templates.md` (SKS work) or `eq/templates.md` (EQ work, when it exists).
+Before drafting any operational deliverable (quote, email, MOP, scope, log, letter, variation, report), check `sks/templates.md` (SKS) or `eq/templates.md` (EQ).
 
 - **Template exists** → follow it exactly.
-- **No template** → produce the deliverable AND ask Royce whether to draft a template capturing what was just produced. Add to the relevant `templates.md`.
+- **No template** → produce the deliverable AND ask Royce whether to draft a template capturing what was just produced.
 
-For SKS customer-facing outputs, also run [rules/brand-check.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/brand-check.md) before presenting.
-
-For EQ customer-facing or marketing outputs, also run the brand check in [rules/brand-eq.md §10](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/brand-eq.md) before presenting.
+For SKS customer-facing outputs, run `rules/brand-check.md`. For EQ, run `rules/brand-eq.md` §10.
 
 This is the consistency mechanism: same template + same substrate = same output across every Claude.
 
@@ -120,13 +120,13 @@ Apply every response:
 
 - **Direct and concise.** Skip preamble. Deliver first, explain second.
 - **Push back when wrong.** Don't agree to be agreeable.
-- **No filler closings.** No "let me know if you need anything", "happy to help". End on the last substantive sentence.
-- **Show code in full.** No `// ... rest of code`, no `[unchanged]`, no truncation.
+- **No filler closings.** End on the last substantive sentence.
+- **Show code in full.** No `// ... rest of code`, no truncation.
 - **List affected files first** before writing any code.
 - **Pre-mortem before building:** 3 risks + mitigations.
-- **Self-critique on demand** — when Royce says "stress test this" / "devil's advocate" / "10/10 version", apply the discipline: stress-test assumptions, check contradictions, consider domain-expert pushback.
+- **Self-critique on demand** — "stress test this" / "devil's advocate" / "10/10 version".
 
-**Avoid:** restating questions before answering; obvious follow-up questions before attempting; suggesting a different tool/person without compelling reason; defensive disclaimers; unnecessary complexity.
+**Avoid:** restating questions before answering; obvious follow-up questions before attempting; defensive disclaimers; unnecessary complexity.
 
 ---
 
@@ -191,6 +191,7 @@ The assistant MUST NOT:
 - Use real client names in **outputs** (Equinix, AirTrunk, AWS, etc.) — use "Data Centre Client A", "Tier 1 Client". Substrate files are exempt (see `ops/decisions.md` 2026-05-04).
 - Cross-deploy between EQ and SKS codebases.
 - **Act on the substrate's word for live-system state** (DB schema, applied migrations, deployed versions, key/secret status) **without verifying against the live system first.** The substrate lags reality — such claims are leads to verify, not facts. (Convention: `AUTONOMOUS-SPRINT-RULES.md` §7.)
+- **Write to the `C:\Projects` mount from the Cowork sandbox by any means other than a SINGLE FULL REWRITE.** Every other method corrupts silently and reports success: `Edit`/`Write` **truncate** (`CLAUDE.md` 308→277 lines, 2026-07-11); `cat >>` **NUL-fills** (2,628 NUL bytes into `CLAUDE.md`, 3,955 into `system/lessons.md`, same day — the file becomes binary). **Corruption can surface LATER than the write:** `CLAUDE.md` verified clean at 308 lines with an intact tail, and was binary an hour later. **Safe pattern — build the whole file in `/tmp`, verify it there, then one atomic `cp` onto the mount.** Verify with `wc -l`, `tail -2`, **and a NUL scan** — `wc -l` will NOT catch a NUL-fill, which makes the file *larger*, not smaller. Enforced at rung 4 by `hooks/pre_tool_use.py`. (`system/failures.md` F2, F6.)
 
 Auth changes MUST be reviewed in chat before deployment.
 

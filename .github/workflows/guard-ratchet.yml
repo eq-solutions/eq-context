@@ -1,0 +1,52 @@
+name: guard-ratchet
+
+# The self-improving loop. PROPOSE-ONLY (Royce, 2026-07-11): this workflow never
+# merges its own changes. It reads system/failures.md and argues that a guard which
+# has failed twice must climb the enforcement ladder. Royce decides.
+#
+# The oracle is REALITY — a failure that actually escaped. Never the substrate's
+# opinion of itself. A loop that closes against its own opinion is not self-improvement,
+# it is a hallucination amplifier with a changelog.
+
+on:
+  push:
+    paths: ['system/failures.md']
+  schedule:
+    - cron: '0 19 * * *'   # 05:00 AEST
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  ratchet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Find guards overdue for promotion
+        id: scan
+        run: python3 .github/scripts/guard_ratchet.py
+
+      - name: Open promotion issue (propose only — never auto-apply)
+        if: steps.scan.outputs.due != ''
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = process.env.BODY;
+            const title = 'guard-ratchet: a safeguard has failed twice and must climb';
+            const existing = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo,
+              state: 'open', labels: 'guard-ratchet'
+            });
+            if (existing.data.some(i => i.title === title)) {
+              core.info('Promotion issue already open — not duplicating.');
+              return;
+            }
+            await github.rest.issues.create({
+              owner: context.repo.owner, repo: context.repo.repo,
+              title, body, labels: ['guard-ratchet']
+            });
+        env:
+          BODY: ${{ steps.scan.outputs.body }}

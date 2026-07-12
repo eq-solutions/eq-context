@@ -1,63 +1,78 @@
 ---
-title: TODAY — Q3 2026 Focus Filter
+title: TODAY — Focus Filter
 owner: Royce Milmlow
-last_updated: 2026-06-28
-scope: Current-quarter success outcomes — the filter for every Claude session decision
+last_updated: 2026-07-11
+scope: The filter for every Claude session decision. Facts are machine-verified. Goals are human-owned and currently UNSET.
 read_priority: critical
 status: live
 ---
 
-# Q3 2026 Focus
-**34 days to 1 August 2026.**
+# TODAY — Focus Filter
+
+> **Goals: UNSET.** See below. **Do not invent them. Do not infer them from old files.**
+> Until Royce sets them, no assistant may defer, deprioritise, or justify work by appeal to a deadline or quarterly outcome. There isn't one.
 
 ---
 
-## If these three things are true on 1 August 2026, Q3 was a success:
+## ⚠️ Read this before using this file
 
-1. **A working version of EQ Field / EQ Service is being used by the
-   NSW office** — not a demo, not a sandbox; real NSW staff using it
-   for real operational work.
+On **2026-07-11** this file contained a hard deadline — *"34 days to 1 August 2026"* — and three Q3 success outcomes, marked `read_priority: critical`, loaded first by every assistant in every session.
 
-2. **The electrical and comms divisions of NSW are successfully
-   integrated** — single operational view, shared processes, no
-   division-side silos.
+**Royce did not recognise it.** It had governed session prioritisation for two weeks. An assistant used it to repeatedly tell him to defer work. The deadline was not real.
 
-3. **AI is being used across all areas of life** — work (SKS, EQ),
-   admin (entities, finance), personal — AI is the default assistant,
-   not a special-case tool.
+**Nothing detected this.** Sixteen CI workflows, a nightly digest, a drift detector, an auto-bump bot faithfully keeping its `last_updated` fresh — every check passed green, because every check verifies **recency**, not **truth or ownership**.
+
+**The lesson, and the reason this file is now structured the way it is:** an unowned goal in a critical file is worse than an empty file. A blank goals section is *honest*. A stale one is a phantom that steers every agent you run. **Leave it blank until it's true.**
+
+Full write-up: [`system/lessons.md`](lessons.md) → "The Substrate Contained a Goal Nobody Owned".
 
 ---
 
-## Status as of 2026-06-28
+## GOALS — `type: goal` · `owner: royce` · **status: UNSET**
 
-| Outcome | Signal | Gap |
-|---------|--------|-----|
-| 1 — NSW live | EQ Service: 5 users, 15 defects, 3 checks on ehow. Safety module (prestarts / toolbox / site audits) has 0 rows. | Is real operational work happening, or just setup? Safety data = 0. |
-| 2 — Divisions integrated | ? | Royce to update. |
-| 3 — AI as default | Substrate coherence system built 2026-06-28: event-driven refresh, session-start hook, smarter digest. | Breadth: are all areas (admin, finance, personal) genuinely using AI daily? |
+```yaml
+claims: []
+# Royce to define. Each goal must carry:
+#   type: goal
+#   owner: royce
+#   asserted_on: YYYY-MM-DD
+#   expires_on: YYYY-MM-DD    # goals expire. unreconfirmed = dead.
+#   verify: human
+```
+
+**Rules for this section (enforced by `claim-expiry.yml`):**
+- A goal with no `expires_on` is **invalid** — CI fails.
+- A goal past `expires_on` is **dead**, and surfaces as *"Royce — confirm or kill."* It does not silently persist.
+- **No assistant may write a goal here.** Assistants may only propose. Goals are human-owned. This is not a formality — it is the specific safeguard that would have prevented the 1 August phantom.
 
 ---
 
-## Default question for every build/feature decision:
+## FACTS — `type: verified` · `verify: sql` · read from live DB 2026-07-11
 
-> "Does this move outcome 1, 2, or 3 before 1 August — and will an NSW staff member use it within 2 weeks?"
+These are **not** assertions. They are direct reads of ehow (`ehowgjardagevnrluult`) and eq-canonical (`jvknxcmbtrfnxfrwfimn`). Re-verify before quoting — the query is the source, this table is a cache.
 
-With 34 days left, the second clause matters. Time spent building things that won't be used before the deadline borrows from the outcomes.
+| Signal | Verified value | Note |
+|---|---|---|
+| **Maintenance checks created** | **14** | |
+| **Maintenance checks completed** | **0. Ever.** | **The core product workflow has never once been completed.** |
+| `defects` · `asset_defects` · `test_records` · `service_visits` · `toolbox_talks` · `site_audits` | **0** | all zero |
+| `prestarts` | 30 | last 2026-07-04 — stalled |
+| `job_notes` | 309 | last 2026-07-10 — healthy |
+| **Named SKS staff signing in** (21d) | **~10+** | matthew.miller, luke.wheeler, collin.toohey, william.brown, zemi.asri, huon.henne, scott.hotson, simon.bramall, calum@ssw. **Logins are real.** |
+| **Human writes, 14d** | **Royce 507 (94%)** · simon.bramall 23 · unresolved 7 · scott.hotson 1 | **31 non-Royce writes in two weeks.** |
+| Automated writes, 14d | 2,494 (`source='system'`) | **Exclude from every adoption metric or you will flatter yourself.** |
+| `service.profiles.last_login_at` | NULL, all 5 rows | Written only by the **retired** standalone signin. Shell SSO never writes it. **Adoption is currently unmeasurable.** |
 
----
+### What the facts say — without a goal to filter them through
 
-## 34-day filter for this session
+**People show up and cannot finish work.** Ten staff log in. Fourteen checks get started. Zero get completed. That is not an adoption problem — it is a **completion-path problem**, and it is the only thing in this file that is both verified and unambiguously bad.
 
-- **Substrate work** (brain, digest, coherence): justified only if it makes the AI meaningfully more effective at supporting real NSW work. Brain is in good shape — don't let it become a distraction from outcome 1.
-- **Product work** (Field, Service, Shell): if NSW staff aren't yet using it for real work daily, that is the top priority.
-- **The test:** would an NSW site supervisor open EQ Field or EQ Service tomorrow and find it useful without help?
+It is stated here as a **fact, not a priority.** Priorities require goals, and there are none. If Royce wants this to be the priority, it goes in the GOALS section above with an owner and an expiry — like everything else.
 
 ---
 
 ## How to use this file
 
-Every session decision filters through these outcomes:
-
-- **Build / feature requests:** does this move outcome 1, 2, or 3 forward before 1 August? If no, defer it.
-- **Substrate changes:** does this make the AI better at supporting outcome 1, 2, or 3? If no, surface but don't expand scope.
-- **Time allocation:** if a day's work doesn't visibly move one of these three, that's a signal — investigate before continuing.
+1. **Read the GOALS section.** If it is UNSET, you have **no basis to defer or deprioritise anything.** Say so plainly rather than borrowing a deadline from somewhere else.
+2. **Treat FACTS as leads with a shelf life.** Re-run the query. This table is a cache of reality, not reality. (`CLAUDE.md` §7.)
+3. **Never fill a slot in this file because it looks empty.** The blank goals section is the most valuable thing on this page.
