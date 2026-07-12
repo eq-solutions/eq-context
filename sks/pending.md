@@ -306,7 +306,24 @@ The following tests belong to eq-quotes-port (Flask), which is retired as of 202
 
 **Deferred:**
 - [ ] **Prevention Layer #5 (review/process)** — the outage also had *no human review* (self-merged) as an enabler; a lightweight review gate or required-check on this repo is a process call, Royce's to make. _(added 2026-07-12)_
-- [ ] **PR #64 awaiting merge** — the checklist update (fail-loud + degrade-alert as merge parity) is a docs-only PR; auto-mode classifier blocked me self-merging it (ask was "add the items", not "merge without review"). Royce to merge. _(added 2026-07-12)_
+- [ ] **PR #64 awaiting merge** — the checklist update (fail-loud + degrade-alert as merge parity) is a docs-only PR; auto-mode classifier blocked me self-merging it (ask was "add the items", not "merge without review"). Royce to merge. **NOTE:** the later login fix (#65, merged) also edited `docs/merge/sks-eqfield-parity-checklist.md` (added a "Login / role parity" section), so #64 may now need a rebase before it merges cleanly. _(added 2026-07-12)_
+
+## ⏩ SKS Field — session 2026-07-12 (login: supervisor no longer drops to view-only after a reload)
+
+**Trigger:** Royce reported the SKS login "logs me in as supervisor, logs me out, then logs me back in as view-only — every time." Asked to audit + give options.
+
+**Root cause (audited, not guessed):** supervisor status was held in a *one-shot* sessionStorage flag `eq_auto_admin` that `initApp()` read once and then **deleted** (index.html). The logged-in flag `eq_access_v1` is durable across reloads; the supervisor flag was not. Any same-tab reload — most often the **service-worker auto-reload on deploy** (we shipped four builds that day) — re-ran `initApp()` with the flag already consumed → fell through to `applyStaffMode()` (view-only). `checkAccess()` also early-returned on `eq_access_v1` *before* the durable remember-me restore, so even a remembered supervisor login was bypassed. Staff never noticed (view-only anyway) → looked account-specific. No security hole; a state-persistence bug.
+
+**Completed:**
+- [x] **sks-nsw-labour v3.10.96 (PR #65, MERGED + deploying — `6f3eccc`)** — **Option 1 (durable role):** write a durable `eq_role` key at every login path (tenant-code gate, demo, production verify-pin, shell-token SSO, both remember-me restores) and read it in `initApp()` on **every** boot, so supervisor survives a reload. `eq_auto_admin` is kept only to fire the login-moment UX (welcome toast + dashboard jump), never the role. "Switch to view only" + mid-session unlock both update `eq_role` (that choice also survives a reload); logout clears it. Back-compat for sessions open across the upgrade via the legacy flag. **Option 3 (calmer reload):** the SW-activated reload no longer fires instantly — defers to a non-disruptive moment (`_scheduleSwReload`: tab backgrounded, or first safe foreground moment — never mid-edit/type/queued-write; 5-min hard cap). `scripts/auth.js` + `index.html` only; no change to how anyone logs in. Syntax-checked; inline-script parse-error count unchanged vs main.
+
+**Decided (Royce):**
+- Fix approach = **Option 1 + 3** (durable role + defer the SW reload), chosen from the audit's four options.
+- **Merge** #65 → authorised the production deploy (auth change — explicit approval given).
+
+**Deferred:**
+- [ ] **One-time transition after this deploy** — supervisors *currently* logged in have a pre-v3.10.96 session with no `eq_role` (and `eq_auto_admin` already consumed), so their first reload onto v3.10.96 shows view-only once; a single log-out/log-in (or re-unlock) seats the durable role permanently. New logins are correct immediately. Told Royce; no code owed. _(added 2026-07-12)_
+- [ ] **EQ Field login-parity check (merge-time)** — EQ Field's login model differs (Shell JWT handoff / canonical, not name+code), so this is **not a verbatim port**. At the codebase-merge phase, verify whether EQ Field re-derives role on every boot or has the same one-shot-consume trap, and fix in its own terms. Logged to the merge parity checklist ("Login / role parity" section). _(added 2026-07-12)_
 
 ## ⏩ SKS Field — session 2026-07-12 (DB "not working" outage → root fix + timesheet UX)
 
