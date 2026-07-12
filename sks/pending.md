@@ -291,6 +291,31 @@ The following tests belong to eq-quotes-port (Flask), which is retired as of 202
 - [ ] **"Which 90 is headcount?" decision** — HC = every unarchived person in People, incl. office/PM staff never rostered to a job, so BENCH and "N free" overstate deployable capacity. Options: keep as-is, filter by role/category, or use "deployed in the last N weeks" as the denominator. (Largely resolved by the supply-curve item above if that ships.) _(added 2026-07-11)_
 - [x] **Empty "Pipeline" nav header in employee view** (spawned as background task `task_dcd8df1b`) — the sidebar section wrapper `#nav-section-pipeline` isn't role-gated but all 3 of its items (Pipeline/Resources/Accounts) are `edit-only` (`.nav-item.edit-only` → `display:none` without `body.manager-mode`, base.css:210-211). An employee-view Core login never gets `manager-mode`, so the items hide and only the orphaned "PIPELINE" label shows. **FIXED + LIVE (v3.5.299, PR #455, 2026-07-11):** took the group-level `edit-only` route — marked `#nav-section-pipeline` `.edit-only` + added `.nav-section.edit-only { display:none }` / `.manager-mode .nav-section.edit-only { display:flex }` in base.css, mirroring the existing `.nav-item.edit-only` pattern. Whole group now hides for employees, shows for managers; apprentice-branch inline `display:none` still wins. Other groups verified unaffected (Operations/Manage/Testing keep non-edit-only items; Safety has its own toggle). Prod curl confirmed v3.5.299 serving. _(added 2026-07-11, done 2026-07-11)_
 
+## ⏩ SKS NSW Comms — session 2026-07-11/12 (replace the Excel labour planner)
+
+**The whole NSW Comms module (`core.eq.solutions/sks/comms`) was built out to replace the team's Excel labour planner — all merged to eq-shell main + live.**
+
+**Completed:**
+- [x] **Job card + one job list** — widened `sks_comms_jobs` (manager/start/finish/hours/dock/NV1/materials + source provenance); backfilled all 143 planner jobs → 153 total. Filters + declutter.
+- [x] **Crew booking → Field roster** — booking a crew on a comms job writes real Field roster rows (`schedule_entries`, tagged with the job), shared with EQ Field. Validated shape live; **no real booking has flowed yet** (0 of 1,016 roster rows job-linked).
+- [x] **Fortnight view** — capacity ("need N / have M"), Monday agenda (who needs a crew), tech×day grid, hide-idle + this-week default.
+- [x] **Crew = the Field "Comms" team** (`app_data.teams`/`team_members`, 11 people) — read-only in comms, managed in Field; retired the parallel `sks_comms_crew` table (0170→0171).
+- [x] **Staff dedupe** — 16 duplicate Cards stub rows merged/retired (licences + logins preserved) → 93 clean people. Root cause (Cards making new rows) fixed in eq-cards #147.
+- [x] **Scannable job table** — replaced the busy card grid with a spreadsheet-style table (Start/Finish/Hours columns, sortable), **custom columns** (Value/Manager/Quote switch-on), fits-width.
+- [x] **Three intake "doors":** typed-in (New job); **Ops** (pull won EQ Ops quotes → comms jobs, bulk tick-box import); **Melbourne** (upload the "Microsoft Working Job List.xlsx" → parse in browser → import new jobs, add-only, skips existing).
+- [x] **Door polish** — imports carry the $ value across (PO line), "From Ops · N" count, Melbourne brings PO detail + de-dups suffixed job numbers.
+- [x] **Verified live end-to-end** (browser walkthrough, read-only) — page loads with data, table, columns picker, bulk Ops import, job detail, crew tick-list all working.
+
+**Deferred:**
+- [ ] **Run one real Monday through it** — book real crews on real jobs, confirm they hit the Field roster. The single step that turns "built" into "used"; it's a trial run, not code. _(added 2026-07-12)_
+- [ ] **NV1-as-a-licence PARKED (Royce)** — model NV1 clearance as a Field licence for a real 1-per-3 supervision meter (source: Melbourne MS TECHS sheet). Sound but "polish, not site value yet". _(added 2026-07-12)_
+- [ ] **Melbourne import is add-only** — skips any job already in comms, never updates/enriches an existing one. A future "enrich existing" pass if updates from Melbourne should flow. _(added 2026-07-12)_
+- [ ] **Cutover** — two parallel Mondays (Excel + core), then the spreadsheet goes read-only; Royce calls it. _(added 2026-07-12)_
+
+**Notes / gotchas:**
+- **I caused + fixed a ~15-min comms outage.** During a shared-worktree wipe recovery, `git add`-ing a wiped `comms-jobs.ts` staged its *deletion* → #764 shipped the core comms API function deleted from main; CI passed (a missing Netlify function isn't a compile error) and it deployed. Caught by #765's merge conflict, restored + live-verified (`curl …/comms-jobs` = 401 not 404). Lesson: after any wipe, never `git add <path>` without confirming the file is present + carries your changes.
+- Shared eq-shell worktree got wiped (1271 tracked files + node_modules .bin) mid-session by a concurrent process — recovered.
+
 ## Untouched substrate items
 
 (Separate from EQ Quotes — preserve)
