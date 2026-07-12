@@ -15,6 +15,13 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ✅ eq-shell — jvkn control-plane anon-grant lockdown (2026-07-12, MERGED + LIVE)
+*Authorized pentest found the anon (public) API key held full read/write/delete grants on 23 sensitive control-plane tables — workers, credentials, licences, audit log, tenants, invites. Row-level security already blocked real access (verified: anon writes were rejected, sensitive reads returned nothing), so this was a defense-in-depth close, not an active breach.*
+- [x] **Revoked all anon/PUBLIC access on the 20 sensitive tables; anon kept read-only on the 3 that are meant to be public** (org list, module list, licence-type list — needed before login). Applied live to jvkn and verified: locked tables now hard-refuse anon, the public bootstrap still works, staff/admin access untouched. **PR #786 MERGED** → core.eq.solutions auto-deploying. _(done 2026-07-12)_
+- [ ] **Follow-up: the public org-list table still handed out every tenant's private database address + access key to anyone, pre-login.** A separate session trimmed it to just the safe display columns (name/logo/etc), already applied live to jvkn — **PR #787 OPEN**, needs merge. _(added 2026-07-12)_
+
+---
+
 ## SKS Field host — console React #418 error investigated (2026-07-12, ruled out as a Shell bug)
 Reported: `core.eq.solutions/sks/field` throws "Minified React error #418" in console when signed in as SKS supervisor. #418 is React's hydration-mismatch error — but only reachable via `hydrateRoot`/SSR.
 - [x] **Ruled out structurally, not just spot-checked.** eq-shell is a pure client-rendered SPA — `main.tsx` uses `createRoot` (never `hydrateRoot`), `index.html`'s root div is empty, no SSR/prerender anywhere in source or vendored packages. Verified against the LIVE site too: prod HTML has no server-rendered markup, and the live bundle (`index-3nTNi-Md.js`) contains zero `hydrateRoot`/`.hydrate(` calls — the reported bundle hash (`2t8p4nrb71jbq.js`) doesn't even match what's currently deployed. React can't throw a hydration-mismatch error with nothing hydrating — the ticket's premise doesn't hold, no fix applied. _(done 2026-07-12)_
