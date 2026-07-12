@@ -9,6 +9,12 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-12] v3.5.304 — Degraded-sync observability + preserve-on-failure (SHIPPED, PR #459, live)
+- Parity with SKS NSW Labour v3.10.93 (#60), reached via Field's own resilience model — Field was never exposed to the SKS `Promise.all` freeze (per-fetch `_loadSafe`, v3.5.201), so this closes only the two remaining gaps.
+- **Preserve-on-failure**: a failed core-table fetch on the 30s/5min background poll used to blank the roster/Contacts for ≥30s — the fetch fell back to an empty set that overwrote currently-good data (Field has no last-good read snapshot). Now a failed fetch keeps the last-known data: the five core loads (people/sites/schedule/managers/timesheets) each skip their STATE write on failure (via a `_LOAD_FAILED` sentinel) instead of emptying. Cold boot unchanged (state starts empty anyway).
+- **Observability**: a degraded or fully-failed core sync now raises a toast + a `sync_degraded` analytics event (`kind` partial/failed, failed table names, count) + a console breadcrumb — fired once on the healthy→degraded edge, not every poll tick. Turns a previously silent, console-only partial outage into something operators actually see. Effectively SKS-only (the eq sandbox loads from seed; the demo slug is in-memory, so neither hits the fetch path).
+- No DB / schema / auth change; client-only, dependency-free. Verified live in the deploy preview by driving the health-signal state machine before merge.
+
 ## [2026-07-12] v3.5.303 — Birthday + Start date columns; Supervision read-only on SKS (SHIPPED, PR #458, live)
 - Contacts gains two optional columns — **Birthday** (day + month, no year) and **Start date** — available from the Columns picker for every Group segment (hidden by default). The data already lived on each person and is edited in the Add/Edit Person modal; this just surfaces it in the table. Mirrors the same two columns added to Core's Staff list (eq-shell #771).
 - Supervision is now read-only on SKS: the "＋ Add Contact" button is hidden and `openAddManager` is guarded (row edit/archive/delete were already SKS-hidden). SKS supervisors are managed in Core (Shell Staff → Supervisor toggle); Field is view-only for them. EQ tenants unchanged.
