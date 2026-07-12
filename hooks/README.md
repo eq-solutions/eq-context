@@ -1,3 +1,12 @@
+---
+title: hooks — rung 4 guards (enforcement layer)
+owner: Royce Milmlow
+last_updated: 2026-07-12
+scope: What the pre_tool_use and session_start hooks enforce, why fail-closed, how to install and test them
+read_priority: standard
+status: live
+---
+
 # hooks/ — rung 4. Prevention, not documentation.
 
 These are the guards that cannot be forgotten. They live **here**, in the governed,

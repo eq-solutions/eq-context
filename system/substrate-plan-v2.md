@@ -3,10 +3,13 @@ title: The Notebook That Tells the Truth — Substrate Plan v2
 owner: royce (pending confirmation — this file is `asserted` until he adopts it)
 type: asserted
 asserted_on: 2026-07-12
+last_updated: 2026-07-12
+scope: Proposed programme to make the EQ substrate self-verifying — facts close against the live DB, guards against escaped failures, goals against Royce
+read_priority: standard
 expires_on: 2026-08-12
 verify: human
 supersedes: system/substrate-a-plus-plan.md
-status: proposed
+status: draft
 ---
 
 # The Notebook That Tells the Truth
