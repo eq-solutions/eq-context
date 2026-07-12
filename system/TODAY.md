@@ -53,8 +53,7 @@ These are **not** assertions. They are direct reads of ehow (`ehowgjardagevnrluu
 
 | Signal | Verified value | Note |
 |---|---|---|
-| **Maintenance checks created** | **14** | |
-| **Maintenance checks completed** | **0. Ever.** | **The core product workflow has never once been completed.** |
+| **Maintenance checks** | **16 created · 10 live · 0 completed** | Re-verified 2026-07-12 against due-dates. All 10 live checks are **future-dated** (earliest due 2026-08-06; 8 are RCD compliance seeds due 2027). 6 are soft-deleted. **0 completed = nothing has come due, NOT a broken workflow.** First real completion signal: **2026-08-06**. |
 | `defects` · `asset_defects` · `test_records` · `service_visits` · `toolbox_talks` · `site_audits` | **0** | all zero |
 | `prestarts` | 30 | last 2026-07-04 — stalled |
 | `job_notes` | 309 | last 2026-07-10 — healthy |
@@ -65,9 +64,9 @@ These are **not** assertions. They are direct reads of ehow (`ehowgjardagevnrluu
 
 ### What the facts say — without a goal to filter them through
 
-**People show up and cannot finish work.** Ten staff log in. Fourteen checks get started. Zero get completed. That is not an adoption problem — it is a **completion-path problem**, and it is the only thing in this file that is both verified and unambiguously bad.
+**Correction (2026-07-12): the earlier alarm was over-read.** The first cut of this file said *"people show up and cannot finish work — a completion-path problem, unambiguously bad."* A live check of due-dates shows that was wrong: nothing has been completed because **nothing has come due.** Every live check is scheduled for 2026-08-06 or later; 8 are 2027 RCD compliance seeds; nothing has even been *started*. That is a young, forward-scheduled system, not a broken one. Logged as the correction to failure **F4** — the metric used to raise the alarm was itself un-verified against reality, the exact "verified falsehood" the plan calls its floor.
 
-It is stated here as a **fact, not a priority.** Priorities require goals, and there are none. If Royce wants this to be the priority, it goes in the GOALS section above with an owner and an expiry — like everything else.
+**What IS genuinely open** (soft signals, not a crisis, stated as facts not priorities): whether NSW is capturing *near-term* operational work at all — `prestarts` stalled at 30 (last 2026-07-04), safety modules at 0, only 31 non-Royce human writes in 14 days, and adoption itself unmeasurable because `last_login_at` is never written by Shell SSO. These are worth **watching** (the product pulse), not **alarming** about. The next moment that matters: **2026-08-06** — does the first due check get completed?
 
 ---
 
