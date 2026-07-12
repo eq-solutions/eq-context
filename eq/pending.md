@@ -15,6 +15,14 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## SKS Field host — console React #418 error investigated (2026-07-12, ruled out as a Shell bug)
+Reported: `core.eq.solutions/sks/field` throws "Minified React error #418" in console when signed in as SKS supervisor. #418 is React's hydration-mismatch error — but only reachable via `hydrateRoot`/SSR.
+- [x] **Ruled out structurally, not just spot-checked.** eq-shell is a pure client-rendered SPA — `main.tsx` uses `createRoot` (never `hydrateRoot`), `index.html`'s root div is empty, no SSR/prerender anywhere in source or vendored packages. Verified against the LIVE site too: prod HTML has no server-rendered markup, and the live bundle (`index-3nTNi-Md.js`) contains zero `hydrateRoot`/`.hydrate(` calls — the reported bundle hash (`2t8p4nrb71jbq.js`) doesn't even match what's currently deployed. React can't throw a hydration-mismatch error with nothing hydrating — the ticket's premise doesn't hold, no fix applied. _(done 2026-07-12)_
+- [ ] **Royce to reproduce in a clean Incognito profile (extensions off)** on `/sks/field` as SKS. If #418 disappears → a browser extension (Grammarly, translator, password manager) is mutating the DOM — not a Shell bug, close it out. If it survives clean Incognito, capture the console `args[]=` values + top stack frames (script provided in-session) and bring them back — that's the only path to a real root cause. _(added 2026-07-12)_
+- [ ] **No sourcemaps uploaded for eq-shell** (`@sentry/vite-plugin`/`sentry-cli` absent from the build) — Sentry events are exactly as minified as the console, so it isn't a shortcut here. Optional follow-up if prod JS errors keep needing manual decode: wire up sourcemap upload in its own PR. _(added 2026-07-12)_
+
+---
+
 ## ✅ EQ Field — in-app Remove/Restore/Delete people lifecycle (2026-07-12, MERGED + DEPLOYED)
 *Royce: "make eq field work properly … users don't have to leave and come back" + "start trusting our data". On SKS, Archive AND Delete both only set active=false, which the active-only field_people view hides → removed people vanished, Restore was dead, "Show archived" always empty, and Delete also wiped roster history.*
 - [x] **PR #462 (v3.5.306) — full in-app lifecycle: Remove from roster → Show removed → Restore → Delete permanently.** Live on field.eq.solutions. Two-step: active rows Remove (reversible, keeps all history); removed rows Restore or supervisor hard-delete (FK-guarded — roster/timesheet/leave/licence history blocks it with a friendly toast). _(done 2026-07-12)_
