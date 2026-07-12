@@ -1,0 +1,52 @@
+name: Guard adversarial suite
+
+# Regression-tests hooks/pre_tool_use.py and hooks/session_start.py against every
+# failure they were built to catch (F1, F2, F6). Without this, a future edit to
+# either hook could silently reintroduce a fixed failure — the ratchet only climbs
+# on a REAL recurrence; this is what stops that recurrence from being the hook
+# itself breaking, undetected, until it fails for real again.
+#
+# Checkout path matters here, unusually: pre_tool_use.py's mount-detection
+# (targets_mount()) matches on a "/projects/" path segment — the production
+# convention is C:\Projects\eq-context. A default checkout lands at
+# /home/runner/work/eq-context/eq-context, which contains no such segment, so
+# the F2 fixtures (edit CLAUDE.md / system/lessons.md) would silently no-op
+# instead of exercising the guard at all — a quiet, wrong-for-the-wrong-reason
+# pass, not the loud failure this suite exists to produce. `path:` below
+# reproduces the "/projects/" segment so the fixtures test the real code path.
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "hooks/**"
+  push:
+    branches: [main]
+    paths:
+      - "hooks/**"
+  schedule:
+    # 03:00 AEST — catches drift in the fixtures' own assumptions (e.g. if
+    # CLAUDE.md or system/lessons.md ever shrinks under the hook's 200-line
+    # threshold, these tests should start failing to say so), not just edits.
+    - cron: '0 17 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  adversarial-suite:
+    name: Adversarial suite (18/18)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          path: Projects/eq-context
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Run the adversarial suite
+        working-directory: Projects/eq-context
+        run: python hooks/adversarial_test.py
