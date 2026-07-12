@@ -1,13 +1,22 @@
 ---
 title: Autonomous Sprint — Rules
 owner: Royce Milmlow
-last_updated: 2026-06-04
+last_updated: 2026-07-12
 scope: Diverge-proof conventions for all parallel autonomous agent work across EQ repos
 read_priority: critical
 status: live
 ---
 
 # Autonomous Sprint — RULES (read before doing anything)
+
+> **Coordination mechanism retired 2026-07-12** — `SPRINT-BOARD.md` and `STATE.md`
+> (referenced in §4 and §6 below) are archived to `archive/sprints/`; the Autonomous
+> Sprint board is no longer how work is coordinated (normal PRs + `suite-state.md`/
+> `digest.md` now). **The rules themselves stay live** — they're durable engineering
+> conventions (git hygiene, migration naming, ground-truth-before-trust), still cited
+> by `CLAUDE.md` §7, and still apply the moment more than one agent works this repo
+> in parallel (e.g. worktrees). Read §4/§6 as historical for *how* claiming worked,
+> not as a live pointer to an active board.
 
 These are the hard conventions that make parallel autonomous work **diverge-proof**. Every one exists because we hit the failure on 2026-05-30. Breaking one re-introduces a known break. If a task seems to require breaking a rule, STOP and flag it — don't work around it.
 

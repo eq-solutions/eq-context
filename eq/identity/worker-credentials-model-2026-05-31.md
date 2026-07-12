@@ -103,4 +103,4 @@ not built — no consumer yet.**
 - [../cards/canonical-migration/plan.md](../cards/canonical-migration/plan.md) — Cards-side canonical migration
 - eq-intake `EQ-TENANCY-MODEL.md` — tenancy model (separate DB per tenant)
 - eq-cards PR #12 — canonical-api rewire (gateway transport seam)
-- [SPRINT-BOARD.md](../../SPRINT-BOARD.md) Stream G — Phase-1 work items
+- [SPRINT-BOARD.md](../../archive/sprints/SPRINT-BOARD.md) Stream G — Phase-1 work items (archived 2026-07-12 — coordination mode retired)

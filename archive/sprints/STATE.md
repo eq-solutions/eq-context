@@ -1,11 +1,16 @@
 ---
-title: Autonomous Sprint — State
+title: Autonomous Sprint — State (ARCHIVED)
 owner: Royce Milmlow
-last_updated: 2026-06-15
+last_updated: 2026-07-12
 scope: Per-repo + Supabase reality snapshot, CI guards, and known hazards for the sprint
-read_priority: critical
-status: live
+read_priority: reference
+status: archived
 ---
+
+> **ARCHIVED 2026-07-12 — the Autonomous Sprint coordination mode is superseded.**
+> Work now runs as normal PRs; current per-repo/live-DB reality lives in
+> `suite-state.md` (auto-refreshed nightly) and `digest.md` (what needs attention).
+> Kept for git history. Do not treat anything below as current.
 
 # Autonomous Sprint — STATE (current reality; refresh at sprint start)
 
