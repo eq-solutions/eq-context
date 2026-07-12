@@ -40,7 +40,7 @@ _If this file is >48h old, the cron is broken._
 | Assets | 401 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
 | Users | 5 | service.tenant_members |
-| Maintenance checks | 16 | service.maintenance_checks |
+| Maintenance checks | 18 | service.maintenance_checks |
 | Defects | 0 | service.defects |
 
 **SKS tenant ID on ehow:** `7dee117c-98bd-4d39-af8c-2c81d02a1e85`
@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-12)
 
-**eq-field:**
-- #459 v3.5.304 — degraded-sync observability + preserve-on-failure (SKS #60 parity)
-
 **eq-service:**
 - #459 chore(deps-dev): bump @vitejs/plugin-react from 6.0.1 to 6.0.3
 - #458 chore(deps): bump tailwind-merge from 3.5.0 to 3.6.0
@@ -71,7 +68,6 @@ _If this file is >48h old, the cron is broken._
 - #455 chore(deps): bump @eq-solutions/ui from v1.9.0 to v1.10.0 in the eq-design-system group
 
 **eq-shell:**
-- #751 fix(security): migrate eq-intake xlsx reader off vulnerable xlsx@0.18.5 to exceljs
 - #715 feat(access): gate enforcement on can()/useCan() not role names (access-model Phase 1)
 - #658 fix(dashboard): surface pending staff connections on home sidebar
 
