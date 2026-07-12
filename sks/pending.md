@@ -283,6 +283,23 @@ The following tests belong to eq-quotes-port (Flask), which is retired as of 202
 **Deferred:**
 - [ ] **EQ Field reconcile** (spawned `task_8c1fb92e`, running) — EQ Field (v3.5.303) already solved the freeze differently: `_loadSafe` wraps ALL core fetches in `.catch(()=>[])` (v3.5.201), so it's NOT exposed. But (a) it's console-only — no toast/analytics, so a persistent partial failure is still silent to operators; (b) it blanks a failed core table to `[]` rather than keeping last-good cached data like SKS. Chip raised to port SKS's observability layer + make the blank-vs-cached failure mode a conscious choice. Don't cross-deploy — EQ Field's own lane. _(added 2026-07-12)_
 
+## ⏩ SKS Field — session 2026-07-12 (DB "not working" outage → root fix + timesheet UX)
+
+**Trigger:** Royce reported "the database isn't working" — app stuck on a 4-day-old "Cached" banner. Diagnosed live: DB healthy; every full sync 400'd on two id-less tables and (via the all-or-nothing `Promise.all`) froze the app on its last snapshot. This session shipped the ROOT fix; the resilience layer (v3.10.93 #60) was the follow-up chip.
+
+**Completed:**
+- [x] **sks-nsw-labour v3.10.92 (PR #59, MERGED, live — `2e38315`)** — root fix. v3.10.90 paginated `team_members`/`timesheet_locks` via `sbFetchAll()` with no `orderBy`, so both defaulted to `order=id` — neither has an `id` column (PKs `team_id,person_id` / `week_key,org_id`) → 400 on every load. One 400 in the `Promise.all` failed the whole sync → cached-snapshot fallback, silent ~2 days (writes still 200'd so saves looked fine; the 400 was a handled rejection → 0 `error_thrown` in PostHog). Passed each table's PK. Live-verified via API logs (400→200 after deploy). Post-mortem: no review (self-merged), no CI/tests, failure mislabeled "Offline".
+- [x] **sks-nsw-labour v3.10.94 (PR #61, MERGED, live — `84abe48`)** — three timesheet UX fixes: (1) **hours-missing red flag** — `placeholder="8"` made an empty cell look filled; a job-with-blank-hours now goes red with a `?` (empty boxes show `hrs`/`h`, not a fake `8`), live-toggled desktop + mobile; nothing auto-writes hours. (2) **weekend auto-show** — any week with Sat/Sun data reveals the weekend columns (`_showWE = tsShowWeekends || hasSat || hasSun`). (3) **Sunday week-rollover fix** — default week used `getDate()-getDay()+1` (JS Sunday=0 → rolled to next week all Sunday); aligned all four week-Monday formulas (index.html ×3 + auth.js) to ISO `-((getDay()+6)%7)`, so the app advances Monday. Rebased onto v3.10.93 first (#60 intact).
+
+**Decided (Royce):**
+- Ship the DB fix immediately (live outage); ship all three timesheet fixes as v3.10.94.
+- Hours-missing = red flag + kill the "8", NOT auto-fill 8h (auto-fill risks over-billing partial days; invoiced hours stay human-entered).
+- Sunday rollover = stay on the current Mon–Sun week through Sunday, advance Monday.
+
+**Deferred:**
+- [ ] **Prevention (not filed):** make `sbFetchAll` fail loud (drop the `order=id` default / validate the column) + a post-deploy smoke check (assert every bootstrap fetch 2xx) — highest-leverage gap given there's no CI at all. _(added 2026-07-12)_
+- [ ] **Don't port v3.10.94 timesheet UX to EQ Field now** — steelmanned: field.eq.solutions carries deploy-preview traffic only (no live timesheet users), SKS is source of truth and carries v3.10.94 across at the codebase-merge phase, and EQ Field's timesheet render has already diverged (desktop uses `h` not `8`; mobile still `8`; no red flag). Log as a merge-time checklist item, not speculative work. _(added 2026-07-12)_
+
 ## ⏩ SKS Field — session 2026-07-11 (Safety offline queue unwedge + Resource Allocation capacity panel + Sentry triage)
 
 **Completed (eq-field, all merged to main + live):**

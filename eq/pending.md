@@ -15,6 +15,11 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ✅ EQ Field — sync resilience + order=id parity (2026-07-12, MERGED + DEPLOYED)
+- [x] **PR #459 (v3.5.304) — degraded-sync observability + preserve-on-failure (SKS #60 parity).** Ported SKS v3.10.93 to EQ Field: sync-health state machine (`_emitSyncHealth`), `sync_degraded` analytics event, degraded toast, preserve-last-known-on-failure. Built by the reconcile chip session, verified in-browser. _(done 2026-07-12)_
+- [x] **PR #460 (v3.5.305) — order=id fix for id-less tables.** `sbFetchAll('team_members'…)` / `sbFetchAll('timesheet_locks'…)` passed no `orderBy` → default `order=id` 400s (no `id` column). Passed each PK (`team_id,person_id` / `week_key`). Low impact — both already guarded (try/catch) so they degraded silently, but the teams-filter + week-lock features never loaded for the SKS tenant. Meant to fold into #459 but it merged first; clean follow-up. SKS #59 parity. _(done 2026-07-12)_
+- [ ] **`project_targets` (supabase.js:1765)** also calls `sbFetchAll` without `orderBy` — left as-is; normal entity table that should have an `id`. Verify if paranoid. _(added 2026-07-12)_
+
 ## ✅ EQ Cards — decline-reason loop + tenant minimum licences + edge fixes (2026-07-12, ALL MERGED + DEPLOYED)
 Overhauled the worker connection flow so a declined worker isn't left in the dark, employers self-serve their minimum credentials, and edge cases don't dead-end. Everything shipped to cards.eq.solutions + core.eq.solutions and exercised end-to-end through the REAL UI (Bob test dummy + Emma).
 - [x] **iOS spinner fix** — Timer-driven `EqSpinner` replaces the indeterminate `CircularProgressIndicator` that froze on iOS Safari (throttles CanvasKit's WebGL loop); swept 28 spinners / 26 files. eq-cards #144. _(done 2026-07-12)_
