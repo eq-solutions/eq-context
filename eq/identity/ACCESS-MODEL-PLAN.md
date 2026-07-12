@@ -1,3 +1,12 @@
+---
+title: Access-Model Foundation Plan
+owner: Royce Milmlow
+last_updated: 2026-07-08
+scope: 5-role access-model consolidation across the EQ suite — collapse five grant paths to one, canonical groups, phased rollout; companion to IDENTITY-MODEL.md
+read_priority: high
+status: live
+---
+
 # Access-Model Foundation Plan — decided 2026-07-08
 
 Companion to `IDENTITY-MODEL.md`. Decisions made by Royce on Fable-tier design review.

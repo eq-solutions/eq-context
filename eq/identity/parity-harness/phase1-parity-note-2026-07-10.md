@@ -1,3 +1,12 @@
+---
+title: Access-Model Phase 1 parity check
+owner: Royce Milmlow
+last_updated: 2026-07-10
+scope: Gate result for access-model Phase 1 (eq-shell enforcement conversion + eq-roles v2.5.1) — behaviour-preserving; hash delta fully accounted for
+read_priority: standard
+status: archived
+---
+
 # Phase 1 parity check — 2026-07-10
 
 Gate for access-model Phase 1 (the eq-shell enforcement-conversion PR + the

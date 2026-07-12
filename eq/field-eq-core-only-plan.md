@@ -2,7 +2,8 @@
 title: Plan — Retire the EQ Field PIN gate (EQ tenant → Core-only)
 owner: Royce Milmlow
 created: 2026-07-11
-status: planned (not started)
+last_updated: 2026-07-11
+status: draft
 scope: eq-field (single repo). Core/canonical/shell already ready — no eq-shell build.
 read_priority: reference
 ---

@@ -1,3 +1,12 @@
+---
+title: Enforcement-site inventory (Access-Model Phase 0 deliverable)
+owner: Royce Milmlow
+last_updated: 2026-07-08
+scope: Per-PermKey map of who actually enforces each permission across the suite and whether a key means the same thing everywhere; seeds Phase 3 why_can()
+read_priority: standard
+status: live
+---
+
 # Enforcement-site inventory — 2026-07-08
 
 Phase 0 deliverable of the [Access-Model Plan](ACCESS-MODEL-PLAN.md). Answers,
