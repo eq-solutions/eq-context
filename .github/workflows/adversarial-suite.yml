@@ -55,7 +55,8 @@ jobs:
 
       - name: Relocate checkout under /mnt/Projects (matches the guard's real mount detection)
         run: |
-          mkdir -p /mnt/Projects
+          sudo mkdir -p /mnt/Projects
+          sudo chown "$(whoami)" /mnt/Projects
           cp -r "$GITHUB_WORKSPACE" /mnt/Projects/eq-context
 
       - name: Run the adversarial suite
