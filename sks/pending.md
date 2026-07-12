@@ -5,6 +5,7 @@ last_updated: 2026-07-11
 scope: SKS Technologies operational TODO list
 read_priority: critical
 status: live
+last_updated: 2026-07-12
 ---
 
 # SKS Pending
@@ -305,8 +306,15 @@ The following tests belong to eq-quotes-port (Flask), which is retired as of 202
 - [x] **Three intake "doors":** typed-in (New job); **Ops** (pull won EQ Ops quotes → comms jobs, bulk tick-box import); **Melbourne** (upload the "Microsoft Working Job List.xlsx" → parse in browser → import new jobs, add-only, skips existing).
 - [x] **Door polish** — imports carry the $ value across (PO line), "From Ops · N" count, Melbourne brings PO detail + de-dups suffixed job numbers.
 - [x] **Verified live end-to-end** (browser walkthrough, read-only) — page loads with data, table, columns picker, bulk Ops import, job detail, crew tick-list all working.
+- [x] **Job-list polish (2026-07-12, merged + deployed)** — sticky column headers, loading skeleton, removable active-filter chips, friendlier empty/error states (with Try-again), column-picker tidy (Reset + hidden count). UI only.
+- [x] **Wiring diagram + tech-facing one-pager** — mapped how Comms/Field/Ops connect (built vs dry); published a plain-English "your week, in one place" one-pager for the crew (private artifact, share from the page).
+- [x] **Planner reconciliation (2026-07-12)** — checked the tool against the actual planner Excel: all Monday-critical features + header data covered; found two pre-fill gaps (materials, crew) and three consciously-parked features (Gantt, hours-by-tech dashboard, NV1-per-person). Details in session log.
 
 **Deferred:**
+- [ ] **Reach the crew — the last mile is off.** Only 6 of 11 comms techs can log in; 0 of 11 get any roster notification (all 11 have a phone). Until this is wired, a booking never reaches the tech automatically. Fix = logins for the 5 + roster SMS. Chip spawned. _(added 2026-07-12)_
+- [ ] **Materials pre-fill — staged, reversible, ready.** The planner has materials status on 84 jobs; the backfill skipped the column (0 filled). Fix dry-run clean: 83 rows, maps cleanly to the dropdown, all targets blank. Blocked at the write (question ≠ consent); run on Royce's go. Chip spawned. _(added 2026-07-12)_
+- [ ] **Crew pre-fill — planner knows a lead on 76 jobs, tool shows 1.** Filling means seeding the Field roster from the planner's lead+dates = the first real (stale-date) roster write; do as a curated pass with the real Monday, not an auto-backfill. _(added 2026-07-12)_
+- [ ] **Parked planner features** — Gantt (jobs across time) and the Dashboard's hours-by-manager / hours-by-tech analytics not built; NV1-per-person parked (below). Pull back in only if the team asks. _(added 2026-07-12)_
 - [ ] **Run one real Monday through it** — book real crews on real jobs, confirm they hit the Field roster. The single step that turns "built" into "used"; it's a trial run, not code. _(added 2026-07-12)_
 - [ ] **NV1-as-a-licence PARKED (Royce)** — model NV1 clearance as a Field licence for a real 1-per-3 supervision meter (source: Melbourne MS TECHS sheet). Sound but "polish, not site value yet". _(added 2026-07-12)_
 - [ ] **Melbourne import is add-only** — skips any job already in comms, never updates/enriches an existing one. A future "enrich existing" pass if updates from Melbourne should flow. _(added 2026-07-12)_
