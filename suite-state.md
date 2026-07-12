@@ -88,7 +88,8 @@ _If this file is >48h old, the cron is broken._
 | eq-solves-intake | ? unknown |
 
 **Deploys:**
-_NETLIFY_TOKEN not set — deploy status unavailable_
+_NETLIFY_TOKEN not set — auto deploy status unavailable._
+- **eq-shell → core.eq.solutions** — verified live 2026-07-12: production deploy `de1be77` (shell PR #770, "add_site links the chosen site contact") state **ready**, published 00:38:24Z, build 234s, 121 functions deployed. Fixes the CRM Add-Site contact not sticking until an Edit (`add_site` now writes the `contact_site_links` site_contact row). Immediately preceded live by #769 phone-E164 (`6c542a2`).
 
 **Migrations:** eq-service has 183 (latest: 0179) applied
 
