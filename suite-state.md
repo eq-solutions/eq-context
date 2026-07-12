@@ -35,7 +35,7 @@ _If this file is >48h old, the cron is broken._
 
 | Entity | Count | Schema |
 |--------|-------|--------|
-| Sites | 243 | app_data.sites |
+| Sites | 232 | app_data.sites |
 | Customers | 42 | app_data.customers |
 | Assets | 401 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
@@ -59,6 +59,9 @@ _If this file is >48h old, the cron is broken._
 ---
 
 ## Open PRs (as of 2026-07-12)
+
+**eq-field:**
+- #461 feat(auth): EQ tenant is Core-only — close the demo login gate (v3.5.306)
 
 **eq-service:**
 - #459 chore(deps-dev): bump @vitejs/plugin-react from 6.0.1 to 6.0.3
