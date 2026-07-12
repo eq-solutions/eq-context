@@ -16,7 +16,7 @@ status: live
 
 ## ⚠️ Read this before using this file
 
-On **2026-07-11** this file contained a hard deadline — *"34 days to 1 August 2026"* — and three Q3 success outcomes, marked `read_priority: critical`, loaded first by every assistant in every session.
+On **2026-07-11** this file contained a hard deadline nobody had set — and three Q3 success outcomes, marked `read_priority: critical`, loaded first by every assistant in every session.
 
 **Royce did not recognise it.** It had governed session prioritisation for two weeks. An assistant used it to repeatedly tell him to defer work. The deadline was not real.
 
@@ -43,7 +43,7 @@ claims: []
 **Rules for this section (enforced by `claim-expiry.yml`):**
 - A goal with no `expires_on` is **invalid** — CI fails.
 - A goal past `expires_on` is **dead**, and surfaces as *"Royce — confirm or kill."* It does not silently persist.
-- **No assistant may write a goal here.** Assistants may only propose. Goals are human-owned. This is not a formality — it is the specific safeguard that would have prevented the 1 August phantom.
+- **No assistant may write a goal here.** Assistants may only propose. Goals are human-owned. This is not a formality — it is the specific safeguard that would have prevented this phantom.
 
 ---
 

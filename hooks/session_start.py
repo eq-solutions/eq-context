@@ -9,7 +9,7 @@ costs no ceremony. Prints, unprompted, at every session start:
   2. NEEDS YOU   — the digest's own alert section, which otherwise waits in a file
                    nobody opens (it sat unread for 12 days).
   3. GOALS       — whether TODAY.md has any. If UNSET, no assistant may defer work
-                   by appeal to a deadline (failure F3 — the 1 August phantom).
+                   by appeal to a deadline (failure F3 — the phantom-deadline incident).
   4. RATCHET     — failures whose guard is overdue for promotion (system/failures.md).
 
 Reads the LOCAL CLONE, never a URL. The URL is what lied on 2026-07-11.
@@ -85,7 +85,7 @@ if nm:
     else:
         out.append("NEEDS YOU  clear")
 
-# --- 3. GOALS (F3 — the 1 August phantom) -----------------------------------
+# --- 3. GOALS (F3 — the phantom-deadline incident) -----------------------------------
 today = read("system/TODAY.md")
 if "status: UNSET" in today or "Goals: UNSET" in today or "claims: []" in today:
     out.append(
@@ -93,7 +93,7 @@ if "status: UNSET" in today or "Goals: UNSET" in today or "claims: []" in today:
         "           You therefore have NO BASIS to defer, deprioritise, or justify work\n"
         "           by appeal to a deadline or quarterly outcome. Do not borrow one from\n"
         "           an old file. Do not invent one. Say plainly that goals are unset.\n"
-        "           (On 2026-07-11 a phantom '1 August' deadline steered two weeks of\n"
+        "           (On 2026-07-11 a phantom deadline nobody owned steered two weeks of\n"
         "           sessions. Nobody owned it. Every CI check passed green — failure F3.)"
     )
 else:

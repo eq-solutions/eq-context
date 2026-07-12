@@ -36,7 +36,7 @@ not urgent — "working before refactoring").
 - [x] **Hooks wired in** — `C:\Projects\.claude\settings.json` created (merges with existing
   `settings.local.json`; does not clobber it). Rung-4 guards now actually run.
 - [x] **`auto-bump-frontmatter.yml` retired** — the "beetle" that manufactured false freshness
-  (kept the 1-Aug phantom looking current). Dates now come from real commits. Recoverable from git.
+  (kept the phantom deadline looking current). Dates now come from real commits. Recoverable from git.
 
 **Open:**
 - [x] **Day 0 — F5** — RESOLVED as a Claude-Code task: verified `~/.claude/CLAUDE.md` is clean

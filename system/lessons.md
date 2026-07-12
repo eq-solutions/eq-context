@@ -469,12 +469,12 @@ Three distinct corruption modes on the `C:\Projects` virtiofs mount from the Cow
 
 **Problem:** `system/TODAY.md` — `read_priority: critical`, the first file loaded by every assistant in every session, the stated filter for *every* build decision — contained:
 
-> **34 days to 1 August 2026.**
-> *"Default question for every build/feature decision: does this move outcome 1, 2, or 3 before 1 August?"*
+> **A hard deadline nobody set.**
+> *"Default question for every build/feature decision: does this move outcome 1, 2, or 3 before [the deadline]?"*
 
 An assistant loaded it, believed it, and spent a session repeatedly telling Royce to **defer work** against that deadline. It shaped the priority of every recommendation made.
 
-Then Royce said: **"what's august 1? why are you mentioning that?"**
+Then Royce said: **"what's that deadline? why are you mentioning it?"**
 
 He did not recognise it. It had governed session prioritisation for two weeks.
 
@@ -491,7 +491,7 @@ He did not recognise it. It had governed session prioritisation for two weeks.
 4. **`hooks/session_start.py`** announces `GOALS UNSET` at every session start: *"you have NO BASIS to defer or deprioritise anything."*
 5. Logged as **F3** in `system/failures.md`. Target rung 3 (`claim-expiry.yml`) — **not yet built.**
 
-**Rule:** treat **facts** and **goals** as different substances with different half-lives. A fact ("ehow is the live DB") is machine-verifiable and should be re-checked by SQL. A goal ("NSW live by August") is verifiable *only by the human who owns it*, and must expire fast. Storing both in the same file under the same freshness rules is precisely how a lapsed intention becomes a governing constraint.
+**Rule:** treat **facts** and **goals** as different substances with different half-lives. A fact ("ehow is the live DB") is machine-verifiable and should be re-checked by SQL. A goal ("NSW live by some date") is verifiable *only by the human who owns it*, and must expire fast. Storing both in the same file under the same freshness rules is precisely how a lapsed intention becomes a governing constraint.
 
 **The deeper rule — the one that generalises:** an agent quoting the substrate must **inherit its confidence type**. Say *"5 users (asserted 2026-06-28, unverified)"* — never *"5 users."* On 2026-07-11 the assistant quoted `TODAY.md`'s guesses with exactly the same confidence as numbers it had pulled from live SQL, **because the substrate gave it no way to tell the difference.** That is the bug. Everything else is a symptom.
 

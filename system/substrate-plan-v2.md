@@ -18,7 +18,7 @@ status: draft
 
 There was once a farmer with too many fields and one clever notebook. The notebook could write in itself, which was useful, because the farmer was busy. Each night it wrote down what had happened on the farm, and each morning it told the farmer what mattered.
 
-One day the farmer noticed the notebook kept saying: *"Hurry — every apple must be sold by the first of August."* He stopped. "Who wrote that?" The notebook checked. The farmer hadn't. The farmhands hadn't. Nobody had — or rather, someone had once, long ago, perhaps as a guess, and a small beetle named Tick, whose only job was stamping today's date on every page so the pages looked fresh, had been re-stamping it every night. The guess wore a new date every morning. It looked like the truest thing in the book. Twelve fences had been mended in a hurry because of a sentence nobody owned.
+One day the farmer noticed the notebook kept saying: *"Hurry — every apple must be sold by harvest day."* He stopped. "Who wrote that?" The notebook checked. The farmer hadn't. The farmhands hadn't. Nobody had — or rather, someone had once, long ago, perhaps as a guess, and a small beetle named Tick, whose only job was stamping today's date on every page so the pages looked fresh, had been re-stamping it every night. The guess wore a new date every morning. It looked like the truest thing in the book. Twelve fences had been mended in a hurry because of a sentence nobody owned.
 
 The farmer didn't burn the notebook. He taught it three things.
 

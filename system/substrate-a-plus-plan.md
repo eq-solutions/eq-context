@@ -30,7 +30,7 @@ The plan is measured against these. Not against a rubric. If a phase does not ma
 |---|---|---|
 | **F1** | `raw.../main/CLAUDE.md` served **8 days stale**, `digest.md` **12 days stale** — 200 OK, no error. | The §1 fallback triggers on *errors*. A stale cache hit is not an error. |
 | **F2** | `Edit` **silently truncated** `CLAUDE.md` (308 → 277 lines, §12/§13 gone). Tool reported success. | The lesson existed in `lessons.md` — buried 300 lines in as "Bonus 2". It was read and still didn't fire. |
-| **F3** | **"1 August 2026"** governed every session decision for two weeks from `read_priority: critical` — and its owner did not recognise it. | Freshness checks verify *recency*. Nothing verifies *truth* or *ownership*. `auto-bump-frontmatter` would have kept it looking fresh forever. |
+| **F3** | **an unowned deadline** governed every session decision for two weeks from `read_priority: critical` — and its owner did not recognise it. | Freshness checks verify *recency*. Nothing verifies *truth* or *ownership*. `auto-bump-frontmatter` would have kept it looking fresh forever. |
 | **F4** | `maintenance_checks`: **14 created, 0 ever completed.** Nothing surfaced it. | 16 workflows watch the repos. **Zero watch the product.** |
 | **F5** | The **Cowork preferences box** — unversioned, unaudited — **overrode** the canonical contract and fed an agent stale substrate. | One governed memory. **Six ungoverned ones.** CI covers the one that was correct. |
 
@@ -40,7 +40,7 @@ The plan is measured against these. Not against a rubric. If a phase does not ma
 
 ## Phase 0 — Stop the bleeding *(30 min, today)*
 
-- [ ] **Hold `system/TODAY.md` out of the push** until the 1 August question is answered. It currently launders an unowned goal into a freshly-dated, "live-DB verified" file. **This is F3 being actively made worse.**
+- [ ] **Hold `system/TODAY.md` out of the push** until the goal question is answered. It currently launders an unowned goal into a freshly-dated, "live-DB verified" file. **This is F3 being actively made worse.**
 - [ ] Push `CLAUDE.md`, `system/lessons.md`, `sessions/2026-07-11-*.md`.
 - [ ] **Delete the Cowork preferences patch.** (Claude settings → Preferences.) It is redundant and it caused F1.
 
@@ -82,7 +82,7 @@ expires_on: 2026-09-22
 
 **Three rules that make it work:**
 
-1. **Goals expire fast; facts get re-verified.** A `type: goal` with no reconfirmation **dies automatically** and surfaces as *"Royce — confirm or kill: 1 August deadline."* F3 becomes impossible: the phantom would have expired on 2026-07-28 and been escalated, not silently obeyed.
+1. **Goals expire fast; facts get re-verified.** A `type: goal` with no reconfirmation **dies automatically** and surfaces as *"Royce — confirm or kill: the deadline."* F3 becomes impossible: the phantom would have expired on 2026-07-28 and been escalated, not silently obeyed.
 2. **Agents cannot promote their own claims.** Anything an agent writes is `asserted`. Only `verify: sql` (machine, re-run nightly) or explicit human sign-off promotes to `verified`. **This blocks the collusion failure** where an agent writes a fact and then "verifies" it.
 3. **Confidence is inherited, not laundered.** An agent quoting a claim must carry its type: *"5 users (asserted 2026-06-28, unverified)"* — never *"5 users."* Today I quoted `TODAY.md`'s guesses with the same confidence as live SQL. **The substrate gave me no way to tell the difference. That is the bug.**
 

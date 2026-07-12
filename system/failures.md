@@ -63,7 +63,7 @@ failures:
     rung: 1
     target_rung: 3
     guard: "TODAY.md GOALS section left explicitly UNSET (rung 1) -> claim-expiry.yml (rung 3)"
-    detected_by: "human — Royce asked 'what's August 1? why are you mentioning that?'"
+    detected_by: "human — Royce asked 'what's that deadline? why are you mentioning it?'"
     cost: "an assistant repeatedly told Royce to defer work against a phantom deadline"
     note: "Every check passed green. auto-bump-frontmatter was faithfully keeping the phantom looking fresh. Freshness != truth."
 
