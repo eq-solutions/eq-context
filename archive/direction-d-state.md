@@ -1,11 +1,15 @@
 ---
-title: Direction D — State Tracker
+title: Direction D — State Tracker (ARCHIVED)
 owner: Royce Milmlow
-last_updated: 2026-06-01
+last_updated: 2026-07-12
 scope: Living state doc for the Direction D design-system + IA wave. Updated after each task closes.
-read_priority: high
-status: live
+read_priority: reference
+status: archived
 ---
+
+> **ARCHIVED 2026-07-12 — no inbound references found (checked all governed docs);
+> the Direction D wave this tracked appears dormant.** Kept for git history. If this
+> wave resumes, reinstate and refresh against live state first.
 
 # Direction D — State Tracker
 

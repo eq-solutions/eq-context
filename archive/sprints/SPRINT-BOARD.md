@@ -1,16 +1,21 @@
 ---
-title: Autonomous Sprint — Board
+title: Autonomous Sprint — Board (ARCHIVED)
 owner: Royce Milmlow
-last_updated: 2026-06-22
+last_updated: 2026-07-12
 scope: Full sprint backlog + ownership/claims across all EQ streams; the coordination contract
-read_priority: critical
-status: live
+read_priority: reference
+status: archived
 ---
+
+> **ARCHIVED 2026-07-12 — the Autonomous Sprint coordination mode is superseded.**
+> Work now runs as normal PRs; current state lives in `suite-state.md` / `digest.md`.
+> Kept for git history — claim/ownership rows below are historical, not live.
+
 <!-- Last updated: 2026-06-07. Streams above reflect Sprint 5 completions. Active sprint: see sks-live-sprint-2026-06-07.md -->
 
 # Autonomous Sprint — BOARD (single source of truth for who's doing what)
 
-**Read [`AUTONOMOUS-SPRINT-RULES.md`](AUTONOMOUS-SPRINT-RULES.md) first, then [`STATE.md`](STATE.md).**
+**Read [`AUTONOMOUS-SPRINT-RULES.md`](../../AUTONOMOUS-SPRINT-RULES.md) first, then [`STATE.md`](STATE.md).**
 **Claim an item before starting:** set its `owner` + `branch` + status to 🔵 in-progress. Don't start an item whose repo+files are already claimed.
 
 Legend: ✅ done · 🔵 in-progress (claimed) · ⚪ todo (unclaimed) · ⛔ Royce-gated · ⏸ paused
@@ -41,7 +46,7 @@ Consolidates **every** outstanding finding from the 2026-05-31 deep-dive + cross
 
 **P3 — housekeeping:** B10 ⛔ delete dead stubs (your permission) · Stream D asset-intake (in-flight) · migrate the 4 held plans → eq-context, then prune
 
-> **✅ SPRINT 1 + SPRINT 2 (Waves 1–2) COMPLETE — 2026-05-30.** Sprint 2 detail + all merged Wave-1/2 PRs are in [`SPRINT-2-BOARD.md`](archive/sprints/SPRINT-2-BOARD.md); current per-repo reality is the [`STATE.md`](STATE.md) POST-SPRINT block. **Held for Royce:** 3 dormant-feature migrations (licence-expiry, timesheet-approval, audit-log-UI) + B4 canonical wiring + ⛔ C4 auth cutover + **B5 SKS-live cutover (LAST)**. The Sprint-1 fan-out record below is retained for history.
+> **✅ SPRINT 1 + SPRINT 2 (Waves 1–2) COMPLETE — 2026-05-30.** Sprint 2 detail + all merged Wave-1/2 PRs are in [`SPRINT-2-BOARD.md`](SPRINT-2-BOARD.md); current per-repo reality is the [`STATE.md`](STATE.md) POST-SPRINT block. **Held for Royce:** 3 dormant-feature migrations (licence-expiry, timesheet-approval, audit-log-UI) + B4 canonical wiring + ⛔ C4 auth cutover + **B5 SKS-live cutover (LAST)**. The Sprint-1 fan-out record below is retained for history.
 >
 > **🧭 CONVERGENCE DIRECTIVE (2026-05-31, Royce) — collapse parallel consoles to ONE driver.**
 > Multiple consoles diverged onto the same roles/canonical/design questions today (see the four
@@ -157,7 +162,7 @@ Verify every claim live via Supabase MCP — never trust docs over the DB. Detai
 | F5 | Track B — Quotes → canonical-api + retire `sks_*` silo + `shell_control.eq_intake_*` retirement | eq-quotes + Shell | ⛔ | **WOULD BREAK LIVE QUOTES** — needs the staged cutover. Ties to the eq-quotes console chip. LAST. |
 
 ## Stream G — Worker-owned credentials (EQ Cards · worker-house) · DESIGN DONE 2026-05-31
-Model + decisions: [`eq/identity/worker-credentials-model-2026-05-31.md`](eq/identity/worker-credentials-model-2026-05-31.md).
+Model + decisions: [`eq/identity/worker-credentials-model-2026-05-31.md`](../../eq/identity/worker-credentials-model-2026-05-31.md).
 Worker data lives in the **worker-house** (`eq-canonical-internal` `worker_*`), worker-keyed, first-class `worker_id`.
 **Supersedes the Cards-rewire per-business-tenant assumption — do NOT flip Cards `gateway` until G2 lands.**
 Phase 1 = seed + self-maintenance (build now, pending Royce inputs); Phase 2 = snapshot + live-link + grant (deferred to business #2).

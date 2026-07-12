@@ -1,11 +1,17 @@
 ---
-title: GROK.md — Grok Session Entry Point
+title: GROK.md — Grok Session Entry Point (ARCHIVED)
 owner: Royce Milmlow
-last_updated: 2026-06-09
+last_updated: 2026-07-12
 scope: Primary context loader for all Grok (xAI) sessions
-read_priority: critical
-status: live
+read_priority: reference
+status: archived
 ---
+
+> **ARCHIVED 2026-07-12 — Grok is not part of the active workflow.** This file also
+> pointed at `STATE.md` / `SPRINT-BOARD.md`, both archived the same day (the
+> Autonomous Sprint coordination mode was superseded by normal PRs +
+> `suite-state.md`/`digest.md`). Kept for git history; reinstate and rewire to
+> `suite-state.md` if Grok sessions resume. Master contract is `CLAUDE.md`.
 
 # GROK.md — Grok Context Loader
 

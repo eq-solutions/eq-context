@@ -277,7 +277,7 @@ For the current built state of each system, see [system/architecture.md](https:/
 - **SKS live is untouchable** — no deploy to sks-nsw-labour.netlify.app, no writes to the SKS live DB (`nspbmirochztcjijmcrx`), no Field-merge cutover. Unchanged from the standing rule.
 - **Auth-flow changes stay gated** — build + green PR is fine, but deploying any auth / MFA / session / password change still needs Royce's explicit OK. Preserves the standing auth-review non-negotiable.
 
-Full conventions in `SPRINT-BOARD.md`, `AUTONOMOUS-SPRINT-RULES.md`, `STATE.md` (eq-context repo root).
+Full conventions were in `SPRINT-BOARD.md` + `STATE.md` (both archived 2026-07-12 to `archive/sprints/` — the Autonomous Sprint coordination mode is retired; current state is `suite-state.md`). The diverge-proof conventions themselves remain live in `AUTONOMOUS-SPRINT-RULES.md` (eq-context repo root) — still cited by `CLAUDE.md` §7 as the origin of the ground-truth-before-trust rule.
 
 **Why:** 2026-05-30 ran several parallel agent sessions and hit repeated *divergence*: diverged local mains dragging unrelated commits into PRs, duplicate sequential migration numbers breaking Service CI twice (`0097`, then a `0110` near-miss), stale worktrees holding uncommitted work, two sessions colliding in one repo. A source of truth + structural guardrails (branch-from-origin, timestamp migrations, claim-before-start) makes divergence structurally hard; full-auto EQ deploy keeps the sprint moving without a human bottleneck on every change. The carve-outs preserve the only two gates whose blast radius justifies a human: SKS (separate live entity) and auth (suite-wide, hard to unwind).
 

@@ -2448,6 +2448,12 @@ superset — no pin/role, no region/project). The B5 canonical unification stays
 
 ## 🟦 Autonomous Sprint — SOURCE OF TRUTH (read first if running sprint work)
 
+> **⚠ SUPERSEDED (2026-07-12) — the Autonomous Sprint coordination mode is retired.**
+> Work now runs as normal PRs; current state lives in `suite-state.md` (auto-refreshed
+> nightly) and `digest.md` (what needs attention). `SPRINT-BOARD.md` and `STATE.md`
+> are archived (`archive/sprints/`) — kept for history, not live. Section below kept
+> for record only.
+
 Parallel autonomous agents coordinate through three root files (added 2026-05-30):
 - `SPRINT-BOARD.md` — full backlog + claim/ownership (claim before you start)
 - `AUTONOMOUS-SPRINT-RULES.md` — diverge-proof conventions (branch from origin/main, **timestamp migrations**, SKS-live untouchable, full-auto EQ deploy, auth gated)
@@ -2455,7 +2461,7 @@ Parallel autonomous agents coordinate through three root files (added 2026-05-30
 
 Autonomy policy: `ops/decisions.md` 2026-05-30. Session log: `sessions/2026-05-30.md`.
 
-**Drift resolved (2026-06-02):** the GTM gate was killed (we build for ourselves — see `ops/decisions.md` 2026-06-02) and the stale gate language was purged from the forward docs. The "two-Supabase obsolete / single canonical" framing is also stale — reality is the two-plane split (`eq-canonical` + `eq-canonical-internal`). `STATE.md` carries current reality.
+**Drift resolved (2026-06-02):** the GTM gate was killed (we build for ourselves — see `ops/decisions.md` 2026-06-02) and the stale gate language was purged from the forward docs. The "two-Supabase obsolete / single canonical" framing is also stale — reality is the two-plane split (`eq-canonical` + `eq-canonical-internal`). `STATE.md` carried current reality at the time (now archived — see `suite-state.md`).
 
 ---
 
@@ -2605,7 +2611,7 @@ contain the same values and were pushed before push-protection caught up.
 
 ## EQ Shell + EQ Intake
 
-> **⚠ SUPERSEDED (2026-05-30) — the architecture + gate notes in this section are STALE; `STATE.md` carries current reality.** (1) The **two-plane** model is current, NOT "single canonical": browser → `eq-canonical` (control plane) + tenant data **server-only** in `eq-canonical-internal` (`zaapmfdkgedqupfjtchl`). The "Two-Supabase obsolete / single canonical" copy below is itself now obsolete. (2) The **GTM validation gate was REMOVED** — do NOT block Shell Phase 2 (or any EQ work) on outside-customer validation (see `ops/decisions.md` + memory `feedback_gtm_intent`). Historical detail below kept for record only.
+> **⚠ SUPERSEDED (2026-05-30) — the architecture + gate notes in this section are STALE; `suite-state.md` carries current reality** (`STATE.md`, cited here originally, is archived as of 2026-07-12). (1) The **two-plane** model is current, NOT "single canonical": browser → `eq-canonical` (control plane) + tenant data **server-only** in `eq-canonical-internal` (`zaapmfdkgedqupfjtchl`). The "Two-Supabase obsolete / single canonical" copy below is itself now obsolete. (2) The **GTM validation gate was REMOVED** — do NOT block Shell Phase 2 (or any EQ work) on outside-customer validation (see `ops/decisions.md` + memory `feedback_gtm_intent`). Historical detail below kept for record only.
 
 **Status as of 2026-05-20:** Phase 1.E + 1.F shipped (single canonical
 Supabase, Intake module live at `/core/intake`, Unified Identity, RLS

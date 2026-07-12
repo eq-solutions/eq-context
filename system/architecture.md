@@ -118,9 +118,9 @@ per-tenant projects. The guard is against *unintentional* divergence: a core mig
 on one tenant but not the other.
 
 **CI drift guard:** A GitHub Actions job on any change to `core/migrations/` should validate
-both tenant projects have applied every migration in the folder. This is the pending CI guard
-item in STATE.md. Until it exists, any core migration MUST be manually applied to both tenants
-and confirmed before merging.
+both tenant projects have applied every migration in the folder. **Not yet built** — until it
+exists, any core migration MUST be manually applied to both tenants and confirmed before
+merging.
 
 **Where these files live:** TBD — either a `tenant-schema/` folder in this repo (`eq-context`)
 or a thin dedicated repo. Decision needed before the first core migration is written.
