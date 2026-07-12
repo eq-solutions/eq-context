@@ -1,0 +1,14 @@
+{
+  "_comment": "Thin pointer. Copy to C:\\Projects\\.claude\\settings.json. The LOGIC lives in the governed, versioned repo (eq-context/hooks/). Nothing here but wiring — see Phase 4: facts live in one place.",
+  "hooks": {
+    "SessionStart": [
+      { "hooks": [ { "type": "command", "command": "python C:\\Projects\\eq-context\\hooks\\session_start.py" } ] }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit|Bash",
+        "hooks": [ { "type": "command", "command": "python C:\\Projects\\eq-context\\hooks\\pre_tool_use.py" } ]
+      }
+    ]
+  }
+}

@@ -417,3 +417,92 @@ After the fix: pre-commit bumps dates before each commit, the bot finds nothing 
 **Critical dead reference:** Supabase project `urjhmkhbgaxrofurpbgc` (urjh / eq-solves-service-dev) was DELETED 2026-06-22. Any reference to it as a live project in substrate files is stale. Do not query it, do not reference it as a data store, do not deploy edge functions to it. The sole live DB for EQ Service and EQ Field is ehow (`ehowgjardagevnrluult`).
 
 **The substrate itself is on GitHub:** The eq-context substrate is served via GitHub raw CDN (https://raw.githubusercontent.com/eq-solutions/eq-context/main/<path>). There is no Supabase cache, no edge function, no context_files table. These were all retired when urjh was deleted.
+
+---
+
+## The Substrate Read Path Lied — `raw.githubusercontent.com/.../main/` Served 8–12 Day Stale Content (2026-07-11)
+
+**Problem:** A Cowork session ran the §1 start sequence and fetched the substrate via the canonical raw URLs. It was served:
+- `CLAUDE.md` stamped **2026-06-04** — full of dead Supabase `urjh` URLs. Reality on `main`: the **2026-07-03** rewrite, GitHub-only, correct. **8 days stale.**
+- `digest.md` stamped **2026-06-29**. Reality on `main`: **2026-07-11 08:14 UTC**, generated that morning. **12 days stale.**
+
+Every fetch returned **200 OK**. No error. No warning. The repo was correct the entire time.
+
+**Proof:** fetching the *same file at a pinned commit SHA* returned the **correct** content. The `/main/` branch alias and the SHA-pinned URL disagreed about the contents of the same commit. The branch alias is CDN-cached; the SHA path is not.
+
+**What it cost:** the assistant concluded the master contract was broken, produced a confident critique of ~40 "dead URLs", and was authorised to rewrite the file. **Executing that would have reverted the 2026-07-03 work and reintroduced the dead Supabase URLs — while logging a session note saying it had fixed them.** Caught only because a `git` reflog read showed local `main` == `origin/main`, which contradicted the fetched file.
+
+**Compounding cause:** Royce's Cowork *preferences* block contained a hand-written patch — "the substrate is GitHub only, fetch from raw.githubusercontent…" — written earlier to correct the then-stale contract. That patch **overrode `CLAUDE.md` §1's own instruction** (Cowork reads the *local clone*, not URLs) and routed the assistant to the cached URL. **The patch written to prevent substrate drift is what caused the assistant to read drifted substrate.**
+
+**Fix (applied 2026-07-11):** `CLAUDE.md` §1 freshness gate; local clone **mandatory** for Code/Cowork; cache warning; delete the preferences patch. Enforced at rung 4 by `hooks/session_start.py`. Logged as **F1** in `system/failures.md`.
+
+**Why it matters:** §1's "Fallback if substrate fetch fails" **cannot catch this** — it triggers on *errors*, and a stale cache hit is not an error. This is the precise failure the fallback exists to prevent (silent substitution), arriving through the one door the fallback doesn't watch. **An assistant reading silently-stale substrate is more dangerous than one with no substrate at all: it is confidently wrong, and it will "fix" work that was already done.**
+
+**Rule:** treat a substrate read as *evidence*, not *truth*, until its `last_updated` is checked against the calendar. **If you have a clone, the clone wins. Always.**
+
+---
+
+## Writes to the `C:\Projects` Mount Are Not Safe — Neither Edit/Write NOR Append (2026-07-11)
+
+**This lesson has now cost us three times. It is enforced at rung 4 (`hooks/pre_tool_use.py`). Do not re-learn it.**
+
+Three distinct corruption modes on the `C:\Projects` virtiofs mount from the Cowork sandbox:
+
+| Method | Behaviour | Safe? |
+|---|---|---|
+| `Edit` / `Write` tool on a long file | **Silently TRUNCATES.** Reports success. `CLAUDE.md` 308 → 277 lines; §12, §13 and End destroyed. | **NO** |
+| `cat >> file << EOF` (append) | **NUL-FILLS.** Wrote **3,955 NUL bytes** instead of the content. The append is gone; the file becomes binary. Reports success. | **NO** |
+| `cat > file << EOF` (full rewrite) | Correct. Verified on `CLAUDE.md` (308 lines), `TODAY.md`, `failures.md`, all hooks. | **YES** |
+
+**The trap:** the earlier version of this lesson said *"For appends, prefer bash `cat >>` over Edit on long files."* **That advice was wrong and it destroyed this file.** Append is not a safe fallback. It is a different corruption with the same silent-success signature.
+
+**Rule — no exceptions:**
+1. **Full rewrite only.** `cat > file << 'EOF'`. Never `>>`. Never `Edit`/`Write` on anything long.
+2. **Verify every single write:** `wc -l`, `tail -2`, and **`grep -c $'\x00'` — a NUL byte means the write corrupted.** A byte count that looks plausible is not proof; the NUL-fill produced a *larger* file.
+3. **`wc -l` alone will not save you.** The NUL-filled `lessons.md` reported a *sane* line count. Only a NUL scan caught it.
+
+**Why it matters:** every corruption mode on this mount **reports success**. The filesystem lies, the tools lie, and the line count lies. The only thing that does not lie is reading the bytes back. **Verify, or you did not write it.**
+
+---
+
+## The Substrate Contained a Goal Nobody Owned (2026-07-11)
+
+**Problem:** `system/TODAY.md` — `read_priority: critical`, the first file loaded by every assistant in every session, the stated filter for *every* build decision — contained:
+
+> **34 days to 1 August 2026.**
+> *"Default question for every build/feature decision: does this move outcome 1, 2, or 3 before 1 August?"*
+
+An assistant loaded it, believed it, and spent a session repeatedly telling Royce to **defer work** against that deadline. It shaped the priority of every recommendation made.
+
+Then Royce said: **"what's august 1? why are you mentioning that?"**
+
+He did not recognise it. It had governed session prioritisation for two weeks.
+
+**Nothing detected this. Nothing could.** Sixteen CI workflows. A nightly digest. A drift detector. `frontmatter-check`. And `auto-bump-frontmatter`, which was **faithfully keeping the phantom's `last_updated` looking fresh.** Every check passed green — because **every check verifies recency, not truth or ownership.**
+
+**This is a different bug from substrate drift.** Drift is when the substrate *falls behind* reality. This is when the substrate contains something that was **never true, or stopped being true, and no mechanism exists to notice** — because no mechanism ever asked *"who says so, and is it still so?"*
+
+`last_updated` records when someone **touched** a file. It says nothing about whether anything in it is **real**. A confident, well-formatted, freshly-dated, critically-prioritised assertion that no human currently owns will propagate through every agent you run, forever, and every check you have will report success. **Freshness is not truth. A fresh lie is still a lie — it is just a lie with better hygiene.**
+
+**Fix (applied 2026-07-11):**
+1. **`TODAY.md` GOALS section is now explicitly `UNSET`** and blank. **A blank goals section is honest. A stale one is a phantom that steers every agent you run.** Never fill a slot in a critical file because it looks empty.
+2. **Goals are typed, owned, and expiring.** `type: goal` · `owner` · `asserted_on` · `expires_on`. A goal nobody reconfirms **dies** and surfaces as *"confirm or kill."*
+3. **No assistant may write a goal.** Assistants propose; only Royce owns. This is the specific safeguard that would have prevented it.
+4. **`hooks/session_start.py`** announces `GOALS UNSET` at every session start: *"you have NO BASIS to defer or deprioritise anything."*
+5. Logged as **F3** in `system/failures.md`. Target rung 3 (`claim-expiry.yml`) — **not yet built.**
+
+**Rule:** treat **facts** and **goals** as different substances with different half-lives. A fact ("ehow is the live DB") is machine-verifiable and should be re-checked by SQL. A goal ("NSW live by August") is verifiable *only by the human who owns it*, and must expire fast. Storing both in the same file under the same freshness rules is precisely how a lapsed intention becomes a governing constraint.
+
+**The deeper rule — the one that generalises:** an agent quoting the substrate must **inherit its confidence type**. Say *"5 users (asserted 2026-06-28, unverified)"* — never *"5 users."* On 2026-07-11 the assistant quoted `TODAY.md`'s guesses with exactly the same confidence as numbers it had pulled from live SQL, **because the substrate gave it no way to tell the difference.** That is the bug. Everything else is a symptom.
+
+---
+
+## The First Guard I Wrote Failed Open, Silently (2026-07-11)
+
+**Problem:** `hooks/pre_tool_use.py` was written to block long-file `Edit`s (failure F2). Its first adversarial test — Edit a 308-line `CLAUDE.md` — **passed straight through.** The hook could not resolve the path, `line_count()` returned `0`, `0 > 200` was false, and it **allowed the write while reporting nothing.**
+
+**The guard built to stop silent failures failed silently.** Caught only because the adversarial suite tested it instead of trusting it.
+
+**Fix:** **fail-closed.** If the hook cannot resolve a path under the mount to count its lines, it **blocks**. Cost of a false block: one heredoc. Cost of a false allow: a destroyed file that reports success.
+
+**Rule:** **a guard that fails open without announcing it is worse than no guard at all** — it manufactures the feeling of safety and delivers none of it. Every guard must answer: *what do I do when I don't know?* If the answer is "allow, quietly", it is not a guard, it is decoration. And: **never trust a guard you have not attacked.** `hooks/adversarial_test.sh` — 15 tests, seeded from every failure that has ever escaped. Every future escape gets added.

@@ -1,7 +1,7 @@
 ---
 title: OPS — Decisions Log
 owner: Royce Milmlow
-last_updated: 2026-06-27
+last_updated: 2026-07-12
 scope: Append-only log of key decisions across all tiers and the reasoning at the time
 read_priority: standard
 status: live
@@ -10,6 +10,20 @@ status: live
 # OPS — Decisions Log
 
 Append-only log.
+
+---
+
+## 2026-07-12 — Courier: eq-context Exempted from the No-Auto-Push Rule (eq-context ONLY)
+
+**Status:** Accepted (Royce, in-chat, 2026-07-12).
+
+**Decision:** A Beelink-native scheduled task (“the courier”) may `git pull`, commit staged substrate changes, and push for **eq-context only, main only**, commit prefix `courier:`. Every other repo keeps the hard rule: never push/deploy/commit without explicit instruction.
+
+**Why:** Sessions ending with “run this .bat” is visible tech and the reason the clone can lag origin — a stale clone lies exactly like the stale CDN did on 2026-07-11 (F1). The session gate reports courier age; a silent courier is announced, never assumed.
+
+**Alternatives considered:** Manual pushes (rejected — the ceremony gets skipped and the clone drifts); auto-push for all repos (rejected — deploy-bearing repos stay human-gated).
+
+**Implications:** Substrate writes land on main without Royce running anything. Scope creep beyond eq-context/main is a failure — log it in system/failures.md. Plan: system/substrate-plan-v2.md Phase 5.
 
 ---
 

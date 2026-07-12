@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-07-03
+last_updated: 2026-07-12
 scope: Operational support to-do list — Webb, infra, substrate
 read_priority: standard
 status: live
@@ -11,6 +11,40 @@ status: live
 
 EQ items in `eq/pending.md`. SKS items in `sks/pending.md`. This file is
 for operational support: tax, entities, infrastructure, substrate.
+
+---
+
+## Substrate Plan v2 — execution queue (added 2026-07-12, no deadline, goals UNSET)
+
+Plan: `system/substrate-plan-v2.md` (supersedes substrate-a-plus-plan.md). All propose-only.
+**Reshaped to a leaner cut (Royce, in-chat 2026-07-12):** collapse the full typed claims
+ledger into the nightly pulse; defer workflow consolidation + memory-coverage CI (hygiene,
+not urgent — "working before refactoring").
+
+**Done this session (2026-07-12, on branch `claude/substrate-plan-v2-review-bb96aa`):**
+- [x] **Gate bug fixed** — `session_start.py` crashed on Windows (cp1252 can't encode the 🟠
+  emoji it echoes from digest.md) → forced UTF-8 stdout. Adversarial suite **18/18 green**
+  (was 15/18; the 3 gate tests caught it).
+- [x] **Hooks wired in** — `C:\Projects\.claude\settings.json` created (merges with existing
+  `settings.local.json`; does not clobber it). Rung-4 guards now actually run.
+- [x] **`auto-bump-frontmatter.yml` retired** — the "beetle" that manufactured false freshness
+  (kept the 1-Aug phantom looking current). Dates now come from real commits. Recoverable from git.
+
+**Open:**
+- [x] **Day 0 — F5** — RESOLVED as a Claude-Code task: verified `~/.claude/CLAUDE.md` is clean
+  (no raw-URL routing — it's the useful Global Rules file; NOT nuked). Real F5 residue is the
+  **Cowork auto-memory** surface, unreachable from Claude Code → **Royce to prune in a Cowork
+  session** (pointers only). (2026-07-12)
+- [ ] **P2+P3 — product pulse (lean, build-next)** — nightly workflow: ~6 live `verify: sql`
+  signals (checks created/completed, non-Royce writes excl. `source='system'`, prestarts/
+  toolbox/audits, active users) + goal-expiry check + morning push on zero↔nonzero flips.
+  **One promotion guard kept:** an agent may not mark its own claim `verified`. **Dropped:** the
+  general typed `claims.yml` system (duplicated the pulse). (2026-07-12)
+- [ ] **P5 — courier install** — Beelink-native scheduled git sync, eq-context/main only
+  (approved `ops/decisions.md` 2026-07-12); gate reports courier age. (2026-07-12)
+- [ ] **Deferred (P4 hygiene)** — `memory-coverage.yml`; consolidate workflows 17→≤8;
+  CLAUDE.md diet ≤200 lines. Not urgent; each carries refactor risk. (2026-07-12)
+- [x] Morning pulse — Cowork scheduled task `morning-pulse`, daily 07:05 — DONE 2026-07-12
 
 ---
 
