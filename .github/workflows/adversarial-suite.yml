@@ -1,0 +1,64 @@
+name: Guard adversarial suite
+
+# Regression-tests hooks/pre_tool_use.py and hooks/session_start.py against every
+# failure they were built to catch (F1, F2, F6). Without this, a future edit to
+# either hook could silently reintroduce a fixed failure — the ratchet only climbs
+# on a REAL recurrence; this is what stops that recurrence from being the hook
+# itself breaking, undetected, until it fails for real again.
+#
+# Checkout location matters here, unusually, and needs to satisfy TWO separate
+# mechanisms in pre_tool_use.py, not one:
+#   1. targets_mount() — a string match for a "/projects/" path segment.
+#   2. mount_roots() — an actual filesystem glob for /sessions/*/mnt/Projects,
+#      /mnt/Projects, or C:/Projects; resolve() needs ONE of these to genuinely
+#      exist so it can confirm "parent dir exists -> legitimately a new file"
+#      for the not-yet-created-file control case.
+# A default checkout (/home/runner/work/eq-context/eq-context) satisfies neither,
+# so the F2 fixtures would silently no-op — a quiet pass for the wrong reason.
+# Relocating the checkout to literally sit under /mnt/Projects satisfies both at
+# once (rather than a path segment trick that only satisfies #1 — that was tried
+# first here and made the "new file, parent exists" control fail for real: it
+# passed locally only because the dev machine's own real C:\Projects existed and
+# got picked up by mount_roots() instead of the intended simulated path).
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "hooks/**"
+      - ".github/workflows/adversarial-suite.yml"
+  push:
+    branches: [main]
+    paths:
+      - "hooks/**"
+      - ".github/workflows/adversarial-suite.yml"
+  schedule:
+    # 03:00 AEST — catches drift in the fixtures' own assumptions (e.g. if
+    # CLAUDE.md or system/lessons.md ever shrinks under the hook's 200-line
+    # threshold, these tests should start failing to say so), not just edits.
+    - cron: '0 17 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  adversarial-suite:
+    name: Adversarial suite (18/18)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Relocate checkout under /mnt/Projects (matches the guard's real mount detection)
+        run: |
+          sudo mkdir -p /mnt/Projects
+          sudo chown "$(whoami)" /mnt/Projects
+          cp -r "$GITHUB_WORKSPACE" /mnt/Projects/eq-context
+
+      - name: Run the adversarial suite
+        working-directory: /mnt/Projects/eq-context
+        run: python hooks/adversarial_test.py
