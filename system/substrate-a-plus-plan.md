@@ -4,7 +4,7 @@ owner: Royce Milmlow
 last_updated: 2026-07-11
 scope: The programme to take the EQ substrate from B+ (excellent machinery, broken delivery) to A+ (self-verifying, self-expiring, adversarially tested)
 read_priority: high
-status: superseded
+status: archived
 superseded_by: system/substrate-plan-v2.md (2026-07-12)
 expires_on: 2026-08-11
 verify: human
