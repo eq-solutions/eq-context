@@ -61,7 +61,6 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-12)
 
 **eq-field:**
-- #463 fix(security): gate the four open Field automation edge functions
 - #461 feat(auth): EQ tenant is Core-only — close the demo login gate (v3.5.306)
 
 **eq-service:**
@@ -73,7 +72,7 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #788 fix(comms): make the job list readable — wrap Work, wider page, fix Crew ellipsis
-- #787 fix(security): control-plane anon-grant lockdown + organisations column scope
+- #787 fix(security): scope anon's read of public.organisations to safe columns (+ CHECK 8 guard)
 - #715 feat(access): gate enforcement on can()/useCan() not role names (access-model Phase 1)
 - #658 fix(dashboard): surface pending staff connections on home sidebar
 
