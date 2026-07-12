@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-12 00:56 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-12 01:06 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-12 00:51 UTC → 2026-07-12 00:56 UTC)
+## Since last refresh (2026-07-12 00:56 UTC → 2026-07-12 01:06 UTC)
 
-- Merged: eq-shell [#773](https://github.com/eq-solutions/eq-shell/pull/773) feat(staff): manager UI to define required tickets (minimum 
-- Merged: eq-shell [#753](https://github.com/eq-solutions/eq-shell/pull/753) feat(staff): labour-hire agency + roster on/off toggle on th
-- Merged: eq-shell [#750](https://github.com/eq-solutions/eq-shell/pull/750) fix(crm-write/entity-patch): 404 on zero-row / cross-tenant 
-- Merged: eq-shell [#749](https://github.com/eq-solutions/eq-shell/pull/749) fix(invite-users-batch): await entitlement upsert so dropped
-- Merged: eq-shell [#748](https://github.com/eq-solutions/eq-shell/pull/748) feat(comms): crew = the Field "Comms" team (retire the paral
-- Merged: eq-shell [#746](https://github.com/eq-solutions/eq-shell/pull/746) chore(armada): set maxConcurrentBuilds=3 for parallel fleet 
-- Merged: eq-shell [#745](https://github.com/eq-solutions/eq-shell/pull/745) fix(crm-write): narrow bare catch on link-table writes to mi
-- Merged: eq-shell [#744](https://github.com/eq-solutions/eq-shell/pull/744) feat(comms): Move 5 — the comms crew (scope the grid + picke
+- Merged: eq-shell [#759](https://github.com/eq-solutions/eq-shell/pull/759) fix(comms): job table fits its width — no cut-off columns
+- Merged: eq-shell [#757](https://github.com/eq-solutions/eq-shell/pull/757) fix(ci): move invite-users-batch.test.ts out of functions ro
+- Merged: eq-shell [#754](https://github.com/eq-solutions/eq-shell/pull/754) feat(comms): scannable job table — Start / Finish / Hours in
+- Merged: eq-shell [#752](https://github.com/eq-solutions/eq-shell/pull/752) feat(staff): capture a decline reason and deliver it to the 
+- Merged: eq-shell [#747](https://github.com/eq-solutions/eq-shell/pull/747) feat(comms): trim the fortnight view — this-week default + h
+- Merged: eq-shell [#743](https://github.com/eq-solutions/eq-shell/pull/743) fix(security): remove anon cross-tenant access on tender_enr
+- Merged: eq-shell [#742](https://github.com/eq-solutions/eq-shell/pull/742) feat(comms): Move 4 — the fortnight job agenda (the Monday d
+- Merged: eq-shell [#637](https://github.com/eq-solutions/eq-shell/pull/637) docs: pnpm-workspace.yaml — packages are vendored, not a git
 
 ## ⚠ Needs you (1)
 
@@ -57,6 +57,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-12 | eq-shell | [#768](https://github.com/eq-solutions/eq-shell/pull/768) fix(field-iframe): retire cookie-mode handoff — token mode for ev |
 | 2026-07-12 | eq-shell | [#765](https://github.com/eq-solutions/eq-shell/pull/765) feat(comms): bulk-import from Ops — tick boxes + select all |
 | 2026-07-12 | eq-solves-service | [#499](https://github.com/eq-solutions/eq-service/pull/499) fix(scope): reconciliation to service-enabled sites; scope groupe |
+| 2026-07-12 | eq-cards | [#150](https://github.com/eq-solutions/eq-cards/pull/150) feat(connections): let workers dismiss a declined card |
 | 2026-07-12 | eq-cards | [#149](https://github.com/eq-solutions/eq-cards/pull/149) feat(connections): smart re-apply cooldown after a decline |
 | 2026-07-12 | eq-cards | [#148](https://github.com/eq-solutions/eq-cards/pull/148) fix(connections): dedup declined cards to latest per org |
 | 2026-07-11 | eq-shell | [#764](https://github.com/eq-solutions/eq-shell/pull/764) feat(comms): custom columns + tick-list crew picker — more power  |
@@ -64,8 +65,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-11 | eq-shell | [#762](https://github.com/eq-solutions/eq-shell/pull/762) feat(comms): the Melbourne door — import the Working Job List wor |
 | 2026-07-11 | eq-shell | [#761](https://github.com/eq-solutions/eq-shell/pull/761) fix(staff): E.164 phone normalisation on edit + carry #681 eq_upd |
 | 2026-07-11 | eq-shell | [#760](https://github.com/eq-solutions/eq-shell/pull/760) feat(comms): the Ops door — import won EQ Ops jobs into the comms |
-| 2026-07-11 | eq-shell | [#755](https://github.com/eq-solutions/eq-shell/pull/755) fix(field-iframe): cookie-mode handoff falls back to token mode o |
-_Showing 15 of 116 · full record in [sessions/](sessions/)_
+_Showing 15 of 117 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
@@ -111,4 +111,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-12 00:56 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-12 01:06 UTC._
