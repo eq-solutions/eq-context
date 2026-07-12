@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-12 09:53 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-12 10:45 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-12 09:44 UTC → 2026-07-12 09:53 UTC)
+## Since last refresh (2026-07-12 09:53 UTC → 2026-07-12 10:45 UTC)
 
-- Merged: eq-shell [#782](https://github.com/eq-solutions/eq-shell/pull/782) feat(canonical): one-active-staff-per-person lock (0175)
-- Merged: eq-shell [#765](https://github.com/eq-solutions/eq-shell/pull/765) feat(comms): bulk-import from Ops — tick boxes + select all
-- Merged: eq-shell [#763](https://github.com/eq-solutions/eq-shell/pull/763) feat(comms): door polish — money across, Ops count, Melbourn
-- Merged: eq-shell [#761](https://github.com/eq-solutions/eq-shell/pull/761) fix(staff): E.164 phone normalisation on edit + carry #681 e
-- Merged: eq-shell [#755](https://github.com/eq-solutions/eq-shell/pull/755) fix(field-iframe): cookie-mode handoff falls back to token m
-- Merged: eq-shell [#753](https://github.com/eq-solutions/eq-shell/pull/753) feat(staff): labour-hire agency + roster on/off toggle on th
-- Merged: eq-shell [#750](https://github.com/eq-solutions/eq-shell/pull/750) fix(crm-write/entity-patch): 404 on zero-row / cross-tenant 
-- Merged: eq-shell [#749](https://github.com/eq-solutions/eq-shell/pull/749) fix(invite-users-batch): await entitlement upsert so dropped
+- Merged: eq-shell [#768](https://github.com/eq-solutions/eq-shell/pull/768) fix(field-iframe): retire cookie-mode handoff — token mode f
+- Merged: eq-shell [#764](https://github.com/eq-solutions/eq-shell/pull/764) feat(comms): custom columns + tick-list crew picker — more p
+- Merged: eq-shell [#762](https://github.com/eq-solutions/eq-shell/pull/762) feat(comms): the Melbourne door — import the Working Job Lis
+- Merged: eq-shell [#760](https://github.com/eq-solutions/eq-shell/pull/760) feat(comms): the Ops door — import won EQ Ops jobs into the 
+- Merged: eq-shell [#759](https://github.com/eq-solutions/eq-shell/pull/759) fix(comms): job table fits its width — no cut-off columns
+- Merged: eq-shell [#757](https://github.com/eq-solutions/eq-shell/pull/757) fix(ci): move invite-users-batch.test.ts out of functions ro
+- Merged: eq-shell [#754](https://github.com/eq-solutions/eq-shell/pull/754) feat(comms): scannable job table — Start / Finish / Hours in
+- Merged: eq-solves-service [#514](https://github.com/eq-solutions/eq-service/pull/514) fix(assets): unblock imports (0181) + reshape reconciliation
 
 ## ⚠ Needs you (2)
 
@@ -31,8 +31,8 @@ _2026-07-12 09:53 UTC · what needs your attention. Full snapshot: [suite-state.
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
 | eq-shell | ? unknown | ? | 2 | 7d |
-| eq-solves-service | ✓ success | 0d ago | 5 | 6d |
-| eq-field | ✓ success | 0d ago | 1 | 0d |
+| eq-solves-service | ✓ success | -1d ago | 5 | 6d |
+| eq-field | ✓ success | 0d ago | 2 | 0d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ? unknown | ? | 0 | — |
 
@@ -112,4 +112,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-12 09:53 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-12 10:45 UTC._
