@@ -60,12 +60,12 @@ failures:
     title: A goal nobody owned governed every session for two weeks from a read_priority critical file
     first_seen: 2026-07-11
     recurrences: 1
-    rung: 1
+    rung: 3
     target_rung: 3
-    guard: "TODAY.md GOALS section left explicitly UNSET (rung 1) -> claim-expiry.yml (rung 3)"
+    guard: "TODAY.md GOALS UNSET + claim-expiry.yml (rung 3, built 2026-07-12) — fails CI on an unowned/undated/expired goal"
     detected_by: "human — Royce asked 'what's that deadline? why are you mentioning it?'"
     cost: "an assistant repeatedly told Royce to defer work against a phantom deadline"
-    note: "Every check passed green. auto-bump-frontmatter was faithfully keeping the phantom looking fresh. Freshness != truth."
+    note: "Every check passed green. auto-bump-frontmatter was faithfully keeping the phantom looking fresh. Freshness != truth. claim-expiry.yml built 2026-07-12 — F3's guard climbed 1->3; a goal now cannot sit in TODAY.md undated, unowned, or past expiry without failing CI."
 
   - id: F4
     title: Nothing watches the product — and the metric raised to prove it was itself over-read
