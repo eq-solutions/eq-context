@@ -9,6 +9,14 @@ status: live
 
 # Changelog — SKS Labour
 
+## [2026-07-12] "Database not working" outage → root fix, resilience, timesheet UX, and prevention (first CI)
+**Built by:** assistant + Royce Milmlow
+- **v3.10.92 (PR #59, `2e38315`, live)** — ROOT FIX for the ~2-day silent outage. v3.10.90 paginated `team_members`/`timesheet_locks` via `sbFetchAll()` with no `orderBy`, so both defaulted to `order=id` — neither has an `id` column → 400 on every load. One 400 in `loadFromSupabase()`'s all-or-nothing `Promise.all` froze the whole sync on the last cached snapshot (writes still 200'd, so saves looked fine; the 400 was a handled rejection → 0 `error_thrown`, invisible). Passed each table's real PK.
+- **v3.10.93 (PR #60, `0f68678`, live)** — made the sync failure-resilient. Split tables into load-critical (abort → keep last-good snapshot) vs optional (`.catch(()=>[])`, preserve last-known). Degraded syncs now observable — toast + `sync_degraded` PostHog event + console breadcrumb, transition-guarded.
+- **v3.10.94 (PR #61, `84abe48`, live)** — timesheet UX: (1) hours-missing red flag (kills the phantom `placeholder="8"`; a job with blank hours goes red `?`), (2) weekend auto-show (any week with Sat/Sun data reveals the weekend columns), (3) Sunday week-rollover fix (all four week-Monday formulas aligned to ISO `-((getDay()+6)%7)` — app advances Monday, not Sunday).
+- **v3.10.95 (PR #63, `b8cd308`, live)** — prevention: fail-loud `sbFetchAll` (throws instead of defaulting to `order=id`); degrade email alert to ops (`_alertSyncDegraded`, throttled 1/device/day, SKS-only); **bootstrap smoke test + first CI** (`scripts/smoke/bootstrap-smoke.mjs` + `.github/workflows/smoke.yml`) asserting every bootstrap read 2xx on push to main.
+**Status:** All live on sks-nsw-labour.netlify.app. EQ Field audited — the resilience layers aren't required there now (it can't freeze; `_loadSafe` + #459); logged to the merge-time parity checklist instead.
+
 ## [2026-07-10] Roster save reliability — two bugs behind one "Save failed" toast + schedule retention
 **Built by:** assistant + Royce Milmlow
 - **v3.10.88 (PR #55, merged + live)** — roster save self-heals the duplicate-key (409) race. `saveCellToSB`'s POST-insert path now catches `UNIQUE(name,week,org_id)`, fetches the existing server row, and PATCHes the edited day onto it instead of showing "Save failed — check connection". Root cause of Collin Toohey's report — a stale local cache colliding with a server row it didn't know about.
