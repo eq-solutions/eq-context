@@ -1,3 +1,12 @@
+---
+title: Labour Hire Rates — Canonical Design & Build Spec
+owner: Royce Milmlow
+last_updated: 2026-07-05
+scope: Canonical data model (rate matrix + source_doc_type) and lean build plan for labour-hire rates; v1 seeded manually from 3 agency PDFs, EQ Intake auto-upload deferred
+read_priority: reference
+status: draft
+---
+
 # Labour Hire Rates — Canonical Design & Build Spec
 
 _Author: Claude Code · 2026-07-04 (rev. 2026-07-05: rate-matrix model from 3 real agency PDFs; eq-ui-grounded tab) · Status: APPROVED — lean build (Royce 2026-07-05) · No DB/code applied yet_
