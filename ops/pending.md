@@ -26,23 +26,37 @@ not urgent — "working before refactoring").
 - [x] **Frontmatter-schema CI check GREENED** — was chronically red (16 pre-existing violations), gates again. On main (PR #81).
 - [~] **Product pulse — DROPPED.** Premise was the false F4 alarm. Revive only if a goal needs it.
 - [ ] **Courier (P5) — PARKED**, not dropped. Manual `git checkout main && git pull` suffices.
-- [ ] **Cowork auto-memory prune (F5 residue)** — Royce to do in a Cowork session (directions given 2026-07-12).
+- [x] **Auto-memory prune (F5 residue) — DONE 2026-07-12 (cont.), from Claude Code, not Cowork.**
+  Corrects the note below: the auto-memory surface is NOT unreachable from Claude Code —
+  it's a plain file directory (`C:\Users\EQ\.claude\projects\<project>\memory\*`),
+  read/writable like any other file. Slimmed 3 memory files that copied drift-prone
+  substrate facts (project IDs, CI-gate mechanics) instead of pointing at eq-context;
+  reshaped 1 completed-sprint memory to just its durable lessons; `MEMORY.md` index updated.
 - [ ] **Chat** — GitHub connector on + fresh session to read corrected main (hygiene).
 
 **Done this session (2026-07-12, on branch `claude/substrate-plan-v2-review-bb96aa`):**
 - [x] **Gate bug fixed** — `session_start.py` crashed on Windows (cp1252 can't encode the 🟠
   emoji it echoes from digest.md) → forced UTF-8 stdout. Adversarial suite **18/18 green**
   (was 15/18; the 3 gate tests caught it).
-- [x] **Hooks wired in** — `C:\Projects\.claude\settings.json` created (merges with existing
-  `settings.local.json`; does not clobber it). Rung-4 guards now actually run.
+- [x] **Hooks wired in** — `C:\Projects\.claude\settings.json` created 2026-07-12 (merges with
+  existing `settings.local.json`; does not clobber it). **Gap found + fixed 2026-07-12 (cont.):**
+  that wiring only fires `SessionStart` for sessions launched at the `C:\Projects` umbrella
+  root — repo-scoped and worktree sessions silently never ran the gate. Moved `SessionStart`
+  to user-level `C:\Users\EQ\.claude\settings.json` so it fires for every session; the umbrella
+  copy now carries only the (Windows no-op) `PreToolUse` pointer. `hooks/README.md` install
+  instructions corrected to match.
 - [x] **`auto-bump-frontmatter.yml` retired** — the "beetle" that manufactured false freshness
   (kept the phantom deadline looking current). Dates now come from real commits. Recoverable from git.
 
 **Open:**
-- [x] **Day 0 — F5** — RESOLVED as a Claude-Code task: verified `~/.claude/CLAUDE.md` is clean
-  (no raw-URL routing — it's the useful Global Rules file; NOT nuked). Real F5 residue is the
-  **Cowork auto-memory** surface, unreachable from Claude Code → **Royce to prune in a Cowork
-  session** (pointers only). (2026-07-12)
+- [x] **Day 0 — F5** — RESOLVED 2026-07-12, then RE-OPENED AND ACTUALLY RESOLVED 2026-07-12 (cont.).
+  The original "verified clean" claim was wrong on both counts: `~/.claude/CLAUDE.md` was
+  NOT clean — its EQ Suite status table was 7 weeks stale and contradicted canonical
+  (still called EQ Quotes "Built" after retirement); fixed to point at `suite-state.md`
+  instead of restating status, backed up to `CLAUDE.md.bak` first. And the auto-memory
+  surface was NOT unreachable from Claude Code — see the item above; done directly.
+  Lesson: a "verified clean" claim needs the same live-check discipline as everything else —
+  this one wasn't actually tested against the file, just asserted.
 - [ ] **P2+P3 — product pulse (lean, build-next)** — nightly workflow: ~6 live `verify: sql`
   signals (checks created/completed, non-Royce writes excl. `source='system'`, prestarts/
   toolbox/audits, active users) + goal-expiry check + morning push on zero↔nonzero flips.
@@ -53,6 +67,43 @@ not urgent — "working before refactoring").
 - [ ] **Deferred (P4 hygiene)** — `memory-coverage.yml`; consolidate workflows 17→≤8;
   CLAUDE.md diet ≤200 lines. Not urgent; each carries refactor risk. (2026-07-12)
 - [x] Morning pulse — Cowork scheduled task `morning-pulse`, daily 07:05 — DONE 2026-07-12
+
+**Session continuation 2026-07-12 (audit + F3 guard + memory collapse + sprint-cluster archive):**
+- [x] **F3 guard actually BUILT** — `claim-expiry.yml` + `scripts/claim_expiry.py` (rung 1→3).
+  TODAY.md's goals section previously *claimed* this guard existed when it didn't (the exact
+  F3-class doc-honesty bug); now it's real — fails CI on any goal in TODAY.md that's undated,
+  unowned, or past `expires_on`. 10/10 unit tests; dogfooded green on its own PR. (PR #82)
+- [x] **Two doc-honesty defects fixed** — the F2 block message advised `cat >>` as a remedy,
+  which the sibling F6 guard then blocks; and the phantom `claim-expiry.yml` claim above. (PR #82)
+- [x] **Dead link in `SPRINT-BOARD.md`** fixed before archiving (pointed at a file already
+  moved to `archive/sprints/`). (PR #83)
+- [x] **`digest.md`'s persistent broken link fixed at the generator**, not the file —
+  `refresh_digest.py` hoists `eq/pending.md`/`sks/pending.md` items verbatim into root-level
+  `digest.md`; a link relative to `eq/` 404s once copied to root. `pending_open_items()` now
+  re-roots relative links to repo root; self-corrects on next regen. (PR #84)
+- [x] **Autonomous Sprint cluster archived** — `GROK.md`, `STATE.md`, `SPRINT-BOARD.md`,
+  `direction-d-state.md` → `archive/` (git-renamed, history kept), each confirmed dormant
+  first (not blind-archived): Grok isn't part of the active workflow; the sprint-board
+  coordination mode is superseded by normal PRs + `suite-state.md`/`digest.md`; Direction D
+  had zero inbound references anywhere in governed docs. Kept `AUTONOMOUS-SPRINT-RULES.md`
+  (cited live by `CLAUDE.md` §7) with a banner noting §4/§6's board references are historical.
+  Rewired every live pointer that treated the archived files as current (`eq/pending.md`,
+  `ops/decisions.md`, `system/architecture.md`) — historical mentions in old planning docs
+  left alone. A repo-wide re-scan caught one regression I introduced (an inbound link broken
+  by the move) before merge. (PR #85)
+- [x] **"Type the facts" investigated, no change needed** — `refresh_suite_state.py` already
+  calls `raise_for_status()` on the live DB read, so a failed query **aborts the job** rather
+  than stamping today's date on a stale count. The F1 trap was already closed by existing
+  engineering; building more would have been the opposite of the lean-cut direction.
+- [ ] **Wire `hooks/adversarial_test.py` into CI** — the hook suite (18/18) currently has no
+  CI regression test; a future hook edit could silently break it. _(added 2026-07-12)_
+- [ ] **Trim `system/lessons.md`** (508 lines) to durable rules + an archive of war-stories —
+  narrative volume was flagged as the substrate's main remaining overhead. _(added 2026-07-12)_
+- [ ] **Branch protection on `main` — deliberately NOT done.** Nightly refresh crons push
+  directly to `main` as `github-actions[bot]` (some with `[skip ci]`); naive required-checks
+  would break them, and it wouldn't have caught F1/F3 anyway (both passed every green check).
+  Built `claim-expiry.yml` instead (higher leverage, Royce's call). Revisit only if the crons
+  move to a PR-based flow. _(added 2026-07-12)_
 
 ---
 
