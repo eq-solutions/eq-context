@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-12 08:28 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-12 09:37 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-12 08:21 UTC → 2026-07-12 08:28 UTC)
+## Since last refresh (2026-07-12 08:28 UTC → 2026-07-12 09:37 UTC)
 
-- Merged: eq-shell [#764](https://github.com/eq-solutions/eq-shell/pull/764) feat(comms): custom columns + tick-list crew picker — more p
-- Merged: eq-shell [#762](https://github.com/eq-solutions/eq-shell/pull/762) feat(comms): the Melbourne door — import the Working Job Lis
-- Merged: eq-shell [#760](https://github.com/eq-solutions/eq-shell/pull/760) feat(comms): the Ops door — import won EQ Ops jobs into the 
-- Merged: eq-shell [#759](https://github.com/eq-solutions/eq-shell/pull/759) fix(comms): job table fits its width — no cut-off columns
-- Merged: eq-shell [#757](https://github.com/eq-solutions/eq-shell/pull/757) fix(ci): move invite-users-batch.test.ts out of functions ro
-- Merged: eq-shell [#754](https://github.com/eq-solutions/eq-shell/pull/754) feat(comms): scannable job table — Start / Finish / Hours in
-- Merged: eq-shell [#752](https://github.com/eq-solutions/eq-shell/pull/752) feat(staff): capture a decline reason and deliver it to the 
-- Merged: eq-solves-service [#513](https://github.com/eq-solutions/eq-service/pull/513) fix(assets): asset external_id unique per site, not per tena
+- Merged: eq-shell [#780](https://github.com/eq-solutions/eq-shell/pull/780) ci: wire the check:perms permission-matrix drift guard into 
+- Merged: eq-shell [#763](https://github.com/eq-solutions/eq-shell/pull/763) feat(comms): door polish — money across, Ops count, Melbourn
+- Merged: eq-shell [#761](https://github.com/eq-solutions/eq-shell/pull/761) fix(staff): E.164 phone normalisation on edit + carry #681 e
+- Merged: eq-shell [#755](https://github.com/eq-solutions/eq-shell/pull/755) fix(field-iframe): cookie-mode handoff falls back to token m
+- Merged: eq-shell [#753](https://github.com/eq-solutions/eq-shell/pull/753) feat(staff): labour-hire agency + roster on/off toggle on th
+- Merged: eq-shell [#750](https://github.com/eq-solutions/eq-shell/pull/750) fix(crm-write/entity-patch): 404 on zero-row / cross-tenant 
+- Merged: eq-shell [#749](https://github.com/eq-solutions/eq-shell/pull/749) fix(invite-users-batch): await entitlement upsert so dropped
+- Merged: eq-shell [#748](https://github.com/eq-solutions/eq-shell/pull/748) feat(comms): crew = the Field "Comms" team (retire the paral
 
 ## ⚠ Needs you (2)
 
@@ -31,8 +31,8 @@ _2026-07-12 08:28 UTC · what needs your attention. Full snapshot: [suite-state.
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
 | eq-shell | ? unknown | ? | 2 | 7d |
-| eq-solves-service | ✓ success | 0d ago | 5 | 5d |
-| eq-field | ✓ success | 0d ago | 0 | — |
+| eq-solves-service | ✓ success | 0d ago | 5 | 6d |
+| eq-field | ✓ success | 0d ago | 1 | 0d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ? unknown | ? | 0 | — |
 
@@ -51,6 +51,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-12 | eq-shell | [#780](https://github.com/eq-solutions/eq-shell/pull/780) ci: wire the check:perms permission-matrix drift guard into the P |
 | 2026-07-12 | eq-shell | [#751](https://github.com/eq-solutions/eq-shell/pull/751) fix(security): migrate eq-intake xlsx reader off vulnerable xlsx@ |
 | 2026-07-12 | eq-shell | [#779](https://github.com/eq-solutions/eq-shell/pull/779) refactor(shell): consistent app names — one shared list, fix invi |
 | 2026-07-12 | eq-shell | [#778](https://github.com/eq-solutions/eq-shell/pull/778) feat(canonical): DB-level AU phone normalisation trigger (0174) |
@@ -65,11 +66,11 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-12 | eq-shell | [#769](https://github.com/eq-solutions/eq-shell/pull/769) fix(crm): normalise contact mobile to E.164 on every write path |
 | 2026-07-12 | eq-shell | [#768](https://github.com/eq-solutions/eq-shell/pull/768) fix(field-iframe): retire cookie-mode handoff — token mode for ev |
 | 2026-07-12 | eq-shell | [#765](https://github.com/eq-solutions/eq-shell/pull/765) feat(comms): bulk-import from Ops — tick boxes + select all |
-| 2026-07-12 | eq-solves-service | [#513](https://github.com/eq-solutions/eq-service/pull/513) fix(assets): asset external_id unique per site, not per tenant (0 |
 _Showing 15 of 118 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **`project_targets` (supabase.js:1765)** also calls `sbFetchAll` without `orderBy` — left as-is; normal entity table that should have an `id`. Verify if paranoid. _(added 2026-07-12)_
 - **Android OTP autofill (WebOTP)** — SMS template binding line `@cards.eq.solutions #{{ .Code }}` NOW ADDED by Royce (2026-07-12); SMS confirmed carrying it. Android re-tested: the autofill chip did NOT fire — WebOTP needs the PAGE to call `navigator.credentials.get({otp})`, which Flutter/CanvasKit doesn't do out of the box, so the SMS line is necessary-but-not-sufficient. Remaining = a JS shim (read the code → inject into the OTP field; the CanvasKit injection is the fiddly + auth-critical part) + Android device re-test. **PARKED** (Royce: "probably not end of the world") — pick up only if Android login friction becomes a real complaint; the SMS line is already in place for a quick pickup. _(updated 2026-07-12)_
 - **59 SKS staff_id-without-membership** — 53 are unclaimed roster (no login yet — normal backlog); rest logged-in-never-connected or declined. No action unless they surface. _(added 2026-07-12)_
 - **Post-merge cleanup:** drop the `eq_set_workbench_job_no` wrapper once no caller remains — the last trace of the word. _(added 2026-07-12)_
@@ -79,8 +80,7 @@ _Showing 15 of 118 · full record in [sessions/](sessions/)_
 - **Service-side SameSite gap** — SERVICE-9 `cookie_absent` is the Service twin of the Field cookie issue; Service already auths via token mode so it's residual canary noise, but worth confirming the canary can be muted/removed rather than left firing. _(added 2026-07-12)_
 - **Plan saved 2026-07-11:** [`eq/field-eq-core-only-plan.md`](field-eq-core-only-plan.md). 3-phase, single-repo (eq-field). Decided: role-based supervision, **full strip**; keep `?tenant=demo` in-memory slug.
 - **Phase 2 (now UNBLOCKED — handoff confirmed live):** extend the `sks` Core-only lock in `checkAccess()` to `eq` + drop the `STAFF_CODE=demo`/`MANAGER_CODE=demo1234` backdoor (still a live fallback if the handoff ever fails). Then Phase 3: strip the dead server PIN code. Safe to proceed now the door works. _(added 2026-07-12)_
-- **Security hygiene (chip `task_ed725611`):** several EQ Netlify env vars are `is_secret=false` so full values leak via the API — incl. a **GCP service-account private key** (`GOOGLE_DOC_AI_CREDENTIALS`) + JWT/handoff secrets on eq-shell, and `SKS_JWT_SECRET`/`EQ_FIELD_HANDOFF_KEY`/`RESEND_API_KEY` on eq-field. Flip to secret; consider rotating the exposed GCP key. _(added 2026-07-12)_
-_…and 311 more · [eq/pending.md](eq/pending.md)_
+_…and 312 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -94,7 +94,7 @@ _…and 311 more · [eq/pending.md](eq/pending.md)_
 - **Anthony Hartley correction**: not actually a violation of the 2026-07-05 "never touch it" plan — re-checked live. His canonical worker id `098e4bff-…` (the one documented as "dead weight, exclude, no hard-archive field") is still there, untouched, exactly as decided — it's referenced from his current live `app_data.staff` row. What got hard-deleted was a *different* duplicate, at the `app_data.staff` (Service/ehow) layer, not the canonical-worker (jvkn) layer the 2026-07-05 decision was about. No action needed.
 - **121 items still pending in `eq_remediation_queue`** (steward-run-001) — unreviewed AI data-quality suggestions for staff/contacts, sitting in EQ Intake's review queue. Breakdown: 54 missing emergency contacts (low confidence — queue's own guidance is dismiss-only, collect via a future Cards prompt), 43 low-confidence trade guesses, 9 more staff duplicates, 11 more email gaps, 8 firmer trade guesses, 1 contact duplicate. Informational, surfaced while auditing the 16 already-committed rows. _(added 2026-07-06)_
 - **eq-shell PR #681 needs review + merge** — fix is already live on ehow (applied directly ahead of the PR); the PR just brings the source-controlled migration back in sync. _(added 2026-07-06)_
-_…and 44 more · [sks/pending.md](sks/pending.md)_
+_…and 46 more · [sks/pending.md](sks/pending.md)_
 
 ## Recent sessions
 
@@ -112,4 +112,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-12 08:28 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-12 09:37 UTC._
