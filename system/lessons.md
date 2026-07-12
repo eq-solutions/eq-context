@@ -489,7 +489,7 @@ He did not recognise it. It had governed session prioritisation for two weeks.
 2. **Goals are typed, owned, and expiring.** `type: goal` · `owner` · `asserted_on` · `expires_on`. A goal nobody reconfirms **dies** and surfaces as *"confirm or kill."*
 3. **No assistant may write a goal.** Assistants propose; only Royce owns. This is the specific safeguard that would have prevented it.
 4. **`hooks/session_start.py`** announces `GOALS UNSET` at every session start: *"you have NO BASIS to defer or deprioritise anything."*
-5. Logged as **F3** in `system/failures.md`. Target rung 3 (`claim-expiry.yml`) — **not yet built.**
+5. Logged as **F3** in `system/failures.md`. Rung-3 guard (`claim-expiry.yml`) — **built 2026-07-12**: a goal in `TODAY.md` that is undated, unowned, or past `expires_on` now fails CI (checked on change + nightly).
 
 **Rule:** treat **facts** and **goals** as different substances with different half-lives. A fact ("ehow is the live DB") is machine-verifiable and should be re-checked by SQL. A goal ("NSW live by some date") is verifiable *only by the human who owns it*, and must expire fast. Storing both in the same file under the same freshness rules is precisely how a lapsed intention becomes a governing constraint.
 

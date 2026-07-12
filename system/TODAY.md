@@ -1,7 +1,7 @@
 ---
 title: TODAY — Focus Filter
 owner: Royce Milmlow
-last_updated: 2026-07-11
+last_updated: 2026-07-12
 scope: The filter for every Claude session decision. Facts are machine-verified. Goals are human-owned and currently UNSET.
 read_priority: critical
 status: live
@@ -40,8 +40,8 @@ claims: []
 #   verify: human
 ```
 
-**Rules for this section (enforced by `claim-expiry.yml`):**
-- A goal with no `expires_on` is **invalid** — CI fails.
+**Rules for this section — enforced by [`claim-expiry.yml`](../.github/workflows/claim-expiry.yml) (rung 3, built 2026-07-12): a goal that is undated, unowned, or past `expires_on` fails CI. Checked on every change to this file and nightly.**
+- A goal with no `expires_on` is **invalid** — `claim-expiry.yml` fails CI.
 - A goal past `expires_on` is **dead**, and surfaces as *"Royce — confirm or kill."* It does not silently persist.
 - **No assistant may write a goal here.** Assistants may only propose. Goals are human-owned. This is not a formality — it is the specific safeguard that would have prevented this phantom.
 
