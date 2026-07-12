@@ -16,15 +16,22 @@ versioned, CI-checked repo — not in a `.claude/` folder outside version contro
 | Hook | Rung | Kills |
 |---|---|---|
 | `session_start.py` | 4 | **F1** — stale substrate read (8–12d, 200 OK, no error). Prints freshness, Needs-you, goals status, and any guard overdue for promotion. Reads the **local clone, never a URL** — the URL is what lied. |
-| `pre_tool_use.py` | 4 | **F2** — Edit/Write silently truncating long files on the virtiofs mount. Also blocks `git` from the Cowork sandbox (orphan `index.lock`). **Fail-closed.** |
+| `pre_tool_use.py` | 4 | **F2 / F6** — Edit/Write silently truncating (F2) and `>>` append NUL-filling (F6) long files on the virtiofs mount. Also blocks `git` from the Cowork sandbox (orphan `index.lock`). **Fail-closed.** Linux-sandbox-scoped; no-ops on Windows (on the Beelink `guard.js` is the active write-guard). |
 
 ## Install (Beelink)
 
-```
-copy C:\Projects\eq-context\hooks\settings.template.json C:\Projects\.claude\settings.json
-```
+The freshness gate must load for **every** session — not only ones launched at the
+`C:\Projects` umbrella root. Wire `session_start.py` in **user** settings so it is global:
 
-Then start a fresh session — hooks load at session start.
+- Add the `SessionStart` pointer from `settings.template.json` to
+  **`C:\Users\EQ\.claude\settings.json`** (user scope — applies to every repo + worktree).
+
+Installing only at `C:\Projects\.claude\settings.json` fires the gate **solely** for
+sessions started at the umbrella root; repo-scoped and worktree sessions never see it.
+That gap was live until 2026-07-12 — the gate existed but silently did not run for most
+sessions, the exact "guard that isn't wired" failure class the ladder exists to kill.
+
+Then start a fresh session — the gate prints before the tier question.
 
 ## Why fail-closed
 

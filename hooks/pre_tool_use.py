@@ -118,8 +118,9 @@ def main():
                         f"  Edit/Write TRUNCATE SILENTLY against virtiofs and report SUCCESS.\n"
                         f"  This destroyed 31 lines of CLAUDE.md on 2026-07-11 (§12, §13, End).\n\n"
                         f"  Use bash heredoc instead, then VERIFY:\n"
-                        f"    cat > <file> << 'EOF'   (full rewrite)\n"
-                        f"    cat >> <file> << 'EOF'  (append)\n"
+                        f"    cat > <file> << 'EOF'   (FULL REWRITE — the ONLY safe method.\n"
+                        f"                             Do NOT use >> to append: it NUL-fills\n"
+                        f"                             on this mount. See F6.)\n"
                         f"    wc -l <file> && tail -2 <file>\n\n"
                         f"  system/failures.md → F2. Do not retry this tool on this file.\n"
                     )
