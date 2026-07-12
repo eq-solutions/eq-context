@@ -13,6 +13,7 @@ of waiting to be asked. Run on every merge to main via repository_dispatch
 """
 import base64
 import os
+import posixpath
 import re
 import subprocess
 import sys
@@ -154,15 +155,46 @@ def recently_merged_prs(repo, days=RECENTLY_MERGED_DAYS):
     return out
 
 
+def _reroot_links(text, base_dir):
+    """Rewrite relative markdown-link targets in `text` to be relative to the repo
+    root, given the source file's directory `base_dir` (e.g. 'eq').
+
+    digest.md lives at the repo root, so a link written relative to eq/pending.md
+    ('field-x.md' -> eq/field-x.md) breaks when copied verbatim to root. External,
+    absolute, in-page-anchor, and autolink targets are left untouched.
+    """
+    if not base_dir or base_dir == ".":
+        return text
+
+    def repl(m):
+        target = m.group(1)
+        if re.match(r"^(https?:|mailto:|/|#|<)", target) or "://" in target:
+            return m.group(0)
+        mm = re.match(r"^([^#?]*)([#?].*)?$", target)
+        pathpart, suffix = mm.group(1), (mm.group(2) or "")
+        if not pathpart:
+            return m.group(0)
+        rerooted = posixpath.normpath(posixpath.join(base_dir, pathpart))
+        return f"]({rerooted}{suffix})"
+
+    return re.sub(r"\]\(([^)]+)\)", repl, text)
+
+
 def pending_open_items(path):
-    """Unchecked items from a pending.md file. Returns list of strings."""
+    """Unchecked items from a pending.md file. Returns list of strings.
+
+    Relative links inside each item are re-rooted from the pending file's directory
+    to the repo root, because these items are hoisted into root-level digest.md
+    (where a link written relative to eq/ or sks/ would otherwise 404).
+    """
     try:
         with open(path, encoding="utf-8") as f:
             lines = f.readlines()
     except FileNotFoundError:
         return []
+    base_dir = posixpath.dirname(path)
     return [
-        line.strip()[5:].strip()
+        _reroot_links(line.strip()[5:].strip(), base_dir)
         for line in lines
         if line.strip().startswith("- [ ]")
     ]
