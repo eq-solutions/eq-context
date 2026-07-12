@@ -1,7 +1,7 @@
 ---
 title: Archive
 owner: Royce Milmlow
-last_updated: 2026-05-04
+last_updated: 2026-07-12
 scope: Parked, deferred, and historical content kept out of default AI load
 read_priority: reference
 status: live
@@ -19,6 +19,7 @@ explicitly directed.
 | `changelog-ahd.md` | AHD parked to 2027 capital activation | 2027 capital activation review |
 | `GROK.md` | Grok not part of the active workflow (2026-07-12); pointed at `STATE.md`/`SPRINT-BOARD.md`, archived same day | If Grok sessions resume — rewire its `STATE.md` pointer to `suite-state.md` first |
 | `direction-d-state.md` | Direction D design-system + IA wave appears dormant — zero inbound references found across governed docs (2026-07-12) | If the wave resumes, refresh against live state before reinstating |
+| `lessons-history.md` | Full narratives for `system/lessons.md` entries that were either fully dead (pre-GitHub Supabase substrate mechanisms) or duplicated in full elsewhere (`system/failures.md`, `system/TODAY.md`, `hooks/README.md`) — trimmed 2026-07-12 to a short rule + pointer in `lessons.md` per the "one fact, one home" rule | Read directly whenever the full story behind a rule is wanted, not just the rule — not really "revivable", this is the permanent home for the long version |
 
 ## Sprint working docs — `sprints/`
 
