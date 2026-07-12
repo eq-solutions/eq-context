@@ -131,6 +131,26 @@ The 2026-05-04 tier refactor solved tier-bleed and dead-product noise within Cla
 - [ ] **Restart the held Chat session on the new bootstrap** — enable/verify the GitHub connector on claude.ai, then open a **fresh** chat with `CHAT-PROMPT.md` pasted (connector tools don't load mid-session). The 2026-07-03 Chat thread that was stuck on the fetch wall can be abandoned — its held "substrate fix" was this same issue, closed by PR #59. **(Royce manual step.)** _(added 2026-07-03)_
 - [x] **PAT rotation — DONE 2026-06-15** — new PATs generated and deployed. Confirmed by Royce.
 
+- [x] **PostHog MCP connector mislabeled "Github" — fixed 2026-07-12** — the PostHog
+  connector on claude.ai displayed as "Github" (its hedgehog logo gave it away; the real
+  GitHub connector is the separate "GitHub Integration" row with the octocat). Royce
+  renamed/re-added it. Also stripped a dead `mcpServers.github` stdio stub (malformed,
+  command `"\\"`) from `~/.claude.json`, scoped to the stale `C:/Projects/eq-solves-service`
+  key — re-validated as well-formed JSON via Node + Python.
+  **Open (Royce manual):** restart the app so a fresh session binds the new PostHog
+  connector and the real tool list shows (this session's connection went stale after the
+  swap); if the stub reappears (app caches `.claude.json` in memory), run
+  `claude mcp remove github`. _(added 2026-07-12)_
+
+- [ ] **Rung-4 guard hooks are DEAD — backslash paths in `C:\Projects\.claude\settings.json`**
+  — Claude Code runs hook commands through a POSIX shell that strips backslashes, so
+  `python C:\Projects\eq-context\hooks\pre_tool_use.py` resolves to a garbage path and every
+  Edit/Bash from the `C:\Projects` root is blocked with a hook error — so the brief-gate,
+  NUL-scan, and freshness guards installed 2026-07-12 are NOT actually running. **Fix:**
+  switch both hook `command` paths to forward slashes (`C:/Projects/eq-context/hooks/...`).
+  Claude Code declined to self-edit hook wiring without instruction — **Royce to
+  approve/apply** (say "fix the hook paths"). _(added 2026-07-12)_
+
 ---
 
 ## Multi-Repo Push Automation
