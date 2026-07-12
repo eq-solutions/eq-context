@@ -15,6 +15,14 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ✅ Staff records — dedup completed + one-per-person LOCK live (2026-07-12)
+*Royce: "we keep going around in circles" with duplicate staff. Verify-first: the front door (eq-cards `0089` adopt-by-email/phone + eq-shell #724 sync identity-match) already shipped 07-11, so NO new dupes since — this was un-cleaned backlog + a missing hard guarantee.*
+- [x] **9 SKS duplicate people merged → one active record each** (ehow; email-dup groups 9→0; EQ/zaap + nxoj already clean). 19 licences + ~62 roster + timesheets repointed onto the survivor (18 FK columns); 12 loser rows archived (nothing hard-deleted; 85 KB reversal snapshot). Direct SQL, Royce's go. _(done 2026-07-12)_
+- [x] **11 middle-name-jammed names cleaned at the SOURCE (jvkn workers) + projection (ehow staff)** — incl. Royce Milmlow. The name's canonical home is the worker record; a staff-only fix re-syncs back, so both layers were fixed. _(done 2026-07-12)_
+- [x] **Phoenix's worker back-pointer re-aimed** at the surviving staff row (was pointing at the archived, data-holding row). _(done 2026-07-12)_
+- [x] **The LOCK — migration `0175` (PR #782, dispatched + applied all 3 planes, MERGED `0b40bec`)** — partial unique indexes: one ACTIVE `app_data.staff` per `(tenant, lower(email))` AND per `(tenant, cards_worker_id)`. No write path can silently re-fork a person again; a collision now fails loud. _(done 2026-07-12)_
+- [ ] **Anthony Hartley's dangling 2nd worker on jvkn** (staff_id → a deleted row) — left untouched per the 2026-07-05 "don't touch that canonical worker" call; the staff-layer lock means it can no longer spawn a dup. _(added 2026-07-12)_
+
 ## ✅ EQ Field — sync resilience + order=id parity (2026-07-12, MERGED + DEPLOYED)
 - [x] **PR #459 (v3.5.304) — degraded-sync observability + preserve-on-failure (SKS #60 parity).** Ported SKS v3.10.93 to EQ Field: sync-health state machine (`_emitSyncHealth`), `sync_degraded` analytics event, degraded toast, preserve-last-known-on-failure. Built by the reconcile chip session, verified in-browser. _(done 2026-07-12)_
 - [x] **PR #460 (v3.5.305) — order=id fix for id-less tables.** `sbFetchAll('team_members'…)` / `sbFetchAll('timesheet_locks'…)` passed no `orderBy` → default `order=id` 400s (no `id` column). Passed each PK (`team_id,person_id` / `week_key`). Low impact — both already guarded (try/catch) so they degraded silently, but the teams-filter + week-lock features never loaded for the SKS tenant. Meant to fold into #459 but it merged first; clean follow-up. SKS #59 parity. _(done 2026-07-12)_

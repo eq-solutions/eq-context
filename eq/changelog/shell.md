@@ -10,6 +10,9 @@ last_updated: 2026-07-12
 
 # Changelog — EQ Shell
 
+## [2026-07-12] Staff dedup + one-per-person lock (PR #782, migration 0175 — LIVE)
+- Root-caused the recurring duplicate-staff problem and closed it end-to-end. **9 SKS duplicate people merged to one active record each** (email-dup groups 9→0; EQ/nxoj already clean): 19 stranded licences + ~62 roster entries + timesheets repointed onto the surviving record, 12 duplicates archived (soft; reversal snapshot kept). **11 middle-name-jammed names cleaned** at the worker source (jvkn) + staff projection — incl. Royce Milmlow. **The lock (`0175`)** adds two partial unique indexes so at most one ACTIVE `app_data.staff` row exists per person (by email and by worker link) — no write path can silently re-fork again. Applied to all 3 planes via the One Pipe (Royce-approved gate). Recurrence itself was already stopped 07-11 by the Cards adopt-by-email/phone front door; this cleaned the backlog + added the hard guarantee.
+
 ## [2026-07-12] DB-level phone normalisation trigger (PR #778, migration 0174 — LIVE)
 - Phone normalisation is now a tenant-DB invariant, not app-code duplicated across `entity-patch`/`savePerson` (and absent from Field's direct PostgREST writes). `app_data.to_au_e164()` + `BEFORE INSERT/UPDATE OF` triggers on `staff` (`phone`, `emergency_contact_mobile`) + `contacts` (`mobile_phone`, `work_phone`) normalise every write to `+61` E.164 — every writer, no exceptions. A one-time backfill fixed the existing drift the app layer never caught (bare-`61`, local-`0`, mobiles parked in `work_phone`): ehow 54+28+103 → 0. Applied to all 3 planes (ehow/zaap/nxoj); dispatched + Royce-approved. Follows the `staff_normalise_employment_type` precedent. Phone only — the onboarding middle-name tidy stays app-side.
 

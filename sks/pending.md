@@ -10,6 +10,9 @@ last_updated: 2026-07-12
 
 # SKS Pending
 
+## ✅ Staff duplicates cleaned + locked (2026-07-12)
+- [x] 9 duplicate SKS staff merged to one live record each; 19 stranded licences + ~62 roster entries recovered onto the record they belong to; 11 middle-name-jammed names cleaned (incl. Royce Milmlow). Recurrence was already stopped 07-11 (Cards adopt-by-email/phone); a DB one-per-person lock (eq-shell `0175`, all 3 planes) now makes it permanent. Full detail in `eq/pending.md`. _(done 2026-07-12)_
+
 ## Done (pruned summary — full history in git log)
 
 - [x] EQ Quotes Supabase port — full Flask rewrite (v50+)
