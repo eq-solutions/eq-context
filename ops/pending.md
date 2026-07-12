@@ -21,6 +21,14 @@ Plan: `system/substrate-plan-v2.md` (supersedes substrate-a-plus-plan.md). All p
 ledger into the nightly pulse; defer workflow consolidation + memory-coverage CI (hygiene,
 not urgent — "working before refactoring").
 
+**Session update 2026-07-12 (cont.) — substrate thread PARKED (rabbit-hole call, Royce):**
+- [x] **F4 "0 completions" alarm CORRECTED** — over-read; checks are future-scheduled (first due 2026-08-06), not broken. On main (PR #80).
+- [x] **Frontmatter-schema CI check GREENED** — was chronically red (16 pre-existing violations), gates again. On main (PR #81).
+- [~] **Product pulse — DROPPED.** Premise was the false F4 alarm. Revive only if a goal needs it.
+- [ ] **Courier (P5) — PARKED**, not dropped. Manual `git checkout main && git pull` suffices.
+- [ ] **Cowork auto-memory prune (F5 residue)** — Royce to do in a Cowork session (directions given 2026-07-12).
+- [ ] **Chat** — GitHub connector on + fresh session to read corrected main (hygiene).
+
 **Done this session (2026-07-12, on branch `claude/substrate-plan-v2-review-bb96aa`):**
 - [x] **Gate bug fixed** — `session_start.py` crashed on Windows (cp1252 can't encode the 🟠
   emoji it echoes from digest.md) → forced UTF-8 stdout. Adversarial suite **18/18 green**
