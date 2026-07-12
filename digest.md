@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-12 11:10 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-12 11:52 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-12 10:45 UTC → 2026-07-12 11:10 UTC)
+## Since last refresh (2026-07-12 11:10 UTC → 2026-07-12 11:52 UTC)
 
-- Merged: eq-shell [#765](https://github.com/eq-solutions/eq-shell/pull/765) feat(comms): bulk-import from Ops — tick boxes + select all
-- Merged: eq-shell [#763](https://github.com/eq-solutions/eq-shell/pull/763) feat(comms): door polish — money across, Ops count, Melbourn
-- Merged: eq-shell [#761](https://github.com/eq-solutions/eq-shell/pull/761) fix(staff): E.164 phone normalisation on edit + carry #681 e
-- Merged: eq-shell [#755](https://github.com/eq-solutions/eq-shell/pull/755) fix(field-iframe): cookie-mode handoff falls back to token m
-- Merged: eq-shell [#753](https://github.com/eq-solutions/eq-shell/pull/753) feat(staff): labour-hire agency + roster on/off toggle on th
-- Merged: eq-shell [#750](https://github.com/eq-solutions/eq-shell/pull/750) fix(crm-write/entity-patch): 404 on zero-row / cross-tenant 
-- Merged: eq-shell [#749](https://github.com/eq-solutions/eq-shell/pull/749) fix(invite-users-batch): await entitlement upsert so dropped
-- Merged: eq-solves-service [#514](https://github.com/eq-solutions/eq-service/pull/514) fix(assets): unblock imports (0181) + reshape reconciliation
+- Merged: eq-shell [#785](https://github.com/eq-solutions/eq-shell/pull/785) feat(comms): Excel-style inline editing on the job list + KP
+- Merged: eq-shell [#768](https://github.com/eq-solutions/eq-shell/pull/768) fix(field-iframe): retire cookie-mode handoff — token mode f
+- Merged: eq-shell [#764](https://github.com/eq-solutions/eq-shell/pull/764) feat(comms): custom columns + tick-list crew picker — more p
+- Merged: eq-shell [#762](https://github.com/eq-solutions/eq-shell/pull/762) feat(comms): the Melbourne door — import the Working Job Lis
+- Merged: eq-shell [#760](https://github.com/eq-solutions/eq-shell/pull/760) feat(comms): the Ops door — import won EQ Ops jobs into the 
+- Merged: eq-shell [#759](https://github.com/eq-solutions/eq-shell/pull/759) fix(comms): job table fits its width — no cut-off columns
+- Merged: eq-shell [#757](https://github.com/eq-solutions/eq-shell/pull/757) fix(ci): move invite-users-batch.test.ts out of functions ro
+- Merged: eq-shell [#754](https://github.com/eq-solutions/eq-shell/pull/754) feat(comms): scannable job table — Start / Finish / Hours in
 
 ## ⚠ Needs you (2)
 
@@ -30,7 +30,7 @@ _2026-07-12 11:10 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 3 | 7d |
+| eq-shell | ? unknown | ? | 2 | 7d |
 | eq-solves-service | ✓ success | 0d ago | 5 | 6d |
 | eq-field | ✓ success | 0d ago | 1 | 0d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
@@ -51,6 +51,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-12 | eq-shell | [#785](https://github.com/eq-solutions/eq-shell/pull/785) feat(comms): Excel-style inline editing on the job list + KPI-til |
 | 2026-07-12 | eq-shell | [#782](https://github.com/eq-solutions/eq-shell/pull/782) feat(canonical): one-active-staff-per-person lock (0175) |
 | 2026-07-12 | eq-shell | [#783](https://github.com/eq-solutions/eq-shell/pull/783) ci: wire the check:css coverage gate into the PR gate |
 | 2026-07-12 | eq-shell | [#780](https://github.com/eq-solutions/eq-shell/pull/780) ci: wire the check:perms permission-matrix drift guard into the P |
@@ -65,22 +66,21 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-12 | eq-shell | [#773](https://github.com/eq-solutions/eq-shell/pull/773) feat(staff): manager UI to define required tickets (minimum crede |
 | 2026-07-12 | eq-shell | [#772](https://github.com/eq-solutions/eq-shell/pull/772) ci: guard against invalid netlify/functions filenames that break  |
 | 2026-07-12 | eq-shell | [#770](https://github.com/eq-solutions/eq-shell/pull/770) fix(crm): add_site links the chosen site contact so it sticks wit |
-| 2026-07-12 | eq-shell | [#769](https://github.com/eq-solutions/eq-shell/pull/769) fix(crm): normalise contact mobile to E.164 on every write path |
 _Showing 15 of 118 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **Royce to reproduce in a clean Incognito profile (extensions off)** on `/sks/field` as SKS. If #418 disappears → a browser extension (Grammarly, translator, password manager) is mutating the DOM — not a Shell bug, close it out. If it survives clean Incognito, capture the console `args[]=` values + top stack frames (script provided in-session) and bring them back — that's the only path to a real root cause. _(added 2026-07-12)_
+- **No sourcemaps uploaded for eq-shell** (`@sentry/vite-plugin`/`sentry-cli` absent from the build) — Sentry events are exactly as minified as the console, so it isn't a shortcut here. Optional follow-up if prod JS errors keep needing manual decode: wire up sourcemap upload in its own PR. _(added 2026-07-12)_
+- **Rotate the jvkn (eq-canonical) service_role key** — pasted into chat this session to fix canon-read. Roll it (Supabase → jvkn → API), update everywhere used; same class as the EQ_SECRET_SALT-in-chat rotation item. _(added 2026-07-12)_
+- **Field gate PIN inputs not wrapped in a `<form>`** — browser "password field is not contained in a form" warning ×5; password-manager UX nit. Low priority. _(added 2026-07-12)_
+- **Timesheet "(unknown)" staff-map load-order race (v3.5.219)** — pre-existing; a timesheet row can render a beat before the canonical staff map is ready (verified 0 orphaned timesheets, data intact). Self-heals on re-render; fix only if it becomes visibly annoying. _(added 2026-07-12)_
 - **`project_targets` (supabase.js:1765)** also calls `sbFetchAll` without `orderBy` — left as-is; normal entity table that should have an `id`. Verify if paranoid. _(added 2026-07-12)_
 - **Android OTP autofill (WebOTP)** — SMS template binding line `@cards.eq.solutions #{{ .Code }}` NOW ADDED by Royce (2026-07-12); SMS confirmed carrying it. Android re-tested: the autofill chip did NOT fire — WebOTP needs the PAGE to call `navigator.credentials.get({otp})`, which Flutter/CanvasKit doesn't do out of the box, so the SMS line is necessary-but-not-sufficient. Remaining = a JS shim (read the code → inject into the OTP field; the CanvasKit injection is the fiddly + auth-critical part) + Android device re-test. **PARKED** (Royce: "probably not end of the world") — pick up only if Android login friction becomes a real complaint; the SMS line is already in place for a quick pickup. _(updated 2026-07-12)_
 - **59 SKS staff_id-without-membership** — 53 are unclaimed roster (no login yet — normal backlog); rest logged-in-never-connected or declined. No action unless they surface. _(added 2026-07-12)_
 - **Post-merge cleanup:** drop the `eq_set_workbench_job_no` wrapper once no caller remains — the last trace of the word. _(added 2026-07-12)_
 - **Optional (declined for now):** rename GM `job_code` → `job_number` across the 3 GM tables (+ unique constraints, parser, UI) for strict one-name-in-the-schema. _(added 2026-07-12)_
-- **"Damon Patrick Francis"** — title-case, so the middle-name rule correctly left it alone. Confirm whether "Patrick" is a middle name → should be "Damon Francis" (one-row manual fix). _(added 2026-07-12)_
-- **Records↔Field seam polish (discussed, not built)** — steelmanned the "one record, many windows" model; creative next steps proposed: (1) a declarative field-ownership registry to kill the ~10-edit-site tax per new field, (2) push phone/name normalisation into a Postgres BEFORE trigger (one definition, every writer, no app duplication), (3) a "Records health" panel reusing `eq_quality_runs` (non-E.164 phones, embedded middles, missing canonical link, orphaned workers) with one-click fixes, (4) Cards as the real front door + canonical↔tenant reconciliation/merge-review to kill dup stubs, (5) extend the pattern to CRM contacts + fix the "Contacts" vocabulary clash. Recommended first move: the DB-level normalise trigger (highest leverage, lowest risk). _(added 2026-07-12)_
-- **Service-side SameSite gap** — SERVICE-9 `cookie_absent` is the Service twin of the Field cookie issue; Service already auths via token mode so it's residual canary noise, but worth confirming the canary can be muted/removed rather than left firing. _(added 2026-07-12)_
-- **Plan saved 2026-07-11:** [`eq/field-eq-core-only-plan.md`](field-eq-core-only-plan.md). 3-phase, single-repo (eq-field). Decided: role-based supervision, **full strip**; keep `?tenant=demo` in-memory slug.
-- **Phase 2 (now UNBLOCKED — handoff confirmed live):** extend the `sks` Core-only lock in `checkAccess()` to `eq` + drop the `STAFF_CODE=demo`/`MANAGER_CODE=demo1234` backdoor (still a live fallback if the handoff ever fails). Then Phase 3: strip the dead server PIN code. Safe to proceed now the door works. _(added 2026-07-12)_
-_…and 312 more · [eq/pending.md](eq/pending.md)_
+_…and 317 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -112,4 +112,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-12 11:10 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-12 11:52 UTC._
