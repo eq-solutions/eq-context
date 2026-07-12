@@ -9,6 +9,12 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-12] v3.5.306 — In-app Remove / Restore / Delete people lifecycle (SHIPPED, PR #462, live)
+- Fixes the archive/delete flow on canonical (SKS). Both "Archive" and "Delete permanently" only ever set `staff.active=false`, which the active-only `field_people` view hides — so removed people vanished, Restore was dead, "Show archived" was always empty, and Delete additionally wiped roster history (lossy).
+- New two-step lifecycle, entirely in-app (no bounce to Core, no refresh): active rows get **📦 Remove from roster** (reversible, keeps all history); **Show removed** reveals removed people (lazily loaded from a new companion twin); removed rows get **↺ Restore** or **✕ Delete permanently** (supervisor-only, blocked server-side when roster/timesheet/leave/licence history exists so real history is never nuked).
+- DB (ehow + zaap): companion view `app_data.field_people_removed` (`security_invoker=on` → RLS tenant-isolated) + `INSTEAD OF UPDATE` (restore) / `DELETE` (hard-purge) trigger, SECURITY DEFINER + explicit tenant guard. Client: JWT twin `people_removed`; `STATE.peopleArchived` kept OUT of `STATE.people` so roster/timesheets/dropdowns never see removed people. Managers unchanged (Core-managed / read-only on SKS). SEED tenants (eq/demo) run the lifecycle in-memory — zaap's `field_people` is a thin drifted view with no `archived` column.
+- Data hygiene alongside: 23 test/duplicate `app_data.staff` rows purged from the SKS spine (Sam Powell's real EWP licence merged onto his live record first). Also fixed a live `canon-read` 500 — the eq-field Netlify project was missing `CANONICAL_SERVICE_ROLE_KEY` (jvkn service_role); set + verified.
+
 ## [2026-07-12] v3.5.304 — Degraded-sync observability + preserve-on-failure (SHIPPED, PR #459, live)
 - Parity with SKS NSW Labour v3.10.93 (#60), reached via Field's own resilience model — Field was never exposed to the SKS `Promise.all` freeze (per-fetch `_loadSafe`, v3.5.201), so this closes only the two remaining gaps.
 - **Preserve-on-failure**: a failed core-table fetch on the 30s/5min background poll used to blank the roster/Contacts for ≥30s — the fetch fell back to an empty set that overwrote currently-good data (Field has no last-good read snapshot). Now a failed fetch keeps the last-known data: the five core loads (people/sites/schedule/managers/timesheets) each skip their STATE write on failure (via a `_LOAD_FAILED` sentinel) instead of emptying. Cold boot unchanged (state starts empty anyway).
