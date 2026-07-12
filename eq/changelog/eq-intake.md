@@ -2,6 +2,7 @@
 
 ## 2026-07-12
 - **Repo gets its first CI** (PR #64, merged `e62009c`) — was completely uncovered (zero GitHub Actions workflows, confirmed via API). New workflow: install → build → typecheck + schema-lint → test, across all 7 `eq-platform/` packages. Caught and fixed a real ordering bug on the way in (typecheck must run after build, since `eq-validation` resolves `@eq/ai` against its built types) and a `pnpm`/`setup-node` cache-path friction point (dropped the cache rather than debug it). `pnpm ci:drift` and `pnpm test:integration` deliberately left out of the gate — see PR #64 for why.
+- **Both gaps closed** (PR #65, merged `f6f41e3`) — `ci:drift`'s "fails on a clean checkout" finding turned out to be contaminated-environment noise, not real; re-verified clean on a genuine fresh clone and wired up as a real gate. `test:integration` already self-skips without `ANTHROPIC_API_KEY`, so it now runs unconditionally (free today, real coverage once the secret's added). Both confirmed on real GitHub Actions logs.
 
 ## 2026-07-03
 - **Guardian go-live executed on ehow** — 058/059/060 applied, Edge Function deployed (first ever; now v3), Vault-keyed nightly cron live at 03:00 AEST. First alerts ever persisted: critical LVR expired 268d (Huon Henne) + LVR 29d and electrical_licence 25d warnings. PR #59 (cron hour), PR #60 (auth by privilege probe — injected env key ≠ dashboard key on ehow), PR #61 (health-score columns: sites/contacts no longer false 0%).

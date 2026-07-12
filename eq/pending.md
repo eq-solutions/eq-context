@@ -2861,3 +2861,17 @@ Diagnosed 2026-05-19. 17 advisor warnings, fix drafted but not applied.
     no error). Re-cloned to a short path (`C:\Users\EQ\AppData\Local\Temp\esi-ci`) with
     `core.longpaths` enabled and it checked out clean. Worth remembering for any repo with deep
     nested paths (this one has `eq-platform/packages/.../test/fixtures/...` several levels deep).
+
+- [x] **Both deferred CI gaps above closed same-week — eq-solves-intake PR #65, merged `f6f41e3`.**
+  Re-tested `pnpm ci:drift` from a genuinely fresh clone (short path, pinned pnpm 9.15.9): zero
+  diff, exit 0, reproducible twice. The original "fails on a clean checkout" finding was itself
+  contaminated-environment noise (an earlier test clone wasn't actually clean), not a real
+  product bug — same failure class as the build-before-typecheck bug two paragraphs up. Wired
+  up as a real CI gate. Separately, `pnpm test:integration` (`@eq/ai`, real Anthropic API) turns
+  out to already self-skip cleanly when `ANTHROPIC_API_KEY` is absent
+  (`describe.skipIf(!HAS_KEY)`) — so it now runs unconditionally in CI (costs nothing, 1 test
+  skipped) and will start asserting for real the moment the secret is added, no workflow change
+  needed later. Confirmed via real GitHub Actions log, not just the checkmark: schema-drift step
+  showed zero diff, integration step showed "1 skipped". Adding the `ANTHROPIC_API_KEY` secret
+  itself is deferred — that's a real-cost decision (calls the live Anthropic API) for Royce, not
+  something to add unasked. _(done 2026-07-12)_
