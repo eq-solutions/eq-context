@@ -1719,7 +1719,7 @@ Net: on a deep-linked `?tab=leave` view — exactly how Core embeds Field — `l
 - [ ] **(optional, needs your taste)** Archive stale root planning docs (`PLAN-*`, `OVERNIGHT-REVIEW-*`, `CONDUIT-AUDIT-*`) into `_archive/` _(added 2026-06-30)_
 
 **Notes (load-bearing):**
-- eq-intake has **no root `package.json`** — the pnpm workspace lives in `eq-platform/`; fleet gate = `pnpm -C eq-platform check:packages`. No CI workflows in the repo.
+- eq-intake has **no root `package.json`** — the pnpm workspace lives in `eq-platform/`; fleet gate = `pnpm -C eq-platform check:packages`. **CI workflow added 2026-07-12** (`.github/workflows/ci.yml`, PR #64) — see the 2026-07-12 session-close entry below; this note previously said "no CI workflows in the repo", which is why it's corrected here rather than left stale.
 - Vendored ARMADA skills are **local-only in the main checkout** `C:\Projects\eq-intake\.claude\` — run ARMADA from a session rooted at the repo root, NOT a `*-wt` worktree, or `/lighthouse` etc. won't resolve.
 - PHASE-0 monorepo migration is **abandoned**; `apps/eq-service`/`apps/eq-shell` are gone from eq-intake. eq-service = `eq-solves-service` repo, eq-shell = `eq-shell` repo (live, shipping daily).
 ---
@@ -2823,3 +2823,41 @@ Diagnosed 2026-05-19. 17 advisor warnings, fix drafted but not applied.
 ## Deferred (added 2026-07-08)
 - [x] **Customer contract/SLA/rate fields decision: leave as-is for now.** Royce confirmed — the export stays honestly marked "not available yet" rather than building the missing database fields now; revisit if something downstream actually needs this data. _(decided 2026-07-08)_
 - [x] **Follow-up sweep run same-day, as Royce requested.** Live-tested every "shortcut lookup" pattern in the repo against the real database API (not just docs/comments) and found the original theory was wrong: the 2026-06-23 change was fixed the very next day, so that's not actually the cause of anything still broken. What IS genuinely broken, found by testing rather than guessing: the Customer Portal's "Your Reports" page (silently showed nothing to every customer regardless of real history), the overnight reminder system's "your visit is coming up" notice (silently never sent since it was built), and the "assign to" dropdown on two of the test-creation screens (always empty) — all three because the code assumed a database link existed that was never actually built, unrelated to the earlier column-name bugs. All fixed, same PR (#477) — **merged live by Royce, Netlify deploy triggered, CI green** (one known pre-existing integration-test failure unrelated to this work). _(done 2026-07-08)_
+
+## ⏩ Session close — 2026-07-12 — eq-solves-intake gets basic CI (was completely uncovered)
+
+- [x] **Added GitHub Actions CI to eq-solves-intake — PR #64, merged `e62009c`.** The repo had
+  **zero** workflows configured (confirmed via the GitHub API before touching anything) — it's
+  why `digest.md` has been showing its CI status as "? unknown" every refresh: there was
+  genuinely nothing to check. One workflow now covers the `eq-platform/` pnpm monorepo (7
+  packages: eq-intake, eq-ai, eq-schemas, eq-validation, eq-confirm-ui, eq-format-ui,
+  eq-intake-demo): install (frozen-lockfile) → build → typecheck + schema-lint → test, on push
+  and PR to `main`. Confirmed genuinely green by reading the real CI log (all 7 packages built,
+  typechecked, and tested; 46/46 schemas valid) — not just the checkmark.
+  - **Confirms a previously-flagged concern was real.** The 2026-06-30 ARMADA session-close
+    above (line ~1718) flagged as an optional follow-up: "harden build-before-test
+    workspace-wide so the stale-dist bug class... can't recur." Independently hit exactly that
+    bug class today: the first CI attempt typechecked before building, and `eq-validation`
+    (which imports `@eq/ai`) failed with "Cannot find module '@eq/ai'" — TypeScript resolves
+    that workspace dependency against `@eq/ai`'s *built* `dist/index.d.ts`, not its source. My
+    own first local "clean" test missed this because it wasn't actually clean (leftover `dist/`
+    folders from an earlier build masked the bug) — only real CI caught it. Fixed by reordering
+    to build-then-typecheck; verified with a true from-scratch repro (deleted `node_modules`
+    AND every `dist/`) before shipping the fix.
+  - **Deliberately excluded, not silently skipped:** `pnpm test:integration` (eq-ai — hits a
+    real provider, needs an API key, not appropriate for a secret-free basic gate) and
+    `pnpm ci:drift` (the schema-generation drift check — tested locally and **it fails on a
+    clean, untouched checkout**: pnpm rewrites `package.json`'s `packageManager` integrity hash
+    and normalises an em-dash as a side effect of install, and the diff then flags that as
+    "drift" even though no generated schema changed. Wiring up an already-flaky check would be
+    worse than no check — flagged in the PR as a separate follow-up, not bundled in).
+  - Also dropped `actions/setup-node`'s built-in pnpm cache mid-way — a documented friction
+    point between `pnpm/action-setup` and that cache feature caused a path-mismatch failure in
+    the job's post-cleanup step, after every real check had already passed. Caching is a speed
+    optimisation, not correctness; not worth the complexity for basic CI.
+  - **Environment note for future sessions:** cloning this repo into a deeply-nested scratch
+    path (this session's own multi-layer temp/session-UUID structure) hit Windows' MAX_PATH
+    limit and silently produced a half-checked-out clone (mixed deleted/untracked git status,
+    no error). Re-cloned to a short path (`C:\Users\EQ\AppData\Local\Temp\esi-ci`) with
+    `core.longpaths` enabled and it checked out clean. Worth remembering for any repo with deep
+    nested paths (this one has `eq-platform/packages/.../test/fixtures/...` several levels deep).

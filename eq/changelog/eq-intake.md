@@ -1,5 +1,8 @@
 # EQ Intake — Changelog
 
+## 2026-07-12
+- **Repo gets its first CI** (PR #64, merged `e62009c`) — was completely uncovered (zero GitHub Actions workflows, confirmed via API). New workflow: install → build → typecheck + schema-lint → test, across all 7 `eq-platform/` packages. Caught and fixed a real ordering bug on the way in (typecheck must run after build, since `eq-validation` resolves `@eq/ai` against its built types) and a `pnpm`/`setup-node` cache-path friction point (dropped the cache rather than debug it). `pnpm ci:drift` and `pnpm test:integration` deliberately left out of the gate — see PR #64 for why.
+
 ## 2026-07-03
 - **Guardian go-live executed on ehow** — 058/059/060 applied, Edge Function deployed (first ever; now v3), Vault-keyed nightly cron live at 03:00 AEST. First alerts ever persisted: critical LVR expired 268d (Huon Henne) + LVR 29d and electrical_licence 25d warnings. PR #59 (cron hour), PR #60 (auth by privilege probe — injected env key ≠ dashboard key on ehow), PR #61 (health-score columns: sites/contacts no longer false 0%).
 - Review-queue tab SHIPPED: eq-intake PR #55 merged; eq-shell port PR #606 merged (Royce, 05:08Z) and deployed to core.eq.solutions (05:13Z). sql/062 (queue RPCs + whitelist extension) applied to ehow and verified — eq_queue_list returns 137 under tenant JWT.
