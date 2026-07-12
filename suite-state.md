@@ -68,7 +68,7 @@ _If this file is >48h old, the cron is broken._
 - #455 chore(deps): bump @eq-solutions/ui from v1.9.0 to v1.10.0 in the eq-design-system group
 
 **eq-shell:**
-- #776 fix(quotes): "Job No." not "Workbench Job No." in the pipeline UI
+- #776 feat(quotes): job numbers are canonical — one name everywhere
 - #775 chore(quotes): remove retired Flask→canonical quote ETL
 - #751 fix(security): migrate eq-intake xlsx reader off vulnerable xlsx@0.18.5 to exceljs
 - #715 feat(access): gate enforcement on can()/useCan() not role names (access-model Phase 1)
