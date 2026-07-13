@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-13 12:46 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-13 12:48 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-13 12:27 UTC → 2026-07-13 12:46 UTC)
+## Since last refresh (2026-07-13 12:46 UTC → 2026-07-13 12:48 UTC)
 
-- Merged: eq-shell [#829](https://github.com/eq-solutions/eq-shell/pull/829) feat(canonical): read RPC for the site-resolver adjudication
-- Merged: eq-shell [#810](https://github.com/eq-solutions/eq-shell/pull/810) fix(ci): derive smoke-functions probe list from disk (48/120
-- Merged: eq-shell [#808](https://github.com/eq-solutions/eq-shell/pull/808) refactor(labour-hire): drop #805 focus workaround now Modal 
-- Merged: eq-shell [#807](https://github.com/eq-solutions/eq-shell/pull/807) chore(deps): bump @eq-solutions/ui to v1.10.1 (Modal focus-t
-- Merged: eq-shell [#803](https://github.com/eq-solutions/eq-shell/pull/803) fix(labour-hire): weekly cost was dropping 'Travel & Fares' 
-- Merged: eq-shell [#801](https://github.com/eq-solutions/eq-shell/pull/801) feat(labour-hire): Redundancy in the weekly cost + agency/ra
-- Merged: eq-shell [#800](https://github.com/eq-solutions/eq-shell/pull/800) fix(auth): create auth.users before shell user on invite acc
-- Merged: eq-shell [#799](https://github.com/eq-solutions/eq-shell/pull/799) feat(labour-hire): add 'week' rate unit for once-a-week char
+- Merged: eq-shell [#830](https://github.com/eq-solutions/eq-shell/pull/830) vendor: site-resolver adjudication console (eq-intake #67)
+- Merged: eq-shell [#819](https://github.com/eq-solutions/eq-shell/pull/819) chore(intake): vendor sync — eq-intake PR #66 (SY9 duplicate
+- Merged: eq-shell [#816](https://github.com/eq-solutions/eq-shell/pull/816) fix(security): gate gm-chat with a rate cap + input bounds
+- Merged: eq-shell [#809](https://github.com/eq-solutions/eq-shell/pull/809) feat(ops): clarifications under scope + table on page 4; fix
+- Merged: eq-shell [#806](https://github.com/eq-solutions/eq-shell/pull/806) feat(mobile): foundation envelope fixes + first-touch polish
+- Merged: eq-shell [#805](https://github.com/eq-solutions/eq-shell/pull/805) fix(labour-hire): Add-rate modal loses focus on every keystr
+- Merged: eq-shell [#804](https://github.com/eq-solutions/eq-shell/pull/804) feat(labour-hire): weekly cost grouped by agency — concise 4
+- Merged: eq-shell [#802](https://github.com/eq-solutions/eq-shell/pull/802) fix(labour-hire): modal focus loss + wide weekly-cost table 
 
 ## ⚠ Needs you (5)
 
@@ -33,7 +33,7 @@ _2026-07-13 12:46 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 5 | 3d |
+| eq-shell | ✓ success | 0d ago | 4 | 3d |
 | eq-solves-service | ✓ success | 0d ago | 6 | 7d |
 | eq-field | ✓ success | 0d ago | 2 | 1d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
@@ -56,6 +56,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-13 | eq-shell | [#830](https://github.com/eq-solutions/eq-shell/pull/830) vendor: site-resolver adjudication console (eq-intake #67) |
 | 2026-07-13 | eq-shell | [#829](https://github.com/eq-solutions/eq-shell/pull/829) feat(canonical): read RPC for the site-resolver adjudication cons |
 | 2026-07-13 | eq-shell | [#814](https://github.com/eq-solutions/eq-shell/pull/814) one-login P2 — worker-facing two-tile Core home (My Card + Field) |
 | 2026-07-13 | eq-shell | [#821](https://github.com/eq-solutions/eq-shell/pull/821) chore(intake): vendor sync — eq-solves-intake main (through PR #6 |
@@ -70,7 +71,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-13 | eq-shell | [#817](https://github.com/eq-solutions/eq-shell/pull/817) fix(security): accept-invite consumes the invite atomically (comp |
 | 2026-07-13 | eq-shell | [#815](https://github.com/eq-solutions/eq-shell/pull/815) fix(security): canonical-api customer secondary-match no longer b |
 | 2026-07-13 | eq-shell | [#820](https://github.com/eq-solutions/eq-shell/pull/820) feat(ops): preset markup fix, PDF export spinner, bookmarkable pa |
-| 2026-07-13 | eq-shell | [#813](https://github.com/eq-solutions/eq-shell/pull/813) feat(ops): brand the quote PDF export (SKS logo, header, totals c |
 _Showing 15 of 119 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -117,4 +117,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-13 12:46 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-13 12:48 UTC._
