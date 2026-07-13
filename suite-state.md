@@ -61,7 +61,6 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-13)
 
 **eq-field:**
-- #477 v3.5.316 — one-login P1: carry canonical worker identity + Core-only kill-switch
 - #466 chore(ci): enable Dependabot for GitHub Actions
 - #461 feat(auth): EQ tenant is Core-only — close the demo login gate (v3.5.306)
 
