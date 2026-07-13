@@ -62,7 +62,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-field:**
 - #471 v3.5.310 — mobile: clamp horizontal page scroll (overflow-x guard)
-- #470 v3.5.309 — mobile: one shared .eqf-mcard card primitive + migrate 3 bespoke impls
 - #466 chore(ci): enable Dependabot for GitHub Actions
 - #461 feat(auth): EQ tenant is Core-only — close the demo login gate (v3.5.306)
 
