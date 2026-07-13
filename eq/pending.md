@@ -5,7 +5,7 @@ last_updated: 2026-07-11
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
-last_updated: 2026-07-12
+last_updated: 2026-07-13
 ---
 
 # EQ Tier — Pending
@@ -23,6 +23,17 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [ ] **Dependabot PR #466 open** — auto-patches eq-field CI action versions. Low-risk, Royce to merge. _(added 2026-07-13)_
 - [ ] **Pre-existing (NOT security): Field reminder/digest/TAFE features are missing config secrets (`TENANT_UUID` etc.) on ehow** → they'd error on a real run, so may not be working. Royce to decide if they're meant to be live. _(added 2026-07-13)_
 - [ ] **Security roadmap PARKED behind a trigger** — Trust-page draft + `security-register.md` in `scratchpad/`. Phase 1 = Royce's alert click-list + rotate the jvkn service key + GitHub Dependabot/secret-scanning org-wide. SOC 2 / rented 24/7 monitoring (MDR) / Cloudflare WAF (apps are direct-to-Netlify, not behind CF) PARKED until a real deal, a 3rd tenant, or EQ goes external. _(added 2026-07-13)_
+
+---
+
+## ✅ eq-ui Modal focus-trap fix → published v1.10.1 + rolled to consumers (2026-07-13)
+*Handed a latent eq-ui bug: the shared Modal stole focus on every parent re-render when `onClose` had an unstable identity (the common inline `onClose={() => setOpen(false)}`) — every keystroke yanked the caret out of the field. eq-shell's Labour-hire rates screen hit it twice (patched locally in #805).*
+- [x] **eq-ui #23 MERGED — durable fix.** Focus/lock effect now keyed on `[open]` only; Esc-to-close reads the latest `onClose` via a ref, so no consumer has to memoise `onClose`. Added the repo's FIRST test harness (vitest + RTL + jsdom) with a regression suite (typing keeps focus, re-render doesn't move focus, plus Esc / focus-restore / Tab-trap) wired into CI. _(done 2026-07-13)_
+- [x] **Published `@eq-solutions/ui` v1.10.1** — Version Packages PR #24 merged → GitHub Packages + `v1.10.1` git tag created. _(done 2026-07-13)_
+- [x] **eq-shell bumped to v1.10.1 — PR #807 MERGED (`68a0cef`) → core.eq.solutions auto-deploying.** _(done 2026-07-13)_
+- [ ] **eq-service bump v1.9.0 → v1.10.1 — PR #517 OPEN, NOT merged.** Merging deploys service.eq.solutions; held for Royce's deploy call. Real-gate CI green (tsc+build, typecheck); the Supabase integration-test fail is the known pre-existing one. _(added 2026-07-13)_
+- [ ] **Drop eq-shell's now-redundant #805 `useCallback` workaround** in Labour-hire rates — running in a separate session (task_9517bc02), unblocked now that #807 merged. _(added 2026-07-13)_
+- Substrate corrections: both consumers pin eq-ui by git **tag** `#vX.Y.Z` (NOT `#main` — earlier note was wrong), so publish must land before a consumer pin can bump. npm `--package-lock-only` silently no-ops a changed git-dep resolution — force it with an explicit `npm install "<pkg>@<git-spec>" --package-lock-only`.
 
 ---
 
