@@ -2909,3 +2909,12 @@ Diagnosed 2026-05-19. 17 advisor warnings, fix drafted but not applied.
   showed zero diff, integration step showed "1 skipped". Adding the `ANTHROPIC_API_KEY` secret
   itself is deferred — that's a real-cost decision (calls the live Anthropic API) for Royce, not
   something to add unasked. _(done 2026-07-12)_
+
+- [x] **`ANTHROPIC_API_KEY` added to eq-solves-intake's GitHub secrets by Royce — verified live,
+  not just assumed.** Confirmed the secret exists via the GitHub API, then re-ran the existing CI
+  workflow (`gh run rerun`, no new commit needed) and read the actual log: the integration test
+  made a real call this time instead of skipping — `Mobile -> phone (conf=0.90)`,
+  `Type -> employment_type (conf=0.70)`, 1797 in / 755 out tokens, 12.8s. eq-solves-intake's CI
+  now has full real coverage on both previously-deferred gaps. Confirmed the local dev `.env`
+  (`C:\Projects\eq-intake\eq-platform\.env`) already carried the same key, so local testing was
+  never actually blocked. _(done 2026-07-13)_
