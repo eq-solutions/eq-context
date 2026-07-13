@@ -61,17 +61,20 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-13)
 
 **eq-field:**
+- #471 v3.5.310 — mobile: clamp horizontal page scroll (overflow-x guard)
+- #470 v3.5.309 — mobile: one shared .eqf-mcard card primitive + migrate 3 bespoke impls
 - #466 chore(ci): enable Dependabot for GitHub Actions
 - #461 feat(auth): EQ tenant is Core-only — close the demo login gate (v3.5.306)
 
 **eq-service:**
+- #520 chore(deps): bump resend from 6.12.4 to 6.17.2
+- #518 chore(deps): bump @eq-solutions/roles from v2.4.0 to v2.5.1 in the eq-design-system group across 1 directory
 - #459 chore(deps-dev): bump @vitejs/plugin-react from 6.0.1 to 6.0.3
 - #458 chore(deps): bump tailwind-merge from 3.5.0 to 3.6.0
-- #457 chore(deps): bump resend from 6.12.4 to 6.17.1
 - #456 chore(deps-dev): bump tailwindcss from 4.2.2 to 4.3.2
-- #455 chore(deps): bump @eq-solutions/ui from v1.9.0 to v1.10.0 in the eq-design-system group
 
 **eq-shell:**
+- #808 refactor(labour-hire): drop #805 focus workaround now Modal fix ships in ui@1.10.1
 - #715 feat(access): gate enforcement on can()/useCan() not role names (access-model Phase 1)
 - #658 fix(dashboard): surface pending staff connections on home sidebar
 
@@ -83,7 +86,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ? in_progress |
+| eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
