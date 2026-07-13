@@ -15,6 +15,18 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ✅ eq-shell lighthouse recon → 6 fixes shipped to core.eq.solutions (2026-07-13, ALL MERGED + DEPLOYED)
+*Scheduled lighthouse recon on eq-shell surfaced 14 findings; the 6 highest-value non-duplicates were filed unarmed, then (on Royce's go) built, reviewed, and merged. An independent adversarial review pass before merge caught two real bugs in Claude's own fixes and they were corrected before landing. All 6 auto-deploy live to core.eq.solutions.*
+- [x] **Function-load alarm now watches the whole app** — the import-crash smoke gate hand-maintained its list and had drifted to ~48 of 120 functions (and still checked a deleted one, so it falsely reported "ok"). Now derived from the filesystem (107 probed, cron/background auto-excluded). eq-shell #810 MERGED. _(done 2026-07-13)_
+- [x] **AI GM-chat can't run up an unbounded bill** — added a per-user rate cap (reuses the shared limiter) + input size bounds; output was already capped. eq-shell #816 MERGED. _(done 2026-07-13)_
+- [x] **Customer-save injection closed** — the email/abn match glued user input into a PostgREST `.or()` filter, letting a crafted value grab/overwrite an unrelated customer in the tenant. Now two parameterised `.eq()` lookups. eq-shell #815 MERGED. _(done 2026-07-13)_
+- [x] **Quotes iframe token binds to the active tenant (id AND role)** — checked the wrong id (locked out multi-company/admin users, or minted a wrong-tenant token). Review also caught that role was still home-scoped → fixed to the active-tenant role before merge. eq-shell #811 MERGED. _(done 2026-07-13)_
+- [x] **Invite acceptance is race-safe** — invite was only crossed off at the end with no compare-and-set, so two simultaneous accepts could both mint a session (stub path). Now claimed up front; review caught that a thrown error skipped the release → wrapped so a crash still leaves the invite reclaimable. eq-shell #817 MERGED. _(done 2026-07-13)_
+- [x] **Intake rate-limit source reconciled to live** — migration file shipped unpinned functions + a spoofable policy; live ehow was already hardened out-of-band but the source lagged, so fresh tenants would get the weak version. Migration 0178 folds the live hardening back into the lineage. eq-shell #818 MERGED. **Royce applies 0178 per tenant + runs advisors** (source-only merge; DB change is manual). _(added 2026-07-13)_
+- [ ] **8 lower-value lighthouse findings left unfiled (queued)** — TOTP replay window, canonical-api warm-Lambda scope cache, dashboard-counts missing the issues entity, README migration-range drift, check-perm-sync error message, unused vendored `eq-format-ui`, a Unicode-glyph success icon on the public quote page. Pick up in a future recon if worth it. _(added 2026-07-13)_
+
+---
+
 ## ✅ EQ Intake — duplicate-site detector was blind to inactive rows (the SY9 silent-failure) (2026-07-13, MERGED + DEPLOYED)
 *The SY9 customer silently vanished from Service because its one correctly-linked site row was inactive, and the "Scan for possible duplicates" tool filtered inactive rows out before clustering — so the tool meant to catch it couldn't see it. Live SY9 data reconciled by hand first (activated the correct row, retired 3 dupes, repointed 8 roster entries + 1 quote onto the survivor).*
 - [x] **Live SY9 data reconciled** — one active `SY9` site with the correct customer, 3 duplicates retired (soft, active=false), no orphaned records. Direct SQL on ehow `app_data.sites` after a dependent-record sweep across the ~30 FK tables. _(done 2026-07-13)_
