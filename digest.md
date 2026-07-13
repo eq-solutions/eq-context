@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-13 09:23 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-13 09:30 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-13 09:18 UTC → 2026-07-13 09:23 UTC)
+## Since last refresh (2026-07-13 09:23 UTC → 2026-07-13 09:30 UTC)
 
-- Merged: eq-shell [#800](https://github.com/eq-solutions/eq-shell/pull/800) fix(auth): create auth.users before shell user on invite acc
-- Merged: eq-shell [#799](https://github.com/eq-solutions/eq-shell/pull/799) feat(labour-hire): add 'week' rate unit for once-a-week char
-- Merged: eq-shell [#792](https://github.com/eq-solutions/eq-shell/pull/792) feat(comms): crew-gaps strip — where the labour issues are, 
-- Merged: eq-shell [#791](https://github.com/eq-solutions/eq-shell/pull/791) fix(comms): job list fills the window + job numbers never tr
-- Merged: eq-shell [#790](https://github.com/eq-solutions/eq-shell/pull/790) fix(security): protect plant_equipment from customer-asset i
-- Merged: eq-shell [#788](https://github.com/eq-solutions/eq-shell/pull/788) fix(comms): make the job list readable — wrap Work, wider pa
-- Merged: eq-shell [#787](https://github.com/eq-solutions/eq-shell/pull/787) fix(security): scope anon's read of public.organisations to 
-- Merged: eq-shell [#786](https://github.com/eq-solutions/eq-shell/pull/786) fix(security): revoke anon write grants on jvkn control-plan
+- Merged: eq-shell [#785](https://github.com/eq-solutions/eq-shell/pull/785) feat(comms): Excel-style inline editing on the job list + KP
+- Merged: eq-shell [#783](https://github.com/eq-solutions/eq-shell/pull/783) ci: wire the check:css coverage gate into the PR gate
+- Merged: eq-shell [#782](https://github.com/eq-solutions/eq-shell/pull/782) feat(canonical): one-active-staff-per-person lock (0175)
+- Merged: eq-shell [#780](https://github.com/eq-solutions/eq-shell/pull/780) ci: wire the check:perms permission-matrix drift guard into 
+- Merged: eq-shell [#779](https://github.com/eq-solutions/eq-shell/pull/779) refactor(shell): consistent app names — one shared list, fix
+- Merged: eq-shell [#778](https://github.com/eq-solutions/eq-shell/pull/778) feat(canonical): DB-level AU phone normalisation trigger (01
+- Merged: eq-shell [#777](https://github.com/eq-solutions/eq-shell/pull/777) feat(comms): job-list polish — sticky headers, skeleton, fil
+- Merged: eq-shell [#776](https://github.com/eq-solutions/eq-shell/pull/776) feat(quotes): job numbers are canonical — one name everywher
 
 ## ⚠ Needs you (4)
 
@@ -34,8 +34,8 @@ _2026-07-13 09:23 UTC · what needs your attention. Full snapshot: [suite-state.
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 2 | 3d |
 | eq-solves-service | ✓ success | 0d ago | 5 | 7d |
-| eq-field | ✓ success | 0d ago | 2 | 1d |
-| eq-cards | ✓ success | 1d ago | 1 | 0d |
+| eq-field | ✓ success | 0d ago | 3 | 1d |
+| eq-cards | ✓ success | 1d ago | 0 | — |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
 ## Live errors (Sentry)
@@ -68,21 +68,21 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-13 | eq-field | [#473](https://github.com/eq-solutions/eq-field/pull/473) fix(field): visible confirmation on crew add + retire "What's new |
 | 2026-07-13 | eq-field | [#472](https://github.com/eq-solutions/eq-field/pull/472) v3.5.312 — mobile reflow slice 2: Dashboard / Job Numbers / Leave |
 | 2026-07-13 | eq-field | [#471](https://github.com/eq-solutions/eq-field/pull/471) v3.5.311 — mobile: clamp horizontal page scroll (overflow-x guard |
-_Showing 15 of 114 · full record in [sessions/](sessions/)_
+_Showing 15 of 115 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
 - **Royce device-confirm the Field add-crew fix on his phone** once v3.5.308 deploys — the exact mobile add-crew mechanism (Add button under keyboard vs `list=` datalist intercepting the tap) was unproven from code; Enter-to-add is the safe slice, may still need a CSS/layout pass. _(added 2026-07-13)_
 - **Field mobile-first reflow (simple, must respect security groups)** — the real remaining crew-mobile work; lives in eq-field. Parked eq-shell native-page mobile (Customers/Ops master-detail, nav-model unification, PWA-standalone install — auth-hub cookie risk) explicitly deprioritized per Royce ("Field is focus"). _(added 2026-07-13)_
+- **Royce phone-smoke slices 1–3 inside the Core iframe (`?tenant=sks`)** — the three reflowed screens + the clamp on a real device; the embedded iframe is the one surface Claude can't drive from here. _(added 2026-07-13)_
+- **One-login BUILD (P1–P5) — NOT started (explore/plan only)**: P1 identity-via-Core, P2 Core mobile home (My Card + Field tiles), P3 canonical completeness RPC (the one net-new piece), P4 grace-gate, P5 migrate SKS + harden. P1 auth is lower near-term value (SKS already logs in via Core) AND overlaps eq-shell's in-flight mobile-foundation branch — coordinate before building. _(added 2026-07-13, needs your go — auth-flow change)_
+- **Correct the stale "63 SKS invites" figure** wherever referenced — live = 20 shell user_invites + 2 worker_invites; SKS org_memberships 34; workers 89 (87 unique phones, 39 auth-linked). _(added 2026-07-13)_
 - **Dependabot PR #466 open** — auto-patches eq-field CI action versions. Low-risk, Royce to merge. _(added 2026-07-13)_
 - **Pre-existing (NOT security): Field reminder/digest/TAFE features are missing config secrets (`TENANT_UUID` etc.) on ehow** → they'd error on a real run, so may not be working. Royce to decide if they're meant to be live. _(added 2026-07-13)_
 - **Security roadmap PARKED behind a trigger** — Trust-page draft + `security-register.md` in `scratchpad/`. Phase 1 = Royce's alert click-list + rotate the jvkn service key + GitHub Dependabot/secret-scanning org-wide. SOC 2 / rented 24/7 monitoring (MDR) / Cloudflare WAF (apps are direct-to-Netlify, not behind CF) PARKED until a real deal, a 3rd tenant, or EQ goes external. _(added 2026-07-13)_
 - **Leif still needs to accept** — his invite is valid/unused (token regenerated 2026-07-13, expires 07-20). Royce sending him the link + the how-to page (`scratchpad/leif-signin-howto.html`, artifact `de35bebb`). _(added 2026-07-13)_
 - **Root cause: the resend branch of `invite-user.ts` (added `3a4c724`) hardcodes `email_delivered: false` — it calls sendEmail but throws the result away. The first-time-invite branch reports it correctly.** Fix made (capture `resendResult.delivered`) + typechecks clean, but UNCOMMITTED in the worktree — awaiting Royce's ship decision. _(added 2026-07-13)_
-- **M365 deliverability unverified** — Resend accepted the invite email, but `sks.com.au` is Microsoft 365 and may quarantine/junk it. Check messageId `3d0e29d5` status in Resend + Leif's junk. Separate from the reporting bug. _(added 2026-07-13)_
-- **Durable, only if it starts hitting many devices: submit `eq.solutions` for categorization to FortiGuard/Palo Alto/Zscaler (stops default inspection everywhere over time) + publish a "Network Requirements / allowlist" page as a standard enterprise-onboarding step.** eq.solutions is NOT on the HSTS preload list ("unknown") — the `preload` token is inert; optional hygiene to drop it. Not needed for a one-off. _(added 2026-07-13)_
-- **No sourcemaps uploaded for eq-shell** (`@sentry/vite-plugin`/`sentry-cli` absent from the build) — Sentry events are exactly as minified as the console, so it isn't a shortcut here. Optional follow-up if prod JS errors keep needing manual decode: wire up sourcemap upload in its own PR. _(added 2026-07-12)_
-_…and 325 more · [eq/pending.md](eq/pending.md)_
+_…and 328 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -114,4 +114,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-13 09:23 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-13 09:30 UTC._
