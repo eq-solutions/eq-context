@@ -442,3 +442,30 @@ The following tests belong to eq-quotes-port (Flask), which is retired as of 202
 
 **Deferred:**
 - [ ] **2FA grace window is a one-line change** (`TOTP_GRACE_MS` in `totp.ts`) if Royce ever wants it shortened or dropped to force enrolment on first sign-in — auth-path change, left until he says go. Not requested now. _(added 2026-07-13)_
+
+## ⏩ SKS Labour hire — session 2026-07-13 (weekly-cost redesign + modal focus fix + 4-provider rate-card audit)
+
+**Trigger:** Royce reviewing `/sks/ops/labour-hire-rates` — wanted the weekly-cost view simpler/grouped, a per-week redundancy charge, the Add-rate modal fixed (kept dropping focus per keystroke), a formula-Excel to check the maths, and a full audit of the labour-hire rate-card PDFs.
+
+**Completed (all merged to eq-shell main + deployed, and data live on ehow SKS plane):**
+- [x] **Weekly cost redesigned — agency-grouped, 4 columns** (eq-shell #804). Was 8 sparse columns with the total clipping off-screen; now one band per agency (name + role count + weekly spread), roles dearest-first, allowances folded into one "Add-ons" column with a breakdown sub-line. `money()` got thousands separators. Search / CSV / print-PDF preserved.
+- [x] **Add/Edit-rate modal focus-per-keystroke bug fixed** (eq-shell #805). Root cause = eq-ui `<Modal>` focus-trap effect keyed on `[open, onClose]`; `onClose` was a fresh arrow each render → effect re-ran every keystroke → focus yanked to first field. Fixed with `useCallback`. **Durable fix landed in eq-ui v1.10.1** (the spawned task Royce started) and bumped in via **#807** — the package now fixes it for every consumer; #805 is belt-and-braces.
+- [x] **4-provider rate-card audit** (5 PDFs = 4 providers; filenames misleading — `SKS Technolgies - Rate Card.pdf` is **Atom**, `NSW 2022.pdf` is a **Madagins invoice** (2022 = Bondi postcode), `SKS Technologies 2026 (002).pdf` is **Cranfield**). Every current rate reconciled to a signed card. Madagins matches exactly; Atom/Core Talent/Cranfield had gaps (below).
+- [x] **Atom MERT/Redundancy $62.15/week ADDED** — source-confirmed on Atom's signed card. Role `All`, allowance `Redundancy`, unit `each` (flat weekly stopgap until 0177 enables `week`). Now on all 4 Atom roles.
+- [x] **Cranfield tidied** — current travel relabelled `Travel`→`Travel & Fares` (matches the card); 7 expired duplicate rows (identical-value current twins) deleted. 5 clean current rows remain.
+- [x] **Core Talent stale "Electrician" role RETIRED** — its 01-Jul-2026 card has 3 named roles + a flat Daily Travel $31.09; the DB's `Electrician` role (70.07 + Productivity/Travel-28.60/Excess-Travel) was superseded 21-Jun leftovers. Soft-retired via `effective_to=2026-06-30` (kept as history). Weekly cost now 13 rows, all card-accurate.
+- [x] **Formula-driven Excel cross-check** — `C:\Users\EQ\Downloads\SKS labour-hire weekly cost - calcs FINAL.xlsx`: Assumptions / Rates (Kind+Wildcard+Weekly-equiv formulas) / Weekly cost (SUMIFS, role-vs-wildcard workings) / Check tab reconciles formula vs an independent hand-calc = **all 13 OK** against live DB. (Stale earlier versions deleted at Royce's request.)
+
+**Decided (Royce):**
+- Add the redundancy; tidy Cranfield (relabel + delete dupes); retire Core Talent's stale Electrician role — "complete all 3."
+- **Ignore Atom's night-shift +25% loading** for now (situational %, not in the standard-week model).
+- Excel is the cross-check; the **eq-shell rates page is the ultimate source of truth**.
+
+**Notes / gotchas:**
+- The auto-mode classifier **allowed the redundancy INSERT** but **denied the Cranfield UPDATE/DELETE and Electrician retire** until Royce explicitly named/approved the specific `rate_id`s — modifying pre-existing shared rows needs named-specifics, a fresh INSERT doesn't.
+- `is_current` (view) = `active AND effective_from<=today AND (effective_to IS NULL OR effective_to>=today)` — retire a current row by setting `effective_to` to a past date.
+
+**Deferred:**
+- [ ] **Migration 0177 still un-dispatched** — adds `week` to the rate `unit` CHECK. Until dispatched via the One Pipe: the redundancy sits on `unit='each'` (correct $ value, flat weekly) and the **"week" option in the Add-rate dropdown 400s if picked**. Dispatch when convenient, then flip the redundancy `each`→`week` (cosmetic). _(added 2026-07-13)_
+- [ ] **Uploaded rate-card PDFs are not stored** (parse-and-discard) — offered a private file-store + per-rate download link so cards are retained going forward; not built, Royce hasn't taken it up. _(added 2026-07-13)_
+- [ ] **Cranfield current rates (eff 2026-07-01) have no July source doc** — amounts verified against the 29-Jan card (identical), but the 1-Jul effective date isn't doc-backed. Cosmetic/low-pri. _(added 2026-07-13)_
