@@ -8,25 +8,25 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-13 12:03 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-13 12:20 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-13 12:01 UTC → 2026-07-13 12:03 UTC)
+## Since last refresh (2026-07-13 12:03 UTC → 2026-07-13 12:20 UTC)
 
-- Merged: eq-shell [#807](https://github.com/eq-solutions/eq-shell/pull/807) chore(deps): bump @eq-solutions/ui to v1.10.1 (Modal focus-t
-- Merged: eq-shell [#803](https://github.com/eq-solutions/eq-shell/pull/803) fix(labour-hire): weekly cost was dropping 'Travel & Fares' 
-- Merged: eq-shell [#801](https://github.com/eq-solutions/eq-shell/pull/801) feat(labour-hire): Redundancy in the weekly cost + agency/ra
-- Merged: eq-shell [#800](https://github.com/eq-solutions/eq-shell/pull/800) fix(auth): create auth.users before shell user on invite acc
-- Merged: eq-shell [#799](https://github.com/eq-solutions/eq-shell/pull/799) feat(labour-hire): add 'week' rate unit for once-a-week char
-- Merged: eq-shell [#792](https://github.com/eq-solutions/eq-shell/pull/792) feat(comms): crew-gaps strip — where the labour issues are, 
-- Merged: eq-shell [#791](https://github.com/eq-solutions/eq-shell/pull/791) fix(comms): job list fills the window + job numbers never tr
-- Merged: eq-shell [#790](https://github.com/eq-solutions/eq-shell/pull/790) fix(security): protect plant_equipment from customer-asset i
+- Merged: eq-shell [#827](https://github.com/eq-solutions/eq-shell/pull/827) fix(ops): clarify preset cost-vs-markup + copy polish in Rat
+- Merged: eq-shell [#806](https://github.com/eq-solutions/eq-shell/pull/806) feat(mobile): foundation envelope fixes + first-touch polish
+- Merged: eq-shell [#805](https://github.com/eq-solutions/eq-shell/pull/805) fix(labour-hire): Add-rate modal loses focus on every keystr
+- Merged: eq-shell [#804](https://github.com/eq-solutions/eq-shell/pull/804) feat(labour-hire): weekly cost grouped by agency — concise 4
+- Merged: eq-shell [#802](https://github.com/eq-solutions/eq-shell/pull/802) fix(labour-hire): modal focus loss + wide weekly-cost table 
+- Merged: eq-shell [#658](https://github.com/eq-solutions/eq-shell/pull/658) fix(dashboard): surface pending staff connections on home si
+- Merged: eq-solves-service [#523](https://github.com/eq-solutions/eq-service/pull/523) fix(observability): slug_unresolved is a warning, not a pagi
+- Merged: eq-solves-service [#522](https://github.com/eq-solutions/eq-service/pull/522) fix(testing): NSX/ACB Create Check lists all service sites
 
 ## ⚠ Needs you (5)
 
 - 🟠 **PR aging 7d** — eq-solves-service [#459](https://github.com/eq-solutions/eq-service/pull/459) "chore(deps-dev): bump @vitejs/plugin-react from 6.0.1 to 6.0.3"
 - 🟠 **PR aging 7d** — eq-solves-service [#458](https://github.com/eq-solutions/eq-service/pull/458) "chore(deps): bump tailwind-merge from 3.5.0 to 3.6.0"
 - 🟠 **PR aging 7d** — eq-solves-service [#456](https://github.com/eq-solutions/eq-service/pull/456) "chore(deps-dev): bump tailwindcss from 4.2.2 to 4.3.2"
-- 🟠 **Sentry new error** — `eq-solves-service` [auth handoff: slug_unresolved](https://eq-solutions.sentry.io/issues/133973384/)
+- 🟠 **Sentry new error** — `eq-cards` [LateInitializationError: Field '' has not been initialized.](https://eq-solutions.sentry.io/issues/133972818/)
 - 🟡 **1 stale worktree** need cleanup — [worktree-registry.md](system/worktree-registry.md)
 
 ## Pulse
@@ -35,7 +35,7 @@ _2026-07-13 12:03 UTC · what needs your attention. Full snapshot: [suite-state.
 |------|-----------|--------|----------|-----------|
 | eq-shell | ? unknown | ? | 5 | 3d |
 | eq-solves-service | ✓ success | 0d ago | 6 | 7d |
-| eq-field | ✓ success | 0d ago | 3 | 1d |
+| eq-field | ✓ success | 0d ago | 4 | 1d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
@@ -44,7 +44,6 @@ _2026-07-13 12:03 UTC · what needs your attention. Full snapshot: [suite-state.
 | Project | Error | Events | Last seen |
 |---------|-------|--------|-----------|
 | eq-solves-service | [auth handoff: cookie_absent](https://eq-solutions.sentry.io/issues/132832684/) | 19 | 2026-07-08 |
-| eq-solves-service | [auth handoff: slug_unresolved](https://eq-solutions.sentry.io/issues/133973384/) | 3 | 2026-07-13 |
 | eq-cards | [LateInitializationError: Field '' has not been initialized.](https://eq-solutions.sentry.io/issues/132643934/) | 2 | 2026-07-07 |
 | eq-cards | [LateInitializationError: Field '' has not been initialized.](https://eq-solutions.sentry.io/issues/133972818/) | 1 | 2026-07-13 |
 | eq-cards | [LateInitializationError: Field '' has not been initialized.](https://eq-solutions.sentry.io/issues/133972817/) | 1 | 2026-07-13 |
@@ -57,6 +56,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-13 | eq-shell | [#827](https://github.com/eq-solutions/eq-shell/pull/827) fix(ops): clarify preset cost-vs-markup + copy polish in Rate lib |
 | 2026-07-13 | eq-shell | [#812](https://github.com/eq-solutions/eq-shell/pull/812) one-login P1 — carry worker_id into the Field handoff JWT + enfor |
 | 2026-07-13 | eq-shell | [#826](https://github.com/eq-solutions/eq-shell/pull/826) fix(ops): prime markup on $0 material presets so cost entry marks |
 | 2026-07-13 | eq-shell | [#825](https://github.com/eq-solutions/eq-shell/pull/825) feat(canonical): site resolver — advisory phase (0179) |
@@ -71,22 +71,21 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-13 | eq-shell | [#816](https://github.com/eq-solutions/eq-shell/pull/816) fix(security): gate gm-chat with a rate cap + input bounds |
 | 2026-07-13 | eq-shell | [#810](https://github.com/eq-solutions/eq-shell/pull/810) fix(ci): derive smoke-functions probe list from disk (48/120 → 10 |
 | 2026-07-13 | eq-shell | [#809](https://github.com/eq-solutions/eq-shell/pull/809) feat(ops): clarifications under scope + table on page 4; fix quot |
-| 2026-07-13 | eq-shell | [#808](https://github.com/eq-solutions/eq-shell/pull/808) refactor(labour-hire): drop #805 focus workaround now Modal fix s |
 _Showing 15 of 117 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **eq-service Sentry error was a mislabelled non-error — FIX OPEN as eq-service PR #523, needs review + merge.** The digest's "auth handoff: slug_unresolved" (EQ-SOLVES-SERVICE-A) was the fail-closed login guard doing its job: someone clicked into Service from the EQ tenant (slug `eq`), which isn't provisioned in Service, and got a clean 403 ("your account isn't set up in EQ Service yet"). The bug was that the canary still classified that benign per-account state as an ERROR (paging), justified by an empty-app failure mode PR #376 already removed. PR #523 demotes `slug_unresolved` to warning (a real tenant-wide lockout still shows as a warning-rate spike); `secret_mismatch`/`no_email` stay error-level. tsc clean, build-inert. Merge auto-deploys to eq-solves-service.netlify.app → Royce-gated. Once deployed, the existing Sentry issue can be resolved. _(added 2026-07-13)_
+- **"Balloon years" feature — proposal written, owner decision pending. eq-service PR #524 (docs only, no code).** A way inside Service to nominate which assets get their bigger low-frequency (2/3/5-yearly) service in which year, so the money and scheduling land in the right year. SY9's contract has big every-few-years jobs the current system can't place in a specific year. Recommends a per-asset approach that reuses existing structure (no rebuild). **Decision needed from Royce:** grain (per-asset vs per-scope) + rollout — being worked through with the customer. Already-imported sites stay correct meanwhile; no rework wasted. _(added 2026-07-13)_
 - **8 lower-value lighthouse findings left unfiled (queued)** — TOTP replay window, canonical-api warm-Lambda scope cache, dashboard-counts missing the issues entity, README migration-range drift, check-perm-sync error message, unused vendored `eq-format-ui`, a Unicode-glyph success icon on the public quote page. Pick up in a future recon if worth it. _(added 2026-07-13)_
 - **Core-side merge/retire action + dependent-record counts — DEFERRED to eq-shell#781.** The actual "collapse these dupes into one" button + the ~30-table dependent-record sweep need a Core-owned RPC over `app_data.sites`; tracked in eq-shell#781 (commented with the SY9 evidence). Detection-only shipped; the merge action is the next half. _(added 2026-07-13)_
-- **Full vendor-sync eq-intake → eq-shell (~14 PRs behind) — IN PROGRESS (separate session, task_b637c475).** eq-shell's vendored Intake copy is ~14 eq-intake PRs stale — still bundling the vulnerable `xlsx` that eq-intake#63 already replaced with `exceljs`, plus the older dashboard. Full sync running in its own session; open PR, do NOT merge (auth-hub production deploy). _(added 2026-07-13)_
+- **Merge order once xlsx task lands: #824 then #821 (Royce approved, waiting on #824 leaving draft).** Both auto-deploy to core.eq.solutions on merge; hold until PR #824 flips out of draft, confirm both green, merge xlsx first then the sync. _(added 2026-07-13)_
 - **eq-shell's OWN vulnerable `xlsx` — FIX OPEN as draft eq-shell PR #824, needs review + merge.** Distinct from the vendored-copy item above: eq-shell had `xlsx` (SheetJS, proto-pollution/ReDoS) as a direct dep in TWO of its own files — the Comms "import from Melbourne workbook" parser (a 424 kB chunk in the prod client bundle) and the server-side `upload-gm-report` function. Both repointed to `exceljs` (already a dep); `xlsx` removed from package.json + lockfile. Build confirmed no `xlsx-*.js` chunk; parse behaviour verified. Draft PR — merge auto-deploys to core.eq.solutions, so Royce-gated. _(added 2026-07-13)_
+- **Enforcing phase + the match-key decision — DEFERRED, gated on advisory evidence.** The resolver only WATCHES today. Flipping it to enforce (redirect a duplicate write onto the existing site) is a later one-branch change, and it needs Royce's business call on how strict a match is — address-match-now vs mandate-a-canonical-code (the eq-shell#781 fork). Let `app_data.site_resolution_advisory` fill on ~2 weeks of real traffic first; that count is also the CEO-facing "duplicates prevented" metric (`select outcome, confidence, count(*) … group by 1,2`). _(added 2026-07-13)_
 - **Option B (OCR consolidation onto EQ Intake `api-extract`) — HELD (recon'd 2026-07-13, NOT a swap).** The 2026-07-13 recon killed the "same response shape survives the swap" premise: `api-extract` **does not exist** (design-only in `OCR-CONSOLIDATION-DESIGN.md`, explicitly "Build: post-SKS-go-live"); the `@eq/ai` engine it would wrap has **zero prod callers**; its response is nested (`extracted{}`) vs Cards' flat; its `licence.schema.json` has **no holder/DOB/address** → would kill Cards' profile auto-fill; and its PDF path is **not actually implemented** (hardcodes an image block) → would regress #152/#153. It's a multi-day cross-repo BUILD, not a repoint. Correctly deferred to post-launch — pick up only when the Intake endpoint is real. _(updated 2026-07-13)_
 - **Royce device-confirm the Field add-crew flow on his phone** — the "Added <name>" toast now makes it visible whether a name landed; still worth one real-device pass end-to-end (add crew → sign → submit). _(added 2026-07-13)_
 - **Trace + remove the "Ben says to use EQ Field" chip** — Royce sees a little chip mentioning Ben (Ritchie) telling him to use EQ Field. NOT in eq-field code (no live "Ritchie" string, only comments; he's a manager in `field_managers` but not on leave → not the roster "Management Out This Week" strip). Likely a **Shell-side notice / in-app announcement**. Royce to screenshot next time it appears; trace source then. _(added 2026-07-13)_
 - **Field mobile-first reflow (simple, must respect security groups)** — the real remaining crew-mobile work; lives in eq-field. Parked eq-shell native-page mobile (Customers/Ops master-detail, nav-model unification, PWA-standalone install — auth-hub cookie risk) explicitly deprioritized per Royce ("Field is focus"). _(added 2026-07-13)_
-- **Royce phone-smoke slices 1–3 inside the Core iframe (`?tenant=sks`)** — the three reflowed screens + the clamp on a real device; the embedded iframe is the one surface Claude can't drive from here. _(added 2026-07-13)_
-_…and 335 more · [eq/pending.md](eq/pending.md)_
+_…and 337 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -118,4 +117,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-13 12:03 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-13 12:20 UTC._
