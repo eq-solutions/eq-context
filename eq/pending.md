@@ -15,6 +15,17 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ✅ eq-field — 4 open automation endpoints locked down + shipped (2026-07-13, DEPLOYED + VERIFIED)
+*Authorized pentest — 10 attack vectors across all 3 databases — found four Field background jobs (weekly supervisor email, roster auto-fill, daily roster read, timesheet reminders) were triggerable by ANY anonymous internet caller: they run with full admin rights and had no caller check. Everything else held (data reads/writes, token forgery, signing-key crack, SQL injection, GraphQL, storage, the control-plane functions — all blocked/rejected).*
+- [x] **Fixed + deployed live to ehow + verified.** Caller guard (service-role / shared-secret gate) added to the 3 cron jobs via a shared `_shared/cron-auth.ts`; roster job pinned to its own tenant (was overridable via request-body `tenantId`); timesheet-reminder got an interim hourly abuse-cap. PR #463 merged, all 4 functions deployed, anonymous calls now 401 (×3) / fail-closed 500 (×1). _(done 2026-07-13)_
+- [x] **Guardrail so the class can't recur — PR #465 merged.** `tests/edge-fn-auth.test.js` fails CI if any edge function ships without a caller check. _(done 2026-07-13)_
+- [x] **Control-plane anon-grant lockdown verified landed** (companion chip): anon write grants on jvkn control-plane tables ~23 tables → **0**; reads trimmed to 2 lookup tables. _(done 2026-07-13)_
+- [ ] **Dependabot PR #466 open** — auto-patches eq-field CI action versions. Low-risk, Royce to merge. _(added 2026-07-13)_
+- [ ] **Pre-existing (NOT security): Field reminder/digest/TAFE features are missing config secrets (`TENANT_UUID` etc.) on ehow** → they'd error on a real run, so may not be working. Royce to decide if they're meant to be live. _(added 2026-07-13)_
+- [ ] **Security roadmap PARKED behind a trigger** — Trust-page draft + `security-register.md` in `scratchpad/`. Phase 1 = Royce's alert click-list + rotate the jvkn service key + GitHub Dependabot/secret-scanning org-wide. SOC 2 / rented 24/7 monitoring (MDR) / Cloudflare WAF (apps are direct-to-Netlify, not behind CF) PARKED until a real deal, a 3rd tenant, or EQ goes external. _(added 2026-07-13)_
+
+---
+
 ## ✅ eq-shell — invite acceptance 500 fixed (Leif Lundberg, 2026-07-13, MERGED + LIVE)
 *Leif (SKS manager) hit "Could not accept the invite" on the Welcome-aboard screen. Generic error = an un-mapped `server-error` 500 from accept-invite's user INSERT, not a validation error.*
 - [x] **Root cause: out-of-band BEFORE INSERT trigger on `shell_control.users` (`fn_link_worker_on_user_create`, not in the repo) links `public.workers.user_id` (non-deferrable FK → `auth.users`) to the new user, but accept-invite created the auth.users row AFTER the shell insert → 23503 aborts the whole insert.** Fires for any invite where a canonical worker matches the invite email with user_id NULL + a phone (28 such SKS workers). _(done 2026-07-13)_

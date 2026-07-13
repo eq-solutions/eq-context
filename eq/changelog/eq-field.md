@@ -1,3 +1,8 @@
+## 2026-07-13
+- **Security: closed 4 automation edge functions that were triggerable by anonymous callers.** Added a caller-auth guard (`supabase/functions/_shared/cron-auth.ts`) to supervisor-digest / shift-events / tafe-weekly-fill; pinned tafe-weekly-fill to its own tenant (was overridable via request body); added an interim hourly abuse-cap to ts-reminder. Deployed all 4 to ehow (`--no-verify-jwt`), verified anon → 401 (×3) / 500 fail-closed (×1). **PR #463.**
+- **CI guardrail — `tests/edge-fn-auth.test.js` (PR #465).** Fails the build if any edge function ships without a caller-auth marker; rides the existing test loop (no workflow change).
+- **Dependabot for github-actions (PR #466, open).**
+
 ## 2026-07-12
 - **PR #460 (MERGED, v3.5.305) — order=id 400s on id-less tables.** `sbFetchAll('team_members?select=*')` and `sbFetchAll('timesheet_locks?select=*')` passed no `orderBy` → default `order=id` 400s (no `id` column: PKs `team_id,person_id` / `week_key,org_id`). Passed each PK. Both already guarded (try/catch) so they degraded silently rather than freezing — unlike SKS, where the same calls sat in an unguarded `Promise.all` and caused the v3.10.90→.92 outage. Meant to fold into #459 but that merged first; clean follow-up. SKS #59 parity.
 - **PR #459 (MERGED, v3.5.304) — degraded-sync observability + preserve-on-failure (SKS #60 parity).** Sync-health state machine (`_emitSyncHealth`), `sync_degraded` analytics event, degraded toast, preserve-last-known-on-failure. Ported from SKS v3.10.93 by the reconcile chip session; verified in-browser against forced failures.
