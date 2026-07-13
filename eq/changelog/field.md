@@ -1211,3 +1211,10 @@ explicit Royce go-ahead.
 - v3.5.312 (PR #472) — Mobile reflow slice 2: Dashboard "Site Breakdown — Per Day", Job Numbers table, and Leave calendar reflow onto the `.eqf-mcard` phone-card primitive (no more 375px side-scroll). Live.
 - v3.5.311 (PR #471) — Mobile: `overflow-x: clip` body guard (≤768px + shell-mode) so a single wide child can't make the whole page side-scroll. `clip` chosen over `hidden` to preserve sticky headers + fixed nav. Live.
 - v3.5.310 (PR #470) — Mobile reflow slice 1: introduced the shared `.eqf-mcard` stacked-row card primitive (styles/mobile.css) and migrated Timesheets `.ts-mcard`, Contacts mobile cards, and Leave `.eq-lv-wcard` onto it (no behaviour change). Home `.eqh-tile` token-aligned CSS-only (kept as a launcher tile). Live.
+
+## 2026-07-13
+- v3.5.307 (PR #467) — fixed Core→Field login ("could not connect to this workspace" on every load). eq-shell's control-plane column-scope migration had stripped tenant routing secrets from anon on jvkn; Field now resolves routing server-side via netlify/functions/tenant-config.js (service role, tenant from the signed #sh= token). No anon re-grant.
+- v3.5.309 (PR #469) — mobile nav + home respect security groups: bottom nav / drawer / home tiles gated via EQ_PERMS (new applyMobileNavPerms + home.js tile gating) so labour_hire no longer sees Leave/Roster/Team/Contacts it can't action.
+- v3.5.310 (PR #470) — shared .eqf-mcard phone-card primitive; 3 bespoke card impls migrated onto it.
+- v3.5.311 (PR #471) — overflow-x: clip page-scroll guard (html/body) so a stray over-wide child can't side-scroll the whole page on a phone.
+- v3.5.312 (PR #472) — Dashboard / Job Numbers / Leave-calendar reflowed onto .eqf-mcard for phones. All shipped to field.eq.solutions + verified live.
