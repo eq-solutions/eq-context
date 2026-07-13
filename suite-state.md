@@ -61,6 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-13)
 
 **eq-field:**
+- #468 fix(field): no more silent prestart/toolbox save failures on mobile (v3.5.308)
 - #466 chore(ci): enable Dependabot for GitHub Actions
 - #461 feat(auth): EQ tenant is Core-only — close the demo login gate (v3.5.306)
 
@@ -72,6 +73,7 @@ _If this file is >48h old, the cron is broken._
 - #455 chore(deps): bump @eq-solutions/ui from v1.9.0 to v1.10.0 in the eq-design-system group
 
 **eq-shell:**
+- #806 feat(mobile): foundation envelope fixes + first-touch polish
 - #715 feat(access): gate enforcement on can()/useCan() not role names (access-model Phase 1)
 - #658 fix(dashboard): surface pending staff connections on home sidebar
 
