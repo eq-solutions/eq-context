@@ -35,7 +35,7 @@ _If this file is >48h old, the cron is broken._
 
 | Entity | Count | Schema |
 |--------|-------|--------|
-| Sites | 231 | app_data.sites |
+| Sites | 230 | app_data.sites |
 | Customers | 42 | app_data.customers |
 | Assets | 2,322 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
@@ -72,7 +72,6 @@ _If this file is >48h old, the cron is broken._
 - #456 chore(deps-dev): bump tailwindcss from 4.2.2 to 4.3.2
 
 **eq-shell:**
-- #809 feat(ops): clarifications under scope + table on page 4; fix quote PDF crash
 - #715 feat(access): gate enforcement on can()/useCan() not role names (access-model Phase 1)
 
 ---
