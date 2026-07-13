@@ -74,7 +74,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #818 fix(security): reconcile 0033 intake rate-limit objects with the hardened live state (0178)
-- #817 fix(security): accept-invite consumes the invite atomically (compare-and-set)
 - #815 fix(security): canonical-api customer secondary-match no longer builds a raw PostgREST .or()
 - #814 one-login P2 — worker-facing two-tile Core home (My Card + Field)
 - #812 one-login P1 — carry worker_id into the Field handoff JWT + enforce origin on token-exchange
@@ -98,7 +97,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 0 applied
+**Migrations:** eq-service has 185 (latest: 0181) applied
 
 ---
 
