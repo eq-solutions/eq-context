@@ -86,7 +86,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ✓ success |
+| eq-service | ? in_progress |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
@@ -95,7 +95,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 185 (latest: 0181) applied
+**Migrations:** eq-service has 186 (latest: 0181) applied
 
 ---
 
