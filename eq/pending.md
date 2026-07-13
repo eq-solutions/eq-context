@@ -32,7 +32,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **Published `@eq-solutions/ui` v1.10.1** — Version Packages PR #24 merged → GitHub Packages + `v1.10.1` git tag created. _(done 2026-07-13)_
 - [x] **eq-shell bumped to v1.10.1 — PR #807 MERGED (`68a0cef`) → core.eq.solutions auto-deploying.** _(done 2026-07-13)_
 - [x] **eq-service bump v1.9.0 → v1.10.1 — PR #517 MERGED (`1dd7d00`) → service.eq.solutions auto-deploying** (Royce's "merge #517"). Both consumers now on v1.10.1; rollout complete. Real-gate CI was green (tsc+build, typecheck); the Supabase integration-test fail is the known pre-existing one. _(done 2026-07-13)_
-- [ ] **Drop eq-shell's now-redundant #805 `useCallback` workaround** in Labour-hire rates — running in a separate session (task_9517bc02), unblocked now that #807 merged. _(added 2026-07-13)_
+- [x] **Dropped eq-shell's now-redundant #805 `useCallback` workaround** in Labour-hire rates — PR #808 MERGED (`ad8eb5f`) → core.eq.solutions auto-deploying. `closeEditor` reverted to a plain handler; the eq-ui v1.10.1 Modal now owns focus stability (verified live). _(done 2026-07-13)_
 - Substrate corrections: both consumers pin eq-ui by git **tag** `#vX.Y.Z` (NOT `#main` — earlier note was wrong), so publish must land before a consumer pin can bump. npm `--package-lock-only` silently no-ops a changed git-dep resolution — force it with an explicit `npm install "<pkg>@<git-spec>" --package-lock-only`.
 
 ---
