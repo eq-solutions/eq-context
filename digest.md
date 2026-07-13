@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-13 11:45 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-13 11:54 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-13 11:39 UTC → 2026-07-13 11:45 UTC)
+## Since last refresh (2026-07-13 11:45 UTC → 2026-07-13 11:54 UTC)
 
-- Merged: eq-shell [#825](https://github.com/eq-solutions/eq-shell/pull/825) feat(canonical): site resolver — advisory phase (0179)
-- Merged: eq-shell [#803](https://github.com/eq-solutions/eq-shell/pull/803) fix(labour-hire): weekly cost was dropping 'Travel & Fares' 
-- Merged: eq-shell [#801](https://github.com/eq-solutions/eq-shell/pull/801) feat(labour-hire): Redundancy in the weekly cost + agency/ra
-- Merged: eq-shell [#800](https://github.com/eq-solutions/eq-shell/pull/800) fix(auth): create auth.users before shell user on invite acc
-- Merged: eq-shell [#799](https://github.com/eq-solutions/eq-shell/pull/799) feat(labour-hire): add 'week' rate unit for once-a-week char
-- Merged: eq-shell [#792](https://github.com/eq-solutions/eq-shell/pull/792) feat(comms): crew-gaps strip — where the labour issues are, 
-- Merged: eq-shell [#791](https://github.com/eq-solutions/eq-shell/pull/791) fix(comms): job list fills the window + job numbers never tr
-- Merged: eq-shell [#790](https://github.com/eq-solutions/eq-shell/pull/790) fix(security): protect plant_equipment from customer-asset i
+- Merged: eq-shell [#826](https://github.com/eq-solutions/eq-shell/pull/826) fix(ops): prime markup on $0 material presets so cost entry 
+- Merged: eq-shell [#806](https://github.com/eq-solutions/eq-shell/pull/806) feat(mobile): foundation envelope fixes + first-touch polish
+- Merged: eq-shell [#805](https://github.com/eq-solutions/eq-shell/pull/805) fix(labour-hire): Add-rate modal loses focus on every keystr
+- Merged: eq-shell [#804](https://github.com/eq-solutions/eq-shell/pull/804) feat(labour-hire): weekly cost grouped by agency — concise 4
+- Merged: eq-shell [#802](https://github.com/eq-solutions/eq-shell/pull/802) fix(labour-hire): modal focus loss + wide weekly-cost table 
+- Merged: eq-shell [#788](https://github.com/eq-solutions/eq-shell/pull/788) fix(comms): make the job list readable — wrap Work, wider pa
+- Merged: eq-shell [#787](https://github.com/eq-solutions/eq-shell/pull/787) fix(security): scope anon's read of public.organisations to 
+- Merged: eq-solves-service [#522](https://github.com/eq-solutions/eq-service/pull/522) fix(testing): NSX/ACB Create Check lists all service sites
 
 ## ⚠ Needs you (5)
 
@@ -35,7 +35,7 @@ _2026-07-13 11:45 UTC · what needs your attention. Full snapshot: [suite-state.
 |------|-----------|--------|----------|-----------|
 | eq-shell | ? unknown | ? | 6 | 3d |
 | eq-solves-service | ✓ success | 0d ago | 5 | 7d |
-| eq-field | ✓ success | 0d ago | 4 | 1d |
+| eq-field | ✓ success | 0d ago | 3 | 1d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
@@ -57,6 +57,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-13 | eq-shell | [#826](https://github.com/eq-solutions/eq-shell/pull/826) fix(ops): prime markup on $0 material presets so cost entry marks |
 | 2026-07-13 | eq-shell | [#825](https://github.com/eq-solutions/eq-shell/pull/825) feat(canonical): site resolver — advisory phase (0179) |
 | 2026-07-13 | eq-shell | [#823](https://github.com/eq-solutions/eq-shell/pull/823) feat(ops): tidy the Rate library preset table |
 | 2026-07-13 | eq-shell | [#811](https://github.com/eq-solutions/eq-shell/pull/811) fix(auth): mint-quotes-iframe-token binds to session tenant, not  |
@@ -71,7 +72,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-13 | eq-shell | [#809](https://github.com/eq-solutions/eq-shell/pull/809) feat(ops): clarifications under scope + table on page 4; fix quot |
 | 2026-07-13 | eq-shell | [#808](https://github.com/eq-solutions/eq-shell/pull/808) refactor(labour-hire): drop #805 focus workaround now Modal fix s |
 | 2026-07-13 | eq-shell | [#658](https://github.com/eq-solutions/eq-shell/pull/658) fix(dashboard): surface pending staff connections on home sidebar |
-| 2026-07-13 | eq-shell | [#807](https://github.com/eq-solutions/eq-shell/pull/807) chore(deps): bump @eq-solutions/ui to v1.10.1 (Modal focus-trap f |
 _Showing 15 of 117 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -118,4 +118,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-13 11:45 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-13 11:54 UTC._
