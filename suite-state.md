@@ -73,8 +73,8 @@ _If this file is >48h old, the cron is broken._
 - #456 chore(deps-dev): bump tailwindcss from 4.2.2 to 4.3.2
 
 **eq-shell:**
+- #821 chore(intake): vendor sync — eq-solves-intake main (through PR #66)
 - #818 fix(security): reconcile 0033 intake rate-limit objects with the hardened live state (0178)
-- #815 fix(security): canonical-api customer secondary-match no longer builds a raw PostgREST .or()
 - #814 one-login P2 — worker-facing two-tile Core home (My Card + Field)
 - #812 one-login P1 — carry worker_id into the Field handoff JWT + enforce origin on token-exchange
 - #811 fix(auth): mint-quotes-iframe-token binds to session tenant, not home tenant
