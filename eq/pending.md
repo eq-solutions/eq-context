@@ -15,6 +15,14 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ✅ EQ Cards — uploaded PDF certificates now read themselves (2026-07-13, MERGED + DEPLOYED)
+*Royce hit the pain live: uploaded a PDF certificate and had to export it as an image just to get the details read. Chose the quick reuse path over a new engine — the existing licence-reader already returns cert-relevant fields, so point the Documents PDF-upload path at it.*
+- [x] **PDF auto-read shipped (Option A) — eq-cards PR #152 MERGED (`bf0e933`) + Cards deployed live.** Uploading a PDF in Documents now runs the existing `ocr-licence` edge fn (Claude native PDF `document` block, image path unchanged, `file_base64` alias, 8MB guard — deployed **v11**) and pre-fills type / expiry / issue date / issuer. Dual banner tells the worker whether details were auto-read (check before saving) or need manual entry. Deploy run 29239351901 green (build + Sentry source maps + Netlify, 2m38s). _(done 2026-07-13)_
+- [ ] **Licence-from-PDF still unbuilt** — the `licences` table has no document column (needs a migration); only certificates take PDFs today. _(added 2026-07-13)_
+- [ ] **Option B (strategic) — consolidate all OCR onto EQ Intake's `api-extract`** (see eq-intake `OCR-CONSOLIDATION-DESIGN.md`); Cards would repoint `ocr-licence` → `api-extract`, same response shape survives the swap. Not urgent — one engine works. _(added 2026-07-13)_
+
+---
+
 ## ✅ eq-shell + eq-field — mobile-view audit → Field is the program (2026-07-13, SHIPPED + VERIFIED)
 *Royce asked for a full mobile audit ("cover all options, tech should be invisible"). 4 parallel auditors → ~40 findings, but the device pass (Royce on his phone) re-ranked everything: the mobile program is **Field, not eq-shell** — Customers/Ops native-page mobile PARKED.*
 - [x] **eq-shell mobile foundation — PR #806 MERGED→prod + smoke-verified** (squash `5ad4b72`; core.eq.solutions serving it, verify-shell-session 401 + home 200). Steelman-scoped to safe envelope fixes only: mobile menu Sign-out/tenant-switch reachable (`100dvh` + safe-area), 16px input floor (kills iOS zoom), login split reflows in landscape, invite page rebuilt on the real login shell. Charter + device checklist in eq-shell `docs/mobile-foundation.md`. _(done 2026-07-13)_
