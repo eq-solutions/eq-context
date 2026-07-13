@@ -15,6 +15,29 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ✅ eq-shell — invite acceptance 500 fixed (Leif Lundberg, 2026-07-13, MERGED + LIVE)
+*Leif (SKS manager) hit "Could not accept the invite" on the Welcome-aboard screen. Generic error = an un-mapped `server-error` 500 from accept-invite's user INSERT, not a validation error.*
+- [x] **Root cause: out-of-band BEFORE INSERT trigger on `shell_control.users` (`fn_link_worker_on_user_create`, not in the repo) links `public.workers.user_id` (non-deferrable FK → `auth.users`) to the new user, but accept-invite created the auth.users row AFTER the shell insert → 23503 aborts the whole insert.** Fires for any invite where a canonical worker matches the invite email with user_id NULL + a phone (28 such SKS workers). _(done 2026-07-13)_
+- [x] **Fix eq-shell PR #800 (squash `c865dba`) MERGED + auto-deployed to core.eq.solutions.** accept-invite.ts mints the auth.users identity FIRST (shared id) so the trigger's FK resolves + the worker auto-links; removed the redundant post-insert auth mirror. _(done 2026-07-13)_
+- [x] **Control-plane migration `2026_07_13_harden_link_worker_trigger_fk.sql` — APPLIED + VERIFIED live on jvkn (Royce-approved).** Guards the trigger's worker-link UPDATE behind an `auth.users` existence check so it can NEVER again abort user creation, regardless of caller ordering. CREATE OR REPLACE = full function body now versioned in-repo. _(done 2026-07-13)_
+- [ ] **Leif still needs to accept** — his invite is valid/unused (token regenerated 2026-07-13, expires 07-20). Royce sending him the link + the how-to page (`scratchpad/leif-signin-howto.html`, artifact `de35bebb`). _(added 2026-07-13)_
+
+---
+
+## eq-shell — invite-user "email isn't configured" false report (2026-07-13, FIX STAGED, NOT SHIPPED)
+*Re-sending an existing pending invite showed "email isn't configured — copy the link" even though Resend accepted the email. Sent us chasing a phantom provider outage; the provider is fine (EQ_EMAIL_PROVIDER=resend, key present, domain DKIM/SPF intact; the 00:17 resend delivered messageId `3d0e29d5` to Leif).*
+- [ ] **Root cause: the resend branch of `invite-user.ts` (added `3a4c724`) hardcodes `email_delivered: false` — it calls sendEmail but throws the result away. The first-time-invite branch reports it correctly.** Fix made (capture `resendResult.delivered`) + typechecks clean, but UNCOMMITTED in the worktree — awaiting Royce's ship decision. _(added 2026-07-13)_
+- [ ] **M365 deliverability unverified** — Resend accepted the invite email, but `sks.com.au` is Microsoft 365 and may quarantine/junk it. Check messageId `3d0e29d5` status in Resend + Leif's junk. Separate from the reporting bug. _(added 2026-07-13)_
+
+---
+
+## Fortinet SSL-inspection vs HSTS on eq.solutions (2026-07-13, edge case — right-sized)
+*A device hit `NET::ERR_CERT_AUTHORITY_INVALID` / "Fortinet wasn't installed properly". Our May HSTS header (#40, `bfbaf85`, `max-age=…; includeSubDomains; preload`) turns SKS's Fortinet SSL deep-inspection into an un-bypassable block on any device that doesn't trust the Fortinet CA.*
+- [x] **Right-sized (Royce pushback confirmed): NOT systemic.** Lots of people use core daily fine (managed fleet trusts the Fortinet CA); the error needs on-SKS-network + a device missing the CA (new/BYOD). Shell-login has only ~10 distinct users in 90d; the "a lot" are field/labour users on the `sks-nsw-labour` path, not shell_control. Per-device fix: use a managed device / install the CA / open the link off-network (mobile data = no Fortinet). _(done 2026-07-13)_
+- [ ] **Durable, only if it starts hitting many devices: submit `eq.solutions` for categorization to FortiGuard/Palo Alto/Zscaler (stops default inspection everywhere over time) + publish a "Network Requirements / allowlist" page as a standard enterprise-onboarding step.** eq.solutions is NOT on the HSTS preload list ("unknown") — the `preload` token is inert; optional hygiene to drop it. Not needed for a one-off. _(added 2026-07-13)_
+
+---
+
 ## ✅ eq-shell — jvkn control-plane anon-grant lockdown (2026-07-12, MERGED + LIVE)
 *Authorized pentest found the anon (public) API key held full read/write/delete grants on 23 sensitive control-plane tables — workers, credentials, licences, audit log, tenants, invites. Row-level security already blocked real access (verified: anon writes were rejected, sensitive reads returned nothing), so this was a defense-in-depth close, not an active breach.*
 - [x] **Revoked all anon/PUBLIC access on the 20 sensitive tables; anon kept read-only on the 3 that are meant to be public** (org list, module list, licence-type list — needed before login). Applied live to jvkn and verified: locked tables now hard-refuse anon, the public bootstrap still works, staff/admin access untouched. **PR #786 MERGED** → core.eq.solutions auto-deploying. _(done 2026-07-12)_
