@@ -61,6 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-13)
 
 **eq-field:**
+- #477 v3.5.316 — one-login P1: carry canonical worker identity + Core-only kill-switch
 - #466 chore(ci): enable Dependabot for GitHub Actions
 - #461 feat(auth): EQ tenant is Core-only — close the demo login gate (v3.5.306)
 
@@ -72,7 +73,14 @@ _If this file is >48h old, the cron is broken._
 - #456 chore(deps-dev): bump tailwindcss from 4.2.2 to 4.3.2
 
 **eq-shell:**
+- #813 feat(ops): brand the quote PDF export (SKS logo, header, totals card)
+- #812 one-login P1 — carry worker_id + phone into the Field handoff JWT
+- #811 fix(auth): mint-quotes-iframe-token binds to session tenant, not home tenant
+- #810 fix(ci): derive smoke-functions probe list from disk (48/120 → 107)
 - #715 feat(access): gate enforcement on can()/useCan() not role names (access-model Phase 1)
+
+**eq-solves-intake:**
+- #66 fix(intake): duplicate detector was blind to inactive rows — the SY9 silent-failure
 
 ---
 
