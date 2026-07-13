@@ -15,6 +15,18 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ✅ EQ Ops — quote export polish + rate-library QoL (2026-07-13, ALL MERGED + DEPLOYED)
+*A run of ad-hoc EQ Ops requests off the live tool: the quote exports looked unpolished, a material-preset pricing leak, and rough edges in the rate-library UI. Five PRs, all auto-deployed to core.eq.solutions.*
+- [x] **Word quote export tidied** — clarifications now sit under Scope of Works (their own heading), and the commercial table starts on a fresh page. Template surgery + generator change. eq-shell #809 MERGED (`25cc976`). _(done 2026-07-13)_
+- [x] **PDF quote export was crashing (500) — fixed.** Root cause was a build/bundling mismatch that shipped the PDF code with no React import → runtime crash; fixed by setting the JSX runtime in the root tsconfig. Any future `.tsx` Netlify function needs the same. eq-shell #809. _(done 2026-07-13)_
+- [x] **Branded the PDF quote** — plain functional PDF → SKS one-pager: logo, header, section styling, navy totals card, real SKS footer (ABN/address). Logo embedded as a data URI (no fetch/filesystem in the function). eq-shell #813 MERGED (`3e3c537`). _(done 2026-07-13)_
+- [x] **Preset materials markup leak closed (revenue).** Adding a material line from the rate library applied NO markup (the library Rate was treated as the sell price), while a manual material line adds the tenant's markup. Now material/subbie/one-off presets treat the Rate as cost and add the global Materials Markup — like manual entry. Labour presets unchanged. eq-shell #820 MERGED (`c7c82a8`). **Royce: sanity-check a couple of material presets — they now quote at Rate + markup; any entered as already-marked-up sell prices will read higher.** _(done 2026-07-13)_
+- [x] **PDF export shows a spinner** — the Download PDF action was in a dropdown that closes on click, hiding the "Generating…" label; added a visible "Generating PDF…" spinner. eq-shell #820. _(done 2026-07-13)_
+- [x] **EQ Ops pages are now bookmarkable** — the section tab and open quote are reflected in the URL (`?view=`, `?quote=`) and restored on load, so any page/quote can be bookmarked or shared. eq-shell #820. _(done 2026-07-13)_
+- [x] **Rate library table tidied** — presets grouped under Labour/Materials/Subcontractors/One-off headers (was a "Labour" dropdown repeated on every row), each with its own "+ Add"; Description and Rate no longer truncated. eq-shell #823 MERGED (`ce0c0e9`). _(done 2026-07-13)_
+
+---
+
 ## ✅ eq-shell lighthouse recon → 6 fixes shipped to core.eq.solutions (2026-07-13, ALL MERGED + DEPLOYED)
 *Scheduled lighthouse recon on eq-shell surfaced 14 findings; the 6 highest-value non-duplicates were filed unarmed, then (on Royce's go) built, reviewed, and merged. An independent adversarial review pass before merge caught two real bugs in Claude's own fixes and they were corrected before landing. All 6 auto-deploy live to core.eq.solutions.*
 - [x] **Function-load alarm now watches the whole app** — the import-crash smoke gate hand-maintained its list and had drifted to ~48 of 120 functions (and still checked a deleted one, so it falsely reported "ok"). Now derived from the filesystem (107 probed, cron/background auto-excluded). eq-shell #810 MERGED. _(done 2026-07-13)_
