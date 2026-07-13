@@ -64,7 +64,6 @@ _If this file is >48h old, the cron is broken._
 - #152 feat(certificates): auto-read uploaded PDFs via Claude (Option A)
 
 **eq-field:**
-- #473 fix(field): visible confirmation on crew add + retire "What's new" banner (v3.5.309)
 - #466 chore(ci): enable Dependabot for GitHub Actions
 - #461 feat(auth): EQ tenant is Core-only — close the demo login gate (v3.5.306)
 
