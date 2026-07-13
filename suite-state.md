@@ -65,6 +65,7 @@ _If this file is >48h old, the cron is broken._
 - #461 feat(auth): EQ tenant is Core-only — close the demo login gate (v3.5.306)
 
 **eq-service:**
+- #526 feat(assets): balloon years — nominate low-frequency majors in-app
 - #524 docs(scope): balloon-years proposal — nominate low-frequency majors in-app
 - #520 chore(deps): bump resend from 6.12.4 to 6.17.2
 - #518 chore(deps): bump @eq-solutions/roles from v2.4.0 to v2.5.1 in the eq-design-system group across 1 directory
@@ -74,7 +75,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #833 fix(auth): recover from stalled mobile login instead of a frozen spinner
-- #831 one-login P4 — warn-first worker compliance surface
 - #828 one-login P1/P3 hardening — fail-safe worker lookup + revoke anon on eq_worker_completeness()
 - #824 fix(security): drop vulnerable xlsx from the client bundle — parse with exceljs
 - #715 feat(access): gate enforcement on can()/useCan() not role names (access-model Phase 1)
