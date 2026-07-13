@@ -61,10 +61,12 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-13)
 
 **eq-field:**
+- #469 v3.5.308 — mobile: respect security groups on nav + home surface
 - #466 chore(ci): enable Dependabot for GitHub Actions
 - #461 feat(auth): EQ tenant is Core-only — close the demo login gate (v3.5.306)
 
 **eq-service:**
+- #517 chore(deps): bump @eq-solutions/ui v1.9.0 → v1.10.1 (Modal focus-trap fix)
 - #459 chore(deps-dev): bump @vitejs/plugin-react from 6.0.1 to 6.0.3
 - #458 chore(deps): bump tailwind-merge from 3.5.0 to 3.6.0
 - #457 chore(deps): bump resend from 6.12.4 to 6.17.1
@@ -72,8 +74,6 @@ _If this file is >48h old, the cron is broken._
 - #455 chore(deps): bump @eq-solutions/ui from v1.9.0 to v1.10.0 in the eq-design-system group
 
 **eq-shell:**
-- #807 chore(deps): bump @eq-solutions/ui to v1.10.1 (Modal focus-trap fix)
-- #806 feat(mobile): foundation envelope fixes + first-touch polish
 - #715 feat(access): gate enforcement on can()/useCan() not role names (access-model Phase 1)
 - #658 fix(dashboard): surface pending staff connections on home sidebar
 
