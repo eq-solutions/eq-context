@@ -22,6 +22,10 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **Home sidebar staff-connections badge — PR #658 MERGED→prod + smoke-verified** (`e97fcc2`). Royce's own stale PR, synced onto main, CI re-ran green. _(done 2026-07-13)_
 - [ ] **Royce device-confirm the Field add-crew fix on his phone** once v3.5.308 deploys — the exact mobile add-crew mechanism (Add button under keyboard vs `list=` datalist intercepting the tap) was unproven from code; Enter-to-add is the safe slice, may still need a CSS/layout pass. _(added 2026-07-13)_
 - [ ] **Field mobile-first reflow (simple, must respect security groups)** — the real remaining crew-mobile work; lives in eq-field. Parked eq-shell native-page mobile (Customers/Ops master-detail, nav-model unification, PWA-standalone install — auth-hub cookie risk) explicitly deprioritized per Royce ("Field is focus"). _(added 2026-07-13)_
+  - [x] **Slice 1 — shared `.eqf-mcard` phone-card primitive** (PR #470, shipped v3.5.310). One stacked-row card the dense phone screens consume; migrated 3 bespoke card impls onto it. _(done 2026-07-13)_
+  - [x] **Slice 2 — Dashboard / Job Numbers / Leave calendar onto `.eqf-mcard`** (PR #472, shipped v3.5.312 → field.eq.solutions, verified live). Three dense desktop tables that side-scrolled/squashed at 375px now render stacked phone cards (Dashboard site-breakdown per-site cards + day-density strip; Job Numbers per-job cards with the same manager actions; Leave calendar → per-day agenda). No auth/routing/schema change. _(done 2026-07-13)_
+  - [x] **Slice 3 — page-body horizontal-scroll clamp** (PR #471, shipped v3.5.311). `overflow-x: clip` guard on html/body so a stray over-wide child can't side-scroll the whole page on a phone. _(done 2026-07-13)_
+  - [ ] **Royce phone-smoke slices 1–3 inside the Core iframe (`?tenant=sks`)** — the three reflowed screens + the clamp on a real device; the embedded iframe is the one surface Claude can't drive from here. _(added 2026-07-13)_
 
 ---
 

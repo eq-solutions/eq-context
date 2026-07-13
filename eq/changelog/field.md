@@ -9,6 +9,11 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-13] v3.5.312 — Mobile reflow slice 2: Dashboard / Job Numbers / Leave calendar → .eqf-mcard (SHIPPED, PR #472, live)
+- Three dense desktop tables that side-scrolled or squashed at 375px now dual-render a stacked phone-card view on the shared `.eqf-mcard` primitive (from v3.5.310), flipping desktop↔mobile at ≤768px via new `.eqf-mobonly`/`.eqf-deskonly` helpers.
+- Dashboard "Site Breakdown — Per Day": per-site card with a Mon–Fri crew-density count strip. Job Numbers: per-job card with status-coloured left-border + the same manager actions (shared `jnActions()`). Leave calendar: per-day agenda of only days-with-leave.
+- No auth/routing/schema change. Stacked on #470's primitive; merged after #470 (v3.5.310) and alongside #471 (v3.5.311 page-body overflow-x:clip clamp).
+
 ## [2026-07-12] v3.5.306 — In-app Remove / Restore / Delete people lifecycle (SHIPPED, PR #462, live)
 - Fixes the archive/delete flow on canonical (SKS). Both "Archive" and "Delete permanently" only ever set `staff.active=false`, which the active-only `field_people` view hides — so removed people vanished, Restore was dead, "Show archived" was always empty, and Delete additionally wiped roster history (lossy).
 - New two-step lifecycle, entirely in-app (no bounce to Core, no refresh): active rows get **📦 Remove from roster** (reversible, keeps all history); **Show removed** reveals removed people (lazily loaded from a new companion twin); removed rows get **↺ Restore** or **✕ Delete permanently** (supervisor-only, blocked server-side when roster/timesheet/leave/licence history exists so real history is never nuked).
