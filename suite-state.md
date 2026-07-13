@@ -73,6 +73,7 @@ _If this file is >48h old, the cron is broken._
 - #456 chore(deps-dev): bump tailwindcss from 4.2.2 to 4.3.2
 
 **eq-shell:**
+- #820 feat(ops): preset markup fix, PDF export spinner, bookmarkable page URLs
 - #818 fix(security): reconcile 0033 intake rate-limit objects with the hardened live state (0178)
 - #817 fix(security): accept-invite consumes the invite atomically (compare-and-set)
 - #815 fix(security): canonical-api customer secondary-match no longer builds a raw PostgREST .or()
