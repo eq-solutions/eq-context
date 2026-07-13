@@ -8,18 +8,7 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-13 08:52 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
-
-## Since last refresh (2026-07-13 08:51 UTC → 2026-07-13 08:52 UTC)
-
-- Merged: eq-shell [#792](https://github.com/eq-solutions/eq-shell/pull/792) feat(comms): crew-gaps strip — where the labour issues are, 
-- Merged: eq-shell [#790](https://github.com/eq-solutions/eq-shell/pull/790) fix(security): protect plant_equipment from customer-asset i
-- Merged: eq-shell [#785](https://github.com/eq-solutions/eq-shell/pull/785) feat(comms): Excel-style inline editing on the job list + KP
-- Merged: eq-shell [#783](https://github.com/eq-solutions/eq-shell/pull/783) ci: wire the check:css coverage gate into the PR gate
-- Merged: eq-shell [#778](https://github.com/eq-solutions/eq-shell/pull/778) feat(canonical): DB-level AU phone normalisation trigger (01
-- Merged: eq-shell [#776](https://github.com/eq-solutions/eq-shell/pull/776) feat(quotes): job numbers are canonical — one name everywher
-- Merged: eq-shell [#775](https://github.com/eq-solutions/eq-shell/pull/775) chore(quotes): remove retired Flask→canonical quote ETL
-- Merged: eq-shell [#774](https://github.com/eq-solutions/eq-shell/pull/774) feat(staff): drop onboarding middle names from the surname o
+_2026-07-13 09:05 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
 ## ⚠ Needs you (4)
 
@@ -32,9 +21,9 @@ _2026-07-13 08:52 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 2 | 3d |
+| eq-shell | ✓ success | 0d ago | 1 | 3d |
 | eq-solves-service | ✓ success | 0d ago | 5 | 7d |
-| eq-field | ✓ success | 0d ago | 3 | 1d |
+| eq-field | ✓ success | 0d ago | 4 | 1d |
 | eq-cards | ✓ success | 1d ago | 0 | — |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
@@ -53,6 +42,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-13 | eq-shell | [#808](https://github.com/eq-solutions/eq-shell/pull/808) refactor(labour-hire): drop #805 focus workaround now Modal fix s |
 | 2026-07-13 | eq-shell | [#658](https://github.com/eq-solutions/eq-shell/pull/658) fix(dashboard): surface pending staff connections on home sidebar |
 | 2026-07-13 | eq-shell | [#807](https://github.com/eq-solutions/eq-shell/pull/807) chore(deps): bump @eq-solutions/ui to v1.10.1 (Modal focus-trap f |
 | 2026-07-13 | eq-shell | [#806](https://github.com/eq-solutions/eq-shell/pull/806) feat(mobile): foundation envelope fixes + first-touch polish |
@@ -67,7 +57,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-13 | eq-field | [#470](https://github.com/eq-solutions/eq-field/pull/470) v3.5.310 — mobile: one shared .eqf-mcard card primitive + migrate |
 | 2026-07-13 | eq-field | [#469](https://github.com/eq-solutions/eq-field/pull/469) v3.5.309 — mobile: respect security groups on nav + home surface |
 | 2026-07-13 | eq-field | [#468](https://github.com/eq-solutions/eq-field/pull/468) fix(field): no more silent prestart/toolbox save failures on mobi |
-| 2026-07-12 | eq-shell | [#799](https://github.com/eq-solutions/eq-shell/pull/799) feat(labour-hire): add 'week' rate unit for once-a-week charges ( |
 _Showing 15 of 113 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -114,4 +103,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-13 08:52 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-13 09:05 UTC._
