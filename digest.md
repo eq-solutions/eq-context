@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-13 10:39 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-13 10:54 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-13 10:38 UTC → 2026-07-13 10:39 UTC)
+## Since last refresh (2026-07-13 10:39 UTC → 2026-07-13 10:54 UTC)
 
-- Merged: eq-shell [#800](https://github.com/eq-solutions/eq-shell/pull/800) fix(auth): create auth.users before shell user on invite acc
-- Merged: eq-shell [#799](https://github.com/eq-solutions/eq-shell/pull/799) feat(labour-hire): add 'week' rate unit for once-a-week char
-- Merged: eq-shell [#792](https://github.com/eq-solutions/eq-shell/pull/792) feat(comms): crew-gaps strip — where the labour issues are, 
-- Merged: eq-shell [#791](https://github.com/eq-solutions/eq-shell/pull/791) fix(comms): job list fills the window + job numbers never tr
-- Merged: eq-shell [#790](https://github.com/eq-solutions/eq-shell/pull/790) fix(security): protect plant_equipment from customer-asset i
-- Merged: eq-shell [#788](https://github.com/eq-solutions/eq-shell/pull/788) fix(comms): make the job list readable — wrap Work, wider pa
-- Merged: eq-shell [#787](https://github.com/eq-solutions/eq-shell/pull/787) fix(security): scope anon's read of public.organisations to 
-- Merged: eq-shell [#786](https://github.com/eq-solutions/eq-shell/pull/786) fix(security): revoke anon write grants on jvkn control-plan
+- Merged: eq-shell [#819](https://github.com/eq-solutions/eq-shell/pull/819) chore(intake): vendor sync — eq-intake PR #66 (SY9 duplicate
+- Merged: eq-shell [#785](https://github.com/eq-solutions/eq-shell/pull/785) feat(comms): Excel-style inline editing on the job list + KP
+- Merged: eq-shell [#783](https://github.com/eq-solutions/eq-shell/pull/783) ci: wire the check:css coverage gate into the PR gate
+- Merged: eq-shell [#782](https://github.com/eq-solutions/eq-shell/pull/782) feat(canonical): one-active-staff-per-person lock (0175)
+- Merged: eq-shell [#780](https://github.com/eq-solutions/eq-shell/pull/780) ci: wire the check:perms permission-matrix drift guard into 
+- Merged: eq-shell [#779](https://github.com/eq-solutions/eq-shell/pull/779) refactor(shell): consistent app names — one shared list, fix
+- Merged: eq-shell [#778](https://github.com/eq-solutions/eq-shell/pull/778) feat(canonical): DB-level AU phone normalisation trigger (01
+- Merged: eq-shell [#776](https://github.com/eq-solutions/eq-shell/pull/776) feat(quotes): job numbers are canonical — one name everywher
 
 ## ⚠ Needs you (5)
 
@@ -33,7 +33,7 @@ _2026-07-13 10:39 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 8 | 3d |
+| eq-shell | ✓ success | 0d ago | 9 | 3d |
 | eq-solves-service | ✓ success | 0d ago | 5 | 7d |
 | eq-field | ✓ success | 0d ago | 3 | 1d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
@@ -57,6 +57,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-13 | eq-shell | [#819](https://github.com/eq-solutions/eq-shell/pull/819) chore(intake): vendor sync — eq-intake PR #66 (SY9 duplicate-dete |
 | 2026-07-13 | eq-shell | [#816](https://github.com/eq-solutions/eq-shell/pull/816) fix(security): gate gm-chat with a rate cap + input bounds |
 | 2026-07-13 | eq-shell | [#810](https://github.com/eq-solutions/eq-shell/pull/810) fix(ci): derive smoke-functions probe list from disk (48/120 → 10 |
 | 2026-07-13 | eq-shell | [#809](https://github.com/eq-solutions/eq-shell/pull/809) feat(ops): clarifications under scope + table on page 4; fix quot |
@@ -71,8 +72,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-13 | eq-shell | [#801](https://github.com/eq-solutions/eq-shell/pull/801) feat(labour-hire): Redundancy in the weekly cost + agency/rate-ty |
 | 2026-07-13 | eq-solves-service | [#521](https://github.com/eq-solutions/eq-service/pull/521) feat(testing): inline Add Asset on NSX/ACB + offline safety net |
 | 2026-07-13 | eq-solves-service | [#519](https://github.com/eq-solutions/eq-service/pull/519) fix(import): dedupe register Asset# within a batch + import spinn |
-| 2026-07-13 | eq-solves-service | [#517](https://github.com/eq-solutions/eq-service/pull/517) chore(deps): bump @eq-solutions/ui v1.9.0 → v1.10.1 (Modal focus- |
-_Showing 15 of 117 · full record in [sessions/](sessions/)_
+_Showing 15 of 116 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
@@ -80,13 +80,13 @@ _Showing 15 of 117 · full record in [sessions/](sessions/)_
 - **Royce device-confirm the Field add-crew flow on his phone** — the "Added <name>" toast now makes it visible whether a name landed; still worth one real-device pass end-to-end (add crew → sign → submit). _(added 2026-07-13)_
 - **Trace + remove the "Ben says to use EQ Field" chip** — Royce sees a little chip mentioning Ben (Ritchie) telling him to use EQ Field. NOT in eq-field code (no live "Ritchie" string, only comments; he's a manager in `field_managers` but not on leave → not the roster "Management Out This Week" strip). Likely a **Shell-side notice / in-app announcement**. Royce to screenshot next time it appears; trace source then. _(added 2026-07-13)_
 - **Field mobile-first reflow (simple, must respect security groups)** — the real remaining crew-mobile work; lives in eq-field. Parked eq-shell native-page mobile (Customers/Ops master-detail, nav-model unification, PWA-standalone install — auth-hub cookie risk) explicitly deprioritized per Royce ("Field is focus"). _(added 2026-07-13)_
-- **Item 6 — drawer icons → consistent Lucide (PR [#476](https://github.com/eq-solutions/eq-field/pull/476) OPEN, v3.5.315, awaiting Royce's merge)**. The `#mobile-drawer` slide-up menu mixed geometric Unicode (◈ ⬡ ◉ ◎) + colour emoji (☎ 🏖 🛡 👥) — misleading on a phone (Supervision=telephone, Leave=beach/boat, Contacts=dot). Swapped all 21 `.d-icon` for inline Lucide SVGs (new global `.d-icon svg` rule in mobile.css mirrors `.mnav-icon svg`); `stroke:currentColor` so icons now tint with row state (navy active / green unlocked / red log-out). Manager-lock row toggles lock⇄lock-open via innerHTML (auth.js). Browser-verified on preview: 21/21 SVG, 20×20, ink-tinted, labels intact. CSS/JS-only. _(added 2026-07-13)_
 - **Royce phone-smoke slices 1–3 inside the Core iframe (`?tenant=sks`)** — the three reflowed screens + the clamp on a real device; the embedded iframe is the one surface Claude can't drive from here. _(added 2026-07-13)_
 - **One-login BUILD (P1–P5) — NOT started (explore/plan only)**: P1 identity-via-Core, P2 Core mobile home (My Card + Field tiles), P3 canonical completeness RPC (the one net-new piece), P4 grace-gate, P5 migrate SKS + harden. P1 auth is lower near-term value (SKS already logs in via Core) AND overlaps eq-shell's in-flight mobile-foundation branch — coordinate before building. _(added 2026-07-13, needs your go — auth-flow change)_
 - **Correct the stale "63 SKS invites" figure** wherever referenced — live = 20 shell user_invites + 2 worker_invites; SKS org_memberships 34; workers 89 (87 unique phones, 39 auth-linked). _(added 2026-07-13)_
 - **Dependabot PR #466 open** — auto-patches eq-field CI action versions. Low-risk, Royce to merge. _(added 2026-07-13)_
 - **Pre-existing (NOT security): Field reminder/digest/TAFE features are missing config secrets (`TENANT_UUID` etc.) on ehow** → they'd error on a real run, so may not be working. Royce to decide if they're meant to be live. _(added 2026-07-13)_
-_…and 331 more · [eq/pending.md](eq/pending.md)_
+- **Security roadmap PARKED behind a trigger** — Trust-page draft + `security-register.md` in `scratchpad/`. Phase 1 = Royce's alert click-list + rotate the jvkn service key + GitHub Dependabot/secret-scanning org-wide. SOC 2 / rented 24/7 monitoring (MDR) / Cloudflare WAF (apps are direct-to-Netlify, not behind CF) PARKED until a real deal, a 3rd tenant, or EQ goes external. _(added 2026-07-13)_
+_…and 330 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -118,4 +118,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-13 10:39 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-13 10:54 UTC._
