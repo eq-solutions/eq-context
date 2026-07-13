@@ -15,6 +15,16 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ✅ EQ Intake — duplicate-site detector was blind to inactive rows (the SY9 silent-failure) (2026-07-13, MERGED + DEPLOYED)
+*The SY9 customer silently vanished from Service because its one correctly-linked site row was inactive, and the "Scan for possible duplicates" tool filtered inactive rows out before clustering — so the tool meant to catch it couldn't see it. Live SY9 data reconciled by hand first (activated the correct row, retired 3 dupes, repointed 8 roster entries + 1 quote onto the survivor).*
+- [x] **Live SY9 data reconciled** — one active `SY9` site with the correct customer, 3 duplicates retired (soft, active=false), no orphaned records. Direct SQL on ehow `app_data.sites` after a dependent-record sweep across the ~30 FK tables. _(done 2026-07-13)_
+- [x] **Detector fix SHIPPED — eq-solves-intake PR #66 MERGED (`0442f14`).** Duplicate scanner now includes inactive rows, adds a site-code match signal, suggests a survivor with honest LOW confidence when the choice is contested (the SY9 shape — two rows carried a customer link, the active one wrong), and emits a `needs_reconcile` count the health badge leads with. First-ever tests for the detector incl. an SY9 regression fixture. _(done 2026-07-13)_
+- [x] **Vendored into eq-shell + DEPLOYED LIVE to core.eq.solutions — eq-shell PR #819 MERGED (`16a3da6`), Netlify deploy `6a54c3c3` ready/green 10:58Z.** eq-shell builds the vendored @eq/intake copy from source; targeted 3-file patch (not a full resync). The Intake dashboard on core.eq.solutions now surfaces SY9-type clusters. _(done 2026-07-13)_
+- [ ] **Core-side merge/retire action + dependent-record counts — DEFERRED to eq-shell#781.** The actual "collapse these dupes into one" button + the ~30-table dependent-record sweep need a Core-owned RPC over `app_data.sites`; tracked in eq-shell#781 (commented with the SY9 evidence). Detection-only shipped; the merge action is the next half. _(added 2026-07-13)_
+- [ ] **Full vendor-sync eq-intake → eq-shell (~14 PRs behind) — IN PROGRESS (separate session, task_b637c475).** eq-shell's vendored Intake copy is ~14 eq-intake PRs stale — still bundling the vulnerable `xlsx` that eq-intake#63 already replaced with `exceljs`, plus the older dashboard. Full sync running in its own session; open PR, do NOT merge (auth-hub production deploy). _(added 2026-07-13)_
+
+---
+
 ## ✅ EQ Cards — uploaded PDF certificates now read themselves (2026-07-13, MERGED + DEPLOYED)
 *Royce hit the pain live: uploaded a PDF certificate and had to export it as an image just to get the details read. Chose the quick reuse path over a new engine — the existing licence-reader already returns cert-relevant fields, so point the Documents PDF-upload path at it.*
 - [x] **PDF auto-read shipped (Option A) — eq-cards PR #152 MERGED (`bf0e933`) + Cards deployed live.** Uploading a PDF in Documents now runs the existing `ocr-licence` edge fn (Claude native PDF `document` block, image path unchanged, `file_base64` alias, 8MB guard — deployed **v11**) and pre-fills type / expiry / issue date / issuer. Dual banner tells the worker whether details were auto-read (check before saving) or need manual entry. Deploy run 29239351901 green (build + Sentry source maps + Netlify, 2m38s). _(done 2026-07-13)_

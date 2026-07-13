@@ -1,6 +1,7 @@
 # EQ Intake — Changelog
 
 ## 2026-07-13
+- **PR #66 (MERGED `0442f14`) — duplicate detector was blind to inactive rows (the SY9 silent-failure).** The health-home "Scan for possible duplicates" filtered out `active=false` rows before clustering, hiding the SY9 shape (four `app_data.sites` rows for one site, only the retired one holding the correct `customer_id` → the customer silently dropped from the site-driven `service.customers` view). Now includes inactive rows, adds a site-`code` match signal, suggests a survivor with `survivor_confidence:'low'` when the choice is contested (SY9: two rows carried a customer link, the active one wrong), and emits a `needs_reconcile` count the badge leads with. First-ever tests for the detector incl. an SY9 regression fixture. The actual merge/retire action + dependent-record counts (~30-table sweep) deferred to Core (eq-shell#781).
 - **`ANTHROPIC_API_KEY` added to CI** (Royce, via repo secrets) — the integration test now makes a real Anthropic call in CI instead of skipping. Verified by re-running the existing workflow and reading the log: `Mobile -> phone (conf=0.90)`, `Type -> employment_type (conf=0.70)`. Both CI gaps from PR #64 are now closed with real, not theoretical, coverage.
 
 ## 2026-07-12
