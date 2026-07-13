@@ -73,8 +73,12 @@ _If this file is >48h old, the cron is broken._
 - #456 chore(deps-dev): bump tailwindcss from 4.2.2 to 4.3.2
 
 **eq-shell:**
+- #828 one-login P3 follow-up — revoke anon EXECUTE on eq_worker_completeness()
 - #824 fix(security): drop vulnerable xlsx from the client bundle — parse with exceljs
 - #715 feat(access): gate enforcement on can()/useCan() not role names (access-model Phase 1)
+
+**eq-solves-intake:**
+- #67 feat(intake): adjudication console — surface what the write-time resolver caught
 
 ---
 
