@@ -61,6 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-13)
 
 **eq-field:**
+- #478 v3.5.316 — mobile device-pass bug batch 1 (photo/scroll/toast)
 - #477 v3.5.316 — one-login P1: carry canonical worker identity + Core-only kill-switch
 - #466 chore(ci): enable Dependabot for GitHub Actions
 - #461 feat(auth): EQ tenant is Core-only — close the demo login gate (v3.5.306)
@@ -78,7 +79,6 @@ _If this file is >48h old, the cron is broken._
 - #817 fix(security): accept-invite consumes the invite atomically (compare-and-set)
 - #815 fix(security): canonical-api customer secondary-match no longer builds a raw PostgREST .or()
 - #814 one-login P2 — worker-facing two-tile Core home (My Card + Field)
-- #813 feat(ops): brand the quote PDF export (SKS logo, header, totals card)
 - #812 one-login P1 — carry worker_id + phone into the Field handoff JWT
 - #811 fix(auth): mint-quotes-iframe-token binds to session tenant, not home tenant
 - #715 feat(access): gate enforcement on can()/useCan() not role names (access-model Phase 1)
