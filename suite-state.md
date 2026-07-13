@@ -73,8 +73,9 @@ _If this file is >48h old, the cron is broken._
 - #456 chore(deps-dev): bump tailwindcss from 4.2.2 to 4.3.2
 
 **eq-shell:**
+- #833 fix(auth): recover from stalled mobile login instead of a frozen spinner
 - #831 one-login P4 — warn-first worker compliance surface
-- #828 one-login P3 follow-up — revoke anon EXECUTE on eq_worker_completeness()
+- #828 one-login P1/P3 hardening — fail-safe worker lookup + revoke anon on eq_worker_completeness()
 - #824 fix(security): drop vulnerable xlsx from the client bundle — parse with exceljs
 - #715 feat(access): gate enforcement on can()/useCan() not role names (access-model Phase 1)
 
@@ -86,7 +87,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ? in_progress |
+| eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
