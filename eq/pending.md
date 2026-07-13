@@ -101,7 +101,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
     - v3.5.322 (#483): supervisor timesheet card tidy (44px tap targets; hide empty meta). CSS-only.
     - Findings, not code: Pipeline/Resources already unreachable on phone; supervisor "my-hours" is a separate PIN-auth mode (feature not reroute) — left per Royce.
   - [ ] **#4 — dropdown/form-field pickers "too large" on phone** — Royce to screenshot the offending field. Native `<select>` option lists are OS-sized/un-styleable; app datalists (site/person) can be tightened. _(added 2026-07-13)_
-  - [ ] **#1 — Field "slow" on the dummy Android** — likely low-RAM device + full payload; needs a real-device perf profile before chasing. _(added 2026-07-13)_
+  - [x] **#1 — Field "slow" — ROOT-CAUSED + FIXED (v3.5.323, #484, prod)**. Reported slow on both real Android + iPhone (not the dummy phone). Profiled: Field's own navigation is 3.5–7.9ms; the cost was the analytics **recording** layer — PostHog session replay + autocapture/dead-clicks/surveys/web-vitals + Microsoft Clarity (a 2nd recorder), both tenants. Disabled all recording/autocapture (kept events), disabled Clarity, deferred init to idle. Preview-verified 0 heavy analytics scripts. _(done 2026-07-13)_
   - [x] **Full `.eqh-tile` markup migration onto `.eqf-mcard`** (PR #475, shipped v3.5.315). Home launcher tiles now carry `.eqf-mcard` in their markup (all 10 sites in `home.js`); `home.css` drops the redundant background/border/border-radius (identical values from the primitive) and keeps only tile-specific layout. No visual change (computed-style parity: 12px radius, 1px `--line` border, 130px min-height, shadow). All four bespoke phone-card envelopes are now unified on `.eqf-mcard`. _(done 2026-07-13)_
 
 ---
