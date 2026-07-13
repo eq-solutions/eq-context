@@ -9,6 +9,15 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-13] v3.5.317–322 — Mobile device-pass: 6 PRs from Royce's real-Android smoke (SHIPPED, #478–#483, live)
+- **v3.5.317 (#478):** prestart photo-eviction data loss fixed (sessionStorage stash + rehydrate on tab-hide/return); accidental pull-to-refresh reload killed (`overscroll-behavior-y: contain` on root + `.content`, plain-mobile + shell-mode); timesheet orphaned-`staff_id` toast spam → console-only `note()` (with `setNoteSink` test hook).
+- **v3.5.318 (#479):** Help tab removed (all 5 entry points; `#page-help` left unreachable); Sites search (name/code/address/lead, focus-stable); prestart/toolbox site datalist opens the full scrollable list on focus even when a site is set.
+- **v3.5.319 (#480):** Add Site / payroll CSV bar / Job Numbers CSV+Import hidden on phone; `.hide-mobile` extended to shell-mode (Core-iframe touch WebView).
+- **v3.5.320 (#481):** honest voice-input error inside the Core iframe — Chrome blocks the Web Speech API cross-origin even with `allow="microphone"`; message now points embedded users to a browser tab. Standalone unchanged.
+- **v3.5.321 (#482):** phone Roster decluttered — day switcher (default today) + collapsible crew sections + one chip per person; desktop grid untouched. Synthetic-render-verified on the deploy-preview.
+- **v3.5.322 (#483):** supervisor timesheet card tidy — 44px tap targets, hide empty meta divider. CSS-only.
+- Findings surfaced, not built: Pipeline/Resources already unreachable on phone; supervisor "my-hours" is a separate PIN-auth mode (feature, not reroute) — left per Royce (workers already self-submit; supervisor phone view already card-based). Open: **#4 dropdown/form-field pickers** (awaiting Royce screenshot); #1 "slow" (device + payload, needs real-device profile).
+
 ## [2026-07-13] v3.5.312 — Mobile reflow slice 2: Dashboard / Job Numbers / Leave calendar → .eqf-mcard (SHIPPED, PR #472, live)
 - Three dense desktop tables that side-scrolled or squashed at 375px now dual-render a stacked phone-card view on the shared `.eqf-mcard` primitive (from v3.5.310), flipping desktop↔mobile at ≤768px via new `.eqf-mobonly`/`.eqf-deskonly` helpers.
 - Dashboard "Site Breakdown — Per Day": per-site card with a Mon–Fri crew-density count strip. Job Numbers: per-job card with status-coloured left-border + the same manager actions (shared `jnActions()`). Leave calendar: per-day agenda of only days-with-leave.
