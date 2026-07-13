@@ -192,3 +192,6 @@
 ## 2026-07-13
 - Vendor sync of the in-tree @eq/intake packages to eq-solves-intake main / PR #66 (PR #821, open — green, unmerged): SY9 dup-detector fix, health/licence scoring fixes, calibration-cert refinements; local calibration-cert export + host-shell fonts preserved.
 - Drop vulnerable `xlsx` from the client bundle + report function, repoint to `exceljs` (PR #824, draft): Comms Melbourne-workbook parser (was a 424 kB prod chunk) + upload-gm-report; `xlsx` removed from deps/lockfile.
+
+## 2026-07-14
+- PR #821 (intake vendor-sync) + PR #824 (drop vulnerable `xlsx`, parse with `exceljs`) MERGED and DEPLOYED LIVE to core.eq.solutions — both carried in prod deploy `38006fe` (Netlify ready). `xlsx-*.js` chunk gone from the prod bundle; #824's earlier "DRAFT/do-not-merge" status is now superseded.
