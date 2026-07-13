@@ -35,9 +35,9 @@ _If this file is >48h old, the cron is broken._
 
 | Entity | Count | Schema |
 |--------|-------|--------|
-| Sites | 232 | app_data.sites |
+| Sites | 231 | app_data.sites |
 | Customers | 42 | app_data.customers |
-| Assets | 1,217 | app_data.assets |
+| Assets | 1,557 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
 | Users | 5 | service.tenant_members |
 | Maintenance checks | 18 | service.maintenance_checks |
@@ -60,9 +60,11 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-13)
 
+**eq-cards:**
+- #152 feat(certificates): auto-read uploaded PDFs via Claude (Option A)
+
 **eq-field:**
 - #473 fix(field): visible confirmation on crew add + retire "What's new" banner (v3.5.309)
-- #472 v3.5.311 — mobile reflow slice 2: Dashboard / Job Numbers / Leave calendar onto .eqf-mcard
 - #466 chore(ci): enable Dependabot for GitHub Actions
 - #461 feat(auth): EQ tenant is Core-only — close the demo login gate (v3.5.306)
 
