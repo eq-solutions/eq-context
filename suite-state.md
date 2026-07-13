@@ -61,6 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-13)
 
 **eq-field:**
+- #479 v3.5.318 — mobile device-pass quick-UX batch 2 (Help/Sites search/prestart list)
 - #477 v3.5.316 — one-login P1: carry canonical worker identity + Core-only kill-switch
 - #466 chore(ci): enable Dependabot for GitHub Actions
 - #461 feat(auth): EQ tenant is Core-only — close the demo login gate (v3.5.306)
@@ -74,7 +75,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #821 chore(intake): vendor sync — eq-solves-intake main (through PR #66)
-- #818 fix(security): reconcile 0033 intake rate-limit objects with the hardened live state (0178)
 - #814 one-login P2 — worker-facing two-tile Core home (My Card + Field)
 - #812 one-login P1 — carry worker_id into the Field handoff JWT + enforce origin on token-exchange
 - #811 fix(auth): mint-quotes-iframe-token binds to session tenant, not home tenant
