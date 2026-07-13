@@ -35,7 +35,7 @@ _If this file is >48h old, the cron is broken._
 
 | Entity | Count | Schema |
 |--------|-------|--------|
-| Sites | 230 | app_data.sites |
+| Sites | 225 | app_data.sites |
 | Customers | 42 | app_data.customers |
 | Assets | 2,821 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
@@ -61,12 +61,13 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-13)
 
 **eq-field:**
-- #482 v3.5.321 — declutter phone roster (single-day view + collapsible crew)
 - #477 v3.5.316 — one-login P1: carry canonical worker identity + Core-only kill-switch
 - #466 chore(ci): enable Dependabot for GitHub Actions
 - #461 feat(auth): EQ tenant is Core-only — close the demo login gate (v3.5.306)
 
 **eq-service:**
+- #524 docs(scope): balloon-years proposal — nominate low-frequency majors in-app
+- #523 fix(observability): slug_unresolved is a warning, not a paging error
 - #520 chore(deps): bump resend from 6.12.4 to 6.17.2
 - #518 chore(deps): bump @eq-solutions/roles from v2.4.0 to v2.5.1 in the eq-design-system group across 1 directory
 - #459 chore(deps-dev): bump @vitejs/plugin-react from 6.0.1 to 6.0.3
@@ -78,7 +79,6 @@ _If this file is >48h old, the cron is broken._
 - #822 one-login P3 — eq_worker_completeness() canonical RPC
 - #821 chore(intake): vendor sync — eq-solves-intake main (through PR #66)
 - #814 one-login P2 — worker-facing two-tile Core home (My Card + Field)
-- #812 one-login P1 — carry worker_id into the Field handoff JWT + enforce origin on token-exchange
 - #715 feat(access): gate enforcement on can()/useCan() not role names (access-model Phase 1)
 
 ---
