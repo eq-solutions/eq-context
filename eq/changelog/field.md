@@ -9,6 +9,10 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-13] v3.5.323 — PERF: trim the analytics recording layer (Field slow on phones) (SHIPPED, #484, live)
+- Royce: slow navigating on both Android + iPhone. Profiled prod: Field's own tab navigation is 3.5–7.9ms — the cost was the analytics **recording** layer (both tenants): PostHog session replay (rrweb) + autocapture/dead-clicks/surveys/web-vitals, **plus Microsoft Clarity as a second continuous recorder**.
+- Fix keeps all custom events/funnels; disables PostHog session recording + autocapture + surveys + performance + dead-clicks + heatmaps, disables Clarity on both tenants, and defers analytics init to `requestIdleCallback`. Preview-verified zero heavy analytics scripts load; PostHog core still up for events. Fully reversible (flip flags / paste Clarity IDs). Aligns with the "not a surveillance tool" charter.
+
 ## [2026-07-13] v3.5.317–322 — Mobile device-pass: 6 PRs from Royce's real-Android smoke (SHIPPED, #478–#483, live)
 - **v3.5.317 (#478):** prestart photo-eviction data loss fixed (sessionStorage stash + rehydrate on tab-hide/return); accidental pull-to-refresh reload killed (`overscroll-behavior-y: contain` on root + `.content`, plain-mobile + shell-mode); timesheet orphaned-`staff_id` toast spam → console-only `note()` (with `setNoteSink` test hook).
 - **v3.5.318 (#479):** Help tab removed (all 5 entry points; `#page-help` left unreachable); Sites search (name/code/address/lead, focus-stable); prestart/toolbox site datalist opens the full scrollable list on focus even when a site is set.
