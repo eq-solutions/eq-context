@@ -8,17 +8,17 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-13 11:09 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-13 11:12 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-13 11:08 UTC → 2026-07-13 11:09 UTC)
+## Since last refresh (2026-07-13 11:09 UTC → 2026-07-13 11:12 UTC)
 
-- Merged: eq-shell [#786](https://github.com/eq-solutions/eq-shell/pull/786) fix(security): revoke anon write grants on jvkn control-plan
-- Merged: eq-shell [#785](https://github.com/eq-solutions/eq-shell/pull/785) feat(comms): Excel-style inline editing on the job list + KP
-- Merged: eq-shell [#783](https://github.com/eq-solutions/eq-shell/pull/783) ci: wire the check:css coverage gate into the PR gate
-- Merged: eq-shell [#782](https://github.com/eq-solutions/eq-shell/pull/782) feat(canonical): one-active-staff-per-person lock (0175)
-- Merged: eq-shell [#780](https://github.com/eq-solutions/eq-shell/pull/780) ci: wire the check:perms permission-matrix drift guard into 
-- Merged: eq-shell [#779](https://github.com/eq-solutions/eq-shell/pull/779) refactor(shell): consistent app names — one shared list, fix
-- Merged: eq-shell [#751](https://github.com/eq-solutions/eq-shell/pull/751) fix(security): migrate eq-intake xlsx reader off vulnerable 
+- Merged: eq-shell [#800](https://github.com/eq-solutions/eq-shell/pull/800) fix(auth): create auth.users before shell user on invite acc
+- Merged: eq-shell [#799](https://github.com/eq-solutions/eq-shell/pull/799) feat(labour-hire): add 'week' rate unit for once-a-week char
+- Merged: eq-shell [#792](https://github.com/eq-solutions/eq-shell/pull/792) feat(comms): crew-gaps strip — where the labour issues are, 
+- Merged: eq-shell [#791](https://github.com/eq-solutions/eq-shell/pull/791) fix(comms): job list fills the window + job numbers never tr
+- Merged: eq-shell [#790](https://github.com/eq-solutions/eq-shell/pull/790) fix(security): protect plant_equipment from customer-asset i
+- Merged: eq-shell [#788](https://github.com/eq-solutions/eq-shell/pull/788) fix(comms): make the job list readable — wrap Work, wider pa
+- Merged: eq-shell [#787](https://github.com/eq-solutions/eq-shell/pull/787) fix(security): scope anon's read of public.organisations to 
 - Merged: eq-solves-service [#522](https://github.com/eq-solutions/eq-service/pull/522) fix(testing): NSX/ACB Create Check lists all service sites
 
 ## ⚠ Needs you (5)
@@ -36,7 +36,7 @@ _2026-07-13 11:09 UTC · what needs your attention. Full snapshot: [suite-state.
 | eq-shell | ✓ success | 0d ago | 7 | 3d |
 | eq-solves-service | ✓ success | 0d ago | 5 | 7d |
 | eq-field | ✓ success | 0d ago | 3 | 1d |
-| eq-cards | ✓ success | 0d ago | 1 | 0d |
+| eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
 ## Live errors (Sentry)
@@ -72,7 +72,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-13 | eq-shell | [#803](https://github.com/eq-solutions/eq-shell/pull/803) fix(labour-hire): weekly cost was dropping 'Travel & Fares' / 'ME |
 | 2026-07-13 | eq-shell | [#802](https://github.com/eq-solutions/eq-shell/pull/802) fix(labour-hire): modal focus loss + wide weekly-cost table + tol |
 | 2026-07-13 | eq-shell | [#801](https://github.com/eq-solutions/eq-shell/pull/801) feat(labour-hire): Redundancy in the weekly cost + agency/rate-ty |
-_Showing 15 of 116 · full record in [sessions/](sessions/)_
+_Showing 15 of 117 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
@@ -118,4 +118,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-13 11:09 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-13 11:12 UTC._
