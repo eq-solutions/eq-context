@@ -37,10 +37,10 @@ _If this file is >48h old, the cron is broken._
 |--------|-------|--------|
 | Sites | 231 | app_data.sites |
 | Customers | 42 | app_data.customers |
-| Assets | 1,557 | app_data.assets |
+| Assets | 2,322 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
 | Users | 5 | service.tenant_members |
-| Maintenance checks | 18 | service.maintenance_checks |
+| Maintenance checks | 22 | service.maintenance_checks |
 | Defects | 0 | service.defects |
 
 **SKS tenant ID on ehow:** `7dee117c-98bd-4d39-af8c-2c81d02a1e85`
@@ -60,10 +60,8 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-13)
 
-**eq-cards:**
-- #152 feat(certificates): auto-read uploaded PDFs via Claude (Option A)
-
 **eq-field:**
+- #474 v3.5.314 — mobile device-pass polish (week nav, save pill, icons, banners)
 - #466 chore(ci): enable Dependabot for GitHub Actions
 - #461 feat(auth): EQ tenant is Core-only — close the demo login gate (v3.5.306)
 
