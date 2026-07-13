@@ -65,7 +65,6 @@ _If this file is >48h old, the cron is broken._
 - #461 feat(auth): EQ tenant is Core-only — close the demo login gate (v3.5.306)
 
 **eq-service:**
-- #517 chore(deps): bump @eq-solutions/ui v1.9.0 → v1.10.1 (Modal focus-trap fix)
 - #459 chore(deps-dev): bump @vitejs/plugin-react from 6.0.1 to 6.0.3
 - #458 chore(deps): bump tailwind-merge from 3.5.0 to 3.6.0
 - #457 chore(deps): bump resend from 6.12.4 to 6.17.1
@@ -84,7 +83,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ✓ success |
+| eq-service | ? in_progress |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
