@@ -73,7 +73,6 @@ _If this file is >48h old, the cron is broken._
 - #456 chore(deps-dev): bump tailwindcss from 4.2.2 to 4.3.2
 
 **eq-shell:**
-- #823 feat(ops): tidy the Rate library preset table
 - #822 one-login P3 — eq_worker_completeness() canonical RPC
 - #821 chore(intake): vendor sync — eq-solves-intake main (through PR #66)
 - #814 one-login P2 — worker-facing two-tile Core home (My Card + Field)
