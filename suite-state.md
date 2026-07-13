@@ -37,7 +37,7 @@ _If this file is >48h old, the cron is broken._
 |--------|-------|--------|
 | Sites | 232 | app_data.sites |
 | Customers | 42 | app_data.customers |
-| Assets | 1,214 | app_data.assets |
+| Assets | 1,217 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
 | Users | 5 | service.tenant_members |
 | Maintenance checks | 18 | service.maintenance_checks |
@@ -61,8 +61,8 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-13)
 
 **eq-field:**
+- #473 fix(field): visible confirmation on crew add + retire "What's new" banner (v3.5.309)
 - #472 v3.5.311 — mobile reflow slice 2: Dashboard / Job Numbers / Leave calendar onto .eqf-mcard
-- #471 v3.5.310 — mobile: clamp horizontal page scroll (overflow-x guard)
 - #466 chore(ci): enable Dependabot for GitHub Actions
 - #461 feat(auth): EQ tenant is Core-only — close the demo login gate (v3.5.306)
 
@@ -74,6 +74,7 @@ _If this file is >48h old, the cron is broken._
 - #456 chore(deps-dev): bump tailwindcss from 4.2.2 to 4.3.2
 
 **eq-shell:**
+- #809 feat(ops): clarifications under scope + table on page 4; fix quote PDF crash
 - #715 feat(access): gate enforcement on can()/useCan() not role names (access-model Phase 1)
 
 ---
