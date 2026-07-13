@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-13 12:57 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-13 14:23 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-13 12:51 UTC → 2026-07-13 12:57 UTC)
+## Since last refresh (2026-07-13 12:57 UTC → 2026-07-13 14:23 UTC)
 
-- Merged: eq-shell [#832](https://github.com/eq-solutions/eq-shell/pull/832) fix(canonical): eq_site_advisory_summary authenticated-only 
-- Merged: eq-shell [#819](https://github.com/eq-solutions/eq-shell/pull/819) chore(intake): vendor sync — eq-intake PR #66 (SY9 duplicate
-- Merged: eq-shell [#816](https://github.com/eq-solutions/eq-shell/pull/816) fix(security): gate gm-chat with a rate cap + input bounds
-- Merged: eq-shell [#809](https://github.com/eq-solutions/eq-shell/pull/809) feat(ops): clarifications under scope + table on page 4; fix
-- Merged: eq-shell [#806](https://github.com/eq-solutions/eq-shell/pull/806) feat(mobile): foundation envelope fixes + first-touch polish
-- Merged: eq-shell [#805](https://github.com/eq-solutions/eq-shell/pull/805) fix(labour-hire): Add-rate modal loses focus on every keystr
-- Merged: eq-shell [#804](https://github.com/eq-solutions/eq-shell/pull/804) feat(labour-hire): weekly cost grouped by agency — concise 4
-- Merged: eq-shell [#802](https://github.com/eq-solutions/eq-shell/pull/802) fix(labour-hire): modal focus loss + wide weekly-cost table 
+- Merged: eq-shell [#820](https://github.com/eq-solutions/eq-shell/pull/820) feat(ops): preset markup fix, PDF export spinner, bookmarkab
+- Merged: eq-shell [#813](https://github.com/eq-solutions/eq-shell/pull/813) feat(ops): brand the quote PDF export (SKS logo, header, tot
+- Merged: eq-shell [#810](https://github.com/eq-solutions/eq-shell/pull/810) fix(ci): derive smoke-functions probe list from disk (48/120
+- Merged: eq-shell [#808](https://github.com/eq-solutions/eq-shell/pull/808) refactor(labour-hire): drop #805 focus workaround now Modal 
+- Merged: eq-shell [#807](https://github.com/eq-solutions/eq-shell/pull/807) chore(deps): bump @eq-solutions/ui to v1.10.1 (Modal focus-t
+- Merged: eq-shell [#803](https://github.com/eq-solutions/eq-shell/pull/803) fix(labour-hire): weekly cost was dropping 'Travel & Fares' 
+- Merged: eq-shell [#801](https://github.com/eq-solutions/eq-shell/pull/801) feat(labour-hire): Redundancy in the weekly cost + agency/ra
+- Merged: eq-shell [#658](https://github.com/eq-solutions/eq-shell/pull/658) fix(dashboard): surface pending staff connections on home si
 
 ## ⚠ Needs you (5)
 
@@ -34,7 +34,7 @@ _2026-07-13 12:57 UTC · what needs your attention. Full snapshot: [suite-state.
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 5 | 3d |
-| eq-solves-service | ✓ success | 0d ago | 6 | 7d |
+| eq-solves-service | ✓ success | 0d ago | 7 | 7d |
 | eq-field | ✓ success | 0d ago | 2 | 1d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
@@ -117,4 +117,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-13 12:57 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-13 14:23 UTC._
