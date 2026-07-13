@@ -73,14 +73,16 @@ _If this file is >48h old, the cron is broken._
 - #456 chore(deps-dev): bump tailwindcss from 4.2.2 to 4.3.2
 
 **eq-shell:**
+- #818 fix(security): reconcile 0033 intake rate-limit objects with the hardened live state (0178)
+- #817 fix(security): accept-invite consumes the invite atomically (compare-and-set)
+- #816 fix(security): gate gm-chat with a rate cap + input bounds
+- #815 fix(security): canonical-api customer secondary-match no longer builds a raw PostgREST .or()
+- #814 one-login P2 — worker-facing two-tile Core home (My Card + Field)
 - #813 feat(ops): brand the quote PDF export (SKS logo, header, totals card)
 - #812 one-login P1 — carry worker_id + phone into the Field handoff JWT
 - #811 fix(auth): mint-quotes-iframe-token binds to session tenant, not home tenant
 - #810 fix(ci): derive smoke-functions probe list from disk (48/120 → 107)
 - #715 feat(access): gate enforcement on can()/useCan() not role names (access-model Phase 1)
-
-**eq-solves-intake:**
-- #66 fix(intake): duplicate detector was blind to inactive rows — the SY9 silent-failure
 
 ---
 
