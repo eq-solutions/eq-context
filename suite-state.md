@@ -1,7 +1,7 @@
 ---
 title: EQ Suite — Current State
 owner: Royce Milmlow
-last_updated: 2026-07-12
+last_updated: 2026-07-13
 scope: Live suite state — app lineup, DB counts, open PRs, architectural decisions. Auto-refreshed nightly by GitHub Action.
 read_priority: critical
 status: live
@@ -138,6 +138,7 @@ _Auto-refreshed nightly. ✓ = has data · ⚠ = empty (no data yet) · ✗ = ta
 ---
 
 ## Key Decisions (auto-derived from merged PRs + manual)
+- **eq-ui Modal is now focus-identity-agnostic** — v1.10.1 keys the focus-trap effect on `[open]` only and reads the latest `onClose` via a ref (`onCloseRef`), so consumers passing an inline/unstable `onClose` no longer lose input focus on every keystroke. eq-shell bumped the ui pin to v1.10.1 (shell PR #807) and then reverted the local `useCallback` workaround on the Labour Hire Rates Add/Edit-rate modal as redundant — back to a plain `closeEditor` handler (shell PR #808, squash `ad8eb5f`). CI green; **deployed green to core.eq.solutions** (deploy `6a54aa53`, published 2026-07-13 09:09Z). (2026-07-13)
 - **Contract sheet is the source of truth for what's funded this cycle** — a new `not_funded` scope status shows an amber "not funded this cycle · ad-hoc only" warning at check-create and on the executing check; creation is **never blocked**, just stamped into the audit trail for the ad-hoc paper trail. Also fixes the ContractScopeBanner FY lookup so calendar/hyphenated FYs (e.g. Equinix `2025-2026`) classify instead of rendering blank (service PR #497, 2026-07-11)
 - **Asset-register import: the workbook's Assets tab is the source of truth for real assets** — replaces `Unverified #N` stub assets and reconciles per-site to canonical `app_data.assets` via the write layer (SY1 pilot) (service PR #496, 2026-07-11)
 - **Shell Comms list: the Field roster is the single source for 'who's on a job'** — the parallel crew table is retired (crew = the Field "Comms" team); won **EQ Ops** jobs and the **Melbourne Working Job List** workbook now import into the comms list, matched by base job/quote number (`27151` ≡ `27151b`) so suffixed rows don't duplicate, and imported jobs seed a PO line carrying the quote value (shell PRs #741/#748/#760/#762/#763, 2026-07-11)
