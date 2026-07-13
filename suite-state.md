@@ -61,7 +61,6 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-13)
 
 **eq-field:**
-- #484 v3.5.323 — perf: trim the analytics recording layer (Field slow on phones)
 - #477 v3.5.316 — one-login P1: carry canonical worker identity + Core-only kill-switch
 - #466 chore(ci): enable Dependabot for GitHub Actions
 - #461 feat(auth): EQ tenant is Core-only — close the demo login gate (v3.5.306)
@@ -76,8 +75,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #824 fix(security): drop vulnerable xlsx from the client bundle — parse with exceljs
-- #822 one-login P3 — eq_worker_completeness() canonical RPC
-- #821 chore(intake): vendor sync — eq-solves-intake main (through PR #66)
 - #814 one-login P2 — worker-facing two-tile Core home (My Card + Field)
 - #715 feat(access): gate enforcement on can()/useCan() not role names (access-model Phase 1)
 
