@@ -9,6 +9,10 @@ status: live
 
 # Changelog — EQ Solves Service
 
+## [2026-07-13] "Balloon years" proposal — nominate low-frequency majors in-app (PR #524, docs only)
+- **`docs/proposals/balloon-years.md`** — design brief (no code) for nominating which assets get their 2/3/5-yearly majors in which calendar year, so funding + renewal-pack $ and scheduling land in the right year. Came out of the SY9 import deep-dive (its contract prices multi-year majors the flat-annual model can't place). Recommends a per-asset `major_due_year` on `service.asset_local`, anchor+cadence pre-fill from the Maximo `nextdate`, rolled up to `due_years`/`year_totals` — no funding-consumer change (those read `year_totals` only). Grain + rollout owner-gated.
+- **Data fix (not in the PR):** the active SY9 canonical site row had `code=NULL`; set to `SY9` so it matches every other site and the WO-schedule importer (which resolves sites by code) can find it.
+
 ## [2026-06-30] Shell→Service handoff: shared contract + auth canaries + fail-closed (PRs #371, #373, #374, #376)
 - **Adopted `@eq-solutions/contracts`** (#374) — `ServiceJwtClaims.app_metadata` is now the shared `ShellHandoffClaims` type; `verifyServiceJwt` + `validateSupabaseJwt` runtime-validate the full contract (was email-only). `tsc` now fails if the Shell→Service claim shape drifts.
 - **Auth-handoff Sentry canaries** (#373) — `captureAuthHandoff(reason)` on every handoff failure; `validateSupabaseJwt` returns a discriminated reason (signature checked before expiry → distinguishes a rotated secret from a stale token). `layout.tsx` flags `cookie_unusable`.

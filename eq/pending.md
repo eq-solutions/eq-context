@@ -15,6 +15,14 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## EQ Service — SY9 import verified correct + "balloon years" feature proposed (2026-07-13)
+*Deep-dive audit of the SY9 (Equinix) import against how every other site imports. Everything checks out; one small consistency fix applied; the multi-year-major pricing gap it exposed is now a proposed fleet-wide feature.*
+- [x] **SY9 import verified 100% correct against other sites (SY1/SY7).** Every asset column matches what the app's own importer produces (equipment type, defaults, IDs, plan links); 499 assets all linked to their maintenance plans; the contract loads funding-correct. Confirmed live that SY9 shows in the app under Customers (Equinix) and Assets (499). _(done 2026-07-13)_
+- [x] **Fixed: SY9 site was missing its short "code".** The active SY9 site had a blank code (only it and one other Equinix site did; every older site has one) — set it to `SY9` so it lines up with the others and future schedule imports can find it. _(done 2026-07-13)_
+- [ ] **"Balloon years" feature — proposal written, owner decision pending. eq-service PR #524 (docs only, no code).** A way inside Service to nominate which assets get their bigger low-frequency (2/3/5-yearly) service in which year, so the money and scheduling land in the right year. SY9's contract has big every-few-years jobs the current system can't place in a specific year. Recommends a per-asset approach that reuses existing structure (no rebuild). **Decision needed from Royce:** grain (per-asset vs per-scope) + rollout — being worked through with the customer. Already-imported sites stay correct meanwhile; no rework wasted. _(added 2026-07-13)_
+
+---
+
 ## ✅ EQ Ops — quote export polish + rate-library QoL (2026-07-13, ALL MERGED + DEPLOYED)
 *A run of ad-hoc EQ Ops requests off the live tool: the quote exports looked unpolished, a material-preset pricing leak, and rough edges in the rate-library UI. Five PRs, all auto-deployed to core.eq.solutions.*
 - [x] **Word quote export tidied** — clarifications now sit under Scope of Works (their own heading), and the commercial table starts on a fresh page. Template surgery + generator change. eq-shell #809 MERGED (`25cc976`). _(done 2026-07-13)_
