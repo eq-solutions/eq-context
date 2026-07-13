@@ -1219,3 +1219,6 @@ explicit Royce go-ahead.
 - v3.5.311 (PR #471) — overflow-x: clip page-scroll guard (html/body) so a stray over-wide child can't side-scroll the whole page on a phone.
 - v3.5.312 (PR #472) — Dashboard / Job Numbers / Leave-calendar reflowed onto .eqf-mcard for phones. All shipped to field.eq.solutions + verified live.
 - v3.5.314 (PR #474) — mobile device-pass polish, 7 fixes: dropped the ◉ glyph on the "this week" week-picker option; **root-caused the stuck "↑ Saving…" pill** (a 4xx write threw without releasing `_pendingWriteCount` → hung forever; now cleared + 15s watchdog); week-nav "‹ prev" no longer jumps across gaps (picker seeds a symmetric ±16-week contiguous window — prev is the real previous week); Labour Hire stat-card wrench→hard-hat; removed the Timesheets helper paragraph; hid the EQ Agent FAB; retired the Prestart dual-source banner. Live on field.eq.solutions.
+
+## 2026-07-13 (cont.)
+- v3.5.315 (PR #475) — Mobile: finished migrating the home launcher tiles (`.eqh-tile`) onto the shared `.eqf-mcard` primitive (markup carries the class; home.css keeps only tile-specific layout). No visual change; completes the phone-card unification (all 4 envelopes now on one primitive). Live.
