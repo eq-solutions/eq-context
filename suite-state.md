@@ -75,7 +75,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #824 fix(security): drop vulnerable xlsx from the client bundle — parse with exceljs
-- #814 one-login P2 — worker-facing two-tile Core home (My Card + Field)
 - #715 feat(access): gate enforcement on can()/useCan() not role names (access-model Phase 1)
 
 ---
