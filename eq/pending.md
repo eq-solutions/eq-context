@@ -27,6 +27,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
   - [x] **Slice 3 — page-body horizontal-scroll clamp** (PR #471, shipped v3.5.311). `overflow-x: clip` guard on html/body so a stray over-wide child can't side-scroll the whole page on a phone. _(done 2026-07-13)_
   - [x] **Respect security groups on the mobile shell** (PR #469, v3.5.309 — chronologically the first slice). Bottom nav / drawer / home tiles were role-blind; now gated via EQ_PERMS (new `applyMobileNavPerms` + home.js tile gating) so labour_hire no longer sees Leave / Roster / Team / Contacts it can't action; employee/apprentice unchanged, unresolved-role sessions never over-hidden. (This session also reviewed + landed the primitive #470, overflow #471 and slice-2 #472 PRs.) _(done 2026-07-13)_
   - [ ] **Royce phone-smoke slices 1–3 inside the Core iframe (`?tenant=sks`)** — the three reflowed screens + the clamp on a real device; the embedded iframe is the one surface Claude can't drive from here. _(added 2026-07-13)_
+  - [ ] **Full `.eqh-tile` markup migration onto `.eqf-mcard`** — slice 1 only token-aligned the home launcher tiles at the CSS level (no `home.js` change) to dodge a collision with the then-open #469, which has since merged. The tile can now be migrated properly onto the shared primitive markup. Low priority — it's a launcher tile, not a data card, so a full migration is optional cleanup, not a fix. _(added 2026-07-13)_
 
 ---
 
