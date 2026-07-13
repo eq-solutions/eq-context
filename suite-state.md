@@ -76,7 +76,6 @@ _If this file is >48h old, the cron is broken._
 **eq-shell:**
 - #808 refactor(labour-hire): drop #805 focus workaround now Modal fix ships in ui@1.10.1
 - #715 feat(access): gate enforcement on can()/useCan() not role names (access-model Phase 1)
-- #658 fix(dashboard): surface pending staff connections on home sidebar
 
 ---
 
