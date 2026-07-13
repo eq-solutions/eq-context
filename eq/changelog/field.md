@@ -1201,3 +1201,8 @@ explicit Royce go-ahead.
 
 ## 2026-07-11
 - v3.5.299 (PR #455) — Sidebar: hide the orphaned "Pipeline" section header in employee view. The section wrapper was ungated while all three children (Pipeline/Resources/Accounts) are manager-only, so employee logins saw an empty "Pipeline" label. Marked `#nav-section-pipeline` `.edit-only` + added a matching `.nav-section.edit-only` CSS rule. Live.
+
+## 2026-07-13
+- v3.5.312 (PR #472) — Mobile reflow slice 2: Dashboard "Site Breakdown — Per Day", Job Numbers table, and Leave calendar reflow onto the `.eqf-mcard` phone-card primitive (no more 375px side-scroll). Live.
+- v3.5.311 (PR #471) — Mobile: `overflow-x: clip` body guard (≤768px + shell-mode) so a single wide child can't make the whole page side-scroll. `clip` chosen over `hidden` to preserve sticky headers + fixed nav. Live.
+- v3.5.310 (PR #470) — Mobile reflow slice 1: introduced the shared `.eqf-mcard` stacked-row card primitive (styles/mobile.css) and migrated Timesheets `.ts-mcard`, Contacts mobile cards, and Leave `.eq-lv-wcard` onto it (no behaviour change). Home `.eqh-tile` token-aligned CSS-only (kept as a launcher tile). Live.
