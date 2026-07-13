@@ -60,6 +60,9 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-13)
 
+**eq-cards:**
+- #154 fix(wallet): make the "Add to wallet" sheet scrollable so all options show
+
 **eq-field:**
 - #478 v3.5.316 — mobile device-pass bug batch 1 (photo/scroll/toast)
 - #477 v3.5.316 — one-login P1: carry canonical worker identity + Core-only kill-switch
@@ -74,7 +77,6 @@ _If this file is >48h old, the cron is broken._
 - #456 chore(deps-dev): bump tailwindcss from 4.2.2 to 4.3.2
 
 **eq-shell:**
-- #820 feat(ops): preset markup fix, PDF export spinner, bookmarkable page URLs
 - #818 fix(security): reconcile 0033 intake rate-limit objects with the hardened live state (0178)
 - #817 fix(security): accept-invite consumes the invite atomically (compare-and-set)
 - #815 fix(security): canonical-api customer secondary-match no longer builds a raw PostgREST .or()
@@ -100,7 +102,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 185 (latest: 0181) applied
+**Migrations:** eq-service has 0 applied
 
 ---
 
