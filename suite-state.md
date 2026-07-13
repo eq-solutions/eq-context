@@ -74,7 +74,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #831 one-login P4 — warn-first worker compliance surface
-- #830 vendor: site-resolver adjudication console (eq-intake #67)
 - #828 one-login P3 follow-up — revoke anon EXECUTE on eq_worker_completeness()
 - #824 fix(security): drop vulnerable xlsx from the client bundle — parse with exceljs
 - #715 feat(access): gate enforcement on can()/useCan() not role names (access-model Phase 1)
