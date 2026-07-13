@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-13 08:32 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-13 08:43 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-13 08:22 UTC → 2026-07-13 08:32 UTC)
+## Since last refresh (2026-07-13 08:32 UTC → 2026-07-13 08:43 UTC)
 
-- Merged: eq-shell [#807](https://github.com/eq-solutions/eq-shell/pull/807) chore(deps): bump @eq-solutions/ui to v1.10.1 (Modal focus-t
-- Merged: eq-shell [#806](https://github.com/eq-solutions/eq-shell/pull/806) feat(mobile): foundation envelope fixes + first-touch polish
-- Merged: eq-shell [#785](https://github.com/eq-solutions/eq-shell/pull/785) feat(comms): Excel-style inline editing on the job list + KP
-- Merged: eq-shell [#783](https://github.com/eq-solutions/eq-shell/pull/783) ci: wire the check:css coverage gate into the PR gate
-- Merged: eq-shell [#778](https://github.com/eq-solutions/eq-shell/pull/778) feat(canonical): DB-level AU phone normalisation trigger (01
-- Merged: eq-shell [#775](https://github.com/eq-solutions/eq-shell/pull/775) chore(quotes): remove retired Flask→canonical quote ETL
-- Merged: eq-shell [#774](https://github.com/eq-solutions/eq-shell/pull/774) feat(staff): drop onboarding middle names from the surname o
-- Merged: eq-shell [#773](https://github.com/eq-solutions/eq-shell/pull/773) feat(staff): manager UI to define required tickets (minimum 
+- Merged: eq-shell [#788](https://github.com/eq-solutions/eq-shell/pull/788) fix(comms): make the job list readable — wrap Work, wider pa
+- Merged: eq-shell [#787](https://github.com/eq-solutions/eq-shell/pull/787) fix(security): scope anon's read of public.organisations to 
+- Merged: eq-shell [#786](https://github.com/eq-solutions/eq-shell/pull/786) fix(security): revoke anon write grants on jvkn control-plan
+- Merged: eq-shell [#782](https://github.com/eq-solutions/eq-shell/pull/782) feat(canonical): one-active-staff-per-person lock (0175)
+- Merged: eq-shell [#780](https://github.com/eq-solutions/eq-shell/pull/780) ci: wire the check:perms permission-matrix drift guard into 
+- Merged: eq-shell [#779](https://github.com/eq-solutions/eq-shell/pull/779) refactor(shell): consistent app names — one shared list, fix
+- Merged: eq-shell [#777](https://github.com/eq-solutions/eq-shell/pull/777) feat(comms): job-list polish — sticky headers, skeleton, fil
+- Merged: eq-shell [#776](https://github.com/eq-solutions/eq-shell/pull/776) feat(quotes): job numbers are canonical — one name everywher
 
 ## ⚠ Needs you (2)
 
@@ -31,8 +31,8 @@ _2026-07-13 08:32 UTC · what needs your attention. Full snapshot: [suite-state.
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 2 | 8d |
-| eq-solves-service | ✓ success | 0d ago | 6 | 6d |
-| eq-field | ✓ success | 0d ago | 2 | 0d |
+| eq-solves-service | ✓ success | 0d ago | 5 | 6d |
+| eq-field | ✓ success | 0d ago | 2 | 1d |
 | eq-cards | ✓ success | 1d ago | 0 | — |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
@@ -58,6 +58,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-13 | eq-shell | [#803](https://github.com/eq-solutions/eq-shell/pull/803) fix(labour-hire): weekly cost was dropping 'Travel & Fares' / 'ME |
 | 2026-07-13 | eq-shell | [#802](https://github.com/eq-solutions/eq-shell/pull/802) fix(labour-hire): modal focus loss + wide weekly-cost table + tol |
 | 2026-07-13 | eq-shell | [#801](https://github.com/eq-solutions/eq-shell/pull/801) feat(labour-hire): Redundancy in the weekly cost + agency/rate-ty |
+| 2026-07-13 | eq-solves-service | [#517](https://github.com/eq-solutions/eq-service/pull/517) chore(deps): bump @eq-solutions/ui v1.9.0 → v1.10.1 (Modal focus- |
 | 2026-07-13 | eq-solves-service | [#516](https://github.com/eq-solutions/eq-service/pull/516) feat(import/assets): skip plan-less register rows by default + as |
 | 2026-07-13 | eq-field | [#469](https://github.com/eq-solutions/eq-field/pull/469) v3.5.309 — mobile: respect security groups on nav + home surface |
 | 2026-07-13 | eq-field | [#468](https://github.com/eq-solutions/eq-field/pull/468) fix(field): no more silent prestart/toolbox save failures on mobi |
@@ -65,7 +66,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-12 | eq-shell | [#800](https://github.com/eq-solutions/eq-shell/pull/800) fix(auth): create auth.users before shell user on invite accept |
 | 2026-07-12 | eq-shell | [#792](https://github.com/eq-solutions/eq-shell/pull/792) feat(comms): crew-gaps strip — where the labour issues are, by si |
 | 2026-07-12 | eq-shell | [#791](https://github.com/eq-solutions/eq-shell/pull/791) fix(comms): job list fills the window + job numbers never truncat |
-| 2026-07-12 | eq-shell | [#790](https://github.com/eq-solutions/eq-shell/pull/790) fix(security): protect plant_equipment from customer-asset import |
 _Showing 15 of 116 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -73,14 +73,14 @@ _Showing 15 of 116 · full record in [sessions/](sessions/)_
 - **Dependabot PR #466 open** — auto-patches eq-field CI action versions. Low-risk, Royce to merge. _(added 2026-07-13)_
 - **Pre-existing (NOT security): Field reminder/digest/TAFE features are missing config secrets (`TENANT_UUID` etc.) on ehow** → they'd error on a real run, so may not be working. Royce to decide if they're meant to be live. _(added 2026-07-13)_
 - **Security roadmap PARKED behind a trigger** — Trust-page draft + `security-register.md` in `scratchpad/`. Phase 1 = Royce's alert click-list + rotate the jvkn service key + GitHub Dependabot/secret-scanning org-wide. SOC 2 / rented 24/7 monitoring (MDR) / Cloudflare WAF (apps are direct-to-Netlify, not behind CF) PARKED until a real deal, a 3rd tenant, or EQ goes external. _(added 2026-07-13)_
+- **eq-service bump v1.9.0 → v1.10.1 — PR #517 OPEN, NOT merged.** Merging deploys service.eq.solutions; held for Royce's deploy call. Real-gate CI green (tsc+build, typecheck); the Supabase integration-test fail is the known pre-existing one. _(added 2026-07-13)_
+- **Drop eq-shell's now-redundant #805 `useCallback` workaround** in Labour-hire rates — running in a separate session (task_9517bc02), unblocked now that #807 merged. _(added 2026-07-13)_
 - **Leif still needs to accept** — his invite is valid/unused (token regenerated 2026-07-13, expires 07-20). Royce sending him the link + the how-to page (`scratchpad/leif-signin-howto.html`, artifact `de35bebb`). _(added 2026-07-13)_
 - **Root cause: the resend branch of `invite-user.ts` (added `3a4c724`) hardcodes `email_delivered: false` — it calls sendEmail but throws the result away. The first-time-invite branch reports it correctly.** Fix made (capture `resendResult.delivered`) + typechecks clean, but UNCOMMITTED in the worktree — awaiting Royce's ship decision. _(added 2026-07-13)_
 - **M365 deliverability unverified** — Resend accepted the invite email, but `sks.com.au` is Microsoft 365 and may quarantine/junk it. Check messageId `3d0e29d5` status in Resend + Leif's junk. Separate from the reporting bug. _(added 2026-07-13)_
 - **Durable, only if it starts hitting many devices: submit `eq.solutions` for categorization to FortiGuard/Palo Alto/Zscaler (stops default inspection everywhere over time) + publish a "Network Requirements / allowlist" page as a standard enterprise-onboarding step.** eq.solutions is NOT on the HSTS preload list ("unknown") — the `preload` token is inert; optional hygiene to drop it. Not needed for a one-off. _(added 2026-07-13)_
 - **No sourcemaps uploaded for eq-shell** (`@sentry/vite-plugin`/`sentry-cli` absent from the build) — Sentry events are exactly as minified as the console, so it isn't a shortcut here. Optional follow-up if prod JS errors keep needing manual decode: wire up sourcemap upload in its own PR. _(added 2026-07-12)_
-- **Rotate the jvkn (eq-canonical) service_role key** — pasted into chat this session to fix canon-read. Roll it (Supabase → jvkn → API), update everywhere used; same class as the EQ_SECRET_SALT-in-chat rotation item. _(added 2026-07-12)_
-- **Field gate PIN inputs not wrapped in a `<form>`** — browser "password field is not contained in a form" warning ×5; password-manager UX nit. Low priority. _(added 2026-07-12)_
-_…and 323 more · [eq/pending.md](eq/pending.md)_
+_…and 325 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -112,4 +112,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-13 08:32 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-13 08:43 UTC._
