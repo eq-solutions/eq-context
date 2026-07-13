@@ -64,7 +64,6 @@ _If this file is >48h old, the cron is broken._
 - #154 fix(wallet): make the "Add to wallet" sheet scrollable so all options show
 
 **eq-field:**
-- #478 v3.5.316 — mobile device-pass bug batch 1 (photo/scroll/toast)
 - #477 v3.5.316 — one-login P1: carry canonical worker identity + Core-only kill-switch
 - #466 chore(ci): enable Dependabot for GitHub Actions
 - #461 feat(auth): EQ tenant is Core-only — close the demo login gate (v3.5.306)
@@ -102,7 +101,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 0 applied
+**Migrations:** eq-service has 185 (latest: 0181) applied
 
 ---
 
