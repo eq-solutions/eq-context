@@ -38,6 +38,13 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## EQ Service migration hygiene — duplicate numbers deduped + stuck deploy pipeline fixed (2026-07-14)
+*Repo hygiene surfaced while reviewing recent EQ Service database updates — no product/feature change; nothing waiting on you.*
+- [x] **Renamed three duplicate migration numbers so a fresh rebuild can't silently skip a file.** Concurrent agents had each reused numbers 0180/0181/0182; the calibration/test-equipment set moved to 0183/0184/0185 (PR #535 merged). Pure file rename — the live database was untouched. _(done 2026-07-14)_
+- [x] **Fixed the migration deploy pipeline, which was quietly jammed.** Three recent database updates had been applied straight to the live system, bypassing the governed apply pipeline — leaving its record-book 6 behind, so the next dispatch would have tried to re-apply already-live changes and failed. Recorded them as applied and verified the pipeline now reads clean. _(done 2026-07-14)_
+
+---
+
 ## ✅ EQ Cards — White Card can no longer show a false expiry (2026-07-14, FIXED + GUARDED + LIVE)
 *Royce spotted (off the live admin view) that Vinicius Zara's White Card showed "Expired" — but a White Card doesn't expire (it's a lifetime credential in Australia). It was bad data, and there was no way for an admin to fix it in-app. Corrected his record and guarded the whole class so it can't recur.*
 - [x] **Vinicius Zara's White Card corrected (live).** His card had been saved with a real expiry of the day it was entered, so it read "Expired". Set back to lifetime — it now shows as valid. _(done 2026-07-14)_
