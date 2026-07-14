@@ -10,16 +10,16 @@ status: live
 # EQ Suite — Health Digest
 _2026-07-14 10:36 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-14 10:30 UTC → 2026-07-14 10:36 UTC)
+## Since last refresh (2026-07-14 10:36 UTC → 2026-07-14 10:36 UTC)
 
-- Merged: eq-shell [#858](https://github.com/eq-solutions/eq-shell/pull/858) fix(auth): bound verify-session body read + de-noise the sta
-- Merged: eq-shell [#857](https://github.com/eq-solutions/eq-shell/pull/857) onboarding: manager-push invite funnel becomes the "Add work
-- Merged: eq-shell [#836](https://github.com/eq-solutions/eq-shell/pull/836) feat(ops): native mobile view for EQ Ops — pipeline cards + 
-- Merged: eq-shell [#834](https://github.com/eq-solutions/eq-shell/pull/834) one-login field-first — flag-gated employee→Field on Core en
-- Merged: eq-shell [#833](https://github.com/eq-solutions/eq-shell/pull/833) fix(auth): recover from stalled mobile login instead of a fr
-- Merged: eq-shell [#831](https://github.com/eq-solutions/eq-shell/pull/831) one-login P4 compliance surface + P3↔Cards completeness alig
-- Merged: eq-shell [#830](https://github.com/eq-solutions/eq-shell/pull/830) vendor: site-resolver adjudication console (eq-intake #67)
-- Merged: eq-shell [#828](https://github.com/eq-solutions/eq-shell/pull/828) one-login P1/P3 hardening — fail-safe worker lookup + revoke
+- Merged: eq-shell [#859](https://github.com/eq-solutions/eq-shell/pull/859) fix(audit): lock EXECUTE on public.eq_audit_retention_run (a
+- Merged: eq-shell [#835](https://github.com/eq-solutions/eq-shell/pull/835) feat(comms): native mobile view for NSW Comms — card list + 
+- Merged: eq-shell [#832](https://github.com/eq-solutions/eq-shell/pull/832) fix(canonical): eq_site_advisory_summary authenticated-only 
+- Merged: eq-shell [#824](https://github.com/eq-solutions/eq-shell/pull/824) fix(security): drop vulnerable xlsx from the client bundle —
+- Merged: eq-shell [#715](https://github.com/eq-solutions/eq-shell/pull/715) feat(access): gate enforcement on can()/useCan() not role na
+- Merged: eq-solves-service [#535](https://github.com/eq-solutions/eq-service/pull/535) chore(migrations): renumber colliding prefixes 0180/0181/018
+- Merged: eq-solves-service [#533](https://github.com/eq-solutions/eq-service/pull/533) feat(reports): tenant-branded reports + run-sheet redesign
+- Merged: eq-solves-service [#532](https://github.com/eq-solutions/eq-service/pull/532) feat(testing): surface canonical calibration cert-chain in T
 
 ## ⚠ Needs you (6)
 
@@ -34,7 +34,7 @@ _2026-07-14 10:36 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 6 | 0d |
+| eq-shell | ✓ success | 0d ago | 5 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 7 | 8d |
 | eq-field | ✓ success | 0d ago | 2 | 2d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
@@ -56,6 +56,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-14 | eq-shell | [#859](https://github.com/eq-solutions/eq-shell/pull/859) fix(audit): lock EXECUTE on public.eq_audit_retention_run (anon/a |
 | 2026-07-14 | eq-shell | [#858](https://github.com/eq-solutions/eq-shell/pull/858) fix(auth): bound verify-session body read + de-noise the stall wa |
 | 2026-07-14 | eq-shell | [#857](https://github.com/eq-solutions/eq-shell/pull/857) onboarding: manager-push invite funnel becomes the "Add workers"  |
 | 2026-07-14 | eq-shell | [#860](https://github.com/eq-solutions/eq-shell/pull/860) feat(audit): Phase 2b — before/after drill-down on the activity l |
@@ -70,7 +71,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-14 | eq-shell | [#840](https://github.com/eq-solutions/eq-shell/pull/840) feat(audit): make public.audit_log (credential audit) append-only |
 | 2026-07-14 | eq-shell | [#839](https://github.com/eq-solutions/eq-shell/pull/839) feat(audit): Phase 1b — legible activity log (de-noise + identity |
 | 2026-07-14 | eq-shell | [#838](https://github.com/eq-solutions/eq-shell/pull/838) feat(mobile): native Ops create/edit form + Comms Fortnight roste |
-| 2026-07-14 | eq-shell | [#837](https://github.com/eq-solutions/eq-shell/pull/837) feat(audit): make audit_log append-only - Phase 1a immutability l |
 _Showing 15 of 113 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
