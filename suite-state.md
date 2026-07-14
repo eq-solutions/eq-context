@@ -74,7 +74,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #837 feat(audit): make audit_log append-only - Phase 1a immutability lockdown
-- #715 feat(access): gate enforcement on can()/useCan() not role names (access-model Phase 1)
 
 ---
 
