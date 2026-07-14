@@ -78,7 +78,6 @@ _If this file is >48h old, the cron is broken._
 **eq-shell:**
 - #853 feat(audit): Phase 1c — audit-log retention (13mo hot / 7yr cold, append-only-safe)
 - #852 fix(drift): register service.instrument_calibration_events as a tracked safe-invoker read
-- #848 feat(canonical): site-resolver adjudication — verdict capture (0183) + adjudicable console
 - #847 feat(cards): tenant-branded Excel compliance register (shared builder)
 
 ---
