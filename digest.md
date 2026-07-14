@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-14 09:21 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-14 09:23 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-14 09:18 UTC → 2026-07-14 09:21 UTC)
+## Since last refresh (2026-07-14 09:21 UTC → 2026-07-14 09:23 UTC)
 
-- Merged: eq-shell [#850](https://github.com/eq-solutions/eq-shell/pull/850) docs: reflect that Resend email delivery is live in producti
-- Merged: eq-shell [#836](https://github.com/eq-solutions/eq-shell/pull/836) feat(ops): native mobile view for EQ Ops — pipeline cards + 
-- Merged: eq-shell [#834](https://github.com/eq-solutions/eq-shell/pull/834) one-login field-first — flag-gated employee→Field on Core en
-- Merged: eq-shell [#833](https://github.com/eq-solutions/eq-shell/pull/833) fix(auth): recover from stalled mobile login instead of a fr
-- Merged: eq-shell [#831](https://github.com/eq-solutions/eq-shell/pull/831) one-login P4 compliance surface + P3↔Cards completeness alig
-- Merged: eq-shell [#830](https://github.com/eq-solutions/eq-shell/pull/830) vendor: site-resolver adjudication console (eq-intake #67)
-- Merged: eq-shell [#828](https://github.com/eq-solutions/eq-shell/pull/828) one-login P1/P3 hardening — fail-safe worker lookup + revoke
-- Merged: eq-shell [#825](https://github.com/eq-solutions/eq-shell/pull/825) feat(canonical): site resolver — advisory phase (0179)
+- Merged: eq-shell [#835](https://github.com/eq-solutions/eq-shell/pull/835) feat(comms): native mobile view for NSW Comms — card list + 
+- Merged: eq-shell [#832](https://github.com/eq-solutions/eq-shell/pull/832) fix(canonical): eq_site_advisory_summary authenticated-only 
+- Merged: eq-shell [#829](https://github.com/eq-solutions/eq-shell/pull/829) feat(canonical): read RPC for the site-resolver adjudication
+- Merged: eq-shell [#827](https://github.com/eq-solutions/eq-shell/pull/827) fix(ops): clarify preset cost-vs-markup + copy polish in Rat
+- Merged: eq-shell [#826](https://github.com/eq-solutions/eq-shell/pull/826) fix(ops): prime markup on $0 material presets so cost entry 
+- Merged: eq-shell [#824](https://github.com/eq-solutions/eq-shell/pull/824) fix(security): drop vulnerable xlsx from the client bundle —
+- Merged: eq-shell [#823](https://github.com/eq-solutions/eq-shell/pull/823) feat(ops): tidy the Rate library preset table
+- Merged: eq-shell [#822](https://github.com/eq-solutions/eq-shell/pull/822) one-login P3 — eq_worker_completeness() canonical RPC
 
 ## ⚠ Needs you (6)
 
@@ -34,9 +34,9 @@ _2026-07-14 09:21 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 5 | 0d |
-| eq-solves-service | ✓ success | 0d ago | 9 | 8d |
-| eq-field | ✓ success | 0d ago | 2 | 2d |
+| eq-shell | ✓ success | 0d ago | 4 | 0d |
+| eq-solves-service | ✓ success | 0d ago | 8 | 8d |
+| eq-field | ✓ success | 0d ago | 3 | 2d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
@@ -66,14 +66,14 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-14 | eq-shell | [#838](https://github.com/eq-solutions/eq-shell/pull/838) feat(mobile): native Ops create/edit form + Comms Fortnight roste |
 | 2026-07-14 | eq-shell | [#837](https://github.com/eq-solutions/eq-shell/pull/837) feat(audit): make audit_log append-only - Phase 1a immutability l |
 | 2026-07-14 | eq-shell | [#715](https://github.com/eq-solutions/eq-shell/pull/715) feat(access): gate enforcement on can()/useCan() not role names ( |
+| 2026-07-14 | eq-solves-service | [#535](https://github.com/eq-solutions/eq-service/pull/535) chore(migrations): renumber colliding prefixes 0180/0181/0182 → 0 |
 | 2026-07-14 | eq-solves-service | [#532](https://github.com/eq-solutions/eq-service/pull/532) feat(testing): surface canonical calibration cert-chain in Test E |
 | 2026-07-14 | eq-solves-service | [#531](https://github.com/eq-solutions/eq-service/pull/531) feat(testing): calibration becomes canonical (asset_calibration + |
 | 2026-07-14 | eq-solves-service | [#530](https://github.com/eq-solutions/eq-service/pull/530) feat(maintenance): make test checks read as work-to-do, not empty |
 | 2026-07-14 | eq-solves-service | [#529](https://github.com/eq-solutions/eq-service/pull/529) fix(assets): import upsert (stop doubling) + NSX/ACB picker shows |
 | 2026-07-14 | eq-solves-service | [#526](https://github.com/eq-solutions/eq-service/pull/526) feat(assets): register — balloon years + per-asset frequency chip |
 | 2026-07-14 | eq-field | [#489](https://github.com/eq-solutions/eq-field/pull/489) v3.5.329 — timesheets: one-tap prefill for a worker's own week |
-| 2026-07-14 | eq-field | [#488](https://github.com/eq-solutions/eq-field/pull/488) v3.5.328 — mobile gestures: timesheets swipe + pull-to-refresh |
-_Showing 15 of 115 · full record in [sessions/](sessions/)_
+_Showing 15 of 114 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
@@ -87,7 +87,7 @@ _Showing 15 of 115 · full record in [sessions/](sessions/)_
 - **8 lower-value lighthouse findings left unfiled (queued)** — TOTP replay window, canonical-api warm-Lambda scope cache, dashboard-counts missing the issues entity, README migration-range drift, check-perm-sync error message, unused vendored `eq-format-ui`, a Unicode-glyph success icon on the public quote page. Pick up in a future recon if worth it. _(added 2026-07-13)_
 - **Core-side merge/retire action + dependent-record counts — DEFERRED to eq-shell#781.** The actual "collapse these dupes into one" button + the ~30-table dependent-record sweep need a Core-owned RPC over `app_data.sites`; tracked in eq-shell#781 (commented with the SY9 evidence). Detection-only shipped; the merge action is the next half. _(added 2026-07-13)_
 - **eq-shell's OWN vulnerable `xlsx` — FIX OPEN as draft eq-shell PR #824, needs review + merge.** Distinct from the vendored-copy item above: eq-shell had `xlsx` (SheetJS, proto-pollution/ReDoS) as a direct dep in TWO of its own files — the Comms "import from Melbourne workbook" parser (a 424 kB chunk in the prod client bundle) and the server-side `upload-gm-report` function. Both repointed to `exceljs` (already a dep); `xlsx` removed from package.json + lockfile. Build confirmed no `xlsx-*.js` chunk; parse behaviour verified. Draft PR — merge auto-deploys to core.eq.solutions, so Royce-gated. _(added 2026-07-13)_
-_…and 341 more · [eq/pending.md](eq/pending.md)_
+_…and 342 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -119,4 +119,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-14 09:21 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-14 09:23 UTC._
