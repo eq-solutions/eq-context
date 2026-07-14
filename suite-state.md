@@ -61,6 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-14)
 
 **eq-field:**
+- #490 feat(field): read-only Test Equipment calibration surface (SKS)
 - #466 chore(ci): enable Dependabot for GitHub Actions
 - #461 feat(auth): EQ tenant is Core-only — close the demo login gate (v3.5.306)
 
@@ -75,10 +76,10 @@ _If this file is >48h old, the cron is broken._
 - #456 chore(deps-dev): bump tailwindcss from 4.2.2 to 4.3.2
 
 **eq-shell:**
+- #853 feat(audit): Phase 1c — audit-log retention (13mo hot / 7yr cold, append-only-safe)
 - #852 fix(drift): register service.instrument_calibration_events as a tracked safe-invoker read
 - #848 feat(canonical): site-resolver adjudication — verdict capture (0183) + adjudicable console
 - #847 feat(cards): tenant-branded Excel compliance register (shared builder)
-- #846 feat(audit): Phase 1d (eq-shell) — attribute worker create/edit to the acting user
 
 ---
 
