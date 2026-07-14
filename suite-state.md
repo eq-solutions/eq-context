@@ -65,6 +65,8 @@ _If this file is >48h old, the cron is broken._
 - #461 feat(auth): EQ tenant is Core-only — close the demo login gate (v3.5.306)
 
 **eq-service:**
+- #535 chore(migrations): renumber colliding prefixes 0180/0181/0182 → 0183/0184/0185
+- #534 fix(testing): backfill canonical calibration from legacy assets columns (consolidation 1/4)
 - #533 fix(reports): inherit tenant brand in reports + notification emails
 - #524 docs(scope): balloon-years proposal — nominate low-frequency majors in-app
 - #520 chore(deps): bump resend from 6.12.4 to 6.17.2
@@ -74,6 +76,8 @@ _If this file is >48h old, the cron is broken._
 - #456 chore(deps-dev): bump tailwindcss from 4.2.2 to 4.3.2
 
 **eq-shell:**
+- #850 docs: reflect that Resend email delivery is live in production
+- #849 fix(drift): allow-list service.instrument_calibration_events (safe invoker view)
 - #848 feat(canonical): site-resolver adjudication — verdict capture (0183) + adjudicable console
 - #847 feat(cards): tenant-branded Excel compliance register (shared builder)
 - #846 feat(audit): Phase 1d (eq-shell) — attribute worker create/edit to the acting user
