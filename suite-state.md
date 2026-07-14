@@ -65,6 +65,7 @@ _If this file is >48h old, the cron is broken._
 - #461 feat(auth): EQ tenant is Core-only — close the demo login gate (v3.5.306)
 
 **eq-service:**
+- #536 feat(brand): sync document palette + doc logo to tenant_settings on login
 - #524 docs(scope): balloon-years proposal — nominate low-frequency majors in-app
 - #520 chore(deps): bump resend from 6.12.4 to 6.17.2
 - #518 chore(deps): bump @eq-solutions/roles from v2.4.0 to v2.5.1 in the eq-design-system group across 1 directory
@@ -75,10 +76,6 @@ _If this file is >48h old, the cron is broken._
 **eq-shell:**
 - #863 fix(auth): bound login body reads under one deadline (the #858 latent twin)
 - #862 fix(auth): harden invite-accept auth-identity binding + orphan detector
-- #856 feat(brand): carry full tenant document palette + doc logo in the Service JWT
-
-**eq-solves-intake:**
-- #69 feat(intake): AI adjudicator — Claude suggests a verdict + reason on flagged sites
 
 ---
 
@@ -88,7 +85,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ? in_progress |
+| eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
