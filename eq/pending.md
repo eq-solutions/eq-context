@@ -15,6 +15,21 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## ✅ EQ audit-log compliance program — trustworthy → legible → retained → attributed (2026-07-14, all built; 5 PRs merged + live, retention awaiting your dispatch)
+*The audit log became a real compliance surface. Verified live first — which corrected a stale plan (attribution was already working for edits made in Shell, and the "two logs" turned out to have distinct jobs, not a bug). Then shipped, in order, the four things that make an audit log trustworthy: it can't be secretly changed, you can actually read it, it doesn't grow forever holding personal data, and it records who did what.*
+- [x] **Can't be secretly changed — already live.** All four audit trails are append-only; the app can no longer rewrite or wipe history. Verified across all three databases. _(done 2026-07-14)_
+- [x] **You can read it — MERGED + LIVE (eq-shell #839).** The activity log now hides the machine noise (a 60-second background handshake was 96% of it) and shows the human events; a new "Sign-ins" tab surfaces logins / workspace-switches / role changes that previously had no screen at all. _(done 2026-07-14)_
+- [x] **You can query + export it — MERGED + LIVE (eq-shell #842).** Filter the log by date and type and export to a spreadsheet — so it answers a real question ("who changed this site last week", "everything for a tender"), not just something to scroll. _(done 2026-07-14)_
+- [x] **It records who — MERGED + LIVE (eq-shell #846).** Adding or editing a worker now records WHO did it (it used to log as "system" — the "who onboarded this person" gap). The cause was in-repo (two functions using the wrong client), not the big cross-app job it first looked like. _(done 2026-07-14)_
+- [x] **It won't hoard personal data — MERGED (eq-shell #853), NOT yet dispatched.** Chose 13 months live / 7 years archived / then delete. A scheduled job ages old personal data out of the (now unchangeable) log so it satisfies the Privacy Act. Forward-looking — it installs the mechanism and moves/deletes nothing until ~2027. _(done 2026-07-14)_
+- [x] **Cleared a blocker for the whole team — MERGED (eq-shell #849).** A concurrent EQ Service change had red-lit the shared security check and blocked ALL merges to eq-shell; diagnosed it as a safe false alarm and cleared it. _(done 2026-07-14)_
+- [ ] **DISPATCH the retention job to the live databases** — merging landed the code; applying it is your gated action: run the tenant-migration pipeline (`0184`) for EQ + SKS, and apply the login-database file (`2026_07_14c`) by hand. Safe anytime — it moves no data now. _(added 2026-07-14)_
+- [ ] **Cross-app attribution (the rest of it)** — Field / Service / Intake still log their own edits as "system"; making those record the person is a multi-app job with no single choke point. _(added 2026-07-14)_
+- [ ] **Later audit polish** — before/after values on each change, PDF export, and logging who reads the log; then on-request data erasure and anomaly alerts. _(added 2026-07-14)_
+- [x] **EQ Service calibration view — already properly governed (no action).** The view that briefly broke the shared check turned out to already be a real, governed EQ Service migration — it was only missing an entry in eq-shell's safety-check allow-list, which #849 added. Nothing more to do. _(done 2026-07-14)_
+
+---
+
 ## Leadership one-pagers — data security + systems integration (2026-07-14, DELIVERED)
 *Royce asked for high-level one-pagers for a CEO / leadership meeting. Produced as PDFs (in `~/Downloads`) + claude.ai artifacts. No code shipped — external deliverables only.*
 - [x] **Data-security one-pager (CEO)** — where data's stored / who can access it / redundancy, in plain professional English (NOT literal "tradie-terms" analogies). Frames EQ as using the same principles as the world's largest cloud providers **without naming them** + cites SOC 2 / ISO 27001. Real EQ logo. `EQ-Data-Safety-One-Pager.pdf`. _(done 2026-07-14)_
