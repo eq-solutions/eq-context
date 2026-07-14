@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-14 09:04 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-14 09:17 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-14 08:55 UTC → 2026-07-14 09:04 UTC)
+## Since last refresh (2026-07-14 09:04 UTC → 2026-07-14 09:17 UTC)
 
-- Merged: eq-shell [#835](https://github.com/eq-solutions/eq-shell/pull/835) feat(comms): native mobile view for NSW Comms — card list + 
-- Merged: eq-shell [#832](https://github.com/eq-solutions/eq-shell/pull/832) fix(canonical): eq_site_advisory_summary authenticated-only 
-- Merged: eq-shell [#829](https://github.com/eq-solutions/eq-shell/pull/829) feat(canonical): read RPC for the site-resolver adjudication
-- Merged: eq-shell [#827](https://github.com/eq-solutions/eq-shell/pull/827) fix(ops): clarify preset cost-vs-markup + copy polish in Rat
-- Merged: eq-shell [#826](https://github.com/eq-solutions/eq-shell/pull/826) fix(ops): prime markup on $0 material presets so cost entry 
-- Merged: eq-shell [#824](https://github.com/eq-solutions/eq-shell/pull/824) fix(security): drop vulnerable xlsx from the client bundle —
-- Merged: eq-shell [#823](https://github.com/eq-solutions/eq-shell/pull/823) feat(ops): tidy the Rate library preset table
-- Merged: eq-shell [#821](https://github.com/eq-solutions/eq-shell/pull/821) chore(intake): vendor sync — eq-solves-intake main (through 
+- Merged: eq-shell [#836](https://github.com/eq-solutions/eq-shell/pull/836) feat(ops): native mobile view for EQ Ops — pipeline cards + 
+- Merged: eq-shell [#834](https://github.com/eq-solutions/eq-shell/pull/834) one-login field-first — flag-gated employee→Field on Core en
+- Merged: eq-shell [#833](https://github.com/eq-solutions/eq-shell/pull/833) fix(auth): recover from stalled mobile login instead of a fr
+- Merged: eq-shell [#831](https://github.com/eq-solutions/eq-shell/pull/831) one-login P4 compliance surface + P3↔Cards completeness alig
+- Merged: eq-shell [#830](https://github.com/eq-solutions/eq-shell/pull/830) vendor: site-resolver adjudication console (eq-intake #67)
+- Merged: eq-shell [#828](https://github.com/eq-solutions/eq-shell/pull/828) one-login P1/P3 hardening — fail-safe worker lookup + revoke
+- Merged: eq-shell [#825](https://github.com/eq-solutions/eq-shell/pull/825) feat(canonical): site resolver — advisory phase (0179)
+- Merged: eq-shell [#822](https://github.com/eq-solutions/eq-shell/pull/822) one-login P3 — eq_worker_completeness() canonical RPC
 
 ## ⚠ Needs you (6)
 
@@ -34,11 +34,11 @@ _2026-07-14 09:04 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 4 | 0d |
-| eq-solves-service | ✓ success | 0d ago | 7 | 8d |
+| eq-shell | ✓ success | 0d ago | 6 | 0d |
+| eq-solves-service | ✓ success | 0d ago | 9 | 8d |
 | eq-field | ✓ success | 0d ago | 2 | 2d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
-| eq-solves-intake | ✓ success | 0d ago | 1 | 0d |
+| eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
 ## Live errors (Sentry)
 
@@ -69,15 +69,15 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-14 | eq-solves-service | [#530](https://github.com/eq-solutions/eq-service/pull/530) feat(maintenance): make test checks read as work-to-do, not empty |
 | 2026-07-14 | eq-solves-service | [#529](https://github.com/eq-solutions/eq-service/pull/529) fix(assets): import upsert (stop doubling) + NSX/ACB picker shows |
 | 2026-07-14 | eq-solves-service | [#526](https://github.com/eq-solutions/eq-service/pull/526) feat(assets): register — balloon years + per-asset frequency chip |
+| 2026-07-14 | eq-field | [#489](https://github.com/eq-solutions/eq-field/pull/489) v3.5.329 — timesheets: one-tap prefill for a worker's own week |
 | 2026-07-14 | eq-field | [#488](https://github.com/eq-solutions/eq-field/pull/488) v3.5.328 — mobile gestures: timesheets swipe + pull-to-refresh |
 | 2026-07-14 | eq-field | [#487](https://github.com/eq-solutions/eq-field/pull/487) v3.5.327 — mobile: skeleton loaders + tidy empty states |
 | 2026-07-14 | eq-field | [#486](https://github.com/eq-solutions/eq-field/pull/486) v3.5.326 — mobile: pin form actions in thumb reach (sticky footer |
-| 2026-07-14 | eq-field | [#485](https://github.com/eq-solutions/eq-field/pull/485) v3.5.325 — mobile: one honest sync-status pill (offline confidenc |
-_Showing 15 of 114 · full record in [sessions/](sessions/)_
+_Showing 15 of 115 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **Optional later: let an admin edit a worker's licence in-app.** Today an admin can only "Re-review" a worker's licences from the employer view — there's no way to correct a field (e.g. a wrong expiry); the fix path is the worker editing it in their own wallet, or you/us correcting the data. Presented this session; Royce chose the source-guard route instead, so this stays un-built. Would be a Shell change (new admin edit + touches "the worker owns their own data"). _(added 2026-07-14, your call)_
+- **Optional later: let an admin edit a worker's licence in-app.** Today an admin can only "Re-review" a worker's licences from the employer view — there's no way to correct a field (e.g. a wrong expiry); the fix path is the worker editing it in their own wallet, or you/us correcting the data. Presented this session; Royce chose the source-guard route instead, so this stays un-built. Would be a Shell change (new admin edit + touches "the worker owns their own data"). **Steelmanned 2026-07-14 (Royce asked) → explicitly PARKED for later** — the case-for (guards only fix lifetime types; the accountable admin is a read-only spectator; both current fix-paths don't scale; it's table-stakes for the Core sales motion) is written up in the session log. _(added 2026-07-14, your call — parked)_
 - **Field/Shell to surface the now-canonical calibration cert chain** — the calibration state + cert history are canonical and cross-app readable now; surfacing them in Field/Shell is their repos' work, not eq-service. _(added 2026-07-14)_
 - **Crew retry + Sentry watch** — have the crew reopen via a normal browser tab (their home-screen icon may hold stale code from the day's deploys); if anyone still freezes, the fix now self-tags the exact stall in Sentry (`verify-timeout` / `login-timeout` / `session-spinner-timeout` / `chunk-error`). _(added 2026-07-14)_
 - **Material-preset sanity check** — since materials presets now quote at Rate + markup, any entered as already-marked-up sell prices will read higher; worth a glance in the Rate library. _(added 2026-07-14, carried from #820)_
@@ -119,4 +119,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-14 09:04 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-14 09:17 UTC._
