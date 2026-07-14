@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-14 05:23 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-14 07:25 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-14 05:19 UTC → 2026-07-14 05:23 UTC)
+## Since last refresh (2026-07-14 05:23 UTC → 2026-07-14 07:25 UTC)
 
-- Merged: eq-shell [#838](https://github.com/eq-solutions/eq-shell/pull/838) feat(mobile): native Ops create/edit form + Comms Fortnight 
-- Merged: eq-shell [#827](https://github.com/eq-solutions/eq-shell/pull/827) fix(ops): clarify preset cost-vs-markup + copy polish in Rat
-- Merged: eq-shell [#826](https://github.com/eq-solutions/eq-shell/pull/826) fix(ops): prime markup on $0 material presets so cost entry 
-- Merged: eq-shell [#823](https://github.com/eq-solutions/eq-shell/pull/823) feat(ops): tidy the Rate library preset table
-- Merged: eq-shell [#821](https://github.com/eq-solutions/eq-shell/pull/821) chore(intake): vendor sync — eq-solves-intake main (through 
-- Merged: eq-shell [#820](https://github.com/eq-solutions/eq-shell/pull/820) feat(ops): preset markup fix, PDF export spinner, bookmarkab
-- Merged: eq-shell [#815](https://github.com/eq-solutions/eq-shell/pull/815) fix(security): canonical-api customer secondary-match no lon
-- Merged: eq-shell [#813](https://github.com/eq-solutions/eq-shell/pull/813) feat(ops): brand the quote PDF export (SKS logo, header, tot
+- Merged: eq-shell [#825](https://github.com/eq-solutions/eq-shell/pull/825) feat(canonical): site resolver — advisory phase (0179)
+- Merged: eq-shell [#822](https://github.com/eq-solutions/eq-shell/pull/822) one-login P3 — eq_worker_completeness() canonical RPC
+- Merged: eq-shell [#819](https://github.com/eq-solutions/eq-shell/pull/819) chore(intake): vendor sync — eq-intake PR #66 (SY9 duplicate
+- Merged: eq-shell [#818](https://github.com/eq-solutions/eq-shell/pull/818) fix(security): reconcile 0033 intake rate-limit objects with
+- Merged: eq-shell [#817](https://github.com/eq-solutions/eq-shell/pull/817) fix(security): accept-invite consumes the invite atomically 
+- Merged: eq-shell [#816](https://github.com/eq-solutions/eq-shell/pull/816) fix(security): gate gm-chat with a rate cap + input bounds
+- Merged: eq-shell [#814](https://github.com/eq-solutions/eq-shell/pull/814) one-login P2 — worker-facing two-tile Core home (My Card + F
+- Merged: eq-shell [#812](https://github.com/eq-solutions/eq-shell/pull/812) one-login P1 — carry worker_id into the Field handoff JWT + 
 
 ## ⚠ Needs you (6)
 
@@ -61,6 +61,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-14 | eq-shell | [#838](https://github.com/eq-solutions/eq-shell/pull/838) feat(mobile): native Ops create/edit form + Comms Fortnight roste |
 | 2026-07-14 | eq-shell | [#837](https://github.com/eq-solutions/eq-shell/pull/837) feat(audit): make audit_log append-only - Phase 1a immutability l |
 | 2026-07-14 | eq-shell | [#715](https://github.com/eq-solutions/eq-shell/pull/715) feat(access): gate enforcement on can()/useCan() not role names ( |
+| 2026-07-14 | eq-solves-service | [#530](https://github.com/eq-solutions/eq-service/pull/530) feat(maintenance): make test checks read as work-to-do, not empty |
 | 2026-07-14 | eq-solves-service | [#529](https://github.com/eq-solutions/eq-service/pull/529) fix(assets): import upsert (stop doubling) + NSX/ACB picker shows |
 | 2026-07-14 | eq-solves-service | [#526](https://github.com/eq-solutions/eq-service/pull/526) feat(assets): register — balloon years + per-asset frequency chip |
 | 2026-07-13 | eq-shell | [#836](https://github.com/eq-solutions/eq-shell/pull/836) feat(ops): native mobile view for EQ Ops — pipeline cards + detai |
@@ -72,13 +73,12 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-13 | eq-shell | [#831](https://github.com/eq-solutions/eq-shell/pull/831) one-login P4 compliance surface + P3↔Cards completeness alignment |
 | 2026-07-13 | eq-shell | [#832](https://github.com/eq-solutions/eq-shell/pull/832) fix(canonical): eq_site_advisory_summary authenticated-only (0181 |
 | 2026-07-13 | eq-shell | [#830](https://github.com/eq-solutions/eq-shell/pull/830) vendor: site-resolver adjudication console (eq-intake #67) |
-| 2026-07-13 | eq-shell | [#829](https://github.com/eq-solutions/eq-shell/pull/829) feat(canonical): read RPC for the site-resolver adjudication cons |
-_Showing 15 of 117 · full record in [sessions/](sessions/)_
+_Showing 15 of 116 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
 - **Phone-smoke Comms + Ops mobile on a real device** — both deployed and content-verified, but not exercised through a real authenticated session (auth-gated; not reproducible in the sandbox). _(added 2026-07-14)_
-- **Merge #838** (auto-deploys to core.eq.solutions) + real-device smoke of all four mobile surfaces (Ops pipeline / detail / form, Comms list / detail / Fortnight) — auth-gated, not reproducible in the sandbox. _(added 2026-07-14)_
+- **Real-device smoke of all four mobile surfaces** (Ops pipeline / detail / form, Comms list / detail / Fortnight) — auth-gated, needs Royce signed in on his phone; not reproducible in the sandbox. _(added 2026-07-14)_
 - **Balloon years — later phases (P2/P3) when you want them.** P2: auto-suggest each asset's balloon year from the source schedule dates (so you confirm rather than type). P3: the scheduler/run-sheet lists the exact units due in the balloon year. P1 (this session) already delivers the funding-correctness + the nomination data those build on. _(added 2026-07-14)_
 - **8 lower-value lighthouse findings left unfiled (queued)** — TOTP replay window, canonical-api warm-Lambda scope cache, dashboard-counts missing the issues entity, README migration-range drift, check-perm-sync error message, unused vendored `eq-format-ui`, a Unicode-glyph success icon on the public quote page. Pick up in a future recon if worth it. _(added 2026-07-13)_
 - **Core-side merge/retire action + dependent-record counts — DEFERRED to eq-shell#781.** The actual "collapse these dupes into one" button + the ~30-table dependent-record sweep need a Core-owned RPC over `app_data.sites`; tracked in eq-shell#781 (commented with the SY9 evidence). Detection-only shipped; the merge action is the next half. _(added 2026-07-13)_
@@ -119,4 +119,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-14 05:23 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-14 07:25 UTC._
