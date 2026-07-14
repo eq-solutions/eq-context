@@ -75,7 +75,9 @@ _If this file is >48h old, the cron is broken._
 - #456 chore(deps-dev): bump tailwindcss from 4.2.2 to 4.3.2
 
 **eq-shell:**
-- #855 feat(equipment): re-point Plant & Equipment calibration onto canonical asset_calibration
+- #858 fix(auth): bound verify-session body read + de-noise the stall watchdog
+- #857 onboarding: manager-push invite funnel becomes the "Add workers" front door (one-login T1)
+- #856 feat(brand): carry full tenant document palette + doc logo in the Service JWT
 - #847 feat(cards): tenant-branded Excel compliance register (shared builder)
 
 ---
