@@ -74,9 +74,13 @@ _If this file is >48h old, the cron is broken._
 - #456 chore(deps-dev): bump tailwindcss from 4.2.2 to 4.3.2
 
 **eq-shell:**
+- #848 feat(canonical): site-resolver adjudication — verdict capture (0183) + adjudicable console
+- #847 feat(cards): tenant-branded Excel compliance register (shared builder)
 - #846 feat(audit): Phase 1d (eq-shell) — attribute worker create/edit to the acting user
 - #844 feat(audit): Phase 1c — audit-log retention (13mo hot / 7yr cold, append-only-safe)
-- #843 fix(cards): restore phone and email on licenced rows of the compliance register
+
+**eq-solves-intake:**
+- #68 feat(intake): adjudicable console — capture the human verdict on flagged sites
 
 ---
 
