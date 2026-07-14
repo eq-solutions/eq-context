@@ -10,6 +10,10 @@ last_updated: 2026-07-12
 
 # Changelog — EQ Shell
 
+## [2026-07-14] "Add workers" opens the invite funnel + closed an anon-exec purge hole (PR #857 — LIVE)
+- **The "Add workers" admin screen is now the manager-push invite funnel, not a dead-end QR.** `/admin/workers` → invites hub (list + "Invite worker"); "Invite worker" → a name/mobile/role form that mints a claim link employing the worker (`active:true`) and setting up their card in one step; the old open-enrolment QR is demoted to a secondary "Worker join QR". The hub + form were already built but unplugged at the router — this re-points them (3-file routing change). Auto-deployed to core.eq.solutions.
+- **Security:** `public.eq_audit_retention_run()` (the credential-audit purge added by the audit-retention work) was executable by anon + authenticated — callable with the public anon key — because the prior migration's `REVOKE … FROM PUBLIC` doesn't strip Supabase's explicit default grants. Revoked to postgres+service_role only (migration `2026_07_14d`, jvkn); the weekly pg_cron job is unaffected.
+
 ## [2026-07-12] Staff dedup + one-per-person lock (PR #782, migration 0175 — LIVE)
 - Root-caused the recurring duplicate-staff problem and closed it end-to-end. **9 SKS duplicate people merged to one active record each** (email-dup groups 9→0; EQ/nxoj already clean): 19 stranded licences + ~62 roster entries + timesheets repointed onto the surviving record, 12 duplicates archived (soft; reversal snapshot kept). **11 middle-name-jammed names cleaned** at the worker source (jvkn) + staff projection — incl. Royce Milmlow. **The lock (`0175`)** adds two partial unique indexes so at most one ACTIVE `app_data.staff` row exists per person (by email and by worker link) — no write path can silently re-fork again. Applied to all 3 planes via the One Pipe (Royce-approved gate). Recurrence itself was already stopped 07-11 by the Cards adopt-by-email/phone front door; this cleaned the backlog + added the hard guarantee.
 
