@@ -76,8 +76,7 @@ _If this file is >48h old, the cron is broken._
 - #456 chore(deps-dev): bump tailwindcss from 4.2.2 to 4.3.2
 
 **eq-shell:**
-- #853 feat(audit): Phase 1c — audit-log retention (13mo hot / 7yr cold, append-only-safe)
-- #852 fix(drift): register service.instrument_calibration_events as a tracked safe-invoker read
+- #854 docs(drift): retruth calibration-view allow-list comment (adoption done)
 - #847 feat(cards): tenant-branded Excel compliance register (shared builder)
 
 ---
