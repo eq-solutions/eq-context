@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-14 09:51 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-14 10:01 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-14 09:37 UTC → 2026-07-14 09:51 UTC)
+## Since last refresh (2026-07-14 09:51 UTC → 2026-07-14 10:01 UTC)
 
-- Merged: eq-shell [#854](https://github.com/eq-solutions/eq-shell/pull/854) docs(drift): retruth calibration-view allow-list comment (ad
-- Merged: eq-shell [#835](https://github.com/eq-solutions/eq-shell/pull/835) feat(comms): native mobile view for NSW Comms — card list + 
-- Merged: eq-shell [#832](https://github.com/eq-solutions/eq-shell/pull/832) fix(canonical): eq_site_advisory_summary authenticated-only 
-- Merged: eq-shell [#829](https://github.com/eq-solutions/eq-shell/pull/829) feat(canonical): read RPC for the site-resolver adjudication
-- Merged: eq-shell [#827](https://github.com/eq-solutions/eq-shell/pull/827) fix(ops): clarify preset cost-vs-markup + copy polish in Rat
-- Merged: eq-shell [#824](https://github.com/eq-solutions/eq-shell/pull/824) fix(security): drop vulnerable xlsx from the client bundle —
-- Merged: eq-shell [#822](https://github.com/eq-solutions/eq-shell/pull/822) one-login P3 — eq_worker_completeness() canonical RPC
-- Merged: eq-shell [#814](https://github.com/eq-solutions/eq-shell/pull/814) one-login P2 — worker-facing two-tile Core home (My Card + F
+- Merged: eq-shell [#836](https://github.com/eq-solutions/eq-shell/pull/836) feat(ops): native mobile view for EQ Ops — pipeline cards + 
+- Merged: eq-shell [#834](https://github.com/eq-solutions/eq-shell/pull/834) one-login field-first — flag-gated employee→Field on Core en
+- Merged: eq-shell [#833](https://github.com/eq-solutions/eq-shell/pull/833) fix(auth): recover from stalled mobile login instead of a fr
+- Merged: eq-shell [#831](https://github.com/eq-solutions/eq-shell/pull/831) one-login P4 compliance surface + P3↔Cards completeness alig
+- Merged: eq-shell [#830](https://github.com/eq-solutions/eq-shell/pull/830) vendor: site-resolver adjudication console (eq-intake #67)
+- Merged: eq-shell [#828](https://github.com/eq-solutions/eq-shell/pull/828) one-login P1/P3 hardening — fail-safe worker lookup + revoke
+- Merged: eq-shell [#821](https://github.com/eq-solutions/eq-shell/pull/821) chore(intake): vendor sync — eq-solves-intake main (through 
+- Merged: eq-solves-service [#535](https://github.com/eq-solutions/eq-service/pull/535) chore(migrations): renumber colliding prefixes 0180/0181/018
 
 ## ⚠ Needs you (6)
 
@@ -36,7 +36,7 @@ _2026-07-14 09:51 UTC · what needs your attention. Full snapshot: [suite-state.
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 2 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 8 | 8d |
-| eq-field | ✓ success | 0d ago | 3 | 2d |
+| eq-field | ✓ success | 0d ago | 2 | 2d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
@@ -77,6 +77,9 @@ _Showing 15 of 113 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **DISPATCH the retention job to the live databases** — merging landed the code; applying it is your gated action: run the tenant-migration pipeline (`0184`) for EQ + SKS, and apply the login-database file (`2026_07_14c`) by hand. Safe anytime — it moves no data now. _(added 2026-07-14)_
+- **Cross-app attribution (the rest of it)** — Field / Service / Intake still log their own edits as "system"; making those record the person is a multi-app job with no single choke point. _(added 2026-07-14)_
+- **Later audit polish** — before/after values on each change, PDF export, and logging who reads the log; then on-request data erasure and anomaly alerts. _(added 2026-07-14)_
 - **Your call: keep or bin the earlier EQ-vs-Microsoft/Google security comparison PDF** (`EQ-Security-One-Pager-2026-07-14.pdf`) — superseded by the CEO data-security version but left in Downloads. _(added 2026-07-14)_
 - **Optional later: let an admin edit a worker's licence in-app.** Today an admin can only "Re-review" a worker's licences from the employer view — there's no way to correct a field (e.g. a wrong expiry); the fix path is the worker editing it in their own wallet, or you/us correcting the data. Presented this session; Royce chose the source-guard route instead, so this stays un-built. Would be a Shell change (new admin edit + touches "the worker owns their own data"). **Steelmanned 2026-07-14 (Royce asked) → explicitly PARKED for later** — the case-for (guards only fix lifetime types; the accountable admin is a read-only spectator; both current fix-paths don't scale; it's table-stakes for the Core sales motion) is written up in the session log. **RESOLVED 2026-07-14 — Royce: "let it ride."** Design landed = *flag, don't edit*: tidy data on the way in (ingest guards + onboarding normalisation), and for judgment calls the admin uses the existing decline-with-comment loop → worker fixes in their own wallet. Preserves worker-ownership; no admin-edit build. The only theoretical gap (a soft "flag for fix" nudge on an already-*connected* worker vs a decline) was judged hair-splitting and left alone. _(added 2026-07-14; resolved — not building)_
 - **Field/Shell to surface the now-canonical calibration cert chain** — the calibration state + cert history are canonical and cross-app readable now; surfacing them in Field/Shell is their repos' work, not eq-service. _(added 2026-07-14)_
@@ -84,10 +87,7 @@ _Showing 15 of 113 · full record in [sessions/](sessions/)_
 - **Material-preset sanity check** — since materials presets now quote at Rate + markup, any entered as already-marked-up sell prices will read higher; worth a glance in the Rate library. _(added 2026-07-14, carried from #820)_
 - **Phone-smoke Comms + Ops mobile on a real device** — both deployed and content-verified, but not exercised through a real authenticated session (auth-gated; not reproducible in the sandbox). _(added 2026-07-14)_
 - **Real-device smoke of all four mobile surfaces** (Ops pipeline / detail / form, Comms list / detail / Fortnight) — auth-gated, needs Royce signed in on his phone; not reproducible in the sandbox. _(added 2026-07-14)_
-- **Balloon years — later phases (P2/P3) when you want them.** P2: auto-suggest each asset's balloon year from the source schedule dates (so you confirm rather than type). P3: the scheduler/run-sheet lists the exact units due in the balloon year. P1 (this session) already delivers the funding-correctness + the nomination data those build on. _(added 2026-07-14)_
-- **8 lower-value lighthouse findings left unfiled (queued)** — TOTP replay window, canonical-api warm-Lambda scope cache, dashboard-counts missing the issues entity, README migration-range drift, check-perm-sync error message, unused vendored `eq-format-ui`, a Unicode-glyph success icon on the public quote page. Pick up in a future recon if worth it. _(added 2026-07-13)_
-- **Core-side merge/retire action + dependent-record counts — DEFERRED to eq-shell#781.** The actual "collapse these dupes into one" button + the ~30-table dependent-record sweep need a Core-owned RPC over `app_data.sites`; tracked in eq-shell#781 (commented with the SY9 evidence). Detection-only shipped; the merge action is the next half. _(added 2026-07-13)_
-_…and 343 more · [eq/pending.md](eq/pending.md)_
+_…and 346 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -119,4 +119,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-14 09:51 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-14 10:01 UTC._
