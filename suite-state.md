@@ -76,7 +76,7 @@ _If this file is >48h old, the cron is broken._
 - #456 chore(deps-dev): bump tailwindcss from 4.2.2 to 4.3.2
 
 **eq-shell:**
-- #850 docs: reflect that Resend email delivery is live in production
+- #852 fix(drift): register service.instrument_calibration_events as a tracked safe-invoker read
 - #848 feat(canonical): site-resolver adjudication — verdict capture (0183) + adjudicable console
 - #847 feat(cards): tenant-branded Excel compliance register (shared builder)
 - #846 feat(audit): Phase 1d (eq-shell) — attribute worker create/edit to the acting user
