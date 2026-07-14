@@ -67,7 +67,7 @@ _If this file is >48h old, the cron is broken._
 
 **eq-service:**
 - #534 fix(testing): backfill canonical calibration from legacy assets columns (consolidation 1/4)
-- #533 fix(reports): inherit tenant brand in reports + notification emails
+- #533 feat(reports): tenant-branded reports + run-sheet redesign
 - #524 docs(scope): balloon-years proposal — nominate low-frequency majors in-app
 - #520 chore(deps): bump resend from 6.12.4 to 6.17.2
 - #518 chore(deps): bump @eq-solutions/roles from v2.4.0 to v2.5.1 in the eq-design-system group across 1 directory
@@ -76,7 +76,7 @@ _If this file is >48h old, the cron is broken._
 - #456 chore(deps-dev): bump tailwindcss from 4.2.2 to 4.3.2
 
 **eq-shell:**
-- #854 docs(drift): retruth calibration-view allow-list comment (adoption done)
+- #855 feat(equipment): re-point Plant & Equipment calibration onto canonical asset_calibration
 - #847 feat(cards): tenant-branded Excel compliance register (shared builder)
 
 ---
