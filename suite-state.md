@@ -8,7 +8,7 @@ status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-07-13 (nightly cron)_
+_Last verified: 2026-07-14 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -37,10 +37,10 @@ _If this file is >48h old, the cron is broken._
 |--------|-------|--------|
 | Sites | 224 | app_data.sites |
 | Customers | 42 | app_data.customers |
-| Assets | 2,821 | app_data.assets |
+| Assets | 2,836 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
 | Users | 5 | service.tenant_members |
-| Maintenance checks | 22 | service.maintenance_checks |
+| Maintenance checks | 23 | service.maintenance_checks |
 | Defects | 0 | service.defects |
 
 **SKS tenant ID on ehow:** `7dee117c-98bd-4d39-af8c-2c81d02a1e85`
@@ -58,14 +58,13 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-07-13)
+## Open PRs (as of 2026-07-14)
 
 **eq-field:**
 - #466 chore(ci): enable Dependabot for GitHub Actions
 - #461 feat(auth): EQ tenant is Core-only — close the demo login gate (v3.5.306)
 
 **eq-service:**
-- #526 feat(assets): balloon years — nominate low-frequency majors in-app
 - #524 docs(scope): balloon-years proposal — nominate low-frequency majors in-app
 - #520 chore(deps): bump resend from 6.12.4 to 6.17.2
 - #518 chore(deps): bump @eq-solutions/roles from v2.4.0 to v2.5.1 in the eq-design-system group across 1 directory
@@ -74,11 +73,12 @@ _If this file is >48h old, the cron is broken._
 - #456 chore(deps-dev): bump tailwindcss from 4.2.2 to 4.3.2
 
 **eq-shell:**
+- #837 feat(audit): make audit_log append-only - Phase 1a immutability lockdown
 - #715 feat(access): gate enforcement on can()/useCan() not role names (access-model Phase 1)
 
 ---
 
-## System Health (as of 2026-07-13)
+## System Health (as of 2026-07-14)
 
 **CI on main:**
 
@@ -93,7 +93,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 186 (latest: 0181) applied
+**Migrations:** eq-service has 187 (latest: 0182) applied
 
 ---
 
