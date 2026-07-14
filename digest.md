@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-14 11:07 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-14 13:33 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-14 11:06 UTC → 2026-07-14 11:07 UTC)
+## Since last refresh (2026-07-14 11:07 UTC → 2026-07-14 13:33 UTC)
 
-- Merged: eq-shell [#840](https://github.com/eq-solutions/eq-shell/pull/840) feat(audit): make public.audit_log (credential audit) append
-- Merged: eq-shell [#837](https://github.com/eq-solutions/eq-shell/pull/837) feat(audit): make audit_log append-only - Phase 1a immutabil
-- Merged: eq-shell [#836](https://github.com/eq-solutions/eq-shell/pull/836) feat(ops): native mobile view for EQ Ops — pipeline cards + 
-- Merged: eq-shell [#834](https://github.com/eq-solutions/eq-shell/pull/834) one-login field-first — flag-gated employee→Field on Core en
-- Merged: eq-shell [#833](https://github.com/eq-solutions/eq-shell/pull/833) fix(auth): recover from stalled mobile login instead of a fr
-- Merged: eq-shell [#828](https://github.com/eq-solutions/eq-shell/pull/828) one-login P1/P3 hardening — fail-safe worker lookup + revoke
+- Merged: eq-shell [#839](https://github.com/eq-solutions/eq-shell/pull/839) feat(audit): Phase 1b — legible activity log (de-noise + ide
+- Merged: eq-shell [#838](https://github.com/eq-solutions/eq-shell/pull/838) feat(mobile): native Ops create/edit form + Comms Fortnight 
+- Merged: eq-shell [#835](https://github.com/eq-solutions/eq-shell/pull/835) feat(comms): native mobile view for NSW Comms — card list + 
+- Merged: eq-shell [#824](https://github.com/eq-solutions/eq-shell/pull/824) fix(security): drop vulnerable xlsx from the client bundle —
+- Merged: eq-shell [#715](https://github.com/eq-solutions/eq-shell/pull/715) feat(access): gate enforcement on can()/useCan() not role na
 - Merged: eq-solves-service [#536](https://github.com/eq-solutions/eq-service/pull/536) feat(brand): sync document palette + doc logo to tenant_sett
 - Merged: eq-solves-service [#535](https://github.com/eq-solutions/eq-service/pull/535) chore(migrations): renumber colliding prefixes 0180/0181/018
+- Merged: eq-solves-service [#534](https://github.com/eq-solutions/eq-service/pull/534) fix(testing): backfill canonical calibration from legacy ass
 
 ## ⚠ Needs you (6)
 
@@ -75,6 +75,9 @@ _Showing 15 of 114 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **MERGE (needs Royce): PR #863** — I couldn't merge it myself (merge on this repo auto-deploys auth code, so the tools blocked it). Squash-merge in the GitHub UI when you want it live; no urgency — no live incident. _(added 2026-07-14)_
+- **Cleanup, anytime: the old manual colour copy for SKS can be trimmed** now the pipe is self-maintaining — but keep the white on-dark logo, which the admin settings don't carry yet. _(added 2026-07-14)_
+- **Nice-to-have: add a "logo for dark backgrounds" slot in the admin brand settings** — reports put the logo on a dark navy header and the settings only hold one (light) logo, so the white version is currently hard-set on the Service side. _(added 2026-07-14)_
 - **DEPLOY (needs Royce, next auth deploy): apply the two database helpers THEN merge PR #862** — the database change must land before the code. Production database + auth deploys are permission-gated, so this waits on you. No urgency — zero broken invites live today. _(added 2026-07-14)_
 - **Minor, anytime: 6 users are missing a sign-in record** (their in-app tools would fail to authorise them) — heal by running the existing admin "backfill" action once. Pre-existing, not caused by this work. _(added 2026-07-14)_
 - **NEXT — Claude as the adjudicator on the "unsure" rows.** Labels now accumulate. Wire the AI to read the full record context (customer, neighbouring sites, import source), propose a verdict + a plain-English reason on the ambiguous middle, human confirms with one tap. This is the jump from classical MDM to the ask-anything brain, and it makes the match-key decision self-calibrating instead of a one-time guess. _(added 2026-07-14)_
@@ -82,10 +85,7 @@ _Showing 15 of 114 · full record in [sessions/](sessions/)_
 - **Cross-app attribution (the rest of it)** — Field / Service / Intake still log their own edits as "system"; making those record the person is a multi-app job with no single choke point. _(added 2026-07-14)_
 - **Later audit polish** — PDF / branded-report export, and logging who reads the log; then on-request data erasure and anomaly alerts. _(added 2026-07-14; before/after values shipped in #860)_
 - **Your call: keep or bin the earlier EQ-vs-Microsoft/Google security comparison PDF** (`EQ-Security-One-Pager-2026-07-14.pdf`) — superseded by the CEO data-security version but left in Downloads. _(added 2026-07-14)_
-- **Optional later: let an admin edit a worker's licence in-app.** Today an admin can only "Re-review" a worker's licences from the employer view — there's no way to correct a field (e.g. a wrong expiry); the fix path is the worker editing it in their own wallet, or you/us correcting the data. Presented this session; Royce chose the source-guard route instead, so this stays un-built. Would be a Shell change (new admin edit + touches "the worker owns their own data"). **Steelmanned 2026-07-14 (Royce asked) → explicitly PARKED for later** — the case-for (guards only fix lifetime types; the accountable admin is a read-only spectator; both current fix-paths don't scale; it's table-stakes for the Core sales motion) is written up in the session log. **RESOLVED 2026-07-14 — Royce: "let it ride."** Design landed = *flag, don't edit*: tidy data on the way in (ingest guards + onboarding normalisation), and for judgment calls the admin uses the existing decline-with-comment loop → worker fixes in their own wallet. Preserves worker-ownership; no admin-edit build. The only theoretical gap (a soft "flag for fix" nudge on an already-*connected* worker vs a decline) was judged hair-splitting and left alone. _(added 2026-07-14; resolved — not building)_
-- **Phase 4 — optional null-out of the 18 stale plant_equipment values on the assets calibration columns (NO column drop).** After cutover those rows' `last_service_date/next_service_due/cert_url` are a stale mirror. **Cannot drop the columns** — they're SHARED with the maintainable-asset PPM engine (`eq_ppm_*`), dashboard + intake (see substrate correction below). Cosmetic-only, gated after eyeballing the deployed apps. _(added 2026-07-14)_
-- **Ops-brief "service due" now surfaces only calibration gear.** After Phase 3, `fetchServiceDue` reads `asset_calibration.calibration_due` (plant_equipment/calibration). If maintainable-asset PPM-due should ALSO appear in the morning brief, source it from `maintenance_checks`/`eq_ppm_*` — `assets.next_service_due` is unpopulated (0/2830) so it was never a live signal, not a regression. _(added 2026-07-14)_
-_…and 351 more · [eq/pending.md](eq/pending.md)_
+_…and 353 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -117,4 +117,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-14 11:07 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-14 13:33 UTC._
