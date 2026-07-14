@@ -15,6 +15,16 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## EQ Service reports — now render each tenant's real brand, and auto-update (2026-07-14, BUILT + MERGED + LIVE)
+*Maintenance run-sheets and reports were coming out in EQ's sky-blue with no logo. They now render in SKS's own document colours (navy + purple + grey) with the SKS logo on every page. And it's self-maintaining: change the logo or colours in the admin brand settings and reports pick it up automatically on the next login — no manual step, and it works the same for any future tenant.*
+- [x] **Reports render the tenant's brand, not EQ's.** Fixed the branding step so every report + emailed notice uses the tenant's real colours + logo instead of EQ defaults; redesigned the run-sheet (navy headers, purple section markers, grey row banding, white logo on the masthead). eq-service #533 MERGED + LIVE. _(done 2026-07-14)_
+- [x] **Report branding auto-updates from the admin brand settings.** The tenant's full colour set + document logo now flow from admin settings through to reports on each login (was a one-time manual copy). eq-shell #856 (admin-merged) + eq-service #536, both LIVE + verified (production deploys ready, sites healthy). _(done 2026-07-14)_
+- [ ] **Cleanup, anytime: the old manual colour copy for SKS can be trimmed** now the pipe is self-maintaining — but keep the white on-dark logo, which the admin settings don't carry yet. _(added 2026-07-14)_
+- [ ] **Security follow-up (#851): a database table has row-level security disabled** (`service.instrument_calibration_events`) — this is why the automated safety check was red; it was bypassed (with your OK) to ship the branding change, which has no database content. Enable RLS on it to clear the gate. Pre-existing, unrelated to branding. _(added 2026-07-14)_
+- [ ] **Nice-to-have: add a "logo for dark backgrounds" slot in the admin brand settings** — reports put the logo on a dark navy header and the settings only hold one (light) logo, so the white version is currently hard-set on the Service side. _(added 2026-07-14)_
+
+---
+
 ## EQ invite-accept — right sign-in record on accept + leftover-record detector (2026-07-14, BUILT + PR OPEN, NOT deployed)
 *When someone accepts an invite, the system now links them to the correct sign-in record instead of occasionally creating a mismatched one (which silently locked them out of the apps). A clear "your email needs a quick reset" message replaces the old generic "couldn't accept the invite". A daily background check now flags the rare leftover-sign-in-record condition so it never surprises anyone again. **Nothing is broken live today — this is preventive.** Parked on PR #862 for the next deliberate auth deploy; no rush.*
 - [x] **Reuse the existing sign-in record on accept + clear error for the leftover-record case.** Looks up the sign-in identity by email and reuses it (was creating a random one → mismatch → permanent lock-out); leftover record → a plain "needs a quick reset" message instead of a generic failure. 10 unit tests; two database helpers written + checked against live data read-only. Branch `claude/invite-accept-auth-id-reuse` (`58cbaca`). _(done 2026-07-14)_
