@@ -60,13 +60,15 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-14)
 
+**eq-cards:**
+- #155 fix(web): pin CanvasKit renderer; correct stale HTML-renderer premise
+
 **eq-field:**
 - #466 chore(ci): enable Dependabot for GitHub Actions
 - #461 feat(auth): EQ tenant is Core-only — close the demo login gate (v3.5.306)
 
 **eq-service:**
 - #534 fix(testing): backfill canonical calibration from legacy assets columns (consolidation 1/4)
-- #533 feat(reports): tenant-branded reports + run-sheet redesign
 - #524 docs(scope): balloon-years proposal — nominate low-frequency majors in-app
 - #520 chore(deps): bump resend from 6.12.4 to 6.17.2
 - #518 chore(deps): bump @eq-solutions/roles from v2.4.0 to v2.5.1 in the eq-design-system group across 1 directory
@@ -75,6 +77,9 @@ _If this file is >48h old, the cron is broken._
 - #456 chore(deps-dev): bump tailwindcss from 4.2.2 to 4.3.2
 
 **eq-shell:**
+- #862 fix(auth): harden invite-accept auth-identity binding + orphan detector
+- #861 fix(calibration): retire legacy asset-calibration reads/writes in 3 remaining consumers (Phase 3, #855 follow-up)
+- #859 fix(audit): lock EXECUTE on public.eq_audit_retention_run (anon/authenticated)
 - #858 fix(auth): bound verify-session body read + de-noise the stall watchdog
 - #857 onboarding: manager-push invite funnel becomes the "Add workers" front door (one-login T1)
 - #856 feat(brand): carry full tenant document palette + doc logo in the Service JWT
