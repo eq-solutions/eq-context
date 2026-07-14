@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-14 10:29 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-14 10:30 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-14 10:13 UTC → 2026-07-14 10:29 UTC)
+## Since last refresh (2026-07-14 10:29 UTC → 2026-07-14 10:30 UTC)
 
-- Merged: eq-shell [#836](https://github.com/eq-solutions/eq-shell/pull/836) feat(ops): native mobile view for EQ Ops — pipeline cards + 
-- Merged: eq-shell [#834](https://github.com/eq-solutions/eq-shell/pull/834) one-login field-first — flag-gated employee→Field on Core en
-- Merged: eq-shell [#833](https://github.com/eq-solutions/eq-shell/pull/833) fix(auth): recover from stalled mobile login instead of a fr
-- Merged: eq-shell [#831](https://github.com/eq-solutions/eq-shell/pull/831) one-login P4 compliance surface + P3↔Cards completeness alig
-- Merged: eq-shell [#830](https://github.com/eq-solutions/eq-shell/pull/830) vendor: site-resolver adjudication console (eq-intake #67)
-- Merged: eq-shell [#828](https://github.com/eq-solutions/eq-shell/pull/828) one-login P1/P3 hardening — fail-safe worker lookup + revoke
-- Merged: eq-shell [#821](https://github.com/eq-solutions/eq-shell/pull/821) chore(intake): vendor sync — eq-solves-intake main (through 
+- Merged: eq-shell [#860](https://github.com/eq-solutions/eq-shell/pull/860) feat(audit): Phase 2b — before/after drill-down on the activ
+- Merged: eq-shell [#835](https://github.com/eq-solutions/eq-shell/pull/835) feat(comms): native mobile view for NSW Comms — card list + 
+- Merged: eq-shell [#832](https://github.com/eq-solutions/eq-shell/pull/832) fix(canonical): eq_site_advisory_summary authenticated-only 
+- Merged: eq-shell [#829](https://github.com/eq-solutions/eq-shell/pull/829) feat(canonical): read RPC for the site-resolver adjudication
+- Merged: eq-shell [#824](https://github.com/eq-solutions/eq-shell/pull/824) fix(security): drop vulnerable xlsx from the client bundle —
+- Merged: eq-shell [#814](https://github.com/eq-solutions/eq-shell/pull/814) one-login P2 — worker-facing two-tile Core home (My Card + F
 - Merged: eq-solves-service [#535](https://github.com/eq-solutions/eq-service/pull/535) chore(migrations): renumber colliding prefixes 0180/0181/018
+- Merged: eq-solves-service [#533](https://github.com/eq-solutions/eq-service/pull/533) feat(reports): tenant-branded reports + run-sheet redesign
 
 ## ⚠ Needs you (6)
 
@@ -34,10 +34,10 @@ _2026-07-14 10:29 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 8 | 0d |
+| eq-shell | ✓ success | 0d ago | 7 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 7 | 8d |
 | eq-field | ✓ success | 0d ago | 2 | 2d |
-| eq-cards | ✓ success | 0d ago | 1 | 0d |
+| eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
 ## Live errors (Sentry)
@@ -56,6 +56,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-14 | eq-shell | [#860](https://github.com/eq-solutions/eq-shell/pull/860) feat(audit): Phase 2b — before/after drill-down on the activity l |
 | 2026-07-14 | eq-shell | [#855](https://github.com/eq-solutions/eq-shell/pull/855) feat(equipment): re-point Plant & Equipment calibration onto cano |
 | 2026-07-14 | eq-shell | [#854](https://github.com/eq-solutions/eq-shell/pull/854) docs(drift): retruth calibration-view allow-list comment (adoptio |
 | 2026-07-14 | eq-shell | [#853](https://github.com/eq-solutions/eq-shell/pull/853) feat(audit): Phase 1c — audit-log retention (13mo hot / 7yr cold, |
@@ -70,8 +71,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-14 | eq-shell | [#837](https://github.com/eq-solutions/eq-shell/pull/837) feat(audit): make audit_log append-only - Phase 1a immutability l |
 | 2026-07-14 | eq-shell | [#715](https://github.com/eq-solutions/eq-shell/pull/715) feat(access): gate enforcement on can()/useCan() not role names ( |
 | 2026-07-14 | eq-solves-service | [#533](https://github.com/eq-solutions/eq-service/pull/533) feat(reports): tenant-branded reports + run-sheet redesign |
-| 2026-07-14 | eq-solves-service | [#535](https://github.com/eq-solutions/eq-service/pull/535) chore(migrations): renumber colliding prefixes 0180/0181/0182 → 0 |
-_Showing 15 of 112 · full record in [sessions/](sessions/)_
+_Showing 15 of 113 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
@@ -117,4 +117,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-14 10:29 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-14 10:30 UTC._
