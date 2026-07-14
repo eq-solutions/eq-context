@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-14 07:25 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-14 07:35 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-14 05:23 UTC → 2026-07-14 07:25 UTC)
+## Since last refresh (2026-07-14 07:25 UTC → 2026-07-14 07:35 UTC)
 
-- Merged: eq-shell [#825](https://github.com/eq-solutions/eq-shell/pull/825) feat(canonical): site resolver — advisory phase (0179)
-- Merged: eq-shell [#822](https://github.com/eq-solutions/eq-shell/pull/822) one-login P3 — eq_worker_completeness() canonical RPC
-- Merged: eq-shell [#819](https://github.com/eq-solutions/eq-shell/pull/819) chore(intake): vendor sync — eq-intake PR #66 (SY9 duplicate
-- Merged: eq-shell [#818](https://github.com/eq-solutions/eq-shell/pull/818) fix(security): reconcile 0033 intake rate-limit objects with
-- Merged: eq-shell [#817](https://github.com/eq-solutions/eq-shell/pull/817) fix(security): accept-invite consumes the invite atomically 
-- Merged: eq-shell [#816](https://github.com/eq-solutions/eq-shell/pull/816) fix(security): gate gm-chat with a rate cap + input bounds
-- Merged: eq-shell [#814](https://github.com/eq-solutions/eq-shell/pull/814) one-login P2 — worker-facing two-tile Core home (My Card + F
-- Merged: eq-shell [#812](https://github.com/eq-solutions/eq-shell/pull/812) one-login P1 — carry worker_id into the Field handoff JWT + 
+- Merged: eq-shell [#829](https://github.com/eq-solutions/eq-shell/pull/829) feat(canonical): read RPC for the site-resolver adjudication
+- Merged: eq-shell [#827](https://github.com/eq-solutions/eq-shell/pull/827) fix(ops): clarify preset cost-vs-markup + copy polish in Rat
+- Merged: eq-shell [#826](https://github.com/eq-solutions/eq-shell/pull/826) fix(ops): prime markup on $0 material presets so cost entry 
+- Merged: eq-shell [#823](https://github.com/eq-solutions/eq-shell/pull/823) feat(ops): tidy the Rate library preset table
+- Merged: eq-shell [#821](https://github.com/eq-solutions/eq-shell/pull/821) chore(intake): vendor sync — eq-solves-intake main (through 
+- Merged: eq-shell [#820](https://github.com/eq-solutions/eq-shell/pull/820) feat(ops): preset markup fix, PDF export spinner, bookmarkab
+- Merged: eq-shell [#815](https://github.com/eq-solutions/eq-shell/pull/815) fix(security): canonical-api customer secondary-match no lon
+- Merged: eq-shell [#813](https://github.com/eq-solutions/eq-shell/pull/813) feat(ops): brand the quote PDF export (SKS logo, header, tot
 
 ## ⚠ Needs you (6)
 
@@ -35,7 +35,7 @@ _2026-07-14 07:25 UTC · what needs your attention. Full snapshot: [suite-state.
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 0 | — |
-| eq-solves-service | ✓ success | 0d ago | 6 | 7d |
+| eq-solves-service | ✓ success | -1d ago | 6 | 7d |
 | eq-field | ✓ success | 0d ago | 2 | 1d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
@@ -61,6 +61,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-14 | eq-shell | [#838](https://github.com/eq-solutions/eq-shell/pull/838) feat(mobile): native Ops create/edit form + Comms Fortnight roste |
 | 2026-07-14 | eq-shell | [#837](https://github.com/eq-solutions/eq-shell/pull/837) feat(audit): make audit_log append-only - Phase 1a immutability l |
 | 2026-07-14 | eq-shell | [#715](https://github.com/eq-solutions/eq-shell/pull/715) feat(access): gate enforcement on can()/useCan() not role names ( |
+| 2026-07-14 | eq-solves-service | [#531](https://github.com/eq-solutions/eq-service/pull/531) feat(testing): calibration becomes canonical (asset_calibration + |
 | 2026-07-14 | eq-solves-service | [#530](https://github.com/eq-solutions/eq-service/pull/530) feat(maintenance): make test checks read as work-to-do, not empty |
 | 2026-07-14 | eq-solves-service | [#529](https://github.com/eq-solutions/eq-service/pull/529) fix(assets): import upsert (stop doubling) + NSX/ACB picker shows |
 | 2026-07-14 | eq-solves-service | [#526](https://github.com/eq-solutions/eq-service/pull/526) feat(assets): register — balloon years + per-asset frequency chip |
@@ -72,11 +73,12 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-13 | eq-shell | [#824](https://github.com/eq-solutions/eq-shell/pull/824) fix(security): drop vulnerable xlsx from the client bundle — pars |
 | 2026-07-13 | eq-shell | [#831](https://github.com/eq-solutions/eq-shell/pull/831) one-login P4 compliance surface + P3↔Cards completeness alignment |
 | 2026-07-13 | eq-shell | [#832](https://github.com/eq-solutions/eq-shell/pull/832) fix(canonical): eq_site_advisory_summary authenticated-only (0181 |
-| 2026-07-13 | eq-shell | [#830](https://github.com/eq-solutions/eq-shell/pull/830) vendor: site-resolver adjudication console (eq-intake #67) |
 _Showing 15 of 116 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **Crew retry + Sentry watch** — have the crew reopen via a normal browser tab (their home-screen icon may hold stale code from the day's deploys); if anyone still freezes, the fix now self-tags the exact stall in Sentry (`verify-timeout` / `login-timeout` / `session-spinner-timeout` / `chunk-error`). _(added 2026-07-14)_
+- **Material-preset sanity check** — since materials presets now quote at Rate + markup, any entered as already-marked-up sell prices will read higher; worth a glance in the Rate library. _(added 2026-07-14, carried from #820)_
 - **Phone-smoke Comms + Ops mobile on a real device** — both deployed and content-verified, but not exercised through a real authenticated session (auth-gated; not reproducible in the sandbox). _(added 2026-07-14)_
 - **Real-device smoke of all four mobile surfaces** (Ops pipeline / detail / form, Comms list / detail / Fortnight) — auth-gated, needs Royce signed in on his phone; not reproducible in the sandbox. _(added 2026-07-14)_
 - **Balloon years — later phases (P2/P3) when you want them.** P2: auto-suggest each asset's balloon year from the source schedule dates (so you confirm rather than type). P3: the scheduler/run-sheet lists the exact units due in the balloon year. P1 (this session) already delivers the funding-correctness + the nomination data those build on. _(added 2026-07-14)_
@@ -85,9 +87,7 @@ _Showing 15 of 116 · full record in [sessions/](sessions/)_
 - **eq-shell's OWN vulnerable `xlsx` — FIX OPEN as draft eq-shell PR #824, needs review + merge.** Distinct from the vendored-copy item above: eq-shell had `xlsx` (SheetJS, proto-pollution/ReDoS) as a direct dep in TWO of its own files — the Comms "import from Melbourne workbook" parser (a 424 kB chunk in the prod client bundle) and the server-side `upload-gm-report` function. Both repointed to `exceljs` (already a dep); `xlsx` removed from package.json + lockfile. Build confirmed no `xlsx-*.js` chunk; parse behaviour verified. Draft PR — merge auto-deploys to core.eq.solutions, so Royce-gated. _(added 2026-07-13)_
 - **Enforcing phase + the match-key decision — DEFERRED, gated on advisory evidence.** The resolver only WATCHES today. Flipping it to enforce (redirect a duplicate write onto the existing site) is a later one-branch change, and it needs Royce's business call on how strict a match is — address-match-now vs mandate-a-canonical-code (the eq-shell#781 fork). Let `app_data.site_resolution_advisory` fill on ~2 weeks of real traffic first; that count is also the CEO-facing "duplicates prevented" metric (`select outcome, confidence, count(*) … group by 1,2`). _(added 2026-07-13)_
 - **Option B (OCR consolidation onto EQ Intake `api-extract`) — HELD (recon'd 2026-07-13, NOT a swap).** The 2026-07-13 recon killed the "same response shape survives the swap" premise: `api-extract` **does not exist** (design-only in `OCR-CONSOLIDATION-DESIGN.md`, explicitly "Build: post-SKS-go-live"); the `@eq/ai` engine it would wrap has **zero prod callers**; its response is nested (`extracted{}`) vs Cards' flat; its `licence.schema.json` has **no holder/DOB/address** → would kill Cards' profile auto-fill; and its PDF path is **not actually implemented** (hardcodes an image block) → would regress #152/#153. It's a multi-day cross-repo BUILD, not a repoint. Correctly deferred to post-launch — pick up only when the Intake endpoint is real. _(updated 2026-07-13)_
-- **Royce device-confirm the Field add-crew flow on his phone** — the "Added <name>" toast now makes it visible whether a name landed; still worth one real-device pass end-to-end (add crew → sign → submit). _(added 2026-07-13)_
-- **Trace + remove the "Ben says to use EQ Field" chip** — Royce sees a little chip mentioning Ben (Ritchie) telling him to use EQ Field. NOT in eq-field code (no live "Ritchie" string, only comments; he's a manager in `field_managers` but not on leave → not the roster "Management Out This Week" strip). Likely a **Shell-side notice / in-app announcement**. Royce to screenshot next time it appears; trace source then. _(added 2026-07-13)_
-_…and 337 more · [eq/pending.md](eq/pending.md)_
+_…and 339 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -119,4 +119,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-14 07:25 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-14 07:35 UTC._
