@@ -72,6 +72,9 @@ _If this file is >48h old, the cron is broken._
 - #458 chore(deps): bump tailwind-merge from 3.5.0 to 3.6.0
 - #456 chore(deps-dev): bump tailwindcss from 4.2.2 to 4.3.2
 
+**eq-shell:**
+- #838 feat(mobile): native Ops create/edit form + Comms Fortnight roster on phones
+
 ---
 
 ## System Health (as of 2026-07-14)
