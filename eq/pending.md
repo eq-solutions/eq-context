@@ -5,13 +5,22 @@ last_updated: 2026-07-11
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
-last_updated: 2026-07-13
+last_updated: 2026-07-14
 ---
 
 # EQ Tier — Pending
 
 EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## ✅ EQ Cards — White Card can no longer show a false expiry (2026-07-14, FIXED + GUARDED + LIVE)
+*Royce spotted (off the live admin view) that Vinicius Zara's White Card showed "Expired" — but a White Card doesn't expire (it's a lifetime credential in Australia). It was bad data, and there was no way for an admin to fix it in-app. Corrected his record and guarded the whole class so it can't recur.*
+- [x] **Vinicius Zara's White Card corrected (live).** His card had been saved with a real expiry of the day it was entered, so it read "Expired". Set back to lifetime — it now shows as valid. _(done 2026-07-14)_
+- [x] **Guard so no White Card can ever show a false expiry again (live in the database).** A White Card entered — by anyone, any way (worker edit, PDF/photo auto-read, admin, or a direct write) — is now automatically forced to "never expires", so a mis-read or mistyped expiry date can't stick. Also swept every existing White Card clean in one go (31 in total — this also fixed one other worker whose card carried a bogus 2040 date). _(done 2026-07-14)_
+- [x] **Cards app updated + deployed to cards.eq.solutions.** When someone picks "White Card" while adding a licence, the app now hides the expiry field entirely (with a "lifetime credential — no expiry" note) and ignores any expiry the photo/PDF reader thinks it saw. _(done 2026-07-14)_
+- [ ] **Optional later: let an admin edit a worker's licence in-app.** Today an admin can only "Re-review" a worker's licences from the employer view — there's no way to correct a field (e.g. a wrong expiry); the fix path is the worker editing it in their own wallet, or you/us correcting the data. Presented this session; Royce chose the source-guard route instead, so this stays un-built. Would be a Shell change (new admin edit + touches "the worker owns their own data"). _(added 2026-07-14, your call)_
 
 ---
 
