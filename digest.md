@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-14 11:06 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-14 11:07 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-14 10:54 UTC → 2026-07-14 11:06 UTC)
+## Since last refresh (2026-07-14 11:06 UTC → 2026-07-14 11:07 UTC)
 
-- Merged: eq-shell [#856](https://github.com/eq-solutions/eq-shell/pull/856) feat(brand): carry full tenant document palette + doc logo i
-- Merged: eq-shell [#839](https://github.com/eq-solutions/eq-shell/pull/839) feat(audit): Phase 1b — legible activity log (de-noise + ide
-- Merged: eq-shell [#838](https://github.com/eq-solutions/eq-shell/pull/838) feat(mobile): native Ops create/edit form + Comms Fortnight 
-- Merged: eq-shell [#835](https://github.com/eq-solutions/eq-shell/pull/835) feat(comms): native mobile view for NSW Comms — card list + 
-- Merged: eq-shell [#824](https://github.com/eq-solutions/eq-shell/pull/824) fix(security): drop vulnerable xlsx from the client bundle —
-- Merged: eq-shell [#715](https://github.com/eq-solutions/eq-shell/pull/715) feat(access): gate enforcement on can()/useCan() not role na
+- Merged: eq-shell [#840](https://github.com/eq-solutions/eq-shell/pull/840) feat(audit): make public.audit_log (credential audit) append
+- Merged: eq-shell [#837](https://github.com/eq-solutions/eq-shell/pull/837) feat(audit): make audit_log append-only - Phase 1a immutabil
+- Merged: eq-shell [#836](https://github.com/eq-solutions/eq-shell/pull/836) feat(ops): native mobile view for EQ Ops — pipeline cards + 
+- Merged: eq-shell [#834](https://github.com/eq-solutions/eq-shell/pull/834) one-login field-first — flag-gated employee→Field on Core en
+- Merged: eq-shell [#833](https://github.com/eq-solutions/eq-shell/pull/833) fix(auth): recover from stalled mobile login instead of a fr
+- Merged: eq-shell [#828](https://github.com/eq-solutions/eq-shell/pull/828) one-login P1/P3 hardening — fail-safe worker lookup + revoke
+- Merged: eq-solves-service [#536](https://github.com/eq-solutions/eq-service/pull/536) feat(brand): sync document palette + doc logo to tenant_sett
 - Merged: eq-solves-service [#535](https://github.com/eq-solutions/eq-service/pull/535) chore(migrations): renumber colliding prefixes 0180/0181/018
-- Merged: eq-solves-service [#534](https://github.com/eq-solutions/eq-service/pull/534) fix(testing): backfill canonical calibration from legacy ass
 
 ## ⚠ Needs you (6)
 
@@ -35,7 +35,7 @@ _2026-07-14 11:06 UTC · what needs your attention. Full snapshot: [suite-state.
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 2 | 0d |
-| eq-solves-service | ✓ success | 0d ago | 7 | 8d |
+| eq-solves-service | ✓ success | 0d ago | 6 | 8d |
 | eq-field | ✓ success | 0d ago | 2 | 2d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
@@ -117,4 +117,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-14 11:06 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-14 11:07 UTC._
