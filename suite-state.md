@@ -77,7 +77,6 @@ _If this file is >48h old, the cron is broken._
 - #863 fix(auth): bound login body reads under one deadline (the #858 latent twin)
 - #862 fix(auth): harden invite-accept auth-identity binding + orphan detector
 - #861 fix(calibration): retire legacy asset-calibration reads/writes in 3 remaining consumers (Phase 3, #855 follow-up)
-- #859 fix(audit): lock EXECUTE on public.eq_audit_retention_run (anon/authenticated)
 - #856 feat(brand): carry full tenant document palette + doc logo in the Service JWT
 - #847 feat(cards): tenant-branded Excel compliance register (shared builder)
 
