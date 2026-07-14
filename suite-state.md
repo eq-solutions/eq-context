@@ -65,12 +65,16 @@ _If this file is >48h old, the cron is broken._
 - #461 feat(auth): EQ tenant is Core-only — close the demo login gate (v3.5.306)
 
 **eq-service:**
+- #532 feat(testing): surface canonical calibration cert-chain in Test Equipment
 - #524 docs(scope): balloon-years proposal — nominate low-frequency majors in-app
 - #520 chore(deps): bump resend from 6.12.4 to 6.17.2
 - #518 chore(deps): bump @eq-solutions/roles from v2.4.0 to v2.5.1 in the eq-design-system group across 1 directory
 - #459 chore(deps-dev): bump @vitejs/plugin-react from 6.0.1 to 6.0.3
 - #458 chore(deps): bump tailwind-merge from 3.5.0 to 3.6.0
 - #456 chore(deps-dev): bump tailwindcss from 4.2.2 to 4.3.2
+
+**eq-shell:**
+- #843 fix(cards): restore phone and email on licenced rows of the compliance register
 
 ---
 
