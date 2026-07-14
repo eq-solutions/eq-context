@@ -15,6 +15,14 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## Leadership one-pagers — data security + systems integration (2026-07-14, DELIVERED)
+*Royce asked for high-level one-pagers for a CEO / leadership meeting. Produced as PDFs (in `~/Downloads`) + claude.ai artifacts. No code shipped — external deliverables only.*
+- [x] **Data-security one-pager (CEO)** — where data's stored / who can access it / redundancy, in plain professional English (NOT literal "tradie-terms" analogies). Frames EQ as using the same principles as the world's largest cloud providers **without naming them** + cites SOC 2 / ISO 27001. Real EQ logo. `EQ-Data-Safety-One-Pager.pdf`. _(done 2026-07-14)_
+- [x] **Systems-integration one-pager** — Smartsheet (pipeline & reporting) → EQ Ops → Workbench → Field/Service resting on one shared layer (one job number / customer / asset), + EQ Cards feeding worker-owned compliance. Passive "bring together, not replace" framing. Real EQ logo. `EQ-Systems-Linkage-One-Pager.pdf`. _(done 2026-07-14)_
+- [ ] **Your call: keep or bin the earlier EQ-vs-Microsoft/Google security comparison PDF** (`EQ-Security-One-Pager-2026-07-14.pdf`) — superseded by the CEO data-security version but left in Downloads. _(added 2026-07-14)_
+
+---
+
 ## ✅ EQ Cards — White Card can no longer show a false expiry (2026-07-14, FIXED + GUARDED + LIVE)
 *Royce spotted (off the live admin view) that Vinicius Zara's White Card showed "Expired" — but a White Card doesn't expire (it's a lifetime credential in Australia). It was bad data, and there was no way for an admin to fix it in-app. Corrected his record and guarded the whole class so it can't recur.*
 - [x] **Vinicius Zara's White Card corrected (live).** His card had been saved with a real expiry of the day it was entered, so it read "Expired". Set back to lifetime — it now shows as valid. _(done 2026-07-14)_
