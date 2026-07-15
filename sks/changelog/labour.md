@@ -9,6 +9,12 @@ status: live
 
 # Changelog — SKS Labour
 
+## [2026-07-15] Timesheet total double-count fix, invisible mobile roster header, Pipeline/Resources hidden
+**Built by:** assistant + Royce Milmlow
+- **v3.10.97 (PR #66, `51544ad`, live)** — two fixes. (1) Timesheet weekly total double-counted a roster A/L day: the day's leave status comes from `schedule`, its hours from `timesheets`, and a stale entry left behind by an earlier "Fill Week" run was hidden behind the leave pill but still summed into the total (plus the paid-leave 8h added for the same day) — TAFE days had a same-day guard for this since v3.10.84, paid leave never did. New `_tsWorkedHrs()` skips roster-leave days, wired into every total surface (row, apprentice, in-place save, CSV export); cleared the one affected DB row (Jack Trusler, wk 13.07.26, the only occurrence found). (2) Mobile Weekly Roster header (Name/Mon–Fri) rendered invisible below 768px — the sticky-header CSS re-backgrounded the cells for the scroll effect without resetting the inherited white header text from the desktop navy header; added explicit `color: var(--navy)`.
+- **v3.10.98 (PR #67, `fbeeeec`, live)** — Pipeline + Resources nav hidden from all managers (previously visible to any manager-mode user via `edit-only`). Nav-only change; pages, data, and `scripts/pipeline*.js` untouched.
+**Status:** Both live on sks-nsw-labour.netlify.app. EQ Field flagged for the same header-CSS pattern (background task, independent session, result not yet known).
+
 ## [2026-07-12] "Database not working" outage → root fix, resilience, timesheet UX, and prevention (first CI)
 **Built by:** assistant + Royce Milmlow
 - **v3.10.92 (PR #59, `2e38315`, live)** — ROOT FIX for the ~2-day silent outage. v3.10.90 paginated `team_members`/`timesheet_locks` via `sbFetchAll()` with no `orderBy`, so both defaulted to `order=id` — neither has an `id` column → 400 on every load. One 400 in `loadFromSupabase()`'s all-or-nothing `Promise.all` froze the whole sync on the last cached snapshot (writes still 200'd, so saves looked fine; the 400 was a handled rejection → 0 `error_thrown`, invisible). Passed each table's real PK.
