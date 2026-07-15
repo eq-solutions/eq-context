@@ -1240,3 +1240,6 @@ explicit Royce go-ahead.
 - v3.5.327 (PR #487) — mobile: reusable skeleton loaders (`eqSkeleton()` + `.eqf-skel*`); Dashboard loading shimmers instead of a bare ⏳; roster Job Numbers empty gets icon + action.
 - v3.5.328 (PR #488) — mobile gestures: timesheets swipe-to-change-week (mirrors roster) + pull-to-refresh (passive, guarded, fixed pill; interacts with v3.5.317's native-reload suppression — complementary).
 - v3.5.329 (PR #489) — timesheets: one-tap "Prefill week" for a worker's OWN draft week (was supervisor-only). Precedence roster → last week; own row, empty days only, never overwrites, editable, hidden once submitted.
+
+## 2026-07-15
+- PR #492 (merged `8142119`, live on field.eq.solutions) — Forecast page's sticky "Project" column header set `background:var(--surface)` inline without resetting `color`, inheriting `color:white` from base.css's `thead tr` rule → invisible white-on-white text at every viewport width. Fixed by adding `color:var(--navy)`. Found while auditing the whole app for the same pattern that broke SKS's mobile Weekly Roster header; no other page reproduces it.
