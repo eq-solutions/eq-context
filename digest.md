@@ -8,21 +8,23 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-15 05:58 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-15 06:20 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-14 13:33 UTC → 2026-07-15 05:58 UTC)
+## Since last refresh (2026-07-15 05:58 UTC → 2026-07-15 06:20 UTC)
 
-- Merged: eq-shell [#840](https://github.com/eq-solutions/eq-shell/pull/840) feat(audit): make public.audit_log (credential audit) append
-- Merged: eq-shell [#837](https://github.com/eq-solutions/eq-shell/pull/837) feat(audit): make audit_log append-only - Phase 1a immutabil
-- Merged: eq-shell [#836](https://github.com/eq-solutions/eq-shell/pull/836) feat(ops): native mobile view for EQ Ops — pipeline cards + 
-- Merged: eq-shell [#834](https://github.com/eq-solutions/eq-shell/pull/834) one-login field-first — flag-gated employee→Field on Core en
-- Merged: eq-shell [#833](https://github.com/eq-solutions/eq-shell/pull/833) fix(auth): recover from stalled mobile login instead of a fr
-- Merged: eq-shell [#828](https://github.com/eq-solutions/eq-shell/pull/828) one-login P1/P3 hardening — fail-safe worker lookup + revoke
+- Merged: eq-shell [#842](https://github.com/eq-solutions/eq-shell/pull/842) feat(audit): Phase 2a — date/type filters + CSV export on th
+- Merged: eq-shell [#839](https://github.com/eq-solutions/eq-shell/pull/839) feat(audit): Phase 1b — legible activity log (de-noise + ide
+- Merged: eq-shell [#838](https://github.com/eq-solutions/eq-shell/pull/838) feat(mobile): native Ops create/edit form + Comms Fortnight 
+- Merged: eq-shell [#835](https://github.com/eq-solutions/eq-shell/pull/835) feat(comms): native mobile view for NSW Comms — card list + 
+- Merged: eq-shell [#824](https://github.com/eq-solutions/eq-shell/pull/824) fix(security): drop vulnerable xlsx from the client bundle —
+- Merged: eq-shell [#715](https://github.com/eq-solutions/eq-shell/pull/715) feat(access): gate enforcement on can()/useCan() not role na
+- Merged: eq-solves-service [#537](https://github.com/eq-solutions/eq-service/pull/537) fix(auth): report exports 401 under Shell JWT sessions
 - Merged: eq-solves-service [#536](https://github.com/eq-solutions/eq-service/pull/536) feat(brand): sync document palette + doc logo to tenant_sett
-- Merged: eq-solves-service [#535](https://github.com/eq-solutions/eq-service/pull/535) chore(migrations): renumber colliding prefixes 0180/0181/018
+- ⚠ Needs you: 6 → 7 (new items)
 
-## ⚠ Needs you (6)
+## ⚠ Needs you (7)
 
+- 🔴 **Substrate drift** — DRIFT: deploy EQ website (https://eq.solutions): claimed LIVE but reality looks DEAD
 - 🟠 **PR aging 8d** — eq-solves-service [#459](https://github.com/eq-solutions/eq-service/pull/459) "chore(deps-dev): bump @vitejs/plugin-react from 6.0.1 to 6.0.3"
 - 🟠 **PR aging 8d** — eq-solves-service [#458](https://github.com/eq-solutions/eq-service/pull/458) "chore(deps): bump tailwind-merge from 3.5.0 to 3.6.0"
 - 🟠 **PR aging 8d** — eq-solves-service [#456](https://github.com/eq-solutions/eq-service/pull/456) "chore(deps-dev): bump tailwindcss from 4.2.2 to 4.3.2"
@@ -35,7 +37,7 @@ _2026-07-15 05:58 UTC · what needs your attention. Full snapshot: [suite-state.
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 2 | 0d |
-| eq-solves-service | ✓ success | 0d ago | 6 | 8d |
+| eq-solves-service | ✓ success | -1d ago | 6 | 8d |
 | eq-field | ✓ success | 0d ago | 2 | 2d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
@@ -56,6 +58,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-15 | eq-solves-service | [#537](https://github.com/eq-solutions/eq-service/pull/537) fix(auth): report exports 401 under Shell JWT sessions |
 | 2026-07-15 | eq-field | [#492](https://github.com/eq-solutions/eq-field/pull/492) fix(mobile): Forecast page sticky header — white-on-white contras |
 | 2026-07-14 | eq-shell | [#856](https://github.com/eq-solutions/eq-shell/pull/856) feat(brand): carry full tenant document palette + doc logo in the |
 | 2026-07-14 | eq-shell | [#847](https://github.com/eq-solutions/eq-shell/pull/847) feat(cards): tenant-branded Excel compliance register (shared bui |
@@ -70,11 +73,11 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-14 | eq-shell | [#848](https://github.com/eq-solutions/eq-shell/pull/848) feat(canonical): site-resolver adjudication — verdict capture (01 |
 | 2026-07-14 | eq-shell | [#846](https://github.com/eq-solutions/eq-shell/pull/846) feat(audit): Phase 1d (eq-shell) — attribute worker create/edit t |
 | 2026-07-14 | eq-shell | [#850](https://github.com/eq-solutions/eq-shell/pull/850) docs: reflect that Resend email delivery is live in production |
-| 2026-07-14 | eq-shell | [#849](https://github.com/eq-solutions/eq-shell/pull/849) fix(drift): allow-list service.instrument_calibration_events (saf |
 _Showing 15 of 114 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **Minor, anytime: two pages have the opposite contrast problem** (Leave calendar mini-view, Pipeline import preview) — grey text sits on a still-dark header background, giving low-contrast rather than invisible text. Spotted during the audit, not fixed — different bug shape, lower urgency (readable, just not crisp). _(added 2026-07-15)_
 - **MERGE (needs Royce): PR #863** — I couldn't merge it myself (merge on this repo auto-deploys auth code, so the tools blocked it). Squash-merge in the GitHub UI when you want it live; no urgency — no live incident. _(added 2026-07-14)_
 - **Cleanup, anytime: the old manual colour copy for SKS can be trimmed** now the pipe is self-maintaining — but keep the white on-dark logo, which the admin settings don't carry yet. _(added 2026-07-14)_
 - **Nice-to-have: add a "logo for dark backgrounds" slot in the admin brand settings** — reports put the logo on a dark navy header and the settings only hold one (light) logo, so the white version is currently hard-set on the Service side. _(added 2026-07-14)_
@@ -84,8 +87,7 @@ _Showing 15 of 114 · full record in [sessions/](sessions/)_
 - **NEXT — Claude as the adjudicator on the "unsure" rows.** Labels now accumulate. Wire the AI to read the full record context (customer, neighbouring sites, import source), propose a verdict + a plain-English reason on the ambiguous middle, human confirms with one tap. This is the jump from classical MDM to the ask-anything brain, and it makes the match-key decision self-calibrating instead of a one-time guess. _(added 2026-07-14)_
 - **Core-owned merge/retire RPC over `app_data.sites`.** Adjudication records "same"; ACTING on it (merge/retire the duplicate) is still a separate human-gated step with no RPC yet — the survivorship engine. _(added 2026-07-14)_
 - **Cross-app attribution (the rest of it)** — Field / Service / Intake still log their own edits as "system"; making those record the person is a multi-app job with no single choke point. _(added 2026-07-14)_
-- **Later audit polish** — PDF / branded-report export, and logging who reads the log; then on-request data erasure and anomaly alerts. _(added 2026-07-14; before/after values shipped in #860)_
-_…and 354 more · [eq/pending.md](eq/pending.md)_
+_…and 355 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -99,7 +101,7 @@ _…and 354 more · [eq/pending.md](eq/pending.md)_
 - **Anthony Hartley correction**: not actually a violation of the 2026-07-05 "never touch it" plan — re-checked live. His canonical worker id `098e4bff-…` (the one documented as "dead weight, exclude, no hard-archive field") is still there, untouched, exactly as decided — it's referenced from his current live `app_data.staff` row. What got hard-deleted was a *different* duplicate, at the `app_data.staff` (Service/ehow) layer, not the canonical-worker (jvkn) layer the 2026-07-05 decision was about. No action needed.
 - **121 items still pending in `eq_remediation_queue`** (steward-run-001) — unreviewed AI data-quality suggestions for staff/contacts, sitting in EQ Intake's review queue. Breakdown: 54 missing emergency contacts (low confidence — queue's own guidance is dismiss-only, collect via a future Cards prompt), 43 low-confidence trade guesses, 9 more staff duplicates, 11 more email gaps, 8 firmer trade guesses, 1 contact duplicate. Informational, surfaced while auditing the 16 already-committed rows. _(added 2026-07-06)_
 - **eq-shell PR #681 needs review + merge** — fix is already live on ehow (applied directly ahead of the PR); the PR just brings the source-controlled migration back in sync. _(added 2026-07-06)_
-_…and 53 more · [sks/pending.md](sks/pending.md)_
+_…and 55 more · [sks/pending.md](sks/pending.md)_
 
 ## Recent sessions
 
@@ -114,7 +116,7 @@ _[sessions/](sessions/) · 5 shown_
 
 ## Substrate honesty
 
-✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
+✗ Drift detected — see **Needs you** above. Source: `scripts/substrate_honesty.py`.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-15 05:58 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-15 06:20 UTC._
