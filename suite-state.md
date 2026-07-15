@@ -61,7 +61,6 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-15)
 
 **eq-field:**
-- #495 feat(pipeline): in-browser sample data for SKS Pipeline demos (v3.5.331)
 - #466 chore(ci): enable Dependabot for GitHub Actions
 - #461 feat(auth): EQ tenant is Core-only — close the demo login gate (v3.5.306)
 
