@@ -61,10 +61,12 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-15)
 
 **eq-field:**
+- #495 feat(pipeline): in-browser sample data for SKS Pipeline demos (v3.5.331)
 - #466 chore(ci): enable Dependabot for GitHub Actions
 - #461 feat(auth): EQ tenant is Core-only — close the demo login gate (v3.5.306)
 
 **eq-service:**
+- #540 fix(testing): NSX/ACB check lists + cert-chain empty in Shell iframe (anon client reads → server actions)
 - #524 docs(scope): balloon-years proposal — nominate low-frequency majors in-app
 - #520 chore(deps): bump resend from 6.12.4 to 6.17.2
 - #518 chore(deps): bump @eq-solutions/roles from v2.4.0 to v2.5.1 in the eq-design-system group across 1 directory
@@ -73,7 +75,6 @@ _If this file is >48h old, the cron is broken._
 - #456 chore(deps-dev): bump tailwindcss from 4.2.2 to 4.3.2
 
 **eq-shell:**
-- #867 vendor sync — eq-intake #69 (AI site-duplicate adjudicator)
 - #863 fix(auth): bound login body reads under one deadline (the #858 latent twin)
 - #862 fix(auth): harden invite-accept auth-identity binding + orphan detector
 
