@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-15 06:37 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-15 06:57 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-15 06:23 UTC → 2026-07-15 06:37 UTC)
+## Since last refresh (2026-07-15 06:37 UTC → 2026-07-15 06:57 UTC)
 
-- Merged: eq-shell [#866](https://github.com/eq-solutions/eq-shell/pull/866) feat(brand): dark-background document logo (canonical + hand
-- Merged: eq-shell [#850](https://github.com/eq-solutions/eq-shell/pull/850) docs: reflect that Resend email delivery is live in producti
-- Merged: eq-shell [#842](https://github.com/eq-solutions/eq-shell/pull/842) feat(audit): Phase 2a — date/type filters + CSV export on th
-- Merged: eq-shell [#839](https://github.com/eq-solutions/eq-shell/pull/839) feat(audit): Phase 1b — legible activity log (de-noise + ide
-- Merged: eq-shell [#838](https://github.com/eq-solutions/eq-shell/pull/838) feat(mobile): native Ops create/edit form + Comms Fortnight 
-- Merged: eq-shell [#835](https://github.com/eq-solutions/eq-shell/pull/835) feat(comms): native mobile view for NSW Comms — card list + 
-- Merged: eq-shell [#715](https://github.com/eq-solutions/eq-shell/pull/715) feat(access): gate enforcement on can()/useCan() not role na
-- Merged: eq-solves-service [#538](https://github.com/eq-solutions/eq-service/pull/538) feat(brand): consume dark-surface document logo from the She
+- Merged: eq-shell [#849](https://github.com/eq-solutions/eq-shell/pull/849) fix(drift): allow-list service.instrument_calibration_events
+- Merged: eq-shell [#848](https://github.com/eq-solutions/eq-shell/pull/848) feat(canonical): site-resolver adjudication — verdict captur
+- Merged: eq-shell [#846](https://github.com/eq-solutions/eq-shell/pull/846) feat(audit): Phase 1d (eq-shell) — attribute worker create/e
+- Merged: eq-shell [#840](https://github.com/eq-solutions/eq-shell/pull/840) feat(audit): make public.audit_log (credential audit) append
+- Merged: eq-shell [#837](https://github.com/eq-solutions/eq-shell/pull/837) feat(audit): make audit_log append-only - Phase 1a immutabil
+- Merged: eq-shell [#836](https://github.com/eq-solutions/eq-shell/pull/836) feat(ops): native mobile view for EQ Ops — pipeline cards + 
+- Merged: eq-shell [#834](https://github.com/eq-solutions/eq-shell/pull/834) one-login field-first — flag-gated employee→Field on Core en
+- Merged: eq-shell [#833](https://github.com/eq-solutions/eq-shell/pull/833) fix(auth): recover from stalled mobile login instead of a fr
 
 ## ⚠ Needs you (7)
 
@@ -35,9 +35,9 @@ _2026-07-15 06:37 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 2 | 0d |
+| eq-shell | ✓ success | 0d ago | 3 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 6 | 8d |
-| eq-field | ✓ success | 0d ago | 2 | 2d |
+| eq-field | ✓ success | 0d ago | 3 | 2d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
@@ -58,6 +58,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | Merged | Repo | PR |
 |--------|------|----|
 | 2026-07-15 | eq-shell | [#866](https://github.com/eq-solutions/eq-shell/pull/866) feat(brand): dark-background document logo (canonical + handoff) |
+| 2026-07-15 | eq-solves-service | [#539](https://github.com/eq-solutions/eq-service/pull/539) refactor(reports): retire Service report-logo pickers — Shell is  |
 | 2026-07-15 | eq-solves-service | [#538](https://github.com/eq-solutions/eq-service/pull/538) feat(brand): consume dark-surface document logo from the Shell ha |
 | 2026-07-15 | eq-solves-service | [#537](https://github.com/eq-solutions/eq-service/pull/537) fix(auth): report exports 401 under Shell JWT sessions |
 | 2026-07-15 | eq-field | [#493](https://github.com/eq-solutions/eq-field/pull/493) fix: Leave calendar weekday header — low-contrast text on navy |
@@ -71,14 +72,13 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-14 | eq-shell | [#860](https://github.com/eq-solutions/eq-shell/pull/860) feat(audit): Phase 2b — before/after drill-down on the activity l |
 | 2026-07-14 | eq-shell | [#855](https://github.com/eq-solutions/eq-shell/pull/855) feat(equipment): re-point Plant & Equipment calibration onto cano |
 | 2026-07-14 | eq-shell | [#854](https://github.com/eq-solutions/eq-shell/pull/854) docs(drift): retruth calibration-view allow-list comment (adoptio |
-| 2026-07-14 | eq-shell | [#853](https://github.com/eq-solutions/eq-shell/pull/853) feat(audit): Phase 1c — audit-log retention (13mo hot / 7yr cold, |
 _Showing 15 of 114 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
 - **MERGE (needs Royce): PR #863** — I couldn't merge it myself (merge on this repo auto-deploys auth code, so the tools blocked it). Squash-merge in the GitHub UI when you want it live; no urgency — no live incident. _(added 2026-07-14)_
 - **Cleanup, anytime: the old manual colour copy for SKS can be trimmed** now the pipe is self-maintaining — but keep the white on-dark logo, which the admin settings don't carry yet. _(added 2026-07-14)_
-- **Nice-to-have: add a "logo for dark backgrounds" slot in the admin brand settings** — reports put the logo on a dark navy header and the settings only hold one (light) logo, so the white version is currently hard-set on the Service side. _(added 2026-07-14)_
+- **Follow-up: retire the EQ Service Report-Settings "Dark Surface" picker** now the dark logo is canonical in Shell (kept for now as a harmless local override). _(added 2026-07-14)_
 - **DEPLOY (needs Royce, next auth deploy): apply the two database helpers THEN merge PR #862 — now merge-ready.** Brought #862 up to date with main + renumbered its two database updates so they no longer clash with the audit ones; build + tests green. Apply the two helpers (`resolve_invite_auth_identity` + `list_orphan_auth_identities`) FIRST, then merge → auto-deploy. Permission-gated, waits on you. No urgency — the three new users (Rob Baird, Matt Jinks, Tim Watson) accept + sign in on current prod without it (triple-checked clean-slate). _(added 2026-07-14, updated 2026-07-15)_
 - **Minor, anytime: 6 users are missing a sign-in record** (their in-app tools would fail to authorise them) — heal by running the existing admin "backfill" action once. Pre-existing, not caused by this work. _(added 2026-07-14)_
 - **Outbound email → dev@eq.solutions (staged, NOT deployed).** Changed all system email to send FROM dev@ and route replies to dev@ (was noreply@ with replies going nowhere), plus the 3 in-app "contact us" links → dev@. Code staged on branch `claude/email-new-users-levers-baab69` (uncommitted); the sender env `EMAIL_FROM` is already set on Netlify but needs a redeploy to take effect. Decide: commit → PR → deploy, or drop. _(added 2026-07-15)_
@@ -118,4 +118,4 @@ _[sessions/](sessions/) · 5 shown_
 ✗ Drift detected — see **Needs you** above. Source: `scripts/substrate_honesty.py`.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-15 06:37 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-15 06:57 UTC._
