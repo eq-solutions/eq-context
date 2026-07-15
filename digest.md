@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-15 06:57 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-15 06:59 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-15 06:37 UTC → 2026-07-15 06:57 UTC)
+## Since last refresh (2026-07-15 06:57 UTC → 2026-07-15 06:59 UTC)
 
-- Merged: eq-shell [#849](https://github.com/eq-solutions/eq-shell/pull/849) fix(drift): allow-list service.instrument_calibration_events
-- Merged: eq-shell [#848](https://github.com/eq-solutions/eq-shell/pull/848) feat(canonical): site-resolver adjudication — verdict captur
-- Merged: eq-shell [#846](https://github.com/eq-solutions/eq-shell/pull/846) feat(audit): Phase 1d (eq-shell) — attribute worker create/e
-- Merged: eq-shell [#840](https://github.com/eq-solutions/eq-shell/pull/840) feat(audit): make public.audit_log (credential audit) append
-- Merged: eq-shell [#837](https://github.com/eq-solutions/eq-shell/pull/837) feat(audit): make audit_log append-only - Phase 1a immutabil
-- Merged: eq-shell [#836](https://github.com/eq-solutions/eq-shell/pull/836) feat(ops): native mobile view for EQ Ops — pipeline cards + 
-- Merged: eq-shell [#834](https://github.com/eq-solutions/eq-shell/pull/834) one-login field-first — flag-gated employee→Field on Core en
-- Merged: eq-shell [#833](https://github.com/eq-solutions/eq-shell/pull/833) fix(auth): recover from stalled mobile login instead of a fr
+- Merged: eq-shell [#853](https://github.com/eq-solutions/eq-shell/pull/853) feat(audit): Phase 1c — audit-log retention (13mo hot / 7yr 
+- Merged: eq-shell [#850](https://github.com/eq-solutions/eq-shell/pull/850) docs: reflect that Resend email delivery is live in producti
+- Merged: eq-shell [#842](https://github.com/eq-solutions/eq-shell/pull/842) feat(audit): Phase 2a — date/type filters + CSV export on th
+- Merged: eq-shell [#839](https://github.com/eq-solutions/eq-shell/pull/839) feat(audit): Phase 1b — legible activity log (de-noise + ide
+- Merged: eq-shell [#838](https://github.com/eq-solutions/eq-shell/pull/838) feat(mobile): native Ops create/edit form + Comms Fortnight 
+- Merged: eq-shell [#835](https://github.com/eq-solutions/eq-shell/pull/835) feat(comms): native mobile view for NSW Comms — card list + 
+- Merged: eq-shell [#828](https://github.com/eq-solutions/eq-shell/pull/828) one-login P1/P3 hardening — fail-safe worker lookup + revoke
+- Merged: eq-shell [#715](https://github.com/eq-solutions/eq-shell/pull/715) feat(access): gate enforcement on can()/useCan() not role na
 
 ## ⚠ Needs you (7)
 
@@ -37,7 +37,7 @@ _2026-07-15 06:57 UTC · what needs your attention. Full snapshot: [suite-state.
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 3 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 6 | 8d |
-| eq-field | ✓ success | 0d ago | 3 | 2d |
+| eq-field | ✓ success | -1d ago | 2 | 2d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
@@ -61,6 +61,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-15 | eq-solves-service | [#539](https://github.com/eq-solutions/eq-service/pull/539) refactor(reports): retire Service report-logo pickers — Shell is  |
 | 2026-07-15 | eq-solves-service | [#538](https://github.com/eq-solutions/eq-service/pull/538) feat(brand): consume dark-surface document logo from the Shell ha |
 | 2026-07-15 | eq-solves-service | [#537](https://github.com/eq-solutions/eq-service/pull/537) fix(auth): report exports 401 under Shell JWT sessions |
+| 2026-07-15 | eq-field | [#494](https://github.com/eq-solutions/eq-field/pull/494) feat(pipeline): manual remove for SKS tenders (v3.5.330) |
 | 2026-07-15 | eq-field | [#493](https://github.com/eq-solutions/eq-field/pull/493) fix: Leave calendar weekday header — low-contrast text on navy |
 | 2026-07-15 | eq-field | [#492](https://github.com/eq-solutions/eq-field/pull/492) fix(mobile): Forecast page sticky header — white-on-white contras |
 | 2026-07-14 | eq-shell | [#856](https://github.com/eq-solutions/eq-shell/pull/856) feat(brand): carry full tenant document palette + doc logo in the |
@@ -71,14 +72,12 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-14 | eq-shell | [#857](https://github.com/eq-solutions/eq-shell/pull/857) onboarding: manager-push invite funnel becomes the "Add workers"  |
 | 2026-07-14 | eq-shell | [#860](https://github.com/eq-solutions/eq-shell/pull/860) feat(audit): Phase 2b — before/after drill-down on the activity l |
 | 2026-07-14 | eq-shell | [#855](https://github.com/eq-solutions/eq-shell/pull/855) feat(equipment): re-point Plant & Equipment calibration onto cano |
-| 2026-07-14 | eq-shell | [#854](https://github.com/eq-solutions/eq-shell/pull/854) docs(drift): retruth calibration-view allow-list comment (adoptio |
 _Showing 15 of 114 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
 - **MERGE (needs Royce): PR #863** — I couldn't merge it myself (merge on this repo auto-deploys auth code, so the tools blocked it). Squash-merge in the GitHub UI when you want it live; no urgency — no live incident. _(added 2026-07-14)_
 - **Cleanup, anytime: the old manual colour copy for SKS can be trimmed** now the pipe is self-maintaining — but keep the white on-dark logo, which the admin settings don't carry yet. _(added 2026-07-14)_
-- **Follow-up: retire the EQ Service Report-Settings "Dark Surface" picker** now the dark logo is canonical in Shell (kept for now as a harmless local override). _(added 2026-07-14)_
 - **DEPLOY (needs Royce, next auth deploy): apply the two database helpers THEN merge PR #862 — now merge-ready.** Brought #862 up to date with main + renumbered its two database updates so they no longer clash with the audit ones; build + tests green. Apply the two helpers (`resolve_invite_auth_identity` + `list_orphan_auth_identities`) FIRST, then merge → auto-deploy. Permission-gated, waits on you. No urgency — the three new users (Rob Baird, Matt Jinks, Tim Watson) accept + sign in on current prod without it (triple-checked clean-slate). _(added 2026-07-14, updated 2026-07-15)_
 - **Minor, anytime: 6 users are missing a sign-in record** (their in-app tools would fail to authorise them) — heal by running the existing admin "backfill" action once. Pre-existing, not caused by this work. _(added 2026-07-14)_
 - **Outbound email → dev@eq.solutions (staged, NOT deployed).** Changed all system email to send FROM dev@ and route replies to dev@ (was noreply@ with replies going nowhere), plus the 3 in-app "contact us" links → dev@. Code staged on branch `claude/email-new-users-levers-baab69` (uncommitted); the sender env `EMAIL_FROM` is already set on Netlify but needs a redeploy to take effect. Decide: commit → PR → deploy, or drop. _(added 2026-07-15)_
@@ -86,7 +85,8 @@ _Showing 15 of 114 · full record in [sessions/](sessions/)_
 - **Core-owned merge/retire RPC over `app_data.sites`.** Adjudication records "same"; ACTING on it (merge/retire the duplicate) is still a separate human-gated step with no RPC yet — the survivorship engine. _(added 2026-07-14)_
 - **Cross-app attribution (the rest of it)** — Field / Service / Intake still log their own edits as "system"; making those record the person is a multi-app job with no single choke point. _(added 2026-07-14)_
 - **Later audit polish** — PDF / branded-report export, and logging who reads the log; then on-request data erasure and anomaly alerts. _(added 2026-07-14; before/after values shipped in #860)_
-_…and 354 more · [eq/pending.md](eq/pending.md)_
+- **Your call: keep or bin the earlier EQ-vs-Microsoft/Google security comparison PDF** (`EQ-Security-One-Pager-2026-07-14.pdf`) — superseded by the CEO data-security version but left in Downloads. _(added 2026-07-14)_
+_…and 353 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -118,4 +118,4 @@ _[sessions/](sessions/) · 5 shown_
 ✗ Drift detected — see **Needs you** above. Source: `scripts/substrate_honesty.py`.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-15 06:57 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-15 06:59 UTC._
