@@ -1,25 +1,25 @@
 ---
 title: EQ Suite — Health Digest
 owner: Royce Milmlow
-last_updated: 2026-07-14
+last_updated: 2026-07-15
 scope: Push-style 'what needs your attention' feed across the EQ suite. Regenerated on merge (repository_dispatch: suite-state-changed) and nightly. Full snapshot in suite-state.md.
 read_priority: high
 status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-14 13:33 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-15 05:58 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-14 11:07 UTC → 2026-07-14 13:33 UTC)
+## Since last refresh (2026-07-14 13:33 UTC → 2026-07-15 05:58 UTC)
 
-- Merged: eq-shell [#839](https://github.com/eq-solutions/eq-shell/pull/839) feat(audit): Phase 1b — legible activity log (de-noise + ide
-- Merged: eq-shell [#838](https://github.com/eq-solutions/eq-shell/pull/838) feat(mobile): native Ops create/edit form + Comms Fortnight 
-- Merged: eq-shell [#835](https://github.com/eq-solutions/eq-shell/pull/835) feat(comms): native mobile view for NSW Comms — card list + 
-- Merged: eq-shell [#824](https://github.com/eq-solutions/eq-shell/pull/824) fix(security): drop vulnerable xlsx from the client bundle —
-- Merged: eq-shell [#715](https://github.com/eq-solutions/eq-shell/pull/715) feat(access): gate enforcement on can()/useCan() not role na
+- Merged: eq-shell [#840](https://github.com/eq-solutions/eq-shell/pull/840) feat(audit): make public.audit_log (credential audit) append
+- Merged: eq-shell [#837](https://github.com/eq-solutions/eq-shell/pull/837) feat(audit): make audit_log append-only - Phase 1a immutabil
+- Merged: eq-shell [#836](https://github.com/eq-solutions/eq-shell/pull/836) feat(ops): native mobile view for EQ Ops — pipeline cards + 
+- Merged: eq-shell [#834](https://github.com/eq-solutions/eq-shell/pull/834) one-login field-first — flag-gated employee→Field on Core en
+- Merged: eq-shell [#833](https://github.com/eq-solutions/eq-shell/pull/833) fix(auth): recover from stalled mobile login instead of a fr
+- Merged: eq-shell [#828](https://github.com/eq-solutions/eq-shell/pull/828) one-login P1/P3 hardening — fail-safe worker lookup + revoke
 - Merged: eq-solves-service [#536](https://github.com/eq-solutions/eq-service/pull/536) feat(brand): sync document palette + doc logo to tenant_sett
 - Merged: eq-solves-service [#535](https://github.com/eq-solutions/eq-service/pull/535) chore(migrations): renumber colliding prefixes 0180/0181/018
-- Merged: eq-solves-service [#534](https://github.com/eq-solutions/eq-service/pull/534) fix(testing): backfill canonical calibration from legacy ass
 
 ## ⚠ Needs you (6)
 
@@ -56,6 +56,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-15 | eq-field | [#492](https://github.com/eq-solutions/eq-field/pull/492) fix(mobile): Forecast page sticky header — white-on-white contras |
 | 2026-07-14 | eq-shell | [#856](https://github.com/eq-solutions/eq-shell/pull/856) feat(brand): carry full tenant document palette + doc logo in the |
 | 2026-07-14 | eq-shell | [#847](https://github.com/eq-solutions/eq-shell/pull/847) feat(cards): tenant-branded Excel compliance register (shared bui |
 | 2026-07-14 | eq-shell | [#861](https://github.com/eq-solutions/eq-shell/pull/861) fix(calibration): retire legacy asset-calibration reads/writes in |
@@ -70,7 +71,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-14 | eq-shell | [#846](https://github.com/eq-solutions/eq-shell/pull/846) feat(audit): Phase 1d (eq-shell) — attribute worker create/edit t |
 | 2026-07-14 | eq-shell | [#850](https://github.com/eq-solutions/eq-shell/pull/850) docs: reflect that Resend email delivery is live in production |
 | 2026-07-14 | eq-shell | [#849](https://github.com/eq-solutions/eq-shell/pull/849) fix(drift): allow-list service.instrument_calibration_events (saf |
-| 2026-07-14 | eq-shell | [#842](https://github.com/eq-solutions/eq-shell/pull/842) feat(audit): Phase 2a — date/type filters + CSV export on the act |
 _Showing 15 of 114 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -78,14 +78,14 @@ _Showing 15 of 114 · full record in [sessions/](sessions/)_
 - **MERGE (needs Royce): PR #863** — I couldn't merge it myself (merge on this repo auto-deploys auth code, so the tools blocked it). Squash-merge in the GitHub UI when you want it live; no urgency — no live incident. _(added 2026-07-14)_
 - **Cleanup, anytime: the old manual colour copy for SKS can be trimmed** now the pipe is self-maintaining — but keep the white on-dark logo, which the admin settings don't carry yet. _(added 2026-07-14)_
 - **Nice-to-have: add a "logo for dark backgrounds" slot in the admin brand settings** — reports put the logo on a dark navy header and the settings only hold one (light) logo, so the white version is currently hard-set on the Service side. _(added 2026-07-14)_
-- **DEPLOY (needs Royce, next auth deploy): apply the two database helpers THEN merge PR #862** — the database change must land before the code. Production database + auth deploys are permission-gated, so this waits on you. No urgency — zero broken invites live today. _(added 2026-07-14)_
+- **DEPLOY (needs Royce, next auth deploy): apply the two database helpers THEN merge PR #862 — now merge-ready.** Brought #862 up to date with main + renumbered its two database updates so they no longer clash with the audit ones; build + tests green. Apply the two helpers (`resolve_invite_auth_identity` + `list_orphan_auth_identities`) FIRST, then merge → auto-deploy. Permission-gated, waits on you. No urgency — the three new users (Rob Baird, Matt Jinks, Tim Watson) accept + sign in on current prod without it (triple-checked clean-slate). _(added 2026-07-14, updated 2026-07-15)_
 - **Minor, anytime: 6 users are missing a sign-in record** (their in-app tools would fail to authorise them) — heal by running the existing admin "backfill" action once. Pre-existing, not caused by this work. _(added 2026-07-14)_
+- **Outbound email → dev@eq.solutions (staged, NOT deployed).** Changed all system email to send FROM dev@ and route replies to dev@ (was noreply@ with replies going nowhere), plus the 3 in-app "contact us" links → dev@. Code staged on branch `claude/email-new-users-levers-baab69` (uncommitted); the sender env `EMAIL_FROM` is already set on Netlify but needs a redeploy to take effect. Decide: commit → PR → deploy, or drop. _(added 2026-07-15)_
 - **NEXT — Claude as the adjudicator on the "unsure" rows.** Labels now accumulate. Wire the AI to read the full record context (customer, neighbouring sites, import source), propose a verdict + a plain-English reason on the ambiguous middle, human confirms with one tap. This is the jump from classical MDM to the ask-anything brain, and it makes the match-key decision self-calibrating instead of a one-time guess. _(added 2026-07-14)_
 - **Core-owned merge/retire RPC over `app_data.sites`.** Adjudication records "same"; ACTING on it (merge/retire the duplicate) is still a separate human-gated step with no RPC yet — the survivorship engine. _(added 2026-07-14)_
 - **Cross-app attribution (the rest of it)** — Field / Service / Intake still log their own edits as "system"; making those record the person is a multi-app job with no single choke point. _(added 2026-07-14)_
 - **Later audit polish** — PDF / branded-report export, and logging who reads the log; then on-request data erasure and anomaly alerts. _(added 2026-07-14; before/after values shipped in #860)_
-- **Your call: keep or bin the earlier EQ-vs-Microsoft/Google security comparison PDF** (`EQ-Security-One-Pager-2026-07-14.pdf`) — superseded by the CEO data-security version but left in Downloads. _(added 2026-07-14)_
-_…and 353 more · [eq/pending.md](eq/pending.md)_
+_…and 354 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -105,11 +105,11 @@ _…and 53 more · [sks/pending.md](sks/pending.md)_
 
 | Date | Session |
 |------|---------|
+| 2026-07-15 | [Unblocked new-user logins for the SKS demo; made the invite-accept fix merge-ready](sessions/2026-07-15.md) |
 | 2026-07-14 | [Merged + deployed the intake vendor-sync and the xlsx security fix](sessions/2026-07-14.md) |
 | 2026-07-13 | [SKS plant & equipment restored after a manual asset-register wipe; 2FA grace unchanged](sessions/2026-07-13.md) |
 | 2026-07-12 | [Shell→Field handoff: cookie mode retired, recurring Sentry issues cleared](sessions/2026-07-12.md) |
 | 2026-07-12 | [Session — Substrate Plan v2 (the notebook that tells the truth)](sessions/2026-07-12-substrate-plan-v2.md) |
-| 2026-07-11 | [CEO meeting prep for SKS Labour → Cards is the strategic standout](sessions/2026-07-11.md) |
 _[sessions/](sessions/) · 5 shown_
 
 ## Substrate honesty
@@ -117,4 +117,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-14 13:33 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-15 05:58 UTC._
