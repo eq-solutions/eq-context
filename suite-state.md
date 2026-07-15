@@ -8,7 +8,7 @@ status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-07-14 (nightly cron)_
+_Last verified: 2026-07-15 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -58,7 +58,7 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-07-14)
+## Open PRs (as of 2026-07-15)
 
 **eq-field:**
 - #466 chore(ci): enable Dependabot for GitHub Actions
@@ -78,7 +78,7 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## System Health (as of 2026-07-14)
+## System Health (as of 2026-07-15)
 
 **CI on main:**
 
