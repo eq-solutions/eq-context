@@ -80,3 +80,6 @@
 - feat(onboarding): explicit camera+gallery buttons in FirstScanScreen; worker card hidden on empty wallet; CTAs at top (commit 493d895, run 28511411215)
 - feat(onboarding): first-licence success sheet + connection confirmation snackbar + PostHog signup_completed fix (commit 1a141a6, run 28512783582)
 - fix(ui): CircularProgressIndicator.adaptive → plain in EqButton + NotProvisionedScreen; worker ID card moved to wallet bottom (commit 9f2b408, run 28513226954)
+
+## 2026-07-14
+- PR #155: renderer config truthed — `web/index.html` now pins `renderer:'canvaskit'` (was `'auto'` with a stale "HTML renderer on mobile" note that Flutter removed in 3.29; app builds on 3.41). Functional no-op today — Cards is not cross-origin isolated, so `auto` already resolved to canvaskit. Context: Sentry EQ-CARDS-12/13 were ONE transient CanvasKit/OffscreenCanvas WebGL-context-loss engine crash on mobile Safari (0 users, 1 incident) — resolve-and-monitor (Royce); this PR does NOT fix that (no app-side fix exists). Deploying.
