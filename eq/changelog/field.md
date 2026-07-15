@@ -1243,3 +1243,4 @@ explicit Royce go-ahead.
 
 ## 2026-07-15
 - PR #492 (merged `8142119`, live on field.eq.solutions) — Forecast page's sticky "Project" column header set `background:var(--surface)` inline without resetting `color`, inheriting `color:white` from base.css's `thead tr` rule → invisible white-on-white text at every viewport width. Fixed by adding `color:var(--navy)`. Found while auditing the whole app for the same pattern that broke SKS's mobile Weekly Roster header; no other page reproduces it.
+- PR #493 (merged `48d29f1`, live on field.eq.solutions) — Leave calendar's weekday header (`leave.js`) left its `th` background transparent, letting the unstyled `thead tr`'s navy show through under dark ink-3/ink-4 text — low-contrast, opposite direction of #492's bug. Matched to `calendar.js`'s already-correct identical header by adding `background:var(--surface-2)`. Pipeline import preview has the same pattern, left as-is (not used on mobile).
