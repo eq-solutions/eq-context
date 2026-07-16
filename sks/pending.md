@@ -10,6 +10,10 @@ last_updated: 2026-07-12
 
 # SKS Pending
 
+## Monday meeting prep — Royce + Adam (SKS), adoption + data-security discussion (2026-07-16)
+- [x] **Terms/legal review + fixes done, talking points drafted.** Full detail in `eq/pending.md` (EQ-side work: eq-service `/terms` taken down, eq-cards wording softened, eq-field/eq-shell confirmed clean). Positioning locked: personal-tooling framing, no marketing/customer language, Royce recuses from any commercial-terms question. _(done 2026-07-16)_
+- [ ] **Not done: live-demo readiness check** (data cleanliness / no visible errors on whatever screen gets shown) — offered, awaiting Royce's go. _(added 2026-07-16)_
+
 ## ✅ Staff duplicates cleaned + locked (2026-07-12)
 - [x] 9 duplicate SKS staff merged to one live record each; 19 stranded licences + ~62 roster entries recovered onto the record they belong to; 11 middle-name-jammed names cleaned (incl. Royce Milmlow). Recurrence was already stopped 07-11 (Cards adopt-by-email/phone); a DB one-per-person lock (eq-shell `0175`, all 3 planes) now makes it permanent. Full detail in `eq/pending.md`. _(done 2026-07-12)_
 

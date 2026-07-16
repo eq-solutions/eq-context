@@ -83,3 +83,6 @@
 
 ## 2026-07-14
 - PR #155: renderer config truthed — `web/index.html` now pins `renderer:'canvaskit'` (was `'auto'` with a stale "HTML renderer on mobile" note that Flutter removed in 3.29; app builds on 3.41). Functional no-op today — Cards is not cross-origin isolated, so `auto` already resolved to canvaskit. Context: Sentry EQ-CARDS-12/13 were ONE transient CanvasKit/OffscreenCanvas WebGL-context-loss engine crash on mobile Safari (0 users, 1 incident) — resolve-and-monitor (Royce); this PR does NOT fix that (no app-side fix exists). Deploying.
+
+## 2026-07-16
+- **PR #156 MERGED (`ab393a6`) — softened overseas-disclosure wording in the Privacy Policy.** §6 previously read "If you do not consent to overseas disclosure, you cannot use EQ Cards... you confirm you understand and accept this." Reworded to the same legal substance (still discloses overseas processors, still requires acceptance) without the take-it-or-leave-it framing. Non-material change per the policy's own §13 definition — no effective-date bump. Note: bundled Flutter asset, only reaches users on the next app build/release. Prompted by a pre-meeting terms review — full context in `eq-context/eq/pending.md`.
