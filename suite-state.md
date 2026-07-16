@@ -68,12 +68,10 @@ _If this file is >48h old, the cron is broken._
 - #524 docs(scope): balloon-years proposal — nominate low-frequency majors in-app
 - #520 chore(deps): bump resend from 6.12.4 to 6.17.2
 - #518 chore(deps): bump @eq-solutions/roles from v2.4.0 to v2.5.1 in the eq-design-system group across 1 directory
-- #459 chore(deps-dev): bump @vitejs/plugin-react from 6.0.1 to 6.0.3
-- #458 chore(deps): bump tailwind-merge from 3.5.0 to 3.6.0
-- #456 chore(deps-dev): bump tailwindcss from 4.2.2 to 4.3.2
 
 **eq-shell:**
-- #882 fix(briefing): align quote-signal statuses to the live enum
+- #886 feat(dashboard): permission-gated signals board (compliance · works · crew)
+- #885 feat(access): cluster 1 — enforce the 7 sensitive-read keys (eq-shell Phase 1+2)
 - #863 fix(auth): bound login body reads under one deadline (the #858 latent twin)
 - #862 fix(auth): harden invite-accept auth-identity binding + orphan detector
 
