@@ -15,6 +15,13 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## EQ Shell admin — Apps list on the dashboard settings tab now matches the app names everywhere else (2026-07-16, BUILT + MERGED + LIVE)
+*Royce spotted it live on `/sks/admin/settings?tab=dashboard`: the Apps toggle list read "Intake / Cards / Field / EQ Ops / Service" — only one of five had the "EQ" prefix, out of step with the sidebar, command palette, and every other screen. Root cause: that one screen had its own hardcoded name list instead of using the shared one.*
+- [x] **Apps list now reads EQ Intake / EQ Cards / EQ Field / EQ Ops / EQ Service, consistent everywhere.** Swapped the settings page's own hardcoded label list for the same shared source every other screen already uses. Copy-only, no behaviour change. eq-shell **PR #875 MERGED** (`7e4660e`) → core.eq.solutions deployed on Royce's "deploy" go. _(done 2026-07-16)_
+- [x] **Merged past one unrelated red check (Royce's explicit go).** The required schema-safety check failed on an infra hiccup unrelated to this change (a Supabase status lookup returned "resource removed") — not a real security or data issue, and this PR touched no database code. Confirmed with Royce before bypassing it. _(done 2026-07-16)_
+
+---
+
 ## EQ Field — Pipeline: real manual-remove (archive gated + restorable + permanent delete) + in-browser sample data for demos (2026-07-15, BOTH MERGED + LIVE)
 *SKS raised that Pipeline data had no way to be manually removed. Root cause: an archive action already existed but was ungated, unaudited, and one-way — a tender vanished from the board with its data untouched in the database and no way to see it again. Fixed that, then added a real permanent-delete reachable only from the archived list (archive-first is the deliberate safety gate, Royce's call: "Both"). Separately, built an in-browser-only sample-data toggle so the Pipeline/Resources/Accounts screens can be demoed to the internal EQ team (Royce's call) without ever touching real SKS data.*
 - [x] **Archive (Discard/Remove job) — gated + audit-logged; "Show archived" + Restore; permanent delete added.** `discardJob`/`removeProject` now require manager access and write an audit-log entry (previously open to anyone, silent). New "Show archived" list with Restore. New "Delete permanently" — manager-gated, explicit confirm ("cannot be undone"), audit-logged, only reachable from the archived list. Hard-deletes the tender plus its nominations/pending_schedule/tender_enrichment (all CASCADE); `tender_review_decisions` has no CASCADE FK so it's cleared explicitly first. eq-field **PR #494 MERGED + LIVE** (v3.5.330). _(done 2026-07-15)_
