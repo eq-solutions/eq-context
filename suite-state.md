@@ -73,6 +73,7 @@ _If this file is >48h old, the cron is broken._
 - #456 chore(deps-dev): bump tailwindcss from 4.2.2 to 4.3.2
 
 **eq-shell:**
+- #877 chore: remove dead vendored eq-platform/apps scaffold
 - #863 fix(auth): bound login body reads under one deadline (the #858 latent twin)
 - #862 fix(auth): harden invite-accept auth-identity binding + orphan detector
 
@@ -94,9 +95,6 @@ _If this file is >48h old, the cron is broken._
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
 **Migrations:** eq-service has 190 (latest: 0186) applied
-
-**Incidents (resolved):**
-- **2026-07-15 22:09Z → 2026-07-16 09:20Z: eq-shell's required "Tenant drift + anon-grant + policy-lint check" gate red on every run + every PR.** Root cause was NOT a GitHub secret (the three `*_PROJECT_REF` secrets were fine) — `check-tenant-drift.mjs`'s `fingerprint()` iterates tenants read live from `shell_control.tenant_routing` on the control plane (jvknxcmbtrfnxfrwfimn), and tenant `favour-perfect` (`supabase_project_ref = nxojbntrpxfnbhbyaspp`) had its Supabase project deleted while its routing row was still `status='active'`. The Management API's 400 "Resource has been removed" on that dead ref threw uncaught and killed the whole job. Fixed by setting that `tenant_routing` row to `status='suspended'` on jvknxcmbtrfnxfrwfimn (plain DML, no DDL); workflow manually re-run and confirmed green. Follow-up spawned to harden `check-tenant-drift.mjs` so one unreachable tenant soft-fails instead of red-X'ing the required gate for every PR (not yet actioned).
 
 ---
 
