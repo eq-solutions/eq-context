@@ -506,3 +506,11 @@ The following tests belong to eq-quotes-port (Flask), which is retired as of 202
 
 **Deferred:**
 - [ ] **EQ Solutions' own org (`eq`) has zero credential requirements configured** — worth a call on whether EQ Solutions should require White Card/Photo ID too, or stay requirement-free deliberately (it's the seed-demo org). _(added 2026-07-16)_
+
+## ⏩ SKS Field — session 2026-07-16 (Equinix SY9 duplicate customer — verified already clean)
+
+**Trigger:** Royce flagged a possible duplicate customer for the Equinix SY9 site on ehow and asked which company name was correct.
+
+**Completed:**
+- [x] **Confirmed live: "Equinix Hyperscale 2 (SY9) Pty Limited" (`d79ee06f-…`) is the correct/active SY9 customer** (Royce confirmed) — linked to the real SY9 site (499 assets, 10 contract scopes, 2 quotes). The older duplicate "Equinix Hyperscale" (`a57bf144-…`, created 2026-05-23) and its linked site (`95cdc37d-…`) were both already `active=false` with zero dependent rows (quotes/contacts/scopes/jobs) — cleanup had already happened previously. `eq_merge_customers` RPC not needed, no DML required.
+- [x] Logged the resolved name + duplicate-customer history to memory (`project_equinix_entity_map.md`) so future Coupa/PO matching doesn't second-guess "Equinix Hyperscale" (no suffix) as live.
