@@ -48,13 +48,17 @@ supabase_projects:
 # --- Deploy URLs -------------------------------------------------------------
 # status: live -> host must answer 2xx/3xx. A 4xx root (SPA / auth-gate) is noted
 #                 as INFO, not a failure. Connection failure / 5xx -> drift.
+# status: paused -> intentionally taken down; any unhandled status is treated as
+#                   INFO by substrate_honesty.py, never DRIFT, so this doesn't
+#                   trip CI. Update back to "live" when it comes back up.
 deploy_urls:
   - label: EQ Shell (core)
     url: https://core.eq.solutions
     status: live
   - label: EQ website
     url: https://eq.solutions
-    status: live
+    status: paused
+    role: Intentionally taken down 2026-07-16 while Royce works through SKS's employer adopting the software — avoiding any dramas mid-discussion. Not a bug; don't re-flag.
   - label: EQ Service (Netlify)
     url: https://eq-solves-service.netlify.app
     status: live
