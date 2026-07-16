@@ -66,6 +66,43 @@ Check this file first — if your target repo/area is already claimed, coordinat
 
 ---
 
+## Recently pruned (2026-07-16 — 20 worktrees across 5 repos)
+
+Full audit: every active worktree in eq-shell, eq-intake, eq-field, eq-cards, eq-solves-service checked for merged branch + clean tree before removal. Two `git worktree remove` calls without `--force` hit an interrupted-timeout mid-removal on the shared eq-shell root (heavy concurrent-session churn that session — root branch changed under the operator mid-task); recovered via `git worktree prune` + manual `rm -rf` of the orphaned leftover disk content once confirmed no longer git-registered.
+
+| Folder | Repo | Branch | Merged as |
+|--------|------|--------|-----------|
+| 767-wire-check-css | eq-shell | armada/767-wire-check-css | PR #783 |
+| .claude/worktrees/advisory-rpc | eq-shell | claude/advisory-rpc-anon-revoke | PR #832 |
+| .claude/worktrees/dark-doc-logo | eq-shell | claude/dark-doc-logo | PR #866 |
+| .claude/worktrees/sentry-fixes | eq-shell | claude/sentry-fixes | PR #673 |
+| eq-shell-perf-tier1-wt | eq-shell | claude/perf-cold-open-tier1 | PR #740 |
+| .claude/worktrees/eq-ops-mobile-view-af44a3 | eq-shell | (detached) | PR #875 (content match, squash) |
+| eq-shell-onelogin-wt | eq-shell | main | pre-emptied husk, force-removed w/ Royce's go |
+| .claude/worktrees/compassionate-goldberg-734468 | eq-shell | (detached) | pre-emptied husk, force-removed w/ Royce's go |
+| eq-intake-export-tmp | eq-intake | (detached) | PR #71 (content match) |
+| .claude/worktrees/advisory-console | eq-intake | claude/site-advisory-console | PR #67 |
+| .claude/worktrees/ai-adjudicator | eq-intake | claude/ai-site-adjudicator | PR #69 |
+| .claude/worktrees/jovial-rubin-0d0004 | eq-intake | claude/jovial-rubin-0d0004 | PR #41 |
+| .claude/worktrees/sy9-duplicate-sites-6bab8b | eq-intake | claude/sy9-duplicate-sites-6bab8b | PR #66 |
+| eq-field-pipeline-pagination-wt | eq-field | claude/pipeline-pagination-fix | PR #427 |
+| eq-field-roster-save-fix | eq-field | claude/roster-save-409-fix | PR #423 |
+| eq-field-sec | eq-field | claude/sec-cron-fn-auth | PR #463 |
+| .claude/worktrees/contacts-segment-columns | eq-field | main | PR #430 |
+| .claude/worktrees/wonderful-davinci-94d063 | eq-field | claude/one-login-field | PR #477 (content match, squash) |
+| .claude/worktrees/provision-identity | eq-cards | claude/provision-identity | PR #118 |
+| .claude/worktrees/asset-import-export-1fe110 | eq-solves-service | claude/asset-import-export-1fe110 | PR #529 |
+| .claude/worktrees/unruffled-noyce-657c65 | eq-solves-service | main | already broken/dangling — `git worktree prune` |
+
+**Left alone (do not touch without checking first):**
+- eq-shell: `accept-invite-phonestub` (PR #862 open), `eq-shell-dupes-merge-wt` (uncommitted migration 0187 WIP), `.claude/worktrees/eq-roles-enterprise-eval-177343` (uncommitted migration 0186 WIP), `eq-shell-revendor-intake-wt` (PR #879 open)
+- eq-intake: `eq-intake-dupes-merge-wt` (real uncommitted diff beyond its merged PR), `eq-intake-backport-wt` (new, concurrent session)
+- eq-field: `eq-field-guard` (PR #466 open), `.claude/worktrees/bold-volhard-645dd7` on branch `land-472` (2 commits ahead of main, **never pushed, no PR** — flag before ever touching), `.claude/worktrees/unruffled-torvalds-03ce2f` (PR #375 merged + clean tree, but carries 2 untracked audit `.md` files that were never explicitly named for deletion — Royce's call to clear by hand)
+- eq-shell also spawned several brand-new worktrees mid-session from other concurrent agents (`app-naming-wt`, `brand-handoff`, `frozen-window-issue-58b6b2`, `labour-hire-agency-grouped`, `labour-hire-modal-focus`, `sks-comms-resource-mgmt-7563e2`) — not evaluated, not touched.
+- `.claude/worktrees/eq-ops-mobile-view-af44a3` (eq-shell) is down to an empty 8K husk but Windows reports the directory "busy" (file lock) — harmless, needs a machine-level look to actually delete, not a git issue.
+
+---
+
 ## Stale (verify branch merged before pruning)
 
 | Folder | Branch | Agent / Session | Notes |
