@@ -70,6 +70,7 @@ _If this file is >48h old, the cron is broken._
 - #518 chore(deps): bump @eq-solutions/roles from v2.4.0 to v2.5.1 in the eq-design-system group across 1 directory
 
 **eq-shell:**
+- #888 perf(auth): parallelize verify-shell-session's independent DB reads
 - #886 feat(dashboard): permission-gated signals board (compliance · works · crew)
 - #885 feat(access): cluster 1 — enforce the 7 sensitive-read keys (eq-shell Phase 1+2)
 - #863 fix(auth): bound login body reads under one deadline (the #858 latent twin)
