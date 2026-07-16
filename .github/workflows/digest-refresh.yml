@@ -56,31 +56,11 @@ jobs:
       - name: Generate sessions/INDEX.md
         run: python scripts/generate_session_index.py
 
-      - name: Generate live-check canary
-        # Cheap, unpredictable-enough token for Claude Chat's connector to quote
-        # verbatim as proof of a live read (see CHAT-PROMPT.md rule 2). A stale
-        # or hallucinated read can't produce today's date + this exact commit
-        # SHA + run number by accident, so a mismatch is obvious to a human at
-        # a glance — unlike a self-reported "freshness date" (F1 in failures.md).
-        run: |
-          {
-            echo "---"
-            echo "title: SYSTEM — Live-Check Canary"
-            echo "owner: Royce Milmlow"
-            echo "last_updated: $(date -u +%Y-%m-%d)"
-            echo "scope: Machine-written canary for Claude Chat's connector freshness check. Rewritten every digest-refresh run — never edit by hand."
-            echo "read_priority: high"
-            echo "status: live"
-            echo "---"
-            echo ""
-            echo "LIVE · $(date -u +%Y-%m-%dT%H:%MZ) · commit $(git rev-parse --short HEAD) · run ${GITHUB_RUN_NUMBER}"
-          } > system/live-check.md
-
       - name: Commit if changed
         run: |
           git config user.name  "eq-suite-bot"
           git config user.email "bot@eq.solutions"
-          git add digest.md sessions/INDEX.md system/live-check.md
+          git add digest.md sessions/INDEX.md
           if git diff --staged --quiet; then
             echo "No changes"
             exit 0
