@@ -71,7 +71,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #888 perf(auth): parallelize verify-shell-session's independent DB reads
-- #886 feat(dashboard): permission-gated signals board (compliance · works · crew)
 - #885 feat(access): cluster 1 — enforce the 7 sensitive-read keys (eq-shell Phase 1+2)
 - #863 fix(auth): bound login body reads under one deadline (the #858 latent twin)
 - #862 fix(auth): harden invite-accept auth-identity binding + orphan detector
