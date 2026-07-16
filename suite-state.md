@@ -8,7 +8,7 @@ status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-07-15 (nightly cron)_
+_Last verified: 2026-07-16 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -58,7 +58,7 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-07-15)
+## Open PRs (as of 2026-07-16)
 
 **eq-field:**
 - #466 chore(ci): enable Dependabot for GitHub Actions
@@ -76,15 +76,18 @@ _If this file is >48h old, the cron is broken._
 - #863 fix(auth): bound login body reads under one deadline (the #858 latent twin)
 - #862 fix(auth): harden invite-accept auth-identity binding + orphan detector
 
+**eq-solves-intake:**
+- #71 feat(intake): flagSitePairForMerge client wrapper
+
 ---
 
-## System Health (as of 2026-07-15)
+## System Health (as of 2026-07-16)
 
 **CI on main:**
 
 | Repo | Status |
 |------|--------|
-| eq-service | ✗ failure |
+| eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
