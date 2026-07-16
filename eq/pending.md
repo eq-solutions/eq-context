@@ -5,13 +5,22 @@ last_updated: 2026-07-11
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
-last_updated: 2026-07-16
+last_updated: 2026-07-17
 ---
 
 # EQ Tier — Pending
 
 EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## AI morning brief — the quote signals had been silently reporting zero for SKS; realigned to the live statuses and shipped (2026-07-17, MERGED + LIVE)
+*The brief's quote-pipeline signals filtered on status names that don't occur in the live SKS data (`ready-to-invoice`, `submitted`, `won-awaiting-job-no`), so real backlogs were invisible: finished-but-unbilled work, verbal wins missing a job number, and quotes sitting unanswered with a client all reported zero. Verified the real statuses against both live tenant databases before touching anything — both planes carry an identical 16-value `quote_status_check` constraint, but SKS only ever uses a subset, and EQ's plane (zaap) has zero quote rows because Quotes isn't live there.*
+- [x] **Realigned `fetchQuoteSignals` in `briefing-engine.ts` to the statuses the data actually uses.** Ready-to-invoice now reads `complete`/`ready-to-invoice`; verbal-wins-no-job reads `verbal-win`/`won-awaiting-job-no`/`won-job-created` with no job number. Verified against live SKS: ready-to-invoice went 0 → 14 rows of unbilled finished work, verbal-wins 1 → 3, stale 2 → 10. eq-shell **PR #882 MERGED** (squash `332d426`) → Netlify deploy `6a58ecde…` `ready`, live on core.eq.solutions, smoke-verified (`ai-briefing` unauth → 401 not 500, so the new module loads clean in the prod bundle). _(done 2026-07-17)_
+- [x] **Caught and corrected a wrong assumption in the task brief itself — `active` is a won job, not an open quote.** The brief specified keying the expiring/stale signals off `active`; live data says 14 of 15 `active` quotes carry a job number, i.e. they're won jobs in progress. Using them would have flagged won jobs as "quote expiring / no client response in 14 days" — a new wrong signal. Used the taxonomy's `OPEN_PIPELINE` set instead (`draft`/`submitted`/`client-reviewing`/`on-hold`), which excludes won jobs and correctly includes SKS's sent-but-still-`draft` quotes. Flagged to Royce for veto; he merged. _(done 2026-07-17)_
+- [x] **Added a guard so this can't silently recur.** New `_shared/quote-signal-status.ts` holds the three status sets as a curated projection of `src/modules/quotes/taxonomy.ts`, and `quote-signal-status.test.ts` locks every literal to the taxonomy's `QUOTE_STATUSES` + pipeline groups — a future status rename now fails a test instead of a signal quietly going dark. _(done 2026-07-17)_
+- [ ] **Eyeball the next SKS morning brief once signed in** to confirm the signals render as expected end-to-end. The query logic is verified against live data and the deploy is smoke-verified, but the authed brief output itself needs a signed-in SKS session (10-minute per-user cache, or wait for the daily scheduled email). _(added 2026-07-17)_
 
 ---
 
