@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-16 09:23 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-16 09:35 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-16 09:23 UTC → 2026-07-16 09:23 UTC)
+## Since last refresh (2026-07-16 09:23 UTC → 2026-07-16 09:35 UTC)
 
-- Merged: eq-shell [#857](https://github.com/eq-solutions/eq-shell/pull/857) onboarding: manager-push invite funnel becomes the "Add work
-- Merged: eq-shell [#856](https://github.com/eq-solutions/eq-shell/pull/856) feat(brand): carry full tenant document palette + doc logo i
-- Merged: eq-shell [#854](https://github.com/eq-solutions/eq-shell/pull/854) docs(drift): retruth calibration-view allow-list comment (ad
-- Merged: eq-shell [#849](https://github.com/eq-solutions/eq-shell/pull/849) fix(drift): allow-list service.instrument_calibration_events
-- Merged: eq-shell [#848](https://github.com/eq-solutions/eq-shell/pull/848) feat(canonical): site-resolver adjudication — verdict captur
-- Merged: eq-shell [#847](https://github.com/eq-solutions/eq-shell/pull/847) feat(cards): tenant-branded Excel compliance register (share
-- Merged: eq-shell [#846](https://github.com/eq-solutions/eq-shell/pull/846) feat(audit): Phase 1d (eq-shell) — attribute worker create/e
-- Merged: eq-shell [#842](https://github.com/eq-solutions/eq-shell/pull/842) feat(audit): Phase 2a — date/type filters + CSV export on th
+- Merged: eq-shell [#861](https://github.com/eq-solutions/eq-shell/pull/861) fix(calibration): retire legacy asset-calibration reads/writ
+- Merged: eq-shell [#860](https://github.com/eq-solutions/eq-shell/pull/860) feat(audit): Phase 2b — before/after drill-down on the activ
+- Merged: eq-shell [#859](https://github.com/eq-solutions/eq-shell/pull/859) fix(audit): lock EXECUTE on public.eq_audit_retention_run (a
+- Merged: eq-shell [#858](https://github.com/eq-solutions/eq-shell/pull/858) fix(auth): bound verify-session body read + de-noise the sta
+- Merged: eq-shell [#855](https://github.com/eq-solutions/eq-shell/pull/855) feat(equipment): re-point Plant & Equipment calibration onto
+- Merged: eq-shell [#853](https://github.com/eq-solutions/eq-shell/pull/853) feat(audit): Phase 1c — audit-log retention (13mo hot / 7yr 
+- Merged: eq-shell [#850](https://github.com/eq-solutions/eq-shell/pull/850) docs: reflect that Resend email delivery is live in producti
+- Merged: eq-shell [#840](https://github.com/eq-solutions/eq-shell/pull/840) feat(audit): make public.audit_log (credential audit) append
 
 ## ⚠ Needs you (8)
 
@@ -36,7 +36,7 @@ _2026-07-16 09:23 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 1d ago | 2 | 1d |
+| eq-shell | ✓ success | 1d ago | 3 | 1d |
 | eq-solves-service | ✓ success | 0d ago | 6 | 10d |
 | eq-field | ✓ success | 1d ago | 2 | 4d |
 | eq-cards | ✓ success | 1d ago | 0 | — |
@@ -63,6 +63,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-16 | eq-shell | [#875](https://github.com/eq-solutions/eq-shell/pull/875) fix(admin): use shared APP_LABELS for the Apps toggle list |
 | 2026-07-16 | eq-solves-service | [#544](https://github.com/eq-solutions/eq-service/pull/544) fix(admin): correct stale card copy, remove unused Today view |
 | 2026-07-16 | eq-solves-service | [#543](https://github.com/eq-solutions/eq-service/pull/543) chore(terms): temporarily unpublish /terms pending legal review |
+| 2026-07-16 | eq-cards | [#156](https://github.com/eq-solutions/eq-cards/pull/156) chore(legal): soften overseas-disclosure wording in privacy polic |
 | 2026-07-16 | eq-solves-intake | [#71](https://github.com/eq-solutions/eq-solves-intake/pull/71) feat(intake): flagSitePairForMerge client wrapper |
 | 2026-07-15 | eq-shell | [#868](https://github.com/eq-solutions/eq-shell/pull/868) feat(intake): site merge — the "merge these" button (migration 01 |
 | 2026-07-15 | eq-shell | [#867](https://github.com/eq-solutions/eq-shell/pull/867) vendor sync — eq-intake #69 (AI site-duplicate adjudicator) |
@@ -73,11 +74,11 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-15 | eq-solves-service | [#539](https://github.com/eq-solutions/eq-service/pull/539) refactor(reports): retire Service report-logo pickers — Shell is  |
 | 2026-07-15 | eq-solves-service | [#538](https://github.com/eq-solutions/eq-service/pull/538) feat(brand): consume dark-surface document logo from the Shell ha |
 | 2026-07-15 | eq-solves-service | [#537](https://github.com/eq-solutions/eq-service/pull/537) fix(auth): report exports 401 under Shell JWT sessions |
-| 2026-07-15 | eq-field | [#495](https://github.com/eq-solutions/eq-field/pull/495) feat(pipeline): in-browser sample data for SKS Pipeline demos (v3 |
-_Showing 15 of 114 · full record in [sessions/](sessions/)_
+_Showing 15 of 115 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **Live data gap surfaced while checking Connected Apps: 0 of 5 SKS customers have ever linked to a canonical ID**, though sites are 9/9 linked. Each of the 5 customer rows does have a `canonical_synced_at` timestamp, meaning a sync attempt fired but never actually returned a canonical link. Not investigated further — Royce hasn't said whether to chase it. _(added 2026-07-16)_
 - **Not click-tested live** — SKS Pipeline is triple-gated to the SKS tenant; this session had no SKS login to verify either feature by hand. Worth a quick real click-through next time you're signed in, especially "Load sample data" before demoing it to anyone. _(added 2026-07-15)_
 - **Small, low-risk: rename the "Field Run-Sheet" button** — Royce noticed it's not obvious this is the report/export button (reads as a document name, not an action, and sits next to "Print Blank for Onsite" which does read as an action). Recommended "Download Run-Sheet" or "Export Run-Sheet" — label-only change, no rename of the underlying feature/code/tests. Awaiting Royce's go-ahead. _(added 2026-07-15)_
 - **MERGE (needs Royce): PR #863** — I couldn't merge it myself (merge on this repo auto-deploys auth code, so the tools blocked it). Squash-merge in the GitHub UI when you want it live; no urgency — no live incident. _(added 2026-07-14)_
@@ -86,9 +87,8 @@ _Showing 15 of 114 · full record in [sessions/](sessions/)_
 - **Minor, anytime: 6 users are missing a sign-in record** (their in-app tools would fail to authorise them) — heal by running the existing admin "backfill" action once. Pre-existing, not caused by this work. _(added 2026-07-14)_
 - **Outbound email → dev@eq.solutions (staged, NOT deployed).** Changed all system email to send FROM dev@ and route replies to dev@ (was noreply@ with replies going nowhere), plus the 3 in-app "contact us" links → dev@. Code staged on branch `claude/email-new-users-levers-baab69` (uncommitted); the sender env `EMAIL_FROM` is already set on Netlify but needs a redeploy to take effect. Decide: commit → PR → deploy, or drop. _(added 2026-07-15)_
 - **Seed one realistic flagged pair on ehow for a hands-on demo.** Console currently has 0 flagged rows — nothing real has tripped the write-time resolver yet, so there's nothing to click through end-to-end. Offered to insert one synthetic advisory row; correctly blocked by the auto-mode classifier as a write to shared production SKS data without Royce's explicit go — needs his yes. _(added 2026-07-15)_
-- **`favour-perfect` tenant is stuck on migration 0184 — `pg_cron` extension not installed.** The same One Pipe run that applied 0185 to ehow/eq failed on `favour-perfect` (Supabase project `nxojbntrpxfnbhbyaspp`) at 0184_audit_log_retention.sql: `schema "cron" does not exist`. Blocks the whole-fleet apply job for that tenant going forward (currently 189 migrations behind everyone else). Chip filed: task_2a98bf3b. _(added 2026-07-15)_
 - **Cross-app attribution (the rest of it)** — Field / Service / Intake still log their own edits as "system"; making those record the person is a multi-app job with no single choke point. _(added 2026-07-14)_
-_…and 355 more · [eq/pending.md](eq/pending.md)_
+_…and 354 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -120,4 +120,4 @@ _[sessions/](sessions/) · 5 shown_
 ✗ Drift detected — see **Needs you** above. Source: `scripts/substrate_honesty.py`.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-16 09:23 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-16 09:35 UTC._
