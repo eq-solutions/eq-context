@@ -2,16 +2,16 @@
 title: EQ Tier — Products
 owner: Royce Milmlow
 last_updated: 2026-06-13
-scope: Live EQ products. Killed/deferred entries removed in 2026-05-04 refactor.
+scope: Live EQ products, plus the canonical Killed / Deferred list (CLAUDE.md §9 points here — don't duplicate facts back into CLAUDE.md).
 read_priority: standard
 status: live
 ---
 
 # EQ Tier — Products
 
-Only live or actively-built products. Killed/deferred products are not
-listed here — see `CLAUDE.md` "Killed / deferred" section, or
-`/archive/` for historical changelogs.
+Live or actively-built products below. Killed/deferred products are listed
+in their own section at the bottom of this file — see there, not
+`CLAUDE.md`. `/archive/` holds historical changelogs for parked work.
 
 ---
 
@@ -255,10 +255,11 @@ Phase 2 question — a tier-of-company question.
 
 ---
 
-## (No other EQ products are live)
+## Killed / Deferred
 
-Removed from this file in 2026-05-04 refactor:
-- EQ Solves Compliance (killed)
-- EQ Variations (killed)
-- EQ Expenses (now SKS internal tool — see `sks/products.md` if added)
-- EQ Ops was incorrectly listed as killed — it is active dev (see above).
+**EQ Variations, EQ Compliance** — killed (2026-04-29 cull).
+**EQ Expenses** — internal SKS tool only, no longer an EQ product.
+**EQ Quotes** — RETIRED 2026, replaced by EQ Ops (see above). Flask v1 at `quotes.eq.solutions` is decommissioned. Do not build on or extend it; work goes into EQ Ops.
+**AHD** — parked to 2027 capital activation. Full detail: `archive/README.md` → `archive/changelog-ahd.md`. Not an EQ Solves product — kept here only as a pointer since CLAUDE.md previously listed it alongside these.
+
+If Royce mentions any of these, treat as historical unless he explicitly reactivates it.

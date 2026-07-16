@@ -233,15 +233,7 @@ Do NOT duplicate content into this file. Update facts in their home.
 
 ## 9. Killed / Deferred — NOT Live Products
 
-(2026-04-29 cull, 2026-05-04 refactor; EQ Quotes RETIRED 2026 — replaced by EQ Ops)
-
-- **EQ Variations, EQ Compliance** — killed.
-- **EQ Expenses** — internal SKS tool only, no longer an EQ product.
-- **AHD** — parked to 2027. `archive/changelog-ahd.md`.
-
-If Royce mentions these, treat as historical unless he explicitly reactivates.
-
-**EQ Quotes is RETIRED** — replaced by EQ Ops (active dev in eq-shell, core.eq.solutions/ops). Flask v1 at `quotes.eq.solutions` is decommissioned. Do not build on or extend EQ Quotes; work goes into EQ Ops.
+Facts live in [eq/products.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/eq/products.md) "Killed / Deferred" section — read it, don't assume from this file. If Royce mentions a killed/deferred product, treat as historical unless he explicitly reactivates.
 
 ---
 

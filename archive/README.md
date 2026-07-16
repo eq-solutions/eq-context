@@ -15,7 +15,7 @@ explicitly directed.
 
 | File | Why archived | When to revisit |
 |---|---|---|
-| `changelog-eq-quotes.md` | Historical Flask v1 changelog. EQ Quotes was un-deferred 2026-05-19 and is now live first-round core (`eq/products.md`) | Reinstate as `eq/changelog/quotes.md` when the React rewrite begins |
+| `changelog-eq-quotes.md` | Historical Flask v1 changelog. Note: EQ Quotes was un-deferred 2026-05-19 and briefly live, but was RETIRED in 2026 — replaced by EQ Ops. See `eq/products.md` "Killed / Deferred" for current status | Superseded — EQ Ops is the successor, no revival planned |
 | `changelog-ahd.md` | AHD parked to 2027 capital activation | 2027 capital activation review |
 | `GROK.md` | Grok not part of the active workflow (2026-07-12); pointed at `STATE.md`/`SPRINT-BOARD.md`, archived same day | If Grok sessions resume — rewire its `STATE.md` pointer to `suite-state.md` first |
 | `direction-d-state.md` | Direction D design-system + IA wave appears dormant — zero inbound references found across governed docs (2026-07-12) | If the wave resumes, refresh against live state before reinstating |
