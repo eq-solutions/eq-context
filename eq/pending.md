@@ -5,13 +5,30 @@ last_updated: 2026-07-11
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
-last_updated: 2026-07-14
+last_updated: 2026-07-16
 ---
 
 # EQ Tier — Pending
 
 EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-shell's required security CI check was red on every PR for ~11 hours — root-caused, fixed, and follow-up hardening spawned (2026-07-16, FIXED LIVE + FOLLOW-UP RUNNING)
+*Royce reported eq-shell's "Tenant drift + anon-grant + policy-lint check" — a REQUIRED gate covering real security invariants (no unconstrained anon access, RLS on every table, tenant-isolation policies) — had been red on every scheduled run and every fresh PR since 2026-07-15 22:09Z, forcing unrelated PRs into an unrelated red X and tempting admin-bypass merges. It looked like a stale GitHub secret at first; it wasn't.*
+- [x] **Root cause found: not a secret, a live data row.** The check reads tenant Supabase refs live from the control-plane database (not from GitHub secrets) and tries to fingerprint each one. The `favour-perfect` tenant's Supabase project had actually been deleted, but the control-plane record still said it was active, so the check kept trying to reach a project that no longer exists and crashing instead of skipping it. _(done 2026-07-16)_
+- [x] **Fixed live — one data change, no code deploy needed.** Marked `favour-perfect` as suspended in the control-plane database so the check stops trying to reach it. Manually re-ran the workflow and confirmed it's green again. _(done 2026-07-16)_
+- [x] **Follow-up spawned so this can't happen again: task_8d6e64f1 — Royce started it in a separate session, running independently.** Goal: make the check shrug off one unreachable tenant (skip it + warn) instead of failing the entire required gate for every PR on the whole repo. _(in progress 2026-07-16 — check its own session for outcome)_
+- [x] **`eq-context/suite-state.md` updated with the incident** (System Health note + Key Decisions entry + corrected the `favour-perfect` status line, which previously still said "active"). Left unstaged for this session's commit at close. _(done 2026-07-16)_
+
+---
+
+## EQ Service — Admin hub audited card-by-card, two stale descriptions fixed, unused Today view removed (2026-07-16, MERGED + LIVE)
+*Royce asked for every card on `/sks/service/admin` to be traced to what it actually does, not what the label implies. Found two cards describing features that no longer exist: "Users" implied invite/role management (that moved to Shell — this page is read-only roster now), and "Connected Apps" implied active EQ Field syncing (there's no EQ Field sync here at all — it's a static canonical-linkage completion percentage with no controls). Also removed the "Today" card/page — it duplicated Activity's live-status purpose and nothing else linked to it.*
+- [x] **Users and Connected Apps card copy now matches reality.** Read-only roster / read-only sync status, no action implied that isn't there. _(done 2026-07-16)_
+- [x] **"Today" admin view removed** (`/admin/today`) — confirmed nothing else referenced it before deleting. eq-service **PR #544 MERGED + LIVE** (`358858d`), went in against current `main` so it got a real CI run + Netlify deploy preview (the branch it started on was stale/already-merged, so it was re-pushed as a clean PR off current main rather than reusing the old one). _(done 2026-07-16)_
+- [ ] **Live data gap surfaced while checking Connected Apps: 0 of 5 SKS customers have ever linked to a canonical ID**, though sites are 9/9 linked. Each of the 5 customer rows does have a `canonical_synced_at` timestamp, meaning a sync attempt fired but never actually returned a canonical link. Not investigated further — Royce hasn't said whether to chase it. _(added 2026-07-16)_
 
 ---
 
@@ -87,7 +104,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [ ] **Seed one realistic flagged pair on ehow for a hands-on demo.** Console currently has 0 flagged rows — nothing real has tripped the write-time resolver yet, so there's nothing to click through end-to-end. Offered to insert one synthetic advisory row; correctly blocked by the auto-mode classifier as a write to shared production SKS data without Royce's explicit go — needs his yes. _(added 2026-07-15)_
 - [x] **The "merge these" button — SHIPPED (2026-07-15).** Closes the loop: a `same`-verdict row now shows "Preview merge" (exact row/table counts across the 26 tables that reference `app_data.sites`) → "Confirm merge" (repoints every dependent row to the survivor, soft-retires the loser — never deleted). Manager-only (new `intake.sites.merge` permission, one tier above `intake.commit`); also gated server-side by tenant role, so a non-manager literally cannot call it, not just can't see the button. Migration **0185** validated live via BEGIN…ROLLBACK on ehow (zero trace left). eq-solves-intake **PR #70 MERGED** (client wrappers, 6/6 tests); eq-shell **PR #868 MERGED** (`c3a337f`, Royce's "merge both, no review" — real CI green: schema drift, typecheck/test/lint, migration ledger hygiene) → core.eq.solutions auto-deploying. _(done 2026-07-15)_
 - [x] **APPLIED: migration 0185 to ehow — 2026-07-15 09:23Z.** Royce's "merge and deploy" go — dispatched via the One Pipe `tenant-migrate.yml` workflow, gated behind the `production` environment approval. `eq_site_merge_preview`/`eq_site_merge_execute`/`site_resolution_merge_log` confirmed live on ehow by direct query. Same run also applied to the `eq` tenant. Preview/Confirm merge is now fully callable on production data. _(done 2026-07-15)_
-- [ ] **`favour-perfect` tenant is stuck on migration 0184 — `pg_cron` extension not installed.** The same One Pipe run that applied 0185 to ehow/eq failed on `favour-perfect` (Supabase project `nxojbntrpxfnbhbyaspp`) at 0184_audit_log_retention.sql: `schema "cron" does not exist`. Blocks the whole-fleet apply job for that tenant going forward (currently 189 migrations behind everyone else). Chip filed: task_2a98bf3b. _(added 2026-07-15)_
+- [x] **`favour-perfect`'s stuck migration is moot — its Supabase project is gone.** Confirmed 2026-07-16: the project (`nxojbntrpxfnbhbyaspp`) itself has been deleted (Management API returns "Resource has been removed"), not just behind on migrations as first thought 2026-07-15. Tenant marked `suspended` in the control-plane routing table so nothing tries to reach it anymore — see the new CI-outage entry below for the knock-on effect this had. _(superseded 2026-07-16)_
 - [x] **Seeded a real flagged site pair on ehow — 2026-07-16 (Royce's go).** SY3: two genuine duplicate rows already in the data (active "SY3" w/ customer vs. inactive "Equinix SY3", same address, no customer) — inserted one `site_resolution_advisory` row (outcome='match', confidence='high', score=0.90) so the "Duplicates caught at the write" panel on the Health tab now has something to adjudicate/merge. Source stamped `seeded-demo:royce-go-2026-07-16` so it's distinguishable from a real write-time catch. Royce still has to click Same → Preview → Confirm himself — nothing merged automatically. _(done 2026-07-16)_
 
 ---

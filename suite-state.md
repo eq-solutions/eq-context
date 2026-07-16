@@ -95,6 +95,9 @@ _NETLIFY_TOKEN not set — deploy status unavailable_
 
 **Migrations:** eq-service has 190 (latest: 0186) applied
 
+**Incidents (resolved):**
+- **2026-07-15 22:09Z → 2026-07-16 09:20Z: eq-shell's required "Tenant drift + anon-grant + policy-lint check" gate red on every run + every PR.** Root cause was NOT a GitHub secret (the three `*_PROJECT_REF` secrets were fine) — `check-tenant-drift.mjs`'s `fingerprint()` iterates tenants read live from `shell_control.tenant_routing` on the control plane (jvknxcmbtrfnxfrwfimn), and tenant `favour-perfect` (`supabase_project_ref = nxojbntrpxfnbhbyaspp`) had its Supabase project deleted while its routing row was still `status='active'`. The Management API's 400 "Resource has been removed" on that dead ref threw uncaught and killed the whole job. Fixed by setting that `tenant_routing` row to `status='suspended'` on jvknxcmbtrfnxfrwfimn (plain DML, no DDL); workflow manually re-run and confirmed green. Follow-up spawned to harden `check-tenant-drift.mjs` so one unreachable tenant soft-fails instead of red-X'ing the required gate for every PR (not yet actioned).
+
 ---
 
 | Layer | View / Table | Rows | Status |
@@ -135,6 +138,7 @@ _Auto-refreshed nightly. ✓ = has data · ⚠ = empty (no data yet) · ✗ = ta
 ---
 
 ## Key Decisions (auto-derived from merged PRs + manual)
+- **`favour-perfect` tenant suspended in `shell_control.tenant_routing`** — its Supabase project (`nxojbntrpxfnbhbyaspp`) had been deleted but the routing row was left `active`, which broke eq-shell's required tenant-drift CI gate for ~11 hours across every PR (2026-07-15 22:09Z → 2026-07-16 09:20Z). Manual DML fix on the control plane (jvknxcmbtrfnxfrwfimn), no DDL. Open follow-up: harden `check-tenant-drift.mjs` to soft-fail on one unreachable tenant instead of throwing uncaught. (2026-07-16)
 - **eq-ui Modal is now focus-identity-agnostic** — v1.10.1 keys the focus-trap effect on `[open]` only and reads the latest `onClose` via a ref (`onCloseRef`), so consumers passing an inline/unstable `onClose` no longer lose input focus on every keystroke. eq-shell bumped the ui pin to v1.10.1 (shell PR #807) and then reverted the local `useCallback` workaround on the Labour Hire Rates Add/Edit-rate modal as redundant — back to a plain `closeEditor` handler (shell PR #808, squash `ad8eb5f`). CI green; **deployed green to core.eq.solutions** (deploy `6a54aa53`, published 2026-07-13 09:09Z). (2026-07-13)
 - **Contract sheet is the source of truth for what's funded this cycle** — a new `not_funded` scope status shows an amber "not funded this cycle · ad-hoc only" warning at check-create and on the executing check; creation is **never blocked**, just stamped into the audit trail for the ad-hoc paper trail. Also fixes the ContractScopeBanner FY lookup so calendar/hyphenated FYs (e.g. Equinix `2025-2026`) classify instead of rendering blank (service PR #497, 2026-07-11)
 - **Asset-register import: the workbook's Assets tab is the source of truth for real assets** — replaces `Unverified #N` stub assets and reconciles per-site to canonical `app_data.assets` via the write layer (SY1 pilot) (service PR #496, 2026-07-11)
@@ -205,4 +209,4 @@ _Auto-refreshed nightly. ✓ = has data · ⚠ = empty (no data yet) · ✗ = ta
 - EQ Ops fully built (in progress in eq-shell)
 - Integration tests
 
-_(Second tenant now exists: `favour-perfect` self-provisioned onto its own plane `nxojbntrpxfnbhbyaspp` — the "only SKS" claim is retired.)_
+_(Second tenant `favour-perfect` self-provisioned onto its own plane `nxojbntrpxfnbhbyaspp` — the "only SKS" claim is retired. **Status update 2026-07-16:** that Supabase project has since been deleted; the tenant's `shell_control.tenant_routing` row is now `suspended`, not `active` — see Incidents above.)_
