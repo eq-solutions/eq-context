@@ -76,9 +76,6 @@ _If this file is >48h old, the cron is broken._
 - #863 fix(auth): bound login body reads under one deadline (the #858 latent twin)
 - #862 fix(auth): harden invite-accept auth-identity binding + orphan detector
 
-**eq-solves-intake:**
-- #72 feat(intake): wire the merge-panel UI into IntakeHealthHome
-
 ---
 
 ## System Health (as of 2026-07-16)
