@@ -8,24 +8,22 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-16 14:38 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-16 19:03 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-16 14:36 UTC → 2026-07-16 14:38 UTC)
+## Since last refresh (2026-07-16 14:38 UTC → 2026-07-16 19:03 UTC)
 
-- Merged: eq-shell [#857](https://github.com/eq-solutions/eq-shell/pull/857) onboarding: manager-push invite funnel becomes the "Add work
-- Merged: eq-shell [#856](https://github.com/eq-solutions/eq-shell/pull/856) feat(brand): carry full tenant document palette + doc logo i
-- Merged: eq-shell [#855](https://github.com/eq-solutions/eq-shell/pull/855) feat(equipment): re-point Plant & Equipment calibration onto
-- Merged: eq-shell [#854](https://github.com/eq-solutions/eq-shell/pull/854) docs(drift): retruth calibration-view allow-list comment (ad
-- Merged: eq-shell [#853](https://github.com/eq-solutions/eq-shell/pull/853) feat(audit): Phase 1c — audit-log retention (13mo hot / 7yr 
-- Merged: eq-shell [#850](https://github.com/eq-solutions/eq-shell/pull/850) docs: reflect that Resend email delivery is live in producti
-- Merged: eq-shell [#849](https://github.com/eq-solutions/eq-shell/pull/849) fix(drift): allow-list service.instrument_calibration_events
-- Merged: eq-shell [#848](https://github.com/eq-solutions/eq-shell/pull/848) feat(canonical): site-resolver adjudication — verdict captur
-- ✅ Needs you: 7 → 5
+- Merged: eq-shell [#884](https://github.com/eq-solutions/eq-shell/pull/884) perf(build): split heavy vendors into cacheable chunks
+- Merged: eq-shell [#882](https://github.com/eq-solutions/eq-shell/pull/882) fix(briefing): align quote-signal statuses to the live enum
+- Merged: eq-shell [#868](https://github.com/eq-solutions/eq-shell/pull/868) feat(intake): site merge — the "merge these" button (migrati
+- Merged: eq-shell [#867](https://github.com/eq-solutions/eq-shell/pull/867) vendor sync — eq-intake #69 (AI site-duplicate adjudicator)
+- Merged: eq-shell [#866](https://github.com/eq-solutions/eq-shell/pull/866) feat(brand): dark-background document logo (canonical + hand
+- Merged: eq-shell [#861](https://github.com/eq-solutions/eq-shell/pull/861) fix(calibration): retire legacy asset-calibration reads/writ
+- Merged: eq-shell [#860](https://github.com/eq-solutions/eq-shell/pull/860) feat(audit): Phase 2b — before/after drill-down on the activ
+- Merged: eq-shell [#859](https://github.com/eq-solutions/eq-shell/pull/859) fix(audit): lock EXECUTE on public.eq_audit_retention_run (a
+- ✅ Needs you: 5 → 3
 
-## ⚠ Needs you (5)
+## ⚠ Needs you (3)
 
-- 🔴 **CI cancelled** — eq-solves-service `main`
-- 🔴 **Sentry 30 events today** — `eq-shell` [Error: events GET 500: internal_error](https://eq-solutions.sentry.io/issues/132197414/)
 - 🟠 **Sentry new error** — `eq-shell` [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/)
 - 🟠 **Sentry new error** — `eq-shell` [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/)
 - 🟡 **1 stale worktree** need cleanup — [worktree-registry.md](system/worktree-registry.md)
@@ -34,8 +32,8 @@ _2026-07-16 14:38 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 1d ago | 3 | 2d |
-| eq-solves-service | ⚠ cancelled | -1d ago | 3 | 3d |
+| eq-shell | ✓ success | 1d ago | 4 | 2d |
+| eq-solves-service | ✓ success | 0d ago | 3 | 3d |
 | eq-field | ✓ success | 1d ago | 2 | 4d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
@@ -44,7 +42,6 @@ _2026-07-16 14:38 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Project | Error | Events | Last seen |
 |---------|-------|--------|-----------|
-| eq-shell | [Error: events GET 500: internal_error](https://eq-solutions.sentry.io/issues/132197414/) | 30 | 2026-07-16 |
 | eq-shell | [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/) | 5 | 2026-07-16 |
 | eq-shell | [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/) | 2 | 2026-07-14 |
 | eq-cards | [LateInitializationError: Field '' has not been initialized.](https://eq-solutions.sentry.io/issues/132643934/) | 2 | 2026-07-07 |
@@ -57,6 +54,8 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-16 | eq-shell | [#884](https://github.com/eq-solutions/eq-shell/pull/884) perf(build): split heavy vendors into cacheable chunks |
+| 2026-07-16 | eq-shell | [#882](https://github.com/eq-solutions/eq-shell/pull/882) fix(briefing): align quote-signal statuses to the live enum |
 | 2026-07-16 | eq-shell | [#883](https://github.com/eq-solutions/eq-shell/pull/883) perf(quotes): parallelize the quote-open RPC waterfall |
 | 2026-07-16 | eq-shell | [#881](https://github.com/eq-solutions/eq-shell/pull/881) perf: capture Core Web Vitals + unsaved-changes guard (Quotes) |
 | 2026-07-16 | eq-shell | [#880](https://github.com/eq-solutions/eq-shell/pull/880) feat(intake): usage-based survivor pick for the Sites Dupes tab ( |
@@ -70,12 +69,11 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-16 | eq-solves-service | [#456](https://github.com/eq-solutions/eq-service/pull/456) chore(deps-dev): bump tailwindcss from 4.2.2 to 4.3.2 |
 | 2026-07-16 | eq-solves-service | [#545](https://github.com/eq-solutions/eq-service/pull/545) fix(admin): remove Connected Apps card — measures retired sync ar |
 | 2026-07-16 | eq-solves-service | [#544](https://github.com/eq-solutions/eq-service/pull/544) fix(admin): correct stale card copy, remove unused Today view |
-| 2026-07-16 | eq-solves-service | [#543](https://github.com/eq-solutions/eq-service/pull/543) chore(terms): temporarily unpublish /terms pending legal review |
-| 2026-07-16 | eq-cards | [#156](https://github.com/eq-solutions/eq-cards/pull/156) chore(legal): soften overseas-disclosure wording in privacy polic |
-_Showing 15 of 118 · full record in [sessions/](sessions/)_
+_Showing 15 of 119 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **Eyeball the next SKS morning brief once signed in** to confirm the signals render as expected end-to-end. The query logic is verified against live data and the deploy is smoke-verified, but the authed brief output itself needs a signed-in SKS session (10-minute per-user cache, or wait for the daily scheduled email). _(added 2026-07-17)_
 - **Not checked: live data cleanliness / Sentry error surfacing on whatever gets demoed live Monday**, and the eq-field Privacy Notice modal's links weren't click-tested (read-only content review only). Offered, Royce hadn't said go as of session close. _(added 2026-07-16)_
 - **Not click-tested live** — SKS Pipeline is triple-gated to the SKS tenant; this session had no SKS login to verify either feature by hand. Worth a quick real click-through next time you're signed in, especially "Load sample data" before demoing it to anyone. _(added 2026-07-15)_
 - **Small, low-risk: rename the "Field Run-Sheet" button** — Royce noticed it's not obvious this is the report/export button (reads as a document name, not an action, and sits next to "Print Blank for Onsite" which does read as an action). Recommended "Download Run-Sheet" or "Export Run-Sheet" — label-only change, no rename of the underlying feature/code/tests. Awaiting Royce's go-ahead. _(added 2026-07-15)_
@@ -85,8 +83,7 @@ _Showing 15 of 118 · full record in [sessions/](sessions/)_
 - **Minor, anytime: 6 users are missing a sign-in record** (their in-app tools would fail to authorise them) — heal by running the existing admin "backfill" action once. Pre-existing, not caused by this work. _(added 2026-07-14)_
 - **Outbound email → dev@eq.solutions (staged, NOT deployed).** Changed all system email to send FROM dev@ and route replies to dev@ (was noreply@ with replies going nowhere), plus the 3 in-app "contact us" links → dev@. Code staged on branch `claude/email-new-users-levers-baab69` (uncommitted); the sender env `EMAIL_FROM` is already set on Netlify but needs a redeploy to take effect. Decide: commit → PR → deploy, or drop. _(added 2026-07-15)_
 - **Seed one realistic flagged pair on ehow for a hands-on demo.** Console currently has 0 flagged rows — nothing real has tripped the write-time resolver yet, so there's nothing to click through end-to-end. Offered to insert one synthetic advisory row; correctly blocked by the auto-mode classifier as a write to shared production SKS data without Royce's explicit go — needs his yes. _(added 2026-07-15)_
-- **Later audit polish** — PDF / branded-report export, and logging who reads the log; then on-request data erasure and anomaly alerts. _(added 2026-07-14; before/after values shipped in #860)_
-_…and 354 more · [eq/pending.md](eq/pending.md)_
+_…and 355 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -106,11 +103,11 @@ _…and 57 more · [sks/pending.md](sks/pending.md)_
 
 | Date | Session |
 |------|---------|
+| 2026-07-17 | [AI brief's quote signals were silently zero for SKS; realigned to the live enum, guarded, shipped live](sessions/2026-07-17.md) |
 | 2026-07-16 | [verified migration 0185 live, explained the merge feature's location, seeded a real demo pair](sessions/2026-07-16.md) |
 | 2026-07-15 | [EQ Service: fixed empty NSX/ACB testing lists in the Shell iframe + Field Run-Sheet dropping recorded breaker data](sessions/2026-07-15.md) |
 | 2026-07-14 | [Merged + deployed the intake vendor-sync and the xlsx security fix](sessions/2026-07-14.md) |
 | 2026-07-13 | [SKS plant & equipment restored after a manual asset-register wipe; 2FA grace unchanged](sessions/2026-07-13.md) |
-| 2026-07-12 | [Shell→Field handoff: cookie mode retired, recurring Sentry issues cleared](sessions/2026-07-12.md) |
 _[sessions/](sessions/) · 5 shown_
 
 ## Substrate honesty
@@ -118,4 +115,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-16 14:38 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-16 19:03 UTC._
