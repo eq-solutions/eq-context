@@ -35,8 +35,8 @@ _If this file is >48h old, the cron is broken._
 
 | Entity | Count | Schema |
 |--------|-------|--------|
-| Sites | 224 | app_data.sites |
-| Customers | 42 | app_data.customers |
+| Sites | 225 | app_data.sites |
+| Customers | 43 | app_data.customers |
 | Assets | 2,836 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
 | Users | 5 | service.tenant_members |
@@ -61,12 +61,12 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-17)
 
 **eq-field:**
+- #497 feat(access): cluster 3 — server-side enforcement of field.manage_roster/licences/labour_hire
 - #496 feat(access): cluster 3 — enforce field.manage_roster/licences/labour_hire
 - #466 chore(ci): enable Dependabot for GitHub Actions
 - #461 feat(auth): EQ tenant is Core-only — close the demo login gate (v3.5.306)
 
 **eq-service:**
-- #551 feat(access): cluster 3 — enforce service.reopen + service.record_tests
 - #524 docs(scope): balloon-years proposal — nominate low-frequency majors in-app
 - #520 chore(deps): bump resend from 6.12.4 to 6.17.2
 - #518 chore(deps): bump @eq-solutions/roles from v2.4.0 to v2.5.1 in the eq-design-system group across 1 directory
