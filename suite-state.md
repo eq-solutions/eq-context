@@ -62,7 +62,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-field:**
 - #497 feat(access): cluster 3 — server-side enforcement of field.manage_roster/licences/labour_hire
-- #496 feat(access): cluster 3 — enforce field.manage_roster/licences/labour_hire
 - #466 chore(ci): enable Dependabot for GitHub Actions
 - #461 feat(auth): EQ tenant is Core-only — close the demo login gate (v3.5.306)
 
