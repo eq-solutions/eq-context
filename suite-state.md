@@ -68,9 +68,9 @@ _If this file is >48h old, the cron is broken._
 **eq-service:**
 - #524 docs(scope): balloon-years proposal — nominate low-frequency majors in-app
 - #520 chore(deps): bump resend from 6.12.4 to 6.17.2
-- #518 chore(deps): bump @eq-solutions/roles from v2.4.0 to v2.5.1 in the eq-design-system group across 1 directory
 
 **eq-shell:**
+- #897 NSW Comms: Start-by estimate from PO+53-day planning rule (Patrick's demo feedback)
 - #890 feat(access): gate contact PII in direct-read RPCs (cluster 1, Phase 4 remainder)
 - #863 fix(auth): bound login body reads under one deadline (the #858 latent twin)
 - #862 fix(auth): harden invite-accept auth-identity binding + orphan detector
