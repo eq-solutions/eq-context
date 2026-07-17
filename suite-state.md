@@ -8,7 +8,7 @@ status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-07-16 (nightly cron)_
+_Last verified: 2026-07-17 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -58,26 +58,27 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-07-16)
+## Open PRs (as of 2026-07-17)
 
 **eq-field:**
+- #496 feat(access): cluster 3 — enforce field.manage_roster/licences/labour_hire
 - #466 chore(ci): enable Dependabot for GitHub Actions
 - #461 feat(auth): EQ tenant is Core-only — close the demo login gate (v3.5.306)
 
 **eq-service:**
+- #551 feat(access): cluster 3 — enforce service.reopen + service.record_tests
 - #524 docs(scope): balloon-years proposal — nominate low-frequency majors in-app
 - #520 chore(deps): bump resend from 6.12.4 to 6.17.2
 - #518 chore(deps): bump @eq-solutions/roles from v2.4.0 to v2.5.1 in the eq-design-system group across 1 directory
 
 **eq-shell:**
-- #888 perf(auth): parallelize verify-shell-session's independent DB reads
-- #885 feat(access): cluster 1 — enforce the 7 sensitive-read keys (eq-shell Phase 1+2)
+- #890 feat(access): gate contact PII in direct-read RPCs (cluster 1, Phase 4 remainder)
 - #863 fix(auth): bound login body reads under one deadline (the #858 latent twin)
 - #862 fix(auth): harden invite-accept auth-identity binding + orphan detector
 
 ---
 
-## System Health (as of 2026-07-16)
+## System Health (as of 2026-07-17)
 
 **CI on main:**
 
