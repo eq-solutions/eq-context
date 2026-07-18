@@ -8,7 +8,7 @@ status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-07-17 (nightly cron)_
+_Last verified: 2026-07-18 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -58,7 +58,7 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-07-17)
+## Open PRs (as of 2026-07-18)
 
 **eq-field:**
 - #497 feat(access): cluster 3 — server-side enforcement of field.manage_roster/licences/labour_hire
@@ -77,7 +77,7 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## System Health (as of 2026-07-17)
+## System Health (as of 2026-07-18)
 
 **CI on main:**
 
