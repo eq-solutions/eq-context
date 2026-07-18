@@ -109,7 +109,7 @@ section title) or `rules/non-negotiables.md §0` for numbered sections.
 
 **`sks-team/` is the exception:** files in that tier MUST NOT cross-reference
 any other tier — they stand alone. If a fact in `sks-team/` is needed from
-elsewhere (e.g. brand colours from `rules/brand.md`), copy the fact in rather
+elsewhere (e.g. brand colours from `rules/brand-sks.md`), copy the fact in rather
 than linking. The cost of duplication is the price of separability — the
 tier needs to extract cleanly to its own substrate later, and cross-references
 make that mechanical move into a rewrite.

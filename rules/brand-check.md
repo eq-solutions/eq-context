@@ -11,7 +11,7 @@ status: live
 
 Run this checklist on every customer-facing output (quote, MOP, scope, letter, report, presentation, email signature, HTML) **before** presenting it to Royce. If any item is ✗, fix it before showing.
 
-The check is six lines. It exists because the brand spec in `rules/brand.md` is comprehensive but only enforced by Claude remembering to apply it. This is the second-line catch.
+The check is six lines. It exists because the brand spec in `rules/brand-sks.md` is comprehensive but only enforced by Claude remembering to apply it. This is the second-line catch.
 
 ---
 
@@ -43,13 +43,13 @@ Brand check: ✓ logo ✓ ratio ✗ palette → had purple as primary fill, chan
 ✓ fonts ✓ flat ✓ footer
 ```
 
-This makes the brand-check status visible to Royce in one glance. It's the cheapest possible enforcement layer — a few hundred tokens — but it catches the failure modes that `rules/brand.md` and the artefacts can't.
+This makes the brand-check status visible to Royce in one glance. It's the cheapest possible enforcement layer — a few hundred tokens — but it catches the failure modes that `rules/brand-sks.md` and the artefacts can't.
 
 ---
 
 ## What this check does NOT replace
 
-- `rules/brand.md` — the full spec, colours, hex codes, layout hierarchy.
+- `rules/brand-sks.md` — the full spec, colours, hex codes, layout hierarchy.
 - `sks-brand.css` at `pub-97a4f025d993484e91b8f15a8c73084d.r2.dev/sks-brand.css` — the canonical stylesheet for HTML.
 - `SKS_Master.docx` at `pub-97a4f025d993484e91b8f15a8c73084d.r2.dev/SKS_Master.docx` — the named-styles template for Word.
 - `sks/templates.md` — document-specific structure (e.g. Quote v3 has its own section sequence).
