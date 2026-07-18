@@ -1,11 +1,10 @@
 ---
 title: SKS — Pending
 owner: Royce Milmlow
-last_updated: 2026-07-11
+last_updated: 2026-07-16
 scope: SKS Technologies operational TODO list
 read_priority: critical
 status: live
-last_updated: 2026-07-12
 ---
 
 # SKS Pending
@@ -216,9 +215,9 @@ _Nothing pending — migrations 001–023 all applied._
 | MS Planner delivery system setup | `SKS_NSW_Delivery_Planner_Setup.pdf` | PDF |
 | Scott Hotson JD | `Scott_Hotson_Operations_Lead_SKS.docx` | Word |
 
-## Active (in progress or blocked)
+## Cancelled
 
-- [ ] ~~**Workbench customer CSV import**~~ — **CANCELLED** — eq-quotes (Flask) is retired; EQ Ops is the replacement. Re-evaluate if import is still needed against EQ Ops.
+- ~~**Workbench customer CSV import**~~ — **CANCELLED** — eq-quotes (Flask) is retired; EQ Ops is the replacement. Re-evaluate if import is still needed against EQ Ops.
 
 ## Test suite — EQ Quotes (RETIRED — do not work on these)
 
@@ -412,7 +411,6 @@ The following tests belong to eq-quotes-port (Flask), which is retired as of 202
 - [ ] Bring apprentice module from demo to SKS Labour prod
 - [ ] Scale EQ Field App for Melbourne office demo
 - [ ] R2 backup audit/download from Beelink desktop
-- [ ] Scott Hotson hire finalisation
 - [ ] One-on-one catch-up sessions with 8 key staff — 7 Role Step-Up Charters drafted 2026-07-05 (Collin, Rhys, William, Simon, Matt, David, Luke) as supporting artefacts for these conversations
 - [ ] Comms portfolio growth under Royce
 

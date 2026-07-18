@@ -1,7 +1,7 @@
 ---
 title: SKS — Document Templates
 owner: Royce Milmlow
-last_updated: 2026-07-05
+last_updated: 2026-07-16
 scope: Standard templates and document formats for SKS work
 read_priority: reference
 status: live
@@ -15,6 +15,12 @@ check here first — don't reinvent.
 ---
 
 ## SKS Quotation Template (v3 — April 2026)
+
+> This is Royce's own docx-js pipeline — a full, ready-to-send .docx is generated
+> directly. Separate from **sks-team/quoting.md**'s "SKS ELEC Client Services Quote
+> Template," which the wider SKS team pastes labelled text blocks into by hand on
+> SharePoint — believed to be two deliberately different pipelines for two
+> different audiences, not duplicate/competing specs. Flagged for Royce to confirm.
 
 **Format:** A4 .docx, built with docx-js (Node)
 **Font:** Roboto for headings, Calibri for body (per `rules/brand-sks.md` §3 — supersedes the prior "Arial throughout" policy; see `ops/decisions.md` 2026-05-21 for rationale)
