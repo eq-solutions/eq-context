@@ -9,6 +9,11 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-19] DB-only: restored `authenticated` grant on 6 app_data.field_* views on live ehow (SHIPPED, #498, live)
+- `field_schedule`/`field_timesheets`/`field_leave_requests`/`field_prestarts`/`field_toolbox_talks`/`field_site_diaries` had all silently lost their `authenticated` grant at some point after the `20260611_sks_canonical_field_sync.sql` migration created them with it present — likely a later `DROP`+recreate against the normalized tables that didn't carry the grants forward.
+- Investigated and confirmed **not currently live-breaking for SKS**: a later "Design B" canonical-adapter layer already routes real roster/timesheets/leave traffic around these exact views to base tables that do carry the grant (built independently, for a different reason, after the same failure class hit twice before per the adapters' own code comments). Still a primed landmine if that routing config ever changes, so fixed anyway — no app code/version bump, DB grants only.
+- Applied live to ehow via Supabase MCP on Royce's explicit go; repo record merged as PR #498.
+
 ## [2026-07-13] v3.5.323 — PERF: trim the analytics recording layer (Field slow on phones) (SHIPPED, #484, live)
 - Royce: slow navigating on both Android + iPhone. Profiled prod: Field's own tab navigation is 3.5–7.9ms — the cost was the analytics **recording** layer (both tenants): PostHog session replay (rrweb) + autocapture/dead-clicks/surveys/web-vitals, **plus Microsoft Clarity as a second continuous recorder**.
 - Fix keeps all custom events/funnels; disables PostHog session recording + autocapture + surveys + performance + dead-clicks + heatmaps, disables Clarity on both tenants, and defers analytics init to `requestIdleCallback`. Preview-verified zero heavy analytics scripts load; PostHog core still up for events. Fully reversible (flip flags / paste Clarity IDs). Aligns with the "not a surveillance tool" charter.

@@ -514,3 +514,19 @@ The following tests belong to eq-quotes-port (Flask), which is retired as of 202
 **Completed:**
 - [x] **Confirmed live: "Equinix Hyperscale 2 (SY9) Pty Limited" (`d79ee06f-…`) is the correct/active SY9 customer** (Royce confirmed) — linked to the real SY9 site (499 assets, 10 contract scopes, 2 quotes). The older duplicate "Equinix Hyperscale" (`a57bf144-…`, created 2026-05-23) and its linked site (`95cdc37d-…`) were both already `active=false` with zero dependent rows (quotes/contacts/scopes/jobs) — cleanup had already happened previously. `eq_merge_customers` RPC not needed, no DML required.
 - [x] Logged the resolved name + duplicate-customer history to memory (`project_equinix_entity_map.md`) so future Coupa/PO matching doesn't second-guess "Equinix Hyperscale" (no suffix) as live.
+
+## ⏩ SKS Field — session 2026-07-19 (6 app_data.field_* views lost their authenticated grant — investigated, confirmed not live-breaking, fixed)
+
+**Trigger:** validating eq-field PR #497 (access-model cluster 3 server-side enforcement) against live ehow surfaced `app_data.field_schedule` with no `authenticated` grant at all — its own PR body flagged this as a separate, out-of-scope finding with two open hypotheses (JWT carrier off and masking it, or roster writes silently 403ing in prod).
+
+**Completed:**
+- [x] **Root-caused: neither hypothesis was right.** `DATA_JWT_ENABLED=on` in production (checked Netlify env vars directly), ruling out the masking theory. But traced the actual write path and found `schedule`/`timesheets`/`leave_requests` never touch their `field_*` views for SKS at all — a later "Design B" layer (`roster-adapter.js`/`timesheets-adapter.js`/`leave-adapter.js`) hard-codes `sks` into its canonical allow-list and routes both reads and writes straight to the base tables (`app_data.schedule_entries`/`timesheets`/`leave_requests`), which do carry the grant. Confirmed live: 1012/129/32 real rows in the "broken" views, not 0 — the suite-state.md "0 rows" note that kicked off the original worry was stale/wrong.
+- [x] **Scope was bigger than the one view flagged in the PR.** Spot-checked all 6 views created by the same `20260611_sks_canonical_field_sync.sql` migration: `field_schedule`, `field_timesheets`, `field_leave_requests`, `field_prestarts`, `field_toolbox_talks`, `field_site_diaries` had all silently lost the grant (likely a later `DROP`+recreate against the normalized tables that didn't carry the original `GRANT`s forward). Only `field_audit_log` (same migration) kept its grant — and it's the one view of the six still actually live-routed-through for SKS today, so the one path that mattered was fine. `field_people`/`sites`/`managers`/`people_removed`/`teams`/`team_members` (Service-owned) were unaffected.
+- [x] **Applied the fix live to ehow** (Royce confirmed) — restored `SELECT`/`INSERT`/`UPDATE`/`DELETE` to `authenticated` on all 6 views, matching the original 20260611 grants exactly. [eq-field PR #498](https://github.com/eq-solutions/eq-field/pull/498) (repo record of the grant restore) reviewed clean and merged (`af9b1d5`).
+
+**Decided (Royce):**
+- Apply the grant now — confirmed explicitly.
+- Merge #498.
+
+**Deferred:**
+- [ ] **Primed-but-currently-disarmed landmine, worth closing on principle.** If `ROSTER_CANONICAL_TENANTS`/`TIMESHEETS_CANONICAL_TENANTS`/`LEAVE_CANONICAL_TENANTS` ever drop `'sks'`, or `prestarts`/`toolbox_talks`/`site_diaries` ever get removed from `JWT_INPLACE_TABLES` (e.g. someone "cleans up" assuming the `app_data` twin is now canonical), the same silent 403 that already happened twice before (documented in the adapter files' own v3.5.201/v3.5.286 comments) would reappear with no code change anywhere in the calling surface — the grant restore (done this session) closes the immediate gap, but the routing fragility itself is unaddressed. _(added 2026-07-19)_
