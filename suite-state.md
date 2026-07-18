@@ -71,7 +71,6 @@ _If this file is >48h old, the cron is broken._
 **eq-shell:**
 - #899 fix(security): reassert security_invoker on 3 field_* views (0187)
 - #897 NSW Comms: Start-by estimate from PO+53-day planning rule (Patrick's demo feedback)
-- #863 fix(auth): bound login body reads under one deadline (the #858 latent twin)
 - #862 fix(auth): harden invite-accept auth-identity binding + orphan detector
 
 ---
