@@ -1,7 +1,7 @@
 ---
 title: SYSTEM — Onboarding
 owner: Royce Milmlow
-last_updated: 2026-05-07
+last_updated: 2026-07-16
 scope: Tutorial introduction for any new assistant or human entering this repo
 read_priority: optional
 status: live
@@ -86,19 +86,21 @@ If the raw URL doesn't reflect your change, it isn't on `main` yet.
 
 `age` should be under 60 seconds for everything you touched.
 
-For a periodic substrate audit (catches stale files):
+For a periodic substrate audit (catches stale files) — **this used to be a SQL
+query against a Supabase `context_files` table; that table's host project was
+deleted 2026-06-22 (see above) and no longer exists.** Use a filesystem/git
+check instead, e.g. from a local clone:
 
-```sql
-SELECT slug, updated_at, NOW() - updated_at AS age
-FROM context_files
-WHERE
-  (slug LIKE '%/pending.md' AND updated_at < NOW() - INTERVAL '7 days')
-  OR (slug LIKE 'system/%' AND updated_at < NOW() - INTERVAL '14 days')
-  OR (slug LIKE '%/changelog/%' AND updated_at < NOW() - INTERVAL '30 days')
-ORDER BY updated_at ASC;
+```bash
+# Files whose frontmatter last_updated is older than a threshold, per tier convention:
+#   */pending.md          -> 7 days
+#   system/*.md            -> 14 days
+#   */changelog/*.md       -> 30 days
+grep -rn "^last_updated:" --include="*.md" . | awk -F: '{print $1, $3}'
 ```
 
-Each row is a "needs update or explicit no-change confirmation".
+Compare each date against today and the tier's threshold above. Each stale
+file is a "needs update or explicit no-change confirmation".
 
 ---
 

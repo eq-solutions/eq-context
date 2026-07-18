@@ -1,7 +1,7 @@
 ---
 title: eq-context — Repository README
 owner: Royce Milmlow
-last_updated: 2026-05-07
+last_updated: 2026-07-16
 scope: Human-readable entry point for the eq-context repository
 read_priority: reference
 status: live
@@ -37,7 +37,10 @@ commit is the deliverable — there is no separate cache to sync.
 CLAUDE.md                    ← Master index — assistants read this first, always
 AGENTS.md                    ← Tool-neutral equivalent entry point
 COWORK-PROMPT.md             ← Cowork session starter
+CHAT-PROMPT.md               ← Claude Chat session starter
 README.md                    ← This file (human-focused)
+digest.md                    ← Push-style health feed — read every session, all tiers
+suite-state.md                ← Full nightly-refreshed suite snapshot
 
 rules/
   non-negotiables.md         ← Hard rules that override everything
@@ -97,8 +100,14 @@ sessions/
 scripts/
   install-hooks.ps1          ← Pre-commit hook installer
 
-.github/workflows/
-  sync-context.yml           ← GitHub → Supabase sync
+.github/workflows/            ← 17 workflows as of 2026-07-16 — no GitHub→Supabase
+                                 sync (that path was retired 2026-06-22, see
+                                 CLAUDE.md §1). Key ones: digest-refresh.yml +
+                                 suite-state-refresh.yml (nightly substrate
+                                 regen), claim-expiry.yml + guard-ratchet.yml +
+                                 substrate-honesty.yml + frontmatter-check.yml +
+                                 md-health.yml (CI gates), backup-*.yml +
+                                 verify-backup-*.yml (offsite DR)
 ```
 
 ## Update frequency
