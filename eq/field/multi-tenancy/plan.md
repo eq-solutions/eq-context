@@ -1,13 +1,16 @@
 ---
 title: EQ Field — Multi-Tenancy & Dev Workflow Plan
 owner: Royce Milmlow
-last_updated: 2026-05-13
-scope: Plan for moving EQ Field from single-org tool to multi-tenant SaaS on the eq-solves-field Supabase project
-read_priority: standard
-status: draft
+last_updated: 2026-07-16
+scope: HISTORICAL — multi-tenancy has been live for months (4 tenants, JWT data path, canonical sync). See eq/active.md and suite-state.md for current state; this plan is kept for the original design rationale only.
+read_priority: reference
+status: shipped
 ---
 
 # EQ Field — Multi-Tenancy & Dev Workflow Plan
+
+> **Superseded — multi-tenancy shipped.** This describes the plan, not the
+> current state. See `eq/active.md` / `suite-state.md` for what's actually live.
 
 Plan for the migration described in the 2026-04 roadmap. Grounded in an audit
 of the current `demo` branch (worktree `hopeful-wright-058c8b`).

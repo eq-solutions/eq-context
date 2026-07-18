@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Index
 owner: Royce Milmlow
-last_updated: 2026-06-13
+last_updated: 2026-07-16
 scope: EQ Solutions work — products, decisions, build state
 read_priority: critical
 status: live
@@ -27,7 +27,7 @@ Every canonical EQ file as a full URL — clickable from `/context/claude`:
 - [eq/canonical-readiness/spine.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/eq/canonical-readiness/spine.md) — **The trust spine**: which 6 of 55 `app_data` tables must be identical/trusted across tenants vs free to vary. Foundation for the coherence rung + drift guard (2026-06-02)
 - [eq/sprints/2026-05-20-S1-canonical-lockin.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/eq/sprints/2026-05-20-S1-canonical-lockin.md) — Sprint S1: canonical-readiness lock-in + ship-ready. 10 items, 1-week, security rotations + PostgREST schema exposure + first functional Core dropzone + Cards iframe deploy (draft 2026-05-20)
 - [eq/canonical-readiness/audit-2026-05-21.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/eq/canonical-readiness/audit-2026-05-21.md) — Honest audit of core.eq.solutions post-S3. Top issues: EntityImportPanel hangs the renderer; home screen reads as admin dashboard not platform; intake legacy has no topbar. **All 8 items shipped + verified in browser 2026-05-21**.
-- `eq/templates.md` — forward-pointer; file does not exist yet, will be created when the first EQ deliverable template is captured
+- `eq/templates.md` — forward-pointer; re-checked 2026-07-16, still does not exist — will be created when the first EQ deliverable template is captured
 
 ## Strategic focus (2026 Q2)
 
@@ -50,15 +50,13 @@ Every canonical EQ file as a full URL — clickable from `/context/claude`:
 | `field/permissions/` | EQ Field role/permission matrix |
 | `cards/canonical-migration/plan.md` | EQ Cards §18 close-out (active 2026-05-20) |
 | `canonical-readiness/plan.md` | Canonical layer readiness for Intake/Field/Quotes ports (draft 2026-05-20) |
-| `changelog/field.md` | EQ Field append-only history |
-| `changelog/eq-context.md` | Substrate self-changelog |
+| `changelog/*.md` | Per-product changelogs — **known duplication issue**: shell/service/cards each currently have two parallel changelog files (e.g. `changelog/shell.md` vs `changelog/eq-shell.md`), only one of which is kept current. Check both until consolidated; flagged as a follow-up. |
 
 ## Killed / deferred (do not reference as live products)
 
-- **EQ Variations** — killed 2026-04-29
-- **EQ Compliance** — killed 2026-04-29
-- **EQ Ops** — active dev in `eq-shell` (core.eq.solutions/ops); replaces EQ Quotes
-- **EQ Expenses** — demoted to internal SKS tool (no longer an EQ product)
+See `eq/products.md` → "Killed / Deferred" section for the canonical list — not
+restated here to avoid a third copy (CLAUDE.md §9 and this file both used to
+duplicate it independently).
 - **AHD** — parked to 2027 (changelog at `/archive/changelog-ahd.md`)
 
 **EQ Quotes** — retired (Flask v1 at quotes.eq.solutions shut down; replaced by EQ Ops). The 2026-05-19 un-deferral was superseded when EQ Ops was designated as the replacement.

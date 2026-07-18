@@ -1,3 +1,12 @@
+---
+title: EQ Shell — Changelog
+owner: Royce Milmlow
+last_updated: 2026-07-19
+scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
+read_priority: reference
+status: live
+---
+
 # eq-shell changelog
 
 ## 2026-07-19

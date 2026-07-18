@@ -1,3 +1,12 @@
+---
+title: EQ Field — Changelog (supplementary)
+owner: Royce Milmlow
+last_updated: 2026-07-14
+scope: EQ Field append-only history, supplementary entries. NOTE — duplicates a subset of eq/changelog/field.md's period; unclear which is authoritative for overlapping dates. Consolidate, flagged as a follow-up.
+read_priority: reference
+status: live
+---
+
 ## 2026-07-14
 - **PR #490 (MERGED → main, deployed LIVE to field.eq.solutions, Netlify `state=ready`) — read-only Test Equipment calibration surface (SKS-gated).** New `scripts/calibration.js` `renderCalibration()`: a list (instrument, asset #, last calibrated, next due with overdue/near colour, status pill, certificate link) + per-item cert-history drill-in, reading canonical `app_data.asset_calibration` (embedding asset identity via the `asset_id` FK) + `app_data.asset_calibration_events`. New `sbFetchAppData()` bare-`app_data` read helper (mints the data-plane JWT + `Accept-Profile: app_data`; these tables have no `field_` twin so the generic `sbFetch` would misroute them). Nav item in the Safety group (ships `display:none`), SKS-only reveal in `applyTierVisibility`, lazy-loader entry, `sw.js` precache + cache bump. Read-only, no writes, XSS-safe (`esc()` throughout). Part of the cross-repo calibration single-source consolidation (shows data once eq-service #534 backfill is applied — done). `node --check` clean; live verification needs an authenticated field session (not reproducible in sandbox).
 

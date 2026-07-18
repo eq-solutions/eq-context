@@ -1,3 +1,12 @@
+---
+title: EQ Cards — Changelog
+owner: Royce Milmlow
+last_updated: 2026-07-14
+scope: EQ Cards append-only history. NOTE — duplicates eq/changelog/cards.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
+read_priority: reference
+status: live
+---
+
 # EQ Cards — Changelog
 
 ## 2026-07-14
