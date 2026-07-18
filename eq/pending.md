@@ -1,11 +1,10 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-07-11
+last_updated: 2026-07-17
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
-last_updated: 2026-07-17
 ---
 
 # EQ Tier — Pending

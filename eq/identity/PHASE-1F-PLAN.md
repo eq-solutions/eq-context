@@ -1,15 +1,15 @@
 ---
 title: EQ Shell — Phase 1.F implementation plan (unified identity layer)
 owner: Royce Milmlow
-last_updated: 2026-05-30
-scope: Implementation plan for the eq-shell side of the unified identity model. Expands shell-login/verify-shell-session/SessionContext to carry the 5-tier role + platform-admin boolean; adds a per-user Supabase JWT minter consumed by Cards and Intake; adds admin invite + edit UX; bridges EQ Field's iframe handoff. Predecessor Phase 1.E (Supabase consolidation). Blocks all module-shipping work until merged.
-read_priority: critical
-status: draft
+last_updated: 2026-07-16
+scope: SHIPPED 2026-05-20 — historical implementation plan, kept for the design detail. Current status lives in eq/identity/IDENTITY-MODEL.md, not here.
+read_priority: reference
+status: archived
 ---
 
 # Phase 1.F — Unified Identity & Permissions (eq-shell implementation)
 
-**Status:** Plan drafted 2026-05-20, not started.
+**Status:** SHIPPED 2026-05-20 (see `eq/identity/IDENTITY-MODEL.md` and `eq/products.md`). This plan is historical — kept for the design rationale below, not as a live blocker. It does NOT block current module-shipping work; dozens of PRs have shipped across the suite since.
 **Companion doc:** [IDENTITY-MODEL.md](./IDENTITY-MODEL.md) — the authoritative spec this plan implements.
 **Predecessor:** Phase 1.E (Supabase consolidation onto `eq-canonical`).
 **Blocks:** Phase 2 (Tender Pipeline import), Cards Unit 4 (Flutter flip to canonical), and all future module-shipping work. `claude/phase-2-import-screen` (Tender Pipeline) and `claude/cards-iframe-embed` (Cards iframe wiring) stay live in parallel but neither ships to production until Phase 1.F merges.

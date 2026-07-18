@@ -1,13 +1,18 @@
 ---
 title: EQ Field ↔ EQ Shell — identity & security-groups tie-in
 owner: Royce Milmlow
-last_updated: 2026-06-07
-scope: How Field consumes Shell identity today, and the target for tying Field permissions into Shell security groups
-read_priority: high
-status: live
+last_updated: 2026-07-16
+scope: SUPERSEDED by eq/identity/enforcement-site-inventory-2026-07-08.md's re-audit — kept for the original 2026-06-05 findings, not current state
+read_priority: reference
+status: archived
 ---
 
 # EQ Field ↔ EQ Shell — security tie-in
+
+> **Superseded 2026-07-08.** `eq/identity/enforcement-site-inventory-2026-07-08.md`
+> and `ACCESS-MODEL-PLAN.md` re-audited this and found different numbers (e.g.
+> corrected "~10 checks, Shell-only" to "5 server sites, not Shell-only"). Read
+> those first; this file is the original 2026-06-05 findings only.
 
 > Verified against the running code and `shell_control` DB on 2026-06-05. This
 > **supersedes** the "Field doesn't consume the shell token yet / Phase 1.F not

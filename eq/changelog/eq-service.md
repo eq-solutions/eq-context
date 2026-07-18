@@ -1,3 +1,12 @@
+---
+title: EQ Service — Changelog
+owner: Royce Milmlow
+last_updated: 2026-07-16
+scope: EQ Service append-only history. NOTE — duplicates eq/changelog/service.md, which stalls mid-deploy at 2026-06-09; this file is the one actually kept current. Consolidate, flagged as a follow-up.
+read_priority: reference
+status: live
+---
+
 # EQ Service — Changelog
 
 ## 2026-07-16

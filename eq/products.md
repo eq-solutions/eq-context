@@ -1,8 +1,8 @@
 ---
 title: EQ Tier — Products
 owner: Royce Milmlow
-last_updated: 2026-06-13
-scope: Live EQ products, plus the canonical Killed / Deferred list (CLAUDE.md §9 points here — don't duplicate facts back into CLAUDE.md).
+last_updated: 2026-07-16
+scope: Live EQ products, plus the canonical Killed / Deferred list (CLAUDE.md §9 points here — don't duplicate facts back into CLAUDE.md). Field section flagged stale — see banner in that section.
 read_priority: standard
 status: live
 ---
@@ -17,13 +17,23 @@ in their own section at the bottom of this file — see there, not
 
 ## EQ Solves — Field (LEAD MODULE)
 
-**Status:** Live. Current version **v3.5.125** (2026-06-11). SKS Field active on ehow. v8 design pass complete 2026-06-09 (all 14 screens + Shell warmup). Security sprint complete 2026-06-09. Shell SSO fixed 2026-06-10 (eq-shell PR #306). SKS canonical DB full JWT coverage 2026-06-11 (PR #267 — 58 staff + 591 sites on ehow). EQ Service iframe loading fixed 2026-06-13 (eq-shell PR #334, 12s → 4s). Multi-tenant via DATA_JWT_ENABLED + per-tenant Supabase JWT.
+> **This section is stale — last touched 2026-06-13, version pinned at v3.5.125.**
+> `eq/changelog/field.md` and `eq/pending.md` show Field at **v3.5.331** as of
+> 2026-07-15 (200+ releases and 34 days of shipped work: Site Audits,
+> Apprentices module, Acknowledgments, Pipeline archive/delete, sample-data
+> demo mode, calibration surface — unreflected below). Full status refresh is
+> a separate follow-up; flagged, not done in this pass. Two facts below are
+> corrected as of 2026-07-16: the SKS staff count, and the netlify.app URL's
+> actual status (see suite-state.md, which still lists it as the live/demo
+> URL — that entry needs a generator-level fix, not a hand-edit here).
+
+**Status:** Live. Current version **v3.5.125 (STALE — see banner above, actually v3.5.331 as of 2026-07-15)**. SKS Field active on ehow. v8 design pass complete 2026-06-09 (all 14 screens + Shell warmup). Security sprint complete 2026-06-09. Shell SSO fixed 2026-06-10 (eq-shell PR #306). SKS canonical DB full JWT coverage 2026-06-11 (PR #267 — 591 sites; the "58 staff" figure from that PR is stale — **verified live 2026-07-16: 39 on-roster non-supervisor Direct staff** + 18 Labour Hire + 18 supervisors (10 off-roster, 8 on-roster) + 10 Apprentices = 88 active total. The 58→39 discrepancy Royce flagged was exactly a supervision/management counting difference, confirmed against ehow). EQ Service iframe loading fixed 2026-06-13 (eq-shell PR #334, 12s → 4s). Multi-tenant via DATA_JWT_ENABLED + per-tenant Supabase JWT.
 **URL:** field.eq.solutions (live) / core.eq.solutions/sks/field (SKS prod via Shell)
 **Repo:** eq-solutions/eq-field (private)
 **Working file:** index.html
 **Architecture:** Multi-tenant PWA. URL-based tenant detection + Shell iframe with JWT handoff. EQ tenant → eq-canonical-internal (zaap, `zaapmfdkgedqupfjtchl`). SKS tenant → ehow (`ehowgjardagevnrluult`).
 **Supabase:** EQ live = `zaapmfdkgedqupfjtchl` (eq-canonical-internal/zaap). SKS live = `ehowgjardagevnrluult` (ehow). Old `ktmjmdzqrogauaevbktn` = cold backup (do not write).
-**Deploy:** GitHub push → Netlify auto (main branch → field.eq.solutions). eq-solves-field.netlify.app is dead since mid-2026.
+**Deploy:** GitHub push → Netlify auto (main branch → field.eq.solutions). eq-solves-field.netlify.app is dead since mid-2026 — **suite-state.md's Apps table still lists it as the live/demo URL; that's generated, needs a source-data fix, not covered in this pass.**
 
 **Strategic priority:** Lead module. Built for ourselves (SKS NSW) —
 no outside-validation gate (killed 2026-06-02).
@@ -229,7 +239,7 @@ Phase 2 question — a tier-of-company question.
 
 ## EQ Solves — Service
 
-**Status:** Active development
+**Status:** Live at eq-solves-service.netlify.app (per suite-state.md's Apps table — this line previously just said "Active development" and undersold it)
 **Architecture:** Next.js + Supabase + Netlify serverless functions
 **Supabase project:** ehowgjardagevnrluult (sks-canonical), `service.*` schema — migrated from urjhmkhbgaxrofurpbgc (eq-solves-service-dev) on 2026-06-08; old project deleted 2026-06-22
 **Scale:** Production-level complexity, multi-tenant with Supabase RLS

@@ -1,13 +1,20 @@
 ---
 title: EQ — Owner Punch List (resume after break)
 owner: Royce Milmlow
-last_updated: 2026-06-04
+last_updated: 2026-07-16
 scope: Owner-only actions (Royce must do these by hand). Pick up here after the break.
 read_priority: critical
-status: live
+status: archived
 ---
 
 # EQ — Owner Punch List
+
+> **Mostly SUPERSEDED as of 2026-07-16.** Written 2026-06-04, before EQ Quotes
+> was retired (replaced by EQ Ops) and its Fly.io account deleted 2026-07-04.
+> **Item #7 ("Deploy EQ Quotes") and the eq-quotes-sks reference in item #2 no
+> longer apply — do not run them, the Fly app is gone.** Any other item below
+> may also be stale; verify against the live system before acting on it. See
+> `eq/products.md` for current EQ Quotes / EQ Ops status.
 
 These are the **owner-only** actions that unblock value already built and switched off,
 plus the security items. None need a dev — they're dashboard/secret/toggle actions.
@@ -47,7 +54,7 @@ Detailed steps below kept for reference.
 - **Where:** Supabase → `sks-canonical` (`ehowgjardagevnrluult`) → Settings → API → Service role key → **Rotate**.
 - **Then propagate the new key to its 2 consumers:**
   - **eq-shell tenant routing** — re-encrypt + UPDATE the SKS row in `shell_control.tenant_routing` (needs `TENANT_ROUTING_MASTER_KEY`; pattern in `eq-shell/scripts/provision-tenant.mjs`).
-  - **eq-quotes Fly secret** — `flyctl secrets set CANONICAL_SUPABASE_KEY=<new_key>` for app `eq-quotes-sks`.
+  - ~~**eq-quotes Fly secret**~~ — DEAD, skip. That Fly app (`eq-quotes-sks`) no longer exists (deleted 2026-07-04 with EQ Quotes' retirement).
 - **Rule:** never echo or commit the key.
 - **Unblocks:** closes the exposed-credential hole; keeps quotes write-through working.
 
@@ -91,8 +98,8 @@ Apply via Supabase Studio SQL editor (or MCP `apply_migration`). Source of truth
 
 ## READY TO DEPLOY (when you choose)
 
-### 7. Deploy EQ Quotes
-- `cd eq-quotes-port && flyctl deploy` (app `eq-quotes-sks`, region `syd`). Live immediately; check `flyctl status` / `flyctl logs`. Confirm `CANONICAL_API_KEY_QUOTES` secret is set.
+### 7. ~~Deploy EQ Quotes~~ — DEAD, do not run
+~~`cd eq-quotes-port && flyctl deploy` (app `eq-quotes-sks`, region `syd`)~~ — EQ Quotes is retired, its Fly.io account was deleted 2026-07-04. This app no longer exists. See `eq/products.md` — EQ Ops is the successor.
 
 ---
 
