@@ -71,7 +71,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #897 NSW Comms: Start-by estimate from PO+53-day planning rule (Patrick's demo feedback)
-- #890 feat(access): gate contact PII in direct-read RPCs (cluster 1, Phase 4 remainder)
 - #863 fix(auth): bound login body reads under one deadline (the #858 latent twin)
 - #862 fix(auth): harden invite-accept auth-identity binding + orphan detector
 
