@@ -4,7 +4,7 @@ owner: Royce Milmlow
 last_updated: 2026-07-16
 scope: SHIPPED 2026-05-20 — historical implementation plan, kept for the design detail. Current status lives in eq/identity/IDENTITY-MODEL.md, not here.
 read_priority: reference
-status: shipped
+status: archived
 ---
 
 # Phase 1.F — Unified Identity & Permissions (eq-shell implementation)

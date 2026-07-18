@@ -4,7 +4,7 @@ owner: Royce Milmlow
 last_updated: 2026-07-16
 scope: HISTORICAL — multi-tenancy has been live for months (4 tenants, JWT data path, canonical sync). See eq/active.md and suite-state.md for current state; this plan is kept for the original design rationale only.
 read_priority: reference
-status: shipped
+status: archived
 ---
 
 # EQ Field — Multi-Tenancy & Dev Workflow Plan
