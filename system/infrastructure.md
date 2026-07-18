@@ -210,7 +210,7 @@ Base URL: `https://pub-409bd651f2e549f4907f5a856a9264ae.r2.dev/`
 | `EQ_logo_blue_transparent.png` / `@2x.png` | Raster fallback |
 | `EQ_logo_white_transparent.png` / `@2x.png` | Raster reversed |
 
-(Full brand spec, including colours and typography, in `rules/brand.md`.)
+(Full brand spec, including colours and typography, in `rules/brand-sks.md`.)
 
 ---
 

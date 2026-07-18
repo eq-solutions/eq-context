@@ -25,6 +25,7 @@ Every canonical OPS file as a full URL — clickable from `/context/claude`:
 - [ops/entities.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/entities.md) — entity register, bank accounts, registrations, key contacts
 - [ops/financial-architecture.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/financial-architecture.md) — AHD design, Delta Elcom cliff, CDC PSI position
 - [ops/decisions.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/decisions.md) — append-only decisions log (ADR format) — covers all tiers
+- [ops/security-register.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/security-register.md) — live security findings register (P0/P1/P2), across all tiers
 
 ## Files
 
@@ -34,6 +35,7 @@ Every canonical OPS file as a full URL — clickable from `/context/claude`:
 | `entities.md` | Entity register, bank accounts, registrations, key contacts |
 | `decisions.md` | Append-only decisions (ADR format) — covers all tiers |
 | `financial-architecture.md` | AHD design, Delta Elcom cliff, CDC PSI position |
+| `security-register.md` | Live security findings register (P0/P1/P2) — check for open P0s before any cross-tier work |
 
 ## When to load OPS
 

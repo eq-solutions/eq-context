@@ -1,7 +1,7 @@
 ---
 title: OPS — Security Register
 owner: Royce Milmlow
-last_updated: 2026-06-27
+last_updated: 2026-07-16
 scope: Single tracked register of open security findings across the EQ/SKS Supabase surface — advisor output + live probes + known P0s
 read_priority: critical
 status: live
@@ -23,7 +23,7 @@ fails on **new** exposure while keeping the open ones visible.
 
 | ID | Severity | Finding | Project | Status |
 |---|---|---|---|---|
-| SEC-1 | **P0 — live PII leak** | Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` | sks-labour (LIVE, being retired) | FIX = **decommission at Field cutover** (weekend). Live until the old app is actually off. |
+| SEC-1 | **P0 — live PII leak** | Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` | sks-labour (LIVE — confirmed by Royce 2026-07-16 still active, retirement date NOT set) | **STILL OPEN.** Original fix plan ("decommission at Field cutover, weekend of 06-05") assumed a near-term retirement that hasn't happened — leak has been live ~6+ weeks past that assumption. Royce to decide: interim RLS hardening now, or accept the exposure pending an actual retirement date. |
 | SEC-3 | **P0** | Exposed `ehowg` service_role key still live (F1) | sks-canonical (LIVE) | OPEN — **staged rotation, NOT blind** (mis-sequence breaks live Quotes + routing). Weekend window. |
 | SEC-2 | P1 | RLS policy `tenant_isolation` trusts end-user-editable `user_metadata` (advisor ERROR) | eq-canonical-internal | **SCHEDULED — weekend** |
 | SEC-4 | P3 — hardening | `anon`-executable SECURITY DEFINER `eq_cards_*` fns | eq-canonical | **VERIFIED not exploitable** 2026-06-05 (auth.uid()/token-guarded). Post-launch: revoke anon EXECUTE on the 3 that don't need it. |

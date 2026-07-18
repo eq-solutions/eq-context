@@ -209,6 +209,7 @@ This contract points; it doesn't restate. Authoritative files:
 | Deployment | [rules/deployment.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/deployment.md) |
 | Stack defaults | [rules/stack.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/stack.md) |
 | Entities, accounts | [ops/entities.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/entities.md) |
+| Security findings register | [ops/security-register.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/security-register.md) |
 | Infrastructure (Supabase IDs, CF, Netlify) | [system/infrastructure.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/infrastructure.md) |
 | Tech architecture | [system/architecture.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/architecture.md) |
 | Financial architecture | [ops/financial-architecture.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/financial-architecture.md) |

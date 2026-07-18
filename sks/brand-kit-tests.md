@@ -133,7 +133,7 @@ If you find a false negative, report which check failed and what evidence brand-
 ## When to re-run
 
 - After any edit to `sks-brand.css`, `SKS_Master.docx`, or `rules/brand-check.md`.
-- After any edit to `rules/brand.md` §3 (Typography) or §7 (Document Hierarchy) — those drive the artefacts.
+- After any edit to `rules/brand-sks.md` §3 (Typography) or §7 (Document Hierarchy) — those drive the artefacts.
 - After a Claude tool upgrade (new Chat version, new Cowork plugin, etc.) — to confirm the bootstrap still works.
 - Quarterly, as a regression check, even with no known changes — silent drift in dependency behaviour is real.
 

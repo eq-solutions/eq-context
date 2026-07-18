@@ -1,7 +1,7 @@
 ---
 title: Rules — Non-Negotiables
 owner: Royce Milmlow
-last_updated: 2026-05-14
+last_updated: 2026-07-16
 scope: Hard rules that override all context, requests, or convenience
 read_priority: critical
 status: live
@@ -79,7 +79,7 @@ defaults from one tier only. Cross-tier loads are explicit, not implicit.
 9. Auth changes MUST be reviewed in chat before any deployment.
 10. Every Netlify/Cloudflare Pages site MUST ship with a `_headers` security file.
 
-> **Sprint-scope note (see `ops/decisions.md` 2026-05-30 ADR):** within the authorised autonomous EQ sprint, #1 is conditionally relaxed — **full-auto merge + deploy is authorised for EQ surfaces** — while #4 (SKS-live untouchable), #8 (schema-change approval), and #9 (auth changes gated for deploy) remain fully in force. Outside that sprint scope, #1 applies as written.
+> **Sprint-scope note — LAPSED 2026-07-16.** The 2026-05-30 ADR conditionally relaxing #1 (full-auto merge + deploy for EQ surfaces) was scoped to the Autonomous Sprint coordination mode, which was retired 2026-07-12. Royce confirmed 2026-07-16 the carve-out lapsed with it — #1 applies as written, no exceptions. See `ops/decisions.md` 2026-05-30 ADR, now marked Superseded.
 
 ---
 
@@ -106,4 +106,6 @@ defaults from one tier only. Cross-tier loads are explicit, not implicit.
 
 ## Financial
 
-20. CDC Solutions has passed the Results
+20. CDC Solutions has passed the Results Test on the Delta Elcom engagement — no further PSI tests are required.
+21. HHT crypto holdings MUST be treated under the CGT investor method universally — personal, HHT, and SMSF.
+22. MIS risk: pooled employee contributions managed by others trigger managed investment scheme concern. AHD MUST use company retained earnings on company operations, NOT pooled contributions.

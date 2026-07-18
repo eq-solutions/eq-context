@@ -9,7 +9,14 @@ status: live
 
 # OPS — Decisions Log
 
-Append-only log.
+Key decisions and the reasoning behind them — reasoning disappears faster
+than outcomes, which is why this file is the most important one to
+maintain.
+
+Format: Status → Decision → Why → Alternatives considered → Implications.
+Status values: Accepted | Superseded by [date+title] | On Hold | Deprecated | Proposed.
+Append-only — never delete an entry. Supersede or deprecate it instead.
+For the current built state of each system, see [system/architecture.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/architecture.md).
 
 ---
 
@@ -131,17 +138,6 @@ The two-auth-path reality is acceptable, not a gap. The phone is the shared iden
 - **GoTrue-vs-own-mint reconciliation (flagged 2026-06-04):** Resolved in favour of GoTrue for workers. Workers authenticate directly via GoTrue phone OTP; the `custom_access_token_hook` injects `tenant_id` from `shell_control.users`. Shell-exchange bridges (`shell-login-phone-otp`, `shell-join-tenant`) remain as the join-code / claim paths but are NOT the primary repeat-login path. Phase 2 retirement of these bridges stands as planned.
 - **IDENTITY-MODEL.md v2 bump:** "One sign-in at Shell → same identity across all EQ products" applies to employer-facing products only. Workers have a parallel path via Cards. The v2 bump (flagged as a Phase 2 trigger in the 2026-06-04 implications) should reflect the two-auth-path model explicitly.
 - **Long-term roadmap signal:** As Field's worker-facing features mature (timesheets, availability, job-assignment notifications), they belong in Cards. Field and Shell retain the employer-admin view. The canonical layer is the exchange point.
-
----
-
- Key decisions and the reasoning behind them — reasoning
-disappears faster than outcomes, which is why this file is the most
-important one to maintain.
-
-Format: Status → Decision → Why → Alternatives considered → Implications.
-Status values: Accepted | Superseded by [date+title] | On Hold | Deprecated | Proposed.
-Append-only — never delete an entry. Supersede or deprecate it instead.
-For the current built state of each system, see [system/architecture.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/architecture.md).
 
 ---
 
@@ -271,7 +267,7 @@ For the current built state of each system, see [system/architecture.md](https:/
 
 ## 2026-05-30 — Autonomous Sprint: Full-Auto EQ Deploy, SKS Live Untouchable, Auth Gated
 
-**Status:** Accepted
+**Status:** Superseded 2026-07-16 (lapsed when the Autonomous Sprint coordination mode retired 2026-07-12; Royce confirmed 2026-07-16 the full-auto-deploy carve-out did not survive it — `rules/non-negotiables.md` #1 applies as written, no exceptions. The SKS-live and auth carve-outs below were never conditional on the sprint and remain standing rules regardless.)
 
 **Decision:** For the autonomous parallel sprint, agents MAY build, branch, open PRs, gate them green, and **merge + deploy autonomously for EQ-side changes** — superseding, *for the sprint scope only*, the standing "no push/deploy/commit without explicit instruction" and "never deploy to eq-solves-field.netlify.app directly" rules (`CLAUDE.md` §7/§11, `rules/non-negotiables.md`). Two carve-outs remain hard gates:
 - **SKS live is untouchable** — no deploy to sks-nsw-labour.netlify.app, no writes to the SKS live DB (`nspbmirochztcjijmcrx`), no Field-merge cutover. Unchanged from the standing rule.
