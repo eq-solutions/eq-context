@@ -1,7 +1,7 @@
 ---
 title: SYSTEM — Tech Architecture
 owner: Royce Milmlow
-last_updated: 2026-06-28
+last_updated: 2026-07-16
 scope: Current state of how systems are built and how they fit together — including tenant migration management pattern
 read_priority: standard
 status: live
@@ -80,7 +80,7 @@ Cost is ~$25/mo per active tenant — acceptable at trade-subbie scale.
 apply the canonical migration set, register the connection in `eq-canonical`, set
 `TENANT_ORG_UUID` in the app's Netlify env.
 
-**Active Supabase footprint (as of 2026-06-22):** `eq-canonical` (`jvknxcmbtrfnxfrwfimn`, control), `eq-canonical-internal` (`zaapmfdkgedqupfjtchl`, EQ tenant), `sks-canonical` / ehow (`ehowgjardagevnrluult`, SKS tenant — sole DB for EQ Service + Field), `sks-labour` (`nspbmirochztcjijmcrx`, **SKS LIVE — never touch**). `eq-solves-service-dev` (`urjhmkhbgaxrofurpbgc`): **DELETED 2026-06-22**. `eq-solves-field` (`ktmjmdzqrogauaevbktn`): verify status before use.
+**Active Supabase footprint (as of 2026-06-22):** `eq-canonical` (`jvknxcmbtrfnxfrwfimn`, control), `eq-canonical-internal` (`zaapmfdkgedqupfjtchl`, EQ tenant), `sks-canonical` / ehow (`ehowgjardagevnrluult`, SKS tenant — sole DB for EQ Service + Field), `sks-labour` (`nspbmirochztcjijmcrx`, **SKS LIVE — never touch**). `eq-solves-service-dev` (`urjhmkhbgaxrofurpbgc`): **DELETED 2026-06-22**. `eq-solves-field` (`ktmjmdzqrogauaevbktn`): **DELETED, confirmed 2026-06-30** (see `system/substrate-facts.yml` — not in the Supabase project list, never explicitly deleted by Royce but no longer accessible).
 
 **Operational rule:** confirm which project before connecting. Never touch
 `nspbmirochztcjijmcrx` (sks-labour) unless "SKS live" is explicitly stated.

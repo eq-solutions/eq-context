@@ -1,7 +1,7 @@
 ---
 title: SYSTEM — Git Automation for eq-context
 owner: Royce Milmlow
-last_updated: 2026-06-27
+last_updated: 2026-07-16
 scope: How auto-push, credential helpers, and hooks are wired for the substrate repo
 read_priority: reference
 status: live
@@ -80,8 +80,14 @@ identities can coexist without prompts:
 | `https://github.com/eq-solutions/*` | eq-solutions org PAT | `%USERPROFILE%\.git-credentials` |
 | `https://github.com/Milmlow/*` | Milmlow user PAT | `%USERPROFILE%\.git-credentials` |
 
-Both PATs are fine-grained, expire **2026-05-19**, rotation reminder set
-for 2026-05-16 (see `ops/pending.md` → Infrastructure → PAT rotation).
+Both PATs are fine-grained. **Current security status lives in
+`system/infrastructure.md` → "GitHub PATs" — as of that file's last edit
+all 3 tokens were flagged compromised (committed to substrate 2026-05-15→19,
+caught by GitHub push-protection) with an unresolved rotation checklist.
+The "expire 2026-05-19" framing here was stale and is removed — don't infer
+from it that rotation happened.** Verify current token status against
+`infrastructure.md` and the actual credential files before assuming either
+"routine" or "resolved."
 
 ### How they're wired
 
