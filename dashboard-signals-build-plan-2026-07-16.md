@@ -1,3 +1,12 @@
+---
+title: Core Dashboard — Signals Board Build Plan
+owner: Royce Milmlow
+last_updated: 2026-07-16
+scope: Build plan for the core.eq.solutions signals board — spec, not started
+read_priority: standard
+status: draft
+---
+
 # Core dashboard — signals board · build plan
 
 **Date:** 2026-07-16 · **Owner:** Royce · **Status:** spec, not started
