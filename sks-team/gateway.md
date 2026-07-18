@@ -1,7 +1,7 @@
 ---
 title: SKS-TEAM — Gateway Router
 owner: Royce Milmlow
-last_updated: 2026-05-15
+last_updated: 2026-07-16
 scope: Single-file entry point for SKS NSW Operations team AI sessions — handles all document types
 read_priority: critical
 status: live
@@ -200,6 +200,7 @@ Then below the table:
 - All works performed in accordance with AS/NZS 3000 and relevant WHS legislation
 - Pricing assumes no asbestos, hazardous materials, or contamination encountered; rectification quoted separately if required
 - Any variations to scope require written approval before works proceed
+- Drawings, specifications, or addendums received as listed in scope; subsequent revisions may affect pricing
 
 ---
 

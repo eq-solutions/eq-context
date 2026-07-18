@@ -1,7 +1,7 @@
 ---
 title: SKS Tier — Products
 owner: Royce Milmlow
-last_updated: 2026-06-08
+last_updated: 2026-07-16
 scope: Live SKS internal tools
 read_priority: standard
 status: live
@@ -14,14 +14,15 @@ is operational tooling for the NSW office.
 
 ---
 
-## SKS Labour App — standalone (LEGACY / FROZEN)
+## SKS Labour App — standalone (LEGACY, eventual retirement target)
 
-**Status:** Live but **FROZEN for new development** (since the 2026-05-20 split).
-Kept running warm in parallel, short-term only. **All new SKS app development now
-targets the EQ Field SKS tenant** (`eq-solutions/eq-field`, served at
-`core.eq.solutions/field` · `field.sks.eq.solutions`) — NOT this standalone. Do
-not port features between them (the auto-port model was killed at the split).
-Cutover + decommission is Royce-gated (no date set). See `sks/README.md` →
+**Status:** Live and **still receiving real feature work** (confirmed 2026-07-16,
+e.g. PR #67 / v3.10.98, 2026-07-15) — not frozen, despite the 2026-05-20 split
+intending new SKS app work to target the EQ Field SKS tenant
+(`eq-solutions/eq-field`, served at `core.eq.solutions/field` ·
+`field.sks.eq.solutions`) instead. Do not port features between them (the
+auto-port model was killed at the split). Cutover + decommission is
+Royce-gated — **no date set as of 2026-07-16.** See `sks/README.md` →
 "SKS app systems — the split".
 **URL:** sks-nsw-labour.netlify.app
 **Repo:** eq-solutions/sks-nsw-labour — **own dedicated repo since 2026-05-20**, main branch only

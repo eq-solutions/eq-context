@@ -1,7 +1,7 @@
 ---
 title: SKS-TEAM — Canonical Quoting Router
 owner: Royce Milmlow
-last_updated: 2026-05-23
+last_updated: 2026-07-16
 scope: The single source of truth for AI-assisted SKS quote drafting by NSW Operations team
 read_priority: critical
 status: live
@@ -24,6 +24,8 @@ The official template is **SKS ELEC Client Services Quote Template** (.docx).
 - **AI-fetchable copy:** [R2 URL TBC — Royce will populate]
 
 The user opens the SharePoint copy, saves locally as `SKS-QT-XXXX.docx`, and pastes the labelled blocks you produce into the corresponding spots.
+
+(Not to be confused with `sks/templates.md`'s "SKS Quotation Template v3" — that's Royce's own docx-js pipeline for generating a finished document directly. This file is the separate, team-facing paste-in pipeline. Flagged for Royce to confirm these are deliberately two different tools, not drift.)
 
 **Do not generate a Word document yourself.** Your job is labelled text content. The template enforces structure; you enforce content.
 

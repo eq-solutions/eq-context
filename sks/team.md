@@ -1,7 +1,7 @@
 ---
 title: SKS Tier — NSW Team
 owner: Royce Milmlow
-last_updated: 2026-06-01
+last_updated: 2026-07-16
 scope: SKS NSW team roster — leadership, PMs, supervisors
 read_priority: standard
 status: live
@@ -57,8 +57,8 @@ Labour App, not listed here. Disciplines: **Electrical** and **Comms**.
 
 | Name | Role | Discipline | Discuss |
 |---|---|---|---|
-| Simon Bramall | Equinix Account Lead (de facto) | Electrical | ⬆ Promotion — formal title + pay overdue |
-| Luke Wheeler | Schneider Account Lead (de facto) | Electrical | ⟲ Role change — formalise, respect time constraints |
+| Simon Bramall | Equinix Account Lead (de facto) | Electrical | Charter drafted 2026-07-05 (see `sks/active.md`) — formal title + pay still to land |
+| Luke Wheeler | Schneider Account Lead (de facto) | Electrical | Charter drafted 2026-07-05 (see `sks/active.md`) — role change still to formalise |
 | Matthew Miller | Equinix Site Lead (proposed) | Electrical | ⟲ Role change — structured executor scope |
 
 ---
@@ -116,7 +116,11 @@ Labour App, not listed here. Disciplines: **Electrical** and **Comms**.
 
 ## Field Workforce
 
-~60 NSW field staff across both NSW and NSW (Delta) tabs.
-Roster managed via SKS Labour App (`sks-nsw-labour.netlify.app`,
-project `nspbmirochztcjijmcrx`). Do not query this file for live roster —
-query the app.
+~60 NSW field staff across both NSW and NSW (Delta) tabs (headcount unreconciled
+against `sks/active.md`'s ~55 — see `sks/pending.md`).
+Do not query this file for live roster. **Transitional dual-source state (DB
+cutover in progress, see `sks/README.md`):** directory data (people, sites,
+managers) is live on `sks-canonical`/`ehow`; operational data (schedule,
+timesheets) is not yet migrated and still lives only in SKS Labour App
+(`sks-nsw-labour.netlify.app`, project `nspbmirochztcjijmcrx`). Query
+whichever holds the data you need.

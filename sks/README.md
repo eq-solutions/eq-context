@@ -1,7 +1,7 @@
 ---
 title: SKS Tier — Index
 owner: Royce Milmlow
-last_updated: 2026-06-08
+last_updated: 2026-07-16
 scope: SKS Technologies work — operations, projects, team, tools
 read_priority: critical
 status: live
@@ -30,12 +30,10 @@ the cutover. Do not conflate them:
 |---|---|---|
 | Site | `sks-nsw-labour.netlify.app` | `core.eq.solutions/field` · `field.sks.eq.solutions` |
 | Repo | `eq-solutions/sks-nsw-labour` | `eq-solutions/eq-field` (tenant slug `sks`) |
-| Dev status | **DECOMMISSIONING** — no new features; being retired. Do not invest in infra or add features here. | **ACTIVE — all new SKS development happens here** |
+| Dev status | **STILL ACTIVE — retirement intended, date not set** (confirmed 2026-07-16). Receiving real feature work (PR #67 / v3.10.98, 2026-07-15). Don't assume it's frozen. | **ACTIVE — all new SKS development happens here** |
 
-- **All new SKS app work goes to the EQ Field SKS tenant** (`eq-field` repo).
-  Do **not** build features in the standalone repo, and do **not** port between
-  them — the auto-port model was killed at the 2026-05-20 split.
-- ⚠️ **DB cutover is in progress.** Directory data (people, sites, managers) is live on `sks-canonical` / `ehow` (`ehowgjardagevnrluult`). Operational data (schedule, timesheets) is not yet migrated — those tables are empty on ehow. The standalone (`nspb` / `sks-nsw-labour.netlify.app`) is being **decommissioned** — do not invest in it. The `DATA-PLANES-SOURCE-OF-TRUTH.md` in eq-field predates this migration (verified 2026-06-07) and is now stale on the directory migration status.
+- **New SKS app work goes to the EQ Field SKS tenant** (`eq-field` repo) where possible. The standalone repo is still taking feature work too — it's not yet safe to treat as feature-frozen. Don't port between them — the auto-port model was killed at the 2026-05-20 split.
+- ⚠️ **DB cutover is in progress.** Directory data (people, sites, managers) is live on `sks-canonical` / `ehow` (`ehowgjardagevnrluult`). Operational data (schedule, timesheets) is not yet migrated — those tables are empty on ehow. Standalone (`nspb` / `sks-nsw-labour.netlify.app`) is the **eventual retirement target — no date set as of 2026-07-16**, still live and under active development. The `DATA-PLANES-SOURCE-OF-TRUTH.md` in eq-field predates this migration (verified 2026-06-07) and is now stale on the directory migration status.
 
 ---
 
@@ -45,8 +43,11 @@ Every canonical SKS file as a full URL — clickable from `/context/claude`:
 
 - [sks/pending.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/pending.md) — SKS-only to-do list
 - [sks/active.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/active.md) — rolling active projects (current quarter)
-- [sks/templates.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/templates.md) — Quote v3 spec + client context blocks
+- [sks/templates.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/templates.md) — Quote v3 spec + client context blocks (Royce's own docx-js pipeline — see sks-team/quoting.md for the separate team-facing SharePoint-template pipeline)
 - [sks/team.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/team.md) — NSW team
+- [sks/products.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/products.md) — SKS app product status
+- [sks/brand-kit-tests.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/brand-kit-tests.md) — brand-artefact test log
+- [sks/changelog/labour.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/changelog/labour.md) — SKS Labour app changelog
 
 Separate audience — only fetch when explicitly authoring or reviewing team-facing guidance:
 
@@ -101,6 +102,7 @@ Separate audience — only fetch when explicitly authoring or reviewing team-fac
 | `products.md` | SKS live tools (Labour, Receipt Tracker) |
 | `templates.md` | Quote v3 spec + client context blocks |
 | `changelog/labour.md` | SKS Labour app history |
+| `brand-kit-tests.md` | Brand-artefact test log |
 
 ## Reference
 
