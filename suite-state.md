@@ -90,7 +90,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 190 (latest: 0186) applied
+**Migrations:** eq-service has 190 (latest: 0186) applied. eq-shell tenant-migrations at 196 (latest: 0190) applied to both planes (eq/zaap + sks/ehow) — verified live via `pg_proc` 2026-07-19.
 
 ---
 
@@ -132,6 +132,7 @@ _Auto-refreshed nightly. ✓ = has data · ⚠ = empty (no data yet) · ✗ = ta
 ---
 
 ## Key Decisions (auto-derived from merged PRs + manual)
+- **Access-model cluster 1 Phase 4 (sensitive-read RLS) is CLOSED on eq-shell** — migrations `0188` (margin/cost gate on `eq_list_quotes`/`eq_get_quote_detail`), `0189` (closed a real no-auth gap on `eq_set_job_number`), and `0190` (contact-PII gate on `eq_list_contacts_for_customer`/`eq_list_contacts_for_site`/`eq_get_quote_detail.contact_email` — a direct-browser-RPC path the server-layer `entity.view_pii` redaction in PR #885 couldn't reach) were dispatched together via the One Pipe (`tenant-migrate.yml`, Royce's explicit go + production-environment approval) and independently re-verified live on both `ehowgjardagevnrluult` (sks) and `zaapmfdkgedqupfjtchl` (eq) via direct `pg_proc` source inspection, not just the migration ledger. gm-reports (`reports.view_financial`) audited with zero direct-RPC paths found — nothing to gate there. Shell PRs #885 + #890 merged. (shell PRs #885/#890, 2026-07-19)
 - **`favour-perfect` tenant suspended in `shell_control.tenant_routing`** — its Supabase project (`nxojbntrpxfnbhbyaspp`) had been deleted but the routing row was left `active`, which broke eq-shell's required tenant-drift CI gate for ~11 hours across every PR (2026-07-15 22:09Z → 2026-07-16 09:20Z). Manual DML fix on the control plane (jvknxcmbtrfnxfrwfimn), no DDL. Open follow-up: harden `check-tenant-drift.mjs` to soft-fail on one unreachable tenant instead of throwing uncaught. (2026-07-16)
 - **eq-ui Modal is now focus-identity-agnostic** — v1.10.1 keys the focus-trap effect on `[open]` only and reads the latest `onClose` via a ref (`onCloseRef`), so consumers passing an inline/unstable `onClose` no longer lose input focus on every keystroke. eq-shell bumped the ui pin to v1.10.1 (shell PR #807) and then reverted the local `useCallback` workaround on the Labour Hire Rates Add/Edit-rate modal as redundant — back to a plain `closeEditor` handler (shell PR #808, squash `ad8eb5f`). CI green; **deployed green to core.eq.solutions** (deploy `6a54aa53`, published 2026-07-13 09:09Z). (2026-07-13)
 - **Contract sheet is the source of truth for what's funded this cycle** — a new `not_funded` scope status shows an amber "not funded this cycle · ad-hoc only" warning at check-create and on the executing check; creation is **never blocked**, just stamped into the audit trail for the ad-hoc paper trail. Also fixes the ContractScopeBanner FY lookup so calendar/hyphenated FYs (e.g. Equinix `2025-2026`) classify instead of rendering blank (service PR #497, 2026-07-11)
