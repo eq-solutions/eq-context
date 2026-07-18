@@ -102,3 +102,6 @@
 
 ## 2026-07-16 (2)
 - **PR #543 MERGED + LIVE (`b587d84`) — `/terms` temporarily unpublished pending legal review.** Page carried a self-admitted internal comment ("plain-English draft — review with Webb Financial / SaaS-literate lawyer before relying on in a commercial dispute") and read in a harder B2B/IP-protective tone than the rest of the suite. Now `notFound()`s; prior content preserved in git history for restore after actual legal review. Verified live via Netlify MCP (deploy `ready`, commit ref matches) and a browser check (`/terms` → redirects to `/auth/signin`, confirming the old content is gone). Prompted by Royce's Monday meeting with an SKS stakeholder — full context in `eq-context/eq/pending.md` "Terms/legal review" entry (2026-07-16).
+
+## 2026-07-19
+- **PR #551 MERGED + LIVE — access-model cluster 3: `service.reopen` + `service.record_tests` (`@eq-solutions/roles` v2.5.3).** `reopenCheckAction` was `canWrite() OR isAssigned` — any technician assigned to a check could reopen it regardless of role; now `canReopen()` only, closing that bypass. `updateInstrumentAction` (the sole calibration-write path) now `canRecordTests()`. Genuine server-side enforcement — `requireUser()`'s `role` is resolved from a server-verified JWT, never client input.
