@@ -69,7 +69,6 @@ _If this file is >48h old, the cron is broken._
 - #520 chore(deps): bump resend from 6.12.4 to 6.17.2
 
 **eq-shell:**
-- #899 fix(security): reassert security_invoker on 3 field_* views (0187)
 - #897 NSW Comms: Start-by estimate from PO+53-day planning rule (Patrick's demo feedback)
 - #862 fix(auth): harden invite-accept auth-identity binding + orphan detector
 
@@ -90,7 +89,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 190 (latest: 0186) applied. eq-shell tenant-migrations at 196 (latest: 0190) applied to both planes (eq/zaap + sks/ehow) — verified live via `pg_proc` 2026-07-19.
+**Migrations:** eq-service has 190 (latest: 0186) applied
 
 ---
 
