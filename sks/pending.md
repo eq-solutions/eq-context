@@ -10,6 +10,9 @@ last_updated: 2026-07-12
 
 # SKS Pending
 
+## Live security gap on SKS's database found + fixed same day (2026-07-19)
+- [x] **A safety check protecting SKS's database caught a real gap and blocked an unrelated merge until it was fixed.** Restoring a permission on SKS's database earlier the same day (see `eq/pending.md`, "EQ Field — closed the server-side permission gap") had a side effect: 3 database views (prestart forms, toolbox talks, site diaries) became readable by any signed-in account while still missing a separate protection — meaning any signed-in user, any company, could potentially have read that content directly. Confirmed live, got Royce's go, fixed live on all 3, verified. Full detail in `eq/pending.md`. _(done 2026-07-19)_
+
 ## Monday meeting prep — Royce + Adam (SKS), adoption + data-security discussion (2026-07-16)
 - [x] **Terms/legal review + fixes done, talking points drafted.** Full detail in `eq/pending.md` (EQ-side work: eq-service `/terms` taken down, eq-cards wording softened, eq-field/eq-shell confirmed clean). Positioning locked: personal-tooling framing, no marketing/customer language, Royce recuses from any commercial-terms question. _(done 2026-07-16)_
 - [ ] **Not done: live-demo readiness check** (data cleanliness / no visible errors on whatever screen gets shown) — offered, awaiting Royce's go. _(added 2026-07-16)_
