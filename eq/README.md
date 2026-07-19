@@ -79,7 +79,7 @@ Every canonical EQ file as a full URL — clickable from `/context/claude`:
 | `identity/parity-harness/phase1-parity-note-2026-07-10.md` | Phase 1 parity-harness note |
 | `design/claude-design-context.md` | Claude Design "start with context" brief for EQ brand |
 | `sprints/2026-05-20-S3-polish-and-audit.md` | Sprint S3 polish + audit doc, historical |
-| `changelog/*.md` | Per-product changelogs — **known duplication issue**: `changelog/shell.md`, `changelog/service.md`, `changelog/cards.md`, `changelog/field.md` each have a parallel `eq-*.md` file (`eq-shell.md`, `eq-service.md`, `eq-cards.md`, `eq-field.md`) that's the one actually kept current; plus `changelog/eq-context.md` and `changelog/eq-intake.md`. Check the `eq-*` variant first until consolidated — flagged as a follow-up, not yet fixed. |
+| `changelog/*.md` | Per-product changelogs. **Resolved 2026-07-19** for Shell/Service/Cards: `shell.md`/`service.md`/`cards.md` were genuinely abandoned (stopped 3-19 days before their `eq-*` twin) — each now carries a "Superseded, use `eq-*.md`" banner; use the `eq-*` file for all three. **Still open** for Field: `field.md` and `eq-field.md` were BOTH being actively appended to as of 2026-07-19 (not one-stale-one-current like the others) — check both until Royce decides which stays canonical, don't assume either is the source of truth. Plus `changelog/eq-context.md` and `changelog/eq-intake.md`, which have no duplicate. |
 
 ## Killed / deferred (do not reference as live products)
 

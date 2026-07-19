@@ -2,10 +2,14 @@
 title: Changelog — EQ Solves Service
 owner: Royce Milmlow
 last_updated: 2026-06-30
-scope: Append-only history of changes to the EQ Solves Service product
+scope: Append-only history of changes to the EQ Solves Service product through 2026-07-13. Superseded by eq-service.md going forward — see banner below.
 read_priority: reference
 status: live
 ---
+
+> **Superseded 2026-07-19.** This file's last entry is 2026-07-13; `eq-service.md`
+> has been the actively-maintained EQ Service changelog since, and is current.
+> Kept here for history — don't append to this file, use `eq-service.md`.
 
 # Changelog — EQ Solves Service
 
