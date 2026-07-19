@@ -69,7 +69,6 @@ _If this file is >48h old, the cron is broken._
 - #520 chore(deps): bump resend from 6.12.4 to 6.17.2
 
 **eq-shell:**
-- #900 perf(offline): extend the unsaved-changes guard to site and invite forms
 - #862 fix(auth): harden invite-accept auth-identity binding + orphan detector
 
 ---
