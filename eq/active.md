@@ -1,7 +1,7 @@
 ---
 title: EQ Field — Active State (Rolling)
 owner: Royce Milmlow
-last_updated: 2026-07-05
+last_updated: 2026-07-19
 scope: Current live state of EQ Field product
 read_priority: critical
 status: live
@@ -39,7 +39,9 @@ RLS WITH CHECK hardened on all 14 write policies. Adapter view architecture:
 
 **v3.5.147 identity stub (2026-06-15):** `_tryLinkPersonToWorker()` in `people.js` — on person save with email, looks up jvkn.workers by email; if found, patches `people.worker_id`; if not found, creates a minimal stub (name, email, phone, role). Transition scaffolding — removes when Cards onboarding is the sole creator of jvkn.workers rows. `syncAllToCanonical()` bulk action available to supervisor role.
 
-**Data counts:** 39 staff · 591 sites · 171 licences · 0 roster rows (data entry needed)
+**Data counts (2026-06-13, at time of the sync above — historical, see below for current):** 39 staff · 591 sites · 171 licences · 0 roster rows (data entry needed)
+
+**Data counts (live-verified 2026-07-19, direct query against ehow):** 88 active staff total — 58 Direct (39 on-roster non-supervisor + 18 supervisor + 1 off-roster non-supervisor) + 19 Labour Hire + 10 Apprentice + 1 Subcontractor · 250 sites · 100 licences. Resolves the 58-vs-39 discrepancy Royce flagged in the 2026-07-19 substrate audit (EQ-03) — both figures were correct, just counting different subsets (all-Direct vs on-roster-non-supervisor-Direct) with no label saying so. Site count (591→250) and licence count (171→100) also dropped substantially since 06-13 — not investigated further, likely the site-merge/dedup work from the same week, worth a look if it looks wrong.
 
 **Apprentice module (2026-06-18):** 11 tables created (apprentice_profiles, journal, skills_ratings, competencies, feedback_entries, feedback_requests, rotations, buddy_checkins, quarterly_reviews, engagement_log, checkins). 11 standard electrical competencies seeded. All module_entitlements flipped to enabled in jvkn. person_id/supervisor_id/buddy_id are bigint (adapted from EQ uuid pattern). Nav unlocked.
 
