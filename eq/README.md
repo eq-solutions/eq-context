@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Index
 owner: Royce Milmlow
-last_updated: 2026-07-16
+last_updated: 2026-07-19
 scope: EQ Solutions work — products, decisions, build state
 read_priority: critical
 status: live
@@ -46,11 +46,40 @@ Every canonical EQ file as a full URL — clickable from `/context/claude`:
 |---|---|
 | `pending.md` | EQ-only to-do list |
 | `products.md` | EQ live product status |
+| `active.md` | Live-state snapshot (staff/site/licence counts) — cross-check against products.md before quoting a headcount, they've drifted before |
+| `punch-list-2026-06-02.md` | 2026-06-02 punch list — several items superseded, treat as historical unless re-confirmed live |
+| `field-eq-core-only-plan.md` | Plan: EQ tenant is Core-only, closes the demo login gate |
+| `go-live-runbook.md` | Go-live runbook |
 | `field/multi-tenancy/` | EQ Field MT plan + explainer (active reference) |
-| `field/permissions/` | EQ Field role/permission matrix |
+| `field/permissions/field-shell-security-groups-2026-06-05.md` | 2026-06-05 permission-groups audit — superseded by `identity/enforcement-site-inventory-2026-07-08.md`, kept for history |
+| `field/staff-site-visibility-model.md` | Staff/site visibility model |
 | `cards/canonical-migration/plan.md` | EQ Cards §18 close-out (active 2026-05-20) |
+| `cards/worker-platform-direction-2026-06-15.md` | Cards worker-platform direction |
 | `canonical-readiness/plan.md` | Canonical layer readiness for Intake/Field/Quotes ports (draft 2026-05-20) |
-| `changelog/*.md` | Per-product changelogs — **known duplication issue**: shell/service/cards each currently have two parallel changelog files (e.g. `changelog/shell.md` vs `changelog/eq-shell.md`), only one of which is kept current. Check both until consolidated; flagged as a follow-up. |
+| `canonical-readiness/spine.md` | The trust spine — which tables must be identical across tenants |
+| `canonical-readiness/audit-2026-05-21.md` | Post-S3 honest audit, all items shipped |
+| `canonical-readiness/audit-existing-tables.md` | Existing-table audit |
+| `canonical-readiness/canonical-target-model-2026-06-24.md` | Canonical target model |
+| `canonical-readiness/canonical-consolidation-roadmap-2026-06-25.md` | Consolidation roadmap |
+| `canonical-readiness/contract-scope-canonical-design-2026-06-15.md` | Contract-scope canonical design |
+| `canonical-readiness/labour-hire-rates-canonical-design-2026-07-04.md` | Labour-hire rates canonical design |
+| `canonical-readiness/plan-control-plane-governance-and-card-read-2026-06-25.md` | Control-plane governance + Cards read plan |
+| `canonical-readiness/plan-eq-service-migration-apply-gate-2026-07-03.md` | EQ Service migration apply-gate plan |
+| `canonical-readiness/service-consumes-canonical-spine-2026-06-16.md` | Service-consumes-canonical-spine design |
+| `canonical-readiness/ticket-field-licence-read-2026-06-25.md` | Field licence-read ticket |
+| `identity/IDENTITY-MODEL.md` | **Current source of truth** for Shell auth/session/canonical identity — check this first on any auth-adjacent work |
+| `identity/ACCESS-MODEL-PLAN.md` | Access-model program plan (permission keys, RLS) |
+| `identity/PHASE-1F-PLAN.md` | Phase 1.F plan — **shipped 2026-05-20**, historical, superseded by IDENTITY-MODEL.md |
+| `identity/enforcement-site-inventory-2026-07-08.md` | Current permission-enforcement site inventory, supersedes the 06-05 field/permissions audit |
+| `identity/gate-a-decision-2026-06-03.md` | Gate A decision record |
+| `identity/identity-convergence-target-2026-06-04.md` | Identity convergence target design |
+| `identity/onboarding-portable-identity-2026-06-04.md` | Portable-identity onboarding design |
+| `identity/service-canonical-identity-seam-2026-06-25.md` | Service/canonical identity seam design |
+| `identity/worker-credentials-model-2026-05-31.md` | Worker credentials model |
+| `identity/parity-harness/phase1-parity-note-2026-07-10.md` | Phase 1 parity-harness note |
+| `design/claude-design-context.md` | Claude Design "start with context" brief for EQ brand |
+| `sprints/2026-05-20-S3-polish-and-audit.md` | Sprint S3 polish + audit doc, historical |
+| `changelog/*.md` | Per-product changelogs — **known duplication issue**: `changelog/shell.md`, `changelog/service.md`, `changelog/cards.md`, `changelog/field.md` each have a parallel `eq-*.md` file (`eq-shell.md`, `eq-service.md`, `eq-cards.md`, `eq-field.md`) that's the one actually kept current; plus `changelog/eq-context.md` and `changelog/eq-intake.md`. Check the `eq-*` variant first until consolidated — flagged as a follow-up, not yet fixed. |
 
 ## Killed / deferred (do not reference as live products)
 
