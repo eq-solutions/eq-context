@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-19 04:59 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-19 05:04 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-19 00:16 UTC → 2026-07-19 04:59 UTC)
+## Since last refresh (2026-07-19 04:59 UTC → 2026-07-19 05:04 UTC)
 
-- Merged: eq-shell [#901](https://github.com/eq-solutions/eq-shell/pull/901) NSW Comms: cut Dashboard load-time from ~5.4s to ~2 round tr
-- Merged: eq-shell [#884](https://github.com/eq-solutions/eq-shell/pull/884) perf(build): split heavy vendors into cacheable chunks
-- Merged: eq-shell [#883](https://github.com/eq-solutions/eq-shell/pull/883) perf(quotes): parallelize the quote-open RPC waterfall
-- Merged: eq-shell [#880](https://github.com/eq-solutions/eq-shell/pull/880) feat(intake): usage-based survivor pick for the Sites Dupes 
-- Merged: eq-shell [#878](https://github.com/eq-solutions/eq-shell/pull/878) fix(drift): degrade gracefully on an unreachable tenant
-- Merged: eq-shell [#876](https://github.com/eq-solutions/eq-shell/pull/876) feat(intake): merge from the Sites Dupes tab (migration 0186
-- Merged: eq-shell [#866](https://github.com/eq-solutions/eq-shell/pull/866) feat(brand): dark-background document logo (canonical + hand
-- Merged: eq-shell [#861](https://github.com/eq-solutions/eq-shell/pull/861) fix(calibration): retire legacy asset-calibration reads/writ
+- Merged: eq-shell [#887](https://github.com/eq-solutions/eq-shell/pull/887) perf(obs): lazy-load posthog-js off the cold-open critical p
+- Merged: eq-shell [#882](https://github.com/eq-solutions/eq-shell/pull/882) fix(briefing): align quote-signal statuses to the live enum
+- Merged: eq-shell [#881](https://github.com/eq-solutions/eq-shell/pull/881) perf: capture Core Web Vitals + unsaved-changes guard (Quote
+- Merged: eq-shell [#879](https://github.com/eq-solutions/eq-shell/pull/879) chore: re-vendor eq-intake/eq-platform (merge-panel UI + sel
+- Merged: eq-shell [#877](https://github.com/eq-solutions/eq-shell/pull/877) chore: remove dead vendored eq-platform/apps scaffold
+- Merged: eq-shell [#875](https://github.com/eq-solutions/eq-shell/pull/875) fix(admin): use shared APP_LABELS for the Apps toggle list
+- Merged: eq-shell [#868](https://github.com/eq-solutions/eq-shell/pull/868) feat(intake): site merge — the "merge these" button (migrati
+- Merged: eq-shell [#867](https://github.com/eq-solutions/eq-shell/pull/867) vendor sync — eq-intake #69 (AI site-duplicate adjudicator)
 
 ## ⚠ Needs you (1)
 
@@ -52,6 +52,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 |--------|------|----|
 | 2026-07-19 | eq-shell | [#901](https://github.com/eq-solutions/eq-shell/pull/901) NSW Comms: cut Dashboard load-time from ~5.4s to ~2 round trips |
 | 2026-07-19 | eq-shell | [#897](https://github.com/eq-solutions/eq-shell/pull/897) NSW Comms: Start-by estimate from PO+53-day planning rule (Patric |
+| 2026-07-19 | eq-field | [#500](https://github.com/eq-solutions/eq-field/pull/500) test: guard the routing bypass that hid the 6-view grant gap |
 | 2026-07-18 | eq-shell | [#899](https://github.com/eq-solutions/eq-shell/pull/899) fix(security): reassert security_invoker on 3 field_* views (0187 |
 | 2026-07-18 | eq-shell | [#863](https://github.com/eq-solutions/eq-shell/pull/863) fix(auth): bound login body reads under one deadline (the #858 la |
 | 2026-07-18 | eq-shell | [#898](https://github.com/eq-solutions/eq-shell/pull/898) perf(home): dedupe duplicate dashboard + pending-connections fetc |
@@ -64,7 +65,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-17 | eq-field | [#496](https://github.com/eq-solutions/eq-field/pull/496) feat(access): cluster 3 — enforce field.manage_roster/licences/la |
 | 2026-07-16 | eq-shell | [#888](https://github.com/eq-solutions/eq-shell/pull/888) perf(auth): parallelize verify-shell-session's independent DB rea |
 | 2026-07-16 | eq-shell | [#885](https://github.com/eq-solutions/eq-shell/pull/885) feat(access): cluster 1 — enforce the 7 sensitive-read keys (eq-s |
-| 2026-07-16 | eq-shell | [#886](https://github.com/eq-solutions/eq-shell/pull/886) feat(dashboard): permission-gated signals board (compliance · wor |
 _Showing 15 of 104 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -111,4 +111,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-19 04:59 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-19 05:04 UTC._
