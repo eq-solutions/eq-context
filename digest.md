@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-19 00:16 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-19 04:59 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-18 23:40 UTC → 2026-07-19 00:16 UTC)
+## Since last refresh (2026-07-19 00:16 UTC → 2026-07-19 04:59 UTC)
 
-- Merged: eq-shell [#897](https://github.com/eq-solutions/eq-shell/pull/897) NSW Comms: Start-by estimate from PO+53-day planning rule (P
-- Merged: eq-shell [#882](https://github.com/eq-solutions/eq-shell/pull/882) fix(briefing): align quote-signal statuses to the live enum
-- Merged: eq-shell [#881](https://github.com/eq-solutions/eq-shell/pull/881) perf: capture Core Web Vitals + unsaved-changes guard (Quote
-- Merged: eq-shell [#879](https://github.com/eq-solutions/eq-shell/pull/879) chore: re-vendor eq-intake/eq-platform (merge-panel UI + sel
-- Merged: eq-shell [#877](https://github.com/eq-solutions/eq-shell/pull/877) chore: remove dead vendored eq-platform/apps scaffold
-- Merged: eq-shell [#875](https://github.com/eq-solutions/eq-shell/pull/875) fix(admin): use shared APP_LABELS for the Apps toggle list
-- Merged: eq-shell [#868](https://github.com/eq-solutions/eq-shell/pull/868) feat(intake): site merge — the "merge these" button (migrati
-- Merged: eq-shell [#867](https://github.com/eq-solutions/eq-shell/pull/867) vendor sync — eq-intake #69 (AI site-duplicate adjudicator)
+- Merged: eq-shell [#901](https://github.com/eq-solutions/eq-shell/pull/901) NSW Comms: cut Dashboard load-time from ~5.4s to ~2 round tr
+- Merged: eq-shell [#884](https://github.com/eq-solutions/eq-shell/pull/884) perf(build): split heavy vendors into cacheable chunks
+- Merged: eq-shell [#883](https://github.com/eq-solutions/eq-shell/pull/883) perf(quotes): parallelize the quote-open RPC waterfall
+- Merged: eq-shell [#880](https://github.com/eq-solutions/eq-shell/pull/880) feat(intake): usage-based survivor pick for the Sites Dupes 
+- Merged: eq-shell [#878](https://github.com/eq-solutions/eq-shell/pull/878) fix(drift): degrade gracefully on an unreachable tenant
+- Merged: eq-shell [#876](https://github.com/eq-solutions/eq-shell/pull/876) feat(intake): merge from the Sites Dupes tab (migration 0186
+- Merged: eq-shell [#866](https://github.com/eq-solutions/eq-shell/pull/866) feat(brand): dark-background document logo (canonical + hand
+- Merged: eq-shell [#861](https://github.com/eq-solutions/eq-shell/pull/861) fix(calibration): retire legacy asset-calibration reads/writ
 
 ## ⚠ Needs you (1)
 
@@ -29,8 +29,8 @@ _2026-07-19 00:16 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 1 | 4d |
-| eq-solves-service | ✓ success | 1d ago | 2 | 5d |
+| eq-shell | ? unknown | ? | 2 | 4d |
+| eq-solves-service | ✓ success | 2d ago | 2 | 5d |
 | eq-field | ✓ success | 0d ago | 2 | 6d |
 | eq-cards | ✓ success | 2d ago | 0 | — |
 | eq-solves-intake | ✓ success | 2d ago | 0 | — |
@@ -50,6 +50,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-19 | eq-shell | [#901](https://github.com/eq-solutions/eq-shell/pull/901) NSW Comms: cut Dashboard load-time from ~5.4s to ~2 round trips |
 | 2026-07-19 | eq-shell | [#897](https://github.com/eq-solutions/eq-shell/pull/897) NSW Comms: Start-by estimate from PO+53-day planning rule (Patric |
 | 2026-07-18 | eq-shell | [#899](https://github.com/eq-solutions/eq-shell/pull/899) fix(security): reassert security_invoker on 3 field_* views (0187 |
 | 2026-07-18 | eq-shell | [#863](https://github.com/eq-solutions/eq-shell/pull/863) fix(auth): bound login body reads under one deadline (the #858 la |
@@ -64,21 +65,20 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-16 | eq-shell | [#888](https://github.com/eq-solutions/eq-shell/pull/888) perf(auth): parallelize verify-shell-session's independent DB rea |
 | 2026-07-16 | eq-shell | [#885](https://github.com/eq-solutions/eq-shell/pull/885) feat(access): cluster 1 — enforce the 7 sensitive-read keys (eq-s |
 | 2026-07-16 | eq-shell | [#886](https://github.com/eq-solutions/eq-shell/pull/886) feat(dashboard): permission-gated signals board (compliance · wor |
-| 2026-07-16 | eq-shell | [#887](https://github.com/eq-solutions/eq-shell/pull/887) perf(obs): lazy-load posthog-js off the cold-open critical path |
-_Showing 15 of 107 · full record in [sessions/](sessions/)_
+_Showing 15 of 104 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **Deferred: remove the legacy public-read grant across all 7 related views**, as one deliberate, scoped cleanup rather than piecemeal — only if Royce wants that extra hardening on top of the row-level-security fix already live. _(added 2026-07-19)_
 - **Deferred: bigger first-load speedup** — breaking one large file into smaller pieces that only load when needed. Real win, but a bigger change that needs a hands-on check, not just automated tests. _(added 2026-07-19)_
 - **Deferred: extend the "you'll lose this" warning** to other forms — site details, invites, admin settings. Currently only on quotes. _(added 2026-07-19)_
 - **Deferred: make long lists load a page at a time** instead of everything at once (quotes, comms roster, staff, customers). _(added 2026-07-19)_
-- **Deferred, bigger decision: real offline capability** (works with no signal, not just faster with one) — recommended keeping that in EQ Field rather than building it into eq-shell, since Field is where genuinely offline field-work already lives. Not started, needs Royce's steer on scope before building. _(added 2026-07-19)_
+- **Now in scope, not yet built: extend the "you'll lose this" warning to more forms** (site details, invites, admin settings — currently only quotes), a plain "you're offline" banner when the connection drops, and re-checking sign-in status automatically when someone comes back to a tab left open a while. _(added 2026-07-19)_
 - **Royce to eyeball the live dashboard signed in** — the endpoint/bundle/error-monitoring checks are all clean, but only a signed-in pass confirms the three bands render correctly and the rostered-but-lapsed join surfaces real people. _(added 2026-07-17)_
 - **Gate keys are interim** (`field.view`/`service.view`) — swap to the cluster-1 granular keys (`field.view_licences` etc., PR #885, concurrent session) once that ships. _(added 2026-07-17)_
 - **Phase 2 deferred: crew-demand overlay.** Needs a `crew_required` column added to `app_data.jobs` (One Pipe migration, both planes) so the "can we staff what we've won" verdict has a real demand side — supply side (deployable crew) is live now, demand isn't wired yet. _(added 2026-07-16)_
 - **Phase 3 deferred: the one commercial signal permitted by the scope decision** — "N quotes won but no job number yet," gated behind `quotes.view`, no dollar amount, off the default board. Not built. _(added 2026-07-16)_
 - **Eyeball the next SKS morning brief once signed in** to confirm the signals render as expected end-to-end. The query logic is verified against live data and the deploy is smoke-verified, but the authed brief output itself needs a signed-in SKS session (10-minute per-user cache, or wait for the daily scheduled email). _(added 2026-07-17)_
-- **Not checked: live data cleanliness / Sentry error surfacing on whatever gets demoed live Monday**, and the eq-field Privacy Notice modal's links weren't click-tested (read-only content review only). Offered, Royce hadn't said go as of session close. _(added 2026-07-16)_
 _…and 362 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
@@ -111,4 +111,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-19 00:16 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-19 04:59 UTC._
