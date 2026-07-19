@@ -1,7 +1,7 @@
 ---
 title: SYSTEM Tier — Index
 owner: Royce Milmlow
-last_updated: 2026-07-16
+last_updated: 2026-07-19
 scope: The substrate itself — how the AI context system works
 read_priority: reference
 status: live
@@ -30,7 +30,8 @@ Every canonical system file as a full URL — clickable from `/context/claude`:
 - [system/tenant-routing-master-key-rotation.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/tenant-routing-master-key-rotation.md) — tenant_routing key rotation runbook
 - [system/chat-bootstrap.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/chat-bootstrap.md) / [system/cowork-bootstrap.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/cowork-bootstrap.md) — tool-specific session bootstraps
 - [system/substrate-plan-v2.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/substrate-plan-v2.md) — active substrate-hardening plan (draft, pending confirmation)
-- [system/runbooks/](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/runbooks/) — operational runbooks (e.g. Supabase restore drill)
+- [system/substrate-a-plus-plan.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/substrate-a-plus-plan.md) — **archived**, superseded by substrate-plan-v2.md — kept for history, not live
+- [system/runbooks/supabase-restore-drill.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/runbooks/supabase-restore-drill.md) — Supabase restore drill runbook (narrowed 2026-07-05 to auth-restore + app-repoint)
 
 ## Files
 

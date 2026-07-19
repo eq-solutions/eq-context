@@ -1,0 +1,45 @@
+name: Index drift check
+
+# Verifies every tier README (system/, eq/, sks/, sks-team/, ops/, archive/, root)
+# actually lists every .md file physically present in its own folder.
+#
+# WHY: the 2026-07-19 full substrate audit found this as the single most common
+# defect class — system/README.md indexed 6 of 17 files, archive/README.md was
+# missing 11 files, eq/README.md indexed 2 of 8 changelogs. An index that's wrong
+# actively misdirects an agent into thinking a file doesn't exist, rather than
+# just being silent. This guard makes that class of drift visible on every PR
+# instead of waiting for the next manual audit.
+#
+# Ships as a hard gate (INDEX_DRIFT_STRICT=1) — the backlog it found (62 files
+# across root/system/eq) was cleared in the same PR that added this check, so
+# there's no pre-existing drift to grandfather in. Fails the PR if any new .md
+# file lands without a mention in its tier's README.
+
+on:
+  schedule:
+    # 11:30 UTC — after suite-state (10:00) and substrate-honesty (11:00).
+    - cron: '30 11 * * *'
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  index-drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Classifier unit tests
+        run: python scripts/test_index_drift.py
+
+      - name: Index drift check
+        env:
+          INDEX_DRIFT_STRICT: "1"
+        run: python scripts/index_drift.py
