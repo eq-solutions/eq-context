@@ -52,11 +52,13 @@ than a flat list, since 95 items needs sorting/filtering to be usable.
   Superseded, the sprint-scope carve-out struck from `rules/non-negotiables.md`
   (PR #97). Back to explicit-instruction-required for everything.
 - [x] **EQ-03 staff-count discrepancy (58 vs 39 in eq/products.md vs
-  active.md)** — Royce's steer was supervision/management likely wasn't being
-  counted consistently between the two snapshots; live-DB reconciliation
-  attempted but the Supabase query errored out mid-session (fetch failure) —
-  noted as unresolved in the audit tool, worth a follow-up SQL check against
-  `app_data.staff` on ehow rather than a guess.
+  active.md)** — Royce's steer (supervision/management counted
+  inconsistently) confirmed exactly via live query against ehow: 58 = all
+  Direct staff; 39 = Direct AND on_roster AND NOT supervisor. Both numbers
+  were correct, just measuring different subsets with no label. Fixed live
+  snapshot added to `eq/active.md` (PR #103). Also surfaced: site count
+  (591→250) and licence count (171→100) dropped substantially since the
+  06-13 snapshot — flagged, not investigated.
 - [x] **SKS-09 (two quote templates)** — confirmed deliberately separate, not
   duplicate/stale: `sks/templates.md`'s docx-js template is Royce's own
   full-document generator; `sks-team/quoting.md`'s SharePoint template is for
@@ -73,12 +75,40 @@ root README.md, and the CHAT-PROMPT.md freshness-check simplification from
 earlier in the session (Royce: "that's annoying, I just want a simple
 read-only prompt" — dropped the canary-token verification ritual).
 
+**Follow-up session (2026-07-19, same day) — 4 more PRs, plus a Cowork bug found by asking:**
+- [x] **Index-drift CI check shipped** (PR #101) — a GitHub Action that diffs
+  each tier README's file index against the real folder contents and fails
+  on mismatch. Directly prevents the "file exists but isn't linked anywhere"
+  failure class that caused the `ops/security-register.md` orphan above.
+  Cleared a 62-file backlog (mostly `eq/README.md`) to get it green.
+- [x] **3 of 4 duplicate changelog pairs resolved** (PR #102) —
+  `shell.md`/`service.md`/`cards.md` were genuinely abandoned (3-19 days
+  stale vs their `eq-*.md` twin, no concurrent activity) — each now carries
+  a "Superseded, use eq-*.md" banner rather than a content merge, to avoid
+  losing history. **`field.md`/`eq-field.md` deliberately NOT touched** —
+  investigation found both were being actively appended to on the same day,
+  not one-stale-one-current like the others; merging live-written files
+  risks clobbering a concurrent session's work. Needs Royce's call on which
+  stays canonical.
+- [x] **COWORK-PROMPT.md fixed** (PR #104) — was telling Cowork to fetch
+  `CLAUDE.md` via `raw.githubusercontent.com`, the exact CDN-cache mechanism
+  (F1) that served this file 8+ days stale with a 200 OK and no error, and
+  the reason CHAT-PROMPT.md was moved off that pattern earlier the same
+  session. CLAUDE.md's own §1 table already said Cowork should read the
+  local clone, same as Code — this file just never matched. Found only
+  because Royce asked "do we need to do anything for Cowork and Chat" —
+  worth remembering to check tool-bootstrap files specifically after any
+  fix to one of them, since they drift independently.
+
 **Needs Royce (open in the audit tool, not yet triaged):**
 - [ ] **SEC-1 remediation plan** — sks-nsw-labour confirmed still live, so
   the register's existing plan is stale. What should actually close this?
-- [ ] The remaining ~75 lower-severity findings (stale dates, duplicate
-  changelogs per product, missing frontmatter, minor cross-file drift) — sit
-  in the artifact for Royce to triage at his own pace, not urgent.
+  Explicitly parked this session (Royce: "ignore sks nsw labour for now").
+- [ ] **Field's changelog pair** — `field.md` vs `eq-field.md`, both live.
+  Which one should be canonical going forward?
+- [ ] The remaining ~70 lower-severity findings (stale dates, missing
+  frontmatter, minor cross-file drift) — sit in the artifact for Royce to
+  triage at his own pace, not urgent.
 
 **Artifact:** interactive triage tool, published — Royce has the link from
 earlier in the session (not repeated here since Artifact URLs are
