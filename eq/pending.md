@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-07-17
+last_updated: 2026-07-19
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -22,7 +22,9 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] Confirmed the live site picked up all three changes (checked the deployed version directly, not just that GitHub said "merged"). _(done 2026-07-19)_
 - [x] **Found a fourth gap the same day, from a separate eq-shell session** — restoring the six tables' database permission (bullet above) had a side effect nobody caught at the time: 3 of those 6 database views (prestarts, site diaries, toolbox talks) became readable by any signed-in account while still missing a separate protection that keeps row-level security enforced. Combined, that meant any signed-in user on any company account could potentially have read that content directly, bypassing the normal per-company restriction. An automated safety check caught it (it blocked an unrelated eq-shell change from merging because live security posture had regressed) rather than a person spotting it. Confirmed live, got Royce's go, fixed live on all 3, verified fixed. _(done 2026-07-19)_
 - [x] **eq-solves-service's matching work (the same kind of gap for two CMMS actions) — PR #551 MERGED 2026-07-17**, live. _(correction 2026-07-19: this line previously said open/unmerged — re-verified directly against GitHub, that was stale.)_
-- [x] **Repo-side record for the security_invoker fix now exists — eq-shell PR #899 OPEN** (migration 0187), all checks green, not yet merged/dispatched. The live database was already correct before this PR existed; #899 gives the fix a proper committed record instead of only a hand-applied one. _(added 2026-07-19)_
+- [x] **Repo-side record for the security_invoker fix — eq-shell PR #899 MERGED** (migration 0187, squash `758c6f6`), branch deleted. The live database was already correct before this PR existed; #899 gives the fix a proper committed record instead of only a hand-applied one. Re-verified live on ehow before merging (all 3 views confirmed fixed, no longer flagged by Supabase's own security advisor) and re-ran the stale automated safety check that had been blocking an unrelated PR (#897) so it would reflect the fix instead of the old failure. Royce gave the explicit merge instruction. _(done 2026-07-19)_
+- [x] **Checked whether the 3 views should also lose their public-read grant entirely, not just have row-level security restored — decided no, leave as is.** All 3 (plus 4 related views) are already on record as accepted, tracked technical debt for this exact reason — the database can't apply per-company row filtering directly to a view, so the filtering happens one layer down on the real table instead, which is what the security_invoker fix restores. Removing the read grant on just 3 of the 7 would create a new inconsistency, not fix one. _(done 2026-07-19)_
+- [ ] **Deferred: remove the legacy public-read grant across all 7 related views**, as one deliberate, scoped cleanup rather than piecemeal — only if Royce wants that extra hardening on top of the row-level-security fix already live. _(added 2026-07-19)_
 
 ---
 
