@@ -9,6 +9,10 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-19] Test-only: CI guard on the routing bypass that hid the 6-view grant gap (SHIPPED, #500, live)
+- New `tests/canonical-routing-guard.test.js` asserts `sks` stays in `ROSTER_CANONICAL_TENANTS`/`TIMESHEETS_CANONICAL_TENANTS`/`LEAVE_CANONICAL_TENANTS` and that `prestarts`/`toolbox_talks`/`site_diaries` stay in `JWT_INPLACE_TABLES` — the two routing layers that keep the #498 grant gap (below) from ever mattering in practice. If either is ever edited away, CI now fails loud instead of prod silently 403ing for SKS again.
+- No production code touched, no schema/migration change, no deploy risk.
+
 ## [2026-07-19] DB-only: restored `authenticated` grant on 6 app_data.field_* views on live ehow (SHIPPED, #498, live)
 - `field_schedule`/`field_timesheets`/`field_leave_requests`/`field_prestarts`/`field_toolbox_talks`/`field_site_diaries` had all silently lost their `authenticated` grant at some point after the `20260611_sks_canonical_field_sync.sql` migration created them with it present — likely a later `DROP`+recreate against the normalized tables that didn't carry the grants forward.
 - Investigated and confirmed **not currently live-breaking for SKS**: a later "Design B" canonical-adapter layer already routes real roster/timesheets/leave traffic around these exact views to base tables that do carry the grant (built independently, for a different reason, after the same failure class hit twice before per the adapters' own code comments). Still a primed landmine if that routing config ever changes, so fixed anyway — no app code/version bump, DB grants only.
