@@ -38,7 +38,8 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [ ] **Deferred: bigger first-load speedup** — breaking one large file into smaller pieces that only load when needed. Real win, but a bigger change that needs a hands-on check, not just automated tests. _(added 2026-07-19)_
 - [ ] **Deferred: extend the "you'll lose this" warning** to other forms — site details, invites, admin settings. Currently only on quotes. _(added 2026-07-19)_
 - [ ] **Deferred: make long lists load a page at a time** instead of everything at once (quotes, comms roster, staff, customers). _(added 2026-07-19)_
-- [ ] **Deferred, bigger decision: real offline capability** (works with no signal, not just faster with one) — recommended keeping that in EQ Field rather than building it into eq-shell, since Field is where genuinely offline field-work already lives. Not started, needs Royce's steer on scope before building. _(added 2026-07-19)_
+- [x] **Decided: real offline capability (works with no signal, not just faster with one) stays out of eq-shell.** Royce confirmed — that stays EQ Field's job, where genuinely offline field-work already lives; eq-shell's own offline ambition is capped at not losing in-progress work and telling the user plainly when they've lost signal, nothing more. _(done 2026-07-19)_
+- [ ] **Now in scope, not yet built: extend the "you'll lose this" warning to more forms** (site details, invites, admin settings — currently only quotes), a plain "you're offline" banner when the connection drops, and re-checking sign-in status automatically when someone comes back to a tab left open a while. _(added 2026-07-19)_
 
 ---
 
