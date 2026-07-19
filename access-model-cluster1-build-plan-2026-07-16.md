@@ -1,4 +1,15 @@
+---
+title: Access-model cluster 1 — sensitive-read split build plan
+owner: Royce Milmlow
+last_updated: 2026-07-16
+scope: 4-repo build plan for the cluster-1 sensitive-read permission split. Root scratch doc — see README.md "Root scratch docs".
+read_priority: reference
+status: live
+---
+
 # Access-model cluster 1 — sensitive-read split · 4-repo build plan
+
+**Note (2026-07-19):** this plan's own header below says "approved, not started" — per the same day's session logs, cluster 1 was actually designed, built, and shipped live the same day (2026-07-16, eq-shell PR #885). Treat this file as the historical plan, not current status.
 
 **Date:** 2026-07-16 · **Owner:** Royce · **Status:** approved, not started
 **Source:** the "feature levers" proposal + the `/sks/admin/access-control` visibility audit (2026-07-16)
