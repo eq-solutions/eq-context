@@ -1,13 +1,17 @@
 ---
 title: SKS — Pending
 owner: Royce Milmlow
-last_updated: 2026-07-16
+last_updated: 2026-07-19
 scope: SKS Technologies operational TODO list
 read_priority: critical
 status: live
 ---
 
 # SKS Pending
+
+## NSW Comms — dashboard, Patrick's demo follow-up, speed fix (2026-07-17/19)
+- [x] **New overview screen, a Microsoft-jobs pipeline view, a full-screen Monday-meeting display, and a "start by" warning on Microsoft jobs** (Patrick's request from the Melbourne demo — flags the latest safe start date for a job so it doesn't put the ~53-day PO-to-finish window at risk). **Also fixed a real slow-loading complaint** — the page was making 4 separate requests at once on open; now 2. Full detail in `eq/pending.md`. _(done 2026-07-19)_
+- [ ] **Still needed: who should receive the weekly NSW Comms summary email?** Built, just needs a recipient list before it's switched on. _(added 2026-07-17)_
 
 ## Live security gap on SKS's database found + fixed same day (2026-07-19)
 - [x] **A safety check protecting SKS's database caught a real gap and blocked an unrelated merge until it was fixed.** Restoring a permission on SKS's database earlier the same day (see `eq/pending.md`, "EQ Field — closed the server-side permission gap") had a side effect: 3 database views (prestart forms, toolbox talks, site diaries) became readable by any signed-in account while still missing a separate protection — meaning any signed-in user, any company, could potentially have read that content directly. Confirmed live, got Royce's go, fixed live on all 3, verified. Full detail in `eq/pending.md`. _(done 2026-07-19)_
