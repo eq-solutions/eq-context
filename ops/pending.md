@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-07-12
+last_updated: 2026-07-19
 scope: Operational support to-do list — Webb, infra, substrate
 read_priority: standard
 status: live
@@ -11,6 +11,78 @@ status: live
 
 EQ items in `eq/pending.md`. SKS items in `sks/pending.md`. This file is
 for operational support: tax, entities, infrastructure, substrate.
+
+---
+
+## Full substrate audit — 95 findings across the whole eq-context repo (2026-07-19)
+
+Royce asked for a deep-dive, full review of the substrate ("spend the time now
+then we can trust our truth") after a Chat-sync friction session surfaced a
+CLAUDE.md §9 fact-duplication bug. Five parallel read-only audits (system/,
+eq/, sks/, ops+rules/, root+archive) found 95 distinct issues — stale facts,
+cross-file contradictions, broken pointers, duplicate/forked files, missing
+frontmatter. Built as an interactive triage tool (published Artifact,
+localStorage-backed status + notes per finding, export to markdown) rather
+than a flat list, since 95 items needs sorting/filtering to be usable.
+
+**Findings that turned out to be real incidents, not just doc drift:**
+- [x] `rules/non-negotiables.md` had been **silently truncated** by a
+  2026-05-30 commit — rule 21 (HHT CGT) and rule 22 (MIS risk / AHD must use
+  retained earnings, not pooled contributions) were deleted; rule 22's content
+  existed nowhere else live. Unenforced for 7 weeks, never caught. **Restored
+  (PR #97).**
+- [x] `ops/security-register.md` (carries the SEC-1 P0 PII-leak finding) was
+  **orphaned** — not linked from `ops/README.md` or `CLAUDE.md` §8, so a normal
+  session bootstrap would never surface it. **Linked into both maps (PR #97).**
+  SEC-1 itself is **NOT closed** — Royce confirmed sks-nsw-labour is still
+  live, so the "fix at decommission" plan the register assumed is stale. Needs
+  a fresh remediation call from Royce — see "Needs Royce" below.
+- [x] `digest.md`/`substrate-facts.yml` were flagging **eq.solutions as a live
+  drift** (claimed LIVE, observed DEAD). Resolved — Royce confirmed it's
+  intentionally paused while working through SKS's employer adopting the
+  software, to avoid drama mid-discussion. **PR #96** sets `status: paused` so
+  the checker stops false-alarming; flip back to `live` when the site returns.
+
+**Royce's judgment calls, applied:**
+- [x] **sks-nsw-labour is still actively developed, no retirement date set** —
+  corrected `sks/README.md`/`sks/products.md`, which wrongly called it
+  frozen/decommissioning (PR #98).
+- [x] **Full-auto EQ merge+deploy authority (2026-05-30 ADR) has lapsed** now
+  that the Autonomous Sprint coordination mode is retired — ADR marked
+  Superseded, the sprint-scope carve-out struck from `rules/non-negotiables.md`
+  (PR #97). Back to explicit-instruction-required for everything.
+- [x] **EQ-03 staff-count discrepancy (58 vs 39 in eq/products.md vs
+  active.md)** — Royce's steer was supervision/management likely wasn't being
+  counted consistently between the two snapshots; live-DB reconciliation
+  attempted but the Supabase query errored out mid-session (fetch failure) —
+  noted as unresolved in the audit tool, worth a follow-up SQL check against
+  `app_data.staff` on ehow rather than a guess.
+- [x] **SKS-09 (two quote templates)** — confirmed deliberately separate, not
+  duplicate/stale: `sks/templates.md`'s docx-js template is Royce's own
+  full-document generator; `sks-team/quoting.md`'s SharePoint template is for
+  the wider team, AI produces paste-in text blocks only. Cross-noted in both
+  files, not a fix.
+
+**Shipped:** PRs #94–#100, all merged to `main`. Fixed: circular §9 pointer
+(CLAUDE.md ⇄ eq/products.md), a punch-list item instructing deploy to a
+deleted Fly.io app, two plan docs that said "not started"/"PR open" for work
+that actually shipped/merged weeks ago, a dead-Supabase-table SQL instruction
+in `system/onboarding.md`, several incomplete file indexes (archive/README.md,
+system/README.md, eq/README.md, ops/README.md), a dead workflow reference in
+root README.md, and the CHAT-PROMPT.md freshness-check simplification from
+earlier in the session (Royce: "that's annoying, I just want a simple
+read-only prompt" — dropped the canary-token verification ritual).
+
+**Needs Royce (open in the audit tool, not yet triaged):**
+- [ ] **SEC-1 remediation plan** — sks-nsw-labour confirmed still live, so
+  the register's existing plan is stale. What should actually close this?
+- [ ] The remaining ~75 lower-severity findings (stale dates, duplicate
+  changelogs per product, missing frontmatter, minor cross-file drift) — sit
+  in the artifact for Royce to triage at his own pace, not urgent.
+
+**Artifact:** interactive triage tool, published — Royce has the link from
+earlier in the session (not repeated here since Artifact URLs are
+account-scoped, not fetchable from a fresh session).
 
 ---
 
