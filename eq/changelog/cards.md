@@ -1,9 +1,15 @@
 ---
 title: EQ Cards — Changelog
 owner: Royce Milmlow
+last_updated: 2026-06-30
+scope: Append-only history of changes to EQ Cards through 2026-06-30. Superseded by eq-cards.md going forward — see banner below.
 read_priority: reference
 status: live
 ---
+
+> **Superseded 2026-07-19.** This file's last entry is 2026-06-30; `eq-cards.md`
+> has been the actively-maintained EQ Cards changelog since, and is current.
+> Kept here for history — don't append to this file, use `eq-cards.md`.
 
 # EQ Cards — Changelog
 

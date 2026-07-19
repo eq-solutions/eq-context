@@ -1,12 +1,15 @@
 ---
 title: Changelog — EQ Shell
 owner: Royce Milmlow
-last_updated: 2026-07-08
-scope: Append-only history of changes to EQ Shell (core.eq.solutions)
+last_updated: 2026-07-12
+scope: Append-only history of changes to EQ Shell through 2026-07-14. Superseded by eq-shell.md going forward — see banner below.
 read_priority: reference
 status: live
-last_updated: 2026-07-12
 ---
+
+> **Superseded 2026-07-19.** This file's last entry is 2026-07-14; `eq-shell.md`
+> has been the actively-maintained EQ Shell changelog since, and is current.
+> Kept here for history — don't append to this file, use `eq-shell.md`.
 
 # Changelog — EQ Shell
 
