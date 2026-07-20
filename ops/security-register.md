@@ -1,8 +1,8 @@
 ---
 title: OPS — Security Register
 owner: Royce Milmlow
-last_updated: 2026-07-16
-scope: Single tracked register of open security findings across the EQ/SKS Supabase surface — advisor output + live probes + known P0s
+last_updated: 2026-07-20
+scope: Single tracked register of open security findings across the EQ/SKS Supabase surface — advisor output + live probes + known P0s. This is the ONLY security-register.md in the repo — a same-named file mentioned in eq/pending.md lives in a local scratchpad/ folder for an unrelated Trust-page/SOC2 draft, not tracked in git.
 read_priority: critical
 status: live
 ---

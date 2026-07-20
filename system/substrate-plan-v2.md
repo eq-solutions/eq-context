@@ -3,7 +3,7 @@ title: The Notebook That Tells the Truth — Substrate Plan v2
 owner: royce (pending confirmation — this file is `asserted` until he adopts it)
 type: asserted
 asserted_on: 2026-07-12
-last_updated: 2026-07-12
+last_updated: 2026-07-20
 scope: Proposed programme to make the EQ substrate self-verifying — facts close against the live DB, guards against escaped failures, goals against Royce
 read_priority: standard
 expires_on: 2026-08-12
@@ -35,7 +35,7 @@ On its last page the notebook kept a list titled **"Things I still cannot see."*
 ## Ground verified before writing (2026-07-12, live SQL on ehow)
 
 - `app_data.maintenance_checks`: **16 created** (14 scheduled, 1 cancelled, 1 overdue — latest created today), **0 completed, ever**. TODAY.md's cached "14" already lags by two. The table is a cache; the query is the source. Stated as a fact, not a priority — goals are UNSET.
-- **A live F5, found this session:** the global `~/.claude/CLAUDE.md` auto-loaded into every Cowork session still instructs *"Fetch and read raw.githubusercontent.com/.../CLAUDE.md"* — the exact read path that served 8–12-day-stale content on 2026-07-11 (F1). Only the pasted brief overrode it. F5 is not historical. It is running right now.
+- ~~**A live F5, found this session:** the global `~/.claude/CLAUDE.md`...~~ **RESOLVED, re-checked 2026-07-20** — `C:\Users\EQ\.claude\CLAUDE.md` no longer contains any `raw.githubusercontent.com` instruction. Fixed at some point after this note was written; kept struck-through rather than deleted since it documents a real historical bug. The same class of bug was independently found and fixed in `COWORK-PROMPT.md` and `AGENTS.md` on 2026-07-19/20 — worth checking any *other* tool-bootstrap file for the same pattern before assuming it's fully closed.
 
 ## Design rules (one per oracle)
 
@@ -74,6 +74,8 @@ The two ungoverned pointer files are actively routing agents to the path that li
 ---
 
 ## Phase 2 — Truth: the claims ledger *(2 agent-days)*
+
+**Note (2026-07-20):** a lighter-weight version of claim-expiry already shipped and is live at rung 3 — `claim-expiry.yml` + `scripts/claim_expiry.py`, scoped to `TODAY.md`'s goals only (see `ops/pending.md` 2026-07-12, `system/failures.md` F3). This Phase 2 is the *generalized* version — a full typed ledger covering every load-bearing claim across the substrate, not just goals — not the first guard of this kind.
 
 One machine-owned file, `system/claims.yml`. Every load-bearing claim:
 

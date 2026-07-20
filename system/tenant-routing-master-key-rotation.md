@@ -1,11 +1,18 @@
 ---
 title: SECURITY — TENANT_ROUTING_MASTER_KEY rotation runbook
 owner: Royce Milmlow
-last_updated: 2026-06-09
+last_updated: 2026-07-20
 scope: AES-256-GCM master key for tenant service-role key encryption — prerequisites, re-encryption procedure, rollback, emergency path
 read_priority: reference
 status: live
 ---
+
+> **Not re-reviewed since the 2026-07-16 `favour-perfect` incident** (see `suite-state.md`
+> Key Decisions) — that tenant's `shell_control.tenant_routing` row is now `suspended`
+> after its Supabase project was deleted mid-flight. This runbook doesn't model a
+> `suspended` row anywhere below. Flagging the gap explicitly rather than asserting the
+> procedure still holds — Royce to confirm before relying on this runbook if a rotation
+> is ever needed while any tenant sits in a non-`active` routing state.
 
 # SECURITY — TENANT_ROUTING_MASTER_KEY rotation runbook
 

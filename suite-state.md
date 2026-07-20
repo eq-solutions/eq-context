@@ -1,7 +1,7 @@
 ---
 title: EQ Suite — Current State
 owner: Royce Milmlow
-last_updated: 2026-07-13
+last_updated: 2026-07-20
 scope: Live suite state — app lineup, DB counts, open PRs, architectural decisions. Auto-refreshed nightly by GitHub Action.
 read_priority: critical
 status: live
@@ -19,7 +19,7 @@ _If this file is >48h old, the cron is broken._
 |-----|--------|------|-----|-------|
 | EQ Shell | Live | eq-shell | core.eq.solutions | Auth hub, canonical owner, EQ Ops lives here |
 | EQ Service | Live | eq-solves-service | eq-solves-service.netlify.app | CMMS — maintenance, defects, reports |
-| EQ Field | Live (demo) | eq-field | eq-solves-field.netlify.app | Resources, dispatch, labour hire |
+| EQ Field | Live (SKS prod) / demo (EQ tenant) | eq-field | field.eq.solutions | Resources, dispatch, labour hire. `eq-solves-field.netlify.app` is dead since mid-2026 — use `field.eq.solutions` or the `core.eq.solutions/sks/field` Shell embed. |
 | EQ Cards | Live | eq-cards | — | Onboarding intake — Phase 1 live, taking real self-signup/claim traffic |
 | EQ Intake | In build | eq-solves-intake | — | Parse/emit engine behind Cards |
 | EQ Ops | Active dev | eq-shell | core.eq.solutions/ops | Operational dashboards — REPLACING Quotes |

@@ -73,7 +73,7 @@ failures:
     recurrences: 1
     rung: 0
     target_rung: 3
-    guard: "none -> product signals in digest.md (rung 3), framed as TRANSITIONS not thresholds"
+    guard: "PLANNED, NOT YET BUILT -> product signals in digest.md (rung 3), framed as TRANSITIONS not thresholds"
     detected_by: "human — an ad-hoc live SQL query; corrected 2026-07-12 by a second, due-date-aware query"
     cost: "REAL GAP: zero monitoring of any product signal. But the alarm that surfaced it — '14/16 created, 0 ever completed, the core workflow has never worked' — was OVER-READ. Verified live 2026-07-12: of 16 checks, 10 are live and ALL future-dated (earliest due 2026-08-06; 8 are RCD compliance seeds due 2027); the only past-due rows are soft-deleted; nothing has even been started. 0 completions is a young, forward-scheduled system, not a broken completion path."
     note: "The lesson doubled. (1) Nothing watched the product — still true, still rung 0. (2) The very first metric used to raise the alarm was un-verified against due-dates — the exact 'verified falsehood' the plan (residual risk #1) calls its floor. Mitigation: the pulse must watch TRANSITIONS (did the 2026-08-06 check complete WHEN DUE?), never a pre-due backlog. Real soft signals to watch instead of the completion count: prestarts stalled (30, last 07-04), safety modules at 0, 31 non-Royce writes/14d, last_login_at never written."

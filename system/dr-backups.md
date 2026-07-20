@@ -54,7 +54,7 @@ Status above for armed state).
 | **ehow** (sks-canonical) | `ehowgjardagevnrluult` | Shared prod: `service.*`, `app_data.*` (241 sites / 41 customers), **6 storage buckets** | **Yes** — crown-jewel shared DB | **1 ✓** |
 | **eq-canonical** | `jvknxcmbtrfnxfrwfimn` | Shell identity/control plane: **50 `auth.users`**, `shell_control` (29 tables — tenants/memberships, ~2 454 token-mint audit rows), `public` (18), `app_data` (2); **6 buckets / 213 objects** | **Yes** — irreplaceable identity plane | **2 ✓** |
 | **eq-canonical-internal** | `zaapmfdkgedqupfjtchl` | Tenant data plane: `app_data` (**104 tables** — 500 schedule entries, 323 tenders, timesheets, customers, sites), `public` (39), `service` (3); **2 buckets / 0 objects**; **0 `auth.users`** | **Yes** — real operational data | **2 ✓** |
-| eq-tenant-favour-perfect | `jzjzpgaablnppoimdnip` | **Empty** — system migrations only (created 2026-07-03) | No — nothing to lose yet; Supabase daily suffices | Watch |
+| ~~eq-tenant-favour-perfect~~ | `jzjzpgaablnppoimdnip` | **DELETED** — the Supabase project itself was deleted; the `favour-perfect` tenant's `shell_control.tenant_routing` row is now `suspended` (2026-07-16 incident, see suite-state.md Key Decisions). Nothing left to back up. | No — project gone | Retired |
 | sks-labour | `nspbmirochztcjijmcrx` | SKS entity app DB | **Out of scope** — SKS owns its DR; never cross-entity. (Also retiring.) | — |
 
 > Note: issue #60 listed a 6th project, `vjvamvfpbwcqfudousmg` ("EQ Context"). It exists but
@@ -229,8 +229,7 @@ moved to `--use-copy`.
 
 ## Follow-ups (not in this change)
 
-- **eq-tenant-favour-perfect** (`jzjzpgaablnppoimdnip`) — empty today; add a job (same template,
-  parameterised) if/when it takes real data. On the Watch list.
+- ~~**eq-tenant-favour-perfect**~~ — RETIRED 2026-07-20. The project was deleted (2026-07-16 incident); nothing to add a job for.
 - **Immediate, orthogonal:** eq-service's own `SUPABASE_DB_URL` (env `production-ops`) still points
   at the deleted `urjh` pooler host; repoint to ehow if you want the old job alive during cutover.
   Royce owns this secret. Once eq-context is green, the eq-service job is retired regardless.

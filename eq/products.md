@@ -17,17 +17,16 @@ in their own section at the bottom of this file — see there, not
 
 ## EQ Solves — Field (LEAD MODULE)
 
-> **This section is stale — last touched 2026-06-13, version pinned at v3.5.125.**
-> `eq/changelog/field.md` and `eq/pending.md` show Field at **v3.5.331** as of
-> 2026-07-15 (200+ releases and 34 days of shipped work: Site Audits,
-> Apprentices module, Acknowledgments, Pipeline archive/delete, sample-data
-> demo mode, calibration surface — unreflected below). Full status refresh is
-> a separate follow-up; flagged, not done in this pass. Two facts below are
-> corrected as of 2026-07-16: the SKS staff count, and the netlify.app URL's
-> actual status (see suite-state.md, which still lists it as the live/demo
-> URL — that entry needs a generator-level fix, not a hand-edit here).
+> **Version number fixed 2026-07-20 (was pinned at v3.5.125 since 2026-06-13).** The
+> narrative below this line is still the 2026-06-13 write-up and doesn't reflect ~34
+> days of shipped work (Site Audits, Apprentices module, Acknowledgments, Pipeline
+> archive/delete, sample-data demo mode, calibration surface) — a full status refresh
+> is a separate follow-up, flagged not done. Two facts below are corrected as of
+> 2026-07-16: the SKS staff count, and the netlify.app URL's actual status (see
+> suite-state.md, which still lists it as the live/demo URL — that entry needs a
+> generator-level fix, not a hand-edit here).
 
-**Status:** Live. Current version **v3.5.125 (STALE — see banner above, actually v3.5.331 as of 2026-07-15)**. SKS Field active on ehow. v8 design pass complete 2026-06-09 (all 14 screens + Shell warmup). Security sprint complete 2026-06-09. Shell SSO fixed 2026-06-10 (eq-shell PR #306). SKS canonical DB full JWT coverage 2026-06-11 (PR #267 — 591 sites; the "58 staff" figure from that PR is stale — **verified live 2026-07-16: 39 on-roster non-supervisor Direct staff** + 18 Labour Hire + 18 supervisors (10 off-roster, 8 on-roster) + 10 Apprentices = 88 active total. The 58→39 discrepancy Royce flagged was exactly a supervision/management counting difference, confirmed against ehow). EQ Service iframe loading fixed 2026-06-13 (eq-shell PR #334, 12s → 4s). Multi-tenant via DATA_JWT_ENABLED + per-tenant Supabase JWT.
+**Status:** Live. Current version **v3.5.331** (verified 2026-07-20 against eq/changelog/field.md — check that file for the latest, this number will drift again without a live regeneration mechanism). SKS Field active on ehow. v8 design pass complete 2026-06-09 (all 14 screens + Shell warmup). Security sprint complete 2026-06-09. Shell SSO fixed 2026-06-10 (eq-shell PR #306). SKS canonical DB full JWT coverage 2026-06-11 (PR #267 — 591 sites; the "58 staff" figure from that PR is stale — **verified live 2026-07-16: 39 on-roster non-supervisor Direct staff** + 18 Labour Hire + 18 supervisors (10 off-roster, 8 on-roster) + 10 Apprentices = 88 active total. The 58→39 discrepancy Royce flagged was exactly a supervision/management counting difference, confirmed against ehow). EQ Service iframe loading fixed 2026-06-13 (eq-shell PR #334, 12s → 4s). Multi-tenant via DATA_JWT_ENABLED + per-tenant Supabase JWT.
 **URL:** field.eq.solutions (live) / core.eq.solutions/sks/field (SKS prod via Shell)
 **Repo:** eq-solutions/eq-field (private)
 **Working file:** index.html
@@ -35,8 +34,7 @@ in their own section at the bottom of this file — see there, not
 **Supabase:** EQ live = `zaapmfdkgedqupfjtchl` (eq-canonical-internal/zaap). SKS live = `ehowgjardagevnrluult` (ehow). Old `ktmjmdzqrogauaevbktn` = cold backup (do not write).
 **Deploy:** GitHub push → Netlify auto (main branch → field.eq.solutions). eq-solves-field.netlify.app is dead since mid-2026 — **suite-state.md's Apps table still lists it as the live/demo URL; that's generated, needs a source-data fix, not covered in this pass.**
 
-**Strategic priority:** Lead module. Built for ourselves (SKS NSW) —
-no outside-validation gate (killed 2026-06-02).
+**Strategic priority:** Lead module — see `eq/README.md` "Strategic focus" for the full rationale (built for ourselves, trust-ladder sequencing, GTM gate killed 2026-06-02).
 
 **Site Reports sub-module (v3.4.69+, demo only):**
 - THREE workflows shipped on demo (was two): Prestart, Toolbox, Diary. All under "Testing (DO NOT USE)" sidebar section with BETA chips.
@@ -211,12 +209,7 @@ critique synthesis — deferred to Phase 2 resumption):
 Full list in `eq/pending.md` "EQ Shell + EQ Intake" section. Real,
 not stale — deferred, not dropped.
 
-**Strategic priority:** Phase 2 sequenced by the trust ladder + Royce's
-go (GTM gate killed 2026-06-02). The
-strategic question per ChatGPT critique (2026-05-20 part-d) is
-whether EQ Shell is acknowledged as a platform-tier product (with
-SLOs, oncall, dedicated headcount) or remains solo-maintained. Not a
-Phase 2 question — a tier-of-company question.
+**Strategic priority:** Phase 2 sequencing rationale — see `eq/README.md`. Shell-specific question per ChatGPT critique (2026-05-20 part-d), unresolved: whether EQ Shell is acknowledged as a platform-tier product (with SLOs, oncall, dedicated headcount) or remains solo-maintained. Not a Phase 2 question — a tier-of-company question.
 
 **Pending:**
 - [ ] Phase 2 module sequencing per the trust ladder + Royce's go

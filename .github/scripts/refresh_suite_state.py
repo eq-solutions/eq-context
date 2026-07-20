@@ -197,6 +197,15 @@ content = re.sub(
     content,
 )
 
+# 7a-2. Frontmatter last_updated — was never bumped, only the body line above was,
+# so the YAML header silently drifted behind the file's own "Last verified" stamp.
+content = re.sub(
+    r"(?m)^last_updated: \d{4}-\d{2}-\d{2}$",
+    f"last_updated: {TODAY}",
+    content,
+    count=1,
+)
+
 # 7b. Counts table
 def fmt(v):
     return f"{v:,}" if isinstance(v, int) else str(v)

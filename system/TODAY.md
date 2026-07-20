@@ -1,7 +1,7 @@
 ---
 title: TODAY — Focus Filter
 owner: Royce Milmlow
-last_updated: 2026-07-12
+last_updated: 2026-07-20
 scope: The filter for every Claude session decision. Facts are machine-verified. Goals are human-owned and currently UNSET.
 read_priority: critical
 status: live
@@ -47,26 +47,27 @@ claims: []
 
 ---
 
-## FACTS — `type: verified` · `verify: sql` · read from live DB 2026-07-11
+## FACTS — `type: verified` · `verify: sql` · read from live DB 2026-07-20
 
 These are **not** assertions. They are direct reads of ehow (`ehowgjardagevnrluult`) and eq-canonical (`jvknxcmbtrfnxfrwfimn`). Re-verify before quoting — the query is the source, this table is a cache.
 
 | Signal | Verified value | Note |
 |---|---|---|
-| **Maintenance checks** | **16 created · 10 live · 0 completed** | Re-verified 2026-07-12 against due-dates. All 10 live checks are **future-dated** (earliest due 2026-08-06; 8 are RCD compliance seeds due 2027). 6 are soft-deleted. **0 completed = nothing has come due, NOT a broken workflow.** First real completion signal: **2026-08-06**. |
-| `defects` · `asset_defects` · `test_records` · `service_visits` · `toolbox_talks` · `site_audits` | **0** | all zero |
-| `prestarts` | 30 | last 2026-07-04 — stalled |
-| `job_notes` | 309 | last 2026-07-10 — healthy |
-| **Named SKS staff signing in** (21d) | **~10+** | matthew.miller, luke.wheeler, collin.toohey, william.brown, zemi.asri, huon.henne, scott.hotson, simon.bramall, calum@ssw. **Logins are real.** |
-| **Human writes, 14d** | **Royce 507 (94%)** · simon.bramall 23 · unresolved 7 · scott.hotson 1 | **31 non-Royce writes in two weeks.** |
-| Automated writes, 14d | 2,494 (`source='system'`) | **Exclude from every adoption metric or you will flatter yourself.** |
-| `service.profiles.last_login_at` | NULL, all 5 rows | Written only by the **retired** standalone signin. Shell SSO never writes it. **Adoption is currently unmeasurable.** |
+| **Maintenance checks** | **24 created · 18 live · 0 completed** | Re-verified 2026-07-20 (previous read 2026-07-12 showed 16/10/0). 15 scheduled, 2 in_progress, 1 cancelled. **One check is now overdue and in progress** — `kind='nsx'`, due 2026-06-30, status `in_progress`, not completed. Not investigated further this pass — worth a look if it's still open next check. Still 0 completed overall. |
+| `defects` · `asset_defects` · `test_records` | **0** | Re-verified 2026-07-20, still all zero. |
+| `toolbox_talks` · `site_audits` | **0** | Not re-verified this pass — carried from 2026-07-12 read. |
+| `prestarts` | 34 | last 2026-07-16 (was 30, last 2026-07-04) — some movement, still infrequent. |
+| `job_notes` | 391 | last 2026-07-20 — healthy, active. |
+| **Named SKS staff signing in** (21d) | *not re-verified this pass* | Carried from 2026-07-12 read (~10+ named logins) — the query used a column name (`actor_email`) that no longer matches the live schema; needs a fresh query written against the current `audit_log` columns before re-quoting. |
+| **Human writes, 14d** | *not re-verified this pass* | Same schema mismatch as above — don't quote the old 507/23/7/1 breakdown as current. |
+| Automated writes, 14d | *not re-verified this pass* | Same. |
+| `service.profiles.last_login_at` | *not re-verified this pass* | Carried from 2026-07-12 (NULL, all 5 rows) — plausible still true (Shell SSO's write path hasn't changed that anyone's logged), but not re-queried. |
 
 ### What the facts say — without a goal to filter them through
 
 **Correction (2026-07-12): the earlier alarm was over-read.** The first cut of this file said *"people show up and cannot finish work — a completion-path problem, unambiguously bad."* A live check of due-dates shows that was wrong: nothing has been completed because **nothing has come due.** Every live check is scheduled for 2026-08-06 or later; 8 are 2027 RCD compliance seeds; nothing has even been *started*. That is a young, forward-scheduled system, not a broken one. Logged as the correction to failure **F4** — the metric used to raise the alarm was itself un-verified against reality, the exact "verified falsehood" the plan calls its floor.
 
-**What IS genuinely open** (soft signals, not a crisis, stated as facts not priorities): whether NSW is capturing *near-term* operational work at all — `prestarts` stalled at 30 (last 2026-07-04), safety modules at 0, only 31 non-Royce human writes in 14 days, and adoption itself unmeasurable because `last_login_at` is never written by Shell SSO. These are worth **watching** (the product pulse), not **alarming** about. The next moment that matters: **2026-08-06** — does the first due check get completed?
+**Update (2026-07-20):** that framing needs one adjustment, not a reversal — one check (`nsx`, due 2026-06-30) is now overdue and marked `in_progress`, the first sign of the "first due check" moment the 07-12 note said to watch for. Still 0 completions overall; still not a broken-workflow signal, just the first real data point since the seed. **What IS genuinely open** (soft signals, not a crisis, stated as facts not priorities): whether NSW is capturing *near-term* operational work at all — `prestarts` still infrequent (34 total, last 07-16), safety modules still at 0, and the login/write breakdown needs a fresh query (see table above) before it can be quoted again. These are worth **watching** (the product pulse), not **alarming** about.
 
 ---
 

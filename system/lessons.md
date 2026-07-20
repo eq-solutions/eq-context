@@ -354,7 +354,7 @@ After the fix: pre-commit bumps dates before each commit, the bot finds nothing 
 
 **Why it matters:** A pre-commit hook that silently doesn't run is worse than no hook at all — you think the guard is in place and it isn't. The tell was the bot's auto-bump commits appearing on every push. Any time you see the bot fighting your pushes, check `git config core.hooksPath` before diagnosing the bot itself.
 
-**Note (2026-07-12):** `auto-bump-frontmatter.yml` — the bot referenced above — was itself retired 2026-07-12 (it was manufacturing false freshness; see `system/failures.md` F3). This entry is kept for the `core.hooksPath` gotcha, which remains true independent of that bot's removal.
+**Note (2026-07-12):** `auto-bump-frontmatter.yml` — the bot referenced above — was itself retired 2026-07-12 (it was manufacturing false freshness; see `system/failures.md` F3). This entry is kept for the `core.hooksPath` gotcha, which remains true independent of that bot's removal. **Practical effect:** dates across the substrate are honest again post-retirement, so expect more files to show real, unmasked staleness at once than you'd have seen while the bot was faking freshness — that's the system working correctly, not new drift.
 
 ---
 
