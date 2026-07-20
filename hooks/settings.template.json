@@ -9,6 +9,9 @@
         "matcher": "Edit|Write|MultiEdit|NotebookEdit|Bash",
         "hooks": [ { "type": "command", "command": "python C:\\Projects\\eq-context\\hooks\\pre_tool_use.py" } ]
       }
+    ],
+    "Stop": [
+      { "hooks": [ { "type": "command", "command": "python C:\\Projects\\eq-context\\hooks\\session_end.py" } ] }
     ]
   }
 }

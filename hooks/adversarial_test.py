@@ -8,11 +8,12 @@ The system's own history becomes its test corpus. This is the part that compound
 
 Run:  python hooks/adversarial_test.py
 """
-import json, os, subprocess, sys
+import json, os, shutil, subprocess, sys, tempfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 HOOK = os.path.join(ROOT, "hooks", "pre_tool_use.py")
 GATE = os.path.join(ROOT, "hooks", "session_start.py")
+END_GATE = os.path.join(ROOT, "hooks", "session_end.py")
 CLAUDE_MD = os.path.join(ROOT, "CLAUDE.md")
 LESSONS = os.path.join(ROOT, "system", "lessons.md")
 SHORT = os.path.join(ROOT, "hooks", "README.md")
@@ -79,6 +80,61 @@ for label, key in [("gate reports freshness", "FRESHNESS"),
     print("  {:<52}{}".format(label, "PASS" if ok else "*** FAIL ***"))
     passed += ok
     failed += (not ok)
+
+print("=== SESSION END GATE — Stop hook must speak on dirty state, stay quiet clean, never block ===")
+
+
+def fixture_repo(dirty):
+    """A throwaway git repo so the Stop-hook test doesn't depend on live ROOT state.
+
+    'Clean' means genuinely closed out per Section 10 — main branch, today's
+    session log committed — not just "has no changes", so the quiet-path
+    assertion actually exercises all three checks landing negative.
+    """
+    import datetime
+    d = tempfile.mkdtemp(prefix="eq_end_gate_")
+    run = lambda *a: subprocess.run(["git", *a], cwd=d, capture_output=True, text=True)
+    run("init", "-q", "-b", "main")
+    run("config", "user.email", "test@example.com")
+    run("config", "user.name", "test")
+    os.makedirs(os.path.join(d, "sessions"), exist_ok=True)
+    today = datetime.date.today().isoformat()
+    with open(os.path.join(d, "sessions", f"{today}.md"), "w") as fh:
+        fh.write("seed session log\n")
+    run("add", "-A")
+    run("commit", "-q", "-m", "seed")
+    if dirty:
+        with open(os.path.join(d, "f.md"), "w") as fh:
+            fh.write("uncommitted change\n")
+    return d
+
+
+def run_end_gate(root):
+    p = subprocess.run([sys.executable, END_GATE], capture_output=True, text=True,
+                       env=dict(os.environ, EQ_CONTEXT=root))
+    return p.returncode, p.stdout
+
+
+for label, dirty_flag, want_marker in [
+    ("dirty fixture reports DIRTY", True, "DIRTY"),
+    ("clean fixture stays quiet", False, None),
+]:
+    d = fixture_repo(dirty_flag)
+    try:
+        code, out = run_end_gate(d)
+        ok = code == 0 and ((want_marker in out) if want_marker else out.strip() == "")
+        print("  {:<52}{}".format(label, "PASS" if ok else "*** FAIL *** (exit {}, out: {!r})".format(code, out[:200])))
+        passed += ok
+        failed += (not ok)
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+
+# Never blocks, even against the live repo (whatever state it's in right now).
+code, _ = run_end_gate(ROOT)
+ok = code == 0
+print("  {:<52}{}".format("end gate never blocks Stop (exit 0)", "PASS" if ok else "*** FAIL *** (exit {})".format(code)))
+passed += ok
+failed += (not ok)
 
 print()
 print("  {} passed, {} failed".format(passed, failed))
