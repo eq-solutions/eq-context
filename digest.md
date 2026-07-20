@@ -8,13 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-20 13:56 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-20 19:16 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## ⚠ Needs you (3)
+## Since last refresh (2026-07-20 13:56 UTC → 2026-07-20 19:16 UTC)
+
+- ⚠ Needs you: 3 → 4 (new items)
+
+## ⚠ Needs you (4)
 
 - 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-9 (P0 — confirmed exposure, same window as SEC-3) — A different service_role key (`jvkn`/eq-canonical) was pasted directly into a ch · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-10 (P0 — confirmed exposure) — `ANTHROPIC_API_KEY` + `RESEND_API_KEY` stored as plaintext Netlify env vars (`is · [security-register.md](ops/security-register.md)
+- 🔴 **Guard bypass? rung 4** — F1: Substrate read path served 8-12 day stale content, 200 OK, no error · possibly recurred in [2026-07-19.md](sessions/2026-07-19.md) · [failures.md](system/failures.md)
 
 ## Pulse
 
@@ -55,6 +60,9 @@ _7 merges · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **The rest of that audit's recommended fixes still await your decision:** whether the account-deletion feature should actually delete data (it currently just blanks it out) or the privacy policy wording should change instead; adding a way to revoke a licence link once it's been shared; and adding a simple "how sure are we this credential is real" label to licences. Full detail in the audit doc (`eq-context/eq/cards/portable-trade-identity-audit-2026-07-20.md`). _(added 2026-07-21)_
+- **Field's mobile-improvement sprint (PRs #486–#489, v3.5.326–329) has no changelog entry.** Real shipped work, but written as plain descriptive bullets rather than checked-off items, so the dedup pass correctly left it alone rather than guess. Worth a manual changelog entry if you want it on record. _(added 2026-07-20)_
+- **~250 bullets across the 5 products were deliberately left in this file** — ambiguous product ownership, investigation-only findings with no shipped fix, or genuinely cross-cutting content. Not a backlog in the usual sense; full per-product breakdown is in today's session log. _(added 2026-07-20)_
 - **Whether to actually build the "QR code for on-site sign-in" feature, or drop it for good.** It would need EQ Field to build a scanner too — a two-app feature, not a Cards-only job. Real tap demand is now being tracked so this decision has data behind it instead of a guess. _(added 2026-07-20)_
 - **Why roughly a third of Shell-embedded sign-ins don't cleanly land in the wallet — now measured, not yet fixed.** The likely fix touches EQ Shell's side of the handshake too, and it's part of the sign-in flow, so it needs a deliberate decision rather than a quiet patch. _(added 2026-07-20)_
 - **A longer list of smaller polish items from the same audit, not yet actioned:** inconsistent colours/spacing in a couple of screens, a few screens that don't resize well on a desktop browser, some smaller error-handling gaps, and roughly half the app's features have no automated tests at all. Lower urgency than what got fixed this session. _(added 2026-07-20)_
@@ -62,10 +70,7 @@ _7 merges · full record in [sessions/](sessions/)_
 - **Two small, low-value items looked at and deliberately left alone**: a handful of unused database indexes and a couple of overlapping row-check rules — real but minor, and touching them risked more than they'd save. _(added 2026-07-20)_
 - **One dependency has a known minor security note with no real fix available** — fixing it would mean rolling the spreadsheet-import library back several versions, which would break more than it protects. Left as-is and documented. _(added 2026-07-20)_
 - **Melbourne / second-tenant status — needs Royce's direct confirmation.** Two audits ago this was the active enterprise target; current evidence (only shows up in month-old archived planning docs now) suggests it's gone quiet. Matters because it determines whether the next sprint should harden SKS further or prep onboarding for a new tenant. _(added 2026-07-20)_
-- **Bus-factor runbook — 4th consecutive audit asking for this.** A documented "what to do if Royce is out for two weeks" doc still doesn't exist. Either schedule it or explicitly decide it's not a priority — repeating the ask a 5th time isn't useful. _(added 2026-07-20)_
-- **Desktop visual polish (typography, empty states) — still open since the very first audit (2026-05-13).** This week's usability investment went entirely into mobile; the original desktop polish ask is now 3 audits old with zero movement. _(added 2026-07-20)_
-- **`EQ_SECRET_SALT` rotation — still not done.** The value was exposed in a chat session back in April. Rotating it will sign every current user out and could break any in-flight leave-approval email links, so it needs a deliberate low-traffic window and an explicit go, not a quiet mid-week swap. _(added 2026-07-13, still open 2026-07-21)_
-_…and 374 more · [eq/pending.md](eq/pending.md)_
+_…and 377 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -87,7 +92,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) |
 |------|------:|-----:|------------------:|
-| [EQ](eq/pending.md) | 2843 | 388 | 372 |
+| [EQ](eq/pending.md) | 2862 | 391 | 378 |
 | [SKS](sks/pending.md) | 544 | 67 | 134 |
 | [SKS active](sks/active.md) | 108 | 0 | 0 |
 | [OPS](ops/pending.md) | 444 | 28 | 46 |
@@ -96,11 +101,11 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | Date | Session |
 |------|---------|
+| 2026-07-21 | [eq-shell had its own copy of the licence-privacy gap; found, fixed, deployed, and smoke-tested](sessions/2026-07-21.md) |
 | 2026-07-20 | [invite-accept duplicate-identity follow-up: root cause disproven, hardening shipped + deployed, then a real lead found via Sentry](sessions/2026-07-20.md) |
 | 2026-07-19 | [Digest sweep: two Sentry issues root-caused, one real fix shipped + verified live](sessions/2026-07-19.md) |
 | 2026-07-17 | [AI brief's quote signals were silently zero for SKS; realigned to the live enum, guarded, shipped live](sessions/2026-07-17.md) |
 | 2026-07-16 | [verified migration 0185 live, explained the merge feature's location, seeded a real demo pair](sessions/2026-07-16.md) |
-| 2026-07-15 | [EQ Service: fixed empty NSX/ACB testing lists in the Shell iframe + Field Run-Sheet dropping recorded breaker data](sessions/2026-07-15.md) |
 _[sessions/](sessions/) · 5 shown_
 
 ## Substrate honesty
@@ -108,4 +113,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-20 13:56 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-20 19:16 UTC._
