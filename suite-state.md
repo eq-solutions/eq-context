@@ -8,7 +8,7 @@ status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-07-19 (nightly cron)_
+_Last verified: 2026-07-20 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -58,7 +58,7 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-07-19)
+## Open PRs (as of 2026-07-20)
 
 **eq-field:**
 - #466 chore(ci): enable Dependabot for GitHub Actions
@@ -68,12 +68,9 @@ _If this file is >48h old, the cron is broken._
 - #524 docs(scope): balloon-years proposal — nominate low-frequency majors in-app
 - #520 chore(deps): bump resend from 6.12.4 to 6.17.2
 
-**eq-shell:**
-- #862 fix(auth): harden invite-accept auth-identity binding + orphan detector
-
 ---
 
-## System Health (as of 2026-07-19)
+## System Health (as of 2026-07-20)
 
 **CI on main:**
 
