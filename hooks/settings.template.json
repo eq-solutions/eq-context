@@ -7,7 +7,10 @@
     "PreToolUse": [
       {
         "matcher": "Edit|Write|MultiEdit|NotebookEdit|Bash",
-        "hooks": [ { "type": "command", "command": "python C:\\Projects\\eq-context\\hooks\\pre_tool_use.py" } ]
+        "hooks": [
+          { "type": "command", "command": "python C:\\Projects\\eq-context\\hooks\\pre_tool_use.py" },
+          { "type": "command", "command": "python C:\\Projects\\eq-context\\hooks\\auto_pr_guard.py" }
+        ]
       }
     ],
     "Stop": [
