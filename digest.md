@@ -8,11 +8,7 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-20 12:12 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
-
-## Since last refresh (2026-07-20 12:06 UTC → 2026-07-20 12:12 UTC)
-
-- ✅ Needs you: 4 → 3
+_2026-07-20 13:55 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
 ## ⚠ Needs you (3)
 
@@ -28,7 +24,7 @@ _2026-07-20 12:12 UTC · what needs your attention. Full snapshot: [suite-state.
 | eq-solves-service | ? unknown | ? | 0 | — |
 | eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ? unknown | ? | 0 | — |
-| eq-solves-intake | ✓ success | 3d ago | 0 | — |
+| eq-solves-intake | ✓ success | 4d ago | 0 | — |
 
 ## Live errors (Sentry)
 
@@ -55,8 +51,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-15 | eq-solves-intake | [#70](https://github.com/eq-solutions/eq-solves-intake/pull/70) feat(intake): site merge preview + execute client wrappers |
 | 2026-07-14 | eq-solves-intake | [#69](https://github.com/eq-solutions/eq-solves-intake/pull/69) feat(intake): AI adjudicator — Claude suggests a verdict + reason |
 | 2026-07-14 | eq-solves-intake | [#68](https://github.com/eq-solutions/eq-solves-intake/pull/68) feat(intake): adjudicable console — capture the human verdict on  |
-| 2026-07-13 | eq-solves-intake | [#67](https://github.com/eq-solutions/eq-solves-intake/pull/67) feat(intake): adjudication console — surface what the write-time  |
-_8 merges · full record in [sessions/](sessions/)_
+_7 merges · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
@@ -92,7 +87,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) |
 |------|------:|-----:|------------------:|
-| [EQ](eq/pending.md) | 3449 | 388 | 865 |
+| [EQ](eq/pending.md) | 2843 | 388 | 372 |
 | [SKS](sks/pending.md) | 544 | 67 | 134 |
 | [SKS active](sks/active.md) | 108 | 0 | 0 |
 | [OPS](ops/pending.md) | 444 | 28 | 46 |
@@ -113,4 +108,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-20 12:12 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-20 13:55 UTC._
