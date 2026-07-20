@@ -14,6 +14,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 HOOK = os.path.join(ROOT, "hooks", "pre_tool_use.py")
 GATE = os.path.join(ROOT, "hooks", "session_start.py")
 END_GATE = os.path.join(ROOT, "hooks", "session_end.py")
+AUTO_PR_GUARD = os.path.join(ROOT, "hooks", "auto_pr_guard.py")
 CLAUDE_MD = os.path.join(ROOT, "CLAUDE.md")
 LESSONS = os.path.join(ROOT, "system", "lessons.md")
 SHORT = os.path.join(ROOT, "hooks", "README.md")
@@ -135,6 +136,60 @@ ok = code == 0
 print("  {:<52}{}".format("end gate never blocks Stop (exit 0)", "PASS" if ok else "*** FAIL *** (exit {})".format(code)))
 passed += ok
 failed += (not ok)
+
+print("=== AUTO-PR GUARD — the leash from the 2026-07-20 self-improving-substrate call ===")
+
+
+def run_guard(payload, auto_pr_mode=True, root=ROOT):
+    # root always pinned explicitly (default: this repo's real ROOT), matching
+    # the GATE test's existing convention below — the hook's own EQ_CONTEXT
+    # fallback is a hardcoded Windows path and silently resolves to nothing on
+    # Linux CI, which is exactly the bug an unpinned root would have hidden.
+    env = dict(os.environ)
+    if auto_pr_mode:
+        env["EQ_AUTO_PR_MODE"] = "1"
+    else:
+        env.pop("EQ_AUTO_PR_MODE", None)
+    env["EQ_CONTEXT"] = root
+    p = subprocess.run([sys.executable, AUTO_PR_GUARD], input=json.dumps(payload),
+                       capture_output=True, text=True, env=env)
+    return p.returncode
+
+
+def guard_edit(path):
+    return {"tool_name": "Edit", "tool_input": {"file_path": path}}
+
+
+def guard_bash(cmd):
+    return {"tool_name": "Bash", "tool_input": {"command": cmd}}
+
+
+def tg(name, payload, expect, **kw):
+    global passed, failed
+    got = run_guard(payload, **kw)
+    ok = got == expect
+    print("  {:<52}{}".format(name, "PASS" if ok else "*** FAIL *** (got {}, want {})".format(got, expect)))
+    passed += ok
+    failed += (not ok)
+
+
+tg("dormant without EQ_AUTO_PR_MODE (even for main push)", guard_bash("git push origin main"), 0, auto_pr_mode=False)
+tg("in-scope edit (.github/scripts/x.py) allowed", guard_edit(os.path.join(ROOT, ".github", "scripts", "x.py")), 0)
+tg("in-scope edit (archive/x.md) allowed", guard_edit(os.path.join(ROOT, "archive", "x.md")), 0)
+tg("out-of-scope edit (eq/pending.md) blocked", guard_edit(os.path.join(ROOT, "eq", "pending.md")), 2)
+tg("unlisted path blocked (default-deny)", guard_edit(os.path.join(ROOT, "README.md")), 2)
+tg("the leash file itself blocked, unconditionally", guard_edit(os.path.join(ROOT, "system", "auto-pr-scope.md")), 2)
+tg("explicit DENY wins (CLAUDE.md)", guard_edit(CLAUDE_MD), 2)
+tg("git push to main blocked", guard_bash("git push origin main"), 2)
+tg("git push --force blocked", guard_bash("git push --force origin claude/foo"), 2)
+tg("gh pr merge blocked", guard_bash("gh pr merge 42 --merge"), 2)
+tg("git push to a feature branch allowed", guard_bash("git push origin claude/some-fix-branch"), 0)
+tg("gh pr create allowed", guard_bash('gh pr create --title "x" --body "y"'), 0)
+
+d = tempfile.mkdtemp(prefix="eq_no_scope_")
+tg("missing scope file fails CLOSED (blocks, not allows)",
+   guard_edit(os.path.join(d, ".github", "scripts", "x.py")), 2, root=d)
+shutil.rmtree(d, ignore_errors=True)
 
 print()
 print("  {} passed, {} failed".format(passed, failed))
