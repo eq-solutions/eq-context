@@ -20,6 +20,27 @@ For the current built state of each system, see [system/architecture.md](https:/
 
 ---
 
+## 2026-07-20 — EQ Cards: 90/10 on SKS, Company-Scale Build Parked
+
+**Status:** Accepted (Royce, decision record "EQ Cards — Where It Sits, and Why", synthesis of own analysis triangulated against ChatGPT + Grok adversarial reviews, 2026-07-20).
+
+**Decision:** 90% of effort goes to the SKS career and building Cards *for* SKS's own labour-hire/subcontractor onboarding. EQ Cards is **not** being built as a standalone company right now — the company-scale version (worker-controlled portability, cross-company sharing, compliance/rostering product features, NSW market pricing) is parked deliberately, not abandoned, pending a named IP arrangement and one validated external buyer.
+
+**The scope test for every future Cards feature:** *"Does this feature help SKS mobilise this worker — or does it help the worker leave SKS with something?"* First → build freely, it's the 90 (SKS operational value: clean identity, licences attached, no fragmentation). Second → defer, it's the company (worker-controlled sharing/portability, cross-tenant features) — answer on purpose, not by drift.
+
+**Why:** The asset isn't the identity data, it's the acquisition channel — Cards gets worker records as a by-product of onboarding that already happens inside SKS operations, near-zero marginal cost, vs. competitors (MyPass, HammerTech, Service NSW) who must acquire cold. All three reviews independently agreed: (1) the buyer is the business not the worker, (2) free-wallet→paid-module conversion must be engineered on purpose or it never happens, (3) data staleness is the quiet killer — records must strengthen through normal work, never a new admin ritual. Grok's repair list (six "build more" fixes) is directionally correct for a company but wrong for this quarter — its own length proves this is a company-sized build, which confirms parking it was right.
+
+**Alternatives considered:** Pursuing the Phase 2/3 "package Core, sell into SKS's network" GTM motion now ([[cards_wedge_gtm]], affirmed 2026-06-29) — superseded by this decision; that plan assumed active company-building, this decision defers it.
+
+**Implications:**
+- The portable-trade-identity audit's recommended first slice (`eq/cards/portable-trade-identity-audit-2026-07-20.md`) item 3 (public share-link revoke) and item 4 (4-tier evidence-confidence badges) are both **worker-controlled-portability features → deferred**, not next-up, per the new scope test.
+- Item 1 (is_private RLS fix, migration 0096) already shipped 2026-07-20 — correctly in-scope: it protects an existing worker's privacy inside current SKS operations, not a portability/expansion feature.
+- Item 2 (delete-account Privacy Policy vs. code mismatch) is unaffected by this decision — still a legal-risk call for Royce, independent of the SKS-vs-company scope question.
+- Near-term Cards work should default to: identity resolving cleanly, licences attaching immediately, no fragmentation — i.e. onboarding hygiene, not new product surface.
+- `worker_platform_direction.md` and `cards_wedge_gtm.md` (private memory) both describe an active bottom-up-wedge GTM motion that this decision puts on hold; read them as historical direction, not current priority, until Royce revisits.
+
+---
+
 ## 2026-07-12 — Courier: eq-context Exempted from the No-Auto-Push Rule (eq-context ONLY)
 
 **Status:** Accepted (Royce, in-chat, 2026-07-12).
