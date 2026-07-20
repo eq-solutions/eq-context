@@ -71,7 +71,7 @@ _No open PRs_
 | Repo | Status |
 |------|--------|
 | eq-service | ? unknown |
-| eq-shell | ✓ success |
+| eq-shell | ? unknown |
 | eq-field | ? unknown |
 | eq-cards | ? unknown |
 | eq-solves-intake | ✓ success |
