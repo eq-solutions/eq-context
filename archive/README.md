@@ -1,7 +1,7 @@
 ---
 title: Archive
 owner: Royce Milmlow
-last_updated: 2026-07-16
+last_updated: 2026-07-20
 scope: Parked, deferred, and historical content kept out of default AI load
 read_priority: reference
 status: live
@@ -27,6 +27,21 @@ explicitly directed.
 | `service-feature-backlog-2026-05-30.md` | EQ Service feature backlog snapshot, 2026-05-30 — superseded by eq/pending.md's live backlog | Historical only — eq/pending.md is current |
 | `sessions-2026-04.md` | Session logs, April 2026 | Historical record, no revival path — see `sessions/` for current session logs |
 | `sks-anon-exposure-audit-2026-05-31.md` | SKS canonical anon-exposure audit + canonical RPC hardening — one-shot security audit doc | Read before any future anon-exposure audit as a prior baseline; check `ops/security-register.md` for current open findings |
+| `WEEKEND-MERGE-RUNBOOK.md` | One-off runbook for the 2026-06-04 weekend merge window — every candidate in it long resolved | Historical only |
+| `_ws1-customer-dedup-2026-06-07.md` | Already self-marked `status: archived` — record of the 38-row Tier-S customer dedup actually applied 2026-06-07 | Read only as the exact rollback record if that dedup is ever questioned |
+| `_ws2-site-customer-backfill-2026-06-07.md` | Already self-marked `status: archived` — record of the 440-row site→customer backfill actually applied 2026-06-07 | Rollback record only |
+| `canonical-wiring-deploy-runbook-2026-06-07.md` | Already self-marked `status: archived` — the 6-step canonical wiring program it activates shipped long ago | Historical only |
+| `cross-app-linkage-audit-2026-06-07.md` | Already self-marked `status: archived` — point-in-time snapshot superseded by live state | Historical only — companion `cross-app-linkage-remediation-plan-2026-06-07.md` (still at root) links here for the original audit |
+| `cross-app-linkage-sprint-2026-06-07.md` | Already self-marked `status: archived` ("now complete") — its one remaining open item (Tier A/C customer dedup) is tracked directly in `eq/pending.md` | Historical only |
+| `design-system-consolidation-2026-05-31.md` | Verified live 2026-07-20: every listed component (Modal/FormInput/StatusBadge/Card/Toast/Tabs) ships in `eq-ui` v1.10.0, font self-hosted via `@fontsource` — `eq/pending.md`'s open checkboxes were stale, not a real gap | Historical only |
+| `field-roles-findings-2026-05-31.md` | No live pointer found anywhere (`pending.md`/`digest.md`/`suite-state.md`) — the Field auth-token-fidelity fix it raised was never picked up | Read if that specific fix is ever revisited |
+| `platform-architecture-audit-2026-06-02.md` | Already self-marked `status: archived` — F1/F3 findings superseded by the newer secret-rotation runbooks | Historical only |
+| `quality-polish-backlog-2026-05-30.md` | No live pointer outside the (also archived) design-system doc; remaining items (U5/M4/M5/L4/C1/Z1) minor and untracked | Historical only |
+| `roles-canonical-audit-2026-05-31.md` | No live pointer found — the open Service-role-mapping decision it surfaced was never picked up | Read if that decision is ever revisited |
+| `security-secret-rotation-runbook-2026-05-31.md` | Superseded by the newer `eq-secret-salt-rotation-runbook-2026-06-06.md` (still live at root) | Historical only |
+| `sprint-2026-05-31-design-system.md` | Never-authorised draft build plan for the same component work confirmed complete in `eq-ui` v1.10.0 | Historical only |
+| `sprint-2026-06-08-ui-consistency.md` | Remaining tasks were version-bump busywork (tokens v1.3.1, eq-ui v1.1.2) long since superseded by many later bumps (eq-ui now v1.10.0) | Historical only |
+| `worker-identity-linker-spec-2026-06-07.md` | Already self-marked `status: archived` — `eq/pending.md` confirms "DONE 2026-06-09, PR merged" | Historical only |
 
 ## Sprint working docs — `sprints/`
 

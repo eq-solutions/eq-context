@@ -129,30 +129,36 @@ A number of one-off working docs — sprint plans, audits, runbooks — accumula
 directly at repo root rather than in a tier folder, because they were written
 for a single dated piece of work rather than as living substrate. They're not
 indexed individually above; this section exists so `scripts/index_drift.py`
-has somewhere to point and so they're not simply invisible. Most predate
-2026-06-08 and describe completed work — treat as historical unless a session
-log says otherwise. Worth a dedicated archival pass at some point (move
-genuinely-done ones into `archive/`), not done as part of this fix since each
-needs a quick "is this actually finished" check first:
+has somewhere to point and so they're not simply invisible.
 
-`SKS-CUTOVER-CRITICAL-PATH.md`, `WEEKEND-MERGE-RUNBOOK.md`,
-`_ws1-customer-dedup-2026-06-07.md`, `_ws2-site-customer-backfill-2026-06-07.md`,
+**Archival pass done 2026-07-20** — each of the 22 files previously listed
+here was checked individually (read in full, cross-referenced against every
+live pointer doc, not just guessed from date) rather than assumed from "most
+predate 2026-06-08." 15 were genuinely done and moved into `archive/` (see
+`archive/README.md`); the 7 below are still cited as live by something
+current and stay at root until whatever cites them is itself resolved:
+
+`SKS-CUTOVER-CRITICAL-PATH.md` — cited by `eq/pending.md` as the current
+pre-cutover state; Phases A–C not yet started.
+`auth-phase4-hmac-retirement-runbook.md` — cited by
+`eq/identity/IDENTITY-MODEL.md` §7.1 as the authority for the completed
+HMAC→JWT cutover.
+`cross-app-linkage-remediation-plan-2026-06-07.md` — `digest.md` still points
+to its §7a for the open SKS anon-remediation policy worklist.
+`eq-platform-verified-state-2026-06-03.md` — named explicitly in this
+repo's own `CLAUDE.md` as the Rule 0.5 starting snapshot.
+`eq-secret-salt-rotation-runbook-2026-06-06.md` — `eq/pending.md` records
+the rotation as "DECLINED for now," runbook explicitly kept on file.
+`field-feature-backlog-2026-05-30.md` — named "source of truth" in
+`eq/punch-list-2026-06-02.md` for still-parked, migration-gated Field items.
+`sks-live-sprint-2026-06-07.md` — `digest.md` still lists its Security
+Groups Phase 2–5 work as open.
+
+Plus 2 not re-checked this pass (2026-07-16, too recent for the "most predate
+2026-06-08" heuristic to apply, actively tied to a program that shipped this
+week — needs its own check, not bundled into this one):
 `access-model-cluster1-build-plan-2026-07-16.md`,
-`auth-phase4-hmac-retirement-runbook.md`,
-`canonical-wiring-deploy-runbook-2026-06-07.md`,
-`cross-app-linkage-audit-2026-06-07.md`,
-`cross-app-linkage-remediation-plan-2026-06-07.md`,
-`cross-app-linkage-sprint-2026-06-07.md`,
-`dashboard-signals-build-plan-2026-07-16.md`,
-`design-system-consolidation-2026-05-31.md`,
-`eq-platform-verified-state-2026-06-03.md`,
-`eq-secret-salt-rotation-runbook-2026-06-06.md`,
-`field-feature-backlog-2026-05-30.md`, `field-roles-findings-2026-05-31.md`,
-`platform-architecture-audit-2026-06-02.md`,
-`quality-polish-backlog-2026-05-30.md`, `roles-canonical-audit-2026-05-31.md`,
-`security-secret-rotation-runbook-2026-05-31.md`,
-`sks-live-sprint-2026-06-07.md`, `sprint-2026-05-31-design-system.md`,
-`sprint-2026-06-08-ui-consistency.md`, `worker-identity-linker-spec-2026-06-07.md`.
+`dashboard-signals-build-plan-2026-07-16.md`.
 
 ## Update frequency
 

@@ -2,7 +2,7 @@
 title: Cross-App Linkage — Remediation Plan
 date: 2026-06-07
 status: archived
-companion_to: cross-app-linkage-audit-2026-06-07.md
+companion_to: archive/cross-app-linkage-audit-2026-06-07.md
 owner: Royce Milmlow
 rule: every executable step below is GATED. Nothing here has been run. Tenant-plane DDL goes through the
   One Pipe (eq-shell tenant-migrate.yml); nspb via sks-nsw-labour repo; ktmj via eq-solves-field repo.
@@ -14,7 +14,8 @@ read_priority: reference
 
 # Cross-App Linkage — Remediation Plan (2026-06-07)
 
-Turns the [audit](cross-app-linkage-audit-2026-06-07.md) into an ordered, mechanism-aware playbook. The canonical
+Turns the [audit](archive/cross-app-linkage-audit-2026-06-07.md) into an ordered, mechanism-aware playbook.
+(Archived 2026-07-20 — moved but kept resolvable since this plan still cites it.) The canonical
 model is **already built** (`ehow.app_data` is fully FK-wired) — the work is **populating bridge columns, choosing
 single owners, and finishing the in-flight Field anon-remediation** — not redesigning schema.
 
