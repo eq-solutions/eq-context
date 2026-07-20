@@ -338,6 +338,75 @@ def security_open_critical(path="ops/security-register.md"):
     return found
 
 
+def failure_recurrence_signals(path="system/failures.md", sessions_dir="sessions"):
+    """The missing half of the ratchet: guard_ratchet.py proposes a rung
+    promotion once `recurrences` in failures.md is bumped, but nothing has
+    ever noticed WHEN to bump it — that step has always been a human
+    happening to recognise their own past failure in a new session. This
+    scans session logs for each failure's `signal` regex, dated strictly
+    after its `last_seen`, and surfaces a candidate — it never writes to
+    failures.md itself. Confirming and bumping `recurrences` stays a human
+    call, same "propose only" posture as guard_ratchet.py.
+
+    Deterministic regex match against sessions/*.md, zero LLM, same as every
+    other digest signal. Failures without a `signal` field are skipped
+    (retrofit as they're added — see 'How to add a failure').
+
+    Returns (urgent, quiet): urgent = rung 4 (the guard was supposed to make
+    this impossible; a hit anyway means a bypass, not just promotion
+    evidence — surfaced in Needs You). quiet = rung < 4 (routine ratchet
+    fodder — a low-priority section, not an alert).
+    """
+    try:
+        with open(path, encoding="utf-8") as f:
+            content = f.read()
+    except FileNotFoundError:
+        return [], []
+    m = re.search(r"```yaml\n(.*?)\n```", content, re.S)
+    if not m:
+        return [], []
+    try:
+        import yaml
+        data = yaml.safe_load(m.group(1)) or {}
+    except Exception:
+        return [], []
+    failures = data.get("failures", []) or []
+
+    import glob as _glob
+    session_files = sorted(_glob.glob(f"{sessions_dir}/*.md"))
+
+    urgent, quiet = [], []
+    for fl in failures:
+        sig = fl.get("signal")
+        if not sig:
+            continue
+        try:
+            pat = re.compile(sig, re.I)
+        except re.error:
+            continue
+        # PyYAML parses bare YYYY-MM-DD scalars as datetime.date, not str.
+        last_seen = str(fl.get("last_seen") or fl.get("first_seen") or "9999-99-99")
+        hits = []
+        for sess_path in session_files:
+            fn = os.path.basename(sess_path)
+            date_m = re.match(r"(\d{4}-\d{2}-\d{2})", fn)
+            file_date = date_m.group(1) if date_m else None
+            if not file_date or file_date <= last_seen:
+                continue  # dated at/before the known incident window, not a new hit
+            try:
+                with open(sess_path, encoding="utf-8") as sf:
+                    text = sf.read()
+            except OSError:
+                continue
+            if pat.search(text):
+                hits.append(sess_path.replace("\\", "/"))
+        if hits:
+            rung = fl.get("rung", 0)
+            entry = (fl.get("id", "?"), (fl.get("title") or "")[:90], rung, hits)
+            (urgent if rung >= 4 else quiet).append(entry)
+    return urgent, quiet
+
+
 def deploy_state(site):
     """(state, published_date) for a Netlify site's last deploy. Token-gated."""
     if not NETLIFY_TOKEN:
@@ -541,6 +610,13 @@ def build():
         attention.append(("🔴", f"**Open security finding** — {text} · "
                                  f"[security-register.md](ops/security-register.md)"))
 
+    urgent_recurrences, quiet_recurrences = failure_recurrence_signals()
+    for fid, title, rung, hits in urgent_recurrences:
+        latest = hits[-1]
+        attention.append(("🔴", f"**Guard bypass? rung {rung}** — {fid}: {title} · "
+                                 f"possibly recurred in [{os.path.basename(latest)}]({latest}) · "
+                                 f"[failures.md](system/failures.md)"))
+
     # Flatten + sort recently merged; cap for display
     recent_all = [
         (repo, pr)
@@ -734,6 +810,29 @@ def build():
         lines.append("|------|------:|-----:|------------------:|")
         for label, path, (total, open_n, done_n) in queue_rows:
             lines.append(f"| [{label}]({path}) | {total} | {open_n} | {done_n} |")
+        lines.append("")
+
+    # Possible recurring failures — the missing half of guard-ratchet.yml. That
+    # workflow proposes a rung promotion once `recurrences` is bumped in
+    # failures.md, but nothing has ever noticed WHEN to bump it. This is that
+    # noticing, surfaced quietly — never auto-written to the ledger.
+    if quiet_recurrences:
+        lines.append("## Possible recurring failures (unconfirmed)")
+        lines.append("")
+        lines.append(
+            "_Session logs mention a pattern matching a known failure below, dated after its "
+            "last recorded occurrence. Not yet counted — if it's real, bump `recurrences` in "
+            "[failures.md](system/failures.md) and `guard-ratchet.yml` proposes promotion on its own next run._"
+        )
+        lines.append("")
+        for fid, title, rung, hits in quiet_recurrences:
+            latest = hits[-1]
+            n = len(hits)
+            s = "s" if n != 1 else ""
+            lines.append(
+                f"- **{fid}** (rung {rung}) — {title} · {n} session{s} since last recorded, "
+                f"most recent [{os.path.basename(latest)}]({latest})"
+            )
         lines.append("")
 
     # Recent sessions

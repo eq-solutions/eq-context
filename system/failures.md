@@ -1,7 +1,7 @@
 ---
 title: SYSTEM — Failure Ledger (the ratchet's memory)
 owner: Royce Milmlow
-last_updated: 2026-07-11
+last_updated: 2026-07-21
 scope: Every failure that escaped the safeguards, with the rung its guard currently sits at. Machine-read by guard-ratchet.yml. Append-only for entries; rung/count are mutable.
 read_priority: high
 status: live
@@ -37,6 +37,7 @@ failures:
   - id: F1
     title: Substrate read path served 8-12 day stale content, 200 OK, no error
     first_seen: 2026-07-11
+    last_seen: 2026-07-11
     recurrences: 1
     rung: 4
     target_rung: 4
@@ -44,10 +45,12 @@ failures:
     detected_by: "human — git reflog contradicted the fetched file"
     cost: "near-revert of the 2026-07-03 contract rewrite; two false headline findings"
     note: "The §1 fallback cannot catch this — it triggers on errors, and a stale cache hit is not an error."
+    signal: "raw\\.githubusercontent.*stale|serving stale.*(no error|200 ok)|CDN.?cache.*stale"
 
   - id: F2
     title: Edit/Write silently truncates long files on the C:\Projects virtiofs mount
     first_seen: 2026-05-24
+    last_seen: 2026-07-11
     recurrences: 2
     rung: 4
     target_rung: 4
@@ -55,10 +58,12 @@ failures:
     detected_by: "wc -l after the write"
     cost: "CLAUDE.md truncated 308->277 lines, §12/§13/End destroyed. Tool reported success."
     note: "PROMOTED 2026-07-11 — the ratchet's first closed loop. It demanded promotion; the hook was built; it went quiet. Prose failed twice; the hook cannot be forgotten."
+    signal: "truncat(e|ed|ion|es).{0,40}(virtiofs|mount)|virtiofs.{0,40}truncat"
 
   - id: F3
     title: A goal nobody owned governed every session for two weeks from a read_priority critical file
     first_seen: 2026-07-11
+    last_seen: 2026-07-11
     recurrences: 1
     rung: 3
     target_rung: 3
@@ -66,10 +71,12 @@ failures:
     detected_by: "human — Royce asked 'what's that deadline? why are you mentioning it?'"
     cost: "an assistant repeatedly told Royce to defer work against a phantom deadline"
     note: "Every check passed green. auto-bump-frontmatter was faithfully keeping the phantom looking fresh. Freshness != truth. claim-expiry.yml built 2026-07-12 — F3's guard climbed 1->3; a goal now cannot sit in TODAY.md undated, unowned, or past expiry without failing CI."
+    signal: "phantom deadline|unowned goal|goal.{0,20}nobody owned"
 
   - id: F4
     title: Nothing watches the product — and the metric raised to prove it was itself over-read
     first_seen: 2026-07-11
+    last_seen: 2026-07-11
     recurrences: 1
     rung: 0
     target_rung: 3
@@ -77,10 +84,12 @@ failures:
     detected_by: "human — an ad-hoc live SQL query; corrected 2026-07-12 by a second, due-date-aware query"
     cost: "REAL GAP: zero monitoring of any product signal. But the alarm that surfaced it — '14/16 created, 0 ever completed, the core workflow has never worked' — was OVER-READ. Verified live 2026-07-12: of 16 checks, 10 are live and ALL future-dated (earliest due 2026-08-06; 8 are RCD compliance seeds due 2027); the only past-due rows are soft-deleted; nothing has even been started. 0 completions is a young, forward-scheduled system, not a broken completion path."
     note: "The lesson doubled. (1) Nothing watched the product — still true, still rung 0. (2) The very first metric used to raise the alarm was un-verified against due-dates — the exact 'verified falsehood' the plan (residual risk #1) calls its floor. Mitigation: the pulse must watch TRANSITIONS (did the 2026-08-06 check complete WHEN DUE?), never a pre-due backlog. Real soft signals to watch instead of the completion count: prestarts stalled (30, last 07-04), safety modules at 0, 31 non-Royce writes/14d, last_login_at never written."
+    signal: "over-?read.{0,20}(metric|alarm|signal)|nothing (watches|monitors) the product"
 
   - id: F5
     title: An ungoverned shadow memory overrode the canonical contract
     first_seen: 2026-07-11
+    last_seen: 2026-07-11
     recurrences: 1
     rung: 0
     target_rung: 3
@@ -88,10 +97,12 @@ failures:
     detected_by: "human — traced backwards from F1"
     cost: "the Cowork preferences patch routed an agent to a stale URL instead of the authoritative local clone"
     note: "Seven memory layers. One governed. The CI audits the memory that was CORRECT. The patch written to prevent drift is what caused it."
+    signal: "shadow memory|ungoverned memory"
 
   - id: F6
     title: Append (>>) NUL-fills files on the C:\Projects virtiofs mount
     first_seen: 2026-07-11
+    last_seen: 2026-07-11
     recurrences: 1
     rung: 4
     target_rung: 4
@@ -99,6 +110,7 @@ failures:
     detected_by: "NUL-byte scan after the write — wc -l reported a SANE line count"
     cost: "3,955 NUL bytes written into system/lessons.md. Two lessons destroyed. File became binary."
     note: "Found while fixing F2 — and it INVALIDATED the F2 fix. The old lesson said 'prefer cat >> over Edit for appends'. That advice was WRONG and it corrupted the file. Only FULL REWRITE (cat >) is safe. wc -l alone will not catch this: the NUL-fill made the file LARGER."
+    signal: "NUL.?(fill|byte)s?|nul-fill"
 ```
 
 ---
@@ -107,8 +119,11 @@ failures:
 
 When something escapes the safeguards — **not** when it is merely annoying, but when a guard that should have caught it did not:
 
-1. Append an entry. `recurrences: 1`, `rung:` = whatever the guard sits at **today** (be honest; prose is rung 1).
-2. If an `id` already exists for this failure class, **increment `recurrences`** — do not add a new entry. Recurrence is the whole signal.
-3. `guard-ratchet.yml` does the rest. It proposes; Royce disposes.
+1. Append an entry. `recurrences: 1`, `rung:` = whatever the guard sits at **today** (be honest; prose is rung 1). `last_seen:` = the date of this occurrence (same as `first_seen` on a new entry).
+2. If an `id` already exists for this failure class, **increment `recurrences`** and bump `last_seen` to today — do not add a new entry. Recurrence is the whole signal.
+3. Add a `signal:` regex — a short, specific phrase pattern that would appear in a session log describing this exact failure recurring (not the general topic area; specific enough that it wouldn't match an unrelated mention). This is what `failure_recurrence_signals()` in `refresh_digest.py` scans `sessions/*.md` for.
+4. `guard-ratchet.yml` does the rest. It proposes; Royce disposes.
 
 **Do not close a failure by writing a lesson.** A lesson is rung 1. If it already had a lesson and recurred, the lesson is the thing that failed.
+
+**The recurrence-detection loop (2026-07-21).** `guard-ratchet.yml` has always proposed a rung promotion once `recurrences >= 2` — but nothing ever noticed *when* to bump that counter; a human had to happen to recognise their own past failure in a new session. `failure_recurrence_signals()` closes that gap: it scans every session log dated after a failure's `last_seen` for its `signal` regex and surfaces a candidate in digest.md — a rung-4 hit lands in **Needs you** (the guard was supposed to make this impossible; a hit anyway is a bypass), anything below rung 4 lands in the quieter **Possible recurring failures** section. It never writes to this file — confirming a real recurrence and bumping `recurrences`/`last_seen` stays a human call, same posture as the ratchet itself.
