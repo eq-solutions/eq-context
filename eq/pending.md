@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-07-20
+last_updated: 2026-07-21
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -11,6 +11,15 @@ status: live
 
 EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-shell: closed the last open piece of the private-licence privacy fix — a second copy of the same bug found in Core's own code (2026-07-21)
+*A privacy audit two days ago found and fixed a bug where a connected company could still see a worker's licence after the worker marked it private — that fix went into the wallet app's own database rules. This session checked whether Core (the company-facing admin app) had a separate copy of the same bug in its own code, since it reads the same data a different way that skips those rules entirely. It did.*
+- [x] **Found and fixed two places in Core where a manager reviewing a worker's licences before approving a company connection could still see licences the worker had marked private** — one showed the full licence details and photos, the other just showed a slightly inflated count. Fixed, merged, and confirmed live on core.eq.solutions. _(done 2026-07-21)_
+- [x] **Verified both fixes work against real data, not just in theory** — found a real worker with a private licence and confirmed the fix now correctly leaves it out of both the review screen and the count. _(done 2026-07-21)_
+- [x] **Updated the original privacy audit document** to record this follow-on gap and its fix, and corrected a wrong claim in that document that said no changes to Core would be needed. _(done 2026-07-21)_
+- [ ] **The rest of that audit's recommended fixes still await your decision:** whether the account-deletion feature should actually delete data (it currently just blanks it out) or the privacy policy wording should change instead; adding a way to revoke a licence link once it's been shared; and adding a simple "how sure are we this credential is real" label to licences. Full detail in the audit doc (`eq-context/eq/cards/portable-trade-identity-audit-2026-07-20.md`). _(added 2026-07-21)_
 
 ---
 

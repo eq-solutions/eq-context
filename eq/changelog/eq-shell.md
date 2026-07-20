@@ -1,13 +1,16 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-07-20
+last_updated: 2026-07-21
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # eq-shell changelog
+
+## 2026-07-21
+- **PR #920 (MERGED squash `827dfc9`/`918dd20` → main, auto-deployed LIVE to core.eq.solutions, confirmed via Netlify MCP commit_ref match) — closed a companion `is_private`-licence gap found while following up on eq-cards migration `0096`.** That migration fixed the `licences_read` RLS policy on eq-canonical so a connected org admin's RLS-respecting queries can no longer see a worker's licence marked `is_private = true`. But eq-shell's own admin-facing licence reads go through a service-role client (`getServiceClient()`), which bypasses RLS entirely — so the RLS fix didn't reach them. `worker-licences.ts` (the pre-approval Cards-connection review modal, `StaffPage.tsx`) returned every licence including private ones, with signed photo URLs; `staff-pending-connections.ts`'s per-worker licence count included private licences too. Both now filter `.eq('is_private', false)`, matching the pattern already used in every sibling admin-facing licence read (`staff-canonical-licences.ts`, `cards-export-licences.ts`, `cards-approve-staff.ts`, etc.) from the 2026-06-27 privacy-hardening sprint. Smoke-tested post-deploy by running each function's exact query directly against live eq-canonical data for a real worker with a private licence — confirmed excluded. Full detail: `eq-context/eq/cards/portable-trade-identity-audit-2026-07-20.md` (2026-07-21 update) and `eq-context/sessions/2026-07-21.md`.
 
 ## 2026-07-20
 - **PR #914 (MERGED squash `8cc321c` → main, auto-deployed LIVE to core.eq.solutions, confirmed via Netlify MCP commit_ref match) — follow-up hardening on invite-accept's identity matching, prompted by a real duplicate-identity incident but not proven to be its cause.** `accept-invite.ts`'s Cards-worker stub phone lookup was an exact string match against `invite.phone`; a stub's phone is written raw from `public.workers.phone` (whatever format it happened to be stored in) while `invite.phone` is E.164-normalized, so a format mismatch could silently miss a real stub and mint a duplicate identity instead of promoting it — now checks common AU phone variants via `phoneMatchKey`. `backfill-auth-users.ts` had zero cross-row collision detection: if two different `shell_control.users` rows represent the same person, it would mint a distinct `auth.users` identity for each — now skips minting for any row sharing a normalized phone/email with another and reports both under `collisions_skipped` for manual merge. Investigated as the suspected root cause of a real incident (a worker ended up with two disconnected sign-in identities after an invite-accept); ruled OUT as that incident's actual cause — `shell_control.audit_log` (append-only, survives hand-repair) shows the phone-stub match worked correctly for that invite. Shipped anyway as defense-in-depth for the latent gap it exposed. Rebased mid-review onto main after PR #862 (below) merged; typecheck/163 tests/lint all green pre- and post-rebase.

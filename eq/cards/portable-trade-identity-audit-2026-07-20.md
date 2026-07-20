@@ -1,10 +1,10 @@
 ---
 title: EQ Cards — Portable Trade Identity Audit
 owner: Royce Milmlow
-last_updated: 2026-07-20
+last_updated: 2026-07-21
 scope: Response to the "EQ Cards — From Credential Wallet to Portable Trade Identity" agent brief (2026-07-20). Current-state audit + design recommendation. No implementation performed — this is the required output before any build decision.
 read_priority: critical
-status: awaiting Royce's decision on recommended first slice
+status: recommended-first-slice item 1 (is_private gap) CLOSED 2026-07-21, both in RLS and in a companion eq-shell server-side bypass found during close-out. Remaining first-slice items (2–4) and Path A/B/C decision still await Royce.
 ---
 
 # EQ Cards — Portable Trade Identity Audit
@@ -12,6 +12,8 @@ status: awaiting Royce's decision on recommended first slice
 Response to the agent brief delivered 2026-07-20 (`eq-cards-brief.pdf`). Primary repo `eq-cards`; investigation also touched `eq-shell`, `eq-field`, and live queries against eq-canonical (Supabase project `jvknxcmbtrfnxfrwfimn`). `sks-nsw-labour` was not touched. Every claim below was verified against live code and/or live data this session — none of it is carried over from older docs without a spot-check (one existing doc, the 2026-06-15 iframe ADR, was already found stale earlier today and corrected separately; the same discipline was applied here).
 
 No implementation has been done. Per the brief's own instruction, this stops at the recommendation.
+
+**2026-07-21 update — item 1 closed, and it was bigger than scoped.** The RLS fix landed as eq-cards migration `0096` (commit `c07d574`, live on eq-canonical). A follow-up check asked whether eq-shell (Core), which reads `licences` server-side with a service-role key and therefore never touches RLS at all, had its own copy of the same gap. It did: `netlify/functions/worker-licences.ts` (the org-admin licence-review modal, called before approving a Cards connection) and `netlify/functions/staff-pending-connections.ts` (licence count) both queried `public.licences` unfiltered. Fixed in eq-shell PR [#920](https://github.com/eq-solutions/eq-shell/pull/920) (commit `827dfc9`, squash-merged to `main` as `918dd20`), deployed to core.eq.solutions 2026-07-20T12:55:41Z. Both fixes verified against live production data post-deploy (§10). This **contradicts §7's original claim that no eq-shell changes were required** — see the correction inline there.
 
 ---
 
@@ -29,8 +31,10 @@ Two independent detectors: a phone-dedup trigger (migration `0040`, `shell_contr
 **Company connections — two tracks, disconnect is correctly server-enforced today (after a real fix).**
 Worker self-signup (`eq_cards_submit_access_request` → `org_access_requests`, pending/approved/declined/cancelled) and employer-initiated (`eq_cards_request_worker_access`) both resolve into `org_memberships` (`pending`/`active`/`revoked` — no separate "past relationship" state; the row persists with a status flip, not a delete). Live: 45 access requests (40 approved, 3 cancelled, 2 declined), 46 memberships (45 active, 1 revoked). Disconnect (`eq_cards_revoke_org_access`) originally (migration `0030`) only flipped the Shell-layer SSO membership and left `public.org_memberships` active — meaning a "disconnected" company kept real RLS read access to the worker's licences. Migration `0036` fixed this to also revoke `org_memberships`, which is what the RLS policy (`is_org_admin_of`) actually checks. This is now correct, but it shipped wrong first and was caught later — worth remembering, see risk #1 below.
 
-**What a connected company can actually see — the one live gap that matters most.**
+**What a connected company can actually see — the one live gap that matters most.** *[FIXED 2026-07-21 — see update at top]*
 RLS on `licences`: `is_org_admin_of(user_id) OR user_id = auth.uid()`. **This policy does not filter on `is_private`.** `is_private` is only enforced in the public `share-licence` edge function (404s a private licence for an anonymous link). A worker who marks a licence private believing it's hidden from their employer is wrong — their connected org's admin can see it via the normal admin worker-detail screen. This is a live, unannounced gap between the product's implied promise and its actual behaviour.
+
+RLS policy fixed by migration `0096` (live). But RLS only governs paths that go through it — eq-shell's own admin-facing licence reads use a service-role key and bypass RLS entirely, so they needed (and got) their own explicit filter; see the 2026-07-21 update above and the §7 correction below.
 
 **Worker-controlled sharing — real, but "controlled" overstates it.**
 The public QR/link share (`share-licence` edge function) exposes exactly six fields (type, number, state, issuing authority, expiry, holder name) — no photos, DOB, or address — and correctly 404s if the licence is private. But there is no revoke mechanism: once shared, the link works forever (gated only by a 128-bit unguessable UUID) until the worker deletes the licence entirely; flipping `is_private` after the fact stops new fetches but doesn't invalidate anyone who already has the link. A full self-export (`data_export.dart`) does exist — profile + all licences + 1-hour signed photo URLs — satisfying the Privacy Policy's §9 access-rights promise.
@@ -116,7 +120,7 @@ Worker identity/credential tables (`profiles`, `workers`, `licences`, `certifica
 
 Matches the brief's own recommended-first-slice test almost exactly, because getting there means making an existing implicit promise actually true rather than building something new:
 
-1. Fix the `is_private` gap so a connected company genuinely cannot see a licence the worker marked private (currently: `licences_read` RLS policy in Supabase).
+1. ~~Fix the `is_private` gap so a connected company genuinely cannot see a licence the worker marked private (currently: `licences_read` RLS policy in Supabase).~~ **DONE 2026-07-21** — RLS policy (eq-cards migration `0096`) plus the two eq-shell service-role code paths that bypassed it (`worker-licences.ts`, `staff-pending-connections.ts`, PR #920). See update at top.
 2. Resolve the delete-account mismatch — either the Privacy Policy's "hard-deleted within 30 days" claim needs to become true in code, or the Policy needs to be corrected to describe the actual anonymize-in-place behaviour. Recommend the former if feasible (it's what a worker would reasonably expect), but this is a legal-risk call, not a technical one — flagging for Royce, not deciding here.
 3. Add revoke capability to the public share link.
 4. Add a 4-tier evidence-confidence label (self-declared / OCR-extracted / admin-confirmed / issuer-verified) to the existing `licences`/`worker_credentials` schema, surfaced as a small badge — no new screen.
@@ -134,7 +138,7 @@ After this slice, the brief's own success test — "a worker joins once, their i
 - `lib/features/licences/presentation/widgets/expiry_badge.dart` and the licence card widgets — evidence-confidence badge.
 - `assets/legal/privacy-policy.md` — if the Policy is corrected rather than the code.
 
-No `eq-shell` or `eq-field` changes required for the recommended slice — confirmed by the architecture findings in §1. Path C, if ever pursued, would need `eq-field` (roster/site/crew data).
+~~No `eq-shell` or `eq-field` changes required for the recommended slice — confirmed by the architecture findings in §1.~~ **Correction, 2026-07-21: this was wrong for item 1.** The RLS fix (§1) only closes the gap for reads that go through Postgres RLS. eq-shell reads `public.licences` server-side with a service-role key (`getServiceClient()` in `netlify/functions/`), which never touches RLS — it had its own unfiltered `is_private` read in `worker-licences.ts` (org-admin licence-review modal) and `staff-pending-connections.ts` (licence count), both now fixed (eq-shell PR #920, commit `827dfc9`, deployed). Lesson for future items in this slice: any "RLS-only" fix claim needs an explicit check for service-role/SECURITY DEFINER paths in every consuming repo, not just the table's own policy. Path C, if ever pursued, would still need `eq-field` (roster/site/crew data) — that part of the original claim holds.
 
 ---
 
@@ -160,7 +164,7 @@ No `eq-shell` or `eq-field` changes required for the recommended slice — confi
 
 ## 10. Definition of done (for the recommended first slice)
 
-- A connected company's admin view cannot render a licence where `is_private = true` (verified by a real query as an org-admin role, not just a UI check).
+- ~~A connected company's admin view cannot render a licence where `is_private = true` (verified by a real query as an org-admin role, not just a UI check).~~ **DONE 2026-07-21.** Verified by running eq-shell's exact post-fix queries directly against live eq-canonical data for a real worker with 1 private + 5 visible licences: `worker-licences.ts`'s query returns the 5 visible rows only; `staff-pending-connections.ts`'s count query returns 5, not the pre-fix 6. No live worker currently has both a pending worker-initiated connection request and a private licence, so the fix hasn't yet been exercised by real admin traffic — but the query logic is confirmed correct against production data.
 - The delete-account behaviour and the Privacy Policy's description of it match each other exactly — whichever direction Royce decides.
 - A worker can revoke a previously-shared public licence link, and a revoked link stops resolving.
 - Every licence/credential shows a confidence label pulled from real data (not a placeholder), covering all 154 live licence rows without requiring backfill guesswork — self-declared as the default for anything with no other signal.
