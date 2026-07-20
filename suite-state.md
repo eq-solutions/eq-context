@@ -60,13 +60,7 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-20)
 
-**eq-field:**
-- #466 chore(ci): enable Dependabot for GitHub Actions
-- #461 feat(auth): EQ tenant is Core-only — close the demo login gate (v3.5.306)
-
-**eq-service:**
-- #524 docs(scope): balloon-years proposal — nominate low-frequency majors in-app
-- #520 chore(deps): bump resend from 6.12.4 to 6.17.2
+_No open PRs_
 
 ---
 
@@ -76,16 +70,16 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ✓ success |
+| eq-service | ? unknown |
 | eq-shell | ✓ success |
-| eq-field | ✓ success |
-| eq-cards | ✓ success |
+| eq-field | ? unknown |
+| eq-cards | ? unknown |
 | eq-solves-intake | ✓ success |
 
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 190 (latest: 0186) applied
+**Migrations:** eq-service has 0 applied
 
 ---
 
