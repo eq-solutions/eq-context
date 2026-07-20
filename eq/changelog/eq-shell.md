@@ -1,13 +1,17 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-07-19
+last_updated: 2026-07-20
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # eq-shell changelog
+
+## 2026-07-20
+- **PR #914 (MERGED squash `8cc321c` → main, auto-deployed LIVE to core.eq.solutions, confirmed via Netlify MCP commit_ref match) — follow-up hardening on invite-accept's identity matching, prompted by a real duplicate-identity incident but not proven to be its cause.** `accept-invite.ts`'s Cards-worker stub phone lookup was an exact string match against `invite.phone`; a stub's phone is written raw from `public.workers.phone` (whatever format it happened to be stored in) while `invite.phone` is E.164-normalized, so a format mismatch could silently miss a real stub and mint a duplicate identity instead of promoting it — now checks common AU phone variants via `phoneMatchKey`. `backfill-auth-users.ts` had zero cross-row collision detection: if two different `shell_control.users` rows represent the same person, it would mint a distinct `auth.users` identity for each — now skips minting for any row sharing a normalized phone/email with another and reports both under `collisions_skipped` for manual merge. Investigated as the suspected root cause of a real incident (a worker ended up with two disconnected sign-in identities after an invite-accept); ruled OUT as that incident's actual cause — `shell_control.audit_log` (append-only, survives hand-repair) shows the phone-stub match worked correctly for that invite. Shipped anyway as defense-in-depth for the latent gap it exposed. Rebased mid-review onto main after PR #862 (below) merged; typecheck/163 tests/lint all green pre- and post-rebase.
+- **PR #862 (MERGED squash `8cb5e9f` → main, auto-deployed) — invite-accept auth-identity binding hardened + a daily leftover-identity detector added.** Matches an invite acceptance to an existing sign-in identity by email (was previously capable of minting a mismatched duplicate); adds `check-orphan-identities.ts`, a daily alert-only check for the rare leftover-identity condition. Does not cover the case where the existing identity has no email on file (e.g. a phone-only worker) — see #914 above and `eq-context/eq/pending.md` for the open follow-up.
 
 ## 2026-07-19
 - **PR #863 (MERGED squash `a68a62e` → main, deployed LIVE to core.eq.solutions, confirmed via Netlify MCP commit_ref match, Royce's explicit "merge PR 863") — login-screen body-read timeout, the latent twin of #858.** `fetchWithTimeout` cleared its `AbortController` timer the instant `fetch()` resolved (headers in), leaving a subsequent `await res.json()` body read unbounded — a stalled body froze the "Signing in…" spinner forever, the same class of stall #858 fixed on the session-verify path but that fix never reached the login screen itself. New `fetchJsonWithTimeout<T>()` keeps one `AbortController` live across `fetch()` + `res.json()` and returns `{ok, status, data}` (non-2xx isn't an error); migrated the two JSON callers in `LoginPage.tsx` (email-submit, verify-code). Was 5 days stale against `main` by merge time — rebased in an isolated worktree, re-verified clean (`tsc -b` + `vite build` + 151/151 tests, including the pinned "stalled body read" regression test) before force-pushing the rebase back onto the branch and re-running CI. Closes the `session-spinner-timeout` Sentry marker (EQ-SHELL-V) — paired with #888 (2026-07-17, the `verify-timeout` marker's fix), both halves of the 2026-07-14 auth-stall Sentry pair are now live.
