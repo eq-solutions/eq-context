@@ -200,6 +200,25 @@ def pending_open_items(path):
     ]
 
 
+def pending_queue_health(path):
+    """(total_lines, open_count, unrotated_done_count) for a pending/active file.
+
+    Surfaces queue bloat as a quiet signal, not an alert — hygiene debt
+    (done items never rotated to changelog/) is a different thing from a real
+    backlog, and neither is urgent the way a Needs You item is. Two numbers,
+    not one, because a big file that's mostly open work reads very differently
+    from a big file that's mostly done work nobody archived.
+    """
+    try:
+        with open(path, encoding="utf-8") as f:
+            lines = f.readlines()
+    except FileNotFoundError:
+        return None
+    open_count = sum(1 for ln in lines if ln.strip().startswith("- [ ]"))
+    done_count = sum(1 for ln in lines if ln.strip().startswith("- [x]"))
+    return len(lines), open_count, done_count
+
+
 def recent_sessions(sessions_dir="sessions", n=5):
     """Return list of {date, title} for the N most recent session logs.
 
@@ -690,6 +709,31 @@ def build():
             lines.append(f"_…and {len(items) - 10} more · [{path}]({path})_")
         else:
             lines.append(f"_[{path}]({path})_")
+        lines.append("")
+
+    # Queue health — quiet signal, not an alert. See pending_queue_health()'s
+    # docstring: separate open-vs-done counts because a big file that's mostly
+    # backlog reads very differently from one that's mostly unrotated history.
+    queue_files = [
+        ("eq/pending.md", "EQ"),
+        ("sks/pending.md", "SKS"),
+        ("sks/active.md", "SKS active"),
+        ("ops/pending.md", "OPS"),
+    ]
+    queue_rows = [(label, path, pending_queue_health(path)) for path, label in queue_files]
+    queue_rows = [(label, path, h) for label, path, h in queue_rows if h is not None]
+    if queue_rows:
+        lines.append("## Queue health")
+        lines.append("")
+        lines.append(
+            "_Hygiene signal, not an alert — a large open count is real backlog; "
+            "a large done count is unrotated history that belongs in a changelog._"
+        )
+        lines.append("")
+        lines.append("| File | Lines | Open | Done (unrotated) |")
+        lines.append("|------|------:|-----:|------------------:|")
+        for label, path, (total, open_n, done_n) in queue_rows:
+            lines.append(f"| [{label}]({path}) | {total} | {open_n} | {done_n} |")
         lines.append("")
 
     # Recent sessions
