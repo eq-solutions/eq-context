@@ -23,9 +23,10 @@ fails on **new** exposure while keeping the open ones visible.
 
 | ID | Severity | Finding | Project | Status |
 |---|---|---|---|---|
-| SEC-1 | **P0 — live PII leak** | Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` | sks-labour (LIVE — confirmed by Royce 2026-07-16 still active, retirement date NOT set) | **STILL OPEN.** Original fix plan ("decommission at Field cutover, weekend of 06-05") assumed a near-term retirement that hasn't happened — leak has been live ~6+ weeks past that assumption. Royce to decide: interim RLS hardening now, or accept the exposure pending an actual retirement date. |
+| SEC-1 | **P0 — live PII leak** | Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` | sks-labour (LIVE — confirmed by Royce 2026-07-16 still active, retirement date NOT set) | **STILL OPEN, deliberately not engineered around.** **Reaffirmed 2026-07-20 (Royce): "SKS NSW Labour is not to be touched — we are keeping it going while we build Field."** Same standing decision as 2026-06-05 (below), restated after this session got as far as verifying live `pg_policies` and staging a Stage 2 RLS-hardening migration before being stopped — no engineering changes land on sks-nsw-labour, full stop, until Field replaces it. Fix stays decommission-at-cutover, not interim hardening. Nothing was written to `nspbmirochztcjijmcrx` or the sks-nsw-labour Netlify project this session — read-only verification only. |
 | SEC-3 | **P3 — hygiene (downgraded from P0 2026-07-20)** | `ehowg` service_role key never rotated (F1) — **no confirmed leak vector found**, unrotated ≠ leaked | sks-canonical (LIVE) | **OPEN, hygiene priority.** Investigated 2026-07-20: the only evidence for "leaked" across the whole substrate is the key still being *valid* (unrotated since 2026-05-24) — no incident, no leak vector, no exposed-location ever documented. A **later, more careful analysis** (`cross-app-linkage-sprint-2026-06-07.md`) explicitly downgraded this: *"tenant_routing key concentration... No live exposure today; high cost if it leaks."* Corroborates the eq-field punch-list's own June note that the "exposed" flag looked stale. **Royce's call 2026-07-20: downgrade, rotate at a calm moment, not a rushed weekend window.** Rotation runbook (`f1-ehowg-key-rotation-runbook-2026-06-03.md`) still valid whenever it happens. |
 | SEC-9 | **P0 — confirmed exposure, same window as SEC-3** | A different service_role key (`jvkn`/eq-canonical) was pasted directly into a chat session 2026-07-12 to fix `canon-read` | eq-canonical (LIVE) | **OPEN.** Unlike SEC-3, this exposure IS confirmed — plaintext in a chat transcript is a real leak vector, not a hygiene item. **Royce's call 2026-07-20: same priority and rotation window as SEC-3** rather than treating separately. Rotate both together whenever that window lands. |
+| SEC-10 | **P0 — confirmed exposure** | `ANTHROPIC_API_KEY` + `RESEND_API_KEY` stored as plaintext Netlify env vars (`is_secret: false` — not masked in Netlify's own UI/API either), full values returned by a routine env-var read 2026-07-20 and now sitting in a chat transcript, same leak-vector class as SEC-9 | sks-nsw-labour (Netlify, LIVE) | **OPEN.** Found by accident while prepping SEC-1's JWT-minter env vars (that prep is now moot — see SEC-1, app is not being touched). Credential storage, not app config — **not covered by the "don't touch sks-nsw-labour" freeze**, but rotation itself is a separate action requiring your own console.anthropic.com / resend.com access. `EQ_SECRET_SALT`'s `dev`-context value came back unmasked too (its `production`/`branch-deploy`/`deploy-preview` values are correctly masked — only `dev` isn't). **Royce's call 2026-07-20: rotate at another time.** When rotated: set the new values with `is_secret: true`, closing the plaintext-storage gap too, and re-check whether any other project has the same pattern on a real credential. |
 | SEC-2 | P1 | RLS policy `tenant_isolation` trusts end-user-editable `user_metadata` (advisor ERROR) | eq-canonical-internal | **SCHEDULED — weekend** |
 | SEC-4 | P3 — hardening | `anon`-executable SECURITY DEFINER `eq_cards_*` fns | eq-canonical | **VERIFIED not exploitable** 2026-06-05 (auth.uid()/token-guarded). Post-launch: revoke anon EXECUTE on the 3 that don't need it. |
 | SEC-5 | P3 — hygiene | always-true (`USING/WITH CHECK = true`) write policies | eq-solves-field, eq-canonical-internal | **VERIFIED latent** 2026-06-05 — anon holds NO table grant, policies unreachable. Post-launch cleanup. |
@@ -40,7 +41,8 @@ fails on **new** exposure while keeping the open ones visible.
   access so the PII leak can't outlive the app. **Explicit checklist line — not
   assumed.** Remove from `rls_probe.py KNOWN_LEAKS` once done. Still blocked on
   an actual retirement date — sks-nsw-labour confirmed still active 2026-07-16,
-  no date set.
+  no date set. **Reaffirmed 2026-07-20: no interim hardening either** — the app
+  stays untouched, not just unretired, until Field replaces it.
 - **SEC-2 — fix `eq_intake_rate_limits` RLS.** Rewrite `tenant_isolation` to derive
   tenant from `app_metadata` (server-set) not `user_metadata`. Mirror the existing
   `sks_safety_rpc_jwt_tenant_guard` pattern. Then remove from
@@ -82,6 +84,19 @@ blocks probing the SKS-live project). This did **not** resolve SEC-1: the leak i
 live until SKS Labour is decommissioned. SEC-1 is now tracked **manually** here,
 not by CI — a green gate no longer implies SEC-1 is closed. Close it when the app
 is actually off.
+
+**Note 2026-07-20:** a session got as far as re-verifying live `pg_policies`,
+confirming the `sks` org id, and staging a Stage 2 RLS-hardening migration
+(additive `authenticated` policies alongside the existing `anon` ones) before
+Royce stopped it: *"SKS NSW Labour is not to be touched — we are keeping it
+going while we build Field."* This restates, not reverses, the 2026-06-05
+decision above — worth recording explicitly since an earlier prompt this same
+session had framed it as an open choice between "harden now" and "accept
+pending retirement," which wasn't the real choice on offer. Nothing was
+applied — no SQL ran, no env var changed, PR #34 (dark Stage-1 minter) is
+still open/unmerged on `sks-nsw-labour` and should stay that way. The 4
+draft SQL/runbook files in `~/.claude/plans/nspbmir-*` remain exactly that:
+drafts, not a queued plan.
 
 ### SEC-2 — eq-canonical-internal RLS trusts user_metadata (P1, advisor ERROR)
 `app_data.eq_intake_rate_limits` policy `tenant_isolation` references
