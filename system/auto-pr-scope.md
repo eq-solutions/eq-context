@@ -50,12 +50,14 @@ ALLOW:
 .github/scripts/**/*.py
 archive/**
 system/lessons.md
+*.md
 
 DENY:
 CLAUDE.md
 AGENTS.md
 CHAT-PROMPT.md
 COWORK-PROMPT.md
+README.md
 system/auto-pr-scope.md
 hooks/**
 supabase/migrations/**
@@ -72,11 +74,21 @@ system/TODAY.md
 .github/workflows/**
 ```
 
+**Why `*.md` and not `archive/**` alone:** the first-pass scope only let an
+agent write *into* `archive/` — it never covered deleting the *source* file at
+root, which is what an actual "move a root file into archive" task requires
+(`git mv`/`rm` on the root copy). Found by trying to dogfood the original
+scope on 2026-07-20 and having it correctly block the very task it was meant
+to enable. `*.md` (single star — matches root-level files only, never crosses
+a `/`, so `eq/pending.md` and friends are untouched) widens ALLOW to cover
+that source deletion, with the highest-stakes root `.md` files pulled back out
+via explicit DENY below.
+
 **Why each exclusion, briefly:**
-- `CLAUDE.md`/`AGENTS.md`/`CHAT-PROMPT.md`/`COWORK-PROMPT.md` — the behavioral
-  contract itself. "Never allowed to write in the farmer's ink"
-  (`system/substrate-plan-v2.md`'s own fable). Full human review, always, no
-  exception path.
+- `CLAUDE.md`/`AGENTS.md`/`CHAT-PROMPT.md`/`COWORK-PROMPT.md`/`README.md` —
+  the behavioral contract plus the repo's own front door. "Never allowed to
+  write in the farmer's ink" (`system/substrate-plan-v2.md`'s own fable). Full
+  human review, always, no exception path.
 - `hooks/**` — this is the enforcement layer. A bug in a self-proposed hook
   change could weaken the guard protecting everything else. Too meta for a
   first pass; revisit only after the narrower scope has a real track record.

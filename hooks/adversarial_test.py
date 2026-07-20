@@ -191,6 +191,33 @@ tg("missing scope file fails CLOSED (blocks, not allows)",
    guard_edit(os.path.join(d, ".github", "scripts", "x.py")), 2, root=d)
 shutil.rmtree(d, ignore_errors=True)
 
+# A move/delete's SOURCE never goes through Edit/Write — caught live while
+# actually trying to dogfood an archive/** cleanup: `git mv <root file>
+# archive/x.md` sailed through with exit 0 because only the destination
+# looked in-scope; the source (a root-level file) was never checked at all.
+tg("git mv: out-of-scope SOURCE blocked even though dest is archive/**",
+   guard_bash("git mv deploy.sh archive/deploy.sh"), 2)
+tg("rm: out-of-scope path blocked", guard_bash("rm deploy.sh"), 2)
+tg("rm: in-scope path (archive/**) allowed", guard_bash("rm archive/old-thing.md"), 0)
+tg("git mv: both sides in-scope allowed", guard_bash("git mv archive/a.md archive/b.md"), 0)
+tg("chained command: benign && out-of-scope rm still blocked",
+   guard_bash("echo hi && rm deploy.sh"), 2)
+tg("git commit message containing the word 'rm' is not a real rm (control)",
+   guard_bash('git commit -m "rm stale reference"'), 0)
+tg("npm script name containing 'cp' is not a real cp (control)",
+   guard_bash("npm run cp-assets"), 0)
+
+# Scope widened same day (2026-07-20) after the dogfood attempt above showed
+# the original ALLOW never covered a root .md's SOURCE deletion.
+tg("git mv: root .md source now allowed (scope widened)",
+   guard_bash("git mv WEEKEND-MERGE-RUNBOOK.md archive/WEEKEND-MERGE-RUNBOOK.md"), 0)
+tg("root .sh (non-.md) still out of scope — *.md widening isn't a blanket root exemption",
+   guard_bash("git mv deploy.sh archive/deploy.sh"), 2)
+tg("root README.md still explicitly protected despite *.md widening",
+   guard_edit(os.path.join(ROOT, "README.md")), 2)
+tg("*.md does not reach into subdirectories (eq/pending.md still blocked)",
+   guard_edit(os.path.join(ROOT, "eq", "pending.md")), 2)
+
 print()
 print("  {} passed, {} failed".format(passed, failed))
 sys.exit(1 if failed else 0)

@@ -124,6 +124,53 @@ def path_matches(path, patterns):
     return any(re.match(_glob_to_regex(pat), path) for pat in patterns)
 
 
+# Common shell verbs that mutate the filesystem outside Edit/Write/etc — a
+# rename/delete of the ORIGINAL file (e.g. moving a root .md into archive/)
+# happens through one of these, not through an edit tool, and the scope check
+# below has to see it too or the source side of every move goes unchecked.
+# Deliberately not exhaustive (doesn't catch `find -delete`, a Python
+# os.remove(), etc.) — a prompt-level hook can raise the bar on the common
+# path, it can't be a full filesystem sandbox. Named here rather than assumed.
+FILE_MUTATING_CMD = re.compile(r"(?:^|[;&|]\s*)(git\s+mv|git\s+rm|mv|rm|cp)\s+(.+)$", re.I | re.M)
+
+
+def extract_path_args(cmd):
+    """Best-effort: the non-flag, non-verb tokens of a file-mutating command."""
+    args = []
+    for m in FILE_MUTATING_CMD.finditer(cmd):
+        for tok in m.group(2).split():
+            if not tok.startswith("-"):
+                args.append(tok.strip("\"'"))
+    return args
+
+
+def check_path_scope(rel, root):
+    """Returns None if in scope, or a block-message string if not."""
+    if rel in NEVER_EDITABLE:
+        return (
+            f"'{rel}' is the scope file itself. It cannot expand its own leash from\n"
+            f"  inside an automated run, even if ALLOW somehow named it. Scope changes\n"
+            f"  require a normal human-reviewed PR."
+        )
+    scope = parse_scope(root)
+    if scope is None:
+        return (
+            f"Could not read/parse {SCOPE_FILE} to determine what's in scope.\n"
+            f"  A guard that can't find its own leash does not get to decide it's off\n"
+            f"  the leash. Fix the scope file (as a normal, human-reviewed change) —\n"
+            f"  do not retry this edit until it parses."
+        )
+    allow, deny = scope
+    if path_matches(rel, deny):
+        return f"'{rel}' matches system/auto-pr-scope.md's DENY list.\n  Out of scope for an automated fix, unconditionally."
+    if not path_matches(rel, allow):
+        return (
+            f"'{rel}' does not match any pattern in system/auto-pr-scope.md's ALLOW\n"
+            f"  list. Default is deny — only explicitly listed paths are in scope."
+        )
+    return None
+
+
 def main():
     if not active():
         sys.exit(0)
@@ -148,44 +195,24 @@ def main():
                 "  here regardless of what the agent believes it's authorized to do.\n\n"
                 "  system/auto-pr-scope.md — 'The three rules, unconditionally'.\n"
             )
+        # A move/delete's SOURCE path never goes through Edit/Write — e.g.
+        # moving a root .md into archive/ deletes the root copy via `git mv`
+        # or `rm`. Every path argument to a mutating shell verb gets the same
+        # scope check an Edit/Write would get, not just the tool calls that
+        # happen to be named Edit or Write.
+        for arg in extract_path_args(cmd):
+            rel = relpath(arg, root)
+            reason = check_path_scope(rel, root)
+            if reason:
+                block(f"BLOCKED by auto_pr_guard (rung 4) — FAIL-CLOSED.\n\n  {reason}\n")
 
     # --- scoped: edits must land inside ALLOW, never in DENY or the leash file
     if tool in EDIT_TOOLS:
         path = ti.get("file_path") or ti.get("notebook_path") or ""
         rel = relpath(path, root)
-
-        if rel in NEVER_EDITABLE:
-            block(
-                f"BLOCKED by auto_pr_guard (rung 4) — FAIL-CLOSED.\n\n"
-                f"  '{rel}' is the scope file itself. It cannot expand its own leash from\n"
-                f"  inside an automated run, even if ALLOW somehow named it. Scope changes\n"
-                f"  require a normal human-reviewed PR.\n"
-            )
-
-        scope = parse_scope(root)
-        if scope is None:
-            block(
-                f"BLOCKED by auto_pr_guard (rung 4) — FAIL-CLOSED.\n\n"
-                f"  Could not read/parse {SCOPE_FILE} to determine what's in scope.\n"
-                f"  A guard that can't find its own leash does not get to decide it's off\n"
-                f"  the leash. Fix the scope file (as a normal, human-reviewed change) —\n"
-                f"  do not retry this edit until it parses.\n"
-            )
-        allow, deny = scope
-
-        if path_matches(rel, deny):
-            block(
-                f"BLOCKED by auto_pr_guard (rung 4) — FAIL-CLOSED.\n\n"
-                f"  '{rel}' matches system/auto-pr-scope.md's DENY list.\n"
-                f"  Out of scope for an automated fix, unconditionally.\n"
-            )
-
-        if not path_matches(rel, allow):
-            block(
-                f"BLOCKED by auto_pr_guard (rung 4) — FAIL-CLOSED.\n\n"
-                f"  '{rel}' does not match any pattern in system/auto-pr-scope.md's ALLOW\n"
-                f"  list. Default is deny — only explicitly listed paths are in scope.\n"
-            )
+        reason = check_path_scope(rel, root)
+        if reason:
+            block(f"BLOCKED by auto_pr_guard (rung 4) — FAIL-CLOSED.\n\n  {reason}\n")
 
     sys.exit(0)
 
