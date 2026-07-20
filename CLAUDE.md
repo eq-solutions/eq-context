@@ -1,7 +1,7 @@
 ---
 title: CLAUDE.md — Master Behavioural Contract
 owner: Royce Milmlow
-last_updated: 2026-07-11
+last_updated: 2026-07-20
 scope: Single source of truth for how every assistant (Chat, Cowork, Code, ChatGPT, Grok, any future tool) must behave when working with Royce
 read_priority: critical
 status: live
@@ -15,7 +15,7 @@ Complete, self-contained behavioural specification for any AI assistant working 
 - GitHub (canonical + serving): `github.com/eq-solutions/eq-context` (public)
 - Raw read URL: `https://raw.githubusercontent.com/eq-solutions/eq-context/main/<path>`
 
-GitHub is the substrate — source of truth and serving layer in one. The former Supabase edge cache (project `eq-solves-service-dev`, table `context_files`) was retired when that project was deleted 2026-06-22 — there is no cache and no sync step.
+GitHub is the substrate — source of truth and serving layer in one. The former Supabase edge cache is retired — see `system/infrastructure.md` for the retirement detail. There is no cache and no sync step.
 
 ---
 
@@ -191,7 +191,7 @@ The assistant MUST NOT:
 - Use real client names in **outputs** (Equinix, AirTrunk, AWS, etc.) — use "Data Centre Client A", "Tier 1 Client". Substrate files are exempt (see `ops/decisions.md` 2026-05-04).
 - Cross-deploy between EQ and SKS codebases.
 - **Act on the substrate's word for live-system state** (DB schema, applied migrations, deployed versions, key/secret status) **without verifying against the live system first.** The substrate lags reality — such claims are leads to verify, not facts. (Convention: `AUTONOMOUS-SPRINT-RULES.md` §7.)
-- **Write to the `C:\Projects` mount from the Cowork sandbox by any means other than a SINGLE FULL REWRITE.** Every other method corrupts silently and reports success: `Edit`/`Write` **truncate** (`CLAUDE.md` 308→277 lines, 2026-07-11); `cat >>` **NUL-fills** (2,628 NUL bytes into `CLAUDE.md`, 3,955 into `system/lessons.md`, same day — the file becomes binary). **Corruption can surface LATER than the write:** `CLAUDE.md` verified clean at 308 lines with an intact tail, and was binary an hour later. **Safe pattern — build the whole file in `/tmp`, verify it there, then one atomic `cp` onto the mount.** Verify with `wc -l`, `tail -2`, **and a NUL scan** — `wc -l` will NOT catch a NUL-fill, which makes the file *larger*, not smaller. Enforced at rung 4 by `hooks/pre_tool_use.py`. (`system/failures.md` F2, F6.)
+- **Write to the `C:\Projects` mount from the Cowork sandbox by any means other than a SINGLE FULL REWRITE.** Every other method corrupts silently and reports success (`Edit`/`Write` truncate, `cat >>` NUL-fills — full incident detail in `system/failures.md` F2/F6). **Safe pattern — build the whole file in `/tmp`, verify it there, then one atomic `cp` onto the mount.** Verify with `wc -l`, `tail -2`, **and a NUL scan** (a NUL-fill makes the file *larger*, not smaller — `wc -l` alone won't catch it). Enforced at rung 4 by `hooks/pre_tool_use.py`.
 
 Auth changes MUST be reviewed in chat before deployment.
 
@@ -267,7 +267,7 @@ All tools share: never push to demo branch without instruction; never deploy to 
 
 ## 12. Workstation Note
 
-Primary AI workstation: **Beelink** (Ryzen 7 7735HS, 32 GB RAM, 1 TB NVMe), exposed via Cloudflare Tunnel as `beelink.eq.solutions`. Chrome Remote Desktop from work PC (ThreatLocker blocks Tailscale).
+Primary AI workstation: **Beelink**, exposed via Cloudflare Tunnel as `beelink.eq.solutions`. Hardware spec + remote-access detail: `system/infrastructure.md` (don't restate here, it drifts).
 
 ---
 

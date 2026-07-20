@@ -1,4 +1,7 @@
 # substrate-facts.yml — machine-readable load-bearing facts for the substrate.
+# owner: Royce Milmlow · last_updated: 2026-07-20
+# (bare YAML, no --- frontmatter block — this file IS data, not prose;
+#  bump the date above whenever the expected-state list below changes)
 #
 # Checked by scripts/substrate_honesty.py (CI: .github/workflows/substrate-honesty.yml).
 #

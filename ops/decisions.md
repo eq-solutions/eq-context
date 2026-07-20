@@ -46,7 +46,7 @@ For the current built state of each system, see [system/architecture.md](https:/
 - Re-synced the existing 35 → correct SKS tenant + approved.
 - Cleanup: deleted test-pilot + Emma Curth at source; re-pointed Collin Toohey's 7 licences from his dead duplicate to his live row, removed the empty dup; **kept Daniel Bower** (not on authoritative list — confirm leaver).
 - Loaded the 32 missing (apprentices, labour-hire, missing directs/supervisors) into `jvkn.workers` (E.164 phones, mapped `eq_role`) → synced onto the SKS shelf.
-- Result: **67 staff live in EQ Field** (48 Direct / 11 Apprentice / 8 Labour Hire); 171 licences intact.
+- Result **as of 2026-06-15** (this entry's date — do not treat as current headcount): **67 staff live in EQ Field** (48 Direct / 11 Apprentice / 8 Labour Hire); 171 licences intact. For today's count see `eq/active.md`'s live-verified snapshot.
 
 **Model/schema added:** `app_data.staff.on_roster boolean default true` + exposed in `field_people` view; seeded **57 on / 10 off** (office/management off; field supervisors kept on). `on_roster` = "appears on the weekly roster as an assignable resource, independent of role." Apprentice `year_level` set for all 11.
 
@@ -65,7 +65,7 @@ For the current built state of each system, see [system/architecture.md](https:/
 
 ## 2026-06-15 — Phone Identity Deduplication: Hook Must Match by Phone, Not UUID Only
 
-**Status:** Proposed (pattern identified; fix not yet landed). Implementation target: `custom_access_token_hook` in eq-canonical migration. Related data fix: Luke Wheeler data patch 2026-06-15 (same pattern as Royce identity consolidation 2026-06-10 and SKS health check 2026-06-11).
+**Status:** Accepted — implemented and confirmed LIVE (re-verified 2026-07-20 via `pg_get_functiondef` on jvkn, not just the migration ledger). Sat marked "Proposed" for over a month despite being shipped; never updated. The live function matches Option A below plus an extra hardening the original sketch didn't have: phone-fallback matches only fire when exactly one active user has that phone (`v_match_count = 1`), and a phone-fallback match never grants `is_platform_admin` regardless of the matched `shell_control.users` row's flag — closes a privilege-escalation path the original proposal didn't consider. Related data fix: Luke Wheeler data patch 2026-06-15 (same pattern as Royce identity consolidation 2026-06-10 and SKS health check 2026-06-11).
 
 **Decision:** The `custom_access_token_hook` must match `shell_control.users` by **phone as a fallback** when the UUID lookup finds nothing. Admin back-fills (invite import, shell-exchange claim) create `auth.users` rows via non-OTP paths, storing phone as `+61XXXXXXXXX` (E.164 with +). GoTrue's native phone OTP creates a **new** `auth.users` row with a different UUID, storing phone as bare digits (`61XXXXXXXXX`, no +). The hook's UUID-only lookup fails to connect the new GoTrue row to the pre-existing `shell_control.users` row — the worker lands in notProvisioned, taps "Start my personal wallet," and a broken duplicate is silently created.
 
