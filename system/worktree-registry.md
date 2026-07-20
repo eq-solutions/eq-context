@@ -73,9 +73,9 @@ Check this file first — if your target repo/area is already claimed, coordinat
 
 ---
 
-## Recently pruned (2026-07-19 — 5 eq-shell worktrees)
+## Recently pruned (2026-07-19/20 — 6 eq-shell worktrees)
 
-Digest flagged "1 stale worktree needs cleanup"; live check found 5 eq-shell worktrees whose PRs had actually merged (the doc's own "removed"/"removable" labels on 3 of them were already correct in text but the folders hadn't physically been deleted yet; a 4th — `eq-shell-comms-polish-wt` — had a genuinely stale "NOT merged" note, since corrected above; a 5th — `frozen-window-issue-58b6b2` — was never tracked as its own row, just listed as "not evaluated"). All 5 re-verified live via `gh pr list` (not just the doc) before removal — clean working tree + no unpushed commits on every one.
+Digest flagged "1 stale worktree needs cleanup"; live check found 5 eq-shell worktrees whose PRs had actually merged (the doc's own "removed"/"removable" labels on 3 of them were already correct in text but the folders hadn't physically been deleted yet; a 4th — `eq-shell-comms-polish-wt` — had a genuinely stale "NOT merged" note, since corrected above; a 5th — `frozen-window-issue-58b6b2` — was never tracked as its own row, just listed as "not evaluated"). All re-verified live via `gh pr list` (not just the doc) before removal — clean working tree + no unpushed commits on every one. A 6th, `accept-invite-phonestub`, was left alone at first (PR #862 was genuinely still open) — its status was re-checked the next day, found merged + deployed live (commit `8cb5e9f`, confirmed via Netlify), and pruned the same way once confirmed.
 
 | Folder | Branch | Merged as |
 |--------|--------|-----------|
@@ -84,8 +84,9 @@ Digest flagged "1 stale worktree needs cleanup"; live check found 5 eq-shell wor
 | eq-shell-accessmodel-c1-wt | claude/accessmodel-cluster1-pii-gate | PR #890 (+ #885) |
 | eq-shell-comms-polish-wt | claude/comms-startby-estimate | PR #897 |
 | eq-shell-dupes-merge-wt | claude/dupes-usage-check | PR #880 |
+| .claude/worktrees/accept-invite-phonestub | claude/invite-accept-auth-id-reuse | PR #862 |
 
-Local + remote branch deletion for these 5 needed its own separate confirmation (worktree removal and branch deletion are gated separately) — done 2026-07-19: all 5 local branches deleted; 3 remote branches deleted directly, 2 (`comms-dashboard-loadtime`, `comms-startby-estimate`) had already been auto-deleted at merge time. Fully clean, nothing left behind.
+Local + remote branch deletion needed its own separate confirmation each time (worktree removal and branch deletion are gated separately, and each new instance — including the 6th, a day later — needed a fresh explicit go, not just "yes" carried over from the batch). All 6 fully clean now: local branches deleted, remote branches deleted (3 of the first 5 had already been auto-deleted at merge time; the 6th's remote branch needed an explicit retry after an initial classifier block, which cleared on its own). Nothing left behind — `git worktree list` on eq-shell shows only the root checkout.
 
 ---
 
