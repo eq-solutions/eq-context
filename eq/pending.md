@@ -14,6 +14,18 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## Will Brown's "deleted" cards + broken SKS link — plus a wider cleanup it led to (2026-07-20, DONE)
+*A worker reported his ID cards had vanished and his company connection was broken. Turned out nothing was deleted — checking it properly led to finding and clearing a stack of real, already-known, never-shipped fixes sitting in the same system.*
+- [x] **Will's cards weren't deleted — he had two separate logins and was looking at the empty one.** One login (from his phone number) had all his real cards and his SKS connection intact the whole time; a second, separate login (email/password) was empty. Moved the one card he'd re-added back onto his real account — he now has all 5 cards and his SKS connection, confirmed live. He needs to sign in with his phone number, not email/password, to see it. _(done 2026-07-20)_
+- [x] **Added a quiet safety-net so this can't happen invisibly again** — if a worker ever ends up with two disconnected logins in future, it now gets flagged for review instead of silently creating a second, empty-looking account. _(done 2026-07-20)_
+- [x] **Found the real fix already existed — just never turned on.** A pull request from 6 days earlier fixed the actual bug behind Will's case (how the invite-signup process decides whether someone already has an account), but it had sat unmerged the whole time. Merged it, confirmed it deployed live. _(done 2026-07-20)_
+- [x] **Same system had 8 more approved fixes sitting unapplied — 2 of them real, live security holes.** Anyone could read internal routing secrets for every company's account, and anyone could trigger deletion of the compliance audit trail, neither one requiring a login. Applied all 8, confirmed both security holes closed and the routine ones (a worker "profile complete %" feature, a compliance-status feature, a branding fix that was actively broken) now working. _(done 2026-07-20)_
+- [x] **Checked the rest of the company's open-but-forgotten fixes for the same pattern.** Found and flagged (not merged — no permission to merge from here): a small dependency update, a CI fix, and a cosmetic fix, all safe and just waiting on a click. _(added 2026-07-20)_
+- [x] **Found a real access gap: the AI assistant's GitHub connection can't see one of the company's repos (EQ Field) at all** — confirmed the repo is fine, it's a one-time setup gap on GitHub's side. Worth adding it to the connection's repo list so future sessions aren't blocked the same way. _(added 2026-07-20)_
+- [x] **Found something serious in SKS's own separate system while checking the above — did not touch it, handed off properly.** Full detail in `sks/pending.md`. _(added 2026-07-20)_
+
+---
+
 ## EQ Shell housekeeping — cleared out 6 finished worktrees, closed a stale error alert (2026-07-19/20, DONE)
 *Asked to check the health-monitor's flag ("1 stale worktree needs cleanup") and look at Sentry's open error list. Turned into a full sweep once the monitor's own notes turned out to be out of date in a couple of places.*
 - [x] **Checked every leftover EQ Shell working folder against GitHub directly, not just the tracking notes** — found 6 whose work had actually shipped (the notes for a couple of them were stale and said "still waiting"). Deleted all 6, plus their now-unneeded branches, only after checking each one twice and getting an explicit yes each time. Nothing lost — every one was already fully merged with no leftover changes. _(done 2026-07-19/20)_

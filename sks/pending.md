@@ -9,6 +9,12 @@ status: live
 
 # SKS Pending
 
+## Real security hole found in SKS's standalone Field system — not fixed, handed off properly (2026-07-20)
+*Found while investigating an unrelated EQ Cards issue that turned into a wider cleanup — see `eq/pending.md` for that side. This part is pure SKS, nothing touched, nothing changed.*
+- [ ] **SKS's standalone Field app (sks-nsw-labour) currently lets anyone with the app's public web address read or wipe roster/schedule/timesheet data for all ~50 SKS people — no login required.** A 4-stage fix plan already exists: Stage 1 (the identity layer) is built and sitting in an unmerged pull request, ready to activate; Stage 2 (locks data to the right company) is drafted but not run; Stage 3 (removes the open door) is drafted but has 3 known gaps that need closing first (a few tables would go offline instead of getting properly locked down); Stage 4 (final cleanup) isn't drafted yet. Nothing on SKS's live system was touched — this needs Royce's own hands per stage (setting secrets, running SQL, flipping a switch), plus review of the gaps before Stage 3 is safe. Handed off as its own task rather than half-finishing it inside an unrelated session. _(added 2026-07-20)_
+
+---
+
 ## NSW Comms — dashboard, Patrick's demo follow-up, speed fix (2026-07-17/19)
 - [x] **New overview screen, a Microsoft-jobs pipeline view, a full-screen Monday-meeting display, and a "start by" warning on Microsoft jobs** (Patrick's request from the Melbourne demo — flags the latest safe start date for a job so it doesn't put the ~53-day PO-to-finish window at risk). **Also fixed a real slow-loading complaint** — the page was making 4 separate requests at once on open; now 2. Full detail in `eq/pending.md`. _(done 2026-07-19)_
 - [ ] **Still needed: who should receive the weekly NSW Comms summary email?** Built, just needs a recipient list before it's switched on. _(added 2026-07-17)_
