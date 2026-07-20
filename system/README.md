@@ -31,6 +31,7 @@ Every canonical system file as a full URL — clickable from `/context/claude`:
 - [system/chat-bootstrap.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/chat-bootstrap.md) / [system/cowork-bootstrap.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/cowork-bootstrap.md) — tool-specific session bootstraps
 - [system/substrate-plan-v2.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/substrate-plan-v2.md) — active substrate-hardening plan (draft, pending confirmation)
 - [system/substrate-a-plus-plan.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/substrate-a-plus-plan.md) — **archived**, superseded by substrate-plan-v2.md — kept for history, not live
+- [system/auto-pr-scope.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/auto-pr-scope.md) — the leash for a future auto-PR-finding agent (ALLOW/DENY path list); enforced by `hooks/auto_pr_guard.py`, not just descriptive
 - [system/runbooks/supabase-restore-drill.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/runbooks/supabase-restore-drill.md) — Supabase restore drill runbook (narrowed 2026-07-05 to auth-restore + app-repoint)
 
 ## Files
@@ -52,6 +53,7 @@ Every canonical system file as a full URL — clickable from `/context/claude`:
 | `tenant-routing-master-key-rotation.md` | tenant_routing key rotation runbook |
 | `chat-bootstrap.md` / `cowork-bootstrap.md` | Tool-specific session bootstraps |
 | `substrate-plan-v2.md` | Active substrate-hardening plan (draft) |
+| `auto-pr-scope.md` | Leash (ALLOW/DENY paths) for a future auto-PR-finding agent — enforced by `hooks/auto_pr_guard.py` |
 | `runbooks/` | Operational runbooks |
 
 ## When to load SYSTEM

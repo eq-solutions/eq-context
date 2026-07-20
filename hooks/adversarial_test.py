@@ -140,14 +140,17 @@ failed += (not ok)
 print("=== AUTO-PR GUARD — the leash from the 2026-07-20 self-improving-substrate call ===")
 
 
-def run_guard(payload, auto_pr_mode=True, root=None):
+def run_guard(payload, auto_pr_mode=True, root=ROOT):
+    # root always pinned explicitly (default: this repo's real ROOT), matching
+    # the GATE test's existing convention below — the hook's own EQ_CONTEXT
+    # fallback is a hardcoded Windows path and silently resolves to nothing on
+    # Linux CI, which is exactly the bug an unpinned root would have hidden.
     env = dict(os.environ)
     if auto_pr_mode:
         env["EQ_AUTO_PR_MODE"] = "1"
     else:
         env.pop("EQ_AUTO_PR_MODE", None)
-    if root:
-        env["EQ_CONTEXT"] = root
+    env["EQ_CONTEXT"] = root
     p = subprocess.run([sys.executable, AUTO_PR_GUARD], input=json.dumps(payload),
                        capture_output=True, text=True, env=env)
     return p.returncode
