@@ -8,19 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-20 04:36 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-20 05:29 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-19 13:06 UTC → 2026-07-20 04:36 UTC)
+## Since last refresh (2026-07-20 04:36 UTC → 2026-07-20 05:29 UTC)
 
-- Merged: eq-shell [#886](https://github.com/eq-solutions/eq-shell/pull/886) feat(dashboard): permission-gated signals board (compliance 
-- Merged: eq-shell [#884](https://github.com/eq-solutions/eq-shell/pull/884) perf(build): split heavy vendors into cacheable chunks
-- Merged: eq-shell [#883](https://github.com/eq-solutions/eq-shell/pull/883) perf(quotes): parallelize the quote-open RPC waterfall
-- Merged: eq-shell [#880](https://github.com/eq-solutions/eq-shell/pull/880) feat(intake): usage-based survivor pick for the Sites Dupes 
-- Merged: eq-shell [#878](https://github.com/eq-solutions/eq-shell/pull/878) fix(drift): degrade gracefully on an unreachable tenant
-- Merged: eq-shell [#876](https://github.com/eq-solutions/eq-shell/pull/876) feat(intake): merge from the Sites Dupes tab (migration 0186
-- Merged: eq-shell [#867](https://github.com/eq-solutions/eq-shell/pull/867) vendor sync — eq-intake #69 (AI site-duplicate adjudicator)
-- Merged: eq-shell [#866](https://github.com/eq-solutions/eq-shell/pull/866) feat(brand): dark-background document logo (canonical + hand
-- ⚠ Needs you: 2 → 4 (new items)
+- Merged: eq-shell [#914](https://github.com/eq-solutions/eq-shell/pull/914) fix(auth): format-tolerant phone match on invite-accept stub
+- Merged: eq-shell [#888](https://github.com/eq-solutions/eq-shell/pull/888) perf(auth): parallelize verify-shell-session's independent D
+- Merged: eq-shell [#887](https://github.com/eq-solutions/eq-shell/pull/887) perf(obs): lazy-load posthog-js off the cold-open critical p
+- Merged: eq-shell [#885](https://github.com/eq-solutions/eq-shell/pull/885) feat(access): cluster 1 — enforce the 7 sensitive-read keys 
+- Merged: eq-shell [#882](https://github.com/eq-solutions/eq-shell/pull/882) fix(briefing): align quote-signal statuses to the live enum
+- Merged: eq-shell [#881](https://github.com/eq-solutions/eq-shell/pull/881) perf: capture Core Web Vitals + unsaved-changes guard (Quote
+- Merged: eq-shell [#879](https://github.com/eq-solutions/eq-shell/pull/879) chore: re-vendor eq-intake/eq-platform (merge-panel UI + sel
+- Merged: eq-shell [#877](https://github.com/eq-solutions/eq-shell/pull/877) chore: remove dead vendored eq-platform/apps scaffold
 
 ## ⚠ Needs you (4)
 
@@ -34,8 +33,8 @@ _2026-07-20 04:36 UTC · what needs your attention. Full snapshot: [suite-state.
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 0 | — |
-| eq-solves-service | ✓ success | 2d ago | 2 | 6d |
-| eq-field | ✓ success | 0d ago | 2 | 7d |
+| eq-solves-service | ✓ success | 3d ago | 2 | 6d |
+| eq-field | ✓ success | 1d ago | 2 | 7d |
 | eq-cards | ✓ success | 3d ago | 0 | — |
 | eq-solves-intake | ✓ success | 3d ago | 0 | — |
 
@@ -57,21 +56,21 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-20 | eq-shell | [#914](https://github.com/eq-solutions/eq-shell/pull/914) fix(auth): format-tolerant phone match on invite-accept stub reus |
 | 2026-07-20 | eq-shell | [#862](https://github.com/eq-solutions/eq-shell/pull/862) fix(auth): harden invite-accept auth-identity binding + orphan de |
 | 2026-07-19 | eq-shell | [#900](https://github.com/eq-solutions/eq-shell/pull/900) perf(offline): extend the unsaved-changes guard to site and invit |
 | 2026-07-19 | eq-shell | [#901](https://github.com/eq-solutions/eq-shell/pull/901) NSW Comms: cut Dashboard load-time from ~5.4s to ~2 round trips |
 | 2026-07-19 | eq-shell | [#897](https://github.com/eq-solutions/eq-shell/pull/897) NSW Comms: Start-by estimate from PO+53-day planning rule (Patric |
 | 2026-07-19 | eq-field | [#500](https://github.com/eq-solutions/eq-field/pull/500) test: guard the routing bypass that hid the 6-view grant gap |
+| 2026-07-18 | eq-shell | [#890](https://github.com/eq-solutions/eq-shell/pull/890) feat(access): gate contact PII in direct-read RPCs (cluster 1, Ph |
+| 2026-07-18 | eq-shell | [#898](https://github.com/eq-solutions/eq-shell/pull/898) perf(home): dedupe duplicate dashboard + pending-connections fetc |
 | 2026-07-18 | eq-shell | [#899](https://github.com/eq-solutions/eq-shell/pull/899) fix(security): reassert security_invoker on 3 field_* views (0187 |
 | 2026-07-18 | eq-shell | [#863](https://github.com/eq-solutions/eq-shell/pull/863) fix(auth): bound login body reads under one deadline (the #858 la |
-| 2026-07-18 | eq-shell | [#898](https://github.com/eq-solutions/eq-shell/pull/898) perf(home): dedupe duplicate dashboard + pending-connections fetc |
-| 2026-07-18 | eq-shell | [#890](https://github.com/eq-solutions/eq-shell/pull/890) feat(access): gate contact PII in direct-read RPCs (cluster 1, Ph |
 | 2026-07-18 | eq-field | [#499](https://github.com/eq-solutions/eq-field/pull/499) fix(access): field_people_iud — extend labour-hire guard to hire_ |
 | 2026-07-18 | eq-field | [#498](https://github.com/eq-solutions/eq-field/pull/498) fix(field): restore authenticated grant on 6 app_data views (ehow |
 | 2026-07-18 | eq-field | [#497](https://github.com/eq-solutions/eq-field/pull/497) feat(access): cluster 3 — server-side enforcement of field.manage |
 | 2026-07-17 | eq-shell | [#889](https://github.com/eq-solutions/eq-shell/pull/889) NSW Comms: parallel jobs-GET + resource dashboard landing view +  |
 | 2026-07-17 | eq-solves-service | [#551](https://github.com/eq-solutions/eq-service/pull/551) feat(access): cluster 3 — enforce service.reopen + service.record |
-| 2026-07-17 | eq-field | [#496](https://github.com/eq-solutions/eq-field/pull/496) feat(access): cluster 3 — enforce field.manage_roster/licences/la |
 _Showing 15 of 100 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -118,4 +117,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-20 04:36 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-20 05:29 UTC._
