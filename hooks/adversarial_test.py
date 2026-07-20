@@ -191,6 +191,22 @@ tg("missing scope file fails CLOSED (blocks, not allows)",
    guard_edit(os.path.join(d, ".github", "scripts", "x.py")), 2, root=d)
 shutil.rmtree(d, ignore_errors=True)
 
+# A move/delete's SOURCE never goes through Edit/Write — caught live while
+# actually trying to dogfood an archive/** cleanup: `git mv <root file>
+# archive/x.md` sailed through with exit 0 because only the destination
+# looked in-scope; the source (a root-level file) was never checked at all.
+tg("git mv: out-of-scope SOURCE blocked even though dest is archive/**",
+   guard_bash("git mv SKS-CUTOVER-CRITICAL-PATH.md archive/SKS-CUTOVER-CRITICAL-PATH.md"), 2)
+tg("rm: out-of-scope path blocked", guard_bash("rm SKS-CUTOVER-CRITICAL-PATH.md"), 2)
+tg("rm: in-scope path (archive/**) allowed", guard_bash("rm archive/old-thing.md"), 0)
+tg("git mv: both sides in-scope allowed", guard_bash("git mv archive/a.md archive/b.md"), 0)
+tg("chained command: benign && out-of-scope rm still blocked",
+   guard_bash("echo hi && rm SKS-CUTOVER-CRITICAL-PATH.md"), 2)
+tg("git commit message containing the word 'rm' is not a real rm (control)",
+   guard_bash('git commit -m "rm stale reference"'), 0)
+tg("npm script name containing 'cp' is not a real cp (control)",
+   guard_bash("npm run cp-assets"), 0)
+
 print()
 print("  {} passed, {} failed".format(passed, failed))
 sys.exit(1 if failed else 0)
