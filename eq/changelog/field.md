@@ -35,6 +35,22 @@ status: live
 - Investigated and confirmed **not currently live-breaking for SKS**: a later "Design B" canonical-adapter layer already routes real roster/timesheets/leave traffic around these exact views to base tables that do carry the grant (built independently, for a different reason, after the same failure class hit twice before per the adapters' own code comments). Still a primed landmine if that routing config ever changes, so fixed anyway — no app code/version bump, DB grants only.
 - Applied live to ehow via Supabase MCP on Royce's explicit go; repo record merged as PR #498.
 
+## [2026-07-19] Access-model cluster 3 — eq-field write-splits enforced end to end (SHIPPED, PRs #496/#497/#499, live)
+- Enforces the `field.manage_roster` / `field.manage_licences` / `field.manage_labour_hire` keys (shipped in `@eq-solutions/roles` v2.5.3, mirrored into Shell's Access Control page but previously enforced nowhere). All three default to manager+supervisor, so every PR here is a no-op for current users until a tenant customises Access Control — the value is making the toggles actually enforceable.
+- **#496 (client gating, live).** Verified first that licence-management and labour-hire-company aren't separate Field features — both are two text fields inside the shared Person modal — and scoped accordingly: a full permission gate on the real roster/teams write surface (`roster.js`/`teams.js`, also closing a pre-existing gap where 3 team-write functions had no guard of their own, only their modal opener did) + field-level disable on the two Person-modal inputs. The permission helper was centralised in the eager-loaded `permissions.js` after a first draft in `roster.js` threw `ReferenceError` on the standalone `teams` lazy page (loads `teams.js` without `roster.js`).
+- **#497 (server enforcement, live).** RLS policy hardening on `schedule_entries` (roster) + permission checks inside the 3 `SECURITY DEFINER` trigger functions (`field_teams_iud`/`field_team_members_iud`/`field_people_iud`, since SECURITY DEFINER bypasses base-table RLS). Validation caught a real trap: the Supabase-MCP connection runs as `postgres` (`rolbypassrls=true`), so a naive RLS test false-passes — fixed by testing under `SET LOCAL ROLE authenticated`.
+- **#499 (follow-up, live).** `field_people_iud`'s `field.manage_labour_hire` guard reverted only `NEW.agency` on an unauthorised edit, never `NEW.hire_company` — a second `app_data.staff` column any authenticated session, any role, could set via a direct API call. Fixed with the same revert pattern; verified live with a forced-rollback tamper test (employee → both columns revert; supervisor → legitimate change applies). A stale note claiming this was already fixed was checked against live and corrected.
+- Sibling eq-solves-service work shipped as PR #551 (see the Service changelog).
+
+## [2026-07-15] Pipeline manual remove/restore/delete + in-browser sample data (SHIPPED, PRs #494/#495, v3.5.330/331, live)
+- **#494 (v3.5.330) — real manual-remove for Pipeline (archive-gated + restorable + permanent delete).** SKS had no way to manually remove Pipeline data: an Archive action existed but was ungated, unaudited and one-way (a tender vanished from the board with its data untouched and no way to see it again). `discardJob`/`removeProject` now require manager access and write an audit-log entry; a new "Show archived" list with Restore; and a manager-gated, explicit-confirm "Delete permanently" reachable only from the archived list. Hard-delete cascades the tender + nominations/pending_schedule/tender_enrichment; `tender_review_decisions` (no CASCADE FK) is cleared explicitly first. A matching DELETE policy on `tender_review_decisions` was applied to the SKS-live DB (Royce's separate go on prod RLS).
+- **#495 (v3.5.331) — "Load sample data" for Pipeline / Resource Allocation / Account Explorer.** Fills all three with 12 fabricated (obviously-sample) tenders so the feature can be demoed to the internal EQ team. Nothing is fetched or written while on — reads swap to fake data locally, writes are blocked at the network layer across every save point (20+) as a backstop. Persistent banner + one-click exit. SKS-triple-gated; not click-tested live (no SKS login in-session).
+
+## [2026-07-15] Mobile header-contrast audit — one live invisible-text bug fixed (SHIPPED, PRs #492/#493, live)
+- Prompted by an SKS fix (mobile Weekly Roster header text going invisible — light background under inherited white text). Audited every table header across Contacts, Sites, Supervision, Job Numbers, Safety Report, Timesheets, Roster, Leave, Dashboard, Pipeline, Audits and Calibration.
+- **#492 — Forecast page "Project" column header (white-on-white), fixed.** The header set a light background without resetting the inherited white text, so the label was invisible at every viewport width (not mobile-only). Verified the broken vs fixed rendering side-by-side before shipping.
+- **#493 — Leave calendar weekday header (low-contrast on navy), fixed.** Opposite direction: the header left its background transparent so the navy page background showed through under dark-grey text; matched to `calendar.js`'s already-correct paired background+text. Pipeline import preview shares the pattern but was left as-is (not a mobile page, Royce's call).
+
 ## [2026-07-14] Read-only Test Equipment calibration surface (SKS-gated) (SHIPPED, PR #490, live)
 - New `scripts/calibration.js` `renderCalibration()`: a list (instrument, asset #, last calibrated, next due with overdue/near colour, status pill, certificate link) + per-item cert-history drill-in, reading canonical `app_data.asset_calibration` (embedding asset identity via the `asset_id` FK) + `app_data.asset_calibration_events`. New `sbFetchAppData()` bare-`app_data` read helper (mints the data-plane JWT + `Accept-Profile: app_data`; these tables have no `field_` twin so the generic `sbFetch` would misroute them).
 - Nav item in the Safety group (ships `display:none`), SKS-only reveal in `applyTierVisibility`, lazy-loader entry, `sw.js` precache + cache bump. Read-only, no writes, XSS-safe (`esc()` throughout). Part of the cross-repo calibration single-source consolidation (shows data once eq-service #534 backfill is applied — done). `node --check` clean; live verification needs an authenticated field session (not reproducible in sandbox).
@@ -53,6 +69,13 @@ status: live
 - **v3.5.322 (#483):** supervisor timesheet card tidy — 44px tap targets, hide empty meta divider. CSS-only.
 - Findings surfaced, not built: Pipeline/Resources already unreachable on phone; supervisor "my-hours" is a separate PIN-auth mode (feature, not reroute) — left per Royce (workers already self-submit; supervisor phone view already card-based). Open: **#4 dropdown/form-field pickers** (awaiting Royce screenshot); #1 "slow" (device + payload, needs real-device profile).
 
+## [2026-07-13] v3.5.309–316 — Mobile reflow slices + device-pass polish (SHIPPED, PRs #469/#474/#475/#476, live)
+- Companion slices to the v3.5.310–312 mobile-card work (#470/#471/#472). Each shipped to field.eq.solutions.
+- **v3.5.309 (#469) — mobile shell respects security groups.** Bottom nav / drawer / home tiles were role-blind; now gated via `EQ_PERMS` (new `applyMobileNavPerms` + home-tile gating) so labour_hire no longer sees Leave/Roster/Team/Contacts it can't action. Employee/apprentice unchanged; unresolved-role sessions never over-hidden.
+- **v3.5.314 (#474) — device-pass polish (7 fixes from Royce's phone).** Dropped the `◉` glyph that rendered as a speckle on the "this week" week-picker; **root-caused the stuck "↑ Saving…" pill** (a 4xx write threw without releasing `_pendingWriteCount` in supabase.js → hung forever; now the 4xx path clears it + a 15s watchdog for a hung fetch); symmetric ±16-week contiguous week-nav window (prev-week jumped across gaps); Labour Hire stat-card icon fix; removed a long Timesheets helper paragraph; hid the unused EQ Agent FAB; retired the Prestart dual-source banner.
+- **v3.5.315 (#475) — home launcher tiles migrated onto `.eqf-mcard`.** All 10 tiles in `home.js` carry the shared primitive; `home.css` drops the now-redundant background/border/radius (computed-style parity verified). Unifies the last of the four bespoke phone-card envelopes.
+- **v3.5.316 (#476) — mobile drawer icons → consistent Lucide.** The `#mobile-drawer` slide-up menu mixed geometric Unicode + colour emoji (misleading on a phone); swapped all 21 `.d-icon` for inline Lucide SVGs (`stroke:currentColor` so they tint with row state — navy active / green unlocked / red log-out); the manager-lock row toggles lock⇄lock-open.
+
 ## [2026-07-13] v3.5.312 — Mobile reflow slice 2: Dashboard / Job Numbers / Leave calendar → .eqf-mcard (SHIPPED, PR #472, live)
 - Three dense desktop tables that side-scrolled or squashed at 375px now dual-render a stacked phone-card view on the shared `.eqf-mcard` primitive (from v3.5.310), flipping desktop↔mobile at ≤768px via new `.eqf-mobonly`/`.eqf-deskonly` helpers.
 - Dashboard "Site Breakdown — Per Day": per-site card with a Mon–Fri crew-density count strip. Job Numbers: per-job card with status-coloured left-border + the same manager actions (shared `jnActions()`). Leave calendar: per-day agenda of only days-with-leave.
@@ -69,7 +92,7 @@ status: live
 ## [2026-07-13] Security: closed 4 automation edge functions triggerable by anonymous callers (SHIPPED, PR #463, live)
 - Added a caller-auth guard (`supabase/functions/_shared/cron-auth.ts`) to supervisor-digest / shift-events / tafe-weekly-fill; pinned tafe-weekly-fill to its own tenant (was overridable via request body); added an interim hourly abuse-cap to ts-reminder. Deployed all 4 to ehow (`--no-verify-jwt`), verified anon → 401 (×3) / 500 fail-closed (×1).
 - **CI guardrail — `tests/edge-fn-auth.test.js` (PR #465).** Fails the build if any edge function ships without a caller-auth marker; rides the existing test loop (no workflow change).
-- Dependabot for github-actions (PR #466, open at time of writing).
+- Dependabot for github-actions (PR #466 — since merged; 4 follow-up version-bump PRs #501–#504 opened and merged 2026-07-20).
 
 ## [2026-07-12] v3.5.306 — In-app Remove / Restore / Delete people lifecycle (SHIPPED, PR #462, live)
 - Fixes the archive/delete flow on canonical (SKS). Both "Archive" and "Delete permanently" only ever set `staff.active=false`, which the active-only `field_people` view hides — so removed people vanished, Restore was dead, "Show archived" was always empty, and Delete additionally wiped roster history (lossy).
@@ -90,6 +113,9 @@ status: live
 
 ## [2026-07-12] order=id 400s on id-less tables (SHIPPED, PR #460, v3.5.305, live)
 - `sbFetchAll('team_members?select=*')` and `sbFetchAll('timesheet_locks?select=*')` passed no `orderBy` → default `order=id` 400s (no `id` column: PKs `team_id,person_id` / `week_key,org_id`). Passed each PK. Both already guarded (try/catch) so they degraded silently rather than freezing — unlike SKS, where the same calls sat in an unguarded `Promise.all` and caused the v3.10.90→.92 outage. Meant to fold into #459 but that merged first; clean follow-up. SKS #59 parity.
+
+## [2026-07-12] eq tenant → Core-only sign-in, Phase 1 (config-only, no version bump)
+- `core.eq.solutions/eq/field` now signs EQ staff straight through Core with no demo PIN gate. Zero eq-field code change: the whole fix was a missing `SUPABASE_JWT_SECRET` env var on the eq-field Netlify site (`field.eq.solutions`, a separate site from SKS's `sks-nsw-labour`) → `verifySupabaseJwt()` returned null → the Shell handoff was rejected → demo-gate fallback. Royce set the secret (fingerprint verified against eq-shell's) and redeployed; smoked live. Lesson: Netlify bakes env into functions at deploy time, so an env fix does nothing until a redeploy. (The full standalone-PIN strip + supervisor-backdoor removal landed later as #461/#506, v3.5.333, 2026-07-20.)
 
 ## [2026-07-11] Undefined-name safety net completed — `no-undef` ON (SHIPPED, PR #438, v3.5.261, `b71fa16`, live)
 - Directly closes the `ReferenceError: isLeave is not defined` bug class that stranded the boot spinner (see v3.5.284 below). eq-field is build-less vanilla HTML/JS, so its self-contained flat ESLint config had `no-undef` OFF (no module graph to resolve cross-file globals) — meaning lint could not catch a call to an undeclared name. Fixed by *deriving* the globals from source: new `deriveAppGlobals()` reads every `scripts/*.js` + the inline `<script>` blocks in `index.html`/`404.html` and extracts top-level declarations, including `window.`/`self.`/`globalThis.` assignments at any indentation.
@@ -375,6 +401,9 @@ Four iterative ships turning apprentice TAFE days from a locked cell into a prep
 - Digest opt-out (DB migration, no version bump): `field_managers.digest_opt_in` writable via a digest-only INSTEAD OF trigger; 19 supervisors backfilled opted-in.
 **Deferred:** Teams wire, Safety grants + create `site_audits`, Apprentices cluster, realtime publication, `user_id` backfill (see `eq/pending.md`).
 
+## [2026-06-27] on_roster now filters the roster grid (PR #349, merged)
+- The eq-field roster grid + timesheets now honour `app_data.staff.on_roster`, hiding off-roster people (office/managers) from the roster while keeping them in Contacts. Later superseded/extended by v3.5.301 (#454, 2026-07-11), which added the full Roster + Timesheets + completion-stats hide keyed on the same flag.
+
 ## [2026-06-26] v3.5.191 — Safety docs: footer parity (page numbers + EQ Solves credit)
 **Built by:** Royce Milmlow + Claude Code
 **Changes:**
@@ -421,6 +450,10 @@ Four iterative ships turning apprentice TAFE days from a locked cell into a prep
 - PIN Management hidden (`nav-pins`) — individual worker PIN feature is orphaned without the labour hire login tier.
 
 ---
+
+## [2026-06-15] v3.5.148 — SKS Field showed nothing: stale JWT_INPLACE_TENANTS routing (PR #289, merged)
+- SKS Field loaded no data because `JWT_INPLACE_TENANTS={'sks'}` was stale — it routed SKS reads to `public.*` on ehow (0 SKS rows, no `authenticated` grant) instead of the canonical `app_data.field_*` twin path where the data lives. Removed `'sks'` (verified live bundle = `new Set([])`). Console 403s had confirmed the data-JWT mints fine (`role=authenticated`) — it was just pointed at the wrong tables.
+- Also restored the `app_data.field_people` SELECT grant on ehow (lost when the view was recreated for the new `on_roster` column) and set apprentice `year_level`. Live result: EQ Field staff 0 → 67 (48 Direct / 11 Apprentice / 8 Labour Hire), 171 licences intact.
 
 ## [2026-06-15] v3.5.147 — Canonical worker write (PR #288, merged)
 **Built by:** Royce Milmlow + Claude Code
