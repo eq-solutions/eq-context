@@ -14,6 +14,15 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## EQ Shell housekeeping — cleared out 6 finished worktrees, closed a stale error alert (2026-07-19/20, DONE)
+*Asked to check the health-monitor's flag ("1 stale worktree needs cleanup") and look at Sentry's open error list. Turned into a full sweep once the monitor's own notes turned out to be out of date in a couple of places.*
+- [x] **Checked every leftover EQ Shell working folder against GitHub directly, not just the tracking notes** — found 6 whose work had actually shipped (the notes for a couple of them were stale and said "still waiting"). Deleted all 6, plus their now-unneeded branches, only after checking each one twice and getting an explicit yes each time. Nothing lost — every one was already fully merged with no leftover changes. _(done 2026-07-19/20)_
+- [x] **Looked into a live error alert about EQ Field not loading properly inside the Shell** — traced it to a real but already-handled situation: a slow connection let a one-time sign-in pass expire before the person's device finished loading, and the app's own automatic retry quietly fixed it. Not a new bug, not urgent — the system already does the right thing here. _(done 2026-07-19)_
+- [x] **Found and closed a second error alert that was actually already fixed** — a "stuck sign-in spinner" bug had a fix shipped and live for several days, but nobody had told the error-tracking system it was resolved, so it still looked like an open problem. Confirmed the fix really is live, then marked it resolved with a note explaining why. _(done 2026-07-19)_
+- [ ] **Still open, not urgent:** the exact reason EQ Field was slow to load for that one person on 2026-07-19 is unconfirmed — likely just a poor connection, but couldn't fully rule out anything worse. Nothing else has reported it since. _(added 2026-07-19)_
+
+---
+
 ## NSW Comms — resource dashboard, demo follow-up, and a real speed fix (2026-07-17/19, MERGED + LIVE)
 *Asked to polish NSW Comms: it was slow to load and Royce wanted a resource-overview screen up front instead of the raw job list. Built that, then Patrick (runs Microsoft's Sydney account from Melbourne) saw a demo and asked for one more thing; a couple of days later Royce reported the whole page was still "VERY slow" and asked what could be done — that turned out to need actual measurement, not a guess.*
 - [x] **New "Dashboard" screen — now the first thing you see opening NSW Comms.** This week's crew capacity, which sites are short a crew, a Microsoft-jobs pipeline count (MOP received → pre-cable → post-dock → invoiced), and a list of anything needing attention — click any job to open and edit it directly. Also added a full-screen "Present" view for showing the Monday meeting on a shared screen, and a weekly summary email (built, but not switched on yet — needs a list of who should receive it). _(done 2026-07-17, live)_
