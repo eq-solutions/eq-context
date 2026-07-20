@@ -8,23 +8,23 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-20 05:29 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-20 10:10 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-20 04:36 UTC → 2026-07-20 05:29 UTC)
+## Since last refresh (2026-07-20 05:29 UTC → 2026-07-20 10:10 UTC)
 
-- Merged: eq-shell [#914](https://github.com/eq-solutions/eq-shell/pull/914) fix(auth): format-tolerant phone match on invite-accept stub
-- Merged: eq-shell [#888](https://github.com/eq-solutions/eq-shell/pull/888) perf(auth): parallelize verify-shell-session's independent D
-- Merged: eq-shell [#887](https://github.com/eq-solutions/eq-shell/pull/887) perf(obs): lazy-load posthog-js off the cold-open critical p
-- Merged: eq-shell [#885](https://github.com/eq-solutions/eq-shell/pull/885) feat(access): cluster 1 — enforce the 7 sensitive-read keys 
-- Merged: eq-shell [#882](https://github.com/eq-solutions/eq-shell/pull/882) fix(briefing): align quote-signal statuses to the live enum
-- Merged: eq-shell [#881](https://github.com/eq-solutions/eq-shell/pull/881) perf: capture Core Web Vitals + unsaved-changes guard (Quote
-- Merged: eq-shell [#879](https://github.com/eq-solutions/eq-shell/pull/879) chore: re-vendor eq-intake/eq-platform (merge-panel UI + sel
-- Merged: eq-shell [#877](https://github.com/eq-solutions/eq-shell/pull/877) chore: remove dead vendored eq-platform/apps scaffold
+- Merged: eq-solves-intake [#74](https://github.com/eq-solutions/eq-solves-intake/pull/74) fix: backport two eq-shell-only fixes into source
+- Merged: eq-solves-intake [#73](https://github.com/eq-solutions/eq-solves-intake/pull/73) feat(intake): usage-based survivor pick for the Sites Dupes 
+- Merged: eq-solves-intake [#72](https://github.com/eq-solutions/eq-solves-intake/pull/72) feat(intake): wire the merge-panel UI into IntakeHealthHome
+- Merged: eq-solves-intake [#71](https://github.com/eq-solutions/eq-solves-intake/pull/71) feat(intake): flagSitePairForMerge client wrapper
+- Merged: eq-solves-intake [#70](https://github.com/eq-solutions/eq-solves-intake/pull/70) feat(intake): site merge preview + execute client wrappers
+- Merged: eq-solves-intake [#69](https://github.com/eq-solutions/eq-solves-intake/pull/69) feat(intake): AI adjudicator — Claude suggests a verdict + r
+- Merged: eq-solves-intake [#68](https://github.com/eq-solutions/eq-solves-intake/pull/68) feat(intake): adjudicable console — capture the human verdic
+- Merged: eq-solves-intake [#67](https://github.com/eq-solutions/eq-solves-intake/pull/67) feat(intake): adjudication console — surface what the write-
 
 ## ⚠ Needs you (4)
 
-- 🟠 **PR aging 7d** — eq-field [#466](https://github.com/eq-solutions/eq-field/pull/466) "chore(ci): enable Dependabot for GitHub Actions"
-- 🟠 **PR aging 7d** — eq-field [#461](https://github.com/eq-solutions/eq-field/pull/461) "feat(auth): EQ tenant is Core-only — close the demo login gate (v3.5.3"
+- 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
+- 🔴 **Open security finding** — SEC-9 (P0 — confirmed exposure, same window as SEC-3) — A different service_role key (`jvkn`/eq-canonical) was pasted directly into a ch · [security-register.md](ops/security-register.md)
 - 🟠 **Sentry new error** — `eq-cards` [minified:iu: ServerFailure(23502): null value in column "wor](https://eq-solutions.sentry.io/issues/135305974/)
 - 🟡 **1 stale worktree** need cleanup — [worktree-registry.md](system/worktree-registry.md)
 
@@ -32,10 +32,10 @@ _2026-07-20 05:29 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 0 | — |
-| eq-solves-service | ✓ success | 3d ago | 2 | 6d |
-| eq-field | ✓ success | 1d ago | 2 | 7d |
-| eq-cards | ✓ success | 3d ago | 0 | — |
+| eq-shell | ? unknown | ? | 0 | — |
+| eq-solves-service | ? unknown | ? | 0 | — |
+| eq-field | ? unknown | ? | 0 | — |
+| eq-cards | ? unknown | ? | 0 | — |
 | eq-solves-intake | ✓ success | 3d ago | 0 | — |
 
 ## Live errors (Sentry)
@@ -56,39 +56,34 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
-| 2026-07-20 | eq-shell | [#914](https://github.com/eq-solutions/eq-shell/pull/914) fix(auth): format-tolerant phone match on invite-accept stub reus |
-| 2026-07-20 | eq-shell | [#862](https://github.com/eq-solutions/eq-shell/pull/862) fix(auth): harden invite-accept auth-identity binding + orphan de |
-| 2026-07-19 | eq-shell | [#900](https://github.com/eq-solutions/eq-shell/pull/900) perf(offline): extend the unsaved-changes guard to site and invit |
-| 2026-07-19 | eq-shell | [#901](https://github.com/eq-solutions/eq-shell/pull/901) NSW Comms: cut Dashboard load-time from ~5.4s to ~2 round trips |
-| 2026-07-19 | eq-shell | [#897](https://github.com/eq-solutions/eq-shell/pull/897) NSW Comms: Start-by estimate from PO+53-day planning rule (Patric |
-| 2026-07-19 | eq-field | [#500](https://github.com/eq-solutions/eq-field/pull/500) test: guard the routing bypass that hid the 6-view grant gap |
-| 2026-07-18 | eq-shell | [#890](https://github.com/eq-solutions/eq-shell/pull/890) feat(access): gate contact PII in direct-read RPCs (cluster 1, Ph |
-| 2026-07-18 | eq-shell | [#898](https://github.com/eq-solutions/eq-shell/pull/898) perf(home): dedupe duplicate dashboard + pending-connections fetc |
-| 2026-07-18 | eq-shell | [#899](https://github.com/eq-solutions/eq-shell/pull/899) fix(security): reassert security_invoker on 3 field_* views (0187 |
-| 2026-07-18 | eq-shell | [#863](https://github.com/eq-solutions/eq-shell/pull/863) fix(auth): bound login body reads under one deadline (the #858 la |
-| 2026-07-18 | eq-field | [#499](https://github.com/eq-solutions/eq-field/pull/499) fix(access): field_people_iud — extend labour-hire guard to hire_ |
-| 2026-07-18 | eq-field | [#498](https://github.com/eq-solutions/eq-field/pull/498) fix(field): restore authenticated grant on 6 app_data views (ehow |
-| 2026-07-18 | eq-field | [#497](https://github.com/eq-solutions/eq-field/pull/497) feat(access): cluster 3 — server-side enforcement of field.manage |
-| 2026-07-17 | eq-shell | [#889](https://github.com/eq-solutions/eq-shell/pull/889) NSW Comms: parallel jobs-GET + resource dashboard landing view +  |
-| 2026-07-17 | eq-solves-service | [#551](https://github.com/eq-solutions/eq-service/pull/551) feat(access): cluster 3 — enforce service.reopen + service.record |
-_Showing 15 of 100 · full record in [sessions/](sessions/)_
+| 2026-07-16 | eq-solves-intake | [#73](https://github.com/eq-solutions/eq-solves-intake/pull/73) feat(intake): usage-based survivor pick for the Sites Dupes tab |
+| 2026-07-16 | eq-solves-intake | [#74](https://github.com/eq-solutions/eq-solves-intake/pull/74) fix: backport two eq-shell-only fixes into source |
+| 2026-07-16 | eq-solves-intake | [#72](https://github.com/eq-solutions/eq-solves-intake/pull/72) feat(intake): wire the merge-panel UI into IntakeHealthHome |
+| 2026-07-16 | eq-solves-intake | [#71](https://github.com/eq-solutions/eq-solves-intake/pull/71) feat(intake): flagSitePairForMerge client wrapper |
+| 2026-07-15 | eq-solves-intake | [#70](https://github.com/eq-solutions/eq-solves-intake/pull/70) feat(intake): site merge preview + execute client wrappers |
+| 2026-07-14 | eq-solves-intake | [#69](https://github.com/eq-solutions/eq-solves-intake/pull/69) feat(intake): AI adjudicator — Claude suggests a verdict + reason |
+| 2026-07-14 | eq-solves-intake | [#68](https://github.com/eq-solutions/eq-solves-intake/pull/68) feat(intake): adjudicable console — capture the human verdict on  |
+| 2026-07-13 | eq-solves-intake | [#67](https://github.com/eq-solutions/eq-solves-intake/pull/67) feat(intake): adjudication console — surface what the write-time  |
+| 2026-07-13 | eq-solves-intake | [#66](https://github.com/eq-solutions/eq-solves-intake/pull/66) fix(intake): duplicate detector was blind to inactive rows — the  |
+_9 merges · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **A cosmetic app-crash message (unrelated) is still open, low priority** — a rendering hiccup that's been intermittently appearing since 2026-07-13, not something from today's work. Not investigated further. _(added 2026-07-20)_
+- **Last step: the access key itself needs to be re-entered correctly.** The new connection is wired up and reaching GitHub, but currently rejects the specific key that was entered — likely a copy/paste slip (extra space, truncated, or an old/expired one). Once re-pasted correctly, this should fully close out the whole GitHub-access saga. _(added 2026-07-20)_
+- **Note for the record: one repo (EQ Shell) got switched from public to private today as a side effect of testing this** — confirmed intentional at the time, but worth double-checking it's still meant to be that way. Also worth knowing: several other company repos (EQ Context, EQ UI, EQ Quotes, EQ Contracts, the old SKS labour app, and a couple of smaller internal libraries) have been sitting fully public — readable by anyone on the internet with no login — for as long as this was checked. Given the private-repo requirement from SKS, worth a deliberate look at whether those should be private too. _(added 2026-07-20)_
+- **Still open, not urgent:** the exact reason EQ Field was slow to load for that one person on 2026-07-19 is unconfirmed — likely just a poor connection, but couldn't fully rule out anything worse. Nothing else has reported it since. _(added 2026-07-19)_
 - **Deferred: who should get the weekly summary email?** Built and ready, just needs a recipient list from Royce before it's switched on. _(added 2026-07-17)_
 - **Declined for now (Royce's call): a personal calendar feed per crew member, and a weather warning near Microsoft dock dates.** Offered as options alongside the above; not built. _(added 2026-07-17)_
 - **Deferred: remove the legacy public-read grant across all 7 related views**, as one deliberate, scoped cleanup rather than piecemeal — only if Royce wants that extra hardening on top of the row-level-security fix already live. _(added 2026-07-19)_
 - **Deferred: bigger first-load speedup** — breaking one large file into smaller pieces that only load when needed. Real win, but a bigger change that needs a hands-on check, not just automated tests. _(added 2026-07-19)_
 - **Deferred: extend the "you'll lose this" warning** to other forms — site details, invites, admin settings. Currently only on quotes. _(added 2026-07-19)_
 - **Deferred: make long lists load a page at a time** instead of everything at once (quotes, comms roster, staff, customers). _(added 2026-07-19)_
-- **Now in scope, not yet built: extend the "you'll lose this" warning to more forms** (site details, invites, admin settings — currently only quotes), a plain "you're offline" banner when the connection drops, and re-checking sign-in status automatically when someone comes back to a tab left open a while. _(added 2026-07-19)_
-- **Royce to eyeball the live dashboard signed in** — the endpoint/bundle/error-monitoring checks are all clean, but only a signed-in pass confirms the three bands render correctly and the rostered-but-lapsed join surfaces real people. _(added 2026-07-17)_
-- **Gate keys are interim** (`field.view`/`service.view`) — swap to the cluster-1 granular keys (`field.view_licences` etc., PR #885, concurrent session) once that ships. _(added 2026-07-17)_
-- **Phase 2 deferred: crew-demand overlay.** Needs a `crew_required` column added to `app_data.jobs` (One Pipe migration, both planes) so the "can we staff what we've won" verdict has a real demand side — supply side (deployable crew) is live now, demand isn't wired yet. _(added 2026-07-16)_
-_…and 364 more · [eq/pending.md](eq/pending.md)_
+_…and 363 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
+- **SKS's standalone Field app (sks-nsw-labour) currently lets anyone with the app's public web address read or wipe roster/schedule/timesheet data for all ~50 SKS people — no login required.** A 4-stage fix plan already exists: Stage 1 (the identity layer) is built and sitting in an unmerged pull request, ready to activate; Stage 2 (locks data to the right company) is drafted but not run; Stage 3 (removes the open door) is drafted but has 3 known gaps that need closing first (a few tables would go offline instead of getting properly locked down); Stage 4 (final cleanup) isn't drafted yet. Nothing on SKS's live system was touched — this needs Royce's own hands per stage (setting secrets, running SQL, flipping a switch), plus review of the gaps before Stage 3 is safe. Handed off as its own task rather than half-finishing it inside an unrelated session. _(added 2026-07-20)_
 - **Still needed: who should receive the weekly NSW Comms summary email?** Built, just needs a recipient list before it's switched on. _(added 2026-07-17)_
 - **Not done: live-demo readiness check** (data cleanliness / no visible errors on whatever screen gets shown) — offered, awaiting Royce's go. _(added 2026-07-16)_
 - **Standalone `sks-nsw-labour` retirement** — NOTE: app is still receiving active feature work as of 2026-06-26 (PRs #32–#54 merged in June). 'Keep warm' understates current investment. Retirement gating question is still open — confirm with Royce whether ehow Field has superseded the standalone app before setting a retirement date. **PIN audit 2026-07-05 (Royce-confirmed):** this repo has its own independent login/PIN system, still actively used — a completely different codebase from eq-field, not affected by eq-field's own PIN-gate retirement below.
@@ -98,18 +93,17 @@ _…and 364 more · [eq/pending.md](eq/pending.md)_
 - **Security groups Phase 2–5** — wire group perms into session, `AdminSecurityGroups` page, first real `user_security_groups` row for a SKS user.
 - Royce to independently click-through-confirm the Weekends toggle, roster names, and both safety forms live (smoke-tested remotely, not yet confirmed by Royce beyond the original repros) _(added 2026-07-03)_
 - **Reverse-angle gap (independent read-only pass 2026-07-05):** 9 legacy `people` rows have a canonical twin already but `people.canonical_id` is still NULL — matched live by phone+email vs jvkn `workers`: Louisa Cardinale, Matthew Khreich, Andre de Biasi, Damon Francis, Timothy Chapman, Bruno Pedrosa, Eric Nguyen (phone-only), Liam Holmgreen, Sam Powell. Back-link write not yet run; handed to the concurrent console actioning this batch (Royce copy-pasted the id list). Low-risk `UPDATE people SET canonical_id=… WHERE id=…` on nspb _(added 2026-07-05)_
-- **Anthony Hartley correction**: not actually a violation of the 2026-07-05 "never touch it" plan — re-checked live. His canonical worker id `098e4bff-…` (the one documented as "dead weight, exclude, no hard-archive field") is still there, untouched, exactly as decided — it's referenced from his current live `app_data.staff` row. What got hard-deleted was a *different* duplicate, at the `app_data.staff` (Service/ehow) layer, not the canonical-worker (jvkn) layer the 2026-07-05 decision was about. No action needed.
 _…and 56 more · [sks/pending.md](sks/pending.md)_
 
 ## Recent sessions
 
 | Date | Session |
 |------|---------|
+| 2026-07-20 | [invite-accept duplicate-identity follow-up: root cause disproven, hardening shipped + deployed, then a real lead found via Sentry](sessions/2026-07-20.md) |
 | 2026-07-19 | [Digest sweep: two Sentry issues root-caused, one real fix shipped + verified live](sessions/2026-07-19.md) |
 | 2026-07-17 | [AI brief's quote signals were silently zero for SKS; realigned to the live enum, guarded, shipped live](sessions/2026-07-17.md) |
 | 2026-07-16 | [verified migration 0185 live, explained the merge feature's location, seeded a real demo pair](sessions/2026-07-16.md) |
 | 2026-07-15 | [EQ Service: fixed empty NSX/ACB testing lists in the Shell iframe + Field Run-Sheet dropping recorded breaker data](sessions/2026-07-15.md) |
-| 2026-07-14 | [Merged + deployed the intake vendor-sync and the xlsx security fix](sessions/2026-07-14.md) |
 _[sessions/](sessions/) · 5 shown_
 
 ## Substrate honesty
@@ -117,4 +111,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-20 05:29 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-20 10:10 UTC._
