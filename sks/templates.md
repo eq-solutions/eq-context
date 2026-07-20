@@ -78,21 +78,14 @@ check here first — don't reinvent.
 
 ## Client Context Blocks
 
-Reusable context blocks for the three primary client relationships.
-Paste the relevant block at session start when producing documents for that client.
+**Client facts (sites, contacts, terminology, contract basis) now live in `sks/active.md` → "Client Conventions"** — that file is the live-state snapshot, this one is templates. Read that section before producing documents for Equinix or Schneider. Only template-specific detail stays here:
 
 ### Equinix Australia
-- Sites: SY5 (St Peters), SY6 (Ultimo)
 - Submission: Word doc, SKS branded, itemised scope + exclusions
-- Terminology: IBX, CUFT, MOP, ITP — always use Equinix terminology
 - Change management: Reference IBX site code in subject/title, include revision block
-- Contract basis: MSA in place, variations as lump sum unless directed
-- Procurement via: Erilyan (contract administrator) — Sabrina Lowe, Daniel Palmer
 
 ### Schneider Electric
-- Role: Schneider is principal contractor on data centre projects
 - Document types: Subcontractor quotes, MOPs/JSAs, commissioning packs, variation claims
-- Terminology: Align to Schneider project numbering and WBS structure
 
 ### SKS Internal
 - Document types: QA packages/ITPs, site safety packs, operational SOPs, training records

@@ -491,8 +491,20 @@ def build():
     total_recent = len(recent_all)
     recent_display = recent_all[:RECENT_PR_LIMIT]
 
-    # Pending open items
-    eq_pending = pending_open_items("eq/pending.md")
+    # Pending open items — drop any item that names a PR already in this cycle's
+    # Merged list. pending.md items get ticked off by hand at session-close, so a
+    # PR can merge and be listed above as Merged while the same session's stale
+    # "- [ ] ..." line hasn't been ticked yet — same digest, contradicting itself.
+    merged_pr_nums = {
+        f"#{pr['num']}"
+        for prs in recent_by_repo.values()
+        for pr in prs
+    }
+
+    def _drop_merged(items):
+        return [item for item in items if not any(num in item for num in merged_pr_nums)]
+
+    eq_pending = _drop_merged(pending_open_items("eq/pending.md"))
 
     # ── render ──
     lines = []
@@ -625,7 +637,7 @@ def build():
     lines.append("")
 
     # Pending open items (EQ + SKS)
-    sks_pending = pending_open_items("sks/pending.md")
+    sks_pending = _drop_merged(pending_open_items("sks/pending.md"))
     for label, items, path in [("EQ", eq_pending, "eq/pending.md"), ("SKS", sks_pending, "sks/pending.md")]:
         if not items:
             continue
