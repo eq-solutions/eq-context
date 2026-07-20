@@ -212,5 +212,3 @@ $empty = "$env:TEMP\empty_rob"; New-Item -ItemType Directory $empty -Force | Out
 robocopy $empty "C:\Projects\<folder>" /MIR /NFL /NDL /NJH /NJS /NP
 Remove-Item "C:\Projects\<folder>" -Recurse -Force
 ```
-
-*Last updated: 2026-06-22*

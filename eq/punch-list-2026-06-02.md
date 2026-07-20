@@ -50,8 +50,8 @@ Detailed steps below kept for reference.
 - **Verify first:** this value is the `org_id` in the **Field** DB (`ktmjmdzqrogauaevbktn`) `app_config` rows — confirm it matches before saving. (Note: eq-canonical's "EQ Solutions" org/tenant UUIDs are *different* control-plane IDs — don't use those here.)
 - **Unblocks:** U6 — PIN read from Supabase `app_config` instead of plaintext env vars. Without it `verify-pin.js` silently skips the lookup.
 
-### 2. Rotate the exposed sks-canonical service_role key
-- **STILL OPEN, re-checked 2026-07-20** — no completion note anywhere in the substrate; the F1 runbook's live-key check (2026-06-03) showed the key unrotated since 2026-05-24. Now tracked as **SEC-3** in `ops/security-register.md` — check there for current status, don't duplicate tracking here.
+### 2. Rotate the (probably not actually exposed) sks-canonical service_role key
+- **DOWNGRADED 2026-07-20** — investigated, no confirmed leak vector anywhere in the substrate; the "exposed" framing traces back to the key just being unrotated, not a documented incident. A later 06-07 analysis independently reached the same conclusion ("no live exposure today"). Now tracked as **SEC-3** in `ops/security-register.md`, hygiene priority not P0 — check there for current status, don't duplicate tracking here.
 - **Where:** Supabase → `sks-canonical` (`ehowgjardagevnrluult`) → Settings → API → Service role key → **Rotate**.
 - **Then propagate the new key to its 2 consumers:**
   - **eq-shell tenant routing** — re-encrypt + UPDATE the SKS row in `shell_control.tenant_routing` (needs `TENANT_ROUTING_MASTER_KEY`; pattern in `eq-shell/scripts/provision-tenant.mjs`).
