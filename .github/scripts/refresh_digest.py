@@ -282,6 +282,43 @@ def worktree_stale_count(registry_path="system/worktree-registry.md"):
     return count
 
 
+def security_open_critical(path="ops/security-register.md"):
+    """P0/P1 findings still genuinely open in the security register.
+
+    'Open' means the Status cell starts with OPEN/STILL OPEN — not SCHEDULED
+    (already queued) and not VERIFIED (already assessed safe). A confirmed P0
+    that only ever reaches this file, never the channel actually read every
+    session, is a real gap the register alone can't close — see SEC-1, which
+    sat unescalated for weeks despite the register itself calling it correctly.
+    Returns [(id, one_line_summary), ...].
+    """
+    try:
+        with open(path, encoding="utf-8") as f:
+            lines = f.readlines()
+    except FileNotFoundError:
+        return []
+    found = []
+    for line in lines:
+        if not line.strip().startswith("| SEC-"):
+            continue
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        if len(cells) < 5:
+            continue
+        sec_id, severity, finding, _project, status = cells[:5]
+        # Match only the LEADING rating (e.g. "P0" in "**P0 — live PII leak**"),
+        # never a substring anywhere in the cell — SEC-3's own severity text
+        # contains "downgraded from P0" in its explanation, which a bare
+        # search() would wrongly re-flag as a live P0.
+        sev_clean = severity.lstrip("*").strip()
+        if not re.match(r"P[01]\b", sev_clean, re.I):
+            continue
+        status_plain = status.lstrip("*").strip()
+        if not re.match(r"(still open|open)\b", status_plain, re.I):
+            continue
+        found.append((sec_id, f"{sec_id} ({sev_clean.rstrip('*').strip()}) — {finding[:80]}"))
+    return found
+
+
 def deploy_state(site):
     """(state, published_date) for a Netlify site's last deploy. Token-gated."""
     if not NETLIFY_TOKEN:
@@ -480,6 +517,10 @@ def build():
     if ok is False:
         for issue in issues:
             attention.append(("🔴", f"**Substrate drift** — {issue}"))
+
+    for sec_id, text in security_open_critical():
+        attention.append(("🔴", f"**Open security finding** — {text} · "
+                                 f"[security-register.md](ops/security-register.md)"))
 
     # Flatten + sort recently merged; cap for display
     recent_all = [
