@@ -8,23 +8,17 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-20 10:10 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-20 11:38 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-20 05:29 UTC → 2026-07-20 10:10 UTC)
+## Since last refresh (2026-07-20 10:10 UTC → 2026-07-20 11:38 UTC)
 
-- Merged: eq-solves-intake [#74](https://github.com/eq-solutions/eq-solves-intake/pull/74) fix: backport two eq-shell-only fixes into source
-- Merged: eq-solves-intake [#73](https://github.com/eq-solutions/eq-solves-intake/pull/73) feat(intake): usage-based survivor pick for the Sites Dupes 
-- Merged: eq-solves-intake [#72](https://github.com/eq-solutions/eq-solves-intake/pull/72) feat(intake): wire the merge-panel UI into IntakeHealthHome
-- Merged: eq-solves-intake [#71](https://github.com/eq-solutions/eq-solves-intake/pull/71) feat(intake): flagSitePairForMerge client wrapper
-- Merged: eq-solves-intake [#70](https://github.com/eq-solutions/eq-solves-intake/pull/70) feat(intake): site merge preview + execute client wrappers
-- Merged: eq-solves-intake [#69](https://github.com/eq-solutions/eq-solves-intake/pull/69) feat(intake): AI adjudicator — Claude suggests a verdict + r
-- Merged: eq-solves-intake [#68](https://github.com/eq-solutions/eq-solves-intake/pull/68) feat(intake): adjudicable console — capture the human verdic
-- Merged: eq-solves-intake [#67](https://github.com/eq-solutions/eq-solves-intake/pull/67) feat(intake): adjudication console — surface what the write-
+- ⚠ Needs you: 4 → 5 (new items)
 
-## ⚠ Needs you (4)
+## ⚠ Needs you (5)
 
 - 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-9 (P0 — confirmed exposure, same window as SEC-3) — A different service_role key (`jvkn`/eq-canonical) was pasted directly into a ch · [security-register.md](ops/security-register.md)
+- 🔴 **Open security finding** — SEC-10 (P0 — confirmed exposure) — `ANTHROPIC_API_KEY` + `RESEND_API_KEY` stored as plaintext Netlify env vars (`is · [security-register.md](ops/security-register.md)
 - 🟠 **Sentry new error** — `eq-cards` [minified:iu: ServerFailure(23502): null value in column "wor](https://eq-solutions.sentry.io/issues/135305974/)
 - 🟡 **1 stale worktree** need cleanup — [worktree-registry.md](system/worktree-registry.md)
 
@@ -64,22 +58,21 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-14 | eq-solves-intake | [#69](https://github.com/eq-solutions/eq-solves-intake/pull/69) feat(intake): AI adjudicator — Claude suggests a verdict + reason |
 | 2026-07-14 | eq-solves-intake | [#68](https://github.com/eq-solutions/eq-solves-intake/pull/68) feat(intake): adjudicable console — capture the human verdict on  |
 | 2026-07-13 | eq-solves-intake | [#67](https://github.com/eq-solutions/eq-solves-intake/pull/67) feat(intake): adjudication console — surface what the write-time  |
-| 2026-07-13 | eq-solves-intake | [#66](https://github.com/eq-solutions/eq-solves-intake/pull/66) fix(intake): duplicate detector was blind to inactive rows — the  |
-_9 merges · full record in [sessions/](sessions/)_
+_8 merges · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **A cosmetic app-crash message (unrelated) is still open, low priority** — a rendering hiccup that's been intermittently appearing since 2026-07-13, not something from today's work. Not investigated further. _(added 2026-07-20)_
-- **Last step: the access key itself needs to be re-entered correctly.** The new connection is wired up and reaching GitHub, but currently rejects the specific key that was entered — likely a copy/paste slip (extra space, truncated, or an old/expired one). Once re-pasted correctly, this should fully close out the whole GitHub-access saga. _(added 2026-07-20)_
-- **Note for the record: one repo (EQ Shell) got switched from public to private today as a side effect of testing this** — confirmed intentional at the time, but worth double-checking it's still meant to be that way. Also worth knowing: several other company repos (EQ Context, EQ UI, EQ Quotes, EQ Contracts, the old SKS labour app, and a couple of smaller internal libraries) have been sitting fully public — readable by anyone on the internet with no login — for as long as this was checked. Given the private-repo requirement from SKS, worth a deliberate look at whether those should be private too. _(added 2026-07-20)_
-- **Still open, not urgent:** the exact reason EQ Field was slow to load for that one person on 2026-07-19 is unconfirmed — likely just a poor connection, but couldn't fully rule out anything worse. Nothing else has reported it since. _(added 2026-07-19)_
-- **Deferred: who should get the weekly summary email?** Built and ready, just needs a recipient list from Royce before it's switched on. _(added 2026-07-17)_
-- **Declined for now (Royce's call): a personal calendar feed per crew member, and a weather warning near Microsoft dock dates.** Offered as options alongside the above; not built. _(added 2026-07-17)_
-- **Deferred: remove the legacy public-read grant across all 7 related views**, as one deliberate, scoped cleanup rather than piecemeal — only if Royce wants that extra hardening on top of the row-level-security fix already live. _(added 2026-07-19)_
-- **Deferred: bigger first-load speedup** — breaking one large file into smaller pieces that only load when needed. Real win, but a bigger change that needs a hands-on check, not just automated tests. _(added 2026-07-19)_
-- **Deferred: extend the "you'll lose this" warning** to other forms — site details, invites, admin settings. Currently only on quotes. _(added 2026-07-19)_
-- **Deferred: make long lists load a page at a time** instead of everything at once (quotes, comms roster, staff, customers). _(added 2026-07-19)_
-_…and 363 more · [eq/pending.md](eq/pending.md)_
+- **Whether to actually build the "QR code for on-site sign-in" feature, or drop it for good.** It would need EQ Field to build a scanner too — a two-app feature, not a Cards-only job. Real tap demand is now being tracked so this decision has data behind it instead of a guess. _(added 2026-07-20)_
+- **Why roughly a third of Shell-embedded sign-ins don't cleanly land in the wallet — now measured, not yet fixed.** The likely fix touches EQ Shell's side of the handshake too, and it's part of the sign-in flow, so it needs a deliberate decision rather than a quiet patch. _(added 2026-07-20)_
+- **A longer list of smaller polish items from the same audit, not yet actioned:** inconsistent colours/spacing in a couple of screens, a few screens that don't resize well on a desktop browser, some smaller error-handling gaps, and roughly half the app's features have no automated tests at all. Lower urgency than what got fixed this session. _(added 2026-07-20)_
+- **Demo account/data still needs a proper rebuild whenever there's time for it** — matching what the site used to advertise (a small sample company with a few sites and some completed inspections) so prospects can click "try the demo" and see something real again. Not urgent; the button that pointed to it is gone for now. _(added 2026-07-20)_
+- **Two small, low-value items looked at and deliberately left alone**: a handful of unused database indexes and a couple of overlapping row-check rules — real but minor, and touching them risked more than they'd save. _(added 2026-07-20)_
+- **One dependency has a known minor security note with no real fix available** — fixing it would mean rolling the spreadsheet-import library back several versions, which would break more than it protects. Left as-is and documented. _(added 2026-07-20)_
+- **Melbourne / second-tenant status — needs Royce's direct confirmation.** Two audits ago this was the active enterprise target; current evidence (only shows up in month-old archived planning docs now) suggests it's gone quiet. Matters because it determines whether the next sprint should harden SKS further or prep onboarding for a new tenant. _(added 2026-07-20)_
+- **Bus-factor runbook — 4th consecutive audit asking for this.** A documented "what to do if Royce is out for two weeks" doc still doesn't exist. Either schedule it or explicitly decide it's not a priority — repeating the ask a 5th time isn't useful. _(added 2026-07-20)_
+- **Desktop visual polish (typography, empty states) — still open since the very first audit (2026-05-13).** This week's usability investment went entirely into mobile; the original desktop polish ask is now 3 audits old with zero movement. _(added 2026-07-20)_
+- **`EQ_SECRET_SALT` rotation — still not done.** The value was exposed in a chat session back in April. Rotating it will sign every current user out and could break any in-flight leave-approval email links, so it needs a deliberate low-traffic window and an explicit go, not a quiet mid-week swap. _(added 2026-07-13, still open 2026-07-21)_
+_…and 374 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -94,6 +87,17 @@ _…and 363 more · [eq/pending.md](eq/pending.md)_
 - Royce to independently click-through-confirm the Weekends toggle, roster names, and both safety forms live (smoke-tested remotely, not yet confirmed by Royce beyond the original repros) _(added 2026-07-03)_
 - **Reverse-angle gap (independent read-only pass 2026-07-05):** 9 legacy `people` rows have a canonical twin already but `people.canonical_id` is still NULL — matched live by phone+email vs jvkn `workers`: Louisa Cardinale, Matthew Khreich, Andre de Biasi, Damon Francis, Timothy Chapman, Bruno Pedrosa, Eric Nguyen (phone-only), Liam Holmgreen, Sam Powell. Back-link write not yet run; handed to the concurrent console actioning this batch (Royce copy-pasted the id list). Low-risk `UPDATE people SET canonical_id=… WHERE id=…` on nspb _(added 2026-07-05)_
 _…and 56 more · [sks/pending.md](sks/pending.md)_
+
+## Queue health
+
+_Hygiene signal, not an alert — a large open count is real backlog; a large done count is unrotated history that belongs in a changelog._
+
+| File | Lines | Open | Done (unrotated) |
+|------|------:|-----:|------------------:|
+| [EQ](eq/pending.md) | 3449 | 388 | 865 |
+| [SKS](sks/pending.md) | 544 | 67 | 134 |
+| [SKS active](sks/active.md) | 108 | 0 | 0 |
+| [OPS](ops/pending.md) | 444 | 28 | 46 |
 
 ## Recent sessions
 
@@ -111,4 +115,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-20 10:10 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-20 11:38 UTC._
