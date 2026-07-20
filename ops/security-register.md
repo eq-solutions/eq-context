@@ -24,8 +24,8 @@ fails on **new** exposure while keeping the open ones visible.
 | ID | Severity | Finding | Project | Status |
 |---|---|---|---|---|
 | SEC-1 | **P0 — live PII leak** | Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` | sks-labour (LIVE — confirmed by Royce 2026-07-16 still active, retirement date NOT set) | **STILL OPEN.** Original fix plan ("decommission at Field cutover, weekend of 06-05") assumed a near-term retirement that hasn't happened — leak has been live ~6+ weeks past that assumption. Royce to decide: interim RLS hardening now, or accept the exposure pending an actual retirement date. |
-| SEC-3 | **P0** | Exposed `ehowg` service_role key still live (F1) | sks-canonical (LIVE) | **STILL OPEN, re-checked 2026-07-20.** No completion note found anywhere in the substrate (decisions.md, pending.md, sessions/) and the runbook's own live-key check (as of 2026-06-03) showed the key's `iat` unchanged since 2026-05-24 — never rotated. Couldn't verify further live (rotation status isn't queryable via Supabase MCP, needs Netlify env var access). Staged rotation plan below still stands. |
-| SEC-9 | **P0/P1 — untracked until now** | A DIFFERENT service_role key (`jvkn`/eq-canonical, not the SEC-3 `ehowg` one) was pasted directly into a chat session 2026-07-12 to fix `canon-read` — same exposure class as SEC-3/F1, but for eq-canonical instead of sks-canonical. Sat only in `eq/pending.md` (line ~491), never added to this register. | eq-canonical (LIVE) | **OPEN, found 2026-07-20.** Not investigated further — this is a live-key rotation decision, not a doc fix. Royce to confirm scope/urgency and whether to fold into the same rotation window as SEC-3. |
+| SEC-3 | **P3 — hygiene (downgraded from P0 2026-07-20)** | `ehowg` service_role key never rotated (F1) — **no confirmed leak vector found**, unrotated ≠ leaked | sks-canonical (LIVE) | **OPEN, hygiene priority.** Investigated 2026-07-20: the only evidence for "leaked" across the whole substrate is the key still being *valid* (unrotated since 2026-05-24) — no incident, no leak vector, no exposed-location ever documented. A **later, more careful analysis** (`cross-app-linkage-sprint-2026-06-07.md`) explicitly downgraded this: *"tenant_routing key concentration... No live exposure today; high cost if it leaks."* Corroborates the eq-field punch-list's own June note that the "exposed" flag looked stale. **Royce's call 2026-07-20: downgrade, rotate at a calm moment, not a rushed weekend window.** Rotation runbook (`f1-ehowg-key-rotation-runbook-2026-06-03.md`) still valid whenever it happens. |
+| SEC-9 | **P0 — confirmed exposure, same window as SEC-3** | A different service_role key (`jvkn`/eq-canonical) was pasted directly into a chat session 2026-07-12 to fix `canon-read` | eq-canonical (LIVE) | **OPEN.** Unlike SEC-3, this exposure IS confirmed — plaintext in a chat transcript is a real leak vector, not a hygiene item. **Royce's call 2026-07-20: same priority and rotation window as SEC-3** rather than treating separately. Rotate both together whenever that window lands. |
 | SEC-2 | P1 | RLS policy `tenant_isolation` trusts end-user-editable `user_metadata` (advisor ERROR) | eq-canonical-internal | **SCHEDULED — weekend** |
 | SEC-4 | P3 — hardening | `anon`-executable SECURITY DEFINER `eq_cards_*` fns | eq-canonical | **VERIFIED not exploitable** 2026-06-05 (auth.uid()/token-guarded). Post-launch: revoke anon EXECUTE on the 3 that don't need it. |
 | SEC-5 | P3 — hygiene | always-true (`USING/WITH CHECK = true`) write policies | eq-solves-field, eq-canonical-internal | **VERIFIED latent** 2026-06-05 — anon holds NO table grant, policies unreachable. Post-launch cleanup. |
@@ -38,15 +38,18 @@ fails on **new** exposure while keeping the open ones visible.
 - **SEC-1 — decommission SKS Labour.** Field replaces it; once Field is live, take
   SKS Labour offline / pause project `nspbmirochztcjijmcrx` / disable its anon
   access so the PII leak can't outlive the app. **Explicit checklist line — not
-  assumed.** Remove from `rls_probe.py KNOWN_LEAKS` once done.
+  assumed.** Remove from `rls_probe.py KNOWN_LEAKS` once done. Still blocked on
+  an actual retirement date — sks-nsw-labour confirmed still active 2026-07-16,
+  no date set.
 - **SEC-2 — fix `eq_intake_rate_limits` RLS.** Rewrite `tenant_isolation` to derive
   tenant from `app_metadata` (server-set) not `user_metadata`. Mirror the existing
   `sks_safety_rpc_jwt_tenant_guard` pattern. Then remove from
   `security_audit.py ACCEPTED_ERRORS`.
-- **SEC-3 — F1 key rotation (optional, in the same window).** Per
-  `f1-ehowg-key-rotation-runbook-2026-06-03.md`. Staged: new key → propagate to
-  Quotes Fly secret + re-encrypt `tenant_routing` → disable legacy → re-test
-  legacy GET = 401. Do NOT disable legacy before both consumers hold the new key.
+
+## Rotate whenever convenient (not weekend-critical, per Royce's 2026-07-20 call)
+
+- **SEC-9 — rotate the jvkn (eq-canonical) service_role key first or alongside SEC-3.** Confirmed exposure (pasted into a chat transcript 2026-07-12). No runbook exists yet — write one before rotating (mirror the SEC-3/F1 runbook's staged pattern: new key → propagate to consumers → disable legacy).
+- **SEC-3 — F1 key rotation.** Per `f1-ehowg-key-rotation-runbook-2026-06-03.md`. Downgraded 2026-07-20 (no confirmed leak, hygiene priority) — do this at a calm moment, not a rushed weekend window. Staged: new key → propagate to Quotes Fly secret + re-encrypt `tenant_routing` → disable legacy → re-test legacy GET = 401. Do NOT disable legacy before both consumers hold the new key.
 
 ## Post-launch hardening (after the freeze)
 
