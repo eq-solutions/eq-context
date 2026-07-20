@@ -91,6 +91,8 @@ check here first — don't reinvent.
 - Document types: QA packages/ITPs, site safety packs, operational SOPs, training records
 - Software: Workbench (job/project management) — never reference SimPRO
 
+**NEXTDC and AirTrunk** are live client relationships (see `sks/active.md`'s "Active Projects") without a context block here yet — deliberately deferred until recurring volume justifies one, matching `sks-team/README.md`'s stated policy for its own per-client files. Pull facts from `sks/active.md` directly until then.
+
 ---
 
 ## Role Step-Up Charter (promotion charter)

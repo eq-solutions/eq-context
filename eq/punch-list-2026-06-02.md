@@ -51,6 +51,7 @@ Detailed steps below kept for reference.
 - **Unblocks:** U6 — PIN read from Supabase `app_config` instead of plaintext env vars. Without it `verify-pin.js` silently skips the lookup.
 
 ### 2. Rotate the exposed sks-canonical service_role key
+- **STILL OPEN, re-checked 2026-07-20** — no completion note anywhere in the substrate; the F1 runbook's live-key check (2026-06-03) showed the key unrotated since 2026-05-24. Now tracked as **SEC-3** in `ops/security-register.md` — check there for current status, don't duplicate tracking here.
 - **Where:** Supabase → `sks-canonical` (`ehowgjardagevnrluult`) → Settings → API → Service role key → **Rotate**.
 - **Then propagate the new key to its 2 consumers:**
   - **eq-shell tenant routing** — re-encrypt + UPDATE the SKS row in `shell_control.tenant_routing` (needs `TENANT_ROUTING_MASTER_KEY`; pattern in `eq-shell/scripts/provision-tenant.mjs`).
@@ -79,9 +80,8 @@ Apply via Supabase Studio SQL editor (or MCP `apply_migration`). Source of truth
 
 ## HIGH — security + CI
 
-### 4. Rotate GitHub PATs
-- **Where:** github.com/settings/tokens → revoke the 3 compromised PATs → issue **1** fine-grained PAT → update local `.git-credentials`.
-- **Ref:** `eq/pending.md` "CRITICAL — Rotate GitHub PATs".
+### 4. ~~Rotate GitHub PATs~~ — ✅ DONE 2026-06-15
+- Confirmed by Royce, recorded in `ops/pending.md` "Infrastructure — Live Blockers".
 
 ### 5. Set tenant-drift CI secrets (eq-shell repo)
 - **Where:** GitHub → `eq-solutions/eq-shell` → Settings → Secrets and variables → Actions → New repository secret (×4):

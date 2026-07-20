@@ -122,6 +122,8 @@ in their own section at the bottom of this file — see there, not
 
 ## EQ Shell — PLATFORM (multi-module shell)
 
+> **Significant work has shipped since this section was last written (mid-June).** ~40+ PRs merged since — Labour Hire Rates canonical, Access-Model clusters (Phase 0/1/4), Ops entitlements, site-merge/dupe-adjudication, embedded-chrome unification, and more. See `eq/changelog/eq-shell.md` for the full history and `suite-state.md`'s "Key Decisions" for the headline items. Not summarized here — a real rewrite would go stale again in days given the pace of this repo; the pointer is the more durable fix.
+
 **Status:** Live. Phase 1.F + Sprint S3 + Sprint 7 (EQ Service cutover) + v8 design pass shipped. EQ Service Shell SSO fixed 2026-06-10 (PR #306 — `COOKIE_AUTH = false`, TOKEN MODE always). EQ Service iframe loading fixed 2026-06-13 (PR #334 — fallback timer 12s → 4s). v8 warm-sand design pass applied 2026-06-09 (auth.css, App.css, MobileRecordsDrawer, MobileTabBar). Live at `core.eq.solutions` — login → tenant home → Field iframe (SKS) + Service iframe (SKS) + Intake + Cards. EQ Field surface mounts via JWT handoff (TOKEN MODE, no second PIN). **Phase 2 sequencing by trust ladder + Royce's go.** GTM gate dead (killed 2026-06-02).
 
 **URL:** `core.eq.solutions` (live, dog-food tenant for EQ Solutions
@@ -239,7 +241,6 @@ not stale — deferred, not dropped.
 **Test coverage:** None. Gate is tsc + next build. Integration tests in CI are pre-existing failures — never block a merge on them.
 **Sprint cadence:** 22 sprints to date
 **Deploy:** GitHub → Netlify CD
-**Blocker:** GitHub MCP write access (403) — fix at `github.com/settings/installations`
 
 ---
 

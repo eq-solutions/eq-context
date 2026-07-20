@@ -1,7 +1,7 @@
 ---
 title: SYSTEM — MD Style Standard
 owner: Royce Milmlow
-last_updated: 2026-05-30
+last_updated: 2026-07-20
 scope: Style standard for all MD files in eq-context
 read_priority: reference
 status: live

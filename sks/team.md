@@ -116,8 +116,9 @@ Labour App, not listed here. Disciplines: **Electrical** and **Comms**.
 
 ## Field Workforce
 
-~60 NSW field staff across both NSW and NSW (Delta) tabs (headcount unreconciled
-against `sks/active.md`'s ~55 — see `sks/pending.md`).
+~55 NSW field staff across both NSW and NSW (Delta) tabs — reconciled 2026-07-20
+against `sks/active.md`'s ~55, which is the more recently-refreshed count; this
+file's older ~60 was stale.
 Do not query this file for live roster. **Transitional dual-source state (DB
 cutover in progress, see `sks/README.md`):** directory data (people, sites,
 managers) is live on `sks-canonical`/`ehow`; operational data (schedule,
