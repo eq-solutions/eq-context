@@ -1,11 +1,22 @@
 ---
-title: EQ Field — Changelog (supplementary)
+title: EQ Field — Changelog (supplementary, MERGED)
 owner: Royce Milmlow
-last_updated: 2026-07-14
-scope: EQ Field append-only history, supplementary entries. NOTE — duplicates a subset of eq/changelog/field.md's period; unclear which is authoritative for overlapping dates. Consolidate, flagged as a follow-up.
+last_updated: 2026-07-19
+scope: RETIRED — every entry below is now in eq/changelog/field.md. Kept for git history only, do not append to this file.
 read_priority: reference
 status: live
 ---
+
+> **Merged into `field.md` 2026-07-19.** This file and `field.md` had been
+> maintained as two independent, actively-written logs for months — not
+> one-abandoned-one-current like Shell/Service/Cards' duplicate pairs.
+> Every PR below (18 of them: #386, #397, #405, #412, #418, #423, #430,
+> #431, #435, #437, #438, #452, #459, #460, #463, #465, #466, #468, #473,
+> #490) is now folded into `field.md` at its correct chronological
+> position; the one genuine duplicate (#498, 2026-07-19) was dropped here
+> since `field.md`'s version is more complete (it also has the companion
+> PR #500 this file never had). Use `field.md` going forward — this file
+> is retired, not deleted, so the entries below stay reachable in history.
 
 ## 2026-07-19
 - **PR #498 (MERGED `af9b1d5`, live) — restored `authenticated`/`anon` grants on 6 `app_data.field_*` views.** `field_schedule`/`field_timesheets`/`field_leave_requests`/`field_prestarts`/`field_toolbox_talks`/`field_site_diaries` were created with an explicit `authenticated` grant by `20260611_sks_canonical_field_sync.sql`; all six had since lost it (`postgres`/`service_role` only), almost certainly from a later `DROP`+recreate against the Design B normalized base tables that didn't carry the grant forward (`field_audit_log`, same original migration, was unaffected). Not live-breaking today — SKS roster/timesheets/leave already bypass these views via the Design B canonical adapters straight to base tables, and prestarts/toolbox_talks/site_diaries route via `JWT_INPLACE_TABLES` to `public.*` instead — but a primed landmine if that routing ever reverts (the same silent 403 this codebase hit twice before, v3.5.201/v3.5.286). Verified `security_invoker=on` + tenant-scoped RLS on the underlying base tables before granting, not assumed. Applied to live ehow via Supabase MCP with Royce's explicit go, repo record merged same day.
