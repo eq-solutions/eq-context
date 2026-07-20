@@ -8,18 +8,17 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-20 12:06 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-20 12:12 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-20 11:38 UTC → 2026-07-20 12:06 UTC)
+## Since last refresh (2026-07-20 12:06 UTC → 2026-07-20 12:12 UTC)
 
-- ✅ Needs you: 5 → 4
+- ✅ Needs you: 4 → 3
 
-## ⚠ Needs you (4)
+## ⚠ Needs you (3)
 
 - 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-9 (P0 — confirmed exposure, same window as SEC-3) — A different service_role key (`jvkn`/eq-canonical) was pasted directly into a ch · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-10 (P0 — confirmed exposure) — `ANTHROPIC_API_KEY` + `RESEND_API_KEY` stored as plaintext Netlify env vars (`is · [security-register.md](ops/security-register.md)
-- 🟡 **1 stale worktree** need cleanup — [worktree-registry.md](system/worktree-registry.md)
 
 ## Pulse
 
@@ -114,4 +113,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-20 12:06 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-20 12:12 UTC._
