@@ -85,7 +85,7 @@ Digest flagged "1 stale worktree needs cleanup"; live check found 5 eq-shell wor
 | eq-shell-comms-polish-wt | claude/comms-startby-estimate | PR #897 |
 | eq-shell-dupes-merge-wt | claude/dupes-usage-check | PR #880 |
 
-Local + remote branch deletion for these 5 was blocked by the safety classifier (worktree removal and branch deletion are gated separately) — branches still exist, pointing at now-merged/squashed commits; harmless, prunable whenever Royce confirms that step too.
+Local + remote branch deletion for these 5 needed its own separate confirmation (worktree removal and branch deletion are gated separately) — done 2026-07-19: all 5 local branches deleted; 3 remote branches deleted directly, 2 (`comms-dashboard-loadtime`, `comms-startby-estimate`) had already been auto-deleted at merge time. Fully clean, nothing left behind.
 
 ---
 
