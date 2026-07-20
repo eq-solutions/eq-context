@@ -1,7 +1,7 @@
 ---
 title: Worktree Registry
 owner: Royce Milmlow
-last_updated: 2026-07-12
+last_updated: 2026-07-20
 scope: Active and stale git worktrees — check before creating a new one
 read_priority: critical
 status: live
@@ -130,9 +130,13 @@ Full audit: every active worktree in eq-shell, eq-intake, eq-field, eq-cards, eq
 
 ## Stale (verify branch merged before pruning)
 
-| Folder | Branch | Agent / Session | Notes |
-|--------|--------|-----------------|-------|
-| C:\Projects\eq-intake-ledger-wt | claude/ledger-checksum-stamp | Claude (quality-guardian session) | Work done, pushed, eq-intake PR #58 open. Worktree removal was classifier-blocked — safe to `git -C C:\Projects\eq-intake worktree remove ..\eq-intake-ledger-wt` after merge. |
+_None currently._
+
+---
+
+## Recently pruned (2026-07-20 — stale registry row, folder already gone)
+
+Digest flagged "1 stale worktree needs cleanup," pointing at this table. Live check: `C:\Projects\eq-intake-ledger-wt` was already gone from disk and absent from `git worktree list` on `eq-intake` — some earlier session had already run the removal, but never updated this row. eq-solves-intake PR #58 confirmed merged (2026-07-03). Cleaned up what was actually left: the orphaned `claude/ledger-checksum-stamp` branch, local + remote (merged, unused by any worktree) — deleted both. Row removed.
 
 ---
 
