@@ -14,6 +14,14 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## Found + fixed a real live crash on the "connect to company" screen, then hit a GitHub access wall trying to file it properly (2026-07-20)
+*Asked to check Sentry for anything new. One real bug turned up, got fixed and confirmed live — but writing it up properly as a pull request ran into a GitHub connection problem that's still not sorted.*
+- [x] **Found and fixed a real crash: anyone signing in by email/password (no phone on file) got a hard error trying to connect to a company.** Same root gap as the Will Brown issue above — the system assumed everyone has a phone number on file, and a database rule was blocking the save when one wasn't. Fixed and confirmed live; happened 4 times to one real person before the fix went in. _(done 2026-07-20)_
+- [ ] **A cosmetic app-crash message (unrelated) is still open, low priority** — a rendering hiccup that's been intermittently appearing since 2026-07-13, not something from today's work. Not investigated further. _(added 2026-07-20)_
+- [ ] **The GitHub connection this AI assistant uses can't see two more of the company's repos at all — EQ Cards and EQ Field — and it turns out it's not the "one repo left off a list" problem it looked like earlier today.** Both are private repos; every repo the connection *can* currently reach is public. So the real gap is that this connection only has access to public repos in general, not select private ones. Tried updating it once already — still not working, unclear yet why. Nothing else is affected by this; it only blocks writing up a fix as a formal pull request, and that can always be done by hand instead in the meantime. _(added 2026-07-20)_
+
+---
+
 ## Will Brown's "deleted" cards + broken SKS link — plus a wider cleanup it led to (2026-07-20, DONE)
 *A worker reported his ID cards had vanished and his company connection was broken. Turned out nothing was deleted — checking it properly led to finding and clearing a stack of real, already-known, never-shipped fixes sitting in the same system.*
 - [x] **Will's cards weren't deleted — he had two separate logins and was looking at the empty one.** One login (from his phone number) had all his real cards and his SKS connection intact the whole time; a second, separate login (email/password) was empty. Moved the one card he'd re-added back onto his real account — he now has all 5 cards and his SKS connection, confirmed live. He needs to sign in with his phone number, not email/password, to see it. _(done 2026-07-20)_
