@@ -1,7 +1,7 @@
 ---
 title: EQ Service — Changelog
 owner: Royce Milmlow
-last_updated: 2026-07-16
+last_updated: 2026-07-20
 scope: EQ Service append-only history. NOTE — duplicates eq/changelog/service.md, which stalls mid-deploy at 2026-06-09; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
@@ -114,3 +114,10 @@ status: live
 
 ## 2026-07-19
 - **PR #551 MERGED + LIVE — access-model cluster 3: `service.reopen` + `service.record_tests` (`@eq-solutions/roles` v2.5.3).** `reopenCheckAction` was `canWrite() OR isAssigned` — any technician assigned to a check could reopen it regardless of role; now `canReopen()` only, closing that bypass. `updateInstrumentAction` (the sole calibration-write path) now `canRecordTests()`. Genuine server-side enforcement — `requireUser()`'s `role` is resolved from a server-verified JWT, never client input.
+
+## 2026-07-20
+- **Migrations 0187 + 0188 APPLIED LIVE to ehow** — fixed 28 `service.*` RLS policies re-evaluating `auth.jwt()`/`auth.uid()` per row instead of once (wrapped in a scalar subquery so Postgres hoists it into a one-time InitPlan), plus added 12 missing FK covering indexes. Both validated via BEGIN/ROLLBACK against live ehow before commit, applied through the governed `apply-service-migrations` pipeline. Confirmed clean via a post-apply Supabase advisor re-run: 0 remaining findings of either kind in the service schema.
+- **PR #564-567 MERGED** — 4 dependabot version bumps (next, react-dom, tailwindcss, @tailwindcss/postcss), the last of which ships a real postcss XSS fix. **PR #520 MERGED** — resend bump. **PR #524 MERGED** — Royce's balloon-years proposal doc (`docs/proposals/balloon-years.md`); not stale, migration 0182's own comment cited it by path before it existed on `main`.
+- **PR #570 MERGED — jszip lazy-loaded off `/admin/backup`'s first load.** Only the Preview card's file handler needs it; converted the top-level import to a dynamic `import()` inside `handleFile`, same pattern as the acb-excel lazy-load (#509). Confirmed via build output: the page's own chunk is 10.4KB with zero JSZip code.
+- **PR #571 MERGED — trimmed Sentry's server-side default integration set from 44 to 17.** `sentry.server.config.ts` had `tracesSampleRate: 0`, but the SDK's `hasSpansEnabled()` treats `0` as tracing-configured (not nullish), so the full ~27-integration auto-performance-instrumentation set (mysql/mongo/kafka/prisma/langchain/openai/express/etc., mostly for frameworks this app doesn't use) was still being initialized on every cold start. Omitted `tracesSampleRate` entirely instead — verified via `getDefaultIntegrations()` directly against the installed SDK. **Post-deploy correction:** checked the actual deployed Lambda size via Netlify — it did not shrink (27,160,990 → 27,161,093 bytes, noise). Netlify's file-tracing bundles by static require-graph, not runtime gating, so this cuts real init-time work but not the packaged bundle size as originally claimed.
+- **PR #572 MERGED — removed the broken "Try the demo" tile from the sign-in page.** Found while trying to live-verify the Sentry fix: the demo tenant (`a0000000-0000-0000-0000-000000000001`) has zero rows anywhere on live ehow (tenants, tenant_members, customers, sites), and the `demo@eqsolves.com.au` auth user doesn't exist — casualty of the urjh→ehow cutover (2026-06-22), never reseeded. Both the one-click demo button and manual credential entry failed with a raw "Invalid login credentials" error. Royce's call: remove the tile now, rebuild the demo data later rather than doing a full reseed in this pass. `lib/utils/demo.ts` / `app/demo/route.ts` / `startDemoSessionAction` left intact for a one-file reconnect once reseeded.

@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-07-19
+last_updated: 2026-07-20
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -11,6 +11,18 @@ status: live
 
 EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-solves-service: full repo audit → database speed-up shipped and confirmed live, then two loading-time fixes, then found and fixed a broken "try the demo" button (2026-07-20)
+*Asked for a general outstanding-work audit, which turned into a database performance fix; then asked to focus on loading times and user experience next, which turned into two speed fixes plus finding (and fixing) an unrelated broken feature along the way.*
+- [x] **Database speed-up shipped and confirmed live.** Found 28 places where every single row-check was being repeated once per row instead of once per request, plus 12 tables missing an index they needed — both real, both safe, both fixed and confirmed live on the database with zero permission changes. Also cleared out 6 small pending dependency updates (one of which closed a real security hole in a formatting library) and merged Royce's own in-progress proposal document. _(done 2026-07-20)_
+- [x] **Two loading-time fixes shipped.** A file-import screen was loading a large library it only needed occasionally — now it only loads when actually used. Separately, trimmed error-tracking startup work the server was doing on every single request even though most of it was never actually used. _(done 2026-07-20)_
+- [x] **Caught myself overclaiming, corrected it.** Checked the loading-time fix against the real deployed system afterward — the error-tracking trim didn't actually shrink the server as much as expected (a technical quirk in how the deploy tool packages files). Still a safe, real improvement, just smaller than first advertised. Told Royce the corrected version rather than letting the bigger claim stand. _(done 2026-07-20)_
+- [x] **Found and fixed a real broken feature while checking the above:** the public "try the demo, no signup needed" button on the sign-in page has been completely broken — the demo account it points to doesn't exist anymore, likely lost when the database was migrated back in June and never rebuilt. Royce's call: remove the broken button now, rebuild the demo properly later rather than doing a big rebuild in the moment. Removed and confirmed working in a real browser test before shipping. _(done 2026-07-20)_
+- [ ] **Demo account/data still needs a proper rebuild whenever there's time for it** — matching what the site used to advertise (a small sample company with a few sites and some completed inspections) so prospects can click "try the demo" and see something real again. Not urgent; the button that pointed to it is gone for now. _(added 2026-07-20)_
+- [ ] **Two small, low-value items looked at and deliberately left alone**: a handful of unused database indexes and a couple of overlapping row-check rules — real but minor, and touching them risked more than they'd save. _(added 2026-07-20)_
+- [ ] **One dependency has a known minor security note with no real fix available** — fixing it would mean rolling the spreadsheet-import library back several versions, which would break more than it protects. Left as-is and documented. _(added 2026-07-20)_
 
 ---
 
