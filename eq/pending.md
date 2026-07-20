@@ -14,6 +14,16 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-context — pending.md dedup pass: 865 → 372 done items, cross-checked against every product changelog (2026-07-20)
+*digest.md's Queue health signal flagged this file as bloated with 865 unrotated "done" items. Investigation found the real problem wasn't missing rotation — most of that history already existed in the product changelogs, just never trimmed here after. A 5-agent pass (one per product) checked every done item against its matching changelog before deleting anything.*
+- [x] **eq-cards Sentry crash (EQ-CARDS-14) found already fixed by a concurrent session** — verified the fix live on the database before closing the Sentry issue with the evidence recorded on it. _(done 2026-07-20)_
+- [x] **Stale worktree-registry.md row cleared** — the folder it described was already gone; found and deleted the real leftover (an orphaned merged branch, local + remote). _(done 2026-07-20)_
+- [x] **This file cut from 3449 to 2843 lines, 865 to 372 done items** — every deletion was checked against the matching product changelog first (duplicate → delete; missing detail → add to the changelog, then delete; genuinely ambiguous or cross-cutting → left alone). Zero open items touched. `eq-shell.md` also had 5 duplicate date headings from older drift, one hiding a real contradiction (a PR recorded as both "open" and "merged") — consolidated and corrected. _(done 2026-07-20)_
+- [ ] **Field's mobile-improvement sprint (PRs #486–#489, v3.5.326–329) has no changelog entry.** Real shipped work, but written as plain descriptive bullets rather than checked-off items, so the dedup pass correctly left it alone rather than guess. Worth a manual changelog entry if you want it on record. _(added 2026-07-20)_
+- [ ] **~250 bullets across the 5 products were deliberately left in this file** — ambiguous product ownership, investigation-only findings with no shipped fix, or genuinely cross-cutting content. Not a backlog in the usual sense; full per-product breakdown is in today's session log. _(added 2026-07-20)_
+
+---
+
 ## EQ Cards — full audit turned into four real fixes, and checking real data instead of guessing corrected a wrong belief about how sign-in actually works (2026-07-20)
 *Asked for a general polish/audit of EQ Cards — what's missing, what could be better. Ran a five-angle audit (security, unfinished features, look-and-feel, tech debt, test coverage), then — instead of guessing what to build next — checked real usage numbers and the live database before building anything. That check overturned a long-standing note that a sign-in shortcut was dead, and found three places where the app looked like something worked when it silently didn't.*
 - [ ] **Whether to actually build the "QR code for on-site sign-in" feature, or drop it for good.** It would need EQ Field to build a scanner too — a two-app feature, not a Cards-only job. Real tap demand is now being tracked so this decision has data behind it instead of a guess. _(added 2026-07-20)_
