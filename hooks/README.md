@@ -17,6 +17,7 @@ versioned, CI-checked repo — not in a `.claude/` folder outside version contro
 |---|---|---|
 | `session_start.py` | 4 | **F1** — stale substrate read (8–12d, 200 OK, no error). Prints freshness, Needs-you, goals status, and any guard overdue for promotion. Reads the **local clone, never a URL** — the URL is what lied. |
 | `pre_tool_use.py` | 4 | **F2 / F6** — Edit/Write silently truncating (F2) and `>>` append NUL-filling (F6) long files on the virtiofs mount. Also blocks `git` from the Cowork sandbox (orphan `index.lock`). **Fail-closed.** Linux-sandbox-scoped; no-ops on Windows (on the Beelink `guard.js` is the active write-guard). |
+| `session_end.py` | 4 | Section 10 (Session End Protocol) sitting at rung 1 — an agent had to *remember* to commit, push, and log the session, the exact "read it and still didn't fire" failure class F2 already proved doesn't hold. Reports dirty tree / unpushed main / a day with commits but no `sessions/<date>.md`. **Fail-open, loud** — informational only, never blocks Stop (no destroyed data at stake to justify fail-closed, and a Stop hook that traps someone mid-exit is its own Loop of Despair). Built 2026-07-20, ahead of a recorded ledger entry — see `system/failures.md` note before treating it as a normal rung-2→4 promotion. |
 
 ## Install (Beelink)
 
@@ -32,6 +33,11 @@ That gap was live until 2026-07-12 — the gate existed but silently did not run
 sessions, the exact "guard that isn't wired" failure class the ladder exists to kill.
 
 Then start a fresh session — the gate prints before the tier question.
+
+`session_end.py` needs the same user-scope `Stop` wiring (the block is already in
+`settings.template.json` — copy it across the same way). Until that copy happens it
+exists only in the governed repo, not in force: check `C:\Users\EQ\.claude\settings.json`
+against the template before assuming it's live.
 
 ## Why fail-closed
 

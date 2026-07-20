@@ -44,7 +44,7 @@ permissions:
 
 jobs:
   adversarial-suite:
-    name: Adversarial suite (18/18)
+    name: Adversarial suite (21/21)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
