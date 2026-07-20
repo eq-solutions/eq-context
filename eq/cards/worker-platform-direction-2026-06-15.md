@@ -11,6 +11,8 @@ status: live
 
 Decision logged 2026-06-15. ADR entry in [ops/decisions.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/decisions.md).
 
+> **Correction — 2026-07-20.** The "iframe is retired" call below (§ The problem this resolves, § Shell changes) did not hold and should not be treated as current. Verified against live `eq-cards` code and 90-day usage data: the `/auth/handoff` Shell-iframe entry point is live in `lib/core/router/app_router.dart` and is the **majority sign-in path** — 851 of 1,544 app-open sessions (55%) over the last 90 days. Git history shows this wasn't neglect: real fixes landed on this exact code on 2026-06-15 (same day as this decision), 2026-06-24 (`e620df3` — a working `verifyOTP`/magic-link replacement for the broken `setSession` approach described in problem #1 below), 2026-06-25, and 2026-06-27. Someone actively rebuilt and kept the iframe handoff after this ADR was written; the ADR itself was never updated to reflect that. Auth-seam problem #1 below appears solved by the new mechanism (a real GoTrue magic-link `hashed_token` → `auth.verifyOTP()`, which does create a real `auth.sessions` row) — the custom-JWT/HMAC approaches this doc ruled out are not what's running today. Reliability is a separate, still-open question: ~33% of these sessions show no signal of reaching the wallet in the same session (now instrumented — `shell_handoff_started`/`shell_handoff_outcome` PostHog events, `eq-cards` PR #158). Before repeating "iframe is retired" anywhere, verify against `app_router.dart` + `shell_bridge_web.dart` directly.
+
 ## The problem this resolves
 
 Cards was embedded in Shell as an iframe. This produced three unsolvable problems:
