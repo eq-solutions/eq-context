@@ -100,15 +100,49 @@ read-only prompt" — dropped the canary-token verification ritual).
   worth remembering to check tool-bootstrap files specifically after any
   fix to one of them, since they drift independently.
 
-**Needs Royce (open in the audit tool, not yet triaged):**
-- [ ] **SEC-1 remediation plan** — sks-nsw-labour confirmed still live, so
-  the register's existing plan is stale. What should actually close this?
-  Explicitly parked this session (Royce: "ignore sks nsw labour for now").
-- [ ] **Field's changelog pair** — `field.md` vs `eq-field.md`, both live.
-  Which one should be canonical going forward?
-- [ ] The remaining ~70 lower-severity findings (stale dates, missing
-  frontmatter, minor cross-file drift) — sit in the artifact for Royce to
-  triage at his own pace, not urgent.
+**Third follow-up session (2026-07-20) — 3 more PRs, audit substantively closed:**
+- [x] **Field's changelog pair resolved** (PR #105) — `field.md` and
+  `eq-field.md` were BOTH live-written for months (not one-stale-one-current
+  like the other 3 pairs). 18 PRs that existed only in `eq-field.md` merged
+  into `field.md` at their correct dates; `eq-field.md` retired with a
+  merge banner. `field.md` is canonical.
+- [x] **All 21 items from the first "still open" pass closed** (PR #106) —
+  2 generator bugs fixed at the root (suite-state.md frontmatter never
+  bumped; digest.md could show a PR as both Merged and pending), TODAY.md
+  live-re-verified against ehow directly, several duplicate-fact spots
+  trimmed to pointers, a handful confirmed false positives on close read.
+- [x] **Round 2 of the "touched but unverified" findings closed** (PR #107)
+  — most were already fixed by earlier PRs when checked directly; genuine
+  finds: `ops/decisions.md`'s Phone Identity Dedup entry had been shipped
+  and live for a month but still marked "Proposed" (verified via
+  `pg_get_functiondef` on jvkn, corrected); **SEC-9 discovered** — a
+  second, previously untracked service_role key (`jvkn`/eq-canonical,
+  distinct from SEC-3's `ehowg` key) was pasted into a chat session
+  2026-07-12 and never rotated.
+- [x] **SEC-3 investigated and downgraded, SEC-9 confirmed P0** (PR #108)
+  — per Royce's explicit "investigate exposure first" call, traced the
+  "leaked" claim for SEC-3 back through every substrate file that could
+  hold evidence and found none — only that the key is unrotated, not that
+  it was ever actually leaked anywhere. A later, more careful 2026-06-07
+  analysis (`cross-app-linkage-sprint-2026-06-07.md`) independently reached
+  the same conclusion. Downgraded P0→P3/hygiene. SEC-9 stays P0 (confirmed
+  chat-paste exposure) — Royce's call: same rotation window as SEC-3, not
+  a separate urgent effort.
+
+**Needs Royce:**
+- [ ] **SEC-1** — still parked (Royce: "ignore sks nsw labour for now").
+  sks-nsw-labour confirmed still live 2026-07-16, no retirement date.
+- [ ] **SEC-9 rotation runbook** — doesn't exist yet. Write one (mirror the
+  SEC-3/F1 runbook's staged pattern) before either SEC-3 or SEC-9 can
+  actually be rotated.
+- [ ] **Execute the SEC-3 + SEC-9 rotation** whenever Royce picks a window
+  — both are live-secret actions requiring his explicit go, not something
+  to do unilaterally.
+- [ ] A residual tail of low-severity findings (stale dates on files never
+  touched across any of the 4 follow-up PRs — `system/failures.md`,
+  `system/lessons.md` narrative detail, `ops/financial-architecture.md`,
+  `sks-team/README.md`, `sks/active.md`) — sit in the artifact if Royce
+  wants to work through them, genuinely not urgent.
 
 **Artifact:** interactive triage tool, published — Royce has the link from
 earlier in the session (not repeated here since Artifact URLs are
