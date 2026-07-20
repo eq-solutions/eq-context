@@ -1,13 +1,30 @@
 ---
 title: Changelog — EQ Solves Field
 owner: Royce Milmlow
-last_updated: 2026-07-19
+last_updated: 2026-07-21
 scope: Append-only history of changes to the EQ Solves Field product. Canonical — eq-field.md was merged into this file 2026-07-19, don't split again.
 read_priority: reference
 status: live
 ---
 
 # Changelog — EQ Solves Field
+
+## [2026-07-21] v3.5.334 — decompose supabase.js, 2278 → 1010 lines (SHIPPED, #508, live)
+- Wed-Thu sprint centerpiece (see the multi-lens audit entry below). `supabase.js` was the fastest-growing file in the app (+34% in 5 weeks per the audit) and the single most load-bearing file for both live tenants — every write in the app routes through it — with zero test coverage until the day before.
+- Split into 6 new files, each moved verbatim (no logic change), verified against the full test suite (386 assertions, 8 files) after every single extraction: `supabase-queue-crypto.js` (write-queue encryption), `roster-undo.js` (undo/redo), `supabase-rpc.js` (RPC helpers), `supabase-canon-write.js` (canonical timesheets/roster write dispatch), `supabase-roster-write.js` (the roster cell-save hot path — kept separate given its complexity), `supabase-entities.js` (per-table CRUD helpers).
+- `sbFetch` itself — the core routing function — deliberately NOT split; highest-risk, most tightly-coupled piece, needs its own dedicated pass. Flagged as a follow-up.
+- Also fixed a real bug the new tests found the day before: a write that kept failing due to server/network issues was supposed to give up after 5 retries and instead retried forever (the retry-counter only worked for one narrower failure mode). Fixed properly, same day, verified via the same test flipping from "confirms bug" to "confirms fix."
+- Live-verified via deploy-preview browser smoke test (not just Node tests): all 6 new files load with zero console errors, and the actual cross-file call chain works correctly end-to-end.
+
+## [2026-07-20/21] Multi-lens strategic audit (4th run) + the week's sprint it produced (SHIPPED, #505 + #506 + #507 + #508, live)
+- 4th in a recurring CEO/UI/engineering-quality review series (prior: 2026-05-13, 2026-05-23, 2026-06-14). Findings: strongest security cycle of the four (server-side permission enforcement, a generalized "Core-only" auth switch); automated tests exist for the first time (0→7 files, now 8 after this sprint); a real mobile-usability program landed. Recurring problem: a handful of files keep growing past a healthy size, worse for the 3rd review running, no rule stopping it. Also flagged: the Melbourne enterprise-customer plan appears to have gone quiet (needs Royce's confirmation), and found 4 already-stale to-do items that had actually shipped months ago but were still listed open.
+- Sprint executed same session: a file-size convention adopted; a cosmetic bug the audit's own live-check found (login screen said "for SKS" even for the `eq` tenant) fixed; `approve-leave.js`'s security model documented (no gap found, one UX trade-off flagged for Royce); automated tests written for `supabase.js` (see the entry above); then the decomposition itself.
+- Full review: `_reviews/multi-lens/2026-07-20.md`.
+
+## [2026-07-20] v3.5.333 — Core-only gate copy: drop the last hardcoded 'sks' checks (SHIPPED, #506 + #461, live)
+- PR #461 (open since 2026-07-12, closing the `eq` tenant's standalone demo-login gate) had gone stale: main had since shipped a general "Core-only" kill-switch that already covered most of what #461's diff did, via a hardcoded check that would have conflicted with it. Rewrote to close the one real gap the general switch didn't cover (a supervisor-password backdoor), merged, and flipped the canonical flag that actually activates the lock for `eq`. Live-verified: `eq` now requires signing in through Core, matching SKS.
+- Found smoke-testing that fix live: the same hardcoded-slug pattern was still present in one more spot (the standalone "My Timesheet" login) and in the gate's own copy text. Fixed both same day.
+- Bundled with 3 other sprint items: a file-size convention added to the repo's own contributor guide; a stale to-do item (`pending_schedule` table) confirmed already resolved by earlier work, not a live decision; `approve-leave.js`'s security model documented.
 
 ## [2026-07-19] Test-only: CI guard on the routing bypass that hid the 6-view grant gap (SHIPPED, #500, live)
 - New `tests/canonical-routing-guard.test.js` asserts `sks` stays in `ROSTER_CANONICAL_TENANTS`/`TIMESHEETS_CANONICAL_TENANTS`/`LEAVE_CANONICAL_TENANTS` and that `prestarts`/`toolbox_talks`/`site_diaries` stay in `JWT_INPLACE_TABLES` — the two routing layers that keep the #498 grant gap (below) from ever mattering in practice. If either is ever edited away, CI now fails loud instead of prod silently 403ing for SKS again.

@@ -1,7 +1,7 @@
 ---
 title: EQ Field — Active State (Rolling)
 owner: Royce Milmlow
-last_updated: 2026-07-19
+last_updated: 2026-07-21
 scope: Current live state of EQ Field product
 read_priority: critical
 status: live
@@ -9,8 +9,10 @@ status: live
 
 # EQ Field — Active State
 
-**Current version:** v3.5.211 · **Deployed:** `field.eq.solutions` + `core.eq.solutions/sks/field`
+**Current version:** v3.5.334 · **Deployed:** `field.eq.solutions` + `core.eq.solutions/sks/field`
 **Repo:** `eq-solutions/eq-field` (main branch, auto-deploy via Netlify)
+
+> **Corrected 2026-07-20/21** (this file was stale since 2026-07-19, version pinned at v3.5.211 — 123 versions behind): tenant table below fixed against live data — `demo-trades`/`melbourne` were deleted from canonical 2026-06-28 and no longer resolve (only `?tenant=demo` — an in-memory URL-override slug, no DB — reaches anything demo-shaped now); `eq`'s data plane migrated off `ktmj` (deleted 2026-07-04, no longer a Supabase project) onto `zaapmfdkgedqupfjtchl`. Rest of this file not re-verified line-by-line this pass — treat anything not touched below as unconfirmed until re-checked.
 
 ---
 
@@ -18,10 +20,10 @@ status: live
 
 | Tenant | URL | Data plane | State |
 |---|---|---|---|
-| `eq` | `field.eq.solutions` | `ktmjmdzqrogauaevbktn` (ktmj) — demo/disposable | Live (demo data) |
-| `demo-trades` | `field.eq.solutions?tenant=demo-trades` | ktmj | Advanced demo |
-| `melbourne` | `field.eq.solutions?tenant=melbourne` | ktmj | Enterprise demo (577 ppl) |
-| `sks` | `field.sks.eq.solutions` | `ehowgjardagevnrluult` (ehow) — SKS LIVE | Live (SKS canonical) |
+| `eq` | `field.eq.solutions` | `zaapmfdkgedqupfjtchl` (zaap / eq-canonical-internal) — demo/disposable, NOT a customer | Live (sandbox data) |
+| `sks` | `core.eq.solutions/sks/field` (Shell iframe) | `ehowgjardagevnrluult` (ehow) — SKS LIVE | Live (SKS canonical) — the only live customer data in this product |
+
+**Retired 2026-06-28:** `demo-trades` / `melbourne` DB-backed demo tenants — deleted from canonical, no longer resolve. The only remaining demo surface is `?tenant=demo` (hardcoded in-memory gate codes, no DB calls, URL-override only).
 
 **Shell embed:** `core.eq.solutions/sks/field` → iframes `field.sks.eq.solutions`
 
