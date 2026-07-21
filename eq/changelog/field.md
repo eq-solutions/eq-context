@@ -9,6 +9,13 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-21] Fix Sentry telemetry delivery: await captureServerError, correct tag shape (SHIPPED, #515, live)
+- PR #509's detect-only fallback telemetry (merged 2026-07-20 as `30f44d4`) had been silently not reporting: the eq-field Sentry project showed zero `netlify_function`-tagged events in 90 days. Two independent bugs, both fixed.
+- Bug 1: both new call sites (`canon-read.js`, `verify-pin.js`) invoked `captureServerError()` without `await` — the in-flight Sentry POST gets dropped when the Lambda freezes on return. Proved locally against a stub ingest listener before trusting the fix: un-awaited delivered 0 events at return time, awaited delivered before returning.
+- Bug 2: three pre-existing error-path sites (`eq-agent.js`, `send-email.js`, `tenant-config.js`) passed `{ function }` / `{ fn }` instead of `{ tags: { netlify_function } }` — `_buildEvent` only reads `opts.tags`, so those keys were silently discarded and those sites never set the tag at all.
+- All 5 sites fixed. Squash-merged `cd39bc2`; production deploy confirmed (`6a5eec6e`, 15s, secret-scan clean, all 5 functions rebuilt with fresh timestamps). Post-deploy Sentry re-check: still zero events, expected — the fallback path needs a specific real-world request shape (session missing `tenant_slug` + client tenant hint) that a deploy alone doesn't generate. Follow-up: re-check after real traffic to read the `origin_mismatch` ratio.
+- Hit the known squash-merge stranded-SHA trap mid-session (branch's older commit was already merged as part of #509) — resolved via `git rebase --onto` rather than a raw conflict-merge, backed by a throwaway branch first.
+
 ## [2026-07-21] v3.5.334 — decompose supabase.js, 2278 → 1010 lines (SHIPPED, #508, live)
 - Wed-Thu sprint centerpiece (see the multi-lens audit entry below). `supabase.js` was the fastest-growing file in the app (+34% in 5 weeks per the audit) and the single most load-bearing file for both live tenants — every write in the app routes through it — with zero test coverage until the day before.
 - Split into 6 new files, each moved verbatim (no logic change), verified against the full test suite (386 assertions, 8 files) after every single extraction: `supabase-queue-crypto.js` (write-queue encryption), `roster-undo.js` (undo/redo), `supabase-rpc.js` (RPC helpers), `supabase-canon-write.js` (canonical timesheets/roster write dispatch), `supabase-roster-write.js` (the roster cell-save hot path — kept separate given its complexity), `supabase-entities.js` (per-table CRUD helpers).
