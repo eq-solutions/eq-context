@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-21)
 
-**eq-cards:**
-- #170 feat(cards): decommission the certificates feature (Phase C)
-
 **eq-field:**
 - #520 Gate timesheet + leave status transitions (self-approval, reopen, paid)
 - #519 v3.5.343 — remove the Site Reports hub nav button
@@ -73,6 +70,7 @@ _If this file is >48h old, the cron is broken._
 - #576 Security: authenticated users could self-promote to manager via service.tenant_members (migration 0189)
 
 **eq-shell:**
+- #941 EQ Ops Setup: add Save all for the preset line-item library
 - #940 chore: retire the certificates-migrate endpoint (Phase C cleanup)
 - #936 Security: app_data.staff.user_id was directly client-writable on zaap (migration 0194)
 - #935 P0: any authenticated user could forge an invite and become tenant manager (jvkn)
