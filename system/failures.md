@@ -37,8 +37,8 @@ failures:
   - id: F1
     title: Substrate read path served 8-12 day stale content, 200 OK, no error
     first_seen: 2026-07-11
-    last_seen: 2026-07-11
-    recurrences: 1
+    last_seen: 2026-07-19
+    recurrences: 2
     rung: 4
     target_rung: 4
     guard: "hooks/session_start.py — SessionStart gate (rung 4, built 2026-07-11)"
