@@ -61,20 +61,11 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-21)
 
 **eq-field:**
-- #523 diag(ci): surface real HTTP status/body from notify-substrate dispatch
 - #520 Gate timesheet + leave status transitions (self-approval, reopen, paid)
 - #518 Security: field_people_iud never gated user_id — the Shell-login-to-Field-person binding
 
-**eq-service:**
-- #578 diag(ci): surface real HTTP status/body from notify-substrate dispatch
-- #577 Make service.audit_logs append-only and derive authorship server-side
-- #576 Security: authenticated users could self-promote to manager via service.tenant_members (migration 0189)
-
 **eq-shell:**
-- #942 diag(ci): surface real HTTP status/body from notify-substrate dispatch
 - #936 Security: app_data.staff.user_id was directly client-writable on zaap (migration 0194)
-- #935 P0: any authenticated user could forge an invite and become tenant manager (jvkn)
-- #933 Security: any org invitee could activate as admin (control plane, jvkn)
 - #930 Security: EQ Ops setup RPCs adopt the pricing write guard on the EQ plane too (migration 0193)
 
 ---
@@ -94,7 +85,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 192 (latest: 0188) applied
+**Migrations:** eq-service has 194 (latest: 0190) applied
 
 ---
 
