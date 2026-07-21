@@ -9,6 +9,19 @@ status: live
 
 # SKS Pending
 
+## SKS Ops — Suppliers directory + role-gated credentials (2026-07-21)
+*Royce asked for creative ways to help SKS crews connect with suppliers, starting from a static spreadsheet ("who to call for what") that only stayed current when someone remembered to open it. Built a live directory, then added login/password fields for supplier portals — gated so they're only visible to managers/supervisors, since the base table grants read access to every signed-in tenant user.*
+
+**Completed:**
+- [x] **Suppliers directory shipped** — new page under EQ Ops (`core.eq.solutions/sks/ops/suppliers`), searchable, with desktop table + mobile card list (tap-to-call). 47 real suppliers imported from the spreadsheet, explicitly excluding its login/account/password columns (those never touched the database this stage). eq-shell PRs [#927](https://github.com/eq-solutions/eq-shell/pull/927) + [#929](https://github.com/eq-solutions/eq-shell/pull/929), merged, deployed. Migration `0191_suppliers.sql` applied live (SKS only).
+- [x] **Column filters added** to the desktop table — category dropdown + text filters on supplier/contact/phone/email/notes. eq-shell PR [#931](https://github.com/eq-solutions/eq-shell/pull/931), merged, deployed.
+- [x] **Login/password fields added, gated to managers/supervisors only** — mirrors the same role-gate pattern already used for quote margins and contact PII elsewhere in eq-shell (a database function nulls the fields for anyone else, not just a UI hide). Password renders masked with a click-to-reveal. eq-shell PR [#938](https://github.com/eq-solutions/eq-shell/pull/938), merged, deployed. Migration `0195_supplier_credentials_gate.sql` applied live. **Live-verified end to end** signed in as a manager: saved a test login/password, confirmed it read back correctly, confirmed the reveal toggle works and doesn't open the edit screen by mistake, then removed the test data.
+
+**Deferred:**
+- [ ] **Confirm a non-manager (employee-level) login actually sees a blank instead of real credentials** — only had a manager session available to test with this session. _(added 2026-07-21)_
+- [ ] **Confirm the mobile card view on a real phone** (tap-to-call, login/password display, reveal toggle) — couldn't force a reliable mobile browser preview in this session's tooling. _(added 2026-07-21)_
+- [ ] **Password-manager decision still open** — Royce said "not now" to setting up a shared 1Password/Bitwarden vault this session; the in-app login/password fields are the interim answer. Revisit if the list of stored credentials grows. _(added 2026-07-21)_
+
 ## Real security hole found in SKS's standalone Field system — not fixed, handed off properly (2026-07-20)
 *Found while investigating an unrelated EQ Cards issue that turned into a wider cleanup — see `eq/pending.md` for that side. This part is pure SKS, nothing touched, nothing changed.*
 - [ ] **SKS's standalone Field app (sks-nsw-labour) currently lets anyone with the app's public web address read or wipe roster/schedule/timesheet data for all ~50 SKS people — no login required.** A 4-stage fix plan already exists: Stage 1 (the identity layer) is built and sitting in an unmerged pull request, ready to activate; Stage 2 (locks data to the right company) is drafted but not run; Stage 3 (removes the open door) is drafted but has 3 known gaps that need closing first (a few tables would go offline instead of getting properly locked down); Stage 4 (final cleanup) isn't drafted yet. Nothing on SKS's live system was touched — this needs Royce's own hands per stage (setting secrets, running SQL, flipping a switch), plus review of the gaps before Stage 3 is safe. Handed off as its own task rather than half-finishing it inside an unrelated session. _(added 2026-07-20)_
