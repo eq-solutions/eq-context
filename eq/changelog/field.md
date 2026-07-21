@@ -9,6 +9,13 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-21] Tenant-isolation root fix — bind tenant at session-mint time, not on client trust (MERGED, #521, live)
+- Follow-up to #509's detect-only telemetry, built ahead of schedule. `verify-pin.js` mints the Field session token via 4 paths (plain PIN, Shell-cookie SSO, legacy HMAC shell-token, Supabase-JWT shell-token); 3 never bound `tenant_slug` into the signed token, so every later `canon-read.js`/`mint-data-jwt` call fell back to a client-supplied tenant hint, bounded only by a static allow-list.
+- Fixed all 4: plain PIN binds from the request Origin header (the only server-trusted signal available — no Shell context exists at this point); Shell-cookie resolves from the HMAC-verified cookie's own `tenant_id` claim; legacy HMAC shell-token (retired, no live caller) now passes through its own already-Shell-signed claim instead of dropping it.
+- **Found a more serious issue while building the 4th, live path**: the Shell→Field Supabase-JWT handoff was binding tenant from the client-supplied `body.tenantSlug` hint rather than the JWT's own signed `app_metadata.tenant_id` claim — a valid Shell JWT minted for tenant A plus a spoofed hint in the POST body could mint a Field session (and downstream data-JWT) bound to tenant B. Fixed so the JWT's own claim always wins; the hint is now only a fallback for the should-not-happen case where the claim doesn't map to a known tenant. Logs a Sentry warning (non-blocking) if hint and claim ever disagree, as a canary.
+- New regression test `tests/tenant-binding.test.js` (11 assertions) locks in all 4 paths, including the escalation case. Full suite + eslint clean.
+- PR #521, squash-merged `021b42c` → `main`, confirmed live via Netlify deploy `commit_ref` match (`context: production`) + smoke test.
+
 ## [2026-07-20] Detect-only tenant-fallback telemetry for the golden-worker-journey identity/tenant-isolation gap (MERGED, #509, live)
 - Found while tracing the full worker journey (Shell → Cards → Field): `canon-read.js` and `verify-pin.js`'s `mint-data-jwt` both fall back to a client-supplied tenant slug when the caller's session carries no `tenant_slug` claim — true of every plain-PIN Field login. That fallback is bounded only by a fixed allow-list, which stops hostname/injection abuse but not a session for one tenant requesting another tenant's worker PII.
 - Shipped detect-only: a non-blocking Sentry warning fires whenever the fallback is taken, tagged with the Origin-derived tenant for comparison, with zero behaviour change — real usage data first, enforcement decision second. One-time scheduled check `collision-alert-week1-check` set for 2026-07-27 to read the real frequency/mismatch ratio back.
