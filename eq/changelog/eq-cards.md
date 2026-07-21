@@ -96,7 +96,13 @@ status: live
 - feat(onboarding): rich empty state — updated headline + employer context copy for connected workers
 - feat(onboarding): explicit camera+gallery buttons in FirstScanScreen; worker card hidden on empty wallet; CTAs at top (commit 493d895, run 28511411215)
 - feat(onboarding): first-licence success sheet + connection confirmation snackbar + PostHog signup_completed fix (commit 1a141a6, run 28512783582)
-- fix(ui): CircularProgressIndicator.adaptive → plain in EqButton + NotProvisionedScreen; worker ID card moved to wallet bottom (commit 9f2b408, run 28513226954)
+- fix(ui): CircularProgressIndicator.adaptive → plain in EqButton + NotProvisionedScreen; worker ID card moved to wallet bottom (commit 9f2b408, run 28513226954) — reverts the previous day's `.adaptive()` change (see 2026-06-30 below)
+
+## 2026-06-30
+- `licence_edit_screen.dart` — fixed Sentry EQ-CARDS-W: `_PhotoSlot` converted StatelessWidget → StatefulWidget with cached `MemoryImage` to prevent CanvasKit blob URL revocation on Chrome Mobile (AU). (The same blob-URL pattern recurred on the crop screen and was fixed the same way 2026-07-02 — see above.)
+- `web/index.html` — `window.flutterConfiguration = { renderer: 'auto' }` (commit `c159717`): restores HTML renderer on mobile (iOS Safari, Android); Flutter 3.22+ CanvasKit default freezes WebGL animation on iOS Safari. (Superseded 2026-07-14 by PR #155, which pins `renderer:'canvaskit'` once the app no longer needed the HTML-renderer workaround — see above.)
+- `eq_button.dart` + `not_provisioned_screen.dart` — `CircularProgressIndicator.adaptive()`: shows `CupertinoActivityIndicator` (CoreAnimation-backed) on native iOS; always animates. (Reverted 2026-07-01 back to plain — see above.)
+- `worker_self_repository.dart` — dead `FoundInvite` class + `findInvitesByPhone()` removed (commit `e2c77f7`); zero usages after "Find my company account" UI button was retired.
 
 ## 2026-07-14
 - PR #155: renderer config truthed — `web/index.html` now pins `renderer:'canvaskit'` (was `'auto'` with a stale "HTML renderer on mobile" note that Flutter removed in 3.29; app builds on 3.41). Functional no-op today — Cards is not cross-origin isolated, so `auto` already resolved to canvaskit. Context: Sentry EQ-CARDS-12/13 were ONE transient CanvasKit/OffscreenCanvas WebGL-context-loss engine crash on mobile Safari (0 users, 1 incident) — resolve-and-monitor (Royce); this PR does NOT fix that (no app-side fix exists). Deploying.
