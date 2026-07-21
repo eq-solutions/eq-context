@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-21 07:45 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-21 07:58 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-21 07:18 UTC → 2026-07-21 07:45 UTC)
+## Since last refresh (2026-07-21 07:45 UTC → 2026-07-21 07:58 UTC)
 
-- Merged: eq-shell [#929](https://github.com/eq-solutions/eq-shell/pull/929) Suppliers.tsx: fix stale comment about which perm gates writ
-- Merged: eq-shell [#927](https://github.com/eq-solutions/eq-shell/pull/927) Suppliers directory - EQ Ops (SKS)
-- Merged: eq-shell [#925](https://github.com/eq-solutions/eq-shell/pull/925) feat(retention): daily job to finalise deleted Cards account
-- Merged: eq-shell [#924](https://github.com/eq-solutions/eq-shell/pull/924) Fix: flush Sentry before functions return — server events we
-- Merged: eq-shell [#923](https://github.com/eq-solutions/eq-shell/pull/923) Quote doc: fix Clarifications alignment (justified -> left)
-- Merged: eq-shell [#922](https://github.com/eq-solutions/eq-shell/pull/922) Staff: Company column for Labour Hire + Subcontractor, fix r
-- Merged: eq-shell [#921](https://github.com/eq-solutions/eq-shell/pull/921) Security fix: cross-org identity-collision metadata leak in 
-- Merged: eq-shell [#920](https://github.com/eq-solutions/eq-shell/pull/920) fix(licences): exclude is_private licences from admin-facing
+- Merged: eq-shell [#919](https://github.com/eq-solutions/eq-shell/pull/919) Option 3: surface + gate identity collisions in the staff-ap
+- Merged: eq-shell [#918](https://github.com/eq-solutions/eq-shell/pull/918) Alert-only visibility: identity collisions + never-invited w
+- Merged: eq-shell [#917](https://github.com/eq-solutions/eq-shell/pull/917) feat(staff): admin licence backfill with photo/PDF upload
+- Merged: eq-shell [#916](https://github.com/eq-solutions/eq-shell/pull/916) feat(staff): per-column filtering on the Staff table
+- Merged: eq-shell [#915](https://github.com/eq-solutions/eq-shell/pull/915) fix(staff): clear on_roster when archiving a staff record
+- Merged: eq-shell [#914](https://github.com/eq-solutions/eq-shell/pull/914) fix(auth): format-tolerant phone match on invite-accept stub
+- Merged: eq-shell [#901](https://github.com/eq-solutions/eq-shell/pull/901) NSW Comms: cut Dashboard load-time from ~5.4s to ~2 round tr
+- Merged: eq-shell [#900](https://github.com/eq-solutions/eq-shell/pull/900) perf(offline): extend the unsaved-changes guard to site and 
 
 ## ⚠ Needs you (4)
 
@@ -32,24 +32,11 @@ _2026-07-21 07:45 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 2 | 0d |
-| eq-solves-service | ? unknown | ? | 0 | — |
-| eq-field | ? unknown | ? | 0 | — |
-| eq-cards | ? unknown | ? | 0 | — |
+| eq-shell | ✓ success | 1d ago | 2 | 0d |
+| eq-solves-service | ✓ success | 0d ago | 1 | 0d |
+| eq-field | ✓ success | 0d ago | 0 | — |
+| eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 4d ago | 0 | — |
-
-## Live errors (Sentry)
-
-| Project | Error | Events | Last seen |
-|---------|-------|--------|-----------|
-| eq-shell | [EQ Field handoff auto-recovery (rejected)](https://eq-solutions.sentry.io/issues/133584980/) | 6 | 2026-07-19 |
-| eq-shell | [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/) | 5 | 2026-07-16 |
-| eq-cards | [LateInitializationError: Field '' has not been initialized.](https://eq-solutions.sentry.io/issues/133972818/) | 3 | 2026-07-20 |
-| eq-shell | [Error: eq-ops rpc eq_upsert_pricing_config failed: pricing config requires manag](https://eq-solutions.sentry.io/issues/135532286/) | 2 | 2026-07-21 |
-| eq-shell | [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/) | 2 | 2026-07-14 |
-| eq-solves-service | [auth handoff: expired](https://eq-solutions.sentry.io/issues/135281279/) | 1 | 2026-07-19 |
-| eq-shell | [EQ Field handoff timeout — no postMessage in 30s](https://eq-solutions.sentry.io/issues/129554465/) | 1 | 2026-07-19 |
-_[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunresolved)_
 
 ## Recently built (last 7 days)
 
@@ -79,7 +66,7 @@ _Showing 15 of 105 · full record in [sessions/](sessions/)_
 - **The dormant `shell_control.persons`/`person_xref` "golden record" spine (ADR-002)** was found built and never populated — three repos each run their own separate identity-matching heuristic instead. Explicitly parked as a separate, later initiative, not this sprint. _(added 2026-07-21)_
 - **`mint-cards-iframe-token.ts` (eq-shell) is confirmed dead code**, superseded by `mint-cards-otp.ts` — never actually removed. Trivial cleanup, not done. _(added 2026-07-21)_
 - **eq-cards `main`'s "Notify substrate on merge" workflow is failing on every commit** (exit 22, empty `Authorization: Bearer` token when dispatching to `eq-context`) — noticed while confirming CI health, unrelated to the migration-number fix. Not a build/test gate, just a broken fire-and-forget webhook, so substrate may be missing merge notifications from eq-cards until the secret is fixed. _(added 2026-07-21)_
-- **Toolbox Talks may have the exact same duplicate-copy problem as Prestart did** — spotted in passing (a second, separate "Toolbox" entry point exists alongside the one inside Safety) but not investigated. Worth the same check once Prestart's fix is confirmed working. _(added 2026-07-21)_
+- **Not independently confirmed live by Royce yet**: the merged fix above was verified via code review, automated tests, and a clean preview boot — but an actual click-through as an SKS user (Safety → Site Audits/Records, and the Site Reports screens for Prestart/Toolbox/Diary) was blocked by safety guards when tried locally (moving the SKS database key through a file or a browser URL got correctly stopped rather than worked around) and never completed. Worth a real look next time you're in the SKS view. _(added 2026-07-21)_
 - **The rest of the "biggest files are untested / too large" list from the review is still open:** Apprentices, Roster, Timesheets are each still well over the size where they need to be split up further (only removed one duplicate section each so far); a few other large files (the Safety area, two Tender-Pipeline-related files) haven't been touched at all yet. _(added 2026-07-21)_
 - **Checked Sentry after deploy: still zero events, which is expected, not a new problem.** The warning only fires on a specific real-world request shape (an old-style session hitting the fallback) — the fix makes it capable of reporting, it doesn't manufacture that traffic. Re-check after a normal working day, or after a deliberate test hits that path. _(added 2026-07-21)_
 - **Worth a quick look once deployed:** confirm a weekend-rostered person's mobile schedule and "Next shift" home tile show Saturday/Sunday correctly. _(added 2026-07-21)_
@@ -106,7 +93,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) |
 |------|------:|-----:|------------------:|
-| [EQ](eq/pending.md) | 2957 | 404 | 415 |
+| [EQ](eq/pending.md) | 2957 | 403 | 416 |
 | [SKS](sks/pending.md) | 457 | 68 | 64 |
 | [SKS active](sks/active.md) | 108 | 0 | 0 |
 | [OPS](ops/pending.md) | 230 | 28 | 6 |
@@ -127,4 +114,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-21 07:45 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-21 07:58 UTC._
