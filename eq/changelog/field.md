@@ -9,6 +9,10 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-21] notify-substrate diagnostics ported from eq-cards (MERGED, #523, live)
+- Same fix as eq-shell #942/eq-service #578: `curl -sf` swallowed the real HTTP status/body on a failed dispatch to eq-context, leaving only an opaque exit 22; now surfaces status + body so the next failure is legible.
+- Doesn't fix the dispatch itself — `EQ_CONTEXT_PAT` still needs the same working classic PAT eq-cards holds. Royce-only: can't read or copy a GitHub secret's value via API. Live-verified via Netlify: deploy `ready`, `error_message: null`, secret scan clean.
+
 ## [2026-07-21] Site Reports hub nav button removed (MERGED, #519, v3.5.345, live)
 - Follow-up to the same-day Safety nav flatten below: with Prestarts/Toolboxes now living directly in the Safety group, the separate "Site Reports" hub tile (`nav-site-reports`) was redundant. Removed from the sidebar.
 - Diary was the hub's third tile and has no other nav entry point — left unreachable **by explicit decision** (Royce declined adding it a dedicated button), not an oversight. `page-diary`/`diary.js` and `page-site-reports`/`site-reports-hub.js` are untouched, just unlinked.
