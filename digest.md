@@ -1,25 +1,24 @@
 ---
 title: EQ Suite — Health Digest
 owner: Royce Milmlow
-last_updated: 2026-07-20
+last_updated: 2026-07-21
 scope: Push-style 'what needs your attention' feed across the EQ suite. Regenerated on merge (repository_dispatch: suite-state-changed) and nightly. Full snapshot in suite-state.md.
 read_priority: high
 status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-20 19:16 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-21 02:15 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-20 13:56 UTC → 2026-07-20 19:16 UTC)
+## Since last refresh (2026-07-20 19:16 UTC → 2026-07-21 02:15 UTC)
 
-- ⚠ Needs you: 3 → 4 (new items)
+- ✅ Needs you: 4 → 3
 
-## ⚠ Needs you (4)
+## ⚠ Needs you (3)
 
 - 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-9 (P0 — confirmed exposure, same window as SEC-3) — A different service_role key (`jvkn`/eq-canonical) was pasted directly into a ch · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-10 (P0 — confirmed exposure) — `ANTHROPIC_API_KEY` + `RESEND_API_KEY` stored as plaintext Netlify env vars (`is · [security-register.md](ops/security-register.md)
-- 🔴 **Guard bypass? rung 4** — F1: Substrate read path served 8-12 day stale content, 200 OK, no error · possibly recurred in [2026-07-19.md](sessions/2026-07-19.md) · [failures.md](system/failures.md)
 
 ## Pulse
 
@@ -42,7 +41,6 @@ _2026-07-20 19:16 UTC · what needs your attention. Full snapshot: [suite-state.
 | eq-cards | [LateInitializationError: Field '' has not been initialized.](https://eq-solutions.sentry.io/issues/132643934/) | 2 | 2026-07-07 |
 | eq-solves-service | [auth handoff: expired](https://eq-solutions.sentry.io/issues/135281279/) | 1 | 2026-07-19 |
 | eq-shell | [EQ Field handoff timeout — no postMessage in 30s](https://eq-solutions.sentry.io/issues/129554465/) | 1 | 2026-07-19 |
-| eq-solves-service | [Error: COALESCE types uuid and text cannot be matched](https://eq-solutions.sentry.io/issues/132618557/) | 1 | 2026-07-07 |
 _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunresolved)_
 
 ## Recently built (last 7 days)
@@ -113,4 +111,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-20 19:16 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-21 02:15 UTC._
