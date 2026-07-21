@@ -62,7 +62,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-cards:**
 - #170 feat(cards): decommission the certificates feature (Phase C)
-- #169 docs: correct licence-photos RLS mechanism in photo_upload.dart header
 
 **eq-field:**
 - #520 Gate timesheet + leave status transitions (self-approval, reopen, paid)
@@ -70,10 +69,11 @@ _If this file is >48h old, the cron is broken._
 - #518 Security: field_people_iud never gated user_id — the Shell-login-to-Field-person binding
 
 **eq-service:**
+- #577 Make service.audit_logs append-only and derive authorship server-side
 - #576 Security: authenticated users could self-promote to manager via service.tenant_members (migration 0189)
 
 **eq-shell:**
-- #939 docs: correct licence-photos RLS mechanism (segment 2, not segment 1)
+- #940 chore: retire the certificates-migrate endpoint (Phase C cleanup)
 - #936 Security: app_data.staff.user_id was directly client-writable on zaap (migration 0194)
 - #935 P0: any authenticated user could forge an invite and become tenant manager (jvkn)
 - #933 Security: any org invitee could activate as admin (control plane, jvkn)
