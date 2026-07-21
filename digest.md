@@ -8,11 +8,7 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-21 05:04 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
-
-## Since last refresh (2026-07-21 03:44 UTC → 2026-07-21 05:04 UTC)
-
-- ⚠ Needs you: 3 → 4 (new items)
+_2026-07-21 07:18 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
 ## ⚠ Needs you (4)
 
@@ -40,7 +36,6 @@ _2026-07-21 05:04 UTC · what needs your attention. Full snapshot: [suite-state.
 | eq-cards | [LateInitializationError: Field '' has not been initialized.](https://eq-solutions.sentry.io/issues/133972818/) | 3 | 2026-07-20 |
 | eq-shell | [Error: eq-ops rpc eq_upsert_pricing_config failed: pricing config requires manag](https://eq-solutions.sentry.io/issues/135532286/) | 2 | 2026-07-21 |
 | eq-shell | [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/) | 2 | 2026-07-14 |
-| eq-cards | [LateInitializationError: Field '' has not been initialized.](https://eq-solutions.sentry.io/issues/132643934/) | 2 | 2026-07-07 |
 | eq-solves-service | [auth handoff: expired](https://eq-solutions.sentry.io/issues/135281279/) | 1 | 2026-07-19 |
 | eq-shell | [EQ Field handoff timeout — no postMessage in 30s](https://eq-solutions.sentry.io/issues/129554465/) | 1 | 2026-07-19 |
 _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunresolved)_
@@ -60,17 +55,17 @@ _7 merges · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **Tenant-isolation root fix still open.** A Field session without a `tenant_slug` claim (every plain-PIN login) falls back to a client-supplied tenant, checked only against a static allow-list. The real fix (bind tenant into the session at PIN-mint time) is designed but deliberately deferred pending real frequency data. One-time scheduled check `collision-alert-week1-check` set for 2026-07-27 09:00 AEST to gather it — a manual "Run now" attempt didn't actually trigger; it'll fire on schedule. _(added 2026-07-21)_
+- **EQ-tenant worker→staff sync doesn't exist** — `workers-canonical-sync` is hardcoded to SKS only. Deprioritized rather than built, since the EQ tenant's Field plane has no real usage yet — revisit if that changes. _(added 2026-07-21)_
+- **The dormant `shell_control.persons`/`person_xref` "golden record" spine (ADR-002)** was found built and never populated — three repos each run their own separate identity-matching heuristic instead. Explicitly parked as a separate, later initiative, not this sprint. _(added 2026-07-21)_
+- **Invite-path collision gate still missing** — PR #919 only covers the Cards self-signup approval path; the older invite/`staff_id` approval path has the same duplicate-identity exposure, unaddressed. _(added 2026-07-21)_
+- **45 never-invited workers are now visible (via #918's alert) but nobody's actually invited them.** Sending real invites to real workers is a deliberate action for an operator, not something to automate. Fits under the existing `/admin/invite-bulk` 50-cap if actioned. _(added 2026-07-21)_
+- **`mint-cards-iframe-token.ts` (eq-shell) is confirmed dead code**, superseded by `mint-cards-otp.ts` — never actually removed. Trivial cleanup, not done. _(added 2026-07-21)_
+- **Unrelated pre-existing CI failure found and flagged, not this session's problem**: two already-merged, unrelated features (worker-credential deletion and the account-deletion privacy fix) both happened to use the same internal migration number, so eq-cards' database-hygiene check has been red on every PR since. Spun off as its own fix; someone has already started it in a separate session. _(added 2026-07-21)_
 - **Found a real bug: the Safety area's Prestart form (crew sign-off before starting work) existed in two separate places in the code, and they didn't always agree with each other on whether a submission should be allowed** — whichever copy loaded most recently on a person's device silently won, for anyone using either screen. Fixed by removing the duplicate and keeping the one actually in daily use; the reporting/records views and Toolbox Talk's "copy from today's prestart" were carefully preserved. **PR [#516](https://github.com/eq-solutions/eq-field/pull/516) OPEN, deploy preview green, NOT merged** — click through Safety → Toolbox/Records and the separate Prestart screen on the preview before merging, since this touches a live safety form. _(added 2026-07-21)_
 - **Toolbox Talks may have the exact same duplicate-copy problem as Prestart did** — spotted in passing (a second, separate "Toolbox" entry point exists alongside the one inside Safety) but not investigated. Worth the same check once Prestart's fix is confirmed working. _(added 2026-07-21)_
 - **The rest of the "biggest files are untested / too large" list from the review is still open:** Apprentices, Roster, Timesheets are each still well over the size where they need to be split up further (only removed one duplicate section each so far); a few other large files (the Safety area, two Tender-Pipeline-related files) haven't been touched at all yet. _(added 2026-07-21)_
-- **Checked Sentry after deploy: still zero events, which is expected, not a new problem.** The warning only fires on a specific real-world request shape (an old-style session hitting the fallback) — the fix makes it capable of reporting, it doesn't manufacture that traffic. Re-check after a normal working day, or after a deliberate test hits that path. _(added 2026-07-21)_
-- **Worth a quick look once deployed:** confirm a weekend-rostered person's mobile schedule and "Next shift" home tile show Saturday/Sunday correctly. _(added 2026-07-21)_
-- **Worth a quick look once deployed:** confirm the Company field shows/saves correctly for Labour Hire and Subcontractor (desktop + mobile), and re-export SKS-17386 to confirm Clarifications now sits left-aligned without needing a manual fix in Word. _(added 2026-07-21)_
-- **The rest of that audit's recommended fixes still await your decision:** whether the account-deletion feature should actually delete data (it currently just blanks it out) or the privacy policy wording should change instead; adding a way to revoke a licence link once it's been shared; and adding a simple "how sure are we this credential is real" label to licences. Full detail in the audit doc (`eq-context/eq/cards/portable-trade-identity-audit-2026-07-20.md`). _(added 2026-07-21)_
-- **Field's mobile-improvement sprint (PRs #486–#489, v3.5.326–329) has no changelog entry.** Real shipped work, but written as plain descriptive bullets rather than checked-off items, so the dedup pass correctly left it alone rather than guess. Worth a manual changelog entry if you want it on record. _(added 2026-07-20)_
-- **~250 bullets across the 5 products were deliberately left in this file** — ambiguous product ownership, investigation-only findings with no shipped fix, or genuinely cross-cutting content. Not a backlog in the usual sense; full per-product breakdown is in today's session log. _(added 2026-07-20)_
-- **Whether to actually build the "QR code for on-site sign-in" feature, or drop it for good.** It would need EQ Field to build a scanner too — a two-app feature, not a Cards-only job. Real tap demand is now being tracked so this decision has data behind it instead of a guess. _(added 2026-07-20)_
-_…and 384 more · [eq/pending.md](eq/pending.md)_
+_…and 390 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -92,7 +87,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) |
 |------|------:|-----:|------------------:|
-| [EQ](eq/pending.md) | 2916 | 398 | 395 |
+| [EQ](eq/pending.md) | 2943 | 404 | 406 |
 | [SKS](sks/pending.md) | 457 | 68 | 64 |
 | [SKS active](sks/active.md) | 108 | 0 | 0 |
 | [OPS](ops/pending.md) | 230 | 28 | 6 |
@@ -113,4 +108,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-21 05:04 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-21 07:18 UTC._
