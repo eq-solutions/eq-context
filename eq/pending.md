@@ -71,7 +71,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **eq-cards Sentry crash (EQ-CARDS-14) found already fixed by a concurrent session** — verified the fix live on the database before closing the Sentry issue with the evidence recorded on it. _(done 2026-07-20)_
 - [x] **Stale worktree-registry.md row cleared** — the folder it described was already gone; found and deleted the real leftover (an orphaned merged branch, local + remote). _(done 2026-07-20)_
 - [x] **This file cut from 3449 to 2843 lines, 865 to 372 done items** — every deletion was checked against the matching product changelog first (duplicate → delete; missing detail → add to the changelog, then delete; genuinely ambiguous or cross-cutting → left alone). Zero open items touched. `eq-shell.md` also had 5 duplicate date headings from older drift, one hiding a real contradiction (a PR recorded as both "open" and "merged") — consolidated and corrected. _(done 2026-07-20)_
-- [ ] **Field's mobile-improvement sprint (PRs #486–#489, v3.5.326–329) has no changelog entry.** Real shipped work, but written as plain descriptive bullets rather than checked-off items, so the dedup pass correctly left it alone rather than guess. Worth a manual changelog entry if you want it on record. _(added 2026-07-20)_
+- [x] **Field's mobile-improvement sprint (PRs #486–#489, v3.5.326–329) written up in `eq/changelog/field.md`.** _(done 2026-07-21)_
 - [ ] **~250 bullets across the 5 products were deliberately left in this file** — ambiguous product ownership, investigation-only findings with no shipped fix, or genuinely cross-cutting content. Not a backlog in the usual sense; full per-product breakdown is in today's session log. _(added 2026-07-20)_
 
 ---
