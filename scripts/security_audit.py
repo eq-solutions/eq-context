@@ -40,9 +40,8 @@ PROJECTS = {
 # Accepted ERROR findings (cache_key -> "ticket — review_by"). Baseline so CI
 # fails only on NEW errors. Keep tight; every entry is a tracked risk.
 ACCEPTED_ERRORS = {
-    # eq-canonical-internal: rate-limit table RLS trusts user_metadata.
-    "rls_references_user_metadata_app_data_eq_intake_rate_limits_tenant_isolation":
-        "SEC-2 user_metadata in RLS — review_by 2026-06-12",
+    # SEC-2 closed 2026-07-21 — live-verified fixed via eq-shell tenant-migrations
+    # 0023/0178 on both planes, entry removed. See ops/security-register.md.
 }
 
 

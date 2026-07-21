@@ -27,7 +27,7 @@ fails on **new** exposure while keeping the open ones visible.
 | SEC-3 | **P3 — hygiene (downgraded from P0 2026-07-20)** | `ehowg` service_role key never rotated (F1) — **no confirmed leak vector found**, unrotated ≠ leaked | sks-canonical (LIVE) | **OPEN, hygiene priority.** Investigated 2026-07-20: the only evidence for "leaked" across the whole substrate is the key still being *valid* (unrotated since 2026-05-24) — no incident, no leak vector, no exposed-location ever documented. A **later, more careful analysis** (`cross-app-linkage-sprint-2026-06-07.md`) explicitly downgraded this: *"tenant_routing key concentration... No live exposure today; high cost if it leaks."* Corroborates the eq-field punch-list's own June note that the "exposed" flag looked stale. **Royce's call 2026-07-20: downgrade, rotate at a calm moment, not a rushed weekend window.** Rotation runbook (`f1-ehowg-key-rotation-runbook-2026-06-03.md`) still valid whenever it happens. |
 | SEC-9 | **P0 — confirmed exposure, same window as SEC-3** | A different service_role key (`jvkn`/eq-canonical) was pasted directly into a chat session 2026-07-12 to fix `canon-read` | eq-canonical (LIVE) | **OPEN.** Unlike SEC-3, this exposure IS confirmed — plaintext in a chat transcript is a real leak vector, not a hygiene item. **Royce's call 2026-07-20: same priority and rotation window as SEC-3** rather than treating separately. Rotate both together whenever that window lands. |
 | SEC-10 | **P0 — confirmed exposure** | `ANTHROPIC_API_KEY` + `RESEND_API_KEY` stored as plaintext Netlify env vars (`is_secret: false` — not masked in Netlify's own UI/API either), full values returned by a routine env-var read 2026-07-20 and now sitting in a chat transcript, same leak-vector class as SEC-9 | sks-nsw-labour (Netlify, LIVE) | **OPEN.** Found by accident while prepping SEC-1's JWT-minter env vars (that prep is now moot — see SEC-1, app is not being touched). Credential storage, not app config — **not covered by the "don't touch sks-nsw-labour" freeze**, but rotation itself is a separate action requiring your own console.anthropic.com / resend.com access. `EQ_SECRET_SALT`'s `dev`-context value came back unmasked too (its `production`/`branch-deploy`/`deploy-preview` values are correctly masked — only `dev` isn't). **Royce's call 2026-07-20: rotate at another time.** When rotated: set the new values with `is_secret: true`, closing the plaintext-storage gap too, and re-check whether any other project has the same pattern on a real credential. |
-| SEC-2 | P1 | RLS policy `tenant_isolation` trusts end-user-editable `user_metadata` (advisor ERROR) | eq-canonical-internal | **SCHEDULED — weekend** |
+| SEC-2 | ~~P1~~ **CLOSED** | RLS policy `tenant_isolation` trusts end-user-editable `user_metadata` (advisor ERROR) | eq-canonical-internal | **CLOSED 2026-07-21 — was already fixed, register was stale.** See Detail. |
 | SEC-4 | P3 — hardening | `anon`-executable SECURITY DEFINER `eq_cards_*` fns | eq-canonical | **VERIFIED not exploitable** 2026-06-05 (auth.uid()/token-guarded). Post-launch: revoke anon EXECUTE on the 3 that don't need it. |
 | SEC-5 | P3 — hygiene | always-true (`USING/WITH CHECK = true`) write policies | eq-solves-field, eq-canonical-internal | **VERIFIED latent** 2026-06-05 — anon holds NO table grant, policies unreachable. Post-launch cleanup. |
 | SEC-6 | P2 | `context_proposals` anon INSERT has length caps but no volume throttle | eq-substrate | OPEN — needed before the queue has a consumer |
@@ -43,10 +43,7 @@ fails on **new** exposure while keeping the open ones visible.
   an actual retirement date — sks-nsw-labour confirmed still active 2026-07-16,
   no date set. **Reaffirmed 2026-07-20: no interim hardening either** — the app
   stays untouched, not just unretired, until Field replaces it.
-- **SEC-2 — fix `eq_intake_rate_limits` RLS.** Rewrite `tenant_isolation` to derive
-  tenant from `app_metadata` (server-set) not `user_metadata`. Mirror the existing
-  `sks_safety_rpc_jwt_tenant_guard` pattern. Then remove from
-  `security_audit.py ACCEPTED_ERRORS`.
+- ~~SEC-2 — fix `eq_intake_rate_limits` RLS.~~ **Already done — closed 2026-07-21, see Detail.**
 
 ## Rotate whenever convenient (not weekend-critical, per Royce's 2026-07-20 call)
 
@@ -98,13 +95,29 @@ still open/unmerged on `sks-nsw-labour` and should stay that way. The 4
 draft SQL/runbook files in `~/.claude/plans/nspbmir-*` remain exactly that:
 drafts, not a queued plan.
 
-### SEC-2 — eq-canonical-internal RLS trusts user_metadata (P1, advisor ERROR)
-`app_data.eq_intake_rate_limits` policy `tenant_isolation` references
-`auth.user_metadata`, which end users can edit — so a user can forge their tenant
-and bypass isolation on that table. **Fix:** rewrite the policy to derive tenant
-from `app_metadata` (server-controlled) or a trusted claim, matching the
-`sks_safety_rpc_jwt_tenant_guard` pattern already used. Baselined in
-`security_audit.py` `ACCEPTED_ERRORS` until fixed.
+### SEC-2 — eq-canonical-internal RLS trusts user_metadata (CLOSED 2026-07-21)
+Originally: `app_data.eq_intake_rate_limits` policy `tenant_isolation` referenced
+`auth.user_metadata`, which end users can edit — a forgeable-tenant bypass.
+
+**Closed, not fixed this session — it turned out to already be fixed.** Asked to
+action this finding 2026-07-21; live-verified via `pg_policies` on both tenant
+planes (zaap `eq-canonical-internal` and ehow `sks-canonical`) before touching
+anything, per this repo's own Rule 0.5 (verify live before building). Both
+`app_data.eq_intake_rate_limits` **and** `app_data.api_intake_calls` already key
+`tenant_isolation` on `app_metadata`, not `user_metadata`, on both planes.
+Traced to eq-shell's canonical `supabase/tenant-migrations/0023_intake_infra.sql`
+(the original SKS→canonical port — header literally says "corrected from SKS's
+user_metadata") plus `0178_intake_rate_limit_harden.sql` (a later
+source-reconciliation that also pinned `search_path` on the two rate-limit
+definer RPCs and wrapped the claim in `(SELECT …)` for planner caching). This
+register and `security_audit.py`'s `ACCEPTED_ERRORS` were simply never updated
+after those migrations shipped — the finding had been stale since whenever 0023
+first went live. `ACCEPTED_ERRORS` entry removed same session. eq-intake's own
+`sql/029_rate_limiting.sql` + `sql/032_api_audit_log.sql` (pre-port staging
+copies, never self-serve applyable — see that repo's CLAUDE.md) still show the
+superseded `user_metadata` version; annotated with a pointer to the real fix
+rather than rewritten, since they're an intentional historical record of what
+was ported *from*.
 
 ### SEC-3 — F1: exposed ehowg service_role key still live (P0)
 Full runbook: `f1-ehowg-key-rotation-runbook-2026-06-03.md`. The leaked
