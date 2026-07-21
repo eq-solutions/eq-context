@@ -14,6 +14,28 @@ for operational support: tax, entities, infrastructure, substrate.
 
 ---
 
+## Brief-gate flag made per-session (2026-07-21)
+
+The `/brief` flag that unlocks `guard.js`'s brief-gate was a single global
+file per day, shared by every concurrent agent on this machine. One session's
+`/close` deleted it and silently re-blocked every other live session mid-work;
+one session's `/brief` waived the gate for sessions that never ran one. Now
+named `eq-brief-<date>-<session_id>.flag`, read from the hook's `session_id`.
+Fixed in `~/.claude` (`hooks/guard.js`, `commands/brief.md`, `commands/close.md`)
+— not a repo change, so there's no PR.
+
+**Needs Royce:** nothing — but two follow-ups worth knowing:
+- [ ] Verify the per-session flag across a **real concurrent pair** — only
+  single-session behaviour was tested (block without flag, allow with).
+  Two agents at once is the case it exists for. _(added 2026-07-21)_
+- [ ] `echo '<json>' | node guard.js` returns a **false all-clear** — exits 0
+  with empty stdout even when the rule should deny. Calling `evaluate()`
+  directly on the same payload denies correctly. Any future gate test using
+  the piped form will silently pass; worth root-causing so the hook is
+  testable from the CLI. _(added 2026-07-21)_
+
+---
+
 ## Full substrate audit — 95 findings across the whole eq-context repo (2026-07-19)
 
 Royce asked for a deep-dive, full review of the substrate ("spend the time now
