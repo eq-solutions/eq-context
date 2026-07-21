@@ -1,7 +1,7 @@
 ---
 title: EQ Cards — Changelog
 owner: Royce Milmlow
-last_updated: 2026-07-20
+last_updated: 2026-07-21
 scope: EQ Cards append-only history. NOTE — duplicates eq/changelog/cards.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
@@ -102,4 +102,5 @@ status: live
 - PR #155: renderer config truthed — `web/index.html` now pins `renderer:'canvaskit'` (was `'auto'` with a stale "HTML renderer on mobile" note that Flutter removed in 3.29; app builds on 3.41). Functional no-op today — Cards is not cross-origin isolated, so `auto` already resolved to canvaskit. Context: Sentry EQ-CARDS-12/13 were ONE transient CanvasKit/OffscreenCanvas WebGL-context-loss engine crash on mobile Safari (0 users, 1 incident) — resolve-and-monitor (Royce); this PR does NOT fix that (no app-side fix exists). Deploying.
 
 ## 2026-07-16
+- **Photo ID added as a soft credential requirement for SKS (data-only, no migration).** `public.org_credential_requirements` (eq-canonical, jvkn) got a new row `(org_id='00000000-0000-0000-0000-000000000002', licence_type='photo_id', active=true)` — `photo_id` already existed as a seeded `licence_types` row. Confirmed live: gap query shows `photo_id` missing for all 33 active SKS workers (expected, brand-new requirement); White Card gap unchanged at 7 workers. Confirmed **soft** (non-blocking) — `org_credential_requirements`/`eq_get_org_credential_gaps`/`eq_worker_compliance_status` are explicitly non-blocking by design, nothing gates approval or Field access on it. Surfaced with zero code changes — `RequiredByOrgStrip` (`lib/features/licences/presentation/widgets/required_by_org_strip.dart`) is fully data-driven off the gap RPC, so it shows a second "Photo ID" chip automatically on every SKS worker's wallet, framed as an invitation. Audited requirement config across all 3 Cards tenants (`sks`/`eq`/`favour-perfect`) — only SKS has any requirements configured; `eq` (EQ Solutions' own active seed-demo org) and `favour-perfect` (inactive) have zero.
 - **PR #156 MERGED (`ab393a6`) — softened overseas-disclosure wording in the Privacy Policy.** §6 previously read "If you do not consent to overseas disclosure, you cannot use EQ Cards... you confirm you understand and accept this." Reworded to the same legal substance (still discloses overseas processors, still requires acceptance) without the take-it-or-leave-it framing. Non-material change per the policy's own §13 definition — no effective-date bump. Note: bundled Flutter asset, only reaches users on the next app build/release. Prompted by a pre-meeting terms review — full context in `eq-context/eq/pending.md`.

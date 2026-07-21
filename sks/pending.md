@@ -1,7 +1,7 @@
 ---
 title: SKS — Pending
 owner: Royce Milmlow
-last_updated: 2026-07-19
+last_updated: 2026-07-21
 scope: SKS Technologies operational TODO list
 read_priority: critical
 status: live
@@ -17,18 +17,11 @@ status: live
 ---
 
 ## NSW Comms — dashboard, Patrick's demo follow-up, speed fix (2026-07-17/19)
-- [x] **New overview screen, a Microsoft-jobs pipeline view, a full-screen Monday-meeting display, and a "start by" warning on Microsoft jobs** (Patrick's request from the Melbourne demo — flags the latest safe start date for a job so it doesn't put the ~53-day PO-to-finish window at risk). **Also fixed a real slow-loading complaint** — the page was making 4 separate requests at once on open; now 2. Full detail in `eq/pending.md`. _(done 2026-07-19)_
 - [ ] **Still needed: who should receive the weekly NSW Comms summary email?** Built, just needs a recipient list before it's switched on. _(added 2026-07-17)_
-
-## Live security gap on SKS's database found + fixed same day (2026-07-19)
-- [x] **A safety check protecting SKS's database caught a real gap and blocked an unrelated merge until it was fixed.** Restoring a permission on SKS's database earlier the same day (see `eq/pending.md`, "EQ Field — closed the server-side permission gap") had a side effect: 3 database views (prestart forms, toolbox talks, site diaries) became readable by any signed-in account while still missing a separate protection — meaning any signed-in user, any company, could potentially have read that content directly. Confirmed live, got Royce's go, fixed live on all 3, verified. Full detail in `eq/pending.md`. _(done 2026-07-19)_
 
 ## Monday meeting prep — Royce + Adam (SKS), adoption + data-security discussion (2026-07-16)
 - [x] **Terms/legal review + fixes done, talking points drafted.** Full detail in `eq/pending.md` (EQ-side work: eq-service `/terms` taken down, eq-cards wording softened, eq-field/eq-shell confirmed clean). Positioning locked: personal-tooling framing, no marketing/customer language, Royce recuses from any commercial-terms question. _(done 2026-07-16)_
 - [ ] **Not done: live-demo readiness check** (data cleanliness / no visible errors on whatever screen gets shown) — offered, awaiting Royce's go. _(added 2026-07-16)_
-
-## ✅ Staff duplicates cleaned + locked (2026-07-12)
-- [x] 9 duplicate SKS staff merged to one live record each; 19 stranded licences + ~62 roster entries recovered onto the record they belong to; 11 middle-name-jammed names cleaned (incl. Royce Milmlow). Recurrence was already stopped 07-11 (Cards adopt-by-email/phone); a DB one-per-person lock (eq-shell `0175`, all 3 planes) now makes it permanent. Full detail in `eq/pending.md`. _(done 2026-07-12)_
 
 ## Done (pruned summary — full history in git log)
 
@@ -69,14 +62,9 @@ _Nothing pending — migrations 001–023 all applied._
 
 ## ⏩ SKS Field — sessions 2026-06-07 through 2026-06-13
 
-**Completed:**
-- [x] **ehow SKS canonical DB** — 58 staff + 591 sites synced to ehow (`ehowgjardagevnrluult`). All 11 `app_data.field_*` views created. Full JWT coverage (v3.5.125, PR #267, 2026-06-11). SKS Field (`core.eq.solutions/sks/field`) loads correctly.
-- [x] **Audit_log clean slate** — 109 legacy nspb-UUID rows deleted; RLS policies corrected to SKS org_id.
-
 **Pending (Royce-gated):**
 - [x] **Roster data entry on ehow — DECISION 2026-06-15** — start fresh on ehow. Do not migrate from nspb. New entries go direct to ehow from now.
-- [ ] **Standalone `sks-nsw-labour` retirement** — NOTE: app is still receiving active feature work as of 2026-06-26 (PRs #32–#54 merged in June). 'Keep warm' understates current investment. Retirement gating question is still open — confirm with Royce whether ehow Field has superseded the standalone app before setting a retirement date. **PIN audit 2026-07-05 (Royce-confirmed):** this repo has its own independent login/PIN system, still actively used — a completely different codebase from eq-field, not affected by eq-field's own PIN-gate retirement below.
-- [x] **eq-field's standalone PIN gate — retired in practice for SKS (confirmed 2026-07-05).** Three legacy pieces (~1,271 lines): tenant-wide STAFF_CODE/MANAGER_CODE gate, per-worker 4-digit staff-timesheet PIN, supervisor PIN-management UI. All explicitly code-blocked for SKS (`_lockGateForCoreOnly()` + matching guards) — SKS authenticates exclusively via the Shell JWT/cookie handoff. **Cannot be physically deleted yet** — the `eq` demo tenant has no Shell/JWT integration and depends on this gate as its only way in. Full detail: IDENTITY-MODEL.md §7.1.
+- [ ] **Standalone `sks-nsw-labour` retirement** — NOTE: app is still receiving active feature work as of 2026-06-26 (PRs #32–#54 merged in June). 'Keep warm' understates current investment. Retirement gating question is still open — confirm with Royce whether ehow Field has superseded the standalone app before setting a retirement date. **PIN audit 2026-07-05 (Royce-confirmed):** this repo has its own independent login/PIN system, still actively used — a completely different codebase from eq-field, not affected by eq-field's own PIN-gate retirement (see `eq/changelog/field.md` "SKS = Core-only auth", v3.5.200).
 - [ ] **Track 2 RLS STEP 2** — anon SELECT lockdown on ehow. DEFERRED until standalone retired.
 - [ ] **SKS anon-remediation (nspb)** — exact policy worklist in `cross-app-linkage-remediation-plan-2026-06-07.md` §7a. Separate from ehow work. SKS-live gated.
 
@@ -87,21 +75,7 @@ _Nothing pending — migrations 001–023 all applied._
 
 ## ⏩ SKS Field — session 2026-07-03 (QA batch: 9 live bug reports)
 
-**Completed (eq-field v3.5.218–222 + eq-shell PR #619, all merged and live):**
-- [x] Leave submit — real error now logged (console + Sentry) instead of generic "check connection"; adapter's specific "no matching staff record" toast no longer gets overwritten
-- [x] Timesheets — duplicate "Pre-fill from Roster" button removed
-- [x] Timesheets — "Weekends" toggle actually shows Sat/Sun columns now (was wired to a dead renderer)
-- [x] Roster — "(unknown)" staff names on cold boot fixed (staff-map load-order race)
-- [x] Middle names — display-only strip everywhere (roster/editor/mobile/batch-fill); Editor name-column misalignment fixed alongside it
-- [x] Prestarts not saving — `sks_rep`/`site_rep` column typo fixed
-- [x] Toolbox Talks not saving — migration applied to ehow adding 4 missing form columns
-- [x] `?tab=person-wizard` deep link — Shell-side tab-forwarding race fixed (PR #619); URL correctly holds now
-- [x] Site Audits — audited, already correct, no bug
-- [x] Document branding — confirmed already shipped v3.5.191, no action needed
-- [x] Acknowledgments — confirmed live and working, no action needed
-
 **Deferred (added 2026-07-03):**
-- [x] Person-wizard renders blank content on a cold `?tab=person-wizard` deep-link boot _(added 2026-07-03)_ — **RESOLVED 2026-07-11 (eq-field #456, v3.5.300)**: the person-wizard was **removed entirely** — Add/Edit Person is now the compact `#modal-person` (reliable save + adopt-before-create dedup), and the `page-person-wizard` route/DOM/`wizardSave`/`renderPersonWizard`/`pf-*` handlers no longer exist. The blank-render bug is moot; nothing deep-links there anymore.
 - [x] At least one SKS person ("Collin ... Toohey") has no record in canonical `app_data.staff`, blocking their leave submissions — data-ops backfill needed, not a code fix _(added 2026-07-03)_ — **RESOLVED, confirmed live 2026-07-06**: `app_data.staff` row exists (`3c9714bd-…`, email `collin.toohey@sks.com.au`, trade `electrical`). Not built this session — found already-fixed during the remediation-queue audit below, likely landed via the 2026-07-02/03 EQ Intake steward-run. Worth confirming his leave submissions actually work end-to-end now that the record exists.
 - [ ] Royce to independently click-through-confirm the Weekends toggle, roster names, and both safety forms live (smoke-tested remotely, not yet confirmed by Royce beyond the original repros) _(added 2026-07-03)_
 
@@ -132,7 +106,6 @@ _Nothing pending — migrations 001–023 all applied._
   - 4 `customer_id` link fixes — clean; the one that later changed (Ben Cheam's Equinix contact, deleted 2026-07-06) was a legitimate, attributed action by Simon Bramall (Equinix account lead) through the app, not a bug.
   - 4 of 8 `email` fixes were silently reverted 2 days later (2026-07-05 07:44:07) as a side effect of that same day's SKS roster-reconciliation session (see below — same 4 people: Ian Marston, Johannes Otto, John McKee, Jonathan Ryan). Traced via `app_data.audit_log`: surgical single-field nulls, `actor_id=null`/`source='system'` (direct-SQL, not through the app). **All 4 emails restored** with Royce's confirmation.
 - [x] **Broader activity audit** (all contacts/customers/sites/staff writes, by source) — Royce's own 31-site + 17-contact purge (Erilyan Pty Ltd, DigiCo Infrastructure REIT, 2026-07-03) confirmed legitimate: both customers remain active, nothing duplicated/lost. All 6 "system"-sourced staff hard-deletes (2026-07-05) confirmed safe — every one has a live, current staff record for the same person under a different `staff_id`; stale duplicate stubs, not data loss.
-- [x] **Root-caused + fixed the unattributed "system" staff-write pattern — `eq_update_staff` (public RPC, eq-shell) had a real bug**: every optional param defaulted to `NULL`, and `NULLIF(trim(NULL), '')` also evaluates to `NULL`, so "field not sent" and "field explicitly cleared" were indistinguishable — any partial-payload call (e.g. only correcting `employment_type`) silently wiped every other field it didn't mean to touch. `first_name`/`last_name` were already correctly `COALESCE`-protected; `email`/`phone`/`trade`/`level`/`employment_type` were not. Confirmed via full `audit_log` history: this fired **3 times, hit 6 people** — Eric (Hoang Minh) Nguyen (2026-06-30, twice same day), Mohammed Nabeel Hussain (2026-07-02), plus the 4 already found (Ryan/Otto/Marston/McKee, 2026-07-05). All 6 emails now restored. `staff-update.ts` (the only wrapper) has zero live callers in eq-shell or eq-field — every hit came from a direct RPC call, which is also why it's unattributed (no PostgREST session, no `x-eq-actor` header to read). Fixed in both the live ehow function and source: eq-shell PR **#681** (`0165_fix_eq_update_staff_field_clobber.sql`, COALESCE added to match the name-field pattern), branched fresh off `origin/main` after an earlier commit accidentally landed on a concurrent session's branch (`claude/staff-job-title-column`) in the shared eq-shell checkout — caught before push, no harm done, but a reminder to branch explicitly off `origin/main` when editing a repo mid-session rather than trusting whatever's currently checked out.
 
 **Deferred:**
 - [ ] **Anthony Hartley correction**: not actually a violation of the 2026-07-05 "never touch it" plan — re-checked live. His canonical worker id `098e4bff-…` (the one documented as "dead weight, exclude, no hard-archive field") is still there, untouched, exactly as decided — it's referenced from his current live `app_data.staff` row. What got hard-deleted was a *different* duplicate, at the `app_data.staff` (Service/ehow) layer, not the canonical-worker (jvkn) layer the 2026-07-05 decision was about. No action needed.
@@ -141,18 +114,7 @@ _Nothing pending — migrations 001–023 all applied._
 
 ## ⏩ SKS Field — session 2026-07-08 (TAFE timesheet prefill — 4 iterative ships)
 
-**Completed (sks-nsw-labour v3.10.82→85, all merged to main + deployed; ported to eq-field v3.5.263→267):**
-- [x] **v3.10.82** — TAFE days no longer mute the timesheet during a configured TAFE holiday (payroll could not enter real hours on the break week). `_tsDayStatus` made holiday-aware via a shared `isTafeHolidayCell()` helper in `tafe.js`.
-- [x] **v3.10.83** — soft "🎓 TAFE break" hint on the (now editable) holiday-week TAFE cell so it didn't look like the prefill vanished.
-- [x] **v3.10.84** — superseded both: EVERY apprentice TAFE day renders as an editable cell pre-filled with `TAFE`/8h you type a real job over. Stays `workable:false` (completion/40h unchanged); 8h counted via `_tafeHrs`, made **entry-aware (job OR hours)** so overwriting never double-counts. Verified 6/6.
-- [x] **v3.10.85 (final, Royce-approved)** — the prefill is driven by each apprentice's **nominated `people.tafe_day`**, not just roster-typed TAFE — so their TAFE day prepopulates EVERY week incl. future weeks. Roster content still wins (site keeps day workable; leave mutes); nominated-day default only fills an empty cell. Verified 8/8.
-
-**Verified live (nspb `nspbmirochztcjijmcrx`):** `app_config.tafe_holidays` correct (winter break 06→17 Jul, anon-readable); **NO `tafe-weekly-fill` cron on the nspb project** (the PR #399 cron enablement was on ehow/canonical — the eq-field data plane — a separate lane). Apprentice nominated `tafe_day`s captured; Terry Su has none (had TAFE hand-typed on 3 roster days); Aiden Crowley nominated=tue but rostered SYD55 that Tue.
-
-**Also completed (same day, after the TAFE work — sks-nsw-labour v3.10.86 / eq-field v3.5.268, merged + deployed):**
-- [x] **Labour-hire agency filter on Timesheets** — new Agency dropdown next to Group; pick a business → list narrows to that agency's people so their sheet can be printed/exported and sent. Built from the `people.agency` tag on active LH workers (case-folded); selection persists. `↓ Export CSV` / `↓ Payroll Report` now honour the on-screen filters (were dumping everyone) and the filename carries an agency suffix. eq-field exports unified onto `_getTsFilteredPeople()` (now also include Direct, matching the on-screen view + SKS).
-- [x] **Agency data tidy (nspb, 2 rows)** — merged look-alike tags: `Madigans`→`Madagins` (Ali Alsalman) and `core`→`Core` (Zemi Asri). Now 7 clean agencies (Atom×7, Core×2, Cranfield×2, DL Electrical×2, Carter & Osbourne×1, IVI×1, Madagins×3). Royce confirmed spelling = "Madagins".
-- [x] **Jose Quintanilla "still labour hire" — fixed (nspb) + guard shipped (v3.10.87 / eq-field v3.5.269).** Root cause: he was moved LH→Direct (`group='SKS Direct'`) but kept `agency='Madagins'`; the app doesn't infer LH from agency, but the stale tag showed against him + leaked him into the new agency filter. **EQ/canonical (ehow `app_data.staff`) was already correct** (Direct, no agency). Cleared his nspb agency manually, then shipped the guard: SKS `savePerson()` forces agency empty for non-LH + hides the field; **eq-field guarded at `savePersonToSB()`** (covers BOTH the add modal and the person wizard) + hides/clears the field on both forms. Was chip `task_354e9f49`. Non-LH people can no longer carry an agency.
+(full ship history — v3.10.82→87 TAFE prefill + agency filter + Jose Quintanilla fix — recorded in `sks/changelog/labour.md` "2026-07-08"; eq-field ports v3.5.263→269 recorded in `eq/changelog/field.md`)
 
 **Deferred:**
 - [ ] `isTafeHolidayCell()` in `scripts/tafe.js` (both apps) is now **dead code** — the timesheet stopped consulting the holiday config at v3.10.84; writers use `tafeIsHolidayForDay` directly. Low-pri cleanup (leave or remove next timesheet touch). _(added 2026-07-08)_
@@ -270,27 +232,13 @@ The following tests belong to eq-quotes-port (Flask), which is retired as of 202
 
 **Reported live:** Collin Toohey hit a "Save failed — check connection" toast on a roster save; Simon Bramall separately reported failures specifically editing roster entries more than a month out. Investigated as one ticket, turned out to be two unrelated bugs sharing the same generic error toast.
 
-**Completed (sks-nsw-labour v3.10.88→89, all merged to main + deployed; v3.10.88 ported to eq-field v3.5.272):**
-- [x] **v3.10.88 — Collin's issue: duplicate-key race on first save of a week.** `saveCellToSB`'s POST-insert path had no handler for the `UNIQUE(name,week,org_id)` 409 fired when STATE's local cache didn't know about a server row that already existed (stale cache / another device wrote first). Surfaced as the generic connection-error toast though the connection was fine. Self-heals now: catches the 409, fetches the existing row, PATCHes the edited day onto it. Ported identically to eq-field (same code, same bug, `_stampPersonId` preserved).
-- [x] **v3.10.89 — Simon's issue: full-table schedule load silently capped at 1000 rows.** `schedule?select=*` on initial load had no `order=`/pagination. SKS's `schedule` table crossed Supabase/PostgREST's default 1000-row cap (hit 1,069 rows 2026-07-10) — the response was silently truncated, dropping the highest-id (newest) rows. Far-future weeks are naturally the newest inserts, so every client's local `STATE.schedule` was missing far-future data: first edits collided with the untracked server row (409), and read-only views were simply blank. Confirmed directly — the highest `id` in the table (1672) was Simon's own week 24.08.26 entry. New `sbFetchAll()` pages through with explicit `order=id`. **eq-field unaffected** — it already windows the schedule load by week (`STATE.loadedWeeks`), never does the unbounded full-table fetch.
-- [x] **Live data cleanup (Royce-approved) — 4-week retention on `schedule`.** One-time archive-then-delete: 681 rows (weeks >4 weeks in the past) moved to new `schedule_archive` table (RLS-locked, no app access, fully recoverable), live table dropped 1,069 → 388 rows. Recurring weekly cron `schedule-4wk-retention-archive` (Sun 03:00 UTC) now enforces the 4-week window going forward — same archive-then-delete logic, matches the existing `roster-presence-cleanup`/`daily-audit-log-trim` cron pattern already on this DB. At ~142 rows/month growth this keeps the live table permanently under the row cap without manual maintenance.
-
-**Deferred:**
-- [x] **eq-field bulk-export path has the same unbounded-fetch pattern — RESOLVED same day, see session below.** `_loadFullDataForExport()` unscoped `schedule?select=*` / `timesheets?select=*`. Flagged as `task_69a6ff0f`, superseded by a wider-scope fix (`task_b6cbfbf9`) once the SKS-side sweep found more unbounded tables than just those two — see "2026-07-10 (full pagination sweep)" below.
-
 **Process note:** hit the same collision twice this session — both `C:\Projects\sks-nsw-labour` and `C:\Projects\eq-field` root checkouts had unrelated uncommitted work from concurrent sessions (`scripts/batch.js` on sks main-adjacent branch; `scripts/audit.js`+`scripts/supabase.js` audit-revert canon patching on eq-field `main`). Used dedicated fresh worktrees off `origin/main` for both instead of touching root, registered in `worktree-registry.md`. Also hit a squash-merge trap: a branch cut locally *after* a PR merged (from the pre-squash local commit, not `origin/main`) diverges from the squashed commit GitHub creates — same content, different SHA, false merge conflict. Fix is `git rebase origin/main <branch>` (git recognizes the duplicate content and skips it), not a manual conflict resolution.
 
 ## ⏩ SKS Field / EQ Field — session 2026-07-10 (full pagination sweep)
 
 **Trigger:** picked up the eq-field export truncation flag from the earlier same-day session (`task_69a6ff0f` above). Before building, verified the premise against live git/GitHub state rather than trusting the flag at face value — this caught that the referenced "SKS v3.10.89 fix" was real (PR #56, merged, a genuine live incident — Simon Bramall's far-future roster gap) but only covered the `schedule` table; its sibling `timesheets` load in the exact same function was never touched.
 
-**Completed:**
-- [x] **sks-nsw-labour v3.10.90 (PR #57, MERGED, live)** — paginated `timesheets` (both `loadFromSupabase()` and the standalone `timesheets.js` loader), `team_members`, `timesheet_locks` (all in `loadFromSupabase()`), and `leave_requests` (`scripts/leave.js`) with the same `sbFetchAll()` pattern as the v3.10.89 schedule fix. None of these had crossed 1000 rows yet — fixed proactively rather than waiting for a repeat incident.
-- [x] **eq-field (PR #425, MERGED, live)** — spawned as an independent background session (`task_b6cbfbf9`, superseding the narrower `task_69a6ff0f`). Ported the same `sbFetchAll(path, orderBy, pageSize)` helper into `scripts/supabase.js` and wired it into `_loadFullDataForExport()` (schedule + timesheets), `team_members`, `project_targets`, `timesheet_locks`, and `tender-pipeline.js`'s `tender_enrichment`/`nominations` (ordered by `tender_id` where no `id` PK exists). Correctly left `nomination_clashes` unpaginated — it's a view with no id-equivalent column and is currently absent from the live DB.
-- [x] **sks-nsw-labour v3.10.91 (PR #58, MERGED, live)** — closed the "lower-priority, already-capped" deferred item below, but split it on intent rather than blanket-applying the same fix: `tender_enrichment`/`nominations` (both `pipeline.js` and `pipeline-resource.js`), `pending_schedule`, and the tender-import diff read in `pipeline-import.js` were capped with a generous `limit=N` as a stopgap but are meant to be complete datasets — same silent-drop risk as the schedule/timesheets bug, now paginated. `sbFetchAll()` gained an `orderBy` param for this — confirmed live that `tender_enrichment` has no `id` column, only `tender_id`. **Deliberately left `audit_log`/`prestarts`/`toolbox_talks` alone** — those caps are an intentional "show the most recent N" UI display, not a full-load bug; converting them would change behaviour (dump entire history into the browser), not fix anything.
-
 **Deferred:**
-- [x] **Same pattern confirmed + fixed in eq-field, same day — RESOLVED.** `sks-pipeline.js`/`sks-pipeline-resource.js` had the identical stopgap-limit gap (plus `tender_phases`, not present in SKS's own version of these files). Confirmed live against the underlying database (not assumed from the SKS schema) that `tender_enrichment` has no `id` column there either, only `tender_id`. Fixed via `sbFetchAll()`, eq-field v3.5.276, PR **#427, merged, live**.
 - [ ] `audit_log`/`prestarts`/`toolbox_talks` recency caps (both apps) — not a bug, but if older history genuinely needs to be reachable, that's a pagination-UI or date-filter feature to design, not a copy of `sbFetchAll()`. _(added 2026-07-10)_
 
 ## ⏩ SKS Field — session 2026-07-12 (loadFromSupabase resilience — one table's failure can't freeze the app)
@@ -385,20 +333,7 @@ The following tests belong to eq-quotes-port (Flask), which is retired as of 202
 
 **The whole NSW Comms module (`core.eq.solutions/sks/comms`) was built out to replace the team's Excel labour planner — all merged to eq-shell main + live.**
 
-**Completed:**
-- [x] **Job card + one job list** — widened `sks_comms_jobs` (manager/start/finish/hours/dock/NV1/materials + source provenance); backfilled all 143 planner jobs → 153 total. Filters + declutter.
-- [x] **Crew booking → Field roster** — booking a crew on a comms job writes real Field roster rows (`schedule_entries`, tagged with the job), shared with EQ Field. Validated shape live; **no real booking has flowed yet** (0 of 1,016 roster rows job-linked).
-- [x] **Fortnight view** — capacity ("need N / have M"), Monday agenda (who needs a crew), tech×day grid, hide-idle + this-week default.
-- [x] **Crew = the Field "Comms" team** (`app_data.teams`/`team_members`, 11 people) — read-only in comms, managed in Field; retired the parallel `sks_comms_crew` table (0170→0171).
-- [x] **Staff dedupe** — 16 duplicate Cards stub rows merged/retired (licences + logins preserved) → 93 clean people. Root cause (Cards making new rows) fixed in eq-cards #147.
-- [x] **Scannable job table** — replaced the busy card grid with a spreadsheet-style table (Start/Finish/Hours columns, sortable), **custom columns** (Value/Manager/Quote switch-on), fits-width.
-- [x] **Three intake "doors":** typed-in (New job); **Ops** (pull won EQ Ops quotes → comms jobs, bulk tick-box import); **Melbourne** (upload the "Microsoft Working Job List.xlsx" → parse in browser → import new jobs, add-only, skips existing).
-- [x] **Door polish** — imports carry the $ value across (PO line), "From Ops · N" count, Melbourne brings PO detail + de-dups suffixed job numbers.
-- [x] **Verified live end-to-end** (browser walkthrough, read-only) — page loads with data, table, columns picker, bulk Ops import, job detail, crew tick-list all working.
-- [x] **Job-list polish (2026-07-12, merged + deployed)** — sticky column headers, loading skeleton, removable active-filter chips, friendlier empty/error states (with Try-again), column-picker tidy (Reset + hidden count). UI only.
-- [x] **Wiring diagram + tech-facing one-pager** — mapped how Comms/Field/Ops connect (built vs dry); published a plain-English "your week, in one place" one-pager for the crew (private artifact, share from the page).
-- [x] **Planner reconciliation (2026-07-12)** — checked the tool against the actual planner Excel: all Monday-critical features + header data covered; found two pre-fill gaps (materials, crew) and three consciously-parked features (Gantt, hours-by-tech dashboard, NV1-per-person). Details in session log.
-- [x] **App names made consistent (2026-07-12, merged + deployed)** — the invite screen showed Cards/Intake/Service without the "EQ" (everywhere else had it). Decision: keep "EQ" (EQ Field/Cards/Intake/Ops/Service; NSW Comms stays unprefixed). Fixed the invite screen + routed all surfaces through one shared list so they can't drift again.
+(full build history recorded in `eq/changelog/eq-shell.md` "2026-07-16" NSW Comms module entry)
 
 **Deferred:**
 - [ ] **Reach the crew — the last mile is off.** Only 6 of 11 comms techs can log in; 0 of 11 get any roster notification (all 11 have a phone). Until this is wired, a booking never reaches the tech automatically. Fix = logins for the 5 + roster SMS. Chip spawned. _(added 2026-07-12)_
@@ -427,10 +362,7 @@ The following tests belong to eq-quotes-port (Flask), which is retired as of 202
 
 ## ⏩ SKS NSW Comms — session 2026-07-12 (editable grid + readability)
 
-**Completed (eq-shell, merged + deploying):**
-- [x] **The job list is now editable like a spreadsheet.** Click any cell to change it — site, client, work, start/finish dates, hours, status, materials — Tab/Enter to move on, Esc to cancel; each edit saves straight through without opening the job. NV1 and dock are click-to-toggle chips. **Live-verified on the deploy: edits save cleanly.**
-- [x] **Decluttered the top.** Retired the yellow "action needed" band (it just repeated the tiles + tabs, and its counts disagreed); the Need-a-crew / Invoice / Overdue tiles are now click-to-filter buttons. Fixed the mis-styled "Crew" column heading.
-- [x] **Made the list readable.** Splitting Site/Client had squeezed the Work column to one cut-off line — Work now wraps to two lines, the Crew "…" glitch is gone, and the table uses more of the screen.
+(recorded in `eq/changelog/eq-shell.md` "2026-07-12" PR #785/#788)
 
 **Notes / gotchas:**
 - The first merge was blocked by a **security-gate false alarm** — a safe Field "removed people" view was mis-flagged as an exposed table. Verified it's actually tenant-isolated (a security_invoker view, writes tenant-guarded), cleared the flag; this also unblocked every other eq-shell PR. Folding that view's setup into a proper migration is running as its own background task.
@@ -445,10 +377,7 @@ The following tests belong to eq-quotes-port (Flask), which is retired as of 202
 
 **Root cause (verified live, ehow `app_data.assets` + `app_data.audit_log`):** a MANUAL service-role delete-all+reload of the whole SKS asset register at 2026-07-12 09:53 wiped every row not in the incoming feed — all **16 `plant_equipment` rows** (SKS's own calibrated test instruments: Fluke/Megger/Metrel/Kyoritsu/UNI-T meters, 2 torque wrenches, micro-ohmmeter) plus **817 customer asset rows**. The Plant & Equipment page filters `asset_type='plant_equipment'` server-side, so it went empty. NOT the eq-solves-service importer (which writes its own `service.assets`, never canonical `app_data.assets`) — the delete-all was a manual SQL/service-role run whose service-role JWT sailed past the older 0154 delete guard.
 
-**Completed:**
-- [x] **16 calibrated instruments RESTORED** — re-inserted from `audit_log.old_record` under their original IDs, all active, every calibration certificate still linked (cert PDFs live in the jvkn `asset-certs` bucket, untouched). P&E page shows them again. Live-verified: 16 plant_equipment rows, all active, all with certs.
-- [x] **DB guard hardened (eq-shell #790 / migration 0176, via spawned task `task_4bfeb34a`)** — a `plant_equipment` DELETE now requires a real user actor (`x-eq-actor`) or the reviewed override; blocks a service-role/manual wipe while leaving the equipment module's own Delete + customer-asset reconcile untouched. **APPLIED + LIVE both planes** (ehow + zaap, `tenant-migrate.yml` run `29196855141`, Royce-approved).
-- [x] **2FA enrolment grace re-checked** (`netlify/functions/_shared/totp.ts`) — still a **14-day** window, per-user from account creation, enforced only for manager/supervisor + platform admin; unenrolled + past 14 days ⇒ forced (fail-open on missing/invalid createdAt). Wired identically into all 6 login/session entry points; file matches `origin/main` (= production). No change made.
+(restore + DB guard recorded in `eq/changelog/eq-shell.md` "2026-07-13" PR #790; 2FA grace re-check found no change needed)
 
 **Decided (Royce):**
 - Restore only the 16 instruments; the **817 deleted customer rows = "not required, all good"** — closed, no restore.
@@ -463,14 +392,7 @@ The following tests belong to eq-quotes-port (Flask), which is retired as of 202
 
 **Trigger:** Royce reviewing `/sks/ops/labour-hire-rates` — wanted the weekly-cost view simpler/grouped, a per-week redundancy charge, the Add-rate modal fixed (kept dropping focus per keystroke), a formula-Excel to check the maths, and a full audit of the labour-hire rate-card PDFs.
 
-**Completed (all merged to eq-shell main + deployed, and data live on ehow SKS plane):**
-- [x] **Weekly cost redesigned — agency-grouped, 4 columns** (eq-shell #804). Was 8 sparse columns with the total clipping off-screen; now one band per agency (name + role count + weekly spread), roles dearest-first, allowances folded into one "Add-ons" column with a breakdown sub-line. `money()` got thousands separators. Search / CSV / print-PDF preserved.
-- [x] **Add/Edit-rate modal focus-per-keystroke bug fixed** (eq-shell #805). Root cause = eq-ui `<Modal>` focus-trap effect keyed on `[open, onClose]`; `onClose` was a fresh arrow each render → effect re-ran every keystroke → focus yanked to first field. Fixed with `useCallback`. **Durable fix landed in eq-ui v1.10.1** (the spawned task Royce started) and bumped in via **#807** — the package now fixes it for every consumer; #805 is belt-and-braces.
-- [x] **4-provider rate-card audit** (5 PDFs = 4 providers; filenames misleading — `SKS Technolgies - Rate Card.pdf` is **Atom**, `NSW 2022.pdf` is a **Madagins invoice** (2022 = Bondi postcode), `SKS Technologies 2026 (002).pdf` is **Cranfield**). Every current rate reconciled to a signed card. Madagins matches exactly; Atom/Core Talent/Cranfield had gaps (below).
-- [x] **Atom MERT/Redundancy $62.15/week ADDED** — source-confirmed on Atom's signed card. Role `All`, allowance `Redundancy`, unit `each` (flat weekly stopgap until 0177 enables `week`). Now on all 4 Atom roles.
-- [x] **Cranfield tidied** — current travel relabelled `Travel`→`Travel & Fares` (matches the card); 7 expired duplicate rows (identical-value current twins) deleted. 5 clean current rows remain.
-- [x] **Core Talent stale "Electrician" role RETIRED** — its 01-Jul-2026 card has 3 named roles + a flat Daily Travel $31.09; the DB's `Electrician` role (70.07 + Productivity/Travel-28.60/Excess-Travel) was superseded 21-Jun leftovers. Soft-retired via `effective_to=2026-06-30` (kept as history). Weekly cost now 13 rows, all card-accurate.
-- [x] **Formula-driven Excel cross-check** — `C:\Users\EQ\Downloads\SKS labour-hire weekly cost - calcs FINAL.xlsx`: Assumptions / Rates (Kind+Wildcard+Weekly-equiv formulas) / Weekly cost (SUMIFS, role-vs-wildcard workings) / Check tab reconciles formula vs an independent hand-calc = **all 13 OK** against live DB. (Stale earlier versions deleted at Royce's request.)
+(weekly-cost redesign, modal focus fix, and the 4-provider rate-card audit all recorded in `eq/changelog/eq-shell.md` "2026-07-13" PR #804/#805/#807/#808)
 
 **Decided (Royce):**
 - Add the redundancy; tidy Cranfield (relabel + delete dupes); retire Core Talent's stale Electrician role — "complete all 3."
@@ -490,9 +412,7 @@ The following tests belong to eq-quotes-port (Flask), which is retired as of 202
 
 **Trigger:** Royce reported Jack Trusler's Timesheets row total didn't add up (43h against visible 8+10+9 cells), then separately flagged the mobile Weekly Roster header text was invisible, then asked to hide Pipeline/Resources from nav entirely.
 
-**Completed:**
-- [x] **sks-nsw-labour v3.10.97 (PR #66, MERGED, live — `51544ad`)** — two fixes. (1) **Timesheet total double-count**: a day's leave status comes from the roster (`schedule` table) while its hours come from the timesheet — when a day is A/L on the roster, the cell shows a read-only 🌴 pill that hides any timesheet entry still saved against it, but the total was counting both the hidden hours AND the paid-leave 8h for that same day. Root cause: `tsTotalHrs()` summed all 7 days blind to the roster; only TAFE days (v3.10.84) had a same-day-double-count guard, paid leave (A/L/SICK, v3.10.41) never did. New `_tsWorkedHrs(name, week, entry)` skips any roster-leave day, routed through the row total, apprentice total, in-place cell-save update, and CSV export total. Verified against the real functions (6 cases: Jack's exact bug, post-clean, normal week, split-day, unpaid RDO, weekend — all pass). Root cause traced live: Jack had a stale `26184/8` Friday entry left behind by an earlier "Fill Week" run, before Friday was set to A/L on the roster — cleared that one DB row (only occurrence across all weeks, confirmed by full-table query). (2) **Invisible mobile Roster header**: base.css sets `thead tr { color: white }` for the desktop navy header; mobile's sticky-header CSS re-backgrounds `th.name-col`/`th.center` to near-white `--surface-2` for the scroll effect but never reset the inherited white text — added `color: var(--navy)` to both rules. Verified via computed styles at 375px (navy-on-light) and confirmed desktop unaffected at 1280px (still white-on-navy).
-- [x] **sks-nsw-labour v3.10.98 (PR #67, MERGED, live — `fbeeeec`)** — Pipeline + Resources nav buttons were only gated by `edit-only` (visible to any manager-mode user); Royce's call was to hide from **all** managers, not just staff. Hard-hid the desktop sidebar section + mobile drawer items (`display:none` regardless of manager-mode) in `index.html`. Pages/data/`scripts/pipeline*.js` untouched — confirmed via grep no other nav/dashboard link points at `pipeline`/`pipeline-resource`, so this fully removes the entry points. Reversible by deleting the added inline styles.
+(v3.10.97/98 fixes recorded in `sks/changelog/labour.md` "2026-07-15")
 
 **Decided (Royce):**
 - Timesheet fix = code fix (leave-aware total) **and** clean the one stale DB row, not just one or the other.
@@ -509,12 +429,7 @@ The following tests belong to eq-quotes-port (Flask), which is retired as of 202
 
 **Trigger:** Royce asked what EQ Cards' minimum tenant requirements are for SKS, then asked whether "form of ID" could be added as a minimum requirement alongside White Card.
 
-**Completed:**
-- [x] **Photo ID added as a soft credential requirement for SKS** — `public.org_credential_requirements` (eq-canonical, jvkn) got a new row `(org_id='00000000-0000-0000-0000-000000000002', licence_type='photo_id', active=true)`. Data-only change, no migration/schema change — `photo_id` already existed as a seeded `licence_types` row. Confirmed live: `eq_get_org_credential_gaps`-equivalent query shows `photo_id` gap (`held=false`) for all 33 active SKS workers (nobody's uploaded one yet, expected for a brand-new requirement); White Card gap unchanged at 7 workers missing it (Brett Kilpatrick, Dylan Lieu, Kurt Sticker, Mark Brame, Matthew Miller, Owen Dottson, Sam Powell, Tom Ivicevic).
-- [x] **Confirmed the requirement is SOFT, matching the ask** — `org_credential_requirements`/`eq_get_org_credential_gaps`/`eq_worker_compliance_status` are explicitly non-blocking by design (code comments call this out directly); nothing gates approval or Field access on it.
-- [x] **Confirmed Cards UI surfaces it with zero code changes** — `RequiredByOrgStrip` widget (`eq-cards/lib/features/licences/presentation/widgets/required_by_org_strip.dart`) is fully data-driven off the gap RPC, not hardcoded to White Card. It'll show a second "Photo ID" chip automatically on every SKS worker's wallet, framed as an invitation ("add yours if you have it"), never an accusation.
-- [x] **Audited requirement config across all Cards tenants** — only 3 orgs exist (`sks`, `eq`, `favour-perfect`). Only SKS has any `org_credential_requirements` rows (now White Card + Photo ID). `eq` (EQ Solutions' own seed-demo org, active) and `favour-perfect` (inactive) have zero requirements configured.
-- [x] **Re-verified `licence-expiry-notifications` memory still accurate** — live query confirms only SKS has `notification_email` set; `eq` (active tenant) still has none, so the licence-expiry employer alert still won't fire for EQ Solutions itself. No memory update needed, already correct as of 2026-06-30.
+(recorded in `eq/changelog/eq-cards.md` "2026-07-16")
 
 **Deferred:**
 - [ ] **EQ Solutions' own org (`eq`) has zero credential requirements configured** — worth a call on whether EQ Solutions should require White Card/Photo ID too, or stay requirement-free deliberately (it's the seed-demo org). _(added 2026-07-16)_
@@ -527,18 +442,4 @@ The following tests belong to eq-quotes-port (Flask), which is retired as of 202
 - [x] **Confirmed live: "Equinix Hyperscale 2 (SY9) Pty Limited" (`d79ee06f-…`) is the correct/active SY9 customer** (Royce confirmed) — linked to the real SY9 site (499 assets, 10 contract scopes, 2 quotes). The older duplicate "Equinix Hyperscale" (`a57bf144-…`, created 2026-05-23) and its linked site (`95cdc37d-…`) were both already `active=false` with zero dependent rows (quotes/contacts/scopes/jobs) — cleanup had already happened previously. `eq_merge_customers` RPC not needed, no DML required.
 - [x] Logged the resolved name + duplicate-customer history to memory (`project_equinix_entity_map.md`) so future Coupa/PO matching doesn't second-guess "Equinix Hyperscale" (no suffix) as live.
 
-## ⏩ SKS Field — session 2026-07-19 (6 app_data.field_* views lost their authenticated grant — investigated, confirmed not live-breaking, fixed)
-
-**Trigger:** validating eq-field PR #497 (access-model cluster 3 server-side enforcement) against live ehow surfaced `app_data.field_schedule` with no `authenticated` grant at all — its own PR body flagged this as a separate, out-of-scope finding with two open hypotheses (JWT carrier off and masking it, or roster writes silently 403ing in prod).
-
-**Completed:**
-- [x] **Root-caused: neither hypothesis was right.** `DATA_JWT_ENABLED=on` in production (checked Netlify env vars directly), ruling out the masking theory. But traced the actual write path and found `schedule`/`timesheets`/`leave_requests` never touch their `field_*` views for SKS at all — a later "Design B" layer (`roster-adapter.js`/`timesheets-adapter.js`/`leave-adapter.js`) hard-codes `sks` into its canonical allow-list and routes both reads and writes straight to the base tables (`app_data.schedule_entries`/`timesheets`/`leave_requests`), which do carry the grant. Confirmed live: 1012/129/32 real rows in the "broken" views, not 0 — the suite-state.md "0 rows" note that kicked off the original worry was stale/wrong.
-- [x] **Scope was bigger than the one view flagged in the PR.** Spot-checked all 6 views created by the same `20260611_sks_canonical_field_sync.sql` migration: `field_schedule`, `field_timesheets`, `field_leave_requests`, `field_prestarts`, `field_toolbox_talks`, `field_site_diaries` had all silently lost the grant (likely a later `DROP`+recreate against the normalized tables that didn't carry the original `GRANT`s forward). Only `field_audit_log` (same migration) kept its grant — and it's the one view of the six still actually live-routed-through for SKS today, so the one path that mattered was fine. `field_people`/`sites`/`managers`/`people_removed`/`teams`/`team_members` (Service-owned) were unaffected.
-- [x] **Applied the fix live to ehow** (Royce confirmed) — restored `SELECT`/`INSERT`/`UPDATE`/`DELETE` to `authenticated` on all 6 views, matching the original 20260611 grants exactly. [eq-field PR #498](https://github.com/eq-solutions/eq-field/pull/498) (repo record of the grant restore) reviewed clean and merged (`af9b1d5`).
-
-**Decided (Royce):**
-- Apply the grant now — confirmed explicitly.
-- Merge #498.
-
-**Deferred:**
-- [x] **Primed-but-currently-disarmed landmine — CLOSED same day.** If `ROSTER_CANONICAL_TENANTS`/`TIMESHEETS_CANONICAL_TENANTS`/`LEAVE_CANONICAL_TENANTS` ever drop `'sks'`, or `prestarts`/`toolbox_talks`/`site_diaries` ever get removed from `JWT_INPLACE_TABLES`, the same silent 403 that already happened twice before (v3.5.201/v3.5.286) would reappear with no code change anywhere in the calling surface. Royce asked to have this tidied up; new CI test `tests/canonical-routing-guard.test.js` (eq-field [PR #500](https://github.com/eq-solutions/eq-field/pull/500), merged `bdd38b0`) asserts all 4 conditions and fails loud if any are ever edited away. No production code touched. _(added 2026-07-19, closed 2026-07-19)_
+(full investigation + fix recorded in `eq/changelog/field.md` "2026-07-19" — DB-only grant restore PR #498, CI guard PR #500)

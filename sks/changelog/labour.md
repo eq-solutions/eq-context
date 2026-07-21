@@ -1,7 +1,7 @@
 ---
 title: Changelog — SKS Labour
 owner: Royce Milmlow
-last_updated: 2026-07-15
+last_updated: 2026-07-21
 scope: Append-only history of changes to the SKS Labour scheduling app
 read_priority: reference
 status: live
@@ -24,11 +24,23 @@ status: live
 - **v3.10.96 (PR #65, `6f3eccc`, deploying)** — LOGIN FIX: supervisors stopped dropping to view-only after a reload. Supervisor status was held in a one-shot `eq_auto_admin` flag that `initApp` consumed; the durable logged-in flag survived reloads but the role didn't, so the SW auto-reload (fires every deploy) re-ran boot with the flag gone → view-only. Fix: durable `eq_role` written at every login path and read on every boot (Option 1); SW-activated reload deferred to a non-disruptive moment instead of an instant flash (Option 3). `scripts/auth.js` + `index.html`; no change to how anyone logs in. One-time: currently-logged-in supervisors log out/in once to seat the durable role.
 **Status:** All live on sks-nsw-labour.netlify.app. EQ Field audited — the resilience layers aren't required there now (it can't freeze; `_loadSafe` + #459); logged to the merge-time parity checklist instead. EQ Field's login differs (Shell JWT) — its role-persistence gets its own check at merge, not a copy of the SKS fix.
 
-## [2026-07-10] Roster save reliability — two bugs behind one "Save failed" toast + schedule retention
+## [2026-07-10] Roster save reliability — two bugs behind one "Save failed" toast + schedule retention + full pagination sweep
 **Built by:** assistant + Royce Milmlow
 - **v3.10.88 (PR #55, merged + live)** — roster save self-heals the duplicate-key (409) race. `saveCellToSB`'s POST-insert path now catches `UNIQUE(name,week,org_id)`, fetches the existing server row, and PATCHes the edited day onto it instead of showing "Save failed — check connection". Root cause of Collin Toohey's report — a stale local cache colliding with a server row it didn't know about.
 - **v3.10.89 (PR #56, merged + live)** — `schedule?select=*` initial load no longer silently truncated at 1000 rows. New `sbFetchAll()` pages through with explicit `order=id`. The table had crossed the PostgREST default cap (1,069 rows); the dropped rows were the newest inserts = far-future weeks, which is exactly what Simon Bramall reported (roster entries more than a month out failing/blank).
 - **Live retention (nspb, Royce-approved)** — new `schedule_archive` (RLS-locked, no app access); one-time archive-then-delete of 681 rows >4 weeks past (live table 1,069 → 388); recurring weekly cron `schedule-4wk-retention-archive` (Sun 03:00 UTC) enforces the 4-week window going forward. Keeps the live table permanently under the row cap (~142 rows/month growth).
+- **v3.10.90 (PR #57, merged + live)** — same-day follow-up sweep: paginated `timesheets` (both `loadFromSupabase()` and the standalone `timesheets.js` loader), `team_members`, `timesheet_locks`, and `leave_requests` (`scripts/leave.js`) with the same `sbFetchAll()` pattern as v3.10.89. None of these had crossed 1000 rows yet — fixed proactively rather than waiting for a repeat incident. Ported the same day to eq-field as PR #425 (v3.5.274).
+- **v3.10.91 (PR #58, merged + live)** — pagination sweep continued: `tender_enrichment`/`nominations` (both `pipeline.js` and `pipeline-resource.js`), `pending_schedule`, and the tender-import diff read in `pipeline-import.js` were capped with a generous `limit=N` stopgap but are meant to be complete datasets — same silent-drop risk as schedule/timesheets, now paginated. `sbFetchAll()` gained an `orderBy` param (`tender_enrichment` has no `id` column, only `tender_id`). Deliberately left `audit_log`/`prestarts`/`toolbox_talks` alone — those caps are an intentional "show the most recent N" UI display, not a full-load bug. Ported the same day to eq-field as PR #427 (v3.5.276).
+
+## [2026-07-08] TAFE timesheet prefill — 4 iterative ships + labour-hire agency filter
+**Built by:** assistant + Royce Milmlow
+- **v3.10.82** — TAFE days no longer mute the timesheet during a configured TAFE holiday (payroll could not enter real hours on the break week). `_tsDayStatus` made holiday-aware via a shared `isTafeHolidayCell()` helper in `tafe.js`.
+- **v3.10.83** — soft "🎓 TAFE break" hint on the (now editable) holiday-week TAFE cell so it didn't look like the prefill vanished.
+- **v3.10.84** — superseded both: every apprentice TAFE day renders as an editable cell pre-filled with `TAFE`/8h you type a real job over. Stays `workable:false` (completion/40h unchanged); 8h counted via `_tafeHrs`, made entry-aware (job OR hours) so overwriting never double-counts.
+- **v3.10.85 (final, Royce-approved)** — the prefill is driven by each apprentice's nominated `people.tafe_day`, not just roster-typed TAFE — so their TAFE day prepopulates every week incl. future weeks. Roster content still wins (site keeps day workable; leave mutes); nominated-day default only fills an empty cell.
+- **v3.10.86** — labour-hire agency filter on Timesheets: new Agency dropdown next to Group narrows the list to one agency's people for print/export; built from the `people.agency` tag on active LH workers. `↓ Export CSV`/`↓ Payroll Report` now honour the on-screen filters and the filename carries an agency suffix. Agency data tidy on nspb (2 rows): `Madigans`→`Madagins`, `core`→`Core`.
+- **v3.10.87** — Jose Quintanilla "still labour hire" fixed: he'd been moved LH→Direct but kept his `agency` tag, leaking him into the new agency filter. Cleared his nspb agency manually + shipped the guard — `savePerson()` forces `agency` empty for non-LH people and hides the field, so non-LH people can no longer carry an agency. Ported the same day to eq-field (`savePersonToSB()`, v3.5.269).
+**Status:** All live on sks-nsw-labour.netlify.app. Ported to eq-field v3.5.263→269 (see field.md).
 
 ## [2026-04-28] Add Contact button on Contacts page (cherry-picked from EQ Field demo)
 **Built by:** Royce Milmlow + assistant
