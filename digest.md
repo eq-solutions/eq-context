@@ -8,7 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-21 07:18 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-21 07:45 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+
+## Since last refresh (2026-07-21 07:18 UTC → 2026-07-21 07:45 UTC)
+
+- Merged: eq-shell [#929](https://github.com/eq-solutions/eq-shell/pull/929) Suppliers.tsx: fix stale comment about which perm gates writ
+- Merged: eq-shell [#927](https://github.com/eq-solutions/eq-shell/pull/927) Suppliers directory - EQ Ops (SKS)
+- Merged: eq-shell [#925](https://github.com/eq-solutions/eq-shell/pull/925) feat(retention): daily job to finalise deleted Cards account
+- Merged: eq-shell [#924](https://github.com/eq-solutions/eq-shell/pull/924) Fix: flush Sentry before functions return — server events we
+- Merged: eq-shell [#923](https://github.com/eq-solutions/eq-shell/pull/923) Quote doc: fix Clarifications alignment (justified -> left)
+- Merged: eq-shell [#922](https://github.com/eq-solutions/eq-shell/pull/922) Staff: Company column for Labour Hire + Subcontractor, fix r
+- Merged: eq-shell [#921](https://github.com/eq-solutions/eq-shell/pull/921) Security fix: cross-org identity-collision metadata leak in 
+- Merged: eq-shell [#920](https://github.com/eq-solutions/eq-shell/pull/920) fix(licences): exclude is_private licences from admin-facing
 
 ## ⚠ Needs you (4)
 
@@ -21,7 +32,7 @@ _2026-07-21 07:18 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 0 | — |
+| eq-shell | ? unknown | ? | 2 | 0d |
 | eq-solves-service | ? unknown | ? | 0 | — |
 | eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ? unknown | ? | 0 | — |
@@ -44,28 +55,36 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
-| 2026-07-16 | eq-solves-intake | [#73](https://github.com/eq-solutions/eq-solves-intake/pull/73) feat(intake): usage-based survivor pick for the Sites Dupes tab |
-| 2026-07-16 | eq-solves-intake | [#74](https://github.com/eq-solutions/eq-solves-intake/pull/74) fix: backport two eq-shell-only fixes into source |
-| 2026-07-16 | eq-solves-intake | [#72](https://github.com/eq-solutions/eq-solves-intake/pull/72) feat(intake): wire the merge-panel UI into IntakeHealthHome |
-| 2026-07-16 | eq-solves-intake | [#71](https://github.com/eq-solutions/eq-solves-intake/pull/71) feat(intake): flagSitePairForMerge client wrapper |
-| 2026-07-15 | eq-solves-intake | [#70](https://github.com/eq-solutions/eq-solves-intake/pull/70) feat(intake): site merge preview + execute client wrappers |
-| 2026-07-14 | eq-solves-intake | [#69](https://github.com/eq-solutions/eq-solves-intake/pull/69) feat(intake): AI adjudicator — Claude suggests a verdict + reason |
-| 2026-07-14 | eq-solves-intake | [#68](https://github.com/eq-solutions/eq-solves-intake/pull/68) feat(intake): adjudicable console — capture the human verdict on  |
-_7 merges · full record in [sessions/](sessions/)_
+| 2026-07-21 | eq-shell | [#929](https://github.com/eq-solutions/eq-shell/pull/929) Suppliers.tsx: fix stale comment about which perm gates writes |
+| 2026-07-21 | eq-shell | [#927](https://github.com/eq-solutions/eq-shell/pull/927) Suppliers directory - EQ Ops (SKS) |
+| 2026-07-21 | eq-shell | [#924](https://github.com/eq-solutions/eq-shell/pull/924) Fix: flush Sentry before functions return — server events were si |
+| 2026-07-21 | eq-shell | [#925](https://github.com/eq-solutions/eq-shell/pull/925) feat(retention): daily job to finalise deleted Cards accounts |
+| 2026-07-21 | eq-shell | [#923](https://github.com/eq-solutions/eq-shell/pull/923) Quote doc: fix Clarifications alignment (justified -> left) |
+| 2026-07-21 | eq-shell | [#922](https://github.com/eq-solutions/eq-shell/pull/922) Staff: Company column for Labour Hire + Subcontractor, fix role d |
+| 2026-07-21 | eq-shell | [#921](https://github.com/eq-solutions/eq-shell/pull/921) Security fix: cross-org identity-collision metadata leak in worke |
+| 2026-07-21 | eq-solves-service | [#575](https://github.com/eq-solutions/eq-service/pull/575) fix(auth): scheduled functions' own trigger URLs get redirected b |
+| 2026-07-21 | eq-solves-service | [#574](https://github.com/eq-solutions/eq-service/pull/574) perf: pick up merged load-time PRs + combine duplicate MFA-grace/ |
+| 2026-07-21 | eq-field | [#516](https://github.com/eq-solutions/eq-field/pull/516) v3.5.340 — retire safety.js's duplicate Prestart + Toolbox forms |
+| 2026-07-21 | eq-field | [#515](https://github.com/eq-solutions/eq-field/pull/515) Fix Sentry telemetry delivery: await captureServerError, correct  |
+| 2026-07-21 | eq-field | [#514](https://github.com/eq-solutions/eq-field/pull/514) fix: mobile My Schedule + home tile show Sat/Sun when rostered (v |
+| 2026-07-21 | eq-field | [#513](https://github.com/eq-solutions/eq-field/pull/513) docs: reframe apprentice comments off compliance language |
+| 2026-07-21 | eq-field | [#512](https://github.com/eq-solutions/eq-field/pull/512) v3.5.337 — extract + test roster.js approved-leave overlay |
+| 2026-07-21 | eq-field | [#511](https://github.com/eq-solutions/eq-field/pull/511) v3.5.336 — extract apprentices.js year-advancement + rating rules |
+_Showing 15 of 105 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
 - **Tenant-isolation root fix still open.** A Field session without a `tenant_slug` claim (every plain-PIN login) falls back to a client-supplied tenant, checked only against a static allow-list. The real fix (bind tenant into the session at PIN-mint time) is designed but deliberately deferred pending real frequency data. One-time scheduled check `collision-alert-week1-check` set for 2026-07-27 09:00 AEST to gather it — a manual "Run now" attempt didn't actually trigger; it'll fire on schedule. _(added 2026-07-21)_
 - **EQ-tenant worker→staff sync doesn't exist** — `workers-canonical-sync` is hardcoded to SKS only. Deprioritized rather than built, since the EQ tenant's Field plane has no real usage yet — revisit if that changes. _(added 2026-07-21)_
 - **The dormant `shell_control.persons`/`person_xref` "golden record" spine (ADR-002)** was found built and never populated — three repos each run their own separate identity-matching heuristic instead. Explicitly parked as a separate, later initiative, not this sprint. _(added 2026-07-21)_
-- **Invite-path collision gate still missing** — PR #919 only covers the Cards self-signup approval path; the older invite/`staff_id` approval path has the same duplicate-identity exposure, unaddressed. _(added 2026-07-21)_
-- **45 never-invited workers are now visible (via #918's alert) but nobody's actually invited them.** Sending real invites to real workers is a deliberate action for an operator, not something to automate. Fits under the existing `/admin/invite-bulk` 50-cap if actioned. _(added 2026-07-21)_
 - **`mint-cards-iframe-token.ts` (eq-shell) is confirmed dead code**, superseded by `mint-cards-otp.ts` — never actually removed. Trivial cleanup, not done. _(added 2026-07-21)_
-- **Unrelated pre-existing CI failure found and flagged, not this session's problem**: two already-merged, unrelated features (worker-credential deletion and the account-deletion privacy fix) both happened to use the same internal migration number, so eq-cards' database-hygiene check has been red on every PR since. Spun off as its own fix; someone has already started it in a separate session. _(added 2026-07-21)_
-- **Found a real bug: the Safety area's Prestart form (crew sign-off before starting work) existed in two separate places in the code, and they didn't always agree with each other on whether a submission should be allowed** — whichever copy loaded most recently on a person's device silently won, for anyone using either screen. Fixed by removing the duplicate and keeping the one actually in daily use; the reporting/records views and Toolbox Talk's "copy from today's prestart" were carefully preserved. **PR [#516](https://github.com/eq-solutions/eq-field/pull/516) OPEN, deploy preview green, NOT merged** — click through Safety → Toolbox/Records and the separate Prestart screen on the preview before merging, since this touches a live safety form. _(added 2026-07-21)_
+- **eq-cards `main`'s "Notify substrate on merge" workflow is failing on every commit** (exit 22, empty `Authorization: Bearer` token when dispatching to `eq-context`) — noticed while confirming CI health, unrelated to the migration-number fix. Not a build/test gate, just a broken fire-and-forget webhook, so substrate may be missing merge notifications from eq-cards until the secret is fixed. _(added 2026-07-21)_
 - **Toolbox Talks may have the exact same duplicate-copy problem as Prestart did** — spotted in passing (a second, separate "Toolbox" entry point exists alongside the one inside Safety) but not investigated. Worth the same check once Prestart's fix is confirmed working. _(added 2026-07-21)_
 - **The rest of the "biggest files are untested / too large" list from the review is still open:** Apprentices, Roster, Timesheets are each still well over the size where they need to be split up further (only removed one duplicate section each so far); a few other large files (the Safety area, two Tender-Pipeline-related files) haven't been touched at all yet. _(added 2026-07-21)_
-_…and 390 more · [eq/pending.md](eq/pending.md)_
+- **Checked Sentry after deploy: still zero events, which is expected, not a new problem.** The warning only fires on a specific real-world request shape (an old-style session hitting the fallback) — the fix makes it capable of reporting, it doesn't manufacture that traffic. Re-check after a normal working day, or after a deliberate test hits that path. _(added 2026-07-21)_
+- **Worth a quick look once deployed:** confirm a weekend-rostered person's mobile schedule and "Next shift" home tile show Saturday/Sunday correctly. _(added 2026-07-21)_
+- **Worth a quick look once deployed:** confirm the Company field shows/saves correctly for Labour Hire and Subcontractor (desktop + mobile), and re-export SKS-17386 to confirm Clarifications now sits left-aligned without needing a manual fix in Word. _(added 2026-07-21)_
+_…and 385 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -87,7 +106,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) |
 |------|------:|-----:|------------------:|
-| [EQ](eq/pending.md) | 2943 | 404 | 406 |
+| [EQ](eq/pending.md) | 2957 | 404 | 415 |
 | [SKS](sks/pending.md) | 457 | 68 | 64 |
 | [SKS active](sks/active.md) | 108 | 0 | 0 |
 | [OPS](ops/pending.md) | 230 | 28 | 6 |
@@ -108,4 +127,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-21 07:18 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-21 07:45 UTC._
