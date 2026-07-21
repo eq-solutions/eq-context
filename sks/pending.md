@@ -16,6 +16,18 @@ status: live
 
 ---
 
+## SKS Field — session 2026-07-21 (mobile My Schedule + home tile: show Sat/Sun when rostered)
+
+**Trigger:** Royce spotted the mobile "My Schedule" day cards only showing Monday-Friday, even though a screenshot showed people rostered to work weekends.
+
+**Completed:**
+- [x] **sks-nsw-labour v3.10.99 (PR #68, MERGED, live)** — My Schedule day cards (`roster.js`) and the home tile's shift count / next-shift / schedule subtitle (`home.js`) now build their day list from the existing `getVisibleRosterDays()` helper instead of a hardcoded Mon-Fri array, so Sat/Sun show whenever that week actually has weekend work — same rule the desktop roster grid already uses. Display-logic only, no schema change. Same fix ported to EQ Field the same session (v3.5.338, PR #514, merged) — see `eq/pending.md`.
+
+**Deferred:**
+- [ ] Royce to click-through confirm a real weekend-rostered person's mobile schedule + home tile on both apps. _(added 2026-07-21)_
+
+---
+
 ## NSW Comms — dashboard, Patrick's demo follow-up, speed fix (2026-07-17/19)
 - [ ] **Still needed: who should receive the weekly NSW Comms summary email?** Built, just needs a recipient list before it's switched on. _(added 2026-07-17)_
 

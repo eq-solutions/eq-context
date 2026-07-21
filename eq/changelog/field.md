@@ -9,6 +9,11 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-21] Mobile My Schedule + home tile now show Saturday/Sunday when rostered (SHIPPED, #514, live)
+- My Schedule day cards (`roster.js` `renderSchedule`) and the home tile (shift count / next-shift / schedule subtitle in `home.js`) were hardcoded to Mon–Fri, silently dropping any Sat/Sun shift even though `schedule.sat`/`schedule.sun` and the desktop roster grid already carry that data. Both now build their day list from the existing `getVisibleRosterDays()` helper — the same "only show Sat/Sun if the week actually has weekend work" rule the desktop grid already uses.
+- `home.js`'s usage is `typeof`-guarded (falls back to Mon–Fri) since `roster.js` is lazy-loaded in this app and may not be loaded yet when the home tile renders at boot — matches the existing `isLeave`/`isEducation` guard pattern already in the file.
+- v3.5.338, PR #514, squash-merged to main. Display-logic only, no schema/data change. Sibling fix shipped same day to sks-nsw-labour (v3.10.99, PR #68). Built in a fresh worktree (`eq-field-mobile-weekend-wt`) since the root checkout was mid-unrelated telemetry work.
+
 ## [2026-07-21] Fix Sentry telemetry delivery: await captureServerError, correct tag shape (SHIPPED, #515, live)
 - PR #509's detect-only fallback telemetry (merged 2026-07-20 as `30f44d4`) had been silently not reporting: the eq-field Sentry project showed zero `netlify_function`-tagged events in 90 days. Two independent bugs, both fixed.
 - Bug 1: both new call sites (`canon-read.js`, `verify-pin.js`) invoked `captureServerError()` without `await` — the in-flight Sentry POST gets dropped when the Lambda freezes on return. Proved locally against a stub ingest listener before trusting the fix: un-awaited delivered 0 events at return time, awaited delivered before returning.
