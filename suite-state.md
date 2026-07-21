@@ -60,10 +60,8 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-21)
 
-**eq-cards:**
-- #167 fix(ci): surface real HTTP status when substrate dispatch fails
-
 **eq-field:**
+- #520 Gate timesheet + leave status transitions (self-approval, reopen, paid)
 - #519 v3.5.343 — remove the Site Reports hub nav button
 - #518 Security: field_people_iud never gated user_id — the Shell-login-to-Field-person binding
 
