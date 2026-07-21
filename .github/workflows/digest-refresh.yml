@@ -4,10 +4,13 @@ name: Refresh digest.md
 # (CI failures, aging PRs, stale deploys, substrate drift). Companion to the
 # suite-state refresh; runs after it so the day's picture is settled.
 #
-# Cross-repo reads use GITHUB_TOKEN — eq-solutions repos are public, so it's
-# sufficient for PR + Actions reads. NETLIFY_TOKEN is optional (deploy section
-# only appears when it's set). Commits with [skip ci] so the bot push doesn't
-# re-trigger the MD/frontmatter workflows.
+# Cross-repo reads need EQ_CONTEXT_PAT — eq-shell/eq-service/eq-field/eq-cards
+# are private repos, so the default GITHUB_TOKEN (scoped to eq-context only)
+# can't read their Actions runs or PRs; falls back to GITHUB_TOKEN if the PAT
+# isn't set (works for public repos like eq-solves-intake, "unknown" for the
+# rest). NETLIFY_TOKEN is optional (deploy section only appears when it's
+# set). Commits with [skip ci] so the bot push doesn't re-trigger the
+# MD/frontmatter workflows.
 
 on:
   schedule:
@@ -48,7 +51,7 @@ jobs:
 
       - name: Generate digest.md
         env:
-          GH_TOKEN:           ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN:           ${{ secrets.EQ_CONTEXT_PAT || secrets.GITHUB_TOKEN }}
           NETLIFY_TOKEN:      ${{ secrets.NETLIFY_TOKEN }}
           SENTRY_AUTH_TOKEN:  ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: python .github/scripts/refresh_digest.py

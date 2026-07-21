@@ -8,8 +8,9 @@ name: JWT contract drift
 # from main (public raw GitHub) and diffs the key sets.
 #
 # Fails (red) ONLY when Service consumes a claim the Shell mint never sets — a
-# real regression. New mint-only keys are surfaced non-blocking. No secret
-# needed (eq-solutions repos are public; see suite-state-refresh.yml).
+# real regression. New mint-only keys are surfaced non-blocking. Needs
+# EQ_CONTEXT_PAT as GH_TOKEN — eq-shell/eq-service are private repos (see
+# suite-state-refresh.yml for the same fix applied there).
 #
 # Runs on:
 #   - A daily schedule — the contract drifts out-of-band (a change in another
@@ -50,4 +51,6 @@ jobs:
           node-version: 20
 
       - name: Diff minted vs consumed JWT claim shape
+        env:
+          GH_TOKEN: ${{ secrets.EQ_CONTEXT_PAT }}
         run: node scripts/check-jwt-contract-drift.mjs

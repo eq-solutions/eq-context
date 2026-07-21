@@ -39,8 +39,10 @@ jobs:
         env:
           SUPABASE_URL:              https://ehowgjardagevnrluult.supabase.co
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-          # eq-solutions repos are public — GITHUB_TOKEN is sufficient for PR reads
-          GH_TOKEN:                  ${{ secrets.GITHUB_TOKEN }}
+          # eq-shell/eq-service/eq-field/eq-cards are private — need EQ_CONTEXT_PAT
+          # for cross-repo Actions/PR reads; falls back to GITHUB_TOKEN (public
+          # repos only, e.g. eq-solves-intake) if the PAT isn't set.
+          GH_TOKEN:                  ${{ secrets.EQ_CONTEXT_PAT || secrets.GITHUB_TOKEN }}
           NETLIFY_TOKEN:             ${{ secrets.NETLIFY_TOKEN }}
         run: python .github/scripts/refresh_suite_state.py
 

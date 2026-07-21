@@ -24,8 +24,10 @@
  *   - Either interface can't be located → ❌ exit 2 (file moved/renamed — this
  *     guard must be updated; failing loud beats a silent false-pass).
  *
- * Read-only HTTPS GETs against public raw.githubusercontent.com. Dependency-free
- * (global fetch, Node 18+). No secret needed — eq-solutions repos are public.
+ * Read-only HTTPS GETs against raw.githubusercontent.com. Dependency-free
+ * (global fetch, Node 18+). eq-shell/eq-service are private repos, so this
+ * needs GH_TOKEN (EQ_CONTEXT_PAT) set — raw.githubusercontent.com accepts a
+ * bearer token for private-repo content the same way the Contents API does.
  *
  * Upgrade path: the durable fix is a shared `@eq-solutions/contracts` package
  * exporting ONE claim type imported by both repos, so `tsc` becomes the gate.
@@ -69,9 +71,11 @@ function printReport(lines) {
 async function loadSource(src) {
   const override = process.env[src.envOverride]
   if (override) return readFileSync(override, 'utf8')
-  const res = await fetch(src.url)
+  const token = process.env.GH_TOKEN
+  const headers = token ? { Authorization: `Bearer ${token}` } : {}
+  const res = await fetch(src.url, { headers })
   if (!res.ok) {
-    throw new Error(`Could not fetch ${src.label} — HTTP ${res.status} from ${src.url}. Repo/path renamed, or GitHub raw is down. Update scripts/check-jwt-contract-drift.mjs.`)
+    throw new Error(`Could not fetch ${src.label} — HTTP ${res.status} from ${src.url}. Repo/path renamed, repo is private and GH_TOKEN is unset/lacks access, or GitHub raw is down. Update scripts/check-jwt-contract-drift.mjs.`)
   }
   return res.text()
 }
