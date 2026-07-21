@@ -14,6 +14,15 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: Staff Company field for subcontractors + a real approval bug where the chosen role got silently dropped (2026-07-21)
+*Asked to rename the Staff page's "Agency" field to "Company" and open it up to subcontractors as well as labour-hire (so you can record who a sub actually works for), plus flagged that approving Alabbas's sign-up as a subcontractor still left him recorded as a direct employee. The second part turned out to be a real bug, not a one-off mistake.*
+- [x] **Staff page: the Agency field is now called Company, and works for both Labour Hire and Subcontractor** (was Labour Hire only) — desktop and mobile. Merged to `main`, will auto-deploy. _(done 2026-07-21)_
+- [x] **Found and fixed the actual cause of Alabbas showing as a direct employee despite picking Subcontractor at approval time.** When a worker's Cards sign-up matches someone already in the system (by name/phone/email, or an admin's manual match), approval was skipping the step that writes the chosen role — so whatever type the existing record already had just stuck, silently. Now fixed so the picked role always lands. You'd already hand-fixed Alabbas's record directly; this stops it happening to the next person. Merged to `main`, will auto-deploy. _(done 2026-07-21)_
+- [x] **Quote doc export: the Clarifications section came out justified/stretched instead of left-aligned** (the SKS-17386 doc you flagged) — traced to the Word template's Clarifications block inheriting a justified paragraph style. Fixed at the template level, not just for that one quote, so every future quote export is affected, not just re-exports. Merged to `main`, will auto-deploy. _(done 2026-07-21)_
+- [ ] **Worth a quick look once deployed:** confirm the Company field shows/saves correctly for Labour Hire and Subcontractor (desktop + mobile), and re-export SKS-17386 to confirm Clarifications now sits left-aligned without needing a manual fix in Word. _(added 2026-07-21)_
+
+---
+
 ## eq-shell: closed the last open piece of the private-licence privacy fix — a second copy of the same bug found in Core's own code (2026-07-21)
 *A privacy audit two days ago found and fixed a bug where a connected company could still see a worker's licence after the worker marked it private — that fix went into the wallet app's own database rules. This session checked whether Core (the company-facing admin app) had a separate copy of the same bug in its own code, since it reads the same data a different way that skips those rules entirely. It did.*
 - [x] **Found and fixed two places in Core where a manager reviewing a worker's licences before approving a company connection could still see licences the worker had marked private** — one showed the full licence details and photos, the other just showed a slightly inflated count. Fixed, merged, and confirmed live on core.eq.solutions. _(done 2026-07-21)_
