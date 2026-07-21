@@ -14,6 +14,16 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## Built the account-deletion cleanup job, then found a real bug it exposed: "delete my account" has been silently broken for a month (2026-07-21)
+*Follow-up to the licence-privacy audit earlier today: "delete my account" in Cards blanks out the data but never actually erases it, contradicting the Privacy Policy's "hard-deleted within 30 days" promise. Built the fix, deployed it switched off, then tested it on a real throwaway account — which is where it got interesting.*
+- [x] **Built and deployed the actual cleanup job — currently harmless by design.** A database function finds accounts deleted 30+ days ago and safely detaches the employer's own HR record first (checked the real database relationships before writing anything — a naive version would have wiped the employer's induction/training records too), then a daily job in Core finishes the job by actually removing the sign-in. Nothing can delete anything until a separate switch is deliberately turned on — that switch is still off.
+- [x] **Tested it for real, not just in theory** — you signed up and deleted a real throwaway test account in the live app. First attempt failed with a vague error.
+- [x] **Found the real reason it failed — and it's a genuinely separate, pre-existing bug, not something today's work broke.** A change from about a month ago (2026-06-27) added a feature that keeps an employer's copy of a worker's name in sync. When an account gets deleted, the name gets blanked to `"[deleted]"` — and that sync feature chokes on it, which silently cancels the entire deletion. **This means the "delete my account" button has likely not worked for any real worker with an employer connection since that change shipped a month ago** — nobody would have known, since the app just shows a generic "try again" error.
+- [x] **Fixed and confirmed live** — retried the same delete on the same test account, it worked this time, and separately confirmed the employer's own record was left untouched (as it should be).
+- [ ] **One test step is blocked, needs your call:** fast-forwarding that one test account's "deleted" timestamp by 31 days (so the cleanup job can be checked without waiting a real month) got blocked by the safety guardrail, even for a single-column edit on a known test row. Either approve a retry, or just let the real 30 days pass and it'll be checked then. _(added 2026-07-21)_
+
+---
+
 ## Notify-substrate webhook: turned out to be broken on all 4 repos, root cause found, blocked on an org GitHub setting only Royce can check (2026-07-21)
 *Asked to fix eq-cards' broken "Notify substrate on merge" workflow (flagged in an earlier session today). Investigation found it wasn't eq-cards-specific — same workflow, same failure, on eq-shell/eq-field/eq-service too, all broken since they were wired up ~3 weeks ago (2026-06-27/28). Chased it to a real, org-level root cause rather than a per-repo config fix.*
 - [x] **Confirmed the missing-secret gap is org-wide, not eq-cards-only** — `EQ_CONTEXT_PAT` had only ever been set on `eq-context` (the receiver repo); none of the 4 sender repos (eq-cards, eq-shell, eq-field, eq-service) ever had it. A doc note claiming it was "an org-level secret, no per-repo setup needed" was wrong.
