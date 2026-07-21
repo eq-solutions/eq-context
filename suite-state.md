@@ -1,14 +1,14 @@
 ---
 title: EQ Suite — Current State
 owner: Royce Milmlow
-last_updated: 2026-07-20
+last_updated: 2026-07-21
 scope: Live suite state — app lineup, DB counts, open PRs, architectural decisions. Auto-refreshed nightly by GitHub Action.
 read_priority: critical
 status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-07-20 (nightly cron)_
+_Last verified: 2026-07-21 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -58,13 +58,27 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-07-20)
+## Open PRs (as of 2026-07-21)
 
-_No open PRs_
+**eq-cards:**
+- #167 fix(ci): surface real HTTP status when substrate dispatch fails
+
+**eq-field:**
+- #519 v3.5.343 — remove the Site Reports hub nav button
+- #518 Security: field_people_iud never gated user_id — the Shell-login-to-Field-person binding
+
+**eq-service:**
+- #576 Security: authenticated users could self-promote to manager via service.tenant_members (migration 0189)
+
+**eq-shell:**
+- #936 Security: app_data.staff.user_id was directly client-writable on zaap (migration 0194)
+- #935 P0: any authenticated user could forge an invite and become tenant manager (jvkn)
+- #933 Security: any org invitee could activate as admin (control plane, jvkn)
+- #930 Security: EQ Ops setup RPCs adopt the pricing write guard on the EQ plane too (migration 0193)
 
 ---
 
-## System Health (as of 2026-07-20)
+## System Health (as of 2026-07-21)
 
 **CI on main:**
 
@@ -79,7 +93,7 @@ _No open PRs_
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 0 applied
+**Migrations:** eq-service has 192 (latest: 0188) applied
 
 ---
 
