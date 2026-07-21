@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-21 08:07 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-21 08:38 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-21 07:58 UTC → 2026-07-21 08:07 UTC)
+## Since last refresh (2026-07-21 08:07 UTC → 2026-07-21 08:38 UTC)
 
-- Merged: eq-shell [#920](https://github.com/eq-solutions/eq-shell/pull/920) fix(licences): exclude is_private licences from admin-facing
-- Merged: eq-shell [#899](https://github.com/eq-solutions/eq-shell/pull/899) fix(security): reassert security_invoker on 3 field_* views 
-- Merged: eq-shell [#898](https://github.com/eq-solutions/eq-shell/pull/898) perf(home): dedupe duplicate dashboard + pending-connections
-- Merged: eq-shell [#897](https://github.com/eq-solutions/eq-shell/pull/897) NSW Comms: Start-by estimate from PO+53-day planning rule (P
-- Merged: eq-shell [#890](https://github.com/eq-solutions/eq-shell/pull/890) feat(access): gate contact PII in direct-read RPCs (cluster 
-- Merged: eq-shell [#889](https://github.com/eq-solutions/eq-shell/pull/889) NSW Comms: parallel jobs-GET + resource dashboard landing vi
-- Merged: eq-shell [#888](https://github.com/eq-solutions/eq-shell/pull/888) perf(auth): parallelize verify-shell-session's independent D
-- Merged: eq-shell [#887](https://github.com/eq-solutions/eq-shell/pull/887) perf(obs): lazy-load posthog-js off the cold-open critical p
+- Merged: eq-shell [#937](https://github.com/eq-solutions/eq-shell/pull/937) Fix: 0194 left three preset RPCs granted to PUBLIC/anon
+- Merged: eq-shell [#934](https://github.com/eq-solutions/eq-shell/pull/934) One-shot endpoint: move certificates into licences (Phase B)
+- Merged: eq-shell [#932](https://github.com/eq-solutions/eq-shell/pull/932) Extend identity-collision gate to the invite-path approval
+- Merged: eq-shell [#931](https://github.com/eq-solutions/eq-shell/pull/931) Suppliers.tsx: add per-column filters to the desktop table
+- Merged: eq-shell [#928](https://github.com/eq-solutions/eq-shell/pull/928) EQ Ops: unblock Setup, restore labour cost, column filters, 
+- Merged: eq-shell [#919](https://github.com/eq-solutions/eq-shell/pull/919) Option 3: surface + gate identity collisions in the staff-ap
+- Merged: eq-shell [#918](https://github.com/eq-solutions/eq-shell/pull/918) Alert-only visibility: identity collisions + never-invited w
+- Merged: eq-shell [#917](https://github.com/eq-solutions/eq-shell/pull/917) feat(staff): admin licence backfill with photo/PDF upload
 
 ## ⚠ Needs you (4)
 
@@ -35,7 +35,7 @@ _2026-07-21 08:07 UTC · what needs your attention. Full snapshot: [suite-state.
 | eq-shell | ? unknown | ? | 4 | 0d |
 | eq-solves-service | ? unknown | ? | 1 | 0d |
 | eq-field | ? unknown | ? | 2 | 0d |
-| eq-cards | ? unknown | ? | 0 | — |
+| eq-cards | ? unknown | ? | 1 | 0d |
 | eq-solves-intake | ✓ success | 4d ago | 0 | — |
 
 ## Live errors (Sentry)
@@ -55,6 +55,11 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-21 | eq-shell | [#937](https://github.com/eq-solutions/eq-shell/pull/937) Fix: 0194 left three preset RPCs granted to PUBLIC/anon |
+| 2026-07-21 | eq-shell | [#928](https://github.com/eq-solutions/eq-shell/pull/928) EQ Ops: unblock Setup, restore labour cost, column filters, reord |
+| 2026-07-21 | eq-shell | [#934](https://github.com/eq-solutions/eq-shell/pull/934) One-shot endpoint: move certificates into licences (Phase B) |
+| 2026-07-21 | eq-shell | [#931](https://github.com/eq-solutions/eq-shell/pull/931) Suppliers.tsx: add per-column filters to the desktop table |
+| 2026-07-21 | eq-shell | [#932](https://github.com/eq-solutions/eq-shell/pull/932) Extend identity-collision gate to the invite-path approval |
 | 2026-07-21 | eq-shell | [#929](https://github.com/eq-solutions/eq-shell/pull/929) Suppliers.tsx: fix stale comment about which perm gates writes |
 | 2026-07-21 | eq-shell | [#927](https://github.com/eq-solutions/eq-shell/pull/927) Suppliers directory - EQ Ops (SKS) |
 | 2026-07-21 | eq-shell | [#924](https://github.com/eq-solutions/eq-shell/pull/924) Fix: flush Sentry before functions return — server events were si |
@@ -64,27 +69,22 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-21 | eq-shell | [#921](https://github.com/eq-solutions/eq-shell/pull/921) Security fix: cross-org identity-collision metadata leak in worke |
 | 2026-07-21 | eq-solves-service | [#575](https://github.com/eq-solutions/eq-service/pull/575) fix(auth): scheduled functions' own trigger URLs get redirected b |
 | 2026-07-21 | eq-solves-service | [#574](https://github.com/eq-solutions/eq-service/pull/574) perf: pick up merged load-time PRs + combine duplicate MFA-grace/ |
-| 2026-07-21 | eq-field | [#516](https://github.com/eq-solutions/eq-field/pull/516) v3.5.340 — retire safety.js's duplicate Prestart + Toolbox forms |
-| 2026-07-21 | eq-field | [#515](https://github.com/eq-solutions/eq-field/pull/515) Fix Sentry telemetry delivery: await captureServerError, correct  |
-| 2026-07-21 | eq-field | [#514](https://github.com/eq-solutions/eq-field/pull/514) fix: mobile My Schedule + home tile show Sat/Sun when rostered (v |
-| 2026-07-21 | eq-field | [#513](https://github.com/eq-solutions/eq-field/pull/513) docs: reframe apprentice comments off compliance language |
-| 2026-07-21 | eq-field | [#512](https://github.com/eq-solutions/eq-field/pull/512) v3.5.337 — extract + test roster.js approved-leave overlay |
-| 2026-07-21 | eq-field | [#511](https://github.com/eq-solutions/eq-field/pull/511) v3.5.336 — extract apprentices.js year-advancement + rating rules |
-_Showing 15 of 105 · full record in [sessions/](sessions/)_
+| 2026-07-21 | eq-field | [#517](https://github.com/eq-solutions/eq-field/pull/517) v3.5.342 — flatten Safety nav (Prestarts/Toolboxes/Site Audits/Re |
+_Showing 15 of 106 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **One test step is blocked, needs your call:** fast-forwarding that one test account's "deleted" timestamp by 31 days (so the cleanup job can be checked without waiting a real month) got blocked by the safety guardrail, even for a single-column edit on a known test row. Either approve a retry, or just let the real 30 days pass and it'll be checked then. _(added 2026-07-21)_
+- **Blocked on Royce**: could not confirm or fix this via API — `gh api orgs/eq-solutions/personal-access-token-requests` and `.../personal-access-tokens` both 404, even with `admin:org` scope. Asked Royce to check [github.com/organizations/eq-solutions/settings/personal-access-tokens](https://github.com/organizations/eq-solutions/settings/personal-access-tokens) directly — either approve a pending request for the new token, or relax a restrictive org policy. **No answer yet — session ended on a handoff prompt instead of continuing to chase it.** _(added 2026-07-21)_
+- **Once unblocked**: re-run the diagnostic workflow and confirm HTTP 200, merge the diagnostic branch's error-surfacing improvement (worth keeping regardless — turns a silent exit-22 into a readable error) into all 4 repos' `notify-substrate.yml`, confirm all 4 go green, delete the diagnostic branch. _(added 2026-07-21)_
 - **`EQ_CONTEXT_PAT` still can't read Actions runs on eq-shell/eq-service/eq-field/eq-cards for the automated nightly/on-merge digest refresh.** Spent a long back-and-forth on this: confirmed it's a fine-grained token, walked through adding the 4 repos + Actions/Contents permissions, clicked Update — API still returns `403 "Resource not accessible by personal access token"` on all 3 repos added this session (eq-context, added at token creation, works fine). Most likely an org-approval step never completed, but not confirmed. **Royce's call: leave it** — not worth more time right now. Stopgap in place: I can run `refresh_digest.py` locally with my own working GitHub access any time current numbers are needed (did this once today — all 5 repos show real CI status as of this session). _(added 2026-07-21)_
-- **Found in passing: eq-cards' "Notify substrate on merge" workflow fails on every commit** (exit 22, empty `Authorization: Bearer` token when dispatching to eq-context) — a broken fire-and-forget webhook, not a build gate, but substrate may be missing merge notifications from eq-cards until the secret is fixed. _(added 2026-07-21)_
+- **Root-caused the eq-cards notify-substrate failure — a different, unrelated secret to everything else this session.** It's the ORG-level `EQ_CONTEXT_PAT` (visibility: selected → eq-cards/eq-field/eq-service/eq-shell, created 2026-06-28 "notify-substrate use only") — separate from the repo-level `EQ_CONTEXT_PAT` on eq-context fixed earlier today. Confirmed via live log: `Authorization: Bearer ` is genuinely empty, not a permissions error — the org secret has never had a value set. **Needs you**: `github.com/organizations/eq-solutions/settings/secrets/actions` → `EQ_CONTEXT_PAT` → paste a value (any PAT with write access to eq-context works) → Save. Not a build gate, but substrate is missing merge notifications from eq-cards/eq-field/eq-service/eq-shell until it's set. _(added 2026-07-21, root-caused 2026-07-21)_
+- **Re-checked digest CI-status automation — confirmed still blocked, no change since the "leave it" call.** Re-ran the refresh; same "? unknown" result for all 4 repos via the automated path. Manual refresh (`refresh_digest.py` run locally) remains the working stopgap. _(added 2026-07-21)_
 - **Tenant-isolation root fix still open.** A Field session without a `tenant_slug` claim (every plain-PIN login) falls back to a client-supplied tenant, checked only against a static allow-list. The real fix (bind tenant into the session at PIN-mint time) is designed but deliberately deferred pending real frequency data. One-time scheduled check `collision-alert-week1-check` set for 2026-07-27 09:00 AEST to gather it — a manual "Run now" attempt didn't actually trigger; it'll fire on schedule. _(added 2026-07-21)_
 - **EQ-tenant worker→staff sync doesn't exist** — `workers-canonical-sync` is hardcoded to SKS only. Deprioritized rather than built, since the EQ tenant's Field plane has no real usage yet — revisit if that changes. _(added 2026-07-21)_
 - **The dormant `shell_control.persons`/`person_xref` "golden record" spine (ADR-002)** was found built and never populated — three repos each run their own separate identity-matching heuristic instead. Explicitly parked as a separate, later initiative, not this sprint. _(added 2026-07-21)_
 - **`mint-cards-iframe-token.ts` (eq-shell) is confirmed dead code**, superseded by `mint-cards-otp.ts` — never actually removed. Trivial cleanup, not done. _(added 2026-07-21)_
-- **eq-cards `main`'s "Notify substrate on merge" workflow is failing on every commit** (exit 22, empty `Authorization: Bearer` token when dispatching to `eq-context`) — noticed while confirming CI health, unrelated to the migration-number fix. Not a build/test gate, just a broken fire-and-forget webhook, so substrate may be missing merge notifications from eq-cards until the secret is fixed. _(added 2026-07-21)_
-- **Not independently confirmed live by Royce yet**: the merged fix above was verified via code review, automated tests, and a clean preview boot — but an actual click-through as an SKS user (Safety → Site Audits/Records, and the Site Reports screens for Prestart/Toolbox/Diary) was blocked by safety guards when tried locally (moving the SKS database key through a file or a browser URL got correctly stopped rather than worked around) and never completed. Worth a real look next time you're in the SKS view. _(added 2026-07-21)_
-- **The rest of the "biggest files are untested / too large" list from the review is still open:** Apprentices, Roster, Timesheets are each still well over the size where they need to be split up further (only removed one duplicate section each so far); a few other large files (the Safety area, two Tender-Pipeline-related files) haven't been touched at all yet. _(added 2026-07-21)_
-- **Checked Sentry after deploy: still zero events, which is expected, not a new problem.** The warning only fires on a specific real-world request shape (an old-style session hitting the fallback) — the fix makes it capable of reporting, it doesn't manufacture that traffic. Re-check after a normal working day, or after a deliberate test hits that path. _(added 2026-07-21)_
-_…and 387 more · [eq/pending.md](eq/pending.md)_
+_…and 392 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -106,10 +106,10 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) |
 |------|------:|-----:|------------------:|
-| [EQ](eq/pending.md) | 2967 | 405 | 421 |
+| [EQ](eq/pending.md) | 2989 | 409 | 429 |
 | [SKS](sks/pending.md) | 457 | 68 | 64 |
 | [SKS active](sks/active.md) | 108 | 0 | 0 |
-| [OPS](ops/pending.md) | 230 | 28 | 6 |
+| [OPS](ops/pending.md) | 252 | 30 | 6 |
 
 ## Recent sessions
 
@@ -127,4 +127,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-21 08:07 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-21 08:38 UTC._
