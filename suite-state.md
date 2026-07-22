@@ -1,14 +1,14 @@
 ---
 title: EQ Suite — Current State
 owner: Royce Milmlow
-last_updated: 2026-07-21
+last_updated: 2026-07-22
 scope: Live suite state — app lineup, DB counts, open PRs, architectural decisions. Auto-refreshed nightly by GitHub Action.
 read_priority: critical
 status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-07-21 (nightly cron)_
+_Last verified: 2026-07-22 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -35,7 +35,7 @@ _If this file is >48h old, the cron is broken._
 
 | Entity | Count | Schema |
 |--------|-------|--------|
-| Sites | 225 | app_data.sites |
+| Sites | 226 | app_data.sites |
 | Customers | 43 | app_data.customers |
 | Assets | 2,836 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
@@ -58,19 +58,14 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-07-21)
-
-**eq-field:**
-- #520 Gate timesheet + leave status transitions (self-approval, reopen, paid)
-- #518 Security: field_people_iud never gated user_id — the Shell-login-to-Field-person binding
+## Open PRs (as of 2026-07-22)
 
 **eq-shell:**
-- #936 Security: app_data.staff.user_id was directly client-writable on zaap (migration 0194)
-- #930 Security: EQ Ops setup RPCs adopt the pricing write guard on the EQ plane too (migration 0193)
+- #945 fix(staff): admin licence PDF upload failed on every PDF in production
 
 ---
 
-## System Health (as of 2026-07-21)
+## System Health (as of 2026-07-22)
 
 **CI on main:**
 
