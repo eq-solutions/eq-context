@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-22 10:19 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-22 10:22 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-22 10:12 UTC → 2026-07-22 10:19 UTC)
+## Since last refresh (2026-07-22 10:19 UTC → 2026-07-22 10:22 UTC)
 
-- Merged: eq-shell [#943](https://github.com/eq-solutions/eq-shell/pull/943) chore: remove dead mint-cards-iframe-token.ts
-- Merged: eq-shell [#942](https://github.com/eq-solutions/eq-shell/pull/942) diag(ci): surface real HTTP status/body from notify-substrat
-- Merged: eq-shell [#937](https://github.com/eq-solutions/eq-shell/pull/937) Fix: 0194 left three preset RPCs granted to PUBLIC/anon
-- Merged: eq-shell [#936](https://github.com/eq-solutions/eq-shell/pull/936) Security: app_data.staff.user_id was directly client-writabl
-- Merged: eq-shell [#935](https://github.com/eq-solutions/eq-shell/pull/935) P0: any authenticated user could forge an invite and become 
-- Merged: eq-shell [#934](https://github.com/eq-solutions/eq-shell/pull/934) One-shot endpoint: move certificates into licences (Phase B)
-- Merged: eq-shell [#933](https://github.com/eq-solutions/eq-shell/pull/933) Security: any org invitee could activate as admin (control p
-- Merged: eq-shell [#928](https://github.com/eq-solutions/eq-shell/pull/928) EQ Ops: unblock Setup, restore labour cost, column filters, 
+- Merged: eq-shell [#941](https://github.com/eq-solutions/eq-shell/pull/941) EQ Ops Setup: add Save all for the preset line-item library
+- Merged: eq-shell [#940](https://github.com/eq-solutions/eq-shell/pull/940) chore: retire the certificates-migrate endpoint (Phase C cle
+- Merged: eq-shell [#939](https://github.com/eq-solutions/eq-shell/pull/939) docs: correct licence-photos RLS mechanism (segment 2, not s
+- Merged: eq-shell [#938](https://github.com/eq-solutions/eq-shell/pull/938) Suppliers: role-gate login/password behind manager/superviso
+- Merged: eq-shell [#932](https://github.com/eq-solutions/eq-shell/pull/932) Extend identity-collision gate to the invite-path approval
+- Merged: eq-shell [#931](https://github.com/eq-solutions/eq-shell/pull/931) Suppliers.tsx: add per-column filters to the desktop table
+- Merged: eq-shell [#930](https://github.com/eq-solutions/eq-shell/pull/930) Security: EQ Ops setup RPCs adopt the pricing write guard on
+- Merged: eq-shell [#929](https://github.com/eq-solutions/eq-shell/pull/929) Suppliers.tsx: fix stale comment about which perm gates writ
 
 ## ⚠ Needs you (4)
 
@@ -32,9 +32,9 @@ _2026-07-22 10:19 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 1 | 0d |
+| eq-shell | ? unknown | ? | 2 | 0d |
 | eq-solves-service | ? unknown | ? | 0 | — |
-| eq-field | ? unknown | ? | 2 | 0d |
+| eq-field | ? unknown | ? | 1 | 0d |
 | eq-cards | ? unknown | ? | 0 | — |
 | eq-solves-intake | ✓ success | 1d ago | 0 | — |
 
@@ -64,13 +64,13 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-22 | eq-shell | [#948](https://github.com/eq-solutions/eq-shell/pull/948) Retire backfill-auth-users.ts — dead code, only live target was d |
 | 2026-07-22 | eq-shell | [#945](https://github.com/eq-solutions/eq-shell/pull/945) fix(staff): admin licence PDF upload failed on every PDF in produ |
 | 2026-07-22 | eq-shell | [#944](https://github.com/eq-solutions/eq-shell/pull/944) Account deletion left the Shell identity row behind (6 orphans on |
+| 2026-07-22 | eq-field | [#536](https://github.com/eq-solutions/eq-field/pull/536) Security: same tenant-isolation gap in teams + team_members |
 | 2026-07-22 | eq-field | [#535](https://github.com/eq-solutions/eq-field/pull/535) v3.5.355 — boot week-window ±4 → ±1, the actual scale lever |
 | 2026-07-22 | eq-field | [#534](https://github.com/eq-solutions/eq-field/pull/534) v3.5.355 — crew scoping: My crew / a team / Everyone, ungated wid |
 | 2026-07-22 | eq-field | [#533](https://github.com/eq-solutions/eq-field/pull/533) Security: tenant-isolation gap in team_supervisors (crew scoping, |
 | 2026-07-22 | eq-field | [#532](https://github.com/eq-solutions/eq-field/pull/532) v3.5.354 — three guards were reading a week they didn't have |
 | 2026-07-22 | eq-field | [#530](https://github.com/eq-solutions/eq-field/pull/530) v3.5.353 — crew scoping: a supervisor sees the crews they run |
 | 2026-07-22 | eq-field | [#531](https://github.com/eq-solutions/eq-field/pull/531) v3.5.352 — enforce the tender-parser test suite in CI |
-| 2026-07-22 | eq-field | [#528](https://github.com/eq-solutions/eq-field/pull/528) v3.5.351 — leave_requests: the last unbounded read, and a non-uni |
 _Showing 15 of 106 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -107,7 +107,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) |
 |------|------:|-----:|------------------:|
-| [EQ](eq/pending.md) | 3160 | 419 | 508 |
+| [EQ](eq/pending.md) | 3162 | 419 | 510 |
 | [SKS](sks/pending.md) | 488 | 72 | 76 |
 | [SKS active](sks/active.md) | 108 | 0 | 0 |
 | [OPS](ops/pending.md) | 252 | 30 | 6 |
@@ -128,4 +128,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-22 10:19 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-22 10:22 UTC._
