@@ -60,11 +60,9 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-22)
 
-**eq-field:**
-- #533 Security: tenant-isolation gap in team_supervisors (crew scoping, #530)
-
 **eq-shell:**
-- #949 Detect dangling cross-plane workers.staff_id pointers (22 of 93 live)
+- #952 fix(ci): CHECK 2 anon-grant invariant excludes views — fixes the checker, not the DB
+- #951 fix(cards): Cards-approved staff got a Shell membership born inactive
 
 ---
 
