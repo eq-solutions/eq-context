@@ -40,7 +40,7 @@ _If this file is >48h old, the cron is broken._
 | Assets | 2,836 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
 | Users | 5 | service.tenant_members |
-| Maintenance checks | 24 | service.maintenance_checks |
+| Maintenance checks | 25 | service.maintenance_checks |
 | Defects | 0 | service.defects |
 
 **SKS tenant ID on ehow:** `7dee117c-98bd-4d39-af8c-2c81d02a1e85`
@@ -60,7 +60,8 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-22)
 
-_No open PRs_
+**eq-shell:**
+- #967 feat(identity-health): detect duplicate Shell accounts across signup paths
 
 ---
 
