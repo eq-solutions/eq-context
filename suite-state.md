@@ -60,10 +60,8 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-22)
 
-**eq-cards:**
-- #173 fix(migrations): 0102 — stop sync_profile_to_worker folding middle names into surnames
-
 **eq-shell:**
+- #959 docs(scripts): record the William Brown identity merge as APPLIED
 - #958 Security: enforce module entitlement at the iframe-SSO minters
 - #957 ci: one-time workflow to apply Sentry alert rules
 
