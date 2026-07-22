@@ -62,7 +62,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #960 Security: gate Ops-exclusive backend functions on the ops entitlement
-- #957 ci: one-time workflow to apply Sentry alert rules
 
 ---
 
