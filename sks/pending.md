@@ -9,6 +9,20 @@ status: live
 
 # SKS Pending
 
+## SKS Field — Safety: Incidents/Near Miss reporting + Prestart copy-from-last (2026-07-22)
+*Royce asked for two safety-module improvements: a way to report an incident/near miss, and a faster way to fill in a prestart for a site worked recently.*
+
+**Completed:**
+- [x] **Incidents / Near Miss tab shipped** — new 4th tab in Safety (Prestart/Toolbox/Incidents/Records): type (Incident/Near Miss/Hazard Observation), severity, description + voice input, people involved with individual sign-off, photos, draft/submit/delete, Word export, offline queue. New `incidents` table live on Supabase, same RLS/pattern as prestarts/toolbox_talks. Wired into the Records tab (filter + ZIP export) and into the manager-only Safety Report dashboard (stat card, by-person table, site-coverage split). Submitting a High-severity or non-near-miss incident emails every manager with an email on file.
+- [x] **Prestart copy-from-last-visit + Duplicate** — picking a site on a new prestart offers to copy scope/hazards/SWMS/HRCW/permits/crew from the most recent *submitted* prestart at that site (within 7 days, any supervisor) — crew signatures reset, everyone still signs fresh. Separate "Duplicate" button on any saved prestart clones it into a new draft for today.
+- [x] **Mobile CSS gap fixed** — the Incidents tab was initially missing from the mobile full-screen-modal/anti-zoom/single-column rules that Prestart/Toolbox already had; caught and fixed same session.
+- [x] sks-nsw-labour PRs [#69](https://github.com/eq-solutions/sks-nsw-labour/pull/69) — MERGED, v3.10.99 → v3.10.102, deployed via Netlify auto-deploy on push to main.
+- [x] **Word doc branding double-checked** — Royce reported the Incident export "isn't branded at all" vs the Prestart doc; generated both from identical data and diffed the file contents byte-for-byte (logo, header, title colour) — identical. Likely a stale service-worker cache on Royce's device (this app is a PWA, aggressive offline cache) rather than a real gap; asked Royce to hard-refresh / send the actual file if it persists.
+
+**Deferred:**
+- [ ] **Found regression while investigating parity: EQ Field's own "copy from last prestart" feature was accidentally deleted** in a refactor the day before (PR #516 retired the old duplicate prestart form and didn't port the copy-last helpers to the new canonical form). Spun off as its own task — see `eq/pending.md` for status (built + committed locally on eq-field, not yet pushed/PR'd, awaiting Royce's go). _(added 2026-07-22)_
+- [ ] EQ Field has no Incidents-tab equivalent at all (only a generic incidents array buried in its Site Diary) — would be a from-scratch build there, not a port, if Royce wants parity. _(added 2026-07-22)_
+
 ## SKS Ops — Suppliers directory + role-gated credentials (2026-07-21)
 *Royce asked for creative ways to help SKS crews connect with suppliers, starting from a static spreadsheet ("who to call for what") that only stayed current when someone remembered to open it. Built a live directory, then added login/password fields for supplier portals — gated so they're only visible to managers/supervisors, since the base table grants read access to every signed-in tenant user.*
 

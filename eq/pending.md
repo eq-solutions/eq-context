@@ -14,6 +14,13 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## EQ Field: a time-saving prestart shortcut got accidentally deleted, now rebuilt and waiting to ship (2026-07-22)
+*Found while checking whether a new SKS feature had an EQ Field equivalent. It used to — supervisors could pull yesterday's site setup into a new prestart instead of retyping it. A form got retired the day before and that shortcut was thrown out with it, never rebuilt in its replacement. Crews have been retyping standing site details every single day since.*
+- [x] **Rebuilt against the current prestart form**, not the old deleted one — same idea (pre-fill a new prestart from the most recent one, plus a "use last for this site" option), adapted to how the form works today. Committed locally on its own branch (`claude/prestart-copy-last`, v3.5.350).
+- [ ] **Not pushed or opened as a PR yet — needs your go.** Sitting ready; say the word and it ships the same way everything else does (PR → your review → merge → deploy). _(added 2026-07-22)_
+
+---
+
 ## EQ Service: the automated safety check has been failing on everything, for everyone (2026-07-21)
 *Every code change in EQ Service goes through an automated check before it can ship. One part of that check — the one that scans for known security problems in third-party code the app depends on — had started failing on the main copy of the code itself, not on any one person's change. So every change anyone opened was born with a red light against it, regardless of whether anything was actually wrong with it. The real risk isn't the two flaws themselves; it's that a permanently-red light teaches everyone to ignore it, and then a genuine problem slips through unnoticed.*
 - [x] **Fixed — the light is green again.** Two known flaws in third-party code EQ Service uses: one where a specially-crafted input could hang the app by making it do a wildly disproportionate amount of work, and a similar one in a configuration-file reader. Both had official fixes already published, and both were routine updates — no version jumps, no changes to how the app behaves, only the file that records exact dependency versions was touched. eq-service PR [#579](https://github.com/eq-solutions/eq-service/pull/579), merged on Royce's go, confirmed green on the main copy afterwards.
