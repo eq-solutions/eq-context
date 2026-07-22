@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-22 11:59 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-22 12:06 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-22 11:46 UTC → 2026-07-22 11:59 UTC)
+## Since last refresh (2026-07-22 11:59 UTC → 2026-07-22 12:06 UTC)
 
-- Merged: eq-shell [#944](https://github.com/eq-solutions/eq-shell/pull/944) Account deletion left the Shell identity row behind (6 orpha
-- Merged: eq-shell [#941](https://github.com/eq-solutions/eq-shell/pull/941) EQ Ops Setup: add Save all for the preset line-item library
-- Merged: eq-shell [#940](https://github.com/eq-solutions/eq-shell/pull/940) chore: retire the certificates-migrate endpoint (Phase C cle
-- Merged: eq-shell [#939](https://github.com/eq-solutions/eq-shell/pull/939) docs: correct licence-photos RLS mechanism (segment 2, not s
-- Merged: eq-shell [#938](https://github.com/eq-solutions/eq-shell/pull/938) Suppliers: role-gate login/password behind manager/superviso
-- Merged: eq-shell [#933](https://github.com/eq-solutions/eq-shell/pull/933) Security: any org invitee could activate as admin (control p
-- Merged: eq-shell [#931](https://github.com/eq-solutions/eq-shell/pull/931) Suppliers.tsx: add per-column filters to the desktop table
-- Merged: eq-shell [#928](https://github.com/eq-solutions/eq-shell/pull/928) EQ Ops: unblock Setup, restore labour cost, column filters, 
+- Merged: eq-shell [#968](https://github.com/eq-solutions/eq-shell/pull/968) fix(staff): resync from Cards can no longer skip already-syn
+- Merged: eq-shell [#943](https://github.com/eq-solutions/eq-shell/pull/943) chore: remove dead mint-cards-iframe-token.ts
+- Merged: eq-shell [#942](https://github.com/eq-solutions/eq-shell/pull/942) diag(ci): surface real HTTP status/body from notify-substrat
+- Merged: eq-shell [#937](https://github.com/eq-solutions/eq-shell/pull/937) Fix: 0194 left three preset RPCs granted to PUBLIC/anon
+- Merged: eq-shell [#936](https://github.com/eq-solutions/eq-shell/pull/936) Security: app_data.staff.user_id was directly client-writabl
+- Merged: eq-shell [#935](https://github.com/eq-solutions/eq-shell/pull/935) P0: any authenticated user could forge an invite and become 
+- Merged: eq-shell [#934](https://github.com/eq-solutions/eq-shell/pull/934) One-shot endpoint: move certificates into licences (Phase B)
+- Merged: eq-shell [#930](https://github.com/eq-solutions/eq-shell/pull/930) Security: EQ Ops setup RPCs adopt the pricing write guard on
 
 ## ⚠ Needs you (5)
 
@@ -34,7 +34,7 @@ _2026-07-22 11:59 UTC · what needs your attention. Full snapshot: [suite-state.
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
 | eq-shell | ? unknown | ? | 1 | 0d |
-| eq-solves-service | ? unknown | ? | 0 | — |
+| eq-solves-service | ? unknown | ? | 1 | 0d |
 | eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ? unknown | ? | 0 | — |
 | eq-solves-intake | ✓ success | 1d ago | 0 | — |
@@ -51,6 +51,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-22 | eq-shell | [#968](https://github.com/eq-solutions/eq-shell/pull/968) fix(staff): resync from Cards can no longer skip already-synced l |
 | 2026-07-22 | eq-shell | [#960](https://github.com/eq-solutions/eq-shell/pull/960) Security: gate Ops-exclusive backend functions on the ops entitle |
 | 2026-07-22 | eq-shell | [#957](https://github.com/eq-solutions/eq-shell/pull/957) ci: one-time workflow to apply Sentry alert rules |
 | 2026-07-22 | eq-shell | [#959](https://github.com/eq-solutions/eq-shell/pull/959) docs(scripts): record the William Brown identity merge as APPLIED |
@@ -65,7 +66,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-22 | eq-shell | [#950](https://github.com/eq-solutions/eq-shell/pull/950) fix(ci): allowlist app_data.field_team_supervisors (safe invoker  |
 | 2026-07-22 | eq-shell | [#947](https://github.com/eq-solutions/eq-shell/pull/947) fix(ui): attachment spinners referenced an undefined spin keyfram |
 | 2026-07-22 | eq-shell | [#948](https://github.com/eq-solutions/eq-shell/pull/948) Retire backfill-auth-users.ts — dead code, only live target was d |
-| 2026-07-22 | eq-shell | [#945](https://github.com/eq-solutions/eq-shell/pull/945) fix(staff): admin licence PDF upload failed on every PDF in produ |
 _Showing 15 of 111 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -123,4 +123,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-22 11:59 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-22 12:06 UTC._
