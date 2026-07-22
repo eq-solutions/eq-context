@@ -9,6 +9,13 @@ status: live
 
 # SKS Pending
 
+## SKS database — three tables had a policy bug that could let a signed-in user see or delete other people's roster/supervisor data (2026-07-22)
+*Started as a false alarm: a routine safety check flagged `field_team_supervisors` (added same day by the new "supervisor sees their own crew" feature) as wide open. It wasn't — that flag was itself a false positive, a known blind spot in the checking tool for a safe pattern already used elsewhere. But reading the real table underneath it closely turned up a genuine, separate problem: a leftover, looser rule sitting alongside the correct one, so the correct one didn't actually apply. Found on the brand-new table, then found the same bug on the two older tables the new one had been copied from.*
+- [x] **Fixed the false alarm** — added the new table to the checker's existing safe-list (same pattern as several tables already on it), so the automated check stops blocking every other change to the shell app. eq-shell PR [#950](https://github.com/eq-solutions/eq-shell/pull/950), merged.
+- [x] **Fixed the real bug on the new crew-supervisor table** — closed the loophole and re-tested live: signed-in SKS users still see everything they should, and a simulated user from a different company now correctly sees nothing (previously would have seen everything). eq-field PR [#533](https://github.com/eq-solutions/eq-field/pull/533), applied live and merged.
+- [x] **Found and fixed the identical bug on the two older tables it was copied from** (Teams and Team Members — the everyday "who's on which crew" data), plus a second related issue: the code that creates a new team was trusting a value the app sends it instead of checking it server-side. Systematically checked every table on the SKS database for this same pattern first — confirmed nothing else has it. Live-tested by trying to sneak a bad value through and confirming the system now overrides it. eq-field PR [#536](https://github.com/eq-solutions/eq-field/pull/536), applied live and merged.
+- **Not exploited** — SKS is currently the only company on this database, so there was no second company's data to actually leak into; the fix closes the door before that changes. All three fixes verified against the live database before and after, with the actual team/roster counts unchanged throughout.
+
 ## SKS Field — Safety: Incidents/Near Miss reporting + Prestart copy-from-last (2026-07-22)
 *Royce asked for two safety-module improvements: a way to report an incident/near miss, and a faster way to fill in a prestart for a site worked recently.*
 

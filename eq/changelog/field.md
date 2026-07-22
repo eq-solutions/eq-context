@@ -9,6 +9,13 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-22] Tenant-isolation fix: team_supervisors, teams, team_members (MERGED, #533 + #536, live on ehow)
+- Same-day follow-up to the crew-scoping table (#530): a CI security check flagged the new table as wide open. That flag was itself a false positive (a `security_invoker` view always reports `rls_enabled=false` — fixed on the eq-shell side, see its changelog #950), but reading the real base table underneath it turned up a genuine bug: a leftover, looser policy sitting alongside the correct tenant-scoped one, so the loose one silently won (Postgres OR's permissive policies together). Any signed-in ehow user could have read every SKS supervisor row regardless of their own tenant, and deleted any row.
+- **#533** fixed it on `team_supervisors` — collapsed to one tenant-bound read policy, revoked direct write access from the app role (writes now go only through the existing security-definer trigger), and closed a second issue in that trigger: it trusted a client-supplied `org_id` on insert instead of deriving it from the parent team.
+- **#536** found (via a systematic check of every policy on the database, not a guess) that `teams` and `team_members` — the two older tables `team_supervisors` was copied from — carried the exact same bug, plus the same client-trusted-`org_id` issue in their own write triggers. Fixed identically. Confirmed nothing else on ehow has this pattern.
+- Both migrations dry-run against live ehow before Royce's go, then applied and functionally verified live: correct-tenant reads unchanged (10 / 7 / 72 rows respectively), a simulated wrong-tenant caller now denied, and — specifically proving the trigger fix, not just the policy fix — a deliberate attempt to insert a team with a forged `org_id` came back with the server-corrected value instead.
+- Not previously exploited: SKS is the only tenant currently on ehow, so there was no second tenant's data to actually leak into. Proactive fix, not incident response.
+
 ## [2026-07-22] Crew scoping: My crew / a team / Everyone, ungated widen (MERGED, #534, v3.5.355, live)
 - Follow-up to crew scoping (#530, same day) shipping as a hard boundary: a scoped supervisor could **only** see their own crew, no way to widen it. Royce's steer after seeing it live: "no guardrails that stop people doing their job" — a supervisor covering an unplanned job shouldn't need a database edit mid-shift.
 - New dropdown on Timesheets + Roster, supervision-unlocked only: My crew / a specific team / Everyone. Both selects share one choice. The team picker is genuinely ungated — any team, not just one the caller runs or belongs to, since 'Everyone' already grants full visibility with no permission check.

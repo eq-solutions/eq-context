@@ -10,6 +10,9 @@ status: live
 # eq-shell changelog
 
 ## 2026-07-22
+- **Cleared a CI false alarm** ([#950](https://github.com/eq-solutions/eq-shell/pull/950)) — the tenant-drift/anon-grant gate flagged `app_data.field_team_supervisors` (new same-day, eq-field #530) as an open table on ehow, blocking every subsequent eq-shell PR. It's a `security_invoker=on` view over an RLS-protected base table — views always report `rls_enabled=false`, a known blind spot the check's own header documents for exactly this pattern. Added to the existing allowlist beside its already-listed siblings (`field_teams`, `field_team_members`, etc). No DDL. The real bug the false alarm led to (an OR-widened tenant-isolation policy on the base table itself) was found and fixed separately — see eq-field's changelog, PRs #533 and #536.
+
+## 2026-07-22 (earlier)
 - **Retired `backfill-auth-users.ts`** ([#948](https://github.com/eq-solutions/eq-shell/pull/948)) — the one-shot admin tool that minted `auth.users` rows for every `shell_control.users` row on jvkn. Its stated purpose (pre-fix accept-invite not mirroring to `auth.users`) was already closed by migrations `2026_07_15a`/`15b` + `accept-invite.ts`'s own inline mint (0 orphaned identities live). Its only remaining candidates were the 6 deletion-residue rows from [#944](https://github.com/eq-solutions/eq-shell/pull/944) — running it there would have re-minted GoTrue identities for people who exercised account deletion. It failed safe only by accident (those 6 rows all have `email IS NULL`, so `createUser` 422s); any future orphan with an email would have been silently resurrected. File deleted rather than guarded; README/`smoke-functions.mjs`/`retention-purge.ts`/`cleanup-orphaned-shell-users.sql` updated to match.
 
 ## 2026-07-21
