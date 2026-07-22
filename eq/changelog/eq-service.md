@@ -1,7 +1,7 @@
 ---
 title: EQ Service — Changelog
 owner: Royce Milmlow
-last_updated: 2026-07-20
+last_updated: 2026-07-22
 scope: EQ Service append-only history. NOTE — duplicates eq/changelog/service.md, which stalls mid-deploy at 2026-06-09; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
@@ -10,6 +10,8 @@ status: live
 # EQ Service — Changelog
 
 ## 2026-07-22
+- **PR #582 (MERGED, LIVE) includes dead-code removal — `CheckAssetTable.tsx`/`AssetRow.tsx` deleted.** Re-verified via fresh repo-wide grep that neither file had any import sites beyond each other; the live `/maintenance/[id]` page uses its own separate inline `AssetRow` in `CheckDetailPage.tsx`. Merged to `main` (`cf6fcd1`) despite a failing `npm audit --audit-level=high` CI check on the PR — confirmed pre-existing/unrelated to this change before merging on Royce's go.
+- **PR #583 (MERGED, LIVE, `5b6aa70`) — `npm audit fix` for 2 of 5 HIGH/moderate advisories.** Non-breaking fix resolves the DOMPurify custom-element sanitizer bypass and a fast-uri host-confusion HIGH advisory. Remaining 3 (sharp HIGH, postcss, uuid) only resolve via `--force`, which downgrades `next` to 9.3.3 or `exceljs` to 3.4.0 — left as an open decision, see `eq/pending.md`.
 - **PR #580 (MERGED, LIVE) — null-safe roster sort (fixes Sentry EQ-SOLVES-SERVICE-C).** A canonical roster member with no `full_name`/`name` AND no `email` crashed `GET /maintenance` (`.localeCompare` on null) — the sort comparator's fallback assumed email is always a real string, but the canonical roster's TS type isn't runtime-enforced. Floored both sides at `''` in the 3 places sharing this exact pattern: `app/(app)/maintenance/page.tsx:165` (the crash site), `lib/canonical-members.ts:96` (`memberDisplayName`), `app/(app)/admin/users/page.tsx:51`. A technician with genuinely no name and no email now sorts to the end instead of crashing the page for everyone.
 
 ## 2026-07-21
