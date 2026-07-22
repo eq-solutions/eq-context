@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-07-21
+last_updated: 2026-07-22
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -11,6 +11,16 @@ status: live
 
 EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## Deleted accounts were leaving a login record behind — asked to "restore" them, found the opposite was true (2026-07-22)
+*Six leftover login records had no matching sign-in identity. The obvious read was that they were half-created accounts from invites that never completed, and there's an existing admin button that finishes those off. Checking the history first showed they were the reverse: real accounts that people had used — added their licences, invited colleagues — and then deleted. Pressing that button would have re-created working logins for six people who'd asked to be removed.*
+- [x] **Found the actual cause** — when an account is deleted, the sign-in identity is removed but the separate login record isn't. Nothing cleans it up, so every future account deletion would leave another one behind. One deletion is already in the queue.
+- [x] **Fixed it properly** — account deletion now clears both halves together. Reviewed, merged, and deployed. The fix is deliberately narrow: it only removes records for accounts it just deleted itself, because a login record with no sign-in identity is perfectly normal for staff who only ever use the Shell — a blanket sweep could have deleted live accounts.
+- [x] **Wrote it down so nobody reaches for that button again** — both in the code and in the cleanup script, with the evidence.
+- [ ] **Six leftover records still need clearing — needs your hand.** A prepared script is sitting in the repo (`scripts/cleanup-orphaned-shell-users.sql`). It snapshots first, re-checks six safety conditions before touching anything, and won't save changes unless you confirm the numbers look right. It can't be automated — that database has no automatic update path. Nobody is affected in the meantime; none of these accounts can be signed into. _(added 2026-07-22)_
+- [ ] **The old admin button should be guarded or retired.** It still exists and would still do the wrong thing if pointed at records like these. Its original job was finished off by fixes that went live a week ago, so it may simply be dead. Separate task, chip raised. _(added 2026-07-22)_
 
 ---
 
@@ -133,7 +143,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **Fixed wrongly "compliance"-framed code comments about apprentice year-advancement and ratings** — corrected to describe what they actually are: a trade-progress fact and a growth-visibility tool, not a policing/performance record. Merged to `main` (PR #513).
 - [x] **Found a real bug: the Safety area's Prestart form (crew sign-off before starting work) existed in two separate places in the code, and they didn't always agree with each other on whether a submission should be allowed** — whichever copy loaded most recently on a person's device silently won, for anyone using either screen. Fixed by removing the duplicate and keeping the one actually in daily use. **Two more real bugs caught before merge, both in the first version of this same fix:** (1) it would have removed SKS's *only* way to reach Prestart briefings entirely — the "keep this one" screen lived behind a sidebar item that had been hidden for SKS since a much earlier release, on the wrong assumption that screen was EQ-only. Fixed by un-hiding it. (2) it deleted a shared piece of on-screen form structure thinking it was a private copy — it wasn't, the surviving Prestart screen needed it too and would have broken. Restored it. **Toolbox Talks had the identical duplicate-copy problem — also fixed, same pass** (checked live first: that form has never actually been used on SKS, so lower risk, but fixed the same way for consistency). **PR [#516](https://github.com/eq-solutions/eq-field/pull/516) MERGED, live on field.eq.solutions (v3.5.340).** _(added 2026-07-21)_
 - [x] **Superseded by a follow-up session the same day** — the "Site Reports" hub screen this item pointed at no longer exists (see the nav-flatten + removal entry below). The underlying access-path fix (Prestart/Toolbox reachable for SKS) is unchanged and still live. _(superseded 2026-07-21)_
-- [ ] **The rest of the "biggest files are untested / too large" list from the review is still open:** Apprentices, Roster, Timesheets are each still well over the size where they need to be split up further (only removed one duplicate section each so far); a few other large files (the Safety area, two Tender-Pipeline-related files) haven't been touched at all yet. _(added 2026-07-21)_
+- [x] **Progress since, 2026-07-22 — but with a usage-check correction along the way.** `sks-pipeline-resource.js` extracted+tested (PR #527), then corrected: it was picked using code-risk signals alone, without checking real feature usage — SKS has barely used the screen (1 real enrichment row). `tender-parser.js`'s test suite (PR #531) was picked more carefully afterward — the genuinely high-usage part of the Tender Pipeline (300+ real imported tenders on both tenants) got its already-written-but-never-CI-enforced tests turned on. Full detail + the correction itself: `eq/changelog/field.md`, memory `feedback_check_usage_before_prioritizing.md`. Apprentices/Roster/Timesheets remain oversized by line count but already have their risky logic extracted+tested from an earlier pass — what's left of their size is readability, not live risk. _(updated 2026-07-22)_
 
 ---
 
