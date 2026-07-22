@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-22 12:08 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-22 13:40 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-22 12:06 UTC → 2026-07-22 12:08 UTC)
+## Since last refresh (2026-07-22 12:08 UTC → 2026-07-22 13:40 UTC)
 
-- Merged: eq-shell [#945](https://github.com/eq-solutions/eq-shell/pull/945) fix(staff): admin licence PDF upload failed on every PDF in 
-- Merged: eq-shell [#944](https://github.com/eq-solutions/eq-shell/pull/944) Account deletion left the Shell identity row behind (6 orpha
-- Merged: eq-shell [#941](https://github.com/eq-solutions/eq-shell/pull/941) EQ Ops Setup: add Save all for the preset line-item library
-- Merged: eq-shell [#940](https://github.com/eq-solutions/eq-shell/pull/940) chore: retire the certificates-migrate endpoint (Phase C cle
-- Merged: eq-shell [#939](https://github.com/eq-solutions/eq-shell/pull/939) docs: correct licence-photos RLS mechanism (segment 2, not s
-- Merged: eq-shell [#938](https://github.com/eq-solutions/eq-shell/pull/938) Suppliers: role-gate login/password behind manager/superviso
-- Merged: eq-shell [#933](https://github.com/eq-solutions/eq-shell/pull/933) Security: any org invitee could activate as admin (control p
-- Merged: eq-shell [#928](https://github.com/eq-solutions/eq-shell/pull/928) EQ Ops: unblock Setup, restore labour cost, column filters, 
+- Merged: eq-shell [#943](https://github.com/eq-solutions/eq-shell/pull/943) chore: remove dead mint-cards-iframe-token.ts
+- Merged: eq-shell [#942](https://github.com/eq-solutions/eq-shell/pull/942) diag(ci): surface real HTTP status/body from notify-substrat
+- Merged: eq-shell [#937](https://github.com/eq-solutions/eq-shell/pull/937) Fix: 0194 left three preset RPCs granted to PUBLIC/anon
+- Merged: eq-shell [#936](https://github.com/eq-solutions/eq-shell/pull/936) Security: app_data.staff.user_id was directly client-writabl
+- Merged: eq-shell [#935](https://github.com/eq-solutions/eq-shell/pull/935) P0: any authenticated user could forge an invite and become 
+- Merged: eq-shell [#934](https://github.com/eq-solutions/eq-shell/pull/934) One-shot endpoint: move certificates into licences (Phase B)
+- Merged: eq-shell [#930](https://github.com/eq-solutions/eq-shell/pull/930) Security: EQ Ops setup RPCs adopt the pricing write guard on
+- Merged: eq-solves-service [#584](https://github.com/eq-solutions/eq-service/pull/584) fix(assets,maintenance,reports): remaining maximo_id display
 
 ## ⚠ Needs you (5)
 
@@ -34,7 +34,7 @@ _2026-07-22 12:08 UTC · what needs your attention. Full snapshot: [suite-state.
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
 | eq-shell | ? unknown | ? | 1 | 0d |
-| eq-solves-service | ? unknown | ? | 0 | — |
+| eq-solves-service | ? unknown | ? | 1 | 0d |
 | eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ? unknown | ? | 0 | — |
 | eq-solves-intake | ✓ success | 1d ago | 0 | — |
@@ -70,17 +70,17 @@ _Showing 15 of 111 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **Email-in capture still needs Royce to finish 2 things** in his own Resend and Supabase logins before it actually turns on (add a receiving domain, create a webhook, add 4 secret values) — code side is done and waiting. _(added 2026-07-22)_
+- **Phase 3 gate still open** — clearing one real week of receipts end-to-end in under 10 minutes, to prove the whole thing actually works day-to-day. Only Royce can run this one. _(added 2026-07-22, carried over from earlier)_
+- **3 warnings remain, on purpose.** The only fix available for these would downgrade the app's core framework by several versions (from Next.js 16 back to 9) or downgrade the spreadsheet-export library — both real breaking changes, not something to do silently. Needs your call on whether that trade is worth it, or whether these sit as an accepted risk for now. _(added 2026-07-22)_
+- **eq-solves-service's checkout is shared with other concurrent sessions, same as eq-shell.** Caught a same-second glimpse of another session's in-progress edit, and a commit appeared on the working branch mid-session that wasn't mine — no harm done (switched to a fresh branch off main rather than touch it), but worth knowing this repo has the same multi-agent risk eq-shell already has a documented workaround for. _(added 2026-07-22)_
 - **One triage sub-agent overstepped its brief** — told to investigate only, it instead made a real (but unpushed, harmless) local commit on a shared eq-service checkout. Caught it, verified the fix was actually correct, and folded it into the proper PR instead of using it directly. Worth remembering for future parallel-agent triage: general-purpose agents have full write tools even when told not to use them — an isolated/read-only agent type would remove the risk entirely. _(added 2026-07-22)_
 - **7 workers' names need your eye — I deliberately didn't guess.** Their surname is currently stored as more than one word, and there is genuinely no way to tell from the data whether that's wrong or right: "Marcus De La Fuente" and "Cicero Goncalves Da Silva Junior" are real surnames, while "Damon Patrick Francis" looks like a middle name that got absorbed, and "Jose Luis Quintanilla Rodriguez" has the opposite problem — his *first* name is "Jose Luis" and the system only kept "Jose". Nothing recorded what the names looked like beforehand, so any automatic rule I applied would fix one group by breaking the other. The list is written up ready for you; it only needs someone who knows these people. Nothing is broken while it waits — the underlying fault is fixed, so these names will now stay exactly as they are. _(added 2026-07-22)_
 - **A version-numbering collision happened again mid-session — 4th time this has come up.** Two of these narrow, independent EQ Field changes get worked on in parallel worktrees and both grab the "next" version number before either merges; whoever merges second has to notice, rebase, and renumber. Caught and handled cleanly every time so far, no lost work, but worth a look if it keeps recurring — a small script/lock to hand out the next version number would remove the manual "check right before merging" step. _(added 2026-07-22)_
 - **Clicked through Forecast and Calendar directly on the live site — clean both times, but on the sandbox tenant, not yours.** No errors, both rendered properly. The gap: the sandbox tenant already has everything loaded in memory, so it never exercises the actual "fetch more when you need it" code this change added — the one thing that would need your own real session to properly prove out. Asked what you actually saw go wrong on screen (blank page, stuck spinner, wrong numbers) since nothing in the log pointed at a cause — still waiting to hear back. _(added 2026-07-22)_
 - **Cloudflare account has no 2FA.** `royce@eq.solutions` is the sole Super Administrator over DNS for the entire suite, and account access alone was the only thing separating the whole suite from an outage like this. Worth turning on next time you're in the Cloudflare dashboard. _(added 2026-07-22)_
 - **DMARC record for `eq.solutions` was never added** — Resend's auto-configure only pushed MX/SPF/DKIM and marked those optional; verification succeeded without it. Not required, but a `p=none` starter record would give visibility into anyone spoofing `@eq.solutions`, if that's ever worth doing. _(added 2026-07-22)_
-- **GitHub's automated test-and-lint check never ran on this PR** — only the Netlify build check fired; the actual test suite was run by hand instead and came back clean, but the automatic safety net didn't fire and the cause wasn't tracked down. Worth a look if it happens again on the next PR. _(added 2026-07-22)_
-- **No hands-on test of the finished feature yet** — signing a report, attaching a photo, downloading the Word doc, and the manager email actually arriving haven't been clicked through live, only checked via the automated tests and a read-through of the working page. Worth Royce (or someone on a phone/tablet on site) trying it for real. _(added 2026-07-22)_
-- **Field still writes to the SKS database through its own door, outside the governed pipeline.** Two of today's changes went in by hand because Field has no approval pipeline of its own, following existing precedent. That's the same pattern named elsewhere as the cause of an earlier drift incident. Now that the governed pipeline has been seen working cleanly several times today, Field's database changes should move into it — otherwise there are permanently two ways in, one of them unaudited. _(added 2026-07-21)_
-- **The timesheet and leave approval rules have never been exercised by a real person.** The logic went live without ever having been run — there's no safe place to rehearse it. Worth putting one real timesheet and one real leave request through the full path (submit → approve → try to approve your own → try to reopen) next time you're in Field, to confirm the blocks and the wording behave as intended. _(added 2026-07-21)_
-_…and 410 more · [eq/pending.md](eq/pending.md)_
+_…and 414 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -102,7 +102,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) |
 |------|------:|-----:|------------------:|
-| [EQ](eq/pending.md) | 3221 | 424 | 544 |
+| [EQ](eq/pending.md) | 3244 | 428 | 553 |
 | [SKS](sks/pending.md) | 495 | 72 | 79 |
 | [SKS active](sks/active.md) | 108 | 0 | 0 |
 | [OPS](ops/pending.md) | 252 | 30 | 6 |
@@ -123,4 +123,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-22 12:08 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-22 13:40 UTC._
