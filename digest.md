@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-22 10:07 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-22 10:12 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-22 10:04 UTC → 2026-07-22 10:07 UTC)
+## Since last refresh (2026-07-22 10:07 UTC → 2026-07-22 10:12 UTC)
 
-- Merged: eq-shell [#951](https://github.com/eq-solutions/eq-shell/pull/951) fix(cards): Cards-approved staff got a Shell membership born
-- Merged: eq-shell [#943](https://github.com/eq-solutions/eq-shell/pull/943) chore: remove dead mint-cards-iframe-token.ts
-- Merged: eq-shell [#942](https://github.com/eq-solutions/eq-shell/pull/942) diag(ci): surface real HTTP status/body from notify-substrat
-- Merged: eq-shell [#937](https://github.com/eq-solutions/eq-shell/pull/937) Fix: 0194 left three preset RPCs granted to PUBLIC/anon
-- Merged: eq-shell [#936](https://github.com/eq-solutions/eq-shell/pull/936) Security: app_data.staff.user_id was directly client-writabl
-- Merged: eq-shell [#935](https://github.com/eq-solutions/eq-shell/pull/935) P0: any authenticated user could forge an invite and become 
-- Merged: eq-shell [#934](https://github.com/eq-solutions/eq-shell/pull/934) One-shot endpoint: move certificates into licences (Phase B)
-- Merged: eq-shell [#933](https://github.com/eq-solutions/eq-shell/pull/933) Security: any org invitee could activate as admin (control p
+- Merged: eq-shell [#941](https://github.com/eq-solutions/eq-shell/pull/941) EQ Ops Setup: add Save all for the preset line-item library
+- Merged: eq-shell [#940](https://github.com/eq-solutions/eq-shell/pull/940) chore: retire the certificates-migrate endpoint (Phase C cle
+- Merged: eq-shell [#939](https://github.com/eq-solutions/eq-shell/pull/939) docs: correct licence-photos RLS mechanism (segment 2, not s
+- Merged: eq-shell [#938](https://github.com/eq-solutions/eq-shell/pull/938) Suppliers: role-gate login/password behind manager/superviso
+- Merged: eq-shell [#932](https://github.com/eq-solutions/eq-shell/pull/932) Extend identity-collision gate to the invite-path approval
+- Merged: eq-shell [#931](https://github.com/eq-solutions/eq-shell/pull/931) Suppliers.tsx: add per-column filters to the desktop table
+- Merged: eq-shell [#930](https://github.com/eq-solutions/eq-shell/pull/930) Security: EQ Ops setup RPCs adopt the pricing write guard on
+- Merged: eq-shell [#929](https://github.com/eq-solutions/eq-shell/pull/929) Suppliers.tsx: fix stale comment about which perm gates writ
 
 ## ⚠ Needs you (4)
 
@@ -34,9 +34,9 @@ _2026-07-22 10:07 UTC · what needs your attention. Full snapshot: [suite-state.
 |------|-----------|--------|----------|-----------|
 | eq-shell | ? unknown | ? | 0 | — |
 | eq-solves-service | ? unknown | ? | 0 | — |
-| eq-field | ? unknown | ? | 2 | 0d |
+| eq-field | ? unknown | ? | 1 | 0d |
 | eq-cards | ? unknown | ? | 0 | — |
-| eq-solves-intake | ✓ success | 0d ago | 0 | — |
+| eq-solves-intake | ✓ success | 1d ago | 0 | — |
 
 ## Live errors (Sentry)
 
@@ -64,13 +64,13 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-22 | eq-shell | [#948](https://github.com/eq-solutions/eq-shell/pull/948) Retire backfill-auth-users.ts — dead code, only live target was d |
 | 2026-07-22 | eq-shell | [#945](https://github.com/eq-solutions/eq-shell/pull/945) fix(staff): admin licence PDF upload failed on every PDF in produ |
 | 2026-07-22 | eq-shell | [#944](https://github.com/eq-solutions/eq-shell/pull/944) Account deletion left the Shell identity row behind (6 orphans on |
+| 2026-07-22 | eq-field | [#534](https://github.com/eq-solutions/eq-field/pull/534) v3.5.355 — crew scoping: My crew / a team / Everyone, ungated wid |
 | 2026-07-22 | eq-field | [#533](https://github.com/eq-solutions/eq-field/pull/533) Security: tenant-isolation gap in team_supervisors (crew scoping, |
 | 2026-07-22 | eq-field | [#532](https://github.com/eq-solutions/eq-field/pull/532) v3.5.354 — three guards were reading a week they didn't have |
 | 2026-07-22 | eq-field | [#530](https://github.com/eq-solutions/eq-field/pull/530) v3.5.353 — crew scoping: a supervisor sees the crews they run |
 | 2026-07-22 | eq-field | [#531](https://github.com/eq-solutions/eq-field/pull/531) v3.5.352 — enforce the tender-parser test suite in CI |
 | 2026-07-22 | eq-field | [#528](https://github.com/eq-solutions/eq-field/pull/528) v3.5.351 — leave_requests: the last unbounded read, and a non-uni |
 | 2026-07-22 | eq-field | [#529](https://github.com/eq-solutions/eq-field/pull/529) v3.5.350 — restore prestart "copy from last" dropped in #516 |
-| 2026-07-22 | eq-field | [#527](https://github.com/eq-solutions/eq-field/pull/527) v3.5.347 — extract + test sks-pipeline-resource.js's allocation m |
 _Showing 15 of 106 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -89,7 +89,7 @@ _…and 409 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
-- **Worth a UX pass some day, not urgent:** the confirm page doesn't make it obvious a second click is required — easy trap for anyone expecting "click link = done." Not raised as an ask, just flagging in case it recurs. _(added 2026-07-22)_
+- **The 3 already-stuck Cameron Tregoning requests still need manual action** — this fix stops it happening again, it doesn't retroactively fix those. Ian needs to go back and finish confirming them (or Royce/a supervisor approves directly in-app). _(added 2026-07-22)_
 - **Confirm a non-manager (employee-level) login actually sees a blank instead of real credentials** — only had a manager session available to test with this session. _(added 2026-07-21)_
 - **Confirm the mobile card view on a real phone** (tap-to-call, login/password display, reveal toggle) — couldn't force a reliable mobile browser preview in this session's tooling. _(added 2026-07-21)_
 - **Password-manager decision still open** — Royce said "not now" to setting up a shared 1Password/Bitwarden vault this session; the in-app login/password fields are the interim answer. Revisit if the list of stored credentials grows. _(added 2026-07-21)_
@@ -108,7 +108,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | File | Lines | Open | Done (unrotated) |
 |------|------:|-----:|------------------:|
 | [EQ](eq/pending.md) | 3159 | 421 | 505 |
-| [SKS](sks/pending.md) | 487 | 72 | 75 |
+| [SKS](sks/pending.md) | 488 | 72 | 76 |
 | [SKS active](sks/active.md) | 108 | 0 | 0 |
 | [OPS](ops/pending.md) | 252 | 30 | 6 |
 
@@ -128,4 +128,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-22 10:07 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-22 10:12 UTC._
