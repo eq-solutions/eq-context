@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-22 10:04 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-22 10:07 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-22 09:57 UTC → 2026-07-22 10:04 UTC)
+## Since last refresh (2026-07-22 10:04 UTC → 2026-07-22 10:07 UTC)
 
-- Merged: eq-shell [#952](https://github.com/eq-solutions/eq-shell/pull/952) fix(ci): CHECK 2 anon-grant invariant excludes views — fixes
-- Merged: eq-shell [#941](https://github.com/eq-solutions/eq-shell/pull/941) EQ Ops Setup: add Save all for the preset line-item library
-- Merged: eq-shell [#940](https://github.com/eq-solutions/eq-shell/pull/940) chore: retire the certificates-migrate endpoint (Phase C cle
-- Merged: eq-shell [#939](https://github.com/eq-solutions/eq-shell/pull/939) docs: correct licence-photos RLS mechanism (segment 2, not s
-- Merged: eq-shell [#938](https://github.com/eq-solutions/eq-shell/pull/938) Suppliers: role-gate login/password behind manager/superviso
-- Merged: eq-shell [#932](https://github.com/eq-solutions/eq-shell/pull/932) Extend identity-collision gate to the invite-path approval
-- Merged: eq-shell [#931](https://github.com/eq-solutions/eq-shell/pull/931) Suppliers.tsx: add per-column filters to the desktop table
-- Merged: eq-shell [#930](https://github.com/eq-solutions/eq-shell/pull/930) Security: EQ Ops setup RPCs adopt the pricing write guard on
+- Merged: eq-shell [#951](https://github.com/eq-solutions/eq-shell/pull/951) fix(cards): Cards-approved staff got a Shell membership born
+- Merged: eq-shell [#943](https://github.com/eq-solutions/eq-shell/pull/943) chore: remove dead mint-cards-iframe-token.ts
+- Merged: eq-shell [#942](https://github.com/eq-solutions/eq-shell/pull/942) diag(ci): surface real HTTP status/body from notify-substrat
+- Merged: eq-shell [#937](https://github.com/eq-solutions/eq-shell/pull/937) Fix: 0194 left three preset RPCs granted to PUBLIC/anon
+- Merged: eq-shell [#936](https://github.com/eq-solutions/eq-shell/pull/936) Security: app_data.staff.user_id was directly client-writabl
+- Merged: eq-shell [#935](https://github.com/eq-solutions/eq-shell/pull/935) P0: any authenticated user could forge an invite and become 
+- Merged: eq-shell [#934](https://github.com/eq-solutions/eq-shell/pull/934) One-shot endpoint: move certificates into licences (Phase B)
+- Merged: eq-shell [#933](https://github.com/eq-solutions/eq-shell/pull/933) Security: any org invitee could activate as admin (control p
 
 ## ⚠ Needs you (4)
 
@@ -32,7 +32,7 @@ _2026-07-22 10:04 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 1 | 0d |
+| eq-shell | ? unknown | ? | 0 | — |
 | eq-solves-service | ? unknown | ? | 0 | — |
 | eq-field | ? unknown | ? | 2 | 0d |
 | eq-cards | ? unknown | ? | 0 | — |
@@ -56,6 +56,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-22 | eq-shell | [#951](https://github.com/eq-solutions/eq-shell/pull/951) fix(cards): Cards-approved staff got a Shell membership born inac |
 | 2026-07-22 | eq-shell | [#952](https://github.com/eq-solutions/eq-shell/pull/952) fix(ci): CHECK 2 anon-grant invariant excludes views — fixes the  |
 | 2026-07-22 | eq-shell | [#949](https://github.com/eq-solutions/eq-shell/pull/949) Detect dangling cross-plane workers.staff_id pointers (22 of 93 l |
 | 2026-07-22 | eq-shell | [#950](https://github.com/eq-solutions/eq-shell/pull/950) fix(ci): allowlist app_data.field_team_supervisors (safe invoker  |
@@ -70,7 +71,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-22 | eq-field | [#528](https://github.com/eq-solutions/eq-field/pull/528) v3.5.351 — leave_requests: the last unbounded read, and a non-uni |
 | 2026-07-22 | eq-field | [#529](https://github.com/eq-solutions/eq-field/pull/529) v3.5.350 — restore prestart "copy from last" dropped in #516 |
 | 2026-07-22 | eq-field | [#527](https://github.com/eq-solutions/eq-field/pull/527) v3.5.347 — extract + test sks-pipeline-resource.js's allocation m |
-| 2026-07-22 | eq-field | [#526](https://github.com/eq-solutions/eq-field/pull/526) v3.5.348 — canonical wide reads (timesheets + roster): truncated, |
 _Showing 15 of 106 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -128,4 +128,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-22 10:04 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-22 10:07 UTC._
