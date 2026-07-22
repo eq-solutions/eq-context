@@ -10,6 +10,7 @@ status: live
 # EQ Service — Changelog
 
 ## 2026-07-23
+- **PR #588 (MERGED, `4f5e1e7`) — docs-only: reconciled `docs/perf/load-time-investigation.md` with what's shipped.** Doc still marked the Sentry server-bundle trim "ruled out"; #571 actually shipped it (omitting `tracesSampleRate` rather than setting it to `0` drops registered integrations 44→17). Folded in #568/#569/#570/#573/#574, which the doc predated. Replaced "one lever left" with what's actually open: a live cold-start remeasurement, not yet done since #571 deployed.
 - **PR #586 (MERGED, LIVE, `fa19450`) — override `next`'s bundled postcss, closing the postcss audit finding.** `next@16.2.11` vendors its own `postcss@8.4.31` (XSS-via-stringify, GHSA-qx2v-qp2m-jg93) separate from our own already-patched top-level copy (8.5.20); added a `package.json` `overrides` entry, no `next` version change. `npm run check` clean. Down to 2 remaining findings (sharp HIGH, uuid moderate) — both live-verified as unreachable by this app (no `next/image` usage anywhere; `exceljs` only calls `uuid.v4()` with no args, outside the affected buf-param advisory) and both confirmed upstream-blocked (newest `next`/`exceljs` releases still pin the vulnerable versions). `npm audit fix --force` was test-driven in a throwaway worktree first — downgrades `next` to 9.3.3, breaks the build immediately, vulnerability count goes up 5→95 — confirmed not viable, discarded.
 
 ## 2026-07-22
