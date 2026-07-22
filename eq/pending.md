@@ -14,6 +14,18 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## EQ Receipts: closed all 4 deferred gaps from yesterday's competitive review (2026-07-23)
+*Royce said "sprint all outstanding items" against yesterday's close-card deferred list. The 2 items needing Royce's own logins (email-in setup, Phase 3 timed test) stayed open — everything code-side got built.*
+- [x] **Retry button on failed uploads in Inbox** — a failed receipt used to just sit there with an error message and no way to try again short of re-uploading. One click now re-runs it.
+- [x] **Backlog nudge across every screen** — once 10 or more receipts are waiting on review, a banner appears linking straight to Review. Was previously invisible unless you happened to check the Dashboard.
+- [x] **Bulk-download on Exports** — tick multiple past exports (or one click to grab everything in the current quarter) and download them all at once, instead of one at a time.
+- [x] **Recurring-bill detection on Verify** — if a receipt matches the same vendor and a similar amount to a receipt already verified before, it's flagged as a likely recurring bill with a one-click "use last time's details" that carries over entity, category, business-use %, and the SKS fields (not just entity/category like the existing vendor auto-tagging).
+- [x] Also fixed a pre-existing (not new) `tsc` type error on the untyped `supplier_defaults` RPC call, hit while touching that file today.
+- Build clean, verified in a live preview (Inbox/Review/Exports/Verify all load, no console errors) — no exports existed yet in the dev session to click-test the new bulk-download UI itself, so that one's unexercised until Royce has 2+ real exports to select.
+- [ ] Email-in capture and the Phase 3 gate remain open — see the 2026-07-22 entry below, unchanged.
+
+---
+
 ## eq-solves-service: fixed the SKS Thermals check crash, cleaned up a duplicate account, fixed Asset # display + export, and shipped funding-gap visibility on-site (2026-07-22/23)
 *Started from a screenshot of a crashed maintenance check page, ran through a duplicate-account cleanup, a batch of asset-display bugs, and a new feature request, all in the same working session.*
 - [x] **Crash on the SKS "Thermals" maintenance check fixed and root-caused deeper.** The immediate cause: a technician with no name on file crashed the whole page sort. Traced past the quick fix to the real cause — accounts created via phone-only mobile sign-up never get a name or email captured at all, which was tripping the same null-handling gap in several places (Maintenance list, Admin Users, Defects, Audit log). All fixed; phone number now shown as a fallback identity everywhere the name is blank. **PR #581, merged, live.**
