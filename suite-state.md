@@ -60,13 +60,7 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-22)
 
-**eq-service:**
-- #580 fix(sort): guard localeCompare against null name+email
-
-**eq-shell:**
-- #955 fix(field-iframe): retry the handoff timeout path instead of dead-ending (EQ-SHELL-9)
-- #954 docs(scripts): mark the staff-pointer repair as APPLIED
-- #953 chore: fold orphan iframe-mint Sentry alert into setup-sentry-alerts.mjs
+_No open PRs_
 
 ---
 
