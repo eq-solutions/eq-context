@@ -228,12 +228,13 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## eq-field: who does a supervisor actually see? — blocked on Royce (2026-07-22)
+## eq-field: who does a supervisor actually see? — built, live, then loosened on your feedback (2026-07-22)
 *The big lever for scale isn't fetching faster, it's fetching less: a supervisor only needs their own crew, not all 1,500 people. That turns a ~10,500-row week into about 200 — one quick request instead of eighty. Royce's steer: "only their crew, but able to filter by predefined teams / search / the usual filtering features."*
 
-- [ ] **Blocked: nothing currently records which teams a supervisor is responsible for.** Checked live — 7 teams, 72 memberships covering ~90% of staff, so teams are a sensible unit, but the data only says who is *in* a team, never who *runs* it. (The roster records a supervisor per shift, but that changes week to week and isn't a standing assignment.) **Needs your call:** either give each team an owner (clearest — needs a database change plus a small screen to set it), or infer it from who supervised whom on the roster recently (no database change, but it drifts and gives a newly-appointed supervisor an empty list). _(added 2026-07-22)_
-- [ ] **Second decision, same feature: should managers see everyone while supervisors see only their crew?** This decides who can see whose hours, so it's a visibility question, not a technical one. Worth applying the recognition filter — the right shape is "a supervisor sees the people they support", not a manager dashboard over everyone by default. _(added 2026-07-22)_
-- [ ] **A session is running on this now** (started from a chip). It's been told to bring both decisions back to you before building anything. _(added 2026-07-22)_
+- [x] **Both decisions settled and built.** Gave each team a proper owner in the database (a crew can have several — e.g. the Vans crew has 4 supervisors) rather than guessing from the roster. Managers see everyone by default; supervisors see the crew(s) they run, plus anyone not yet assigned to a team (so nobody's hours go unreviewed just because the setup isn't finished). **Live on field.eq.solutions.** _(done 2026-07-22)_
+- [x] **You saw it live and pushed back: too rigid.** A supervisor covering an unplanned job, or checking one person outside their usual crew, shouldn't need a database edit mid-shift — "no guardrails that stop people doing their job." Added a My crew / a specific team / Everyone switch on Timesheets and Roster, visible only while supervision is unlocked. Picking a team is genuinely open — any team, not just one you run. **Live on field.eq.solutions.** _(done 2026-07-22)_
+- [x] **The one thing still gated, and why it isn't a contradiction:** the switch only works while supervision is unlocked on that device. Without that, a widened choice left on a shared device could quietly stay widened for whoever uses it next, even after supervision was locked again — the control not being on screen has to mean it also has no effect. That's the same rule every other supervisor-only button already follows, not a new restriction on the choice itself. _(done 2026-07-22)_
+- [ ] **Couldn't get eyes on it working in a real browser this session** — the testing tool kept timing out for reasons unrelated to the change, so it was verified a different way (driving the actual running code directly) instead of a live click-through. Worth a real look next time you're in Timesheets or Roster with supervision unlocked. _(added 2026-07-22)_
 
 ---
 
