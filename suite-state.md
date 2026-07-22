@@ -61,6 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-22)
 
 **eq-shell:**
+- #971 fix(security): tenant-scope the react-query caches so a workspace switch can't show the previous tenant
 - #970 Security: the quote draft leaked customer PII to the next tenant/user on the same browser
 
 ---
