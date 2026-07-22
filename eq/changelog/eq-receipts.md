@@ -8,6 +8,14 @@ status: live
 
 # Changelog — EQ Receipts
 
+## [2026-07-23] Closed the 4 deferred competitive-gap items
+- **Inbox retry**: failed upload items get a Retry button (`processItem` re-run) instead of a dead-end error state. `3cdfebd`.
+- **Backlog banner** in `Layout.tsx`: counts `pending`/`extracted`/`needs_review` receipts on mount + every 5 min, shows a banner linking to `/review` once the count hits 10.
+- **Bulk-download** on Exports: checkbox multi-select on the "Past exports" history list, plus a "Select this quarter" shortcut; downloads via a single `createSignedUrls` batch call, opened together in the same click-gesture tick to avoid popup-blocker issues.
+- **Recurring-bill detection** in VerifyCard: on load, looks for a prior `verified`/`exported` receipt with the same vendor (case-insensitive) and a total within 2% — distinct from the existing vendor-only `supplier_defaults` lookup, this one is exact-amount-match and carries over `entity_id`/`category_id`/`business_use_pct`/`is_capital`/`sks_purpose`/`sks_expense_type`/`sks_state` in one click ("Use last time's details"), not just entity/category.
+- **Fixed pre-existing `tsc` error** on the untyped `supplier_defaults` RPC call (present since `22365a1`, not introduced today) — added a local `SupplierDefault` interface and `.returns<SupplierDefault[]>()` on both call sites.
+- Verified live in a local preview: Inbox, Review, VerifyCard, Exports all load with no console errors. Exports bulk-download UI itself unexercised — no export history existed in the dev session to click-test against.
+
 ## [2026-07-22] Login outage fixed, quick-approve, email-in capture, vendor auto-tagging
 - **Neumorphism reskin completed** across every page (soft/embossed shadow system, replacing the standard EQ brand look — this app is a documented single-user exception). `ba422e9`.
 - **Fixed login**: `eq.solutions` apex MX record was missing, breaking inbound mail to Royce's real Microsoft 365 mailbox — root-caused via Supabase auth logs + live DNS + Cloudflare audit log, restored the MX record via Cloudflare API. Also hit Supabase's built-in mailer's hard 2-emails/hour cap; walked Royce through switching to Resend as custom SMTP.
