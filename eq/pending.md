@@ -14,6 +14,16 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## Worker records were pointing at the wrong people — found, fixed, and a nightly check added (2026-07-22)
+*A worker's details live in two separate systems: the Cards side (what the worker owns) and the SKS staff list. Each Cards record carries a note saying "this is the same person as staff record X." Because the two live on different databases, nothing was ever able to check that note was still correct — and nobody had looked.*
+
+- [x] **Nearly a quarter of those notes were pointing at nothing — 22 of 93.** Not a future risk; already broken. Five of them were pointing at the worker's own record instead of the staff record, which was never valid even for a moment. The damage was silent: a manager adding a licence could attach it to the wrong person and the screen would still say "done," and the same wrong link put wrong names into the compliance pack you export. **All 22 repaired; re-checked afterwards and all 93 now resolve correctly.**
+- [x] **Added a nightly check so this can't drift invisibly again.** Runs each morning and reports anything that stops lining up. It only looks and reports — it never changes anyone's records on its own, because correcting one of these decides whose licence is whose, and that's your call. Deliberately built to stay quiet rather than cry wolf: if one of the databases can't be reached it says "couldn't check" instead of reporting everyone as broken. **Live on core.eq.solutions.**
+- [ ] **William Brown has two accounts and his 5 tickets are on the wrong one.** Same name, email and phone, both signed up. His licences sit on the older account, but SKS's staff list points at the newer empty one — so his tickets are invisible to SKS, and trying to add a licence for him fails with a misleading "no linked account" error. Needs a decision on which account survives before anything is merged. Also means one of the existing duplicate-account defences didn't hold on 20 July, worth finding out which. _(added 2026-07-22, started as its own session)_
+- [ ] **Three staff records on SKS's system are stamped with EQ's company ID instead of SKS's.** One is Daniel Bower, an active worker — until it's corrected, adding a licence for him fails even though his record link is now correct. The other two are inactive leftovers. _(added 2026-07-22)_
+
+---
+
 ## eq-field: cut how much of the roster/timesheets the app loads at once — the actual scale lever, in two steps (2026-07-22)
 *Direct follow-up to the crew-scoping work below ("who does a supervisor actually see"). That fixed WHO the app asks for. This is about HOW MANY WEEKS — the app was fetching 9 weeks of schedule/timesheet data every time it opened, when almost all of that time someone only needs to see the current week and the one either side. Cutting it to 3 weeks is roughly a 3x cut in what gets pulled on every open and every 30-second background check, stacking on top of the crew-scoping cut.*
 
