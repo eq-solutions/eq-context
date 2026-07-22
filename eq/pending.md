@@ -14,6 +14,12 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## EQ Field: building a real way to report a safety incident or near miss (2026-07-22)
+*Royce decided EQ Field should get the same Incidents/Near-Miss reporting SKS just shipped, rather than staying with the generic notes field buried in the daily Site Diary.*
+- [ ] **Build kicked off as its own chip session** (`task_bac795b3`), running independently in its own eq-field worktree — briefed to verify eq-field's actual current Safety/prestart architecture live before building (it's drifted from SKS's — prestart moved to a different file there recently), reuse eq-field's own existing docx/signature/offline-queue mechanisms rather than importing SKS's, and get Royce's go before any live migration or push. _(added 2026-07-22)_
+
+---
+
 ## Uploading a licence from Core never worked as a PDF — fixed, and a way to break a worker's whole wallet closed at the same time (2026-07-22)
 *Started as a question — "if I upload a licence for someone in Core, does it show up in their Cards app automatically?" Yes, confirmed. Royce then tried it for real on Elliot Gross and hit "couldn't read the PDF." Turned out that button had never once worked for a PDF, for anyone, since it was built — checked EQ Intake first in case it already had this solved, it didn't. Worked around it with a photo instead, but the record that saved was itself broken and would have broken Elliot's entire wallet, not just the one certificate — caught and repaired live, then fixed properly so it can't happen to anyone else.*
 - [x] **Confirmed how the sync works.** Anything added to a worker's record from Core appears in their Cards app on next refresh — same underlying record, no separate copy to keep in sync.
