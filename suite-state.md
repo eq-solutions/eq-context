@@ -64,9 +64,6 @@ _If this file is >48h old, the cron is broken._
 - #535 v3.5.355 — boot week-window ±4 → ±1, the actual scale lever
 - #534 v3.5.355 — crew scoping: My crew / a team / Everyone, ungated widen
 
-**eq-shell:**
-- #951 fix(cards): Cards-approved staff got a Shell membership born inactive
-
 ---
 
 ## System Health (as of 2026-07-22)
