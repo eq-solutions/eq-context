@@ -60,8 +60,11 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-22)
 
+**eq-field:**
+- #533 Security: tenant-isolation gap in team_supervisors (crew scoping, #530)
+
 **eq-shell:**
-- #945 fix(staff): admin licence PDF upload failed on every PDF in production
+- #949 Detect dangling cross-plane workers.staff_id pointers (22 of 93 live)
 
 ---
 
