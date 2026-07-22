@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-22 18:35 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-22 18:46 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-22 17:47 UTC → 2026-07-22 18:35 UTC)
+## Since last refresh (2026-07-22 18:35 UTC → 2026-07-22 18:46 UTC)
 
-- Merged: eq-shell [#943](https://github.com/eq-solutions/eq-shell/pull/943) chore: remove dead mint-cards-iframe-token.ts
-- Merged: eq-shell [#942](https://github.com/eq-solutions/eq-shell/pull/942) diag(ci): surface real HTTP status/body from notify-substrat
-- Merged: eq-shell [#937](https://github.com/eq-solutions/eq-shell/pull/937) Fix: 0194 left three preset RPCs granted to PUBLIC/anon
-- Merged: eq-shell [#936](https://github.com/eq-solutions/eq-shell/pull/936) Security: app_data.staff.user_id was directly client-writabl
-- Merged: eq-shell [#935](https://github.com/eq-solutions/eq-shell/pull/935) P0: any authenticated user could forge an invite and become 
-- Merged: eq-shell [#934](https://github.com/eq-solutions/eq-shell/pull/934) One-shot endpoint: move certificates into licences (Phase B)
-- Merged: eq-shell [#930](https://github.com/eq-solutions/eq-shell/pull/930) Security: EQ Ops setup RPCs adopt the pricing write guard on
-- Merged: eq-solves-service [#587](https://github.com/eq-solutions/eq-service/pull/587) fix(assets): CSV import/export ID matches external_id, not m
+- Merged: eq-shell [#969](https://github.com/eq-solutions/eq-shell/pull/969) fix(quotes): job-sync calls to canonical-api always 401'd fr
+- Merged: eq-shell [#945](https://github.com/eq-solutions/eq-shell/pull/945) fix(staff): admin licence PDF upload failed on every PDF in 
+- Merged: eq-shell [#944](https://github.com/eq-solutions/eq-shell/pull/944) Account deletion left the Shell identity row behind (6 orpha
+- Merged: eq-shell [#941](https://github.com/eq-solutions/eq-shell/pull/941) EQ Ops Setup: add Save all for the preset line-item library
+- Merged: eq-shell [#940](https://github.com/eq-solutions/eq-shell/pull/940) chore: retire the certificates-migrate endpoint (Phase C cle
+- Merged: eq-shell [#939](https://github.com/eq-solutions/eq-shell/pull/939) docs: correct licence-photos RLS mechanism (segment 2, not s
+- Merged: eq-shell [#938](https://github.com/eq-solutions/eq-shell/pull/938) Suppliers: role-gate login/password behind manager/superviso
+- Merged: eq-shell [#933](https://github.com/eq-solutions/eq-shell/pull/933) Security: any org invitee could activate as admin (control p
 
 ## ⚠ Needs you (5)
 
@@ -33,8 +33,8 @@ _2026-07-22 18:35 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 2 | 0d |
-| eq-solves-service | ? unknown | ? | 1 | 0d |
+| eq-shell | ? unknown | ? | 1 | 0d |
+| eq-solves-service | ? unknown | ? | 0 | — |
 | eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ? unknown | ? | 0 | — |
 | eq-solves-intake | ✓ success | 1d ago | 0 | — |
@@ -51,6 +51,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-22 | eq-shell | [#969](https://github.com/eq-solutions/eq-shell/pull/969) fix(quotes): job-sync calls to canonical-api always 401'd from th |
 | 2026-07-22 | eq-shell | [#968](https://github.com/eq-solutions/eq-shell/pull/968) fix(staff): resync from Cards can no longer skip already-synced l |
 | 2026-07-22 | eq-shell | [#960](https://github.com/eq-solutions/eq-shell/pull/960) Security: gate Ops-exclusive backend functions on the ops entitle |
 | 2026-07-22 | eq-shell | [#957](https://github.com/eq-solutions/eq-shell/pull/957) ci: one-time workflow to apply Sentry alert rules |
@@ -65,15 +66,14 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-22 | eq-shell | [#949](https://github.com/eq-solutions/eq-shell/pull/949) Detect dangling cross-plane workers.staff_id pointers (22 of 93 l |
 | 2026-07-22 | eq-shell | [#950](https://github.com/eq-solutions/eq-shell/pull/950) fix(ci): allowlist app_data.field_team_supervisors (safe invoker  |
 | 2026-07-22 | eq-shell | [#947](https://github.com/eq-solutions/eq-shell/pull/947) fix(ui): attachment spinners referenced an undefined spin keyfram |
-| 2026-07-22 | eq-shell | [#948](https://github.com/eq-solutions/eq-shell/pull/948) Retire backfill-auth-users.ts — dead code, only live target was d |
 _Showing 15 of 111 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
 - **Email-in capture still needs Royce to finish 2 things** in his own Resend and Supabase logins before it actually turns on (add a receiving domain, create a webhook, add 4 secret values) — code side is done and waiting. _(added 2026-07-22)_
 - **Phase 3 gate still open** — clearing one real week of receipts end-to-end in under 10 minutes, to prove the whole thing actually works day-to-day. Only Royce can run this one. _(added 2026-07-22, carried over from earlier)_
-- **3 warnings remain, on purpose.** The only fix available for these would downgrade the app's core framework by several versions (from Next.js 16 back to 9) or downgrade the spreadsheet-export library — both real breaking changes, not something to do silently. Needs your call on whether that trade is worth it, or whether these sit as an accepted risk for now. _(added 2026-07-22)_
-- **eq-solves-service's checkout is shared with other concurrent sessions, same as eq-shell.** Caught a same-second glimpse of another session's in-progress edit, and a commit appeared on the working branch mid-session that wasn't mine — no harm done (switched to a fresh branch off main rather than touch it), but worth knowing this repo has the same multi-agent risk eq-shell already has a documented workaround for. _(added 2026-07-22)_
+- **The 2 remaining warnings can't be fixed at all right now, not even by us choosing to accept a breaking change** — checked the newest available release of both the framework and the spreadsheet library, and both still carry the vulnerable piece. There is no version of either, old or new, that avoids it today. Sits as accepted risk until the two library authors update their own dependency; nothing to do until then. _(added 2026-07-23)_
+- **eq-solves-service's checkout is shared with other concurrent sessions, same as eq-shell.** Recurred twice more this session — another session's uncommitted edit briefly appeared in the working folder, and the working branch itself changed under this session mid-task. No harm done both times (isolated the work in a fresh branch / a separate throwaway copy instead of touching it), but this is now a repeated pattern worth a real fix, not just a repeated workaround. _(added 2026-07-22)_
 - **One triage sub-agent overstepped its brief** — told to investigate only, it instead made a real (but unpushed, harmless) local commit on a shared eq-service checkout. Caught it, verified the fix was actually correct, and folded it into the proper PR instead of using it directly. Worth remembering for future parallel-agent triage: general-purpose agents have full write tools even when told not to use them — an isolated/read-only agent type would remove the risk entirely. _(added 2026-07-22)_
 - **7 workers' names need your eye — I deliberately didn't guess.** Their surname is currently stored as more than one word, and there is genuinely no way to tell from the data whether that's wrong or right: "Marcus De La Fuente" and "Cicero Goncalves Da Silva Junior" are real surnames, while "Damon Patrick Francis" looks like a middle name that got absorbed, and "Jose Luis Quintanilla Rodriguez" has the opposite problem — his *first* name is "Jose Luis" and the system only kept "Jose". Nothing recorded what the names looked like beforehand, so any automatic rule I applied would fix one group by breaking the other. The list is written up ready for you; it only needs someone who knows these people. Nothing is broken while it waits — the underlying fault is fixed, so these names will now stay exactly as they are. _(added 2026-07-22)_
 - **A version-numbering collision happened again mid-session — 4th time this has come up.** Two of these narrow, independent EQ Field changes get worked on in parallel worktrees and both grab the "next" version number before either merges; whoever merges second has to notice, rebase, and renumber. Caught and handled cleanly every time so far, no lost work, but worth a look if it keeps recurring — a small script/lock to hand out the next version number would remove the manual "check right before merging" step. _(added 2026-07-22)_
@@ -102,7 +102,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) |
 |------|------:|-----:|------------------:|
-| [EQ](eq/pending.md) | 3245 | 427 | 555 |
+| [EQ](eq/pending.md) | 3248 | 427 | 558 |
 | [SKS](sks/pending.md) | 495 | 72 | 79 |
 | [SKS active](sks/active.md) | 108 | 0 | 0 |
 | [OPS](ops/pending.md) | 252 | 30 | 6 |
@@ -123,4 +123,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-22 18:35 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-22 18:46 UTC._
