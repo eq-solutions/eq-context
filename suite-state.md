@@ -60,8 +60,7 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-22)
 
-**eq-shell:**
-- #960 Security: gate Ops-exclusive backend functions on the ops entitlement
+_No open PRs_
 
 ---
 
