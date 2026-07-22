@@ -1,13 +1,30 @@
 ---
 title: Changelog — EQ Solves Field
 owner: Royce Milmlow
-last_updated: 2026-07-21
+last_updated: 2026-07-22
 scope: Append-only history of changes to the EQ Solves Field product. Canonical — eq-field.md was merged into this file 2026-07-19, don't split again.
 read_priority: reference
 status: live
 ---
 
 # Changelog — EQ Solves Field
+
+## [2026-07-22] leave_requests: the last unbounded read, and a non-unique sort (MERGED, #528, v3.5.351, live)
+- `leave.js loadLeaveRequests` was an unbounded read — PostgREST caps at 1000 rows and returns `200 OK`, so past that leave requests were simply missing with no error.
+- The `order=created_at.desc` had to GO, not just gain a page loop: `sbFetchAllWide` honours a caller-supplied order and won't append its own, and `created_at` is **not unique** — verified live, 32 rows share just 3 distinct values (ETL batch-stamped). Dropping it also removes a per-path branch, since the unique tiebreak column differs by shape (`leave_request_id` canonical vs `id` legacy).
+- The sort could **not** simply disappear: `_renderLeaveAll` and `printLeaveRequests` consume `leaveRequests` in array order and don't sort themselves. Now sorted once at the load site (`_leaveByNewestFirst` — ties → id desc, undated → last), so every consumer is unchanged.
+- **Differs from #526 deliberately:** leave's `toWideList` is a 1:1 map, not a grouping, so there's no page-boundary corruption hazard here — only the ordering one. `tests/leave-paging.test.js` (15 assertions) PINS the 1:1 property rather than asserting a corruption that doesn't exist.
+- Re-stamped 3.5.349 → 3.5.350 → 3.5.351 across two rebases (#527 and #529 each claimed a version mid-review). **The squash title reads "v3.5.349" but the file stamps are 3.5.351** — `gh pr merge --squash` used the original commit subject. Main is not regressed; prod live-verified at 3.5.351.
+
+## [2026-07-22] Canonical wide reads (timesheets + roster) truncated, and bulk export already 400ing (MERGED, #526, v3.5.348, live)
+- Phase 2 of the 1000-row work started in #525 (people family, v3.5.347), which deliberately excluded `timesheets`.
+- On a canonical tenant `timesheets`/`schedule` are **not plain tables** — `sbFetch` rewrites the wide week filter into a normalized date range against `app_data.timesheets` / `app_data.schedule_entries` (one row per person per DAY per job segment) and reshapes the response back to wide via `toWideList`. The PostgREST row count is not the final row count.
+- So swapping `sbFetch`→`sbFetchAll` is wrong twice: (1) default `order=id` **400s** — no normalized table has an `id` column; (2) `toWideList` runs per response, so paging + concatenating emits a duplicate partial wide row for every person/week straddling a boundary. Corrupted payroll rows, worse than truncation.
+- New `sbFetchAllWide()` pages the normalized domain by normalized PK with the response transform suppressed, then groups the complete set to wide exactly once. Non-canonical tenants page the wide twin on `id`. Both directions of a planner/`sbFetch` disagreement fail loud (400 / no `date` column), never plausible-but-wrong.
+- Pages fetched in waves of 4 (~81 pages at 1500 staff: ~14s sequential → ~3s). `sbFetchAll` itself unchanged — 18 call sites depend on it.
+- **Found already-broken-today:** `_loadFullDataForExport`'s bulk export had been failing outright on SKS at 80 staff, unreported.
+- **Premise correction:** the canonical adapters are NOT default-off. `TIMESHEETS_/ROSTER_/LEAVE_CANONICAL_TENANTS` all contain `'sks'` — the only live tenant runs the canonical path. The "DEFAULT OFF" comments describe the original state.
+- `tests/timesheets-paging.test.js` (26 assertions), including one that asserts the per-page transform *genuinely corrupts* a boundary-straddling week so nobody simplifies the helper back into `sbFetchAll`.
 
 ## [2026-07-21] notify-substrate diagnostics ported from eq-cards (MERGED, #523, live)
 - Same fix as eq-shell #942/eq-service #578: `curl -sf` swallowed the real HTTP status/body on a failed dispatch to eq-context, leaving only an opaque exit 22; now surfaces status + body so the next failure is legible.

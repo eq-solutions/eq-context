@@ -150,6 +150,29 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-field: the app was silently losing rows when a list got long — all three cases now fixed (2026-07-22)
+*Third angle on the same "could we take a 1,500-person customer" question. Nothing to do with connections or screen rendering this time — this is about the app asking the database for a list and quietly getting back only the first 1,000 items, with no error and no warning. The screen looks completely normal; people are just missing. On timesheets that means missing pay.*
+
+- [x] **Fixed for staff lists** — login name picker, apprentice records, archived people. Past 1,000 people someone literally couldn't find their own name to sign in. **Live.**
+- [x] **Fixed for timesheets and the roster.** At 1,500 staff a *single* week already goes past the limit. **Live.**
+- [x] **Fixed for leave requests. Live.**
+- [x] **Found a bug that was already broken today, at 80 staff — not a future problem.** The "fetch everything" step behind bulk exports had been failing outright on SKS, not merely returning less. Nobody had reported it. Fixed in the same pass. _(2026-07-22)_
+- [x] **The obvious fix would have made timesheets *worse*, not better.** Timesheets and the roster don't come out of the database in the shape the screen shows them — the app stitches many daily records into one weekly row. Fetching in batches and stitching each batch separately would have split a person's week across two batches and shown them **twice**, each half missing days. Corrupted pay rows are worse than missing ones. The fix stitches only after everything has arrived. _(2026-07-22)_
+- [x] **Leave needed a different fix again.** Its list was sorted by "date created", which isn't unique — on the live system **32 leave records share just 3 timestamps** (imported in batches). Sorting by something non-unique means records can be skipped or duplicated when fetched in batches. Now sorted by the app after everything arrives, so the order is stable. _(2026-07-22)_
+- [x] **Honest framing, prompted by Royce asking for a steelman**: this is a *correctness* fix, not proof we can take a 1,500-person customer. SKS is 80 staff today and only the export bug was actually biting. It was still worth doing because of the failure mode — silent, no error, on pay data. What's genuinely unknown about 1,500 is the login-burst question above, not row counts. _(2026-07-22)_
+- [ ] **The real scaling answer is still ahead and needs your decision** — see the crew-scoping entry below. _(added 2026-07-22)_
+
+---
+
+## eq-field: who does a supervisor actually see? — blocked on Royce (2026-07-22)
+*The big lever for scale isn't fetching faster, it's fetching less: a supervisor only needs their own crew, not all 1,500 people. That turns a ~10,500-row week into about 200 — one quick request instead of eighty. Royce's steer: "only their crew, but able to filter by predefined teams / search / the usual filtering features."*
+
+- [ ] **Blocked: nothing currently records which teams a supervisor is responsible for.** Checked live — 7 teams, 72 memberships covering ~90% of staff, so teams are a sensible unit, but the data only says who is *in* a team, never who *runs* it. (The roster records a supervisor per shift, but that changes week to week and isn't a standing assignment.) **Needs your call:** either give each team an owner (clearest — needs a database change plus a small screen to set it), or infer it from who supervised whom on the roster recently (no database change, but it drifts and gives a newly-appointed supervisor an empty list). _(added 2026-07-22)_
+- [ ] **Second decision, same feature: should managers see everyone while supervisors see only their crew?** This decides who can see whose hours, so it's a visibility question, not a technical one. Worth applying the recognition filter — the right shape is "a supervisor sees the people they support", not a manager dashboard over everyone by default. _(added 2026-07-22)_
+- [ ] **A session is running on this now** (started from a chip). It's been told to bring both decisions back to you before building anything. _(added 2026-07-22)_
+
+---
+
 ## eq-field: extracted + tested sks-pipeline-resource.js's allocation math (2026-07-22)
 *Direct follow-up to the capacity/scaling audit above and the earlier backlog review: of the 5 files flagged as oversized, 3 already had their risky logic pulled out and tested, one dropped under the size threshold on its own — `sks-pipeline-resource.js` was the one left that was both still oversized and still genuinely risky (zero tests, actively edited, real labour-allocation math for SKS tenders).*
 - [x] **Extracted the SKS Resource Allocation screen's core math into a new, pure, tested module** (`sks-pipeline-resource-rules.js`, 46 new tests): which tenders count as "allocated" for the capacity chart, the 26-week labour-demand forecast (the single highest-value piece — a silent phase-boundary bug here would show a manager a confidently-wrong capacity chart with nothing to catch it), and the worker-track grouping behind the labour-curve panel.
