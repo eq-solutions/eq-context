@@ -1,13 +1,22 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-07-22
+last_updated: 2026-07-23
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
 ---
 
 # EQ Tier — Pending
+
+## eq-solves-service: fixed the SKS Thermals check crash, cleaned up a duplicate account, fixed Asset # display + export, and shipped funding-gap visibility on-site (2026-07-22/23)
+*Started from a screenshot of a crashed maintenance check page, ran through a duplicate-account cleanup, a batch of asset-display bugs, and a new feature request, all in the same working session.*
+- [x] **Crash on the SKS "Thermals" maintenance check fixed and root-caused deeper.** The immediate cause: a technician with no name on file crashed the whole page sort. Traced past the quick fix to the real cause — accounts created via phone-only mobile sign-up never get a name or email captured at all, which was tripping the same null-handling gap in several places (Maintenance list, Admin Users, Defects, Audit log). All fixed; phone number now shown as a fallback identity everywhere the name is blank. **PR #581, merged, live.**
+- [x] **Admin Users roster's blank-name rows explained and one real duplicate fixed.** Most blank rows were legitimate phone-only accounts (now fixed above to show phone instead of blank). One was a genuine duplicate — Brian Griffin-Colls had two separate active sign-in accounts for the same person. Checked both had zero real usage tied to the one being removed before merging them, then fixed it. Also swept every tenant for the same pattern — nothing else found.
+- [ ] **A permanent nightly check for this exact duplicate-account pattern is built but not yet turned on.** Same idea as the check that already runs for the *other* kind of identity gap (a person's SKS staff record pointing at the wrong Shell account) — this one instead catches two Shell accounts for the same person. eq-shell **PR #967, open, needs your merge call.** _(added 2026-07-23)_
+- [x] **The Asset # shown on a maintenance check was wrong, and there was no maintenance plan or export.** Root cause: the page was displaying an old, always-empty ID field instead of the real Asset # column from your import file. Fixed everywhere it showed up (this check page, the main Assets list, the asset detail page), added the missing Maintenance Plan column, and added an Export-to-Excel button next to the existing "print blank onsite" option. **PRs #582 and #584, merged, live.**
+- [x] **New feature: assets you're not being paid for this cycle are now clearly marked, everywhere.** When a maintenance check includes assets outside this year's contract (not funded, or excluded), the tech on-site now sees an amber "Not funded" badge on each one and a visible count at the top of the check — not just the supervisor's existing dashboard reminder. Included in every export and printed report too, with a toggle so you can choose to show or hide them (visible-by-default, per your call). **PR #585, merged, live.**
+- [ ] **The mojibake asset-name corruption (47 rows across 3 sites, stray "Â" characters from an old import) still isn't fixed.** Tried the one-line SQL fix twice, including once on your direct "go run it now" — both times it silently didn't take, a known non-deterministic quirk of the DB tool blocking certain live writes without erroring. Cosmetic only (the corrupted name still displays, nothing else is affected). **Needs you to run this once in the Supabase SQL editor on ehow:** `UPDATE app_data.assets SET name = replace(name, 'Â ', ' ') WHERE name ~ 'Â';` _(added 2026-07-23)_
 
 EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 (entities, tax, infra) in `ops/pending.md`.
@@ -36,6 +45,17 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **Found and fixed one more, for free.** One of the two remaining warnings turned out to have two copies of the same component installed — the app's own copy was already fixed, but the framework carries its own separate old copy internally. Pointed the framework at the already-fixed copy instead. No downgrade, no breaking change, shipped and live (PR #586, merged). **Down to 2 warnings left, both confirmed above as not actually triggerable by anything this app does.**
 - [ ] **The 2 remaining warnings can't be fixed at all right now, not even by us choosing to accept a breaking change** — checked the newest available release of both the framework and the spreadsheet library, and both still carry the vulnerable piece. There is no version of either, old or new, that avoids it today. Sits as accepted risk until the two library authors update their own dependency; nothing to do until then. _(added 2026-07-23)_
 - [ ] **eq-solves-service's checkout is shared with other concurrent sessions, same as eq-shell.** Recurred twice more this session — another session's uncommitted edit briefly appeared in the working folder, and the working branch itself changed under this session mid-task. No harm done both times (isolated the work in a fresh branch / a separate throwaway copy instead of touching it), but this is now a repeated pattern worth a real fix, not just a repeated workaround. _(added 2026-07-22)_
+
+---
+
+## eq-solves-service: brought the internal load-time write-up up to date with what's actually shipped (2026-07-23)
+*Asked what's left on Service's "takes a while to load" issue, then to update the internal write-up to match reality.*
+- [x] **Checked every speed fix logged since the original investigation and confirmed all of them already shipped and are live** — the write-up was two weeks stale and still described the biggest one as impossible.
+- [x] **Corrected that: the fix believed too risky to attempt (patching a monitoring library's internals) turned out unnecessary.** A much simpler one-line settings change got almost the same win safely, and it already shipped — the write-up just hadn't caught up.
+- [x] **Folded in four more already-shipped fixes** (faster page loads, faster database lookups) the write-up never mentioned.
+- [x] **Replaced "one thing left to do" with what's honestly still open**: nobody has actually re-timed the site since the last fix landed, to confirm how much faster it now is.
+- [x] **Opened and merged the write-up update** after confirming the only two failing automated checks were pre-existing issues unrelated to this change (a known dependency warning already tracked as accepted risk, and a documented flaky test).
+- [ ] **Nobody has re-measured real-world load time since the last speed fix landed.** The write-up now says so plainly — worth a real check next time Service feels slow to load, before assuming there's more to fix. _(added 2026-07-23)_
 
 ---
 
