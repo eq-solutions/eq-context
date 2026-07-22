@@ -62,9 +62,9 @@ _If this file is >48h old, the cron is broken._
 
 **eq-field:**
 - #537 feat: Incidents / Near Miss reporting (v3.5.355)
-- #536 Security: same tenant-isolation gap in teams + team_members
 
 **eq-shell:**
+- #954 docs(scripts): mark the staff-pointer repair as APPLIED
 - #953 chore: fold orphan iframe-mint Sentry alert into setup-sentry-alerts.mjs
 
 ---
