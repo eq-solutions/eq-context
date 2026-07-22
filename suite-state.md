@@ -61,7 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-22)
 
 **eq-shell:**
-- #959 docs(scripts): record the William Brown identity merge as APPLIED
+- #960 Security: gate Ops-exclusive backend functions on the ops entitlement
 - #957 ci: one-time workflow to apply Sentry alert rules
 
 ---
