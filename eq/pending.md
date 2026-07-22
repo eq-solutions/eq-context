@@ -14,6 +14,10 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: retired the "backfill missing sign-in records" admin tool (2026-07-22)
+*Follow-up from the 2026-07-22 discovery that 6 old sign-in records on the control-plane database (jvkn) are the leftovers of deleted accounts, not people who never finished signing up (PR #944).*
+- [x] **Retired the tool rather than patching it.** It had no legitimate target left — the bug it was built to fix (accept-invite not creating a sign-in record) was already fixed properly, and the only accounts it would still act on are the 6 deleted ones, which it would have silently un-deleted for anyone who had an email on file (today's 6 happen not to). Deleted the file, updated the docs/scripts that pointed at it. eq-shell **PR #948 MERGED** (squash `c836f12`) → auto-deployed to core.eq.solutions. Build clean, 177/177 tests. jvkn was only read from, never written to. _(done 2026-07-22)_
+
 ## EQ Field: building a real way to report a safety incident or near miss (2026-07-22)
 *Royce decided EQ Field should get the same Incidents/Near-Miss reporting SKS just shipped, rather than staying with the generic notes field buried in the daily Site Diary.*
 - [ ] **Build kicked off as its own chip session** (`task_bac795b3`), running independently in its own eq-field worktree — briefed to verify eq-field's actual current Safety/prestart architecture live before building (it's drifted from SKS's — prestart moved to a different file there recently), reuse eq-field's own existing docx/signature/offline-queue mechanisms rather than importing SKS's, and get Royce's go before any live migration or push. _(added 2026-07-22)_
