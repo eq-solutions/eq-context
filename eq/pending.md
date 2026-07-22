@@ -9,17 +9,19 @@ status: live
 
 # EQ Tier — Pending
 
+EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
+(entities, tax, infra) in `ops/pending.md`.
+
+---
+
 ## eq-solves-service: fixed the SKS Thermals check crash, cleaned up a duplicate account, fixed Asset # display + export, and shipped funding-gap visibility on-site (2026-07-22/23)
 *Started from a screenshot of a crashed maintenance check page, ran through a duplicate-account cleanup, a batch of asset-display bugs, and a new feature request, all in the same working session.*
 - [x] **Crash on the SKS "Thermals" maintenance check fixed and root-caused deeper.** The immediate cause: a technician with no name on file crashed the whole page sort. Traced past the quick fix to the real cause — accounts created via phone-only mobile sign-up never get a name or email captured at all, which was tripping the same null-handling gap in several places (Maintenance list, Admin Users, Defects, Audit log). All fixed; phone number now shown as a fallback identity everywhere the name is blank. **PR #581, merged, live.**
 - [x] **Admin Users roster's blank-name rows explained and one real duplicate fixed.** Most blank rows were legitimate phone-only accounts (now fixed above to show phone instead of blank). One was a genuine duplicate — Brian Griffin-Colls had two separate active sign-in accounts for the same person. Checked both had zero real usage tied to the one being removed before merging them, then fixed it. Also swept every tenant for the same pattern — nothing else found.
-- [ ] **A permanent nightly check for this exact duplicate-account pattern is built but not yet turned on.** Same idea as the check that already runs for the *other* kind of identity gap (a person's SKS staff record pointing at the wrong Shell account) — this one instead catches two Shell accounts for the same person. eq-shell **PR #967, open, needs your merge call.** _(added 2026-07-23)_
+- [x] **A permanent nightly check for this exact duplicate-account pattern is now live.** Same idea as the check that already runs for the *other* kind of identity gap (a person's SKS staff record pointing at the wrong Shell account) — this one instead catches two Shell accounts for the same person. eq-shell **PR #967, merged, live** (your "merge #967"). _(done 2026-07-23)_
 - [x] **The Asset # shown on a maintenance check was wrong, and there was no maintenance plan or export.** Root cause: the page was displaying an old, always-empty ID field instead of the real Asset # column from your import file. Fixed everywhere it showed up (this check page, the main Assets list, the asset detail page), added the missing Maintenance Plan column, and added an Export-to-Excel button next to the existing "print blank onsite" option. **PRs #582 and #584, merged, live.**
 - [x] **New feature: assets you're not being paid for this cycle are now clearly marked, everywhere.** When a maintenance check includes assets outside this year's contract (not funded, or excluded), the tech on-site now sees an amber "Not funded" badge on each one and a visible count at the top of the check — not just the supervisor's existing dashboard reminder. Included in every export and printed report too, with a toggle so you can choose to show or hide them (visible-by-default, per your call). **PR #585, merged, live.**
 - [ ] **The mojibake asset-name corruption (47 rows across 3 sites, stray "Â" characters from an old import) still isn't fixed.** Tried the one-line SQL fix twice, including once on your direct "go run it now" — both times it silently didn't take, a known non-deterministic quirk of the DB tool blocking certain live writes without erroring. Cosmetic only (the corrupted name still displays, nothing else is affected). **Needs you to run this once in the Supabase SQL editor on ehow:** `UPDATE app_data.assets SET name = replace(name, 'Â ', ' ') WHERE name ~ 'Â';` _(added 2026-07-23)_
-
-EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
-(entities, tax, infra) in `ops/pending.md`.
 
 ---
 
