@@ -1,13 +1,16 @@
 ---
 title: EQ Service — Changelog
 owner: Royce Milmlow
-last_updated: 2026-07-22
+last_updated: 2026-07-23
 scope: EQ Service append-only history. NOTE — duplicates eq/changelog/service.md, which stalls mid-deploy at 2026-06-09; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # EQ Service — Changelog
+
+## 2026-07-23
+- **PR #586 (MERGED, LIVE, `fa19450`) — override `next`'s bundled postcss, closing the postcss audit finding.** `next@16.2.11` vendors its own `postcss@8.4.31` (XSS-via-stringify, GHSA-qx2v-qp2m-jg93) separate from our own already-patched top-level copy (8.5.20); added a `package.json` `overrides` entry, no `next` version change. `npm run check` clean. Down to 2 remaining findings (sharp HIGH, uuid moderate) — both live-verified as unreachable by this app (no `next/image` usage anywhere; `exceljs` only calls `uuid.v4()` with no args, outside the affected buf-param advisory) and both confirmed upstream-blocked (newest `next`/`exceljs` releases still pin the vulnerable versions). `npm audit fix --force` was test-driven in a throwaway worktree first — downgrades `next` to 9.3.3, breaks the build immediately, vulnerability count goes up 5→95 — confirmed not viable, discarded.
 
 ## 2026-07-22
 - **PR #582 (MERGED, LIVE) includes dead-code removal — `CheckAssetTable.tsx`/`AssetRow.tsx` deleted.** Re-verified via fresh repo-wide grep that neither file had any import sites beyond each other; the live `/maintenance/[id]` page uses its own separate inline `AssetRow` in `CheckDetailPage.tsx`. Merged to `main` (`cf6fcd1`) despite a failing `npm audit --audit-level=high` CI check on the PR — confirmed pre-existing/unrelated to this change before merging on Royce's go.
