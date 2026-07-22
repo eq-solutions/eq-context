@@ -60,7 +60,11 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-22)
 
+**eq-service:**
+- #586 fix(deps): override next's bundled postcss for the last free audit finding
+
 **eq-shell:**
+- #969 fix(quotes): job-sync calls to canonical-api always 401'd from the browser
 - #967 feat(identity-health): detect duplicate Shell accounts across signup paths
 
 ---
