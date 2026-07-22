@@ -14,6 +14,19 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## EQ Receipts: fixed a broken login, then added quick-approve, email-in receipts, and auto-tagging by vendor (2026-07-22)
+*Standalone receipt tracker for Royce personally (CDC Solutions / Hexican Holdings Trust / Milmlow Family Trust / Personal / SKS Technologies) — separate from the main EQ suite, single user. Ran most of the day: finished a visual reskin, fixed a login outage, then three feature builds Royce asked for directly, closing with a live competitive check against Dext.*
+- [x] **Finished the visual reskin** (a soft, "embossed" look) across every screen — this app is a documented exception to the standard EQ brand look since it's Royce-only.
+- [x] **Diagnosed and fixed why Royce couldn't log in.** The domain's mail-routing record for his real inbox (Outlook/Microsoft 365) had gone missing this morning — traced it via the live DNS records, confirmed a working Microsoft mail server for the domain already existed, and restored the missing record. Also hit and worked through Supabase's built-in email sender being hard-capped at 2 emails/hour — guided Royce through switching to his own sender (Resend) instead.
+- [x] **Added a "Job number" field on the SKS expense-claim screen** — the number was already being written onto the exported claim form but there was no way to actually type it in.
+- [x] **Added tick-box approve / force-approve / delete on the receipt review list**, working on one or many receipts at once, instead of needing to open every single receipt individually.
+- [x] **Built email-in capture**: forward a receipt to a dedicated inbox address and it gets read and filed automatically, same as uploading it by hand. Code is built, tested, and deployed.
+- [x] **Built auto-tagging by vendor**: a receipt from a supplier billed before now arrives already assigned to the right entity/category (and job number for SKS) instead of sitting untagged — makes the new bulk-approve actually useful on a normal inbox, not just already-corrected receipts.
+- [ ] **Email-in capture still needs Royce to finish 2 things** in his own Resend and Supabase logins before it actually turns on (add a receiving domain, create a webhook, add 4 secret values) — code side is done and waiting. _(added 2026-07-22)_
+- [ ] **Phase 3 gate still open** — clearing one real week of receipts end-to-end in under 10 minutes, to prove the whole thing actually works day-to-day. Only Royce can run this one. _(added 2026-07-22, carried over from earlier)_
+
+---
+
 ## eq-solves-service: cleared two dead files, then closed out the two HIGH security warnings from the last audit (2026-07-22)
 *Asked to double-check a suspected pair of dead files before deleting them, then to fix the security-scanner warnings that PR #582 (the Asset # display fix, built earlier the same day) had picked up along the way.*
 - [x] **Confirmed dead and deleted.** `CheckAssetTable.tsx` / `AssetRow.tsx` were an old maintenance-check asset table nobody was actually using — the live page uses its own separate copy instead. Re-checked with a fresh repo-wide search before touching anything (the only references left were the two files pointing at each other, and a changelog mention); nothing broke it. Merged into PR #582 alongside the maximo_id fix, live.
