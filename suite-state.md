@@ -62,7 +62,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-field:**
 - #535 v3.5.355 — boot week-window ±4 → ±1, the actual scale lever
-- #534 v3.5.355 — crew scoping: My crew / a team / Everyone, ungated widen
 
 ---
 
