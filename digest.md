@@ -1,28 +1,30 @@
 ---
 title: EQ Suite — Health Digest
 owner: Royce Milmlow
-last_updated: 2026-07-21
+last_updated: 2026-07-22
 scope: Push-style 'what needs your attention' feed across the EQ suite. Regenerated on merge (repository_dispatch: suite-state-changed) and nightly. Full snapshot in suite-state.md.
 read_priority: high
 status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-21 13:28 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-22 09:03 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-21 10:13 UTC → 2026-07-21 13:28 UTC)
+## Since last refresh (2026-07-21 13:28 UTC → 2026-07-22 09:03 UTC)
 
-- Merged: eq-shell [#943](https://github.com/eq-solutions/eq-shell/pull/943) chore: remove dead mint-cards-iframe-token.ts
-- Merged: eq-shell [#942](https://github.com/eq-solutions/eq-shell/pull/942) diag(ci): surface real HTTP status/body from notify-substrat
-- Merged: eq-shell [#935](https://github.com/eq-solutions/eq-shell/pull/935) P0: any authenticated user could forge an invite and become 
-- Merged: eq-shell [#933](https://github.com/eq-solutions/eq-shell/pull/933) Security: any org invitee could activate as admin (control p
-- Merged: eq-shell [#921](https://github.com/eq-solutions/eq-shell/pull/921) Security fix: cross-org identity-collision metadata leak in 
-- Merged: eq-shell [#920](https://github.com/eq-solutions/eq-shell/pull/920) fix(licences): exclude is_private licences from admin-facing
-- Merged: eq-shell [#916](https://github.com/eq-solutions/eq-shell/pull/916) feat(staff): per-column filtering on the Staff table
-- Merged: eq-shell [#915](https://github.com/eq-solutions/eq-shell/pull/915) fix(staff): clear on_roster when archiving a staff record
+- Merged: eq-shell [#944](https://github.com/eq-solutions/eq-shell/pull/944) Account deletion left the Shell identity row behind (6 orpha
+- Merged: eq-shell [#936](https://github.com/eq-solutions/eq-shell/pull/936) Security: app_data.staff.user_id was directly client-writabl
+- Merged: eq-shell [#930](https://github.com/eq-solutions/eq-shell/pull/930) Security: EQ Ops setup RPCs adopt the pricing write guard on
+- Merged: eq-shell [#925](https://github.com/eq-solutions/eq-shell/pull/925) feat(retention): daily job to finalise deleted Cards account
+- Merged: eq-shell [#924](https://github.com/eq-solutions/eq-shell/pull/924) Fix: flush Sentry before functions return — server events we
+- Merged: eq-shell [#923](https://github.com/eq-solutions/eq-shell/pull/923) Quote doc: fix Clarifications alignment (justified -> left)
+- Merged: eq-shell [#922](https://github.com/eq-solutions/eq-shell/pull/922) Staff: Company column for Labour Hire + Subcontractor, fix r
+- Merged: eq-shell [#919](https://github.com/eq-solutions/eq-shell/pull/919) Option 3: surface + gate identity collisions in the staff-ap
+- ⚠ Needs you: 4 → 5 (new items)
 
-## ⚠ Needs you (4)
+## ⚠ Needs you (5)
 
+- 🔴 **Substrate drift** — DRIFT: deploy EQ Shell (core) (https://core.eq.solutions): claimed LIVE but reality looks DEAD
 - 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-9 (P0 — confirmed exposure, same window as SEC-3) — A different service_role key (`jvkn`/eq-canonical) was pasted directly into a ch · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-10 (P0 — confirmed exposure) — `ANTHROPIC_API_KEY` + `RESEND_API_KEY` stored as plaintext Netlify env vars (`is · [security-register.md](ops/security-register.md)
@@ -32,9 +34,9 @@ _2026-07-21 13:28 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 2 | 0d |
+| eq-shell | ? unknown | ? | 1 | 0d |
 | eq-solves-service | ? unknown | ? | 0 | — |
-| eq-field | ? unknown | ? | 2 | 0d |
+| eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ? unknown | ? | 0 | — |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
@@ -47,6 +49,7 @@ _2026-07-21 13:28 UTC · what needs your attention. Full snapshot: [suite-state.
 | eq-cards | [LateInitializationError: Field '' has not been initialized.](https://eq-solutions.sentry.io/issues/133972818/) | 3 | 2026-07-20 |
 | eq-shell | [Error: eq-ops rpc eq_upsert_pricing_config failed: pricing config requires manag](https://eq-solutions.sentry.io/issues/135532286/) | 2 | 2026-07-21 |
 | eq-shell | [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/) | 2 | 2026-07-14 |
+| eq-shell | [Error: Workers never invited to join, past grace period: 45](https://eq-solutions.sentry.io/issues/135740258/) | 1 | 2026-07-21 |
 | eq-solves-service | [auth handoff: expired](https://eq-solutions.sentry.io/issues/135281279/) | 1 | 2026-07-19 |
 | eq-shell | [EQ Field handoff timeout — no postMessage in 30s](https://eq-solutions.sentry.io/issues/129554465/) | 1 | 2026-07-19 |
 _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunresolved)_
@@ -55,39 +58,40 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-22 | eq-shell | [#944](https://github.com/eq-solutions/eq-shell/pull/944) Account deletion left the Shell identity row behind (6 orphans on |
+| 2026-07-22 | eq-field | [#530](https://github.com/eq-solutions/eq-field/pull/530) v3.5.353 — crew scoping: a supervisor sees the crews they run |
+| 2026-07-22 | eq-field | [#531](https://github.com/eq-solutions/eq-field/pull/531) v3.5.352 — enforce the tender-parser test suite in CI |
+| 2026-07-22 | eq-field | [#528](https://github.com/eq-solutions/eq-field/pull/528) v3.5.351 — leave_requests: the last unbounded read, and a non-uni |
+| 2026-07-22 | eq-field | [#529](https://github.com/eq-solutions/eq-field/pull/529) v3.5.350 — restore prestart "copy from last" dropped in #516 |
+| 2026-07-22 | eq-field | [#527](https://github.com/eq-solutions/eq-field/pull/527) v3.5.347 — extract + test sks-pipeline-resource.js's allocation m |
+| 2026-07-22 | eq-field | [#526](https://github.com/eq-solutions/eq-field/pull/526) v3.5.348 — canonical wide reads (timesheets + roster): truncated, |
+| 2026-07-22 | eq-field | [#520](https://github.com/eq-solutions/eq-field/pull/520) Gate timesheet + leave status transitions (self-approval, reopen, |
+| 2026-07-22 | eq-field | [#525](https://github.com/eq-solutions/eq-field/pull/525) v3.5.347 — people-family reads silently truncated at PostgREST's  |
+| 2026-07-22 | eq-cards | [#172](https://github.com/eq-solutions/eq-cards/pull/172) 0101: enforce canonical licence row shape on jvkn (NOT APPLIED) |
+| 2026-07-21 | eq-shell | [#936](https://github.com/eq-solutions/eq-shell/pull/936) Security: app_data.staff.user_id was directly client-writable on  |
+| 2026-07-21 | eq-shell | [#930](https://github.com/eq-solutions/eq-shell/pull/930) Security: EQ Ops setup RPCs adopt the pricing write guard on the  |
 | 2026-07-21 | eq-shell | [#935](https://github.com/eq-solutions/eq-shell/pull/935) P0: any authenticated user could forge an invite and become tenan |
 | 2026-07-21 | eq-shell | [#943](https://github.com/eq-solutions/eq-shell/pull/943) chore: remove dead mint-cards-iframe-token.ts |
 | 2026-07-21 | eq-shell | [#942](https://github.com/eq-solutions/eq-shell/pull/942) diag(ci): surface real HTTP status/body from notify-substrate dis |
-| 2026-07-21 | eq-shell | [#933](https://github.com/eq-solutions/eq-shell/pull/933) Security: any org invitee could activate as admin (control plane, |
-| 2026-07-21 | eq-shell | [#939](https://github.com/eq-solutions/eq-shell/pull/939) docs: correct licence-photos RLS mechanism (segment 2, not segmen |
-| 2026-07-21 | eq-shell | [#941](https://github.com/eq-solutions/eq-shell/pull/941) EQ Ops Setup: add Save all for the preset line-item library |
-| 2026-07-21 | eq-shell | [#940](https://github.com/eq-solutions/eq-shell/pull/940) chore: retire the certificates-migrate endpoint (Phase C cleanup) |
-| 2026-07-21 | eq-shell | [#938](https://github.com/eq-solutions/eq-shell/pull/938) Suppliers: role-gate login/password behind manager/supervisor |
-| 2026-07-21 | eq-shell | [#937](https://github.com/eq-solutions/eq-shell/pull/937) Fix: 0194 left three preset RPCs granted to PUBLIC/anon |
-| 2026-07-21 | eq-shell | [#928](https://github.com/eq-solutions/eq-shell/pull/928) EQ Ops: unblock Setup, restore labour cost, column filters, reord |
-| 2026-07-21 | eq-shell | [#934](https://github.com/eq-solutions/eq-shell/pull/934) One-shot endpoint: move certificates into licences (Phase B) |
-| 2026-07-21 | eq-shell | [#931](https://github.com/eq-solutions/eq-shell/pull/931) Suppliers.tsx: add per-column filters to the desktop table |
-| 2026-07-21 | eq-shell | [#932](https://github.com/eq-solutions/eq-shell/pull/932) Extend identity-collision gate to the invite-path approval |
-| 2026-07-21 | eq-shell | [#929](https://github.com/eq-solutions/eq-shell/pull/929) Suppliers.tsx: fix stale comment about which perm gates writes |
-| 2026-07-21 | eq-shell | [#927](https://github.com/eq-solutions/eq-shell/pull/927) Suppliers directory - EQ Ops (SKS) |
-_Showing 15 of 110 · full record in [sessions/](sessions/)_
+_Showing 15 of 107 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **Field still writes to the SKS database through its own door, outside the governed pipeline.** Two of today's changes went in by hand because Field has no approval pipeline of its own, following existing precedent. That's the same pattern named elsewhere as the cause of an earlier drift incident. Now that the governed pipeline has been seen working cleanly several times today, Field's database changes should move into it — otherwise there are permanently two ways in, one of them unaudited. _(added 2026-07-21)_
+- **The timesheet and leave approval rules have never been exercised by a real person.** The logic went live without ever having been run — there's no safe place to rehearse it. Worth putting one real timesheet and one real leave request through the full path (submit → approve → try to approve your own → try to reopen) next time you're in Field, to confirm the blocks and the wording behave as intended. _(added 2026-07-21)_
+- **Six leftover records still need clearing — needs your hand.** A prepared script is sitting in the repo (`scripts/cleanup-orphaned-shell-users.sql`). It snapshots first, re-checks six safety conditions before touching anything, and won't save changes unless you confirm the numbers look right. It can't be automated — that database has no automatic update path. Nobody is affected in the meantime; none of these accounts can be signed into. _(added 2026-07-22)_
+- **The old admin button should be guarded or retired.** It still exists and would still do the wrong thing if pointed at records like these. Its original job was finished off by fixes that went live a week ago, so it may simply be dead. Separate task, chip raised. _(added 2026-07-22)_
+- **One thing not checked: a real click-through with a live login.** The sandbox this was built in has no working sign-in to the real system, so the code was verified by reading + a syntax/lint pass + a no-login load test, not by actually opening a prestart and clicking the button. Worth a real click-through next time you're in the app at a site with prior prestart history. _(added 2026-07-22)_
+- **Four lesser flaws deliberately left alone.** They're rated moderate rather than serious, and fixing them isn't a routine update — it would mean *downgrading* two major pieces of the app (the web framework itself, and the spreadsheet export library) by several major versions. That's a rewrite with real breakage risk, traded against flaws the safety check doesn't even consider serious enough to block on. Not recommended, and not urgent — noting it only so nobody re-discovers it and assumes it was missed. _(added 2026-07-21)_
 - **The `production` GitHub Environment on eq-shell has no protection rules** (confirmed directly via the GitHub API — the reviewer list is empty). The documented safety net for every tenant-database migration doesn't actually exist right now. This isn't specific to this session's changes — it means ANY future migration dispatch (by anyone, on any tenant) applies immediately with no approval step, contradicting the "explicit human go before live DDL" design the workflow file describes. Fix is a plain GitHub settings change (repo Settings → Environments → production → add Royce as a required reviewer) — not something fixable by me via API or CLI. _(added 2026-07-21)_
 - **A separate, already-diagnosed cause of people getting logged out unexpectedly** (a background check treats "the server was just slow to answer" the same as "you're not logged in any more," and logs you out either way) is understood but not yet built, since it changes how login/session behaviour works and needs an explicit go-ahead first. _(added 2026-07-21)_
 - **One test step is blocked, needs your call:** fast-forwarding that one test account's "deleted" timestamp by 31 days (so the cleanup job can be checked without waiting a real month) got blocked by the safety guardrail, even for a single-column edit on a known test row. Either approve a retry, or just let the real 30 days pass and it'll be checked then. _(added 2026-07-21)_
 - **PAT swap still outstanding — narrowed the problem.** Confirmed live that eq-cards' repo-level `EQ_CONTEXT_PAT` (set 08:38) is a genuinely working classic PAT — dispatch returns HTTP 204 on 3 consecutive runs. The 3 sibling repos' `EQ_CONTEXT_PAT` secrets were set earlier the same session (08:08–08:30) and are **not** the same value — still failing, now with a visible real error instead of a silent exit-22 (thanks to the diagnostics port above). Can't read/copy a GitHub secret's value via API — **needs Royce**: paste the same working classic PAT into eq-shell/eq-field/eq-service's `EQ_CONTEXT_PAT` (Settings → Secrets → Actions, per repo, same value reused across all three). _(added 2026-07-21)_
-- **`EQ_CONTEXT_PAT` still can't read Actions runs on eq-shell/eq-service/eq-field/eq-cards for the automated nightly/on-merge digest refresh.** Spent a long back-and-forth on this: confirmed it's a fine-grained token, walked through adding the 4 repos + Actions/Contents permissions, clicked Update — API still returns `403 "Resource not accessible by personal access token"` on all 3 repos added this session (eq-context, added at token creation, works fine). Most likely an org-approval step never completed, but not confirmed. **Royce's call: leave it** — not worth more time right now. Stopgap in place: I can run `refresh_digest.py` locally with my own working GitHub access any time current numbers are needed (did this once today — all 5 repos show real CI status as of this session). _(added 2026-07-21)_
-- **Root-caused the eq-cards notify-substrate failure — a different, unrelated secret to everything else this session.** It's the ORG-level `EQ_CONTEXT_PAT` (visibility: selected → eq-cards/eq-field/eq-service/eq-shell, created 2026-06-28 "notify-substrate use only") — separate from the repo-level `EQ_CONTEXT_PAT` on eq-context fixed earlier today. Confirmed via live log: `Authorization: Bearer ` is genuinely empty, not a permissions error — the org secret has never had a value set. **Needs you**: `github.com/organizations/eq-solutions/settings/secrets/actions` → `EQ_CONTEXT_PAT` → paste a value (any PAT with write access to eq-context works) → Save. Not a build gate, but substrate is missing merge notifications from eq-cards/eq-field/eq-service/eq-shell until it's set. _(added 2026-07-21, root-caused 2026-07-21)_
-- **Re-checked digest CI-status automation — confirmed still blocked, no change since the "leave it" call.** Re-ran the refresh; same "? unknown" result for all 4 repos via the automated path. Manual refresh (`refresh_digest.py` run locally) remains the working stopgap. _(added 2026-07-21)_
-- **The `shell_control.persons`/`person_xref` "golden record" spine — investigated further, recommendation reversed.** Asked to do a full 3-repo build; investigation disproved the premise it was based on. Only eq-cards actually matches identities (phone/email against `public.workers`) — eq-shell only reads the output, and eq-field has no matching of its own (its one identity lookup is `user_id`-keyed, already-established, SKS-only). Also found eq-field has its own separate, deliberately parked initiative for a related but different problem (`ADR-PERSON-IDENTITY.md` — same-name disambiguation within eq-field's own tables, not cross-tenant identity; Phases 1–2 shipped, Phases 3–4 explicitly gated by Royce on "not until SKS is stable in live", set 2026-06-08) — and that ADR's own canonical-link plan points at `public.workers`, not `shell_control.persons`/`person_xref`. Recommendation: don't build the spine — it looks like a second, unused design for a job `public.workers` already does. **Royce confirmed: "don't build the spine, leave it parked."** Closed — no further action unless a real second consumer shows up (most likely trigger: EQ tenant's Field plane going live). Open question for later, not urgent: whether to formally retire the empty `persons`/`person_xref` tables rather than leave them as dead schema two different plans could collide on. _(added 2026-07-21, corrected 2026-07-21, confirmed parked 2026-07-21)_
-- **EQ-tenant worker→staff sync doesn't exist** — `workers-canonical-sync` is hardcoded to SKS only. Deprioritized rather than built, since the EQ tenant's Field plane has no real usage yet — revisit if that changes. _(added 2026-07-21)_
-- **eq-cards `main`'s "Notify substrate on merge" workflow is failing on every commit** (exit 22, empty `Authorization: Bearer` token when dispatching to `eq-context`) — noticed while confirming CI health, unrelated to the migration-number fix. Not a build/test gate, just a broken fire-and-forget webhook, so substrate may be missing merge notifications from eq-cards until the secret is fixed. **Follow-up session same day dug in — see below, still blocked, not eq-cards-only.** _(added 2026-07-21)_
-_…and 395 more · [eq/pending.md](eq/pending.md)_
+_…and 403 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
+- EQ Field has no Incidents-tab equivalent at all (only a generic incidents array buried in its Site Diary) — would be a from-scratch build there, not a port, if Royce wants parity. _(added 2026-07-22)_
 - **Confirm a non-manager (employee-level) login actually sees a blank instead of real credentials** — only had a manager session available to test with this session. _(added 2026-07-21)_
 - **Confirm the mobile card view on a real phone** (tap-to-call, login/password display, reveal toggle) — couldn't force a reliable mobile browser preview in this session's tooling. _(added 2026-07-21)_
 - **Password-manager decision still open** — Royce said "not now" to setting up a shared 1Password/Bitwarden vault this session; the in-app login/password fields are the interim answer. Revisit if the list of stored credentials grows. _(added 2026-07-21)_
@@ -97,8 +101,7 @@ _…and 395 more · [eq/pending.md](eq/pending.md)_
 - **Not done: live-demo readiness check** (data cleanliness / no visible errors on whatever screen gets shown) — offered, awaiting Royce's go. _(added 2026-07-16)_
 - **Standalone `sks-nsw-labour` retirement** — NOTE: app is still receiving active feature work as of 2026-06-26 (PRs #32–#54 merged in June). 'Keep warm' understates current investment. Retirement gating question is still open — confirm with Royce whether ehow Field has superseded the standalone app before setting a retirement date. **PIN audit 2026-07-05 (Royce-confirmed):** this repo has its own independent login/PIN system, still actively used — a completely different codebase from eq-field, not affected by eq-field's own PIN-gate retirement (see `eq/changelog/field.md` "SKS = Core-only auth", v3.5.200).
 - **Track 2 RLS STEP 2** — anon SELECT lockdown on ehow. DEFERRED until standalone retired.
-- **SKS anon-remediation (nspb)** — exact policy worklist in `cross-app-linkage-remediation-plan-2026-06-07.md` §7a. Separate from ehow work. SKS-live gated.
-_…and 61 more · [sks/pending.md](sks/pending.md)_
+_…and 62 more · [sks/pending.md](sks/pending.md)_
 
 ## Queue health
 
@@ -106,8 +109,8 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) |
 |------|------:|-----:|------------------:|
-| [EQ](eq/pending.md) | 3023 | 408 | 448 |
-| [SKS](sks/pending.md) | 470 | 71 | 67 |
+| [EQ](eq/pending.md) | 3123 | 416 | 490 |
+| [SKS](sks/pending.md) | 484 | 73 | 72 |
 | [SKS active](sks/active.md) | 108 | 0 | 0 |
 | [OPS](ops/pending.md) | 252 | 30 | 6 |
 
@@ -115,16 +118,16 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | Date | Session |
 |------|---------|
+| 2026-07-22 | [SKS Safety: Incidents/Near Miss tab + Prestart copy-from-last, EQ Field regression found & fixed](sessions/2026-07-22.md) |
 | 2026-07-21 | [eq-shell had its own copy of the licence-privacy gap; found, fixed, deployed, and smoke-tested](sessions/2026-07-21.md) |
 | 2026-07-20 | [invite-accept duplicate-identity follow-up: root cause disproven, hardening shipped + deployed, then a real lead found via Sentry](sessions/2026-07-20.md) |
 | 2026-07-19 | [Digest sweep: two Sentry issues root-caused, one real fix shipped + verified live](sessions/2026-07-19.md) |
 | 2026-07-17 | [AI brief's quote signals were silently zero for SKS; realigned to the live enum, guarded, shipped live](sessions/2026-07-17.md) |
-| 2026-07-16 | [verified migration 0185 live, explained the merge feature's location, seeded a real demo pair](sessions/2026-07-16.md) |
 _[sessions/](sessions/) · 5 shown_
 
 ## Substrate honesty
 
-✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
+✗ Drift detected — see **Needs you** above. Source: `scripts/substrate_honesty.py`.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-21 13:28 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-22 09:03 UTC._
