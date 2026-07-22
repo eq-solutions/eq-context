@@ -9,6 +9,13 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-22] Prestart "copy from last" restored — dropped when the old duplicate form was retired (MERGED, #529, v3.5.350, live)
+- PR #396 (v3.5.233) shipped `_psCopyLast()`/`_psUseLastForSite()` in the old `safety.js` Prestart form — pre-fill a new prestart from the most recent one (any site), or fill just the standing setup (subcontractor, SWMS refs, HRCW ticks, hazards, permits) from the most recent prestart at the selected site.
+- #516 (v3.5.340) retired that whole duplicate form wholesale once `site-reports.js` became canonical, and neither function was ported. Confirmed via `git grep` that neither existed anywhere on `main`. Crews were retyping the same standing setup daily, even at sites worked yesterday.
+- Re-implemented as `copyLastPrestart()` (list-level, "↺ Copy last" button) and `useLastPrestartForSite()` (form-level, "↺ Use last for `<SITE>`" button) in `scripts/site-reports.js`, against the current data model — no separate `project_number`/`controls`/`other_hazards` fields any more, that setup collapsed into the free-text `hazards`/`permits` fields when `site-reports.js` became canonical. Per-day content (works scope, previous-day issues), crew, photos and status are never copied by either.
+- Surfaced via a background chip from a concurrent SKS session that had independently rebuilt an equivalent (richer) feature there and checked EQ Field for parity — found the regression, spun off this fix rather than porting SKS's design directly (different data model, different offline-queue conventions).
+- `node --check` clean, eslint 0 errors. **Not click-through tested with a live login** — this session's sandbox has no working Supabase/Netlify-Functions auth path; verified via static load (no console errors) instead. Worth a real click-through next time someone's in the app at a site with prior prestart history.
+
 ## [2026-07-22] leave_requests: the last unbounded read, and a non-unique sort (MERGED, #528, v3.5.351, live)
 - `leave.js loadLeaveRequests` was an unbounded read — PostgREST caps at 1000 rows and returns `200 OK`, so past that leave requests were simply missing with no error.
 - The `order=created_at.desc` had to GO, not just gain a page loop: `sbFetchAllWide` honours a caller-supplied order and won't append its own, and `created_at` is **not unique** — verified live, 32 rows share just 3 distinct values (ETL batch-stamped). Dropping it also removes a per-path branch, since the unique tiebreak column differs by shape (`leave_request_id` canonical vs `id` legacy).

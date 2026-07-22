@@ -14,10 +14,11 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## EQ Field: a time-saving prestart shortcut got accidentally deleted, now rebuilt and waiting to ship (2026-07-22)
-*Found while checking whether a new SKS feature had an EQ Field equivalent. It used to — supervisors could pull yesterday's site setup into a new prestart instead of retyping it. A form got retired the day before and that shortcut was thrown out with it, never rebuilt in its replacement. Crews have been retyping standing site details every single day since.*
-- [x] **Rebuilt against the current prestart form**, not the old deleted one — same idea (pre-fill a new prestart from the most recent one, plus a "use last for this site" option), adapted to how the form works today. Committed locally on its own branch (`claude/prestart-copy-last`, v3.5.350).
-- [ ] **Not pushed or opened as a PR yet — needs your go.** Sitting ready; say the word and it ships the same way everything else does (PR → your review → merge → deploy). _(added 2026-07-22)_
+## EQ Field: a time-saving prestart shortcut got accidentally deleted — rebuilt, reviewed, and live (2026-07-22)
+*Found while checking whether a new SKS feature had an EQ Field equivalent. It used to — supervisors could pull yesterday's site setup into a new prestart instead of retyping it. A form got retired the day before and that shortcut was thrown out with it, never rebuilt in its replacement. Crews had been retyping standing site details every single day since.*
+- [x] **Rebuilt against the current prestart form**, not the old deleted one — same idea (pre-fill a new prestart from the most recent one, plus a "use last for this site" option), adapted to how the form works today. v3.5.350.
+- [x] **Shipped the normal way — PR, review, merge, deploy.** eq-field PR [#529](https://github.com/eq-solutions/eq-field/pull/529), merged on Royce's "merge" go, deployed and confirmed live on field.eq.solutions (secret scan clean).
+- [ ] **One thing not checked: a real click-through with a live login.** The sandbox this was built in has no working sign-in to the real system, so the code was verified by reading + a syntax/lint pass + a no-login load test, not by actually opening a prestart and clicking the button. Worth a real click-through next time you're in the app at a site with prior prestart history. _(added 2026-07-22)_
 
 ---
 
