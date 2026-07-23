@@ -60,7 +60,11 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-23)
 
+**eq-service:**
+- #600 fix(reports): correct colour logo + stable alignment in report header
+
 **eq-shell:**
+- #979 fix(quotes): simplify quote-detail panel to high-value info
 - #973 perf(quotes): bound the Ops pipeline fetch, add a real counts RPC
 - #971 fix(security): tenant-scope the react-query caches so a workspace switch can't show the previous tenant
 - #970 Security: the quote draft leaked customer PII to the next tenant/user on the same browser
