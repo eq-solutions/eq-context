@@ -14,6 +14,20 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell Staff: compliance pack export was re-downloading the first pack instead of a new one (2026-07-23)
+*Royce reported: exported the compliance pack for 1 person, it worked; selected 7 people and exported again, got the same 1-person file back.*
+- [x] **Root cause found: the export button had no memory of which selection it last built a pack for.** Once a pack finished, clicking the button again always just re-served that same file — even after picking a completely different set of people — because nothing was checking whether the selection had changed since. The button's label was misleading too: it stayed stuck on "Download ready" no matter who was newly selected.
+- [x] Fixed: the button now remembers exactly who the ready pack was built for, and only reuses it when the current selection still matches. Any change in who's selected starts a real new export. **eq-shell PR #974, merged, live** (Royce merged via the GitHub UI himself).
+- Verified: build clean, lint clean on the touched file, all 199 existing tests pass.
+- Also answered Royce's separate question on how a manager-uploaded licence PDF is stored: it's kept as-is (not converted to an image), in the private `licence-photos` bucket at `{org}/{worker}/{licence}/document.pdf`; live-checked the storage security rule directly and confirmed it keys off the worker's own id (not the org id) — a detail a past PR (#939) had corrected in the docs but is now confirmed against the real database, not just the writeup.
+
+## eq-shell: Sentry check — one new error, tied to the licence-upload question above (2026-07-23)
+*Asked to check Sentry after the fix above shipped.*
+- [ ] **New: the automatic "read the certificate for me" step failed once on a PDF upload, rejected by the server that does the reading.** Didn't affect the person uploading — it just quietly fell back to typing the details in by hand, same as if no reading happened at all. Only happened once so far. Task chip spawned to check whether the two systems' shared password has gotten out of sync (which would keep failing) or it was a one-off. _(added 2026-07-23)_
+- Two other Sentry items are already known/tracked, unchanged since yesterday's digest — not repeated here.
+
+---
+
 ## eq-shell Suppliers: fixed squashed columns + a stale-workspace-switch bug that briefly exposed the wrong tenant's data (2026-07-23)
 *Royce reported the Suppliers login/password columns "showing then disappearing" and asked to check the wiring for a security issue.*
 - [x] Suppliers table columns had no set widths and were squashed together — Category/Contact/Phone/Login/Password now have fixed widths, Supplier/Email/Notes get the extra room.
