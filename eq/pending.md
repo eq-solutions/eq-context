@@ -14,6 +14,20 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell Suppliers: fixed squashed columns + a stale-workspace-switch bug that briefly exposed the wrong tenant's data (2026-07-23)
+*Royce reported the Suppliers login/password columns "showing then disappearing" and asked to check the wiring for a security issue.*
+- [x] Suppliers table columns had no set widths and were squashed together — Category/Contact/Phone/Login/Password now have fixed widths, Supplier/Email/Notes get the extra room.
+- [x] The password field in the Add/Edit form typed in plain text and could trigger the browser's own "save this password?" prompt — now properly masked.
+- [x] **Real bug found and fixed: switching workspaces (the picker in the sidebar) didn't close the connection to the previous workspace's data for up to ~14 minutes after switching.** Anyone using EQ Ops right after a workspace switch could be reading or writing the PREVIOUS workspace's data with no sign anything was wrong — this is what Royce actually saw. Fixed: switching now always opens a fresh connection to the new workspace immediately. **PR #972, merged, live.**
+- [ ] Royce to click through a workspace switch + the Suppliers page once live to confirm the fix. _(added 2026-07-23)_
+
+## eq-shell: confirms the exact "fake private folder" bug just found + fixed on eq-solves-service also exists here (2026-07-23)
+*Discovered by accident at session start — the folder this session was assigned to work in turned out to be empty (no code in it at all), same shape as the eq-solves-service finding logged below on the same day.*
+- [ ] **The tripwire fix eq-solves-service got today (see that entry below) hasn't been built for eq-shell, and eq-shell needs it too.** This session's assigned private folder had nothing in it — ended up doing all its real work in the one shared master copy instead, same mechanism as eq-solves-service's bug. Confirmed live mid-session: a second, unrelated concurrent session's own work-in-progress (a database list-loading improvement) was sitting there uncommitted where this session could see it, and that session's own folder-switch changed what this session was pointed at partway through, without warning. Nothing was lost either time — caught before anything got mixed up — but it's luck, not a safeguard. _(added 2026-07-23)_
+- [ ] **Separately: PR #973 (the other session's database list-loading work, opened while this session was mid-review) got a partial review before that session took over — worth a second look before merge.** The new database logic correctly matches the existing rules, no issues there. One real thing: the "Overdue follow-up" filter button will start showing fewer results than before once this ships (it'll now match the same, stricter rule the on-screen count already uses) — arguably a fix, not a bug, but nobody explicitly decided it should change. Not urgent, just flag it before merge. _(added 2026-07-23)_
+
+---
+
 ## EQ Receipts: closed all 4 deferred gaps from yesterday's competitive review (2026-07-23)
 *Royce said "sprint all outstanding items" against yesterday's close-card deferred list. The 2 items needing Royce's own logins (email-in setup, Phase 3 timed test) stayed open — everything code-side got built.*
 - [x] **Retry button on failed uploads in Inbox** — a failed receipt used to just sit there with an error message and no way to try again short of re-uploading. One click now re-runs it.
