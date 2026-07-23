@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-23 03:24 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-23 05:29 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-23 03:00 UTC → 2026-07-23 03:24 UTC)
+## Since last refresh (2026-07-23 03:24 UTC → 2026-07-23 05:29 UTC)
 
-- Merged: eq-shell [#959](https://github.com/eq-solutions/eq-shell/pull/959) docs(scripts): record the William Brown identity merge as AP
-- Merged: eq-shell [#956](https://github.com/eq-solutions/eq-shell/pull/956) fix(list-members): include phone, mark email/name nullable
-- Merged: eq-shell [#954](https://github.com/eq-solutions/eq-shell/pull/954) docs(scripts): mark the staff-pointer repair as APPLIED
-- Merged: eq-shell [#953](https://github.com/eq-solutions/eq-shell/pull/953) chore: fold orphan iframe-mint Sentry alert into setup-sentr
-- Merged: eq-shell [#952](https://github.com/eq-solutions/eq-shell/pull/952) fix(ci): CHECK 2 anon-grant invariant excludes views — fixes
-- Merged: eq-shell [#949](https://github.com/eq-solutions/eq-shell/pull/949) Detect dangling cross-plane workers.staff_id pointers (22 of
-- Merged: eq-shell [#945](https://github.com/eq-solutions/eq-shell/pull/945) fix(staff): admin licence PDF upload failed on every PDF in 
-- Merged: eq-shell [#944](https://github.com/eq-solutions/eq-shell/pull/944) Account deletion left the Shell identity row behind (6 orpha
+- Merged: eq-shell [#958](https://github.com/eq-solutions/eq-shell/pull/958) Security: enforce module entitlement at the iframe-SSO minte
+- Merged: eq-shell [#957](https://github.com/eq-solutions/eq-shell/pull/957) ci: one-time workflow to apply Sentry alert rules
+- Merged: eq-shell [#955](https://github.com/eq-solutions/eq-shell/pull/955) fix(field-iframe): retry the handoff timeout path instead of
+- Merged: eq-shell [#951](https://github.com/eq-solutions/eq-shell/pull/951) fix(cards): Cards-approved staff got a Shell membership born
+- Merged: eq-shell [#950](https://github.com/eq-solutions/eq-shell/pull/950) fix(ci): allowlist app_data.field_team_supervisors (safe inv
+- Merged: eq-shell [#948](https://github.com/eq-solutions/eq-shell/pull/948) Retire backfill-auth-users.ts — dead code, only live target 
+- Merged: eq-shell [#947](https://github.com/eq-solutions/eq-shell/pull/947) fix(ui): attachment spinners referenced an undefined spin ke
+- Merged: eq-shell [#943](https://github.com/eq-solutions/eq-shell/pull/943) chore: remove dead mint-cards-iframe-token.ts
 
 ## ⚠ Needs you (6)
 
@@ -34,7 +34,7 @@ _2026-07-23 03:24 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 3 | 0d |
+| eq-shell | ? unknown | ? | 4 | 0d |
 | eq-solves-service | ? unknown | ? | 0 | — |
 | eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ? unknown | ? | 0 | — |
@@ -55,6 +55,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | Merged | Repo | PR |
 |--------|------|----|
 | 2026-07-23 | eq-shell | [#974](https://github.com/eq-solutions/eq-shell/pull/974) fix(staff): compliance pack export stuck re-downloading the first |
+| 2026-07-23 | eq-solves-service | [#597](https://github.com/eq-solutions/eq-service/pull/597) feat(maintenance): make Site and the check name editable on the c |
 | 2026-07-23 | eq-solves-service | [#596](https://github.com/eq-solutions/eq-service/pull/596) fix(errors): gracefully recover from stale server-action IDs post |
 | 2026-07-23 | eq-solves-service | [#595](https://github.com/eq-solutions/eq-service/pull/595) fix(maintenance): show check title on Kanban cycle cards |
 | 2026-07-23 | eq-solves-service | [#594](https://github.com/eq-solutions/eq-service/pull/594) fix(reports): render tenant logo on Compliance Report |
@@ -68,12 +69,12 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-22 | eq-shell | [#967](https://github.com/eq-solutions/eq-shell/pull/967) feat(identity-health): detect duplicate Shell accounts across sig |
 | 2026-07-22 | eq-shell | [#969](https://github.com/eq-solutions/eq-shell/pull/969) fix(quotes): job-sync calls to canonical-api always 401'd from th |
 | 2026-07-22 | eq-shell | [#968](https://github.com/eq-solutions/eq-shell/pull/968) fix(staff): resync from Cards can no longer skip already-synced l |
-| 2026-07-22 | eq-shell | [#960](https://github.com/eq-solutions/eq-shell/pull/960) Security: gate Ops-exclusive backend functions on the ops entitle |
 _Showing 15 of 114 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
 - None of this session's UI changes (the check page's Site fix/inline editors, the Kanban card titles) were eyeballed live in a real browser — verification was code-level (type-checking + full build) only, since these pages sit behind Royce's own login. Worth a quick click-through next time he's in the app. _(added 2026-07-23)_
+- **2 of the leftover folders from the cleanup above are still stuck** — something else on this machine currently has them open, so they couldn't be deleted this session. Safe to remove once whatever's using them finishes; matches the same known bug pattern, not a new issue. _(added 2026-07-23)_
 - **New: the automatic "read the certificate for me" step failed once on a PDF upload, rejected by the server that does the reading.** Didn't affect the person uploading — it just quietly fell back to typing the details in by hand, same as if no reading happened at all. Only happened once so far. Task chip spawned to check whether the two systems' shared password has gotten out of sync (which would keep failing) or it was a one-off. _(added 2026-07-23)_
 - Royce to click through a workspace switch + the Suppliers page once live to confirm the fix. _(added 2026-07-23)_
 - **The tripwire fix eq-solves-service got today (see that entry below) hasn't been built for eq-shell, and eq-shell needs it too.** This session's assigned private folder had nothing in it — ended up doing all its real work in the one shared master copy instead, same mechanism as eq-solves-service's bug. Confirmed live mid-session: a second, unrelated concurrent session's own work-in-progress (a database list-loading improvement) was sitting there uncommitted where this session could see it, and that session's own folder-switch changed what this session was pointed at partway through, without warning. Nothing was lost either time — caught before anything got mixed up — but it's luck, not a safeguard. _(added 2026-07-23)_
@@ -82,8 +83,7 @@ _Showing 15 of 114 · full record in [sessions/](sessions/)_
 - **The mojibake asset-name corruption (47 rows across 3 sites, stray "Â" characters from an old import) still isn't fixed.** Tried the one-line SQL fix twice, including once on your direct "go run it now" — both times it silently didn't take, a known non-deterministic quirk of the DB tool blocking certain live writes without erroring. Cosmetic only (the corrupted name still displays, nothing else is affected). **Needs you to run this once in the Supabase SQL editor on ehow:** `UPDATE app_data.assets SET name = replace(name, 'Â ', ' ') WHERE name ~ 'Â';` _(added 2026-07-23)_
 - **Email-in capture still needs Royce to finish 2 things** in his own Resend and Supabase logins before it actually turns on (add a receiving domain, create a webhook, add 4 secret values) — code side is done and waiting. _(added 2026-07-22)_
 - **Phase 3 gate still open** — clearing one real week of receipts end-to-end in under 10 minutes, to prove the whole thing actually works day-to-day. Only Royce can run this one. _(added 2026-07-22, carried over from earlier)_
-- **CONFIRMED REAL, re-checked same day — the 2 remaining warnings genuinely can't be fixed right now, not even by choosing to accept a breaking change.** Re-queried the package registry directly today: the newest available release of both the framework and the spreadsheet library still carry the vulnerable piece — nothing shipped upstream since yesterday. True accepted risk, not a "we just haven't gotten to it" item. Nothing to do until the two library authors update their own dependency; re-check next time either one releases. _(confirmed 2026-07-23)_
-_…and 426 more · [eq/pending.md](eq/pending.md)_
+_…and 427 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -105,7 +105,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) |
 |------|------:|-----:|------------------:|
-| [EQ](eq/pending.md) | 3388 | 442 | 611 |
+| [EQ](eq/pending.md) | 3405 | 443 | 617 |
 | [SKS](sks/pending.md) | 495 | 72 | 79 |
 | [SKS active](sks/active.md) | 108 | 0 | 0 |
 | [OPS](ops/pending.md) | 252 | 30 | 6 |
@@ -126,4 +126,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-23 03:24 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-23 05:29 UTC._
