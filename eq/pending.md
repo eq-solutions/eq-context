@@ -14,6 +14,25 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: onboarding information-flow review — confirmed Cards→Field already covers direct employees + subcontractors, deleted a stale branch (2026-07-24)
+
+*Royce opened a conversation about the direct-employee onboarding bottleneck (forms/licences → head office → manual Upvise upload, Letter of Offer acceptance visible only to the sender) and asked for a review of Cards→Field solutions. First-pass research was too shallow (grepped `main` only, missed the canonical-sync architecture and in-flight branches) and proposed building a Cards→Field pipe that already exists. Royce caught it and asked to re-verify — corrected findings below.*
+
+**Confirmed live (nothing to build here):**
+- [x] **Canonical sync (`workers-canonical-sync` v3+, `credentials-canonical-sync` v1) has synced Cards (jvkn) → Field (ehow) since 2026-06-13**, both workers and licences, with nightly `pg_cron` reconciliation. Not manual CSV, not a stub.
+- [x] **Direct employees already flow through it** — `role='employee'` maps to `employment_type='Direct'`; 48 of 67 live Field staff were Direct as of 2026-06-15.
+- [x] **Subcontractor is already modeled** as a roster `employment_type` (`Direct`/`Apprentice`/`Labour Hire`/`Subcontractor`), deliberately not a Field login role, standardized 2026-07-06 across eq-shell + eq-field.
+- [x] **Deleted stale branch `claude/agency-column-contractor-type-a4454e`** (local + origin) — its two commits (Company-column rename, role-drop-on-approval-match fix) were already squash-merged to `main` as PR [#922](https://github.com/eq-solutions/eq-shell/pull/922) (2026-07-21, all checks green) and PR #924; the branch just hadn't been cleaned up.
+
+**Decided (Royce):**
+- Upvise stays untouched — SKS's own process, too big to change quickly; work within existing systems, don't replace it.
+- Letter-of-Offer acceptance tracking stays out of scope, deliberately — to avoid looking like Shell is hijacking HR's employee-info process without being asked.
+
+**Deferred:**
+- [ ] **What's the actual remaining pain point for direct employees, now that the Cards→Field pipe is confirmed live end-to-end?** Asked Royce directly — is it that head office doesn't trust/re-checks Field data before their manual Upvise upload, or a different gap not yet found. Not answered yet this session. _(added 2026-07-24)_
+
+---
+
 ## eq-context: Reflection Protocol built + EQ Field commits mechanically gated (2026-07-24)
 *Royce dictated a mandatory pre-finalization self-critique (4 checks: substrate conflict, vagueness, domain pushback, EQ Field scope) for EQ Field build decisions, SKS ops/commissioning docs, and any output read outside the session. Persisted as `rules/reflection-protocol.md` (PR [#118](https://github.com/eq-solutions/eq-context/pull/118)). Steelmanned before building: a first design (block every `Edit` under `/eq-field/`) was rejected as the wrong moment — it fires on trivial edits and can't see the chat discussion where the actual decision gets made. Redesigned to gate at `git commit` instead, paired with a durable, PR-visible log.*
 - [x] **EQ Field commits are now mechanically gated.** New `~/.claude/hooks/guard.js` rule (`reflection-gate`) blocks `git commit` in `eq-field` unless `docs/reflection-log.md` is staged in the same commit. New `/reflect` command runs the four checks and stages that entry. Skippable via `EQ_SKIP_REFLECT=1`. _(done 2026-07-24)_
