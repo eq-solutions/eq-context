@@ -14,6 +14,15 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## EQ Service: ACB/NSX check creation was writing frequency in the wrong format — fixed, live (2026-07-23)
+*Royce pointed at the exact bug: the ACB/NSX "Create Check" screens showed frequency as plain English ("Annual", "5 Yearly") and saved it that way, but every other part of the app (and one already-live database cleanup) expects a short code instead ("annual", "5yr"). Also had zero validation on that save at all.*
+- [x] **Confirmed one real check already had the wrong format saved** (a DigiCo NSX check from mid-July) before touching anything — checked the live database first rather than assuming.
+- [x] Fixed both the ACB and NSX check-creation screens to save the short code, while still showing Royce/techs the plain-English label on screen. Added the missing validation so this can't drift again. Corrected the one bad record via a database update that shipped with the fix.
+- [x] **Merged and live** — `eq-solves-service` [PR #591](https://github.com/eq-solutions/eq-service/pull/591), confirmed on service.eq.solutions after deploy.
+- Note for future sessions: this repo's GitHub setup will let a pull request merge even while its automated checks are still running (no "wait for checks" rule configured) — this session waited for them manually and they came back clean, but a future session merging quickly could ship a red build without noticing. Worth adding a "must pass" rule if this comes up again.
+
+---
+
 ## eq-shell Staff: compliance pack export was re-downloading the first pack instead of a new one (2026-07-23)
 *Royce reported: exported the compliance pack for 1 person, it worked; selected 7 people and exported again, got the same 1-person file back.*
 - [x] **Root cause found: the export button had no memory of which selection it last built a pack for.** Once a pack finished, clicking the button again always just re-served that same file — even after picking a completely different set of people — because nothing was checking whether the selection had changed since. The button's label was misleading too: it stayed stuck on "Download ready" no matter who was newly selected.
