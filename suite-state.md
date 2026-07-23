@@ -60,8 +60,8 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-23)
 
-**eq-cards:**
-- #175 feat(admin-attach-licence-photo): support attaching a PDF, not just a photo
+**eq-service:**
+- #594 fix(reports): render tenant logo on Compliance Report
 
 **eq-shell:**
 - #973 perf(quotes): bound the Ops pipeline fetch, add a real counts RPC
