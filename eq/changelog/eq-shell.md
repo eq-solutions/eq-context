@@ -9,7 +9,13 @@ status: live
 
 # eq-shell changelog
 
-## 2026-07-23 (latest, PR #983)
+## 2026-07-23 (latest, PR #986)
+- **PR #986 (MERGED squash `c4601ea0`) — customer search now shows what matched.** Follow-up to #977's widened search: Royce asked whether a result could show *why* it matched when it wasn't the company name. `crm-customers.ts`'s `list` action now returns lightweight match-candidate arrays (`site_names`, `contact_names`, `contact_emails`, `contract_refs`) alongside the existing `search_text` — same query, no extra DB round-trip. `CustomersPage.tsx`'s new `searchMatchLabel()` picks the first field that actually matched and renders it under the row ("Site: X" / "Contact: Y" / "Contract: Z"), skipped when the match is the company name itself. No schema change. Netlify deploy confirmed via commit-SHA match (`6a61e304` → `c4601ea0`) after two polling rounds — the first check landed mid-build, still serving the prior deploy.
+
+## 2026-07-23 (PR #984, separate session)
+- **PR #984 (MERGED squash `36a9745f`) — backfilled `market_vertical` from the legacy `customer_group` field + a Group-pill dedupe fix.** Closed the data-quality gap flagged alongside #983 (`task_080ca70e`): 3 SKS customers had an informal industry note in `customer_group` that duplicated the new Market Vertical dropdown. Built and merged in a separate concurrent session — recorded here for continuity.
+
+## 2026-07-23 (PR #983)
 - **PR #983 (MERGED squash `b9776003`) — Client ID + Market Segment close the last gap on the Job Creation export.** Follow-up to #977: Royce asked for the remaining 2 blank cells (B27/B28) after live-testing the first 3. Read the template's "Extention Column Tabs" sheet directly rather than guessing values — both are fixed 6-value dropdowns already wired into `job-creation.ts` with Excel validation but never pre-filled: Client ID (Builder/End User/Consultant/Facility Manager/Contractor/Technology Integrator), Market Segment (Construction/Design/Fit Out-Refurbishment/Industrial/Service-Maintenance/Supply Only). Migration `0198`: `customers.client_type` (named to avoid reading as a foreign key), `customers.market_segment` — both customer-level defaults per Royce's call (AskUserQuestion), same reasoning as Market Vertical. Extended `eq_update_customer` (2 more COALESCE trailing params, 10 total) and `eq_get_job_creation`. Applied live to both planes (1 applied/205 skipped each, zero errors). Netlify deploy confirmed via commit-SHA match (`6a61de17` → `b9776003`), not just `state: ready` (a stale prior deploy also reads `ready`). Along the way, flagged (not fixed) that `customers.customer_group` already holds the same "industry" idea informally for 6 SKS customers — spun off as `task_080ca70e`.
 
 ## 2026-07-23 (PR #980)
