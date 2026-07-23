@@ -21,6 +21,12 @@ changelog and session logs are for.
 
 ---
 
+## eq-shell: root-caused why 5 archived staff keep reappearing — it's actually 87 people, every night (2026-07-24)
+*Royce: kept archiving the same 5 people on the Staff page and they kept coming back — Aaron Clohessy, Bob Smith, Emma Curth, Jack Fitzpatrick, Ross Davidson. Investigated live, read-only (nothing changed yet) — real, live, nightly-recurring bug affecting far more than 5 people. Handoff prompt written for a dedicated fix session rather than building inline.*
+- [ ] **A nightly automatic sync silently un-archives anyone with a Cards phone sign-in linked to their staff record — every single night, no exceptions.** Confirmed live: 87 different staff rows all got force-flipped back to active in the same second at 2:35am. Archiving someone only sticks until the next night unless they've never signed in via Cards. Root cause is two-part: a database-only nightly job (`eq_reconcile_worker_sync`, not tracked in any code file — a gap on its own) blindly re-pushes every linked worker every night regardless of whether anything changed, and the sync it feeds always stamps a person back to "active" with no check for a deliberate archive. Full technical detail + a ready-to-paste fix brief written up for a dedicated session (not fixed inline this session — real design decision needed first: is there ever a legitimate reason the sync SHOULD bring someone back, or should archived always mean archived until a human reverses it?). _(added 2026-07-24)_
+
+---
+
 ## EQ Receipts: tax-invoice watchlist labels cleaned up, expense-claim submission tracking + receipts bundled into export downloads (2026-07-24)
 *Royce first asked why the Dashboard's "Invalid tax invoice watchlist" showed raw codes like `missing_or_invalid_abn` instead of plain English — fixed by reusing a label map that already existed in VerifyCard but wasn't shared. Then asked for two real features: a way to know an expense claim has actually been submitted (not just generated), and for the receipt images/PDFs to be bundled into the export download alongside the spreadsheet. Both built, merged, and deployed.*
 - Watchlist labels: extracted VerifyCard's `ISSUE_LABELS` into shared `src/lib/taxInvoiceRules.ts`, added a compact `ISSUE_LABELS_SHORT` variant, Dashboard now renders each flag as its own small chip instead of one raw-code string. PR #1 merged.
