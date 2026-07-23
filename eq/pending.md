@@ -21,6 +21,15 @@ changelog and session logs are for.
 
 ---
 
+## EQ Receipts: tax-invoice watchlist labels cleaned up, expense-claim submission tracking + receipts bundled into export downloads (2026-07-24)
+*Royce first asked why the Dashboard's "Invalid tax invoice watchlist" showed raw codes like `missing_or_invalid_abn` instead of plain English — fixed by reusing a label map that already existed in VerifyCard but wasn't shared. Then asked for two real features: a way to know an expense claim has actually been submitted (not just generated), and for the receipt images/PDFs to be bundled into the export download alongside the spreadsheet. Both built, merged, and deployed.*
+- Watchlist labels: extracted VerifyCard's `ISSUE_LABELS` into shared `src/lib/taxInvoiceRules.ts`, added a compact `ISSUE_LABELS_SHORT` variant, Dashboard now renders each flag as its own small chip instead of one raw-code string. PR #1 merged.
+- Submission tracking: `exports.submitted_at` (nullable timestamp, migration `0008_export_submitted.sql`) + a "Mark submitted" toggle on the Past Exports list.
+- Receipt bundling: new shared `supabase/functions/_shared/receiptZip.ts` helper. SKS Weekly Claim and the Excel format of CSV-by-entity now download as a `.zip` (spreadsheet + `receipts/` folder of the original images/PDFs) instead of a bare spreadsheet — matches the pattern the existing Full Backup feature already used. CSV format left untouched, per Royce's literal wording ("when you download the excel"). PR #2 merged.
+- [ ] **Not yet confirmed working end-to-end by Royce.** He tested once and got no receipts in the zip — root-caused to him re-downloading a *pre-existing* Past Exports history row generated before this session's fix (immutable — old rows never gain the bundling retroactively), not a code bug. Live-pulled the deployed function source to confirm the real fix is active. Told him to click "Generate claim form" again for a fresh `.zip` and report back — session ended before that confirmation came in. _(added 2026-07-24)_
+
+---
+
 ## eq-shell: EQ Ops quote-detail panel simplified for real-world use, then the Coupa PO import tool rebuilt from scratch against the real export (2026-07-23 → 2026-07-24)
 *Reopened the accidentally-stopped session flagged above. What started as "tidy up the quote panel" (remove Win/Lose, simplify statuses, fix a sticky-totals regression) grew across the day into a full simplification of the panel plus a ground-up rebuild of the Coupa purchase-order matching tool, once it turned out that feature had never actually been tested against a real Coupa export.*
 - [ ] **The purchase-order matching database update applied live under one filename, then had to be renamed to avoid clashing with someone else's unrelated update — the tracking record on both company databases still shows the old name.** The fix itself is live and working correctly either way; this is a pure bookkeeping mismatch. Needs one more approval click from Royce (`Tenant migrations (One Pipe)` workflow, "Reconcile tenant ledgers" option) to tidy up the record. _(added 2026-07-24)_
