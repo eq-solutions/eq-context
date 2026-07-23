@@ -47,6 +47,16 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## EQ Service: Compliance Report logo follow-through, worktree bug re-hit and cleaned up, "wrong report" question resolved (2026-07-23)
+*Continuation session: built the Compliance Report logo fix flagged above, then hit the exact "fake checkout" bug already tracked two entries up, and finally chased down a real question from Royce about whether the fix landed on the right report.*
+- [x] **Compliance Report never showed the company logo anywhere (cover or header) — fixed.** Every other report already had one; this was the one gap. `eq-solves-service` [PR #594](https://github.com/eq-solutions/eq-service/pull/594), merged, live.
+- [x] **Hit the shared-checkout bug from the note two entries above, in a new shape.** The folder this session was pointed at to do the work (`eqsvc-check-detail-wt`) turned out to not be a real, isolated copy at all — just an empty leftover folder with no actual project link to it. Worked around it by making a proper isolated copy to build in instead. **Also found the branch that folder was supposedly for had already been merged and closed out earlier that same day** — so the finished fix was moved onto a fresh branch and its own new pull request (#594 above) rather than being lost in a dead one.
+- [x] **Cleaned up 3 confirmed-dead leftover folders** (`eqsvc-check-detail-wt`, plus two more found the same way inside the project's own worktree folder: `migration-renumber` and one more that turned out to still be in use — see deferred below). All three had zero real project link to them, matching exactly what the note two entries above already flagged as a recurring problem.
+- [x] **Royce asked "did you fix the wrong report?" — checked properly instead of assuming.** He'd been told the company logo needs to show on every page of the Maintenance/PM Check report, not just the cover. Turns out that was **already fixed earlier the same day** (see the entry above, PR #592) — confirmed for real by generating an actual sample report file and inspecting its raw contents (the logo image genuinely is embedded on every page, not just the cover), and by checking that the live site is actually running that fix right now, not an older version. Nothing further needed here.
+- [ ] **2 of the leftover folders from the cleanup above are still stuck** — something else on this machine currently has them open, so they couldn't be deleted this session. Safe to remove once whatever's using them finishes; matches the same known bug pattern, not a new issue. _(added 2026-07-23)_
+
+---
+
 ## EQ Service: ACB/NSX check creation was writing frequency in the wrong format — fixed, live (2026-07-23)
 *Royce pointed at the exact bug: the ACB/NSX "Create Check" screens showed frequency as plain English ("Annual", "5 Yearly") and saved it that way, but every other part of the app (and one already-live database cleanup) expects a short code instead ("annual", "5yr"). Also had zero validation on that save at all.*
 - [x] **Confirmed one real check already had the wrong format saved** (a DigiCo NSX check from mid-July) before touching anything — checked the live database first rather than assuming.
