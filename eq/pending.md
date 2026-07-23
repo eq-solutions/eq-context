@@ -14,6 +14,15 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## EQ Service + EQ Shell: OCR-upload fix coordination, and a second "stale page after deploy" crash confirmed (2026-07-23)
+*No code written this session — this was a coordination + diagnosis session, checking in on a fix another session had already started and chasing a fresh Royce bug report to ground.*
+- [x] Checked eq-shell's error tracker on request: the automatic "read the certificate for me" step (PDF licence upload) is failing with an unauthorized error talking to the reading service. A separate session was already mid-fix (the fix was actually already written and waiting, just never turned on) — relayed each of Royce's decisions to that session (merge it himself, then turn it on himself) rather than duplicating the work, double-checking each step actually happened before passing it along rather than trusting the message.
+- [x] That "turn it on" step hit real friction: Royce's local deploy tool errored twice (wrong folder, then a genuine bug in an out-of-date version of the tool — 14 versions behind). Diagnosed both, gave Royce the fix each time. **Still not confirmed live as of this close** — owned by the other session (title "Investigate staff-licence-ocr 401 from ocr-licence"), not this one.
+- [x] **Royce reported "creating a maintenance check crashes."** Checked the error tracker rather than guessing: it's the exact same "stale browser page after a new version went out" pattern already seen once today (see PR #595 entry below) — NOT a bug in this session's or anyone's actual check/job-plan logic. Confirmed via the deploy history that a second, unrelated update had gone out in between, which is what triggered it this time. Told Royce to refresh and retry.
+- [x] **This is now the second time today this exact "stale page" crash has fired** (see the ACB/NSX one-off two entries below) — with this app pushing out several updates a day, it'll keep happening to someone. Spun off a proper fix as its own task (`task_79c719cc`: catch this specific crash and show "a newer version is available, refreshing…" instead of a raw error) — Royce has since started it as its own session.
+
+---
+
 ## ⏩ Session close — 2026-07-23 (eq-solves-service) — Asset ID export bug, GitHub Actions billing block, check-page site/edit fix, bulk-delete timeout, Kanban titles — all merged + live
 *Long session on EQ Service: started verifying a previous deploy, then chased a live bug report through to a real root cause every time rather than patching symptoms.*
 - [x] **Fixed: exporting the asset list left the ID column blank, and there was nowhere to find/enter an asset's real ID number when creating a maintenance check.** Root cause: the screen that builds the exportable/grouped asset list was quietly dropping the real ID field and only ever looked at a separate, almost-always-empty field instead. Added the real ID field back everywhere it was missing — the asset record, the export, and the check-creation lookup all agree now. `eq-solves-service` [PR #590](https://github.com/eq-solutions/eq-service/pull/590), merged, live.
