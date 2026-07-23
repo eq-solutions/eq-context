@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-23 09:54 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-23 09:57 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-23 09:49 UTC → 2026-07-23 09:54 UTC)
+## Since last refresh (2026-07-23 09:54 UTC → 2026-07-23 09:57 UTC)
 
-- Merged: eq-shell [#970](https://github.com/eq-solutions/eq-shell/pull/970) Security: the quote draft leaked customer PII to the next te
-- Merged: eq-shell [#968](https://github.com/eq-solutions/eq-shell/pull/968) fix(staff): resync from Cards can no longer skip already-syn
-- Merged: eq-shell [#967](https://github.com/eq-solutions/eq-shell/pull/967) feat(identity-health): detect duplicate Shell accounts acros
-- Merged: eq-shell [#958](https://github.com/eq-solutions/eq-shell/pull/958) Security: enforce module entitlement at the iframe-SSO minte
-- Merged: eq-shell [#957](https://github.com/eq-solutions/eq-shell/pull/957) ci: one-time workflow to apply Sentry alert rules
-- Merged: eq-shell [#955](https://github.com/eq-solutions/eq-shell/pull/955) fix(field-iframe): retry the handoff timeout path instead of
-- Merged: eq-shell [#953](https://github.com/eq-solutions/eq-shell/pull/953) chore: fold orphan iframe-mint Sentry alert into setup-sentr
-- Merged: eq-shell [#952](https://github.com/eq-solutions/eq-shell/pull/952) fix(ci): CHECK 2 anon-grant invariant excludes views — fixes
+- Merged: eq-shell [#973](https://github.com/eq-solutions/eq-shell/pull/973) perf(quotes): bound the Ops pipeline fetch, add a real count
+- Merged: eq-shell [#972](https://github.com/eq-solutions/eq-shell/pull/972) fix(ops): Suppliers column widths + stale cross-tenant JWT c
+- Merged: eq-shell [#969](https://github.com/eq-solutions/eq-shell/pull/969) fix(quotes): job-sync calls to canonical-api always 401'd fr
+- Merged: eq-shell [#960](https://github.com/eq-solutions/eq-shell/pull/960) Security: gate Ops-exclusive backend functions on the ops en
+- Merged: eq-shell [#959](https://github.com/eq-solutions/eq-shell/pull/959) docs(scripts): record the William Brown identity merge as AP
+- Merged: eq-shell [#956](https://github.com/eq-solutions/eq-shell/pull/956) fix(list-members): include phone, mark email/name nullable
+- Merged: eq-shell [#954](https://github.com/eq-solutions/eq-shell/pull/954) docs(scripts): mark the staff-pointer repair as APPLIED
+- Merged: eq-shell [#951](https://github.com/eq-solutions/eq-shell/pull/951) fix(cards): Cards-approved staff got a Shell membership born
 
 ## ⚠ Needs you (6)
 
@@ -34,7 +34,7 @@ _2026-07-23 09:54 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 2 | 0d |
+| eq-shell | ? unknown | ? | 1 | 0d |
 | eq-solves-service | ? unknown | ? | 0 | — |
 | eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ? unknown | ? | 0 | — |
@@ -54,6 +54,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-23 | eq-shell | [#973](https://github.com/eq-solutions/eq-shell/pull/973) perf(quotes): bound the Ops pipeline fetch, add a real counts RPC |
 | 2026-07-23 | eq-shell | [#970](https://github.com/eq-solutions/eq-shell/pull/970) Security: the quote draft leaked customer PII to the next tenant/ |
 | 2026-07-23 | eq-shell | [#986](https://github.com/eq-solutions/eq-shell/pull/986) feat(customers): show what matched a search result |
 | 2026-07-23 | eq-shell | [#985](https://github.com/eq-solutions/eq-shell/pull/985) docs(ci): stop claiming tenant-migrate.yml has an approval gate |
@@ -68,22 +69,21 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-23 | eq-shell | [#975](https://github.com/eq-solutions/eq-shell/pull/975) fix(identity): list-members backfills name/email from app_data.st |
 | 2026-07-23 | eq-shell | [#974](https://github.com/eq-solutions/eq-shell/pull/974) fix(staff): compliance pack export stuck re-downloading the first |
 | 2026-07-23 | eq-solves-service | [#600](https://github.com/eq-solutions/eq-service/pull/600) fix(reports): correct colour logo + stable alignment in report he |
-| 2026-07-23 | eq-solves-service | [#599](https://github.com/eq-solutions/eq-service/pull/599) fix(maintenance,reports): stop-crashing site lookup, resolve cano |
 _Showing 15 of 112 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
 - **Royce hasn't yet downloaded a fresh Run-Sheet to eyeball the fixed logo himself** — verified by generating and inspecting a sample file directly against the real SKS logo, not by his own click-through. _(added 2026-07-23)_
 - **Not yet click-tested live in the browser** — all 5 Job Creation fields (B17/B27/B28/B29/B30) are wired and deployed, but nobody has actually set them on a real customer/job and pulled a fresh export to confirm every cell lands right. _(added 2026-07-23)_
-- **Found a related data-quality wrinkle, spun off separately, not fixed here.** 6 SKS customers have an old, informal "industry" note sitting in a different field (`customer_group`) that's the same idea as the new Market Vertical dropdown, just not using it. Flagged as its own follow-up (`task_080ca70e`) rather than folded into this change — Royce has already started that session. _(added 2026-07-23)_
-- **Still open: whether a "here's what matched" indicator gets built for the widened customer search** — Royce asked if it's possible after seeing search results with no highlight of why a customer matched; not decided yet, not started. _(added 2026-07-23)_
+- **Not yet click-tested live** — build-verified only; nobody has actually searched for a site/contact/contract on the real Customers page and confirmed the right label shows. _(added 2026-07-23)_
 - **Identity model needs a second dimension: division, not just tenant/role.** The SKS org chart shows state alone doesn't match how the business actually reports — VIC's headcount splits across national functional divisions (Major Projects, Data Centre Solutions, AV, HV) that cut across every state. Recommended direction (not yet built): keep the single-tenant model (don't fork Supabase projects per state — see `system/architecture.md` Control Layer section for why physical separation is reserved for separate *customers*, not sub-units of one), but extend the JWT claim set to carry `state`/`region` **and** `division`, with a layered exec view (State GM → Regional GM → Divisional GM → Group exec) rather than the current flat `is_platform_admin` bypass. _(added 2026-07-23)_
 - **No live access-revoke exists.** Role/entitlement changes only take effect on next login today (`IDENTITY-MODEL.md` §6.3) — SKS's stated requirement for a national rollout is instant ("push of a button"). Needs a real design: likely a per-request `users.active`/`deactivated_at` check instead of relying solely on the cached session cookie. _(added 2026-07-23)_
 - **Cards' scope needs defining against Upvise.** Royce's call: Cards supplements Upvise, doesn't replace it — Upvise stays the system of record for employment data, Cards owns onboarding/qualifications. That boundary (what Cards owns vs. what stays in Upvise, and whether/how they sync) isn't designed yet. _(added 2026-07-23)_
 - **The 3 open P0 security findings (SEC-1 PII leak, SEC-9 leaked service_role key, SEC-10 plaintext API keys) matter more now than the usual priority read** — Royce agreed they should close regardless of the scale question; at 55 users they're bad, at a national headcount any one is a reportable breach, not an internal fix-it item. Already tracked in `ops/security-register.md` — flagging here so the scale conversation doesn't let them drift. _(added 2026-07-23)_
 - **No off-platform backup exists for ehow** (SKS's live tenant data) — only Supabase's native 7-day PITR. Target design already exists in `system/infrastructure.md` ("Backup strategy — target state") but isn't built. Royce: budget/appetite exists "if this progresses." _(added 2026-07-23)_
 - **A wrong first theory got spun off as its own task before it was disproven** — an early chip pointed at the wrong screen entirely (a different, internal eq-shell user list), and that chip was already started as its own session before the live-database check ruled it out. That session was never tracked down to stop it — it may still be running against a bug that doesn't actually exist. Worth a look for a stray, pointless eq-shell PR later and closing it out if one shows up. _(added 2026-07-23)_
-_…and 437 more · [eq/pending.md](eq/pending.md)_
+- **A completely unrelated, real in-progress session got stopped by accident** while chasing the item above (mistaken identity, caught and corrected same session) — the EQ Ops quotes-screen cleanup (removing old Win/Lost buttons, tidying the status filter, sticky totals on the quote form). Nothing was lost — the changes are sitting safely un-saved in their own folder — but it needs manually reopening from the Archived sessions list to pick back up. _(added 2026-07-23)_
+_…and 431 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -105,7 +105,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) |
 |------|------:|-----:|------------------:|
-| [EQ](eq/pending.md) | 3475 | 452 | 642 |
+| [EQ](eq/pending.md) | 3482 | 451 | 645 |
 | [SKS](sks/pending.md) | 514 | 76 | 85 |
 | [SKS active](sks/active.md) | 108 | 0 | 0 |
 | [OPS](ops/pending.md) | 252 | 30 | 6 |
@@ -126,4 +126,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-23 09:54 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-23 09:57 UTC._
