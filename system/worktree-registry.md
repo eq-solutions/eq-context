@@ -18,14 +18,41 @@ Check this file first — if your target repo/area is already claimed, coordinat
 3. When done: move row to Stale or delete it
 4. Never edit a worktree that isn't yours (see Rule in `C:\Projects\CLAUDE.md`)
 
+**Root cause of the eq-solves-service shared-checkout collisions (found + fixed 2026-07-23):**
+A real linked git worktree has its own `.git` FILE at its root (a ~70-byte gitdir
+pointer — e.g. `.claude/worktrees/eqsvc-loadtime-ux/.git`). Two paths under
+eq-solves-service's `.claude/worktrees/` — `asset-import-export-1fe110` and
+`unruffled-noyce-657c65` — turned out to have **no `.git` of their own at all**.
+They were never created via `git worktree add`; they're plain nested folders.
+Any git command run from inside one silently walks up to the **parent repo's**
+`.git` and mutates its shared branch/working tree — which is exactly how two
+concurrent sessions each believing they're isolated collided (one session's
+uncommitted edit appearing in another's `git status`, the checked-out branch
+changing mid-task). `unruffled-noyce-657c65` holds nothing (empty `.claude`
+dir only) and is safe to delete whenever someone has `rm -rf` permission —
+this session's classifier blocked the delete. `asset-import-export-1fe110`
+similarly holds no files of its own (just `.claude`/`.next`) — the actual
+uncommitted work sessions have found "in" it lives in the **root checkout**
+(`C:\Projects\eq-solves-service`), not the subfolder. **Fix shipped:** `~/.claude/hooks/guard.js`
+now has a `detect-fake-worktree` rule (rule 1b) that force-blocks any Edit/Write
+whose path matches `/worktrees/<name>/` or `<name>-wt/` but whose root has no
+`.git` — tested against both known-fake dirs (blocks) and two real worktrees,
+one of each path shape (passes clean). Does not block `Bash`/`git worktree add`,
+so fixing a path is never gated. **This does not retroactively fix the two
+existing fake folders** — it only stops future silent edits into them (or any
+new ones like them) from mutating the wrong checkout. If a session gets
+assigned one of these two paths, treat it as: work is actually happening in
+the root `eq-solves-service` checkout, verify `git status`/`git branch` there
+before editing, or spin up a real worktree elsewhere instead.
+
 ---
 
 ## Active (do not touch)
 
 | Folder | Branch | Agent / Session | Claimed | Status |
 |--------|--------|-----------------|---------|--------|
-| C:/Projects/eq-shell-tenant-cache-wt (eq-shell) | claude/tenant-scoped-query-keys | crows-nest/shipwright #961 | 2026-07-23 | In progress — tenant-scoping react-query cache keys + clearing the cache on workspace switch (issue #961). |
-| C:/Projects/eq-shell-quote-draft-wt (eq-shell) | claude/quote-draft-namespacing | crows-nest/shipwright #962 (namespace quote draft localStorage key by tenant+user, clear on sign-out) | 2026-07-23 | In progress |
+| ~~C:/Projects/eq-shell-quote-draft-wt (eq-shell)~~ REMOVED | claude/quote-draft-namespacing | crows-nest/shipwright #962 | 2026-07-23 | DONE — PR [#970](https://github.com/eq-solutions/eq-shell/pull/970) open; pnpm build exit 0, 205/205 tests pass. Worktree removed 2026-07-23. |
+| ~~C:/Projects/eq-shell-tenant-cache-wt (eq-shell)~~ REMOVED | claude/tenant-scoped-query-keys | crows-nest/shipwright #961 | 2026-07-23 | DONE — PR [#971](https://github.com/eq-solutions/eq-shell/pull/971) OPEN, NOT merged (Royce's call; eq-shell auto-deploys main → core.eq.solutions). Tenant-scoped 6 react-query key families (staff ×5, crm customer list, 4 access-control keys, entity-rows, home signals) via new `src/lib/tenantQueryKeys.ts` factories + `useTenantScope()` (session tenant **id**, not the URL slug — every one of these endpoints resolves tenant from the session cookie), and added `queryClient.clear()` to TenantSwitcher's successful switch. Both layers deliberately: clear() is the belt, scoped keys are the braces for any future path that changes tenant without the switcher. Prefix invalidations (StaffPage handleMutated/handleArchived, EntityBrowser refresh) and all optimistic setQueryData/getQueryData sites repointed; `scope` added to affected dep arrays. Dropped SignalsBoard's discarded `tenantSlug` prop + its TenantHome call site. `pnpm build` exit 0; `pnpm test` 205/205 (199 pre-existing + 6 new); eslint on touched files strictly improves (two `_tenantSlug` unused-var errors removed, nothing new — verified byte-identical to origin/main by stashing and re-running). No auth-flow/JWT/token-exchange change, no migration. **NOTE: issue #961's body is literally `@-`** (a broken `gh issue create --body-file` at charter time) — the acceptance criteria existed only in the dispatch prompt, so there was no issue-side checklist to verify against. Worktree removed 2026-07-23. |
 | ~~C:\Projects\eqsvc-loadtime-doc-wt (eq-solves-service)~~ REMOVED | claude/loadtime-doc-update (merged, deleted) | Claude (refreshed docs/perf/load-time-investigation.md — the doc still said the Sentry server-bundle trim was "ruled out" when #571 actually shipped it, and it predated #568/#569/#570/#573/#574; docs-only, no code) | 2026-07-23 | DONE — **PR [#588](https://github.com/eq-solutions/eq-service/pull/588) MERGED** (squash `4f5e1e7`, Royce's "merge the PR" go). `tsc + next build` passed; `npm audit` + integration-test CI reds are pre-existing (sharp/uuid transitive vulns already tracked as accepted risk, integration tests are documented pre-existing per repo CLAUDE.md) — unrelated to this docs-only diff. Spun up a fresh worktree off main rather than writing into `.claude/worktrees/asset-import-export-1fe110`, which this session found on branch `claude/eq-service-load-time-f601ff` carrying unrelated uncommitted asset-import changes not authored here. Worktree removed 2026-07-23. |
 | C:\Projects\eq-shell-dup-accounts-wt (eq-shell) | claude/duplicate-shell-accounts-check | Claude (eq-solves-service session — found + fixed a live duplicate Shell account for Brian Griffin-Colls 2026-07-22, one phone-only (real history: worker/org_membership/10 licences/24 audit_log rows) + one empty email-based dup created 12 days later via a different signup path; neither `shell_control.phone_link_review` nor `public.identity_collision_flags` ever flagged it since the duplicate wasn't created via the Cards-linking RPC at all. Built an alert-only reconciliation cron, 5th member of the identity-health family) | 2026-07-22 | DONE — **PR [#967](https://github.com/eq-solutions/eq-shell/pull/967) OPEN**. `build:packages && tsc -b` clean, 199/199 tests (190 pre-existing + 9 new), eslint clean on both new files. `check-duplicate-shell-accounts.ts` fires daily 21:40 UTC, reads each tenant's own `app_data.staff` as the trust anchor (staff.user_id = the one real linked account) and flags any OTHER active Shell account in the same tenant sharing that person's known email/phone — deliberately no global "complete" guard (unlike check-dangling-staff-pointers), since detection here is per-tenant/positive-only so a read failure only reduces coverage, never manufactures a false positive. NOT merged, NOT deployed — Royce's call. Worktree prunable after merge. |
 |--------|--------|-----------------|---------|--------|
