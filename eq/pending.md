@@ -14,6 +14,13 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-solves-service: "stale page after deploy" crash now shows a friendly refresh instead of a raw error (2026-07-23)
+*Closes the fix spun off as `task_79c719cc` from the "OCR-upload fix coordination" session earlier today (see entry below) — the app was crashing with a raw, unexplained error any time someone had a page open across a new update going out, which was happening multiple times a day.*
+- [x] **Any tab left open across a deploy now recovers on its own instead of crashing.** When that happens, the page briefly says "a newer version of this page is available, refreshing…" and reloads itself automatically (with a manual "Refresh now" button too, in case the reload doesn't fire). Covers every page in the app, not just the maintenance-check screen the original report came from. `eq-solves-service` [PR #596](https://github.com/eq-solutions/eq-service/pull/596), merged, live.
+- [x] **Double-checked the original "crashes when creating a check with a job plan" report has no separate real bug hiding behind it** — the error tracker only ever showed this one stale-page issue for the whole app, nothing distinct tied to job plans. Nothing touched in the actual check/job-plan logic.
+
+---
+
 ## eq-cards: PDF support added to the admin evidence-attach tool, used immediately for a real case (2026-07-23)
 *Royce: "we have Karar Mohammed's Silica Awareness licence approved with no PDF or photo saved — if I add another from the tenant side it'll create a double-up, what are my options?" Live-checked first: exactly one licence row for him, no evidence, and no delete-licence capability exists anywhere in Shell — the normal "Add licence" flow always inserts a new row, so it genuinely would have duplicated.*
 - [x] **`admin-attach-licence-photo` (the existing operator tool for attaching evidence to an already-approved licence without creating a duplicate) only ever wrote images — extended it to also accept a PDF** (writes `document_url`/`document_type` on the same row, matching the shape `staff-licence-backfill.ts` already uses). Also added a 10MB cap it never had. **eq-cards PR [#175](https://github.com/eq-solutions/eq-cards/pull/175), merged, deployed live** (v1→v2).
