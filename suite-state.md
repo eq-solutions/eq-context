@@ -60,6 +60,9 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-23)
 
+**eq-cards:**
+- #174 fix(ocr-licence): recognise eq-shell's service-role server-to-server caller
+
 **eq-shell:**
 - #973 perf(quotes): bound the Ops pipeline fetch, add a real counts RPC
 - #971 fix(security): tenant-scope the react-query caches so a workspace switch can't show the previous tenant
