@@ -1,13 +1,26 @@
 ---
 title: SKS — Pending
 owner: Royce Milmlow
-last_updated: 2026-07-21
+last_updated: 2026-07-23
 scope: SKS Technologies operational TODO list
 read_priority: critical
 status: live
 ---
 
 # SKS Pending
+
+## SKS national scale discovery — "what breaks EQ at ~2,000 employees" (2026-07-23)
+*Royce: "scalable / bigger picture discussion... national business that's approaching 2000 employees." Built a discovery questionnaire (24 questions across 8 categories) rather than guessing at a plan; Royce filled it out with real numbers, then supplied the actual SKS org chart (`MASTER Organisation Chart 01.07.2026.pdf`, 136 pages) to ground the architecture question.*
+- [x] **Real scale trajectory confirmed** — 2,000 is a growth target, not current headcount. NSW: ~100 today → 300 in 18 months. VIC: ~700 today → 1,000+ in 12 months (VIC is already bigger than NSW's whole 18-month target). National beyond that grows slower. EQ Field would carry ~80% of the load; Field should reach almost everyone except execs/admin.
+- [x] **Sequencing decided by Royce:** fix the known gaps first, prove the software in NSW, then expand — not scale-first-fix-under-load.
+- [x] **Org chart read and mapped** — SKS is Region (Eastern/Western) over State, but not cleanly: NSW/QLD/WA/NT each have a proper GM, **VIC does not** — VIC's headcount splits across Major Projects VIC and the VIC Elec/Comms team, both reporting through national functional divisions (Major Projects, Data Centre Solutions + Client Services, AV, HV — HV alone looks like ~90 nationally-mobile trade staff) that cut across every state. **SKS Indigenous Technologies** sits under its own Managing Director, reporting straight to the Group CEO, not into either region — a distinct branded entity, not just a region. Royce's own chain confirmed in the chart: Royce → Mark Brame (GM NSW) → Shane Edmunds (GM Eastern Region) → Matthew Jinks (CEO).
+- [x] **Upvise decision: Cards supplements Upvise, does not replace it.** Upvise stays the system of record for employment data; EQ Cards' role is onboarding/qualifications, not the full employment lifecycle. (See `eq/pending.md` for the EQ-side scoping this implies.)
+- [ ] **Still open — Royce to confirm: does SKS Indigenous Technologies need its own isolation** (separate from the state/division access model), given it's a distinct MD-led entity that may carry its own compliance obligations (e.g. Indigenous procurement certification)? Flagged, not answered. _(added 2026-07-23)_
+- [ ] **Still open — who signs off on a rollout this size.** Royce: "no idea about sign-off yet, that will evolve over time." No action needed now, just not resolved. _(added 2026-07-23)_
+- [ ] **Real risk named, not resolved: the "prove in NSW" plan proves at ~300, but the very next expansion (VIC) is already ~700-1,000** — a materially bigger jump than what NSW will have proven. Worth deciding whether VIC gets its own smaller proof step before full rollout. _(added 2026-07-23)_
+- Confirmed live during this discovery: SKS's live EQ footprint today is genuinely tiny relative to the 2,000 target — ~55 staff on the legacy sks-labour app, only 5 registered users on the Shell/Field SKS tenant, and the `field_schedule`/`field_timesheets` tables (the ones that would carry a site workforce) are still empty.
+
+---
 
 ## SKS database — three tables had a policy bug that could let a signed-in user see or delete other people's roster/supervisor data (2026-07-22)
 *Started as a false alarm: a routine safety check flagged `field_team_supervisors` (added same day by the new "supervisor sees their own crew" feature) as wide open. It wasn't — that flag was itself a false positive, a known blind spot in the checking tool for a safe pattern already used elsewhere. But reading the real table underneath it closely turned up a genuine, separate problem: a leftover, looser rule sitting alongside the correct one, so the correct one didn't actually apply. Found on the brand-new table, then found the same bug on the two older tables the new one had been copied from.*
