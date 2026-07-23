@@ -1,14 +1,14 @@
 ---
 title: EQ Suite — Current State
 owner: Royce Milmlow
-last_updated: 2026-07-22
+last_updated: 2026-07-23
 scope: Live suite state — app lineup, DB counts, open PRs, architectural decisions. Auto-refreshed nightly by GitHub Action.
 read_priority: critical
 status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-07-22 (nightly cron)_
+_Last verified: 2026-07-23 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -40,7 +40,7 @@ _If this file is >48h old, the cron is broken._
 | Assets | 2,836 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
 | Users | 5 | service.tenant_members |
-| Maintenance checks | 25 | service.maintenance_checks |
+| Maintenance checks | 26 | service.maintenance_checks |
 | Defects | 0 | service.defects |
 
 **SKS tenant ID on ehow:** `7dee117c-98bd-4d39-af8c-2c81d02a1e85`
@@ -58,15 +58,16 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-07-22)
+## Open PRs (as of 2026-07-23)
 
 **eq-shell:**
+- #973 perf(quotes): bound the Ops pipeline fetch, add a real counts RPC
 - #971 fix(security): tenant-scope the react-query caches so a workspace switch can't show the previous tenant
 - #970 Security: the quote draft leaked customer PII to the next tenant/user on the same browser
 
 ---
 
-## System Health (as of 2026-07-22)
+## System Health (as of 2026-07-23)
 
 **CI on main:**
 
@@ -81,7 +82,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 194 (latest: 0190) applied
+**Migrations:** eq-service has 195 (latest: 0191) applied
 
 ---
 
