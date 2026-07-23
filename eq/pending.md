@@ -119,7 +119,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **Recurring-bill detection on Verify** — if a receipt matches the same vendor and a similar amount to a receipt already verified before, it's flagged as a likely recurring bill with a one-click "use last time's details" that carries over entity, category, business-use %, and the SKS fields (not just entity/category like the existing vendor auto-tagging).
 - [x] Also fixed a pre-existing (not new) `tsc` type error on the untyped `supplier_defaults` RPC call, hit while touching that file today.
 - Build clean, verified in a live preview (Inbox/Review/Exports/Verify all load, no console errors) — no exports existed yet in the dev session to click-test the new bulk-download UI itself, so that one's unexercised until Royce has 2+ real exports to select.
-- [ ] Email-in capture and the Phase 3 gate remain open — see the 2026-07-22 entry below, unchanged.
+- [ ] Phase 3 gate remains open — see the 2026-07-22 entry below. (Email-in capture is resolved — see 2026-07-23 entry: decided against for now, not a technical block.)
 
 ---
 
@@ -142,7 +142,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **Added tick-box approve / force-approve / delete on the receipt review list**, working on one or many receipts at once, instead of needing to open every single receipt individually.
 - [x] **Built email-in capture**: forward a receipt to a dedicated inbox address and it gets read and filed automatically, same as uploading it by hand. Code is built, tested, and deployed.
 - [x] **Built auto-tagging by vendor**: a receipt from a supplier billed before now arrives already assigned to the right entity/category (and job number for SKS) instead of sitting untagged — makes the new bulk-approve actually useful on a normal inbox, not just already-corrected receipts.
-- [ ] **Email-in capture still needs Royce to finish 2 things** in his own Resend and Supabase logins before it actually turns on (add a receiving domain, create a webhook, add 4 secret values) — code side is done and waiting. _(added 2026-07-22)_
+- [x] **Email-in capture: decided against, for now — not a technical block.** Walked through the actual Resend setup (a receiving subdomain was needed anyway, since the eq.solutions apex MX is already committed to Royce's real M365 inbox — repointing it would repeat the earlier login outage). Turned out Resend's Free plan only covers 1 domain, and that slot's already used by the sending domain, so a receiving subdomain needs Resend Pro at $20/mo. Royce's call: skip it rather than pay for it right now — Inbox's drag-drop/click/camera-capture already covers the core flow. The `receive-email` Edge Function stays deployed but dormant (no secrets set, so every call 500s with "Server misconfigured" — inert, not a risk). Revisit if email-in ends up genuinely missed. _(decided 2026-07-23)_
 - [ ] **Phase 3 gate still open** — clearing one real week of receipts end-to-end in under 10 minutes, to prove the whole thing actually works day-to-day. Only Royce can run this one. _(added 2026-07-22, carried over from earlier)_
 
 ---
