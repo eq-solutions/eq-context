@@ -1,7 +1,7 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-07-22
+last_updated: 2026-07-23
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
@@ -11,6 +11,9 @@ status: live
 
 ## 2026-07-23 (latest)
 - **PR #974 (MERGED via GitHub UI) — compliance pack export re-served the first pack instead of building a new one.** `handleCompliancePack` in `StaffPage.tsx` treated `compStatus === 'ready'` alone as "just re-download the cached file," with no check that the staff selection had changed since that pack was built — so exporting 1 person, then selecting 7 and exporting again, silently re-downloaded the 1-person file. The button's "Download ready ↓" label had the same bug, staying stuck regardless of later selection changes. Fixed with a new `compKey` (the selection that produced the current ready pack); both the re-download shortcut and the button's visual state now key off whether the *current* selection matches it. Build/lint/199-tests clean. Also live-confirmed (not just from docs) how a manager-uploaded licence PDF is stored: private `licence-photos` bucket, path `{orgId}/{userId}/{licenceId}/document.pdf`, RLS keyed on path segment 2 (`userId`) via `licence_photos_owner_*` policies — matches the correction already recorded in #939.
+
+## 2026-07-23 (newest)
+- **PR #975 (OPEN, not merged) — `list-members.ts` now backfills name/email from `app_data.staff`.** Server-to-server roster endpoint EQ Service reads only ever queried `shell_control.users` (jvkn) — never `app_data.staff` (ehow), where phone-only EQ Cards sign-ups already have a real name/email on file via `staff.user_id = users.id`. No FDW between the two planes (by design), so this is a second query merged in code, reusing the existing `getTenantDataClientById` cross-plane pattern from `staff-pending-connections.ts`. New pure `backfillFromStaff()` (never overwrites a value Shell already had; a staff-plane failure degrades gracefully via `captureServerError`) — 7 new tests, 206/206 total pass, build clean.
 
 ## 2026-07-23 (even later)
 - **PR #972 (MERGED squash `c8be61a`, Royce's "commit and merge" go) — fixed a stale cross-tenant JWT cache on workspace switch, root-caused from a Suppliers login/password display bug.** Reported symptom: Suppliers' login/password columns "showing then disappearing." Live-checked the read gate (`eq_list_suppliers`, migration 0195) first — correctly redacts server-side, fails closed, no live leak. Real cause: `createTenantDataClient()` (`src/lib/tenantDataClient.ts`) caches its minted JWT + plane URL in a module-level singleton with no invalidation; `TenantSwitcher.tsx` changes the active tenant via a client-side `navigate()` (no page reload), so switching workspaces left the *previous* tenant's data plane + role live for up to ~14 minutes — any EQ Ops call in that window (Suppliers, Labour hire rates, etc.) silently hit the wrong tenant. `clearTenantJwt()` existed but was never called anywhere. Fixed: the switcher clears the cache before navigating. Also gave Suppliers' 8 columns explicit widths (were squashed, `table-layout: auto` with no `width` set) and masked the Password field in the Add/Edit modal (was plaintext, no `autoComplete`, could trip the browser's own save-password prompt).

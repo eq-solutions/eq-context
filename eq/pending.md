@@ -14,6 +14,16 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## EQ Service + EQ Shell: found why some people on the Users page had no name or email — real fix opened for review (2026-07-23)
+*Royce pasted a user list and asked where it came from. Traced it through to a real, live-confirmed data gap between two systems, not bad data.*
+- [x] **Root cause found and fixed:** people who joined by scanning the EQ Cards phone sign-up code show up on the Users page with just a phone number — but their real name and email were already on file elsewhere (their staff record) the whole time. The page's data feed was only ever checking one of the two places. Now checks both. `eq-shell` [PR #975](https://github.com/eq-solutions/eq-shell/pull/975) — **open, not merged, not deployed yet.**
+- [ ] **Needs you:** confirm on the live Users page that the previously-blank rows now show real names, then merge PR #975. _(added 2026-07-23)_
+- [ ] **A wrong first theory got spun off as its own task before it was disproven** — an early chip pointed at the wrong screen entirely (a different, internal eq-shell user list), and that chip was already started as its own session before the live-database check ruled it out. That session was never tracked down to stop it — it may still be running against a bug that doesn't actually exist. Worth a look for a stray, pointless eq-shell PR later and closing it out if one shows up. _(added 2026-07-23)_
+- [ ] **Small cosmetic miss, not fixed:** on the Users page, the "subcontractor" role shows in lowercase while every other role is capitalised — the page's label list is just missing that one entry. _(added 2026-07-23)_
+- [ ] **A completely unrelated, real in-progress session got stopped by accident** while chasing the item above (mistaken identity, caught and corrected same session) — the EQ Ops quotes-screen cleanup (removing old Win/Lost buttons, tidying the status filter, sticky totals on the quote form). Nothing was lost — the changes are sitting safely un-saved in their own folder — but it needs manually reopening from the Archived sessions list to pick back up. _(added 2026-07-23)_
+
+---
+
 ## eq-solves-service: "stale page after deploy" crash now shows a friendly refresh instead of a raw error (2026-07-23)
 *Closes the fix spun off as `task_79c719cc` from the "OCR-upload fix coordination" session earlier today (see entry below) — the app was crashing with a raw, unexplained error any time someone had a page open across a new update going out, which was happening multiple times a day.*
 - [x] **Any tab left open across a deploy now recovers on its own instead of crashing.** When that happens, the page briefly says "a newer version of this page is available, refreshing…" and reloads itself automatically (with a manual "Refresh now" button too, in case the reload doesn't fire). Covers every page in the app, not just the maintenance-check screen the original report came from. `eq-solves-service` [PR #596](https://github.com/eq-solutions/eq-service/pull/596), merged, live.
