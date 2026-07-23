@@ -18,7 +18,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 *Direct follow-up to PR #980's CustomersPage/SiteModals fix — asked to apply the same fix everywhere else the same bug existed.*
 - [x] **Found the same bug still live in 8 more places** — selecting text near the edge of a popup (like copying an email or licence number) and releasing the mouse just outside it would close the popup mid-selection, across Staff, Access Control, the generic record browser, the number-reuse review screen, and the equipment/calibration module.
 - [x] **Applied the same fix everywhere**, keeping each popup's own "don't close while saving" behaviour intact. `eq-shell` [PR #982](https://github.com/eq-solutions/eq-shell/pull/982) — merged, live (core.eq.solutions).
-- [ ] **Not yet click-tested live** — build/typecheck/tests all passed clean, but nobody has opened the affected screens in a browser and actually tried the text-selection drag to confirm it no longer closes them. _(added 2026-07-23)_
+- [x] **Royce confirmed live** — clicked through the affected screens on core.eq.solutions and confirmed the fix holds. Closes out this item.
 
 ---
 
