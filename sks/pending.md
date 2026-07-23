@@ -9,6 +9,12 @@ status: live
 
 # SKS Pending
 
+## SKS Job Creation spreadsheet — the 3 fields finance/admin always had to fill in by hand can now be pre-set on the customer/job record (2026-07-23)
+*Royce sent a real completed Job Creation form (SKS-17359, Equinix) and asked whether the payables invoice email, Market Vertical, and End Client could be nominated somewhere instead of guessed fresh every time.*
+- [x] **All 3 are now settable in the app** — Market Vertical and a default payables invoice email live on the customer record (edit any customer in Customers → the dropdown matches the spreadsheet's own 19-industry list exactly); End Client is entered per job when creating/editing a quote in EQ Ops. The downloaded Job Creation spreadsheet now comes out with all 3 already filled in, instead of 2 blank dropdowns and a blank box.
+- [x] **Customer search in the Customers screen now also finds sites, contacts, and contract details** — previously only matched the company name.
+- [ ] **Needs a real click-through before trusting it fully** — set a Market Vertical + invoice email on a real customer, then pull a fresh Job Creation export on one of their jobs and check the 3 cells actually come out right. _(added 2026-07-23)_
+
 ## SKS national scale discovery — "what breaks EQ at ~2,000 employees" (2026-07-23)
 *Royce: "scalable / bigger picture discussion... national business that's approaching 2000 employees." Built a discovery questionnaire (24 questions across 8 categories) rather than guessing at a plan; Royce filled it out with real numbers, then supplied the actual SKS org chart (`MASTER Organisation Chart 01.07.2026.pdf`, 136 pages) to ground the architecture question.*
 - [x] **Real scale trajectory confirmed** — 2,000 is a growth target, not current headcount. NSW: ~100 today → 300 in 18 months. VIC: ~700 today → 1,000+ in 12 months (VIC is already bigger than NSW's whole 18-month target). National beyond that grows slower. EQ Field would carry ~80% of the load; Field should reach almost everyone except execs/admin.
