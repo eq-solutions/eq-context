@@ -12,6 +12,17 @@ status: live
 EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 (entities, tax, infra) in `ops/pending.md`.
 
+---
+
+## eq-context: Reflection Protocol built + EQ Field commits mechanically gated (2026-07-24)
+*Royce dictated a mandatory pre-finalization self-critique (4 checks: substrate conflict, vagueness, domain pushback, EQ Field scope) for EQ Field build decisions, SKS ops/commissioning docs, and any output read outside the session. Persisted as `rules/reflection-protocol.md` (PR [#118](https://github.com/eq-solutions/eq-context/pull/118)). Steelmanned before building: a first design (block every `Edit` under `/eq-field/`) was rejected as the wrong moment — it fires on trivial edits and can't see the chat discussion where the actual decision gets made. Redesigned to gate at `git commit` instead, paired with a durable, PR-visible log.*
+- [x] **EQ Field commits are now mechanically gated.** New `~/.claude/hooks/guard.js` rule (`reflection-gate`) blocks `git commit` in `eq-field` unless `docs/reflection-log.md` is staged in the same commit. New `/reflect` command runs the four checks and stages that entry. Skippable via `EQ_SKIP_REFLECT=1`. _(done 2026-07-24)_
+- [x] **SKS ops/commissioning docs and chat-only outputs stay self-reported — by mechanical limit, not oversight.** A `PreToolUse` hook only sees tool calls, never chat prose, and most SKS deliverables have no reliable file-path signature to key on. Documented explicitly in `rules/reflection-protocol.md` so this isn't mistaken for full coverage. _(done 2026-07-24)_
+- [x] **The new `reflection-gate` rule has been live-tested and confirmed working** — 4 scenarios verified (blocks without a paired log entry, allows with one, ignores non-eq-field repos, respects `EQ_SKIP_REFLECT=1`). Two real bugs hit and fixed along the way applying the guard.js diff by hand (a PowerShell BOM injection, then a codepage mis-decode) — both root-caused and corrected, final state byte-verified. _(done 2026-07-24)_
+- [ ] **Follow-up: `guard.js` itself is unversioned and untested.** It lives at `~/.claude/hooks/guard.js`, outside any git repo, with zero test coverage (beyond the ad hoc verification above) — unlike `hooks/*.py` in this repo, which are governed/versioned/CI-checked (`hooks/README.md`). Its own header cites a spec file (`system/operating-model-roadmap.md`) that doesn't exist. Worth eventually mirroring guard.js into this repo (versioned source of truth, deployed copy on the Beelink) so it gets the same test-before-trust discipline as the Python hooks. Not fixed this session — separate, larger scope. _(added 2026-07-24)_
+
+---
+
 Fully-closed write-ups get moved to `eq/pending-archive.md` to keep this
 file scannable (trimmed 2026-07-24, 568KB → 298KB) — check there for
 history, not here. When closing a section here, either archive it wholesale
