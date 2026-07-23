@@ -61,7 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-23)
 
 **eq-cards:**
-- #174 fix(ocr-licence): recognise eq-shell's service-role server-to-server caller
+- #175 feat(admin-attach-licence-photo): support attaching a PDF, not just a photo
 
 **eq-shell:**
 - #973 perf(quotes): bound the Ops pipeline fetch, add a real counts RPC
