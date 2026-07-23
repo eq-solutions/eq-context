@@ -1,13 +1,16 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-07-23
+last_updated: 2026-07-24
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # eq-shell changelog
+
+## 2026-07-24 (latest — PR #989, quote-detail panel simplified + Coupa PO import rebuilt)
+- **PR #989 (MERGED squash `037fde81`) — EQ Ops quote-detail panel decluttered + Coupa PO import rebuilt against the real export shape.** Panel: removed Win/Lose, expanded the dots menu, collapsed the 16-status taxonomy to 5 UI-facing stages, sticky create-form totals, two-row toolbar, quick-fill/linked-contact consolidated, follow-up date field removed, Advance Status card removed (its `syncJobToCanonical` side effect folded into `savePipelineStatus`, the sole remaining status-change path), Sent/Expires stage-gated to Open-only, Issues collapses when empty, Notes+Change History merged into one Activity feed, top-bar gains PO/Job/files-attached/last-touched chips (`AttachmentList` gained an `onCountChange` prop, effect-set not render-time). Coupa: new `parse-coupa-po.ts` function reads the real `.xlsx` server-side (exceljs, matches existing server-only convention) — the real export has no site-code/quote-number column at all, both are extracted from free-text via regex. Migration `0201_coupa_po_match_by_quote_number.sql` (authored as `0198`, renamed mid-session after a numbering collision with unrelated work merged to `main` — see session log 2026-07-24 for the git-recovery detail) — `eq_match_coupa_po` now prefers an exact quote-number match over the old site-code-only heuristic, plus a value cross-check (PO Total × 1.1 vs quote total, verified 1.1× exactly across 8 live samples) that downgrades a mismatch to needs-review instead of writing. Client: "Import All" only auto-writes exact matches; everything uncertain waits for an explicit per-row confirm. 6 new tests. Live, post-merge smoke checks green. **Outstanding:** migration ledger on both tenant planes still references the pre-rename `0198` filename — needs a `reconcile_ledger=true` dispatch (Royce). Full build/decision detail in `sessions/2026-07-24.md`.
 
 ## 2026-07-23 (latest — PR #988, migration renumber + live dispatch)
 - **PR #988 (MERGED squash `a0445112`) — fixed a same-day migration-number collision, then shipped PR #973's fix live.** Two concurrent sessions had both numbered a tenant migration `0197`; confirmed via Supabase MCP on both ehow and zaap that this was cosmetic only (`migrate-tenants.mjs` keys its ledger by full filename, not the numeric prefix — no risk of double-apply or a skipped migration). Renamed the still-unapplied file to `0200_quote_list_pagination_counts.sql`. After merge, dispatched `tenant-migrate.yml` (Royce's explicit go) — applied clean on both tenant planes, 0 errors, live-verified in `app_data._eq_migrations`. PR #973's `eq_list_quotes` pagination + `eq_quote_pipeline_counts` RPC are now live, not just merged — also confirms the GitHub Actions billing failure that blocked #973's own dispatch earlier today has resolved.

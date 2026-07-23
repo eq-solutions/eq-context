@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-07-23
+last_updated: 2026-07-24
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -11,6 +11,22 @@ status: live
 
 EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-shell: EQ Ops quote-detail panel simplified for real-world use, then the Coupa PO import tool rebuilt from scratch against the real export (2026-07-23 → 2026-07-24)
+*Reopened the accidentally-stopped session flagged above. What started as "tidy up the quote panel" (remove Win/Lose, simplify statuses, fix a sticky-totals regression) grew across the day into a full simplification of the panel plus a ground-up rebuild of the Coupa purchase-order matching tool, once it turned out that feature had never actually been tested against a real Coupa export.*
+- [x] **Quote-detail panel decluttered to "what matters once a quote is moving forward."** Win/Lose buttons removed (that path still exists via the status dropdown). Job Creation and Download Quote are now always-visible instead of buried in a "…" menu. The old sprawl of 16 raw statuses is grouped into 5 plain stages everywhere a customer or manager looks (Open → Job Created → In Progress → Complete → Invoiced) — the full 16 stay available where estimators actually need the detail (bulk status-setting). Customer/Site moved into a small reminder line under the quote number instead of taking up its own block. Scope of Works trims to one line with the full text on hover. The "quick-fill vs linked contact" confusion — two ways to do the same thing — was collapsed into one: link a contact, the recipient fields fill themselves.
+- [x] **The old "Advance Status" card removed** (status changes now happen from the top bar) — and a real bug caught in the process: that card was quietly doing an extra job (syncing a won quote to its job record) that nothing else did. Moved that sync into the status-change path itself so removing the card didn't silently break job creation.
+- [x] **Sent/Expires dates now only show while a quote is still awaiting a decision** — once it's moved past that stage they're irrelevant, so they disappear instead of cluttering an otherwise-done quote.
+- [x] **The Issues tracker (a formal, structured log — different from freeform Notes) now stays out of the way until something's actually logged against it**, instead of always taking up space with "no issues" the vast majority of the time.
+- [x] **Notes and Change History — two separate lists that were really the same thing (what happened, who did it, when) — merged into one timeline.**
+- [x] **The empty space at the top of the panel now earns its keep:** PO number, job number, a file-count badge, and "last touched by [initials], [when]" all sit right under the quote number — the exact things worth knowing before diving into the full detail.
+- [x] **The Coupa purchase-order import tool was rebuilt from the ground up** after checking it against a real Coupa export file and finding it had been built against a guessed spreadsheet shape that Coupa doesn't actually produce — it would have silently failed to import a single real PO. The real export has no "site code" or "quote number" column at all; both live buried inside a free-text description field in wildly inconsistent formats. New tool reads the real file directly, pulls the quote number and site out of that text automatically, and — a second real risk caught along the way — cross-checks the dollar value on the PO against the quote's own total before trusting a match, since Coupa sometimes references the wrong quote number in that free text. Anything uncertain (no clean quote-number match, or the dollar values don't line up) is held for a one-click manual confirm instead of silently importing against the wrong quote.
+- [x] **`eq-shell` [PR #989](https://github.com/eq-solutions/eq-shell/pull/989)** — merged, live (core.eq.solutions), confirmed responding correctly post-deploy.
+- [x] **Hit and recovered from two git housekeeping traps along the way, no work lost either time:** a pull request had already been merged and closed without it being obvious, so several follow-up commits kept landing on a branch nobody was watching anymore — caught and re-opened as a fresh PR. Separately, a routine "compare before/after" check accidentally surfaced a completely unrelated stranger's saved-but-not-committed work from months back — caught immediately, restored their work untouched, nothing of theirs was lost or overwritten.
+- [ ] **The purchase-order matching database update applied live under one filename, then had to be renamed to avoid clashing with someone else's unrelated update — the tracking record on both company databases still shows the old name.** The fix itself is live and working correctly either way; this is a pure bookkeeping mismatch. Needs one more approval click from Royce (`Tenant migrations (One Pipe)` workflow, "Reconcile tenant ledgers" option) to tidy up the record. _(added 2026-07-24)_
+- [ ] **Not yet click-tested live by Royce** — everything above was verified by building it, running the automated tests, and checking the deploy went out clean, but nobody has actually clicked through the new panel layout or run a real Coupa file through the new importer on the live site yet. _(added 2026-07-24)_
 
 ---
 
@@ -82,7 +98,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **CI caught a real mistake in the fix before it merged:** the new test file was placed directly in the functions folder, which Netlify would have treated as a broken function and failed every future deploy — the same trap this repo already hit and fixed once before. Moved to the right spot, confirmed green, then merged. Live now.
 - [ ] **A wrong first theory got spun off as its own task before it was disproven** — an early chip pointed at the wrong screen entirely (a different, internal eq-shell user list), and that chip was already started as its own session before the live-database check ruled it out. That session was never tracked down to stop it — it may still be running against a bug that doesn't actually exist. Worth a look for a stray, pointless eq-shell PR later and closing it out if one shows up. _(added 2026-07-23)_
 - [x] **Small cosmetic miss, fixed:** on the Users page, the "subcontractor" role showed in lowercase while every other role was capitalised — the page's label list was just missing that one entry. `eq-solves-service` [PR #598](https://github.com/eq-solutions/eq-service/pull/598) — **merged, live.**
-- [ ] **A completely unrelated, real in-progress session got stopped by accident** while chasing the item above (mistaken identity, caught and corrected same session) — the EQ Ops quotes-screen cleanup (removing old Win/Lost buttons, tidying the status filter, sticky totals on the quote form). Nothing was lost — the changes are sitting safely un-saved in their own folder — but it needs manually reopening from the Archived sessions list to pick back up. _(added 2026-07-23)_
+- [x] **A completely unrelated, real in-progress session got stopped by accident** while chasing the item above (mistaken identity, caught and corrected same session) — the EQ Ops quotes-screen cleanup (removing old Win/Lost buttons, tidying the status filter, sticky totals on the quote form). Nothing was lost. Reopened and carried all the way through — see the full write-up below, this grew into the biggest single-session build of the day. _(added 2026-07-23, closed 2026-07-24)_
 
 ---
 
