@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-23 01:26 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-23 01:46 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-23 01:12 UTC → 2026-07-23 01:26 UTC)
+## Since last refresh (2026-07-23 01:26 UTC → 2026-07-23 01:46 UTC)
 
-- Merged: eq-shell [#952](https://github.com/eq-solutions/eq-shell/pull/952) fix(ci): CHECK 2 anon-grant invariant excludes views — fixes
-- Merged: eq-shell [#949](https://github.com/eq-solutions/eq-shell/pull/949) Detect dangling cross-plane workers.staff_id pointers (22 of
-- Merged: eq-shell [#945](https://github.com/eq-solutions/eq-shell/pull/945) fix(staff): admin licence PDF upload failed on every PDF in 
-- Merged: eq-shell [#944](https://github.com/eq-solutions/eq-shell/pull/944) Account deletion left the Shell identity row behind (6 orpha
-- Merged: eq-shell [#941](https://github.com/eq-solutions/eq-shell/pull/941) EQ Ops Setup: add Save all for the preset line-item library
-- Merged: eq-shell [#940](https://github.com/eq-solutions/eq-shell/pull/940) chore: retire the certificates-migrate endpoint (Phase C cle
-- Merged: eq-shell [#939](https://github.com/eq-solutions/eq-shell/pull/939) docs: correct licence-photos RLS mechanism (segment 2, not s
-- Merged: eq-shell [#933](https://github.com/eq-solutions/eq-shell/pull/933) Security: any org invitee could activate as admin (control p
+- Merged: eq-shell [#951](https://github.com/eq-solutions/eq-shell/pull/951) fix(cards): Cards-approved staff got a Shell membership born
+- Merged: eq-shell [#950](https://github.com/eq-solutions/eq-shell/pull/950) fix(ci): allowlist app_data.field_team_supervisors (safe inv
+- Merged: eq-shell [#948](https://github.com/eq-solutions/eq-shell/pull/948) Retire backfill-auth-users.ts — dead code, only live target 
+- Merged: eq-shell [#947](https://github.com/eq-solutions/eq-shell/pull/947) fix(ui): attachment spinners referenced an undefined spin ke
+- Merged: eq-shell [#943](https://github.com/eq-solutions/eq-shell/pull/943) chore: remove dead mint-cards-iframe-token.ts
+- Merged: eq-shell [#942](https://github.com/eq-solutions/eq-shell/pull/942) diag(ci): surface real HTTP status/body from notify-substrat
+- Merged: eq-shell [#936](https://github.com/eq-solutions/eq-shell/pull/936) Security: app_data.staff.user_id was directly client-writabl
+- Merged: eq-shell [#935](https://github.com/eq-solutions/eq-shell/pull/935) P0: any authenticated user could forge an invite and become 
 
 ## ⚠ Needs you (6)
 
@@ -27,7 +27,7 @@ _2026-07-23 01:26 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🔴 **Open security finding** — SEC-9 (P0 — confirmed exposure, same window as SEC-3) — A different service_role key (`jvkn`/eq-canonical) was pasted directly into a ch · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-10 (P0 — confirmed exposure) — `ANTHROPIC_API_KEY` + `RESEND_API_KEY` stored as plaintext Netlify env vars (`is · [security-register.md](ops/security-register.md)
 - 🔴 **Guard bypass? rung 4** — F1: Substrate read path served 8-12 day stale content, 200 OK, no error · possibly recurred in [2026-07-21.md](sessions/2026-07-21.md) · [failures.md](system/failures.md)
-- 🟠 **Sentry new error** — `eq-solves-service` [UnrecognizedActionError: Server Action "40dbe95a25df946d13db](https://eq-solutions.sentry.io/issues/122209933/)
+- 🟠 **Sentry new error** — `eq-solves-service` [UnrecognizedActionError: Server Action "608d88ecb6eb85fc7aaa](https://eq-solutions.sentry.io/issues/122209933/)
 - 🟠 **Sentry new error** — `eq-shell` [Error: Workers never invited to join, past grace period: 45](https://eq-solutions.sentry.io/issues/135740258/)
 
 ## Pulse
@@ -37,7 +37,7 @@ _2026-07-23 01:26 UTC · what needs your attention. Full snapshot: [suite-state.
 | eq-shell | ? unknown | ? | 3 | 0d |
 | eq-solves-service | ? unknown | ? | 0 | — |
 | eq-field | ? unknown | ? | 0 | — |
-| eq-cards | ? unknown | ? | 0 | — |
+| eq-cards | ? unknown | ? | 1 | 0d |
 | eq-solves-intake | ✓ success | 1d ago | 0 | — |
 
 ## Live errors (Sentry)
@@ -45,7 +45,7 @@ _2026-07-23 01:26 UTC · what needs your attention. Full snapshot: [suite-state.
 | Project | Error | Events | Last seen |
 |---------|-------|--------|-----------|
 | eq-shell | [EQ Field handoff auto-recovery (rejected)](https://eq-solutions.sentry.io/issues/133584980/) | 6 | 2026-07-19 |
-| eq-solves-service | [UnrecognizedActionError: Server Action "40dbe95a25df946d13dbc7a303f98a6b660211ea](https://eq-solutions.sentry.io/issues/122209933/) | 4 | 2026-07-23 |
+| eq-solves-service | [UnrecognizedActionError: Server Action "608d88ecb6eb85fc7aaa4724a378a88187679ffd](https://eq-solutions.sentry.io/issues/122209933/) | 5 | 2026-07-23 |
 | eq-shell | [Error: Workers never invited to join, past grace period: 45](https://eq-solutions.sentry.io/issues/135740258/) | 3 | 2026-07-22 |
 | eq-shell | [Error: staff-licence-ocr: ocr-licence returned 401](https://eq-solutions.sentry.io/issues/135986280/) | 1 | 2026-07-22 |
 _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunresolved)_
@@ -55,6 +55,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | Merged | Repo | PR |
 |--------|------|----|
 | 2026-07-23 | eq-shell | [#974](https://github.com/eq-solutions/eq-shell/pull/974) fix(staff): compliance pack export stuck re-downloading the first |
+| 2026-07-23 | eq-solves-service | [#592](https://github.com/eq-solutions/eq-service/pull/592) fix(maintenance,reports): surface site on check detail, editable  |
 | 2026-07-23 | eq-solves-service | [#591](https://github.com/eq-solutions/eq-service/pull/591) fix(testing): ACB/NSX checks use canonical frequency slugs, not l |
 | 2026-07-23 | eq-solves-service | [#590](https://github.com/eq-solutions/eq-service/pull/590) fix(assets,maintenance): surface Asset # on the record + fix ID-b |
 | 2026-07-22 | eq-shell | [#972](https://github.com/eq-solutions/eq-shell/pull/972) fix(ops): Suppliers column widths + stale cross-tenant JWT cache  |
@@ -68,7 +69,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-22 | eq-shell | [#956](https://github.com/eq-solutions/eq-shell/pull/956) fix(list-members): include phone, mark email/name nullable |
 | 2026-07-22 | eq-shell | [#954](https://github.com/eq-solutions/eq-shell/pull/954) docs(scripts): mark the staff-pointer repair as APPLIED |
 | 2026-07-22 | eq-shell | [#955](https://github.com/eq-solutions/eq-shell/pull/955) fix(field-iframe): retry the handoff timeout path instead of dead |
-| 2026-07-22 | eq-shell | [#953](https://github.com/eq-solutions/eq-shell/pull/953) chore: fold orphan iframe-mint Sentry alert into setup-sentry-ale |
 _Showing 15 of 112 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -105,7 +105,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) |
 |------|------:|-----:|------------------:|
-| [EQ](eq/pending.md) | 3328 | 439 | 586 |
+| [EQ](eq/pending.md) | 3337 | 439 | 589 |
 | [SKS](sks/pending.md) | 495 | 72 | 79 |
 | [SKS active](sks/active.md) | 108 | 0 | 0 |
 | [OPS](ops/pending.md) | 252 | 30 | 6 |
@@ -126,4 +126,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-23 01:26 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-23 01:46 UTC._
