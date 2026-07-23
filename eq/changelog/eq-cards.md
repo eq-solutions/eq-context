@@ -9,6 +9,9 @@ status: live
 
 # EQ Cards — Changelog
 
+## 2026-07-23 (later)
+- **`admin-attach-licence-photo` now accepts a PDF, not just an image (v1→v2, PR #175, merged + deployed).** This operator tool attaches evidence to an *existing* licence row (no duplicate created) — built 2026-07-10 but only ever handled `photo_front_url`/`photo_back_url`. `content_type === 'application/pdf'` now writes `document_url`/`document_type` on the same row instead, matching the shape `staff-licence-backfill.ts` already uses. Also added a 10MB cap the endpoint never had. First real use: attaching Karar Mohammed's Silica Awareness certificate to his already-approved-but-evidenceless licence record (done via direct `supabase storage cp` + a plain row update, not this tool's own secret-gated HTTP path).
+
 ## 2026-07-23
 - **`ocr-licence` edge function fixed and deployed live (v11→v12) — eq-shell's admin licence-backfill auto-read had 401'd on every single call since it shipped.** Root cause: `staff-licence-ocr.ts` (eq-shell) authenticates to this function with `SUPABASE_SERVICE_ROLE_KEY` as the bearer, but the function's manual auth check calls `/auth/v1/user`, which only recognises a real signed-in user's session JWT — a service-role key always failed it. Fix (branch `claude/ocr-licence-service-role-auth`, `aa89194`, merged by Royce): a caller presenting the project's own service-role key as its bearer now skips both the `/auth/v1/user` check and the per-user `check_and_record_ocr_usage` rate limit (which would otherwise 429 every server call anyway, since it keys off `auth.uid()`, null for a service-role token). Cards' own worker-facing calls (which forward a real user session JWT) are unaffected. Closes Sentry `EQ-SHELL-Y`.
 
