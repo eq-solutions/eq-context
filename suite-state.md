@@ -60,8 +60,7 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-24)
 
-**eq-shell:**
-- #996 fix+feat(quotes): Coupa PO import — fix the broken write path, replace bulk auto-import with a per-row review table
+_No open PRs_
 
 ---
 
