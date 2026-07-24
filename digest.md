@@ -1,25 +1,25 @@
 ---
 title: EQ Suite — Health Digest
 owner: Royce Milmlow
-last_updated: 2026-07-23
+last_updated: 2026-07-24
 scope: Push-style 'what needs your attention' feed across the EQ suite. Regenerated on merge (repository_dispatch: suite-state-changed) and nightly. Full snapshot in suite-state.md.
 read_priority: high
 status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-23 19:36 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-24 00:15 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-23 19:34 UTC → 2026-07-23 19:36 UTC)
+## Since last refresh (2026-07-23 19:36 UTC → 2026-07-24 00:15 UTC)
 
-- Merged: eq-shell [#995](https://github.com/eq-solutions/eq-shell/pull/995) docs(ledger): record reconcile_worker_sync migration as appl
-- Merged: eq-shell [#982](https://github.com/eq-solutions/eq-shell/pull/982) fix(modals): apply useOverlayClickOutside across remaining b
-- Merged: eq-shell [#980](https://github.com/eq-solutions/eq-shell/pull/980) fix(sites): address autocomplete hid saved addresses + doubl
-- Merged: eq-shell [#977](https://github.com/eq-solutions/eq-shell/pull/977) feat(customers,ops): market vertical, invoice email, end cli
-- Merged: eq-shell [#975](https://github.com/eq-solutions/eq-shell/pull/975) fix(identity): list-members backfills name/email from app_da
-- Merged: eq-shell [#972](https://github.com/eq-solutions/eq-shell/pull/972) fix(ops): Suppliers column widths + stale cross-tenant JWT c
-- Merged: eq-shell [#969](https://github.com/eq-solutions/eq-shell/pull/969) fix(quotes): job-sync calls to canonical-api always 401'd fr
-- Merged: eq-shell [#960](https://github.com/eq-solutions/eq-shell/pull/960) Security: gate Ops-exclusive backend functions on the ops en
+- Merged: eq-shell [#997](https://github.com/eq-solutions/eq-shell/pull/997) feat(quotes): suggest the customer's last End Client on new 
+- Merged: eq-shell [#983](https://github.com/eq-solutions/eq-shell/pull/983) feat(ops): wire Client ID + Market Segment into Job Creation
+- Merged: eq-shell [#979](https://github.com/eq-solutions/eq-shell/pull/979) fix(quotes): simplify quote-detail panel to high-value info
+- Merged: eq-shell [#978](https://github.com/eq-solutions/eq-shell/pull/978) fix(quotes): follow-up removal, contact consolidation, two-r
+- Merged: eq-shell [#976](https://github.com/eq-solutions/eq-shell/pull/976) fix(quotes): simplify EQ Ops quote panel actions + status fi
+- Merged: eq-shell [#974](https://github.com/eq-solutions/eq-shell/pull/974) fix(staff): compliance pack export stuck re-downloading the 
+- Merged: eq-shell [#968](https://github.com/eq-solutions/eq-shell/pull/968) fix(staff): resync from Cards can no longer skip already-syn
+- Merged: eq-shell [#967](https://github.com/eq-solutions/eq-shell/pull/967) feat(identity-health): detect duplicate Shell accounts acros
 
 ## ⚠ Needs you (5)
 
@@ -33,7 +33,7 @@ _2026-07-23 19:36 UTC · what needs your attention. Full snapshot: [suite-state.
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 0 | — |
+| eq-shell | ? unknown | ? | 1 | 0d |
 | eq-solves-service | ? unknown | ? | 0 | — |
 | eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ? unknown | ? | 0 | — |
@@ -47,7 +47,7 @@ _2026-07-23 19:36 UTC · what needs your attention. Full snapshot: [suite-state.
 | eq-solves-service | [UnrecognizedActionError: Server Action "4073d2dc7728208efb4febe859b7cd09e6dabc19](https://eq-solutions.sentry.io/issues/122209933/) | 9 | 2026-07-23 |
 | eq-shell | [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/) | 6 | 2026-07-23 |
 | eq-shell | [EQ Field handoff auto-recovery (rejected)](https://eq-solutions.sentry.io/issues/133584980/) | 6 | 2026-07-19 |
-| eq-shell | [Error: Workers never invited to join, past grace period: 45](https://eq-solutions.sentry.io/issues/135740258/) | 3 | 2026-07-22 |
+| eq-shell | [Error: Workers never invited to join, past grace period: 45](https://eq-solutions.sentry.io/issues/135740258/) | 4 | 2026-07-23 |
 | eq-shell | [Error: staff-licence-ocr: ocr-licence returned 401](https://eq-solutions.sentry.io/issues/135986280/) | 1 | 2026-07-22 |
 _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunresolved)_
 
@@ -55,6 +55,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-24 | eq-shell | [#997](https://github.com/eq-solutions/eq-shell/pull/997) feat(quotes): suggest the customer's last End Client on new quote |
 | 2026-07-23 | eq-shell | [#995](https://github.com/eq-solutions/eq-shell/pull/995) docs(ledger): record reconcile_worker_sync migration as applied |
 | 2026-07-23 | eq-shell | [#994](https://github.com/eq-solutions/eq-shell/pull/994) chore(migrations): codify eq_reconcile_worker_sync() + support ta |
 | 2026-07-23 | eq-shell | [#993](https://github.com/eq-solutions/eq-shell/pull/993) fix(workers-canonical-sync): stop nightly reconciler from un-arch |
@@ -69,11 +70,11 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-23 | eq-shell | [#970](https://github.com/eq-solutions/eq-shell/pull/970) Security: the quote draft leaked customer PII to the next tenant/ |
 | 2026-07-23 | eq-shell | [#986](https://github.com/eq-solutions/eq-shell/pull/986) feat(customers): show what matched a search result |
 | 2026-07-23 | eq-shell | [#985](https://github.com/eq-solutions/eq-shell/pull/985) docs(ci): stop claiming tenant-migrate.yml has an approval gate |
-| 2026-07-23 | eq-shell | [#984](https://github.com/eq-solutions/eq-shell/pull/984) fix(customers): backfill market_vertical from customer_group, ded |
 _Showing 15 of 109 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **What's the actual remaining pain point for direct employees, now that the Cards→Field pipe is confirmed live end-to-end?** Asked Royce directly — is it that head office doesn't trust/re-checks Field data before their manual Upvise upload, or a different gap not yet found. Not answered yet this session. _(added 2026-07-24)_
 - **Follow-up: `guard.js` itself is unversioned and untested.** It lives at `~/.claude/hooks/guard.js`, outside any git repo, with zero test coverage (beyond the ad hoc verification above) — unlike `hooks/*.py` in this repo, which are governed/versioned/CI-checked (`hooks/README.md`). Its own header cites a spec file (`system/operating-model-roadmap.md`) that doesn't exist. Worth eventually mirroring guard.js into this repo (versioned source of truth, deployed copy on the Beelink) so it gets the same test-before-trust discipline as the Python hooks. Not fixed this session — separate, larger scope. _(added 2026-07-24)_
 - **Not yet confirmed by Royce that the 5 originally-reported people stay archived overnight.** Everything above is verified via the live function version + the fix's own logic, not a "come back tomorrow and check" from Royce himself yet. _(added 2026-07-24)_
 - **`eq_reconcile_worker_sync()` (the nightly dispatcher itself, jvkn `pg_cron` job id 2) still isn't tracked in any repo migration** — a governance gap independent of the bug above, not touched by this fix. Not urgent now that the harmful write is gone, but worth bringing under the normal migration pipeline at some point. _(added 2026-07-24)_
@@ -83,8 +84,7 @@ _Showing 15 of 109 · full record in [sessions/](sessions/)_
 - **Royce hasn't yet downloaded a fresh Run-Sheet to eyeball the fixed logo himself** — verified by generating and inspecting a sample file directly against the real SKS logo, not by his own click-through. _(added 2026-07-23)_
 - **Not yet click-tested live in the browser** — all 5 Job Creation fields (B17/B27/B28/B29/B30) are wired and deployed, but nobody has actually set them on a real customer/job and pulled a fresh export to confirm every cell lands right. _(added 2026-07-23)_
 - **Not yet click-tested live** — build-verified only; nobody has actually searched for a site/contact/contract on the real Customers page and confirmed the right label shows. _(added 2026-07-23)_
-- **Identity model needs a second dimension: division, not just tenant/role.** The SKS org chart shows state alone doesn't match how the business actually reports — VIC's headcount splits across national functional divisions (Major Projects, Data Centre Solutions, AV, HV) that cut across every state. Recommended direction (not yet built): keep the single-tenant model (don't fork Supabase projects per state — see `system/architecture.md` Control Layer section for why physical separation is reserved for separate *customers*, not sub-units of one), but extend the JWT claim set to carry `state`/`region` **and** `division`, with a layered exec view (State GM → Regional GM → Divisional GM → Group exec) rather than the current flat `is_platform_admin` bypass. _(added 2026-07-23)_
-_…and 436 more · [eq/pending.md](eq/pending.md)_
+_…and 437 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -106,7 +106,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) |
 |------|------:|-----:|------------------:|
-| [EQ](eq/pending.md) | 2639 | 452 | 4 |
+| [EQ](eq/pending.md) | 2658 | 453 | 8 |
 | [SKS](sks/pending.md) | 514 | 76 | 85 |
 | [SKS active](sks/active.md) | 108 | 0 | 0 |
 | [OPS](ops/pending.md) | 252 | 30 | 6 |
@@ -127,4 +127,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-23 19:36 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-24 00:15 UTC._
