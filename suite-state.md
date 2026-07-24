@@ -60,7 +60,8 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-24)
 
-_No open PRs_
+**eq-shell:**
+- #1000 chore(migrations): renumber 0202/0203 Coupa PO collisions -> 0205/0206
 
 ---
 
