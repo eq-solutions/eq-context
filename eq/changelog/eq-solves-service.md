@@ -1,5 +1,8 @@
 # eq-solves-service changelog
 
+## 2026-07-24
+- **PR #601, #602 MERGED — Excel-style checklist filters on the maintenance-check Assets table.** Location, Work Order #, and Maintenance Plan get a header filter icon (popover: search, Select all/Reset, checkbox list of unique values), same interaction as the new multiselect filter shipped in the shared `@eq-solutions/ui` Table component. Built locally rather than migrating this table onto the shared component — it's a bespoke Tailwind build with row selection, bulk actions, CSV export, and inline editing that would all need rebuilding through `Table`'s props. PR #602 added cascading (picking a Location now narrows what Work Order # and Maintenance Plan offer, matching Excel AutoFilter — Royce asked after confirming the base filter worked). Both deployed live to service.eq.solutions, **Royce confirmed working**.
+
 ## 2026-07-23
 - **PR #581 — phone-only Shell accounts treated as first-class, not a crash.** A technician with no name/email (mobile phone-only sign-up) crashed the Maintenance page sort (`null.localeCompare`). Fixed with a shared `displayNameFrom(name, email, phone)` helper across Maintenance, Admin Users, Defects, and Audit log — falls back to phone number instead of blank/crashing. `CanonicalMember`/`Asset` types widened to match the real nullable shape.
 - **Admin Users duplicate-account cleanup.** Brian Griffin-Colls had two active Shell accounts for the same tenant (phone-only + email-based). Verified zero real references to the stale one across both data planes, then merged. Swept all tenants for the same pattern — no other instances found.
