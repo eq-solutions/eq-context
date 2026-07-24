@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-24 01:24 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-24 01:34 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-24 00:52 UTC → 2026-07-24 01:24 UTC)
+## Since last refresh (2026-07-24 01:24 UTC → 2026-07-24 01:34 UTC)
 
-- Merged: eq-shell [#1001](https://github.com/eq-solutions/eq-shell/pull/1001) feat(ops): Excel-style multiselect filters + fix labour-hire
-- Merged: eq-shell [#985](https://github.com/eq-solutions/eq-shell/pull/985) docs(ci): stop claiming tenant-migrate.yml has an approval g
-- Merged: eq-shell [#983](https://github.com/eq-solutions/eq-shell/pull/983) feat(ops): wire Client ID + Market Segment into Job Creation
-- Merged: eq-shell [#979](https://github.com/eq-solutions/eq-shell/pull/979) fix(quotes): simplify quote-detail panel to high-value info
-- Merged: eq-shell [#978](https://github.com/eq-solutions/eq-shell/pull/978) fix(quotes): follow-up removal, contact consolidation, two-r
-- Merged: eq-shell [#976](https://github.com/eq-solutions/eq-shell/pull/976) fix(quotes): simplify EQ Ops quote panel actions + status fi
-- Merged: eq-shell [#974](https://github.com/eq-solutions/eq-shell/pull/974) fix(staff): compliance pack export stuck re-downloading the 
-- Merged: eq-shell [#970](https://github.com/eq-solutions/eq-shell/pull/970) Security: the quote draft leaked customer PII to the next te
+- Merged: eq-shell [#986](https://github.com/eq-solutions/eq-shell/pull/986) feat(customers): show what matched a search result
+- Merged: eq-shell [#984](https://github.com/eq-solutions/eq-shell/pull/984) fix(customers): backfill market_vertical from customer_group
+- Merged: eq-shell [#982](https://github.com/eq-solutions/eq-shell/pull/982) fix(modals): apply useOverlayClickOutside across remaining b
+- Merged: eq-shell [#980](https://github.com/eq-solutions/eq-shell/pull/980) fix(sites): address autocomplete hid saved addresses + doubl
+- Merged: eq-shell [#977](https://github.com/eq-solutions/eq-shell/pull/977) feat(customers,ops): market vertical, invoice email, end cli
+- Merged: eq-shell [#975](https://github.com/eq-solutions/eq-shell/pull/975) fix(identity): list-members backfills name/email from app_da
+- Merged: eq-shell [#973](https://github.com/eq-solutions/eq-shell/pull/973) perf(quotes): bound the Ops pipeline fetch, add a real count
+- Merged: eq-shell [#972](https://github.com/eq-solutions/eq-shell/pull/972) fix(ops): Suppliers column widths + stale cross-tenant JWT c
 
 ## ⚠ Needs you (5)
 
@@ -60,6 +60,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-24 | eq-shell | [#998](https://github.com/eq-solutions/eq-shell/pull/998) feat(customers,quotes): customer-level default End Client |
 | 2026-07-24 | eq-shell | [#996](https://github.com/eq-solutions/eq-shell/pull/996) fix+feat(quotes): Coupa PO import — fix the broken write path, re |
 | 2026-07-24 | eq-shell | [#997](https://github.com/eq-solutions/eq-shell/pull/997) feat(quotes): suggest the customer's last End Client on new quote |
+| 2026-07-24 | eq-solves-service | [#601](https://github.com/eq-solutions/eq-service/pull/601) feat(maintenance): Excel-style checklist filters on the Assets ta |
 | 2026-07-23 | eq-shell | [#995](https://github.com/eq-solutions/eq-shell/pull/995) docs(ledger): record reconcile_worker_sync migration as applied |
 | 2026-07-23 | eq-shell | [#994](https://github.com/eq-solutions/eq-shell/pull/994) chore(migrations): codify eq_reconcile_worker_sync() + support ta |
 | 2026-07-23 | eq-shell | [#993](https://github.com/eq-solutions/eq-shell/pull/993) fix(workers-canonical-sync): stop nightly reconciler from un-arch |
@@ -69,7 +70,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-23 | eq-shell | [#989](https://github.com/eq-solutions/eq-shell/pull/989) fix(quotes): simplify quote-detail panel; rebuild Coupa PO import |
 | 2026-07-23 | eq-shell | [#988](https://github.com/eq-solutions/eq-shell/pull/988) chore(migrations): renumber 0197_quote_list_pagination_counts ->  |
 | 2026-07-23 | eq-shell | [#987](https://github.com/eq-solutions/eq-shell/pull/987) perf(customers): run the 3 customer-detail lookups in parallel |
-| 2026-07-23 | eq-shell | [#971](https://github.com/eq-solutions/eq-shell/pull/971) fix(security): tenant-scope the react-query caches so a workspace |
 _Showing 15 of 109 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -127,4 +127,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-24 01:24 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-24 01:34 UTC._
