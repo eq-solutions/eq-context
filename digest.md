@@ -1,25 +1,25 @@
 ---
 title: EQ Suite — Health Digest
 owner: Royce Milmlow
-last_updated: 2026-07-24
+last_updated: 2026-07-25
 scope: Push-style 'what needs your attention' feed across the EQ suite. Regenerated on merge (repository_dispatch: suite-state-changed) and nightly. Full snapshot in suite-state.md.
 read_priority: high
 status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-24 13:26 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-25 13:14 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-24 04:19 UTC → 2026-07-24 13:26 UTC)
+## Since last refresh (2026-07-24 13:26 UTC → 2026-07-25 13:14 UTC)
 
-- Merged: eq-shell [#991](https://github.com/eq-solutions/eq-shell/pull/991) fix(ops): job-creation export never actually populated the n
-- Merged: eq-shell [#989](https://github.com/eq-solutions/eq-shell/pull/989) fix(quotes): simplify quote-detail panel; rebuild Coupa PO i
-- Merged: eq-shell [#987](https://github.com/eq-solutions/eq-shell/pull/987) perf(customers): run the 3 customer-detail lookups in parall
-- Merged: eq-shell [#986](https://github.com/eq-solutions/eq-shell/pull/986) feat(customers): show what matched a search result
-- Merged: eq-shell [#984](https://github.com/eq-solutions/eq-shell/pull/984) fix(customers): backfill market_vertical from customer_group
-- Merged: eq-shell [#982](https://github.com/eq-solutions/eq-shell/pull/982) fix(modals): apply useOverlayClickOutside across remaining b
-- Merged: eq-shell [#980](https://github.com/eq-solutions/eq-shell/pull/980) fix(sites): address autocomplete hid saved addresses + doubl
-- Merged: eq-shell [#977](https://github.com/eq-solutions/eq-shell/pull/977) feat(customers,ops): market vertical, invoice email, end cli
+- Merged: eq-shell [#990](https://github.com/eq-solutions/eq-shell/pull/990) fix(login): rename stale Quotes tile to Ops
+- Merged: eq-shell [#988](https://github.com/eq-solutions/eq-shell/pull/988) chore(migrations): renumber 0197_quote_list_pagination_count
+- Merged: eq-shell [#985](https://github.com/eq-solutions/eq-shell/pull/985) docs(ci): stop claiming tenant-migrate.yml has an approval g
+- Merged: eq-shell [#983](https://github.com/eq-solutions/eq-shell/pull/983) feat(ops): wire Client ID + Market Segment into Job Creation
+- Merged: eq-shell [#979](https://github.com/eq-solutions/eq-shell/pull/979) fix(quotes): simplify quote-detail panel to high-value info
+- Merged: eq-shell [#978](https://github.com/eq-solutions/eq-shell/pull/978) fix(quotes): follow-up removal, contact consolidation, two-r
+- Merged: eq-shell [#973](https://github.com/eq-solutions/eq-shell/pull/973) perf(quotes): bound the Ops pipeline fetch, add a real count
+- Merged: eq-shell [#971](https://github.com/eq-solutions/eq-shell/pull/971) fix(security): tenant-scope the react-query caches so a work
 
 ## ⚠ Needs you (5)
 
@@ -37,7 +37,7 @@ _2026-07-24 13:26 UTC · what needs your attention. Full snapshot: [suite-state.
 | eq-solves-service | ? unknown | ? | 0 | — |
 | eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ? unknown | ? | 0 | — |
-| eq-solves-intake | ✓ success | 3d ago | 0 | — |
+| eq-solves-intake | ✓ success | 4d ago | 0 | — |
 
 ## Live errors (Sentry)
 
@@ -46,9 +46,9 @@ _2026-07-24 13:26 UTC · what needs your attention. Full snapshot: [suite-state.
 | eq-shell | [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/) | 10 | 2026-07-23 |
 | eq-solves-service | [UnrecognizedActionError: Server Action "4073d2dc7728208efb4febe859b7cd09e6dabc19](https://eq-solutions.sentry.io/issues/122209933/) | 9 | 2026-07-23 |
 | eq-shell | [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/) | 6 | 2026-07-23 |
-| eq-shell | [EQ Field handoff auto-recovery (rejected)](https://eq-solutions.sentry.io/issues/133584980/) | 6 | 2026-07-19 |
-| eq-shell | [Error: Workers never invited to join, past grace period: 45](https://eq-solutions.sentry.io/issues/135740258/) | 4 | 2026-07-23 |
+| eq-shell | [Error: Workers never invited to join, past grace period: 45](https://eq-solutions.sentry.io/issues/135740258/) | 5 | 2026-07-24 |
 | eq-shell | [Error: staff-licence-ocr: ocr-licence returned 401](https://eq-solutions.sentry.io/issues/135986280/) | 1 | 2026-07-22 |
+| eq-shell | [EQ Field handoff auto-recovery (rejected)](https://eq-solutions.sentry.io/issues/133584980/) | 1 | 2026-07-19 |
 _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunresolved)_
 
 ## Recently built (last 7 days)
@@ -127,4 +127,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-24 13:26 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-25 13:14 UTC._
