@@ -55,7 +55,8 @@ Client", "Healthcare Client").
 | Job / project management | **Workbench** |
 | File storage | OneDrive (SKS corporate Microsoft 365) |
 | Quoting | Excel estimator + SKS Quote Template v3 (.docx, docx-js) |
-| SKS Labour tracking | sks-nsw-labour.netlify.app (internal PWA, Supabase-backed) |
+| SKS Labour tracking | sks-nsw-labour.netlify.app (internal PWA, Supabase-backed) — **being retired**, see `SKS-CUTOVER-CRITICAL-PATH.md` |
+| SKS Field cutover | EQ Field parallel-run in progress — mismatch log: `SKS-FIELD-PARALLEL-RUN-LOG.md` (root of eq-context) |
 | Endpoint security | ThreatLocker on SKS corporate laptops — blocks Python, .bat, unapproved exes. Tailscale blocked. |
 
 ---

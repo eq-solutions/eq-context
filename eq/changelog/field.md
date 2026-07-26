@@ -9,6 +9,13 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-26] Access-Model Phase 3 guardrails — leave/timesheets/people isManager conversion (MERGED, #538, #539)
+- Converted the remaining raw `isManager` hard-gates in `leave.js` (5), `timesheets.js` (9), and `people.js` (13) onto `EQ_PERMS.can(permKey)`, matching the pattern already used by `roster.js`/`teams.js`/`diary.js`/`incidents.js`/`site-reports.js`/`toolbox.js`.
+- `leave.js` → `leave.approve`/`leave.archive`; `timesheets.js` → `ts.approve`/`ts.view_completion` — both drop straight in, no behaviour change, since those keys already grant identically to manager and supervisor.
+- `people.js` had no matching key for its write actions (add/edit/remove/restore/hard-delete a worker, PIN management) — the existing `people.*` keys are manager-only in the canonical matrix, so reusing them would have silently narrowed supervisor access. New `canManagePeople()` wrapper backed by `field.manage_people` (`@eq-solutions/roles` v2.5.6) instead.
+- Same-day follow-up fix (#539): `savePerson()`'s PIN-value computation still checked the raw `isManager` global after the function itself had already been converted to gate on `canManagePeople()` — a Shell-authenticated supervisor with no local PIN-unlock could have any PIN they set silently discarded, no error shown. One-line fix.
+- 11 files remain unconverted (apprentices/audit/batch/import-export/jobnumbers/managers/projects/sites/sks-pipeline/sks-pipeline-resource/tafe.js, ~65 gates) — scoped in the same session but deliberately parked; see `eq/pending.md` (2026-07-26).
+
 ## [2026-07-26] File-size CI ratchet + first Playwright DOM-lifecycle smoke suite (MERGED, #540)
 - `eslint.config.js`: new `max-lines` rule enforcing the existing (previously unenforced) ~1,500-line-per-file convention. 8 already-oversized files (`timesheets.js`, `apprentices.js`, `roster.js`, `tender-pipeline.js`, `sks-pipeline-resource.js`, `leave.js`, `sks-pipeline.js`, `people.js`) grandfathered at a ceiling just above current size — CI stays green today, further unchecked growth doesn't.
 - Small stale-comment fixes found while verifying the above: `ci.yml` claimed `no-undef` is off for browser scripts (it's `'error'`, backed by `APP_GLOBALS` auto-derivation which already shipped); `index.html` cited tokens `v1.0.0` when the CI-enforced pin is `v1.3.1`.

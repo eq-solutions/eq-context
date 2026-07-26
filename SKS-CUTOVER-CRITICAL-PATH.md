@@ -31,6 +31,8 @@ status: live
 - **Enter independently, then compare** — don't key EQ Field to *force* a match, or you smooth over the exact divergences the parallel run exists to catch. Log every mismatch.
 - **Define the stop condition** — N consecutive clean weeks (recommend 3–4) across a full roster+timesheet cycle → cut. Open-ended dual-entry becomes permanent.
 
+**Tracking:** the mismatch log + clean-week counter lives in [`SKS-FIELD-PARALLEL-RUN-LOG.md`](SKS-FIELD-PARALLEL-RUN-LOG.md) — started 2026-07-26 after verifying live that the run decided here on 2026-07-11 never actually got sustained (real weekly entry activity had dropped to ~1 action/14 days). That file also has the live-verified baseline (row counts, RLS check) as of restart.
+
 _The Phase A–E plan below remains the reference for the schema/auth prerequisites; treat Phase D as history._
 
 ---
