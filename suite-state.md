@@ -61,6 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-26)
 
 **eq-shell:**
+- #1021 refactor(perms): collapse hand-typed module matrices to derive from @eq-solutions/roles
 - #1019 feat(cards): bulk connect-worker mode, respecting the existing rate limit
 
 ---
