@@ -14,6 +14,21 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-receipts: duplicate-detection audit, Dashboard tile, 5 real bugs found+fixed (2026-07-26)
+*Royce asked whether eq-receipts had any duplicate-receipt alerting, then asked for a Dashboard tile, then for a broader "any more high-value polish" pass. Traced the existing but Dashboard-invisible `dupe_hash` mechanism, added a tile+list for it, then found the exact same "derived value never recomputed on edit" bug pattern twice — once already known (dupe_hash), once new (tax_invoice_valid/issues) — plus 3 unrelated real bugs via a verified agent audit (not taken on trust). All shipped across 3 PRs, each Netlify-deploy-confirmed by commit SHA.*
+
+- [x] **Possible-duplicates stat tile + clickable list added to the Dashboard**, matching the existing Invalid-tax-invoice-watchlist pattern. eq-receipts PR [#3](https://github.com/eq-solutions/eq-receipts/pull/3)/[#4](https://github.com/eq-solutions/eq-receipts/pull/4), merged, live.
+- [x] **Fixed: `dupe_hash` (and separately, `tax_invoice_valid`/`issues`) went stale the moment you corrected an OCR mistake in Verify** — neither was ever recomputed on save, so a fixed total/date/vendor/ABN silently kept the old duplicate-match / tax-invoice-flag forever. Both now recompute on every save.
+- [x] **Fixed: Verify's "Business use %" field showed a 100 fallback for display only** — saving without touching it wrote `null`, silently corrupting the export's tax-apportionment column.
+- [x] **Fixed: no way to correct a misread ABN anywhere in the UI** — a failed checksum was permanent regardless of review. Added the input + live checksum feedback (also caught `abn_valid` itself was never being saved at all).
+- [x] **Fixed: Dashboard/Exports date defaults were off by a day for AU users** — `toISOString().slice(0,10)` on locally-built dates truncates to the wrong calendar day for any positive UTC offset. Exports' "start of month" default was unconditionally wrong every month, not just at certain times of day.
+- [x] All 5 fixes shipped in eq-receipts PR [#5](https://github.com/eq-solutions/eq-receipts/pull/5), merged, Netlify-deploy-confirmed.
+- [ ] **"Not a duplicate" dismiss mechanism** — needs a schema change (e.g. `dupe_ack` column), flagged as a product decision, not built. _(added 2026-07-26)_
+- [ ] **Editing Currency in Verify doesn't re-trigger the FX conversion** — `total`/`fx_rate`/`original_total` stay derived from the original (possibly wrong) currency; needs a product call on auto-refetch vs. warn-and-fix-manually. _(added 2026-07-26)_
+- [ ] **`poll-batch` edge function can double-ingest a batch job under two concurrent calls** — the "already ingested" guard isn't set until the whole ingest loop finishes. Currently latent, zero client callers of that path today, but real the moment it ships. _(added 2026-07-26)_
+
+---
+
 ## eq-ui + eq-field: closed the Spinner CSS hand-port drift gap that caused the earlier inverted-prop bug (2026-07-26)
 *Royce asked for high-value improvements to eq-ui and a critique of the separate-repo-for-UI strategy. Verified the actual repo state (13 components, only 2 tested, no lint, no a11y testing) rather than guessing, then focused in on the sharpest real gap: eq-field can't consume eq-ui's React components at all (build-less, no bundler), so Field hand-copies component CSS by hand — currently just Spinner — with nothing catching drift. That's the same mechanism that shipped the earlier inverted-Spinner-prop bug. Proposed an automated CI guard, then steelmanned it myself and talked Royce out of it: a CSS-surface diff wouldn't have caught that bug (it was a JS prop-semantics issue, not a CSS change), and it's infrastructure for a single hand-ported component today. Built the cheaper fix instead.*
 
