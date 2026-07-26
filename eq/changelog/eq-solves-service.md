@@ -1,5 +1,8 @@
 # eq-solves-service changelog
 
+## 2026-07-26
+- **PR #603 MERGED — `@eq-solutions/roles` dependency bumped v2.5.3 → v2.5.5.** Was 2 releases stale; confirmed a pure no-op before opening (v2.5.4/v2.5.5 only added an eq-shell-only ops permission and an eq-cards-only Dart package, neither touched by this repo's `can()`/`PermKey`/`EqRole` usage in `lib/utils/roles.ts`/`lib/types/index.ts`). `npm run check` (tsc+build) clean, 359/359 tests. Merged on local verification after a GitHub Actions org-billing gap (separate from the payment method — an Actions-specific spending cap left at $0) blocked CI from running at all; confirmed live on service.eq.solutions once the billing issue was actually resolved.
+
 ## 2026-07-24
 - **PR #601, #602 MERGED — Excel-style checklist filters on the maintenance-check Assets table.** Location, Work Order #, and Maintenance Plan get a header filter icon (popover: search, Select all/Reset, checkbox list of unique values), same interaction as the new multiselect filter shipped in the shared `@eq-solutions/ui` Table component. Built locally rather than migrating this table onto the shared component — it's a bespoke Tailwind build with row selection, bulk actions, CSV export, and inline editing that would all need rebuilding through `Table`'s props. PR #602 added cascading (picking a Location now narrows what Work Order # and Maintenance Plan offer, matching Excel AutoFilter — Royce asked after confirming the base filter worked). Both deployed live to service.eq.solutions, **Royce confirmed working**.
 

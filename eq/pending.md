@@ -14,6 +14,27 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## Access-Model Phase 3 — scoped the 11 remaining eq-field files, deliberately parked (2026-07-26)
+*Follow-on from the same session that shipped eq-field PR #538/#539 (leave/timesheets/people conversion). Asked to scope the 11 remaining unconverted files, then asked to steelman whether that was actually the right direction — reading `ACCESS-MODEL-PLAN.md` directly (not from memory) surfaced that Phase 3 is explicitly fenced to "post-cutover" and the standing rule is "auth-touching changes never land in a cutover week," which this session's own earlier work had already overridden twice on ad hoc go-aheads. Redirected to scoping just the concrete gap-fixes instead, then Royce pivoted the session to the actual SKS cutover work (see `sks/pending.md`).*
+
+- [x] **All 11 remaining files scoped via parallel research agents** (apprentices/audit/batch/import-export/jobnumbers/managers/projects/sites/sks-pipeline/sks-pipeline-resource/tafe.js) — 65 `isManager` gates found, mapped to 8 new candidate PermKeys (`app.give_feedback`, `field.view_audit_log`, `data.restore_backup`, `field.manage_job_numbers`, `field.manage_supervisors`, `field.manage_projects`, `field.manage_pipeline`, `field.manage_sites`) plus reuse of existing both-tier keys. 4 tier-ambiguous cases were resolved with Royce directly (sites.js tier mismatch → new Field-local key rather than widening the canonical `sites.add`/`sites.archive`, to keep canonical integrity and stay reversible either direction; managers.js Supervisor Notes → preserve current reach; sks-pipeline.js permanent-delete → bundle, don't split; audit.js → one key covers view+revert).
+- [ ] **NOT built.** Royce's call after the steelman: this is real, but not urgent, and the plan itself says it belongs post-cutover — parked. _(added 2026-07-26)_
+- [x] **Separately scoped ~20 concrete gap-fixes** (real, unrelated finding from the same file-reading pass): write functions across 8 files with *zero* permission check anywhere in their call chain — only a sibling function's or a UI opener's check protects them today. Highest-severity: `apprentices.js`'s entire quarterly-review save path (`saveQuarterlyReview`), `sks-pipeline-resource.js`'s live-roster-writing functions (`pushToRoster`/`pushOverwrite`/`pushSkipConflicts`), and `import-export.js`'s bulk CSV importers (`importPeopleCSV`/`importSitesCSV`/`importScheduleCSV`/`confirmReset`). Each fix is a one-line `isManager` check copied from an already-correct sibling — no new PermKeys needed for this list.
+- [ ] **NOT built either** — session pivoted to SKS Field cutover work before this was actioned. Low urgency (nothing found actively exploiting these), but real; worth a short session on its own. _(added 2026-07-26)_
+
+---
+
+## eq-shell + eq-solves-service: 2 more permission-mirror polish items, plus a GitHub Actions billing gap found and fixed (2026-07-26)
+*Continuing the Access-Model Phase 3 mirror-collapse thread from the same day — Royce asked to tidy up the deprecated cards permissions found during the earlier audit, then "what would you do" about two more loose ends, approved both, and asked to merge once CI was green.*
+
+- [x] **Retired `cards.view`/`cards.onboard` entirely** — not just from the permission matrix but the admin toggle for them too, after confirming zero functional check sites anywhere in eq-shell and zero live tenant/security-group overrides reference either key. eq-shell PR #1025, merged, live on core.eq.solutions.
+- [x] **Bumped eq-solves-service's shared-permissions dependency**, which had been 2 releases stale — confirmed a pure no-op first (nothing changed touches what that repo actually uses) before opening it. eq-service PR #603, merged, live on service.eq.solutions.
+- [x] **Found and fixed a third hidden permission mirror**: the Access Control admin page's own toggle list was hand-typed separately from everything else fixed earlier today, and had already silently fallen behind — 4 of 6 "EQ Ops" permissions and a newer Field permission (worker management) had no admin override toggle at all, despite being live and enforced. Admins had no way to customize them per role. Now derived directly from the shared permissions package so this can't happen again. eq-shell PR #1026, merged, live.
+- [x] **Diagnosed a real GitHub Actions billing gap while merging #603**: CI was failing instantly on every job, org-wide, not just this one PR. Traced it past the payment method (which Royce had already fixed) to a separate, still-zeroed spending cap specifically for GitHub Actions. Confirmed live once addressed — reran CI and watched real jobs execute and pass.
+- [x] **Verified all four PRs from today's permissions work are actually deployed**, not just merged — checked Netlify's own deploy record for each and matched the exact commit, rather than trusting "merge succeeded" alone.
+
+---
+
 ## Closed out the last 2 Access-Model Phase 3 follow-ups: mirror-collapse PR + cards.view/cards.onboard merge (2026-07-26)
 *Royce asked to check on the "collapse eq-shell's permission matrix mirrors" background task's in-progress work, then to push and PR it, then to check on the other spun-off follow-ups (Field's isManager conversion, tenant_role_overrides cleanup).*
 

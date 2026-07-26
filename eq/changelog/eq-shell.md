@@ -9,7 +9,10 @@ status: live
 
 # eq-shell changelog
 
-## 2026-07-26 (latest — PR #1025 merged, PR #1024 closed as redundant)
+## 2026-07-26 (latest — PR #1026, Access Control admin UI derived from the package)
+- **PR #1026 (MERGED, squash `64552ef`) — the Access Control page's role-matrix toggle list is now derived from `@eq-solutions/roles` instead of hand-typed.** `MODULES` was its own separate key+label mirror of the permission matrix, purely for the admin UI — already caught stale twice: `cards.view`/`cards.onboard` were still listed as togglable after #1025 retired them everywhere else, and 4 of 6 `ops.*` keys plus `field.manage_people` (live, enforced permissions) had never had an override toggle at all. `MODULE_SECTIONS` now only decides shape/grouping (Royce confirmed: "EQ Ops" stays one section combining the quotes + ops package modules); keys and labels derive from `PERMISSIONS`, filtered non-deprecated. `check-perm-sync.mjs`, full typecheck, and 247/247 tests green before merge; confirmed live on core.eq.solutions by matching Netlify's deploy `commit_ref`.
+
+## 2026-07-26 (PR #1025 merged, PR #1024 closed as redundant)
 - **PR #1025 (MERGED) — retired the deprecated `cards.view`/`cards.onboard` PermKeys entirely.** Audited first: zero functional check sites reference either key anywhere in the repo, and zero live rows in `shell_control.tenant_role_overrides` or `security_group_perms` on jvkn reference them. Removed the whole `cards` module from the client PermKey union, dropped the now-inert "Cards" toggle section from the Access Control admin page, updated `check-perm-sync.mjs` to drop the retired module. `check-perm-sync.mjs`, full typecheck, and full test suite (247/247) all green before merge.
 - **PR #1024 (CLOSED, not merged) — mirror-collapse work, confirmed already redundant.** Verified a separate background session's in-progress "collapse per-module permission matrix mirrors" branch (typecheck clean, `check-perm-sync.mjs` green, 242/242 tests), pushed it to a new branch name to avoid colliding with an unrelated unmerged remote branch of the same name, and opened a PR. Rebasing onto `main` before merge (per instruction) showed the branch was now a zero-diff — the identical work had already landed independently via PRs #1021/#1022. Closed rather than merged.
 
