@@ -61,10 +61,8 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-26)
 
 **eq-cards:**
+- #179 feat(access-model): widen is_org_admin canonical predicate — closes silent SKS notification gap
 - #178 feat(workers): wire onto @eq-solutions/roles, retire hand-maintained kEqRoleLabels
-
-**eq-shell:**
-- #1016 fix(perms): close check-perm-sync.mjs under-grant blind spot + wire ops.manage_suppliers
 
 ---
 
