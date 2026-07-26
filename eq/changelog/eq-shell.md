@@ -9,6 +9,9 @@ status: live
 
 # eq-shell changelog
 
+## 2026-07-26 (latest — PR #1027, `@eq-solutions/ui` bump surfaces a live unstyled-dropdown bug)
+- **PR #1027 (MERGED, squash `9293c2c`) — bumped `@eq-solutions/ui` v1.11.1 → v1.12.0 to pick up new Tooltip/EmptyState/Pagination components, and found a real bug along the way.** This repo's own `src/index.css` imports eq-ui's styles only via the barrel (`@eq-solutions/ui/styles`), and `QuotesModule.tsx` uses `DropdownMenu` with no fallback CSS import of its own. Confirmed directly against the live `v1.11.1` git tag that the barrel stylesheet was missing `DropdownMenu.css` entirely at that version — so the Quotes "⋯" menu has likely been rendering completely unstyled in production since it shipped, until this deploy. `pnpm run build:packages && build:tokens && tsc -b` clean, 247/247 tests, `check:perms` + `check:css` (549 `eq-*` classes resolve, would have caught this) both pass. Netlify auto-deploys `main` → core.eq.solutions.
+
 ## 2026-07-26 (latest — PR #1026, Access Control admin UI derived from the package)
 - **PR #1026 (MERGED, squash `64552ef`) — the Access Control page's role-matrix toggle list is now derived from `@eq-solutions/roles` instead of hand-typed.** `MODULES` was its own separate key+label mirror of the permission matrix, purely for the admin UI — already caught stale twice: `cards.view`/`cards.onboard` were still listed as togglable after #1025 retired them everywhere else, and 4 of 6 `ops.*` keys plus `field.manage_people` (live, enforced permissions) had never had an override toggle at all. `MODULE_SECTIONS` now only decides shape/grouping (Royce confirmed: "EQ Ops" stays one section combining the quotes + ops package modules); keys and labels derive from `PERMISSIONS`, filtered non-deprecated. `check-perm-sync.mjs`, full typecheck, and 247/247 tests green before merge; confirmed live on core.eq.solutions by matching Netlify's deploy `commit_ref`.
 

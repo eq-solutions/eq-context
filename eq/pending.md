@@ -14,6 +14,17 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-ui + eq-shell + eq-solves-service: shipped 3 new components, found + fixed a live unstyled-dropdown bug, closed a real sharp/uuid vulnerability (2026-07-26)
+*Royce shared a Claude Design handoff (Tooltip, EmptyState, Pagination for eq-ui) and asked for a review with intent to implement. Verified against the real toolchain rather than trusting the handoff's own claims — found and fixed two real issues before merging. Then traced how the new release actually reaches live apps: eq-shell and eq-solves-service pin eq-ui by exact git tag, not a floating range, so nothing propagates without a manual bump PR per app. Bumping eq-shell surfaced a second, unrelated real bug: its only CSS import path had been missing the dropdown menu's styles since v1.11.1. A side investigation into two npm-audit findings (spun off as a background task) turned up a clean, non-breaking fix.*
+
+- [x] **eq-ui gains Tooltip, EmptyState, and Pagination.** The handoff had 2 real issues (an accessibility lint failure in Tooltip, a prop-shape mismatch vs. the rest of the library) — both fixed before merge, not just flagged. Shipped: eq-ui PR [#33](https://github.com/eq-solutions/eq-ui/pull/33), merged, published as v1.12.0.
+- [x] **eq-shell's Quotes "⋯" menu has likely been rendering completely unstyled in production** — found while bumping to pick up the new components, not something anyone reported; confirmed directly against the old release, not assumed. Shipped: eq-shell PR [#1027](https://github.com/eq-solutions/eq-shell/pull/1027), merged, live on core.eq.solutions.
+- [x] **EQ Service bumped to the same new release too** — no visible change there, it doesn't use the affected menu component. Shipped: eq-service PR [#604](https://github.com/eq-solutions/eq-service/pull/604), merged, live on service.eq.solutions.
+- [x] **Closed a real security finding (sharp/libvips + uuid) without a breaking dependency downgrade.** Checked first whether the vulnerable path is even reachable — it isn't, this app never runs untrusted images through it — then pinned just the two vulnerable packages instead of the breaking "auto-fix" GitHub suggested. Shipped: eq-service PR [#605](https://github.com/eq-solutions/eq-service/pull/605), merged (Royce's own review + merge).
+- [x] **EQ Field's hand-copied loading-spinner style checked against the new release** — confirmed it doesn't need updating; the spinner itself was untouched by this release.
+
+---
+
 ## Access-Model Phase 3 — scoped the 11 remaining eq-field files, deliberately parked (2026-07-26)
 *Follow-on from the same session that shipped eq-field PR #538/#539 (leave/timesheets/people conversion). Asked to scope the 11 remaining unconverted files, then asked to steelman whether that was actually the right direction — reading `ACCESS-MODEL-PLAN.md` directly (not from memory) surfaced that Phase 3 is explicitly fenced to "post-cutover" and the standing rule is "auth-touching changes never land in a cutover week," which this session's own earlier work had already overridden twice on ad hoc go-aheads. Redirected to scoping just the concrete gap-fixes instead, then Royce pivoted the session to the actual SKS cutover work (see `sks/pending.md`).*
 
