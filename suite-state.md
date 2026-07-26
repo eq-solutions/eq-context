@@ -61,7 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-26)
 
 **eq-shell:**
-- #1008 fix(cards): invite-approval path used an invalid role enum value
+- #1009 fix(staff): lock down direct writes + guard against silent reactivation
 
 ---
 
