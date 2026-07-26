@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-26 07:17 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-26 07:23 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-26 07:09 UTC → 2026-07-26 07:17 UTC)
+## Since last refresh (2026-07-26 07:17 UTC → 2026-07-26 07:23 UTC)
 
-- Merged: eq-shell [#1007](https://github.com/eq-solutions/eq-shell/pull/1007) fix(quotes): Job Creation export falls back to customer's de
-- Merged: eq-shell [#1005](https://github.com/eq-solutions/eq-shell/pull/1005) fix(sentry): correct filter type on the folded-in iframe-min
-- Merged: eq-shell [#1004](https://github.com/eq-solutions/eq-shell/pull/1004) fix(quotes): End Client next to Quote Number, Commercials st
-- Merged: eq-shell [#1002](https://github.com/eq-solutions/eq-shell/pull/1002) fix(migrations): 0206 was aborting every tenant-migrate disp
-- Merged: eq-shell [#1001](https://github.com/eq-solutions/eq-shell/pull/1001) feat(ops): Excel-style multiselect filters + fix labour-hire
-- Merged: eq-shell [#999](https://github.com/eq-solutions/eq-shell/pull/999) fix(quotes): Coupa import shows import outcome + job title
-- Merged: eq-shell [#997](https://github.com/eq-solutions/eq-shell/pull/997) feat(quotes): suggest the customer's last End Client on new 
-- Merged: eq-shell [#996](https://github.com/eq-solutions/eq-shell/pull/996) fix+feat(quotes): Coupa PO import — fix the broken write pat
+- Merged: eq-shell [#1006](https://github.com/eq-solutions/eq-shell/pull/1006) chore: remove one-time Sentry alert-apply workflow
+- Merged: eq-shell [#1003](https://github.com/eq-solutions/eq-shell/pull/1003) chore(deps): bump @eq-solutions/ui to v1.11.1 (cascading fil
+- Merged: eq-shell [#1000](https://github.com/eq-solutions/eq-shell/pull/1000) chore(migrations): renumber 0202/0203 Coupa PO collisions ->
+- Merged: eq-shell [#998](https://github.com/eq-solutions/eq-shell/pull/998) feat(customers,quotes): customer-level default End Client
+- Merged: eq-shell [#995](https://github.com/eq-solutions/eq-shell/pull/995) docs(ledger): record reconcile_worker_sync migration as appl
+- Merged: eq-shell [#994](https://github.com/eq-solutions/eq-shell/pull/994) chore(migrations): codify eq_reconcile_worker_sync() + suppo
+- Merged: eq-shell [#993](https://github.com/eq-solutions/eq-shell/pull/993) fix(workers-canonical-sync): stop nightly reconciler from un
+- Merged: eq-solves-service [#602](https://github.com/eq-solutions/eq-service/pull/602) fix(maintenance): cascade the Assets table checklist filters
 
 ## ⚠ Needs you (5)
 
@@ -75,17 +75,17 @@ _Showing 15 of 114 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **Royce to click through the new "Who can join" Settings section and confirm it reads clearly and saves correctly** — code-complete and tested, not yet user-verified. _(added 2026-07-26)_
+- **Royce to run one more fresh Cards signup** to confirm the nudge and the approval-time flag actually show correctly end to end — the full loop has never been walked through live since these changes landed. _(added 2026-07-26)_
+- **Royce to test the new bulk connect-worker tool** with a real list of phone numbers. _(added 2026-07-26)_
+- **`cards-staff-matches.ts` is dead code** — built to power a duplicate-worker suggestion UI (`AdminCardsFeed`) that no longer exists anywhere in the codebase, superseded by a different mechanism. Not cleaned up, just flagged. _(added 2026-07-26)_
+- **Broader question not investigated**: the anon-EXECUTE fix above was for one function found by accident. The 2026-06-07 lockdown closed this class of gap for new *tables* but never for new *functions* — worth a proper sweep to see if other functions have the same unnoticed gap. _(added 2026-07-26)_
 - **Live smoke test of the new brief bullets + action-reason labels** on a tenant with an active AI brief — not yet manually verified in the running app, only build/typecheck confirmed clean. _(added 2026-07-26)_
 - **Confirm the daily email digest** (`scheduled-briefing.ts`) still renders correctly for a tenant with `brief_recipients` set, now that the brief is a list of lines instead of one string — not yet sent/verified live. _(added 2026-07-26)_
 - **Royce to check the Netlify dashboard for `ENFORCE_IFRAME_ORIGIN`** on eq-shell — confirms whether the iframe-origin check is actually enforcing in production (not just in code). Not readable via the connected tools. _(added 2026-07-26)_
 - **Royce to remediate SEC-12** (plaintext Netlify secrets on eq-shell) via the Netlify dashboard — same-value re-store per key (not a rotation), just needs "contains sensitive values" ticked. `GOOGLE_DOC_AI_CREDENTIALS` (an RSA private key) is the highest-priority one. Full detail in `ops/security-register.md`. _(added 2026-07-26)_
 - **EQ Cards' own worker-initiated 30-day account-deletion promise** (separate from the leaver-retention work above — this is a worker deleting their *own* Cards account) is still built but switched off (dry-run only). Not actioned this session, just a known standing gap. _(added 2026-07-26)_
-- **Access-Model Phase 2 ("One admin") and Phase 3 (permission-key guardrails)** — explained to Royce in the Q&A, deliberately not built yet. Locked decision to keep auth changes out of the SKS launch window; revisit post-cutover. _(added 2026-07-26)_
-- **Real end-to-end confirmation still open**: re-archived the 4 originally-affected people (Aaron Clohessy, Emma Curth, Jack Fitzpatrick, Ross Davidson) as a live test. Need to check after tomorrow's nightly run (and ideally after their Cards profile syncs in real time) that they're still archived — that's the actual proof the fix holds, not just a clean deploy. _(added 2026-07-26)_
-- **Bob Smith** (one of the 5 originally reported) still doesn't match any current staff record in the SKS tenant by name — never resolved, possibly a name-spelling mismatch or a different tenant. Worth a quick manual look. _(added 2026-07-26)_
-- **The old, now-unused sync function is still sitting in Supabase** (edge function `credentials-canonical-sync`) — harmless since nothing calls it anymore, but there's no way to delete an edge function via a migration; would need a manual removal via the Supabase dashboard if Royce wants it gone entirely. _(added 2026-07-26)_
-- **Real-world confirmation still open** — have a manager ask Zemi Asri (or another affected worker) to retry logging into core.eq.solutions now that #992 is live, and confirm it worked. _(added 2026-07-26)_
-_…and 453 more · [eq/pending.md](eq/pending.md)_
+_…and 458 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -107,7 +107,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) |
 |------|------:|-----:|------------------:|
-| [EQ](eq/pending.md) | 2764 | 465 | 49 |
+| [EQ](eq/pending.md) | 2786 | 470 | 58 |
 | [SKS](sks/pending.md) | 522 | 77 | 87 |
 | [SKS active](sks/active.md) | 108 | 0 | 0 |
 | [OPS](ops/pending.md) | 252 | 30 | 6 |
@@ -128,4 +128,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-26 07:17 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-26 07:23 UTC._
