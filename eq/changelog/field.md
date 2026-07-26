@@ -1,13 +1,21 @@
 ---
 title: Changelog — EQ Solves Field
 owner: Royce Milmlow
-last_updated: 2026-07-22
+last_updated: 2026-07-26
 scope: Append-only history of changes to the EQ Solves Field product. Canonical — eq-field.md was merged into this file 2026-07-19, don't split again.
 read_priority: reference
 status: live
 ---
 
 # Changelog — EQ Solves Field
+
+## [2026-07-26] File-size CI ratchet + first Playwright DOM-lifecycle smoke suite (MERGED, #540)
+- `eslint.config.js`: new `max-lines` rule enforcing the existing (previously unenforced) ~1,500-line-per-file convention. 8 already-oversized files (`timesheets.js`, `apprentices.js`, `roster.js`, `tender-pipeline.js`, `sks-pipeline-resource.js`, `leave.js`, `sks-pipeline.js`, `people.js`) grandfathered at a ceiling just above current size — CI stays green today, further unchecked growth doesn't.
+- Small stale-comment fixes found while verifying the above: `ci.yml` claimed `no-undef` is off for browser scripts (it's `'error'`, backed by `APP_GLOBALS` auto-derivation which already shipped); `index.html` cited tokens `v1.0.0` when the CI-enforced pin is `v1.3.1`.
+- New: `playwright.config.js` + `tests/e2e/` — Field's first automated test that renders the real DOM in a browser, targeting the DOM-lifecycle bug class (stuck loading overlays, wrong CSS state) that's shipped 3+ times before (v3.5.18, v3.5.284, v3.5.285) and which the existing 19 logic-only `tests/*.test.js` structurally cannot catch. Covers boot/login, roster, timesheets, leave-request modal, plus a Shell-embedded-mode pass on boot+leave. New `.github/workflows/e2e-smoke.yml`, manual-trigger only (`workflow_dispatch`), same reasoning as `accessibility-audit.yml` — no recurring/auto-triggered infra.
+- Auth is mocked, not real: discovered live while building this that canonical's `organisations` table has no `demo` row (a `?tenant=demo` override silently falls through to `eq`), and both live tenants are now Core-only (`eq` since v3.5.333, `sks` since v3.5.200) — the standalone PIN gate is hard-disabled for real logins. The suite intercepts the canonical org lookup instead, reaching the same client-side demo-tenant code path (`checkPin()`, `_isDemoTenant()`) without needing Core, secrets, or a live backend. Does not cover real auth/Core handoff/`tenant-config.js` routing — DOM lifecycle only.
+- Picked up PR #541's `spinner.css` version-pin via a clean merge conflict resolution (both PRs touched the same header comment independently; combined rather than overwrote).
+- Also hit the same org-wide GitHub Actions billing outage as the concurrent eq-ui/Spinner session (see below) — same fix, no separate action needed.
 
 ## [2026-07-26] Spinner CSS hand-port now version-pinned (MERGED, #541)
 - `styles/spinner.css` (the hand-ported copy of eq-ui's React `<Spinner>`, needed because Field is build-less and can't import React components) now carries a comment pinning it to `@eq-solutions/ui v1.11.1`, plus a note that nothing in CI enforces the pin.

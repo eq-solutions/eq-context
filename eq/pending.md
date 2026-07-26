@@ -68,6 +68,19 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **Shipped**: eq-solves-intake PR #76, CI green, merged to main (squash `7429424`). This repo has no auto-deploy configured — merge to main is the full extent of shipping it.
 - [x] **Refreshed the suite-state/digest tracking files live** by running the real automated refresh (not a hand edit), so they reflect the merge immediately instead of waiting for tonight's nightly run.
 
+---
+
+## eq-field: file-size CI ratchet + first browser-based test suite; found both live tenants are Core-only now (2026-07-26)
+
+*Royce asked for high-value improvements to eq-field specifically and a critique of the separate-repo-for-UI strategy (a parallel, eq-ui-focused version of the same question is tracked in the entries above — different repo, no overlap). Steelmanned the recommendations before building anything: killed a full rewrite-to-ES-modules idea and a TypeScript-checking setup as too risky or premature for zero current payoff, built the two ideas that survived scrutiny.*
+
+- [x] **The "keep files under ~1,500 lines" rule (already written down, never enforced) is now a real CI check.** 8 already-oversized files got a ceiling just above their current size so nothing breaks today, but any of them growing further now fails the build instead of silently drifting further.
+- [x] **Built EQ Field's first automated test that actually opens the app in a browser**, instead of only testing logic in isolation. Targets the exact bug that's shipped four separate times before (a loading spinner getting stuck on screen — most recently a real error the day of this session) — covers the login screen, roster, timesheets, and leave-request screens. Run manually before a risky merge, not automatically on every change.
+- [x] **Found while building it: neither live tenant's app can actually be logged into directly anymore.** Both EQ's own test version and SKS's real one now require going through the Core login page instead of the app's own login screen — the test suite (correctly) can't fake its way past that, so it simulates a successful login response to reach the same screens real users see. Auth itself isn't covered by these tests, only what happens after someone's logged in.
+- [x] **Found: the "quick demo login" web address (`?tenant=demo`) documented in eq-field's setup notes doesn't actually work anymore** — it silently falls back to EQ's real (if disposable) test tenant instead of the fully offline mode the notes describe. Spun off as its own follow-up (already running in a separate session) rather than fixed here, since it touches login/tenant routing.
+- [x] Shipped: eq-field PR [#540](https://github.com/eq-solutions/eq-field/pull/540), merged. Picked up PR #541's Spinner version-pin (from the eq-ui entry above) via a clean merge along the way.
+- [x] **Also hit the same GitHub Actions billing outage** described in the eq-ui/Spinner entry above — same root cause, this repo's CI checks. No separate fix needed.
+
 **Deferred:**
 - [x] **4 other polish ideas offered but not picked this round**: cleaning up ~40 inline hardcoded-colour styles on the Health tab's merge/duplicate panel (works fine today, just won't automatically track a future colour/theme change); an actual mobile-width check of the Health tab (only 5 responsive breakpoints exist across the whole stylesheet, never spot-checked at phone width); a manual "Refresh" button on Health so it updates itself after you act elsewhere instead of needing to leave and come back; and refreshing `SPRINT-SUMMARY.md`, which is nearly two months stale and still describes features as unbuilt that have since shipped. _(added 2026-07-26)_ — **all 4 built this same day, see the entry below.**
 
