@@ -14,6 +14,20 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## tenant_role_overrides cleanup: audited SKS's 10 one-off permission tweaks, resolved the one undecided case, cleaned out the rest (2026-07-26)
+*Picked up the Phase 3 "guardrails" work flagged as deferred earlier today (see the launch-window note below). Audited every live SKS-specific permission tweak in the shared roles system against the locked 2026-07-08 decisions on this exact question. Found 9 of the 10 already had a clear answer on record; only one — letting casual/labour-hire workers see the equipment list — had never actually been decided either way. Asked Royce directly; his call: make it standard everywhere, since seeing equipment isn't sensitive. Also caught, mid-task, that this whole area was supposed to be on hold for the SKS launch window — flagged it to Royce before going further, and he said proceed.*
+
+- [x] **Audited all 10 live SKS permission overrides** against the locked 2026-07-08 decision record: 4 were leftover artifacts from an old Cards-onboarding quirk (safe to delete), 1 was already redundant (the underlying permission had separately become standard), 4 were confirmed working-as-intended and left alone, 1 (casual workers seeing equipment) had no prior decision.
+- [x] **Royce's call on the one open question: yes, casual/labour-hire workers can now see the equipment list everywhere**, not just at SKS. Shipped in the shared roles package (v2.5.7), then eq-shell picked up the new version.
+- [x] **Verified it's actually live before touching anything else** — checked the real production site is running the updated code, not just that the change was merged.
+- [x] **Cleaned out all 6 no-longer-needed one-off tweaks for SKS** (the 5 leftover/redundant ones, then the 6th once the equipment-view change was confirmed live) — SKS's permission table now only holds the 4 genuinely-still-special cases.
+- [x] **Flagged a real process conflict mid-task rather than pushing through it**: this exact area had been marked "hold until after the SKS launch" earlier the same day. Stopped and asked Royce directly before making any live change — his call was to proceed.
+
+**Deferred:**
+- [ ] **The remaining 4 SKS-specific permission tweaks are intentional, not a to-do list** — flagged here only so a future session doesn't mistake "still has one-off tweaks" for "cleanup incomplete." No action needed unless the underlying product decision changes.
+
+---
+
 ## eq-shell: collapsed the hand-typed permission list to pull directly from the shared roles package (2026-07-26)
 *Deferred scoping item from earlier today's SKS security deep-dive (see "Access-Model Phase 2/3" below). Checked whether eq-shell's 9 hand-typed copies of "who can do what" (7 separate files plus two blocks in the master file) could instead read straight from the shared roles package used across all the EQ apps, removing the risk of a hand-typed copy quietly drifting out of sync. This is a narrow, verified-zero-behaviour-change structural cleanup — not the broader Phase 2/3 auth-feature work Royce locked out of the SKS launch window.*
 
@@ -82,7 +96,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [ ] **Royce to check the Netlify dashboard for `ENFORCE_IFRAME_ORIGIN`** on eq-shell — confirms whether the iframe-origin check is actually enforcing in production (not just in code). Not readable via the connected tools. _(added 2026-07-26)_
 - [ ] **Royce to remediate SEC-12** (plaintext Netlify secrets on eq-shell) via the Netlify dashboard — same-value re-store per key (not a rotation), just needs "contains sensitive values" ticked. `GOOGLE_DOC_AI_CREDENTIALS` (an RSA private key) is the highest-priority one. Full detail in `ops/security-register.md`. _(added 2026-07-26)_
 - [ ] **EQ Cards' own worker-initiated 30-day account-deletion promise** (separate from the leaver-retention work above — this is a worker deleting their *own* Cards account) is still built but switched off (dry-run only). Not actioned this session, just a known standing gap. _(added 2026-07-26)_
-- [ ] **Access-Model Phase 2 ("One admin") and Phase 3 (permission-key guardrails)** — explained to Royce in the Q&A, deliberately not built yet. Locked decision to keep auth changes out of the SKS launch window; revisit post-cutover. _(added 2026-07-26)_ **Note:** later the same day Royce separately approved one narrow piece of Phase 3 scoping — a pure internal cleanup with zero change to who can do what (see "collapsed the hand-typed permission list" above) — not a reversal of the launch-window lock, just a specific low-risk carve-out he signed off on directly.
+- [ ] **Access-Model Phase 2 ("One admin") and Phase 3 (permission-key guardrails)** — explained to Royce in the Q&A, deliberately not built yet. Locked decision to keep auth changes out of the SKS launch window; revisit post-cutover. _(added 2026-07-26)_ **Note:** later the same day Royce separately approved one narrow piece of Phase 3 scoping — a pure internal cleanup with zero change to who can do what (see "collapsed the hand-typed permission list" above) — not a reversal of the launch-window lock, just a specific low-risk carve-out he signed off on directly. **Second note, later still:** Royce also explicitly approved a real behaviour-changing piece of Phase 3 — cleaning up SKS's one-off permission tweaks (see "tenant_role_overrides cleanup" below). Asked directly whether the launch-window lock applied here; his call was to proceed anyway. Phase 2 ("One admin") remains untouched.
 
 ---
 

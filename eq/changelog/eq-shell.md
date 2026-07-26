@@ -9,7 +9,10 @@ status: live
 
 # eq-shell changelog
 
-## 2026-07-26 (latest — PR #1012/#1014/#1015/#1017/#1019/#1020/#1021, onboarding minimum-requirements switch + bulk connect-worker + dead CSS cleanup + permission-matrix collapse)
+## 2026-07-26 (latest — PR #1023, eq-roles dependency bump to v2.5.7)
+- **PR #1023 (MERGED) — `@eq-solutions/roles` bumped to v2.5.7.** Picks up `labour_hire` gaining `equipment.view` (see `eq-roles.md`). CI green including `check-perm-sync.mjs`; `src/modules/equipment/permissions.ts` is already a pure re-export from the package (post-#1021 collapse), so no other file needed to change. Confirmed live on core.eq.solutions (deploy `f24db117`) before the now-redundant SKS `tenant_role_overrides` row for the same grant was deleted on jvkn. Completed by a background task (`task_01e7af09`) spawned earlier the same session.
+
+## 2026-07-26 (PR #1012/#1014/#1015/#1017/#1019/#1020/#1021, onboarding minimum-requirements switch + bulk connect-worker + dead CSS cleanup + permission-matrix collapse)
 - **PR #1012 (MERGED) — name title-casing generalized.** `_shared/name.ts`'s `tidyOnboardSurname` widened beyond its one narrow ALL-CAPS-plus-middle-name case to any no-case-signal name; new `tidyOnboardFirstName` covers first names too. "bob smith" now becomes "Bob Smith" going through `cards-approve-staff.ts`'s application path. Deliberately-styled names (McDonald, O'Brien, de Biasi) still untouched.
 - **PR #1012/#1015 — new `org_join_requirements` soft-flag switch, relocated after live feedback.** Three toggles (full name / DOB / email) gate nothing but surface a nudge; first built into Training Matrix, then moved into Settings → "Who can join" once Royce flagged it as buried, unexplained, and on the wrong page. Backed by eq-cards migration 0104, applied live to jvkn.
 - **PR #1014 — approval-time gap indicator.** `PendingSection` shows a "Missing N" chip per applicant; the review modal shows a full banner before Approve — both computed against the same requirements the Settings switch controls.
