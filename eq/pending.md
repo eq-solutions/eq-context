@@ -14,6 +14,23 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-solves-intake: EQ Intake demo app polish — tab badges, progressive loading, un-capped dupes list, Ask filter carry-through (2026-07-26)
+*Royce asked for a review of where the EQ Intake demo app is at, plus ideas to polish/improve it. Reviewed the live code directly (not the stale docs) across all 5 tabs, offered 8 concrete polish ideas grounded in what was actually found, and Royce picked 4 to build.*
+
+- [x] **Health and Queue tabs now show a small count badge** of what's waiting, so you don't have to click in to find out something needs attention.
+- [x] **Health tab no longer waits for everything to load before showing anything** — sections appear as their own data arrives instead of one all-or-nothing spinner.
+- [x] **The "duplicates caught at the write" list on Health no longer silently hides anything past the first 8** — a "Show all" button reveals the rest.
+- [x] **Asking a question in the Ask tab and opening the matching records now actually shows the records that answered your question** — previously it silently reset to showing every record for that entity.
+- [x] **Caught and fixed a real bug along the way before it shipped**: the new "show all" toggle was first written in a way that could break under React's rules (a hook called after an early return).
+- [x] **Verified clean**: full typecheck + full test suite (166 tests) before shipping.
+- [x] **Shipped**: eq-solves-intake PR #76, CI green, merged to main (squash `7429424`). This repo has no auto-deploy configured — merge to main is the full extent of shipping it.
+- [x] **Refreshed the suite-state/digest tracking files live** by running the real automated refresh (not a hand edit), so they reflect the merge immediately instead of waiting for tonight's nightly run.
+
+**Deferred:**
+- [ ] **4 other polish ideas offered but not picked this round**: cleaning up ~40 inline hardcoded-colour styles on the Health tab's merge/duplicate panel (works fine today, just won't automatically track a future colour/theme change); an actual mobile-width check of the Health tab (only 5 responsive breakpoints exist across the whole stylesheet, never spot-checked at phone width); a manual "Refresh" button on Health so it updates itself after you act elsewhere instead of needing to leave and come back; and refreshing `SPRINT-SUMMARY.md`, which is nearly two months stale and still describes features as unbuilt that have since shipped. _(added 2026-07-26)_
+
+---
+
 ## tenant_role_overrides cleanup: audited SKS's 10 one-off permission tweaks, resolved the one undecided case, cleaned out the rest (2026-07-26)
 *Picked up the Phase 3 "guardrails" work flagged as deferred earlier today (see the launch-window note below). Audited every live SKS-specific permission tweak in the shared roles system against the locked 2026-07-08 decisions on this exact question. Found 9 of the 10 already had a clear answer on record; only one — letting casual/labour-hire workers see the equipment list — had never actually been decided either way. Asked Royce directly; his call: make it standard everywhere, since seeing equipment isn't sensitive. Also caught, mid-task, that this whole area was supposed to be on hold for the SKS launch window — flagged it to Royce before going further, and he said proceed.*
 
