@@ -60,7 +60,9 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-26)
 
-_No open PRs_
+**eq-shell:**
+- #1029 feat(settings): nominate specific recipients for new-join-request emails
+- #1028 fix(security): close anon-EXECUTE gap on zaap/ehow Ops+Quotes RPCs
 
 ---
 
