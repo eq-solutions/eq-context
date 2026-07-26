@@ -63,9 +63,6 @@ _If this file is >48h old, the cron is broken._
 **eq-field:**
 - #538 feat: access-model Phase 3 — leave/timesheets/people isManager conversion
 
-**eq-shell:**
-- #1021 refactor(perms): collapse hand-typed module matrices to derive from @eq-solutions/roles
-
 ---
 
 ## System Health (as of 2026-07-26)
