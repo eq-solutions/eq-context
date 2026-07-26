@@ -14,6 +14,23 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: collapsed the hand-typed permission list to pull directly from the shared roles package (2026-07-26)
+*Deferred scoping item from earlier today's SKS security deep-dive (see "Access-Model Phase 2/3" below). Checked whether eq-shell's 9 hand-typed copies of "who can do what" (7 separate files plus two blocks in the master file) could instead read straight from the shared roles package used across all the EQ apps, removing the risk of a hand-typed copy quietly drifting out of sync. This is a narrow, verified-zero-behaviour-change structural cleanup — not the broader Phase 2/3 auth-feature work Royce locked out of the SKS launch window.*
+
+- [x] **Checked all 9 hand-typed copies against the shared package**: exact match everywhere except one, a genuinely Shell-only permission (site-merge, used by nothing else).
+- [x] **Switched all 9 to read directly from the shared package** instead of keeping hand-typed copies — closes off the entire class of "someone edits one copy and forgets the other" risk (a version of this exact bug was already caught and fixed earlier this week).
+- [x] **Rewrote the automated checker** that guards this so it still works correctly against the new setup.
+- [x] **Verified nothing changed for any user**: full build, full test suite (236/236 passing), and the automated checker all confirm a clean, no-behaviour-change swap.
+- [x] **Shipped and confirmed live**: eq-shell PR #1021, merged and verified actually running on core.eq.solutions (checked the live deploy directly, not just that the merge went through).
+- [x] **Found and fixed in passing**: this session's local copy of the shared roles package was missing two already-published updates — synced it, no functional impact.
+- [x] **Found, not fixed**: two permissions eq-shell still actively hands out (`cards.view`/`cards.onboard`) are marked "don't use these anymore" in the shared package. Spun off as its own small follow-up.
+
+**Deferred:**
+- [ ] **Cards' two deprecated permissions still actively granted** — should be replaced with the correct mechanism instead. Spun off as its own background task, not done this session. _(added 2026-07-26)_
+- [ ] **Hit the recurring "two sessions, one folder" hazard again mid-task** — another concurrent session was actively working in the same shared eq-shell folder at the same time, on a different branch, with its own unsaved work in progress. Worked around it safely (moved to an isolated copy, touched nothing of theirs) — no data lost, but this is the same known hazard logged elsewhere in this file, not a new one. _(added 2026-07-26)_
+
+---
+
 ## eq-cards/eq-shell: onboarding minimum-requirements switch, bulk connect-worker, and a live anon-EXECUTE fix (2026-07-26)
 *Royce deleted a dummy "Bob Smith" test account and signed up fresh himself, live-testing the whole Cards→Shell onboarding path. Found three real gaps: no minimum info required to request joining an org, names not tidied on capitalisation, and no visibility into what happens after approval. Built the fix for all three, then iterated hard on where the "minimum requirements" control should actually live based on Royce's own critique of the first version, separately investigated and built a bulk version of the existing "connect an existing Cards user" admin tool, and along the way found and fixed a live security gap unrelated to any of this.*
 
@@ -43,9 +60,10 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **Today's Actions now shows why each item is ranked where it is.** A short reason (Compliance risk / Commercial risk / Housekeeping) next to each action, so the 1/2/3 order isn't a mystery.
 - [x] **Shipped**: eq-shell PR #1018, merged (squash `f264adf3`) to `main` — Netlify auto-deploys to core.eq.solutions.
 - [x] **Flagged a pre-existing issue found along the way, spun off separately**: `src/App.css` carries a full duplicate copy of the AI-brief/actions CSS from a past "restore" commit — the earlier copy is dead code, superseded by a later block. Spun off as its own background task; already picked up and running in a separate session.
+- [x] **Dead duplicate CSS block removed**: verified the earlier `.eq-hub-ai`/ranked-actions block in `src/App.css` selector-by-selector against the live block before deleting (`.eq-hub-briefing`/`.eq-hub-briefing-skeleton` are NOT part of the duplicate — kept). Branch had gone stale once #1018 merged (same dashboard files); rebased cleanly (the duplicate was untouched by #1018), re-verified build, re-PR'd. **Shipped**: eq-shell PR #1020, merged (squash `e622d775`) to `main`. Netlify production deploy confirmed live (built from `0decaecf`, on top of `e622d775`).
 
 **Deferred:**
-- [ ] **Live smoke test of the new brief bullets + action-reason labels** on a tenant with an active AI brief — not yet manually verified in the running app, only build/typecheck confirmed clean. _(added 2026-07-26)_
+- [ ] **Live smoke test of the new brief bullets + action-reason labels, and the CSS dedup above** on a tenant with an active AI brief — not yet manually verified in the running app (needs a signed-in session), only build/typecheck confirmed clean for both changes. _(added 2026-07-26)_
 - [ ] **Confirm the daily email digest** (`scheduled-briefing.ts`) still renders correctly for a tenant with `brief_recipients` set, now that the brief is a list of lines instead of one string — not yet sent/verified live. _(added 2026-07-26)_
 
 ---
@@ -64,7 +82,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [ ] **Royce to check the Netlify dashboard for `ENFORCE_IFRAME_ORIGIN`** on eq-shell — confirms whether the iframe-origin check is actually enforcing in production (not just in code). Not readable via the connected tools. _(added 2026-07-26)_
 - [ ] **Royce to remediate SEC-12** (plaintext Netlify secrets on eq-shell) via the Netlify dashboard — same-value re-store per key (not a rotation), just needs "contains sensitive values" ticked. `GOOGLE_DOC_AI_CREDENTIALS` (an RSA private key) is the highest-priority one. Full detail in `ops/security-register.md`. _(added 2026-07-26)_
 - [ ] **EQ Cards' own worker-initiated 30-day account-deletion promise** (separate from the leaver-retention work above — this is a worker deleting their *own* Cards account) is still built but switched off (dry-run only). Not actioned this session, just a known standing gap. _(added 2026-07-26)_
-- [ ] **Access-Model Phase 2 ("One admin") and Phase 3 (permission-key guardrails)** — explained to Royce in the Q&A, deliberately not built yet. Locked decision to keep auth changes out of the SKS launch window; revisit post-cutover. _(added 2026-07-26)_
+- [ ] **Access-Model Phase 2 ("One admin") and Phase 3 (permission-key guardrails)** — explained to Royce in the Q&A, deliberately not built yet. Locked decision to keep auth changes out of the SKS launch window; revisit post-cutover. _(added 2026-07-26)_ **Note:** later the same day Royce separately approved one narrow piece of Phase 3 scoping — a pure internal cleanup with zero change to who can do what (see "collapsed the hand-typed permission list" above) — not a reversal of the launch-window lock, just a specific low-risk carve-out he signed off on directly.
 
 ---
 

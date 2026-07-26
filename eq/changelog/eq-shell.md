@@ -9,7 +9,7 @@ status: live
 
 # eq-shell changelog
 
-## 2026-07-26 (latest — PR #1012/#1014/#1015/#1017/#1019, onboarding minimum-requirements switch + bulk connect-worker)
+## 2026-07-26 (latest — PR #1012/#1014/#1015/#1017/#1019/#1020, onboarding minimum-requirements switch + bulk connect-worker + dead CSS cleanup)
 - **PR #1012 (MERGED) — name title-casing generalized.** `_shared/name.ts`'s `tidyOnboardSurname` widened beyond its one narrow ALL-CAPS-plus-middle-name case to any no-case-signal name; new `tidyOnboardFirstName` covers first names too. "bob smith" now becomes "Bob Smith" going through `cards-approve-staff.ts`'s application path. Deliberately-styled names (McDonald, O'Brien, de Biasi) still untouched.
 - **PR #1012/#1015 — new `org_join_requirements` soft-flag switch, relocated after live feedback.** Three toggles (full name / DOB / email) gate nothing but surface a nudge; first built into Training Matrix, then moved into Settings → "Who can join" once Royce flagged it as buried, unexplained, and on the wrong page. Backed by eq-cards migration 0104, applied live to jvkn.
 - **PR #1014 — approval-time gap indicator.** `PendingSection` shows a "Missing N" chip per applicant; the review modal shows a full banner before Approve — both computed against the same requirements the Settings switch controls.
@@ -24,6 +24,9 @@ status: live
 - **Today's Actions rows now show a plain-English reason** (`Compliance risk` / `Commercial risk` / `Housekeeping`) next to each action, derived client-side from the existing `urgency` field, so the 1/2/3 rank order is self-evident instead of an unexplained ordinal + colour dot.
 - Prompted by a design critique + steelman pass on the live dashboard screenshot — full reasoning in `sessions/2026-07-26.md`.
 - Found (not fixed, spun off separately as `task_0c60de81`): `src/App.css` has a full dead duplicate of the AI-brief/actions CSS block from a prior "restore" commit.
+
+## 2026-07-26 (PR #1020, dead duplicate AI-brief CSS block removed)
+- **PR #1020 (MERGED, squash `e622d775`) — closes the `task_0c60de81` follow-up from #1018 above.** Deleted the pre-PR-127 `.eq-hub-ai`/ranked-actions CSS block in `src/App.css` (350 lines), verified selector-by-selector as a strict subset of the later "restored verbatim" block that actually renders. Branch had gone stale once #1018 merged (touched the same files) — rebased cleanly onto current `main` (the duplicate was untouched by #1018's changes), rebuilt, re-PR'd, remerged. Netlify production deploy confirmed live (`0decaecf`, descendant of `e622d775`).
 
 ## 2026-07-26 (PR #1011/#1013, SKS onboarding pre-rollout security fixes + leaver data retention)
 - **PR #1011 (open) — `subcontractor` added to the `tenant_role_overrides` CHECK constraint.** Blocked scoping that role per-tenant; applied live to the control-plane database (jvkn) via Supabase MCP ahead of the PR merge, per the no-CI-apply-path control-migration convention. Flagged in the 2026-07-26 SKS onboarding security review.
