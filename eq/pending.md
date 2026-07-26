@@ -14,6 +14,16 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-roles v2.5.7 shipped + eq-shell bumped: labour_hire can now see equipment (2026-07-26)
+*Royce asked to bump eq-shell onto eq-roles v2.5.7 (the labour_hire→equipment.view permission), then to merge once green, then to delete the now-redundant SKS override, then to confirm it actually works live. Recon caught two live-state surprises before any writing: the PR he pointed at was a duplicate of one already merged hours earlier, and no version tag existed yet to bump to. Also found and deliberately avoided a collision with a different concurrent session redoing already-shipped work in the shared eq-shell checkout.*
+
+- [x] **eq-roles: version tag `v2.5.7` cut and pushed** — package.json had been sitting at 2.5.6/2.5.7 for two releases with no matching git tag, so nothing downstream could actually pin to it. PR #18 (Royce's original pointer) turned out to be a same-day duplicate of already-merged PR #17 — merged anyway for cleanliness but it's an empty diff, no functional change.
+- [x] **eq-shell: `@eq-solutions/roles` bumped v2.5.4 → v2.5.7**, eq-shell PR [#1023](https://github.com/eq-solutions/eq-shell/pull/1023), merged and live on core.eq.solutions. Pure version bump — no client-side permission file needed touching, because an earlier session (PR #1021) had already collapsed those to derive straight from the package. Built in an isolated worktree rather than the shared checkout, which had unrelated uncommitted work sitting in it from a different concurrent session (confirmed as a redundant re-do of already-merged work, not real in-progress work — left untouched either way).
+- [x] **SKS's `tenant_role_override` row granting labour_hire/equipment.view deleted** from the live control-plane database — the canonical package grant now covers it directly, so the tenant-specific patch was redundant. Deleted on Royce's explicit go, ahead of a live click-through check.
+- [x] **Confirmed as far as possible without SKS login access**: production is serving the exact deployed change (matched by commit), and all 4 real labour_hire users at SKS have no other overrides or group memberships that could interfere — their access comes purely from the new canonical grant. A real click-through by an SKS labour_hire user is the only remaining confirmation step.
+
+---
+
 ## eq-receipts: duplicate-detection audit, Dashboard tile, 5 real bugs found+fixed (2026-07-26)
 *Royce asked whether eq-receipts had any duplicate-receipt alerting, then asked for a Dashboard tile, then for a broader "any more high-value polish" pass. Traced the existing but Dashboard-invisible `dupe_hash` mechanism, added a tile+list for it, then found the exact same "derived value never recomputed on edit" bug pattern twice — once already known (dupe_hash), once new (tax_invoice_valid/issues) — plus 3 unrelated real bugs via a verified agent audit (not taken on trust). All shipped across 3 PRs, each Netlify-deploy-confirmed by commit SHA.*
 
@@ -41,7 +51,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **Only 2 of eq-ui's 13 components had any tests** (Modal, Table) — the stateful ones most worth covering (DropdownMenu, Toast, Tabs, AppShell) had zero. Built same session, see below.
 - [x] **No accessibility testing on eq-ui at all.** Built same session, see below. Note: this overlaps with the older, already-tracked a11y backlog items further down this file (A7–A10), which remain their own separate open item.
 - [x] **No linting in eq-ui's CI** — eq-field's build-less app had more lint discipline (a throwaway `npx eslint` run) than eq-ui did despite eq-ui having full npm tooling. Built same session, see below.
-- [ ] **No visual/Storybook-style review tool for eq-ui** — downgraded from "build Storybook" to "maybe a simple one-page kitchen-sink view" given the team's current size; lowest priority of the four, still not built. _(added 2026-07-26)_
+- [x] **No visual/Storybook-style review tool for eq-ui** — downgraded from "build Storybook" to "maybe a simple one-page kitchen-sink view" given the team's current size. Built later the same session, see below. All 4 items from this review are now closed.
 
 ---
 

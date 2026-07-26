@@ -9,6 +9,13 @@ status: live
 
 # SKS Pending
 
+## labour_hire workers can now see Plant & Equipment (2026-07-26)
+*Fix landed on the EQ side (eq-roles + eq-shell) — see `eq/pending.md` (2026-07-26) for full build detail. This entry is the SKS-side pointer.*
+- [x] **labour_hire-role SKS workers now get the same equipment-view access as apprentices** — was previously only granted via a one-off tenant patch specific to SKS; now it's a standard part of every app's permission set. The old SKS-only patch was removed since it's no longer needed.
+- [ ] **Needs a real-world check**: have a labour-hire worker (or someone who can log in as one) open the Plant & Equipment list on core.eq.solutions and confirm it loads. Confirmed as far as possible from the data side (production is serving the right code, no other access rule is in the way) but nobody has actually clicked through as that kind of user yet. _(added 2026-07-26)_
+
+---
+
 ## SKS→EQ Field worker migration — login gap root-caused + fixed on the EQ side (2026-07-26)
 *Royce: reconcile SKS NSW Labour vs EQ Field ahead of moving SKS workers onto EQ Field via Core, then focus on getting the login/onboarding experience right rather than fixing substrate docs. Full build detail lives in `eq/pending.md` (the fix landed in eq-shell) — this entry is the SKS-side pointer.*
 - [x] **Root cause found and fixed**: SKS workers approved before completing Cards phone-OTP signup were never getting a Shell login provisioned. Self-heal fix now closes this automatically on next login attempt — see `eq/pending.md` (2026-07-26) for detail.
