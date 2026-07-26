@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-26 02:04 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-26 02:48 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-26 02:04 UTC → 2026-07-26 02:04 UTC)
+## Since last refresh (2026-07-26 02:04 UTC → 2026-07-26 02:48 UTC)
 
-- Merged: eq-shell [#1009](https://github.com/eq-solutions/eq-shell/pull/1009) fix(staff): lock down direct writes + guard against silent r
-- Merged: eq-shell [#995](https://github.com/eq-solutions/eq-shell/pull/995) docs(ledger): record reconcile_worker_sync migration as appl
-- Merged: eq-shell [#993](https://github.com/eq-solutions/eq-shell/pull/993) fix(workers-canonical-sync): stop nightly reconciler from un
-- Merged: eq-shell [#991](https://github.com/eq-solutions/eq-shell/pull/991) fix(ops): job-creation export never actually populated the n
-- Merged: eq-shell [#989](https://github.com/eq-solutions/eq-shell/pull/989) fix(quotes): simplify quote-detail panel; rebuild Coupa PO i
-- Merged: eq-shell [#987](https://github.com/eq-solutions/eq-shell/pull/987) perf(customers): run the 3 customer-detail lookups in parall
-- Merged: eq-shell [#986](https://github.com/eq-solutions/eq-shell/pull/986) feat(customers): show what matched a search result
-- Merged: eq-shell [#984](https://github.com/eq-solutions/eq-shell/pull/984) fix(customers): backfill market_vertical from customer_group
+- Merged: eq-shell [#1010](https://github.com/eq-solutions/eq-shell/pull/1010) docs(ledger): record retire_credentials_canonical_sync as ap
+- Merged: eq-shell [#994](https://github.com/eq-solutions/eq-shell/pull/994) chore(migrations): codify eq_reconcile_worker_sync() + suppo
+- Merged: eq-shell [#992](https://github.com/eq-solutions/eq-shell/pull/992) fix(auth): self-heal shell login for staff approved before C
+- Merged: eq-shell [#990](https://github.com/eq-solutions/eq-shell/pull/990) fix(login): rename stale Quotes tile to Ops
+- Merged: eq-shell [#988](https://github.com/eq-solutions/eq-shell/pull/988) chore(migrations): renumber 0197_quote_list_pagination_count
+- Merged: eq-shell [#985](https://github.com/eq-solutions/eq-shell/pull/985) docs(ci): stop claiming tenant-migrate.yml has an approval g
+- Merged: eq-shell [#973](https://github.com/eq-solutions/eq-shell/pull/973) perf(quotes): bound the Ops pipeline fetch, add a real count
+- Merged: eq-shell [#971](https://github.com/eq-solutions/eq-shell/pull/971) fix(security): tenant-scope the react-query caches so a work
 
 ## ⚠ Needs you (4)
 
@@ -55,6 +55,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-26 | eq-shell | [#1010](https://github.com/eq-solutions/eq-shell/pull/1010) docs(ledger): record retire_credentials_canonical_sync as applied |
 | 2026-07-26 | eq-shell | [#1009](https://github.com/eq-solutions/eq-shell/pull/1009) fix(staff): lock down direct writes + guard against silent reacti |
 | 2026-07-26 | eq-shell | [#1008](https://github.com/eq-solutions/eq-shell/pull/1008) fix(cards): invite-approval path used an invalid role enum value |
 | 2026-07-26 | eq-shell | [#1007](https://github.com/eq-solutions/eq-shell/pull/1007) fix(quotes): Job Creation export falls back to customer's default |
@@ -69,12 +70,10 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-24 | eq-shell | [#998](https://github.com/eq-solutions/eq-shell/pull/998) feat(customers,quotes): customer-level default End Client |
 | 2026-07-24 | eq-shell | [#996](https://github.com/eq-solutions/eq-shell/pull/996) fix+feat(quotes): Coupa PO import — fix the broken write path, re |
 | 2026-07-24 | eq-shell | [#997](https://github.com/eq-solutions/eq-shell/pull/997) feat(quotes): suggest the customer's last End Client on new quote |
-| 2026-07-24 | eq-solves-service | [#602](https://github.com/eq-solutions/eq-service/pull/602) fix(maintenance): cascade the Assets table checklist filters |
 _Showing 15 of 109 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **Self-heal defaults new logins to the base "employee" role** — anyone who should be supervisor/manager needs a manual role bump after their first self-healed login; role isn't recoverable from employment type alone. _(added 2026-07-26)_
 - **Not yet confirmed by Royce**: the EQ Ops multiselect filters (Est./Status/Job No.) and the labour-hire dashboard now showing the corrected INSELEC rates. The EQ Service Assets table cascade WAS confirmed live by Royce this session. _(added 2026-07-24)_
 - **What's the actual remaining pain point for direct employees, now that the Cards→Field pipe is confirmed live end-to-end?** Asked Royce directly — is it that head office doesn't trust/re-checks Field data before their manual Upvise upload, or a different gap not yet found. Not answered yet this session. _(added 2026-07-24)_
 - **Follow-up: `guard.js` itself is unversioned and untested.** It lives at `~/.claude/hooks/guard.js`, outside any git repo, with zero test coverage (beyond the ad hoc verification above) — unlike `hooks/*.py` in this repo, which are governed/versioned/CI-checked (`hooks/README.md`). Its own header cites a spec file (`system/operating-model-roadmap.md`) that doesn't exist. Worth eventually mirroring guard.js into this repo (versioned source of truth, deployed copy on the Beelink) so it gets the same test-before-trust discipline as the Python hooks. Not fixed this session — separate, larger scope. _(added 2026-07-24)_
@@ -84,7 +83,8 @@ _Showing 15 of 109 · full record in [sessions/](sessions/)_
 - **Not yet click-tested against the newest version** — the tick/cross feedback and the job title column are live, but nobody has run a fresh file through *this* version of the screen yet. _(added 2026-07-24)_
 - **A second, older bookkeeping mismatch of the same kind (two database updates sharing one tracking number, from an earlier session) is still sitting there unresolved** — spotted in passing while fixing the pair above, deliberately left untouched since it wasn't part of what Royce asked for this time. Same fix pattern would apply. _(added 2026-07-24)_
 - **Royce hasn't yet downloaded a fresh Run-Sheet to eyeball the fixed logo himself** — verified by generating and inspecting a sample file directly against the real SKS logo, not by his own click-through. _(added 2026-07-23)_
-_…and 440 more · [eq/pending.md](eq/pending.md)_
+- **Royce hasn't yet re-pulled a fresh export to eyeball the fixed cells himself** — the fix was confirmed via direct RPC call, not a real export download; he asked for this exact check but got redirected before it happened. _(added 2026-07-26)_
+_…and 439 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -106,7 +106,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) |
 |------|------:|-----:|------------------:|
-| [EQ](eq/pending.md) | 2709 | 456 | 29 |
+| [EQ](eq/pending.md) | 2710 | 456 | 30 |
 | [SKS](sks/pending.md) | 522 | 77 | 87 |
 | [SKS active](sks/active.md) | 108 | 0 | 0 |
 | [OPS](ops/pending.md) | 252 | 30 | 6 |
@@ -127,4 +127,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-26 02:04 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-26 02:48 UTC._
