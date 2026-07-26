@@ -24,7 +24,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **New finding logged, not yet fixed**: eq-shell's Netlify project stores several secrets (API keys, a Google service-account private key) as plain visible text instead of masked — SEC-12 in the security register, cross-referenced to two related existing findings. Remediation requires Royce's own hands-on step in the Netlify dashboard (masking an existing env var isn't something this tool is allowed to do even with permission — same class of action as changing a security setting).
 
 **Deferred:**
-- [ ] **Royce to merge eq-shell PR #1011** (subcontractor fix) — open, no blockers, just needs the merge click. _(added 2026-07-26)_
+- [x] **eq-shell PR #1011 merged** (subcontractor fix) — squash-merged 2026-07-26, branch deleted.
 - [ ] **Royce to check the Netlify dashboard for `ENFORCE_IFRAME_ORIGIN`** on eq-shell — confirms whether the iframe-origin check is actually enforcing in production (not just in code). Not readable via the connected tools. _(added 2026-07-26)_
 - [ ] **Royce to remediate SEC-12** (plaintext Netlify secrets on eq-shell) via the Netlify dashboard — same-value re-store per key (not a rotation), just needs "contains sensitive values" ticked. `GOOGLE_DOC_AI_CREDENTIALS` (an RSA private key) is the highest-priority one. Full detail in `ops/security-register.md`. _(added 2026-07-26)_
 - [ ] **EQ Cards' own worker-initiated 30-day account-deletion promise** (separate from the leaver-retention work above — this is a worker deleting their *own* Cards account) is still built but switched off (dry-run only). Not actioned this session, just a known standing gap. _(added 2026-07-26)_
