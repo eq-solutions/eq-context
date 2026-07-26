@@ -1,13 +1,20 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-07-25
+last_updated: 2026-07-26
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # eq-shell changelog
+
+## 2026-07-26 (latest — PR #987/#991/#998/#1004, Customers page speed + Job Creation export bug fix + customer-level default End Client + Ops quote-form layout)
+- **PR #987 (MERGED) — Customers page detail load sped up.** `crm-customers.ts`'s `detail` action ran 3 DB lookups sequentially; converted to `Promise.all`. Ruled out (with real Sentry span data, not guesswork) a speculative fix decoupling sidebar-badge fetches — they don't block rendering.
+- **PR #991 (MERGED) — fixed a real bug: 5 Job Creation export fields (B17/B27/B28/B29/B30) came back blank on a real Equinix export.** Root cause: a duplicate `eq_get_job_creation` overload — `CREATE OR REPLACE FUNCTION` only replaces an identical arg signature, so migrations 0197/0198's new fields landed on an unreachable 1-arg overload while `job-creation.ts`'s service-role caller (no JWT claims) always invokes the 2-arg one (added in migration 0121 for exactly that reason). Migration 0202 dropped both and consolidated into the single correct 2-arg signature. Live-verified via direct RPC call. Royce still owes a manual re-pull of a fresh export to eyeball it himself.
+- **PR #998 (MERGED) — End Client suggestion moved from "last quote used" to a customer-level default.** New `app_data.customers.default_end_client` (migration 0204), `eq_update_customer`/`eq_list_customers` RPCs updated, `CustomersPage.tsx` Edit modal field, `QuotesModule.tsx` prepopulates from it on customer select (both PDF-import and search paths) — still editable per quote, never locked. Confirmed for Royce: only pre-fills quotes created after the customer is updated, not retroactive.
+- **PR #1004 (MERGED) — EQ Ops quote form layout.** End Client field moved up next to Quote Number (kept the "if different" disclaimer); Commercials panel moved into a `position: sticky` right-hand sidebar that stays visible while scrolling the line items, instead of being nested inside the Line Items card.
+- All 4 deployed live to core.eq.solutions, each Netlify deploy confirmed by matching `commit_ref` to the actual merge SHA. Full detail in `sessions/2026-07-26.md`.
 
 ## 2026-07-25 (latest — PR #993 merged, nightly staff-reactivation fix)
 - **PR #993 (MERGED squash `252d8574`) — archived staff no longer get silently un-archived overnight.** Root cause (found 2026-07-24): `workers-canonical-sync`'s merge branch unconditionally forced `active:true`/`field_approved:true` on every synced worker, including anyone manually archived from Shell's Staff page — 87 rows flipped in the same second at 2:35am nightly, confirmed live, since at least 2026-07-19. Fix drops both fields from the sync's write entirely; active/approved status is now decided only by the explicit actions meant to own it (Shell's archive button, the Cards approval flow). The fix had already been live via direct Supabase edge-function deploy (`workers-canonical-sync` v9) since the day before — this merge is pure git-history record-keeping, no behaviour change. Also dispatched `reconcile_ledger=true` for the unrelated Coupa migration-numbering mismatch flagged the same day (`0198`→`0201` rename) — confirmed live on both ehow and zaap afterward.

@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-07-25
+last_updated: 2026-07-26
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -11,6 +11,17 @@ status: live
 
 EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## ⏩ Session close — 2026-07-26 (eq-shell) — Customers page speed, Job Creation export bug fix, customer-level default End Client, Ops quote-form layout
+
+*Continuation of the Job Creation export work. Royce asked for a Customers-page load-time review (steelmanned before shipping — Sentry data showed the real bottleneck, not the first guess), sent a real export that came back with 5 blank fields (a self-inflicted duplicate-RPC bug, fixed and live-verified), then asked for the End Client suggestion to live at the customer level instead of "last quote used," and finally asked for two EQ Ops quote-form layout changes.*
+
+- [x] **Customers page detail load sped up** — 3 sequential DB lookups in `crm-customers.ts`'s `detail` action converted to `Promise.all`. Investigated (and ruled out, with real Sentry span data) a speculative sidebar-badge decoupling fix — it doesn't block rendering, so left alone. eq-shell PR #987, live.
+- [x] **Job Creation export bug found + fixed**: all 5 fields (B17/B27/B28/B29/B30) came back blank on a real Equinix export. Root cause: a duplicate `eq_get_job_creation` overload — the new fields were added to an unreachable 1-arg signature while the actual caller (service-role, no JWT) invokes the 2-arg one. Migration 0202 consolidated both into the single correct signature. eq-shell PR #991, live-verified via direct RPC call. **Still owed: Royce hasn't re-pulled a fresh export himself to eyeball it** (see item above).
+- [x] **End Client suggestion moved from "last quote used" to a customer-level default** — `app_data.customers.default_end_client`, editable per quote (not a hard lock). Migration 0204, eq-shell PR #998, live. Confirmed for Royce: the default only pre-fills **new** quotes going forward — editing a customer's default does not retroactively change any existing quote's End Client (he asked this directly after updating Equinix's default).
+- [x] **EQ Ops quote form layout**: End Client field moved up next to Quote Number (kept the "if different" disclaimer); Commercials panel moved to a sticky top-right sidebar that stays in view while scrolling the line items. eq-shell PR #1004, live.
 
 ---
 
@@ -98,7 +109,8 @@ changelog and session logs are for.
 
 ## eq-shell: SKS Job Creation export now fills in the 3 fields it always had blank + broader customer search (2026-07-23)
 *Royce sent a real "JobCreation-SKS-17359-Equinix..." spreadsheet and asked to check wiring for 3 fields on it, plus whether customer search covers sites/contracts.*
-- [ ] **Not yet click-tested live in the browser** — all 5 Job Creation fields (B17/B27/B28/B29/B30) are wired and deployed, but nobody has actually set them on a real customer/job and pulled a fresh export to confirm every cell lands right. _(added 2026-07-23)_
+- ~~Not yet click-tested live in the browser~~ → **it was tested (2026-07-26), and all 5 fields (B17/B27/B28/B29/B30) came back blank on a real export.** Root cause: a duplicate `eq_get_job_creation` overload — `CREATE OR REPLACE` only replaces a function with an identical arg signature, so the new fields landed on an unreachable 1-arg overload while `job-creation.ts`'s service-role caller actually invokes the 2-arg one. Fixed by migration 0202 (dropped both, consolidated into the single correct 2-arg signature); confirmed live via direct RPC call on the real Equinix quote.
+- [ ] **Royce hasn't yet re-pulled a fresh export to eyeball the fixed cells himself** — the fix was confirmed via direct RPC call, not a real export download; he asked for this exact check but got redirected before it happened. _(added 2026-07-26)_
 
 ---
 
