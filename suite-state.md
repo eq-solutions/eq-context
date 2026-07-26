@@ -60,7 +60,8 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-26)
 
-_No open PRs_
+**eq-shell:**
+- #1011 fix(access-control): add subcontractor to tenant_role_overrides CHECK constraint
 
 ---
 
