@@ -1,13 +1,16 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-07-24
+last_updated: 2026-07-25
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # eq-shell changelog
+
+## 2026-07-25 (latest — PR #993 merged, nightly staff-reactivation fix)
+- **PR #993 (MERGED squash `252d8574`) — archived staff no longer get silently un-archived overnight.** Root cause (found 2026-07-24): `workers-canonical-sync`'s merge branch unconditionally forced `active:true`/`field_approved:true` on every synced worker, including anyone manually archived from Shell's Staff page — 87 rows flipped in the same second at 2:35am nightly, confirmed live, since at least 2026-07-19. Fix drops both fields from the sync's write entirely; active/approved status is now decided only by the explicit actions meant to own it (Shell's archive button, the Cards approval flow). The fix had already been live via direct Supabase edge-function deploy (`workers-canonical-sync` v9) since the day before — this merge is pure git-history record-keeping, no behaviour change. Also dispatched `reconcile_ledger=true` for the unrelated Coupa migration-numbering mismatch flagged the same day (`0198`→`0201` rename) — confirmed live on both ehow and zaap afterward.
 
 ## 2026-07-24 (latest — PR #999 + #1002, Coupa import outcome feedback + job title, then a migration-pipeline collision fixed live)
 - **PR #999 (MERGED squash) — Coupa PO import review table now shows whether each row actually imported.** Royce's first real run of the redesigned table (PR #996) worked — 14 rows matched cleanly, confirmed directly against `app_data.quote_status_history` — but the screen never said so; a committed row looked identical to its pre-commit preview. Each row's checkbox now becomes a fixed outcome icon (check/cross, failure reason shown inline) once it's actually gone through a real commit, and the toolbar tracks a running "N imported, M failed" as the batch goes; a committed row drops out of the checked count so it can't be resubmitted by accident. Also adds a "Job" column (`quote.project_name`) per Royce's ask — migration `0204_coupa_match_project_name.sql`, same query already reading `app_data.quote` for `customer_name`, no new join. Dry-run verified live against ehow before writing.

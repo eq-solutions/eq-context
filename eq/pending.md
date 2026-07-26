@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-07-24
+last_updated: 2026-07-25
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -63,7 +63,8 @@ changelog and session logs are for.
 ## eq-shell: root-caused why 5 archived staff kept reappearing — it was actually 87 people, every night — FIXED + LIVE same day, by a concurrent session (2026-07-24)
 *Royce: kept archiving the same 5 people on the Staff page and they kept coming back — Aaron Clohessy, Bob Smith, Emma Curth, Jack Fitzpatrick, Ross Davidson. Investigated live, found it was actually 87 people getting silently un-archived every night, and wrote a handoff brief for a dedicated fix session. A separate concurrent session picked it up off the live bug (not the handoff doc — timing suggests independent discovery) and shipped the fix before this session's close finished.*
 - [x] **Fixed: the nightly sync no longer touches active/approved status at all.** Root cause was a background profile-detail sync (`workers-canonical-sync`) that unconditionally forced every linked worker back to "active" and "approved" on every sync, including anyone manually archived from the Staff page — confirmed live, 87 rows flipped in the same second at 2:35am, nightly, since at least 2026-07-19. Fix removes those two fields from the sync entirely — active/approved status is now decided ONLY by the explicit actions meant to own it (Shell's archive button, the Cards approval flow), never by a background sync. **Deployed live** (`workers-canonical-sync` v9 on jvkn, confirmed). Archiving someone should stick from now on.
-- [ ] **Not yet confirmed by Royce that the 5 originally-reported people stay archived overnight.** Everything above is verified via the live function version + the fix's own logic, not a "come back tomorrow and check" from Royce himself yet. _(added 2026-07-24)_
+- [x] The code change itself is now merged into eq-shell's main history too (it had been live via direct deploy before this, so no behaviour change — just proper record-keeping). PR [#993](https://github.com/eq-solutions/eq-shell/pull/993), squash `252d8574`.
+- [ ] **An automatic check is scheduled for the morning of 2026-07-25 to confirm the fix actually held overnight** — will look at the 5 originally-reported people directly, check for any suspicious mass-reactivation pattern across staff generally, and report back. Not yet confirmed by Royce himself. _(added 2026-07-24)_
 - [ ] **`eq_reconcile_worker_sync()` (the nightly dispatcher itself, jvkn `pg_cron` job id 2) still isn't tracked in any repo migration** — a governance gap independent of the bug above, not touched by this fix. Not urgent now that the harmful write is gone, but worth bringing under the normal migration pipeline at some point. _(added 2026-07-24)_
 
 ---
