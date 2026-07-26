@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-26 09:15 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-26 09:37 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-26 09:12 UTC → 2026-07-26 09:15 UTC)
+## Since last refresh (2026-07-26 09:15 UTC → 2026-07-26 09:37 UTC)
 
-- Merged: eq-shell [#1008](https://github.com/eq-solutions/eq-shell/pull/1008) fix(cards): invite-approval path used an invalid role enum v
-- Merged: eq-shell [#1006](https://github.com/eq-solutions/eq-shell/pull/1006) chore: remove one-time Sentry alert-apply workflow
-- Merged: eq-shell [#1003](https://github.com/eq-solutions/eq-shell/pull/1003) chore(deps): bump @eq-solutions/ui to v1.11.1 (cascading fil
-- Merged: eq-shell [#1000](https://github.com/eq-solutions/eq-shell/pull/1000) chore(migrations): renumber 0202/0203 Coupa PO collisions ->
-- Merged: eq-shell [#998](https://github.com/eq-solutions/eq-shell/pull/998) feat(customers,quotes): customer-level default End Client
-- Merged: eq-shell [#996](https://github.com/eq-solutions/eq-shell/pull/996) fix+feat(quotes): Coupa PO import — fix the broken write pat
-- Merged: eq-solves-service [#603](https://github.com/eq-solutions/eq-service/pull/603) chore(deps): bump @eq-solutions/roles v2.5.3 -> v2.5.5
-- Merged: eq-solves-service [#602](https://github.com/eq-solutions/eq-service/pull/602) fix(maintenance): cascade the Assets table checklist filters
+- Merged: eq-shell [#1009](https://github.com/eq-solutions/eq-shell/pull/1009) fix(staff): lock down direct writes + guard against silent r
+- Merged: eq-shell [#1007](https://github.com/eq-solutions/eq-shell/pull/1007) fix(quotes): Job Creation export falls back to customer's de
+- Merged: eq-shell [#1005](https://github.com/eq-solutions/eq-shell/pull/1005) fix(sentry): correct filter type on the folded-in iframe-min
+- Merged: eq-shell [#1004](https://github.com/eq-solutions/eq-shell/pull/1004) fix(quotes): End Client next to Quote Number, Commercials st
+- Merged: eq-shell [#1002](https://github.com/eq-solutions/eq-shell/pull/1002) fix(migrations): 0206 was aborting every tenant-migrate disp
+- Merged: eq-shell [#1001](https://github.com/eq-solutions/eq-shell/pull/1001) feat(ops): Excel-style multiselect filters + fix labour-hire
+- Merged: eq-shell [#999](https://github.com/eq-solutions/eq-shell/pull/999) fix(quotes): Coupa import shows import outcome + job title
+- Merged: eq-shell [#997](https://github.com/eq-solutions/eq-shell/pull/997) feat(quotes): suggest the customer's last End Client on new 
 
 ## ⚠ Needs you (5)
 
@@ -71,21 +71,21 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-26 | eq-shell | [#1013](https://github.com/eq-solutions/eq-shell/pull/1013) feat(retention): ADR-005 leaver data retention — deactivated_at + |
 | 2026-07-26 | eq-shell | [#1012](https://github.com/eq-solutions/eq-shell/pull/1012) feat(cards): title-case onboarding names + admin switch for join  |
 | 2026-07-26 | eq-shell | [#1010](https://github.com/eq-solutions/eq-shell/pull/1010) docs(ledger): record retire_credentials_canonical_sync as applied |
-_Showing 15 of 114 · full record in [sessions/](sessions/)_
+_Showing 15 of 115 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **"Not a duplicate" dismiss mechanism** — needs a schema change (e.g. `dupe_ack` column), flagged as a product decision, not built. _(added 2026-07-26)_
+- **Editing Currency in Verify doesn't re-trigger the FX conversion** — `total`/`fx_rate`/`original_total` stay derived from the original (possibly wrong) currency; needs a product call on auto-refetch vs. warn-and-fix-manually. _(added 2026-07-26)_
+- **`poll-batch` edge function can double-ingest a batch job under two concurrent calls** — the "already ingested" guard isn't set until the whole ingest loop finishes. Currently latent, zero client callers of that path today, but real the moment it ships. _(added 2026-07-26)_
+- **Only 2 of eq-ui's 13 components have any tests** (Modal, Table) despite the test setup already being there — the stateful ones most worth covering (DropdownMenu, Toast, Tabs, AppShell) have zero. _(added 2026-07-26)_
+- **No accessibility testing on eq-ui at all** — Modal/DropdownMenu/Tabs are exactly the kind of components (focus traps, keyboard nav) where this matters most. Note: this overlaps with the older, already-tracked a11y backlog items further down this file (A7–A10). _(added 2026-07-26)_
+- **No linting in eq-ui's CI** — eq-field's build-less app actually has more lint discipline (a throwaway `npx eslint` run) than eq-ui does despite eq-ui having full npm tooling. _(added 2026-07-26)_
+- **No visual/Storybook-style review tool for eq-ui** — downgraded from "build Storybook" to "maybe a simple one-page kitchen-sink view" given the team's current size; lowest priority of the four. _(added 2026-07-26)_
+- **4 other polish ideas offered but not picked this round**: cleaning up ~40 inline hardcoded-colour styles on the Health tab's merge/duplicate panel (works fine today, just won't automatically track a future colour/theme change); an actual mobile-width check of the Health tab (only 5 responsive breakpoints exist across the whole stylesheet, never spot-checked at phone width); a manual "Refresh" button on Health so it updates itself after you act elsewhere instead of needing to leave and come back; and refreshing `SPRINT-SUMMARY.md`, which is nearly two months stale and still describes features as unbuilt that have since shipped. _(added 2026-07-26)_
 - **The remaining 4 SKS-specific permission tweaks are intentional, not a to-do list** — flagged here only so a future session doesn't mistake "still has one-off tweaks" for "cleanup incomplete." No action needed unless the underlying product decision changes.
 - **Cards' two deprecated permissions still actively granted** — should be replaced with the correct mechanism instead. Spun off as its own background task, not done this session. _(added 2026-07-26)_
-- **Hit the recurring "two sessions, one folder" hazard again mid-task** — another concurrent session was actively working in the same shared eq-shell folder at the same time, on a different branch, with its own unsaved work in progress. Worked around it safely (moved to an isolated copy, touched nothing of theirs) — no data lost, but this is the same known hazard logged elsewhere in this file, not a new one. _(added 2026-07-26)_
-- **Royce to click through the new "Who can join" Settings section and confirm it reads clearly and saves correctly** — code-complete and tested, not yet user-verified. _(added 2026-07-26)_
-- **Royce to run one more fresh Cards signup** to confirm the nudge and the approval-time flag actually show correctly end to end — the full loop has never been walked through live since these changes landed. _(added 2026-07-26)_
-- **Royce to test the new bulk connect-worker tool** with a real list of phone numbers. _(added 2026-07-26)_
-- **`cards-staff-matches.ts` is dead code** — built to power a duplicate-worker suggestion UI (`AdminCardsFeed`) that no longer exists anywhere in the codebase, superseded by a different mechanism. Not cleaned up, just flagged. _(added 2026-07-26)_
-- **Broader question not investigated**: the anon-EXECUTE fix above was for one function found by accident. The 2026-06-07 lockdown closed this class of gap for new *tables* but never for new *functions* — worth a proper sweep to see if other functions have the same unnoticed gap. _(added 2026-07-26)_
-- **Live smoke test of the new brief bullets + action-reason labels, and the CSS dedup above** on a tenant with an active AI brief — not yet manually verified in the running app (needs a signed-in session), only build/typecheck confirmed clean for both changes. _(added 2026-07-26)_
-- **Confirm the daily email digest** (`scheduled-briefing.ts`) still renders correctly for a tenant with `brief_recipients` set, now that the brief is a list of lines instead of one string — not yet sent/verified live. _(added 2026-07-26)_
-_…and 461 more · [eq/pending.md](eq/pending.md)_
+_…and 469 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -107,7 +107,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) |
 |------|------:|-----:|------------------:|
-| [EQ](eq/pending.md) | 2818 | 473 | 71 |
+| [EQ](eq/pending.md) | 2866 | 481 | 89 |
 | [SKS](sks/pending.md) | 522 | 77 | 87 |
 | [SKS active](sks/active.md) | 108 | 0 | 0 |
 | [OPS](ops/pending.md) | 252 | 30 | 6 |
@@ -128,4 +128,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-26 09:15 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-26 09:37 UTC._
