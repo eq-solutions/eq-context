@@ -46,6 +46,7 @@ failures:
     cost: "near-revert of the 2026-07-03 contract rewrite; two false headline findings"
     note: "The §1 fallback cannot catch this — it triggers on errors, and a stale cache hit is not an error."
     signal: "raw\\.githubusercontent.*stale|serving stale.*(no error|200 ok)|CDN.?cache.*stale"
+    confirmed_in: ["sessions/2026-07-21.md"]
 
   - id: F2
     title: Edit/Write silently truncates long files on the C:\Projects virtiofs mount
@@ -122,7 +123,8 @@ When something escapes the safeguards — **not** when it is merely annoying, bu
 1. Append an entry. `recurrences: 1`, `rung:` = whatever the guard sits at **today** (be honest; prose is rung 1). `last_seen:` = the date of this occurrence (same as `first_seen` on a new entry).
 2. If an `id` already exists for this failure class, **increment `recurrences`** and bump `last_seen` to today — do not add a new entry. Recurrence is the whole signal.
 3. Add a `signal:` regex — a short, specific phrase pattern that would appear in a session log describing this exact failure recurring (not the general topic area; specific enough that it wouldn't match an unrelated mention). This is what `failure_recurrence_signals()` in `refresh_digest.py` scans `sessions/*.md` for.
-4. `guard-ratchet.yml` does the rest. It proposes; Royce disposes.
+4. Add the session file you just wrote this entry into (or bumped it from) to `confirmed_in:` (a list). The date filter alone (`file_date > last_seen`) cannot tell "a session narrating an already-confirmed recurrence" apart from "the failure happening again" — without this, the very session log that reports and closes a recurrence permanently re-triggers itself on every future digest run, since its own file date always stays after `last_seen`. Found live 2026-07-26: F1's confirmation write-up in `sessions/2026-07-21.md` was re-flagging as a "possible guard bypass" in every digest since, purely because it quotes its own signal phrase while being dated after the `last_seen` it set.
+5. `guard-ratchet.yml` does the rest. It proposes; Royce disposes.
 
 **Do not close a failure by writing a lesson.** A lesson is rung 1. If it already had a lesson and recurred, the lesson is the thing that failed.
 

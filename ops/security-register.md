@@ -1,7 +1,7 @@
 ---
 title: OPS — Security Register
 owner: Royce Milmlow
-last_updated: 2026-07-20
+last_updated: 2026-07-27
 scope: Single tracked register of open security findings across the EQ/SKS Supabase surface — advisor output + live probes + known P0s. This is the ONLY security-register.md in the repo — a same-named file mentioned in eq/pending.md lives in a local scratchpad/ folder for an unrelated Trust-page/SOC2 draft, not tracked in git.
 read_priority: critical
 status: live
@@ -45,6 +45,40 @@ fails on **new** exposure while keeping the open ones visible.
   an actual retirement date — sks-nsw-labour confirmed still active 2026-07-16,
   no date set. **Reaffirmed 2026-07-20: no interim hardening either** — the app
   stays untouched, not just unretired, until Field replaces it.
+
+  **Decommission checklist (drafted 2026-07-26, no date set — gates not yet met):**
+  Full cutover mechanics are `SKS-CUTOVER-CRITICAL-PATH.md` Phase E; this is the
+  narrower "is it actually safe to set a date" gate, checked live before writing
+  anything actionable:
+  1. ☐ **Proving run hits its stop condition** — `SKS-FIELD-PARALLEL-RUN-LOG.md`'s
+     own rule: 3-4 *consecutive* clean weeks of parallel roster+timesheet entry.
+     **Current streak: 0 — not yet started** (verified live 2026-07-26; the
+     2026-07-11-decided run never got sustained, real entry activity had dropped
+     to ~1 audit-log action/14 days before this log restarted it). A dirty week
+     resets the counter to zero, not just pauses it.
+  2. ☐ **VIC scale-jump question resolved** — the NSW proof is sized at ~300
+     users; VIC's next expansion is already ~700-1,000, a materially bigger jump
+     than anything NSW will have proven. Open, undecided (`eq/pending.md`).
+  3. ☐ **Rollout sign-off owner named** — "who signs off on a cutover this size"
+     is still unanswered (Royce, 2026-07-23: "no idea about sign-off yet").
+  4. ☐ **The 44 SKS workers still on the standalone app get an actual migration
+     date**, not just a count — 48 already cut over as of 2026-06-06 per
+     `eq/pending.md`, but the remaining 44 have no plan attached, only a tally.
+  5. ☐ **EQ Field's two live untriaged errors get looked at first** — both first
+     seen 2026-07-26, in exactly the crew-facing modules NSW workers would lean
+     on hardest during a scaled-up proving run: `ReferenceError:
+     openLeaveRequest is not defined` and `SyntaxError: Identifier
+     'INCIDENT_TYPES' has already been declared` (Incidents/Near-Miss, shipped
+     2026-07-22). A duplicate-const `SyntaxError` can break bundle load
+     depending on order — worth ruling out before more NSW usage lands on it,
+     not after. Not yet investigated by any session.
+  6. ☐ Once 1-5 are clear: set the actual retirement date, then run Phase E's
+     mechanical steps (repoint SKS Field surface → parallel-run/soak → take
+     `nspbmirochztcjijmcrx` offline → disable its anon key → strike SEC-1 from
+     `rls_probe.py KNOWN_LEAKS`).
+
+  **Bottom line (2026-07-26): premature to set a date today.** Gate 1 alone
+  (0/3-4 clean weeks) rules it out regardless of the other four.
 - ~~SEC-2 — fix `eq_intake_rate_limits` RLS.~~ **Already done — closed 2026-07-21, see Detail.**
 
 ## Rotate whenever convenient (not weekend-critical, per Royce's 2026-07-20 call)

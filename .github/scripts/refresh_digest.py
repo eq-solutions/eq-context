@@ -386,13 +386,22 @@ def failure_recurrence_signals(path="system/failures.md", sessions_dir="sessions
             continue
         # PyYAML parses bare YYYY-MM-DD scalars as datetime.date, not str.
         last_seen = str(fl.get("last_seen") or fl.get("first_seen") or "9999-99-99")
+        # Session files that already confirmed the current last_seen recurrence —
+        # their own write-up quotes the signal phrase, so the date filter alone
+        # can't tell "narrating an already-confirmed hit" from "happened again."
+        # Without this, that write-up re-triggers as a false "guard bypass" on
+        # every future digest run forever (found live 2026-07-26, F1).
+        confirmed_in = set(fl.get("confirmed_in") or [])
         hits = []
         for sess_path in session_files:
             fn = os.path.basename(sess_path)
+            norm_path = sess_path.replace("\\", "/")
             date_m = re.match(r"(\d{4}-\d{2}-\d{2})", fn)
             file_date = date_m.group(1) if date_m else None
             if not file_date or file_date <= last_seen:
                 continue  # dated at/before the known incident window, not a new hit
+            if norm_path in confirmed_in or fn in confirmed_in:
+                continue  # already accounted for in the current last_seen/recurrences
             try:
                 with open(sess_path, encoding="utf-8") as sf:
                     text = sf.read()

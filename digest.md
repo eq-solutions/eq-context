@@ -21,13 +21,12 @@ _2026-07-26 13:09 UTC · what needs your attention. Full snapshot: [suite-state.
 - Merged: eq-shell [#1002](https://github.com/eq-solutions/eq-shell/pull/1002) fix(migrations): 0206 was aborting every tenant-migrate disp
 - Merged: eq-shell [#1001](https://github.com/eq-solutions/eq-shell/pull/1001) feat(ops): Excel-style multiselect filters + fix labour-hire
 
-## ⚠ Needs you (5)
+## ⚠ Needs you (4)
 
 - 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-9 (P0 — confirmed exposure, same window as SEC-3) — A different service_role key (`jvkn`/eq-canonical) was pasted directly into a ch · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-10 (P0 — confirmed exposure) — `ANTHROPIC_API_KEY` + `RESEND_API_KEY` stored as plaintext Netlify env vars (`is · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-12 (P0 — confirmed exposure, same class as SEC-9/SEC-10) — Several real secrets on **eq-shell's own** Netlify project stored with `is_secre · [security-register.md](ops/security-register.md)
-- 🔴 **Guard bypass? rung 4** — F1: Substrate read path served 8-12 day stale content, 200 OK, no error · possibly recurred in [2026-07-21.md](sessions/2026-07-21.md) · [failures.md](system/failures.md)
 
 ## Pulse
 
