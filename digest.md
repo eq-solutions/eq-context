@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-26 09:37 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-26 09:52 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-26 09:15 UTC → 2026-07-26 09:37 UTC)
+## Since last refresh (2026-07-26 09:37 UTC → 2026-07-26 09:52 UTC)
 
-- Merged: eq-shell [#1009](https://github.com/eq-solutions/eq-shell/pull/1009) fix(staff): lock down direct writes + guard against silent r
-- Merged: eq-shell [#1007](https://github.com/eq-solutions/eq-shell/pull/1007) fix(quotes): Job Creation export falls back to customer's de
-- Merged: eq-shell [#1005](https://github.com/eq-solutions/eq-shell/pull/1005) fix(sentry): correct filter type on the folded-in iframe-min
-- Merged: eq-shell [#1004](https://github.com/eq-solutions/eq-shell/pull/1004) fix(quotes): End Client next to Quote Number, Commercials st
-- Merged: eq-shell [#1002](https://github.com/eq-solutions/eq-shell/pull/1002) fix(migrations): 0206 was aborting every tenant-migrate disp
-- Merged: eq-shell [#1001](https://github.com/eq-solutions/eq-shell/pull/1001) feat(ops): Excel-style multiselect filters + fix labour-hire
-- Merged: eq-shell [#999](https://github.com/eq-solutions/eq-shell/pull/999) fix(quotes): Coupa import shows import outcome + job title
-- Merged: eq-shell [#997](https://github.com/eq-solutions/eq-shell/pull/997) feat(quotes): suggest the customer's last End Client on new 
+- Merged: eq-shell [#1026](https://github.com/eq-solutions/eq-shell/pull/1026) refactor(access-control): derive the role-matrix perm list f
+- Merged: eq-shell [#1008](https://github.com/eq-solutions/eq-shell/pull/1008) fix(cards): invite-approval path used an invalid role enum v
+- Merged: eq-shell [#1006](https://github.com/eq-solutions/eq-shell/pull/1006) chore: remove one-time Sentry alert-apply workflow
+- Merged: eq-shell [#1003](https://github.com/eq-solutions/eq-shell/pull/1003) chore(deps): bump @eq-solutions/ui to v1.11.1 (cascading fil
+- Merged: eq-shell [#1000](https://github.com/eq-solutions/eq-shell/pull/1000) chore(migrations): renumber 0202/0203 Coupa PO collisions ->
+- Merged: eq-shell [#998](https://github.com/eq-solutions/eq-shell/pull/998) feat(customers,quotes): customer-level default End Client
+- Merged: eq-shell [#996](https://github.com/eq-solutions/eq-shell/pull/996) fix+feat(quotes): Coupa PO import — fix the broken write pat
+- Merged: eq-solves-service [#603](https://github.com/eq-solutions/eq-service/pull/603) chore(deps): bump @eq-solutions/roles v2.5.3 -> v2.5.5
 
 ## ⚠ Needs you (5)
 
@@ -47,6 +47,7 @@ _2026-07-26 09:37 UTC · what needs your attention. Full snapshot: [suite-state.
 | eq-solves-service | [UnrecognizedActionError: Server Action "4073d2dc7728208efb4febe859b7cd09e6dabc19](https://eq-solutions.sentry.io/issues/122209933/) | 9 | 2026-07-23 |
 | eq-shell | [Error: Workers never invited to join, past grace period: 45](https://eq-solutions.sentry.io/issues/135740258/) | 6 | 2026-07-25 |
 | eq-shell | [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/) | 6 | 2026-07-23 |
+| eq-field | [ReferenceError: openLeaveRequest is not defined](https://eq-solutions.sentry.io/issues/130706295/) | 2 | 2026-07-26 |
 | eq-field | [SyntaxError: Identifier 'INCIDENT_TYPES' has already been declared](https://eq-solutions.sentry.io/issues/136548558/) | 1 | 2026-07-26 |
 | eq-shell | [Error: staff-licence-ocr: ocr-licence returned 401](https://eq-solutions.sentry.io/issues/135986280/) | 1 | 2026-07-22 |
 | eq-shell | [EQ Field handoff auto-recovery (rejected)](https://eq-solutions.sentry.io/issues/133584980/) | 1 | 2026-07-19 |
@@ -56,6 +57,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-26 | eq-shell | [#1026](https://github.com/eq-solutions/eq-shell/pull/1026) refactor(access-control): derive the role-matrix perm list from t |
 | 2026-07-26 | eq-shell | [#1025](https://github.com/eq-solutions/eq-shell/pull/1025) refactor(perms): retire deprecated cards.view/cards.onboard entir |
 | 2026-07-26 | eq-shell | [#1023](https://github.com/eq-solutions/eq-shell/pull/1023) chore(deps): bump @eq-solutions/roles to v2.5.7 |
 | 2026-07-26 | eq-shell | [#1021](https://github.com/eq-solutions/eq-shell/pull/1021) refactor(perms): collapse hand-typed module matrices to derive fr |
@@ -70,7 +72,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-26 | eq-shell | [#1014](https://github.com/eq-solutions/eq-shell/pull/1014) feat(cards): surface the join-requirement gap at approval time |
 | 2026-07-26 | eq-shell | [#1013](https://github.com/eq-solutions/eq-shell/pull/1013) feat(retention): ADR-005 leaver data retention — deactivated_at + |
 | 2026-07-26 | eq-shell | [#1012](https://github.com/eq-solutions/eq-shell/pull/1012) feat(cards): title-case onboarding names + admin switch for join  |
-| 2026-07-26 | eq-shell | [#1010](https://github.com/eq-solutions/eq-shell/pull/1010) docs(ledger): record retire_credentials_canonical_sync as applied |
 _Showing 15 of 115 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -82,10 +83,10 @@ _Showing 15 of 115 · full record in [sessions/](sessions/)_
 - **No accessibility testing on eq-ui at all** — Modal/DropdownMenu/Tabs are exactly the kind of components (focus traps, keyboard nav) where this matters most. Note: this overlaps with the older, already-tracked a11y backlog items further down this file (A7–A10). _(added 2026-07-26)_
 - **No linting in eq-ui's CI** — eq-field's build-less app actually has more lint discipline (a throwaway `npx eslint` run) than eq-ui does despite eq-ui having full npm tooling. _(added 2026-07-26)_
 - **No visual/Storybook-style review tool for eq-ui** — downgraded from "build Storybook" to "maybe a simple one-page kitchen-sink view" given the team's current size; lowest priority of the four. _(added 2026-07-26)_
-- **4 other polish ideas offered but not picked this round**: cleaning up ~40 inline hardcoded-colour styles on the Health tab's merge/duplicate panel (works fine today, just won't automatically track a future colour/theme change); an actual mobile-width check of the Health tab (only 5 responsive breakpoints exist across the whole stylesheet, never spot-checked at phone width); a manual "Refresh" button on Health so it updates itself after you act elsewhere instead of needing to leave and come back; and refreshing `SPRINT-SUMMARY.md`, which is nearly two months stale and still describes features as unbuilt that have since shipped. _(added 2026-07-26)_
 - **The remaining 4 SKS-specific permission tweaks are intentional, not a to-do list** — flagged here only so a future session doesn't mistake "still has one-off tweaks" for "cleanup incomplete." No action needed unless the underlying product decision changes.
 - **Cards' two deprecated permissions still actively granted** — should be replaced with the correct mechanism instead. Spun off as its own background task, not done this session. _(added 2026-07-26)_
-_…and 469 more · [eq/pending.md](eq/pending.md)_
+- **Hit the recurring "two sessions, one folder" hazard again mid-task** — another concurrent session was actively working in the same shared eq-shell folder at the same time, on a different branch, with its own unsaved work in progress. Worked around it safely (moved to an isolated copy, touched nothing of theirs) — no data lost, but this is the same known hazard logged elsewhere in this file, not a new one. _(added 2026-07-26)_
+_…and 468 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -107,7 +108,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) |
 |------|------:|-----:|------------------:|
-| [EQ](eq/pending.md) | 2866 | 481 | 89 |
+| [EQ](eq/pending.md) | 2879 | 480 | 97 |
 | [SKS](sks/pending.md) | 522 | 77 | 87 |
 | [SKS active](sks/active.md) | 108 | 0 | 0 |
 | [OPS](ops/pending.md) | 252 | 30 | 6 |
@@ -128,4 +129,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-26 09:37 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-26 09:52 UTC._
