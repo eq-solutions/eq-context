@@ -14,6 +14,15 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## Closed the loop on the orphan Sentry alert rule — applied live, found and fixed a bug in my own script along the way (2026-07-26)
+*Follow-up to 2026-07-22's session, which fixed the code (`setup-sentry-alerts.mjs`) but couldn't apply it to live Sentry — no write access to alert rules via the available Sentry connection, and no `SENTRY_AUTH_TOKEN`. Royce chose the safest option: a one-time, manual-only GitHub Actions workflow so the token never has to be pasted into chat.*
+- [x] **Built + ran the one-time workflow (eq-shell PR #957, merged).** Royce created a Sentry token + GitHub secret himself. First run "succeeded" at the process level but the real per-rule log told a different story: 4 unrelated rules recreated cleanly (no duplicates, confirmed against live Sentry), but the 5th rule — the actual orphan fix this whole thread was about — failed with a `400` (`"transaction is not one of the available choices"`), and its old broken version had already been deleted by the same run. Net effect of that first run: went from "rule exists but inert" to "rule doesn't exist at all."
+- [x] **Root-caused and fixed the bug (eq-shell PR #1005, merged).** Used `sentry.rules.filters.event_attribute.EventAttributeFilter` (fixed built-in attributes only) instead of `sentry.rules.filters.tagged_event.TaggedEventFilter` (arbitrary tags, e.g. `transaction`) — the original rule had used the latter, confirmed via Sentry's own "Tagged event" label when first inspected. Re-ran the workflow; this time the rule created correctly (id 720354), live-verified: watches `token-exchange`/`mint-cards-otp`/`mint-quotes-iframe-token`, no duplicates across either run.
+- [x] **Removed the one-time workflow (eq-shell PR #1006, merged)** now that it's done its job, per its own stated scope.
+- [ ] **Needs you: revoke the Sentry token + delete the `SENTRY_AUTH_TOKEN` GitHub secret.** It's a management-scoped token (`alerts:write`/`project:write`) — worth cleaning up now that the one-time job is finished, unless something else already needs it. _(added 2026-07-26)_
+
+---
+
 ## eq-shell (cross-tier, EQ side): SKS worker login self-heal shipped — closes the Cards-approved-but-no-Shell-login gap (2026-07-26)
 *Royce asked to reconcile SKS NSW Labour vs EQ Field ahead of migrating SKS workers onto EQ Field via Core, then redirected from "fix the substrate docs" to "how do we get users into Core with minimum access, and make it good." Corrected my own wrong claim that no single-login system existed — Royce pushed back ("we spent heaps of time on a one login system to avoid the friction of two sign ups"); traced eq-cards' actual phone-OTP flow and confirmed the login-sharing already works as designed. Root-caused the real gap: workers approved via the "invite" path (pre-existing staff record) before they'd done Cards phone-OTP signup never get a Shell login provisioned, and nothing re-triggers it later.*
 
