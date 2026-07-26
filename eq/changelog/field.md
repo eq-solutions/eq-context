@@ -9,6 +9,12 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-26] Spinner CSS hand-port now version-pinned (MERGED, #541)
+- `styles/spinner.css` (the hand-ported copy of eq-ui's React `<Spinner>`, needed because Field is build-less and can't import React components) now carries a comment pinning it to `@eq-solutions/ui v1.11.1`, plus a note that nothing in CI enforces the pin.
+- Doc-only — no visual or behavioral change. Companion change in `eq-ui` (`RELEASING.md`) adds a PR-checklist line pointing back at this hand-port.
+- Follows an eq-ui-side review that considered and rejected an automated CI drift-guard for this: a CSS-content diff wouldn't have caught the actual bug this is meant to prevent recurring (an earlier inverted boolean prop on Spinner — a JS semantics issue, not a CSS one).
+- Along the way, found eq-field's GitHub Actions couldn't run at all — an org-level billing/spending-limit block, unrelated to any code. Flagged to Royce, who fixed it; the blocked CI run was re-triggered and passed.
+
 ## [2026-07-22] Incidents / Near Miss reporting (MERGED, #537, v3.5.357, live)
 - New top-level Incidents / Near Miss page (`scripts/incidents.js`), matching Prestart/Toolbox's own-page pattern rather than a `safety.js` tab — corrected mid-build after an initial edit assumed the latter, based on the task brief's SKS-shaped framing, before EQ Field's actual current architecture (Prestart/Toolbox already split off safety.js) was confirmed live.
 - Two premises in the originating task brief were wrong and caught before building: the SKS reference implementation (cited as "just shipped") was actually on an unmerged branch, read as prior art only; and the reference `org_id`-shaped migration file on disk didn't match live — `prestarts`/`toolbox_talks`/`site_diaries` are actually `tenant_id`-scoped on the live DB (`ehow`), with `site_audits`' `org_id` pattern being the outlier, not the template. New `public.incidents` table matches the verified live shape.

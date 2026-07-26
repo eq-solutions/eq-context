@@ -14,6 +14,22 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-ui + eq-field: closed the Spinner CSS hand-port drift gap that caused the earlier inverted-prop bug (2026-07-26)
+*Royce asked for high-value improvements to eq-ui and a critique of the separate-repo-for-UI strategy. Verified the actual repo state (13 components, only 2 tested, no lint, no a11y testing) rather than guessing, then focused in on the sharpest real gap: eq-field can't consume eq-ui's React components at all (build-less, no bundler), so Field hand-copies component CSS by hand — currently just Spinner — with nothing catching drift. That's the same mechanism that shipped the earlier inverted-Spinner-prop bug. Proposed an automated CI guard, then steelmanned it myself and talked Royce out of it: a CSS-surface diff wouldn't have caught that bug (it was a JS prop-semantics issue, not a CSS change), and it's infrastructure for a single hand-ported component today. Built the cheaper fix instead.*
+
+- [x] **eq-field's Spinner CSS now says which version of the real component it was copied from**, so it's obvious at a glance when it's gone stale, instead of just a comment promising it's "in sync." Shipped: eq-field PR #541, merged.
+- [x] **eq-ui's release checklist now tells whoever's shipping a change: if this touches Spinner (or any future component Field hand-ports), say so** — so a human catches it instead of nothing catching it. Shipped: eq-ui PR #29, merged.
+- [x] **Deliberately did NOT build an automated CI check for this** — talked through why with Royce and he agreed: it would check the wrong thing (CSS class names, not component behaviour) and would be over-engineering for one component. If Field ever hand-ports a second or third component, this call is worth revisiting.
+- [x] **Along the way, found eq-field's GitHub Actions was fully blocked** — not by any code issue, by an org billing/spending-limit problem stopping CI jobs from even starting. Flagged it, Royce fixed the billing, re-ran the stuck check, went green, merged.
+
+**Ideas raised but not built this session** (from the broader eq-ui review, still worth doing — none picked yet):
+- [ ] **Only 2 of eq-ui's 13 components have any tests** (Modal, Table) despite the test setup already being there — the stateful ones most worth covering (DropdownMenu, Toast, Tabs, AppShell) have zero. _(added 2026-07-26)_
+- [ ] **No accessibility testing on eq-ui at all** — Modal/DropdownMenu/Tabs are exactly the kind of components (focus traps, keyboard nav) where this matters most. Note: this overlaps with the older, already-tracked a11y backlog items further down this file (A7–A10). _(added 2026-07-26)_
+- [ ] **No linting in eq-ui's CI** — eq-field's build-less app actually has more lint discipline (a throwaway `npx eslint` run) than eq-ui does despite eq-ui having full npm tooling. _(added 2026-07-26)_
+- [ ] **No visual/Storybook-style review tool for eq-ui** — downgraded from "build Storybook" to "maybe a simple one-page kitchen-sink view" given the team's current size; lowest priority of the four. _(added 2026-07-26)_
+
+---
+
 ## eq-solves-intake: EQ Intake demo app polish — tab badges, progressive loading, un-capped dupes list, Ask filter carry-through (2026-07-26)
 *Royce asked for a review of where the EQ Intake demo app is at, plus ideas to polish/improve it. Reviewed the live code directly (not the stale docs) across all 5 tabs, offered 8 concrete polish ideas grounded in what was actually found, and Royce picked 4 to build.*
 
