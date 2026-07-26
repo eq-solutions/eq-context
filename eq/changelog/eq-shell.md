@@ -9,6 +9,9 @@ status: live
 
 # eq-shell changelog
 
+## 2026-07-26 (latest — PR #1007, Job Creation export End Client fallback)
+- **PR #1007 (MERGED squash `0cb4e0a7`) — Job Creation export's End Client field now falls back to the customer's default when the quote's own value is blank.** A real export (SKS-17461, Metronode NSW Pty Ltd) surfaced a second, separate bug from the 0202 duplicate-overload fix: `default_end_client` (migration 0204) only prepopulates End Client at quote-creation time, so a quote created before the customer's default was set stayed permanently blank. `eq_get_job_creation` now reads `COALESCE(q.end_client, c.default_end_client)` — migration 0207, same 2-arg signature as 0202 (deliberately, to avoid recreating the overload bug). No app code change; `job-creation.ts` already does a pure passthrough. Dispatched via `tenant-migrate.yml` and applied to both planes (eq/zaap, sks/ehow), live-verified via direct RPC call on the real quote. Full detail in `sessions/2026-07-26.md`.
+
 ## 2026-07-26 — PR #1008, invite-approval role-enum fix
 - **PR #1008 (MERGED, squash `c0dd17f2`) — the invite-approval path's own attempt to provision a Shell login has never actually worked, now fixed.** `cards-approve-staff.ts` hardcoded `role: 'worker'` on the `shell_control.users` upsert — not a member of the `eq_role` enum (confirmed live on jvkn), so the upsert errored on every call, silently (the error return was never checked). Now reuses `resolveRole(role)`, the same helper the application (self-signup) path already uses one function down, and logs if the upsert ever fails again. No schema change. Live on core.eq.solutions. Known limitation, not a bug: the one real caller (`FieldRosterPage.tsx` bulk Approve) never sends a role, so provisioned logins default to "employee" — same ceiling #992's self-heal already has.
 
