@@ -33,7 +33,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 **Deferred:**
 - [ ] **Real-world confirmation still open** — have a manager ask Zemi Asri (or another affected worker) to retry logging into core.eq.solutions now that #992 is live, and confirm it worked. _(added 2026-07-26)_
-- [ ] **A stray invalid role value is written by `cards-approve-staff.ts`'s invite path** — not a valid Shell role, currently dormant (zero live rows affected), no DB constraint catching it. Landmine, not urgent. _(added 2026-07-26)_
+- [x] **Stray invalid role value in `cards-approve-staff.ts`'s invite path — fixed.** Turned out worse than "dormant": `shell_control.users.role` is a proper `eq_role` enum, so the hardcoded `role: 'worker'` value made that upsert error every single time it ran (silently — the error was never checked), meaning approval-time login provisioning never actually worked for the invite path. Now reuses the same `resolveRole()` helper the application path already uses. eq-shell PR #1008, open, holding for explicit merge instruction (auth-adjacent). _(fixed 2026-07-26)_
 - [ ] **Self-heal defaults new logins to the base "employee" role** — anyone who should be supervisor/manager needs a manual role bump after their first self-healed login; role isn't recoverable from employment type alone. _(added 2026-07-26)_
 
 ---
