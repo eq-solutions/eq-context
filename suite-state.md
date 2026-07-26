@@ -60,8 +60,7 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-26)
 
-**eq-shell:**
-- #1027 chore(deps): bump @eq-solutions/ui v1.11.1 -> v1.12.0
+_No open PRs_
 
 ---
 
