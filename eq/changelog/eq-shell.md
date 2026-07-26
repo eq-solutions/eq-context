@@ -9,7 +9,14 @@ status: live
 
 # eq-shell changelog
 
-## 2026-07-26 (latest — PR #1011/#1013, SKS onboarding pre-rollout security fixes + leaver data retention)
+## 2026-07-26 (latest — PR #1018, dashboard AI Brief + Today's Actions simplification)
+- **PR #1018 (MERGED, squash `f264adf3da0b`) — AI Brief now renders as short bullet lines instead of one dense paragraph.** Changed the `submit_briefing` Claude tool schema + system prompt (`briefing-engine.ts`) to return 2-4 short standalone lines instead of forced prose; dashboard (`TenantHome.tsx`) and the daily email digest (`scheduled-briefing.ts`, both HTML and plain-text renderers) both updated to render a list.
+- **Actions cap raised 3→4** so a backlog large enough to matter (e.g. a big stalled-quotes total) can get its own ranked action card instead of being buried only in the brief's prose — with an explicit prompt rule to do so.
+- **Today's Actions rows now show a plain-English reason** (`Compliance risk` / `Commercial risk` / `Housekeeping`) next to each action, derived client-side from the existing `urgency` field, so the 1/2/3 rank order is self-evident instead of an unexplained ordinal + colour dot.
+- Prompted by a design critique + steelman pass on the live dashboard screenshot — full reasoning in `sessions/2026-07-26.md`.
+- Found (not fixed, spun off separately as `task_0c60de81`): `src/App.css` has a full dead duplicate of the AI-brief/actions CSS block from a prior "restore" commit.
+
+## 2026-07-26 (PR #1011/#1013, SKS onboarding pre-rollout security fixes + leaver data retention)
 - **PR #1011 (open) — `subcontractor` added to the `tenant_role_overrides` CHECK constraint.** Blocked scoping that role per-tenant; applied live to the control-plane database (jvkn) via Supabase MCP ahead of the PR merge, per the no-CI-apply-path control-migration convention. Flagged in the 2026-07-26 SKS onboarding security review.
 - **PR #1013 (MERGED) — ADR-005: leaver data retention, live on all three database planes.** New `deactivated_at` column + trigger on both `shell_control.users` (control plane) and `app_data.staff` (every tenant plane), bidirectional (clears on reactivation). On deactivation: `pin_hash`/`totp_secret` wiped immediately (pure security hygiene, no retention obligation). 7 years after `deactivated_at` (Fair Work Act s.535 / reg 3.33 floor): weekly `pg_cron` job anonymises name/email/phone/DOB/address/emergency-contact/licence-number fields — rows are never hard-deleted, since timesheets/schedule/maintenance-check history still legitimately references them. Deliberately does not touch EQ Cards' own worker-owned licence photos (confirmed no photos are stored tenant-side; reaching into Cards would break its portable-across-employers design). Control-plane half applied by hand to jvkn; tenant-plane half is tenant-migration `0210`, dispatched via `tenant-migrate.yml` (run 30186608588) to both ehow (SKS) and zaap (EQ), live-verified on both.
 - Confirmed CSRF/iframe-origin-check and `eq_recent_auth_events` tenant isolation have no code-level gap (read the live function body directly for the latter).

@@ -14,6 +14,20 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell dashboard: AI Brief scannability + action-ranking clarity (2026-07-26)
+*Royce asked for a critique of the tenant dashboard's AI Brief and Today's Actions sections. Rated 6/10 — good data, weak layout: the same facts (a licence expiring, ready-to-invoice quotes, expiring quotes) surfaced in four places, the brief was a dense unscannable paragraph, and the one genuinely new insight (a large stalled-quotes backlog) had no action card. Asked to steelman the design first — the repetition is a defensible glance→narrative→act→audit scan-depth pattern, not pure duplication — then picked three targeted fixes that respect that structure rather than flattening it.*
+- [x] **Brief now renders as short bullet lines instead of one paragraph.** Changed the AI schema + prompt so the briefing returns 2-4 short standalone lines instead of forced prose; the dashboard and the daily email digest both updated to render it as a list.
+- [x] **The stalled-quotes insight can now be its own action card.** Actions cap raised from 3 to 4, with an explicit rule that a backlog large enough to matter (like $148k of stale quotes) gets its own action instead of being buried in the brief's prose.
+- [x] **Today's Actions now shows why each item is ranked where it is.** A short reason (Compliance risk / Commercial risk / Housekeeping) next to each action, so the 1/2/3 order isn't a mystery.
+- [x] **Shipped**: eq-shell PR #1018, merged (squash `f264adf3`) to `main` — Netlify auto-deploys to core.eq.solutions.
+- [x] **Flagged a pre-existing issue found along the way, spun off separately**: `src/App.css` carries a full duplicate copy of the AI-brief/actions CSS from a past "restore" commit — the earlier copy is dead code, superseded by a later block. Spun off as its own background task; already picked up and running in a separate session.
+
+**Deferred:**
+- [ ] **Live smoke test of the new brief bullets + action-reason labels** on a tenant with an active AI brief — not yet manually verified in the running app, only build/typecheck confirmed clean. _(added 2026-07-26)_
+- [ ] **Confirm the daily email digest** (`scheduled-briefing.ts`) still renders correctly for a tenant with `brief_recipients` set, now that the brief is a list of lines instead of one string — not yet sent/verified live. _(added 2026-07-26)_
+
+---
+
 ## SKS onboarding security deep-dive: 3 pre-rollout fixes + leaver data-retention policy built end-to-end (2026-07-26)
 *Royce asked for a plain-English deep dive on security/roles/access-control on core.eq.solutions ahead of onboarding the SKS NSW business, plus a Q&A on next steps. Full report published as an Artifact. Three items were flagged as "fix before wider rollout"; all three actioned same session, then a real policy gap (no leaver data-retention) was scoped, steelmanned, and built.*
 - [x] **Subcontractor role missing from a DB constraint — fixed live.** `shell_control.tenant_role_overrides` CHECK constraint didn't allow `'subcontractor'`, silently blocking a real role from being scoped per-tenant. Applied directly to the control-plane database. Source-of-record: eq-shell PR #1011 (still open — squash-mergeable, no conflict risk).
