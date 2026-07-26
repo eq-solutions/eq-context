@@ -14,6 +14,28 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-cards/eq-shell: onboarding minimum-requirements switch, bulk connect-worker, and a live anon-EXECUTE fix (2026-07-26)
+*Royce deleted a dummy "Bob Smith" test account and signed up fresh himself, live-testing the whole Cards→Shell onboarding path. Found three real gaps: no minimum info required to request joining an org, names not tidied on capitalisation, and no visibility into what happens after approval. Built the fix for all three, then iterated hard on where the "minimum requirements" control should actually live based on Royce's own critique of the first version, separately investigated and built a bulk version of the existing "connect an existing Cards user" admin tool, and along the way found and fixed a live security gap unrelated to any of this.*
+
+- [x] **Name title-casing fixed** — "bob smith" now becomes "Bob Smith" going through approval; previously only fixed one narrow case (ALL-CAPS surname with a stray middle name). Deliberately-styled names (McDonald, O'Brien) untouched. eq-shell PR #1012, merged+live.
+- [x] **Built a real "minimum info required to join" switch** — three toggles (Full name / Date of birth / Email), soft nudge only (never blocks a join request, just flags it). Backed by a new table (eq-cards migration 0104, applied live to jvkn).
+- [x] **Moved that switch out of Training Matrix into Settings**, after Royce's own critique that it was buried, unexplained, and in the wrong place — Training Matrix is for licence compliance monitoring, Settings is for the underlying policy decision. eq-shell PR #1015.
+- [x] **Closed both consuming loops**: a worker now sees "Before you apply, add: Date of birth" in the Cards app before applying (eq-cards PR #177); a manager reviewing an application now sees a "Missing N" chip + a full banner before approving (eq-shell PR #1014).
+- [x] **Extended the same Settings section to also cover required licences** (Photo ID / White Card), after Royce asked whether those should be a tenant-wide default too — same underlying table Training Matrix already used, added a second edit surface in Settings for the setup/policy side, kept Training Matrix's own picker for in-the-moment compliance fixes. eq-shell PR #1017.
+- [x] **Investigated "how do we pull existing Cards users into Core more easily"** — found this already exists (`AdminConnectWorker`: admin sends a phone number, worker approves in-app, licences flow across with no re-entry) but only one at a time. Also found a dead/orphaned matching feature (`cards-staff-matches.ts`) that references a UI component that no longer exists — flagged, not touched.
+- [x] **Built a bulk version of that connect tool** — paste a list of phone numbers, sends sequentially. Deliberately does NOT bypass the existing 30-requests/hour rate limit (that limit IS the privacy protection, not an inconvenience) — stops cleanly the instant it's hit and shows exactly what sent vs. what's still queued. eq-shell PR #1019.
+- [x] **Found and fixed a live security gap along the way, unrelated to any of the above**: a database function (`my_admin_org_ids`) was reachable by anyone, not just logged-in managers, because of a Postgres default-grant quirk (same class of bug as a previous audit-log fix). Real risk was low — nothing sensitive was actually returned to an anonymous caller — but wrong to leave open. Fixed and applied live. eq-cards PR #180.
+- [x] **Bob Smith test account deleted twice** (start and mid-session, after Royce re-tested live) — verified zero rows remain anywhere both times.
+
+**Deferred:**
+- [ ] **Royce to click through the new "Who can join" Settings section and confirm it reads clearly and saves correctly** — code-complete and tested, not yet user-verified. _(added 2026-07-26)_
+- [ ] **Royce to run one more fresh Cards signup** to confirm the nudge and the approval-time flag actually show correctly end to end — the full loop has never been walked through live since these changes landed. _(added 2026-07-26)_
+- [ ] **Royce to test the new bulk connect-worker tool** with a real list of phone numbers. _(added 2026-07-26)_
+- [ ] **`cards-staff-matches.ts` is dead code** — built to power a duplicate-worker suggestion UI (`AdminCardsFeed`) that no longer exists anywhere in the codebase, superseded by a different mechanism. Not cleaned up, just flagged. _(added 2026-07-26)_
+- [ ] **Broader question not investigated**: the anon-EXECUTE fix above was for one function found by accident. The 2026-06-07 lockdown closed this class of gap for new *tables* but never for new *functions* — worth a proper sweep to see if other functions have the same unnoticed gap. _(added 2026-07-26)_
+
+---
+
 ## eq-shell dashboard: AI Brief scannability + action-ranking clarity (2026-07-26)
 *Royce asked for a critique of the tenant dashboard's AI Brief and Today's Actions sections. Rated 6/10 — good data, weak layout: the same facts (a licence expiring, ready-to-invoice quotes, expiring quotes) surfaced in four places, the brief was a dense unscannable paragraph, and the one genuinely new insight (a large stalled-quotes backlog) had no action card. Asked to steelman the design first — the repetition is a defensible glance→narrative→act→audit scan-depth pattern, not pure duplication — then picked three targeted fixes that respect that structure rather than flattening it.*
 - [x] **Brief now renders as short bullet lines instead of one paragraph.** Changed the AI schema + prompt so the briefing returns 2-4 short standalone lines instead of forced prose; the dashboard and the daily email digest both updated to render it as a list.

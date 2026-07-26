@@ -1,13 +1,19 @@
 ---
 title: EQ Cards — Changelog
 owner: Royce Milmlow
-last_updated: 2026-07-21
+last_updated: 2026-07-26
 scope: EQ Cards append-only history. NOTE — duplicates eq/changelog/cards.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # EQ Cards — Changelog
+
+## 2026-07-26
+- **PR #176 (MERGED) — new `org_join_requirements` table + `eq_cards_my_join_gaps` RPC (migration 0104).** Per-org soft-flag minimum profile fields (full name / DOB / email) required before requesting to join — mirrors `org_credential_requirements`'s (0086) RLS pattern. Applied live to jvkn. Companion to eq-shell's Settings "Who can join" switch (PR #1012/#1015).
+- **PR #177 (MERGED) — worker-facing nudge in `ConnectToCompanyScreen`.** "Before you apply, add: X" shown per org card via the new `JoinGaps` model + `myJoinGapsProvider`. CI caught a real bug pre-merge — `AsyncValue.valueOrNull` isn't defined in this Riverpod version — fixed by switching to the `.when()` shape `RequiredByOrgStrip` already used for the equivalent credential-gap nudge.
+- **PR #180 (MERGED) — closed an anon-EXECUTE gap on `public.my_admin_org_ids()` (migration 0106).** Found via eq-shell's drift-gate CI on an unrelated PR (that check reads live jvkn state, not just the diff). Same class of bug as eq-shell #859 (`eq_audit_retention_run`): Supabase's `public` schema grants `EXECUTE` to `anon`/`authenticated` explicitly at `CREATE FUNCTION` time, so 0106's own `GRANT ... TO authenticated` left the default `anon`/`PUBLIC` grants untouched. Low real exposure (self-gated on `auth.uid()`, anon got an empty result) but fixed and applied live: explicit `REVOKE ... FROM anon, authenticated, PUBLIC` then re-`GRANT` to `authenticated` only.
+- Full reasoning + the eq-shell companion PRs in `eq-context/sessions/2026-07-26.md`.
 
 ## 2026-07-23 (later)
 - **`admin-attach-licence-photo` now accepts a PDF, not just an image (v1→v2, PR #175, merged + deployed).** This operator tool attaches evidence to an *existing* licence row (no duplicate created) — built 2026-07-10 but only ever handled `photo_front_url`/`photo_back_url`. `content_type === 'application/pdf'` now writes `document_url`/`document_type` on the same row instead, matching the shape `staff-licence-backfill.ts` already uses. Also added a 10MB cap the endpoint never had. First real use: attaching Karar Mohammed's Silica Awareness certificate to his already-approved-but-evidenceless licence record (done via direct `supabase storage cp` + a plain row update, not this tool's own secret-gated HTTP path).
