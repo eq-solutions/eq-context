@@ -60,7 +60,8 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-26)
 
-_No open PRs_
+**eq-shell:**
+- #1016 fix(perms): close check-perm-sync.mjs under-grant blind spot + wire ops.manage_suppliers
 
 ---
 
