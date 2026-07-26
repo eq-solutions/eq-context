@@ -58,7 +58,20 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **Refreshed the suite-state/digest tracking files live** by running the real automated refresh (not a hand edit), so they reflect the merge immediately instead of waiting for tonight's nightly run.
 
 **Deferred:**
-- [ ] **4 other polish ideas offered but not picked this round**: cleaning up ~40 inline hardcoded-colour styles on the Health tab's merge/duplicate panel (works fine today, just won't automatically track a future colour/theme change); an actual mobile-width check of the Health tab (only 5 responsive breakpoints exist across the whole stylesheet, never spot-checked at phone width); a manual "Refresh" button on Health so it updates itself after you act elsewhere instead of needing to leave and come back; and refreshing `SPRINT-SUMMARY.md`, which is nearly two months stale and still describes features as unbuilt that have since shipped. _(added 2026-07-26)_
+- [x] **4 other polish ideas offered but not picked this round**: cleaning up ~40 inline hardcoded-colour styles on the Health tab's merge/duplicate panel (works fine today, just won't automatically track a future colour/theme change); an actual mobile-width check of the Health tab (only 5 responsive breakpoints exist across the whole stylesheet, never spot-checked at phone width); a manual "Refresh" button on Health so it updates itself after you act elsewhere instead of needing to leave and come back; and refreshing `SPRINT-SUMMARY.md`, which is nearly two months stale and still describes features as unbuilt that have since shipped. _(added 2026-07-26)_ — **all 4 built this same day, see the entry below.**
+
+---
+
+## eq-solves-intake: shipped the 4 deferred polish items — style cleanup, mobile fix, manual refresh, stale docs (2026-07-26)
+*Same-day follow-up: Royce said "sprint all deferred items", picking up all 4 items deferred from the review above. The mobile-width check wasn't just a clean bill of health — it caught a real bug.*
+
+- [x] **Cleaned up ~40 inline colour styles on the Health tab's merge/duplicate panel**, moved to proper stylesheet classes. Turned up a real, previously invisible bug in passing: two of those inline styles referenced colour variables (`--eq-ink-soft`, `--eq-danger`) that don't actually exist anywhere in the app's colour system — so the fallback colour baked into the code was silently the only thing that was ever rendering. Swapped both for the real, already-defined colours used everywhere else on that screen.
+- [x] **Added a manual "Refresh" button to the Health tab** — acting elsewhere (adjudicating a duplicate, merging sites, approving a queue item) no longer requires leaving the tab and coming back to see updated numbers.
+- [x] **Actually checked the Health tab at phone width** (never done before) using a temporary mock-data test rig, viewed live in a browser, then removed before shipping. Found a real bug: the 6 compliance/data-quality bars next to the score ring were squeezing down to an unreadably thin ~77px wide on a phone instead of stacking properly. Fixed — they now stack cleanly under the score ring below a set screen width.
+- [x] **Refreshed the stale `SPRINT-SUMMARY.md`** — added a "what's shipped since" section covering everything built from write-time duplicate detection through this week's polish work, instead of rewriting the whole two-month-old document.
+- [x] **Verified clean**: full typecheck + full test suite (166 tests) before shipping.
+- [x] **Shipped**: eq-solves-intake PR #77, CI green, merged to main (squash `ed6b9d7`).
+- [x] **Refreshed the suite-state/digest tracking files live** again via the real automated refresh, same as the round before.
 
 ---
 
