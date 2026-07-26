@@ -60,8 +60,7 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-26)
 
-**eq-field:**
-- #538 feat: access-model Phase 3 — leave/timesheets/people isManager conversion
+_No open PRs_
 
 ---
 
