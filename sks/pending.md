@@ -9,6 +9,14 @@ status: live
 
 # SKS Pending
 
+## SKS→EQ Field worker migration — login gap root-caused + fixed on the EQ side (2026-07-26)
+*Royce: reconcile SKS NSW Labour vs EQ Field ahead of moving SKS workers onto EQ Field via Core, then focus on getting the login/onboarding experience right rather than fixing substrate docs. Full build detail lives in `eq/pending.md` (the fix landed in eq-shell) — this entry is the SKS-side pointer.*
+- [x] **Root cause found and fixed**: SKS workers approved before completing Cards phone-OTP signup were never getting a Shell login provisioned. Self-heal fix now closes this automatically on next login attempt — see `eq/pending.md` (2026-07-26) for detail.
+- [x] **One-login design confirmed already correct** — verifying by phone in Cards is the same login used in Shell/Field; no second signup, by design.
+- [ ] **Needs a real-world check**: have a manager get one affected worker (Zemi Asri, approved 2026-06-25) to retry logging into core.eq.solutions and confirm it now works. _(added 2026-07-26)_
+
+---
+
 ## SKS Job Creation spreadsheet — the 3 fields finance/admin always had to fill in by hand can now be pre-set on the customer/job record (2026-07-23)
 *Royce sent a real completed Job Creation form (SKS-17359, Equinix) and asked whether the payables invoice email, Market Vertical, and End Client could be nominated somewhere instead of guessed fresh every time.*
 - [x] **All 3 are now settable in the app** — Market Vertical and a default payables invoice email live on the customer record (edit any customer in Customers → the dropdown matches the spreadsheet's own 19-industry list exactly); End Client is entered per job when creating/editing a quote in EQ Ops. The downloaded Job Creation spreadsheet now comes out with all 3 already filled in, instead of 2 blank dropdowns and a blank box.

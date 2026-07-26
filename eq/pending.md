@@ -14,6 +14,21 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell (cross-tier, EQ side): SKS worker login self-heal shipped — closes the Cards-approved-but-no-Shell-login gap (2026-07-26)
+*Royce asked to reconcile SKS NSW Labour vs EQ Field ahead of migrating SKS workers onto EQ Field via Core, then redirected from "fix the substrate docs" to "how do we get users into Core with minimum access, and make it good." Corrected my own wrong claim that no single-login system existed — Royce pushed back ("we spent heaps of time on a one login system to avoid the friction of two sign ups"); traced eq-cards' actual phone-OTP flow and confirmed the login-sharing already works as designed. Root-caused the real gap: workers approved via the "invite" path (pre-existing staff record) before they'd done Cards phone-OTP signup never get a Shell login provisioned, and nothing re-triggers it later.*
+
+- [x] **Self-heal fix shipped and live**: `shell-login-phone-otp.ts` now provisions the missing Shell login on next login attempt, if (and only if) the worker is linked to a staff record AND that staff record has an actual approved review. Extracted as a pure, unit-tested decision function (`_shared/cards-approval-selfheal.ts` + 5 tests) rather than inline logic. eq-shell PR #992, merged + live on core.eq.solutions.
+- [x] **Confirmed (not assumed) the one-login system already exists** — Cards' phone-OTP verify calls the Shell login exchange directly, setting the Shell session cookie cross-origin in the same step; a second URL-fragment handoff covers the tenant-provisioning edge case. No new login system was needed or built.
+- [x] **Real test candidate identified**: one live worker (Zemi Asri, approved 2026-06-25) matches the exact gap — Cards-verified, approved, no Shell login yet. Flagged to Royce as the concrete case to have a manager re-test.
+- [x] **Onboarding flow explainer built** — simple HTML diagram (worker side vs. onboarding-manager side, converging on "Cards grants a profile only, approval unlocks Field only, everything else needs a separate grant") — published as an artifact for Royce.
+
+**Deferred:**
+- [ ] **Real-world confirmation still open** — have a manager ask Zemi Asri (or another affected worker) to retry logging into core.eq.solutions now that #992 is live, and confirm it worked. _(added 2026-07-26)_
+- [ ] **A stray invalid role value is written by `cards-approve-staff.ts`'s invite path** — not a valid Shell role, currently dormant (zero live rows affected), no DB constraint catching it. Landmine, not urgent. _(added 2026-07-26)_
+- [ ] **Self-heal defaults new logins to the base "employee" role** — anyone who should be supervisor/manager needs a manual role bump after their first self-healed login; role isn't recoverable from employment type alone. _(added 2026-07-26)_
+
+---
+
 ## ⏩ Session close — 2026-07-26 (eq-shell) — Customers page speed, Job Creation export bug fix, customer-level default End Client, Ops quote-form layout
 
 *Continuation of the Job Creation export work. Royce asked for a Customers-page load-time review (steelmanned before shipping — Sentry data showed the real bottleneck, not the first guess), sent a real export that came back with 5 blank fields (a self-inflicted duplicate-RPC bug, fixed and live-verified), then asked for the End Client suggestion to live at the customer level instead of "last quote used," and finally asked for two EQ Ops quote-form layout changes.*
