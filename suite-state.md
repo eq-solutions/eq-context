@@ -61,7 +61,6 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-26)
 
 **eq-field:**
-- #541 docs(spinner): pin the hand-port to its @eq-solutions/ui source version
 - #540 chore: max-lines ratchet + fix stale drift/port comments
 
 ---
