@@ -37,11 +37,22 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **Deliberately did NOT build an automated CI check for this** — talked through why with Royce and he agreed: it would check the wrong thing (CSS class names, not component behaviour) and would be over-engineering for one component. If Field ever hand-ports a second or third component, this call is worth revisiting.
 - [x] **Along the way, found eq-field's GitHub Actions was fully blocked** — not by any code issue, by an org billing/spending-limit problem stopping CI jobs from even starting. Flagged it, Royce fixed the billing, re-ran the stuck check, went green, merged.
 
-**Ideas raised but not built this session** (from the broader eq-ui review, still worth doing — none picked yet):
-- [ ] **Only 2 of eq-ui's 13 components have any tests** (Modal, Table) despite the test setup already being there — the stateful ones most worth covering (DropdownMenu, Toast, Tabs, AppShell) have zero. _(added 2026-07-26)_
-- [ ] **No accessibility testing on eq-ui at all** — Modal/DropdownMenu/Tabs are exactly the kind of components (focus traps, keyboard nav) where this matters most. Note: this overlaps with the older, already-tracked a11y backlog items further down this file (A7–A10). _(added 2026-07-26)_
-- [ ] **No linting in eq-ui's CI** — eq-field's build-less app actually has more lint discipline (a throwaway `npx eslint` run) than eq-ui does despite eq-ui having full npm tooling. _(added 2026-07-26)_
-- [ ] **No visual/Storybook-style review tool for eq-ui** — downgraded from "build Storybook" to "maybe a simple one-page kitchen-sink view" given the team's current size; lowest priority of the four. _(added 2026-07-26)_
+**Ideas raised in the review** (3 of 4 picked up later the same session, see below):
+- [x] **Only 2 of eq-ui's 13 components had any tests** (Modal, Table) — the stateful ones most worth covering (DropdownMenu, Toast, Tabs, AppShell) had zero. Built same session, see below.
+- [x] **No accessibility testing on eq-ui at all.** Built same session, see below. Note: this overlaps with the older, already-tracked a11y backlog items further down this file (A7–A10), which remain their own separate open item.
+- [x] **No linting in eq-ui's CI** — eq-field's build-less app had more lint discipline (a throwaway `npx eslint` run) than eq-ui did despite eq-ui having full npm tooling. Built same session, see below.
+- [ ] **No visual/Storybook-style review tool for eq-ui** — downgraded from "build Storybook" to "maybe a simple one-page kitchen-sink view" given the team's current size; lowest priority of the four, still not built. _(added 2026-07-26)_
+
+---
+
+## eq-ui: added ESLint + accessibility testing, found and fixed 4 real bugs along the way (2026-07-26)
+*Same-session follow-up: asked to steelman the 4 ideas above, then "sprint the outcome." Built 3 of the 4 (skipped the kitchen-sink page, still lowest priority). The linter and the new tests weren't just process theatre — both immediately found real, previously-shipped bugs.*
+
+- [x] **Added ESLint (with an accessibility-rules plugin) to eq-ui, wired into the same CI check every PR already has to pass.** It immediately found real bugs: two places in the Table component where working code was written in a confusing way that could easily hide a future mistake, and one column-toggle menu item that could only be clicked with a mouse — even though the exact same table already handles this correctly a few hundred lines away for its row checkboxes. All three fixed.
+- [x] **Found and fixed a real keyboard-navigation bug in Tabs while adding its tests**: pressing the arrow keys visually moved the selected tab, but a keyboard user's actual focus got stranded on the tab they'd just left — meaning further keyboard presses stopped working as expected. Fixed.
+- [x] **Added automated accessibility checks for the 4 components that had none**: the dropdown menu, tabs, toast notifications, and the app's overall page shell. 29 tests total, all passing.
+- [x] **Two accessibility-checker false alarms were investigated, not blindly "fixed"** — one was a known limitation of the test tool itself (it can't judge colour contrast without a real browser), the other was the test tool not understanding that the app shell already uses a responsive CSS rule correctly. Both documented in the code so nobody re-investigates them from scratch later.
+- [x] Shipped: eq-ui PR [#30](https://github.com/eq-solutions/eq-ui/pull/30), merged.
 
 ---
 
