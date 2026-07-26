@@ -9,7 +9,11 @@ status: live
 
 # eq-shell changelog
 
-## 2026-07-26 (latest — PR #1023, eq-roles dependency bump to v2.5.7)
+## 2026-07-26 (latest — PR #1025 merged, PR #1024 closed as redundant)
+- **PR #1025 (MERGED) — retired the deprecated `cards.view`/`cards.onboard` PermKeys entirely.** Audited first: zero functional check sites reference either key anywhere in the repo, and zero live rows in `shell_control.tenant_role_overrides` or `security_group_perms` on jvkn reference them. Removed the whole `cards` module from the client PermKey union, dropped the now-inert "Cards" toggle section from the Access Control admin page, updated `check-perm-sync.mjs` to drop the retired module. `check-perm-sync.mjs`, full typecheck, and full test suite (247/247) all green before merge.
+- **PR #1024 (CLOSED, not merged) — mirror-collapse work, confirmed already redundant.** Verified a separate background session's in-progress "collapse per-module permission matrix mirrors" branch (typecheck clean, `check-perm-sync.mjs` green, 242/242 tests), pushed it to a new branch name to avoid colliding with an unrelated unmerged remote branch of the same name, and opened a PR. Rebasing onto `main` before merge (per instruction) showed the branch was now a zero-diff — the identical work had already landed independently via PRs #1021/#1022. Closed rather than merged.
+
+## 2026-07-26 (PR #1023, eq-roles dependency bump to v2.5.7)
 - **PR #1023 (MERGED) — `@eq-solutions/roles` bumped to v2.5.7.** Picks up `labour_hire` gaining `equipment.view` (see `eq-roles.md`). CI green including `check-perm-sync.mjs`; `src/modules/equipment/permissions.ts` is already a pure re-export from the package (post-#1021 collapse), so no other file needed to change. Confirmed live on core.eq.solutions (deploy `f24db117`) before the now-redundant SKS `tenant_role_overrides` row for the same grant was deleted on jvkn. Completed by a background task (`task_01e7af09`) spawned earlier the same session.
 
 ## 2026-07-26 (PR #1012/#1014/#1015/#1017/#1019/#1020/#1021, onboarding minimum-requirements switch + bulk connect-worker + dead CSS cleanup + permission-matrix collapse)

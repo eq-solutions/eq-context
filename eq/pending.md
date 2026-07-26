@@ -14,6 +14,18 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## Closed out the last 2 Access-Model Phase 3 follow-ups: mirror-collapse PR + cards.view/cards.onboard merge (2026-07-26)
+*Royce asked to check on the "collapse eq-shell's permission matrix mirrors" background task's in-progress work, then to push and PR it, then to check on the other spun-off follow-ups (Field's isManager conversion, tenant_role_overrides cleanup).*
+
+- [x] **Verified the in-progress mirror-collapse branch before touching it** — typecheck clean, `check-perm-sync.mjs` confirms every module is now a pure re-export, full test suite 242/242 passing, every new package subpath import confirmed present at the already-pinned version (no version drift).
+- [x] **Found a real hazard before pushing**: the branch's name collided with an unrelated, unmerged remote branch (a dashboard feature). Pushed to a new branch name instead of overwriting someone else's in-flight work.
+- [x] **Opened eq-shell PR #1024** for the mirror-collapse + `why_can()` work — then, rebasing onto `main` per Royce's instruction, found the exact same work had already independently landed via PRs #1021/#1022. Closed #1024 as a confirmed no-op rather than merging a duplicate.
+- [x] **Merged eq-shell PR #1025** (retiring the two deprecated `cards.view`/`cards.onboard` permissions) once Royce confirmed it.
+- [x] **Confirmed Field's isManager→canonical-permission conversion is done and live** — eq-field PR #538 plus a same-day follow-up fix, PR #539.
+- [x] **Confirmed the `tenant_role_overrides` cleanup task is done** — see that entry elsewhere in this file for its own detail.
+
+---
+
 ## eq-roles v2.5.7 shipped + eq-shell bumped: labour_hire can now see equipment (2026-07-26)
 *Royce asked to bump eq-shell onto eq-roles v2.5.7 (the labour_hire→equipment.view permission), then to merge once green, then to delete the now-redundant SKS override, then to confirm it actually works live. Recon caught two live-state surprises before any writing: the PR he pointed at was a duplicate of one already merged hours earlier, and no version tag existed yet to bump to. Also found and deliberately avoided a collision with a different concurrent session redoing already-shipped work in the shared eq-shell checkout.*
 
@@ -62,6 +74,18 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **Found and fixed a real keyboard-navigation bug in Tabs while adding its tests**: pressing the arrow keys visually moved the selected tab, but a keyboard user's actual focus got stranded on the tab they'd just left — meaning further keyboard presses stopped working as expected. Fixed.
 - [x] **Added automated accessibility checks for the 4 components that had none**: the dropdown menu, tabs, toast notifications, and the app's overall page shell. 29 tests total, all passing.
 - [x] **Two accessibility-checker false alarms were investigated, not blindly "fixed"** — one was a known limitation of the test tool itself (it can't judge colour contrast without a real browser), the other was the test tool not understanding that the app shell already uses a responsive CSS rule correctly. Both documented in the code so nobody re-investigates them from scratch later.
+
+---
+
+## eq-ui: built the kitchen-sink preview page — the last of the 4 review items — and found one more real bug (2026-07-26)
+*Same-session, final round: built the one item deferred twice already (Storybook-style preview, downgraded to a simple one-page view). Then walked through getting Royce an actual look at it, which surfaced a real problem with the first attempt.*
+
+- [x] **A one-page live preview of every eq-ui component** (`npm run dev`) — not published, dev-only. Shipped: eq-ui PR [#32](https://github.com/eq-solutions/eq-ui/pull/32), merged. **All 4 items from the original review are now built.**
+- [x] **Building the preview found a real, separate bug**: the master stylesheet every app is told to import for styling was silently missing the dropdown menu's styles entirely — any app wiring itself up that way would get a completely unstyled dropdown menu with no warning. Fixed in the same PR.
+- [x] **Actually tested it in a live browser before calling it done**, not just "it builds" — opened the menu, opened a popup dialog, fired a notification, all confirmed working, no errors.
+- [x] **First attempt at showing Royce a snapshot of the page was broken** (file paths that only work when served by a real website, not when just opened from disk) — caught it myself before Royce did, rebuilt it correctly (everything bundled into one self-contained file), verified that one actually works, then sent the fixed version.
+- [x] **Second false alarm, diagnosed not guessed**: Royce reported the fixed file was still blank. Turned out he was viewing it through this chat app's own built-in preview, which strips scripts for security before showing anything — not a bug in the file at all. Confirmed by asking what the browser console actually showed (nothing) and how he was opening it (in-chat preview, not a real downloaded-and-opened file) rather than guessing at a fix.
+- [x] Confirmed safe to hand to the design team on request — no live data, no secrets, just placeholder component examples. Flagged that it's a frozen snapshot, not a live view — worth regenerating if eq-ui changes before design gets to it.
 - [x] Shipped: eq-ui PR [#30](https://github.com/eq-solutions/eq-ui/pull/30), merged.
 
 ---
