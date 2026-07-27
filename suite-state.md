@@ -60,6 +60,9 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-27)
 
+**eq-field:**
+- #544 v3.5.360 — Batch Fill teams, week-jump picker, week-nav hover fix
+
 **eq-service:**
 - #612 chore(deps): bump @sentry/nextjs from 10.58.0 to 10.68.0
 - #611 chore(deps): bump lucide-react from 1.22.0 to 1.27.0
