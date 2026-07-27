@@ -48,12 +48,23 @@ worktree list` to a direct on-disk vs. tracked diff across every repo's
 repo's registry entry already flagged as "never real worktrees" back on
 2026-07-23), `eq-intake`. `worktree-registry.md` updated to record it.
 
-**Needs Royce:** two real leftovers, not urgent:
-- [ ] `eq-shell/.claude/worktrees/app-naming-wt` has real content — 133
-  source files, README/schema-governance/security-pattern docs, actual
-  vite config. No `.git` of its own, so there's no way to tell what
-  branch/commit it represents or whether it's already in `main`. Take a
-  look before anyone deletes it. _(added 2026-07-27)_
+Follow-up: `eq-shell/.claude/worktrees/app-naming-wt` (real content, initially
+flagged for Royce below) turned out to have a sibling — a standalone
+top-level folder `C:\Projects\766-wire-check-perms`, same no-`.git` pattern,
+found while chasing the original "are all these folders required?" audit's
+one fully-undocumented mystery folder. The two were near-byte-identical
+(differed in one file only, itself just a line-ending artifact) and both
+turned out to be stale pre-merge snapshots of already-shipped work —
+confirmed by diffing `src/lib/appLabels.ts` against the live repo (exact
+match) and `git log` on that file, which traced it straight to
+[eq-shell PR #779](https://github.com/eq-solutions/eq-shell/pull/779)
+(MERGED 2026-07-12, confirmed via `gh pr view`). Both deleted — no Royce
+review needed after all, closing that half of the item below.
+
+**Needs Royce:** one real leftover, not urgent:
+- [x] ~~`eq-shell/.claude/worktrees/app-naming-wt` has real content...~~
+  Resolved above — confirmed already-merged, deleted along with its
+  sibling `766-wire-check-perms`.
 - [ ] 4 folders are stuck "device busy" on every retry (not another
   session — consistent across several minutes, points at a system
   process like antivirus/indexing): `eq-cards/will-brown-cards-sks-issue-4ec9c4`,
