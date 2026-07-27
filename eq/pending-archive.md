@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-07-24
+last_updated: 2026-07-27
 scope: Fully-closed session write-ups moved out of eq/pending.md to keep the live doc scannable. Nothing here is actionable — pure historical record (also covered in eq/changelog/*.md and sessions/*.md). Append-only, oldest first as they existed in pending.md.
 read_priority: reference
 status: archive
@@ -389,6 +389,174 @@ something to action, it''s not here — check `eq/pending.md`.
 - **The whole access-model program spans 4 repos from one originating decision.** eq-roles (package = source of truth, needs its own release before any consumer can mirror a new key) → eq-shell (the shared model + whatever it owns directly: Records, EQ Ops, Reports, GM) → eq-field + eq-solves-service (their own write paths, gated separately since Shell only iframes them). Any future access-model cluster should expect the same shape: a package release first, then per-repo enforcement PRs, in whatever order their write paths are actually owned.
 - **`postgres` role bypassing RLS is a standing trap for any future Supabase-MCP-driven migration validation**, not a one-off — worth remembering as a default check (`select rolbypassrls from pg_roles where rolname = current_user`) before trusting any `BEGIN...ROLLBACK` test of a *declarative* RLS policy specifically. Function-body checks (`RAISE EXCEPTION` inside `SECURITY DEFINER`) don't have this problem — they're explicit code, not RLS — so 0188/0189/0190's validations were unaffected.
 - **13 new permission keys shipped this program, all defaulting to manager+supervisor (financial-only key manager-only)** — every one is a no-op for current SKS users until Access Control is customised. The entire value is in the keys being real and enforceable the moment someone does customise, not in any immediate behaviour change.
+
+---
+
+## eq-shell: Training Matrix's "Photo ID" requirement now accepts a driver's licence or passport (2026-07-27)
+*Royce asked to review what "Photo ID" means in the Training Matrix — a driver's licence or passport IS itself valid photo ID, but the matrix was treating photo_id/driver_licence/passport as three unrelated ticket types, so a worker with only a driver's licence on file was wrongly flagged as missing a required Photo ID.*
+
+- [x] **Photo ID requirement now satisfied by holding a photo ID, driver's licence, or passport** — one-directional: a Driver Licence or Passport *requirement* still needs the exact document (driving eligibility / travel are specific asks), only the generic Photo ID requirement gets the equivalence. The matrix cell also now shows whichever document actually covers it, preferring a currently-valid one over an expired one. Shipped: eq-shell PR [#1030](https://github.com/eq-solutions/eq-shell/pull/1030), merged, live on core.eq.solutions.
+
+---
+
+## eq-ui + eq-shell + eq-solves-service: shipped 3 new components, found + fixed a live unstyled-dropdown bug, closed a real sharp/uuid vulnerability (2026-07-26)
+*Royce shared a Claude Design handoff (Tooltip, EmptyState, Pagination for eq-ui) and asked for a review with intent to implement. Verified against the real toolchain rather than trusting the handoff's own claims — found and fixed two real issues before merging. Then traced how the new release actually reaches live apps: eq-shell and eq-solves-service pin eq-ui by exact git tag, not a floating range, so nothing propagates without a manual bump PR per app. Bumping eq-shell surfaced a second, unrelated real bug: its only CSS import path had been missing the dropdown menu's styles since v1.11.1. A side investigation into two npm-audit findings (spun off as a background task) turned up a clean, non-breaking fix.*
+
+- [x] **eq-ui gains Tooltip, EmptyState, and Pagination.** The handoff had 2 real issues (an accessibility lint failure in Tooltip, a prop-shape mismatch vs. the rest of the library) — both fixed before merge, not just flagged. Shipped: eq-ui PR [#33](https://github.com/eq-solutions/eq-ui/pull/33), merged, published as v1.12.0.
+- [x] **eq-shell's Quotes "⋯" menu has likely been rendering completely unstyled in production** — found while bumping to pick up the new components, not something anyone reported; confirmed directly against the old release, not assumed. Shipped: eq-shell PR [#1027](https://github.com/eq-solutions/eq-shell/pull/1027), merged, live on core.eq.solutions.
+- [x] **EQ Service bumped to the same new release too** — no visible change there, it doesn't use the affected menu component. Shipped: eq-service PR [#604](https://github.com/eq-solutions/eq-service/pull/604), merged, live on service.eq.solutions.
+- [x] **Closed a real security finding (sharp/libvips + uuid) without a breaking dependency downgrade.** Checked first whether the vulnerable path is even reachable — it isn't, this app never runs untrusted images through it — then pinned just the two vulnerable packages instead of the breaking "auto-fix" GitHub suggested. Shipped: eq-service PR [#605](https://github.com/eq-solutions/eq-service/pull/605), merged (Royce's own review + merge).
+- [x] **EQ Field's hand-copied loading-spinner style checked against the new release** — confirmed it doesn't need updating; the spinner itself was untouched by this release.
+
+---
+
+## eq-shell + eq-solves-service: 2 more permission-mirror polish items, plus a GitHub Actions billing gap found and fixed (2026-07-26)
+*Continuing the Access-Model Phase 3 mirror-collapse thread from the same day — Royce asked to tidy up the deprecated cards permissions found during the earlier audit, then "what would you do" about two more loose ends, approved both, and asked to merge once CI was green.*
+
+- [x] **Retired `cards.view`/`cards.onboard` entirely** — not just from the permission matrix but the admin toggle for them too, after confirming zero functional check sites anywhere in eq-shell and zero live tenant/security-group overrides reference either key. eq-shell PR #1025, merged, live on core.eq.solutions.
+- [x] **Bumped eq-solves-service's shared-permissions dependency**, which had been 2 releases stale — confirmed a pure no-op first (nothing changed touches what that repo actually uses) before opening it. eq-service PR #603, merged, live on service.eq.solutions.
+- [x] **Found and fixed a third hidden permission mirror**: the Access Control admin page's own toggle list was hand-typed separately from everything else fixed earlier today, and had already silently fallen behind — 4 of 6 "EQ Ops" permissions and a newer Field permission (worker management) had no admin override toggle at all, despite being live and enforced. Admins had no way to customize them per role. Now derived directly from the shared permissions package so this can't happen again. eq-shell PR #1026, merged, live.
+- [x] **Diagnosed a real GitHub Actions billing gap while merging #603**: CI was failing instantly on every job, org-wide, not just this one PR. Traced it past the payment method (which Royce had already fixed) to a separate, still-zeroed spending cap specifically for GitHub Actions. Confirmed live once addressed — reran CI and watched real jobs execute and pass.
+- [x] **Verified all four PRs from today's permissions work are actually deployed**, not just merged — checked Netlify's own deploy record for each and matched the exact commit, rather than trusting "merge succeeded" alone.
+
+---
+
+## Closed out the last 2 Access-Model Phase 3 follow-ups: mirror-collapse PR + cards.view/cards.onboard merge (2026-07-26)
+*Royce asked to check on the "collapse eq-shell's permission matrix mirrors" background task's in-progress work, then to push and PR it, then to check on the other spun-off follow-ups (Field's isManager conversion, tenant_role_overrides cleanup).*
+
+- [x] **Verified the in-progress mirror-collapse branch before touching it** — typecheck clean, `check-perm-sync.mjs` confirms every module is now a pure re-export, full test suite 242/242 passing, every new package subpath import confirmed present at the already-pinned version (no version drift).
+- [x] **Found a real hazard before pushing**: the branch's name collided with an unrelated, unmerged remote branch (a dashboard feature). Pushed to a new branch name instead of overwriting someone else's in-flight work.
+- [x] **Opened eq-shell PR #1024** for the mirror-collapse + `why_can()` work — then, rebasing onto `main` per Royce's instruction, found the exact same work had already independently landed via PRs #1021/#1022. Closed #1024 as a confirmed no-op rather than merging a duplicate.
+- [x] **Merged eq-shell PR #1025** (retiring the two deprecated `cards.view`/`cards.onboard` permissions) once Royce confirmed it.
+- [x] **Confirmed Field's isManager→canonical-permission conversion is done and live** — eq-field PR #538 plus a same-day follow-up fix, PR #539.
+- [x] **Confirmed the `tenant_role_overrides` cleanup task is done** — see that entry elsewhere in this file for its own detail.
+
+---
+
+## eq-roles v2.5.7 shipped + eq-shell bumped: labour_hire can now see equipment (2026-07-26)
+*Royce asked to bump eq-shell onto eq-roles v2.5.7 (the labour_hire→equipment.view permission), then to merge once green, then to delete the now-redundant SKS override, then to confirm it actually works live. Recon caught two live-state surprises before any writing: the PR he pointed at was a duplicate of one already merged hours earlier, and no version tag existed yet to bump to. Also found and deliberately avoided a collision with a different concurrent session redoing already-shipped work in the shared eq-shell checkout.*
+
+- [x] **eq-roles: version tag `v2.5.7` cut and pushed** — package.json had been sitting at 2.5.6/2.5.7 for two releases with no matching git tag, so nothing downstream could actually pin to it. PR #18 (Royce's original pointer) turned out to be a same-day duplicate of already-merged PR #17 — merged anyway for cleanliness but it's an empty diff, no functional change.
+- [x] **eq-shell: `@eq-solutions/roles` bumped v2.5.4 → v2.5.7**, eq-shell PR [#1023](https://github.com/eq-solutions/eq-shell/pull/1023), merged and live on core.eq.solutions. Pure version bump — no client-side permission file needed touching, because an earlier session (PR #1021) had already collapsed those to derive straight from the package. Built in an isolated worktree rather than the shared checkout, which had unrelated uncommitted work sitting in it from a different concurrent session (confirmed as a redundant re-do of already-merged work, not real in-progress work — left untouched either way).
+- [x] **SKS's `tenant_role_override` row granting labour_hire/equipment.view deleted** from the live control-plane database — the canonical package grant now covers it directly, so the tenant-specific patch was redundant. Deleted on Royce's explicit go, ahead of a live click-through check.
+- [x] **Confirmed as far as possible without SKS login access**: production is serving the exact deployed change (matched by commit), and all 4 real labour_hire users at SKS have no other overrides or group memberships that could interfere — their access comes purely from the new canonical grant. A real click-through by an SKS labour_hire user is the only remaining confirmation step.
+
+---
+
+## eq-receipts: duplicate-detection audit, Dashboard tile, 5 real bugs found+fixed (2026-07-26)
+*Royce asked whether eq-receipts had any duplicate-receipt alerting, then asked for a Dashboard tile, then for a broader "any more high-value polish" pass. Traced the existing but Dashboard-invisible `dupe_hash` mechanism, added a tile+list for it, then found the exact same "derived value never recomputed on edit" bug pattern twice — once already known (dupe_hash), once new (tax_invoice_valid/issues) — plus 3 unrelated real bugs via a verified agent audit (not taken on trust). All shipped across 3 PRs, each Netlify-deploy-confirmed by commit SHA.*
+
+- [x] **Possible-duplicates stat tile + clickable list added to the Dashboard**, matching the existing Invalid-tax-invoice-watchlist pattern. eq-receipts PR [#3](https://github.com/eq-solutions/eq-receipts/pull/3)/[#4](https://github.com/eq-solutions/eq-receipts/pull/4), merged, live.
+- [x] **Fixed: `dupe_hash` (and separately, `tax_invoice_valid`/`issues`) went stale the moment you corrected an OCR mistake in Verify** — neither was ever recomputed on save, so a fixed total/date/vendor/ABN silently kept the old duplicate-match / tax-invoice-flag forever. Both now recompute on every save.
+- [x] **Fixed: Verify's "Business use %" field showed a 100 fallback for display only** — saving without touching it wrote `null`, silently corrupting the export's tax-apportionment column.
+- [x] **Fixed: no way to correct a misread ABN anywhere in the UI** — a failed checksum was permanent regardless of review. Added the input + live checksum feedback (also caught `abn_valid` itself was never being saved at all).
+- [x] **Fixed: Dashboard/Exports date defaults were off by a day for AU users** — `toISOString().slice(0,10)` on locally-built dates truncates to the wrong calendar day for any positive UTC offset. Exports' "start of month" default was unconditionally wrong every month, not just at certain times of day.
+- [x] All 5 fixes shipped in eq-receipts PR [#5](https://github.com/eq-solutions/eq-receipts/pull/5), merged, Netlify-deploy-confirmed.
+- [x] **"Not a duplicate" dismiss mechanism** — asked to steelman the 3 deferred items then build per outcome; this one held up (single-user app, low schema risk, a genuinely recurring nag). `receipts.dupe_dismissed_at` column + a "Not a duplicate" button in Verify, respected by the Dashboard tile/list and Verify's own duplicate lookup, auto-clears if `dupe_hash` changes on save. eq-receipts PR [#6](https://github.com/eq-solutions/eq-receipts/pull/6), merged, live.
+- [x] **Editing Currency in Verify doesn't re-trigger the FX conversion** — built as an opt-in "Refresh AUD conversion" button (not automatic), which sidesteps the clobber risk that made this a pure product call before. Along the way, found `original_total`/`original_subtotal`/`original_gst`/`fx_rate`/`fx_rate_date` were never even included in Verify's save payload at all — fixed too. eq-receipts PR #6, merged, live.
+- [x] **`poll-batch` edge function double-ingest race** — steelman verdict: fix the code (cheap, correct, contained), don't deploy (unreachable from any current UI path today; an Edge Function deploy is a separate explicit-authorization action from a code fix). Atomic conditional UPDATE replaces the check-then-write guard. eq-receipts PR #6 — **shipped as code only, edge function not redeployed.**
+
+---
+
+## eq-ui: added ESLint + accessibility testing, found and fixed 4 real bugs along the way (2026-07-26)
+*Same-session follow-up: asked to steelman the 4 ideas above, then "sprint the outcome." Built 3 of the 4 (skipped the kitchen-sink page, still lowest priority). The linter and the new tests weren't just process theatre — both immediately found real, previously-shipped bugs.*
+
+- [x] **Added ESLint (with an accessibility-rules plugin) to eq-ui, wired into the same CI check every PR already has to pass.** It immediately found real bugs: two places in the Table component where working code was written in a confusing way that could easily hide a future mistake, and one column-toggle menu item that could only be clicked with a mouse — even though the exact same table already handles this correctly a few hundred lines away for its row checkboxes. All three fixed.
+- [x] **Found and fixed a real keyboard-navigation bug in Tabs while adding its tests**: pressing the arrow keys visually moved the selected tab, but a keyboard user's actual focus got stranded on the tab they'd just left — meaning further keyboard presses stopped working as expected. Fixed.
+- [x] **Added automated accessibility checks for the 4 components that had none**: the dropdown menu, tabs, toast notifications, and the app's overall page shell. 29 tests total, all passing.
+- [x] **Two accessibility-checker false alarms were investigated, not blindly "fixed"** — one was a known limitation of the test tool itself (it can't judge colour contrast without a real browser), the other was the test tool not understanding that the app shell already uses a responsive CSS rule correctly. Both documented in the code so nobody re-investigates them from scratch later.
+
+---
+
+## eq-ui: built the kitchen-sink preview page — the last of the 4 review items — and found one more real bug (2026-07-26)
+*Same-session, final round: built the one item deferred twice already (Storybook-style preview, downgraded to a simple one-page view). Then walked through getting Royce an actual look at it, which surfaced a real problem with the first attempt.*
+
+- [x] **A one-page live preview of every eq-ui component** (`npm run dev`) — not published, dev-only. Shipped: eq-ui PR [#32](https://github.com/eq-solutions/eq-ui/pull/32), merged. **All 4 items from the original review are now built.**
+- [x] **Building the preview found a real, separate bug**: the master stylesheet every app is told to import for styling was silently missing the dropdown menu's styles entirely — any app wiring itself up that way would get a completely unstyled dropdown menu with no warning. Fixed in the same PR.
+- [x] **Actually tested it in a live browser before calling it done**, not just "it builds" — opened the menu, opened a popup dialog, fired a notification, all confirmed working, no errors.
+- [x] **First attempt at showing Royce a snapshot of the page was broken** (file paths that only work when served by a real website, not when just opened from disk) — caught it myself before Royce did, rebuilt it correctly (everything bundled into one self-contained file), verified that one actually works, then sent the fixed version.
+- [x] **Second false alarm, diagnosed not guessed**: Royce reported the fixed file was still blank. Turned out he was viewing it through this chat app's own built-in preview, which strips scripts for security before showing anything — not a bug in the file at all. Confirmed by asking what the browser console actually showed (nothing) and how he was opening it (in-chat preview, not a real downloaded-and-opened file) rather than guessing at a fix.
+- [x] Confirmed safe to hand to the design team on request — no live data, no secrets, just placeholder component examples. Flagged that it's a frozen snapshot, not a live view — worth regenerating if eq-ui changes before design gets to it.
+- [x] Shipped: eq-ui PR [#30](https://github.com/eq-solutions/eq-ui/pull/30), merged.
+
+---
+
+## eq-solves-intake: EQ Intake demo app polish — tab badges, progressive loading, un-capped dupes list, Ask filter carry-through (2026-07-26)
+*Royce asked for a review of where the EQ Intake demo app is at, plus ideas to polish/improve it. Reviewed the live code directly (not the stale docs) across all 5 tabs, offered 8 concrete polish ideas grounded in what was actually found, and Royce picked 4 to build.*
+
+- [x] **Health and Queue tabs now show a small count badge** of what's waiting, so you don't have to click in to find out something needs attention.
+- [x] **Health tab no longer waits for everything to load before showing anything** — sections appear as their own data arrives instead of one all-or-nothing spinner.
+- [x] **The "duplicates caught at the write" list on Health no longer silently hides anything past the first 8** — a "Show all" button reveals the rest.
+- [x] **Asking a question in the Ask tab and opening the matching records now actually shows the records that answered your question** — previously it silently reset to showing every record for that entity.
+- [x] **Caught and fixed a real bug along the way before it shipped**: the new "show all" toggle was first written in a way that could break under React's rules (a hook called after an early return).
+- [x] **Verified clean**: full typecheck + full test suite (166 tests) before shipping.
+- [x] **Shipped**: eq-solves-intake PR #76, CI green, merged to main (squash `7429424`). This repo has no auto-deploy configured — merge to main is the full extent of shipping it.
+- [x] **Refreshed the suite-state/digest tracking files live** by running the real automated refresh (not a hand edit), so they reflect the merge immediately instead of waiting for tonight's nightly run.
+
+---
+
+## eq-field: file-size CI ratchet + first browser-based test suite; found both live tenants are Core-only now (2026-07-26)
+
+*Royce asked for high-value improvements to eq-field specifically and a critique of the separate-repo-for-UI strategy (a parallel, eq-ui-focused version of the same question is tracked in the entries above — different repo, no overlap). Steelmanned the recommendations before building anything: killed a full rewrite-to-ES-modules idea and a TypeScript-checking setup as too risky or premature for zero current payoff, built the two ideas that survived scrutiny.*
+
+- [x] **The "keep files under ~1,500 lines" rule (already written down, never enforced) is now a real CI check.** 8 already-oversized files got a ceiling just above their current size so nothing breaks today, but any of them growing further now fails the build instead of silently drifting further.
+- [x] **Built EQ Field's first automated test that actually opens the app in a browser**, instead of only testing logic in isolation. Targets the exact bug that's shipped four separate times before (a loading spinner getting stuck on screen — most recently a real error the day of this session) — covers the login screen, roster, timesheets, and leave-request screens. Run manually before a risky merge, not automatically on every change.
+- [x] **Found while building it: neither live tenant's app can actually be logged into directly anymore.** Both EQ's own test version and SKS's real one now require going through the Core login page instead of the app's own login screen — the test suite (correctly) can't fake its way past that, so it simulates a successful login response to reach the same screens real users see. Auth itself isn't covered by these tests, only what happens after someone's logged in.
+- [x] **Found: the "quick demo login" web address (`?tenant=demo`) documented in eq-field's setup notes doesn't actually work anymore** — it silently falls back to EQ's real (if disposable) test tenant instead of the fully offline mode the notes describe. Spun off as its own follow-up (already running in a separate session) rather than fixed here, since it touches login/tenant routing.
+- [x] Shipped: eq-field PR [#540](https://github.com/eq-solutions/eq-field/pull/540), merged. Picked up PR #541's Spinner version-pin (from the eq-ui entry above) via a clean merge along the way.
+- [x] **Also hit the same GitHub Actions billing outage** described in the eq-ui/Spinner entry above — same root cause, this repo's CI checks. No separate fix needed.
+
+**Deferred:**
+- [x] **4 other polish ideas offered but not picked this round**: cleaning up ~40 inline hardcoded-colour styles on the Health tab's merge/duplicate panel (works fine today, just won't automatically track a future colour/theme change); an actual mobile-width check of the Health tab (only 5 responsive breakpoints exist across the whole stylesheet, never spot-checked at phone width); a manual "Refresh" button on Health so it updates itself after you act elsewhere instead of needing to leave and come back; and refreshing `SPRINT-SUMMARY.md`, which is nearly two months stale and still describes features as unbuilt that have since shipped. _(added 2026-07-26)_ — **all 4 built this same day, see the entry below.**
+
+---
+
+## eq-solves-intake: shipped the 4 deferred polish items — style cleanup, mobile fix, manual refresh, stale docs (2026-07-26)
+*Same-day follow-up: Royce said "sprint all deferred items", picking up all 4 items deferred from the review above. The mobile-width check wasn't just a clean bill of health — it caught a real bug.*
+
+- [x] **Cleaned up ~40 inline colour styles on the Health tab's merge/duplicate panel**, moved to proper stylesheet classes. Turned up a real, previously invisible bug in passing: two of those inline styles referenced colour variables (`--eq-ink-soft`, `--eq-danger`) that don't actually exist anywhere in the app's colour system — so the fallback colour baked into the code was silently the only thing that was ever rendering. Swapped both for the real, already-defined colours used everywhere else on that screen.
+- [x] **Added a manual "Refresh" button to the Health tab** — acting elsewhere (adjudicating a duplicate, merging sites, approving a queue item) no longer requires leaving the tab and coming back to see updated numbers.
+- [x] **Actually checked the Health tab at phone width** (never done before) using a temporary mock-data test rig, viewed live in a browser, then removed before shipping. Found a real bug: the 6 compliance/data-quality bars next to the score ring were squeezing down to an unreadably thin ~77px wide on a phone instead of stacking properly. Fixed — they now stack cleanly under the score ring below a set screen width.
+- [x] **Refreshed the stale `SPRINT-SUMMARY.md`** — added a "what's shipped since" section covering everything built from write-time duplicate detection through this week's polish work, instead of rewriting the whole two-month-old document.
+- [x] **Verified clean**: full typecheck + full test suite (166 tests) before shipping.
+- [x] **Shipped**: eq-solves-intake PR #77, CI green, merged to main (squash `ed6b9d7`).
+- [x] **Refreshed the suite-state/digest tracking files live** again via the real automated refresh, same as the round before.
+
+---
+
+## Closed the loop on the orphan Sentry alert rule — applied live, found and fixed a bug in my own script along the way (2026-07-26)
+*Follow-up to 2026-07-22's session, which fixed the code (`setup-sentry-alerts.mjs`) but couldn't apply it to live Sentry — no write access to alert rules via the available Sentry connection, and no `SENTRY_AUTH_TOKEN`. Royce chose the safest option: a one-time, manual-only GitHub Actions workflow so the token never has to be pasted into chat.*
+- [x] **Built + ran the one-time workflow (eq-shell PR #957, merged).** Royce created a Sentry token + GitHub secret himself. First run "succeeded" at the process level but the real per-rule log told a different story: 4 unrelated rules recreated cleanly (no duplicates, confirmed against live Sentry), but the 5th rule — the actual orphan fix this whole thread was about — failed with a `400` (`"transaction is not one of the available choices"`), and its old broken version had already been deleted by the same run. Net effect of that first run: went from "rule exists but inert" to "rule doesn't exist at all."
+- [x] **Root-caused and fixed the bug (eq-shell PR #1005, merged).** Used `sentry.rules.filters.event_attribute.EventAttributeFilter` (fixed built-in attributes only) instead of `sentry.rules.filters.tagged_event.TaggedEventFilter` (arbitrary tags, e.g. `transaction`) — the original rule had used the latter, confirmed via Sentry's own "Tagged event" label when first inspected. Re-ran the workflow; this time the rule created correctly (id 720354), live-verified: watches `token-exchange`/`mint-cards-otp`/`mint-quotes-iframe-token`, no duplicates across either run.
+- [x] **Removed the one-time workflow (eq-shell PR #1006, merged)** now that it's done its job, per its own stated scope.
+- [x] **Sentry token revoked + `SENTRY_AUTH_TOKEN` GitHub secret deleted** — confirmed by Royce. _(done 2026-07-26)_
+
+---
+
+## ⏩ Session close — 2026-07-26 (eq-shell) — Customers page speed, Job Creation export bug fix, customer-level default End Client, Ops quote-form layout
+
+*Continuation of the Job Creation export work. Royce asked for a Customers-page load-time review (steelmanned before shipping — Sentry data showed the real bottleneck, not the first guess), sent a real export that came back with 5 blank fields (a self-inflicted duplicate-RPC bug, fixed and live-verified), then asked for the End Client suggestion to live at the customer level instead of "last quote used," and finally asked for two EQ Ops quote-form layout changes.*
+
+- [x] **Customers page detail load sped up** — 3 sequential DB lookups in `crm-customers.ts`'s `detail` action converted to `Promise.all`. Investigated (and ruled out, with real Sentry span data) a speculative sidebar-badge decoupling fix — it doesn't block rendering, so left alone. eq-shell PR #987, live.
+- [x] **Job Creation export bug found + fixed**: all 5 fields (B17/B27/B28/B29/B30) came back blank on a real Equinix export. Root cause: a duplicate `eq_get_job_creation` overload — the new fields were added to an unreachable 1-arg signature while the actual caller (service-role, no JWT) invokes the 2-arg one. Migration 0202 consolidated both into the single correct signature. eq-shell PR #991, live-verified via direct RPC call.
+- [x] **End Client suggestion moved from "last quote used" to a customer-level default** — `app_data.customers.default_end_client`, editable per quote (not a hard lock). Migration 0204, eq-shell PR #998, live. Confirmed for Royce: the default only pre-fills **new** quotes going forward — editing a customer's default does not retroactively change any existing quote's End Client (he asked this directly after updating Equinix's default).
+- [x] **EQ Ops quote form layout**: End Client field moved up next to Quote Number (kept the "if different" disclaimer); Commercials panel moved to a sticky top-right sidebar that stays in view while scrolling the line items. eq-shell PR #1004, live.
+- [x] **Royce pulled a real export (SKS-17461, Metronode NSW Pty Ltd) and confirmed B17/B27/B28/B29 all fill in correctly — the item above is now genuinely closed, not just RPC-verified.** But B30 (End Client) came back blank, a second, separate bug: the customer-level default (previous bullet) only prepopulates End Client at quote-creation time — it never touches a quote that already existed when the customer default was set. This quote was created 3 days before Metronode's default was set, so it fell in the gap. Fixed by making the export RPC fall back to the customer's default whenever the quote's own End Client is blank (`COALESCE(q.end_client, c.default_end_client)`), matching Royce's original "customer level, user can change case by case" intent — every existing quote for a customer with a default now exports correctly, not just new ones. Migration 0207, eq-shell PR #1007, merged and dispatched live to both planes, live-verified via direct RPC call on the real quote. **Still owed: Royce hasn't re-downloaded a fresh export since this specific fix to see B30 show "Equinix."** _(added 2026-07-26)_
+
+---
+
+## eq-shell: PR #973 quotes-pipeline pagination — confirmed live on both tenants (2026-07-26)
+*A prior session's 2026-07-23 session-close correction (recording that PR #973's migration went live once a GitHub-billing block cleared) was written to a worktree branch that was never pushed — the correction itself was lost, though the real work had genuinely shipped. Verified fresh this session, independent of that lost note.*
+- [x] **PR #973's pagination + counts fix is confirmed live end-to-end.** GitHub: PR [#973](https://github.com/eq-solutions/eq-shell/pull/973) ("perf(quotes): bound the Ops pipeline fetch, add a real counts RPC") merged 2026-07-23 09:56 UTC; PR [#988](https://github.com/eq-solutions/eq-shell/pull/988) (same-day `0197`→`0200` renumbering after a collision with an unrelated migration) merged 2026-07-23 10:29 UTC. `supabase/tenant-migrations/0200_quote_list_pagination_counts.sql` is on `origin/main`. Live-queried via `pg_proc` on both tenant databases: `eq_list_quotes` carries the new `p_limit/p_offset/p_smart_filter/p_stage` signature and `eq_quote_pipeline_counts` exists, on both ehow (SKS) and zaap (EQ). `QuotesModule.tsx` on `origin/main` genuinely calls both with the new params — not dead code. eq-shell auto-deploys `main` → core.eq.solutions, so this is live in production, not just merged. (Aside: the generic Supabase migration ledger has no entry for this migration on ehow — the governed tenant-migration pipeline doesn't feed that particular tracking table — but the functions themselves are directly confirmed live, which is stronger evidence than a ledger row.) _(confirmed 2026-07-26)_
+
+---
+
+## eq-solves-service: closed the sharp/uuid npm-audit findings via overrides, not a next/exceljs bump (2026-07-27)
+*Two real (non-devDependency) npm audit findings — `sharp <0.35.0` (libvips CVEs, high) and `uuid <11.1.1` (buffer bounds check, moderate) — had been flagged "pre-existing, spun off separately" across a few recent PRs. Investigated whether untrusted image data actually flows through the vulnerable path before touching anything.*
+
+- [x] **Confirmed zero runtime exposure**: `next/image`'s `<Image>` component is never used anywhere in this repo (no `images` config in `next.config.ts`; the one `<Image>` import anywhere is a lucide-react icon). Attachment/defect-photo thumbnails render via a plain `<img>` pointing at signed Supabase Storage URLs — `sharp` sits in `node_modules` purely as `next`'s unused optional dependency.
+- [x] **Fixed via `package.json` `overrides`** (`sharp@^0.35.3`, `uuid@^11.1.1`) instead of `npm audit fix --force`, which would have downgraded `next` to 14.2.35 and `exceljs` to 3.4.0 — both real breaking changes. `next`/`exceljs` stay untouched at their current pins. Verified: clean install, `tsc --noEmit` clean, 359/359 tests pass, `next build` TypeScript phase clean. Shipped: eq-service PR [#605](https://github.com/eq-solutions/eq-service/pull/605), squash `e6e72fe`, merged — Royce's "merge #605 once CI is green" go, confirmed the 2 remaining CI reds were the same pre-existing eslint-chain/integration-test failures every recent PR in this repo carries, not caused by this change.
+- [x] Isolated worktree (`eq-solves-service-sharp-uuid-audit-wt`) fully pruned after merge — no leftover local/remote branch.
 
 ---
 
