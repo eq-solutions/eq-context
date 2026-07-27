@@ -60,8 +60,7 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-27)
 
-**eq-service:**
-- #607 fix(security): apply security headers to page responses, not just static assets
+_No open PRs_
 
 ---
 
