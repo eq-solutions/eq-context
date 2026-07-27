@@ -349,7 +349,6 @@ The following tests belong to eq-quotes-port (Flask), which is retired as of 202
 
 (Separate from EQ Quotes — preserve)
 
-- [ ] Bring apprentice module from demo to SKS Labour prod
 - [ ] Scale EQ Field App for Melbourne office demo
 - [ ] R2 backup audit/download from Beelink desktop
 - [ ] One-on-one catch-up sessions with 8 key staff — 7 Role Step-Up Charters drafted 2026-07-05 (Collin, Rhys, William, Simon, Matt, David, Luke) as supporting artefacts for these conversations

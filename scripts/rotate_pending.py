@@ -40,6 +40,7 @@ PAIRS = [
 ]
 
 OPEN_RE = re.compile(r"^- \[ \]")
+PARTIAL_RE = re.compile(r"^- \[~\]")  # in-progress marker, e.g. "- [~] partially applied"
 DONE_RE = re.compile(r"^- \[[xX]\]")
 CONT_RE = re.compile(r"^\s+\S")  # indented continuation line of a bullet
 HEADER_DATE_RE = re.compile(r"\((?:[^)]*\b)?(\d{4}-\d{2}-\d{2})\)")
@@ -99,12 +100,18 @@ def bullet_blocks(section):
     """Yield (start, end_exclusive, kind) for checkbox bullets in a section.
 
     kind is 'open' or 'done'. A bullet block is its '- [ ]'/'- [x]' line plus
-    any immediately-following indented continuation lines.
+    any immediately-following indented continuation lines. '- [~]' (in
+    progress / partially applied) counts as 'open' — it must never be
+    archived alongside real done items, and its presence must stop a
+    section from being treated as fully closed. Missing this was a real
+    bug (found 2026-07-27): a section holding only a '[~]' item plus
+    already-done items was wrongly whole-section-archived as "fully done".
     """
     i = 0
     while i < len(section):
         line = section[i]
-        kind = "open" if OPEN_RE.match(line) else "done" if DONE_RE.match(line) else None
+        kind = ("open" if OPEN_RE.match(line) or PARTIAL_RE.match(line)
+                else "done" if DONE_RE.match(line) else None)
         if kind is None:
             i += 1
             continue

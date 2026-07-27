@@ -2176,6 +2176,28 @@ refs updated (PR #257 → main, open); repo on `eq-solutions/eq-service`.
 - [ ] **`canonical_field_id` gap** — live-checked 2026-07-27: `service.sites` still shows 11/11 rows with `canonical_field_id = NULL` (site count itself has shrunk from the original 37 — worth confirming that's expected). The bridge from EQ Service sites to EQ Field dispatch is still not wired. Separate task, not blocking anything. (Surfaced during Sprint 7 canonical-id audit.)
 ---
 
+## ⏩ Session close — 2026-06-07 (PM) — Cross-app linkage audit
+*Restored 2026-07-27 — a rotate_pending.py bug didn't recognize `- [~]` (partial) as an open state, so this whole section was wrongly archived as "fully done" during the backlog cull even though its P2 item is genuinely still in progress. Bug fixed same day (scripts/rotate_pending.py now treats `[~]` as open for section-completeness purposes); the 3 already-closed bullets below stay closed and will rotate out normally next cycle.*
+
+Live-verified map of Cards/Shell/Field/Service/Quotes linkage (4 Supabase projects + 5 repos, read-only).
+Full report: [`cross-app-linkage-audit-2026-06-07.md`](../cross-app-linkage-audit-2026-06-07.md).
+Gated playbook: [`cross-app-linkage-remediation-plan-2026-06-07.md`](../cross-app-linkage-remediation-plan-2026-06-07.md).
+Sprint (steelman-corrected, 10/10): [`cross-app-linkage-sprint-2026-06-07.md`](../cross-app-linkage-sprint-2026-06-07.md) — 7 workstreams, 4 waves, pre-mortem.
+
+**Headline:** canonical model (`ehow.app_data`) is FK-wired but its linking rows are empty (`jobs`=0, `quote`=0);
+worker→staff link 1/50, customer `canonical_id` 0/520 in live ehow, sites→customer 28/591. Asset sync (4808) works.
+
+**Prioritised actions (all Royce-gated — see plan for mechanism/verify):**
+- [~] **P2:** customer convergence — **PARTIAL APPLIED 2026-06-07** (`_ws1-customer-dedup-2026-06-07.md`): Tier S 38
+      stub customers retired (dup-groups 117→80); 28 quotes `canonical_id` linked (1:1-both-sides). **Remaining:** decide
+      SoR (rec `app_data.customers`); Tier A merge (26, supervised); Tier C (50 ambiguous) + quotes-side N:1 dedup via
+      Intake; 99 dangling sites need source re-import. Note: `sks_quotes_customers.canonical_id` is UNIQUE (1:1) vs N:1 data.
+
+**Drift corrected (live wins):** `architecture.md` "jvkn = no operational data" is false (it's the worker house);
+creds 779→737, invites 37→58 since 06-03; `0028_contact_customer_links` IS present on SKS (291 rows).
+
+---
+
 ## ⏩ Session close — 2026-06-08 — EQ Field Sentry crash fixes
 
 **Completed:**
@@ -2433,46 +2455,14 @@ added to `eq-intake/CONFIRM-UI-SPEC.md` as a new section.
 ### EQ Shell Phase 1.B (Netlify wire-up) — DONE
 
 
-### eq-demo-canonical — security advisor cleanup (open)
+### eq-demo-canonical — security advisor cleanup (open) — CLOSED 2026-07-27, see below
 
 Diagnosed 2026-05-19. 17 advisor warnings, fix drafted but not applied.
 
-- [ ] **Apply migration 004 to `eq-demo-canonical`** —
-      `C:\Projects\eq-intake\sql\004_security_advisor_fix.sql`
-      rewritten 2026-05-19 to grant EXECUTE to `authenticated`
-      (not `service_role` — see session log for why). Paste into the
-      Supabase SQL editor for the project and Run.
-- [ ] **Toggle leaked-password protection** in eq-canonical (`jvknxcmbtrfnxfrwfimn`)
-      dashboard → Authentication → Settings → enable HaveIBeenPwned check.
-      **(Royce manual step)**
-- [ ] **Commit + push the two eq-intake edits** —
-      `sql/004_security_advisor_fix.sql` and
-      `eq-platform/scripts/db-apply.ts` are uncommitted in
-      `C:\Projects\eq-intake` (no auto-push hook on that repo, no
-      GitHub remote either per `system/infrastructure.md`).
-- [ ] **Smoke-test intake commit after applying 004** — through the
-      signed-in shell, an intake commit through the demo path should
-      still succeed (authenticated grant retained). An anon-key curl
-      to the same RPC should now return 403.
-- [ ] **Decide on server-side commit RPC migration** — the 4
-      remaining "Signed-In Users Can Execute SECURITY DEFINER"
-      warnings clear only if the commit moves to a Netlify Function
-      (service-role) AND the in-function `auth.jwt()` tenant check
-      is rewritten. Deferred — no urgency until `sks-canonical-eq`
-      is provisioned with real users.
+- [ ] **Toggle leaked-password protection** in eq-canonical (`jvknxcmbtrfnxfrwfimn`) dashboard → Authentication → Settings → enable HaveIBeenPwned check. **(Royce manual step, never confirmed done)** **Correction 2026-07-27: this had 3 duplicate copies elsewhere in this file, all closed as redundant during the backlog cull — but the cull mechanically closed all matching lines including this one, the copy meant to stay as the single live tracker. Reopened here; the underlying toggle is still unconfirmed.**
 
-### sks-canonical-eq provisioning (gated, not started)
+### sks-canonical-eq provisioning (gated, not started) — CLOSED 2026-07-27, see below
 
-- [ ] Provision `sks-canonical-eq` Supabase project (Sydney /
-      `ap-southeast-2`).
-- [ ] Run `pnpm db:apply` from `eq-platform/` to regenerate
-      `all-migrations.sql` with 004 bundled (`db-apply.ts` updated
-      2026-05-19).
-- [ ] Paste `all-migrations.sql` into the new project's SQL editor.
-- [ ] Add Royce as the first user with `user_metadata.tenant_id`
-      set to the SKS tenant uuid.
-- [ ] Drop SKS credentials into the Netlify env vars for the
-      production shell deployment.
 
 ---
 

@@ -97,6 +97,21 @@ live, append, s = run(body)
 check("notes: stay live", "- plain note bullet, no checkbox" in live)
 check("notes: not archived", "plain note" not in append)
 
+# 9 — regression (found 2026-07-27): a '[~]' (partial/in-progress) item must
+# never be whole-section-archived alongside real done items, and must never
+# itself be moved to the archive.
+body = (
+    "\n## partial only (2026-06-01)\n"
+    "*intro*\n\n"
+    "- [~] still partially applied\n"
+    "- [x] this part is done\n"
+)
+live, append, s = run(body)
+check("partial: section NOT whole-moved", live is not None and "- [~] still partially applied" in live, live)
+check("partial: intro stays live", live is not None and "*intro*" in live)
+check("partial: done bullet moved", "- [x] this part is done" in append)
+check("partial: partial bullet never archived", "still partially applied" not in append)
+
 # 9 — conservation across a realistic multi-section file
 body = (
     "\npreamble text\n\n"

@@ -249,3 +249,9 @@ section's done items live here; its open items stayed in `sks/pending.md`.
 - [x] sks-charters has no GitHub remote — decide whether it gets pushed to `eq-solutions` org or stays local-only _(added 2026-07-05)_ **[CLOSED 2026-07-27 — done — pushed to eq-solutions/sks-charters (see the closed item at the top of this file, 2026-07-27)]**
 
 ---
+
+## Untouched substrate items (rotated 2026-07-27 — open items remain in pending.md)
+
+- [x] Bring apprentice module from demo to SKS Labour prod **[CLOSED 2026-07-27 — sks-nsw-labour is under an explicit standing freeze (SEC-1, reaffirmed 2026-07-20): no engineering changes, new-module builds included, until Field replaces it]**
+
+---

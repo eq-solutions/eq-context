@@ -782,30 +782,6 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
-## ⏩ Session close — 2026-06-07 (PM) — Cross-app linkage audit (rotated 2026-07-27)
-
-Live-verified map of Cards/Shell/Field/Service/Quotes linkage (4 Supabase projects + 5 repos, read-only).
-Full report: [`cross-app-linkage-audit-2026-06-07.md`](../cross-app-linkage-audit-2026-06-07.md).
-Gated playbook: [`cross-app-linkage-remediation-plan-2026-06-07.md`](../cross-app-linkage-remediation-plan-2026-06-07.md).
-Sprint (steelman-corrected, 10/10): [`cross-app-linkage-sprint-2026-06-07.md`](../cross-app-linkage-sprint-2026-06-07.md) — 7 workstreams, 4 waves, pre-mortem.
-
-**Headline:** canonical model (`ehow.app_data`) is FK-wired but its linking rows are empty (`jobs`=0, `quote`=0);
-worker→staff link 1/50, customer `canonical_id` 0/520 in live ehow, sites→customer 28/591. Asset sync (4808) works.
-
-**Prioritised actions (all Royce-gated — see plan for mechanism/verify):**
-- [~] **P2:** customer convergence — **PARTIAL APPLIED 2026-06-07** (`_ws1-customer-dedup-2026-06-07.md`): Tier S 38
-      stub customers retired (dup-groups 117→80); 28 quotes `canonical_id` linked (1:1-both-sides). **Remaining:** decide
-      SoR (rec `app_data.customers`); Tier A merge (26, supervised); Tier C (50 ambiguous) + quotes-side N:1 dedup via
-      Intake; 99 dangling sites need source re-import. Note: `sks_quotes_customers.canonical_id` is UNIQUE (1:1) vs N:1 data.
-- [x] **P7a:** SKS anon-remediation (nspb) — exact policy worklist in plan §7a. **SKS-live, gated.** **[CLOSED 2026-07-27 — duplicate of sks/pending.md's live-tracked SKS anon-remediation item]**
-- [x] **P7b:** ktmj anon-write policies close via the pause/decommission already pending (after P4). **[CLOSED 2026-07-27 — ktmjmdzqrogauaevbktn confirmed DELETED 2026-06-30 (system/infrastructure.md) — moot]**
-- [x] **P7d:** run a `get_advisors` pass on the EQ Service DB — now `ehowgjardagevnrluult` (sks-canonical, `service.*` schema). Service migrated off `urjhmkhbgaxrofurpbgc` 2026-06-08; that project was deleted 2026-06-22 before this audit ran. **[CLOSED 2026-07-27 — the pass was run; result now tracked as its own item elsewhere in this file]**
-
-**Drift corrected (live wins):** `architecture.md` "jvkn = no operational data" is false (it's the worker house);
-creds 779→737, invites 37→58 since 06-03; `0028_contact_customer_links` IS present on SKS (291 rows).
-
----
-
 ## SKS Live — roles / security-groups track (2026-06-07) (rotated 2026-07-27 — open items remain in pending.md)
 
 - [x] **eq-shell** — converge `c2-shell-roles` + `sks-field-host` into one trunk (Prompt A; Royce picks trunk). **[CLOSED 2026-07-27 — sessions/2026-06-08.md: 'main IS trunk' — resolved]**
@@ -1021,5 +997,27 @@ contain the same values and were pushed before push-protection caught up.
 
 **Remaining for SKS go-live (Royce-gated):**
 - [x] **Onboarding** — invite-claim rollout (only 1 of 36 workers linked; 0/56 invites claimed). Upstream eq-shell #183/#175. **[CLOSED 2026-07-27 — live-checked jvkn's `worker_invites`: only 1 row total, already claimed — the formal invite-claim model was superseded by the 2026-07-26 self-heal login fix (SKS workers approved before completing Cards phone-OTP now get a Shell login provisioned automatically on next login attempt), not by this rollout finishing]**
+
+---
+
+## ⏩ Session close — 2026-06-07 (PM) — Cross-app linkage audit (rotated 2026-07-27 — open items remain in pending.md)
+
+- [x] **P7a:** SKS anon-remediation (nspb) — exact policy worklist in plan §7a. **SKS-live, gated.** **[CLOSED 2026-07-27 — duplicate of sks/pending.md's live-tracked SKS anon-remediation item]**
+- [x] **P7b:** ktmj anon-write policies close via the pause/decommission already pending (after P4). **[CLOSED 2026-07-27 — ktmjmdzqrogauaevbktn confirmed DELETED 2026-06-30 (system/infrastructure.md) — moot]**
+- [x] **P7d:** run a `get_advisors` pass on the EQ Service DB — now `ehowgjardagevnrluult` (sks-canonical, `service.*` schema). Service migrated off `urjhmkhbgaxrofurpbgc` 2026-06-08; that project was deleted 2026-06-22 before this audit ran. **[CLOSED 2026-07-27 — the pass was run; result now tracked as its own item elsewhere in this file]**
+
+---
+
+## EQ Shell + EQ Intake (rotated 2026-07-27 — open items remain in pending.md)
+
+- [x] **Apply migration 004 to `eq-demo-canonical`** — `C:\Projects\eq-intake\sql\004_security_advisor_fix.sql` rewritten 2026-05-19 to grant EXECUTE to `authenticated` (not `service_role` — see session log for why). Paste into the Supabase SQL editor for the project and Run. **[CLOSED 2026-07-27 — `eq-demo-canonical` isn't in `system/infrastructure.md`'s or `suite-state.md`'s live-project list (only jvkn/zaap/ehow exist today) — this whole subsection targets a project that no longer exists in the current architecture]**
+- [x] **Commit + push the two eq-intake edits** — `sql/004_security_advisor_fix.sql` and `eq-platform/scripts/db-apply.ts` are uncommitted in `C:\Projects\eq-intake` (no auto-push hook on that repo, no GitHub remote either per `system/infrastructure.md`). **[CLOSED 2026-07-27 — same eq-demo-canonical supersession as above]**
+- [x] **Smoke-test intake commit after applying 004** — through the signed-in shell, an intake commit through the demo path should still succeed (authenticated grant retained). An anon-key curl to the same RPC should now return 403. **[CLOSED 2026-07-27 — same eq-demo-canonical supersession as above]**
+- [x] **Decide on server-side commit RPC migration** — the 4 remaining "Signed-In Users Can Execute SECURITY DEFINER" warnings clear only if the commit moves to a Netlify Function (service-role) AND the in-function `auth.jwt()` tenant check is rewritten. Deferred — no urgency until `sks-canonical-eq` is provisioned with real users. **[CLOSED 2026-07-27 — gated on `sks-canonical-eq`, which was never provisioned; see the section below]**
+- [x] Provision `sks-canonical-eq` Supabase project (Sydney / `ap-southeast-2`). **[CLOSED 2026-07-27 — SKS ended up on `ehow` (sks-canonical, `ehowgjardagevnrluult`) instead, per CLAUDE.md/suite-state.md — this separate project was never the path actually taken]**
+- [x] Run `pnpm db:apply` from `eq-platform/` to regenerate `all-migrations.sql` with 004 bundled (`db-apply.ts` updated 2026-05-19). **[CLOSED 2026-07-27 — same supersession as above, this whole plan was never executed]**
+- [x] Paste `all-migrations.sql` into the new project's SQL editor. **[CLOSED 2026-07-27 — same supersession as above]**
+- [x] Add Royce as the first user with `user_metadata.tenant_id` set to the SKS tenant uuid. **[CLOSED 2026-07-27 — same supersession as above]**
+- [x] Drop SKS credentials into the Netlify env vars for the production shell deployment. **[CLOSED 2026-07-27 — same supersession as above]**
 
 ---
