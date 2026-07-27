@@ -46,6 +46,15 @@ status: live
 - [x] **Root cause found**: the Netlify function generating the Job Creation spreadsheet was re-downloading its own blank template from the live website on every single click, instead of using a copy already bundled with the function — an unnecessary round trip on top of the function's own startup time.
 - [x] **Fixed and live** — eq-shell [PR #1031](https://github.com/eq-solutions/eq-shell/pull/1031) merged, deployed to core.eq.solutions same day. The download now reads the bundled copy directly; no functional change to the spreadsheet itself.
 
+## Drag-and-drop file uploads for quotes/jobs (2026-07-27)
+*Royce asked what's wired for saving files to quotes/jobs and asked for drag-and-drop.*
+- [x] **Built and shipped** — the attachments panel on quotes/jobs now accepts multiple files dropped anywhere in the panel, not just one file via a click-to-browse button. Same upload path underneath (no backend change) — file size/type limits are unchanged. eq-shell [PR #1033](https://github.com/eq-solutions/eq-shell/pull/1033), merged, live on core.eq.solutions.
+- [ ] **Royce to click-test it himself** — confirmed the deploy went out and the new code is live (checked the page's actual HTML directly), but couldn't finish a full live drag-and-drop test this session due to browser tooling instability. _(added 2026-07-27)_
+
+## Quote pipeline "Pending" stage — looked at, decided not to build (2026-07-27)
+*Royce asked whether a "Pending" stage (quote-to-job, awaiting PO) should be added, since a lot of jobs sit in "Open" waiting on a PO. Checked the live numbers before building anything: "Open" barely had any won-but-unpaperworked quotes (3 total) — the real conflation was inside "Job created," which lumped 5 quotes still awaiting a PO together with 12 that already had one. Built the corrected, narrower version (splitting "Job created" from "In Progress" by PO status) and opened it as a PR, but Royce decided not to touch statuses at all for now — a lot of the underlying status plumbing is backend complexity that isn't actually surfaced to the team, not worth the churn currently.*
+- [x] **Closed unmerged, per Royce** — eq-shell PR #1032 opened, then closed without merging. No live change.
+
 ## SKS national scale discovery — "what breaks EQ at ~2,000 employees" (2026-07-23)
 *Royce: "scalable / bigger picture discussion... national business that's approaching 2000 employees." Built a discovery questionnaire (24 questions across 8 categories) rather than guessing at a plan; Royce filled it out with real numbers, then supplied the actual SKS org chart (`MASTER Organisation Chart 01.07.2026.pdf`, 136 pages) to ground the architecture question.*
 - [x] **Real scale trajectory confirmed** — 2,000 is a growth target, not current headcount. NSW: ~100 today → 300 in 18 months. VIC: ~700 today → 1,000+ in 12 months (VIC is already bigger than NSW's whole 18-month target). National beyond that grows slower. EQ Field would carry ~80% of the load; Field should reach almost everyone except execs/admin.

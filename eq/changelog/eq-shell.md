@@ -16,6 +16,10 @@ status: live
 - **PR #1036 (MERGED) — swept for more instances of the same bug rather than stopping at three.** Found 2 more in admin review queues (`eq_list_phone_link_reviews`, `eq_list_recycle_reviews`) — a silent-omission failure mode (an affected item just never appears, no error). Added `shell_control.is_active_tenant_member()` (SQL) + `hasActiveTenantMembership()` (`_shared/tenant-membership.ts`) as the canonical check for future code to reuse.
 - 253/253 tests pass, `tsc --noEmit` clean throughout. All RPC-side fixes applied live to jvkn same session.
 
+## 2026-07-27 (PR #1033, drag-and-drop file uploads on quotes/jobs)
+- **PR #1033 (MERGED) — the attachments panel on quotes/jobs now accepts multiple files dropped anywhere in the panel**, not just one file via click-to-browse (`AttachmentList.tsx`). Files upload sequentially through the existing single-file `upload-attachment` endpoint (unchanged — same 20MB limit, same allowed types, same permission gate), so one bad file doesn't block the rest and the server never sees a burst of concurrent multipart uploads. Also fixed a pre-existing `react-hooks/set-state-in-effect` lint failure on this file's mount-time fetch effect, same eslint-disable-with-justification pattern already used elsewhere in this repo. Deployed to core.eq.solutions same session.
+- A companion PR (#1032, splitting the "Job created" pipeline stage by PO-matched status) was built and opened but closed unmerged — Royce decided not to touch quote statuses for now.
+
 ## 2026-07-27 (PR #1030, Training Matrix "Photo ID" equivalence)
 - **PR #1030 (MERGED) — Training Matrix's "Photo ID" requirement now accepts a driver's licence or passport as satisfying it**, one-directional (Driver Licence/Passport requirements stay exact-match). `staffLib.ts` gained `satisfiesRequirement()`/`licenceForColumn()`; wired into `MatrixView.tsx`'s gap-checking, cell rendering, and CSV export. Cell shows whichever document actually covers it, preferring a currently-valid one over an expired one. 8 new unit tests, 253/253 total pass. No DB/migration change. Deployed to core.eq.solutions same session.
 
