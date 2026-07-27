@@ -14,6 +14,16 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: quick-edit Staff list — Supervisor/Roster toggles + inline fields, no more open-record-to-flip-one-checkbox (2026-07-27)
+*Royce asked for a faster way to see/change who's a Supervisor and who's shown on Field's roster, then broadened it mid-session: too slow clicking into every profile just to edit a field. Scoped with Royce to inline-edit Job Title, Employment Type, Trade, Level, Company, Phone, and Email directly in the list — deliberately leaving Name out (edit-panel-only, so it can't be changed by accident).*
+
+- [x] **Supervisor and On-roster are now checkboxes right in the Staff list** — tick/untick without opening the record. New "Supervisors" / "Off roster" filter chips alongside the existing licence ones.
+- [x] **Job Title, Employment Type, Trade, Level, Company, Phone, and Email are all click-to-edit in the list** — Name stays full-edit-only by design.
+- [x] Self-reviewed before shipping and caught two real issues: the toggles were gated on the wrong permission (would've shown to the wrong group of people) and a save-error edge case that wasn't handled — both fixed and re-checked.
+- [x] **Shipped and deployed live** — core.eq.solutions is running this now (eq-shell PR [#1046](https://github.com/eq-solutions/eq-shell/pull/1046), merged + confirmed live in a real browser screenshot of the production Staff page).
+
+---
+
 ## eq-cards: licence renewal built, shipped, and deployed for two real workers (2026-07-27)
 *Royce asked what Rhys Scott and Brian Griffin-Colls should do to upload their renewed licences — the same two people flagged back on 2026-07-03 as needing to submit updated documents, which had been sitting as "can't action from here" ever since. Turned out the real gap wasn't missing documents, it was the app: renewing an existing licence either created a silent duplicate (the obvious "Add" button) or required retyping everything by hand with no auto-read (the correct "Edit" path). Built the fix, shipped it, and deployed it live the same session.*
 

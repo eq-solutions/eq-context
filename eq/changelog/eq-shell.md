@@ -9,7 +9,10 @@ status: live
 
 # eq-shell changelog
 
-## 2026-07-27 (latest — PRs #1037/#1039, iframe loading pane black-screen fix)
+## 2026-07-27 (latest — PR #1046, Staff list quick-edit)
+- **PR #1046 (MERGED) — Supervisor and On-roster are now checkboxes right in the Staff list**, plus click-to-edit inline cells for Job Title, Employment Type, Trade, Level, Company, Phone, and Email — no more opening a record just to flip one field. Name deliberately stays edit-panel-only (Royce's explicit scope call). New "Supervisors" / "Off roster" filter chips alongside the existing licence-status ones. Reuses the existing `entity-patch.ts` generic PATCH endpoint, gated on `field.dispatch` (the permission the endpoint already enforces for `staff`). Self-review before shipping caught and fixed a wrong permission key and an unhandled-promise-rejection edge case. Deployed live same session (Netlify `commit_ref` = merge commit `ad0c139`), confirmed rendering correctly on core.eq.solutions via a live screenshot.
+
+## 2026-07-27 (PRs #1037/#1039, iframe loading pane black-screen fix)
 - **PR #1037 (MERGED) — fixed a genuine solid-black screen while Field/Service/Cards load inside Core.** `.eq-hub`'s near-black sidebar background had no override on `.eq-hub__iframe-content`, so it bled through everywhere outside the narrow loading-skeleton card during load — root-caused directly from a screenshot Royce sent, not guessed. One-line CSS fix (`.eq-hub__iframe-content { background: var(--eq-white) }`).
 - **PR #1039 (MERGED) — that fix left the pane white but the loading indicator itself was nearly invisible** (light gray shimmer, opacity-only pulse, low contrast on white). Swapped `IframeLoadingSkeleton` to eq-ui's canonical `Spinner` (`bars`, `lg`) — the same loader already used on Core's own sign-in screen — plus a visible text label.
 - Both fixes are in the shared iframe-loading component, so Field and Cards get the same fix as Service, not just the app that was originally reported slow.
