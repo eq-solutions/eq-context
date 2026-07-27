@@ -84,12 +84,8 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ---
 
 ## eq-shell: quick-edit Staff list — Supervisor/Roster toggles + inline fields, no more open-record-to-flip-one-checkbox (2026-07-27)
-*Royce asked for a faster way to see/change who's a Supervisor and who's shown on Field's roster, then broadened it mid-session: too slow clicking into every profile just to edit a field. Scoped with Royce to inline-edit Job Title, Employment Type, Trade, Level, Company, Phone, and Email directly in the list — deliberately leaving Name out (edit-panel-only, so it can't be changed by accident).*
 
-- [x] **Supervisor and On-roster are now checkboxes right in the Staff list** — tick/untick without opening the record. New "Supervisors" / "Off roster" filter chips alongside the existing licence ones.
-- [x] **Job Title, Employment Type, Trade, Level, Company, Phone, and Email are all click-to-edit in the list** — Name stays full-edit-only by design.
-- [x] Self-reviewed before shipping and caught two real issues: the toggles were gated on the wrong permission (would've shown to the wrong group of people) and a save-error edge case that wasn't handled — both fixed and re-checked.
-- [x] **Shipped and deployed live** — core.eq.solutions is running this now (eq-shell PR [#1046](https://github.com/eq-solutions/eq-shell/pull/1046), merged + confirmed live in a real browser screenshot of the production Staff page).
+- [ ] **Live click-through as a lower-permission user (employee/apprentice/labour-hire/subcontractor) still not done** — verified instead by reading the code directly: those roles all lack `field.dispatch`, and without it the new checkboxes render natively `disabled` and the inline text/select cells render as plain unclickable text with no edit affordance at all (not just a disabled button) — confirmed in both `StaffPage.tsx` and the shared roles package. The write endpoint (`entity-patch.ts`) enforces the same permission server-side regardless of what the UI shows. Needs Royce to actually sign in as one of those roles to eyeball it, since Claude doesn't hold a lower-permission test login. _(added 2026-07-27)_
 
 ---
 
