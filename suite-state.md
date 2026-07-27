@@ -60,8 +60,7 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-27)
 
-**eq-field:**
-- #547 v3.5.363 — Batch Fill gets Clear, Bulk Assign/Clear removed
+_No open PRs_
 
 ---
 
