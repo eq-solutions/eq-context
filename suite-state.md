@@ -60,7 +60,9 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-27)
 
-_No open PRs_
+**eq-shell:**
+- #1051 feat(staff): reorderable columns + compact Status/Contact cells
+- #1050 ci(control-plane): gate PRs on jvkn function-drift check (--strict)
 
 ---
 
