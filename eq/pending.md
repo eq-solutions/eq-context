@@ -14,6 +14,19 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell/eq-cards: tenant data-plane security sweep + a real login-blocking bug fixed for a live user (2026-07-27)
+*Continuing straight from the anon-EXECUTE fix flagged as an open question the session before: swept the two tenant databases properly instead of stopping at the one function found by accident. Then Royce asked who gets notified when someone new asks to join a company, and separately reported a real employee (Brian Griffin-Colls) couldn't log in — both turned into real, shipped fixes.*
+
+- [x] **Full security sweep of both tenant databases (EQ's and SKS's) for the "anyone, logged in or not, could call this" gap.** Found 39 more functions on EQ's database (12 on SKS's) with the same exposure as the one-off fixed last session. Read every one rather than assuming: almost all fail safely for a stranger anyway (defense-in-depth, not a live breach), two are correctly public by design (the customer quote-approval link doesn't require login), and one (an old quote-cleanup job) had drifted back open after already being fixed once in June — flagged as a process gap, not just re-fixed quietly. Closed all of them, and added an automatic check so this can't silently happen again. Logged in full in the security register (entry SEC-13). eq-shell PR [#1028](https://github.com/eq-solutions/eq-shell/pull/1028), merged.
+- [x] **Companies can now choose exactly who gets emailed when someone new asks to join** — previously it was always every manager, which is what led to a test signup ("Bob Smith") emailing 15 real SKS managers. Default behaviour is unchanged (still everyone) unless a company picks specific people. New control in Settings, next to the existing notification-email field. eq-shell PR [#1029](https://github.com/eq-solutions/eq-shell/pull/1029) + eq-cards migration 0108, both merged/applied.
+- [x] **Diagnosed and fixed why Brian Griffin-Colls couldn't log in.** Root cause: he'd been added to SKS separately from his original personal sign-up, and three different places in the system were checking his *original* sign-up tenant instead of the SKS one he actually works in — so admin pages said "user not found" and, worse, his own login session was silently rejected on refresh. This exact same mistake (checking the wrong tenant reference) has now bitten five different features since June; fixed all three current instances, then deliberately checked for more rather than stopping at three — found two additional ones (both in admin review queues, silently hiding items rather than erroring) and fixed those too. Added a single shared, correct check for future features to reuse instead of getting this wrong again. eq-shell PRs [#1034](https://github.com/eq-solutions/eq-shell/pull/1034), [#1035](https://github.com/eq-solutions/eq-shell/pull/1035), [#1036](https://github.com/eq-solutions/eq-shell/pull/1036), all merged and live. Brian confirmed working.
+- [x] **Deleted a leftover duplicate account for Brian** created 12 days after his real one, never used, isolated from everything else — snapshotted before deleting, verified nothing else referenced it, verified his real account was untouched afterward.
+
+**Deferred:**
+- [ ] **Royce to click through the new "who gets notified" Settings control** to confirm it reads clearly and saves correctly — code-complete and tested, not yet user-verified. _(added 2026-07-27)_
+
+---
+
 ## eq-shell: local build was failing on Suppliers permission keys — stale `node_modules`, not a code bug (2026-07-27)
 *`pnpm run build` (the exact command Netlify's `netlify.toml` runs) was failing locally at `tsc -b` with 4 `PermKey` type errors on `ops.view_suppliers` / `ops.manage_suppliers` (`HubSidebar.tsx`, `useCommandIndex.tsx`, `Suppliers.tsx`, `suppliers-mutate.ts`). Confirmed via `git stash` these 4 errors were already present identically on `main`, not caused by any recent PR.*
 
@@ -250,7 +263,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [ ] **Royce to run one more fresh Cards signup** to confirm the nudge and the approval-time flag actually show correctly end to end — the full loop has never been walked through live since these changes landed. _(added 2026-07-26)_
 - [ ] **Royce to test the new bulk connect-worker tool** with a real list of phone numbers. _(added 2026-07-26)_
 - [ ] **`cards-staff-matches.ts` is dead code** — built to power a duplicate-worker suggestion UI (`AdminCardsFeed`) that no longer exists anywhere in the codebase, superseded by a different mechanism. Not cleaned up, just flagged. _(added 2026-07-26)_
-- [ ] **Broader question not investigated**: the anon-EXECUTE fix above was for one function found by accident. The 2026-06-07 lockdown closed this class of gap for new *tables* but never for new *functions* — worth a proper sweep to see if other functions have the same unnoticed gap. _(added 2026-07-26)_
+- [x] **Broader sweep done, same session** — 39 more anon-executable functions found on the EQ tenant database (12 on SKS's), all closed; see the security-register + tenant-lookup-bugs entry below. _(closed 2026-07-27)_
 
 ---
 

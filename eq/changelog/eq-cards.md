@@ -1,13 +1,16 @@
 ---
 title: EQ Cards — Changelog
 owner: Royce Milmlow
-last_updated: 2026-07-26
+last_updated: 2026-07-27
 scope: EQ Cards append-only history. NOTE — duplicates eq/changelog/cards.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # EQ Cards — Changelog
+
+## 2026-07-27
+- **Migration 0108 (APPLIED to jvkn) — `org_join_notify_recipients` table + updated `eq_notify_connection_request_targets`.** Lets an org nominate specific admins/managers to receive new-join-request emails instead of always notifying everyone; empty selection keeps today's behaviour. Companion to eq-shell PR #1029 (Settings "New join-request emails" picker).
 
 ## 2026-07-26
 - **PR #176 (MERGED) — new `org_join_requirements` table + `eq_cards_my_join_gaps` RPC (migration 0104).** Per-org soft-flag minimum profile fields (full name / DOB / email) required before requesting to join — mirrors `org_credential_requirements`'s (0086) RLS pattern. Applied live to jvkn. Companion to eq-shell's Settings "Who can join" switch (PR #1012/#1015).

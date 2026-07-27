@@ -9,7 +9,14 @@ status: live
 
 # eq-shell changelog
 
-## 2026-07-27 (latest — PR #1030, Training Matrix "Photo ID" equivalence)
+## 2026-07-27 (latest — PRs #1028/#1029/#1034/#1035/#1036, tenant security sweep + cross-tenant login fixes)
+- **PR #1028 (MERGED) — closed the anon-EXECUTE gap on both tenant databases (zaap/EQ + ehow/SKS): 39 functions on zaap, 12 on ehow.** Same public-schema default-grant footgun as a prior one-off fix, swept properly this time instead of assuming it was isolated. 37 fail closed for an anonymous caller anyway (defense-in-depth), 2 are the customer quote-portal flow (correctly anon by design), and `eq_mark_expired_quotes` had drifted back open after already being fixed once in June (logged as a separate governance finding). Migrations 0211+0212 (the second catching a signature transcription error the first silently no-op'd on). Seeds a CI baseline (`FUNC_EXEC_ANON_ALLOW`) for both tenant planes so this is enforced going forward. Logged as SEC-13 in `ops/security-register.md`.
+- **PR #1029 (MERGED) — admins can now nominate specific recipients for new-join-request emails**, instead of it always being every manager. New "New join-request emails" picker in Settings; backed by `org_join_notify_recipients` (eq-cards migration 0108, applied to jvkn) and an updated `eq_notify_connection_request_targets`. Empty selection = unchanged default behaviour.
+- **PRs #1034/#1035 (MERGED) — fixed a live login-blocking bug for a real user.** `eq_get_tenant_user`, `edit-user.ts`, and `mint-supabase-jwt.ts` all compared a user's home tenant against their active session tenant instead of checking active membership — the same mistake already fixed once for `mint-tenant-jwt` in June. `mint-supabase-jwt.ts` is the live session-token minter (refreshed ~every 14 min), so this one silently broke the affected user's own session, not just an admin page. Confirmed fixed with the affected user directly.
+- **PR #1036 (MERGED) — swept for more instances of the same bug rather than stopping at three.** Found 2 more in admin review queues (`eq_list_phone_link_reviews`, `eq_list_recycle_reviews`) — a silent-omission failure mode (an affected item just never appears, no error). Added `shell_control.is_active_tenant_member()` (SQL) + `hasActiveTenantMembership()` (`_shared/tenant-membership.ts`) as the canonical check for future code to reuse.
+- 253/253 tests pass, `tsc --noEmit` clean throughout. All RPC-side fixes applied live to jvkn same session.
+
+## 2026-07-27 (PR #1030, Training Matrix "Photo ID" equivalence)
 - **PR #1030 (MERGED) — Training Matrix's "Photo ID" requirement now accepts a driver's licence or passport as satisfying it**, one-directional (Driver Licence/Passport requirements stay exact-match). `staffLib.ts` gained `satisfiesRequirement()`/`licenceForColumn()`; wired into `MatrixView.tsx`'s gap-checking, cell rendering, and CSV export. Cell shows whichever document actually covers it, preferring a currently-valid one over an expired one. 8 new unit tests, 253/253 total pass. No DB/migration change. Deployed to core.eq.solutions same session.
 
 ## 2026-07-27 (PR #1031, Job Creation export was slow, not broken)
