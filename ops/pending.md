@@ -36,6 +36,33 @@ Fixed in `~/.claude` (`hooks/guard.js`, `commands/brief.md`, `commands/close.md`
 
 ---
 
+## Worktree cleanup round 3 — suite-wide orphan sweep (2026-07-27)
+
+Royce: "keep auditing and deep diving." Widened the check beyond `git
+worktree list` to a direct on-disk vs. tracked diff across every repo's
+`.claude/worktrees/` folder — found ~65 more orphaned folders suite-wide
+(some dating back to mid-June), same root cause as the earlier rounds.
+60 confirmed empty/build-cruft-only and deleted across `eq-roles`,
+`eq-design-tokens`, `eq-field`, `eq-context`, `sks-nsw-labour` (26),
+`eq-shell` (9/10), `eq-solves-service` (2/3, including the two folders this
+repo's registry entry already flagged as "never real worktrees" back on
+2026-07-23), `eq-intake`. `worktree-registry.md` updated to record it.
+
+**Needs Royce:** two real leftovers, not urgent:
+- [ ] `eq-shell/.claude/worktrees/app-naming-wt` has real content — 133
+  source files, README/schema-governance/security-pattern docs, actual
+  vite config. No `.git` of its own, so there's no way to tell what
+  branch/commit it represents or whether it's already in `main`. Take a
+  look before anyone deletes it. _(added 2026-07-27)_
+- [ ] 4 folders are stuck "device busy" on every retry (not another
+  session — consistent across several minutes, points at a system
+  process like antivirus/indexing): `eq-cards/will-brown-cards-sks-issue-4ec9c4`,
+  `eq-ui/elastic-blackwell-1a85b8`, `eq-shell/frozen-window-issue-58b6b2`,
+  `eq-solves-service/user-source-analysis-be4daa`. All confirmed empty —
+  harmless to leave, retry later or after a reboot. _(added 2026-07-27)_
+
+---
+
 ## Worktree cleanup round 2 + template fix (2026-07-27)
 
 Follow-on to the entry below: checked that *other* repos' worktrees were

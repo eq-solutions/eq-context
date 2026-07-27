@@ -75,6 +75,20 @@ Also pruned: `eq-context`'s own `sks-adam-meeting-prep-4ba3e8` worktree, an empt
 
 ---
 
+## Recently pruned (2026-07-27, round 3 -- 60 orphaned .claude/worktrees folders suite-wide)
+
+Royce: 'keep auditing and deep diving.' Widened the check beyond `git worktree list` (which by definition can't show a worktree git has already forgotten) to a direct diff: every folder physically present under each repo's `.claude/worktrees/` versus what `git worktree list --porcelain` actually tracks. Turned up **~65 orphaned folders across every repo in the suite** — some dated back to mid-June, all the same root cause as the earlier 39-folder / 8-folder rounds (a worktree teardown that unregisters from git but doesn't always clear the physical folder).
+
+Checked every one's contents before deleting anything (none had their own `.git`, confirming git had already forgotten all of them):
+
+- **Empty or pure build-cruft (node_modules/.next/eq-platform skeletons, no real source)** — deleted via plain recursive delete: `eq-roles` (5), `eq-design-tokens` (5), `eq-field` (5), `eq-context` (2, incl. `developer-resource-opportunity-cc9c94` which held only a stray `.claude/settings.local.json`), `sks-nsw-labour` (26, every single one confirmed empty), `eq-shell` (9 of 10 — `eq-ops-mobile-view-af44a3`, `sks-comms-resource-mgmt-7563e2`, `accept-invite-phonestub`, `bold-brattain-688290`, `compassionate-goldberg-734468`, `labour-hire-agency-grouped`, `labour-hire-modal-focus`, `staff-active-writeguard`, `brand-handoff`), `eq-solves-service` (2 of 3 — `asset-import-export-1fe110` + `unruffled-noyce-657c65`, the two folders this file already documented as 'never real worktrees' from the 2026-07-23 root-cause investigation above, confirmed safe and finally cleared), `eq-intake` (6 — verified their `eq-platform/packages/*` contents were 0-file skeletons by diffing against the live repo, not just assumed).
+
+- **Flagged, NOT deleted** — `eq-shell/.claude/worktrees/app-naming-wt` has real content: 133 source files under `src/`, plus `README.md`/`SCHEMA-GOVERNANCE.md`/`SECURITY-PATTERNS.md`/`package.json`/actual vite config. No `.git` of its own, so there's no way to check what branch/commit it represents or whether it's already reflected in `main`. Left for Royce to look at before anyone deletes it.
+
+- **Still locked, left in place** — 4 folders returned 'device or resource busy' on every retry across several minutes (not a one-off): `eq-cards/will-brown-cards-sks-issue-4ec9c4`, `eq-ui/elastic-blackwell-1a85b8`, `eq-shell/frozen-window-issue-58b6b2`, `eq-solves-service/user-source-analysis-be4daa` (the same one blocked in round 2 — still stuck). All confirmed empty of real content. The consistent, repeated lock (rather than a one-time collision) points more at a system-level process (antivirus/indexer) than another live session. Harmless to leave; retry later or after a reboot.
+
+---
+
 ## Active (do not touch)
 
 | C:\Projects\eqsvc-redirect-headers-wt (eq-solves-service) | claude/redirect-security-headers | Claude (follow-up to #607/#613 — the security-headers fix only applies to normal page responses via `next.config.ts headers()`; `proxy.ts`'s 8 `NextResponse.redirect()` call sites don't carry those headers on the 3xx itself. Root checkout `.claude/worktrees/user-source-analysis-be4daa` is now an orphaned fake worktree, no `.git` of its own, git falls through to the root checkout on `claude/migration-ledger-checksum-verify` with another session's uncommitted asset-import work — isolated here off origin/main instead) | 2026-07-27 | IN PROGRESS |
