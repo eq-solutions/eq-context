@@ -62,7 +62,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-field:**
 - #547 v3.5.363 — Batch Fill gets Clear, Bulk Assign/Clear removed
-- #546 v3.5.362 — fix v3.5.360's week-nav hover + week-picker positioning
 
 ---
 
