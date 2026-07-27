@@ -9,6 +9,16 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-27] Tender Pipeline locked to managers only + closed a live nav-bypass (MERGED, #550, v3.5.366)
+- New manager-ONLY permission key `field.manage_pipeline` (`canManagePipeline()`) — unlike every other `field.*` key in this app, deliberately excludes supervisor. A supervisor who unlocks Supervision mode no longer sees or can reach Pipeline/Resources/Accounts. Grantable to a specific supervisor via Shell's Access Control (`extra_perms`) without opening it to everyone.
+- Real access gap found and fixed: nav-item hiding was the only gate Pipeline ever had — `showPage()` had zero route guard for any pipeline page id, so a `?tab=<id>` deep link reached it regardless of role. Added an explicit `showPage()` guard (same pattern as the existing `editor` check), covering both the live SKS Pipeline module and an older, no-longer-nav-linked module still fully wired into the page dispatcher.
+- Updated the 4 existing per-action `isManager` guards inside `sks-pipeline.js`/`sks-pipeline-resource.js` to the same manager-only check. 15 new unit tests (`tests/pipeline-lockdown.test.js`); verified live on the deploy preview (staff blocked, supervisor-unlocked still blocked, manager allowed, deep-link bypass closed).
+
+## [2026-07-27] Boot-perf round 2 — sign-in now runs in parallel with tenant lookup (MERGED, #549, v3.5.365)
+- `tenant-config.js` now resolves the tenant DB's own `organisations.id` server-side instead of the client making a separate round trip for it.
+- `checkAccess()` (Shell sign-in token verify) no longer waits for the entire tenant-config chain to finish first — it only ever depended on the tenant slug, not `SB_URL`/`SB_KEY`. The two now run in parallel; `initApp()` still waits for both. No auth logic changed, only timing.
+- Measured live before fixing: `tenant-config.js`/`verify-pin.js` each cost ~1-1.7s per call even warm — this was the "spins for a while, then the app needs to load" half of boot that v3.5.361 (same day) didn't address.
+
 ## [2026-07-27] Roster/schedule UI polish — Batch Fill teams, week-picker, hover fixes, Bulk Assign/Clear folded in, boot-perf (MERGED, #544-#548, v3.5.360-v3.5.364)
 - Batch Fill gets a Team quick-toggle (check/uncheck a team's people), mirroring the existing Direct/Apprentice/Labour Hire buttons.
 - New click-to-jump week picker on the Edit Roster/Schedule/Editor week-nav bars — a dropdown of every available week, matching sks-nsw-labour's equivalent feature. Extracted to `scripts/week-picker.js` when the addition tripped `roster.js`'s `max-lines` CI ratchet.

@@ -65,21 +65,29 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ---
 
 ## eq-field: Batch Fill teams, week-picker, hover fixes, Bulk Assign/Clear folded in, boot-perf (2026-07-27)
-*Royce reported several live UI issues on the Shell-embedded roster/schedule screens from screenshots: no hover feedback on the week-nav buttons, a request for a click-to-jump week picker (like the one in sks-nsw-labour), and asked whether Batch Fill and Bulk Assign/Clear were redundant. Also flagged Andrew Murphy/Ben Ritchie roster-vs-Contacts display discrepancies, and separately reported boot feeling "insane" slow. Each was root-caused against the live app/DB before building, not assumed.*
-
-- [x] Added a Team quick-toggle to Batch Fill (check/uncheck a team's people within the full list), mirroring the existing Direct/Apprentice/Labour Hire group buttons.
-- [x] Added a click-to-jump week picker to the Edit Roster/Schedule/Editor nav (dropdown of every available week), matching the pattern in sks-nsw-labour.
-- [x] Fixed the week-nav arrow buttons' hover — the CSS rule existed but was silently overridden by an inline style set at render time; needed `!important`.
-- [x] Added hover feedback to the week-picker label too (it previously had none at all).
-- [x] Consolidated Batch Fill and Bulk Assign/Clear on Royce's direction — added a "Clear Selected" button to Batch Fill (any day combination, not the old hardcoded Mon–Fri/Mon–Sun), then removed the separate Bulk Assign/Clear toolbar button + modal entirely.
-- [x] Investigated Andrew Murphy (roster vs Contacts) and Ben Ritchie (roster vs on/off-roster status) — both traced to real, correct database state (a legitimate batch update), not a client-side bug. Royce confirmed the display is now correct after a hard refresh.
-- [x] Parallelized 6 independent boot-time data loaders that were running one after another for no real reason — a real, verified improvement, but explicitly not claimed as the full fix for "insane" load time.
-- [x] Gave the week label its own hover affordance (a visible border) — unlike the arrow buttons, it has no border at rest, so the existing subtle background-only tint didn't read as "this became clickable."
-- [x] Shipped and live on field.eq.solutions: v3.5.360 through v3.5.364 (eq-field PRs #544, #545, #546, #547, #548, all merged).
 
 **Deferred:**
 - [ ] **Batch Fill's new Team toggle (compose/select) behaves differently from the Timesheets batch modal's existing Team filter (narrows the list)** — same idea, two different behaviours in two similar screens of the same app. Flagged for Royce's call, not resolved. _(added 2026-07-27)_
-- [ ] **The boot-time parallelization fix is real but likely isn't the whole "insane load time" story** — if it still feels slow, the next place to look is the Shell-to-Field sign-in handoff and the tenant-lookup function's cold start, not more client-side changes. _(added 2026-07-27)_
+
+---
+
+## eq-field: boot-time sign-in now runs in parallel with tenant lookup, not after it (2026-07-27)
+*Follow-on to the same day's "insane load time" report — the earlier fix only sped up data loading AFTER sign-in. Royce reported the actual symptom more precisely: "it spins for a while and then the app needs to load," two distinct phases. Measured the sign-in phase live before touching anything: two separate background checks (which system to talk to, and who's signed in) each took ~1-1.7 seconds, and ran one after the other even though the second one doesn't actually need the first to finish.*
+
+- [x] The system that resolves which database to use for a tenant now also looks up one extra piece of info it used to make the app fetch separately — one less round trip on every load.
+- [x] The sign-in check no longer waits for that whole lookup to finish first — it starts as soon as it knows which tenant it's dealing with, running alongside the rest of the lookup instead of after it. No change to what's checked or how securely — only when it starts.
+- [x] Verified with a standalone test of the actual boot code (not a rewritten copy) before shipping, confirming the two really do run in parallel and nothing hangs if the tenant lookup fails.
+- [x] Shipped and confirmed live on field.eq.solutions: v3.5.365 (eq-field [PR #549](https://github.com/eq-solutions/eq-field/pull/549), merged).
+
+---
+
+## eq-field: Tender Pipeline locked to managers only (2026-07-27)
+*Royce asked for the whole Pipeline feature to be turned off for everyone except managers. Checked how it was actually gated today before building anything: the only thing hiding it was the menu button itself — supervisors who unlock "Supervision mode" could already see and use it (same as most other manager tools in this app), and a direct link to the page (the same kind of link Core uses to open a specific tab) skipped the menu-hiding entirely and let ANYONE reach it, manager or not.*
+
+- [x] Added a new access rule that is manager-only — stricter than every other manager-tool rule in this app, which all also allow supervisors. A supervisor unlocking Supervision mode no longer sees or can open Pipeline/Resources/Accounts. Can still be handed to one specific supervisor individually later via Core's Access Control if Royce ever wants that, without opening it to every supervisor.
+- [x] Closed the direct-link bypass — confirmed real and live before fixing it, not assumed. Now blocked at the same point that already protects the Edit Roster screen.
+- [x] Verified live on the actual test site: a regular staff login can't see or open Pipeline even via a direct link; a supervisor who unlocks Supervision mode STILL can't (the exact case this was built to prevent); a real manager login can.
+- [x] Shipped and confirmed live on field.eq.solutions: v3.5.366 (eq-field [PR #550](https://github.com/eq-solutions/eq-field/pull/550), merged).
 
 ---
 
