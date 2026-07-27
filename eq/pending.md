@@ -80,16 +80,8 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ---
 
 ## eq-cards: licence renewal built, shipped, and deployed for two real workers (2026-07-27)
-*Royce asked what Rhys Scott and Brian Griffin-Colls should do to upload their renewed licences — the same two people flagged back on 2026-07-03 as needing to submit updated documents, which had been sitting as "can't action from here" ever since. Turned out the real gap wasn't missing documents, it was the app: renewing an existing licence either created a silent duplicate (the obvious "Add" button) or required retyping everything by hand with no auto-read (the correct "Edit" path). Built the fix, shipped it, and deployed it live the same session.*
 
-- [x] **Added a "Renew" button on any expiring or expired licence** (both the wallet list and the licence detail screen) that reuses the same photo/PDF scan + auto-read the app already uses for adding a licence — but now updates the existing entry instead of creating a duplicate.
-- [x] **Scanning a licence type you already hold now asks first** — "update the existing one, or add a new one anyway" — instead of silently duplicating it.
-- [x] **Fixed a data-safety bug found while building this**: renewing would have silently blanked out fields the new scan didn't happen to re-read (e.g. issuing authority). Now only overwrites what the fresh scan actually found.
-- [x] **Shipped and deployed live** — cards.eq.solutions is running this now. eq-cards PR [#181](https://github.com/eq-solutions/eq-cards/pull/181), merged and deployed. CI caught a real broken test on the first push (a required field the test wasn't passing) — fixed before merging, not skipped.
-
-**Deferred:**
 - [ ] **Rhys Scott and Brian Griffin-Colls still need to actually renew** using the new button — the tool is ready, nobody's used it yet. Royce to confirm once they have. _(added 2026-07-27)_
-- [ ] **The licence-expiry email/SMS reminders don't deep-link to this new Renew button yet** — they still just point at the general wallet. Small follow-up, not done this session. _(added 2026-07-27)_
 - [ ] **Excel workbook auditing the 478-item EQ backlog (why it grew this large, dashboard + root-cause) — spun off as its own background session** (`task_a6f9b5d8`), running independently, not concluded this session. _(added 2026-07-27)_
 
 ---
