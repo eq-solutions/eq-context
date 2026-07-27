@@ -71,6 +71,19 @@ review needed after all, closing that half of the item below.
   `eq-ui/elastic-blackwell-1a85b8`, `eq-shell/frozen-window-issue-58b6b2`,
   `eq-solves-service/user-source-analysis-be4daa`. All confirmed empty —
   harmless to leave, retry later or after a reboot. _(added 2026-07-27)_
+  - `user-source-analysis-be4daa`'s cause was found and cleared: two
+    orphaned `next start` dev servers (ports 3111/3112) left running from
+    a Claude Code session that verified the now-merged
+    [PR #613](https://github.com/eq-solutions/eq-service/pull/613) and
+    never stopped them — full process chain traced back to a Git-Bash
+    session whose own parent had already exited (the classic
+    background-process-outlives-its-session pattern). Both stopped
+    cleanly, ports confirmed free, no processes reference the path
+    anymore — but the folder is *still* locked by something Windows'
+    built-in tools can't identify without a reboot (`openfiles` needs a
+    system flag that itself only takes effect after restarting). Same
+    bucket as the other 3 now — harmless, will clear on its own.
+    _(2026-07-27)_
 
 ---
 
