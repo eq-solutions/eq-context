@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-27 09:48 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-27 09:50 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-27 09:34 UTC → 2026-07-27 09:48 UTC)
+## Since last refresh (2026-07-27 09:48 UTC → 2026-07-27 09:50 UTC)
 
-- Merged: eq-shell [#1031](https://github.com/eq-solutions/eq-shell/pull/1031) perf(ops): Job Creation export reads its bundled template in
-- Merged: eq-shell [#1027](https://github.com/eq-solutions/eq-shell/pull/1027) chore(deps): bump @eq-solutions/ui v1.11.1 -> v1.12.0
-- Merged: eq-shell [#1025](https://github.com/eq-solutions/eq-shell/pull/1025) refactor(perms): retire deprecated cards.view/cards.onboard 
-- Merged: eq-shell [#1021](https://github.com/eq-solutions/eq-shell/pull/1021) refactor(perms): collapse hand-typed module matrices to deri
-- Merged: eq-shell [#1019](https://github.com/eq-solutions/eq-shell/pull/1019) feat(cards): bulk connect-worker mode, respecting the existi
-- Merged: eq-shell [#1018](https://github.com/eq-solutions/eq-shell/pull/1018) feat(dashboard): scannable AI brief, self-evident action ran
-- Merged: eq-shell [#1017](https://github.com/eq-solutions/eq-shell/pull/1017) feat(settings): required-tickets picker alongside Who can jo
-- Merged: eq-shell [#1016](https://github.com/eq-solutions/eq-shell/pull/1016) fix(perms): close check-perm-sync.mjs under-grant blind spot
+- Merged: eq-shell [#1030](https://github.com/eq-solutions/eq-shell/pull/1030) fix(staff): Photo ID requirement satisfied by driver licence
+- Merged: eq-shell [#1029](https://github.com/eq-solutions/eq-shell/pull/1029) feat(settings): nominate specific recipients for new-join-re
+- Merged: eq-shell [#1028](https://github.com/eq-solutions/eq-shell/pull/1028) fix(security): close anon-EXECUTE gap on zaap/ehow Ops+Quote
+- Merged: eq-shell [#1026](https://github.com/eq-solutions/eq-shell/pull/1026) refactor(access-control): derive the role-matrix perm list f
+- Merged: eq-shell [#1023](https://github.com/eq-solutions/eq-shell/pull/1023) chore(deps): bump @eq-solutions/roles to v2.5.7
+- Merged: eq-shell [#1022](https://github.com/eq-solutions/eq-shell/pull/1022) feat(access-model): canWithReason() + why-can.ts diagnostic 
+- Merged: eq-shell [#1020](https://github.com/eq-solutions/eq-shell/pull/1020) chore(styles): remove dead duplicate TenantHome AI-brief CSS
+- Merged: eq-shell [#1015](https://github.com/eq-solutions/eq-shell/pull/1015) feat(settings): move the join-requirements switch out of Tra
 
 ## ⚠ Needs you (3)
 
@@ -33,7 +33,7 @@ _2026-07-27 09:48 UTC · what needs your attention. Full snapshot: [suite-state.
 |------|-----------|--------|----------|-----------|
 | eq-shell | ? unknown | ? | 0 | — |
 | eq-solves-service | ? unknown | ? | 5 | 0d |
-| eq-field | ? unknown | ? | 1 | 0d |
+| eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ? unknown | ? | 0 | — |
 | eq-solves-intake | ✓ success | 1d ago | 0 | — |
 
@@ -127,4 +127,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-27 09:48 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-27 09:50 UTC._
