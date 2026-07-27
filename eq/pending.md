@@ -14,6 +14,24 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-solves-service: migration-ledger drift audit → checksum verification shipped, then the archive/delete feature turned out to be fully broken and got rebuilt (2026-07-27)
+*Royce asked for an audit of the migration ledger for rows claiming to be applied when they aren't — found genuine drift from a known 2026-07-03 grandfather backfill, built a --verify tool for it, then chased the one real pending migration through the governed pipeline. Re-verification (at Royce's insistence — "are you confident in your ranking?") showed almost all the "unverified" migrations are safe (they target a pre-canonical schema shape that no longer exists and would fail cleanly, not silently corrupt anything). Along the way, confirmed contacts are already fully wired to the shared canonical database (no work needed — an earlier note calling this "fragmented" was stale). Then scoped the archive/recycle-bin rewrite and found it was worse than expected: "delete permanently" silently did nothing for every entity type, archived sites could never be restored, and archiving a customer left the customer's own record active forever. All three fixed and deployed live.*
+
+- [x] **Added a tool that checks whether a migration marked "applied" in the ledger actually matches what's live** — catches drift instead of trusting the record blindly. Wired into every PR as an informational check (won't block merges). eq-service PR #614, merged.
+- [x] **Applied the one migration that was genuinely still pending** (a data cleanup for testing-check frequency labels) through the proper approval-gated process.
+- [x] **Re-checked the ~172 older "unverified" migrations against the live database instead of guessing from filenames** — confirmed nearly all of them target database tables that don't exist in that old shape anymore, so they'd fail safely (nothing runs halfway) rather than pose a real risk. No cleanup action needed beyond documenting it.
+- [x] **Confirmed Contacts is not broken** — an older note said the contacts feature was still on a separate, unsynced copy of the data; checked live and it's already fully wired to the shared database (has been since 2026-07-07). No work needed.
+- [x] **Found and fixed: the Archive page's "Delete permanently" button didn't actually delete anything** — for customers, sites, assets, maintenance plans, or checks — it silently did nothing while claiming success in the activity log.
+- [x] **Found and fixed: an archived site could never be restored** — a database view was hiding archived sites so completely that even the "restore" button couldn't find them.
+- [x] **Found and fixed: archiving a customer didn't actually archive the customer** — it correctly archived the sites and equipment underneath, but the customer's own record silently stayed active forever.
+- [x] **Deliberately did not build an automatic nightly delete** — sites and customers are shared with the Field app (real live data depends on them), so an unattended timer deleting them was judged riskier than it's worth. "Delete permanently" stays a manual, one-at-a-time action, backed by a real database safety check that blocks the delete if anything else still depends on the record. Confirmed with Royce.
+- [x] **Shipped and deployed live** — eq-service PR #617, merged, migration applied to the live database and verified.
+
+**Deferred:**
+- [ ] **A separate, smaller governance gap found while checking whether the platform-wide "lock down database changes" effort was finished**: the login/identity database (a different, separate system from eq-service's own data) has a safety check that was written but never switched on. Spun off as its own background session (`task_4e47f248`), running independently — not part of eq-service, not resolved this session. _(added 2026-07-27)_
+
+---
+
 ## eq-shell: quick-edit Staff list — Supervisor/Roster toggles + inline fields, no more open-record-to-flip-one-checkbox (2026-07-27)
 *Royce asked for a faster way to see/change who's a Supervisor and who's shown on Field's roster, then broadened it mid-session: too slow clicking into every profile just to edit a field. Scoped with Royce to inline-edit Job Title, Employment Type, Trade, Level, Company, Phone, and Email directly in the list — deliberately leaving Name out (edit-panel-only, so it can't be changed by accident).*
 
