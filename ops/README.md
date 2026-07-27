@@ -32,6 +32,7 @@ Every canonical OPS file as a full URL — clickable from `/context/claude`:
 | Path | Purpose |
 |---|---|
 | `pending.md` | Webb tax, infra blockers, substrate-discipline items |
+| `pending-archive.md` | Done items rotated out of pending.md nightly (`scripts/rotate_pending.py`) — historical record only |
 | `entities.md` | Entity register, bank accounts, registrations, key contacts |
 | `decisions.md` | Append-only decisions (ADR format) — covers all tiers |
 | `financial-architecture.md` | AHD design, Delta Elcom cliff, CDC PSI position |

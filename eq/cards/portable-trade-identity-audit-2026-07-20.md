@@ -4,10 +4,12 @@ owner: Royce Milmlow
 last_updated: 2026-07-21
 scope: Response to the "EQ Cards — From Credential Wallet to Portable Trade Identity" agent brief (2026-07-20). Current-state audit + design recommendation. No implementation performed — this is the required output before any build decision.
 read_priority: critical
-status: recommended-first-slice item 1 (is_private gap) CLOSED 2026-07-21, both in RLS and in a companion eq-shell server-side bypass found during close-out. Remaining first-slice items (2–4) and Path A/B/C decision still await Royce.
+status: live
 ---
 
 # EQ Cards — Portable Trade Identity Audit
+
+**Status:** recommended-first-slice item 1 (is_private gap) CLOSED 2026-07-21, both in RLS and in a companion eq-shell server-side bypass found during close-out. Remaining first-slice items (2–4) and Path A/B/C decision still await Royce. *(Moved out of the frontmatter `status:` field 2026-07-27 — that field is schema-constrained to live/draft/archived/deprecated and this narrative was failing the frontmatter CI gate.)*
 
 Response to the agent brief delivered 2026-07-20 (`eq-cards-brief.pdf`). Primary repo `eq-cards`; investigation also touched `eq-shell`, `eq-field`, and live queries against eq-canonical (Supabase project `jvknxcmbtrfnxfrwfimn`). `sks-nsw-labour` was not touched. Every claim below was verified against live code and/or live data this session — none of it is carried over from older docs without a spot-check (one existing doc, the 2026-06-15 iframe ADR, was already found stale earlier today and corrected separately; the same discipline was applied here).
 

@@ -49,6 +49,20 @@ NETLIFY_SITES = {
 # CI conclusions that mean "broken" (anything not in the healthy set).
 HEALTHY_CI = {"success", "skipped", "neutral"}
 
+# Open pending items only Royce personally can clear — a confirm, a
+# click-through, or a decision. The 2026-07-27 backlog analysis found ~17% of
+# eq/pending.md's open count was this queue, invisible inside the engineering
+# backlog; surfacing it separately is what lets 15 minutes of clicking clear
+# dozens of "open" items. Matches the phrasings session write-ups actually use.
+ROYCE_QUEUE_RE = re.compile(
+    r"Royce (?:to|himself)\b"
+    r"|Royce'?s (?:call|confirmation|go-ahead|sign-off|approval)"
+    r"|needs Royce|waiting on Royce|Royce manual step"
+    r"|needs your call|your call on|needs your confirmation",
+    re.I,
+)
+ROYCE_QUEUE_LIMIT = 12  # max rows shown; full lists stay in the pending files
+
 # Infra/notification workflows — not build CI. Blocked from ci_status() so they
 # don't overwrite the real build signal. Add any new meta-workflows here.
 META_WORKFLOW_PATHS = {
@@ -649,7 +663,19 @@ def build():
     def _drop_merged(items):
         return [item for item in items if not any(num in item for num in merged_pr_nums)]
 
-    eq_pending = _drop_merged(pending_open_items("eq/pending.md"))
+    eq_pending_all = _drop_merged(pending_open_items("eq/pending.md"))
+    sks_pending_all = _drop_merged(pending_open_items("sks/pending.md"))
+    ops_pending_all = _drop_merged(pending_open_items("ops/pending.md"))
+
+    # Split out the personal queue: items only Royce can clear go to their own
+    # section; the Pending sections below then read as engineering-only.
+    royce_queue = (
+        [("EQ", i) for i in eq_pending_all if ROYCE_QUEUE_RE.search(i)]
+        + [("SKS", i) for i in sks_pending_all if ROYCE_QUEUE_RE.search(i)]
+        + [("OPS", i) for i in ops_pending_all if ROYCE_QUEUE_RE.search(i)]
+    )
+    eq_pending = [i for i in eq_pending_all if not ROYCE_QUEUE_RE.search(i)]
+    sks_pending = [i for i in sks_pending_all if not ROYCE_QUEUE_RE.search(i)]
 
     # ── render ──
     lines = []
@@ -721,6 +747,26 @@ def build():
         lines.append("**Nothing flagged — every EQ repo green, no aging PRs, substrate honest.** ✓")
     lines.append("")
 
+    # Waiting on you — the personal confirm/decide queue, split out from the
+    # engineering backlog so it's clearable (and so Pending below stays honest).
+    if royce_queue:
+        lines.append(f"## 🙋 Waiting on you ({len(royce_queue)})")
+        lines.append("")
+        lines.append(
+            "_Items only you can clear — a confirm, a click-through, or a call. "
+            "Not engineering backlog; the Pending sections below exclude these._"
+        )
+        lines.append("")
+        for tier, item in royce_queue[:ROYCE_QUEUE_LIMIT]:
+            lines.append(f"- **{tier}** · {item}")
+        if len(royce_queue) > ROYCE_QUEUE_LIMIT:
+            lines.append(
+                f"_…and {len(royce_queue) - ROYCE_QUEUE_LIMIT} more · "
+                f"[eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · "
+                f"[ops/pending.md](ops/pending.md)_"
+            )
+        lines.append("")
+
     lines.append("## Pulse")
     lines.append("")
     lines.append("| Repo | CI (main) | CI age | Open PRs | Oldest PR |")
@@ -781,8 +827,8 @@ def build():
         lines.append(f"_No merges in the last {RECENTLY_MERGED_DAYS} days._")
     lines.append("")
 
-    # Pending open items (EQ + SKS)
-    sks_pending = _drop_merged(pending_open_items("sks/pending.md"))
+    # Pending open items (EQ + SKS) — engineering-only; the Royce-queue items
+    # were split into "Waiting on you" above.
     for label, items, path in [("EQ", eq_pending, "eq/pending.md"), ("SKS", sks_pending, "sks/pending.md")]:
         if not items:
             continue

@@ -45,6 +45,8 @@ Every canonical EQ file as a full URL — clickable from `/context/claude`:
 | Path | Purpose |
 |---|---|
 | `pending.md` | EQ-only to-do list |
+| `pending-archive.md` | Done items rotated out of pending.md nightly (`scripts/rotate_pending.py`) — historical record only |
+| `cards/portable-trade-identity-audit-2026-07-20.md` | Cards portable-trade-identity audit — first-slice item 1 closed, items 2–4 + Path A/B/C await Royce |
 | `products.md` | EQ live product status |
 | `active.md` | Live-state snapshot (staff/site/licence counts) — cross-check against products.md before quoting a headcount, they've drifted before |
 | `punch-list-2026-06-02.md` | 2026-06-02 punch list — several items superseded, treat as historical unless re-confirmed live |
@@ -79,7 +81,7 @@ Every canonical EQ file as a full URL — clickable from `/context/claude`:
 | `identity/parity-harness/phase1-parity-note-2026-07-10.md` | Phase 1 parity-harness note |
 | `design/claude-design-context.md` | Claude Design "start with context" brief for EQ brand |
 | `sprints/2026-05-20-S3-polish-and-audit.md` | Sprint S3 polish + audit doc, historical |
-| `changelog/*.md` | Per-product changelogs — **all 4 duplicate pairs resolved 2026-07-19**. `shell.md`/`service.md`/`cards.md` were abandoned (stopped 3-19 days before their twin) — each carries a "Superseded" banner; use `eq-shell.md`/`eq-service.md`/`eq-cards.md`. `field.md` and `eq-field.md` had both been actively written for months in parallel — 18 PRs that only existed in `eq-field.md` were merged into `field.md` at their correct dates; `eq-field.md` now carries a "Merged" banner listing what moved. `field.md` is canonical going forward. Plus `changelog/eq-context.md` and `changelog/eq-intake.md`, which have no duplicate. |
+| `changelog/*.md` | Per-product changelogs — **all 4 duplicate pairs resolved 2026-07-19**. `shell.md`/`service.md`/`cards.md` were abandoned (stopped 3-19 days before their twin) — each carries a "Superseded" banner; use `eq-shell.md`/`eq-service.md`/`eq-cards.md`. `field.md` and `eq-field.md` had both been actively written for months in parallel — 18 PRs that only existed in `eq-field.md` were merged into `field.md` at their correct dates; `eq-field.md` now carries a "Merged" banner listing what moved. `field.md` is canonical going forward. Plus `changelog/eq-context.md` and `changelog/eq-intake.md`, which have no duplicate, and the newer single-copy logs `eq-roles.md`, `eq-ui.md`, `eq-receipts.md`, and `eq-solves-service.md`. |
 
 ## Killed / deferred (do not reference as live products)
 
