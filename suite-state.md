@@ -1,14 +1,14 @@
 ---
 title: EQ Suite — Current State
 owner: Royce Milmlow
-last_updated: 2026-07-26
+last_updated: 2026-07-27
 scope: Live suite state — app lineup, DB counts, open PRs, architectural decisions. Auto-refreshed nightly by GitHub Action.
 read_priority: critical
 status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-07-26 (nightly cron)_
+_Last verified: 2026-07-27 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -58,15 +58,13 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-07-26)
+## Open PRs (as of 2026-07-27)
 
-**eq-shell:**
-- #1029 feat(settings): nominate specific recipients for new-join-request emails
-- #1028 fix(security): close anon-EXECUTE gap on zaap/ehow Ops+Quotes RPCs
+_No open PRs_
 
 ---
 
-## System Health (as of 2026-07-26)
+## System Health (as of 2026-07-27)
 
 **CI on main:**
 
