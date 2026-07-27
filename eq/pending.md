@@ -2206,25 +2206,11 @@ creds 779→737, invites 37→58 since 06-03; `0028_contact_customer_links` IS p
 
 ---
 
-## ⏩ Session close — 2026-06-08 — EQ Field Sentry crash fixes
-
-**Completed:**
-      resolved in Sentry; no new occurrences since deploy. Both marked resolved with notes.
-      lazy-load race in dashboard.js). PR #230, merged, smoked, production verified.
-      fully closed for all roster.js dependants.
-
-**EQ Field live version:** v3.5.100
-
-**Deferred (carry forward):**
-- [ ] Deploy-preview auth gate (zaap anon-revoked) — `demo-trades` on previews 401s on
-      name list. Use `?tenant=demo` to bypass for smoke. Pre-existing, deferred 2026-06-06.
----
-
 ## SKS Live — roles / security-groups track (2026-06-07)
 
 Parallel to the Field schema/data cutover below. Full plan + agent prompts (A–E): [`sks-live-sprint-2026-06-07.md`](../sks-live-sprint-2026-06-07.md). Live-verified 2026-06-07: `shell_control` has 9 groups / 16 perms / **0** user assignments; tenant `sks` = 3 × manager.
 
-- [ ] **eq-shell Phase 4** — walk ONE real SKS user end-to-end; first-ever `user_security_groups` row (Prompt D).
+- [ ] **eq-shell Phase 4** — walk ONE real SKS user end-to-end; first-ever `user_security_groups` row (Prompt D). **Re-verified live 2026-07-27**: `shell_control.user_security_groups` on jvkn is still **0 rows**, 50 days after this was flagged — unlike the other items in this section, this one hasn't just gone quiet, it's never been started. Worth a direct decision: still wanted, or superseded by the access-model `field.manage_*` cluster work that's since shipped a different (table/RLS-based, not security-groups-based) enforcement model for the same underlying goal.
 ---
 
 ## ⏩ Session close — 2026-06-05
@@ -2253,8 +2239,6 @@ Parallel to the Field schema/data cutover below. Full plan + agent prompts (A–
 - [ ] 🟠 **MFA-bypass posture** — PIN-only Shell → Service single-factor; accept or gate behind mandatory Shell-TOTP
 
 **Deferred (spun off as post-launch tasks):**
-- [ ] Unify cross-app PostHog distinct_id (Shell UUID / Field `tenant:handle` / Service id) — fixes the "refused to merge" warning + the inflated user count
-- [ ] Fix EQ Field double `$pageview` capture (SPA logs ~80% of pageviews as `/`)
 ---
 
 ## ⏩ Session close — 2026-06-03 (PM) — EQ Field anon-remediation Phase 2 + SKS sync
@@ -2276,7 +2260,9 @@ superset — no pin/role, no region/project). The B5 canonical unification stays
 
 **Backlog (deferred, Royce-gated):**
 - [ ] **Drop the revoked `public.*` husks + `public.tenders` fallback** once confident (anon already
-      revoked — not leaking).
+      revoked — not leaking). **Re-verified live 2026-07-27**: `public.tenders` still exists on zaap;
+      anon still holds zero grants (only `authenticated` does) — the "not leaking" claim still holds,
+      the husk just hasn't been dropped yet. Still genuinely open, not stale.
 ---
 
 ## 🟦 Autonomous Sprint — SOURCE OF TRUTH (read first if running sprint work)

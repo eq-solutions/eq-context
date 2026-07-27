@@ -1021,3 +1021,24 @@ contain the same values and were pushed before push-protection caught up.
 - [x] Drop SKS credentials into the Netlify env vars for the production shell deployment. **[CLOSED 2026-07-27 — same supersession as above]**
 
 ---
+
+## ⏩ Session close — 2026-06-08 — EQ Field Sentry crash fixes (rotated 2026-07-27)
+
+**Completed:**
+      resolved in Sentry; no new occurrences since deploy. Both marked resolved with notes.
+      lazy-load race in dashboard.js). PR #230, merged, smoked, production verified.
+      fully closed for all roster.js dependants.
+
+**EQ Field live version:** v3.5.100
+
+**Deferred (carry forward):**
+- [x] ~~Deploy-preview auth gate (zaap anon-revoked) — `demo-trades` on previews 401s~~ — **moot, closed 2026-07-27**: the `demo-trades` canonical tenant this item was about was deleted 2026-06-28 (`CLAUDE.md`: only `eq`/`sks`/`favour-perfect` resolve now). Nothing left to fix for a tenant that no longer exists; the `?tenant=demo` in-memory bypass remains available for smoke-testing regardless.
+
+---
+
+## ⏩ Session close — 2026-06-05 (part b) — PostHog MCP + EQ Core go-live readiness (rotated 2026-07-27 — open items remain in pending.md)
+
+- [x] ~~Unify cross-app PostHog distinct_id~~ — **done, verified live 2026-07-27**: `scripts/analytics.js` `_identify()` uses the canonical email as the cross-app distinct_id (falls back to legacy `tenant:handle` only when the Shell handoff carries no email), with a one-time `posthog.alias()` bridge so historical `tenant:handle` events join the unified person. Never marked done in this file — closing now.
+- [x] ~~Fix EQ Field double `$pageview` capture~~ — **done since v3.5.76** (`scripts/analytics.js`): autocapture `$pageview` turned off, replaced with a single explicit capture per logical screen from `_events.pageViewed()`. Comment in the code cites the exact ~80% bare-`/` bug this item describes. Never marked done in this file — closing now.
+
+---
