@@ -60,15 +60,9 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-27)
 
-**eq-cards:**
-- #181 feat(licences): renew an existing licence in place instead of duplicating
-
 **eq-field:**
+- #547 v3.5.363 — Batch Fill gets Clear, Bulk Assign/Clear removed
 - #546 v3.5.362 — fix v3.5.360's week-nav hover + week-picker positioning
-- #545 v3.5.361 — boot perf: parallelize 6 independent initApp() loaders
-
-**eq-service:**
-- #617 fix(archive): rewrite hard-delete + restore for canonical write layer
 
 ---
 
@@ -87,7 +81,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 196 (latest: 0192) applied
+**Migrations:** eq-service has 197 (latest: 0193) applied
 
 ---
 
