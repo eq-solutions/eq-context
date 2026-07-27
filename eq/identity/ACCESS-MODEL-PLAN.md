@@ -62,12 +62,13 @@ The 5-role model is consistent across all apps (audited 2026-07-07/08: Shell, Fi
 - Migrate the 3 known readers of `org_memberships.role='admin'` → canonical manager/`can()` gates (Cards `org_admin_provider`, jvkn licence-photos RLS, connection-request edge fn). Re-grep for unknowns first.
 - Parity test on the 3 current admin-flag holders; keep column data.
 
-**Phase 3 — Guardrails (post-cutover)**
-- Field UI gates: convert enforcement-relevant `isManager` checks to `EQ_PERMS.can()` incrementally; Cards consumes `roles.dart` (retire `kEqRoleLabels`).
-- **Split `service.create`/`service.close` by app** before ever promoting a Service-affecting grant canonically (the inventory's top Phase 3 item).
-- Decide whether Shell's `ops.*` module gets a canonical home, or collapse the client-matrix architecture to derive from the package directly (closes the whole class of "3 more hidden mirrors" risk).
-- Retire redundant overrides; constrain/replace free-form groups (D3); build `why_can()`; kill remaining hardcoded matrix mirrors.
-- **Fix `check-perm-sync.mjs`'s blind spot**: it merges the full package matrix into `clientGrants` before diffing, so it can only ever catch a local module *over*-granting vs canonical, never *under*-granting. Found 2026-07-08 when it didn't flag a stale `EQUIPMENT_MATRIX.apprentice`.
+**Phase 3 — Guardrails (post-cutover) — partially shipped.** Three of the original items merged 2026-07-26; the rest are still open, not blocked.
+- ✅ **`check-perm-sync.mjs`'s under-grant blind spot fixed** (eq-shell PR #1016, merged `99a1a8e5`, 2026-07-26). It used to merge the full package matrix into `clientGrants` before diffing, so it could only ever catch a local module *over*-granting vs canonical, never *under*-granting — found 2026-07-08 when it didn't flag a stale `EQUIPMENT_MATRIX.apprentice`. Fix scopes the merge to the admin./audit. subset actually composed live from the package, and separately parses `OPS_MATRIX`. Surfaced a real gap in the process: `ops.view_suppliers`/`ops.manage_suppliers` existed in Shell's client matrix but not in the package — added in eq-roles v2.5.4, wired into `suppliers-mutate.ts`'s server gate.
+- ✅ **Hand-typed client-matrix mirrors collapsed to derive from `@eq-solutions/roles`** (eq-shell PR #1021, merged `0decaecf`, 2026-07-26) — this also resolves the "does Shell's `ops.*` module get a canonical home" question (moot once the matrices are pure re-exports) and kills the "3 more hidden mirrors" risk from the Phase 0 findings.
+- ✅ **`why_can()` built** (eq-shell PR #1022, merged `81b8d03e`/`0fd3f285`, 2026-07-26) — shipped as `canWithReason()` + a `why-can.ts` diagnostic script.
+- **Still open**: Field UI gates — convert enforcement-relevant `isManager` checks to `EQ_PERMS.can()` incrementally; Cards consumes `roles.dart` (retire `kEqRoleLabels`).
+- **Still open**: **Split `service.create`/`service.close` by app** before ever promoting a Service-affecting grant canonically (the inventory's top remaining Phase 3 item).
+- **Still open**: Retire `tenant_role_overrides`; constrain/replace free-form groups (D3).
 
 ## Standing rules
 - Gate on **permissions, never role names**. Additive roles only — never rename `manager`.
