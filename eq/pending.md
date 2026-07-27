@@ -2867,3 +2867,15 @@ Diagnosed 2026-05-19. 17 advisor warnings, fix drafted but not applied.
 - `gh pr merge --delete-branch` failed its local branch-delete step (another worktree already had `main` checked out) even though the GitHub-side merge succeeded — always verify merge state via `gh pr view --json state,mergedAt` rather than trusting the CLI's exit code, and clean up the remote branch manually if needed.
 
 ---
+
+## eq-context: backlog overwhelm fixed at the source — nightly rotation + personal queue (2026-07-27)
+*Royce reacted to the 478-open-item backlog workbook and said "help me fix it." The number was mostly bookkeeping, not engineering debt: done items never rotated (one manual chore ever), one trailing "Royce to confirm" line trapped whole finished sessions, and ~79 items across the three tiers are personally his (confirms/click-throughs/calls), buried in the engineering noise.*
+
+- [x] **pending.md now cleans itself.** Done items rotate to `pending-archive.md` per-item every night (`scripts/rotate_pending.py` + `pending-rotate.yml`, 24 unit tests, conservation hard-asserted) — a mixed section keeps its open items live instead of trapping the finished ones. 3-day grace window keeps this week's narrative readable. Initial run moved 99 done items; sks/ops archives created. PR [#121](https://github.com/eq-solutions/eq-context/pull/121), merged.
+- [x] **digest.md now splits out "Waiting on you"** — the items only Royce can clear, out of the engineering Pending list. First regenerate picks it up automatically.
+- [x] **Both chronically-red CI gates on main (frontmatter, index-drift) turned green** — every violation fixed, all 8 README orphans indexed, in the same PR.
+- [x] **The 67-day corrupted "Licence p" line restored** verbatim from git history (F7) — its 3 items are back and flagged as possibly stale.
+- [ ] **Royce to work through the "Your queue" artifact** (81 items: SEC-9/SEC-10 key rotations first, then 79 confirm/decide items) — telling any session "confirmed: X" closes items properly. _(added 2026-07-27)_
+- [ ] **Stale-cull sweep of the ~90 open items older than 30 days** (including the restored May section) — close dead ones, merge duplicate threads. Good multi-agent session on its own; not run this session. _(added 2026-07-27)_
+
+---
