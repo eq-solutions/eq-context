@@ -23,6 +23,16 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-service: finished the security-headers cleanup, cleared the dependency backlog, found the npm audit gate isn't fully fixable (2026-07-27)
+*Follow-on from the earlier security-headers fix (public/_headers never reaching server-rendered pages) — closed the one remaining gap, then Royce asked to check CI health suite-wide, merge the open dependency PRs, and fix the one red check that was left.*
+
+- [x] **Redirect responses (sign-in bounce, MFA challenge, dashboard bounce, admin/commercials role gate, deactivated-user signout) weren't carrying the security headers** — the earlier fix only reached normal page loads, not the 8 redirect responses in the auth middleware. Fixed, with the header list now defined once and shared instead of copied a second time. Shipped: eq-service PR [#615](https://github.com/eq-solutions/eq-service/pull/615), merged, live.
+- [x] **Merged all 5 pending dependency-update PRs** (design-system components, an icon library, an analytics library, a build tool, error-tracking) — routine version bumps, all tested clean first.
+- [x] **Investigated the one red CI check (a security-scanner flag)** — confirmed it started 3 days before this session over an unrelated industry-wide advisory in a shared low-level library, not anything built this week. About half of it was fixable outright; the other half is stuck behind two other tools (the linter, and the spreadsheet-export library) that haven't released compatible updates yet. Checked directly that neither of those two remaining paths can actually be triggered by a real user in this app, so there's no live risk sitting behind them — but the scanner itself will keep flagging red until either those tools update, or the check itself is changed to stop double-counting things already accepted as safe. Shipped the fixable half: eq-service PR [#616](https://github.com/eq-solutions/eq-service/pull/616), merged, live.
+- [ ] **Needs Royce's call: what to do about the still-red security scanner check.** Not urgent (verified no live exposure), but it won't turn green on its own — either wait for the linter/spreadsheet-library maintainers to catch up, or change what the check itself looks for so it stops flagging things already confirmed safe. _(added 2026-07-27)_
+
+---
+
 ## eq-shell/eq-cards: tenant data-plane security sweep + a real login-blocking bug fixed for a live user (2026-07-27)
 *Continuing straight from the anon-EXECUTE fix flagged as an open question the session before: swept the two tenant databases properly instead of stopping at the one function found by accident. Then Royce asked who gets notified when someone new asks to join a company, and separately reported a real employee (Brian Griffin-Colls) couldn't log in — both turned into real, shipped fixes.*
 
