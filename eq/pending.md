@@ -14,6 +14,42 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell Staff table: reorderable columns + compact Status/Contact cells (2026-07-27)
+*Royce asked to simplify the Staff table, whether columns could be reordered, and for any smart ideas to make it "simple but powerful" — with the instruction that whatever's decided should land in the shared component library (eq-ui), not just Shell. Checked the real table first: show/hide columns and CSV export already existed, reorder didn't. Recommended against a natural-language "ask the table a question" AI feature — the existing filters already answer that need — in favour of two concrete, scoped wins Royce picked from a shortlist.*
+
+- [x] **Added column drag-style reordering to the shared table component** (`@eq-solutions/ui`) — move-up/move-down buttons in the Columns menu, remembered per person. Built as buttons rather than literal drag-and-drop for reliable keyboard and touch support. This lands in every app using the shared table, not just Staff. Released as `@eq-solutions/ui` v1.13.0.
+- [x] **Merged Supervisor + On-roster into one compact status cell, and Phone + Email into one Contact cell** on the Staff list — same information, fewer columns, search/filter/export all still work correctly against the underlying fields.
+- [x] Both fully built and tested (253/253 automated tests pass, clean build against the real released component). eq-ui [#34](https://github.com/eq-solutions/eq-ui/pull/34)/[#35](https://github.com/eq-solutions/eq-ui/pull/35) merged and released. eq-shell [PR #1051](https://github.com/eq-solutions/eq-shell/pull/1051) open, CI green, **not yet merged**.
+
+**Deferred:**
+- [ ] **eq-shell PR #1051 needs a merge decision** — CI is green but this session ended before Royce gave the go-ahead. _(added 2026-07-27)_
+- [ ] **No live click-through yet** — the session's local preview browser never rendered content (tooling issue this session, browser pane wouldn't display frames at all, confirmed on both a local dev server and a real hosted deploy-preview URL). Worth a real look once merged and live. _(added 2026-07-27)_
+
+---
+
+## eq-shell Suppliers: login/password visibility is now a real, assignable permission (2026-07-27)
+*Royce asked to "fix up" the login/password columns on the Suppliers page and make them controllable via Security Groups, rather than hardcoded to Manager/Supervisor. Found the database-side gate for this had already existed since 21 July — the only missing piece was a matching permission that could actually be granted. Added it properly through the shared role-permission library (used by every EQ app), not as a Shell-only hack.*
+
+- [x] **Added a new grantable permission, "See supplier login/password"**, to the shared permission library used across all EQ apps. Released as a proper version (`@eq-solutions/roles` v2.5.8) with a written changelog entry.
+- [x] **Wired it into the Suppliers page** — Managers and Supervisors keep seeing it by default (unchanged), and now anyone else can be granted the same visibility individually via Security Groups, without a code change.
+- [x] **Shipped and deployed live** — eq-shell [PR #1047](https://github.com/eq-solutions/eq-shell/pull/1047), merged.
+
+---
+
+## eq-shell Quotes: retired 4 dead status values, added Close as Lost/Cancelled, added a file-count indicator (2026-07-27)
+*Started from a review of the quote/job status diagram Royce had flagged as overcomplicated — the app's UI only ever shows 5 main stages, but the database allowed 16 possible values, several of which no button or process ever set. Went through each one with Royce and got an explicit call on all of them, including a from-scratch judgement call he asked for directly ("do you think knowing it's lost/closed out when archiving is smart?"). Separately, Royce spotted from a screenshot that attached files had no visible indicator on the list and asked where they're stored — answered, then built the one feature he actually wanted (a file-count badge), not the "attach to email" idea, which stays unbuilt.*
+
+- [x] **Removed 4 status values that nothing in the app ever set or read** (folded into the nearest real equivalent), and merged two duplicate "verbal win" statuses into one. Fewer, more honest options everywhere quote status shows up.
+- [x] **Built a real "Close as Lost" / "Close as Cancelled" action** with a one-line reason prompt — the database already had a place to store the reason (built for this exact purpose, never wired to a button before now).
+- [x] **Added a small file-count badge** next to quotes/jobs that have attachments, so it's visible from the list without opening the record — answers "can I tell at a glance there are files here" without building the bigger "attach files to an email" feature, which stays a future option if wanted.
+- [x] **Shipped, deployed live, and the underlying database changes applied to the SKS database** — eq-shell [PR #1044](https://github.com/eq-solutions/eq-shell/pull/1044) + [PR #1045](https://github.com/eq-solutions/eq-shell/pull/1045), both merged.
+
+**Deferred:**
+- [ ] **Bulk "change status" on multiple quotes at once still doesn't capture a reason when closing as lost/cancelled** — only closing one quote at a time does. Known gap, not built. _(added 2026-07-27)_
+- [ ] **"Select files to send with an email" was floated but not chosen** — Royce picked the file-count badge only. Worth revisiting if the need comes up again. _(added 2026-07-27)_
+
+---
+
 ## eq-field: Batch Fill teams, week-picker, hover fixes, Bulk Assign/Clear folded in, boot-perf (2026-07-27)
 *Royce reported several live UI issues on the Shell-embedded roster/schedule screens from screenshots: no hover feedback on the week-nav buttons, a request for a click-to-jump week picker (like the one in sks-nsw-labour), and asked whether Batch Fill and Bulk Assign/Clear were redundant. Also flagged Andrew Murphy/Ben Ritchie roster-vs-Contacts display discrepancies, and separately reported boot feeling "insane" slow. Each was root-caused against the live app/DB before building, not assumed.*
 
