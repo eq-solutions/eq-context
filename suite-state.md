@@ -60,7 +60,12 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-27)
 
-_No open PRs_
+**eq-service:**
+- #612 chore(deps): bump @sentry/nextjs from 10.58.0 to 10.68.0
+- #611 chore(deps): bump lucide-react from 1.22.0 to 1.27.0
+- #610 chore(deps): bump posthog-js from 1.386.8 to 1.407.3
+- #609 chore(deps-dev): bump @vitejs/plugin-react from 6.0.3 to 6.0.4
+- #608 chore(deps): bump the eq-design-system group with 2 updates
 
 ---
 
