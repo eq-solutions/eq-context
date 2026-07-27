@@ -14,6 +14,16 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-field: fixed 2 live Sentry errors — duplicate global + Leave lazy-load race (2026-07-27)
+*Royce asked to investigate the two untriaged live Sentry errors flagged as gate item 5 in `ops/security-register.md` (both first seen 2026-07-26, in the Leave and Incidents modules NSW crews lean on hardest). A prior recon pass had already built accurate hypotheses from Sentry metadata + session logs alone, without repo access — this session confirmed both against the actual source, fixed, and verified live.*
+
+- [x] **`SyntaxError: Identifier 'INCIDENT_TYPES' has already been declared`** (Sentry 136548558) — confirmed exactly: `scripts/diary.js` and `scripts/incidents.js` (Incidents/Near-Miss, shipped 2026-07-22) each declared their own top-level `const INCIDENT_TYPES` with different taxonomies. Classic lazy-loaded `<script>` tags share one global scope and dedupe only by exact `src`, not by declared identifier — whichever file loaded second threw at parse time and aborted the whole module. Renamed diary.js's (narrower, diary-scoped) list to `DIARY_INCIDENT_TYPES`. Audited every other top-level identifier in both files — no other collisions.
+- [x] **`ReferenceError: openLeaveRequest is not defined`** (Sentry 130706295) — `showPage()` unhides the Leave page synchronously, before its async lazy-load of `leave.js` resolves; a fast click on the toolbar's "+ New Request" button could fire in that window. Added `openLeaveRequestSafe()`, reusing the exact lazy-load-then-call pattern the Dashboard leave strip already uses (`dashboard.js` `_kickLeave`, v3.5.293) rather than inventing a new mechanism.
+- [x] Verified both fixes with `node --check` on the touched scripts, a real browser load of both script orderings (zero errors either way), and a direct simulation of the leave-button race — then re-verified all three (Diary, Incidents/Safety, Leave "+ New Request") on the live Netlify deploy preview before merging. Shipped: eq-field [PR #542](https://github.com/eq-solutions/eq-field/pull/542) (v3.5.358), squash `ee0767c`, merged, live on field.eq.solutions.
+- [ ] **Latent sibling risk, not fixed**: the Leave toolbar's other buttons (CC List, Archive Resolved, Show Archived, Print, the status-filter/search `renderLeave()` calls) call `leave.js` globals directly and unguarded, with the exact same lazy-load race as the button just fixed — just not yet caught by Sentry. Deliberately left out of this PR to keep it scoped to the confirmed crash; worth a small follow-up sweep applying the same `openLeaveRequestSafe()`-style guard to the rest of that toolbar. _(added 2026-07-27)_
+
+---
+
 ## eq-solves-service: branded loading spinner on the Shell sign-in handoff (2026-07-27)
 *Royce reported the app is blank/white for a while before it appears, and asked for a loading spinner.*
 

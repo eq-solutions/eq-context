@@ -9,6 +9,11 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-27] Fixed 2 live Sentry errors — duplicate INCIDENT_TYPES global + leave lazy-load race (MERGED, #542, v3.5.358)
+- `SyntaxError: Identifier 'INCIDENT_TYPES' has already been declared` (Sentry 136548558) — `diary.js` and `incidents.js` both declared top-level `const INCIDENT_TYPES` with different taxonomies; lazy-loaded scripts share one global scope, so whichever loaded second threw at parse time. Renamed diary.js's to `DIARY_INCIDENT_TYPES`.
+- `ReferenceError: openLeaveRequest is not defined` (Sentry 130706295) — `showPage()` unhides the Leave page before its async `leave.js` lazy-load resolves; a fast click on "+ New Request" could fire first. Added `openLeaveRequestSafe()`, reusing the existing `EQ_LAZY.loadTabScripts` guard pattern already used by the Dashboard leave strip.
+- Verified via `node --check`, real browser loads of both script orderings, a direct simulation of the leave-button race, and a full smoke pass on the live deploy preview (Diary, Incidents/Safety, Leave "+ New Request" all clean).
+
 ## [2026-07-26] Access-Model Phase 3 guardrails — leave/timesheets/people isManager conversion (MERGED, #538, #539)
 - Converted the remaining raw `isManager` hard-gates in `leave.js` (5), `timesheets.js` (9), and `people.js` (13) onto `EQ_PERMS.can(permKey)`, matching the pattern already used by `roster.js`/`teams.js`/`diary.js`/`incidents.js`/`site-reports.js`/`toolbox.js`.
 - `leave.js` → `leave.approve`/`leave.archive`; `timesheets.js` → `ts.approve`/`ts.view_completion` — both drop straight in, no behaviour change, since those keys already grant identically to manager and supervisor.

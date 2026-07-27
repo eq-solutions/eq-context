@@ -65,14 +65,22 @@ fails on **new** exposure while keeping the open ones visible.
   4. ☐ **The 44 SKS workers still on the standalone app get an actual migration
      date**, not just a count — 48 already cut over as of 2026-06-06 per
      `eq/pending.md`, but the remaining 44 have no plan attached, only a tally.
-  5. ☐ **EQ Field's two live untriaged errors get looked at first** — both first
-     seen 2026-07-26, in exactly the crew-facing modules NSW workers would lean
-     on hardest during a scaled-up proving run: `ReferenceError:
-     openLeaveRequest is not defined` and `SyntaxError: Identifier
-     'INCIDENT_TYPES' has already been declared` (Incidents/Near-Miss, shipped
-     2026-07-22). A duplicate-const `SyntaxError` can break bundle load
-     depending on order — worth ruling out before more NSW usage lands on it,
-     not after. Not yet investigated by any session.
+  5. ✅ **EQ Field's two live untriaged errors — FIXED 2026-07-27, v3.5.358
+     (eq-field [PR #542](https://github.com/eq-solutions/eq-field/pull/542),
+     squash `ee0767c`), live on field.eq.solutions.** `SyntaxError: Identifier
+     'INCIDENT_TYPES' has already been declared` (Sentry 136548558) was a
+     duplicate top-level `const INCIDENT_TYPES` in both `scripts/diary.js` and
+     `scripts/incidents.js` (Incidents/Near-Miss, shipped 2026-07-22) —
+     classic-script lazy-loading shares one global scope, so whichever loaded
+     second threw at parse time and aborted the module. Renamed diary.js's to
+     `DIARY_INCIDENT_TYPES`. `ReferenceError: openLeaveRequest is not defined`
+     (Sentry 130706295) was a lazy-load race: `showPage()` unhides the Leave
+     page before its async `leave.js` lazy-load resolves, so a fast click on
+     "+ New Request" could fire before the function existed — added
+     `openLeaveRequestSafe()`, reusing the existing dashboard-strip lazy-load
+     guard pattern. Verified `node --check` clean on both touched scripts, plus
+     real browser loads (both script orderings, and the exact leave-button
+     race) on both `serve` and the live Netlify deploy preview — zero errors.
   6. ☐ Once 1-5 are clear: set the actual retirement date, then run Phase E's
      mechanical steps (repoint SKS Field surface → parallel-run/soak → take
      `nspbmirochztcjijmcrx` offline → disable its anon key → strike SEC-1 from
