@@ -1,13 +1,16 @@
 ---
 title: EQ Service — Changelog
 owner: Royce Milmlow
-last_updated: 2026-07-23
+last_updated: 2026-07-27
 scope: EQ Service append-only history. NOTE — duplicates eq/changelog/service.md, which stalls mid-deploy at 2026-06-09; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # EQ Service — Changelog
+
+## 2026-07-27
+- **PR #606 (MERGED, LIVE, `e54d8dc9`) — branded loading spinner on the Shell iframe sign-in handoff.** Royce reported a blank white screen before the app appears when Shell embeds Service. Root splash (`app/loading.tsx`) already existed and covers Suspense-boundary route loads; the actual first-paint during a fresh Shell embed is `app/shell/page.tsx` (the token-exchange page), which showed bare unstyled text ("Signing you in…") with no logo or spinner. Restyled to match the root splash (EQ logo + bouncing-dot spinner). The blank-screen-before-that is the middleware's Supabase auth round-trip in `proxy.ts` — separate cold-start/latency issue, not fixed this session (no client-side loading UI can paint before that response returns).
 
 ## 2026-07-23
 - **PR #598 (MERGED, LIVE, `10cf6a46`) — Admin Users page: added the missing "subcontractor" entry to the role label map.** `ROLE_ORDER`/`ROLE_LABEL` in `app/(app)/admin/users/page.tsx` listed 5 of the 6 canonical roles; the 6th fell through to its raw lowercase value instead of a sort position and a capitalized label. Found while investigating the companion `eq-shell` fix (PR #975) to this same page's data source.

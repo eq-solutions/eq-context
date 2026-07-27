@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-07-26
+last_updated: 2026-07-27
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -11,6 +11,14 @@ status: live
 
 EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-solves-service: branded loading spinner on the Shell sign-in handoff (2026-07-27)
+*Royce reported the app is blank/white for a while before it appears, and asked for a loading spinner.*
+
+- [x] **`/shell` entry page (the actual first-paint during a Shell embed) now shows the EQ logo + bouncing-dot spinner instead of bare text** while it exchanges the sign-in token. Shipped: eq-service PR [#606](https://github.com/eq-solutions/eq-service/pull/606), merged, live on service.eq.solutions.
+- [ ] **Root cause of the blank screen itself is still open**: the middleware (`proxy.ts`) does a full Supabase auth round-trip before any HTML reaches the browser on a fresh Shell embed — no client-side loading UI can paint over that gap. Worth a dedicated latency investigation if the blank-screen complaint persists after this spinner ships. _(added 2026-07-27)_
 
 ---
 
