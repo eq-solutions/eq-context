@@ -67,9 +67,6 @@ _If this file is >48h old, the cron is broken._
 - #609 chore(deps-dev): bump @vitejs/plugin-react from 6.0.3 to 6.0.4
 - #608 chore(deps): bump the eq-design-system group with 2 updates
 
-**eq-shell:**
-- #1043 fix(shell): EQ Field is missing its Records nav + rail opens on a mouse graze
-
 ---
 
 ## System Health (as of 2026-07-27)
