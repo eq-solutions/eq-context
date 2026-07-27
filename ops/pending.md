@@ -55,14 +55,16 @@ throw a file-not-found error. Fixed by switching to forward slashes (already
 the working convention for `guard.js` and other hooks in the same files) — not
 a repo change, so no PR; local machine config only.
 
-**Needs Royce:** nothing blocking — one small leftover:
-- [ ] 5 local git branches (already merged, worktrees now removed) are still
-  sitting in their repos and could be deleted with `git branch -d`:
+**Needs Royce:** nothing.
+- [x] 5 local git branches (already merged, worktrees now removed) deleted:
   `claude/timesheet-leave-approval-lifecycle` + `claude/dependabot-config`
   (eq-field), `claude/access-cluster3-service-gate` (eq-solves-service),
   `claude/dupes-usage-check-client` (eq-solves-intake),
-  `claude/phone-otp-approval-selfheal` (eq-shell). Cosmetic, not urgent.
-  _(added 2026-07-27)_
+  `claude/phone-otp-approval-selfheal` (eq-shell). Three needed `git branch -D`
+  (same squash-merge false-negative from the worktree removal: `git branch -d`
+  checks ancestry against local HEAD, which never includes a squashed commit
+  — each was independently confirmed MERGED via `gh pr list` first).
+  _(added 2026-07-27, closed 2026-07-27)_
 
 ---
 
