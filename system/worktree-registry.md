@@ -61,6 +61,20 @@ Any row below this point naming one of the Batch 1/2 folders is superseded by th
 
 ---
 
+## Recently pruned (2026-07-27, round 2 -- 8 more worktrees + 1 empty husk)
+
+Royce asked to check that OTHER repos' worktrees were clean too, as a follow-on to the same-day 39-folder cleanup above. Found 3 dirty checkouts -- all belong to other live sessions, none touched: `eq-shell/.claude/worktrees/wonderful-brahmagupta-fa0d32` (1 uncommitted file, `claude/staff-supervisor-roster-visibility-81bb93`), the `eq-solves-service` root checkout (14 modified + untracked incl. a stray `nul` file, on `claude/migration-ledger-checksum-verify`), and the `eq-intake` root checkout (detached HEAD, 6 modified + 3 untracked).
+
+Separately found 8 clean worktrees whose PRs were already merged (confirmed via `gh pr list --head <branch> --state all`, not assumed): `eq-shell-dup-accounts-wt` ([PR #967](https://github.com/eq-solutions/eq-shell/pull/967)), `eq-shell-invites-wt` ([#935](https://github.com/eq-solutions/eq-shell/pull/935)), `eq-shell-zaap-staff-wt` ([#936](https://github.com/eq-solutions/eq-shell/pull/936)), `eq-field-userid-guard-wt` ([#518](https://github.com/eq-solutions/eq-field/pull/518)), `eqsvc-asset-filter-wt` ([#602](https://github.com/eq-solutions/eq-service/pull/602)), `eqsvc-auditlog-wt` ([#577](https://github.com/eq-solutions/eq-service/pull/577)), `eqsvc-tm-lockdown-wt` ([#576](https://github.com/eq-solutions/eq-service/pull/576)), and `eq-solves-service/.claude/worktrees/user-source-analysis-be4daa` ([#613](https://github.com/eq-solutions/eq-service/pull/613), `claude/dev-csp-localhost-framing`).
+
+7 of 8 removed via `git worktree remove` (2 left build-cruft husks afterward -- `node_modules`/`.next` -- cleared with a plain delete, same pattern as the earlier 39). Their 7 now-dangling local branches deleted too (4 needed `-D` for the same squash-merge false-negative documented above -- every one independently confirmed MERGED via `gh` first, not just force-deleted on assumption).
+
+The 8th, `user-source-analysis-be4daa`, could **not** be removed -- a locked file inside its `node_modules` (`import-in-the-middle`, a Sentry auto-instrumentation temp file) blocked both `git worktree remove` and a direct long-path-safe .NET delete. 16 `node.exe` processes were running on this shared machine at the time and none could be confidently attributed, so none were killed to force the deletion -- left the worktree and its branch (`claude/dev-csp-localhost-framing`) in place rather than risk another session's live work. Revisit once the lock clears.
+
+Also pruned: `eq-context`'s own `sks-adam-meeting-prep-4ba3e8` worktree, an empty husk git had already self-flagged as prunable (`git worktree prune -v`).
+
+---
+
 ## Active (do not touch)
 
 | C:\Projects\eq-shell-field-nav-fixes-wt (eq-shell) | claude/field-records-and-rail-sensitivity | Claude (Royce asked two things live: "where are the records in the nav bar" while looking at EQ Field, and reported the Core sidebar rail "opens by mistake a fair bit" while using Field. Root-caused both: FieldIframe.tsx never wired `sidebarRecords` to `HubLayout`, unlike ServiceIframe/CardsIframe which both do — so Field is the only iframe module missing the Records nav section entirely. Separately, the 52px hover-expand rail has no hover-intent delay, so any mouse graze near the left edge pops it to 260px) | 2026-07-27 | IN PROGRESS |

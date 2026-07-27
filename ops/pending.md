@@ -36,6 +36,40 @@ Fixed in `~/.claude` (`hooks/guard.js`, `commands/brief.md`, `commands/close.md`
 
 ---
 
+## Worktree cleanup round 2 + template fix (2026-07-27)
+
+Follow-on to the entry below: checked that *other* repos' worktrees were
+clean too. Found 3 dirty checkouts belonging to other live sessions (left
+untouched — `eq-shell`'s `wonderful-brahmagupta-fa0d32`, `eq-solves-service`
+root, `eq-intake` root) and 8 more clean-but-merged worktrees, confirmed via
+`gh pr list` before touching: `eq-shell-dup-accounts-wt`, `eq-shell-invites-wt`,
+`eq-shell-zaap-staff-wt`, `eq-field-userid-guard-wt`, `eqsvc-asset-filter-wt`,
+`eqsvc-auditlog-wt`, `eqsvc-tm-lockdown-wt`, and
+`eq-solves-service/.claude/worktrees/user-source-analysis-be4daa`. 7 removed
+clean (+ their now-dangling branches deleted); the 8th blocked by a locked
+file in `node_modules` (see below). Also pruned `eq-context`'s own empty
+`sks-adam-meeting-prep-4ba3e8` husk. `worktree-registry.md` updated to
+record it.
+
+Separately: `eq-context/hooks/settings.template.json` (the master template
+for wiring these hooks into a repo) still had the old backslash paths from
+the PreToolUse hook bug fixed earlier today — fixed there too, so the next
+repo that copies it doesn't reinherit the bug. eq-context commit
+[`ab66d76`](https://github.com/eq-solutions/eq-context/commit/ab66d76).
+
+**Needs Royce:** nothing blocking — one small leftover:
+- [ ] `eq-solves-service/.claude/worktrees/user-source-analysis-be4daa`
+  (already-merged [PR #613](https://github.com/eq-solutions/eq-service/pull/613))
+  couldn't be removed — a locked file inside its `node_modules`
+  (`import-in-the-middle`, a Sentry instrumentation temp file) blocked both
+  `git worktree remove` and a direct delete. Likely held open by a running
+  dev/test process on this machine; didn't kill any of the 16 `node.exe`
+  processes running at the time to force it, since I couldn't tell whose
+  they were. Revisit once whatever's using it stops, or ask whoever's
+  running it to close it first. _(added 2026-07-27)_
+
+---
+
 ## Worktree-registry cleanup + broken PreToolUse hook fixed (2026-07-27)
 
 `C:\Projects` audit found 39 stale/orphaned worktree folders (34 already
