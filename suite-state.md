@@ -60,8 +60,7 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-27)
 
-**eq-shell:**
-- #1051 feat(staff): reorderable columns + compact Status/Contact cells
+_No open PRs_
 
 ---
 
