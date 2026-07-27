@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-07-21
+last_updated: 2026-07-27
 scope: Operational support to-do list — Webb, infra, substrate
 read_priority: standard
 status: live
@@ -250,3 +250,20 @@ Changelog at `archive/changelog-ahd.md`.
 - [ ] Engage solicitor for ISA, MIS Position Paper, EISP sign-off
 - [ ] First property acquisition — Adelaide North corridor / SE QLD fallback
 - [ ] Government engagement letter (NSW Treasurer) — post first bonus paid
+
+---
+
+## Security register triage: SEC-1 checklist, SEC-9 runbook, false-alarm guard fixed (2026-07-27)
+*Royce asked to fix SEC-1, close SEC-9/10/12, and investigate the "guard bypass?" flag in digest.md. Steelmanned the framing before acting — none of the three were as simple as the one-line ask implied.*
+
+- [x] **SEC-1 turned into a real gated decommission checklist**, not touched — Royce's own standing decision (2026-06-05, reaffirmed 2026-07-20) is that sks-nsw-labour stays untouched until Field replaces it. Live-verified Field's parallel-run proving is at 0/3-4 clean weeks, so a retirement date would be premature regardless of the other open gates (VIC scale-jump question, no sign-off owner, 44 workers with no migration date, 2 untriaged eq-field errors — since fixed, see `eq/pending.md` 2026-07-27). Checklist lives in `ops/security-register.md`'s SEC-1 row.
+- [x] **SEC-9 rotation runbook drafted** (`sec9-jvkn-key-rotation-runbook-2026-07-27.md`) — mapped all 4 live consumers (eq-shell primary, eq-field, eq-cards, eq-solves-service). Rotation itself is credential handling — hard-blocked for Claude Code to execute, Royce-gated.
+- [x] **SEC-10/SEC-12 exact manual steps handed to Royce** — both are "re-store as masked, same value, no rotation" fixes in the Netlify dashboard, a few minutes each; also credential handling, can't be done by Claude Code (confirmed: a same-value re-store attempt was blocked by the safety classifier in an earlier session, logged in SEC-12's row).
+- [x] **F1 "guard bypass?" flag in digest.md was a false positive, not a real recurrence** — the detector (`refresh_digest.py`'s `failure_recurrence_signals()`) was re-flagging `sessions/2026-07-21.md`'s own sentence confirming the already-known 2026-07-19 hit, because its date-only filter can't distinguish "narrating a confirmed past incident" from "it happened again." Added a `confirmed_in` field to `failures.md`'s schema + patched the detector to skip those files; verified live (empty result, no real recurrence hiding elsewhere). Struck the stale line from the tracked `digest.md` directly rather than rebuilding it locally (no `GH_TOKEN`/`NETLIFY_TOKEN`/`SENTRY_AUTH_TOKEN` in this session — a token-less rebuild would've blanked real PR/deploy/Sentry data).
+
+### Notes (added 2026-07-27)
+- **A subagent run to map SEC-9's consumers was itself flagged by the Claude Code security classifier** for decoding a live jvkn `service_role` JWT's payload while reading Netlify env vars — recorded honestly in SEC-9's row as a possible second exposure (not confirmed as a full leak: only decoded claims, not necessarily the encoded bearer token, were visible in what I could see). Process fix applied: future credential-consumer mapping should be scoped to env-var names/presence only, never fetch/decode/print actual values.
+
+### Deferred (added 2026-07-27)
+- [ ] **Royce's call: does the possible SEC-9 second exposure push "rotate whenever convenient" to "rotate soon"?** Not decided this session.
+- [ ] SEC-9/10/12 actual rotation/re-store — Royce to run himself, runbook/steps ready.
