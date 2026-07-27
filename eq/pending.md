@@ -2826,3 +2826,29 @@ Diagnosed 2026-05-19. 17 advisor warnings, fix drafted but not applied.
 - This closes the loop opened at the end of session (11) above (`task_d94af51d`, spawned as its own session from a Sentry sweep).
 
 ---
+
+## ⏩ Session close — 2026-07-27 — eq-shell: jvkn control-plane function-drift CI check authored + the last named drift anchor (eq_get_licences_expiring_within) backfilled and applied — PR #1048 merged
+
+*Started as a recon ask (does `--strict-identity` on `check-tenant-drift.mjs` cover the jvkn drift gate from `plan-control-plane-governance-and-card-read-2026-06-25.md` Workstream A2?). Answer: no — that flag gates a different check (zaap/ehow migration-identity), not jvkn. A2 was never actually built. Session then built it.*
+
+**Built / landed:**
+- New `scripts/check-control-plane-drift.mjs` — flags jvkn functions that are live but have no matching `CREATE FUNCTION` anywhere in `supabase/migrations/`. Verifies by object existence, not ledger name-matching (jvkn has no CI-checkable apply ledger).
+- Migration `2026_07_27_eq_get_licences_expiring_within_backfill.sql` — the third and last of the plan's named drift anchors (`eq_get_org_licences` / `eq_field_get_worker_summary` were already reconciled 2026-06-25). Applied to live jvkn as a verified no-op (byte-identical body, unchanged grants).
+- `CONTROL-PLANE-LEDGER.md` updated (new row + changelog).
+- **PR [#1048](https://github.com/eq-solutions/eq-shell/pull/1048) merged** (squash `25b1acf`) — cut onto its own branch off `main` after landing, so it didn't ride along on another concurrent session's unrelated branch.
+
+**Decided (Royce-confirmed):**
+- Apply the backfill migration + update the ledger — done.
+- Commit, then split onto its own branch off `main` (not the shared branch it was drafted on) — done.
+- Push, open PR, merge — done, all CI green pre-merge.
+
+**Deferred:**
+- [ ] **New drift-gate script not wired into any CI workflow yet.** Whether/when to add it to a workflow (informational first, `--strict` after a bake-in — same pattern as the other gates) is a separate decision. _(added 2026-07-27)_
+- [ ] **111-function baseline of legacy jvkn functions accepted as debt, not reconciled.** The control-plane migrations tree only starts 2026-05-24 — everything live from before that (the whole Cards/auth/audit genesis layer) predates it and was never going to have a source file. Seeded into the gate's allowlist so the check is useful from day one instead of drowning in noise, but reconciling them for real (writing ~111 backfill files) is a separate, large project. _(added 2026-07-27)_
+
+**Notes:**
+- `--strict-identity` on `check-tenant-drift.mjs` does NOT cover jvkn — it's CHECK 3 (migration-identity), scoped to `supabase/tenant-migrations/*.sql` vs `app_data._eq_migrations` on the zaap/ehow **data** planes only. Don't reach for that flag again for a control-plane ask; use the new script instead.
+- Confirmed live during recon: enabling `--strict-identity` today would fail CI immediately anyway, on ordinary in-flight work (a few-day zaap apply-lag, plus an unmerged branch's out-of-band ehow migration) — not an incident, just this repo's normal pace. Reinforces why that gate defaults off.
+- `gh pr merge --delete-branch` failed its local branch-delete step (another worktree already had `main` checked out) even though the GitHub-side merge succeeded — always verify merge state via `gh pr view --json state,mergedAt` rather than trusting the CLI's exit code, and clean up the remote branch manually if needed.
+
+---

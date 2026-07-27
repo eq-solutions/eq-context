@@ -9,7 +9,12 @@ status: live
 
 # eq-shell changelog
 
-## 2026-07-27 (latest — PR #1046, Staff list quick-edit)
+## 2026-07-27 (latest — PR #1048, jvkn control-plane function-drift CI check)
+- **PR #1048 (MERGED) — new script `scripts/check-control-plane-drift.mjs` flags jvkn (control-plane) functions that are live but have no matching source file** in `supabase/migrations/`, closing the last open gap in `plan-control-plane-governance-and-card-read-2026-06-25.md` Workstream A. Not yet wired into any CI workflow — script only, enabling it is a separate decision.
+- Also backfilled the last of the plan's three named drift anchors, `eq_get_licences_expiring_within` (`2026_07_27_eq_get_licences_expiring_within_backfill.sql`) — applied to live jvkn as a verified no-op. `eq_get_org_licences`/`eq_field_get_worker_summary` were already reconciled back on 2026-06-25.
+- A first live-vs-source run of the new script found 112 unsourced functions, not 3 — the control-plane migrations tree only starts 2026-05-24, so the entire pre-existing Cards/auth/audit genesis layer was never going to have a source file. 111 seeded into an accepted-debt allowlist so the gate reports the one real finding, not noise.
+
+## 2026-07-27 (PR #1046, Staff list quick-edit)
 - **PR #1046 (MERGED) — Supervisor and On-roster are now checkboxes right in the Staff list**, plus click-to-edit inline cells for Job Title, Employment Type, Trade, Level, Company, Phone, and Email — no more opening a record just to flip one field. Name deliberately stays edit-panel-only (Royce's explicit scope call). New "Supervisors" / "Off roster" filter chips alongside the existing licence-status ones. Reuses the existing `entity-patch.ts` generic PATCH endpoint, gated on `field.dispatch` (the permission the endpoint already enforces for `staff`). Self-review before shipping caught and fixed a wrong permission key and an unhandled-promise-rejection edge case. Deployed live same session (Netlify `commit_ref` = merge commit `ad0c139`), confirmed rendering correctly on core.eq.solutions via a live screenshot.
 
 ## 2026-07-27 (PRs #1037/#1039, iframe loading pane black-screen fix)
