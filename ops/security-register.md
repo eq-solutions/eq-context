@@ -35,6 +35,7 @@ fails on **new** exposure while keeping the open ones visible.
 | SEC-8 | P3 | `pg_net` extension installed in `public` schema | sks-labour | OPEN — moot once sks-labour retired |
 | SEC-11 | **P3 — accepted, docs corrected (downgraded from P1 2026-07-23)** | `tenant-migrate.yml`'s `production` GitHub Environment has **zero protection rules** (`protection_rules: []`, confirmed via `gh api repos/eq-solutions/eq-shell/environments/production` 2026-07-23) despite the workflow's own header comment and prior session memory both asserting "gated behind the `production` Environment so it PAUSES for a human approve click... `production` environment with Royce as required reviewer — CREATED 2026-06-03." | eq-shell (GitHub Actions/repo config) | **ACCEPTED, not fixing — Royce's call 2026-07-23.** Found live: dispatched `tenant-migrate.yml` (migration 0199, whole fleet) on Royce's "dispatch tenant-migrate.yml" — the `Apply to all tenants` job ran straight through in ~15s with no approval pause, applying live DDL to both zaap and ehow. Attempted the fix (`gh api --method PUT .../environments/production` with Royce/`Milmlow` id `271704382` as required reviewer) — **rejected, HTTP 422: "Please ensure the billing plan supports the required reviewers protection rule."** Required-reviewer environment protection needs GitHub Team/Enterprise Cloud (or a public repo); this private repo doesn't have it. Royce's call: don't pay for the plan upgrade — `Milmlow` is the only repo collaborator with dispatch access anyway (confirmed via `gh api repos/.../collaborators` — one entry), so a reviewer gate would only ever be "Royce clicks twice," not a real access boundary. **Fixed instead:** corrected the false claim in `tenant-migrate.yml`'s header + inline comments (PR [#985](https://github.com/eq-solutions/eq-shell/pull/985), OPEN) so nobody trusts a safety net that isn't there. Real safeguard going forward: deliberate manual dispatch only, no second-click gate. |
 | SEC-12 | **P0 — confirmed exposure, same class as SEC-9/SEC-10** | Several real secrets on **eq-shell's own** Netlify project stored with `is_secret: false` — full plaintext returned on any routine env-var read/API call, unmasked in Netlify's own UI | eq-shell (Netlify, LIVE, site `a3473f83-7c82-4f1e-872d-aa96eaa55172`, core.eq.solutions) | **OPEN.** Found 2026-07-26 during the SKS NSW onboarding security review, while checking `ENFORCE_IFRAME_ORIGIN` (confirmed separately: set to `true` in production — SEC-11-adjacent CSRF gap is enforced, not a hole). A `getAllEnvVars` read surfaced, all currently `is_secret: false`: `GOOGLE_DOC_AI_CREDENTIALS` (full Google service-account JSON incl. RSA private key, production context — **the most serious of the set**, grants direct GCP API access if leaked), `EQ_PLATFORM_ADMIN_KEY`, `EQ_SHELL_JWT_SECRET`, `SKS_SUPABASE_JWT_SECRET`, `EQ_SERVICE_HANDOFF_KEY`, `EQ_QUOTES_HANDOFF_KEY`, `CANONICAL_API_KEY_FIELD`, `EQ_SESSION_SALT` — all identical plaintext value across every context (dev/branch-deploy/deploy-preview/production) except `GOOGLE_DOC_AI_CREDENTIALS` (production only). Do not confuse `EQ_SESSION_SALT` (this finding) with `EQ_SECRET_SALT` (a distinct, similarly-named var already correctly `is_secret: true` on this same site). **Remediation attempted, blocked by design:** a same-value re-store (upsert with `envVarIsSecret: true`, no rotation) via the Netlify MCP was **blocked by the Claude Code safety classifier** as "modifying security settings" — this is a manual-hands-only fix, not something any Claude Code session can complete regardless of explicit permission. **Royce must do this himself** via the Netlify dashboard (Site settings → Environment variables → per key: note the current value, delete, recreate with the identical value, tick "contains sensitive values" this time) or the Netlify CLI. Same-value re-store, not rotation — changing any value breaks live signing (in-flight JWTs, handoff tokens) immediately. Rotation is a separate, larger decision (mirrors the SEC-9/SEC-3 "rotate whenever convenient" pattern) — not needed just to close the plaintext-storage gap. |
+| SEC-13 | ~~P2~~ **CLOSED 2026-07-27** | Same public-schema default-grant footgun as SEC-4, never previously audited on the tenant data planes — 39 anon-executable SECURITY DEFINER functions on zaap (12 on ehow, exact subset), the Ops/Quotes RPC surface | eq-canonical-internal (EQ tenant, zaap) + sks-canonical (SKS tenant, ehow) | **CLOSED same session — found, fixed, and live-verified.** See Detail. |
 
 ## Weekend tasks (Field go-live + cutover)
 
@@ -184,6 +185,80 @@ confirms anon reads = 401/empty on these. **Risk:** a single stray `GRANT ... TO
 anon` would instantly arm every always-true policy. **Action (post-launch):**
 drop the always-true policies and replace with tenant/owner-scoped ones so the
 table can never leak even if a grant is added.
+
+### SEC-13 — anon-executable SECURITY DEFINER functions on tenant data planes (CLOSED 2026-07-27)
+Same class of bug as SEC-4 (Supabase grants `EXECUTE` to `anon`+`authenticated`
+explicitly at `CREATE FUNCTION` time in the `public` schema — a separate
+mechanism from the `PUBLIC` pseudo-role; `REVOKE ... FROM PUBLIC` alone does
+not remove it), but SEC-4 only ever covered the control plane (jvkn). The
+tenant data planes (zaap/ehow) had never been checked for this — the drift
+gate's function-EXECUTE invariant (`scripts/check-tenant-drift.mjs`) had a
+maintained `FUNC_EXEC_ANON_ALLOW` baseline for jvkn only; zaap/ehow reported
+"no allow-list baseline — seed to enforce" and were silently unaudited by CI.
+
+**Found while investigating an unrelated finding same session:** an eq-shell
+PR's CI run surfaced `my_admin_org_ids()` (jvkn) anon-executable, fixed via
+eq-cards PR #180 + migration `0107_lock_my_admin_org_ids_exec.sql`. That
+prompted a direct SQL audit of the two tenant planes, which had never had
+this check run against them at all.
+
+**Verification method:** read every function body, not assumed from names.
+Live-queried `has_function_privilege('anon', ..., 'EXECUTE')` against both
+planes immediately before writing the fix (not the earlier triage snapshot).
+37 of the 39 zaap functions (12 of ehow) derive tenant scope from the
+caller's JWT (`current_setting('request.jwt.claims', true)` / `auth.jwt()` →
+`tenant_id`, both NULL for an anonymous caller) and fail closed — an anon
+call reads zero rows or hits an explicit `RAISE EXCEPTION`. Real
+exploitability was low; this was a defense-in-depth close, not a live
+breach.
+
+**Two confirmed legitimate exceptions**, left untouched: `eq_get_portal_quote(text)`
+/ `eq_respond_portal_quote(text,text,text,text)` — the customer-facing quote
+portal, gated by an unguessable share token
+(`app_data.quote_share_links.token = p_token AND is_active`), not auth. An
+external customer clicks an emailed link and never logs into EQ Shell.
+
+**A separate, distinct governance-drift finding surfaced in the same audit:**
+`eq_mark_expired_quotes()` (zero-arg cron sweep, no tenant filter) had
+already been correctly migrated to `service_role`-only twice
+(`0099_quote_expiry_rpc.sql`, `0111_eq_mark_expired_quotes_v2.sql`), both
+confirmed applied in `app_data._eq_migrations` on zaap (2026-06-15
+08:12:57/08:13:19 UTC) — yet live grants still showed `anon` holding
+`EXECUTE` before this fix, with no later migration touching the function
+again. Most likely an out-of-band change outside the One Pipe sometime after
+2026-06-15 — the **mechanism/actor is unidentified**, only the drift itself
+is confirmed and re-closed. Worth keeping in mind as a precedent: a
+correctly-migrated function is not guaranteed to stay fixed without the CI
+baseline described below.
+
+**Fix:** eq-shell `supabase/tenant-migrations/0211_close_anon_exec_gap_ops_quotes_rpcs.sql`
+(the 39/12-function REVOKE+re-GRANT, tolerant of ehow's smaller subset via
+`EXCEPTION WHEN undefined_function`) + `0212_fix_eq_update_customer_anon_exec_signature.sql`
+(0211's own signature list had 10 args for `eq_update_customer`; the real
+function takes 11 — the exception handler swallowed the mismatch silently on
+both planes, caught by live re-verification immediately after 0211 applied,
+exactly the risk flagged before building). PR
+[#1028](https://github.com/eq-solutions/eq-shell/pull/1028), merged and
+dispatched to both zaap and ehow via `tenant-migrate.yml` same session.
+Live-reverified after both migrations: zaap holds only the 2 portal
+functions anon-executable, ehow holds zero.
+
+**Also seeds `FUNC_EXEC_ANON_ALLOW` baselines for both tenant planes** in
+`check-tenant-drift.mjs` (`eq-canonical-internal (EQ tenant)`: the 2 portal
+signatures; `sks-canonical (SKS tenant)`: empty set) — the drift gate now
+actually enforces this class of bug on the tenant planes going forward
+instead of reporting "no baseline." Confirmed: PR #1028's drift-gate check
+initially failed post-migration-draft (live state hadn't caught up yet),
+then passed clean after the migrations were dispatched — same
+dispatch-before-merge sequencing as SEC-11's workflow.
+
+**Related, still open:** SEC-4 (jvkn, the original 4-function instance of
+this same footgun) remains unfixed — "VERIFIED not exploitable," never
+revoked. This session's three fixes of the identical pattern
+(`my_admin_org_ids`, the zaap 39, the ehow 12), all applied with zero
+incidents, are a working precedent for finally closing SEC-4 too. Not
+actioned this session — flagged here, not fixed, since it wasn't the
+task in hand.
 
 ### SEC-6 — context_proposals volume throttle (P2)
 Length caps applied (migration `context_proposals`), but anon can still insert
