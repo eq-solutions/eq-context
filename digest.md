@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-27 09:22 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-27 09:34 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-27 09:16 UTC → 2026-07-27 09:22 UTC)
+## Since last refresh (2026-07-27 09:22 UTC → 2026-07-27 09:34 UTC)
 
-- Merged: eq-shell [#1043](https://github.com/eq-solutions/eq-shell/pull/1043) fix(shell): EQ Field is missing its Records nav + rail opens
-- Merged: eq-shell [#1031](https://github.com/eq-solutions/eq-shell/pull/1031) perf(ops): Job Creation export reads its bundled template in
-- Merged: eq-shell [#1027](https://github.com/eq-solutions/eq-shell/pull/1027) chore(deps): bump @eq-solutions/ui v1.11.1 -> v1.12.0
-- Merged: eq-shell [#1025](https://github.com/eq-solutions/eq-shell/pull/1025) refactor(perms): retire deprecated cards.view/cards.onboard 
-- Merged: eq-shell [#1021](https://github.com/eq-solutions/eq-shell/pull/1021) refactor(perms): collapse hand-typed module matrices to deri
-- Merged: eq-shell [#1019](https://github.com/eq-solutions/eq-shell/pull/1019) feat(cards): bulk connect-worker mode, respecting the existi
-- Merged: eq-shell [#1017](https://github.com/eq-solutions/eq-shell/pull/1017) feat(settings): required-tickets picker alongside Who can jo
-- Merged: eq-shell [#1016](https://github.com/eq-solutions/eq-shell/pull/1016) fix(perms): close check-perm-sync.mjs under-grant blind spot
+- Merged: eq-shell [#1044](https://github.com/eq-solutions/eq-shell/pull/1044) fix(quotes): retire 4 dead status values, merge verbal-win, 
+- Merged: eq-shell [#1030](https://github.com/eq-solutions/eq-shell/pull/1030) fix(staff): Photo ID requirement satisfied by driver licence
+- Merged: eq-shell [#1029](https://github.com/eq-solutions/eq-shell/pull/1029) feat(settings): nominate specific recipients for new-join-re
+- Merged: eq-shell [#1028](https://github.com/eq-solutions/eq-shell/pull/1028) fix(security): close anon-EXECUTE gap on zaap/ehow Ops+Quote
+- Merged: eq-shell [#1026](https://github.com/eq-solutions/eq-shell/pull/1026) refactor(access-control): derive the role-matrix perm list f
+- Merged: eq-shell [#1023](https://github.com/eq-solutions/eq-shell/pull/1023) chore(deps): bump @eq-solutions/roles to v2.5.7
+- Merged: eq-shell [#1022](https://github.com/eq-solutions/eq-shell/pull/1022) feat(access-model): canWithReason() + why-can.ts diagnostic 
+- Merged: eq-shell [#1020](https://github.com/eq-solutions/eq-shell/pull/1020) chore(styles): remove dead duplicate TenantHome AI-brief CSS
 
 ## ⚠ Needs you (3)
 
@@ -33,7 +33,7 @@ _2026-07-27 09:22 UTC · what needs your attention. Full snapshot: [suite-state.
 |------|-----------|--------|----------|-----------|
 | eq-shell | ? unknown | ? | 0 | — |
 | eq-solves-service | ? unknown | ? | 5 | 0d |
-| eq-field | ? unknown | ? | 0 | — |
+| eq-field | ? unknown | ? | 1 | 0d |
 | eq-cards | ? unknown | ? | 0 | — |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
@@ -46,15 +46,16 @@ _2026-07-27 09:22 UTC · what needs your attention. Full snapshot: [suite-state.
 | eq-shell | [Error: Workers never invited to join, past grace period: 45](https://eq-solutions.sentry.io/issues/135740258/) | 7 | 2026-07-26 |
 | eq-shell | [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/) | 6 | 2026-07-23 |
 | eq-field | [ReferenceError: openLeaveRequest is not defined](https://eq-solutions.sentry.io/issues/130706295/) | 2 | 2026-07-26 |
+| eq-field | [SyntaxError: Identifier '_ROSTER_WEEKDAYS' has already been declared](https://eq-solutions.sentry.io/issues/136749375/) | 1 | 2026-07-27 |
 | eq-cards | [LateInitializationError: Field '' has not been initialized.](https://eq-solutions.sentry.io/issues/136695941/) | 1 | 2026-07-27 |
 | eq-cards | [LateInitializationError: Field '' has not been initialized.](https://eq-solutions.sentry.io/issues/136695940/) | 1 | 2026-07-27 |
-| eq-field | [TypeError: Cannot set properties of null (setting 'innerHTML')](https://eq-solutions.sentry.io/issues/136685760/) | 1 | 2026-07-27 |
 _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunresolved)_
 
 ## Recently built (last 7 days)
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-27 | eq-shell | [#1044](https://github.com/eq-solutions/eq-shell/pull/1044) fix(quotes): retire 4 dead status values, merge verbal-win, add C |
 | 2026-07-27 | eq-shell | [#1043](https://github.com/eq-solutions/eq-shell/pull/1043) fix(shell): EQ Field is missing its Records nav + rail opens on a |
 | 2026-07-27 | eq-shell | [#1042](https://github.com/eq-solutions/eq-shell/pull/1042) fix(service-embed): explain the preview block instead of hanging  |
 | 2026-07-27 | eq-shell | [#1041](https://github.com/eq-solutions/eq-shell/pull/1041) fix(attachments): list/upload-attachment hit the control plane, n |
@@ -69,7 +70,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-27 | eq-solves-service | [#614](https://github.com/eq-solutions/eq-service/pull/614) feat(migrations): add --verify checksum step, wire into PR plan ( |
 | 2026-07-27 | eq-solves-service | [#613](https://github.com/eq-solutions/eq-service/pull/613) fix(dev): allow localhost framing in development CSP |
 | 2026-07-27 | eq-solves-service | [#607](https://github.com/eq-solutions/eq-service/pull/607) fix(security): apply security headers to page responses, not just |
-| 2026-07-27 | eq-solves-service | [#606](https://github.com/eq-solutions/eq-service/pull/606) feat(shell): branded loading spinner on the iframe sign-in handof |
 _Showing 15 of 113 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -109,7 +109,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | [EQ](eq/pending.md) | 3036 | 478 | 163 |
 | [SKS](sks/pending.md) | 554 | 79 | 97 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 |
-| [OPS](ops/pending.md) | 335 | 33 | 11 |
+| [OPS](ops/pending.md) | 362 | 35 | 11 |
 
 ## Recent sessions
 
@@ -127,4 +127,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-27 09:22 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-27 09:34 UTC._
