@@ -36,6 +36,36 @@ Fixed in `~/.claude` (`hooks/guard.js`, `commands/brief.md`, `commands/close.md`
 
 ---
 
+## Worktree-registry cleanup + broken PreToolUse hook fixed (2026-07-27)
+
+`C:\Projects` audit found 39 stale/orphaned worktree folders (34 already
+untracked by git, holding only leftover build cruft; 5 still git-tracked on
+merged-but-not-torn-down branches). All 39 removed after live verification
+(`git worktree list` + `gh pr` status per branch, not the registry's own
+say-so — the registry was wrong in both directions). `worktree-registry.md`
+updated to record it ([eq-context PR-less commit `918d9e4`](https://github.com/eq-solutions/eq-context/commit/918d9e4),
+direct push to main).
+
+Separately found + fixed: the `PreToolUse` hook pointer in
+`C:\Projects\.claude\settings.json` (and the `SessionStart`/`Stop` hooks in
+`C:\Users\EQ\.claude\settings.json`) used backslash Windows paths
+(`C:\\Projects\\eq-context\\hooks\\...`) that this session's harness silently
+mangled before spawning python, causing every `Bash`/`Edit` call to briefly
+throw a file-not-found error. Fixed by switching to forward slashes (already
+the working convention for `guard.js` and other hooks in the same files) — not
+a repo change, so no PR; local machine config only.
+
+**Needs Royce:** nothing blocking — one small leftover:
+- [ ] 5 local git branches (already merged, worktrees now removed) are still
+  sitting in their repos and could be deleted with `git branch -d`:
+  `claude/timesheet-leave-approval-lifecycle` + `claude/dependabot-config`
+  (eq-field), `claude/access-cluster3-service-gate` (eq-solves-service),
+  `claude/dupes-usage-check-client` (eq-solves-intake),
+  `claude/phone-otp-approval-selfheal` (eq-shell). Cosmetic, not urgent.
+  _(added 2026-07-27)_
+
+---
+
 ## Full substrate audit — 95 findings across the whole eq-context repo (2026-07-19)
 
 Royce asked for a deep-dive, full review of the substrate ("spend the time now
