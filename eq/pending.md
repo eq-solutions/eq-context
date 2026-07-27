@@ -14,6 +14,20 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-context: old-format pending.md backfill archived + nightly rotation workflow verified clean (2026-07-27)
+*Follow-on to a prior session's backlog analysis, which found 115 sections still using an older Shipped/Decided/Notes write-up format the new per-item `rotate_pending.py` (merged same day, PR #121) can't always see. Found the sibling branch building that rotator was still unpushed, waited for it to land, then re-classified against the live post-merge file rather than the stale 115-count.*
+
+- [x] **Re-classified against live state**: of 103 old-format candidate sections, 96 already had consistent `- [ ]`/`- [x]` checkbox syntax in their Deferred blocks and are already correctly handled by `rotate_pending.py` going forward — no action needed. Only 6 used narrative-only sub-headers with zero checkbox syntax anywhere, genuinely invisible to that script.
+- [x] **Hand-verified all 6 were fully closed** (no open item anywhere, checkbox or prose) and archived them whole to `eq/pending-archive.md` with a one-off script matching `rotate_pending.py`'s conservation-invariant pattern (open item count asserted unchanged before/after: 494 → 494, NUL-scanned).
+- [x] **Verified `pending-rotate.yml` runs clean.** Its first scheduled tick (11:30 UTC) was silently missed — merged too close to its own cron trigger, a known GitHub Actions quirk — so triggered it manually instead: 24/24 unit tests passed, the rotation script ran clean (nothing left to rotate, since the 6 above already cleared the backlog), and the "commit if changed" step correctly no-op'd rather than pushing an empty commit.
+- [x] **Committed 3 separate complete, unrelated in-progress changes from other concurrent sessions sharing this checkout** as their own commits before touching anything, rather than risk clobbering or batching them — this file saw at least 4 different sessions writing to it inside one hour today.
+
+**Notes:**
+- The remaining old-format sections beyond these 6 are not a backlog — `rotate_pending.py`'s checkbox-based logic already covers them correctly on its own nightly schedule. The only structural gap was narrative-only closed sections with no checkbox syntax at all, now cleared.
+- Tomorrow's regular 11:30 UTC tick should fire normally now the workflow's been on `main` a full cycle — worth a quick spot-check if it doesn't, but nothing found suggests a persistent problem (it ran clean on manual dispatch).
+
+---
+
 ## eq-shell Staff table: reorderable columns + compact Status/Contact cells (2026-07-27)
 *Royce asked to simplify the Staff table, whether columns could be reordered, and for any smart ideas to make it "simple but powerful" — with the instruction that whatever's decided should land in the shared component library (eq-ui), not just Shell. Checked the real table first: show/hide columns and CSV export already existed, reorder didn't. Recommended against a natural-language "ask the table a question" AI feature — the existing filters already answer that need — in favour of two concrete, scoped wins Royce picked from a shortlist.*
 
