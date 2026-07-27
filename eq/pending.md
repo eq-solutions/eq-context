@@ -262,7 +262,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [ ] **Royce to click through the new "Who can join" Settings section and confirm it reads clearly and saves correctly** — code-complete and tested, not yet user-verified. _(added 2026-07-26)_
 - [ ] **Royce to run one more fresh Cards signup** to confirm the nudge and the approval-time flag actually show correctly end to end — the full loop has never been walked through live since these changes landed. _(added 2026-07-26)_
 - [ ] **Royce to test the new bulk connect-worker tool** with a real list of phone numbers. _(added 2026-07-26)_
-- [ ] **`cards-staff-matches.ts` is dead code** — built to power a duplicate-worker suggestion UI (`AdminCardsFeed`) that no longer exists anywhere in the codebase, superseded by a different mechanism. Not cleaned up, just flagged. _(added 2026-07-26)_
+- [x] **`cards-staff-matches.ts` deleted** — confirmed dead via git history (its caller was removed 2026-06-23, this file was a one-item miss in that cleanup), swept the rest of `netlify/functions/` for the same shape and found no other real instance. eq-shell PR #1038, merged. _(closed 2026-07-27)_
 - [x] **Broader sweep done, same session** — 39 more anon-executable functions found on the EQ tenant database (12 on SKS's), all closed; see the security-register + tenant-lookup-bugs entry below. _(closed 2026-07-27)_
 
 ---
