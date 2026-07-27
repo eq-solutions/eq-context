@@ -817,18 +817,6 @@ Agency field + roster on/off toggle in Core (#753), Field honours `on_roster` (#
 
 ---
 
-## ⏩ Session close — 2026-07-11 (eq-cards) — duplicate-staff LAST leak closed, residual data cleaned, Cards deployed
-
-*Royce handed the recurring SKS duplicate-staff problem as a root-cause task. Verify-first paid off: the main fix was already shipped — avoided rebuilding it — so the real work was the one remaining leak + data cleanup.*
-
-**Built / shipped:**
-
-**Decided (Royce):** scope = sync fallback + admin dedup; match key = phone-then-email within tenant; then approved apply + merge + full data cleanup + frontend deploy.
-
-**Notes:** the brief's "~18 dormant duplicate logins" was wrong — only 7 never-signed-in accounts, 0 phone-duplicates (phone-dedup trigger 0040 holding, 1 login/person). #724's phone/email fallback only adopts *unclaimed* staff rows, which is why the admin blind-insert still leaked; 0089 removes that trigger at the source. No new deferred items.
-
----
-
 ## ⏩ Session close — 2026-07-11 (per-app nav-speed) — Field + Service boot lightened & shipped; Cards profiled + held
 
 *Continuation of the Shell nav-speed thread. Royce: "continue per-app speed work" + "steelman" + "use fable". Profiled all 3 apps LIVE (prod, logged-in) + code (Fable agents per repo). Scope chosen: **Field + Service, hold Cards** (live signup traffic).*
@@ -871,26 +859,6 @@ Agency field + roster on/off toggle in Core (#753), Field honours `on_roster` (#
 - **eq-shell migrations are NOT auto-applied on merge** — merge ships code only; the DB migration must be applied to the live plane by hand (migrate-then-merge). Bit us on #635.
 - **Tender tables live on ehow (SKS) + zaap (EQ) public schema.** Live anon exposure was already closed by hand (anon grants revoked on both) BEFORE this session — #743 codified it + cleaned zaap's inert policies. Verify-live beat trusting the migration source.
 - eq-shell repo auto-merge disabled + branch protection requires up-to-date branches → update-branch + CI re-run before each merge.
-
----
-
-## ⏩ Session close — 2026-07-11 (eq-shell perf) — Shell cold-open made ~3× faster (nav-speed Tier 1 shipped + verified live); Tier 2 investigated + declined
-
-*Same-day continuation. Royce's stated top priority: "speed between apps/windows … can be quite slow." Ruled out Chrome Remote Desktop (heavy on his PC directly too), then profiled the live logged-in Shell, shipped the free wins, verified on production.*
-
-**Built / shipped:**
-
-**Investigated + declined (evidence-led — working-before-refactoring):**
-- **Tier 2 "don't eager-mount all 3 apps" — already built.** `App.tsx` has a deliberate **deferred 2.5 s pre-warm** + persistent keepers → the mount is already off the cold-open critical path *and* is what makes switching instant. Changing it = high risk (the spinner-of-death iframe/token lineage), marginal reward. Not done.
-- **Data-cache lever (`staleTime:0`) — already handled.** The hot React-Query pages set their own staleTime (dashboard 60 s, customers 30 s, access-control 1–5 min); `staleTime:0` is a deliberate fresh-by-default for ops safety. A global flip would make roster/dispatch data stale — wrong. Not done.
-
-**Direction:**
-- Nav-speed is Royce's top near-term priority (memory [[perf-app-switching-priority]]). Tier 1 (~3×) banked; further Shell-side perf has hit the sensible floor — remaining weight is per-app *inside* the iframes (Field/Service/Cards boot their own code+data), separate work in those repos.
-
-**Notes:**
-- Deploy-done signal: production `/assets/*` `Cache-Control` flips to `immutable` when the new deploy is live (deterministic check).
-- Measurement discipline paid off twice more — both Tier 2 levers looked promising from the browser profile, but reading the CODE showed they were already well-built. Read the code before refactoring.
-- Housekeeping: cpledger + eq-field-net worktrees pruned (both merged); perf-tier1 worktree kept for any follow-up.
 
 ---
 
@@ -940,18 +908,6 @@ Agency field + roster on/off toggle in Core (#753), Field honours `on_roster` (#
 **Artifact:** CEO meeting kit (one-page brief + talking-points card + 6-slide deck), SKS-branded — https://claude.ai/code/artifact/1b3c73a2-b584-4f1f-bcdd-cd4ce15322c6 (scratchpad source: `sks-labour-ceo-kit.html`). Dashed fields left for Royce (CEO name, date, hours saved, labour-hire $, run cost, the one ask).
 
 **Note (§7 discipline):** queried nspbmir (SKS live) read-only to verify liveness at Royce's explicit "prove it". SELECTs only — no writes, no DDL. §7 guards this project for writes; flagging the read for transparency.
-
----
-
-## ⏩ Session close — 2026-07-10 (eq-field + eq-shell) — spinner-of-death ROOT-CAUSED & killed; Clarity CSP fixed
-
-*Royce: "eq field keeps doing this" (stuck "Loading…" spinner over a rendered dashboard), "we worked on it all day". Traced it end-to-end. The recurring spinner was NOT the CSP noise and NOT React #418 (a browser extension). Found the real mechanism, shipped and merged three fixes, all live-verified.*
-
-**Done this session (all MERGED + DEPLOYED + live-verified):**
-
-**Lesson:** spinner/overlay ownership must live in the CALLER, never in a helper shared by boot + background-refresh — and "fixed the boot path" ≠ "fixed the recurrence." Also: eq-field is static HTML with no build step, so `node --check` the extracted inline scripts before every commit.
-
-**Not touched (still open, separate issue):** SKS leave-shows-0 (the 🔴 section below) — these spinner fixes don't affect leave-data resolution. The `TENANT.ORG_SLUG` runtime diagnostic remains the definitive next step.
 
 ---
 
@@ -1203,17 +1159,6 @@ Net: on a deep-linked `?tab=leave` view — exactly how Core embeds Field — `l
 
 ---
 
-## ⏩ Session close — 2026-07-08 (eq-shell) — Branded print-to-PDF export for labour hire weekly cost, deployed live
-
-*Follow-up to the same-day labour-hire session. Royce asked how hard a tenant-branded export of the weekly-cost table would be for distribution; compared the print-to-PDF vs server-generated-PDF options, then asked to build the cheaper one.*
-
-
-**Notes:**
-- Merge required two branch updates mid-flight — `main` moved twice while CI was running (busy day on eq-shell) — each time re-ran checks clean before merging.
-- Full live verification (real tenant logo/name rendering in the actual print preview) still needs a manual check by Royce once deployed — branding only resolves inside a logged-in session, so it couldn't be exercised end-to-end from this session.
-
----
-
 ## ⏩ Session close — 2026-07-08 (eq-field) — SKS tenant logo unblocked (v3.5.270, shipped + live)
 
 *Royce reported the SKS logo not rendering on `field.eq.solutions/?tenant=sks`. Root cause: the Content-Security-Policy `img-src` directive never listed the canonical Supabase host, so the browser refused the logo image. Fixed, merged, and deployed to production this session.*
@@ -1283,16 +1228,6 @@ Net: on a deep-linked `?tab=leave` view — exactly how Core embeds Field — `l
 **Notes:**
 - Root cause of the Core Talent duplicate company: the import commit function matches agencies by exact-string name (`"Core Talent"` vs `"Core Talent Pty Ltd"`), so a rate-card upload and an invoice upload with slightly different letterhead names create two companies. Not code-fixed — fuzzy name matching on import risks false-merging genuinely different agencies; safer to catch and merge manually as it comes up.
 - Royce flagged he'll do a full formula/data sanity check before uploading a new agency ("Atom") — the deferred item above is exactly the kind of thing that pass should catch.
-
----
-
-## ⏩ Session close — 2026-07-08 (eq-shell) — EQ Ops "lost my quote" bug fixed + merged live
-
-*Royce reported: adding a site mid-quote in EQ Ops completely wiped the quote he was building. Root-caused (not a site-save bug at all) and shipped same session.*
-
-
-**Notes:**
-- Confirmed via Royce's own repro (form stayed on-screen but blank, right after saving a brand-new site) before touching code — matched the "stray keystroke, no input focused" theory exactly.
 
 ---
 
@@ -1389,24 +1324,6 @@ Net: on a deep-linked `?tab=leave` view — exactly how Core embeds Field — `l
 - Root cause of the historical onboarding screen-stacking: `/licences/new` + `/fill-profile` are child routes pushed **on top** of the list within the same `StatefulShellRoute.indexedStack` branch, so `LicencesListScreen` keeps rebuilding underneath and its post-frame gates fire while another screen is open. Guarding every once-ever onboarding gate on `ModalRoute.of(context)?.isCurrent == true` is the durable fix — reach for it before adding more in-memory "launched" flags.
 - Silent profile name-fill is name-only and empty-only (never overwrites); DOB/address auto-fill remains the richer driver-licence confirm screen.
 
----
-
-## ⏩ Session close — 2026-07-06 (eq-shell) — Embedded pages get the full sidebar (collapsed), IconRail retired, mobile nav polished
-
-*Royce: the nav on embedded-app pages (Field/Service/Cards/Quotes) looked "average" — a thin 48px icon strip missing most of the nav. Chose Option A: reuse the full hub sidebar, defaulted collapsed. A background task Royce started ("remove dead IconRail") expanded scope and shipped the core feature as PR #688 while this session was building a parallel version (#689) — closed #689 as a duplicate rather than clobber the already-merged one. Royce then delegated the mobile pass ("do a mobile polish yourself"): #688's mobile hamburger overlapped the embedded app's own header AND left a 681–767px dead zone with no navigation at all; replaced it with the purpose-built bottom-tab bar.*
-
-**Shipped:**
-
-**Decided:**
-- Royce: Option A (reuse the full sidebar, default collapsed) over syncing the old icon rail's list (Option B) or a per-view toggle (Option C).
-- Royce: delete IconRail.
-- Royce: "do a mobile polish yourself" — delegated the mobile-chrome call; chose `MobileTabBar` over refining #688's hamburger drawer.
-- Royce: merge #691 (production deploy to core.eq.solutions).
-
-**Notes:**
-- eq-ui is a pinned git-tarball dependency, not a workspace source link — changing `AppSidebar`/`AppShell` behaviour needs a republish + bump; the default-collapsed behaviour was done entirely at the eq-shell layer instead.
-- A spawned background task can expand scope and ship the whole feature (#688) while you build the same thing on another branch — check `origin/main` before merging parallel branch work; two agents on one feature nearly collided this session.
-- The preview-tool screenshots flaked all session on the full-height `100svh` layout; `getBoundingClientRect`/`getComputedStyle` measurements were the reliable fallback.
 ---
 
 ## ⏩ Session close — 2026-07-06 (eq-shell) — App activation: one-spot Field/Service status view, canonical entitlement merge, bulk toggle, collapsible sites
