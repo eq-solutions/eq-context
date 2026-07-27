@@ -14,6 +14,13 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: Training Matrix's "Photo ID" requirement now accepts a driver's licence or passport (2026-07-27)
+*Royce asked to review what "Photo ID" means in the Training Matrix — a driver's licence or passport IS itself valid photo ID, but the matrix was treating photo_id/driver_licence/passport as three unrelated ticket types, so a worker with only a driver's licence on file was wrongly flagged as missing a required Photo ID.*
+
+- [x] **Photo ID requirement now satisfied by holding a photo ID, driver's licence, or passport** — one-directional: a Driver Licence or Passport *requirement* still needs the exact document (driving eligibility / travel are specific asks), only the generic Photo ID requirement gets the equivalence. The matrix cell also now shows whichever document actually covers it, preferring a currently-valid one over an expired one. Shipped: eq-shell PR [#1030](https://github.com/eq-solutions/eq-shell/pull/1030), merged, live on core.eq.solutions.
+
+---
+
 ## eq-ui + eq-shell + eq-solves-service: shipped 3 new components, found + fixed a live unstyled-dropdown bug, closed a real sharp/uuid vulnerability (2026-07-26)
 *Royce shared a Claude Design handoff (Tooltip, EmptyState, Pagination for eq-ui) and asked for a review with intent to implement. Verified against the real toolchain rather than trusting the handoff's own claims — found and fixed two real issues before merging. Then traced how the new release actually reaches live apps: eq-shell and eq-solves-service pin eq-ui by exact git tag, not a floating range, so nothing propagates without a manual bump PR per app. Bumping eq-shell surfaced a second, unrelated real bug: its only CSS import path had been missing the dropdown menu's styles since v1.11.1. A side investigation into two npm-audit findings (spun off as a background task) turned up a clean, non-breaking fix.*
 

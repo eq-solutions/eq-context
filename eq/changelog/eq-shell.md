@@ -1,7 +1,7 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-07-26
+last_updated: 2026-07-27
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
@@ -9,7 +9,10 @@ status: live
 
 # eq-shell changelog
 
-## 2026-07-27 (latest — PR #1031, Job Creation export was slow, not broken)
+## 2026-07-27 (latest — PR #1030, Training Matrix "Photo ID" equivalence)
+- **PR #1030 (MERGED) — Training Matrix's "Photo ID" requirement now accepts a driver's licence or passport as satisfying it**, one-directional (Driver Licence/Passport requirements stay exact-match). `staffLib.ts` gained `satisfiesRequirement()`/`licenceForColumn()`; wired into `MatrixView.tsx`'s gap-checking, cell rendering, and CSV export. Cell shows whichever document actually covers it, preferring a currently-valid one over an expired one. 8 new unit tests, 253/253 total pass. No DB/migration change. Deployed to core.eq.solutions same session.
+
+## 2026-07-27 (PR #1031, Job Creation export was slow, not broken)
 - **PR #1031 (MERGED) — `job-creation.ts` now reads its bundled xlsx template from disk instead of re-fetching it over HTTP from the live site on every download.** Reported as "job creation stopped working"; live investigation on the actual reported quote showed the export succeeded but was slow. The self-referential network round-trip (on top of the function's own cold start) was the cause — `netlify.toml`'s `included_files` already bundled the identical template since the function's original commit, just never used. Single-file diff, no functional/schema change. Deployed to core.eq.solutions same session.
 
 ## 2026-07-26 (PR #1027, `@eq-solutions/ui` bump surfaces a live unstyled-dropdown bug)
