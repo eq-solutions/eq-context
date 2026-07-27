@@ -14,6 +14,25 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-field: Batch Fill teams, week-picker, hover fixes, Bulk Assign/Clear folded in, boot-perf (2026-07-27)
+*Royce reported several live UI issues on the Shell-embedded roster/schedule screens from screenshots: no hover feedback on the week-nav buttons, a request for a click-to-jump week picker (like the one in sks-nsw-labour), and asked whether Batch Fill and Bulk Assign/Clear were redundant. Also flagged Andrew Murphy/Ben Ritchie roster-vs-Contacts display discrepancies, and separately reported boot feeling "insane" slow. Each was root-caused against the live app/DB before building, not assumed.*
+
+- [x] Added a Team quick-toggle to Batch Fill (check/uncheck a team's people within the full list), mirroring the existing Direct/Apprentice/Labour Hire group buttons.
+- [x] Added a click-to-jump week picker to the Edit Roster/Schedule/Editor nav (dropdown of every available week), matching the pattern in sks-nsw-labour.
+- [x] Fixed the week-nav arrow buttons' hover — the CSS rule existed but was silently overridden by an inline style set at render time; needed `!important`.
+- [x] Added hover feedback to the week-picker label too (it previously had none at all).
+- [x] Consolidated Batch Fill and Bulk Assign/Clear on Royce's direction — added a "Clear Selected" button to Batch Fill (any day combination, not the old hardcoded Mon–Fri/Mon–Sun), then removed the separate Bulk Assign/Clear toolbar button + modal entirely.
+- [x] Investigated Andrew Murphy (roster vs Contacts) and Ben Ritchie (roster vs on/off-roster status) — both traced to real, correct database state (a legitimate batch update), not a client-side bug. Royce confirmed the display is now correct after a hard refresh.
+- [x] Parallelized 6 independent boot-time data loaders that were running one after another for no real reason — a real, verified improvement, but explicitly not claimed as the full fix for "insane" load time.
+- [x] Gave the week label its own hover affordance (a visible border) — unlike the arrow buttons, it has no border at rest, so the existing subtle background-only tint didn't read as "this became clickable."
+- [x] Shipped and live on field.eq.solutions: v3.5.360 through v3.5.364 (eq-field PRs #544, #545, #546, #547, #548, all merged).
+
+**Deferred:**
+- [ ] **Batch Fill's new Team toggle (compose/select) behaves differently from the Timesheets batch modal's existing Team filter (narrows the list)** — same idea, two different behaviours in two similar screens of the same app. Flagged for Royce's call, not resolved. _(added 2026-07-27)_
+- [ ] **The boot-time parallelization fix is real but likely isn't the whole "insane load time" story** — if it still feels slow, the next place to look is the Shell-to-Field sign-in handoff and the tenant-lookup function's cold start, not more client-side changes. _(added 2026-07-27)_
+
+---
+
 ## eq-solves-service: migration-ledger drift audit → checksum verification shipped, then the archive/delete feature turned out to be fully broken and got rebuilt (2026-07-27)
 *Royce asked for an audit of the migration ledger for rows claiming to be applied when they aren't — found genuine drift from a known 2026-07-03 grandfather backfill, built a --verify tool for it, then chased the one real pending migration through the governed pipeline. Re-verification (at Royce's insistence — "are you confident in your ranking?") showed almost all the "unverified" migrations are safe (they target a pre-canonical schema shape that no longer exists and would fail cleanly, not silently corrupt anything). Along the way, confirmed contacts are already fully wired to the shared canonical database (no work needed — an earlier note calling this "fragmented" was stale). Then scoped the archive/recycle-bin rewrite and found it was worse than expected: "delete permanently" silently did nothing for every entity type, archived sites could never be restored, and archiving a customer left the customer's own record active forever. All three fixed and deployed live.*
 

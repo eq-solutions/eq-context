@@ -9,6 +9,14 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-27] Roster/schedule UI polish — Batch Fill teams, week-picker, hover fixes, Bulk Assign/Clear folded in, boot-perf (MERGED, #544-#548, v3.5.360-v3.5.364)
+- Batch Fill gets a Team quick-toggle (check/uncheck a team's people), mirroring the existing Direct/Apprentice/Labour Hire buttons.
+- New click-to-jump week picker on the Edit Roster/Schedule/Editor week-nav bars — a dropdown of every available week, matching sks-nsw-labour's equivalent feature. Extracted to `scripts/week-picker.js` when the addition tripped `roster.js`'s `max-lines` CI ratchet.
+- Fixed the week-nav arrow buttons' hover (existing CSS rule was silently overridden by an inline `style` set at render time — needed `!important`), the week-picker popover rendering partially off-screen, and gave the week label its own hover affordance (a border) since it has no chrome at rest unlike the arrow buttons either side of it.
+- Batch Fill gets a "Clear Selected" button (any day combination); the separate "Bulk Assign / Clear" toolbar button + modal (only ever Mon–Fri/Mon–Sun) removed as a result.
+- Parallelized 6 independent boot-time data loaders in `initApp()` that had no real dependency between them.
+- Investigated two roster-vs-Contacts display discrepancies (Andrew Murphy, Ben Ritchie) directly against the live SKS database — both traced to real, correct DB state, not a client bug.
+
 ## [2026-07-27] Fixed 2 live Sentry errors — duplicate INCIDENT_TYPES global + leave lazy-load race (MERGED, #542, v3.5.358)
 - `SyntaxError: Identifier 'INCIDENT_TYPES' has already been declared` (Sentry 136548558) — `diary.js` and `incidents.js` both declared top-level `const INCIDENT_TYPES` with different taxonomies; lazy-loaded scripts share one global scope, so whichever loaded second threw at parse time. Renamed diary.js's to `DIARY_INCIDENT_TYPES`.
 - `ReferenceError: openLeaveRequest is not defined` (Sentry 130706295) — `showPage()` unhides the Leave page before its async `leave.js` lazy-load resolves; a fast click on "+ New Request" could fire first. Added `openLeaveRequestSafe()`, reusing the existing `EQ_LAZY.loadTabScripts` guard pattern already used by the Dashboard leave strip.
