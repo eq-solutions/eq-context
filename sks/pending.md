@@ -9,6 +9,21 @@ status: live
 
 # SKS Pending
 
+## sks-charters has no remote — local-only repo (2026-07-27)
+*Found during a `C:\Projects` folder audit — `C:\Projects\sks-charters` (generates
+SKS "Role Step-Up Charter" `.docx` files, format documented in
+`eq-context/sks/templates.md`) is a real, active git repo but `git remote get-url
+origin` returns "No such remote". Everything in it — charter data, generator
+code, commit history — exists only on this one machine.*
+
+- [ ] Push `sks-charters` to a real GitHub remote (e.g.
+  `eq-solutions/sks-charters`), or confirm it's fine to stay local-only if
+  the actual deliverables (the generated `.docx` files) are what matters,
+  not the repo itself. Not urgent, but a single-machine-loss risk as-is.
+  _(added 2026-07-27)_
+
+---
+
 ## EQ Field parallel-run restarted — mismatch log set up (2026-07-26)
 *Royce: "start manually entering our weekly labour from SKS NSW Labour to see what breaks." Checked live state first rather than assuming from the docs — `SKS-CUTOVER-CRITICAL-PATH.md`'s 2026-07-11 decision (manual weekly re-entry into EQ Field in parallel with SKS Labour, N clean weeks, then cut over) had never actually been sustained: real timesheet-entry activity on `ehow` had dropped to ~1 action in the last 14 days, against an 86-row burst the week of 2026-07-06 that looks like a one-time backfill. Also chased down and ruled out a suspected security issue before recommending Royce put more real data in.*
 
