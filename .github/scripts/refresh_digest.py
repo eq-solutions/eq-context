@@ -214,14 +214,29 @@ def pending_open_items(path):
     ]
 
 
+SECTION_HEADER_DATE_RE = re.compile(r"(\d{4}-\d{2}-\d{2})")
+AGING_OPEN_THRESHOLD_DAYS = 45
+
+
 def pending_queue_health(path):
-    """(total_lines, open_count, unrotated_done_count) for a pending/active file.
+    """(total_lines, open_count, unrotated_done_count, aging_open_count) for a
+    pending/active file.
 
     Surfaces queue bloat as a quiet signal, not an alert — hygiene debt
-    (done items never rotated to changelog/) is a different thing from a real
-    backlog, and neither is urgent the way a Needs You item is. Two numbers,
-    not one, because a big file that's mostly open work reads very differently
-    from a big file that's mostly done work nobody archived.
+    (done items never rotated to the archive) is a different thing from a real
+    backlog, and neither is urgent the way a Needs You item is. Open/done/aging
+    are three separate numbers because a big file that's mostly open work reads
+    very differently from one that's mostly unrotated done history, and both
+    differ from one where open items have simply gone quiet.
+
+    aging_open_count is the early-warning `scripts/rotate_pending.py` doesn't
+    provide on its own: it rotates DONE items nightly, but a section can carry
+    OPEN items under an old dated header indefinitely — exactly how eq/pending.md
+    reached 478 open items before the 2026-07-27 backlog review forced a manual
+    cull. Counts open items in any section whose header carries a date 45+ days
+    old. Undated sections are excluded — a section with no date (e.g. the
+    deliberately-parked "Parked — AHD (revisit 2027)") isn't newly stale just
+    because nothing there has a timestamp.
     """
     try:
         with open(path, encoding="utf-8") as f:
@@ -230,7 +245,28 @@ def pending_queue_health(path):
         return None
     open_count = sum(1 for ln in lines if ln.strip().startswith("- [ ]"))
     done_count = sum(1 for ln in lines if ln.strip().startswith("- [x]"))
-    return len(lines), open_count, done_count
+
+    cutoff = (NOW - timedelta(days=AGING_OPEN_THRESHOLD_DAYS)).strftime("%Y-%m-%d")
+    aging = 0
+    section_date = None
+    section_open = 0
+
+    def flush():
+        nonlocal aging
+        if section_date is not None and section_date < cutoff:
+            aging += section_open
+
+    for ln in lines:
+        if ln.startswith("## "):
+            flush()
+            dates = SECTION_HEADER_DATE_RE.findall(ln)
+            section_date = max(dates) if dates else None
+            section_open = 0
+        elif ln.strip().startswith("- [ ]"):
+            section_open += 1
+    flush()
+
+    return len(lines), open_count, done_count, aging
 
 
 def recent_sessions(sessions_dir="sessions", n=5):
@@ -843,8 +879,9 @@ def build():
         lines.append("")
 
     # Queue health — quiet signal, not an alert. See pending_queue_health()'s
-    # docstring: separate open-vs-done counts because a big file that's mostly
-    # backlog reads very differently from one that's mostly unrotated history.
+    # docstring: open/done/aging are separate counts because a big file that's
+    # mostly open work, one that's mostly unrotated history, and one where open
+    # items have simply gone quiet, are three different problems.
     queue_files = [
         ("eq/pending.md", "EQ"),
         ("sks/pending.md", "SKS"),
@@ -858,13 +895,16 @@ def build():
         lines.append("")
         lines.append(
             "_Hygiene signal, not an alert — a large open count is real backlog; "
-            "a large done count is unrotated history that belongs in a changelog._"
+            "a large done count is unrotated history that belongs in a changelog; "
+            f"a large aging count is open work that's gone {AGING_OPEN_THRESHOLD_DAYS}+ "
+            "days quiet under its dated section and is worth a look before it becomes "
+            "the next 478-item surprise._"
         )
         lines.append("")
-        lines.append("| File | Lines | Open | Done (unrotated) |")
-        lines.append("|------|------:|-----:|------------------:|")
-        for label, path, (total, open_n, done_n) in queue_rows:
-            lines.append(f"| [{label}]({path}) | {total} | {open_n} | {done_n} |")
+        lines.append(f"| File | Lines | Open | Done (unrotated) | Aging {AGING_OPEN_THRESHOLD_DAYS}d+ |")
+        lines.append("|------|------:|-----:|------------------:|------------:|")
+        for label, path, (total, open_n, done_n, aging_n) in queue_rows:
+            lines.append(f"| [{label}]({path}) | {total} | {open_n} | {done_n} | {aging_n} |")
         lines.append("")
 
     # Possible recurring failures — the missing half of guard-ratchet.yml. That

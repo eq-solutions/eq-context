@@ -236,3 +236,16 @@ section's done items live here; its open items stayed in `sks/pending.md`.
 (full investigation + fix recorded in `eq/changelog/field.md` "2026-07-19" — DB-only grant restore PR #498, CI guard PR #500)
 
 ---
+
+## ⏩ SKS Field — sessions 2026-06-07 through 2026-06-13 (rotated 2026-07-27 — open items remain in pending.md)
+
+- [x] **Standalone `sks-nsw-labour` retirement** — NOTE: app is still receiving active feature work as of 2026-06-26 (PRs #32–#54 merged in June). 'Keep warm' understates current investment. Retirement gating question is still open — confirm with Royce whether ehow Field has superseded the standalone app before setting a retirement date. **PIN audit 2026-07-05 (Royce-confirmed):** this repo has its own independent login/PIN system, still actively used — a completely different codebase from eq-field, not affected by eq-field's own PIN-gate retirement (see `eq/changelog/field.md` "SKS = Core-only auth", v3.5.200). **[CLOSED 2026-07-27 — Royce-gated decision now tracked fresher at ops/pending.md's SEC-1 checklist (memory sks-labour-retiring.md)]**
+- [x] **eq-shell** — ~~converge `c2-shell-roles` + `sks-field-host` branches~~ — `c2-shell-roles` no longer exists in eq-shell repo (deleted). Re-assess: verify whether the security-groups work from `sks-live-sprint-2026-06-07.md` Prompt A was folded into main or abandoned before reopening this track. **[CLOSED 2026-07-27 — re-checked live: security-groups work was folded into main (not abandoned) — merged PRs #210/#231/#237/#240/#285, still actively extended (PR #1047, 2026-07-27)]**
+
+---
+
+## Added 2026-07-05 (rotated 2026-07-27 — open items remain in pending.md)
+
+- [x] sks-charters has no GitHub remote — decide whether it gets pushed to `eq-solutions` org or stays local-only _(added 2026-07-05)_ **[CLOSED 2026-07-27 — done — pushed to eq-solutions/sks-charters (see the closed item at the top of this file, 2026-07-27)]**
+
+---

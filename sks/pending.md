@@ -119,13 +119,11 @@ _Nothing pending — migrations 001–023 all applied._
 ## ⏩ SKS Field — sessions 2026-06-07 through 2026-06-13
 
 **Pending (Royce-gated):**
-- [ ] **Standalone `sks-nsw-labour` retirement** — NOTE: app is still receiving active feature work as of 2026-06-26 (PRs #32–#54 merged in June). 'Keep warm' understates current investment. Retirement gating question is still open — confirm with Royce whether ehow Field has superseded the standalone app before setting a retirement date. **PIN audit 2026-07-05 (Royce-confirmed):** this repo has its own independent login/PIN system, still actively used — a completely different codebase from eq-field, not affected by eq-field's own PIN-gate retirement (see `eq/changelog/field.md` "SKS = Core-only auth", v3.5.200).
 - [ ] **Track 2 RLS STEP 2** — anon SELECT lockdown on ehow. DEFERRED until standalone retired.
 - [ ] **SKS anon-remediation (nspb)** — exact policy worklist in `cross-app-linkage-remediation-plan-2026-06-07.md` §7a. Separate from ehow work. SKS-live gated.
 
 **SKS roles / security-groups track (from 2026-06-07):**
-- [ ] **eq-shell** — ~~converge `c2-shell-roles` + `sks-field-host` branches~~ — `c2-shell-roles` no longer exists in eq-shell repo (deleted). Re-assess: verify whether the security-groups work from `sks-live-sprint-2026-06-07.md` Prompt A was folded into main or abandoned before reopening this track.
-- [ ] **Security groups Phase 2–5** — wire group perms into session, `AdminSecurityGroups` page, first real `user_security_groups` row for a SKS user.
+- [ ] **Security groups Phase 2–5** — wire group perms into session, `AdminSecurityGroups` page, first real `user_security_groups` row for a SKS user. **Narrowed 2026-07-27 — 2 of 3 confirmed shipped and live** (session extra_perms wiring + the AdminSecurityGroups CRUD page); live-queried `shell_control.user_security_groups` on jvkn today: still 0 rows — only the first real SKS user assignment remains open.
 
 ## ⏩ SKS Field — session 2026-07-03 (QA batch: 9 live bug reports)
 
@@ -249,7 +247,6 @@ The following tests belong to eq-quotes-port (Flask), which is retired as of 202
 ## Added 2026-07-05
 
 - [ ] David Boyd charter — confirm qualification path (electrical licence / Cert IV / Diploma PM / senior-title move) and sharpen the "Where you're growing" section
-- [ ] sks-charters has no GitHub remote — decide whether it gets pushed to `eq-solutions` org or stays local-only _(added 2026-07-05)_
 - [ ] `npm run check` (blank-trailing-page regression check) needs LibreOffice (`soffice`) + poppler (`pdftoppm`) installed on the Beelink — currently neither is on PATH, script degrades gracefully but doesn't actually validate _(added 2026-07-05)_
 
 ## ⏩ SKS Field — session 2026-07-10 (roster "Save failed — check connection" — two distinct root causes)

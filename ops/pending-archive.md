@@ -31,3 +31,25 @@ section's done items live here; its open items stayed in `ops/pending.md`.
 - [x] Milmlow Holdings / MFT / Allcraft review — September 2026 — CLOSED 2026-06-15
 
 ---
+
+## Multi-Repo Push Automation (rotated 2026-07-27 — open items remain in pending.md)
+
+- [x] **eq-solves-field push blocked on `demo` branch** — **[CLOSED 2026-07-27 — moot — the 2026-05-20 eq-field/SKS-Live split renamed local demo->main and rewired Netlify; eq-field's origin is now eq-solutions/eq-field, not the old Milmlow/eq-field-app:demo remote]**
+  2026-05-14 `push-all.bat` attempted push of local `demo` to
+  `Milmlow/eq-field-app:demo`, rejected as non-fast-forward (remote has
+  commits we don't). §11 hard rule also says never push `demo` without
+  explicit instruction. Decisions needed: (a) `git pull --rebase origin
+  demo` and re-push, or (b) switch local to `main` for the SKS labour
+  app surface and push there, or (c) skip until the EQ Field branch
+  strategy is settled. **Royce to call.**
+- [x] **Personal global rules `C:\Users\EQ\.claude\CLAUDE.md` **[CLOSED 2026-07-27 — already corrected — this session's own loaded global CLAUDE.md shows the fixed table (field.eq.solutions -> eq-field -> main, sks-nsw-labour.netlify.app -> SKS NSW Labour -> main)]**
+      deployment table is stale (post-split)** —
+  Royce's personal global rules still show
+  `sks-nsw-labour.netlify.app` as deploying from "EQ Field (demo)"
+  repo on `demo` branch. After today's split that row should read
+  `eq-solutions/sks-nsw-labour` on `main`, and the eq-solves-field
+  row should read `eq-solutions/eq-field` on `main` (renamed from
+  demo 2026-05-20). Not substrate-visible — Royce-manual edit in
+  his personal global rules.
+
+---

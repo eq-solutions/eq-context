@@ -324,14 +324,6 @@ After running `.\scripts\install-hooks.ps1` once per clone, every commit on
 `main` auto-pushes to `origin/main`; branches other than `main` skip the
 hook. Docs: `system/git-automation.md`.
 
-- [ ] **eq-solves-field push blocked on `demo` branch** —
-  2026-05-14 `push-all.bat` attempted push of local `demo` to
-  `Milmlow/eq-field-app:demo`, rejected as non-fast-forward (remote has
-  commits we don't). §11 hard rule also says never push `demo` without
-  explicit instruction. Decisions needed: (a) `git pull --rebase origin
-  demo` and re-push, or (b) switch local to `main` for the SKS labour
-  app surface and push there, or (c) skip until the EQ Field branch
-  strategy is settled. **Royce to call.**
 
 - [ ] **Per-repo post-commit hooks for eq-cards and eq-solves-field** —
   only eq-context has the auto-push hook installed. The other two still
@@ -358,15 +350,6 @@ Netlify branch rewire — all completed 2026-05-20) is recorded in
 `sessions/2026-05-20-part-b.md`; full reasoning in `ops/decisions.md`
 "2026-05-20 — Split SKS Live Out of eq-field Into Dedicated Repo".
 
-- [ ] **Personal global rules `C:\Users\EQ\.claude\CLAUDE.md`
-      deployment table is stale (post-split)** —
-  Royce's personal global rules still show
-  `sks-nsw-labour.netlify.app` as deploying from "EQ Field (demo)"
-  repo on `demo` branch. After today's split that row should read
-  `eq-solutions/sks-nsw-labour` on `main`, and the eq-solves-field
-  row should read `eq-solutions/eq-field` on `main` (renamed from
-  demo 2026-05-20). Not substrate-visible — Royce-manual edit in
-  his personal global rules.
 
 ---
 

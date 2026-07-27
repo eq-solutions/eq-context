@@ -810,7 +810,7 @@ Extends the 2026-07-11 staff-records work. Three greenlit items + a normaliser f
 - [ ] **Plan saved 2026-07-11:** [`eq/field-eq-core-only-plan.md`](field-eq-core-only-plan.md). 3-phase, single-repo (eq-field). Decided: role-based supervision, **full strip**; keep `?tenant=demo` in-memory slug.
 - **✅ 2026-07-12 — FIXED + LIVE (config, not code).** The plan's "`auth.js` hardwires `eq` to demo, never runs the handoff" was **stale** — that was the pre-#768 code. Traced the full chain (both repos): `checkAccess()` runs the shell handoff for **every** tenant incl. `eq`; eq-field `verify-pin` auto-detects the Supabase-JWT token and accepts `eq`; eq-shell `token-exchange` mints with `eq` as the default slug. **No code bug.** Real cause: **`SUPABASE_JWT_SECRET` was missing from the eq-field Netlify site** (`field.eq.solutions` = site `eq-field` `554a0f1f…`) → `verifySupabaseJwt()` returned null → handoff rejected → demo-gate fallback. EQ Field and SKS Field are **separate Netlify sites** (SKS = `sks-nsw-labour`), which is why SKS worked and `eq` didn't. **Royce set `SUPABASE_JWT_SECRET` on eq-field 2026-07-12; value verified (fingerprint `…6w==` matches eq-shell's).**
 - [ ] **Phase 2 (now UNBLOCKED — handoff confirmed live):** extend the `sks` Core-only lock in `checkAccess()` to `eq` + drop the `STAFF_CODE=demo`/`MANAGER_CODE=demo1234` backdoor (still a live fallback if the handoff ever fails). Then Phase 3: strip the dead server PIN code. Safe to proceed now the door works. _(added 2026-07-12)_
-- [ ] **Security hygiene (chip `task_ed725611`):** several EQ Netlify env vars are `is_secret=false` so full values leak via the API — incl. a **GCP service-account private key** (`GOOGLE_DOC_AI_CREDENTIALS`) + JWT/handoff secrets on eq-shell, and `SKS_JWT_SECRET`/`EQ_FIELD_HANDOFF_KEY`/`RESEND_API_KEY` on eq-field. Flip to secret; consider rotating the exposed GCP key. _(added 2026-07-12)_
+- [ ] **Security hygiene (chip `task_ed725611`):** several EQ Netlify env vars are `is_secret=false` so full values leak via the API — incl. a **GCP service-account private key** (`GOOGLE_DOC_AI_CREDENTIALS`) + JWT/handoff secrets on eq-shell, and `SKS_JWT_SECRET`/`EQ_FIELD_HANDOFF_KEY`/`RESEND_API_KEY` on eq-field. Flip to secret; consider rotating the exposed GCP key. **eq-shell half CLOSED via SEC-12 (2026-07-27 — Royce re-stored all 8 vars, live-verified); eq-field's `SKS_JWT_SECRET`/`EQ_FIELD_HANDOFF_KEY`/`RESEND_API_KEY` still open, narrowed 2026-07-27.** _(added 2026-07-12)_
 
 ---
 
@@ -2133,36 +2133,12 @@ PR #379 revoked the 4 worker-PII tables (the instances). The *class* + ratchet a
 - [ ] **Update C:\Projects\.git-credentials** files with new PAT after rotation
 ---
 
-## ⏩ Session close — 2026-06-26 — Safety docs footer parity
-
-**Completed (live + verified):**
-
-**Open / next:**
-- [ ] Remaining items carried from 2026-06-18 (see below)
----
-
-## ⏩ Session close — 2026-06-18 — Apprentices SKS unlock + Recognition philosophy
-
-**Completed (live + verified):**
-
-**Human Recognition Philosophy (2026-06-18):**
-- Steelmanned against the filter question (does this help understand/support/recognise/develop another person?). All apprentice features pass.
-- Key design decisions validated: journal private by default, feedback apprentice-initiated, no streaks/gamification.
-- Acknowledged limit: tool amplifies culture, cannot create it. Needs supervisors who give a damn.
-
-**Open / next:**
-- [ ] **Curate `sites.field_enabled`** — 591 all enabled → trim to live jobs
----
-
 ## ⏩ Session close — 2026-06-15 — SKS Field staff: tenant-bug fix + full roster load
 
 **Completed (live + verified):**
 
 **Open / next:**
-- [ ] **Login hook** (phone-dedup) — workers still can't sign in (separate track; `ops/decisions.md`).
-- [ ] **Curate `sites.field_enabled`** — 591 all enabled → trim to live jobs.
 - [ ] **Daniel Bower** — confirm leaver / remove.
-- [ ] **Generalise `workers-canonical-sync`** — currently single-tenant (hardcodes SKS+ehow).
 ---
 
 ## ⏩ Session close — 2026-06-15 (part b) — v3.5.146 + v3.5.147 + canonical architecture rethink
@@ -2177,53 +2153,7 @@ PR #379 revoked the 4 worker-PII tables (the instances). The *class* + ratchet a
 
 **Open / next:**
 - [ ] People profile enrichment from ehow — when Field loads a person with worker_id, optionally pre-fill from ehow.app_data.staff. Requires reading ehow via staff map (already loaded by leave adapter). Next meaningful sprint.
-- [ ] `ZAAP_JWT_SECRET=""` — EQ tenant JWT broken (acceptable while zaap unpopulated).
-- [ ] `APP_ORIGIN` env var stale (`eq-solves-field.netlify.app` → should be `field.eq.solutions`).
 - [ ] v3.5.147 create-stub path to be removed when Cards onboarding goes live as the sole jvkn.workers creator.
----
-
-## ⏩ Session close — 2026-06-13 (part b) — v3.5.139 + canonical pipeline + housekeeping
-
-**Completed:**
-
-**Open / Royce-gated:**
-- [ ] Roster data entry on ehow (SKS Field empty schedule/timesheets/leave)
-- [ ] Standalone `sks-nsw-labour` retirement
-- [ ] Track 2 RLS STEP 2 (after standalone retired)
----
-
-## ⏩ Session close — 2026-06-13 — EQ Service iframe loading fix (Shell PR #334)
-
-**Completed:**
-
-**Pending verification:**
-- [ ] **Royce: smoke test** — navigate to `core.eq.solutions/sks/service`, confirm Service dashboard loads within 5s (hard-refresh if needed)
-
-**Deferred (Royce-gated):**
-- [ ] Roster data entry on ehow (SKS Field — empty schedule/timesheets/leave)
-- [ ] Standalone `sks-nsw-labour` retirement — after soak confirmation
-- [ ] Track 2 RLS STEP 2 — anon SELECT lockdown; after standalone retired
-- [ ] jvkn→ehow canonical identity pipeline — `WORKERS_WEBHOOK_SECRET` + `EHOW_SERVICE_ROLE_KEY` must be set in Supabase Dashboard before bulk sync runs
----
-
-## ⏩ Session close — 2026-06-11 — SKS canonical DB full JWT coverage + start fresh
-
-**Completed (EQ Field v3.5.125 — PR [#267](https://github.com/eq-solutions/eq-field/pull/267), merged):**
-
-**Data state post-session (ehow):** 58 staff · 591 sites · 0 roster rows (empty, data entry needed)
-
-**Deferred (Royce-gated):**
-- [ ] **Roster data entry on ehow** — schedule/timesheets/leave empty; start fresh or migrate from nspb
-- [ ] **Standalone sks-nsw-labour retirement** — after soak confirmation
-- [ ] **Track 2 RLS STEP 2** — anon SELECT lockdown; after standalone retired
----
-
-## ⏩ Session close — 2026-06-10 — EQ Service Shell SSO root cause + fix (Session 7)
-
-**Completed (2026-06-10):**
-
-**Pending verification:**
-- [ ] **Royce: smoke test Service SSO** — fresh incognito → `core.eq.solutions` → Shell login → click Service → dashboard loads without login prompt. Tick Sprint 7 smoke test when done.
 ---
 
 ## ⏩ Session close — 2026-06-09 — Security sprint + WS1/4/5/7 + GATE A + eq-service encryption
@@ -2231,11 +2161,8 @@ PR #379 revoked the 4 worker-PII tables (the instances). The *class* + ratchet a
 **Completed (2026-06-09):**
 
 **Active / time-sensitive:**
-- [ ] **2 workers with no staff match** — emma_curth@outlook.com, hexperfect@outlook.com. Create staff records in EQ Field or correct emails.
-- [ ] **8 workers with no email** — populate email in eq-canonical `public.workers` to enable linking.
 
 **Deferred:**
-- [ ] **WS1 remainder** — 481 ambiguous customers need human dedup via EQ Intake (Tier A 26 supervised + Tier C 50 ambiguous + quotes-side N:1)
 - [ ] **Delete `C:\Users\EQ\eq-credentials-ref.html`** after importing to password manager
 ---
 
@@ -2252,9 +2179,6 @@ refs updated (PR #257 → main, open); repo on `eq-solutions/eq-service`.
 - [ ] **Smoke test (Royce)** — sign in via Shell OTP at service.eq.solutions, confirm
       checks/tests/defects visible, create a test check → lands in ehow tenant `7dee117c-…`.
       *(Shell SSO now fixed — 2026-06-09, 4 bugs fixed, deploy 6a27f277. Test in incognito.)*
-- [ ] **Scheduler/route migration (4.4)** — `supervisor-digest` + `pre-visit-brief` schedulers
-      depend on Next.js `/api/cron/*` routes still in eq-service; needs a route-hosting decision
-      before moving to eq-shell.
 ---
 
 ## ⏩ Session close — 2026-06-08 — EQ Field Sentry crash fixes
@@ -2271,34 +2195,10 @@ refs updated (PR #257 → main, open); repo on `eq-solutions/eq-service`.
       name list. Use `?tenant=demo` to bypass for smoke. Pre-existing, deferred 2026-06-06.
 ---
 
-## ⏩ Session close — 2026-06-07 (PM) — Cross-app linkage audit
-
-Live-verified map of Cards/Shell/Field/Service/Quotes linkage (4 Supabase projects + 5 repos, read-only).
-Full report: [`cross-app-linkage-audit-2026-06-07.md`](../cross-app-linkage-audit-2026-06-07.md).
-Gated playbook: [`cross-app-linkage-remediation-plan-2026-06-07.md`](../cross-app-linkage-remediation-plan-2026-06-07.md).
-Sprint (steelman-corrected, 10/10): [`cross-app-linkage-sprint-2026-06-07.md`](../cross-app-linkage-sprint-2026-06-07.md) — 7 workstreams, 4 waves, pre-mortem.
-
-**Headline:** canonical model (`ehow.app_data`) is FK-wired but its linking rows are empty (`jobs`=0, `quote`=0);
-worker→staff link 1/50, customer `canonical_id` 0/520 in live ehow, sites→customer 28/591. Asset sync (4808) works.
-
-**Prioritised actions (all Royce-gated — see plan for mechanism/verify):**
-- [~] **P2:** customer convergence — **PARTIAL APPLIED 2026-06-07** (`_ws1-customer-dedup-2026-06-07.md`): Tier S 38
-      stub customers retired (dup-groups 117→80); 28 quotes `canonical_id` linked (1:1-both-sides). **Remaining:** decide
-      SoR (rec `app_data.customers`); Tier A merge (26, supervised); Tier C (50 ambiguous) + quotes-side N:1 dedup via
-      Intake; 99 dangling sites need source re-import. Note: `sks_quotes_customers.canonical_id` is UNIQUE (1:1) vs N:1 data.
-- [ ] **P7a:** SKS anon-remediation (nspb) — exact policy worklist in plan §7a. **SKS-live, gated.**
-- [ ] **P7b:** ktmj anon-write policies close via the pause/decommission already pending (after P4).
-- [ ] **P7d:** run a `get_advisors` pass on the EQ Service DB — now `ehowgjardagevnrluult` (sks-canonical, `service.*` schema). Service migrated off `urjhmkhbgaxrofurpbgc` 2026-06-08; that project was deleted 2026-06-22 before this audit ran.
-
-**Drift corrected (live wins):** `architecture.md` "jvkn = no operational data" is false (it's the worker house);
-creds 779→737, invites 37→58 since 06-03; `0028_contact_customer_links` IS present on SKS (291 rows).
 ## SKS Live — roles / security-groups track (2026-06-07)
 
 Parallel to the Field schema/data cutover below. Full plan + agent prompts (A–E): [`sks-live-sprint-2026-06-07.md`](../sks-live-sprint-2026-06-07.md). Live-verified 2026-06-07: `shell_control` has 9 groups / 16 perms / **0** user assignments; tenant `sks` = 3 × manager.
 
-- [ ] **eq-shell** — converge `c2-shell-roles` + `sks-field-host` into one trunk (Prompt A; Royce picks trunk).
-- [ ] **eq-shell Phase 2** — wire group perms into the session as `extra_perms` via `resolveEffectivePermissions` (Prompt B).
-- [ ] **eq-shell Phase 3** — `AdminSecurityGroups` page; first write moves `user_security_groups` off 0 rows (Prompt C).
 - [ ] **eq-shell Phase 4** — walk ONE real SKS user end-to-end; first-ever `user_security_groups` row (Prompt D).
 - [ ] **Phase 5 hardening** — `contact_customer_links` explicit `WITH CHECK` (`::uuid` cast) + CI policy-lint + eq-roles no-orphan-keys test (Prompt E).
 ---
@@ -2330,9 +2230,6 @@ Parallel to the Field schema/data cutover below. Full plan + agent prompts (A–
 - ❌ **Key rotation DECLINED** for now — `EQ_SECRET_SALT` (exposed shared master key) + `GOOGLE_DOC_AI_CREDENTIALS` rotation deferred at Royce's call; risk accepted. Runbook (`eq-secret-salt-rotation-runbook-2026-06-06.md`) stays on file.
 
 **Remaining for SKS go-live (Royce-gated):**
-- [ ] Functional click-through smoke on `core.eq.solutions/sks/field` (supervisor): **person edit + site edit + team create + team delete** (confirm the dual-write/teams fixes) → pipeline / import / resources / roster / safety against SKS data.
-- [ ] Cutover **soak** 24–48h with the standalone (`sks-nsw-labour`, v3.10.59) kept warm → then **retire** the standalone.
-- [ ] **Track 2 STEP 2 (anon lockdown)** — DEFERRED until the standalone is retired. Then move `AUDIT_SB_KEY` → service_role and drop the `audit_log` anon-insert carve-out.
 - [ ] **Onboarding** — invite-claim rollout (only 1 of 36 workers linked; 0/56 invites claimed). Upstream eq-shell #183/#175.
 ---
 
@@ -2359,25 +2256,11 @@ Parallel to the Field schema/data cutover below. Full plan + agent prompts (A–
 - **`eq/go-live-runbook.md`** written + committed — live-verified weekend runbook.
 
 **Go-live gates (weekend) — see `eq/go-live-runbook.md` §B:**
-- [ ] Finish **Service domain cutover** (DNS/TLS, `NEXT_PUBLIC_SITE_URL`, Supabase URL allowlist on `ehowgjardagevnrluult`). Service prod project resolved: migrated to ehow (sks-canonical) 2026-06-08; old `urjhmkhbgaxrofurpbgc` (-dev) deleted 2026-06-22.
 - [ ] 🟠 **MFA-bypass posture** — PIN-only Shell → Service single-factor; accept or gate behind mandatory Shell-TOTP
 
 **Deferred (spun off as post-launch tasks):**
 - [ ] Unify cross-app PostHog distinct_id (Shell UUID / Field `tenant:handle` / Service id) — fixes the "refused to merge" warning + the inflated user count
 - [ ] Fix EQ Field double `$pageview` capture (SPA logs ~80% of pageviews as `/`)
-- [ ] Optional: add `auth.uid() IS NULL` guard to `eq_cards_claim_invite`
----
-
-## ⏩ Session close — 2026-06-04
-
-**Completed (EQ Field):**
-- v3.5.72 — removed the "Pick a demo tenant" workspace picker; EQ Field now boots straight into the default `eq` tenant (PR [#185](https://github.com/eq-solutions/eq-field/pull/185), merged, live). Demo tiers still reachable via `?tenant=demo-trades` / `?tenant=melbourne`.
-
-**Pending Royce-actions (carried forward):**
-- [ ] Downgrade old EQ DB `ktmjmdzqrogauaevbktn` → free tier in Supabase dashboard, then pause it (paid projects can't be paused via API)
-- [ ] `TENANT_ORG_UUID` Netlify env var for eq-solves-field EQ site (blocks U6 PIN)
-- [ ] Drift CI secrets in eq-shell GitHub repo settings
-- [ ] HaveIBeenPwned toggle in eq-canonical Supabase Auth settings
 ---
 
 ## ⏩ Session close — 2026-06-03 (PM) — EQ Field anon-remediation Phase 2 + SKS sync
@@ -2398,51 +2281,8 @@ Parallel to the Field schema/data cutover below. Full plan + agent prompts (A–
 superset — no pin/role, no region/project). The B5 canonical unification stays a separate track.
 
 **Backlog (deferred, Royce-gated):**
-- [ ] **`app_config` PIN-read auth refactor** — last real anon leak; can't be JWT-gated (gate reads
-      it pre-login). Needs login-touching change to stop the browser reading PINs.
-- [ ] **Realtime browser verification** — repointed but not eyeballed (EQ demo twins empty); fails
-      safe to 30s poll.
 - [ ] **Drop the revoked `public.*` husks + `public.tenders` fallback** once confident (anon already
       revoked — not leaking).
-- [ ] **Apprentices module** — neither wired nor dropped (not in use); secure-or-retire when needed.
-- [ ] SKS (separate repo/DB) inherits the Goal-1 pattern when its anon-remediation runs.
----
-
-## ⏩ Session close — 2026-06-03
-
-**Completed (EQ Field pipeline/Resources sprint — all live; mirrored to SKS standalone):**
-- Resources: Remove/archive job (v3.5.53–54, BUG-009 modal-confirm fix)
-- Pipeline: value + probability sliders + Keep/Discard triage (v3.5.55)
-- Pipeline: Estimator + Builder filters (v3.5.56)
-- Resources: edit confirmed-job details + pipeline Start-date tag (v3.5.57)
-- Resources: editing workers/duration rebuilds the labour plan (v3.5.58)
-- Pipeline import: email-form estimator normalisation + one-time SQL dedupe both DBs (v3.5.59)
-- EQ pipeline data migrated `ktm` → `eq-canonical-internal` (pipeline only; roster intentionally NOT migrated — Royce: not relevant)
-- SKS standalone kept in lockstep: v3.10.44 → v3.10.49
-- Smartsheet import reviewed — parse→preview→confirm gate confirmed safe; no change needed
-
-**Pending Royce-actions (carried forward + new):**
-- [ ] **NEW:** Downgrade old EQ DB `ktmjmdzqrogauaevbktn` → free tier in Supabase dashboard, then pause it (paid projects can't be paused via API). Dead cold-backup, unused by live EQ Field.
-- [ ] `TENANT_ORG_UUID` Netlify env var for eq-solves-field EQ site (blocks U6 PIN)
-- [ ] Drift CI secrets in eq-shell GitHub repo settings
-- [ ] HaveIBeenPwned toggle in eq-canonical Supabase Auth settings
----
-
-## ⏩ Session close — 2026-06-02
-
-**Completed this session:**
-- Tenant model confirmed + documented (STATE.md / architecture.md / infrastructure.md)
-- `tenant_routing` gap fixed — canonical-api routing now live end-to-end (sks → sks-canonical)
-- EQ Quotes wiring audited ✅; stale `SUPABASE_URL` removed from fly.toml
-- EQ Service canonical wiring audited ✅ (write-through live, 4 export stubs non-blocking)
-- eq-solves-field CLAUDE.md committed to main
-- eq-shell build fixed (cap_exceeded union + never cast in errorSummary) — `core.eq.solutions` live
-
-**Pending Royce-actions (carried forward):**
-- [ ] `TENANT_ORG_UUID` Netlify env var for eq-solves-field EQ site (blocks U6 PIN)
-- [ ] Drift CI secrets in eq-shell GitHub repo settings
-- [ ] HaveIBeenPwned toggle in eq-canonical Supabase Auth settings
-
 ---
 
 ## 🟦 Autonomous Sprint — SOURCE OF TRUTH (read first if running sprint work)
@@ -2468,13 +2308,7 @@ Autonomy policy: `ops/decisions.md` 2026-05-30. Session log: `sessions/2026-05-3
 
 Foundation shipped (One Spine, Stream A): `@eq-solutions/tokens` v1.0 consumed (not vendored) across Shell/Service/Field/Cards; `@eq-solutions/ui` v1.0.1 = Button/Skeleton/Table. Full plan + model: `design-system-consolidation-2026-05-31.md`, `ops/decisions.md` 2026-05-31. Remaining (board rows A7–A12):
 
-- [ ] **A7** eq-ui Modal + ConfirmDialog (fold in a11y A1/A2 from `quality-polish-backlog-2026-05-30.md`)
-- [ ] **A8** eq-ui FormInput
-- [ ] **A9** eq-ui StatusBadge + KindPill
-- [ ] **A10** eq-ui Card + Toast + Tabs (resolve ghost-border → Option B)
 - [ ] **A11** Font self-host in the shared package (supersedes per-app P5)
-- [ ] Confirm the pin-by-tag migration landed (eq-ui v1.0.1 / eq-roles tags); move any `#main` consumers to `#vX`
-- [ ] Add 2 drift items to `quality-polish-backlog-2026-05-30.md`: Service emoji-in-Lucide (~7 files), Service `RouteProgress` cyan→indigo gradient — **verify vs origin/main first**
 
 ---
 
@@ -2487,60 +2321,20 @@ Foundation shipped (One Spine, Stream A): `@eq-solutions/tokens` v1.0 consumed (
 a good product — build investment is sequenced by the trust ladder +
 Royce's go, not by outside-customer validation (gate killed 2026-06-02,
 see `ops/decisions.md`).
-- [ ] Clear Supabase rate_limits table on demo branch (ktmjmdzqrogauaevbktn)
-- [ ] Write fresh Cowork brief for EQ Field (guardrails, demo branch rules)
 
 ### Tender Pipeline — SKS promotion (blocked)
 
 Shipped to demo 2026-05-14 (v3.4.79 → v3.4.84 across patches). Do NOT
 promote to `main`/SKS until all three are cleared:
 
-- [ ] Apply migrations 001 + 002 to SKS Supabase (`nspbmirochztcjijmcrx`)
-- [ ] Remove pipeline tables from `TENANT_DISABLED_TABLES.sks` in
-      `scripts/app-state.js`
-- [ ] Backfill `migrations/` on disk from `list_migrations` MCP
-      (applied via MCP only — not on disk)
 
 Open Tender Pipeline items (demo):
 
-- [ ] Wire `clash_detected` PostHog event (reserved in
-      `tender-pipeline.js`, not yet firing)
-- [ ] Decide `pending_schedule` table fate — currently written but
-      bypassed (Confirm Curve writes direct to `schedule`). Either
-      promote it to a real CM-editable staging queue with a second
-      approval page, or drop it and treat `schedule` as the single
-      source of truth
-- [ ] Lazy-load SheetJS if first-load bundle size becomes a problem
-      (~250KB added)
 
 ### Phase 1 — implementation (in progress on `claude/hopeful-wright-058c8b`)
 
 5 commits past `demo` tip on feature branch; not merged.
 
-- [ ] `feat_project_hours_v1` flag in EQ PostHog project (`phc_zXpRxm6Q…`),
-      default off, targeted at Royce only first **(Royce manual step)**
-      `migrations/2026-04-27_sites_track_hours.sql` (commit `8b6bdb1`)
-- [ ] Apply that migration to `ktmjmdzqrogauaevbktn` via Supabase MCP /
-      Studio **(Royce manual step — review SQL first)**
-      commit `89f96dc`. Activates when both gates open (PostHog flag on +
-      `EQ_PERMS.can('ph.view_dashboard')` true). Graceful empty / coming-soon
-      states until migration is applied.
-      `migrations/2026-04-27_eq_role_enum_people_role.sql` (commit `8b6bdb1`).
-      Header includes verification queries to run before applying.
-- [ ] Apply that migration to `ktmjmdzqrogauaevbktn` **(Royce manual step —
-      verify pre-conditions in header first)**
-      returns `eq_role` ('supervisor'/'employee'); all 3 auth paths store
-      `eq_role` in `window.EQ_SESSION.app_metadata.eq_role`; shipped as
-      **v3.5.23, PR #135** on eq-solutions/eq-field.
-      **Royce: smoke deploy-preview then squash-merge PR #135.**
-      Full verify-pin rewrite (tenant-slug → DB lookup, per-user JWT) is
-      Phase 2 multi-tenancy work — still gated.
-      (`EQ_PERMS.can()` + `.role()` + `.list()`) — commits `f2d0e91`, `b367eb1`
-      it as primary today-path signal. Legacy migration is opportunistic,
-      not a sweep (97 occurrences ruled out wholesale refactor).
-      `demo` (merge commit `996a895`, 2026-04-27 09:36 UTC). Netlify
-      auto-deploy triggered. Verify Project Hours panel appears on
-      eq-solves-field.netlify.app once deploy lands.
 
 ### Phase 2 — multi-tenancy foundation (gated on customer trigger)
 
@@ -2570,27 +2364,6 @@ Items when triggered:
       prompt works, commit succeeds, re-upload triggers duplicate blocker
 - [ ] Full-repo file-header backfill (EQ-IP-Register P2 #7 scope A) —
       dedicated session
-- [ ] Continue sprint cadence (22 sprints to date, 80 Vitest tests)
-
----
-
-## CRITICAL — Rotate GitHub PATs (substrate exposure)
-
-Discovered 2026-05-19: `system/infrastructure.md` was tracking the literal
-values of all 3 GitHub PATs in plaintext from at least 2026-05-15. GitHub
-push-protection caught the pattern when this commit re-touched the file
-and rejected the push. Older commits in the substrate history likely
-contain the same values and were pushed before push-protection caught up.
-
-**Treat all 3 as compromised regardless of which got "removed" from
-`.git-credentials.*` files** — they've been on GitHub.
-
-- [ ] Update `C:\Projects\.git-credentials.eq-solutions` and
-      `C:\Projects\.git-credentials` on the Beelink with the new value.
-- [ ] **Verify push works** on eq-context after PAT rotation.
-- [ ] **Substrate hardening** — consider adding `gitleaks` (or similar)
-      pre-commit hook on the eq-context repo so secret-scan happens
-      locally before push.
 
 ---
 
@@ -2742,9 +2515,7 @@ Diagnosed 2026-05-19. 17 advisor warnings, fix drafted but not applied.
 ## EQ Cards — canonical flip follow-ups (shipped 2026-05-21)
 *This section sat corrupted in this file for 67 days — the first bullet was truncated to "**Licence p" mid-sentence. Restored verbatim 2026-07-27 from commit 436b44e (2026-05-24). All three items are from May and may be stale — verify against live before acting.*
 
-- [ ] **Licence photo JPGs not migrated** — 2 active licence photos (electrical + medicare) still on legacy Cards Supabase (`hshvnjzczdytfiklhojz`). `photo_front_path` is NULL on canonical. Re-upload via the new Cards UI OR run a copy script with both service-role keys.
-- [ ] **`cards.eq.solutions` custom domain** (S2.E) — DNS alias + Netlify domain alias on the `eq-cards` project still pending.
-- [ ] **`claude/canonical-migration` branch** — exists in eq-cards as change record; prod is the flutter build web artefact. Either merge or delete.
+- [ ] **Needs Royce's call: the 2 licence photos flagged missing back on 2026-05-21 (electrical + medicare) may now be permanently unrecoverable.** Their only other copy lived on the source project retired that same week, which was confirmed fully deleted by 2026-07-02 — the planned copy-script remediation is no longer possible. Worth a quick check of whether either worker has since re-uploaded via the current Cards UI; if not, they'll need to re-supply the documents. _(added 2026-07-27, during the backlog cull)_
 
 ---
 
