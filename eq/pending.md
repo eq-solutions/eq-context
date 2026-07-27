@@ -91,6 +91,22 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-field: Audit log decluttered, then made faster to actually use (2026-07-27)
+*Royce: "polish the audit log — a lot of irrelevant info, use your judgement." First pass hid Roster/Timesheet cell edits from the default view — reasonable-looking, but based only on reading the app's own code, not the real data. Asked to critique the work before merging, then checked the live database directly: sign-in records, not roster edits, were the actual problem — 96% of everything the audit log could show, not 2%. Fixed before shipping. Then asked to make the tool itself better, not just quieter — steelmanned a list of ideas and built the simple, immediately-useful ones.*
+
+- [x] Roster/Timesheet cell edits AND sign-in records now hidden from the default view — a toggle reveals everything on demand, nothing is ever deleted from the real record or left out of the CSV export.
+- [x] 11 kinds of activity that were already being recorded but couldn't be filtered to (imports, job numbers, teams, tender pipeline changes, apprentice reviews, safety reports, sign-ins, etc.) are now selectable.
+- [x] **Self-caught before shipping**: the first version of this fix targeted the wrong thing — checked the real numbers and found sign-in records were 96% of the noise, roster edits were 2%. Corrected in the same pull request, not after.
+- [x] Added a search box, three one-click "show me just this" views (Compliance / Security / Roster & Timesheet), and click-to-jump — clicking a roster or timesheet entry takes you straight to that week with the person already searched for, instead of reading the entry and finding it yourself.
+- [x] Shipped and confirmed live on field.eq.solutions: v3.5.367 + v3.5.368 (eq-field [PR #552](https://github.com/eq-solutions/eq-field/pull/552), [PR #553](https://github.com/eq-solutions/eq-field/pull/553), both merged).
+
+**Deferred — real ideas, not built, from the "how could this be improved" brainstorm:**
+- [ ] **Fix sign-in logging at the source** — it currently writes a fresh record every ~14 minutes per active session, which is *why* it dominated the table. Rolling those up into one summary entry would shrink the underlying record itself, not just what's shown. _(added 2026-07-27)_
+- [ ] **A weekly summary of audit activity in the existing Friday digest email** — "3 people removed, 5 PIN resets, 1 tender archived" — so Royce doesn't need to open the log cold to know if anything happened. _(added 2026-07-27)_
+- [ ] **Proactive alert on the highest-stakes actions** (a permanent delete, a bulk PIN reset) — push a notification the moment it happens rather than waiting for someone to think to check. _(added 2026-07-27)_
+
+---
+
 ## eq-shell: quick-edit Staff list — Supervisor/Roster toggles + inline fields, no more open-record-to-flip-one-checkbox (2026-07-27)
 
 - [ ] **Live click-through as a lower-permission user (employee/apprentice/labour-hire/subcontractor) still not done** — verified instead by reading the code directly: those roles all lack `field.dispatch`, and without it the new checkboxes render natively `disabled` and the inline text/select cells render as plain unclickable text with no edit affordance at all (not just a disabled button) — confirmed in both `StaffPage.tsx` and the shared roles package. The write endpoint (`entity-patch.ts`) enforces the same permission server-side regardless of what the UI shows. Needs Royce to actually sign in as one of those roles to eyeball it, since Claude doesn't hold a lower-permission test login. _(added 2026-07-27)_

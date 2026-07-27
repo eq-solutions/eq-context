@@ -9,6 +9,17 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-27] Audit log: search, quick-view presets, click-to-jump (MERGED, #553, v3.5.368)
+- Free-text search across action/detail/manager name — still respects the routine-hide default from v3.5.367.
+- Three one-click quick-view presets: Compliance (Leave/People/Import/Prestart/Toolbox/Diary/Incident), Security (Access/Sign-ins), Roster & Timesheet — each a multi-category view the single-select category dropdown couldn't express.
+- Click a Roster/Timesheet entry to jump straight to that week with the person already searched for — scoped to those two categories only, the only ones with a clean structured person name in `detail`.
+- 26 tests total (11 new); live-verified in a browser harness (caught and fixed a missing `cursor:pointer` on jumpable rows).
+
+## [2026-07-27] Audit log: routine cell edits + sign-ins hidden by default (MERGED, #552, v3.5.367)
+- Roster/Timesheet/TAFE cell edits and `Auth` sign-in records (written server-side by `verify-pin.js` on every JWT re-mint) hidden from the default "All Categories" view — approvals, deletions, PIN changes and access unlocks no longer buried under routine noise. Nothing deleted or excluded from CSV export; a "Show routine edits & sign-ins" toggle reveals everything.
+- **Self-corrected before merge**: the first version of this fix (Roster/Timesheet only) was diagnosed from a client-side code grep and missed `Auth` entirely — a live query against `ehow.audit_log` (the org this modal's RLS policy can read) found Auth was 838 of 874 visible rows (96%), Roster/Timesheet/TAFE was 20 rows (2.3%). Fixed in the same PR before it shipped.
+- Added 11 previously-loggable-but-unfilterable categories (Auth, Import, Job Numbers, Teams, Pipeline, Apprentices, Prestart, Toolbox, Diary, Incident, TAFE) to the category filter dropdown with their own colour coding.
+
 ## [2026-07-27] Tender Pipeline locked to managers only + closed a live nav-bypass (MERGED, #550, v3.5.366)
 - New manager-ONLY permission key `field.manage_pipeline` (`canManagePipeline()`) — unlike every other `field.*` key in this app, deliberately excludes supervisor. A supervisor who unlocks Supervision mode no longer sees or can reach Pipeline/Resources/Accounts. Grantable to a specific supervisor via Shell's Access Control (`extra_perms`) without opening it to everyone.
 - Real access gap found and fixed: nav-item hiding was the only gate Pipeline ever had — `showPage()` had zero route guard for any pipeline page id, so a `?tab=<id>` deep link reached it regardless of role. Added an explicit `showPage()` guard (same pattern as the existing `editor` check), covering both the live SKS Pipeline module and an older, no-longer-nav-linked module still fully wired into the page dispatcher.
