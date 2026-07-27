@@ -14,6 +14,16 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: local build was failing on Suppliers permission keys — stale `node_modules`, not a code bug (2026-07-27)
+*`pnpm run build` (the exact command Netlify's `netlify.toml` runs) was failing locally at `tsc -b` with 4 `PermKey` type errors on `ops.view_suppliers` / `ops.manage_suppliers` (`HubSidebar.tsx`, `useCommandIndex.tsx`, `Suppliers.tsx`, `suppliers-mutate.ts`). Confirmed via `git stash` these 4 errors were already present identically on `main`, not caused by any recent PR.*
+
+- [x] **Root-caused: local `node_modules` was stale, not a code or dependency-pin bug.** `package.json`/`pnpm-lock.yaml` already correctly pinned `@eq-solutions/roles#v2.5.7` (landed [#1023](https://github.com/eq-solutions/eq-shell/pull/1023)), and v2.5.7 already defines both permission keys — but the local `node_modules/@eq-solutions/roles` symlink still pointed at an old pnpm-store tarball resolving to v2.5.4, a version that predates those keys.
+- [x] **Fixed with `pnpm install --frozen-lockfile`** — no source changes, no lockfile changes (nothing to commit; `git status` clean throughout). `pnpm run build` now passes clean.
+- [x] **Explained why core.eq.solutions was never at risk**: Netlify always does a fresh install from `pnpm-lock.yaml` on every build, so it never had a stale `node_modules` to go stale in the first place. Verified live via Netlify MCP — current production deploy (commit `a0df50b1`, PR [#1033](https://github.com/eq-solutions/eq-shell/pull/1033)) is `state: ready`, `error_message: null`, and multiple deploys have succeeded since the v2.5.7 bump.
+- [ ] **Habit note, not a task**: after pulling any `@eq-solutions/*` package-version bump, run `pnpm install` before trusting a local `tsc -b` failure as a real regression — this one cost investigation time chasing a phantom code bug. _(added 2026-07-27)_
+
+---
+
 ## eq-field: fixed 2 live Sentry errors — duplicate global + Leave lazy-load race (2026-07-27)
 *Royce asked to investigate the two untriaged live Sentry errors flagged as gate item 5 in `ops/security-register.md` (both first seen 2026-07-26, in the Leave and Incidents modules NSW crews lean on hardest). A prior recon pass had already built accurate hypotheses from Sentry metadata + session logs alone, without repo access — this session confirmed both against the actual source, fixed, and verified live.*
 
@@ -2993,3 +3003,12 @@ Diagnosed 2026-05-19. 17 advisor warnings, fix drafted but not applied.
 ### Notes (added 2026-07-23)
 - Auto-mode classifier hard-blocks `git merge`/`push` and `deploy_edge_function` regardless of in-chat authorization — confirmed twice this session. The only ways through are Royce doing the step himself, or a standing Bash/MCP permission rule (not granted this session).
 - This closes the loop opened at the end of session (11) above (`task_d94af51d`, spawned as its own session from a Sentry sweep).
+
+---
+
+## eq-solves-service: closed the sharp/uuid npm-audit findings via overrides, not a next/exceljs bump (2026-07-27)
+*Two real (non-devDependency) npm audit findings — `sharp <0.35.0` (libvips CVEs, high) and `uuid <11.1.1` (buffer bounds check, moderate) — had been flagged "pre-existing, spun off separately" across a few recent PRs. Investigated whether untrusted image data actually flows through the vulnerable path before touching anything.*
+
+- [x] **Confirmed zero runtime exposure**: `next/image`'s `<Image>` component is never used anywhere in this repo (no `images` config in `next.config.ts`; the one `<Image>` import anywhere is a lucide-react icon). Attachment/defect-photo thumbnails render via a plain `<img>` pointing at signed Supabase Storage URLs — `sharp` sits in `node_modules` purely as `next`'s unused optional dependency.
+- [x] **Fixed via `package.json` `overrides`** (`sharp@^0.35.3`, `uuid@^11.1.1`) instead of `npm audit fix --force`, which would have downgraded `next` to 14.2.35 and `exceljs` to 3.4.0 — both real breaking changes. `next`/`exceljs` stay untouched at their current pins. Verified: clean install, `tsc --noEmit` clean, 359/359 tests pass, `next build` TypeScript phase clean. Shipped: eq-service PR [#605](https://github.com/eq-solutions/eq-service/pull/605), squash `e6e72fe`, merged — Royce's "merge #605 once CI is green" go, confirmed the 2 remaining CI reds were the same pre-existing eslint-chain/integration-test failures every recent PR in this repo carries, not caused by this change.
+- [x] Isolated worktree (`eq-solves-service-sharp-uuid-audit-wt`) fully pruned after merge — no leftover local/remote branch.
