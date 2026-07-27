@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-27 11:26 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-27 11:27 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-27 11:21 UTC → 2026-07-27 11:26 UTC)
+## Since last refresh (2026-07-27 11:26 UTC → 2026-07-27 11:27 UTC)
 
-- Merged: eq-shell [#1049](https://github.com/eq-solutions/eq-shell/pull/1049) feat(licences): deep-link expiry email/SMS reminders to the 
-- Merged: eq-shell [#1033](https://github.com/eq-solutions/eq-shell/pull/1033) feat(attachments): drag-and-drop + multi-file upload onto qu
-- Merged: eq-shell [#1031](https://github.com/eq-solutions/eq-shell/pull/1031) perf(ops): Job Creation export reads its bundled template in
-- Merged: eq-shell [#1027](https://github.com/eq-solutions/eq-shell/pull/1027) chore(deps): bump @eq-solutions/ui v1.11.1 -> v1.12.0
-- Merged: eq-shell [#1025](https://github.com/eq-solutions/eq-shell/pull/1025) refactor(perms): retire deprecated cards.view/cards.onboard 
-- Merged: eq-shell [#1021](https://github.com/eq-solutions/eq-shell/pull/1021) refactor(perms): collapse hand-typed module matrices to deri
-- Merged: eq-shell [#1019](https://github.com/eq-solutions/eq-shell/pull/1019) feat(cards): bulk connect-worker mode, respecting the existi
-- Merged: eq-solves-service [#617](https://github.com/eq-solutions/eq-service/pull/617) fix(archive): rewrite hard-delete + restore for canonical wr
+- Merged: eq-shell [#1050](https://github.com/eq-solutions/eq-shell/pull/1050) ci(control-plane): gate PRs on jvkn function-drift check (--
+- Merged: eq-shell [#1034](https://github.com/eq-solutions/eq-shell/pull/1034) fix(admin): resolve cross-tenant user lookup in eq_get_tenan
+- Merged: eq-shell [#1030](https://github.com/eq-solutions/eq-shell/pull/1030) fix(staff): Photo ID requirement satisfied by driver licence
+- Merged: eq-shell [#1029](https://github.com/eq-solutions/eq-shell/pull/1029) feat(settings): nominate specific recipients for new-join-re
+- Merged: eq-shell [#1028](https://github.com/eq-solutions/eq-shell/pull/1028) fix(security): close anon-EXECUTE gap on zaap/ehow Ops+Quote
+- Merged: eq-shell [#1026](https://github.com/eq-solutions/eq-shell/pull/1026) refactor(access-control): derive the role-matrix perm list f
+- Merged: eq-shell [#1023](https://github.com/eq-solutions/eq-shell/pull/1023) chore(deps): bump @eq-solutions/roles to v2.5.7
+- Merged: eq-shell [#1022](https://github.com/eq-solutions/eq-shell/pull/1022) feat(access-model): canWithReason() + why-can.ts diagnostic 
 
 ## ⚠ Needs you (3)
 
@@ -49,7 +49,7 @@ _…and 69 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 2 | 0d |
+| eq-shell | ? unknown | ? | 1 | 0d |
 | eq-solves-service | ? unknown | ? | 0 | — |
 | eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ? unknown | ? | 0 | — |
@@ -73,6 +73,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-27 | eq-shell | [#1050](https://github.com/eq-solutions/eq-shell/pull/1050) ci(control-plane): gate PRs on jvkn function-drift check (--stric |
 | 2026-07-27 | eq-shell | [#1049](https://github.com/eq-solutions/eq-shell/pull/1049) feat(licences): deep-link expiry email/SMS reminders to the speci |
 | 2026-07-27 | eq-shell | [#1048](https://github.com/eq-solutions/eq-shell/pull/1048) feat(control-plane): jvkn function-drift CI check + backfill eq_g |
 | 2026-07-27 | eq-shell | [#1047](https://github.com/eq-solutions/eq-shell/pull/1047) fix(suppliers): make login/password visibility a real Security-Gr |
@@ -87,7 +88,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-27 | eq-shell | [#1039](https://github.com/eq-solutions/eq-shell/pull/1039) fix(shell): iframe loading placeholder uses the canonical Spinner |
 | 2026-07-27 | eq-shell | [#1037](https://github.com/eq-solutions/eq-shell/pull/1037) fix(shell): white background on iframe loading pane, not near-bla |
 | 2026-07-27 | eq-shell | [#1036](https://github.com/eq-solutions/eq-shell/pull/1036) fix(security): close 2 more cross-tenant lookup bugs + add shared |
-| 2026-07-27 | eq-shell | [#1035](https://github.com/eq-solutions/eq-shell/pull/1035) fix(auth): mint-supabase-jwt rejects cross-tenant users with a 40 |
 _Showing 15 of 113 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -145,4 +145,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-27 11:26 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-27 11:27 UTC._
