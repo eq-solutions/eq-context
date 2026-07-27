@@ -187,10 +187,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 *Royce opened a conversation about the direct-employee onboarding bottleneck (forms/licences → head office → manual Upvise upload, Letter of Offer acceptance visible only to the sender) and asked for a review of Cards→Field solutions. First-pass research was too shallow (grepped `main` only, missed the canonical-sync architecture and in-flight branches) and proposed building a Cards→Field pipe that already exists. Royce caught it and asked to re-verify — corrected findings below.*
 
 **Confirmed live (nothing to build here):**
-- [x] **Canonical sync (`workers-canonical-sync` v3+, `credentials-canonical-sync` v1) has synced Cards (jvkn) → Field (ehow) since 2026-06-13**, both workers and licences, with nightly `pg_cron` reconciliation. Not manual CSV, not a stub.
-- [x] **Direct employees already flow through it** — `role='employee'` maps to `employment_type='Direct'`; 48 of 67 live Field staff were Direct as of 2026-06-15.
-- [x] **Subcontractor is already modeled** as a roster `employment_type` (`Direct`/`Apprentice`/`Labour Hire`/`Subcontractor`), deliberately not a Field login role, standardized 2026-07-06 across eq-shell + eq-field.
-- [x] **Deleted stale branch `claude/agency-column-contractor-type-a4454e`** (local + origin) — its two commits (Company-column rename, role-drop-on-approval-match fix) were already squash-merged to `main` as PR [#922](https://github.com/eq-solutions/eq-shell/pull/922) (2026-07-21, all checks green) and PR #924; the branch just hadn't been cleaned up.
 
 **Decided (Royce):**
 - Upvise stays untouched — SKS's own process, too big to change quickly; work within existing systems, don't replace it.
@@ -203,9 +199,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ## eq-context: Reflection Protocol built + EQ Field commits mechanically gated (2026-07-24)
 *Royce dictated a mandatory pre-finalization self-critique (4 checks: substrate conflict, vagueness, domain pushback, EQ Field scope) for EQ Field build decisions, SKS ops/commissioning docs, and any output read outside the session. Persisted as `rules/reflection-protocol.md` (PR [#118](https://github.com/eq-solutions/eq-context/pull/118)). Steelmanned before building: a first design (block every `Edit` under `/eq-field/`) was rejected as the wrong moment — it fires on trivial edits and can't see the chat discussion where the actual decision gets made. Redesigned to gate at `git commit` instead, paired with a durable, PR-visible log.*
-- [x] **EQ Field commits are now mechanically gated.** New `~/.claude/hooks/guard.js` rule (`reflection-gate`) blocks `git commit` in `eq-field` unless `docs/reflection-log.md` is staged in the same commit. New `/reflect` command runs the four checks and stages that entry. Skippable via `EQ_SKIP_REFLECT=1`. _(done 2026-07-24)_
-- [x] **SKS ops/commissioning docs and chat-only outputs stay self-reported — by mechanical limit, not oversight.** A `PreToolUse` hook only sees tool calls, never chat prose, and most SKS deliverables have no reliable file-path signature to key on. Documented explicitly in `rules/reflection-protocol.md` so this isn't mistaken for full coverage. _(done 2026-07-24)_
-- [x] **The 2026-07-24 "live-tested, 4 scenarios verified" claim below was false confidence — the tests were synthetic payloads with a manually-set `cwd`, never a real command. Corrected 2026-07-26 after actually running a real eq-field commit surfaced two real bugs the synthetic tests couldn't have caught.** (1) `data.cwd` in this session's hook payloads stays pinned to wherever the session started and never follows an in-command `cd`, so the rule silently never fired on the real invocation pattern `cd "<path>" && git commit ...`; fixed by parsing `cd "<path>"` / `git -C <path>` out of the command string instead of trusting `cwd` alone. (2) Even after that fix, `git -C "<path>" commit ...` — the more common pattern here since the Bash tool discourages `cd` — still slipped through unblocked: the trigger regex required "git" and "commit" adjacent with only whitespace between them, so the `-C "<path>"` in between skipped the rule before the cwd-parsing code ever ran; fixed by widening the trigger to tolerate an intervening `-C <path>`. Both fixes then verified for real in a real eq-field worktree: blocks on both invocation patterns, allows through once `docs/reflection-log.md` is staged in a genuinely prior, separate tool call — how `/reflect`-then-commit actually works (a single bundled `git add … && git commit` won't be seen, since the hook evaluates the whole compound command before any of it runs — stage the log entry as its own step first). `EQ_SKIP_REFLECT=1` intentionally untested here — it's an operator-level env var the hook process itself must inherit at launch, not something an agent's shell command can set for it after the fact. _(corrected 2026-07-26)_
 - [ ] **Follow-up: `guard.js` itself is unversioned and untested.** It lives at `~/.claude/hooks/guard.js`, outside any git repo, with zero test coverage (beyond the ad hoc verification above) — unlike `hooks/*.py` in this repo, which are governed/versioned/CI-checked (`hooks/README.md`). Its own header cites a spec file (`system/operating-model-roadmap.md`) that doesn't exist. Worth eventually mirroring guard.js into this repo (versioned source of truth, deployed copy on the Beelink) so it gets the same test-before-trust discipline as the Python hooks. Not fixed this session — separate, larger scope. _(added 2026-07-24)_
 
 ---
@@ -2791,8 +2784,11 @@ Diagnosed 2026-05-19. 17 advisor warnings, fix drafted but not applied.
 ---
 
 ## EQ Cards — canonical flip follow-ups (shipped 2026-05-21)
+*This section sat corrupted in this file for 67 days — the first bullet was truncated to "**Licence p" mid-sentence. Restored verbatim 2026-07-27 from commit 436b44e (2026-05-24). All three items are from May and may be stale — verify against live before acting.*
 
-- [ ] **Licence p
+- [ ] **Licence photo JPGs not migrated** — 2 active licence photos (electrical + medicare) still on legacy Cards Supabase (`hshvnjzczdytfiklhojz`). `photo_front_path` is NULL on canonical. Re-upload via the new Cards UI OR run a copy script with both service-role keys.
+- [ ] **`cards.eq.solutions` custom domain** (S2.E) — DNS alias + Netlify domain alias on the `eq-cards` project still pending.
+- [ ] **`claude/canonical-migration` branch** — exists in eq-cards as change record; prod is the flutter build web artefact. Either merge or delete.
 
 ---
 

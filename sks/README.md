@@ -97,6 +97,7 @@ Separate audience — only fetch when explicitly authoring or reviewing team-fac
 | Path | Purpose |
 |---|---|
 | `pending.md` | SKS-only to-do list |
+| `pending-archive.md` | Done items rotated out of pending.md nightly (`scripts/rotate_pending.py`) — historical record only |
 | `active.md` | Rolling active projects (current quarter) |
 | `team.md` | NSW team |
 | `products.md` | SKS live tools (Labour, Receipt Tracker) |

@@ -2,15 +2,17 @@
 title: EQ Tier — Pending Actions Archive
 owner: Royce Milmlow
 last_updated: 2026-07-27
-scope: Fully-closed session write-ups moved out of eq/pending.md to keep the live doc scannable. Nothing here is actionable — pure historical record (also covered in eq/changelog/*.md and sessions/*.md). Append-only, oldest first as they existed in pending.md.
+scope: Done items rotated out of eq/pending.md nightly by scripts/rotate_pending.py (per-item since 2026-07-27; before that, occasional manual whole-section moves). Nothing here is actionable — pure historical record (also covered in eq/changelog/*.md and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
-status: archive
+status: archived
 ---
 
 # EQ Tier — Pending (Archive)
 
-Sections here had zero open items left when moved. If you''re looking for
-something to action, it''s not here — check `eq/pending.md`.
+Done items and fully-closed session write-ups rotated out of `eq/pending.md`.
+If you''re looking for something to action, it''s not here — check `eq/pending.md`.
+A "(rotated YYYY-MM-DD ...)" note on a section header means only that
+section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
@@ -560,3 +562,20 @@ something to action, it''s not here — check `eq/pending.md`.
 
 ---
 
+
+## eq-shell: onboarding information-flow review — confirmed Cards→Field already covers direct employees + subcontractors, deleted a stale branch (2026-07-24) (rotated 2026-07-27 — open items remain in pending.md)
+
+- [x] **Canonical sync (`workers-canonical-sync` v3+, `credentials-canonical-sync` v1) has synced Cards (jvkn) → Field (ehow) since 2026-06-13**, both workers and licences, with nightly `pg_cron` reconciliation. Not manual CSV, not a stub.
+- [x] **Direct employees already flow through it** — `role='employee'` maps to `employment_type='Direct'`; 48 of 67 live Field staff were Direct as of 2026-06-15.
+- [x] **Subcontractor is already modeled** as a roster `employment_type` (`Direct`/`Apprentice`/`Labour Hire`/`Subcontractor`), deliberately not a Field login role, standardized 2026-07-06 across eq-shell + eq-field.
+- [x] **Deleted stale branch `claude/agency-column-contractor-type-a4454e`** (local + origin) — its two commits (Company-column rename, role-drop-on-approval-match fix) were already squash-merged to `main` as PR [#922](https://github.com/eq-solutions/eq-shell/pull/922) (2026-07-21, all checks green) and PR #924; the branch just hadn't been cleaned up.
+
+---
+
+## eq-context: Reflection Protocol built + EQ Field commits mechanically gated (2026-07-24) (rotated 2026-07-27 — open items remain in pending.md)
+
+- [x] **EQ Field commits are now mechanically gated.** New `~/.claude/hooks/guard.js` rule (`reflection-gate`) blocks `git commit` in `eq-field` unless `docs/reflection-log.md` is staged in the same commit. New `/reflect` command runs the four checks and stages that entry. Skippable via `EQ_SKIP_REFLECT=1`. _(done 2026-07-24)_
+- [x] **SKS ops/commissioning docs and chat-only outputs stay self-reported — by mechanical limit, not oversight.** A `PreToolUse` hook only sees tool calls, never chat prose, and most SKS deliverables have no reliable file-path signature to key on. Documented explicitly in `rules/reflection-protocol.md` so this isn't mistaken for full coverage. _(done 2026-07-24)_
+- [x] **The 2026-07-24 "live-tested, 4 scenarios verified" claim below was false confidence — the tests were synthetic payloads with a manually-set `cwd`, never a real command. Corrected 2026-07-26 after actually running a real eq-field commit surfaced two real bugs the synthetic tests couldn't have caught.** (1) `data.cwd` in this session's hook payloads stays pinned to wherever the session started and never follows an in-command `cd`, so the rule silently never fired on the real invocation pattern `cd "<path>" && git commit ...`; fixed by parsing `cd "<path>"` / `git -C <path>` out of the command string instead of trusting `cwd` alone. (2) Even after that fix, `git -C "<path>" commit ...` — the more common pattern here since the Bash tool discourages `cd` — still slipped through unblocked: the trigger regex required "git" and "commit" adjacent with only whitespace between them, so the `-C "<path>"` in between skipped the rule before the cwd-parsing code ever ran; fixed by widening the trigger to tolerate an intervening `-C <path>`. Both fixes then verified for real in a real eq-field worktree: blocks on both invocation patterns, allows through once `docs/reflection-log.md` is staged in a genuinely prior, separate tool call — how `/reflect`-then-commit actually works (a single bundled `git add … && git commit` won't be seen, since the hook evaluates the whole compound command before any of it runs — stage the log entry as its own step first). `EQ_SKIP_REFLECT=1` intentionally untested here — it's an operator-level env var the hook process itself must inherit at launch, not something an agent's shell command can set for it after the fact. _(corrected 2026-07-26)_
+
+---

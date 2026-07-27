@@ -1,0 +1,72 @@
+name: Rotate pending.md done items
+
+# Nightly per-item rotation of done ("- [x]") items out of eq/sks/ops
+# pending.md into their pending-archive.md — scripts/rotate_pending.py.
+#
+# Why: before this existed, rotation was a one-off manual chore (done once in
+# ~12 weeks) whose "zero open items per section" rule let a single trailing
+# 'Royce to confirm X' line trap a whole finished session in the live doc.
+# eq/pending.md reached 478 open + 163 done-unrotated items before the
+# 2026-07-27 backlog analysis forced the issue. Sections dated within the
+# last 3 days are left alone (grace window) so follow-on sessions keep
+# same-week narrative context.
+#
+# Runs at 11:30 UTC — after suite-state (10:00) and honesty (11:00), before
+# digest-refresh (12:00) so the digest's Queue health table reflects the
+# rotated state. Commits with [skip ci] so the bot push doesn't re-trigger
+# the MD/frontmatter workflows.
+
+on:
+  schedule:
+    - cron: '30 11 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  # Same group as suite-state-refresh + digest-refresh: serialize every
+  # substrate-committing bot so no two ever push to main at once.
+  group: eq-context-substrate-push
+  cancel-in-progress: false
+
+jobs:
+  rotate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      # The rotation rewrites the substrate's most-read file unattended —
+      # run its unit tests first, every night, and refuse to rotate if red.
+      - name: Test the rotation engine
+        run: python scripts/test_rotate_pending.py
+
+      - name: Rotate done items
+        run: python scripts/rotate_pending.py
+
+      - name: Commit if changed
+        run: |
+          git config user.name  "eq-suite-bot"
+          git config user.email "bot@eq.solutions"
+          git add eq/pending.md eq/pending-archive.md \
+                  sks/pending.md sks/pending-archive.md \
+                  ops/pending.md ops/pending-archive.md
+          if git diff --staged --quiet; then
+            echo "No changes"
+            exit 0
+          fi
+          git commit -m "chore: nightly pending rotation $(date -u +%Y-%m-%d) [skip ci]"
+          for attempt in 1 2 3; do
+            if git push; then
+              echo "Pushed on attempt $attempt"
+              exit 0
+            fi
+            echo "Push rejected (attempt $attempt) — rebasing on latest origin/main"
+            git pull --rebase --autostash origin main || git rebase --abort || true
+          done
+          echo "Push failed after 3 attempts" >&2
+          exit 1

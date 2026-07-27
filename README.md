@@ -153,6 +153,10 @@ the rotation as "DECLINED for now," runbook explicitly kept on file.
 `eq/punch-list-2026-06-02.md` for still-parked, migration-gated Field items.
 `sks-live-sprint-2026-06-07.md` — `digest.md` still lists its Security
 Groups Phase 2–5 work as open.
+`SKS-FIELD-PARALLEL-RUN-LOG.md` — the EQ Field parallel-run mismatch log +
+clean-week counter the 2026-07-11 cutover plan requires; live, streak at 0.
+`sec9-jvkn-key-rotation-runbook-2026-07-27.md` — ready-to-run SEC-9 rotation
+runbook, Royce-gated; stays at root until the key is rotated.
 
 Plus 2 not re-checked this pass (2026-07-16, too recent for the "most predate
 2026-06-08" heuristic to apply, actively tied to a program that shipped this
