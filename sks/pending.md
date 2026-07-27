@@ -9,18 +9,19 @@ status: live
 
 # SKS Pending
 
-## sks-charters has no remote — local-only repo (2026-07-27)
+## sks-charters backed up to GitHub (2026-07-27)
 *Found during a `C:\Projects` folder audit — `C:\Projects\sks-charters` (generates
 SKS "Role Step-Up Charter" `.docx` files, format documented in
-`eq-context/sks/templates.md`) is a real, active git repo but `git remote get-url
-origin` returns "No such remote". Everything in it — charter data, generator
-code, commit history — exists only on this one machine.*
+`eq-context/sks/templates.md`) had no remote at all; the tool, its data, and
+history existed only on this one machine. The 7 already-generated documents
+(`out/*.docx`) were confirmed already delivered to their recipients, so only
+the tool itself needed backing up — the documents were left as-is, not
+pushed (they're gitignored by design, not meant to be version-controlled
+output).*
 
-- [ ] Push `sks-charters` to a real GitHub remote (e.g.
-  `eq-solutions/sks-charters`), or confirm it's fine to stay local-only if
-  the actual deliverables (the generated `.docx` files) are what matters,
-  not the repo itself. Not urgent, but a single-machine-loss risk as-is.
-  _(added 2026-07-27)_
+- [x] Pushed to [`eq-solutions/sks-charters`](https://github.com/eq-solutions/sks-charters)
+  (private — contains real staff names/roles, unlike the public `eq-context`).
+  _(added 2026-07-27, closed 2026-07-27)_
 
 ---
 
