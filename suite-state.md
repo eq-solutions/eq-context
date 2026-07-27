@@ -61,7 +61,6 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-27)
 
 **eq-field:**
-- #552 v3.5.367 — Audit log: hide routine cell edits by default
 - #551 docs: multi-lens review — 2026-07-27 + keep-warm loading-time fix (v3.5.367)
 
 ---
