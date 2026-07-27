@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-27 10:03 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-27 10:27 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-27 09:57 UTC → 2026-07-27 10:03 UTC)
+## Since last refresh (2026-07-27 10:03 UTC → 2026-07-27 10:27 UTC)
 
-- Merged: eq-shell [#1045](https://github.com/eq-solutions/eq-shell/pull/1045) feat(quotes): file-count badge on pipeline list + finish RPC
-- Merged: eq-shell [#1030](https://github.com/eq-solutions/eq-shell/pull/1030) fix(staff): Photo ID requirement satisfied by driver licence
-- Merged: eq-shell [#1029](https://github.com/eq-solutions/eq-shell/pull/1029) feat(settings): nominate specific recipients for new-join-re
-- Merged: eq-shell [#1028](https://github.com/eq-solutions/eq-shell/pull/1028) fix(security): close anon-EXECUTE gap on zaap/ehow Ops+Quote
-- Merged: eq-shell [#1026](https://github.com/eq-solutions/eq-shell/pull/1026) refactor(access-control): derive the role-matrix perm list f
-- Merged: eq-shell [#1023](https://github.com/eq-solutions/eq-shell/pull/1023) chore(deps): bump @eq-solutions/roles to v2.5.7
-- Merged: eq-shell [#1022](https://github.com/eq-solutions/eq-shell/pull/1022) feat(access-model): canWithReason() + why-can.ts diagnostic 
-- Merged: eq-shell [#1020](https://github.com/eq-solutions/eq-shell/pull/1020) chore(styles): remove dead duplicate TenantHome AI-brief CSS
+- Merged: eq-shell [#1046](https://github.com/eq-solutions/eq-shell/pull/1046) feat(staff): inline supervisor/roster toggles + quick-edit l
+- Merged: eq-shell [#1031](https://github.com/eq-solutions/eq-shell/pull/1031) perf(ops): Job Creation export reads its bundled template in
+- Merged: eq-shell [#1027](https://github.com/eq-solutions/eq-shell/pull/1027) chore(deps): bump @eq-solutions/ui v1.11.1 -> v1.12.0
+- Merged: eq-shell [#1025](https://github.com/eq-solutions/eq-shell/pull/1025) refactor(perms): retire deprecated cards.view/cards.onboard 
+- Merged: eq-shell [#1021](https://github.com/eq-solutions/eq-shell/pull/1021) refactor(perms): collapse hand-typed module matrices to deri
+- Merged: eq-shell [#1019](https://github.com/eq-solutions/eq-shell/pull/1019) feat(cards): bulk connect-worker mode, respecting the existi
+- Merged: eq-shell [#1018](https://github.com/eq-solutions/eq-shell/pull/1018) feat(dashboard): scannable AI brief, self-evident action ran
+- Merged: eq-shell [#1016](https://github.com/eq-solutions/eq-shell/pull/1016) fix(perms): close check-perm-sync.mjs under-grant blind spot
 
 ## ⚠ Needs you (3)
 
@@ -33,7 +33,7 @@ _2026-07-27 10:03 UTC · what needs your attention. Full snapshot: [suite-state.
 |------|-----------|--------|----------|-----------|
 | eq-shell | ? unknown | ? | 0 | — |
 | eq-solves-service | ? unknown | ? | 0 | — |
-| eq-field | ? unknown | ? | 0 | — |
+| eq-field | ? unknown | ? | 1 | 0d |
 | eq-cards | ? unknown | ? | 0 | — |
 | eq-solves-intake | ✓ success | 1d ago | 0 | — |
 
@@ -46,15 +46,16 @@ _2026-07-27 10:03 UTC · what needs your attention. Full snapshot: [suite-state.
 | eq-shell | [Error: Workers never invited to join, past grace period: 45](https://eq-solutions.sentry.io/issues/135740258/) | 7 | 2026-07-26 |
 | eq-shell | [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/) | 6 | 2026-07-23 |
 | eq-field | [ReferenceError: openLeaveRequest is not defined](https://eq-solutions.sentry.io/issues/130706295/) | 2 | 2026-07-26 |
-| eq-field | [SyntaxError: Identifier '_ROSTER_WEEKDAYS' has already been declared](https://eq-solutions.sentry.io/issues/136749375/) | 1 | 2026-07-27 |
 | eq-cards | [LateInitializationError: Field '' has not been initialized.](https://eq-solutions.sentry.io/issues/136695941/) | 1 | 2026-07-27 |
 | eq-cards | [LateInitializationError: Field '' has not been initialized.](https://eq-solutions.sentry.io/issues/136695940/) | 1 | 2026-07-27 |
+| eq-field | [TypeError: Cannot set properties of null (setting 'innerHTML')](https://eq-solutions.sentry.io/issues/136685760/) | 1 | 2026-07-27 |
 _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunresolved)_
 
 ## Recently built (last 7 days)
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-27 | eq-shell | [#1046](https://github.com/eq-solutions/eq-shell/pull/1046) feat(staff): inline supervisor/roster toggles + quick-edit list c |
 | 2026-07-27 | eq-shell | [#1045](https://github.com/eq-solutions/eq-shell/pull/1045) feat(quotes): file-count badge on pipeline list + finish RPC stat |
 | 2026-07-27 | eq-shell | [#1044](https://github.com/eq-solutions/eq-shell/pull/1044) fix(quotes): retire 4 dead status values, merge verbal-win, add C |
 | 2026-07-27 | eq-shell | [#1043](https://github.com/eq-solutions/eq-shell/pull/1043) fix(shell): EQ Field is missing its Records nav + rail opens on a |
@@ -69,7 +70,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-27 | eq-shell | [#1034](https://github.com/eq-solutions/eq-shell/pull/1034) fix(admin): resolve cross-tenant user lookup in eq_get_tenant_use |
 | 2026-07-27 | eq-shell | [#1033](https://github.com/eq-solutions/eq-shell/pull/1033) feat(attachments): drag-and-drop + multi-file upload onto quote/j |
 | 2026-07-27 | eq-solves-service | [#612](https://github.com/eq-solutions/eq-service/pull/612) chore(deps): bump @sentry/nextjs from 10.58.0 to 10.68.0 |
-| 2026-07-27 | eq-solves-service | [#611](https://github.com/eq-solutions/eq-service/pull/611) chore(deps): bump lucide-react from 1.22.0 to 1.27.0 |
 _Showing 15 of 113 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -127,4 +127,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-27 10:03 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-27 10:27 UTC._
