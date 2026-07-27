@@ -195,7 +195,14 @@ def _reroot_links(text, base_dir):
 
 
 def pending_open_items(path):
-    """Unchecked items from a pending.md file. Returns list of strings.
+    """Unchecked or in-progress items from a pending.md file. Returns list of strings.
+
+    Matches '- [ ]' (open) and '- [~]' (in-progress/partial — this substrate's
+    existing convention, e.g. 'P2: customer convergence — PARTIAL APPLIED').
+    Missing '[~]' here was a real bug (found 2026-07-27, same root cause as the
+    one fixed in scripts/rotate_pending.py): a partial item is genuinely open
+    work, but read as invisible to both the Pending lists below and the
+    'Waiting on you' classifier that runs over this function's output.
 
     Relative links inside each item are re-rooted from the pending file's directory
     to the repo root, because these items are hoisted into root-level digest.md
@@ -210,7 +217,7 @@ def pending_open_items(path):
     return [
         _reroot_links(line.strip()[5:].strip(), base_dir)
         for line in lines
-        if line.strip().startswith("- [ ]")
+        if line.strip().startswith("- [ ]") or line.strip().startswith("- [~]")
     ]
 
 
@@ -243,7 +250,11 @@ def pending_queue_health(path):
             lines = f.readlines()
     except FileNotFoundError:
         return None
-    open_count = sum(1 for ln in lines if ln.strip().startswith("- [ ]"))
+    def is_open(ln):
+        s = ln.strip()
+        return s.startswith("- [ ]") or s.startswith("- [~]")
+
+    open_count = sum(1 for ln in lines if is_open(ln))
     done_count = sum(1 for ln in lines if ln.strip().startswith("- [x]"))
 
     cutoff = (NOW - timedelta(days=AGING_OPEN_THRESHOLD_DAYS)).strftime("%Y-%m-%d")
@@ -262,7 +273,7 @@ def pending_queue_health(path):
             dates = SECTION_HEADER_DATE_RE.findall(ln)
             section_date = max(dates) if dates else None
             section_open = 0
-        elif ln.strip().startswith("- [ ]"):
+        elif is_open(ln):
             section_open += 1
     flush()
 
