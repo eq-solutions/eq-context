@@ -14,6 +14,31 @@ for operational support: tax, entities, infrastructure, substrate.
 
 ---
 
+## Root cause of the recurring worktree-orphan pattern found + fixed (2026-07-27)
+
+Royce shared an Explorer screenshot asking what all the extra `C:\Projects`
+folders were — found 22 more (on top of the ~110 already cleaned earlier the
+same day), all in `eq-shell`/`eq-solves-service`/`eq-intake`, dating back 15
+days. Root-caused it instead of just cleaning around it again: Windows'
+OS-level long-path support (`LongPathsEnabled`) was off even though git's
+own `core.longpaths` was already `true` — that gap was breaking `git
+worktree remove`'s deletion step on any repo with deep `node_modules` trees,
+which lines up exactly with which repos had orphans (never `eq-field`, which
+has no `node_modules` at all). Full detail in `system/worktree-registry.md`.
+
+- [x] 22 orphaned folders deleted (all confirmed empty/build-cruft, no
+  `.git`, no real content). _(added + closed 2026-07-27)_
+- [ ] **Royce enabled `LongPathsEnabled=1` himself** (system setting, out of
+  scope for Claude Code to change) — confirmed live via registry read, but
+  it only takes effect **after a reboot**, not done yet as of this entry.
+  Reboot whenever convenient; no urgency. _(added 2026-07-27)_
+- [ ] **Verify after reboot**: if orphaned `-wt` folders start reappearing
+  in those 3 repos again post-reboot, the diagnosis was wrong or incomplete
+  and needs revisiting — don't assume the fix worked without checking.
+  _(added 2026-07-27)_
+
+---
+
 ## Brief-gate flag made per-session (2026-07-21)
 
 The `/brief` flag that unlocks `guard.js`'s brief-gate was a single global
