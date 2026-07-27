@@ -70,9 +70,6 @@ _If this file is >48h old, the cron is broken._
 **eq-service:**
 - #617 fix(archive): rewrite hard-delete + restore for canonical write layer
 
-**eq-shell:**
-- #1047 fix(suppliers): make login/password visibility a real Security-Groups permission
-
 ---
 
 ## System Health (as of 2026-07-27)
