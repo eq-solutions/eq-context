@@ -980,3 +980,46 @@ contain the same values and were pushed before push-protection caught up.
 - [x] **`claude/canonical-migration` branch** — exists in eq-cards as change record; prod is the flutter build web artefact. Either merge or delete. **[CLOSED 2026-07-27 — branch confirmed gone (local and remote) — already resolved either way]**
 
 ---
+
+## ⏩ Sprint 7 — EQ Service cutover (urjh → ehow) — 2026-06-08 (rotated 2026-07-27 — open items remain in pending.md)
+
+- [x] **Smoke test (Royce)** — sign in via Shell OTP at service.eq.solutions, confirm checks/tests/defects visible, create a test check → lands in ehow tenant `7dee117c-…`. *(Shell SSO now fixed — 2026-06-09, 4 bugs fixed, deploy 6a27f277. Test in incognito.)* **[CLOSED 2026-07-27 — duplicate of the same Shell SSO smoke test closed elsewhere; Service confirmed running live/stable for weeks]**
+
+---
+
+## SKS Live — roles / security-groups track (2026-06-07) (rotated 2026-07-27 — open items remain in pending.md)
+
+- [x] **Phase 5 hardening** — `contact_customer_links` explicit `WITH CHECK` (`::uuid` cast) + CI policy-lint + eq-roles no-orphan-keys test (Prompt E). **[CLOSED 2026-07-27 — eq-shell PR #231 confirmed MERGED 2026-06-07 ("feat(phase5): tenant WITH CHECK + orphan-perms validator")]**
+
+---
+
+## ⏩ Session close — 2026-06-06 — SKS tenant LIVE on EQ Field + JWT/RLS Track 2 staged + Teams uuid fix (rotated 2026-07-27)
+
+**SKS is now usable on the EQ Field build** at `field.sks.eq.solutions` (eq-field **v3.5.83**). Big correction vs the earlier draft of this block: **`DATA_JWT_ENABLED` is ON deploy-wide**, so SKS runs on the AUTHED JWT path post-login (not anon parity), and STEP 1 is load-bearing.
+
+**Completed (EQ Field, prod-verified):**
+- **v3.5.82 — SKS pipeline JWT+RLS carrier (B5 Track 2)** (PR [#195](https://github.com/eq-solutions/eq-field/pull/195)). Per-tenant data-JWT secret resolver + in-place carrier (`JWT_INPLACE_TENANTS={sks}` → `public.*` on SKS's own Supabase).
+- **STEP 1 RLS (authed policies) APPLIED to SKS prod** (migration `sks_pipeline_rls_step1_additive`; 22 `field_authed_*` policies; anon untouched/intact). **Load-bearing** — with the flag on, this is what lets SKS read its own data post-login. **Do NOT roll back.** Dry-run-validated on a disposable Supabase branch first.
+- **v3.5.83 — gate anon-fallback fix** (PR [#199](https://github.com/eq-solutions/eq-field/pull/199)). Fixed the empty-gate lock-out (pre-login `sbFetch` of JWT_TABLES couldn't mint → now falls back to anon). Verified live: gate lists 69 SKS names.
+- **v3.5.81 — Teams id-type fix for uuid tenants** (PR [#196](https://github.com/eq-solutions/eq-field/pull/196); dup #197 closed).
+- **Canonical hostname** for `sks` = `field.sks.eq.solutions` (was repointed to `sks-field.netlify.app` then finalised to the custom domain).
+- **Track-2 migration files** PR'd ([#200](https://github.com/eq-solutions/eq-field/pull/200), docs/SQL only): STEP1 (applied), STEP2 lockdown (deferred), PRE-SNAPSHOT, original marked superseded.
+- **`core.eq.solutions` → SKS Field WORKING** — eq-shell [#189](https://github.com/eq-solutions/eq-shell/pull/189) (merged + live). The admin auto-route honored a sticky `localStorage` last-pick over the URL tenant, so `/sks/field` loaded the empty EQ tenant; fixed so the active shell tenant wins. Verified live (loads `field.sks.eq.solutions` + sks even with last-pick=eq).
+- **SKS-canonical drift fixed:** `app_data.eq_intake_rate_limits` RLS gate `user_metadata`→`app_metadata` on `ehow` (aligned to core; source migration `0023_intake_infra.sql` already correct — SKS had drifted out-of-band). Unblocked the eq-shell schema-drift CI gate.
+
+**Pre-go-live hardening pass (2026-06-06) — advisors swept on nspbmi/ehow/jvkn + dual-write + DEFINER audits:**
+- **Dual-write silent-data-loss FIXED (was HIGH).** EQ Field writes `people.employment_type/rto/hire_company` + `sites.project_id`; SKS lacked them → every person/site edit from EQ Field would 400 and silently drop. Added the 4 nullable columns to SKS prod (`nspbmirochztcjijmcrx`), matching the EQ plane. **Smoke a person + site edit post-merge of #202.**
+- **SSO "view only" + Teams create FIXED + MERGED** — eq-field [#202](https://github.com/eq-solutions/eq-field/pull/202) (v3.5.85, live): cookie SSO path grants supervisor to platform admins (parity w/ token path); `teams`+`team_members` added to ORG_TABLES (org_id NOT NULL stamping).
+- **Team DELETE FIXED + MERGED** — eq-field [#203](https://github.com/eq-solutions/eq-field/pull/203) (v3.5.86, live): `deleteTeam` removes `team_members` links before the team (SKS FK isn't ON DELETE CASCADE → delete had 400'd on any team with members).
+- **SKS-canonical rate-limit DEFINER fns hardened (live):** `eq_check/increment_intake_rate_limit` trusted a caller-supplied `p_tenant_id` (cross-tenant) + mutable search_path → pinned search_path + revoked EXECUTE from public/anon/authenticated (sole caller is the api-intake edge fn on service_role). 
+- **Audits clean elsewhere:** the 17 other ehow DEFINER RPCs are JWT-tenant-scoped (safe); the 4 anon-callable control-plane Cards DEFINER fns are auth.uid()/token-gated (safe — advisor pattern, not a hole). Control plane has NO anon exposure of registry/config/entitlements.
+- **Track-2 SQL artifacts merged** — eq-field [#200](https://github.com/eq-solutions/eq-field/pull/200) (record only).
+
+**Royce decisions (2026-06-06):**
+- ❌ **PITR DECLINED** — $100/mo/project too expensive at this scale. Weekly backups stand; ~14-day worst-case RPO accepted (consistent with the existing SKS backup decision). Cheap alt on file if wanted: daily `pg_dump` → storage.
+- ❌ **Key rotation DECLINED** for now — `EQ_SECRET_SALT` (exposed shared master key) + `GOOGLE_DOC_AI_CREDENTIALS` rotation deferred at Royce's call; risk accepted. Runbook (`eq-secret-salt-rotation-runbook-2026-06-06.md`) stays on file.
+
+**Remaining for SKS go-live (Royce-gated):**
+- [x] **Onboarding** — invite-claim rollout (only 1 of 36 workers linked; 0/56 invites claimed). Upstream eq-shell #183/#175. **[CLOSED 2026-07-27 — live-checked jvkn's `worker_invites`: only 1 row total, already claimed — the formal invite-claim model was superseded by the 2026-07-26 self-heal login fix (SKS workers approved before completing Cards phone-OTP now get a Shell login provisioned automatically on next login attempt), not by this rollout finishing]**
+
+---

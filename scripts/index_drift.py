@@ -43,7 +43,7 @@ TIERS = {
 # excluded from root's index requirement so this check doesn't flag them forever.
 ROOT_EXEMPT = {
     "README.md", "CLAUDE.md", "AGENTS.md", "CHAT-PROMPT.md", "COWORK-PROMPT.md",
-    "AUTONOMOUS-SPRINT-RULES.md",
+    "CHATGPT-PROMPT.md", "GROK-PROMPT.md", "AUTONOMOUS-SPRINT-RULES.md",
 }
 
 

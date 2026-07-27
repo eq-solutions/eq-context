@@ -53,3 +53,9 @@ section's done items live here; its open items stayed in `ops/pending.md`.
   his personal global rules.
 
 ---
+
+## Cross-Tool Consistency — Original Reason for 2026-05-04 Refactor (rotated 2026-07-27 — open items remain in pending.md)
+
+- [x] **(A) ChatGPT and Grok bootstrap prompts** — produce `CHATGPT-PROMPT.md` and `GROK-PROMPT.md` mirroring `COWORK-PROMPT.md` / `CHAT-PROMPT.md` (paste-once-per-session prompts fetching the raw GitHub URLs — the "canonical Supabase URLs" in the original framing are gone; edge cache retired 2026-06-22). Highest-priority, lowest-risk follow-up. Closes the original framing: "consistency across all tools." **[CLOSED 2026-07-27 — both files written, root-exempt list updated in `scripts/index_drift.py`]**
+
+---

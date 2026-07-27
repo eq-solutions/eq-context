@@ -260,7 +260,8 @@ Skipping these = substrate stale = next session inherits drift. (See `system/les
 | **Claude Code** (Beelink) | Local `CLAUDE.md` (`C:\Users\EQ\.claude\CLAUDE.md`) | Filesystem + git | Run `git pull` at start if clone may be stale |
 | **Claude Chat** (claude.ai) | Memory + pasted `CHAT-PROMPT.md`; substrate via **GitHub connector** | None | Read substrate through the GitHub connector, never web fetch (can't construct URLs; returns previews, not raw text). Connector missing → fresh session after Royce connects it. Produce patched files; Royce uploads via GitHub web UI |
 | **Cowork** | Cowork system prompt + pasted `COWORK-PROMPT.md` | Filesystem | Never run `git` from the **Cowork sandbox** against `C:\Projects\*` repos — produces orphan `.git/index.lock` files. Emit `.bat`/`.ps1` for Royce to run instead. (Claude Code on the Beelink runs git directly — this constraint is Cowork-only.) |
-| **ChatGPT / Grok / others** | None | None | Bootstrap manually: "Fetch CLAUDE.md from `https://raw.githubusercontent.com/eq-solutions/eq-context/main/CLAUDE.md` and follow it." Proper bootstrap files pending — see `ops/pending.md` |
+| **ChatGPT** | None | None | Paste `CHATGPT-PROMPT.md` at session start (mirrors `CHAT-PROMPT.md`/`COWORK-PROMPT.md`) |
+| **Grok** | None | None | Paste `GROK-PROMPT.md` at session start (same pattern) |
 
 All tools share: never push to demo branch without instruction; never deploy to `eq-solves-field.netlify.app` directly; auth changes require Chat review.
 
