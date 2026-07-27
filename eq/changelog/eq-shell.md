@@ -9,7 +9,10 @@ status: live
 
 # eq-shell changelog
 
-## 2026-07-26 (latest — PR #1027, `@eq-solutions/ui` bump surfaces a live unstyled-dropdown bug)
+## 2026-07-27 (latest — PR #1031, Job Creation export was slow, not broken)
+- **PR #1031 (MERGED) — `job-creation.ts` now reads its bundled xlsx template from disk instead of re-fetching it over HTTP from the live site on every download.** Reported as "job creation stopped working"; live investigation on the actual reported quote showed the export succeeded but was slow. The self-referential network round-trip (on top of the function's own cold start) was the cause — `netlify.toml`'s `included_files` already bundled the identical template since the function's original commit, just never used. Single-file diff, no functional/schema change. Deployed to core.eq.solutions same session.
+
+## 2026-07-26 (PR #1027, `@eq-solutions/ui` bump surfaces a live unstyled-dropdown bug)
 - **PR #1027 (MERGED, squash `9293c2c`) — bumped `@eq-solutions/ui` v1.11.1 → v1.12.0 to pick up new Tooltip/EmptyState/Pagination components, and found a real bug along the way.** This repo's own `src/index.css` imports eq-ui's styles only via the barrel (`@eq-solutions/ui/styles`), and `QuotesModule.tsx` uses `DropdownMenu` with no fallback CSS import of its own. Confirmed directly against the live `v1.11.1` git tag that the barrel stylesheet was missing `DropdownMenu.css` entirely at that version — so the Quotes "⋯" menu has likely been rendering completely unstyled in production since it shipped, until this deploy. `pnpm run build:packages && build:tokens && tsc -b` clean, 247/247 tests, `check:perms` + `check:css` (549 `eq-*` classes resolve, would have caught this) both pass. Netlify auto-deploys `main` → core.eq.solutions.
 
 ## 2026-07-26 (latest — PR #1026, Access Control admin UI derived from the package)
