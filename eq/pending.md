@@ -14,6 +14,15 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: black-screen-on-load fixed for real, then a follow-up made it actually visible (2026-07-27)
+*Follow-on from the earlier EQ Service loading-spinner session — Royce sent a photo of a genuine solid-black screen every time he opens Service (or Field/Cards) from Core, not just the perceived slowness chased down before. Root-caused and fixed twice in one thread: once for the black itself, once because the first fix's replacement loading indicator turned out to be nearly invisible.*
+
+- [x] **Solid black screen while EQ Service (or Field/Cards) loads inside Core — root-caused from a screenshot, not guessed.** The whole "hub" wrapper (sidebar + content pane) has a near-black background for the sidebar's dark look, but the content pane never overrode it back to white — so everywhere outside the loading indicator's narrow centred card, the near-black bled straight through, reading as a solid black screen for as long as Service took to boot. Confirmed the same bug affects Field and Cards too, not just Service (shared component). Shipped: eq-shell PR [#1037](https://github.com/eq-solutions/eq-shell/pull/1037), merged, live on core.eq.solutions.
+- [x] **That fix alone left the pane white with no visible loading animation** — the placeholder's light gray fill barely showed up against the new white background. Royce asked to use EQ's own standard spinner (already used on Core's own sign-in screen) instead of the content-shaped placeholder. Swapped in — same spinner, clearly visible, same fix applies to Field/Cards too. Shipped: eq-shell PR [#1039](https://github.com/eq-solutions/eq-shell/pull/1039), merged, live on core.eq.solutions.
+- [ ] **Royce to confirm live** that the loading screen now shows a clearly visible spinner instead of a black or blank pane, next time he opens Service/Field/Cards from Core. _(added 2026-07-27)_
+
+---
+
 ## eq-shell/eq-cards: tenant data-plane security sweep + a real login-blocking bug fixed for a live user (2026-07-27)
 *Continuing straight from the anon-EXECUTE fix flagged as an open question the session before: swept the two tenant databases properly instead of stopping at the one function found by accident. Then Royce asked who gets notified when someone new asks to join a company, and separately reported a real employee (Brian Griffin-Colls) couldn't log in — both turned into real, shipped fixes.*
 

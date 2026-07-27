@@ -9,7 +9,12 @@ status: live
 
 # eq-shell changelog
 
-## 2026-07-27 (latest — PR #1038, dead-code cleanup)
+## 2026-07-27 (latest — PRs #1037/#1039, iframe loading pane black-screen fix)
+- **PR #1037 (MERGED) — fixed a genuine solid-black screen while Field/Service/Cards load inside Core.** `.eq-hub`'s near-black sidebar background had no override on `.eq-hub__iframe-content`, so it bled through everywhere outside the narrow loading-skeleton card during load — root-caused directly from a screenshot Royce sent, not guessed. One-line CSS fix (`.eq-hub__iframe-content { background: var(--eq-white) }`).
+- **PR #1039 (MERGED) — that fix left the pane white but the loading indicator itself was nearly invisible** (light gray shimmer, opacity-only pulse, low contrast on white). Swapped `IframeLoadingSkeleton` to eq-ui's canonical `Spinner` (`bars`, `lg`) — the same loader already used on Core's own sign-in screen — plus a visible text label.
+- Both fixes are in the shared iframe-loading component, so Field and Cards get the same fix as Service, not just the app that was originally reported slow.
+
+## 2026-07-27 (PR #1038, dead-code cleanup)
 - **PR #1038 (MERGED) — removed `cards-staff-matches.ts`.** Confirmed dead via git history: its sole caller (`AdminCardsFeed.tsx`) was deleted in `4921c13a` (2026-06-23), a commit that enumerated three files to remove and missed this fourth one sharing the same dependency. Also fixed a stale comment in `cards-approve-staff.ts` still naming this file as the match-panel source (it's `identity_collision_flags` now). Swept the rest of `netlify/functions/` for the same shape and found no other genuine instance — the other 23 candidates were all cron-scheduled, called from other repos, or already self-documented as retired-pending-sign-off.
 
 ## 2026-07-27 (PRs #1028/#1029/#1034/#1035/#1036, tenant security sweep + cross-tenant login fixes)
