@@ -9,6 +9,9 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-27] Automated release tagging (MERGED, #554)
+- New `.github/workflows/tag-release.yml` extracts `APP_VERSION` from `scripts/app-state.js` on every push to `main`, tags it `v<version>` (skipping cleanly if that tag already exists — multiple commits can land under one un-bumped version before the next bump), and creates a GitHub Release. Closes a real gap: eq-field has never had a single git tag despite the hand-maintained `APP_VERSION` constant being the only version marker across the whole app.
+
 ## [2026-07-27] Audit log: search, quick-view presets, click-to-jump (MERGED, #553, v3.5.368)
 - Free-text search across action/detail/manager name — still respects the routine-hide default from v3.5.367.
 - Three one-click quick-view presets: Compliance (Leave/People/Import/Prestart/Toolbox/Diary/Incident), Security (Access/Sign-ins), Roster & Timesheet — each a multi-category view the single-select category dropdown couldn't express.
