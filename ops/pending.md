@@ -383,5 +383,13 @@ Changelog at `archive/changelog-ahd.md`.
 
 ## rls_introspection() anon-EXECUTE leak (2026-07-28)
 
-- [ ] Royce's call: eq-shell PR #1061 (duplicate fix for the same rls_introspection() anon-grant, landed via a concurrent session's own pipeline) — close as superseded or merge; both are safe no-ops on top of the already-applied fix.
-- [ ] Root-cause default-privilege gap not fixed: ehow's `public` schema still auto-grants EXECUTE to anon/authenticated on any future SECURITY DEFINER function — a plane-wide fix, shared with sks-nsw-labour, needs Royce's go before touching.
+Two sessions independently fixed the identical live exposure via two separate
+governed pipelines, ~85s apart, no conflict (both idempotent REVOKE/GRANT):
+eq-shell [#1061](https://github.com/eq-solutions/eq-shell/pull/1061)
+(`0219_revoke_anon_rls_introspection.sql` via `tenant-migrate.yml`) and
+eq-service [#622](https://github.com/eq-solutions/eq-service/pull/622)
+(`0194_revoke_rls_introspection_anon_grant.sql` via `apply-service-migrations.yml`).
+Both merged and live-verified. Real cost was duplicate engineering effort
+across two repos, not a live risk.
+
+- [ ] **Root-cause default-privilege gap not fixed:** ehow's `public` schema still auto-grants EXECUTE to anon/authenticated on any future SECURITY DEFINER function — a plane-wide fix, shared with sks-nsw-labour, needs Royce's go before touching. This is *why* SEC-4/SEC-13/SEC-15 keep recurring as separate incidents instead of being closed once at the source.
