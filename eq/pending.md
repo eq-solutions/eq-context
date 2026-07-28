@@ -43,12 +43,24 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ---
 
 ## eq-shell: Suppliers page "missing" Login/Password columns — was a display bug, not a missing feature (2026-07-28)
-*Royce reported the Suppliers directory missing its login/password columns on a live screenshot. The feature has been fully shipped since PR #938 — root-caused to a CSS clipping bug instead: `@eq-solutions/ui`'s Table component has no horizontal-scroll container of its own, and Suppliers.tsx was the one page in the repo rendering it with no `overflowX:auto` wrapper, unlike every other wide table here. Columns past a certain width just got silently clipped, no scrollbar, no error.*
+*Royce reported the Suppliers directory missing its login/password columns on a live screenshot. The feature has been fully shipped since PR #938 — root-caused to a CSS clipping bug instead: `@eq-solutions/ui`'s Table component has no horizontal-scroll container of its own. First fix ([PR #1079](https://github.com/eq-solutions/eq-shell/pull/1079)) was insufficient — Royce reported it still didn't work. Re-diagnosed: a bare `overflowX:auto` wrapper does nothing for a `table-layout:auto` table, since the browser shrinks every column to fit 100% width before it would ever overflow. Corrected with `eq-rc-tablescroll` (already-proven pattern used in `equipment/index.tsx`, pins a `min-width` so the table is forced to actually overflow).*
 
-- [x] Wrapped the desktop Table in a scroll container, matching the existing idiom elsewhere in the repo. eq-shell [PR #1079](https://github.com/eq-solutions/eq-shell/pull/1079), merged.
+- [x] First attempt: wrapped the desktop Table in a bare scroll container. eq-shell [PR #1079](https://github.com/eq-solutions/eq-shell/pull/1079), merged — did not fix it.
+- [x] Corrected fix: switched to `eq-rc-tablescroll`, forcing genuine overflow. eq-shell [PR #1082](https://github.com/eq-solutions/eq-shell/pull/1082), merged, confirmed live (Netlify production deploy verified serving this exact commit).
 
 **Deferred:**
-- [ ] **Royce to confirm live**: open Suppliers on a normal browser window and confirm Login/Password (and Notes) are now reachable via horizontal scroll. _(added 2026-07-28)_
+- [ ] **Royce to confirm live**: open Suppliers on a normal browser window and confirm Login/Password (and Notes) are now reachable via horizontal scroll. _(added 2026-07-28, still open after the #1082 correction)_
+
+---
+
+## eq-cards: Wallet nagged for "Photo ID" even though a Driver Licence was already held (2026-07-28)
+*Royce reported the Wallet's "SKS Technologies asks its team for Photo ID" banner showing even though he holds a Driver Licence. Root-caused to `eq_cards_my_credential_gaps()` (jvkn RPC behind the banner) doing an exact `licence_type` match only — no idea that Shell's own compliance matrix (`PHOTO_ID_EQUIVALENTS` in `staffLib.ts`) has treated Photo ID / Driver Licence / Passport as interchangeable proof-of-identity since that feature shipped. Cards and Shell were quietly disagreeing on what counts as "held".*
+
+- [x] Verified against real data before writing anything: a real SKS worker holding only a `driver_licence` showed `held=false` under the old exact-match logic, `held=true` under the new equivalence logic.
+- [x] Fixed and applied live. eq-cards [PR #185](https://github.com/eq-solutions/eq-cards/pull/185), merged. Migration `0109` applied directly to jvkn via Supabase MCP (no automated apply pipeline for this repo's control-plane changes) — post-apply verified via `pg_get_functiondef` that the live function contains the equivalence fix.
+
+**Deferred:**
+- [ ] **Royce to confirm live**: reload the Wallet and confirm the Photo ID nag no longer shows for a worker who holds a Driver Licence or Passport. _(added 2026-07-28)_
 
 ---
 
