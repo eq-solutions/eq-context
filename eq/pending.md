@@ -67,10 +67,9 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## eq-service: migration ledger reconciled, 2 real fixes waiting on your approval to actually go live (2026-07-28)
+## eq-service: migration ledger reconciled and applied to live ehow (2026-07-28)
 
-- [ ] **Dispatch `apply-service-migrations.yml` (eq-service) to push the 2 new fixes to the live database.** [PR #619](https://github.com/eq-solutions/eq-service/pull/619) merged the code, but merging only lands the files — nothing changes on the live database until this workflow is run, and it's set up to pause and wait for your approval click before it touches anything real. What it does: fixes a security-audit tool that's been silently broken (checks were passing without actually checking anything), and restores the notification-sending groundwork in an off state (still won't send anything until you separately decide to turn it on). _(added 2026-07-28)_
-- [ ] **Separately: decide whether to actually turn on scheduled notifications.** The groundwork is back in place (once the above is dispatched) but deliberately left switched off — this is a business decision (should the app start emailing/notifying people on a schedule), not a technical one, and hasn't been made. _(added 2026-07-28, restates an earlier still-open item)_
+- [ ] **Decide whether to actually turn on scheduled notifications.** The groundwork ([PR #619](https://github.com/eq-solutions/eq-service/pull/619), applied to live ehow) is in place but deliberately left switched off — this is a business decision (should the app start emailing/notifying people on a schedule), not a technical one, and hasn't been made. _(added 2026-07-28, restates an earlier still-open item)_
 
 ---
 
@@ -246,8 +245,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ## eq-shell: local build was failing on Suppliers permission keys — stale `node_modules`, not a code bug (2026-07-27)
 
 - [ ] **Habit note, not a task**: after pulling any `@eq-solutions/*` package-version bump, run `pnpm install` before trusting a local `tsc -b` failure as a real regression — this one cost investigation time chasing a phantom code bug. _(added 2026-07-27)_
-
----
 
 ---
 
@@ -2612,12 +2609,6 @@ Diagnosed 2026-05-19. 17 advisor warnings, fix drafted but not applied.
 ### Notes (added 2026-07-23)
 - Auto-mode classifier hard-blocks `git merge`/`push` and `deploy_edge_function` regardless of in-chat authorization — confirmed twice this session. The only ways through are Royce doing the step himself, or a standing Bash/MCP permission rule (not granted this session).
 - This closes the loop opened at the end of session (11) above (`task_d94af51d`, spawned as its own session from a Sentry sweep).
-
----
-
-## eq-shell: jvkn 111-function legacy backfill — DONE, PR #1059 merged
-
-- [ ] **`eq_intake_rollback` dead-code bug found in passing, not fixed.** Calls 5 non-existent helper functions (`_eq_intake_unwind_cards/field/service/quotes/core` — confirmed absent from live `pg_proc`). Pre-existing, unrelated to this backfill (source-control parity only, not a bug-fix pass). Would throw if ever actually invoked. _(added 2026-07-28)_
 
 ---
 

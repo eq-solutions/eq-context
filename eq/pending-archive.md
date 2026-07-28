@@ -18,6 +18,11 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ## eq-shell: field_people security-setting drift (2026-07-28)
 - [x] **EQ Field root-cause fix** — task_c940a825, was still running as of the original write-up; now complete. See the canonical write-up in `eq/pending.md` → "eq-field: field_people security_invoker drift root-caused + fixed" (eq-field [PR #557](https://github.com/eq-solutions/eq-field/pull/557), merged).
+
+---
+
+## eq-shell: jvkn 111-function legacy backfill — DONE, PR #1059 merged
+- [x] **`eq_intake_rollback` dead-code bug found in passing (5 calls to non-existent helper functions dropped 2026-05-24), fixed 2026-07-28.** Verified live that a real per-row rollback rebuild isn't feasible without a larger redesign (no intake_id tracking on jvkn's Cards tables, audit table empty, feature never once succeeded in production) — function now raises a clear error instead of crashing. eq-shell [PR #1069](https://github.com/eq-solutions/eq-shell/pull/1069), merged (`d857292`).
 - [x] **A 3rd duplicate task (task_b9317024) was spawned and finished clean** — an unrelated session (merging a secret-scanning CI gate, eq-shell PR #1056) hit this same drift-gate failure at 04:16 UTC, before PR #1054's fix had propagated, and spawned its own background task without noticing task_c940a825/task_bfc87dc9 already covered it. Checked `gh pr list` at close: no new PR appeared after #1056, so it did not duplicate the fix — same "already resolved" outcome as task_bfc87dc9 above.
 
 ---
@@ -1074,5 +1079,11 @@ contain the same values and were pushed before push-protection caught up.
 - [x] **`eq_bulk_update_quote_status` now accepts an optional reason**, forwarded to the same `loss_reason` column the single-quote Close as Lost/Cancelled flow already uses. The bulk toolbar shows a required reason field only when the target status is Lost or Cancelled. Migration 0217, eq-shell [PR #1053](https://github.com/eq-solutions/eq-shell/pull/1053), merged + dispatched to SKS.
 - [x] **Caught and fixed a real regression from that same migration before it could sit broken.** `CREATE OR REPLACE FUNCTION` doesn't replace a function when the parameter list changes — it silently adds a second overload. 0217 left the old 3-argument version live alongside the new 4-argument one, and confirmed directly against the SKS database that this broke bulk status-changing entirely (not just the new reason field) for every existing caller, with a "function is not unique" error. Root-caused by testing the live database directly rather than trusting a green CI run. Fixed by dropping the stale overload — migration 0218, eq-shell [PR #1055](https://github.com/eq-solutions/eq-shell/pull/1055), merged + dispatched to SKS + re-verified live that the bulk action works again.
 - [x] **Spotted a second, unrelated issue while watching CI** — a required security check (two SKS database views missing an RLS-safety setting) had gone red on `main` itself hours earlier, nothing to do with this work. Confirmed live, spun off as a separate background task rather than fixing inline; Royce ran it in parallel and it was merged and live before this session even finished.
+
+---
+
+## eq-field: fixed 2 live Sentry errors — duplicate global + Leave lazy-load race (2026-07-27)
+
+- [x] **Latent sibling risk — now fixed.** It stopped being latent: the "Show Archived" toggle actually crashed a real user with this exact race (Sentry EQ-FIELD-X, confirmed via the now-connected Sentry MCP). Fixed at the root instead of one call site at a time — `renderLeave()` itself now checks the user is still on the Leave page before rendering, closing this and the other 7 call sites (CC List, Archive Resolved, Print, respond/archive/unarchive/withdraw/quick-approve) in one place. Shipped: eq-field PR [#556](https://github.com/eq-solutions/eq-field/pull/556), merged, live. _(added 2026-07-27, closed 2026-07-28)_
 
 ---
