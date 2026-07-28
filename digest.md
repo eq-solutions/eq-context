@@ -8,19 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-28 08:18 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-28 08:29 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-28 08:05 UTC → 2026-07-28 08:18 UTC)
+## Since last refresh (2026-07-28 08:18 UTC → 2026-07-28 08:29 UTC)
 
-- Merged: eq-shell [#1054](https://github.com/eq-solutions/eq-shell/pull/1054) fix(schema): reassert security_invoker on field_people views
-- Merged: eq-shell [#1053](https://github.com/eq-solutions/eq-shell/pull/1053) fix(quotes): capture a reason when bulk-closing quotes as lo
-- Merged: eq-shell [#1052](https://github.com/eq-solutions/eq-shell/pull/1052) feat: add release tagging workflow
-- Merged: eq-shell [#1050](https://github.com/eq-solutions/eq-shell/pull/1050) ci(control-plane): gate PRs on jvkn function-drift check (--
-- Merged: eq-shell [#1049](https://github.com/eq-solutions/eq-shell/pull/1049) feat(licences): deep-link expiry email/SMS reminders to the 
-- Merged: eq-shell [#1047](https://github.com/eq-solutions/eq-shell/pull/1047) fix(suppliers): make login/password visibility a real Securi
-- Merged: eq-shell [#1044](https://github.com/eq-solutions/eq-shell/pull/1044) fix(quotes): retire 4 dead status values, merge verbal-win, 
-- Merged: eq-shell [#1042](https://github.com/eq-solutions/eq-shell/pull/1042) fix(service-embed): explain the preview block instead of han
-- ⚠ Needs you: 3 → 4 (new items)
+- Merged: eq-shell [#1073](https://github.com/eq-solutions/eq-shell/pull/1073) fix(sks-sync): stop the daily worker sync clobbering Shell s
+- Merged: eq-shell [#1056](https://github.com/eq-solutions/eq-shell/pull/1056) ci(security): add blocking secret-scan gate (gitleaks)
+- Merged: eq-shell [#1051](https://github.com/eq-solutions/eq-shell/pull/1051) feat(staff): reorderable columns + compact Status/Contact ce
+- Merged: eq-shell [#1048](https://github.com/eq-solutions/eq-shell/pull/1048) feat(control-plane): jvkn function-drift CI check + backfill
+- Merged: eq-shell [#1046](https://github.com/eq-solutions/eq-shell/pull/1046) feat(staff): inline supervisor/roster toggles + quick-edit l
+- Merged: eq-shell [#1045](https://github.com/eq-solutions/eq-shell/pull/1045) feat(quotes): file-count badge on pipeline list + finish RPC
+- Merged: eq-shell [#1043](https://github.com/eq-solutions/eq-shell/pull/1043) fix(shell): EQ Field is missing its Records nav + rail opens
+- Merged: eq-solves-service [#624](https://github.com/eq-solutions/eq-service/pull/624) style(maintenance): drop vendor-specific naming from import 
 
 ## ⚠ Needs you (4)
 
@@ -51,7 +50,7 @@ _…and 70 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 4 | 0d |
+| eq-shell | ? unknown | ? | 3 | 0d |
 | eq-solves-service | ? unknown | ? | 0 | — |
 | eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ? unknown | ? | 0 | — |
@@ -75,6 +74,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-28 | eq-shell | [#1073](https://github.com/eq-solutions/eq-shell/pull/1073) fix(sks-sync): stop the daily worker sync clobbering Shell staff  |
 | 2026-07-28 | eq-shell | [#1072](https://github.com/eq-solutions/eq-shell/pull/1072) docs(control-plane): record eq_enforce_function_privacy applied t |
 | 2026-07-28 | eq-shell | [#1070](https://github.com/eq-solutions/eq-shell/pull/1070) fix(security): event-trigger lockdown for anon-executable new fun |
 | 2026-07-28 | eq-shell | [#1068](https://github.com/eq-solutions/eq-shell/pull/1068) feat(auth): TOTP backup codes for authenticator device loss |
@@ -89,8 +89,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-28 | eq-shell | [#1060](https://github.com/eq-solutions/eq-shell/pull/1060) fix(licences): dedup guard on staff-licence-backfill, same class  |
 | 2026-07-28 | eq-shell | [#1058](https://github.com/eq-solutions/eq-shell/pull/1058) fix(auth): require re-auth before replacing an enrolled authentic |
 | 2026-07-28 | eq-shell | [#1057](https://github.com/eq-solutions/eq-shell/pull/1057) fix(customers): address autocomplete never mounts in New customer |
-| 2026-07-28 | eq-shell | [#1055](https://github.com/eq-solutions/eq-shell/pull/1055) hotfix(quotes): drop stale eq_bulk_update_quote_status overload |
-_Showing 15 of 110 · full record in [sessions/](sessions/)_
+_Showing 15 of 109 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
@@ -147,4 +146,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-28 08:18 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-28 08:29 UTC._
