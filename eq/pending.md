@@ -14,6 +14,20 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-cards: worker-reported "my update didn't save" root-caused and fixed, deployed (2026-07-28)
+*Royce shared a screenshot of Brian Griffin-Colls' licence list on the Staff page asking why it hadn't updated — he'd said he updated his First Aid/CPR certificate. Checked the live database directly first: that record had zero write activity of any kind, successful or failed, in the 26 days since it was first added — ruling out a save that silently errored. Traced it to an already-known but ignored crash report: when the app's automatic photo-reading step times out, it correctly falls back to letting the person fill the form in by hand, but the only warning was a message that disappears after a few seconds. Easy to miss, and missing it meant walking away believing the update had gone through when the Save button was never actually pressed.*
+
+- [x] Reopened the ignored crash report (Sentry EQ-CARDS-H) and confirmed the cause matches Brian's report exactly.
+- [x] Replaced the disappearing warning with one that stays on screen until the person finishes the form. eq-cards [PR #182](https://github.com/eq-solutions/eq-cards/pull/182), merged, deployed live to cards.eq.solutions (deploy run confirmed successful).
+
+**Deferred:**
+- [ ] **Royce/a worker to trigger a slow or failed photo-read live and confirm the new message shows and stays** — verified in code + automated tests (88/88 passing), not yet clicked through for real. _(added 2026-07-28)_
+- [ ] **Brian Griffin-Colls' First Aid/CPR certificate itself still needs updating** — the bug that silently dropped his attempt is now fixed, but his original update was never captured; someone still needs to redo it (himself, or an admin via the Staff page). _(added 2026-07-28)_
+
+**Note:** the earlier eq-shell duplicate-licence fix (PR #1060) and its CI-surfaced `rls_introspection` finding are already fully covered further down this file and in today's session log (resolved as SEC-15/SEC-16) — a follow-up chip spun off for that finding this session was superseded by the time it could run; no separate entry needed here.
+
+---
+
 ## eq-field: Sites screen simplified around canonical customer links; site-record fragmentation found, not fixed (2026-07-28)
 - [ ] **Competitive benchmark vs industry leaders (Deputy, Tradify, Fergus, simPRO, ServiceM8, Rhumbix, Skedulo)** — selected alongside the MD-tidy pass, but the session pivoted to the Sites-screen rebuild before it was run. Not started. _(added 2026-07-28)_
 - [ ] **`app_data.sites` has 22 duplicate-named site groups with inconsistent customer-linking and roster-code assignment** (258 rows total, only 53 `field_enabled`, 205 enabled for neither Field nor Service) — surfaced while wiring the Sites screen to the canonical customer link. This is eq-shell's table (Field only reads it); merging duplicates needs a human call per group since live `schedule`/`timesheet` rows point at these ids. A background audit (`task_5ebbc8cf`) is already running independently. Pressure-tested via the decision protocol: don't act on this from eq-field, don't duplicate the running audit, and don't let it jump ahead of the open P0 security findings (SEC-1/SEC-9/SEC-10) in NEEDS YOU. _(added 2026-07-28)_
