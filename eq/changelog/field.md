@@ -9,6 +9,9 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-28] Edit Roster grid now respects the off-roster flag (MERGED, `7a19fd9`)
+- `renderEditor()` (the "Edit Roster" week grid, where a supervisor actually schedules people) filtered by group and archived status but never checked `on_roster` — so a person toggled off the roster in Shell's Staff page still showed up here for scheduling, even though the read-only Weekly Roster view already hid them (v3.5.301). One-line filter fix to match.
+
 ## [2026-07-28] Sites screen: grouped by customer, read-only badge, customer search + keep-warm ping (MERGED, #551, v3.5.370)
 - Sites screen was flat and hard to navigate once real customer data started showing through the canonical link — grouped into per-customer sections (largest first, unlinked sites last), with a count per group.
 - SKS sites owned by EQ Shell now show a "Managed in Core" badge instead of dead edit/delete buttons that silently did nothing.
