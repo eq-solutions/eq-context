@@ -40,14 +40,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## eq-cards: licence saves now push to eq-shell so Field's compliance data stays current (2026-07-28)
-*Companion to eq-shell [PR #1076](https://github.com/eq-solutions/eq-shell/pull/1076) (`licence-push.ts`, not yet merged) — mirrors the existing `worker-profile-push` pattern so a saved licence propagates into every active tenant's copy, the data EQ Field reads for dispatch/compliance-register/expiry notifications.*
-
-- [x] `LicenceRepository.upsert()` now fires a background sync to eq-shell right after a successful save — same fire-and-forget pattern already used for profile saves, never blocks or fails the save itself if the sync fails. eq-cards [PR #183](https://github.com/eq-solutions/eq-cards/pull/183), pushed, not yet merged.
-
-**Deferred:**
-- [ ] **eq-shell PR #1076 needs to merge before this actually does anything** — the endpoint this PR calls doesn't exist in production yet; merging #183 alone is safe (the call just fails silently and gets swallowed), but the sync won't start working until both land. _(added 2026-07-28)_
-
 ---
 
 ## eq-field: Sites screen simplified around canonical customer links; site-record fragmentation audited, one gap closed (2026-07-28)
@@ -87,13 +79,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 **Deferred:**
 - [ ] **Royce to confirm live**: open Moahmmed Alsadiq Ahmed Elsayed on the Staff page, check the Photo ID and White Card show the new clearer photos, and that the "Replace photo" button now returns to normal after use. _(added 2026-07-28)_
 - [ ] **eq-shell's `Tenant drift + anon-grant + policy-lint` CI check is failing on `main` itself**, independent of any PR — unrelated `tender_import_runs`/`tender_enrichments`/`tender_nominations` schema drift (Tenders/EQ Ops feature, nothing to do with licences). Confirmed via two separate main-branch runs the same day. Not blocking merges (treated as pre-existing and merged past it, same as this repo's established pattern for known-red checks), but it means this check gives no real signal right now — worth a look so it starts catching real drift again. _(added 2026-07-28)_
-
----
-
-## eq-shell: found why the security-drift check is also failing for a second, separate reason — fix is written, needs your hand to go live (2026-07-28)
-*The safety net built earlier this week (locking down every newly created database function) had a gap in itself: it can't protect its own creation, so it was born open to the public the moment it was made. Traced this, confirmed a prior session already wrote the correct fix and opened a pull request — but the two remaining steps to actually apply it are both things this AI is blocked from doing on its own.*
-
-- [ ] **eq-shell [PR #1077](https://github.com/eq-solutions/eq-shell/pull/1077) is correct and ready, but needs your hand for two steps**: applying the small database fix directly on the main system (blocked from AI execution by a safety check), and kicking off the sync that pushes it to the other two systems. Once both are done, re-run the failing check and merge. _(added 2026-07-28)_
 
 ---
 
@@ -164,12 +149,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ## eq-service: migration ledger reconciled and applied to live ehow (2026-07-28)
 
 - [ ] **Decide whether to actually turn on scheduled notifications.** The groundwork ([PR #619](https://github.com/eq-solutions/eq-service/pull/619), applied to live ehow) is in place but deliberately left switched off — this is a business decision (should the app start emailing/notifying people on a schedule), not a technical one, and hasn't been made. _(added 2026-07-28, restates an earlier still-open item)_
-
----
-
-## eq-solves-service: found and closed duplicate work — a stale WIP branch's asset-import fix was already shipped by a concurrent session (2026-07-28)
-
-- [ ] **Same root cause as the 2026-07-23 "sessions colliding on the same files" investigation, recurring in a new form** — that fix addressed a fake-worktree collision; this incident was a stale local branch that never picked up days of intervening `main`-branch merges before new work got committed on top of it. Worth deciding whether sessions should confirm `git fetch && git log origin/main..HEAD` before *building on* an old branch, not just before pushing one. _(added 2026-07-28)_
 
 ---
 

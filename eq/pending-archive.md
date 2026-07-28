@@ -1087,3 +1087,18 @@ contain the same values and were pushed before push-protection caught up.
 - [x] **Latent sibling risk — now fixed.** It stopped being latent: the "Show Archived" toggle actually crashed a real user with this exact race (Sentry EQ-FIELD-X, confirmed via the now-connected Sentry MCP). Fixed at the root instead of one call site at a time — `renderLeave()` itself now checks the user is still on the Leave page before rendering, closing this and the other 7 call sites (CC List, Archive Resolved, Print, respond/archive/unarchive/withdraw/quick-approve) in one place. Shipped: eq-field PR [#556](https://github.com/eq-solutions/eq-field/pull/556), merged, live. _(added 2026-07-27, closed 2026-07-28)_
 
 ---
+
+## eq-shell: found why the security-drift check is also failing for a second, separate reason — fix is written, needs your hand to go live (2026-07-28)
+*The safety net built earlier this week (locking down every newly created database function) had a gap in itself: it can't protect its own creation, so it was born open to the public the moment it was made. Traced this, confirmed the fix, and it needed two things only Royce can do: apply the database change directly, and kick off the sync that pushes it everywhere else.*
+
+- [x] **Closed same session.** Confirmed live on all three database systems that the gap was real (the guard function itself was publicly callable). Royce approved applying the fix directly to the main system, then approved kicking off the sync to the other two — both done, both verified clean afterward. The failing check went green, and both this fix (eq-shell [PR #1077](https://github.com/eq-solutions/eq-shell/pull/1077)) and an unrelated already-queued dependency fix (eq-shell [PR #1074](https://github.com/eq-solutions/eq-shell/pull/1074), a security-patched spreadsheet-reading library) merged and deployed cleanly to core.eq.solutions. _(added 2026-07-28, closed 2026-07-28)_
+
+---
+
+## eq-cards: licence saves now push to eq-shell so Field's compliance data stays current (2026-07-28)
+*Companion to eq-shell PR #1076 (`licence-push.ts`) — mirrors the existing `worker-profile-push` pattern so a saved licence propagates into every active tenant's copy, the data EQ Field reads for dispatch/compliance-register/expiry notifications.*
+
+- [x] `LicenceRepository.upsert()` now fires a background sync to eq-shell right after a successful save (both new licences and renewals/edits) — same fire-and-forget pattern already used for profile saves, never blocks or fails the save itself if the sync fails. eq-cards [PR #183](https://github.com/eq-solutions/eq-cards/pull/183), merged.
+- [x] **Both halves confirmed merged and live same session**: eq-shell [PR #1076](https://github.com/eq-solutions/eq-shell/pull/1076) (the receiving endpoint) and eq-cards #183 (the call site) — closes the standing gap flagged earlier the same day (Rhys Scott's licence renewal not showing up until a manual "Re-sync from Cards" click). _(added 2026-07-28, closed 2026-07-28)_
+
+---
