@@ -14,6 +14,14 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-cards: licence-push deploy caught a step behind its own merges (2026-07-28)
+*Dispatched the deploy for eq-cards PR #183 (licence-push on save) after confirming it was merged-but-not-live — this repo deliberately doesn't auto-deploy on merge. Confirmed cards.eq.solutions live afterward. But PR #184 (the softDelete/revoke half of the same feature) merged ~18 seconds after that deploy run finished, so it rode in just too late.*
+
+- [x] Dispatched `Build & Deploy` on eq-cards `main` for #183, confirmed live (200 on root, correct page title, `flutter.js` loading).
+- [ ] **eq-cards PR #184 (softDelete push hook) merged after the deploy above and has not been deployed yet** — cards.eq.solutions currently has the save-side push live but not the revoke-side one. Needs another `Build & Deploy` dispatch once convenient (not done automatically — Royce's call each time, per this repo's deliberate no-auto-deploy convention). _(added 2026-07-28)_
+
+---
+
 ## eq-shell: triaged 181 Dependabot alerts down to the 2 with real exposure, fixed both (2026-07-28)
 *Ran /decide on eq-shell's 181 open Dependabot alerts (~35 unique CVEs, almost all build-tooling/transitive noise). Picked the two with actual production reach: `xlsx` (parses uploaded licence photos/quote PDFs/PO imports, permanently unpatched on npm — SheetJS only ships fixes via their own CDN) and `sharp` (turned out to be a dangling lockfile entry with no real usage). Both fixed as eq-shell [PR #1074](https://github.com/eq-solutions/eq-shell/pull/1074) — merged and live (see `pending-archive.md` for the merge/deploy record, closed same day alongside the unrelated `eq_enforce_function_privacy` security fix).*
 
