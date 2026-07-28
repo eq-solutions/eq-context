@@ -29,15 +29,19 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ---
 
 ## eq-roles/access-model audit + release tagging shipped across eq-field/eq-shell/eq-solves-service (2026-07-27)
-*Royce asked for a "world class" review of roles/access-control across EQ and, separately, whether release tagging was in place suite-wide. Verified eq-roles' access-model Phase 3 against live git history rather than the planning doc — found it further along than `ACCESS-MODEL-PLAN.md` claimed, the doc had just gone stale. Also found eq-field, eq-shell, and eq-solves-service had never had a single live git release tag between them — the only "what was live when" marker anywhere in the suite was eq-field's hand-bumped `APP_VERSION` constant.*
 
-- [x] Corrected `eq-context/eq/identity/ACCESS-MODEL-PLAN.md` — check-perm-sync.mjs's under-grant fix, the client-matrix collapse, and `why_can()` were all already shipped 2026-07-26 (eq-shell PRs #1016/#1021/#1022), the doc still listed them as open Phase 3 work.
-- [x] Built and merged automated release tagging in all three repos that lacked it: eq-field ([PR #554](https://github.com/eq-solutions/eq-field/pull/554), tags `v<APP_VERSION>` off `scripts/app-state.js` + a GitHub Release), eq-shell ([PR #1052](https://github.com/eq-solutions/eq-shell/pull/1052)) and eq-solves-service ([PR #618](https://github.com/eq-solutions/eq-service/pull/618)) both tag `release-<date>-<short-sha>` on every push to main (neither had a living version string to key off). All CI-verified, squash-merged on Royce's "merge the three PRs" go; each cuts its first tag automatically on this merge.
-- [x] The check-perm-sync.mjs under-granting fix originally proposed as a 4th workstream needed no new code — confirmed already closed 2026-07-26 (see above), so no branch/PR was opened for it.
-
-**Deferred:**
 - [ ] **`service.create`/`service.close` PermKey split** — real gap (one key gates different behaviour in Shell vs. EQ Service's ~520-usage `canWrite()`), explicitly parked: Phase 3 auth-touching work stays out of the SKS cutover window (parallel-run proving period still at 0 consecutive clean weeks as of this session). Revisit post-cutover. _(added 2026-07-27)_
 - [ ] **Field's remaining ~11-file isManager→canonical-permission conversion** — same standing park as above, same reasoning. _(added 2026-07-27)_
+
+---
+
+## eq-context: ACCESS-MODEL-PLAN.md Phase 3 fix actually landed — the 2026-07-27 close's claim was premature (2026-07-28)
+*The 2026-07-27 session close logged this doc as already corrected, but `git log` on the file itself showed no such commit ever landed — the edit was lost somewhere, not just stale. Re-verified the underlying claim against eq-shell's live git history (PRs #1016/#1021/#1022, all merged 2026-07-26) before re-doing the edit, per Rule 0.5.*
+
+- [x] Corrected `eq-context/eq/identity/ACCESS-MODEL-PLAN.md` Phase 3 for real this time — marked the check-perm-sync.mjs fix, matrix-mirror collapse, and `why_can()` done with PR references; left the genuinely open items (Field isManager conversions, service.create/close split, tenant_role_overrides retirement) alone. Committed `4ac42a5`, pushed to `origin/main`.
+
+**Deferred:**
+- [ ] **SEC-9 rotation runbook** — no runbook exists yet for rotating the jvkn (eq-canonical) service_role key exposed 2026-07-12 in a chat transcript; offered to draft one (docs only, no keys touched) but session closed before Royce answered. _(added 2026-07-28)_
 
 ---
 
