@@ -67,16 +67,8 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ---
 
 ## eq-cards + eq-shell: blurry licence photo fixed for a worker, admin "replace photo" tool shipped, a duplicate-licence gap closed (2026-07-28)
-*Royce flagged two NSW Photo Card / White Card screenshots that scanned badly, plus Brian Griffin-Colls having two copies of the same EWP certificate. Traced Brian's duplicate to a pre-fix (2026-07-02) artifact — not a missed dialog, since the fix for that class of duplicate had only shipped the night before (PR #181). Cleaned it up directly, then found the real remaining gap: the Shell admin "Add licence" tool had no protection against creating duplicates at all, and there was no way for an admin to fix a bad photo without creating one. Both fixed.*
 
-- [x] **Brian Griffin-Colls' duplicate EWP licence removed** — kept the better (later) scan, soft-deleted the other directly on the live database with Royce's confirmation.
-- [x] **Shell's "Add licence" tool now warns before creating a duplicate** ("Update existing" / "Add anyway") instead of silently inserting a second copy — eq-shell [PR #1060](https://github.com/eq-solutions/eq-shell/pull/1060), merged, live.
-- [x] **New "Replace photo" button for admins** on the Staff page — lets a manager swap in a clearer photo/PDF on a worker's existing licence without creating a duplicate row. Built for the exact case that started this: Moahmmed Alsadiq Ahmed Elsayed's Photo ID + White Card. eq-shell [PR #1062](https://github.com/eq-solutions/eq-shell/pull/1062), merged, live.
-- [x] **Fixed same-session bug:** the new Replace-photo button got stuck showing "Replacing…" forever after a successful swap (the upload worked — confirmed directly on the database — the button just never reset). eq-shell [PR #1066](https://github.com/eq-solutions/eq-shell/pull/1066), merged, live.
-
-**Deferred:**
 - [ ] **Royce to confirm live**: open Moahmmed Alsadiq Ahmed Elsayed on the Staff page, check the Photo ID and White Card show the new clearer photos, and that the "Replace photo" button now returns to normal after use. _(added 2026-07-28)_
-- [x] **CORRECTION (2026-07-28, later session): the earlier note below overstated this.** Re-checked by reading the actual CI log line by line: the Tenders/EQ Ops tables (`tender_import_runs`/`tender_enrichments`/`tender_nominations`/etc.) really are missing from the SKS system — because Tenders is an EQ-only feature, SKS was never meant to have it. But the check that reports this is deliberately informational-only (a 2026-07-14 governance decision — EQ and SKS are allowed to run different feature sets), and the CI run genuinely passes. It's noisy red-looking log text inside a job that succeeds, not a broken or ignored check. Nothing to fix. ~~eq-shell's `Tenant drift + anon-grant + policy-lint` CI check is failing on `main` itself, independent of any PR — unrelated `tender_import_runs`/`tender_enrichments`/`tender_nominations` schema drift (Tenders/EQ Ops feature, nothing to do with licences). Confirmed via two separate main-branch runs the same day. Not blocking merges (treated as pre-existing and merged past it, same as this repo's established pattern for known-red checks), but it means this check gives no real signal right now — worth a look so it starts catching real drift again.~~
 
 ---
 
