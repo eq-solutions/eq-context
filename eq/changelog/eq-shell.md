@@ -9,7 +9,8 @@ status: live
 
 # eq-shell changelog
 
-## 2026-07-28 (latest — PR #1055 hotfix MERGED; #1053 MERGED)
+## 2026-07-28 (latest — PR #1054 MERGED; #1055 hotfix MERGED; #1053 MERGED)
+- **PR #1054 (MERGED) — reasserted `security_invoker` on `app_data.field_people`/`field_people_removed` (SKS/ehow only).** Third occurrence of this exact drift (also 0158, 0164) — an out-of-band view rebuild on the eq-field side keeps resetting the option list; no functional change to either view. Migration 0211, dispatched to SKS, live-verified. Root cause still unfixed at the source (eq-field) — background task spawned to find and fix it there.
 - **PR #1053 (MERGED) — bulk-closing several quotes as lost/cancelled now captures a reason**, matching the single-quote Close as Lost/Cancelled flow shipped 2026-07-27. `eq_bulk_update_quote_status` widened with an optional `p_note`, forwarded to `eq_update_quote_status`'s existing `loss_reason` handling. Migration 0217, dispatched to SKS.
 - **PR #1055 (MERGED, hotfix, same day) — fixed a live production regression 0217 introduced.** `CREATE OR REPLACE FUNCTION` doesn't replace a function when the parameter list changes — it adds a second overload. 0217 left the old 3-arg `eq_bulk_update_quote_status` live alongside the new 4-arg version; confirmed directly against ehow that this broke the *entire* bulk "Set status..." feature (not just the new reason field) with `function ... is not unique` for named-parameter calls — the calling style PostgREST/Supabase's `.rpc()` uses. Migration 0218 drops the stale overload. zaap unaffected (0217 was SKS-only). Dispatched to SKS, re-verified live.
 

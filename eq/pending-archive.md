@@ -16,6 +16,15 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-shell: confirmed field_people security-setting alarm already fixed; spawned root-cause task for eq-field (2026-07-28)
+*Investigated a failing automated database-safety check on eq-shell PR #1056, flagging two SKS-side database views missing a security setting — the same class of issue that's recurred four times before. Before writing a new fix, checked whether it had already been handled: a concurrent session's PR (#1054) landed the exact fix ~18 minutes before this investigation started. Verified the live database directly instead of trusting the stale CI result, confirmed correct, then re-ran the check fresh to get a live green.*
+
+- [x] Confirmed via direct database query that both flagged views are already correctly configured on the live SKS database — no new migration or PR needed.
+- [x] Re-ran the automated database-safety check on the main branch to get a fresh, current green result (the one visible on PR #1056 was captured before the fix landed).
+- [x] Spawned a follow-up task (chip) to fix the actual root cause in EQ Field — turned out to duplicate the one from PR #1054's own session; the duplicate chip is no longer reachable (task ids don't persist across app restarts), only task_c940a825 (already running) applies.
+
+---
+
 ## eq-shell: cleared the day's backlog of waiting security/perf fixes, found two more real problems along the way (2026-07-23)
 *Asked to merge 3 pull requests that were sitting open and ready. Two were real security fixes from earlier sessions today: a customer quote could show the next person to use the same browser someone else's pricing/contact details, and switching between company workspaces could leave old company data showing on screen (or, separately, keep talking to the old company's database in the background) for a few minutes after the switch.*
 - [x] **Both security fixes merged and live.** The quote-draft leak fix landed cleanly. The workspace-switch fix had genuinely conflicting changes from other work that landed on `main` in between — resolved carefully (both underlying fixes needed to survive together, not one replacing the other), then re-verified the whole app still builds and every automated test still passes before merging, not just took the merge on faith. `eq-shell` [PR #970](https://github.com/eq-solutions/eq-shell/pull/970) and [PR #971](https://github.com/eq-solutions/eq-shell/pull/971), both merged, live (core.eq.solutions).
