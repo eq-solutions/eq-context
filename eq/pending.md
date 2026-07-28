@@ -14,6 +14,13 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-service: migration ledger reconciled, 2 real fixes waiting on your approval to actually go live (2026-07-28)
+
+- [ ] **Dispatch `apply-service-migrations.yml` (eq-service) to push the 2 new fixes to the live database.** [PR #619](https://github.com/eq-solutions/eq-service/pull/619) merged the code, but merging only lands the files — nothing changes on the live database until this workflow is run, and it's set up to pause and wait for your approval click before it touches anything real. What it does: fixes a security-audit tool that's been silently broken (checks were passing without actually checking anything), and restores the notification-sending groundwork in an off state (still won't send anything until you separately decide to turn it on). _(added 2026-07-28)_
+- [ ] **Separately: decide whether to actually turn on scheduled notifications.** The groundwork is back in place (once the above is dispatched) but deliberately left switched off — this is a business decision (should the app start emailing/notifying people on a schedule), not a technical one, and hasn't been made. _(added 2026-07-28, restates an earlier still-open item)_
+
+---
+
 ## eq-shell: field_people security-setting drift (2026-07-28)
 - [ ] **EQ Field root-cause fix not built** — task_c940a825, already running (started from the chip). Fixing the view definition at the source in EQ Field would stop this recurring a 4th time. _(added 2026-07-28)_
 - [x] **A 3rd duplicate task (task_b9317024) was spawned and finished clean** — an unrelated session (merging a secret-scanning CI gate, eq-shell PR #1056) hit this same drift-gate failure at 04:16 UTC, before PR #1054's fix had propagated, and spawned its own background task without noticing task_c940a825/task_bfc87dc9 already covered it. Checked `gh pr list` at close: no new PR appeared after #1056, so it did not duplicate the fix — same "already resolved" outcome as task_bfc87dc9 above. task_c940a825 remains the one real root-cause task still open.
