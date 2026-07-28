@@ -39,10 +39,10 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 - [x] **Backup codes built end-to-end**: generated once at setup (10 codes, shown once, never re-viewable), a "use a backup code instead" option on the sign-in screen, and a Settings page to get a fresh set if the old ones are lost. eq-shell [PR #1068](https://github.com/eq-solutions/eq-shell/pull/1068), merged (`4177d8c5`), Netlify auto-deploying to core.eq.solutions.
 - [x] **Database change applied live** to the jvkn system — Royce ran it directly via the Supabase SQL editor (the AI tool's direct-write path was blocked by a safety check, so instructions were handed over instead) and confirmed the new table exists.
+- [x] **Separate bug found while building this, fixed same day in its own session**: the sign-in system was sending a user's live authenticator secret back to their own browser when they signed in from a device marked "remembered" — a real leak, worse than a normal login-token leak because the secret never expires. eq-shell PR #1067, merged — verified directly against the live code that the fix landed correctly.
 
 **Deferred:**
 - [ ] **Royce to click through the real flow once the deploy lands**: set up two-step verification, save the codes shown, sign out, sign back in using one of the backup codes instead of the phone app, then generate a fresh set from Settings and confirm the old ones stop working. _(added 2026-07-28)_
-- [ ] **Separate bug found while building this, already spun off as its own background job**: the sign-in system currently sends a user's live authenticator secret back to their own browser when they sign in from a device marked "remembered" — a real leak, worse than a normal login-token leak because the secret never expires. Not fixed as part of this PR (kept the diff scoped); Royce already started the fix in its own session. _(added 2026-07-28)_
 
 ---
 
