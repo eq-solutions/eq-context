@@ -67,7 +67,6 @@ _If this file is >48h old, the cron is broken._
 - #621 feat(maintenance): add Maximo PDF work-order import (eq-service side)
 
 **eq-shell:**
-- #1062 feat(licences): let a manager replace the photo/PDF on an existing licence
 - #1061 fix(security): revoke anon EXECUTE on rls_introspection (ehow)
 
 ---
