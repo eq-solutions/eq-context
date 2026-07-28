@@ -61,7 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-28)
 
 **eq-shell:**
-- #1068 feat(auth): TOTP backup codes for authenticator device loss
+- #1070 fix(security): event-trigger lockdown for anon-executable new functions
 - #1065 fix(functions): lazy-load @sentry/node to unblock local netlify dev
 
 ---
