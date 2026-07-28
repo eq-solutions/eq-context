@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-28 19:43 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-28 21:05 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-28 19:37 UTC → 2026-07-28 19:43 UTC)
+## Since last refresh (2026-07-28 19:43 UTC → 2026-07-28 21:05 UTC)
 
-- Merged: eq-shell [#1087](https://github.com/eq-solutions/eq-shell/pull/1087) fix(cards): spinner on compliance-pack progress label
-- Merged: eq-shell [#1072](https://github.com/eq-solutions/eq-shell/pull/1072) docs(control-plane): record eq_enforce_function_privacy appl
-- Merged: eq-shell [#1070](https://github.com/eq-solutions/eq-shell/pull/1070) fix(security): event-trigger lockdown for anon-executable ne
-- Merged: eq-shell [#1069](https://github.com/eq-solutions/eq-shell/pull/1069) fix(control-plane): eq_intake_rollback crashed on every call
-- Merged: eq-shell [#1067](https://github.com/eq-solutions/eq-shell/pull/1067) fix(auth): strip totp_secret from login response payloads
-- Merged: eq-shell [#1066](https://github.com/eq-solutions/eq-shell/pull/1066) fix(licences): Replace photo button never clears its busy st
-- Merged: eq-shell [#1064](https://github.com/eq-solutions/eq-shell/pull/1064) feat(cards): compliance register — one row per employee, not
-- Merged: eq-shell [#1061](https://github.com/eq-solutions/eq-shell/pull/1061) fix(security): revoke anon EXECUTE on rls_introspection (eho
+- Merged: eq-shell [#1090](https://github.com/eq-solutions/eq-shell/pull/1090) chore(intake): remove the unlinked per-domain landing pages
+- Merged: eq-shell [#1089](https://github.com/eq-solutions/eq-shell/pull/1089) fix(home): apprentices land on WorkerHome, not the manager d
+- Merged: eq-shell [#1088](https://github.com/eq-solutions/eq-shell/pull/1088) fix(intake): route the Health-console commit through intake-
+- Merged: eq-shell [#1073](https://github.com/eq-solutions/eq-shell/pull/1073) fix(sks-sync): stop the daily worker sync clobbering Shell s
+- Merged: eq-shell [#1068](https://github.com/eq-solutions/eq-shell/pull/1068) feat(auth): TOTP backup codes for authenticator device loss
+- Merged: eq-shell [#1063](https://github.com/eq-solutions/eq-shell/pull/1063) fix(quotes): stop detail badge showing a stage change that n
+- Merged: eq-shell [#1062](https://github.com/eq-solutions/eq-shell/pull/1062) feat(licences): let a manager replace the photo/PDF on an ex
+- Merged: eq-shell [#1059](https://github.com/eq-solutions/eq-shell/pull/1059) feat(control-plane): backfill remaining 111 legacy jvkn func
 
 ## ⚠ Needs you (4)
 
@@ -50,11 +50,11 @@ _…and 75 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 1 | 0d |
+| eq-shell | ? unknown | ? | 2 | 0d |
 | eq-solves-service | ? unknown | ? | 0 | — |
 | eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ? unknown | ? | 0 | — |
-| eq-solves-intake | ✓ success | 2d ago | 2 | 0d |
+| eq-solves-intake | ✓ success | 0d ago | 1 | 0d |
 
 ## Live errors (Sentry)
 
@@ -74,6 +74,9 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-28 | eq-shell | [#1090](https://github.com/eq-solutions/eq-shell/pull/1090) chore(intake): remove the unlinked per-domain landing pages |
+| 2026-07-28 | eq-shell | [#1088](https://github.com/eq-solutions/eq-shell/pull/1088) fix(intake): route the Health-console commit through intake-stage |
+| 2026-07-28 | eq-shell | [#1089](https://github.com/eq-solutions/eq-shell/pull/1089) fix(home): apprentices land on WorkerHome, not the manager dashbo |
 | 2026-07-28 | eq-shell | [#1087](https://github.com/eq-solutions/eq-shell/pull/1087) fix(cards): spinner on compliance-pack progress label |
 | 2026-07-28 | eq-shell | [#1086](https://github.com/eq-solutions/eq-shell/pull/1086) feat(home): roster, leave, and prestart at-a-glance cards on Work |
 | 2026-07-28 | eq-shell | [#1085](https://github.com/eq-solutions/eq-shell/pull/1085) fix(deps): react-router-dom 6.30.4 -> 7.18.1, closes the 2 remain |
@@ -86,10 +89,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-28 | eq-shell | [#1078](https://github.com/eq-solutions/eq-shell/pull/1078) fix(admin): correct Worker join QR copy to match invite-required  |
 | 2026-07-28 | eq-shell | [#1074](https://github.com/eq-solutions/eq-shell/pull/1074) fix(deps): xlsx off unpatched npm registry to SheetJS CDN fix |
 | 2026-07-28 | eq-shell | [#1077](https://github.com/eq-solutions/eq-shell/pull/1077) fix(security): revoke anon EXECUTE on eq_enforce_function_privacy |
-| 2026-07-28 | eq-shell | [#1076](https://github.com/eq-solutions/eq-shell/pull/1076) feat(field-sync): licence-push.ts syncs Cards licence edits into  |
-| 2026-07-28 | eq-shell | [#1075](https://github.com/eq-solutions/eq-shell/pull/1075) fix(staff): licence-review badge misses edits to already-reviewed |
-| 2026-07-28 | eq-shell | [#1071](https://github.com/eq-solutions/eq-shell/pull/1071) fix(cards): clean compliance-pack filename, stop showing stale wo |
-_Showing 15 of 105 · full record in [sessions/](sessions/)_
+_Showing 15 of 106 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
@@ -146,4 +146,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-28 19:43 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-28 21:05 UTC._
