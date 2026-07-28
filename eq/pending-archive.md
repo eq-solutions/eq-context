@@ -28,6 +28,12 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-shell: triaged 181 Dependabot alerts down to the 2 with real exposure, fixed both (2026-07-28)
+*Ran /decide on eq-shell's 181 open Dependabot alerts (~35 unique CVEs, almost all build-tooling/transitive noise). Picked the two with actual production reach: `xlsx` (parses uploaded licence photos/quote PDFs/PO imports, permanently unpatched on npm — SheetJS only ships fixes via their own CDN) and `sharp` (turned out to be a dangling lockfile entry with no real usage). Both fixed as eq-shell [PR #1074](https://github.com/eq-solutions/eq-shell/pull/1074) — merged and live alongside the unrelated `eq_enforce_function_privacy` security fix.*
+- [x] **The deferred full sweep of the remaining ~179 alerts was done later the same day** — see `eq-shell: full Dependabot sweep — 146 alerts down to 6 known/deferred` below.
+
+---
+
 ## eq-shell: jvkn 111-function legacy backfill — DONE, PR #1059 merged
 - [x] **`eq_intake_rollback` dead-code bug found in passing (5 calls to non-existent helper functions dropped 2026-05-24), fixed 2026-07-28.** Verified live that a real per-row rollback rebuild isn't feasible without a larger redesign (no intake_id tracking on jvkn's Cards tables, audit table empty, feature never once succeeded in production) — function now raises a clear error instead of crashing. eq-shell [PR #1069](https://github.com/eq-solutions/eq-shell/pull/1069), merged (`d857292`).
 - [x] **A 3rd duplicate task (task_b9317024) was spawned and finished clean** — an unrelated session (merging a secret-scanning CI gate, eq-shell PR #1056) hit this same drift-gate failure at 04:16 UTC, before PR #1054's fix had propagated, and spawned its own background task without noticing task_c940a825/task_bfc87dc9 already covered it. Checked `gh pr list` at close: no new PR appeared after #1056, so it did not duplicate the fix — same "already resolved" outcome as task_bfc87dc9 above.

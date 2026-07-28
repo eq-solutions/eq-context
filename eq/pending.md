@@ -22,11 +22,12 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## eq-shell: triaged 181 Dependabot alerts down to the 2 with real exposure, fixed both (2026-07-28)
-*Ran /decide on eq-shell's 181 open Dependabot alerts (~35 unique CVEs, almost all build-tooling/transitive noise). Picked the two with actual production reach: `xlsx` (parses uploaded licence photos/quote PDFs/PO imports, permanently unpatched on npm — SheetJS only ships fixes via their own CDN) and `sharp` (turned out to be a dangling lockfile entry with no real usage). Both fixed as eq-shell [PR #1074](https://github.com/eq-solutions/eq-shell/pull/1074) — merged and live (see `pending-archive.md` for the merge/deploy record, closed same day alongside the unrelated `eq_enforce_function_privacy` security fix).*
+## eq-shell: full Dependabot sweep — 146 alerts down to 6 known/deferred (2026-07-28)
+*Royce asked to sweep the remaining alerts left alone in the earlier xlsx/sharp pass (above). Triaged all 17 unique packages across both lockfiles (root + vendored `eq-intake` tree): bumped `vitest` 2.1.5 → 3.2.7 (closing 2 critical RCE CVEs, across all 8 vendored `package.json` files), bumped `vite` everywhere it's direct (cascading a fix to vitest's own internal vite pin), added `pnpm.overrides` for the purely-transitive packages (`tar`, `brace-expansion`, `fast-uri`, `js-yaml`, `postcss`, `@babel/core`, `ajv`, `esbuild`, `dompurify`, `protobufjs`, `@opentelemetry/core`, `undici`, `uuid`), and patch-bumped `react-router-dom`. Shipped as eq-shell [PR #1083](https://github.com/eq-solutions/eq-shell/pull/1083) — merged (`3107494`) and live on core.eq.solutions. Verified before merging: full build + test suite clean on both trees (265/265 root, 543/544 vendored — the 1 failure is a pre-existing, unrelated missing-fixtures-folder issue, confirmed identical with the changes stashed out against `main`), lint problem count unchanged (confirmed pre-existing the same way).*
 
 **Deferred:**
-- [ ] **Remaining ~179 Dependabot alerts left alone this round** — spot-checked as build-tooling/transitive with no live runtime exposure, not a full sweep. A real sweep needs a proper re-vendor of the `eq-intake` tree (not just an in-place bump) — worth doing as its own pass. _(added 2026-07-28)_
+- [ ] **React Router's remaining 2 CVEs only have a v7 fix** — a framework migration (merged with Remix, real routing/API changes), not a version bump. Explicitly scoped out of this pass on Royce's instruction ("skip the react-router v7 migration"). Worth its own scoped project if ever prioritized. _(added 2026-07-28)_
+- [ ] **One DoS CVE left deliberately unfixed**: `brace-expansion` inside `exceljs`'s zip-writer chain (`archiver` → `archiver-utils` → `glob@7` → `minimatch@3.1.5`). The only full fix is a `minimatch` major bump, and this deep tree isn't verified against `minimatch`'s newer API — accepted as a residual rather than risk breaking xlsx writing in production. Low real-world exploitability (internal file-glob matching during archive creation, not attacker-reachable input). _(added 2026-07-28)_
 
 ---
 
