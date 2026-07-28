@@ -65,9 +65,10 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #1083 fix(deps): sweep the remaining Dependabot alerts (146 -> 4 known/deferred)
-- #1082 fix(suppliers): PR #1079's scroll wrapper was insufficient — force a real overflow
-- #1081 feat(auth): tenant-scoped self-serve phone signup on Core login (one-login P5)
 - #1065 fix(functions): lazy-load @sentry/node to unblock local netlify dev
+
+**eq-solves-intake:**
+- #79 parse-maximo-pdf-wo: text-first extraction, resource-limit fix, 5A frequency
 
 ---
 
