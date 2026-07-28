@@ -14,6 +14,14 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: triaged 181 Dependabot alerts down to the 2 with real exposure, fixed both (2026-07-28)
+*Ran /decide on eq-shell's 181 open Dependabot alerts (~35 unique CVEs, almost all build-tooling/transitive noise). Picked the two with actual production reach: `xlsx` (parses uploaded licence photos/quote PDFs/PO imports, permanently unpatched on npm — SheetJS only ships fixes via their own CDN) and `sharp` (turned out to be a dangling lockfile entry with no real usage). Both fixed as eq-shell [PR #1074](https://github.com/eq-solutions/eq-shell/pull/1074) — merged and live (see `pending-archive.md` for the merge/deploy record, closed same day alongside the unrelated `eq_enforce_function_privacy` security fix).*
+
+**Deferred:**
+- [ ] **Remaining ~179 Dependabot alerts left alone this round** — spot-checked as build-tooling/transitive with no live runtime exposure, not a full sweep. A real sweep needs a proper re-vendor of the `eq-intake` tree (not just an in-place bump) — worth doing as its own pass. _(added 2026-07-28)_
+
+---
+
 ## eq-shell: licence-review badge never caught a Cards-side edit to an already-reviewed licence — fixed, plus the Field-sync gap it exposed (2026-07-28)
 *Royce asked to design and build a notification for admins when an already-approved worker edits a licence in Cards. Investigation found the premise needed correcting first: Shell's own Staff-page licence view reads live from jvkn canonical, so it was never stale — the actual bug was narrower (the review badge only checked `created_at`, so a correction to an already-reviewed licence never re-flagged, only a brand-new licence did) and a separate, real gap existed for EQ Field's own tenant-plane copy of licences, which had no sync path at all once a staff member had any licence on file (the one manual "Re-sync from Cards" button is unreachable past that point). Steelmanned before building the second half, then built both.*
 
