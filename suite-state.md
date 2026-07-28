@@ -64,6 +64,7 @@ _If this file is >48h old, the cron is broken._
 - #1065 fix(functions): lazy-load @sentry/node to unblock local netlify dev
 
 **eq-solves-intake:**
+- #80 fix(intake): close the /intake commit-path gap that bypassed staging review
 - #79 parse-maximo-pdf-wo: text-first extraction, resource-limit fix, 5A frequency
 
 ---
