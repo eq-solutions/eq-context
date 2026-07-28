@@ -61,7 +61,15 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-28)
 
 **eq-field:**
+- #558 ci(schema): mechanical gate for field_people security_invoker drift
 - #551 v3.5.370 — multi-lens review + keep-warm fix + Sites customer grouping
+
+**eq-service:**
+- #621 feat(maintenance): add Maximo PDF work-order import (eq-service side)
+
+**eq-shell:**
+- #1061 fix(security): revoke anon EXECUTE on rls_introspection (ehow)
+- #1059 feat(control-plane): backfill remaining 111 legacy jvkn functions
 
 ---
 
