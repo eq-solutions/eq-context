@@ -65,7 +65,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #1078 fix(admin): correct Worker join QR copy to match invite-required behaviour
-- #1077 fix(security): revoke anon EXECUTE on eq_enforce_function_privacy()
 - #1074 fix(deps): xlsx off unpatched npm registry to SheetJS CDN fix
 - #1065 fix(functions): lazy-load @sentry/node to unblock local netlify dev
 
