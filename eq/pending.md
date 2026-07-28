@@ -14,6 +14,27 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: licence-review badge never caught a Cards-side edit to an already-reviewed licence — fixed, plus the Field-sync gap it exposed (2026-07-28)
+*Royce asked to design and build a notification for admins when an already-approved worker edits a licence in Cards. Investigation found the premise needed correcting first: Shell's own Staff-page licence view reads live from jvkn canonical, so it was never stale — the actual bug was narrower (the review badge only checked `created_at`, so a correction to an already-reviewed licence never re-flagged, only a brand-new licence did) and a separate, real gap existed for EQ Field's own tenant-plane copy of licences, which had no sync path at all once a staff member had any licence on file (the one manual "Re-sync from Cards" button is unreachable past that point). Steelmanned before building the second half, then built both.*
+
+- [x] **Badge staleness fixed.** Threaded `updated_at` through `staff-canonical-licences.ts` → `LicenceRow` → `reviewBadgeFor()` so an edit to an already-reviewed licence re-flags "changed since — re-review needed", not just a brand-new one. eq-shell [PR #1075](https://github.com/eq-solutions/eq-shell/pull/1075), merged. No schema change — the column already existed on both jvkn and the tenant planes.
+- [x] **Field's tenant-plane licence copy now auto-syncs.** New `licence-push.ts` (eq-shell [PR #1076](https://github.com/eq-solutions/eq-shell/pull/1076)) mirrors the existing profile-push pattern; eq-cards now calls it after every licence save ([PR #183](https://github.com/eq-solutions/eq-cards/pull/183)). Both merged. (A follow-on gap this exposed — deleting a licence in Cards never told Shell — was found and fixed by a separate concurrent session same day, see the entry above/below on the false "expires today" alert.)
+
+**Deferred:**
+- [ ] **Royce to confirm live**: edit an already-reviewed licence's expiry/number in Cards for an approved worker, confirm the Staff page badge flips to "changed since — re-review needed" without a hard refresh. _(added 2026-07-28)_
+
+---
+
+## eq-shell: Suppliers page "missing" Login/Password columns — was a display bug, not a missing feature (2026-07-28)
+*Royce reported the Suppliers directory missing its login/password columns on a live screenshot. The feature has been fully shipped since PR #938 — root-caused to a CSS clipping bug instead: `@eq-solutions/ui`'s Table component has no horizontal-scroll container of its own, and Suppliers.tsx was the one page in the repo rendering it with no `overflowX:auto` wrapper, unlike every other wide table here. Columns past a certain width just got silently clipped, no scrollbar, no error.*
+
+- [x] Wrapped the desktop Table in a scroll container, matching the existing idiom elsewhere in the repo. eq-shell [PR #1079](https://github.com/eq-solutions/eq-shell/pull/1079), merged.
+
+**Deferred:**
+- [ ] **Royce to confirm live**: open Suppliers on a normal browser window and confirm Login/Password (and Notes) are now reachable via horizontal scroll. _(added 2026-07-28)_
+
+---
+
 ## Shell licence dashboard showing a false "expires today" alert — root cause is a real product gap (2026-07-28)
 *Royce spotted the AI Brief claiming Rhys Scott's licence expired today when he'd already renewed it, and pushed back on trusting dashboard text that "says a lot without saying anything." Investigated properly rather than reassuring: found and fixed the specific case (see the 2026-07-03 licence-renewal item below, now closed), and checked the other 112 synced licence records for the same class of staleness.*
 
@@ -49,7 +70,8 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **Filed eq-solves-intake#78 in error, caught it, closed it**: assumed (from an empty GitHub issue search) that #781's 2026-07-13 "companion detection panel" promise was never built. It was — as direct PRs #66-73/#76/#77 (2026-07-13→2026-07-26), no governing issue, invisible to an issue search. The panel (write-time resolver, adjudication console, AI-suggested verdict, human verdict capture, merge preview/execute) already ships inside eq-shell/Core via `IntakeHealthHome`. Closed #78 with the correction; the brief-gate's git-staleness check is what caught it, not the issue search.
 - [x] **Bigger finding, posted to eq-shell#781**: `app_data.site_resolution_advisory` already had 22 high-confidence duplicate matches pre-populated since 2026-07-16 (covering nearly everything just fixed by hand), but `site_resolution_verdict`/`site_resolution_merge_log` were both completely empty — the review console has had correct answers sitting unreviewed for 12 days. Today's manual fix cross-checked clean against it (no conflicts) but bypassed the actual tool.
 - [ ] **Go use the real review console next time** (Core → `IntakeHealthHome`'s Sites Dupes tab) instead of raw SQL — it already works. _(added 2026-07-28)_
-- [ ] **4 new unreviewed advisory pairs from this morning** (2026-07-28 05:42-06:36 UTC) on sites not touched today — not investigated. _(added 2026-07-28)_
+- [x] **4 new advisory pairs from this morning checked and resolved** — all 4 were sites Royce entered by hand (not an automated import). SYD05 was a genuine duplicate of the established "Microsoft SYD05" (23 real shifts) — merged. SYD27 looked like a duplicate but Royce corrected it: that address is a multi-site data-centre campus, both records (Microsoft, Schneider Electric Australia) are legitimately separate — left alone. SYD29 was a **code collision, not a duplicate** — two real, different sites (400 Harris St Ultimo, 34 real shifts vs a brand-new Lane Cove West site) had both been coded "SYD29"; cleared the wrong code off the new site. SYD09 was a false positive, no action needed.
+- [ ] **The Lane Cove West site (code cleared from the SYD29 collision) needs a real, correct code assigned** — currently has none. _(added 2026-07-28)_
 - [ ] **Kareena's KPH/KAR pairing was flagged "ambiguous" by the live resolver** (2026-07-23) — today's manual pick (keep KPH) looks right on the evidence, but worth a second look via the console. _(added 2026-07-28)_
 
 ---
