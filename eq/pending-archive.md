@@ -1124,3 +1124,77 @@ contain the same values and were pushed before push-protection caught up.
 - [x] **Closed same session: dispatched a second deploy for #184**, confirmed the run completed on the correct commit (`9e106989`) and re-checked `main`'s tip hadn't moved again behind it before verifying live (200 on root, correct page title). Both the save-side and revoke-side halves of the licence-push feature are now live on cards.eq.solutions. _(added 2026-07-28, closed 2026-07-28)_
 
 ---
+
+## ⏩ Session close — 2026-07-04 (frontmatter CI green + DR-arming prep) — PR #62 fixes the repo-wide frontmatter check; verified exact live-secret state ahead of arming (rotated 2026-07-28 — open items remain in pending.md)
+
+- [x] **Arm the Phase 1 + Phase 2 backups** / **Arm the ehow backup** — **both done, confirmed live 2026-07-28.** The `production-ops` GitHub Environment exists (created 2026-07-04, same day as this item) with all 10 secrets present (`SUPABASE_DB_URL`, `R2_ACCESS_KEY_ID/SECRET/ENDPOINT/BUCKET_NAME`, `SENTRY_DSN`, `EQ_CANONICAL_DB_URL`, `EQ_CANONICAL_INTERNAL_DB_URL`, `EQ_CANONICAL_SERVICE_ROLE_KEY`, `EQ_CANONICAL_INTERNAL_SERVICE_ROLE_KEY`). All 6 backup/verify workflows (`backup-ehow`, `backup-eq-canonical`, `backup-eq-canonical-internal` + their 3 `verify-*` counterparts) are active and their most recent runs all `completed success`, most within the last 24h. This was fully done back on 2026-07-04 — the pending items were just never closed. Closing now. _(added 2026-07-04, closed 2026-07-28 — verified live)_
+
+---
+
+## ⏩ Session close — 2026-07-04 (15 July CEO presentation prep) — pre-pass bug sweep across Field/Shell/Cards; self-serve tenant provisioning fully hardened + verified live end-to-end for the first time ever (rotated 2026-07-28 — open items remain in pending.md)
+
+- [x] **Orphaned Supabase project `eq-tenant-favour-perfect` (`jzjzpgaablnppoimdnip`)** — **confirmed deleted.** Re-checked live 2026-07-28: `list_projects` no longer shows it, and `get_project` on its ID returns "Resource has been removed." Someone (Royce or another session) already handled this. Closing. _(added 2026-07-04, closed 2026-07-28 — verified live)_
+
+---
+
+## ⏩ Session close — 2026-07-04 (platform DR / backups, issue #60) — ehow offsite backup moved into eq-context; three real defects fixed; Phase 2 + arming deferred (rotated 2026-07-28 — open items remain in pending.md)
+
+- [x] **Arm the ehow backup — done, see the merged duplicate above** (this was the same item as "Arm the Phase 1 + Phase 2 backups," both closed together 2026-07-28 — verified live). _(added 2026-07-04, closed 2026-07-28)_
+
+---
+
+## ⏩ Session close — 2026-07-03 (eq-shell + eq-intake) — EQ Ops Status-filter bug fixed; intake Health/Tidy dashboard field-name + row-identity bugs found and fixed; Tidy tab gained inline Edit/Suggest (rotated 2026-07-28 — open items remain in pending.md)
+
+- [x] ~~Licence renewals surfaced by the quality-guardian run — Huon Henne's LVR~~ **Huon Henne's LVR is now moot** — re-verified live 2026-07-28: he's `active: false`, `on_roster: false` as of today (`updated_at` 2026-07-28 02:35 UTC — someone offboarded him this morning). No longer a live safety gap; closing this part. _(added 2026-07-03, closed 2026-07-28 — verified live)_
+- [x] ~~Rhys Scott's electrical licence (371332C) expires TODAY (2026-07-28); Brian Griffin-Colls' LVR (UETDRMP007) expires in 4 days.~~ **Both had actually already renewed in Cards — Shell's dashboard just hadn't picked it up.** Royce flagged the dashboard's "expires today" AI Brief line as wrong; traced it to a real sync-lag bug, not a hallucination: Shell keeps its own copy of licence data and only refreshes it when a manager clicks "Re-sync from Cards" on that person's staff panel — nothing re-syncs automatically after a renewal. Checked all 113 synced licence records against their live Cards source, found 3 genuinely stale (Rhys's electrical licence → renewed to 2031-07-28 on 2026-07-27; Brian's LVR → renewed to 2027-07-24 on 2026-07-26; Bruno Vita Pedrosa's white card → now never-expires) plus 2 orphaned duplicate rows (Huon Henne, Brian — old Cards credential IDs replaced but never cleaned up, spun off separately as `task_55fb545d`). Synced all 4 affected people (Royce's "trigger those four syncs now" go), then cleared the dashboard's cached AI Brief (`app_data.briefing_cache`, 21 rows) so it regenerates from correct data — confirmed live via screenshot, the false alarm is gone. _(added 2026-07-03, closed 2026-07-28)_
+
+---
+
+## ⏩ Session close — 2026-07-03 (eq-shell) — Add-to-roster built end-to-end (PR #614 open, merge blocked on classifier) (rotated 2026-07-28)
+
+*Own thread: built the "Add to roster" action from the brief through to a PR, then attempted to merge it on Royce's "merge" instruction — blocked twice, needs Royce's hand.*
+
+**Completed (eq-shell, branch `claude/staff-add-to-roster-v2`):**
+
+**Blocked (needs Royce):**
+- [x] **Delete stale remote branch `claude/staff-add-to-roster`** — **confirmed gone.** Re-checked live 2026-07-28: `git ls-remote` against eq-shell returns nothing for this branch — already deleted by someone. Closing. _(added 2026-07-03, closed 2026-07-28 — verified live)_
+
+**Notes (load-bearing):**
+- Hit the [[shared-checkout-branch-race]] pattern (documented in `~/.claude` memory from PR #613 the same day) — verify `git branch --show-current` and the `[branch xxxx]` line in commit output before trusting a commit/push landed where intended when other sessions may be sharing the checkout.
+- Full detail in `~/.claude` memory `staff-add-to-roster.md`.
+
+---
+
+## ⏩ Session close — 2026-07-03 (eq-shell + eq-intake) — quality-guardian table adoption (0157) + ledger checksum fix, both PRs open (rotated 2026-07-28)
+
+*This session ran independently of the other 2026-07-03 quality-guardian/steward threads below (concurrent sessions) — picks up their audit finding (hardcoded-tenant policy + anon RPC grants on `eq_quality_runs`/`eq_quality_alerts`) and the ledger-checksum blocker they flagged.*
+
+**Completed (both PRs open, CI-clean, not yet merged):**
+
+**Resolved after this session's close (verified live, re-checked against ehow directly):**
+
+**Blocked (needs Royce):**
+- [x] **Merge eq-intake #58** — **already merged** (verified live via `gh pr view`, `state: MERGED`). This item was stale — closing. _(added 2026-07-03, closed 2026-07-28 — verified live)_
+
+**Notes (load-bearing):**
+- **Worktree `C:\Projects\eq-intake-ledger-wt` — confirmed gone**, checked live 2026-07-28 (folder no longer exists). #58 merged, this cleaned up. No action needed.
+- This session's audit is a second, independent confirmation of the hardcoded-UUID + anon-grant issue already known from the earlier steward-session audit — no new live finding beyond what's captured in the blocks below, just a different fix path (table lineage vs. RPC-only).
+
+---
+
+## ⏩ Session close — 2026-07-03 (eq-intake) — licence strip "all current" trust failure root-caused + fixed (PRs #56 + #57 merged; go-live needs Royce) (rotated 2026-07-28)
+
+**Completed (eq-intake, repo `eq-solves-intake`, both PRs merged to main):**
+
+**Decided (Royce):**
+- "merge" ×2 → #56 then #57 straight to main. Merging applies/deploys nothing — go-live is a separate explicit step.
+
+**Deferred (added 2026-07-03):**
+- [x] **Renew Huon Henne's LVR — duplicate of the item closed 2026-07-28** (he was offboarded 2026-07-28, `active: false`/`on_roster: false` on ehow, no longer a live gap). The other two people this item mentions (Rhys Scott, Brian Griffin-Colls) are tracked live in the "eq-cards: licence renewal built, shipped" section above — still open, now urgent (today / 4 days). _(added 2026-07-03, closed 2026-07-28)_
+
+**Notes (load-bearing):**
+- **053's sibling RPCs (`eq_quality_open_alerts`/`eq_quality_resolve_alert`) have `authenticated` grants on live but 053 contains no GRANT lines** — they were granted out-of-band at some point. Any function shipped without an explicit GRANT block should be assumed locked-down on ehow; check `has_function_privilege` before wiring a browser caller.
+- **`app_data._eq_migrations` on ehow already holds `057_remediation_queue` with no matching `sql/057` file in the repo** — allocate migration numbers from the live ledger, not the sql/ folder listing (hence this session used 058/059/060).
+- **Live `eq_quality_upsert_alert` on ehow is still the ungranted 053 version** until 058 is applied — merged ≠ applied.
+
+---
