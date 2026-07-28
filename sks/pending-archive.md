@@ -255,3 +255,10 @@ section's done items live here; its open items stayed in `sks/pending.md`.
 - [x] Bring apprentice module from demo to SKS Labour prod **[CLOSED 2026-07-27 — sks-nsw-labour is under an explicit standing freeze (SEC-1, reaffirmed 2026-07-20): no engineering changes, new-module builds included, until Field replaces it]**
 
 ---
+
+## SKS staff licences: 2 orphaned duplicate rows soft-deleted, sweep confirmed no others (2026-07-28)
+*A licence-sync investigation on ehow surfaced 2 pre-existing orphaned duplicate rows in `app_data.licences` that a Cards resync doesn't clean up (upsert-by-credential-id only, never deletes). Verified live against jvkn before touching anything, fixed the 2 confirmed orphans, then ran the same check across all SKS staff at Royce's request.*
+
+- [x] **Brian Griffin-Colls' stale EWP licence + Huon Henne's stale driver licence** — soft-deleted (`active=false`) in ehow `app_data.licences`; each staff member's licence panel now shows one row per type. _(2026-07-28)_
+- [x] **Full-staff sweep for the same pattern** — one more staff member (Collin Toohey) had two active `electrical_licence` rows, but confirmed with Royce these are legitimate distinct state licences (QLD 176335 + NSW 315326C), not a duplicate — left untouched. No other staff had genuine orphaned duplicates. _(2026-07-28)_
+- [x] **Traced the "Contractor" label Royce saw on Collin's NSW licence** — confirmed `licence_type` is correctly `electrical_licence` in both ehow and jvkn; the "Contractor" label isn't rendered anywhere in the EQ Suite (swept eq-shell/eq-field/eq-cards/eq-solves-service, no state-conditional label logic and no "Address" field exist anywhere in the suite) — almost certainly the NSW Fair Trading public licence-lookup register's own regulator classification, external to our system. _(2026-07-28)_
