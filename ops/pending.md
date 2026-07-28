@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-07-27
+last_updated: 2026-07-28
 scope: Operational support to-do list — Webb, infra, substrate
 read_priority: standard
 status: live
@@ -380,3 +380,8 @@ Changelog at `archive/changelog-ahd.md`.
 ### Deferred (added 2026-07-27)
 - [ ] **Royce's call: does the possible SEC-9 second exposure push "rotate whenever convenient" to "rotate soon"?** Not decided this session.
 - [ ] SEC-9/10/12 actual rotation/re-store — Royce to run himself, runbook/steps ready.
+
+## rls_introspection() anon-EXECUTE leak (2026-07-28)
+
+- [ ] Royce's call: eq-shell PR #1061 (duplicate fix for the same rls_introspection() anon-grant, landed via a concurrent session's own pipeline) — close as superseded or merge; both are safe no-ops on top of the already-applied fix.
+- [ ] Root-cause default-privilege gap not fixed: ehow's `public` schema still auto-grants EXECUTE to anon/authenticated on any future SECURITY DEFINER function — a plane-wide fix, shared with sks-nsw-labour, needs Royce's go before touching.

@@ -14,6 +14,16 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: EQ Ops quote-status badge/board desync fixed (2026-07-28)
+*Royce flagged a screenshot: quote SKS-17489 showed "Job created" in the detail panel but stayed under "Open" on the Kanban board. Root cause: the detail panel's stage dropdown updated its own label before the save actually ran; the save has a real guard that blocks "Job created" without a job number, but it silently declined without telling the UI, so the badge kept showing a change that never persisted while the board (a separate query) correctly showed the true status.*
+
+- [x] Fixed the detail panel to wait for the save and re-read the real row afterward, so the badge can't show a stage that never saved. eq-shell [PR #1063](https://github.com/eq-solutions/eq-shell/pull/1063), merged, live via Netlify auto-deploy.
+
+**Deferred:**
+- [ ] **Royce to check SKS-17489 in EQ Ops** once the deploy lands — confirm the badge and board agree, then enter a Job No. to actually advance it out of Open (that's why it was stuck). _(added 2026-07-28)_
+
+---
+
 ## eq-field: field_people security_invoker drift root-caused + fixed (2026-07-28)
 *A recurring security bug (view losing tenant-isolation on ehow/SKS, 3rd time) got traced to its actual source: eq-field's own database change for the same-day Labour Hire rating feature (PR #555) was applied straight to the live database but never saved to the repo, and the version applied left out a required safety setting. Live data was never exposed further than the earlier incidents already were — this closes the gap, it doesn't newly open one.*
 
