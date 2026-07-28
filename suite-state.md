@@ -60,6 +60,9 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-28)
 
+**eq-cards:**
+- #182 fix(licences): persistent banner when auto-read fails, not a snackbar
+
 **eq-shell:**
 - #1071 fix(cards): clean compliance-pack filename, stop showing stale worker email
 - #1065 fix(functions): lazy-load @sentry/node to unblock local netlify dev
