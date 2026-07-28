@@ -60,11 +60,8 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-28)
 
-**eq-field:**
-- #551 v3.5.370 — multi-lens review + keep-warm fix + Sites customer grouping
-
 **eq-shell:**
-- #1067 fix(auth): strip totp_secret from login response payloads
+- #1068 feat(auth): TOTP backup codes for authenticator device loss
 - #1065 fix(functions): lazy-load @sentry/node to unblock local netlify dev
 
 ---
