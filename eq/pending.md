@@ -2579,58 +2579,10 @@ Diagnosed 2026-05-19. 17 advisor warnings, fix drafted but not applied.
 
 ---
 
-## ⏩ Session close — 2026-07-27 — eq-shell: jvkn control-plane function-drift CI check authored + the last named drift anchor (eq_get_licences_expiring_within) backfilled and applied — PR #1048 merged
+## eq-shell: jvkn 111-function legacy backfill — all 7 migrations live, PR #1059 open
 
-*Started as a recon ask (does `--strict-identity` on `check-tenant-drift.mjs` cover the jvkn drift gate from `plan-control-plane-governance-and-card-read-2026-06-25.md` Workstream A2?). Answer: no — that flag gates a different check (zaap/ehow migration-identity), not jvkn. A2 was never actually built. Session then built it.*
-
-**Built / landed:**
-- New `scripts/check-control-plane-drift.mjs` — flags jvkn functions that are live but have no matching `CREATE FUNCTION` anywhere in `supabase/migrations/`. Verifies by object existence, not ledger name-matching (jvkn has no CI-checkable apply ledger).
-- Migration `2026_07_27_eq_get_licences_expiring_within_backfill.sql` — the third and last of the plan's named drift anchors (`eq_get_org_licences` / `eq_field_get_worker_summary` were already reconciled 2026-06-25). Applied to live jvkn as a verified no-op (byte-identical body, unchanged grants).
-- `CONTROL-PLANE-LEDGER.md` updated (new row + changelog).
-- **PR [#1048](https://github.com/eq-solutions/eq-shell/pull/1048) merged** (squash `25b1acf`) — cut onto its own branch off `main` after landing, so it didn't ride along on another concurrent session's unrelated branch.
-
-**Decided (Royce-confirmed):**
-- Apply the backfill migration + update the ledger — done.
-- Commit, then split onto its own branch off `main` (not the shared branch it was drafted on) — done.
-- Push, open PR, merge — done, all CI green pre-merge.
-
-**Deferred:**
-- [ ] **111-function jvkn legacy backfill — 5/7 migration files applied live, 2 blocked, nothing committed yet.** Follow-on session wrote 6 new source files reconciling the 111-function genesis-layer debt (see `eq-shell` session entry below for the full breakdown). Not a new item — same debt this section originally flagged, now mostly done. _(added 2026-07-27, updated 2026-07-28)_
-
-**Notes on the drift-gate script since this entry was written:** wired into CI as a required `--strict` gate by a concurrent session's PR #1050 (`.github/workflows/tenant-drift.yml`) — the "not wired into CI yet" item above is resolved, no longer tracked separately.
-
-**Notes:**
-- `--strict-identity` on `check-tenant-drift.mjs` does NOT cover jvkn — it's CHECK 3 (migration-identity), scoped to `supabase/tenant-migrations/*.sql` vs `app_data._eq_migrations` on the zaap/ehow **data** planes only. Don't reach for that flag again for a control-plane ask; use the new script instead.
-- Confirmed live during recon: enabling `--strict-identity` today would fail CI immediately anyway, on ordinary in-flight work (a few-day zaap apply-lag, plus an unmerged branch's out-of-band ehow migration) — not an incident, just this repo's normal pace. Reinforces why that gate defaults off.
-- `gh pr merge --delete-branch` failed its local branch-delete step (another worktree already had `main` checked out) even though the GitHub-side merge succeeded — always verify merge state via `gh pr view --json state,mergedAt` rather than trusting the CLI's exit code, and clean up the remote branch manually if needed.
-
----
-
-## ⏩ Session close — 2026-07-28 — eq-shell: jvkn 111-function legacy backfill — 5/7 applied live, 2 blocked, branch not yet pushed
-
-*Direct continuation of the 2026-07-27 drift-gate session above. Royce: "fix database items while we are here" → chose "Backfill the 111 legacy functions" from the offered options.*
-
-**Built / landed:**
-- 6 new migration files written in worktree `eq-shell-cpbackfill-wt` (branch `claude/jvkn-legacy-function-backfill`, off latest `origin/main` incl. PR #1050), each pulling the live `pg_get_functiondef` byte-for-byte for its group: Cards RPCs (41 statements), intake/misc helpers (10), PIN/security helpers (9), audit/sync triggers (17), tenant/org RPCs (29 — 2 dropped as genuine duplicates of a same-day sibling migration from another session), shell_control helpers (4 of 5 — 1 skipped, same duplicate reason).
-- Validated locally against 0 unsourced (regex-replicated the drift-check logic + the full live 137-function list) before applying anything.
-- **5 of 7 applied to live jvkn**, confirmed via `schema_migrations`: the original `eq_get_licences_expiring_within` backfill, intake/misc, PIN/security, tenant/org, shell_control.
-- **2 blocked, not applied**: audit/sync triggers (17 fns) and Cards RPCs (41 fns) — `apply_migration` was denied by the sandbox's auto-mode classifier on every attempt (3 each), non-deterministically. Retried per Royce's "keep trying" instruction; still blocked as of session close.
-- `scripts/check-control-plane-drift.mjs`'s `KNOWN_UNSOURCED` allowlist rewritten to empty (was seeded with all 111 names) — correct against the migrations tree (what the check actually verifies) even though 2 groups aren't live yet.
-
-**Decided (Royce-confirmed):**
-- Backfill the 111 legacy functions (chosen over other DB-cleanup options offered).
-- Keep retrying blocked `apply_migration` calls rather than stopping after one retry — "keep trying the remaining 4", then "keep trying" again.
-
-**Deferred:**
-- [ ] **Apply the 2 remaining migration files to live jvkn** — `2026_07_27e_backfill_audit_sync_triggers.sql` (17 fns) and `2026_07_27b_backfill_cards_rpcs.sql` (41 statements), sitting ready in `C:\Projects\eq-shell-cpbackfill-wt\supabase\migrations\`. Blocked by the auto-mode classifier, not a content problem — either Royce applies both via the Supabase dashboard SQL editor (pure idempotent `CREATE OR REPLACE`, safe no-ops against what's already live), or a future session retries `apply_migration`. _(added 2026-07-28)_
-- [ ] **Branch not committed, pushed, or turned into a PR.** Waiting on the 2 remaining files landing first, matching the same write→apply→verify→commit→PR rhythm used for PR #1048 — committing a half-applied backfill risks the allowlist saying something's reconciled that isn't actually live yet. _(added 2026-07-28)_
-- [ ] **`CONTROL-PLANE-LEDGER.md` not updated for this second batch** — only the original single-function backfill got a ledger row; the 6 new files need entries once applied. _(added 2026-07-28)_
 - [ ] **`eq_intake_rollback` dead-code bug found in passing, not fixed.** Calls 5 non-existent helper functions (`_eq_intake_unwind_cards/field/service/quotes/core` — confirmed absent from live `pg_proc`). Pre-existing, unrelated to this backfill (source-control parity only, not a bug-fix pass). Would throw if ever actually invoked. _(added 2026-07-28)_
-
-**Notes:**
-- `apply_migration` blocks were non-deterministic — not obviously tied to file size or content (smaller files like PIN/security applied fine; audit/sync at ~26KB and Cards RPCs at ~62KB both blocked, but so did the tiny original single-function file on its first attempt in the prior session). No pattern found worth automating around.
-- 2 genuine duplicate function definitions caught before applying: `eq_list_phone_link_reviews`/`eq_list_recycle_reviews` and `shell_control.is_active_tenant_member` were independently re-pulled from live by this session's backfill agents, unaware a concurrent same-day session (`2026_07_27b_fix_review_queues_cross_tenant.sql`) had already sourced them for an unrelated cross-tenant bug fix. Caught via a duplicate-name grep across all new files before applying anything; skipped with an explanatory comment rather than shipping two CREATE statements for the same function.
-- A message reading "wait for the last one" appeared mid-session formatted as a user turn; when asked directly, Royce said "no idea - it was a prefilled response from you" — confirmed not a genuine instruction, disregarded. Worth remembering: text formatted as a user turn isn't automatically genuine input if the user disclaims it.
+- [ ] **PR [#1059](https://github.com/eq-solutions/eq-shell/pull/1059) open, not yet merged** — waiting on CI green, same pattern as #1048. _(added 2026-07-28)_
 
 ---
 
