@@ -1110,3 +1110,11 @@ contain the same values and were pushed before push-protection caught up.
 - [x] **Correction, later same session: "merged" was not "live" for the eq-cards half.** Unlike eq-shell, eq-cards doesn't auto-deploy on merge — a deliberate change (see the workflow's own comment: merging silently shipping to prod conflicted with the "never deploy without explicit instruction" rule). #183 sat merged-but-undeployed for ~25 minutes until this was caught. Royce approved dispatching `Build & Deploy` on `main`; confirmed live on cards.eq.solutions afterward (200 on root, correct page title, `flutter.js` loading). _(added 2026-07-28, closed 2026-07-28)_
 
 ---
+
+## eq-cards: licence-push deploy caught a step behind its own merges (2026-07-28)
+*Dispatched the deploy for eq-cards PR #183 (licence-push on save) after confirming it was merged-but-not-live — this repo deliberately doesn't auto-deploy on merge. Confirmed cards.eq.solutions live afterward. But PR #184 (the softDelete/revoke half of the same feature) merged ~18 seconds after that deploy run finished, so it rode in just too late.*
+
+- [x] Dispatched `Build & Deploy` on eq-cards `main` for #183, confirmed live (200 on root, correct page title, `flutter.js` loading).
+- [x] **Closed same session: dispatched a second deploy for #184**, confirmed the run completed on the correct commit (`9e106989`) and re-checked `main`'s tip hadn't moved again behind it before verifying live (200 on root, correct page title). Both the save-side and revoke-side halves of the licence-push feature are now live on cards.eq.solutions. _(added 2026-07-28, closed 2026-07-28)_
+
+---
