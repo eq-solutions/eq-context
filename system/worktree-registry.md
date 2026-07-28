@@ -291,7 +291,7 @@ Full audit: every active worktree in eq-shell, eq-intake, eq-field, eq-cards, eq
 | eq-shell-onelogin-wt | eq-shell | main | pre-emptied husk, force-removed w/ Royce's go |
 | eq-shell-onelogin-p5-wt | eq-shell | claude/one-login-p5-tenant-signup | MERGED PR #1081 — worktree removed 2026-07-28 |
 | eq-shell-workerhome-cards-wt | eq-shell | claude/workerhome-roster-leave-prestart-cards | MERGED PR #1086 — worktree removed 2026-07-28 |
-| eq-shell-apprentice-workerhome-wt | eq-shell | claude/apprentice-workerhome-routing | PR #1089 — apprentice WorkerHome routing fix |
+| eq-shell-apprentice-workerhome-wt | eq-shell | claude/apprentice-workerhome-routing | MERGED PR #1089 — worktree removed 2026-07-28 |
 | eq-field-561-cachebust-wt | eq-field | claude/561-force-cache-refresh | MERGED PR #564 — worktree removed 2026-07-28 |
 | eq-field-shell-role-fallback-wt | eq-field | claude/shell-field-role-fallback-fix | MERGED PR #561 — worktree removed 2026-07-28 |
 | eq-shell-apprentice-fields-wt | eq-shell | claude/staff-apprentice-year-company | MERGED PR #1084 — worktree removed 2026-07-28 |
