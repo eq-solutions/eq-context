@@ -1,14 +1,14 @@
 ---
 title: EQ Suite — Current State
 owner: Royce Milmlow
-last_updated: 2026-07-27
+last_updated: 2026-07-28
 scope: Live suite state — app lineup, DB counts, open PRs, architectural decisions. Auto-refreshed nightly by GitHub Action.
 read_priority: critical
 status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-07-27 (nightly cron)_
+_Last verified: 2026-07-28 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -35,8 +35,8 @@ _If this file is >48h old, the cron is broken._
 
 | Entity | Count | Schema |
 |--------|-------|--------|
-| Sites | 227 | app_data.sites |
-| Customers | 43 | app_data.customers |
+| Sites | 228 | app_data.sites |
+| Customers | 44 | app_data.customers |
 | Assets | 2,836 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
 | Users | 5 | service.tenant_members |
@@ -58,14 +58,14 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-07-27)
+## Open PRs (as of 2026-07-28)
 
 **eq-field:**
 - #551 v3.5.370 — multi-lens review + keep-warm fix + Sites customer grouping
 
 ---
 
-## System Health (as of 2026-07-27)
+## System Health (as of 2026-07-28)
 
 **CI on main:**
 
