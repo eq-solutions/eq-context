@@ -262,3 +262,8 @@ section's done items live here; its open items stayed in `sks/pending.md`.
 - [x] **Brian Griffin-Colls' stale EWP licence + Huon Henne's stale driver licence** — soft-deleted (`active=false`) in ehow `app_data.licences`; each staff member's licence panel now shows one row per type. _(2026-07-28)_
 - [x] **Full-staff sweep for the same pattern** — one more staff member (Collin Toohey) had two active `electrical_licence` rows, but confirmed with Royce these are legitimate distinct state licences (QLD 176335 + NSW 315326C), not a duplicate — left untouched. No other staff had genuine orphaned duplicates. _(2026-07-28)_
 - [x] **Traced the "Contractor" label Royce saw on Collin's NSW licence** — confirmed `licence_type` is correctly `electrical_licence` in both ehow and jvkn; the "Contractor" label isn't rendered anywhere in the EQ Suite (swept eq-shell/eq-field/eq-cards/eq-solves-service, no state-conditional label logic and no "Address" field exist anywhere in the suite) — almost certainly the NSW Fair Trading public licence-lookup register's own regulator classification, external to our system. _(2026-07-28)_
+
+---
+
+## EQ Field — team pills as the single crew picker (2026-07-29)
+- [x] Copy Last Week / Copy Week → copy the WHOLE roster's schedule data for the source week, not whatever's currently filtered by a team pill — confirmed by reading the code, flagged, then resolved via `/decide` (Royce: "make it filter-aware with an explicit scope note"). Both now scope to the active team filter with an explicit confirm/note, falling back to whole-roster when unfiltered. eq-field PR #566, v3.5.378, merged and confirmed live. _(added 2026-07-29, closed 2026-07-29)_

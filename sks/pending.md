@@ -9,11 +9,6 @@ status: live
 
 # SKS Pending
 
-## EQ Field — team pills as the single crew picker (2026-07-29)
-- [ ] Copy Last Week / Copy Week → copy the WHOLE roster's schedule data for the source week, not whatever's currently filtered by a team pill — confirmed by reading the code, not yet a decision either way. Worth knowing before relying on team-filtering to scope a copy. _(added 2026-07-29)_
-
----
-
 ## Labour Hire archive + rehire rating
 - [ ] Mirror the roster-grid archive + rating feature (SKS v3.10.104/.105) in EQ Field — flagged as a follow-up task; Royce started it in a separate session, result not yet known. _(added 2026-07-28)_
 
