@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-28 06:16 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-28 06:25 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-28 06:08 UTC → 2026-07-28 06:16 UTC)
+## Since last refresh (2026-07-28 06:16 UTC → 2026-07-28 06:25 UTC)
 
-- Merged: eq-shell [#1058](https://github.com/eq-solutions/eq-shell/pull/1058) fix(auth): require re-auth before replacing an enrolled auth
-- Merged: eq-shell [#1047](https://github.com/eq-solutions/eq-shell/pull/1047) fix(suppliers): make login/password visibility a real Securi
-- Merged: eq-shell [#1044](https://github.com/eq-solutions/eq-shell/pull/1044) fix(quotes): retire 4 dead status values, merge verbal-win, 
-- Merged: eq-shell [#1042](https://github.com/eq-solutions/eq-shell/pull/1042) fix(service-embed): explain the preview block instead of han
-- Merged: eq-shell [#1040](https://github.com/eq-solutions/eq-shell/pull/1040) fix(attachments): codify app_data.attachments — was hand-cre
-- Merged: eq-shell [#1039](https://github.com/eq-solutions/eq-shell/pull/1039) fix(shell): iframe loading placeholder uses the canonical Sp
-- Merged: eq-shell [#1035](https://github.com/eq-solutions/eq-shell/pull/1035) fix(auth): mint-supabase-jwt rejects cross-tenant users with
-- Merged: eq-shell [#1034](https://github.com/eq-solutions/eq-shell/pull/1034) fix(admin): resolve cross-tenant user lookup in eq_get_tenan
+- Merged: eq-shell [#1060](https://github.com/eq-solutions/eq-shell/pull/1060) fix(licences): dedup guard on staff-licence-backfill, same c
+- Merged: eq-shell [#1048](https://github.com/eq-solutions/eq-shell/pull/1048) feat(control-plane): jvkn function-drift CI check + backfill
+- Merged: eq-shell [#1046](https://github.com/eq-solutions/eq-shell/pull/1046) feat(staff): inline supervisor/roster toggles + quick-edit l
+- Merged: eq-shell [#1045](https://github.com/eq-solutions/eq-shell/pull/1045) feat(quotes): file-count badge on pipeline list + finish RPC
+- Merged: eq-shell [#1043](https://github.com/eq-solutions/eq-shell/pull/1043) fix(shell): EQ Field is missing its Records nav + rail opens
+- Merged: eq-shell [#1041](https://github.com/eq-solutions/eq-shell/pull/1041) fix(attachments): list/upload-attachment hit the control pla
+- Merged: eq-shell [#1038](https://github.com/eq-solutions/eq-shell/pull/1038) chore: remove dead cards-staff-matches.ts
+- Merged: eq-shell [#1037](https://github.com/eq-solutions/eq-shell/pull/1037) fix(shell): white background on iframe loading pane, not nea
 
 ## ⚠ Needs you (4)
 
@@ -50,9 +50,9 @@ _…and 66 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 1 | 0d |
-| eq-solves-service | ? unknown | ? | 0 | — |
-| eq-field | ? unknown | ? | 2 | 0d |
+| eq-shell | ? unknown | ? | 2 | 0d |
+| eq-solves-service | ? unknown | ? | 1 | 0d |
+| eq-field | ? unknown | ? | 1 | 0d |
 | eq-cards | ? unknown | ? | 0 | — |
 | eq-solves-intake | ✓ success | 1d ago | 0 | — |
 
@@ -73,6 +73,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-28 | eq-shell | [#1060](https://github.com/eq-solutions/eq-shell/pull/1060) fix(licences): dedup guard on staff-licence-backfill, same class  |
 | 2026-07-28 | eq-shell | [#1058](https://github.com/eq-solutions/eq-shell/pull/1058) fix(auth): require re-auth before replacing an enrolled authentic |
 | 2026-07-28 | eq-shell | [#1057](https://github.com/eq-solutions/eq-shell/pull/1057) fix(customers): address autocomplete never mounts in New customer |
 | 2026-07-28 | eq-shell | [#1055](https://github.com/eq-solutions/eq-shell/pull/1055) hotfix(quotes): drop stale eq_bulk_update_quote_status overload |
@@ -81,13 +82,12 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-28 | eq-shell | [#1053](https://github.com/eq-solutions/eq-shell/pull/1053) fix(quotes): capture a reason when bulk-closing quotes as lost/ca |
 | 2026-07-28 | eq-solves-service | [#620](https://github.com/eq-solutions/eq-service/pull/620) docs(ci): correct the false approval-gate claim on apply-service- |
 | 2026-07-28 | eq-solves-service | [#619](https://github.com/eq-solutions/eq-service/pull/619) fix(migrations): reconcile 2 of 5 ledger-drifted migrations, mark |
+| 2026-07-28 | eq-field | [#558](https://github.com/eq-solutions/eq-field/pull/558) ci(schema): mechanical gate for field_people security_invoker dri |
 | 2026-07-28 | eq-field | [#557](https://github.com/eq-solutions/eq-field/pull/557) fix(schema): record missing security_invoker migration for field_ |
 | 2026-07-28 | eq-field | [#556](https://github.com/eq-solutions/eq-field/pull/556) fix(leave): renderLeave() no-ops after navigating off the Leave p |
 | 2026-07-28 | eq-field | [#555](https://github.com/eq-solutions/eq-field/pull/555) v3.5.369 — Roster: archive Labour Hire from the grid with a rehir |
 | 2026-07-27 | eq-shell | [#1052](https://github.com/eq-solutions/eq-shell/pull/1052) feat: add release tagging workflow |
 | 2026-07-27 | eq-shell | [#1051](https://github.com/eq-solutions/eq-shell/pull/1051) feat(staff): reorderable columns + compact Status/Contact cells |
-| 2026-07-27 | eq-shell | [#1050](https://github.com/eq-solutions/eq-shell/pull/1050) ci(control-plane): gate PRs on jvkn function-drift check (--stric |
-| 2026-07-27 | eq-shell | [#1049](https://github.com/eq-solutions/eq-shell/pull/1049) feat(licences): deep-link expiry email/SMS reminders to the speci |
 _Showing 15 of 108 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -102,7 +102,7 @@ _Showing 15 of 108 · full record in [sessions/](sessions/)_
 - **SEC-9 rotation runbook** — no runbook exists yet for rotating the jvkn (eq-canonical) service_role key exposed 2026-07-12 in a chat transcript; offered to draft one (docs only, no keys touched) but session closed before Royce answered. _(added 2026-07-28)_
 - **No live click-through yet** — the session's local preview browser never rendered content (tooling issue this session, browser pane wouldn't display frames at all, confirmed on both a local dev server and a real hosted deploy-preview URL). Worth a real look once merged and live. _(added 2026-07-27)_
 - **"Select files to send with an email" was floated but not chosen** — Royce picked the file-count badge only. Worth revisiting if the need comes up again. _(added 2026-07-27)_
-_…and 330 more · [eq/pending.md](eq/pending.md)_
+_…and 327 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -124,7 +124,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 2647 | 414 | 59 | 9 |
+| [EQ](eq/pending.md) | 2599 | 411 | 59 | 9 |
 | [SKS](sks/pending.md) | 434 | 76 | 12 | 13 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 382 | 34 | 7 | 1 |
@@ -145,4 +145,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-28 06:16 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-28 06:25 UTC._
