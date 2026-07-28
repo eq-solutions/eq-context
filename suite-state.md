@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-28)
 
-**eq-service:**
-- #626 feat(migrations): add --verify checksum step, wire into PR plan (non-blocking)
-
 **eq-shell:**
 - #1074 fix(deps): xlsx off unpatched npm registry to SheetJS CDN fix
 - #1065 fix(functions): lazy-load @sentry/node to unblock local netlify dev
