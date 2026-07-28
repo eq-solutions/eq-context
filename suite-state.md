@@ -61,6 +61,8 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-28)
 
 **eq-shell:**
+- #1074 fix(deps): xlsx off unpatched npm registry to SheetJS CDN fix
+- #1073 fix(sks-sync): stop the daily worker sync clobbering Shell staff edits
 - #1071 fix(cards): clean compliance-pack filename, stop showing stale worker email
 - #1065 fix(functions): lazy-load @sentry/node to unblock local netlify dev
 
