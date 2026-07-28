@@ -60,11 +60,7 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-28)
 
-**eq-cards:**
-- #185 fix(credentials): eq_cards_my_credential_gaps() applies the Photo ID equivalence
-
 **eq-shell:**
-- #1083 fix(deps): sweep the remaining Dependabot alerts (146 -> 4 known/deferred)
 - #1065 fix(functions): lazy-load @sentry/node to unblock local netlify dev
 
 **eq-solves-intake:**
