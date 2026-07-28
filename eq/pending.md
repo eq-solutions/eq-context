@@ -14,6 +14,28 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: Google Maps address autocomplete fixed in New Customer wizard (2026-07-28)
+*Royce hit it live while adding Microsoft as a new customer — the site address field never showed the Google suggestions dropdown. Root-caused: the autocomplete widget only tries to attach once, when the form first loads, and on that step the address box doesn't exist yet (it only appears once you reach the second step of the wizard) — so it gave up before the field was ever on screen. Fixed so it watches for the field to actually appear instead of giving up after one look.*
+
+- [x] Fixed the underlying autocomplete helper so it re-attaches whenever the address field appears — covers the New Customer wizard's late-appearing field and any future field like it. eq-shell [PR #1057](https://github.com/eq-solutions/eq-shell/pull/1057), merged, live-verified on core.eq.solutions.
+
+**Deferred:**
+- [ ] **Royce to click through a real "New customer" add** once convenient, to confirm the address dropdown now actually appears and fills suburb/state (verified in code + build, not yet eyeballed live). _(added 2026-07-28)_
+
+**Note:** this PR's CI run also surfaced an unrelated security finding (a database function on the SKS system callable by anyone, not just logged-in users) — spun off as background task `task_fee4ba20`. Already resolved same day by a concurrent session: logged as **SEC-15**, fixed via eq-shell [PR #1061](https://github.com/eq-solutions/eq-shell/pull/1061), live-verified. See today's session log for full detail — no action needed here.
+
+---
+
+## eq-shell: Compliance register now one row per employee, not per licence (2026-07-28)
+*Royce asked to optimise the Cards compliance Excel export — it listed every licence as its own row, so an employee with 3 licences appeared 3 times, making it hard to use as a simple headcount/status list. Talked through 3 ways to do this and went with the recommended option: keep a full one-row-per-employee summary as the main view, and keep the old full-detail, one-row-per-licence list as a second sheet so nothing is lost for a real audit.*
+
+- [x] Rebuilt the export: the main sheet now shows one line per employee (name, contact details, how many licences, their worst status, and the next one due) — a full detail sheet and the existing summary totals are still there underneath for drill-down. eq-shell [PR #1064](https://github.com/eq-solutions/eq-shell/pull/1064), merged, live via Netlify auto-deploy.
+
+**Deferred:**
+- [ ] **Royce to export a real org's compliance pack and eyeball the new layout in Excel** — verified in code and with a test run, not yet checked against a real export. _(added 2026-07-28)_
+
+---
+
 ## eq-shell: EQ Ops quote-status badge/board desync fixed (2026-07-28)
 *Royce flagged a screenshot: quote SKS-17489 showed "Job created" in the detail panel but stayed under "Open" on the Kanban board. Root cause: the detail panel's stage dropdown updated its own label before the save actually ran; the save has a real guard that blocks "Job created" without a job number, but it silently declined without telling the UI, so the badge kept showing a change that never persisted while the board (a separate query) correctly showed the true status.*
 
@@ -21,19 +43,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 **Deferred:**
 - [ ] **Royce to check SKS-17489 in EQ Ops** once the deploy lands — confirm the badge and board agree, then enter a Job No. to actually advance it out of Open (that's why it was stuck). _(added 2026-07-28)_
-
----
-
-## eq-field: field_people security_invoker drift root-caused + fixed (2026-07-28)
-*A recurring security bug (view losing tenant-isolation on ehow/SKS, 3rd time) got traced to its actual source: eq-field's own database change for the same-day Labour Hire rating feature (PR #555) was applied straight to the live database but never saved to the repo, and the version applied left out a required safety setting. Live data was never exposed further than the earlier incidents already were — this closes the gap, it doesn't newly open one.*
-
-- [x] Confirmed live database state directly — the safety setting was already correct (fixed reactively by the Shell team's own automated check the same day) before touching anything.
-- [x] Saved the missing database change to the repo properly this time, with the safety setting restored and a warning comment explaining why, right where the next person will see it.
-- [x] Added a permanent note to eq-field's own build rules so the next person adding a column to these two tables copies the safe pattern instead of writing a bare replace statement.
-- [x] Shipped — eq-field [PR #557](https://github.com/eq-solutions/eq-field/pull/557), merged on Royce's go.
-
-**Deferred:**
-- [ ] **The fix above is a warning comment, not a hard stop** — the same warning language already existed after the 2nd incident and the bug still recurred, so a comment alone isn't good enough. Spun off as its own background task (`task_8e90b65d`, still running as of this close): build an actual automated check that blocks a bad database change before it ships, not just documents the risk after. _(added 2026-07-28)_
 
 ---
 
@@ -2589,10 +2598,9 @@ Diagnosed 2026-05-19. 17 advisor warnings, fix drafted but not applied.
 
 ---
 
-## eq-shell: jvkn 111-function legacy backfill — all 7 migrations live, PR #1059 open
+## eq-shell: jvkn 111-function legacy backfill — DONE, PR #1059 merged
 
 - [ ] **`eq_intake_rollback` dead-code bug found in passing, not fixed.** Calls 5 non-existent helper functions (`_eq_intake_unwind_cards/field/service/quotes/core` — confirmed absent from live `pg_proc`). Pre-existing, unrelated to this backfill (source-control parity only, not a bug-fix pass). Would throw if ever actually invoked. _(added 2026-07-28)_
-- [ ] **PR [#1059](https://github.com/eq-solutions/eq-shell/pull/1059) open, not yet merged** — waiting on CI green, same pattern as #1048. _(added 2026-07-28)_
 
 ---
 
