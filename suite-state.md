@@ -66,7 +66,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #1055 hotfix(quotes): drop stale eq_bulk_update_quote_status overload
-- #1054 fix(schema): reassert security_invoker on field_people views (ehow)
 
 ---
 
