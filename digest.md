@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-28 09:50 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-28 10:02 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-28 09:24 UTC → 2026-07-28 09:50 UTC)
+## Since last refresh (2026-07-28 09:50 UTC → 2026-07-28 10:02 UTC)
 
-- Merged: eq-shell [#1064](https://github.com/eq-solutions/eq-shell/pull/1064) feat(cards): compliance register — one row per employee, not
-- Merged: eq-shell [#1061](https://github.com/eq-solutions/eq-shell/pull/1061) fix(security): revoke anon EXECUTE on rls_introspection (eho
-- Merged: eq-shell [#1060](https://github.com/eq-solutions/eq-shell/pull/1060) fix(licences): dedup guard on staff-licence-backfill, same c
-- Merged: eq-shell [#1057](https://github.com/eq-solutions/eq-shell/pull/1057) fix(customers): address autocomplete never mounts in New cus
-- Merged: eq-shell [#1056](https://github.com/eq-solutions/eq-shell/pull/1056) ci(security): add blocking secret-scan gate (gitleaks)
-- Merged: eq-shell [#1052](https://github.com/eq-solutions/eq-shell/pull/1052) feat: add release tagging workflow
-- Merged: eq-shell [#1051](https://github.com/eq-solutions/eq-shell/pull/1051) feat(staff): reorderable columns + compact Status/Contact ce
-- Merged: eq-shell [#1050](https://github.com/eq-solutions/eq-shell/pull/1050) ci(control-plane): gate PRs on jvkn function-drift check (--
+- Merged: eq-shell [#1082](https://github.com/eq-solutions/eq-shell/pull/1082) fix(suppliers): PR #1079's scroll wrapper was insufficient —
+- Merged: eq-shell [#1081](https://github.com/eq-solutions/eq-shell/pull/1081) feat(auth): tenant-scoped self-serve phone signup on Core lo
+- Merged: eq-shell [#1063](https://github.com/eq-solutions/eq-shell/pull/1063) fix(quotes): stop detail badge showing a stage change that n
+- Merged: eq-shell [#1062](https://github.com/eq-solutions/eq-shell/pull/1062) feat(licences): let a manager replace the photo/PDF on an ex
+- Merged: eq-shell [#1059](https://github.com/eq-solutions/eq-shell/pull/1059) feat(control-plane): backfill remaining 111 legacy jvkn func
+- Merged: eq-shell [#1058](https://github.com/eq-solutions/eq-shell/pull/1058) fix(auth): require re-auth before replacing an enrolled auth
+- Merged: eq-shell [#1055](https://github.com/eq-solutions/eq-shell/pull/1055) hotfix(quotes): drop stale eq_bulk_update_quote_status overl
+- Merged: eq-shell [#1054](https://github.com/eq-solutions/eq-shell/pull/1054) fix(schema): reassert security_invoker on field_people views
 
 ## ⚠ Needs you (4)
 
@@ -50,10 +50,10 @@ _…and 74 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 1 | 0d |
-| eq-solves-service | ? unknown | ? | 1 | 0d |
+| eq-shell | ? unknown | ? | 2 | 0d |
+| eq-solves-service | ? unknown | ? | 0 | — |
 | eq-field | ? unknown | ? | 0 | — |
-| eq-cards | ? unknown | ? | 0 | — |
+| eq-cards | ? unknown | ? | 1 | 0d |
 | eq-solves-intake | ✓ success | 2d ago | 0 | — |
 
 ## Live errors (Sentry)
@@ -64,16 +64,18 @@ _…and 74 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 | eq-shell | [Error: Workers never invited to join, past grace period: 45](https://eq-solutions.sentry.io/issues/135740258/) | 8 | 2026-07-27 |
 | eq-cards | [TimeoutException: TimeoutException after 0:00:14.000000: Future not completed](https://eq-solutions.sentry.io/issues/129414832/) | 5 | 2026-07-23 |
 | eq-cards | [LateInitializationError: Field '' has not been initialized.](https://eq-solutions.sentry.io/issues/136695941/) | 3 | 2026-07-28 |
+| eq-field | [ReferenceError: openTafeHolidaysConfig is not defined](https://eq-solutions.sentry.io/issues/130706295/) | 3 | 2026-07-28 |
 | eq-shell | [Error: Unresolved identity collisions detected on jvkn: 1](https://eq-solutions.sentry.io/issues/136887159/) | 1 | 2026-07-27 |
 | eq-cards | [LateInitializationError: Field '' has not been initialized.](https://eq-solutions.sentry.io/issues/136695940/) | 1 | 2026-07-27 |
 | eq-field | [TypeError: Cannot set properties of null (setting 'innerHTML')](https://eq-solutions.sentry.io/issues/136685760/) | 1 | 2026-07-27 |
-| eq-field | [SyntaxError: Identifier 'INCIDENT_TYPES' has already been declared](https://eq-solutions.sentry.io/issues/136548558/) | 1 | 2026-07-26 |
 _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunresolved)_
 
 ## Recently built (last 7 days)
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-28 | eq-shell | [#1081](https://github.com/eq-solutions/eq-shell/pull/1081) feat(auth): tenant-scoped self-serve phone signup on Core login ( |
+| 2026-07-28 | eq-shell | [#1082](https://github.com/eq-solutions/eq-shell/pull/1082) fix(suppliers): PR #1079's scroll wrapper was insufficient — forc |
 | 2026-07-28 | eq-shell | [#1080](https://github.com/eq-solutions/eq-shell/pull/1080) fix(licences): licence-push never marks a revoked Cards licence i |
 | 2026-07-28 | eq-shell | [#1079](https://github.com/eq-solutions/eq-shell/pull/1079) fix(suppliers): wrap desktop Table in a horizontal-scroll contain |
 | 2026-07-28 | eq-shell | [#1078](https://github.com/eq-solutions/eq-shell/pull/1078) fix(admin): correct Worker join QR copy to match invite-required  |
@@ -87,8 +89,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-28 | eq-shell | [#1070](https://github.com/eq-solutions/eq-shell/pull/1070) fix(security): event-trigger lockdown for anon-executable new fun |
 | 2026-07-28 | eq-shell | [#1068](https://github.com/eq-solutions/eq-shell/pull/1068) feat(auth): TOTP backup codes for authenticator device loss |
 | 2026-07-28 | eq-shell | [#1069](https://github.com/eq-solutions/eq-shell/pull/1069) fix(control-plane): eq_intake_rollback crashed on every call sinc |
-| 2026-07-28 | eq-shell | [#1067](https://github.com/eq-solutions/eq-shell/pull/1067) fix(auth): strip totp_secret from login response payloads |
-| 2026-07-28 | eq-shell | [#1066](https://github.com/eq-solutions/eq-shell/pull/1066) fix(licences): Replace photo button never clears its busy state o |
 _Showing 15 of 106 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -103,7 +103,7 @@ _Showing 15 of 106 · full record in [sessions/](sessions/)_
 - **eq-receipts' Netlify site doesn't auto-deploy on push to `main`** despite `netlify.toml` and the app's own kickoff doc assuming it does — every deploy this session needed a manual trigger. The Netlify MCP's own CLI-proxy deploy path 404'd reproducibly (three times now); the dashboard's manual "Trigger deploy" is the only confirmed-working path right now. Root cause not investigated — worth fixing so this doesn't need manual triggering forever. _(added 2026-07-28)_
 - **Rhys to re-upload a distinct back photo for his electrical licence** if the duplicate was accidental — his call, not a system fix. _(added 2026-07-28)_
 - **CRON_SECRET rotation** — the one real hit: a plaintext credential in vendored git history (`eq-intake/eq-platform/apps/eq-service/CHANGELOG.md`, commit `b116e4430c8`, 2026-06-10, file since deleted from the tree), described in that commit as "already set" in Netlify. Deliberately left un-allowlisted in `.gitleaks.toml` so it keeps surfacing on a full-history scan rather than going silent. Needs a decision: rotate the value in Netlify, and note the same value likely sits in `eq-solves-intake`'s own git history too, not just here. _(added 2026-07-28)_
-_…and 333 more · [eq/pending.md](eq/pending.md)_
+_…and 334 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -146,4 +146,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-28 09:50 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-28 10:02 UTC._
