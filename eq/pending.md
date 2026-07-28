@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-07-27
+last_updated: 2026-07-28
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -16,6 +16,15 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ## eq-shell: field_people security-setting drift (2026-07-28)
 - [ ] **EQ Field root-cause fix not built** — task_c940a825, already running (started from the chip). Fixing the view definition at the source in EQ Field would stop this recurring a 4th time. _(added 2026-07-28)_
+- [x] **A 3rd duplicate task (task_b9317024) was spawned and finished clean** — an unrelated session (merging a secret-scanning CI gate, eq-shell PR #1056) hit this same drift-gate failure at 04:16 UTC, before PR #1054's fix had propagated, and spawned its own background task without noticing task_c940a825/task_bfc87dc9 already covered it. Checked `gh pr list` at close: no new PR appeared after #1056, so it did not duplicate the fix — same "already resolved" outcome as task_bfc87dc9 above. task_c940a825 remains the one real root-cause task still open.
+
+---
+
+## eq-shell: secret-scanning CI gate added, one real leak found (2026-07-28)
+*Asked for advice on working through the 24-finding "eq-shell vs industry" audit from earlier the same session; picked the cheapest, no-approval-needed item first — a secret-scanning CI gate. Verified a full git-history scan (1665 commits) before turning it on as blocking rather than advisory: 325 of 326 raw hits were false positives (UUIDs, one public Supabase anon key), now allowlisted with reasoning inline in `.gitleaks.toml`. Built, merged (eq-shell [PR #1056](https://github.com/eq-solutions/eq-shell/pull/1056)), live.*
+
+- [ ] **CRON_SECRET rotation** — the one real hit: a plaintext credential in vendored git history (`eq-intake/eq-platform/apps/eq-service/CHANGELOG.md`, commit `b116e4430c8`, 2026-06-10, file since deleted from the tree), described in that commit as "already set" in Netlify. Deliberately left un-allowlisted in `.gitleaks.toml` so it keeps surfacing on a full-history scan rather than going silent. Needs a decision: rotate the value in Netlify, and note the same value likely sits in `eq-solves-intake`'s own git history too, not just here. _(added 2026-07-28)_
+- [ ] **Remaining audit findings not yet triaged into work** — the 6-perspective "vs industry" audit that prompted this surfaced 4 P0 / 11 P1 / 9 P2 findings across auth, authorization, multi-tenant data, frontend composition, security ops, and DX tooling. Only the secret-scan gate (above) and the field_people drift (separate section) have been acted on so far. Full findings are in a Claude.ai artifact from this session, not yet copied into repo docs — worth deciding whether it needs a permanent home before the artifact is the only record of it. _(added 2026-07-28)_
 
 ---
 
@@ -1597,8 +1606,8 @@ Net: on a deep-linked `?tab=leave` view — exactly how Core embeds Field — `l
 **Completed:**
 
 **Deferred:**
-- [ ] **Merge eq-context PR #62.** _(added 2026-07-04)_
-- [ ] **Arm the Phase 1 + Phase 2 backups (needs Royce)** — supplementary detail verified live via `gh` just now: eq-context's `production-ops` **GitHub Environment does not exist yet** (Phase 1 isn't armed either, not just Phase 2). Repo secrets currently present: `EQ_CONTEXT_PAT`, `EQ_SHELL_JWT_SECRET`, `SENTRY_AUTH_TOKEN`, `SUPABASE_ACCESS_TOKEN`, `SUPABASE_SERVICE_ROLE_KEY` (= ehow key) — that's all. None of `R2_ACCESS_KEY_ID/SECRET/ENDPOINT/BUCKET_NAME`, `SENTRY_DSN`, ehow's `SUPABASE_DB_URL`, or the 4 `EQ_CANONICAL*`/`EQ_CANONICAL_INTERNAL*` secrets exist in eq-context yet. **`eq-service` repo already has live `R2_ACCESS_KEY_ID`/`R2_SECRET_ACCESS_KEY`/`R2_ENDPOINT`/`R2_BUCKET_NAME` + its own `SUPABASE_DB_URL`** — reusable by copying the values across, no Cloudflare-dashboard trip needed for R2. `SENTRY_DSN` doesn't exist anywhere yet — genuinely needs creating fresh in Sentry. _(supplementary detail added 2026-07-04, needs your call)_
+- [ ] **Merge eq-context PR #62** — still open, 24 days old. Re-checked live 2026-07-28: no longer cleanly mergeable (`gh pr merge` refused — "the merge commit cannot be cleanly created"), main has drifted too far since 2026-07-04. Pure frontmatter-hygiene/docs change (adds missing frontmatter to 6 changelog/runbook files + one workflow allowlist entry), all its own CI checks still green — just needs a rebase before it can land. Not attempting the rebase unprompted on a 24-day-old branch touching 10 files. _(added 2026-07-04, re-checked 2026-07-28)_
+- [x] **Arm the Phase 1 + Phase 2 backups** / **Arm the ehow backup** — **both done, confirmed live 2026-07-28.** The `production-ops` GitHub Environment exists (created 2026-07-04, same day as this item) with all 10 secrets present (`SUPABASE_DB_URL`, `R2_ACCESS_KEY_ID/SECRET/ENDPOINT/BUCKET_NAME`, `SENTRY_DSN`, `EQ_CANONICAL_DB_URL`, `EQ_CANONICAL_INTERNAL_DB_URL`, `EQ_CANONICAL_SERVICE_ROLE_KEY`, `EQ_CANONICAL_INTERNAL_SERVICE_ROLE_KEY`). All 6 backup/verify workflows (`backup-ehow`, `backup-eq-canonical`, `backup-eq-canonical-internal` + their 3 `verify-*` counterparts) are active and their most recent runs all `completed success`, most within the last 24h. This was fully done back on 2026-07-04 — the pending items were just never closed. Closing now. _(added 2026-07-04, closed 2026-07-28 — verified live)_
 
 **Notes:**
 - A concurrent console (different tool, screenshot shared mid-session) was independently working the exact same arming task with its own checklist. Drafted Royce a coordination prompt handing that console the just-verified live-secret facts and standing this session's Code instance down from touching any secrets/environments, so the two consoles don't race on creating the same GitHub Environment or setting conflicting values.
@@ -1632,7 +1641,7 @@ Net: on a deep-linked `?tab=leave` view — exactly how Core embeds Field — `l
 **Completed (merged to `main`, `ca9ae0c`):**
 
 **Deferred:**
-- [ ] **Arm the ehow backup (needs Royce)** — create eq-context `production-ops` env (main-only, no reviewers) + add secrets `SUPABASE_DB_URL` (ehow pooler), `R2_ACCESS_KEY_ID/SECRET/ENDPOINT/BUCKET_NAME`, `SENTRY_DSN`; run once via `workflow_dispatch`; confirm green + R2 contents + Sentry check-in. _(added 2026-07-04)_
+- [x] **Arm the ehow backup — done, see the merged duplicate above** (this was the same item as "Arm the Phase 1 + Phase 2 backups," both closed together 2026-07-28 — verified live). _(added 2026-07-04, closed 2026-07-28)_
 - [ ] **Retire `eq-service/.github/workflows/backup.yml`** — separate eq-service PR, only after the eq-context job runs green once (avoid double-backup). _(added 2026-07-04)_
 - [ ] **Repoint eq-service `SUPABASE_DB_URL`** (env `production-ops`) urjh→ehow if keeping the old job alive during cutover — Royce owns the secret; moot once eq-context is green. _(added 2026-07-04)_
 - [ ] **Run the first restore drill** per `system/runbooks/supabase-restore-drill.md`; record achieved RTO/RPO in the drill log. _(added 2026-07-04)_
