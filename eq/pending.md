@@ -1615,7 +1615,7 @@ Net: on a deep-linked `?tab=leave` view — exactly how Core embeds Field — `l
 **Completed (merged + deployed live):**
 
 **Deferred:**
-- [ ] **Orphaned Supabase project `eq-tenant-favour-perfect` (`jzjzpgaablnppoimdnip`)** — DB rows are gone (above), but the project itself is still `ACTIVE_HEALTHY`. No MCP tool can delete/pause it (`pause_project` failed again: "not free-tier, downgrade first"); needs Royce via the Supabase dashboard directly — org `sqjyblkiqonyrdobaucn` → project "eq-tenant-favour-perfect" → Settings → General → Delete project. _(added 2026-07-04, needs your call)_
+- [x] **Orphaned Supabase project `eq-tenant-favour-perfect` (`jzjzpgaablnppoimdnip`)** — **confirmed deleted.** Re-checked live 2026-07-28: `list_projects` no longer shows it, and `get_project` on its ID returns "Resource has been removed." Someone (Royce or another session) already handled this. Closing. _(added 2026-07-04, closed 2026-07-28 — verified live)_
 - [ ] **Test the Add-tenant → data-plane Provision button flow fresh** — this session verified the *self-serve invite-link* path end-to-end; the *admin manually creates a tenant, then clicks Provision* path (same PR #627 fix) was never independently walked start-to-finish on a brand-new tenant. _(added 2026-07-04)_
 - [ ] **Leave submit-path** — never load-tested a real leave submission this session (real-email side effect); still open ahead of Royce's stress-testing week. _(added 2026-07-04)_
 - [ ] **QR/join-code worker flow** — `JoinContextNotifier`'s keepalive fix (PR #120) was applied by exact code-pattern match to the provision-context bug, not independently reproduced/verified live. Worth a live pass before the 15th. _(added 2026-07-04)_
@@ -1692,7 +1692,7 @@ Net: on a deep-linked `?tab=leave` view — exactly how Core embeds Field — `l
 **Completed (eq-shell, branch `claude/staff-add-to-roster-v2`):**
 
 **Blocked (needs Royce):**
-- [ ] **Delete stale remote branch `claude/staff-add-to-roster`** — a concurrent session's branch-switch in the shared checkout caused the first push attempt to land on the wrong branch pointing at an unrelated commit; recovered by opening the PR from `-v2` instead, but the stale remote ref is still there (`git push origin --delete claude/staff-add-to-roster`) and the classifier blocked the agent from deleting it. _(added 2026-07-03, needs your call)_
+- [x] **Delete stale remote branch `claude/staff-add-to-roster`** — **confirmed gone.** Re-checked live 2026-07-28: `git ls-remote` against eq-shell returns nothing for this branch — already deleted by someone. Closing. _(added 2026-07-03, closed 2026-07-28 — verified live)_
 
 **Notes (load-bearing):**
 - Hit the [[shared-checkout-branch-race]] pattern (documented in `~/.claude` memory from PR #613 the same day) — verify `git branch --show-current` and the `[branch xxxx]` line in commit output before trusting a commit/push landed where intended when other sessions may be sharing the checkout.
@@ -1711,7 +1711,7 @@ Net: on a deep-linked `?tab=leave` view — exactly how Core embeds Field — `l
 - [x] **Merge eq-intake #58** — **already merged** (verified live via `gh pr view`, `state: MERGED`). This item was stale — closing. _(added 2026-07-03, closed 2026-07-28 — verified live)_
 
 **Notes (load-bearing):**
-- **Worktree `C:\Projects\eq-intake-ledger-wt` still exists** — work is pushed to #58, removal was also classifier-blocked (treated as a shared-resource mutation alongside the DB backfill in the same turn). Safe to `git -C C:\Projects\eq-intake worktree remove ..\eq-intake-ledger-wt` once #58 is merged. Registry row already cleared to Stale by this session.
+- **Worktree `C:\Projects\eq-intake-ledger-wt` — confirmed gone**, checked live 2026-07-28 (folder no longer exists). #58 merged, this cleaned up. No action needed.
 - This session's audit is a second, independent confirmation of the hardcoded-UUID + anon-grant issue already known from the earlier steward-session audit — no new live finding beyond what's captured in the blocks below, just a different fix path (table lineage vs. RPC-only).
 ---
 
