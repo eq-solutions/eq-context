@@ -190,7 +190,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ## eq-field: fixed 2 live Sentry errors — duplicate global + Leave lazy-load race (2026-07-27)
 
-- [ ] **Latent sibling risk, not fixed**: the Leave toolbar's other buttons (CC List, Archive Resolved, Show Archived, Print, the status-filter/search `renderLeave()` calls) call `leave.js` globals directly and unguarded, with the exact same lazy-load race as the button just fixed — just not yet caught by Sentry. Deliberately left out of this PR to keep it scoped to the confirmed crash; worth a small follow-up sweep applying the same `openLeaveRequestSafe()`-style guard to the rest of that toolbar. _(added 2026-07-27)_
+- [x] **Latent sibling risk — now fixed.** It stopped being latent: the "Show Archived" toggle actually crashed a real user with this exact race (Sentry EQ-FIELD-X, confirmed via the now-connected Sentry MCP). Fixed at the root instead of one call site at a time — `renderLeave()` itself now checks the user is still on the Leave page before rendering, closing this and the other 7 call sites (CC List, Archive Resolved, Print, respond/archive/unarchive/withdraw/quick-approve) in one place. Shipped: eq-field PR [#556](https://github.com/eq-solutions/eq-field/pull/556), merged, live. _(added 2026-07-27, closed 2026-07-28)_
 
 ---
 

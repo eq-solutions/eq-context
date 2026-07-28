@@ -9,6 +9,11 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-28] Leave page: fixed a crash when navigating away mid-refresh (MERGED, #556)
+- Sentry EQ-FIELD-X: `TypeError: Cannot set properties of null (setting 'innerHTML')`, `toggleShowArchived` → `renderLeave` → `_renderLeaveWorker`. The "Show Archived" toggle (and 7 sibling actions — respond, archive, unarchive, withdraw, hard-delete, quick-approve, archive-all) `await` a network call before re-rendering the Leave page; if the user had already navigated off Leave by the time the await resolved, the render wrote to a DOM element that no longer existed and crashed.
+- Fixed at the root: `renderLeave()` now no-ops if the user isn't on the Leave page anymore, matching the guard `_ensureLeaveLoaded()` already used for the equivalent race — one line closes every call site sharing the shape, not just the one that actually crashed.
+- The other flagged error (`ReferenceError: openLeaveRequest is not defined`) was already fixed live in v3.5.358 — Sentry just hadn't re-resolved the group.
+
 ## [2026-07-28] Labour Hire: archive from the roster grid with a rehire rating (MERGED, #555, v3.5.369)
 - New 📦 archive icon on Labour Hire rows only in the roster editor, opening an optional 1-5 star "would rehire" rating before removing them from the roster. Skippable — the remove action works with no rating set.
 - People page: ★/☆ rate/re-rate action on already-archived Labour Hire rows, plus a rating chip shown wherever a rating is set (active or archived — restoring never clears it).
