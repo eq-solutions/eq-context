@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-28 10:10 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-28 10:18 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-28 10:05 UTC → 2026-07-28 10:10 UTC)
+## Since last refresh (2026-07-28 10:10 UTC → 2026-07-28 10:18 UTC)
 
-- Merged: eq-shell [#1069](https://github.com/eq-solutions/eq-shell/pull/1069) fix(control-plane): eq_intake_rollback crashed on every call
-- Merged: eq-shell [#1067](https://github.com/eq-solutions/eq-shell/pull/1067) fix(auth): strip totp_secret from login response payloads
-- Merged: eq-shell [#1066](https://github.com/eq-solutions/eq-shell/pull/1066) fix(licences): Replace photo button never clears its busy st
-- Merged: eq-shell [#1064](https://github.com/eq-solutions/eq-shell/pull/1064) feat(cards): compliance register — one row per employee, not
-- Merged: eq-shell [#1061](https://github.com/eq-solutions/eq-shell/pull/1061) fix(security): revoke anon EXECUTE on rls_introspection (eho
-- Merged: eq-shell [#1060](https://github.com/eq-solutions/eq-shell/pull/1060) fix(licences): dedup guard on staff-licence-backfill, same c
-- Merged: eq-shell [#1057](https://github.com/eq-solutions/eq-shell/pull/1057) fix(customers): address autocomplete never mounts in New cus
-- Merged: eq-shell [#1056](https://github.com/eq-solutions/eq-shell/pull/1056) ci(security): add blocking secret-scan gate (gitleaks)
+- Merged: eq-shell [#1063](https://github.com/eq-solutions/eq-shell/pull/1063) fix(quotes): stop detail badge showing a stage change that n
+- Merged: eq-shell [#1062](https://github.com/eq-solutions/eq-shell/pull/1062) feat(licences): let a manager replace the photo/PDF on an ex
+- Merged: eq-shell [#1059](https://github.com/eq-solutions/eq-shell/pull/1059) feat(control-plane): backfill remaining 111 legacy jvkn func
+- Merged: eq-shell [#1058](https://github.com/eq-solutions/eq-shell/pull/1058) fix(auth): require re-auth before replacing an enrolled auth
+- Merged: eq-shell [#1055](https://github.com/eq-solutions/eq-shell/pull/1055) hotfix(quotes): drop stale eq_bulk_update_quote_status overl
+- Merged: eq-shell [#1054](https://github.com/eq-solutions/eq-shell/pull/1054) fix(schema): reassert security_invoker on field_people views
+- Merged: eq-shell [#1053](https://github.com/eq-solutions/eq-shell/pull/1053) fix(quotes): capture a reason when bulk-closing quotes as lo
+- Merged: eq-solves-service [#629](https://github.com/eq-solutions/eq-service/pull/629) Send one PDF per request to the parse endpoint, not one batc
 
 ## ⚠ Needs you (4)
 
@@ -51,7 +51,7 @@ _…and 74 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
 | eq-shell | ? unknown | ? | 1 | 0d |
-| eq-solves-service | ? unknown | ? | 1 | 0d |
+| eq-solves-service | ? unknown | ? | 0 | — |
 | eq-field | ? unknown | ? | 1 | 0d |
 | eq-cards | ? unknown | ? | 0 | — |
 | eq-solves-intake | ✓ success | 2d ago | 1 | 0d |
@@ -89,12 +89,13 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-28 | eq-shell | [#1072](https://github.com/eq-solutions/eq-shell/pull/1072) docs(control-plane): record eq_enforce_function_privacy applied t |
 | 2026-07-28 | eq-shell | [#1070](https://github.com/eq-solutions/eq-shell/pull/1070) fix(security): event-trigger lockdown for anon-executable new fun |
 | 2026-07-28 | eq-shell | [#1068](https://github.com/eq-solutions/eq-shell/pull/1068) feat(auth): TOTP backup codes for authenticator device loss |
-_Showing 15 of 106 · full record in [sessions/](sessions/)_
+_Showing 15 of 105 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
 - **Working tree on that branch has an uncommitted fix for a real production incident** (`WORKER_RESOURCE_LIMIT / 546` — Deno edge function hit its memory limit running `unpdf` text-extraction concurrently across a 5-file batch) not yet committed or deployed. Live is still v6; this fix (serialize the text-extraction phase per file, keep vision fallback concurrent) would become v7. Whoever's session that is should commit + redeploy; not picked up by this session since it wasn't this session's work. _(added 2026-07-28)_
-- **Remaining ~179 Dependabot alerts left alone this round** — spot-checked as build-tooling/transitive with no live runtime exposure, not a full sweep. A real sweep needs a proper re-vendor of the `eq-intake` tree (not just an in-place bump) — worth doing as its own pass. _(added 2026-07-28)_
+- **React Router's remaining 2 CVEs only have a v7 fix** — a framework migration (merged with Remix, real routing/API changes), not a version bump. Explicitly scoped out of this pass on Royce's instruction ("skip the react-router v7 migration"). Worth its own scoped project if ever prioritized. _(added 2026-07-28)_
+- **One DoS CVE left deliberately unfixed**: `brace-expansion` inside `exceljs`'s zip-writer chain (`archiver` → `archiver-utils` → `glob@7` → `minimatch@3.1.5`). The only full fix is a `minimatch` major bump, and this deep tree isn't verified against `minimatch`'s newer API — accepted as a residual rather than risk breaking xlsx writing in production. Low real-world exploitability (internal file-glob matching during archive creation, not attacker-reachable input). _(added 2026-07-28)_
 - **Royce/a worker to trigger a slow or failed photo-read live and confirm the new message shows and stays** — verified in code + automated tests (88/88 passing), not yet clicked through for real. _(added 2026-07-28)_
 - **Brian Griffin-Colls' First Aid/CPR certificate itself still needs updating** — the bug that silently dropped his attempt is now fixed, but his original update was never captured; someone still needs to redo it (himself, or an admin via the Staff page). _(added 2026-07-28)_
 - **Competitive benchmark vs industry leaders (Deputy, Tradify, Fergus, simPRO, ServiceM8, Rhumbix, Skedulo)** — selected alongside the MD-tidy pass, but the session pivoted to the Sites-screen rebuild before it was run. Not started. _(added 2026-07-28)_
@@ -102,8 +103,7 @@ _Showing 15 of 106 · full record in [sessions/](sessions/)_
 - **Kareena's KPH/KAR pairing was flagged "ambiguous" by the live resolver** (2026-07-23) — today's manual pick (keep KPH) looks right on the evidence, but worth a second look via the console. _(added 2026-07-28)_
 - **eq-receipts' Netlify site doesn't auto-deploy on push to `main`** despite `netlify.toml` and the app's own kickoff doc assuming it does — every deploy this session needed a manual trigger. The Netlify MCP's own CLI-proxy deploy path 404'd reproducibly (three times now); the dashboard's manual "Trigger deploy" is the only confirmed-working path right now. Root cause not investigated — worth fixing so this doesn't need manual triggering forever. _(added 2026-07-28)_
 - **Rhys to re-upload a distinct back photo for his electrical licence** if the duplicate was accidental — his call, not a system fix. _(added 2026-07-28)_
-- **CRON_SECRET rotation** — the one real hit: a plaintext credential in vendored git history (`eq-intake/eq-platform/apps/eq-service/CHANGELOG.md`, commit `b116e4430c8`, 2026-06-10, file since deleted from the tree), described in that commit as "already set" in Netlify. Deliberately left un-allowlisted in `.gitleaks.toml` so it keeps surfacing on a full-history scan rather than going silent. Needs a decision: rotate the value in Netlify, and note the same value likely sits in `eq-solves-intake`'s own git history too, not just here. _(added 2026-07-28)_
-_…and 334 more · [eq/pending.md](eq/pending.md)_
+_…and 335 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -125,7 +125,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 2731 | 425 | 82 | 9 |
+| [EQ](eq/pending.md) | 2732 | 426 | 82 | 9 |
 | [SKS](sks/pending.md) | 434 | 76 | 12 | 13 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 382 | 34 | 7 | 1 |
@@ -146,4 +146,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-28 10:10 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-28 10:18 UTC._
