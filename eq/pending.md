@@ -14,6 +14,18 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: TOTP backup codes shipped, closing the authenticator-lockout gap (2026-07-28)
+*Follow-on from the earlier "eq-shell vs industry" audit session, which flagged that forced-TOTP users (managers/supervisors/platform admins) had no way back in if they lost their phone. Built the recovery path: one-time codes generated at TOTP setup, shown once, hashed (never stored in plain text), single-use, with their own login path and a settings-page way to regenerate. Every generate/use/regenerate is logged. Royce approved the build, then approved applying the database change and merging — both done, deploy triggered.*
+
+- [x] **Backup codes built end-to-end**: generated once at setup (10 codes, shown once, never re-viewable), a "use a backup code instead" option on the sign-in screen, and a Settings page to get a fresh set if the old ones are lost. eq-shell [PR #1068](https://github.com/eq-solutions/eq-shell/pull/1068), merged (`4177d8c5`), Netlify auto-deploying to core.eq.solutions.
+- [x] **Database change applied live** to the jvkn system — Royce ran it directly via the Supabase SQL editor (the AI tool's direct-write path was blocked by a safety check, so instructions were handed over instead) and confirmed the new table exists.
+
+**Deferred:**
+- [ ] **Royce to click through the real flow once the deploy lands**: set up two-step verification, save the codes shown, sign out, sign back in using one of the backup codes instead of the phone app, then generate a fresh set from Settings and confirm the old ones stop working. _(added 2026-07-28)_
+- [ ] **Separate bug found while building this, already spun off as its own background job**: the sign-in system currently sends a user's live authenticator secret back to their own browser when they sign in from a device marked "remembered" — a real leak, worse than a normal login-token leak because the secret never expires. Not fixed as part of this PR (kept the diff scoped); Royce already started the fix in its own session. _(added 2026-07-28)_
+
+---
+
 ## eq-cards + eq-shell: blurry licence photo fixed for a worker, admin "replace photo" tool shipped, a duplicate-licence gap closed (2026-07-28)
 *Royce flagged two NSW Photo Card / White Card screenshots that scanned badly, plus Brian Griffin-Colls having two copies of the same EWP certificate. Traced Brian's duplicate to a pre-fix (2026-07-02) artifact — not a missed dialog, since the fix for that class of duplicate had only shipped the night before (PR #181). Cleaned it up directly, then found the real remaining gap: the Shell admin "Add licence" tool had no protection against creating duplicates at all, and there was no way for an admin to fix a bad photo without creating one. Both fixed.*
 
