@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-07-27
+last_updated: 2026-07-28
 scope: Done items rotated out of eq/pending.md nightly by scripts/rotate_pending.py (per-item since 2026-07-27; before that, occasional manual whole-section moves). Nothing here is actionable — pure historical record (also covered in eq/changelog/*.md and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -19,6 +19,17 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 ## eq-shell: field_people security-setting drift (2026-07-28)
 - [x] **EQ Field root-cause fix** — task_c940a825, was still running as of the original write-up; now complete. See the canonical write-up in `eq/pending.md` → "eq-field: field_people security_invoker drift root-caused + fixed" (eq-field [PR #557](https://github.com/eq-solutions/eq-field/pull/557), merged).
 - [x] **A 3rd duplicate task (task_b9317024) was spawned and finished clean** — an unrelated session (merging a secret-scanning CI gate, eq-shell PR #1056) hit this same drift-gate failure at 04:16 UTC, before PR #1054's fix had propagated, and spawned its own background task without noticing task_c940a825/task_bfc87dc9 already covered it. Checked `gh pr list` at close: no new PR appeared after #1056, so it did not duplicate the fix — same "already resolved" outcome as task_bfc87dc9 above.
+
+---
+
+## eq-field: field_people security_invoker drift root-caused + fixed (2026-07-28)
+*A recurring security bug (view losing tenant-isolation on ehow/SKS, 3rd time) got traced to its actual source: eq-field's own database change for the same-day Labour Hire rating feature (PR #555) was applied straight to the live database but never saved to the repo, and the version applied left out a required safety setting. Live data was never exposed further than the earlier incidents already were — this closes the gap, it doesn't newly open one.*
+
+- [x] Confirmed live database state directly — the safety setting was already correct (fixed reactively by the Shell team's own automated check the same day) before touching anything.
+- [x] Saved the missing database change to the repo properly this time, with the safety setting restored and a warning comment explaining why, right where the next person will see it.
+- [x] Added a permanent note to eq-field's own build rules so the next person adding a column to these two tables copies the safe pattern instead of writing a bare replace statement.
+- [x] Shipped — eq-field [PR #557](https://github.com/eq-solutions/eq-field/pull/557), merged on Royce's go.
+- [x] **Closed the "just a comment" gap** (`task_8e90b65d`) — added an automated check that fails the build if a future change to these two database views leaves out the required safety setting, instead of only warning about it in a comment. eq-field [PR #558](https://github.com/eq-solutions/eq-field/pull/558), merged on Royce's go. Verified the check actually works by deliberately injecting the exact past bug and watching it get caught, not just assumed. Two known limits, accepted rather than hidden: it can't catch a bad change made inside eq-shell's own repo (that team's own drift-gate check is still what covers that path), and it can't catch a database change made by hand outside the normal file-based process.
 
 ---
 

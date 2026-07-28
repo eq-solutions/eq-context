@@ -14,6 +14,11 @@ status: live
 - No live database change made by this PR — ehow was already correct (fixed by eq-shell PR #1054). This PR only records the migration properly in the repo (with the safety clause restored) and adds a permanent warning to `CLAUDE.md` so the next column added to either view doesn't repeat the omission.
 - Flagged as a residual gap, not fixed here: the safeguard shipped is documentation only, which is the same class of gap that let this recur once already. A mechanical CI check is spun off separately (`task_8e90b65d`).
 
+## [2026-07-28] CI: mechanical gate for field_people security_invoker drift (MERGED, #558)
+- Closes the gap #557 flagged: `tests/migration-security-invoker-guard.test.js`, wired automatically into the existing CI job (no workflow change needed — it already loops `tests/*.test.js`). Scans every migration for `CREATE OR REPLACE VIEW` on `app_data.field_people`/`field_people_removed` and fails the build if the safety clause is missing.
+- Verified by injecting a migration reproducing the exact bug and confirming the test fails; confirmed green again after removing it.
+- Scope decision: eq-field only. eq-shell's own migrations were 2 of the 3 historical incidents' actual source — that repo's existing drift-gate CI remains the backstop for changes originating there; not touched here (separate repo/ownership, reported back per task scope). Also can't stop a DB change hand-applied via Supabase MCP and never committed to a migration file — only guarantees a committed one gets caught.
+
 ## [2026-07-28] Leave page: fixed a crash when navigating away mid-refresh (MERGED, #556)
 - Sentry EQ-FIELD-X: `TypeError: Cannot set properties of null (setting 'innerHTML')`, `toggleShowArchived` → `renderLeave` → `_renderLeaveWorker`. The "Show Archived" toggle (and 7 sibling actions — respond, archive, unarchive, withdraw, hard-delete, quick-approve, archive-all) `await` a network call before re-rendering the Leave page; if the user had already navigated off Leave by the time the await resolved, the render wrote to a DOM element that no longer existed and crashed.
 - Fixed at the root: `renderLeave()` now no-ops if the user isn't on the Leave page anymore, matching the guard `_ensureLeaveLoaded()` already used for the equivalent race — one line closes every call site sharing the shape, not just the one that actually crashed.
