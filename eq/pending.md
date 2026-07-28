@@ -42,8 +42,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ## eq-receipts: Exports archive/delete + PDF page-splitting shipped, deploy pipeline gaps found (2026-07-28)
 
-- [ ] **`downloadSelectedHistory`'s bulk-download likely popup-blocked** — multiple `window.open()` calls fire after an `await`, past the point most browsers still treat it as a user-gesture-triggered open. Pre-existing, not touched this session, worth a real fix (single zip download, or a "click each link" fallback). _(added 2026-07-28)_
-- [ ] **eq-receipts' Netlify site doesn't auto-deploy on push to `main`** despite `netlify.toml` and the app's own kickoff doc assuming it does — every deploy this session needed a manual trigger. The Netlify MCP's own CLI-proxy deploy path 404'd reproducibly (twice); the dashboard's manual "Trigger deploy" is the only confirmed-working path right now. Root cause not investigated — worth fixing so this doesn't need manual triggering forever. _(added 2026-07-28)_
+- [ ] **eq-receipts' Netlify site doesn't auto-deploy on push to `main`** despite `netlify.toml` and the app's own kickoff doc assuming it does — every deploy this session needed a manual trigger. The Netlify MCP's own CLI-proxy deploy path 404'd reproducibly (three times now); the dashboard's manual "Trigger deploy" is the only confirmed-working path right now. Root cause not investigated — worth fixing so this doesn't need manual triggering forever. _(added 2026-07-28)_
 
 ---
 
