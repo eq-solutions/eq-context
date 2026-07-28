@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-28)
 
-**eq-cards:**
-- #183 feat(licences): push licence updates to eq-shell after save
-
 **eq-shell:**
 - #1078 fix(admin): correct Worker join QR copy to match invite-required behaviour
 - #1074 fix(deps): xlsx off unpatched npm registry to SheetJS CDN fix
