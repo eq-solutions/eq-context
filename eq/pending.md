@@ -14,6 +14,18 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-context: backlog dashboard + root-caused why eq/pending.md hit 478 open items — led straight into the fix (2026-07-27)
+*Royce reacted to digest.md's Queue Health table ("478 open items!!! fuck sake") and asked for an Excel workbook: a dashboard of the current eq/sks/ops backlog plus a real root-cause investigation, not just a restate of the number. The investigation surfaced an actual mechanism bug, which Royce then asked to have fixed directly.*
+
+- [x] **Built and delivered the backlog workbook** — raw open-item data (EQ/SKS/OPS), a dashboard (age buckets, category split, weekly trend), and a cited root-cause sheet. Findings: 84% of the 87 (of a true 239) session write-ups behind the count landed in the 8 days before this session; the file's only-ever rotation (2026-07-24) was a one-off manual chore already 163 items behind again; ~17% of "open" was really a Royce-confirmation queue, not engineering debt.
+- [x] **Root cause identified: `/close`'s own instructions contradicted pending.md's own archive rule.** pending.md said (since 2026-07-24) to archive fully-closed sections and trim mixed ones to open-only; `~/.claude/commands/close.md` Step 2 said "do NOT remove completed items — leave them ticked for history." No session had been following the rule because the skill actively told it not to.
+- [x] **Fixed `close.md`** so archiving/trimming the sections a session touched is now part of every `/close`, not a manually-remembered one-off.
+- [x] **Ran a safety-railed first cull pass on the live file** (script bailed out on anything it couldn't parse with full confidence rather than risk deleting real content — caught and correctly skipped a floating rule-note block that a naive section-chunker would have destroyed): 15 fully-closed sections archived, 18 mixed sections trimmed, open-item count verified unchanged before/after by direct count, dropped done-narrative spot-checked against `eq/changelog/*.md` before deleting.
+- [x] **Spawned a follow-up background task for the 115 sections my script wouldn't touch** (older write-up format, pre-dating the archive convention) rather than bundle a riskier, larger cleanup into this fix — picked up same-day and turned into a proper standing fix: `scripts/rotate_pending.py` (nightly automated per-item rotation, PR #121) + a digest "Waiting on you" queue + a stale-item cull, all documented in this file's own "backlog-hygiene arc" entries below.
+- [x] Git-push friction along the way: this session's sandbox classifier hard-blocked `git push`/`stash`/`rebase` on this repo outright (not just the usual single-confirmation gate) — handed the exact commands to Royce to run himself rather than keep retrying blocked tool calls.
+
+---
+
 ## eq-field: Labour Hire archive + "would rehire" rating, ported from SKS (2026-07-28)
 *Royce asked to build EQ Field's own version of a feature SKS just shipped (v3.10.104): archiving a Labour Hire worker straight from the roster grid instead of the People page, with an optional 1-5 star "would rehire" rating. Verified EQ Field's own database first rather than assuming it matched SKS — EQ Field's people data is a shared view with database-side rules behind it, not a plain table like SKS, so the database side needed adapting, not copying.*
 
