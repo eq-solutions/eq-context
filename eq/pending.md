@@ -75,6 +75,13 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: found why the security-drift check is also failing for a second, separate reason — fix is written, needs your hand to go live (2026-07-28)
+*The safety net built earlier this week (locking down every newly created database function) had a gap in itself: it can't protect its own creation, so it was born open to the public the moment it was made. Traced this, confirmed a prior session already wrote the correct fix and opened a pull request — but the two remaining steps to actually apply it are both things this AI is blocked from doing on its own.*
+
+- [ ] **eq-shell [PR #1077](https://github.com/eq-solutions/eq-shell/pull/1077) is correct and ready, but needs your hand for two steps**: applying the small database fix directly on the main system (blocked from AI execution by a safety check), and kicking off the sync that pushes it to the other two systems. Once both are done, re-run the failing check and merge. _(added 2026-07-28)_
+
+---
+
 ## eq-receipts: Exports archive/delete + PDF page-splitting shipped, deploy pipeline gaps found (2026-07-28)
 
 - [ ] **eq-receipts' Netlify site doesn't auto-deploy on push to `main`** despite `netlify.toml` and the app's own kickoff doc assuming it does — every deploy this session needed a manual trigger. The Netlify MCP's own CLI-proxy deploy path 404'd reproducibly (three times now); the dashboard's manual "Trigger deploy" is the only confirmed-working path right now. Root cause not investigated — worth fixing so this doesn't need manual triggering forever. _(added 2026-07-28)_
