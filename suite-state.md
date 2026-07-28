@@ -60,10 +60,13 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-28)
 
-**eq-service:**
-- #628 Map LVACB-5A frequency suffix to 5yr
+**eq-cards:**
+- #185 fix(credentials): eq_cards_my_credential_gaps() applies the Photo ID equivalence
 
 **eq-shell:**
+- #1083 fix(deps): sweep the remaining Dependabot alerts (146 -> 4 known/deferred)
+- #1082 fix(suppliers): PR #1079's scroll wrapper was insufficient — force a real overflow
+- #1081 feat(auth): tenant-scoped self-serve phone signup on Core login (one-login P5)
 - #1065 fix(functions): lazy-load @sentry/node to unblock local netlify dev
 
 ---
