@@ -60,6 +60,12 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-28)
 
+**eq-field:**
+- #561 fix(auth): persist Shell-verified eq_role across iframe reboot
+
+**eq-service:**
+- #629 Send one PDF per request to the parse endpoint, not one batched request
+
 **eq-shell:**
 - #1065 fix(functions): lazy-load @sentry/node to unblock local netlify dev
 
