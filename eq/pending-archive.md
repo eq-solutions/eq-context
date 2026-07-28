@@ -16,6 +16,12 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-shell: field_people security-setting drift (2026-07-28)
+- [x] **EQ Field root-cause fix** — task_c940a825, was still running as of the original write-up; now complete. See the canonical write-up in `eq/pending.md` → "eq-field: field_people security_invoker drift root-caused + fixed" (eq-field [PR #557](https://github.com/eq-solutions/eq-field/pull/557), merged).
+- [x] **A 3rd duplicate task (task_b9317024) was spawned and finished clean** — an unrelated session (merging a secret-scanning CI gate, eq-shell PR #1056) hit this same drift-gate failure at 04:16 UTC, before PR #1054's fix had propagated, and spawned its own background task without noticing task_c940a825/task_bfc87dc9 already covered it. Checked `gh pr list` at close: no new PR appeared after #1056, so it did not duplicate the fix — same "already resolved" outcome as task_bfc87dc9 above.
+
+---
+
 ## eq-shell: confirmed field_people security-setting alarm already fixed; spawned root-cause task for eq-field (2026-07-28)
 *Investigated a failing automated database-safety check on eq-shell PR #1056, flagging two SKS-side database views missing a security setting — the same class of issue that's recurred four times before. Before writing a new fix, checked whether it had already been handled: a concurrent session's PR (#1054) landed the exact fix ~18 minutes before this investigation started. Verified the live database directly instead of trusting the stale CI result, confirmed correct, then re-ran the check fresh to get a live green.*
 
