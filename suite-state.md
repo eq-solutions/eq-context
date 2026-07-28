@@ -64,7 +64,6 @@ _If this file is >48h old, the cron is broken._
 - #626 feat(migrations): add --verify checksum step, wire into PR plan (non-blocking)
 
 **eq-shell:**
-- #1076 feat(field-sync): licence-push.ts syncs Cards licence edits into Field post-approval
 - #1074 fix(deps): xlsx off unpatched npm registry to SheetJS CDN fix
 - #1065 fix(functions): lazy-load @sentry/node to unblock local netlify dev
 
