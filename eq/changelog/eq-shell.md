@@ -1,7 +1,7 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-07-27
+last_updated: 2026-07-28
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
@@ -9,7 +9,11 @@ status: live
 
 # eq-shell changelog
 
-## 2026-07-27 (latest — PR #1052 MERGED; #1051 open (not merged); #1049/#1044/#1045/#1047 MERGED)
+## 2026-07-28 (latest — PR #1055 hotfix MERGED; #1053 MERGED)
+- **PR #1053 (MERGED) — bulk-closing several quotes as lost/cancelled now captures a reason**, matching the single-quote Close as Lost/Cancelled flow shipped 2026-07-27. `eq_bulk_update_quote_status` widened with an optional `p_note`, forwarded to `eq_update_quote_status`'s existing `loss_reason` handling. Migration 0217, dispatched to SKS.
+- **PR #1055 (MERGED, hotfix, same day) — fixed a live production regression 0217 introduced.** `CREATE OR REPLACE FUNCTION` doesn't replace a function when the parameter list changes — it adds a second overload. 0217 left the old 3-arg `eq_bulk_update_quote_status` live alongside the new 4-arg version; confirmed directly against ehow that this broke the *entire* bulk "Set status..." feature (not just the new reason field) with `function ... is not unique` for named-parameter calls — the calling style PostgREST/Supabase's `.rpc()` uses. Migration 0218 drops the stale overload. zaap unaffected (0217 was SKS-only). Dispatched to SKS, re-verified live.
+
+## 2026-07-27 — PR #1052 MERGED; #1051 open (not merged as of that close); #1049/#1044/#1045/#1047 MERGED
 - **PR #1052 (MERGED, LIVE) — automated release tagging.** New `.github/workflows/tag-release.yml` tags every push to `main` as `release-<YYYY-MM-DD>-<short-sha>` and pushes it — this repo has never had a single git tag before (package.json's version field is stuck at `0.0.0`, never bumped). Closes a real gap: no way to point at "what was live on a given date" without scrolling commit history. Same scheme as eq-solves-service's equivalent workflow, for suite-wide consistency. Companion task (fixing `check-perm-sync.mjs`'s under-granting blind spot) needed no new work — verified it was already fixed 2026-07-26 (PR #1016) and superseded by the Phase 3 matrix-collapse refactor; `check:perms` already reports clean.
 - **PR #1049 (MERGED, LIVE) — licence-expiry email/SMS reminders now deep-link to the specific licence.** Follow-up to eq-cards PR #181 (the new Renew button). `licence-expiry-scheduler.ts`'s worker email and SMS builders now link straight to `cards.eq.solutions/licences/{id}` instead of the wallet root — email gets a per-row link plus a single-licence CTA; SMS gets the same deep link only when exactly one licence is due, with a length guard that falls back to the plain domain rather than risk a second billed segment. Employer alert / admin digest untouched (different audience). `tsc -b` + full netlify-functions test suite (194/194) clean. Deploy confirmed live via Netlify MCP (`commit_ref` matched the merge commit, not just assumed from the merge itself).
 - **PR #1051 (OPEN, CI green, not merged)** — Staff list: merged Supervisor+On Roster into one compact "Status" cell and Phone+Email into one "Contact" cell, using new `@eq-solutions/ui` v1.13.0 `filterValue`/`exportValue` column props to keep global search, per-column filter, and CSV export working against the underlying fields. Bumps the `@eq-solutions/ui` pin to `#v1.13.0` for the same release's new column-reorder popover (move-up/move-down buttons in the shared Table's Columns menu, generic — every consumer of the shared Table gets it, not just Staff).

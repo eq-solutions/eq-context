@@ -14,15 +14,25 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: fixed the field_people security-setting drift that PR #1056's session later verified (2026-07-28)
+*A required automated database-safety check went red on `main` (not tied to any in-flight PR) — two SKS-side database views (`field_people`, `field_people_removed`) had silently lost a security setting (`security_invoker`) that keeps them from bypassing row-level access rules. Verified every claim in the initial report directly against the live systems before acting (the CI run, the database state, the affected PR) rather than trusting it at face value — one detail in the report was wrong (a stale migration-number reference) and got corrected in the fix. This is the third time specifically these two views have needed this exact fix (also 2026-07: two earlier rounds) — always caught reactively by CI, never fixed at its source in EQ Field.*
+
+- [x] **Shipped the fix** — PR #1054 merged, restores the missing security setting on both views, no functional/behavioural change.
+- [x] **Applied it to the live SKS database** and confirmed directly afterward that both views are correctly configured again.
+- [x] Hit a known chicken-and-egg on this repo's safety check (it reads live database state, not the code change, so it can't go green until the fix is actually applied — but the normal process applies fixes only after merging) — used the already-established workaround (apply against the pending change first, confirm green, then merge) rather than force through it.
+- [x] Spawned a follow-up task (chip) to find and fix the actual root cause in EQ Field, since a later session's write-up below shows a second, duplicate version of that same follow-up task got created — only one is needed, already running.
+
+**Deferred:**
+- [ ] **EQ Field root-cause fix not built** — task_c940a825, already running (started from the chip). Fixing the view definition at the source in EQ Field would stop this recurring a 4th time. _(added 2026-07-28)_
+
+---
+
 ## eq-shell: confirmed field_people security-setting alarm already fixed; spawned root-cause task for eq-field (2026-07-28)
-*Investigated a failing automated database-safety check on eq-shell PR #1056, flagging two SKS-side database views missing a security setting — the same class of issue that's recurred four times before. Before writing a new fix, checked whether it had already been handled: a concurrent session's PR (#1054) landed the exact fix ~18 minutes before this investigation started. Verified the live database directly instead of trusting the stale CI result, confirmed correct, then re-ran the check fresh to get a live green.*
+*Investigated a failing automated database-safety check on eq-shell PR #1056, flagging two SKS-side database views missing a security setting — the same class of issue that's recurred four times before. Before writing a new fix, checked whether it had already been handled: a concurrent session's PR (#1054, see entry above) landed the exact fix ~18 minutes before this investigation started. Verified the live database directly instead of trusting the stale CI result, confirmed correct, then re-ran the check fresh to get a live green.*
 
 - [x] Confirmed via direct database query that both flagged views are already correctly configured on the live SKS database — no new migration or PR needed.
 - [x] Re-ran the automated database-safety check on the main branch to get a fresh, current green result (the one visible on PR #1056 was captured before the fix landed).
-- [x] Spawned a follow-up task (chip, not started) to fix the actual root cause in EQ Field — the setting keeps getting silently reset because EQ Field's own code recreates these two views without it, so eq-shell has had to keep chasing and re-patching the same thing 5 times now.
-
-**Deferred:**
-- [ ] **EQ Field root-cause fix not built** — task_bfc87dc9 spawned, pending start (one-click from the chip, or pick up next EQ Field session). Fixing the view definition at the source would stop this recurring a 6th time. _(added 2026-07-28)_
+- [x] Spawned a follow-up task (chip) to fix the actual root cause in EQ Field — turned out to duplicate the one from the entry above; the duplicate chip is no longer reachable (task ids don't persist across app restarts), only task_c940a825 (already running) applies.
 
 ---
 
@@ -2579,8 +2589,9 @@ Diagnosed 2026-05-19. 17 advisor warnings, fix drafted but not applied.
 - Push, open PR, merge — done, all CI green pre-merge.
 
 **Deferred:**
-- [ ] **New drift-gate script not wired into any CI workflow yet.** Whether/when to add it to a workflow (informational first, `--strict` after a bake-in — same pattern as the other gates) is a separate decision. _(added 2026-07-27)_
-- [ ] **111-function baseline of legacy jvkn functions accepted as debt, not reconciled.** The control-plane migrations tree only starts 2026-05-24 — everything live from before that (the whole Cards/auth/audit genesis layer) predates it and was never going to have a source file. Seeded into the gate's allowlist so the check is useful from day one instead of drowning in noise, but reconciling them for real (writing ~111 backfill files) is a separate, large project. _(added 2026-07-27)_
+- [ ] **111-function jvkn legacy backfill — 5/7 migration files applied live, 2 blocked, nothing committed yet.** Follow-on session wrote 6 new source files reconciling the 111-function genesis-layer debt (see `eq-shell` session entry below for the full breakdown). Not a new item — same debt this section originally flagged, now mostly done. _(added 2026-07-27, updated 2026-07-28)_
+
+**Notes on the drift-gate script since this entry was written:** wired into CI as a required `--strict` gate by a concurrent session's PR #1050 (`.github/workflows/tenant-drift.yml`) — the "not wired into CI yet" item above is resolved, no longer tracked separately.
 
 **Notes:**
 - `--strict-identity` on `check-tenant-drift.mjs` does NOT cover jvkn — it's CHECK 3 (migration-identity), scoped to `supabase/tenant-migrations/*.sql` vs `app_data._eq_migrations` on the zaap/ehow **data** planes only. Don't reach for that flag again for a control-plane ask; use the new script instead.
