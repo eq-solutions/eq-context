@@ -35,7 +35,7 @@ _If this file is >48h old, the cron is broken._
 
 | Entity | Count | Schema |
 |--------|-------|--------|
-| Sites | 233 | app_data.sites |
+| Sites | 234 | app_data.sites |
 | Customers | 39 | app_data.customers |
 | Assets | 2,836 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
@@ -65,9 +65,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-service:**
 - #621 feat(maintenance): add Maximo PDF work-order import (eq-service side)
-
-**eq-shell:**
-- #1061 fix(security): revoke anon EXECUTE on rls_introspection (ehow)
 
 ---
 
