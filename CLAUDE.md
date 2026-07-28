@@ -125,6 +125,7 @@ Apply every response:
 - **List affected files first** before writing any code.
 - **Pre-mortem before building:** 3 risks + mitigations.
 - **Self-critique on demand** — "stress test this" / "devil's advocate" / "10/10 version". For EQ Field build decisions, SKS ops/commissioning/scheduling docs, or anything read outside the session, this runs automatically — see `rules/reflection-protocol.md`.
+- **Decision quality on demand** — "steelman this" / "no mistakes" / "high value?" / "will this work" / `/decide`. Six-step pass (frame, steelman, pre-mortem, value, feasibility, the call) for choosing *between* options, before anything is finalized — see `rules/decision-protocol.md`. Scale the output to the decision; don't run full ceremony on a trivial call.
 
 **Avoid:** restating questions before answering; obvious follow-up questions before attempting; defensive disclaimers; unnecessary complexity.
 
@@ -205,6 +206,7 @@ This contract points; it doesn't restate. Authoritative files:
 |---|---|
 | Hard rules | [rules/non-negotiables.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/non-negotiables.md) |
 | Reflection protocol (mandatory pre-finalization self-critique) | [rules/reflection-protocol.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/reflection-protocol.md) |
+| Decision protocol (on-demand steelman/pre-mortem/value/feasibility pass) | [rules/decision-protocol.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/decision-protocol.md) |
 | EQ Brand (Design Brief v1.3) | [rules/brand-eq.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/brand-eq.md) |
 | SKS Brand | [rules/brand-sks.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/brand-sks.md) |
 | Deployment | [rules/deployment.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/deployment.md) |
