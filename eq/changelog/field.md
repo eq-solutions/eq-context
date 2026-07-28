@@ -9,6 +9,13 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-28] Labour Hire: archive from the roster grid with a rehire rating (MERGED, #555, v3.5.369)
+- New 📦 archive icon on Labour Hire rows only in the roster editor, opening an optional 1-5 star "would rehire" rating before removing them from the roster. Skippable — the remove action works with no rating set.
+- People page: ★/☆ rate/re-rate action on already-archived Labour Hire rows, plus a rating chip shown wherever a rating is set (active or archived — restoring never clears it).
+- New nullable `rating` smallint (CHECK 1-5) on `app_data.staff`, exposed through `field_people`/`field_people_removed`, writes gated behind the existing `field.manage_labour_hire` permission. Live on ehow (sks tenant) only — the `eq` sandbox tenant's people writes are already in-memory-only, so the column would be inert there.
+- Ported from `sks-nsw-labour` v3.10.104, adapted to eq-field's canonical view + `INSTEAD OF` trigger architecture (SKS has a flat `people` table).
+- Split `scripts/people-labour-hire.js` out of `people.js` to stay under the file-size convention's CI gate; also fixed a latent gap where the roster editor's per-row actions only worked correctly if Contacts had been visited first in the same session (same class of bug `virtual-table.js` hit at v3.5.346).
+
 ## [2026-07-27] Automated release tagging (MERGED, #554)
 - New `.github/workflows/tag-release.yml` extracts `APP_VERSION` from `scripts/app-state.js` on every push to `main`, tags it `v<version>` (skipping cleanly if that tag already exists — multiple commits can land under one un-bumped version before the next bump), and creates a GitHub Release. Closes a real gap: eq-field has never had a single git tag despite the hand-maintained `APP_VERSION` constant being the only version marker across the whole app.
 

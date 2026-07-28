@@ -14,6 +14,20 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-field: Labour Hire archive + "would rehire" rating, ported from SKS (2026-07-28)
+*Royce asked to build EQ Field's own version of a feature SKS just shipped (v3.10.104): archiving a Labour Hire worker straight from the roster grid instead of the People page, with an optional 1-5 star "would rehire" rating. Verified EQ Field's own database first rather than assuming it matched SKS — EQ Field's people data is a shared view with database-side rules behind it, not a plain table like SKS, so the database side needed adapting, not copying.*
+
+- [x] Added an archive button to Labour Hire rows only in the roster grid, opening an optional star rating before removing someone — skippable, same idea as SKS.
+- [x] Added a rate/re-rate button on already-archived Labour Hire people on the People page, plus a star-rating chip shown wherever the rating is set — it survives if the person is brought back later.
+- [x] Added the new place to store the rating directly to the live database, nullable so nothing already stored is affected — confirmed live before building the rest.
+- [x] Caught and fixed a real problem before merging: the first version broke an automated code-quality check (a file-length limit). Fixed by splitting the new code into its own file rather than disabling the check.
+- [x] Shipped and live on field.eq.solutions — eq-field [PR #555](https://github.com/eq-solutions/eq-field/pull/555), merged on Royce's go.
+
+**Deferred:**
+- [ ] **No live click-through was possible this session** — the local preview needs credentials this session doesn't have access to. Verified instead via automated tests, a code check, and the exact same checks GitHub runs (all passed), plus a live preview link — but nobody has actually clicked through the real feature yet. Worth a quick real check next time you're in the app. _(added 2026-07-28)_
+
+---
+
 ## eq-roles/access-model audit + release tagging shipped across eq-field/eq-shell/eq-solves-service (2026-07-27)
 *Royce asked for a "world class" review of roles/access-control across EQ and, separately, whether release tagging was in place suite-wide. Verified eq-roles' access-model Phase 3 against live git history rather than the planning doc — found it further along than `ACCESS-MODEL-PLAN.md` claimed, the doc had just gone stale. Also found eq-field, eq-shell, and eq-solves-service had never had a single live git release tag between them — the only "what was live when" marker anywhere in the suite was eq-field's hand-bumped `APP_VERSION` constant.*
 
