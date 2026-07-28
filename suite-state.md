@@ -36,7 +36,7 @@ _If this file is >48h old, the cron is broken._
 | Entity | Count | Schema |
 |--------|-------|--------|
 | Sites | 231 | app_data.sites |
-| Customers | 45 | app_data.customers |
+| Customers | 39 | app_data.customers |
 | Assets | 2,836 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
 | Users | 5 | service.tenant_members |
@@ -64,7 +64,6 @@ _If this file is >48h old, the cron is broken._
 - #551 v3.5.370 — multi-lens review + keep-warm fix + Sites customer grouping
 
 **eq-service:**
-- #622 fix(security): revoke anon/authenticated EXECUTE on rls_introspection()
 - #621 feat(maintenance): add Maximo PDF work-order import (eq-service side)
 
 **eq-shell:**
@@ -88,7 +87,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 199 (latest: 0193) applied
+**Migrations:** eq-service has 200 (latest: 0194) applied
 
 ---
 
