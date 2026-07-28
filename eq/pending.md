@@ -14,6 +14,19 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-service: page-only export bug closed out everywhere, Excel export added to 3 pages (2026-07-29)
+*Follow-on from the Maximo PDF import thread (full write-up in `pending-archive.md`, 2026-07-29). The same "export only grabs the current page" bug that hit Maintenance Plans also existed on Sites, Customers, Instruments, and the Audit Log — fixed in a background session Royce started, reviewed and merged here. Royce then asked whether Excel export was a big lift; it wasn't (the library was already in use elsewhere in the app) — built and shipped the same session.*
+
+- [x] **Sites/Customers/Instruments/Audit Log export now downloads the full filtered list**, not just the current page — same fix pattern as Maintenance Plans. eq-service [PR #632](https://github.com/eq-solutions/eq-service/pull/632), merged.
+- [x] **Excel export added to Assets, Job Plans, and Maintenance Checks** — the Export button now offers a choice of CSV or Excel. Reused an Excel-writing library already in use elsewhere in the app, so this was a small addition, not new infrastructure. eq-service [PR #633](https://github.com/eq-solutions/eq-service/pull/633), merged.
+- [x] **Found and fixed a second bug on the Maintenance Checks page while wiring the above**: the "tasks completed" count next to every check was always showing a 0 for the total (e.g. "5/0" instead of "5/12") — the total was never actually being calculated, just hardcoded. Fixed in the same change.
+- [x] **Confirmed the Contacts page (`/sks/service/contacts`) is fully canonical** — reads and writes route straight through to the same shared contacts data Shell and Field use, no separate copy that could drift.
+
+**Deferred:**
+- [ ] **Royce to click through Assets/Job Plans/Maintenance Checks once the deploy lands** — confirm the Export button's new dropdown offers CSV and Excel, both download the full list, and the Maintenance Checks "tasks completed" count now shows a real number instead of "/0". Not click-tested live this session — no login credentials available in this environment, verified via type-checking + the full automated test suite + code review only. _(added 2026-07-29)_
+
+---
+
 ## eq-field: Safety nav reorder, dead TAFE buttons fixed, and a real load-time bug found + fixed (2026-07-28)
 *Royce flagged three things in one session: the Safety submenu felt overwhelming and out of order vs. actual daily use; the "Apply TAFE Day" / "TAFE Holidays" buttons on Edit Roster didn't appear to do anything; and Field's load time "really does suck." All three were real, all three shipped and verified live.*
 
