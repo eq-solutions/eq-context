@@ -9,6 +9,17 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-28] Scripts/styles now actually cacheable — repeat loads ~9-10x faster (MERGED, #562, v3.5.374)
+- Root cause of "load times suck": `sw.js`'s fetch handler was network-first for `/scripts/`/`/styles/`, so the Service Worker's own precache (34+ files) was never read on a normal load — every load, even a repeat load of the same version, re-fetched everything from the network. Added scripts/styles to the SW's cache-first paths (safe — `CACHE` already bumps per release and stale caches are purged on activate).
+- `netlify.toml`'s `no-cache, must-revalidate` on the same paths blocked the browser's native HTTP cache too, for anyone the SW hadn't taken over yet. Switched to `max-age=0, stale-while-revalidate=86400`.
+- Measured on the deploy preview before merge: repeat-load boot time ~6,074ms → 635ms DOMContentLoaded (~9.5x), ~6,701ms → 1,233ms load event (~5.4x).
+
+## [2026-07-28] Edit Roster: fixed dead "Apply TAFE Day" / "TAFE Holidays" buttons (MERGED, #560, v3.5.373)
+- `scripts/tafe.js` (defines both button handlers) was only lazy-loaded on the Apprentices tab, not Edit Roster — opening Edit Roster cold left both functions undefined, so clicking either button threw a silent error with no toast. Added `tafe.js` to the `'editor'` lazy-load bundle.
+
+## [2026-07-28] Safety submenu reordered by actual usage frequency (MERGED, #559, v3.5.372)
+- Was ordered by ship date (Prestarts, Toolboxes, Incidents, Site Audits, Records, Report, Test Equipment). Reordered per Royce's real usage read: Prestarts (daily) → Toolboxes → Site Audits → Records → Report → Test Equipment → Incidents (moved last — reported almost never).
+
 ## [2026-07-28] Edit Roster grid now respects the off-roster flag (MERGED, `7a19fd9`)
 - `renderEditor()` (the "Edit Roster" week grid, where a supervisor actually schedules people) filtered by group and archived status but never checked `on_roster` — so a person toggled off the roster in Shell's Staff page still showed up here for scheduling, even though the read-only Weekly Roster view already hid them (v3.5.301). One-line filter fix to match.
 
