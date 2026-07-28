@@ -35,7 +35,7 @@ _If this file is >48h old, the cron is broken._
 
 | Entity | Count | Schema |
 |--------|-------|--------|
-| Sites | 218 | app_data.sites |
+| Sites | 217 | app_data.sites |
 | Customers | 39 | app_data.customers |
 | Assets | 2,836 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
@@ -59,6 +59,9 @@ _If this file is >48h old, the cron is broken._
 ---
 
 ## Open PRs (as of 2026-07-28)
+
+**eq-service:**
+- #628 Map LVACB-5A frequency suffix to 5yr
 
 **eq-shell:**
 - #1065 fix(functions): lazy-load @sentry/node to unblock local netlify dev
