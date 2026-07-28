@@ -146,10 +146,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ---
 
 ## eq-solves-service: found and closed duplicate work — a stale WIP branch's asset-import fix was already shipped by a concurrent session (2026-07-28)
-*A session-open check found 13 files + a new migration sitting uncommitted and untested on the `migration-ledger-checksum-verify` branch, unrelated to that branch's own checksum-verify commit. Verified it (`tsc` clean, tests passing), committed, pushed, opened a PR. Asked to split the unrelated checksum-verify commit into its own PR — while doing that, the rebase revealed the asset-import fix was byte-for-byte already merged via PR #589/#590 days earlier, by a different concurrent session working off the same shared checkout. Closed the redundant PR with an explanation rather than merging dead work; no code was lost, nothing shipped twice.*
 
-- [x] **Split the checksum-verify commit into its own PR** — eq-service [PR #626](https://github.com/eq-solutions/eq-service/pull/626), open, mergeable, no longer bundled with unrelated work.
-- [x] **Closed the asset external_id fix PR as fully redundant** — confirmed via diff that its entire content was already live on `main` via PR #589 and PR #590 (merged 2026-07-23). Deleted the now-empty branch (remote + local).
 - [ ] **Same root cause as the 2026-07-23 "sessions colliding on the same files" investigation, recurring in a new form** — that fix addressed a fake-worktree collision; this incident was a stale local branch that never picked up days of intervening `main`-branch merges before new work got committed on top of it. Worth deciding whether sessions should confirm `git fetch && git log origin/main..HEAD` before *building on* an old branch, not just before pushing one. _(added 2026-07-28)_
 
 ---
