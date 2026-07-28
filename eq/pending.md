@@ -14,17 +14,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## eq-shell/eq-field: ONE LOGIN — tenant-scoped mobile signup shipped, Field role-persistence bug found (2026-07-28)
-*Royce asked for the actual levers to make onboarding into Field and Cards simple ("mobile number > code into a homepage"), while keeping the control layer separate from tenant. Investigation surfaced that the homepage (WorkerHome, two tiles) and the provisioning backend (`shell-join-tenant.ts`) already existed and were live — the real gap was narrower than expected. Also traced a live bug Royce hit personally ("logged in as a visitor") to its root cause.*
-
-- [x] **Tenant-scoped self-serve phone signup on Core's login page**, gated to a real tenant slug in the URL (`?tenant=`) — same trust boundary Cards' own `/join` already relies on. The bare public `/login` page stays login-only (anti-SMS-pumping-fraud protection, untouched). eq-shell [PR #1081](https://github.com/eq-solutions/eq-shell/pull/1081), merged, live.
-- [x] **Fixed Worker join QR admin page copy** to match its actual invite-required behaviour instead of promising open enrolment it never offered. eq-shell [PR #1078](https://github.com/eq-solutions/eq-shell/pull/1078), merged, live-verified.
-- [x] **Fixed a real data-loss bug on the Staff card**: editing anything on an Apprentice or Direct staff member and saving silently wiped their Company field. Added an Apprentice-year (1-4) field. eq-shell [PR #1084](https://github.com/eq-solutions/eq-shell/pull/1084), merged, live.
-- [x] Cleaned up a stray test account ("bob smith," demo phone) created while testing the signup flow, across all 3 tables/2 planes it touched.
-- [ ] **Merge eq-field PR #561** — persists the Shell-verified role across an iframe reboot (e.g. a service-worker update) so a Core-authenticated user isn't silently downgraded to a generic crew role in Field. This is the actual bug behind Royce's own "logged in as a visitor" report. Code done, CI green, deploy preview ready — just needs the merge go-ahead. _(added 2026-07-28)_
-
----
-
 ## eq-field: Safety nav reorder, dead TAFE buttons fixed, and a real load-time bug found + fixed (2026-07-28)
 *Royce flagged three things in one session: the Safety submenu felt overwhelming and out of order vs. actual daily use; the "Apply TAFE Day" / "TAFE Holidays" buttons on Edit Roster didn't appear to do anything; and Field's load time "really does suck." All three were real, all three shipped and verified live.*
 
