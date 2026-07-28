@@ -65,6 +65,7 @@ _If this file is >48h old, the cron is broken._
 - #561 fix(auth): persist Shell-verified eq_role across iframe reboot
 
 **eq-shell:**
+- #1084 fix(staff): stop Company field wiping on save, add apprentice year
 - #1065 fix(functions): lazy-load @sentry/node to unblock local netlify dev
 
 **eq-solves-intake:**
