@@ -14,6 +14,18 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: confirmed field_people security-setting alarm already fixed; spawned root-cause task for eq-field (2026-07-28)
+*Investigated a failing automated database-safety check on eq-shell PR #1056, flagging two SKS-side database views missing a security setting — the same class of issue that's recurred four times before. Before writing a new fix, checked whether it had already been handled: a concurrent session's PR (#1054) landed the exact fix ~18 minutes before this investigation started. Verified the live database directly instead of trusting the stale CI result, confirmed correct, then re-ran the check fresh to get a live green.*
+
+- [x] Confirmed via direct database query that both flagged views are already correctly configured on the live SKS database — no new migration or PR needed.
+- [x] Re-ran the automated database-safety check on the main branch to get a fresh, current green result (the one visible on PR #1056 was captured before the fix landed).
+- [x] Spawned a follow-up task (chip, not started) to fix the actual root cause in EQ Field — the setting keeps getting silently reset because EQ Field's own code recreates these two views without it, so eq-shell has had to keep chasing and re-patching the same thing 5 times now.
+
+**Deferred:**
+- [ ] **EQ Field root-cause fix not built** — task_bfc87dc9 spawned, pending start (one-click from the chip, or pick up next EQ Field session). Fixing the view definition at the source would stop this recurring a 6th time. _(added 2026-07-28)_
+
+---
+
 ## eq-context: backlog dashboard + root-caused why eq/pending.md hit 478 open items — led straight into the fix (2026-07-27)
 *Royce reacted to digest.md's Queue Health table ("478 open items!!! fuck sake") and asked for an Excel workbook: a dashboard of the current eq/sks/ops backlog plus a real root-cause investigation, not just a restate of the number. The investigation surfaced an actual mechanism bug, which Royce then asked to have fixed directly.*
 
@@ -94,15 +106,8 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ---
 
 ## eq-shell Quotes: retired 4 dead status values, added Close as Lost/Cancelled, added a file-count indicator (2026-07-27)
-*Started from a review of the quote/job status diagram Royce had flagged as overcomplicated — the app's UI only ever shows 5 main stages, but the database allowed 16 possible values, several of which no button or process ever set. Went through each one with Royce and got an explicit call on all of them, including a from-scratch judgement call he asked for directly ("do you think knowing it's lost/closed out when archiving is smart?"). Separately, Royce spotted from a screenshot that attached files had no visible indicator on the list and asked where they're stored — answered, then built the one feature he actually wanted (a file-count badge), not the "attach to email" idea, which stays unbuilt.*
-
-- [x] **Removed 4 status values that nothing in the app ever set or read** (folded into the nearest real equivalent), and merged two duplicate "verbal win" statuses into one. Fewer, more honest options everywhere quote status shows up.
-- [x] **Built a real "Close as Lost" / "Close as Cancelled" action** with a one-line reason prompt — the database already had a place to store the reason (built for this exact purpose, never wired to a button before now).
-- [x] **Added a small file-count badge** next to quotes/jobs that have attachments, so it's visible from the list without opening the record — answers "can I tell at a glance there are files here" without building the bigger "attach files to an email" feature, which stays a future option if wanted.
-- [x] **Shipped, deployed live, and the underlying database changes applied to the SKS database** — eq-shell [PR #1044](https://github.com/eq-solutions/eq-shell/pull/1044) + [PR #1045](https://github.com/eq-solutions/eq-shell/pull/1045), both merged.
 
 **Deferred:**
-- [ ] **Bulk "change status" on multiple quotes at once still doesn't capture a reason when closing as lost/cancelled** — only closing one quote at a time does. Known gap, not built. _(added 2026-07-27)_
 - [ ] **"Select files to send with an email" was floated but not chosen** — Royce picked the file-count badge only. Worth revisiting if the need comes up again. _(added 2026-07-27)_
 
 ---
