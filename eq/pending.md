@@ -139,6 +139,20 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ## eq-receipts: Exports archive/delete + PDF page-splitting shipped, deploy pipeline gaps found (2026-07-28)
 
 - [ ] **eq-receipts' Netlify site doesn't auto-deploy on push to `main`** despite `netlify.toml` and the app's own kickoff doc assuming it does — every deploy this session needed a manual trigger. The Netlify MCP's own CLI-proxy deploy path 404'd reproducibly (three times now); the dashboard's manual "Trigger deploy" is the only confirmed-working path right now. Root cause not investigated — worth fixing so this doesn't need manual triggering forever. _(added 2026-07-28)_
+  - **Correction (2026-07-29):** a same-day session merged a PR via `gh pr merge` and Netlify auto-deployed cleanly within a minute of the merge commit, no manual trigger needed — confirmed live via the Netlify MCP's deploy record (commit ref matched exactly, build succeeded, secret scan clean). Only retested the PR-merge path, not the original direct-push-to-main repro, so leaving this open rather than closing outright — but the auto-deploy pipeline itself is evidently not broken end-to-end.
+
+---
+
+## eq-receipts: duplicate-detection blind spot fixed (FX rounding hid a real double-charge), invoice number added as a stronger match (2026-07-29)
+*Royce asked "do we check for duplicate receipts?", then reported a specific receipt sitting unactioned that had already been approved elsewhere. Traced it live: two identical Anthropic charges ($12.02 USD both), missed as a duplicate because the app's duplicate check was comparing the AUD-converted dollar amount, and the currency-conversion rate applied can differ by a day (and a few cents) between the first scan and the second — so two copies of the exact same charge could get slightly different AUD totals and slip past the check.*
+
+- [x] Duplicate check now compares the original as-charged amount (for foreign-currency receipts) instead of the AUD conversion, so a few cents' conversion drift no longer hides a real duplicate. eq-receipts [PR #14](https://github.com/eq-solutions/eq-receipts/pull/14), merged, deployed (site + backend), live-verified.
+- [x] Where a receipt prints its own invoice/receipt number, the app now reads it and uses it as the strongest match — more reliable than amount+date for recurring subscription charges (same vendor, same amount, every month).
+- [x] Re-checked every existing receipt against the corrected rule — surfaced a **second** real duplicate that had been hiding the same way: two identical GitHub charges ($68.64 USD, both already approved, 2026-07-22). Both duplicate pairs now show correctly in the app.
+
+**Deferred:**
+- [ ] **Royce to review the two now-flagged duplicate pairs in the app** (Anthropic $12.02 USD and GitHub $68.64 USD, both 2026-07-22/07-28) and decide whether either was a genuine double-charge worth pursuing a refund/credit for, or just dismiss as intentional. _(added 2026-07-29)_
+- [ ] **No way to correct a misread invoice number in the app yet** — if the receipt-reading step gets a digit wrong, there's currently no field to fix it by hand, so it'll just fall back to the amount+date check instead. Low priority; flagged for later. _(added 2026-07-29)_
 
 ---
 
