@@ -289,6 +289,8 @@ Full audit: every active worktree in eq-shell, eq-intake, eq-field, eq-cards, eq
 | .claude/worktrees/eq-ops-mobile-view-af44a3 | eq-shell | (detached) | PR #875 (content match, squash) |
 | eq-shell-onelogin-wt | eq-shell | main | pre-emptied husk, force-removed w/ Royce's go |
 | eq-shell-onelogin-p5-wt | eq-shell | claude/one-login-p5-tenant-signup | MERGED PR #1081 — worktree removed 2026-07-28 |
+| eq-field-shell-role-fallback-wt | eq-field | claude/shell-field-role-fallback-fix | PR #561 — persist Shell eq_role across iframe reboot |
+| eq-shell-apprentice-fields-wt | eq-shell | claude/staff-apprentice-year-company | MERGED PR #1084 — worktree removed 2026-07-28 |
 | .claude/worktrees/compassionate-goldberg-734468 | eq-shell | (detached) | pre-emptied husk, force-removed w/ Royce's go |
 | eq-intake-export-tmp | eq-intake | (detached) | PR #71 (content match) |
 | .claude/worktrees/advisory-console | eq-intake | claude/site-advisory-console | PR #67 |
