@@ -1,13 +1,18 @@
 ---
 title: SKS — Pending
 owner: Royce Milmlow
-last_updated: 2026-07-27
+last_updated: 2026-07-28
 scope: SKS Technologies operational TODO list
 read_priority: critical
 status: live
 ---
 
 # SKS Pending
+
+## Labour Hire archive + rehire rating
+- [ ] Mirror the roster-grid archive + rating feature (SKS v3.10.104/.105) in EQ Field — flagged as a follow-up task; Royce started it in a separate session, result not yet known. _(added 2026-07-28)_
+
+---
 
 ## sks-charters backed up to GitHub (2026-07-27)
 *Found during a `C:\Projects` folder audit — `C:\Projects\sks-charters` (generates

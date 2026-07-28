@@ -1,13 +1,19 @@
 ---
 title: Changelog — SKS Labour
 owner: Royce Milmlow
-last_updated: 2026-07-21
+last_updated: 2026-07-28
 scope: Append-only history of changes to the SKS Labour scheduling app
 read_priority: reference
 status: live
 ---
 
 # Changelog — SKS Labour
+
+## [2026-07-28] Roster: archive Labour Hire from the grid, with a rehire rating
+**Built by:** assistant + Royce Milmlow
+- **v3.10.104 (PR #71, `6ff6fd3`, live)** — Labour Hire rows in the roster grid get a 📦 archive icon (other groups untouched), opening a small modal with an optional 1–5 star "would rehire" rating before archiving — reversible, same as the existing People-page archive. Already-archived Labour Hire rows on the People page get a ☆/★ rate action so the rating can be set or changed after the fact, not just at archive time; a star chip shows next to the name wherever a rating is set, including on a restored (rehired) worker. New nullable `rating smallint` column on `people` (CHECK 1–5), applied live to sks-labour. Not touched by the regular Add/Edit Person save path.
+- **v3.10.105 (PR #72, `7919a3e`, live)** — same-session follow-up fix: the roster-grid archive modal always opened with the star picker blank, so re-archiving a restored worker without picking a star silently wiped their earlier rating to `null`. Modal now prefills from the worker's current rating (same as the People-page rate action) — untouched stars preserve it, only an explicit tap overwrites.
+**Status:** Both live on sks-nsw-labour.netlify.app. Could not click-test live — this session's sandboxed browser has no outbound network to Supabase (known tooling limitation, not specific to this change); verified instead via live DB schema check before/after, `node --check` on every edited file, and direct read of the exact save/PATCH paths. EQ Field mirror flagged as a follow-up background task (`task_bc704d8e`) — Royce started it in a separate session, result not yet known.
 
 ## [2026-07-21] Mobile My Schedule + home tile now show Saturday/Sunday when rostered
 **Built by:** assistant + Royce Milmlow
