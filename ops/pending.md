@@ -380,16 +380,3 @@ Changelog at `archive/changelog-ahd.md`.
 ### Deferred (added 2026-07-27)
 - [ ] **Royce's call: does the possible SEC-9 second exposure push "rotate whenever convenient" to "rotate soon"?** Not decided this session.
 - [ ] SEC-9/10/12 actual rotation/re-store — Royce to run himself, runbook/steps ready.
-
-## rls_introspection() anon-EXECUTE leak (2026-07-28)
-
-Two sessions independently fixed the identical live exposure via two separate
-governed pipelines, ~85s apart, no conflict (both idempotent REVOKE/GRANT):
-eq-shell [#1061](https://github.com/eq-solutions/eq-shell/pull/1061)
-(`0219_revoke_anon_rls_introspection.sql` via `tenant-migrate.yml`) and
-eq-service [#622](https://github.com/eq-solutions/eq-service/pull/622)
-(`0194_revoke_rls_introspection_anon_grant.sql` via `apply-service-migrations.yml`).
-Both merged and live-verified. Real cost was duplicate engineering effort
-across two repos, not a live risk.
-
-- [x] **Root-cause default-privilege gap — CLOSED 2026-07-28 (SEC-16), via a different mechanism than first attempted.** `ALTER DEFAULT PRIVILEGES ... REVOKE EXECUTE ON FUNCTIONS FROM PUBLIC` was confirmed a no-op (see above investigation — real, reproducible, not a known Supabase event-trigger conflict). Root cause holds; the fix doesn't have to be a "default privilege" though. Shipped a `ddl_command_end` event trigger (`eq_enforce_function_privacy`) instead — re-runs the same explicit REVOKE/GRANT idiom SEC-4/13/15 already used, on every function landing in a guarded schema, immediately after creation. Verified live on all 3 planes (real test functions, not just rolled-back transactions): `anon=false`, `service_role=true`. Confirmed compatible with the existing convention of an explicit follow-up `GRANT` for a legitimate anon/authenticated RPC. eq-shell [#1070](https://github.com/eq-solutions/eq-shell/pull/1070) (tenant migration `0220`, zaap+ehow via `tenant-migrate.yml`) + [#1072](https://github.com/eq-solutions/eq-shell/pull/1072) (control-plane ledger, jvkn applied via Supabase MCP). Full detail: `ops/security-register.md` SEC-16.
