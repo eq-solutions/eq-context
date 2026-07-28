@@ -61,7 +61,6 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-28)
 
 **eq-field:**
-- #557 fix(schema): record missing security_invoker migration for field_people (ehow)
 - #551 v3.5.370 — multi-lens review + keep-warm fix + Sites customer grouping
 
 ---
