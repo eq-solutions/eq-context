@@ -60,9 +60,13 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-28)
 
+**eq-service:**
+- #626 feat(migrations): add --verify checksum step, wire into PR plan (non-blocking)
+- #625 fix(assets): match on external_id (Asset #) instead of unpopulated maximo_id
+
 **eq-shell:**
+- #1075 fix(staff): licence-review badge misses edits to already-reviewed licences
 - #1074 fix(deps): xlsx off unpatched npm registry to SheetJS CDN fix
-- #1071 fix(cards): clean compliance-pack filename, stop showing stale worker email
 - #1065 fix(functions): lazy-load @sentry/node to unblock local netlify dev
 
 ---
