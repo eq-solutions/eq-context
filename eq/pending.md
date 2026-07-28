@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-07-28
+last_updated: 2026-07-29
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -11,6 +11,13 @@ status: live
 
 EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-service: Maximo PDF import — fully live, one follow-up running elsewhere (2026-07-29)
+*The Maximo PDF work-order importer (full write-up in `pending-archive.md`, same date) is done and confirmed working against real production data. One adjacent bug it surfaced — the same "export only grabs the current page" pattern also exists on Sites, Customers, Instruments, and the Audit Log — was flagged and spun off as its own background session rather than fixed inline here.*
+
+- [ ] **Sites/Customers/Instruments/Audit Log export-pagination fix** — Royce started this as a separate background session (task `a787e8ea`) after it was flagged during this session; check its outcome next session rather than re-diagnosing. _(added 2026-07-29)_
 
 ---
 
@@ -26,14 +33,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [ ] **Concatenate the always-loaded boot scripts into 2-3 files at deploy time** (plain concatenation, not a bundler — stays consistent with the repo's deliberate no-build-step architecture). Cuts request count on the true first-ever cold visit, which the caching fix above doesn't touch. _(added 2026-07-28)_
 - [ ] **Audit which of the ~34 always-loaded-at-boot scripts actually need to block first paint** — several (recognitions.js, digest-settings.js, whatsnew.js, apprentice-widget.js, region-filter.js) look like narrow-feature scripts that could join the existing on-demand-per-page loading pattern already used for Roster/Timesheets/etc. _(added 2026-07-28)_
 - [ ] **Netlify Early Hints (103) for the first, blocking script** — lets the browser start fetching before Netlify finishes streaming the page shell. Polish-tier, smallest expected impact of the four. _(added 2026-07-28)_
-
----
-
-## eq-intake: parse-maximo-pdf-wo edge function git sync — already done by a concurrent session; found a live-production bug fix sitting uncommitted (2026-07-28)
-*Asked to pull the live `parse-maximo-pdf-wo` Supabase Edge Function (v6, `ehowgjardagevnrluult`) and commit it to `claude/parse-maximo-pdf-wo-edge-fn` in eq-intake, since the branch's only commit was a stale v1. Turned out a concurrent session had already done exactly this (commit `4ccf08d`, pushed to origin) — verified byte-for-byte against the live function before touching anything. Caught the concurrent session live-editing the same file mid-investigation (3 different function bodies read in 90 seconds); waited for it to settle rather than overwrite.*
-
-- [x] Verified `claude/parse-maximo-pdf-wo-edge-fn` (eq-intake) already matches live v6 exactly — no action needed, nothing pushed by this session.
-- [ ] **Working tree on that branch has an uncommitted fix for a real production incident** (`WORKER_RESOURCE_LIMIT / 546` — Deno edge function hit its memory limit running `unpdf` text-extraction concurrently across a 5-file batch) not yet committed or deployed. Live is still v6; this fix (serialize the text-extraction phase per file, keep vision fallback concurrent) would become v7. Whoever's session that is should commit + redeploy; not picked up by this session since it wasn't this session's work. _(added 2026-07-28)_
 
 ---
 

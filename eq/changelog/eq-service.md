@@ -1,13 +1,19 @@
 ---
 title: EQ Service — Changelog
 owner: Royce Milmlow
-last_updated: 2026-07-28
+last_updated: 2026-07-29
 scope: EQ Service append-only history. NOTE — duplicates eq/changelog/service.md, which stalls mid-deploy at 2026-06-09; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # EQ Service — Changelog
+
+## 2026-07-29
+- **PR #628 (MERGED) — Maximo PDF import: "5A" frequency suffix now maps to 5-yearly**, confirmed against real SY3 LVACB export data.
+- **PR #629 (MERGED) — Maximo PDF import client now sends one file per HTTP request, sequentially**, instead of bundling every file into one request. Root cause of a second, distinct `WORKER_RESOURCE_LIMIT` crash on the edge function — the server-side sequential fix from the same day didn't hold because the client was still bundling all files into one invocation.
+- **PR #630 (MERGED) — two Maximo/Maintenance-Plans bugs fixed.** (1) Every real PDF import showed every maintenance plan as "not found in EQ" — the importer was matching on the job plan's E-number instead of its short mnemonic code; fixed on the edge-function side (deployed live, v9) and documented here since it required no eq-service code change. (2) The Maintenance Plans page's CSV export only downloaded the current page (26 of 58 rows) — fixed by adding a second, unpaginated query for export only (`app/(app)/job-plans/page.tsx`, `JobPlanList.tsx`).
+- **PR #631 (MERGED) — fuzzy job-plan match picked the wrong candidate on a tie.** `MVSWBD` was suggesting `SWBD` instead of the obvious typo target `MVSWDB`. `lib/utils/levenshtein.ts` used plain Levenshtein, which scores a 2-letter swap the same as an unrelated 2-edit difference — switched to Damerau-Levenshtein so a swap costs 1 edit, removing the order-dependent tie-break entirely.
 
 ## 2026-07-28
 - **PR #626 (MERGED `4876a14` + LIVE) — split the migration-checksum `--verify` step out of a branch that had also picked up unrelated WIP.** A stale local branch carried both the `--verify` checksum-step commit and 13 uncommitted files fixing asset-import matching. **Duplicate-effort note:** the asset-import fix was confirmed byte-for-byte already merged via PR #589/#590 (2026-07-23) by a concurrent session — closed that half as redundant (was briefly opened as PR #625) rather than merging dead work. #626 carried only the checksum-verify commit; merged and confirmed live on service.eq.solutions (Netlify deploy `6a686bd7`, ready in 90s, secret scan clean).

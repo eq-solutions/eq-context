@@ -854,6 +854,27 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-intake: parse-maximo-pdf-wo edge function git sync — already done by a concurrent session; found a live-production bug fix sitting uncommitted (2026-07-28)
+*Asked to pull the live `parse-maximo-pdf-wo` Supabase Edge Function (v6, `ehowgjardagevnrluult`) and commit it to `claude/parse-maximo-pdf-wo-edge-fn` in eq-intake, since the branch's only commit was a stale v1. Turned out a concurrent session had already done exactly this (commit `4ccf08d`, pushed to origin) — verified byte-for-byte against the live function before touching anything. Caught the concurrent session live-editing the same file mid-investigation (3 different function bodies read in 90 seconds); waited for it to settle rather than overwrite.*
+
+- [x] Verified `claude/parse-maximo-pdf-wo-edge-fn` (eq-intake) already matches live v6 exactly — no action needed, nothing pushed by this session.
+- [x] **Working tree's uncommitted `WORKER_RESOURCE_LIMIT` fix became the seed of a much larger effort** — see the full write-up below ("Maximo PDF import — text-first extraction rebuild + 6 production bugs fixed"). **[CLOSED 2026-07-29 — the entire feature was rebuilt and hardened against real production PDFs across multiple sessions; this narrow item was long since subsumed]**
+
+---
+
+## eq-service/eq-intake: Maximo PDF import — text-first extraction rebuild + 6 production bugs fixed, feature now fully live (2026-07-29)
+*Royce tested the Maximo PDF work-order importer against real Equinix PDF exports repeatedly, live, over several sessions — each real bug surfaced through his own testing, fixed and verified against the live system, not assumed. What started as "commit an uncommitted fix" (see the entry above) grew into rebuilding the extraction approach entirely and closing out six separate real bugs.*
+
+- [x] **Text-first extraction replaces vision-only.** Discovered real Equinix Maximo PDFs have a genuine text layer with a consistent per-page header format — extraction now reads that directly (`unpdf`) and only falls back to Claude vision for pages it can't parse. Removes Anthropic's 100-page cap, the 200k-token budget ceiling, per-PDF Anthropic cost, and 28-80s latency for the common case. Deployed live (Supabase edge function `parse-maximo-pdf-wo`, versions 5-9), git history caught up via eq-solves-intake [PR #79](https://github.com/eq-solutions/eq-solves-intake/pull/79) (merged).
+- [x] **Two separate `WORKER_RESOURCE_LIMIT` (546) crashes fixed** — first, the edge function was extracting text from every PDF in a batch concurrently and ran out of memory (fixed: sequential per-file extraction, vision fallback only when needed); second, discovered the fix didn't fully land because eq-service's client was still bundling every file into one HTTP request regardless (fixed: eq-service now sends one file per request, sequential). eq-service [PR #629](https://github.com/eq-solutions/eq-service/pull/629), merged.
+- [x] **"5A" frequency suffix now maps to 5-yearly**, confirmed against real SY3 LVACB export data with Royce directly. Fixed in all three places the mapping lives (eq-service, eq-intake's shared package, the edge function). eq-service [PR #628](https://github.com/eq-solutions/eq-service/pull/628), merged.
+- [x] **Every real PDF import showed every maintenance plan as "not found in EQ", even ones that clearly existed.** Root cause: the importer was matching on the E-number (e.g. "E1.25") instead of the short plan code (e.g. "LVACB") — Maximo's raw text has both, and the wrong one was being extracted for matching. Fixed and verified against all 5 real PDF files. Documented in eq-service [PR #630](https://github.com/eq-solutions/eq-service/pull/630) (deployed live via direct edge function deploy, v9).
+- [x] **Maintenance Plans page export only downloaded the current page** (26 rows), not the full list (58 rows) — confirmed against a CSV Royce actually exported and compared to the live database. Fixed by fetching a second, unpaginated query specifically for export. eq-service [PR #630](https://github.com/eq-solutions/eq-service/pull/630), merged.
+- [x] **A near-match Maximo code (`MVSWBD`) was suggesting the wrong maintenance plan (`SWBD`) instead of the obvious intended one (`MVSWDB`)**, confirmed by Royce from a live screenshot. Root cause: the "how close are these two codes" check didn't recognise a simple two-letter swap as a small difference — it scored the swap the same as an unrelated, bigger difference, so the tie went to whichever plan happened to load from the database first. Fixed so a swap is correctly recognised as the smallest possible difference. eq-service [PR #631](https://github.com/eq-solutions/eq-service/pull/631), merged.
+- [x] **Git history for all the edge-function fixes above was caught up to what's already live.** eq-solves-intake [PR #79](https://github.com/eq-solutions/eq-solves-intake/pull/79), merged.
+
+---
+
 ## ⏩ Session close — 2026-06-05 (part b) — PostHog MCP + EQ Core go-live readiness (rotated 2026-07-27 — open items remain in pending.md)
 
 - [x] Finish **Service domain cutover** (DNS/TLS, `NEXT_PUBLIC_SITE_URL`, Supabase URL allowlist on `ehowgjardagevnrluult`). Service prod project resolved: migrated to ehow (sks-canonical) 2026-06-08; old `urjhmkhbgaxrofurpbgc` (-dev) deleted 2026-06-22. **[CLOSED 2026-07-27 — confirmed live and resolved elsewhere in this file (service.eq.solutions Netlify project)]**
