@@ -1798,7 +1798,7 @@ Net: on a deep-linked `?tab=leave` view — exactly how Core embeds Field — `l
 - "merge" ×2 → #56 then #57 straight to main. Merging applies/deploys nothing — go-live is a separate explicit step.
 
 **Deferred (added 2026-07-03):**
-- [ ] **Renew Huon Henne's LVR** — ops action, not code: expired 2025-10-08 (268 days), staff active + on-roster. The dashboard + alerts panel now show it as critical; the ticket itself is the safety issue. **Also surfaced by the first guardian run: a second LVR expires in 29 days and an electrical licence in 25 days.** _(added 2026-07-03, needs your call)_
+- [x] **Renew Huon Henne's LVR — duplicate of the item closed 2026-07-28** (he was offboarded 2026-07-28, `active: false`/`on_roster: false` on ehow, no longer a live gap). The other two people this item mentions (Rhys Scott, Brian Griffin-Colls) are tracked live in the "eq-cards: licence renewal built, shipped" section above — still open, now urgent (today / 4 days). _(added 2026-07-03, closed 2026-07-28)_
 
 **Notes (load-bearing):**
 - **053's sibling RPCs (`eq_quality_open_alerts`/`eq_quality_resolve_alert`) have `authenticated` grants on live but 053 contains no GRANT lines** — they were granted out-of-band at some point. Any function shipped without an explicit GRANT block should be assumed locked-down on ehow; check `has_function_privilege` before wiring a browser caller.
