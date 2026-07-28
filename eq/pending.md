@@ -14,6 +14,12 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-field: Sites screen simplified around canonical customer links; site-record fragmentation found, not fixed (2026-07-28)
+- [ ] **Competitive benchmark vs industry leaders (Deputy, Tradify, Fergus, simPRO, ServiceM8, Rhumbix, Skedulo)** — selected alongside the MD-tidy pass, but the session pivoted to the Sites-screen rebuild before it was run. Not started. _(added 2026-07-28)_
+- [ ] **`app_data.sites` has 22 duplicate-named site groups with inconsistent customer-linking and roster-code assignment** (258 rows total, only 53 `field_enabled`, 205 enabled for neither Field nor Service) — surfaced while wiring the Sites screen to the canonical customer link. This is eq-shell's table (Field only reads it); merging duplicates needs a human call per group since live `schedule`/`timesheet` rows point at these ids. A background audit (`task_5ebbc8cf`) is already running independently. Pressure-tested via the decision protocol: don't act on this from eq-field, don't duplicate the running audit, and don't let it jump ahead of the open P0 security findings (SEC-1/SEC-9/SEC-10) in NEEDS YOU. _(added 2026-07-28)_
+
+---
+
 ## eq-shell: TOTP backup codes shipped, closing the authenticator-lockout gap (2026-07-28)
 *Follow-on from the earlier "eq-shell vs industry" audit session, which flagged that forced-TOTP users (managers/supervisors/platform admins) had no way back in if they lost their phone. Built the recovery path: one-time codes generated at TOTP setup, shown once, hashed (never stored in plain text), single-use, with their own login path and a settings-page way to regenerate. Every generate/use/regenerate is logged. Royce approved the build, then approved applying the database change and merging — both done, deploy triggered.*
 

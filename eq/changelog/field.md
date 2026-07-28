@@ -9,6 +9,13 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-28] Sites screen: grouped by customer, read-only badge, customer search + keep-warm ping (MERGED, #551, v3.5.370)
+- Sites screen was flat and hard to navigate once real customer data started showing through the canonical link — grouped into per-customer sections (largest first, unlinked sites last), with a count per group.
+- SKS sites owned by EQ Shell now show a "Managed in Core" badge instead of dead edit/delete buttons that silently did nothing.
+- Site search now also matches on customer name, not just site name/address/code.
+- New `keep-warm` scheduled Netlify Function (every 5 min) pings `tenant-config`/`verify-pin` to cut cold-start latency on first load — measured cold 1.6s → warm 0.4s on `tenant-config`.
+- Also shipped in the same PR: v5 multi-lens review (`_reviews/multi-lens/2026-07-27.md`) — noted the monster-file trend reversed (supabase.js -48% after decomposition), test coverage 7→19 files, 6/7 prior asks closed within a week.
+
 ## [2026-07-28] Schema: recorded the missing security_invoker migration for field_people (MERGED, #557)
 - Root-caused a recurring security bug: `app_data.field_people`/`field_people_removed` on ehow (SKS) kept losing their `security_invoker=on` tenant-isolation setting (3rd occurrence, previously patched reactively by eq-shell's drift-gate CI). Traced to the same-day #555 rating migration having been applied live via Supabase MCP but never committed to this repo — the applied `CREATE OR REPLACE VIEW` statements omitted the safety clause, which Postgres resets in full on any view replace.
 - No live database change made by this PR — ehow was already correct (fixed by eq-shell PR #1054). This PR only records the migration properly in the repo (with the safety clause restored) and adds a permanent warning to `CLAUDE.md` so the next column added to either view doesn't repeat the omission.
