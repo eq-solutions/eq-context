@@ -61,6 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-28)
 
 **eq-field:**
+- #563 v3.5.374 — Team pills: one crew picker across Editor/Roster/Contacts/Timesheets
 - #561 fix(auth): persist Shell-verified eq_role across iframe reboot
 
 **eq-shell:**
