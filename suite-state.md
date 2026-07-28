@@ -35,8 +35,8 @@ _If this file is >48h old, the cron is broken._
 
 | Entity | Count | Schema |
 |--------|-------|--------|
-| Sites | 228 | app_data.sites |
-| Customers | 44 | app_data.customers |
+| Sites | 231 | app_data.sites |
+| Customers | 45 | app_data.customers |
 | Assets | 2,836 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
 | Users | 5 | service.tenant_members |
@@ -61,6 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-28)
 
 **eq-field:**
+- #557 fix(schema): record missing security_invoker migration for field_people (ehow)
 - #551 v3.5.370 — multi-lens review + keep-warm fix + Sites customer grouping
 
 ---
@@ -80,7 +81,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 197 (latest: 0193) applied
+**Migrations:** eq-service has 199 (latest: 0193) applied
 
 ---
 
