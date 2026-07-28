@@ -1,13 +1,18 @@
 ---
 title: Changelog — EQ Solves Field
 owner: Royce Milmlow
-last_updated: 2026-07-26
+last_updated: 2026-07-28
 scope: Append-only history of changes to the EQ Solves Field product. Canonical — eq-field.md was merged into this file 2026-07-19, don't split again.
 read_priority: reference
 status: live
 ---
 
 # Changelog — EQ Solves Field
+
+## [2026-07-28] Schema: recorded the missing security_invoker migration for field_people (MERGED, #557)
+- Root-caused a recurring security bug: `app_data.field_people`/`field_people_removed` on ehow (SKS) kept losing their `security_invoker=on` tenant-isolation setting (3rd occurrence, previously patched reactively by eq-shell's drift-gate CI). Traced to the same-day #555 rating migration having been applied live via Supabase MCP but never committed to this repo — the applied `CREATE OR REPLACE VIEW` statements omitted the safety clause, which Postgres resets in full on any view replace.
+- No live database change made by this PR — ehow was already correct (fixed by eq-shell PR #1054). This PR only records the migration properly in the repo (with the safety clause restored) and adds a permanent warning to `CLAUDE.md` so the next column added to either view doesn't repeat the omission.
+- Flagged as a residual gap, not fixed here: the safeguard shipped is documentation only, which is the same class of gap that let this recur once already. A mechanical CI check is spun off separately (`task_8e90b65d`).
 
 ## [2026-07-28] Leave page: fixed a crash when navigating away mid-refresh (MERGED, #556)
 - Sentry EQ-FIELD-X: `TypeError: Cannot set properties of null (setting 'innerHTML')`, `toggleShowArchived` → `renderLeave` → `_renderLeaveWorker`. The "Show Archived" toggle (and 7 sibling actions — respond, archive, unarchive, withdraw, hard-delete, quick-approve, archive-all) `await` a network call before re-rendering the Leave page; if the user had already navigated off Leave by the time the await resolved, the render wrote to a DOM element that no longer existed and crashed.

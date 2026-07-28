@@ -14,16 +14,23 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-field: field_people security_invoker drift root-caused + fixed (2026-07-28)
+*A recurring security bug (view losing tenant-isolation on ehow/SKS, 3rd time) got traced to its actual source: eq-field's own database change for the same-day Labour Hire rating feature (PR #555) was applied straight to the live database but never saved to the repo, and the version applied left out a required safety setting. Live data was never exposed further than the earlier incidents already were — this closes the gap, it doesn't newly open one.*
+
+- [x] Confirmed live database state directly — the safety setting was already correct (fixed reactively by the Shell team's own automated check the same day) before touching anything.
+- [x] Saved the missing database change to the repo properly this time, with the safety setting restored and a warning comment explaining why, right where the next person will see it.
+- [x] Added a permanent note to eq-field's own build rules so the next person adding a column to these two tables copies the safe pattern instead of writing a bare replace statement.
+- [x] Shipped — eq-field [PR #557](https://github.com/eq-solutions/eq-field/pull/557), merged on Royce's go.
+
+**Deferred:**
+- [ ] **The fix above is a warning comment, not a hard stop** — the same warning language already existed after the 2nd incident and the bug still recurred, so a comment alone isn't good enough. Spun off as its own background task (`task_8e90b65d`, still running as of this close): build an actual automated check that blocks a bad database change before it ships, not just documents the risk after. _(added 2026-07-28)_
+
+---
+
 ## eq-service: migration ledger reconciled, 2 real fixes waiting on your approval to actually go live (2026-07-28)
 
 - [ ] **Dispatch `apply-service-migrations.yml` (eq-service) to push the 2 new fixes to the live database.** [PR #619](https://github.com/eq-solutions/eq-service/pull/619) merged the code, but merging only lands the files — nothing changes on the live database until this workflow is run, and it's set up to pause and wait for your approval click before it touches anything real. What it does: fixes a security-audit tool that's been silently broken (checks were passing without actually checking anything), and restores the notification-sending groundwork in an off state (still won't send anything until you separately decide to turn it on). _(added 2026-07-28)_
 - [ ] **Separately: decide whether to actually turn on scheduled notifications.** The groundwork is back in place (once the above is dispatched) but deliberately left switched off — this is a business decision (should the app start emailing/notifying people on a schedule), not a technical one, and hasn't been made. _(added 2026-07-28, restates an earlier still-open item)_
-
----
-
-## eq-shell: field_people security-setting drift (2026-07-28)
-- [ ] **EQ Field root-cause fix not built** — task_c940a825, already running (started from the chip). Fixing the view definition at the source in EQ Field would stop this recurring a 4th time. _(added 2026-07-28)_
-- [x] **A 3rd duplicate task (task_b9317024) was spawned and finished clean** — an unrelated session (merging a secret-scanning CI gate, eq-shell PR #1056) hit this same drift-gate failure at 04:16 UTC, before PR #1054's fix had propagated, and spawned its own background task without noticing task_c940a825/task_bfc87dc9 already covered it. Checked `gh pr list` at close: no new PR appeared after #1056, so it did not duplicate the fix — same "already resolved" outcome as task_bfc87dc9 above. task_c940a825 remains the one real root-cause task still open.
 
 ---
 
