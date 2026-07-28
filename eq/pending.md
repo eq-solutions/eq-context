@@ -17,7 +17,12 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ## Shell licence dashboard showing a false "expires today" alert — root cause is a real product gap (2026-07-28)
 *Royce spotted the AI Brief claiming Rhys Scott's licence expired today when he'd already renewed it, and pushed back on trusting dashboard text that "says a lot without saying anything." Investigated properly rather than reassuring: found and fixed the specific case (see the 2026-07-03 licence-renewal item below, now closed), and checked the other 112 synced licence records for the same class of staleness.*
 
-- [ ] **Standing gap, not fixed this session: Shell never automatically re-syncs a licence after a worker renews it in Cards.** The only trigger is a manager manually clicking "Re-sync from Cards" on that person's staff panel — miss that click and Shell's dashboard (and its AI Brief) can show stale expiry data indefinitely, including false "expires soon/today" alarms after a real renewal already happened. This is exactly what caused the Rhys Scott case. A real fix would need either an automatic re-sync (mirroring how `workers-canonical-sync` already runs nightly for staff records) or the AI Brief/dashboard cross-checking Cards directly instead of trusting Shell's cached copy. Not scoped or built — flagging the pattern, not just the one incident. _(added 2026-07-28)_
+*Follow-up same day: Royce asked for a fuller audit of the sync path. Result: SKS is clean (all 114 currently-synced licence rows match Cards exactly, zero drift), but the audit surfaced two things well beyond the original incident.*
+
+- [x] **Confirmed the SKS fix holds.** Full diff of all 114 SKS licence rows in Shell against Cards live — zero expiry mismatches, zero orphans, zero missing links.
+- [x] **Found the EQ Solutions tenant (Royce's own company) had never really synced at all — fixed live.** Its Shell data hadn't been touched since 2026-05-24: Royce's own 4 licence rows were all marked inactive, one was a straight duplicate (same licence, two conflicting expiry dates), and 3 of his current real licences (Police Check, High Voltage Switching, Master Cablers licence) added in Cards since didn't exist in Shell at all. The other 26 "staff" in that tenant were fabricated demo data from a May sprint (fake names, fake licence numbers) with ~590 dependent rows (500 schedule entries, 75 timesheets, 15 leave requests) — none of it touching real operational tables (assets, service visits, defects, tests all showed zero references). Royce approved a full clean: deleted the 26 fake staff and their seed data, resynced his own 7 real current licences from Cards, cleared the tenant's cached AI Brief. Direct SQL via Supabase MCP (zaap), not a migration — no code changed.
+- [ ] **Standing gap, not fixed this session: Shell never automatically re-syncs a licence after a worker renews it in Cards**, in either tenant. The only trigger is a manager manually clicking "Re-sync from Cards" on that person's staff panel — miss that click and Shell's dashboard (and its AI Brief) can show stale expiry data indefinitely. This caused both the Rhys Scott case and the EQ tenant's two-month dormancy. A real fix needs either an automatic re-sync (mirroring how `workers-canonical-sync` already runs nightly for staff records) or the AI Brief/dashboard cross-checking Cards directly instead of trusting Shell's cached copy. Not scoped or built. _(added 2026-07-28)_
+- [ ] **Separate, lower-priority finding: 53 of 88 active SKS staff have a Cards worker link but zero credentials captured in Cards at all** (checked the pre-promotion `worker_credentials` table too — genuinely empty, not stuck mid-migration). Only 34 of 88 active staff have any licence data flowing through Shell. This is a Cards onboarding-completion gap, not a sync bug — no action taken, logging only per Royce's call. _(added 2026-07-28)_
 
 ---
 
@@ -32,6 +37,16 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [ ] **Brian Griffin-Colls' First Aid/CPR certificate itself still needs updating** — the bug that silently dropped his attempt is now fixed, but his original update was never captured; someone still needs to redo it (himself, or an admin via the Staff page). _(added 2026-07-28)_
 
 **Note:** the earlier eq-shell duplicate-licence fix (PR #1060) and its CI-surfaced `rls_introspection` finding are already fully covered further down this file and in today's session log (resolved as SEC-15/SEC-16) — a follow-up chip spun off for that finding this session was superseded by the time it could run; no separate entry needed here.
+
+---
+
+## eq-cards: licence saves now push to eq-shell so Field's compliance data stays current (2026-07-28)
+*Companion to eq-shell [PR #1076](https://github.com/eq-solutions/eq-shell/pull/1076) (`licence-push.ts`, not yet merged) — mirrors the existing `worker-profile-push` pattern so a saved licence propagates into every active tenant's copy, the data EQ Field reads for dispatch/compliance-register/expiry notifications.*
+
+- [x] `LicenceRepository.upsert()` now fires a background sync to eq-shell right after a successful save — same fire-and-forget pattern already used for profile saves, never blocks or fails the save itself if the sync fails. eq-cards [PR #183](https://github.com/eq-solutions/eq-cards/pull/183), pushed, not yet merged.
+
+**Deferred:**
+- [ ] **eq-shell PR #1076 needs to merge before this actually does anything** — the endpoint this PR calls doesn't exist in production yet; merging #183 alone is safe (the call just fails silently and gets swallowed), but the sync won't start working until both land. _(added 2026-07-28)_
 
 ---
 
