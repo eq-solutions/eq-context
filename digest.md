@@ -8,19 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-28 06:58 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-28 07:09 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-28 06:55 UTC → 2026-07-28 06:58 UTC)
+## Since last refresh (2026-07-28 06:58 UTC → 2026-07-28 07:09 UTC)
 
-- Merged: eq-shell [#1066](https://github.com/eq-solutions/eq-shell/pull/1066) fix(licences): Replace photo button never clears its busy st
-- Merged: eq-shell [#1052](https://github.com/eq-solutions/eq-shell/pull/1052) feat: add release tagging workflow
-- Merged: eq-shell [#1050](https://github.com/eq-solutions/eq-shell/pull/1050) ci(control-plane): gate PRs on jvkn function-drift check (--
-- Merged: eq-shell [#1049](https://github.com/eq-solutions/eq-shell/pull/1049) feat(licences): deep-link expiry email/SMS reminders to the 
-- Merged: eq-shell [#1047](https://github.com/eq-solutions/eq-shell/pull/1047) fix(suppliers): make login/password visibility a real Securi
-- Merged: eq-shell [#1044](https://github.com/eq-solutions/eq-shell/pull/1044) fix(quotes): retire 4 dead status values, merge verbal-win, 
-- Merged: eq-shell [#1042](https://github.com/eq-solutions/eq-shell/pull/1042) fix(service-embed): explain the preview block instead of han
-- Merged: eq-shell [#1040](https://github.com/eq-solutions/eq-shell/pull/1040) fix(attachments): codify app_data.attachments — was hand-cre
-- ✅ Needs you: 4 → 3
+- Merged: eq-shell [#1069](https://github.com/eq-solutions/eq-shell/pull/1069) fix(control-plane): eq_intake_rollback crashed on every call
+- Merged: eq-shell [#1067](https://github.com/eq-solutions/eq-shell/pull/1067) fix(auth): strip totp_secret from login response payloads
+- Merged: eq-shell [#1051](https://github.com/eq-solutions/eq-shell/pull/1051) feat(staff): reorderable columns + compact Status/Contact ce
+- Merged: eq-shell [#1048](https://github.com/eq-solutions/eq-shell/pull/1048) feat(control-plane): jvkn function-drift CI check + backfill
+- Merged: eq-shell [#1046](https://github.com/eq-solutions/eq-shell/pull/1046) feat(staff): inline supervisor/roster toggles + quick-edit l
+- Merged: eq-shell [#1045](https://github.com/eq-solutions/eq-shell/pull/1045) feat(quotes): file-count badge on pipeline list + finish RPC
+- Merged: eq-shell [#1043](https://github.com/eq-solutions/eq-shell/pull/1043) fix(shell): EQ Field is missing its Records nav + rail opens
+- Merged: eq-shell [#1041](https://github.com/eq-solutions/eq-shell/pull/1041) fix(attachments): list/upload-attachment hit the control pla
 
 ## ⚠ Needs you (3)
 
@@ -28,7 +27,7 @@ _2026-07-28 06:58 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🔴 **Open security finding** — SEC-9 (P0 — confirmed exposure, same window as SEC-3, possible second exposure 2026-07-27) — A different service_role key (`jvkn`/eq-canonical) was pasted directly into a ch · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-10 (P0 — confirmed exposure) — `ANTHROPIC_API_KEY` + `RESEND_API_KEY` stored as plaintext Netlify env vars (`is · [security-register.md](ops/security-register.md)
 
-## 🙋 Waiting on you (81)
+## 🙋 Waiting on you (80)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
@@ -44,7 +43,7 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **EQ** · **Royce to click through the new "who gets notified" Settings control** to confirm it reads clearly and saves correctly — code-complete and tested, not yet user-verified. _(added 2026-07-27)_
 - **EQ** · **Needs Royce's call: is cold start still bad enough to warrant an infra change?** Everything fixable in code has shipped — the only remaining lever is moving off the serverless runtime model (always-on server or edge) to a materially faster cold start, which is a real infrastructure decision, not a quick fix. Not pursued without Royce's go-ahead. _(added 2026-07-27)_
 - **EQ** · **NOT built.** Royce's call after the steelman: this is real, but not urgent, and the plan itself says it belongs post-cutover — parked. _(added 2026-07-26)_
-_…and 69 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 68 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
@@ -74,6 +73,8 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-28 | eq-shell | [#1069](https://github.com/eq-solutions/eq-shell/pull/1069) fix(control-plane): eq_intake_rollback crashed on every call sinc |
+| 2026-07-28 | eq-shell | [#1067](https://github.com/eq-solutions/eq-shell/pull/1067) fix(auth): strip totp_secret from login response payloads |
 | 2026-07-28 | eq-shell | [#1066](https://github.com/eq-solutions/eq-shell/pull/1066) fix(licences): Replace photo button never clears its busy state o |
 | 2026-07-28 | eq-shell | [#1064](https://github.com/eq-solutions/eq-shell/pull/1064) feat(cards): compliance register — one row per employee, not per  |
 | 2026-07-28 | eq-shell | [#1063](https://github.com/eq-solutions/eq-shell/pull/1063) fix(quotes): stop detail badge showing a stage change that never  |
@@ -87,12 +88,12 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-28 | eq-shell | [#1054](https://github.com/eq-solutions/eq-shell/pull/1054) fix(schema): reassert security_invoker on field_people views (eho |
 | 2026-07-28 | eq-shell | [#1056](https://github.com/eq-solutions/eq-shell/pull/1056) ci(security): add blocking secret-scan gate (gitleaks) |
 | 2026-07-28 | eq-shell | [#1053](https://github.com/eq-solutions/eq-shell/pull/1053) fix(quotes): capture a reason when bulk-closing quotes as lost/ca |
-| 2026-07-28 | eq-solves-service | [#621](https://github.com/eq-solutions/eq-service/pull/621) feat(maintenance): add Maximo PDF work-order import (eq-service s |
-| 2026-07-28 | eq-solves-service | [#622](https://github.com/eq-solutions/eq-service/pull/622) fix(security): revoke anon/authenticated EXECUTE on rls_introspec |
 _Showing 15 of 109 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **`downloadSelectedHistory`'s bulk-download likely popup-blocked** — multiple `window.open()` calls fire after an `await`, past the point most browsers still treat it as a user-gesture-triggered open. Pre-existing, not touched this session, worth a real fix (single zip download, or a "click each link" fallback). _(added 2026-07-28)_
+- **eq-receipts' Netlify site doesn't auto-deploy on push to `main`** despite `netlify.toml` and the app's own kickoff doc assuming it does — every deploy this session needed a manual trigger. The Netlify MCP's own CLI-proxy deploy path 404'd reproducibly (twice); the dashboard's manual "Trigger deploy" is the only confirmed-working path right now. Root cause not investigated — worth fixing so this doesn't need manual triggering forever. _(added 2026-07-28)_
 - **Separately: decide whether to actually turn on scheduled notifications.** The groundwork is back in place (once the above is dispatched) but deliberately left switched off — this is a business decision (should the app start emailing/notifying people on a schedule), not a technical one, and hasn't been made. _(added 2026-07-28, restates an earlier still-open item)_
 - **CRON_SECRET rotation** — the one real hit: a plaintext credential in vendored git history (`eq-intake/eq-platform/apps/eq-service/CHANGELOG.md`, commit `b116e4430c8`, 2026-06-10, file since deleted from the tree), described in that commit as "already set" in Netlify. Deliberately left un-allowlisted in `.gitleaks.toml` so it keeps surfacing on a full-history scan rather than going silent. Needs a decision: rotate the value in Netlify, and note the same value likely sits in `eq-solves-intake`'s own git history too, not just here. _(added 2026-07-28)_
 - **Remaining audit findings not yet triaged into work** — the 6-perspective "vs industry" audit that prompted this surfaced 4 P0 / 11 P1 / 9 P2 findings across auth, authorization, multi-tenant data, frontend composition, security ops, and DX tooling. Only the secret-scan gate (above) and the field_people drift (separate section) have been acted on so far. Full findings are in a Claude.ai artifact from this session, not yet copied into repo docs — worth deciding whether it needs a permanent home before the artifact is the only record of it. _(added 2026-07-28)_
@@ -101,9 +102,7 @@ _Showing 15 of 109 · full record in [sessions/](sessions/)_
 - **Field's remaining ~11-file isManager→canonical-permission conversion** — same standing park as above, same reasoning. _(added 2026-07-27)_
 - **SEC-9 rotation runbook** — no runbook exists yet for rotating the jvkn (eq-canonical) service_role key exposed 2026-07-12 in a chat transcript; offered to draft one (docs only, no keys touched) but session closed before Royce answered. _(added 2026-07-28)_
 - **No live click-through yet** — the session's local preview browser never rendered content (tooling issue this session, browser pane wouldn't display frames at all, confirmed on both a local dev server and a real hosted deploy-preview URL). Worth a real look once merged and live. _(added 2026-07-27)_
-- **"Select files to send with an email" was floated but not chosen** — Royce picked the file-count badge only. Worth revisiting if the need comes up again. _(added 2026-07-27)_
-- **A weekly summary of audit activity in the existing Friday digest email** — "3 people removed, 5 PIN resets, 1 tender archived" — so Royce doesn't need to open the log cold to know if anything happened. _(added 2026-07-27)_
-_…and 326 more · [eq/pending.md](eq/pending.md)_
+_…and 328 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -125,7 +124,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 2617 | 412 | 58 | 9 |
+| [EQ](eq/pending.md) | 2624 | 414 | 58 | 9 |
 | [SKS](sks/pending.md) | 434 | 76 | 12 | 13 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 395 | 35 | 7 | 1 |
@@ -146,4 +145,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-28 06:58 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-28 07:09 UTC._
