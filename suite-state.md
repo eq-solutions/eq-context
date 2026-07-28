@@ -63,9 +63,6 @@ _If this file is >48h old, the cron is broken._
 **eq-field:**
 - #551 v3.5.370 — multi-lens review + keep-warm fix + Sites customer grouping
 
-**eq-service:**
-- #621 feat(maintenance): add Maximo PDF work-order import (eq-service side)
-
 ---
 
 ## System Health (as of 2026-07-28)
