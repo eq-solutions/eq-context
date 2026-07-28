@@ -14,6 +14,13 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-receipts: Exports archive/delete + PDF page-splitting shipped, deploy pipeline gaps found (2026-07-28)
+
+- [ ] **`downloadSelectedHistory`'s bulk-download likely popup-blocked** — multiple `window.open()` calls fire after an `await`, past the point most browsers still treat it as a user-gesture-triggered open. Pre-existing, not touched this session, worth a real fix (single zip download, or a "click each link" fallback). _(added 2026-07-28)_
+- [ ] **eq-receipts' Netlify site doesn't auto-deploy on push to `main`** despite `netlify.toml` and the app's own kickoff doc assuming it does — every deploy this session needed a manual trigger. The Netlify MCP's own CLI-proxy deploy path 404'd reproducibly (twice); the dashboard's manual "Trigger deploy" is the only confirmed-working path right now. Root cause not investigated — worth fixing so this doesn't need manual triggering forever. _(added 2026-07-28)_
+
+---
+
 ## eq-shell: Google Maps address autocomplete fixed in New Customer wizard (2026-07-28)
 *Royce hit it live while adding Microsoft as a new customer — the site address field never showed the Google suggestions dropdown. Root-caused: the autocomplete widget only tries to attach once, when the form first loads, and on that step the address box doesn't exist yet (it only appears once you reach the second step of the wizard) — so it gave up before the field was ever on screen. Fixed so it watches for the field to actually appear instead of giving up after one look.*
 
