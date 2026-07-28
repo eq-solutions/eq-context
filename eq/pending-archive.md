@@ -16,6 +16,13 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-solves-service: found and closed duplicate work — a stale WIP branch's asset-import fix was already shipped by a concurrent session (2026-07-28)
+- [x] **Split the checksum-verify commit into its own PR** — eq-service [PR #626](https://github.com/eq-solutions/eq-service/pull/626), merged (`4876a14`) and confirmed live on service.eq.solutions.
+- [x] **Closed the asset external_id fix PR as fully redundant** — confirmed via diff its entire content was already live on `main` via PR #589 and PR #590 (merged 2026-07-23). Deleted the now-empty branch.
+- [x] **Fixed the root cause: sessions had no habit of checking a branch against `origin/main` before building on it, only before pushing.** Added `git fetch origin main && git log HEAD..origin/main --oneline` to `/brief`'s Step 3 and to Rule 0.6 in `C:\Projects\CLAUDE.md`, with instructions to skim overlapping commit titles before writing new code. Same root-cause family as the 2026-07-23 "sessions colliding on the same files" incident (fake-worktree collision) — different mechanism (stale branch base), now closed with a mechanical check rather than a one-off catch.
+
+---
+
 ## eq-shell: field_people security-setting drift (2026-07-28)
 - [x] **EQ Field root-cause fix** — task_c940a825, was still running as of the original write-up; now complete. See the canonical write-up in `eq/pending.md` → "eq-field: field_people security_invoker drift root-caused + fixed" (eq-field [PR #557](https://github.com/eq-solutions/eq-field/pull/557), merged).
 
