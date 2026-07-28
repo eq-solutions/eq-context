@@ -14,6 +14,13 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## Shell licence dashboard showing a false "expires today" alert — root cause is a real product gap (2026-07-28)
+*Royce spotted the AI Brief claiming Rhys Scott's licence expired today when he'd already renewed it, and pushed back on trusting dashboard text that "says a lot without saying anything." Investigated properly rather than reassuring: found and fixed the specific case (see the 2026-07-03 licence-renewal item below, now closed), and checked the other 112 synced licence records for the same class of staleness.*
+
+- [ ] **Standing gap, not fixed this session: Shell never automatically re-syncs a licence after a worker renews it in Cards.** The only trigger is a manager manually clicking "Re-sync from Cards" on that person's staff panel — miss that click and Shell's dashboard (and its AI Brief) can show stale expiry data indefinitely, including false "expires soon/today" alarms after a real renewal already happened. This is exactly what caused the Rhys Scott case. A real fix would need either an automatic re-sync (mirroring how `workers-canonical-sync` already runs nightly for staff records) or the AI Brief/dashboard cross-checking Cards directly instead of trusting Shell's cached copy. Not scoped or built — flagging the pattern, not just the one incident. _(added 2026-07-28)_
+
+---
+
 ## eq-cards: worker-reported "my update didn't save" root-caused and fixed, deployed (2026-07-28)
 *Royce shared a screenshot of Brian Griffin-Colls' licence list on the Staff page asking why it hadn't updated — he'd said he updated his First Aid/CPR certificate. Checked the live database directly first: that record had zero write activity of any kind, successful or failed, in the 26 days since it was first added — ruling out a save that silently errored. Traced it to an already-known but ignored crash report: when the app's automatic photo-reading step times out, it correctly falls back to letting the person fill the form in by hand, but the only warning was a message that disappears after a few seconds. Easy to miss, and missing it meant walking away believing the update had gone through when the Save button was never actually pressed.*
 
@@ -85,6 +92,31 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 **Deferred:**
 - [ ] **Royce to export a real org's compliance pack and eyeball the new layout in Excel** — verified in code and with a test run, not yet checked against a real export. _(added 2026-07-28)_
+
+---
+
+## eq-shell: Compliance pack download filename + stale contact details fixed (2026-07-28)
+*Royce downloaded a real compliance pack and flagged three things: the filename was an ugly UUID-prefixed string, Rhys Scott's email showed stale even though he'd updated it, and the electrical licence export showed the same photo for front and back. Root-caused all three against live data before touching code: the filename bug was a missing `download` option on the signed URL (fixed); the stale email was the export reading `public.workers` instead of the corrected `app_data.staff` contact overlay (fixed); the "same photo" turned out not to be a bug at all — the two stored objects have different size/checksum, so it's a genuine duplicate photo Rhys uploaded, not a system fault.*
+
+- [x] **Download filename now reads `<Org>_Compliance_<date>.zip`** instead of a raw UUID storage key. eq-shell [PR #1071](https://github.com/eq-solutions/eq-shell/pull/1071), merged (`5a6036a0`).
+- [x] **Export now shows the manager-corrected email/phone from the Staff page**, not the stale Cards copy — same PR #1071, merged, live via Netlify auto-deploy.
+- [x] **Confirmed (not a bug): the "duplicate" front/back electrical licence photo is a real duplicate Rhys uploaded**, not the system reusing one image — no code change needed.
+
+**Deferred:**
+- [ ] **Royce to re-download a compliance pack once the deploy lands** and confirm the filename reads correctly and Rhys Scott's email now shows current. _(added 2026-07-28)_
+- [ ] **Rhys to re-upload a distinct back photo for his electrical licence** if the duplicate was accidental — his call, not a system fix. _(added 2026-07-28)_
+
+---
+
+## eq-shell: Staff page edits silently reverting overnight — root-caused and fixed, deployed (2026-07-28)
+*Royce reported having to re-save staff details repeatedly, specifically Ben Ritchie's email reverting after being corrected, plus Ben showing up in EQ Field's roster despite being marked off-roster. Root-caused the email revert against the audit log: a nightly background sync that copies Cards worker data into the Staff page's records was letting the older Cards value silently overwrite a manager's correction on every run, because it preferred the incoming Cards value whenever one existed. Fixed so a manager's saved correction now always wins over a stale re-sync. The roster display issue is a separate bug in EQ Field itself (not this app) — spun off as its own background task rather than fixed here.*
+
+- [x] **Fixed the overnight sync so a manager's correction in the Staff page can no longer be silently reverted** — contact details (email, phone, address, emergency contact, name) now only fill in from Cards when the Staff page field is empty; once a manager has set a value, only a real Cards-side change can move it. eq-shell PR #1073, merged (`17f88f5f`), and the fix was deployed live the same day (Royce approved the deploy explicitly).
+- [x] **Spun off as a separate background task**: EQ Field showing off-roster staff in its roster view — confirmed as an eq-field-repo bug (its roster query doesn't filter on `on_roster`), out of scope for eq-shell. Task `task_1fa4d77a` running independently.
+- [x] **Spun off as a separate background task**: the standing gap where Shell never automatically re-syncs a licence after a Cards renewal (surfaced earlier in the Rhys Scott licence-alert item above) — task `task_f69713e6` running independently to build a licence-update push/notification.
+
+**Deferred:**
+- [ ] **Royce to re-enter Ben Ritchie's correct email one more time** via the Staff page — his last correction was reverted by the old bug before the fix went live, so the stale value is still sitting in the database. It will stick this time. _(added 2026-07-28)_
 
 ---
 
@@ -249,7 +281,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ## eq-cards: licence renewal built, shipped, and deployed for two real workers (2026-07-27)
 
-- [ ] **Rhys Scott and Brian Griffin-Colls still need to actually renew** using the new button — the tool is ready, nobody's used it yet. **Re-verified live 2026-07-28: Rhys's licence expires today, Brian's in 4 days** — this got more urgent, not less, since first flagged. Royce to confirm once they have. _(added 2026-07-27, re-verified 2026-07-28)_
 - [ ] **Excel workbook auditing the 478-item EQ backlog (why it grew this large, dashboard + root-cause) — spun off as its own background session** (`task_a6f9b5d8`), running independently, not concluded this session. _(added 2026-07-27)_
 
 ---
@@ -1742,7 +1773,7 @@ Net: on a deep-linked `?tab=leave` view — exactly how Core embeds Field — `l
 **Investigated, not built — needs Royce (data/business judgment, not code):**
 - [ ] **12 contacts missing first/last name, categorized** — 2 safely inferable from email pattern (Pashon Jima at ap.equinix.com → last name "Jima"; Benoit Kon at digi-co.com.au → last name "Kon"), 1 data-import bug (company name "Metronode" landed in `first_name` with a garbled fragment in `position` — needs a real fix, not a name), 1 unrecoverable ("Rafael", no email/signal), 8 are role/department mailboxes ("Accounts", "Payables", "Reception") not people — filling a `last_name` for those would be fabricating data. Declined to hand-write any of this via raw SQL (bypasses the governed audit path this whole day's work has been about) — needs your call on fix path (dashboard tidy flow, once the Tidy-tab Edit lands live, is now a real option for the 2 inferable ones). _(added 2026-07-03, needs your call)_
 - [x] ~~Licence renewals surfaced by the quality-guardian run — Huon Henne's LVR~~ **Huon Henne's LVR is now moot** — re-verified live 2026-07-28: he's `active: false`, `on_roster: false` as of today (`updated_at` 2026-07-28 02:35 UTC — someone offboarded him this morning). No longer a live safety gap; closing this part. _(added 2026-07-03, closed 2026-07-28 — verified live)_
-- [ ] **Rhys Scott's electrical licence (371332C) expires TODAY (2026-07-28); Brian Griffin-Colls' LVR (UETDRMP007) expires in 4 days (2026-08-01).** Re-verified live 2026-07-28 — both got more urgent since first flagged, not less (was "25/29 days" on 2026-07-03). Both are active staff. **The renewal tool for exactly these two already shipped 2026-07-27** (eq-cards, see the "licence renewal built, shipped, deployed" section above) — nobody's used it yet. Needs the actual updated licence documents from each person, then the renewal button. _(added 2026-07-03, re-verified + re-scoped 2026-07-28, needs your call)_
+- [x] ~~Rhys Scott's electrical licence (371332C) expires TODAY (2026-07-28); Brian Griffin-Colls' LVR (UETDRMP007) expires in 4 days.~~ **Both had actually already renewed in Cards — Shell's dashboard just hadn't picked it up.** Royce flagged the dashboard's "expires today" AI Brief line as wrong; traced it to a real sync-lag bug, not a hallucination: Shell keeps its own copy of licence data and only refreshes it when a manager clicks "Re-sync from Cards" on that person's staff panel — nothing re-syncs automatically after a renewal. Checked all 113 synced licence records against their live Cards source, found 3 genuinely stale (Rhys's electrical licence → renewed to 2031-07-28 on 2026-07-27; Brian's LVR → renewed to 2027-07-24 on 2026-07-26; Bruno Vita Pedrosa's white card → now never-expires) plus 2 orphaned duplicate rows (Huon Henne, Brian — old Cards credential IDs replaced but never cleaned up, spun off separately as `task_55fb545d`). Synced all 4 affected people (Royce's "trigger those four syncs now" go), then cleared the dashboard's cached AI Brief (`app_data.briefing_cache`, 21 rows) so it regenerates from correct data — confirmed live via screenshot, the false alarm is gone. _(added 2026-07-03, closed 2026-07-28)_
 - [ ] **137-item review queue is not agent-workable** — checked before bulk-approving anything: every item across every category, including the "one-click" trade/link/format ones, is explicitly low/medium confidence with the adjudication panel that built the queue having already declined to auto-commit ("per-person trade unproven, confirm," "adjudication panel rejected auto-commit 0/3," "not resolvable from canonical data"). There's no genuinely mechanical subset — every item needs someone who knows the specific person/customer. _(added 2026-07-03, needs your call)_
 - [ ] **Browser verification of the new Tidy-tab Edit/Suggest + Dupes multi-group fix** — no component-test infra exists for `@eq/intake-demo` (no testing-library/jsdom), and no live authenticated session was available to click through it. Verified via strict `tsc -b` + full existing test suites + careful code tracing only. Next session with a live login: open a Tidy tab with gaps, Edit one inline, Suggest one, confirm only the intended row changes; open Dupes and confirm more than one duplicate group can now show per field; confirm Site Name renders on the Sites Gaps/All view. _(added 2026-07-03, needs your call)_
 
