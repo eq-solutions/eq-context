@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-07-28
+last_updated: 2026-07-29
 scope: Done items rotated out of eq/pending.md nightly by scripts/rotate_pending.py (per-item since 2026-07-27; before that, occasional manual whole-section moves). Nothing here is actionable — pure historical record (also covered in eq/changelog/*.md and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -13,6 +13,13 @@ Done items and fully-closed session write-ups rotated out of `eq/pending.md`.
 If you''re looking for something to action, it''s not here — check `eq/pending.md`.
 A "(rotated YYYY-MM-DD ...)" note on a section header means only that
 section's done items live here; its open items stayed in `eq/pending.md`.
+
+---
+
+## eq-solves-service: Sites/Customers/Instruments/Audit Log export-pagination fix — merged (2026-07-29)
+*Flagged during the previous session's Maximo PDF import work as the same "export only grabs the current page" bug pattern already fixed on Maintenance Plans (PR #630) — the Export button on four more pages serialized the paginated list (25/page, 50 for Audit Log) instead of every row matching the current filters. Verified live row counts on ehow first (sites 258, customers 48, instruments 18, audit_logs 49) to confirm the simple second-query pattern fit (no RPC bypass needed, unlike `/assets`).*
+
+- [x] **Sites, Customers, Test Equipment, and Audit Log CSV exports now include every matching row, not just the visible page.** Each page fetches a second unpaginated query in parallel with the paginated one (fresh query-builder call per query, since postgrest-js mutates a builder in place rather than branching one before/after `.range()`) and passes the full result to the Export button via a dedicated prop. Also fixed the Export button on Test Equipment and Audit Log to stay visible based on the full filtered set rather than the current page, so it doesn't wrongly hide itself on an out-of-range page. eq-service [PR #632](https://github.com/eq-solutions/eq-service/pull/632), merged, `tsc --noEmit` clean, rebased onto latest `main` (which had since picked up #630/#631) before merge. CI shows the same two pre-existing red checks as #630 (flaky integration tests; an unrelated `npm audit` finding on a deep transitive dependency already logged as an accepted residual) — the real gate (`tsc + next build`) passed.
 
 ---
 
