@@ -35,9 +35,17 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## eq-field: Sites screen simplified around canonical customer links; site-record fragmentation found, not fixed (2026-07-28)
+## eq-field: Sites screen simplified around canonical customer links; site-record fragmentation audited, one gap closed (2026-07-28)
 - [ ] **Competitive benchmark vs industry leaders (Deputy, Tradify, Fergus, simPRO, ServiceM8, Rhumbix, Skedulo)** — selected alongside the MD-tidy pass, but the session pivoted to the Sites-screen rebuild before it was run. Not started. _(added 2026-07-28)_
-- [ ] **`app_data.sites` has 22 duplicate-named site groups with inconsistent customer-linking and roster-code assignment** (258 rows total, only 53 `field_enabled`, 205 enabled for neither Field nor Service) — surfaced while wiring the Sites screen to the canonical customer link. This is eq-shell's table (Field only reads it); merging duplicates needs a human call per group since live `schedule`/`timesheet` rows point at these ids. A background audit (`task_5ebbc8cf`) is already running independently. Pressure-tested via the decision protocol: don't act on this from eq-field, don't duplicate the running audit, and don't let it jump ahead of the open P0 security findings (SEC-1/SEC-9/SEC-10) in NEEDS YOU. _(added 2026-07-28)_
+- [x] **`app_data.sites` duplication reference-checked and triaged by real risk** — 21 duplicate-named groups (46 rows; corrected from the earlier "22"), cross-checked against every table with a `site_id` FK. Most pairs are cold (zero dependent records, safe to retire); one is genuinely live: **SY5** has 191 real `schedule_entries` on its "Equinix Australia" row vs almost nothing on the row currently marked enabled ("Erilyan Pty Ltd"). This is eq-shell's table (Field only reads it) — no write made from Field.
+- [x] **Found the existing owner of this problem**: eq-shell#781, filed and decided by Royce himself 2026-07-12, disarmed 2026-07-22 pending a human-supervised build. Today's SY9 "duplicate" is confirmed to be the tail of a fix Royce already did by hand on 2026-07-13, not new breakage.
+- [x] **Filed the companion detection-panel issue #781 promised but never created**: [eq-solves-intake#78](https://github.com/eq-solutions/eq-solves-intake/issues/78) — read-only, surfaces duplicate candidates + dependent-record counts, no merge/write path, references #781.
+- [ ] **SY5 customer mismatch needs a decision** — which customer's hours are actually correct: "Equinix Australia" (has the real roster data) or "Erilyan Pty Ltd" (currently marked enabled). _(added 2026-07-28)_
+- [ ] **Three cold duplicate rows safe to disable now** — Kareena "KAR", St George "Akalan Projects", old (already-retired) SY9 row — zero dependent records, `field_enabled` can be flipped off with no migration. _(added 2026-07-28)_
+- [ ] **eq-shell#781 remains disarmed** — resolver key already decided (address-match now, backfill code later); needs Royce to schedule the actual build. _(added 2026-07-28)_
+- [ ] **eq-solves-intake#78 needs an arming call** (fleet-buildable vs hand-built) — filed unlabeled for `armada` pending Royce. _(added 2026-07-28)_
+- [ ] **North Shore Private Hospital's two customer links may be legitimate** (two tenants, one building), not a true duplicate — unconfirmed. _(added 2026-07-28)_
+- [ ] **"SY5" and "Equinix SY5" look like the same site under two different name strings** (4 rows total) — not caught by exact-name dedupe. _(added 2026-07-28)_
 
 ---
 
