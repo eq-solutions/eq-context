@@ -14,6 +14,14 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-intake: parse-maximo-pdf-wo edge function git sync — already done by a concurrent session; found a live-production bug fix sitting uncommitted (2026-07-28)
+*Asked to pull the live `parse-maximo-pdf-wo` Supabase Edge Function (v6, `ehowgjardagevnrluult`) and commit it to `claude/parse-maximo-pdf-wo-edge-fn` in eq-intake, since the branch's only commit was a stale v1. Turned out a concurrent session had already done exactly this (commit `4ccf08d`, pushed to origin) — verified byte-for-byte against the live function before touching anything. Caught the concurrent session live-editing the same file mid-investigation (3 different function bodies read in 90 seconds); waited for it to settle rather than overwrite.*
+
+- [x] Verified `claude/parse-maximo-pdf-wo-edge-fn` (eq-intake) already matches live v6 exactly — no action needed, nothing pushed by this session.
+- [ ] **Working tree on that branch has an uncommitted fix for a real production incident** (`WORKER_RESOURCE_LIMIT / 546` — Deno edge function hit its memory limit running `unpdf` text-extraction concurrently across a 5-file batch) not yet committed or deployed. Live is still v6; this fix (serialize the text-extraction phase per file, keep vision fallback concurrent) would become v7. Whoever's session that is should commit + redeploy; not picked up by this session since it wasn't this session's work. _(added 2026-07-28)_
+
+---
+
 ## eq-cards: licence-push deploy caught a step behind its own merges (2026-07-28)
 *Dispatched the deploy for eq-cards PR #183 (licence-push on save) after confirming it was merged-but-not-live — this repo deliberately doesn't auto-deploy on merge. Confirmed cards.eq.solutions live afterward. But PR #184 (the softDelete/revoke half of the same feature) merged ~18 seconds after that deploy run finished, so it rode in just too late.*
 
@@ -87,7 +95,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **Bigger finding, posted to eq-shell#781**: `app_data.site_resolution_advisory` already had 22 high-confidence duplicate matches pre-populated since 2026-07-16 (covering nearly everything just fixed by hand), but `site_resolution_verdict`/`site_resolution_merge_log` were both completely empty — the review console has had correct answers sitting unreviewed for 12 days. Today's manual fix cross-checked clean against it (no conflicts) but bypassed the actual tool.
 - [ ] **Go use the real review console next time** (Core → `IntakeHealthHome`'s Sites Dupes tab) instead of raw SQL — it already works. _(added 2026-07-28)_
 - [x] **4 new advisory pairs from this morning checked and resolved** — all 4 were sites Royce entered by hand (not an automated import). SYD05 was a genuine duplicate of the established "Microsoft SYD05" (23 real shifts) — merged. SYD27 looked like a duplicate but Royce corrected it: that address is a multi-site data-centre campus, both records (Microsoft, Schneider Electric Australia) are legitimately separate — left alone. SYD29 was a **code collision, not a duplicate** — two real, different sites (400 Harris St Ultimo, 34 real shifts vs a brand-new Lane Cove West site) had both been coded "SYD29"; cleared the wrong code off the new site. SYD09 was a false positive, no action needed.
-- [ ] **The Lane Cove West site (code cleared from the SYD29 collision) needs a real, correct code assigned** — currently has none. _(added 2026-07-28)_
+- [x] **SYD29 swap corrected** — the earlier fix had it backwards. Royce confirmed: SYD29 is Microsoft's own code for the Lane Cove West site (moved back there); 400 Harris Street Ultimo is a Digital Realty site (linked as customer, code cleared, previously had no customer at all). Lesson: dependent-record volume shows which row is *used*, not which one is *named right* — customer identity needs an actual customer-side signal, not an inference from usage.
 - [ ] **Kareena's KPH/KAR pairing was flagged "ambiguous" by the live resolver** (2026-07-23) — today's manual pick (keep KPH) looks right on the evidence, but worth a second look via the console. _(added 2026-07-28)_
 
 ---
