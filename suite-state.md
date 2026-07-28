@@ -35,7 +35,7 @@ _If this file is >48h old, the cron is broken._
 
 | Entity | Count | Schema |
 |--------|-------|--------|
-| Sites | 219 | app_data.sites |
+| Sites | 218 | app_data.sites |
 | Customers | 39 | app_data.customers |
 | Assets | 2,836 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
@@ -61,8 +61,6 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-28)
 
 **eq-shell:**
-- #1078 fix(admin): correct Worker join QR copy to match invite-required behaviour
-- #1074 fix(deps): xlsx off unpatched npm registry to SheetJS CDN fix
 - #1065 fix(functions): lazy-load @sentry/node to unblock local netlify dev
 
 ---
