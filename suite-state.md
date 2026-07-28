@@ -62,10 +62,9 @@ _If this file is >48h old, the cron is broken._
 
 **eq-service:**
 - #626 feat(migrations): add --verify checksum step, wire into PR plan (non-blocking)
-- #625 fix(assets): match on external_id (Asset #) instead of unpopulated maximo_id
 
 **eq-shell:**
-- #1075 fix(staff): licence-review badge misses edits to already-reviewed licences
+- #1076 feat(field-sync): licence-push.ts syncs Cards licence edits into Field post-approval
 - #1074 fix(deps): xlsx off unpatched npm registry to SheetJS CDN fix
 - #1065 fix(functions): lazy-load @sentry/node to unblock local netlify dev
 
