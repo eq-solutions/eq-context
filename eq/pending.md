@@ -14,13 +14,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## eq-service: Maximo PDF import — fully live, one follow-up running elsewhere (2026-07-29)
-*The Maximo PDF work-order importer (full write-up in `pending-archive.md`, same date) is done and confirmed working against real production data. One adjacent bug it surfaced — the same "export only grabs the current page" pattern also exists on Sites, Customers, Instruments, and the Audit Log — was flagged and spun off as its own background session rather than fixed inline here.*
-
-- [ ] **Sites/Customers/Instruments/Audit Log export-pagination fix** — Royce started this as a separate background session (task `a787e8ea`) after it was flagged during this session; check its outcome next session rather than re-diagnosing. _(added 2026-07-29)_
-
----
-
 ## eq-field: Safety nav reorder, dead TAFE buttons fixed, and a real load-time bug found + fixed (2026-07-28)
 *Royce flagged three things in one session: the Safety submenu felt overwhelming and out of order vs. actual daily use; the "Apply TAFE Day" / "TAFE Holidays" buttons on Edit Roster didn't appear to do anything; and Field's load time "really does suck." All three were real, all three shipped and verified live.*
 
@@ -54,14 +47,15 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## eq-shell: Suppliers page "missing" Login/Password columns — was a display bug, not a missing feature (2026-07-28)
-*Royce reported the Suppliers directory missing its login/password columns on a live screenshot. The feature has been fully shipped since PR #938 — root-caused to a CSS clipping bug instead: `@eq-solutions/ui`'s Table component has no horizontal-scroll container of its own. First fix ([PR #1079](https://github.com/eq-solutions/eq-shell/pull/1079)) was insufficient — Royce reported it still didn't work. Re-diagnosed: a bare `overflowX:auto` wrapper does nothing for a `table-layout:auto` table, since the browser shrinks every column to fit 100% width before it would ever overflow. Corrected with `eq-rc-tablescroll` (already-proven pattern used in `equipment/index.tsx`, pins a `min-width` so the table is forced to actually overflow).*
+## eq-shell: Suppliers page "missing" Login/Password columns — three attempts, root cause finally addressed (2026-07-28 → 2026-07-29)
+*Royce reported the Suppliers directory missing its login/password columns on a live screenshot. The feature has been fully shipped since PR #938 — three separate root causes, found one at a time as each fix didn't fully solve it. Not a permissions/security setting at any point, despite Royce's reasonable "is it a security setting?" guess on attempt 3 — a display/layout bug throughout.*
 
-- [x] First attempt: wrapped the desktop Table in a bare scroll container. eq-shell [PR #1079](https://github.com/eq-solutions/eq-shell/pull/1079), merged — did not fix it.
-- [x] Corrected fix: switched to `eq-rc-tablescroll`, forcing genuine overflow. eq-shell [PR #1082](https://github.com/eq-solutions/eq-shell/pull/1082), merged, confirmed live (Netlify production deploy verified serving this exact commit).
+- [x] **Attempt 1**: wrapped the desktop Table in a bare `overflowX:auto` scroll container. eq-shell [PR #1079](https://github.com/eq-solutions/eq-shell/pull/1079), merged — did not fix it (a `table-layout:auto` table shrinks columns to fit before it would ever overflow, so there was nothing to scroll to).
+- [x] **Attempt 2**: switched to `eq-rc-tablescroll` (pins a `min-width`, forces genuine overflow, already-proven pattern from `equipment/index.tsx`). eq-shell [PR #1082](https://github.com/eq-solutions/eq-shell/pull/1082), merged, confirmed live. Fixed *scrollability* — but Royce then reported the columns "show and then disappear," which turned out to be a distinct, deeper issue: reachable via scroll isn't the same as visible by default.
+- [x] **Attempt 3, real root cause**: `notes` was the only column with no width cap — the loading skeleton has no real content so it always fit on screen, but once real (sometimes long) note text loaded, the table widened past the visible area and pushed Login/Password off-screen, reading as "show then disappear" between loading and loaded states. Royce explicitly asked to keep the fix simple rather than reorder or rebuild the table (two heavier options were offered and declined). Capped `notes` at 160px with ellipsis truncation + hover tooltip, matching the existing pattern in `AdminAuditPage.tsx`. eq-shell [PR #1092](https://github.com/eq-solutions/eq-shell/pull/1092), merged, confirmed live (Netlify production deploy verified serving this exact commit).
 
 **Deferred:**
-- [ ] **Royce to confirm live**: open Suppliers on a normal browser window and confirm Login/Password (and Notes) are now reachable via horizontal scroll. _(added 2026-07-28, still open after the #1082 correction)_
+- [ ] **Royce to click through live**: open Suppliers and confirm Login/Password (and Notes) are visible without needing to scroll or wait for anything to settle. _(added 2026-07-29 — three fixes now verified live via deploy checks, none yet confirmed by an actual human look)_
 
 ---
 
