@@ -60,7 +60,9 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-29)
 
-_No open PRs_
+**eq-shell:**
+- #1114 chore: remove dead intake domain pages and SecurityGroupsPage shim
+- #1113 chore(intake): re-vendor eq-intake/eq-platform — customers/contacts rulebook migration
 
 ---
 
