@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-29 10:34 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-29 10:43 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-29 10:26 UTC → 2026-07-29 10:34 UTC)
+## Since last refresh (2026-07-29 10:34 UTC → 2026-07-29 10:43 UTC)
 
-- Merged: eq-shell [#1105](https://github.com/eq-solutions/eq-shell/pull/1105) fix(auth): register /login route so ?tenant= survives to Log
-- Merged: eq-shell [#1091](https://github.com/eq-solutions/eq-shell/pull/1091) fix(licences): stop the Cards resync from bumping updated_at
-- Merged: eq-shell [#1088](https://github.com/eq-solutions/eq-shell/pull/1088) fix(intake): route the Health-console commit through intake-
-- Merged: eq-shell [#1087](https://github.com/eq-solutions/eq-shell/pull/1087) fix(cards): spinner on compliance-pack progress label
-- Merged: eq-shell [#1086](https://github.com/eq-solutions/eq-shell/pull/1086) feat(home): roster, leave, and prestart at-a-glance cards on
-- Merged: eq-shell [#1083](https://github.com/eq-solutions/eq-shell/pull/1083) fix(deps): sweep the remaining Dependabot alerts (146 -> 4 k
-- Merged: eq-shell [#1080](https://github.com/eq-solutions/eq-shell/pull/1080) fix(licences): licence-push never marks a revoked Cards lice
-- Merged: eq-shell [#1079](https://github.com/eq-solutions/eq-shell/pull/1079) fix(suppliers): wrap desktop Table in a horizontal-scroll co
+- Merged: eq-shell [#1106](https://github.com/eq-solutions/eq-shell/pull/1106) chore(intake): re-vendor eq-intake/eq-platform — field-impor
+- Merged: eq-shell [#1092](https://github.com/eq-solutions/eq-shell/pull/1092) fix(suppliers): cap the Notes column width so Login/Password
+- Merged: eq-shell [#1090](https://github.com/eq-solutions/eq-shell/pull/1090) chore(intake): remove the unlinked per-domain landing pages
+- Merged: eq-shell [#1089](https://github.com/eq-solutions/eq-shell/pull/1089) fix(home): apprentices land on WorkerHome, not the manager d
+- Merged: eq-shell [#1085](https://github.com/eq-solutions/eq-shell/pull/1085) fix(deps): react-router-dom 6.30.4 -> 7.18.1, closes the 2 r
+- Merged: eq-shell [#1084](https://github.com/eq-solutions/eq-shell/pull/1084) fix(staff): stop Company field wiping on save, add apprentic
+- Merged: eq-shell [#1082](https://github.com/eq-solutions/eq-shell/pull/1082) fix(suppliers): PR #1079's scroll wrapper was insufficient —
+- Merged: eq-shell [#1081](https://github.com/eq-solutions/eq-shell/pull/1081) feat(auth): tenant-scoped self-serve phone signup on Core lo
 
 ## ⚠ Needs you (4)
 
@@ -50,7 +50,7 @@ _…and 81 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 1 | 0d |
+| eq-shell | ? unknown | ? | 0 | — |
 | eq-solves-service | ? unknown | ? | 0 | — |
 | eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ? unknown | ? | 0 | — |
@@ -74,6 +74,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-29 | eq-shell | [#1106](https://github.com/eq-solutions/eq-shell/pull/1106) chore(intake): re-vendor eq-intake/eq-platform — field-importance |
 | 2026-07-29 | eq-shell | [#1105](https://github.com/eq-solutions/eq-shell/pull/1105) fix(auth): register /login route so ?tenant= survives to LoginPag |
 | 2026-07-29 | eq-shell | [#1104](https://github.com/eq-solutions/eq-shell/pull/1104) feat(intake): tenant-editable field-importance override table + R |
 | 2026-07-29 | eq-shell | [#1103](https://github.com/eq-solutions/eq-shell/pull/1103) fix(invite): route phone-first worker activation through Shell, n |
@@ -88,7 +89,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-29 | eq-shell | [#1095](https://github.com/eq-solutions/eq-shell/pull/1095) fix(suppliers): retune every column width to a coherent budget, n |
 | 2026-07-29 | eq-shell | [#1094](https://github.com/eq-solutions/eq-shell/pull/1094) chore(intake): re-vendor eq-intake/eq-platform — tab redesign (Ov |
 | 2026-07-29 | eq-shell | [#1093](https://github.com/eq-solutions/eq-shell/pull/1093) feat(ops): view archived quotes without restoring them |
-| 2026-07-29 | eq-solves-service | [#647](https://github.com/eq-solutions/eq-service/pull/647) fix(reports): correct Secondary Injection label lookups on ACB/NS |
 _Showing 15 of 117 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -146,4 +146,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-29 10:34 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-29 10:43 UTC._
