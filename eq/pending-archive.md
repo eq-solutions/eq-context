@@ -1284,3 +1284,19 @@ contain the same values and were pushed before push-protection caught up.
 - [x] **Settings screen's save round-trip verified live, without a browser sign-in.** Claude declined to enter the shared dev PIN into the eq-shell deploy preview (credential-entry line, held even for a low-stakes documented dev account) -- Royce chose to merge #1106 without a manual click-through. This session closed that gap a different way: called `eq_set_field_importance_override` / `eq_get_field_importance_overrides` / `eq_reset_field_importance_override` directly against live ehow via Supabase MCP, with a simulated JWT tenant claim (`set_config('request.jwt.claims', ...)`) standing in for a real signed-in session. Full write -> read-back -> reset proven working; zero residue left on SKS's live tenant afterward. Not a literal UI click, but the same underlying mechanism the settings screen's Save button calls, verified end-to-end.
 
 ---
+
+## eq-ui + eq-field: closed the Spinner CSS hand-port drift gap that caused the earlier inverted-prop bug (2026-07-26) (rotated 2026-07-29)
+*Royce asked for high-value improvements to eq-ui and a critique of the separate-repo-for-UI strategy. Verified the actual repo state (13 components, only 2 tested, no lint, no a11y testing) rather than guessing, then focused in on the sharpest real gap: eq-field can't consume eq-ui's React components at all (build-less, no bundler), so Field hand-copies component CSS by hand — currently just Spinner — with nothing catching drift. That's the same mechanism that shipped the earlier inverted-Spinner-prop bug. Proposed an automated CI guard, then steelmanned it myself and talked Royce out of it: a CSS-surface diff wouldn't have caught that bug (it was a JS prop-semantics issue, not a CSS change), and it's infrastructure for a single hand-ported component today. Built the cheaper fix instead.*
+
+- [x] **eq-field's Spinner CSS now says which version of the real component it was copied from**, so it's obvious at a glance when it's gone stale, instead of just a comment promising it's "in sync." Shipped: eq-field PR #541, merged.
+- [x] **eq-ui's release checklist now tells whoever's shipping a change: if this touches Spinner (or any future component Field hand-ports), say so** — so a human catches it instead of nothing catching it. Shipped: eq-ui PR #29, merged.
+- [x] **Deliberately did NOT build an automated CI check for this** — talked through why with Royce and he agreed: it would check the wrong thing (CSS class names, not component behaviour) and would be over-engineering for one component. If Field ever hand-ports a second or third component, this call is worth revisiting.
+- [x] **Along the way, found eq-field's GitHub Actions was fully blocked** — not by any code issue, by an org billing/spending-limit problem stopping CI jobs from even starting. Flagged it, Royce fixed the billing, re-ran the stuck check, went green, merged.
+
+**Ideas raised in the review** (3 of 4 picked up later the same session, see below):
+- [x] **Only 2 of eq-ui's 13 components had any tests** (Modal, Table) — the stateful ones most worth covering (DropdownMenu, Toast, Tabs, AppShell) had zero. Built same session, see below.
+- [x] **No accessibility testing on eq-ui at all.** Built same session, see below. Note: this overlaps with the older, already-tracked a11y backlog items further down this file (A7–A10), which remain their own separate open item.
+- [x] **No linting in eq-ui's CI** — eq-field's build-less app had more lint discipline (a throwaway `npx eslint` run) than eq-ui did despite eq-ui having full npm tooling. Built same session, see below.
+- [x] **No visual/Storybook-style review tool for eq-ui** — downgraded from "build Storybook" to "maybe a simple one-page kitchen-sink view" given the team's current size. Built later the same session, see below. All 4 items from this review are now closed.
+
+---

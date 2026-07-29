@@ -33,25 +33,18 @@ output).*
 ## EQ Field parallel-run restarted — mismatch log set up (2026-07-26)
 *Royce: "start manually entering our weekly labour from SKS NSW Labour to see what breaks." Checked live state first rather than assuming from the docs — `SKS-CUTOVER-CRITICAL-PATH.md`'s 2026-07-11 decision (manual weekly re-entry into EQ Field in parallel with SKS Labour, N clean weeks, then cut over) had never actually been sustained: real timesheet-entry activity on `ehow` had dropped to ~1 action in the last 14 days, against an 86-row burst the week of 2026-07-06 that looks like a one-time backfill. Also chased down and ruled out a suspected security issue before recommending Royce put more real data in.*
 
-- [x] **Verified EQ Field for SKS is not empty** — 1,012 schedule rows, 138 timesheets, 90 people, 46 sites, 7 teams, 27 job numbers already on the canonical database, current through 2026-07-24. The gap is sustained *use*, not missing infrastructure.
-- [x] **Chased down and cleared a suspected data leak**: the `field_*` views carry an `anon SELECT` grant that looked like it could mirror the known `sks-nsw-labour` PII exposure. Traced through to the underlying base tables (`schedule_entries`, `timesheets`, `leave_requests`, etc.) — RLS is enabled on all of them with policies scoped to authenticated users + tenant match only, no policy exists for anonymous access, so the grant is inert. Not a live risk; a P3 cleanup (revoke the unused grant) is worth doing but isn't urgent.
-- [x] **Corrected a wrong assumption from earlier in the same session**: initially said the security "Stage-1 minter" PR for `sks-nsw-labour` was "ready to activate" — actually re-checked the register and found the standing decision is the opposite: that PR stays unmerged, the old app stays untouched, and the whole plan is to retire it by replacing it with EQ Field, not to harden it.
-- [x] **Set up `SKS-FIELD-PARALLEL-RUN-LOG.md`** (root of eq-context) — the mismatch log + clean-week counter the 2026-07-11 plan called for but never had. Cross-linked from `SKS-CUTOVER-CRITICAL-PATH.md` and `sks/active.md`. Clean-week streak starts at 0.
 - [ ] **Actual weekly entry hasn't started yet** — the log is ready, first week isn't logged. Per the plan's own proving discipline, needs at least one real supervisor entering their own crew's data (not just one person doing it centrally) to actually test the load the new app has to carry. _(added 2026-07-26)_
 
 ---
 
 ## labour_hire workers can now see Plant & Equipment (2026-07-26)
 *Fix landed on the EQ side (eq-roles + eq-shell) — see `eq/pending.md` (2026-07-26) for full build detail. This entry is the SKS-side pointer.*
-- [x] **labour_hire-role SKS workers now get the same equipment-view access as apprentices** — was previously only granted via a one-off tenant patch specific to SKS; now it's a standard part of every app's permission set. The old SKS-only patch was removed since it's no longer needed.
 - [ ] **Needs a real-world check**: have a labour-hire worker (or someone who can log in as one) open the Plant & Equipment list on core.eq.solutions and confirm it loads. Confirmed as far as possible from the data side (production is serving the right code, no other access rule is in the way) but nobody has actually clicked through as that kind of user yet. _(added 2026-07-26)_
 
 ---
 
 ## SKS→EQ Field worker migration — login gap root-caused + fixed on the EQ side (2026-07-26)
 *Royce: reconcile SKS NSW Labour vs EQ Field ahead of moving SKS workers onto EQ Field via Core, then focus on getting the login/onboarding experience right rather than fixing substrate docs. Full build detail lives in `eq/pending.md` (the fix landed in eq-shell) — this entry is the SKS-side pointer.*
-- [x] **Root cause found and fixed**: SKS workers approved before completing Cards phone-OTP signup were never getting a Shell login provisioned. Self-heal fix now closes this automatically on next login attempt — see `eq/pending.md` (2026-07-26) for detail.
-- [x] **One-login design confirmed already correct** — verifying by phone in Cards is the same login used in Shell/Field; no second signup, by design.
 - [ ] **Needs a real-world check**: have a manager get one affected worker (Zemi Asri, approved 2026-06-25) to retry logging into core.eq.solutions and confirm it now works. _(added 2026-07-26)_
 
 ---

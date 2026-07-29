@@ -1,7 +1,7 @@
 ---
 title: SKS Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-07-27
+last_updated: 2026-07-29
 scope: Done items rotated out of sks/pending.md nightly by scripts/rotate_pending.py to keep the live doc scannable. Nothing here is actionable — pure historical record (also covered in changelogs and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -267,3 +267,25 @@ section's done items live here; its open items stayed in `sks/pending.md`.
 
 ## EQ Field — team pills as the single crew picker (2026-07-29)
 - [x] Copy Last Week / Copy Week → copy the WHOLE roster's schedule data for the source week, not whatever's currently filtered by a team pill — confirmed by reading the code, flagged, then resolved via `/decide` (Royce: "make it filter-aware with an explicit scope note"). Both now scope to the active team filter with an explicit confirm/note, falling back to whole-roster when unfiltered. eq-field PR #566, v3.5.378, merged and confirmed live. _(added 2026-07-29, closed 2026-07-29)_
+
+## EQ Field parallel-run restarted — mismatch log set up (2026-07-26) (rotated 2026-07-29 — open items remain in pending.md)
+
+- [x] **Verified EQ Field for SKS is not empty** — 1,012 schedule rows, 138 timesheets, 90 people, 46 sites, 7 teams, 27 job numbers already on the canonical database, current through 2026-07-24. The gap is sustained *use*, not missing infrastructure.
+- [x] **Chased down and cleared a suspected data leak**: the `field_*` views carry an `anon SELECT` grant that looked like it could mirror the known `sks-nsw-labour` PII exposure. Traced through to the underlying base tables (`schedule_entries`, `timesheets`, `leave_requests`, etc.) — RLS is enabled on all of them with policies scoped to authenticated users + tenant match only, no policy exists for anonymous access, so the grant is inert. Not a live risk; a P3 cleanup (revoke the unused grant) is worth doing but isn't urgent.
+- [x] **Corrected a wrong assumption from earlier in the same session**: initially said the security "Stage-1 minter" PR for `sks-nsw-labour` was "ready to activate" — actually re-checked the register and found the standing decision is the opposite: that PR stays unmerged, the old app stays untouched, and the whole plan is to retire it by replacing it with EQ Field, not to harden it.
+- [x] **Set up `SKS-FIELD-PARALLEL-RUN-LOG.md`** (root of eq-context) — the mismatch log + clean-week counter the 2026-07-11 plan called for but never had. Cross-linked from `SKS-CUTOVER-CRITICAL-PATH.md` and `sks/active.md`. Clean-week streak starts at 0.
+
+---
+
+## labour_hire workers can now see Plant & Equipment (2026-07-26) (rotated 2026-07-29 — open items remain in pending.md)
+
+- [x] **labour_hire-role SKS workers now get the same equipment-view access as apprentices** — was previously only granted via a one-off tenant patch specific to SKS; now it's a standard part of every app's permission set. The old SKS-only patch was removed since it's no longer needed.
+
+---
+
+## SKS→EQ Field worker migration — login gap root-caused + fixed on the EQ side (2026-07-26) (rotated 2026-07-29 — open items remain in pending.md)
+
+- [x] **Root cause found and fixed**: SKS workers approved before completing Cards phone-OTP signup were never getting a Shell login provisioned. Self-heal fix now closes this automatically on next login attempt — see `eq/pending.md` (2026-07-26) for detail.
+- [x] **One-login design confirmed already correct** — verifying by phone in Cards is the same login used in Shell/Field; no second signup, by design.
+
+---
