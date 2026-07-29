@@ -127,17 +127,22 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ---
 
 ## eq-field: Safety nav reorder, dead TAFE buttons fixed, and a real load-time bug found + fixed (2026-07-28)
-*Royce flagged three things in one session: the Safety submenu felt overwhelming and out of order vs. actual daily use; the "Apply TAFE Day" / "TAFE Holidays" buttons on Edit Roster didn't appear to do anything; and Field's load time "really does suck." All three were real, all three shipped and verified live.*
 
-- [x] **Safety submenu reordered by actual usage frequency**, not ship date — Prestarts (daily) → Toolboxes → Site Audits → Records → Report → Test Equipment → Incidents (moved last, reported almost never). Markup-only, no logic touched. eq-field [PR #559](https://github.com/eq-solutions/eq-field/pull/559), v3.5.372, merged + live.
-- [x] **Fixed dead "Apply TAFE Day" / "TAFE Holidays" buttons.** Root cause: `scripts/tafe.js` (defines both button handlers) was only ever lazy-loaded on the Apprentices tab, not Edit Roster — opening Edit Roster without visiting Apprentices first in the same session left both functions undefined, so clicking either button threw a silent error with no toast. Same latent-dependency bug class this file has hit three times before. eq-field [PR #560](https://github.com/eq-solutions/eq-field/pull/560), v3.5.373, merged + live, verified on the deploy preview before merge.
-- [x] **Found and fixed the real load-time bug.** Field's own Service Worker was fetching every script from the network on every single load — even the 50th repeat load of the same version in the same session — because its caching logic never actually used the cache it was building. Fixed the caching logic plus a related browser-cache setting. Measured effect on the deploy preview: repeat-load boot time dropped from ~6.1 seconds to ~0.6 seconds, roughly 9-10x faster. eq-field [PR #562](https://github.com/eq-solutions/eq-field/pull/562), v3.5.374, merged + live on field.eq.solutions.
-
-**Deferred (load-time follow-ups, not built — offered as next steps if the above isn't enough once Royce feels it live):**
-- [ ] **Version-tag script URLs** (e.g. `app-state.js?v=3.5.374`) with long-lived immutable caching, so even the very first load per version skips the network-revalidation step entirely. Touches ~34 script tags in `index.html`; would extend the existing version-bump ritual. _(added 2026-07-28)_
-- [ ] **Concatenate the always-loaded boot scripts into 2-3 files at deploy time** (plain concatenation, not a bundler — stays consistent with the repo's deliberate no-build-step architecture). Cuts request count on the true first-ever cold visit, which the caching fix above doesn't touch. _(added 2026-07-28)_
+- [ ] **Concatenate the always-loaded boot scripts into 2-3 files at deploy time** (plain concatenation, not a bundler — stays consistent with the repo's deliberate no-build-step architecture). Cuts request count on the true first-ever cold visit, which the version-tag fix below doesn't touch. _(added 2026-07-28)_
 - [ ] **Audit which of the ~34 always-loaded-at-boot scripts actually need to block first paint** — several (recognitions.js, digest-settings.js, whatsnew.js, apprentice-widget.js, region-filter.js) look like narrow-feature scripts that could join the existing on-demand-per-page loading pattern already used for Roster/Timesheets/etc. _(added 2026-07-28)_
-- [ ] **Netlify Early Hints (103) for the first, blocking script** — lets the browser start fetching before Netlify finishes streaming the page shell. Polish-tier, smallest expected impact of the four. _(added 2026-07-28)_
+- [ ] **Netlify Early Hints (103) for the first, blocking script** — lets the browser start fetching before Netlify finishes streaming the page shell. Polish-tier, smallest expected impact. _(added 2026-07-28)_
+
+---
+
+## eq-field: production deploy stalled after a merge, manual Netlify CLI-proxy deploy fails from a git worktree (2026-07-29)
+*Merging eq-field PR #567 (v3.5.379) didn't reach field.eq.solutions for several minutes — much longer than the ~20-30s lag seen on the three earlier merges that same day. GitHub's `main` was confirmed correct via the API the whole time; this was purely a stall on Netlify's side.*
+
+- [x] Tried the Netlify MCP's CLI-proxy deploy trigger as a fix — failed with `open /opt/build/repo/.git: is a directory`. Root cause: the session's checkout is a git worktree (`.git` is a small pointer file there), and Netlify's build environment already has a real `.git` directory cached at that same path from prior native GitHub-integration builds — the local zip upload collides with it on extraction every time, not intermittently.
+- [x] Netlify dashboard's manual "Trigger deploy" button worked immediately (re-clones from GitHub directly, bypassing the local zip path entirely). Production confirmed live on v3.5.379 right after.
+
+**Deferred:**
+- [ ] **Same underlying flakiness eq-receipts hit** (its own Netlify site also doesn't reliably auto-deploy on push, logged separately) — worth a real investigation into why this account's Netlify projects need manual kicks, instead of treating each occurrence as a one-off to work around. _(added 2026-07-29)_
+- [ ] **CLI-proxy deploy is now confirmed structurally broken when run from a git worktree checkout**, not just occasionally flaky — if a future session needs a manual deploy from a worktree, use the Netlify dashboard's trigger directly and don't retry the CLI proxy. _(added 2026-07-29)_
 
 ---
 

@@ -9,6 +9,11 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-29] Closed the load-time gap for a fresh deploy/first visit (MERGED, #567, v3.5.379)
+- The v3.5.374 caching fix only sped up repeat loads of an already-installed version. The very first load of any new version — a fresh deploy preview, or production right after a merge — still paid a full network round-trip per file. Every `/scripts/` and `/styles/` request now carries a `?v=<APP_VERSION>` query string (index.html's tags, lazy-loader.js's dynamic injection, and the inline jszip.min.js loader), and netlify.toml caches those paths as `public, max-age=31536000, immutable` — safe because the URL changes every release. `sw.js`'s PRECACHE list is versioned the same way. Also fixed a small gap noticed in passing: `styles/spinner.css` + `styles/field-v8.css` were live but missing from PRECACHE.
+- Trade-off named explicitly (see PR + `docs/reflection-log.md`): this makes the failure mode of forgetting to bump the shared version worse (stuck up to a year vs. self-healing within a day) — landed the same day #564 proved that mistake happens in practice. No new ritual added.
+- Production deploy stalled for several minutes after merging — GitHub was correct the whole time, Netlify's side just hadn't picked it up. The Netlify MCP's CLI-proxy manual-deploy path failed reproducibly (git-worktree checkouts have a `.git` pointer file that collides with a real `.git` directory Netlify's build environment caches at the same path) — the dashboard's manual "Trigger deploy" button worked instead.
+
 ## [2026-07-28] #561's fix wasn't reaching anyone — version bump to force the cache refresh (MERGED, #564, v3.5.376)
 - #561 (below) changed `scripts/auth.js` without bumping the version. `/scripts/*` has been cache-first since #562 — safe only because a version bump is what forces the browser to fetch fresh content; the Service Worker never checks the network on a cache-first path otherwise. Anyone whose SW had already installed under `v3.5.375` — including the person who reported the bug #561 fixes — would keep serving their already-cached, pre-#561 `auth.js` indefinitely. Version-only bump, no logic change, so the fix actually takes effect.
 
