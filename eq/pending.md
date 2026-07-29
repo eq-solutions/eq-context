@@ -14,6 +14,12 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: EQ Ops — view archived quotes without restoring them (2026-07-29)
+
+- [ ] **Royce to click through live**: EQ Ops → "…" → Archived → open a quote via View, confirm it shows a read-only "Archived" badge and only Restore/Download/Delete (no Edit/Mark as Sent/Close/Archive controls), then confirm Restore still works from there. Verified only via the Netlify production deploy record (commit `2b01bf3b` live), not an actual click-through — no production login session in this environment. eq-shell [PR #1093](https://github.com/eq-solutions/eq-shell/pull/1093), merged. _(added 2026-07-29)_
+
+---
+
 ## eq-shell: removed a dead, never-linked duplicate import screen (2026-07-29)
 *Investigating a staging-gate fix turned up 6 import-related pages built back in May that were never actually reachable from anywhere in the app — no sidebar link, no button, nothing. They duplicated the working Import screen people already use. Given the choice to finish wiring them in or remove them, Royce chose to remove them.*
 
