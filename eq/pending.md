@@ -14,6 +14,18 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-solves-service: Field Run-Sheet asset headers now show the maintenance plan's Job Code (2026-07-29)
+*Royce shared a generated Run-Sheet (SY3, standard) and asked for the maintenance plan's Job Code to show on each asset — right now a tech sees ID/Location/WO on the printout but has no way to tell which maintenance plan an asset belongs to without looking it up separately.*
+
+- [x] **Each asset's printed header now shows its Job Code** (e.g. "SJPNL1") next to the existing ID/Location/WO line, for standard maintenance checks. eq-service [PR #638](https://github.com/eq-solutions/eq-service/pull/638), `tsc` clean, awaiting CI + merge.
+
+**Deferred:**
+- [ ] **ACB/NSX breaker-card run-sheets and RCD test run-sheets don't show the Job Code** — Royce chose to scope this session to the standard maintenance checklist only; same gap exists in those report variants if wanted later. _(added 2026-07-29)_
+- [ ] **Two other report types have the same missing-Job-Code gap**: the PM asset report and the work-order-details report already fetch/track job plan info per asset but only surface the plan *name*, never the *code*. Not touched this session — out of scope. _(added 2026-07-29)_
+- [ ] **Royce to confirm PR #638 merged + spot-check a freshly generated Run-Sheet shows the Job Code line as expected.** _(added 2026-07-29)_
+
+---
+
 ## eq-solves-intake + eq-shell: Intake redesigned — 5 confusing tabs down to 4 clear ones (2026-07-29)
 *Royce reviewed the live Intake screens and found them overwhelming — five tabs, two of which (Import, Reconcile) looked like near-duplicate "drop a file" screens, and the Health tab crammed a score, six sub-metrics, a fix-it list, and a site-merge tool onto one screen. Built a clickable mockup first, walked it through with Royce, then shipped the real thing: Health/Queue collapsed into Overview/To Do, and Import/Reconcile collapsed into one Bring Data In screen.*
 
@@ -135,15 +147,9 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## eq-shell: Suppliers page "missing" Login/Password columns — three attempts, root cause finally addressed (2026-07-28 → 2026-07-29)
-*Royce reported the Suppliers directory missing its login/password columns on a live screenshot. The feature has been fully shipped since PR #938 — three separate root causes, found one at a time as each fix didn't fully solve it. Not a permissions/security setting at any point, despite Royce's reasonable "is it a security setting?" guess on attempt 3 — a display/layout bug throughout.*
+## eq-shell: Suppliers page "missing" Login/Password columns — real root cause fixed (2026-07-28 → 2026-07-29)
 
-- [x] **Attempt 1**: wrapped the desktop Table in a bare `overflowX:auto` scroll container. eq-shell [PR #1079](https://github.com/eq-solutions/eq-shell/pull/1079), merged — did not fix it (a `table-layout:auto` table shrinks columns to fit before it would ever overflow, so there was nothing to scroll to).
-- [x] **Attempt 2**: switched to `eq-rc-tablescroll` (pins a `min-width`, forces genuine overflow, already-proven pattern from `equipment/index.tsx`). eq-shell [PR #1082](https://github.com/eq-solutions/eq-shell/pull/1082), merged, confirmed live. Fixed *scrollability* — but Royce then reported the columns "show and then disappear," which turned out to be a distinct, deeper issue: reachable via scroll isn't the same as visible by default.
-- [x] **Attempt 3, real root cause**: `notes` was the only column with no width cap — the loading skeleton has no real content so it always fit on screen, but once real (sometimes long) note text loaded, the table widened past the visible area and pushed Login/Password off-screen, reading as "show then disappear" between loading and loaded states. Royce explicitly asked to keep the fix simple rather than reorder or rebuild the table (two heavier options were offered and declined). Capped `notes` at 160px with ellipsis truncation + hover tooltip, matching the existing pattern in `AdminAuditPage.tsx`. eq-shell [PR #1092](https://github.com/eq-solutions/eq-shell/pull/1092), merged, confirmed live (Netlify production deploy verified serving this exact commit).
-
-**Deferred:**
-- [ ] **Royce to click through live**: open Suppliers and confirm Login/Password (and Notes) are visible without needing to scroll or wait for anything to settle. _(added 2026-07-29 — three fixes now verified live via deploy checks, none yet confirmed by an actual human look)_
+- [ ] **Royce to click through live**: open Suppliers and confirm all 8 columns (incl. Login/Password) are reachable via horizontal scroll and nothing truncates. _(added 2026-07-29)_
 
 ---
 
