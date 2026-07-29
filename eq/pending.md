@@ -14,6 +14,16 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-intake: Reconcile silently skipped phone/ABN cleanup for customer and contact imports (2026-07-29)
+*A bug report named the exact file and lines; confirmed by direct code read that the fix matched the report before touching anything.*
+
+- [x] **Fixed the entity-name mismatch that made Reconcile skip phone-number and ABN cleanup for customers and contacts** — the lookup used the wrong spelling internally (plural vs singular) so it silently never fired for those two, only staff happened to work by coincidence. eq-solves-intake [PR #82](https://github.com/eq-solutions/eq-solves-intake/pull/82), merged, branch deleted.
+
+**Deferred:**
+- [ ] **Royce to reconcile a customer CSV with a messy phone number/ABN and confirm it now gets cleaned up** — verified in code + typecheck, not yet clicked through live. _(added 2026-07-29)_
+
+---
+
 ## eq-shell: EQ Ops — view archived quotes without restoring them (2026-07-29)
 
 - [ ] **Royce to click through live**: EQ Ops → "…" → Archived → open a quote via View, confirm it shows a read-only "Archived" badge and only Restore/Download/Delete (no Edit/Mark as Sent/Close/Archive controls), then confirm Restore still works from there. Verified only via the Netlify production deploy record (commit `2b01bf3b` live), not an actual click-through — no production login session in this environment. eq-shell [PR #1093](https://github.com/eq-solutions/eq-shell/pull/1093), merged. _(added 2026-07-29)_

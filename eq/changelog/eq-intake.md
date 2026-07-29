@@ -1,6 +1,7 @@
 # EQ Intake — Changelog
 
 ## 2026-07-29
+- **PR #82 (MERGED squash `b0c7fb6`) — Reconcile phone/ABN normalization now actually fires for customer and contact rows.** `PHONE_FIELDS`/`normaliseRow` in `ReconcileModule.tsx` keyed off plural entity names (`customers`, `contacts`), but `classifySheet` (via `ROLE_REGISTRY` → `x-eq-entity` in `simpro-schemas.ts`) returns singular names (`customer`, `contact`, `staff`, `site`) — the lookup never matched for two of the three entities, only `staff` happened to work since singular/plural coincide there. Fixed the keys to singular. `tsc --noEmit` clean on the file. Branch was 14 commits behind `main`; merged up before opening the PR so the diff showed only the real 4-line change.
 - **PR #79 (MERGED `139f515`) — git history for `parse-maximo-pdf-wo` caught up to what's already live.** The edge function was iterated live via direct Supabase deploys (v5-v9) across several sessions fixing real production bugs against real Equinix PDF exports: switched from vision-only to text-first extraction (`unpdf`) with vision as a fallback only; fixed two separate `WORKER_RESOURCE_LIMIT` crashes (concurrent per-file text extraction, then a client that still bundled every file into one request); added the `"5A"` → 5-yearly frequency-suffix mapping; fixed job-plan matching to use the short mnemonic code instead of the E-number. This PR is the git record of all of it — the deployed function was already correct.
 
 ## 2026-07-26
