@@ -22,10 +22,11 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **Report Settings' sign-off / cover page / executive-summary toggles now also apply to the Field Run-Sheet and the PM Check Report** (previously only the Customer Report respected these). eq-service [PR #645](https://github.com/eq-solutions/eq-service/pull/645), merged + live.
 - [x] **Compliance Report's cover page can now also be turned off from Report Settings** — required a small refactor first (the cover was hard-wired into the report body) rather than the two-line change the other reports got. eq-service [PR #646](https://github.com/eq-solutions/eq-service/pull/646), merged + live.
 - [x] Confirmed all three PRs actually deployed — Netlify's production deploy record for service.eq.solutions matches the last merge commit, not just "merged on GitHub."
+- [x] **Secondary Injection test results now show real data too.** Royce asked for this same-day follow-up. Turned out to be a bigger bug than just the SI section: the report's label-matching also silently failed on every visual-checklist row (the "Visual Check:" prefix the app actually stores wasn't being stripped), so the checklist relabel from #644 looked right but never actually showed pass/fail data. Both fixed — confirmed 12/12 against the live checklist data on ehow, and confirmed against a synthetic real-format test since no live check has reached the Secondary Injection step yet. eq-service [PR #647](https://github.com/eq-solutions/eq-service/pull/647), merged + live.
 
 **Deferred:**
-- [ ] **Secondary Injection test results (the "SI: Long Time - Setting" style readings) still don't match the ACB/NSX report's lookup labels** — same class of bug as the checklist mismatch just fixed, found during the same QA pass but left alone to keep this change scoped. Report will render this section blank until it's fixed too. _(added 2026-07-29)_
 - [ ] **The ACB Test Report has been verified correct by code symmetry with the NSX path, not against a real ACB check** — there are currently zero completed ACB checks in the live database to test against. Worth a quick look the first time SKS actually completes one. _(added 2026-07-29)_
+- [ ] **No live check has reached the Secondary Injection/Electrical Testing step yet either** (ACB or NSX) — the #647 fix is verified against the real stored label *format* (traced from the save actions) plus a synthetic end-to-end docx generation, not an actual live reading. Worth a real spot-check the first time a technician gets that far. _(added 2026-07-29)_
 
 ---
 
