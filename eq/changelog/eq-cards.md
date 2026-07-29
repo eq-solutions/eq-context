@@ -9,6 +9,10 @@ status: live
 
 # EQ Cards — Changelog
 
+## 2026-07-29
+- **PR #186 (MERGED) — removed dead netlify.toml config, deleted orphaned `web/welcome.html`.** netlify.toml's `[[redirects]]`/`[[headers]]` tables were never read in production (GitHub Actions deploy zip-uploads `build/web` only); `web/_redirects`/`web/_headers` are the real live sources. Folded the one rule netlify.toml alone had (`main.dart.wasm` cache header) into `web/_headers`. Deleted `web/welcome.html`, orphaned since GoRouter took over root routing 2026-06-23. Found while auditing a report of a stale login screen on mobile — that turned out to be a stuck service worker on one device, unrelated to this config drift.
+- **STATUS.md auth-flows table corrected (commit `447ba9f`, docs-only).** Still described the retired email-OTP flow; `/auth/email` has been phone-OTP-only since the auth-hardening sprint.
+
 ## 2026-07-27
 - **PR #181 (MERGED, DEPLOYED) — licence renewal: "Renew" on an expiring/expired licence updates it in place instead of duplicating.** New CTA on the wallet tile and detail screen reuses the existing scan/PDF → OCR pipeline, but routes to the existing licence's edit screen instead of creating a new row. Add now offers "update existing" vs "add anyway" when a live licence of that type is already held. Fixed the edit screen's OCR-field-application ordering so a renewal scan only overwrites fields it actually read, never blanking the rest. New `lib/features/licences/presentation/helpers/scan_ocr_flow.dart`. CI caught a real broken widget test pre-merge (a newly-required constructor param); fixed + added 3 new tests for the Renew CTA. Deployed live to cards.eq.solutions via explicit `deploy.yml` dispatch (merge alone does not deploy). No schema change.
 - **Migration 0108 (APPLIED to jvkn) — `org_join_notify_recipients` table + updated `eq_notify_connection_request_targets`.** Lets an org nominate specific admins/managers to receive new-join-request emails instead of always notifying everyone; empty selection keeps today's behaviour. Companion to eq-shell PR #1029 (Settings "New join-request emails" picker).
