@@ -60,8 +60,7 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-29)
 
-**eq-solves-intake:**
-- #92 feat(intake): migrate Customers/Contacts into the field-importance rulebook
+_No open PRs_
 
 ---
 
