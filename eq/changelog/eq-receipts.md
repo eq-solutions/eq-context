@@ -8,6 +8,12 @@ status: live
 
 # Changelog — EQ Receipts
 
+## [2026-07-29] (part 2) Editable invoice number field added, both flagged duplicate pairs resolved
+- **Added an "Invoice / receipt number" field to Verify** — only shown once a value exists or on request via "+ Add invoice number", keeping the form uncluttered for the majority of receipts that don't print one. Also fixed the save handler silently dropping edits to `invoice_number` (it was typed on `Receipt` but never included in the update payload). eq-receipts [PR #15](https://github.com/eq-solutions/eq-receipts/pull/15), merged, deployed (frontend only, confirmed via Netlify deploy record).
+- **Correction to the previous entry below**: the "second real duplicate" (GitHub, $68.64 USD, 2026-07-22) was investigated further and turned out to be a **false positive** — the line items show two genuinely different subscriptions (an annual Team plan for the eq-solutions org, an annual Developer plan on Royce's personal account) that coincidentally renew for the same amount on the same day. Dismissed as not-a-duplicate; both charges are legitimate.
+- **The Anthropic pair was confirmed a real duplicate** (identical "Auto-recharge credits" line item, ABN, and payment method) — deleted the accidental unverified re-upload, kept the already-approved receipt.
+- **Real limitation surfaced, not fixed**: vendor+date+amount can false-positive on two different transactions that coincidentally share both — annual subscription renewals are exactly the case most likely to collide. Would need to compare line-item descriptions too; not built. Logged in `eq-context/eq/pending-archive.md`.
+
 ## [2026-07-29] Duplicate-detection FX blind spot fixed, invoice number added as a stronger match
 - **Root-caused a real missed duplicate**: two identical Anthropic charges ($12.02 USD) weren't flagged, because `dupe_hash` was computed inconsistently — extraction hashed the pre-conversion original total, but `VerifyCard`'s save-time recompute hashed the post-conversion AUD total. Two scans of the same foreign-currency document can pick up different currency-conversion rates a day apart, drifting the AUD total by a few cents and silently splitting one real duplicate into two non-matching hashes.
 - **Fixed**: both the extraction path and Verify's save path now hash on the pre-conversion amount (`original_total` for foreign-currency receipts, `total` for AUD) consistently.

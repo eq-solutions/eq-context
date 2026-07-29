@@ -14,6 +14,55 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-solves-intake + eq-shell: Intake redesigned — 5 confusing tabs down to 4 clear ones (2026-07-29)
+*Royce reviewed the live Intake screens and found them overwhelming — five tabs, two of which (Import, Reconcile) looked like near-duplicate "drop a file" screens, and the Health tab crammed a score, six sub-metrics, a fix-it list, and a site-merge tool onto one screen. Built a clickable mockup first, walked it through with Royce, then shipped the real thing: Health/Queue collapsed into Overview/To Do, and Import/Reconcile collapsed into one Bring Data In screen.*
+
+- [x] **Overview (was Health) + To Do (was Queue)** — the site-merge decision tool (Preview → Confirm merge) moved out of Overview into To Do, since it's a decision, not a diagnostic; the two tabs' pending-count badges merged into one. eq-solves-intake [PR #81](https://github.com/eq-solutions/eq-solves-intake/pull/81), merged.
+- [x] **Bring Data In (was Import + Reconcile)** — one drop zone instead of two; each dropped file gets an optional "Check for conflicts" step instead of forcing a tab pick before you can even see what's in the file. Generic "drop a file" wording replaces the SimPRO-specific copy on this screen. eq-solves-intake [PR #83](https://github.com/eq-solutions/eq-solves-intake/pull/83), merged.
+- [x] **Found and fixed a leftover bug while re-vendoring into eq-shell**: PR #81 left an unused import behind that eq-intake's own typecheck doesn't catch but eq-shell's stricter build does. eq-solves-intake [PR #84](https://github.com/eq-solutions/eq-solves-intake/pull/84), merged.
+- [x] **eq-shell re-vendored to pick up all three** — eq-shell [PR #1094](https://github.com/eq-solutions/eq-shell/pull/1094), merged, live on core.eq.solutions via Netlify auto-deploy.
+
+**Deferred:**
+- [ ] **Royce to click through `/sks/intake` live** — confirm Overview/To Do/Bring Data In/Ask all render as expected. Not click-tested live this session — the deploy preview is login-gated and no production session was available in this environment; verified via full build + 270/270 tests + code review only. _(added 2026-07-29)_
+- [ ] **Bring Data In's "Check for conflicts" still commits on its own path, separate from the main Into-EQ flow** — routing those resolved rows into the same shared commit path as everything else is real, separate work, not done here. _(added 2026-07-29)_
+- [ ] **The deeper "why is this still exhausting" fixes are still open** — bulk-approve (today it's still one row at a time), standing rules for recurring conflict types (so the same duplicate doesn't get flagged forever), a trend view (is the score improving?), and a real ask-anything grounded across the whole suite (today's Ask tab is a thin preview of that). Discussed with Royce as the next tier up from this session's fix — this session deliberately shipped the cheap, clear win first. _(added 2026-07-29)_
+
+---
+
+## eq-shell: licence "Re-review" badge was firing on its own, not on real edits (2026-07-29)
+*Royce asked why some licences kept needing "re-review" with nothing actually changed. Root cause: the automated Cards→Shell licence sync had no change-detection, so it bumped every synced licence's timestamp on every run — live SQL showed 24 licence rows across 4 staff sharing the exact same timestamp from an automated sync, not a real edit.*
+
+- [x] **Sync now fetches existing rows first and only writes when a field actually changed** — no more false re-review flags from a no-op sync. eq-shell [PR #1091](https://github.com/eq-solutions/eq-shell/pull/1091), merged, live.
+
+**Deferred:**
+- [ ] **Royce to confirm live**: check that a staff member's licence no longer shows "re-review needed" after an automated sync unless something actually changed on it. Verified via 5 new unit tests + CI, not click-tested live in production. _(added 2026-07-29)_
+
+---
+
+## eq-solves-intake + eq-shell: `/intake`'s commit path was quietly skipping the review queue (2026-07-29)
+*While scoping the redesign work above, checked whether it was safe to keep both Intake UI surfaces live — turned out one of them (`/intake`'s "Into EQ" commit) wrote straight to canonical tables, bypassing the same conflict-detection gate the other surface already enforced. A messy/conflicting row dropped through `/intake` would commit immediately instead of parking for review.*
+
+- [x] **`/intake`'s commit path now routes through the same staging/review gate** as the other importer — a flagged or conflicting row parks in the queue instead of committing straight through, on both surfaces now. eq-solves-intake [PR #80](https://github.com/eq-solutions/eq-solves-intake/pull/80) + eq-shell [PR #1088](https://github.com/eq-solutions/eq-shell/pull/1088), merged, live.
+- [x] **Nav label fixed while in there**: `/intake` was labelled "Import" in the sidebar (Download icon) — relabelled "Intake" (Activity icon) to match what it actually does.
+
+**Deferred:**
+- [ ] **The live end-to-end proof is still outstanding**: drop a deliberately-conflicting test row through production `/intake` and confirm it parks in the queue instead of committing. Blocked this session on the file-upload tool refusing to attach a test file not shared directly by Royce in chat — needs either Royce dragging the file into chat, or Royce doing the drop himself while checked live. This becomes easy to verify now that Overview/To Do is the single place to look. _(added 2026-07-29)_
+
+---
+
+
+## eq-cards: netlify.toml dead-config cleanup, orphaned welcome.html removed (2026-07-29)
+*Investigating a report of an old email-login screen appearing on a phone in Brave. Production itself turned out to be correctly configured — the actual cause was a stuck service worker on that one device, not a server bug — but the investigation surfaced a real, unrelated config problem worth fixing while in the area.*
+
+- [x] **Removed netlify.toml's entire `[[redirects]]`/`[[headers]]` config** — confirmed live it was never actually read in production (the GitHub Actions deploy zip-uploads `build/web` only, so root `netlify.toml` isn't shipped). `web/_redirects` and `web/_headers` are the real, live sources; a duplicate/conflicting header block here already broke CSP once before. Folded the one rule only netlify.toml had (`main.dart.wasm` cache header) into `web/_headers` so nothing was lost. eq-cards [PR #186](https://github.com/eq-solutions/eq-cards/pull/186), merged.
+- [x] **Deleted `web/welcome.html`** — a "smart front door" marketing page correctly retired from live routing on 2026-06-23 (GoRouter took over root routing) but never actually deleted; still directly reachable by URL, nothing linked to it. Confirmed no remaining references anywhere in the repo before deleting.
+- [x] **STATUS.md's auth-flow doc corrected** — still described the old email-OTP flow; production has been phone-OTP-only at `/auth/email` since the auth-hardening sprint, the route/screen/file names just never got renamed. Flagged as a background task (`task_814bdaef`), Royce ran it in a separate session, landed direct to `main` (`447ba9f`, docs-only, no deploy). STATUS.md's other pre-existing stale items (SW claim, Email OTP dashboard-mode check) were left untouched, still tracked in the 2026-07-06 entry elsewhere in this file.
+
+**Deferred:**
+- [ ] **Royce to clear Brave's site data for cards.eq.solutions on his own phone** — the actual reported symptom (an old email-login screen). A Flutter service worker registered on that device before the phone-OTP flip is still serving its own cached copy of the old build; production itself is correctly configured (verified live). A full close + clear-site-data + reopen forces the fresh navigation the browser's update check needs. _(added 2026-07-29)_
+
+---
+
 ## eq-intake: Reconcile silently skipped phone/ABN cleanup for customer and contact imports (2026-07-29)
 *A bug report named the exact file and lines; confirmed by direct code read that the fix matched the report before touching anything.*
 
@@ -172,19 +221,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 - [ ] **eq-receipts' Netlify site doesn't auto-deploy on push to `main`** despite `netlify.toml` and the app's own kickoff doc assuming it does — every deploy this session needed a manual trigger. The Netlify MCP's own CLI-proxy deploy path 404'd reproducibly (three times now); the dashboard's manual "Trigger deploy" is the only confirmed-working path right now. Root cause not investigated — worth fixing so this doesn't need manual triggering forever. _(added 2026-07-28)_
   - **Correction (2026-07-29):** a same-day session merged a PR via `gh pr merge` and Netlify auto-deployed cleanly within a minute of the merge commit, no manual trigger needed — confirmed live via the Netlify MCP's deploy record (commit ref matched exactly, build succeeded, secret scan clean). Only retested the PR-merge path, not the original direct-push-to-main repro, so leaving this open rather than closing outright — but the auto-deploy pipeline itself is evidently not broken end-to-end.
-
----
-
-## eq-receipts: duplicate-detection blind spot fixed (FX rounding hid a real double-charge), invoice number added as a stronger match (2026-07-29)
-*Royce asked "do we check for duplicate receipts?", then reported a specific receipt sitting unactioned that had already been approved elsewhere. Traced it live: two identical Anthropic charges ($12.02 USD both), missed as a duplicate because the app's duplicate check was comparing the AUD-converted dollar amount, and the currency-conversion rate applied can differ by a day (and a few cents) between the first scan and the second — so two copies of the exact same charge could get slightly different AUD totals and slip past the check.*
-
-- [x] Duplicate check now compares the original as-charged amount (for foreign-currency receipts) instead of the AUD conversion, so a few cents' conversion drift no longer hides a real duplicate. eq-receipts [PR #14](https://github.com/eq-solutions/eq-receipts/pull/14), merged, deployed (site + backend), live-verified.
-- [x] Where a receipt prints its own invoice/receipt number, the app now reads it and uses it as the strongest match — more reliable than amount+date for recurring subscription charges (same vendor, same amount, every month).
-- [x] Re-checked every existing receipt against the corrected rule — surfaced a **second** real duplicate that had been hiding the same way: two identical GitHub charges ($68.64 USD, both already approved, 2026-07-22). Both duplicate pairs now show correctly in the app.
-
-**Deferred:**
-- [ ] **Royce to review the two now-flagged duplicate pairs in the app** (Anthropic $12.02 USD and GitHub $68.64 USD, both 2026-07-22/07-28) and decide whether either was a genuine double-charge worth pursuing a refund/credit for, or just dismiss as intentional. _(added 2026-07-29)_
-- [ ] **No way to correct a misread invoice number in the app yet** — if the receipt-reading step gets a digit wrong, there's currently no field to fix it by hand, so it'll just fall back to the amount+date check instead. Low priority; flagged for later. _(added 2026-07-29)_
 
 ---
 
