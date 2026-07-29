@@ -21,8 +21,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **IDENTITY-MODEL.md corrected, not the data** — retracted the false "retired" claim; the actual 2026-06-28 change only deactivated the `__personal__` tenant record itself, which just hides it from admin/audit sweeps, not from new memberships. eq-context commit `87d565f`, pushed to `main`.
 - [x] Flagged that the doc's own §11.2 backlog item ("multi-tenant membership — not yet built") is itself stale against eq-cards' shipped behaviour.
 
-**Deferred:**
-- [ ] **Full reconciliation of IDENTITY-MODEL.md's "one user, one tenant" model against eq-cards' shipped dual-membership Policy 1** — spawned as a background task; mid-session it produced a new §11.3 section (uncommitted, sitting in the shared eq-context checkout as of session close) with an explicit open decision for Royce: ratify Policy 1 as the de facto shape, scope it as a Cards-only exception, or constrain it back toward one-tenant. Not resolved — needs Royce's call, and needs that in-progress edit committed/pushed. _(added 2026-07-30)_
+- [x] **Reconciliation resolved by Royce**: the doc's old "one user, one tenant" rule was backwards — corrected. Cards is the personal identity/control layer for everyone; a person owns one identity and can additively join multiple tenants by choice, so they're not re-entering their info per employer. §11 item 2 and §11.2 updated to match; §11.3 records the decision and the eq-cards code that already implements it. eq-context, same-day follow-up commit.
 
 ---
 
