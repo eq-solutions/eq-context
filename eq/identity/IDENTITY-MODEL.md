@@ -1,7 +1,7 @@
 ---
 title: EQ Solutions — Unified Identity & Permissions Model
 owner: Royce Milmlow
-last_updated: 2026-07-05
+last_updated: 2026-07-30
 scope: Authoritative cross-product reference. Every present and future EQ Solutions product (Field, Quotes, Cards, Service, Intake, Tender Pipeline, anything that follows) conforms to this model. Governs the 5-tier role system, the platform-admin escape hatch, naming conventions for roles and permission keys, the invite flow, session lifecycle, and the JWT shape that lets modules talk directly to Supabase.
 read_priority: critical
 status: live
@@ -11,7 +11,11 @@ status: live
 
 **Status:** Live v1, 2026-05-20. (Promoted from Draft when Phase 1.F shipped — see commit history on `claude/phase-1f-identity-foundation`.)
 
-**Tenant slug update 2026-06-29:** EQ Solutions company tenant slug renamed from `core` to `eq` (jvkn `shell_control.tenants`). Shell and Service now agree on `eq`. Any reference to Shell slug `core` for the EQ Solutions tenant is stale. `__personal__` ghost tenant retired — all users homed in their primary employer tenant. Worker identity anchors (Cards stubs with no Shell credentials) remain in `shell_control.users` but are excluded from the admin users RPC by `email IS NOT NULL` filter.
+**Tenant slug update 2026-06-29:** EQ Solutions company tenant slug renamed from `core` to `eq` (jvkn `shell_control.tenants`). Shell and Service now agree on `eq`. Any reference to Shell slug `core` for the EQ Solutions tenant is stale. Worker identity anchors (Cards stubs with no Shell credentials) remain in `shell_control.users` but are excluded from the admin users RPC by `email IS NOT NULL` filter.
+
+**Correction 2026-07-30 (live-verified against jvknxcmbtrfnxfrwfimn):** the line above previously read "`__personal__` ghost tenant retired — all users homed in their primary employer tenant." That is false — retracted, not just stale. Live query of `shell_control.user_tenant_memberships` found 47 active rows against the `__personal__` tenant, created continuously through 2026-07-29 (the day before this correction), several tied to real named SKS employees. What actually happened 2026-06-28 was narrower: the `shell_control.tenants` row for `__personal__` was set `active=false`, which only removes it from admin/audit sweeps that filter `is_personal=false` (`eq-shell/netlify/functions/check-duplicate-shell-accounts.ts`, `check-dangling-staff-pointers.ts`, `licence-expiry-scheduler.ts`). It never stopped new memberships.
+`__personal__` is in fact a permanent, deliberate architectural feature, not a retired one: eq-cards' "Policy 1" (`supabase/migrations/0038_claim_invite_personal_tenant.sql`, decided 2026-06-17, live unchanged in the current `eq_cards_claim_invite`/`eq_cards_auto_provision` bodies through migration `0072`/`0076` as of 2026-07-27) makes `__personal__` the permanent **home** tenant for every Cards worker — the claiming org's tenant is added additively via a second active membership row + `last_active_tenant_id`, never replacing the personal one. Of the 47 live rows: 40 also hold exactly one active org membership (expected dual-membership under Policy 1), 6 hold only the personal membership (Cards signups that never claimed an org), 1 (a platform admin) holds 3 others.
+Net: this doc's own §11.2 backlog item ("Multi-tenant membership... v2 candidate... not yet built") is itself stale — eq-cards has shipped exactly that (one user, two simultaneous active tenant memberships) since 2026-06-17. Treat §11.2's "not yet built" framing as unverified against eq-cards until someone reconciles the two.
 **Implementation owner (shell side):** see [eq/identity/PHASE-1F-PLAN.md](./PHASE-1F-PLAN.md).
 **Scope:** Authoritative reference for every present and future EQ Solutions product (Field, Quotes, Cards, Service, Intake, Tender Pipeline, and anything that follows). Every new module shipped under the EQ shell must conform to this document.
 
