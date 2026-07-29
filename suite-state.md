@@ -61,7 +61,6 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-29)
 
 **eq-service:**
-- #635 fix(import): add missing unique index on service.job_plan_aliases
 - #634 fix(deps): close the readdir-glob brace-expansion DoS chain
 
 **eq-shell:**
@@ -88,7 +87,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 200 (latest: 0194) applied
+**Migrations:** eq-service has 201 (latest: 0195) applied
 
 ---
 
