@@ -60,10 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-29)
 
-**eq-service:**
-- #640 feat(import): parse titled PM sheets in the Delta/Maximo importer
-- #639 fix(reports): run-sheet job code line now shows Code - Plan # - Name
-
 **eq-shell:**
 - #1065 fix(functions): lazy-load @sentry/node to unblock local netlify dev
 
