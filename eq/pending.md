@@ -14,6 +14,18 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-solves-service: Contacts list now respects Shell's Service toggle + monthly PM sheet now imports directly (2026-07-29)
+*Two asks in one session: (1) double-check the Service Users list and Contacts list are sourced from canonical, not a separate list — Users already was; Contacts turned out to leak past a toggle. (2) get "August PM.xlsx", Royce's monthly hand-copied work-order sheet, importing directly instead of manual entry.*
+
+- [x] **`/contacts` no longer shows contacts for customers/sites toggled off for Service in Shell.** The canonical contact views (`service.customer_contacts`/`service.site_contacts`) never inherited the `service_enabled` filter that the sites/customers views already had — 93 of 197 customer contacts and 13 of 31 site contacts were leaking through. eq-service [PR #637](https://github.com/eq-solutions/eq-service/pull/637), merged + migration applied live to production (ehow) — confirmed the counts dropped to 104/18.
+- [x] **Maintenance Import now accepts the "titled PM sheet" format** — a free-text title (site + month) above an offset header row, no dedicated Site/Target Start columns, which is the shape of the file Royce had been retyping by hand each month. Parser infers the site and month from the title, and prefers a real per-row Site column when one exists (so a mixed-site sheet still splits correctly). Every inferred date is flagged in the import preview for a check before committing. eq-service [PR #640](https://github.com/eq-solutions/eq-service/pull/640), merged + deployed live to service.eq.solutions — verified the deploy is serving the new code.
+- [x] **Caught a stale-branch risk before merging #640** — the working branch was 4 commits behind `main`, including an unrelated security fix; merged `main` in first so the PR couldn't silently revert other people's work.
+
+**Deferred:**
+- [ ] **First real "August PM"-style import: the "BTCHGR" job plan code on Royce's file doesn't match any existing SKS job plan exactly** (closest is "24VBTCHGR") — the import wizard's existing fuzzy-match step will prompt to confirm or nominate a plan the first time this file type is actually committed. Not a bug, just a heads-up for whoever runs the first real import. _(added 2026-07-29)_
+
+---
+
 ## eq-solves-service: Field Run-Sheet asset headers now show the maintenance plan's Job Code (2026-07-29)
 *Royce shared a generated Run-Sheet (SY3, standard) and asked for the maintenance plan's Job Code to show on each asset — right now a tech sees ID/Location/WO on the printout but has no way to tell which maintenance plan an asset belongs to without looking it up separately.*
 
