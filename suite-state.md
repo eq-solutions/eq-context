@@ -64,10 +64,10 @@ _If this file is >48h old, the cron is broken._
 - #634 fix(deps): close the readdir-glob brace-expansion DoS chain
 
 **eq-shell:**
+- #1094 chore(intake): re-vendor eq-intake/eq-platform — tab redesign (Overview/To Do/Bring Data In/Ask)
 - #1065 fix(functions): lazy-load @sentry/node to unblock local netlify dev
 
 **eq-solves-intake:**
-- #83 feat(intake): fold Reconcile into Bring Data In, drop the SimPRO copy
 - #82 fix(intake-demo): align Reconcile phone/ABN normalization keys with classifySheet's singular entity names
 
 ---
