@@ -60,7 +60,12 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-29)
 
+**eq-service:**
+- #646 feat(reports): extract + gate Compliance Report cover
+- #645 feat(reports): wire sign-off/cover/summary toggles into two more generators
+
 **eq-shell:**
+- #1101 fix(staff): compare licence content, not updated_at, for the re-review badge
 - #1065 fix(functions): lazy-load @sentry/node to unblock local netlify dev
 
 ---
