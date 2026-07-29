@@ -60,6 +60,9 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-29)
 
+**eq-service:**
+- #638 feat(reports): show maintenance plan job code in run-sheet asset headers
+
 **eq-shell:**
 - #1065 fix(functions): lazy-load @sentry/node to unblock local netlify dev
 
