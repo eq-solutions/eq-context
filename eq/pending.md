@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-07-29
+last_updated: 2026-07-30
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -11,6 +11,18 @@ status: live
 
 EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-context: `__personal__` tenant "retired" claim in IDENTITY-MODEL.md corrected against live data (2026-07-30)
+*Royce asked to investigate a live/docs mismatch found while verifying an unrelated mobile-permissions PR: 47 active `shell_control.user_tenant_memberships` rows against the `__personal__` tenant on eq-canonical (jvknxcmbtrfnxfrwfimn), contradicting the doc's "ghost tenant retired" line.*
+
+- [x] **Confirmed the 47 rows are not stale/orphaned — they're live, ongoing output of eq-cards' "Policy 1"** (migration 0038, decided 2026-06-17, unchanged through migrations 0072/0076 as of 2026-07-27): every Cards worker's home tenant is permanently `__personal__`, with org access added as a second active membership. New rows are still being created (last one 2026-07-29). Verified against real named SKS employees, not just anonymous rows.
+- [x] **IDENTITY-MODEL.md corrected, not the data** — retracted the false "retired" claim; the actual 2026-06-28 change only deactivated the `__personal__` tenant record itself, which just hides it from admin/audit sweeps, not from new memberships. eq-context commit `87d565f`, pushed to `main`.
+- [x] Flagged that the doc's own §11.2 backlog item ("multi-tenant membership — not yet built") is itself stale against eq-cards' shipped behaviour.
+
+**Deferred:**
+- [ ] **Full reconciliation of IDENTITY-MODEL.md's "one user, one tenant" model against eq-cards' shipped dual-membership Policy 1** — spawned as a background task; mid-session it produced a new §11.3 section (uncommitted, sitting in the shared eq-context checkout as of session close) with an explicit open decision for Royce: ratify Policy 1 as the de facto shape, scope it as a Cards-only exception, or constrain it back toward one-tenant. Not resolved — needs Royce's call, and needs that in-progress edit committed/pushed. _(added 2026-07-30)_
 
 ---
 
