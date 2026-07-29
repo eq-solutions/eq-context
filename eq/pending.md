@@ -14,6 +14,21 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-solves-service: ACB/NSX Test Report shipped with real data; Report Settings toggles extended to 3 more reports (2026-07-29)
+*Two background plans from an earlier session came back and were reviewed with Royce via three separate yes/no calls: (1) build the dormant ACB/NSX Test Report generator against real data, (2) wire the Report Settings toggles (sign-off, cover page, executive summary) into more report types beyond the Customer Report, (3) do the extra refactor needed to gate the Compliance Report's cover page too. All three: yes.*
+
+- [x] **ACB/NSX Test Report — new downloadable report, per completed test.** Real breaker details (make/model/serial/rating/protection settings) and test results now populate the report; previously this generator existed but was never wired to real data. eq-service [PR #644](https://github.com/eq-solutions/eq-service/pull/644), merged + live.
+- [x] **Mid-build catch, fixed before shipping, not after**: comparing the report template against the actual technician checklist screens (`AcbWorkflow.tsx`/`NsxWorkflow.tsx`) found the two used completely different wording for the same checks — the report would have rendered mostly blank. Royce chose "fix the labels before shipping" over shipping broken or holding the whole feature. Relabelled ~35 checklist items and rewired ~20 breaker-attribute fields to their real database columns across both report types.
+- [x] **Report Settings' sign-off / cover page / executive-summary toggles now also apply to the Field Run-Sheet and the PM Check Report** (previously only the Customer Report respected these). eq-service [PR #645](https://github.com/eq-solutions/eq-service/pull/645), merged + live.
+- [x] **Compliance Report's cover page can now also be turned off from Report Settings** — required a small refactor first (the cover was hard-wired into the report body) rather than the two-line change the other reports got. eq-service [PR #646](https://github.com/eq-solutions/eq-service/pull/646), merged + live.
+- [x] Confirmed all three PRs actually deployed — Netlify's production deploy record for service.eq.solutions matches the last merge commit, not just "merged on GitHub."
+
+**Deferred:**
+- [ ] **Secondary Injection test results (the "SI: Long Time - Setting" style readings) still don't match the ACB/NSX report's lookup labels** — same class of bug as the checklist mismatch just fixed, found during the same QA pass but left alone to keep this change scoped. Report will render this section blank until it's fixed too. _(added 2026-07-29)_
+- [ ] **The ACB Test Report has been verified correct by code symmetry with the NSX path, not against a real ACB check** — there are currently zero completed ACB checks in the live database to test against. Worth a quick look the first time SKS actually completes one. _(added 2026-07-29)_
+
+---
+
 ## eq-solves-service: Contacts list now respects Shell's Service toggle + monthly PM sheet now imports directly (2026-07-29)
 *Two asks in one session: (1) double-check the Service Users list and Contacts list are sourced from canonical, not a separate list — Users already was; Contacts turned out to leak past a toggle. (2) get "August PM.xlsx", Royce's monthly hand-copied work-order sheet, importing directly instead of manual entry.*
 
