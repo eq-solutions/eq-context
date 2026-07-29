@@ -40,7 +40,7 @@ _If this file is >48h old, the cron is broken._
 | Assets | 2,836 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
 | Users | 5 | service.tenant_members |
-| Maintenance checks | 30 | service.maintenance_checks |
+| Maintenance checks | 31 | service.maintenance_checks |
 | Defects | 0 | service.defects |
 
 **SKS tenant ID on ehow:** `7dee117c-98bd-4d39-af8c-2c81d02a1e85`
@@ -61,10 +61,10 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-29)
 
 **eq-service:**
+- #637 fix(contacts): respect Shell's service_enabled toggle
 - #634 fix(deps): close the readdir-glob brace-expansion DoS chain
 
 **eq-shell:**
-- #1094 chore(intake): re-vendor eq-intake/eq-platform — tab redesign (Overview/To Do/Bring Data In/Ask)
 - #1065 fix(functions): lazy-load @sentry/node to unblock local netlify dev
 
 **eq-solves-intake:**
