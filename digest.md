@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-29 08:44 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-29 08:58 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-29 08:38 UTC → 2026-07-29 08:44 UTC)
+## Since last refresh (2026-07-29 08:44 UTC → 2026-07-29 08:58 UTC)
 
-- Merged: eq-shell [#1092](https://github.com/eq-solutions/eq-shell/pull/1092) fix(suppliers): cap the Notes column width so Login/Password
-- Merged: eq-shell [#1090](https://github.com/eq-solutions/eq-shell/pull/1090) chore(intake): remove the unlinked per-domain landing pages
-- Merged: eq-shell [#1089](https://github.com/eq-solutions/eq-shell/pull/1089) fix(home): apprentices land on WorkerHome, not the manager d
-- Merged: eq-shell [#1085](https://github.com/eq-solutions/eq-shell/pull/1085) fix(deps): react-router-dom 6.30.4 -> 7.18.1, closes the 2 r
-- Merged: eq-shell [#1084](https://github.com/eq-solutions/eq-shell/pull/1084) fix(staff): stop Company field wiping on save, add apprentic
-- Merged: eq-shell [#1082](https://github.com/eq-solutions/eq-shell/pull/1082) fix(suppliers): PR #1079's scroll wrapper was insufficient —
-- Merged: eq-shell [#1081](https://github.com/eq-solutions/eq-shell/pull/1081) feat(auth): tenant-scoped self-serve phone signup on Core lo
-- Merged: eq-shell [#1077](https://github.com/eq-solutions/eq-shell/pull/1077) fix(security): revoke anon EXECUTE on eq_enforce_function_pr
+- Merged: eq-shell [#1099](https://github.com/eq-solutions/eq-shell/pull/1099) fix(suppliers): pass fullWidth to HubLayout — the actual roo
+- Merged: eq-shell [#1091](https://github.com/eq-solutions/eq-shell/pull/1091) fix(licences): stop the Cards resync from bumping updated_at
+- Merged: eq-shell [#1088](https://github.com/eq-solutions/eq-shell/pull/1088) fix(intake): route the Health-console commit through intake-
+- Merged: eq-shell [#1087](https://github.com/eq-solutions/eq-shell/pull/1087) fix(cards): spinner on compliance-pack progress label
+- Merged: eq-shell [#1086](https://github.com/eq-solutions/eq-shell/pull/1086) feat(home): roster, leave, and prestart at-a-glance cards on
+- Merged: eq-shell [#1083](https://github.com/eq-solutions/eq-shell/pull/1083) fix(deps): sweep the remaining Dependabot alerts (146 -> 4 k
+- Merged: eq-shell [#1080](https://github.com/eq-solutions/eq-shell/pull/1080) fix(licences): licence-push never marks a revoked Cards lice
+- Merged: eq-shell [#1079](https://github.com/eq-solutions/eq-shell/pull/1079) fix(suppliers): wrap desktop Table in a horizontal-scroll co
 
 ## ⚠ Needs you (4)
 
@@ -74,6 +74,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-29 | eq-shell | [#1099](https://github.com/eq-solutions/eq-shell/pull/1099) fix(suppliers): pass fullWidth to HubLayout — the actual root cau |
 | 2026-07-29 | eq-shell | [#1098](https://github.com/eq-solutions/eq-shell/pull/1098) fix(suppliers): hide Notes/Login/Password by default, same idiom  |
 | 2026-07-29 | eq-shell | [#1097](https://github.com/eq-solutions/eq-shell/pull/1097) fix(suppliers): paginate the table so the scrollbar isn't buried |
 | 2026-07-29 | eq-shell | [#1096](https://github.com/eq-solutions/eq-shell/pull/1096) fix(suppliers): scroll the table on its own card, not truncate ev |
@@ -88,22 +89,21 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-29 | eq-solves-service | [#634](https://github.com/eq-solutions/eq-service/pull/634) fix(deps): close the readdir-glob brace-expansion DoS chain |
 | 2026-07-29 | eq-solves-service | [#636](https://github.com/eq-solutions/eq-service/pull/636) fix(migrations): remove top-level BEGIN/COMMIT from 0195 |
 | 2026-07-29 | eq-solves-service | [#635](https://github.com/eq-solutions/eq-service/pull/635) fix(import): add missing unique index on service.job_plan_aliases |
-| 2026-07-29 | eq-field | [#567](https://github.com/eq-solutions/eq-field/pull/567) v3.5.379 — version-tag script/style URLs, immutable caching |
-_Showing 15 of 112 · full record in [sessions/](sessions/)_
+_Showing 15 of 113 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **First real "August PM"-style import: the "BTCHGR" job plan code on Royce's file doesn't match any existing SKS job plan exactly** (closest is "24VBTCHGR") — the import wizard's existing fuzzy-match step will prompt to confirm or nominate a plan the first time this file type is actually committed. Not a bug, just a heads-up for whoever runs the first real import. _(added 2026-07-29)_
 - **ACB/NSX breaker-card run-sheets and RCD test run-sheets don't show the Job Code** — Royce chose to scope this session to the standard maintenance checklist only; same gap exists in those report variants if wanted later. _(added 2026-07-29)_
 - **Two other report types have the same missing-Job-Code gap**: the PM asset report and the work-order-details report already fetch/track job plan info per asset but only surface the plan *name*, never the *code*. Not touched this session — out of scope. _(added 2026-07-29)_
 - **Bring Data In's "Check for conflicts" still commits on its own path, separate from the main Into-EQ flow** — routing those resolved rows into the same shared commit path as everything else is real, separate work, not done here. _(added 2026-07-29)_
 - **The deeper "why is this still exhausting" fixes are still open** — bulk-approve (today it's still one row at a time), standing rules for recurring conflict types (so the same duplicate doesn't get flagged forever), a trend view (is the score improving?), and a real ask-anything grounded across the whole suite (today's Ask tab is a thin preview of that). Discussed with Royce as the next tier up from this session's fix — this session deliberately shipped the cheap, clear win first. _(added 2026-07-29)_
 - **The live end-to-end proof is still outstanding**: drop a deliberately-conflicting test row through production `/intake` and confirm it parks in the queue instead of committing. Blocked this session on the file-upload tool refusing to attach a test file not shared directly by Royce in chat — needs either Royce dragging the file into chat, or Royce doing the drop himself while checked live. This becomes easy to verify now that Overview/To Do is the single place to look. _(added 2026-07-29)_
-- **Version-tag script URLs** (e.g. `app-state.js?v=3.5.374`) with long-lived immutable caching, so even the very first load per version skips the network-revalidation step entirely. Touches ~34 script tags in `index.html`; would extend the existing version-bump ritual. _(added 2026-07-28)_
-- **Concatenate the always-loaded boot scripts into 2-3 files at deploy time** (plain concatenation, not a bundler — stays consistent with the repo's deliberate no-build-step architecture). Cuts request count on the true first-ever cold visit, which the caching fix above doesn't touch. _(added 2026-07-28)_
+- **Concatenate the always-loaded boot scripts into 2-3 files at deploy time** (plain concatenation, not a bundler — stays consistent with the repo's deliberate no-build-step architecture). Cuts request count on the true first-ever cold visit, which the version-tag fix below doesn't touch. _(added 2026-07-28)_
 - **Audit which of the ~34 always-loaded-at-boot scripts actually need to block first paint** — several (recognitions.js, digest-settings.js, whatsnew.js, apprentice-widget.js, region-filter.js) look like narrow-feature scripts that could join the existing on-demand-per-page loading pattern already used for Roster/Timesheets/etc. _(added 2026-07-28)_
-- **Netlify Early Hints (103) for the first, blocking script** — lets the browser start fetching before Netlify finishes streaming the page shell. Polish-tier, smallest expected impact of the four. _(added 2026-07-28)_
-- **One DoS CVE left deliberately unfixed**: `brace-expansion` inside `exceljs`'s zip-writer chain (`archiver` → `archiver-utils` → `glob@7` → `minimatch@3.1.5`). The only full fix is a `minimatch` major bump, and this deep tree isn't verified against `minimatch`'s newer API — accepted as a residual rather than risk breaking xlsx writing in production. Low real-world exploitability (internal file-glob matching during archive creation, not attacker-reachable input). _(added 2026-07-28)_
-_…and 339 more · [eq/pending.md](eq/pending.md)_
+- **Netlify Early Hints (103) for the first, blocking script** — lets the browser start fetching before Netlify finishes streaming the page shell. Polish-tier, smallest expected impact. _(added 2026-07-28)_
+- **Same underlying flakiness eq-receipts hit** (its own Netlify site also doesn't reliably auto-deploy on push, logged separately) — worth a real investigation into why this account's Netlify projects need manual kicks, instead of treating each occurrence as a one-off to work around. _(added 2026-07-29)_
+_…and 341 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -125,7 +125,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 2795 | 442 | 95 | 9 |
+| [EQ](eq/pending.md) | 2812 | 444 | 97 | 9 |
 | [SKS](sks/pending.md) | 434 | 76 | 12 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 382 | 34 | 7 | 1 |
@@ -146,4 +146,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-29 08:44 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-29 08:58 UTC._
