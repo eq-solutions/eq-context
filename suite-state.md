@@ -60,11 +60,13 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-29)
 
-**eq-service:**
-- #638 feat(reports): show maintenance plan job code in run-sheet asset headers
-
 **eq-shell:**
+- #1097 fix(suppliers): paginate the table so the scrollbar isn't buried
 - #1065 fix(functions): lazy-load @sentry/node to unblock local netlify dev
+
+**eq-solves-intake:**
+- #86 fix(validation): coerceDate errored on every blank date, even optional ones
+- #85 fix(licences): cross-field rule used an operator the parser never supported
 
 ---
 
