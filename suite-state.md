@@ -61,9 +61,11 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-29)
 
 **eq-shell:**
+- #1100 fix(suppliers): show all columns by default now that fullWidth fits them
 - #1065 fix(functions): lazy-load @sentry/node to unblock local netlify dev
 
 **eq-solves-intake:**
+- #88 Make the field-importance rulebook visible and enforced
 - #86 fix(validation): coerceDate errored on every blank date, even optional ones
 - #85 fix(licences): cross-field rule used an operator the parser never supported
 
