@@ -1238,3 +1238,14 @@ contain the same values and were pushed before push-protection caught up.
 - **Live `eq_quality_upsert_alert` on ehow is still the ungranted 053 version** until 058 is applied — merged ≠ applied.
 
 ---
+
+## eq-service: import silently generating nothing — root-caused and fixed (2026-07-29)
+*Royce reported the Maximo PDF importer "generating nothing even after skipping questionable stuff", with a screenshot showing a Postgres `ON CONFLICT` constraint error. Traced live rather than guessed — the fix was a one-line missing database index, but the bug had been silently breaking this exact workflow for every tenant since the table was created.*
+
+- [x] **Root cause: `service.job_plan_aliases` — the table the app actually writes to — was missing a unique index the import code has always assumed existed.** Any group needing a job-plan match resolved (Accept a fuzzy match / Nominate an existing plan / Create a new plan) during an import commit failed on that write, which aborted the *entire* commit before any maintenance checks were created — even after unresolved rows were skipped. Confirmed live: the table had 0 rows, meaning this path had never once succeeded in production.
+- [x] **Fixed with migration 0195** (added the missing index — table was empty, so purely additive, zero data risk). Dry-run verified twice against live ehow in rolled-back transactions before committing, including simulating the exact app write. eq-service [PR #635](https://github.com/eq-solutions/eq-service/pull/635), merged.
+- [x] **First deploy attempt was correctly blocked by the deploy pipeline's own safety check** (a formatting rule in the migration file, not the fix itself) — caught before anything touched the live database, fixed, redeployed. eq-service [PR #636](https://github.com/eq-solutions/eq-service/pull/636), merged.
+- [x] **Confirmed live** — the missing index now exists on the production database. Retry the import: skipping unresolved rows plus resolving the rest should now actually generate checks instead of silently aborting.
+- [x] Found a second, unrelated orphaned table (`app_data.job_plan_aliases`, 2 rows, correct index, but the app never reads or writes it) while investigating — not touched, not blocking anything, noted for whenever it's convenient to clean up.
+
+---
