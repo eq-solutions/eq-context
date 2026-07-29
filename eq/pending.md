@@ -68,13 +68,14 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## eq-shell: licence "Re-review" badge was firing on its own, not on real edits (2026-07-29)
-*Royce asked why some licences kept needing "re-review" with nothing actually changed. Root cause: the automated Cards→Shell licence sync had no change-detection, so it bumped every synced licence's timestamp on every run — live SQL showed 24 licence rows across 4 staff sharing the exact same timestamp from an automated sync, not a real edit.*
+## eq-shell: licence "Re-review" badge false-flagging — real fix landed, correcting an earlier wrong diagnosis (2026-07-29)
+*PR #1091 (below) was believed to fix this but does not — it guards `app_data.licences` (the tenant-plane copy `staff-resync-licences.ts` keeps current for Field), a different table from `public.licences` (jvkn canonical), which the Staff-page badge actually reads. Royce later reported it was still happening ("this happens alot, licenses keep required a re review for no reason") — root-caused to a jvkn DB trigger (`licences_set_updated_at`) that stamps `updated_at` on every UPDATE regardless of real content change. Found 2 confirmed cross-person batch-touch incidents in the last 45 days that explained 3 of 9 currently-flagged people.*
 
-- [x] **Sync now fetches existing rows first and only writes when a field actually changed** — no more false re-review flags from a no-op sync. eq-shell [PR #1091](https://github.com/eq-solutions/eq-shell/pull/1091), merged, live.
+- [x] **#1091 — fixed Field's tenant-plane copy** (real fix, just not this bug): sync now fetches existing rows first and only writes when a field actually changed. eq-shell [PR #1091](https://github.com/eq-solutions/eq-shell/pull/1091), merged, live.
+- [x] **#1101 — the actual Staff-badge fix**: record a content fingerprint (licence number/expiry/no-expiry/photo+document storage paths) on each verified licence at review time, compare that instead of timestamps. A legacy verified entry with no fingerprint falls back to the old timestamp check unchanged — no regression for existing reviews. eq-shell [PR #1101](https://github.com/eq-solutions/eq-shell/pull/1101), merged, live (274/274 tests pass, no migration needed — jsonb column).
 
 **Deferred:**
-- [ ] **Royce to confirm live**: check that a staff member's licence no longer shows "re-review needed" after an automated sync unless something actually changed on it. Verified via 5 new unit tests + CI, not click-tested live in production. _(added 2026-07-29)_
+- [ ] **Royce to re-review Bruno Vita Pedrosa, Luke Wheeler, and Mohamed Ahmed** — their current flags trace to the confirmed false-positive batch touches; reviewing them now (post-#1101) records a real fingerprint so they won't be falsely re-flagged again. _(added 2026-07-29)_
 
 ---
 
@@ -181,9 +182,9 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## eq-shell: Suppliers page "missing" Login/Password columns — real root cause fixed (2026-07-28 → 2026-07-29)
+## eq-shell: Suppliers page "missing" Login/Password columns — actual root cause fixed (2026-07-28 → 2026-07-29)
 
-- [ ] **Royce to click through live**: open Suppliers and confirm all 8 columns (incl. Login/Password) are reachable via horizontal scroll and nothing truncates. _(added 2026-07-29)_
+- [ ] **Royce to click through live**: open Suppliers and confirm all 8 columns show by default with no scrolling needed — the page now uses `fullWidth` (the real fix; the page had been stuck inside an 860px reading-width cap the whole time) instead of scroll/pagination/column-hiding workarounds. _(added 2026-07-29)_
 
 ---
 
