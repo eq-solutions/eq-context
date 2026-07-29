@@ -60,7 +60,8 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-29)
 
-_No open PRs_
+**eq-shell:**
+- #1106 chore(intake): re-vendor eq-intake/eq-platform — field-importance settings screen
 
 ---
 
