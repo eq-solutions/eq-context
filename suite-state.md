@@ -60,8 +60,7 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-29)
 
-**eq-service:**
-- #647 fix(reports): correct Secondary Injection label lookups on ACB/NSX Test Report
+_No open PRs_
 
 ---
 
