@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-29 06:33 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-29 06:35 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-29 02:19 UTC → 2026-07-29 06:33 UTC)
+## Since last refresh (2026-07-29 06:33 UTC → 2026-07-29 06:35 UTC)
 
-- Merged: eq-shell [#1094](https://github.com/eq-solutions/eq-shell/pull/1094) chore(intake): re-vendor eq-intake/eq-platform — tab redesig
-- Merged: eq-shell [#1082](https://github.com/eq-solutions/eq-shell/pull/1082) fix(suppliers): PR #1079's scroll wrapper was insufficient —
-- Merged: eq-shell [#1081](https://github.com/eq-solutions/eq-shell/pull/1081) feat(auth): tenant-scoped self-serve phone signup on Core lo
-- Merged: eq-shell [#1078](https://github.com/eq-solutions/eq-shell/pull/1078) fix(admin): correct Worker join QR copy to match invite-requ
-- Merged: eq-shell [#1077](https://github.com/eq-solutions/eq-shell/pull/1077) fix(security): revoke anon EXECUTE on eq_enforce_function_pr
-- Merged: eq-shell [#1074](https://github.com/eq-solutions/eq-shell/pull/1074) fix(deps): xlsx off unpatched npm registry to SheetJS CDN fi
-- Merged: eq-shell [#1073](https://github.com/eq-solutions/eq-shell/pull/1073) fix(sks-sync): stop the daily worker sync clobbering Shell s
-- Merged: eq-shell [#1068](https://github.com/eq-solutions/eq-shell/pull/1068) feat(auth): TOTP backup codes for authenticator device loss
+- Merged: eq-shell [#1083](https://github.com/eq-solutions/eq-shell/pull/1083) fix(deps): sweep the remaining Dependabot alerts (146 -> 4 k
+- Merged: eq-shell [#1080](https://github.com/eq-solutions/eq-shell/pull/1080) fix(licences): licence-push never marks a revoked Cards lice
+- Merged: eq-shell [#1079](https://github.com/eq-solutions/eq-shell/pull/1079) fix(suppliers): wrap desktop Table in a horizontal-scroll co
+- Merged: eq-shell [#1076](https://github.com/eq-solutions/eq-shell/pull/1076) feat(field-sync): licence-push.ts syncs Cards licence edits 
+- Merged: eq-shell [#1075](https://github.com/eq-solutions/eq-shell/pull/1075) fix(staff): licence-review badge misses edits to already-rev
+- Merged: eq-shell [#1072](https://github.com/eq-solutions/eq-shell/pull/1072) docs(control-plane): record eq_enforce_function_privacy appl
+- Merged: eq-shell [#1071](https://github.com/eq-solutions/eq-shell/pull/1071) fix(cards): clean compliance-pack filename, stop showing sta
+- Merged: eq-shell [#1070](https://github.com/eq-solutions/eq-shell/pull/1070) fix(security): event-trigger lockdown for anon-executable ne
 
 ## ⚠ Needs you (4)
 
@@ -51,10 +51,10 @@ _…and 77 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
 | eq-shell | ? unknown | ? | 1 | 0d |
-| eq-solves-service | ? unknown | ? | 2 | 0d |
+| eq-solves-service | ? unknown | ? | 1 | 0d |
 | eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ? unknown | ? | 0 | — |
-| eq-solves-intake | ✓ success | 0d ago | 1 | 0d |
+| eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
 ## Live errors (Sentry)
 
@@ -76,8 +76,10 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 |--------|------|----|
 | 2026-07-29 | eq-shell | [#1094](https://github.com/eq-solutions/eq-shell/pull/1094) chore(intake): re-vendor eq-intake/eq-platform — tab redesign (Ov |
 | 2026-07-29 | eq-shell | [#1093](https://github.com/eq-solutions/eq-shell/pull/1093) feat(ops): view archived quotes without restoring them |
+| 2026-07-29 | eq-solves-service | [#634](https://github.com/eq-solutions/eq-service/pull/634) fix(deps): close the readdir-glob brace-expansion DoS chain |
 | 2026-07-29 | eq-solves-service | [#636](https://github.com/eq-solutions/eq-service/pull/636) fix(migrations): remove top-level BEGIN/COMMIT from 0195 |
 | 2026-07-29 | eq-solves-service | [#635](https://github.com/eq-solutions/eq-service/pull/635) fix(import): add missing unique index on service.job_plan_aliases |
+| 2026-07-29 | eq-solves-intake | [#82](https://github.com/eq-solutions/eq-solves-intake/pull/82) fix(intake-demo): align Reconcile phone/ABN normalization keys wi |
 | 2026-07-29 | eq-solves-intake | [#84](https://github.com/eq-solutions/eq-solves-intake/pull/84) fix(intake): drop the now-unused useCallback import in IntakeHeal |
 | 2026-07-29 | eq-solves-intake | [#83](https://github.com/eq-solutions/eq-solves-intake/pull/83) feat(intake): fold Reconcile into Bring Data In, drop the SimPRO  |
 | 2026-07-28 | eq-shell | [#1092](https://github.com/eq-solutions/eq-shell/pull/1092) fix(suppliers): cap the Notes column width so Login/Password don' |
@@ -87,9 +89,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-28 | eq-shell | [#1089](https://github.com/eq-solutions/eq-shell/pull/1089) fix(home): apprentices land on WorkerHome, not the manager dashbo |
 | 2026-07-28 | eq-shell | [#1087](https://github.com/eq-solutions/eq-shell/pull/1087) fix(cards): spinner on compliance-pack progress label |
 | 2026-07-28 | eq-shell | [#1086](https://github.com/eq-solutions/eq-shell/pull/1086) feat(home): roster, leave, and prestart at-a-glance cards on Work |
-| 2026-07-28 | eq-shell | [#1085](https://github.com/eq-solutions/eq-shell/pull/1085) fix(deps): react-router-dom 6.30.4 -> 7.18.1, closes the 2 remain |
-| 2026-07-28 | eq-shell | [#1084](https://github.com/eq-solutions/eq-shell/pull/1084) fix(staff): stop Company field wiping on save, add apprentice yea |
-_Showing 15 of 110 · full record in [sessions/](sessions/)_
+_Showing 15 of 111 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
@@ -103,7 +103,7 @@ _Showing 15 of 110 · full record in [sessions/](sessions/)_
 - **Competitive benchmark vs industry leaders (Deputy, Tradify, Fergus, simPRO, ServiceM8, Rhumbix, Skedulo)** — selected alongside the MD-tidy pass, but the session pivoted to the Sites-screen rebuild before it was run. Not started. _(added 2026-07-28)_
 - **Go use the real review console next time** (Core → `IntakeHealthHome`'s Sites Dupes tab) instead of raw SQL — it already works. _(added 2026-07-28)_
 - **Kareena's KPH/KAR pairing was flagged "ambiguous" by the live resolver** (2026-07-23) — today's manual pick (keep KPH) looks right on the evidence, but worth a second look via the console. _(added 2026-07-28)_
-_…and 338 more · [eq/pending.md](eq/pending.md)_
+_…and 336 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -146,4 +146,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-29 06:33 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-29 06:35 UTC._
