@@ -190,9 +190,10 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **Download filename now reads `<Org>_Compliance_<date>.zip`** instead of a raw UUID storage key. eq-shell [PR #1071](https://github.com/eq-solutions/eq-shell/pull/1071), merged (`5a6036a0`).
 - [x] **Export now shows the manager-corrected email/phone from the Staff page**, not the stale Cards copy — same PR #1071, merged, live via Netlify auto-deploy.
 - [x] **Confirmed (not a bug): the "duplicate" front/back electrical licence photo is a real duplicate Rhys uploaded**, not the system reusing one image — no code change needed.
+- [x] **Added a spinner to the "building your pack" progress text** so it's obvious an export is still running (it already said "Downloading photos…" then "Compressing…", just as easy-to-miss plain text on the button). eq-shell [PR #1087](https://github.com/eq-solutions/eq-shell/pull/1087), merged (`7a30a76d`). Royce confirmed the filename fix was already live before this pass — this was UX-only, no backend change.
 
 **Deferred:**
-- [ ] **Royce to re-download a compliance pack once the deploy lands** and confirm the filename reads correctly and Rhys Scott's email now shows current. _(added 2026-07-28)_
+- [ ] **Royce to re-download a compliance pack once the deploy lands** and confirm the filename reads correctly, Rhys Scott's email now shows current, and the spinner shows while it builds. _(added 2026-07-28, updated 2026-07-29)_
 - [ ] **Rhys to re-upload a distinct back photo for his electrical licence** if the duplicate was accidental — his call, not a system fix. _(added 2026-07-28)_
 
 ---
