@@ -60,8 +60,8 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-29)
 
-**eq-service:**
-- #637 fix(contacts): respect Shell's service_enabled toggle
+**eq-field:**
+- #567 v3.5.379 — version-tag script/style URLs, immutable caching
 
 **eq-shell:**
 - #1065 fix(functions): lazy-load @sentry/node to unblock local netlify dev
@@ -83,7 +83,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 201 (latest: 0195) applied
+**Migrations:** eq-service has 202 (latest: 0196) applied
 
 ---
 
