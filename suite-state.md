@@ -60,11 +60,8 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-29)
 
-**eq-shell:**
-- #1104 feat(intake): tenant-editable field-importance override table + RPCs
-
-**eq-solves-intake:**
-- #91 feat(intake): tenant-editable field-importance settings screen
+**eq-service:**
+- #647 fix(reports): correct Secondary Injection label lookups on ACB/NSX Test Report
 
 ---
 
