@@ -14,6 +14,16 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: removed a dead, never-linked duplicate import screen (2026-07-29)
+*Investigating a staging-gate fix turned up 6 import-related pages built back in May that were never actually reachable from anywhere in the app — no sidebar link, no button, nothing. They duplicated the working Import screen people already use. Given the choice to finish wiring them in or remove them, Royce chose to remove them.*
+
+- [x] **Deleted the 6 unreachable per-domain import pages and their code** (`intake/core`, `intake/field`, `intake/quotes`, `intake/cards`, `intake/service`, `intake/review`) — confirmed first that nothing else in the app or any other EQ app ever linked to them. eq-shell [PR #1090](https://github.com/eq-solutions/eq-shell/pull/1090), merged, deploying to core.eq.solutions now.
+
+**Deferred:**
+- [ ] **Royce to click through the Import screen (`/intake`) on core.eq.solutions once the deploy lands** — confirm it still loads and still commits normally. That screen wasn't touched, but worth a look since it's the app's only working import path now. _(added 2026-07-29)_
+
+---
+
 ## eq-service: page-only export bug closed out everywhere, Excel export added to 3 pages (2026-07-29)
 *Follow-on from the Maximo PDF import thread (full write-up in `pending-archive.md`, 2026-07-29). The same "export only grabs the current page" bug that hit Maintenance Plans also existed on Sites, Customers, Instruments, and the Audit Log — fixed in a background session Royce started, reviewed and merged here. Royce then asked whether Excel export was a big lift; it wasn't (the library was already in use elsewhere in the app) — built and shipped the same session.*
 
