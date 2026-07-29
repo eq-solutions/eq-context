@@ -64,7 +64,6 @@ _If this file is >48h old, the cron is broken._
 - #637 fix(contacts): respect Shell's service_enabled toggle
 
 **eq-shell:**
-- #1095 fix(suppliers): retune every column width to a coherent budget, not just Notes
 - #1065 fix(functions): lazy-load @sentry/node to unblock local netlify dev
 
 ---
