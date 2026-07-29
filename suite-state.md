@@ -1,14 +1,14 @@
 ---
 title: EQ Suite — Current State
 owner: Royce Milmlow
-last_updated: 2026-07-28
+last_updated: 2026-07-29
 scope: Live suite state — app lineup, DB counts, open PRs, architectural decisions. Auto-refreshed nightly by GitHub Action.
 read_priority: critical
 status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-07-28 (nightly cron)_
+_Last verified: 2026-07-29 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -58,14 +58,22 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-07-28)
+## Open PRs (as of 2026-07-29)
+
+**eq-service:**
+- #635 fix(import): add missing unique index on service.job_plan_aliases
+- #634 fix(deps): close the readdir-glob brace-expansion DoS chain
 
 **eq-shell:**
 - #1065 fix(functions): lazy-load @sentry/node to unblock local netlify dev
 
+**eq-solves-intake:**
+- #83 feat(intake): fold Reconcile into Bring Data In, drop the SimPRO copy
+- #82 fix(intake-demo): align Reconcile phone/ABN normalization keys with classifySheet's singular entity names
+
 ---
 
-## System Health (as of 2026-07-28)
+## System Health (as of 2026-07-29)
 
 **CI on main:**
 
