@@ -1,7 +1,7 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-07-29
+last_updated: 2026-07-30
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
@@ -9,7 +9,13 @@ status: live
 
 # eq-shell changelog
 
-## 2026-07-29 (latest — PR #1106 MERGED; #1104 MERGED, migration 0222 APPLIED LIVE (eq+sks); #1101 MERGED, confirmed live; #1100 MERGED; #1099 MERGED, confirmed live; #1098 MERGED; #1097 MERGED; #1096 MERGED, confirmed live; #1095 MERGED; #1094 MERGED, confirmed live; #1093 MERGED, confirmed live; #1091 MERGED; #1090 MERGED; #1092 MERGED; #1088 MERGED; #1087 MERGED; #1065 MERGED, confirmed live)
+## 2026-07-30 (latest — PR #1111 MERGED, migration 0223 APPLIED LIVE (sks))
+
+- **PR #1111 (MERGED squash) — EQ Ops now leads with ex-GST everywhere, not inc-GST.** Royce: purchase orders and day-to-day conversation are always ex-GST; the app showed inc-GST as the primary figure almost everywhere. Swapped emphasis in the job detail header + financial breakdown, create-quote form breakdown, kanban board cards (inc-GST moved to a hover tooltip), and every Reports tab (pipeline, aging, by-estimator, monthly, by-customer, win/loss, register) — headers relabelled to match. Register CSV export unchanged (already showed both, clearly labelled). Customer-facing quote PDF deliberately left inc-GST-prominent (standard AU invoicing practice, out of scope). Also fixed the Coupa PO-match import preview, which compared an ex-GST PO figure against the quote's inc-GST total on screen — a correct match could read as a mismatch; the matching RPC's own logic was already correct, only the on-screen pair was mismatched units.
+- **Migration 0223 (`ops_ex_gst_display_rpcs`) dispatched and APPLIED LIVE to `sks`/ehow.** Adds `quote_subtotal_cents` to `eq_match_coupa_po` and `subtotal_cents` to `eq_list_loss_reasons`. First dispatch failed clean (0 applied, whole-file transaction rolled back) on Postgres 42P13 — `CREATE OR REPLACE FUNCTION` can't change a `RETURNS TABLE` function's OUT-parameter shape; `eq_list_loss_reasons` needed an explicit `DROP FUNCTION` first (already had this right for `eq_match_coupa_po`). Fixed, redispatched, applied clean, live-verified via Supabase MCP — both RPCs confirmed returning the new columns on ehow.
+- PR #1111 merged despite one pre-existing, unrelated failing check (`tenant_field_importance_overrides` RLS disabled on zaap+ehow, [issue #1108](https://github.com/eq-solutions/eq-shell/issues/1108), from PR #1104/migration 0222) — `main` has no branch protection requiring it green, and the violation predates this branch.
+
+## 2026-07-29 (PR #1106 MERGED; #1104 MERGED, migration 0222 APPLIED LIVE (eq+sks); #1101 MERGED, confirmed live; #1100 MERGED; #1099 MERGED, confirmed live; #1098 MERGED; #1097 MERGED; #1096 MERGED, confirmed live; #1095 MERGED; #1094 MERGED, confirmed live; #1093 MERGED, confirmed live; #1091 MERGED; #1090 MERGED; #1092 MERGED; #1088 MERGED; #1087 MERGED; #1065 MERGED, confirmed live)
 
 - **PR #1104 (MERGED squash `2ff281f1`) — tenant-editable field-importance override table + RPCs (server half of the eq-solves-intake #91 settings screen).** Sparse per-tenant override table `app_data.tenant_field_importance_overrides` — only rows for fields a tenant actually customized, absence = inherit `@eq/intake`'s code default. No direct PostgREST grants (mirrors `quote_rate_presets`, 0071); access only via `eq_get/set/reset_field_importance_override()`. Write access gated at the eq-shell route/component layer, same posture as `eq_upsert_rate_preset` (0093) — no DB-level role check beyond tenant scoping. Migration-only PR, no eq-shell UI changes.
 - **PR #1106 (MERGED squash `77578839`) — re-vendored eq-intake/eq-platform to eq-solves-intake@53a50f9, surfacing the #91 settings screen at core.eq.solutions.** Also picked up drift accumulated since the last vendor bump (#1094): #82 Reconcile phone/ABN key fix, #85 licence `NOT IN` parser fix, #86 `coerceDate` blank-date fix, #87/#89/#90 field-importance rulebook. Dropped ~86 stale generated `eq-schemas/src/generated/*.ts` files a prior vendor bump left committed — the README's own re-vendor process strips `src/generated` (regenerated fresh by `pnpm install`'s prepare script, confirmed working). Full build chain (build:packages+tokens+`tsc -b`+vite), `check:perms`, `check:css`, 274/274 tests all green. Deploy-preview click-through was skipped on Royce's call (required signing into the preview with a shared dev PIN, which Claude declined to enter itself) — merged on the automated-checks basis instead.

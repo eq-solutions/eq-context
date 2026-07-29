@@ -14,6 +14,21 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: EQ Ops now leads with ex-GST everywhere, Coupa PO-match display fixed (2026-07-30)
+*Royce noted EQ Ops always showed the inc-GST figure as primary, but every purchase order and day-to-day conversation is in ex-GST terms — asked for a review of where totals are wired, then to make ex-GST the prominent number.*
+
+- [x] **Job detail header, financial breakdown, and the create-quote form now lead with the ex-GST total** (inc-GST kept as the secondary line) — previously the inc-GST figure was bold/primary in all three. eq-shell [PR #1111](https://github.com/eq-solutions/eq-shell/pull/1111), merged to `main`.
+- [x] **Kanban board cards now show ex-GST as the headline figure**, inc-GST moved to a hover tooltip.
+- [x] **Every Reports tab (pipeline, aging, by-estimator, monthly, by-customer, win/loss, register) now totals ex-GST**, headers relabelled accordingly. Register CSV export unchanged — already showed both figures, clearly labelled.
+- [x] **Fixed a real display bug found along the way**: the Coupa purchase-order import screen was comparing a supplier PO's ex-GST value against the quote's inc-GST total on screen, which made correct matches look like mismatches. The underlying matching logic was already correct — only what was shown on screen was comparing two different things. Now shows ex-GST on both sides.
+- [x] Customer-facing quote PDF deliberately left showing inc-GST first — normal invoicing practice, not part of this change.
+- [x] Database change (adds the ex-GST figure to two backend lookups) applied live and verified working before the code was merged.
+
+**Deferred:**
+- [ ] **Royce to click through live**: open a job's detail view, the create-quote form, the kanban board, and each Reports tab, confirm ex-GST reads as the main figure everywhere it should. Verified via build + typecheck only, not yet clicked through live. _(added 2026-07-30)_
+
+---
+
 ## eq-context: `__personal__` tenant "retired" claim in IDENTITY-MODEL.md corrected against live data (2026-07-30)
 *Royce asked to investigate a live/docs mismatch found while verifying an unrelated mobile-permissions PR: 47 active `shell_control.user_tenant_memberships` rows against the `__personal__` tenant on eq-canonical (jvknxcmbtrfnxfrwfimn), contradicting the doc's "ghost tenant retired" line.*
 
