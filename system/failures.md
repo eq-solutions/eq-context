@@ -1,7 +1,7 @@
 ---
 title: SYSTEM — Failure Ledger (the ratchet's memory)
 owner: Royce Milmlow
-last_updated: 2026-07-21
+last_updated: 2026-07-31
 scope: Every failure that escaped the safeguards, with the rung its guard currently sits at. Machine-read by guard-ratchet.yml. Append-only for entries; rung/count are mutable.
 read_priority: high
 status: live
@@ -112,6 +112,21 @@ failures:
     cost: "3,955 NUL bytes written into system/lessons.md. Two lessons destroyed. File became binary."
     note: "Found while fixing F2 — and it INVALIDATED the F2 fix. The old lesson said 'prefer cat >> over Edit for appends'. That advice was WRONG and it corrupted the file. Only FULL REWRITE (cat >) is safe. wc -l alone will not catch this: the NUL-fill made the file LARGER."
     signal: "NUL.?(fill|byte)s?|nul-fill"
+    confirmed_in: ["sessions/2026-07-28.md"]
+
+  - id: F7
+    title: git merge/stash-pop round-trip NUL-fills files on the C:\Projects virtiofs mount
+    first_seen: 2026-07-28
+    last_seen: 2026-07-28
+    recurrences: 1
+    rung: 0
+    target_rung: 4
+    guard: "none -> proposed: a git post-merge/post-checkout hook that NUL-byte-scans every touched file, fail-closed (mirrors F2's posture — F6's existing hook only pattern-matches Bash `>>` commands and has no visibility into git-internal writes)"
+    detected_by: "human — `file` + a byte-level scan on scripts/sites.js after a git stash pop/merge round-trip; node --check did not catch it"
+    cost: "scripts/sites.js corrupted with NUL bytes mid-session; caught and fixed before commit, so no damage landed — but the corruption mechanism is real and currently invisible to every existing guard"
+    note: "Distinct mechanism from F6, not a bypass of it — confirmed by reading hooks/pre_tool_use.py: F6's guard (and its paired lesson in system/lessons.md) is scoped to Edit/Write and Bash '>>' append only, neither watches git operations. This is a second, currently-unguarded way this mount silently NUL-corrupts a file. Logged as its own id per the ledger's own convention (F4/F5) for a brand-new vector: rung 0, honest 'no guard yet', so a second occurrence starts the ratchet rather than re-tripping F6's already-closed rung-4 entry."
+    signal: "git (stash pop|merge).{0,80}NUL|NUL.{0,80}(stash pop|merge|round-trip)"
+    confirmed_in: ["sessions/2026-07-28.md"]
 ```
 
 ---
