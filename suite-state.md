@@ -60,8 +60,7 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-30)
 
-**eq-field:**
-- #576 v3.5.383 — Fix: staff toggled off-roster became unresolvable to a name
+_No open PRs_
 
 ---
 
