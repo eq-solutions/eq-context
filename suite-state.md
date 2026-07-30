@@ -60,8 +60,7 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-30)
 
-**eq-cards:**
-- #188 fix(identity): stop hardcoding 'employee' on the personal wallet membership role
+_No open PRs_
 
 ---
 
