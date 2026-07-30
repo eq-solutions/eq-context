@@ -1,13 +1,16 @@
 ---
 title: EQ Service — Changelog
 owner: Royce Milmlow
-last_updated: 2026-07-29
+last_updated: 2026-07-30
 scope: EQ Service append-only history. NOTE — duplicates eq/changelog/service.md, which stalls mid-deploy at 2026-06-09; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # EQ Service — Changelog
+
+## 2026-07-30
+- **PR #652 MERGED — admin archive/restore/cascade-archive writes now attribute to a real actor in eq-shell's canonical audit log**, instead of logging `source='system'` with no actor. Part of the cross-repo "who did this" gap the 2026-07-14 eq-shell audit-log program flagged as its last, biggest piece: `createAppDataAdminClient()` is service-role, so its writes to `app_data.customers`/`sites` were invisible to eq-shell's `fn_audit()` trigger, which only attributes a write when the caller forwards an `x-eq-actor` request header — `auth.uid()`/`auth.jwt()` aren't consulted. Added an optional `actorId` param that sends that header (mirrors eq-shell's own `getAuditedTenantDataClientById()`), wired into `restoreEntityAction` and `cascadeArchiveAction`, both of which already had `requireUser()`'s real user id sitting unused in scope. Deliberately left alone in the same pass: `contract_scopes` writes (import/derive) aren't watched by the trigger at all, so a header there is a no-op; `asset-reconciliation` writes go through the shared per-user client used across dozens of call sites, a bigger change; `hardDeleteEntityAction`'s actual delete runs through the `hard_delete_archived_entity` RPC on the JWT client, a different mechanism. Netlify auto-deployed to service.eq.solutions on merge — verified live via the Netlify MCP (deploy `ready`, commit matches, secret scan clean).
 
 ## 2026-07-29
 - **PR #628 (MERGED) — Maximo PDF import: "5A" frequency suffix now maps to 5-yearly**, confirmed against real SY3 LVACB export data.
