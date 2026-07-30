@@ -392,12 +392,6 @@ Changelog at `archive/changelog-ahd.md`.
 
 ---
 
-## Security-audit CI gate: dead project ref fixed, error isolation added (2026-07-30)
-
-- [ ] SEC-9/10/12 actual rotation/re-store — Royce to run himself, runbook/steps ready.
-
----
-
 ## guard.js selftest fixed, `~/.claude` git-init'd (2026-07-30)
 
 `selftest.js` reported 10/11 — root cause wasn't rule 2 (scan-secrets) or the
