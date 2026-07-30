@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-30 08:49 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-30 08:54 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-30 08:33 UTC → 2026-07-30 08:49 UTC)
+## Since last refresh (2026-07-30 08:49 UTC → 2026-07-30 08:54 UTC)
 
-- Merged: eq-shell [#1120](https://github.com/eq-solutions/eq-shell/pull/1120) fix(suppliers): free scroll + column toggle; drop BETA from 
-- Merged: eq-shell [#1106](https://github.com/eq-solutions/eq-shell/pull/1106) chore(intake): re-vendor eq-intake/eq-platform — field-impor
-- Merged: eq-shell [#1105](https://github.com/eq-solutions/eq-shell/pull/1105) fix(auth): register /login route so ?tenant= survives to Log
-- Merged: eq-shell [#1103](https://github.com/eq-solutions/eq-shell/pull/1103) fix(invite): route phone-first worker activation through She
-- Merged: eq-shell [#1100](https://github.com/eq-solutions/eq-shell/pull/1100) fix(suppliers): show all columns by default now that fullWid
-- Merged: eq-shell [#1098](https://github.com/eq-solutions/eq-shell/pull/1098) fix(suppliers): hide Notes/Login/Password by default, same i
-- Merged: eq-shell [#1096](https://github.com/eq-solutions/eq-shell/pull/1096) fix(suppliers): scroll the table on its own card, not trunca
-- Merged: eq-shell [#1095](https://github.com/eq-solutions/eq-shell/pull/1095) fix(suppliers): retune every column width to a coherent budg
+- Merged: eq-shell [#1119](https://github.com/eq-solutions/eq-shell/pull/1119) feat(auth): SIM-swap PIN invalidation — admin phone-number c
+- Merged: eq-shell [#1107](https://github.com/eq-solutions/eq-shell/pull/1107) fix(observability): stop mislabeling network errors as stale
+- Merged: eq-shell [#1104](https://github.com/eq-solutions/eq-shell/pull/1104) feat(intake): tenant-editable field-importance override tabl
+- Merged: eq-shell [#1102](https://github.com/eq-solutions/eq-shell/pull/1102) fix(auth): Mobile-door tenant resolution + invite role copy
+- Merged: eq-shell [#1101](https://github.com/eq-solutions/eq-shell/pull/1101) fix(staff): compare licence content, not updated_at, for the
+- Merged: eq-shell [#1099](https://github.com/eq-solutions/eq-shell/pull/1099) fix(suppliers): pass fullWidth to HubLayout — the actual roo
+- Merged: eq-shell [#1097](https://github.com/eq-solutions/eq-shell/pull/1097) fix(suppliers): paginate the table so the scrollbar isn't bu
+- Merged: eq-shell [#1094](https://github.com/eq-solutions/eq-shell/pull/1094) chore(intake): re-vendor eq-intake/eq-platform — tab redesig
 
 ## ⚠ Needs you (3)
 
@@ -49,7 +49,7 @@ _…and 83 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 1 | 0d |
+| eq-shell | ? unknown | ? | 0 | — |
 | eq-solves-service | ? unknown | ? | 0 | — |
 | eq-field | ? unknown | ? | 1 | 0d |
 | eq-cards | ? unknown | ? | 0 | — |
@@ -73,6 +73,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-30 | eq-shell | [#1119](https://github.com/eq-solutions/eq-shell/pull/1119) feat(auth): SIM-swap PIN invalidation — admin phone-number change |
 | 2026-07-30 | eq-shell | [#1120](https://github.com/eq-solutions/eq-shell/pull/1120) fix(suppliers): free scroll + column toggle; drop BETA from Cards |
 | 2026-07-30 | eq-shell | [#1117](https://github.com/eq-solutions/eq-shell/pull/1117) fix(briefing): exclude archived staff from the AI dashboard summa |
 | 2026-07-30 | eq-shell | [#1118](https://github.com/eq-solutions/eq-shell/pull/1118) fix(staff): lock email/phone provenance so Cards can update a non |
@@ -87,7 +88,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-29 | eq-shell | [#1112](https://github.com/eq-solutions/eq-shell/pull/1112) fix(staff): full-size licence photo lightbox |
 | 2026-07-29 | eq-shell | [#1111](https://github.com/eq-solutions/eq-shell/pull/1111) feat(ops): make ex-GST the prominent figure across EQ Ops |
 | 2026-07-29 | eq-shell | [#1110](https://github.com/eq-solutions/eq-shell/pull/1110) feat(auth): phone+PIN login door, generalized grace-gate pattern |
-| 2026-07-29 | eq-shell | [#1109](https://github.com/eq-solutions/eq-shell/pull/1109) fix(mobile): mirror desktop's permission checks (Security Groups  |
 _Showing 15 of 117 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -127,17 +127,17 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | [EQ](eq/pending.md) | 2853 | 450 | 105 | 9 |
 | [SKS](sks/pending.md) | 427 | 76 | 5 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
-| [OPS](ops/pending.md) | 398 | 36 | 7 | 1 |
+| [OPS](ops/pending.md) | 430 | 36 | 7 | 1 |
 
 ## Recent sessions
 
 | Date | Session |
 |------|---------|
 | 2026-07-30 | [`__personal__` tenant "retired" doc claim corrected against live data](sessions/2026-07-30.md) |
+| 2026-07-30 | [guard.js selftest fixed; ~/.claude brought under version control](sessions/2026-07-30-guard-selftest-claude-git.md) |
 | 2026-07-29 | [eq-receipts: fixed a duplicate-detection blind spot, added invoice number as a stronger match](sessions/2026-07-29.md) |
 | 2026-07-28 | [Roster: archive Labour Hire from the grid with a rehire rating](sessions/2026-07-28.md) |
 | 2026-07-27 | [eq-ui design handoff shipped + propagated to eq-shell/eq-service, real bugs found along the way](sessions/2026-07-27.md) |
-| 2026-07-26 | [Customers page speed fix, Job Creation export bug found+fixed, customer-level default End Client, Ops quote-form layout](sessions/2026-07-26.md) |
 _[sessions/](sessions/) · 5 shown_
 
 ## Substrate honesty
@@ -145,4 +145,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-30 08:49 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-30 08:54 UTC._
