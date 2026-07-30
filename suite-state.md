@@ -60,8 +60,7 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-30)
 
-**eq-field:**
-- #570 v3.5.381 — SKS logo + email polish
+_No open PRs_
 
 ---
 
