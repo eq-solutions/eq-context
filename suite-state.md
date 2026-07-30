@@ -63,9 +63,6 @@ _If this file is >48h old, the cron is broken._
 **eq-shell:**
 - #1139 perf(shell): preconnect to Field/Service/Cards origins ahead of iframe mount
 
-**eq-solves-intake:**
-- #97 feat(intake): tenant-editable trades settings screen + duplicate dismiss
-
 ---
 
 ## System Health (as of 2026-07-30)
@@ -83,7 +80,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 202 (latest: 0196) applied
+**Migrations:** eq-service has 203 (latest: 0197) applied
 
 ---
 
