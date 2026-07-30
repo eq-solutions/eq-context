@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-30 09:45 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-30 09:49 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-30 09:39 UTC → 2026-07-30 09:45 UTC)
+## Since last refresh (2026-07-30 09:45 UTC → 2026-07-30 09:49 UTC)
 
-- Merged: eq-shell [#1112](https://github.com/eq-solutions/eq-shell/pull/1112) fix(staff): full-size licence photo lightbox
-- Merged: eq-shell [#1110](https://github.com/eq-solutions/eq-shell/pull/1110) feat(auth): phone+PIN login door, generalized grace-gate pat
-- Merged: eq-shell [#1107](https://github.com/eq-solutions/eq-shell/pull/1107) fix(observability): stop mislabeling network errors as stale
-- Merged: eq-shell [#1104](https://github.com/eq-solutions/eq-shell/pull/1104) feat(intake): tenant-editable field-importance override tabl
-- Merged: eq-shell [#1102](https://github.com/eq-solutions/eq-shell/pull/1102) fix(auth): Mobile-door tenant resolution + invite role copy
-- Merged: eq-shell [#1101](https://github.com/eq-solutions/eq-shell/pull/1101) fix(staff): compare licence content, not updated_at, for the
-- Merged: eq-shell [#1099](https://github.com/eq-solutions/eq-shell/pull/1099) fix(suppliers): pass fullWidth to HubLayout — the actual roo
-- Merged: eq-shell [#1098](https://github.com/eq-solutions/eq-shell/pull/1098) fix(suppliers): hide Notes/Login/Password by default, same i
+- Merged: eq-shell [#1127](https://github.com/eq-solutions/eq-shell/pull/1127) chore(intake): re-vendor eq-intake/eq-platform — Tidy tab en
+- Merged: eq-shell [#1111](https://github.com/eq-solutions/eq-shell/pull/1111) feat(ops): make ex-GST the prominent figure across EQ Ops
+- Merged: eq-shell [#1109](https://github.com/eq-solutions/eq-shell/pull/1109) fix(mobile): mirror desktop's permission checks (Security Gr
+- Merged: eq-shell [#1106](https://github.com/eq-solutions/eq-shell/pull/1106) chore(intake): re-vendor eq-intake/eq-platform — field-impor
+- Merged: eq-shell [#1105](https://github.com/eq-solutions/eq-shell/pull/1105) fix(auth): register /login route so ?tenant= survives to Log
+- Merged: eq-shell [#1103](https://github.com/eq-solutions/eq-shell/pull/1103) fix(invite): route phone-first worker activation through She
+- Merged: eq-shell [#1100](https://github.com/eq-solutions/eq-shell/pull/1100) fix(suppliers): show all columns by default now that fullWid
+- Merged: eq-shell [#1065](https://github.com/eq-solutions/eq-shell/pull/1065) fix(functions): lazy-load @sentry/node to unblock local netl
 
 ## ⚠ Needs you (3)
 
@@ -27,13 +27,14 @@ _2026-07-30 09:45 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🔴 **Open security finding** — SEC-9 (P0 — confirmed exposure, same window as SEC-3, possible second exposure 2026-07-27) — A different service_role key (`jvkn`/eq-canonical) was pasted directly into a ch · [security-register.md](ops/security-register.md)
 - 🔴 **Guard bypass? rung 4** — F6: Append (>>) NUL-fills files on the C:\Projects virtiofs mount · possibly recurred in [2026-07-28.md](sessions/2026-07-28.md) · [failures.md](system/failures.md)
 
-## 🙋 Waiting on you (97)
+## 🙋 Waiting on you (98)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
 - **EQ** · **Royce to confirm live**: open `/sks/admin/users`, click the "Deactivated" tab, confirm the deactivated users actually appear. _(added 2026-07-30)_
 - **EQ** · **Moahmmed Elsayed's `photo_id`-typed licence row (number `0140988080`) not yet corrected** — unlike Maylin Ung's case (a driver's-licence-format number, fixed directly), this number doesn't match a recognisable pattern; needs Royce to confirm the actual document type before the DB row is corrected. _(added 2026-07-29)_
-- **EQ** · **Royce to click through live**: invite a labour-hire worker with the box unchecked, confirm they land on a Field-free home screen and can't reach Field directly; then invite/sign in a normal worker (box left checked) and confirm nothing changed for them. _(added 2026-07-30)_
+- **EQ** · **Royce to click through live**: invite a labour-hire worker with the box unchecked, confirm they land on a Field-free home screen and can't reach Field directly; then invite/sign in a normal worker (box left checked) and confirm nothing changed for them. Bundled with the three click-through items below into one live-testing pass — see that section's deferred note. _(added 2026-07-30)_
+- **EQ** · **Royce to click through live, all four features shipped today together** (this section's three plus the compliance-roster-only switch above): invite/adjust a worker with Field access off; correct a test worker's phone number and confirm their old passcode stops working while a fresh sign-in + new passcode works; check the passcode-status view and try "Unlock now" on a locked test account; sign in as a phone-only worker and confirm the backup-email reminder shows, dismisses for that sign-in only, and clears once an email is added. None of this has been clicked through live yet — Claude can't perform this step directly (logging in requires entering a passcode, which falls under a hard rule against entering credentials on the user's behalf, even for the user's own product). _(added 2026-07-30)_
 - **EQ** · **Royce to click through live**: open a job's detail view, the create-quote form, the kanban board, and each Reports tab, confirm ex-GST reads as the main figure everywhere it should. Verified via build + typecheck only, not yet clicked through live. _(added 2026-07-30)_
 - **EQ** · **Royce to clear Brave's site data for cards.eq.solutions on his own phone** — the actual reported symptom (an old email-login screen). A Flutter service worker registered on that device before the phone-OTP flip is still serving its own cached copy of the old build; production itself is correctly configured (verified live). A full close + clear-site-data + reopen forces the fresh navigation the browser's update check needs. _(added 2026-07-29)_
 - **EQ** · **Royce to reconcile a customer CSV with a messy phone number/ABN and confirm it now gets cleaned up** — verified in code + typecheck, not yet clicked through live. _(added 2026-07-29)_
@@ -42,8 +43,7 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **EQ** · **Royce to click through Assets/Job Plans/Maintenance Checks once the deploy lands** — confirm the Export button's new dropdown offers CSV and Excel, both download the full list, and the Maintenance Checks "tasks completed" count now shows a real number instead of "/0". Not click-tested live this session — no login credentials available in this environment, verified via type-checking + the full automated test suite + code review only. _(added 2026-07-29)_
 - **EQ** · **Royce to confirm live**: edit an already-reviewed licence's expiry/number in Cards for an approved worker, confirm the Staff page badge flips to "changed since — re-review needed" without a hard refresh. _(added 2026-07-28)_
 - **EQ** · **Royce to confirm live**: reload the Wallet and confirm the Photo ID nag no longer shows for a worker who holds a Driver Licence or Passport. _(added 2026-07-28)_
-- **EQ** · **Separate, lower-priority finding: 53 of 88 active SKS staff have a Cards worker link but zero credentials captured in Cards at all** (checked the pre-promotion `worker_credentials` table too — genuinely empty, not stuck mid-migration). Only 34 of 88 active staff have any licence data flowing through Shell. This is a Cards onboarding-completion gap, not a sync bug — no action taken, logging only per Royce's call. _(added 2026-07-28)_
-_…and 85 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 86 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
@@ -51,7 +51,7 @@ _…and 85 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 |------|-----------|--------|----------|-----------|
 | eq-shell | ? unknown | ? | 0 | — |
 | eq-solves-service | ? unknown | ? | 0 | — |
-| eq-field | ? unknown | ? | 1 | 0d |
+| eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ? unknown | ? | 0 | — |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
@@ -73,6 +73,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-30 | eq-shell | [#1127](https://github.com/eq-solutions/eq-shell/pull/1127) chore(intake): re-vendor eq-intake/eq-platform — Tidy tab enum dr |
 | 2026-07-30 | eq-shell | [#1126](https://github.com/eq-solutions/eq-shell/pull/1126) feat(audit): Suite activity tab — canonical_events as plain sente |
 | 2026-07-30 | eq-shell | [#1125](https://github.com/eq-solutions/eq-shell/pull/1125) feat(auth): email-capture nudge — Email+PIN fallback for phone-on |
 | 2026-07-30 | eq-shell | [#1124](https://github.com/eq-solutions/eq-shell/pull/1124) fix(admin): eq_list_tenant_users no longer drops deactivated user |
@@ -87,12 +88,11 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-30 | eq-shell | [#1116](https://github.com/eq-solutions/eq-shell/pull/1116) feat(workers): compliance-roster-only workers — has_field_access  |
 | 2026-07-30 | eq-shell | [#1114](https://github.com/eq-solutions/eq-shell/pull/1114) chore: remove dead intake domain pages and SecurityGroupsPage shi |
 | 2026-07-30 | eq-shell | [#1115](https://github.com/eq-solutions/eq-shell/pull/1115) fix(migrations): enable RLS on tenant_field_importance_overrides |
-| 2026-07-30 | eq-solves-service | [#651](https://github.com/eq-solutions/eq-service/pull/651) fix(reports): clarify Report Settings toggles are global, not per |
 _Showing 15 of 118 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **Not yet visible on core.eq.solutions** — this app is copied into the main Shell app in a separate step (same pattern as recent settings-screen work); a follow-up task is already queued to do that copy. _(added 2026-07-30)_
+- **Not yet visible on core.eq.solutions** — this app is copied into the main Shell app in a separate step (same pattern as recent settings-screen work). A follow-up task had paused itself waiting on the merge above; unblocked and told to proceed once it landed. _(added 2026-07-30)_
 - **Zemi Asri's email in core is still the old value** (`zemi.asri@sks.com.au`) — the fix stops this happening to the next worker, it doesn't correct his row. Either have him re-enter his email in Cards now (will take, unlocked), or edit it directly on his Shell Staff page. _(added 2026-07-30)_
 - No edit screen yet for switching an *existing* worker's Field access on/off after the fact — today it's invite-time only. _(added 2026-07-30)_
 - **The ACB Test Report has been verified correct by code symmetry with the NSX path, not against a real ACB check** — there are currently zero completed ACB checks in the live database to test against. Worth a quick look the first time SKS actually completes one. _(added 2026-07-29)_
@@ -102,7 +102,7 @@ _Showing 15 of 118 · full record in [sessions/](sessions/)_
 - **Bring Data In's "Check for conflicts" still commits on its own path, separate from the main Into-EQ flow** — routing those resolved rows into the same shared commit path as everything else is real, separate work, not done here. _(added 2026-07-29)_
 - **The deeper "why is this still exhausting" fixes are still open** — bulk-approve (today it's still one row at a time), standing rules for recurring conflict types (so the same duplicate doesn't get flagged forever), a trend view (is the score improving?), and a real ask-anything grounded across the whole suite (today's Ask tab is a thin preview of that). Discussed with Royce as the next tier up from this session's fix — this session deliberately shipped the cheap, clear win first. _(added 2026-07-29)_
 - **The live end-to-end proof is still outstanding**: drop a deliberately-conflicting test row through production `/intake` and confirm it parks in the queue instead of committing. Blocked this session on the file-upload tool refusing to attach a test file not shared directly by Royce in chat — needs either Royce dragging the file into chat, or Royce doing the drop himself while checked live. This becomes easy to verify now that Overview/To Do is the single place to look. _(added 2026-07-29)_
-_…and 343 more · [eq/pending.md](eq/pending.md)_
+_…and 344 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -124,10 +124,10 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 2873 | 452 | 109 | 9 |
+| [EQ](eq/pending.md) | 2894 | 455 | 114 | 9 |
 | [SKS](sks/pending.md) | 432 | 78 | 5 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
-| [OPS](ops/pending.md) | 421 | 36 | 7 | 1 |
+| [OPS](ops/pending.md) | 433 | 38 | 9 | 1 |
 
 ## Recent sessions
 
@@ -145,4 +145,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-30 09:45 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-30 09:49 UTC._
