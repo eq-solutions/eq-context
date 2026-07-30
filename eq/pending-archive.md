@@ -36,7 +36,6 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 - [x] **Server-side allow-list gap closed live** — Customer Type and Site Type were quietly blocked from saving even before this session's fix; corrected and confirmed live on the SKS database.
 - [x] **Code merged** — eq-solves-intake [PR #93](https://github.com/eq-solutions/eq-solves-intake/pull/93) squash-merged to `main` (`fc46a41`), Royce's "merge it once CI's green" go.
 - [x] **Re-vendored into eq-shell** — [PR #1127](https://github.com/eq-solutions/eq-shell/pull/1127), merged by Royce directly, Netlify deploy confirmed `SUCCESS`. Live on core.eq.solutions end-to-end.
-- [x] **`eq` tenant's Leave 401 investigated — not a bug.** The suspected missing DB grant turned out to be correct behaviour: `eq` moved to Core-only auth in v3.5.306, so the standalone demo PIN mints no session token, so the JWT-authenticated read path can never activate on that URL, so every read falls back to the anon path — which is deliberately locked down on zaap, same protection SKS already has. `CLAUDE.md`'s Tenants/Auth sections still described the old standalone-PIN flow as current; corrected instead of granting anon access (which would have reopened the hole the lockdown closed). Doc-only. [PR #571](https://github.com/eq-solutions/eq-field/pull/571) merged.
 
 ---
 

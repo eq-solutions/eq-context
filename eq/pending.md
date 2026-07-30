@@ -21,14 +21,12 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## eq-solves-intake: Customers/Sites Tidy tab — fixing a value gap couldn't actually be saved (2026-07-30)
-*Royce, looking at a screenshot: "no dropdown when you edit, then you can't save it here anyway... what is the value of intake?" Both were real, confirmed bugs, not misreadings — the Tidy tab's Edit/Suggest buttons for a data gap (e.g. a customer's Type field showing "company" isn't a recognised value) always used a plain text box even for closed-list fields, and neither Edit nor Suggest ever actually saved anywhere — they only changed what was on screen. On top of that, the one save path that does exist (the same one used for auto-fixes) was separately missing two fields from its own allow-list, so even a perfect frontend fix would have silently failed to save a customer's Type or a site's Type.*
+## eq-solves-intake: two more real bugs found live while clicking through Intake (2026-07-30)
+*Same session as the Tidy-tab fix above (now fully closed — see `eq/pending-archive.md`). Royce kept clicking through the freshly-deployed Intake screens and found two more genuine problems, not rough edges: the "Possible duplicate sites" merge tool's "Confirm merge" button did nothing visible on failure (error was captured but had no render branch to show in — a real server-side rejection looked identical to a UI that silently ignored the click), and the "Other duplicate flags" list only offered Dismiss, forcing a trip to the Staff/Contacts page and back just to archive an obvious duplicate.*
 
-- [x] **Dropdown for closed-list fields** — editing a gap like Customer Type now shows the actual allowed choices (lead/prospect/active/churned) instead of a free-text box.
-- [x] **Edit/Suggest now actually save** — both write to the real customer/site/etc. record instead of only changing what's shown on screen.
-- [x] **Server-side allow-list gap closed live** — Customer Type and Site Type were quietly blocked from saving even before this session's fix; corrected and confirmed live on the SKS database.
-- [x] **Code merged** — eq-solves-intake [PR #93](https://github.com/eq-solutions/eq-solves-intake/pull/93) squash-merged to `main` (`fc46a41`), Royce's "merge it once CI's green" go.
-- [ ] **Not yet visible on core.eq.solutions** — this app is copied into the main Shell app in a separate step (same pattern as recent settings-screen work). A follow-up task had paused itself waiting on the merge above; unblocked and told to proceed once it landed. _(added 2026-07-30)_
+- [x] **Merge-confirm silent failure fixed** — errors from a failed merge (wrong role, stale verdict, already merged, missing site) now render inline instead of vanishing. eq-solves-intake [PR #94](https://github.com/eq-solutions/eq-solves-intake/pull/94), merged.
+- [x] **One-click Archive added to duplicate flags** — staff/contact duplicates can be archived directly from the flag, same effect as archiving on their own page (record goes inactive). New database function written, applied live to the SKS database, and verified. eq-solves-intake [PR #95](https://github.com/eq-solutions/eq-solves-intake/pull/95), merged.
+- [ ] **Not yet visible on core.eq.solutions** — same copy-into-Shell step as the Tidy-tab fix; a follow-up task is running independently. _(added 2026-07-30)_
 
 ---
 
