@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-30)
 
-**eq-service:**
-- #649 fix(reports): wire remaining Report Settings gaps (Work Order Details sign-off, PM Check complexity)
-
 **eq-shell:**
 - #1117 fix(briefing): exclude archived staff from the AI dashboard summary
 
