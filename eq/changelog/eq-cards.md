@@ -1,13 +1,16 @@
 ---
 title: EQ Cards — Changelog
 owner: Royce Milmlow
-last_updated: 2026-07-27
+last_updated: 2026-07-30
 scope: EQ Cards append-only history. NOTE — duplicates eq/changelog/cards.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # EQ Cards — Changelog
+
+## 2026-07-30
+- **PR #187 (MERGED squash `27b68d70`) — codified `photo_id`/`passport` as tracked licence types.** Follow-up to the Maylin Ung photo-ID mistype (eq-shell changelog, 2026-07-29): investigated whether the picker needed a fix so it offers these as proper selectable types instead of routing through free-text "Other / not listed". Checked live jvkn state first — both already exist as canonical (`is_custom=false`) rows, added out-of-band 2026-06-22; the picker (which lists straight from `public.licence_types`) already surfaces them. The real gap was that the tracked seed migration (`0002_seed_licence_types.sql`) never captured this, so a fresh environment built from this repo's migrations would silently miss them. Added a no-op migration matching the live rows exactly. Also reconfirmed PR #185's equivalence RPC (migration 0109) is applied live on jvkn, matching the tracked migration.
 
 ## 2026-07-29
 - **PR #186 (MERGED) — removed dead netlify.toml config, deleted orphaned `web/welcome.html`.** netlify.toml's `[[redirects]]`/`[[headers]]` tables were never read in production (GitHub Actions deploy zip-uploads `build/web` only); `web/_redirects`/`web/_headers` are the real live sources. Folded the one rule netlify.toml alone had (`main.dart.wasm` cache header) into `web/_headers`. Deleted `web/welcome.html`, orphaned since GoRouter took over root routing 2026-06-23. Found while auditing a report of a stale login screen on mobile — that turned out to be a stuck service worker on one device, unrelated to this config drift.

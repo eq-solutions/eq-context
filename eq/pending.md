@@ -14,6 +14,11 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell + eq-cards: Photo ID compliance-matrix accuracy + full-size licence photo lightbox (2026-07-29 → 2026-07-30)
+- [ ] **Moahmmed Elsayed's `photo_id`-typed licence row (number `0140988080`) not yet corrected** — unlike Maylin Ung's case (a driver's-licence-format number, fixed directly), this number doesn't match a recognisable pattern; needs Royce to confirm the actual document type before the DB row is corrected. _(added 2026-07-29)_
+
+---
+
 ## eq-shell: Compliance-roster-only workers — Field access can now be switched off per worker (2026-07-30)
 *Sprint-planning Q&A on top of the ONE LOGIN work surfaced a gap: some labour-hire/subcontractor workers exist purely so their licences and compliance paperwork can be tracked — they have no actual Field duties. Until now every worker was routed into Field identically. Royce confirmed the fix: a per-worker on/off switch, defaulting on, so nothing changes for existing workers unless an admin explicitly flips it for a new invite.*
 
