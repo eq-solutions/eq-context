@@ -9,6 +9,11 @@ status: live
 
 # eq-shell changelog
 
+## 2026-07-30 (latest — PR #1124 MERGED, migration applied live)
+
+- **PR #1124 (MERGED squash `72337de7`) — `eq_list_tenant_users()` no longer filters out deactivated users server-side.** `AdminUserList.tsx`'s "Deactivated" slicer tab was dead UI — the RPC's own `WHERE` clause included `AND u.active = true`, so every row reaching the client was already active-only and the tab could never match anything. New migration `2026_07_30_fix_eq_list_tenant_users_active_filter.sql` drops that filter (kept `m.active = true` for tenant membership and the Cards-worker-stub email exclusion, both unrelated). Applied to live jvkn via Supabase MCP before merge (control-plane convention — no CI apply path); post-apply verified `sks` has 2 deactivated users now correctly surfacing, previously silently dropped.
+- **Second same-day 42P13 hit**: plain `CREATE OR REPLACE FUNCTION` was rejected live ("cannot change return type of existing function") despite an identical `RETURNS TABLE` column list — same error as this session's earlier `0223` migration below. Applied as `DROP FUNCTION` + `CREATE FUNCTION` per Postgres's own hint. Two hits in one day on unrelated functions — treat this as the default expectation for any control-plane RPC body edit, not an edge case.
+
 ## 2026-07-30 (PR #1113 MERGED, re-vendor only, no migration)
 
 - **PR #1113 (MERGED squash `8acd50cc`) — re-vendored `eq-intake/eq-platform/packages/` to eq-solves-intake main (`d1a0ebd3`, #92).** Picks up the customers/contacts phone-field coalescing fix (was under-flagging ~30/210 live contacts missing a phone number — `mobile_phone`/`primary_phone` for customers, `mobile_phone`/`work_phone` for contacts, now coalesced via a new `sourceFields`/`isFieldBlank` mechanism in `field-importance.ts`), Customers/Contacts enabled in the tenant-editable field-importance settings screen, and `IntakeHealthHome`'s `deriveActions()` generalized to derive "Fix these" cards from the rulebook for every entity instead of 3 hardcoded staff-only checks. Diff scoped to exactly the 6 files eq-intake #92 changed — the copy touched 282 files on disk but 276 were pure CRLF/LF normalization noise, confirmed via `--ignore-space-at-eol` before committing.

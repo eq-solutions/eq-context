@@ -14,6 +14,16 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: Admin Users "Deactivated" tab was dead UI — server-side filter was dropping every row it needed (2026-07-30)
+*The Users list page has a "Deactivated" tab, but the backend query that feeds the whole list only ever fetched active users — so the tab could never show anything, no matter how many deactivated users a tenant had. Fixed and applied live same day.*
+
+- [x] **Deactivated users now appear under the Deactivated tab.** Confirmed at least one tenant (SKS) has deactivated users that were being silently hidden and now show correctly. eq-shell [PR #1124](https://github.com/eq-solutions/eq-shell/pull/1124), merged.
+
+**Deferred:**
+- [ ] **Royce to confirm live**: open `/sks/admin/users`, click the "Deactivated" tab, confirm the deactivated users actually appear. _(added 2026-07-30)_
+
+---
+
 ## eq-solves-intake: Customers/Sites Tidy tab — fixing a value gap couldn't actually be saved (2026-07-30)
 *Royce, looking at a screenshot: "no dropdown when you edit, then you can't save it here anyway... what is the value of intake?" Both were real, confirmed bugs, not misreadings — the Tidy tab's Edit/Suggest buttons for a data gap (e.g. a customer's Type field showing "company" isn't a recognised value) always used a plain text box even for closed-list fields, and neither Edit nor Suggest ever actually saved anywhere — they only changed what was on screen. On top of that, the one save path that does exist (the same one used for auto-fixes) was separately missing two fields from its own allow-list, so even a perfect frontend fix would have silently failed to save a customer's Type or a site's Type.*
 
@@ -231,9 +241,9 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## eq-shell: Suppliers page "missing" Login/Password columns — actual root cause fixed (2026-07-28 → 2026-07-29)
+## eq-shell: Suppliers page "missing" Login/Password columns — actual root cause fixed (2026-07-28 → 2026-07-30)
 
-- [ ] **Royce to click through live**: open Suppliers and confirm all 8 columns show by default with no scrolling needed — the page now uses `fullWidth` (the real fix; the page had been stuck inside an 860px reading-width cap the whole time) instead of scroll/pagination/column-hiding workarounds. _(added 2026-07-29)_
+- [ ] **Royce to click through live**: Suppliers shows a Columns button, the table scrolls freely past 20 rows instead of paginating, and hovering a masked password shows "Click to reveal". _(added 2026-07-30, PR #1120 merged)_
 
 ---
 
