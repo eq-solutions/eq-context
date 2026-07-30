@@ -14,25 +14,41 @@ for operational support: tax, entities, infrastructure, substrate.
 
 ---
 
-## F7 — git-merge NUL corruption logged as its own failure, distinct from F6 (2026-07-31)
+## F7 — git-merge NUL corruption: guard built, real wiring question still open (2026-07-31)
 
 Digest's recurrence scanner flagged a possible F6 (append `>>` NUL-fills the mount) rung-4
-bypass in `sessions/2026-07-28.md`. Read the actual guard code (`hooks/pre_tool_use.py`) and
-lesson (`system/lessons.md`) before acting — confirmed F6's guard only pattern-matches Bash
-`>>` commands and has no visibility into git operations. The 2026-07-28 incident was a `git
-stash pop`/merge round-trip corrupting `scripts/sites.js` with NUL bytes — same symptom,
-different mechanism, never something F6's hook could have caught. Not a bypass; a second,
-currently-unguarded vector. Surfaced the analysis to Royce (not a silent edit, per the
-ledger's own "recurrences is a human call" posture) — he chose to track it as its own entry.
+bypass in `sessions/2026-07-28.md`. First pass (earlier this session) concluded F6's guard
+"has no visibility into git operations" and logged F7 as a brand-new, unguarded vector.
+**That first-pass claim was wrong** — re-reading `hooks/pre_tool_use.py` line-by-line while
+building the actual fix found it already had a blanket block on git write verbs (add/commit/
+push/merge/stash/rebase/etc.), live since 2026-07-12, which already covers `merge` and
+`stash`. That block SHOULD have stopped the 2026-07-28 incident outright. Corrected in place
+in `system/failures.md` rather than left standing — the real open question isn't "no guard
+exists," it's "why didn't the guard that already existed fire."
 
-- [x] Added F7 to `system/failures.md` (rung 0, honest "no guard yet", target rung 4).
+- [x] Added F7 to `system/failures.md` (originally rung 0; corrected to rung 4 once the
+  hardening below shipped — see that entry's own "CORRECTED 2026-07-31" note for the
+  full story, including the wrong initial claim).
 - [x] Added `sessions/2026-07-28.md` to F6's `confirmed_in` so the digest scanner stops
-  re-flagging that session against F6's already-closed rung-4 entry (same fix pattern
-  already used for F1's self-confirmation false-positive).
-- [ ] **Guard not yet built** — proposed: a git `post-merge`/`post-checkout` hook that
-  NUL-byte-scans every touched file, fail-closed (mirrors F2/F6's posture). Nobody's asked
-  for this to be built yet; it's parked at rung 0 until a second occurrence or Royce
-  prioritizes it.
+  re-flagging that session against F6's already-closed rung-4 entry.
+- [x] **Built and shipped** (Royce chose "harden the existing block" over "investigate
+  wiring" or "build the original post-merge hook"): `hooks/pre_tool_use.py` now (1) matches
+  `PowerShell` as well as `Bash` throughout, not just Bash, and (2) runs an independent,
+  NOT sandbox-gated NUL-byte scan of the working tree ahead of any git verb, on any
+  platform — blocks fail-closed if the tree is already corrupted, regardless of whether
+  this hook thinks it's in the sandbox. Adversarial suite: 51/51 (6 new cases). Also found
+  and fixed, while building this: `guard.js` (the hook actually active on the Beelink)
+  has zero NUL-byte/truncation logic of its own, despite `hooks/README.md` claiming it's
+  "the active write-guard" there for this failure class — that claim is now corrected
+  in the README to flag the gap rather than assert it's covered.
+- [ ] **Still open, not fixed by this build**: WHY the pre-existing blanket git-verb block
+  didn't fire on 2026-07-28. Two live candidates — (a) that Cowork sandbox session never
+  had `hooks/pre_tool_use.py` wired into its own settings.json at all, or (b) the git
+  command reached it through something this hook's tool-name matching didn't cover (now
+  narrowed by widening to Bash+PowerShell, but not proven to have been the actual cause).
+  Nobody can inspect that sandbox's actual settings from this machine — needs Royce's
+  input on how Cowork sandbox sessions get their hooks wired, or a live test next time a
+  Cowork session is available, before this can be closed with confidence.
 
 ---
 
