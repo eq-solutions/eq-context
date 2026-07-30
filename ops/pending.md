@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-07-30
+last_updated: 2026-07-31
 scope: Operational support to-do list — Webb, infra, substrate
 read_priority: standard
 status: live
@@ -11,6 +11,28 @@ status: live
 
 EQ items in `eq/pending.md`. SKS items in `sks/pending.md`. This file is
 for operational support: tax, entities, infrastructure, substrate.
+
+---
+
+## F7 — git-merge NUL corruption logged as its own failure, distinct from F6 (2026-07-31)
+
+Digest's recurrence scanner flagged a possible F6 (append `>>` NUL-fills the mount) rung-4
+bypass in `sessions/2026-07-28.md`. Read the actual guard code (`hooks/pre_tool_use.py`) and
+lesson (`system/lessons.md`) before acting — confirmed F6's guard only pattern-matches Bash
+`>>` commands and has no visibility into git operations. The 2026-07-28 incident was a `git
+stash pop`/merge round-trip corrupting `scripts/sites.js` with NUL bytes — same symptom,
+different mechanism, never something F6's hook could have caught. Not a bypass; a second,
+currently-unguarded vector. Surfaced the analysis to Royce (not a silent edit, per the
+ledger's own "recurrences is a human call" posture) — he chose to track it as its own entry.
+
+- [x] Added F7 to `system/failures.md` (rung 0, honest "no guard yet", target rung 4).
+- [x] Added `sessions/2026-07-28.md` to F6's `confirmed_in` so the digest scanner stops
+  re-flagging that session against F6's already-closed rung-4 entry (same fix pattern
+  already used for F1's self-confirmation false-positive).
+- [ ] **Guard not yet built** — proposed: a git `post-merge`/`post-checkout` hook that
+  NUL-byte-scans every touched file, fail-closed (mirrors F2/F6's posture). Nobody's asked
+  for this to be built yet; it's parked at rung 0 until a second occurrence or Royce
+  prioritizes it.
 
 ---
 
