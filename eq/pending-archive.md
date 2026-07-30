@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-07-29
+last_updated: 2026-07-30
 scope: Done items rotated out of eq/pending.md nightly by scripts/rotate_pending.py (per-item since 2026-07-27; before that, occasional manual whole-section moves). Nothing here is actionable — pure historical record (also covered in eq/changelog/*.md and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -1298,5 +1298,15 @@ contain the same values and were pushed before push-protection caught up.
 - [x] **No accessibility testing on eq-ui at all.** Built same session, see below. Note: this overlaps with the older, already-tracked a11y backlog items further down this file (A7–A10), which remain their own separate open item.
 - [x] **No linting in eq-ui's CI** — eq-field's build-less app had more lint discipline (a throwaway `npx eslint` run) than eq-ui did despite eq-ui having full npm tooling. Built same session, see below.
 - [x] **No visual/Storybook-style review tool for eq-ui** — downgraded from "build Storybook" to "maybe a simple one-page kitchen-sink view" given the team's current size. Built later the same session, see below. All 4 items from this review are now closed.
+
+---
+
+## eq-context: `__personal__` tenant "retired" claim in IDENTITY-MODEL.md corrected against live data (2026-07-30)
+*Royce asked to investigate a live/docs mismatch found while verifying an unrelated mobile-permissions PR: 47 active `shell_control.user_tenant_memberships` rows against the `__personal__` tenant on eq-canonical (jvknxcmbtrfnxfrwfimn), contradicting the doc's "ghost tenant retired" line.*
+
+- [x] **Confirmed the 47 rows are not stale/orphaned — they're live, ongoing output of eq-cards' "Policy 1"** (migration 0038, decided 2026-06-17, unchanged through migrations 0072/0076 as of 2026-07-27): every Cards worker's home tenant is permanently `__personal__`, with org access added as a second active membership. New rows are still being created (last one 2026-07-29). Verified against real named SKS employees, not just anonymous rows.
+- [x] **IDENTITY-MODEL.md corrected, not the data** — retracted the false "retired" claim; the actual 2026-06-28 change only deactivated the `__personal__` tenant record itself, which just hides it from admin/audit sweeps, not from new memberships. eq-context commit `87d565f`, pushed to `main`.
+- [x] Flagged that the doc's own §11.2 backlog item ("multi-tenant membership — not yet built") is itself stale against eq-cards' shipped behaviour.
+- [x] **Reconciliation resolved by Royce**: the doc's old "one user, one tenant" rule was backwards — corrected. Cards is the personal identity/control layer for everyone; a person owns one identity and can additively join multiple tenants by choice, so they're not re-entering their info per employer. §11 item 2 and §11.2 updated to match; §11.3 records the decision and the eq-cards code that already implements it. eq-context commit `f67886e`, pushed to `main`.
 
 ---
