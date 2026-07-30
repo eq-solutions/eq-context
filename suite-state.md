@@ -60,12 +60,12 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-30)
 
-**eq-field:**
-- #582 v3.5.389 — Fix: leave-approval magic links 500'd since canonical mode went on
-
 **eq-shell:**
 - #1137 fix(intake): site-merge manager gate checked the wrong identity source
 - #1136 fix(quotes): sync canonical job status for every pipeline stage
+
+**eq-solves-intake:**
+- #96 feat(intake): Contacts/Staff Dupes gets Archive; Tidy gaps show real context
 
 ---
 
