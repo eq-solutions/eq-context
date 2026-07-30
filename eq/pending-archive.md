@@ -16,6 +16,18 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-shell: Cards email/phone edits silently discarded once a value already existed — fixed live end-to-end (2026-07-30)
+*Royce reported adding Zemi Asri to Cards and entering an email that didn't update in core. Traced to `workers-canonical-sync`'s "fill-if-missing" merge rule (added 2026-07-28 to stop a different clobber bug, Ben Ritchie) — it can't tell a deliberate Shell correction apart from a stale placeholder that just happens to be non-null, so once ANY value landed in `staff.email`/`phone`, no later Cards-entered value could ever overwrite it, ever. Ran the decision protocol before building (full six-step pass, since it's cross-plane and the value call was genuinely uncertain) — call was to build it scoped to both email and phone.*
+
+- [x] Migration `0224_staff_contact_provenance_lock.sql` adds `email_locked_by_shell`/`phone_locked_by_shell` to `app_data.staff`. eq-shell [PR #1118](https://github.com/eq-solutions/eq-shell/pull/1118), merged (`43e2c42`).
+- [x] `entity-patch.ts` (Shell's Staff-page edit endpoint) sets the relevant lock only when a human explicitly edits that field via Shell — Cards can freely update either field until then.
+- [x] `workers-canonical-sync/index.ts` merge now checks the lock instead of bare null-ness. Deployed as Edge Function version 11 to jvkn (`98756fee`), same `verify_jwt: false` auth preserved.
+- [x] Migration dispatched fleet-wide via `tenant-migrate.yml` off the PR branch before merge (established pattern, see [eq-shell drift-gate dispatch-order workaround]) — live-verified on both ehow and zaap via direct query.
+- Note: Zemi Asri's own `staff.email` row was still on the stale value as of this fix landing — the fix stops the *next* occurrence, it doesn't retroactively correct an existing row. Follow-up tracked in `eq/pending.md`.
+- Note: migration filename collides in number with `0224_field_importance_overrides_rls.sql` (merged same day via #1115) — different filenames so the ledger and drift-check are unaffected, purely cosmetic against the "NNNN = next number" convention. Left as-is rather than renumber post-apply.
+
+---
+
 ## eq-shell: RLS gap on `tenant_field_importance_overrides` closed (2026-07-29 → 2026-07-30)
 *Surfaced as a pre-existing, unrelated failing CI check ([issue #1108](https://github.com/eq-solutions/eq-shell/issues/1108)) while merging PR #1112 — RLS had been left disabled on both tenant planes since PR #1104/migration 0222. Flagged via `spawn_task` instead of fixed inline (out of scope for the PR being merged at the time); Royce started the spawned task in a separate session.*
 
@@ -1336,5 +1348,18 @@ contain the same values and were pushed before push-protection caught up.
 - [x] **Deliberately did not write the requested fix** — a second, duplicate database change for something already done risks breaking protection that works. Also declined to add the table to a "backend-only" exemption list: it uses a different (and correct) protection style that the list isn't meant for.
 - [x] **Checked the one thing that would have caused a real outage had the fix not already been applied** — the protection rule assumes a particular data type for the tenant column; confirmed it matches, so saving would not have broken.
 - [x] **Merged the blocked pull request on Royce's go** (dead-file cleanup only) — all checks green at merge time via the re-run, not an admin override. Live site smoke-checked healthy afterwards.
+
+---
+
+## eq-solves-service: Assigned To dropdown fixed to sort A-Z; Report Settings toggle gaps found and resolved (2026-07-30)
+*Royce reported two things after downloading a Field Run-Sheet: the Assigned To dropdown wasn't alphabetical, and the Report Settings toggles didn't seem to affect the download. Chasing the second down meant auditing every report generator's actual toggle wiring instead of trusting the settings page's own description, then following two spawned background sessions through to their actual outcome rather than assuming.*
+
+- [x] **Assigned To dropdown (on a maintenance check and on the New Check form) now sorts flat A-Z.** It was grouping by role first (managers, then supervisors, then technicians) and only alphabetising within each group — read as two stitched-together lists, exactly matching the screenshot. eq-service [PR #648](https://github.com/eq-solutions/eq-service/pull/648), merged + live.
+- [x] **Confirmed the Report Settings complaint was real, not user error.** Audited all 9 report generators against their actual code and built a toggle matrix. The Field Run-Sheet only ever read the sign-off switch — it had no cover/contents/executive-summary sections to turn off, so those three switches on the settings page silently did nothing to a Run-Sheet download regardless of how they were set.
+- [x] **Found the same class of gap independently on Work Order Details**: it ignored every Report Settings toggle, including sign-off.
+- [x] **Found the settings page's own documentation was stale**: `docs/FEATURES.md` still described a "Customer logo" and "Site photos" toggle on the cover page — both were actually removed from the code and the admin form on 2026-04-26. The form itself was already correct; only the doc lagged.
+- [x] **Work Order Details now respects sign-off, and PM Check Report now actually honours its complexity setting.** A spawned background session wired Work Order Details' sign-off toggle (matching Field Run-Sheet's existing behaviour) and found + fixed a related bug: PM Check Report was silently ignoring `report_complexity` entirely — its Summary tier now genuinely drops the itemised checklist for a pass/fail count, matching what the settings page already claimed. eq-service [PR #649](https://github.com/eq-solutions/eq-service/pull/649), merged + live.
+- [x] **Resolved the "should these reports grow full sections" question by fixing the documentation rather than building sections that don't fit.** The settings page and `docs/FEATURES.md` now state plainly which toggles affect which report — Work Order Details and Field Run-Sheet are fixed-layout, working documents where only sign-off is ever optional, not a gap to build around by default.
+- [x] **A second spawned session looked specifically at Field Run-Sheet**, confirmed the identical gap, asked Royce directly whether it should grow full sections, got no reply, and made no changes rather than guess — superseded by the documentation resolution above. Reopening that question (building real Cover/Contents/Executive-Summary sections into Field Run-Sheet) remains available if Royce ever wants it; nothing is currently blocked on it.
 
 ---

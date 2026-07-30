@@ -14,6 +14,18 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: archived staff still naming themselves in the AI dashboard summary — fixed, not yet merged (2026-07-30)
+*Royce archived Huon Henne but he kept showing up in the AI dashboard summary. Traced to `briefing-engine.ts`: the staff name lookup and the "licence expiring soon" signal both skipped the active-staff filter that a third function in the same file already had — so an archived worker's still-active licence kept generating a signal with their name attached.*
+
+- [ ] **Merge [PR #1117](https://github.com/eq-solutions/eq-shell/pull/1117)** (branch `claude/archived-huon-dashboard-summary-ac5190`) — fix is written and typechecked, not yet on `main`. _(added 2026-07-30)_
+
+## eq-shell: Cards email edits weren't reaching core — fixed and shipped, one worker's data still needs a manual touch-up (2026-07-30)
+*See `eq/pending-archive.md` for the full write-up — [PR #1118](https://github.com/eq-solutions/eq-shell/pull/1118) merged, migration dispatched, Edge Function redeployed, all live same day.*
+
+- [ ] **Zemi Asri's email in core is still the old value** (`zemi.asri@sks.com.au`) — the fix stops this happening to the next worker, it doesn't correct his row. Either have him re-enter his email in Cards now (will take, unlocked), or edit it directly on his Shell Staff page. _(added 2026-07-30)_
+
+---
+
 ## eq-shell + eq-cards: Photo ID compliance-matrix accuracy + full-size licence photo lightbox (2026-07-29 → 2026-07-30)
 - [ ] **Moahmmed Elsayed's `photo_id`-typed licence row (number `0140988080`) not yet corrected** — unlike Maylin Ung's case (a driver's-licence-format number, fixed directly), this number doesn't match a recognisable pattern; needs Royce to confirm the actual document type before the DB row is corrected. _(added 2026-07-29)_
 
@@ -45,19 +57,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 **Deferred:**
 - [ ] **Royce to click through live**: open a job's detail view, the create-quote form, the kanban board, and each Reports tab, confirm ex-GST reads as the main figure everywhere it should. Verified via build + typecheck only, not yet clicked through live. _(added 2026-07-30)_
-
----
-
-## eq-solves-service: Assigned To dropdown fixed to sort A-Z; found Report Settings toggles don't reach two report types (2026-07-30)
-*Royce reported two things after downloading a Field Run-Sheet: the Assigned To dropdown wasn't alphabetical, and the Report Settings toggles didn't seem to affect the download. Chasing the second down meant auditing every report generator's actual toggle wiring instead of trusting the settings page's own description.*
-
-- [x] **Assigned To dropdown (on a maintenance check and on the New Check form) now sorts flat A-Z.** It was grouping by role first (managers, then supervisors, then technicians) and only alphabetising within each group — read as two stitched-together lists, exactly matching the screenshot. eq-service [PR #648](https://github.com/eq-solutions/eq-service/pull/648), merged + live.
-- [x] **Confirmed the Report Settings complaint was real, not user error.** Audited all 9 report generators against their actual code and built a toggle matrix. The Field Run-Sheet only ever reads the sign-off switch — it has no cover/contents/executive-summary sections to turn off, so those three switches on the settings page silently do nothing to a Run-Sheet download regardless of how they're set.
-- [x] **Found the same class of gap independently on a different report**: the Work Order Details report (one of two formats "Issue Maintenance Report" can email) ignores every Report Settings toggle, including sign-off.
-- [x] **Found the settings page's own documentation was stale**: `docs/FEATURES.md` still described a "Customer logo" and "Site photos" toggle on the cover page — both were actually removed from the code and the admin form on 2026-04-26. The form itself was already correct; only the doc lagged.
-
-**Deferred:**
-- [ ] **Whether Field Run-Sheet and Work Order Details should grow real Cover/Contents/Executive-Summary sections to match the settings page, or are meant to stay fixed-format working documents with only sign-off ever optional — needs Royce's call, not a guess.** Two background sessions are already looking at this: Work Order Details is mid-build on branch `claude/wo-details-report-settings` (uncommitted changes to `ReportSettingsForm.tsx`, `docs/FEATURES.md`, `generate-and-store.ts`, `work-order-details.ts`); the Field Run-Sheet session ran and finished but nothing has been committed or opened as a PR yet. Worth checking both outcomes next session before doing anything further here. _(added 2026-07-30)_
 
 ---
 
