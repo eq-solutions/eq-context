@@ -9,7 +9,14 @@ status: live
 
 # eq-shell changelog
 
-## 2026-07-30 (latest — PR #1124 MERGED, migration applied live)
+## 2026-07-30 (latest — PRs #1119/#1122/#1125 MERGED, 5 control-plane migrations applied live)
+
+- **PR #1119 (MERGED squash `87203110`) — admin phone-number correction + SIM-swap PIN invalidation.** `edit-user.ts` gains a `phone` patch field (previously fully immutable); a new trigger `users_invalidate_pin_on_phone_change` wipes `pin_hash`/`totp_secret`/`totp_enrolled_at`/`pin_failed_attempts`/`pin_locked_until` the instant phone changes on `shell_control.users`, so a reassigned number can never inherit the previous holder's PIN/2FA. Also added `users_phone_unique` (missing despite `_shared/phone.ts` claiming it existed — zero live duplicates, safe to add). `eq_get_tenant_user` extended to return `phone` (drop+recreate per the `RETURNS TABLE` 42P13 gotcha).
+- **PR #1122 (MERGED squash `7bb33291`) — admin PIN-visibility UI.** Users list + edit page now show whether a worker has set a PIN and whether they're locked out — never the PIN itself (bcrypt, unrecoverable). New `unlock_pin` patch action on `edit-user.ts` clears a lockout without a full reset. `eq_get_tenant_user` and `eq_list_tenant_users` both extended with `pin_set`/`pin_locked(_until)`/`pin_failed_attempts`.
+- **PR #1125 (MERGED squash `d9ecce3e`) — email-capture nudge.** Dismissible, nag-only WorkerHome banner for phone-only self-join workers (`email: null`), linking to new self-service `/settings/set-email` (`set-recovery-email.ts`). No migration — `email` + its unique constraint already existed. Existing email+PIN door (`shell-login.ts`) needed no changes.
+- All three control-plane migrations (2 for #1119, 2 for #1122, 0 for #1125) applied by hand via Supabase MCP to jvkn before merge, verified live, same convention as every prior control-plane change this session.
+
+## 2026-07-30 (PR #1124 MERGED, migration applied live)
 
 - **PR #1124 (MERGED squash `72337de7`) — `eq_list_tenant_users()` no longer filters out deactivated users server-side.** `AdminUserList.tsx`'s "Deactivated" slicer tab was dead UI — the RPC's own `WHERE` clause included `AND u.active = true`, so every row reaching the client was already active-only and the tab could never match anything. New migration `2026_07_30_fix_eq_list_tenant_users_active_filter.sql` drops that filter (kept `m.active = true` for tenant membership and the Cards-worker-stub email exclusion, both unrelated). Applied to live jvkn via Supabase MCP before merge (control-plane convention — no CI apply path); post-apply verified `sks` has 2 deactivated users now correctly surfacing, previously silently dropped.
 - **Second same-day 42P13 hit**: plain `CREATE OR REPLACE FUNCTION` was rejected live ("cannot change return type of existing function") despite an identical `RETURNS TABLE` column list — same error as this session's earlier `0223` migration below. Applied as `DROP FUNCTION` + `CREATE FUNCTION` per Postgres's own hint. Two hits in one day on unrelated functions — treat this as the default expectation for any control-plane RPC body edit, not an edge case.
