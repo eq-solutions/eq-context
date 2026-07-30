@@ -14,8 +14,10 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## eq-shell: `workers-canonical-sync` audit-attribution fix awaiting review (2026-07-31)
-- [ ] eq-shell [PR #1134](https://github.com/eq-solutions/eq-shell/pull/1134) ("workers-canonical-sync attributes real actors") is open, from a different session than the one that built the top-bar fix above — not reviewed or merged by an eq-field session (Royce asked "merge once green" with no PR specified; checked it, found CI still in progress and the PR's own test plan has an unchecked live-verification item, recommended against auto-merging). Needs Royce or its originating session to finish the live checks and merge. _(added 2026-07-31)_
+## eq-shell: `workers-canonical-sync` audit-attribution fix — merged, deploy + live checks still open (2026-07-31)
+*eq-shell [PR #1134](https://github.com/eq-solutions/eq-shell/pull/1134) merged 2026-07-30 20:14 UTC (by its own session, shortly after this session flagged it as premature to auto-merge — CI was in progress at the time of that check, finished green before merge).*
+- [ ] **Edge function redeploy** — the PR body says it needs `deploy_edge_function` to jvkn after merge; not git-triggered, so the fix isn't live in the running function until that manual step happens. Not confirmed done. _(added 2026-07-31)_
+- [ ] **Live verification unchecked in the PR's own test plan** — admin edit → admin attributed, self-edit → worker attributed, reconcile → no actor. None confirmed yet. _(added 2026-07-31)_
 
 ## eq-shell: re-vendored the Intake engine — merge errors now show, duplicate flags can be archived (2026-07-31)
 *eq-solves-intake shipped two fixes on `main` (PRs #94/#95); eq-shell keeps its own copy of that engine, so it doesn't pick anything up until someone copies the changed files across and re-ships — same routine as the last two times this month.*
