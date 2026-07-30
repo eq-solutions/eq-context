@@ -9,7 +9,11 @@ status: live
 
 # eq-shell changelog
 
-## 2026-07-30 (latest — PR #1131 MERGED, no migration)
+## 2026-07-30 → 2026-07-31 (latest — PR #1132 MERGED, migration 0227 dispatched)
+- **PR #1132 (MERGED squash `8c9dd4ee`) — quote events now stamp `app_source='ops'`, not the retired app.** Follow-up to `#1129`, which only corrected the Suite Activity tab's *display* label from "EQ Quotes" to "EQ Ops". `eq_update_quote_status` had written `app_source='quotes'` to `canonical_events` since migration `0082` — a leftover from when quoting was a separate Flask app (EQ Quotes, retired 2026-07-04). New migration `0227` changes it to write `'ops'` for `quote.sent`/`accepted`/`declined` going forward; historical rows keep `'quotes'`, no backfill. Current live definition (`0214`) confirmed matching on both ehow and zaap before writing the migration, and the DDL was replay-tested in a rolled-back transaction against ehow first. Paired frontend fix: `tenant-events.ts`'s `APP_LABELS` maps both `quotes` and `ops` to "EQ Ops" and the App-filter's `source=ops` query matches both values (`.in('app_source', ['ops','quotes'])`); `AdminAuditPage.tsx`'s App dropdown option value changed from `"quotes"` to `"ops"` to match — otherwise the filter would have silently stopped finding new quote events the moment the migration landed.
+- **Migration `0227` dispatched** — read-only plan confirmed exactly 1 pending migration across exactly 2 tenants (`eq`→zaap, `sks`→ehow), fleet otherwise fully caught up. `tenant-migrate.yml` dispatched with no slug filter (whole fleet), ran green. Verified live via `pg_get_functiondef` on both ehow and zaap that `app_source` is now `'ops'`.
+
+## 2026-07-30 (PR #1131 MERGED, no migration)
 - **PR #1131 (MERGED squash `76fd6be1`) — archived staff no longer leak into the Core dashboard's "Compliance & safety" card.** Sibling occurrence of #1117 (fixed the same leak in the AI briefing engine) — `signals-data.ts` behind the `SignalsBoard` widget's `/signals` endpoint is deliberately self-contained and never got that fix's `active`-staff filter. `loadNames()` and `fetchCompliance()`'s two licence queries now filter on `staff.active`, mirroring `briefing-engine.ts`'s pattern exactly.
 
 ## 2026-07-30 (PRs #1127/#1129 MERGED, no migration)
