@@ -14,13 +14,12 @@ for operational support: tax, entities, infrastructure, substrate.
 
 ---
 
-## SEC-10 follow-up — Netlify plaintext-secret sweep (2026-07-30)
+## SEC-18 — plaintext service-role/JWT secrets on eq-service/field/cards (2026-07-30)
 
-- [ ] Sweep other Netlify projects (eq-shell, eq-solves-service, eq-field) for
-  the same `is_secret: false` plaintext-credential pattern SEC-10 found on
-  sks-nsw-labour (`ANTHROPIC_API_KEY`/`RESEND_API_KEY`, now closed) — not yet
-  checked on any other project. See `ops/security-register.md` SEC-10.
-  _(added 2026-07-30)_
+*Sweep requested as the SEC-10 follow-up ("check other Netlify projects for the same plaintext pattern"). Two independent sessions ran it in parallel and both found the same live exposure, worse than expected — a control-plane database master key and a live-tenant database master key, both fully unmasked in production. Full detail + exact variable list in `ops/security-register.md` SEC-18.*
+
+- [ ] **Royce: re-store each flagged secret as masked (same value, not a rotation)** on eq-service, eq-field, and eq-cards' Netlify projects — per var: note the current value, delete, recreate identical, tick "contains sensitive values". Credential handling — cannot be done by Claude Code regardless of permission (same block as SEC-12).
+- [ ] **Royce's call: does `CANONICAL_SERVICE_ROLE_KEY` (ehow) or `SUPABASE_SERVICE_ROLE_KEY` (jvkn) warrant an actual rotation**, not just re-masking — unlike SEC-12's set, these two grant full database bypass access if they ever did leak beyond Netlify's own storage.
 
 ---
 
