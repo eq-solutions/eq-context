@@ -48,6 +48,19 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-solves-service: Assigned To dropdown fixed to sort A-Z; found Report Settings toggles don't reach two report types (2026-07-30)
+*Royce reported two things after downloading a Field Run-Sheet: the Assigned To dropdown wasn't alphabetical, and the Report Settings toggles didn't seem to affect the download. Chasing the second down meant auditing every report generator's actual toggle wiring instead of trusting the settings page's own description.*
+
+- [x] **Assigned To dropdown (on a maintenance check and on the New Check form) now sorts flat A-Z.** It was grouping by role first (managers, then supervisors, then technicians) and only alphabetising within each group — read as two stitched-together lists, exactly matching the screenshot. eq-service [PR #648](https://github.com/eq-solutions/eq-service/pull/648), merged + live.
+- [x] **Confirmed the Report Settings complaint was real, not user error.** Audited all 9 report generators against their actual code and built a toggle matrix. The Field Run-Sheet only ever reads the sign-off switch — it has no cover/contents/executive-summary sections to turn off, so those three switches on the settings page silently do nothing to a Run-Sheet download regardless of how they're set.
+- [x] **Found the same class of gap independently on a different report**: the Work Order Details report (one of two formats "Issue Maintenance Report" can email) ignores every Report Settings toggle, including sign-off.
+- [x] **Found the settings page's own documentation was stale**: `docs/FEATURES.md` still described a "Customer logo" and "Site photos" toggle on the cover page — both were actually removed from the code and the admin form on 2026-04-26. The form itself was already correct; only the doc lagged.
+
+**Deferred:**
+- [ ] **Whether Field Run-Sheet and Work Order Details should grow real Cover/Contents/Executive-Summary sections to match the settings page, or are meant to stay fixed-format working documents with only sign-off ever optional — needs Royce's call, not a guess.** Two background sessions are already looking at this: Work Order Details is mid-build on branch `claude/wo-details-report-settings` (uncommitted changes to `ReportSettingsForm.tsx`, `docs/FEATURES.md`, `generate-and-store.ts`, `work-order-details.ts`); the Field Run-Sheet session ran and finished but nothing has been committed or opened as a PR yet. Worth checking both outcomes next session before doing anything further here. _(added 2026-07-30)_
+
+---
+
 ## eq-solves-service: ACB/NSX Test Report shipped with real data; Report Settings toggles extended to 3 more reports (2026-07-29)
 *Two background plans from an earlier session came back and were reviewed with Royce via three separate yes/no calls: (1) build the dormant ACB/NSX Test Report generator against real data, (2) wire the Report Settings toggles (sign-off, cover page, executive summary) into more report types beyond the Customer Report, (3) do the extra refactor needed to gate the Compliance Report's cover page too. All three: yes.*
 
@@ -89,15 +102,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ---
 
 ## eq-solves-intake + eq-shell: Intake redesigned — 5 confusing tabs down to 4 clear ones (2026-07-29)
-*Royce reviewed the live Intake screens and found them overwhelming — five tabs, two of which (Import, Reconcile) looked like near-duplicate "drop a file" screens, and the Health tab crammed a score, six sub-metrics, a fix-it list, and a site-merge tool onto one screen. Built a clickable mockup first, walked it through with Royce, then shipped the real thing: Health/Queue collapsed into Overview/To Do, and Import/Reconcile collapsed into one Bring Data In screen.*
 
-- [x] **Overview (was Health) + To Do (was Queue)** — the site-merge decision tool (Preview → Confirm merge) moved out of Overview into To Do, since it's a decision, not a diagnostic; the two tabs' pending-count badges merged into one. eq-solves-intake [PR #81](https://github.com/eq-solutions/eq-solves-intake/pull/81), merged.
-- [x] **Bring Data In (was Import + Reconcile)** — one drop zone instead of two; each dropped file gets an optional "Check for conflicts" step instead of forcing a tab pick before you can even see what's in the file. Generic "drop a file" wording replaces the SimPRO-specific copy on this screen. eq-solves-intake [PR #83](https://github.com/eq-solutions/eq-solves-intake/pull/83), merged.
-- [x] **Found and fixed a leftover bug while re-vendoring into eq-shell**: PR #81 left an unused import behind that eq-intake's own typecheck doesn't catch but eq-shell's stricter build does. eq-solves-intake [PR #84](https://github.com/eq-solutions/eq-solves-intake/pull/84), merged.
-- [x] **eq-shell re-vendored to pick up all three** — eq-shell [PR #1094](https://github.com/eq-solutions/eq-shell/pull/1094), merged, live on core.eq.solutions via Netlify auto-deploy.
-
-**Deferred:**
-- [ ] **Royce to click through `/sks/intake` live** — confirm Overview/To Do/Bring Data In/Ask all render as expected. Not click-tested live this session — the deploy preview is login-gated and no production session was available in this environment; verified via full build + 270/270 tests + code review only. _(added 2026-07-29)_
 - [ ] **Bring Data In's "Check for conflicts" still commits on its own path, separate from the main Into-EQ flow** — routing those resolved rows into the same shared commit path as everything else is real, separate work, not done here. _(added 2026-07-29)_
 - [ ] **The deeper "why is this still exhausting" fixes are still open** — bulk-approve (today it's still one row at a time), standing rules for recurring conflict types (so the same duplicate doesn't get flagged forever), a trend view (is the score improving?), and a real ask-anything grounded across the whole suite (today's Ask tab is a thin preview of that). Discussed with Royce as the next tier up from this session's fix — this session deliberately shipped the cheap, clear win first. _(added 2026-07-29)_
 

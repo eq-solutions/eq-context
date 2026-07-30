@@ -9,6 +9,11 @@ status: live
 
 # eq-shell changelog
 
+## 2026-07-30 (PR #1113 MERGED, re-vendor only, no migration)
+
+- **PR #1113 (MERGED squash `8acd50cc`) — re-vendored `eq-intake/eq-platform/packages/` to eq-solves-intake main (`d1a0ebd3`, #92).** Picks up the customers/contacts phone-field coalescing fix (was under-flagging ~30/210 live contacts missing a phone number — `mobile_phone`/`primary_phone` for customers, `mobile_phone`/`work_phone` for contacts, now coalesced via a new `sourceFields`/`isFieldBlank` mechanism in `field-importance.ts`), Customers/Contacts enabled in the tenant-editable field-importance settings screen, and `IntakeHealthHome`'s `deriveActions()` generalized to derive "Fix these" cards from the rulebook for every entity instead of 3 hardcoded staff-only checks. Diff scoped to exactly the 6 files eq-intake #92 changed — the copy touched 282 files on disk but 276 were pure CRLF/LF normalization noise, confirmed via `--ignore-space-at-eol` before committing.
+- **First CI run failed on the required "Schema drift + anon-grant + policy-lint" check** (`tenant_field_importance_overrides` — RLS disabled on both zaap and ehow) — verified via direct `pg_class`/`pg_policies` query this was real but transient and unrelated to this PR's diff (zero SQL touched), and had already been independently remediated between the first run and a re-run minutes later (same underlying gap as [issue #1108](https://github.com/eq-solutions/eq-shell/issues/1108), closed by a concurrent session's #1115 fix — see that entry below). Re-ran the job (`gh run rerun --failed`) rather than merging past red; all 8 checks green on re-run, merged clean.
+
 ## 2026-07-30 (latest — PR #1114 MERGED, no migration; drift gate confirmed green, no new work needed)
 
 - **PR #1114 (MERGED squash `7ac5af3a`) — removed dead intake domain pages + the `SecurityGroupsPage` redirect shim.** Dead-file deletion only, no behaviour change. It had been blocked by a red "Schema drift + anon-grant + policy-lint" check through no fault of its own — that check had run at 19:44:53Z on 2026-07-29, ~51 min *before* #1115's fix landed at 20:36Z, so it was a **stale result, not a live failure**. `gh run rerun` turned it green; merged on the green re-run, not an admin bypass. Live smoke after merge: `verify-shell-session` → 401 `{"valid":false}`, root 200.
