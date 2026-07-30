@@ -45,8 +45,6 @@ worktree remove`'s deletion step on any repo with deep `node_modules` trees,
 which lines up exactly with which repos had orphans (never `eq-field`, which
 has no `node_modules` at all). Full detail in `system/worktree-registry.md`.
 
-- [x] 22 orphaned folders deleted (all confirmed empty/build-cruft, no
-  `.git`, no real content). _(added + closed 2026-07-27)_
 - [ ] **Royce enabled `LongPathsEnabled=1` himself** (system setting, out of
   scope for Claude Code to change) — confirmed live via registry read, but
   it only takes effect **after a reboot**, not done yet as of this entry.
@@ -106,9 +104,6 @@ match) and `git log` on that file, which traced it straight to
 review needed after all, closing that half of the item below.
 
 **Needs Royce:** one real leftover, not urgent:
-- [x] ~~`eq-shell/.claude/worktrees/app-naming-wt` has real content...~~
-  Resolved above — confirmed already-merged, deleted along with its
-  sibling `766-wire-check-perms`.
 - [ ] 4 folders are stuck "device busy" on every retry (not another
   session — consistent across several minutes, points at a system
   process like antivirus/indexing): `eq-cards/will-brown-cards-sks-issue-4ec9c4`,
@@ -162,38 +157,6 @@ repo that copies it doesn't reinherit the bug. eq-context commit
   processes running at the time to force it, since I couldn't tell whose
   they were. Revisit once whatever's using it stops, or ask whoever's
   running it to close it first. _(added 2026-07-27)_
-
----
-
-## Worktree-registry cleanup + broken PreToolUse hook fixed (2026-07-27)
-
-`C:\Projects` audit found 39 stale/orphaned worktree folders (34 already
-untracked by git, holding only leftover build cruft; 5 still git-tracked on
-merged-but-not-torn-down branches). All 39 removed after live verification
-(`git worktree list` + `gh pr` status per branch, not the registry's own
-say-so — the registry was wrong in both directions). `worktree-registry.md`
-updated to record it ([eq-context PR-less commit `918d9e4`](https://github.com/eq-solutions/eq-context/commit/918d9e4),
-direct push to main).
-
-Separately found + fixed: the `PreToolUse` hook pointer in
-`C:\Projects\.claude\settings.json` (and the `SessionStart`/`Stop` hooks in
-`C:\Users\EQ\.claude\settings.json`) used backslash Windows paths
-(`C:\\Projects\\eq-context\\hooks\\...`) that this session's harness silently
-mangled before spawning python, causing every `Bash`/`Edit` call to briefly
-throw a file-not-found error. Fixed by switching to forward slashes (already
-the working convention for `guard.js` and other hooks in the same files) — not
-a repo change, so no PR; local machine config only.
-
-**Needs Royce:** nothing.
-- [x] 5 local git branches (already merged, worktrees now removed) deleted:
-  `claude/timesheet-leave-approval-lifecycle` + `claude/dependabot-config`
-  (eq-field), `claude/access-cluster3-service-gate` (eq-solves-service),
-  `claude/dupes-usage-check-client` (eq-solves-intake),
-  `claude/phone-otp-approval-selfheal` (eq-shell). Three needed `git branch -D`
-  (same squash-merge false-negative from the worktree removal: `git branch -d`
-  checks ancestry against local HEAD, which never includes a squashed commit
-  — each was independently confirmed MERGED via `gh pr list` first).
-  _(added 2026-07-27, closed 2026-07-27)_
 
 ---
 
@@ -388,10 +351,6 @@ Changelog at `archive/changelog-ahd.md`.
 ## Security register triage: SEC-1 checklist, SEC-9 runbook, false-alarm guard fixed (2026-07-27)
 *Royce asked to fix SEC-1, close SEC-9/10/12, and investigate the "guard bypass?" flag in digest.md. Steelmanned the framing before acting — none of the three were as simple as the one-line ask implied.*
 
-- [x] **SEC-1 turned into a real gated decommission checklist**, not touched — Royce's own standing decision (2026-06-05, reaffirmed 2026-07-20) is that sks-nsw-labour stays untouched until Field replaces it. Live-verified Field's parallel-run proving is at 0/3-4 clean weeks, so a retirement date would be premature regardless of the other open gates (VIC scale-jump question, no sign-off owner, 44 workers with no migration date, 2 untriaged eq-field errors — since fixed, see `eq/pending.md` 2026-07-27). Checklist lives in `ops/security-register.md`'s SEC-1 row.
-- [x] **SEC-9 rotation runbook drafted** (`sec9-jvkn-key-rotation-runbook-2026-07-27.md`) — mapped all 4 live consumers (eq-shell primary, eq-field, eq-cards, eq-solves-service). Rotation itself is credential handling — hard-blocked for Claude Code to execute, Royce-gated.
-- [x] **SEC-10/SEC-12 exact manual steps handed to Royce** — both are "re-store as masked, same value, no rotation" fixes in the Netlify dashboard, a few minutes each; also credential handling, can't be done by Claude Code (confirmed: a same-value re-store attempt was blocked by the safety classifier in an earlier session, logged in SEC-12's row).
-- [x] **F1 "guard bypass?" flag in digest.md was a false positive, not a real recurrence** — the detector (`refresh_digest.py`'s `failure_recurrence_signals()`) was re-flagging `sessions/2026-07-21.md`'s own sentence confirming the already-known 2026-07-19 hit, because its date-only filter can't distinguish "narrating a confirmed past incident" from "it happened again." Added a `confirmed_in` field to `failures.md`'s schema + patched the detector to skip those files; verified live (empty result, no real recurrence hiding elsewhere). Struck the stale line from the tracked `digest.md` directly rather than rebuilding it locally (no `GH_TOKEN`/`NETLIFY_TOKEN`/`SENTRY_AUTH_TOKEN` in this session — a token-less rebuild would've blanked real PR/deploy/Sentry data).
 
 ### Notes (added 2026-07-27)
 - **A subagent run to map SEC-9's consumers was itself flagged by the Claude Code security classifier** for decoding a live jvkn `service_role` JWT's payload while reading Netlify env vars — recorded honestly in SEC-9's row as a possible second exposure (not confirmed as a full leak: only decoded claims, not necessarily the encoded bearer token, were visible in what I could see). Process fix applied: future credential-consumer mapping should be scoped to env-var names/presence only, never fetch/decode/print actual values.

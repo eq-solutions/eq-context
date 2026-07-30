@@ -1420,3 +1420,85 @@ contain the same values and were pushed before push-protection caught up.
 - [x] **Confirmed, not built**: the other flagged item from the same check-in (`eq_cards_auto_provision()` hardcoding the personal membership's role to `'employee'`) had already been fixed and merged independently — eq-cards [PR #188](https://github.com/eq-solutions/eq-cards/pull/188) (migration `0111`), applied live to jvkn before this session got to it.
 
 ---
+
+## eq-context: backlog dashboard + root-caused why eq/pending.md hit 478 open items — led straight into the fix (2026-07-27) (rotated 2026-07-30)
+*Royce reacted to digest.md's Queue Health table ("478 open items!!! fuck sake") and asked for an Excel workbook: a dashboard of the current eq/sks/ops backlog plus a real root-cause investigation, not just a restate of the number. The investigation surfaced an actual mechanism bug, which Royce then asked to have fixed directly.*
+
+- [x] **Built and delivered the backlog workbook** — raw open-item data (EQ/SKS/OPS), a dashboard (age buckets, category split, weekly trend), and a cited root-cause sheet. Findings: 84% of the 87 (of a true 239) session write-ups behind the count landed in the 8 days before this session; the file's only-ever rotation (2026-07-24) was a one-off manual chore already 163 items behind again; ~17% of "open" was really a Royce-confirmation queue, not engineering debt.
+- [x] **Root cause identified: `/close`'s own instructions contradicted pending.md's own archive rule.** pending.md said (since 2026-07-24) to archive fully-closed sections and trim mixed ones to open-only; `~/.claude/commands/close.md` Step 2 said "do NOT remove completed items — leave them ticked for history." No session had been following the rule because the skill actively told it not to.
+- [x] **Fixed `close.md`** so archiving/trimming the sections a session touched is now part of every `/close`, not a manually-remembered one-off.
+- [x] **Ran a safety-railed first cull pass on the live file** (script bailed out on anything it couldn't parse with full confidence rather than risk deleting real content — caught and correctly skipped a floating rule-note block that a naive section-chunker would have destroyed): 15 fully-closed sections archived, 18 mixed sections trimmed, open-item count verified unchanged before/after by direct count, dropped done-narrative spot-checked against `eq/changelog/*.md` before deleting.
+- [x] **Spawned a follow-up background task for the 115 sections my script wouldn't touch** (older write-up format, pre-dating the archive convention) rather than bundle a riskier, larger cleanup into this fix — picked up same-day and turned into a proper standing fix: `scripts/rotate_pending.py` (nightly automated per-item rotation, PR #121) + a digest "Waiting on you" queue + a stale-item cull, all documented in this file's own "backlog-hygiene arc" entries below.
+- [x] Git-push friction along the way: this session's sandbox classifier hard-blocked `git push`/`stash`/`rebase` on this repo outright (not just the usual single-confirmation gate) — handed the exact commands to Royce to run himself rather than keep retrying blocked tool calls.
+
+---
+
+## eq-context: old-format pending.md backfill archived + nightly rotation workflow verified clean (2026-07-27) (rotated 2026-07-30)
+*Follow-on to a prior session's backlog analysis, which found 115 sections still using an older Shipped/Decided/Notes write-up format the new per-item `rotate_pending.py` (merged same day, PR #121) can't always see. Found the sibling branch building that rotator was still unpushed, waited for it to land, then re-classified against the live post-merge file rather than the stale 115-count.*
+
+- [x] **Re-classified against live state**: of 103 old-format candidate sections, 96 already had consistent `- [ ]`/`- [x]` checkbox syntax in their Deferred blocks and are already correctly handled by `rotate_pending.py` going forward — no action needed. Only 6 used narrative-only sub-headers with zero checkbox syntax anywhere, genuinely invisible to that script.
+- [x] **Hand-verified all 6 were fully closed** (no open item anywhere, checkbox or prose) and archived them whole to `eq/pending-archive.md` with a one-off script matching `rotate_pending.py`'s conservation-invariant pattern (open item count asserted unchanged before/after: 494 → 494, NUL-scanned).
+- [x] **Verified `pending-rotate.yml` runs clean.** Its first scheduled tick (11:30 UTC) was silently missed — merged too close to its own cron trigger, a known GitHub Actions quirk — so triggered it manually instead: 24/24 unit tests passed, the rotation script ran clean (nothing left to rotate, since the 6 above already cleared the backlog), and the "commit if changed" step correctly no-op'd rather than pushing an empty commit.
+- [x] **Committed 3 separate complete, unrelated in-progress changes from other concurrent sessions sharing this checkout** as their own commits before touching anything, rather than risk clobbering or batching them — this file saw at least 4 different sessions writing to it inside one hour today.
+
+**Notes:**
+- The remaining old-format sections beyond these 6 are not a backlog — `rotate_pending.py`'s checkbox-based logic already covers them correctly on its own nightly schedule. The only structural gap was narrative-only closed sections with no checkbox syntax at all, now cleared.
+- Tomorrow's regular 11:30 UTC tick should fire normally now the workflow's been on `main` a full cycle — worth a quick spot-check if it doesn't, but nothing found suggests a persistent problem (it ran clean on manual dispatch).
+
+---
+
+## eq-shell Staff table: reorderable columns + compact Status/Contact cells (2026-07-27) (rotated 2026-07-30 — open items remain in pending.md)
+
+- [x] **Added column drag-style reordering to the shared table component** (`@eq-solutions/ui`) — move-up/move-down buttons in the Columns menu, remembered per person. Built as buttons rather than literal drag-and-drop for reliable keyboard and touch support. This lands in every app using the shared table, not just Staff. Released as `@eq-solutions/ui` v1.13.0.
+- [x] **Merged Supervisor + On-roster into one compact status cell, and Phone + Email into one Contact cell** on the Staff list — same information, fewer columns, search/filter/export all still work correctly against the underlying fields.
+- [x] Both fully built and tested (253/253 automated tests pass, clean build against the real released component). eq-ui [#34](https://github.com/eq-solutions/eq-ui/pull/34)/[#35](https://github.com/eq-solutions/eq-ui/pull/35) merged and released. eq-shell [PR #1051](https://github.com/eq-solutions/eq-shell/pull/1051) open, CI green, **not yet merged**.
+
+---
+
+## eq-shell Suppliers: login/password visibility is now a real, assignable permission (2026-07-27) (rotated 2026-07-30)
+*Royce asked to "fix up" the login/password columns on the Suppliers page and make them controllable via Security Groups, rather than hardcoded to Manager/Supervisor. Found the database-side gate for this had already existed since 21 July — the only missing piece was a matching permission that could actually be granted. Added it properly through the shared role-permission library (used by every EQ app), not as a Shell-only hack.*
+
+- [x] **Added a new grantable permission, "See supplier login/password"**, to the shared permission library used across all EQ apps. Released as a proper version (`@eq-solutions/roles` v2.5.8) with a written changelog entry.
+- [x] **Wired it into the Suppliers page** — Managers and Supervisors keep seeing it by default (unchanged), and now anyone else can be granted the same visibility individually via Security Groups, without a code change.
+- [x] **Shipped and deployed live** — eq-shell [PR #1047](https://github.com/eq-solutions/eq-shell/pull/1047), merged.
+
+---
+
+## eq-field: boot-time sign-in now runs in parallel with tenant lookup, not after it (2026-07-27) (rotated 2026-07-30)
+*Follow-on to the same day's "insane load time" report — the earlier fix only sped up data loading AFTER sign-in. Royce reported the actual symptom more precisely: "it spins for a while and then the app needs to load," two distinct phases. Measured the sign-in phase live before touching anything: two separate background checks (which system to talk to, and who's signed in) each took ~1-1.7 seconds, and ran one after the other even though the second one doesn't actually need the first to finish.*
+
+- [x] The system that resolves which database to use for a tenant now also looks up one extra piece of info it used to make the app fetch separately — one less round trip on every load.
+- [x] The sign-in check no longer waits for that whole lookup to finish first — it starts as soon as it knows which tenant it's dealing with, running alongside the rest of the lookup instead of after it. No change to what's checked or how securely — only when it starts.
+- [x] Verified with a standalone test of the actual boot code (not a rewritten copy) before shipping, confirming the two really do run in parallel and nothing hangs if the tenant lookup fails.
+- [x] Shipped and confirmed live on field.eq.solutions: v3.5.365 (eq-field [PR #549](https://github.com/eq-solutions/eq-field/pull/549), merged).
+
+---
+
+## eq-field: Tender Pipeline locked to managers only (2026-07-27) (rotated 2026-07-30)
+*Royce asked for the whole Pipeline feature to be turned off for everyone except managers. Checked how it was actually gated today before building anything: the only thing hiding it was the menu button itself — supervisors who unlock "Supervision mode" could already see and use it (same as most other manager tools in this app), and a direct link to the page (the same kind of link Core uses to open a specific tab) skipped the menu-hiding entirely and let ANYONE reach it, manager or not.*
+
+- [x] Added a new access rule that is manager-only — stricter than every other manager-tool rule in this app, which all also allow supervisors. A supervisor unlocking Supervision mode no longer sees or can open Pipeline/Resources/Accounts. Can still be handed to one specific supervisor individually later via Core's Access Control if Royce ever wants that, without opening it to every supervisor.
+- [x] Closed the direct-link bypass — confirmed real and live before fixing it, not assumed. Now blocked at the same point that already protects the Edit Roster screen.
+- [x] Verified live on the actual test site: a regular staff login can't see or open Pipeline even via a direct link; a supervisor who unlocks Supervision mode STILL can't (the exact case this was built to prevent); a real manager login can.
+- [x] Shipped and confirmed live on field.eq.solutions: v3.5.366 (eq-field [PR #550](https://github.com/eq-solutions/eq-field/pull/550), merged).
+
+---
+
+## eq-field: Audit log decluttered, then made faster to actually use (2026-07-27) (rotated 2026-07-30 — open items remain in pending.md)
+
+- [x] Roster/Timesheet cell edits AND sign-in records now hidden from the default view — a toggle reveals everything on demand, nothing is ever deleted from the real record or left out of the CSV export.
+- [x] 11 kinds of activity that were already being recorded but couldn't be filtered to (imports, job numbers, teams, tender pipeline changes, apprentice reviews, safety reports, sign-ins, etc.) are now selectable.
+- [x] **Self-caught before shipping**: the first version of this fix targeted the wrong thing — checked the real numbers and found sign-in records were 96% of the noise, roster edits were 2%. Corrected in the same pull request, not after.
+- [x] Added a search box, three one-click "show me just this" views (Compliance / Security / Roster & Timesheet), and click-to-jump — clicking a roster or timesheet entry takes you straight to that week with the person already searched for, instead of reading the entry and finding it yourself.
+- [x] Shipped and confirmed live on field.eq.solutions: v3.5.367 + v3.5.368 (eq-field [PR #552](https://github.com/eq-solutions/eq-field/pull/552), [PR #553](https://github.com/eq-solutions/eq-field/pull/553), both merged).
+
+---
+
+## eq-context: backlog overwhelm fixed at the source — nightly rotation + personal queue (2026-07-27) (rotated 2026-07-30 — open items remain in pending.md)
+
+- [x] **pending.md now cleans itself.** Done items rotate to `pending-archive.md` per-item every night (`scripts/rotate_pending.py` + `pending-rotate.yml`, 24 unit tests, conservation hard-asserted) — a mixed section keeps its open items live instead of trapping the finished ones. 3-day grace window keeps this week's narrative readable. Initial run moved 99 done items; sks/ops archives created. PR [#121](https://github.com/eq-solutions/eq-context/pull/121), merged.
+- [x] **digest.md now splits out "Waiting on you"** — the items only Royce can clear, out of the engineering Pending list. First regenerate picks it up automatically.
+- [x] **Both chronically-red CI gates on main (frontmatter, index-drift) turned green** — every violation fixed, all 8 README orphans indexed, in the same PR.
+- [x] **The 67-day corrupted "Licence p" line restored** verbatim from git history (F7) — its 3 items are back and flagged as possibly stale.
+
+---

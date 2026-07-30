@@ -1,7 +1,7 @@
 ---
 title: SKS — Pending
 owner: Royce Milmlow
-last_updated: 2026-07-29
+last_updated: 2026-07-30
 scope: SKS Technologies operational TODO list
 read_priority: critical
 status: live
@@ -16,22 +16,6 @@ status: live
 
 ## Labour Hire archive + rehire rating
 - [ ] Mirror the roster-grid archive + rating feature (SKS v3.10.104/.105) in EQ Field — flagged as a follow-up task; Royce started it in a separate session, result not yet known. _(added 2026-07-28)_
-
----
-
-## sks-charters backed up to GitHub (2026-07-27)
-*Found during a `C:\Projects` folder audit — `C:\Projects\sks-charters` (generates
-SKS "Role Step-Up Charter" `.docx` files, format documented in
-`eq-context/sks/templates.md`) had no remote at all; the tool, its data, and
-history existed only on this one machine. The 7 already-generated documents
-(`out/*.docx`) were confirmed already delivered to their recipients, so only
-the tool itself needed backing up — the documents were left as-is, not
-pushed (they're gitignored by design, not meant to be version-controlled
-output).*
-
-- [x] Pushed to [`eq-solutions/sks-charters`](https://github.com/eq-solutions/sks-charters)
-  (private — contains real staff names/roles, unlike the public `eq-context`).
-  _(added 2026-07-27, closed 2026-07-27)_
 
 ---
 
@@ -54,19 +38,9 @@ output).*
 
 ---
 
-## SKS Job Creation export was slow, not broken — self-fetching its own template over HTTP on every download (2026-07-27)
-*Royce reported Job Creation had "stopped working" on a specific quote. Live investigation on that exact quote (his session) showed the export actually succeeded (200 OK) — the real symptom, confirmed after asking, was that it just took a long time.*
-- [x] **Root cause found**: the Netlify function generating the Job Creation spreadsheet was re-downloading its own blank template from the live website on every single click, instead of using a copy already bundled with the function — an unnecessary round trip on top of the function's own startup time.
-- [x] **Fixed and live** — eq-shell [PR #1031](https://github.com/eq-solutions/eq-shell/pull/1031) merged, deployed to core.eq.solutions same day. The download now reads the bundled copy directly; no functional change to the spreadsheet itself.
-
 ## Drag-and-drop file uploads for quotes/jobs (2026-07-27)
 *Royce asked what's wired for saving files to quotes/jobs and asked for drag-and-drop.*
-- [x] **Built and shipped** — the attachments panel on quotes/jobs now accepts multiple files dropped anywhere in the panel, not just one file via a click-to-browse button. Same upload path underneath (no backend change) — file size/type limits are unchanged. eq-shell [PR #1033](https://github.com/eq-solutions/eq-shell/pull/1033), merged, live on core.eq.solutions.
 - [ ] **Royce to click-test it himself** — confirmed the deploy went out and the new code is live (checked the page's actual HTML directly), but couldn't finish a full live drag-and-drop test this session due to browser tooling instability. _(added 2026-07-27)_
-
-## Quote pipeline "Pending" stage — looked at, decided not to build (2026-07-27)
-*Royce asked whether a "Pending" stage (quote-to-job, awaiting PO) should be added, since a lot of jobs sit in "Open" waiting on a PO. Checked the live numbers before building anything: "Open" barely had any won-but-unpaperworked quotes (3 total) — the real conflation was inside "Job created," which lumped 5 quotes still awaiting a PO together with 12 that already had one. Built the corrected, narrower version (splitting "Job created" from "In Progress" by PO status) and opened it as a PR, but Royce decided not to touch statuses at all for now — a lot of the underlying status plumbing is backend complexity that isn't actually surfaced to the team, not worth the churn currently.*
-- [x] **Closed unmerged, per Royce** — eq-shell PR #1032 opened, then closed without merging. No live change.
 
 ## SKS national scale discovery — "what breaks EQ at ~2,000 employees" (2026-07-23)
 *Royce: "scalable / bigger picture discussion... national business that's approaching 2000 employees." Built a discovery questionnaire (24 questions across 8 categories) rather than guessing at a plan; Royce filled it out with real numbers, then supplied the actual SKS org chart (`MASTER Organisation Chart 01.07.2026.pdf`, 136 pages) to ground the architecture question.*
