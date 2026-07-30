@@ -7,7 +7,10 @@ name: Security audit
 #      SUPABASE_ACCESS_TOKEN secret; no-ops cleanly until that's set.
 #
 # BLOCKING mode: both finding steps fail the build on new findings.
-# Promoted from advisory 2026-06-27 — ERROR 0 across all 4 EQ projects confirmed.
+# Promoted from advisory 2026-06-27 — ERROR 0 across all 4 EQ projects confirmed
+# (later reduced to 3: eq-solves-field's project ktmjmdzqrogauaevbktn was
+# deleted 2026-07-04 and had no replacement — EQ Field has no standalone
+# Supabase project; its data lives on zaap/ehow, both already covered here).
 # Scope is EQ-only; SKS-Labour (retiring) was dropped from both scripts.
 # See ops/security-register.md for the tracked findings these gate against.
 

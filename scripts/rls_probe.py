@@ -47,11 +47,6 @@ PROJECTS = {
         "key": "sb_publishable_hxFkxp_oA4NPvYoDINoFXw__0Z4Oqj2",
         "targets": ["sks_customers", "sks_staff", "sks_quotes", "sks_quotes_customers", "sks_quotes_contacts"],
     },
-    "eq-solves-field": {
-        "url": "https://ktmjmdzqrogauaevbktn.supabase.co",
-        "key": "sb_publishable_rLY8fFG52GPjzZrrhoqATA_bOrRyfXL",
-        "targets": ["people", "timesheets", "leave_requests", "nominations", "audit_log", "tenders"],
-    },
 }
 
 
