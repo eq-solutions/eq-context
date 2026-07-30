@@ -1,13 +1,26 @@
 ---
 title: Changelog — EQ Solves Field
 owner: Royce Milmlow
-last_updated: 2026-07-29
+last_updated: 2026-07-30
 scope: Append-only history of changes to the EQ Solves Field product. Canonical — eq-field.md was merged into this file 2026-07-19, don't split again.
 read_priority: reference
 status: live
 ---
 
 # Changelog — EQ Solves Field
+
+## [2026-07-30] SKS logo added to every email, Approve/Reject buttons consolidated, unicode icons swapped for SVG (MERGED, #570, v3.5.381)
+- Every transactional email header now shows the tenant's logo when canonical has one set (`organisations.branding.sidebarLogoHtml` — the same wordmark the app's own sidebar already renders, no new asset). SKS gets its logo on leave/incident/apprentice-feedback/timesheet-reminder/digest emails; `eq` keeps a text-only header since it has none set.
+- Consolidated the Approve/Reject button markup `leave.js` and the digest edge function each hand-rolled separately into one shared, icon-labelled `button()` helper (`scripts/email-branding.js`, new `supabase/functions/_shared/email-ui.ts` for the two server-side templates). Status text (leave "Pending", incident severity) now reads as a coloured pill. Swapped the remaining ✓/✕/🎉 unicode glyphs for inline Lucide SVG icons, matching the repo's existing icon convention for touched Netlify/Edge functions.
+- **Found and fixed while smoke-testing the deploy preview**: `index.html`'s 39 static eager-loaded `<script>`/`<link>` tags carried a hardcoded `?v=3.5.379` cache-busting query string that had never been bumped since #567 introduced the versioning scheme — only the lazy-loaded tab scripts computed their version live. Netlify serves those paths as `immutable, max-age=31536000`, so any returning browser with a pre-v3.5.379 cache never picked up v3.5.380's fixes either. Bumped all 39 to `?v=3.5.381`; self-healing for every returning user once this ships, no content change to the 39 referenced files.
+- Both Supabase edge functions (`supervisor-digest`, `ts-reminder`) redeployed on ehow (v10 → v11) so the server-rendered emails pick up the branding/icon changes — no CI path exists for edge functions in this repo, deploy was manual via the Supabase MCP.
+- `scripts/apprentices.js` is now exactly at the repo's 2500-line `max-lines` CI ceiling — zero headroom left for the next feature there.
+
+## [2026-07-30] Transactional emails now tenant-branded instead of hardcoding SKS's navy (MERGED, #569, v3.5.380)
+- Every EQ Field email (leave request/approval/rejection/submission receipt, apprentice feedback requests, incident alerts, the weekly supervisor digest, timesheet reminders) previously hardcoded `#1F335C` as if it were a universal brand colour. Now reads the tenant's actual `organisations.branding.palette` — the same field the docx exports already use via `site-reports-shared.js`, and the same field eq-shell's `AdminTenantSettings` page already lets an admin edit. New `scripts/email-branding.js` for the 3 browser-triggered templates, new `supabase/functions/_shared/tenant-brand.ts` for the 2 server-side edge functions (which fetch it from canonical directly since they have no browser window to read the already-loaded value from).
+- Live-verified SKS's actual canonical primary is `#203060`, not `#1F335C` as CLAUDE.md's Brand table had documented — corrected both the project and global brand references rather than shipping a false "no visible change" claim; `eq`'s canonical primary already matches the EQ-default fallback, so that tenant is genuinely unaffected.
+- Fixed a separate bug found in the same pass: `supervisor-digest`'s real cron fire sends an empty POST body, which left `orgSlug` null — this both skipped the new brand lookup AND (pre-existing, unrelated to branding) let the org-name query fall through to an unfiltered first row, displaying the literal string "EQ Field" instead of "SKS" in every live digest email. Defaults to the one live tenant slug now.
+- Also fixed the digest cron's own 401: `assertCronCaller()`'s literal string compare against the live service-role key didn't match the vault-stored copy the cron job actually sent. New dedicated `digest_cron_secret` Vault secret + `CRON_SECRET` function secret, sent as `x-cron-secret`; confirmed live with a 200 OK dry run.
 
 ## [2026-07-29] Closed the load-time gap for a fresh deploy/first visit (MERGED, #567, v3.5.379)
 - The v3.5.374 caching fix only sped up repeat loads of an already-installed version. The very first load of any new version — a fresh deploy preview, or production right after a merge — still paid a full network round-trip per file. Every `/scripts/` and `/styles/` request now carries a `?v=<APP_VERSION>` query string (index.html's tags, lazy-loader.js's dynamic injection, and the inline jszip.min.js loader), and netlify.toml caches those paths as `public, max-age=31536000, immutable` — safe because the URL changes every release. `sw.js`'s PRECACHE list is versioned the same way. Also fixed a small gap noticed in passing: `styles/spinner.css` + `styles/field-v8.css` were live but missing from PRECACHE.

@@ -16,6 +16,17 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-field: Tenant-branded transactional emails, SKS logo + polish, and a real cache-busting bug caught while smoke-testing (2026-07-30) (rotated 2026-07-30 — 2 open items stayed in pending.md)
+*Every EQ Field transactional email (leave request/approval/rejection, apprentice feedback, incident alerts, the weekly supervisor digest, timesheet reminders) previously hardcoded a stale SKS navy hex instead of reading the tenant's actual canonical brand colour. Fixed in two passes: v3.5.380 wired every template to the real `organisations.branding.palette` value (also catching and fixing a separate bug where the Friday digest cron's empty POST body made it display "EQ Field" instead of "SKS" as the org name in every live digest). v3.5.381 then added the SKS logo to every email header (reusing the same wordmark asset the app's own sidebar already renders — no new upload), consolidated the Approve/Reject button markup two different files had each hand-rolled separately into one shared icon-labelled helper, and swapped remaining unicode glyphs for inline Lucide icons per the repo's own convention. Smoke-testing the second PR's deploy preview surfaced a separate, unrelated, real bug: `index.html`'s static eager-script/style tags carried a hardcoded cache-busting version string that had never been bumped past the release that introduced it — only the lazy-loaded scripts computed their version live. Any returning user with an old cached copy of those files had been silently stuck on stale JS since that release, with no error or indication anything was wrong. Fixed going forward (the fix is self-healing the moment it ships — every browser is forced to re-fetch regardless of what stale version it was stuck on — but there's no way to retroactively un-stick anyone who was already affected before this shipped).*
+
+- [x] **Tenant-branded emails (v3.5.380)** — 5 templates now read the live canonical palette instead of a hardcoded, drifted colour. [PR #569](https://github.com/eq-solutions/eq-field/pull/569) merged.
+- [x] **Friday digest cron fixed** — had been silently failing to fire due to a mismatched auth secret; fixed with a new Supabase Vault secret, confirmed live with a 200 OK dry run.
+- [x] **SKS logo + visual polish (v3.5.381)** — logo added to every email header when the tenant has one set; Approve/Reject buttons and status labels given a consistent, icon-labelled treatment. [PR #570](https://github.com/eq-solutions/eq-field/pull/570) merged.
+- [x] **39 stale cache-busting tags fixed** — found while smoke-testing; bundled into the same PR.
+- [x] **Both Supabase edge functions redeployed** (`supervisor-digest`, `ts-reminder`, v10 → v11) so the server-rendered emails pick up the branding changes too.
+
+---
+
 ## eq-shell: Admin Users "Deactivated" tab was dead UI — server-side filter was dropping every row it needed (2026-07-30)
 *The Users list page has a "Deactivated" tab, but the backend query that feeds the whole list only ever fetched active users — so the tab could never show anything, no matter how many deactivated users a tenant had. Fixed and applied live same day. Royce then clicked through, found the two deactivated SKS users it surfaced (Jack Cluff, Patricia Milmlow), and acted on both.*
 

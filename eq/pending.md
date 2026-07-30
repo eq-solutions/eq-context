@@ -14,6 +14,14 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-field: Tenant-branded transactional emails, SKS logo + polish, and a real cache-busting bug caught while smoke-testing (2026-07-30)
+*See `eq/pending-archive.md` for the full write-up — [PR #569](https://github.com/eq-solutions/eq-field/pull/569) and [PR #570](https://github.com/eq-solutions/eq-field/pull/570) merged, both edge functions redeployed, all live same day.*
+
+- [ ] **`eq` tenant's Leave feature is broken (401)** — the demo tenant can't read its own leave requests (anon lacks a DB grant on zaap); spotted while smoke-testing this unrelated work, spun off as its own background task, not yet resolved. _(added 2026-07-30)_
+- [ ] **`EQ_SECRET_SALT` rotation still outstanding** — the value was exposed in chat back in April; nothing has forced a rotation since. _(added 2026-07-30)_
+
+---
+
 ## eq-solves-intake: Customers/Sites Tidy tab — fixing a value gap couldn't actually be saved (2026-07-30)
 *Royce, looking at a screenshot: "no dropdown when you edit, then you can't save it here anyway... what is the value of intake?" Both were real, confirmed bugs, not misreadings — the Tidy tab's Edit/Suggest buttons for a data gap (e.g. a customer's Type field showing "company" isn't a recognised value) always used a plain text box even for closed-list fields, and neither Edit nor Suggest ever actually saved anywhere — they only changed what was on screen. On top of that, the one save path that does exist (the same one used for auto-fixes) was separately missing two fields from its own allow-list, so even a perfect frontend fix would have silently failed to save a customer's Type or a site's Type.*
 
