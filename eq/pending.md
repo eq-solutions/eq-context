@@ -14,6 +14,16 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-solves-intake: Customers/Sites Tidy tab — fixing a value gap couldn't actually be saved (2026-07-30)
+*Royce, looking at a screenshot: "no dropdown when you edit, then you can't save it here anyway... what is the value of intake?" Both were real, confirmed bugs, not misreadings — the Tidy tab's Edit/Suggest buttons for a data gap (e.g. a customer's Type field showing "company" isn't a recognised value) always used a plain text box even for closed-list fields, and neither Edit nor Suggest ever actually saved anywhere — they only changed what was on screen. On top of that, the one save path that does exist (the same one used for auto-fixes) was separately missing two fields from its own allow-list, so even a perfect frontend fix would have silently failed to save a customer's Type or a site's Type.*
+
+- [x] **Dropdown for closed-list fields** — editing a gap like Customer Type now shows the actual allowed choices (lead/prospect/active/churned) instead of a free-text box.
+- [x] **Edit/Suggest now actually save** — both write to the real customer/site/etc. record instead of only changing what's shown on screen.
+- [x] **Server-side allow-list gap closed live** — Customer Type and Site Type were quietly blocked from saving even before this session's fix; corrected and confirmed live on the SKS database.
+- [ ] **Not yet visible on core.eq.solutions** — this app is copied into the main Shell app in a separate step (same pattern as recent settings-screen work); a follow-up task is already queued to do that copy. _(added 2026-07-30)_
+
+---
+
 ## eq-shell: archived staff still naming themselves in the AI dashboard summary — fixed, not yet merged (2026-07-30)
 *Royce archived Huon Henne but he kept showing up in the AI dashboard summary. Traced to `briefing-engine.ts`: the staff name lookup and the "licence expiring soon" signal both skipped the active-staff filter that a third function in the same file already had — so an archived worker's still-active licence kept generating a signal with their name attached.*
 
