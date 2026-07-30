@@ -16,6 +16,21 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-shell: RLS gap on `tenant_field_importance_overrides` closed (2026-07-29 → 2026-07-30)
+*Surfaced as a pre-existing, unrelated failing CI check ([issue #1108](https://github.com/eq-solutions/eq-shell/issues/1108)) while merging PR #1112 — RLS had been left disabled on both tenant planes since PR #1104/migration 0222. Flagged via `spawn_task` instead of fixed inline (out of scope for the PR being merged at the time); Royce started the spawned task in a separate session.*
+
+- [x] Migration enabling RLS + tenant-isolation policy on `tenant_field_importance_overrides`, both planes. eq-shell [PR #1115](https://github.com/eq-solutions/eq-shell/pull/1115), merged.
+- [x] Live-verified via Supabase MCP this close: `relrowsecurity = true` on both zaap and ehow. Drift-check issue #1108 auto-closed (2026-07-29T20:38:46Z), consistent with the fix landing.
+
+## eq-cards: "nudge the picker" follow-up — already live, migration history drift closed (2026-07-29 → 2026-07-30)
+*Follow-on from the Maylin Ung photo-ID mistype (below): asked whether to build a fix so the licence-type picker offers "Photo ID"/"Passport" as proper selectable types instead of routing through free-text "Other/not listed". Checked live state before building anything.*
+
+- [x] **Turned out the fix is already live** — both `photo_id` and `passport` exist on jvkn as canonical, non-custom `licence_types` rows, added out-of-band 2026-06-22. The picker already lists them; no Dart change needed.
+- [x] **Closed the real gap: migration history never captured it.** `0002_seed_licence_types.sql` (the tracked seed) only lists 13 types — a fresh environment built from this repo's migrations would silently miss these two. Added a no-op migration (`on conflict do nothing`) matching the live rows exactly. eq-cards [PR #187](https://github.com/eq-solutions/eq-cards/pull/187), merged.
+- [x] Reconfirmed PR #185 (`eq_cards_my_credential_gaps()` photo-ID equivalence, migration 0109) is applied live on jvkn — matches the tracked migration exactly.
+
+---
+
 ## eq-receipts: duplicate-detection blind spot fixed (FX rounding hid a real double-charge), invoice number added as a stronger match (2026-07-29)
 *Royce asked "do we check for duplicate receipts?", then reported a specific receipt sitting unactioned that had already been approved elsewhere. Traced it live: two identical Anthropic charges ($12.02 USD both), missed as a duplicate because the app's duplicate check was comparing the AUD-converted dollar amount, and the currency-conversion rate applied can differ by a day (and a few cents) between the first scan and the second — so two copies of the exact same charge could get slightly different AUD totals and slip past the check.*
 
@@ -1308,5 +1323,18 @@ contain the same values and were pushed before push-protection caught up.
 - [x] **IDENTITY-MODEL.md corrected, not the data** — retracted the false "retired" claim; the actual 2026-06-28 change only deactivated the `__personal__` tenant record itself, which just hides it from admin/audit sweeps, not from new memberships. eq-context commit `87d565f`, pushed to `main`.
 - [x] Flagged that the doc's own §11.2 backlog item ("multi-tenant membership — not yet built") is itself stale against eq-cards' shipped behaviour.
 - [x] **Reconciliation resolved by Royce**: the doc's old "one user, one tenant" rule was backwards — corrected. Cards is the personal identity/control layer for everyone; a person owns one identity and can additively join multiple tenants by choice, so they're not re-entering their info per employer. §11 item 2 and §11.2 updated to match; §11.3 records the decision and the eq-cards code that already implements it. eq-context commit `f67886e`, pushed to `main`.
+
+---
+
+## eq-shell: the "blocked by a failing security check" problem was a stale result, not a real failure — nothing needed building (2026-07-30)
+*A task came in reporting that a required security check was failing on every open pull request, because a database table had been left unprotected on both the EQ and SKS systems, and asked for a fix to be written. Checked the live systems first rather than building from the description — every part of it had already been resolved the day before.*
+
+- [x] **Confirmed the protection was already in place on both systems** — the table was locked down the previous evening (2026-07-29), access limited to the backend service only. No customer data was ever reachable by a browser; there was no live exposure at any point, before or after.
+- [x] **Confirmed the security check itself had been passing since that same evening** — three consecutive scheduled runs green, and the tracking issue for it already closed.
+- [x] **Found why the pull request still showed red**: its check had run about 50 minutes *before* the fix landed, so it was displaying a stale result rather than a live failure. Re-ran the check — passed, and the pull request went fully green.
+- [x] **Confirmed which app owned the table** (EQ Shell — not the Service or Field apps the task suggested checking first), and that it was created through the proper governed process, not applied by hand as reported. The "created out-of-band" conclusion came from the file living in a differently-named folder than the one searched.
+- [x] **Deliberately did not write the requested fix** — a second, duplicate database change for something already done risks breaking protection that works. Also declined to add the table to a "backend-only" exemption list: it uses a different (and correct) protection style that the list isn't meant for.
+- [x] **Checked the one thing that would have caused a real outage had the fix not already been applied** — the protection rule assumes a particular data type for the tenant column; confirmed it matches, so saving would not have broken.
+- [x] **Merged the blocked pull request on Royce's go** (dead-file cleanup only) — all checks green at merge time via the re-run, not an admin override. Live site smoke-checked healthy afterwards.
 
 ---
