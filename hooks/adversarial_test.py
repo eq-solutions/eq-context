@@ -43,8 +43,23 @@ def edit(path):
     return {"tool_name": "Edit", "tool_input": {"file_path": path}}
 
 
-def bash(cmd):
-    return {"tool_name": "Bash", "tool_input": {"command": cmd}}
+# Every existing bash() test predates F7's pre-git-verb NUL scan, which resolves
+# a repo root from the payload's "cwd" (falling back to os.getcwd()) and scans
+# ITS actual working tree. Pointing plain bash() calls at a real git repo would
+# make those tests' outcomes depend on whatever happens to be modified in that
+# repo's working tree at the moment the suite runs — exactly the kind of ambient-
+# state coupling a regression test must not have. NOGIT_CWD is a bare, repo-less
+# tempdir: repo_root_for() returns None there, so F7 cleanly no-ops and every
+# pre-existing test keeps its original, fully deterministic behavior.
+NOGIT_CWD = tempfile.mkdtemp(prefix="eq_nogit_")
+
+
+def bash(cmd, cwd=NOGIT_CWD):
+    return {"tool_name": "Bash", "tool_input": {"command": cmd}, "cwd": cwd}
+
+
+def powershell(cmd, cwd=NOGIT_CWD):
+    return {"tool_name": "PowerShell", "tool_input": {"command": cmd}, "cwd": cwd}
 
 
 print("=== F2 - silent truncation on the mount (must BLOCK) ===")
@@ -61,6 +76,94 @@ print("=== git from the sandbox (must BLOCK) ===")
 t("git commit", bash("git commit -m x"), 2)
 t("git push", bash("cd /x && git push origin main"), 2)
 t("git status", bash("git status"), 2)
+t("git merge via PowerShell (widened tool matching)", powershell("git merge origin/main"), 2)
+t("git stash pop via PowerShell (widened tool matching)", powershell("git stash pop"), 2)
+
+
+def _clear_readonly_and_retry(func, path, exc_info):
+    """shutil.rmtree onerror hook — git marks some .git/objects files read-only
+    on Windows, and shutil.rmtree(ignore_errors=True) silently leaves those (and
+    therefore the whole directory) behind rather than raising. That then makes
+    the NEXT fixture's os.makedirs() hit FileExistsError against a half-deleted
+    leftover. Clear the attribute and retry the specific failing op instead of
+    swallowing it blind."""
+    import stat
+    os.chmod(path, stat.S_IWRITE)
+    func(path)
+
+
+def _rmtree_retry(path, attempts=5, delay=0.2):
+    """Bounded local retry for the rare case even the onerror clear loses a race
+    against a just-exited git subprocess still releasing its handle — not a
+    wait-on-external-system poll, same tolerance every fixture here already needs."""
+    import time
+    for _ in range(attempts):
+        if not os.path.exists(path):
+            return
+        shutil.rmtree(path, onerror=_clear_readonly_and_retry)
+        if not os.path.exists(path):
+            return
+        time.sleep(delay)
+
+
+def f7_fixture_repo(corrupt):
+    """A throwaway repo NESTED under ROOT (not a random tempdir) — targets_mount()
+    matches on a '/projects/' path segment, and ROOT already sits under that on
+    both the local Windows checkout and the CI runner's relocated /mnt/Projects
+    checkout (see adversarial-suite.yml's relocation step). A plain tempdir
+    would silently skip the F7 check, the same "quiet pass for the wrong reason"
+    trap this suite's own CI comment already warns about for the F2 fixtures."""
+    d = os.path.join(ROOT, ".tmp_f7_fixture")
+    _rmtree_retry(d)
+    os.makedirs(d)
+    run = lambda *a: subprocess.run(["git", *a], cwd=d, capture_output=True, text=True)
+    run("init", "-q", "-b", "main")
+    run("config", "user.email", "test@example.com")
+    run("config", "user.name", "test")
+    target = os.path.join(d, "clean.md")
+    with open(target, "w") as fh:
+        fh.write("hello\n")
+    run("add", "-A")
+    run("commit", "-q", "-m", "seed")
+    if corrupt:
+        with open(target, "wb") as fh:
+            fh.write(b"hello\x00\x00\x00 world\n")   # F6/F7's shared signature
+    else:
+        with open(target, "a") as fh:
+            fh.write("more text, no corruption\n")
+    return d
+
+
+def bash_at(cmd, cwd):
+    return {"tool_name": "Bash", "tool_input": {"command": cmd}, "cwd": cwd}
+
+
+def te(name, payload, expect, extra_env):
+    global passed, failed
+    env2 = dict(os.environ)
+    env2.update(extra_env)
+    got = subprocess.run([sys.executable, HOOK], input=json.dumps(payload),
+                          capture_output=True, text=True, env=env2).returncode
+    ok = got == expect
+    print("  {:<52}{}".format(name, "PASS" if ok else "*** FAIL *** (got {}, want {})".format(got, expect)))
+    passed += ok
+    failed += (not ok)
+
+
+print("=== F7 - pre-existing NUL corruption caught ahead of a git verb, INDEPENDENT of sandbox status ===")
+corrupt_repo = f7_fixture_repo(corrupt=True)
+te("BLOCKS with sandbox guard explicitly OFF (proves F7 isn't sandbox-scoped)",
+   bash_at("git commit -am x", corrupt_repo), 2, {"EQ_FORCE_GUARD": "0"})
+te("BLOCKS with sandbox guard ON too (F7 fires ahead of the pre-existing blanket block either way)",
+   bash_at("git commit -am x", corrupt_repo), 2, {"EQ_FORCE_GUARD": "1"})
+_rmtree_retry(corrupt_repo)
+
+clean_repo = f7_fixture_repo(corrupt=False)
+te("clean modified tree + sandbox guard OFF -> NOT blocked (F7 finds nothing, F2/F6/git-blanket correctly dormant)",
+   bash_at("git commit -am x", clean_repo), 0, {"EQ_FORCE_GUARD": "0"})
+te("clean modified tree + sandbox guard ON -> still blocked, but by the PRE-EXISTING git-blanket rule, not F7",
+   bash_at("git commit -am x", clean_repo), 2, {"EQ_FORCE_GUARD": "1"})
+_rmtree_retry(clean_repo)
 
 print("=== CONTROLS - legitimate work must NOT be blocked ===")
 t("Edit a short file", edit(SHORT), 0)
