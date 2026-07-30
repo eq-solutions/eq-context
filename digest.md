@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-30 13:47 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-30 16:04 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-30 11:50 UTC → 2026-07-30 13:47 UTC)
+## Since last refresh (2026-07-30 13:47 UTC → 2026-07-30 16:04 UTC)
 
-- Merged: eq-shell [#1113](https://github.com/eq-solutions/eq-shell/pull/1113) chore(intake): re-vendor eq-intake/eq-platform — customers/c
-- Merged: eq-shell [#1111](https://github.com/eq-solutions/eq-shell/pull/1111) feat(ops): make ex-GST the prominent figure across EQ Ops
-- Merged: eq-shell [#1109](https://github.com/eq-solutions/eq-shell/pull/1109) fix(mobile): mirror desktop's permission checks (Security Gr
-- Merged: eq-shell [#1106](https://github.com/eq-solutions/eq-shell/pull/1106) chore(intake): re-vendor eq-intake/eq-platform — field-impor
-- Merged: eq-shell [#1105](https://github.com/eq-solutions/eq-shell/pull/1105) fix(auth): register /login route so ?tenant= survives to Log
-- Merged: eq-shell [#1103](https://github.com/eq-solutions/eq-shell/pull/1103) fix(invite): route phone-first worker activation through She
-- Merged: eq-shell [#1102](https://github.com/eq-solutions/eq-shell/pull/1102) fix(auth): Mobile-door tenant resolution + invite role copy
-- Merged: eq-shell [#1065](https://github.com/eq-solutions/eq-shell/pull/1065) fix(functions): lazy-load @sentry/node to unblock local netl
+- Merged: eq-shell [#1132](https://github.com/eq-solutions/eq-shell/pull/1132) fix(audit): quote events now stamp app_source='ops', not the
+- Merged: eq-shell [#1116](https://github.com/eq-solutions/eq-shell/pull/1116) feat(workers): compliance-roster-only workers — has_field_ac
+- Merged: eq-shell [#1115](https://github.com/eq-solutions/eq-shell/pull/1115) fix(migrations): enable RLS on tenant_field_importance_overr
+- Merged: eq-shell [#1114](https://github.com/eq-solutions/eq-shell/pull/1114) chore: remove dead intake domain pages and SecurityGroupsPag
+- Merged: eq-shell [#1112](https://github.com/eq-solutions/eq-shell/pull/1112) fix(staff): full-size licence photo lightbox
+- Merged: eq-shell [#1110](https://github.com/eq-solutions/eq-shell/pull/1110) feat(auth): phone+PIN login door, generalized grace-gate pat
+- Merged: eq-shell [#1107](https://github.com/eq-solutions/eq-shell/pull/1107) fix(observability): stop mislabeling network errors as stale
+- Merged: eq-shell [#1104](https://github.com/eq-solutions/eq-shell/pull/1104) feat(intake): tenant-editable field-importance override tabl
 
 ## ⚠ Needs you (3)
 
@@ -49,9 +49,9 @@ _…and 87 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 1 | 0d |
+| eq-shell | ? unknown | ? | 0 | — |
 | eq-solves-service | ? unknown | ? | 0 | — |
-| eq-field | ? unknown | ? | 0 | — |
+| eq-field | ? unknown | ? | 1 | 0d |
 | eq-cards | ? unknown | ? | 0 | — |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
@@ -73,6 +73,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-30 | eq-shell | [#1132](https://github.com/eq-solutions/eq-shell/pull/1132) fix(audit): quote events now stamp app_source='ops', not the reti |
 | 2026-07-30 | eq-shell | [#1130](https://github.com/eq-solutions/eq-shell/pull/1130) chore(intake): re-vendor eq-intake/eq-platform — merge-error disp |
 | 2026-07-30 | eq-shell | [#1131](https://github.com/eq-solutions/eq-shell/pull/1131) fix(signals): exclude archived staff from Compliance & safety das |
 | 2026-07-30 | eq-shell | [#1129](https://github.com/eq-solutions/eq-shell/pull/1129) fix(audit): Suite Activity gets real filtering; correct EQ Quotes |
@@ -87,7 +88,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-30 | eq-shell | [#1119](https://github.com/eq-solutions/eq-shell/pull/1119) feat(auth): SIM-swap PIN invalidation — admin phone-number change |
 | 2026-07-30 | eq-shell | [#1120](https://github.com/eq-solutions/eq-shell/pull/1120) fix(suppliers): free scroll + column toggle; drop BETA from Cards |
 | 2026-07-30 | eq-shell | [#1117](https://github.com/eq-solutions/eq-shell/pull/1117) fix(briefing): exclude archived staff from the AI dashboard summa |
-| 2026-07-30 | eq-shell | [#1118](https://github.com/eq-solutions/eq-shell/pull/1118) fix(staff): lock email/phone provenance so Cards can update a non |
 _Showing 15 of 121 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -102,7 +102,7 @@ _Showing 15 of 121 · full record in [sessions/](sessions/)_
 - **Bring Data In's "Check for conflicts" still commits on its own path, separate from the main Into-EQ flow** — routing those resolved rows into the same shared commit path as everything else is real, separate work, not done here. _(added 2026-07-29)_
 - **The deeper "why is this still exhausting" fixes are still open** — bulk-approve (today it's still one row at a time), standing rules for recurring conflict types (so the same duplicate doesn't get flagged forever), a trend view (is the score improving?), and a real ask-anything grounded across the whole suite (today's Ask tab is a thin preview of that). Discussed with Royce as the next tier up from this session's fix — this session deliberately shipped the cheap, clear win first. _(added 2026-07-29)_
 - **The live end-to-end proof is still outstanding**: drop a deliberately-conflicting test row through production `/intake` and confirm it parks in the queue instead of committing. Blocked this session on the file-upload tool refusing to attach a test file not shared directly by Royce in chat — needs either Royce dragging the file into chat, or Royce doing the drop himself while checked live. This becomes easy to verify now that Overview/To Do is the single place to look. _(added 2026-07-29)_
-_…and 344 more · [eq/pending.md](eq/pending.md)_
+_…and 341 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -124,7 +124,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 2822 | 457 | 76 | 9 |
+| [EQ](eq/pending.md) | 2819 | 455 | 76 | 9 |
 | [SKS](sks/pending.md) | 406 | 78 | 0 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 392 | 38 | 2 | 1 |
@@ -145,4 +145,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-30 13:47 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-30 16:04 UTC._
