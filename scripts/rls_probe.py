@@ -47,6 +47,11 @@ PROJECTS = {
         "key": "sb_publishable_hxFkxp_oA4NPvYoDINoFXw__0Z4Oqj2",
         "targets": ["sks_customers", "sks_staff", "sks_quotes", "sks_quotes_customers", "sks_quotes_contacts"],
     },
+    "eq-receipts": {
+        "url": "https://bgrhqvmvzgotxzjneskv.supabase.co",
+        "key": "sb_publishable_cxxFmNzK2uogt_kdl2uNHQ_wOIvfcSn",
+        "targets": ["entities", "categories", "receipts", "line_items", "extraction_jobs", "exports"],
+    },
 }
 
 
