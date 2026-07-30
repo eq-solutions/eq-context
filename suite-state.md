@@ -61,8 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-30)
 
 **eq-shell:**
-- #1141 perf(shell): fetchpriority=low on prewarmed iframes + pause prewarm when tab hidden
-- #1139 perf(shell): preconnect to Field/Service/Cards origins ahead of iframe mount
+- #1144 feat(mobile): My Card row in the account sheet for non-field-first users
 
 ---
 
