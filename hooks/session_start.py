@@ -11,6 +11,9 @@ costs no ceremony. Prints, unprompted, at every session start:
   3. GOALS       — whether TODAY.md has any. If UNSET, no assistant may defer work
                    by appeal to a deadline (failure F3 — the phantom-deadline incident).
   4. RATCHET     — failures whose guard is overdue for promotion (system/failures.md).
+  5. CLAIMS      — active incident claims (system/incident-claims.md) that overlap
+                   this session's own Needs You list — stops duplicate investigation
+                   of the same finding by concurrent sessions.
 
 Reads the LOCAL CLONE, never a URL. The URL is what lied on 2026-07-11.
 Fails open but loud: a silent guard is the bug we are fixing.
@@ -76,6 +79,7 @@ else:
 
 # --- 2. NEEDS YOU -----------------------------------------------------------
 nm = re.search(r"##\s*⚠?\s*Needs you[^\n]*\n(.*?)(?=\n##\s)", digest, re.S)
+items = []
 if nm:
     items = [l.strip() for l in nm.group(1).splitlines() if l.strip().startswith("-")]
     if items:
@@ -120,6 +124,54 @@ if due:
     out.append("           A lesson that failed twice IS the thing that failed. Promote it to a hook.")
 else:
     out.append("RATCHET    no promotions due")
+
+# --- 5. CLAIMS (duplicate-investigation guard) ------------------------------
+# Cross-references active rows in system/incident-claims.md against this
+# session's own "Needs you" items (already parsed above as `items`, if any)
+# by ID substring match (SEC-N / F-N / a distinctive slug) — not free-text
+# fuzzy matching. Never blocks; loudly flags so a session doesn't start an
+# independent investigation of something another live session already claimed.
+claims_raw = read("system/incident-claims.md")
+claim_rows = re.findall(
+    r"^\|\s*([A-Za-z0-9_.\-]+)\s*\|\s*([^|]*?)\s*\|\s*([0-9T:\-]+Z?)\s*\|\s*([^|]*?)\s*\|\s*$",
+    claims_raw, re.M
+)
+STALE_HOURS = 6
+active_claims = []
+for cid, who, since, notes in claim_rows:
+    cid = cid.strip()
+    if not cid or re.match(r"^-+$", cid):  # markdown header separator row, not a real claim
+        continue
+    age_h = None
+    try:
+        since_dt = datetime.fromisoformat(since.replace("Z", "+00:00"))
+        age_h = (datetime.now(timezone.utc) - since_dt).total_seconds() / 3600
+    except Exception:
+        pass
+    active_claims.append((cid, who.strip(), age_h, notes.strip()))
+
+matches = []
+for it in items:
+    for cid, who, age_h, notes in active_claims:
+        if cid and cid in it:
+            if age_h is not None and age_h > STALE_HOURS:
+                tag = f"STALE {age_h:.1f}h — claim may be abandoned, but read its notes first"
+            elif age_h is not None:
+                tag = f"claimed {age_h:.1f}h ago"
+            else:
+                tag = "claimed"
+            label = f"{cid} [{tag}] by {who}" + (f" — {notes}" if notes else "")
+            matches.append(label)
+
+if matches:
+    out.append("CLAIMS     *** possible duplicate work — check before investigating ***")
+    for mtext in matches[:5]:
+        out.append("           " + mtext[:140])
+    out.append("           system/incident-claims.md")
+elif active_claims:
+    out.append(f"CLAIMS     {len(active_claims)} active claim(s), none overlap today's Needs You list")
+else:
+    out.append("CLAIMS     none active")
 
 print("=== EQ SESSION GATE (local clone — never the URL) ===")
 print("\n".join(out))
