@@ -14,6 +14,16 @@ for operational support: tax, entities, infrastructure, substrate.
 
 ---
 
+## SEC-10 follow-up — Netlify plaintext-secret sweep (2026-07-30)
+
+- [ ] Sweep other Netlify projects (eq-shell, eq-solves-service, eq-field) for
+  the same `is_secret: false` plaintext-credential pattern SEC-10 found on
+  sks-nsw-labour (`ANTHROPIC_API_KEY`/`RESEND_API_KEY`, now closed) — not yet
+  checked on any other project. See `ops/security-register.md` SEC-10.
+  _(added 2026-07-30)_
+
+---
+
 ## Root cause of the recurring worktree-orphan pattern found + fixed (2026-07-27)
 
 Royce shared an Explorer screenshot asking what all the extra `C:\Projects`

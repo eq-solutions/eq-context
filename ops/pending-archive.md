@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-07-28
+last_updated: 2026-07-30
 scope: Done items rotated out of ops/pending.md nightly by scripts/rotate_pending.py to keep the live doc scannable. Nothing here is actionable — pure historical record (also covered in changelogs and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -72,5 +72,31 @@ Both merged and live-verified. Real cost was duplicate engineering effort
 across two repos, not a live risk.
 
 - [x] **Root-cause default-privilege gap — CLOSED 2026-07-28 (SEC-16), via a different mechanism than first attempted.** `ALTER DEFAULT PRIVILEGES ... REVOKE EXECUTE ON FUNCTIONS FROM PUBLIC` was confirmed a no-op (see above investigation — real, reproducible, not a known Supabase event-trigger conflict). Root cause holds; the fix doesn't have to be a "default privilege" though. Shipped a `ddl_command_end` event trigger (`eq_enforce_function_privacy`) instead — re-runs the same explicit REVOKE/GRANT idiom SEC-4/13/15 already used, on every function landing in a guarded schema, immediately after creation. Verified live on all 3 planes (real test functions, not just rolled-back transactions): `anon=false`, `service_role=true`. Confirmed compatible with the existing convention of an explicit follow-up `GRANT` for a legitimate anon/authenticated RPC. eq-shell [#1070](https://github.com/eq-solutions/eq-shell/pull/1070) (tenant migration `0220`, zaap+ehow via `tenant-migrate.yml`) + [#1072](https://github.com/eq-solutions/eq-shell/pull/1072) (control-plane ledger, jvkn applied via Supabase MCP). Full detail: `ops/security-register.md` SEC-16.
+
+---
+
+## Chat's 3 discipline recommendations built (2026-07-30 — one follow-up remains in pending.md)
+
+Chat rated /clothes-skill discipline 82/100 and named 3 fixes. All three landed
+this session (order revised via steelman: value first, not cost first).
+
+- [x] **SEC-10 closed** — `ANTHROPIC_API_KEY`/`RESEND_API_KEY` on sks-nsw-labour
+  rotated by Royce and re-stored `is_secret:true`; `EQ_SECRET_SALT`'s `dev`-context
+  plaintext leftover cleared via the Netlify MCP. Commit `ef41f55`. See
+  `ops/security-register.md` SEC-10.
+- [x] **DDL-without-migration Stop gate built** — `guard.js` tags every `gate-sql`
+  log line with session_id+cwd; new `~/.claude/hooks/ddl_migration_gate.py` Stop
+  hook flags (never blocks) a session that applied live DDL with no matching
+  migration file committed or uncommitted. Tested 4 scenarios. Machine-local
+  config, not git-versioned (same as `guard.js`).
+- [x] **Incident-claims registry built** — `system/incident-claims.md` (claim/lock
+  table) + `hooks/session_start.py` cross-references it against the digest's
+  Needs You list every session, flagging possible duplicate investigation.
+  Tested (fresh/stale/empty). Commit `8087b7a` — recovered from a live shared-
+  checkout collision with a concurrent session via a clean throwaway clone,
+  no content lost either side.
+- [x] **Pre-existing `guard.js` bug found + spun off** — `selftest.js`'s inline-
+  password case denies when it should warn-allow; confirmed pre-existing, not
+  a regression. Background task `task_19efbbf8`, running independently.
 
 ---
