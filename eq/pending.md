@@ -35,6 +35,13 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 - [ ] **Merge [PR #1117](https://github.com/eq-solutions/eq-shell/pull/1117)** (branch `claude/archived-huon-dashboard-summary-ac5190`) — fix is written and typechecked, not yet on `main`. _(added 2026-07-30)_
 
+---
+
+## eq-shell: same archived-staff leak, different dashboard card — Core home's "Compliance & safety" card — fixed + merged (2026-07-30)
+*Same root cause as the AI dashboard summary bug above (PR #1117) but a different file: `netlify/functions/_shared/signals-data.ts` (the `/signals` endpoint behind the Core home `SignalsBoard` widget) is deliberately self-contained per its own header comment, so it never got that fix's active-staff filter. Huon Henne (archived) kept showing up under "Licences expiring" on the Compliance & safety card. Same two misses, same fix pattern, applied to this file too — [PR #1131](https://github.com/eq-solutions/eq-shell/pull/1131), merged same day, all CI green before merge.*
+
+- [ ] **Royce to confirm live**: once the deploy lands on core.eq.solutions, reload the dashboard and confirm Huon Henne no longer appears under "Licences expiring" on the Compliance & safety card. _(added 2026-07-30)_
+
 ## eq-shell: Cards email edits weren't reaching core — fixed and shipped, one worker's data still needs a manual touch-up (2026-07-30)
 *See `eq/pending-archive.md` for the full write-up — [PR #1118](https://github.com/eq-solutions/eq-shell/pull/1118) merged, migration dispatched, Edge Function redeployed, all live same day.*
 
