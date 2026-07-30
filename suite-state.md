@@ -60,8 +60,8 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-30)
 
-**eq-shell:**
-- #1133 fix(mobile): drop redundant top bar on adapted iframe modules
+**eq-field:**
+- #579 v3.5.386 — Leave toolbar: manager-only actions collapsed into one overflow menu
 
 ---
 
