@@ -61,8 +61,8 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-30)
 
 **eq-shell:**
+- #1139 perf(shell): preconnect to Field/Service/Cards origins ahead of iframe mount
 - #1138 feat(intake): tenant-editable trades vocab + persisted duplicate dismiss
-- #1136 fix(quotes): sync canonical job status for every pipeline stage
 
 **eq-solves-intake:**
 - #96 feat(intake): Contacts/Staff Dupes gets Archive; Tidy gaps show real context
