@@ -60,8 +60,11 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-30)
 
-**eq-shell:**
-- #1113 chore(intake): re-vendor eq-intake/eq-platform — customers/contacts rulebook migration
+**eq-cards:**
+- #188 fix(identity): stop hardcoding 'employee' on the personal wallet membership role
+
+**eq-service:**
+- #648 fix(maintenance): sort Assigned To dropdown A-Z instead of by role tier
 
 ---
 
