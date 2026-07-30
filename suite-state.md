@@ -60,8 +60,7 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-30)
 
-**eq-field:**
-- #579 v3.5.386 — Leave toolbar: manager-only actions collapsed into one overflow menu
+_No open PRs_
 
 ---
 
