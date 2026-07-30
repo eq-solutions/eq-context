@@ -61,7 +61,6 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-30)
 
 **eq-shell:**
-- #1116 feat(workers): compliance-roster-only workers — has_field_access flag
 - #1113 chore(intake): re-vendor eq-intake/eq-platform — customers/contacts rulebook migration
 
 ---
