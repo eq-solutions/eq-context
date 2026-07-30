@@ -17,7 +17,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ## eq-field: Tenant-branded transactional emails, SKS logo + polish, and a real cache-busting bug caught while smoke-testing (2026-07-30)
 *See `eq/pending-archive.md` for the full write-up — [PR #569](https://github.com/eq-solutions/eq-field/pull/569) and [PR #570](https://github.com/eq-solutions/eq-field/pull/570) merged, both edge functions redeployed, all live same day.*
 
-- [ ] **`eq` tenant's Leave feature is broken (401)** — the demo tenant can't read its own leave requests (anon lacks a DB grant on zaap); spotted while smoke-testing this unrelated work, spun off as its own background task, not yet resolved. _(added 2026-07-30)_
 - [ ] **`EQ_SECRET_SALT` rotation still outstanding** — the value was exposed in chat back in April; nothing has forced a rotation since. _(added 2026-07-30)_
 
 ---

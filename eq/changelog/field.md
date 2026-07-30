@@ -9,6 +9,9 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-30] `eq` tenant's Leave 401 investigated and closed as expected behaviour, not a bug (MERGED, #571)
+- Suspected missing anon DB grant on zaap's `leave_requests`, spotted while smoke-testing #570. Turned out to be correct: `eq` moved to Core-only auth in v3.5.306, so the standalone demo PIN mints no session token and every read of `public.people`/`timesheets`/`leave_requests` on the standalone URL falls back to the anon path — deliberately locked down (zero grants), same protection SKS already has. `CLAUDE.md`'s Tenants/Auth sections still described the old standalone-PIN flow as current; corrected instead of granting anon access, which would have reopened the hole the Core-only cutover closed. Doc-only, no code/grants/migrations changed.
+
 ## [2026-07-30] SKS logo added to every email, Approve/Reject buttons consolidated, unicode icons swapped for SVG (MERGED, #570, v3.5.381)
 - Every transactional email header now shows the tenant's logo when canonical has one set (`organisations.branding.sidebarLogoHtml` — the same wordmark the app's own sidebar already renders, no new asset). SKS gets its logo on leave/incident/apprentice-feedback/timesheet-reminder/digest emails; `eq` keeps a text-only header since it has none set.
 - Consolidated the Approve/Reject button markup `leave.js` and the digest edge function each hand-rolled separately into one shared, icon-labelled `button()` helper (`scripts/email-branding.js`, new `supabase/functions/_shared/email-ui.ts` for the two server-side templates). Status text (leave "Pending", incident severity) now reads as a coloured pill. Swapped the remaining ✓/✕/🎉 unicode glyphs for inline Lucide SVG icons, matching the repo's existing icon convention for touched Netlify/Edge functions.
