@@ -21,15 +21,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## eq-solves-intake: two more real bugs found live while clicking through Intake (2026-07-30)
-*Same session as the Tidy-tab fix above (now fully closed — see `eq/pending-archive.md`). Royce kept clicking through the freshly-deployed Intake screens and found two more genuine problems, not rough edges: the "Possible duplicate sites" merge tool's "Confirm merge" button did nothing visible on failure (error was captured but had no render branch to show in — a real server-side rejection looked identical to a UI that silently ignored the click), and the "Other duplicate flags" list only offered Dismiss, forcing a trip to the Staff/Contacts page and back just to archive an obvious duplicate.*
-
-- [x] **Merge-confirm silent failure fixed** — errors from a failed merge (wrong role, stale verdict, already merged, missing site) now render inline instead of vanishing. eq-solves-intake [PR #94](https://github.com/eq-solutions/eq-solves-intake/pull/94), merged.
-- [x] **One-click Archive added to duplicate flags** — staff/contact duplicates can be archived directly from the flag, same effect as archiving on their own page (record goes inactive). New database function written, applied live to the SKS database, and verified. eq-solves-intake [PR #95](https://github.com/eq-solutions/eq-solves-intake/pull/95), merged.
-- [ ] **Not yet visible on core.eq.solutions** — same copy-into-Shell step as the Tidy-tab fix; a follow-up task is running independently. _(added 2026-07-30)_
-
----
-
 ## eq-shell: archived staff still naming themselves in the AI dashboard summary — fixed, not yet merged (2026-07-30)
 *Royce archived Huon Henne but he kept showing up in the AI dashboard summary. Traced to `briefing-engine.ts`: the staff name lookup and the "licence expiring soon" signal both skipped the active-staff filter that a third function in the same file already had — so an archived worker's still-active licence kept generating a signal with their name attached.*
 

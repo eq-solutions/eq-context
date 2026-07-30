@@ -39,6 +39,15 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-solves-intake: two more real bugs found live while clicking through Intake (2026-07-30) (rotated 2026-07-30 — fully closed, live end-to-end)
+*Same session as the Tidy-tab fix above. Royce kept clicking through the freshly-deployed Intake screens and found two more genuine problems, not rough edges: the "Possible duplicate sites" merge tool's "Confirm merge" button did nothing visible on failure (error was captured but had no render branch to show in — a real server-side rejection looked identical to a UI that silently ignored the click), and the "Other duplicate flags" list only offered Dismiss, forcing a trip to the Staff/Contacts page and back just to archive an obvious duplicate.*
+
+- [x] **Merge-confirm silent failure fixed** — errors from a failed merge (wrong role, stale verdict, already merged, missing site) now render inline instead of vanishing. eq-solves-intake [PR #94](https://github.com/eq-solutions/eq-solves-intake/pull/94), merged.
+- [x] **One-click Archive added to duplicate flags** — staff/contact duplicates can be archived directly from the flag, same effect as archiving on their own page (record goes inactive). New database function written, applied live to the SKS database, and verified. eq-solves-intake [PR #95](https://github.com/eq-solutions/eq-solves-intake/pull/95), merged.
+- [x] **Re-vendored into eq-shell** — [PR #1130](https://github.com/eq-solutions/eq-shell/pull/1130), merged by Royce directly. Confirmed live via Netlify MCP: production deploy is one commit ahead of the merge, not behind — the fix is live on core.eq.solutions.
+
+---
+
 ## eq-shell: Admin Users "Deactivated" tab was dead UI — server-side filter was dropping every row it needed (2026-07-30)
 *The Users list page has a "Deactivated" tab, but the backend query that feeds the whole list only ever fetched active users — so the tab could never show anything, no matter how many deactivated users a tenant had. Fixed and applied live same day. Royce then clicked through, found the two deactivated SKS users it surfaced (Jack Cluff, Patricia Milmlow), and acted on both.*
 
