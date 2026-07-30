@@ -60,8 +60,8 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-30)
 
-**eq-shell:**
-- #1132 fix(audit): quote events now stamp app_source='ops', not the retired app
+**eq-field:**
+- #576 v3.5.383 — Fix: staff toggled off-roster became unresolvable to a name
 
 ---
 
