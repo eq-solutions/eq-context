@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-07-28
+last_updated: 2026-07-30
 scope: Operational support to-do list — Webb, infra, substrate
 read_priority: standard
 status: live
@@ -379,4 +379,10 @@ Changelog at `archive/changelog-ahd.md`.
 
 ### Deferred (added 2026-07-27)
 - [ ] **Royce's call: does the possible SEC-9 second exposure push "rotate whenever convenient" to "rotate soon"?** Not decided this session.
+
+---
+
+## Security-audit CI gate: dead project ref fixed, error isolation added (2026-07-30)
+
+- [ ] **Royce: supply the eq-receipts Supabase anon/publishable key** (Project Settings → API) so `rls_probe.py` can add coverage for it — blocked this session (MCP key-fetch denied by the safety classifier, no other read path available). See SEC-17 in `ops/security-register.md`. _(added 2026-07-30)_
 - [ ] SEC-9/10/12 actual rotation/re-store — Royce to run himself, runbook/steps ready.
