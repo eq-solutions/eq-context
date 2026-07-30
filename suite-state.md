@@ -60,8 +60,7 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-30)
 
-**eq-shell:**
-- #1122 feat(auth): admin PIN-visibility UI — status, not the PIN itself
+_No open PRs_
 
 ---
 
