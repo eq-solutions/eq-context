@@ -60,7 +60,8 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-30)
 
-_No open PRs_
+**eq-field:**
+- #572 v3.5.382 — Screenshot review pass: My Schedule / Job Numbers / Pipeline / CC List
 
 ---
 
