@@ -14,6 +14,19 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: re-vendored the Intake engine — merge errors now show, duplicate flags can be archived (2026-07-31)
+*eq-solves-intake shipped two fixes on `main` (PRs #94/#95); eq-shell keeps its own copy of that engine, so it doesn't pick anything up until someone copies the changed files across and re-ships — same routine as the last two times this month.*
+
+- [x] **Site-merge failures now show an on-screen error** instead of failing silently — previously a failed merge in the Duplicate Sites panel gave no feedback at all.
+- [x] **New Archive button on the Remediation Queue's "other duplicate flags" list** — lets staff retire a confirmed duplicate person/contact record directly from the queue instead of needing a database fix.
+- [x] Full build/typecheck/style/permission/test gate all green before shipping; eq-shell [PR #1130](https://github.com/eq-solutions/eq-shell/pull/1130), merged (squash `ea42a65`) per Royce's go-ahead once CI passed.
+- [x] Confirmed live: core.eq.solutions' production deploy is built from a commit that sits directly on top of the merge, and the site loads normally.
+
+**Deferred:**
+- [ ] **Royce to click through live** — trigger a failed site merge in the Duplicate Sites panel and confirm the error now shows; open the Remediation Queue, find a duplicate flag, click Archive, confirm the record goes inactive and drops off the list. Claude can't do this step itself — it requires signing in, which falls under the hard rule against entering credentials on the user's behalf. _(added 2026-07-31)_
+
+---
+
 ## EQ Field screenshot review — cross-tenant fixes (2026-07-30/31)
 *Full build detail lives in `sks/pending.md` (the review + Q&A pass was SKS-tenant-driven, and the two live-data fixes are SKS-specific) — this entry is the EQ-side pointer, since two of the five shipped PRs affect the `eq` tenant too: Job Numbers' BETA→Manage nav promotion was SKS-only since v3.5.95, now ungated for all tenants (v3.5.382); Pipeline nav is now hidden outright on mobile regardless of tenant (v3.5.382).*
 - [ ] Nobody's confirmed the `eq` tenant's Job Numbers nav placement or mobile Pipeline hiding on a live click-through — same "not yet clicked through production" gap noted in the SKS entry. _(added 2026-07-31)_
