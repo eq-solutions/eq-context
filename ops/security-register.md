@@ -98,7 +98,7 @@ fails on **new** exposure while keeping the open ones visible.
 
 ## Rotate whenever convenient (not weekend-critical, per Royce's 2026-07-20 call)
 
-- **SEC-9 — rotate the jvkn (eq-canonical) service_role key first or alongside SEC-3.** Confirmed exposure (pasted into a chat transcript 2026-07-12). No runbook exists yet — write one before rotating (mirror the SEC-3/F1 runbook's staged pattern: new key → propagate to consumers → disable legacy).
+- **SEC-9 — rotate the jvkn (eq-canonical) service_role key first or alongside SEC-3.** Confirmed exposure (pasted into a chat transcript 2026-07-12). **Runbook exists and is ready-to-run** (`sec9-jvkn-key-rotation-runbook-2026-07-27.md`, committed 2026-07-27, mirrors the SEC-3/F1 staged pattern) — 4 live Netlify consumers mapped (eq-shell primary, eq-field, eq-cards, eq-solves-service). Only blocked on Royce picking a rotation window and running Step 1 himself (Supabase dashboard — key rotation isn't a Claude Code action).
 - **SEC-3 — F1 key rotation.** Per `f1-ehowg-key-rotation-runbook-2026-06-03.md`. Downgraded 2026-07-20 (no confirmed leak, hygiene priority) — do this at a calm moment, not a rushed weekend window. Staged: new key → propagate to Quotes Fly secret + re-encrypt `tenant_routing` → disable legacy → re-test legacy GET = 401. Do NOT disable legacy before both consumers hold the new key.
 
 ## Post-launch hardening (after the freeze)
