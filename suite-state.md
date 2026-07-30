@@ -60,7 +60,8 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-30)
 
-_No open PRs_
+**eq-shell:**
+- #1134 fix(audit): workers-canonical-sync attributes real actors
 
 ---
 
