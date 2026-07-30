@@ -14,6 +14,20 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: Compliance-roster-only workers — Field access can now be switched off per worker (2026-07-30)
+*Sprint-planning Q&A on top of the ONE LOGIN work surfaced a gap: some labour-hire/subcontractor workers exist purely so their licences and compliance paperwork can be tracked — they have no actual Field duties. Until now every worker was routed into Field identically. Royce confirmed the fix: a per-worker on/off switch, defaulting on, so nothing changes for existing workers unless an admin explicitly flips it for a new invite.*
+
+- [x] **New "Field access" checkbox on the worker invite form**, shown only for labour-hire/subcontractor roles, checked by default. Unchecking it means that worker sees only their compliance card — no Field tile, no Field tab, no Field sidebar item, and a direct link to Field is blocked.
+- [x] Existing workers are completely unaffected — the switch defaults to "on" for everyone already in the system.
+- [x] Database change applied live and verified before the code went out.
+- [x] eq-shell [PR #1116](https://github.com/eq-solutions/eq-shell/pull/1116), merged to `main` and deployed.
+
+**Deferred:**
+- [ ] **Royce to click through live**: invite a labour-hire worker with the box unchecked, confirm they land on a Field-free home screen and can't reach Field directly; then invite/sign in a normal worker (box left checked) and confirm nothing changed for them. _(added 2026-07-30)_
+- [ ] No edit screen yet for switching an *existing* worker's Field access on/off after the fact — today it's invite-time only. _(added 2026-07-30)_
+
+---
+
 ## eq-shell: EQ Ops now leads with ex-GST everywhere, Coupa PO-match display fixed (2026-07-30)
 *Royce noted EQ Ops always showed the inc-GST figure as primary, but every purchase order and day-to-day conversation is in ex-GST terms — asked for a review of where totals are wired, then to make ex-GST the prominent number.*
 
