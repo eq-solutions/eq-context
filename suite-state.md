@@ -60,7 +60,11 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-30)
 
+**eq-field:**
+- #570 v3.5.381 — SKS logo + email polish
+
 **eq-shell:**
+- #1125 feat(auth): email-capture nudge — Email+PIN fallback for phone-only workers
 - #1124 fix(admin): eq_list_tenant_users no longer drops deactivated users
 
 ---
