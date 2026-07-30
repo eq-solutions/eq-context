@@ -9,6 +9,11 @@ status: live
 
 # SKS Pending
 
+## PIN Management modal shows "No PIN" for everyone except this-session edits (2026-07-30)
+*Royce flagged: `renderPinList()` in `scripts/people.js` checks `p.pin` on `STATE.people`, but the bulk load (`loadFromSupabase()`) never fetches `pin` — dropped from the select list in v3.10.106 as a deliberate fix so PINs aren't shipped to every session. Session gate ran (brief drafted, git/worktree state checked — branch is clean, 12 commits behind main but nothing behind touches `people.js`), brief was presented for confirmation, session closed before Royce confirmed it. No code changed.*
+- [ ] **Build the fix**: `openPinManagement()` does a narrow on-demand `people?select=id,pin&group=in.(Apprentice,Labour Hire)` fetch (same pattern as the staff-timesheet PIN gate in `auth.js`), caches it, `renderPinList()` reads from that cache instead of `p.pin`. Keeps raw PINs out of the general bulk load. Branch fresh off `origin/main`, not the stale `claude/loadfromsupabase-resilient-sync` branch. _(added 2026-07-30)_
+- [ ] **Separate, lower-priority**: the DB's `has_pin` boolean column is stale/unmaintained (verified live 2026-07-30: 32 of 35 people with a set PIN had `has_pin=false`) — would need an INSERT/UPDATE trigger to sync before it's trustworthy. Not needed for the fix above (on-demand fetch sidesteps it), but worth fixing separately if `has_pin` is ever relied on elsewhere. _(added 2026-07-30)_
+
 ## Labour Hire archive + rehire rating
 - [ ] Mirror the roster-grid archive + rating feature (SKS v3.10.104/.105) in EQ Field — flagged as a follow-up task; Royce started it in a separate session, result not yet known. _(added 2026-07-28)_
 
