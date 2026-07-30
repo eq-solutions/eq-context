@@ -1363,3 +1363,11 @@ contain the same values and were pushed before push-protection caught up.
 - [x] **A second spawned session looked specifically at Field Run-Sheet**, confirmed the identical gap, asked Royce directly whether it should grow full sections, got no reply, and made no changes rather than guess — superseded by the documentation resolution above. Reopening that question (building real Cover/Contents/Executive-Summary sections into Field Run-Sheet) remains available if Royce ever wants it; nothing is currently blocked on it.
 
 ---
+
+## eq-cards: second copy of the false "__personal__ tenant is retired" claim found and corrected (2026-07-30)
+*Follow-up from the same day's IDENTITY-MODEL.md correction — Royce asked to check on two spawned background tasks and "is this everything?"; surfaced that the identical false claim also lived, independently, inside eq-cards migration `0076`'s own policy comment.*
+
+- [x] **Corrected `0076_recycled_phone_review_guard.sql`'s comment** — it asserted "the `__personal__` tenant is retired" as the justification for why its fallback path leaves a user without a `shell_control.users` row. Comment-only fix; also documented that `eq_cards_auto_provision()` (confirmed live in `otp_screen.dart` — runs automatically right after OTP verification, not gated behind a manual button) still creates that row moments later per migration `0055`, so this guard only withholds the cross-tenant graft, not personal-tenant access. Commit `60b21c3`, pushed direct to `main` (comment-only, no deploy gate).
+- [x] **Confirmed, not built**: the other flagged item from the same check-in (`eq_cards_auto_provision()` hardcoding the personal membership's role to `'employee'`) had already been fixed and merged independently — eq-cards [PR #188](https://github.com/eq-solutions/eq-cards/pull/188) (migration `0111`), applied live to jvkn before this session got to it.
+
+---
