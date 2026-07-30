@@ -60,8 +60,7 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-30)
 
-**eq-shell:**
-- #1144 feat(mobile): My Card row in the account sheet for non-field-first users
+_No open PRs_
 
 ---
 
