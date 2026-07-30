@@ -63,9 +63,6 @@ _If this file is >48h old, the cron is broken._
 **eq-field:**
 - #572 v3.5.382 — Screenshot review pass: My Schedule / Job Numbers / Pipeline / CC List
 
-**eq-shell:**
-- #1131 fix(signals): exclude archived staff from Compliance & safety dashboard card
-
 ---
 
 ## System Health (as of 2026-07-30)
