@@ -16,9 +16,7 @@ for operational support: tax, entities, infrastructure, substrate.
 
 ## SEC-18 — plaintext service-role/JWT secrets on eq-service/field/cards (2026-07-30)
 
-*Sweep requested as the SEC-10 follow-up ("check other Netlify projects for the same plaintext pattern"). Two independent sessions ran it in parallel and both found the same live exposure, worse than expected — a control-plane database master key and a live-tenant database master key, both fully unmasked in production. Full detail + exact variable list in `ops/security-register.md` SEC-18.*
-
-- [ ] **Royce: re-store each flagged secret as masked (same value, not a rotation)** on eq-service, eq-field, and eq-cards' Netlify projects — per var: note the current value, delete, recreate identical, tick "contains sensitive values". Credential handling — cannot be done by Claude Code regardless of permission (same block as SEC-12).
+- [ ] **Royce: re-store each flagged secret as masked (same value, not a rotation)** on eq-service, eq-field, and eq-cards' Netlify projects — per var: note the current value, delete, recreate identical, tick "contains sensitive values". Credential handling — cannot be done by Claude Code regardless of permission (same block as SEC-12). Full detail + exact variable list in `ops/security-register.md` SEC-18.
 - [ ] **Royce's call: does `CANONICAL_SERVICE_ROLE_KEY` (ehow) or `SUPABASE_SERVICE_ROLE_KEY` (jvkn) warrant an actual rotation**, not just re-masking — unlike SEC-12's set, these two grant full database bypass access if they ever did leak beyond Netlify's own storage.
 
 ---
