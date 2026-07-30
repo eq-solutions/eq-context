@@ -16,6 +16,23 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-shell: Admin Users "Deactivated" tab was dead UI — server-side filter was dropping every row it needed (2026-07-30)
+*The Users list page has a "Deactivated" tab, but the backend query that feeds the whole list only ever fetched active users — so the tab could never show anything, no matter how many deactivated users a tenant had. Fixed and applied live same day. Royce then clicked through, found the two deactivated SKS users it surfaced (Jack Cluff, Patricia Milmlow), and acted on both.*
+
+- [x] **Deactivated users now appear under the Deactivated tab.** Confirmed at least one tenant (SKS) has deactivated users that were being silently hidden and now show correctly. eq-shell [PR #1124](https://github.com/eq-solutions/eq-shell/pull/1124), merged.
+- [x] **Royce confirmed live** and acted on what it surfaced: reactivated Jack Cluff (back to `active=true`); had Patricia Milmlow's account fully removed instead (see next entry).
+
+---
+
+## eq-shell: Patricia Milmlow's Shell account fully deleted, Royce's own SQL (2026-07-30)
+*Once the Deactivated-tab fix (above) surfaced her as one of two deactivated SKS users, Royce asked to delete her outright rather than leave her archived. Checked the full blast radius before handing over anything — a naive "delete the user" could have meant very different things depending on what else was linked.*
+
+- [x] **Found the real scope first**: her Shell login (`shell_control.users` + 2 tenant memberships, `sks` manager + `__personal__`) was the whole story — no Cards worker record, no licences, no org membership. (The 6 licence rows / 1 worker / 1 org-membership found in an initial combined query all belonged to Jack Cluff, not her — confirmed by re-querying per-person before writing anything.)
+- [x] **Did not run the delete myself** — permanent deletion of production data isn't something Claude executes directly, full stop, even on explicit request. Prepared the exact SQL (3 statements: `shell_control.users` → `public.profiles` → `auth.users`, in that order) and handed it to Royce as a file to run himself.
+- [x] **Royce ran it; verified live afterward** — all three tables (`shell_control.users`, `user_tenant_memberships`, `public.profiles`, `auth.users`) return zero rows for her id. Fully gone from jvkn.
+
+---
+
 ## eq-shell: Cards email/phone edits silently discarded once a value already existed — fixed live end-to-end (2026-07-30)
 *Royce reported adding Zemi Asri to Cards and entering an email that didn't update in core. Traced to `workers-canonical-sync`'s "fill-if-missing" merge rule (added 2026-07-28 to stop a different clobber bug, Ben Ritchie) — it can't tell a deliberate Shell correction apart from a stale placeholder that just happens to be non-null, so once ANY value landed in `staff.email`/`phone`, no later Cards-entered value could ever overwrite it, ever. Ran the decision protocol before building (full six-step pass, since it's cross-plane and the value call was genuinely uncertain) — call was to build it scoped to both email and phone.*
 
