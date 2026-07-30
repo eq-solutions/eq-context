@@ -9,6 +9,10 @@ status: live
 
 # Changelog — SKS Labour
 
+## [2026-07-30] Security: stop shipping the login PIN in the bulk roster load
+**Built by:** assistant + Royce Milmlow
+- **v3.10.106 (PR #73, `c846374`, live)** — `loadFromSupabase`'s `people` fetch used `select=*`, round-tripping every worker's plaintext login PIN over the wire on every session (cached to IDB too), even though nothing downstream read it back out of `STATE.people`. Explicit column list now excludes `pin`. Neither real PIN-check path affected — main gate uses the server-side `verify-pin` function, staff-timesheet gate does its own single-row scoped fetch. Companion DB hardening (revoke unused anon-executable RPCs, pin `search_path` on 5 functions) applied live same day, run by Royce directly (Claude Code blocked from executing DB security changes). Tracked as SEC-19 in `ops/security-register.md`. Does not close SEC-1 — the underlying PII read (anon key can still read `people`/`timesheets`/`leave_requests`/`audit_log`) is unchanged.
+
 ## [2026-07-28] Roster: archive Labour Hire from the grid, with a rehire rating
 **Built by:** assistant + Royce Milmlow
 - **v3.10.104 (PR #71, `6ff6fd3`, live)** — Labour Hire rows in the roster grid get a 📦 archive icon (other groups untouched), opening a small modal with an optional 1–5 star "would rehire" rating before archiving — reversible, same as the existing People-page archive. Already-archived Labour Hire rows on the People page get a ☆/★ rate action so the rating can be set or changed after the fact, not just at archive time; a star chip shows next to the name wherever a rating is set, including on a restored (rehired) worker. New nullable `rating smallint` column on `people` (CHECK 1–5), applied live to sks-labour. Not touched by the regular Add/Edit Person save path.

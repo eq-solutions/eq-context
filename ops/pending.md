@@ -14,6 +14,18 @@ for operational support: tax, entities, infrastructure, substrate.
 
 ---
 
+## SEC-19 — sks-labour PIN credential leak: CLOSED. SEC-1 residual risk: still open, next step offered (2026-07-30)
+
+Royce asked for "simple security upgrades that won't affect people using sks nsw labour," then set the real constraint: no login/UX changes. Investigation (live-verified, not doc-assumed) found the anon key could read `people.pin` directly — worse than SEC-1's PII framing, a live login-credential leak, not just data. `loadFromSupabase`'s bulk roster fetch shipped every worker's plaintext PIN on every session. Full writeup: `ops/security-register.md` SEC-19.
+
+- [x] **Code fix shipped and live**: `people?select=*` → explicit column list excluding `pin`. sks-nsw-labour PR [#73](https://github.com/eq-solutions/sks-nsw-labour/pull/73) (v3.10.106, `c846374`), merged by Royce, live-verified via Netlify (`production`, deploy `ready`). Neither real login path touched — main gate uses the server-side `verify-pin` function, staff-timesheet gate does its own scoped fetch.
+- [x] **DB hardening closed, live-verified**: revoked anon/authenticated EXECUTE on 3 unused RPCs (`verify_staff_pin`, `trigger_shift_events`, `bump_rate_limit` — confirmed unused by the app, Netlify functions, and all 7 `pg_cron` jobs before touching), pinned `search_path` on those 3 plus `eq_field_shift_payload`/`incidents_set_updated_at`. Royce ran the SQL himself — blocked from Claude Code by the "modifying security settings" classifier, same as SEC-12/SEC-18.
+- [ ] **SEC-1 itself is unchanged** — anon key still reads all of `people`/`timesheets`/`leave_requests`/`audit_log`. Not fixable under the "no login changes" constraint without either real per-user auth (ruled out this session) or decommissioning the app (not happening — still the live system during the Field parallel-run). Real closure path is unchanged from the existing SEC-1 entry below: the proving-run clock, currently at 0 of the required 3-4 clean weeks.
+- [ ] **Offered, not yet confirmed**: pull together exactly what's blocking the Field parallel-run proving run from actually starting (it's been re-started before and stalled — see `SKS-FIELD-PARALLEL-RUN-LOG.md`). This is the actual lever left on SEC-1; no further "safe" code hardening exists under current constraints.
+- Incidental, unrelated finding spun off separately (not built): PIN-management modal shows stale "No PIN" status for staff whose PIN was set in a prior session — tracked in `sks/pending.md`.
+
+---
+
 ## SEC-18 — plaintext service-role/JWT secrets on eq-service/field/cards (2026-07-30)
 
 - [ ] **Royce: re-store each flagged secret as masked (same value, not a rotation)** on eq-service, eq-field, and eq-cards' Netlify projects — per var: note the current value, delete, recreate identical, tick "contains sensitive values". Credential handling — cannot be done by Claude Code regardless of permission (same block as SEC-12). Full detail + exact variable list in `ops/security-register.md` SEC-18.
