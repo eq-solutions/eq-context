@@ -9,6 +9,9 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-30] Real actor id threaded into canonical writes for audit attribution (MERGED, #574)
+- Part of the cross-repo audit-attribution gap eq-shell's 2026-07-14 audit-log program flagged: Field's writes to canonical `app_data.staff` were logging `source='system'` in eq-shell's audit trail, no actor, even for real live sessions. Root cause: both live tenants (`eq`, `sks`) are Core-only, so every real session enters via `verify-shell-token`, which decodes the Supabase JWT eq-shell minted for the iframe handoff — that JWT's `claims.sub` (a real `shell_control.users.id`) was already being read server-side and returned to the client at login, but never signed into Field's own 7-day session token, so the later data-plane JWT mint had no way to recover it and hardcoded its `sub` to the tenant id instead. Threaded `shell_user_id` through the session token, the data-JWT mint, and out as an `x-eq-actor` header on the write in `people.js` (same header/trigger eq-shell's own writes use). Netlify auto-deployed to field.eq.solutions on merge.
+
 ## [2026-07-30] Second stale Core-only comment fixed (MERGED, #573)
 - The comment above `_isCoreOnly()` in `scripts/auth.js` (~line 255-266) still said EQ sandbox "stays PIN-gated (false)" — stale since v3.5.306 (PR #461) flipped `eq` to Core-only too. A correct version already existed ~40 lines down (v3.5.333); brought the older block in line with it. Comment-only, no logic change.
 
