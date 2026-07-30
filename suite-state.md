@@ -60,7 +60,11 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-30)
 
-_No open PRs_
+**eq-field:**
+- #569 v3.5.380 — Tenant-branded transactional emails
+
+**eq-shell:**
+- #1119 feat(auth): SIM-swap PIN invalidation — admin phone-number change
 
 ---
 
