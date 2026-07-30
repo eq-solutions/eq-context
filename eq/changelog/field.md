@@ -9,6 +9,9 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-30] Second stale Core-only comment fixed (MERGED, #573)
+- The comment above `_isCoreOnly()` in `scripts/auth.js` (~line 255-266) still said EQ sandbox "stays PIN-gated (false)" — stale since v3.5.306 (PR #461) flipped `eq` to Core-only too. A correct version already existed ~40 lines down (v3.5.333); brought the older block in line with it. Comment-only, no logic change.
+
 ## [2026-07-30] `eq` tenant's Leave 401 investigated and closed as expected behaviour, not a bug (MERGED, #571)
 - Suspected missing anon DB grant on zaap's `leave_requests`, spotted while smoke-testing #570. Turned out to be correct: `eq` moved to Core-only auth in v3.5.306, so the standalone demo PIN mints no session token and every read of `public.people`/`timesheets`/`leave_requests` on the standalone URL falls back to the anon path — deliberately locked down (zero grants), same protection SKS already has. `CLAUDE.md`'s Tenants/Auth sections still described the old standalone-PIN flow as current; corrected instead of granting anon access, which would have reopened the hole the Core-only cutover closed. Doc-only, no code/grants/migrations changed.
 
