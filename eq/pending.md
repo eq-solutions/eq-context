@@ -14,6 +14,23 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-intake + eq-shell: 4-part fix from Royce's live screenshot review of the Intake console (2026-07-31)
+*Royce tested the Review Queue / Tidy / Dupes screens live on core.eq.solutions and sent screenshots flagging four things: nowhere to see/edit the trades list, a site merge that failed with a permission error, the Data Gaps table showing bare unhelpful labels, and the Contacts Dupes tab having no way to act on a flagged duplicate. Investigated all four against the real code and the live database before building anything.*
+
+- [x] **The merge failure was a real bug, not you** — live-checked the database and confirmed you genuinely do hold manager access on this tenant. The failing check itself was outdated: it was looking up your access a different way than every other permission check in the system uses, so it never found you even though you're really a manager. Fixed to use the same check as everywhere else. eq-shell [PR #1137](https://github.com/eq-solutions/eq-shell/pull/1137), merged, dispatched to both SKS and EQ, live-verified.
+- [x] **Data gaps table now shows enough to tell records apart** — a bare name like "Accounts" or "Rafael" now shows the person's email, phone, or company underneath it, so two people with the same first name (or a generic label like "Reception") aren't indistinguishable anymore.
+- [x] **Contacts/Staff Dupes tab can now do something** — previously read-only; added an Archive button so a confirmed duplicate person/contact can be retired straight from that screen, matching what the Remediation Queue already had.
+- [x] **New Trades settings screen** — a wrench icon next to the existing gear icon on Overview lets you add your own trades on top of EQ's default list (electrical, plumbing, etc.). Defaults can't be removed, but anything you add can be.
+- [x] **Contacts/Staff Dupes tab can now be told "not a duplicate"** — previously the same correctly-not-duplicate pair re-appeared on every visit forever; dismissing it now actually sticks.
+- [x] eq-solves-intake [PR #96](https://github.com/eq-solutions/eq-solves-intake/pull/96) and [PR #97](https://github.com/eq-solutions/eq-solves-intake/pull/97), eq-shell [PR #1138](https://github.com/eq-solutions/eq-shell/pull/1138) (new database tables for trades + dismiss), [PR #1140](https://github.com/eq-solutions/eq-shell/pull/1140) and [PR #1142](https://github.com/eq-solutions/eq-shell/pull/1142) (re-vendored into the live app) — all merged, all live on core.eq.solutions. New database tables dispatched to both SKS and EQ and live-verified before the screens that use them went live.
+- [x] Found and fixed a related bug while building the "not a duplicate" feature: two people sharing the same email but typed with different capitalization could end up treated as two separate duplicate groups instead of one — fixed at the source, so it also makes the Sites duplicate-merge screen's grouping more reliable, not just this new feature.
+
+**Deferred:**
+- [ ] **Royce to click through live** — trigger a failed-then-fixed site merge and confirm it now works; open the Contacts/Staff Dupes tab, archive one flagged duplicate and dismiss another as "not a duplicate," confirm both stick; add a trade in the new Trades screen and confirm it shows up in the Review Queue's trade picker. Needs sign-in, which is off-limits for Claude to do on your behalf. _(added 2026-07-31)_
+- [ ] **Two separate sessions independently claimed the same migration number (0228)** tonight — this one and the quote-target-period entry above. Not a live problem (both applied cleanly, nothing broke), but worth knowing the "check origin/main before claiming a number" step isn't fully collision-proof under concurrent sessions. _(added 2026-07-31)_
+
+---
+
 ## eq-shell: EQ Ops quote status → job status sync fixed for all 5 stages, plus a new "Target period" badge for future-dated quotes (2026-07-31)
 *Royce flagged (screenshot, quote SKS-17503) that changing a quote's status on the right-hand dropdown wasn't reliably moving the underlying job into the matching status. Root cause: the save code only synced 2 of the 5 pipeline stages (Job created, Invoiced) to the job record other apps read — In Progress and Complete changes never reached it. Separately, Royce showed a quote submitted as a 2027 budget (SKS-17480) and asked about flagging future-dated quotes without adding friction to archiving; agreed on a passive, manually-set month/year rather than any auto-detection.*
 
