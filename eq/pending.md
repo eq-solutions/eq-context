@@ -14,6 +14,19 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: EQ Ops quote status → job status sync fixed for all 5 stages, plus a new "Target period" badge for future-dated quotes (2026-07-31)
+*Royce flagged (screenshot, quote SKS-17503) that changing a quote's status on the right-hand dropdown wasn't reliably moving the underlying job into the matching status. Root cause: the save code only synced 2 of the 5 pipeline stages (Job created, Invoiced) to the job record other apps read — In Progress and Complete changes never reached it. Separately, Royce showed a quote submitted as a 2027 budget (SKS-17480) and asked about flagging future-dated quotes without adding friction to archiving; agreed on a passive, manually-set month/year rather than any auto-detection.*
+
+- [x] All 5 pipeline stages now push the correct job status through to the job record every app reads, not just 2 of them.
+- [x] New optional "Target period" field on a quote (month + year) — shows a quiet "Targeting Jan 2027"-style badge on the quote detail panel and its board card. Nothing required, nothing blocks archiving.
+- [x] Database change to support the new field applied live to both EQ's and SKS's systems. eq-shell [PR #1136](https://github.com/eq-solutions/eq-shell/pull/1136), merged, live via Netlify auto-deploy.
+
+**Deferred:**
+- [ ] **Royce to click through live**: change a quote's status through each of the 5 stages and confirm the job record follows each time; set a Target period on a quote and confirm the badge shows correctly in both the detail panel and the board view. _(added 2026-07-31)_
+- [ ] **Long "Open" list / no drag-and-drop from the bottom** — Royce flagged the Open column is getting hard to manage as it grows. Discussed as ideas only (lean on the existing board view, add sort/filter to the flat list) — not approved for build yet. _(added 2026-07-31)_
+
+---
+
 ## eq-shell: `workers-canonical-sync` audit-attribution fix — merged, deploy + live checks still open (2026-07-31)
 *eq-shell [PR #1134](https://github.com/eq-solutions/eq-shell/pull/1134) merged 2026-07-30 20:14 UTC (by its own session, shortly after this session flagged it as premature to auto-merge — CI was in progress at the time of that check, finished green before merge).*
 - [ ] **Edge function redeploy** — the PR body says it needs `deploy_edge_function` to jvkn after merge; not git-triggered, so the fix isn't live in the running function until that manual step happens. Not confirmed done. _(added 2026-07-31)_
