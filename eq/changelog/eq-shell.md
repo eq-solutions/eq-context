@@ -1,13 +1,17 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-07-30
+last_updated: 2026-07-31
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # eq-shell changelog
+
+## 2026-07-31 (PR #1133 MERGED, no migration)
+- **PR #1133 (MERGED squash `4266310a`) — dropped the redundant mobile top bar on Field/Service.** Royce, reviewing a screenshot of Field's mobile view: "do you think we can do without the top EQ FIELD bar here? All that 'Apps' button does is take you home." Confirmed the "Apps ←" button's only behavior was linking home — on adapted modules (Field/Service, + Cards for field-first workers) Shell's persistent bottom tab bar already renders alongside it and includes a Home tab, so the top bar was pure redundant chrome. `MobileTabBar.tsx` now only renders the top bar (+ its account/admin sheets) for non-adapted modules (Ops/Comms, which have no bottom tab bar and rely on it as their only mobile nav); `HubLayout.tsx`/`App.css` drop the 48px top padding reserved for the bar on adapted modules to match. Account/Settings/2FA/Sign-out remain reachable via the Home tab. Checked for regression risk against `eq-field`'s own `.shell-mode` CSS (which reserves space for Shell's bottom bar) — confirmed no coupling to Shell's top bar, so nothing broke on the Field side.
+- **Verified, no code change needed: mobile Ops tab is already role-gated.** Second item from the same screenshot review ("only managers or people with permission to be able to see Ops") — traced to `MobileTabBar.tsx`'s `useCan('ops.view_rates')` check, already shipped live via PR #1109 (2026-07-30, same day). Confirmed on `origin/main` before starting other work.
 
 ## 2026-07-30 → 2026-07-31 (latest — PR #1132 MERGED, migration 0227 dispatched)
 - **PR #1132 (MERGED squash `8c9dd4ee`) — quote events now stamp `app_source='ops'`, not the retired app.** Follow-up to `#1129`, which only corrected the Suite Activity tab's *display* label from "EQ Quotes" to "EQ Ops". `eq_update_quote_status` had written `app_source='quotes'` to `canonical_events` since migration `0082` — a leftover from when quoting was a separate Flask app (EQ Quotes, retired 2026-07-04). New migration `0227` changes it to write `'ops'` for `quote.sent`/`accepted`/`declined` going forward; historical rows keep `'quotes'`, no backfill. Current live definition (`0214`) confirmed matching on both ehow and zaap before writing the migration, and the DDL was replay-tested in a rolled-back transaction against ehow first. Paired frontend fix: `tenant-events.ts`'s `APP_LABELS` maps both `quotes` and `ops` to "EQ Ops" and the App-filter's `source=ops` query matches both values (`.in('app_source', ['ops','quotes'])`); `AdminAuditPage.tsx`'s App dropdown option value changed from `"quotes"` to `"ops"` to match — otherwise the filter would have silently stopped finding new quote events the moment the migration landed.
