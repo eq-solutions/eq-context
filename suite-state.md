@@ -63,6 +63,9 @@ _If this file is >48h old, the cron is broken._
 **eq-field:**
 - #572 v3.5.382 — Screenshot review pass: My Schedule / Job Numbers / Pipeline / CC List
 
+**eq-shell:**
+- #1132 fix(audit): quote events now stamp app_source='ops', not the retired app
+
 ---
 
 ## System Health (as of 2026-07-30)
