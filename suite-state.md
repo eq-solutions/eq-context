@@ -61,6 +61,8 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-30)
 
 **eq-shell:**
+- #1142 chore(intake): re-vendor eq-intake/eq-platform — trades settings + duplicate dismiss
+- #1141 perf(shell): fetchpriority=low on prewarmed iframes + pause prewarm when tab hidden
 - #1139 perf(shell): preconnect to Field/Service/Cards origins ahead of iframe mount
 
 ---
