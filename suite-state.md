@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-30)
 
-**eq-field:**
-- #575 security(auth): server-side Core-only gate + fix tenant-slug loss on session restore
-
 **eq-shell:**
 - #1132 fix(audit): quote events now stamp app_source='ops', not the retired app
 
