@@ -396,3 +396,36 @@ Changelog at `archive/changelog-ahd.md`.
 
 - [ ] **Royce: supply the eq-receipts Supabase anon/publishable key** (Project Settings → API) so `rls_probe.py` can add coverage for it — blocked this session (MCP key-fetch denied by the safety classifier, no other read path available). See SEC-17 in `ops/security-register.md`. _(added 2026-07-30)_
 - [ ] SEC-9/10/12 actual rotation/re-store — Royce to run himself, runbook/steps ready.
+
+---
+
+## guard.js selftest fixed, `~/.claude` git-init'd (2026-07-30)
+
+`selftest.js` reported 10/11 — root cause wasn't rule 2 (scan-secrets) or the
+`decide()` blockers filter, both already correct. Rule 8 (`brief-gate`, added
+2026-07-21) forces a deny on any non-exempt file write with no session brief
+flag, regardless of `EQ_GUARD_MODE`; it piggybacked on the test harness's
+`write()` cases (none of which are brief-gate-exempt, and the harness never
+set `EQ_SKIP_BRIEF`), flipping the one case expecting `allow`. Checked
+`guard.log` for real-session false positives — none found; brief-gate has
+only ever fired as designed. Fix: default every `selftest.js` invocation to
+`EQ_SKIP_BRIEF=1` so each case isolates the rule it targets. `guard.js`
+unchanged. 11/11 now passes.
+
+Separately, `C:\Users\EQ\.claude` had no git history at all. Initialised a
+repo there (was not a repo, no parent `.git` either) with a `.gitignore`
+excluding `.credentials.json`, session/cache/telemetry/chrome/shell-snapshot
+data, `hooks/guard.log` (churns constantly), and the `plugins/marketplaces/`
+third-party clone — then committed the selftest fix and, on request, the
+rest of the directory's config (CLAUDE.md, hooks, settings.json, commands,
+plans, plugins metadata, reference docs) in a second commit. Not a repo
+change to `eq-context`, so no PR here either — same pattern as the
+2026-07-21 brief-gate fix above.
+
+**Needs Royce:**
+- [ ] **Where should `~/.claude` push to?** Asked mid-session; not yet
+  answered. Contains sensitive content under `plans/` (SKS live-Supabase
+  `nspbmirochztcjijmcrx` lockdown/remediation SQL) that must never land in a
+  public repo — needs an explicit target (new private repo + account/org, or
+  an existing empty repo) before any `git remote add` + push happens.
+  _(added 2026-07-30)_
