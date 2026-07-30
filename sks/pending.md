@@ -1,13 +1,20 @@
 ---
 title: SKS — Pending
 owner: Royce Milmlow
-last_updated: 2026-07-30
+last_updated: 2026-07-31
 scope: SKS Technologies operational TODO list
 read_priority: critical
 status: live
 ---
 
 # SKS Pending
+
+## EQ Field screenshot review — 5 fixes shipped (2026-07-30/31)
+*Royce shared a 12-screen PDF (`EQ Field & Ops – Screenshot Review.pdf`) with inline comments on My Schedule, Job Numbers, Pipeline, the Leave CC list, and Roster. Investigated each, ran a detailed Q&A pass on the open design questions, then shipped 5 PRs: My Schedule/Job Numbers/Pipeline/CC-visibility fixes (v3.5.382), a real on_roster sync bug affecting 21 of 98 SKS staff (v3.5.383), the Leave CC list moved off the anon-readable `app_config` table into its own table restricted to canonical managers only (v3.5.384 — closed a real security finding), a Roster Overview summary card with coverage %/zero-crew sites/tap-a-site crew (v3.5.385), and the Leave toolbar's manager-only buttons collapsed into one menu (v3.5.386). All merged to `main`, live on `field.eq.solutions`.*
+- [ ] **Nobody's clicked through the deployed app yet** — every PR was verified via automated tests + real browser execution against stubbed data (no live Netlify Functions runtime in the build sandbox), not against the actual production app. Worth a real pass on `field.eq.solutions`, especially the new Roster Overview card on a real phone (the explicit "add value on mobile" ask) and the Leave CC list modal (now driven by canonical managers, not free-text email). _(added 2026-07-31)_
+- [ ] **EQ Wallet — Licences screen critique**: gave direct feedback (add a red/amber dot to the "Expiring soon" filter chip when non-zero so the whole screen doesn't need scanning; no lock-icon legend for a first-time user) but didn't build anything — Royce hasn't said whether he wants it built. _(added 2026-07-31)_
+- [ ] **Timesheets mobile-entry strategy** — Royce asked "will users actually be doing timesheets on their phone?" No usage data was pulled to answer it responsibly; recommended checking PostHog's `timesheet_saved` event breakdown by device before deciding whether to simplify or cut anything, not done. _(added 2026-07-31)_
+- [ ] **Shell chrome items handed to a separate session**: the redundant "Apps/EQ Field" top bar and the Ops-tab visibility gate are eq-shell's code, not eq-field's — filed as `task_e8b60d22`, running in a separate session as of 2026-07-31. _(added 2026-07-31)_
 
 ## PIN Management modal shows "No PIN" for everyone except this-session edits (2026-07-30)
 *Royce flagged: `renderPinList()` in `scripts/people.js` checks `p.pin` on `STATE.people`, but the bulk load (`loadFromSupabase()`) never fetches `pin` — dropped from the select list in v3.10.106 as a deliberate fix so PINs aren't shipped to every session. Session gate ran (brief drafted, git/worktree state checked — branch is clean, 12 commits behind main but nothing behind touches `people.js`), brief was presented for confirmation, session closed before Royce confirmed it. No code changed.*

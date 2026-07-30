@@ -14,6 +14,10 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## EQ Field screenshot review — cross-tenant fixes (2026-07-30/31)
+*Full build detail lives in `sks/pending.md` (the review + Q&A pass was SKS-tenant-driven, and the two live-data fixes are SKS-specific) — this entry is the EQ-side pointer, since two of the five shipped PRs affect the `eq` tenant too: Job Numbers' BETA→Manage nav promotion was SKS-only since v3.5.95, now ungated for all tenants (v3.5.382); Pipeline nav is now hidden outright on mobile regardless of tenant (v3.5.382).*
+- [ ] Nobody's confirmed the `eq` tenant's Job Numbers nav placement or mobile Pipeline hiding on a live click-through — same "not yet clicked through production" gap noted in the SKS entry. _(added 2026-07-31)_
+
 ## eq-shell: dropped redundant mobile top bar on Field/Service; verified Ops-tab gating already live (2026-07-31)
 *From Royce's 2026-07-30 screenshot review of EQ Field/Ops — two items, both turned out to be eq-shell chrome (the outer frame around the embedded Field/Service/Ops iframes), not eq-field. "Do you think we can do without the top EQ FIELD bar here? All that 'Apps' button does is take you home" — confirmed: on Field/Service, Shell's persistent bottom tab bar (which includes Home) already renders alongside the top bar, making it pure redundant chrome.*
 

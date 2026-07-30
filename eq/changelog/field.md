@@ -1,13 +1,28 @@
 ---
 title: Changelog — EQ Solves Field
 owner: Royce Milmlow
-last_updated: 2026-07-30
+last_updated: 2026-07-31
 scope: Append-only history of changes to the EQ Solves Field product. Canonical — eq-field.md was merged into this file 2026-07-19, don't split again.
 read_priority: reference
 status: live
 ---
 
 # Changelog — EQ Solves Field
+
+## [2026-07-31] Leave toolbar: manager-only actions collapsed into one overflow menu (MERGED, v3.5.386, #579)
+- CC List / Archive Resolved / Show Archived (all manager-only) collapsed from 3 separate toolbar buttons into one "⋯" menu, matching the roster cell popover's existing outside-click/Escape dismissal pattern. Print and +New Request stay prominent (neither is manager-only). Royce's screenshot review: "Can this screen be simplified at all?"
+
+## [2026-07-31] Roster Overview summary card (MERGED, v3.5.385, #578)
+- New landing card at the top of the Roster page: today's coverage % (rostered vs total active/on-roster headcount), sites with nobody rostered today, and a "Sites today — tap to see crew" list that expands inline. Management Out This Week (previously its own standalone banner) folded into the same card. Existing scrollable grid/mobile crew-strip views unchanged below it. Royce's screenshot review, steelmanned via a follow-up Q&A: "an overall summary dashboard would add more value on mobile view?" — confirmed "Build all 4 as described." One item ("sites that normally have coverage") deliberately narrowed to the mechanically defensible version (a registered site with nobody assigned today) rather than a fuzzy historical-average heuristic.
+
+## [2026-07-31] Leave CC list: own table + canonical-manager-only membership (MERGED, v3.5.384, #577)
+- Security fix: `leave_cc_list` moved off `app_config` (whose SELECT policy is `USING(true)` for every role including anon, needed for the pre-auth PIN-code read) into its own table, `public.leave_cc_recipients`, with real RLS (authenticated + org_id + JWT tenant claim, zero anon grant, mirrors the `acknowledgments` pattern). Migration `20260731_leave_cc_recipients.sql` applied live to ehow with a one-time backfill of the live list. Product change per Royce's follow-up: CC membership is now a pure multi-select over canonical Supervisors, not a free-text email list — the "type any email + Add" box is gone.
+
+## [2026-07-31] Fix: staff toggled off-roster became unresolvable to a name (MERGED, v3.5.383, #576)
+- `loadCanonicalStaffMap()`'s staff-name fetch filtered `&on_roster=eq.true` (added v3.5.151 to hide leavers from the roster grid/timesheet headers) — but that excluded anyone toggled off-roster from NAME RESOLUTION entirely, not just the display list, so any schedule/leave/timesheet row referencing them showed as unresolvable. Affected 21 of 98 active SKS staff. Root-caused from a flagged-but-unchased finding in the prior screenshot-review PR. Fix: drop the filter from that one fetch; the "hide from the active grid" behaviour stays correctly enforced downstream in roster.js/timesheets.js/people.js.
+
+## [2026-07-31] Screenshot review pass: My Schedule / Job Numbers / Pipeline / CC List (MERGED, v3.5.382, #572)
+- Four fixes from Royce's 2026-07-30 screenshot review PDF: My Schedule's team-filter pill row hidden unconditionally (had zero function on that page); Job Numbers' BETA→Manage nav promotion (already live for SKS since v3.5.95) ungated for all tenants; Pipeline nav hidden outright on mobile regardless of role; Leave's CC List/Archive Resolved/Show Archived buttons were visible-but-permission-blocked for non-managers (missing CSS rule) — fixed. Two related items (the Shell top bar, Ops-tab visibility) turned out to be eq-shell's chrome, not eq-field's — handed off, not built here.
 
 ## [2026-07-30] Real actor id threaded into canonical writes for audit attribution (MERGED, #574)
 - Part of the cross-repo audit-attribution gap eq-shell's 2026-07-14 audit-log program flagged: Field's writes to canonical `app_data.staff` were logging `source='system'` in eq-shell's audit trail, no actor, even for real live sessions. Root cause: both live tenants (`eq`, `sks`) are Core-only, so every real session enters via `verify-shell-token`, which decodes the Supabase JWT eq-shell minted for the iframe handoff — that JWT's `claims.sub` (a real `shell_control.users.id`) was already being read server-side and returned to the client at login, but never signed into Field's own 7-day session token, so the later data-plane JWT mint had no way to recover it and hardcoded its `sub` to the tenant id instead. Threaded `shell_user_id` through the session token, the data-JWT mint, and out as an `x-eq-actor` header on the write in `people.js` (same header/trigger eq-shell's own writes use). Netlify auto-deployed to field.eq.solutions on merge.
