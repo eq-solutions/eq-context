@@ -61,8 +61,10 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-07-30)
 
 **eq-shell:**
-- #1140 chore(intake): re-vendor eq-intake/eq-platform — Dupes archive + gap context
 - #1139 perf(shell): preconnect to Field/Service/Cards origins ahead of iframe mount
+
+**eq-solves-intake:**
+- #97 feat(intake): tenant-editable trades settings screen + duplicate dismiss
 
 ---
 
