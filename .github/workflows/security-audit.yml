@@ -11,6 +11,9 @@ name: Security audit
 # (later reduced to 3: eq-solves-field's project ktmjmdzqrogauaevbktn was
 # deleted 2026-07-04 and had no replacement — EQ Field has no standalone
 # Supabase project; its data lives on zaap/ehow, both already covered here).
+# eq-receipts added 2026-07-30 (SEC-17) once the advisor-audit script gained
+# per-project error isolation — a bad ref in one project can no longer abort
+# the whole run's summary, the failure mode that hid this gate for a month.
 # Scope is EQ-only; SKS-Labour (retiring) was dropped from both scripts.
 # See ops/security-register.md for the tracked findings these gate against.
 

@@ -34,6 +34,7 @@ PROJECTS = {
     "eq-canonical": "jvknxcmbtrfnxfrwfimn",
     "eq-canonical-internal": "zaapmfdkgedqupfjtchl",
     "sks-canonical": "ehowgjardagevnrluult",
+    "eq-receipts": "bgrhqvmvzgotxzjneskv",
 }
 
 # Accepted ERROR findings (cache_key -> "ticket — review_by"). Baseline so CI
@@ -80,12 +81,19 @@ def main():
         return 0
 
     new_errors = []
+    fetch_failures = []
     for name, ref in PROJECTS.items():
         try:
             lints = fetch(ref, token)
         except urllib.error.HTTPError as e:
-            print(f"[{name}] ERROR fetching advisors: {e.code} {e.read().decode()[:200]}")
-            return 2
+            detail = e.read().decode()[:200]
+            print(f"[{name}] ERROR fetching advisors: {e.code} {detail}")
+            fetch_failures.append(f"{name}: HTTP {e.code} — {detail}")
+            continue
+        except urllib.error.URLError as e:
+            print(f"[{name}] ERROR fetching advisors: network — {e.reason}")
+            fetch_failures.append(f"{name}: network — {e.reason}")
+            continue
         t = triage(lints)
         print(f"[{name}] ERROR {len(t['error'])} · WARN {len(t['warn'])} · INFO {len(t['info'])}")
         for nm, detail, ck in t["error"]:
@@ -96,11 +104,20 @@ def main():
                 new_errors.append(f"{name}: {nm} — {detail[:120]}")
 
     print("\n=== summary ===")
+    # A fetch failure on one project must not hide the results already
+    # gathered for every other project (the eq-solves-field incident:
+    # SEC-17 — one dead ref aborted the whole run's summary for a month).
+    if fetch_failures:
+        print(f"{len(fetch_failures)} project(s) could not be reached:")
+        for f in fetch_failures:
+            print(f"  - {f}")
     if new_errors:
         print(f"{len(new_errors)} NEW ERROR-level security finding(s):")
         for e in new_errors:
             print(f"  - {e}")
         return 1
+    if fetch_failures:
+        return 2
     print("No new ERROR-level security findings. (Accepted baseline still open — see register.)")
     return 0
 
