@@ -14,6 +14,9 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: `workers-canonical-sync` audit-attribution fix awaiting review (2026-07-31)
+- [ ] eq-shell [PR #1134](https://github.com/eq-solutions/eq-shell/pull/1134) ("workers-canonical-sync attributes real actors") is open, from a different session than the one that built the top-bar fix above — not reviewed or merged by an eq-field session (Royce asked "merge once green" with no PR specified; checked it, found CI still in progress and the PR's own test plan has an unchecked live-verification item, recommended against auto-merging). Needs Royce or its originating session to finish the live checks and merge. _(added 2026-07-31)_
+
 ## eq-shell: re-vendored the Intake engine — merge errors now show, duplicate flags can be archived (2026-07-31)
 *eq-solves-intake shipped two fixes on `main` (PRs #94/#95); eq-shell keeps its own copy of that engine, so it doesn't pick anything up until someone copies the changed files across and re-ships — same routine as the last two times this month.*
 
