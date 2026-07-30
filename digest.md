@@ -8,19 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-30 08:21 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-30 08:24 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-30 08:03 UTC → 2026-07-30 08:21 UTC)
+## Since last refresh (2026-07-30 08:21 UTC → 2026-07-30 08:24 UTC)
 
-- Merged: eq-shell [#1118](https://github.com/eq-solutions/eq-shell/pull/1118) fix(staff): lock email/phone provenance so Cards can update 
-- Merged: eq-shell [#1103](https://github.com/eq-solutions/eq-shell/pull/1103) fix(invite): route phone-first worker activation through She
-- Merged: eq-shell [#1100](https://github.com/eq-solutions/eq-shell/pull/1100) fix(suppliers): show all columns by default now that fullWid
-- Merged: eq-shell [#1098](https://github.com/eq-solutions/eq-shell/pull/1098) fix(suppliers): hide Notes/Login/Password by default, same i
-- Merged: eq-shell [#1096](https://github.com/eq-solutions/eq-shell/pull/1096) fix(suppliers): scroll the table on its own card, not trunca
-- Merged: eq-shell [#1095](https://github.com/eq-solutions/eq-shell/pull/1095) fix(suppliers): retune every column width to a coherent budg
-- Merged: eq-shell [#1091](https://github.com/eq-solutions/eq-shell/pull/1091) fix(licences): stop the Cards resync from bumping updated_at
-- Merged: eq-shell [#1089](https://github.com/eq-solutions/eq-shell/pull/1089) fix(home): apprentices land on WorkerHome, not the manager d
-- ✅ Needs you: 4 → 3
+- Merged: eq-shell [#1104](https://github.com/eq-solutions/eq-shell/pull/1104) feat(intake): tenant-editable field-importance override tabl
+- Merged: eq-shell [#1102](https://github.com/eq-solutions/eq-shell/pull/1102) fix(auth): Mobile-door tenant resolution + invite role copy
+- Merged: eq-shell [#1101](https://github.com/eq-solutions/eq-shell/pull/1101) fix(staff): compare licence content, not updated_at, for the
+- Merged: eq-shell [#1099](https://github.com/eq-solutions/eq-shell/pull/1099) fix(suppliers): pass fullWidth to HubLayout — the actual roo
+- Merged: eq-shell [#1097](https://github.com/eq-solutions/eq-shell/pull/1097) fix(suppliers): paginate the table so the scrollbar isn't bu
+- Merged: eq-shell [#1094](https://github.com/eq-solutions/eq-shell/pull/1094) chore(intake): re-vendor eq-intake/eq-platform — tab redesig
+- Merged: eq-shell [#1093](https://github.com/eq-solutions/eq-shell/pull/1093) feat(ops): view archived quotes without restoring them
+- Merged: eq-shell [#1092](https://github.com/eq-solutions/eq-shell/pull/1092) fix(suppliers): cap the Notes column width so Login/Password
 
 ## ⚠ Needs you (3)
 
@@ -51,7 +50,7 @@ _…and 84 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
 | eq-shell | ? unknown | ? | 1 | 0d |
-| eq-solves-service | ? unknown | ? | 1 | 0d |
+| eq-solves-service | ? unknown | ? | 0 | — |
 | eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ? unknown | ? | 0 | — |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
@@ -79,6 +78,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-30 | eq-shell | [#1116](https://github.com/eq-solutions/eq-shell/pull/1116) feat(workers): compliance-roster-only workers — has_field_access  |
 | 2026-07-30 | eq-shell | [#1114](https://github.com/eq-solutions/eq-shell/pull/1114) chore: remove dead intake domain pages and SecurityGroupsPage shi |
 | 2026-07-30 | eq-shell | [#1115](https://github.com/eq-solutions/eq-shell/pull/1115) fix(migrations): enable RLS on tenant_field_importance_overrides |
+| 2026-07-30 | eq-solves-service | [#649](https://github.com/eq-solutions/eq-service/pull/649) fix(reports): wire remaining Report Settings gaps (Work Order Det |
 | 2026-07-30 | eq-solves-service | [#648](https://github.com/eq-solutions/eq-service/pull/648) fix(maintenance): sort Assigned To dropdown A-Z instead of by rol |
 | 2026-07-30 | eq-cards | [#188](https://github.com/eq-solutions/eq-cards/pull/188) fix(identity): stop hardcoding 'employee' on the personal wallet  |
 | 2026-07-30 | eq-cards | [#187](https://github.com/eq-solutions/eq-cards/pull/187) chore(licences): codify Photo ID + Passport as tracked licence ty |
@@ -88,7 +88,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-29 | eq-shell | [#1109](https://github.com/eq-solutions/eq-shell/pull/1109) fix(mobile): mirror desktop's permission checks (Security Groups  |
 | 2026-07-29 | eq-shell | [#1107](https://github.com/eq-solutions/eq-shell/pull/1107) fix(observability): stop mislabeling network errors as stale-chun |
 | 2026-07-29 | eq-shell | [#1106](https://github.com/eq-solutions/eq-shell/pull/1106) chore(intake): re-vendor eq-intake/eq-platform — field-importance |
-| 2026-07-29 | eq-shell | [#1105](https://github.com/eq-solutions/eq-shell/pull/1105) fix(auth): register /login route so ?tenant= survives to LoginPag |
 _Showing 15 of 117 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -103,7 +102,7 @@ _Showing 15 of 117 · full record in [sessions/](sessions/)_
 - **The live end-to-end proof is still outstanding**: drop a deliberately-conflicting test row through production `/intake` and confirm it parks in the queue instead of committing. Blocked this session on the file-upload tool refusing to attach a test file not shared directly by Royce in chat — needs either Royce dragging the file into chat, or Royce doing the drop himself while checked live. This becomes easy to verify now that Overview/To Do is the single place to look. _(added 2026-07-29)_
 - **Concatenate the always-loaded boot scripts into 2-3 files at deploy time** (plain concatenation, not a bundler — stays consistent with the repo's deliberate no-build-step architecture). Cuts request count on the true first-ever cold visit, which the version-tag fix below doesn't touch. _(added 2026-07-28)_
 - **Audit which of the ~34 always-loaded-at-boot scripts actually need to block first paint** — several (recognitions.js, digest-settings.js, whatsnew.js, apprentice-widget.js, region-filter.js) look like narrow-feature scripts that could join the existing on-demand-per-page loading pattern already used for Roster/Timesheets/etc. _(added 2026-07-28)_
-_…and 340 more · [eq/pending.md](eq/pending.md)_
+_…and 341 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -146,4 +145,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-30 08:21 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-30 08:24 UTC._
