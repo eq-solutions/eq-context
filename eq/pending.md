@@ -32,14 +32,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [ ] Nobody's confirmed the `eq` tenant's Job Numbers nav placement or mobile Pipeline hiding on a live click-through — same "not yet clicked through production" gap noted in the SKS entry. _(added 2026-07-31)_
 
 ## eq-shell: dropped redundant mobile top bar on Field/Service; verified Ops-tab gating already live (2026-07-31)
-*From Royce's 2026-07-30 screenshot review of EQ Field/Ops — two items, both turned out to be eq-shell chrome (the outer frame around the embedded Field/Service/Ops iframes), not eq-field. "Do you think we can do without the top EQ FIELD bar here? All that 'Apps' button does is take you home" — confirmed: on Field/Service, Shell's persistent bottom tab bar (which includes Home) already renders alongside the top bar, making it pure redundant chrome.*
-
-- [x] Removed the top bar (+ its account/admin sheets) on Field/Service mobile — the bottom tab bar remains the nav, Home is one tap away. Ops/Comms unchanged (they have no bottom bar of their own, so the top bar stays their only mobile nav).
-- [x] Confirmed the mobile Ops tab is already gated to managers/permission-holders (`useCan('ops.view_rates')`) — shipped live same-day via [PR #1109](https://github.com/eq-solutions/eq-shell/pull/1109), no fix needed.
-- [x] eq-shell [PR #1133](https://github.com/eq-solutions/eq-shell/pull/1133), merged, live on core.eq.solutions.
-
-**Deferred:**
-- [ ] **Royce to click through live** on a mobile-width view (~375px or a phone): open Field/Service and confirm the top bar is gone (just the bottom tab bar); open Ops/Comms and confirm nothing changed; from Field/Service, tap Home and confirm Settings/2FA/Sign-out are still reachable there. _(added 2026-07-31)_
+- [ ] **Royce to click through live** on a mobile-width view (~375px or a phone): open Field/Service and confirm the top bar is gone (just the bottom tab bar); open Ops/Comms and confirm nothing changed; from Field/Service, tap Home and confirm Settings/2FA/Sign-out are still reachable there. Note: a related eq-field fix landed 2026-07-31 (v3.5.388) for a home-label clipping issue caught on the same phone-screenshot pass — worth confirming both together. _(added 2026-07-31)_
 
 ---
 

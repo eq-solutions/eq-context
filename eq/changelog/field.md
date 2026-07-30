@@ -9,6 +9,13 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-31] Home top-clip fix (Shell mobile) + Roster Overview trim (MERGED, v3.5.388, #581)
+- Fix: the "EQ FIELD" home-page eyebrow label rendered clipped under Shell's fixed top strip on mobile (`core.eq.solutions`, caught live on Royce's iPhone). Root cause: `home.css`'s `#page-home` ID selector (specificity 1-0-0) silently beat `mobile.css`'s `.shell-mode .page` clearance rule (specificity 0-2-0) regardless of source order — added a scoped `.shell-mode #page-home` override with the same 68px clearance. Verified the specificity claim directly with a throwaway browser test, not reasoned on paper.
+- Changed: Roster Overview (v3.5.385) drops the "Sites with no one rostered today" panel. Royce, on seeing it live: "we dont need to show what sites arent being worked at - this view is meant to be an easy way to see where people are working." The "Sites today — tap to see crew" list is unchanged.
+
+## [2026-07-31] Fix: loading spinner never animated on iOS (MERGED, v3.5.387, #580)
+- Root-caused a live report ("spinner definitely isn't working on iOS and hasn't... works fine on pc and android") to a WebKit-specific bug: an already-declared `@keyframes` animation doesn't reliably restart when its element goes from `display:none` to visible via a bare class toggle. `showLoadingOverlay()` now forces a reflow (`animation:none` → read `offsetHeight` → restore) on each spinner bar every time the overlay is shown. Chrome (desktop/Android) recomputes animation state on unhide correctly regardless, which is exactly the split Royce reported.
+
 ## [2026-07-31] Leave toolbar: manager-only actions collapsed into one overflow menu (MERGED, v3.5.386, #579)
 - CC List / Archive Resolved / Show Archived (all manager-only) collapsed from 3 separate toolbar buttons into one "⋯" menu, matching the roster cell popover's existing outside-click/Escape dismissal pattern. Print and +New Request stay prominent (neither is manager-only). Royce's screenshot review: "Can this screen be simplified at all?"
 
