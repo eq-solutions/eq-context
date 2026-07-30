@@ -60,11 +60,7 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-30)
 
-**eq-shell:**
-- #1128 fix(audit): stop entity.patched canonical_events noise
-
-**eq-solves-intake:**
-- #94 fix(intake): site-merge confirm errors were captured but never shown
+_No open PRs_
 
 ---
 
