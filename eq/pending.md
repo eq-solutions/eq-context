@@ -30,7 +30,8 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **Dropdown for closed-list fields** — editing a gap like Customer Type now shows the actual allowed choices (lead/prospect/active/churned) instead of a free-text box.
 - [x] **Edit/Suggest now actually save** — both write to the real customer/site/etc. record instead of only changing what's shown on screen.
 - [x] **Server-side allow-list gap closed live** — Customer Type and Site Type were quietly blocked from saving even before this session's fix; corrected and confirmed live on the SKS database.
-- [ ] **Not yet visible on core.eq.solutions** — this app is copied into the main Shell app in a separate step (same pattern as recent settings-screen work); a follow-up task is already queued to do that copy. _(added 2026-07-30)_
+- [x] **Code merged** — eq-solves-intake [PR #93](https://github.com/eq-solutions/eq-solves-intake/pull/93) squash-merged to `main` (`fc46a41`), Royce's "merge it once CI's green" go.
+- [ ] **Not yet visible on core.eq.solutions** — this app is copied into the main Shell app in a separate step (same pattern as recent settings-screen work). A follow-up task had paused itself waiting on the merge above; unblocked and told to proceed once it landed. _(added 2026-07-30)_
 
 ---
 
@@ -60,8 +61,21 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] eq-shell [PR #1116](https://github.com/eq-solutions/eq-shell/pull/1116), merged to `main` and deployed.
 
 **Deferred:**
-- [ ] **Royce to click through live**: invite a labour-hire worker with the box unchecked, confirm they land on a Field-free home screen and can't reach Field directly; then invite/sign in a normal worker (box left checked) and confirm nothing changed for them. _(added 2026-07-30)_
+- [ ] **Royce to click through live**: invite a labour-hire worker with the box unchecked, confirm they land on a Field-free home screen and can't reach Field directly; then invite/sign in a normal worker (box left checked) and confirm nothing changed for them. Bundled with the three click-through items below into one live-testing pass — see that section's deferred note. _(added 2026-07-30)_
 - [ ] No edit screen yet for switching an *existing* worker's Field access on/off after the fact — today it's invite-time only. _(added 2026-07-30)_
+
+---
+
+## eq-shell: Worker sign-in safety net — lost-phone protection, PIN visibility for admins, backup email (2026-07-30)
+*Finished the rest of the same sprint-planning Q&A's approved list: (1) if a worker's phone number gets corrected or reassigned, their old passcode now stops working automatically instead of silently staying valid; (2) managers can now see whether a worker has ever set a passcode and whether they're locked out, plus unlock them without a full reset; (3) workers who signed up with just a phone number are gently nudged to add a backup email, so a lost phone doesn't lock them out for good.*
+
+- [x] **Admins can now correct a worker's phone number**, and doing so automatically signs out their old passcode and 2FA — closes the "SIM swap" gap where a reassigned number could otherwise still work with someone else's old passcode. eq-shell [PR #1119](https://github.com/eq-solutions/eq-shell/pull/1119), merged to `main` and deployed.
+- [x] Found and fixed a related gap along the way: worker phone numbers had no duplicate check at the database level — fixed live, no duplicates existed to clean up first.
+- [x] **Managers can now see a worker's passcode status** (never the passcode itself, which isn't recoverable — only whether one's been set and whether it's locked) on both the Users list and a worker's own page, with a one-click "Unlock now" when someone's locked themselves out. eq-shell [PR #1122](https://github.com/eq-solutions/eq-shell/pull/1122), merged to `main` and deployed.
+- [x] **Phone-only workers now get a gentle, dismissible reminder** to add a backup email, so losing their phone doesn't lock them out of their account for good. Adding one instantly unlocks signing in with email + passcode as an alternative. Unverified for now (Royce's call — keeps it simple; a typo'd email is a low-stakes edge case with no real users yet) and the reminder resets each time they sign back in rather than being dismissed forever. eq-shell [PR #1125](https://github.com/eq-solutions/eq-shell/pull/1125), merged to `main` and deployed.
+
+**Deferred:**
+- [ ] **Royce to click through live, all four features shipped today together** (this section's three plus the compliance-roster-only switch above): invite/adjust a worker with Field access off; correct a test worker's phone number and confirm their old passcode stops working while a fresh sign-in + new passcode works; check the passcode-status view and try "Unlock now" on a locked test account; sign in as a phone-only worker and confirm the backup-email reminder shows, dismisses for that sign-in only, and clears once an email is added. None of this has been clicked through live yet — Claude can't perform this step directly (logging in requires entering a passcode, which falls under a hard rule against entering credentials on the user's behalf, even for the user's own product). _(added 2026-07-30)_
 
 ---
 
@@ -244,6 +258,13 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ## eq-shell: Suppliers page "missing" Login/Password columns — actual root cause fixed (2026-07-28 → 2026-07-30)
 
 - [ ] **Royce to click through live**: Suppliers shows a Columns button, the table scrolls freely past 20 rows instead of paginating, and hovering a masked password shows "Click to reveal". _(added 2026-07-30, PR #1120 merged)_
+
+---
+
+## eq-shell: Audit log was drowning in empty "Automatic" rows — root-caused, fixed, then a live test caught the first fix didn't actually work (2026-07-30)
+
+- [ ] **Royce to click through live**: open Activity log → Suite activity tab, confirm the sentences read sensibly against real SKS data (quotes, shifts, licence reviews). _(added 2026-07-30, PRs #1121/#1123/#1126 merged, migrations 0225+0226 dispatched, workers-canonical-sync redeployed v12 — full write-up in `sessions/2026-07-30.md` and `changelog/eq-shell.md`)_
+- [ ] **Cross-repo attribution still open** — Field/Service/Cards' own sync jobs still write with no actor header (`source='system'`), same gap the 2026-07-14 audit-log program named as its last, biggest piece. Not touched this session. _(added 2026-07-30)_
 
 ---
 
