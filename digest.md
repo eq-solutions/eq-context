@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-30 09:12 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-30 09:20 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-30 09:08 UTC → 2026-07-30 09:12 UTC)
+## Since last refresh (2026-07-30 09:12 UTC → 2026-07-30 09:20 UTC)
 
-- Merged: eq-shell [#1122](https://github.com/eq-solutions/eq-shell/pull/1122) feat(auth): admin PIN-visibility UI — status, not the PIN it
-- Merged: eq-shell [#1111](https://github.com/eq-solutions/eq-shell/pull/1111) feat(ops): make ex-GST the prominent figure across EQ Ops
-- Merged: eq-shell [#1109](https://github.com/eq-solutions/eq-shell/pull/1109) fix(mobile): mirror desktop's permission checks (Security Gr
-- Merged: eq-shell [#1106](https://github.com/eq-solutions/eq-shell/pull/1106) chore(intake): re-vendor eq-intake/eq-platform — field-impor
-- Merged: eq-shell [#1105](https://github.com/eq-solutions/eq-shell/pull/1105) fix(auth): register /login route so ?tenant= survives to Log
-- Merged: eq-shell [#1103](https://github.com/eq-solutions/eq-shell/pull/1103) fix(invite): route phone-first worker activation through She
-- Merged: eq-shell [#1100](https://github.com/eq-solutions/eq-shell/pull/1100) fix(suppliers): show all columns by default now that fullWid
-- Merged: eq-shell [#1098](https://github.com/eq-solutions/eq-shell/pull/1098) fix(suppliers): hide Notes/Login/Password by default, same i
+- Merged: eq-shell [#1123](https://github.com/eq-solutions/eq-shell/pull/1123) fix(audit): fn_audit() noise guard, take 2 — 0225's WHEN cla
+- Merged: eq-shell [#1112](https://github.com/eq-solutions/eq-shell/pull/1112) fix(staff): full-size licence photo lightbox
+- Merged: eq-shell [#1110](https://github.com/eq-solutions/eq-shell/pull/1110) feat(auth): phone+PIN login door, generalized grace-gate pat
+- Merged: eq-shell [#1107](https://github.com/eq-solutions/eq-shell/pull/1107) fix(observability): stop mislabeling network errors as stale
+- Merged: eq-shell [#1104](https://github.com/eq-solutions/eq-shell/pull/1104) feat(intake): tenant-editable field-importance override tabl
+- Merged: eq-shell [#1102](https://github.com/eq-solutions/eq-shell/pull/1102) fix(auth): Mobile-door tenant resolution + invite role copy
+- Merged: eq-shell [#1101](https://github.com/eq-solutions/eq-shell/pull/1101) fix(staff): compare licence content, not updated_at, for the
+- Merged: eq-shell [#1099](https://github.com/eq-solutions/eq-shell/pull/1099) fix(suppliers): pass fullWidth to HubLayout — the actual roo
 
 ## ⚠ Needs you (4)
 
@@ -28,7 +28,7 @@ _2026-07-30 09:12 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🔴 **Open security finding** — SEC-18 (P0 — confirmed exposure, same class as SEC-12, on the sibling apps this time) — Real production secrets stored `is_secret: false` (full plaintext, all four depl · [security-register.md](ops/security-register.md)
 - 🔴 **Guard bypass? rung 4** — F6: Append (>>) NUL-fills files on the C:\Projects virtiofs mount · possibly recurred in [2026-07-28.md](sessions/2026-07-28.md) · [failures.md](system/failures.md)
 
-## 🙋 Waiting on you (94)
+## 🙋 Waiting on you (96)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
@@ -37,14 +37,14 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **EQ** · **Royce to click through live**: open a job's detail view, the create-quote form, the kanban board, and each Reports tab, confirm ex-GST reads as the main figure everywhere it should. Verified via build + typecheck only, not yet clicked through live. _(added 2026-07-30)_
 - **EQ** · **Royce to clear Brave's site data for cards.eq.solutions on his own phone** — the actual reported symptom (an old email-login screen). A Flutter service worker registered on that device before the phone-OTP flip is still serving its own cached copy of the old build; production itself is correctly configured (verified live). A full close + clear-site-data + reopen forces the fresh navigation the browser's update check needs. _(added 2026-07-29)_
 - **EQ** · **Royce to reconcile a customer CSV with a messy phone number/ABN and confirm it now gets cleaned up** — verified in code + typecheck, not yet clicked through live. _(added 2026-07-29)_
+- **EQ** · **Royce to click through live**: EQ Ops → "…" → Archived → open a quote via View, confirm it shows a read-only "Archived" badge and only Restore/Download/Delete (no Edit/Mark as Sent/Close/Archive controls), then confirm Restore still works from there. Verified only via the Netlify production deploy record (commit `2b01bf3b` live), not an actual click-through — no production login session in this environment. eq-shell [PR #1093](https://github.com/eq-solutions/eq-shell/pull/1093), merged. _(added 2026-07-29)_
 - **EQ** · **Royce to click through the Import screen (`/intake`) on core.eq.solutions once the deploy lands** — confirm it still loads and still commits normally. That screen wasn't touched, but worth a look since it's the app's only working import path now. _(added 2026-07-29)_
 - **EQ** · **Royce to click through Assets/Job Plans/Maintenance Checks once the deploy lands** — confirm the Export button's new dropdown offers CSV and Excel, both download the full list, and the Maintenance Checks "tasks completed" count now shows a real number instead of "/0". Not click-tested live this session — no login credentials available in this environment, verified via type-checking + the full automated test suite + code review only. _(added 2026-07-29)_
 - **EQ** · **Royce to confirm live**: edit an already-reviewed licence's expiry/number in Cards for an approved worker, confirm the Staff page badge flips to "changed since — re-review needed" without a hard refresh. _(added 2026-07-28)_
 - **EQ** · **Royce to click through live**: open Suppliers and confirm all 8 columns show by default with no scrolling needed — the page now uses `fullWidth` (the real fix; the page had been stuck inside an 860px reading-width cap the whole time) instead of scroll/pagination/column-hiding workarounds. _(added 2026-07-29)_
 - **EQ** · **Royce to confirm live**: reload the Wallet and confirm the Photo ID nag no longer shows for a worker who holds a Driver Licence or Passport. _(added 2026-07-28)_
 - **EQ** · **Separate, lower-priority finding: 53 of 88 active SKS staff have a Cards worker link but zero credentials captured in Cards at all** (checked the pre-promotion `worker_credentials` table too — genuinely empty, not stuck mid-migration). Only 34 of 88 active staff have any licence data flowing through Shell. This is a Cards onboarding-completion gap, not a sync bug — no action taken, logging only per Royce's call. _(added 2026-07-28)_
-- **EQ** · **Royce to click through the real flow once the deploy lands**: set up two-step verification, save the codes shown, sign out, sign back in using one of the backup codes instead of the phone app, then generate a fresh set from Settings and confirm the old ones stop working. _(added 2026-07-28)_
-_…and 82 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 84 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
@@ -74,6 +74,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-30 | eq-shell | [#1123](https://github.com/eq-solutions/eq-shell/pull/1123) fix(audit): fn_audit() noise guard, take 2 — 0225's WHEN clause i |
 | 2026-07-30 | eq-shell | [#1122](https://github.com/eq-solutions/eq-shell/pull/1122) feat(auth): admin PIN-visibility UI — status, not the PIN itself |
 | 2026-07-30 | eq-shell | [#1121](https://github.com/eq-solutions/eq-shell/pull/1121) fix(audit): stop logging no-op UPDATEs polluting the Activity log |
 | 2026-07-30 | eq-shell | [#1119](https://github.com/eq-solutions/eq-shell/pull/1119) feat(auth): SIM-swap PIN invalidation — admin phone-number change |
@@ -88,7 +89,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-30 | eq-solves-service | [#648](https://github.com/eq-solutions/eq-service/pull/648) fix(maintenance): sort Assigned To dropdown A-Z instead of by rol |
 | 2026-07-30 | eq-field | [#569](https://github.com/eq-solutions/eq-field/pull/569) v3.5.380 — Tenant-branded transactional emails |
 | 2026-07-30 | eq-cards | [#188](https://github.com/eq-solutions/eq-cards/pull/188) fix(identity): stop hardcoding 'employee' on the personal wallet  |
-| 2026-07-30 | eq-cards | [#187](https://github.com/eq-solutions/eq-cards/pull/187) chore(licences): codify Photo ID + Passport as tracked licence ty |
 _Showing 15 of 117 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -128,7 +128,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | [EQ](eq/pending.md) | 2853 | 450 | 105 | 9 |
 | [SKS](sks/pending.md) | 427 | 76 | 5 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
-| [OPS](ops/pending.md) | 424 | 35 | 7 | 1 |
+| [OPS](ops/pending.md) | 421 | 36 | 7 | 1 |
 
 ## Recent sessions
 
@@ -146,4 +146,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-30 09:12 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-30 09:20 UTC._
