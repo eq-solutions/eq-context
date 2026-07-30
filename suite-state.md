@@ -63,9 +63,6 @@ _If this file is >48h old, the cron is broken._
 **eq-cards:**
 - #188 fix(identity): stop hardcoding 'employee' on the personal wallet membership role
 
-**eq-service:**
-- #648 fix(maintenance): sort Assigned To dropdown A-Z instead of by role tier
-
 ---
 
 ## System Health (as of 2026-07-30)
