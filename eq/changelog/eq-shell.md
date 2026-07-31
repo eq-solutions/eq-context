@@ -1,13 +1,17 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-07-31
+last_updated: 2026-08-01
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # eq-shell changelog
+
+## 2026-08-01 (PR #1148 MERGED, no migration)
+- **A user's chrome now says something when the existing 5-minute role poll picks up a real change, instead of silently reconfiguring.** Started from a request to build a "your access changed, sign in again" banner — investigation found `App.tsx` already silently re-verifies and rewrites the session every 5 minutes (live since 2026-05-24), so a promoted/demoted user's view already updates without a re-login. The actual gap was smaller: nothing told the user it had just happened. Added a toast ("Your access just changed — refreshed automatically") that fires only on a same-tenant role diff, not a workspace switch. Companion fix: `eq-context/eq/identity/IDENTITY-MODEL.md` §6.3 wrongly claimed changes were next-login-only, predating this poll by six weeks — corrected there. eq-shell [PR #1148](https://github.com/eq-solutions/eq-shell/pull/1148), merged (squash `8581b24d`).
+- **Separately confirmed the "assign a user to a Security Group" feature already exists end-to-end** (`AccessControlPage.tsx`'s `GroupDetailModal` + `netlify/functions/security-groups.ts`) — an earlier grep hit a re-export stub file and wrongly reported it missing. No code change; the live table has zero rows because nobody's used it yet, not because it's broken.
 
 ## 2026-07-31 (PR #1147 MERGED, docs only)
 - **CLAUDE.md now documents the function-grant landmine behind Sentry EQ-CARDS-1C.** Traced the incident (real Cards sign-ups blocked, fixed by eq-cards PR #191 — see the eq-cards changelog) to its actual mechanism: `eq_enforce_function_privacy` (SEC-16) strips `authenticated`/`anon` EXECUTE on every `CREATE OR REPLACE FUNCTION` in a guarded schema on jvkn/zaap/ehow and never re-grants it, so editing an existing RPC silently breaks it for real users unless the same migration re-asserts the grant. eq-cards migration `0111` did exactly that. Added a rule to CLAUDE.md so the next migration author knows to re-grant. Also corrected a stale line claiming in-DB event triggers weren't feasible on these planes — SEC-16 already proved otherwise. eq-shell [PR #1147](https://github.com/eq-solutions/eq-shell/pull/1147), merged.
