@@ -2,15 +2,34 @@
 title: SEC-9 — Rotate the leaked jvkn (eq-canonical) service_role key
 owner: Royce Milmlow
 created: 2026-07-27
-last_updated: 2026-07-27
-status: draft
+last_updated: 2026-08-01
+status: draft — deferred, safer path identified
 read_priority: critical
 scope: Kill the jvkn service_role key pasted into a chat transcript 2026-07-12, and propagate the new one to every consumer without breaking any of them
 ---
 
-**Status:** draft, ready-to-run once Royce picks a rotation window (P0, Royce-gated).
-Mirrors the staged pattern of `archive/f1-ehowg-key-rotation-runbook-2026-06-03.md`
-(same idea, different project/consumers).
+**Status:** draft, deferred 2026-08-01 (Royce — same low-real-risk calibration as SEC-3;
+this exposure never confirmed to have left the local-machine trust boundary). Ready to
+run whenever convenient — no urgency, no P0 rush. Mirrors the staged pattern of
+`archive/f1-ehowg-key-rotation-runbook-2026-06-03.md` (same idea, different
+project/consumers).
+
+**2026-08-01 update — Step 1 is very likely NOT "rotate the JWT secret" anymore.**
+jvkn already has `sb_publishable_`/`sb_secret_`-style keys provisioned (confirmed live:
+`get_publishable_keys` returns both a legacy `anon` JWT and a `type: publishable`
+`sb_publishable_...` key). Per Supabase's own docs, keys on this newer system "no longer
+touch your project's JWT secret," and revoking/reissuing one signs out zero users — unlike
+rolling the JWT secret, which signs out every active session across the whole suite
+(confirmed in code: `eq-shell/netlify/functions/_shared/supabase-jwt.ts` mints every live
+Shell/Field/Service/Cards session token by HMAC-signing with `SUPABASE_JWT_SECRET` — the
+exact secret the old Step 1 would rotate). **Before running this runbook, confirm in the
+jvkn dashboard (Settings → API Keys) that a new secret key can be issued and the legacy
+`service_role` key deactivated independently** — if so, replace Step 1 below with: issue a
+new `sb_secret_` key, do Steps 2–5 with it, then deactivate (not rotate-JWT) the legacy
+service_role key. This should leave `SUPABASE_JWT_SECRET` — and therefore every live
+session — completely untouched. Also confirmed 2026-08-01: no encrypted copy of jvkn's own
+key exists in `shell_control.tenant_routing` (0 rows) — the runbook's "not found anywhere"
+claim checks out.
 
 # SEC-9 runbook — rotate the leaked eq-canonical (jvkn) key
 
