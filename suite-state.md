@@ -60,7 +60,11 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-31)
 
-_No open PRs_
+**eq-field:**
+- #589 v3.5.396 — Safety nav group no longer stays open on other pages
+
+**eq-shell:**
+- #1149 feat(auth): role-tagged self-join links for Apprentice/Labour hire
 
 ---
 
