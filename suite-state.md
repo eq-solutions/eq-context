@@ -60,6 +60,13 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-31)
 
+**eq-field:**
+- #587 v3.5.393 — Roster import/live-edit collision now has a defined winner
+- #586 fix: mobile drawer - relabel "Safety" to "Site Audits", move below Records (v3.5.393)
+
+**eq-service:**
+- #661 feat(reports): wire site photo into PM Check Report cover
+
 **eq-shell:**
 - #1145 feat(auth): gate Field JWT on earned access, not just allowed
 
