@@ -23,20 +23,12 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## eq-cards: real sign-ups were blocked from onboarding — permission grant regression found + fixed (2026-07-31)
-*Session started as a check-in on the "one-login" Cards/Field/Shell initiative — turned out every phase (P1-P5, T1) was already shipped, nothing to build there. Pivoted to exploring mobile role-based view differences (does a promoted worker's view change live? no — next-login only, by design). While tracing a suspected mobile-permissions gap, found it had already been fixed hours earlier in eq-shell PR #1109 — avoided duplicating that work. Verified #1109's 3 unchecked test-plan boxes without logging in (credential entry is off-limits) via code trace + live production data instead. Then ran a full Sentry triage across all EQ apps (20 unresolved issues, org-wide) at Royce's request, which surfaced the real find below.*
-- [x] **`eq_cards_auto_provision` was missing its `authenticated` database permission live** — real Cards sign-ups landed on `/auth/not-provisioned` and got a hard permission-denied trying to provision their personal wallet (Sentry EQ-CARDS-1C, 2 users blocked over ~9 hours). Confirmed via live grants check this was a regression, not the original design — the function's own first migration (0028) granted `authenticated` EXECUTE from day one; nothing in eq-cards' own migration history revoked it since, so it was very likely collateral damage from a broader EXECUTE-revoke security pass elsewhere on the same database. Restored the grant live via Supabase MCP (Royce's explicit go), then wrote it up as a proper migration for the repo's history — eq-cards [PR #191](https://github.com/eq-solutions/eq-cards/pull/191), merged.
-- [x] **Caught a real migration-numbering collision before it broke CI for good** — the PR's first CI run failed the "Migration hygiene" check: another session's PR (#190) had merged a `0112`-numbered migration between when this branch was created and when CI ran. Renumbered to `0113`, re-ran clean, merged.
-- [x] **Full Sentry triage, all EQ apps** — reviewed all 20 unresolved issues org-wide. Two other real user-facing bugs noted but not actioned (see Deferred); four are self-monitoring cron alerts working as designed, not bugs.
-- [x] **eq-shell PR #1109's 3 unchecked test-plan boxes, verified without a live login** — traced the code against the live permission matrix and confirmed against real production data (the `sks` tenant has real Manager/Supervisor/Employee accounts with Ops entitlement enabled) that boxes 1 and 2 are correct. Box 3 (a Security-Group-granted user) can't be verified by anyone right now — `shell_control.user_security_groups` has zero rows in production; nobody has ever actually been assigned to a Security Group despite 8 groups and 28 permission grants being configured.
+## eq-cards + eq-shell: onboarding block fixed, two false "gaps" corrected before building, one real gap closed (2026-07-31 → 2026-08-01)
 
 **Deferred:**
 - [ ] **Royce to confirm EQ-CARDS-1C stops recurring** over the next 24h now the grant is restored. _(added 2026-07-31)_
 - [ ] **`mint-cards-otp` returned 500 once** for a real sks supervisor on mobile (Sentry EQ-SHELL-13) — single occurrence so far, watch for a repeat before digging further. _(added 2026-07-31)_
 - [ ] **eq-field: duplicate script declaration** (Sentry EQ-FIELD-W, `SyntaxError: Identifier 'INCIDENT_TYPES' has already been declared`) — likely a symptom of the already-known "34 always-loaded boot scripts" architecture debt logged elsewhere in this file; not investigated further this session. _(added 2026-07-31)_
-- [x] **Correction to this session's own earlier mistake**: mid-session I flagged `IDENTITY-MODEL.md`'s "`__personal__` ghost tenant retired" line as a live doc-vs-data discrepancy and spawned a background task chip (`task_5c57a60e`) to investigate it. That was wrong — the doc already corrected this claim on 2026-07-30 (its own lines 16-17, §11.3: `__personal__` is permanent, deliberate architecture, not retired; the 47 live rows were already investigated and explained there). I'd only seen a 3-line grep excerpt that stopped just before the correction paragraph. The task chip couldn't be withdrawn (session-state reset since it was created) — **if it's still showing, it's a false alarm, no action needed.** _(caught and corrected 2026-07-31)_
-- [ ] **"Your access changed, sign in again" nudge — deliberately not built.** Came up exploring the next-login-only role-change design; real gap (a promoted user has no signal their view is stale) but needs Royce to pick a delivery mechanism (banner / forced re-auth / email) before any code gets written. _(added 2026-07-31)_
-- [ ] **Security Group scenario (#1109 test-plan box 3) untestable until a real assignment exists** — offered to help set up a test case if Royce wants this actually exercised rather than left as a code-correctness-only claim. _(added 2026-07-31)_
 
 ---
 
@@ -265,12 +257,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ## eq-solves-service: ACB/NSX Test Report shipped with real data; Report Settings toggles extended to 3 more reports (2026-07-29)
 *Two background plans from an earlier session came back and were reviewed with Royce via three separate yes/no calls: (1) build the dormant ACB/NSX Test Report generator against real data, (2) wire the Report Settings toggles (sign-off, cover page, executive summary) into more report types beyond the Customer Report, (3) do the extra refactor needed to gate the Compliance Report's cover page too. All three: yes.*
 
-- [x] **ACB/NSX Test Report — new downloadable report, per completed test.** Real breaker details (make/model/serial/rating/protection settings) and test results now populate the report; previously this generator existed but was never wired to real data. eq-service [PR #644](https://github.com/eq-solutions/eq-service/pull/644), merged + live.
-- [x] **Mid-build catch, fixed before shipping, not after**: comparing the report template against the actual technician checklist screens (`AcbWorkflow.tsx`/`NsxWorkflow.tsx`) found the two used completely different wording for the same checks — the report would have rendered mostly blank. Royce chose "fix the labels before shipping" over shipping broken or holding the whole feature. Relabelled ~35 checklist items and rewired ~20 breaker-attribute fields to their real database columns across both report types.
-- [x] **Report Settings' sign-off / cover page / executive-summary toggles now also apply to the Field Run-Sheet and the PM Check Report** (previously only the Customer Report respected these). eq-service [PR #645](https://github.com/eq-solutions/eq-service/pull/645), merged + live.
-- [x] **Compliance Report's cover page can now also be turned off from Report Settings** — required a small refactor first (the cover was hard-wired into the report body) rather than the two-line change the other reports got. eq-service [PR #646](https://github.com/eq-solutions/eq-service/pull/646), merged + live.
-- [x] Confirmed all three PRs actually deployed — Netlify's production deploy record for service.eq.solutions matches the last merge commit, not just "merged on GitHub."
-- [x] **Secondary Injection test results now show real data too.** Royce asked for this same-day follow-up. Turned out to be a bigger bug than just the SI section: the report's label-matching also silently failed on every visual-checklist row (the "Visual Check:" prefix the app actually stores wasn't being stripped), so the checklist relabel from #644 looked right but never actually showed pass/fail data. Both fixed — confirmed 12/12 against the live checklist data on ehow, and confirmed against a synthetic real-format test since no live check has reached the Secondary Injection step yet. eq-service [PR #647](https://github.com/eq-solutions/eq-service/pull/647), merged + live.
 
 **Deferred:**
 - [ ] **The ACB Test Report has been verified correct by code symmetry with the NSX path, not against a real ACB check** — there are currently zero completed ACB checks in the live database to test against. Worth a quick look the first time SKS actually completes one. _(added 2026-07-29)_
@@ -281,9 +267,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ## eq-solves-service: Contacts list now respects Shell's Service toggle + monthly PM sheet now imports directly (2026-07-29)
 *Two asks in one session: (1) double-check the Service Users list and Contacts list are sourced from canonical, not a separate list — Users already was; Contacts turned out to leak past a toggle. (2) get "August PM.xlsx", Royce's monthly hand-copied work-order sheet, importing directly instead of manual entry.*
 
-- [x] **`/contacts` no longer shows contacts for customers/sites toggled off for Service in Shell.** The canonical contact views (`service.customer_contacts`/`service.site_contacts`) never inherited the `service_enabled` filter that the sites/customers views already had — 93 of 197 customer contacts and 13 of 31 site contacts were leaking through. eq-service [PR #637](https://github.com/eq-solutions/eq-service/pull/637), merged + migration applied live to production (ehow) — confirmed the counts dropped to 104/18.
-- [x] **Maintenance Import now accepts the "titled PM sheet" format** — a free-text title (site + month) above an offset header row, no dedicated Site/Target Start columns, which is the shape of the file Royce had been retyping by hand each month. Parser infers the site and month from the title, and prefers a real per-row Site column when one exists (so a mixed-site sheet still splits correctly). Every inferred date is flagged in the import preview for a check before committing. eq-service [PR #640](https://github.com/eq-solutions/eq-service/pull/640), merged + deployed live to service.eq.solutions — verified the deploy is serving the new code.
-- [x] **Caught a stale-branch risk before merging #640** — the working branch was 4 commits behind `main`, including an unrelated security fix; merged `main` in first so the PR couldn't silently revert other people's work.
 
 **Deferred:**
 - [ ] **First real "August PM"-style import: the "BTCHGR" job plan code on Royce's file doesn't match any existing SKS job plan exactly** (closest is "24VBTCHGR") — the import wizard's existing fuzzy-match step will prompt to confirm or nominate a plan the first time this file type is actually committed. Not a bug, just a heads-up for whoever runs the first real import. _(added 2026-07-29)_
@@ -293,7 +276,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ## eq-solves-service: Field Run-Sheet asset headers now show the maintenance plan's Job Code (2026-07-29)
 *Royce shared a generated Run-Sheet (SY3, standard) and asked for the maintenance plan's Job Code to show on each asset — right now a tech sees ID/Location/WO on the printout but has no way to tell which maintenance plan an asset belongs to without looking it up separately.*
 
-- [x] **Each asset's printed header now shows its Job Code** (e.g. "SJPNL1") next to the existing ID/Location/WO line, for standard maintenance checks. eq-service [PR #638](https://github.com/eq-solutions/eq-service/pull/638), `tsc` clean, awaiting CI + merge.
 
 **Deferred:**
 - [ ] **ACB/NSX breaker-card run-sheets and RCD test run-sheets don't show the Job Code** — Royce chose to scope this session to the standard maintenance checklist only; same gap exists in those report variants if wanted later. _(added 2026-07-29)_
@@ -312,8 +294,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ## eq-shell: licence "Re-review" badge false-flagging — real fix landed, correcting an earlier wrong diagnosis (2026-07-29)
 *PR #1091 (below) was believed to fix this but does not — it guards `app_data.licences` (the tenant-plane copy `staff-resync-licences.ts` keeps current for Field), a different table from `public.licences` (jvkn canonical), which the Staff-page badge actually reads. Royce later reported it was still happening ("this happens alot, licenses keep required a re review for no reason") — root-caused to a jvkn DB trigger (`licences_set_updated_at`) that stamps `updated_at` on every UPDATE regardless of real content change. Found 2 confirmed cross-person batch-touch incidents in the last 45 days that explained 3 of 9 currently-flagged people.*
 
-- [x] **#1091 — fixed Field's tenant-plane copy** (real fix, just not this bug): sync now fetches existing rows first and only writes when a field actually changed. eq-shell [PR #1091](https://github.com/eq-solutions/eq-shell/pull/1091), merged, live.
-- [x] **#1101 — the actual Staff-badge fix**: record a content fingerprint (licence number/expiry/no-expiry/photo+document storage paths) on each verified licence at review time, compare that instead of timestamps. A legacy verified entry with no fingerprint falls back to the old timestamp check unchanged — no regression for existing reviews. eq-shell [PR #1101](https://github.com/eq-solutions/eq-shell/pull/1101), merged, live (274/274 tests pass, no migration needed — jsonb column).
 
 **Deferred:**
 - [ ] **Royce to re-review Bruno Vita Pedrosa, Luke Wheeler, and Mohamed Ahmed** — their current flags trace to the confirmed false-positive batch touches; reviewing them now (post-#1101) records a real fingerprint so they won't be falsely re-flagged again. _(added 2026-07-29)_
@@ -323,8 +303,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ## eq-solves-intake + eq-shell: `/intake`'s commit path was quietly skipping the review queue (2026-07-29)
 *While scoping the redesign work above, checked whether it was safe to keep both Intake UI surfaces live — turned out one of them (`/intake`'s "Into EQ" commit) wrote straight to canonical tables, bypassing the same conflict-detection gate the other surface already enforced. A messy/conflicting row dropped through `/intake` would commit immediately instead of parking for review.*
 
-- [x] **`/intake`'s commit path now routes through the same staging/review gate** as the other importer — a flagged or conflicting row parks in the queue instead of committing straight through, on both surfaces now. eq-solves-intake [PR #80](https://github.com/eq-solutions/eq-solves-intake/pull/80) + eq-shell [PR #1088](https://github.com/eq-solutions/eq-shell/pull/1088), merged, live.
-- [x] **Nav label fixed while in there**: `/intake` was labelled "Import" in the sidebar (Download icon) — relabelled "Intake" (Activity icon) to match what it actually does.
 
 **Deferred:**
 - [ ] **The live end-to-end proof is still outstanding**: drop a deliberately-conflicting test row through production `/intake` and confirm it parks in the queue instead of committing. Blocked this session on the file-upload tool refusing to attach a test file not shared directly by Royce in chat — needs either Royce dragging the file into chat, or Royce doing the drop himself while checked live. This becomes easy to verify now that Overview/To Do is the single place to look. _(added 2026-07-29)_
@@ -335,51 +313,9 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ## eq-cards: netlify.toml dead-config cleanup, orphaned welcome.html removed (2026-07-29)
 *Investigating a report of an old email-login screen appearing on a phone in Brave. Production itself turned out to be correctly configured — the actual cause was a stuck service worker on that one device, not a server bug — but the investigation surfaced a real, unrelated config problem worth fixing while in the area.*
 
-- [x] **Removed netlify.toml's entire `[[redirects]]`/`[[headers]]` config** — confirmed live it was never actually read in production (the GitHub Actions deploy zip-uploads `build/web` only, so root `netlify.toml` isn't shipped). `web/_redirects` and `web/_headers` are the real, live sources; a duplicate/conflicting header block here already broke CSP once before. Folded the one rule only netlify.toml had (`main.dart.wasm` cache header) into `web/_headers` so nothing was lost. eq-cards [PR #186](https://github.com/eq-solutions/eq-cards/pull/186), merged.
-- [x] **Deleted `web/welcome.html`** — a "smart front door" marketing page correctly retired from live routing on 2026-06-23 (GoRouter took over root routing) but never actually deleted; still directly reachable by URL, nothing linked to it. Confirmed no remaining references anywhere in the repo before deleting.
-- [x] **STATUS.md's auth-flow doc corrected** — still described the old email-OTP flow; production has been phone-OTP-only at `/auth/email` since the auth-hardening sprint, the route/screen/file names just never got renamed. Flagged as a background task (`task_814bdaef`), Royce ran it in a separate session, landed direct to `main` (`447ba9f`, docs-only, no deploy). STATUS.md's other pre-existing stale items (SW claim, Email OTP dashboard-mode check) were left untouched, still tracked in the 2026-07-06 entry elsewhere in this file.
 
 **Deferred:**
 - [ ] **Royce to clear Brave's site data for cards.eq.solutions on his own phone** — the actual reported symptom (an old email-login screen). A Flutter service worker registered on that device before the phone-OTP flip is still serving its own cached copy of the old build; production itself is correctly configured (verified live). A full close + clear-site-data + reopen forces the fresh navigation the browser's update check needs. _(added 2026-07-29)_
-
----
-
-## eq-intake: Reconcile silently skipped phone/ABN cleanup for customer and contact imports (2026-07-29)
-*A bug report named the exact file and lines; confirmed by direct code read that the fix matched the report before touching anything.*
-
-- [x] **Fixed the entity-name mismatch that made Reconcile skip phone-number and ABN cleanup for customers and contacts** — the lookup used the wrong spelling internally (plural vs singular) so it silently never fired for those two, only staff happened to work by coincidence. eq-solves-intake [PR #82](https://github.com/eq-solutions/eq-solves-intake/pull/82), merged, branch deleted.
-
-**Deferred:**
-- [ ] **Royce to reconcile a customer CSV with a messy phone number/ABN and confirm it now gets cleaned up** — verified in code + typecheck, not yet clicked through live. _(added 2026-07-29)_
-
----
-
-## eq-shell: EQ Ops — view archived quotes without restoring them (2026-07-29)
-
-- [ ] **Royce to click through live**: EQ Ops → "…" → Archived → open a quote via View, confirm it shows a read-only "Archived" badge and only Restore/Download/Delete (no Edit/Mark as Sent/Close/Archive controls), then confirm Restore still works from there. Verified only via the Netlify production deploy record (commit `2b01bf3b` live), not an actual click-through — no production login session in this environment. eq-shell [PR #1093](https://github.com/eq-solutions/eq-shell/pull/1093), merged. _(added 2026-07-29)_
-
----
-
-## eq-shell: removed a dead, never-linked duplicate import screen (2026-07-29)
-*Investigating a staging-gate fix turned up 6 import-related pages built back in May that were never actually reachable from anywhere in the app — no sidebar link, no button, nothing. They duplicated the working Import screen people already use. Given the choice to finish wiring them in or remove them, Royce chose to remove them.*
-
-- [x] **Deleted the 6 unreachable per-domain import pages and their code** (`intake/core`, `intake/field`, `intake/quotes`, `intake/cards`, `intake/service`, `intake/review`) — confirmed first that nothing else in the app or any other EQ app ever linked to them. eq-shell [PR #1090](https://github.com/eq-solutions/eq-shell/pull/1090), merged, deploying to core.eq.solutions now.
-
-**Deferred:**
-- [ ] **Royce to click through the Import screen (`/intake`) on core.eq.solutions once the deploy lands** — confirm it still loads and still commits normally. That screen wasn't touched, but worth a look since it's the app's only working import path now. _(added 2026-07-29)_
-
----
-
-## eq-service: page-only export bug closed out everywhere, Excel export added to 3 pages (2026-07-29)
-*Follow-on from the Maximo PDF import thread (full write-up in `pending-archive.md`, 2026-07-29). The same "export only grabs the current page" bug that hit Maintenance Plans also existed on Sites, Customers, Instruments, and the Audit Log — fixed in a background session Royce started, reviewed and merged here. Royce then asked whether Excel export was a big lift; it wasn't (the library was already in use elsewhere in the app) — built and shipped the same session.*
-
-- [x] **Sites/Customers/Instruments/Audit Log export now downloads the full filtered list**, not just the current page — same fix pattern as Maintenance Plans. eq-service [PR #632](https://github.com/eq-solutions/eq-service/pull/632), merged.
-- [x] **Excel export added to Assets, Job Plans, and Maintenance Checks** — the Export button now offers a choice of CSV or Excel. Reused an Excel-writing library already in use elsewhere in the app, so this was a small addition, not new infrastructure. eq-service [PR #633](https://github.com/eq-solutions/eq-service/pull/633), merged.
-- [x] **Found and fixed a second bug on the Maintenance Checks page while wiring the above**: the "tasks completed" count next to every check was always showing a 0 for the total (e.g. "5/0" instead of "5/12") — the total was never actually being calculated, just hardcoded. Fixed in the same change.
-- [x] **Confirmed the Contacts page (`/sks/service/contacts`) is fully canonical** — reads and writes route straight through to the same shared contacts data Shell and Field use, no separate copy that could drift.
-
-**Deferred:**
-- [ ] **Royce to click through Assets/Job Plans/Maintenance Checks once the deploy lands** — confirm the Export button's new dropdown offers CSV and Excel, both download the full list, and the Maintenance Checks "tasks completed" count now shows a real number instead of "/0". Not click-tested live this session — no login credentials available in this environment, verified via type-checking + the full automated test suite + code review only. _(added 2026-07-29)_
 
 ---
 
@@ -394,14 +330,9 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ## eq-field: production deploy stalled after a merge, manual Netlify CLI-proxy deploy fails from a git worktree (2026-07-29)
 *Merging eq-field PR #567 (v3.5.379) didn't reach field.eq.solutions for ~1h49m — much longer than the ~20-30s lag seen on the three earlier merges that same day. GitHub's `main` was confirmed correct via the API the whole time; the earlier write-up called this a Netlify-side "stall," which undersold it — the deploy log (read directly off the Netlify dashboard, not inferable from GitHub) shows it was an outright failed build, not a slow one.*
 
-- [x] Tried the Netlify MCP's CLI-proxy deploy trigger as a fix — failed with `open /opt/build/repo/.git: is a directory`. Root cause: the session's checkout is a git worktree (`.git` is a small pointer file there), and Netlify's build environment already has a real `.git` directory cached at that same path from prior native GitHub-integration builds — the local zip upload collides with it on extraction every time, not intermittently.
-- [x] Netlify dashboard's manual "Trigger deploy" button worked immediately (re-clones from GitHub directly, bypassing the local zip path entirely). Production confirmed live on v3.5.379 right after.
 
 **Both deferred items below investigated 2026-07-29 (same day), via the Netlify dashboard deploy log — not visible from GitHub or from the Netlify MCP's reader tools, which only expose single deploys by ID, not a project's deploy history:**
-- [x] **Root cause of the original stall found — it wasn't a queue delay, it was a hard failure.** The real timeline (all times AEST): auto-deploy fired immediately at merge (5:00pm) and **failed outright** with `Failed to fetch environment variables` — a Netlify-platform-side error pulling the site's env vars at build start, nothing wrong in eq-field's code or config. It then sat dead with no retry until the CLI-proxy attempt at 6:44pm (also failed, the worktree `.git` collision) and the manual dashboard trigger at 6:49pm (succeeded, 8s build). So the "several minutes" framing above was wrong — nothing was building for the full ~1h49m gap; the first attempt died immediately and silently. GitHub's Deployments API (`gh api repos/eq-solutions/eq-field/deployments`) and commit-status API both return empty for this commit — Netlify's native integration posts neither for production deploys on `main`, so this failure is genuinely invisible from git; the Netlify deploy log is the only place it shows up.
-- [x] **"Same flakiness as eq-receipts" — checked, not corroborated.** eq-receipts' own deploy log (last 12 deploys, spanning back to the previous day) is 100% clean — every deploy `Published`/`Completed` in 13-15s, no failures of any kind. Whatever prompted that comparison either predates this visible window or was misattributed; don't carry it forward as a confirmed pattern. The team (`Milmlow's team`, Netlify Pro, 10 projects: eq-field/eq-shell/eq-service/eq-cards/sks-nsw-labour/sks-comms/eq-receipts/+3 personal) shares one build-concurrency pool, which is a real amplifier for cross-repo queueing on a busy day, but that's not what happened here — this was a single build failing, not multiple builds contending for slots.
 - [ ] **If `Failed to fetch environment variables` recurs on any site**, check status.netlify.com for a platform incident at that timestamp before assuming a repo-side cause — this instance had no corresponding repo change that could explain it. No action taken this pass since a single occurrence isn't enough to file anything upstream. _(added 2026-07-29)_
-- [x] CLI-proxy-from-worktree re-confirmed in the same deploy log (`Production: main@HEAD Failed — ...open /opt/build/repo/.git: is a directory`, 6:44pm) — matches the original root-cause exactly, nothing new to investigate. Guidance stands: don't retry the CLI proxy from a worktree checkout, use the dashboard's "Trigger deploy" button.
 
 ---
 
@@ -409,15 +340,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 **Deferred:**
 - [ ] **One DoS CVE left deliberately unfixed**: `brace-expansion` inside `exceljs`'s zip-writer chain (`archiver` → `archiver-utils` → `glob@7` → `minimatch@3.1.5`). The only full fix is a `minimatch` major bump, and this deep tree isn't verified against `minimatch`'s newer API — accepted as a residual rather than risk breaking xlsx writing in production. Low real-world exploitability (internal file-glob matching during archive creation, not attacker-reachable input). _(added 2026-07-28)_
-
----
-
-## eq-shell: licence-review badge never caught a Cards-side edit to an already-reviewed licence — fixed, plus the Field-sync gap it exposed (2026-07-28)
-*Royce asked to design and build a notification for admins when an already-approved worker edits a licence in Cards. Investigation found the premise needed correcting first: Shell's own Staff-page licence view reads live from jvkn canonical, so it was never stale — the actual bug was narrower (the review badge only checked `created_at`, so a correction to an already-reviewed licence never re-flagged, only a brand-new licence did) and a separate, real gap existed for EQ Field's own tenant-plane copy of licences, which had no sync path at all once a staff member had any licence on file (the one manual "Re-sync from Cards" button is unreachable past that point). Steelmanned before building the second half, then built both.*
-
-
-**Deferred:**
-- [ ] **Royce to confirm live**: edit an already-reviewed licence's expiry/number in Cards for an approved worker, confirm the Staff page badge flips to "changed since — re-review needed" without a hard refresh. _(added 2026-07-28)_
 
 ---
 
@@ -430,15 +352,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ## eq-shell: Audit log was drowning in empty "Automatic" rows — root-caused, fixed, then a live test caught the first fix didn't actually work (2026-07-30)
 
 - [ ] **Royce to click through live**: open Activity log → Suite activity tab, confirm the sentences read sensibly against real SKS data (quotes, shifts, licence reviews), and check the new search/filter on that tab works as expected. New quote events should now show "EQ Ops" natively (not just relabelled) — worth a fresh quote status change to confirm end-to-end. _(added 2026-07-30, PRs #1121/#1123/#1126/#1129/#1132 merged, migrations 0225+0226+0227 dispatched, workers-canonical-sync redeployed v12 — full write-up in `sessions/2026-07-30.md` and `changelog/eq-shell.md`)_
-
----
-
-## eq-cards: Wallet nagged for "Photo ID" even though a Driver Licence was already held (2026-07-28)
-*Royce reported the Wallet's "SKS Technologies asks its team for Photo ID" banner showing even though he holds a Driver Licence. Root-caused to `eq_cards_my_credential_gaps()` (jvkn RPC behind the banner) doing an exact `licence_type` match only — no idea that Shell's own compliance matrix (`PHOTO_ID_EQUIVALENTS` in `staffLib.ts`) has treated Photo ID / Driver Licence / Passport as interchangeable proof-of-identity since that feature shipped. Cards and Shell were quietly disagreeing on what counts as "held".*
-
-
-**Deferred:**
-- [ ] **Royce to confirm live**: reload the Wallet and confirm the Photo ID nag no longer shows for a worker who holds a Driver Licence or Passport. _(added 2026-07-28)_
 
 ---
 
@@ -472,36 +385,10 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## eq-shell: TOTP backup codes shipped, closing the authenticator-lockout gap (2026-07-28)
-*Follow-on from the earlier "eq-shell vs industry" audit session, which flagged that forced-TOTP users (managers/supervisors/platform admins) had no way back in if they lost their phone. Built the recovery path: one-time codes generated at TOTP setup, shown once, hashed (never stored in plain text), single-use, with their own login path and a settings-page way to regenerate. Every generate/use/regenerate is logged. Royce approved the build, then approved applying the database change and merging — both done, deploy triggered.*
-
-
-**Deferred:**
-- [ ] **Royce to click through the real flow once the deploy lands**: set up two-step verification, save the codes shown, sign out, sign back in using one of the backup codes instead of the phone app, then generate a fresh set from Settings and confirm the old ones stop working. _(added 2026-07-28)_
-
----
-
-## eq-cards + eq-shell: blurry licence photo fixed for a worker, admin "replace photo" tool shipped, a duplicate-licence gap closed (2026-07-28)
-
-- [ ] **Royce to confirm live**: open Moahmmed Alsadiq Ahmed Elsayed on the Staff page, check the Photo ID and White Card show the new clearer photos, and that the "Replace photo" button now returns to normal after use. _(added 2026-07-28)_
-
----
-
 ## eq-receipts: Exports archive/delete + PDF page-splitting shipped, deploy pipeline gaps found (2026-07-28)
 
 - [ ] **eq-receipts' Netlify site doesn't auto-deploy on push to `main`** despite `netlify.toml` and the app's own kickoff doc assuming it does — every deploy this session needed a manual trigger. The Netlify MCP's own CLI-proxy deploy path 404'd reproducibly (three times now); the dashboard's manual "Trigger deploy" is the only confirmed-working path right now. Root cause not investigated — worth fixing so this doesn't need manual triggering forever. _(added 2026-07-28)_
   - **Correction (2026-07-29):** a same-day session merged a PR via `gh pr merge` and Netlify auto-deployed cleanly within a minute of the merge commit, no manual trigger needed — confirmed live via the Netlify MCP's deploy record (commit ref matched exactly, build succeeded, secret scan clean). Only retested the PR-merge path, not the original direct-push-to-main repro, so leaving this open rather than closing outright — but the auto-deploy pipeline itself is evidently not broken end-to-end.
-
----
-
-## eq-shell: Google Maps address autocomplete fixed in New Customer wizard (2026-07-28)
-*Royce hit it live while adding Microsoft as a new customer — the site address field never showed the Google suggestions dropdown. Root-caused: the autocomplete widget only tries to attach once, when the form first loads, and on that step the address box doesn't exist yet (it only appears once you reach the second step of the wizard) — so it gave up before the field was ever on screen. Fixed so it watches for the field to actually appear instead of giving up after one look.*
-
-
-**Deferred:**
-- [ ] **Royce to click through a real "New customer" add** once convenient, to confirm the address dropdown now actually appears and fills suburb/state (verified in code + build, not yet eyeballed live). _(added 2026-07-28)_
-
-**Note:** this PR's CI run also surfaced an unrelated security finding (a database function on the SKS system callable by anyone, not just logged-in users) — spun off as background task `task_fee4ba20`. Already resolved same day by a concurrent session: logged as **SEC-15**, fixed via eq-shell [PR #1061](https://github.com/eq-solutions/eq-shell/pull/1061), live-verified. See today's session log for full detail — no action needed here.
 
 ---
 
@@ -629,22 +516,9 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## eq-shell: black-screen-on-load fixed for real, then a follow-up made it actually visible (2026-07-27)
-
-- [ ] **Royce to confirm live** that the loading screen now shows a clearly visible spinner instead of a black or blank pane, next time he opens Service/Field/Cards from Core. _(added 2026-07-27)_
-
----
-
 ## eq-service: finished the security-headers cleanup, cleared the dependency backlog, found the npm audit gate isn't fully fixable (2026-07-27)
 
 - [ ] **Needs Royce's call: what to do about the still-red security scanner check.** Not urgent (verified no live exposure), but it won't turn green on its own — either wait for the linter/spreadsheet-library maintainers to catch up, or change what the check itself looks for so it stops flagging things already confirmed safe. **Re-checked live 2026-07-28: still red, same cause** — eq-solves-service's "CI" workflow, "Typecheck + audit" job, `npm audit` reports 16 high-severity findings, all from devDependency chains (`eslint-plugin-*` → `minimatch`; `exceljs`/`archiver` → `glob`/`readdir-glob` → `minimatch`) — none reachable from production code. Deliberately not touching this myself: loosening what a security gate checks is a policy call on the gate itself, not a same-scope fix, even though today's findings are all false-positive-for-this-app. Two real options if you want it green: (a) `npm audit --omit=dev` in CI (only fails on prod-dependency findings — the correct long-term fix, since dev-tooling CVEs can never be exploited in the shipped app), or (b) leave it red and just know why. _(added 2026-07-27, re-verified 2026-07-28)_
-
----
-
-## eq-shell/eq-cards: tenant data-plane security sweep + a real login-blocking bug fixed for a live user (2026-07-27)
-
-**Deferred:**
-- [ ] **Royce to click through the new "who gets notified" Settings control** to confirm it reads clearly and saves correctly — code-complete and tested, not yet user-verified. _(added 2026-07-27)_
 
 ---
 
@@ -798,12 +672,6 @@ changelog and session logs are for.
 
 ---
 
-## eq-shell: Customer search now shows what matched (2026-07-23)
-*Direct follow-up to the widened search shipped above — Royce asked if a result could show why it matched when it wasn't the company name itself.*
-- [ ] **Not yet click-tested live** — build-verified only; nobody has actually searched for a site/contact/contract on the real Customers page and confirmed the right label shows. _(added 2026-07-23)_
-
----
-
 ## Architecture implications from the SKS national-scale discovery (2026-07-23)
 *Companion to the discovery session logged in `sks/pending.md` — that entry has the business/org context (org chart, headcount trajectory, Upvise decision); this is the EQ product/engineering backlog it implies. Nothing built yet — these are the real gaps the discussion surfaced, not yet scoped into actual work.*
 - [ ] **Identity model needs a second dimension: division, not just tenant/role.** The SKS org chart shows state alone doesn't match how the business actually reports — VIC's headcount splits across national functional divisions (Major Projects, Data Centre Solutions, AV, HV) that cut across every state. Recommended direction (not yet built): keep the single-tenant model (don't fork Supabase projects per state — see `system/architecture.md` Control Layer section for why physical separation is reserved for separate *customers*, not sub-units of one), but extend the JWT claim set to carry `state`/`region` **and** `division`, with a layered exec view (State GM → Regional GM → Divisional GM → Group exec) rather than the current flat `is_platform_admin` bypass. _(added 2026-07-23)_
@@ -833,14 +701,9 @@ changelog and session logs are for.
 
 ---
 
-## eq-shell Suppliers: fixed squashed columns + a stale-workspace-switch bug that briefly exposed the wrong tenant's data (2026-07-23)
-*Royce reported the Suppliers login/password columns "showing then disappearing" and asked to check the wiring for a security issue.*
-- [ ] Royce to click through a workspace switch + the Suppliers page once live to confirm the fix. _(added 2026-07-23)_
-
 ## eq-shell: confirms the exact "fake private folder" bug just found + fixed on eq-solves-service also exists here (2026-07-23)
 
 - [ ] **The tripwire fix eq-solves-service got today (see that entry below) hasn't been built for eq-shell, and eq-shell needs it too.** This session's assigned private folder had nothing in it — ended up doing all its real work in the one shared master copy instead, same mechanism as eq-solves-service's bug. Confirmed live mid-session: a second, unrelated concurrent session's own work-in-progress (a database list-loading improvement) was sitting there uncommitted where this session could see it, and that session's own folder-switch changed what this session was pointed at partway through, without warning. Nothing was lost either time — caught before anything got mixed up — but it's luck, not a safeguard. _(added 2026-07-23)_
-- [x] **PR #973 second look, closed out 2026-08-01** — the "worth a second look before merge" flag was moot by the time it was picked up; #973 had already merged same-day (2026-07-23) and is confirmed live on core.eq.solutions. Checked the one flagged behaviour change directly against live data on both tenants: the "Overdue follow-up" filter's new, stricter definition (excludes quotes already won/invoiced/lost, not just any quote with a stale follow-up date) currently produces **identical counts to the old definition** — 1/1 on SKS, 0/0 on eq — so the gap is latent, not yet visible to anyone. Royce confirmed: keep the stricter definition going forward, no code change needed.
 
 ---
 
@@ -1110,12 +973,6 @@ changelog and session logs are for.
 ## Terms/legal review across the EQ suite ahead of Royce's Monday SKS meeting with Adam (2026-07-16, REVIEWED + FIXED + LIVE)
 *Royce has a Monday meeting with Adam (SKS) to discuss adopting some of what's been built + security around data handling — asked for a full review of terms/legal/consent text across EQ Cards and EQ Field (and anywhere else it might live) in case anything reads as "aggressively written." Also worked through positioning: Royce is SKS NSW Ops Manager AND EQ founder, wants to avoid any appearance of conflict of interest, and landed on framing Monday as "I built this because I needed it" (personal tooling, dogfooded by SKS) rather than a product pitch — no "customer"/"case study"/marketing language.*
 - [ ] **Not checked: live data cleanliness / Sentry error surfacing on whatever gets demoed live Monday**, and the eq-field Privacy Notice modal's links weren't click-tested (read-only content review only). Offered, Royce hadn't said go as of session close. _(added 2026-07-16)_
-
----
-
-## EQ Field — Pipeline: real manual-remove (archive gated + restorable + permanent delete) + in-browser sample data for demos (2026-07-15, BOTH MERGED + LIVE)
-*SKS raised that Pipeline data had no way to be manually removed. Root cause: an archive action already existed but was ungated, unaudited, and one-way — a tender vanished from the board with its data untouched in the database and no way to see it again. Fixed that, then added a real permanent-delete reachable only from the archived list (archive-first is the deliberate safety gate, Royce's call: "Both"). Separately, built an in-browser-only sample-data toggle so the Pipeline/Resources/Accounts screens can be demoed to the internal EQ team (Royce's call) without ever touching real SKS data.*
-- [ ] **Not click-tested live** — SKS Pipeline is triple-gated to the SKS tenant; this session had no SKS login to verify either feature by hand. Worth a quick real click-through next time you're signed in, especially "Load sample data" before demoing it to anyone. _(added 2026-07-15)_
 
 ---
 

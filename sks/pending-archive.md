@@ -1,7 +1,7 @@
 ---
 title: SKS Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-07-30
+last_updated: 2026-08-01
 scope: Done items rotated out of sks/pending.md nightly by scripts/rotate_pending.py to keep the live doc scannable. Nothing here is actionable — pure historical record (also covered in changelogs and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -322,5 +322,20 @@ output).*
 ## Quote pipeline "Pending" stage — looked at, decided not to build (2026-07-27) (rotated 2026-07-30)
 *Royce asked whether a "Pending" stage (quote-to-job, awaiting PO) should be added, since a lot of jobs sit in "Open" waiting on a PO. Checked the live numbers before building anything: "Open" barely had any won-but-unpaperworked quotes (3 total) — the real conflation was inside "Job created," which lumped 5 quotes still awaiting a PO together with 12 that already had one. Built the corrected, narrower version (splitting "Job created" from "In Progress" by PO status) and opened it as a PR, but Royce decided not to touch statuses at all for now — a lot of the underlying status plumbing is backend complexity that isn't actually surfaced to the team, not worth the churn currently.*
 - [x] **Closed unmerged, per Royce** — eq-shell PR #1032 opened, then closed without merging. No live change.
+
+---
+
+## SKS national scale discovery — "what breaks EQ at ~2,000 employees" (2026-07-23) (rotated 2026-08-01 — open items remain in pending.md)
+
+
+---
+
+## SKS Field — session 2026-07-21 (mobile My Schedule + home tile: show Sat/Sun when rostered) (rotated 2026-08-01)
+
+**Trigger:** Royce spotted the mobile "My Schedule" day cards only showing Monday-Friday, even though a screenshot showed people rostered to work weekends.
+
+**Completed:**
+
+**Deferred:**
 
 ---

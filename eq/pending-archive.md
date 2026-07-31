@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-07-31
+last_updated: 2026-08-01
 scope: Done items rotated out of eq/pending.md nightly by scripts/rotate_pending.py (per-item since 2026-07-27; before that, occasional manual whole-section moves). Nothing here is actionable — pure historical record (also covered in eq/changelog/*.md and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -1623,5 +1623,185 @@ contain the same values and were pushed before push-protection caught up.
 
 - [x] **Edge function redeploy confirmed** — `list_edge_functions`/`get_edge_function` on jvkn showed `workers-canonical-sync` at version 13, updated 2026-07-30 20:16:16 UTC (90 seconds after the PR merged), and the deployed source matches the merged fix exactly (admin_actor_id priority, isCronReconcile detection, x-eq-actor header logic all present).
 - [x] **Live verification of all three test-plan cases, confirmed against real production data** (not synthetic tests) via `ehow.app_data.audit_log`: (1) **admin edit → admin attributed** — Royce Milmlow (`is_platform_admin: true`) edited 16+ different workers' staff rows in one batch on 2026-07-31 03:39 UTC; every row correctly attributed `actor_id` to Royce, not the affected worker. (2) **self-edit → worker attributed** — Richard Brown (supervisor, not admin) edited his own staff row 2026-07-30 21:44 UTC; correctly attributed to himself. (3) **reconcile → no actor** — the nightly `eq_reconcile_worker_sync()` pass at 2026-07-31 02:35 UTC touched Ben Ritchie's and Rhys Scott's rows with `actor_id: null, source: 'system'`, exactly as designed.
+
+---
+
+## eq-solves-service: ACB/NSX Test Report shipped with real data; Report Settings toggles extended to 3 more reports (2026-07-29) (rotated 2026-08-01 — open items remain in pending.md)
+
+- [x] **ACB/NSX Test Report — new downloadable report, per completed test.** Real breaker details (make/model/serial/rating/protection settings) and test results now populate the report; previously this generator existed but was never wired to real data. eq-service [PR #644](https://github.com/eq-solutions/eq-service/pull/644), merged + live.
+- [x] **Mid-build catch, fixed before shipping, not after**: comparing the report template against the actual technician checklist screens (`AcbWorkflow.tsx`/`NsxWorkflow.tsx`) found the two used completely different wording for the same checks — the report would have rendered mostly blank. Royce chose "fix the labels before shipping" over shipping broken or holding the whole feature. Relabelled ~35 checklist items and rewired ~20 breaker-attribute fields to their real database columns across both report types.
+- [x] **Report Settings' sign-off / cover page / executive-summary toggles now also apply to the Field Run-Sheet and the PM Check Report** (previously only the Customer Report respected these). eq-service [PR #645](https://github.com/eq-solutions/eq-service/pull/645), merged + live.
+- [x] **Compliance Report's cover page can now also be turned off from Report Settings** — required a small refactor first (the cover was hard-wired into the report body) rather than the two-line change the other reports got. eq-service [PR #646](https://github.com/eq-solutions/eq-service/pull/646), merged + live.
+- [x] Confirmed all three PRs actually deployed — Netlify's production deploy record for service.eq.solutions matches the last merge commit, not just "merged on GitHub."
+- [x] **Secondary Injection test results now show real data too.** Royce asked for this same-day follow-up. Turned out to be a bigger bug than just the SI section: the report's label-matching also silently failed on every visual-checklist row (the "Visual Check:" prefix the app actually stores wasn't being stripped), so the checklist relabel from #644 looked right but never actually showed pass/fail data. Both fixed — confirmed 12/12 against the live checklist data on ehow, and confirmed against a synthetic real-format test since no live check has reached the Secondary Injection step yet. eq-service [PR #647](https://github.com/eq-solutions/eq-service/pull/647), merged + live.
+
+---
+
+## eq-solves-service: Contacts list now respects Shell's Service toggle + monthly PM sheet now imports directly (2026-07-29) (rotated 2026-08-01 — open items remain in pending.md)
+
+- [x] **`/contacts` no longer shows contacts for customers/sites toggled off for Service in Shell.** The canonical contact views (`service.customer_contacts`/`service.site_contacts`) never inherited the `service_enabled` filter that the sites/customers views already had — 93 of 197 customer contacts and 13 of 31 site contacts were leaking through. eq-service [PR #637](https://github.com/eq-solutions/eq-service/pull/637), merged + migration applied live to production (ehow) — confirmed the counts dropped to 104/18.
+- [x] **Maintenance Import now accepts the "titled PM sheet" format** — a free-text title (site + month) above an offset header row, no dedicated Site/Target Start columns, which is the shape of the file Royce had been retyping by hand each month. Parser infers the site and month from the title, and prefers a real per-row Site column when one exists (so a mixed-site sheet still splits correctly). Every inferred date is flagged in the import preview for a check before committing. eq-service [PR #640](https://github.com/eq-solutions/eq-service/pull/640), merged + deployed live to service.eq.solutions — verified the deploy is serving the new code.
+- [x] **Caught a stale-branch risk before merging #640** — the working branch was 4 commits behind `main`, including an unrelated security fix; merged `main` in first so the PR couldn't silently revert other people's work.
+
+---
+
+## eq-solves-service: Field Run-Sheet asset headers now show the maintenance plan's Job Code (2026-07-29) (rotated 2026-08-01 — open items remain in pending.md)
+
+- [x] **Each asset's printed header now shows its Job Code** (e.g. "SJPNL1") next to the existing ID/Location/WO line, for standard maintenance checks. eq-service [PR #638](https://github.com/eq-solutions/eq-service/pull/638), `tsc` clean, awaiting CI + merge.
+
+---
+
+## eq-shell: licence "Re-review" badge false-flagging — real fix landed, correcting an earlier wrong diagnosis (2026-07-29) (rotated 2026-08-01 — open items remain in pending.md)
+
+- [x] **#1091 — fixed Field's tenant-plane copy** (real fix, just not this bug): sync now fetches existing rows first and only writes when a field actually changed. eq-shell [PR #1091](https://github.com/eq-solutions/eq-shell/pull/1091), merged, live.
+- [x] **#1101 — the actual Staff-badge fix**: record a content fingerprint (licence number/expiry/no-expiry/photo+document storage paths) on each verified licence at review time, compare that instead of timestamps. A legacy verified entry with no fingerprint falls back to the old timestamp check unchanged — no regression for existing reviews. eq-shell [PR #1101](https://github.com/eq-solutions/eq-shell/pull/1101), merged, live (274/274 tests pass, no migration needed — jsonb column).
+
+---
+
+## eq-solves-intake + eq-shell: `/intake`'s commit path was quietly skipping the review queue (2026-07-29) (rotated 2026-08-01 — open items remain in pending.md)
+
+- [x] **`/intake`'s commit path now routes through the same staging/review gate** as the other importer — a flagged or conflicting row parks in the queue instead of committing straight through, on both surfaces now. eq-solves-intake [PR #80](https://github.com/eq-solutions/eq-solves-intake/pull/80) + eq-shell [PR #1088](https://github.com/eq-solutions/eq-shell/pull/1088), merged, live.
+- [x] **Nav label fixed while in there**: `/intake` was labelled "Import" in the sidebar (Download icon) — relabelled "Intake" (Activity icon) to match what it actually does.
+
+---
+
+## eq-cards: netlify.toml dead-config cleanup, orphaned welcome.html removed (2026-07-29) (rotated 2026-08-01 — open items remain in pending.md)
+
+- [x] **Removed netlify.toml's entire `[[redirects]]`/`[[headers]]` config** — confirmed live it was never actually read in production (the GitHub Actions deploy zip-uploads `build/web` only, so root `netlify.toml` isn't shipped). `web/_redirects` and `web/_headers` are the real, live sources; a duplicate/conflicting header block here already broke CSP once before. Folded the one rule only netlify.toml had (`main.dart.wasm` cache header) into `web/_headers` so nothing was lost. eq-cards [PR #186](https://github.com/eq-solutions/eq-cards/pull/186), merged.
+- [x] **Deleted `web/welcome.html`** — a "smart front door" marketing page correctly retired from live routing on 2026-06-23 (GoRouter took over root routing) but never actually deleted; still directly reachable by URL, nothing linked to it. Confirmed no remaining references anywhere in the repo before deleting.
+- [x] **STATUS.md's auth-flow doc corrected** — still described the old email-OTP flow; production has been phone-OTP-only at `/auth/email` since the auth-hardening sprint, the route/screen/file names just never got renamed. Flagged as a background task (`task_814bdaef`), Royce ran it in a separate session, landed direct to `main` (`447ba9f`, docs-only, no deploy). STATUS.md's other pre-existing stale items (SW claim, Email OTP dashboard-mode check) were left untouched, still tracked in the 2026-07-06 entry elsewhere in this file.
+
+---
+
+## eq-intake: Reconcile silently skipped phone/ABN cleanup for customer and contact imports (2026-07-29) (rotated 2026-08-01)
+*A bug report named the exact file and lines; confirmed by direct code read that the fix matched the report before touching anything.*
+
+- [x] **Fixed the entity-name mismatch that made Reconcile skip phone-number and ABN cleanup for customers and contacts** — the lookup used the wrong spelling internally (plural vs singular) so it silently never fired for those two, only staff happened to work by coincidence. eq-solves-intake [PR #82](https://github.com/eq-solutions/eq-solves-intake/pull/82), merged, branch deleted.
+
+**Deferred:**
+
+---
+
+## eq-shell: EQ Ops — view archived quotes without restoring them (2026-07-29) (rotated 2026-08-01)
+
+---
+
+## eq-shell: removed a dead, never-linked duplicate import screen (2026-07-29) (rotated 2026-08-01)
+*Investigating a staging-gate fix turned up 6 import-related pages built back in May that were never actually reachable from anywhere in the app — no sidebar link, no button, nothing. They duplicated the working Import screen people already use. Given the choice to finish wiring them in or remove them, Royce chose to remove them.*
+
+- [x] **Deleted the 6 unreachable per-domain import pages and their code** (`intake/core`, `intake/field`, `intake/quotes`, `intake/cards`, `intake/service`, `intake/review`) — confirmed first that nothing else in the app or any other EQ app ever linked to them. eq-shell [PR #1090](https://github.com/eq-solutions/eq-shell/pull/1090), merged, deploying to core.eq.solutions now.
+
+**Deferred:**
+
+---
+
+## eq-service: page-only export bug closed out everywhere, Excel export added to 3 pages (2026-07-29) (rotated 2026-08-01)
+*Follow-on from the Maximo PDF import thread (full write-up in `pending-archive.md`, 2026-07-29). The same "export only grabs the current page" bug that hit Maintenance Plans also existed on Sites, Customers, Instruments, and the Audit Log — fixed in a background session Royce started, reviewed and merged here. Royce then asked whether Excel export was a big lift; it wasn't (the library was already in use elsewhere in the app) — built and shipped the same session.*
+
+- [x] **Sites/Customers/Instruments/Audit Log export now downloads the full filtered list**, not just the current page — same fix pattern as Maintenance Plans. eq-service [PR #632](https://github.com/eq-solutions/eq-service/pull/632), merged.
+- [x] **Excel export added to Assets, Job Plans, and Maintenance Checks** — the Export button now offers a choice of CSV or Excel. Reused an Excel-writing library already in use elsewhere in the app, so this was a small addition, not new infrastructure. eq-service [PR #633](https://github.com/eq-solutions/eq-service/pull/633), merged.
+- [x] **Found and fixed a second bug on the Maintenance Checks page while wiring the above**: the "tasks completed" count next to every check was always showing a 0 for the total (e.g. "5/0" instead of "5/12") — the total was never actually being calculated, just hardcoded. Fixed in the same change.
+- [x] **Confirmed the Contacts page (`/sks/service/contacts`) is fully canonical** — reads and writes route straight through to the same shared contacts data Shell and Field use, no separate copy that could drift.
+
+**Deferred:**
+
+---
+
+## eq-field: production deploy stalled after a merge, manual Netlify CLI-proxy deploy fails from a git worktree (2026-07-29) (rotated 2026-08-01 — open items remain in pending.md)
+
+- [x] Tried the Netlify MCP's CLI-proxy deploy trigger as a fix — failed with `open /opt/build/repo/.git: is a directory`. Root cause: the session's checkout is a git worktree (`.git` is a small pointer file there), and Netlify's build environment already has a real `.git` directory cached at that same path from prior native GitHub-integration builds — the local zip upload collides with it on extraction every time, not intermittently.
+- [x] Netlify dashboard's manual "Trigger deploy" button worked immediately (re-clones from GitHub directly, bypassing the local zip path entirely). Production confirmed live on v3.5.379 right after.
+- [x] **Root cause of the original stall found — it wasn't a queue delay, it was a hard failure.** The real timeline (all times AEST): auto-deploy fired immediately at merge (5:00pm) and **failed outright** with `Failed to fetch environment variables` — a Netlify-platform-side error pulling the site's env vars at build start, nothing wrong in eq-field's code or config. It then sat dead with no retry until the CLI-proxy attempt at 6:44pm (also failed, the worktree `.git` collision) and the manual dashboard trigger at 6:49pm (succeeded, 8s build). So the "several minutes" framing above was wrong — nothing was building for the full ~1h49m gap; the first attempt died immediately and silently. GitHub's Deployments API (`gh api repos/eq-solutions/eq-field/deployments`) and commit-status API both return empty for this commit — Netlify's native integration posts neither for production deploys on `main`, so this failure is genuinely invisible from git; the Netlify deploy log is the only place it shows up.
+- [x] **"Same flakiness as eq-receipts" — checked, not corroborated.** eq-receipts' own deploy log (last 12 deploys, spanning back to the previous day) is 100% clean — every deploy `Published`/`Completed` in 13-15s, no failures of any kind. Whatever prompted that comparison either predates this visible window or was misattributed; don't carry it forward as a confirmed pattern. The team (`Milmlow's team`, Netlify Pro, 10 projects: eq-field/eq-shell/eq-service/eq-cards/sks-nsw-labour/sks-comms/eq-receipts/+3 personal) shares one build-concurrency pool, which is a real amplifier for cross-repo queueing on a busy day, but that's not what happened here — this was a single build failing, not multiple builds contending for slots.
+- [x] CLI-proxy-from-worktree re-confirmed in the same deploy log (`Production: main@HEAD Failed — ...open /opt/build/repo/.git: is a directory`, 6:44pm) — matches the original root-cause exactly, nothing new to investigate. Guidance stands: don't retry the CLI proxy from a worktree checkout, use the dashboard's "Trigger deploy" button.
+
+---
+
+## eq-shell: licence-review badge never caught a Cards-side edit to an already-reviewed licence — fixed, plus the Field-sync gap it exposed (2026-07-28) (rotated 2026-08-01)
+*Royce asked to design and build a notification for admins when an already-approved worker edits a licence in Cards. Investigation found the premise needed correcting first: Shell's own Staff-page licence view reads live from jvkn canonical, so it was never stale — the actual bug was narrower (the review badge only checked `created_at`, so a correction to an already-reviewed licence never re-flagged, only a brand-new licence did) and a separate, real gap existed for EQ Field's own tenant-plane copy of licences, which had no sync path at all once a staff member had any licence on file (the one manual "Re-sync from Cards" button is unreachable past that point). Steelmanned before building the second half, then built both.*
+
+
+**Deferred:**
+
+---
+
+## eq-cards: Wallet nagged for "Photo ID" even though a Driver Licence was already held (2026-07-28) (rotated 2026-08-01)
+*Royce reported the Wallet's "SKS Technologies asks its team for Photo ID" banner showing even though he holds a Driver Licence. Root-caused to `eq_cards_my_credential_gaps()` (jvkn RPC behind the banner) doing an exact `licence_type` match only — no idea that Shell's own compliance matrix (`PHOTO_ID_EQUIVALENTS` in `staffLib.ts`) has treated Photo ID / Driver Licence / Passport as interchangeable proof-of-identity since that feature shipped. Cards and Shell were quietly disagreeing on what counts as "held".*
+
+
+**Deferred:**
+
+---
+
+## eq-shell: TOTP backup codes shipped, closing the authenticator-lockout gap (2026-07-28) (rotated 2026-08-01)
+*Follow-on from the earlier "eq-shell vs industry" audit session, which flagged that forced-TOTP users (managers/supervisors/platform admins) had no way back in if they lost their phone. Built the recovery path: one-time codes generated at TOTP setup, shown once, hashed (never stored in plain text), single-use, with their own login path and a settings-page way to regenerate. Every generate/use/regenerate is logged. Royce approved the build, then approved applying the database change and merging — both done, deploy triggered.*
+
+
+**Deferred:**
+
+---
+
+## eq-cards + eq-shell: blurry licence photo fixed for a worker, admin "replace photo" tool shipped, a duplicate-licence gap closed (2026-07-28) (rotated 2026-08-01)
+
+---
+
+## eq-shell: Google Maps address autocomplete fixed in New Customer wizard (2026-07-28) (rotated 2026-08-01)
+*Royce hit it live while adding Microsoft as a new customer — the site address field never showed the Google suggestions dropdown. Root-caused: the autocomplete widget only tries to attach once, when the form first loads, and on that step the address box doesn't exist yet (it only appears once you reach the second step of the wizard) — so it gave up before the field was ever on screen. Fixed so it watches for the field to actually appear instead of giving up after one look.*
+
+
+**Deferred:**
+
+**Note:** this PR's CI run also surfaced an unrelated security finding (a database function on the SKS system callable by anyone, not just logged-in users) — spun off as background task `task_fee4ba20`. Already resolved same day by a concurrent session: logged as **SEC-15**, fixed via eq-shell [PR #1061](https://github.com/eq-solutions/eq-shell/pull/1061), live-verified. See today's session log for full detail — no action needed here.
+
+---
+
+## eq-shell: Staff page edits silently reverting overnight — root-caused and fixed, deployed (2026-07-28) (rotated 2026-08-01 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: black-screen-on-load fixed for real, then a follow-up made it actually visible (2026-07-27) (rotated 2026-08-01)
+
+---
+
+## eq-shell/eq-cards: tenant data-plane security sweep + a real login-blocking bug fixed for a live user (2026-07-27) (rotated 2026-08-01)
+
+**Deferred:**
+
+---
+
+## eq-cards/eq-shell: onboarding minimum-requirements switch, bulk connect-worker, and a live anon-EXECUTE fix (2026-07-26) (rotated 2026-08-01 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: Customer search now shows what matched (2026-07-23) (rotated 2026-08-01)
+*Direct follow-up to the widened search shipped above — Royce asked if a result could show why it matched when it wasn't the company name itself.*
+
+---
+
+## eq-shell Suppliers: fixed squashed columns + a stale-workspace-switch bug that briefly exposed the wrong tenant's data (2026-07-23) (rotated 2026-08-01)
+*Royce reported the Suppliers login/password columns "showing then disappearing" and asked to check the wiring for a security issue.*
+
+---
+
+## eq-shell: confirms the exact "fake private folder" bug just found + fixed on eq-solves-service also exists here (2026-07-23) (rotated 2026-08-01 — open items remain in pending.md)
+
+- [x] **PR #973 second look, closed out 2026-08-01** — the "worth a second look before merge" flag was moot by the time it was picked up; #973 had already merged same-day (2026-07-23) and is confirmed live on core.eq.solutions. Checked the one flagged behaviour change directly against live data on both tenants: the "Overdue follow-up" filter's new, stricter definition (excludes quotes already won/invoiced/lost, not just any quote with a stale follow-up date) currently produces **identical counts to the old definition** — 1/1 on SKS, 0/0 on eq — so the gap is latent, not yet visible to anyone. Royce confirmed: keep the stricter definition going forward, no code change needed.
+
+---
+
+## EQ Field: real Incidents / Near Miss reporting, shipped and live (2026-07-22) (rotated 2026-08-01 — open items remain in pending.md)
+
+
+---
+
+## Core dashboard rebuilt — replaced the passive AI-brief-only home with three permission-gated live signal bands (2026-07-17, MERGED + LIVE) (rotated 2026-08-01 — open items remain in pending.md)
+
+
+---
+
+## EQ Field — Pipeline: real manual-remove (archive gated + restorable + permanent delete) + in-browser sample data for demos (2026-07-15, BOTH MERGED + LIVE) (rotated 2026-08-01)
+*SKS raised that Pipeline data had no way to be manually removed. Root cause: an archive action already existed but was ungated, unaudited, and one-way — a tender vanished from the board with its data untouched in the database and no way to see it again. Fixed that, then added a real permanent-delete reachable only from the archived list (archive-first is the deliberate safety gate, Royce's call: "Both"). Separately, built an in-browser-only sample-data toggle so the Pipeline/Resources/Accounts screens can be demoed to the internal EQ team (Royce's call) without ever touching real SKS data.*
 
 ---
