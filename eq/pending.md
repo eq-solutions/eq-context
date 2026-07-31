@@ -23,15 +23,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## eq-cards + eq-shell: onboarding block fixed, two false "gaps" corrected before building, one real gap closed (2026-07-31 → 2026-08-01)
-
-**Deferred:**
-- [ ] **Royce to confirm EQ-CARDS-1C stops recurring** over the next 24h now the grant is restored. _(added 2026-07-31)_
-- [ ] **`mint-cards-otp` returned 500 once** for a real sks supervisor on mobile (Sentry EQ-SHELL-13) — single occurrence so far, watch for a repeat before digging further. _(added 2026-07-31)_
-- [ ] **eq-field: duplicate script declaration** (Sentry EQ-FIELD-W, `SyntaxError: Identifier 'INCIDENT_TYPES' has already been declared`) — likely a symptom of the already-known "34 always-loaded boot scripts" architecture debt logged elsewhere in this file; not investigated further this session. _(added 2026-07-31)_
-
----
-
 ## eq-field: mobile drawer had no path to Toolboxes/Prestarts/Records/Incidents (v3.5.392 → v3.5.393, PR #585 + #586, merged 2026-07-31)
 *Royce: "mobile view for eq field doesnt allow navigation to toolbox talks." Root-caused to a gap, not a tenant-gating decision: desktop's Safety nav group has 7 children (Prestarts, Toolboxes, Site Audits, Records, Report, Test Equipment, Incidents), but the mobile "More" drawer only ever had one flat, sks-gated "Safety" item routing straight to Site Audits — Prestarts, Toolboxes, Records and Incidents had no mobile path at all, on either tenant.*
 - [x] Added 4 new drawer items mirroring desktop's nav-prestart/nav-toolbox/nav-safety-records/nav-incident exactly — same manager-only gating, ungated by tenant (only Site Audits/Report/Test Equipment are sks-only).

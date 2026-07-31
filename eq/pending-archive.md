@@ -16,6 +16,16 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-cards + eq-shell: onboarding block fixed, two false "gaps" corrected before building, one real gap closed (2026-07-31 → 2026-08-01) (fully closed, no open items remain)
+*Session started as a check-in on the "one-login" Cards/Field/Shell initiative — turned out already fully shipped. Pivoted into a full Sentry triage across all EQ apps, which surfaced a real onboarding-blocking bug in eq-cards (fixed same session). Two follow-on "gaps" that looked real turned out to already be handled — caught before either was built, not after.*
+- [x] **`eq_cards_auto_provision` was missing its `authenticated` database permission live** — real Cards sign-ups landed on `/auth/not-provisioned` with a hard permission-denied (Sentry EQ-CARDS-1C, 2 users blocked ~9h). A regression, not the original design — restored live, recorded as eq-cards migration `0113`. eq-cards [PR #191](https://github.com/eq-solutions/eq-cards/pull/191), merged. **Re-checked 2026-08-01: zero recurrence since the fix. Resolved in Sentry.**
+- [x] **`mint-cards-otp` returned 500 once for a real sks supervisor** (Sentry EQ-SHELL-13) — root-caused to no guard against a null email before calling Supabase's magic-link generator; phone-only self-join workers can legitimately have no email. Endpoint now returns a clear 422 instead of an opaque 500, and the client skips the false-alarm Sentry page for that case. eq-shell [PR #1150](https://github.com/eq-solutions/eq-shell/pull/1150), merged.
+- [x] **eq-field's duplicate `INCIDENT_TYPES` declaration** (Sentry EQ-FIELD-W) — turned out already fixed and live since 2026-07-27 (eq-field PR #542, a day after the only report), confirmed live on `field.eq.solutions`. No code change needed — resolved in Sentry.
+- [x] **"Assign a user to a Security Group" — confirmed this already exists**, fully wired end-to-end. An earlier grep hit a re-export stub file and wrongly reported it missing; caught before anything was built.
+- [x] **"Role changes are next-login-only" — corrected.** `eq-shell/App.tsx` has silently re-verified and rewritten a user's session every 5 minutes since 2026-05-24; a role change already reaches an open tab automatically. `IDENTITY-MODEL.md` §6.3 wrongly claimed otherwise for six weeks — corrected. Built the actually-missing piece instead: a toast that fires when the existing poll picks up a real change. eq-shell [PR #1148](https://github.com/eq-solutions/eq-shell/pull/1148), merged.
+
+---
+
 ## eq-shell: archived staff still naming themselves in the AI dashboard summary — merged and confirmed live (2026-07-30, closed 2026-08-01) (fully closed, no open items remain)
 *Royce archived Huon Henne but he kept showing up in the AI dashboard summary. Traced to `briefing-engine.ts`: the staff name lookup and the "licence expiring soon" signal both skipped the active-staff filter that a third function in the same file already had — so an archived worker's still-active licence kept generating a signal with their name attached. `pending.md` had this logged as "fixed, not yet merged" from the original session; picked back up 2026-08-01 to close out and found it had already shipped.*
 
