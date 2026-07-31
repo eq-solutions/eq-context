@@ -1,13 +1,16 @@
 ---
 title: EQ Cards — Changelog
 owner: Royce Milmlow
-last_updated: 2026-07-30
+last_updated: 2026-07-31
 scope: EQ Cards append-only history. NOTE — duplicates eq/changelog/cards.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # EQ Cards — Changelog
+
+## 2026-07-31
+- **PR #191 (MERGED squash `dffe094`) — restored the `authenticated` EXECUTE grant on `eq_cards_auto_provision()`, fixing a live onboarding break.** Found via a full Sentry triage across all EQ apps: real sign-ups were landing on `/auth/not-provisioned` and hitting a hard `permission denied` (42501) trying to provision their personal wallet tenant (EQ-CARDS-1C, 2 users blocked over ~9 hours). Live grants check on jvkn confirmed `authenticated` had no EXECUTE, contradicting the function's own first migration (`0028`), which granted it from day one — nothing later in eq-cards' own migration history revoked it, so this was almost certainly collateral from a broader EXECUTE-revoke security pass elsewhere on the same project, not an eq-cards regression. Restored live via Supabase MCP first (Royce's explicit go, verified via `has_function_privilege`), then recorded as migration `0113` (renumbered from `0112` after CI's Migration hygiene check caught a real collision with PR #190's same-numbered migration, merged to `main` between branch creation and CI run).
 
 ## 2026-07-30
 - **PR #190 (MERGED) — `eq_cards_admin_upsert_worker` and `sync_worker_to_canonical` now let eq-shell's audit log attribute admin-driven worker edits correctly, not just self-edits.** Closes the last piece of eq-shell's cross-repo audit-attribution program (started 2026-07-14). `eq_cards_admin_upsert_worker` (jvkn, `SECURITY DEFINER`, gated by `is_org_admin()`) can edit any worker's row and deliberately never touches `user_id` — so the downstream `workers-canonical-sync` webhook it fires was indistinguishable in shape from a genuine self-edit, and attributing to `record.user_id` (the first plan) would have logged an admin's edit as if the affected worker made it themselves. Fixed by setting a transaction-local `app.acting_admin_id` (`set_config(..., true)`, scoped to the calling transaction only, can't leak across a pooled connection) with the admin's own `auth.uid()` before the write; the sync trigger reads it and forwards it to eq-shell's edge function, which now prefers it over the self-edit fallback. `eq_cards_upsert_my_worker` (self-service) needed no change — it already writes `auth.uid()` as `user_id` itself. Migration `0112`, applied directly to jvkn (control-plane hand-apply — no CI-driven migration push in this repo). No grant/RLS changes.
