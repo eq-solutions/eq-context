@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-31 22:49 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-31 22:50 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-31 22:37 UTC → 2026-07-31 22:49 UTC)
+## Since last refresh (2026-07-31 22:49 UTC → 2026-07-31 22:50 UTC)
 
-- Merged: eq-shell [#1147](https://github.com/eq-solutions/eq-shell/pull/1147) docs: flag the function-grant landmine behind EQ-CARDS-1C
-- Merged: eq-shell [#1138](https://github.com/eq-solutions/eq-shell/pull/1138) feat(intake): tenant-editable trades vocab + persisted dupli
-- Merged: eq-shell [#1137](https://github.com/eq-solutions/eq-shell/pull/1137) fix(intake): site-merge manager gate checked the wrong ident
-- Merged: eq-shell [#1135](https://github.com/eq-solutions/eq-shell/pull/1135) perf(shell): warm token-exchange to close the last cold-star
-- Merged: eq-shell [#1133](https://github.com/eq-solutions/eq-shell/pull/1133) fix(mobile): drop redundant top bar on adapted iframe module
-- Merged: eq-shell [#1130](https://github.com/eq-solutions/eq-shell/pull/1130) chore(intake): re-vendor eq-intake/eq-platform — merge-error
-- Merged: eq-shell [#1129](https://github.com/eq-solutions/eq-shell/pull/1129) fix(audit): Suite Activity gets real filtering; correct EQ Q
-- Merged: eq-shell [#1127](https://github.com/eq-solutions/eq-shell/pull/1127) chore(intake): re-vendor eq-intake/eq-platform — Tidy tab en
+- Merged: eq-shell [#1140](https://github.com/eq-solutions/eq-shell/pull/1140) chore(intake): re-vendor eq-intake/eq-platform — Dupes archi
+- Merged: eq-shell [#1136](https://github.com/eq-solutions/eq-shell/pull/1136) fix(quotes): sync canonical job status for every pipeline st
+- Merged: eq-shell [#1134](https://github.com/eq-solutions/eq-shell/pull/1134) fix(audit): workers-canonical-sync attributes real actors
+- Merged: eq-shell [#1132](https://github.com/eq-solutions/eq-shell/pull/1132) fix(audit): quote events now stamp app_source='ops', not the
+- Merged: eq-shell [#1131](https://github.com/eq-solutions/eq-shell/pull/1131) fix(signals): exclude archived staff from Compliance & safet
+- Merged: eq-shell [#1128](https://github.com/eq-solutions/eq-shell/pull/1128) fix(audit): stop entity.patched canonical_events noise
+- Merged: eq-shell [#1126](https://github.com/eq-solutions/eq-shell/pull/1126) feat(audit): Suite activity tab — canonical_events as plain 
+- Merged: eq-shell [#1125](https://github.com/eq-solutions/eq-shell/pull/1125) feat(auth): email-capture nudge — Email+PIN fallback for pho
 
 ## ⚠ Needs you (3)
 
@@ -51,7 +51,7 @@ _…and 95 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 |------|-----------|--------|----------|-----------|
 | eq-shell | ? unknown | ? | 1 | 0d |
 | eq-solves-service | ? unknown | ? | 0 | — |
-| eq-field | ? unknown | ? | 2 | 0d |
+| eq-field | ? unknown | ? | 1 | 0d |
 | eq-cards | ? unknown | ? | 0 | — |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
@@ -78,6 +78,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-31 | eq-solves-service | [#661](https://github.com/eq-solutions/eq-service/pull/661) feat(reports): wire site photo into PM Check Report cover |
 | 2026-07-31 | eq-solves-service | [#660](https://github.com/eq-solutions/eq-service/pull/660) feat(maintenance): link/create/skip reconcile for paste-import un |
 | 2026-07-31 | eq-solves-service | [#659](https://github.com/eq-solutions/eq-service/pull/659) fix(storage): add missing tenant write policy on logos bucket |
+| 2026-07-31 | eq-field | [#587](https://github.com/eq-solutions/eq-field/pull/587) v3.5.394 — Roster import/live-edit collision now has a defined wi |
 | 2026-07-31 | eq-field | [#586](https://github.com/eq-solutions/eq-field/pull/586) fix: mobile drawer - relabel "Safety" to "Site Audits", move belo |
 | 2026-07-31 | eq-field | [#585](https://github.com/eq-solutions/eq-field/pull/585) fix: mobile drawer had no path to Toolboxes/Prestarts/Records/Inc |
 | 2026-07-31 | eq-field | [#584](https://github.com/eq-solutions/eq-field/pull/584) fix: photo picker forced the camera, blocking gallery uploads (v3 |
@@ -87,7 +88,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-30 | eq-shell | [#1141](https://github.com/eq-solutions/eq-shell/pull/1141) perf(shell): fetchpriority=low on prewarmed iframes + pause prewa |
 | 2026-07-30 | eq-shell | [#1139](https://github.com/eq-solutions/eq-shell/pull/1139) perf(shell): preconnect to Field/Service/Cards origins ahead of i |
 | 2026-07-30 | eq-shell | [#1142](https://github.com/eq-solutions/eq-shell/pull/1142) chore(intake): re-vendor eq-intake/eq-platform — trades settings  |
-| 2026-07-30 | eq-shell | [#1143](https://github.com/eq-solutions/eq-shell/pull/1143) fix(auth): null-safe display name for phone-only workers |
 _Showing 15 of 126 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -145,4 +145,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-31 22:49 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-31 22:50 UTC._
