@@ -31,13 +31,15 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## eq-field: mobile drawer had no path to Toolboxes/Prestarts/Records/Incidents (v3.5.392, PR #585, merged 2026-07-31)
+## eq-field: mobile drawer had no path to Toolboxes/Prestarts/Records/Incidents (v3.5.392 → v3.5.393, PR #585 + #586, merged 2026-07-31)
 *Royce: "mobile view for eq field doesnt allow navigation to toolbox talks." Root-caused to a gap, not a tenant-gating decision: desktop's Safety nav group has 7 children (Prestarts, Toolboxes, Site Audits, Records, Report, Test Equipment, Incidents), but the mobile "More" drawer only ever had one flat, sks-gated "Safety" item routing straight to Site Audits — Prestarts, Toolboxes, Records and Incidents had no mobile path at all, on either tenant.*
 - [x] Added 4 new drawer items mirroring desktop's nav-prestart/nav-toolbox/nav-safety-records/nav-incident exactly — same manager-only gating, ungated by tenant (only Site Audits/Report/Test Equipment are sks-only).
 - [x] Verified structurally (parsed the built page, confirmed all 4 render with correct IDs/labels/gating, no ID collisions) rather than assumed — this session's sandboxed browser can't complete EQ Field's tenant-config boot handshake to click-test live.
+- [x] **Follow-up, same day**: Royce reviewed the shipped order and asked to relabel "Safety" → "Site Audits" (matches its desktop label) and move it below Records. New drawer order: Prestarts, Toolboxes, Records, Site Audits, Incidents. v3.5.393, PR #586, merged, live.
+- [x] **Royce then asked "do the same for SKS Labour"** — checked first rather than assuming parity: SKS's mobile nav has no equivalent structure to copy. It's a single "Safety" drawer item that opens one page with 4 tabs (Prestart/Toolbox/Incidents/Records) — no separate pages, no distinct "Site Audits" feature to rename, nothing to reorder. Confirmed with Royce via AskUserQuestion: **leave SKS as-is**, no change made.
 
 **Deferred:**
-- [ ] **Live phone click-through not done** — open the More drawer, unlock manager mode, confirm Toolboxes/Prestarts/Incidents/Records each land on the right page. _(added 2026-07-31)_
+- [ ] **Live phone click-through not done** — open the More drawer, unlock manager mode, confirm Toolboxes/Prestarts/Incidents/Records/Site Audits each land on the right page in the new order. _(added 2026-07-31)_
 
 ---
 

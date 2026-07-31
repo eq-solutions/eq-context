@@ -9,6 +9,9 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-31] Mobile drawer: relabel "Safety" → "Site Audits", move below Records (MERGED, v3.5.393, #586)
+- Follow-up polish on v3.5.392 (#585), per Royce's direct feedback after reviewing the shipped drawer live. Relabelled the existing sks-gated drawer item "Safety" → "Site Audits" (matches desktop's `nav-safety` label; routing unchanged) and moved it down to sit between Records and Incidents. New order: Prestarts, Toolboxes, Records, Site Audits, Incidents. Royce also asked to port the same change to SKS Labour — checked first and found SKS has no equivalent structure to copy (one "Safety" drawer item opens a single page with 4 tabs, no separate "Site Audits" feature) — confirmed with Royce to leave SKS unchanged.
+
 ## [2026-07-31] Fix: mobile drawer had no path to Toolboxes/Prestarts/Records/Incidents (MERGED, v3.5.392, #585)
 - Desktop's Safety nav group has 7 children (Prestarts, Toolboxes, Site Audits, Records, Report, Test Equipment, Incidents), but the mobile "More" drawer only ever exposed one flat, sks-gated "Safety" item routing straight to Site Audits — Prestarts, Toolboxes, Records and Incidents had no mobile navigation path at all, on either tenant. Added 4 new drawer items mirroring desktop's `nav-prestart`/`nav-toolbox`/`nav-safety-records`/`nav-incident` exactly (same manager-only gating, ungated by tenant). Royce, live: "mobile view for eq field doesnt allow navigation to toolbox talks."
 
