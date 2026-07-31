@@ -201,11 +201,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## eq-shell: archived staff still naming themselves in the AI dashboard summary — fixed, not yet merged (2026-07-30)
-*Royce archived Huon Henne but he kept showing up in the AI dashboard summary. Traced to `briefing-engine.ts`: the staff name lookup and the "licence expiring soon" signal both skipped the active-staff filter that a third function in the same file already had — so an archived worker's still-active licence kept generating a signal with their name attached.*
-
-- [ ] **Merge [PR #1117](https://github.com/eq-solutions/eq-shell/pull/1117)** (branch `claude/archived-huon-dashboard-summary-ac5190`) — fix is written and typechecked, not yet on `main`. _(added 2026-07-30)_
-
 ---
 
 ## eq-shell: same archived-staff leak, different dashboard card — Core home's "Compliance & safety" card — fixed + merged (2026-07-30)
