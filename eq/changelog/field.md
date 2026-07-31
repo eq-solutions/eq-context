@@ -9,6 +9,10 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-08-01] Fix: leave-approval magic links 500'd since canonical mode went on (MERGED, v3.5.389, #582)
+- The Approve/Reject links in leave-request emails 500'd with "Server misconfigured" on every click, regardless of token validity. Root cause: `approve-leave.js`'s config guard unconditionally required the legacy `LEAVE_SB_URL`/`LEAVE_SB_KEY` env vars, but `LEAVE_CANONICAL=on` (flipped 2026-07-29) routes leave reads/writes through `LEAVE_CANONICAL_SB_*` instead — those legacy vars were never set for canonical mode. `send-email.js`'s resolver already branched on `canonicalEnabled()` before touching `SB_URL`/`SB_KEY`; this guard didn't. Now resolves `canonicalEnabled()` first and only requires the legacy vars when canonical mode is off. 54/54 existing tests pass; verified live.
+- Investigated separately-reported missing logo in the same email — confirmed it's Outlook's default external-image blocking, not a code bug; no fix possible from app code. Considered re-uploading a smaller optimized logo to the shared `sks-assets` R2 bucket, but declined after Royce flagged that bucket as a deliberately-preserved reference library with consumers outside this repo — left untouched (see `sks/pending.md` "2026-08-01" for full detail).
+
 ## [2026-08-01] Roster import/live-edit collision now has a defined winner (MERGED, v3.5.394, #587)
 - `toWideList()`'s `(staff, date)` collision handling was undocumented first-arrival-wins, with a code comment that said the opposite ("Last writer wins"). Picked up from a 2026-07-10 backlog note; live-verified before building that ehow (SKS) enforces `UNIQUE(staff_id, date)` on `schedule_entries` (defensive-only there) but zaap (EQ tenant) does not (collision genuinely reachable there today). Now a genuinely-entered row displaces a stale imported one on collision; two colliding imports still fall back to first-wins. 3 new tests, full suite green. Rebased onto a concurrent same-day version-number collision with #586 (v3.5.393 → this shipped as v3.5.394).
 

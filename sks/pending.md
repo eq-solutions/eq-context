@@ -9,6 +9,16 @@ status: live
 
 # SKS Pending
 
+## SKS leave-approval email: magic links fixed, logo optimization declined (v3.5.389, PR #582, merged 2026-08-01)
+*Royce reported two problems with SKS leave-request approval emails: the SKS logo didn't render for managers, and the Approve/Reject links 500'd on click.*
+- [x] **Approve/Reject magic links fixed** — `netlify/functions/approve-leave.js`'s config guard unconditionally required the legacy `LEAVE_SB_URL`/`LEAVE_SB_KEY` env vars, but `LEAVE_CANONICAL=on` (flipped 2026-07-29) routes leave reads/writes through `LEAVE_CANONICAL_SB_*` instead — those legacy vars were never set, so every click 500'd regardless of token validity. `send-email.js`'s resolver already branched correctly; the approve-leave guard didn't. Fixed, tested (54/54 existing tests pass), merged, verified live on `field.eq.solutions`.
+- [x] **Missing logo — investigated, not a code bug.** Confirmed the R2-hosted image serves correctly (200, correct `Content-Type`) with identical markup to the email that *does* show it. Root cause is Outlook's default "block external images" client setting — not fixable from app code.
+
+**Decided (Royce) — logo re-optimization declined, R2 bucket left untouched:**
+- Prepared a 4.4KB optimized replacement for the 350KB `SKS_Logo_White_Text_Clean.png` in the `sks-assets` R2 bucket, but Royce flagged that bucket is a deliberately-preserved "clean copy" reference library used across a variety of work, with consumers I can't verify from this repo alone. Since the resize doesn't fix the actual reported failure (Outlook's setting, not file size) and carries non-zero blast-radius risk to a shared asset store, recommended leaving it untouched entirely — no upload happened, nothing in `sks-assets` or canonical branding config was changed.
+- **Note for later**: mapped real usage of the 4 `sks-assets` logo files — only 2 are referenced anywhere in eq-field: `SKS_Logo_Colour_Arrows_Clean.png` (app header + docx report headers, printed ~240px — real print size) and `SKS_Logo_White_Text_Clean.png` (email + sidebar + pipeline UI, 32-38px only). The other 2 have no reference found in this repo — could be used elsewhere, unconfirmed.
+- **Note for later**: authenticated the `cloudflare-api` MCP connector this session — it's read-only for R2 (every write attempt failed with an auth/permission error even on a trivial test object), so it can't be used for uploads as currently scoped, regardless of the decision above.
+
 ## Toolbox Talk photo picker + post-submit editing — fixed (v3.10.107, PR #74, merged 2026-07-31)
 *Royce reported two Toolbox Talk problems: couldn't upload an existing JPEG, and asked whether talks should be editable after submitting. Root-caused the photo issue to `capture="environment"` on the shared photo input forcing the camera open and hiding the gallery-picker option on mobile — affects Prestart/Toolbox/Incident since they share one input. For the editability question, found submitted forms already looked editable but had no way to actually save an edit — any change was silently discarded. Royce chose "allow real editing" over locking the form down.*
 - [x] Dropped `capture="environment"` from the shared photo input — gallery and camera both available again on all three Safety forms.
