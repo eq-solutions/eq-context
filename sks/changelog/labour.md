@@ -1,13 +1,17 @@
 ---
 title: Changelog — SKS Labour
 owner: Royce Milmlow
-last_updated: 2026-07-28
+last_updated: 2026-07-31
 scope: Append-only history of changes to the SKS Labour scheduling app
 read_priority: reference
 status: live
 ---
 
 # Changelog — SKS Labour
+
+## [2026-07-31] Safety: photo picker allowed gallery photos again + submitted forms stay editable
+**Built by:** assistant + Royce Milmlow
+- **v3.10.107 (PR #74, `0e3377d`, live)** — Toolbox Talk's photo picker forced the camera open on mobile via `capture="environment"` on the shared photo input, hiding the "choose from library" option, so an existing JPEG couldn't be selected. Dropped `capture`. Shared input also serves Prestart/Incident, so all three fixed. Separately: a submitted Prestart/Toolbox/Incident had no Save button, so any post-submit edit was silently discarded — all three now show a "Save changes" button, reusing the existing PATCH-by-id path that already worked for drafts. Royce chose real editing over locking the form (matches EQ Field's Prestart precedent). Ported the photo-picker half of this fix to EQ Field same session (v3.5.391, PR #584).
 
 ## [2026-07-30] Security: stop shipping the login PIN in the bulk roster load
 **Built by:** assistant + Royce Milmlow

@@ -9,6 +9,16 @@ status: live
 
 # SKS Pending
 
+## Toolbox Talk photo picker + post-submit editing — fixed (v3.10.107, PR #74, merged 2026-07-31)
+*Royce reported two Toolbox Talk problems: couldn't upload an existing JPEG, and asked whether talks should be editable after submitting. Root-caused the photo issue to `capture="environment"` on the shared photo input forcing the camera open and hiding the gallery-picker option on mobile — affects Prestart/Toolbox/Incident since they share one input. For the editability question, found submitted forms already looked editable but had no way to actually save an edit — any change was silently discarded. Royce chose "allow real editing" over locking the form down.*
+- [x] Dropped `capture="environment"` from the shared photo input — gallery and camera both available again on all three Safety forms.
+- [x] Submitted Prestart/Toolbox/Incident forms now show a "Save changes" button that actually persists edits, instead of silently losing them.
+- [x] Ported the identical photo-picker fix to EQ Field — see `eq/pending.md` (2026-07-31).
+
+**Deferred:**
+- [ ] **Live phone click-through not done** — camera vs. gallery picker, and that "Save changes" actually persists an edit after Submit. _(added 2026-07-31)_
+- [ ] **Stale SKS brand color found in the incident-alert email** (`#1F335C` vs. the corrected `#203060`) — spun off as a background task, ran in a separate session; outcome not visible from this session. _(added 2026-07-31)_
+
 ## EQ Field screenshot review — 5 fixes shipped (2026-07-30/31)
 - [ ] **Full click-through still not done.** Royce did send real iPhone screenshots (2026-07-31, Home/Roster) — that surfaced two more real bugs, both fixed same day: the loading spinner never animated on iOS (v3.5.387) and, in Shell (`core.eq.solutions`), the "EQ FIELD" home label rendered clipped under Shell's fixed top strip (v3.5.388). Roster Overview's "sites with no one rostered today" panel was also dropped per his direct feedback ("we dont need to show what sites arent being worked at") — v3.5.388. Still unconfirmed on a real phone: the Leave CC list modal (now driven by canonical managers, not free-text email), Job Numbers/Pipeline nav placement. _(added 2026-07-31, updated 2026-07-31)_
 - [ ] **EQ Wallet — Licences screen critique**: gave direct feedback (add a red/amber dot to the "Expiring soon" filter chip when non-zero so the whole screen doesn't need scanning; no lock-icon legend for a first-time user) but didn't build anything — Royce hasn't said whether he wants it built. _(added 2026-07-31)_

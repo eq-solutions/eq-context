@@ -9,6 +9,9 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-31] Fix: shared photo picker forced the camera, blocking gallery uploads (MERGED, v3.5.391, #584)
+- The shared photo-add input (`createPhotoController.renderList` in `site-reports-shared.js`, used by Toolbox/Incidents/Prestart) carried `capture="environment"` alongside `accept="image/*"` — forces the camera open directly on many mobile browsers and hides the "choose from library" option, so an existing JPEG couldn't be uploaded. Dropped `capture`. Ported from the identical fix on SKS Labour (v3.10.107, #74) — same shared-history bug, same one-line fix. Checked (not assumed) whether EQ Field also needed SKS's other fix, post-submit editing: Toolbox already had a working Save regardless of status; Prestart's post-submit lock is a deliberate July fix (v3.5.247, field feedback) — left untouched.
+
 ## [2026-07-31] Home top-clip fix (Shell mobile) + Roster Overview trim (MERGED, v3.5.388, #581)
 - Fix: the "EQ FIELD" home-page eyebrow label rendered clipped under Shell's fixed top strip on mobile (`core.eq.solutions`, caught live on Royce's iPhone). Root cause: `home.css`'s `#page-home` ID selector (specificity 1-0-0) silently beat `mobile.css`'s `.shell-mode .page` clearance rule (specificity 0-2-0) regardless of source order — added a scoped `.shell-mode #page-home` override with the same 68px clearance. Verified the specificity claim directly with a throwaway browser test, not reasoned on paper.
 - Changed: Roster Overview (v3.5.385) drops the "Sites with no one rostered today" panel. Royce, on seeing it live: "we dont need to show what sites arent being worked at - this view is meant to be an easy way to see where people are working." The "Sites today — tap to see crew" list is unchanged.

@@ -14,6 +14,17 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-field: Toolbox Talk photo picker fix ported from SKS (v3.5.391, PR #584, merged 2026-07-31)
+*Follow-up to the SKS toolbox-talks-feedback session (see `sks/pending.md`) — Royce asked to check the same photo-picker bug against EQ Field. Found the identical `capture="environment"` bug in the shared photo-picker widget (`site-reports-shared.js`), used by Toolbox, Incidents and Prestart.*
+- [x] Dropped `capture="environment"` — gallery and camera both available again.
+- [x] Confirmed EQ Field's Toolbox already had a working post-submit Save (no bug there); confirmed Prestart's post-submit field lock is a deliberate July fix (real field feedback, v3.5.247) — left untouched, not reversed.
+- [x] `scripts/safety.js`'s own duplicate photo picker carries the same bug but is dead code (retired v3.5.339/340, no live caller) — left as-is.
+
+**Deferred:**
+- [ ] **Live phone click-through not done** — camera vs. gallery picker on a real device. _(added 2026-07-31)_
+
+---
+
 ## eq-shell: Richard Brown's mobile crash fixed, then a simplified mobile nav for supervisors driven by real usage data (2026-07-31)
 *Royce reported a phone-only SKS supervisor (Richard Brown) hit a white-screen crash this morning opening core.eq.solutions on his phone. Traced and fixed same session, which led into two follow-on questions Royce asked live: why a different supervisor (William Brown) landed on the manager dashboard instead of the Field view, and whether supervisors could get a simpler, Field-focused mobile nav like field workers get — checked real usage data before building rather than assuming.*
 
