@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-31)
 
-**eq-field:**
-- #583 v3.5.390 — Fix: weekly digest opt-in panel silently stopped appearing
-
 **eq-shell:**
 - #1145 feat(auth): gate Field JWT on earned access, not just allowed
 
