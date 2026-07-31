@@ -1,13 +1,18 @@
 ---
 title: EQ Service — Changelog
 owner: Royce Milmlow
-last_updated: 2026-07-31
+last_updated: 2026-08-01
 scope: EQ Service append-only history. NOTE — duplicates eq/changelog/service.md, which stalls mid-deploy at 2026-06-09; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # EQ Service — Changelog
+
+## 2026-08-01
+- **PR #661 (MERGED) — site photo wired into the PM Check Report cover.** The report ~95% of customers actually receive was the biggest gap in site-photo coverage — Customer Report and ACB Test Report already used `fetchSitePhoto()`, this one never did. Cover swaps to a photo-hero + site/customer caption strip when a Media Library photo exists for the site, falling back to the existing flat brand panel when it doesn't. Added `siteAddress`/`sitePhoto` to `PmCheckReportInput`.
+- **PR #662 (MERGED) — site photo wired into NSX Test Report; ACB confirmed already correct; a real blank-page bug found and fixed.** NSX got the same hero treatment ACB already has. While sampling both, found `pm-check-report.ts`'s two-section document structure had an explicit `PageBreak()` as the first paragraph of the content section, stacked on top of the page break every new `sections[]` entry already gets in OOXML with no `CONTINUOUS` type set — a genuinely blank page 2 in every PM Check Report with a cover page, in every tier, verified by diffing `document.xml` before/after the fix.
+- **Checked the remaining 5 report types for site-photo fit — none qualify, confirmed with Royce rather than force-fitting.** Compliance Report is a multi-site/customer-wide rollup (site filter is optional, rarely used); Field Run-Sheet is explicitly designed for black-and-white printing; Work Order Details has no cover page (one page per asset, repeated); Customer Scope Statement and Customer Renewal Pack are both customer/contract-wide, not single-site. Royce's call: leave all 5 as-is rather than build the plumbing for a Compliance Report single-site edge case.
 
 ## 2026-07-31
 - **PR #658 (MERGED + APPLIED live, migration 0197) — Report Settings genuinely differ per complexity tier now.** Basic/Standard/Detailed previously shared one set of section toggles (cover page, contents, executive summary, sign-off) — the tier buttons looked different but produced the same report. Added 12 tier-suffixed columns to `service.tenant_settings`, a single `resolveTierSectionToggles()` resolution point, rebuilt the `/admin/reports` settings page as a tier × section matrix, and rewired all 8 report-generator call sites to go through the resolver instead of reading the old 4 flat columns directly. Dispatch needed a retry past a transient 502 from the Supabase management API; confirmed live via direct column query.
