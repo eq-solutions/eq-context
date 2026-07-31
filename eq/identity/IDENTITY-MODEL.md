@@ -133,7 +133,7 @@ The role is **not** something the user chooses or can change about themselves. I
 
 ### 5.1 Editing a user later
 
-`Settings → Users → <user> → Edit` lets an admin change the role, toggle module entitlements, deactivate the user. Changes take effect on the user's **next login**, not live (see §6).
+`Settings → Users → <user> → Edit` lets an admin change the role, toggle module entitlements, deactivate the user. Changes reach an already-open session automatically within a few minutes, not just on next login — see the §6.3 correction.
 
 ## 6. Session lifecycle and propagation
 
@@ -184,9 +184,13 @@ Note: `role: 'authenticated'` in the JWT is Supabase's Postgres-role slot — re
 
 ### 6.3 Propagation timing
 
-Role and entitlement changes take effect on the user's **next login**, not in their current session. This is an explicit trade. Live propagation would require either polling the server or a websocket connection sending role-changed events — both fight the "session is the single source" principle. The trade for that simplicity is: when an admin demotes a user from `supervisor` to `employee`, the change applies on their next sign-in. Deactivating a user *does* propagate on next request (the session lookup checks `users.active`).
+**Correction 2026-07-31 (code-verified against `eq-shell/src/App.tsx`):** the two paragraphs below claim role/entitlement changes only take effect on next login and that live propagation "would require... polling the server... both fight the 'session is the single source' principle." That's false — the polling this text says was rejected has been shipped since 2026-05-24, predating this doc's own last edit by six weeks. `SessionProvider` runs a 5-minute `setInterval` that re-calls `verify-shell-session` and silently rewrites the in-memory session (`setSession(s)`) with whatever role/entitlements/JWT the DB currently holds — no page navigation or re-login required. An admin demoting `supervisor` → `employee` reaches that user's open tab within 5 minutes, automatically. The **only** genuinely next-login-only case is a user who was never active in a live tab to begin with (closed the app, no poll running). No websocket exists or is needed; this was already the "live propagation" path the original text said the architecture had traded away.
 
-The Supabase JWT, being short-lived, propagates role changes within at most one JWT TTL (15 min) — but it still requires the user's session to refresh against the cookie first, so the effective propagation is "next login."
+Original text, retained for history, **retracted, not just stale**:
+
+~~Role and entitlement changes take effect on the user's **next login**, not in their current session. This is an explicit trade. Live propagation would require either polling the server or a websocket connection sending role-changed events — both fight the "session is the single source" principle. The trade for that simplicity is: when an admin demotes a user from `supervisor` to `employee`, the change applies on their next sign-in. Deactivating a user *does* propagate on next request (the session lookup checks `users.active`).~~
+
+~~The Supabase JWT, being short-lived, propagates role changes within at most one JWT TTL (15 min) — but it still requires the user's session to refresh against the cookie first, so the effective propagation is "next login."~~
 
 ## 7. Bridging already-shipped surfaces
 
