@@ -9,6 +9,9 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-08-01] Roster import/live-edit collision now has a defined winner (MERGED, v3.5.394, #587)
+- `toWideList()`'s `(staff, date)` collision handling was undocumented first-arrival-wins, with a code comment that said the opposite ("Last writer wins"). Picked up from a 2026-07-10 backlog note; live-verified before building that ehow (SKS) enforces `UNIQUE(staff_id, date)` on `schedule_entries` (defensive-only there) but zaap (EQ tenant) does not (collision genuinely reachable there today). Now a genuinely-entered row displaces a stale imported one on collision; two colliding imports still fall back to first-wins. 3 new tests, full suite green. Rebased onto a concurrent same-day version-number collision with #586 (v3.5.393 → this shipped as v3.5.394).
+
 ## [2026-07-31] Mobile drawer: relabel "Safety" → "Site Audits", move below Records (MERGED, v3.5.393, #586)
 - Follow-up polish on v3.5.392 (#585), per Royce's direct feedback after reviewing the shipped drawer live. Relabelled the existing sks-gated drawer item "Safety" → "Site Audits" (matches desktop's `nav-safety` label; routing unchanged) and moved it down to sit between Records and Incidents. New order: Prestarts, Toolboxes, Records, Site Audits, Incidents. Royce also asked to port the same change to SKS Labour — checked first and found SKS has no equivalent structure to copy (one "Safety" drawer item opens a single page with 4 tabs, no separate "Site Audits" feature) — confirmed with Royce to leave SKS unchanged.
 
