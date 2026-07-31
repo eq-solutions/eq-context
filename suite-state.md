@@ -60,8 +60,7 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-31)
 
-**eq-shell:**
-- #1148 feat(auth): heads-up toast when the existing 5-min role poll detects a change
+_No open PRs_
 
 ---
 
