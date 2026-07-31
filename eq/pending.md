@@ -14,6 +14,38 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: Richard Brown's mobile crash fixed, then a simplified mobile nav for supervisors driven by real usage data (2026-07-31)
+*Royce reported a phone-only SKS supervisor (Richard Brown) hit a white-screen crash this morning opening core.eq.solutions on his phone. Traced and fixed same session, which led into two follow-on questions Royce asked live: why a different supervisor (William Brown) landed on the manager dashboard instead of the Field view, and whether supervisors could get a simpler, Field-focused mobile nav like field workers get — checked real usage data before building rather than assuming.*
+
+- [x] **Crash root cause**: five different screens (account menu, home dashboard, mobile tab bar's account sheet, worker home, admin edit-user) assumed every user has an email address, and crashed with a blank error screen for anyone who joined by phone only with no email on file. Fixed to show a plain-English placeholder instead. eq-shell [PR #1143](https://github.com/eq-solutions/eq-shell/pull/1143), merged, live. Matching Sentry error (EQ-SHELL-10) confirmed no further occurrences after the deploy and marked resolved.
+- [x] **William Brown landing on the dashboard instead of Field is correct, not a bug** — supervisors and managers always get the full dashboard by design; only rank-and-file field roles get the stripped-down Field-first view. No code change needed.
+- [x] **Added a "My Card" way in for everyone else** — supervisors/managers previously had no way to reach their own licences/tickets from mobile at all (Cards was only ever a tab for field-first workers). Added as a row in the mobile account menu. eq-shell [PR #1144](https://github.com/eq-solutions/eq-shell/pull/1144), merged, live.
+- [x] **Checked real usage before simplifying supervisors' mobile nav** — 30-day usage data showed supervisors are actually the heaviest users of the Ops and Service tools, more than Field, but only on desktop; on mobile, every tool including Field barely gets touched at all. So supervisors/managers now get a simple Home + Field mobile view (matching what little mobile work they actually do), with Service/Ops still one tap away in the account menu rather than removed, and their desktop view is completely unchanged. eq-shell [PR #1146](https://github.com/eq-solutions/eq-shell/pull/1146), merged, live.
+
+**Deferred:**
+- [ ] **Royce to confirm on Richard's own phone**: the page loads without the error screen, the bottom bar shows Home + Field only, and Service/Ops are reachable via the account menu. _(added 2026-07-31)_
+- [ ] **Richard then reported he couldn't find Service after the above shipped** — checked live: he has full permission and his company's account has Service switched on, so nothing needs granting. This is the expected result of the new simplified mobile view — Service moved from the main bar into the account menu. Told Royce where to find it; open question whether supervisors need Service as a main tab after all if this keeps coming up, rather than one tap deeper. _(added 2026-07-31)_
+- [ ] **iPads get the full desktop view, not the simplified mobile one** — confirmed the phone/desktop cutoff is a fixed screen-width line that iPads sit above in both orientations, so nothing built this session changes what an iPad shows. Noted in case a tablet-specific view is ever wanted. _(added 2026-07-31)_
+
+---
+
+## eq-shell: Self-join Field access now requires "earned", not just "allowed" — but the thing that earns it isn't built yet (2026-07-31)
+*Deep dive on the ONE LOGIN self-join (QR/link) door found it grants Field access instantly with zero vetting — no admin, no document check, nothing. Royce steelmanned gating it behind Photo ID + White Card upload while keeping the phone+code signup itself frictionless. Scoped which doors are "admin already vetted this" (invite, worker-invite claim, Cards staff approval) vs "nobody has" (true self-join) and built the split.*
+
+- [x] New database columns on every account (`field_access_unlocked_at`/reason) — separate from the existing on/off Field-access switch, this one tracks whether access has actually been *earned*, not just allowed.
+- [x] Every account that already had Field access keeps it — 70/70 backfilled the moment this shipped, confirmed zero gap. Nobody currently working got logged out.
+- [x] Admin-driven doors (email invite, worker-invite claim, Cards staff approval) mark the access earned immediately — a human already vouched, so nothing changes for those.
+- [x] Migration applied live to core's login system (jvkn) — verified. eq-shell [PR #1145](https://github.com/eq-solutions/eq-shell/pull/1145), pushed, **not yet merged**.
+
+**Deferred:**
+- [ ] **Do not merge/deploy PR #1145 on its own** — once live, a brand-new self-join account will be permanently unable to reach Field (not just delayed) because nothing yet exists to flip the switch back on. That "flip it back on" piece (below) has to ship in the same breath, or self-join effectively loses Field access entirely. _(added 2026-07-31)_
+- [ ] **The actual document-check trigger isn't built** — needs eq-cards to recognise Photo ID and White Card as upload types, plus a rule that flips a self-joined worker's access on once both are present and current (and back off if either lapses). This is the missing piece PR #1145 depends on. _(added 2026-07-31)_
+- [ ] **No "you're signed up, but blocked until you upload documents" screen in Field** — right now a gated self-join worker would just hit a dead end with no explanation. _(added 2026-07-31)_
+- [ ] **No Field-access checkbox on the Users-tab invite form** (`invite-user.ts`/`AdminInviteUser.tsx`) — that door currently relies on the database default rather than an explicit admin choice, the same gap the Workers-tab form already closed on 2026-07-30. _(added 2026-07-31)_
+- [ ] **Live smoke test not run** — self-join should now be blocked from Field, existing invite/claim/approval doors should be unaffected. Needs sign-in, which is off-limits for Claude to do on Royce's behalf. _(added 2026-07-31)_
+
+---
+
 ## eq-intake + eq-shell: 4-part fix from Royce's live screenshot review of the Intake console (2026-07-31)
 *Royce tested the Review Queue / Tidy / Dupes screens live on core.eq.solutions and sent screenshots flagging four things: nowhere to see/edit the trades list, a site merge that failed with a permission error, the Data Gaps table showing bare unhelpful labels, and the Contacts Dupes tab having no way to act on a flagged duplicate. Investigated all four against the real code and the live database before building anything.*
 
