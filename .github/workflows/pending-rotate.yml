@@ -11,6 +11,12 @@ name: Rotate pending.md done items
 # last 3 days are left alone (grace window) so follow-on sessions keep
 # same-week narrative context.
 #
+# 2026-08-01: a "Royce to click through live" bullet is the SAME kind of
+# trap, one level down — the build is genuinely done, only a live confirm
+# is left, but that one line still counted as "open" and pinned the whole
+# write-up. Such bullets now rotate out into a separate per-tier
+# verify-queue.md instead of blocking the section.
+#
 # Runs at 11:30 UTC — after suite-state (10:00) and honesty (11:00), before
 # digest-refresh (12:00) so the digest's Queue health table reflects the
 # rotated state. Commits with [skip ci] so the bot push doesn't re-trigger
@@ -52,9 +58,9 @@ jobs:
         run: |
           git config user.name  "eq-suite-bot"
           git config user.email "bot@eq.solutions"
-          git add eq/pending.md eq/pending-archive.md \
-                  sks/pending.md sks/pending-archive.md \
-                  ops/pending.md ops/pending-archive.md
+          git add eq/pending.md eq/pending-archive.md eq/verify-queue.md \
+                  sks/pending.md sks/pending-archive.md sks/verify-queue.md \
+                  ops/pending.md ops/pending-archive.md ops/verify-queue.md
           if git diff --staged --quiet; then
             echo "No changes"
             exit 0
