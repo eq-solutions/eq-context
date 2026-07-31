@@ -126,6 +126,31 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: EQ Suite loading-perf sweep — 3 shipped, 2 shelved/deferred, plus a live secret-exposure finding logged (2026-07-31)
+*Continuation of the 2026-07-11 nav-speed thread's "residual pre-warm timing" open item (see that session-close entry further down). Brainstormed a fresh round of cold-start/prewarm ideas, built the safe ones, verified each live before moving to the next.*
+
+- [x] **Netlify function cold starts on the Field/Service/Cards sign-in step closed** — that one function only fires once per session with long gaps between calls, long enough for its container to go cold right when someone actually opens an app. Added to the existing warm-keeper ping. eq-shell [PR #1135](https://github.com/eq-solutions/eq-shell/pull/1135), merged, live-verified against the actual deploy commit.
+- [x] **Browser now starts connecting to Field/Service/Cards the moment it knows which one you'll need**, instead of waiting until the app is actually opened — shaves the connection-setup time off the load. eq-shell [PR #1139](https://github.com/eq-solutions/eq-shell/pull/1139), merged, live.
+- [x] **Background app-warming now steps out of the way of whatever you're actually doing**, and stops entirely if the browser tab isn't even in front — previously it kept quietly working even in a backgrounded tab nobody was looking at. eq-shell [PR #1141](https://github.com/eq-solutions/eq-shell/pull/1141), merged, live.
+- [x] Confirmed all three actually reached core.eq.solutions by checking the live deploy record against the exact commits, not just trusting the merge.
+
+**Decided (Royce):**
+- Chose the safer "keep the function warm" fix over rewriting it to run on a different, faster hosting mode — that rewrite would have touched the sign-in code itself, which needed more care than this round called for.
+- **"merge #1135"**, then **"merge #1139 and #1141"** — all three deployed.
+
+**Deferred:**
+- [ ] **Moving token-exchange to run on Netlify's faster edge hosting** — shelved. The function does more than expected (three separate checks against the database, a security-department log entry, and its own encryption code), and a rewrite risked breaking sign-in in a way that wouldn't be obvious until it actually failed for someone. Not attempted. _(added 2026-07-31)_
+- [ ] **Two bigger, more invasive speed ideas not built**: combining the three separate app sign-in requests into one, and starting the download of an app's code before you've even opened it. Both would need more design work than this round's cheap wins. _(added 2026-07-31)_
+- [ ] **Sentry deploy tracking is missing entirely** — checked whether today's deploys showed up as a tracked "release" so a future error could be traced back to exactly which change caused it. They don't — and neither has any deploy, ever, going back 90 days. Fixing it needs a new access key from your Sentry account that doesn't exist yet; I can't create that myself. Flagged, not built, defer recommended but not yet confirmed by Royce. _(added 2026-07-31)_
+
+**Notes / substrate corrections:**
+- **A routine settings-check accidentally pulled a live production access key into this session's history in plain text** — the same key type as an already-known open finding (SEC-9). Nothing was printed or reused; logged as an addition to that existing finding rather than a new one. Full detail in `ops/security-register.md`.
+- **Field's actual live web address doesn't match what's hardcoded as the fallback in the code** (`field.eq.solutions` vs `eq-field.netlify.app`) — matters because a naive fix would have quietly warmed the wrong address for most sign-ins. Checked the real setting before building instead of assuming.
+- A live error alert that looked related ("auth-stall: chunk-error", EQ-SHELL-10) turned out to be two days older than this work and already root-caused/fixed by a separate concurrent session same day (see the "Richard Brown's mobile crash" entry above) — confirmed unrelated before treating it as a regression.
+- **git stash/pop was used twice this session to isolate pre-existing lint findings from new ones** — a known guard-bypass risk (F7, file corruption on this mount) exists for exactly that operation. Checked both times with a byte-level NUL scan; both clean.
+
+---
+
 ## EQ Field screenshot review — cross-tenant fixes (2026-07-30/31)
 *Full build detail lives in `sks/pending.md` (the review + Q&A pass was SKS-tenant-driven, and the two live-data fixes are SKS-specific) — this entry is the EQ-side pointer, since two of the five shipped PRs affect the `eq` tenant too: Job Numbers' BETA→Manage nav promotion was SKS-only since v3.5.95, now ungated for all tenants (v3.5.382); Pipeline nav is now hidden outright on mobile regardless of tenant (v3.5.382).*
 - [ ] Nobody's confirmed the `eq` tenant's Job Numbers nav placement or mobile Pipeline hiding on a live click-through — same "not yet clicked through production" gap noted in the SKS entry. _(added 2026-07-31)_
@@ -1321,7 +1346,7 @@ Agency field + roster on/off toggle in Core (#753), Field honours `on_roster` (#
 **Deferred (added 2026-07-11):**
 - [ ] **Cards perf — HELD (live signup traffic).** Safe wins queued: preload/preconnect the boot chain, defer PostHog to `flutter-first-frame`, defer Cropper.js. Big lever = Flutter deferred-imports / `--wasm` / static-first claim page (architectural — do NOT rush on live traffic). _(added 2026-07-11)_
 - [ ] **Field structural cache lever (L-effort)** — fingerprint the ~40 non-hashed JS/CSS assets so the service worker can go cache-first (kills ~40 revalidation round-trips/boot). Higher-effort follow-up. _(added 2026-07-11)_
-- [ ] **Residual "switching feels slow" = Shell-side pre-warm TIMING**, not per-app boot. With persistent hidden iframes each app boots ~once/session (pre-warm ~2.5 s) + on memory-saver re-mount — measure that if these boot cuts don't resolve the feel. _(added 2026-07-11)_
+- [x] **Residual "switching feels slow" = Shell-side pre-warm TIMING**, not per-app boot — addressed 2026-07-31: pre-warm now yields to the active tab, pauses entirely in a backgrounded tab, and preconnects to each app's real origin ahead of time. See the 2026-07-31 loading-perf sweep entry further up this file. _(added 2026-07-11, closed 2026-07-31)_
 
 **Notes / substrate corrections:**
 - **Service is Next.js** (not Vite) and **Cards is Flutter/CanvasKit** (not Vite/React) — live-verified; prior docs were wrong.
