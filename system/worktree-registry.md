@@ -103,6 +103,8 @@ If orphaned top-level `-wt` folders start reappearing in `eq-shell`/`eq-solves-s
 
 ## Active (do not touch)
 
+| C:\Projects\eq-field\.claude\worktrees\mobile-drawer-reorder (eq-field) | claude/mobile-drawer-reorder | Claude (Royce: relabel mobile drawer's "Safety" item to "Site Audits" and move it below Records, between Records and Incidents — follow-up polish on this morning's PR #585) | 2026-07-31 | IN PROGRESS |
+
 | ~~C:\Projects\eq-field\.claude\worktrees\mobile-toolbox-nav (eq-field)~~ REMOVED (orphaned husk — Windows permission-denied on delete, same class as other rounds; git no longer tracks it) | claude/mobile-toolbox-nav (merged) | Claude (Royce: "mobile view for eq field doesnt allow navigation to toolbox talks") | 2026-07-31 | DONE — **PR [#585](https://github.com/eq-solutions/eq-field/pull/585) MERGED** (squash `4a15fa0`, Royce's "merge it now" go). Live on field.eq.solutions via Netlify auto-deploy (deploy `6a6c625`, secret scan clean). Git-unregistered; physical folder left as harmless leftover. |
 
 | ~~C:\Projects\eq-field\.claude\worktrees\toolbox-photo-capture-parity (eq-field)~~ REMOVED | claude/toolbox-photo-capture-parity (merged) | Claude (ported SKS toolbox-talks-feedback photo-picker fix to EQ Field's shared `createPhotoController`) | 2026-07-31 | DONE — **PR [#584](https://github.com/eq-solutions/eq-field/pull/584) MERGED** (squash `cbd1075`, Royce's "merge it now" go). Live on field.eq.solutions via Netlify auto-deploy (deploy `6a6c5db`, secret scan clean). Worktree + branch removed. |
