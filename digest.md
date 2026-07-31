@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-07-31 23:16 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-07-31 23:21 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-31 22:55 UTC → 2026-07-31 23:16 UTC)
+## Since last refresh (2026-07-31 23:16 UTC → 2026-07-31 23:21 UTC)
 
-- Merged: eq-shell [#1142](https://github.com/eq-solutions/eq-shell/pull/1142) chore(intake): re-vendor eq-intake/eq-platform — trades sett
-- Merged: eq-shell [#1140](https://github.com/eq-solutions/eq-shell/pull/1140) chore(intake): re-vendor eq-intake/eq-platform — Dupes archi
-- Merged: eq-shell [#1136](https://github.com/eq-solutions/eq-shell/pull/1136) fix(quotes): sync canonical job status for every pipeline st
-- Merged: eq-shell [#1134](https://github.com/eq-solutions/eq-shell/pull/1134) fix(audit): workers-canonical-sync attributes real actors
-- Merged: eq-shell [#1132](https://github.com/eq-solutions/eq-shell/pull/1132) fix(audit): quote events now stamp app_source='ops', not the
-- Merged: eq-shell [#1131](https://github.com/eq-solutions/eq-shell/pull/1131) fix(signals): exclude archived staff from Compliance & safet
-- Merged: eq-shell [#1128](https://github.com/eq-solutions/eq-shell/pull/1128) fix(audit): stop entity.patched canonical_events noise
-- Merged: eq-shell [#1126](https://github.com/eq-solutions/eq-shell/pull/1126) feat(audit): Suite activity tab — canonical_events as plain 
+- Merged: eq-shell [#1145](https://github.com/eq-solutions/eq-shell/pull/1145) feat(auth): gate Field JWT on earned access, not just allowe
+- Merged: eq-shell [#1143](https://github.com/eq-solutions/eq-shell/pull/1143) fix(auth): null-safe display name for phone-only workers
+- Merged: eq-shell [#1139](https://github.com/eq-solutions/eq-shell/pull/1139) perf(shell): preconnect to Field/Service/Cards origins ahead
+- Merged: eq-shell [#1138](https://github.com/eq-solutions/eq-shell/pull/1138) feat(intake): tenant-editable trades vocab + persisted dupli
+- Merged: eq-shell [#1137](https://github.com/eq-solutions/eq-shell/pull/1137) fix(intake): site-merge manager gate checked the wrong ident
+- Merged: eq-shell [#1135](https://github.com/eq-solutions/eq-shell/pull/1135) perf(shell): warm token-exchange to close the last cold-star
+- Merged: eq-shell [#1133](https://github.com/eq-solutions/eq-shell/pull/1133) fix(mobile): drop redundant top bar on adapted iframe module
+- Merged: eq-shell [#1130](https://github.com/eq-solutions/eq-shell/pull/1130) chore(intake): re-vendor eq-intake/eq-platform — merge-error
 
 ## ⚠ Needs you (3)
 
@@ -73,6 +73,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-07-31 | eq-shell | [#1145](https://github.com/eq-solutions/eq-shell/pull/1145) feat(auth): gate Field JWT on earned access, not just allowed |
 | 2026-07-31 | eq-shell | [#1147](https://github.com/eq-solutions/eq-shell/pull/1147) docs: flag the function-grant landmine behind EQ-CARDS-1C |
 | 2026-07-31 | eq-shell | [#1146](https://github.com/eq-solutions/eq-shell/pull/1146) feat(mobile): simplified 2-tab nav for supervisors/managers, desk |
 | 2026-07-31 | eq-solves-service | [#662](https://github.com/eq-solutions/eq-service/pull/662) fix(reports): wire site photo into NSX Test Report; fix blank pag |
@@ -87,7 +88,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-31 | eq-field | [#583](https://github.com/eq-solutions/eq-field/pull/583) v3.5.390 — Fix: weekly digest opt-in panel silently stopped appea |
 | 2026-07-31 | eq-cards | [#191](https://github.com/eq-solutions/eq-cards/pull/191) fix(auth): restore authenticated EXECUTE grant on eq_cards_auto_p |
 | 2026-07-30 | eq-shell | [#1144](https://github.com/eq-solutions/eq-shell/pull/1144) feat(mobile): My Card row in the account sheet for non-field-firs |
-| 2026-07-30 | eq-shell | [#1141](https://github.com/eq-solutions/eq-shell/pull/1141) perf(shell): fetchpriority=low on prewarmed iframes + pause prewa |
 _Showing 15 of 126 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -100,9 +100,9 @@ _Showing 15 of 126 · full record in [sessions/](sessions/)_
 - **Richard then reported he couldn't find Service after the above shipped** — checked live: he has full permission and his company's account has Service switched on, so nothing needs granting. This is the expected result of the new simplified mobile view — Service moved from the main bar into the account menu. Told Royce where to find it; open question whether supervisors need Service as a main tab after all if this keeps coming up, rather than one tap deeper. _(added 2026-07-31)_
 - **iPads get the full desktop view, not the simplified mobile one** — confirmed the phone/desktop cutoff is a fixed screen-width line that iPads sit above in both orientations, so nothing built this session changes what an iPad shows. Noted in case a tablet-specific view is ever wanted. _(added 2026-07-31)_
 - **Two other places still lack any resolve option for unmatched rows**: the maintenance-check screen's own quick work-order paste (the simplest, position-only version) and the plain Assets spreadsheet import. Out of scope this round — same treatment could be added later if wanted. _(added 2026-07-31)_
-- **Do not merge/deploy PR #1145 on its own** — once live, a brand-new self-join account will be permanently unable to reach Field (not just delayed) because nothing yet exists to flip the switch back on. That "flip it back on" piece (below) has to ship in the same breath, or self-join effectively loses Field access entirely. _(added 2026-07-31)_
-- **The actual document-check trigger isn't built** — needs eq-cards to recognise Photo ID and White Card as upload types, plus a rule that flips a self-joined worker's access on once both are present and current (and back off if either lapses). This is the missing piece PR #1145 depends on. _(added 2026-07-31)_
-_…and 358 more · [eq/pending.md](eq/pending.md)_
+- **No "you're signed up, but blocked until you upload documents" screen in Field** — right now a gated self-join worker would just hit a dead end with no explanation. _(added 2026-07-31)_
+- **No Field-access checkbox on the Users-tab invite form** (`invite-user.ts`/`AdminInviteUser.tsx`) — that door currently relies on the database default rather than an explicit admin choice, the same gap the Workers-tab form already closed on 2026-07-30. _(added 2026-07-31)_
+_…and 355 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -145,4 +145,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-31 23:16 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-07-31 23:21 UTC._
