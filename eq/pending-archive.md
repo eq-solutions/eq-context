@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-07-30
+last_updated: 2026-07-31
 scope: Done items rotated out of eq/pending.md nightly by scripts/rotate_pending.py (per-item since 2026-07-27; before that, occasional manual whole-section moves). Nothing here is actionable — pure historical record (also covered in eq/changelog/*.md and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -1500,5 +1500,110 @@ contain the same values and were pushed before push-protection caught up.
 - [x] **digest.md now splits out "Waiting on you"** — the items only Royce can clear, out of the engineering Pending list. First regenerate picks it up automatically.
 - [x] **Both chronically-red CI gates on main (frontmatter, index-drift) turned green** — every violation fixed, all 8 README orphans indexed, in the same PR.
 - [x] **The 67-day corrupted "Licence p" line restored** verbatim from git history (F7) — its 3 items are back and flagged as possibly stale.
+
+---
+
+## eq-shell: licence-review badge never caught a Cards-side edit to an already-reviewed licence — fixed, plus the Field-sync gap it exposed (2026-07-28) (rotated 2026-07-31 — open items remain in pending.md)
+
+- [x] **Badge staleness fixed.** Threaded `updated_at` through `staff-canonical-licences.ts` → `LicenceRow` → `reviewBadgeFor()` so an edit to an already-reviewed licence re-flags "changed since — re-review needed", not just a brand-new one. eq-shell [PR #1075](https://github.com/eq-solutions/eq-shell/pull/1075), merged. No schema change — the column already existed on both jvkn and the tenant planes.
+- [x] **Field's tenant-plane licence copy now auto-syncs.** New `licence-push.ts` (eq-shell [PR #1076](https://github.com/eq-solutions/eq-shell/pull/1076)) mirrors the existing profile-push pattern; eq-cards now calls it after every licence save ([PR #183](https://github.com/eq-solutions/eq-cards/pull/183)). Both merged. (A follow-on gap this exposed — deleting a licence in Cards never told Shell — was found and fixed by a separate concurrent session same day, see the entry above/below on the false "expires today" alert.)
+
+---
+
+## eq-cards: Wallet nagged for "Photo ID" even though a Driver Licence was already held (2026-07-28) (rotated 2026-07-31 — open items remain in pending.md)
+
+- [x] Verified against real data before writing anything: a real SKS worker holding only a `driver_licence` showed `held=false` under the old exact-match logic, `held=true` under the new equivalence logic.
+- [x] Fixed and applied live. eq-cards [PR #185](https://github.com/eq-solutions/eq-cards/pull/185), merged. Migration `0109` applied directly to jvkn via Supabase MCP (no automated apply pipeline for this repo's control-plane changes) — post-apply verified via `pg_get_functiondef` that the live function contains the equivalence fix.
+
+---
+
+## Shell licence dashboard showing a false "expires today" alert — root cause is a real product gap (2026-07-28) (rotated 2026-07-31 — open items remain in pending.md)
+
+- [x] **Confirmed the SKS fix holds.** Full diff of all 114 SKS licence rows in Shell against Cards live — zero expiry mismatches, zero orphans, zero missing links.
+- [x] **Found the EQ Solutions tenant (Royce's own company) had never really synced at all — fixed live.** Its Shell data hadn't been touched since 2026-05-24: Royce's own 4 licence rows were all marked inactive, one was a straight duplicate (same licence, two conflicting expiry dates), and 3 of his current real licences (Police Check, High Voltage Switching, Master Cablers licence) added in Cards since didn't exist in Shell at all. The other 26 "staff" in that tenant were fabricated demo data from a May sprint (fake names, fake licence numbers) with ~590 dependent rows (500 schedule entries, 75 timesheets, 15 leave requests) — none of it touching real operational tables (assets, service visits, defects, tests all showed zero references). Royce approved a full clean: deleted the 26 fake staff and their seed data, resynced his own 7 real current licences from Cards, cleared the tenant's cached AI Brief. Direct SQL via Supabase MCP (zaap), not a migration — no code changed.
+- [x] **Standing gap closed — turned out to already be fixed by a concurrent session, plus one real hole closed on top.** Ran `/decide` on whether to build an automatic re-sync; before building, found a concurrent session had already shipped exactly that same day — `licence-push.ts` (eq-shell [#1076](https://github.com/eq-solutions/eq-shell/pull/1076)) + eq-cards [#183](https://github.com/eq-solutions/eq-cards/pull/183), so Cards now pushes every licence save straight to Shell/Field. One real gap survived: deleting/revoking a licence in Cards never told Shell (`softDelete()` didn't call the push hook, and even when it did the endpoint only ever pushed *eligible* licences — a deleted one just silently dropped out with no signal, leaving Shell's copy stuck active forever). Fixed both halves: eq-shell [#1080](https://github.com/eq-solutions/eq-shell/pull/1080) (`licence-push.ts` now explicitly deactivates a licence's synced row once Cards drops it), eq-cards [#184](https://github.com/eq-solutions/eq-cards/pull/184) (`softDelete()` now calls the push hook). Both merged (Royce's "merge #1080 and #184" go, squash `5e4ce135` / `9e106989`), all checks green on both, worktrees removed. _(added 2026-07-28)_
+
+---
+
+## eq-cards: worker-reported "my update didn't save" root-caused and fixed, deployed (2026-07-28) (rotated 2026-07-31 — open items remain in pending.md)
+
+- [x] Reopened the ignored crash report (Sentry EQ-CARDS-H) and confirmed the cause matches Brian's report exactly.
+- [x] Replaced the disappearing warning with one that stays on screen until the person finishes the form. eq-cards [PR #182](https://github.com/eq-solutions/eq-cards/pull/182), merged, deployed live to cards.eq.solutions (deploy run confirmed successful).
+
+---
+
+## eq-field: Sites screen simplified around canonical customer links; site-record fragmentation found, triaged, and fixed live (2026-07-28) (rotated 2026-07-31 — open items remain in pending.md)
+
+- [x] **All 21 duplicate-named site groups on ehow (46 rows) fixed live**, soft-retire pattern (`active=false` + audit note, nothing hard-deleted), verified afterward — every group now shows exactly one active row. Included: repointing SY5's 1 contact + 1 quote onto the correct (Equinix Australia) survivor before retiring its duplicate; St George + Port Macquarie survivors linked to Ramsay Health Care (the real building owner — both are actual Ramsay hospitals) rather than the one-off project customers that had been sitting on their duplicate rows; North Shore Private Hospital left with 2 active rows on purpose (2 legitimate different tenants — Ramsay Health Care + North Shore Radiology & Nuclear Medicine — sharing one address, only the unlinked orphan 3rd row retired); Equinix SY5's 2 already-inactive rows corrected (wrong customer stamp fixed, cross-referenced to the SY5 survivor — confirmed same physical site by matching address).
+- [x] **Found the existing owner of this problem**: eq-shell#781, filed and decided by Royce himself 2026-07-12.
+- [x] **Filed eq-solves-intake#78 in error, caught it, closed it**: assumed (from an empty GitHub issue search) that #781's 2026-07-13 "companion detection panel" promise was never built. It was — as direct PRs #66-73/#76/#77 (2026-07-13→2026-07-26), no governing issue, invisible to an issue search. The panel (write-time resolver, adjudication console, AI-suggested verdict, human verdict capture, merge preview/execute) already ships inside eq-shell/Core via `IntakeHealthHome`. Closed #78 with the correction; the brief-gate's git-staleness check is what caught it, not the issue search.
+- [x] **Bigger finding, posted to eq-shell#781**: `app_data.site_resolution_advisory` already had 22 high-confidence duplicate matches pre-populated since 2026-07-16 (covering nearly everything just fixed by hand), but `site_resolution_verdict`/`site_resolution_merge_log` were both completely empty — the review console has had correct answers sitting unreviewed for 12 days. Today's manual fix cross-checked clean against it (no conflicts) but bypassed the actual tool.
+- [x] **4 new advisory pairs from this morning checked and resolved** — all 4 were sites Royce entered by hand (not an automated import). SYD05 was a genuine duplicate of the established "Microsoft SYD05" (23 real shifts) — merged. SYD27 looked like a duplicate but Royce corrected it: that address is a multi-site data-centre campus, both records (Microsoft, Schneider Electric Australia) are legitimately separate — left alone. SYD29 was a **code collision, not a duplicate** — two real, different sites (400 Harris St Ultimo, 34 real shifts vs a brand-new Lane Cove West site) had both been coded "SYD29"; cleared the wrong code off the new site. SYD09 was a false positive, no action needed.
+- [x] **SYD29 swap corrected** — the earlier fix had it backwards. Royce confirmed: SYD29 is Microsoft's own code for the Lane Cove West site (moved back there); 400 Harris Street Ultimo is a Digital Realty site (linked as customer, code cleared, previously had no customer at all). Lesson: dependent-record volume shows which row is *used*, not which one is *named right* — customer identity needs an actual customer-side signal, not an inference from usage.
+
+---
+
+## eq-shell: TOTP backup codes shipped, closing the authenticator-lockout gap (2026-07-28) (rotated 2026-07-31 — open items remain in pending.md)
+
+- [x] **Backup codes built end-to-end**: generated once at setup (10 codes, shown once, never re-viewable), a "use a backup code instead" option on the sign-in screen, and a Settings page to get a fresh set if the old ones are lost. eq-shell [PR #1068](https://github.com/eq-solutions/eq-shell/pull/1068), merged (`4177d8c5`), Netlify auto-deploying to core.eq.solutions.
+- [x] **Database change applied live** to the jvkn system — Royce ran it directly via the Supabase SQL editor (the AI tool's direct-write path was blocked by a safety check, so instructions were handed over instead) and confirmed the new table exists.
+- [x] **Separate bug found while building this, fixed same day in its own session**: the sign-in system was sending a user's live authenticator secret back to their own browser when they signed in from a device marked "remembered" — a real leak, worse than a normal login-token leak because the secret never expires. eq-shell PR #1067, merged — verified directly against the live code that the fix landed correctly.
+
+---
+
+## eq-shell: Google Maps address autocomplete fixed in New Customer wizard (2026-07-28) (rotated 2026-07-31 — open items remain in pending.md)
+
+- [x] Fixed the underlying autocomplete helper so it re-attaches whenever the address field appears — covers the New Customer wizard's late-appearing field and any future field like it. eq-shell [PR #1057](https://github.com/eq-solutions/eq-shell/pull/1057), merged, live-verified on core.eq.solutions.
+
+---
+
+## eq-shell: Compliance register now one row per employee, not per licence (2026-07-28) (rotated 2026-07-31 — open items remain in pending.md)
+
+- [x] Rebuilt the export: the main sheet now shows one line per employee (name, contact details, how many licences, their worst status, and the next one due) — a full detail sheet and the existing summary totals are still there underneath for drill-down. eq-shell [PR #1064](https://github.com/eq-solutions/eq-shell/pull/1064), merged, live via Netlify auto-deploy.
+
+---
+
+## eq-shell: Compliance pack download filename + stale contact details fixed (2026-07-28) (rotated 2026-07-31 — open items remain in pending.md)
+
+- [x] **Download filename now reads `<Org>_Compliance_<date>.zip`** instead of a raw UUID storage key. eq-shell [PR #1071](https://github.com/eq-solutions/eq-shell/pull/1071), merged (`5a6036a0`).
+- [x] **Export now shows the manager-corrected email/phone from the Staff page**, not the stale Cards copy — same PR #1071, merged, live via Netlify auto-deploy.
+- [x] **Confirmed (not a bug): the "duplicate" front/back electrical licence photo is a real duplicate Rhys uploaded**, not the system reusing one image — no code change needed.
+- [x] **Added a spinner to the "building your pack" progress text** so it's obvious an export is still running (it already said "Downloading photos…" then "Compressing…", just as easy-to-miss plain text on the button). eq-shell [PR #1087](https://github.com/eq-solutions/eq-shell/pull/1087), merged (`7a30a76d`). Royce confirmed the filename fix was already live before this pass — this was UX-only, no backend change.
+
+---
+
+## eq-shell: Staff page edits silently reverting overnight — root-caused and fixed, deployed (2026-07-28) (rotated 2026-07-31 — open items remain in pending.md)
+
+- [x] **Fixed the overnight sync so a manager's correction in the Staff page can no longer be silently reverted** — contact details (email, phone, address, emergency contact, name) now only fill in from Cards when the Staff page field is empty; once a manager has set a value, only a real Cards-side change can move it. eq-shell PR #1073, merged (`17f88f5f`), and the fix was deployed live the same day (Royce approved the deploy explicitly).
+- [x] **`task_1fa4d77a` (EQ Field off-roster bug) fixed and pushed to main, 2026-07-28**: root-caused to a *second*, narrower gap than first suspected — the read-only Weekly Roster view already filtered `on_roster` (shipped v3.5.301), but the "Edit Roster" grid (where a supervisor actually schedules people) never checked it, so Ben Ritchie still showed up there for scheduling despite being off-roster. One-line fix in `scripts/roster.js` (`renderEditor()`), commit `7a19fd9`, eq-field `main` → Netlify auto-deploys to field.eq.solutions. Not yet click-through-verified live. Left alone (lower priority, separate follow-up if needed): three timesheet export/prefill functions that also don't filter `on_roster` — reasonable as-is since they reflect historical submitted hours, not "who's currently on the roster."
+- [x] **Spun off as a separate background task**: the standing gap where Shell never automatically re-syncs a licence after a Cards renewal (surfaced earlier in the Rhys Scott licence-alert item above) — task `task_f69713e6` running independently to build a licence-update push/notification.
+
+---
+
+## eq-shell: EQ Ops quote-status badge/board desync fixed (2026-07-28) (rotated 2026-07-31 — open items remain in pending.md)
+
+- [x] Fixed the detail panel to wait for the save and re-read the real row afterward, so the badge can't show a stage that never saved. eq-shell [PR #1063](https://github.com/eq-solutions/eq-shell/pull/1063), merged, live via Netlify auto-deploy.
+
+---
+
+## eq-field: Labour Hire archive + "would rehire" rating, ported from SKS (2026-07-28) (rotated 2026-07-31 — open items remain in pending.md)
+
+- [x] Added an archive button to Labour Hire rows only in the roster grid, opening an optional star rating before removing someone — skippable, same idea as SKS.
+- [x] Added a rate/re-rate button on already-archived Labour Hire people on the People page, plus a star-rating chip shown wherever the rating is set — it survives if the person is brought back later.
+- [x] Added the new place to store the rating directly to the live database, nullable so nothing already stored is affected — confirmed live before building the rest.
+- [x] Caught and fixed a real problem before merging: the first version broke an automated code-quality check (a file-length limit). Fixed by splitting the new code into its own file rather than disabling the check.
+- [x] Shipped and live on field.eq.solutions — eq-field [PR #555](https://github.com/eq-solutions/eq-field/pull/555), merged on Royce's go.
+
+---
+
+## eq-context: ACCESS-MODEL-PLAN.md Phase 3 fix actually landed — the 2026-07-27 close's claim was premature (2026-07-28) (rotated 2026-07-31 — open items remain in pending.md)
+
+- [x] Corrected `eq-context/eq/identity/ACCESS-MODEL-PLAN.md` Phase 3 for real this time — marked the check-perm-sync.mjs fix, matrix-mirror collapse, and `why_can()` done with PR references; left the genuinely open items (Field isManager conversions, service.create/close split, tenant_role_overrides retirement) alone. Committed `4ac42a5`, pushed to `origin/main`.
+
+---
+
+## ⏩ Session close — 2026-07-11 (per-app nav-speed) — Field + Service boot lightened & shipped; Cards profiled + held (rotated 2026-07-31 — open items remain in pending.md)
+
+- [x] **Residual "switching feels slow" = Shell-side pre-warm TIMING**, not per-app boot — addressed 2026-07-31: pre-warm now yields to the active tab, pauses entirely in a backgrounded tab, and preconnects to each app's real origin ahead of time. See the 2026-07-31 loading-perf sweep entry further up this file. _(added 2026-07-11, closed 2026-07-31)_
 
 ---
