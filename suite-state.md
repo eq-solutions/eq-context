@@ -62,7 +62,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-field:**
 - #587 v3.5.393 — Roster import/live-edit collision now has a defined winner
-- #586 fix: mobile drawer - relabel "Safety" to "Site Audits", move below Records (v3.5.393)
 
 **eq-service:**
 - #661 feat(reports): wire site photo into PM Check Report cover
