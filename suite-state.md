@@ -62,7 +62,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-field:**
 - #588 v3.5.394 — Site-dashboard data layer: roster site-code resolver + headcount RPC
-- #587 v3.5.394 — Roster import/live-edit collision now has a defined winner
 
 **eq-shell:**
 - #1145 feat(auth): gate Field JWT on earned access, not just allowed
