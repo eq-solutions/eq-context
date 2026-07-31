@@ -1607,3 +1607,12 @@ contain the same values and were pushed before push-protection caught up.
 - [x] **Residual "switching feels slow" = Shell-side pre-warm TIMING**, not per-app boot — addressed 2026-07-31: pre-warm now yields to the active tab, pauses entirely in a backgrounded tab, and preconnects to each app's real origin ahead of time. See the 2026-07-31 loading-perf sweep entry further up this file. _(added 2026-07-11, closed 2026-07-31)_
 
 ---
+
+## eq-shell: `workers-canonical-sync` audit-attribution fix — merged, deploy + live checks confirmed (2026-07-31) (fully closed, no open items remain)
+
+*eq-shell [PR #1134](https://github.com/eq-solutions/eq-shell/pull/1134) merged 2026-07-30 20:14 UTC. Both items left open at merge time (edge function redeploy, live verification of the fix's own test plan) closed out same week.*
+
+- [x] **Edge function redeploy confirmed** — `list_edge_functions`/`get_edge_function` on jvkn showed `workers-canonical-sync` at version 13, updated 2026-07-30 20:16:16 UTC (90 seconds after the PR merged), and the deployed source matches the merged fix exactly (admin_actor_id priority, isCronReconcile detection, x-eq-actor header logic all present).
+- [x] **Live verification of all three test-plan cases, confirmed against real production data** (not synthetic tests) via `ehow.app_data.audit_log`: (1) **admin edit → admin attributed** — Royce Milmlow (`is_platform_admin: true`) edited 16+ different workers' staff rows in one batch on 2026-07-31 03:39 UTC; every row correctly attributed `actor_id` to Royce, not the affected worker. (2) **self-edit → worker attributed** — Richard Brown (supervisor, not admin) edited his own staff row 2026-07-30 21:44 UTC; correctly attributed to himself. (3) **reconcile → no actor** — the nightly `eq_reconcile_worker_sync()` pass at 2026-07-31 02:35 UTC touched Ben Ritchie's and Rhys Scott's rows with `actor_id: null, source: 'system'`, exactly as designed.
+
+---
