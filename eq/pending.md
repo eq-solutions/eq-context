@@ -29,6 +29,27 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-solves-service: Report Settings now genuinely different per tier, plus a canonical-user-id fix (2026-07-31)
+*Two asks: confirm a canonical Shell user-id fix was actually committed and working, then settle whether Basic/Standard/Detailed report settings genuinely produce different reports — Royce wasn't convinced they did. They didn't: all three tiers shared one set of toggles. Royce chose the full fix over a quick patch.*
+
+- [x] **Report generators now resolve assigned/tested/completed-by names via the canonical Shell roster first**, falling back to the local profile only when canonical has no match — six report call sites were silently missing names for canonical-only Shell users. eq-service [PR #657](https://github.com/eq-solutions/eq-service/pull/657), merged, live.
+- [x] **Basic, Standard, and Detailed report settings now actually save and apply separately** — previously one shared set of toggles (cover page, contents, executive summary, sign-off) applied at every tier, so the buttons looked different but produced the same report. Added 12 new settings columns (one set per tier), rebuilt the Report Settings page as a tier matrix, and rewired every report generator that reads them. eq-service [PR #658](https://github.com/eq-solutions/eq-service/pull/658), merged; database change applied and confirmed live on production.
+
+---
+
+## eq-solves-service: Found why photo uploads were failing everywhere, then added a link/create/skip option to the paste-import flow (2026-07-31)
+*Royce hit "something went wrong" uploading a site photo. Traced to the actual cause rather than a workaround, then moved on to a second, related ask: give the work-order paste-import screen the same "link to an existing asset, create a new one, or skip" choice that a different importer already has, instead of silently dropping anything it can't match.*
+
+- [x] **Root cause of the upload failure: the photo storage area never had permission set up for anyone to write to it**, on any tenant, since it was created — confirmed live, not a one-off. Every in-app upload through Admin → Media had been silently failing. eq-service [PR #659](https://github.com/eq-solutions/eq-service/pull/659), merged; database change applied and confirmed live on production.
+- [x] **Pasting a batch of work orders now lets you resolve any unmatched asset ID** — link it to an existing asset, create a new one on the spot, or skip it — instead of it always being silently dropped. Matches the same resolve pattern already used in the other work-order importer. eq-service [PR #660](https://github.com/eq-solutions/eq-service/pull/660), merged.
+
+**Deferred:**
+- [ ] **Royce to click through the new paste-import resolve screen live** — built and type/build-checked clean, but not clicked through in a real browser session (no test login available in this environment). Paste a batch with an unmatched asset ID, try linking one and creating another, confirm the resulting check comes out right. _(added 2026-07-31)_
+- [ ] **Site photos only show up on two of the eight report types** (the ACB Test Report and the Customer/PM Asset Report) — the other report types (including the PM Check Report, by far the most-used one) don't pull in a site photo at all. Flagged to Royce, not yet requested as a fix. _(added 2026-07-31)_
+- [ ] **Two other places still lack any resolve option for unmatched rows**: the maintenance-check screen's own quick work-order paste (the simplest, position-only version) and the plain Assets spreadsheet import. Out of scope this round — same treatment could be added later if wanted. _(added 2026-07-31)_
+
+---
+
 ## eq-shell: Self-join Field access now requires "earned", not just "allowed" — but the thing that earns it isn't built yet (2026-07-31)
 *Deep dive on the ONE LOGIN self-join (QR/link) door found it grants Field access instantly with zero vetting — no admin, no document check, nothing. Royce steelmanned gating it behind Photo ID + White Card upload while keeping the phone+code signup itself frictionless. Scoped which doors are "admin already vetted this" (invite, worker-invite claim, Cards staff approval) vs "nobody has" (true self-join) and built the split.*
 
