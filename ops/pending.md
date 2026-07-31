@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-07-31
+last_updated: 2026-08-01
 scope: Operational support to-do list — Webb, infra, substrate
 read_priority: standard
 status: live
@@ -200,30 +200,14 @@ repo that copies it doesn't reinherit the bug. eq-context commit
 
 ## Full substrate audit — 95 findings across the whole eq-context repo (2026-07-19)
 
-Royce asked for a deep-dive, full review of the substrate ("spend the time now
-then we can trust our truth") after a Chat-sync friction session surfaced a
-CLAUDE.md §9 fact-duplication bug. Five parallel read-only audits (system/,
-eq/, sks/, ops+rules/, root+archive) found 95 distinct issues — stale facts,
-cross-file contradictions, broken pointers, duplicate/forked files, missing
-frontmatter. Built as an interactive triage tool (published Artifact,
-localStorage-backed status + notes per finding, export to markdown) rather
-than a flat list, since 95 items needs sorting/filtering to be usable.
-
-Full build/fix history (7 PRs across three follow-up sessions, #94–#108,
-covering both real incidents caught — a silent truncation of
-`rules/non-negotiables.md`, an orphaned `ops/security-register.md` — and the
-routine doc-drift fixes) is recorded in `sessions/2026-07-19.md` and
-`sessions/2026-07-20.md`; not repeated here.
-
 **Needs Royce:**
 - [ ] **SEC-1** — still parked (Royce: "ignore sks nsw labour for now").
   sks-nsw-labour confirmed still live 2026-07-16, no retirement date.
-- [ ] **SEC-9 rotation runbook** — doesn't exist yet. Write one (mirror the
-  SEC-3/F1 runbook's staged pattern) before either SEC-3 or SEC-9 can
-  actually be rotated.
 - [ ] **Execute the SEC-3 + SEC-9 rotation** whenever Royce picks a window
   — both are live-secret actions requiring his explicit go, not something
-  to do unilaterally.
+  to do unilaterally. (SEC-9's runbook already exists — `sec9-jvkn-key-
+  rotation-runbook-2026-07-27.md`, updated 2026-08-01 with a safer,
+  non-session-wiping path; explicitly deferred, not urgent.)
 - [ ] A residual tail of low-severity findings (stale dates on files never
   touched across any of the 4 follow-up PRs — `system/failures.md`,
   `system/lessons.md` narrative detail, `ops/financial-architecture.md`,
@@ -383,18 +367,6 @@ Changelog at `archive/changelog-ahd.md`.
 - [ ] Engage solicitor for ISA, MIS Position Paper, EISP sign-off
 - [ ] First property acquisition — Adelaide North corridor / SE QLD fallback
 - [ ] Government engagement letter (NSW Treasurer) — post first bonus paid
-
----
-
-## Security register triage: SEC-1 checklist, SEC-9 runbook, false-alarm guard fixed (2026-07-27)
-*Royce asked to fix SEC-1, close SEC-9/10/12, and investigate the "guard bypass?" flag in digest.md. Steelmanned the framing before acting — none of the three were as simple as the one-line ask implied.*
-
-
-### Notes (added 2026-07-27)
-- **A subagent run to map SEC-9's consumers was itself flagged by the Claude Code security classifier** for decoding a live jvkn `service_role` JWT's payload while reading Netlify env vars — recorded honestly in SEC-9's row as a possible second exposure (not confirmed as a full leak: only decoded claims, not necessarily the encoded bearer token, were visible in what I could see). Process fix applied: future credential-consumer mapping should be scoped to env-var names/presence only, never fetch/decode/print actual values.
-
-### Deferred (added 2026-07-27)
-- [ ] **Royce's call: does the possible SEC-9 second exposure push "rotate whenever convenient" to "rotate soon"?** Not decided this session.
 
 ---
 

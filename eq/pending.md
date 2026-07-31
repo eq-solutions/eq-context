@@ -108,21 +108,12 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## eq-shell: Self-join Field access now requires "earned", not just "allowed" — but the thing that earns it isn't built yet (2026-07-31)
-*Deep dive on the ONE LOGIN self-join (QR/link) door found it grants Field access instantly with zero vetting — no admin, no document check, nothing. Royce steelmanned gating it behind Photo ID + White Card upload while keeping the phone+code signup itself frictionless. Scoped which doors are "admin already vetted this" (invite, worker-invite claim, Cards staff approval) vs "nobody has" (true self-join) and built the split.*
+## eq-shell: Self-join Field access now requires "earned", not just "allowed" — merged and live (2026-07-31 → 2026-08-01)
 
-- [x] New database columns on every account (`field_access_unlocked_at`/reason) — separate from the existing on/off Field-access switch, this one tracks whether access has actually been *earned*, not just allowed.
-- [x] Every account that already had Field access keeps it — 70/70 backfilled the moment this shipped, confirmed zero gap. Nobody currently working got logged out.
-- [x] Admin-driven doors (email invite, worker-invite claim, Cards staff approval) mark the access earned immediately — a human already vouched, so nothing changes for those.
-- [x] Migration applied live to core's login system (jvkn) — verified. eq-shell [PR #1145](https://github.com/eq-solutions/eq-shell/pull/1145), pushed, **not yet merged**.
-
-**Deferred:**
-- [ ] **Do not merge/deploy PR #1145 on its own** — once live, a brand-new self-join account will be permanently unable to reach Field (not just delayed) because nothing yet exists to flip the switch back on. That "flip it back on" piece (below) has to ship in the same breath, or self-join effectively loses Field access entirely. _(added 2026-07-31)_
-- [ ] **The actual document-check trigger isn't built** — needs eq-cards to recognise Photo ID and White Card as upload types, plus a rule that flips a self-joined worker's access on once both are present and current (and back off if either lapses). This is the missing piece PR #1145 depends on. _(added 2026-07-31)_
 - [ ] **No "you're signed up, but blocked until you upload documents" screen in Field** — right now a gated self-join worker would just hit a dead end with no explanation. _(added 2026-07-31)_
 - [ ] **No Field-access checkbox on the Users-tab invite form** (`invite-user.ts`/`AdminInviteUser.tsx`) — that door currently relies on the database default rather than an explicit admin choice, the same gap the Workers-tab form already closed on 2026-07-30. _(added 2026-07-31)_
-- [ ] **Live smoke test not run** — self-join should now be blocked from Field, existing invite/claim/approval doors should be unaffected. Needs sign-in, which is off-limits for Claude to do on Royce's behalf. _(added 2026-07-31)_
-- [ ] **Role-tagged self-join links, for Apprentice/Labour hire specifically** — a cold QR/link signup always defaults to plain Employee today, so those two roles can't get their own security profile without an admin inviting them individually first. Discussed two low-friction options with Royce: (1) separate join links per role, (2) bulk-inviting labour-hire crews from the agency roster ahead of time (already possible today, no build needed). Royce agreed on both but explicitly chose to hold off building (1) until PR #1145 above is reviewed and live — it would touch the same file (`shell-join-tenant.ts`) as an already-open, unreviewed auth change. **Security note for whoever builds this:** the role must come from an opaque server-side code, never a plain URL parameter — a plain `?role=` value would let a worker edit the link to grant themselves any role, including Manager. _(added 2026-07-31)_
+- [ ] **Live smoke test not run** — self-join should now be blocked from Field, existing invite/claim/approval doors should be unaffected. Royce said he'd click through this himself with a test phone number; not yet confirmed done. _(added 2026-07-31)_
+- [ ] **Role-tagged self-join links, for Apprentice/Labour hire specifically** — a cold QR/link signup always defaults to plain Employee today, so those two roles can't get their own security profile without an admin inviting them individually first. Two low-friction options agreed with Royce: (1) separate join links per role, (2) bulk-inviting labour-hire crews from the agency roster ahead of time (already possible today, no build needed). Was deliberately held back until PR #1145 was reviewed and live so it wouldn't stack on the same file as an unreviewed auth change — **that's no longer a blocker, PR #1145 merged 2026-08-01**. **Security note for whoever builds this:** the role must come from an opaque server-side code, never a plain URL parameter — a plain `?role=` value would let a worker edit the link to grant themselves any role, including Manager. _(added 2026-07-31)_
 
 ---
 
