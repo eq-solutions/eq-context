@@ -40,7 +40,7 @@ _If this file is >48h old, the cron is broken._
 | Assets | 2,836 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
 | Users | 5 | service.tenant_members |
-| Maintenance checks | 31 | service.maintenance_checks |
+| Maintenance checks | 34 | service.maintenance_checks |
 | Defects | 0 | service.defects |
 
 **SKS tenant ID on ehow:** `7dee117c-98bd-4d39-af8c-2c81d02a1e85`
@@ -59,6 +59,9 @@ _If this file is >48h old, the cron is broken._
 ---
 
 ## Open PRs (as of 2026-07-31)
+
+**eq-field:**
+- #583 v3.5.390 — Fix: weekly digest opt-in panel silently stopped appearing
 
 **eq-shell:**
 - #1145 feat(auth): gate Field JWT on earned access, not just allowed
@@ -80,7 +83,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 203 (latest: 0197) applied
+**Migrations:** eq-service has 204 (latest: 0198) applied
 
 ---
 
