@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-07-31)
 
-**eq-field:**
-- #588 v3.5.394 — Site-dashboard data layer: roster site-code resolver + headcount RPC
-
 **eq-shell:**
 - #1145 feat(auth): gate Field JWT on earned access, not just allowed
 
