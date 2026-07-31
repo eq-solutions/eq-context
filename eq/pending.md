@@ -87,15 +87,24 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ---
 
 ## eq-solves-service: Found why photo uploads were failing everywhere, then added a link/create/skip option to the paste-import flow (2026-07-31)
-*Royce hit "something went wrong" uploading a site photo. Traced to the actual cause rather than a workaround, then moved on to a second, related ask: give the work-order paste-import screen the same "link to an existing asset, create a new one, or skip" choice that a different importer already has, instead of silently dropping anything it can't match.*
-
-- [x] **Root cause of the upload failure: the photo storage area never had permission set up for anyone to write to it**, on any tenant, since it was created — confirmed live, not a one-off. Every in-app upload through Admin → Media had been silently failing. eq-service [PR #659](https://github.com/eq-solutions/eq-service/pull/659), merged; database change applied and confirmed live on production.
-- [x] **Pasting a batch of work orders now lets you resolve any unmatched asset ID** — link it to an existing asset, create a new one on the spot, or skip it — instead of it always being silently dropped. Matches the same resolve pattern already used in the other work-order importer. eq-service [PR #660](https://github.com/eq-solutions/eq-service/pull/660), merged.
 
 **Deferred:**
 - [ ] **Royce to click through the new paste-import resolve screen live** — built and type/build-checked clean, but not clicked through in a real browser session (no test login available in this environment). Paste a batch with an unmatched asset ID, try linking one and creating another, confirm the resulting check comes out right. _(added 2026-07-31)_
-- [ ] **Site photos only show up on two of the eight report types** (the ACB Test Report and the Customer/PM Asset Report) — the other report types (including the PM Check Report, by far the most-used one) don't pull in a site photo at all. Flagged to Royce, not yet requested as a fix. _(added 2026-07-31)_
 - [ ] **Two other places still lack any resolve option for unmatched rows**: the maintenance-check screen's own quick work-order paste (the simplest, position-only version) and the plain Assets spreadsheet import. Out of scope this round — same treatment could be added later if wanted. _(added 2026-07-31)_
+
+---
+
+## eq-solves-service: Site photos now show up in the reports that actually need them, plus a real blank-page bug found and fixed (2026-08-01)
+*Follow-up to the photo-upload fix from 2026-07-31 — with uploads finally working, the obvious next question was why so few reports actually showed the photo once one was uploaded. Also built Royce a plain-English one-page tour of the whole reports system first, at his request, before diving into the fix.*
+
+- [x] **Site photo now shows on the PM Check Report cover** — the report ~95% of customers actually receive, and the biggest gap. eq-service [PR #661](https://github.com/eq-solutions/eq-service/pull/661), merged.
+- [x] **Same for the NSX Test Report; confirmed the ACB Test Report already had it working correctly**, no change needed there. eq-service [PR #662](https://github.com/eq-solutions/eq-service/pull/662), merged.
+- [x] **Found and fixed a real bug while sampling the output**: PM Check Report was shipping a genuinely blank page 2 in every report with a cover page, in every tier — not a Word-caching illusion, an actual double page-break. Confirmed by diffing the file's internal structure before and after. Included in PR #662 above.
+- [x] **Checked the other 5 report types rather than assuming they should all get a photo too** — Compliance Report, Field Run-Sheet, Work Order Details, Customer Scope Statement, Customer Renewal Pack. None fit: the first is usually multi-site, the next two have no per-site cover, the last two span a whole customer's contract, not one site. Royce's call: leave all 5 as-is.
+- [x] **Built a plain-English "Reports, Explained" page** — what each of the 9 report types is for, how tenant branding flows in from Shell, the per-tier section matrix, and where to find every button. Private page, not yet shared further.
+
+**Deferred:**
+- [ ] **Royce to spot-check a live PM Check Report and NSX Test Report from a site with an uploaded photo** — verified via generated samples with a placeholder image, not yet against a real production report. _(added 2026-08-01)_
 
 ---
 
@@ -840,7 +849,7 @@ changelog and session logs are for.
 ## eq-shell: confirms the exact "fake private folder" bug just found + fixed on eq-solves-service also exists here (2026-07-23)
 
 - [ ] **The tripwire fix eq-solves-service got today (see that entry below) hasn't been built for eq-shell, and eq-shell needs it too.** This session's assigned private folder had nothing in it — ended up doing all its real work in the one shared master copy instead, same mechanism as eq-solves-service's bug. Confirmed live mid-session: a second, unrelated concurrent session's own work-in-progress (a database list-loading improvement) was sitting there uncommitted where this session could see it, and that session's own folder-switch changed what this session was pointed at partway through, without warning. Nothing was lost either time — caught before anything got mixed up — but it's luck, not a safeguard. _(added 2026-07-23)_
-- [ ] **Separately: PR #973 (the other session's database list-loading work, opened while this session was mid-review) got a partial review before that session took over — worth a second look before merge.** The new database logic correctly matches the existing rules, no issues there. One real thing: the "Overdue follow-up" filter button will start showing fewer results than before once this ships (it'll now match the same, stricter rule the on-screen count already uses) — arguably a fix, not a bug, but nobody explicitly decided it should change. Not urgent, just flag it before merge. _(added 2026-07-23)_
+- [x] **PR #973 second look, closed out 2026-08-01** — the "worth a second look before merge" flag was moot by the time it was picked up; #973 had already merged same-day (2026-07-23) and is confirmed live on core.eq.solutions. Checked the one flagged behaviour change directly against live data on both tenants: the "Overdue follow-up" filter's new, stricter definition (excludes quotes already won/invoiced/lost, not just any quote with a stale follow-up date) currently produces **identical counts to the old definition** — 1/1 on SKS, 0/0 on eq — so the gap is latent, not yet visible to anyone. Royce confirmed: keep the stricter definition going forward, no code change needed.
 
 ---
 
