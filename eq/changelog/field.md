@@ -9,6 +9,9 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-07-31] Fix: mobile drawer had no path to Toolboxes/Prestarts/Records/Incidents (MERGED, v3.5.392, #585)
+- Desktop's Safety nav group has 7 children (Prestarts, Toolboxes, Site Audits, Records, Report, Test Equipment, Incidents), but the mobile "More" drawer only ever exposed one flat, sks-gated "Safety" item routing straight to Site Audits — Prestarts, Toolboxes, Records and Incidents had no mobile navigation path at all, on either tenant. Added 4 new drawer items mirroring desktop's `nav-prestart`/`nav-toolbox`/`nav-safety-records`/`nav-incident` exactly (same manager-only gating, ungated by tenant). Royce, live: "mobile view for eq field doesnt allow navigation to toolbox talks."
+
 ## [2026-07-31] Fix: shared photo picker forced the camera, blocking gallery uploads (MERGED, v3.5.391, #584)
 - The shared photo-add input (`createPhotoController.renderList` in `site-reports-shared.js`, used by Toolbox/Incidents/Prestart) carried `capture="environment"` alongside `accept="image/*"` — forces the camera open directly on many mobile browsers and hides the "choose from library" option, so an existing JPEG couldn't be uploaded. Dropped `capture`. Ported from the identical fix on SKS Labour (v3.10.107, #74) — same shared-history bug, same one-line fix. Checked (not assumed) whether EQ Field also needed SKS's other fix, post-submit editing: Toolbox already had a working Save regardless of status; Prestart's post-submit lock is a deliberate July fix (v3.5.247, field feedback) — left untouched.
 
