@@ -43,19 +43,67 @@ check("full-move: narrative intact in archive", "*intro line*" in append)
 check("full-move: header stamped", "## finished thing (2026-07-01) (rotated 2026-07-27)" in append)
 check("full-move: open section untouched", "- [ ] todo C" in live)
 
-# 2 — mixed old section: open items stay byte-identical, done blocks move
+# 2 — a section with real open work left (not just a verify line): open
+# items stay byte-identical, done blocks move, and a verify line riding
+# alongside genuine open work stays put too (mixed sections aren't split).
 body = (
     "\n## mixed session (2026-07-10)\n*context intro*\n\n"
     "- [x] shipped the fix\n"
     "- [ ] **Royce to confirm live** it works _(added 2026-07-10)_\n"
+    "- [ ] a genuinely unbuilt follow-up, not a verify item\n"
 )
 live, append, s = run(body)
 check("mixed: one done moved", s["moved"] == 1 and s["partial"] == 1, s)
-check("mixed: open item stays", "- [ ] **Royce to confirm live** it works _(added 2026-07-10)_" in live)
+check("mixed: no verify moved (real open work still there)", s["moved_verify"] == 0, s)
+check("mixed: verify item stays put", "- [ ] **Royce to confirm live** it works _(added 2026-07-10)_" in live)
+check("mixed: real open item stays", "- [ ] a genuinely unbuilt follow-up, not a verify item" in live)
 check("mixed: intro stays live", "*context intro*" in live)
 check("mixed: archive header notes the split",
       "## mixed session (2026-07-10) (rotated 2026-07-27 — open items remain in pending.md)" in append)
 check("mixed: done item in archive", "- [x] shipped the fix" in append)
+
+# 2b — the actual fix's target case: a section whose only remaining open
+# item is a verify line (nothing left to build) rotates whole — done items
+# to the archive as always, the verify line to the queue instead of
+# pinning the write-up live forever.
+body = (
+    "\n## fully shipped but unconfirmed (2026-06-01)\n*shipped it*\n\n"
+    "- [x] shipped the fix\n"
+    "- [ ] **Royce to click through live** and confirm it works\n"
+)
+live, append, s = run(body)
+check("2b: section leaves live file", "fully shipped but unconfirmed" not in live, live)
+check("2b: done item archived", "- [x] shipped the fix" in append)
+check("2b: narrative archived too", "*shipped it*" in append)
+check("2b: one verify item moved", s["moved_verify"] == 1, s)
+check("2b: queue append has the verify line",
+      "- [ ] **Royce to click through live** and confirm it works" in s["queue_append"], s)
+check("2b: queue append traces its source section",
+      "**From:** fully shipped but unconfirmed (2026-06-01)" in s["queue_append"], s)
+
+# 2c — still real open work alongside a verify line: the section must NOT
+# rotate, and the verify line must NOT move — this is what stops the split
+# from over-firing on sections that aren't actually done yet.
+body = (
+    "\n## still real work left (2026-06-01)\n\n"
+    "- [x] done part\n"
+    "- [ ] Royce to click through live and confirm\n"
+    "- [ ] build the second half of this feature\n"
+)
+live, append, s = run(body)
+check("2c: section stays live (real work remains)", "still real work left" in live)
+check("2c: verify line stays put, not queued", "Royce to click through live and confirm" in live)
+check("2c: nothing queued", s.get("queue_append", "") == "", s)
+check("2c: moved_verify is 0", s["moved_verify"] == 0, s)
+
+# 2d — a section with ONLY a verify item, no done items at all (e.g. a
+# doc-only note with nothing to "credit" as shipped) still rotates and
+# queues cleanly rather than getting stuck on the moved_done==0 early exit.
+body = "\n## nothing built, just a note (2026-06-01)\n\n- [ ] Royce to spot-check this live\n"
+live, append, s = run(body)
+check("2d: section leaves live file", "nothing built, just a note" not in live, live)
+check("2d: verify item queued", s["moved_verify"] == 1, s)
+check("2d: nothing archived (no done items)", s["moved"] == 0, s)
 
 # 3 — section inside the grace window is untouched even if fully done
 body = "\n## fresh work (2026-07-26)\n\n- [x] just did this\n"
