@@ -39,19 +39,17 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ---
 
 ## eq-shell + eq-solves-intake + eq-receipts: closed every open security alert across the EQ suite, found 5 repos where the alert system was switched off entirely (2026-08-01)
-*Started from the original vitest/vite/xlsx fix (PR #99), then kept pulling the thread: fixed the same gap in eq-shell's copy of that code, checked every other repo in the org rather than assuming they were fine, and found a blind spot worth closing.*
 
-- [x] **eq-solves-intake — the original 3 alerts**: an old testing tool bumped to a safe version across every package that used it; a build tool that was still on a version with two 2026 security fixes never released for it (the "already patched" version people had been using turned out to still be exposed — the fix only exists two versions further up); an Excel-reading library with a known flaw removed entirely — the real code had already stopped using it back in July, it was only left behind in test setup, easy to just cut. [PR #99](https://github.com/eq-solutions/eq-solves-intake/pull/99) merged, tagged as a release point.
-- [x] **eq-shell — pulled that fix in** by re-copying the affected code from the fixed source. [PR #1159](https://github.com/eq-solutions/eq-shell/pull/1159) merged.
-- [x] **eq-shell — found the copy-in process only ever grabs part of the files, never the top-level settings that go with them.** That gap meant a security fix eq-shell had already applied once before (a week+ earlier) was quietly getting undone every time anyone did a routine re-copy from the source repo — which is exactly what almost happened again just now. Copied the missing piece across too. [PR #1162](https://github.com/eq-solutions/eq-shell/pull/1162) merged, closed 2 of eq-shell's last 3 open alerts immediately.
-- [x] **Checked every repo in the org, not just the ones already in front of us** — found 5 repos where the alert system had been switched off entirely (not "clean", just unwatched, so nobody would ever be told about a real problem): eq-cards, eq-design-tokens, eq-receipts, sks-charters, eq-website. Switched it back on for all 5, per Royce's go.
-- [x] **That switch-on immediately surfaced 2 real high-severity issues on eq-receipts**, fixed the same session: one a routine patch to a dev-only tool; the other a framework the receipts app is built on that had actually been discontinued outright — the fixed version people would normally just install was never going to be released for it, so the only real fix was moving to its official replacement. Confirmed it's a same-behaviour swap (same screens, same navigation, nothing a user would notice) before shipping. eq-receipts [PR #16](https://github.com/eq-solutions/eq-receipts/pull/16) + [PR #17](https://github.com/eq-solutions/eq-receipts/pull/17) merged — eq-receipts now shows zero open alerts.
-
-**Deferred:**
-- [ ] **eq-shell's last remaining alert (`ajv`) is taking longer than the others to clear from GitHub's own list**, even though the underlying fix already shipped in the same PR that closed the other two — everything about the actual installed code says this one's just GitHub's own scanner catching up, not a real gap, but it was still showing open as of this write-up. Worth a look if it's still open next time someone checks. _(added 2026-08-01)_
 - [ ] **eq-cards / eq-design-tokens / sks-charters / eq-website**: alerts just switched on, the very first scan came back clean on all 4 — worth a second look in a day or two in case that first scan didn't fully finish rather than assuming it's actually clean. _(added 2026-08-01)_
 - [ ] **The gap that let eq-shell's fix quietly get undone (copy-in process only grabs part of the files) is still there structurally** — it'll happen again on the next routine copy-in unless the process itself gets fixed, not just patched around this one time. _(added 2026-08-01)_
 - [ ] **eq-receipts' react-router move hasn't been clicked through live** — the build is clean and Netlify's own preview built it successfully, but nobody has actually navigated the real app (Dashboard → Review → Verify, sidebar links) since the change. Worth a quick manual pass. _(added 2026-08-01)_
+
+---
+
+## eq-shell + eq-solves-intake: the last open security alert (`ajv`) closed — turned out not to be scanner lag, a real stale version number left behind (2026-08-01)
+
+- [x] **Found the actual cause**: an earlier fix had already made the real, installed version of a validation library safe everywhere — but one package's own ingredient list still listed the old, unsafe version number on paper. GitHub was reading that paper list, not what was actually installed, so it correctly kept flagging it. Corrected the paper list to match reality. [eq-solves-intake PR #101](https://github.com/eq-solutions/eq-solves-intake/pull/101) + [eq-shell PR #1167](https://github.com/eq-solutions/eq-shell/pull/1167), both merged.
+- [x] **Confirmed closed, not assumed** — checked GitHub's own record right after merging; it flipped to "fixed" immediately. eq-shell now shows zero open security alerts.
 
 ---
 
