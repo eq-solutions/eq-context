@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-01 04:36 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-01 04:55 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-01 04:23 UTC → 2026-08-01 04:36 UTC)
+## Since last refresh (2026-08-01 04:36 UTC → 2026-08-01 04:55 UTC)
 
-- Merged: eq-shell [#1155](https://github.com/eq-solutions/eq-shell/pull/1155) feat(auth): close 3 remaining ONE LOGIN onboarding gaps
-- Merged: eq-shell [#1152](https://github.com/eq-solutions/eq-shell/pull/1152) fix(auth): connect-wallet approval now checks existing docum
-- Merged: eq-shell [#1151](https://github.com/eq-solutions/eq-shell/pull/1151) fix(security): gate the supplier directory read to manager/s
-- Merged: eq-shell [#1150](https://github.com/eq-solutions/eq-shell/pull/1150) fix(auth): mint-cards-otp returns 422 for no-email users, no
-- Merged: eq-shell [#1149](https://github.com/eq-solutions/eq-shell/pull/1149) feat(auth): role-tagged self-join links for Apprentice/Labou
-- Merged: eq-shell [#1146](https://github.com/eq-solutions/eq-shell/pull/1146) feat(mobile): simplified 2-tab nav for supervisors/managers,
-- Merged: eq-shell [#1145](https://github.com/eq-solutions/eq-shell/pull/1145) feat(auth): gate Field JWT on earned access, not just allowe
-- Merged: eq-shell [#1144](https://github.com/eq-solutions/eq-shell/pull/1144) feat(mobile): My Card row in the account sheet for non-field
+- Merged: eq-shell [#1153](https://github.com/eq-solutions/eq-shell/pull/1153) security: CSP hardening, permission audit-trail logging, clo
+- Merged: eq-shell [#1148](https://github.com/eq-solutions/eq-shell/pull/1148) feat(auth): heads-up toast when the existing 5-min role poll
+- Merged: eq-shell [#1147](https://github.com/eq-solutions/eq-shell/pull/1147) docs: flag the function-grant landmine behind EQ-CARDS-1C
+- Merged: eq-shell [#1143](https://github.com/eq-solutions/eq-shell/pull/1143) fix(auth): null-safe display name for phone-only workers
+- Merged: eq-shell [#1142](https://github.com/eq-solutions/eq-shell/pull/1142) chore(intake): re-vendor eq-intake/eq-platform — trades sett
+- Merged: eq-shell [#1141](https://github.com/eq-solutions/eq-shell/pull/1141) perf(shell): fetchpriority=low on prewarmed iframes + pause 
+- Merged: eq-shell [#1139](https://github.com/eq-solutions/eq-shell/pull/1139) perf(shell): preconnect to Field/Service/Cards origins ahead
+- Merged: eq-solves-service [#673](https://github.com/eq-solutions/eq-service/pull/673) fix(lint): derive eslint ignores from .gitignore instead of 
 
 ## ⚠ Needs you (2)
 
@@ -95,12 +95,12 @@ _Showing 15 of 133 · full record in [sessions/](sessions/)_
 - **The ~176,000 pre-existing code-quality findings now surfaced by the fixed check are a separate, much larger backlog** — not touched this session, worth scoping as its own effort if it's worth doing at all. _(added 2026-08-01)_
 - **Photo → AI Risk Suggestions** (the secondary feature from the original review — supervisor takes site photos, AI suggests hazards, human confirms which to add) — deliberately not started. Needs its own go/no-go before scoping further: real per-call API spend, a new Netlify Function (would clone `eq-agent.js`'s existing auth/rate-limit shape), and site photos leaving the tenant boundary to Anthropic's API. _(added 2026-08-01)_
 - **eq-cards / eq-design-tokens / sks-charters / eq-website**: alerts just switched on, the very first scan came back clean on all 4 — worth a second look in a day or two in case that first scan didn't fully finish rather than assuming it's actually clean. _(added 2026-08-01)_
-- **The gap that let eq-shell's fix quietly get undone (copy-in process only grabs part of the files) is still there structurally** — it'll happen again on the next routine copy-in unless the process itself gets fixed, not just patched around this one time. _(added 2026-08-01)_
 - **eq-receipts' react-router move hasn't been clicked through live** — the build is clean and Netlify's own preview built it successfully, but nobody has actually navigated the real app (Dashboard → Review → Verify, sidebar links) since the change. Worth a quick manual pass. _(added 2026-08-01)_
 - `TENANT_ROUTING_MASTER_KEY` rotation still outstanding — same single-key-no-rotation class as the `EQ_SECRET_SALT` item below _(added 2026-08-01)_
 - CSP still allows `style-src 'unsafe-inline'` — removing it is a multi-day styling refactor (React's `style` prop is itself inline styling), not a strip-and-test; needs its own session _(added 2026-08-01)_
 - No resource- or relationship-level authorization — permission checks are role-based only, nothing checks whether a user actually owns/manages the specific record being acted on. Architectural, needs its own design pass _(added 2026-08-01)_
 - No down-migration/rollback path for schema migrations — a schema-governance policy decision, not a code fix _(added 2026-08-01)_
+- No `.changeset`/versioned release process for the internal `@eq-solutions/*` packages — lives in 4 other repos (eq-roles/eq-ui/tokens/contracts), not eq-shell _(added 2026-08-01)_
 _…and 359 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
@@ -123,7 +123,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 2940 | 477 | 83 | 12 |
+| [EQ](eq/pending.md) | 2946 | 476 | 85 | 12 |
 | [SKS](sks/pending.md) | 424 | 83 | 5 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 402 | 37 | 5 | 1 |
@@ -144,4 +144,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-01 04:36 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-01 04:55 UTC._
