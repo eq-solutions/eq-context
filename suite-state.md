@@ -60,8 +60,7 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-01)
 
-**eq-shell:**
-- #1171 fix(intake): eq_site_advisory_flag_pair missing authenticated grant
+_No open PRs_
 
 ---
 
