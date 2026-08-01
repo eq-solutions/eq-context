@@ -70,8 +70,14 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ## eq-shell + eq-solves-intake + eq-receipts: closed every open security alert across the EQ suite, found 5 repos where the alert system was switched off entirely (2026-08-01)
 
 - [ ] **eq-cards / eq-design-tokens / sks-charters / eq-website**: alerts just switched on, the very first scan came back clean on all 4 — worth a second look in a day or two in case that first scan didn't fully finish rather than assuming it's actually clean. _(added 2026-08-01)_
-- [ ] **The gap that let eq-shell's fix quietly get undone (copy-in process only grabs part of the files) is still there structurally** — it'll happen again on the next routine copy-in unless the process itself gets fixed, not just patched around this one time. _(added 2026-08-01)_
 - [ ] **eq-receipts' react-router move hasn't been clicked through live** — the build is clean and Netlify's own preview built it successfully, but nobody has actually navigated the real app (Dashboard → Review → Verify, sidebar links) since the change. Worth a quick manual pass. _(added 2026-08-01)_
+
+---
+
+## eq-shell: fixed the vendoring process gap itself, then caught and fixed a real bug it had already let through once (2026-08-01)
+
+- [x] **Replaced the old manual copy-paste re-vendor steps with a script.** The README used to say "copy these files over" with a hand-typed list — easy to do partially without noticing. Now there's one script with the full file list built in, so a future copy-in can't quietly skip something again. [eq-shell PR #1169](https://github.com/eq-solutions/eq-shell/pull/1169) merged.
+- [x] **Running the new script against the real source turned up a live case of exactly the problem it was built to prevent**: eq-shell had already fixed a same-day production bug (Intake page crashing for everyone, a duplicate-copy-of-React clash) directly in its own copy — but that fix was never carried back to where the code actually comes from. The next routine copy-in would have silently undone it and broken Intake again. Carried the same fix back to the source. [eq-solves-intake PR #102](https://github.com/eq-solutions/eq-solves-intake/pull/102) merged.
 
 ---
 

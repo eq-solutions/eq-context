@@ -1,5 +1,10 @@
 # EQ Intake — Changelog
 
+## 2026-08-01 (cont. — PR #102 MERGED)
+- **Ported eq-shell's same-day production hotfix back upstream so it can't regress.** eq-shell shipped `ed0e59de` fixing `/intake` crashing for every user (duplicate React instance from a version-pin mismatch: root bumped to `react@^19.2.7` for the react-router v8 migration, but `@eq/confirm-ui`/`@eq/intake-demo` stayed exact-pinned to `19.2.6`) — but only against its own vendored copy, never here. Bumped both packages' `react`/`react-dom` devDependency to `^19.2.7` to match; lockfile now resolves both to `19.2.8`, same as eq-shell.
+- Found while verifying eq-shell's new `scripts/revendor-intake.mjs` against a clean checkout of this repo — see eq-shell changelog, PR #1169. Without this, the next routine re-vendor would have silently reverted eq-shell's fix and reintroduced the outage.
+- `pnpm -r build`, `pnpm -r test` (238 pass, 2 pre-existing skips), `pnpm run check:packages` all clean. [PR #102](https://github.com/eq-solutions/eq-solves-intake/pull/102), merged (`0de1fd7`).
+
 ## 2026-08-01 (cont. — PR #98 MERGED)
 - **Duplicate-sites console had two dead ends — fixed.** Checked the actual RPC gating rather than assuming: `eq_site_merge_preview` (eq-shell 0185) carries no role check server-side, only `eq_site_merge_execute` does — so hiding the whole `MergePanel` behind `canMergeSites` was stricter than the backend requires. `eq_site_advisory_adjudicate` (0183) has always accepted an optional `p_note` param the UI never sent.
 - **`DuplicateMergePanel.tsx`**: `MergePanel` no longer early-returns for non-managers — everyone sees "Preview merge" and the row/table counts; only the "Confirm merge" button itself is gated on `canMerge`, replaced with a "Ask a manager to confirm this merge" hint otherwise. "Unsure" now opens an inline optional note (`notingId`/`noteDraft` local state) before calling `onAdjudicate(id, "unsure", note)`; the note threads through `handleAdjudicate` → `adjudicateSiteAdvisory` → the RPC, and renders back via `it.verdict_note` next to the recorded verdict.
