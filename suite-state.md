@@ -60,17 +60,8 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-01)
 
-**eq-field:**
-- #594 v3.5.400 — Site Audit: completeness check for non-conformances
-
 **eq-service:**
 - #665 docs(perf): close out dashboard_duration canary check
-
-**eq-shell:**
-- #1157 chore(deps): migrate react-router-dom v7 to react-router v8, bump Node to 22
-
-**eq-solves-intake:**
-- #99 fix(deps): close 3 Dependabot alerts — vitest, vite, xlsx
 
 ---
 
