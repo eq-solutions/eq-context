@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-01)
 
-**eq-field:**
-- #597 v3.5.402 — Prestart/Toolbox: completeness checks, same pattern as Site Audit
-
 **eq-shell:**
 - #1160 fix(auth): capture email during role-tagged self-join
 
