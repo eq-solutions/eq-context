@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-01
+last_updated: 2026-08-02
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -11,6 +11,24 @@ status: live
 
 EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-shell: Sentry sweep — fixed 3 real bugs, flagged 2 needing your call (2026-08-02)
+*Asked to fix all current Sentry errors. Triaged all 8 unresolved eq-shell issues before touching anything — 3 turned out to be data-quality alerts firing correctly on real data (not bugs), and 1 was already fixed by an earlier merged PR.*
+
+- [x] **A crash on the Intake page was being logged with no way to actually find the cause** — the error-catching code was throwing away the real error detail before sending it to Sentry, keeping only a one-line summary. Now the full detail goes through, so if this crash happens again it's actually traceable. The crash itself isn't fixed yet — this only makes the next occurrence diagnosable.
+- [x] **Sign-in occasionally timed out even after an earlier speed fix** — one database read was still running by itself after all the others finished, adding just enough delay to sometimes miss the timeout window. Folded it in with the rest so everything runs together.
+- [x] **A rare Cards sign-in failure on iPhone Safari (a dropped network request) now retries once automatically** before giving up, instead of failing on the first blip.
+- [x] Confirmed a 4th flagged error was already fixed by an earlier merged change before this session started — the one reported case happened just before that fix went live. Marked resolved, no code change needed.
+- [x] eq-shell [PR #1174](https://github.com/eq-solutions/eq-shell/pull/1174) — merged to main, live via Netlify's auto-deploy.
+
+**Deferred:**
+- [ ] **A rare licence-photo-scanning failure needs a credential check, not a code fix.** Traced to a security key eq-shell uses to talk to another system possibly being out of date. Notably, this is the *second* time this exact symptom (401 on licence-photo scanning) has shown up — 2026-07-23's version (task_d94af51d) was a stale deploy, this one looks like a different cause. Needs you to confirm/refresh the key rather than guess. _(added 2026-08-02)_
+- [ ] **Two new automated data-quality alerts need an operator decision, not a code fix**: one worker identity looks like a duplicate of an existing one, and one Shell account looks like a duplicate of another. Both alerts already include the worker/account IDs involved — someone needs to decide what to do with each, then the alert clears on its own. _(added 2026-08-02)_
+
+### Notes (added 2026-08-02)
+- This is the second time `ocr-licence`'s server-to-server trust check has broken with a 401 for two unrelated reasons in two weeks — worth a look at whether the trust mechanism itself is fragile by design, next time someone's already in that code.
 
 ---
 
@@ -973,7 +991,7 @@ changelog and session logs are for.
 *Asked to prove and harden the full worker journey (Shell → Cards → company connection → Field) as one system rather than polishing apps in isolation. Investigation before any code: traced the real flow across all three repos against live Supabase data, not docs. Verdict at that checkpoint: not yet proven — a real tenant-isolation gap, unmitigated duplicate identities, and 45 active workers who'd never been invited to join at all.*
 - [ ] **The `shell_control.persons`/`person_xref` "golden record" spine — investigated further, recommendation reversed.** Asked to do a full 3-repo build; investigation disproved the premise it was based on. Only eq-cards actually matches identities (phone/email against `public.workers`) — eq-shell only reads the output, and eq-field has no matching of its own (its one identity lookup is `user_id`-keyed, already-established, SKS-only). Also found eq-field has its own separate, deliberately parked initiative for a related but different problem (`ADR-PERSON-IDENTITY.md` — same-name disambiguation within eq-field's own tables, not cross-tenant identity; Phases 1–2 shipped, Phases 3–4 explicitly gated by Royce on "not until SKS is stable in live", set 2026-06-08) — and that ADR's own canonical-link plan points at `public.workers`, not `shell_control.persons`/`person_xref`. Recommendation: don't build the spine — it looks like a second, unused design for a job `public.workers` already does. **Royce confirmed: "don't build the spine, leave it parked."** Closed — no further action unless a real second consumer shows up (most likely trigger: EQ tenant's Field plane going live). Open question for later, not urgent: whether to formally retire the empty `persons`/`person_xref` tables rather than leave them as dead schema two different plans could collide on. _(added 2026-07-21, corrected 2026-07-21, confirmed parked 2026-07-21)_
 - [ ] **EQ-tenant worker→staff sync doesn't exist** — `workers-canonical-sync` is hardcoded to SKS only. Deprioritized rather than built, since the EQ tenant's Field plane has no real usage yet — revisit if that changes. _(added 2026-07-21)_
-- [ ] **45 never-invited workers are now visible (via #918's alert) but nobody's actually invited them.** Sending real invites to real workers is a deliberate action for an operator, not something to automate. Royce's explicit call this session: not now, "too many moving parts." Fits under the existing `/admin/invite-bulk` 50-cap if actioned. _(added 2026-07-21, reconfirmed 2026-07-21)_
+- [ ] **45 never-invited workers are now visible (via #918's alert) but nobody's actually invited them.** Sending real invites to real workers is a deliberate action for an operator, not something to automate. Royce's explicit call this session: not now, "too many moving parts." Fits under the existing `/admin/invite-bulk` 50-cap if actioned. Still open as of 2026-08-02 — count now 44 (one resolved naturally), still surfacing via the same alert, now also showing as a live Sentry issue (EQ-SHELL-X) rather than only the original ad-hoc check. Same call stands: not actioned yet. _(added 2026-07-21, reconfirmed 2026-07-21, still open 2026-08-02)_
 
 ---
 

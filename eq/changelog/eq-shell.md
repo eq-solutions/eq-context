@@ -1,13 +1,16 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-01
+last_updated: 2026-08-02
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # eq-shell changelog
+
+## 2026-08-02 (PR #1174 MERGED — Sentry sweep: stuck-crash stack traces, verify-shell-session latency, mint-cards-otp retry)
+- **PR #1174** — `ChunkErrorBoundary` (App.tsx) now captures the real exception + React component stack via `Sentry.captureException` for genuine render crashes, not just a message string (EQ-SHELL-10 diagnosability). `verify-shell-session.ts`'s `tenant_role_overrides` read folded into the existing `Promise.allSettled` batch instead of a trailing sequential await, cutting tail latency that occasionally exceeded the client's 15s deadline (EQ-SHELL-T). `CardsIframe.tsx`'s `mint-cards-otp` fetch gets one retry on a network-level failure before giving up (EQ-SHELL-12). EQ-SHELL-13 (mint-cards-otp 500) confirmed already fixed by earlier PR #1150 — marked resolved in Sentry, no code change. Merged to `main` (`b7f809b`), deployed via Netlify auto-deploy.
 
 ## 2026-08-02 (PR #1173 MERGED — stale SKS brand color swept from 4 files)
 - **PR #1173** — replaced the retired stale SKS navy `#1F335C` with the verified-live `#203060` (queried directly against `organisations.branding.palette.primary` on eq-canonical/jvkn) across `src/portal/QuotePortal.tsx`, `netlify/functions/quote-email.ts`, `src/components/MobileRecordsDrawer.tsx`, and `netlify/functions/_shared/quote-pdf.tsx`. Each file's existing styling pattern kept as-is (no migration to `@eq-solutions/tokens`). Repo-wide case-insensitive grep for `1F335C` confirmed clean afterward. Merged to `main`, deployed via Netlify auto-deploy.
