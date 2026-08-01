@@ -60,8 +60,8 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-01)
 
-**eq-shell:**
-- #1164 fix(auth): recovery-email nudge never cleared; show/hide toggle on Set PIN
+**eq-cards:**
+- #192 fix(licences): lead with photo capture on org-required credential nudge
 
 ---
 
