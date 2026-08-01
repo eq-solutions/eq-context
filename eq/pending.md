@@ -14,6 +14,18 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-solves-intake: closed out the rest of the dependency audit findings, both fixes live (2026-08-01)
+*Follow-up to PR #99 (vitest/vite/xlsx). Went through the remaining 20 flagged dependency issues in the intake engine's build tooling one by one — checked which ones a real user could actually be exposed to versus which only matter during install or testing, then fixed what was safe to fix.*
+
+- [x] **All 20 remaining flagged dependencies fixed, zero known issues left** — the two that mattered for real (a schema-validation library and an Excel-export library used at runtime) got a proper version bump; everything else only ever runs during install or automated testing, never touches anything a real user sends in, so those were safe to bump without a second thought.
+- [x] **Caught a mistake before it shipped wrong**: the first attempt let a couple of these bumps jump further ahead than intended and one of them needed a newer Node version than the automated build server has — that broke the very first check run. Pinned every fix to the specific version actually tested, re-ran, clean.
+- [x] eq-solves-intake [PR #100](https://github.com/eq-solutions/eq-solves-intake/pull/100) merged. Companion re-vendor into eq-shell ([PR #1159](https://github.com/eq-solutions/eq-shell/pull/1159), picked up the earlier #99 fix — done in a separate concurrent session, not this one) also merged, confirmed live on core.eq.solutions against the exact merged version.
+
+**Deferred:**
+- [ ] **Royce to click through live**: sign in on core.eq.solutions and confirm Cards/Field/Service each load past "Authorising…" — needs a real login, which Claude can't do on Royce's behalf. _(added 2026-08-01)_
+
+---
+
 ## eq-shell: cross-dimension security/architecture audit turned into a shipped sprint — CSP, permission-denial audit logging, react-router v8, full Dependabot close-out (2026-08-01)
 
 - [ ] `quote-email.ts` has no permission gate — needs a decision on which perm key should cover it _(added 2026-08-01)_
