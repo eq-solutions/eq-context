@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-01 00:04 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-01 00:09 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-07-31 23:50 UTC → 2026-08-01 00:04 UTC)
+## Since last refresh (2026-08-01 00:04 UTC → 2026-08-01 00:09 UTC)
 
-- Merged: eq-shell [#1151](https://github.com/eq-solutions/eq-shell/pull/1151) fix(security): gate the supplier directory read to manager/s
-- Merged: eq-shell [#1142](https://github.com/eq-solutions/eq-shell/pull/1142) chore(intake): re-vendor eq-intake/eq-platform — trades sett
-- Merged: eq-shell [#1141](https://github.com/eq-solutions/eq-shell/pull/1141) perf(shell): fetchpriority=low on prewarmed iframes + pause 
-- Merged: eq-shell [#1140](https://github.com/eq-solutions/eq-shell/pull/1140) chore(intake): re-vendor eq-intake/eq-platform — Dupes archi
-- Merged: eq-shell [#1136](https://github.com/eq-solutions/eq-shell/pull/1136) fix(quotes): sync canonical job status for every pipeline st
-- Merged: eq-shell [#1134](https://github.com/eq-solutions/eq-shell/pull/1134) fix(audit): workers-canonical-sync attributes real actors
-- Merged: eq-shell [#1132](https://github.com/eq-solutions/eq-shell/pull/1132) fix(audit): quote events now stamp app_source='ops', not the
-- Merged: eq-shell [#1131](https://github.com/eq-solutions/eq-shell/pull/1131) fix(signals): exclude archived staff from Compliance & safet
+- Merged: eq-shell [#1149](https://github.com/eq-solutions/eq-shell/pull/1149) feat(auth): role-tagged self-join links for Apprentice/Labou
+- Merged: eq-shell [#1144](https://github.com/eq-solutions/eq-shell/pull/1144) feat(mobile): My Card row in the account sheet for non-field
+- Merged: eq-shell [#1143](https://github.com/eq-solutions/eq-shell/pull/1143) fix(auth): null-safe display name for phone-only workers
+- Merged: eq-shell [#1139](https://github.com/eq-solutions/eq-shell/pull/1139) perf(shell): preconnect to Field/Service/Cards origins ahead
+- Merged: eq-shell [#1138](https://github.com/eq-solutions/eq-shell/pull/1138) feat(intake): tenant-editable trades vocab + persisted dupli
+- Merged: eq-shell [#1137](https://github.com/eq-solutions/eq-shell/pull/1137) fix(intake): site-merge manager gate checked the wrong ident
+- Merged: eq-shell [#1135](https://github.com/eq-solutions/eq-shell/pull/1135) perf(shell): warm token-exchange to close the last cold-star
+- Merged: eq-shell [#1133](https://github.com/eq-solutions/eq-shell/pull/1133) fix(mobile): drop redundant top bar on adapted iframe module
 
 ## ⚠ Needs you (2)
 
@@ -49,7 +49,7 @@ _…and 81 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
 | eq-shell | ? unknown | ? | 1 | 0d |
-| eq-solves-service | ? unknown | ? | 0 | — |
+| eq-solves-service | ? unknown | ? | 1 | 0d |
 | eq-field | ? unknown | ? | 2 | 0d |
 | eq-cards | ? unknown | ? | 0 | — |
 | eq-solves-intake | ✓ success | 1d ago | 0 | — |
@@ -72,6 +72,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-01 | eq-shell | [#1149](https://github.com/eq-solutions/eq-shell/pull/1149) feat(auth): role-tagged self-join links for Apprentice/Labour hir |
 | 2026-08-01 | eq-shell | [#1151](https://github.com/eq-solutions/eq-shell/pull/1151) fix(security): gate the supplier directory read to manager/superv |
 | 2026-08-01 | eq-field | [#590](https://github.com/eq-solutions/eq-field/pull/590) v3.5.396 — Fix: safety photos never actually uploaded to Storage  |
 | 2026-07-31 | eq-shell | [#1150](https://github.com/eq-solutions/eq-shell/pull/1150) fix(auth): mint-cards-otp returns 422 for no-email users, not a b |
@@ -86,11 +87,11 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-07-31 | eq-field | [#588](https://github.com/eq-solutions/eq-field/pull/588) v3.5.394 — Site-dashboard data layer: roster site-code resolver + |
 | 2026-07-31 | eq-field | [#587](https://github.com/eq-solutions/eq-field/pull/587) v3.5.394 — Roster import/live-edit collision now has a defined wi |
 | 2026-07-31 | eq-field | [#586](https://github.com/eq-solutions/eq-field/pull/586) fix: mobile drawer - relabel "Safety" to "Site Audits", move belo |
-| 2026-07-31 | eq-field | [#585](https://github.com/eq-solutions/eq-field/pull/585) fix: mobile drawer had no path to Toolboxes/Prestarts/Records/Inc |
 _Showing 15 of 126 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **Live click-through not done** — sign in via Core, add a photo to a Prestart/Toolbox, confirm it actually lands in the `safety-photos` Storage bucket rather than staying inline base64. Needs a real login only Royce can do. _(added 2026-08-01)_
 - **Live phone click-through not done** — open the More drawer, unlock manager mode, confirm Toolboxes/Prestarts/Incidents/Records/Site Audits each land on the right page in the new order. _(added 2026-07-31)_
 - **Live phone click-through not done** — camera vs. gallery picker on a real device. _(added 2026-07-31)_
 - **Richard then reported he couldn't find Service after the above shipped** — checked live: he has full permission and his company's account has Service switched on, so nothing needs granting. This is the expected result of the new simplified mobile view — Service moved from the main bar into the account menu. Told Royce where to find it; open question whether supervisors need Service as a main tab after all if this keeps coming up, rather than one tap deeper. _(added 2026-07-31)_
@@ -100,8 +101,7 @@ _Showing 15 of 126 · full record in [sessions/](sessions/)_
 - **No Field-access checkbox on the Users-tab invite form** (`invite-user.ts`/`AdminInviteUser.tsx`) — that door currently relies on the database default rather than an explicit admin choice, the same gap the Workers-tab form already closed on 2026-07-30. _(added 2026-07-31)_
 - **Live smoke test not run** — self-join should now be blocked from Field, existing invite/claim/approval doors should be unaffected. Royce said he'd click through this himself with a test phone number; not yet confirmed done. _(added 2026-07-31)_
 - **Two separate sessions independently claimed the same migration number (0228)** tonight — this one and the quote-target-period entry above. Not a live problem (both applied cleanly, nothing broke), but worth knowing the "check origin/main before claiming a number" step isn't fully collision-proof under concurrent sessions. _(added 2026-07-31)_
-- **Long "Open" list / no drag-and-drop from the bottom** — Royce flagged the Open column is getting hard to manage as it grows. Discussed as ideas only (lean on the existing board view, add sort/filter to the flat list) — not approved for build yet. _(added 2026-07-31)_
-_…and 350 more · [eq/pending.md](eq/pending.md)_
+_…and 351 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -123,7 +123,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 2805 | 458 | 54 | 12 |
+| [EQ](eq/pending.md) | 2826 | 459 | 61 | 12 |
 | [SKS](sks/pending.md) | 424 | 83 | 5 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 402 | 37 | 5 | 1 |
@@ -144,4 +144,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-01 00:04 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-01 00:09 UTC._
