@@ -58,17 +58,14 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ## eq-shell: cross-dimension security/architecture audit turned into a shipped sprint — CSP, permission-denial audit logging, react-router v8, full Dependabot close-out (2026-08-01)
 
-- [ ] `quote-email.ts` has no permission gate — needs a decision on which perm key should cover it _(added 2026-08-01)_
 - [ ] `TENANT_ROUTING_MASTER_KEY` rotation still outstanding — same single-key-no-rotation class as the `EQ_SECRET_SALT` item below _(added 2026-08-01)_
-- [ ] Signing out of Shell doesn't propagate to the embedded Field/Service/Cards iframe sessions _(added 2026-08-01)_
-- [ ] Session revocation gap: cookies minted before the `jti` field existed skip the revocation check entirely, and a revocation-check DB error fails open _(added 2026-08-01)_
-- [ ] No build cache (Turborepo or similar) — every CI run rebuilds the full workspace from scratch _(added 2026-08-01)_
-- [ ] CSP still allows `style-src 'unsafe-inline'` — removing it needs a full browser-tested pass, not a blind strip _(added 2026-08-01)_
-- [ ] `is_platform_admin` is an unscoped bypass with no step-up/MFA gate on sensitive actions _(added 2026-08-01)_
-- [ ] No resource- or relationship-level authorization — permission checks are role-based only, nothing checks whether a user actually owns/manages the specific record being acted on _(added 2026-08-01)_
-- [ ] No down-migration/rollback path for schema migrations _(added 2026-08-01)_
-- [ ] Field/Service/Cards iframes combine `allow-same-origin` + `allow-scripts` in their sandbox attribute — should be documented as an accepted risk rather than left implicit _(added 2026-08-01)_
-- [ ] No `.changeset`/versioned release process for the internal `@eq-solutions/*` packages _(added 2026-08-01)_
+- [ ] Signing out of Shell doesn't propagate to the embedded Field/Service/Cards iframe sessions — needs Royce's go, it's a session-lifecycle change _(added 2026-08-01)_
+- [ ] Session revocation gap: cookies minted before the `jti` field existed skip the revocation check entirely, and a revocation-check DB error fails open — needs Royce's go on fail-open vs fail-closed _(added 2026-08-01)_
+- [ ] CSP still allows `style-src 'unsafe-inline'` — removing it is a multi-day styling refactor (React's `style` prop is itself inline styling), not a strip-and-test; needs its own session _(added 2026-08-01)_
+- [ ] `is_platform_admin` is an unscoped bypass with no step-up/MFA gate on sensitive actions — a new auth feature, needs Royce's go before building _(added 2026-08-01)_
+- [ ] No resource- or relationship-level authorization — permission checks are role-based only, nothing checks whether a user actually owns/manages the specific record being acted on. Architectural, needs its own design pass _(added 2026-08-01)_
+- [ ] No down-migration/rollback path for schema migrations — a schema-governance policy decision, not a code fix _(added 2026-08-01)_
+- [ ] No `.changeset`/versioned release process for the internal `@eq-solutions/*` packages — lives in 4 other repos (eq-roles/eq-ui/tokens/contracts), not eq-shell _(added 2026-08-01)_
 
 ---
 
@@ -188,10 +185,27 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ## eq-shell: Self-join Field access now requires "earned", not just "allowed" — merged and live (2026-07-31 → 2026-08-01)
 
-- [ ] **No "you're signed up, but blocked until you upload documents" screen in Field** — right now a gated self-join worker would just hit a dead end with no explanation. _(added 2026-07-31)_
-- [ ] **No Field-access checkbox on the Users-tab invite form** (`invite-user.ts`/`AdminInviteUser.tsx`) — that door currently relies on the database default rather than an explicit admin choice, the same gap the Workers-tab form already closed on 2026-07-30. _(added 2026-07-31)_
-- [ ] **Live smoke test not run** — self-join should now be blocked from Field, existing invite/claim/approval doors should be unaffected. Royce said he'd click through this himself with a test phone number; not yet confirmed done. _(added 2026-07-31)_
-- [ ] **Role-tagged self-join links, for Apprentice/Labour hire specifically** — a cold QR/link signup always defaults to plain Employee today, so those two roles can't get their own security profile without an admin inviting them individually first. Two low-friction options agreed with Royce: (1) separate join links per role, (2) bulk-inviting labour-hire crews from the agency roster ahead of time (already possible today, no build needed). Was deliberately held back until PR #1145 was reviewed and live so it wouldn't stack on the same file as an unreviewed auth change — **that's no longer a blocker, PR #1145 merged 2026-08-01**. **Security note for whoever builds this:** the role must come from an opaque server-side code, never a plain URL parameter — a plain `?role=` value would let a worker edit the link to grant themselves any role, including Manager. _(added 2026-07-31)_
+- [ ] **Live smoke test not run clean end-to-end** — see the follow-up entry below; every underlying piece has now shipped but the full walkthrough hasn't happened yet. _(added 2026-07-31, updated 2026-08-01)_
+
+---
+
+## eq-shell + eq-cards: Live smoke-testing the self-join sprint surfaced 3 real bugs, all fixed same day (2026-08-01)
+*Royce started clicking through the self-join work from the entry above with a real test phone. First signup turned out to be a pre-existing stale test account ("Bob Smith") rather than a fresh one — deleted and verified clean everywhere before re-testing. The clean re-test then surfaced three genuine gaps that only show up on a real click-through, not in code review.*
+
+- [x] **Blocked-pending-documents screen shipped in Field**, a Field-access checkbox added to the Users-tab invite form, and role-tagged self-join links for Apprentice/Labour hire all built and merged together. eq-shell [PR #1155](https://github.com/eq-solutions/eq-shell/pull/1155), merged.
+- [x] **A freshly self-joined worker (phone-only, no email) hit a dead end trying to open EQ Cards to upload documents** — Cards' sign-in needs an email to work, and self-join never asked for one. Now asks for an email up front, right alongside the phone number, so Cards opens straight through instead of a second sign-in screen. eq-shell [PR #1160](https://github.com/eq-solutions/eq-shell/pull/1160), merged.
+- [x] **Found and fixed a real bug**: adding a recovery email never made the "add an email" reminder go away, even after it should have refreshed — the app was quietly dropping that piece of account status every time it checked in. eq-shell [PR #1164](https://github.com/eq-solutions/eq-shell/pull/1164), merged.
+- [x] **Added a show/hide toggle to the Set PIN screen** — a 6-digit PIN is easy to mistype blind on a phone. Same PR as above.
+- [x] **EQ Cards' "your employer needs a copy of X" screen now leads with "take a photo" instead of dropping straight to manual typing** — most workers already have the physical card in hand. eq-cards [PR #192](https://github.com/eq-solutions/eq-cards/pull/192), merged.
+- [x] **Committed a database change to the official record that had already been applied by hand** — lets an org choose specific people to get new-signup notification emails instead of always emailing every manager; this is what stopped the stale test signup from emailing all 15 real SKS managers again. Checked the live database first to confirm it matched exactly before merging. eq-cards [PR #193](https://github.com/eq-solutions/eq-cards/pull/193), merged.
+- [x] **Deleted the stale "Bob Smith" test account** tied to the test phone number and confirmed every trace of it is gone (account, worker record, invite records), so the number is clean for real testing going forward.
+
+**Decided (Royce):**
+- Add an email field to self-join rather than leave the Cards dead-end as-is, or teach Cards to work phone-only.
+- Delete the stale test account and reuse the same phone number rather than get a second test phone.
+
+**Deferred:**
+- [ ] **The actual end-to-end smoke test still hasn't been run clean** — self-join → email → text code → Field's blocked-until-documents screen → Cards opening straight through → photo-first document capture, all together, on the now-clean test phone. Every piece has shipped; the full walkthrough hasn't happened yet. _(added 2026-08-01)_
 
 ---
 
