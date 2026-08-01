@@ -60,8 +60,7 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-01)
 
-**eq-shell:**
-- #1169 chore(intake): replace manual re-vendor steps with a script
+_No open PRs_
 
 ---
 
