@@ -26,6 +26,16 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-field: safety photos were never actually reaching Storage — dead JWT reference fixed (v3.5.396, PR #590, merged + deployed 2026-08-01) (fully closed, no open items remain)
+*Incoming task brief flagged that `_photoJwt()` in `scripts/safety.js` called `_ensureDataJwt` — a name grepped and confirmed to not exist anywhere in this repo. Traced via `git log -S` rather than trusted from the brief: it's a typo baked into the very first commit of the photo-Storage feature (v3.5.237/238, PR #403, 2026-07-04), never a rename of a real function. Because the reference sat behind a `typeof` guard it never threw or logged — every Prestart/Toolbox photo has silently used inline base64 the whole time, never once reaching the `safety-photos` bucket, despite PR #403 believing this shipped live.*
+- [x] Found a second, independent confirmation of the bug: a 2026-07-10 ESLint hardening pass (PR #438) actually caught this exact undefined reference via its `no-undef` scan, but misclassified it as an intentional feature-detected no-op and whitelisted it instead of fixing it.
+- [x] Fixed `_photoJwt()` to call the real `_getDataJwt()` (`scripts/supabase.js`) — same direct cross-file pattern already used by `realtime.js`/`supabase-rpc.js`. Removed the stale whitelist entry from `eslint.config.js`.
+- [x] No DB/RLS change needed — live-verified on ehow (SKS) that the `safety-photos` bucket + its 4 policies (from PR #403) already match this JWT's claim shape correctly.
+- [x] 23/23 local tests pass, zero new lint issues. eq-field [PR #590](https://github.com/eq-solutions/eq-field/pull/590), merged and deployed live to `field.eq.solutions` (confirmed via production `sw.js` banner).
+- [x] **Live click-through confirmed by Royce 2026-08-01** — a real photo saved correctly to the `safety-photos` Storage bucket, not inline base64. Fix verified end-to-end.
+
+---
+
 ## eq-shell: archived staff still naming themselves in the AI dashboard summary — merged and confirmed live (2026-07-30, closed 2026-08-01) (fully closed, no open items remain)
 *Royce archived Huon Henne but he kept showing up in the AI dashboard summary. Traced to `briefing-engine.ts`: the staff name lookup and the "licence expiring soon" signal both skipped the active-staff filter that a third function in the same file already had — so an archived worker's still-active licence kept generating a signal with their name attached. `pending.md` had this logged as "fixed, not yet merged" from the original session; picked back up 2026-08-01 to close out and found it had already shipped.*
 

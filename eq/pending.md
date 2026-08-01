@@ -23,18 +23,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## eq-field: safety photos were never actually reaching Storage — dead JWT reference fixed (v3.5.396, PR #590, merged + deployed 2026-08-01)
-*Incoming task brief flagged that `_photoJwt()` in `scripts/safety.js` called `_ensureDataJwt` — a name grepped and confirmed to not exist anywhere in this repo. Traced via `git log -S` rather than trusted from the brief: it's a typo baked into the very first commit of the photo-Storage feature (v3.5.237/238, PR #403, 2026-07-04), never a rename of a real function. Because the reference sat behind a `typeof` guard it never threw or logged — every Prestart/Toolbox photo has silently used inline base64 the whole time, never once reaching the `safety-photos` bucket, despite PR #403 believing this shipped live.*
-- [x] Found a second, independent confirmation of the bug: a 2026-07-10 ESLint hardening pass (PR #438) actually caught this exact undefined reference via its `no-undef` scan, but misclassified it as an intentional feature-detected no-op and whitelisted it instead of fixing it.
-- [x] Fixed `_photoJwt()` to call the real `_getDataJwt()` (`scripts/supabase.js`) — same direct cross-file pattern already used by `realtime.js`/`supabase-rpc.js`. Removed the stale whitelist entry from `eslint.config.js`.
-- [x] No DB/RLS change needed — live-verified on ehow (SKS) that the `safety-photos` bucket + its 4 policies (from PR #403) already match this JWT's claim shape correctly.
-- [x] 23/23 local tests pass, zero new lint issues. eq-field [PR #590](https://github.com/eq-solutions/eq-field/pull/590), merged and deployed live to `field.eq.solutions` (confirmed via production `sw.js` banner).
-
-**Deferred:**
-- [ ] **Live click-through not done** — sign in via Core, add a photo to a Prestart/Toolbox, confirm it actually lands in the `safety-photos` Storage bucket rather than staying inline base64. Needs a real login only Royce can do. _(added 2026-08-01)_
-
----
-
 ## eq-field: roster import/live-edit collision now has a defined winner (v3.5.394, PR #587, merged 2026-08-01)
 *Nothing was queued this session, so swept `eq/pending.md`/`sks/pending.md` for the highest-value item that was actually buildable — not gated on Royce's design call or a live click-through only he can do. Found one: a 2026-07-10 backlog note flagging `toWideList()`'s undocumented, self-contradicting collision handling in `scripts/roster-adapter.js`. Verified the premise live before building (Rule 0.5) rather than trusting the note as-is.*
 - [x] **Live-verified the note's premise, and found it only half-true**: `app_data.schedule_entries` has `UNIQUE(staff_id, date)` on ehow (SKS) — confirmed no live duplicates — but **zaap (EQ tenant) has no such constraint**, so the collision this code defends against is genuinely reachable there today, not just theoretical "belt-and-suspenders."
