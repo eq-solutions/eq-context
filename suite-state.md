@@ -60,7 +60,8 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-01)
 
-_No open PRs_
+**eq-shell:**
+- #1170 feat(quotes): allow attaching files while creating a new quote
 
 ---
 
