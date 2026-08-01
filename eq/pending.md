@@ -32,6 +32,18 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: Intake page was crashing for everyone — found the cause, fixed it, confirmed live (2026-08-01)
+*Royce reported "WONT LOAD" on the Intake page with a browser console error. Traced it live rather than guessing.*
+
+- [x] **Found the real cause**: earlier the same day, an unrelated update (the site-navigation library upgrade) bumped the main app's copy of React to a newer version — but the Intake page's own bundled copy of React didn't get the same bump, and the two versions can't share the same page. That's exactly the kind of clash that makes a page crash on load with no useful error for a normal user to go on.
+- [x] **Fixed and confirmed the fix actually landed** — not just "the merge went through": checked the live deployment's own build record shows it's running the exact fixed version, and did a direct request against the site to confirm it's responding normally.
+- [x] eq-shell [PR #1161](https://github.com/eq-solutions/eq-shell/pull/1161) merged, live on core.eq.solutions within ~4 minutes of merge.
+
+**Deferred:**
+- [ ] **Royce to click through live**: open Intake as a signed-in user and confirm the page actually renders (not just that the site responds) — needs a real login, which Claude can't do on Royce's behalf. _(added 2026-08-01)_
+
+---
+
 ## eq-shell: cross-dimension security/architecture audit turned into a shipped sprint — CSP, permission-denial audit logging, react-router v8, full Dependabot close-out (2026-08-01)
 
 - [ ] `quote-email.ts` has no permission gate — needs a decision on which perm key should cover it _(added 2026-08-01)_
