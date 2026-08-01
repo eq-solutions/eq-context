@@ -29,17 +29,18 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## eq-solves-service: fixed a broken safety check that was silently skipping every code review (2026-08-01)
-*A prior fix for a security warning (upgrading a bundled tool called "brace-expansion") turned out to also break a different, older tool ("minimatch") that a lot of other tools depend on — including the app's own automated code-quality check. That check had been crashing outright on every fresh install since, meaning it wasn't actually reviewing any pull request's code, just failing before it even started — every PR's quality gate was either silently skipped or red for a reason that had nothing to do with that PR's own changes.*
+## eq-solves-service: fixed a broken safety check that was silently skipping every code review, then found the "176,000 findings" it surfaced was almost entirely noise, cleaned up what was real (2026-08-01)
+*A prior fix for a security warning (upgrading a bundled tool called "brace-expansion") turned out to also break a different, older tool ("minimatch") that the app's own automated code-quality check depends on. That check had been crashing outright on every fresh install, meaning it wasn't actually reviewing any pull request's code at all. Fixed, then dug into the huge number of findings the now-working check reported.*
 
-- [x] **Traced the crash to the exact two tools colliding, not just "something broke"** — an older-style tool tries to call the security fix's replacement as if it were still the old kind of building block, and it no longer works that way.
-- [x] **Fixed by pinning the older tool to a newer version that already knows how to work with the security fix** — the same newer version already working correctly elsewhere in the same install, applied everywhere.
-- [x] **Verified properly, not just "looks fixed"**: reproduced the crash on a byte-for-byte fresh install first, confirmed it's gone after the fix on an equally fresh install, confirmed the code-quality check now actually runs (surfacing ~176,000 pre-existing style/quality notes across the whole codebase — real findings, not a crash; that backlog is separate, much bigger work, not touched here), and ran the full automated test suite clean (391/391) to make sure the fix itself introduced nothing new.
-- [x] eq-service [PR #672](https://github.com/eq-solutions/eq-service/pull/672) opened, not yet merged.
+- [x] **Fixed the crash** — pinned the older tool to a newer version already known to work with the security fix. Verified on a byte-for-byte fresh install, plus the full test suite, before and after. eq-service [PR #672](https://github.com/eq-solutions/eq-service/pull/672), merged.
+- [x] **The "~176,000 findings" the fixed check reported turned out to be 99.8% noise, not real code debt** — the check's own "what to skip" list was hand-written and out of date, so it was quietly also checking three leftover, never-meant-to-be-checked folders: another work-session's own build output sitting in a subfolder, this app's third-party library folder, and a couple of stale old build folders. Once those were excluded properly (by pointing the check at the same "don't touch this" list Git already uses, so the two can't drift apart again), the real number was 342 — completely normal for an app this size. eq-service [PR #673](https://github.com/eq-solutions/eq-service/pull/673), merged.
+- [x] **Cleaned up the safe, mechanical majority of the real 342** — mostly leftover unused code (dead imports, unread error variables in error-handling blocks) and a batch of un-escaped quote marks in on-screen text. 342 → 125 remaining. Verified nothing broke: full test suite and type-check both still clean. eq-service [PR #674](https://github.com/eq-solutions/eq-service/pull/674), merged.
 
-**Deferred:**
-- [ ] **PR #672 needs Royce's merge go** — waiting on CI + review. _(added 2026-08-01)_
-- [ ] **The ~176,000 pre-existing code-quality findings now surfaced by the fixed check are a separate, much larger backlog** — not touched this session, worth scoping as its own effort if it's worth doing at all. _(added 2026-08-01)_
+**Deferred — the remaining 125 need real judgment calls, not a mechanical fix:**
+- [ ] **~47 of the 125 are one check flagging a data-loading pattern used throughout the Circuit Breaker / RCD test screens as risky** — the pattern itself (load data as soon as the screen opens) is completely standard and used everywhere in this app; this particular check is unusually strict about it. Needs a call: either rework how those two screens load their data, or decide the check itself is too strict for how this app is built and dial it back. _(added 2026-08-01)_
+- [ ] **31 places use a generic "could be anything" type instead of a specific one** — safe as-is, but each one needs a real type worked out by hand, not a bulk fix. _(added 2026-08-01)_
+- [ ] **13 places use an older-style image/link tag instead of the app's modern, faster equivalent** — needs each one wired up properly, not a drop-in swap. _(added 2026-08-01)_
+- [ ] **1 build/tooling script still uses an older code-loading style** — leaving it alone is safe (it works fine as-is); switching it needs a small config change elsewhere first. _(added 2026-08-01)_
 
 ---
 
