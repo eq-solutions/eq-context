@@ -60,7 +60,8 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-01)
 
-_No open PRs_
+**eq-field:**
+- #614 v3.5.421 — Fix: Dashboard map real geographic-outlier bug; filter bar tint; row tightened again
 
 ---
 
