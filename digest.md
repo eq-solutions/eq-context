@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-01 05:15 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-01 05:19 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-01 05:06 UTC → 2026-08-01 05:15 UTC)
+## Since last refresh (2026-08-01 05:15 UTC → 2026-08-01 05:19 UTC)
 
-- Merged: eq-shell [#1153](https://github.com/eq-solutions/eq-shell/pull/1153) security: CSP hardening, permission audit-trail logging, clo
-- Merged: eq-shell [#1148](https://github.com/eq-solutions/eq-shell/pull/1148) feat(auth): heads-up toast when the existing 5-min role poll
-- Merged: eq-shell [#1147](https://github.com/eq-solutions/eq-shell/pull/1147) docs: flag the function-grant landmine behind EQ-CARDS-1C
-- Merged: eq-shell [#1143](https://github.com/eq-solutions/eq-shell/pull/1143) fix(auth): null-safe display name for phone-only workers
-- Merged: eq-shell [#1142](https://github.com/eq-solutions/eq-shell/pull/1142) chore(intake): re-vendor eq-intake/eq-platform — trades sett
-- Merged: eq-shell [#1141](https://github.com/eq-solutions/eq-shell/pull/1141) perf(shell): fetchpriority=low on prewarmed iframes + pause 
-- Merged: eq-shell [#1139](https://github.com/eq-solutions/eq-shell/pull/1139) perf(shell): preconnect to Field/Service/Cards origins ahead
-- Merged: eq-solves-service [#674](https://github.com/eq-solutions/eq-service/pull/674) chore(lint): clean up unused vars/imports and unescaped JSX 
+- Merged: eq-shell [#1170](https://github.com/eq-solutions/eq-shell/pull/1170) feat(quotes): allow attaching files while creating a new quo
+- Merged: eq-shell [#1155](https://github.com/eq-solutions/eq-shell/pull/1155) feat(auth): close 3 remaining ONE LOGIN onboarding gaps
+- Merged: eq-shell [#1152](https://github.com/eq-solutions/eq-shell/pull/1152) fix(auth): connect-wallet approval now checks existing docum
+- Merged: eq-shell [#1151](https://github.com/eq-solutions/eq-shell/pull/1151) fix(security): gate the supplier directory read to manager/s
+- Merged: eq-shell [#1150](https://github.com/eq-solutions/eq-shell/pull/1150) fix(auth): mint-cards-otp returns 422 for no-email users, no
+- Merged: eq-shell [#1149](https://github.com/eq-solutions/eq-shell/pull/1149) feat(auth): role-tagged self-join links for Apprentice/Labou
+- Merged: eq-shell [#1146](https://github.com/eq-solutions/eq-shell/pull/1146) feat(mobile): simplified 2-tab nav for supervisors/managers,
+- Merged: eq-shell [#1145](https://github.com/eq-solutions/eq-shell/pull/1145) feat(auth): gate Field JWT on earned access, not just allowe
 
 ## ⚠ Needs you (2)
 
@@ -48,7 +48,7 @@ _…and 91 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 1 | 0d |
+| eq-shell | ? unknown | ? | 0 | — |
 | eq-solves-service | ? unknown | ? | 0 | — |
 | eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ? unknown | ? | 0 | — |
@@ -72,6 +72,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-01 | eq-shell | [#1170](https://github.com/eq-solutions/eq-shell/pull/1170) feat(quotes): allow attaching files while creating a new quote |
 | 2026-08-01 | eq-shell | [#1169](https://github.com/eq-solutions/eq-shell/pull/1169) chore(intake): replace manual re-vendor steps with a script |
 | 2026-08-01 | eq-shell | [#1168](https://github.com/eq-solutions/eq-shell/pull/1168) fix(intake): eq_site_merge_execute missing authenticated grant |
 | 2026-08-01 | eq-shell | [#1167](https://github.com/eq-solutions/eq-shell/pull/1167) chore(intake): re-vendor eq-schemas package.json — closes ajv Dep |
@@ -86,22 +87,21 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-01 | eq-shell | [#1158](https://github.com/eq-solutions/eq-shell/pull/1158) chore(deps): bump brace-expansion overrides to close 2 CVEs |
 | 2026-08-01 | eq-shell | [#1157](https://github.com/eq-solutions/eq-shell/pull/1157) chore(deps): migrate react-router-dom v7 to react-router v8, bump |
 | 2026-08-01 | eq-shell | [#1156](https://github.com/eq-solutions/eq-shell/pull/1156) Re-vendor eq-intake/eq-platform to 27bc7b5 |
-| 2026-08-01 | eq-shell | [#1154](https://github.com/eq-solutions/eq-shell/pull/1154) feat(security): audit-log every permission denial via requirePerm |
 _Showing 15 of 133 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
 - **Worth checking separately**: the tool that rolls database changes out to every company's system may have a bug where an instruction placed right after defining a new function can silently not run, even though the file it's in is marked as successfully applied. Only caught because this one case got tested by hand — there could be others sitting the same way undetected. Not investigated further. _(added 2026-08-01)_
-- **The ~176,000 pre-existing code-quality findings now surfaced by the fixed check are a separate, much larger backlog** — not touched this session, worth scoping as its own effort if it's worth doing at all. _(added 2026-08-01)_
+- **~47 of the 125 are one check flagging a data-loading pattern used throughout the Circuit Breaker / RCD test screens as risky** — the pattern itself (load data as soon as the screen opens) is completely standard and used everywhere in this app; this particular check is unusually strict about it. Needs a call: either rework how those two screens load their data, or decide the check itself is too strict for how this app is built and dial it back. _(added 2026-08-01)_
+- **31 places use a generic "could be anything" type instead of a specific one** — safe as-is, but each one needs a real type worked out by hand, not a bulk fix. _(added 2026-08-01)_
+- **13 places use an older-style image/link tag instead of the app's modern, faster equivalent** — needs each one wired up properly, not a drop-in swap. _(added 2026-08-01)_
+- **1 build/tooling script still uses an older code-loading style** — leaving it alone is safe (it works fine as-is); switching it needs a small config change elsewhere first. _(added 2026-08-01)_
 - **Photo → AI Risk Suggestions** (the secondary feature from the original review — supervisor takes site photos, AI suggests hazards, human confirms which to add) — deliberately not started. Needs its own go/no-go before scoping further: real per-call API spend, a new Netlify Function (would clone `eq-agent.js`'s existing auth/rate-limit shape), and site photos leaving the tenant boundary to Anthropic's API. _(added 2026-08-01)_
 - **eq-cards / eq-design-tokens / sks-charters / eq-website**: alerts just switched on, the very first scan came back clean on all 4 — worth a second look in a day or two in case that first scan didn't fully finish rather than assuming it's actually clean. _(added 2026-08-01)_
 - **eq-receipts' react-router move hasn't been clicked through live** — the build is clean and Netlify's own preview built it successfully, but nobody has actually navigated the real app (Dashboard → Review → Verify, sidebar links) since the change. Worth a quick manual pass. _(added 2026-08-01)_
 - `TENANT_ROUTING_MASTER_KEY` rotation still outstanding — same single-key-no-rotation class as the `EQ_SECRET_SALT` item below _(added 2026-08-01)_
 - CSP still allows `style-src 'unsafe-inline'` — removing it is a multi-day styling refactor (React's `style` prop is itself inline styling), not a strip-and-test; needs its own session _(added 2026-08-01)_
-- No resource- or relationship-level authorization — permission checks are role-based only, nothing checks whether a user actually owns/manages the specific record being acted on. Architectural, needs its own design pass _(added 2026-08-01)_
-- No down-migration/rollback path for schema migrations — a schema-governance policy decision, not a code fix _(added 2026-08-01)_
-- No `.changeset`/versioned release process for the internal `@eq-solutions/*` packages — lives in 4 other repos (eq-roles/eq-ui/tokens/contracts), not eq-shell _(added 2026-08-01)_
-_…and 359 more · [eq/pending.md](eq/pending.md)_
+_…and 362 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -123,7 +123,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 2946 | 476 | 85 | 12 |
+| [EQ](eq/pending.md) | 2947 | 478 | 84 | 12 |
 | [SKS](sks/pending.md) | 424 | 83 | 5 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 402 | 37 | 5 | 1 |
@@ -144,4 +144,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-01 05:15 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-01 05:19 UTC._
