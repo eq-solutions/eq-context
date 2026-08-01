@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-08-01
+last_updated: 2026-08-02
 scope: Done items rotated out of eq/pending.md nightly by scripts/rotate_pending.py (per-item since 2026-07-27; before that, occasional manual whole-section moves). Nothing here is actionable — pure historical record (also covered in eq/changelog/*.md and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -13,6 +13,17 @@ Done items and fully-closed session write-ups rotated out of `eq/pending.md`.
 If you''re looking for something to action, it''s not here — check `eq/pending.md`.
 A "(rotated YYYY-MM-DD ...)" note on a section header means only that
 section's done items live here; its open items stayed in `eq/pending.md`.
+
+---
+
+## Built the /gap centering skill — light mode default, full mode parked for later (2026-08-02) (fully closed, no open items remain)
+*Royce asked for a Claude Code skill built from this session's "centering process" prompt — a status-reset pass for when a project's progress feels unclear. First draft was the full HTML-artifact version (Current Reality / Desired State / Gap Analysis / Appetite & Kill Criteria / Centering Action, with a live-verification requirement added after that first draft shipped a wrong "Parked" status the live system contradicted). Royce compared it against a much shorter hand-written prompt and asked to ship that instead for now.*
+
+- [x] **`/gap` skill built and live** — thin trigger `~/.claude/commands/gap.md` pointing at the full process in `eq-context/rules/gap-protocol.md`, same convention as `/decide` and `/brief`.
+- [x] **Light mode is the default**: one-sentence core problem, then Current Reality / Desired Outcome / Gaps (3 biggest) / Next Move with an explicit time box — chat output, under one page, no artifact. One cheap `git log` check is baked in before "Current Reality" so it doesn't regress the exact failure (a stale "Parked" status, a "3 profiles" count that was actually 12) that motivated the live-verification rule in the first place.
+- [x] **Full HTML/artifact/gap-table mode kept, not deleted** — parked in the same file under its own heading so expanding later is an edit, not a rebuild. Not the active default; only runs if explicitly asked for.
+- [x] **Documented a "revise mode"** for both light and full mode — short section-keyed follow-up corrections get their intent (correct wording / reframe status / delegate ownership / act now / explain further) inferred from phrasing, no rigid tag syntax, and only the referenced line gets touched.
+- [x] Committed + pushed: `eq-context` [0d82bf5](https://github.com/eq-solutions/eq-context/commit/0d82bf5) → `origin/main`. `~/.claude` commands repo committed locally (`master`) — no remote configured there, so nothing to push.
 
 ---
 
