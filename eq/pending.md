@@ -14,6 +14,18 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: every permission denial now leaves a trace in the audit log (PR #1154, merged 2026-08-01)
+*Asked to extend the 12-file "who got denied what" audit-logging start to the ~40 remaining files still on the old silent-403 pattern. Verified against the live repo first (Rule 0.5) and found the 12-file start didn't actually exist yet on `main` — built the whole thing from scratch, only to have a concurrent session merge the real 12-file version mid-session. Reconciled rather than shipping a duplicate.*
+
+- [x] **Every denied action across the whole app now logs who was denied what, and why** — previously a blocked action (wrong role trying an admin/staff/ops/reports action) just failed silently, no record anywhere. Now every one of those leaves a row in the audit trail.
+- [x] Migrated the last ~50 screens/actions still on the old silent pattern, matching the shape another concurrent session had already built for the first 12 (admin actions, invites, audit pages) earlier the same night — checked and reused their design rather than shipping a second, slightly different version.
+- [x] Confirmed nothing else changed for users — same error messages, same behaviour, purely an added paper trail.
+
+**Deferred:**
+- [ ] **Royce to click through live**: sign in as a non-manager, try a manager-only action, confirm a "denied" row actually lands in the audit log. Needs a real login, which Claude can't do on Royce's behalf. _(added 2026-08-01)_
+
+---
+
 ## eq-shell: checked the rest of the Suppliers permission keys — found a suite-wide gap in how "extra access grants" and "explicit denials" actually reach the database (2026-08-01)
 *Follow-up to the Suppliers directory fix above (PR #1151) — asked to check the other two Suppliers permission keys too. Both check out clean: the "who can edit/delete" gate covers all three write actions in one place, and the "who can see login/passwords" gate is unchanged and correct. Chasing one loose thread on the read gate — the exception this database check makes for someone individually granted extra access — surfaced something much bigger than Suppliers.*
 
