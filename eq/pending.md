@@ -44,6 +44,23 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell + eq-solves-intake + eq-receipts: closed every open security alert across the EQ suite, found 5 repos where the alert system was switched off entirely (2026-08-01)
+*Started from the original vitest/vite/xlsx fix (PR #99), then kept pulling the thread: fixed the same gap in eq-shell's copy of that code, checked every other repo in the org rather than assuming they were fine, and found a blind spot worth closing.*
+
+- [x] **eq-solves-intake — the original 3 alerts**: an old testing tool bumped to a safe version across every package that used it; a build tool that was still on a version with two 2026 security fixes never released for it (the "already patched" version people had been using turned out to still be exposed — the fix only exists two versions further up); an Excel-reading library with a known flaw removed entirely — the real code had already stopped using it back in July, it was only left behind in test setup, easy to just cut. [PR #99](https://github.com/eq-solutions/eq-solves-intake/pull/99) merged, tagged as a release point.
+- [x] **eq-shell — pulled that fix in** by re-copying the affected code from the fixed source. [PR #1159](https://github.com/eq-solutions/eq-shell/pull/1159) merged.
+- [x] **eq-shell — found the copy-in process only ever grabs part of the files, never the top-level settings that go with them.** That gap meant a security fix eq-shell had already applied once before (a week+ earlier) was quietly getting undone every time anyone did a routine re-copy from the source repo — which is exactly what almost happened again just now. Copied the missing piece across too. [PR #1162](https://github.com/eq-solutions/eq-shell/pull/1162) merged, closed 2 of eq-shell's last 3 open alerts immediately.
+- [x] **Checked every repo in the org, not just the ones already in front of us** — found 5 repos where the alert system had been switched off entirely (not "clean", just unwatched, so nobody would ever be told about a real problem): eq-cards, eq-design-tokens, eq-receipts, sks-charters, eq-website. Switched it back on for all 5, per Royce's go.
+- [x] **That switch-on immediately surfaced 2 real high-severity issues on eq-receipts**, fixed the same session: one a routine patch to a dev-only tool; the other a framework the receipts app is built on that had actually been discontinued outright — the fixed version people would normally just install was never going to be released for it, so the only real fix was moving to its official replacement. Confirmed it's a same-behaviour swap (same screens, same navigation, nothing a user would notice) before shipping. eq-receipts [PR #16](https://github.com/eq-solutions/eq-receipts/pull/16) + [PR #17](https://github.com/eq-solutions/eq-receipts/pull/17) merged — eq-receipts now shows zero open alerts.
+
+**Deferred:**
+- [ ] **eq-shell's last remaining alert (`ajv`) is taking longer than the others to clear from GitHub's own list**, even though the underlying fix already shipped in the same PR that closed the other two — everything about the actual installed code says this one's just GitHub's own scanner catching up, not a real gap, but it was still showing open as of this write-up. Worth a look if it's still open next time someone checks. _(added 2026-08-01)_
+- [ ] **eq-cards / eq-design-tokens / sks-charters / eq-website**: alerts just switched on, the very first scan came back clean on all 4 — worth a second look in a day or two in case that first scan didn't fully finish rather than assuming it's actually clean. _(added 2026-08-01)_
+- [ ] **The gap that let eq-shell's fix quietly get undone (copy-in process only grabs part of the files) is still there structurally** — it'll happen again on the next routine copy-in unless the process itself gets fixed, not just patched around this one time. _(added 2026-08-01)_
+- [ ] **eq-receipts' react-router move hasn't been clicked through live** — the build is clean and Netlify's own preview built it successfully, but nobody has actually navigated the real app (Dashboard → Review → Verify, sidebar links) since the change. Worth a quick manual pass. _(added 2026-08-01)_
+
+---
+
 ## eq-shell: Intake page was crashing for everyone — found the cause, fixed it, confirmed live (2026-08-01)
 *Royce reported "WONT LOAD" on the Intake page with a browser console error. Traced it live rather than guessing.*
 
@@ -168,18 +185,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [ ] **Royce to spot-check a live PM Check Report and NSX Test Report from a site with an uploaded photo** — verified via generated samples with a placeholder image, not yet against a real production report. _(added 2026-08-01)_
 
 ---
-
-## eq-solves-service: Customer logo uploads now actually reach the customer record; one upload can cover several customers (2026-08-01)
-*Royce asked whether logos should be uploaded in Shell or Service, which surfaced a real gap: audited the existing `/admin/media` Customer Logo upload before building anything ("lets audit this, i want to get it right") and found it saved a file but never applied it to any customer anywhere downstream.*
-
-- [x] **Customer logo upload now writes through to the real customer record** (`logo_url`/`logo_url_on_dark`), so an uploaded logo shows up in reports immediately instead of sitting unused in the Media Library. eq-service [PR #663](https://github.com/eq-solutions/eq-service/pull/663), merged.
-- [x] **Found and fixed a real bug hit live the first time this path actually ran**: the database trigger behind customer updates referenced a field the customer view doesn't expose, crashing every save. Fixed and applied live.
-- [x] **One logo can now be linked to several customers at once**, in both the Upload form and the Edit modal (Royce: "need to be able to select multiple customers with one logo"). eq-service PR #663 + [PR #666](https://github.com/eq-solutions/eq-service/pull/666).
-- [x] **Fixed a real data-model bug Royce caught live**: linking one logo to several customers was creating a duplicate card per customer (4 separate "Equinix" cards for one upload) instead of one shared item. Rebuilt so one upload = one card covering every linked customer; the 4 existing duplicates were consolidated into one live. eq-service [PR #667](https://github.com/eq-solutions/eq-service/pull/667), merged.
-- [x] **Provided the two Equinix logo files** (light-background and dark-background, genuinely transparent) so Royce could run the upload himself.
-
-**Deferred:**
-- [ ] **Royce to hard-refresh `/admin/media` and confirm the Equinix card now shows as one item covering all 4 companies**, not 4 separate cards — fixed and verified against production data, not yet re-confirmed by Royce in the live UI. _(added 2026-08-01)_
 
 ---
 
