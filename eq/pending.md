@@ -150,6 +150,20 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-solves-service: Customer logo uploads now actually reach the customer record; one upload can cover several customers (2026-08-01)
+*Royce asked whether logos should be uploaded in Shell or Service, which surfaced a real gap: audited the existing `/admin/media` Customer Logo upload before building anything ("lets audit this, i want to get it right") and found it saved a file but never applied it to any customer anywhere downstream.*
+
+- [x] **Customer logo upload now writes through to the real customer record** (`logo_url`/`logo_url_on_dark`), so an uploaded logo shows up in reports immediately instead of sitting unused in the Media Library. eq-service [PR #663](https://github.com/eq-solutions/eq-service/pull/663), merged.
+- [x] **Found and fixed a real bug hit live the first time this path actually ran**: the database trigger behind customer updates referenced a field the customer view doesn't expose, crashing every save. Fixed and applied live.
+- [x] **One logo can now be linked to several customers at once**, in both the Upload form and the Edit modal (Royce: "need to be able to select multiple customers with one logo"). eq-service PR #663 + [PR #666](https://github.com/eq-solutions/eq-service/pull/666).
+- [x] **Fixed a real data-model bug Royce caught live**: linking one logo to several customers was creating a duplicate card per customer (4 separate "Equinix" cards for one upload) instead of one shared item. Rebuilt so one upload = one card covering every linked customer; the 4 existing duplicates were consolidated into one live. eq-service [PR #667](https://github.com/eq-solutions/eq-service/pull/667), merged.
+- [x] **Provided the two Equinix logo files** (light-background and dark-background, genuinely transparent) so Royce could run the upload himself.
+
+**Deferred:**
+- [ ] **Royce to hard-refresh `/admin/media` and confirm the Equinix card now shows as one item covering all 4 companies**, not 4 separate cards — fixed and verified against production data, not yet re-confirmed by Royce in the live UI. _(added 2026-08-01)_
+
+---
+
 ## eq-shell: Self-join Field access now requires "earned", not just "allowed" — merged and live (2026-07-31 → 2026-08-01)
 
 - [ ] **No "you're signed up, but blocked until you upload documents" screen in Field** — right now a gated self-join worker would just hit a dead end with no explanation. _(added 2026-07-31)_
