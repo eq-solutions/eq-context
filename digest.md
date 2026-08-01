@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-01 05:52 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-01 06:05 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-01 05:39 UTC → 2026-08-01 05:52 UTC)
+## Since last refresh (2026-08-01 05:52 UTC → 2026-08-01 06:05 UTC)
 
-- Merged: eq-shell [#1156](https://github.com/eq-solutions/eq-shell/pull/1156) Re-vendor eq-intake/eq-platform to 27bc7b5
-- Merged: eq-shell [#1154](https://github.com/eq-solutions/eq-shell/pull/1154) feat(security): audit-log every permission denial via requir
-- Merged: eq-shell [#1153](https://github.com/eq-solutions/eq-shell/pull/1153) security: CSP hardening, permission audit-trail logging, clo
-- Merged: eq-shell [#1148](https://github.com/eq-solutions/eq-shell/pull/1148) feat(auth): heads-up toast when the existing 5-min role poll
-- Merged: eq-shell [#1147](https://github.com/eq-solutions/eq-shell/pull/1147) docs: flag the function-grant landmine behind EQ-CARDS-1C
-- Merged: eq-shell [#1144](https://github.com/eq-solutions/eq-shell/pull/1144) feat(mobile): My Card row in the account sheet for non-field
-- Merged: eq-shell [#1141](https://github.com/eq-solutions/eq-shell/pull/1141) perf(shell): fetchpriority=low on prewarmed iframes + pause 
-- Merged: eq-shell [#1139](https://github.com/eq-solutions/eq-shell/pull/1139) perf(shell): preconnect to Field/Service/Cards origins ahead
+- Merged: eq-shell [#1171](https://github.com/eq-solutions/eq-shell/pull/1171) fix(intake): eq_site_advisory_flag_pair missing authenticate
+- Merged: eq-shell [#1155](https://github.com/eq-solutions/eq-shell/pull/1155) feat(auth): close 3 remaining ONE LOGIN onboarding gaps
+- Merged: eq-shell [#1152](https://github.com/eq-solutions/eq-shell/pull/1152) fix(auth): connect-wallet approval now checks existing docum
+- Merged: eq-shell [#1151](https://github.com/eq-solutions/eq-shell/pull/1151) fix(security): gate the supplier directory read to manager/s
+- Merged: eq-shell [#1150](https://github.com/eq-solutions/eq-shell/pull/1150) fix(auth): mint-cards-otp returns 422 for no-email users, no
+- Merged: eq-shell [#1149](https://github.com/eq-solutions/eq-shell/pull/1149) feat(auth): role-tagged self-join links for Apprentice/Labou
+- Merged: eq-shell [#1146](https://github.com/eq-solutions/eq-shell/pull/1146) feat(mobile): simplified 2-tab nav for supervisors/managers,
+- Merged: eq-shell [#1145](https://github.com/eq-solutions/eq-shell/pull/1145) feat(auth): gate Field JWT on earned access, not just allowe
 
 ## ⚠ Needs you (2)
 
@@ -48,7 +48,7 @@ _…and 90 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 1 | 0d |
+| eq-shell | ? unknown | ? | 0 | — |
 | eq-solves-service | ? unknown | ? | 0 | — |
 | eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ? unknown | ? | 0 | — |
@@ -72,6 +72,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-01 | eq-shell | [#1171](https://github.com/eq-solutions/eq-shell/pull/1171) fix(intake): eq_site_advisory_flag_pair missing authenticated gra |
 | 2026-08-01 | eq-shell | [#1172](https://github.com/eq-solutions/eq-shell/pull/1172) fix(ui): consolidate toast feedback, honest-disable unbuilt bulk  |
 | 2026-08-01 | eq-shell | [#1170](https://github.com/eq-solutions/eq-shell/pull/1170) feat(quotes): allow attaching files while creating a new quote |
 | 2026-08-01 | eq-shell | [#1169](https://github.com/eq-solutions/eq-shell/pull/1169) chore(intake): replace manual re-vendor steps with a script |
@@ -86,22 +87,21 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-01 | eq-shell | [#1160](https://github.com/eq-solutions/eq-shell/pull/1160) fix(auth): capture email during role-tagged self-join |
 | 2026-08-01 | eq-shell | [#1159](https://github.com/eq-solutions/eq-shell/pull/1159) chore(intake): re-vendor eq-intake/eq-platform — closes 3 Dependa |
 | 2026-08-01 | eq-shell | [#1158](https://github.com/eq-solutions/eq-shell/pull/1158) chore(deps): bump brace-expansion overrides to close 2 CVEs |
-| 2026-08-01 | eq-shell | [#1157](https://github.com/eq-solutions/eq-shell/pull/1157) chore(deps): migrate react-router-dom v7 to react-router v8, bump |
 _Showing 15 of 133 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
 - **Worth checking separately**: the tool that rolls database changes out to every company's system may have a bug where an instruction placed right after defining a new function can silently not run, even though the file it's in is marked as successfully applied. Only caught because this one case got tested by hand — there could be others sitting the same way undetected. Not investigated further. _(added 2026-08-01)_
-- **~47 of the 125 are one check flagging a data-loading pattern used throughout the Circuit Breaker / RCD test screens as risky** — the pattern itself (load data as soon as the screen opens) is completely standard and used everywhere in this app; this particular check is unusually strict about it. Needs a call: either rework how those two screens load their data, or decide the check itself is too strict for how this app is built and dial it back. _(added 2026-08-01)_
-- **31 places use a generic "could be anything" type instead of a specific one** — safe as-is, but each one needs a real type worked out by hand, not a bulk fix. _(added 2026-08-01)_
-- **13 places use an older-style image/link tag instead of the app's modern, faster equivalent** — needs each one wired up properly, not a drop-in swap. _(added 2026-08-01)_
-- **1 build/tooling script still uses an older code-loading style** — leaving it alone is safe (it works fine as-is); switching it needs a small config change elsewhere first. _(added 2026-08-01)_
+- **Saving/updating records through one part of the database layer has no real type-checking behind it** — confirmed by testing it directly: removing the "trust me" override that was masking the gap immediately surfaced the underlying problem instead of catching a mistake, which is exactly backwards from what type-checking is supposed to do. Affects roughly 17 places across the app right now. Needs someone to work out whether the underlying database description file is out of date or something else is missing — a real investigation, not a quick fix. _(added 2026-08-01)_
+- **8 places show an image (a company's logo, a photo from the media library) using the plain old-style method instead of the app's modern, faster one** — switching them over needs one extra setting turned on first (which external image sources are allowed to load), and getting that setting right needs checking against the real, live list of where those images actually come from — not guessed from the code alone. _(added 2026-08-01)_
 - **Photo → AI Risk Suggestions** (the secondary feature from the original review — supervisor takes site photos, AI suggests hazards, human confirms which to add) — deliberately not started. Needs its own go/no-go before scoping further: real per-call API spend, a new Netlify Function (would clone `eq-agent.js`'s existing auth/rate-limit shape), and site photos leaving the tenant boundary to Anthropic's API. _(added 2026-08-01)_
 - **eq-cards / eq-design-tokens / sks-charters / eq-website**: alerts just switched on, the very first scan came back clean on all 4 — worth a second look in a day or two in case that first scan didn't fully finish rather than assuming it's actually clean. _(added 2026-08-01)_
 - **eq-receipts' react-router move hasn't been clicked through live** — the build is clean and Netlify's own preview built it successfully, but nobody has actually navigated the real app (Dashboard → Review → Verify, sidebar links) since the change. Worth a quick manual pass. _(added 2026-08-01)_
 - `TENANT_ROUTING_MASTER_KEY` rotation still outstanding — same single-key-no-rotation class as the `EQ_SECRET_SALT` item below. Royce: leave deferred (reconfirmed 2026-08-01, not silence — no change wanted) _(added 2026-08-01)_
 - CSP still allows `style-src 'unsafe-inline'` — removing it is a multi-day styling refactor (React's `style` prop is itself inline styling), not a strip-and-test; needs its own session _(added 2026-08-01)_
-_…and 364 more · [eq/pending.md](eq/pending.md)_
+- `is_platform_admin` is an unscoped bypass with no step-up/MFA gate on sensitive actions — a new auth feature. Royce: scope it as its own session, no build yet (reconfirmed 2026-08-01) _(added 2026-08-01)_
+- No resource- or relationship-level authorization — permission checks are role-based only, nothing checks whether a user actually owns/manages the specific record being acted on. Architectural, needs its own design pass _(added 2026-08-01)_
+_…and 362 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -123,7 +123,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 2965 | 480 | 85 | 12 |
+| [EQ](eq/pending.md) | 2966 | 478 | 88 | 12 |
 | [SKS](sks/pending.md) | 424 | 83 | 5 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 402 | 37 | 5 | 1 |
@@ -144,4 +144,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-01 05:52 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-01 06:05 UTC._
