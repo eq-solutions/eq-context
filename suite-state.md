@@ -61,7 +61,10 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-01)
 
 **eq-cards:**
-- #192 fix(licences): lead with photo capture on org-required credential nudge
+- #193 chore(migrations): commit 0108 (org_join_notify_recipients) — already live on jvkn
+
+**eq-field:**
+- #600 v3.5.407 — Fix: Dashboard map, unbounded silent Leaflet-wait retry loop
 
 ---
 
