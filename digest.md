@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-01 22:24 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-01 22:29 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-01 22:19 UTC → 2026-08-01 22:24 UTC)
+## Since last refresh (2026-08-01 22:24 UTC → 2026-08-01 22:29 UTC)
 
-- Merged: eq-shell [#1162](https://github.com/eq-solutions/eq-shell/pull/1162) chore(intake): re-vendor eq-platform root config — closes 3 
-- Merged: eq-shell [#1160](https://github.com/eq-solutions/eq-shell/pull/1160) fix(auth): capture email during role-tagged self-join
-- Merged: eq-shell [#1158](https://github.com/eq-solutions/eq-shell/pull/1158) chore(deps): bump brace-expansion overrides to close 2 CVEs
-- Merged: eq-shell [#1155](https://github.com/eq-solutions/eq-shell/pull/1155) feat(auth): close 3 remaining ONE LOGIN onboarding gaps
-- Merged: eq-shell [#1152](https://github.com/eq-solutions/eq-shell/pull/1152) fix(auth): connect-wallet approval now checks existing docum
-- Merged: eq-shell [#1151](https://github.com/eq-solutions/eq-shell/pull/1151) fix(security): gate the supplier directory read to manager/s
-- Merged: eq-shell [#1150](https://github.com/eq-solutions/eq-shell/pull/1150) fix(auth): mint-cards-otp returns 422 for no-email users, no
-- Merged: eq-shell [#1149](https://github.com/eq-solutions/eq-shell/pull/1149) feat(auth): role-tagged self-join links for Apprentice/Labou
+- Merged: eq-shell [#1161](https://github.com/eq-solutions/eq-shell/pull/1161) fix(intake): duplicate React instance breaking /intake in pr
+- Merged: eq-shell [#1159](https://github.com/eq-solutions/eq-shell/pull/1159) chore(intake): re-vendor eq-intake/eq-platform — closes 3 De
+- Merged: eq-shell [#1157](https://github.com/eq-solutions/eq-shell/pull/1157) chore(deps): migrate react-router-dom v7 to react-router v8,
+- Merged: eq-shell [#1156](https://github.com/eq-solutions/eq-shell/pull/1156) Re-vendor eq-intake/eq-platform to 27bc7b5
+- Merged: eq-shell [#1154](https://github.com/eq-solutions/eq-shell/pull/1154) feat(security): audit-log every permission denial via requir
+- Merged: eq-shell [#1153](https://github.com/eq-solutions/eq-shell/pull/1153) security: CSP hardening, permission audit-trail logging, clo
+- Merged: eq-shell [#1148](https://github.com/eq-solutions/eq-shell/pull/1148) feat(auth): heads-up toast when the existing 5-min role poll
+- Merged: eq-solves-service [#680](https://github.com/eq-solutions/eq-service/pull/680) fix(migrations): 0201 view-column-order failure that broke t
 
 ## ⚠ Needs you (3)
 
@@ -60,7 +60,7 @@ _…and 91 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 | Project | Error | Events | Last seen |
 |---------|-------|--------|-----------|
 | eq-shell | [auth-stall: chunk-error](https://eq-solutions.sentry.io/issues/137294044/) | 19 | 2026-08-01 |
-| eq-field | [Error: no-tenant-id](https://eq-solutions.sentry.io/issues/138007377/) | 17 | 2026-08-01 |
+| eq-field | [Error: no-tenant-id](https://eq-solutions.sentry.io/issues/138007377/) | 18 | 2026-08-01 |
 | eq-shell | [Error: Workers never invited to join, past grace period: 44](https://eq-solutions.sentry.io/issues/135740258/) | 13 | 2026-08-01 |
 | eq-solves-service | [UnrecognizedActionError: Server Action "40f8ab2385de590826648056ec7fc02ebdd51eb8](https://eq-solutions.sentry.io/issues/122209933/) | 10 | 2026-08-01 |
 | eq-shell | [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/) | 6 | 2026-07-30 |
@@ -145,4 +145,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-01 22:24 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-01 22:29 UTC._
