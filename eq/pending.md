@@ -42,7 +42,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [ ] CSP still allows `style-src 'unsafe-inline'` — removing it needs a full browser-tested pass, not a blind strip _(added 2026-08-01)_
 - [ ] `is_platform_admin` is an unscoped bypass with no step-up/MFA gate on sensitive actions _(added 2026-08-01)_
 - [ ] No resource- or relationship-level authorization — permission checks are role-based only, nothing checks whether a user actually owns/manages the specific record being acted on _(added 2026-08-01)_
-- [ ] Schema drift gate only runs every 3 hours — an out-of-band change can sit undetected that long _(added 2026-08-01)_
 - [ ] No down-migration/rollback path for schema migrations _(added 2026-08-01)_
 - [ ] Field/Service/Cards iframes combine `allow-same-origin` + `allow-scripts` in their sandbox attribute — should be documented as an accepted risk rather than left implicit _(added 2026-08-01)_
 - [ ] No `.changeset`/versioned release process for the internal `@eq-solutions/*` packages _(added 2026-08-01)_
