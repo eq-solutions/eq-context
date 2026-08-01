@@ -1,14 +1,14 @@
 ---
 title: EQ Suite — Current State
 owner: Royce Milmlow
-last_updated: 2026-07-31
+last_updated: 2026-08-01
 scope: Live suite state — app lineup, DB counts, open PRs, architectural decisions. Auto-refreshed nightly by GitHub Action.
 read_priority: critical
 status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-07-31 (nightly cron)_
+_Last verified: 2026-08-01 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -58,17 +58,21 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-07-31)
+## Open PRs (as of 2026-08-01)
 
 **eq-field:**
+- #591 v3.5.396 — Roster Overview Map view (site headcount, geographic)
 - #589 v3.5.396 — Safety nav group no longer stays open on other pages
 
+**eq-service:**
+- #663 feat(admin/media): customer-logo uploads now actually apply to the customer record
+
 **eq-shell:**
-- #1149 feat(auth): role-tagged self-join links for Apprentice/Labour hire
+- #1152 fix(auth): connect-wallet approval now checks existing documents
 
 ---
 
-## System Health (as of 2026-07-31)
+## System Health (as of 2026-08-01)
 
 **CI on main:**
 
