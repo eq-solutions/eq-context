@@ -60,6 +60,10 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-01)
 
+**eq-field:**
+- #596 v3.5.401 — loading perf: hand-merge 17 head scripts into 6 bundles
+- #595 v3.5.401 — Fix: Dashboard map ignored the week nav shipped in the same PR
+
 **eq-service:**
 - #665 docs(perf): close out dashboard_duration canary check
 
