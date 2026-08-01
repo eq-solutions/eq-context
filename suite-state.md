@@ -62,7 +62,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #1156 Re-vendor eq-intake/eq-platform to 27bc7b5
-- #1154 feat(security): audit-log every permission denial via requirePerm()
 
 ---
 
