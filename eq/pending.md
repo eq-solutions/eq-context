@@ -14,6 +14,16 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: New Quote form can now attach files before the quote exists (2026-08-01)
+*Royce noticed uploading documents only worked once a quote already existed — the create form had no attachment option at all.*
+
+- [x] **New Quote form gained a Files section** — pick files while filling in the form, before the quote is even saved; no separate upload step, no new storage/permissions (reuses exactly what the existing quote-detail uploader already uses). eq-shell [PR #1170](https://github.com/eq-solutions/eq-shell/pull/1170), merged.
+
+**Deferred:**
+- [ ] **Royce to click through live**: open New Quote, attach a couple of files before finishing the form, submit, confirm the files show up on the created quote. _(added 2026-08-01)_
+
+---
+
 ## eq-solves-intake + eq-shell: duplicate-site console's two dead ends fixed, then a live permission bug found and fixed mid-testing (2026-08-01)
 *Royce asked why the duplicate-sites screen finds problems a user can't act on. Two real dead ends: a non-manager saw only "ask a manager" with no way to even preview what a merge would do, and marking a match "Unsure" recorded a bare verdict with no way to say why. Fixed both, checked against the real database permissions rather than assumed. Testing the fix live then surfaced a genuine separate bug: even a real manager couldn't confirm a merge.*
 
