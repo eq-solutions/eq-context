@@ -60,8 +60,10 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-01)
 
-**eq-solves-intake:**
-- #98 fix(intake): non-managers can preview a site merge; Unsure gets a note
+**eq-shell:**
+- #1156 Re-vendor eq-intake/eq-platform to 27bc7b5
+- #1155 feat(auth): close 3 remaining ONE LOGIN onboarding gaps
+- #1154 feat(security): audit-log every permission denial via requirePerm()
 
 ---
 
