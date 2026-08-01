@@ -67,9 +67,6 @@ _If this file is >48h old, the cron is broken._
 **eq-service:**
 - #663 feat(admin/media): customer-logo uploads now actually apply to the customer record
 
-**eq-shell:**
-- #1152 fix(auth): connect-wallet approval now checks existing documents
-
 ---
 
 ## System Health (as of 2026-08-01)
