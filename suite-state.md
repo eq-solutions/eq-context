@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-01)
 
-**eq-shell:**
-- #1153 security: CSP hardening, permission audit-trail logging, close 2 ops.create_job gaps
-
 **eq-solves-intake:**
 - #98 fix(intake): non-managers can preview a site merge; Unsure gets a note
 
