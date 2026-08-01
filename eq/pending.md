@@ -14,6 +14,35 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-solves-intake + eq-shell: duplicate-site console's two dead ends fixed, then a live permission bug found and fixed mid-testing (2026-08-01)
+*Royce asked why the duplicate-sites screen finds problems a user can't act on. Two real dead ends: a non-manager saw only "ask a manager" with no way to even preview what a merge would do, and marking a match "Unsure" recorded a bare verdict with no way to say why. Fixed both, checked against the real database permissions rather than assumed. Testing the fix live then surfaced a genuine separate bug: even a real manager couldn't confirm a merge.*
+
+- [x] **Non-managers can now see exactly what a site merge would do** (how many records move, which site wins) before asking a manager to confirm it — previously they saw nothing but a text hint, no way to even look.
+- [x] **Marking a duplicate pair "Unsure" now lets you add a note explaining what's unclear**, shown next to the verdict afterwards — previously it just recorded "Unsure" and went nowhere.
+- [x] eq-solves-intake [PR #98](https://github.com/eq-solutions/eq-solves-intake/pull/98), eq-shell [PR #1156](https://github.com/eq-solutions/eq-shell/pull/1156) (re-vendored to ship it) — both merged, live.
+- [x] **While testing the fix live, found a real separate bug blocking every manager on every company from ever confirming a site merge** — a database permission that a July migration was supposed to switch on never actually took effect, even though that file is recorded as having run successfully. Switched it on directly for both EQ's and SKS's systems, then added the record to the repo so it's tracked properly (not just a live hand-fix nobody remembers). eq-shell [PR #1168](https://github.com/eq-solutions/eq-shell/pull/1168), merged.
+- [x] Investigated the "won't load" Intake crash Royce hit mid-session — ruled out several possible causes (missing files, other pages being affected) in parallel with the concurrent session that found and shipped the actual fix (see the entry above, PR #1161).
+
+**Deferred:**
+- [ ] **Royce to click through live**: open the Duplicate Sites panel as a non-manager and confirm Preview now shows; mark a row Unsure with a note and confirm it saves and displays; confirm a real merge now succeeds end-to-end (Preview → Confirm) now that the permission fix is live. _(added 2026-08-01)_
+- [ ] **Worth checking separately**: the tool that rolls database changes out to every company's system may have a bug where an instruction placed right after defining a new function can silently not run, even though the file it's in is marked as successfully applied. Only caught because this one case got tested by hand — there could be others sitting the same way undetected. Not investigated further. _(added 2026-08-01)_
+
+---
+
+## eq-solves-service: fixed a broken safety check that was silently skipping every code review (2026-08-01)
+*A prior fix for a security warning (upgrading a bundled tool called "brace-expansion") turned out to also break a different, older tool ("minimatch") that a lot of other tools depend on — including the app's own automated code-quality check. That check had been crashing outright on every fresh install since, meaning it wasn't actually reviewing any pull request's code, just failing before it even started — every PR's quality gate was either silently skipped or red for a reason that had nothing to do with that PR's own changes.*
+
+- [x] **Traced the crash to the exact two tools colliding, not just "something broke"** — an older-style tool tries to call the security fix's replacement as if it were still the old kind of building block, and it no longer works that way.
+- [x] **Fixed by pinning the older tool to a newer version that already knows how to work with the security fix** — the same newer version already working correctly elsewhere in the same install, applied everywhere.
+- [x] **Verified properly, not just "looks fixed"**: reproduced the crash on a byte-for-byte fresh install first, confirmed it's gone after the fix on an equally fresh install, confirmed the code-quality check now actually runs (surfacing ~176,000 pre-existing style/quality notes across the whole codebase — real findings, not a crash; that backlog is separate, much bigger work, not touched here), and ran the full automated test suite clean (391/391) to make sure the fix itself introduced nothing new.
+- [x] eq-service [PR #672](https://github.com/eq-solutions/eq-service/pull/672) opened, not yet merged.
+
+**Deferred:**
+- [ ] **PR #672 needs Royce's merge go** — waiting on CI + review. _(added 2026-08-01)_
+- [ ] **The ~176,000 pre-existing code-quality findings now surfaced by the fixed check are a separate, much larger backlog** — not touched this session, worth scoping as its own effort if it's worth doing at all. _(added 2026-08-01)_
+
+---
+
 ## eq-cards: credential-capture screen made photo-first; a leftover production migration reconciled into history (2026-08-01)
 
 - [ ] **Royce to click through live on a real device** — confirm the "take a photo" sheet feels right end to end (camera opens, OCR reads the card, fallback link works). Note: the code merged this morning but wasn't actually live yet when Royce first tried it — this repo's deploy isn't automatic on merge, and nobody had triggered one. Deployed and confirmed live later the same day. _(added 2026-08-01, updated 2026-08-01)_
