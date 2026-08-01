@@ -66,7 +66,6 @@ _If this file is >48h old, the cron is broken._
 **eq-shell:**
 - #1168 fix(intake): eq_site_merge_execute missing authenticated grant
 - #1167 chore(intake): re-vendor eq-schemas package.json — closes ajv Dependabot alert #42
-- #1166 fix(security): session revocation fails closed on a DB lookup error
 
 ---
 
