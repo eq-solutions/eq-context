@@ -90,3 +90,6 @@
 - **PR #50 (#49) — added a `check:packages` script as the fleet gate** (the old `pnpm -C eq-platform check` ran the whole workspace and went red on stale `apps/*`).
 - **PR #51 (#46) — removed the abandoned PHASE-0 monorepo apps** (`apps/eq-service` + `apps/eq-shell`, 675 files) + dropped `apps/*` from `pnpm-workspace.yaml` and pruned the lockfile. Real apps ship from their own standalone repos; full-workspace `check` is green again.
 - **PR #52 — doc-rot follow-through** (superseded banner on the PHASE-0 migration doc; fixed a stale `apps/eq-shell/.env.local` ref in `EQ-TENANCY-MODEL.md`).
+
+## 2026-08-02
+- **PR #103 — corrected two stale claims in `EQ-CARDS-INTAKE-BRIDGE.md`.** The doc (written May 2026) called the Cards→Field SSO sending half unbuilt and implied reshape-out was a handful of SimPRO variants. Both wrong as checked live: `token-exchange.ts` (eq-shell) has minted `worker_id` into the Field JWT since PR #812, earned-access gated by #1145 (live on core.eq.solutions); `eq-format-ui/src/derive/registry.ts` registers 12 reshape profiles (SimPRO/Xero/MYOB/4 Equinix formats), not 3. Left the doc's own open question (worker-pool vs. control-plane architecture) explicitly unresolved — flagged as needing its own re-audit. Docs-only, no code. Squash-merged `dddbe4e`.

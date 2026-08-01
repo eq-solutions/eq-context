@@ -14,6 +14,22 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## EQ Cards + Intake: asked "where are we really at" — found two of our own internal notes were wrong, fixed them (2026-08-02)
+*Royce felt lost in the progress and asked for a plain "what's real vs. what's the goal" check on EQ Cards + Intake. Checked live — the actual code, database, and what's actually deployed — instead of trusting our own internal write-ups.*
+
+- [x] **Found EQ Cards workers signing straight into Field is already done and live** — our own notes still said this hadn't been built. It has, and has been for weeks.
+- [x] **Found EQ Intake can already export data out to 12 different downstream systems, not 3** — our internal notes undercounted this badly.
+- [x] **Fixed both wrong notes** so the next person (or the next AI session) doesn't get misled by them. eq-solves-intake [PR #103](https://github.com/eq-solutions/eq-solves-intake/pull/103), merged.
+- [x] **Found a real number worth tracking along the way:** 44 of 97 EQ Cards-registered workers don't have a login for Field or Service yet. Checked they're not stale/abandoned signups — they're all recent, real people. Royce confirmed this is expected: the team is being brought on in stages on purpose, not a bug.
+- [x] Built two working pages for Royce to review this on (what's built, what "fully solved" looks like, and the gap between) — and turned the process itself into a reusable check (`/gap`) so it can be re-run on any part of the product without starting from scratch.
+
+**Deferred:**
+- [ ] Royce is checking directly whether EQ Intake can push timesheets into Workbench (SKS's own payroll tool) — none of the 12 export formats target it today. _(added 2026-08-02)_
+- [ ] **No automatic check exists yet that a real worker's data survives being exported without something silently going missing** — today it's only tested against made-up sample data, never a real record. Small, scoped fix once someone picks it up: one real record through, confirm nothing vanished. _(added 2026-08-02)_
+- [ ] **Open architecture question, not decided either way:** should a new employee record automatically trigger a login invite, or should that stay a manual/staged process? This is the question behind the 44-workers number above. _(added 2026-08-02)_
+
+---
+
 ## eq-solves-service: two small fixes from a screenshot — bigger upload limit, report cover kept its branding (2026-08-02)
 *You sent a screenshot of a Media Library upload getting blocked over 2MB, then asked about a generated report where uploading a site photo made the blue branded band disappear instead of just adding the photo underneath it.*
 
