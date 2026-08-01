@@ -16,6 +16,15 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-suite loading performance: closed out Service's investigation, cut Field's cold-cache script requests, deliberately held Cards (2026-08-01) (fully closed, no open items remain)
+*Royce: "talk to me about other loading performance improvements." Shell's own perf work already hit its floor 3 weeks ago (2026-07-11). Investigated the other three apps live before proposing anything (Rule 0.5) — measured real cold vs warm load times, checked what earlier fixes actually shipped, ran `/decide` before committing engineering time to a vague "wherever possible" mandate.*
+
+- [x] **EQ Service — confirmed its own "is the dashboard slow" investigation was already closed, just never written up.** The Sentry canary meant to catch a slow dashboard render had zero hits in 90 days — checked directly and confirmed that's the intended good outcome (it can only ever catch slow database queries, not the server cold-start time, which the doc already knew but never connected). [PR #665](https://github.com/eq-solutions/eq-service/pull/665) merged.
+- [x] **EQ Field — cut the number of separate file downloads needed right after every release from 30 down to 20**, by hand-merging 17 always-loaded files that had no individual test and no risk of breaking anything into 6 combined files. This mainly helps a crew opening Field on-site over 4G in the window right after a new version ships — which happens several times a day. Didn't touch anything with its own test or a documented reason to stay separate. Hit two same-day version-number collisions with other in-flight PRs mid-build (#594, #595) — caught and renumbered before merge, not after. [PR #596](https://github.com/eq-solutions/eq-field/pull/596) merged, live, v3.5.403. Royce clicked through live himself before giving the merge go.
+- [x] **Deliberately did not start looking at EQ Cards.** Nobody's ever reported it slow, unlike the other three apps which were driven by an actual complaint; it's also a completely different kind of app (phone app, not a website) so a proper look would be its own piece of work, not a quick add-on. Left alone — revisit only if it's reported slow or Royce wants to spend a session on it specifically.
+
+---
+
 ## eq-shell: supplier directory was only hidden by the UI, not actually enforced — closed, live on both tenants (2026-08-01) (fully closed, no open items remain)
 *Royce asked directly whether Apprentice/Labour Hire/Subcontractor access to the Suppliers directory was actually wired in server-side, not just hidden in the app. Checked all three layers live rather than assuming: writes and login/password were correctly gated server-side, but the general directory (name/category/contact/email/phone/website/notes) had no role check in the database function itself — only the app's own UI hid the page from those roles. A direct call to the underlying function, bypassing the app entirely, would have handed back the full non-credential directory to any signed-in staff member regardless of role.*
 
