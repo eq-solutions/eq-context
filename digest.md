@@ -8,28 +8,29 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-01 01:48 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-01 01:57 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-01 01:47 UTC → 2026-08-01 01:48 UTC)
+## Since last refresh (2026-08-01 01:48 UTC → 2026-08-01 01:57 UTC)
 
-- Merged: eq-shell [#1150](https://github.com/eq-solutions/eq-shell/pull/1150) fix(auth): mint-cards-otp returns 422 for no-email users, no
-- Merged: eq-shell [#1146](https://github.com/eq-solutions/eq-shell/pull/1146) feat(mobile): simplified 2-tab nav for supervisors/managers,
-- Merged: eq-shell [#1145](https://github.com/eq-solutions/eq-shell/pull/1145) feat(auth): gate Field JWT on earned access, not just allowe
-- Merged: eq-shell [#1144](https://github.com/eq-solutions/eq-shell/pull/1144) feat(mobile): My Card row in the account sheet for non-field
-- Merged: eq-shell [#1143](https://github.com/eq-solutions/eq-shell/pull/1143) fix(auth): null-safe display name for phone-only workers
-- Merged: eq-shell [#1139](https://github.com/eq-solutions/eq-shell/pull/1139) perf(shell): preconnect to Field/Service/Cards origins ahead
-- Merged: eq-shell [#1138](https://github.com/eq-solutions/eq-shell/pull/1138) feat(intake): tenant-editable trades vocab + persisted dupli
-- Merged: eq-shell [#1135](https://github.com/eq-solutions/eq-shell/pull/1135) perf(shell): warm token-exchange to close the last cold-star
+- Merged: eq-shell [#1148](https://github.com/eq-solutions/eq-shell/pull/1148) feat(auth): heads-up toast when the existing 5-min role poll
+- Merged: eq-shell [#1147](https://github.com/eq-solutions/eq-shell/pull/1147) docs: flag the function-grant landmine behind EQ-CARDS-1C
+- Merged: eq-shell [#1142](https://github.com/eq-solutions/eq-shell/pull/1142) chore(intake): re-vendor eq-intake/eq-platform — trades sett
+- Merged: eq-shell [#1141](https://github.com/eq-solutions/eq-shell/pull/1141) perf(shell): fetchpriority=low on prewarmed iframes + pause 
+- Merged: eq-shell [#1140](https://github.com/eq-solutions/eq-shell/pull/1140) chore(intake): re-vendor eq-intake/eq-platform — Dupes archi
+- Merged: eq-shell [#1137](https://github.com/eq-solutions/eq-shell/pull/1137) fix(intake): site-merge manager gate checked the wrong ident
+- Merged: eq-shell [#1136](https://github.com/eq-solutions/eq-shell/pull/1136) fix(quotes): sync canonical job status for every pipeline st
+- Merged: eq-shell [#1134](https://github.com/eq-solutions/eq-shell/pull/1134) fix(audit): workers-canonical-sync attributes real actors
 
 ## ⚠ Needs you (2)
 
 - 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-9 (P0 — confirmed exposure, same window as SEC-3, possible second exposure 2026-07-27) — A different service_role key (`jvkn`/eq-canonical) was pasted directly into a ch · [security-register.md](ops/security-register.md)
 
-## 🙋 Waiting on you (94)
+## 🙋 Waiting on you (95)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
+- **EQ** · **Royce to click through live**: sign in on core.eq.solutions and confirm Cards/Field/Service each load past "Authorising…" — needs a real login, which Claude can't do on Royce's behalf. _(added 2026-08-01)_
 - **EQ** · **Royce to click through live**: sign in as a non-manager, try a manager-only action, confirm a "denied" row actually lands in the audit log. Needs a real login, which Claude can't do on Royce's behalf. _(added 2026-08-01)_
 - **EQ** · **Royce to confirm on Richard's own phone**: the page loads without the error screen, the bottom bar shows Home + Field only, and Service/Ops are reachable via the account menu. _(added 2026-07-31)_
 - **EQ** · **Royce to click through the new paste-import resolve screen live** — built and type/build-checked clean, but not clicked through in a real browser session (no test login available in this environment). Paste a batch with an unmatched asset ID, try linking one and creating another, confirm the resulting check comes out right. _(added 2026-07-31)_
@@ -41,16 +42,15 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **EQ** · **Royce to confirm live**: once the deploy lands on core.eq.solutions, reload the dashboard and confirm Huon Henne no longer appears under "Licences expiring" on the Compliance & safety card. _(added 2026-07-30)_
 - **EQ** · **Moahmmed Elsayed's `photo_id`-typed licence row (number `0140988080`) not yet corrected** — unlike Maylin Ung's case (a driver's-licence-format number, fixed directly), this number doesn't match a recognisable pattern; needs Royce to confirm the actual document type before the DB row is corrected. _(added 2026-07-29)_
 - **EQ** · **Royce to click through live**: invite a labour-hire worker with the box unchecked, confirm they land on a Field-free home screen and can't reach Field directly; then invite/sign in a normal worker (box left checked) and confirm nothing changed for them. Bundled with the three click-through items below into one live-testing pass — see that section's deferred note. _(added 2026-07-30)_
-- **EQ** · **Royce to click through live, all four features shipped today together** (this section's three plus the compliance-roster-only switch above): invite/adjust a worker with Field access off; correct a test worker's phone number and confirm their old passcode stops working while a fresh sign-in + new passcode works; check the passcode-status view and try "Unlock now" on a locked test account; sign in as a phone-only worker and confirm the backup-email reminder shows, dismisses for that sign-in only, and clears once an email is added. None of this has been clicked through live yet — Claude can't perform this step directly (logging in requires entering a passcode, which falls under a hard rule against entering credentials on the user's behalf, even for the user's own product). _(added 2026-07-30)_
-_…and 82 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 83 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 0 | — |
+| eq-shell | ? unknown | ? | 1 | 0d |
 | eq-solves-service | ? unknown | ? | 0 | — |
-| eq-field | ? unknown | ? | 2 | 0d |
+| eq-field | ? unknown | ? | 1 | 0d |
 | eq-cards | ? unknown | ? | 0 | — |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
@@ -86,22 +86,22 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-01 | eq-solves-service | [#665](https://github.com/eq-solutions/eq-service/pull/665) docs(perf): close out dashboard_duration canary check |
 | 2026-08-01 | eq-solves-service | [#664](https://github.com/eq-solutions/eq-service/pull/664) fix(reports): fix latent customers-update-trigger bug; add multi- |
 | 2026-08-01 | eq-solves-service | [#663](https://github.com/eq-solutions/eq-service/pull/663) feat(admin/media): customer-logo uploads now actually apply to th |
-| 2026-08-01 | eq-field | [#596](https://github.com/eq-solutions/eq-field/pull/596) v3.5.403 — loading perf: hand-merge 17 head scripts into 6 bundle |
+| 2026-08-01 | eq-field | [#598](https://github.com/eq-solutions/eq-field/pull/598) v3.5.403 — Fix: Sentry EQ-FIELD-10, Dashboard map lost a boot rac |
 _Showing 15 of 129 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **The real fix is a genuine login-system change, not a quick patch** — it means changing what goes on every login token across the whole app, which is exactly the kind of change that needs a proper look before it ships, not a same-session follow-on. Recommended: hold this until there's an actual reason to use either mechanism (someone needs an individual grant, or a specific block on a screen), rather than fixing a currently-theoretical gap by touching how every single person logs in. _(added 2026-08-01)_
-- **Live phone click-through not done** — open the More drawer, unlock manager mode, confirm Toolboxes/Prestarts/Incidents/Records/Site Audits each land on the right page in the new order. _(added 2026-07-31)_
-- **Live phone click-through not done** — camera vs. gallery picker on a real device. _(added 2026-07-31)_
-- **Richard then reported he couldn't find Service after the above shipped** — checked live: he has full permission and his company's account has Service switched on, so nothing needs granting. This is the expected result of the new simplified mobile view — Service moved from the main bar into the account menu. Told Royce where to find it; open question whether supervisors need Service as a main tab after all if this keeps coming up, rather than one tap deeper. _(added 2026-07-31)_
-- **iPads get the full desktop view, not the simplified mobile one** — confirmed the phone/desktop cutoff is a fixed screen-width line that iPads sit above in both orientations, so nothing built this session changes what an iPad shows. Noted in case a tablet-specific view is ever wanted. _(added 2026-07-31)_
-- **Two other places still lack any resolve option for unmatched rows**: the maintenance-check screen's own quick work-order paste (the simplest, position-only version) and the plain Assets spreadsheet import. Out of scope this round — same treatment could be added later if wanted. _(added 2026-07-31)_
-- **No "you're signed up, but blocked until you upload documents" screen in Field** — right now a gated self-join worker would just hit a dead end with no explanation. _(added 2026-07-31)_
-- **No Field-access checkbox on the Users-tab invite form** (`invite-user.ts`/`AdminInviteUser.tsx`) — that door currently relies on the database default rather than an explicit admin choice, the same gap the Workers-tab form already closed on 2026-07-30. _(added 2026-07-31)_
-- **Live smoke test not run** — self-join should now be blocked from Field, existing invite/claim/approval doors should be unaffected. Royce said he'd click through this himself with a test phone number; not yet confirmed done. _(added 2026-07-31)_
-- **Two separate sessions independently claimed the same migration number (0228)** tonight — this one and the quote-target-period entry above. Not a live problem (both applied cleanly, nothing broke), but worth knowing the "check origin/main before claiming a number" step isn't fully collision-proof under concurrent sessions. _(added 2026-07-31)_
-_…and 348 more · [eq/pending.md](eq/pending.md)_
+- `quote-email.ts` has no permission gate — needs a decision on which perm key should cover it _(added 2026-08-01)_
+- `retention-purge.ts`'s live account-deletion path relies solely on Netlify's platform-level scheduled-function-invocation restriction, no app-level guard behind it _(added 2026-08-01)_
+- `TENANT_ROUTING_MASTER_KEY` rotation still outstanding — same single-key-no-rotation class as the `EQ_SECRET_SALT` item below _(added 2026-08-01)_
+- Signing out of Shell doesn't propagate to the embedded Field/Service/Cards iframe sessions _(added 2026-08-01)_
+- Session revocation gap: cookies minted before the `jti` field existed skip the revocation check entirely, and a revocation-check DB error fails open _(added 2026-08-01)_
+- No build cache (Turborepo or similar) — every CI run rebuilds the full workspace from scratch _(added 2026-08-01)_
+- CSP still allows `style-src 'unsafe-inline'` — removing it needs a full browser-tested pass, not a blind strip _(added 2026-08-01)_
+- `is_platform_admin` is an unscoped bypass with no step-up/MFA gate on sensitive actions _(added 2026-08-01)_
+- No resource- or relationship-level authorization — permission checks are role-based only, nothing checks whether a user actually owns/manages the specific record being acted on _(added 2026-08-01)_
+- Schema drift gate only runs every 3 hours — an out-of-band change can sit undetected that long _(added 2026-08-01)_
+_…and 361 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -123,7 +123,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 2828 | 460 | 59 | 12 |
+| [EQ](eq/pending.md) | 2858 | 474 | 62 | 12 |
 | [SKS](sks/pending.md) | 424 | 83 | 5 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 402 | 37 | 5 | 1 |
@@ -144,4 +144,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-01 01:48 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-01 01:57 UTC._
