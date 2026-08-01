@@ -129,8 +129,8 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 Toast consolidation, dead-code cleanup, and honest-disable fixes shipped in eq-shell [PR #1172](https://github.com/eq-solutions/eq-shell/pull/1172) (merged). Two findings deliberately not resolved:
 
-- [ ] **`CoreHome.tsx` is a fully-built, unrouted home-page prototype** ("EQ Intelligence" decision-queue, canonical-graph visualization) sitting dead in the tree, running on hardcoded fake data. Never imported anywhere. Needs Royce's call: revive as the real home page, or delete — not something to guess at _(added 2026-08-01)_
-- [ ] Stale SKS brand color `#1F335C` (should be `#203060`, corrected elsewhere 2026-07-30) hardcoded 13× in `src/portal/QuotePortal.tsx` — the customer-facing quote portal was missed in that earlier sweep _(added 2026-08-01)_
+- [ ] **`CoreHome.tsx` is a fully-built, unrouted home-page prototype** ("EQ Intelligence" decision-queue, canonical-graph visualization) sitting dead in the tree, running on hardcoded fake data. Never imported anywhere. Needs Royce's call: revive as the real home page, or delete — not something to guess at. **Clickable mockup built 2026-08-01** (faithful reproduction of the real component + CSS, published as a Claude artifact) so Royce can evaluate it without reading code — rated 8/10 as a design concept (leads with the decision, not the mechanism — graph is opt-in via "Trace it"), but 3/10 as a build-ready feature: every decision is hardcoded, no backend detection engine exists to actually find these cross-app joins live, and it would be a *third* home-page paradigm alongside `TenantHome`/`WorkerHome` with no resolution on whether it replaces or augments either _(added 2026-08-01)_
+- [ ] Stale SKS brand color `#1F335C` (should be `#203060`, corrected elsewhere 2026-07-30) hardcoded 13× in `src/portal/QuotePortal.tsx` — the customer-facing quote portal was missed in that earlier sweep. **Dispatched as a background task** (task_2d3f2710) 2026-08-01, Royce started it in a separate session — outcome not confirmed as of this session's close _(added 2026-08-01)_
 
 ---
 
