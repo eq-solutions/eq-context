@@ -60,6 +60,9 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-01)
 
+**eq-service:**
+- #665 docs(perf): close out dashboard_duration canary check
+
 **eq-shell:**
 - #1156 Re-vendor eq-intake/eq-platform to 27bc7b5
 
