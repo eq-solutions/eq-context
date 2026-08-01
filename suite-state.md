@@ -61,13 +61,8 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-01)
 
 **eq-field:**
+- #598 v3.5.403 — Fix: Sentry EQ-FIELD-10, Dashboard map lost a boot race, no retry
 - #597 v3.5.402 — Prestart/Toolbox: completeness checks, same pattern as Site Audit
-
-**eq-service:**
-- #665 docs(perf): close out dashboard_duration canary check
-
-**eq-solves-intake:**
-- #100 fix(deps): close pre-existing pnpm audit findings via overrides
 
 ---
 
