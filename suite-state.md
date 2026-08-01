@@ -80,7 +80,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 204 (latest: 0198) applied
+**Migrations:** eq-service has 205 (latest: 0199) applied
 
 ---
 
