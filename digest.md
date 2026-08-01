@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-01 03:38 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-01 03:48 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-01 03:35 UTC → 2026-08-01 03:38 UTC)
+## Since last refresh (2026-08-01 03:38 UTC → 2026-08-01 03:48 UTC)
 
-- Merged: eq-shell [#1167](https://github.com/eq-solutions/eq-shell/pull/1167) chore(intake): re-vendor eq-schemas package.json — closes aj
-- Merged: eq-shell [#1166](https://github.com/eq-solutions/eq-shell/pull/1166) fix(security): session revocation fails closed on a DB looku
-- Merged: eq-shell [#1148](https://github.com/eq-solutions/eq-shell/pull/1148) feat(auth): heads-up toast when the existing 5-min role poll
-- Merged: eq-shell [#1147](https://github.com/eq-solutions/eq-shell/pull/1147) docs: flag the function-grant landmine behind EQ-CARDS-1C
-- Merged: eq-shell [#1142](https://github.com/eq-solutions/eq-shell/pull/1142) chore(intake): re-vendor eq-intake/eq-platform — trades sett
-- Merged: eq-shell [#1141](https://github.com/eq-solutions/eq-shell/pull/1141) perf(shell): fetchpriority=low on prewarmed iframes + pause 
-- Merged: eq-shell [#1140](https://github.com/eq-solutions/eq-shell/pull/1140) chore(intake): re-vendor eq-intake/eq-platform — Dupes archi
-- Merged: eq-solves-service [#671](https://github.com/eq-solutions/eq-service/pull/671) fix(auth): sign-out now clears the Shell-handoff cookies
+- Merged: eq-shell [#1168](https://github.com/eq-solutions/eq-shell/pull/1168) fix(intake): eq_site_merge_execute missing authenticated gra
+- Merged: eq-shell [#1152](https://github.com/eq-solutions/eq-shell/pull/1152) fix(auth): connect-wallet approval now checks existing docum
+- Merged: eq-shell [#1151](https://github.com/eq-solutions/eq-shell/pull/1151) fix(security): gate the supplier directory read to manager/s
+- Merged: eq-shell [#1150](https://github.com/eq-solutions/eq-shell/pull/1150) fix(auth): mint-cards-otp returns 422 for no-email users, no
+- Merged: eq-shell [#1149](https://github.com/eq-solutions/eq-shell/pull/1149) feat(auth): role-tagged self-join links for Apprentice/Labou
+- Merged: eq-shell [#1146](https://github.com/eq-solutions/eq-shell/pull/1146) feat(mobile): simplified 2-tab nav for supervisors/managers,
+- Merged: eq-shell [#1145](https://github.com/eq-solutions/eq-shell/pull/1145) feat(auth): gate Field JWT on earned access, not just allowe
+- Merged: eq-shell [#1144](https://github.com/eq-solutions/eq-shell/pull/1144) feat(mobile): My Card row in the account sheet for non-field
 
 ## ⚠ Needs you (2)
 
@@ -48,7 +48,7 @@ _…and 90 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 1 | 0d |
+| eq-shell | ? unknown | ? | 0 | — |
 | eq-solves-service | ? unknown | ? | 0 | — |
 | eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ? unknown | ? | 0 | — |
@@ -72,6 +72,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-01 | eq-shell | [#1168](https://github.com/eq-solutions/eq-shell/pull/1168) fix(intake): eq_site_merge_execute missing authenticated grant |
 | 2026-08-01 | eq-shell | [#1167](https://github.com/eq-solutions/eq-shell/pull/1167) chore(intake): re-vendor eq-schemas package.json — closes ajv Dep |
 | 2026-08-01 | eq-shell | [#1166](https://github.com/eq-solutions/eq-shell/pull/1166) fix(security): session revocation fails closed on a DB lookup err |
 | 2026-08-01 | eq-shell | [#1165](https://github.com/eq-solutions/eq-shell/pull/1165) fix(security): quote-email gate, iframe sandbox docs, real tsc in |
@@ -86,13 +87,11 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-01 | eq-shell | [#1156](https://github.com/eq-solutions/eq-shell/pull/1156) Re-vendor eq-intake/eq-platform to 27bc7b5 |
 | 2026-08-01 | eq-shell | [#1154](https://github.com/eq-solutions/eq-shell/pull/1154) feat(security): audit-log every permission denial via requirePerm |
 | 2026-08-01 | eq-shell | [#1155](https://github.com/eq-solutions/eq-shell/pull/1155) feat(auth): close 3 remaining ONE LOGIN onboarding gaps |
-| 2026-08-01 | eq-shell | [#1153](https://github.com/eq-solutions/eq-shell/pull/1153) security: CSP hardening, permission audit-trail logging, close 2  |
 _Showing 15 of 132 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
 - **Photo → AI Risk Suggestions** (the secondary feature from the original review — supervisor takes site photos, AI suggests hazards, human confirms which to add) — deliberately not started. Needs its own go/no-go before scoping further: real per-call API spend, a new Netlify Function (would clone `eq-agent.js`'s existing auth/rate-limit shape), and site photos leaving the tenant boundary to Anthropic's API. _(added 2026-08-01)_
-- **eq-shell's last remaining alert (`ajv`) is taking longer than the others to clear from GitHub's own list**, even though the underlying fix already shipped in the same PR that closed the other two — everything about the actual installed code says this one's just GitHub's own scanner catching up, not a real gap, but it was still showing open as of this write-up. Worth a look if it's still open next time someone checks. _(added 2026-08-01)_
 - **eq-cards / eq-design-tokens / sks-charters / eq-website**: alerts just switched on, the very first scan came back clean on all 4 — worth a second look in a day or two in case that first scan didn't fully finish rather than assuming it's actually clean. _(added 2026-08-01)_
 - **The gap that let eq-shell's fix quietly get undone (copy-in process only grabs part of the files) is still there structurally** — it'll happen again on the next routine copy-in unless the process itself gets fixed, not just patched around this one time. _(added 2026-08-01)_
 - **eq-receipts' react-router move hasn't been clicked through live** — the build is clean and Netlify's own preview built it successfully, but nobody has actually navigated the real app (Dashboard → Review → Verify, sidebar links) since the change. Worth a quick manual pass. _(added 2026-08-01)_
@@ -101,7 +100,8 @@ _Showing 15 of 132 · full record in [sessions/](sessions/)_
 - No resource- or relationship-level authorization — permission checks are role-based only, nothing checks whether a user actually owns/manages the specific record being acted on. Architectural, needs its own design pass _(added 2026-08-01)_
 - No down-migration/rollback path for schema migrations — a schema-governance policy decision, not a code fix _(added 2026-08-01)_
 - No `.changeset`/versioned release process for the internal `@eq-solutions/*` packages — lives in 4 other repos (eq-roles/eq-ui/tokens/contracts), not eq-shell _(added 2026-08-01)_
-_…and 357 more · [eq/pending.md](eq/pending.md)_
+- **The real fix is a genuine login-system change, not a quick patch** — it means changing what goes on every login token across the whole app, which is exactly the kind of change that needs a proper look before it ships, not a same-session follow-on. Recommended: hold this until there's an actual reason to use either mechanism (someone needs an individual grant, or a specific block on a screen), rather than fixing a currently-theoretical gap by touching how every single person logs in. _(added 2026-08-01)_
+_…and 356 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -123,7 +123,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 2913 | 474 | 77 | 12 |
+| [EQ](eq/pending.md) | 2911 | 473 | 74 | 12 |
 | [SKS](sks/pending.md) | 424 | 83 | 5 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 402 | 37 | 5 | 1 |
@@ -144,4 +144,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-01 03:38 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-01 03:48 UTC._
