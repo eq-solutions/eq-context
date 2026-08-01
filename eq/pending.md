@@ -34,12 +34,15 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] Confirmed a 4th flagged error was already fixed by an earlier merged change before this session started — the one reported case happened just before that fix went live. Marked resolved, no code change needed.
 - [x] eq-shell [PR #1174](https://github.com/eq-solutions/eq-shell/pull/1174) — merged to main, live via Netlify's auto-deploy.
 
+- [x] **Both flagged duplicate-identity alerts investigated and fixed live** — turned out to be more than bookkeeping. One (Zemi Asri) was a real bug: his staff record had been silently repointed to a brand-new, completely empty account instead of his real, actively-used one — repointed it back and retired the empty one. The other (Collin Toohey) was a harmless empty leftover from a signup attempt that never went anywhere — his real account was never affected. Both fixed directly in the database, logged for the record, and the alerts cleared.
+
 **Deferred:**
 - [ ] **A rare licence-photo-scanning failure needs a credential check, not a code fix.** Traced to a security key eq-shell uses to talk to another system possibly being out of date. Notably, this is the *second* time this exact symptom (401 on licence-photo scanning) has shown up — 2026-07-23's version (task_d94af51d) was a stale deploy, this one looks like a different cause. Needs you to confirm/refresh the key rather than guess. _(added 2026-08-02)_
-- [ ] **Two new automated data-quality alerts need an operator decision, not a code fix**: one worker identity looks like a duplicate of an existing one, and one Shell account looks like a duplicate of another. Both alerts already include the worker/account IDs involved — someone needs to decide what to do with each, then the alert clears on its own. _(added 2026-08-02)_
+- [ ] **Found the likely root cause behind both duplicate-identity bugs above: phone numbers are stored in inconsistent formats across two systems** (e.g. `+61439109013` in one place, `0439109013` or `61408164924` in another, for the same person). Confirmed in 3 separate records. Whatever matches people up by phone number during signup/linking probably fails silently when the formats don't match, creating a stray empty account instead of recognizing the existing person — this will keep recurring until someone normalizes phone numbers before comparing them. Needs its own investigation session to find the exact code path and fix it at the source, not just clean up after it each time. _(added 2026-08-02)_
 
 ### Notes (added 2026-08-02)
 - This is the second time `ocr-licence`'s server-to-server trust check has broken with a 401 for two unrelated reasons in two weeks — worth a look at whether the trust mechanism itself is fragile by design, next time someone's already in that code.
+- Zemi Asri's fix used the exact same account (his real, active one) that an earlier session (2026-07-30, staff contact provenance lock) had already flagged as "still needs a fresh edit to actually update" — that earlier note and today's bug are likely the same underlying phone-format issue surfacing twice.
 
 ---
 
