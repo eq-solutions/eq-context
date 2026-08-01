@@ -14,6 +14,17 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-solves-service: two small fixes from a screenshot — bigger upload limit, report cover kept its branding (2026-08-02)
+*You sent a screenshot of a Media Library upload getting blocked over 2MB, then asked about a generated report where uploading a site photo made the blue branded band disappear instead of just adding the photo underneath it.*
+
+- [x] **Media Library uploads now allow up to 5MB, not 2MB** — site photos like the one in your screenshot regularly land in the 2-3MB range. eq-service [PR #678](https://github.com/eq-solutions/eq-service/pull/678), merged.
+- [x] **PM Asset Report cover: the branded blue band with your logo now always shows, and the site photo (when there is one) sits underneath it instead of replacing it.** eq-service [PR #677](https://github.com/eq-solutions/eq-service/pull/677), merged.
+
+**Deferred:**
+- [ ] Royce to spot-check a generated PM Asset Report live for a site that has a photo on file — confirm the band + photo layout looks right. _(added 2026-08-02)_
+
+---
+
 ## eq-shell: Sentry sweep — fixed 3 real bugs, flagged 2 needing your call (2026-08-02)
 *Asked to fix all current Sentry errors. Triaged all 8 unresolved eq-shell issues before touching anything — 3 turned out to be data-quality alerts firing correctly on real data (not bugs), and 1 was already fixed by an earlier merged PR.*
 
