@@ -35,7 +35,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ## eq-shell: cross-dimension security/architecture audit turned into a shipped sprint — CSP, permission-denial audit logging, react-router v8, full Dependabot close-out (2026-08-01)
 
 - [ ] `quote-email.ts` has no permission gate — needs a decision on which perm key should cover it _(added 2026-08-01)_
-- [ ] `retention-purge.ts`'s live account-deletion path relies solely on Netlify's platform-level scheduled-function-invocation restriction, no app-level guard behind it _(added 2026-08-01)_
 - [ ] `TENANT_ROUTING_MASTER_KEY` rotation still outstanding — same single-key-no-rotation class as the `EQ_SECRET_SALT` item below _(added 2026-08-01)_
 - [ ] Signing out of Shell doesn't propagate to the embedded Field/Service/Cards iframe sessions _(added 2026-08-01)_
 - [ ] Session revocation gap: cookies minted before the `jti` field existed skip the revocation check entirely, and a revocation-check DB error fails open _(added 2026-08-01)_
