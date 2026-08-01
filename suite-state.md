@@ -60,8 +60,7 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-01)
 
-**eq-field:**
-- #618 v3.5.425 — Dashboard: map pins cluster instead of overlapping
+_No open PRs_
 
 ---
 
