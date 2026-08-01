@@ -1,13 +1,24 @@
 ---
 title: Changelog — EQ Solves Field
 owner: Royce Milmlow
-last_updated: 2026-07-31
+last_updated: 2026-08-01
 scope: Append-only history of changes to the EQ Solves Field product. Canonical — eq-field.md was merged into this file 2026-07-19, don't split again.
 read_priority: reference
 status: live
 ---
 
 # Changelog — EQ Solves Field
+
+## [2026-08-01] Safety Completeness Checker: Prestart + Toolbox (MERGED, v3.5.405, #597)
+- Extends the Site Audit completeness banner below to Prestart and Toolbox. Prestart: when any High-Risk Construction Work category is ticked, flags if no photos are attached or no hazards are noted — scoped to HRCW selection so a routine prestart with no HRCW ticked is never flagged for a photo it never needed. Toolbox: flags a blank "Key safety message" once a topic is entered — the one field the form's own copy already frames as the point of the talk.
+- Same soft-gate UX throughout: yellow banner + "Go fix" (scrolls + focuses the field), never blocks Save Draft, Submit proceeds on a "Submit anyway?" confirm rather than hard-blocking. New shared helpers (`renderGapsBanner`/`gapsGoFix`/`confirmSubmitWithGaps`) added to `site-reports-shared.js` so Diary/Weekly can adopt the same pattern later without re-deriving it.
+- Verified via an isolated harness loading the real, unmodified `site-reports-shared.js`/`site-reports.js`/`toolbox.js` (21/21 assertions) — full app boot wasn't reachable in this sandbox.
+- Rebased twice mid-build as `main` moved (the loading-perf bundling below, then a Dashboard-map fix) — confirmed `site-reports*.js`/`toolbox.js` are lazy-loaded, out of scope for the bundling, before rebasing; only version-stamp files conflicted. Re-stamped v3.5.402 → v3.5.405.
+
+## [2026-08-01] Safety Completeness Checker: Site Audit (MERGED, v3.5.401, #594)
+- A non-conformance ("N") checklist response on a Site Audit could previously be submitted with no corrective action or responsible person recorded, even though both fields already exist per item. Soft yellow banner now lists any non-conformance missing that detail, with a "Go fix" button per item (scrolls to it, focuses the field). Never blocks Save Draft; Submit still proceeds — if gaps remain, a "Submit anyway?" confirm replaces the previous zero-friction submit.
+- First piece of a broader "Safety Completeness Checker" feature Royce asked reviewed then built — architecture call was a pure client-side soft-gate (no vision-model call, no edge function) since these forms are offline-first by design; scoped to Site Audit first because it already had structured per-item data (`action_required`/`responsible`) sitting unenforced, the highest-leverage zero-new-schema win. Prestart/Toolbox followed same day (#597, above). Photo → AI Risk Suggestions (the secondary feature from the original review) deliberately not started — needs its own go/no-go, see `eq/pending.md`.
+- Verified via an isolated harness loading the real, unmodified `audits.js` (12/12 assertions).
 
 ## [2026-08-01] Loading perf: 17 always-loaded head scripts hand-merged into 6 bundles (MERGED, v3.5.403, #596)
 - Royce: "talk to me about other loading performance improvements" → `/decide` → build. v3.5.344 (2026-07-11) already fixed the parser-blocking problem (defer on 31/32 head scripts, ~5.4s→~2.4s to domInteractive); the gap that survived was cold-cache network overhead — 30 separate deferred round trips on a fresh cache (e.g. right after a deploy, on-site over 4G) vs 1.6s once cached. Field ships several times a day, so "fresh cache" is closer to "the first open after each release" than a rare edge case.

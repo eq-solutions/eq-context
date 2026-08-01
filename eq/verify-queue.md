@@ -16,6 +16,18 @@ a bug rather than just deleting the line.
 
 ---
 
+**From:** eq-field: Safety Completeness Checker — Site Audit (2026-08-01)
+
+- [ ] **Royce to click through live**: Site Audits → open/start an audit → mark any item "N" → confirm the yellow banner appears and "Go fix" scrolls/focuses correctly → fill in action + responsible → confirm the banner clears → try Submit with a gap still open → confirm the "Submit anyway?" prompt appears and Cancel keeps it in draft. Verified via an isolated JS harness only (12/12 assertions), not clicked through live — no test login in this sandbox. eq-field [PR #594](https://github.com/eq-solutions/eq-field/pull/594), merged, live v3.5.401. _(added 2026-08-01)_
+
+---
+
+**From:** eq-field: Safety Completeness Checker — Prestart/Toolbox (2026-08-01)
+
+- [ ] **Royce to click through live**: Prestart — tick a High-Risk Construction Work category with no photo/hazards, confirm the banner + Go-fix work, fill both in and confirm it clears. Toolbox — enter a topic with no key safety message, confirm the banner appears and clears once filled. Try Submit on each with a gap still open and confirm the "Submit anyway?" prompt appears. Verified via an isolated JS harness only (21/21 assertions), not clicked through live — no test login in this sandbox. eq-field [PR #597](https://github.com/eq-solutions/eq-field/pull/597), merged, live v3.5.405. _(added 2026-08-01)_
+
+---
+
 **From:** eq-intake: Reconcile silently skipped phone/ABN cleanup for customer and contact imports (2026-07-29)
 
 - [ ] **Royce to reconcile a customer CSV with a messy phone number/ABN and confirm it now gets cleaned up** — verified in code + typecheck, not yet clicked through live. _(added 2026-07-29)_
