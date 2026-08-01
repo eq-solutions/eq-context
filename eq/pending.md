@@ -14,6 +14,24 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: cross-dimension security/architecture audit turned into a shipped sprint — CSP, permission-denial audit logging, react-router v8, full Dependabot close-out (2026-08-01)
+
+- [ ] `quote-email.ts` has no permission gate — needs a decision on which perm key should cover it _(added 2026-08-01)_
+- [ ] `retention-purge.ts`'s live account-deletion path relies solely on Netlify's platform-level scheduled-function-invocation restriction, no app-level guard behind it _(added 2026-08-01)_
+- [ ] `TENANT_ROUTING_MASTER_KEY` rotation still outstanding — same single-key-no-rotation class as the `EQ_SECRET_SALT` item below _(added 2026-08-01)_
+- [ ] Signing out of Shell doesn't propagate to the embedded Field/Service/Cards iframe sessions _(added 2026-08-01)_
+- [ ] Session revocation gap: cookies minted before the `jti` field existed skip the revocation check entirely, and a revocation-check DB error fails open _(added 2026-08-01)_
+- [ ] No build cache (Turborepo or similar) — every CI run rebuilds the full workspace from scratch _(added 2026-08-01)_
+- [ ] CSP still allows `style-src 'unsafe-inline'` — removing it needs a full browser-tested pass, not a blind strip _(added 2026-08-01)_
+- [ ] `is_platform_admin` is an unscoped bypass with no step-up/MFA gate on sensitive actions _(added 2026-08-01)_
+- [ ] No resource- or relationship-level authorization — permission checks are role-based only, nothing checks whether a user actually owns/manages the specific record being acted on _(added 2026-08-01)_
+- [ ] Schema drift gate only runs every 3 hours — an out-of-band change can sit undetected that long _(added 2026-08-01)_
+- [ ] No down-migration/rollback path for schema migrations _(added 2026-08-01)_
+- [ ] Field/Service/Cards iframes combine `allow-same-origin` + `allow-scripts` in their sandbox attribute — should be documented as an accepted risk rather than left implicit _(added 2026-08-01)_
+- [ ] No `.changeset`/versioned release process for the internal `@eq-solutions/*` packages _(added 2026-08-01)_
+
+---
+
 ## eq-shell: every permission denial now leaves a trace in the audit log (PR #1154, merged 2026-08-01)
 *Asked to extend the 12-file "who got denied what" audit-logging start to the ~40 remaining files still on the old silent-403 pattern. Verified against the live repo first (Rule 0.5) and found the 12-file start didn't actually exist yet on `main` — built the whole thing from scratch, only to have a concurrent session merge the real 12-file version mid-session. Reconciled rather than shipping a duplicate.*
 
