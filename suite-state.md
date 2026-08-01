@@ -60,8 +60,11 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-01)
 
+**eq-field:**
+- #599 v3.5.405 — Fix: Dashboard map stale-response race, 'opens correct then defaults back'
+
 **eq-shell:**
-- #1160 fix(auth): capture email during role-tagged self-join
+- #1161 fix(intake): duplicate React instance breaking /intake in production
 
 ---
 
@@ -80,7 +83,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 205 (latest: 0199) applied
+**Migrations:** eq-service has 206 (latest: 0200) applied
 
 ---
 
