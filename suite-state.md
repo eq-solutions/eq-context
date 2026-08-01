@@ -63,9 +63,6 @@ _If this file is >48h old, the cron is broken._
 **eq-field:**
 - #589 v3.5.396 — Safety nav group no longer stays open on other pages
 
-**eq-service:**
-- #663 feat(admin/media): customer-logo uploads now actually apply to the customer record
-
 **eq-solves-intake:**
 - #98 fix(intake): non-managers can preview a site merge; Unsure gets a note
 
