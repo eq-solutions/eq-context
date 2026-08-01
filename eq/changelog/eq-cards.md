@@ -1,13 +1,17 @@
 ---
 title: EQ Cards — Changelog
 owner: Royce Milmlow
-last_updated: 2026-07-31
+last_updated: 2026-08-01
 scope: EQ Cards append-only history. NOTE — duplicates eq/changelog/cards.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # EQ Cards — Changelog
+
+## 2026-08-01
+- **PR #192 (MERGED) — org-required-credential capture is now photo-first.** Royce flagged live that tapping a missing-credential chip in `RequiredByOrgStrip` dropped straight into manual data entry — most workers have the physical card in hand. `_AddChip` now opens a sheet offering "Take a photo" (camera → existing OCR pipeline) as the primary CTA, "Type it in instead" as a secondary fallback link, mirroring the photo-first pattern already used elsewhere (`licences_list_screen.dart`'s `_showAddSheet`). `runScanAndOcrFlow` gained an optional `typeCode` param so the org's known credential type threads through to the resulting `LicencePrefill` regardless of what OCR reads off the card. No Flutter toolchain available to build-verify; reviewed by hand against every referenced class/field. Royce to click-through live to confirm.
+- **PR #193 (MERGED, no-op) — migration `0108_org_join_notify_recipients.sql` committed to the ledger.** File existed untracked in a shared local checkout; verified live against jvkn (table + function match byte-for-byte) and against `eq-context/sessions/2026-07-27.md` before concluding it was real, already-applied, Royce-decided work from 2026-07-27 — not stale-branch clutter. Committed as-is on its own branch, separate from PR #192. No live behaviour changed.
 
 ## 2026-07-31
 - **PR #191 (MERGED squash `dffe094`) — restored the `authenticated` EXECUTE grant on `eq_cards_auto_provision()`, fixing a live onboarding break.** Found via a full Sentry triage across all EQ apps: real sign-ups were landing on `/auth/not-provisioned` and hitting a hard `permission denied` (42501) trying to provision their personal wallet tenant (EQ-CARDS-1C, 2 users blocked over ~9 hours). Live grants check on jvkn confirmed `authenticated` had no EXECUTE, contradicting the function's own first migration (`0028`), which granted it from day one — nothing later in eq-cards' own migration history revoked it, so this was almost certainly collateral from a broader EXECUTE-revoke security pass elsewhere on the same project, not an eq-cards regression. Restored live via Supabase MCP first (Royce's explicit go, verified via `has_function_privilege`), then recorded as migration `0113` (renumbered from `0112` after CI's Migration hygiene check caught a real collision with PR #190's same-numbered migration, merged to `main` between branch creation and CI run).

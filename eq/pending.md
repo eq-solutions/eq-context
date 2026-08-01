@@ -14,6 +14,18 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-cards: credential-capture screen made photo-first; a leftover production migration reconciled into history (2026-08-01)
+*Royce flagged during live testing that adding a ticket/licence dropped straight into manual typing instead of offering the camera first — most workers have the physical card in hand. Fixed, then separately found and cleaned up two pieces of repo housekeeping noticed along the way.*
+
+- [x] **"Add your ticket" now leads with the camera** — tapping a missing-credential chip opens a sheet with "Take a photo" as the primary button (camera capture, auto-read via OCR) and "Type it in instead" as a small fallback link, not the default path. eq-cards [PR #192](https://github.com/eq-solutions/eq-cards/pull/192) merged, live.
+- [x] **Found a database change that was already running in production but never saved into the app's own history** — checked it against the live database directly instead of assuming it was stale leftover clutter; it matched exactly, byte-for-byte, and traced back to a decision Royce made on 2026-07-27. Committed it so the record is accurate. eq-cards [PR #193](https://github.com/eq-solutions/eq-cards/pull/193) merged — paperwork only, no live behaviour changed.
+- [x] Cleaned up stray spreadsheet/lock files left in the working folder from earlier work.
+
+**Deferred:**
+- [ ] **Royce to click through live on a real device** — confirm the "take a photo" sheet feels right end to end (camera opens, OCR reads the card, fallback link works). _(added 2026-08-01)_
+
+---
+
 ## eq-field: Safety Completeness Checker — Site Audit, then Prestart/Toolbox, both shipped (v3.5.401 + v3.5.405, PR #594 + #597, merged 2026-08-01)
 
 - [ ] **Photo → AI Risk Suggestions** (the secondary feature from the original review — supervisor takes site photos, AI suggests hazards, human confirms which to add) — deliberately not started. Needs its own go/no-go before scoping further: real per-call API spend, a new Netlify Function (would clone `eq-agent.js`'s existing auth/rate-limit shape), and site photos leaving the tenant boundary to Anthropic's API. _(added 2026-08-01)_
