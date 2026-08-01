@@ -14,12 +14,14 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## eq-shell: supplier directory was only hidden by the UI, not actually enforced — closed, live on both tenants (2026-08-01)
-*Royce asked directly whether Apprentice/Labour Hire/Subcontractor access to the Suppliers directory was actually wired in server-side, not just hidden in the app. Checked all three layers live rather than assuming: writes and login/password were correctly gated server-side, but the general directory (name/category/contact/email/phone/website/notes) had no role check in the database function itself — only the app's own UI hid the page from those roles. A direct call to the underlying function, bypassing the app entirely, would have handed back the full non-credential directory to any signed-in staff member regardless of role.*
+## eq-shell: checked the rest of the Suppliers permission keys — found a suite-wide gap in how "extra access grants" and "explicit denials" actually reach the database (2026-08-01)
+*Follow-up to the Suppliers directory fix above (PR #1151) — asked to check the other two Suppliers permission keys too. Both check out clean: the "who can edit/delete" gate covers all three write actions in one place, and the "who can see login/passwords" gate is unchanged and correct. Chasing one loose thread on the read gate — the exception this database check makes for someone individually granted extra access — surfaced something much bigger than Suppliers.*
 
-- [x] **Database function now checks the role itself**, not just the app screen — mirrors the exact same check already used for login/password, applied to the whole directory this time. Nobody who could already see the page loses access; nobody who couldn't see the page can get the data by any other route either now. eq-shell [PR #1151](https://github.com/eq-solutions/eq-shell/pull/1151), merged.
-- [x] **Confirmed live on both companies' systems** (SKS and EQ) via direct database check — not just trusting the merge. Migration dispatched through the standard governed pipeline, not a manual edit.
-- [x] **Found and corrected a stale note along the way**: the original fix's own write-up claimed this only applied to SKS — checked live and found EQ has the identical function too, so the new fix went to both, not just one.
+- [x] **Traced why "individually granted access" wouldn't currently work for Suppliers, and it's not a Suppliers problem** — the piece of the login token that's supposed to carry an individual grant or an explicit block is never actually written onto the token, anywhere in the app. Checked all 15+ places a login token gets issued (every login method, every company switch) — none of them include it. The database-level checks that were built expecting to read it (this one and the original login/password one from a week ago) simply never see it.
+- [x] **Checked how much this matters today: not at all, yet.** Nobody has ever actually been placed in one of the "extra access" groups this depends on — zero, ever, across the whole platform. The "explicit block" side is real and in use (7 real rules exist, including one blocking an apprentice from a screen they shouldn't see) — but none of those 7 touch Suppliers, so nothing is silently broken for anyone today.
+
+**Deferred:**
+- [ ] **The real fix is a genuine login-system change, not a quick patch** — it means changing what goes on every login token across the whole app, which is exactly the kind of change that needs a proper look before it ships, not a same-session follow-on. Recommended: hold this until there's an actual reason to use either mechanism (someone needs an individual grant, or a specific block on a screen), rather than fixing a currently-theoretical gap by touching how every single person logs in. _(added 2026-08-01)_
 
 ---
 

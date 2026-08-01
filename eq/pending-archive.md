@@ -16,6 +16,15 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-shell: supplier directory was only hidden by the UI, not actually enforced — closed, live on both tenants (2026-08-01) (fully closed, no open items remain)
+*Royce asked directly whether Apprentice/Labour Hire/Subcontractor access to the Suppliers directory was actually wired in server-side, not just hidden in the app. Checked all three layers live rather than assuming: writes and login/password were correctly gated server-side, but the general directory (name/category/contact/email/phone/website/notes) had no role check in the database function itself — only the app's own UI hid the page from those roles. A direct call to the underlying function, bypassing the app entirely, would have handed back the full non-credential directory to any signed-in staff member regardless of role.*
+
+- [x] **Database function now checks the role itself**, not just the app screen — mirrors the exact same check already used for login/password, applied to the whole directory this time. Nobody who could already see the page loses access; nobody who couldn't see the page can get the data by any other route either now. eq-shell [PR #1151](https://github.com/eq-solutions/eq-shell/pull/1151), merged.
+- [x] **Confirmed live on both companies' systems** (SKS and EQ) via direct database check — not just trusting the merge. Migration dispatched through the standard governed pipeline, not a manual edit.
+- [x] **Found and corrected a stale note along the way**: the original fix's own write-up claimed this only applied to SKS — checked live and found EQ has the identical function too, so the new fix went to both, not just one.
+
+---
+
 ## eq-cards + eq-shell: onboarding block fixed, two false "gaps" corrected before building, one real gap closed (2026-07-31 → 2026-08-01) (fully closed, no open items remain)
 *Session started as a check-in on the "one-login" Cards/Field/Shell initiative — turned out already fully shipped. Pivoted into a full Sentry triage across all EQ apps, which surfaced a real onboarding-blocking bug in eq-cards (fixed same session). Two follow-on "gaps" that looked real turned out to already be handled — caught before either was built, not after.*
 - [x] **`eq_cards_auto_provision` was missing its `authenticated` database permission live** — real Cards sign-ups landed on `/auth/not-provisioned` with a hard permission-denied (Sentry EQ-CARDS-1C, 2 users blocked ~9h). A regression, not the original design — restored live, recorded as eq-cards migration `0113`. eq-cards [PR #191](https://github.com/eq-solutions/eq-cards/pull/191), merged. **Re-checked 2026-08-01: zero recurrence since the fix. Resolved in Sentry.**
