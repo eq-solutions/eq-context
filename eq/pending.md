@@ -113,14 +113,22 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ## eq-shell: cross-dimension security/architecture audit turned into a shipped sprint — CSP, permission-denial audit logging, react-router v8, full Dependabot close-out (2026-08-01)
 
-- [ ] `TENANT_ROUTING_MASTER_KEY` rotation still outstanding — same single-key-no-rotation class as the `EQ_SECRET_SALT` item below _(added 2026-08-01)_
-- [ ] Signing out of Shell doesn't propagate to the embedded Field/Service/Cards iframe sessions — needs Royce's go, it's a session-lifecycle change _(added 2026-08-01)_
-- [ ] Session revocation gap: cookies minted before the `jti` field existed skip the revocation check entirely, and a revocation-check DB error fails open — needs Royce's go on fail-open vs fail-closed _(added 2026-08-01)_
+- [ ] `TENANT_ROUTING_MASTER_KEY` rotation still outstanding — same single-key-no-rotation class as the `EQ_SECRET_SALT` item below. Royce: leave deferred (reconfirmed 2026-08-01, not silence — no change wanted) _(added 2026-08-01)_
+- [ ] Signing out of Shell doesn't propagate to the embedded Field/Service/Cards iframe sessions — **investigated 2026-08-01**: confirmed real for all three (Field 7-day localStorage token, Cards indefinite auto-refreshing Supabase Auth session, Service 4h self-renewing cookie), none re-check Shell after handoff. The narrower same-repo bug this surfaced — Service's own Sign Out button not clearing its own `eq_service_jwt` cookie — is fixed (eq-solves-service [PR #671](https://github.com/eq-solutions/eq-service/pull/671), merged). The larger cross-app propagation (Shell broadcasting sign-out, each app listening) still needs Royce's scope/priority call — touches 4 repos, not a single-session build _(added 2026-08-01)_
 - [ ] CSP still allows `style-src 'unsafe-inline'` — removing it is a multi-day styling refactor (React's `style` prop is itself inline styling), not a strip-and-test; needs its own session _(added 2026-08-01)_
-- [ ] `is_platform_admin` is an unscoped bypass with no step-up/MFA gate on sensitive actions — a new auth feature, needs Royce's go before building _(added 2026-08-01)_
+- [ ] `is_platform_admin` is an unscoped bypass with no step-up/MFA gate on sensitive actions — a new auth feature. Royce: scope it as its own session, no build yet (reconfirmed 2026-08-01) _(added 2026-08-01)_
 - [ ] No resource- or relationship-level authorization — permission checks are role-based only, nothing checks whether a user actually owns/manages the specific record being acted on. Architectural, needs its own design pass _(added 2026-08-01)_
 - [ ] No down-migration/rollback path for schema migrations — a schema-governance policy decision, not a code fix _(added 2026-08-01)_
 - [ ] No `.changeset`/versioned release process for the internal `@eq-solutions/*` packages — lives in 4 other repos (eq-roles/eq-ui/tokens/contracts), not eq-shell _(added 2026-08-01)_
+
+---
+
+## eq-shell: UI/UX audit — grounded polish batch shipped, two items need Royce's call (2026-08-01)
+
+Toast consolidation, dead-code cleanup, and honest-disable fixes shipped in eq-shell [PR #1172](https://github.com/eq-solutions/eq-shell/pull/1172) (merged). Two findings deliberately not resolved:
+
+- [ ] **`CoreHome.tsx` is a fully-built, unrouted home-page prototype** ("EQ Intelligence" decision-queue, canonical-graph visualization) sitting dead in the tree, running on hardcoded fake data. Never imported anywhere. Needs Royce's call: revive as the real home page, or delete — not something to guess at _(added 2026-08-01)_
+- [ ] Stale SKS brand color `#1F335C` (should be `#203060`, corrected elsewhere 2026-07-30) hardcoded 13× in `src/portal/QuotePortal.tsx` — the customer-facing quote portal was missed in that earlier sweep _(added 2026-08-01)_
 
 ---
 
