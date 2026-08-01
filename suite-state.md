@@ -61,9 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-01)
 
 **eq-shell:**
-- #1163 fix(security): correct a mistaken audit finding on retention-purge.ts, remove dead code
-- #1162 chore(intake): re-vendor eq-platform root config — closes 3 residual Dependabot alerts
-- #1161 fix(intake): duplicate React instance breaking /intake in production
+- #1164 fix(auth): recovery-email nudge never cleared; show/hide toggle on Set PIN
 
 ---
 
