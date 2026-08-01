@@ -15,18 +15,8 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ---
 
 ## eq-field: Safety Completeness Checker — Site Audit, then Prestart/Toolbox, both shipped (v3.5.401 + v3.5.405, PR #594 + #597, merged 2026-08-01)
-*Royce asked for a review of a proposed "Safety Completeness Checker" AI feature, then to build it — starting with the highest-leverage, lowest-risk piece first. Recommended a pure client-side soft-gate for v1 (no AI/vision model call, no edge function — the offline-first architecture these forms already depend on rules a network round-trip out), scoped to Site Audit first since it already had structured per-item data (`action_required`/`responsible`) sitting completely unenforced.*
 
-- [x] **Site Audit (`audits.js`)** — a non-conformance ("N") checklist response could be submitted with no corrective action or responsible person recorded, even though both fields already exist per item. Soft yellow banner now lists any non-conformance missing that detail, "Go fix" scrolls + focuses the field, Submit proceeds on a "Submit anyway?" confirm rather than a hard block. eq-field [PR #594](https://github.com/eq-solutions/eq-field/pull/594), merged, live v3.5.401.
-- [x] **Prestart + Toolbox (`site-reports.js` / `toolbox.js`)** — extended the same pattern. Prestart: flags missing photos/hazards, but only once a High-Risk Construction Work category is ticked, so a routine prestart is never nagged for a photo it never needed. Toolbox: flags a blank "Key safety message" once a topic is entered — the one field the form's own copy already frames as the point of the talk. New shared helpers (`renderGapsBanner`/`gapsGoFix`/`confirmSubmitWithGaps`) added to `site-reports-shared.js` so Diary/Weekly can reuse the same pattern later without re-deriving it. eq-field [PR #597](https://github.com/eq-solutions/eq-field/pull/597), merged, live v3.5.405.
-- [x] Both verified via isolated harnesses loading the real, unmodified source files directly (no app boot) — 33 assertions total across the two PRs, zero console errors. Full app boot wasn't reachable in this sandbox (no outbound network to canonical Supabase from the browser tool, and PIN entry is off-limits regardless of sandbox access).
-- [x] Two same-day version collisions hit mid-build on the second PR — `main` moved twice more while it was in flight, including a large loading-perf refactor (#596, 17 head scripts hand-merged into 6 bundle files). Confirmed `site-reports*.js`/`toolbox.js` are lazy-loaded tab scripts, out of scope for that bundling, before rebasing — no functional collision, only the version-stamp files (`app-state.js`/`sw.js`/`index.html`) conflicted. Rebased twice, re-stamped v3.5.402 → v3.5.405.
-- [x] `gh pr merge --delete-branch` hit the same local-worktree conflict other sessions logged today (`'main' already checked out in a sibling worktree`) on the second PR — confirmed the merge had actually succeeded via `gh pr view --json state,mergedAt` before treating it as done, deleted the remote branch manually.
-
-**Deferred:**
 - [ ] **Photo → AI Risk Suggestions** (the secondary feature from the original review — supervisor takes site photos, AI suggests hazards, human confirms which to add) — deliberately not started. Needs its own go/no-go before scoping further: real per-call API spend, a new Netlify Function (would clone `eq-agent.js`'s existing auth/rate-limit shape), and site photos leaving the tenant boundary to Anthropic's API. _(added 2026-08-01)_
-
-Live click-through verification for both PRs moved to `eq/verify-queue.md` — nothing left to build here.
 
 ---
 
