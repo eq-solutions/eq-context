@@ -8,19 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-01 13:07 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-01 20:27 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-01 07:36 UTC → 2026-08-01 13:07 UTC)
+## Since last refresh (2026-08-01 13:07 UTC → 2026-08-01 20:27 UTC)
 
-- Merged: eq-shell [#1158](https://github.com/eq-solutions/eq-shell/pull/1158) chore(deps): bump brace-expansion overrides to close 2 CVEs
-- Merged: eq-shell [#1155](https://github.com/eq-solutions/eq-shell/pull/1155) feat(auth): close 3 remaining ONE LOGIN onboarding gaps
-- Merged: eq-shell [#1152](https://github.com/eq-solutions/eq-shell/pull/1152) fix(auth): connect-wallet approval now checks existing docum
-- Merged: eq-shell [#1151](https://github.com/eq-solutions/eq-shell/pull/1151) fix(security): gate the supplier directory read to manager/s
-- Merged: eq-shell [#1150](https://github.com/eq-solutions/eq-shell/pull/1150) fix(auth): mint-cards-otp returns 422 for no-email users, no
-- Merged: eq-shell [#1149](https://github.com/eq-solutions/eq-shell/pull/1149) feat(auth): role-tagged self-join links for Apprentice/Labou
-- Merged: eq-shell [#1146](https://github.com/eq-solutions/eq-shell/pull/1146) feat(mobile): simplified 2-tab nav for supervisors/managers,
-- Merged: eq-shell [#1145](https://github.com/eq-solutions/eq-shell/pull/1145) feat(auth): gate Field JWT on earned access, not just allowe
-- ⚠ Needs you: 2 → 3 (new items)
+- Merged: eq-shell [#1157](https://github.com/eq-solutions/eq-shell/pull/1157) chore(deps): migrate react-router-dom v7 to react-router v8,
+- Merged: eq-shell [#1156](https://github.com/eq-solutions/eq-shell/pull/1156) Re-vendor eq-intake/eq-platform to 27bc7b5
+- Merged: eq-shell [#1154](https://github.com/eq-solutions/eq-shell/pull/1154) feat(security): audit-log every permission denial via requir
+- Merged: eq-shell [#1153](https://github.com/eq-solutions/eq-shell/pull/1153) security: CSP hardening, permission audit-trail logging, clo
+- Merged: eq-shell [#1148](https://github.com/eq-solutions/eq-shell/pull/1148) feat(auth): heads-up toast when the existing 5-min role poll
+- Merged: eq-shell [#1147](https://github.com/eq-solutions/eq-shell/pull/1147) docs: flag the function-grant landmine behind EQ-CARDS-1C
+- Merged: eq-shell [#1144](https://github.com/eq-solutions/eq-shell/pull/1144) feat(mobile): My Card row in the account sheet for non-field
+- Merged: eq-solves-service [#676](https://github.com/eq-solutions/eq-service/pull/676) fix(lint): swap remaining <img> tags to next/image
 
 ## ⚠ Needs you (3)
 
@@ -38,7 +37,7 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **EQ** · **Royce to click through live on a real device** — confirm the "take a photo" sheet feels right end to end (camera opens, OCR reads the card, fallback link works). Note: the code merged this morning but wasn't actually live yet when Royce first tried it — this repo's deploy isn't automatic on merge, and nobody had triggered one. Deployed and confirmed live later the same day. _(added 2026-08-01, updated 2026-08-01)_
 - **EQ** · **Royce to click through live**: sign in on core.eq.solutions and confirm Cards/Field/Service each load past "Authorising…" — needs a real login, which Claude can't do on Royce's behalf. _(added 2026-08-01)_
 - **EQ** · **Royce to click through live**: open Intake as a signed-in user and confirm the page actually renders (not just that the site responds) — needs a real login, which Claude can't do on Royce's behalf. _(added 2026-08-01)_
-- **EQ** · **`CoreHome.tsx` is a fully-built, unrouted home-page prototype** ("EQ Intelligence" decision-queue, canonical-graph visualization) sitting dead in the tree, running on hardcoded fake data. Never imported anywhere. Needs Royce's call: revive as the real home page, or delete — not something to guess at _(added 2026-08-01)_
+- **EQ** · **`CoreHome.tsx` is a fully-built, unrouted home-page prototype** ("EQ Intelligence" decision-queue, canonical-graph visualization) sitting dead in the tree, running on hardcoded fake data. Never imported anywhere. Needs Royce's call: revive as the real home page, or delete — not something to guess at. **Clickable mockup built 2026-08-01** (faithful reproduction of the real component + CSS, published as a Claude artifact) so Royce can evaluate it without reading code — rated 8/10 as a design concept (leads with the decision, not the mechanism — graph is opt-in via "Trace it"), but 3/10 as a build-ready feature: every decision is hardcoded, no backend detection engine exists to actually find these cross-app joins live, and it would be a *third* home-page paradigm alongside `TenantHome`/`WorkerHome` with no resolution on whether it replaces or augments either _(added 2026-08-01)_
 - **EQ** · **Royce to click through live**: sign in as a non-manager, try a manager-only action, confirm a "denied" row actually lands in the audit log. Needs a real login, which Claude can't do on Royce's behalf. _(added 2026-08-01)_
 - **EQ** · **Royce to confirm on Richard's own phone**: the page loads without the error screen, the bottom bar shows Home + Field only, and Service/Ops are reachable via the account menu. _(added 2026-07-31)_
 - **EQ** · **Royce to click through the new paste-import resolve screen live** — built and type/build-checked clean, but not clicked through in a real browser session (no test login available in this environment). Paste a batch with an unmatched asset ID, try linking one and creating another, confirm the resulting check comes out right. _(added 2026-07-31)_
@@ -62,7 +61,7 @@ _…and 90 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 |---------|-------|--------|-----------|
 | eq-shell | [auth-stall: chunk-error](https://eq-solutions.sentry.io/issues/137294044/) | 19 | 2026-08-01 |
 | eq-shell | [Error: Workers never invited to join, past grace period: 44](https://eq-solutions.sentry.io/issues/135740258/) | 12 | 2026-07-31 |
-| eq-field | [Error: no-tenant-id](https://eq-solutions.sentry.io/issues/138007377/) | 10 | 2026-08-01 |
+| eq-field | [Error: no-tenant-id](https://eq-solutions.sentry.io/issues/138007377/) | 11 | 2026-08-01 |
 | eq-solves-service | [UnrecognizedActionError: Server Action "40f8ab2385de590826648056ec7fc02ebdd51eb8](https://eq-solutions.sentry.io/issues/122209933/) | 10 | 2026-08-01 |
 | eq-shell | [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/) | 6 | 2026-07-30 |
 | eq-shell | [Error: Unresolved identity collisions detected on jvkn: 1](https://eq-solutions.sentry.io/issues/136887159/) | 5 | 2026-07-31 |
@@ -103,7 +102,7 @@ _Showing 15 of 133 · full record in [sessions/](sessions/)_
 - `is_platform_admin` is an unscoped bypass with no step-up/MFA gate on sensitive actions — a new auth feature. Royce: scope it as its own session, no build yet (reconfirmed 2026-08-01) _(added 2026-08-01)_
 - No resource- or relationship-level authorization — permission checks are role-based only, nothing checks whether a user actually owns/manages the specific record being acted on. Architectural, needs its own design pass _(added 2026-08-01)_
 - No down-migration/rollback path for schema migrations — a schema-governance policy decision, not a code fix _(added 2026-08-01)_
-_…and 361 more · [eq/pending.md](eq/pending.md)_
+_…and 360 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -125,7 +124,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 2967 | 478 | 89 | 12 |
+| [EQ](eq/pending.md) | 2964 | 477 | 89 | 12 |
 | [SKS](sks/pending.md) | 424 | 83 | 5 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 402 | 37 | 5 | 1 |
@@ -134,11 +133,11 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | Date | Session |
 |------|---------|
+| 2026-08-02 | [Fixed stale SKS brand color in the customer-facing quote portal](sessions/2026-08-02.md) |
 | 2026-08-01 | [Confirmed the "no Supabase connector" finding, then closed a real EQ-tenant roster gap found via a backlog sweep](sessions/2026-08-01.md) |
 | 2026-07-31 | [Quote events now stamp app_source='ops' instead of the retired app name (continuation of 2026-07-30)](sessions/2026-07-31.md) |
 | 2026-07-30 | [`__personal__` tenant "retired" doc claim corrected against live data](sessions/2026-07-30.md) |
 | 2026-07-30 | [guard.js selftest fixed; ~/.claude brought under version control](sessions/2026-07-30-guard-selftest-claude-git.md) |
-| 2026-07-29 | [eq-receipts: fixed a duplicate-detection blind spot, added invoice number as a stronger match](sessions/2026-07-29.md) |
 _[sessions/](sessions/) · 5 shown_
 
 ## Substrate honesty
@@ -146,4 +145,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-01 13:07 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-01 20:27 UTC._

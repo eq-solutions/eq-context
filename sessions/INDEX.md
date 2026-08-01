@@ -1,8 +1,9 @@
 # Session Index
-_79 logs · reverse-chronological · auto-generated_
+_80 logs · reverse-chronological · auto-generated_
 
 | Date | Session |
 |------|---------|
+| 2026-08-02 | [Fixed stale SKS brand color in the customer-facing quote portal](sessions/2026-08-02.md) |
 | 2026-08-01 | [Confirmed the "no Supabase connector" finding, then closed a real EQ-tenant roster gap found via a backlog sweep](sessions/2026-08-01.md) |
 | 2026-07-31 | [Quote events now stamp app_source='ops' instead of the retired app name (continuation of 2026-07-30)](sessions/2026-07-31.md) |
 | 2026-07-30 | [`__personal__` tenant "retired" doc claim corrected against live data](sessions/2026-07-30.md) |
