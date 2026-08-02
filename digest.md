@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-02 00:12 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-02 00:25 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-01 22:31 UTC → 2026-08-02 00:12 UTC)
+## Since last refresh (2026-08-02 00:12 UTC → 2026-08-02 00:25 UTC)
 
-- Merged: eq-shell [#1161](https://github.com/eq-solutions/eq-shell/pull/1161) fix(intake): duplicate React instance breaking /intake in pr
-- Merged: eq-shell [#1159](https://github.com/eq-solutions/eq-shell/pull/1159) chore(intake): re-vendor eq-intake/eq-platform — closes 3 De
-- Merged: eq-shell [#1157](https://github.com/eq-solutions/eq-shell/pull/1157) chore(deps): migrate react-router-dom v7 to react-router v8,
-- Merged: eq-shell [#1156](https://github.com/eq-solutions/eq-shell/pull/1156) Re-vendor eq-intake/eq-platform to 27bc7b5
-- Merged: eq-shell [#1154](https://github.com/eq-solutions/eq-shell/pull/1154) feat(security): audit-log every permission denial via requir
-- Merged: eq-shell [#1153](https://github.com/eq-solutions/eq-shell/pull/1153) security: CSP hardening, permission audit-trail logging, clo
-- Merged: eq-shell [#1148](https://github.com/eq-solutions/eq-shell/pull/1148) feat(auth): heads-up toast when the existing 5-min role poll
-- Merged: eq-solves-service [#680](https://github.com/eq-solutions/eq-service/pull/680) fix(migrations): 0201 view-column-order failure that broke t
+- Merged: eq-shell [#1163](https://github.com/eq-solutions/eq-shell/pull/1163) fix(security): correct a mistaken audit finding on retention
+- Merged: eq-shell [#1162](https://github.com/eq-solutions/eq-shell/pull/1162) chore(intake): re-vendor eq-platform root config — closes 3 
+- Merged: eq-shell [#1160](https://github.com/eq-solutions/eq-shell/pull/1160) fix(auth): capture email during role-tagged self-join
+- Merged: eq-shell [#1158](https://github.com/eq-solutions/eq-shell/pull/1158) chore(deps): bump brace-expansion overrides to close 2 CVEs
+- Merged: eq-shell [#1155](https://github.com/eq-solutions/eq-shell/pull/1155) feat(auth): close 3 remaining ONE LOGIN onboarding gaps
+- Merged: eq-shell [#1152](https://github.com/eq-solutions/eq-shell/pull/1152) fix(auth): connect-wallet approval now checks existing docum
+- Merged: eq-shell [#1151](https://github.com/eq-solutions/eq-shell/pull/1151) fix(security): gate the supplier directory read to manager/s
+- Merged: eq-shell [#1150](https://github.com/eq-solutions/eq-shell/pull/1150) fix(auth): mint-cards-otp returns 422 for no-email users, no
 
 ## ⚠ Needs you (3)
 
@@ -27,10 +27,11 @@ _2026-08-02 00:12 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-9 (P0 — confirmed exposure, same window as SEC-3, possible second exposure 2026-07-27) — A different service_role key (`jvkn`/eq-canonical) was pasted directly into a ch · [security-register.md](ops/security-register.md)
 
-## 🙋 Waiting on you (103)
+## 🙋 Waiting on you (104)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
+- **EQ** · **Royce to check `admin/users/migrate` for SKS against the 44-workers number above** — the invite screen and the 44 are counted two different ways (one by tenant employee record, one by Cards worker record), so they may not match exactly. Worth confirming they're the same gap before assuming the invite screen alone closes it. _(added 2026-08-02)_
 - **EQ** · Royce to spot-check a generated PM Asset Report live for a site that has a photo on file — confirm the band + photo layout looks right. _(added 2026-08-02)_
 - **EQ** · **Royce to click through live**: open New Quote, attach a couple of files before finishing the form, submit, confirm the files show up on the created quote. _(added 2026-08-01)_
 - **EQ** · **Royce to click through live**: open the Duplicate Sites panel as a non-manager and confirm Preview now shows; mark a row Unsure with a note and confirm it saves and displays; confirm a real merge now succeeds end-to-end (Preview → Confirm) now that the permission fix is live. _(added 2026-08-01)_
@@ -42,14 +43,13 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **EQ** · **Royce to click through live**: sign in as a non-manager, try a manager-only action, confirm a "denied" row actually lands in the audit log. Needs a real login, which Claude can't do on Royce's behalf. _(added 2026-08-01)_
 - **EQ** · **Royce to confirm on Richard's own phone**: the page loads without the error screen, the bottom bar shows Home + Field only, and Service/Ops are reachable via the account menu. _(added 2026-07-31)_
 - **EQ** · **Royce to click through the new paste-import resolve screen live** — built and type/build-checked clean, but not clicked through in a real browser session (no test login available in this environment). Paste a batch with an unmatched asset ID, try linking one and creating another, confirm the resulting check comes out right. _(added 2026-07-31)_
-- **EQ** · **Royce to spot-check a live PM Check Report and NSX Test Report from a site with an uploaded photo** — verified via generated samples with a placeholder image, not yet against a real production report. _(added 2026-08-01)_
-_…and 91 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 92 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 1 | 0d |
+| eq-shell | ? unknown | ? | 2 | 0d |
 | eq-solves-service | ? unknown | ? | 0 | — |
 | eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ? unknown | ? | 0 | — |
@@ -59,7 +59,7 @@ _…and 91 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 
 | Project | Error | Events | Last seen |
 |---------|-------|--------|-----------|
-| eq-field | [Error: no-tenant-id](https://eq-solutions.sentry.io/issues/138007377/) | 20 | 2026-08-02 |
+| eq-field | [Error: no-tenant-id](https://eq-solutions.sentry.io/issues/138007377/) | 21 | 2026-08-02 |
 | eq-shell | [auth-stall: chunk-error](https://eq-solutions.sentry.io/issues/137294044/) | 19 | 2026-08-01 |
 | eq-shell | [Error: Workers never invited to join, past grace period: 44](https://eq-solutions.sentry.io/issues/135740258/) | 13 | 2026-08-01 |
 | eq-solves-service | [UnrecognizedActionError: Server Action "40f8ab2385de590826648056ec7fc02ebdd51eb8](https://eq-solutions.sentry.io/issues/122209933/) | 10 | 2026-08-01 |
@@ -73,6 +73,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-02 | eq-solves-service | [#681](https://github.com/eq-solutions/eq-service/pull/681) fix(sites): site supervisor picks from site contacts, not tenant  |
 | 2026-08-02 | eq-field | [#619](https://github.com/eq-solutions/eq-field/pull/619) v3.5.426 — Dashboard: filter row centered, map 20% bigger, Total  |
 | 2026-08-01 | eq-shell | [#1177](https://github.com/eq-solutions/eq-shell/pull/1177) feat(auth): self-join links v2 — approval gate, expiry, all 6 rol |
 | 2026-08-01 | eq-shell | [#1176](https://github.com/eq-solutions/eq-shell/pull/1176) fix(intake): pnpm/action-setup can't auto-detect version with a c |
@@ -87,14 +88,12 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-01 | eq-shell | [#1167](https://github.com/eq-solutions/eq-shell/pull/1167) chore(intake): re-vendor eq-schemas package.json — closes ajv Dep |
 | 2026-08-01 | eq-shell | [#1166](https://github.com/eq-solutions/eq-shell/pull/1166) fix(security): session revocation fails closed on a DB lookup err |
 | 2026-08-01 | eq-shell | [#1165](https://github.com/eq-solutions/eq-shell/pull/1165) fix(security): quote-email gate, iframe sandbox docs, real tsc in |
-| 2026-08-01 | eq-shell | [#1164](https://github.com/eq-solutions/eq-shell/pull/1164) fix(auth): recovery-email nudge never cleared; show/hide toggle o |
 _Showing 15 of 134 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
 - Royce is checking directly whether EQ Intake can push timesheets into Workbench (SKS's own payroll tool) — none of the 12 export formats target it today. _(added 2026-08-02)_
 - **No automatic check exists yet that a real worker's data survives being exported without something silently going missing** — today it's only tested against made-up sample data, never a real record. Small, scoped fix once someone picks it up: one real record through, confirm nothing vanished. _(added 2026-08-02)_
-- **Open architecture question, not decided either way:** should a new employee record automatically trigger a login invite, or should that stay a manual/staged process? This is the question behind the 44-workers number above. _(added 2026-08-02)_
 - **A rare licence-photo-scanning failure needs a credential check, not a code fix.** Traced to a security key eq-shell uses to talk to another system possibly being out of date. Notably, this is the *second* time this exact symptom (401 on licence-photo scanning) has shown up — 2026-07-23's version (task_d94af51d) was a stale deploy, this one looks like a different cause. Needs you to confirm/refresh the key rather than guess. _(added 2026-08-02)_
 - **Found the likely root cause behind both duplicate-identity bugs above: phone numbers are stored in inconsistent formats across two systems** (e.g. `+61439109013` in one place, `0439109013` or `61408164924` in another, for the same person). Confirmed in 3 separate records. Whatever matches people up by phone number during signup/linking probably fails silently when the formats don't match, creating a stray empty account instead of recognizing the existing person — this will keep recurring until someone normalizes phone numbers before comparing them. Needs its own investigation session to find the exact code path and fix it at the source, not just clean up after it each time. _(added 2026-08-02)_
 - **Worth checking separately**: the tool that rolls database changes out to every company's system may have a bug where an instruction placed right after defining a new function can silently not run, even though the file it's in is marked as successfully applied. Only caught because this one case got tested by hand — there could be others sitting the same way undetected. Not investigated further. _(added 2026-08-01)_
@@ -102,7 +101,8 @@ _Showing 15 of 134 · full record in [sessions/](sessions/)_
 - **Photo → AI Risk Suggestions** (the secondary feature from the original review — supervisor takes site photos, AI suggests hazards, human confirms which to add) — deliberately not started. Needs its own go/no-go before scoping further: real per-call API spend, a new Netlify Function (would clone `eq-agent.js`'s existing auth/rate-limit shape), and site photos leaving the tenant boundary to Anthropic's API. _(added 2026-08-01)_
 - **eq-cards / eq-design-tokens / sks-charters / eq-website**: alerts just switched on, the very first scan came back clean on all 4 — worth a second look in a day or two in case that first scan didn't fully finish rather than assuming it's actually clean. _(added 2026-08-01)_
 - **eq-receipts' react-router move hasn't been clicked through live** — the build is clean and Netlify's own preview built it successfully, but nobody has actually navigated the real app (Dashboard → Review → Verify, sidebar links) since the change. Worth a quick manual pass. _(added 2026-08-01)_
-_…and 364 more · [eq/pending.md](eq/pending.md)_
+- `TENANT_ROUTING_MASTER_KEY` rotation still outstanding — same single-key-no-rotation class as the `EQ_SECRET_SALT` item below. Royce: leave deferred (reconfirmed 2026-08-01, not silence — no change wanted) _(added 2026-08-01)_
+_…and 363 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -116,7 +116,7 @@ _…and 364 more · [eq/pending.md](eq/pending.md)_
 - Mirror the roster-grid archive + rating feature (SKS v3.10.104/.105) in EQ Field — flagged as a follow-up task; Royce started it in a separate session, result not yet known. _(added 2026-07-28)_
 - **Actual weekly entry hasn't started yet** — the log is ready, first week isn't logged. Per the plan's own proving discipline, needs at least one real supervisor entering their own crew's data (not just one person doing it centrally) to actually test the load the new app has to carry. _(added 2026-07-26)_
 - **Needs a real-world check**: have a labour-hire worker (or someone who can log in as one) open the Plant & Equipment list on core.eq.solutions and confirm it loads. Confirmed as far as possible from the data side (production is serving the right code, no other access rule is in the way) but nobody has actually clicked through as that kind of user yet. _(added 2026-07-26)_
-_…and 66 more · [sks/pending.md](sks/pending.md)_
+_…and 65 more · [sks/pending.md](sks/pending.md)_
 
 ## Queue health
 
@@ -124,7 +124,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 3012 | 483 | 102 | 12 |
+| [EQ](eq/pending.md) | 3013 | 483 | 103 | 12 |
 | [SKS](sks/pending.md) | 424 | 83 | 5 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 402 | 37 | 5 | 1 |
@@ -145,4 +145,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-02 00:12 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-02 00:25 UTC._
