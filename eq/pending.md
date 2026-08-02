@@ -14,6 +14,14 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-solves-service: PM reports were showing the wrong supervisor and blank contact details — fixed (2026-08-02)
+*Found while checking a PM Check Report for site SY1 — the Supervisor / Contact Email / Phone fields all showed "—". Investigated instead of assuming it was just missing data.*
+
+- [x] **Found the real cause: the report was never wired to the site-supervisor feature at all.** It was pulling the "Supervisor" name from whoever internally created the maintenance check record (a technician or admin), and Contact Email/Phone were hardcoded blank on every report, always — none of it actually read the site's real supervisor contact.
+- [x] **Fixed and verified against real data.** Reports now pull the site's actual assigned supervisor's name, email, and phone. Confirmed against SY3 (now shows Pradeep Singh's real contact details) and SY1 (correctly still shows blank, since that site genuinely has no supervisor assigned yet — not a bug). eq-service [PR #683](https://github.com/eq-solutions/eq-service/pull/683), merged.
+
+---
+
 ## eq-solves-service: your site-supervisor save failure was a 6-day-old bug that had been silently breaking every site/asset edit — found and fixed (2026-08-02)
 *Direct follow-up to the supervisor field below — you tried to save a real supervisor assignment (SY3, Pradeep Singh) and got "Could not update site access — please try again." Root-caused instead of just retrying.*
 
