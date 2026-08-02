@@ -22,11 +22,12 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **Fixed both wrong notes** so the next person (or the next AI session) doesn't get misled by them. eq-solves-intake [PR #103](https://github.com/eq-solutions/eq-solves-intake/pull/103), merged.
 - [x] **Found a real number worth tracking along the way:** 44 of 97 EQ Cards-registered workers don't have a login for Field or Service yet. Checked they're not stale/abandoned signups — they're all recent, real people. Royce confirmed this is expected: the team is being brought on in stages on purpose, not a bug.
 - [x] Built two working pages for Royce to review this on (what's built, what "fully solved" looks like, and the gap between) — and turned the process itself into a reusable check (`/gap`) so it can be re-run on any part of the product without starting from scratch.
+- [x] **Corrected a second wrong assumption from this same check:** first pass called "should a new employee automatically get a login invite" an open, undecided question. It isn't — a real screen already exists (`admin/users/migrate`) that shows a manager exactly who's missing a login and lets them bulk-invite. That's the team's actual, already-built answer.
 
 **Deferred:**
 - [ ] Royce is checking directly whether EQ Intake can push timesheets into Workbench (SKS's own payroll tool) — none of the 12 export formats target it today. _(added 2026-08-02)_
 - [ ] **No automatic check exists yet that a real worker's data survives being exported without something silently going missing** — today it's only tested against made-up sample data, never a real record. Small, scoped fix once someone picks it up: one real record through, confirm nothing vanished. _(added 2026-08-02)_
-- [ ] **Open architecture question, not decided either way:** should a new employee record automatically trigger a login invite, or should that stay a manual/staged process? This is the question behind the 44-workers number above. _(added 2026-08-02)_
+- [ ] **Royce to check `admin/users/migrate` for SKS against the 44-workers number above** — the invite screen and the 44 are counted two different ways (one by tenant employee record, one by Cards worker record), so they may not match exactly. Worth confirming they're the same gap before assuming the invite screen alone closes it. _(added 2026-08-02)_
 
 ---
 
