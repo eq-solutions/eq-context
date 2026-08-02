@@ -4,7 +4,7 @@ owner: Royce Milmlow
 last_updated: 2026-08-03
 scope: Design for an internal-only document sign-off + reminder register — upload once, push to signers, track who's signed, chase who hasn't. First cut of the safety/quality/commissioning-docs idea explored 2026-08-01.
 read_priority: high
-status: in build — steps 1-3 done. Schema (`0233_document_signoff_register.sql`) applied live to both ehow and zaap 2026-08-02 (eq-shell PR #1180). Shell upload+push UI merged and deployed 2026-08-03 (eq-shell PR #1196). Step 4 (Field: sign) not started.
+status: v1 build-plan complete (steps 1-4). Schema (`0233_document_signoff_register.sql`) applied live to both ehow and zaap 2026-08-02 (eq-shell PR #1180). Shell upload+push UI merged and deployed 2026-08-03 (eq-shell PR #1196). Field sign UI merged and deployed 2026-08-03, pilot-gated to one person (eq-field PR #627). Push → sign is a real, working loop for the pilot user. Step 5 (register/reminder view) was always scoped separately — not started.
 ---
 
 # EQ — Internal Document Sign-off Register
@@ -187,9 +187,27 @@ starts — no big-bang schema-then-UI drop.
    document" and Royce's call was not to block the build on adding one.
    Netlify auto-deploys eq-shell on merge — live on core.eq.solutions or
    about to be. **Not yet click-tested live.**
-4. **Field: sign.** Signers see outstanding documents, tap to confirm.
-   Reuses Field's existing auth session — signature is identity +
-   timestamp + version hash, no new capture UI to design.
+4. ~~**Field: sign.**~~ **MERGED + DEPLOYED 2026-08-03** — eq-field PR
+   [#627](https://github.com/eq-solutions/eq-field/pull/627) (squash
+   `3d41f8f`, v3.5.434, Royce's "merge #627" go). New "Sign Documents"
+   nav page reads `app_data.document_register`, shows the current
+   version (via a new signed-URL helper against the private
+   `attachments` bucket), one tap to sign — no drawn signature, no
+   vendor, exactly as designed: identity + timestamp + the version's
+   own content hash, copied not recomputed. **Deliberately pilot-gated
+   to one person** (`royce.milmlow@sks.com.au` only, allowlist constant
+   in `index.html`, two enforcement layers — nav hidden AND a hard
+   route-block against direct navigation) rather than a general
+   rollout — Field is live SKS production, real tradespeople use it
+   daily, and this hadn't been proven end-to-end yet. **Known accepted
+   gap, flagged not fixed:** `document_signoffs` RLS
+   (`document_signoffs_tenant`) is `cmd: ALL`, tenant-scoped only —
+   any authenticated tenant member could currently read OR write any
+   signoff row, not just their own. Low real risk while the table
+   holds nothing but what's pushed to the pilot user; a real follow-up
+   once this moves past one person — needs a signer-scoped policy on
+   the eq-shell side (schema owner), not something eq-field can fix
+   itself.
 5. **Register + reminder cron.** Read view (document → version →
    signer → status → date) plus a cron in the shape of the existing
    pre-visit brief cron, chasing outstanding signers on a schedule.
@@ -197,7 +215,10 @@ starts — no big-bang schema-then-UI drop.
    SMP) end-to-end before onboarding the rest of the switchboard
    schedule / ITC / O&M backlog into the register.
 
-Steps 1–3 are done as of 2026-08-03 — schema applied live, upload+push UI
-merged and deployed. Step 4 (Field: sign) is the next build action and
-needs Royce's go-ahead. Nobody can sign anything yet: documents can be
-uploaded and pushed, but the recipient-facing half doesn't exist.
+Steps 1–4 are done as of 2026-08-03 — schema live, upload+push UI live,
+sign UI live (pilot-gated to one person). Push → sign is a real, working
+loop end-to-end for the pilot user, not just a diagram. Step 5
+(register/reminder view, for admins to see who hasn't signed without
+opening the DB) and step 6 (rollout past the pilot — widen the Field
+gate, onboard a real document) are what's left, both explicitly
+Royce's call on timing, not a technical blocker.
