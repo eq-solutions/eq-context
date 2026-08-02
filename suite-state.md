@@ -61,6 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-02)
 
 **eq-shell:**
+- #1186 feat(auth): delete self-join links, not just deactivate
 - #1180 feat(documents): internal document sign-off register schema (tenant 0233)
 
 ---
