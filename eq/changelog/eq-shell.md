@@ -9,6 +9,11 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-02 (cont. — PR #1187 MERGED, #1183 MERGED, branch protection set)
+- **PR #1183 merged** — the auto re-vendor PR opened by the intake-revendor-check automation (see the entry below), reviewed (single-file `pnpm-lock.yaml` diff, all 4 required checks + Netlify deploy preview green) and merged. First real PR the automation produced end-to-end.
+- **Branch protection set on `main`** — was completely unprotected (`branches/main/protection` returned 404 pre-fix, confirmed live). Required status checks now enforce the same 4 checks CI already treated as "required" in name only: `typecheck · test · lint`, `gitleaks`, `Migration ledger hygiene (added files)`, `Schema drift + anon-grant + policy-lint`. Set via the GitHub API, `enforce_admins: false`.
+- **PR #1187 merged** — re-vendors eq-solves-intake #105 (Contacts "Ask Claude" duplicate sanity-check, see eq-intake changelog) into `eq-intake/eq-platform/packages/`. First real PR opened by the vendor-sync automation for an actual feature change, not a fix-cycle test. All required checks green (the one lint failure shown mid-run was pre-existing, in a vendored file this PR didn't touch — `eq-ai/src/anthropic.ts`, advisory-only lint step). Live on core.eq.solutions via Netlify auto-deploy.
+
 ## 2026-08-02 (PRs #1175/#1176/#1179/#1182 MERGED — EQ Intake vendor-sync automated, 3 real CI/auth gaps found and fixed live)
 - **PR #1175** — new `.github/workflows/intake-revendor-check.yml` (scheduled nightly + `workflow_dispatch`) automates the previously-manual `scripts/revendor-intake.mjs` re-vendor step, which had caused two real production incidents from react version-pin drift (eq-solves-intake #102, eq-shell #1161). Checks out both repos, re-vendors, and — only on a real diff — runs a new `scripts/check-intake-version-pins.mjs` (`check:intake-pins`) react/react-dom parity check plus a full install/build/typecheck/test pass, then opens a PR. Never auto-merges.
 - **PR #1176** — first live dispatch failed at `pnpm/action-setup@v4` ("No pnpm version is specified") because the job checks eq-shell out to a custom `eq-shell/` subpath, so package.json isn't at the workspace root for auto-detect. Fixed via `package_json_file: eq-shell/package.json`.
