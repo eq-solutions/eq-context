@@ -60,7 +60,9 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-02)
 
-_No open PRs_
+**eq-shell:**
+- #1181 feat(auth): surface self-join approvals in the Staff pending panel
+- #1180 feat(documents): internal document sign-off register schema (tenant 0233)
 
 ---
 
