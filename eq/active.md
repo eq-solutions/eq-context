@@ -37,7 +37,7 @@ RLS WITH CHECK hardened on all 14 write policies. Adapter view architecture:
 - `field_sites` → `app_data.sites` (read-only, Service owns)
 - `field_schedule` / `field_timesheets` / etc. → `public.*` (writable pass-throughs)
 
-**Canonical sync LIVE (2026-06-13):** jvkn→ehow forward path active via `workers-canonical-sync` (v3) + `credentials-canonical-sync` (v1). 39 staff + 171 licences synced. Triggers on jvkn fire on INSERT/UPDATE/DELETE → ehow upserts.
+**Canonical sync — workers LIVE, licences retired (updated 2026-08-03):** `workers-canonical-sync` (v3) is live via a real trigger on jvkn `public.workers`. `credentials-canonical-sync` (v1) is dead — no trigger ever wired it, and its hardcoded tenant const was wrong (used the EQ id, not SKS's `7dee117c`). Superseded by eq-shell's own pull-based sync (`cards-approve-staff.ts` at approval time + `staff-resync-licences.ts` on demand), which is what actually keeps ehow `app_data.licences` current. The orphaned edge function itself still needs manual deletion via the Supabase dashboard (no MCP/migration path to remove it) — flagged 2026-07-26, still open. 39 staff + 171 licences reflects the 2026-06-13 snapshot, not an ongoing feed from this function.
 
 **v3.5.147 identity stub (2026-06-15):** `_tryLinkPersonToWorker()` in `people.js` — on person save with email, looks up jvkn.workers by email; if found, patches `people.worker_id`; if not found, creates a minimal stub (name, email, phone, role). Transition scaffolding — removes when Cards onboarding is the sole creator of jvkn.workers rows. `syncAllToCanonical()` bulk action available to supervisor role.
 
