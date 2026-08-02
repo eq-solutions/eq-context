@@ -60,8 +60,7 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-02)
 
-**eq-field:**
-- #625 fix(dashboard): EQ-FIELD-10 — event-driven session-ready signal (v3.5.432)
+_No open PRs_
 
 ---
 
