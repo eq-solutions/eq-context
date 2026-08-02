@@ -60,7 +60,11 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-02)
 
-_No open PRs_
+**eq-cards:**
+- #198 feat(wallet): Show mode — offline fullscreen ID display for site gates
+
+**eq-shell:**
+- #1196 feat(documents): Shell upload + push UI for the sign-off register
 
 ---
 
