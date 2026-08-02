@@ -63,9 +63,14 @@ _If this file is >48h old, the cron is broken._
 **eq-field:**
 - #623 v3.5.430 — Dashboard: Site Breakdown back to single-scroll
 
+**eq-service:**
+- #683 fix(reports): PM report supervisor/contact fields ignored the site's actual supervisor
+
 **eq-shell:**
-- #1185 feat(auth): collapse worker-add header into one button + a menu
 - #1180 feat(documents): internal document sign-off register schema (tenant 0233)
+
+**eq-solves-intake:**
+- #104 test(format-ui): prove a real timesheet record survives xero-payroll reshape
 
 ---
 
