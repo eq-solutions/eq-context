@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-02 07:47 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-02 08:07 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-02 07:39 UTC → 2026-08-02 07:47 UTC)
+## Since last refresh (2026-08-02 07:47 UTC → 2026-08-02 08:07 UTC)
 
-- Merged: eq-shell [#1191](https://github.com/eq-solutions/eq-shell/pull/1191) chore(intake): auto re-vendor eq-intake/eq-platform
-- Merged: eq-shell [#1175](https://github.com/eq-solutions/eq-shell/pull/1175) chore(intake): automate the eq-solves-intake re-vendor check
-- Merged: eq-shell [#1174](https://github.com/eq-solutions/eq-shell/pull/1174) fix(observability): real stack traces on stuck-crash, verify
-- Merged: eq-shell [#1171](https://github.com/eq-solutions/eq-shell/pull/1171) fix(intake): eq_site_advisory_flag_pair missing authenticate
-- Merged: eq-shell [#1170](https://github.com/eq-solutions/eq-shell/pull/1170) feat(quotes): allow attaching files while creating a new quo
-- Merged: eq-shell [#1168](https://github.com/eq-solutions/eq-shell/pull/1168) fix(intake): eq_site_merge_execute missing authenticated gra
-- Merged: eq-shell [#1166](https://github.com/eq-solutions/eq-shell/pull/1166) fix(security): session revocation fails closed on a DB looku
-- Merged: eq-shell [#1164](https://github.com/eq-solutions/eq-shell/pull/1164) fix(auth): recovery-email nudge never cleared; show/hide tog
+- Merged: eq-shell [#1192](https://github.com/eq-solutions/eq-shell/pull/1192) fix(auth): self-join fixes — worker row, email-drop notice, 
+- Merged: eq-shell [#1177](https://github.com/eq-solutions/eq-shell/pull/1177) feat(auth): self-join links v2 — approval gate, expiry, all 
+- Merged: eq-shell [#1176](https://github.com/eq-solutions/eq-shell/pull/1176) fix(intake): pnpm/action-setup can't auto-detect version wit
+- Merged: eq-shell [#1173](https://github.com/eq-solutions/eq-shell/pull/1173) fix(brand): correct stale SKS navy #1F335C to live #203060
+- Merged: eq-shell [#1172](https://github.com/eq-solutions/eq-shell/pull/1172) fix(ui): consolidate toast feedback, honest-disable unbuilt 
+- Merged: eq-shell [#1169](https://github.com/eq-solutions/eq-shell/pull/1169) chore(intake): replace manual re-vendor steps with a script
+- Merged: eq-shell [#1167](https://github.com/eq-solutions/eq-shell/pull/1167) chore(intake): re-vendor eq-schemas package.json — closes aj
+- Merged: eq-shell [#1165](https://github.com/eq-solutions/eq-shell/pull/1165) fix(security): quote-email gate, iframe sandbox docs, real t
 
 ## ⚠ Needs you (3)
 
@@ -27,7 +27,7 @@ _2026-08-02 07:47 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-9 (P0 — confirmed exposure, same window as SEC-3, possible second exposure 2026-07-27) — A different service_role key (`jvkn`/eq-canonical) was pasted directly into a ch · [security-register.md](ops/security-register.md)
 
-## 🙋 Waiting on you (106)
+## 🙋 Waiting on you (107)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
@@ -36,14 +36,14 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **EQ** · **Royce to click through live**: open a site, assign a supervisor from its own contact list, save, reload, confirm it sticks; toggle "Show archived" on the Sites list and confirm it filters/tags correctly. Needs a real sign-in, which is off-limits for Claude to do on your behalf. _(added 2026-08-02)_
 - **EQ** · **Royce to check `admin/users/migrate` for SKS against the 44-workers number above** — the invite screen and the 44 are counted two different ways (one by tenant employee record, one by Cards worker record), so they may not match exactly. Worth confirming they're the same gap before assuming the invite screen alone closes it. _(added 2026-08-02)_
 - **EQ** · Royce to spot-check a generated PM Asset Report live for a site that has a photo on file — confirm the band + photo layout looks right. _(added 2026-08-02)_
+- **EQ** · **Royce to test the licence-photo-scan flow on a real phone.** Built 7 synthetic test photos (6 different licence/certificate types, all fake data, all under one name so they test as multiple licences on a single account, plus one deliberately rotated/lower-quality shot) and sent them over to email to a test phone. Results not yet known — worth checking whether this also exercises the still-open credential issue above. _(added 2026-08-02)_
 - **EQ** · **Royce to click through live**: open New Quote, attach a couple of files before finishing the form, submit, confirm the files show up on the created quote. _(added 2026-08-01)_
 - **EQ** · **Royce to click through live**: open the Duplicate Sites panel as a non-manager and confirm Preview now shows; mark a row Unsure with a note and confirm it saves and displays; confirm a real merge now succeeds end-to-end (Preview → Confirm) now that the permission fix is live. _(added 2026-08-01)_
 - **EQ** · **Royce to click through live**: sidebar logo and the admin Media Library page (grid + edit modal) for a tenant with a logo set — confirm images still render correctly after the switch above. _(added 2026-08-01)_
 - **EQ** · **Royce to click through live on a real device** — confirm the "take a photo" sheet feels right end to end (camera opens, OCR reads the card, fallback link works). Note: the code merged this morning but wasn't actually live yet when Royce first tried it — this repo's deploy isn't automatic on merge, and nobody had triggered one. Deployed and confirmed live later the same day. _(added 2026-08-01, updated 2026-08-01)_
 - **EQ** · **Royce to click through live**: sign in on core.eq.solutions and confirm Cards/Field/Service each load past "Authorising…" — needs a real login, which Claude can't do on Royce's behalf. _(added 2026-08-01)_
 - **EQ** · **Royce to click through live**: open Intake as a signed-in user and confirm the page actually renders (not just that the site responds) — needs a real login, which Claude can't do on Royce's behalf. _(added 2026-08-01)_
-- **EQ** · **`CoreHome.tsx` is a fully-built, unrouted home-page prototype** ("EQ Intelligence" decision-queue, canonical-graph visualization) sitting dead in the tree, running on hardcoded fake data. Never imported anywhere. Needs Royce's call: revive as the real home page, or delete — not something to guess at. **Clickable mockup built 2026-08-01** (faithful reproduction of the real component + CSS, published as a Claude artifact) so Royce can evaluate it without reading code — rated 8/10 as a design concept (leads with the decision, not the mechanism — graph is opt-in via "Trace it"), but 3/10 as a build-ready feature: every decision is hardcoded, no backend detection engine exists to actually find these cross-app joins live, and it would be a *third* home-page paradigm alongside `TenantHome`/`WorkerHome` with no resolution on whether it replaces or augments either _(added 2026-08-01)_
-_…and 94 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 95 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
@@ -73,6 +73,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-02 | eq-shell | [#1192](https://github.com/eq-solutions/eq-shell/pull/1192) fix(auth): self-join fixes — worker row, email-drop notice, photo |
 | 2026-08-02 | eq-shell | [#1191](https://github.com/eq-solutions/eq-shell/pull/1191) chore(intake): auto re-vendor eq-intake/eq-platform |
 | 2026-08-02 | eq-shell | [#1190](https://github.com/eq-solutions/eq-shell/pull/1190) feat(intake): Contact resolver + merge (migrations 0233/0234) |
 | 2026-08-02 | eq-shell | [#1189](https://github.com/eq-solutions/eq-shell/pull/1189) feat(auth): join-links controls — edit expiry, join counts, code  |
@@ -87,22 +88,21 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-02 | eq-shell | [#1179](https://github.com/eq-solutions/eq-shell/pull/1179) fix(intake): auto-vendored PRs must use a PAT, not GITHUB_TOKEN,  |
 | 2026-08-02 | eq-solves-service | [#683](https://github.com/eq-solutions/eq-service/pull/683) fix(reports): PM report supervisor/contact fields ignored the sit |
 | 2026-08-02 | eq-solves-service | [#682](https://github.com/eq-solutions/eq-service/pull/682) fix(migrations): sites/assets update triggers referenced a delete |
-| 2026-08-02 | eq-solves-service | [#681](https://github.com/eq-solutions/eq-service/pull/681) fix(sites): site supervisor picks from site contacts, not tenant  |
 _Showing 15 of 132 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
 - **The map's `invalidateSize()` fix (v3.5.431) hasn't been confirmed against the real failure context.** It only reproduces inside a Shell-embedded iframe (`core.eq.solutions/sks/field`) with real SKS data — this session's browser tooling had no path to Core auth to check it directly. The fix is standard, low-risk Leaflet practice regardless, but worth confirming on a genuinely fresh (not manually re-panned) dashboard load next time you're in there. _(added 2026-08-02)_
 - **Not swept: whether any of the other ~22 canonical objects (defects, contract_scopes, job_plans, maintenance_checks, etc.) have the same "trigger references a column the view doesn't expose" bug class.** This fix only covered the three objects (`customers`, `sites`, `assets`) touched by the 2026-07-27 change — no broader check across all canonical objects has been done. _(added 2026-08-02)_
-- **Build the real Contacts merge (Sites-equivalent)** — write-time detector + advisory table + preview/execute repointing `quote`/`contact_customer_links`/`contact_site_links`, gated the same way Sites' merge is (manager role + recorded 'same' verdict). All the facts above are already gathered; this is a build-and-live-validate task, not a research one. Shell-only, no Field entanglement. _(added 2026-08-02)_
-- **`eq-ai-assist` Edge Function has no repo source of truth** — deployed directly to ehow, not version-controlled anywhere (checked eq-shell, eq-solves-service, eq-cards, eq-field, eq-context — no tracked copy exists). Small hygiene gap, not urgent, but the next hand-edit to it is working blind without a diff. _(added 2026-08-02)_
 - Royce is checking directly whether EQ Intake can push timesheets into Workbench (SKS's own payroll tool) — none of the 12 export formats target it today. _(added 2026-08-02)_
 - **A rare licence-photo-scanning failure needs a credential check, not a code fix.** Traced to a security key eq-shell uses to talk to another system possibly being out of date. Notably, this is the *second* time this exact symptom (401 on licence-photo scanning) has shown up — 2026-07-23's version (task_d94af51d) was a stale deploy, this one looks like a different cause. Needs you to confirm/refresh the key rather than guess. _(added 2026-08-02)_
 - **Found the likely root cause behind both duplicate-identity bugs above: phone numbers are stored in inconsistent formats across two systems** (e.g. `+61439109013` in one place, `0439109013` or `61408164924` in another, for the same person). Confirmed in 3 separate records. Whatever matches people up by phone number during signup/linking probably fails silently when the formats don't match, creating a stray empty account instead of recognizing the existing person — this will keep recurring until someone normalizes phone numbers before comparing them. Needs its own investigation session to find the exact code path and fix it at the source, not just clean up after it each time. _(added 2026-08-02)_
 - **Worth checking separately**: the tool that rolls database changes out to every company's system may have a bug where an instruction placed right after defining a new function can silently not run, even though the file it's in is marked as successfully applied. Only caught because this one case got tested by hand — there could be others sitting the same way undetected. Not investigated further. _(added 2026-08-01)_
 - **Saving/updating records through one part of the database layer has no real type-checking behind it** — turns out this is already known, tracked work (the app's own 30-day plan lists it), not a fresh find: the auto-generated database description file only covers the app's default section, but this data actually lives in a different section the file never describes, so the "trust me" overrides are a deliberate stand-in, not an accident. Confirmed live: the record it reads/writes from isn't a plain table, it's a view with its own custom save-behaviour attached — so even generating a fuller description file may not fully close the gap without extra work. Affects roughly 17 places. Needs the proper database tool run with the right settings (not available through the tools used this session), then each of the 17 spots checked by hand. _(added 2026-08-01, corrected 2026-08-01 — see below)_
 - **Photo → AI Risk Suggestions** (the secondary feature from the original review — supervisor takes site photos, AI suggests hazards, human confirms which to add) — deliberately not started. Needs its own go/no-go before scoping further: real per-call API spend, a new Netlify Function (would clone `eq-agent.js`'s existing auth/rate-limit shape), and site photos leaving the tenant boundary to Anthropic's API. _(added 2026-08-01)_
-_…and 366 more · [eq/pending.md](eq/pending.md)_
+- **eq-cards / eq-design-tokens / sks-charters / eq-website**: alerts just switched on, the very first scan came back clean on all 4 — worth a second look in a day or two in case that first scan didn't fully finish rather than assuming it's actually clean. _(added 2026-08-01)_
+- **eq-receipts' react-router move hasn't been clicked through live** — the build is clean and Netlify's own preview built it successfully, but nobody has actually navigated the real app (Dashboard → Review → Verify, sidebar links) since the change. Worth a quick manual pass. _(added 2026-08-01)_
+_…and 364 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -124,7 +124,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 3080 | 489 | 122 | 12 |
+| [EQ](eq/pending.md) | 3083 | 489 | 124 | 12 |
 | [SKS](sks/pending.md) | 424 | 83 | 5 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 402 | 37 | 5 | 1 |
@@ -145,4 +145,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-02 07:47 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-02 08:07 UTC._
