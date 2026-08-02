@@ -14,6 +14,20 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-solves-service: retired a dead planning doc, added a site supervisor field, then caught and fixed a wrong design before it shipped wrong (2026-08-02)
+*Continuation of a session that had drifted into the wrong chat earlier — resumed here to close out a stale planning doc for a feature that was never built, then build a way to record who supervises each site.*
+
+- [x] **Retired an old planning doc** describing an "Import from Canonical" feature that was never built and can't be built the way it was designed — marked clearly as superseded so nobody picks it back up.
+- [x] **Sites list: the "Status" column that never actually changed value is gone**, replaced with a real "Show archived" toggle plus an inline "Archived" tag on the site name — the list now actually shows which sites are archived instead of a column that always said the same thing.
+- [x] **Added a "site supervisor" field**, viewable and editable on each site's own page.
+- [x] **First version picked the supervisor from the wrong list** (our own SKS staff, not the customer's people) — caught before Royce even tested it. Fixed to pull from the site's own contact list (e.g. the customer's own on-site lead) instead. eq-service [PR #679](https://github.com/eq-solutions/eq-service/pull/679), [PR #681](https://github.com/eq-solutions/eq-service/pull/681), both merged.
+- [x] **One database update along the way failed on the first attempt** (a column-ordering mistake, caught immediately, nothing broken or half-applied) and was fixed and re-applied successfully on the second attempt. eq-service [PR #680](https://github.com/eq-solutions/eq-service/pull/680), merged.
+
+**Deferred:**
+- [ ] **Royce to click through live**: open a site, assign a supervisor from its own contact list, save, reload, confirm it sticks; toggle "Show archived" on the Sites list and confirm it filters/tags correctly. Needs a real sign-in, which is off-limits for Claude to do on your behalf. _(added 2026-08-02)_
+
+---
+
 ## EQ Cards + Intake: asked "where are we really at" — found two of our own internal notes were wrong, fixed them (2026-08-02)
 *Royce felt lost in the progress and asked for a plain "what's real vs. what's the goal" check on EQ Cards + Intake. Checked live — the actual code, database, and what's actually deployed — instead of trusting our own internal write-ups.*
 
