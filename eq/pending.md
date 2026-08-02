@@ -14,6 +14,23 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: automated the EQ Intake vendor-sync check — found and fixed 4 real CI gaps only a live run could catch (2026-08-02)
+*Follow-up to a /decide pass on the EQ Intake gap-analysis doc's P1/P2 items. Built the automation, then insisted on watching it actually run live end-to-end rather than trusting it worked — caught four separate real bugs doing that.*
+
+- [x] Corrected the EQ Intake gap-analysis doc Royce had from an external tool (Grok) — EQ Cards marked live and taking real traffic (was "partial"), "EQ Import" retired as a separate product label (it's a tab inside EQ Intake), EQ Capture corrected from "built then parked" to "never built", and every SimPRO/named-client reference removed (the product went the other way — client names were deliberately stripped from the UI in July).
+- [x] Verified the two other flagged gaps live before building anything: the AI "ask Claude" duplicate-checker already exists for Sites (an earlier claim in this same session that it didn't was wrong, corrected); and the "schema drift" gap is a deliberate, already-documented decision, not unfinished work — the real column differences were fixed months ago, the remaining non-blocking state is intentional until EQ's pricing module goes live.
+- [x] Built and shipped automatic checking for a recurring bug pattern: the EQ Intake engine gets manually copied into EQ Shell, and that manual step has caused two real outages before from a version mismatch. Now a scheduled check runs automatically, and opens a normal pull request for review whenever something's actually changed — never merges on its own.
+- [x] Found and fixed 4 separate real problems only running it live surfaced, one at a time: a setup-tool version-detection bug; a GitHub setting (locked at the whole-company level, not just this one project) that was silently preventing the automation's pull requests from ever being checked properly; a permissions gap on a shared access key; and that same key being pointed at the wrong GitHub account. All 4 fixes shipped and merged (eq-shell [#1175](https://github.com/eq-solutions/eq-shell/pull/1175), [#1176](https://github.com/eq-solutions/eq-shell/pull/1176), [#1179](https://github.com/eq-solutions/eq-shell/pull/1179), [#1182](https://github.com/eq-solutions/eq-shell/pull/1182)); the final account-scope one Royce fixed directly in GitHub's settings.
+- [x] Confirmed working for real, not just built: triggered the finished automation, and it opened a genuine pull request (eq-shell [#1183](https://github.com/eq-solutions/eq-shell/pull/1183)) that got checked properly by every normal safety check, all passing on their own.
+
+**Deferred:**
+- [ ] eq-shell #1183 itself (the actual content the automation found) still needs Royce's normal review before merging — it never merges on its own by design. _(added 2026-08-02)_
+- [ ] eq-shell's main branch has no protection at all — nothing stops someone (or an automated tool) from merging something that hasn't actually passed its checks. Flagged, not fixed — needs Royce's call on which checks to require. _(added 2026-08-02)_
+- [ ] Extending the AI duplicate-checker beyond Sites to Contacts/Staff — a real gap, but those work differently (grouped records, not simple pairs), so it needs its own design decision before building, not a straight copy. _(added 2026-08-02)_
+- [ ] Royce asked what the "next sprint" should be after this — not yet defined, waiting on his answer. _(added 2026-08-02)_
+
+---
+
 ## eq-solves-service: retired a dead planning doc, added a site supervisor field, then caught and fixed a wrong design before it shipped wrong (2026-08-02)
 *Continuation of a session that had drifted into the wrong chat earlier — resumed here to close out a stale planning doc for a feature that was never built, then build a way to record who supervises each site.*
 
