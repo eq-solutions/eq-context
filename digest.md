@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-02 19:54 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-02 19:59 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-02 19:23 UTC → 2026-08-02 19:54 UTC)
+## Since last refresh (2026-08-02 19:54 UTC → 2026-08-02 19:59 UTC)
 
-- Merged: eq-shell [#1197](https://github.com/eq-solutions/eq-shell/pull/1197) fix(auth): Cards SSO no longer depends on the worker having 
-- Merged: eq-shell [#1182](https://github.com/eq-solutions/eq-shell/pull/1182) fix(intake): switch re-vendor workflow to a dedicated, corre
-- Merged: eq-shell [#1179](https://github.com/eq-solutions/eq-shell/pull/1179) fix(intake): auto-vendored PRs must use a PAT, not GITHUB_TO
-- Merged: eq-shell [#1175](https://github.com/eq-solutions/eq-shell/pull/1175) chore(intake): automate the eq-solves-intake re-vendor check
-- Merged: eq-shell [#1174](https://github.com/eq-solutions/eq-shell/pull/1174) fix(observability): real stack traces on stuck-crash, verify
-- Merged: eq-shell [#1171](https://github.com/eq-solutions/eq-shell/pull/1171) fix(intake): eq_site_advisory_flag_pair missing authenticate
-- Merged: eq-shell [#1170](https://github.com/eq-solutions/eq-shell/pull/1170) feat(quotes): allow attaching files while creating a new quo
-- Merged: eq-shell [#1168](https://github.com/eq-solutions/eq-shell/pull/1168) fix(intake): eq_site_merge_execute missing authenticated gra
+- Merged: eq-shell [#1196](https://github.com/eq-solutions/eq-shell/pull/1196) feat(documents): Shell upload + push UI for the sign-off reg
+- Merged: eq-shell [#1181](https://github.com/eq-solutions/eq-shell/pull/1181) feat(auth): surface self-join approvals in the Staff pending
+- Merged: eq-shell [#1177](https://github.com/eq-solutions/eq-shell/pull/1177) feat(auth): self-join links v2 — approval gate, expiry, all 
+- Merged: eq-shell [#1176](https://github.com/eq-solutions/eq-shell/pull/1176) fix(intake): pnpm/action-setup can't auto-detect version wit
+- Merged: eq-shell [#1173](https://github.com/eq-solutions/eq-shell/pull/1173) fix(brand): correct stale SKS navy #1F335C to live #203060
+- Merged: eq-shell [#1172](https://github.com/eq-solutions/eq-shell/pull/1172) fix(ui): consolidate toast feedback, honest-disable unbuilt 
+- Merged: eq-shell [#1169](https://github.com/eq-solutions/eq-shell/pull/1169) chore(intake): replace manual re-vendor steps with a script
+- Merged: eq-solves-service [#683](https://github.com/eq-solutions/eq-service/pull/683) fix(reports): PM report supervisor/contact fields ignored th
 
 ## ⚠ Needs you (3)
 
@@ -49,9 +49,9 @@ _…and 97 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 1 | 0d |
+| eq-shell | ? unknown | ? | 0 | — |
 | eq-solves-service | ? unknown | ? | 0 | — |
-| eq-field | ? unknown | ? | 0 | — |
+| eq-field | ? unknown | ? | 1 | 0d |
 | eq-cards | ? unknown | ? | 1 | 0d |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
@@ -73,6 +73,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-02 | eq-shell | [#1196](https://github.com/eq-solutions/eq-shell/pull/1196) feat(documents): Shell upload + push UI for the sign-off register |
 | 2026-08-02 | eq-shell | [#1197](https://github.com/eq-solutions/eq-shell/pull/1197) fix(auth): Cards SSO no longer depends on the worker having a rea |
 | 2026-08-02 | eq-shell | [#1195](https://github.com/eq-solutions/eq-shell/pull/1195) feat(auth): trim worker-add dropdown to 2 items, surface general  |
 | 2026-08-02 | eq-shell | [#1193](https://github.com/eq-solutions/eq-shell/pull/1193) fix(auth): self-join adds a membership in the new tenant, not jus |
@@ -87,7 +88,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-02 | eq-shell | [#1186](https://github.com/eq-solutions/eq-shell/pull/1186) feat(auth): delete self-join links, not just deactivate |
 | 2026-08-02 | eq-shell | [#1185](https://github.com/eq-solutions/eq-shell/pull/1185) feat(auth): collapse worker-add header into one button + a menu |
 | 2026-08-02 | eq-shell | [#1183](https://github.com/eq-solutions/eq-shell/pull/1183) chore(intake): auto re-vendor eq-intake/eq-platform |
-| 2026-08-02 | eq-shell | [#1184](https://github.com/eq-solutions/eq-shell/pull/1184) feat(auth): per-role QR codes on the self-join links page |
 _Showing 15 of 133 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -145,4 +145,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-02 19:54 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-02 19:59 UTC._
