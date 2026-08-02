@@ -14,6 +14,19 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-solves-service: your site-supervisor save failure was a 6-day-old bug that had been silently breaking every site/asset edit — found and fixed (2026-08-02)
+*Direct follow-up to the supervisor field below — you tried to save a real supervisor assignment (SY3, Pradeep Singh) and got "Could not update site access — please try again." Root-caused instead of just retrying.*
+
+- [x] **Found the real cause: a database update from a week earlier (2026-07-27) had a piece missing, and nobody had hit it until your save just now.** That update taught the site/asset save logic to track something new (`deleted_at`) but never gave it a way to actually read it back — so every save through Site Access, and every asset edit, has silently failed since then. Nobody noticed because nothing had actually tried to save through either of those two paths in the six days since. The identical bug on the customer side was already caught and fixed a day earlier from a different, unrelated change.
+- [x] **Fixed and applied live to the real database** — same fix pattern as the customer-side one. eq-service [PR #682](https://github.com/eq-solutions/eq-service/pull/682), merged and applied.
+- [x] **Verified directly against your exact failed save** (site SY3, supervisor Pradeep Singh) before replying — confirmed it now succeeds.
+
+**Deferred:**
+- [ ] **Royce to retry the actual save in the browser** to confirm end-to-end — DB-level fix is verified, only the real click-through confirms the full path. _(added 2026-08-02)_
+- [ ] **Not swept: whether any of the other ~22 canonical objects (defects, contract_scopes, job_plans, maintenance_checks, etc.) have the same "trigger references a column the view doesn't expose" bug class.** This fix only covered the three objects (`customers`, `sites`, `assets`) touched by the 2026-07-27 change — no broader check across all canonical objects has been done. _(added 2026-08-02)_
+
+---
+
 ## eq-shell: automated the EQ Intake vendor-sync check — found and fixed 4 real CI gaps only a live run could catch (2026-08-02)
 *Follow-up to a /decide pass on the EQ Intake gap-analysis doc's P1/P2 items. Built the automation, then insisted on watching it actually run live end-to-end rather than trusting it worked — caught four separate real bugs doing that.*
 
