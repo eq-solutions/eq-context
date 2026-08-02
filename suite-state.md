@@ -60,8 +60,7 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-02)
 
-**eq-shell:**
-- #1193 fix(auth): self-join adds a membership in the new tenant, not just the old one
+_No open PRs_
 
 ---
 
