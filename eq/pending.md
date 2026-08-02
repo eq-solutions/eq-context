@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-02
+last_updated: 2026-08-03
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -35,6 +35,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 **Deferred:**
 - [ ] **The map's `invalidateSize()` fix (v3.5.431) hasn't been confirmed against the real failure context.** It only reproduces inside a Shell-embedded iframe (`core.eq.solutions/sks/field`) with real SKS data — this session's browser tooling had no path to Core auth to check it directly. The fix is standard, low-risk Leaflet practice regardless, but worth confirming on a genuinely fresh (not manually re-panned) dashboard load next time you're in there. _(added 2026-08-02)_
+- [ ] **Sentry EQ-FIELD-10 recurred on this same PR's preview deploy — tracked, not fixed.** [no-tenant-id](https://eq-solutions.sentry.io/issues/138007377/), 26 events / 3 users, 2026-08-01→02, `deploy-preview-622--eq-field.netlify.app` (demo tenant, v3.5.429). Confirmed by reading the code: the dashboard map's bounded JWT-tenant-id retry (v3.5.403 — 4 tries × 1500ms) fully exhausted before the Shell→Field JWT handoff landed. Real race, not fresh noise — substatus is *regressed* (previously marked resolved). Not caused by this PR's actual diff (filter row / map default / table sizing) — more likely surfaced by preview's colder function starts than production sees. Degrades gracefully on exhaustion ("Map unavailable right now", self-heals next render). **Royce's call 2026-08-03: track only, no fix yet** — preview-only so far, not confirmed on production traffic, TODAY.md goals still unset so nothing forces this now. Two fix directions if it recurs on production: widen the retry budget/interval, or have the map card listen for the Shell→Field JWT-ready event instead of polling a fixed schedule. _(added 2026-08-03)_
 
 ---
 
