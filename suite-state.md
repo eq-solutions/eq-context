@@ -61,6 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-02)
 
 **eq-shell:**
+- #1179 fix(intake): auto-vendored PRs must use a PAT, not GITHUB_TOKEN, to trigger CI
 - #1178 chore(intake): auto re-vendor eq-intake/eq-platform
 
 ---
