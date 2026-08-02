@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-02 18:33 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-02 19:02 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-02 13:09 UTC → 2026-08-02 18:33 UTC)
+## Since last refresh (2026-08-02 18:33 UTC → 2026-08-02 19:02 UTC)
 
-- Merged: eq-shell [#1180](https://github.com/eq-solutions/eq-shell/pull/1180) feat(documents): internal document sign-off register schema 
-- Merged: eq-shell [#1177](https://github.com/eq-solutions/eq-shell/pull/1177) feat(auth): self-join links v2 — approval gate, expiry, all 
-- Merged: eq-shell [#1176](https://github.com/eq-solutions/eq-shell/pull/1176) fix(intake): pnpm/action-setup can't auto-detect version wit
-- Merged: eq-shell [#1173](https://github.com/eq-solutions/eq-shell/pull/1173) fix(brand): correct stale SKS navy #1F335C to live #203060
-- Merged: eq-shell [#1172](https://github.com/eq-solutions/eq-shell/pull/1172) fix(ui): consolidate toast feedback, honest-disable unbuilt 
-- Merged: eq-shell [#1169](https://github.com/eq-solutions/eq-shell/pull/1169) chore(intake): replace manual re-vendor steps with a script
-- Merged: eq-shell [#1167](https://github.com/eq-solutions/eq-shell/pull/1167) chore(intake): re-vendor eq-schemas package.json — closes aj
-- Merged: eq-shell [#1165](https://github.com/eq-solutions/eq-shell/pull/1165) fix(security): quote-email gate, iframe sandbox docs, real t
+- Merged: eq-shell [#1194](https://github.com/eq-solutions/eq-shell/pull/1194) chore(control-plane): backfill missing source for eq_cards_i
+- Merged: eq-shell [#1175](https://github.com/eq-solutions/eq-shell/pull/1175) chore(intake): automate the eq-solves-intake re-vendor check
+- Merged: eq-shell [#1174](https://github.com/eq-solutions/eq-shell/pull/1174) fix(observability): real stack traces on stuck-crash, verify
+- Merged: eq-shell [#1171](https://github.com/eq-solutions/eq-shell/pull/1171) fix(intake): eq_site_advisory_flag_pair missing authenticate
+- Merged: eq-shell [#1170](https://github.com/eq-solutions/eq-shell/pull/1170) feat(quotes): allow attaching files while creating a new quo
+- Merged: eq-shell [#1168](https://github.com/eq-solutions/eq-shell/pull/1168) fix(intake): eq_site_merge_execute missing authenticated gra
+- Merged: eq-shell [#1166](https://github.com/eq-solutions/eq-shell/pull/1166) fix(security): session revocation fails closed on a DB looku
+- Merged: eq-shell [#1164](https://github.com/eq-solutions/eq-shell/pull/1164) fix(auth): recovery-email nudge never cleared; show/hide tog
 
 ## ⚠ Needs you (3)
 
@@ -27,10 +27,11 @@ _2026-08-02 18:33 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-9 (P0 — confirmed exposure, same window as SEC-3, possible second exposure 2026-07-27) — A different service_role key (`jvkn`/eq-canonical) was pasted directly into a ch · [security-register.md](ops/security-register.md)
 
-## 🙋 Waiting on you (107)
+## 🙋 Waiting on you (108)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
+- **EQ** · **Sentry EQ-FIELD-10 recurred on this same PR's preview deploy — tracked, not fixed.** [no-tenant-id](https://eq-solutions.sentry.io/issues/138007377/), 26 events / 3 users, 2026-08-01→02, `deploy-preview-622--eq-field.netlify.app` (demo tenant, v3.5.429). Confirmed by reading the code: the dashboard map's bounded JWT-tenant-id retry (v3.5.403 — 4 tries × 1500ms) fully exhausted before the Shell→Field JWT handoff landed. Real race, not fresh noise — substatus is *regressed* (previously marked resolved). Not caused by this PR's actual diff (filter row / map default / table sizing) — more likely surfaced by preview's colder function starts than production sees. Degrades gracefully on exhaustion ("Map unavailable right now", self-heals next render). **Royce's call 2026-08-03: track only, no fix yet** — preview-only so far, not confirmed on production traffic, TODAY.md goals still unset so nothing forces this now. Two fix directions if it recurs on production: widen the retry budget/interval, or have the map card listen for the Shell→Field JWT-ready event instead of polling a fixed schedule. _(added 2026-08-03)_
 - **EQ** · **Royce to retry the actual save in the browser** to confirm end-to-end — DB-level fix is verified, only the real click-through confirms the full path. _(added 2026-08-02)_
 - **EQ** · **Staff duplicate handling — still Archive-only, needs your call before any build.** A real staff merge fans out into Field-owned operational tables (timesheets, schedule, licences, dispatch) — per the durable architecture rule, that can't be rebuilt Shell-side; it needs Field-repo coordination, which is a scope decision, not something to default on. _(added 2026-08-02)_
 - **EQ** · **Royce to click through live**: open a site, assign a supervisor from its own contact list, save, reload, confirm it sticks; toggle "Show archived" on the Sites list and confirm it filters/tags correctly. Needs a real sign-in, which is off-limits for Claude to do on your behalf. _(added 2026-08-02)_
@@ -42,14 +43,13 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **EQ** · **Royce to click through live**: sidebar logo and the admin Media Library page (grid + edit modal) for a tenant with a logo set — confirm images still render correctly after the switch above. _(added 2026-08-01)_
 - **EQ** · **Royce to click through live on a real device** — confirm the "take a photo" sheet feels right end to end (camera opens, OCR reads the card, fallback link works). Note: the code merged this morning but wasn't actually live yet when Royce first tried it — this repo's deploy isn't automatic on merge, and nobody had triggered one. Deployed and confirmed live later the same day. _(added 2026-08-01, updated 2026-08-01)_
 - **EQ** · **Royce to click through live**: sign in on core.eq.solutions and confirm Cards/Field/Service each load past "Authorising…" — needs a real login, which Claude can't do on Royce's behalf. _(added 2026-08-01)_
-- **EQ** · **Royce to click through live**: open Intake as a signed-in user and confirm the page actually renders (not just that the site responds) — needs a real login, which Claude can't do on Royce's behalf. _(added 2026-08-01)_
-_…and 95 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 96 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 0 | — |
+| eq-shell | ? unknown | ? | 1 | 0d |
 | eq-solves-service | ? unknown | ? | 0 | — |
 | eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ? unknown | ? | 0 | — |
@@ -73,6 +73,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-02 | eq-shell | [#1194](https://github.com/eq-solutions/eq-shell/pull/1194) chore(control-plane): backfill missing source for eq_cards_is_pla |
 | 2026-08-02 | eq-shell | [#1180](https://github.com/eq-solutions/eq-shell/pull/1180) feat(documents): internal document sign-off register schema (tena |
 | 2026-08-02 | eq-shell | [#1192](https://github.com/eq-solutions/eq-shell/pull/1192) fix(auth): self-join fixes — worker row, email-drop notice, photo |
 | 2026-08-02 | eq-shell | [#1191](https://github.com/eq-solutions/eq-shell/pull/1191) chore(intake): auto re-vendor eq-intake/eq-platform |
@@ -87,7 +88,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-02 | eq-shell | [#1181](https://github.com/eq-solutions/eq-shell/pull/1181) feat(auth): surface self-join approvals in the Staff pending pane |
 | 2026-08-02 | eq-shell | [#1182](https://github.com/eq-solutions/eq-shell/pull/1182) fix(intake): switch re-vendor workflow to a dedicated, correctly- |
 | 2026-08-02 | eq-shell | [#1179](https://github.com/eq-solutions/eq-shell/pull/1179) fix(intake): auto-vendored PRs must use a PAT, not GITHUB_TOKEN,  |
-| 2026-08-02 | eq-solves-service | [#683](https://github.com/eq-solutions/eq-service/pull/683) fix(reports): PM report supervisor/contact fields ignored the sit |
 _Showing 15 of 132 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -124,7 +124,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 3083 | 489 | 124 | 12 |
+| [EQ](eq/pending.md) | 3076 | 490 | 119 | 12 |
 | [SKS](sks/pending.md) | 424 | 83 | 5 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 402 | 37 | 5 | 1 |
@@ -133,11 +133,11 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | Date | Session |
 |------|---------|
+| 2026-08-03 | [EQ-FIELD-10 Sentry triage: tracked, not fixed (Royce's call)](sessions/2026-08-03.md) |
 | 2026-08-02 | [eq-solves-service: PM reports were showing the wrong "supervisor" and blank contact details, never wired to the real site-supervisor feature](sessions/2026-08-02.md) |
 | 2026-08-01 | [Confirmed the "no Supabase connector" finding, then closed a real EQ-tenant roster gap found via a backlog sweep](sessions/2026-08-01.md) |
 | 2026-07-31 | [Quote events now stamp app_source='ops' instead of the retired app name (continuation of 2026-07-30)](sessions/2026-07-31.md) |
 | 2026-07-30 | [`__personal__` tenant "retired" doc claim corrected against live data](sessions/2026-07-30.md) |
-| 2026-07-30 | [guard.js selftest fixed; ~/.claude brought under version control](sessions/2026-07-30-guard-selftest-claude-git.md) |
 _[sessions/](sessions/) · 5 shown_
 
 ## Substrate honesty
@@ -145,4 +145,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-02 18:33 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-02 19:02 UTC._
