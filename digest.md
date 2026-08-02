@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-02 01:11 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-02 05:20 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-02 01:04 UTC → 2026-08-02 01:11 UTC)
+## Since last refresh (2026-08-02 01:11 UTC → 2026-08-02 05:20 UTC)
 
-- Merged: eq-shell [#1172](https://github.com/eq-solutions/eq-shell/pull/1172) fix(ui): consolidate toast feedback, honest-disable unbuilt 
-- Merged: eq-shell [#1169](https://github.com/eq-solutions/eq-shell/pull/1169) chore(intake): replace manual re-vendor steps with a script
-- Merged: eq-shell [#1167](https://github.com/eq-solutions/eq-shell/pull/1167) chore(intake): re-vendor eq-schemas package.json — closes aj
-- Merged: eq-shell [#1165](https://github.com/eq-solutions/eq-shell/pull/1165) fix(security): quote-email gate, iframe sandbox docs, real t
-- Merged: eq-shell [#1163](https://github.com/eq-solutions/eq-shell/pull/1163) fix(security): correct a mistaken audit finding on retention
-- Merged: eq-shell [#1162](https://github.com/eq-solutions/eq-shell/pull/1162) chore(intake): re-vendor eq-platform root config — closes 3 
-- Merged: eq-shell [#1160](https://github.com/eq-solutions/eq-shell/pull/1160) fix(auth): capture email during role-tagged self-join
-- Merged: eq-shell [#1158](https://github.com/eq-solutions/eq-shell/pull/1158) chore(deps): bump brace-expansion overrides to close 2 CVEs
+- Merged: eq-shell [#1183](https://github.com/eq-solutions/eq-shell/pull/1183) chore(intake): auto re-vendor eq-intake/eq-platform
+- Merged: eq-shell [#1171](https://github.com/eq-solutions/eq-shell/pull/1171) fix(intake): eq_site_advisory_flag_pair missing authenticate
+- Merged: eq-shell [#1170](https://github.com/eq-solutions/eq-shell/pull/1170) feat(quotes): allow attaching files while creating a new quo
+- Merged: eq-shell [#1168](https://github.com/eq-solutions/eq-shell/pull/1168) fix(intake): eq_site_merge_execute missing authenticated gra
+- Merged: eq-shell [#1166](https://github.com/eq-solutions/eq-shell/pull/1166) fix(security): session revocation fails closed on a DB looku
+- Merged: eq-shell [#1164](https://github.com/eq-solutions/eq-shell/pull/1164) fix(auth): recovery-email nudge never cleared; show/hide tog
+- Merged: eq-shell [#1161](https://github.com/eq-solutions/eq-shell/pull/1161) fix(intake): duplicate React instance breaking /intake in pr
+- Merged: eq-shell [#1159](https://github.com/eq-solutions/eq-shell/pull/1159) chore(intake): re-vendor eq-intake/eq-platform — closes 3 De
 
 ## ⚠ Needs you (3)
 
@@ -31,7 +31,7 @@ _2026-08-02 01:11 UTC · what needs your attention. Full snapshot: [suite-state.
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
-- **EQ** · eq-shell #1183 itself (the actual content the automation found) still needs Royce's normal review before merging — it never merges on its own by design. _(added 2026-08-02)_
+- **EQ** · **Royce to retry the actual save in the browser** to confirm end-to-end — DB-level fix is verified, only the real click-through confirms the full path. _(added 2026-08-02)_
 - **EQ** · eq-shell's main branch has no protection at all — nothing stops someone (or an automated tool) from merging something that hasn't actually passed its checks. Flagged, not fixed — needs Royce's call on which checks to require. _(added 2026-08-02)_
 - **EQ** · **Royce to click through live**: open a site, assign a supervisor from its own contact list, save, reload, confirm it sticks; toggle "Show archived" on the Sites list and confirm it filters/tags correctly. Needs a real sign-in, which is off-limits for Claude to do on your behalf. _(added 2026-08-02)_
 - **EQ** · **Royce to check `admin/users/migrate` for SKS against the 44-workers number above** — the invite screen and the 44 are counted two different ways (one by tenant employee record, one by Cards worker record), so they may not match exactly. Worth confirming they're the same gap before assuming the invite screen alone closes it. _(added 2026-08-02)_
@@ -63,7 +63,7 @@ _…and 94 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 | eq-shell | [auth-stall: chunk-error](https://eq-solutions.sentry.io/issues/137294044/) | 19 | 2026-08-01 |
 | eq-shell | [Error: Workers never invited to join, past grace period: 44](https://eq-solutions.sentry.io/issues/135740258/) | 13 | 2026-08-01 |
 | eq-solves-service | [UnrecognizedActionError: Server Action "40f8ab2385de590826648056ec7fc02ebdd51eb8](https://eq-solutions.sentry.io/issues/122209933/) | 10 | 2026-08-01 |
-| eq-shell | [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/) | 6 | 2026-07-30 |
+| eq-shell | [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/) | 7 | 2026-08-02 |
 | eq-field | [Error: 404: {"code":"PGRST202","details":"Searched for the function public.get_s](https://eq-solutions.sentry.io/issues/138015513/) | 4 | 2026-08-01 |
 | eq-cards | [<unknown>](https://eq-solutions.sentry.io/issues/137265513/) | 4 | 2026-07-29 |
 | eq-cards | [TimeoutException: TimeoutException after 0:00:14.000000: Future not completed](https://eq-solutions.sentry.io/issues/129414832/) | 4 | 2026-07-23 |
@@ -73,6 +73,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-02 | eq-shell | [#1183](https://github.com/eq-solutions/eq-shell/pull/1183) chore(intake): auto re-vendor eq-intake/eq-platform |
 | 2026-08-02 | eq-shell | [#1184](https://github.com/eq-solutions/eq-shell/pull/1184) feat(auth): per-role QR codes on the self-join links page |
 | 2026-08-02 | eq-shell | [#1181](https://github.com/eq-solutions/eq-shell/pull/1181) feat(auth): surface self-join approvals in the Staff pending pane |
 | 2026-08-02 | eq-shell | [#1182](https://github.com/eq-solutions/eq-shell/pull/1182) fix(intake): switch re-vendor workflow to a dedicated, correctly- |
@@ -87,11 +88,11 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-01 | eq-shell | [#1176](https://github.com/eq-solutions/eq-shell/pull/1176) fix(intake): pnpm/action-setup can't auto-detect version with a c |
 | 2026-08-01 | eq-shell | [#1175](https://github.com/eq-solutions/eq-shell/pull/1175) chore(intake): automate the eq-solves-intake re-vendor check |
 | 2026-08-01 | eq-shell | [#1174](https://github.com/eq-solutions/eq-shell/pull/1174) fix(observability): real stack traces on stuck-crash, verify-shel |
-| 2026-08-01 | eq-shell | [#1173](https://github.com/eq-solutions/eq-shell/pull/1173) fix(brand): correct stale SKS navy #1F335C to live #203060 |
-_Showing 15 of 133 · full record in [sessions/](sessions/)_
+_Showing 15 of 131 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **Not swept: whether any of the other ~22 canonical objects (defects, contract_scopes, job_plans, maintenance_checks, etc.) have the same "trigger references a column the view doesn't expose" bug class.** This fix only covered the three objects (`customers`, `sites`, `assets`) touched by the 2026-07-27 change — no broader check across all canonical objects has been done. _(added 2026-08-02)_
 - Extending the AI duplicate-checker beyond Sites to Contacts/Staff — a real gap, but those work differently (grouped records, not simple pairs), so it needs its own design decision before building, not a straight copy. _(added 2026-08-02)_
 - Royce asked what the "next sprint" should be after this — not yet defined, waiting on his answer. _(added 2026-08-02)_
 - Royce is checking directly whether EQ Intake can push timesheets into Workbench (SKS's own payroll tool) — none of the 12 export formats target it today. _(added 2026-08-02)_
@@ -101,8 +102,7 @@ _Showing 15 of 133 · full record in [sessions/](sessions/)_
 - **Worth checking separately**: the tool that rolls database changes out to every company's system may have a bug where an instruction placed right after defining a new function can silently not run, even though the file it's in is marked as successfully applied. Only caught because this one case got tested by hand — there could be others sitting the same way undetected. Not investigated further. _(added 2026-08-01)_
 - **Saving/updating records through one part of the database layer has no real type-checking behind it** — turns out this is already known, tracked work (the app's own 30-day plan lists it), not a fresh find: the auto-generated database description file only covers the app's default section, but this data actually lives in a different section the file never describes, so the "trust me" overrides are a deliberate stand-in, not an accident. Confirmed live: the record it reads/writes from isn't a plain table, it's a view with its own custom save-behaviour attached — so even generating a fuller description file may not fully close the gap without extra work. Affects roughly 17 places. Needs the proper database tool run with the right settings (not available through the tools used this session), then each of the 17 spots checked by hand. _(added 2026-08-01, corrected 2026-08-01 — see below)_
 - **Photo → AI Risk Suggestions** (the secondary feature from the original review — supervisor takes site photos, AI suggests hazards, human confirms which to add) — deliberately not started. Needs its own go/no-go before scoping further: real per-call API spend, a new Netlify Function (would clone `eq-agent.js`'s existing auth/rate-limit shape), and site photos leaving the tenant boundary to Anthropic's API. _(added 2026-08-01)_
-- **eq-cards / eq-design-tokens / sks-charters / eq-website**: alerts just switched on, the very first scan came back clean on all 4 — worth a second look in a day or two in case that first scan didn't fully finish rather than assuming it's actually clean. _(added 2026-08-01)_
-_…and 365 more · [eq/pending.md](eq/pending.md)_
+_…and 366 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -124,7 +124,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 3044 | 488 | 113 | 12 |
+| [EQ](eq/pending.md) | 3057 | 490 | 116 | 12 |
 | [SKS](sks/pending.md) | 424 | 83 | 5 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 402 | 37 | 5 | 1 |
@@ -133,7 +133,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | Date | Session |
 |------|---------|
-| 2026-08-02 | [Fixed stale SKS brand color in the customer-facing quote portal](sessions/2026-08-02.md) |
+| 2026-08-02 | [eq-solves-service: root-caused "Could not update site access" to a 6-day-old dead trigger, fixed and verified live](sessions/2026-08-02.md) |
 | 2026-08-01 | [Confirmed the "no Supabase connector" finding, then closed a real EQ-tenant roster gap found via a backlog sweep](sessions/2026-08-01.md) |
 | 2026-07-31 | [Quote events now stamp app_source='ops' instead of the retired app name (continuation of 2026-07-30)](sessions/2026-07-31.md) |
 | 2026-07-30 | [`__personal__` tenant "retired" doc claim corrected against live data](sessions/2026-07-30.md) |
@@ -145,4 +145,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-02 01:11 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-02 05:20 UTC._
