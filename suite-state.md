@@ -60,11 +60,7 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-02)
 
-**eq-field:**
-- #626 fix(dashboard): eq/demo tenant map now renders from seed data (v3.5.433)
-
-**eq-shell:**
-- #1199 fix(auth): recovery-email nudge distinguishes dropped email from never-given
+_No open PRs_
 
 ---
 
