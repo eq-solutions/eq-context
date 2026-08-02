@@ -14,6 +14,17 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: a second function broken by the same July 30 migration, found by checking the sibling of yesterday's fix (2026-08-02)
+*Yesterday's fix (`eq_site_merge_execute` missing its permission) came from one migration editing two functions. Checked whether the other one had the same problem — it did.*
+
+- [x] **"Flag as duplicate" on the Sites Dupes tab had been broken for every manager on both companies' systems since 2026-07-30** — identical missing-permission bug to yesterday's site-merge fix, same root cause (the July 30 migration edited the function without re-adding its permission grant, and the safety-net trigger silently stripped it). Fixed live on both systems, migration recorded properly. eq-shell [PR #1171](https://github.com/eq-solutions/eq-shell/pull/1171), merged. Royce closed out the database bookkeeping himself afterward.
+- [x] Built a shareable one-page summary of what EQ Intake actually does today — a plain-English feature rundown, a diagram of how data flows through it, and an honest scorecard of what's still missing against the full vision (~62/100, self-assessed). Corrected mid-build on Royce's direct feedback: the diagram had wrongly credited EQ Cards with capturing safety paperwork (prestarts, safety method statements, toolbox talks, incident reports) — that's EQ Field's job. EQ Cards only handles licences and onboarding.
+
+**Deferred:**
+- [ ] **Worth a dedicated look**: the same database-update tool has now silently dropped a permission on two different functions from the identical edit pattern (changing an existing function without re-adding its permission). The safety-net trigger only warns about *new* functions, not edits to existing ones. Nobody's checked whether any other function has the same silent gap. _(added 2026-08-02)_
+
+---
+
 ## eq-field: Dashboard polish — filter row, map default view, table scroll — 6 rounds shipped, real map bug root-caused (2026-08-02)
 *Rapid iterative feedback rounds on the Dashboard page's "Where people are today" map + filter bar + Site Breakdown table, each round shipped as its own version and verified live against `field.eq.solutions` after merge.*
 
