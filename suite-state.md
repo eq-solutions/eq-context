@@ -61,6 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-02)
 
 **eq-shell:**
+- #1184 feat(auth): per-role QR codes on the self-join links page
 - #1183 chore(intake): auto re-vendor eq-intake/eq-platform
 - #1180 feat(documents): internal document sign-off register schema (tenant 0233)
 
