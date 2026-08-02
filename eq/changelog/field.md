@@ -9,6 +9,14 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-08-02] Dashboard polish: filter row centering, map default view + FIX (crop root-caused), Site Breakdown single-scroll (v3.5.427→v3.5.431, #620–#624)
+- Filter row: real flexbox `align-items:center` on the label/hint spans (replacing an earlier line-height approach) — confirmed via direct pixel check on the deploy preview, all five row elements share identical top/bottom/height.
+- Map default view flipped to the tight "busiest sites" cluster (was "every site with people," which zoomed out to include one distant outlier and left most of the canvas empty).
+- FIX — map default-view crop: the busiest cluster (guaranteed included in the default fit by the code's own selection logic) was cropping off-screen on a genuinely fresh load, only correctable by the user manually panning. Root cause: Leaflet computing its fit before the surrounding Shell iframe's layout had settled. Fixed with `map.invalidateSize()` immediately before every default-view fit call.
+- Site Breakdown table: removed a nested double-scrollbar — a 10-row internal scroll frame added earlier the same session collided with the outer Shell iframe's own page scroll. Reverted to natural page-level scroll (also shows every site again, not a capped 10-row window).
+- Map canvas height: 816px → 938px (+15%, direct ask). Filter row + table row sizing tuned tighter on follow-up feedback in the same session.
+- Not independently verified: whether `invalidateSize()` actually resolves the crop in the real Shell-embedded repro (`core.eq.solutions/sks/field`, real SKS data) — this session's tooling had no path to Core auth. See `eq/pending.md` for the follow-up check.
+
 ## [2026-08-01] Safety Completeness Checker: Prestart + Toolbox (MERGED, v3.5.405, #597)
 - Extends the Site Audit completeness banner below to Prestart and Toolbox. Prestart: when any High-Risk Construction Work category is ticked, flags if no photos are attached or no hazards are noted — scoped to HRCW selection so a routine prestart with no HRCW ticked is never flagged for a photo it never needed. Toolbox: flags a blank "Key safety message" once a topic is entered — the one field the form's own copy already frames as the point of the talk.
 - Same soft-gate UX throughout: yellow banner + "Go fix" (scrolls + focuses the field), never blocks Save Draft, Submit proceeds on a "Submit anyway?" confirm rather than hard-blocking. New shared helpers (`renderGapsBanner`/`gapsGoFix`/`confirmSubmitWithGaps`) added to `site-reports-shared.js` so Diary/Weekly can adopt the same pattern later without re-deriving it.
