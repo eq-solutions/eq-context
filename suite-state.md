@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-02)
 
-**eq-cards:**
-- #198 feat(wallet): Show mode — offline fullscreen ID display for site gates
-
 **eq-field:**
 - #625 fix(dashboard): EQ-FIELD-10 — event-driven session-ready signal (v3.5.432)
 
