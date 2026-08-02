@@ -1,10 +1,10 @@
 ---
 title: EQ — Internal Document Sign-off Register (Design)
 owner: Royce Milmlow
-last_updated: 2026-08-02
+last_updated: 2026-08-03
 scope: Design for an internal-only document sign-off + reminder register — upload once, push to signers, track who's signed, chase who hasn't. First cut of the safety/quality/commissioning-docs idea explored 2026-08-01.
 read_priority: high
-status: in build — step 1 (data location) answered against live schema 2026-08-02; step 2 (schema) written as eq-shell tenant migration `0233_document_signoff_register.sql`, committed to branch `claude/document-signoff-register`, NOT applied to any tenant
+status: in build — steps 1-3 done. Schema (`0233_document_signoff_register.sql`) applied live to both ehow and zaap 2026-08-02 (eq-shell PR #1180). Shell upload+push UI merged and deployed 2026-08-03 (eq-shell PR #1196). Step 4 (Field: sign) not started.
 ---
 
 # EQ — Internal Document Sign-off Register
@@ -152,22 +152,41 @@ starts — no big-bang schema-then-UI drop.
 1. ~~**Confirm where the data lives.**~~ **DONE 2026-08-02** — `ehow` /
    `app_data`, via the eq-shell `supabase/tenant-migrations/` One Spine.
    Verified against both live planes; see the verification section above.
-2. ~~**Schema.**~~ **WRITTEN 2026-08-02, NOT APPLIED** — eq-shell
-   `supabase/tenant-migrations/0233_document_signoff_register.sql`, on
-   branch `claude/document-signoff-register`. Four tables + a
-   `document_register` read view (`security_invoker`, per drift CHECK 7),
-   tenant RLS on all four, no anon/PUBLIC grant. All three locked
-   decisions are DB constraints rather than UI rules: no `'all'`
-   target_kind exists so a broadcast is not insertable; nothing gates
-   rostering; `tg_document_version_published` repoints the document and
-   supersedes sign-offs on every other version, while superseded rows
-   retain `signed_at` + `signed_content_hash` as the audit trail.
-   Verified: migration-hygiene lint clean, all 53 statements parse
-   against the real PostgreSQL grammar (libpg_query). **Apply is the
-   gated `tenant-migrate.yml` dispatch — never hand-applied.**
-3. **Shell: upload + push.** Admin surface to upload a document, set
-   version, pick audience (role/crew/site/person). Reuses Shell's
-   existing cross-app admin surface — no new nav shell.
+2. ~~**Schema.**~~ **APPLIED 2026-08-02** — eq-shell
+   `supabase/tenant-migrations/0233_document_signoff_register.sql`
+   (PR [#1180](https://github.com/eq-solutions/eq-shell/pull/1180)),
+   dispatched via `tenant-migrate.yml`, live-confirmed on both ehow
+   (sks-canonical) and zaap (eq-canonical-internal) — a real
+   insert → publish → supersede round-trip was run on ehow inside a
+   rolled-back transaction to prove the trigger, not just check the
+   tables exist. Four tables + a `document_register` read view
+   (`security_invoker`, per drift CHECK 7), tenant RLS on all four, no
+   anon/PUBLIC grant. All three locked decisions are DB constraints
+   rather than UI rules: no `'all'` target_kind exists so a broadcast is
+   not insertable; nothing gates rostering; `tg_document_version_published`
+   repoints the document and supersedes sign-offs on every other version,
+   while superseded rows retain `signed_at` + `signed_content_hash` as
+   the audit trail.
+3. ~~**Shell: upload + push.**~~ **MERGED + DEPLOYED 2026-08-03** — eq-shell
+   PR [#1196](https://github.com/eq-solutions/eq-shell/pull/1196)
+   (squash `50f202f`, Royce's "merge #1196" go). `upload-document-version.ts`
+   (sha256 computed server-side, publishes immediately so the 0233
+   trigger handles supersede) + `push-document-audience.ts` +
+   `AdminDocumentUpload.tsx` (routed `admin/documents`, tile on
+   `AdminHub.tsx`). Three decisions made at this step, all Royce's
+   explicit call, not inferred: audience materializes as a **snapshot at
+   publish**, not dynamic membership; **crew resolves via the tenant
+   canonical tables** (`app_data.teams`/`team_members` — confirmed live
+   these exist on ehow but not at all on zaap, handled as an expected
+   "no crews here yet" state, not an error); **site targeting is hidden
+   entirely** for v1 (`app_data.staff.default_site_id` exists in-schema
+   but is 0/99 populated live — no real data to push against yet).
+   Permission gate is **interim** — authenticated session only, same
+   posture as `list-attachments.ts` — because no permission in
+   `@eq-solutions/roles`' real MATRIX cleanly fits "upload/push a
+   document" and Royce's call was not to block the build on adding one.
+   Netlify auto-deploys eq-shell on merge — live on core.eq.solutions or
+   about to be. **Not yet click-tested live.**
 4. **Field: sign.** Signers see outstanding documents, tap to confirm.
    Reuses Field's existing auth session — signature is identity +
    timestamp + version hash, no new capture UI to design.
@@ -178,7 +197,7 @@ starts — no big-bang schema-then-UI drop.
    SMP) end-to-end before onboarding the rest of the switchboard
    schedule / ITC / O&M backlog into the register.
 
-Steps 1–2 are done as of 2026-08-02 (step 2 written and committed, not
-applied). Step 3 (Shell upload + push UI) is the next build action and
-needs Royce's go-ahead, since it is the first step that puts a surface in
-front of users. Nothing has touched a live tenant.
+Steps 1–3 are done as of 2026-08-03 — schema applied live, upload+push UI
+merged and deployed. Step 4 (Field: sign) is the next build action and
+needs Royce's go-ahead. Nobody can sign anything yet: documents can be
+uploaded and pushed, but the recipient-facing half doesn't exist.
