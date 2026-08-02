@@ -8,6 +8,11 @@ status: live
 
 # Changelog — EQ Receipts
 
+## [2026-08-03] Full-width nav + one-click Review from Inbox
+- **Nav rebuilt as its own full-width wrapping row** instead of a horizontal-scroll strip in the header — every item (Inbox, Dashboard, Review, Exports, Settings, Sign out) is now visible from the homescreen without swiping on mobile.
+- **Inbox photo imports now carry the receipt id back from `extract-receipt`** — each finished item gets a Review link straight to Verify, plus a Review all button once anything's done, so a photo import can be finished from the Inbox in one click. eq-receipts [PR #18](https://github.com/eq-solutions/eq-receipts/pull/18), merged.
+- **Not click-tested live** — same auth-gated limitation as prior entries; both changes still need a real-device pass alongside the still-outstanding Dashboard → Review → Verify smoke test.
+
 ## [2026-08-01] Dependabot alerts enabled for the first time, both surfaced findings fixed same session
 - **Dependabot alerts had been disabled on this repo entirely** — not clean, just unwatched (the GitHub API returned "alerts are disabled" rather than an empty list). Enabled via the vulnerability-alerts API, part of an org-wide sweep that found the same gap on 4 other repos (eq-cards, eq-design-tokens, sks-charters, eq-website).
 - **First scan surfaced 2 open alerts, both high.** `brace-expansion` (GHSA-mh99-v99m-4gvg, dev-only transitive dep) fixed via `npm audit fix`, `1.1.16` → `1.1.18`. eq-receipts [PR #16](https://github.com/eq-solutions/eq-receipts/pull/16), merged.

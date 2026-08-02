@@ -14,6 +14,26 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-cards/eq-shell: worker data consent/sync architecture Q&A — one live bug found, one decision made, no code shipped (2026-08-03)
+
+Royce asked four architecture questions about the Cards→tenant consent model (release mechanics, sync freshness, multi-tenant support, what "released" means technically). Answered against live systems, not docs — found a real bug in the process.
+
+- [ ] **`credentials-canonical-sync` is broken and not actually running** — the edge function that's supposed to copy a worker's licence/credential updates from Cards into the SKS compliance/Field-legacy database is deployed but wired to nothing (no database trigger calls it), and even if it were, it hardcodes the wrong SKS tenant ID (the old, corrected-in-2026-06 wrong value). Net effect: a worker updating a licence or White Card in Cards today does not reach the older SKS compliance view at all. Needs Royce's call on reviving it (fix + wire it up) vs retiring it in favour of the newer eq-field app's live-read pattern, which doesn't have this problem by design. Spawned as background task `task_5687d06b`, already started in a separate session. _(added 2026-08-03)_
+- [x] **Decided: no per-tenant credential-sharing granularity for now** — a worker's credentials stay visible to every company they're linked to (current default), rather than being releasable to one employer at a time. Revisit only if a worker with two employers actually asks to hide a credential from one but not the other — not before. Logged as memory `consent_release_model_decision`.
+
+---
+
+## eq-receipts: full-width nav + one-click Review from Inbox after a photo import (2026-08-03)
+*Royce asked for two things: the top nav needed a horizontal slide to reach every option on mobile, and there was no way to jump straight from a just-imported receipt into Review — had to navigate there separately.*
+
+- [x] **Nav rebuilt as its own full-width row that wraps** instead of a horizontal-scroll strip — every menu item (Inbox, Dashboard, Review, Exports, Settings, Sign out) is now visible from the homescreen without swiping. eq-receipts [PR #18](https://github.com/eq-solutions/eq-receipts/pull/18), merged to main.
+- [x] **Inbox photo imports now carry the receipt id back from `extract-receipt`** — each finished item gets a Review link straight to Verify, plus a Review all button once anything's done, so a photo import can be finished in one click. Same PR.
+
+**Deferred:**
+- [ ] **Neither change has been clicked through live** — Supabase OTP auth gated this session out of the real app, no test login available. Same underlying gap as the still-open react-router click-through below — worth doing both in the same real-device pass. _(added 2026-08-03)_
+
+---
+
 ## eq-shell: a second function broken by the same July 30 migration, found by checking the sibling of yesterday's fix (2026-08-02)
 *Yesterday's fix (`eq_site_merge_execute` missing its permission) came from one migration editing two functions. Checked whether the other one had the same problem — it did.*
 
