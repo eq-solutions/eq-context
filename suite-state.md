@@ -60,8 +60,11 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-02)
 
+**eq-field:**
+- #623 v3.5.430 — Dashboard: Site Breakdown back to single-scroll
+
 **eq-shell:**
-- #1183 chore(intake): auto re-vendor eq-intake/eq-platform
+- #1185 feat(auth): collapse worker-add header into one button + a menu
 - #1180 feat(documents): internal document sign-off register schema (tenant 0233)
 
 ---
