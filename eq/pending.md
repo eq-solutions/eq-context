@@ -72,7 +72,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 **Deferred:**
 - [ ] Royce is checking directly whether EQ Intake can push timesheets into Workbench (SKS's own payroll tool) — none of the 12 export formats target it today. _(added 2026-08-02)_
 - [ ] **Royce to check `admin/users/migrate` for SKS against the 44-workers number above** — the invite screen and the 44 are counted two different ways (one by tenant employee record, one by Cards worker record), so they may not match exactly. Worth confirming they're the same gap before assuming the invite screen alone closes it. _(added 2026-08-02)_
-- [ ] **Royce to say "merge" on [PR #104](https://github.com/eq-solutions/eq-solves-intake/pull/104)** — test-only change, CI green, no code behaviour changed. _(added 2026-08-02)_
 
 ---
 
