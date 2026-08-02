@@ -1,0 +1,184 @@
+---
+title: EQ — Internal Document Sign-off Register (Design)
+owner: Royce Milmlow
+last_updated: 2026-08-02
+scope: Design for an internal-only document sign-off + reminder register — upload once, push to signers, track who's signed, chase who hasn't. First cut of the safety/quality/commissioning-docs idea explored 2026-08-01.
+read_priority: high
+status: in build — step 1 (data location) answered against live schema 2026-08-02; step 2 (schema) written as eq-shell tenant migration `0233_document_signoff_register.sql`, committed to branch `claude/document-signoff-register`, NOT applied to any tenant
+---
+
+# EQ — Internal Document Sign-off Register
+
+## Why
+
+Direct pain, Royce's own words: *"impossible to know who has signed what."*
+Picked via `/decide` (2026-08-01) as the low-hanging-fruit start over
+AI document generation — cheapest of the two, reuses infrastructure
+that's already live, and answers a fact Royce stated, not a guess.
+`TODAY.md` GOALS is UNSET, so this isn't weighed against a deadline —
+only against effort and stated pain.
+
+## Gap analysis — what exists today vs what this closes
+
+| Area | What exists today | Gap |
+|---|---|---|
+| Tracking who's signed a document | Nothing — no register, no view, no export. Matches Royce's stated pain exactly | **This is the whole gap.** Every other row below is supporting infrastructure that already exists |
+| Identity to sign against | Shell canonical auth — live, already the identity every app trusts | None — directly reusable, no new auth to design |
+| Reminder/expiry mechanics | Field's licence-expiry model ("Expiring soon" chip) — live, proven | Pattern exists but has never been pointed at documents |
+| Due-date + notify cron | Service's `maintenance_checks` due-dates + the pre-visit brief cron — live | Same shape, wrong target object — needs retargeting, not inventing |
+| Admin surface to push something to a targeted audience | Shell/Core already the cross-app admin point | No document-specific upload/audience UI yet |
+| Where a document is stored/versioned | ~~Ad hoc~~ **Corrected 2026-08-02:** `app_data.attachments` is a live polymorphic file spine (22 rows on ehow) with live upload/list API routes in Shell | No *document* or *version* record — the spine stores files against quotes/jobs/sites only (`VALID_ENTITY_TYPES` allowlist), with no version or hash concept |
+| Signature capture | ~~None~~ **Corrected 2026-08-02:** partial prior art exists — `app_data.swms.signatures` (jsonb, 0 rows) and eq-field's `public.toolbox_talks.attendance` (jsonb, live UI, per-attendee sign-off) | Both store sign-off *denormalised into jsonb*, which cannot answer "who has **not** signed" without a full scan. v1 needs relational rows — see the divergence note below |
+| Data location (schema) | ~~Not decided~~ **Resolved 2026-08-02** | **`ehow` / `app_data`**, via the eq-shell `supabase/tenant-migrations/` One Spine. Confirmed live, not inferred — see verification below |
+| External (non-EQ-user) signers | None | Deliberately deferred — no real case yet, not designed |
+| AI-drafted document content review | Not addressed by this initiative | Separate, already-flagged problem (raised 3× in the 2026-08-01 session) — this system tracks sign-off, it doesn't generate or review content |
+
+**Bottom line:** three of the four supporting mechanisms — identity, reminders, due-date/notify — already exist and are proven live elsewhere in the suite. The only real gap is the register itself. That's why this is the low-lift starting point.
+
+## Live-schema verification — 2026-08-02 (build plan step 1, closed)
+
+Queried live, not read from a doc. Both candidate planes checked.
+
+| Plane | What's actually there | Read |
+|---|---|---|
+| **`ehow`** (`ehowgjardagevnrluult`) — tenant operational plane | `app_data.swms` (0 rows, has `signatures jsonb` + `version` + status enum incl. `superseded`), `app_data.toolbox_talks` (0 rows), `app_data.attachments` (22 rows, polymorphic spine), `app_data.licences` (115), `public.toolbox_talks` (1 row, eq-field's own) | Every safety/quality document-adjacent table in the suite already lives here, tenant-scoped |
+| **`jvkn`** (`jvknxcmbtrfnxfrwfimn`) — canonical control plane | `public.licences` (175), `public.workers` (97), `public.organisations` (3), `worker_credentials`/`worker_inductions` (0 each), all of `shell_control.*` | Holds **cross-tenant person attributes and identity**, not tenant content |
+
+**Decision: `ehow` / `app_data`.** A document is tenant-owned operational
+content (an SKS SMP, a switchboard schedule) signed by that tenant's own
+staff — not a cross-tenant-identical entity like a licence type. Note
+licences exist on *both* planes (175 canonical on jvkn, 115 mirrored on
+ehow) precisely because a licence is a person attribute; a document is not.
+
+**Three findings that changed the design:**
+
+1. **`public.acknowledgments` is a trap.** Name suggests document
+   attestation; it is actually eq-field **peer recognition** (worker
+   praises worker — `given_by_name`, `message`, `tag`). Has its own RLS
+   in shell migrations 0138/0139. **Do not overload it.**
+2. **Sign-off prior art exists and disagrees with itself.** `app_data.swms.signatures`
+   and `public.toolbox_talks.attendance` both store sign-off as jsonb blobs.
+   Fine for a point-in-time form record; useless for "who hasn't signed."
+   The register diverges deliberately — relational rows, indexed — and the
+   migration header says why, so the divergence doesn't read as drift later.
+3. **`app_data.attachments` is the wrong shape to reuse for this.** It's the
+   many-files-per-entity spine. A document version is exactly *one* file and
+   the signature binds to that file's hash — routing through a polymorphic
+   many-table makes "exactly one file" unenforceable in the DB. Versions
+   carry `storage_path` directly and reuse the same private bucket. Reusing
+   the storage, not bending the table.
+
+Nothing named `documents`, `document_versions`, or `sign_off` exists
+anywhere in eq-shell, eq-field, or eq-solves-service. Not duplicating work.
+
+## What it reuses — not new infrastructure
+
+| Piece | Existing precedent |
+|---|---|
+| Identity — who's signing | Shell canonical auth — already the single identity source every app trusts |
+| Expiry/reminder pattern | Field's licence-expiry model (the "Expiring soon" filter chip) |
+| Due-date + notify pattern | Service's `maintenance_checks` due-dates + the pre-visit brief cron |
+| Distribution/admin surface | Shell (Core) — already the cross-app admin point |
+| Where people actually work day to day | Field |
+
+## Mechanism — v1 scope, internal signers only
+
+1. Upload a document + set signer(s)/audience from Core (Shell). Audience
+   is always targeted — role, crew, site, or specific people. No
+   broadcast-to-everyone shortcut in v1.
+2. Signers see it in Field, review it, tap to confirm.
+3. Signature = authenticated user ID + timestamp + hash of the document
+   version. No drawn signature, no vendor — identity is already proven
+   by the login, which is arguably stronger evidence than a typical
+   e-signature captured via an emailed link.
+4. Register view: document → version → assigned signers →
+   signed/outstanding → date. Purely informational — an unsigned
+   document blocks nothing (no rostering/clock-on gate) in v1.
+5. Reminder cron (same shape as the pre-visit brief cron) chases
+   outstanding signers on a schedule.
+6. Replacing a document (new version) supersedes every signature on the
+   prior version — signers must re-sign. The register never shows
+   someone as "signed" against content that's since changed underneath
+   them.
+
+## Explicitly out of scope for v1
+
+- **External (non-EQ-user) signers** — clients, site owners. Different
+  problem, needs either a signing vendor or a link+PIN flow. Not
+  designed, not needed until a real external-signing case shows up.
+- **AI-drafted or AI-parsed document content.** This is a tracking
+  system, not a generation system — deliberately sidesteps the
+  AI-touches-safety-content review problem raised three times in the
+  2026-08-01 session (photo→hazard suggestions, AI-drafted SWMS text,
+  scan-and-reproduce). That problem gets solved once, later, and reused
+  — not solved here.
+
+## Decisions — Q&A 2026-08-01
+
+| Question | Decision |
+|---|---|
+| Broadcast or targeted? | **Targeted only** — role, crew, site, or person. No "everyone" shortcut. |
+| Gate or informational? | **Informational only** — register + reminders, nothing blocked. Revisit as a separate, explicitly-scoped decision if a real case demands a gate. |
+| Versioning | **Auto-expire on new version** — a new version supersedes every prior signature; signers re-sign. |
+
+## Rough data shape (sketch only, not a migration)
+
+- `documents` — id, title, current_version_id, owner/uploader, tenant
+- `document_versions` — id, document_id, version_no, file ref,
+  uploaded_at, uploaded_by
+- `document_audiences` — document_id, target type (role / crew / site /
+  person) — no "all" row, per the targeted-only decision
+- `document_signoffs` — version_id, user_id, signed_at, status
+  (outstanding / signed / superseded)
+
+Still just a sketch — real column/constraint design happens at migration
+time, not here. But the three decisions above are locked, so the shape
+won't move on those axes.
+
+## Where it likely lives
+
+Distribution/admin UI in Shell, signing UI in Field, register +
+reminder logic as shared logic both read/write rather than owned by
+either alone — same shape as Shell already centralizing auth for
+apps that don't own identity themselves. Matches the existing
+architecture split (asset-scoped work → Service, crew/site-scoped work
+→ Field) rather than introducing a new owning app.
+
+## Build plan (v1)
+
+Sequenced so each phase produces something checkable before the next
+starts — no big-bang schema-then-UI drop.
+
+1. ~~**Confirm where the data lives.**~~ **DONE 2026-08-02** — `ehow` /
+   `app_data`, via the eq-shell `supabase/tenant-migrations/` One Spine.
+   Verified against both live planes; see the verification section above.
+2. ~~**Schema.**~~ **WRITTEN 2026-08-02, NOT APPLIED** — eq-shell
+   `supabase/tenant-migrations/0233_document_signoff_register.sql`, on
+   branch `claude/document-signoff-register`. Four tables + a
+   `document_register` read view (`security_invoker`, per drift CHECK 7),
+   tenant RLS on all four, no anon/PUBLIC grant. All three locked
+   decisions are DB constraints rather than UI rules: no `'all'`
+   target_kind exists so a broadcast is not insertable; nothing gates
+   rostering; `tg_document_version_published` repoints the document and
+   supersedes sign-offs on every other version, while superseded rows
+   retain `signed_at` + `signed_content_hash` as the audit trail.
+   Verified: migration-hygiene lint clean, all 53 statements parse
+   against the real PostgreSQL grammar (libpg_query). **Apply is the
+   gated `tenant-migrate.yml` dispatch — never hand-applied.**
+3. **Shell: upload + push.** Admin surface to upload a document, set
+   version, pick audience (role/crew/site/person). Reuses Shell's
+   existing cross-app admin surface — no new nav shell.
+4. **Field: sign.** Signers see outstanding documents, tap to confirm.
+   Reuses Field's existing auth session — signature is identity +
+   timestamp + version hash, no new capture UI to design.
+5. **Register + reminder cron.** Read view (document → version →
+   signer → status → date) plus a cron in the shape of the existing
+   pre-visit brief cron, chasing outstanding signers on a schedule.
+6. **Rollout.** Start with one real document (candidate: an existing
+   SMP) end-to-end before onboarding the rest of the switchboard
+   schedule / ITC / O&M backlog into the register.
+
+Steps 1–2 are done as of 2026-08-02 (step 2 written and committed, not
+applied). Step 3 (Shell upload + push UI) is the next build action and
+needs Royce's go-ahead, since it is the first step that puts a surface in
+front of users. Nothing has touched a live tenant.
