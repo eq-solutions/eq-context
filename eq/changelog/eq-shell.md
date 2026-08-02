@@ -9,6 +9,9 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-03 (PR #1198 MERGED — react-hooks/refs fix in the iframe pre-warm keeper)
+- **Fixed 8 pre-existing `react-hooks/refs` eslint errors in `App.tsx`'s `TenantTree()`.** `evermounted` — tracks which of Field/Cards/Service have ever been the active route so a visited iframe never unmounts — was a `useRef<Set>` read and mutated directly during render, which `eslint-plugin-react-hooks@^7.1.1`'s `react-hooks/refs` rule now forbids. Converted to `useState<Set>` updated via a guarded render-time `setState` call (React's documented "adjust state during render" pattern) rather than `useEffect`, specifically to avoid a one-render flash on first navigation into a not-yet-prewarmed app — same synchronous mount-on-this-render behavior as before, just React-tracked instead of ref-mutated. Surfaced as an out-of-scope finding from the `document-signoff-shell-push` session (PR #1196). All 4 required checks green, squash-merged by Royce (`d5506d81`). **Not yet click-tested live** — needs Royce to confirm Field/Service/Cards still pre-warm and switching stays fast.
+
 ## 2026-08-02 (cont. — PR #1187 MERGED, #1183 MERGED, branch protection set)
 - **PR #1183 merged** — the auto re-vendor PR opened by the intake-revendor-check automation (see the entry below), reviewed (single-file `pnpm-lock.yaml` diff, all 4 required checks + Netlify deploy preview green) and merged. First real PR the automation produced end-to-end.
 - **Branch protection set on `main`** — was completely unprotected (`branches/main/protection` returned 404 pre-fix, confirmed live). Required status checks now enforce the same 4 checks CI already treated as "required" in name only: `typecheck · test · lint`, `gitleaks`, `Migration ledger hygiene (added files)`, `Schema drift + anon-grant + policy-lint`. Set via the GitHub API, `enforce_admins: false`.

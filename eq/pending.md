@@ -15,9 +15,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ---
 
 ## eq-shell: fixed 8 pre-existing react-hooks/refs eslint errors in the iframe pre-warm keeper (2026-08-03)
-*Surfaced as an out-of-scope finding from the document-signoff-shell-push session (PR #1196) — a newer eslint-plugin-react-hooks version now forbids reading/mutating a ref's `.current` during render, which `TenantTree`'s iframe pre-warm tracking was doing. Converted to `useState` + a guarded render-time `setState` call instead of the more obvious `useEffect` port, specifically to avoid a one-render flash on first navigation into a not-yet-prewarmed app.*
-
-- [x] **`evermounted` (tracks which of Field/Cards/Service have ever been the active route, so their iframe never unmounts) converted from `useRef<Set>` to `useState<Set>`.** `npx eslint src/App.tsx` 0 errors (was 8), `tsc -b` clean, full `pnpm run build` succeeds, 278/278 tests pass. eq-shell [PR #1198](https://github.com/eq-solutions/eq-shell/pull/1198), not yet merged — awaiting CI + Royce's review.
 
 **Deferred:**
 - [ ] **Live click-through not done** — confirm on core.eq.solutions that Field/Service/Cards still pre-warm within 2.5s, switching between them stays fast, and a first-navigation-before-prewarm still mounts instantly with no flash. Needs a real authenticated session, off-limits for me to do myself. _(added 2026-08-03)_
