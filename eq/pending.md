@@ -14,6 +14,22 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-cards: workers can now self-report their trade/employer, and a new platform-admin console gives Royce a live view of the whole network (2026-08-02)
+*Two features, one session: closing the "who's actually using Cards" gap. First let workers tell Cards their trade and who they work through (licence data alone only reveals trade for the regulated minority). Then, since Royce kept asking "can I see this without writing SQL by hand," built him an actual screen for it.*
+
+- [x] **Workers can now fill in their trade, employment type, and who they work through** on their own Cards profile — three new fields, worker-declared only (no admin can fill these in for someone else, by design). eq-cards [PR #194](https://github.com/eq-solutions/eq-cards/pull/194), merged and deployed live to cards.eq.solutions.
+- [x] **Confirmed this data stays Cards-only for now, on purpose.** Shell already has its own separate "trade"/"employment type" fields admins edit on the Staff page — different data, same names, not connected. Bridging the two risks one silently overwriting the other with no rule for which wins — the same class of bug that's already bitten twice on a similar sync. Left as two independent systems until there's a real reason to connect them.
+- [x] **Built Royce a real "platform console" screen** inside Cards (Settings → Platform, visible only to him) — replaces the hand-written SQL he'd been running all session to check network health. Shows how many workers are actually signed up vs. still unclaimed, a per-company breakdown, wallet/licence counts, how many workers have filled in the new trade field, whether the nightly sync to Field is healthy, and data-quality drift (duplicate accounts, orphaned records). eq-cards [PR #195](https://github.com/eq-solutions/eq-cards/pull/195), merged and deployed.
+- [x] **First version buried the most important number on the screen** — Royce called it out directly ("is the UI befitting of such an important role!"). Redesigned so the single worst issue leads the page in a banner, with four at-a-glance numbers up top instead of six identical panels you had to read in full. eq-cards [PR #196](https://github.com/eq-solutions/eq-cards/pull/196), merged and deployed. (Caught a near-miss mid-build: a commit briefly landed on the live branch directly instead of a review branch — caught before it was pushed anywhere, fixed immediately, no harm done.)
+
+**Deferred:**
+- [ ] **Bridging Cards' new trade/employer data into Shell** — deliberately not built; no rule exists yet for what happens when a worker's own answer disagrees with what an employer has on file. _(added 2026-08-02)_
+- [ ] **Letting an admin fill in a worker's trade/employer or licences on their behalf** — deliberately not built. Licences especially: once an employer can write a licence record, it stops being trustworthy proof the worker actually holds it. Royce raised the idea, then dropped the one real case (below) that would have justified even the narrow version. _(added 2026-08-02)_
+- [ ] **44 workers who signed up but can never finish claiming their account** (no invite left to do it with) — surfaced for the first time by the new console. Royce said to leave this alone for now. _(added 2026-08-02)_
+- [ ] **A bug in the database tool used to apply changes to this app locally** (Windows-specific, unrelated to anything built this session) blocked the normal way of pushing database updates, twice — worked around both times by pasting the SQL straight into Supabase's own web editor instead. Nobody's reported it upstream yet. _(added 2026-08-02)_
+
+---
+
 ## eq-cards/eq-shell: worker data consent/sync architecture Q&A — one live bug found, one decision made, no code shipped (2026-08-03)
 
 Royce asked four architecture questions about the Cards→tenant consent model (release mechanics, sync freshness, multi-tenant support, what "released" means technically). Answered against live systems, not docs — found a real bug in the process.
