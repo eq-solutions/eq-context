@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-02 07:10 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-02 07:21 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-02 06:50 UTC → 2026-08-02 07:10 UTC)
+## Since last refresh (2026-08-02 07:10 UTC → 2026-08-02 07:21 UTC)
 
-- Merged: eq-shell [#1188](https://github.com/eq-solutions/eq-shell/pull/1188) fix(auth): self-join provisioning 500s on email collision, m
-- Merged: eq-shell [#1177](https://github.com/eq-solutions/eq-shell/pull/1177) feat(auth): self-join links v2 — approval gate, expiry, all 
-- Merged: eq-shell [#1176](https://github.com/eq-solutions/eq-shell/pull/1176) fix(intake): pnpm/action-setup can't auto-detect version wit
-- Merged: eq-shell [#1173](https://github.com/eq-solutions/eq-shell/pull/1173) fix(brand): correct stale SKS navy #1F335C to live #203060
-- Merged: eq-shell [#1172](https://github.com/eq-solutions/eq-shell/pull/1172) fix(ui): consolidate toast feedback, honest-disable unbuilt 
-- Merged: eq-shell [#1169](https://github.com/eq-solutions/eq-shell/pull/1169) chore(intake): replace manual re-vendor steps with a script
-- Merged: eq-shell [#1167](https://github.com/eq-solutions/eq-shell/pull/1167) chore(intake): re-vendor eq-schemas package.json — closes aj
-- Merged: eq-shell [#1165](https://github.com/eq-solutions/eq-shell/pull/1165) fix(security): quote-email gate, iframe sandbox docs, real t
+- Merged: eq-shell [#1189](https://github.com/eq-solutions/eq-shell/pull/1189) feat(auth): join-links controls — edit expiry, join counts, 
+- Merged: eq-shell [#1175](https://github.com/eq-solutions/eq-shell/pull/1175) chore(intake): automate the eq-solves-intake re-vendor check
+- Merged: eq-shell [#1174](https://github.com/eq-solutions/eq-shell/pull/1174) fix(observability): real stack traces on stuck-crash, verify
+- Merged: eq-shell [#1171](https://github.com/eq-solutions/eq-shell/pull/1171) fix(intake): eq_site_advisory_flag_pair missing authenticate
+- Merged: eq-shell [#1170](https://github.com/eq-solutions/eq-shell/pull/1170) feat(quotes): allow attaching files while creating a new quo
+- Merged: eq-shell [#1168](https://github.com/eq-solutions/eq-shell/pull/1168) fix(intake): eq_site_merge_execute missing authenticated gra
+- Merged: eq-shell [#1166](https://github.com/eq-solutions/eq-shell/pull/1166) fix(security): session revocation fails closed on a DB looku
+- Merged: eq-shell [#1164](https://github.com/eq-solutions/eq-shell/pull/1164) fix(auth): recovery-email nudge never cleared; show/hide tog
 
 ## ⚠ Needs you (3)
 
@@ -73,6 +73,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-02 | eq-shell | [#1189](https://github.com/eq-solutions/eq-shell/pull/1189) feat(auth): join-links controls — edit expiry, join counts, code  |
 | 2026-08-02 | eq-shell | [#1188](https://github.com/eq-solutions/eq-shell/pull/1188) fix(auth): self-join provisioning 500s on email collision, misrep |
 | 2026-08-02 | eq-shell | [#1187](https://github.com/eq-solutions/eq-shell/pull/1187) chore(intake): auto re-vendor eq-intake/eq-platform |
 | 2026-08-02 | eq-shell | [#1186](https://github.com/eq-solutions/eq-shell/pull/1186) feat(auth): delete self-join links, not just deactivate |
@@ -87,12 +88,10 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-02 | eq-solves-service | [#681](https://github.com/eq-solutions/eq-service/pull/681) fix(sites): site supervisor picks from site contacts, not tenant  |
 | 2026-08-02 | eq-field | [#624](https://github.com/eq-solutions/eq-field/pull/624) v3.5.431 — Dashboard: FIX map default-view crop (invalidateSize), |
 | 2026-08-02 | eq-field | [#623](https://github.com/eq-solutions/eq-field/pull/623) v3.5.430 — Dashboard: Site Breakdown back to single-scroll |
-| 2026-08-02 | eq-field | [#622](https://github.com/eq-solutions/eq-field/pull/622) v3.5.429 — Dashboard: filter row tighter, map opens on busy-sites |
 _Showing 15 of 131 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **Worth a dedicated look**: the same database-update tool has now silently dropped a permission on two different functions from the identical edit pattern (changing an existing function without re-adding its permission). The safety-net trigger only warns about *new* functions, not edits to existing ones. Nobody's checked whether any other function has the same silent gap. _(added 2026-08-02)_
 - **The map's `invalidateSize()` fix (v3.5.431) hasn't been confirmed against the real failure context.** It only reproduces inside a Shell-embedded iframe (`core.eq.solutions/sks/field`) with real SKS data — this session's browser tooling had no path to Core auth to check it directly. The fix is standard, low-risk Leaflet practice regardless, but worth confirming on a genuinely fresh (not manually re-panned) dashboard load next time you're in there. _(added 2026-08-02)_
 - **Not swept: whether any of the other ~22 canonical objects (defects, contract_scopes, job_plans, maintenance_checks, etc.) have the same "trigger references a column the view doesn't expose" bug class.** This fix only covered the three objects (`customers`, `sites`, `assets`) touched by the 2026-07-27 change — no broader check across all canonical objects has been done. _(added 2026-08-02)_
 - **Build the real Contacts merge (Sites-equivalent)** — write-time detector + advisory table + preview/execute repointing `quote`/`contact_customer_links`/`contact_site_links`, gated the same way Sites' merge is (manager role + recorded 'same' verdict). All the facts above are already gathered; this is a build-and-live-validate task, not a research one. Shell-only, no Field entanglement. _(added 2026-08-02)_
@@ -102,7 +101,8 @@ _Showing 15 of 131 · full record in [sessions/](sessions/)_
 - **Found the likely root cause behind both duplicate-identity bugs above: phone numbers are stored in inconsistent formats across two systems** (e.g. `+61439109013` in one place, `0439109013` or `61408164924` in another, for the same person). Confirmed in 3 separate records. Whatever matches people up by phone number during signup/linking probably fails silently when the formats don't match, creating a stray empty account instead of recognizing the existing person — this will keep recurring until someone normalizes phone numbers before comparing them. Needs its own investigation session to find the exact code path and fix it at the source, not just clean up after it each time. _(added 2026-08-02)_
 - **Worth checking separately**: the tool that rolls database changes out to every company's system may have a bug where an instruction placed right after defining a new function can silently not run, even though the file it's in is marked as successfully applied. Only caught because this one case got tested by hand — there could be others sitting the same way undetected. Not investigated further. _(added 2026-08-01)_
 - **Saving/updating records through one part of the database layer has no real type-checking behind it** — turns out this is already known, tracked work (the app's own 30-day plan lists it), not a fresh find: the auto-generated database description file only covers the app's default section, but this data actually lives in a different section the file never describes, so the "trust me" overrides are a deliberate stand-in, not an accident. Confirmed live: the record it reads/writes from isn't a plain table, it's a view with its own custom save-behaviour attached — so even generating a fuller description file may not fully close the gap without extra work. Affects roughly 17 places. Needs the proper database tool run with the right settings (not available through the tools used this session), then each of the 17 spots checked by hand. _(added 2026-08-01, corrected 2026-08-01 — see below)_
-_…and 367 more · [eq/pending.md](eq/pending.md)_
+- **Photo → AI Risk Suggestions** (the secondary feature from the original review — supervisor takes site photos, AI suggests hazards, human confirms which to add) — deliberately not started. Needs its own go/no-go before scoping further: real per-call API spend, a new Netlify Function (would clone `eq-agent.js`'s existing auth/rate-limit shape), and site photos leaving the tenant boundary to Anthropic's API. _(added 2026-08-01)_
+_…and 366 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -124,7 +124,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 3081 | 490 | 121 | 12 |
+| [EQ](eq/pending.md) | 3080 | 489 | 122 | 12 |
 | [SKS](sks/pending.md) | 424 | 83 | 5 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 402 | 37 | 5 | 1 |
@@ -145,4 +145,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-02 07:10 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-02 07:21 UTC._
