@@ -4,7 +4,7 @@ owner: Royce Milmlow
 last_updated: 2026-08-03
 scope: Design for an internal-only document sign-off + reminder register — upload once, push to signers, track who's signed, chase who hasn't. First cut of the safety/quality/commissioning-docs idea explored 2026-08-01.
 read_priority: high
-status: live
+status: live, plus a signature-pad + evidence-view upgrade merged 2026-08-03
 ---
 
 # EQ — Internal Document Sign-off Register
@@ -245,14 +245,61 @@ starts — no big-bang schema-then-UI drop.
    SMP) end-to-end before onboarding the rest of the switchboard
    schedule / ITC / O&M backlog into the register.
 
-Steps 1–5 (register view) are done as of 2026-08-03 — schema live,
-upload+push UI live, sign UI live (pilot-gated to one person), register
-view live. Upload → push → sign → register is a real, working loop
-end-to-end for the pilot user, not just a diagram — an admin can now
-see who's signed what without opening the DB. What's left: the
-reminder cron (split out of step 5, never scoped, chases outstanding
-signers on a schedule), the known `document_signoffs` RLS gap
-(tenant-wide, not signer-scoped — flagged across steps 3/4/5, still
-open), and step 6 (rollout past the pilot — widen the Field gate,
-onboard a real document). All Royce's call on timing, not a technical
-blocker.
+## Post-launch upgrade: real drawn signature + evidence view (2026-08-03)
+
+Royce, after actually using the v1 pilot: *"shouldn't the signature be
+actual signing box like the safety docs?"* and *"is the UI built to see
+signed paperwork?"* — tap-to-confirm (identity + timestamp + content
+hash, no drawing) was a deliberate v1 call, but it didn't match Prestart
+Briefings/Toolbox Talks, which already capture a real drawn signature
+via a shared, proven component (`createSignatureController`,
+`eq-field/scripts/site-reports-shared.js`). Neither Shell nor Field had
+any way to view a document or its signing evidence after the fact.
+`/decide` run against the two-stage plan below; Royce: recommended
+options on both, then "Go".
+
+**Stage A — schema.** `signature_image text` added to
+`app_data.document_signoffs`, exposed on `document_register` (eq-shell
+migration `0235_document_signoff_signature_image.sql`, PR
+[#1212](https://github.com/eq-solutions/eq-shell/pull/1212), squash
+`7e7c350`). `CREATE OR REPLACE VIEW` can only append new columns, not
+insert mid-list, and resets `security_invoker` on every replace unless
+reasserted — both real constraints, caught and handled correctly (the
+second one against a bug that's bitten this exact codebase three times
+before). Dispatched and confirmed live on both ehow and zaap.
+
+**Stage B — Field capture + Shell evidence view, built in parallel once
+schema was live.**
+- **eq-field** [PR #635](https://github.com/eq-solutions/eq-field/pull/635)
+  (squash `a819715`, v3.5.442): `sign-documents.js` now opens the same
+  canvas pad Prestart/Toolbox/Diary/Incidents already use instead of
+  writing the PATCH straight off a tap — `signature_image` rides in the
+  same request as the original identity/timestamp/hash evidence, not a
+  second write. `safety.js`'s file header claiming to be dependency-free
+  is stale (its own changelog documents the opposite); confirmed
+  `site-reports-shared.js` is the real live source, and that
+  `core-bundle-b1.js` is what `index.html` actually serves (the on-disk
+  `lazy-loader.js` has no `<script>` tag anywhere) — same class of
+  stale-comment/dead-code trap step 4 hit with `auth.js`. Both the real
+  file and its bundle twin updated together.
+- **eq-shell** [PR #1217](https://github.com/eq-solutions/eq-shell/pull/1217)
+  (squash `d498477`): Register tab gains a "View" action per signer —
+  identity, exact timestamps, content hash, the drawn signature (or a
+  graceful fallback for the many rows that predate this upgrade,
+  including the one real EMP signoff), and a link to the actual signed
+  file via an on-demand signed-URL endpoint (chosen over eager per-row
+  signing specifically to avoid redundant Storage calls on a
+  multi-signer document). No new migration — reused `content_hash` and
+  `signature_image`, already on the view.
+
+Both confirmed live (core.eq.solutions and field.eq.solutions,
+`commit_ref` checked against each merge commit via Netlify MCP, not
+assumed). Upload → push → sign (with a real signature) → register →
+evidence view is now a complete, working loop for the pilot user.
+
+**Still open, unchanged by this upgrade:** the reminder cron (never
+scoped), the known `document_signoffs` RLS gap (tenant-wide, not
+signer-scoped — flagged across steps 3, 4, 5, and this upgrade, still
+not fixed), and step 6 rollout (widen the Field pilot gate, onboard a
+real document past the one EMP test row). All Royce's call on timing,
+not a technical blocker.
