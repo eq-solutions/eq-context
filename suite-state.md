@@ -68,10 +68,8 @@ _If this file is >48h old, the cron is broken._
 - #684 chore(deps): bump the eq-design-system group with 2 updates
 
 **eq-shell:**
+- #1208 feat(documents): register view for the sign-off register (step 5)
 - #1206 fix(shell): Worker Home shows warnings before everyday status
-
-**eq-solves-intake:**
-- #107 fix: resolve the 13 remaining no-unused-vars errors (vendored-copy source)
 
 ---
 
