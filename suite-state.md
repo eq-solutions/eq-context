@@ -60,6 +60,12 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-03)
 
+**eq-cards:**
+- #204 fix(licences): restore authenticated grant on eq_cards_upsert_my_profile
+
+**eq-field:**
+- #634 chore(dashboard): temp map height bump for testing (v3.5.441)
+
 **eq-service:**
 - #688 chore(deps): bump @sentry/nextjs from 10.68.0 to 10.69.0
 - #687 chore(deps-dev): bump eslint-config-next from 16.2.2 to 16.2.12
