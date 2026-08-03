@@ -75,10 +75,10 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ? unknown |
-| eq-shell | ? unknown |
-| eq-field | ? unknown |
-| eq-cards | ? unknown |
+| eq-service | ✗ failure |
+| eq-shell | ✓ success |
+| eq-field | ✓ success |
+| eq-cards | ✓ success |
 | eq-solves-intake | ✓ success |
 
 **Deploys:**
