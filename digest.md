@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-03 09:01 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-03 09:39 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-03 08:44 UTC → 2026-08-03 09:01 UTC)
+## Since last refresh (2026-08-03 09:01 UTC → 2026-08-03 09:39 UTC)
 
-- Merged: eq-shell [#1190](https://github.com/eq-solutions/eq-shell/pull/1190) feat(intake): Contact resolver + merge (migrations 0233/0234
-- Merged: eq-shell [#1188](https://github.com/eq-solutions/eq-shell/pull/1188) fix(auth): self-join provisioning 500s on email collision, m
-- Merged: eq-shell [#1186](https://github.com/eq-solutions/eq-shell/pull/1186) feat(auth): delete self-join links, not just deactivate
-- Merged: eq-shell [#1185](https://github.com/eq-solutions/eq-shell/pull/1185) feat(auth): collapse worker-add header into one button + a m
-- Merged: eq-shell [#1184](https://github.com/eq-solutions/eq-shell/pull/1184) feat(auth): per-role QR codes on the self-join links page
-- Merged: eq-shell [#1182](https://github.com/eq-solutions/eq-shell/pull/1182) fix(intake): switch re-vendor workflow to a dedicated, corre
-- Merged: eq-shell [#1180](https://github.com/eq-solutions/eq-shell/pull/1180) feat(documents): internal document sign-off register schema 
-- Merged: eq-shell [#1179](https://github.com/eq-solutions/eq-shell/pull/1179) fix(intake): auto-vendored PRs must use a PAT, not GITHUB_TO
+- Merged: eq-shell [#1209](https://github.com/eq-solutions/eq-shell/pull/1209) fix(ops): bolder file badge, colour-code estimator instead o
+- Merged: eq-shell [#1208](https://github.com/eq-solutions/eq-shell/pull/1208) feat(documents): register view for the sign-off register (st
+- Merged: eq-shell [#1207](https://github.com/eq-solutions/eq-shell/pull/1207) fix(shell): resolve all 117 eq-shell-owned no-explicit-any e
+- Merged: eq-shell [#1206](https://github.com/eq-solutions/eq-shell/pull/1206) fix(shell): Worker Home shows warnings before everyday statu
+- Merged: eq-shell [#1194](https://github.com/eq-solutions/eq-shell/pull/1194) chore(control-plane): backfill missing source for eq_cards_i
+- Merged: eq-shell [#1192](https://github.com/eq-solutions/eq-shell/pull/1192) fix(auth): self-join fixes — worker row, email-drop notice, 
+- Merged: eq-shell [#1191](https://github.com/eq-solutions/eq-shell/pull/1191) chore(intake): auto re-vendor eq-intake/eq-platform
+- Merged: eq-shell [#1189](https://github.com/eq-solutions/eq-shell/pull/1189) feat(auth): join-links controls — edit expiry, join counts, 
 
 ## ⚠ Needs you (3)
 
@@ -49,11 +49,11 @@ _…and 96 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 1 | 0d |
+| eq-shell | ? unknown | ? | 0 | — |
 | eq-solves-service | ? unknown | ? | 5 | 0d |
 | eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ? unknown | ? | 0 | — |
-| eq-solves-intake | ✓ success | 1d ago | 1 | 0d |
+| eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
 ## Live errors (Sentry)
 
@@ -73,27 +73,27 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-03 | eq-shell | [#1209](https://github.com/eq-solutions/eq-shell/pull/1209) fix(ops): bolder file badge, colour-code estimator instead of cus |
+| 2026-08-03 | eq-shell | [#1208](https://github.com/eq-solutions/eq-shell/pull/1208) feat(documents): register view for the sign-off register (step 5) |
+| 2026-08-03 | eq-shell | [#1206](https://github.com/eq-solutions/eq-shell/pull/1206) fix(shell): Worker Home shows warnings before everyday status |
+| 2026-08-03 | eq-shell | [#1207](https://github.com/eq-solutions/eq-shell/pull/1207) fix(shell): resolve all 117 eq-shell-owned no-explicit-any errors |
 | 2026-08-03 | eq-shell | [#1205](https://github.com/eq-solutions/eq-shell/pull/1205) fix(ops): show file-attached badge on Kanban pipeline board cards |
 | 2026-08-03 | eq-shell | [#1203](https://github.com/eq-solutions/eq-shell/pull/1203) fix(auth): hotfix — Cards SSO email-sync missed a phone-only work |
 | 2026-08-03 | eq-shell | [#1204](https://github.com/eq-solutions/eq-shell/pull/1204) fix(shell): resolve @typescript-eslint/no-unused-vars (107 of 120 |
 | 2026-08-03 | eq-shell | [#1202](https://github.com/eq-solutions/eq-shell/pull/1202) fix(shell): resolve the last react-hooks/refs error via JobRow ex |
 | 2026-08-03 | eq-shell | [#1200](https://github.com/eq-solutions/eq-shell/pull/1200) fix(shell): resolve remaining react-hooks/refs errors (19 of 20) |
 | 2026-08-03 | eq-shell | [#1201](https://github.com/eq-solutions/eq-shell/pull/1201) fix(shell): resolve no-restricted-syntax hex-colour errors (8) |
+| 2026-08-03 | eq-field | [#630](https://github.com/eq-solutions/eq-field/pull/630) fix(dashboard): defer map fit past a layout race (v3.5.437) |
 | 2026-08-03 | eq-field | [#629](https://github.com/eq-solutions/eq-field/pull/629) fix(dashboard): shrink map height, make Birthdays collapsible (v3 |
 | 2026-08-03 | eq-field | [#628](https://github.com/eq-solutions/eq-field/pull/628) fix(dashboard): map default view zoomed 3 levels wider (v3.5.435) |
 | 2026-08-03 | eq-cards | [#200](https://github.com/eq-solutions/eq-cards/pull/200) fix(router): only bump GoRouter on a real auth-state transition |
-| 2026-08-02 | eq-shell | [#1199](https://github.com/eq-solutions/eq-shell/pull/1199) fix(auth): recovery-email nudge distinguishes dropped email from  |
-| 2026-08-02 | eq-shell | [#1198](https://github.com/eq-solutions/eq-shell/pull/1198) fix(shell): resolve react-hooks/refs in iframe pre-warm keeper |
-| 2026-08-02 | eq-shell | [#1196](https://github.com/eq-solutions/eq-shell/pull/1196) feat(documents): Shell upload + push UI for the sign-off register |
-| 2026-08-02 | eq-shell | [#1197](https://github.com/eq-solutions/eq-shell/pull/1197) fix(auth): Cards SSO no longer depends on the worker having a rea |
-| 2026-08-02 | eq-shell | [#1195](https://github.com/eq-solutions/eq-shell/pull/1195) feat(auth): trim worker-add dropdown to 2 items, surface general  |
-| 2026-08-02 | eq-shell | [#1193](https://github.com/eq-solutions/eq-shell/pull/1193) fix(auth): self-join adds a membership in the new tenant, not jus |
-_Showing 15 of 136 · full record in [sessions/](sessions/)_
+| 2026-08-03 | eq-solves-intake | [#107](https://github.com/eq-solutions/eq-solves-intake/pull/107) fix: resolve the 13 remaining no-unused-vars errors (vendored-cop |
+_Showing 15 of 138 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
 - **Live click-through not done** — confirm on `/sks/ops?tab=dashboard` that SKS-17577 (and other quotes with saved files) now shows the paperclip icon on the board card. Needs a real authenticated session, off-limits for me to do myself. _(added 2026-08-03)_
-- **13 remaining instances live in `eq-intake/eq-platform/packages/`** — a vendored copy from the separate `eq-solves-intake` repo, not eq-shell's own code. Needs fixing at the source (eq-solves-intake) and re-vendoring; fixing them in eq-shell's copy would just be overwritten by the next re-vendor. _(added 2026-08-03)_
+- **Live click-through not needed for either PR** — both are pure type-annotation/lint-suppression changes with no runtime behavior change; verified via full build + test suite instead. _(added 2026-08-03)_
 - **Photo ID still shows as needed after uploading a driver's licence, even though the equivalence fix (2026-08-02, migration `2026_08_02b`) is live** — Royce reported this is still happening. Not re-investigated this session (explicitly deprioritised behind the Cards double-sign-in dive). Suspect the screen Royce is looking at reads a different RPC (`eq_cards_my_credential_gaps`, in eq-cards) than the one patched (`eq_worker_compliance_status`, in eq-shell/jvkn) — needs checking against the actual screen, not assumed. _(added 2026-08-03)_
 - **White card upload doesn't offer "choose from photo library," camera-only** — reported by Royce alongside the photo ID issue above. This is EQ Cards' Flutter app, a different repo not available in this session — needs picking up there. _(added 2026-08-03)_
 - **OCR-scanned name still unconfirmed whether it reaches `profiles.full_name`** — flagged in the 2026-08-02 self-join fixes entry below and never independently verified since; still open. _(added 2026-08-03, carried from 2026-08-02)_
@@ -102,7 +102,7 @@ _Showing 15 of 136 · full record in [sessions/](sessions/)_
 - **Repo-wide `pnpm lint` shows 438 pre-existing errors** elsewhere (mostly `react-hooks/set-state-in-effect`), same root cause (the react-hooks v7 upgrade) but a much larger surface than this PR's scope. `ci.yml` already documents lint as advisory (`continue-on-error`) because of this debt, so nothing is silently failing — but worth a dedicated session if/when there's appetite to burn it down before flipping lint to blocking. _(added 2026-08-03)_
 - **Visual check not done** — `LabourHireRates.tsx` and `WorkerHome.tsx` are both behind real auth; couldn't click through myself. A local Browser-tool CSS-swatch comparison also failed (file:// navigate timed out), so verification rests on `@eq-design-tokens`'s own hex definitions, not a live render. Two of the eight swaps aren't exact-hex matches (`var(--eq-grey)` for `#5F5E5A`, and the three status tokens for the WorkerHome tile accents) — worth a glance to confirm nothing looks off. _(added 2026-08-03)_
 - **Live click-through not done** — the comms job table's inline editing (click-to-edit, Enter/Tab save-and-move, Esc cancel, cross-row keyboard nav) needs a real click-through on the NSW Comms board before trusting the extraction blind. Content moved verbatim and the shared-state/keyboard-nav logic was reasoned through carefully, but a structural change like this deserves a real look. Needs a real authenticated session, off-limits for me to do myself. _(added 2026-08-03)_
-_…and 378 more · [eq/pending.md](eq/pending.md)_
+_…and 377 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -124,7 +124,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 3192 | 508 | 144 | 12 |
+| [EQ](eq/pending.md) | 3192 | 509 | 146 | 12 |
 | [SKS](sks/pending.md) | 424 | 83 | 5 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 402 | 37 | 5 | 1 |
@@ -145,4 +145,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-03 09:01 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-03 09:39 UTC._
