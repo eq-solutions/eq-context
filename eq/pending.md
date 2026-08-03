@@ -14,6 +14,17 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-context: added eq/progress/ substrate for year-end EQ tracking (2026-08-03)
+*A prompt drafted by Grok, handed to this session to build a lightweight tracking layer for the 2026 year-end EQ evaluation.*
+
+- [x] **Built `eq/progress/`** (`README.md`, `year-goals.md`, `current.md`, `customers.md`, `decisions-log.md`) — adjusted the source prompt before building so it doesn't duplicate `system/TODAY.md`'s CI-gated GOALS block or `ops/decisions.md`'s ADR log. `CLAUDE.md` §10 gained an on-demand note (pulled back from a mandatory step via `/decide` — a new weekly ritual risked going unfilled given this file's own existing discipline gap). eq-context [PR #124](https://github.com/eq-solutions/eq-context/pull/124), merged.
+
+**Deferred:**
+- [ ] **Pre-existing eq-context CI drift found while merging** — "Frontmatter validation" and "Index drift check" both fail on `main` itself, unrelated to this PR (a malformed `status:` field on an unrelated file, plus 4 already-orphaned files across `system/`, `eq/`, `sks/`). Spawned as background task `task_c6fb3772`, now running in a separate session. _(added 2026-08-03)_
+- [ ] **`eq/progress/` is unproven** — `current.md`/`customers.md` depend on manual discipline with no CI gate (unlike `TODAY.md`'s `claim-expiry.yml`). Worth checking in a few weeks whether it's actually being kept up or going quiet. _(added 2026-08-03)_
+
+---
+
 ## eq-shell: EQ Ops pipeline board was missing the file-attached badge (2026-08-03)
 *Royce noticed SKS-17577 has a saved file but nothing on the card showed it. The list/mcard layout already had a paperclip + count badge; the Kanban board layout (the one in the screenshot, `/sks/ops?tab=dashboard`) simply never got it added.*
 
