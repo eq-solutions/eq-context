@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-03 11:32 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-03 11:42 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-03 11:30 UTC → 2026-08-03 11:32 UTC)
+## Since last refresh (2026-08-03 11:32 UTC → 2026-08-03 11:42 UTC)
 
-- Merged: eq-shell [#1218](https://github.com/eq-solutions/eq-shell/pull/1218) fix(shell): collapse Roster/Leave glance tiles into the sing
-- Merged: eq-shell [#1194](https://github.com/eq-solutions/eq-shell/pull/1194) chore(control-plane): backfill missing source for eq_cards_i
-- Merged: eq-shell [#1193](https://github.com/eq-solutions/eq-shell/pull/1193) fix(auth): self-join adds a membership in the new tenant, no
-- Merged: eq-shell [#1192](https://github.com/eq-solutions/eq-shell/pull/1192) fix(auth): self-join fixes — worker row, email-drop notice, 
-- Merged: eq-shell [#1191](https://github.com/eq-solutions/eq-shell/pull/1191) chore(intake): auto re-vendor eq-intake/eq-platform
-- Merged: eq-shell [#1190](https://github.com/eq-solutions/eq-shell/pull/1190) feat(intake): Contact resolver + merge (migrations 0233/0234
-- Merged: eq-shell [#1180](https://github.com/eq-solutions/eq-shell/pull/1180) feat(documents): internal document sign-off register schema 
-- Merged: eq-solves-service [#683](https://github.com/eq-solutions/eq-service/pull/683) fix(reports): PM report supervisor/contact fields ignored th
+- Merged: eq-shell [#1204](https://github.com/eq-solutions/eq-shell/pull/1204) fix(shell): resolve @typescript-eslint/no-unused-vars (107 o
+- Merged: eq-shell [#1202](https://github.com/eq-solutions/eq-shell/pull/1202) fix(shell): resolve the last react-hooks/refs error via JobR
+- Merged: eq-shell [#1201](https://github.com/eq-solutions/eq-shell/pull/1201) fix(shell): resolve no-restricted-syntax hex-colour errors (
+- Merged: eq-shell [#1200](https://github.com/eq-solutions/eq-shell/pull/1200) fix(shell): resolve remaining react-hooks/refs errors (19 of
+- Merged: eq-shell [#1199](https://github.com/eq-solutions/eq-shell/pull/1199) fix(auth): recovery-email nudge distinguishes dropped email 
+- Merged: eq-shell [#1198](https://github.com/eq-solutions/eq-shell/pull/1198) fix(shell): resolve react-hooks/refs in iframe pre-warm keep
+- Merged: eq-shell [#1197](https://github.com/eq-solutions/eq-shell/pull/1197) fix(auth): Cards SSO no longer depends on the worker having 
+- Merged: eq-shell [#1196](https://github.com/eq-solutions/eq-shell/pull/1196) feat(documents): Shell upload + push UI for the sign-off reg
 
 ## ⚠ Needs you (2)
 
@@ -123,7 +123,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 3216 | 511 | 159 | 12 |
+| [EQ](eq/pending.md) | 3211 | 510 | 155 | 12 |
 | [SKS](sks/pending.md) | 424 | 83 | 5 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 402 | 37 | 5 | 1 |
@@ -144,4 +144,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-03 11:32 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-03 11:42 UTC._
