@@ -25,6 +25,12 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 **Deferred:**
 - [ ] **Visual check not done** — `LabourHireRates.tsx` and `WorkerHome.tsx` are both behind real auth; couldn't click through myself. A local Browser-tool CSS-swatch comparison also failed (file:// navigate timed out), so verification rests on `@eq-design-tokens`'s own hex definitions, not a live render. Two of the eight swaps aren't exact-hex matches (`var(--eq-grey)` for `#5F5E5A`, and the three status tokens for the WorkerHome tile accents) — worth a glance to confirm nothing looks off. _(added 2026-08-03)_
 
+## eq-shell: comms job table's JobRow extraction closes out react-hooks/refs — PR #1202 (2026-08-03)
+*Fixed the 1 instance deliberately deferred from the second pass — extracted the inline `.map()` row renderer into a real named `JobRow` component. Closes all 28 `react-hooks/refs` errors across the whole repo.*
+
+**Deferred:**
+- [ ] **Live click-through not done** — the comms job table's inline editing (click-to-edit, Enter/Tab save-and-move, Esc cancel, cross-row keyboard nav) needs a real click-through on the NSW Comms board before trusting the extraction blind. Content moved verbatim and the shared-state/keyboard-nav logic was reasoned through carefully, but a structural change like this deserves a real look. Needs a real authenticated session, off-limits for me to do myself. _(added 2026-08-03)_
+
 ## eq-shell: second pass of the react-hooks/refs cleanup — 19 more fixed, 1 flagged as harder (2026-08-03)
 
 **Deferred:**
