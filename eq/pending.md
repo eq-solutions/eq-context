@@ -41,9 +41,11 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 - [x] **First bug found and fixed: the screen was being rebuilt on every auth event, not just a real sign-in/out**, which tore down its loading state before it could finish. Real bug, fixed — but turned out not to be the whole story. eq-cards [PR #200](https://github.com/eq-solutions/eq-cards/pull/200), merged + deployed.
 - [x] **Second, deeper bug found after Royce confirmed it was still broken post-deploy: three of the numbers on the Platform Console screen had mismatched names between the database and the app**, so reading the (perfectly successful) response threw an error every single time — this is why it never actually worked, with or without the first bug. Confirmed by pulling the real numbers straight from the database and comparing them line-by-line against the app's code. eq-cards [PR #202](https://github.com/eq-solutions/eq-cards/pull/202), merged + deployed.
+- [x] **Royce confirmed live: both bugs above are fixed** — Platform Console now shows real numbers instead of an error.
+- [x] **Follow-up feedback same session: "Dashboard needs some love. Not much info but takes up over one page."** The 4 headline number tiles were sized for a phone-width screen; on the desktop-width view this console is actually used in (via the Shell website, admin-only), each tile stretched to roughly triple the height it needed, pushing everything else down the page. Tiles now hold a compact height no matter how wide the screen is, and sit 4-across instead of 2x2 on a wide screen. eq-cards [PR #203](https://github.com/eq-solutions/eq-cards/pull/203), merged + deployed.
 
 **Deferred:**
-- [ ] **Royce to refresh Platform Console once more and confirm it now shows real numbers** (companies, wallet counts, sync health) instead of an error. Both fixes are live as of 2026-08-03. _(added 2026-08-03)_
+- [ ] **Royce to eyeball the resized tiles** and confirm the console reads compactly now, without the earlier huge empty tiles. _(added 2026-08-03)_
 
 ---
 
