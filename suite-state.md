@@ -67,6 +67,10 @@ _If this file is >48h old, the cron is broken._
 - #685 chore(deps): bump react-dom and @types/react-dom
 - #684 chore(deps): bump the eq-design-system group with 2 updates
 
+**eq-shell:**
+- #1213 fix(ops): bolder column headers, less-pink estimator colours, bolder customer names
+- #1212 feat(documents): add signature_image column for sign-off register (Stage A)
+
 ---
 
 ## System Health (as of 2026-08-03)
