@@ -61,7 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-03)
 
 **eq-field:**
-- #641 fix: remove dead "What's new" banner code (v3.5.446)
+- #642 v3.5.447 — Roster: keyboard-only cell picker + auto-fill week from Monday
 - #639 v3.5.446 — Contacts: canonical worker-link duplicate guard
 
 **eq-service:**
@@ -70,6 +70,9 @@ _If this file is >48h old, the cron is broken._
 - #686 chore(deps-dev): bump @vitejs/plugin-react from 6.0.4 to 6.0.5
 - #685 chore(deps): bump react-dom and @types/react-dom
 - #684 chore(deps): bump the eq-design-system group with 2 updates
+
+**eq-shell:**
+- #1226 feat(documents): daily reminder email for outstanding sign-offs
 
 ---
 
