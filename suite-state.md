@@ -62,7 +62,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-field:**
 - #642 v3.5.447 — Roster: keyboard-only cell picker + auto-fill week from Monday
-- #639 v3.5.446 — Contacts: canonical worker-link duplicate guard
 
 **eq-service:**
 - #688 chore(deps): bump @sentry/nextjs from 10.68.0 to 10.69.0
@@ -70,9 +69,6 @@ _If this file is >48h old, the cron is broken._
 - #686 chore(deps-dev): bump @vitejs/plugin-react from 6.0.4 to 6.0.5
 - #685 chore(deps): bump react-dom and @types/react-dom
 - #684 chore(deps): bump the eq-design-system group with 2 updates
-
-**eq-shell:**
-- #1226 feat(documents): daily reminder email for outstanding sign-offs
 
 ---
 
