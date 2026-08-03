@@ -30,6 +30,18 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-solves-service: "Canonical types drift" CI check fixed — two live database columns were missing from the code's type definitions (2026-08-03)
+*The scheduled CI check that catches "database changed but the code wasn't told" had been red on every run since 2026-08-01 — confirmed against the live database that this was real, not a broken check. Two columns landed by earlier features (a logo-linked-to-multiple-customers fix, and the site-supervisor feature) were never added to the code's committed type definitions. One of them was already being worked around with a type-safety bypass in the upload code.*
+
+- [x] **eq-service [PR #689](https://github.com/eq-solutions/eq-service/pull/689) merged** (squash `362f6dd`) — added the two missing columns to the type definitions, removed the now-unneeded type-safety bypass in the media upload code. Build check + the drift check itself both confirmed green before merge; the one red check on the PR (a Supabase startup failure unrelated to this fix, already known to be broken beforehand) was correctly not treated as a blocker.
+
+**Deferred:**
+- [ ] **Confirm the scheduled nightly drift check itself shows green**, not just the one-off PR check — same logic, but hasn't been observed on a real nightly run yet. Should self-resolve. _(added 2026-08-03)_
+- [ ] **The Supabase startup failure in CI** (a leftover database setting missing an `id` column, breaking the API's schema cache) is separate, pre-existing, and still red on every run — worth a dedicated fix at some point, not touched this session. _(added 2026-08-03)_
+- [ ] **Separate, lower-priority**: one more stale-type warning (`tenant_settings.archive_grace_period_days`) traces to a database change from months ago that was never actually applied live — left alone on purpose, different job. _(added 2026-08-03, carried forward)_
+
+---
+
 ## eq-cards: profile-save permission bug — PR merged, live grant confirmed and applied (2026-08-03)
 *Sentry showed `eq_cards_upsert_my_profile` throwing "permission denied" for every signed-in user (same incident class as the earlier `eq_cards_auto_provision` outage). PR #204 (grant-restoration migration) merged; live check before applying found the grant had already been restored, almost certainly by a concurrent session, but only as an untracked ad-hoc fix — applied the migration anyway so it's now in eq-canonical's tracked ledger instead of silently regressing on a future restore.*
 
