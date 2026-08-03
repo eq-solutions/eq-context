@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-03 05:27 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-03 05:47 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-03 05:16 UTC → 2026-08-03 05:27 UTC)
+## Since last refresh (2026-08-03 05:27 UTC → 2026-08-03 05:47 UTC)
 
-- Merged: eq-shell [#1200](https://github.com/eq-solutions/eq-shell/pull/1200) fix(shell): resolve remaining react-hooks/refs errors (19 of
-- Merged: eq-shell [#1186](https://github.com/eq-solutions/eq-shell/pull/1186) feat(auth): delete self-join links, not just deactivate
-- Merged: eq-shell [#1185](https://github.com/eq-solutions/eq-shell/pull/1185) feat(auth): collapse worker-add header into one button + a m
-- Merged: eq-shell [#1184](https://github.com/eq-solutions/eq-shell/pull/1184) feat(auth): per-role QR codes on the self-join links page
-- Merged: eq-shell [#1182](https://github.com/eq-solutions/eq-shell/pull/1182) fix(intake): switch re-vendor workflow to a dedicated, corre
-- Merged: eq-shell [#1179](https://github.com/eq-solutions/eq-shell/pull/1179) fix(intake): auto-vendored PRs must use a PAT, not GITHUB_TO
-- Merged: eq-shell [#1175](https://github.com/eq-solutions/eq-shell/pull/1175) chore(intake): automate the eq-solves-intake re-vendor check
-- Merged: eq-shell [#1174](https://github.com/eq-solutions/eq-shell/pull/1174) fix(observability): real stack traces on stuck-crash, verify
+- Merged: eq-shell [#1202](https://github.com/eq-solutions/eq-shell/pull/1202) fix(shell): resolve the last react-hooks/refs error via JobR
+- Merged: eq-shell [#1187](https://github.com/eq-solutions/eq-shell/pull/1187) chore(intake): auto re-vendor eq-intake/eq-platform
+- Merged: eq-shell [#1183](https://github.com/eq-solutions/eq-shell/pull/1183) chore(intake): auto re-vendor eq-intake/eq-platform
+- Merged: eq-shell [#1181](https://github.com/eq-solutions/eq-shell/pull/1181) feat(auth): surface self-join approvals in the Staff pending
+- Merged: eq-shell [#1177](https://github.com/eq-solutions/eq-shell/pull/1177) feat(auth): self-join links v2 — approval gate, expiry, all 
+- Merged: eq-shell [#1176](https://github.com/eq-solutions/eq-shell/pull/1176) fix(intake): pnpm/action-setup can't auto-detect version wit
+- Merged: eq-shell [#1173](https://github.com/eq-solutions/eq-shell/pull/1173) fix(brand): correct stale SKS navy #1F335C to live #203060
+- Merged: eq-solves-service [#683](https://github.com/eq-solutions/eq-service/pull/683) fix(reports): PM report supervisor/contact fields ignored th
 
 ## ⚠ Needs you (3)
 
@@ -73,6 +73,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-03 | eq-shell | [#1202](https://github.com/eq-solutions/eq-shell/pull/1202) fix(shell): resolve the last react-hooks/refs error via JobRow ex |
 | 2026-08-03 | eq-shell | [#1200](https://github.com/eq-solutions/eq-shell/pull/1200) fix(shell): resolve remaining react-hooks/refs errors (19 of 20) |
 | 2026-08-03 | eq-shell | [#1201](https://github.com/eq-solutions/eq-shell/pull/1201) fix(shell): resolve no-restricted-syntax hex-colour errors (8) |
 | 2026-08-02 | eq-shell | [#1199](https://github.com/eq-solutions/eq-shell/pull/1199) fix(auth): recovery-email nudge distinguishes dropped email from  |
@@ -87,7 +88,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-02 | eq-shell | [#1191](https://github.com/eq-solutions/eq-shell/pull/1191) chore(intake): auto re-vendor eq-intake/eq-platform |
 | 2026-08-02 | eq-shell | [#1190](https://github.com/eq-solutions/eq-shell/pull/1190) feat(intake): Contact resolver + merge (migrations 0233/0234) |
 | 2026-08-02 | eq-shell | [#1189](https://github.com/eq-solutions/eq-shell/pull/1189) feat(auth): join-links controls — edit expiry, join counts, code  |
-| 2026-08-02 | eq-shell | [#1188](https://github.com/eq-solutions/eq-shell/pull/1188) fix(auth): self-join provisioning 500s on email collision, misrep |
 _Showing 15 of 135 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -95,14 +95,14 @@ _Showing 15 of 135 · full record in [sessions/](sessions/)_
 - **Live click-through not done** — confirm on core.eq.solutions that Field/Service/Cards still pre-warm within 2.5s, switching between them stays fast, and a first-navigation-before-prewarm still mounts instantly with no flash. Needs a real authenticated session, off-limits for me to do myself. _(added 2026-08-03)_
 - **Repo-wide `pnpm lint` shows 438 pre-existing errors** elsewhere (mostly `react-hooks/set-state-in-effect`), same root cause (the react-hooks v7 upgrade) but a much larger surface than this PR's scope. `ci.yml` already documents lint as advisory (`continue-on-error`) because of this debt, so nothing is silently failing — but worth a dedicated session if/when there's appetite to burn it down before flipping lint to blocking. _(added 2026-08-03)_
 - **Visual check not done** — `LabourHireRates.tsx` and `WorkerHome.tsx` are both behind real auth; couldn't click through myself. A local Browser-tool CSS-swatch comparison also failed (file:// navigate timed out), so verification rests on `@eq-design-tokens`'s own hex definitions, not a live render. Two of the eight swaps aren't exact-hex matches (`var(--eq-grey)` for `#5F5E5A`, and the three status tokens for the WorkerHome tile accents) — worth a glance to confirm nothing looks off. _(added 2026-08-03)_
+- **Live click-through not done** — the comms job table's inline editing (click-to-edit, Enter/Tab save-and-move, Esc cancel, cross-row keyboard nav) needs a real click-through on the NSW Comms board before trusting the extraction blind. Content moved verbatim and the shared-state/keyboard-nav logic was reasoned through carefully, but a structural change like this deserves a real look. Needs a real authenticated session, off-limits for me to do myself. _(added 2026-08-03)_
 - **`comms/index.tsx`'s job table inline-edit row renderer has 1 remaining `react-hooks/refs` error, deliberately not fixed.** Traces into several ref writes (`committed`/`navigating`/`flashTimer`) several calls deep via `startEdit`/`applyEdit`/`onEditKey`/`onEditBlur`, inside an actively-used inline-editing feature (click-to-edit cells with keyboard navigation between them). The likely correct fix is extracting the row renderer into its own named component so the ref-touching logic lives in a real component's scope instead of an anonymous `.map()` callback — bigger and riskier than a quick follow-up. _(added 2026-08-03)_
 - **Live click-through need expanded** — beyond the original iframe pre-warm check, now also needs: EQ Service embed still loads/navigates correctly (`ServiceIframe.tsx` fix), and the Quotes/Ops pipeline (filter persistence across reload, keyboard nav between quotes, stage-picker dropdown on the detail panel) behaves identically (`QuotesModule.tsx` fixes). Same "needs a real session, off-limits for me" constraint. _(added 2026-08-03)_
 - **The other ~410 non-`refs` lint errors are dominated by `@typescript-eslint/no-explicit-any` (157) and `no-unused-vars` (120)** — together over 60% of the repo's remaining lint debt, spread across most of the 192 files that have any lint error at all. Mechanical for unused-vars, needs real typing work for the `any`s. Not started — materially larger and less contained than the refs cleanup. _(added 2026-08-03)_
 - **Bridging Cards' new trade/employer data into Shell** — deliberately not built; no rule exists yet for what happens when a worker's own answer disagrees with what an employer has on file. _(added 2026-08-02)_
 - **Letting an admin fill in a worker's trade/employer or licences on their behalf** — deliberately not built. Licences especially: once an employer can write a licence record, it stops being trustworthy proof the worker actually holds it. Royce raised the idea, then dropped the one real case (below) that would have justified even the narrow version. _(added 2026-08-02)_
 - **44 workers who signed up but can never finish claiming their account** (no invite left to do it with) — surfaced for the first time by the new console. Royce said to leave this alone for now. _(added 2026-08-02)_
-- **A bug in the database tool used to apply changes to this app locally** (Windows-specific, unrelated to anything built this session) blocked the normal way of pushing database updates, twice — worked around both times by pasting the SQL straight into Supabase's own web editor instead. Nobody's reported it upstream yet. _(added 2026-08-02)_
-_…and 373 more · [eq/pending.md](eq/pending.md)_
+_…and 374 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -124,7 +124,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 3131 | 500 | 129 | 12 |
+| [EQ](eq/pending.md) | 3137 | 501 | 129 | 12 |
 | [SKS](sks/pending.md) | 424 | 83 | 5 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 402 | 37 | 5 | 1 |
@@ -145,4 +145,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-03 05:27 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-03 05:47 UTC._
