@@ -60,15 +60,15 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-03)
 
-**eq-cards:**
-- #201 fix(licences): White Card upload nudge offers gallery, not just camera
-
 **eq-service:**
 - #688 chore(deps): bump @sentry/nextjs from 10.68.0 to 10.69.0
 - #687 chore(deps-dev): bump eslint-config-next from 16.2.2 to 16.2.12
 - #686 chore(deps-dev): bump @vitejs/plugin-react from 6.0.4 to 6.0.5
 - #685 chore(deps): bump react-dom and @types/react-dom
 - #684 chore(deps): bump the eq-design-system group with 2 updates
+
+**eq-shell:**
+- #1211 fix(ops): unique stage colours, re-spread estimator palette, wider board columns
 
 ---
 
