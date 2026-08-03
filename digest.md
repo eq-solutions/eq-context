@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-03 18:07 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-03 18:27 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-03 18:06 UTC → 2026-08-03 18:07 UTC)
+## Since last refresh (2026-08-03 18:07 UTC → 2026-08-03 18:27 UTC)
 
-- Merged: eq-shell [#1203](https://github.com/eq-solutions/eq-shell/pull/1203) fix(auth): hotfix — Cards SSO email-sync missed a phone-only
-- Merged: eq-shell [#1198](https://github.com/eq-solutions/eq-shell/pull/1198) fix(shell): resolve react-hooks/refs in iframe pre-warm keep
-- Merged: eq-shell [#1197](https://github.com/eq-solutions/eq-shell/pull/1197) fix(auth): Cards SSO no longer depends on the worker having 
-- Merged: eq-shell [#1196](https://github.com/eq-solutions/eq-shell/pull/1196) feat(documents): Shell upload + push UI for the sign-off reg
-- Merged: eq-shell [#1195](https://github.com/eq-solutions/eq-shell/pull/1195) feat(auth): trim worker-add dropdown to 2 items, surface gen
-- Merged: eq-shell [#1194](https://github.com/eq-solutions/eq-shell/pull/1194) chore(control-plane): backfill missing source for eq_cards_i
-- Merged: eq-shell [#1193](https://github.com/eq-solutions/eq-shell/pull/1193) fix(auth): self-join adds a membership in the new tenant, no
-- Merged: eq-solves-service [#689](https://github.com/eq-solutions/eq-service/pull/689) fix(types): close canonical types drift on media_library + s
+- Merged: eq-shell [#1223](https://github.com/eq-solutions/eq-shell/pull/1223) fix(ops): po-matched status never synced the canonical job r
+- Merged: eq-shell [#1207](https://github.com/eq-solutions/eq-shell/pull/1207) fix(shell): resolve all 117 eq-shell-owned no-explicit-any e
+- Merged: eq-shell [#1206](https://github.com/eq-solutions/eq-shell/pull/1206) fix(shell): Worker Home shows warnings before everyday statu
+- Merged: eq-shell [#1205](https://github.com/eq-solutions/eq-shell/pull/1205) fix(ops): show file-attached badge on Kanban pipeline board 
+- Merged: eq-shell [#1204](https://github.com/eq-solutions/eq-shell/pull/1204) fix(shell): resolve @typescript-eslint/no-unused-vars (107 o
+- Merged: eq-shell [#1202](https://github.com/eq-solutions/eq-shell/pull/1202) fix(shell): resolve the last react-hooks/refs error via JobR
+- Merged: eq-shell [#1201](https://github.com/eq-solutions/eq-shell/pull/1201) fix(shell): resolve no-restricted-syntax hex-colour errors (
+- Merged: eq-shell [#1200](https://github.com/eq-solutions/eq-shell/pull/1200) fix(shell): resolve remaining react-hooks/refs errors (19 of
 
 ## ⚠ Needs you (3)
 
@@ -49,10 +49,10 @@ _…and 97 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 0 | — |
-| eq-solves-service | ? unknown | ? | 5 | 0d |
-| eq-field | ? unknown | ? | 0 | — |
-| eq-cards | ? unknown | ? | 0 | — |
+| eq-shell | ✓ success | 0d ago | 0 | — |
+| eq-solves-service | ✓ success | 0d ago | 5 | 0d |
+| eq-field | ✓ success | 0d ago | 0 | — |
+| eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
 ## Live errors (Sentry)
@@ -73,6 +73,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-03 | eq-shell | [#1223](https://github.com/eq-solutions/eq-shell/pull/1223) fix(ops): po-matched status never synced the canonical job record |
 | 2026-08-03 | eq-shell | [#1222](https://github.com/eq-solutions/eq-shell/pull/1222) feat(documents): sign-off certificate PDF + document templates |
 | 2026-08-03 | eq-shell | [#1221](https://github.com/eq-solutions/eq-shell/pull/1221) fix(ops): migration 0236 needs DROP FUNCTION before CREATE OR REP |
 | 2026-08-03 | eq-shell | [#1220](https://github.com/eq-solutions/eq-shell/pull/1220) fix(ops): board drag-and-drop now writes the canonical job record |
@@ -87,7 +88,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-03 | eq-shell | [#1211](https://github.com/eq-solutions/eq-shell/pull/1211) fix(ops): unique stage colours, re-spread estimator palette, wide |
 | 2026-08-03 | eq-shell | [#1210](https://github.com/eq-solutions/eq-shell/pull/1210) chore(intake): auto re-vendor eq-intake/eq-platform |
 | 2026-08-03 | eq-shell | [#1209](https://github.com/eq-solutions/eq-shell/pull/1209) fix(ops): bolder file badge, colour-code estimator instead of cus |
-| 2026-08-03 | eq-shell | [#1208](https://github.com/eq-solutions/eq-shell/pull/1208) feat(documents): register view for the sign-off register (step 5) |
 _Showing 15 of 143 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -98,11 +98,11 @@ _Showing 15 of 143 · full record in [sessions/](sessions/)_
 - **Confirm the scheduled nightly drift check itself shows green**, not just the one-off PR check — same logic, but hasn't been observed on a real nightly run yet. Should self-resolve. _(added 2026-08-03)_
 - **The Supabase startup failure in CI** (a leftover database setting missing an `id` column, breaking the API's schema cache) is separate, pre-existing, and still red on every run — worth a dedicated fix at some point, not touched this session. _(added 2026-08-03)_
 - **Separate, lower-priority**: one more stale-type warning (`tenant_settings.archive_grace_period_days`) traces to a database change from months ago that was never actually applied live — left alone on purpose, different job. _(added 2026-08-03, carried forward)_
-- **The access token's permissions still need fixing in GitHub itself** — needs "Actions" and "Pull requests" read access added to `EQ_CONTEXT_PAT`; this is what's actually causing the dashboard's "unknown" status, and it can't be done by me — needs your GitHub login. _(added 2026-08-03)_
-- **`eq-solves-assets` folder points at the wrong GitHub repo** (a personal fork of the Service app, not the real assets repo) — needs you to say what this folder is actually for and where the real repo lives. Not touched. _(added 2026-08-03)_
-- **`eq-intake` local checkout has real uncommitted changes** across several config/build files plus a new folder that was never checked in — worth a look before anyone builds from this checkout. Not touched. _(added 2026-08-03)_
+- **`eq-solves-assets` folder points at the wrong GitHub repo** (a personal fork of the Service app, not the real assets repo) — Royce: "on the back burner, can be ignored." Deprioritized, not investigated further. _(added 2026-08-03, updated 2026-08-03)_
+- **`eq-intake` local checkout has real uncommitted changes** — looked closer, this is not junk: coherent, half-finished build-pipeline hardening (narrowing the CI gate to only the packages that actually build, wiring in a test gate now that 4 clean manual cycles have verified it's stable, a new `CLAUDE.md` safety rule — "steward runs are DML-only on live tenant planes" — written after that mistake happened twice) plus two untracked vendored app folders already known-stale from the old config notes. Someone should finish and commit it, or commit it deliberately if abandoned, rather than lose it. Still not touched. _(added 2026-08-03, updated 2026-08-03)_
 - **eq-shell's `smoke.yml` check is chronically noisy** (roughly 1 in 3 runs fails on a timing timeout, always self-resolves) — not a real bug, but worth a longer timeout if the false alarms bother anyone watching it. _(added 2026-08-03)_
-_…and 389 more · [eq/pending.md](eq/pending.md)_
+- **The shared `eq-context` checkout keeps taking damage from concurrent-session git races** — a stuck rebase, a live conflict-marker corruption on `main`, and two separate non-fast-forward push rejections all landed within about 10 minutes from multiple sessions writing to the same working directory at once; a follow-up session then found local `main` had diverged again and, even after verifying the fix in an isolated clone, applying it back on the shared checkout still collided with a second concurrent rebase (HEAD detached, `main` ref left pointing at a stale commit — fixed, no data lost). Worth deciding whether concurrent sessions should default to a fresh clone for any `/close`, not just multi-step surgery — the existing guidance undersells how often this is now actually happening. _(added 2026-08-03)_
+_…and 388 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -124,7 +124,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 3260 | 527 | 165 | 12 |
+| [EQ](eq/pending.md) | 3261 | 526 | 166 | 12 |
 | [SKS](sks/pending.md) | 424 | 83 | 5 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 402 | 37 | 5 | 1 |
@@ -145,4 +145,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-03 18:07 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-03 18:27 UTC._
