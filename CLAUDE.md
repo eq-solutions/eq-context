@@ -253,6 +253,8 @@ Before close, MUST:
 
 Skipping these = substrate stale = next session inherits drift. (See `system/lessons.md` "Update Discipline Lapsed".)
 
+**On-demand, EQ only:** if commercial, product, or strategic ground moved this session, update `eq/progress/` (see `eq/progress/README.md`) — not a standing MUST, populate it when there's something real to log.
+
 ---
 
 ## 11. Tool-Specific Notes
