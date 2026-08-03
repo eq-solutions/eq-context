@@ -67,9 +67,6 @@ _If this file is >48h old, the cron is broken._
 - #685 chore(deps): bump react-dom and @types/react-dom
 - #684 chore(deps): bump the eq-design-system group with 2 updates
 
-**eq-shell:**
-- #1218 fix(shell): collapse Roster/Leave glance tiles into the single Field tile
-
 ---
 
 ## System Health (as of 2026-08-03)
