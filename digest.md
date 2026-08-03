@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-03 09:54 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-03 09:59 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-03 09:49 UTC → 2026-08-03 09:54 UTC)
+## Since last refresh (2026-08-03 09:54 UTC → 2026-08-03 09:59 UTC)
 
-- Merged: eq-shell [#1194](https://github.com/eq-solutions/eq-shell/pull/1194) chore(control-plane): backfill missing source for eq_cards_i
-- Merged: eq-shell [#1192](https://github.com/eq-solutions/eq-shell/pull/1192) fix(auth): self-join fixes — worker row, email-drop notice, 
-- Merged: eq-shell [#1191](https://github.com/eq-solutions/eq-shell/pull/1191) chore(intake): auto re-vendor eq-intake/eq-platform
-- Merged: eq-shell [#1189](https://github.com/eq-solutions/eq-shell/pull/1189) feat(auth): join-links controls — edit expiry, join counts, 
-- Merged: eq-shell [#1188](https://github.com/eq-solutions/eq-shell/pull/1188) fix(auth): self-join provisioning 500s on email collision, m
-- Merged: eq-shell [#1187](https://github.com/eq-solutions/eq-shell/pull/1187) chore(intake): auto re-vendor eq-intake/eq-platform
-- Merged: eq-shell [#1186](https://github.com/eq-solutions/eq-shell/pull/1186) feat(auth): delete self-join links, not just deactivate
-- Merged: eq-shell [#1185](https://github.com/eq-solutions/eq-shell/pull/1185) feat(auth): collapse worker-add header into one button + a m
+- Merged: eq-shell [#1211](https://github.com/eq-solutions/eq-shell/pull/1211) fix(ops): unique stage colours, re-spread estimator palette,
+- Merged: eq-shell [#1199](https://github.com/eq-solutions/eq-shell/pull/1199) fix(auth): recovery-email nudge distinguishes dropped email 
+- Merged: eq-shell [#1198](https://github.com/eq-solutions/eq-shell/pull/1198) fix(shell): resolve react-hooks/refs in iframe pre-warm keep
+- Merged: eq-shell [#1197](https://github.com/eq-solutions/eq-shell/pull/1197) fix(auth): Cards SSO no longer depends on the worker having 
+- Merged: eq-shell [#1196](https://github.com/eq-solutions/eq-shell/pull/1196) feat(documents): Shell upload + push UI for the sign-off reg
+- Merged: eq-shell [#1195](https://github.com/eq-solutions/eq-shell/pull/1195) feat(auth): trim worker-add dropdown to 2 items, surface gen
+- Merged: eq-shell [#1193](https://github.com/eq-solutions/eq-shell/pull/1193) fix(auth): self-join adds a membership in the new tenant, no
+- Merged: eq-shell [#1190](https://github.com/eq-solutions/eq-shell/pull/1190) feat(intake): Contact resolver + merge (migrations 0233/0234
 
 ## ⚠ Needs you (3)
 
@@ -27,11 +27,12 @@ _2026-08-03 09:54 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-9 (P0 — confirmed exposure, same window as SEC-3, possible second exposure 2026-07-27) — A different service_role key (`jvkn`/eq-canonical) was pasted directly into a ch · [security-register.md](ops/security-register.md)
 
-## 🙋 Waiting on you (108)
+## 🙋 Waiting on you (109)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
 - **EQ** · **Show mode not yet click-tested on a real device with network disabled.** Verified: analyzer clean, full test suite (255 tests) passes, `flutter build web` succeeds and boots with zero console errors via a static preview — but never signed in as a real worker and tapped it (real login is off-limits for me to do on Royce's behalf). Royce to confirm brightness/wakelock/offline behaviour actually work as intended. _(added 2026-08-03)_
+- **EQ** · **Photo ID "still needed" report — the RPC-mismatch theory is disproven; real cause is very likely the already-tracked broken `credentials-canonical-sync`.** Checked both live function bodies on jvkn directly (not git): `eq_cards_my_credential_gaps` and `eq_worker_compliance_status` BOTH have the correct photo_id/driver_licence/passport equivalence, and both correctly return "held" when run against Royce's own account. Zero rows in `public.licences` have changed in the last 2 days, so "still happening" is an unconfirmed carry-over, not a fresh repro. Real lead: Royce's own `ehow.app_data.licences` row count is zero — none of his Cards credentials have ever synced there — so if he's checking the older SKS compliance view (the one behind the dead `credentials-canonical-sync` function, see the entry below), it would show everything missing, not just Photo ID. Needs Royce to confirm which screen he's actually looking at; if it's that one, this folds into the `credentials-canonical-sync` decision already pending below, not a new bug. _(added 2026-08-03, updated 2026-08-03)_
 - **EQ** · **`credentials-canonical-sync` is broken and not actually running** — the edge function that's supposed to copy a worker's licence/credential updates from Cards into the SKS compliance/Field-legacy database is deployed but wired to nothing (no database trigger calls it), and even if it were, it hardcodes the wrong SKS tenant ID (the old, corrected-in-2026-06 wrong value). Net effect: a worker updating a licence or White Card in Cards today does not reach the older SKS compliance view at all. Needs Royce's call on reviving it (fix + wire it up) vs retiring it in favour of the newer eq-field app's live-read pattern, which doesn't have this problem by design. Spawned as background task `task_5687d06b`, already started in a separate session. _(added 2026-08-03)_
 - **EQ** · **Royce to retry the actual save in the browser** to confirm end-to-end — DB-level fix is verified, only the real click-through confirms the full path. _(added 2026-08-02)_
 - **EQ** · **Staff duplicate handling — still Archive-only, needs your call before any build.** A real staff merge fans out into Field-owned operational tables (timesheets, schedule, licences, dispatch) — per the durable architecture rule, that can't be rebuilt Shell-side; it needs Field-repo coordination, which is a scope decision, not something to default on. _(added 2026-08-02)_
@@ -42,14 +43,13 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **EQ** · **Royce to click through live**: open the Duplicate Sites panel as a non-manager and confirm Preview now shows; mark a row Unsure with a note and confirm it saves and displays; confirm a real merge now succeeds end-to-end (Preview → Confirm) now that the permission fix is live. _(added 2026-08-01)_
 - **EQ** · **Royce to click through live**: sidebar logo and the admin Media Library page (grid + edit modal) for a tenant with a logo set — confirm images still render correctly after the switch above. _(added 2026-08-01)_
 - **EQ** · **Royce to click through live on a real device** — confirm the "take a photo" sheet feels right end to end (camera opens, OCR reads the card, fallback link works). Note: the code merged this morning but wasn't actually live yet when Royce first tried it — this repo's deploy isn't automatic on merge, and nobody had triggered one. Deployed and confirmed live later the same day. _(added 2026-08-01, updated 2026-08-01)_
-- **EQ** · **Royce to click through live**: sign in on core.eq.solutions and confirm Cards/Field/Service each load past "Authorising…" — needs a real login, which Claude can't do on Royce's behalf. _(added 2026-08-01)_
-_…and 96 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 97 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 1 | 0d |
+| eq-shell | ? unknown | ? | 0 | — |
 | eq-solves-service | ? unknown | ? | 5 | 0d |
 | eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ? unknown | ? | 0 | — |
@@ -64,15 +64,16 @@ _…and 96 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 | eq-shell | [Error: Workers never invited to join, past grace period: 44](https://eq-solutions.sentry.io/issues/135740258/) | 14 | 2026-08-02 |
 | eq-solves-service | [UnrecognizedActionError: Server Action "40f8ab2385de590826648056ec7fc02ebdd51eb8](https://eq-solutions.sentry.io/issues/122209933/) | 10 | 2026-08-01 |
 | eq-shell | [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/) | 7 | 2026-08-02 |
-| eq-field | [Error: 404: {"code":"PGRST202","details":"Searched for the function public.get_s](https://eq-solutions.sentry.io/issues/138015513/) | 4 | 2026-08-01 |
 | eq-cards | [<unknown>](https://eq-solutions.sentry.io/issues/137265513/) | 4 | 2026-07-29 |
 | eq-cards | [minified:a3W: FunctionException(status: 401, details: {error: unauthorized}, rea](https://eq-solutions.sentry.io/issues/138367603/) | 3 | 2026-08-02 |
+| eq-cards | [LateInitializationError: Field '' has not been initialized.](https://eq-solutions.sentry.io/issues/136695941/) | 3 | 2026-07-28 |
 _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunresolved)_
 
 ## Recently built (last 7 days)
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-03 | eq-shell | [#1211](https://github.com/eq-solutions/eq-shell/pull/1211) fix(ops): unique stage colours, re-spread estimator palette, wide |
 | 2026-08-03 | eq-shell | [#1210](https://github.com/eq-solutions/eq-shell/pull/1210) chore(intake): auto re-vendor eq-intake/eq-platform |
 | 2026-08-03 | eq-shell | [#1209](https://github.com/eq-solutions/eq-shell/pull/1209) fix(ops): bolder file badge, colour-code estimator instead of cus |
 | 2026-08-03 | eq-shell | [#1208](https://github.com/eq-solutions/eq-shell/pull/1208) feat(documents): register view for the sign-off register (step 5) |
@@ -87,14 +88,11 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-03 | eq-field | [#630](https://github.com/eq-solutions/eq-field/pull/630) fix(dashboard): defer map fit past a layout race (v3.5.437) |
 | 2026-08-03 | eq-field | [#629](https://github.com/eq-solutions/eq-field/pull/629) fix(dashboard): shrink map height, make Birthdays collapsible (v3 |
 | 2026-08-03 | eq-field | [#628](https://github.com/eq-solutions/eq-field/pull/628) fix(dashboard): map default view zoomed 3 levels wider (v3.5.435) |
-| 2026-08-03 | eq-cards | [#201](https://github.com/eq-solutions/eq-cards/pull/201) fix(licences): White Card upload nudge offers gallery, not just c |
 _Showing 15 of 139 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
 - **Live click-through not done** — confirm on `/sks/ops?tab=dashboard` that SKS-17577 (and other quotes with saved files) now shows the paperclip icon on the board card. Needs a real authenticated session, off-limits for me to do myself. _(added 2026-08-03)_
-- **Photo ID still shows as needed after uploading a driver's licence, even though the equivalence fix (2026-08-02, migration `2026_08_02b`) is live** — Royce reported this is still happening. Not re-investigated this session (explicitly deprioritised behind the Cards double-sign-in dive). Suspect the screen Royce is looking at reads a different RPC (`eq_cards_my_credential_gaps`, in eq-cards) than the one patched (`eq_worker_compliance_status`, in eq-shell/jvkn) — needs checking against the actual screen, not assumed. _(added 2026-08-03)_
-- **White card upload doesn't offer "choose from photo library," camera-only** — reported by Royce alongside the photo ID issue above. This is EQ Cards' Flutter app, a different repo not available in this session — needs picking up there. _(added 2026-08-03)_
 - **OCR-scanned name still unconfirmed whether it reaches `profiles.full_name`** — flagged in the 2026-08-02 self-join fixes entry below and never independently verified since; still open. _(added 2026-08-03, carried from 2026-08-02)_
 - **The `ensureAuthUser` email-sync bug class is worth a second look**: it took a real live failure to catch a `null`-vs-falsy gap in a brand-new function. Worth considering whether any other "sync if different" checks in the auth path have the same falsy-null blind spot — not swept this session. _(added 2026-08-03)_
 - **Live click-through not done** — confirm on core.eq.solutions that Field/Service/Cards still pre-warm within 2.5s, switching between them stays fast, and a first-navigation-before-prewarm still mounts instantly with no flash. Needs a real authenticated session, off-limits for me to do myself. _(added 2026-08-03)_
@@ -102,7 +100,9 @@ _Showing 15 of 139 · full record in [sessions/](sessions/)_
 - **Visual check not done** — `LabourHireRates.tsx` and `WorkerHome.tsx` are both behind real auth; couldn't click through myself. A local Browser-tool CSS-swatch comparison also failed (file:// navigate timed out), so verification rests on `@eq-design-tokens`'s own hex definitions, not a live render. Two of the eight swaps aren't exact-hex matches (`var(--eq-grey)` for `#5F5E5A`, and the three status tokens for the WorkerHome tile accents) — worth a glance to confirm nothing looks off. _(added 2026-08-03)_
 - **Live click-through not done** — the comms job table's inline editing (click-to-edit, Enter/Tab save-and-move, Esc cancel, cross-row keyboard nav) needs a real click-through on the NSW Comms board before trusting the extraction blind. Content moved verbatim and the shared-state/keyboard-nav logic was reasoned through carefully, but a structural change like this deserves a real look. Needs a real authenticated session, off-limits for me to do myself. _(added 2026-08-03)_
 - **Bridging Cards' new trade/employer data into Shell** — deliberately not built; no rule exists yet for what happens when a worker's own answer disagrees with what an employer has on file. _(added 2026-08-02)_
-_…and 376 more · [eq/pending.md](eq/pending.md)_
+- **Letting an admin fill in a worker's trade/employer or licences on their behalf** — deliberately not built. Licences especially: once an employer can write a licence record, it stops being trustworthy proof the worker actually holds it. Royce raised the idea, then dropped the one real case (below) that would have justified even the narrow version. _(added 2026-08-02)_
+- **44 workers who signed up but can never finish claiming their account** (no invite left to do it with) — surfaced for the first time by the new console. Royce said to leave this alone for now. _(added 2026-08-02)_
+_…and 374 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -145,4 +145,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-03 09:54 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-03 09:59 UTC._
