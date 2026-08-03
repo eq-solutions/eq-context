@@ -4,10 +4,21 @@ owner: Royce Milmlow
 last_updated: 2026-08-03
 scope: Design for an internal-only document sign-off + reminder register — upload once, push to signers, track who's signed, chase who hasn't. First cut of the safety/quality/commissioning-docs idea explored 2026-08-01.
 read_priority: high
-status: v1 build-plan steps 1-5 (register view) complete. Schema (`0233_document_signoff_register.sql`) applied live to both ehow and zaap 2026-08-02 (eq-shell PR #1180). Shell upload+push UI merged and deployed 2026-08-03 (eq-shell PR #1196). Field sign UI merged and deployed 2026-08-03, pilot-gated to one person (eq-field PR #627). Shell register view merged 2026-08-03 (eq-shell PR #1208) — admins can see who's signed what without querying the DB. Upload → push → sign → register is a real, working loop for the pilot user. Reminder cron (the other half of step 5 in the original plan) was never scoped/discussed and remains not started; step 6 (rollout past the pilot) also remains — both Royce's call on timing.
+status: live
 ---
 
 # EQ — Internal Document Sign-off Register
+
+**Status:** v1 build-plan steps 1-5 (register view) complete. Schema
+(`0233_document_signoff_register.sql`) applied live to both ehow and zaap
+2026-08-02 (eq-shell PR #1180). Shell upload+push UI merged and deployed
+2026-08-03 (eq-shell PR #1196). Field sign UI merged and deployed 2026-08-03,
+pilot-gated to one person (eq-field PR #627). Shell register view merged
+2026-08-03 (eq-shell PR #1208) — admins can see who's signed what without
+querying the DB. Upload → push → sign → register is a real, working loop for
+the pilot user. Reminder cron (the other half of step 5 in the original plan)
+was never scoped/discussed and remains not started; step 6 (rollout past the
+pilot) also remains — both Royce's call on timing.
 
 ## Why
 

@@ -1,7 +1,7 @@
 ---
 title: SYSTEM Tier — Index
 owner: Royce Milmlow
-last_updated: 2026-07-19
+last_updated: 2026-08-03
 scope: The substrate itself — how the AI context system works
 read_priority: reference
 status: live
@@ -24,6 +24,7 @@ Every canonical system file as a full URL — clickable from `/context/claude`:
 - [system/onboarding.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/onboarding.md) — first-time tutorial
 - [system/failures.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/failures.md) — the guard-ratchet failure ledger
 - [system/worktree-registry.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/worktree-registry.md) — active/stale git worktrees, check before creating one
+- [system/incident-claims.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/incident-claims.md) — same-day claim lock so 2-3 concurrent sessions don't independently chase the same flagged finding; checked automatically by `hooks/session_start.py` against digest.md's "Needs you" list
 - [system/dr-backups.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/dr-backups.md) — offsite backup coverage across projects
 - [system/substrate-facts.yml](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/substrate-facts.yml) — CI-checked live/deleted status manifest, drives digest.md's drift check
 - [system/task-brief-template.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/task-brief-template.md) — Rule 0.6 session-gate brief template
@@ -47,6 +48,7 @@ Every canonical system file as a full URL — clickable from `/context/claude`:
 | `TODAY.md` | Session focus filter — goals currently UNSET |
 | `failures.md` | Guard-ratchet failure ledger |
 | `worktree-registry.md` | Active/stale git worktrees |
+| `incident-claims.md` | Same-day claim lock so concurrent sessions don't duplicate investigation of the same flagged finding |
 | `dr-backups.md` | Offsite backup coverage |
 | `substrate-facts.yml` | CI-checked live/deleted status manifest |
 | `task-brief-template.md` | Rule 0.6 session-gate brief template |

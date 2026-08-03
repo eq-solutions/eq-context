@@ -3,7 +3,7 @@ title: SEC-9 — Rotate the leaked jvkn (eq-canonical) service_role key
 owner: Royce Milmlow
 created: 2026-07-27
 last_updated: 2026-08-01
-status: draft — deferred, safer path identified
+status: draft
 read_priority: critical
 scope: Kill the jvkn service_role key pasted into a chat transcript 2026-07-12, and propagate the new one to every consumer without breaking any of them
 ---

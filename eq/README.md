@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Index
 owner: Royce Milmlow
-last_updated: 2026-07-19
+last_updated: 2026-08-03
 scope: EQ Solutions work — products, decisions, build state
 read_priority: critical
 status: live
@@ -51,6 +51,8 @@ Every canonical EQ file as a full URL — clickable from `/context/claude`:
 | `progress/year-goals.md` | Draft year-end evaluation criteria — live goal stays in `system/TODAY.md` |
 | `pending.md` | EQ-only to-do list |
 | `pending-archive.md` | Done items rotated out of pending.md nightly (`scripts/rotate_pending.py`) — historical record only |
+| `verify-queue.md` | Items only blocked on Royce's own live click-through — the build itself is already done, rotated out of pending.md by `scripts/rotate_pending.py` |
+| `documents/internal-signoff-register-design-2026-08-01.md` | Internal document sign-off register — design + build-plan; steps 1-5 (register view) live, reminder cron + rollout past the pilot still open |
 | `cards/portable-trade-identity-audit-2026-07-20.md` | Cards portable-trade-identity audit — first-slice item 1 closed, items 2–4 + Path A/B/C await Royce |
 | `products.md` | EQ live product status |
 | `active.md` | Live-state snapshot (staff/site/licence counts) — cross-check against products.md before quoting a headcount, they've drifted before |

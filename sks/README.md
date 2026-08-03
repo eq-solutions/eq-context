@@ -1,7 +1,7 @@
 ---
 title: SKS Tier — Index
 owner: Royce Milmlow
-last_updated: 2026-07-16
+last_updated: 2026-08-03
 scope: SKS Technologies work — operations, projects, team, tools
 read_priority: critical
 status: live
@@ -98,6 +98,7 @@ Separate audience — only fetch when explicitly authoring or reviewing team-fac
 |---|---|
 | `pending.md` | SKS-only to-do list |
 | `pending-archive.md` | Done items rotated out of pending.md nightly (`scripts/rotate_pending.py`) — historical record only |
+| `verify-queue.md` | Items only blocked on Royce's own live click-through — the build itself is already done, rotated out of pending.md by `scripts/rotate_pending.py` |
 | `active.md` | Rolling active projects (current quarter) |
 | `team.md` | NSW team |
 | `products.md` | SKS live tools (Labour, Receipt Tracker) |
