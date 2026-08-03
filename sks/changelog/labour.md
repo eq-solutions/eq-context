@@ -1,13 +1,17 @@
 ---
 title: Changelog — SKS Labour
 owner: Royce Milmlow
-last_updated: 2026-07-31
+last_updated: 2026-08-04
 scope: Append-only history of changes to the SKS Labour scheduling app
 read_priority: reference
 status: live
 ---
 
 # Changelog — SKS Labour
+
+## [2026-08-04] Removed the "What's new" release-notes banner
+**Built by:** assistant + Royce Milmlow
+- **v3.10.108 (PR #75, `a1b3f51`→merge `edc2abbb`/live, deployed)** — Deleted the dismissible "What's new" banner entirely: `scripts/whatsnew.js`, its script tag, sidebar link, container div, and `sw.js` precache entry. Unrelated to the roster-change push-notification opt-in in `scripts/auth.js`, which stays. Mirrored the same day in EQ Field for parity — see field.md.
 
 ## [2026-07-31] Safety: photo picker allowed gallery photos again + submitted forms stay editable
 **Built by:** assistant + Royce Milmlow
