@@ -4,7 +4,7 @@ owner: Royce Milmlow
 last_updated: 2026-08-03
 scope: Design for an internal-only document sign-off + reminder register — upload once, push to signers, track who's signed, chase who hasn't. First cut of the safety/quality/commissioning-docs idea explored 2026-08-01.
 read_priority: high
-status: v1 build-plan complete (steps 1-4). Schema (`0233_document_signoff_register.sql`) applied live to both ehow and zaap 2026-08-02 (eq-shell PR #1180). Shell upload+push UI merged and deployed 2026-08-03 (eq-shell PR #1196). Field sign UI merged and deployed 2026-08-03, pilot-gated to one person (eq-field PR #627). Push → sign is a real, working loop for the pilot user. Step 5 (register/reminder view) was always scoped separately — not started.
+status: v1 build-plan steps 1-5 (register view) complete. Schema (`0233_document_signoff_register.sql`) applied live to both ehow and zaap 2026-08-02 (eq-shell PR #1180). Shell upload+push UI merged and deployed 2026-08-03 (eq-shell PR #1196). Field sign UI merged and deployed 2026-08-03, pilot-gated to one person (eq-field PR #627). Shell register view merged 2026-08-03 (eq-shell PR #1208) — admins can see who's signed what without querying the DB. Upload → push → sign → register is a real, working loop for the pilot user. Reminder cron (the other half of step 5 in the original plan) was never scoped/discussed and remains not started; step 6 (rollout past the pilot) also remains — both Royce's call on timing.
 ---
 
 # EQ — Internal Document Sign-off Register
@@ -208,17 +208,40 @@ starts — no big-bang schema-then-UI drop.
    once this moves past one person — needs a signer-scoped policy on
    the eq-shell side (schema owner), not something eq-field can fix
    itself.
-5. **Register + reminder cron.** Read view (document → version →
-   signer → status → date) plus a cron in the shape of the existing
-   pre-visit brief cron, chasing outstanding signers on a schedule.
+5. ~~**Register view.**~~ **MERGED 2026-08-03** — eq-shell PR
+   [#1208](https://github.com/eq-solutions/eq-shell/pull/1208) (squash
+   `35b204b3`, Royce's "merge #1208" go). Extends `admin/documents`
+   with a Register tab — grouped-by-document read of
+   `app_data.document_register` via a new `GET ?resource=register`
+   action on `push-document-audience.ts`, signer names resolved via
+   the same control-plane lookup the push flow uses, outstanding/
+   overdue signers surfaced first, resolved documents after.
+   Live-reverified independently post-merge, not just trusted from
+   the build report: `document_register`'s `due_at`/`is_overdue`/
+   `last_reminded_at` columns — laid in with the original migration
+   for the reminder cron below, unused until this PR — match live
+   schema exactly, and the one real proven row (Environmental
+   Management Plan, signed) renders correctly against a live re-run
+   of the exact query. Netlify auto-deploys eq-shell on merge — build
+   still in flight as of the merge, not yet confirmed live, not
+   click-tested. **Reminder cron split out, not built.** This step
+   originally bundled a cron (chasing outstanding signers on a
+   schedule, shape of the existing pre-visit brief cron) — never
+   discussed for this build, stays a real, separate, not-started
+   item; the schema already carries the columns for it
+   (`due_at`/`last_reminded_at`) whenever it's picked up.
 6. **Rollout.** Start with one real document (candidate: an existing
    SMP) end-to-end before onboarding the rest of the switchboard
    schedule / ITC / O&M backlog into the register.
 
-Steps 1–4 are done as of 2026-08-03 — schema live, upload+push UI live,
-sign UI live (pilot-gated to one person). Push → sign is a real, working
-loop end-to-end for the pilot user, not just a diagram. Step 5
-(register/reminder view, for admins to see who hasn't signed without
-opening the DB) and step 6 (rollout past the pilot — widen the Field
-gate, onboard a real document) are what's left, both explicitly
-Royce's call on timing, not a technical blocker.
+Steps 1–5 (register view) are done as of 2026-08-03 — schema live,
+upload+push UI live, sign UI live (pilot-gated to one person), register
+view live. Upload → push → sign → register is a real, working loop
+end-to-end for the pilot user, not just a diagram — an admin can now
+see who's signed what without opening the DB. What's left: the
+reminder cron (split out of step 5, never scoped, chases outstanding
+signers on a schedule), the known `document_signoffs` RLS gap
+(tenant-wide, not signer-scoped — flagged across steps 3/4/5, still
+open), and step 6 (rollout past the pilot — widen the Field gate,
+onboard a real document). All Royce's call on timing, not a technical
+blocker.
