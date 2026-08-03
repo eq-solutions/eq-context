@@ -8,19 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-03 12:34 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-03 12:37 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-03 12:12 UTC → 2026-08-03 12:34 UTC)
+## Since last refresh (2026-08-03 12:34 UTC → 2026-08-03 12:37 UTC)
 
-- Merged: eq-shell [#1220](https://github.com/eq-solutions/eq-shell/pull/1220) fix(ops): board drag-and-drop now writes the canonical job r
-- Merged: eq-shell [#1203](https://github.com/eq-solutions/eq-shell/pull/1203) fix(auth): hotfix — Cards SSO email-sync missed a phone-only
-- Merged: eq-shell [#1196](https://github.com/eq-solutions/eq-shell/pull/1196) feat(documents): Shell upload + push UI for the sign-off reg
-- Merged: eq-shell [#1195](https://github.com/eq-solutions/eq-shell/pull/1195) feat(auth): trim worker-add dropdown to 2 items, surface gen
-- Merged: eq-shell [#1194](https://github.com/eq-solutions/eq-shell/pull/1194) chore(control-plane): backfill missing source for eq_cards_i
-- Merged: eq-shell [#1193](https://github.com/eq-solutions/eq-shell/pull/1193) fix(auth): self-join adds a membership in the new tenant, no
-- Merged: eq-shell [#1192](https://github.com/eq-solutions/eq-shell/pull/1192) fix(auth): self-join fixes — worker row, email-drop notice, 
-- Merged: eq-shell [#1180](https://github.com/eq-solutions/eq-shell/pull/1180) feat(documents): internal document sign-off register schema 
-- ⚠ Needs you: 2 → 3 (new items)
+- Merged: eq-shell [#1205](https://github.com/eq-solutions/eq-shell/pull/1205) fix(ops): show file-attached badge on Kanban pipeline board 
+- Merged: eq-shell [#1204](https://github.com/eq-solutions/eq-shell/pull/1204) fix(shell): resolve @typescript-eslint/no-unused-vars (107 o
+- Merged: eq-shell [#1202](https://github.com/eq-solutions/eq-shell/pull/1202) fix(shell): resolve the last react-hooks/refs error via JobR
+- Merged: eq-shell [#1201](https://github.com/eq-solutions/eq-shell/pull/1201) fix(shell): resolve no-restricted-syntax hex-colour errors (
+- Merged: eq-shell [#1200](https://github.com/eq-solutions/eq-shell/pull/1200) fix(shell): resolve remaining react-hooks/refs errors (19 of
+- Merged: eq-shell [#1199](https://github.com/eq-solutions/eq-shell/pull/1199) fix(auth): recovery-email nudge distinguishes dropped email 
+- Merged: eq-shell [#1198](https://github.com/eq-solutions/eq-shell/pull/1198) fix(shell): resolve react-hooks/refs in iframe pre-warm keep
+- Merged: eq-shell [#1197](https://github.com/eq-solutions/eq-shell/pull/1197) fix(auth): Cards SSO no longer depends on the worker having 
 
 ## ⚠ Needs you (3)
 
@@ -52,7 +51,7 @@ _…and 97 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 |------|-----------|--------|----------|-----------|
 | eq-shell | ? unknown | ? | 0 | — |
 | eq-solves-service | ? unknown | ? | 5 | 0d |
-| eq-field | ? unknown | ? | 1 | 0d |
+| eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ? unknown | ? | 1 | 0d |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
@@ -146,4 +145,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-03 12:34 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-03 12:37 UTC._
