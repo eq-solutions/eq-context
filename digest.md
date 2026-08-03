@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-03 11:06 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-03 11:14 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-03 11:01 UTC → 2026-08-03 11:06 UTC)
+## Since last refresh (2026-08-03 11:06 UTC → 2026-08-03 11:14 UTC)
 
-- Merged: eq-shell [#1201](https://github.com/eq-solutions/eq-shell/pull/1201) fix(shell): resolve no-restricted-syntax hex-colour errors (
-- Merged: eq-shell [#1199](https://github.com/eq-solutions/eq-shell/pull/1199) fix(auth): recovery-email nudge distinguishes dropped email 
-- Merged: eq-shell [#1198](https://github.com/eq-solutions/eq-shell/pull/1198) fix(shell): resolve react-hooks/refs in iframe pre-warm keep
-- Merged: eq-shell [#1197](https://github.com/eq-solutions/eq-shell/pull/1197) fix(auth): Cards SSO no longer depends on the worker having 
-- Merged: eq-shell [#1196](https://github.com/eq-solutions/eq-shell/pull/1196) feat(documents): Shell upload + push UI for the sign-off reg
-- Merged: eq-shell [#1195](https://github.com/eq-solutions/eq-shell/pull/1195) feat(auth): trim worker-add dropdown to 2 items, surface gen
-- Merged: eq-shell [#1193](https://github.com/eq-solutions/eq-shell/pull/1193) fix(auth): self-join adds a membership in the new tenant, no
-- Merged: eq-shell [#1190](https://github.com/eq-solutions/eq-shell/pull/1190) feat(intake): Contact resolver + merge (migrations 0233/0234
+- Merged: eq-shell [#1216](https://github.com/eq-solutions/eq-shell/pull/1216) fix(ops): board Sent checkbox now promotes draft quotes to s
+- Merged: eq-shell [#1194](https://github.com/eq-solutions/eq-shell/pull/1194) chore(control-plane): backfill missing source for eq_cards_i
+- Merged: eq-shell [#1192](https://github.com/eq-solutions/eq-shell/pull/1192) fix(auth): self-join fixes — worker row, email-drop notice, 
+- Merged: eq-shell [#1191](https://github.com/eq-solutions/eq-shell/pull/1191) chore(intake): auto re-vendor eq-intake/eq-platform
+- Merged: eq-shell [#1189](https://github.com/eq-solutions/eq-shell/pull/1189) feat(auth): join-links controls — edit expiry, join counts, 
+- Merged: eq-shell [#1188](https://github.com/eq-solutions/eq-shell/pull/1188) fix(auth): self-join provisioning 500s on email collision, m
+- Merged: eq-shell [#1180](https://github.com/eq-solutions/eq-shell/pull/1180) feat(documents): internal document sign-off register schema 
+- Merged: eq-solves-service [#683](https://github.com/eq-solutions/eq-service/pull/683) fix(reports): PM report supervisor/contact fields ignored th
 
 ## ⚠ Needs you (2)
 
@@ -50,7 +50,7 @@ _…and 96 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 |------|-----------|--------|----------|-----------|
 | eq-shell | ? unknown | ? | 0 | — |
 | eq-solves-service | ? unknown | ? | 5 | 0d |
-| eq-field | ? unknown | ? | 0 | — |
+| eq-field | ? unknown | ? | 1 | 0d |
 | eq-cards | ? unknown | ? | 1 | 0d |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
@@ -72,6 +72,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-03 | eq-shell | [#1216](https://github.com/eq-solutions/eq-shell/pull/1216) fix(ops): board Sent checkbox now promotes draft quotes to submit |
 | 2026-08-03 | eq-shell | [#1215](https://github.com/eq-solutions/eq-shell/pull/1215) fix(ops): move the job-no-required message into a visible toast |
 | 2026-08-03 | eq-shell | [#1214](https://github.com/eq-solutions/eq-shell/pull/1214) fix(ops): darken customer group header, drop redundant in-card cu |
 | 2026-08-03 | eq-shell | [#1212](https://github.com/eq-solutions/eq-shell/pull/1212) feat(documents): add signature_image column for sign-off register |
@@ -86,11 +87,12 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-03 | eq-shell | [#1203](https://github.com/eq-solutions/eq-shell/pull/1203) fix(auth): hotfix — Cards SSO email-sync missed a phone-only work |
 | 2026-08-03 | eq-shell | [#1204](https://github.com/eq-solutions/eq-shell/pull/1204) fix(shell): resolve @typescript-eslint/no-unused-vars (107 of 120 |
 | 2026-08-03 | eq-shell | [#1202](https://github.com/eq-solutions/eq-shell/pull/1202) fix(shell): resolve the last react-hooks/refs error via JobRow ex |
-| 2026-08-03 | eq-shell | [#1200](https://github.com/eq-solutions/eq-shell/pull/1200) fix(shell): resolve remaining react-hooks/refs errors (19 of 20) |
 _Showing 15 of 140 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **Pre-existing eq-context CI drift found while merging** — "Frontmatter validation" and "Index drift check" both fail on `main` itself, unrelated to this PR (a malformed `status:` field on an unrelated file, plus 4 already-orphaned files across `system/`, `eq/`, `sks/`). Spawned as background task `task_c6fb3772`, now running in a separate session. _(added 2026-08-03)_
+- **`eq/progress/` is unproven** — `current.md`/`customers.md` depend on manual discipline with no CI gate (unlike `TODAY.md`'s `claim-expiry.yml`). Worth checking in a few weeks whether it's actually being kept up or going quiet. _(added 2026-08-03)_
 - **Live click-through not done** — confirm on `/sks/ops?tab=dashboard` that SKS-17577 (and other quotes with saved files) now shows the paperclip icon on the board card. Needs a real authenticated session, off-limits for me to do myself. _(added 2026-08-03)_
 - **OCR-scanned name still unconfirmed whether it reaches `profiles.full_name`** — flagged in the 2026-08-02 self-join fixes entry below and never independently verified since; still open. _(added 2026-08-03, carried from 2026-08-02)_
 - **The `ensureAuthUser` email-sync bug class is worth a second look**: it took a real live failure to catch a `null`-vs-falsy gap in a brand-new function. Worth considering whether any other "sync if different" checks in the auth path have the same falsy-null blind spot — not swept this session. _(added 2026-08-03)_
@@ -99,9 +101,7 @@ _Showing 15 of 140 · full record in [sessions/](sessions/)_
 - **Visual check not done** — `LabourHireRates.tsx` and `WorkerHome.tsx` are both behind real auth; couldn't click through myself. A local Browser-tool CSS-swatch comparison also failed (file:// navigate timed out), so verification rests on `@eq-design-tokens`'s own hex definitions, not a live render. Two of the eight swaps aren't exact-hex matches (`var(--eq-grey)` for `#5F5E5A`, and the three status tokens for the WorkerHome tile accents) — worth a glance to confirm nothing looks off. _(added 2026-08-03)_
 - **Live click-through not done** — the comms job table's inline editing (click-to-edit, Enter/Tab save-and-move, Esc cancel, cross-row keyboard nav) needs a real click-through on the NSW Comms board before trusting the extraction blind. Content moved verbatim and the shared-state/keyboard-nav logic was reasoned through carefully, but a structural change like this deserves a real look. Needs a real authenticated session, off-limits for me to do myself. _(added 2026-08-03)_
 - **Bridging Cards' new trade/employer data into Shell** — deliberately not built; no rule exists yet for what happens when a worker's own answer disagrees with what an employer has on file. _(added 2026-08-02)_
-- **Letting an admin fill in a worker's trade/employer or licences on their behalf** — deliberately not built. Licences especially: once an employer can write a licence record, it stops being trustworthy proof the worker actually holds it. Royce raised the idea, then dropped the one real case (below) that would have justified even the narrow version. _(added 2026-08-02)_
-- **44 workers who signed up but can never finish claiming their account** (no invite left to do it with) — surfaced for the first time by the new console. Royce said to leave this alone for now. _(added 2026-08-02)_
-_…and 374 more · [eq/pending.md](eq/pending.md)_
+_…and 376 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -123,7 +123,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 3186 | 508 | 148 | 12 |
+| [EQ](eq/pending.md) | 3197 | 510 | 149 | 12 |
 | [SKS](sks/pending.md) | 424 | 83 | 5 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 402 | 37 | 5 | 1 |
@@ -144,4 +144,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-03 11:06 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-03 11:14 UTC._
