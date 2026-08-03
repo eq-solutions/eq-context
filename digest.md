@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-03 06:53 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-03 06:54 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-03 05:47 UTC → 2026-08-03 06:53 UTC)
+## Since last refresh (2026-08-03 06:53 UTC → 2026-08-03 06:54 UTC)
 
-- Merged: eq-shell [#1204](https://github.com/eq-solutions/eq-shell/pull/1204) fix(shell): resolve @typescript-eslint/no-unused-vars (107 o
-- Merged: eq-shell [#1188](https://github.com/eq-solutions/eq-shell/pull/1188) fix(auth): self-join provisioning 500s on email collision, m
-- Merged: eq-shell [#1186](https://github.com/eq-solutions/eq-shell/pull/1186) feat(auth): delete self-join links, not just deactivate
-- Merged: eq-shell [#1185](https://github.com/eq-solutions/eq-shell/pull/1185) feat(auth): collapse worker-add header into one button + a m
-- Merged: eq-shell [#1184](https://github.com/eq-solutions/eq-shell/pull/1184) feat(auth): per-role QR codes on the self-join links page
-- Merged: eq-shell [#1182](https://github.com/eq-solutions/eq-shell/pull/1182) fix(intake): switch re-vendor workflow to a dedicated, corre
-- Merged: eq-shell [#1179](https://github.com/eq-solutions/eq-shell/pull/1179) fix(intake): auto-vendored PRs must use a PAT, not GITHUB_TO
-- Merged: eq-shell [#1175](https://github.com/eq-solutions/eq-shell/pull/1175) chore(intake): automate the eq-solves-intake re-vendor check
+- Merged: eq-shell [#1203](https://github.com/eq-solutions/eq-shell/pull/1203) fix(auth): hotfix — Cards SSO email-sync missed a phone-only
+- Merged: eq-shell [#1189](https://github.com/eq-solutions/eq-shell/pull/1189) feat(auth): join-links controls — edit expiry, join counts, 
+- Merged: eq-shell [#1187](https://github.com/eq-solutions/eq-shell/pull/1187) chore(intake): auto re-vendor eq-intake/eq-platform
+- Merged: eq-shell [#1183](https://github.com/eq-solutions/eq-shell/pull/1183) chore(intake): auto re-vendor eq-intake/eq-platform
+- Merged: eq-shell [#1181](https://github.com/eq-solutions/eq-shell/pull/1181) feat(auth): surface self-join approvals in the Staff pending
+- Merged: eq-shell [#1177](https://github.com/eq-solutions/eq-shell/pull/1177) feat(auth): self-join links v2 — approval gate, expiry, all 
+- Merged: eq-shell [#1176](https://github.com/eq-solutions/eq-shell/pull/1176) fix(intake): pnpm/action-setup can't auto-detect version wit
+- Merged: eq-solves-service [#683](https://github.com/eq-solutions/eq-service/pull/683) fix(reports): PM report supervisor/contact fields ignored th
 
 ## ⚠ Needs you (3)
 
@@ -49,7 +49,7 @@ _…and 96 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 1 | 0d |
+| eq-shell | ? unknown | ? | 0 | — |
 | eq-solves-service | ? unknown | ? | 0 | — |
 | eq-field | ? unknown | ? | 0 | — |
 | eq-cards | ? unknown | ? | 0 | — |
@@ -73,6 +73,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-03 | eq-shell | [#1203](https://github.com/eq-solutions/eq-shell/pull/1203) fix(auth): hotfix — Cards SSO email-sync missed a phone-only work |
 | 2026-08-03 | eq-shell | [#1204](https://github.com/eq-solutions/eq-shell/pull/1204) fix(shell): resolve @typescript-eslint/no-unused-vars (107 of 120 |
 | 2026-08-03 | eq-shell | [#1202](https://github.com/eq-solutions/eq-shell/pull/1202) fix(shell): resolve the last react-hooks/refs error via JobRow ex |
 | 2026-08-03 | eq-shell | [#1200](https://github.com/eq-solutions/eq-shell/pull/1200) fix(shell): resolve remaining react-hooks/refs errors (19 of 20) |
@@ -87,7 +88,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-02 | eq-shell | [#1180](https://github.com/eq-solutions/eq-shell/pull/1180) feat(documents): internal document sign-off register schema (tena |
 | 2026-08-02 | eq-shell | [#1192](https://github.com/eq-solutions/eq-shell/pull/1192) fix(auth): self-join fixes — worker row, email-drop notice, photo |
 | 2026-08-02 | eq-shell | [#1191](https://github.com/eq-solutions/eq-shell/pull/1191) chore(intake): auto re-vendor eq-intake/eq-platform |
-| 2026-08-02 | eq-shell | [#1190](https://github.com/eq-solutions/eq-shell/pull/1190) feat(intake): Contact resolver + merge (migrations 0233/0234) |
 _Showing 15 of 135 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -145,4 +145,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-03 06:53 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-03 06:54 UTC._
