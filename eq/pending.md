@@ -36,19 +36,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## eq-cards: Platform Console spinner root-caused and fixed — two separate bugs, not one (2026-08-03)
-*Royce reported live: Platform Console (Settings > Platform, platform-admin only) spun forever on core.eq.solutions/sks/cards. Diagnosed against real Supabase logs and the real database rather than guessing twice — the first fix looked right but wasn't the whole story, caught because Royce re-tested live and reported it was still broken.*
-
-- [x] **First bug found and fixed: the screen was being rebuilt on every auth event, not just a real sign-in/out**, which tore down its loading state before it could finish. Real bug, fixed — but turned out not to be the whole story. eq-cards [PR #200](https://github.com/eq-solutions/eq-cards/pull/200), merged + deployed.
-- [x] **Second, deeper bug found after Royce confirmed it was still broken post-deploy: three of the numbers on the Platform Console screen had mismatched names between the database and the app**, so reading the (perfectly successful) response threw an error every single time — this is why it never actually worked, with or without the first bug. Confirmed by pulling the real numbers straight from the database and comparing them line-by-line against the app's code. eq-cards [PR #202](https://github.com/eq-solutions/eq-cards/pull/202), merged + deployed.
-- [x] **Royce confirmed live: both bugs above are fixed** — Platform Console now shows real numbers instead of an error.
-- [x] **Follow-up feedback same session: "Dashboard needs some love. Not much info but takes up over one page."** The 4 headline number tiles were sized for a phone-width screen; on the desktop-width view this console is actually used in (via the Shell website, admin-only), each tile stretched to roughly triple the height it needed, pushing everything else down the page. Tiles now hold a compact height no matter how wide the screen is, and sit 4-across instead of 2x2 on a wide screen. eq-cards [PR #203](https://github.com/eq-solutions/eq-cards/pull/203), merged + deployed.
-
-**Deferred:**
-- [ ] **Royce to eyeball the resized tiles** and confirm the console reads compactly now, without the earlier huge empty tiles. _(added 2026-08-03)_
-
----
-
 ## eq-field: EQ-FIELD-10 Sentry issue checked live — code fix confirmed already shipped, but Sentry's own tracking is stale (2026-08-03)
 
 - [ ] **Sentry issue [EQ-FIELD-10](https://eq-solutions.sentry.io/issues/138007377/) still shows `unresolved`/`regressed`, despite the code fix being live.** Neither #625's nor #626's commit message used the `Fixes EQ-FIELD-10` keyword Sentry's GitHub integration needs to auto-close an issue. Needs Royce to either manually resolve it in Sentry, or wait for real post-fix traffic before doing so. **Update:** the actual source of the "regressed" relabeling is fixed too now — the `dashboard-map-css-collapsed` events pulling this issue back to "regressed" were a false positive (`_dashMapWatchForVanish` firing on ordinary tab-switches, not a real collapse), fixed in eq-field [PR #631](https://github.com/eq-solutions/eq-field/pull/631) (merged, live). Waiting for post-fix traffic to confirm no further false events land is now the cleaner path before manually resolving. _(added 2026-08-03, updated 2026-08-03)_

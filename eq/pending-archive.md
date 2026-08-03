@@ -1883,3 +1883,14 @@ contain the same values and were pushed before push-protection caught up.
 - [x] Extending the AI duplicate-checker to Contacts/Staff: scoped via `/decide` down to a small, safe Contacts-only addition rather than a full Sites-style rebuild — see the Contacts AI-dupe entry below for what shipped and what's still open.
 
 ---
+
+## eq-cards: Platform Console spinner root-caused and fixed — two separate bugs, not one (2026-08-03) (fully closed, no open items remain)
+*Royce reported live: Platform Console (Settings > Platform, platform-admin only) spun forever on core.eq.solutions/sks/cards. Diagnosed against real Supabase logs and the real database rather than guessing twice — the first fix looked right but wasn't the whole story, caught because Royce re-tested live and reported it was still broken.*
+
+- [x] **First bug found and fixed: the screen was being rebuilt on every auth event, not just a real sign-in/out**, which tore down its loading state before it could finish. Real bug, fixed — but turned out not to be the whole story. eq-cards [PR #200](https://github.com/eq-solutions/eq-cards/pull/200), merged + deployed.
+- [x] **Second, deeper bug found after Royce confirmed it was still broken post-deploy: three of the numbers on the Platform Console screen had mismatched names between the database and the app**, so reading the (perfectly successful) response threw an error every single time — this is why it never actually worked, with or without the first bug. Confirmed by pulling the real numbers straight from the database and comparing them line-by-line against the app's code. eq-cards [PR #202](https://github.com/eq-solutions/eq-cards/pull/202), merged + deployed.
+- [x] **Royce confirmed live: both bugs above are fixed** — Platform Console now shows real numbers instead of an error.
+- [x] **Follow-up feedback same session: "Dashboard needs some love. Not much info but takes up over one page."** The 4 headline number tiles were sized for a phone-width screen; on the desktop-width view this console is actually used in (via the Shell website, admin-only), each tile stretched to roughly triple the height it needed, pushing everything else down the page. Tiles now hold a compact height no matter how wide the screen is, and sit 4-across instead of 2x2 on a wide screen. eq-cards [PR #203](https://github.com/eq-solutions/eq-cards/pull/203), merged + deployed.
+- [x] **Royce confirmed live: the resized tiles look good.**
+
+---
