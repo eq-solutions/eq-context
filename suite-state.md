@@ -63,9 +63,6 @@ _If this file is >48h old, the cron is broken._
 **eq-cards:**
 - #205 feat(profile): scan a driver's licence to prefill Complete Your Profile
 
-**eq-field:**
-- #635 feat(sign-documents): capture a real drawn signature on Sign (v3.5.442)
-
 **eq-service:**
 - #688 chore(deps): bump @sentry/nextjs from 10.68.0 to 10.69.0
 - #687 chore(deps-dev): bump eslint-config-next from 16.2.2 to 16.2.12
@@ -74,7 +71,7 @@ _If this file is >48h old, the cron is broken._
 - #684 chore(deps): bump the eq-design-system group with 2 updates
 
 **eq-shell:**
-- #1217 feat(documents): sign-off evidence view for the Register tab
+- #1218 fix(shell): collapse Roster/Leave glance tiles into the single Field tile
 
 ---
 
