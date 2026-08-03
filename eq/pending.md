@@ -20,7 +20,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **Built `eq/progress/`** (`README.md`, `year-goals.md`, `current.md`, `customers.md`, `decisions-log.md`) — adjusted the source prompt before building so it doesn't duplicate `system/TODAY.md`'s CI-gated GOALS block or `ops/decisions.md`'s ADR log. `CLAUDE.md` §10 gained an on-demand note (pulled back from a mandatory step via `/decide` — a new weekly ritual risked going unfilled given this file's own existing discipline gap). eq-context [PR #124](https://github.com/eq-solutions/eq-context/pull/124), merged.
 
 **Deferred:**
-- [ ] **Pre-existing eq-context CI drift found while merging** — "Frontmatter validation" and "Index drift check" both fail on `main` itself, unrelated to this PR (a malformed `status:` field on an unrelated file, plus 4 already-orphaned files across `system/`, `eq/`, `sks/`). Spawned as background task `task_c6fb3772`, now running in a separate session. _(added 2026-08-03)_
+- [x] **Pre-existing eq-context CI drift found while merging** — "Frontmatter validation" and "Index drift check" both fail on `main` itself, unrelated to this PR (a malformed `status:` field on an unrelated file, plus 4 already-orphaned files across `system/`, `eq/`, `sks/`). Spawned as background task `task_c6fb3772`. **Fixed 2026-08-03** — 2 frontmatter violations + 4 index-drift orphans cleared, both checks confirmed green on `main`. See `eq/changelog/eq-context.md` [2026-08-03] and `sessions/2026-08-03.md`.
 - [ ] **`eq/progress/` is unproven** — `current.md`/`customers.md` depend on manual discipline with no CI gate (unlike `TODAY.md`'s `claim-expiry.yml`). Worth checking in a few weeks whether it's actually being kept up or going quiet. _(added 2026-08-03)_
 
 ---
