@@ -1,13 +1,18 @@
 ---
 title: Changelog — EQ Solves Field
 owner: Royce Milmlow
-last_updated: 2026-08-01
+last_updated: 2026-08-03
 scope: Append-only history of changes to the EQ Solves Field product. Canonical — eq-field.md was merged into this file 2026-07-19, don't split again.
 read_priority: reference
 status: live
 ---
 
 # Changelog — EQ Solves Field
+
+## [2026-08-03] Document sign-off register: real drawn signature on Sign Documents (v3.5.442, #635)
+- Sign Documents' tap-to-confirm replaced with a real signature pad — reuses `SiteReportsShared.createSignatureController` (`site-reports-shared.js`), the same component Prestart Briefings/Toolbox Talks/Diary/Incidents already use, rather than a second implementation. `signature_image` (`canvas.toDataURL('image/png')`) rides in the same PATCH as the original `status`/`signed_at`/`signed_content_hash` — still one round trip, not a second write.
+- `safety.js`'s file header claiming to be dependency-free (no `site-reports-shared.js` needed) is stale — its own changelog (v3.5.339/340) already documents the opposite. Confirmed `site-reports-shared.js` is the real live signature source, and that `core-bundle-b1.js` is what `index.html` actually serves (the on-disk `lazy-loader.js` has no `<script>` tag anywhere). Both `lazy-loader.js` and its `core-bundle-b1.js` twin updated together.
+- Landed as v3.5.442, not v3.5.441 — rebased past #634 (unrelated, concurrent "temp map height bump for testing"), which merged first and had already claimed v3.5.441.
 
 ## [2026-08-02] Dashboard polish: filter row centering, map default view + FIX (crop root-caused), Site Breakdown single-scroll (v3.5.427→v3.5.431, #620–#624)
 - Filter row: real flexbox `align-items:center` on the label/hint spans (replacing an earlier line-height approach) — confirmed via direct pixel check on the deploy preview, all five row elements share identical top/bottom/height.
