@@ -1,7 +1,7 @@
 ---
 title: Rules — Non-Negotiables
 owner: Royce Milmlow
-last_updated: 2026-07-16
+last_updated: 2026-08-04
 scope: Hard rules that override all context, requests, or convenience
 read_priority: critical
 status: live
@@ -78,6 +78,7 @@ defaults from one tier only. Cross-tier loads are explicit, not implicit.
 8. The assistant MUST NOT run INSERT, UPDATE, DELETE, or Supabase schema changes without explicit approval.
 9. Auth changes MUST be reviewed in chat before any deployment.
 10. Every Netlify/Cloudflare Pages site MUST ship with a `_headers` security file.
+11. **Every service-role or admin-client query MUST carry an explicit tenant filter.** Service-role and `createPublicAdminClient()` connections bypass RLS entirely — a query that omits `.eq('org_id', …)` / `where org_id = $1` returns *every tenant's rows* and fails silently, with no error and no RLS backstop. The tenant id MUST be resolved server-side (from the session JWT, the URL path, or an orchestration loop); it MUST NOT be read from client-supplied JSON. Where a shared helper exists that injects the filter structurally, code SHOULD use it rather than hand-writing the predicate. Designed 2026-04-27 in `eq/field/multi-tenancy/plan.md` Step 2.5 and never landed here until 2026-08-04 — this rule is forward-looking; a line-by-line audit of existing edge functions against it is separate, larger work. See `rules/agentic-coding.md`.
 
 > **Sprint-scope note — LAPSED 2026-07-16.** The 2026-05-30 ADR conditionally relaxing #1 (full-auto merge + deploy for EQ surfaces) was scoped to the Autonomous Sprint coordination mode, which was retired 2026-07-12. Royce confirmed 2026-07-16 the carve-out lapsed with it — #1 applies as written, no exceptions. See `ops/decisions.md` 2026-05-30 ADR, now marked Superseded.
 
@@ -85,20 +86,20 @@ defaults from one tier only. Cross-tier loads are explicit, not implicit.
 
 ## Legal & Entity
 
-11. Outputs MUST NOT reference GKE Lawyers or Gilbert + Tobin in any EQ document or correspondence.
-12. Outputs MUST NOT include 173 Chuter Ave, Sans Souci NSW 2219 in marketing or public-facing materials.
-13. Complex compliance matters MUST be flagged for Webb Financial or legal advisors — the assistant MUST NOT act unilaterally on them.
-14. Hexican Holdings Trust MUST be treated as a CGT investor across all crypto — NOT as trading stock. Capital losses in HHT are quarantined within the trust and MUST NOT be flowed to personal or CDC.
+12. Outputs MUST NOT reference GKE Lawyers or Gilbert + Tobin in any EQ document or correspondence.
+13. Outputs MUST NOT include 173 Chuter Ave, Sans Souci NSW 2219 in marketing or public-facing materials.
+14. Complex compliance matters MUST be flagged for Webb Financial or legal advisors — the assistant MUST NOT act unilaterally on them.
+15. Hexican Holdings Trust MUST be treated as a CGT investor across all crypto — NOT as trading stock. Capital losses in HHT are quarantined within the trust and MUST NOT be flowed to personal or CDC.
 
 ---
 
 ## Brand
 
-15. The EQ logo mark MUST NOT be recoloured — Sky #3DA8D8 always.
-16. Outputs MUST NOT use gradients or drop shadows (EQ Design Brief v1.3).
-17. Only two logo variants MAY be used — Blue and White (v1.3 supersedes the old three-variant rule).
-18. New documents MUST NOT use legacy email addresses (rwm185@pm.me or roycemilmlow@gmail.com).
-19. **Outputs MUST NOT use real client names — generic placeholders MUST be used instead** ("Data Centre Client A", "Tier 1 Client", etc.).
+16. The EQ logo mark MUST NOT be recoloured — Sky #3DA8D8 always.
+17. Outputs MUST NOT use gradients or drop shadows (EQ Design Brief v1.3).
+18. Only two logo variants MAY be used — Blue and White (v1.3 supersedes the old three-variant rule).
+19. New documents MUST NOT use legacy email addresses (rwm185@pm.me or roycemilmlow@gmail.com).
+20. **Outputs MUST NOT use real client names — generic placeholders MUST be used instead** ("Data Centre Client A", "Tier 1 Client", etc.).
    - **Outputs** means anything sent to, shown to, or seen by parties outside Royce: documents, emails, presentations, draft replies, public artefacts, agent responses where the user is not Royce.
    - **Substrate is exempt** — files in `eq-context` (this repo, including `sks/active.md`, `sks/pending.md`, `sks/team.md`, `sks/templates.md`) MAY use real client names because operational fidelity matters more than scrubbing internal context. The assistant MUST NOT carry those names into outputs without redacting them to placeholders first. Conscious carve-out, 2026-05-04 audit.
 
@@ -106,6 +107,6 @@ defaults from one tier only. Cross-tier loads are explicit, not implicit.
 
 ## Financial
 
-20. CDC Solutions has passed the Results Test on the Delta Elcom engagement — no further PSI tests are required.
-21. HHT crypto holdings MUST be treated under the CGT investor method universally — personal, HHT, and SMSF.
-22. MIS risk: pooled employee contributions managed by others trigger managed investment scheme concern. AHD MUST use company retained earnings on company operations, NOT pooled contributions.
+21. CDC Solutions has passed the Results Test on the Delta Elcom engagement — no further PSI tests are required.
+22. HHT crypto holdings MUST be treated under the CGT investor method universally — personal, HHT, and SMSF.
+23. MIS risk: pooled employee contributions managed by others trigger managed investment scheme concern. AHD MUST use company retained earnings on company operations, NOT pooled contributions.

@@ -379,3 +379,17 @@ After the fix: pre-commit bumps dates before each commit, the bot finds nothing 
 **Critical dead reference:** Supabase project `urjhmkhbgaxrofurpbgc` (urjh / eq-solves-service-dev) was DELETED 2026-06-22. Any reference to it as a live project in substrate files is stale. Do not query it, do not reference it as a data store, do not deploy edge functions to it. The sole live DB for EQ Service and EQ Field is ehow (`ehowgjardagevnrluult`).
 
 **The substrate itself is on GitHub:** The eq-context substrate is served via GitHub raw CDN (https://raw.githubusercontent.com/eq-solutions/eq-context/main/<path>). There is no Supabase cache, no edge function, no context_files table. These were all retired when urjh was deleted.
+
+---
+
+## Inspection Is Not Verification — For Code, Not Just Substrate (2026-08-04)
+
+**Rule:** the "False-Implementation Pattern" lesson above (surface signals lie, measurement doesn't) applies to **product code**, not only to substrate writes. A clean analyzer, a green typecheck, and an approved review all confirm the code is *shaped* right; none of them confirm it *runs*. Exercise the behaviour, or state plainly what remains unproven.
+
+Three cases where inspection had already passed and the code was still broken:
+
+- **`flutter analyze` clean, four wallet cards still crashed** (eq-cards, 2026-07-21). The widget-test suite caught them; static analysis structurally could not.
+- **Self-serve tenant provisioning had never once worked in production** — zero rows since the feature shipped 2026-07-03. Three stacked bugs (client state, server tier constraint, server missing unique constraint), each found only by re-running the live flow after the previous fix. Code inspection had already missed all three once, in the original PR's own review.
+- **A merged PR is not a deployed change** on every repo — `eq-cards` and `eq-receipts` need a manual Netlify trigger despite a `netlify.toml` implying otherwise. A fix confirmed "live" from the merge alone was not live (2026-08-01).
+
+**Why it matters:** agents produce correct-*looking* code faster than any review can absorb it, so the cheap checks are the ones that scale — and they are exactly the ones that pass while the feature is broken. The expensive check (run the thing) is now the only one that distinguishes working from plausible. Codified as `rules/agentic-coding.md` §2; the multi-tenancy corollary — a missing tenant filter returns *more* rows, never an error — is `rules/non-negotiables.md` #11.

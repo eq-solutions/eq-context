@@ -1,7 +1,7 @@
 ---
 title: Rules — Default Stack
 owner: Royce Milmlow
-last_updated: 2026-05-13
+last_updated: 2026-08-04
 scope: Default technology stack and output preferences for all EQ and SKS work
 read_priority: critical
 status: live
@@ -50,6 +50,14 @@ what is already in the stack. Working before refactoring — always.
   this rules file was written. First commercial customer: SKS
   Technologies. Stack: Next.js + Supabase RLS + Resend + docx-js +
   Netlify CD. Confirmed by repo README inspection 2026-05-13.
+- **EQ Cards** (`eq-solutions/eq-cards`) is **Flutter / Dart** (Riverpod
+  state, `flutter build web`), not React — the only mobile-grade client in
+  the suite, chosen for the camera / OCR / offline path a web SPA does not
+  give cheaply. **The gate is the widget-test suite, not `flutter analyze`
+  alone.** On 2026-07-21 four real wallet-card crashes were caught by widget
+  tests *after* static analysis had passed clean. Any change to Cards MUST
+  run the widget suite before it is called done. See
+  `rules/agentic-coding.md`.
 - Legacy single-HTML apps (EQ Quotes, EQ Expenses, SKS Receipt Tracker,
   early EQ Field prototype) stay vanilla JS + single `index.html`. Do not
   migrate them to React unless there is a specific reason.
