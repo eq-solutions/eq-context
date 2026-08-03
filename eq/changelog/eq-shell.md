@@ -9,6 +9,9 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-03 (PR #1218 MERGED — Worker Home Roster/Leave glance tiles collapsed into Field)
+- **Removed the Roster and Leave glance tiles from Worker Home** — Royce: "roster, leave and eq field all just open the field app to whatever page it was on before... maybe we just have field?" Confirmed: both tiles linked to the exact same `/${tenantSlug}/field` route as the main "EQ Field" tile below them, with no deep link into a roster- or leave-specific sub-page — a second click to the identical destination, not a shortcut. Removed both `RosterGlance`/`LeaveGlance` components and their now-dead helpers (`fmtShiftDay`, `fmtDateShort`) and unused icon imports. `PrestartGlance` kept as-is — not named in the feedback, and it renders real submitted/not-submitted state rather than just redirecting. eq-shell [PR #1218](https://github.com/eq-solutions/eq-shell/pull/1218), MERGED — auto-deploys on merge, live on core.eq.solutions.
+
 ## 2026-08-03 (PRs #1205/#1209/#1211/#1213/#1214/#1215/#1216 MERGED — EQ Ops Kanban board polish + a root-caused bug fix)
 - **File-attached paperclip badge added to the board card** — existed only in the list/mcard layout before; SKS-17577 had a saved file with nothing showing it. eq-shell [PR #1205](https://github.com/eq-solutions/eq-shell/pull/1205), MERGED.
 - **Bolder paperclip pill + estimator-colored initials.** Tried customer-based card coloring first — a static preview against real customer names showed immediate colour collisions (dozens of customers, only ~6 categorical colours available), which implies a false grouping and is worse than no colour at all. Moved the same idea to the estimator initials badge instead — a small, fixed roster where a repeated colour is actually correct (same person). eq-shell [PR #1209](https://github.com/eq-solutions/eq-shell/pull/1209), MERGED.
