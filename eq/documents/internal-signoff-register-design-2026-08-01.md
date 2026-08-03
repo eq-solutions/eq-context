@@ -4,7 +4,7 @@ owner: Royce Milmlow
 last_updated: 2026-08-03
 scope: Design for an internal-only document sign-off + reminder register — upload once, push to signers, track who's signed, chase who hasn't. First cut of the safety/quality/commissioning-docs idea explored 2026-08-01.
 read_priority: high
-status: live, plus a signature-pad + evidence-view upgrade merged 2026-08-03
+status: live
 ---
 
 # EQ — Internal Document Sign-off Register
@@ -18,7 +18,10 @@ pilot-gated to one person (eq-field PR #627). Shell register view merged
 querying the DB. Upload → push → sign → register is a real, working loop for
 the pilot user. Reminder cron (the other half of step 5 in the original plan)
 was never scoped/discussed and remains not started; step 6 (rollout past the
-pilot) also remains — both Royce's call on timing.
+pilot) also remains — both Royce's call on timing. A signature-pad + evidence-view
+upgrade merged 2026-08-03 on top of the above (eq-shell PRs #1212/#1217, eq-field
+PR #635): Field signing uses the real signature pad, and the Shell register shows
+the drawn signature, timestamps, and a link to the signed document.
 
 ## Why
 
