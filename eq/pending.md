@@ -14,6 +14,31 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: no-unused-vars cleanup — one config fix closed 106 of 120, PR #1204 (2026-08-03)
+*Most of the "120 unused-vars errors" weren't bugs — they were the codebase's own `_context`/`_ctx` convention for intentionally-unused Netlify handler args, which the eslint config just wasn't exempting. One rule-option change instead of touching ~90 files.*
+
+**Deferred:**
+- [ ] **13 remaining instances live in `eq-intake/eq-platform/packages/`** — a vendored copy from the separate `eq-solves-intake` repo, not eq-shell's own code. Needs fixing at the source (eq-solves-intake) and re-vendoring; fixing them in eq-shell's copy would just be overwritten by the next re-vendor. _(added 2026-08-03)_
+
+## eq-shell: self-join's "double sign-in" for Cards root-caused and fixed — worker-add nav trimmed further too (2026-08-03)
+*Direct follow-up to the self-join smoke-testing sprint below. Royce reported being stuck on manager approval on an apprentice link, then that Cards was asking for a second sign-in even after phone+email self-join. Traced both against live DB/postgres logs instead of guessing.*
+
+- [x] **Root-caused the Cards "double sign-in": confirmed live, not theoretical.** `mint-cards-otp.ts` hard-required a real email to mint the Cards session. Self-join's own collision-safety-net (from the 2026-08-01 sprint) silently drops the entered email whenever it collides with an existing account — confirmed on the live apprentice test (`users_email_unique` violation in the postgres logs, `dev@eq.solutions` already belonged to Royce's own separate manager account). Same null-email end state whether the worker left it blank or it collided. eq-shell [PR #1197](https://github.com/eq-solutions/eq-shell/pull/1197), merged.
+- [x] **Fixed by decoupling Cards sign-in from needing a real email at all** — falls back to a stable per-worker address on a domain EQ owns, never emailed, so GoTrue can always mint the session. The real email field (and the "add a recovery email" nudge) is untouched — this only stops Cards from depending on it. Same PR.
+- [x] **Bonus bug found while tracing the above, also fixed**: self-join's audit-only `worker_invites` row was missing a required field and had been silently failing on every single self-join. Same PR.
+- [x] **Confirmed live: unticking "Requires manager approval" when creating a self-join link does let people straight in, no pending step** — read directly from the code path, no build needed, just confirming the switch does what it looks like it does.
+- [x] **Confirmed live: the "add a recovery email" nudge does NOT normally ask twice** — it reads off the exact same field self-join's email box writes to. The only time it re-asks is the collision-drop case above, and the nudge's wording didn't reflect that ("add a recovery email" read as if the worker was never asked, when they were). Fixed the copy to say "add a *different* email" plus why, only in that case. eq-shell [PR #1199](https://github.com/eq-solutions/eq-shell/pull/1199), merged.
+- [x] **Worker-add page trimmed further** — the "Redeem invite (QR)" dropdown option (a generic, org-wide, non-personal QR) moved out of the "more ways to add" menu into a plain link next to the invite count, since it isn't really a distinct "how do I add someone" decision. eq-shell [PR #1195](https://github.com/eq-solutions/eq-shell/pull/1195), merged. Found mid-build: a different concurrent session had already collapsed the header from 4 buttons to 1 + a menu earlier the same day (PR #1185) — built on top of that instead of redoing it.
+- [x] **Test account (phone 0466118646 / dev@eq.solutions) deleted again**, verified zero rows everywhere, so the number is clean for the next real test.
+
+**Deferred:**
+- [ ] **None of the three PRs above (#1195, #1197, #1199) have been clicked through live yet.** Specifically: a fresh self-join with a blank or colliding email should open EQ Card with no second sign-in prompt; the postgres `worker_invites.created_by` error should stop appearing; the recovery-email nudge should say "add a different email" (not the generic ask) when it was actually dropped. _(added 2026-08-03)_
+- [ ] **Photo ID still shows as needed after uploading a driver's licence, even though the equivalence fix (2026-08-02, migration `2026_08_02b`) is live** — Royce reported this is still happening. Not re-investigated this session (explicitly deprioritised behind the Cards double-sign-in dive). Suspect the screen Royce is looking at reads a different RPC (`eq_cards_my_credential_gaps`, in eq-cards) than the one patched (`eq_worker_compliance_status`, in eq-shell/jvkn) — needs checking against the actual screen, not assumed. _(added 2026-08-03)_
+- [ ] **White card upload doesn't offer "choose from photo library," camera-only** — reported by Royce alongside the photo ID issue above. This is EQ Cards' Flutter app, a different repo not available in this session — needs picking up there. _(added 2026-08-03)_
+- [ ] **OCR-scanned name still unconfirmed whether it reaches `profiles.full_name`** — flagged in the 2026-08-02 self-join fixes entry below and never independently verified since; still open. _(added 2026-08-03, carried from 2026-08-02)_
+
+---
+
 ## eq-shell: fixed 8 pre-existing react-hooks/refs eslint errors in the iframe pre-warm keeper (2026-08-03)
 
 **Deferred:**
