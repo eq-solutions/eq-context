@@ -9,6 +9,15 @@ status: live
 
 # Changelog — EQ Context Repo
 
+## [2026-08-03] CI greening — Frontmatter validation + Index drift check fixed on main
+
+**Built by:** Royce Milmlow + Claude Code
+
+- Both checks had been failing on every run for several days (confirmed via `gh run list`/`gh run view --log-failed`); no branch protection on `main`, so silently red rather than blocking merges.
+- **Frontmatter (2 files):** `eq/documents/internal-signoff-register-design-2026-08-01.md` and `sec9-jvkn-key-rotation-runbook-2026-07-27.md` both had prose in `status:` instead of the required enum — same defect class as the 2026-05-30 entry below. Descriptive text moved into/already present in a body `**Status:**` line; `status:` set to `live`/`draft` respectively.
+- **Index drift (4 files):** `system/incident-claims.md`, `eq/documents/internal-signoff-register-design-2026-08-01.md`, `eq/verify-queue.md`, `sks/verify-queue.md` added to their tier README.
+- Verified both fixes locally (`scripts/index_drift.py` + the exact `frontmatter-check.yml` loop over every tracked `.md`) before pushing; confirmed green on `main` post-push (Index drift check re-triggered manually via `workflow_dispatch` rather than waiting for its next scheduled run).
+
 ## [2026-06-07] SKS Live roles sprint doc added (live-verified)
 
 **Built by:** Royce Milmlow + Claude Code
