@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-03 10:38 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-03 10:46 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-03 10:32 UTC → 2026-08-03 10:38 UTC)
+## Since last refresh (2026-08-03 10:38 UTC → 2026-08-03 10:46 UTC)
 
-- Merged: eq-shell [#1214](https://github.com/eq-solutions/eq-shell/pull/1214) fix(ops): darken customer group header, drop redundant in-ca
-- Merged: eq-shell [#1194](https://github.com/eq-solutions/eq-shell/pull/1194) chore(control-plane): backfill missing source for eq_cards_i
-- Merged: eq-shell [#1192](https://github.com/eq-solutions/eq-shell/pull/1192) fix(auth): self-join fixes — worker row, email-drop notice, 
-- Merged: eq-shell [#1191](https://github.com/eq-solutions/eq-shell/pull/1191) chore(intake): auto re-vendor eq-intake/eq-platform
-- Merged: eq-shell [#1189](https://github.com/eq-solutions/eq-shell/pull/1189) feat(auth): join-links controls — edit expiry, join counts, 
-- Merged: eq-shell [#1188](https://github.com/eq-solutions/eq-shell/pull/1188) fix(auth): self-join provisioning 500s on email collision, m
-- Merged: eq-shell [#1187](https://github.com/eq-solutions/eq-shell/pull/1187) chore(intake): auto re-vendor eq-intake/eq-platform
-- Merged: eq-shell [#1186](https://github.com/eq-solutions/eq-shell/pull/1186) feat(auth): delete self-join links, not just deactivate
+- Merged: eq-shell [#1199](https://github.com/eq-solutions/eq-shell/pull/1199) fix(auth): recovery-email nudge distinguishes dropped email 
+- Merged: eq-shell [#1198](https://github.com/eq-solutions/eq-shell/pull/1198) fix(shell): resolve react-hooks/refs in iframe pre-warm keep
+- Merged: eq-shell [#1197](https://github.com/eq-solutions/eq-shell/pull/1197) fix(auth): Cards SSO no longer depends on the worker having 
+- Merged: eq-shell [#1196](https://github.com/eq-solutions/eq-shell/pull/1196) feat(documents): Shell upload + push UI for the sign-off reg
+- Merged: eq-shell [#1195](https://github.com/eq-solutions/eq-shell/pull/1195) feat(auth): trim worker-add dropdown to 2 items, surface gen
+- Merged: eq-shell [#1193](https://github.com/eq-solutions/eq-shell/pull/1193) fix(auth): self-join adds a membership in the new tenant, no
+- Merged: eq-shell [#1190](https://github.com/eq-solutions/eq-shell/pull/1190) feat(intake): Contact resolver + merge (migrations 0233/0234
+- Merged: eq-shell [#1180](https://github.com/eq-solutions/eq-shell/pull/1180) feat(documents): internal document sign-off register schema 
 
 ## ⚠ Needs you (3)
 
@@ -32,7 +32,7 @@ _2026-08-03 10:38 UTC · what needs your attention. Full snapshot: [suite-state.
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
 - **EQ** · **Show mode not yet click-tested on a real device with network disabled.** Verified: analyzer clean, full test suite (255 tests) passes, `flutter build web` succeeds and boots with zero console errors via a static preview — but never signed in as a real worker and tapped it (real login is off-limits for me to do on Royce's behalf). Royce to confirm brightness/wakelock/offline behaviour actually work as intended. _(added 2026-08-03)_
-- **EQ** · **Royce to refresh Platform Console once more and confirm it now shows real numbers** (companies, wallet counts, sync health) instead of an error. Both fixes are live as of 2026-08-03. _(added 2026-08-03)_
+- **EQ** · **Royce to eyeball the resized tiles** and confirm the console reads compactly now, without the earlier huge empty tiles. _(added 2026-08-03)_
 - **EQ** · **`credentials-canonical-sync` is broken and not actually running** — the edge function that's supposed to copy a worker's licence/credential updates from Cards into the SKS compliance/Field-legacy database is deployed but wired to nothing (no database trigger calls it), and even if it were, it hardcodes the wrong SKS tenant ID (the old, corrected-in-2026-06 wrong value). Net effect: a worker updating a licence or White Card in Cards today does not reach the older SKS compliance view at all. Needs Royce's call on reviving it (fix + wire it up) vs retiring it in favour of the newer eq-field app's live-read pattern, which doesn't have this problem by design. Spawned as background task `task_5687d06b`, already started in a separate session. **Checked eq-field's actual "live-read pattern" this session (Royce: "have Field pick it up") — it's narrower than assumed: `eq_get_org_licences` (via `canon-read.js`) only lists licences a worker already holds and flags expiry, with NO org-required-credential gap-checking anywhere in eq-field (no `org_credential_requirements` lookup exists in the repo at all). So retiring the old sync is safe — Field was never depending on it — but "Field picks this up" isn't a real feature swap yet; Field doesn't currently show missing-credential warnings the way the old SKS view did. Retire-vs-revive is still Royce's call; if he wants Field to show compliance gaps going forward, that's new work, not a revival.** _(added 2026-08-03, updated 2026-08-03)_
 - **EQ** · **Royce to retry the actual save in the browser** to confirm end-to-end — DB-level fix is verified, only the real click-through confirms the full path. _(added 2026-08-02)_
 - **EQ** · **Staff duplicate handling — still Archive-only, needs your call before any build.** A real staff merge fans out into Field-owned operational tables (timesheets, schedule, licences, dispatch) — per the durable architecture rule, that can't be rebuilt Shell-side; it needs Field-repo coordination, which is a scope decision, not something to default on. _(added 2026-08-02)_
@@ -124,7 +124,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 3196 | 508 | 150 | 12 |
+| [EQ](eq/pending.md) | 3199 | 509 | 152 | 12 |
 | [SKS](sks/pending.md) | 424 | 83 | 5 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 402 | 37 | 5 | 1 |
@@ -145,4 +145,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-03 10:38 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-03 10:46 UTC._
