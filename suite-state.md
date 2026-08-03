@@ -68,8 +68,7 @@ _If this file is >48h old, the cron is broken._
 - #684 chore(deps): bump the eq-design-system group with 2 updates
 
 **eq-shell:**
-- #1208 feat(documents): register view for the sign-off register (step 5)
-- #1206 fix(shell): Worker Home shows warnings before everyday status
+- #1209 fix(ops): bolder file badge, colour-code estimator instead of customer
 
 ---
 
