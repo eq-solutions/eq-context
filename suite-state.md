@@ -60,7 +60,8 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-03)
 
-_No open PRs_
+**eq-shell:**
+- #1203 fix(auth): hotfix — Cards SSO email-sync missed a phone-only worker's null email
 
 ---
 
