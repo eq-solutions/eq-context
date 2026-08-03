@@ -14,6 +14,17 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-cards: profile-save permission bug — PR merged, live grant confirmed and applied (2026-08-03)
+*Sentry showed `eq_cards_upsert_my_profile` throwing "permission denied" for every signed-in user (same incident class as the earlier `eq_cards_auto_provision` outage). PR #204 (grant-restoration migration) merged; live check before applying found the grant had already been restored, almost certainly by a concurrent session, but only as an untracked ad-hoc fix — applied the migration anyway so it's now in eq-canonical's tracked ledger instead of silently regressing on a future restore.*
+
+- [x] **eq-cards [PR #204](https://github.com/eq-solutions/eq-cards/pull/204) merged** (squash `0be5865`) — restores `authenticated`'s EXECUTE grant on `eq_cards_upsert_my_profile`.
+- [x] **Migration `0116_restore_upsert_my_profile_authenticated_grant` applied to eq-canonical (jvkn)** — confirmed `authenticated` can execute both before and after (already true going in); now tracked in the migration ledger, closing the "merge ≠ applied" gap for this specific fix.
+
+**Deferred:**
+- [ ] **Royce (or a real signed-in worker) to confirm live**: save/create a Cards profile and confirm it no longer errors. Off-limits for me to click-test myself. _(added 2026-08-03)_
+
+---
+
 ## eq-context: added eq/progress/ substrate for year-end EQ tracking (2026-08-03)
 *A prompt drafted by Grok, handed to this session to build a lightweight tracking layer for the 2026 year-end EQ evaluation.*
 
@@ -58,7 +69,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ## eq-field: EQ-FIELD-10 Sentry issue checked live — code fix confirmed already shipped, but Sentry's own tracking is stale (2026-08-03)
 
-- [ ] **Sentry issue [EQ-FIELD-10](https://eq-solutions.sentry.io/issues/138007377/) still shows `unresolved`/`regressed`, despite the code fix being live.** Neither #625's nor #626's commit message used the `Fixes EQ-FIELD-10` keyword Sentry's GitHub integration needs to auto-close an issue. Needs Royce to either manually resolve it in Sentry, or wait for real post-fix traffic before doing so. **Update:** the actual source of the "regressed" relabeling is fixed too now — the `dashboard-map-css-collapsed` events pulling this issue back to "regressed" were a false positive (`_dashMapWatchForVanish` firing on ordinary tab-switches, not a real collapse), fixed in eq-field [PR #631](https://github.com/eq-solutions/eq-field/pull/631) (merged, live). Waiting for post-fix traffic to confirm no further false events land is now the cleaner path before manually resolving. _(added 2026-08-03, updated 2026-08-03)_
 - [ ] **Consider removing `_dashMapWatchForVanish` (both watchers) entirely**, now that EQ-FIELD-10's real bug is fixed — its own comment says "remove once the root cause is confirmed." `/decide` run before PR #631 recommended patching (lower risk, easily reverted) over removing; Royce agreed to patch. Revisit if the diagnostic stops earning its keep. _(added 2026-08-03)_
 
 ## eq-shell: self-join's "double sign-in" for Cards root-caused and fixed — worker-add nav trimmed further too (2026-08-03)
