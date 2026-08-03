@@ -60,8 +60,7 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-03)
 
-**eq-shell:**
-- #1200 fix(shell): resolve remaining react-hooks/refs errors (19 of 20)
+_No open PRs_
 
 ---
 
