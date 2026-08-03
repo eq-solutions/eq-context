@@ -14,6 +14,16 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: EQ Ops pipeline board was missing the file-attached badge (2026-08-03)
+*Royce noticed SKS-17577 has a saved file but nothing on the card showed it. The list/mcard layout already had a paperclip + count badge; the Kanban board layout (the one in the screenshot, `/sks/ops?tab=dashboard`) simply never got it added.*
+
+- [x] **Added the same paperclip + file-count badge to the board card**, next to the quote number, reusing existing `attachmentCounts` state and styling — no schema/DB change. eq-shell [PR #1205](https://github.com/eq-solutions/eq-shell/pull/1205), merged + deploying to core.eq.solutions.
+
+**Deferred:**
+- [ ] **Live click-through not done** — confirm on `/sks/ops?tab=dashboard` that SKS-17577 (and other quotes with saved files) now shows the paperclip icon on the board card. Needs a real authenticated session, off-limits for me to do myself. _(added 2026-08-03)_
+
+---
+
 ## eq-cards: Wallet declutter + Show mode + OCR dead-session fix (2026-08-03)
 *Three shipped changes in one session, each verified against live state before merging.*
 
@@ -31,6 +41,11 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 **Deferred:**
 - [ ] **13 remaining instances live in `eq-intake/eq-platform/packages/`** — a vendored copy from the separate `eq-solves-intake` repo, not eq-shell's own code. Needs fixing at the source (eq-solves-intake) and re-vendoring; fixing them in eq-shell's copy would just be overwritten by the next re-vendor. _(added 2026-08-03)_
+
+## eq-field: EQ-FIELD-10 Sentry issue checked live — code fix confirmed already shipped, but Sentry's own tracking is stale (2026-08-03)
+*Royce: "check the sentry error." The dashboard-map fix (PR #625/#626, above) had already landed and was confirmed live by a separate concurrent session earlier the same day — this was a status check on the Sentry issue itself, not a new build.*
+
+- [ ] **Sentry issue [EQ-FIELD-10](https://eq-solutions.sentry.io/issues/138007377/) still shows `unresolved`/`regressed`, despite the code fix being live.** Neither #625's nor #626's commit message used the `Fixes EQ-FIELD-10` keyword Sentry's GitHub integration needs to auto-close an issue, and no new events have landed since before the fix shipped (last pulled event 2026-08-02, predates the 3.5.432 release) — so there's no fresh evidence yet either confirming or refuting the fix in the wild. Needs Royce to either manually resolve it in Sentry, or wait for real post-fix traffic before doing so. Not actioned this session — investigative only, no write to Sentry attempted. _(added 2026-08-03)_
 
 ## eq-shell: self-join's "double sign-in" for Cards root-caused and fixed — worker-add nav trimmed further too (2026-08-03)
 *Direct follow-up to the self-join smoke-testing sprint below. Royce reported being stuck on manager approval on an apprentice link, then that Cards was asking for a second sign-in even after phone+email self-join. Traced both against live DB/postgres logs instead of guessing.*
