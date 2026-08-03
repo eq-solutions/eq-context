@@ -44,6 +44,7 @@ Every canonical EQ file as a full URL — clickable from `/context/claude`:
 
 | Path | Purpose |
 |---|---|
+| `progress/` | Commercial/product/strategic progress tracking toward the 2026 year-end EQ evaluation — see `progress/README.md` |
 | `pending.md` | EQ-only to-do list |
 | `pending-archive.md` | Done items rotated out of pending.md nightly (`scripts/rotate_pending.py`) — historical record only |
 | `cards/portable-trade-identity-audit-2026-07-20.md` | Cards portable-trade-identity audit — first-slice item 1 closed, items 2–4 + Path A/B/C await Royce |
