@@ -86,6 +86,7 @@ Every canonical EQ file as a full URL — clickable from `/context/claude`:
 | `identity/service-canonical-identity-seam-2026-06-25.md` | Service/canonical identity seam design |
 | `identity/worker-credentials-model-2026-05-31.md` | Worker credentials model |
 | `identity/parity-harness/phase1-parity-note-2026-07-10.md` | Phase 1 parity-harness note |
+| `ops/EQ-OPS-ARCHITECTURE.md` | **Read before touching `app_data.quote`, `app_data.jobs`, `job_number`, or the Kanban stage taxonomy** — EQ Ops scope, its relationship to NSW Comms and EQ Field, and the quote-to-job data model |
 | `design/claude-design-context.md` | Claude Design "start with context" brief for EQ brand |
 | `sprints/2026-05-20-S3-polish-and-audit.md` | Sprint S3 polish + audit doc, historical |
 | `changelog/*.md` | Per-product changelogs — **all 4 duplicate pairs resolved 2026-07-19**. `shell.md`/`service.md`/`cards.md` were abandoned (stopped 3-19 days before their twin) — each carries a "Superseded" banner; use `eq-shell.md`/`eq-service.md`/`eq-cards.md`. `field.md` and `eq-field.md` had both been actively written for months in parallel — 18 PRs that only existed in `eq-field.md` were merged into `field.md` at their correct dates; `eq-field.md` now carries a "Merged" banner listing what moved. `field.md` is canonical going forward. Plus `changelog/eq-context.md` and `changelog/eq-intake.md`, which have no duplicate, and the newer single-copy logs `eq-roles.md`, `eq-ui.md`, `eq-receipts.md`, and `eq-solves-service.md`. |

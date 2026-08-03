@@ -192,6 +192,8 @@ The assistant MUST NOT:
 - Use real client names in **outputs** (Equinix, AirTrunk, AWS, etc.) — use "Data Centre Client A", "Tier 1 Client". Substrate files are exempt (see `ops/decisions.md` 2026-05-04).
 - Cross-deploy between EQ and SKS codebases.
 - **Act on the substrate's word for live-system state** (DB schema, applied migrations, deployed versions, key/secret status) **without verifying against the live system first.** The substrate lags reality — such claims are leads to verify, not facts. (Convention: `AUTONOMOUS-SPRINT-RULES.md` §7.)
+- **Write a service-role or admin-client query without an explicit tenant filter.** Those connections bypass RLS entirely; a missing `org_id` predicate returns every tenant's rows and raises no error. Tenant id resolves server-side, never from client input. (`rules/non-negotiables.md` #11, `rules/agentic-coding.md` §4.)
+- **Call a code change done on a green typecheck or a clean analyzer alone.** Run the repo's behavioural gate; if a user-visible flow could not be exercised, say so plainly rather than implying it was. (`rules/agentic-coding.md` §2.)
 - **Write to the `C:\Projects` mount from the Cowork sandbox by any means other than a SINGLE FULL REWRITE.** Every other method corrupts silently and reports success (`Edit`/`Write` truncate, `cat >>` NUL-fills — full incident detail in `system/failures.md` F2/F6). **Safe pattern — build the whole file in `/tmp`, verify it there, then one atomic `cp` onto the mount.** Verify with `wc -l`, `tail -2`, **and a NUL scan** (a NUL-fill makes the file *larger*, not smaller — `wc -l` alone won't catch it). Enforced at rung 4 by `hooks/pre_tool_use.py`.
 
 Auth changes MUST be reviewed in chat before deployment.
@@ -205,6 +207,7 @@ This contract points; it doesn't restate. Authoritative files:
 | Topic | File |
 |---|---|
 | Hard rules | [rules/non-negotiables.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/non-negotiables.md) |
+| Agentic coding (session gate, verification standard, multi-tenancy, effort threshold) | [rules/agentic-coding.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/agentic-coding.md) |
 | Reflection protocol (mandatory pre-finalization self-critique) | [rules/reflection-protocol.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/reflection-protocol.md) |
 | Decision protocol (on-demand steelman/pre-mortem/value/feasibility pass) | [rules/decision-protocol.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/decision-protocol.md) |
 | EQ Brand (Design Brief v1.3) | [rules/brand-eq.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/brand-eq.md) |

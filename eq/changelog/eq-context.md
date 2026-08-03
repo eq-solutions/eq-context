@@ -1,13 +1,26 @@
 ---
 title: Changelog — EQ Context Repo
 owner: Royce Milmlow
-last_updated: 2026-06-07
+last_updated: 2026-08-04
 scope: Append-only history of changes to the eq-context repository itself
 read_priority: reference
 status: live
 ---
 
 # Changelog — EQ Context Repo
+
+## [2026-08-04] Agentic-coding rules landed; three stale/missing rules closed
+
+**Built by:** Royce Milmlow + Claude Code
+
+- **New `rules/agentic-coding.md`** (`read_priority: critical`) — session gate, verification-beats-inspection standard, maintainability guards under iterative agent edits, multi-tenancy constraint, effort threshold, search hygiene. Indexed in `CLAUDE.md` §8.
+- **Rule 0.6 (session gate) + the Workflow Threshold table migrated out of `C:\Projects\CLAUDE.md`** into the new file. That umbrella file is not version-controlled and is only read by a session rooted at `C:\Projects` — the rules had never reached Chat/ChatGPT/Grok. Its copies are now pointers; Rule 0, Rule 0.5, load-bearing facts, worktree rules and the repo map were left untouched.
+- **`rules/non-negotiables.md` #11 (new)** — every service-role/admin-client query MUST carry an explicit tenant filter; tenant id resolves server-side, never from client input. Designed 2026-04-27 in `eq/field/multi-tenancy/plan.md` Step 2.5.A, which said to document it here, and never landed until now. Legal/Brand/Financial rules renumbered 11–22 → 12–23 (no other file references them by number — checked).
+- **`rules/stack.md`** — EQ Cards Flutter/Dart added as an explicit exception alongside the Next.js one; the gate named as the widget-test suite, not `flutter analyze`.
+- **`rules/deployment.md`** — Supabase section rewritten to the live Control Layer + per-tenant model (it still listed deleted `urjh` and `eq-solves-field` as live, in a `read_priority: critical` file). Site registry corrected: `eq-solves-field.netlify.app` was still listed as the lead deploy target though it has been dead since mid-2026; eq-shell and eq-cards were missing entirely; `suite-state.md` now named as the authority for live URLs so the table stops duplicating them. Added that auto-deploy-on-push is not universal (`eq-cards`, `eq-receipts` need a manual trigger).
+- **`CLAUDE.md` §7** — two hard-rule bullets: no untenanted service-role query; no calling a change done on a clean analyzer alone.
+- **`system/lessons.md`** — appended "Inspection Is Not Verification — For Code, Not Just Substrate", generalizing three real cases (Cards widget tests vs `flutter analyze` 2026-07-21; self-serve provisioning never once working in production, three stacked bugs each found only by re-running the live flow; merge ≠ deploy on eq-cards/eq-receipts).
+- Session log: `sessions/2026-08-04-b.md`.
 
 ## [2026-08-03] CI greening — Frontmatter validation + Index drift check fixed on main
 

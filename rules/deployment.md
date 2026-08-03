@@ -1,7 +1,7 @@
 ---
 title: Rules — Deployment
 owner: Royce Milmlow
-last_updated: 2026-05-20
+last_updated: 2026-08-04
 scope: Deployment guardrails for EQ and SKS sites and infrastructure
 read_priority: critical
 status: live
@@ -22,12 +22,19 @@ status: live
 > not from `eq-solutions/eq-field/main` as previously. See `ops/decisions.md`
 > "2026-05-20 — Split SKS Live Out of eq-field Into Dedicated Repo".
 
-| Site | Source repo | Branch | Deploy method | Account | Who triggers |
+> **Live URLs and per-app status live in `suite-state.md`** (auto-refreshed
+> nightly) — read them there, not here. This table carries only the durable
+> deploy facts: which repo, which branch, and who may trigger. It listed a
+> dead URL (`eq-solves-field.netlify.app`) as the lead module until 2026-08-04.
+
+| App | Source repo | Branch | Deploy method | Account | Who triggers |
 |------|-------------|--------|---------------|---------|--------------|
-| eq-solves-field.netlify.app (LEAD MODULE) | `eq-solutions/eq-field` | `main` (was `demo` until 2026-05-20 rename) | GitHub push → Netlify CD | dev@eq.solutions | Explicit instruction only |
-| sks-nsw-labour.netlify.app | `eq-solutions/sks-nsw-labour` (split out 2026-05-20) | `main` | GitHub push → Netlify CD | dev@eq.solutions | NEVER from EQ codebase |
-| eq.solutions | (manual zip) | — | Cloudflare Pages zip upload | royce@eq.solutions | Explicit instruction only |
-| EQ Solves Service | `Milmlow/eq-solves-service` | `main` | GitHub push → Netlify CD | dev@eq.solutions | Explicit instruction only |
+| EQ Shell | `eq-solutions/eq-shell` | `main` | GitHub push → Netlify CD | dev@eq.solutions | Explicit instruction only |
+| EQ Field | `eq-solutions/eq-field` | `main` (was `demo` until 2026-05-20 rename) | GitHub push → Netlify CD | dev@eq.solutions | Explicit instruction only |
+| EQ Service | `eq-solutions/eq-service` (local folder `eq-solves-service`) | `main` | GitHub push → Netlify CD | dev@eq.solutions | Explicit instruction only |
+| EQ Cards | `eq-solutions/eq-cards` | `main` | Netlify (deploy NOT automatic on merge — must be triggered) | dev@eq.solutions | Explicit instruction only |
+| SKS NSW Labour | `eq-solutions/sks-nsw-labour` (split out 2026-05-20) | `main` | GitHub push → Netlify CD | dev@eq.solutions | NEVER from an EQ codebase |
+| eq.solutions (marketing) | (manual zip) | — | Cloudflare Pages zip upload | royce@eq.solutions | Explicit instruction only |
 
 ---
 
@@ -37,7 +44,7 @@ status: live
 - NEVER push to any branch or deploy without explicit instruction from Royce.
 - NEVER touch sks-nsw-labour.netlify.app from any EQ codebase or session.
 - NEVER remove DEMO_FLAG comments — they mark live re-enable points.
-- NEVER deploy to eq-solves-field.netlify.app directly.
+- NEVER deploy an EQ Field site directly — it deploys from `eq-field` on push to `main`, on explicit instruction only.
 - Auth changes require full chat review before any deployment.
 - Working before refactoring — never restructure while a bug is being fixed.
 
@@ -68,10 +75,14 @@ Every Netlify or Cloudflare Pages site must ship with a `_headers` file containi
 
 ## Supabase
 
-- **Three projects exist** — always confirm which one before connecting:
-  - `nspbmirochztcjijmcrx` = **sks-labour (LIVE SKS DATA, DO NOT TOUCH)**
-  - `ktmjmdzqrogauaevbktn` = eq-solves-field (demo)
-  - `urjhmkhbgaxrofurpbgc` = eq-solves-service-dev — **DELETED 2026-06-22** (was the context store; substrate now served from the GitHub repo directly, no Supabase)
+- **Always confirm which project before connecting.** The live footprint is the
+  Control Layer + per-tenant model — `system/architecture.md` is the authority
+  for *why*; this list is the operational guardrail:
+  - `nspbmirochztcjijmcrx` = **sks-labour — LIVE SKS DATA, DO NOT TOUCH** unless Royce explicitly says "SKS live"
+  - `jvknxcmbtrfnxfrwfimn` = eq-canonical — control plane only (tenant registry, config, entitlements). Never a data store.
+  - `zaapmfdkgedqupfjtchl` = eq-canonical-internal — EQ tenant data plane
+  - `ehowgjardagevnrluult` = sks-canonical ("ehow") — SKS tenant data plane; sole live DB for EQ Service and EQ Field
+  - **DELETED, never reference as live:** `urjhmkhbgaxrofurpbgc` (eq-solves-service-dev, deleted 2026-06-22 — was the context store; the substrate is now the GitHub repo itself) and `ktmjmdzqrogauaevbktn` (eq-solves-field, confirmed gone 2026-06-30)
 - Never run INSERT, UPDATE, DELETE, or schema changes without explicit approval
 - SELECT queries are fine — state the query before executing
 - Never touch SKS live data unless Royce explicitly says "SKS live"
@@ -87,8 +98,9 @@ Every Netlify or Cloudflare Pages site must ship with a `_headers` file containi
 - Until MCP fixed: all writes via browser or Cowork
 - Large file API uploads: write JSON payload (base64) to temp file, use `--data @/tmp/payload.json` (inline `-d` fails for large files)
 - Always include `branch` param and existing file's blob SHA in PUT requests
-- `eq-solutions/sks-nsw-labour` repo (split out 2026-05-20): auto-deploys to sks-nsw-labour.netlify.app on push to `main`
-- `eq-solutions/eq-field` repo: auto-deploys to eq-solves-field.netlify.app on push to `main` (formerly `demo` — renamed 2026-05-20 after SKS Live split)
+- `eq-solutions/sks-nsw-labour` repo (split out 2026-05-20): auto-deploys on push to `main`
+- `eq-solutions/eq-field` repo: auto-deploys on push to `main` (branch formerly `demo` — renamed 2026-05-20 after the SKS Live split)
+- **Auto-deploy on push is not universal.** `eq-cards` and `eq-receipts` both need a manual Netlify trigger despite carrying a `netlify.toml` that implies otherwise — a merged PR on those repos is not a live change. Confirm the deploy, don't infer it.
 
 ---
 
