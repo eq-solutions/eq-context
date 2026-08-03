@@ -54,7 +54,15 @@ def gh_get(path):
                  "Accept": "application/vnd.github.v3+json"},
         timeout=15,
     )
-    return resp.json() if resp.ok else []
+    if not resp.ok:
+        # A 13-day silent gap (2026-07-21 through 2026-08-03) taught this: a bad
+        # GH_TOKEN made every call here fail, and the caller-side "unknown"/"?"
+        # fallbacks swallowed it completely — no error anywhere, in the log or
+        # the committed file. Loud stderr means it shows up in the Action's run
+        # log instead of requiring a git-blame archaeology dig to notice.
+        print(f"  WARNING: GitHub API {resp.status_code} on {path} — {resp.text[:200]}", file=sys.stderr)
+        return []
+    return resp.json()
 
 def main_ci_status(repo):
     """Latest CI run conclusion on main branch."""
