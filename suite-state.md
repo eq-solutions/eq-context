@@ -61,10 +61,10 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-03)
 
 **eq-cards:**
-- #204 fix(licences): restore authenticated grant on eq_cards_upsert_my_profile
+- #205 feat(profile): scan a driver's licence to prefill Complete Your Profile
 
 **eq-field:**
-- #635 feat(sign-documents): capture a real drawn signature on Sign (v3.5.441)
+- #635 feat(sign-documents): capture a real drawn signature on Sign (v3.5.442)
 
 **eq-service:**
 - #688 chore(deps): bump @sentry/nextjs from 10.68.0 to 10.69.0
@@ -72,6 +72,9 @@ _If this file is >48h old, the cron is broken._
 - #686 chore(deps-dev): bump @vitejs/plugin-react from 6.0.4 to 6.0.5
 - #685 chore(deps): bump react-dom and @types/react-dom
 - #684 chore(deps): bump the eq-design-system group with 2 updates
+
+**eq-shell:**
+- #1217 feat(documents): sign-off evidence view for the Register tab
 
 ---
 
