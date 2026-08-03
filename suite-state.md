@@ -61,6 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-03)
 
 **eq-field:**
+- #641 fix: remove dead "What's new" banner code (v3.5.446)
 - #639 v3.5.446 — Contacts: canonical worker-link duplicate guard
 
 **eq-service:**
