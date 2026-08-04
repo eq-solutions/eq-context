@@ -23,8 +23,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 **Considered and rejected:** a lock/coordination file (a hook-enforced lock needs reliable cleanup on abnormal session termination or it becomes a new stuck-forever failure class — this repo's history already has several of those from imperfect guards); blocking ALL git writes to the shared checkout (would break routine, currently-reliable automation — nightly cron commits, single-file pending.md ticks, session close — none of which have ever been the source of the actual damage).
 
-**Deferred:**
-- [ ] **`hooks/adversarial_test.sh`** (the legacy/manual test runner, distinct from the CI-authoritative `adversarial_test.py`) is missing F7 and F9 coverage entirely. Either bring it in sync or formally deprecate it — flagged, not decided here. _(added 2026-08-04)_
+- [x] **`hooks/adversarial_test.sh`** (the legacy/manual test runner, distinct from the CI-authoritative `adversarial_test.py`) was missing F7 and F9 coverage entirely. Resolved 2026-08-05 by deletion, not sync — repo-wide grep found zero functional dependents (no CI workflow, Makefile, or pre-commit config referenced it), and porting F7/F9 into bash would have duplicated real complexity (env-scoped subprocess fixtures, Windows read-only-file retry, Bash/PowerShell tool-matching) already solved once in `adversarial_test.py`, whose own header states a deliberate no-bash/WSL design goal. A stale-but-present "legacy" suite is the same shadow-duplicate failure shape as F5. `hooks/README.md`'s Testing section updated to drop the dead pointer. _(added 2026-08-04, resolved 2026-08-05)_
 
 ---
 

@@ -59,8 +59,9 @@ Run the adversarial suite before trusting any change to these files:
 python hooks/adversarial_test.py
 ```
 
-(`adversarial_test.sh` is a legacy, out-of-date subset — no F7 or F9 coverage —
-kept for now but not the one CI runs; see `.github/workflows/adversarial-suite.yml`.)
+This is the only suite — the legacy `adversarial_test.sh` bash subset (F1/F2/F3/F6
+only, no F7/F9) was retired 2026-08-05 rather than kept in sync; see
+`eq/pending.md` for the reasoning.
 
 Every failure that ever escapes in real life gets **added to the suite**. The system's own
 history becomes its test corpus. That is the part that compounds.
