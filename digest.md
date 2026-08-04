@@ -10,17 +10,16 @@ status: live
 # EQ Suite — Health Digest
 _2026-08-04 08:58 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-04 04:47 UTC → 2026-08-04 08:58 UTC)
+## Since last refresh (2026-08-04 08:58 UTC → 2026-08-04 08:58 UTC)
 
-- Merged: eq-shell [#1217](https://github.com/eq-solutions/eq-shell/pull/1217) feat(documents): sign-off evidence view for the Register tab
-- Merged: eq-shell [#1216](https://github.com/eq-solutions/eq-shell/pull/1216) fix(ops): board Sent checkbox now promotes draft quotes to s
-- Merged: eq-shell [#1213](https://github.com/eq-solutions/eq-shell/pull/1213) fix(ops): bolder column headers, less-pink estimator colours
-- Merged: eq-shell [#1212](https://github.com/eq-solutions/eq-shell/pull/1212) feat(documents): add signature_image column for sign-off reg
-- Merged: eq-shell [#1210](https://github.com/eq-solutions/eq-shell/pull/1210) chore(intake): auto re-vendor eq-intake/eq-platform
-- Merged: eq-shell [#1209](https://github.com/eq-solutions/eq-shell/pull/1209) fix(ops): bolder file badge, colour-code estimator instead o
-- Merged: eq-shell [#1207](https://github.com/eq-solutions/eq-shell/pull/1207) fix(shell): resolve all 117 eq-shell-owned no-explicit-any e
-- Merged: eq-shell [#1206](https://github.com/eq-solutions/eq-shell/pull/1206) fix(shell): Worker Home shows warnings before everyday statu
-- ✅ Needs you: 3 → 2
+- Merged: eq-shell [#1233](https://github.com/eq-solutions/eq-shell/pull/1233) fix(deps): bump fast-uri to 4.1.2 (CVE-2026-18446)
+- Merged: eq-shell [#1218](https://github.com/eq-solutions/eq-shell/pull/1218) fix(shell): collapse Roster/Leave glance tiles into the sing
+- Merged: eq-shell [#1215](https://github.com/eq-solutions/eq-shell/pull/1215) fix(ops): move the job-no-required message into a visible to
+- Merged: eq-shell [#1214](https://github.com/eq-solutions/eq-shell/pull/1214) fix(ops): darken customer group header, drop redundant in-ca
+- Merged: eq-shell [#1211](https://github.com/eq-solutions/eq-shell/pull/1211) fix(ops): unique stage colours, re-spread estimator palette,
+- Merged: eq-shell [#1208](https://github.com/eq-solutions/eq-shell/pull/1208) feat(documents): register view for the sign-off register (st
+- Merged: eq-shell [#1205](https://github.com/eq-solutions/eq-shell/pull/1205) fix(ops): show file-attached badge on Kanban pipeline board 
+- Merged: eq-shell [#1204](https://github.com/eq-solutions/eq-shell/pull/1204) fix(shell): resolve @typescript-eslint/no-unused-vars (107 o
 
 ## ⚠ Needs you (2)
 
@@ -49,7 +48,7 @@ _…and 97 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 2 | 0d |
+| eq-shell | ✓ success | 0d ago | 1 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 5 | 1d |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
@@ -73,6 +72,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-04 | eq-shell | [#1233](https://github.com/eq-solutions/eq-shell/pull/1233) fix(deps): bump fast-uri to 4.1.2 (CVE-2026-18446) |
 | 2026-08-04 | eq-shell | [#1232](https://github.com/eq-solutions/eq-shell/pull/1232) fix(invites): recover gracefully from a raced duplicate invite in |
 | 2026-08-04 | eq-field | [#645](https://github.com/eq-solutions/eq-field/pull/645) v3.5.452 — Toolbox Talk: Reopen a submitted talk to fix a mistake |
 | 2026-08-04 | eq-cards | [#210](https://github.com/eq-solutions/eq-cards/pull/210) fix(invites): DB-level guard against duplicate unclaimed worker i |
@@ -87,7 +87,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-03 | eq-shell | [#1222](https://github.com/eq-solutions/eq-shell/pull/1222) feat(documents): sign-off certificate PDF + document templates |
 | 2026-08-03 | eq-shell | [#1221](https://github.com/eq-solutions/eq-shell/pull/1221) fix(ops): migration 0236 needs DROP FUNCTION before CREATE OR REP |
 | 2026-08-03 | eq-shell | [#1220](https://github.com/eq-solutions/eq-shell/pull/1220) fix(ops): board drag-and-drop now writes the canonical job record |
-| 2026-08-03 | eq-shell | [#1219](https://github.com/eq-solutions/eq-shell/pull/1219) fix(auth): support contact link -> contact@eq.solutions |
 _Showing 15 of 146 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
