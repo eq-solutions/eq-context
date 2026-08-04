@@ -62,7 +62,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-cards:**
 - #213 feat(auth): WebOTP auto-fill for phone sign-in
-- #212 fix(shell-handoff): validate a locally-cached session before skipping auto-login
 
 **eq-service:**
 - #688 chore(deps): bump @sentry/nextjs from 10.68.0 to 10.69.0
