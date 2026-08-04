@@ -68,7 +68,6 @@ _If this file is >48h old, the cron is broken._
 - #684 chore(deps): bump the eq-design-system group with 2 updates
 
 **eq-shell:**
-- #1233 fix(deps): bump fast-uri to 4.1.2 (CVE-2026-18446)
 - #1231 chore(intake): auto re-vendor eq-intake/eq-platform
 
 ---
