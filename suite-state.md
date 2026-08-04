@@ -68,8 +68,10 @@ _If this file is >48h old, the cron is broken._
 - #684 chore(deps): bump the eq-design-system group with 2 updates
 
 **eq-shell:**
-- #1244 fix(security): guard entity-patch against same-site confused-deputy CSRF
 - #1231 chore(intake): auto re-vendor eq-intake/eq-platform
+
+**eq-solves-intake:**
+- #110 fix(scripts): hard-stop migrate-cards-to-canonical.mjs rather than leave it silently stale
 
 ---
 
