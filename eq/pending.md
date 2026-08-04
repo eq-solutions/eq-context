@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-04
+last_updated: 2026-08-05
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -99,10 +99,8 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ## eq-context + eq-shell/eq-field: CI health sweep, PAT diagnosis, and a shared-checkout git incident (2026-08-03)
 
-**Deferred:**
 - [ ] **`eq-solves-assets` folder points at the wrong GitHub repo** (a personal fork of the Service app, not the real assets repo) — Royce: "on the back burner, can be ignored." Deprioritized, not investigated further. _(added 2026-08-03, updated 2026-08-03)_
 - [ ] **eq-shell's `smoke.yml` check is chronically noisy** (roughly 1 in 3 runs fails on a timing timeout, always self-resolves) — not a real bug, but worth a longer timeout if the false alarms bother anyone watching it. _(added 2026-08-03)_
-- [x] **The shared `eq-context` checkout keeps taking damage from concurrent-session git races** — a stuck rebase, a live conflict-marker corruption on `main`, and two separate non-fast-forward push rejections all landed within about 10 minutes from multiple sessions writing to the same working directory at once; a follow-up session then found local `main` had diverged again and, even after verifying the fix in an isolated clone, applying it back on the shared checkout still collided with a second concurrent rebase (HEAD detached, `main` ref left pointing at a stale commit — fixed, no data lost). Worth deciding whether concurrent sessions should default to a fresh clone for any `/close`, not just multi-step surgery — the existing guidance undersells how often this is now actually happening. **RESOLVED 2026-08-04** — see the "shared-checkout git races — structural fix shipped as F9" entry near the top of this file; now enforced by a hook (`hooks/pre_tool_use.py`), not just documented. _(added 2026-08-03)_
 
 ---
 
