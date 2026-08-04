@@ -1,9 +1,10 @@
 # Session Index
-_88 logs · reverse-chronological · auto-generated_
+_89 logs · reverse-chronological · auto-generated_
 
 | Date | Session |
 |------|---------|
 | 2026-08-04 | [Removed the "What's new" banner from both SKS NSW Labour and EQ Field](sessions/2026-08-04.md) |
+| 2026-08-04 | [Document sign-off register sprint closed out; new admin-feature-baseline rule](sessions/2026-08-04-h.md) |
 | 2026-08-04 | [g — Shared eq-context checkout: concurrent-session git races closed as F9, hook-enforced](sessions/2026-08-04-g.md) |
 | 2026-08-04 | [f — eq-shell PR #1237 merge confirmed + production deploy independently verified live](sessions/2026-08-04-f.md) |
 | 2026-08-04 | [e — Fernando Alba onboarding surfaced two Shell gaps: back-photo support + OCR-hang fix, both shipped live](sessions/2026-08-04-e.md) |
