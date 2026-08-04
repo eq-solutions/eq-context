@@ -9,6 +9,16 @@ status: live
 
 # Changelog — EQ Context Repo
 
+## [2026-08-04] Pre-commit hook gains a status-enum guard (F8); a repo-wide hook-wiring gap found and fixed
+
+**Built by:** Royce Milmlow + Claude Code
+
+- **`.githooks/pre-commit` check 17.5 (new)** — blocks any governed `.md` whose `status:` is outside `live|draft|archived|deprecated` or missing entirely, exemption list held identical to `frontmatter-check.yml`. `system/failures.md` F8 added (rung 3 → 4, `recurrences: 2` — the defect landed on main twice in four days).
+- **Found while building it: the governed hook had never run on this machine.** `core.hooksPath` pointed at `.git/hooks`, which held an untracked but load-bearing secret-scanning hook (GitHub PATs, Supabase JWTs, AWS/Stripe/Anthropic keys), byte-identical to the tracked `scripts/pre-commit-secrets.sh`. Repointing to `.githooks` without accounting for this — what `scripts/install-hooks.ps1` did — would have silently traded credential-leak protection for style checking. Fixed by delegation: the governed hook now runs the secret guard first and refuses to commit if it's missing (fail-closed).
+- Verified with a 7/7 adversarial test in a throwaway repo before merging: real defect blocked, all 4 valid enum values pass, exempt paths skipped, missing key blocked, a planted secret still blocked through the new delegation, fail-closed when the guard script is absent, clean commit succeeds. PR [#126](https://github.com/eq-solutions/eq-context/pull/126) merged.
+- **Repointing every worktree's `core.hooksPath` was attempted and partially reverted.** 4 of 5 open worktrees are on branches predating this delegation, so their own `.githooks/pre-commit` has zero secret-scanning — repointing them would have removed their only guard. Reverted those 4 back to `.git/hooks`; the shadowed file was **not** deleted. Resolves once those branches merge past `main`.
+- Session log: `sessions/2026-08-04.md` (second entry).
+
 ## [2026-08-04] Agentic-coding rules landed; three stale/missing rules closed
 
 **Built by:** Royce Milmlow + Claude Code
