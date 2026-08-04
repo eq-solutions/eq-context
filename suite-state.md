@@ -60,11 +60,7 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-04)
 
-**eq-field:**
-- #646 fix(ts-reminder): dedup check had no tenant filter
-
 **eq-service:**
-- #690 fix(tenant-scoping): two service-role queries had no defense-in-depth tenant filter
 - #688 chore(deps): bump @sentry/nextjs from 10.68.0 to 10.69.0
 - #687 chore(deps-dev): bump eslint-config-next from 16.2.2 to 16.2.12
 - #686 chore(deps-dev): bump @vitejs/plugin-react from 6.0.4 to 6.0.5
@@ -82,7 +78,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ✗ failure |
+| eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
