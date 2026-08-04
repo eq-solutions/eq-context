@@ -1,13 +1,20 @@
 ---
 title: SKS — Pending
 owner: Royce Milmlow
-last_updated: 2026-08-01
+last_updated: 2026-08-04
 scope: SKS Technologies operational TODO list
 read_priority: critical
 status: live
 ---
 
 # SKS Pending
+
+## Safety records 200-row cap — fixed, staged, NOT yet pushed (v3.10.109, sks-nsw-labour)
+*Royce asked "can you check where all the prestarts went." Live DB check found no data loss at all — 138 prestarts intact, none deleted, RLS not blocking reads. The real cause was two UI windows: the Prestart tab only ever shows today + past 7 days, and Records defaults to a 30-day range (an "All" option already existed and already worked). While tracing it, found the actual latent bug this ties back to the 2026-07-10 pagination-sweep item above never closed: all three safety loaders (`loadPrestarts`/`loadToolboxTalks`/`loadIncidents` in `scripts/safety.js`) fetched a flat `&limit=200` newest-first — at SKS's ~25 prestarts/week that cap was ~2-3 weeks from silently dropping the OLDEST rows out of the cache, invisible even on Records → All, no error. Fixed by swapping all three to `sbFetchAll()` (already proven in `leave.js`/`timesheets.js`), which pages until exhausted. Verified: `node --check` clean, browser boot shows v3.10.109 with no new console errors, `sbFetchAll`'s explicit-order guard (the v3.10.90–92 outage trap) confirmed non-triggering on all three paths since each already carries its own `order=`.*
+- [x] Root-caused "missing prestarts" to UI windowing, not data loss — confirmed live via Supabase MCP.
+- [x] Fixed the 200-row truncation risk on prestarts/toolbox_talks/incidents loaders — `scripts/safety.js`, v3.10.108 → v3.10.109 (app-state.js, sw.js, index.html, CHANGELOG.md bumped).
+- [ ] **Not committed, not pushed, no PR opened.** Sitting on worktree branch `claude/missing-prestarts-777d49` in `sks-nsw-labour`. Royce hasn't given the explicit go to commit/push per the non-negotiables — next session (or this one, if Royce confirms) should do that before considering this shipped. _(added 2026-08-04)_
+- [ ] **Declined this session, still open if wanted:** widen the Prestart tab past its hardcoded 7-day window, or add a "Show older → Records" link — Royce picked "fix the cap only" via AskUserQuestion; the tab itself is unchanged. _(added 2026-08-04)_
 
 ## SKS leave-approval email: magic links fixed, logo optimization declined (v3.5.389, PR #582, merged 2026-08-01)
 *Royce reported two problems with SKS leave-request approval emails: the SKS logo didn't render for managers, and the Approve/Reject links 500'd on click.*
@@ -255,7 +262,7 @@ The following tests belong to eq-quotes-port (Flask), which is retired as of 202
 **Trigger:** picked up the eq-field export truncation flag from the earlier same-day session (`task_69a6ff0f` above). Before building, verified the premise against live git/GitHub state rather than trusting the flag at face value — this caught that the referenced "SKS v3.10.89 fix" was real (PR #56, merged, a genuine live incident — Simon Bramall's far-future roster gap) but only covered the `schedule` table; its sibling `timesheets` load in the exact same function was never touched.
 
 **Deferred:**
-- [ ] `audit_log`/`prestarts`/`toolbox_talks` recency caps (both apps) — not a bug, but if older history genuinely needs to be reachable, that's a pagination-UI or date-filter feature to design, not a copy of `sbFetchAll()`. _(added 2026-07-10)_
+- [x] `prestarts`/`toolbox_talks` recency caps — fixed 2026-08-04, see below. `audit_log` still uncapped/unaudited.
 
 ## ⏩ SKS Field — session 2026-07-12 (loadFromSupabase resilience — one table's failure can't freeze the app)
 
