@@ -1,13 +1,16 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-04
+last_updated: 2026-08-05
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # eq-shell changelog
+
+## 2026-08-05
+- **PR #1243** — Worker invites header simplified: "Share a general QR" link + "More ways to add" dropdown replaced with two plain buttons (Invite worker / Invite by QR). Connect existing moved to a cross-link on the Invite-worker form. Merged (`35da45b`), live-verified against the deployed bundle.
 
 ## 2026-08-04 (Document sign-off register sprint closed out — PRs #1222, #1226, #1228, #1239, #1241)
 - **PR #1222** — sign-off certificate PDF (standalone `@react-pdf/renderer` document, not merged into the original file) + a Templates tab (blank reusable documents, no signer, filtered out of the Register).
