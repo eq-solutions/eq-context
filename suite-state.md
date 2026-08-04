@@ -60,6 +60,9 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-04)
 
+**eq-cards:**
+- #217 fix(ocr): stop trusting service-role callers by raw string equality
+
 **eq-field:**
 - #649 v3.5.455 — SKS Supervision category/role editable from Field, via Core
 
@@ -69,9 +72,6 @@ _If this file is >48h old, the cron is broken._
 - #686 chore(deps-dev): bump @vitejs/plugin-react from 6.0.4 to 6.0.5
 - #685 chore(deps): bump react-dom and @types/react-dom
 - #684 chore(deps): bump the eq-design-system group with 2 updates
-
-**eq-shell:**
-- #1245 feat(field): Bearer credential so Field can trigger a Shell-side staff write
 
 ---
 
