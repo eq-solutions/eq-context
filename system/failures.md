@@ -1,7 +1,7 @@
 ---
 title: SYSTEM — Failure Ledger (the ratchet's memory)
 owner: Royce Milmlow
-last_updated: 2026-07-31
+last_updated: 2026-08-04
 scope: Every failure that escaped the safeguards, with the rung its guard currently sits at. Machine-read by guard-ratchet.yml. Append-only for entries; rung/count are mutable.
 read_priority: high
 status: live
@@ -112,7 +112,7 @@ failures:
     cost: "3,955 NUL bytes written into system/lessons.md. Two lessons destroyed. File became binary."
     note: "Found while fixing F2 — and it INVALIDATED the F2 fix. The old lesson said 'prefer cat >> over Edit for appends'. That advice was WRONG and it corrupted the file. Only FULL REWRITE (cat >) is safe. wc -l alone will not catch this: the NUL-fill made the file LARGER."
     signal: "NUL.?(fill|byte)s?|nul-fill"
-    confirmed_in: ["sessions/2026-07-28.md", "sessions/2026-07-31.md"]
+    confirmed_in: ["sessions/2026-07-28.md", "sessions/2026-07-31.md", "sessions/2026-08-04-b.md", "sessions/2026-08-04-c.md"]
 
   - id: F7
     title: git merge/stash-pop round-trip NUL-fills files on the C:\Projects virtiofs mount
@@ -127,6 +127,20 @@ failures:
     note: "CORRECTED 2026-07-31: this entry originally claimed 'F6's guard has no visibility into git operations' — that was wrong. hooks/pre_tool_use.py already had a blanket block on git write verbs including merge/stash, live since 2026-07-12, which SHOULD have stopped the 2026-07-28 incident outright. The real open question — never resolved, not fixed by this build — is WHY that didn't fire: either the hook wasn't wired into whatever sandbox ran that session, or the git command reached it through a path this hook's tool-name matching didn't cover. Widening to Bash+PowerShell closes one candidate cause but doesn't prove it was THE cause — nobody can currently inspect that sandbox's actual settings.json from here. What this build DOES provide unconditionally: an independent NUL-byte integrity scan ahead of any future git verb, on any platform, that blocks before corruption (from ANY path, wired-hook-covered or not) can be committed/pushed further. Tracked as a separate open item in ops/pending.md, not closed by this entry."
     signal: "git (stash pop|merge).{0,80}NUL|NUL.{0,80}(stash pop|merge|round-trip)"
     confirmed_in: ["sessions/2026-07-28.md", "sessions/2026-07-31.md"]
+
+  - id: F8
+    title: Prose written into the frontmatter status field turned CI red on main, twice in four days
+    first_seen: 2026-08-03
+    last_seen: 2026-08-04
+    recurrences: 2
+    rung: 4
+    target_rung: 4
+    guard: ".githooks/pre-commit check 17.5 — blocks any governed .md whose status: is outside live|draft|archived|deprecated, or is missing the key entirely (rung 4, built 2026-08-04). Exemption list held identical to .github/workflows/frontmatter-check.yml so hook and CI cannot disagree. Adversarial battery 7/7: real defect blocked, all four valid values pass, exempt paths skipped, missing key blocked, secret guard still fires through the new delegation, fail-closed when the guard script is absent, clean file commits."
+    detected_by: "CI — Frontmatter validation, i.e. only AFTER the push. Never caught before the damage."
+    cost: "Frontmatter validation red on main from 092466d until 2026-08-04, so every branch cut from main inherited a failing required check. The 2026-08-03 session fixed this exact defect on two other files; the very next commit to touch a third file reintroduced it."
+    note: "PROMOTED 2026-08-04 on the same day the recurrence was found. The guard existed at rung 3 the whole time and worked exactly as designed — it just cannot fire until the damage is already pushed. This is the ladder's own argument: CI catches AFTER, a hook catches BEFORE. Uncovered while building it: core.hooksPath on the Beelink clone pointed at .git/hooks (an untracked copy of scripts/pre-commit-secrets.sh), so the governed .githooks/pre-commit had never run on this machine at all — a recurrence of the 2026-05-24 core.hooksPath lesson, and the reason a style hook could not have caught this even if the check had existed. Fixed by delegating the secret guard from inside the governed hook, so pointing core.hooksPath at .githooks no longer trades a credential guard for a style guard."
+    signal: "status:.{0,40}(must be one of|carried prose)|prose in the status field"
+    confirmed_in: ["sessions/2026-08-04-c.md"]
 ```
 
 ---
