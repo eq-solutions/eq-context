@@ -9,6 +9,15 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-04 (Document sign-off register sprint closed out — PRs #1222, #1226, #1228, #1239, #1241)
+- **PR #1222** — sign-off certificate PDF (standalone `@react-pdf/renderer` document, not merged into the original file) + a Templates tab (blank reusable documents, no signer, filtered out of the Register).
+- **PR #1226** — daily reminder cron for outstanding sign-offs (T2).
+- **PR #1228** — reminder cadence corrected to a uniform 7 days (was 3-day-first/4-day-repeat).
+- **PR #1239** — Templates' empty state gets a real "Upload a template" CTA (`EmptyState` action prop); Register gets a per-document Archive action (`DropdownMenu`+`ConfirmDialog`, non-destructive — hides, never deletes). New `POST ?resource=archive` on `push-document-audience.ts`; `handleRegister` filters `document_status='active'`, durable across a refresh — `app_data.document_register` already exposed the column, no migration needed.
+- **PR #1241** — bulk upload for Templates (T3): pick many files at once, review/edit auto-derived titles, upload runs through a bounded 3-concurrent worker pool against the existing `upload-document-version` endpoint, failed files retry independently. Also fixed a real bug in `StagedFileList`: its hidden file input sat before the visible trigger button in the DOM, so `@eq-solutions/ui` Modal's focus-trap (first-match, no visibility check) would silently fail to focus anything on open.
+- Companion: `eq-context/rules/admin-feature-baseline.md` — a new governed minimum-bar rule for admin/data-management features, written directly off a live UI critique of this feature (Royce clicked through Upload & push / Register / Templates). Indexed in `CLAUDE.md` §8.
+- T1 (per-signer RLS) investigated and left deliberately deferred — needs an identity-model decision (eq-field's data-plane JWT carries the tenant id, not the actor, as `sub`), not a migration.
+
 ## 2026-08-04 (PR #1236 MERGED — Staff form: Supervision category required, client + server-side; correction to the #1237 entry below)
 - **Correction to the entry below:** the "Save now blocked..." validation was built and merged here, in PR #1236, not in #1237 — two concurrent Claude sessions independently built the same client-side fix at the same time (see `eq-context/sessions/2026-08-04.md` for the full collision writeup). #1237 was rebased on top of this PR once the collision was caught; its duplicate validation hunk dropped out as a no-op, leaving only its Company-field-visibility change (the entry below is accurate for that part).
 - **Save now blocked with an inline error if Supervisor is checked without a Supervision category picked.** Root-cause fix for 3 real SKS people (John Angangan, Scott Hotson, Jack Cluff) showing as a stray "Direct" group on the live Supervision page. `src/pages/staff/SplitPanel.tsx`.
