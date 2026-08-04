@@ -19,9 +19,17 @@ TODAY = datetime.now(timezone.utc).strftime("%Y-%m-%d")
 REPOS = ["eq-service", "eq-shell", "eq-field", "eq-cards", "eq-solves-intake"]
 
 NETLIFY_SITES = {
-    "eq-solves-service.netlify.app": "eq-service",
-    "core.eq.solutions":             "eq-shell",
-    "eq-solves-field.netlify.app":   "eq-field",
+    # Keys are matched as a substring of (Netlify site `name` + `custom_domain`)
+    # in netlify_site_info() below. Both eq-service and eq-field entries used to
+    # carry their dead pre-rename netlify.app URLs, which are NOT substrings of
+    # the live name/domain and would have silently matched nothing — masked
+    # until now only because NETLIFY_TOKEN isn't set in CI (see suite-state.md
+    # "Deploys" section). Corrected to the live custom domains 2026-08-04,
+    # confirmed via the Netlify API: eq-service -> service.eq.solutions,
+    # eq-field -> field.eq.solutions.
+    "service.eq.solutions": "eq-service",
+    "core.eq.solutions":    "eq-shell",
+    "field.eq.solutions":   "eq-field",
 }
 
 # ── helpers ──────────────────────────────────────────────────────────────────

@@ -18,7 +18,7 @@ _If this file is >48h old, the cron is broken._
 | App | Status | Repo | URL | Notes |
 |-----|--------|------|-----|-------|
 | EQ Shell | Live | eq-shell | core.eq.solutions | Auth hub, canonical owner, EQ Ops lives here |
-| EQ Service | Live | eq-solves-service | eq-solves-service.netlify.app | CMMS — maintenance, defects, reports |
+| EQ Service | Live | eq-solves-service | service.eq.solutions | CMMS — maintenance, defects, reports. `eq-solves-service.netlify.app` was never the live domain — Netlify's own site name is `eq-service`, custom domain `service.eq.solutions`, confirmed live 2026-08-04. |
 | EQ Field | Live (SKS prod) / demo (EQ tenant) | eq-field | field.eq.solutions | Resources, dispatch, labour hire. `eq-solves-field.netlify.app` is dead since mid-2026 — use `field.eq.solutions` or the `core.eq.solutions/sks/field` Shell embed. |
 | EQ Cards | Live | eq-cards | — | Onboarding intake — Phase 1 live, taking real self-signup/claim traffic |
 | EQ Intake | In build | eq-solves-intake | — | Parse/emit engine behind Cards |
