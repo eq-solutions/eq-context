@@ -74,8 +74,6 @@ _If this file is >48h old, the cron is broken._
 - #684 chore(deps): bump the eq-design-system group with 2 updates
 
 **eq-shell:**
-- #1241 feat(documents): bulk upload for Templates (T3)
-- #1240 feat(staff): "back on file" indicator for licence photos
 - #1231 chore(intake): auto re-vendor eq-intake/eq-platform
 
 ---
