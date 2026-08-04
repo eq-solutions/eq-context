@@ -1,14 +1,14 @@
 ---
 title: EQ Suite — Current State
 owner: Royce Milmlow
-last_updated: 2026-08-03
+last_updated: 2026-08-04
 scope: Live suite state — app lineup, DB counts, open PRs, architectural decisions. Auto-refreshed nightly by GitHub Action.
 read_priority: critical
 status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-08-03 (nightly cron)_
+_Last verified: 2026-08-04 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -35,7 +35,7 @@ _If this file is >48h old, the cron is broken._
 
 | Entity | Count | Schema |
 |--------|-------|--------|
-| Sites | 218 | app_data.sites |
+| Sites | 220 | app_data.sites |
 | Customers | 39 | app_data.customers |
 | Assets | 2,836 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
@@ -58,7 +58,7 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-08-03)
+## Open PRs (as of 2026-08-04)
 
 **eq-service:**
 - #688 chore(deps): bump @sentry/nextjs from 10.68.0 to 10.69.0
@@ -67,9 +67,12 @@ _If this file is >48h old, the cron is broken._
 - #685 chore(deps): bump react-dom and @types/react-dom
 - #684 chore(deps): bump the eq-design-system group with 2 updates
 
+**eq-shell:**
+- #1231 chore(intake): auto re-vendor eq-intake/eq-platform
+
 ---
 
-## System Health (as of 2026-08-03)
+## System Health (as of 2026-08-04)
 
 **CI on main:**
 
