@@ -9,9 +9,9 @@ status: live
 
 # Changelog — SKS Labour
 
-## [2026-08-04] Safety records 200-row cap fixed — STAGED, not yet pushed/deployed
+## [2026-08-04] Safety records 200-row cap fixed (v3.10.109, PR #76, merged, live)
 **Built by:** assistant
-- **v3.10.109 (branch `claude/missing-prestarts-777d49`, uncommitted — not merged, not live)** — Investigated "prestarts went missing"; live DB confirmed zero data loss (UI windowing only — Prestart tab = today+7d, Records defaults to 30d with a working "All" option). Found and fixed the real risk instead: `loadPrestarts`/`loadToolboxTalks`/`loadIncidents` in `scripts/safety.js` each capped at a flat `limit=200`, which would have started silently dropping the oldest safety records in ~2-3 weeks at SKS's current volume. Swapped all three to `sbFetchAll()`. Do not treat this as shipped until a PR merges to `main` — see `sks/pending.md` for the open item.
+- **v3.10.109 (PR [#76](https://github.com/eq-solutions/sks-nsw-labour/pull/76), commit `d560688`, squash-merged `7ea82a9`, deploy `6a71b52f` confirmed `ready`)** — Investigated "prestarts went missing"; live DB confirmed zero data loss (UI windowing only — Prestart tab = today+7d, Records defaults to 30d with a working "All" option). Found and fixed the real risk instead: `loadPrestarts`/`loadToolboxTalks`/`loadIncidents` in `scripts/safety.js` each capped at a flat `limit=200`, which would have started silently dropping the oldest safety records in ~2-3 weeks at SKS's current volume. Swapped all three to `sbFetchAll()`. Royce confirmed "commit and push" then "merge the PR" explicitly, each as a separate instruction.
 **Built by:** assistant + Royce Milmlow
 - **v3.10.108 (PR #75, `a1b3f51`→merge `edc2abbb`/live, deployed)** — Deleted the dismissible "What's new" banner entirely: `scripts/whatsnew.js`, its script tag, sidebar link, container div, and `sw.js` precache entry. Unrelated to the roster-change push-notification opt-in in `scripts/auth.js`, which stays. Mirrored the same day in EQ Field for parity — see field.md.
 
