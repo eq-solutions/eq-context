@@ -1,13 +1,18 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-03
+last_updated: 2026-08-04
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # eq-shell changelog
+
+## 2026-08-04 (PR #1230 MERGED + dispatched — FK constraint on app_data.jobs.quote_id)
+- **Deleted the one known orphan `app_data.jobs` row** (`job_id 7842b5ce…`, pointed at a hard-deleted quote) directly — data cleanup, not schema DDL. Zero dependent `job_notes` rows confirmed first; both tenant planes confirmed at 0 orphans afterward.
+- **Migration 0237 adds a FK constraint** on `app_data.jobs.quote_id` referencing `app_data.quote.quote_id`, `ON DELETE RESTRICT` — a job can no longer silently lose its quote link or get deleted as a side effect of the quote being removed. eq-shell [PR #1230](https://github.com/eq-solutions/eq-shell/pull/1230), merged, dispatched (`1 applied` on both `eq` and `sks`), live-verified via `pg_get_constraintdef` on both planes.
+- **Closes out the last open item from the 2026-08-03 board→job sync work.** Ran `/decide` on the original quotes-vs-jobs Kanban split ask — recommendation: not now, since both problems that motivated it (Open column density, `job_number` reliability) are already solved by the cheaper changes already shipped. See `sessions/2026-08-04.md`.
 
 ## 2026-08-03 (PRs #1221/#1223/#1224/#1227 MERGED — EQ Ops board→job sync closed out, collapsed-customer-groups shipped)
 - **Migration 0236 re-dispatched after fixing the `DROP FUNCTION` gap** from the failed first attempt (`CREATE OR REPLACE FUNCTION` can't change a `RETURNS TABLE` shape, unlike `CREATE OR REPLACE VIEW`) — `eq_list_quotes` now returns `customer_id`/`site_id`, live-verified on both ehow and zaap. eq-shell [PR #1221](https://github.com/eq-solutions/eq-shell/pull/1221).
