@@ -72,7 +72,6 @@ _If this file is >48h old, the cron is broken._
 - #684 chore(deps): bump the eq-design-system group with 2 updates
 
 **eq-shell:**
-- #1237 fix(staff): hide Company field for Direct, require supervision category
 - #1231 chore(intake): auto re-vendor eq-intake/eq-platform
 
 ---
