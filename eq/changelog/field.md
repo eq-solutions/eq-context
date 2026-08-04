@@ -9,6 +9,10 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-08-04] PWA "Add to Home Screen" identity: fix stale SKS colour, make it tenant-aware (v3.5.453, #647)
+- `manifest.json`'s `theme_color` was `#1F335C` — the same stale SKS navy already caught and fixed in the transactional emails (2026-07-30). Corrected to `#203060`.
+- The whole manifest (name/icons/colour) was static and SKS-only regardless of tenant — an EQ-tenant "Add to Home Screen" install picked up SKS's identity. New `manifest-eq.json` added; the existing tenant-detection script (already used for the favicon since v3.4.30) now also overrides the manifest link, theme-colour meta, and iOS app title for SKS.
+
 ## [2026-08-04] Canonical worker-link duplicate guard, roster keyboard nav, Prestart/Toolbox export+lock, supervisor taxonomy + zaap parity (v3.5.446→v3.5.451, #639/#642/#643/#644)
 - `_canonicalWorkerUpsert` could mint a second jvkn `workers` identity for a person who already had one — added a name-only lookup as a guard (not auto-link), extracted the canonical-link helpers into a new `scripts/people-canonical-link.js` (`people.js` had crossed its 1550-line CI ceiling). #639
 - Edit Roster's day-cell popover gained full keyboard nav (Arrow/Tab + Enter) and Monday now auto-fills Tue–Fri when blank — extracted into new `scripts/roster-cell-picker.js` (`roster.js` was against its 2400-line ceiling). #642
