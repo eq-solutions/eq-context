@@ -70,6 +70,9 @@ _If this file is >48h old, the cron is broken._
 **eq-shell:**
 - #1231 chore(intake): auto re-vendor eq-intake/eq-platform
 
+**eq-solves-intake:**
+- #109 fix(tenant-scoping): close 2 real gaps in api-intake + approve-worker-assignment
+
 ---
 
 ## System Health (as of 2026-08-04)
