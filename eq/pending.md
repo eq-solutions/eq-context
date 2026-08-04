@@ -23,6 +23,24 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-field: canonical worker-link duplicate guard, roster keyboard nav, Prestart/Toolbox export + lock, supervisor taxonomy + zaap parity — four PRs merged (2026-08-04)
+*Started from a live screenshot question ("will this write back to canonical?") on the Contacts/Supervision page, which surfaced a real duplicate-identity bug, then continued through three more rounds as Royce kept finding real issues while clicking through the live app.*
+
+- [x] **eq-field [PR #639](https://github.com/eq-solutions/eq-field/pull/639) merged** — Contacts save could mint a second canonical worker identity for someone who already had one (confirmed: happened for real once, Phoenix Khatri, 2026-07-05, fixed by hand in the DB at the time). Added a name-match guard so it now surfaces "possible duplicate, link manually" instead of silently creating a second record.
+- [x] **eq-field [PR #642](https://github.com/eq-solutions/eq-field/pull/642) merged** — Edit Roster's day-cell picker is now fully usable by keyboard (arrow keys + Enter), and setting Monday now auto-fills the rest of the week if those days are still blank — direct response to "is there a simple way to speed this up."
+- [x] **eq-field [PR #643](https://github.com/eq-solutions/eq-field/pull/643) merged** — Prestart and Toolbox Talk's "Download as Word" button could fail with zero visible error (just did nothing) — now shows a toast on failure. Also found and fixed a real bug: Toolbox Talk had no lock after submission, so re-opening a submitted talk and hitting "Save draft" would silently un-submit it. Toolbox now locks after submission the same way Prestart already does.
+- [x] **eq-field [PR #644](https://github.com/eq-solutions/eq-field/pull/644) merged** — the Supervision list's category groupings ("Executive"/"Supervisor"/etc.) didn't match what Shell's own Staff page actually offers, so real categories like "Operations" and "Project Management" were showing up ungrouped. Fixed to match Shell exactly. Also found the `eq` (sandbox) tenant's database was missing the supervisor columns entirely — a leftover gap from when Shell's supervisor feature shipped to SKS only — brought it up to the same shape as SKS live, plus closed a security gap that surfaced while doing that (a new database function was briefly callable directly by anyone, not just through the intended path — fixed same session).
+- [x] **Sentry alert `dashboard-map-css-collapsed` (EQ-FIELD-10) checked live and marked resolved** — every event traceable predates one of two fixes already shipped to production (v3.5.438, v3.5.444). Marked resolved with the evidence attached; if it's wrong, Sentry will auto-flag it again on its own.
+
+**Deferred:**
+- [ ] **Someone needs to actually mark real SKS people as supervisors with a category in Shell's Staff page for the `eq` sandbox tenant** — the database now supports it (this session's fix), but zero people are marked yet, so Supervision will show empty on `eq` until that happens. Not a code task.
+- [ ] **3 real SKS people (John Angangan, Scott Hotson, Jack Cluff) are marked as supervisors in Shell but have no category set** — shows as a stray "Direct" group on the live Supervision page. Shell-side data entry, not an eq-field fix.
+- [ ] **Whether EQ Field should ever be allowed to write supervisor data itself** (not just read it from Shell) — raised as "in a perfect world" by Royce; deliberately not built, since Field's current read-only design exists specifically to prevent two apps racing to own the same record. Needs an explicit decision, not an assumption. _(added 2026-08-04)_
+- [ ] **Toolbox Talk now has no way to correct a typo in an already-submitted talk** — inherits the same gap Prestart already had (no "reopen" path). Known tradeoff of the lock-on-submit fix above, not solved this session. _(added 2026-08-04)_
+- [ ] **Multiple concurrent Claude sessions were pushing to eq-field's `main` throughout this session** — two real version-number collisions happened and were caught/resolved live, but this is a standing risk with the current strict-monotonic-versioning convention, not a one-off. Worth knowing if it keeps happening. _(added 2026-08-04)_
+
+---
+
 ## eq-shell + eq-field: Internal Document Sign-off Register — register view shipped, then a real signature pad + evidence view after Royce used the pilot (2026-08-03)
 *Step 5 (Shell register view — who's signed what, without opening the database) landed at the start of this session. Then Royce, after actually using the pilot: "shouldn't the signature be an actual signing box like the safety docs?" and "is the UI built to see signed paperwork?" Both closed via a two-stage follow-on build: a small database change, then the Field signing screen and the Shell register view built in parallel.*
 
@@ -104,6 +122,8 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ---
 
 ## eq-field: EQ-FIELD-10 Sentry issue checked live — code fix confirmed already shipped, but Sentry's own tracking is stale (2026-08-03)
+
+*Re-checked live 2026-08-04 (see the top entry on this file): still holds, marked resolved in Sentry with fresh evidence.*
 
 - [ ] **Consider removing `_dashMapWatchForVanish` (both watchers) entirely**, now that EQ-FIELD-10's real bug is fixed — its own comment says "remove once the root cause is confirmed." `/decide` run before PR #631 recommended patching (lower risk, easily reverted) over removing; Royce agreed to patch. Revisit if the diagnostic stops earning its keep. _(added 2026-08-03)_
 

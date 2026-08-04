@@ -9,6 +9,13 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-08-04] Canonical worker-link duplicate guard, roster keyboard nav, Prestart/Toolbox export+lock, supervisor taxonomy + zaap parity (v3.5.446→v3.5.451, #639/#642/#643/#644)
+- `_canonicalWorkerUpsert` could mint a second jvkn `workers` identity for a person who already had one — added a name-only lookup as a guard (not auto-link), extracted the canonical-link helpers into a new `scripts/people-canonical-link.js` (`people.js` had crossed its 1550-line CI ceiling). #639
+- Edit Roster's day-cell popover gained full keyboard nav (Arrow/Tab + Enter) and Monday now auto-fills Tue–Fri when blank — extracted into new `scripts/roster-cell-picker.js` (`roster.js` was against its 2400-line ceiling). #642
+- `exportPrestartDocx()`/`exportToolboxDocx()` had zero error handling — now toast + Sentry report on failure instead of silent no-op. `saveToolboxDraft()` had no lock check, so re-saving an already-submitted talk silently un-submitted it — Toolbox Talk now locks on submit the same way Prestart already does. #643
+- `managers.js`'s supervisor-category taxonomy had drifted from eq-shell's real `SUPERVISOR_CATEGORY_OPTIONS` — fixed to match. Migration `20260804_field_managers_zaap_canonical_parity.sql` brings the `eq` tenant's DB to schema parity with SKS's live shape (eq-shell PR #692 never reached it) — verified byte-for-byte against ehow before applying; also closed a self-caught `PUBLIC EXECUTE` grant gap on the new trigger function. #644
+- Sentry `EQ-FIELD-10` (`dashboard-map-css-collapsed`) checked live and marked resolved — every event predates one of two already-shipped fixes (#631/v3.5.438, v3.5.444); production is on v3.5.451.
+
 ## [2026-08-03] Document sign-off register: real drawn signature on Sign Documents (v3.5.442, #635)
 - Sign Documents' tap-to-confirm replaced with a real signature pad — reuses `SiteReportsShared.createSignatureController` (`site-reports-shared.js`), the same component Prestart Briefings/Toolbox Talks/Diary/Incidents already use, rather than a second implementation. `signature_image` (`canvas.toDataURL('image/png')`) rides in the same PATCH as the original `status`/`signed_at`/`signed_content_hash` — still one round trip, not a second write.
 - `safety.js`'s file header claiming to be dependency-free (no `site-reports-shared.js` needed) is stale — its own changelog (v3.5.339/340) already documents the opposite. Confirmed `site-reports-shared.js` is the real live signature source, and that `core-bundle-b1.js` is what `index.html` actually serves (the on-disk `lazy-loader.js` has no `<script>` tag anywhere). Both `lazy-loader.js` and its `core-bundle-b1.js` twin updated together.
