@@ -214,6 +214,7 @@ This contract points; it doesn't restate. Authoritative files:
 | SKS Brand | [rules/brand-sks.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/brand-sks.md) |
 | Deployment | [rules/deployment.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/deployment.md) |
 | Stack defaults | [rules/stack.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/stack.md) |
+| Admin feature baseline (archive, bulk, export scope, pagination, config, OCR — check eq-ui first) | [rules/admin-feature-baseline.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/admin-feature-baseline.md) |
 | Entities, accounts | [ops/entities.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/entities.md) |
 | Security findings register | [ops/security-register.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/security-register.md) |
 | Infrastructure (Supabase IDs, CF, Netlify) | [system/infrastructure.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/infrastructure.md) |
