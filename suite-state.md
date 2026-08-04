@@ -73,7 +73,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #1237 fix(staff): hide Company field for Direct, require supervision category
-- #1236 fix(staff): require supervisor_category when is_supervisor is set true
 - #1231 chore(intake): auto re-vendor eq-intake/eq-platform
 
 ---
