@@ -17,13 +17,31 @@ Blocks the failures prose could not stop:
       tree — so corruption from ANY path this guard didn't see still gets caught
       before the next git add/commit/push propagates it further.
   --  git from the Cowork sandbox leaves orphan .git/index.lock (Loop of Despair).
+  F9  The SHARED eq-context checkout (C:\\Projects\\eq-context) takes commits from
+      several Claude Code sessions plus nightly bots, all against the same working
+      directory. Recurred 2026-07-14, 2026-08-03 (x3 in ~10 min), 2026-08-04 (x2).
+      Two distinct mechanisms:
+        (a) bare `git commit` (no `--` pathspec) commits the WHOLE index, sweeping
+            up anything a concurrent session already staged there — a targeted
+            `git add system/worktree-registry.md && git commit` swept up three
+            unrelated files another session had staged, 2026-08-04.
+        (b) rebase/merge/pull mutate HEAD, the index, and refs across several
+            non-atomic steps; two sessions doing this against the same working
+            directory at once produced a stuck rebase, conflict markers committed
+            straight to `main`, and a ref left pointing at a stale commit.
+      Fix: (a) requires an explicit pathspec on every commit in the shared
+      checkout; (b) redirects rebase/merge/pull there to an isolated clone.
+      Neither check fires outside the ONE shared checkout — a private clone
+      (the escape valve both messages recommend) has no concurrent writer, so
+      neither risk applies there.
 
 Scope: F2/F6/the git-lock block are Linux sandbox (Cowork) only — on the Beelink
 (Windows) Claude Code writes and runs git natively; neither bug applies there, so
-those specific checks stay out of the way. F7's corruption *scan* is deliberately
-NOT scoped this way (see in_sandbox() vs the unconditional check in main()) — it
-is defense-in-depth against the sandbox-scoping assumption itself being wrong, or
-being bypassed by a wiring gap this file can't see from inside its own process.
+those specific checks stay out of the way. F7's corruption *scan* and F9 are
+deliberately NOT scoped this way (see in_sandbox() vs the unconditional checks in
+main()) — F9 in particular has only ever been observed happening natively on the
+Beelink, never in the sandbox, so gating it on in_sandbox() would make it inert
+exactly where it's needed.
 
 FAIL-CLOSED on the truncation guard. If we cannot resolve a path under the mount to
 count its lines, we BLOCK. Rationale (learned the hard way, 2026-07-11): the first
@@ -41,6 +59,14 @@ EDIT_TOOLS = {"Edit", "Write", "MultiEdit", "NotebookEdit"}
 SHELL_TOOLS = ("Bash", "PowerShell")
 GIT_VERBS = (r"\bgit\s+(add|commit|push|pull|rm|mv|checkout|merge|rebase|status|"
              r"stash|reset|fetch|clone|restore|switch|tag|branch|apply|cherry-pick)\b")
+
+# F9 — the ONE shared checkout, never a private/fresh clone (which is the escape
+# valve F9's own block messages recommend, and must not itself trip these checks).
+# EQ_CONTEXT override matches the convention session_start.py already uses.
+SHARED_EQ_CONTEXT = (os.environ.get("EQ_CONTEXT", r"C:\Projects\eq-context")
+                      .replace("\\", "/").rstrip("/").lower())
+COMMIT_RE = re.compile(r"(?<![\w-])git\s+commit\b")
+REBASE_MERGE_PULL_RE = re.compile(r"(?<![\w-])git\s+(rebase|merge|pull)\b")
 
 # Extensions that are legitimately binary — skip these in the F7 NUL scan so a
 # real image/font doesn't false-positive. Everything else (source, docs, config)
@@ -153,6 +179,21 @@ def resolve(path):
     return None
 
 
+def is_shared_eq_context(root):
+    """F9 — True ONLY for the one shared checkout, by exact path. A private/fresh
+    clone has a different root and correctly returns False here even though
+    `git rev-parse --show-toplevel` still calls it a perfectly good repo."""
+    return bool(root) and root.rstrip("/").lower() == SHARED_EQ_CONTEXT
+
+
+def _strip_quoted(s):
+    """F9 — blank out single/double-quoted string content before scanning a
+    command for flags. Without this, a commit message that happens to contain
+    ' -- ' (e.g. -m "fixes tests -- see PR") would look like a real pathspec
+    separator and the bare-commit check below would wrongly allow it through."""
+    return re.sub(r"'[^']*'|\"[^\"]*\"", '""', s or "")
+
+
 def block(msg):
     sys.stderr.write(msg)
     sys.exit(2)
@@ -191,6 +232,72 @@ def main():
                     f"  This didn't come from this hook's own >> check (F6) or its\n"
                     f"  Edit/Write check (F2) — something else corrupted this file.\n"
                     f"  system/failures.md -> F6, F7.\n"
+                )
+
+    # --- F9: shared eq-context checkout — concurrent-session git races ------
+    # Deliberately NOT gated on in_sandbox() — every occurrence so far (2026-07-14,
+    # 2026-08-03 x3, 2026-08-04 x2) happened natively on the Beelink (Windows), not
+    # in the Cowork sandbox. Scoped to the ONE shared checkout by exact path — see
+    # is_shared_eq_context() — so the fresh clone this hook recommends as the fix
+    # is never itself blocked by it.
+    if tool in SHELL_TOOLS:
+        cmd9 = ti.get("command", "") or ""
+        cwd9 = data.get("cwd") or os.getcwd()
+        root9 = repo_root_for(cwd9)
+        if is_shared_eq_context(root9):
+            stripped9 = _strip_quoted(cmd9)
+
+            # (a) bare `git commit` — no `--` pathspec, no --amend. A bare commit
+            # records EVERYTHING currently staged, not just what this command just
+            # `git add`ed — see module docstring, F9(a).
+            if (COMMIT_RE.search(stripped9) and "--amend" not in stripped9
+                    and not re.search(r"(^|\s)--(\s+\S)", stripped9)):
+                block(
+                    "BLOCKED by pre_tool_use (F9, rung 4).\n\n"
+                    "  Bare `git commit` in the SHARED eq-context checkout, with no\n"
+                    "  `--` pathspec. `git commit` with no pathspec commits EVERYTHING\n"
+                    "  currently staged, not just what you just `git add`ed. If a\n"
+                    "  concurrent session (or a leftover from one) has anything staged\n"
+                    "  in this same working directory, it rides into your commit.\n\n"
+                    "  This is exactly what happened on 2026-08-04: a targeted\n"
+                    "  `git add system/worktree-registry.md && git commit` swept up\n"
+                    "  three unrelated files another session had already staged.\n\n"
+                    "  Scope the commit explicitly:\n"
+                    "    git commit -m \"...\" -- path/one.md path/two.md\n\n"
+                    "  This commits only the named paths' current content and leaves\n"
+                    "  everything else in the index untouched, no matter what else is\n"
+                    "  staged. If you genuinely mean to commit everything currently\n"
+                    "  staged: run `git status --short` first, then name every path\n"
+                    "  you saw after `--`.\n\n"
+                    "  system/failures.md -> F9.\n"
+                )
+
+            # (b) rebase/merge/pull — multi-step, non-atomic ref/HEAD/index
+            # mutation. --abort/--continue/--skip recover an ALREADY-in-flight
+            # operation and must stay allowed, or this hook would trap a session
+            # inside the exact stuck state it exists to prevent.
+            m9 = REBASE_MERGE_PULL_RE.search(stripped9)
+            if m9 and not re.search(r"--(abort|continue|skip)\b",
+                                     stripped9[m9.end():m9.end() + 40]):
+                verb9 = m9.group(1)
+                block(
+                    f"BLOCKED by pre_tool_use (F9, rung 4).\n\n"
+                    f"  `git {verb9}` in the SHARED eq-context checkout\n"
+                    f"  ({SHARED_EQ_CONTEXT}). This repo takes commits from multiple\n"
+                    f"  Claude Code sessions and nightly bots all day. {verb9} mutates\n"
+                    f"  HEAD, the index, and refs across several non-atomic steps — if\n"
+                    f"  another session touches this same working directory\n"
+                    f"  mid-operation, you get what's already happened here more than\n"
+                    f"  once: a stuck rebase, conflict markers committed straight to\n"
+                    f"  main, or a ref left pointing at a stale commit (2026-07-14,\n"
+                    f"  2026-08-03).\n\n"
+                    f"  Do this in an ISOLATED clone instead:\n"
+                    f"    git clone https://github.com/eq-solutions/eq-context.git <dir>\n"
+                    f"    cd <dir> && git {verb9} ...   (safe — nobody else writes here)\n"
+                    f"    git push origin main\n\n"
+                    f"  Already mid-{verb9}, trying to get OUT of a stuck state?\n"
+                    f"  --abort / --continue / --skip are allowed through.\n\n"
+                    f"  system/failures.md -> F9. rules/agentic-coding.md.\n"
                 )
 
     if not in_sandbox():

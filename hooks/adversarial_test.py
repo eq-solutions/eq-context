@@ -165,6 +165,65 @@ te("clean modified tree + sandbox guard ON -> still blocked, but by the PRE-EXIS
    bash_at("git commit -am x", clean_repo), 2, {"EQ_FORCE_GUARD": "1"})
 _rmtree_retry(clean_repo)
 
+
+def f9_fixture_repo():
+    """A throwaway repo for F9's shared-checkout tests — real git repo, one
+    committed file, so `git commit -- <path>` / `git rebase --continue` etc.
+    have real state to operate against without touching the live ROOT. F9 is
+    identified by EXACT PATH (is_shared_eq_context), not by repo content, so
+    "is this the shared checkout" is entirely controlled per-call via the
+    EQ_CONTEXT env var — same mechanism the GATE tests below already use."""
+    d = os.path.join(ROOT, ".tmp_f9_fixture")
+    _rmtree_retry(d)
+    os.makedirs(d)
+    run = lambda *a: subprocess.run(["git", *a], cwd=d, capture_output=True, text=True)
+    run("init", "-q", "-b", "main")
+    run("config", "user.email", "test@example.com")
+    run("config", "user.name", "test")
+    with open(os.path.join(d, "seed.md"), "w") as fh:
+        fh.write("hello\n")
+    run("add", "-A")
+    run("commit", "-q", "-m", "seed")
+    return d
+
+
+print("=== F9 - shared eq-context checkout: concurrent-session git races (must BLOCK) ===")
+f9_repo = f9_fixture_repo()
+SAME = {"EQ_CONTEXT": f9_repo}                       # this fixture IS "the shared checkout"
+OTHER = {"EQ_CONTEXT": f9_repo + "-not-the-shared-one"}  # a different one — F9 must stay dormant
+
+te("bare `git commit` in the SHARED checkout -> BLOCK",
+   bash_at("git commit -m x", f9_repo), 2, SAME)
+te("`git commit -m x -- <path>` (pathspec-scoped) -> allowed",
+   bash_at("git commit -m x -- seed.md", f9_repo), 0, SAME)
+te("`git commit --amend` -> allowed (different, already-governed risk)",
+   bash_at("git commit --amend -m x", f9_repo), 0, SAME)
+te("commit message containing a literal ' -- ' does not false-negative",
+   bash_at('git commit -m "fixes tests -- see PR"', f9_repo), 2, SAME)
+te("`git rebase <ref>` in the SHARED checkout -> BLOCK",
+   bash_at("git rebase origin/main", f9_repo), 2, SAME)
+te("`git merge <ref>` in the SHARED checkout -> BLOCK",
+   bash_at("git merge origin/main", f9_repo), 2, SAME)
+te("`git pull` in the SHARED checkout -> BLOCK (fetch+merge/rebase, same risk)",
+   bash_at("git pull", f9_repo), 2, SAME)
+te("`git rebase --continue` (escaping an already-stuck state) -> allowed",
+   bash_at("git rebase --continue", f9_repo), 0, SAME)
+te("`git rebase --abort` -> allowed",
+   bash_at("git rebase --abort", f9_repo), 0, SAME)
+te("`git merge --abort` -> allowed",
+   bash_at("git merge --abort", f9_repo), 0, SAME)
+te("PowerShell bare commit in the SHARED checkout -> BLOCK (tool matching)",
+   {"tool_name": "PowerShell", "tool_input": {"command": "git commit -m x"}, "cwd": f9_repo}, 2, SAME)
+
+print("=== F9 controls - same operations OUTSIDE the shared checkout must NOT be blocked ===")
+te("bare `git commit` in a private/fresh clone -> allowed (F9's own escape valve)",
+   bash_at("git commit -m x", f9_repo), 0, OTHER)
+te("`git rebase <ref>` in a private/fresh clone -> allowed",
+   bash_at("git rebase origin/main", f9_repo), 0, OTHER)
+te("`git status` / `git push` untouched by F9 even INSIDE the shared checkout",
+   bash_at("git push origin main", f9_repo), 0, SAME)
+_rmtree_retry(f9_repo)
+
 print("=== CONTROLS - legitimate work must NOT be blocked ===")
 t("Edit a short file", edit(SHORT), 0)
 t("Write a NEW file (parent exists)", {"tool_name": "Write", "tool_input": {"file_path": NEWF}}, 0)
