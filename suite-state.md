@@ -60,6 +60,9 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-04)
 
+**eq-cards:**
+- #211 fix(ocr): timeout the Anthropic call in ocr-licence instead of hanging silently
+
 **eq-service:**
 - #688 chore(deps): bump @sentry/nextjs from 10.68.0 to 10.69.0
 - #687 chore(deps-dev): bump eslint-config-next from 16.2.2 to 16.2.12
@@ -68,6 +71,7 @@ _If this file is >48h old, the cron is broken._
 - #684 chore(deps): bump the eq-design-system group with 2 updates
 
 **eq-shell:**
+- #1235 fix(licences): timeout the OCR auto-read chain instead of hanging silently
 - #1231 chore(intake): auto re-vendor eq-intake/eq-platform
 
 ---
