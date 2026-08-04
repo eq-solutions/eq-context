@@ -1,9 +1,10 @@
 # Session Index
-_85 logs · reverse-chronological · auto-generated_
+_86 logs · reverse-chronological · auto-generated_
 
 | Date | Session |
 |------|---------|
 | 2026-08-04 | [Removed the "What's new" banner from both SKS NSW Labour and EQ Field](sessions/2026-08-04.md) |
+| 2026-08-04 | [e — Fernando Alba onboarding surfaced two Shell gaps: back-photo support + OCR-hang fix, both shipped live](sessions/2026-08-04-e.md) |
 | 2026-08-04 | [2026-08-04-d](sessions/2026-08-04-d.md) |
 | 2026-08-04 | [2026-08-04-c](sessions/2026-08-04-c.md) |
 | 2026-08-04 | [2026-08-04-b](sessions/2026-08-04-b.md) |
