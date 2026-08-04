@@ -61,7 +61,6 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-04)
 
 **eq-cards:**
-- #214 fix(wallet-pass): close IDOR — any credentialId returned any worker's pass
 - #213 feat(auth): WebOTP auto-fill for phone sign-in
 
 **eq-field:**
