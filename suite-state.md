@@ -35,7 +35,7 @@ _If this file is >48h old, the cron is broken._
 
 | Entity | Count | Schema |
 |--------|-------|--------|
-| Sites | 220 | app_data.sites |
+| Sites | 221 | app_data.sites |
 | Customers | 39 | app_data.customers |
 | Assets | 2,836 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
@@ -71,7 +71,6 @@ _If this file is >48h old, the cron is broken._
 - #684 chore(deps): bump the eq-design-system group with 2 updates
 
 **eq-shell:**
-- #1246 feat(documents): categories for the Templates tab
 - #1245 feat(field): Bearer credential so Field can trigger a Shell-side staff write
 
 ---
