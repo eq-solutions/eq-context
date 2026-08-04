@@ -8,19 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-04 10:54 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-04 11:15 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-04 10:21 UTC → 2026-08-04 10:54 UTC)
+## Since last refresh (2026-08-04 10:54 UTC → 2026-08-04 11:15 UTC)
 
-- Merged: eq-shell [#1239](https://github.com/eq-solutions/eq-shell/pull/1239) feat(documents): Templates upload CTA + Register archive act
-- Merged: eq-shell [#1228](https://github.com/eq-solutions/eq-shell/pull/1228) fix(documents): sign-off reminder cadence to a uniform 7 day
-- Merged: eq-shell [#1227](https://github.com/eq-solutions/eq-shell/pull/1227) fix(ops): collapsed group header count/total hidden for long
-- Merged: eq-shell [#1226](https://github.com/eq-solutions/eq-shell/pull/1226) feat(documents): daily reminder email for outstanding sign-o
-- Merged: eq-shell [#1225](https://github.com/eq-solutions/eq-shell/pull/1225) fix(cards-handoff): log silent origin mismatch, normalise VI
-- Merged: eq-shell [#1223](https://github.com/eq-solutions/eq-shell/pull/1223) fix(ops): po-matched status never synced the canonical job r
-- Merged: eq-shell [#1220](https://github.com/eq-solutions/eq-shell/pull/1220) fix(ops): board drag-and-drop now writes the canonical job r
-- Merged: eq-shell [#1218](https://github.com/eq-solutions/eq-shell/pull/1218) fix(shell): collapse Roster/Leave glance tiles into the sing
-- ⚠ Needs you: 2 → 3 (new items)
+- Merged: eq-shell [#1230](https://github.com/eq-solutions/eq-shell/pull/1230) fix(ops): add FK constraint on app_data.jobs.quote_id
+- Merged: eq-shell [#1229](https://github.com/eq-solutions/eq-shell/pull/1229) fix(auth): guard shell-join-tenant's existing-user phone mat
+- Merged: eq-shell [#1224](https://github.com/eq-solutions/eq-shell/pull/1224) feat(ops): collapse repeat-customer quote groups on the Kanb
+- Merged: eq-shell [#1222](https://github.com/eq-solutions/eq-shell/pull/1222) feat(documents): sign-off certificate PDF + document templat
+- Merged: eq-shell [#1221](https://github.com/eq-solutions/eq-shell/pull/1221) fix(ops): migration 0236 needs DROP FUNCTION before CREATE O
+- Merged: eq-shell [#1219](https://github.com/eq-solutions/eq-shell/pull/1219) fix(auth): support contact link -> contact@eq.solutions
+- Merged: eq-shell [#1217](https://github.com/eq-solutions/eq-shell/pull/1217) feat(documents): sign-off evidence view for the Register tab
+- Merged: eq-shell [#1216](https://github.com/eq-solutions/eq-shell/pull/1216) fix(ops): board Sent checkbox now promotes draft quotes to s
 
 ## ⚠ Needs you (3)
 
@@ -53,7 +52,7 @@ _…and 100 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | eq-shell | ✓ success | 0d ago | 1 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 5 | 1d |
 | eq-field | ✓ success | 0d ago | 1 | 0d |
-| eq-cards | ✓ success | 0d ago | 2 | 0d |
+| eq-cards | ✓ success | 0d ago | 1 | 0d |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
 ## Live errors (Sentry)
@@ -86,14 +85,13 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-04 | eq-field | [#647](https://github.com/eq-solutions/eq-field/pull/647) v3.5.453 — PWA app icon: fix stale SKS colour, make Add-to-Home-S |
 | 2026-08-04 | eq-field | [#646](https://github.com/eq-solutions/eq-field/pull/646) fix(ts-reminder): dedup check had no tenant filter |
 | 2026-08-04 | eq-field | [#645](https://github.com/eq-solutions/eq-field/pull/645) v3.5.452 — Toolbox Talk: Reopen a submitted talk to fix a mistake |
+| 2026-08-04 | eq-cards | [#214](https://github.com/eq-solutions/eq-cards/pull/214) fix(wallet-pass): close IDOR — any credentialId returned any work |
 | 2026-08-04 | eq-cards | [#212](https://github.com/eq-solutions/eq-cards/pull/212) fix(shell-handoff): validate a locally-cached session before skip |
 | 2026-08-04 | eq-cards | [#211](https://github.com/eq-solutions/eq-cards/pull/211) fix(ocr): timeout the Anthropic call in ocr-licence instead of ha |
-| 2026-08-04 | eq-cards | [#210](https://github.com/eq-solutions/eq-cards/pull/210) fix(invites): DB-level guard against duplicate unclaimed worker i |
-_Showing 15 of 146 · full record in [sessions/](sessions/)_
+_Showing 15 of 147 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **Audit extended to eq-cards (2026-08-04) — found a real authorization bug, not just a defense-in-depth gap.** `generate-wallet-pass`'s ownership check was dead code: queried a nonexistent `workers.auth_user_id` column via a `worker_id` field never selected on the credential row, so it always no-opped. Any authenticated Cards user who obtained another worker's `worker_credentials.id` got that worker's full wallet-pass payload (name, licence number, credential type, expiry, issuing body) with no error — `credentialId` is a random UUID with no listing endpoint, so not mass-exploitable, but a live gap, not theoretical. This schema has no org/tenant column at all on `workers`/`worker_credentials`/`profiles`/`licences` (`0006_org_layer.sql` — org access is policy-based, not column-based); the other 5 elevated-client sites checked were all clean or intentional given that. Fixed: joined `workers.user_id` into the existing query, gated on it, 404 on mismatch (not 403, avoids an existence oracle), deleted the dead block. Tracked as [SEC-20](ops/security-register.md) (P1). eq-cards [PR #214](https://github.com/eq-solutions/eq-cards/pull/214) — **pushed, not merged.** **Not deployed even once merged** — Edge Functions don't redeploy from a git push, needs an explicit call after merge. **Not run** — no Deno runtime available; verified structurally, real column names confirmed against live `jvkn` schema. _(added 2026-08-04)_
 - **Audit extended to eq-solves-intake (2026-08-04) — 2 latent findings, not fixed, needs a priority call before touching.** This repo (product name "EQ Intake," status **In build**, not live) is architecturally different from the others: the suite uses **physical per-tenant Supabase projects**, not one shared DB behind RLS — so most missing-filter patterns here are safe today by construction, not by luck, and only become real the moment a project ever serves more than one tenant (which the control plane and worker pool already do). Two findings, both judged too close to auth-trust logic to fix silently under "keep sprinting": **(1)** `edge-functions/api-intake/index.ts` trusts a caller-supplied `body.tenant_id` with no ownership check whenever the caller's JWT lacks a tenant claim (true for any service-role caller) — the downstream RPC's own tenant-mismatch guard is a documented no-op for exactly this path (see `demos/smoke-test.mjs`'s own comment on it). **(2)** `approve-worker-assignment/index.ts`'s `staff`/`licences` upsert conflict targets (`onConflict: 'cards_worker_id'` / `'cards_credential_id'`) don't include `tenant_id`, so if the same Cards worker is ever engaged by two tenants sharing a database, the second upsert would silently reassign the first tenant's staff row. A third, lower-stakes finding — `scripts/migrate-cards-to-canonical.mjs` reads Cards' `workers`/`worker_licences` tables with zero scoping — is a one-shot manually-invoked migration script, not automated, so bounded blast radius. Full detail in the audit transcript; recommend Royce weighs in on priority before any fix lands, since (1) is genuinely auth-adjacent. _(added 2026-08-04)_
 - **`C:\Projects\CLAUDE.md` is still the only home for Rule 0, Rule 0.5 and the load-bearing-facts list.** Rule 0.6 and the effort threshold were moved into governed substrate; the rest wasn't. That file isn't version-controlled, has no CI, and is only read by a session started in that folder. Same shadow-memory class as failure F5. _(added 2026-08-04)_
 - **Deleting the shadowed `.git/hooks/pre-commit` is held, not done.** Repointing every worktree's `core.hooksPath` to `.githooks` was tried and reverted for 4 of 5 open worktrees (`agent-af31fd71dc13a91c7`, `silly-noether-ec8a81`, `skills-list-html-908d61`, `eq-context-reflection-protocol-wt`) — their branches predate today's secret-guard delegation, so their own `.githooks/pre-commit` has zero secret-scanning in it. Repointing them would have silently removed their only secret guard, so they're back on `.git/hooks` until their branches merge or rebase past `main` (`1059f85`). Safe to repoint + delete at that point, not before. _(added 2026-08-04)_
@@ -103,7 +101,8 @@ _Showing 15 of 146 · full record in [sessions/](sessions/)_
 - **eq-field's `sw.js` `CACHE_FIRST_PATHS` only lists `/icons/` (SKS) and `/manifest.json`, not `/icons-eq/` or the new `/manifest-eq.json`** — a pre-existing asymmetry noticed while fixing the item above (SKS assets get faster but staler cache-first serving; EQ assets are always network-first/fresh). Left alone deliberately — fixing it means deciding a caching tradeoff, not just correcting a stale value. _(added 2026-08-04)_
 - **Confirm the scheduled nightly drift check itself shows green**, not just the one-off PR check — same logic, but hasn't been observed on a real nightly run yet. Should self-resolve. _(added 2026-08-03)_
 - **The Supabase startup failure in CI** (a leftover database setting missing an `id` column, breaking the API's schema cache) is separate, pre-existing, and still red on every run — worth a dedicated fix at some point, not touched this session. _(added 2026-08-03)_
-_…and 394 more · [eq/pending.md](eq/pending.md)_
+- **Separate, lower-priority**: one more stale-type warning (`tenant_settings.archive_grace_period_days`) traces to a database change from months ago that was never actually applied live — left alone on purpose, different job. _(added 2026-08-03, carried forward)_
+_…and 393 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -125,7 +124,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 3308 | 533 | 169 | 12 |
+| [EQ](eq/pending.md) | 3318 | 535 | 169 | 12 |
 | [SKS](sks/pending.md) | 438 | 84 | 6 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 402 | 37 | 5 | 1 |
@@ -146,4 +145,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-04 10:54 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-04 11:15 UTC._
