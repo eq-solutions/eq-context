@@ -189,8 +189,17 @@ def f9_fixture_repo():
 
 print("=== F9 - shared eq-context checkout: concurrent-session git races (must BLOCK) ===")
 f9_repo = f9_fixture_repo()
-SAME = {"EQ_CONTEXT": f9_repo}                       # this fixture IS "the shared checkout"
-OTHER = {"EQ_CONTEXT": f9_repo + "-not-the-shared-one"}  # a different one — F9 must stay dormant
+# EQ_FORCE_GUARD pinned to "0" on both: F9 is deliberately NOT sandbox-gated (see
+# module docstring), but the LATER, pre-existing "any git verb blocks in the
+# sandbox" rule still runs unconditionally once in_sandbox() is true — so on a
+# Linux CI runner (where in_sandbox() is TRUE by default, no forcing needed) an
+# F9-allowed case like a pathspec-scoped commit would still get blocked by that
+# unrelated rule, and this test would wrongly read as a regression. Pinning "0"
+# tests F9's OWN verdict in isolation, on every platform, matching how the F7
+# tests above already pin EQ_FORCE_GUARD per-case rather than trust the ambient
+# platform. Caught live 2026-08-05 by simulating EQ_FORCE_GUARD=1 by hand.
+SAME = {"EQ_CONTEXT": f9_repo, "EQ_FORCE_GUARD": "0"}                       # this fixture IS "the shared checkout"
+OTHER = {"EQ_CONTEXT": f9_repo + "-not-the-shared-one", "EQ_FORCE_GUARD": "0"}  # a different one — F9 must stay dormant
 
 te("bare `git commit` in the SHARED checkout -> BLOCK",
    bash_at("git commit -m x", f9_repo), 2, SAME)

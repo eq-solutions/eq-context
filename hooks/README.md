@@ -1,7 +1,7 @@
 ---
 title: hooks — rung 4 guards (enforcement layer)
 owner: Royce Milmlow
-last_updated: 2026-08-04
+last_updated: 2026-08-05
 scope: What the pre_tool_use and session_start hooks enforce, why fail-closed, how to install and test them
 read_priority: standard
 status: live
@@ -59,9 +59,18 @@ Run the adversarial suite before trusting any change to these files:
 python hooks/adversarial_test.py
 ```
 
-This is the only suite — the legacy `adversarial_test.sh` bash subset (F1/F2/F3/F6
-only, no F7/F9) was retired 2026-08-05 rather than kept in sync; see
-`eq/pending.md` for the reasoning.
+CI-authoritative (`.github/workflows/adversarial-suite.yml`) and the fuller suite —
+also covers `session_end.py` and `auto_pr_guard.py`, whose fixtures don't translate
+cleanly to bash. `hooks/adversarial_test.sh` covers `pre_tool_use.py` + the
+`session_start.py` gate only, in bash, for a quick check with no Python fixtures:
+
+```bash
+bash hooks/adversarial_test.sh
+```
+
+Both must pass before trusting a change here. (2026-08-05: `adversarial_test.sh` was
+briefly deleted, then restored the same day — see `eq/pending.md` for the full story,
+including the reasoning for keeping it and a testing bug the restore itself caught.)
 
 Every failure that ever escapes in real life gets **added to the suite**. The system's own
 history becomes its test corpus. That is the part that compounds.

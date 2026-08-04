@@ -43,6 +43,18 @@ main()) — F9 in particular has only ever been observed happening natively on t
 Beelink, never in the sandbox, so gating it on in_sandbox() would make it inert
 exactly where it's needed.
 
+F9's OWN boundary (found 2026-08-05, one day after shipping): this file is a
+Claude Code PreToolUse hook — it can only see git invoked through Claude Code's
+own Bash/PowerShell tool calls. It cannot see, and cannot block, git run directly
+by a human or by a script Cowork hands off for a human to run (the standing rule
+for Cowork is to never run git itself against C:\\Projects — see the git-lock
+block below — which means Cowork's own git activity is by definition invisible
+here). The bare-commit sweep this file exists to stop (F9(a)) recurred within 24h
+via exactly that path. Not fixable by widening this file's own matching; a
+git-level hook faces the same blind spot from the other side (it can see the
+final staged tree, but not whether the invoking command used a pathspec at all).
+Tracked as an open question, not solved — see eq/pending.md, 2026-08-05.
+
 FAIL-CLOSED on the truncation guard. If we cannot resolve a path under the mount to
 count its lines, we BLOCK. Rationale (learned the hard way, 2026-07-11): the first
 version of this hook returned 0 lines for an unresolvable path and let a 308-line
