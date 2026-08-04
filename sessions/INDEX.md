@@ -1,9 +1,11 @@
 # Session Index
-_90 logs · reverse-chronological · auto-generated_
+_92 logs · reverse-chronological · auto-generated_
 
 | Date | Session |
 |------|---------|
 | 2026-08-05 | [Tenant-rule audit extended to eq-cards + eq-solves-intake, all 4 PRs merged and live](sessions/2026-08-05.md) |
+| 2026-08-05 | [c — hooks/adversarial_test.sh: deleted, then restored on Royce's direct call; live F9 Cowork-gap found](sessions/2026-08-05-c.md) |
+| 2026-08-05 | [b — Back-photo follow-through: confirmed live, then made it actually visible](sessions/2026-08-05-b.md) |
 | 2026-08-04 | [Removed the "What's new" banner from both SKS NSW Labour and EQ Field](sessions/2026-08-04.md) |
 | 2026-08-04 | [Document sign-off register sprint closed out; new admin-feature-baseline rule](sessions/2026-08-04-h.md) |
 | 2026-08-04 | [g — Shared eq-context checkout: concurrent-session git races closed as F9, hook-enforced](sessions/2026-08-04-g.md) |
