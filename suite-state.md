@@ -60,6 +60,12 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-04)
 
+**eq-cards:**
+- #212 fix(shell-handoff): validate a locally-cached session before skipping auto-login
+
+**eq-field:**
+- #647 v3.5.453 — PWA app icon: fix stale SKS colour, make Add-to-Home-Screen tenant-aware
+
 **eq-service:**
 - #688 chore(deps): bump @sentry/nextjs from 10.68.0 to 10.69.0
 - #687 chore(deps-dev): bump eslint-config-next from 16.2.2 to 16.2.12
