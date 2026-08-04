@@ -339,3 +339,16 @@ output).*
 **Deferred:**
 
 ---
+
+## ⏩ SKS — Fernando Alba (Communication Technician) onboarding via core Add Licence (2026-08-04) (rotated 2026-08-05)
+
+**Trigger:** Royce signed Fernando up via core login (not Cards self-signup) — Fernando isn't tech-savvy and emailed his licence photos for a manager to enter on his behalf. Surfaced two real platform gaps, fixed same day (see `eq/pending.md` "EQ Shell — admin licence backfill").
+
+**Completed:**
+- Read both documents directly (OCR pipeline was unreliable mid-session) — General Construction Induction Card (WorkCover NSW, pre-2012 predecessor to the White Card, maps to `white_card`, issued 31 Mar 2009, never expires) and NSW Driver Licence (No. `18877748`, Class C, expires 29 Sep 2030).
+- Extracted the 3 real photo files from the "Fw Second Interview | Fernando Alba" email attachments (not just chat screenshots) — front, back, and induction card (both faces in one photo).
+- Royce submitted both Add Licence entries live — confirmed via his own screenshot ("LICENCES & TRAINING (2 HELD)") and a live DB query (Fernando's driver-licence row has both `photo_front_url` and `photo_back_url` correctly set, real JPEGs in storage).
+
+**Deferred:** none — closed out same day.
+
+---

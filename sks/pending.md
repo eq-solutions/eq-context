@@ -426,13 +426,3 @@ The following tests belong to eq-quotes-port (Flask), which is retired as of 202
 **Deferred:**
 - [ ] **EQ Solutions' own org (`eq`) has zero credential requirements configured** — worth a call on whether EQ Solutions should require White Card/Photo ID too, or stay requirement-free deliberately (it's the seed-demo org). _(added 2026-07-16)_
 
-## ⏩ SKS — Fernando Alba (Communication Technician) onboarding via core Add Licence (2026-08-04)
-
-**Trigger:** Royce signed Fernando up via core login (not Cards self-signup) — Fernando isn't tech-savvy and emailed his licence photos for a manager to enter on his behalf. Surfaced two real platform gaps, fixed this session (see `eq/pending.md` "EQ Shell — admin licence backfill").
-
-**Done this session:**
-- Read both documents directly (OCR pipeline was unreliable mid-session) — General Construction Induction Card (WorkCover NSW, pre-2012 predecessor to the White Card, maps to `white_card`, issued 31 Mar 2009, never expires) and NSW Driver Licence (No. `18877748`, Class C, expires 29 Sep 2030).
-- Extracted the 3 real photo files from the "Fw Second Interview | Fernando Alba" email attachments (not just chat screenshots) to `...\scratchpad\fernando-alba-attachments\` (`image0.jpeg` = licence front, `image1.jpeg` = licence back, `image2.jpeg` = induction card, both faces in one photo) — these are session-scratch, not persisted anywhere durable.
-
-**Deferred:**
-- [ ] **Royce to actually submit the two Add Licence entries for Fernando** — White Card-equivalent (photo = `image2.jpeg`) and Driver Licence (front = `image0.jpeg`, back = `image1.jpeg` now that back-photo support is live). Real login is off-limits for Claude to do on Royce's behalf — extraction + field transcription done, the live click-through isn't. _(added 2026-08-04)_
