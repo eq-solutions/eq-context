@@ -1,9 +1,10 @@
 # Session Index
-_84 logs · reverse-chronological · auto-generated_
+_85 logs · reverse-chronological · auto-generated_
 
 | Date | Session |
 |------|---------|
 | 2026-08-04 | [Removed the "What's new" banner from both SKS NSW Labour and EQ Field](sessions/2026-08-04.md) |
+| 2026-08-04 | [2026-08-04-d](sessions/2026-08-04-d.md) |
 | 2026-08-04 | [2026-08-04-c](sessions/2026-08-04-c.md) |
 | 2026-08-04 | [2026-08-04-b](sessions/2026-08-04-b.md) |
 | 2026-08-03 | [EQ-FIELD-10 Sentry triage: tracked, not fixed (Royce's call)](sessions/2026-08-03.md) |
