@@ -70,6 +70,10 @@ _If this file is >48h old, the cron is broken._
 - #685 chore(deps): bump react-dom and @types/react-dom
 - #684 chore(deps): bump the eq-design-system group with 2 updates
 
+**eq-shell:**
+- #1246 feat(documents): categories for the Templates tab
+- #1245 feat(field): Bearer credential so Field can trigger a Shell-side staff write
+
 ---
 
 ## System Health (as of 2026-08-04)
