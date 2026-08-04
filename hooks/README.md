@@ -33,6 +33,21 @@ sessions started at the umbrella root; repo-scoped and worktree sessions never s
 That gap was live until 2026-07-12 — the gate existed but silently did not run for most
 sessions, the exact "guard that isn't wired" failure class the ladder exists to kill.
 
+`pre_tool_use.py` carried the identical gap from the day it was written — wired
+only at `C:\Projects\.claude\settings.json` (root scope), never moved. It stayed
+invisible for months because most of its checks (F2/F6/the git-lock block) are
+Linux-sandbox-only and no-op on Windows regardless of wiring — until F7's
+NUL-scan (2026-07-31) and F9's shared-checkout checks (2026-08-04) shipped as
+the first checks here deliberately **not** sandbox-gated, meant to run on every
+Beelink session no matter where it launched. F9 recurred within 24h (2026-08-05,
+commit `2104668`, a session launched inside a worktree — `system/failures.md` →
+F9, recurrence 4) before anyone moved the wiring. Fixed 2026-08-05:
+`pre_tool_use.py` now runs from **`C:\Users\EQ\.claude\settings.json`** too,
+alongside `guard.js`, matcher widened to include `PowerShell` (root scope's own
+matcher never had it — a second, smaller case of the same "the code supports
+it, the wiring lagged" pattern). `C:\Projects\.claude\settings.json` now wires
+nothing — see its own `_comment`. `settings.template.json` corrected to match.
+
 Then start a fresh session — the gate prints before the tier question.
 
 `session_end.py` needs the same user-scope `Stop` wiring (the block is already in

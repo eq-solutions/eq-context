@@ -166,14 +166,17 @@ te("clean modified tree + sandbox guard ON -> still blocked, but by the PRE-EXIS
 _rmtree_retry(clean_repo)
 
 
-def f9_fixture_repo():
+def f9_fixture_repo(suffix=""):
     """A throwaway repo for F9's shared-checkout tests — real git repo, one
     committed file, so `git commit -- <path>` / `git rebase --continue` etc.
     have real state to operate against without touching the live ROOT. F9 is
     identified by EXACT PATH (is_shared_eq_context), not by repo content, so
     "is this the shared checkout" is entirely controlled per-call via the
-    EQ_CONTEXT env var — same mechanism the GATE tests below already use."""
-    d = os.path.join(ROOT, ".tmp_f9_fixture")
+    EQ_CONTEXT env var — same mechanism the GATE tests below already use.
+    suffix distinguishes two fixtures live at once (e.g. "shared checkout" vs
+    "a session's separate nominal cwd") — without it, a second call silently
+    deletes and reinitializes the FIRST fixture's identical default directory."""
+    d = os.path.join(ROOT, ".tmp_f9_fixture" + suffix)
     _rmtree_retry(d)
     os.makedirs(d)
     run = lambda *a: subprocess.run(["git", *a], cwd=d, capture_output=True, text=True)
@@ -223,6 +226,30 @@ te("`git merge --abort` -> allowed",
    bash_at("git merge --abort", f9_repo), 0, SAME)
 te("PowerShell bare commit in the SHARED checkout -> BLOCK (tool matching)",
    {"tool_name": "PowerShell", "tool_input": {"command": "git commit -m x"}, "cwd": f9_repo}, 2, SAME)
+
+# A second, real git repo standing in for "the session's NOMINAL cwd is a real,
+# separate worktree" — commit 2104668's exact shape (2026-08-05): the session's
+# reported cwd resolved to ITS OWN valid toplevel, not the shared checkout, even
+# though the actual git commit ran after an explicit cd/-C into the shared
+# checkout. A real repo, not a bogus path, so repo_root_for() finds a genuine
+# (and genuinely different) toplevel if effective_cwd() isn't tracking the
+# command string — the strongest form of this regression test.
+nominal_cwd = f9_fixture_repo("_nominal")
+te("bare commit via cd <shared> && ... while NOMINAL cwd is a real worktree -> "
+   "still BLOCK (2026-08-05, commit 2104668's exact shape)",
+   {"tool_name": "Bash",
+    "tool_input": {"command": 'cd "' + f9_repo + '" && git commit -m x'},
+    "cwd": nominal_cwd}, 2, SAME)
+te("same shape via git -C <shared> commit -> still BLOCK",
+   {"tool_name": "Bash",
+    "tool_input": {"command": 'git -C "' + f9_repo + '" commit -m x'},
+    "cwd": nominal_cwd}, 2, SAME)
+te("CONTROL: NOMINAL cwd IS the shared checkout, but the command cd's OUT to an "
+   "unrelated repo first -> NOT blocked (effective_cwd tracks away, not just in)",
+   {"tool_name": "Bash",
+    "tool_input": {"command": 'cd "' + nominal_cwd + '" && git commit -m x'},
+    "cwd": f9_repo}, 0, SAME)
+_rmtree_retry(nominal_cwd)
 
 print("=== F9 controls - same operations OUTSIDE the shared checkout must NOT be blocked ===")
 te("bare `git commit` in a private/fresh clone -> allowed (F9's own escape valve)",
@@ -388,6 +415,30 @@ tg("root README.md still explicitly protected despite *.md widening",
    guard_edit(os.path.join(ROOT, "README.md")), 2)
 tg("*.md does not reach into subdirectories (eq/pending.md still blocked)",
    guard_edit(os.path.join(ROOT, "eq", "pending.md")), 2)
+
+print("=== WIRING - pre_tool_use.py must be reachable from EVERY session (user scope), not the umbrella-root-only gap that let F9 recur 2026-08-05 ===")
+_user_settings_path = os.environ.get("EQ_USER_SETTINGS", r"C:\Users\EQ\.claude\settings.json")
+if os.path.isfile(_user_settings_path):
+    with open(_user_settings_path, encoding="utf-8") as _fh:
+        _user_settings = json.load(_fh)
+    _pretool_blocks = (_user_settings.get("hooks") or {}).get("PreToolUse") or []
+    _wired_block = next((b for b in _pretool_blocks
+                          for h in (b.get("hooks") or [])
+                          if "pre_tool_use.py" in h.get("command", "")), None)
+    ok = _wired_block is not None
+    print("  {:<52}{}".format("pre_tool_use.py wired at USER scope (every session)",
+                               "PASS" if ok else "*** FAIL *** (this is how 2104668 happened)"))
+    passed += ok
+    failed += (not ok)
+    if _wired_block is not None:
+        ok2 = "PowerShell" in _wired_block.get("matcher", "")
+        print("  {:<52}{}".format("...and its matcher covers PowerShell too",
+                                   "PASS" if ok2 else "*** FAIL ***"))
+        passed += ok2
+        failed += (not ok2)
+else:
+    print("  (skipped — {} not present on this machine; this check only means "
+          "something on the Beelink)".format(_user_settings_path))
 
 print()
 print("  {} passed, {} failed".format(passed, failed))

@@ -41,14 +41,24 @@ exists," it's "why didn't the guard that already existed fire."
   has zero NUL-byte/truncation logic of its own, despite `hooks/README.md` claiming it's
   "the active write-guard" there for this failure class — that claim is now corrected
   in the README to flag the gap rather than assert it's covered.
-- [ ] **Still open, not fixed by this build**: WHY the pre-existing blanket git-verb block
-  didn't fire on 2026-07-28. Two live candidates — (a) that Cowork sandbox session never
-  had `hooks/pre_tool_use.py` wired into its own settings.json at all, or (b) the git
-  command reached it through something this hook's tool-name matching didn't cover (now
-  narrowed by widening to Bash+PowerShell, but not proven to have been the actual cause).
-  Nobody can inspect that sandbox's actual settings from this machine — needs Royce's
-  input on how Cowork sandbox sessions get their hooks wired, or a live test next time a
-  Cowork session is available, before this can be closed with confidence.
+- [x] **Resolved 2026-08-05**, via the F9 wiring-gap investigation (`system/failures.md`
+  F9, recurrence 4; `eq/pending.md`): candidate (a) was right in substance, wrong in
+  scope — it isn't specific to "the Cowork sandbox," it's ANY session not launched at
+  exactly `C:\Projects`. `hooks/pre_tool_use.py` was wired into `PreToolUse` only at the
+  umbrella-root `settings.json`, which (per this same file's own SessionStart precedent,
+  fixed 2026-07-12) only fires for sessions started there — not for a session launched
+  inside a repo or worktree, the common case. Confirmed directly via `guard.log`: the
+  commit that produced the 2026-08-04 sweep DID fire `guard.js` (the user-scope hook)
+  down to the second, proving it ran as an ordinary Claude Code Bash call, not "outside
+  Claude Code's hooks entirely" as a same-day but since-corrected note briefly concluded
+  — it just never reached `pre_tool_use.py` specifically. Two more mechanisms, not
+  originally on this list, compounded it: `pre_tool_use.py`'s F7/F9 cwd resolution read
+  `data.cwd` directly rather than tracking an in-command `cd`/`-C`, and `COMMIT_RE`/
+  `REBASE_MERGE_PULL_RE` didn't tolerate an intervening `-C <path>` between "git" and the
+  verb — both the identical blind spots `guard.js`'s own `reflection-gate` rule already
+  fixed for itself 2026-07-26. All three fixed: `pre_tool_use.py` wired at user scope
+  (matcher widened to include PowerShell too), cwd resolved via a new `effective_cwd()`
+  helper, both regexes widened. Regression cases added to both adversarial suites.
 
 ---
 

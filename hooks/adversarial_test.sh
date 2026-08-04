@@ -10,8 +10,10 @@
 # The system's own history becomes its test corpus. This is the part that compounds.
 #
 # Run before trusting ANY change to hooks/. (Was accidentally deleted 2026-08-05 —
-# swept into an unrelated commit by a process outside Claude Code's own tool-call
-# hook, so pre_tool_use.py's F9 guard never saw it. Restored same day.)
+# swept into a concurrent Claude Code session's bare `git commit` in the shared
+# checkout; pre_tool_use.py's F9 guard existed but wasn't reachably wired for
+# that session (fixed 2026-08-05 — system/failures.md -> F9, recurrence 4).
+# Restored same day.)
 set -u
 R="$(cd "$(dirname "$0")/.." && pwd)"
 pass=0; fail=0
@@ -76,9 +78,11 @@ tf7 "CONTROL: clean modified tree + guard OFF -> not blocked"        0 0
 rm -rf "$F7DIR"
 
 echo "=== F9 — shared eq-context checkout: concurrent-session git races (must BLOCK) ==="
-# Only bash+git-command coverage here — the message-containing-a-literal-'--'
-# false-negative check needs quoting adversarial_test.py already handles far more
-# robustly in Python; not worth fighting bash-in-bash-in-JSON quoting to duplicate.
+# Only bash+git-command coverage here — two cases stay Python-only rather than
+# fighting bash-in-bash-in-JSON quoting to duplicate: the message-containing-a-
+# literal-'--' false-negative check, and the cwd-tracking regression added
+# 2026-08-05 (commit 2104668 — a session's NOMINAL cwd differs from where its
+# command actually `cd`ed). adversarial_test.py already covers both robustly.
 F9DIR="$R/.tmp_f9_fixture_sh"
 rm -rf "$F9DIR"
 mkdir -p "$F9DIR"

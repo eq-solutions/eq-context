@@ -19,8 +19,9 @@ Blocks the failures prose could not stop:
   --  git from the Cowork sandbox leaves orphan .git/index.lock (Loop of Despair).
   F9  The SHARED eq-context checkout (C:\\Projects\\eq-context) takes commits from
       several Claude Code sessions plus nightly bots, all against the same working
-      directory. Recurred 2026-07-14, 2026-08-03 (x3 in ~10 min), 2026-08-04 (x2).
-      Two distinct mechanisms:
+      directory. Recurred 2026-07-14, 2026-08-03 (x3 in ~10 min), 2026-08-04 (x2),
+      2026-08-05 (guard existed but wasn't reachable — see the note below).
+      Two distinct DAMAGE mechanisms:
         (a) bare `git commit` (no `--` pathspec) commits the WHOLE index, sweeping
             up anything a concurrent session already staged there — a targeted
             `git add system/worktree-registry.md && git commit` swept up three
@@ -43,17 +44,41 @@ main()) — F9 in particular has only ever been observed happening natively on t
 Beelink, never in the sandbox, so gating it on in_sandbox() would make it inert
 exactly where it's needed.
 
-F9's OWN boundary (found 2026-08-05, one day after shipping): this file is a
-Claude Code PreToolUse hook — it can only see git invoked through Claude Code's
-own Bash/PowerShell tool calls. It cannot see, and cannot block, git run directly
-by a human or by a script Cowork hands off for a human to run (the standing rule
-for Cowork is to never run git itself against C:\\Projects — see the git-lock
-block below — which means Cowork's own git activity is by definition invisible
-here). The bare-commit sweep this file exists to stop (F9(a)) recurred within 24h
-via exactly that path. Not fixable by widening this file's own matching; a
-git-level hook faces the same blind spot from the other side (it can see the
-final staged tree, but not whether the invoking command used a pathspec at all).
-Tracked as an open question, not solved — see eq/pending.md, 2026-08-05.
+F9's wiring gap (found + fixed 2026-08-05, one day after shipping): this file
+was wired into PreToolUse only at the C:\\Projects umbrella-root settings.json —
+the identical "guard that isn't wired" shape session_start.py already hit once
+(fixed 2026-07-12 by moving to USER settings, so it fires for every session).
+This file never got that same fix, so a session launched inside a repo or
+worktree — the common case — never invoked it at all. F9(a) recurred within 24h
+of shipping via exactly that gap (commit 2104668, session launched in a
+worktree). Fixed by wiring this file at user scope too, alongside guard.js.
+
+Two more independent gaps compounded that same incident, both sharing one root
+shape (an intervening `-C <path>` between "git" and what comes next) that
+guard.js's own reflection-gate rule already found and fixed for itself,
+2026-07-26 — neither fix had been ported here when F9 shipped 2026-08-04:
+  1. cwd resolution read data.get("cwd") alone — the session's NOMINAL starting
+     directory, never an in-command `cd "<path>" &&` / `git -C <path>`. Fixed by
+     effective_cwd(), mirroring guard.js's precedence (-C, then a leading cd,
+     then data.cwd).
+  2. COMMIT_RE / REBASE_MERGE_PULL_RE required "git" and the verb to be
+     separated by whitespace ONLY, so `git -C <path> commit ...` — a real
+     invocation shape in this environment — never matched as a commit at all,
+     independent of cwd. Found live while writing gap 1's regression test.
+     Fixed by widening both to tolerate the same optional `-C <path>` prefix.
+Commit 2104668 needed gap 1's fix specifically: its session's nominal cwd was a
+real, separate git worktree with its own valid toplevel, so cwd resolution had
+to track the command's actual `cd` to see that it had, in fact, landed in the
+shared checkout. Wiring alone would not have been enough.
+
+A same-day earlier version of this note attributed the incident to the commit
+running "outside Claude Code's own tool-call hook entirely" — inferred from its
+"via Cowork" author string plus the standing Cowork-sandbox git rule below,
+never checked against guard.log. guard.log disproves it: gate-outbound fired for
+this exact command, timestamped to the second, from an ordinary Claude Code
+session — "via Cowork" is this environment's standard git identity, not a
+marker of the sandboxed product. Both real mechanisms are the two paragraphs
+above, both fixed. Recurrence recorded: system/failures.md -> F9.
 
 FAIL-CLOSED on the truncation guard. If we cannot resolve a path under the mount to
 count its lines, we BLOCK. Rationale (learned the hard way, 2026-07-11): the first
@@ -77,8 +102,13 @@ GIT_VERBS = (r"\bgit\s+(add|commit|push|pull|rm|mv|checkout|merge|rebase|status|
 # EQ_CONTEXT override matches the convention session_start.py already uses.
 SHARED_EQ_CONTEXT = (os.environ.get("EQ_CONTEXT", r"C:\Projects\eq-context")
                       .replace("\\", "/").rstrip("/").lower())
-COMMIT_RE = re.compile(r"(?<![\w-])git\s+commit\b")
-REBASE_MERGE_PULL_RE = re.compile(r"(?<![\w-])git\s+(rebase|merge|pull)\b")
+# Both tolerate an optional `-C <path>` between "git" and the verb — without
+# it, `git -C <path> commit ...` (a real invocation shape in this environment,
+# same fix guard.js's reflection-gate rule already made for itself 2026-07-26)
+# never matched as a commit/rebase/merge/pull at all. `[^"]*` (not `[^"]+`) so
+# it still matches after _strip_quoted() blanks a quoted path to `""`.
+COMMIT_RE = re.compile(r'(?<![\w-])git\s+(?:-C\s+(?:"[^"]*"|\S+)\s+)?commit\b')
+REBASE_MERGE_PULL_RE = re.compile(r'(?<![\w-])git\s+(?:-C\s+(?:"[^"]*"|\S+)\s+)?(rebase|merge|pull)\b')
 
 # Extensions that are legitimately binary — skip these in the F7 NUL scan so a
 # real image/font doesn't false-positive. Everything else (source, docs, config)
@@ -104,6 +134,26 @@ def in_sandbox():
     if v == "0":
         return False
     return platform.system() != "Windows"
+
+
+def effective_cwd(cmd, data):
+    """The directory a shell command ACTUALLY runs a git verb in — not just the
+    session's nominal starting cwd. data.get("cwd") stays pinned to wherever the
+    session started and does not follow an in-command `cd` or `git -C` — the
+    identical blind spot guard.js's own reflection-gate rule hit and fixed for
+    itself 2026-07-26 (confirmed live there: `cd "<path>" && git commit ...` and
+    `git -C "<path>" commit ...` are the actual shapes this environment's Bash
+    tool produces, since it discourages a separate `cd`). Missing this let F9(a)
+    recur 2026-08-05 even after the wiring fix alone: a session's nominal cwd was
+    a real, separate git worktree, so data.cwd resolved to the worktree's own
+    toplevel even though the command had already `cd`ed into the shared checkout.
+    Mirrors guard.js's exact precedence: -C first, then a leading cd."""
+    m = re.search(r'git\s+-C\s+"([^"]+)"', cmd) or re.search(r'git\s+-C\s+(\S+)', cmd)
+    if not m:
+        m = re.search(r'^\s*cd\s+"([^"]+)"', cmd) or re.search(r'^\s*cd\s+(\S+)', cmd)
+    if m:
+        return m.group(1)
+    return data.get("cwd") or os.getcwd()
 
 
 def repo_root_for(cwd):
@@ -226,7 +276,7 @@ def main():
     # sandbox. If the working tree is already NUL-corrupted (from a path this
     # guard never saw), block before it can be added/committed/pushed further.
     if tool in SHELL_TOOLS and re.search(GIT_VERBS, ti.get("command", "") or ""):
-        cwd = data.get("cwd") or os.getcwd()
+        cwd = effective_cwd(ti.get("command", "") or "", data)
         root = repo_root_for(cwd)
         if root and targets_mount(root):
             hits = nul_corrupted_files(root)
@@ -254,7 +304,7 @@ def main():
     # is never itself blocked by it.
     if tool in SHELL_TOOLS:
         cmd9 = ti.get("command", "") or ""
-        cwd9 = data.get("cwd") or os.getcwd()
+        cwd9 = effective_cwd(cmd9, data)
         root9 = repo_root_for(cwd9)
         if is_shared_eq_context(root9):
             stripped9 = _strip_quoted(cmd9)
