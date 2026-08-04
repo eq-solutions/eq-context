@@ -60,12 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-04)
 
-**eq-cards:**
-- #213 feat(auth): WebOTP auto-fill for phone sign-in
-
-**eq-field:**
-- #648 fix(safety): paginate record loaders instead of capping at 200 rows (v3.5.454)
-
 **eq-service:**
 - #688 chore(deps): bump @sentry/nextjs from 10.68.0 to 10.69.0
 - #687 chore(deps-dev): bump eslint-config-next from 16.2.2 to 16.2.12
