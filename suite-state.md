@@ -60,6 +60,9 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-05)
 
+**eq-field:**
+- #653 v3.5.458 — dashboard: fix intermittent blank Birthdays & Anniversaries / Starting Soon
+
 **eq-service:**
 - #688 chore(deps): bump @sentry/nextjs from 10.68.0 to 10.69.0
 - #687 chore(deps-dev): bump eslint-config-next from 16.2.2 to 16.2.12
