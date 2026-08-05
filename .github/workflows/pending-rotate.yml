@@ -58,9 +58,19 @@ jobs:
         run: |
           git config user.name  "eq-suite-bot"
           git config user.email "bot@eq.solutions"
-          git add eq/pending.md eq/pending-archive.md eq/verify-queue.md \
-                  sks/pending.md sks/pending-archive.md sks/verify-queue.md \
-                  ops/pending.md ops/pending-archive.md ops/verify-queue.md
+          # verify-queue.md is only created per-tier once that tier has a
+          # verify item to move (rotate_pending.py's queue_path.write_text
+          # is conditional) — a tier with none yet (e.g. ops, 2026-08-05)
+          # has no file on disk. A fixed `git add` list fails the whole
+          # step with "did not match any files" under `set -e` the moment
+          # that happens, silently killing every rotation after it (found
+          # 2026-08-05: broke 2026-08-01, 4 nightly runs failed in a row,
+          # ~330 done items piled up unrotated in eq/pending.md alone).
+          for f in eq/pending.md eq/pending-archive.md eq/verify-queue.md \
+                   sks/pending.md sks/pending-archive.md sks/verify-queue.md \
+                   ops/pending.md ops/pending-archive.md ops/verify-queue.md; do
+            [ -f "$f" ] && git add "$f"
+          done
           if git diff --staged --quiet; then
             echo "No changes"
             exit 0

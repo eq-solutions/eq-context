@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-07-30
+last_updated: 2026-08-05
 scope: Done items rotated out of ops/pending.md nightly by scripts/rotate_pending.py to keep the live doc scannable. Nothing here is actionable — pure historical record (also covered in changelogs and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -189,5 +189,60 @@ a repo change, so no PR; local machine config only.
 - [x] **SEC-10/SEC-12 exact manual steps handed to Royce** — both are "re-store as masked, same value, no rotation" fixes in the Netlify dashboard, a few minutes each; also credential handling, can't be done by Claude Code (confirmed: a same-value re-store attempt was blocked by the safety classifier in an earlier session, logged in SEC-12's row).
 - [x] **F1 "guard bypass?" flag in digest.md was a false positive, not a real recurrence** — the detector (`refresh_digest.py`'s `failure_recurrence_signals()`) was re-flagging `sessions/2026-07-21.md`'s own sentence confirming the already-known 2026-07-19 hit, because its date-only filter can't distinguish "narrating a confirmed past incident" from "it happened again." Added a `confirmed_in` field to `failures.md`'s schema + patched the detector to skip those files; verified live (empty result, no real recurrence hiding elsewhere). Struck the stale line from the tracked `digest.md` directly rather than rebuilding it locally (no `GH_TOKEN`/`NETLIFY_TOKEN`/`SENTRY_AUTH_TOKEN` in this session — a token-less rebuild would've blanked real PR/deploy/Sentry data).
 - [x] **Royce's call: does the possible SEC-9 second exposure push "rotate whenever convenient" to "rotate soon"? [CLOSED 2026-08-01 — no.** Reviewed a materially safer, non-disruptive rotation path found 2026-08-01 (jvkn already has newer-style keys independent of the JWT secret, so the leaked key can very likely be swapped with zero signed-out sessions, unlike the runbook's original "rotate the JWT secret" step, which would sign out every live session suite-wide). Given the fix is now near-free, Royce was offered "do it now" and explicitly chose to defer anyway — same low-real-risk calibration already applied to SEC-3 (local-machine-only exposure, never confirmed to have left that trust boundary). Stays "rotate whenever convenient." See `ops/security-register.md` SEC-9 row and `sec9-jvkn-key-rotation-runbook-2026-07-27.md`.]**
+
+---
+
+## F7 — git-merge NUL corruption: guard built, real wiring question still open (2026-07-31) (rotated 2026-08-05)
+
+Digest's recurrence scanner flagged a possible F6 (append `>>` NUL-fills the mount) rung-4
+bypass in `sessions/2026-07-28.md`. First pass (earlier this session) concluded F6's guard
+"has no visibility into git operations" and logged F7 as a brand-new, unguarded vector.
+**That first-pass claim was wrong** — re-reading `hooks/pre_tool_use.py` line-by-line while
+building the actual fix found it already had a blanket block on git write verbs (add/commit/
+push/merge/stash/rebase/etc.), live since 2026-07-12, which already covers `merge` and
+`stash`. That block SHOULD have stopped the 2026-07-28 incident outright. Corrected in place
+in `system/failures.md` rather than left standing — the real open question isn't "no guard
+exists," it's "why didn't the guard that already existed fire."
+
+- [x] Added F7 to `system/failures.md` (originally rung 0; corrected to rung 4 once the
+  hardening below shipped — see that entry's own "CORRECTED 2026-07-31" note for the
+  full story, including the wrong initial claim).
+- [x] Added `sessions/2026-07-28.md` to F6's `confirmed_in` so the digest scanner stops
+  re-flagging that session against F6's already-closed rung-4 entry.
+- [x] **Built and shipped** (Royce chose "harden the existing block" over "investigate
+  wiring" or "build the original post-merge hook"): `hooks/pre_tool_use.py` now (1) matches
+  `PowerShell` as well as `Bash` throughout, not just Bash, and (2) runs an independent,
+  NOT sandbox-gated NUL-byte scan of the working tree ahead of any git verb, on any
+  platform — blocks fail-closed if the tree is already corrupted, regardless of whether
+  this hook thinks it's in the sandbox. Adversarial suite: 51/51 (6 new cases). Also found
+  and fixed, while building this: `guard.js` (the hook actually active on the Beelink)
+  has zero NUL-byte/truncation logic of its own, despite `hooks/README.md` claiming it's
+  "the active write-guard" there for this failure class — that claim is now corrected
+  in the README to flag the gap rather than assert it's covered.
+- [x] **Resolved 2026-08-05**, via the F9 wiring-gap investigation (`system/failures.md`
+  F9, recurrence 4; `eq/pending.md`): candidate (a) was right in substance, wrong in
+  scope — it isn't specific to "the Cowork sandbox," it's ANY session not launched at
+  exactly `C:\Projects`. `hooks/pre_tool_use.py` was wired into `PreToolUse` only at the
+  umbrella-root `settings.json`, which (per this same file's own SessionStart precedent,
+  fixed 2026-07-12) only fires for sessions started there — not for a session launched
+  inside a repo or worktree, the common case. Confirmed directly via `guard.log`: the
+  commit that produced the 2026-08-04 sweep DID fire `guard.js` (the user-scope hook)
+  down to the second, proving it ran as an ordinary Claude Code Bash call, not "outside
+  Claude Code's hooks entirely" as a same-day but since-corrected note briefly concluded
+  — it just never reached `pre_tool_use.py` specifically. Two more mechanisms, not
+  originally on this list, compounded it: `pre_tool_use.py`'s F7/F9 cwd resolution read
+  `data.cwd` directly rather than tracking an in-command `cd`/`-C`, and `COMMIT_RE`/
+  `REBASE_MERGE_PULL_RE` didn't tolerate an intervening `-C <path>` between "git" and the
+  verb — both the identical blind spots `guard.js`'s own `reflection-gate` rule already
+  fixed for itself 2026-07-26. All three fixed: `pre_tool_use.py` wired at user scope
+  (matcher widened to include PowerShell too), cwd resolved via a new `effective_cwd()`
+  helper, both regexes widened. Regression cases added to both adversarial suites.
+
+---
+
+## SEC-19 — sks-labour PIN credential leak: CLOSED. SEC-1 residual risk: still open, next step offered (2026-07-30) (rotated 2026-08-05 — open items remain in pending.md)
+
+- [x] **Code fix shipped and live**: `people?select=*` → explicit column list excluding `pin`. sks-nsw-labour PR [#73](https://github.com/eq-solutions/sks-nsw-labour/pull/73) (v3.10.106, `c846374`), merged by Royce, live-verified via Netlify (`production`, deploy `ready`). Neither real login path touched — main gate uses the server-side `verify-pin` function, staff-timesheet gate does its own scoped fetch.
+- [x] **DB hardening closed, live-verified**: revoked anon/authenticated EXECUTE on 3 unused RPCs (`verify_staff_pin`, `trigger_shift_events`, `bump_rate_limit` — confirmed unused by the app, Netlify functions, and all 7 `pg_cron` jobs before touching), pinned `search_path` on those 3 plus `eq_field_shift_payload`/`incidents_set_updated_at`. Royce ran the SQL himself — blocked from Claude Code by the "modifying security settings" classifier, same as SEC-12/SEC-18.
 
 ---

@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Verify Queue
 owner: Royce Milmlow
-last_updated: 2026-08-01
+last_updated: 2026-08-05
 scope: Items whose only remaining blocker is your own live sign-in/click-through — the underlying work is already built, merged, and (unless the line itself says otherwise) live. Moved here from eq/pending.md by scripts/rotate_pending.py once a session's real build work is fully done, so a stale "click through to confirm" line no longer pins a whole finished write-up in the live pending doc.
 read_priority: high
 status: live
@@ -109,5 +109,107 @@ a bug rather than just deleting the line.
 **From:** EQ Field — Pipeline: real manual-remove (archive gated + restorable + permanent delete) + in-browser sample data for demos (2026-07-15, BOTH MERGED + LIVE)
 
 - [ ] **Not click-tested live** — SKS Pipeline is triple-gated to the SKS tenant; this session had no SKS login to verify either feature by hand. Worth a quick real click-through next time you're signed in, especially "Load sample data" before demoing it to anyone. _(added 2026-07-15)_
+
+---
+
+**From:** eq-solves-service: retired a dead planning doc, added a site supervisor field, then caught and fixed a wrong design before it shipped wrong (2026-08-02)
+
+- [ ] **Royce to click through live**: open a site, assign a supervisor from its own contact list, save, reload, confirm it sticks; toggle "Show archived" on the Sites list and confirm it filters/tags correctly. Needs a real sign-in, which is off-limits for Claude to do on your behalf. _(added 2026-08-02)_
+
+---
+
+**From:** eq-solves-service: two small fixes from a screenshot — bigger upload limit, report cover kept its branding (2026-08-02)
+
+- [ ] Royce to spot-check a generated PM Asset Report live for a site that has a photo on file — confirm the band + photo layout looks right. _(added 2026-08-02)_
+
+---
+
+**From:** eq-shell: New Quote form can now attach files before the quote exists (2026-08-01)
+
+- [ ] **Royce to click through live**: open New Quote, attach a couple of files before finishing the form, submit, confirm the files show up on the created quote. _(added 2026-08-01)_
+
+---
+
+**From:** eq-cards: credential-capture screen made photo-first; a leftover production migration reconciled into history (2026-08-01)
+
+- [ ] **Royce to click through live on a real device** — confirm the "take a photo" sheet feels right end to end (camera opens, OCR reads the card, fallback link works). Note: the code merged this morning but wasn't actually live yet when Royce first tried it — this repo's deploy isn't automatic on merge, and nobody had triggered one. Deployed and confirmed live later the same day. _(added 2026-08-01, updated 2026-08-01)_
+
+---
+
+**From:** eq-solves-intake: closed out the rest of the dependency audit findings, both fixes live (2026-08-01)
+
+- [ ] **Royce to click through live**: sign in on core.eq.solutions and confirm Cards/Field/Service each load past "Authorising…" — needs a real login, which Claude can't do on Royce's behalf. _(added 2026-08-01)_
+
+---
+
+**From:** eq-shell: Intake page was crashing for everyone — found the cause, fixed it, confirmed live (2026-08-01)
+
+- [ ] **Royce to click through live**: open Intake as a signed-in user and confirm the page actually renders (not just that the site responds) — needs a real login, which Claude can't do on Royce's behalf. _(added 2026-08-01)_
+
+---
+
+**From:** eq-shell: every permission denial now leaves a trace in the audit log (PR #1154, merged 2026-08-01)
+
+- [ ] **Royce to click through live**: sign in as a non-manager, try a manager-only action, confirm a "denied" row actually lands in the audit log. Needs a real login, which Claude can't do on Royce's behalf. _(added 2026-08-01)_
+
+---
+
+**From:** eq-solves-service: Site photos now show up in the reports that actually need them, plus a real blank-page bug found and fixed (2026-08-01)
+
+- [ ] **Royce to spot-check a live PM Check Report and NSX Test Report from a site with an uploaded photo** — verified via generated samples with a placeholder image, not yet against a real production report. _(added 2026-08-01)_
+
+---
+
+**From:** eq-shell: re-vendored the Intake engine — merge errors now show, duplicate flags can be archived (2026-07-31)
+
+- [ ] **Royce to click through live** — trigger a failed site merge in the Duplicate Sites panel and confirm the error now shows; open the Remediation Queue, find a duplicate flag, click Archive, confirm the record goes inactive and drops off the list. Claude can't do this step itself — it requires signing in, which falls under the hard rule against entering credentials on the user's behalf. _(added 2026-07-31)_
+
+---
+
+**From:** EQ Field screenshot review — cross-tenant fixes (2026-07-30/31)
+
+- [ ] Nobody's confirmed the `eq` tenant's Job Numbers nav placement or mobile Pipeline hiding on a live click-through — same "not yet clicked through production" gap noted in the SKS entry. _(added 2026-07-31)_
+
+---
+
+**From:** eq-shell: dropped redundant mobile top bar on Field/Service; verified Ops-tab gating already live (2026-07-31)
+
+- [ ] **Royce to click through live** on a mobile-width view (~375px or a phone): open Field/Service and confirm the top bar is gone (just the bottom tab bar); open Ops/Comms and confirm nothing changed; from Field/Service, tap Home and confirm Settings/2FA/Sign-out are still reachable there. Note: a related eq-field fix landed 2026-07-31 (v3.5.388) for a home-label clipping issue caught on the same phone-screenshot pass — worth confirming both together. _(added 2026-07-31)_
+
+---
+
+**From:** eq-shell: same archived-staff leak, different dashboard card — Core home's "Compliance & safety" card — fixed + merged (2026-07-30)
+
+- [ ] **Royce to confirm live**: once the deploy lands on core.eq.solutions, reload the dashboard and confirm Huon Henne no longer appears under "Licences expiring" on the Compliance & safety card. _(added 2026-07-30)_
+
+---
+
+**From:** eq-shell + eq-cards: Photo ID compliance-matrix accuracy + full-size licence photo lightbox (2026-07-29 → 2026-07-30)
+
+- [ ] **Moahmmed Elsayed's `photo_id`-typed licence row (number `0140988080`) not yet corrected** — unlike Maylin Ung's case (a driver's-licence-format number, fixed directly), this number doesn't match a recognisable pattern; needs Royce to confirm the actual document type before the DB row is corrected. _(added 2026-07-29)_
+
+---
+
+**From:** eq-shell: Worker sign-in safety net — lost-phone protection, PIN visibility for admins, backup email (2026-07-30)
+
+- [ ] **Royce to click through live, all four features shipped today together** (this section's three plus the compliance-roster-only switch above): invite/adjust a worker with Field access off; correct a test worker's phone number and confirm their old passcode stops working while a fresh sign-in + new passcode works; check the passcode-status view and try "Unlock now" on a locked test account; sign in as a phone-only worker and confirm the backup-email reminder shows, dismisses for that sign-in only, and clears once an email is added. None of this has been clicked through live yet — Claude can't perform this step directly (logging in requires entering a passcode, which falls under a hard rule against entering credentials on the user's behalf, even for the user's own product). _(added 2026-07-30)_
+
+---
+
+**From:** eq-shell: EQ Ops now leads with ex-GST everywhere, Coupa PO-match display fixed (2026-07-30)
+
+- [ ] **Royce to click through live**: open a job's detail view, the create-quote form, the kanban board, and each Reports tab, confirm ex-GST reads as the main figure everywhere it should. Verified via build + typecheck only, not yet clicked through live. _(added 2026-07-30)_
+
+---
+
+**From:** eq-shell: Suppliers page "missing" Login/Password columns — actual root cause fixed (2026-07-28 → 2026-07-30)
+
+- [ ] **Royce to click through live**: Suppliers shows a Columns button, the table scrolls freely past 20 rows instead of paginating, and hovering a masked password shows "Click to reveal". _(added 2026-07-30, PR #1120 merged)_
+
+---
+
+**From:** eq-shell: Audit log was drowning in empty "Automatic" rows — root-caused, fixed, then a live test caught the first fix didn't actually work (2026-07-30)
+
+- [ ] **Royce to click through live**: open Activity log → Suite activity tab, confirm the sentences read sensibly against real SKS data (quotes, shifts, licence reviews), and check the new search/filter on that tab works as expected. New quote events should now show "EQ Ops" natively (not just relabelled) — worth a fresh quote status change to confirm end-to-end. _(added 2026-07-30, PRs #1121/#1123/#1126/#1129/#1132 merged, migrations 0225+0226+0227 dispatched, workers-canonical-sync redeployed v12 — full write-up in `sessions/2026-07-30.md` and `changelog/eq-shell.md`)_
 
 ---

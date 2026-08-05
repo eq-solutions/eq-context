@@ -1,7 +1,7 @@
 ---
 title: SKS — Pending
 owner: Royce Milmlow
-last_updated: 2026-08-04
+last_updated: 2026-08-05
 scope: SKS Technologies operational TODO list
 read_priority: critical
 status: live
@@ -12,21 +12,8 @@ status: live
 ## Safety records 200-row cap — fixed, merged, live (v3.10.109, PR #76, sks-nsw-labour)
 - [ ] **Declined this session, still open if wanted:** widen the Prestart tab past its hardcoded 7-day window, or add a "Show older → Records" link — Royce picked "fix the cap only" via AskUserQuestion; the tab itself is unchanged. _(added 2026-08-04)_
 
-## SKS leave-approval email: magic links fixed, logo optimization declined (v3.5.389, PR #582, merged 2026-08-01)
-*Royce reported two problems with SKS leave-request approval emails: the SKS logo didn't render for managers, and the Approve/Reject links 500'd on click.*
-- [x] **Approve/Reject magic links fixed** — `netlify/functions/approve-leave.js`'s config guard unconditionally required the legacy `LEAVE_SB_URL`/`LEAVE_SB_KEY` env vars, but `LEAVE_CANONICAL=on` (flipped 2026-07-29) routes leave reads/writes through `LEAVE_CANONICAL_SB_*` instead — those legacy vars were never set, so every click 500'd regardless of token validity. `send-email.js`'s resolver already branched correctly; the approve-leave guard didn't. Fixed, tested (54/54 existing tests pass), merged, verified live on `field.eq.solutions`.
-- [x] **Missing logo — investigated, not a code bug.** Confirmed the R2-hosted image serves correctly (200, correct `Content-Type`) with identical markup to the email that *does* show it. Root cause is Outlook's default "block external images" client setting — not fixable from app code.
-
-**Decided (Royce) — logo re-optimization declined, R2 bucket left untouched:**
-- Prepared a 4.4KB optimized replacement for the 350KB `SKS_Logo_White_Text_Clean.png` in the `sks-assets` R2 bucket, but Royce flagged that bucket is a deliberately-preserved "clean copy" reference library used across a variety of work, with consumers I can't verify from this repo alone. Since the resize doesn't fix the actual reported failure (Outlook's setting, not file size) and carries non-zero blast-radius risk to a shared asset store, recommended leaving it untouched entirely — no upload happened, nothing in `sks-assets` or canonical branding config was changed.
-- **Note for later**: mapped real usage of the 4 `sks-assets` logo files — only 2 are referenced anywhere in eq-field: `SKS_Logo_Colour_Arrows_Clean.png` (app header + docx report headers, printed ~240px — real print size) and `SKS_Logo_White_Text_Clean.png` (email + sidebar + pipeline UI, 32-38px only). The other 2 have no reference found in this repo — could be used elsewhere, unconfirmed.
-- **Note for later**: authenticated the `cloudflare-api` MCP connector this session — it's read-only for R2 (every write attempt failed with an auth/permission error even on a trivial test object), so it can't be used for uploads as currently scoped, regardless of the decision above.
-
 ## Toolbox Talk photo picker + post-submit editing — fixed (v3.10.107, PR #74, merged 2026-07-31)
 *Royce reported two Toolbox Talk problems: couldn't upload an existing JPEG, and asked whether talks should be editable after submitting. Root-caused the photo issue to `capture="environment"` on the shared photo input forcing the camera open and hiding the gallery-picker option on mobile — affects Prestart/Toolbox/Incident since they share one input. For the editability question, found submitted forms already looked editable but had no way to actually save an edit — any change was silently discarded. Royce chose "allow real editing" over locking the form down.*
-- [x] Dropped `capture="environment"` from the shared photo input — gallery and camera both available again on all three Safety forms.
-- [x] Submitted Prestart/Toolbox/Incident forms now show a "Save changes" button that actually persists edits, instead of silently losing them.
-- [x] Ported the identical photo-picker fix to EQ Field — see `eq/pending.md` (2026-07-31).
 
 **Deferred:**
 - [ ] **Live phone click-through not done** — camera vs. gallery picker, and that "Save changes" actually persists an edit after Submit. _(added 2026-07-31)_
@@ -36,10 +23,6 @@ status: live
 - [ ] **Full click-through still not done.** Royce did send real iPhone screenshots (2026-07-31, Home/Roster) — that surfaced two more real bugs, both fixed same day: the loading spinner never animated on iOS (v3.5.387) and, in Shell (`core.eq.solutions`), the "EQ FIELD" home label rendered clipped under Shell's fixed top strip (v3.5.388). Roster Overview's "sites with no one rostered today" panel was also dropped per his direct feedback ("we dont need to show what sites arent being worked at") — v3.5.388. Still unconfirmed on a real phone: the Leave CC list modal (now driven by canonical managers, not free-text email), Job Numbers/Pipeline nav placement. _(added 2026-07-31, updated 2026-07-31)_
 - [ ] **EQ Wallet — Licences screen critique**: gave direct feedback (add a red/amber dot to the "Expiring soon" filter chip when non-zero so the whole screen doesn't need scanning; no lock-icon legend for a first-time user) but didn't build anything — Royce hasn't said whether he wants it built. _(added 2026-07-31)_
 - [ ] **Timesheets mobile-entry strategy** — Royce asked "will users actually be doing timesheets on their phone?" No usage data was pulled to answer it responsibly; recommended checking PostHog's `timesheet_saved` event breakdown by device before deciding whether to simplify or cut anything, not done. _(added 2026-07-31)_
-
-## Weekly digest opt-in panel silently stopped appearing — fixed (v3.5.390, PR #583, merged 2026-07-31)
-*Royce: "I thought it was under supervisors" — the Friday digest recipient toggle panel on the Supervision page had gone missing. Root cause: `scripts/digest-settings.js` (untouched since v3.4.59) triggered the panel by monkey-patching `window.renderManagers`, polled for 5s at boot then abandoned permanently — but `managers.js` became lazy-loaded in v3.5.21 and usually isn't defined that early, so the wrap silently never installed. Fixed with a `MutationObserver` on `#page-managers`'s visibility instead, independent of load timing. Verified on the deploy preview (jumped straight to the Managers tab, panel rendered) and confirmed live on `field.eq.solutions` (`sw.js` banner shows v3.5.390).*
-- [ ] **Royce to click through live on `core.eq.solutions/sks/field?tab=managers`**: confirm the panel appears with real SKS supervisors listed (not just demo-tenant data), and that toggling a supervisor's opt-in checkbox still saves. Not yet confirmed with real tenant data — only demo-tenant + isolated-harness verified. _(added 2026-07-31)_
 
 ## PIN Management modal shows "No PIN" for everyone except this-session edits (2026-07-30)
 *Royce flagged: `renderPinList()` in `scripts/people.js` checks `p.pin` on `STATE.people`, but the bulk load (`loadFromSupabase()`) never fetches `pin` — dropped from the select list in v3.10.106 as a deliberate fix so PINs aren't shipped to every session. Session gate ran (brief drafted, git/worktree state checked — branch is clean, 12 commits behind main but nothing behind touches `people.js`), brief was presented for confirmation, session closed before Royce confirmed it. No code changed.*
@@ -252,13 +235,6 @@ The following tests belong to eq-quotes-port (Flask), which is retired as of 202
 **Reported live:** Collin Toohey hit a "Save failed — check connection" toast on a roster save; Simon Bramall separately reported failures specifically editing roster entries more than a month out. Investigated as one ticket, turned out to be two unrelated bugs sharing the same generic error toast.
 
 **Process note:** hit the same collision twice this session — both `C:\Projects\sks-nsw-labour` and `C:\Projects\eq-field` root checkouts had unrelated uncommitted work from concurrent sessions (`scripts/batch.js` on sks main-adjacent branch; `scripts/audit.js`+`scripts/supabase.js` audit-revert canon patching on eq-field `main`). Used dedicated fresh worktrees off `origin/main` for both instead of touching root, registered in `worktree-registry.md`. Also hit a squash-merge trap: a branch cut locally *after* a PR merged (from the pre-squash local commit, not `origin/main`) diverges from the squashed commit GitHub creates — same content, different SHA, false merge conflict. Fix is `git rebase origin/main <branch>` (git recognizes the duplicate content and skips it), not a manual conflict resolution.
-
-## ⏩ SKS Field / EQ Field — session 2026-07-10 (full pagination sweep)
-
-**Trigger:** picked up the eq-field export truncation flag from the earlier same-day session (`task_69a6ff0f` above). Before building, verified the premise against live git/GitHub state rather than trusting the flag at face value — this caught that the referenced "SKS v3.10.89 fix" was real (PR #56, merged, a genuine live incident — Simon Bramall's far-future roster gap) but only covered the `schedule` table; its sibling `timesheets` load in the exact same function was never touched.
-
-**Deferred:**
-- [x] `prestarts`/`toolbox_talks` recency caps — fixed 2026-08-04, see below. `audit_log` still uncapped/unaudited.
 
 ## ⏩ SKS Field — session 2026-07-12 (loadFromSupabase resilience — one table's failure can't freeze the app)
 

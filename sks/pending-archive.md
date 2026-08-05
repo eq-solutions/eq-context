@@ -1,7 +1,7 @@
 ---
 title: SKS Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-08-01
+last_updated: 2026-08-05
 scope: Done items rotated out of sks/pending.md nightly by scripts/rotate_pending.py to keep the live doc scannable. Nothing here is actionable — pure historical record (also covered in changelogs and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -350,5 +350,44 @@ output).*
 - Royce submitted both Add Licence entries live — confirmed via his own screenshot ("LICENCES & TRAINING (2 HELD)") and a live DB query (Fernando's driver-licence row has both `photo_front_url` and `photo_back_url` correctly set, real JPEGs in storage).
 
 **Deferred:** none — closed out same day.
+
+---
+
+## SKS leave-approval email: magic links fixed, logo optimization declined (v3.5.389, PR #582, merged 2026-08-01) (rotated 2026-08-05)
+*Royce reported two problems with SKS leave-request approval emails: the SKS logo didn't render for managers, and the Approve/Reject links 500'd on click.*
+- [x] **Approve/Reject magic links fixed** — `netlify/functions/approve-leave.js`'s config guard unconditionally required the legacy `LEAVE_SB_URL`/`LEAVE_SB_KEY` env vars, but `LEAVE_CANONICAL=on` (flipped 2026-07-29) routes leave reads/writes through `LEAVE_CANONICAL_SB_*` instead — those legacy vars were never set, so every click 500'd regardless of token validity. `send-email.js`'s resolver already branched correctly; the approve-leave guard didn't. Fixed, tested (54/54 existing tests pass), merged, verified live on `field.eq.solutions`.
+- [x] **Missing logo — investigated, not a code bug.** Confirmed the R2-hosted image serves correctly (200, correct `Content-Type`) with identical markup to the email that *does* show it. Root cause is Outlook's default "block external images" client setting — not fixable from app code.
+
+**Decided (Royce) — logo re-optimization declined, R2 bucket left untouched:**
+- Prepared a 4.4KB optimized replacement for the 350KB `SKS_Logo_White_Text_Clean.png` in the `sks-assets` R2 bucket, but Royce flagged that bucket is a deliberately-preserved "clean copy" reference library used across a variety of work, with consumers I can't verify from this repo alone. Since the resize doesn't fix the actual reported failure (Outlook's setting, not file size) and carries non-zero blast-radius risk to a shared asset store, recommended leaving it untouched entirely — no upload happened, nothing in `sks-assets` or canonical branding config was changed.
+- **Note for later**: mapped real usage of the 4 `sks-assets` logo files — only 2 are referenced anywhere in eq-field: `SKS_Logo_Colour_Arrows_Clean.png` (app header + docx report headers, printed ~240px — real print size) and `SKS_Logo_White_Text_Clean.png` (email + sidebar + pipeline UI, 32-38px only). The other 2 have no reference found in this repo — could be used elsewhere, unconfirmed.
+- **Note for later**: authenticated the `cloudflare-api` MCP connector this session — it's read-only for R2 (every write attempt failed with an auth/permission error even on a trivial test object), so it can't be used for uploads as currently scoped, regardless of the decision above.
+
+---
+
+## Toolbox Talk photo picker + post-submit editing — fixed (v3.10.107, PR #74, merged 2026-07-31) (rotated 2026-08-05 — open items remain in pending.md)
+
+- [x] Dropped `capture="environment"` from the shared photo input — gallery and camera both available again on all three Safety forms.
+- [x] Submitted Prestart/Toolbox/Incident forms now show a "Save changes" button that actually persists edits, instead of silently losing them.
+- [x] Ported the identical photo-picker fix to EQ Field — see `eq/pending.md` (2026-07-31).
+
+---
+
+## Weekly digest opt-in panel silently stopped appearing — fixed (v3.5.390, PR #583, merged 2026-07-31) (rotated 2026-08-05)
+*Royce: "I thought it was under supervisors" — the Friday digest recipient toggle panel on the Supervision page had gone missing. Root cause: `scripts/digest-settings.js` (untouched since v3.4.59) triggered the panel by monkey-patching `window.renderManagers`, polled for 5s at boot then abandoned permanently — but `managers.js` became lazy-loaded in v3.5.21 and usually isn't defined that early, so the wrap silently never installed. Fixed with a `MutationObserver` on `#page-managers`'s visibility instead, independent of load timing. Verified on the deploy preview (jumped straight to the Managers tab, panel rendered) and confirmed live on `field.eq.solutions` (`sw.js` banner shows v3.5.390).*
+
+---
+
+## SKS national scale discovery — "what breaks EQ at ~2,000 employees" (2026-07-23) (rotated 2026-08-05 — open items remain in pending.md)
+
+
+---
+
+## ⏩ SKS Field / EQ Field — session 2026-07-10 (full pagination sweep) (rotated 2026-08-05)
+
+**Trigger:** picked up the eq-field export truncation flag from the earlier same-day session (`task_69a6ff0f` above). Before building, verified the premise against live git/GitHub state rather than trusting the flag at face value — this caught that the referenced "SKS v3.10.89 fix" was real (PR #56, merged, a genuine live incident — Simon Bramall's far-future roster gap) but only covered the `schedule` table; its sibling `timesheets` load in the exact same function was never touched.
+
+**Deferred:**
+- [x] `prestarts`/`toolbox_talks` recency caps — fixed 2026-08-04, see below. `audit_log` still uncapped/unaudited.
 
 ---

@@ -69,54 +69,6 @@ entry of its own — the exact gap F9's own note warns about elsewhere in that f
 
 ---
 
-## F7 — git-merge NUL corruption: guard built, real wiring question still open (2026-07-31)
-
-Digest's recurrence scanner flagged a possible F6 (append `>>` NUL-fills the mount) rung-4
-bypass in `sessions/2026-07-28.md`. First pass (earlier this session) concluded F6's guard
-"has no visibility into git operations" and logged F7 as a brand-new, unguarded vector.
-**That first-pass claim was wrong** — re-reading `hooks/pre_tool_use.py` line-by-line while
-building the actual fix found it already had a blanket block on git write verbs (add/commit/
-push/merge/stash/rebase/etc.), live since 2026-07-12, which already covers `merge` and
-`stash`. That block SHOULD have stopped the 2026-07-28 incident outright. Corrected in place
-in `system/failures.md` rather than left standing — the real open question isn't "no guard
-exists," it's "why didn't the guard that already existed fire."
-
-- [x] Added F7 to `system/failures.md` (originally rung 0; corrected to rung 4 once the
-  hardening below shipped — see that entry's own "CORRECTED 2026-07-31" note for the
-  full story, including the wrong initial claim).
-- [x] Added `sessions/2026-07-28.md` to F6's `confirmed_in` so the digest scanner stops
-  re-flagging that session against F6's already-closed rung-4 entry.
-- [x] **Built and shipped** (Royce chose "harden the existing block" over "investigate
-  wiring" or "build the original post-merge hook"): `hooks/pre_tool_use.py` now (1) matches
-  `PowerShell` as well as `Bash` throughout, not just Bash, and (2) runs an independent,
-  NOT sandbox-gated NUL-byte scan of the working tree ahead of any git verb, on any
-  platform — blocks fail-closed if the tree is already corrupted, regardless of whether
-  this hook thinks it's in the sandbox. Adversarial suite: 51/51 (6 new cases). Also found
-  and fixed, while building this: `guard.js` (the hook actually active on the Beelink)
-  has zero NUL-byte/truncation logic of its own, despite `hooks/README.md` claiming it's
-  "the active write-guard" there for this failure class — that claim is now corrected
-  in the README to flag the gap rather than assert it's covered.
-- [x] **Resolved 2026-08-05**, via the F9 wiring-gap investigation (`system/failures.md`
-  F9, recurrence 4; `eq/pending.md`): candidate (a) was right in substance, wrong in
-  scope — it isn't specific to "the Cowork sandbox," it's ANY session not launched at
-  exactly `C:\Projects`. `hooks/pre_tool_use.py` was wired into `PreToolUse` only at the
-  umbrella-root `settings.json`, which (per this same file's own SessionStart precedent,
-  fixed 2026-07-12) only fires for sessions started there — not for a session launched
-  inside a repo or worktree, the common case. Confirmed directly via `guard.log`: the
-  commit that produced the 2026-08-04 sweep DID fire `guard.js` (the user-scope hook)
-  down to the second, proving it ran as an ordinary Claude Code Bash call, not "outside
-  Claude Code's hooks entirely" as a same-day but since-corrected note briefly concluded
-  — it just never reached `pre_tool_use.py` specifically. Two more mechanisms, not
-  originally on this list, compounded it: `pre_tool_use.py`'s F7/F9 cwd resolution read
-  `data.cwd` directly rather than tracking an in-command `cd`/`-C`, and `COMMIT_RE`/
-  `REBASE_MERGE_PULL_RE` didn't tolerate an intervening `-C <path>` between "git" and the
-  verb — both the identical blind spots `guard.js`'s own `reflection-gate` rule already
-  fixed for itself 2026-07-26. All three fixed: `pre_tool_use.py` wired at user scope
-  (matcher widened to include PowerShell too), cwd resolved via a new `effective_cwd()`
-  helper, both regexes widened. Regression cases added to both adversarial suites.
-
----
-
 ## eq-context: shared checkout (`C:\Projects\eq-context`) needed a manual sync — RESOLVED (2026-08-05)
 
 - [x] **Closed.** A later session picked this up directly: the shared checkout had drifted further by then (4 local-only "session close" commits, `git cherry origin/main HEAD` confirmed genuinely unpushed, not just under a different SHA). Reconciled in a fresh isolated clone in the scratchpad, cherry-picking each of the 4 onto current `origin/main` one at a time. Real conflicts hit on nearly every file (changelog/pending append-point clashes, session-log filename collisions) — resolved by hand, checking actual content each time rather than blindly taking one side. **Key finding: every one of the 4 commits' genuine unique content was already independently present on `origin/main`** — the same underlying sessions had their own later "redo after a lost-update race" pushes that got the content there through different commit objects first. The reconciled scratch branch ended up with **zero diff** against `origin/main` — nothing was ever actually at risk, it just took a different path there. `git cherry` kept showing the 4 as `+` throughout (patch-ID comparison, not final-content comparison — a known blind spot, not a sign of danger; confirmed via direct tree-diff instead). Also found and removed 3 genuinely-redundant session-log duplicates (`sessions/2026-08-05-k/-l/-m.md`) that the cherry-picks would have re-introduced as stale early drafts of the same sessions' own later, fuller close-outs already at `-e`/`-f`/`-h`.
@@ -128,8 +80,6 @@ exists," it's "why didn't the guard that already existed fire."
 
 Royce asked for "simple security upgrades that won't affect people using sks nsw labour," then set the real constraint: no login/UX changes. Investigation (live-verified, not doc-assumed) found the anon key could read `people.pin` directly — worse than SEC-1's PII framing, a live login-credential leak, not just data. `loadFromSupabase`'s bulk roster fetch shipped every worker's plaintext PIN on every session. Full writeup: `ops/security-register.md` SEC-19.
 
-- [x] **Code fix shipped and live**: `people?select=*` → explicit column list excluding `pin`. sks-nsw-labour PR [#73](https://github.com/eq-solutions/sks-nsw-labour/pull/73) (v3.10.106, `c846374`), merged by Royce, live-verified via Netlify (`production`, deploy `ready`). Neither real login path touched — main gate uses the server-side `verify-pin` function, staff-timesheet gate does its own scoped fetch.
-- [x] **DB hardening closed, live-verified**: revoked anon/authenticated EXECUTE on 3 unused RPCs (`verify_staff_pin`, `trigger_shift_events`, `bump_rate_limit` — confirmed unused by the app, Netlify functions, and all 7 `pg_cron` jobs before touching), pinned `search_path` on those 3 plus `eq_field_shift_payload`/`incidents_set_updated_at`. Royce ran the SQL himself — blocked from Claude Code by the "modifying security settings" classifier, same as SEC-12/SEC-18.
 - [ ] **SEC-1 itself is unchanged** — anon key still reads all of `people`/`timesheets`/`leave_requests`/`audit_log`. Not fixable under the "no login changes" constraint without either real per-user auth (ruled out this session) or decommissioning the app (not happening — still the live system during the Field parallel-run). Real closure path is unchanged from the existing SEC-1 entry below: the proving-run clock, currently at 0 of the required 3-4 clean weeks.
 - [ ] **Offered, not yet confirmed**: pull together exactly what's blocking the Field parallel-run proving run from actually starting (it's been re-started before and stalled — see `SKS-FIELD-PARALLEL-RUN-LOG.md`). This is the actual lever left on SEC-1; no further "safe" code hardening exists under current constraints.
 - Incidental, unrelated finding spun off separately (not built): PIN-management modal shows stale "No PIN" status for staff whose PIN was set in a prior session — tracked in `sks/pending.md`.
