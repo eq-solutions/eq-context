@@ -16,6 +16,40 @@ section's done items live here; its open items stayed in `ops/pending.md`.
 
 ---
 
+## Adversarial suite (F2/F7) false-failed on a clean clone — not F9, two harness bugs (2026-08-05, rotated 2026-08-05)
+
+3 cases in both `hooks/adversarial_test.py` and `.sh` were reported failing against
+origin/main, suspected to be the F9 hardening commits interacting badly with F2/F7's
+sandbox simulation. Root-caused instead to two pre-existing, unrelated bugs in the test
+harness itself — confirmed the F9 hypothesis is wrong by running commit `37989be`
+(pre-dating today's F9 work) from a bad clone location and getting the identical 3
+failures; a `/Projects`-pathed clone at origin/main passed 75/0 clean.
+
+**Bug 1 — location-dependence.** `targets_mount()` in `hooks/pre_tool_use.py` requires a
+literal `/projects/` path segment. The suite's own F2/F7 fixtures (`CLAUDE_MD`, `LESSONS`,
+the F7 NUL-scan repo) are built from wherever the test file itself is checked out — so a
+clean-room clone placed anywhere without that segment spuriously fails, on any commit.
+
+**Bug 2 — a Git-Bash/MSYS quirk in `adversarial_test.sh` specifically**, found while
+wiring up the fix for Bug 1: launching a native `python3.exe` from bash auto-translates
+POSIX-looking env vars to Windows-style paths, but not the same-looking text inside a
+JSON payload piped over stdin — so `EQ_MOUNT_ROOT` (env var) and a `$R`-based file path
+(JSON text) stopped matching each other.
+
+- [x] Added an `EQ_MOUNT_ROOT` override to `targets_mount()`/`resolve()`, mirroring the
+  existing `EQ_CONTEXT` pattern for F9 — inert in every real session, set only by the two
+  test files. Fixed Bug 2 by routing `$R` through `cygpath -w` once in
+  `adversarial_test.sh` and using that consistently for JSON-embedded paths.
+- [x] Verified 0 failures across all four combinations (good/bad location × `.py`/`.sh`):
+  75/0 and 36/0 throughout, no change to real-session behavior.
+- [x] **Merged**: [eq-context#128](https://github.com/eq-solutions/eq-context/pull/128) —
+  squash-merged to `main` (`7ffb0d6`), branch deleted. CI: adversarial suite + health +
+  honesty passed; `index-drift` failed but was independently confirmed pre-existing on
+  `main` since 2026-08-01, unrelated to this change (tracked as a fresh item in
+  `pending.md`).
+
+---
+
 ## Infrastructure — Live Blockers (rotated 2026-07-27 — open items remain in pending.md)
 
 - [x] **PAT rotation — DONE 2026-06-28** — new PATs generated and deployed, old ones confirmed revoked. See `sessions/2026-06-28-brain-10-10.md` (date corrected 2026-07-21 — was misdated 2026-06-15, no session log existed for that date; 06-28 is the actual confirming log).
