@@ -229,9 +229,26 @@ def mount_roots():
     return [r for r in roots if os.path.isdir(r)]
 
 
+# Test-only escape valve — mirrors the EQ_CONTEXT override above for F9.
+# targets_mount() gates on a literal "/projects/" path segment, true for the
+# real C:\Projects mount but NOT true when the adversarial suite itself is run
+# from a clone checked out somewhere else (e.g. a throwaway clone for
+# clean-room verification). Without this, F2/F7's own ROOT-derived fixtures
+# (CLAUDE_MD, LESSONS, the F7 NUL-scan repo) silently read as "not the mount"
+# and every case expecting BLOCK instead ALLOWS — a location artifact, not a
+# guard regression (confirmed 2026-08-05: the SAME 3 cases fail identically
+# against an old, pre-F9 commit run from a non-/projects/ location, and origin/
+# main passes 0/75 clean from a /projects/-pathed one — see system/failures.md).
+# Unset in every real session; only the test suite sets it, pointed at ROOT.
+EQ_MOUNT_ROOT = (os.environ.get("EQ_MOUNT_ROOT", "")
+                 .replace("\\", "/").rstrip("/").lower())
+
+
 def targets_mount(path):
     p = (path or "").replace("\\", "/").lower()
-    return "/projects/" in p or p.endswith("/projects") or "c:/projects" in p
+    if "/projects/" in p or p.endswith("/projects") or "c:/projects" in p:
+        return True
+    return bool(EQ_MOUNT_ROOT) and (p == EQ_MOUNT_ROOT or p.startswith(EQ_MOUNT_ROOT + "/"))
 
 
 def resolve(path):
@@ -240,6 +257,15 @@ def resolve(path):
         return None
     if os.path.isfile(path):
         return path
+    if EQ_MOUNT_ROOT:
+        pl = path.replace("\\", "/").lower()
+        if pl == EQ_MOUNT_ROOT or pl.startswith(EQ_MOUNT_ROOT + "/"):
+            # EQ_MOUNT_ROOT paths are already real, correctly-rooted paths on
+            # THIS filesystem (the test suite's own fixtures) — unlike the
+            # real-mount case below, there's no cross-environment (Windows-
+            # path-seen-from-a-Linux-sandbox) translation to do. Parent exists
+            # ⇒ genuinely a new file, same rule the real-mount loop uses.
+            return path if os.path.isdir(os.path.dirname(path)) else None
     p = path.replace("\\", "/")
     m = re.search(r"(?i)(?:^[a-z]:/Projects|/mnt/Projects|.*?/mnt/Projects)/(.*)$", p)
     tail = m.group(1) if m else None

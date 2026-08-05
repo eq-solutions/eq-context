@@ -18,6 +18,22 @@ set -u
 R="$(cd "$(dirname "$0")/.." && pwd)"
 pass=0; fail=0
 
+# Windows-style, forward-slash form of $R — use this (never raw $R) wherever a
+# JSON test payload embeds a path under R for pre_tool_use.py to parse. Git
+# Bash/MSYS auto-translates POSIX-looking ENV VARS (like EQ_MOUNT_ROOT below)
+# to Windows form when launching a native, non-MSYS python.exe, but does NOT
+# translate the same-looking text sitting inside JSON piped over stdin — so a
+# raw $R (MSYS style, e.g. /c/Projects/... or the special /tmp/... TEMP-dir
+# mapping) embedded in a payload silently stops matching the auto-translated
+# EQ_MOUNT_ROOT the hook actually receives (confirmed live 2026-08-05: python3
+# -c "print(os.environ['EQ_MOUNT_ROOT'])" printed the cygpath -w form, not
+# $R's own). cygpath -w resolves any MSYS mapping correctly; tr to forward
+# slashes so it drops into a JSON string with no backslash-escaping. Falls
+# back to plain $R when cygpath doesn't exist (non-Windows CI, where no
+# translation layer exists to cause this in the first place).
+RW="$(cygpath -w "$R" 2>/dev/null | tr '\\' '/')"
+[ -n "$RW" ] || RW="$R"
+
 # F2/F6-main/git-sandbox-block are Linux-sandbox-scoped (in_sandbox() checks
 # platform.system() != "Windows"). Without this, every run on native Windows
 # silently no-ops those checks and reports them as failures below — not because
@@ -26,6 +42,12 @@ pass=0; fail=0
 # every single run trains you to stop reading them. Force sandbox mode so this
 # suite actually exercises what it claims to, on every platform it runs on.
 export EQ_FORCE_GUARD=1
+
+# Tells targets_mount() (hooks/pre_tool_use.py) this checkout IS the mount,
+# even when this suite runs from a clone that isn't under a literal
+# "projects" path (e.g. a throwaway clone for clean-room verification).
+# Mirrors adversarial_test.py's identical override.
+export EQ_MOUNT_ROOT="$RW"
 
 t() {  # name | json | expected_exit
   printf "  %-56s" "$1"
@@ -36,10 +58,10 @@ t() {  # name | json | expected_exit
 }
 
 echo "=== F2 — silent truncation on the virtiofs mount (must BLOCK) ==="
-t "Edit 308-line CLAUDE.md (linux path)"      "{\"tool_name\":\"Edit\",\"tool_input\":{\"file_path\":\"$R/CLAUDE.md\"}}" 2
+t "Edit 308-line CLAUDE.md (linux path)"      "{\"tool_name\":\"Edit\",\"tool_input\":{\"file_path\":\"$RW/CLAUDE.md\"}}" 2
 t "Edit CLAUDE.md (windows path)"             '{"tool_name":"Edit","tool_input":{"file_path":"C:\\Projects\\eq-context\\CLAUDE.md"}}' 2
 t "Edit unresolvable path (FAIL-CLOSED)"      '{"tool_name":"Edit","tool_input":{"file_path":"C:\\Projects\\ghost\\x.md"}}' 2
-t "Write over a long file"                    "{\"tool_name\":\"Write\",\"tool_input\":{\"file_path\":\"$R/system/lessons.md\"}}" 2
+t "Write over a long file"                    "{\"tool_name\":\"Write\",\"tool_input\":{\"file_path\":\"$RW/system/lessons.md\"}}" 2
 
 echo "=== git from the sandbox (must BLOCK) ==="
 t "git commit"                                '{"tool_name":"Bash","tool_input":{"command":"git commit -m x"}}' 2
@@ -163,7 +185,7 @@ rm -rf "$F9DIR"
 
 echo "=== CONTROLS — legitimate work must NOT be blocked ==="
 t "Edit a short file"                         "{\"tool_name\":\"Edit\",\"tool_input\":{\"file_path\":\"$R/hooks/README.md\"}}" 0
-t "Write a NEW file (parent exists)"          "{\"tool_name\":\"Write\",\"tool_input\":{\"file_path\":\"$R/system/new.md\"}}" 0
+t "Write a NEW file (parent exists)"          "{\"tool_name\":\"Write\",\"tool_input\":{\"file_path\":\"$RW/system/new.md\"}}" 0
 t "heredoc write (the sanctioned path)"       '{"tool_name":"Bash","tool_input":{"command":"cat > x.md << EOF"}}' 0
 t "cat .git/HEAD (read-only inspection)"      '{"tool_name":"Bash","tool_input":{"command":"cat .git/HEAD"}}' 0
 t "file outside the mount"                    '{"tool_name":"Edit","tool_input":{"file_path":"/tmp/scratch.md"}}' 0
