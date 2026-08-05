@@ -1,9 +1,13 @@
 # Session Index
-_100 logs · reverse-chronological · auto-generated_
+_104 logs · reverse-chronological · auto-generated_
 
 | Date | Session |
 |------|---------|
 | 2026-08-05 | [Tenant-rule audit extended to eq-cards + eq-solves-intake, all 4 PRs merged and live](sessions/2026-08-05.md) |
+| 2026-08-05 | [o — Root-caused eq-shell's "auth-stall: chunk-error" Sentry P0, fix ready on its own branch](sessions/2026-08-05-o.md) |
+| 2026-08-05 | [2026-08-05-n](sessions/2026-08-05-n.md) |
+| 2026-08-05 | [2026-08-05-m](sessions/2026-08-05-m.md) |
+| 2026-08-05 | [2026-08-05-l](sessions/2026-08-05-l.md) |
 | 2026-08-05 | [2026-08-05-k](sessions/2026-08-05-k.md) |
 | 2026-08-05 | [2026-08-05-j](sessions/2026-08-05-j.md) |
 | 2026-08-05 | [i — Templates get real categories; migration dispatched live](sessions/2026-08-05-i.md) |
