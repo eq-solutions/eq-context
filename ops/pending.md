@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-01
+last_updated: 2026-08-05
 scope: Operational support to-do list — Webb, infra, substrate
 read_priority: standard
 status: live
@@ -11,6 +11,46 @@ status: live
 
 EQ items in `eq/pending.md`. SKS items in `sks/pending.md`. This file is
 for operational support: tax, entities, infrastructure, substrate.
+
+---
+
+## core.hooksPath worktree-scope shadow regressed F8 for ~1 day — root-caused, drift-check proposed (2026-08-05)
+
+`extensions.worktreeConfig` is `true` repo-wide, which means `core.hooksPath` can be
+overridden per-worktree independent of the shared `--local` value. On the main checkout
+(`C:\Projects\eq-context`), a `--worktree`-scope override was silently shadowing the
+correct `--local` value of `.githooks`, resolving effectively to `.git/hooks` — the exact
+symptom F8 was built to close (governed pre-commit hook, including the secret guard,
+never running). Found and fixed directly (`git config --worktree core.hooksPath
+.githooks`) before this write-up; confirmed live and holding this session
+(local/worktree/effective all agree on `.githooks`).
+
+**Root cause, reconstructed from `sessions/2026-08-04.md`:** that session's F8-fix work
+repointed all 5 then-open linked worktrees to `.githooks`, found 4 of 5 were on branches
+predating the secret-guard delegation (so pointing them at `.githooks` would have removed
+their only secret-scanning), and reverted those 4 to `--worktree core.hooksPath
+.git/hooks` — the only place in this repo's history that command was ever run. Main was
+never named in that plan. No transcript exists (git config changes aren't logged), but
+same value, same day, same only-known instance of the pattern — most likely the revert
+loop (or a copied command) touched main's path by accident. The 4 reverted worktrees
+(`agent-af31fd71dc13a91c7`, `silly-noether-ec8a81`, `skills-list-html-908d61`,
+`eq-context-reflection-protocol-wt`) are still on `.git/hooks` today — that's the
+documented, self-resolving state, not a new problem.
+
+**This is arguably the third distinct mechanism producing the same "pre-commit silently
+doesn't run" symptom**: 2026-05-24 (wrong directory name, `lessons.md` prose only,
+rung 1), 2026-08-04 (untracked shadow copy, folded into F8's `note:` field, no own
+ledger id), now this. Neither of the first two ever got a tracked `system/failures.md`
+entry of its own — the exact gap F9's own note warns about elsewhere in that file.
+
+- [ ] **Royce's call, offered via `AskUserQuestion`, not yet answered**: add a sixth
+  check to `hooks/session_start.py` (matches its existing FRESHNESS/NEEDS YOU/GOALS/
+  RATCHET/CLAIMS pattern — comparing local vs. worktree vs. effective `core.hooksPath`)
+  plus a proper `system/failures.md` ledger entry for the 3-recurrence pattern —
+  recommended, since a hook is the only thing in this repo's own ratchet philosophy that
+  actually runs unprompted, unlike a lessons.md entry. Spawned as a background task chip
+  (self-contained prompt, file paths included) so it's one click rather than a dangling
+  note. _(added 2026-08-05)_
 
 ---
 
