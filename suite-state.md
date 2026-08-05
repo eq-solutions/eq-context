@@ -73,7 +73,6 @@ _If this file is >48h old, the cron is broken._
 **eq-shell:**
 - #1253 feat(documents): bulk category assignment for the Templates tab
 - #1251 feat(staff): add home address fields to Staff edit (desktop + mobile)
-- #1250 fix(staff): compliance-pack export shows Unknown for names only edited in Shell
 
 ---
 
@@ -84,7 +83,7 @@ _If this file is >48h old, the cron is broken._
 | Repo | Status |
 |------|--------|
 | eq-service | ✓ success |
-| eq-shell | ✓ success |
+| eq-shell | ? queued |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
 | eq-solves-intake | ✓ success |
