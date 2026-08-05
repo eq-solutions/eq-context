@@ -1,9 +1,11 @@
 # Session Index
-_111 logs · reverse-chronological · auto-generated_
+_113 logs · reverse-chronological · auto-generated_
 
 | Date | Session |
 |------|---------|
 | 2026-08-05 | [Tenant-rule audit extended to eq-cards + eq-solves-intake, all 4 PRs merged and live](sessions/2026-08-05.md) |
+| 2026-08-05 | [x — Sentry confirmed EQ-SHELL-10/19 live, then a /decide pass found F6/F7 were a false alarm and surfaced a genuinely new incident (F12)](sessions/2026-08-05-x.md) |
+| 2026-08-05 | [2026-08-05-w](sessions/2026-08-05-w.md) |
 | 2026-08-05 | [v — Root-caused the pending.md bloat as a 4-day-old broken cron, fixed it, then closed the actual gap as F11](sessions/2026-08-05-v.md) |
 | 2026-08-05 | [u — Opened the chunk-error PR and closed out F10 (rung 1 → 4)](sessions/2026-08-05-u.md) |
 | 2026-08-05 | [t — Fixed guard.js worktree-detection false positives on Git-Bash-style paths (all 3 rules)](sessions/2026-08-05-t.md) |
