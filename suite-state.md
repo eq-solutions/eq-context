@@ -60,12 +60,20 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-05)
 
+**eq-field:**
+- #650 feat(roster): new starters stay off the roster until start date + Starting Soon countdown
+
 **eq-service:**
 - #688 chore(deps): bump @sentry/nextjs from 10.68.0 to 10.69.0
 - #687 chore(deps-dev): bump eslint-config-next from 16.2.2 to 16.2.12
 - #686 chore(deps-dev): bump @vitejs/plugin-react from 6.0.4 to 6.0.5
 - #685 chore(deps): bump react-dom and @types/react-dom
 - #684 chore(deps): bump the eq-design-system group with 2 updates
+
+**eq-shell:**
+- #1253 feat(documents): bulk category assignment for the Templates tab
+- #1251 feat(staff): add home address fields to Staff edit (desktop + mobile)
+- #1250 fix(staff): compliance-pack export shows Unknown for names only edited in Shell
 
 ---
 
