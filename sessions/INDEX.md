@@ -1,9 +1,12 @@
 # Session Index
-_114 logs · reverse-chronological · auto-generated_
+_117 logs · reverse-chronological · auto-generated_
 
 | Date | Session |
 |------|---------|
+| 2026-08-06 | [Document sign-off register: real vision from Royce, two trust gaps fixed](sessions/2026-08-06.md) |
+| 2026-08-06 | [2026-08-06-a](sessions/2026-08-06-a.md) |
 | 2026-08-05 | [Tenant-rule audit extended to eq-cards + eq-solves-intake, all 4 PRs merged and live](sessions/2026-08-05.md) |
+| 2026-08-05 | [2026-08-05-z](sessions/2026-08-05-z.md) |
 | 2026-08-05 | [y — My Schedule maps link fixed (iOS home-screen installs)](sessions/2026-08-05-y.md) |
 | 2026-08-05 | [x — Sentry confirmed EQ-SHELL-10/19 live, then a /decide pass found F6/F7 were a false alarm and surfaced a genuinely new incident (F12)](sessions/2026-08-05-x.md) |
 | 2026-08-05 | [2026-08-05-w](sessions/2026-08-05-w.md) |
