@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-05)
 
-**eq-field:**
-- #650 feat(roster): new starters stay off the roster until start date + Starting Soon countdown
-
 **eq-service:**
 - #688 chore(deps): bump @sentry/nextjs from 10.68.0 to 10.69.0
 - #687 chore(deps-dev): bump eslint-config-next from 16.2.2 to 16.2.12
@@ -72,7 +69,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #1253 feat(documents): bulk category assignment for the Templates tab
-- #1251 feat(staff): add home address fields to Staff edit (desktop + mobile)
 
 ---
 
@@ -83,7 +79,7 @@ _If this file is >48h old, the cron is broken._
 | Repo | Status |
 |------|--------|
 | eq-service | ✓ success |
-| eq-shell | ? queued |
+| eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
 | eq-solves-intake | ✓ success |
