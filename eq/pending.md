@@ -50,6 +50,19 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell + eq-context: Templates get real categories — create/edit/filter, migration dispatched live (2026-08-05)
+*Continuation of the sign-off register sprint (2026-08-04, below). Royce: "we will need to create and be able to edit categories for templates to make it easier to search for them" — 12 templates already live on ehow at the time of the ask.*
+
+- [x] **eq-shell [PR #1246](https://github.com/eq-solutions/eq-shell/pull/1246) merged** — single category per template (not multi-tag), a plain nullable FK distinct from `doc_type`. New "Manage categories" modal (add/rename/delete, blocked from deleting a category still in use — backstopped by the FK itself, not an app-level pre-check), filter chips on the Templates tab, a per-row category picker, and a category field on both the single-upload form and the bulk-upload modal.
+- [x] **Migration 0238 dispatched and live on both tenants** — `app_data.document_categories` + nullable `documents.category_id` FK (`ON DELETE RESTRICT`). Confirmed it was the only migration pending before dispatching fleet-wide (ledger topped out at 0237 on both ehow and zaap); re-verified live afterward — not just the CI checkmark — that `category_id` exists on `documents` on both.
+
+**Deferred:**
+- [ ] **Bulk-assigning a category to the 12 templates that predate this feature** (today it's one row at a time) — flagged as background task `task_8de01dba`; Royce started it in a separate session, still running as of this close. _(added 2026-08-05)_
+- [ ] **Royce's real 15-file template batch: 12 of 15 are now live**, up from 0 at the previous close — not confirmed whether via the bulk-upload feature or one-by-one, or whether it's actually finished. Corrects the "not run yet" note in the sprint-close section below, which is now stale. _(added 2026-08-05)_
+- [ ] **New Sentry regression, unrelated to this session's work but found while closing it out**: [EQ-SHELL-10](https://eq-solutions.sentry.io/issues/EQ-SHELL-10) "auth-stall: chunk-error" — first seen 2026-07-29 (a week before this session, confirmed unrelated to PR #1246), regressed and firing again (27 occurrences, 4 real users, last seen today), culprit `/sks`, underlying captured message `l.brief.map is not a function` — possibly the same root cause as the separate EQ-SHELL-19 TypeError. Flagged as background task `task_714326ef`. _(added 2026-08-05)_
+
+---
+
 ## eq-context: shared-checkout git races — structural fix shipped as F9 (2026-08-04)
 *Closes the "shared eq-context checkout" item below (2026-08-03) — recurred twice more this same day before the fix landed: a stale mid-rebase read (self-resolved), then a bare `git commit` swept up 3 files staged by a concurrent session (caught before push via `git show --stat HEAD`, no data lost, but real time spent reconciling via a fresh clone + cherry-pick).*
 
