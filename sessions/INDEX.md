@@ -1,9 +1,12 @@
 # Session Index
-_92 logs · reverse-chronological · auto-generated_
+_95 logs · reverse-chronological · auto-generated_
 
 | Date | Session |
 |------|---------|
 | 2026-08-05 | [Tenant-rule audit extended to eq-cards + eq-solves-intake, all 4 PRs merged and live](sessions/2026-08-05.md) |
+| 2026-08-05 | [2026-08-05-f](sessions/2026-08-05-f.md) |
+| 2026-08-05 | [2026-08-05-e](sessions/2026-08-05-e.md) |
+| 2026-08-05 | [d — F9 wiring-gap follow-up (task_94836df0): answered, fixed, and the shared checkout reconciled](sessions/2026-08-05-d.md) |
 | 2026-08-05 | [c — hooks/adversarial_test.sh: deleted, then restored on Royce's direct call; live F9 Cowork-gap found](sessions/2026-08-05-c.md) |
 | 2026-08-05 | [b — Back-photo follow-through: confirmed live, then made it actually visible](sessions/2026-08-05-b.md) |
 | 2026-08-04 | [Removed the "What's new" banner from both SKS NSW Labour and EQ Field](sessions/2026-08-04.md) |
