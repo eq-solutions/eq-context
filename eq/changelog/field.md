@@ -9,6 +9,12 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-08-05] Dashboard licence-expiry alert now includes canonical EQ Cards licences (v3.5.459, #654)
+- Royce asked what licence-expiry monitoring exists in Field. Investigation found two separate licence systems: the legacy single `people.licence_expiry` field, and the canonical EQ Cards shared licence pool (white card, forklift, EWP, etc.) already powering the Contacts-page badges — but the dashboard alert card only ever read the first, so an expiring Cards-managed licence was invisible there even though it showed a badge elsewhere.
+- Fix: `getLicenceExpiryAlerts()` (people.js) now merges both sources, same 30-day threshold, sorted worst-first. Canonical rows show their licence type with a "via Cards" label instead of an Edit button, since Field can't edit Cards-owned data. Mirrored into `core-bundle-b1.js`'s embedded copy per the file's documented sync convention.
+- Verified: eslint clean, full test suite green, a scratch harness exercising the real shipped merge logic against mock legacy+canonical data (12/12), and a live smoke test on the deploy preview (loads and runs with zero console errors). Confirmed production serving v3.5.459 post-merge. Full click-through with a real populated Cards licence still needs an authenticated worker session, not available in this environment.
+- Also surfaced, not fixed: the Dashboard tab has no manager-only gate, so this card (and now the wider data it shows) is visible to every logged-in staff member, not just supervisors — flagged as an open design question for Royce.
+
 ## [2026-08-05] Birthdays & Anniversaries dashboard widget only showed up sometimes — root-caused and fixed (v3.5.458, #653)
 - Royce: "every now and then birthdays and anniversaries show up on the main dashboard but not everytime." Root cause: `renderAnniversariesWidget()`/`renderStartingSoonWidget()` (dashboard.js) both read helper functions defined in `people.js`, which is lazy-loaded only by Roster/Editor/Schedule/Contacts/the person wizard. Dashboard is the landing tab and often the only tab a session visits, so the widgets' `typeof` guard silently blanked with no retry whenever `people.js` hadn't happened to load first — the symptom tracked navigation history, not actual data.
 - Fix: added a self-heal kick to `renderDashboard()` — same pattern as the existing leave-strip kick (v3.5.293) — that lazy-loads `people.js` in the background on first dashboard render and re-renders both widgets once it lands.

@@ -100,6 +100,17 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-field: dashboard licence-expiry alert now includes canonical EQ Cards licences — merged, live (2026-08-05)
+*Royce asked what licence-expiry monitoring exists in Field. Investigation surfaced a real gap alongside the answer: two separate licence systems exist (the legacy single `people.licence_expiry` field, and the canonical EQ Cards shared licence pool already powering the Contacts-page badges), but the dashboard alert card only ever read the first.*
+
+- [x] **`getLicenceExpiryAlerts()` now merges both sources**, same 30-day threshold, sorted worst-first. Canonical rows (white card, forklift, EWP, etc.) show their licence type with a "via Cards" label instead of an Edit button — Field can't edit Cards-owned data, so a button pointing at the local edit-person modal would've been misleading. Mirrored into `core-bundle-b1.js`'s embedded copy of the same widget, per this repo's own sync convention. eq-field [PR #654](https://github.com/eq-solutions/eq-field/pull/654), squash-merged, deployed (`v3.5.459`) — confirmed live on `field.eq.solutions`. Verified: eslint clean, full test suite green, plus a scratch harness exercising the real shipped merge logic against mock data (12/12 — gap closure, no cross-source dedup, threshold boundary, never-expires/sentinel exclusion, archived exclusion, sort order), and live-smoke-tested on the deploy preview (loads and runs with zero console errors against real network conditions).
+
+**Deferred:**
+- [ ] **Not click-tested live with real populated canonical data** — needs an authenticated worker session (`canon-read` requires a real session token); same gap as the Starting Soon item above. Royce to confirm a worker with an expiring Cards licence actually surfaces on the dashboard card. _(added 2026-08-05)_
+- [ ] **Dashboard tab has no manager-only gate** — every logged-in staff member (not just supervisors) can already see every other staff member's name + licence-expiry status on this card; this session's change widens what flows through that same surface (adds the canonical pool) but doesn't newly expose it. Whether the card itself should be manager-gated is a real open design question, surfaced but not decided or built. _(added 2026-08-05)_
+
+---
+
 ## eq-shell: EQ Ops quote-import polish — pricing table layout, PDF drag-and-drop, cost/sell question — three PRs merged, live (2026-08-05)
 
 - [x] **Outlet pricing Materials table (`/sks/ops?view=setup`) column widths fixed** — Part no./Unit/Unit cost were unconstrained and rendered the same width as Description, which needs far more room for real part descriptions. Also replaced the per-row Save button with a single "Save all" batch button (dirty-row tracking, mirrors the existing pattern already shipped on the Rates/Presets tab in the same file) — Royce's direct ask: "I dont like the save/archive per line, cant it just save on entry? if not then we need a save all button." Chose Save-all over autosave-on-blur (a pricing table saving partial/mid-edit rows on blur risked writing bad data); kept per-row Archive since it's a deliberate state change, not data entry — confirmed with Royce via AskUserQuestion before building. eq-shell [PR #1248](https://github.com/eq-solutions/eq-shell/pull/1248), squash-merged. **Deploy verified healthy**, not just merged — checked the actual post-merge check-runs on `main`'s HEAD, including the live "GET every function, fail on any 502" smoke test.
