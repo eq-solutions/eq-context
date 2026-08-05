@@ -190,6 +190,30 @@ jobs:
           mkdir -p storage_sync
           : > downloads.tsv   # one line per object: <local path>\t<download URL>
 
+          # Retry-with-backoff wrapper for a Supabase Storage API call that must return
+          # valid JSON. A single transient hiccup (timeout, truncated body, rate limit)
+          # used to pipe straight into `jq` and crash the whole backup with an opaque
+          # "Invalid numeric literal" — that happened for real 2026-08-05 enumerating
+          # the licence-photos bucket, with no retry and no raw-response context to
+          # diagnose it from. Retries 3x with backoff; on final failure, prints the raw
+          # (truncated) response so the next occurrence is diagnosable, then fails loudly
+          # — same "never silently ship a partial backup" posture as the guards below.
+          curl_json_retry () {
+            local desc="$1"; shift
+            local attempt resp
+            for attempt in 1 2 3; do
+              resp=$(curl -sS "$@") || true
+              if echo "$resp" | jq -e . >/dev/null 2>&1; then
+                echo "$resp"
+                return 0
+              fi
+              echo "::warning::${desc}: attempt ${attempt}/3 returned invalid JSON, retrying in $((attempt * 3))s. Raw (first 200 chars): $(echo "$resp" | head -c 200)" >&2
+              sleep $((attempt * 3))
+            done
+            echo "::error::${desc}: still invalid JSON after 3 attempts — refusing to proceed. Raw (first 500 chars): $(echo "$resp" | head -c 500)" >&2
+            return 1
+          }
+
           # Enumerate every object under a bucket prefix (storage `list` is one level
           # deep; folders come back with a null id, so recurse). ENUMERATE ONLY here —
           # each object is appended to the manifest with its URL already percent-encoded
@@ -197,11 +221,11 @@ jobs:
           # themselves run in parallel afterwards.
           enumerate_prefix () {
             local bucket="$1" prefix="$2" resp
-            resp=$(curl -sS \
+            resp=$(curl_json_retry "list ${bucket}/${prefix}" -sS \
               -H "Authorization: Bearer ${SERVICE_ROLE_KEY}" \
               -H "Content-Type: application/json" \
               -X POST "${SUPABASE_URL}/storage/v1/object/list/${bucket}" \
-              -d "{\"prefix\":\"${prefix}\",\"limit\":10000,\"sortBy\":{\"column\":\"name\",\"order\":\"asc\"}}")
+              -d "{\"prefix\":\"${prefix}\",\"limit\":10000,\"sortBy\":{\"column\":\"name\",\"order\":\"asc\"}}") || exit 1
             echo "$resp" | jq -r \
               --arg b "$bucket" --arg p "$prefix" --arg base "$SUPABASE_URL" '
                 .[] | select(.id != null) | ($p + .name) as $o
@@ -216,9 +240,10 @@ jobs:
           }
 
           # Discover buckets dynamically so a newly-added bucket is never silently missed.
-          mapfile -t BUCKETS < <(curl -sS \
+          BUCKET_RESP=$(curl_json_retry "bucket list" -sS \
             -H "Authorization: Bearer ${SERVICE_ROLE_KEY}" \
-            "${SUPABASE_URL}/storage/v1/bucket" | jq -r '.[].id')
+            "${SUPABASE_URL}/storage/v1/bucket") || exit 1
+          mapfile -t BUCKETS < <(echo "$BUCKET_RESP" | jq -r '.[].id')
           echo "Buckets discovered: ${BUCKETS[*]:-<none>}"
 
           if [ "${#BUCKETS[@]}" -eq 0 ]; then
