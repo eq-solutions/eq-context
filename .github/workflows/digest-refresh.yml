@@ -49,6 +49,10 @@ jobs:
       # requests for the digest itself; pyyaml for the substrate-honesty subprocess.
       - run: pip install requests pyyaml
 
+      - name: Test the digest generator's pure logic
+        working-directory: .github/scripts
+        run: python test_scheduled_workflow_health.py
+
       - name: Generate digest.md
         env:
           GH_TOKEN:           ${{ secrets.EQ_CONTEXT_PAT || secrets.GITHUB_TOKEN }}

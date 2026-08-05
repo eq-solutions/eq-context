@@ -399,6 +399,79 @@ def security_open_critical(path="ops/security-register.md"):
     return found
 
 
+def _scan_run_conclusions(conclusions):
+    """Pure logic half of scheduled_workflow_health(): given the most-recent-
+    first conclusion strings for one workflow's scheduled runs (None = still
+    in progress, skipped), return (consecutive_failures, last_success_date_idx)
+    where the second value is the index of the first 'success' found, or None
+    if there isn't one in the window. Counting stops at the first success.
+    """
+    fails = 0
+    success_idx = None
+    for i, concl in enumerate(conclusions):
+        if concl is None:
+            continue
+        if concl == "success":
+            success_idx = i
+            break
+        fails += 1
+    return fails, success_idx
+
+
+def scheduled_workflow_health(workflows_dir=".github/workflows", repo="eq-context"):
+    """Every eq-context workflow with its own `schedule:` trigger, checked
+    against its recent scheduled-run history via the GitHub Actions API.
+
+    Why this exists (found 2026-08-05): pending-rotate.yml's nightly cron
+    failed silently for 4 days straight — a `git add` on a per-tier file
+    (ops/verify-queue.md) that doesn't always exist, fatal under `set -e` —
+    before anyone noticed. Nothing in the whole guard/digest/ratchet system
+    watches eq-context's OWN scheduled bot workflows: ci_status() explicitly
+    excludes them via META_WORKFLOW_PATHS (they're not a build gate), no PR
+    ever fails from a broken cron, and every commit is [skip ci], so even a
+    human scanning recent history sees nothing wrong. 18 workflows currently
+    carry a `schedule:` trigger (backups, restore drills, security audits,
+    rotation, drift checks) — any one of them can fail this same silent way.
+    system/failures.md -> F11.
+
+    Discovers the list by scanning workflow YAML at read time, never a
+    hardcoded list — a hand-maintained list of "files that should exist" is
+    the exact class of drift that caused the bug this guard exists to catch
+    (pending-rotate.yml's git-add list didn't know a file could be absent).
+
+    Returns [(filename, consecutive_failures, last_success_date_or_None), ...]
+    for any workflow with >=1 consecutive scheduled-run failure, counting
+    back from the most recent scheduled (event=schedule) run.
+    """
+    try:
+        names = sorted(f for f in os.listdir(workflows_dir) if f.endswith((".yml", ".yaml")))
+    except FileNotFoundError:
+        return []
+
+    out = []
+    for name in names:
+        try:
+            with open(os.path.join(workflows_dir, name), encoding="utf-8") as fh:
+                text = fh.read()
+        except Exception:
+            continue
+        if not re.search(r"^\s*schedule:\s*$", text, re.M):
+            continue  # no cron trigger — workflow_dispatch-only, not this guard's concern
+
+        data = gh_get(f"repos/eq-solutions/{repo}/actions/workflows/{name}/runs"
+                       f"?event=schedule&per_page=10")
+        runs = data.get("workflow_runs", []) if isinstance(data, dict) else None
+        if not runs:
+            continue  # never had a scheduled run yet, or API unreachable — not a finding
+
+        conclusions = [r.get("conclusion") for r in runs]
+        fails, success_idx = _scan_run_conclusions(conclusions)
+        if fails:
+            last_success = runs[success_idx].get("created_at", "")[:10] if success_idx is not None else None
+            out.append((name, fails, last_success))
+    return out
+
+
 def failure_recurrence_signals(path="system/failures.md", sessions_dir="sessions"):
     """The missing half of the ratchet: guard_ratchet.py proposes a rung
     promotion once `recurrences` in failures.md is bumped, but nothing has
@@ -679,6 +752,12 @@ def build():
     for sec_id, text in security_open_critical():
         attention.append(("🔴", f"**Open security finding** — {text} · "
                                  f"[security-register.md](ops/security-register.md)"))
+
+    for wf, fails, last_ok in scheduled_workflow_health():
+        emoji = "🔴" if fails >= 2 else "🟠"
+        since = f", last success {last_ok}" if last_ok else ", no success in recent history"
+        attention.append((emoji, f"**Cron failing** — `{wf}` {fails} consecutive scheduled "
+                                  f"run(s) failed{since} · [failures.md](system/failures.md) F11"))
 
     urgent_recurrences, quiet_recurrences = failure_recurrence_signals()
     for fid, title, rung, hits in urgent_recurrences:
