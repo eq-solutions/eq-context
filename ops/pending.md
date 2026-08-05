@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-05
+last_updated: 2026-08-06
 scope: Operational support to-do list — Webb, infra, substrate
 read_priority: standard
 status: live
@@ -11,21 +11,6 @@ status: live
 
 EQ items in `eq/pending.md`. SKS items in `sks/pending.md`. This file is
 for operational support: tax, entities, infrastructure, substrate.
-
----
-
-## index-drift CI check red on main since 2026-08-01 — orphaned doc, one-line fix (2026-08-05)
-
-Found while checking PR #128's CI (see `ops/pending-archive.md` for that PR's own
-now-closed write-up): the scheduled "Index drift check" workflow has been failing on
-`main` itself since 2026-08-01, independent of any specific PR — confirmed via
-`gh run list --workflow "Index drift check"`. Cause:
-`eq/documents/internal-signoff-register-sprint-2026-08-04.md` exists but was never added
-to `eq/README.md`'s index.
-
-- [ ] Add the file to `eq/README.md`'s index, verify with `python scripts/index_drift.py`
-  (`INDEX_DRIFT_STRICT=1` to match CI). Spawned as a background task chip
-  (`task_ef924474`) — self-contained, one click. _(added 2026-08-05)_
 
 ---
 

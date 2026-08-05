@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-08-05
+last_updated: 2026-08-06
 scope: Done items rotated out of ops/pending.md nightly by scripts/rotate_pending.py to keep the live doc scannable. Nothing here is actionable — pure historical record (also covered in changelogs and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -13,6 +13,45 @@ Done items and fully-closed session write-ups rotated out of `ops/pending.md`.
 If you're looking for something to action, it's not here — check `ops/pending.md`.
 A "(rotated YYYY-MM-DD ...)" note on a section header means only that
 section's done items live here; its open items stayed in `ops/pending.md`.
+
+---
+
+## index-drift CI check red on main since 2026-08-01 — orphaned doc, one-line fix (2026-08-05, rotated 2026-08-05)
+
+Found while checking PR #128's CI: the scheduled "Index drift check" workflow had been
+failing on `main` since 2026-08-01, independent of any specific PR. Cause:
+`eq/documents/internal-signoff-register-sprint-2026-08-04.md` existed but was never added
+to `eq/README.md`'s index.
+
+- [x] Added the file to `eq/README.md`'s index; verified with
+  `INDEX_DRIFT_STRICT=1 python scripts/index_drift.py` — all 7 tiers clean, `eq` now
+  64/64 indexed. Committed `b51da2fd`.
+
+---
+
+## Digest F6/F7 recurrence-signal false positives — one real bug, one stale citation (2026-08-05, rotated 2026-08-05)
+
+Both flags fired the same day: F6 ("Append (>>) NUL-fills...") and F7 ("git merge/
+stash-pop round-trip NUL-fills..."). Investigated both rather than treating them as one
+issue — turned out to be two different mechanisms.
+
+**F6 — real, fixable precision bug.** Its `signal:` regex (`NUL.?(fill|byte)s?|nul-fill`)
+matched a session log merely citing "the open F7 NUL-fill risk" as workflow rationale, not
+a new incident. Tightened to require an incident verb (corrupted/destroyed/wrote/written/
+found N/became binary/turned binary) near the phrase — tested against all ~22 of that
+day's real session logs (0 false positives after, vs 1 before) and against F6's own
+historical incident text verbatim (still matches). Committed `f93dcef`.
+
+**F7 — not a precision bug, left unchanged.** The old regex matched zero times across
+every session log that day; the digest's citation of `sessions/2026-08-05.md` was stale —
+that file had zero "NUL" mentions at check time, so the citation reflected content from a
+highly volatile, frequently-rewritten base file that had already changed by the time it
+was checked. Tightening the regex the same way as F6 was tested and found to measurably
+hurt recall without fixing anything real (compounds an already-narrow 80-char proximity
+window). No change made.
+
+- [x] Both investigated and resolved (F6 fixed + tested + committed; F7 investigated,
+  correctly left alone). Spawned task `task_5b1d3d56` closed.
 
 ---
 
