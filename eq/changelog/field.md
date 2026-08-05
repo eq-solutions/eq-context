@@ -1,13 +1,18 @@
 ---
 title: Changelog — EQ Solves Field
 owner: Royce Milmlow
-last_updated: 2026-08-04
+last_updated: 2026-08-05
 scope: Append-only history of changes to the EQ Solves Field product. Canonical — eq-field.md was merged into this file 2026-07-19, don't split again.
 read_priority: reference
 status: live
 ---
 
 # Changelog — EQ Solves Field
+
+## [2026-08-05] SKS Supervision category/role editable from Field, via Core (v3.5.455, #649)
+- SKS supervisors have been Shell-owned/read-only in Field since v3.5.206 — fixing a wrong category meant going to Core every time. New scoped "🏷 Edit category" action (`is_supervisor`/`supervisor_role`/`supervisor_category` only, not the full contact record).
+- Field never holds a write credential of its own: requests a fresh ~60s Bearer token from Shell per save (`_requestEntityPatchToken`, mirrors the existing `#sh=` JWT-refresh postMessage bridge) and calls Shell's `entity-patch` directly. Companion eq-shell PRs #1244/#1245/#1247.
+- Also fixed: `netlify.toml`/`_headers` `connect-src` were both missing `core.eq.solutions` — the fetch would have been silently CSP-blocked otherwise.
 
 ## [2026-08-04] PWA "Add to Home Screen" identity: fix stale SKS colour, make it tenant-aware (v3.5.453, #647)
 - `manifest.json`'s `theme_color` was `#1F335C` — the same stale SKS navy already caught and fixed in the transactional emails (2026-07-30). Corrected to `#203060`.

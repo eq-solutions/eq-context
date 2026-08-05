@@ -10,6 +10,9 @@ status: live
 # eq-shell changelog
 
 ## 2026-08-05
+- **PR #1244** — `entity-patch.ts` gains the same `checkShellOrigin()` same-site confused-deputy CSRF guard 15 other cookie-authenticated functions already have. Not previously exploitable (no CORS headers + JSON-only body blocked it by accident), but a real inconsistency, found while auditing whether the endpoint could safely be called cross-app. Merged (`3a3613d6`).
+- **PR #1245** — new `mint-entity-patch-token.ts` (cookie + origin-guard, mirrors `token-exchange.ts`) mints a 60s Bearer credential; `entity-patch.ts` accepts it as an alternative to the cookie and gains real CORS (mirrors `cards-api.ts`). Lets EQ Field trigger a canonical staff write without ever holding a standing credential itself — Shell mints fresh, per save. Merged (`913ebe75`).
+- **PR #1247** — `FieldIframe.tsx` gains the actual `REQUEST_ENTITY_PATCH_TOKEN` → `ENTITY_PATCH_TOKEN_RESPONSE` postMessage relay that calls `mint-entity-patch-token` on Field's behalf — the missing link between #1245 and eq-field's calling code (eq-field PR #649). Merged (`768545d8`).
 - **PR #1243** — Worker invites header simplified: "Share a general QR" link + "More ways to add" dropdown replaced with two plain buttons (Invite worker / Invite by QR). Connect existing moved to a cross-link on the Invite-worker form. Merged (`35da45b`), live-verified against the deployed bundle.
 
 ## 2026-08-04 (Document sign-off register sprint closed out — PRs #1222, #1226, #1228, #1239, #1241)
