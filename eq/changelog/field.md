@@ -9,6 +9,10 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-08-05] Shell-embedded nav bar: narrow iframe left with no nav at all — root-caused and fixed (v3.5.456, v3.5.457, #651, #652)
+- v3.5.456 (#651) fixed a real false positive: the `.shell-mode` touch-nav-restore query matched `pointer:coarse` alone, which also fires for a touchscreen desktop/laptop driven by a mouse. Added `and (hover: none)`. Deployed but did not fix Royce's reported symptom — a different bug.
+- v3.5.457 (#652) fixed the actual bug: `mobile.css` hides `.sidebar` unconditionally at any width ≤768px, but the `.shell-mode` mobile-nav restore was gated to touch devices only. A shell-mode iframe that goes narrow on an ordinary mouse-driven desktop matched neither rule — no navigation at all ("there is no nav bar"). OR'd `(max-width: 768px)` into the same media query. Verified live on the deploy preview before merging (forced `.shell-mode`, resized to 700px, confirmed real computed styles) and confirmed production `sw.js` serving v3.5.457 post-merge.
+
 ## [2026-08-05] New starters stay off the roster/dispatch/timesheets until their start date, plus a Starting Soon countdown (#650)
 - Direct Royce ask: new onboards' `start_date` wasn't respected anywhere — it was display-only (a label on the person's card, the anniversary widget's input) everywhere in eq-field. The only thing that ever kept someone off the live roster was the manual `on_roster` toggle, defaults on, easy to forget. A new hire entered a month ahead of their real start date sat in the live roster, dispatch board, and timesheet-completion tracker the whole time.
 - New `personHasFutureStart()` gate (people.js, null-safe like the existing DOB/anniversary helpers), added to every roster/dispatch/timesheet filter (roster.js × 3 sites, timesheets.js × 2 sites) and to dashboard.js's "unrostered gap" flagging, so a not-yet-started hire is never flagged as a gap either.
