@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-05
+last_updated: 2026-08-06
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -11,6 +11,23 @@ status: live
 
 EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-field + eq-context: Document Sign-off Register — real vision from Royce, two trust gaps fixed, PR open (2026-08-05)
+*Royce, asked directly whether "world class" was still the right bar after the categories PR: "I'm imagining a company document register plus templates that's easily accessible and is easy for management to prove people have signed on / is there a place for a physical signature as part of the document control process. also - everything needs to be world class! but simple." Re-opens the north star the earlier `/decide` had deliberately shelved — with an explicit constraint (simple, not maximal) that wasn't there before.*
+
+- [x] **Investigated the physical-signature question directly against eq-field's real signing code** (`scripts/sign-documents.js`, `scripts/site-reports-shared.js`), not assumed. Answer: no path exists today — only a drawn-signature canvas. A low-lift addition is available: the same file already has a working photo-upload component (`createPhotoController`, used for site photos elsewhere in the app) that the signing flow never calls. Not built — a real, scoped, additive option for later, not confirmed for build yet.
+- [x] **Same investigation surfaced two real gaps unprompted, more fundamental than the signature question**: the signing screen never shows the document being signed (a worker can sign without opening it — "View" is a separate, disconnected button), and nothing is left for a signer afterward (sign → toast → the row vanishes, no receipt). Also surfaced why only Royce has ever signed anything: the nav item is hardcoded `display:none` for every email except his — not an adoption gap, a literal lock.
+- [x] **Royce's call, via AskUserQuestion: fix the two trust gaps before opening access**, not after and not instead of. eq-field [PR #657](https://github.com/eq-solutions/eq-field/pull/657) (v3.5.462) — `signDocument()` now refuses to open the signature pad until the file has actually been opened at least once this session (disabled "View first" button, plus a defensive re-check inside the sign function itself); a small Outstanding/Signed toggle gives the signer a persistent record of what they've already signed. Zero change to `SiteReportsShared.createSignatureController`, confirmed unaffected on all 4 of its callers (Prestart/Toolbox/Diary/Incidents — the brief said 3, a full-repo grep found the 4th before anything was touched). Independently re-verified before opening the PR: `node --check`, all 24 test files re-run individually (not just tailed, to rule out a hidden early failure), eslint 0 errors, `document_signoffs`' RLS/status-check re-confirmed live on ehow. **Honestly scoped as a soft UI gate, not a security boundary** — someone with devtools could still force past it; it stops casual blind-signing, not tampering.
+- [x] **Confirmed unrelated, real Sentry regression (EQ-SHELL-10/19) already found and fixed by a separate concurrent session same day** — see the eq-shell section above/nearby in this file; not re-litigated here.
+
+**Deferred:**
+- [ ] **PR #657 not yet merged** — awaiting Royce's explicit go, same as every other PR this sprint.
+- [ ] **Opening access beyond the hardcoded single-email nav gate** — deliberately sequenced AFTER #657 lands, not part of it. The actual mechanism (where in `index.html` the gate lives, which emails/roles to allow) hasn't been scoped yet. _(added 2026-08-05)_
+- [ ] **Physical-signature-as-photo-upload** — real option, small lift, not confirmed for build. _(added 2026-08-05)_
+- [ ] **"Easily accessible" and "easy for management to prove" beyond what's already built** — no further scoping done yet; revisit once access is actually opened and there's real multi-person usage to learn from. _(added 2026-08-05)_
+- [ ] **`jwt-contract-drift.yml` (eq-context) has failed 3 consecutive days** — root cause found, not fixed: the checker looks for a local `ServiceJwtClaims` interface in eq-service that's been replaced by an import from a new shared `@eq-solutions/contracts` package (the checker's own documented "durable fix" already happened on the consumer side) — the checker itself just wasn't updated. Not necessarily a live problem, likely a stale check; flagged as background task `task_42424993` rather than fixed here, since it needed checking eq-shell's side too and spans 3 repos. _(added 2026-08-05)_
 
 ---
 
