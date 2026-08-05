@@ -126,6 +126,27 @@ SHARED_EQ_CONTEXT = (os.environ.get("EQ_CONTEXT", r"C:\Projects\eq-context")
 COMMIT_RE = re.compile(r'(?<![\w-])git\s+(?:-C\s+(?:"[^"]*"|\S+)\s+)?commit(?!-)\b')
 REBASE_MERGE_PULL_RE = re.compile(r'(?<![\w-])git\s+(?:-C\s+(?:"[^"]*"|\S+)\s+)?(rebase|merge|pull)(?!-)\b')
 
+# F10 — matches a `git config` SET of core.hooksPath: an optional --local/
+# --worktree/--global scope, then the key, then a value (quoted or bare).
+# Deliberately does NOT match a bare read (`git config core.hooksPath`, no
+# value — nothing follows the key so the trailing \s+(value) group can't
+# match) or `--get`, and the (?!--unset\b) lookahead keeps a real `--unset`
+# invocation (flag comes BEFORE the key in git's own grammar: `git config
+# --unset core.hooksPath`) from ever reaching this regex as if `--unset`
+# were the value — moot given where git actually puts the flag, kept as a
+# defensive belt-and-braces read of this regex's own intent. --unset itself
+# is deliberately NOT blocked: none of F10's 3 real recurrences were caused
+# by one, and `--worktree --unset core.hooksPath` specifically can be the
+# legitimate FIX (removing a bad worktree-scope override so a correct
+# --local value takes effect again) — blocking every --unset shape would
+# risk blocking the correction itself, a worse outcome than the narrower
+# gap this leaves. See the F10 block below for the full recurrence history.
+HOOKSPATH_SET_RE = re.compile(
+    r'(?<![\w-])git\s+(?:-C\s+(?:"[^"]*"|\S+)\s+)?config\s+'
+    r'(?:--(local|worktree|global)\s+)?'
+    r'core\.hooksPath\s+(?!--unset\b)(?:"([^"]*)"|(\S+))'
+)
+
 # Extensions that are legitimately binary — skip these in the F7 NUL scan so a
 # real image/font doesn't false-positive. Everything else (source, docs, config)
 # is expected to be text; a NUL byte in one of those is always corruption.
@@ -317,6 +338,19 @@ def _strip_quoted(s):
     return re.sub(r"'[^']*'|\"[^\"]*\"", '""', s or "")
 
 
+def _norm_hookspath(v):
+    """F10 — identical normalization to session_start.py's own _norm_hp(), kept
+    in lockstep deliberately: this hook decides whether to BLOCK a hooksPath
+    SET, session_start.py's HOOKS check decides whether to WARN about the
+    result — both must agree on what ".githooks" means (backslashes, a
+    leading "./", a trailing "/") or a value one considers fine and the other
+    considers wrong would be needlessly confusing."""
+    if v is None:
+        return None
+    v = v.strip().replace("\\", "/")
+    return (v[2:] if v.startswith("./") else v).rstrip("/")
+
+
 def block(msg):
     sys.stderr.write(msg)
     sys.exit(2)
@@ -431,6 +465,40 @@ def main():
                     f"  --abort / --continue / --skip are allowed through.\n\n"
                     f"  system/failures.md -> F9. rules/agentic-coding.md.\n"
                 )
+
+            # (c) F10 — core.hooksPath set to anything but .githooks. Run against
+            # the RAW command, not stripped9: _strip_quoted() would blank out the
+            # very value this needs to read. The false-positive cost (an unrelated
+            # command whose quoted text happens to contain a full, real
+            # `git config core.hooksPath <bad-value>` invocation) is vanishingly
+            # unlikely next to the false-negative cost this exists to close — see
+            # module docstring's F2 FAIL-CLOSED rationale for the same tradeoff
+            # made the same way elsewhere in this file. Ratchet promotion
+            # 2026-08-05: rung 1 (system/lessons.md prose) -> rung 4. This is the
+            # ONE thing all 3 real recurrences share — an explicit SET landing a
+            # wrong value — so it's the one this closes; see HOOKSPATH_SET_RE's
+            # own comment for why --unset is deliberately left alone.
+            m10 = HOOKSPATH_SET_RE.search(cmd9)
+            if m10:
+                val10 = m10.group(2) if m10.group(2) is not None else m10.group(3)
+                if _norm_hookspath(val10) != ".githooks":
+                    scope10 = m10.group(1)
+                    flag10 = f"--{scope10} " if scope10 else ""
+                    block(
+                        f"BLOCKED by pre_tool_use (F10, rung 4).\n\n"
+                        f"  Setting core.hooksPath ({scope10 or 'default/--local'} scope) to\n"
+                        f"  {val10!r} in the SHARED eq-context checkout — not .githooks.\n\n"
+                        f"  This exact symptom has recurred 3 times via 3 different\n"
+                        f"  mechanisms (wrong directory 2026-05-24, a shadow copy at\n"
+                        f"  .git/hooks 2026-08-04, a --worktree override silently shadowing\n"
+                        f"  --local 2026-08-05) — every time, .githooks/pre-commit (secret\n"
+                        f"  scanning, frontmatter status-enum) silently stopped running.\n\n"
+                        f"  If .githooks is genuinely wrong for what you're doing, that's a\n"
+                        f"  decision this hook shouldn't make silently either — stop and ask.\n"
+                        f"  Otherwise, the governed value is .githooks:\n"
+                        f"    git config {flag10}core.hooksPath .githooks\n\n"
+                        f"  system/failures.md -> F10.\n"
+                    )
 
     if not in_sandbox():
         sys.exit(0)

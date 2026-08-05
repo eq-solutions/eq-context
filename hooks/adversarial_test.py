@@ -359,6 +359,43 @@ te("`git status` / `git push` untouched by F9 even INSIDE the shared checkout",
    bash_at("git push origin main", f9_repo), 0, SAME)
 _rmtree_retry(f9_repo)
 
+print("=== F10 - core.hooksPath set away from .githooks in the shared checkout (must BLOCK) ===")
+f10_repo = f9_fixture_repo("_f10")
+SAME10 = {"EQ_CONTEXT": f10_repo, "EQ_FORCE_GUARD": "0"}
+OTHER10 = {"EQ_CONTEXT": f10_repo + "-not-the-shared-one", "EQ_FORCE_GUARD": "0"}
+
+te("no-scope set to .git/hooks (recurrence 1's shape: wrong directory) -> BLOCK",
+   bash_at("git config core.hooksPath .git/hooks", f10_repo), 2, SAME10)
+te("--local set to .git/hooks -> BLOCK",
+   bash_at("git config --local core.hooksPath .git/hooks", f10_repo), 2, SAME10)
+te("--worktree set to .git/hooks (recurrence 3's EXACT shape, 2026-08-05) -> BLOCK",
+   bash_at("git config --worktree core.hooksPath .git/hooks", f10_repo), 2, SAME10)
+te("--global set to an unrelated path -> BLOCK too (defensive: affects every repo, not just this one)",
+   bash_at("git config --global core.hooksPath /some/other/hooks", f10_repo), 2, SAME10)
+te("backslash path variant (.git\\hooks, one literal backslash) still normalizes "
+   "to a bad value -> BLOCK",
+   bash_at(r'git config core.hooksPath ".git\hooks"', f10_repo), 2, SAME10)
+te("`git -C <path> config ...` prefix shape (same tolerance as COMMIT_RE/REBASE_MERGE_PULL_RE) -> BLOCK",
+   bash_at('git -C "' + f10_repo + '" config core.hooksPath .git/hooks', f10_repo), 2, SAME10)
+
+te("SET to the correct value .githooks -> allowed (the fix itself must never be blocked)",
+   bash_at("git config core.hooksPath .githooks", f10_repo), 0, SAME10)
+te("differently-spelled but EQUIVALENT good value (./.githooks/) -> allowed, same normalization "
+   "session_start.py's own HOOKS check uses",
+   bash_at("git config core.hooksPath ./.githooks/", f10_repo), 0, SAME10)
+te("bare read (no value) -> allowed, not a set",
+   bash_at("git config core.hooksPath", f10_repo), 0, SAME10)
+te("explicit --get read -> allowed",
+   bash_at("git config --get core.hooksPath", f10_repo), 0, SAME10)
+te("--unset deliberately NOT blocked (can be the legitimate fix for a bad --worktree "
+   "override; see HOOKSPATH_SET_RE's own comment) -> allowed",
+   bash_at("git config --worktree --unset core.hooksPath", f10_repo), 0, SAME10)
+
+te("CONTROL: identical bad --worktree set OUTSIDE the shared checkout -> allowed "
+   "(F10's own escape valve, same as F9's)",
+   bash_at("git config --worktree core.hooksPath .git/hooks", f10_repo), 0, OTHER10)
+_rmtree_retry(f10_repo)
+
 print("=== CONTROLS - legitimate work must NOT be blocked ===")
 t("Edit a short file", edit(SHORT), 0)
 t("Write a NEW file (parent exists)", {"tool_name": "Write", "tool_input": {"file_path": NEWF}}, 0)
