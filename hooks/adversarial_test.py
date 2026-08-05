@@ -297,6 +297,38 @@ te("CONTROL: NOMINAL cwd IS the shared checkout, but the command cd's OUT to an 
    {"tool_name": "Bash",
     "tool_input": {"command": 'cd "' + nominal_cwd + '" && git commit -m x'},
     "cwd": f9_repo}, 0, SAME)
+
+# Found live 2026-08-05, packaging a fix in an isolated clone during an unrelated
+# investigation: `CLONE="<path>"\ncd "$CLONE" && git rebase ...` — a natural way
+# to spell a long path once and reuse it — put `cd` on the command's SECOND
+# line. effective_cwd()'s cd regex was anchored with a bare `^` (matches only
+# the start of the WHOLE string, not a line start) and no re.MULTILINE, so it
+# never matched, fell through to data.get("cwd"), and a command genuinely `cd`ed
+# into a private clone got attributed to the session's nominal cwd instead —
+# blocking a rebase that was actually safe. These use a literal path after cd,
+# not a shell variable reference (`$CLONE`) — these hooks regex-match the raw
+# command text, they don't execute a shell, so resolving a variable's value
+# was never in scope; only the LINE the real path sits on was the bug.
+te("multi-line command: cd on the SECOND line (any content on line 1 defeats a "
+   "bare ^ anchor) while NOMINAL cwd is a real worktree -> still BLOCK "
+   "(2026-08-05, effective_cwd()'s cd regex needed re.MULTILINE)",
+   {"tool_name": "Bash",
+    "tool_input": {"command": 'echo starting\ncd "' + f9_repo + '" && git commit -m x'},
+    "cwd": nominal_cwd}, 2, SAME)
+te("same shape with rebase (the actual verb that false-blocked live) -> still BLOCK",
+   {"tool_name": "Bash",
+    "tool_input": {"command": 'CLONE="ignored"\ncd "' + f9_repo + '" && git rebase origin/main'},
+    "cwd": nominal_cwd}, 2, SAME)
+te("CONTROL: `git -C <shared>` on the SECOND line already worked pre-fix (that "
+   "regex was never ^-anchored) -> still BLOCK, confirms -C had no equivalent gap",
+   {"tool_name": "Bash",
+    "tool_input": {"command": 'echo starting\ngit -C "' + f9_repo + '" commit -m x'},
+    "cwd": nominal_cwd}, 2, SAME)
+te("CONTROL: multi-line, NOMINAL cwd IS the shared checkout, but a second-line cd "
+   "moves OUT to a private repo -> NOT blocked (fix doesn't over-match)",
+   {"tool_name": "Bash",
+    "tool_input": {"command": 'echo starting\ncd "' + nominal_cwd + '" && git commit -m x'},
+    "cwd": f9_repo}, 0, SAME)
 _rmtree_retry(nominal_cwd)
 
 # Found live 2026-08-05 running real recon commands against this exact fixture

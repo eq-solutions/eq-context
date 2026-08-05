@@ -163,10 +163,29 @@ def effective_cwd(cmd, data):
     recur 2026-08-05 even after the wiring fix alone: a session's nominal cwd was
     a real, separate git worktree, so data.cwd resolved to the worktree's own
     toplevel even though the command had already `cd`ed into the shared checkout.
-    Mirrors guard.js's exact precedence: -C first, then a leading cd."""
+    Mirrors guard.js's exact precedence: -C first, then a leading cd.
+
+    re.MULTILINE on the cd fallback (found 2026-08-05, live, false-blocking a
+    rebase genuinely run inside an isolated clone — the F9 escape valve this
+    hook itself recommends): bare `^` anchors to the start of the WHOLE command
+    string, not the start of a line. A `cd "<path>" && git ...` preceded by an
+    earlier line — e.g. `CLONE="<path>"\ncd "$CLONE" && git rebase ...`, an
+    ordinary way to spell a long path once and reuse it — put `cd` second, so
+    `^` never matched, the function fell through to data.get("cwd"), and a
+    command genuinely `cd`-ed into a private clone got attributed to whatever
+    directory the session nominally started in. Same failure shape as the two
+    gaps above (an effective-directory regex too narrow for a real invocation
+    shape this environment's Bash tool produces), a different specific cause
+    (line-anchoring, not a missing `-C` prefix). guard.js's own equivalent
+    check is regex-per-call on a single flattened cwd string, not re.search
+    against the raw multi-line command, so it was never exposed to this
+    particular gap. system/failures.md -> F9 — a guard false-positive, not a
+    new corruption recurrence, so it isn't counted as one there (same
+    treatment as F9(a)'s merge-completion exemption above)."""
     m = re.search(r'git\s+-C\s+"([^"]+)"', cmd) or re.search(r'git\s+-C\s+(\S+)', cmd)
     if not m:
-        m = re.search(r'^\s*cd\s+"([^"]+)"', cmd) or re.search(r'^\s*cd\s+(\S+)', cmd)
+        m = (re.search(r'^\s*cd\s+"([^"]+)"', cmd, re.MULTILINE)
+             or re.search(r'^\s*cd\s+(\S+)', cmd, re.MULTILINE))
     if m:
         return m.group(1)
     return data.get("cwd") or os.getcwd()
