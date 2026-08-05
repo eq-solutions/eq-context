@@ -14,6 +14,18 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-field: Birthdays & Anniversaries dashboard widget only showed up sometimes — root-caused and fixed, live (2026-08-05)
+*Royce: "every now and then birthdays and anniversaries show up on the main dashboard but not everytime."*
+
+- [x] **Root cause: a lazy-load timing gap, not a data problem.** The Birthdays & Anniversaries and Starting Soon widgets both read helper functions defined in `people.js`, which only lazy-loads when Roster/Editor/Schedule/Contacts/the person wizard is visited. Dashboard is the landing tab and often the only tab a session visits, so the widgets' `typeof` guard silently blanked itself with no retry whenever `people.js` hadn't happened to load first — the symptom tracked unrelated navigation history, not actual birthdays/anniversaries. Same bug class the leave-requests strip hit and was fixed for already (v3.5.293); the people-widgets never got the same treatment.
+- [x] **Fix: added a self-heal kick to `renderDashboard()`** — same pattern as the existing leave-strip kick — that lazy-loads `people.js` in the background on first dashboard render and re-renders both widgets once it lands. `scripts/dashboard.js` only, no schema/auth/deploy-sensitive surface. eq-field [PR #653](https://github.com/eq-solutions/eq-field/pull/653) (v3.5.458), squash-merged, CI green.
+- [x] **Verified against the real functions, not just read**: local static-serve can't run the `tenant-config` Netlify Function the app needs to boot, so reproduced the bug and the fix directly — seeded `STATE.people` with a test birthday, confirmed the real (unmodified) render calls came back blank, then fired the actual kick logic and confirmed it self-heals within ~1.5s. Also smoke-tested the real deploy preview (confirms `tenant-config` itself works there, no console errors) — full click-through blocked by the `eq` tenant's Core-only auth gate (same constraint noted elsewhere in this file), consistent with the local finding.
+
+**Deferred:**
+- [ ] **Not click-tested live by a real signed-in user** — everything above was verified at the function level and via the deploy preview's boot path, not by an authenticated session actually seeing the widget populate with real people. Royce to confirm on `field.eq.solutions` (or the Shell embed) that Birthdays & Anniversaries now shows up reliably from a fresh Dashboard landing. _(added 2026-08-05)_
+
+---
+
 ## eq-shell: root-caused the "auth-stall: chunk-error" Sentry P0 (27 events/day) — fix ready, not shipped (2026-08-05)
 *Session gate flagged it 🔴 P0. Sentry itself was unreachable all session (MCP connector flagged invalid 2026-08-04; dashboard login-walled, no credentials entered) — root cause came entirely from code + git history.*
 
