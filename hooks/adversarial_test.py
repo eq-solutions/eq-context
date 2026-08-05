@@ -227,6 +227,54 @@ te("`git merge --abort` -> allowed",
 te("PowerShell bare commit in the SHARED checkout -> BLOCK (tool matching)",
    {"tool_name": "PowerShell", "tool_input": {"command": "git commit -m x"}, "cwd": f9_repo}, 2, SAME)
 
+
+def f9_merge_conflict_repo():
+    """A real repo with a genuine in-progress merge (.git/MERGE_HEAD present) --
+    two branches touching the same line of the same file, merged, conflicting,
+    left unresolved, then resolved+staged like a real session would. Proves
+    F9(a)'s merge exemption against the real git state it's meant to detect,
+    not a hand-rolled MERGE_HEAD file."""
+    d = os.path.join(ROOT, ".tmp_f9_merge_fixture")
+    _rmtree_retry(d)
+    os.makedirs(d)
+    run = lambda *a: subprocess.run(["git", *a], cwd=d, capture_output=True, text=True)
+    run("init", "-q", "-b", "main")
+    run("config", "user.email", "test@example.com")
+    run("config", "user.name", "test")
+    target = os.path.join(d, "shared.md")
+    with open(target, "w") as fh:
+        fh.write("base\n")
+    run("add", "-A")
+    run("commit", "-q", "-m", "base")
+    run("checkout", "-q", "-b", "side")
+    with open(target, "w") as fh:
+        fh.write("side change\n")
+    run("commit", "-q", "-am", "side change")
+    run("checkout", "-q", "main")
+    with open(target, "w") as fh:
+        fh.write("main change\n")
+    run("commit", "-q", "-am", "main change")
+    run("merge", "side", "-q")           # real conflict -> leaves MERGE_HEAD, no commit
+    with open(target, "w") as fh:
+        fh.write("resolved\n")
+    run("add", "-A")                     # resolve + stage, like a real session would
+    return d
+
+
+merge_repo = f9_merge_conflict_repo()
+te("bare commit COMPLETING an in-progress merge (.git/MERGE_HEAD present) -> allowed",
+   bash_at("git commit --no-edit", merge_repo), 0, {"EQ_CONTEXT": merge_repo, "EQ_FORCE_GUARD": "0"})
+_rmtree_retry(merge_repo)
+
+# CONTROL: identical resolved+staged shape but with MERGE_HEAD removed -- proves
+# the exemption is genuinely gated on an in-progress merge, not on staged-content
+# shape or luck.
+merge_repo2 = f9_merge_conflict_repo()
+os.remove(os.path.join(merge_repo2, ".git", "MERGE_HEAD"))
+te("CONTROL: same resolved+staged state WITHOUT MERGE_HEAD -> bare commit still BLOCKED",
+   bash_at("git commit --no-edit", merge_repo2), 2, {"EQ_CONTEXT": merge_repo2, "EQ_FORCE_GUARD": "0"})
+_rmtree_retry(merge_repo2)
+
 # A second, real git repo standing in for "the session's NOMINAL cwd is a real,
 # separate worktree" — commit 2104668's exact shape (2026-08-05): the session's
 # reported cwd resolved to ITS OWN valid toplevel, not the shared checkout, even
@@ -447,6 +495,12 @@ if os.path.isfile(_user_settings_path):
                                    "PASS" if ok2 else "*** FAIL ***"))
         passed += ok2
         failed += (not ok2)
+    ok3 = any("auto_pr_guard.py" in h.get("command", "")
+              for b in _pretool_blocks for h in (b.get("hooks") or []))
+    print("  {:<52}{}".format("auto_pr_guard.py wired too (no-op until EQ_AUTO_PR_MODE=1)",
+                               "PASS" if ok3 else "*** FAIL ***"))
+    passed += ok3
+    failed += (not ok3)
 else:
     print("  (skipped — {} not present on this machine; this check only means "
           "something on the Beelink)".format(_user_settings_path))

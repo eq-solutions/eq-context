@@ -116,6 +116,39 @@ tf9 "git rebase --abort -> allowed"                     "git rebase --abort" 0
 tf9 "git merge-base (read-only plumbing, not a merge) -> NOT blocked" "git merge-base main origin/main" 0
 tf9 "git commit-graph write (not a commit) -> NOT blocked"            "git commit-graph write" 0
 
+# Real in-progress merge fixture (own dir, not F9DIR) -- proves F9(a)'s merge
+# exemption against genuine .git/MERGE_HEAD state, not a hand-rolled file.
+MDIR="$R/.tmp_f9_merge_fixture_sh"
+rm -rf "$MDIR"
+mkdir -p "$MDIR"
+git -C "$MDIR" init -q -b main
+git -C "$MDIR" config user.email test@example.com
+git -C "$MDIR" config user.name test
+printf 'base\n' > "$MDIR/shared.md"
+git -C "$MDIR" add -A
+git -C "$MDIR" commit -q -m base
+git -C "$MDIR" checkout -q -b side
+printf 'side change\n' > "$MDIR/shared.md"
+git -C "$MDIR" commit -q -am "side change"
+git -C "$MDIR" checkout -q main
+printf 'main change\n' > "$MDIR/shared.md"
+git -C "$MDIR" commit -q -am "main change"
+git -C "$MDIR" merge side -q >/dev/null 2>&1   # real conflict -> leaves MERGE_HEAD
+printf 'resolved\n' > "$MDIR/shared.md"
+git -C "$MDIR" add -A
+
+printf "  %-56s" "bare commit COMPLETING an in-progress merge -> allowed"
+(cd "$MDIR" && echo '{"tool_name":"Bash","tool_input":{"command":"git commit --no-edit"}}' | EQ_CONTEXT="$MDIR" EQ_FORCE_GUARD=0 python3 "$R/hooks/pre_tool_use.py" >/dev/null 2>&1)
+e=$?
+if [ "$e" = "0" ]; then echo "PASS"; pass=$((pass+1)); else echo "*** FAIL *** (exit $e, expected 0)"; fail=$((fail+1)); fi
+
+rm -f "$MDIR/.git/MERGE_HEAD"
+printf "  %-56s" "CONTROL: same staged state w/o MERGE_HEAD -> still BLOCKED"
+(cd "$MDIR" && echo '{"tool_name":"Bash","tool_input":{"command":"git commit --no-edit"}}' | EQ_CONTEXT="$MDIR" EQ_FORCE_GUARD=0 python3 "$R/hooks/pre_tool_use.py" >/dev/null 2>&1)
+e=$?
+if [ "$e" = "2" ]; then echo "PASS"; pass=$((pass+1)); else echo "*** FAIL *** (exit $e, expected 2)"; fail=$((fail+1)); fi
+rm -rf "$MDIR"
+
 echo "=== F9 controls — same ops OUTSIDE the shared checkout must NOT be blocked ==="
 tf9o() {  # name | git-command | expected_exit  (fixture is NOT "the shared checkout")
   printf "  %-56s" "$1"

@@ -71,6 +71,15 @@ real, separate git worktree with its own valid toplevel, so cwd resolution had
 to track the command's actual `cd` to see that it had, in fact, landed in the
 shared checkout. Wiring alone would not have been enough.
 
+F9(a) also gained a merge-completion exemption (2026-08-05, found live
+reconciling a real divergence in this shared checkout): a bare `git commit`
+completing an in-progress merge (`.git/MERGE_HEAD` present) is allowed even
+with no `--` pathspec — that commit is SUPPOSED to record everything staged,
+and can't be meaningfully pathspec-scoped the way a normal commit can. Before
+this, the only escape hatch was `--amend`, which doesn't fit a merge commit at
+all — this hook had no way to let a legitimate `git commit --no-edit` through
+after resolving conflicts.
+
 A same-day earlier version of this note attributed the incident to the commit
 running "outside Claude Code's own tool-call hook entirely" — inferred from its
 "via Cowork" author string plus the standing Cowork-sandbox git rule below,
@@ -316,10 +325,19 @@ def main():
         if is_shared_eq_context(root9):
             stripped9 = _strip_quoted(cmd9)
 
-            # (a) bare `git commit` — no `--` pathspec, no --amend. A bare commit
-            # records EVERYTHING currently staged, not just what this command just
-            # `git add`ed — see module docstring, F9(a).
+            # (a) bare `git commit` — no `--` pathspec, no --amend, no in-progress
+            # merge. A bare commit records EVERYTHING currently staged, not just
+            # what this command just `git add`ed — see module docstring, F9(a).
+            # Completing an in-progress merge (.git/MERGE_HEAD exists) is the one
+            # case where that's not a risk: the whole point of that commit IS to
+            # record everything staged, and a merge commit can't be meaningfully
+            # pathspec-scoped the way a normal commit can. Found live 2026-08-05
+            # reconciling a real divergence in this shared checkout — this hook
+            # had no way to allow a legitimate `git commit --no-edit` after
+            # resolving conflicts, only --amend as an escape hatch that didn't fit.
+            in_merge9 = os.path.isfile(os.path.join(root9, ".git", "MERGE_HEAD"))
             if (COMMIT_RE.search(stripped9) and "--amend" not in stripped9
+                    and not in_merge9
                     and not re.search(r"(^|\s)--(\s+\S)", stripped9)):
                 block(
                     "BLOCKED by pre_tool_use (F9, rung 4).\n\n"
