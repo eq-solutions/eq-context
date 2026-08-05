@@ -110,8 +110,8 @@ failures:
     guard: "hooks/pre_tool_use.py — blocks >> to any mount path (rung 4, built 2026-07-11)"
     detected_by: "NUL-byte scan after the write — wc -l reported a SANE line count"
     cost: "3,955 NUL bytes written into system/lessons.md. Two lessons destroyed. File became binary."
-    note: "Found while fixing F2 — and it INVALIDATED the F2 fix. The old lesson said 'prefer cat >> over Edit for appends'. That advice was WRONG and it corrupted the file. Only FULL REWRITE (cat >) is safe. wc -l alone will not catch this: the NUL-fill made the file LARGER."
-    signal: "NUL.?(fill|byte)s?|nul-fill"
+    note: "Found while fixing F2 — and it INVALIDATED the F2 fix. The old lesson said 'prefer cat >> over Edit for appends'. That advice was WRONG and it corrupted the file. Only FULL REWRITE (cat >) is safe. wc -l alone will not catch this: the NUL-fill made the file LARGER. Signal regex tightened 2026-08-05 after a same-day false-positive digest hit — the bare phrase alone matched a session log merely citing 'the open F7 NUL-fill risk' as workflow rationale, not a new incident. Now requires an incident verb (corrupted/destroyed/wrote/written/found N/became binary/turned binary) near the phrase. Tested against all of that day's ~22 session logs (zero false positives before or after, except the one known case, which the new regex correctly drops) and against this entry's own cost text verbatim (still matches). Known tradeoff: no regex distinguishes 'reference' from 'incident' with perfect recall — this trades a little sensitivity for materially better precision, not a perfect fix."
+    signal: "(?:corrupt(?:ed|ion)?|destroy(?:ed)?|wrote|written|found\\s+\\d|became\\s+binary|turned?\\s+(?:into\\s+)?binary).{0,60}(NUL.?(fill|byte)s?|nul-fill)|(NUL.?(fill|byte)s?|nul-fill).{0,60}(?:corrupt(?:ed|ion)?|destroy(?:ed)?|wrote|written|found\\s+\\d|became\\s+binary|turned?\\s+(?:into\\s+)?binary)"
     confirmed_in: ["sessions/2026-07-28.md", "sessions/2026-07-31.md", "sessions/2026-08-04-b.md", "sessions/2026-08-04-c.md"]
 
   - id: F7
