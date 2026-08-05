@@ -251,6 +251,17 @@ te("CONTROL: NOMINAL cwd IS the shared checkout, but the command cd's OUT to an 
     "cwd": f9_repo}, 0, SAME)
 _rmtree_retry(nominal_cwd)
 
+# Found live 2026-08-05 running real recon commands against this exact fixture
+# shape: \b alone matches the transition from "e" to "-", so a bare `merge\b`
+# wrongly matched inside "merge-base" (and `commit\b` inside "commit-graph") --
+# real, read-only, harmless plumbing commands blocked as if they were the verb
+# itself. Fixed with a (?!-) lookahead; these prove it without regressing the
+# real block above.
+te("`git merge-base` (read-only plumbing, not a merge) -> NOT blocked",
+   bash_at("git merge-base main origin/main", f9_repo), 0, SAME)
+te("`git commit-graph write` (not a commit) -> NOT blocked",
+   bash_at("git commit-graph write", f9_repo), 0, SAME)
+
 print("=== F9 controls - same operations OUTSIDE the shared checkout must NOT be blocked ===")
 te("bare `git commit` in a private/fresh clone -> allowed (F9's own escape valve)",
    bash_at("git commit -m x", f9_repo), 0, OTHER)

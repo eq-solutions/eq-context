@@ -107,8 +107,15 @@ SHARED_EQ_CONTEXT = (os.environ.get("EQ_CONTEXT", r"C:\Projects\eq-context")
 # same fix guard.js's reflection-gate rule already made for itself 2026-07-26)
 # never matched as a commit/rebase/merge/pull at all. `[^"]*` (not `[^"]+`) so
 # it still matches after _strip_quoted() blanks a quoted path to `""`.
-COMMIT_RE = re.compile(r'(?<![\w-])git\s+(?:-C\s+(?:"[^"]*"|\S+)\s+)?commit\b')
-REBASE_MERGE_PULL_RE = re.compile(r'(?<![\w-])git\s+(?:-C\s+(?:"[^"]*"|\S+)\s+)?(rebase|merge|pull)\b')
+#
+# (?!-) after the verb (found 2026-08-05, live, running `git merge-base` for
+# this exact investigation): `\b` alone matches the transition between "e" and
+# "-", so `merge\b` matches inside "merge-base" too — a real, read-only,
+# harmless plumbing command wrongly blocked as if it were `git merge`. Same
+# shape for `commit-graph`/`commit-tree` against COMMIT_RE. (?!-) excludes any
+# git-verb-shaped subcommand that continues past a hyphen into something else.
+COMMIT_RE = re.compile(r'(?<![\w-])git\s+(?:-C\s+(?:"[^"]*"|\S+)\s+)?commit(?!-)\b')
+REBASE_MERGE_PULL_RE = re.compile(r'(?<![\w-])git\s+(?:-C\s+(?:"[^"]*"|\S+)\s+)?(rebase|merge|pull)(?!-)\b')
 
 # Extensions that are legitimately binary — skip these in the F7 NUL scan so a
 # real image/font doesn't false-positive. Everything else (source, docs, config)

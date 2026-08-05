@@ -113,6 +113,8 @@ tf9 "git merge <ref> -> BLOCK"                          "git merge origin/main" 
 tf9 "git pull -> BLOCK"                                 "git pull" 2
 tf9 "git rebase --continue -> allowed (escape a stuck state)" "git rebase --continue" 0
 tf9 "git rebase --abort -> allowed"                     "git rebase --abort" 0
+tf9 "git merge-base (read-only plumbing, not a merge) -> NOT blocked" "git merge-base main origin/main" 0
+tf9 "git commit-graph write (not a commit) -> NOT blocked"            "git commit-graph write" 0
 
 echo "=== F9 controls — same ops OUTSIDE the shared checkout must NOT be blocked ==="
 tf9o() {  # name | git-command | expected_exit  (fixture is NOT "the shared checkout")
