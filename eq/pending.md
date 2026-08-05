@@ -14,6 +14,12 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-context: core.hooksPath resolution check added — closes a 3x-recurring gap as F10 (2026-08-05)
+
+- [ ] **Both adversarial test suites (`hooks/adversarial_test.py` / `.sh`) are currently failing 3 cases each on `origin/main`**, unrelated to the HOOKS/F10 work this section is named for (confirmed via a git-stash A/B test) — looks like one of today's F9-hardening commits regressed the F2/F7 sandbox-simulation tests on Windows. Flagged as background task `task_e1722f87`; Royce started it in a separate session, result not yet known. _(added 2026-08-05)_
+
+---
+
 ## eq-cards: appMetadata JWT root-cause — the real reason self-join signups got stuck looping, plus fresh-signup polish and an OCR auth hardening — three PRs merged, live (2026-08-05)
 *Continuation of the same-day shell-handoff work below — started from a new-user report ("William... gets stuck looping back to the open wallet page") that turned out to be a structural bug, not a one-off.*
 
