@@ -8,29 +8,33 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-05 07:32 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-05 08:07 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-05 07:13 UTC → 2026-08-05 07:32 UTC)
+## Since last refresh (2026-08-05 07:32 UTC → 2026-08-05 08:07 UTC)
 
-- Merged: eq-shell [#1240](https://github.com/eq-solutions/eq-shell/pull/1240) feat(staff): "back on file" indicator for licence photos
-- Merged: eq-shell [#1237](https://github.com/eq-solutions/eq-shell/pull/1237) fix(staff): hide Company field for Direct, require supervisi
-- Merged: eq-shell [#1235](https://github.com/eq-solutions/eq-shell/pull/1235) fix(licences): timeout the OCR auto-read chain instead of ha
-- Merged: eq-shell [#1233](https://github.com/eq-solutions/eq-shell/pull/1233) fix(deps): bump fast-uri to 4.1.2 (CVE-2026-18446)
-- Merged: eq-shell [#1232](https://github.com/eq-solutions/eq-shell/pull/1232) fix(invites): recover gracefully from a raced duplicate invi
-- Merged: eq-shell [#1228](https://github.com/eq-solutions/eq-shell/pull/1228) fix(documents): sign-off reminder cadence to a uniform 7 day
-- Merged: eq-shell [#1227](https://github.com/eq-solutions/eq-shell/pull/1227) fix(ops): collapsed group header count/total hidden for long
-- Merged: eq-shell [#1226](https://github.com/eq-solutions/eq-shell/pull/1226) feat(documents): daily reminder email for outstanding sign-o
+- Merged: eq-shell [#1242](https://github.com/eq-solutions/eq-shell/pull/1242) feat(staff): actual back-photo preview instead of a text-onl
+- Merged: eq-shell [#1241](https://github.com/eq-solutions/eq-shell/pull/1241) feat(documents): bulk upload for Templates (T3)
+- Merged: eq-shell [#1239](https://github.com/eq-solutions/eq-shell/pull/1239) feat(documents): Templates upload CTA + Register archive act
+- Merged: eq-shell [#1238](https://github.com/eq-solutions/eq-shell/pull/1238) feat(licences): show the uploaded photo/PDF as a manual-fill
+- Merged: eq-shell [#1236](https://github.com/eq-solutions/eq-shell/pull/1236) fix(staff): require supervisor_category when is_supervisor i
+- Merged: eq-shell [#1234](https://github.com/eq-solutions/eq-shell/pull/1234) feat(staff): back-photo support in admin licence backfill
+- Merged: eq-shell [#1230](https://github.com/eq-solutions/eq-shell/pull/1230) fix(ops): add FK constraint on app_data.jobs.quote_id
+- Merged: eq-shell [#1229](https://github.com/eq-solutions/eq-shell/pull/1229) fix(auth): guard shell-join-tenant's existing-user phone mat
+- ⚠ Needs you: 3 → 4 (new items)
 
-## ⚠ Needs you (3)
+## ⚠ Needs you (4)
 
 - 🔴 **Sentry 27 events today** — `eq-shell` [auth-stall: chunk-error](https://eq-solutions.sentry.io/issues/137294044/)
 - 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-9 (P0 — confirmed exposure, same window as SEC-3, possible second exposure 2026-07-27) — A different service_role key (`jvkn`/eq-canonical) was pasted directly into a ch · [security-register.md](ops/security-register.md)
+- 🔴 **Guard bypass? rung 4** — F7: git merge/stash-pop round-trip NUL-fills files on the C:\Projects virtiofs mount · possibly recurred in [2026-08-05.md](sessions/2026-08-05.md) · [failures.md](system/failures.md)
 
-## 🙋 Waiting on you (113)
+## 🙋 Waiting on you (116)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
+- **EQ** · **Neither fix has been click-tested live** — Royce to confirm: (1) the address fields save and display correctly on a real staff member, desktop and mobile, (2) re-downloading William's compliance pack now shows "William Hong" instead of "Unknown." _(added 2026-08-05)_
+- **EQ** · **Not click-tested live** — Royce to confirm a real future-dated new starter actually disappears from the roster/dispatch/timesheets and shows up correctly in the new Starting Soon widget. _(added 2026-08-05)_
 - **EQ** · **None of the three above have been click-tested live yet** — all need an authenticated Shell admin session, off-limits for me to drive. Royce to confirm: (1) Materials save-all + archive behaves correctly on the live setup page, (2) dragging a PDF onto the Jobs page actually fires the import in a real browser, (3) the Cost/Sell toggle — especially that a real sell-priced supplier PDF now computes cost correctly, and that the default Cost path is unchanged from before. _(added 2026-08-05)_
 - **EQ** · **Royce to test on his Samsung/Android Chrome** now that the code and the SMS template are live together for the first time — not yet confirmed working end-to-end. No fix exists for iOS Safari (WebOTP isn't implemented there); manual entry stays as-is on that platform.
 - **EQ** · **Not click-tested live** — no way to drive a real cross-origin Field session from this environment. Royce to confirm: open Field as an SKS admin, click "🏷 Edit category" on a supervisor, change category/role, save, confirm it reflects back on Shell's own Staff page. _(added 2026-08-05)_
@@ -41,9 +45,7 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **EQ** · **Royce to retry the actual save in the browser** to confirm end-to-end — DB-level fix is verified, only the real click-through confirms the full path. _(added 2026-08-02)_
 - **EQ** · **Staff duplicate handling — still Archive-only, needs your call before any build.** A real staff merge fans out into Field-owned operational tables (timesheets, schedule, licences, dispatch) — per the durable architecture rule, that can't be rebuilt Shell-side; it needs Field-repo coordination, which is a scope decision, not something to default on. _(added 2026-08-02)_
 - **EQ** · **Royce to click through live**: open a site, assign a supervisor from its own contact list, save, reload, confirm it sticks; toggle "Show archived" on the Sites list and confirm it filters/tags correctly. Needs a real sign-in, which is off-limits for Claude to do on your behalf. _(added 2026-08-02)_
-- **EQ** · **Royce to check `admin/users/migrate` for SKS against the 44-workers number above** — the invite screen and the 44 are counted two different ways (one by tenant employee record, one by Cards worker record), so they may not match exactly. Worth confirming they're the same gap before assuming the invite screen alone closes it. _(added 2026-08-02)_
-- **EQ** · Royce to spot-check a generated PM Asset Report live for a site that has a photo on file — confirm the band + photo layout looks right. _(added 2026-08-02)_
-_…and 101 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 104 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
@@ -51,7 +53,7 @@ _…and 101 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 0 | — |
 | eq-solves-service | ✓ success | 0d ago | 5 | 1d |
-| eq-field | ✓ success | 0d ago | 0 | — |
+| eq-field | ✓ success | -1d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
@@ -80,6 +82,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-05 | eq-shell | [#1249](https://github.com/eq-solutions/eq-shell/pull/1249) feat(ops): drag a subcontractor PDF onto the Jobs home page to st |
 | 2026-08-05 | eq-shell | [#1248](https://github.com/eq-solutions/eq-shell/pull/1248) fix(ops): widen Description column and batch-save outlet pricing  |
 | 2026-08-05 | eq-shell | [#1247](https://github.com/eq-solutions/eq-shell/pull/1247) feat(field): relay a mint-entity-patch-token credential to the Fi |
+| 2026-08-05 | eq-field | [#652](https://github.com/eq-solutions/eq-field/pull/652) v3.5.457 — Shell-embedded nav: narrow iframe left with no nav at  |
 | 2026-08-05 | eq-field | [#651](https://github.com/eq-solutions/eq-field/pull/651) v3.5.456 — Shell-embedded nav: stop giving touchscreen desktops t |
 | 2026-08-05 | eq-field | [#650](https://github.com/eq-solutions/eq-field/pull/650) feat(roster): new starters stay off the roster until start date + |
 | 2026-08-05 | eq-cards | [#218](https://github.com/eq-solutions/eq-cards/pull/218) fix(auth): read tenant_id/eq_role from JWT, not session.user.appM |
@@ -87,11 +90,12 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-04 | eq-shell | [#1246](https://github.com/eq-solutions/eq-shell/pull/1246) feat(documents): categories for the Templates tab |
 | 2026-08-04 | eq-shell | [#1231](https://github.com/eq-solutions/eq-shell/pull/1231) chore(intake): auto re-vendor eq-intake/eq-platform |
 | 2026-08-04 | eq-shell | [#1244](https://github.com/eq-solutions/eq-shell/pull/1244) fix(security): guard entity-patch against same-site confused-depu |
-| 2026-08-04 | eq-shell | [#1243](https://github.com/eq-solutions/eq-shell/pull/1243) refactor(workers): simplify invite header to two actions |
 _Showing 15 of 145 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **Only the last 10 days of signups were checked for the stuck-appMetadata pattern** — the 4 unblocked accounts are the ones caught in that window; any self-join/auto-provision-only account older than that with a never-updated `raw_app_meta_data` would still show the same symptom if they ever come back and retry. No full historical audit run. _(added 2026-08-05)_
+- **William's own Cards `public.workers.first_name/last_name` is still blank** (`""`, unchanged since signup) even though his Shell `app_data.staff` record now has his real name — the compliance-pack fix below makes Shell's copy win for that one export, but anything else that reads Cards' own `workers` table directly for display would still show blank for him specifically. Not backfilled. _(added 2026-08-05)_
 - **The *other* "Import from PDF" button (client-RFQ parser, `quote-parse-pdf`, on the create-quote form header) deliberately did NOT get the same Cost/Sell toggle** — it already extracts cost and rate as two separate fields from the document, a different data shape than the subcontractor-quote path's single ambiguous `unit_price`. Flagged, not touched. Worth a look only if Royce hits the same cost/sell confusion there too. _(added 2026-08-05)_
 - **Worth a look: `digest.md`'s "Recently built" table shows merge status, not deploy status, for every repo — but eq-cards is the one repo where those two are allowed to diverge for hours by design.** A merged eq-cards PR currently reads identically to a live one on the digest, which is exactly what caused this session's confusion. Might be worth a "manual-deploy pending" flag specific to eq-cards, or a general merged-vs-deployed distinction if other repos ever adopt the same manual-gate pattern.
 - **Environment gotcha hit mid-session, not yet root-caused**: in this worktree, Edit-tool writes to already-tracked files were invisible to Bash/PowerShell/git for 20+ minutes (ruled out simple caching lag), even with sandbox disabled — worked around by reapplying the same edits via a Python script written through Bash so it landed on the real filesystem. Worth investigating if it recurs; logged as memory `worktree-tool-filesystem-desync`. _(added 2026-08-05)_
@@ -100,9 +104,7 @@ _Showing 15 of 145 · full record in [sessions/](sessions/)_
 - **`C:\Projects\CLAUDE.md` is still the only home for Rule 0, Rule 0.5 and the load-bearing-facts list.** Rule 0.6 and the effort threshold were moved into governed substrate; the rest wasn't. That file isn't version-controlled, has no CI, and is only read by a session started in that folder. Same shadow-memory class as failure F5. _(added 2026-08-04)_
 - **Deleting the shadowed `.git/hooks/pre-commit` is held, not done.** Repointing every worktree's `core.hooksPath` to `.githooks` was tried and reverted for 4 of 5 open worktrees (`agent-af31fd71dc13a91c7`, `silly-noether-ec8a81`, `skills-list-html-908d61`, `eq-context-reflection-protocol-wt`) — their branches predate today's secret-guard delegation, so their own `.githooks/pre-commit` has zero secret-scanning in it. Repointing them would have silently removed their only secret guard, so they're back on `.git/hooks` until their branches merge or rebase past `main` (`1059f85`). Safe to repoint + delete at that point, not before. _(added 2026-08-04)_
 - **Multiple concurrent Claude sessions were pushing to eq-field's `main` throughout this session** — two real version-number collisions happened and were caught/resolved live, but this is a standing risk with the current strict-monotonic-versioning convention, not a one-off. Worth knowing if it keeps happening. _(added 2026-08-04)_
-- **Roll out past the one-person pilot** — push a real document to a real second person, get them to sign on their own phone. Royce reaffirmed this is lower priority than hardening the feature itself first. _(updated 2026-08-04)_
-- **eq-field's `sw.js` `CACHE_FIRST_PATHS` only lists `/icons/` (SKS) and `/manifest.json`, not `/icons-eq/` or the new `/manifest-eq.json`** — a pre-existing asymmetry noticed while fixing the item above (SKS assets get faster but staler cache-first serving; EQ assets are always network-first/fresh). Left alone deliberately — fixing it means deciding a caching tradeoff, not just correcting a stale value. _(added 2026-08-04)_
-_…and 402 more · [eq/pending.md](eq/pending.md)_
+_…and 404 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -124,7 +126,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 3392 | 544 | 185 | 12 |
+| [EQ](eq/pending.md) | 3429 | 550 | 192 | 12 |
 | [SKS](sks/pending.md) | 428 | 83 | 6 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 463 | 38 | 6 | 1 |
@@ -145,4 +147,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-05 07:32 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-05 08:07 UTC._

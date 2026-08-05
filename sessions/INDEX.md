@@ -1,9 +1,10 @@
 # Session Index
-_98 logs · reverse-chronological · auto-generated_
+_99 logs · reverse-chronological · auto-generated_
 
 | Date | Session |
 |------|---------|
 | 2026-08-05 | [Tenant-rule audit extended to eq-cards + eq-solves-intake, all 4 PRs merged and live](sessions/2026-08-05.md) |
+| 2026-08-05 | [2026-08-05-j](sessions/2026-08-05-j.md) |
 | 2026-08-05 | [i — Templates get real categories; migration dispatched live](sessions/2026-08-05-i.md) |
 | 2026-08-05 | [2026-08-05-h](sessions/2026-08-05-h.md) |
 | 2026-08-05 | [2026-08-05-g](sessions/2026-08-05-g.md) |
