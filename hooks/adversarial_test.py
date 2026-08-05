@@ -20,6 +20,14 @@ LESSONS = os.path.join(ROOT, "system", "lessons.md")
 SHORT = os.path.join(ROOT, "hooks", "README.md")
 NEWF = os.path.join(ROOT, "system", "brand-new-file.md")
 
+# Tells targets_mount() (hooks/pre_tool_use.py) this ROOT IS the mount, even
+# when this suite is run from a clone that isn't under a literal "projects"
+# path — e.g. a throwaway clone for clean-room verification. Set directly on
+# os.environ (not just the `env` dict below) so every subprocess call in this
+# file inherits it, including te()/tg()/run_end_gate(), which each build
+# their own env from os.environ rather than from `env`.
+os.environ.setdefault("EQ_MOUNT_ROOT", ROOT)
+
 env = dict(os.environ, EQ_FORCE_GUARD="1")
 passed = failed = 0
 
