@@ -37,10 +37,10 @@ _If this file is >48h old, the cron is broken._
 |--------|-------|--------|
 | Sites | 221 | app_data.sites |
 | Customers | 39 | app_data.customers |
-| Assets | 2,836 | app_data.assets |
+| Assets | 2,841 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
 | Users | 5 | service.tenant_members |
-| Maintenance checks | 34 | service.maintenance_checks |
+| Maintenance checks | 35 | service.maintenance_checks |
 | Defects | 0 | service.defects |
 
 **SKS tenant ID on ehow:** `7dee117c-98bd-4d39-af8c-2c81d02a1e85`
