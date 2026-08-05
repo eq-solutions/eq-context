@@ -1,9 +1,10 @@
 # Session Index
-_95 logs · reverse-chronological · auto-generated_
+_96 logs · reverse-chronological · auto-generated_
 
 | Date | Session |
 |------|---------|
 | 2026-08-05 | [Tenant-rule audit extended to eq-cards + eq-solves-intake, all 4 PRs merged and live](sessions/2026-08-05.md) |
+| 2026-08-05 | [2026-08-05-g](sessions/2026-08-05-g.md) |
 | 2026-08-05 | [2026-08-05-f](sessions/2026-08-05-f.md) |
 | 2026-08-05 | [2026-08-05-e](sessions/2026-08-05-e.md) |
 | 2026-08-05 | [d — F9 wiring-gap follow-up (task_94836df0): answered, fixed, and the shared checkout reconciled](sessions/2026-08-05-d.md) |
