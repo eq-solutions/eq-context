@@ -14,6 +14,20 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: EQ-SHELL-10/19 "auth-stall: chunk-error" — a second, distinct root cause found and fixed, merged + live (2026-08-05)
+*Same noisy Sentry bucket as the "mislabeling" entry below (still Royce's to ship) — a different, complementary cause, not a duplicate or a contradiction. That fix stops unrelated crashes from being filed under the misleading `chunk-error` name; this one eliminates one specific crash outright. EQ-SHELL-10 had already been resolved once before, for an unrelated cause (missing-email-address crashes, see the 2026-07-31 "Richard Brown" entry further down) — it regressed because this new cause started firing, not because that old fix broke.*
+
+- [x] **Root cause: `generateBrief()` in `briefing-engine.ts` trusted Claude's `submit_briefing` tool output shape with no runtime check.** `tool_choice` forces the tool call but doesn't guarantee the arguments match the schema — in production, `brief` arrived as a plain string instead of `string[]`. `TenantHome.tsx`'s render guard passed anyway (any truthy value with a numeric `.length` slips through), so it reached `.map()` and crashed the `/sks` dashboard. `ChunkErrorBoundary` caught the throw and reported it two ways — `Sentry.captureMessage` (EQ-SHELL-10) and `Sentry.captureException` (EQ-SHELL-19) — one incident, two Sentry groupings, confirmed from the captured event's extra data (`message: "l.brief.map is not a function"`, `phase: "stuck-crash"`) already relayed in the task, not assumed.
+- [x] **Same gap also risked silently dropping the daily briefing email** — `scheduled-briefing.ts`'s renderer reads the same `generateBrief()` output with identical unguarded `.map()`/`.length` calls on `brief`/`actions`/`on_shift`. No crash screen, no Sentry event, just a briefing that never sends. Fixed once at the shared source (`generateBrief()`) instead of patching each consumer separately.
+- [x] **Fix + hardening**: new `asStringArrayOrNull`/`asArray<T>` helpers coerce a wrong-shaped field to a safe default and report to Sentry if it happens again, so schema drift stays visible instead of silently degrading. `TenantHome.tsx`'s render guard also got an explicit `Array.isArray` check, closing the narrow window where a bad shape already sitting in the 10-minute `briefing_cache` could survive one more read post-deploy. `tsc -b --force`, full `pnpm run build`, and the test suite (293/293, incl. 7 new regression tests reproducing the exact production failure) all clean — verified in an isolated worktree off `origin/main`, not just the branch it started on. eq-shell [PR #1255](https://github.com/eq-solutions/eq-shell/pull/1255), squash-merged (`a532eb64`) per Royce's "merge #1255". Deploy confirmed live via the Netlify MCP (production `commit_ref` matches the merge commit exactly) plus a smoke test against `core.eq.solutions` itself, not just the deploy preview.
+- [x] **Sentry MCP was unauthenticated this session** (non-interactive, can't run OAuth) — root-caused entirely from the event facts already relayed in the task prompt (from an earlier `get_sentry_resource` call) plus static analysis of the render path and both `generateBrief()` consumers. Never queried Sentry directly.
+
+**Deferred:**
+- [ ] **Royce to confirm the SKS dashboard loads cleanly** — needs an authenticated session, off-limits for Claude to drive. _(added 2026-08-05)_
+- [ ] **Whether EQ-SHELL-10's event rate actually drops post-deploy is unconfirmed** — this fix addresses one specific captured cause; the still-unshipped "mislabeling" fix below addresses a separate labeling issue in the same Sentry bucket, so today's 27-events/day figure may partly reflect that unshipped piece too. Needs a few days of post-deploy data, and Sentry MCP reauthorization, to actually confirm. _(added 2026-08-05)_
+
+---
+
 ## eq-field: Birthdays & Anniversaries dashboard widget only showed up sometimes — root-caused and fixed, live (2026-08-05)
 *Royce: "every now and then birthdays and anniversaries show up on the main dashboard but not everytime."*
 
