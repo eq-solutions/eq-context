@@ -8,19 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-05 12:09 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-05 12:20 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-05 11:55 UTC → 2026-08-05 12:09 UTC)
+## Since last refresh (2026-08-05 12:09 UTC → 2026-08-05 12:20 UTC)
 
-- Merged: eq-shell [#1246](https://github.com/eq-solutions/eq-shell/pull/1246) feat(documents): categories for the Templates tab
-- Merged: eq-shell [#1244](https://github.com/eq-solutions/eq-shell/pull/1244) fix(security): guard entity-patch against same-site confused
-- Merged: eq-shell [#1242](https://github.com/eq-solutions/eq-shell/pull/1242) feat(staff): actual back-photo preview instead of a text-onl
-- Merged: eq-shell [#1241](https://github.com/eq-solutions/eq-shell/pull/1241) feat(documents): bulk upload for Templates (T3)
-- Merged: eq-shell [#1239](https://github.com/eq-solutions/eq-shell/pull/1239) feat(documents): Templates upload CTA + Register archive act
-- Merged: eq-shell [#1238](https://github.com/eq-solutions/eq-shell/pull/1238) feat(licences): show the uploaded photo/PDF as a manual-fill
-- Merged: eq-shell [#1236](https://github.com/eq-solutions/eq-shell/pull/1236) fix(staff): require supervisor_category when is_supervisor i
-- Merged: eq-shell [#1231](https://github.com/eq-solutions/eq-shell/pull/1231) chore(intake): auto re-vendor eq-intake/eq-platform
-- ✅ Needs you: 10 → 9
+- Merged: eq-shell [#1245](https://github.com/eq-solutions/eq-shell/pull/1245) feat(field): Bearer credential so Field can trigger a Shell-
+- Merged: eq-shell [#1243](https://github.com/eq-solutions/eq-shell/pull/1243) refactor(workers): simplify invite header to two actions
+- Merged: eq-shell [#1240](https://github.com/eq-solutions/eq-shell/pull/1240) feat(staff): "back on file" indicator for licence photos
+- Merged: eq-shell [#1237](https://github.com/eq-solutions/eq-shell/pull/1237) fix(staff): hide Company field for Direct, require supervisi
+- Merged: eq-shell [#1235](https://github.com/eq-solutions/eq-shell/pull/1235) fix(licences): timeout the OCR auto-read chain instead of ha
+- Merged: eq-shell [#1234](https://github.com/eq-solutions/eq-shell/pull/1234) feat(staff): back-photo support in admin licence backfill
+- Merged: eq-shell [#1233](https://github.com/eq-solutions/eq-shell/pull/1233) fix(deps): bump fast-uri to 4.1.2 (CVE-2026-18446)
+- Merged: eq-shell [#1232](https://github.com/eq-solutions/eq-shell/pull/1232) fix(invites): recover gracefully from a raced duplicate invi
 
 ## ⚠ Needs you (9)
 
@@ -34,10 +33,11 @@ _2026-08-05 12:09 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🟠 **Cron failing** — `adversarial-suite.yml` 1 consecutive scheduled run(s) failed, last success 2026-08-03 · [failures.md](system/failures.md) F11
 - 🟠 **Cron failing** — `backup-eq-canonical.yml` 1 consecutive scheduled run(s) failed, last success 2026-08-04 · [failures.md](system/failures.md) F11
 
-## 🙋 Waiting on you (103)
+## 🙋 Waiting on you (104)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
+- **EQ** · **Not click-tested on a real iOS device with Field added to the home screen** — Royce to confirm the maps icon now hands off to the Maps app instead of doing nothing. _(added 2026-08-05)_
 - **EQ** · **Royce to confirm the SKS dashboard loads cleanly** — needs an authenticated session, off-limits for Claude to drive. _(added 2026-08-05)_
 - **EQ** · **Not click-tested live by a real signed-in user** — everything above was verified at the function level and via the deploy preview's boot path, not by an authenticated session actually seeing the widget populate with real people. Royce to confirm on `field.eq.solutions` (or the Shell embed) that Birthdays & Anniversaries now shows up reliably from a fresh Dashboard landing. _(added 2026-08-05)_
 - **EQ** · **Neither fix has been click-tested live** — Royce to confirm: (1) the address fields save and display correctly on a real staff member, desktop and mobile, (2) re-downloading William's compliance pack now shows "William Hong" instead of "Unknown." _(added 2026-08-05)_
@@ -49,8 +49,7 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **EQ** · **Not confirmed by Royce on the real embedded session** — everything above was verified against a standalone repro (deploy preview + forced `.shell-mode` class), not the actual `core.eq.solutions/sks/field` iframe Royce was looking at (no way to drive that cross-origin session from this environment). Royce to hard-refresh (or bypass the service worker) and confirm the nav bar is back. _(added 2026-08-05)_
 - **EQ** · **Sign-off records can be read or overwritten by any signed-in person on the same tenant, not just the person they belong to.** Investigated 2026-08-04 (sprint task T1): the obvious fix (`signer_user_id = auth.uid()`) would break real signing — eq-field's data-plane JWT sets `sub` to the tenant id for every user, not the actor, so `auth.uid()` on the real sign path never equals the signer. Closing this needs an identity-model decision, not a migration. Royce's call: leave deferred, revisit alongside a real second-signer rollout. _(updated 2026-08-04)_
 - **EQ** · **Show mode not yet click-tested on a real device with network disabled.** Verified: analyzer clean, full test suite (255 tests) passes, `flutter build web` succeeds and boots with zero console errors via a static preview — but never signed in as a real worker and tapped it (real login is off-limits for me to do on Royce's behalf). Royce to confirm brightness/wakelock/offline behaviour actually work as intended. _(added 2026-08-03)_
-- **EQ** · **Sentry MCP connector needs Royce to reconnect** — "user's connection to this connector was invalidated" mid-session; `search_issues`/`search_events` unavailable for the rest of the session, worked around via code + live DB reads instead. _(added 2026-08-04)_
-_…and 91 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 92 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
@@ -90,11 +89,11 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-05 | eq-shell | [#1249](https://github.com/eq-solutions/eq-shell/pull/1249) feat(ops): drag a subcontractor PDF onto the Jobs home page to st |
 | 2026-08-05 | eq-shell | [#1248](https://github.com/eq-solutions/eq-shell/pull/1248) fix(ops): widen Description column and batch-save outlet pricing  |
 | 2026-08-05 | eq-shell | [#1247](https://github.com/eq-solutions/eq-shell/pull/1247) feat(field): relay a mint-entity-patch-token credential to the Fi |
+| 2026-08-05 | eq-field | [#656](https://github.com/eq-solutions/eq-field/pull/656) v3.5.461 — Dashboard licence-expiry alert is now supervisor-only |
 | 2026-08-05 | eq-field | [#655](https://github.com/eq-solutions/eq-field/pull/655) v3.5.459 — My Schedule maps link silently did nothing on iOS home |
 | 2026-08-05 | eq-field | [#654](https://github.com/eq-solutions/eq-field/pull/654) v3.5.459 — Dashboard licence alert now reads canonical EQ Cards l |
 | 2026-08-05 | eq-field | [#653](https://github.com/eq-solutions/eq-field/pull/653) v3.5.458 — dashboard: fix intermittent blank Birthdays & Annivers |
 | 2026-08-05 | eq-field | [#652](https://github.com/eq-solutions/eq-field/pull/652) v3.5.457 — Shell-embedded nav: narrow iframe left with no nav at  |
-| 2026-08-05 | eq-field | [#651](https://github.com/eq-solutions/eq-field/pull/651) v3.5.456 — Shell-embedded nav: stop giving touchscreen desktops t |
 _Showing 15 of 139 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -131,7 +130,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 3210 | 541 | 83 | 12 |
+| [EQ](eq/pending.md) | 3223 | 542 | 87 | 12 |
 | [SKS](sks/pending.md) | 404 | 82 | 0 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 424 | 38 | 2 | 1 |
@@ -141,10 +140,10 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | Date | Session |
 |------|---------|
 | 2026-08-05 | [Tenant-rule audit extended to eq-cards + eq-solves-intake, all 4 PRs merged and live](sessions/2026-08-05.md) |
+| 2026-08-05 | [y — My Schedule maps link fixed (iOS home-screen installs)](sessions/2026-08-05-y.md) |
 | 2026-08-05 | [x — Sentry confirmed EQ-SHELL-10/19 live, then a /decide pass found F6/F7 were a false alarm and surfaced a genuinely new incident (F12)](sessions/2026-08-05-x.md) |
 | 2026-08-05 | [v — Root-caused the pending.md bloat as a 4-day-old broken cron, fixed it, then closed the actual gap as F11](sessions/2026-08-05-v.md) |
 | 2026-08-05 | [u — Opened the chunk-error PR and closed out F10 (rung 1 → 4)](sessions/2026-08-05-u.md) |
-| 2026-08-05 | [t — Fixed guard.js worktree-detection false positives on Git-Bash-style paths (all 3 rules)](sessions/2026-08-05-t.md) |
 _[sessions/](sessions/) · 5 shown_
 
 ## Substrate honesty
@@ -152,4 +151,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-05 12:09 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-05 12:20 UTC._
