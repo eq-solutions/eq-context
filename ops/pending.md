@@ -14,6 +14,37 @@ for operational support: tax, entities, infrastructure, substrate.
 
 ---
 
+## Adversarial suite (F2/F7) false-failed on a clean clone — not F9, two harness bugs (2026-08-05)
+
+3 cases in both `hooks/adversarial_test.py` and `.sh` were reported failing against
+origin/main, suspected to be the F9 hardening commits interacting badly with F2/F7's
+sandbox simulation. Root-caused instead to two pre-existing, unrelated bugs in the test
+harness itself — confirmed the F9 hypothesis is wrong by running commit `37989be`
+(pre-dating today's F9 work) from a bad clone location and getting the identical 3
+failures; a `/Projects`-pathed clone at origin/main passed 75/0 clean.
+
+**Bug 1 — location-dependence.** `targets_mount()` in `hooks/pre_tool_use.py` requires a
+literal `/projects/` path segment. The suite's own F2/F7 fixtures (`CLAUDE_MD`, `LESSONS`,
+the F7 NUL-scan repo) are built from wherever the test file itself is checked out — so a
+clean-room clone placed anywhere without that segment spuriously fails, on any commit.
+
+**Bug 2 — a Git-Bash/MSYS quirk in `adversarial_test.sh` specifically**, found while
+wiring up the fix for Bug 1: launching a native `python3.exe` from bash auto-translates
+POSIX-looking env vars to Windows-style paths, but not the same-looking text inside a
+JSON payload piped over stdin — so `EQ_MOUNT_ROOT` (env var) and a `$R`-based file path
+(JSON text) stopped matching each other.
+
+- [x] Added an `EQ_MOUNT_ROOT` override to `targets_mount()`/`resolve()`, mirroring the
+  existing `EQ_CONTEXT` pattern for F9 — inert in every real session, set only by the two
+  test files. Fixed Bug 2 by routing `$R` through `cygpath -w` once in
+  `adversarial_test.sh` and using that consistently for JSON-embedded paths.
+- [x] Verified 0 failures across all four combinations (good/bad location × `.py`/`.sh`):
+  75/0 and 36/0 throughout, no change to real-session behavior.
+- [ ] **PR open, not yet reviewed/merged**: [eq-context#128](https://github.com/eq-solutions/eq-context/pull/128)
+  — CI (`adversarial-suite.yml`) should validate cross-platform before merge. _(added 2026-08-05)_
+
+---
+
 ## core.hooksPath worktree-scope shadow regressed F8 for ~1 day — root-caused, drift-check proposed (2026-08-05)
 
 `extensions.worktreeConfig` is `true` repo-wide, which means `core.hooksPath` can be
