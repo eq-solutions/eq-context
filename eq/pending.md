@@ -23,7 +23,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **Confirmed unrelated, real Sentry regression (EQ-SHELL-10/19) already found and fixed by a separate concurrent session same day** — see the eq-shell section above/nearby in this file; not re-litigated here.
 
 **Deferred:**
-- [ ] **PR #657 not yet merged** — awaiting Royce's explicit go, same as every other PR this sprint.
+- [x] **PR #657 merged** (squash `a487b97f`, Royce's "merge #657" go, CI freshly re-checked green — Tests + lint, all Netlify checks — `mergeStateStatus: CLEAN` confirmed before merge). Worktree + local branch removed.
 - [ ] **Opening access beyond the hardcoded single-email nav gate** — deliberately sequenced AFTER #657 lands, not part of it. The actual mechanism (where in `index.html` the gate lives, which emails/roles to allow) hasn't been scoped yet. _(added 2026-08-05)_
 - [ ] **Physical-signature-as-photo-upload** — real option, small lift, not confirmed for build. _(added 2026-08-05)_
 - [ ] **"Easily accessible" and "easy for management to prove" beyond what's already built** — no further scoping done yet; revisit once access is actually opened and there's real multi-person usage to learn from. _(added 2026-08-05)_
