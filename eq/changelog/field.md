@@ -9,6 +9,12 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-08-05] New starters stay off the roster/dispatch/timesheets until their start date, plus a Starting Soon countdown (#650)
+- Direct Royce ask: new onboards' `start_date` wasn't respected anywhere — it was display-only (a label on the person's card, the anniversary widget's input) everywhere in eq-field. The only thing that ever kept someone off the live roster was the manual `on_roster` toggle, defaults on, easy to forget. A new hire entered a month ahead of their real start date sat in the live roster, dispatch board, and timesheet-completion tracker the whole time.
+- New `personHasFutureStart()` gate (people.js, null-safe like the existing DOB/anniversary helpers), added to every roster/dispatch/timesheet filter (roster.js × 3 sites, timesheets.js × 2 sites) and to dashboard.js's "unrostered gap" flagging, so a not-yet-started hire is never flagged as a gap either.
+- New unbounded "Starting Soon" dashboard widget — every future starter, soonest first, with a "starts in N days" countdown — mirrors the existing Birthdays & Anniversaries widget's shape exactly.
+- Verified: `npx eslint@9` clean (same pre-existing warning set as main), full test suite green, `node --check` on every touched script. No `APP_VERSION` bump in this PR.
+
 ## [2026-08-05] SKS Supervision category/role editable from Field, via Core (v3.5.455, #649)
 - SKS supervisors have been Shell-owned/read-only in Field since v3.5.206 — fixing a wrong category meant going to Core every time. New scoped "🏷 Edit category" action (`is_supervisor`/`supervisor_role`/`supervisor_category` only, not the full contact record).
 - Field never holds a write credential of its own: requests a fresh ~60s Bearer token from Shell per save (`_requestEntityPatchToken`, mirrors the existing `#sh=` JWT-refresh postMessage bridge) and calls Shell's `entity-patch` directly. Companion eq-shell PRs #1244/#1245/#1247.
