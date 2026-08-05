@@ -1,13 +1,17 @@
 ---
 title: EQ Cards — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-04
+last_updated: 2026-08-05
 scope: EQ Cards append-only history. NOTE — duplicates eq/changelog/cards.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # EQ Cards — Changelog
+
+## 2026-08-05 (PR #213 MERGED, DEPLOYED — WebOTP auto-fill for phone sign-in)
+- **Chrome/Android now auto-fills and auto-submits the SMS sign-in code instead of requiring manual entry.** Root cause of Royce's "won't autofill" + "not logging in automatically" reports: Cards' CanvasKit renderer paints to a `<canvas>`, not real DOM inputs, and nothing was listening for the incoming SMS at all. New `WebOtpListener` (`webotp_bridge.dart`/`_stub`/`_web`) feature-detects via `'OTPCredential' in window` and falls straight through to manual entry on every unsupported browser (all of iOS included). Built on `package:web` + `dart:js_interop` — `dart:js_util` no longer exists on this Flutter SDK. eq-cards [PR #213](https://github.com/eq-solutions/eq-cards/pull/213), merged, deployed. Required a companion SMS-template change on jvkn's Supabase Auth dashboard (not code, not in this repo).
+- **Surfaced a real gap along the way**: eq-cards' deploy is `workflow_dispatch`-only (deliberate, since 2026-0x-xx) — merging to `main` runs CI but does not ship to prod. The first round of testing failed simply because nothing had triggered a deploy since 8 hours before this PR merged, not because of a code bug. See `sessions/2026-08-05-c.md` for the full trace.
 
 ## 2026-08-04 (PRs #206/#207/#208/#209/#210 MERGED, DEPLOYED — profile polish, SSO handoff reliability, identity-fragmentation fix, invite dedup)
 - **Profile polish batch** — email/mobile prefill from the sign-in session, Trade + Emergency Contact Relationship converted to dropdown + "Other" free text, Android keyboard now resizes the layout instead of covering the app (`interactive-widget=resizes-content`), home icon on Edit Profile's app bar for an explicit way back to the Wallet. eq-cards [PR #206](https://github.com/eq-solutions/eq-cards/pull/206), merged, deployed.
