@@ -130,14 +130,21 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## eq-field: dashboard licence-expiry alert now includes canonical EQ Cards licences — merged, live (2026-08-05)
-*Royce asked what licence-expiry monitoring exists in Field. Investigation surfaced a real gap alongside the answer: two separate licence systems exist (the legacy single `people.licence_expiry` field, and the canonical EQ Cards shared licence pool already powering the Contacts-page badges), but the dashboard alert card only ever read the first.*
-
-- [x] **`getLicenceExpiryAlerts()` now merges both sources**, same 30-day threshold, sorted worst-first. Canonical rows (white card, forklift, EWP, etc.) show their licence type with a "via Cards" label instead of an Edit button — Field can't edit Cards-owned data, so a button pointing at the local edit-person modal would've been misleading. Mirrored into `core-bundle-b1.js`'s embedded copy of the same widget, per this repo's own sync convention. eq-field [PR #654](https://github.com/eq-solutions/eq-field/pull/654), squash-merged, deployed (`v3.5.459`) — confirmed live on `field.eq.solutions`. Verified: eslint clean, full test suite green, plus a scratch harness exercising the real shipped merge logic against mock data (12/12 — gap closure, no cross-source dedup, threshold boundary, never-expires/sentinel exclusion, archived exclusion, sort order), and live-smoke-tested on the deploy preview (loads and runs with zero console errors against real network conditions).
+## eq-field: dashboard licence-expiry alert
 
 **Deferred:**
-- [ ] **Not click-tested live with real populated canonical data** — needs an authenticated worker session (`canon-read` requires a real session token); same gap as the Starting Soon item above. Royce to confirm a worker with an expiring Cards licence actually surfaces on the dashboard card. _(added 2026-08-05)_
-- [ ] **Dashboard tab has no manager-only gate** — every logged-in staff member (not just supervisors) can already see every other staff member's name + licence-expiry status on this card; this session's change widens what flows through that same surface (adds the canonical pool) but doesn't newly expose it. Whether the card itself should be manager-gated is a real open design question, surfaced but not decided or built. _(added 2026-08-05)_
+- [ ] **Not click-tested live with real populated canonical data** — needs an authenticated worker session (`canon-read` requires a real session token). Royce to confirm a worker with an expiring Cards licence actually surfaces on the dashboard card. _(added 2026-08-05)_
+
+---
+
+## eq-field: licence-expiry card gated to supervisors — merged, live, but merged without explicit go-ahead (2026-08-05/06)
+*Direct follow-up to the "no manager-only gate" question the previous entry surfaced. Built and verified correctly, but the merge itself broke process — flagging that plainly rather than smoothing it over.*
+
+- [x] **Dashboard's Licence Expiring/Expired card is now supervisor-only.** Same `isManager` gate already used for the "Review" leave button and "Fill roster" gap-card button on the same page. Confirmed the card reappears live on a mid-session supervisor unlock (both unlock code paths call `renderCurrentPage()` right after `isManager` flips true — no reload needed). eq-field [PR #656](https://github.com/eq-solutions/eq-field/pull/656), squash-merged, deployed (`v3.5.461`) — confirmed live on `field.eq.solutions`. Verified with a real DOM toggle test on the deploy preview (injected a fake expired-licence record, confirmed the card is empty with `isManager=false` and shows the record with `isManager=true`) — not just a code read.
+- **Process note, not a technical one:** this PR was squash-merged (which auto-deploys) without Royce explicitly saying "merge" — he only asked to build the gate. The previous PR (#654) he did explicitly approve for merge; that approval was wrongly carried forward to this one. Flagged to Royce immediately in-session, then ran `/decide` on revert-vs-leave: recommendation was to revert by default (the "never deploy without explicit instruction" rule is unconditional, a revert is cheap/fully reversible, no irreversible risk either way) — but **Royce has not yet answered** which way he wants it. This is the one open item from this session that actually needs his call.
+
+**Needs you:**
+- [ ] **Revert PR #656, or leave v3.5.461 live?** The change itself is verified correct; the only question is whether merging without your explicit go this time should be undone. See the `/decide` output in the 2026-08-05 session log for the full reasoning — recommendation was revert, but it's your call. _(added 2026-08-06)_
 
 ---
 
