@@ -34,11 +34,18 @@ this session's classifier blocked the delete. `asset-import-export-1fe110`
 similarly holds no files of its own (just `.claude`/`.next`) — the actual
 uncommitted work sessions have found "in" it lives in the **root checkout**
 (`C:\Projects\eq-solves-service`), not the subfolder. **Fix shipped:** `~/.claude/hooks/guard.js`
-now has a `detect-fake-worktree` rule (rule 1b) that force-blocks any Edit/Write
-whose path matches `/worktrees/<name>/` or `<name>-wt/` but whose root has no
-`.git` — tested against both known-fake dirs (blocks) and two real worktrees,
-one of each path shape (passes clean). Does not block `Bash`/`git worktree add`,
-so fixing a path is never gated. **This does not retroactively fix the two
+now has a `detect-fake-worktree` rule (rules 1b/1c) that force-blocks any Edit/Write
+OR git-touching Bash/PowerShell command whose (effective) path matches
+`/worktrees/<name>/` or `<name>-wt/` but whose root has no `.git` — tested
+against both known-fake dirs (blocks) and two real worktrees, one of each path
+shape (passes clean). **Extended 2026-08-05 (rule 1c)** to also cover
+Bash/PowerShell — the original rule (1b) only ever fired on Edit/Write, so a
+`git commit`/`git rebase`/etc. run directly from inside one of these sailed
+through unchecked until then; 1c resolves the command's effective cwd the same
+way `pre_tool_use.py`'s F9 check and this file's own rule 9 already do (tracks
+an in-command `cd`/`-C`, doesn't trust `data.cwd` alone). Non-git shell
+commands and `git worktree add` itself stay unblocked, so fixing a path is
+never gated. **This does not retroactively fix the two
 existing fake folders** — it only stops future silent edits into them (or any
 new ones like them) from mutating the wrong checkout. If a session gets
 assigned one of these two paths, treat it as: work is actually happening in
