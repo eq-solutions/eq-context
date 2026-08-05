@@ -1,9 +1,15 @@
 # Session Index
-_104 logs · reverse-chronological · auto-generated_
+_110 logs · reverse-chronological · auto-generated_
 
 | Date | Session |
 |------|---------|
 | 2026-08-05 | [Tenant-rule audit extended to eq-cards + eq-solves-intake, all 4 PRs merged and live](sessions/2026-08-05.md) |
+| 2026-08-05 | [u — Opened the chunk-error PR and closed out F10 (rung 1 → 4)](sessions/2026-08-05-u.md) |
+| 2026-08-05 | [t — Fixed guard.js worktree-detection false positives on Git-Bash-style paths (all 3 rules)](sessions/2026-08-05-t.md) |
+| 2026-08-05 | [2026-08-05-s](sessions/2026-08-05-s.md) |
+| 2026-08-05 | [r — Fixed the effective_cwd() cd-regex anchoring bug found earlier today](sessions/2026-08-05-r.md) |
+| 2026-08-05 | [2026-08-05-q](sessions/2026-08-05-q.md) |
+| 2026-08-05 | [eq-field: Birthdays & Anniversaries dashboard widget fixed (intermittent → self-healing)](sessions/2026-08-05-p.md) |
 | 2026-08-05 | [o — Root-caused eq-shell's "auth-stall: chunk-error" Sentry P0, fix ready on its own branch](sessions/2026-08-05-o.md) |
 | 2026-08-05 | [2026-08-05-n](sessions/2026-08-05-n.md) |
 | 2026-08-05 | [2026-08-05-m](sessions/2026-08-05-m.md) |
