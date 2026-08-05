@@ -8,25 +8,23 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-05 07:04 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-05 07:08 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-05 06:17 UTC → 2026-08-05 07:04 UTC)
+## Since last refresh (2026-08-05 07:04 UTC → 2026-08-05 07:08 UTC)
 
-- Merged: eq-shell [#1252](https://github.com/eq-solutions/eq-shell/pull/1252) feat(ops): ask cost vs. sell when importing a subcontractor 
-- Merged: eq-shell [#1236](https://github.com/eq-solutions/eq-shell/pull/1236) fix(staff): require supervisor_category when is_supervisor i
-- Merged: eq-shell [#1234](https://github.com/eq-solutions/eq-shell/pull/1234) feat(staff): back-photo support in admin licence backfill
-- Merged: eq-shell [#1230](https://github.com/eq-solutions/eq-shell/pull/1230) fix(ops): add FK constraint on app_data.jobs.quote_id
-- Merged: eq-shell [#1229](https://github.com/eq-solutions/eq-shell/pull/1229) fix(auth): guard shell-join-tenant's existing-user phone mat
-- Merged: eq-shell [#1224](https://github.com/eq-solutions/eq-shell/pull/1224) feat(ops): collapse repeat-customer quote groups on the Kanb
-- Merged: eq-shell [#1223](https://github.com/eq-solutions/eq-shell/pull/1223) fix(ops): po-matched status never synced the canonical job r
-- Merged: eq-shell [#1222](https://github.com/eq-solutions/eq-shell/pull/1222) feat(documents): sign-off certificate PDF + document templat
-- ⚠ Needs you: 3 → 5 (new items)
+- Merged: eq-shell [#1251](https://github.com/eq-solutions/eq-shell/pull/1251) feat(staff): add home address fields to Staff edit (desktop 
+- Merged: eq-shell [#1250](https://github.com/eq-solutions/eq-shell/pull/1250) fix(staff): compliance-pack export shows Unknown for names o
+- Merged: eq-shell [#1237](https://github.com/eq-solutions/eq-shell/pull/1237) fix(staff): hide Company field for Direct, require supervisi
+- Merged: eq-shell [#1235](https://github.com/eq-solutions/eq-shell/pull/1235) fix(licences): timeout the OCR auto-read chain instead of ha
+- Merged: eq-shell [#1233](https://github.com/eq-solutions/eq-shell/pull/1233) fix(deps): bump fast-uri to 4.1.2 (CVE-2026-18446)
+- Merged: eq-shell [#1232](https://github.com/eq-solutions/eq-shell/pull/1232) fix(invites): recover gracefully from a raced duplicate invi
+- Merged: eq-shell [#1228](https://github.com/eq-solutions/eq-shell/pull/1228) fix(documents): sign-off reminder cadence to a uniform 7 day
+- Merged: eq-shell [#1227](https://github.com/eq-solutions/eq-shell/pull/1227) fix(ops): collapsed group header count/total hidden for long
+- ✅ Needs you: 5 → 3
 
-## ⚠ Needs you (5)
+## ⚠ Needs you (3)
 
 - 🔴 **Sentry 27 events today** — `eq-shell` [auth-stall: chunk-error](https://eq-solutions.sentry.io/issues/137294044/)
-- 🔴 **Substrate drift** — DRIFT: deploy EQ Shell (core) (https://core.eq.solutions): claimed LIVE but reality looks DEAD
-- 🔴 **Substrate drift** — DRIFT: deploy EQ Service (Netlify) (https://eq-solves-service.netlify.app): claimed LIVE but reality looks DEAD
 - 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-9 (P0 — confirmed exposure, same window as SEC-3, possible second exposure 2026-07-27) — A different service_role key (`jvkn`/eq-canonical) was pasted directly into a ch · [security-register.md](ops/security-register.md)
 
@@ -52,9 +50,9 @@ _…and 99 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 3 | 0d |
+| eq-shell | ✓ success | 0d ago | 1 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 5 | 1d |
-| eq-field | ✓ success | 0d ago | 1 | 0d |
+| eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
@@ -76,10 +74,13 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-05 | eq-shell | [#1251](https://github.com/eq-solutions/eq-shell/pull/1251) feat(staff): add home address fields to Staff edit (desktop + mob |
+| 2026-08-05 | eq-shell | [#1250](https://github.com/eq-solutions/eq-shell/pull/1250) fix(staff): compliance-pack export shows Unknown for names only e |
 | 2026-08-05 | eq-shell | [#1252](https://github.com/eq-solutions/eq-shell/pull/1252) feat(ops): ask cost vs. sell when importing a subcontractor PDF |
 | 2026-08-05 | eq-shell | [#1249](https://github.com/eq-solutions/eq-shell/pull/1249) feat(ops): drag a subcontractor PDF onto the Jobs home page to st |
 | 2026-08-05 | eq-shell | [#1248](https://github.com/eq-solutions/eq-shell/pull/1248) fix(ops): widen Description column and batch-save outlet pricing  |
 | 2026-08-05 | eq-shell | [#1247](https://github.com/eq-solutions/eq-shell/pull/1247) feat(field): relay a mint-entity-patch-token credential to the Fi |
+| 2026-08-05 | eq-field | [#650](https://github.com/eq-solutions/eq-field/pull/650) feat(roster): new starters stay off the roster until start date + |
 | 2026-08-05 | eq-cards | [#218](https://github.com/eq-solutions/eq-cards/pull/218) fix(auth): read tenant_id/eq_role from JWT, not session.user.appM |
 | 2026-08-04 | eq-shell | [#1245](https://github.com/eq-solutions/eq-shell/pull/1245) feat(field): Bearer credential so Field can trigger a Shell-side  |
 | 2026-08-04 | eq-shell | [#1246](https://github.com/eq-solutions/eq-shell/pull/1246) feat(documents): categories for the Templates tab |
@@ -88,9 +89,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-04 | eq-shell | [#1243](https://github.com/eq-solutions/eq-shell/pull/1243) refactor(workers): simplify invite header to two actions |
 | 2026-08-04 | eq-shell | [#1242](https://github.com/eq-solutions/eq-shell/pull/1242) feat(staff): actual back-photo preview instead of a text-only bad |
 | 2026-08-04 | eq-shell | [#1240](https://github.com/eq-solutions/eq-shell/pull/1240) feat(staff): "back on file" indicator for licence photos |
-| 2026-08-04 | eq-shell | [#1241](https://github.com/eq-solutions/eq-shell/pull/1241) feat(documents): bulk upload for Templates (T3) |
-| 2026-08-04 | eq-shell | [#1239](https://github.com/eq-solutions/eq-shell/pull/1239) feat(documents): Templates upload CTA + Register archive action |
-| 2026-08-04 | eq-shell | [#1238](https://github.com/eq-solutions/eq-shell/pull/1238) feat(licences): show the uploaded photo/PDF as a manual-fill back |
 _Showing 15 of 145 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -145,7 +143,7 @@ _[sessions/](sessions/) · 5 shown_
 
 ## Substrate honesty
 
-✗ Drift detected — see **Needs you** above. Source: `scripts/substrate_honesty.py`.
+✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-05 07:04 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-05 07:08 UTC._
