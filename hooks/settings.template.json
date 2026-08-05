@@ -1,5 +1,5 @@
 {
-  "_comment": "Thin pointer. Copy this ENTIRE hooks block into C:/Users/EQ/.claude/settings.json (USER scope) -- root-scope-only wiring (C:/Projects/.claude/settings.json) silently doesn't fire for a session launched inside a repo or worktree, which is the common case. That gap hit SessionStart (fixed 2026-07-12) and then pre_tool_use.py's F9 check (fixed 2026-08-05, system/failures.md -> F9 recurrence 4) before this template was corrected to match. The LOGIC lives in the governed, versioned repo (eq-context/hooks/); nothing here but wiring -- see Phase 4: facts live in one place. Forward slashes only, everywhere in this file including comments -- backslash Windows paths get silently mangled by this harness's hook-command parsing (found + fixed 2026-07-27, sessions/2026-07-27.md) and can produce invalid JSON if hand-edited carelessly (found 2026-08-05). auto_pr_guard.py is a real, built rung-4 guard (hooks/README.md) but intentionally NOT wired below yet -- it's inert without EQ_AUTO_PR_MODE=1 and has no scheduled/automated run to protect; wire it here when that changes.",
+  "_comment": "Thin pointer. Copy this ENTIRE hooks block into C:/Users/EQ/.claude/settings.json (USER scope) -- root-scope-only wiring (C:/Projects/.claude/settings.json) silently doesn't fire for a session launched inside a repo or worktree, which is the common case. That gap hit SessionStart (fixed 2026-07-12) and then pre_tool_use.py's F9 check (fixed 2026-08-05, system/failures.md -> F9 recurrence 4) before this template was corrected to match. The LOGIC lives in the governed, versioned repo (eq-context/hooks/); nothing here but wiring -- see Phase 4: facts live in one place. Forward slashes only, everywhere in this file including comments -- backslash Windows paths get silently mangled by this harness's hook-command parsing (found + fixed 2026-07-27, sessions/2026-07-27.md) and can produce invalid JSON if hand-edited carelessly (found 2026-08-05). auto_pr_guard.py wired 2026-08-05 -- it's a true no-op for normal sessions (exits before reading stdin unless EQ_AUTO_PR_MODE=1 is set), so wiring it ahead of any scheduled/automated run actually existing costs nothing and means the leash is already in place the day one does.",
   "hooks": {
     "SessionStart": [
       { "hooks": [ { "type": "command", "command": "python C:/Projects/eq-context/hooks/session_start.py" } ] }
@@ -8,7 +8,8 @@
       {
         "matcher": "Edit|Write|MultiEdit|NotebookEdit|Bash|PowerShell",
         "hooks": [
-          { "type": "command", "command": "python C:/Projects/eq-context/hooks/pre_tool_use.py" }
+          { "type": "command", "command": "python C:/Projects/eq-context/hooks/pre_tool_use.py" },
+          { "type": "command", "command": "python C:/Projects/eq-context/hooks/auto_pr_guard.py" }
         ]
       }
     ],
