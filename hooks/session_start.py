@@ -14,11 +14,15 @@ costs no ceremony. Prints, unprompted, at every session start:
   5. CLAIMS      — active incident claims (system/incident-claims.md) that overlap
                    this session's own Needs You list — stops duplicate investigation
                    of the same finding by concurrent sessions.
+  6. HOOKS       — core.hooksPath resolves to .githooks at every scope that can set
+                   it (--local and, if enabled, --worktree). The identical
+                   "pre-commit silently doesn't run" symptom has now recurred via
+                   3 distinct mechanisms on 3 different dates (failure F10).
 
 Reads the LOCAL CLONE, never a URL. The URL is what lied on 2026-07-11.
 Fails open but loud: a silent guard is the bug we are fixing.
 """
-import os, re, sys
+import os, re, subprocess, sys
 from datetime import datetime, timezone
 
 # Windows consoles default to cp1252; digest.md's "Needs you" section contains
@@ -172,6 +176,60 @@ elif active_claims:
     out.append(f"CLAIMS     {len(active_claims)} active claim(s), none overlap today's Needs You list")
 else:
     out.append("CLAIMS     none active")
+
+# --- 6. HOOKS (core.hooksPath resolution — F10) -------------------------------
+# The identical "pre-commit silently doesn't run" symptom has recurred through
+# three distinct mechanisms: 2026-05-24 hooksPath pointed at a directory missing
+# the real hook (prose only, system/lessons.md, no guard); 2026-08-04 hooksPath
+# pointed at .git/hooks via an untracked shadow copy of the secret-scanning
+# script (failure F8); 2026-08-05 a --worktree-scope override on THIS checkout
+# shadowed a correct --local value of .githooks, found only by hand mid-
+# investigation (eq/pending.md, "Correction, 2026-08-05"). None of the three had
+# a check that runs every session until now. system/failures.md -> F10.
+def _git_cfg(*args):
+    try:
+        p = subprocess.run(["git", "config"] + list(args), cwd=ROOT,
+                            capture_output=True, text=True, timeout=5)
+        return p.stdout.strip() if p.returncode == 0 else None
+    except Exception:
+        return None
+
+
+def _norm_hp(v):
+    if v is None:
+        return None
+    v = v.strip().replace("\\", "/")
+    return (v[2:] if v.startswith("./") else v).rstrip("/")
+
+
+local_hp = _git_cfg("--local", "--get", "core.hooksPath")
+worktree_ext = _git_cfg("--get", "extensions.worktreeConfig")
+worktree_hp = _git_cfg("--worktree", "--get", "core.hooksPath") if worktree_ext == "true" else None
+effective_hp = _git_cfg("--get", "core.hooksPath")
+eff_n, local_n, wt_n = _norm_hp(effective_hp), _norm_hp(local_hp), _norm_hp(worktree_hp)
+
+if eff_n != ".githooks":
+    out.append(
+        f"HOOKS      *** WRONG *** core.hooksPath resolves to {effective_hp!r}, not .githooks\n"
+        f"           (local={local_hp!r} worktree={worktree_hp!r}). .githooks/pre-commit\n"
+        f"           (secret scanning, frontmatter status enum) is NOT running on this\n"
+        f"           checkout. This exact symptom has recurred 3x via 3 mechanisms — wrong\n"
+        f"           directory (2026-05-24), a shadow copy at .git/hooks (F8, 2026-08-04),\n"
+        f"           a --worktree override silently shadowing --local (2026-08-05). Fix:\n"
+        f"           git config --local core.hooksPath .githooks\n"
+        f"           and if extensions.worktreeConfig is true, also check --worktree scope —\n"
+        f"           it silently wins over --local. system/failures.md -> F10."
+    )
+elif wt_n is not None and local_n is not None and wt_n != local_n:
+    out.append(
+        f"HOOKS      *** LATENT SHADOW *** effective core.hooksPath is .githooks (ok for\n"
+        f"           now), but --worktree ({worktree_hp!r}) and --local ({local_hp!r}) disagree.\n"
+        f"           Worktree scope silently wins over local — this is the exact shape of\n"
+        f"           F10's 2026-08-05 recurrence. If this worktree's override is ever cleared\n"
+        f"           it reverts to the wrong local value with no warning. system/failures.md -> F10."
+    )
+else:
+    out.append("HOOKS      ok — core.hooksPath resolves to .githooks")
 
 print("=== EQ SESSION GATE (local clone — never the URL) ===")
 print("\n".join(out))
