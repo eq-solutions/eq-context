@@ -8,22 +8,23 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-05 21:28 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-05 22:54 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-05 13:56 UTC → 2026-08-05 21:28 UTC)
+## Since last refresh (2026-08-05 21:28 UTC → 2026-08-05 22:54 UTC)
 
-- Merged: eq-shell [#1245](https://github.com/eq-solutions/eq-shell/pull/1245) feat(field): Bearer credential so Field can trigger a Shell-
-- Merged: eq-shell [#1243](https://github.com/eq-solutions/eq-shell/pull/1243) refactor(workers): simplify invite header to two actions
-- Merged: eq-shell [#1240](https://github.com/eq-solutions/eq-shell/pull/1240) feat(staff): "back on file" indicator for licence photos
-- Merged: eq-shell [#1237](https://github.com/eq-solutions/eq-shell/pull/1237) fix(staff): hide Company field for Direct, require supervisi
-- Merged: eq-shell [#1235](https://github.com/eq-solutions/eq-shell/pull/1235) fix(licences): timeout the OCR auto-read chain instead of ha
-- Merged: eq-shell [#1234](https://github.com/eq-solutions/eq-shell/pull/1234) feat(staff): back-photo support in admin licence backfill
-- Merged: eq-shell [#1233](https://github.com/eq-solutions/eq-shell/pull/1233) fix(deps): bump fast-uri to 4.1.2 (CVE-2026-18446)
-- Merged: eq-shell [#1232](https://github.com/eq-solutions/eq-shell/pull/1232) fix(invites): recover gracefully from a raced duplicate invi
-- ✅ Needs you: 7 → 6
+- Merged: eq-shell [#1259](https://github.com/eq-solutions/eq-shell/pull/1259) fix(onboarding): close two real gaps from the SaaS-parity au
+- Merged: eq-shell [#1258](https://github.com/eq-solutions/eq-shell/pull/1258) fix(cards): stop alerting on Field/Service's own token refre
+- Merged: eq-shell [#1257](https://github.com/eq-solutions/eq-shell/pull/1257) feat(staff): bulk approve/decline self-join requests
+- Merged: eq-shell [#1246](https://github.com/eq-solutions/eq-shell/pull/1246) feat(documents): categories for the Templates tab
+- Merged: eq-shell [#1244](https://github.com/eq-solutions/eq-shell/pull/1244) fix(security): guard entity-patch against same-site confused
+- Merged: eq-shell [#1242](https://github.com/eq-solutions/eq-shell/pull/1242) feat(staff): actual back-photo preview instead of a text-onl
+- Merged: eq-shell [#1241](https://github.com/eq-solutions/eq-shell/pull/1241) feat(documents): bulk upload for Templates (T3)
+- Merged: eq-shell [#1239](https://github.com/eq-solutions/eq-shell/pull/1239) feat(documents): Templates upload CTA + Register archive act
+- ⚠ Needs you: 6 → 7 (new items)
 
-## ⚠ Needs you (6)
+## ⚠ Needs you (7)
 
+- 🔴 **Sentry new error** — `eq-shell` [Error: eq-ops rpc eq_quote_pipeline_counts failed: TypeError](https://eq-solutions.sentry.io/issues/139108089/)
 - 🔴 **Sentry new error** — `eq-shell` [Cards handoff request from unexpected origin](https://eq-solutions.sentry.io/issues/138655603/)
 - 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-9 (P0 — confirmed exposure, same window as SEC-3, possible second exposure 2026-07-27) — A different service_role key (`jvkn`/eq-canonical) was pasted directly into a ch · [security-register.md](ops/security-register.md)
@@ -55,7 +56,7 @@ _…and 92 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 0 | — |
 | eq-solves-service | ✓ success | 1d ago | 5 | 2d |
-| eq-field | ✓ success | -1d ago | 0 | — |
+| eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 1d ago | 0 | — |
 
@@ -64,19 +65,22 @@ _…and 92 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 | Project | Error | Events | Last seen |
 |---------|-------|--------|-----------|
 | eq-shell | [Error: Workers never invited to join, past grace period: 44](https://eq-solutions.sentry.io/issues/135740258/) | 14 | 2026-08-05 |
+| eq-shell | [Error: eq-ops rpc eq_quote_pipeline_counts failed: TypeError: Failed to fetch (e](https://eq-solutions.sentry.io/issues/139108089/) | 10 | 2026-08-05 |
 | eq-shell | [Cards handoff request from unexpected origin](https://eq-solutions.sentry.io/issues/138655603/) | 10 | 2026-08-05 |
 | eq-solves-service | [UnrecognizedActionError: Server Action "40f8ab2385de590826648056ec7fc02ebdd51eb8](https://eq-solutions.sentry.io/issues/122209933/) | 10 | 2026-08-01 |
 | eq-shell | [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/) | 9 | 2026-08-05 |
+| eq-shell | [Error: app_data.staff.cards_worker_id pointing at missing jvkn workers: 7](https://eq-solutions.sentry.io/issues/138175643/) | 5 | 2026-08-05 |
 | eq-cards | [LateInitializationError: Field '' has not been initialized.](https://eq-solutions.sentry.io/issues/136695941/) | 5 | 2026-08-04 |
-| eq-shell | [Error: app_data.staff.cards_worker_id pointing at missing jvkn workers: 7](https://eq-solutions.sentry.io/issues/138175643/) | 4 | 2026-08-04 |
 | eq-cards | [<unknown>](https://eq-solutions.sentry.io/issues/137265513/) | 4 | 2026-07-29 |
-| eq-shell | [Error: staff-licence-ocr: ocr-licence returned 401](https://eq-solutions.sentry.io/issues/135986280/) | 3 | 2026-08-04 |
 _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunresolved)_
 
 ## Recently built (last 7 days)
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-05 | eq-shell | [#1259](https://github.com/eq-solutions/eq-shell/pull/1259) fix(onboarding): close two real gaps from the SaaS-parity audit |
+| 2026-08-05 | eq-shell | [#1258](https://github.com/eq-solutions/eq-shell/pull/1258) fix(cards): stop alerting on Field/Service's own token refresh |
+| 2026-08-05 | eq-shell | [#1257](https://github.com/eq-solutions/eq-shell/pull/1257) feat(staff): bulk approve/decline self-join requests |
 | 2026-08-05 | eq-shell | [#1256](https://github.com/eq-solutions/eq-shell/pull/1256) fix(observability): stop mislabeling render crashes as chunk-erro |
 | 2026-08-05 | eq-shell | [#1255](https://github.com/eq-solutions/eq-shell/pull/1255) fix(briefing): validate submit_briefing tool output before trusti |
 | 2026-08-05 | eq-shell | [#1254](https://github.com/eq-solutions/eq-shell/pull/1254) fix(ops): wire the cost/sell question into the other Import from  |
@@ -89,24 +93,21 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-05 | eq-shell | [#1247](https://github.com/eq-solutions/eq-shell/pull/1247) feat(field): relay a mint-entity-patch-token credential to the Fi |
 | 2026-08-05 | eq-field | [#657](https://github.com/eq-solutions/eq-field/pull/657) fix(sign-documents): view-before-sign gate + Signed tab (v3.5.462 |
 | 2026-08-05 | eq-field | [#656](https://github.com/eq-solutions/eq-field/pull/656) v3.5.461 — Dashboard licence-expiry alert is now supervisor-only |
-| 2026-08-05 | eq-field | [#655](https://github.com/eq-solutions/eq-field/pull/655) v3.5.459 — My Schedule maps link silently did nothing on iOS home |
-| 2026-08-05 | eq-field | [#654](https://github.com/eq-solutions/eq-field/pull/654) v3.5.459 — Dashboard licence alert now reads canonical EQ Cards l |
-| 2026-08-05 | eq-field | [#653](https://github.com/eq-solutions/eq-field/pull/653) v3.5.458 — dashboard: fix intermittent blank Birthdays & Annivers |
 _Showing 15 of 138 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
 - **Physical-signature-as-photo-upload** — real option, small lift, not confirmed for build. _(added 2026-08-05)_
 - **"Easily accessible" and "easy for management to prove" beyond what's already built** — no further scoping done yet; revisit once access is actually opened and there's real multi-person usage to learn from. _(added 2026-08-05)_
-- **`jwt-contract-drift.yml` (eq-context) has failed 3 consecutive days** — root cause found, not fixed: the checker looks for a local `ServiceJwtClaims` interface in eq-service that's been replaced by an import from a new shared `@eq-solutions/contracts` package (the checker's own documented "durable fix" already happened on the consumer side) — the checker itself just wasn't updated. Not necessarily a live problem, likely a stale check; flagged as background task `task_42424993` rather than fixed here, since it needed checking eq-shell's side too and spans 3 repos. _(added 2026-08-05)_
+- **Version-pin skew between eq-shell's and eq-service's independent `@eq-solutions/contracts` pins has no guard.** Both pin the identical tag today so there's no live risk, but each repo pins independently (`github:eq-solutions/eq-contracts#vX.Y.Z`, not a workspace link) — if eq-shell ever migrates too and the two pins later diverge, neither this script (reads the package from `main`, not each repo's actual pin) nor either repo's own `tsc` would catch it. Documented as a caveat in the script itself; a real follow-up guard, not built this session. _(added 2026-08-06)_
+- **eq-shell's own migration to `@eq-solutions/contracts`** (replacing its local `SupabaseJwtClaims` with the shared `ShellHandoffClaims` type) is still not done — the canary's originally-envisioned "durable fix" endpoint. Not requested this session; natural next step if eq-shell touches this file again. _(added 2026-08-06)_
 - **Only the last 10 days of signups were checked for the stuck-appMetadata pattern** — the 4 unblocked accounts are the ones caught in that window; any self-join/auto-provision-only account older than that with a never-updated `raw_app_meta_data` would still show the same symptom if they ever come back and retry. No full historical audit run. _(added 2026-08-05)_
 - **William's own Cards `public.workers.first_name/last_name` is still blank** (`""`, unchanged since signup) even though his Shell `app_data.staff` record now has his real name — the compliance-pack fix below makes Shell's copy win for that one export, but anything else that reads Cards' own `workers` table directly for display would still show blank for him specifically. Not backfilled. _(added 2026-08-05)_
 - **Worth a look: `digest.md`'s "Recently built" table shows merge status, not deploy status, for every repo — but eq-cards is the one repo where those two are allowed to diverge for hours by design.** A merged eq-cards PR currently reads identically to a live one on the digest, which is exactly what caused this session's confusion. Might be worth a "manual-deploy pending" flag specific to eq-cards, or a general merged-vs-deployed distinction if other repos ever adopt the same manual-gate pattern.
 - **Why the iframe actually went narrow on Royce's real machine is still unconfirmed.** Leading candidate: DevTools was docked open in his screenshots, which alone can shrink the page's available width below 768px. An alternative not ruled out: Shell's own layout being disrupted by the React #418 hydration error below. The v3.5.457 fix doesn't need to know which (it closes the gap for "narrow for any reason"), but if the no-nav symptom recurs on a machine with DevTools closed, the hydration-error angle is the next thing to check. _(added 2026-08-05)_
 - **Shell-side `React error #418` (hydration mismatch), `0zzn40uc-_762.js`, thrown at a `$RC`/`$RV` streaming-render boundary — flagged, not investigated.** Found in a console log Royce shared while chasing the nav bug; likely unrelated (a cross-origin Shell hydration failure can't directly manipulate Field's iframe DOM, and the CSS cascade gap above fully explains the symptom on its own) but never independently confirmed as unrelated, and a real Shell-side bug either way. Worth a look on the eq-shell side if it recurs or shows up in Sentry. _(added 2026-08-05)_
 - **Environment gotcha hit mid-session, not yet root-caused**: in this worktree, Edit-tool writes to already-tracked files were invisible to Bash/PowerShell/git for 20+ minutes (ruled out simple caching lag), even with sandbox disabled — worked around by reapplying the same edits via a Python script written through Bash so it landed on the real filesystem. Worth investigating if it recurs; logged as memory `worktree-tool-filesystem-desync`. _(added 2026-08-05)_
-- **Royce's real 15-file template batch: 12 of 15 are now live**, up from 0 at the previous close — not confirmed whether via the bulk-upload feature or one-by-one, or whether it's actually finished. Corrects the "not run yet" note in the sprint-close section below, which is now stale. _(added 2026-08-05)_
-_…and 410 more · [eq/pending.md](eq/pending.md)_
+_…and 411 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -128,7 +129,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 3247 | 547 | 91 | 12 |
+| [EQ](eq/pending.md) | 3252 | 547 | 90 | 12 |
 | [SKS](sks/pending.md) | 404 | 82 | 0 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 409 | 37 | 2 | 1 |
@@ -149,4 +150,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-05 21:28 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-05 22:54 UTC._
