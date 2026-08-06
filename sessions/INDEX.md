@@ -1,9 +1,10 @@
 # Session Index
-_117 logs · reverse-chronological · auto-generated_
+_118 logs · reverse-chronological · auto-generated_
 
 | Date | Session |
 |------|---------|
 | 2026-08-06 | [Document sign-off register: real vision from Royce, two trust gaps fixed](sessions/2026-08-06.md) |
+| 2026-08-06 | [2026-08-06-b](sessions/2026-08-06-b.md) |
 | 2026-08-06 | [2026-08-06-a](sessions/2026-08-06-a.md) |
 | 2026-08-05 | [Tenant-rule audit extended to eq-cards + eq-solves-intake, all 4 PRs merged and live](sessions/2026-08-05.md) |
 | 2026-08-05 | [2026-08-05-z](sessions/2026-08-05-z.md) |
