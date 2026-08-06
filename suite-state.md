@@ -67,6 +67,9 @@ _If this file is >48h old, the cron is broken._
 - #685 chore(deps): bump react-dom and @types/react-dom
 - #684 chore(deps): bump the eq-design-system group with 2 updates
 
+**eq-shell:**
+- #1263 feat(ops): same-origin proxy for EQ Ops/Intake tenant data (EQ-SHELL-1A)
+
 ---
 
 ## System Health (as of 2026-08-06)
