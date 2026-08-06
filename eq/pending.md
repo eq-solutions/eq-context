@@ -68,16 +68,10 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## eq-field: My Schedule maps link silently did nothing on iOS home-screen installs — fixed, merged, live (2026-08-05)
-*Royce: "the maps link on a user schedule page wasn't working when I tried it earlier" — on mobile, on My Schedule.*
-
-- [x] **Root cause: the "Open in Google Maps" icon used `target="_blank"`.** Fine in a normal browser tab, but an iOS standalone PWA (Field added to the home screen — a supported, marketed install path since the v3.5.453 PWA-identity work) has no "new tab" to open the link into, so the tap silently did nothing — no error, no navigation. Same root cause as the v3.5.264 docx-export fix (`<a download>` blob links hit the identical gap).
-- [x] **Fix: reused that fix's existing iOS-standalone detection** rather than inventing a new one — drops `target="_blank"` only when standalone, so the tap becomes a same-window navigation that iOS intercepts as a Universal Link and hands off to the Maps app. Every other target (Android, desktop, iOS Safari tab) unchanged.
-- [x] **Verified against the real shipped function**, not just reasoning: built a harness loading the actual `app-state.js`/`utils.js`/`roster.js` with mocked `STATE`, confirmed the URL/encoding is correct against live SKS site-address data (`app_data.field_sites` on ehow), and confirmed the fix branches correctly (target dropped only under simulated iOS-standalone). eq-field [PR #655](https://github.com/eq-solutions/eq-field/pull/655) (v3.5.460), squash-merged, CI + deploy preview green, production confirmed serving v3.5.460 via `sw.js`.
-- [x] **Resolved a version-stamp collision** during merge — [PR #654](https://github.com/eq-solutions/eq-field/pull/654) (licence-alert dashboard fix) landed on `main` moments earlier and independently bumped to the same `3.5.459`; renumbered this PR to `3.5.460` on merge, no functional conflict.
+## eq-field: My Schedule maps link on iOS home-screen installs — two-part fix, merged, live (2026-08-06)
 
 **Deferred:**
-- [ ] **Not click-tested on a real iOS device with Field added to the home screen** — Royce to confirm the maps icon now hands off to the Maps app instead of doing nothing. _(added 2026-08-05)_
+- [ ] **Not confirmed on a real device that a single tap now opens Apple Maps.** v3.5.460 (PR #655) fixed the hard no-op (tap did literally nothing); Royce click-tested it live and found a second layer — tap still didn't open Maps, only a long-press-then-Open did. v3.5.465 (PR #659) switched the iOS-standalone case to Apple Maps' own `maps://` address instead of the `https://maps.google.com` link, which isn't subject to the same tap-vs-long-press Universal Links gate — reasoned from the live symptom + WebKit's known behavior, not verified against Apple's own docs. Royce to confirm on iPhone with Field on the home screen. _(added 2026-08-05, updated 2026-08-06)_
 
 ---
 
