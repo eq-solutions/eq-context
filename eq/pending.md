@@ -14,10 +14,10 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## eq-shell: EQ-SHELL-1A "eq-ops rpc ... failed: TypeError: Failed to fetch (ehow)" — durable fix live, confirmed working (2026-08-06)
+## eq-shell: EQ-SHELL-1A "eq-ops rpc ... failed: TypeError: Failed to fetch (ehow)" — durable fix live, all known consumers migrated (2026-08-06)
 - [ ] **GitHub MCP connector 404 on eq-shell repo access** — worth checking the GitHub App installation/scope for this connector if PR creation via MCP is needed again on eq-shell. _(added 2026-08-06)_
-- [ ] **Retire the legacy direct-to-Supabase browser path** (`tenantDataClient.ts`/`sksSupabaseClient.ts`, `VITE_SKS_SUPABASE_URL`/anon-key browser exposure, CSP `connect-src` entries) once the proxy soak is confirmed clean — currently kept as fallback. _(added 2026-08-06)_
-- [ ] **Three other pages are unmitigated against the identical failure mode** — `LabourHireRates.tsx`, `Suppliers.tsx`, and `modules/intake/index.tsx` all call `createTenantDataClient()`/`createSKSSupabaseClient()` directly with no proxy-first fallback (only `QuotesNative.tsx` was migrated this session). Any of these breaks the same way EQ-SHELL-1A did if a user's browser/network blocks `*.supabase.co`. _(added 2026-08-06)_
+- [ ] **Retire the legacy direct-to-Supabase browser path** (`tenantDataClient.ts`/`sksSupabaseClient.ts`, `VITE_SKS_SUPABASE_URL`/anon-key browser exposure, CSP `connect-src` entries) — soak is confirmed clean (two Sentry checks post-deploy, zero recurrence, zero fallback breadcrumbs) and all 4 known browser consumers now go through the proxy first, so this is unblocked whenever it's worth the work; currently kept as fallback. _(added 2026-08-06)_
+- [ ] **Not click-tested live by a real user** — `LabourHireRates.tsx`, `Suppliers.tsx`, and Intake were migrated to the proxy-first path and pass build/typecheck/301 tests, but nobody has opened them live yet to confirm no regression. Royce or a real SKS user to confirm. _(added 2026-08-06)_
 
 ---
 
