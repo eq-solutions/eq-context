@@ -1,31 +1,30 @@
 ---
 title: EQ Suite — Health Digest
 owner: Royce Milmlow
-last_updated: 2026-08-05
+last_updated: 2026-08-06
 scope: Push-style 'what needs your attention' feed across the EQ suite. Regenerated on merge (repository_dispatch: suite-state-changed) and nightly. Full snapshot in suite-state.md.
 read_priority: high
 status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-05 22:54 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-06 00:12 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-05 21:28 UTC → 2026-08-05 22:54 UTC)
+## Since last refresh (2026-08-05 22:54 UTC → 2026-08-06 00:12 UTC)
 
-- Merged: eq-shell [#1259](https://github.com/eq-solutions/eq-shell/pull/1259) fix(onboarding): close two real gaps from the SaaS-parity au
-- Merged: eq-shell [#1258](https://github.com/eq-solutions/eq-shell/pull/1258) fix(cards): stop alerting on Field/Service's own token refre
-- Merged: eq-shell [#1257](https://github.com/eq-solutions/eq-shell/pull/1257) feat(staff): bulk approve/decline self-join requests
-- Merged: eq-shell [#1246](https://github.com/eq-solutions/eq-shell/pull/1246) feat(documents): categories for the Templates tab
-- Merged: eq-shell [#1244](https://github.com/eq-solutions/eq-shell/pull/1244) fix(security): guard entity-patch against same-site confused
-- Merged: eq-shell [#1242](https://github.com/eq-solutions/eq-shell/pull/1242) feat(staff): actual back-photo preview instead of a text-onl
-- Merged: eq-shell [#1241](https://github.com/eq-solutions/eq-shell/pull/1241) feat(documents): bulk upload for Templates (T3)
-- Merged: eq-shell [#1239](https://github.com/eq-solutions/eq-shell/pull/1239) feat(documents): Templates upload CTA + Register archive act
-- ⚠ Needs you: 6 → 7 (new items)
+- Merged: eq-shell [#1260](https://github.com/eq-solutions/eq-shell/pull/1260) fix(ops): retry pipeline-counts/attachment-count RPCs on tra
+- Merged: eq-shell [#1245](https://github.com/eq-solutions/eq-shell/pull/1245) feat(field): Bearer credential so Field can trigger a Shell-
+- Merged: eq-shell [#1243](https://github.com/eq-solutions/eq-shell/pull/1243) refactor(workers): simplify invite header to two actions
+- Merged: eq-shell [#1240](https://github.com/eq-solutions/eq-shell/pull/1240) feat(staff): "back on file" indicator for licence photos
+- Merged: eq-shell [#1238](https://github.com/eq-solutions/eq-shell/pull/1238) feat(licences): show the uploaded photo/PDF as a manual-fill
+- Merged: eq-shell [#1237](https://github.com/eq-solutions/eq-shell/pull/1237) fix(staff): hide Company field for Direct, require supervisi
+- Merged: eq-shell [#1236](https://github.com/eq-solutions/eq-shell/pull/1236) fix(staff): require supervisor_category when is_supervisor i
+- Merged: eq-shell [#1235](https://github.com/eq-solutions/eq-shell/pull/1235) fix(licences): timeout the OCR auto-read chain instead of ha
+- ✅ Needs you: 7 → 6
 
-## ⚠ Needs you (7)
+## ⚠ Needs you (6)
 
 - 🔴 **Sentry new error** — `eq-shell` [Error: eq-ops rpc eq_quote_pipeline_counts failed: TypeError](https://eq-solutions.sentry.io/issues/139108089/)
-- 🔴 **Sentry new error** — `eq-shell` [Cards handoff request from unexpected origin](https://eq-solutions.sentry.io/issues/138655603/)
 - 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-9 (P0 — confirmed exposure, same window as SEC-3, possible second exposure 2026-07-27) — A different service_role key (`jvkn`/eq-canonical) was pasted directly into a ch · [security-register.md](ops/security-register.md)
 - 🔴 **Cron failing** — `jwt-contract-drift.yml` 10 consecutive scheduled run(s) failed, no success in recent history · [failures.md](system/failures.md) F11
@@ -78,6 +77,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-06 | eq-shell | [#1260](https://github.com/eq-solutions/eq-shell/pull/1260) fix(ops): retry pipeline-counts/attachment-count RPCs on transien |
 | 2026-08-05 | eq-shell | [#1259](https://github.com/eq-solutions/eq-shell/pull/1259) fix(onboarding): close two real gaps from the SaaS-parity audit |
 | 2026-08-05 | eq-shell | [#1258](https://github.com/eq-solutions/eq-shell/pull/1258) fix(cards): stop alerting on Field/Service's own token refresh |
 | 2026-08-05 | eq-shell | [#1257](https://github.com/eq-solutions/eq-shell/pull/1257) feat(staff): bulk approve/decline self-join requests |
@@ -92,7 +92,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-05 | eq-shell | [#1248](https://github.com/eq-solutions/eq-shell/pull/1248) fix(ops): widen Description column and batch-save outlet pricing  |
 | 2026-08-05 | eq-shell | [#1247](https://github.com/eq-solutions/eq-shell/pull/1247) feat(field): relay a mint-entity-patch-token credential to the Fi |
 | 2026-08-05 | eq-field | [#657](https://github.com/eq-solutions/eq-field/pull/657) fix(sign-documents): view-before-sign gate + Signed tab (v3.5.462 |
-| 2026-08-05 | eq-field | [#656](https://github.com/eq-solutions/eq-field/pull/656) v3.5.461 — Dashboard licence-expiry alert is now supervisor-only |
 _Showing 15 of 138 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -150,4 +149,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-05 22:54 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-06 00:12 UTC._
