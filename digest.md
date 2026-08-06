@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-06 03:25 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-06 03:29 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-06 00:45 UTC → 2026-08-06 03:25 UTC)
+## Since last refresh (2026-08-06 03:25 UTC → 2026-08-06 03:29 UTC)
 
-- Merged: eq-shell [#1262](https://github.com/eq-solutions/eq-shell/pull/1262) feat(quotes): accept Outlook .msg/.eml as quote attachments
-- Merged: eq-shell [#1245](https://github.com/eq-solutions/eq-shell/pull/1245) feat(field): Bearer credential so Field can trigger a Shell-
-- Merged: eq-shell [#1243](https://github.com/eq-solutions/eq-shell/pull/1243) refactor(workers): simplify invite header to two actions
-- Merged: eq-shell [#1240](https://github.com/eq-solutions/eq-shell/pull/1240) feat(staff): "back on file" indicator for licence photos
-- Merged: eq-shell [#1238](https://github.com/eq-solutions/eq-shell/pull/1238) feat(licences): show the uploaded photo/PDF as a manual-fill
-- Merged: eq-shell [#1237](https://github.com/eq-solutions/eq-shell/pull/1237) fix(staff): hide Company field for Direct, require supervisi
-- Merged: eq-shell [#1236](https://github.com/eq-solutions/eq-shell/pull/1236) fix(staff): require supervisor_category when is_supervisor i
-- Merged: eq-shell [#1235](https://github.com/eq-solutions/eq-shell/pull/1235) fix(licences): timeout the OCR auto-read chain instead of ha
+- Merged: eq-shell [#1263](https://github.com/eq-solutions/eq-shell/pull/1263) feat(ops): same-origin proxy for EQ Ops/Intake tenant data (
+- Merged: eq-shell [#1247](https://github.com/eq-solutions/eq-shell/pull/1247) feat(field): relay a mint-entity-patch-token credential to t
+- Merged: eq-shell [#1246](https://github.com/eq-solutions/eq-shell/pull/1246) feat(documents): categories for the Templates tab
+- Merged: eq-shell [#1244](https://github.com/eq-solutions/eq-shell/pull/1244) fix(security): guard entity-patch against same-site confused
+- Merged: eq-shell [#1242](https://github.com/eq-solutions/eq-shell/pull/1242) feat(staff): actual back-photo preview instead of a text-onl
+- Merged: eq-shell [#1241](https://github.com/eq-solutions/eq-shell/pull/1241) feat(documents): bulk upload for Templates (T3)
+- Merged: eq-shell [#1239](https://github.com/eq-solutions/eq-shell/pull/1239) feat(documents): Templates upload CTA + Register archive act
+- Merged: eq-shell [#1231](https://github.com/eq-solutions/eq-shell/pull/1231) chore(intake): auto re-vendor eq-intake/eq-platform
 
 ## ⚠ Needs you (6)
 
@@ -52,7 +52,7 @@ _…and 92 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 1 | 0d |
+| eq-shell | ✓ success | 0d ago | 0 | — |
 | eq-solves-service | ✓ success | 1d ago | 5 | 2d |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
@@ -76,6 +76,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-06 | eq-shell | [#1263](https://github.com/eq-solutions/eq-shell/pull/1263) feat(ops): same-origin proxy for EQ Ops/Intake tenant data (EQ-SH |
 | 2026-08-06 | eq-shell | [#1262](https://github.com/eq-solutions/eq-shell/pull/1262) feat(quotes): accept Outlook .msg/.eml as quote attachments |
 | 2026-08-06 | eq-shell | [#1261](https://github.com/eq-solutions/eq-shell/pull/1261) fix(ops): widen EQ-SHELL-1A retry window to ~5s |
 | 2026-08-06 | eq-shell | [#1260](https://github.com/eq-solutions/eq-shell/pull/1260) fix(ops): retry pipeline-counts/attachment-count RPCs on transien |
@@ -90,7 +91,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-05 | eq-shell | [#1250](https://github.com/eq-solutions/eq-shell/pull/1250) fix(staff): compliance-pack export shows Unknown for names only e |
 | 2026-08-05 | eq-shell | [#1252](https://github.com/eq-solutions/eq-shell/pull/1252) feat(ops): ask cost vs. sell when importing a subcontractor PDF |
 | 2026-08-05 | eq-shell | [#1249](https://github.com/eq-solutions/eq-shell/pull/1249) feat(ops): drag a subcontractor PDF onto the Jobs home page to st |
-| 2026-08-05 | eq-shell | [#1248](https://github.com/eq-solutions/eq-shell/pull/1248) fix(ops): widen Description column and batch-save outlet pricing  |
 _Showing 15 of 138 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -148,4 +148,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-06 03:25 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-06 03:29 UTC._
