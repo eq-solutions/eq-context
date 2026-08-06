@@ -1,13 +1,18 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-05
+last_updated: 2026-08-06
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # eq-shell changelog
+
+## 2026-08-06
+- **PR #1260** — fixes [EQ-SHELL-1A](https://eq-solutions.sentry.io/issues/EQ-SHELL-1A): a `TypeError: Failed to fetch` against the SKS tenant's data plane (ehow) left the `/sks/ops` pipeline stat chips and attachment badges silently stuck at stale data, with no retry and no visible error state. Added `rpcWithRetry` (300ms/900ms backoff) in `quoteTelemetry.ts`, wired into `loadPipelineCounts`/`loadAttachmentCounts` in `QuotesModule.tsx`. Squash-merged (`5705aeb3`), deploy-verified live.
+- **PR #1261** — same bug recurred for the same user (simon.bramall@sks.com.au) after PR #1260 — the ~1.2s retry window wasn't long enough for his bad patches. Widened `rpcWithRetry` to `[500, 1500, 3000]`ms (~5s total). Squash-merged (`d996a3f9` after a rebase to resolve a stacked-PR merge conflict), deploy-verified live.
+- **PR #1263** — durable fix: new `netlify/functions/tenant-data-proxy.ts`, a same-origin reverse proxy (`/api/tenant-proxy/*`) so the browser never talks to a tenant's `*.supabase.co` directly for EQ Ops/Intake traffic. Root cause (confirmed via Sentry replay evidence + Simon's own testing across reboot, cache-clear, two browsers, incognito, and a mobile hotspot — only his phone worked) is domain-selective interference on his machine, most likely corporate security software blocking `*.supabase.co` specifically. New `_shared/tenant-context.ts` factors the session→tenant→routing resolution out of `mint-tenant-jwt.ts` for reuse. Path allow-list by shape (`rest/v1/rpc/<name>` + 5 known tables) and a request-header allow-list (never forwards Cookie/Authorization/apikey) close the two HIGH-severity findings a design-review pass raised before build. `src/lib/tenantProxyClient.ts` (new client) wired into `QuotesNative.tsx` as the first-tried option, falling back to the existing direct clients with every fallback reported to Sentry (`eq-ops client fallback: <from> -> <to>`) so a proxy bug can't hide behind the fallback chain. Squash-merged (`9aedfa50`), live on core.eq.solutions 03:33:59 UTC. Confirmed working for Simon same day — no EQ-SHELL-1A recurrence, no fallback breadcrumbs in the post-deploy watch window.
 
 ## 2026-08-05
 - **PR #1244** — `entity-patch.ts` gains the same `checkShellOrigin()` same-site confused-deputy CSRF guard 15 other cookie-authenticated functions already have. Not previously exploitable (no CORS headers + JSON-only body blocked it by accident), but a real inconsistency, found while auditing whether the endpoint could safely be called cross-app. Merged (`3a3613d6`).
