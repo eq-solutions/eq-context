@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-06 03:29 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-06 04:09 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-06 03:25 UTC → 2026-08-06 03:29 UTC)
+## Since last refresh (2026-08-06 03:29 UTC → 2026-08-06 04:09 UTC)
 
-- Merged: eq-shell [#1263](https://github.com/eq-solutions/eq-shell/pull/1263) feat(ops): same-origin proxy for EQ Ops/Intake tenant data (
-- Merged: eq-shell [#1247](https://github.com/eq-solutions/eq-shell/pull/1247) feat(field): relay a mint-entity-patch-token credential to t
-- Merged: eq-shell [#1246](https://github.com/eq-solutions/eq-shell/pull/1246) feat(documents): categories for the Templates tab
-- Merged: eq-shell [#1244](https://github.com/eq-solutions/eq-shell/pull/1244) fix(security): guard entity-patch against same-site confused
-- Merged: eq-shell [#1242](https://github.com/eq-solutions/eq-shell/pull/1242) feat(staff): actual back-photo preview instead of a text-onl
-- Merged: eq-shell [#1241](https://github.com/eq-solutions/eq-shell/pull/1241) feat(documents): bulk upload for Templates (T3)
-- Merged: eq-shell [#1239](https://github.com/eq-solutions/eq-shell/pull/1239) feat(documents): Templates upload CTA + Register archive act
-- Merged: eq-shell [#1231](https://github.com/eq-solutions/eq-shell/pull/1231) chore(intake): auto re-vendor eq-intake/eq-platform
+- Merged: eq-shell [#1264](https://github.com/eq-solutions/eq-shell/pull/1264) feat(ops): extend the EQ-SHELL-1A tenant-data proxy to 3 mor
+- Merged: eq-shell [#1248](https://github.com/eq-solutions/eq-shell/pull/1248) fix(ops): widen Description column and batch-save outlet pri
+- Merged: eq-shell [#1245](https://github.com/eq-solutions/eq-shell/pull/1245) feat(field): Bearer credential so Field can trigger a Shell-
+- Merged: eq-shell [#1243](https://github.com/eq-solutions/eq-shell/pull/1243) refactor(workers): simplify invite header to two actions
+- Merged: eq-shell [#1240](https://github.com/eq-solutions/eq-shell/pull/1240) feat(staff): "back on file" indicator for licence photos
+- Merged: eq-shell [#1238](https://github.com/eq-solutions/eq-shell/pull/1238) feat(licences): show the uploaded photo/PDF as a manual-fill
+- Merged: eq-shell [#1237](https://github.com/eq-solutions/eq-shell/pull/1237) fix(staff): hide Company field for Direct, require supervisi
+- Merged: eq-shell [#1236](https://github.com/eq-solutions/eq-shell/pull/1236) fix(staff): require supervisor_category when is_supervisor i
 
 ## ⚠ Needs you (6)
 
@@ -76,6 +76,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-06 | eq-shell | [#1264](https://github.com/eq-solutions/eq-shell/pull/1264) feat(ops): extend the EQ-SHELL-1A tenant-data proxy to 3 more pag |
 | 2026-08-06 | eq-shell | [#1263](https://github.com/eq-solutions/eq-shell/pull/1263) feat(ops): same-origin proxy for EQ Ops/Intake tenant data (EQ-SH |
 | 2026-08-06 | eq-shell | [#1262](https://github.com/eq-solutions/eq-shell/pull/1262) feat(quotes): accept Outlook .msg/.eml as quote attachments |
 | 2026-08-06 | eq-shell | [#1261](https://github.com/eq-solutions/eq-shell/pull/1261) fix(ops): widen EQ-SHELL-1A retry window to ~5s |
@@ -90,11 +91,13 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-05 | eq-shell | [#1251](https://github.com/eq-solutions/eq-shell/pull/1251) feat(staff): add home address fields to Staff edit (desktop + mob |
 | 2026-08-05 | eq-shell | [#1250](https://github.com/eq-solutions/eq-shell/pull/1250) fix(staff): compliance-pack export shows Unknown for names only e |
 | 2026-08-05 | eq-shell | [#1252](https://github.com/eq-solutions/eq-shell/pull/1252) feat(ops): ask cost vs. sell when importing a subcontractor PDF |
-| 2026-08-05 | eq-shell | [#1249](https://github.com/eq-solutions/eq-shell/pull/1249) feat(ops): drag a subcontractor PDF onto the Jobs home page to st |
 _Showing 15 of 138 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **GitHub MCP connector 404 on eq-shell repo access** — worth checking the GitHub App installation/scope for this connector if PR creation via MCP is needed again on eq-shell. _(added 2026-08-06)_
+- **Retire the legacy direct-to-Supabase browser path** (`tenantDataClient.ts`/`sksSupabaseClient.ts`, `VITE_SKS_SUPABASE_URL`/anon-key browser exposure, CSP `connect-src` entries) once the proxy soak is confirmed clean — currently kept as fallback. _(added 2026-08-06)_
+- **Three other pages are unmitigated against the identical failure mode** — `LabourHireRates.tsx`, `Suppliers.tsx`, and `modules/intake/index.tsx` all call `createTenantDataClient()`/`createSKSSupabaseClient()` directly with no proxy-first fallback (only `QuotesNative.tsx` was migrated this session). Any of these breaks the same way EQ-SHELL-1A did if a user's browser/network blocks `*.supabase.co`. _(added 2026-08-06)_
 - **Physical-signature-as-photo-upload** — real option, small lift, not confirmed for build. _(added 2026-08-05)_
 - **"Easily accessible" and "easy for management to prove" beyond what's already built** — no further scoping done yet; revisit once access is actually opened and there's real multi-person usage to learn from. _(added 2026-08-05)_
 - **Version-pin skew between eq-shell's and eq-service's independent `@eq-solutions/contracts` pins has no guard.** Both pin the identical tag today so there's no live risk, but each repo pins independently (`github:eq-solutions/eq-contracts#vX.Y.Z`, not a workspace link) — if eq-shell ever migrates too and the two pins later diverge, neither this script (reads the package from `main`, not each repo's actual pin) nor either repo's own `tsc` would catch it. Documented as a caveat in the script itself; a real follow-up guard, not built this session. _(added 2026-08-06)_
@@ -102,10 +105,7 @@ _Showing 15 of 138 · full record in [sessions/](sessions/)_
 - **Only the last 10 days of signups were checked for the stuck-appMetadata pattern** — the 4 unblocked accounts are the ones caught in that window; any self-join/auto-provision-only account older than that with a never-updated `raw_app_meta_data` would still show the same symptom if they ever come back and retry. No full historical audit run. _(added 2026-08-05)_
 - **William's own Cards `public.workers.first_name/last_name` is still blank** (`""`, unchanged since signup) even though his Shell `app_data.staff` record now has his real name — the compliance-pack fix below makes Shell's copy win for that one export, but anything else that reads Cards' own `workers` table directly for display would still show blank for him specifically. Not backfilled. _(added 2026-08-05)_
 - **Worth a look: `digest.md`'s "Recently built" table shows merge status, not deploy status, for every repo — but eq-cards is the one repo where those two are allowed to diverge for hours by design.** A merged eq-cards PR currently reads identically to a live one on the digest, which is exactly what caused this session's confusion. Might be worth a "manual-deploy pending" flag specific to eq-cards, or a general merged-vs-deployed distinction if other repos ever adopt the same manual-gate pattern.
-- **Why the iframe actually went narrow on Royce's real machine is still unconfirmed.** Leading candidate: DevTools was docked open in his screenshots, which alone can shrink the page's available width below 768px. An alternative not ruled out: Shell's own layout being disrupted by the React #418 hydration error below. The v3.5.457 fix doesn't need to know which (it closes the gap for "narrow for any reason"), but if the no-nav symptom recurs on a machine with DevTools closed, the hydration-error angle is the next thing to check. _(added 2026-08-05)_
-- **Shell-side `React error #418` (hydration mismatch), `0zzn40uc-_762.js`, thrown at a `$RC`/`$RV` streaming-render boundary — flagged, not investigated.** Found in a console log Royce shared while chasing the nav bug; likely unrelated (a cross-origin Shell hydration failure can't directly manipulate Field's iframe DOM, and the CSS cascade gap above fully explains the symptom on its own) but never independently confirmed as unrelated, and a real Shell-side bug either way. Worth a look on the eq-shell side if it recurs or shows up in Sentry. _(added 2026-08-05)_
-- **Environment gotcha hit mid-session, not yet root-caused**: in this worktree, Edit-tool writes to already-tracked files were invisible to Bash/PowerShell/git for 20+ minutes (ruled out simple caching lag), even with sandbox disabled — worked around by reapplying the same edits via a Python script written through Bash so it landed on the real filesystem. Worth investigating if it recurs; logged as memory `worktree-tool-filesystem-desync`. _(added 2026-08-05)_
-_…and 411 more · [eq/pending.md](eq/pending.md)_
+_…and 414 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -127,7 +127,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 3252 | 547 | 90 | 12 |
+| [EQ](eq/pending.md) | 3259 | 550 | 90 | 12 |
 | [SKS](sks/pending.md) | 404 | 82 | 0 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 409 | 37 | 2 | 1 |
@@ -148,4 +148,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-06 03:29 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-06 04:09 UTC._
