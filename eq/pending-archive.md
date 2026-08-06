@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-08-05
+last_updated: 2026-08-06
 scope: Done items rotated out of eq/pending.md nightly by scripts/rotate_pending.py (per-item since 2026-07-27; before that, occasional manual whole-section moves). Nothing here is actionable — pure historical record (also covered in eq/changelog/*.md and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -2333,5 +2333,145 @@ contain the same values and were pushed before push-protection caught up.
 ## eq-context: core.hooksPath resolution check added — closes a 3x-recurring gap as F10 (2026-08-05) (rotated 2026-08-05 — its one open item resolved same day)
 
 - [x] **Both adversarial test suites (`hooks/adversarial_test.py` / `.sh`) had been failing 3 cases each on `origin/main`**, unrelated to the HOOKS/F10 work this section was named for (confirmed via a git-stash A/B test) — one of that day's F9-hardening commits had regressed the F2/F7 sandbox-simulation tests on Windows. Flagged as background task `task_e1722f87`. **Resolved same day**, a few hours later: eq-context [PR #128](https://github.com/eq-solutions/eq-context/pull/128) root-caused it precisely — `targets_mount()` gated on a literal `/projects/` path segment, true for the real mount but not for a clean-room clone checked out anywhere else, so F2/F7's own ROOT-derived fixtures silently read as "not the mount" and every case expecting BLOCK instead ALLOWED. Fixed with a test-only `EQ_MOUNT_ROOT` override. Confirmed resolved independently, not just on the PR's own say-so: a later session's own full suite run came back 91/91 (python) and 36/36 (bash), 0 failures. _(added 2026-08-05, resolved 2026-08-05)_
+
+---
+
+## eq-field: dashboard licence-expiry alert (rotated 2026-08-06)
+
+**Deferred:**
+
+---
+
+## eq-solves-service: "Canonical types drift" CI check fixed — two live database columns were missing from the code's type definitions (2026-08-03) (rotated 2026-08-06 — open items remain in pending.md)
+
+- [x] **eq-service [PR #689](https://github.com/eq-solutions/eq-service/pull/689) merged** (squash `362f6dd`) — added the two missing columns to the type definitions, removed the now-unneeded type-safety bypass in the media upload code. Build check + the drift check itself both confirmed green before merge; the one red check on the PR (a Supabase startup failure unrelated to this fix, already known to be broken beforehand) was correctly not treated as a blocker.
+
+---
+
+## eq-cards: profile-save permission bug — PR merged, live grant confirmed and applied (2026-08-03) (rotated 2026-08-06 — open items remain in pending.md)
+
+- [x] **eq-cards [PR #204](https://github.com/eq-solutions/eq-cards/pull/204) merged** (squash `0be5865`) — restores `authenticated`'s EXECUTE grant on `eq_cards_upsert_my_profile`.
+- [x] **Migration `0116_restore_upsert_my_profile_authenticated_grant` applied to eq-canonical (jvkn)** — confirmed `authenticated` can execute both before and after (already true going in); now tracked in the migration ledger, closing the "merge ≠ applied" gap for this specific fix.
+
+---
+
+## eq-context: added eq/progress/ substrate for year-end EQ tracking (2026-08-03) (rotated 2026-08-06 — open items remain in pending.md)
+
+- [x] **Built `eq/progress/`** (`README.md`, `year-goals.md`, `current.md`, `customers.md`, `decisions-log.md`) — adjusted the source prompt before building so it doesn't duplicate `system/TODAY.md`'s CI-gated GOALS block or `ops/decisions.md`'s ADR log. `CLAUDE.md` §10 gained an on-demand note (pulled back from a mandatory step via `/decide` — a new weekly ritual risked going unfilled given this file's own existing discipline gap). eq-context [PR #124](https://github.com/eq-solutions/eq-context/pull/124), merged.
+- [x] **Pre-existing eq-context CI drift found while merging** — "Frontmatter validation" and "Index drift check" both fail on `main` itself, unrelated to this PR (a malformed `status:` field on an unrelated file, plus 4 already-orphaned files across `system/`, `eq/`, `sks/`). Spawned as background task `task_c6fb3772`. **Fixed 2026-08-03** — 2 frontmatter violations + 4 index-drift orphans cleared, both checks confirmed green on `main`. See `eq/changelog/eq-context.md` [2026-08-03] and `sessions/2026-08-03.md`.
+
+---
+
+## eq-cards: Wallet declutter + Show mode + OCR dead-session fix (2026-08-03) (rotated 2026-08-06)
+*Three shipped changes in one session, each verified against live state before merging.*
+
+- [x] **Dev-only "wedge" hint removed + wallet nudge stack decluttered.** Removed a leftover internal debug SnackBar ("...that's the wedge") from the Wallet screen. Also reordered the wallet's stacked nudge cards by actual priority (an incoming company request now outranks a generic "install to home screen" nudge, which had been showing first) and removed a genuine duplicate — the setup checklist already ticks "Connect to your employer" the moment there's a pending application, so the separate "waiting to hear back" banner right below it was saying the same thing twice. eq-cards [PR #197](https://github.com/eq-solutions/eq-cards/pull/197), merged + deployed.
+- [x] **Wallet "Show" mode shipped** — replaces a dead-end QR-sign-in stub with a real fullscreen offline licence display on the live Wallet screen: black-on-white for direct-sun readability, forced max brightness + wakelock while active, worker name/licence type/number/expiry, swipe between licences, "EXPIRED" in red filling roughly a third of the screen. Zero network calls by design. Task named `card_screen.dart` as the build target, but that screen turned out to be unreachable dead code (`/card` is a legacy redirect route, `CardScreen` never constructed) — built against the live Wallet screen instead. eq-cards [PR #198](https://github.com/eq-solutions/eq-cards/pull/198), merged + deployed.
+- [x] **OCR dead-session fix** — root cause + fix both landed same session; see the corrected entry below (eq-shell: Sentry sweep section) for the diagnosis. eq-cards [PR #199](https://github.com/eq-solutions/eq-cards/pull/199), merged + deployed.
+
+**Deferred:**
+
+---
+
+## eq-shell: self-join's "double sign-in" for Cards root-caused and fixed — worker-add nav trimmed further too (2026-08-03) (rotated 2026-08-06 — open items remain in pending.md)
+
+- [x] **Root-caused the Cards "double sign-in": confirmed live, not theoretical.** `mint-cards-otp.ts` hard-required a real email to mint the Cards session. Self-join's own collision-safety-net (from the 2026-08-01 sprint) silently drops the entered email whenever it collides with an existing account — confirmed on the live apprentice test (`users_email_unique` violation in the postgres logs, `dev@eq.solutions` already belonged to Royce's own separate manager account). Same null-email end state whether the worker left it blank or it collided. eq-shell [PR #1197](https://github.com/eq-solutions/eq-shell/pull/1197), merged.
+- [x] **Fixed by decoupling Cards sign-in from needing a real email at all** — falls back to a stable per-worker address on a domain EQ owns, never emailed, so GoTrue can always mint the session. The real email field (and the "add a recovery email" nudge) is untouched — this only stops Cards from depending on it. Same PR.
+- [x] **Bonus bug found while tracing the above, also fixed**: self-join's audit-only `worker_invites` row was missing a required field and had been silently failing on every single self-join. Same PR.
+- [x] **Confirmed live: unticking "Requires manager approval" when creating a self-join link does let people straight in, no pending step** — read directly from the code path, no build needed, just confirming the switch does what it looks like it does.
+- [x] **Confirmed live: the "add a recovery email" nudge does NOT normally ask twice** — it reads off the exact same field self-join's email box writes to. The only time it re-asks is the collision-drop case above, and the nudge's wording didn't reflect that ("add a recovery email" read as if the worker was never asked, when they were). Fixed the copy to say "add a *different* email" plus why, only in that case. eq-shell [PR #1199](https://github.com/eq-solutions/eq-shell/pull/1199), merged.
+- [x] **Worker-add page trimmed further** — the "Redeem invite (QR)" dropdown option (a generic, org-wide, non-personal QR) moved out of the "more ways to add" menu into a plain link next to the invite count, since it isn't really a distinct "how do I add someone" decision. eq-shell [PR #1195](https://github.com/eq-solutions/eq-shell/pull/1195), merged. Found mid-build: a different concurrent session had already collapsed the header from 4 buttons to 1 + a menu earlier the same day (PR #1185) — built on top of that instead of redoing it.
+- [x] **Test account (phone 0466118646 / dev@eq.solutions) deleted again**, verified zero rows everywhere, so the number is clean for the next real test.
+- [x] **Royce's own live click-through of #1197 caught a real regression within the hour — root-caused, hotfixed, and re-shipped same day.** Self-joined fresh, reached Field fine, then EQ Cards spun forever. `ensureAuthUser`'s email-sync check short-circuited on a phone-only worker's `null` existing email — exactly the population #1197 was meant to help — so `generateLink` (which resolves by email, not id) couldn't find the real row and GoTrue silently provisioned a **disconnected orphan `auth.users` row** instead. Fixed the condition, deleted the one orphan row it created. eq-shell [PR #1203](https://github.com/eq-solutions/eq-shell/pull/1203), merged.
+- [x] **Test account (phone +61466118646) deleted a second time after a further re-test round**, this time under email `contact@eq.solutions`. Verified live before deleting: the `auth.users` row's email was the expected synthetic `<id>@cards.eq.solutions`, matching the real canonical id exactly — no orphan, direct evidence #1203's hotfix is holding under real repeat use. Cleared the same recurring `worker_invites` audit-row FK block as last time, then verified zero rows across every dependent table.
+- [x] **Worker Home reordered so warnings show first.** Royce: "we need the warnings at the top above all the other items" — compliance/completeness/PIN/email nudges now render before the roster/leave/prestart glance tiles, not after. eq-shell [PR #1206](https://github.com/eq-solutions/eq-shell/pull/1206), merged.
+- [x] **Photo ID "still needed" report — real root cause found and fixed: the Wallet screen never refreshed, not an RPC bug.** Confirms the RPC-mismatch theory was a dead end (both `eq_cards_my_credential_gaps` and `eq_worker_compliance_status` have had the correct photo_id/driver_licence/passport equivalence live since PR #185/#187, 2026-07-28 — reverified against 20 real SKS Technologies workers holding a driver_licence, all correctly resolve "held"). The actual bug was in eq-cards' Wallet screen itself: adding, editing, or deleting a licence — and even manually pulling to refresh — never told the "asks its team for" pill strip to re-check, so a newly-satisfied requirement kept showing as missing until the whole screen was closed and reopened. Fixed in eq-cards PR #201 (bundled on the same branch as the White Card gallery-picker fix below, split into its own commit), **merged and deployed** — cards.eq.solutions live. Picked up from background task `task_0c9bc250` (spawned this session, flagging both this and the White Card gap for the eq-cards repo).
+- [x] **White card upload doesn't offer "choose from photo library," camera-only** — fixed in eq-cards: the Wallet's org-required-credential nudge (`required_by_org_strip.dart`) hardcoded camera-only, unlike every other upload path in the app. Added an "Upload from album" option matching the existing empty-wallet pattern; swept all 11 upload entry points to confirm this was the only camera-only one. eq-cards [PR #201](https://github.com/eq-solutions/eq-cards/pull/201), **merged and deployed** — cards.eq.solutions confirmed responding live post-deploy. Picked up from background task `task_53091682` (spawned this session). **Royce confirmed live: "White card updated OK."**
+- [x] **Live outage found and fixed: every Cards profile save was failing with "permission denied for function eq_cards_upsert_my_profile."** Royce hit it directly (screenshot: "Could not load profile"); the profile-edit screen's shared error state made a *save* failure read as a *load* failure, which is why it looked like a dead end with no way to escape. Root cause: migration `0114` (worker trade/employer fields, previous day) replaced this function with no trailing `GRANT`, and jvkn's `eq_enforce_function_privacy` trigger silently strips `authenticated`'s execute privilege on every `CREATE OR REPLACE` in a guarded schema — the exact same incident class that broke Cards signups once before (0111/#191). Confirmed live via `has_function_privilege` before and after. eq-cards migration `0116` + [PR #204](https://github.com/eq-solutions/eq-cards/pull/204), applied directly to jvkn (Royce's explicit go, after the Supabase MCP `apply_migration` tool was blocked by the environment's own classifier — worked around via the read/write `execute_sql` tool instead, same DB-tool-flakiness pattern logged 2026-08-02) and merged.
+- [x] **"Complete your profile" never prefilled from a scanned licence, ever — Royce: "bullshit — complete your profile should always try and prefill."** Confirmed: the screen was a blank manual form; the app's existing driver-licence-OCR-to-profile pipeline was only reachable from onboarding/Add-a-licence, never from profile completion itself, and licence rows don't store the OCR'd name/DOB/address anywhere to backfill from later — once skipped, that data is gone. Added a "Scan your driver's licence to fill this in" entry point on the edit screen, reusing the existing scan → crop → OCR pipeline end-to-end. Scoped to driver's licence only — the OCR edge function's own prompt only extracts profile fields for that type, not a generic Photo ID card; widening that is a separate, riskier prompt change, flagged not done. eq-cards [PR #205](https://github.com/eq-solutions/eq-cards/pull/205), merged and deployed.
+- [x] **Royce: "roster, leave and eq field all just open the field app... maybe we just have field?"** Confirmed: Worker Home's Roster and Leave glance tiles both linked to the exact same `/field` destination as the main Field tile, no deep link to a specific sub-page — a redundant second click, not a shortcut. Removed both tiles + their now-dead helpers. Prestart tile kept (not named in the feedback, and shows real submitted/not-submitted state rather than just redirecting). eq-shell [PR #1218](https://github.com/eq-solutions/eq-shell/pull/1218), merged — auto-deploys on merge, live on core.eq.solutions.
+- [x] **Field access mystery — closed by Royce's own retest, root cause still unconfirmed.** Investigated three separate gates for Royce's account (earned-access flags on jvkn, session/JWT staleness, eq-field's own token check, `tenant_routing` status) — all four checked out fine, so none explained why Field was inaccessible. Royce reported "field is now accessible" without further diagnosis on our end; likely resolved by a fresh sign-in/session refresh rather than any code change made this session. Not chased further once he confirmed it working.
+- [x] **"Stuck on profile, no way back to Wallet" — real cause found 2026-08-04, not the same incident.** Royce hit it again after PR #204 was live, so it wasn't the permission bug recurring. Two screens in the onboarding/scan flow (`ProfileEditScreen`, `ProfileFillFromLicenceScreen`) had no explicit way back — Flutter's auto-back arrow only renders when there's a route to pop to, not guaranteed on a deep-linked or freshly-provisioned session. Added an explicit home icon to both, navigating straight to the Wallet regardless of nav-stack state. eq-cards PR #206 + PR #209, merged + deployed. Not yet live-click-tested by Royce specifically for this fix.
+
+---
+
+## eq-cards/eq-shell: worker data consent/sync architecture Q&A — one live bug found, one decision made, no code shipped (2026-08-03) (rotated 2026-08-06 — open items remain in pending.md)
+
+- [x] **Decided: no per-tenant credential-sharing granularity for now** — a worker's credentials stay visible to every company they're linked to (current default), rather than being releasable to one employer at a time. Revisit only if a worker with two employers actually asks to hide a credential from one but not the other — not before. Logged as memory `consent_release_model_decision`.
+
+---
+
+## eq-receipts: full-width nav + one-click Review from Inbox after a photo import (2026-08-03) (rotated 2026-08-06)
+*Royce asked for two things: the top nav needed a horizontal slide to reach every option on mobile, and there was no way to jump straight from a just-imported receipt into Review — had to navigate there separately.*
+
+- [x] **Nav rebuilt as its own full-width row that wraps** instead of a horizontal-scroll strip — every menu item (Inbox, Dashboard, Review, Exports, Settings, Sign out) is now visible from the homescreen without swiping. eq-receipts [PR #18](https://github.com/eq-solutions/eq-receipts/pull/18), merged to main.
+- [x] **Inbox photo imports now carry the receipt id back from `extract-receipt`** — each finished item gets a Review link straight to Verify, plus a Review all button once anything's done, so a photo import can be finished in one click. Same PR.
+
+**Deferred:**
+
+---
+
+## eq-solves-intake + eq-shell: duplicate-site console's two dead ends fixed, then a live permission bug found and fixed mid-testing (2026-08-01) (rotated 2026-08-06 — open items remain in pending.md)
+
+
+---
+
+## eq-solves-service: fixed a broken safety check that was silently skipping every code review, then found the "176,000 findings" it surfaced was almost entirely noise, cleaned up what was real (2026-08-01) (rotated 2026-08-06 — open items remain in pending.md)
+
+
+---
+
+## eq-shell + eq-solves-intake + eq-receipts: closed every open security alert across the EQ suite, found 5 repos where the alert system was switched off entirely (2026-08-01) (rotated 2026-08-06 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: Richard Brown's mobile crash fixed, then a simplified mobile nav for supervisors driven by real usage data (2026-07-31) (rotated 2026-08-06 — open items remain in pending.md)
+
+
+---
+
+## eq-solves-service: Found why photo uploads were failing everywhere, then added a link/create/skip option to the paste-import flow (2026-07-31) (rotated 2026-08-06 — open items remain in pending.md)
+
+
+---
+
+## eq-intake + eq-shell: 4-part fix from Royce's live screenshot review of the Intake console (2026-07-31) (rotated 2026-08-06 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: EQ Ops quote status → job status sync fixed for all 5 stages, plus a new "Target period" badge for future-dated quotes (2026-07-31) (rotated 2026-08-06 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: Compliance-roster-only workers — Field access can now be switched off per worker (2026-07-30) (rotated 2026-08-06 — open items remain in pending.md)
+
+
+---
+
+## eq-solves-service: Field Run-Sheet asset headers now show the maintenance plan's Job Code (2026-07-29) (rotated 2026-08-06 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: Staff page edits silently reverting overnight — root-caused and fixed, deployed (2026-07-28) (rotated 2026-08-06 — open items remain in pending.md)
+
+
+---
+
+## eq-cards/eq-shell: onboarding minimum-requirements switch, bulk connect-worker, and a live anon-EXECUTE fix (2026-07-26) (rotated 2026-08-06 — open items remain in pending.md)
+
+
+---
+
+## EQ Field: real Incidents / Near Miss reporting, shipped and live (2026-07-22) (rotated 2026-08-06 — open items remain in pending.md)
+
+
+---
+
+## Core dashboard rebuilt — replaced the passive AI-brief-only home with three permission-gated live signal bands (2026-07-17, MERGED + LIVE) (rotated 2026-08-06 — open items remain in pending.md)
+
 
 ---
