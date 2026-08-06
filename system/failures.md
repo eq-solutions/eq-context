@@ -1,7 +1,7 @@
 ---
 title: SYSTEM — Failure Ledger (the ratchet's memory)
 owner: Royce Milmlow
-last_updated: 2026-08-05
+last_updated: 2026-08-06
 scope: Every failure that escaped the safeguards, with the rung its guard currently sits at. Machine-read by guard-ratchet.yml. Append-only for entries; rung/count are mutable.
 read_priority: high
 status: live
@@ -126,7 +126,7 @@ failures:
     cost: "scripts/sites.js corrupted with NUL bytes mid-session; caught and fixed before commit, so no damage landed — but the corruption mechanism is real and currently invisible to every existing guard"
     note: "CORRECTED 2026-07-31: this entry originally claimed 'F6's guard has no visibility into git operations' — that was wrong. hooks/pre_tool_use.py already had a blanket block on git write verbs including merge/stash, live since 2026-07-12, which SHOULD have stopped the 2026-07-28 incident outright. The real open question — never resolved, not fixed by this build — is WHY that didn't fire: either the hook wasn't wired into whatever sandbox ran that session, or the git command reached it through a path this hook's tool-name matching didn't cover. Widening to Bash+PowerShell closes one candidate cause but doesn't prove it was THE cause — nobody can currently inspect that sandbox's actual settings.json from here. What this build DOES provide unconditionally: an independent NUL-byte integrity scan ahead of any future git verb, on any platform, that blocks before corruption (from ANY path, wired-hook-covered or not) can be committed/pushed further. Tracked as a separate open item in ops/pending.md, not closed by this entry."
     signal: "git (stash pop|merge).{0,80}NUL|NUL.{0,80}(stash pop|merge|round-trip)"
-    confirmed_in: ["sessions/2026-07-28.md", "sessions/2026-07-31.md"]
+    confirmed_in: ["sessions/2026-07-28.md", "sessions/2026-07-31.md", "sessions/2026-08-05-x.md"]
 
   - id: F8
     title: Prose written into the frontmatter status field turned CI red on main, twice in four days
