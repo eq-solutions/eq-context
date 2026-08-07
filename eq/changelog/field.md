@@ -1,13 +1,20 @@
 ---
 title: Changelog — EQ Solves Field
 owner: Royce Milmlow
-last_updated: 2026-08-06
+last_updated: 2026-08-07
 scope: Append-only history of changes to the EQ Solves Field product. Canonical — eq-field.md was merged into this file 2026-07-19, don't split again.
 read_priority: reference
 status: live
 ---
 
 # Changelog — EQ Solves Field
+
+## [2026-08-07] Contacts CSV import no longer wipes the whole roster (v3.5.466, #660)
+- Closes the top item on eq-shell's "close what's worth closing" plan (see `eq/pending.md` / `sessions/2026-08-06.md`). The existing Contacts CSV import purged the entire `people` table and reinserted from the file — safe only if the CSV was a perfect, complete export, and silently orphaning any of 6 tables carrying an unenforced soft `person_id` reference (timesheets, leave, licences, etc.) whenever it wasn't. `people` has no FK constraints, so nothing enforced this before — the risk had been live all along, not introduced by this fix.
+- Rewrote `importPeopleToSB()` in `scripts/supabase-entities.js`: loads existing (non-archived) people once, indexes them by phone and email, then for each imported row either upserts onto the matching existing person (preserving their id, so every soft reference elsewhere survives) or inserts a new row if no match. The blanket `_purgeTenantRows('people')` call was removed from this path only — the helper itself is untouched and still used by `importSitesToSB`.
+- New `tests/import-people-merge.test.js` (6 cases, existing `ok()`/`okAsync()` headless harness) covering phone-match, email-match, no-match/new-person, and the phone-normalisation fallback. `node --check` clean.
+- Presented to Royce as a picture-based /decide before building (the real complexity — the 6 soft-referenced tables — wasn't in the original one-line scope note); confirmed "yes, build it." Merged (squash) on "merge once CI's green" after all 6 checks + deploy preview passed.
+- **Not click-tested live** — re-uploading a real SKS person's existing CSV row and confirming their id + linked records survive still needs Royce's own session; logged in `eq/pending.md`.
 
 ## [2026-08-06] My Schedule maps link: tap still didn't reliably open Maps on iOS home-screen installs (v3.5.465, #659)
 - Follow-up to the v3.5.460 fix below. Royce click-tested it live and found a second layer: the hard no-op was gone, but a plain tap still didn't open Maps — only a long-press-then-Open from iOS's native link menu did.
