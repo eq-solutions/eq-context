@@ -74,7 +74,7 @@ _If this file is >48h old, the cron is broken._
 - #684 chore(deps): bump the eq-design-system group with 2 updates
 
 **eq-shell:**
-- #1280 fix(auth): Field's JWT now gets live extra_perms, not a stale login-time cookie
+- #1281 feat(access-control): expose eq-field's 74 fine-grained permission keys
 - #1279 feat(staff): labour-hire candidate review + ops intake tool
 
 ---
