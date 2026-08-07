@@ -25,8 +25,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ## eq-context: production-readiness review + 3 backup-workflow reliability fixes, ledger loop closed (2026-08-06)
 *Royce asked for a warts-and-all review across onboarding/licences/security/backup/code-integrity/UX, then a follow-up sprint of whatever was safe to fix solo while he's overseas — substrate-only, no live-app merges.*
 
-- [ ] **Recurring `GET /rest/v1/canonical_outbox` and `GET /rest/v1/_health` 404s on ehow, every ~5 min, ongoing** — found incidentally while checking ehow's API logs for an unrelated Sentry error (EQ-SHELL-1A, see correction below). Both tables don't exist on ehow; something (tagged `node` user-agent, so a server-side job/function, not a browser) is polling them continuously and getting a 404 every time. Not investigated further — unclear if intentional (an existence-probe pattern) or dead/misconfigured code pointed at the wrong project. Worth a look. _(added 2026-08-06)_
-
 **Corrections to this session's own earlier claims, logged so they don't get quoted as fact later:**
 - **EQ-SHELL-1A was NOT "just a network blip, no action needed"** — that was my own under-verified conclusion, based on checking one event's timestamp against ehow's logs without checking the occurrence count (46, escalating) or prior history. A different concurrent session (see [sessions/2026-08-06.md](../sessions/2026-08-06.md), "two hotfixes, then a durable fix") found the real pattern (multi-browser, hotspot-only-worked), root-caused it to the legacy direct-to-Supabase browser path, and shipped a real proxy fix, confirmed live with Royce ("success — Simon is unblocked"). My single-event check was factually accurate as far as it went (that one request never reached ehow) but the conclusion I drew from it was wrong. Nothing further needed from me here — already fixed by other work, just not for the reason I said.
 - **The "44 never-invited workers" I flagged as a fresh action item is the same item already logged 2026-08-02** (`§eq-cards: workers can now self-report...` below) — Royce already looked at this and said "leave this alone for now." Not a new finding; presented incorrectly as one.
@@ -76,10 +74,10 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## eq-field: My Schedule maps link on iOS home-screen installs — two-part fix, merged, live (2026-08-06)
+## eq-field + eq-shell: My Schedule maps link — real root cause found, iframe popups were blocked, merged, live (2026-08-06)
 
 **Deferred:**
-- [ ] **Not confirmed on a real device that a single tap now opens Apple Maps.** v3.5.460 (PR #655) fixed the hard no-op (tap did literally nothing); Royce click-tested it live and found a second layer — tap still didn't open Maps, only a long-press-then-Open did. v3.5.465 (PR #659) switched the iOS-standalone case to Apple Maps' own `maps://` address instead of the `https://maps.google.com` link, which isn't subject to the same tap-vs-long-press Universal Links gate — reasoned from the live symptom + WebKit's known behavior, not verified against Apple's own docs. Royce to confirm on iPhone with Field on the home screen. _(added 2026-08-05, updated 2026-08-06)_
+- [ ] **Not yet confirmed on a real device through Core that the maps link now opens.** Three attempts: v3.5.460 (eq-field #655) dropped `target="_blank"` for iOS standalone; v3.5.465 (eq-field #659) switched to Apple's `maps://` scheme — both real, defensible fixes for genuine standalone-PWA use, but Royce's actual test was always through Core (`core.eq.solutions/sks/field`), where neither could work. The real cause: `FieldIframe.tsx`'s iframe `sandbox` attribute never included `allow-popups`, so **any** `target="_blank"` link or `window.open()` inside Field, Service, or Cards was silently blocked whenever accessed through Shell — on any device, not iOS-specific. Fixed for all three apps (eq-shell [#1268](https://github.com/eq-solutions/eq-shell/pull/1268), merged, live on `core.eq.solutions`). Royce to confirm the maps icon now actually opens Maps when accessed through Core. _(added 2026-08-05, updated 2026-08-06)_
 
 ---
 

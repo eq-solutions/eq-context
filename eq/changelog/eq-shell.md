@@ -1,13 +1,17 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-06
+last_updated: 2026-08-07
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # eq-shell changelog
+
+## 2026-08-07
+- **PR #1268** — root-caused why eq-field's My Schedule maps-link fix (field #655/#659) still did nothing when Royce tested it through Core, after two eq-field-side fixes (both correct for genuine standalone-PWA use, neither applicable to his actual test path). `FieldIframe.tsx`'s iframe `sandbox` attribute was `allow-same-origin allow-scripts allow-forms allow-downloads` — missing `allow-popups`. Without it, any `target="_blank"` link or `window.open()` call inside the embedded app is silently blocked by the browser, no error, no console warning. Confirmed `ServiceIframe.tsx` and `CardsIframe.tsx` carry the identical gap (same origin commit, #1165, which only documented the `allow-same-origin`/`allow-scripts` risk and never considered popups) — this affected any new-tab/app-handoff link in all three embedded apps, on any device, not just Field or iOS. Added `allow-popups allow-popups-to-escape-sandbox` to all three. Same accepted-risk reasoning as the existing pairing: `src` is always Shell's own first-party, token-gated URL, so a popped-open window only ever navigates somewhere trusted first-party code constructed.
+- Verified: `pnpm run build:packages && build:tokens && tsc -b` clean, `vite build` succeeds, eslint 0 new errors. Hit and diagnosed a genuine GitHub-side issue getting this merged: `pull_request`/`push`-triggered Actions weren't firing on this repo at all (0 workflow runs against the PR's commit) for ~18 hours — confirmed scheduled/cron workflows were unaffected throughout (rules out a repo-wide outage or billing pause), confirmed `workflow_dispatch` could still run CI manually but doesn't satisfy a PR's required-check evaluation, tried closing/reopening the PR and pushing a fresh empty commit (neither helped). Presented Royce the actual options rather than overriding branch protection; he chose to wait. CI recovered on its own; all 4 required checks + deploy preview passed clean on the next check. Squash-merged, confirmed live via `core.eq.solutions` responding post-merge.
 
 ## 2026-08-06
 - **PR #1257** — self-join requests (QR/link joins awaiting manager approval) could only be approved or declined one at a time. `self-join-codes.ts`'s `approve`/`reject` action now also accepts a `user_ids` array (single batched update + one audit entry, capped at 200); `StaffPage.tsx`'s pending panel gets checkboxes, select-all, and bulk Approve/Decline, shown only once more than one self-join is pending. Squash-merged.
