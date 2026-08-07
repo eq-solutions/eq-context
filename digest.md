@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-07 02:02 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-07 02:57 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-07 01:17 UTC → 2026-08-07 02:02 UTC)
+## Since last refresh (2026-08-07 02:02 UTC → 2026-08-07 02:57 UTC)
 
-- Merged: eq-shell [#1271](https://github.com/eq-solutions/eq-shell/pull/1271) feat(documents): auto-push onboarding documents to new start
-- Merged: eq-shell [#1256](https://github.com/eq-solutions/eq-shell/pull/1256) fix(observability): stop mislabeling render crashes as chunk
-- Merged: eq-shell [#1254](https://github.com/eq-solutions/eq-shell/pull/1254) fix(ops): wire the cost/sell question into the other Import 
-- Merged: eq-shell [#1250](https://github.com/eq-solutions/eq-shell/pull/1250) fix(staff): compliance-pack export shows Unknown for names o
-- Merged: eq-shell [#1249](https://github.com/eq-solutions/eq-shell/pull/1249) feat(ops): drag a subcontractor PDF onto the Jobs home page 
-- Merged: eq-shell [#1247](https://github.com/eq-solutions/eq-shell/pull/1247) feat(field): relay a mint-entity-patch-token credential to t
-- Merged: eq-shell [#1246](https://github.com/eq-solutions/eq-shell/pull/1246) feat(documents): categories for the Templates tab
-- Merged: eq-shell [#1244](https://github.com/eq-solutions/eq-shell/pull/1244) fix(security): guard entity-patch against same-site confused
+- Merged: eq-shell [#1257](https://github.com/eq-solutions/eq-shell/pull/1257) feat(staff): bulk approve/decline self-join requests
+- Merged: eq-shell [#1255](https://github.com/eq-solutions/eq-shell/pull/1255) fix(briefing): validate submit_briefing tool output before t
+- Merged: eq-shell [#1253](https://github.com/eq-solutions/eq-shell/pull/1253) feat(documents): bulk category assignment for the Templates 
+- Merged: eq-shell [#1252](https://github.com/eq-solutions/eq-shell/pull/1252) feat(ops): ask cost vs. sell when importing a subcontractor 
+- Merged: eq-shell [#1251](https://github.com/eq-solutions/eq-shell/pull/1251) feat(staff): add home address fields to Staff edit (desktop 
+- Merged: eq-shell [#1248](https://github.com/eq-solutions/eq-shell/pull/1248) fix(ops): widen Description column and batch-save outlet pri
+- Merged: eq-shell [#1245](https://github.com/eq-solutions/eq-shell/pull/1245) feat(field): Bearer credential so Field can trigger a Shell-
+- Merged: eq-shell [#1243](https://github.com/eq-solutions/eq-shell/pull/1243) refactor(workers): simplify invite header to two actions
 
 ## ⚠ Needs you (4)
 
@@ -60,7 +60,6 @@ _…and 90 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 
 | Project | Error | Events | Last seen |
 |---------|-------|--------|-----------|
-| eq-shell | [Error: Duplicate Shell accounts detected: 1](https://eq-solutions.sentry.io/issues/137721706/) | 5 | 2026-08-06 |
 | eq-cards | [LateInitializationError: Field '' has not been initialized.](https://eq-solutions.sentry.io/issues/136695941/) | 5 | 2026-08-04 |
 | eq-shell | [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/) | 4 | 2026-08-05 |
 | eq-cards | [<unknown>](https://eq-solutions.sentry.io/issues/137265513/) | 4 | 2026-07-29 |
@@ -68,6 +67,7 @@ _…and 90 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 | eq-field | [ReferenceError: openTafeHolidaysConfig is not defined](https://eq-solutions.sentry.io/issues/130706295/) | 3 | 2026-07-28 |
 | eq-shell | [Error: eq-ops rpc eq_delete_quote failed: quote not found or access denied](https://eq-solutions.sentry.io/issues/139309419/) | 2 | 2026-08-06 |
 | eq-shell | [Error: eq-ops rpc eq_trash_quote failed: quote not found, access denied, or alre](https://eq-solutions.sentry.io/issues/128679375/) | 2 | 2026-08-06 |
+| eq-shell | [TimeoutError: The operation was aborted due to timeout](https://eq-solutions.sentry.io/issues/138753891/) | 2 | 2026-08-04 |
 _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunresolved)_
 
 ## Recently built (last 7 days)
@@ -77,6 +77,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-07 | eq-shell | [#1271](https://github.com/eq-solutions/eq-shell/pull/1271) feat(documents): auto-push onboarding documents to new starters |
 | 2026-08-07 | eq-shell | [#1270](https://github.com/eq-solutions/eq-shell/pull/1270) fix(auth): stop handle_phone_dedup grafting a duplicate shell_con |
 | 2026-08-07 | eq-shell | [#1268](https://github.com/eq-solutions/eq-shell/pull/1268) fix(shell): grant allow-popups on the Field/Service/Cards iframe  |
+| 2026-08-07 | eq-field | [#660](https://github.com/eq-solutions/eq-field/pull/660) v3.5.466 — Contacts CSV import no longer wipes the whole roster |
 | 2026-08-06 | eq-shell | [#1269](https://github.com/eq-solutions/eq-shell/pull/1269) fix(observability): retry-instead-of-logout on verify-timeout, re |
 | 2026-08-06 | eq-shell | [#1265](https://github.com/eq-solutions/eq-shell/pull/1265) fix(ops): stop tenant-data-proxy crashing on 204 responses (EQ-SH |
 | 2026-08-06 | eq-shell | [#1264](https://github.com/eq-solutions/eq-shell/pull/1264) feat(ops): extend the EQ-SHELL-1A tenant-data proxy to 3 more pag |
@@ -88,12 +89,11 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-06 | eq-field | [#659](https://github.com/eq-solutions/eq-field/pull/659) v3.5.465 — My Schedule maps link: tap still didn't open Maps on i |
 | 2026-08-06 | eq-field | [#658](https://github.com/eq-solutions/eq-field/pull/658) fix(bundles): role drift-guard vendoring + restore 3 fixes that n |
 | 2026-08-05 | eq-shell | [#1259](https://github.com/eq-solutions/eq-shell/pull/1259) fix(onboarding): close two real gaps from the SaaS-parity audit |
-| 2026-08-05 | eq-shell | [#1258](https://github.com/eq-solutions/eq-shell/pull/1258) fix(cards): stop alerting on Field/Service's own token refresh |
 _Showing 15 of 129 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **Recurring `GET /rest/v1/canonical_outbox` and `GET /rest/v1/_health` 404s on ehow, every ~5 min, ongoing** — found incidentally while checking ehow's API logs for an unrelated Sentry error (EQ-SHELL-1A, see correction below). Both tables don't exist on ehow; something (tagged `node` user-agent, so a server-side job/function, not a browser) is polling them continuously and getting a 404 every time. Not investigated further — unclear if intentional (an existence-probe pattern) or dead/misconfigured code pointed at the wrong project. Worth a look. _(added 2026-08-06)_
+- **The `_health` 404 (a separate keep-warm ping, same ~5-min cadence) is still open** — not part of this fix, not investigated. `_health` genuinely doesn't exist on ehow; low priority, nothing depends on it succeeding. _(added 2026-08-06)_
 - **Replace EQ Field's destructive CSV import with an additive one** — top item on the "close what's worth closing" plan, not built. Scope: `eq-field/scripts/import-export.js` + `supabase-entities.js` (separate repo) — match-by-phone-or-email against existing people before insert, never blanket-delete first. _(added 2026-08-06)_
 - **Build a Cards bulk-invite path** — Cards has none today, every account provisioned one at a time. Scope: a CSV-in/result-table-out screen mirroring `AdminBulkInvite.tsx`, backed by a batch version of Cards' own single-invite flow. _(added 2026-08-06)_
 - **Load-test the auth path against a synchronised login burst** (e.g. every site clocking on at 7am) — Supabase connection-pool headroom and Netlify Function concurrency under that pattern have never been measured either way. _(added 2026-08-06)_
@@ -125,7 +125,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 3225 | 556 | 55 | 12 |
+| [EQ](eq/pending.md) | 3231 | 556 | 56 | 12 |
 | [SKS](sks/pending.md) | 404 | 82 | 0 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 409 | 37 | 2 | 1 |
@@ -134,11 +134,11 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | Date | Session |
 |------|---------|
+| 2026-08-07 | [My Schedule maps link: the real root cause was Shell's iframe sandbox, not iOS](sessions/2026-08-07.md) |
 | 2026-08-06 | [Document sign-off register: real vision from Royce, two trust gaps fixed](sessions/2026-08-06.md) |
 | 2026-08-06 | [c — My Schedule maps link, part two: tap-vs-long-press on iOS standalone](sessions/2026-08-06-c.md) |
 | 2026-08-05 | [Tenant-rule audit extended to eq-cards + eq-solves-intake, all 4 PRs merged and live](sessions/2026-08-05.md) |
 | 2026-08-05 | [y — My Schedule maps link fixed (iOS home-screen installs)](sessions/2026-08-05-y.md) |
-| 2026-08-05 | [x — Sentry confirmed EQ-SHELL-10/19 live, then a /decide pass found F6/F7 were a false alarm and surfaced a genuinely new incident (F12)](sessions/2026-08-05-x.md) |
 _[sessions/](sessions/) · 5 shown_
 
 ## Substrate honesty
@@ -146,4 +146,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-07 02:02 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-07 02:57 UTC._
