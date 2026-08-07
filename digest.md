@@ -8,26 +8,28 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-07 14:52 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-07 15:25 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-07 14:46 UTC → 2026-08-07 14:52 UTC)
+## Since last refresh (2026-08-07 14:52 UTC → 2026-08-07 15:25 UTC)
 
-- Merged: eq-shell [#1282](https://github.com/eq-solutions/eq-shell/pull/1282) fix(control-plane): backfill labour-hire review functions (d
-- Merged: eq-shell [#1180](https://github.com/eq-solutions/eq-shell/pull/1180) feat(documents): internal document sign-off register schema 
-- Merged: eq-solves-service [#691](https://github.com/eq-solutions/eq-service/pull/691) fix(canonical-outbox): use the public-schema client for the 
-- Merged: eq-solves-service [#690](https://github.com/eq-solutions/eq-service/pull/690) fix(tenant-scoping): two service-role queries had no defense
-- Merged: eq-solves-service [#689](https://github.com/eq-solutions/eq-service/pull/689) fix(types): close canonical types drift on media_library + s
-- Merged: eq-solves-service [#683](https://github.com/eq-solutions/eq-service/pull/683) fix(reports): PM report supervisor/contact fields ignored th
+- Merged: eq-shell [#1281](https://github.com/eq-solutions/eq-shell/pull/1281) feat(access-control): expose eq-field's 74 fine-grained perm
+- Merged: eq-shell [#1265](https://github.com/eq-solutions/eq-shell/pull/1265) fix(ops): stop tenant-data-proxy crashing on 204 responses (
 - Merged: eq-solves-service [#682](https://github.com/eq-solutions/eq-service/pull/682) fix(migrations): sites/assets update triggers referenced a d
-- Merged: eq-solves-service [#681](https://github.com/eq-solutions/eq-service/pull/681) fix(sites): site supervisor picks from site contacts, not te
+- Merged: eq-solves-service [#680](https://github.com/eq-solutions/eq-service/pull/680) fix(migrations): 0201 view-column-order failure that broke t
+- Merged: eq-cards [#198](https://github.com/eq-solutions/eq-cards/pull/198) feat(wallet): Show mode — offline fullscreen ID display for 
+- Merged: eq-solves-intake [#106](https://github.com/eq-solutions/eq-solves-intake/pull/106) feat(intake): real Contacts merge system (Sites-equivalent)
+- Merged: eq-solves-intake [#105](https://github.com/eq-solutions/eq-solves-intake/pull/105) feat(intake): AI sanity-check on the Contacts duplicate-arch
+- Merged: eq-solves-intake [#104](https://github.com/eq-solutions/eq-solves-intake/pull/104) test(format-ui): prove a real timesheet record survives xero
+- ⚠ Needs you: 3 → 4 (new items)
 
-## ⚠ Needs you (3)
+## ⚠ Needs you (4)
 
+- 🔴 **CI failure** — eq-shell `main`
 - 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-9 (P0 — confirmed exposure, same window as SEC-3, possible second exposure 2026-07-27) — A different service_role key (`jvkn`/eq-canonical) was pasted directly into a ch · [security-register.md](ops/security-register.md)
 - 🟠 **Cron failing** — `adversarial-suite.yml` 1 consecutive scheduled run(s) failed, last success 2026-08-05 · [failures.md](system/failures.md) F11
 
-## 🙋 Waiting on you (107)
+## 🙋 Waiting on you (108)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
@@ -43,13 +45,13 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **EQ** · **Not confirmed by Royce on the real embedded session** — everything above was verified against a standalone repro (deploy preview + forced `.shell-mode` class), not the actual `core.eq.solutions/sks/field` iframe Royce was looking at (no way to drive that cross-origin session from this environment). Royce to hard-refresh (or bypass the service worker) and confirm the nav bar is back. _(added 2026-08-05)_
 - **EQ** · Auto-login from Shell's tenant tile into Cards was silently skipping the handoff and bouncing to the sign-in screen instead — reported live by Royce, root-caused same session. `cards.eq.solutions` iframes across every open Shell tab share one browser's local storage, and a refresh-token rotation triggered by one tab invalidates the session another tab still has cached. The splash screen only checked whether *a* session object existed in storage, not whether it was still valid, so a stale cached session silently pre-empted the working handoff. Root-caused live against Royce's own SKS account: PostHog showed `shell_handoff_started` never fired on the failing attempt, and eq-canonical's auth logs showed `403 bad_jwt: invalid claim: missing sub claim` at the same second. Fixed in eq-cards [PR #212](https://github.com/eq-solutions/eq-cards/pull/212) (squash-merged `36a23cd`) — `_handleShellEntry()` now validates any cached session with a live `getUser()` call before trusting it, signing out and falling through to the existing handoff on any failure. Merged and deployed (explicit `Build & Deploy` workflow dispatch — Netlify + Sentry source-map upload both succeeded). **Needs Royce's click-through**: his own browser has a bad session already stuck in local storage from before the fix — clearing site data for `cards.eq.solutions` once (or a private window) and reloading the tenant tile is a device-side action only he can do; confirming the clean auto-login after that is the last open step. _(added 2026-08-04)_
 - **EQ** · **Sign-off records can be read or overwritten by any signed-in person on the same tenant, not just the person they belong to.** Investigated 2026-08-04 (sprint task T1): the obvious fix (`signer_user_id = auth.uid()`) would break real signing — eq-field's data-plane JWT sets `sub` to the tenant id for every user, not the actor, so `auth.uid()` on the real sign path never equals the signer. Closing this needs an identity-model decision, not a migration. Royce's call: leave deferred, revisit alongside a real second-signer rollout. _(updated 2026-08-04)_
-_…and 95 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 96 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 2 | 0d |
+| eq-shell | ✗ failure | 0d ago | 1 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 5 | 4d |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 2d ago | 1 | 0d |
@@ -73,22 +75,22 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
-| 2026-08-07 | eq-shell | [#1282](https://github.com/eq-solutions/eq-shell/pull/1282) fix(control-plane): backfill labour-hire review functions (drift  |
-| 2026-08-07 | eq-shell | [#1280](https://github.com/eq-solutions/eq-shell/pull/1280) fix(auth): Field's JWT now gets live extra_perms, not a stale log |
-| 2026-08-07 | eq-shell | [#1278](https://github.com/eq-solutions/eq-shell/pull/1278) ci: add a static check that function grants survive CREATE OR REP |
+| 2026-08-07 | eq-shell | [#1281](https://github.com/eq-solutions/eq-shell/pull/1281) feat(access-control): expose eq-field's 74 fine-grained permissio |
 | 2026-08-07 | eq-field | [#662](https://github.com/eq-solutions/eq-field/pull/662) fix(roles): vendor verify-pin.js's role list, log the silent-down |
 | 2026-08-07 | eq-solves-intake | [#112](https://github.com/eq-solutions/eq-solves-intake/pull/112) feat(intake): fuzzy identity match in the Reconcile engine |
 | 2026-08-07 | eq-solves-intake | [#111](https://github.com/eq-solutions/eq-solves-intake/pull/111) feat(intake): polish the Overview/To Do data-cleaning flow |
-| 2026-08-06 | eq-solves-service | [#691](https://github.com/eq-solutions/eq-service/pull/691) fix(canonical-outbox): use the public-schema client for the outbo |
-| 2026-08-04 | eq-solves-service | [#690](https://github.com/eq-solutions/eq-service/pull/690) fix(tenant-scoping): two service-role queries had no defense-in-d |
+| 2026-08-06 | eq-shell | [#1265](https://github.com/eq-solutions/eq-shell/pull/1265) fix(ops): stop tenant-data-proxy crashing on 204 responses (EQ-SH |
 | 2026-08-04 | eq-solves-intake | [#109](https://github.com/eq-solutions/eq-solves-intake/pull/109) fix(tenant-scoping): close 2 real gaps in api-intake + approve-wo |
 | 2026-08-04 | eq-solves-intake | [#110](https://github.com/eq-solutions/eq-solves-intake/pull/110) fix(scripts): hard-stop migrate-cards-to-canonical.mjs rather tha |
-| 2026-08-03 | eq-solves-service | [#689](https://github.com/eq-solutions/eq-service/pull/689) fix(types): close canonical types drift on media_library + sites |
 | 2026-08-03 | eq-solves-intake | [#108](https://github.com/eq-solutions/eq-solves-intake/pull/108) build(platform): narrow check:packages, wire in verified test gat |
 | 2026-08-03 | eq-solves-intake | [#107](https://github.com/eq-solutions/eq-solves-intake/pull/107) fix: resolve the 13 remaining no-unused-vars errors (vendored-cop |
-| 2026-08-02 | eq-shell | [#1180](https://github.com/eq-solutions/eq-shell/pull/1180) feat(documents): internal document sign-off register schema (tena |
-| 2026-08-02 | eq-solves-service | [#683](https://github.com/eq-solutions/eq-service/pull/683) fix(reports): PM report supervisor/contact fields ignored the sit |
-_Showing 15 of 44 · full record in [sessions/](sessions/)_
+| 2026-08-02 | eq-solves-service | [#682](https://github.com/eq-solutions/eq-service/pull/682) fix(migrations): sites/assets update triggers referenced a delete |
+| 2026-08-02 | eq-cards | [#198](https://github.com/eq-solutions/eq-cards/pull/198) feat(wallet): Show mode — offline fullscreen ID display for site  |
+| 2026-08-02 | eq-solves-intake | [#106](https://github.com/eq-solutions/eq-solves-intake/pull/106) feat(intake): real Contacts merge system (Sites-equivalent) |
+| 2026-08-02 | eq-solves-intake | [#105](https://github.com/eq-solutions/eq-solves-intake/pull/105) feat(intake): AI sanity-check on the Contacts duplicate-archive f |
+| 2026-08-02 | eq-solves-intake | [#104](https://github.com/eq-solutions/eq-solves-intake/pull/104) test(format-ui): prove a real timesheet record survives xero-payr |
+| 2026-08-01 | eq-solves-service | [#680](https://github.com/eq-solutions/eq-service/pull/680) fix(migrations): 0201 view-column-order failure that broke the di |
+_Showing 15 of 18 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
@@ -116,7 +118,7 @@ _…and 443 more · [eq/pending.md](eq/pending.md)_
 - **Separate, lower-priority**: the DB's `has_pin` boolean column is stale/unmaintained (verified live 2026-07-30: 32 of 35 people with a set PIN had `has_pin=false`) — would need an INSERT/UPDATE trigger to sync before it's trustworthy. Not needed for the fix above (on-demand fetch sidesteps it), but worth fixing separately if `has_pin` is ever relied on elsewhere. _(added 2026-07-30)_
 - Mirror the roster-grid archive + rating feature (SKS v3.10.104/.105) in EQ Field — flagged as a follow-up task; Royce started it in a separate session, result not yet known. _(added 2026-07-28)_
 - **Actual weekly entry hasn't started yet** — the log is ready, first week isn't logged. Per the plan's own proving discipline, needs at least one real supervisor entering their own crew's data (not just one person doing it centrally) to actually test the load the new app has to carry. _(added 2026-07-26)_
-_…and 65 more · [sks/pending.md](sks/pending.md)_
+_…and 66 more · [sks/pending.md](sks/pending.md)_
 
 ## Queue health
 
@@ -145,4 +147,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-07 14:52 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-07 15:25 UTC._
