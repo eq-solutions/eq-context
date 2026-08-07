@@ -14,6 +14,12 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: Sentry sweep → root-caused a suite-wide duplicate-account bug → suite-wide grant audit → new CI gate, all merged + live (2026-08-07)
+
+- [ ] **EQ-SHELL-Y (ocr-licence 401)** — not an eq-shell code bug; the licence-photo-reading feature occasionally fails a permission check talking to eq-canonical. Someone already patched the underlying cause elsewhere (~5 Aug) and it's been quiet since, but needs a few more quiet days before marking resolved for good. _(added 2026-08-07)_
+
+---
+
 ## eq-service: canonical-outbox schema-mismatch fixed, merged, verified live (2026-08-06)
 *Follow-up on the `canonical_outbox` 404 flagged below — Royce asked for it explained "with pictures" and a solution, which turned diagnosis into a same-session fix.*
 
