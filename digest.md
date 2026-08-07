@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-07 12:52 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-07 14:07 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-07 06:08 UTC → 2026-08-07 12:52 UTC)
+## Since last refresh (2026-08-07 12:52 UTC → 2026-08-07 14:07 UTC)
 
-- Merged: eq-shell [#1263](https://github.com/eq-solutions/eq-shell/pull/1263) feat(ops): same-origin proxy for EQ Ops/Intake tenant data (
-- Merged: eq-shell [#1258](https://github.com/eq-solutions/eq-shell/pull/1258) fix(cards): stop alerting on Field/Service's own token refre
-- Merged: eq-shell [#1256](https://github.com/eq-solutions/eq-shell/pull/1256) fix(observability): stop mislabeling render crashes as chunk
-- Merged: eq-shell [#1254](https://github.com/eq-solutions/eq-shell/pull/1254) fix(ops): wire the cost/sell question into the other Import 
-- Merged: eq-shell [#1252](https://github.com/eq-solutions/eq-shell/pull/1252) feat(ops): ask cost vs. sell when importing a subcontractor 
-- Merged: eq-shell [#1251](https://github.com/eq-solutions/eq-shell/pull/1251) feat(staff): add home address fields to Staff edit (desktop 
-- Merged: eq-shell [#1250](https://github.com/eq-solutions/eq-shell/pull/1250) fix(staff): compliance-pack export shows Unknown for names o
-- Merged: eq-shell [#1249](https://github.com/eq-solutions/eq-shell/pull/1249) feat(ops): drag a subcontractor PDF onto the Jobs home page 
+- Merged: eq-shell [#1280](https://github.com/eq-solutions/eq-shell/pull/1280) fix(auth): Field's JWT now gets live extra_perms, not a stal
+- Merged: eq-solves-service [#691](https://github.com/eq-solutions/eq-service/pull/691) fix(canonical-outbox): use the public-schema client for the 
+- Merged: eq-solves-service [#690](https://github.com/eq-solutions/eq-service/pull/690) fix(tenant-scoping): two service-role queries had no defense
+- Merged: eq-solves-service [#689](https://github.com/eq-solutions/eq-service/pull/689) fix(types): close canonical types drift on media_library + s
+- Merged: eq-solves-service [#683](https://github.com/eq-solutions/eq-service/pull/683) fix(reports): PM report supervisor/contact fields ignored th
+- Merged: eq-solves-service [#682](https://github.com/eq-solutions/eq-service/pull/682) fix(migrations): sites/assets update triggers referenced a d
+- Merged: eq-solves-service [#681](https://github.com/eq-solutions/eq-service/pull/681) fix(sites): site supervisor picks from site contacts, not te
+- Merged: eq-solves-service [#680](https://github.com/eq-solutions/eq-service/pull/680) fix(migrations): 0201 view-column-order failure that broke t
 
 ## ⚠ Needs you (3)
 
@@ -27,11 +27,12 @@ _2026-08-07 12:52 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🔴 **Open security finding** — SEC-9 (P0 — confirmed exposure, same window as SEC-3, possible second exposure 2026-07-27) — A different service_role key (`jvkn`/eq-canonical) was pasted directly into a ch · [security-register.md](ops/security-register.md)
 - 🟠 **Cron failing** — `adversarial-suite.yml` 1 consecutive scheduled run(s) failed, last success 2026-08-05 · [failures.md](system/failures.md) F11
 
-## 🙋 Waiting on you (106)
+## 🙋 Waiting on you (107)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
 - **EQ** · **Not click-tested live** — EQ Field's CSV import was rewired from destructive (purge+reinsert) to additive (match existing person by phone/email before insert) ([eq-field PR #660](https://github.com/eq-solutions/eq-field/pull/660), merged, live). Needs Royce to re-upload a real SKS person's CSV row and confirm their linked records (timesheets, leave, licences — 6 tables carry a soft `person_id` reference) and id survive the round trip. _(added 2026-08-07)_
+- **EQ** · **Not yet confirmed on a real device through Core that the maps link now opens.** Three attempts: v3.5.460 (eq-field #655) dropped `target="_blank"` for iOS standalone; v3.5.465 (eq-field #659) switched to Apple's `maps://` scheme — both real, defensible fixes for genuine standalone-PWA use, but Royce's actual test was always through Core (`core.eq.solutions/sks/field`), where neither could work. The real cause: `FieldIframe.tsx`'s iframe `sandbox` attribute never included `allow-popups`, so **any** `target="_blank"` link or `window.open()` inside Field, Service, or Cards was silently blocked whenever accessed through Shell — on any device, not iOS-specific. Fixed for all three apps (eq-shell [#1268](https://github.com/eq-solutions/eq-shell/pull/1268), merged, live on `core.eq.solutions`). Royce to confirm the maps icon now actually opens Maps when accessed through Core. _(added 2026-08-05, updated 2026-08-06)_
 - **EQ** · **Royce to confirm the SKS dashboard loads cleanly** — needs an authenticated session, off-limits for Claude to drive. _(added 2026-08-05)_
 - **EQ** · **Not click-tested live by a real signed-in user** — everything above was verified at the function level and via the deploy preview's boot path, not by an authenticated session actually seeing the widget populate with real people. Royce to confirm on `field.eq.solutions` (or the Shell embed) that Birthdays & Anniversaries now shows up reliably from a fresh Dashboard landing. _(added 2026-08-05)_
 - **EQ** · **Neither fix has been click-tested live** — Royce to confirm: (1) the address fields save and display correctly on a real staff member, desktop and mobile, (2) re-downloading William's compliance pack now shows "William Hong" instead of "Unknown." _(added 2026-08-05)_
@@ -42,8 +43,7 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **EQ** · **Not confirmed by Royce on the real embedded session** — everything above was verified against a standalone repro (deploy preview + forced `.shell-mode` class), not the actual `core.eq.solutions/sks/field` iframe Royce was looking at (no way to drive that cross-origin session from this environment). Royce to hard-refresh (or bypass the service worker) and confirm the nav bar is back. _(added 2026-08-05)_
 - **EQ** · Auto-login from Shell's tenant tile into Cards was silently skipping the handoff and bouncing to the sign-in screen instead — reported live by Royce, root-caused same session. `cards.eq.solutions` iframes across every open Shell tab share one browser's local storage, and a refresh-token rotation triggered by one tab invalidates the session another tab still has cached. The splash screen only checked whether *a* session object existed in storage, not whether it was still valid, so a stale cached session silently pre-empted the working handoff. Root-caused live against Royce's own SKS account: PostHog showed `shell_handoff_started` never fired on the failing attempt, and eq-canonical's auth logs showed `403 bad_jwt: invalid claim: missing sub claim` at the same second. Fixed in eq-cards [PR #212](https://github.com/eq-solutions/eq-cards/pull/212) (squash-merged `36a23cd`) — `_handleShellEntry()` now validates any cached session with a live `getUser()` call before trusting it, signing out and falling through to the existing handoff on any failure. Merged and deployed (explicit `Build & Deploy` workflow dispatch — Netlify + Sentry source-map upload both succeeded). **Needs Royce's click-through**: his own browser has a bad session already stuck in local storage from before the fix — clearing site data for `cards.eq.solutions` once (or a private window) and reloading the tenant tile is a device-side action only he can do; confirming the clean auto-login after that is the last open step. _(added 2026-08-04)_
 - **EQ** · **Sign-off records can be read or overwritten by any signed-in person on the same tenant, not just the person they belong to.** Investigated 2026-08-04 (sprint task T1): the obvious fix (`signer_user_id = auth.uid()`) would break real signing — eq-field's data-plane JWT sets `sub` to the tenant id for every user, not the actor, so `auth.uid()` on the real sign path never equals the signer. Closing this needs an identity-model decision, not a migration. Royce's call: leave deferred, revisit alongside a real second-signer rollout. _(updated 2026-08-04)_
-- **EQ** · **Sentry MCP connector needs Royce to reconnect** — "user's connection to this connector was invalidated" mid-session; `search_issues`/`search_events` unavailable for the rest of the session, worked around via code + live DB reads instead. _(added 2026-08-04)_
-_…and 94 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 95 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
@@ -73,6 +73,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-07 | eq-shell | [#1280](https://github.com/eq-solutions/eq-shell/pull/1280) fix(auth): Field's JWT now gets live extra_perms, not a stale log |
 | 2026-08-07 | eq-shell | [#1278](https://github.com/eq-solutions/eq-shell/pull/1278) ci: add a static check that function grants survive CREATE OR REP |
 | 2026-08-07 | eq-shell | [#1277](https://github.com/eq-solutions/eq-shell/pull/1277) fix(documents): revoke authenticated grants on document_signoffs  |
 | 2026-08-07 | eq-shell | [#1275](https://github.com/eq-solutions/eq-shell/pull/1275) fix(auth): restore eq_cards_admin_upsert_worker's authenticated g |
@@ -81,28 +82,27 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-07 | eq-shell | [#1273](https://github.com/eq-solutions/eq-shell/pull/1273) fix(auth): restore link_pending_invites' authenticated grant |
 | 2026-08-07 | eq-shell | [#1272](https://github.com/eq-solutions/eq-shell/pull/1272) fix(auth): stop link_pending_invites grafting a duplicate on phon |
 | 2026-08-07 | eq-shell | [#1271](https://github.com/eq-solutions/eq-shell/pull/1271) feat(documents): auto-push onboarding documents to new starters |
-| 2026-08-07 | eq-shell | [#1270](https://github.com/eq-solutions/eq-shell/pull/1270) fix(auth): stop handle_phone_dedup grafting a duplicate shell_con |
-| 2026-08-07 | eq-shell | [#1268](https://github.com/eq-solutions/eq-shell/pull/1268) fix(shell): grant allow-popups on the Field/Service/Cards iframe  |
 | 2026-08-07 | eq-solves-intake | [#112](https://github.com/eq-solutions/eq-solves-intake/pull/112) feat(intake): fuzzy identity match in the Reconcile engine |
 | 2026-08-07 | eq-solves-intake | [#111](https://github.com/eq-solutions/eq-solves-intake/pull/111) feat(intake): polish the Overview/To Do data-cleaning flow |
-| 2026-08-06 | eq-shell | [#1269](https://github.com/eq-solutions/eq-shell/pull/1269) fix(observability): retry-instead-of-logout on verify-timeout, re |
-| 2026-08-06 | eq-shell | [#1265](https://github.com/eq-solutions/eq-shell/pull/1265) fix(ops): stop tenant-data-proxy crashing on 204 responses (EQ-SH |
-| 2026-08-06 | eq-shell | [#1264](https://github.com/eq-solutions/eq-shell/pull/1264) feat(ops): extend the EQ-SHELL-1A tenant-data proxy to 3 more pag |
-_Showing 15 of 72 · full record in [sessions/](sessions/)_
+| 2026-08-06 | eq-solves-service | [#691](https://github.com/eq-solutions/eq-service/pull/691) fix(canonical-outbox): use the public-schema client for the outbo |
+| 2026-08-04 | eq-solves-service | [#690](https://github.com/eq-solutions/eq-service/pull/690) fix(tenant-scoping): two service-role queries had no defense-in-d |
+| 2026-08-04 | eq-solves-intake | [#109](https://github.com/eq-solutions/eq-solves-intake/pull/109) fix(tenant-scoping): close 2 real gaps in api-intake + approve-wo |
+| 2026-08-04 | eq-solves-intake | [#110](https://github.com/eq-solutions/eq-solves-intake/pull/110) fix(scripts): hard-stop migrate-cards-to-canonical.mjs rather tha |
+_Showing 15 of 48 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
 - **EQ-SHELL-Y (ocr-licence 401)** — not an eq-shell code bug; the licence-photo-reading feature occasionally fails a permission check talking to eq-canonical. Someone already patched the underlying cause elsewhere (~5 Aug) and it's been quiet since, but needs a few more quiet days before marking resolved for good. _(added 2026-08-07)_
 - **The `_health` 404 (a separate keep-warm ping, same ~5-min cadence) is still open** — not part of this fix, not investigated. `_health` genuinely doesn't exist on ehow; low priority, nothing depends on it succeeding. _(added 2026-08-06)_
+- **Not click-tested live** — self-join bulk approve/decline ([PR #1257](https://github.com/eq-solutions/eq-shell/pull/1257)) needs a tenant with 2+ pending self-join requests to actually exercise the new checkbox/bulk-action UI on Staff → pending. _(added 2026-08-06)_
+- **Not click-tested live** — bulk-invite ceiling raise 50→150 ([PR #1259](https://github.com/eq-solutions/eq-shell/pull/1259)) needs a real >50-row invite batch; also watch the next scheduled `licence-expiry-scheduler` run for the employer-alert log line to confirm the new range-based claim path behaves. Royce: "will click test later." _(added 2026-08-06)_
 - **Build a Cards bulk-invite path** — Cards has none today, every account provisioned one at a time. Scope: a CSV-in/result-table-out screen mirroring `AdminBulkInvite.tsx`, backed by a batch version of Cards' own single-invite flow. _(added 2026-08-06)_
 - **Load-test the auth path against a synchronised login burst** (e.g. every site clocking on at 7am) — Supabase connection-pool headroom and Netlify Function concurrency under that pattern have never been measured either way. _(added 2026-08-06)_
 - **SSO/SCIM and state-scoped RBAC — explicitly excluded from the closure plan, not a gap to chase.** Royce's own call today: build if/when a real customer names either by name, not speculatively ahead of demand. Recorded so this isn't re-flagged as an oversight later. _(added 2026-08-06)_
+- **Not click-tested live** — `.msg`/`.eml` quote-attachment upload ([PR #1262](https://github.com/eq-solutions/eq-shell/pull/1262), merged `d494d9d5`) verified by typecheck/lint/build only. Royce (or the SKS user who hit the original error) to confirm a real Outlook email actually attaches and opens correctly from the quote's attachment list on `/sks/ops`. _(added 2026-08-06)_
 - **Daily `eq-shell-field-handoff-fallback-watch` scheduled check no longer exists** — it used to give a fast yes/no on whether Field sign-in auto-recovery was working; gone from the scheduled-task list (expired or removed, not investigated further). Recreate only if ongoing visibility into this specific failure mode is wanted — EQ-SHELL-R itself is closed (root-caused to two already-fixed prior bugs, see [sessions/2026-08-06.md](sessions/2026-08-06.md)), this is purely optional monitoring. _(added 2026-08-06)_
 - **GitHub MCP connector 404 on eq-shell repo access** — worth checking the GitHub App installation/scope for this connector if PR creation via MCP is needed again on eq-shell. _(added 2026-08-06)_
-- **HOLD — Retire the legacy direct-to-Supabase browser path** (`tenantDataClient.ts`/`sksSupabaseClient.ts`, `VITE_SKS_SUPABASE_URL`/anon-key browser exposure, CSP `connect-src` entries) — technically unblocked (soak confirmed clean, all 4 known browser consumers now go through the proxy first, legacy kept only as fallback), but Royce is overseas and explicitly asked to hold this until he's back rather than risk anything while he's away. Do not start this without him present, even though nothing is technically blocking it. _(added 2026-08-06, held 2026-08-06)_
-- **Not click-tested live by a real user** — `LabourHireRates.tsx`, `Suppliers.tsx`, and Intake were migrated to the proxy-first path and pass build/typecheck/301 tests, but nobody has opened them live yet to confirm no regression. Royce or a real SKS user to confirm. _(added 2026-08-06)_
-- **Opening access beyond the hardcoded single-email nav gate** — deliberately sequenced AFTER #657 lands, not part of it. The actual mechanism (where in `index.html` the gate lives, which emails/roles to allow) hasn't been scoped yet. _(added 2026-08-05)_
-_…and 436 more · [eq/pending.md](eq/pending.md)_
+_…and 443 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -124,7 +124,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 3180 | 556 | 36 | 12 |
+| [EQ](eq/pending.md) | 3180 | 555 | 37 | 12 |
 | [SKS](sks/pending.md) | 404 | 82 | 0 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 409 | 37 | 2 | 1 |
@@ -145,4 +145,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-07 12:52 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-07 14:07 UTC._
