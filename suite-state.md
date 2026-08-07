@@ -63,9 +63,6 @@ _If this file is >48h old, the cron is broken._
 **eq-cards:**
 - #219 feat(labour-hire): candidate intake — control-layer profile + licence staging
 
-**eq-field:**
-- #662 fix(roles): vendor verify-pin.js's role list, log the silent-downgrade path (v3.5.468)
-
 **eq-service:**
 - #688 chore(deps): bump @sentry/nextjs from 10.68.0 to 10.69.0
 - #687 chore(deps-dev): bump eslint-config-next from 16.2.2 to 16.2.12
@@ -74,6 +71,7 @@ _If this file is >48h old, the cron is broken._
 - #684 chore(deps): bump the eq-design-system group with 2 updates
 
 **eq-shell:**
+- #1282 fix(control-plane): backfill labour-hire review functions (drift check)
 - #1281 feat(access-control): expose eq-field's 74 fine-grained permission keys
 - #1279 feat(staff): labour-hire candidate review + ops intake tool
 
