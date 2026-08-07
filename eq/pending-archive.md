@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-08-06
+last_updated: 2026-08-07
 scope: Done items rotated out of eq/pending.md nightly by scripts/rotate_pending.py (per-item since 2026-07-27; before that, occasional manual whole-section moves). Nothing here is actionable — pure historical record (also covered in eq/changelog/*.md and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -2473,5 +2473,139 @@ contain the same values and were pushed before push-protection caught up.
 
 ## Core dashboard rebuilt — replaced the passive AI-brief-only home with three permission-gated live signal bands (2026-07-17, MERGED + LIVE) (rotated 2026-08-06 — open items remain in pending.md)
 
+
+---
+
+## eq-context: shared-checkout git races — structural fix shipped as F9 (2026-08-04) (rotated 2026-08-07)
+*Closes the "shared eq-context checkout" item below (2026-08-03) — recurred twice more this same day before the fix landed: a stale mid-rebase read (self-resolved), then a bare `git commit` swept up 3 files staged by a concurrent session (caught before push via `git show --stat HEAD`, no data lost, but real time spent reconciling via a fresh clone + cherry-pick).*
+
+- [x] **`hooks/pre_tool_use.py` gains two new checks (F9, rung 4)**, both scoped to the ONE shared checkout by exact path — never a private/fresh clone, which is the fix's own recommended escape valve: (1) blocks bare `git commit` with no `--` pathspec, since a bare commit records the WHOLE index, not just what was just `git add`ed — this is the exact mechanism that swept up a concurrent session's files today; (2) redirects `git rebase`/`merge`/`pull` to an isolated clone instead of the shared checkout (`--abort`/`--continue`/`--skip` stay allowed, so a session already stuck mid-operation can still get itself out). Not sandbox-gated — every occurrence so far has happened natively on the Beelink. Adversarial suite: 65/65 (15 new F9 cases, 0 regressions in the pre-existing 50).
+- [x] **`system/failures.md` gains F9** — this exact failure class had recurred 3+ times (2026-07-14, 2026-08-03, 2026-08-04) with no ledger entry at all, so the automated recurrence-detector (`failure_recurrence_signals()`) had nothing to scan for and `guard-ratchet.yml` never had a counter to trip past 2. Closed.
+- [x] **`hooks/README.md`** updated for the new checks; also fixed a stale pointer to the legacy `adversarial_test.sh` runner (missing F7 and F9 coverage) — the row now points at the CI-authoritative `adversarial_test.py`.
+
+**Considered and rejected:** a lock/coordination file (a hook-enforced lock needs reliable cleanup on abnormal session termination or it becomes a new stuck-forever failure class — this repo's history already has several of those from imperfect guards); blocking ALL git writes to the shared checkout (would break routine, currently-reliable automation — nightly cron commits, single-file pending.md ticks, session close — none of which have ever been the source of the actual damage).
+
+- [x] **`hooks/adversarial_test.sh`** (the legacy/manual test runner, distinct from the CI-authoritative `adversarial_test.py`) was missing F7 and F9 coverage entirely. Two sessions reached opposite calls on it the same day: one deleted it (zero functional dependents — no CI workflow, Makefile, or pre-commit config referenced it — and porting F7/F9 into bash would duplicate real complexity already solved once in `adversarial_test.py`, whose header states a deliberate no-bash/WSL design goal; that reasoning is sound and still true). Royce then asked directly for it to be fixed rather than left gone, so it's restored and synced instead — F7 and F9 ported into bash-native fixtures, both suites green (32/32 bash, 65/65 python), `hooks/README.md` now documents both as required, not one dead pointer replacing the other. **A real bug turned up in the restore itself**: the new F9 "allowed" test cases (pathspec-scoped commit, `--amend`, `rebase --continue/--abort`) only passed because they happened to run with `in_sandbox()` naturally False on Windows — on Linux CI, where `in_sandbox()` is True by default, they'd have been wrongly blocked by the pre-existing, unrelated "any git verb blocks in the sandbox" rule and read as a false regression. Caught by deliberately simulating `EQ_FORCE_GUARD=1`; fixed by pinning `EQ_FORCE_GUARD=0` on every F9 test case in both suites, matching the pattern F7's own tests already used. Would have shipped broken on the very next CI run otherwise. _(added 2026-08-04, resolved 2026-08-05)_
+- [x] **The `adversarial_test.sh` deletion itself was accidental, not the considered decision above** — traced via `git show --stat`: a bare `git commit` from an unrelated session (eq-solves-intake tenant-scoping work) swept up a different session's already-staged deletion of the file, landing in a commit whose message never mentions it. Same sweep mechanism F9 exists to stop, but via a path F9 can't see — the commit's author was "via Cowork," meaning it ran outside Claude Code's own tool-call hook entirely (Cowork emits scripts for Royce to run rather than executing git itself, per the standing sandbox rule, so nothing here ever passed through `pre_tool_use.py`). **This is a real, currently-unclosed gap in F9's coverage** — it protects every Claude-Code-tool-mediated git operation (which is how every prior incident happened), not git run by a human or a Cowork-generated script. Not obviously fixable the same way: a git-level hook can't reliably distinguish "pathspec was used" from "the index just happened to hold the right files," which is the exact signal F9's fix depends on. Flagged as a follow-up investigation, not solved here. _(added 2026-08-05)_
+  **Correction, 2026-08-05 (`task_94836df0`):** the specific claim above — that this commit ran "outside Claude Code's own tool-call hook entirely" — is wrong for this incident. `guard.log` has a matching entry down to the second (`gate-outbound` fired, `warn` mode, identical command, identical session): this was an ordinary Claude Code Bash call. The real mechanism was three compounding, fixable bugs in `pre_tool_use.py` itself, not an architectural blind spot: (1) **wiring** — it was registered in `PreToolUse` only at the `C:\Projects` umbrella-root `settings.json`, the identical "guard that isn't wired" shape `session_start.py` hit and fixed 2026-07-12 by moving to **user** scope, a fix this hook never got, so a session launched inside a repo/worktree (the common case, and what `2104668`'s session actually was) never invoked it at all; (2) **cwd tracking** — even when invoked, its F7/F9 checks read `data.cwd` directly, never an in-command `cd "<path>" &&` / `git -C <path>` — the identical blind spot `guard.js`'s own `reflection-gate` rule already fixed for itself 2026-07-26 — so a session nominally cwd'd in a real, separate worktree resolved to the worktree's own (harmless) toplevel even after its command `cd`'d into the shared checkout and committed there; (3) **verb matching**, found live while writing (2)'s regression test — `COMMIT_RE`/`REBASE_MERGE_PULL_RE` required "git" and the verb to be separated by whitespace only, so `git -C <path> commit ...` never matched as a commit at all, independent of cwd. All three fixed 2026-08-05: `pre_tool_use.py` wired at user scope, reads cwd via a new `effective_cwd()` helper, both regexes tolerate an optional `-C <path>` prefix. Regression cases added to both suites (70/70 python, 32/32 bash, from a clean `C:\Projects`-rooted clone). Counted as F9's 4th recurrence (`system/failures.md`); `ops/pending.md`'s parallel F7 "still open" question closed by the same finding. **This does not undercut item 4 below** — the git-level-hook investigation answers a genuinely separate question (can anything backstop git that really is outside Claude Code's tool calls — a true human terminal command, or a Cowork-emitted script run by a human) that remains real even though it wasn't what caused this specific commit.
+- [x] **Follow-up investigated: the git-level-hook question above is closed — no hook fix, but not for the reason first written down.** Verified empirically (throwaway sandbox repo, 5 real commits through diagnostic `pre-commit`/`commit-msg` hooks — bare/safe, bare/sweeps-a-stray, pathspec/excludes-a-stray, pathspec/redundant, bare/sweeps-a-staged-**deletion** matching this incident's actual shape), not reasoned from memory. Two findings:
+  1. **The literal claim above is false as stated.** A hook *can* reliably tell whether scoping syntax was used: `git commit -- <path>` provably builds a temporary index (`GIT_INDEX_FILE` → `.git/next-index-<pid>.lock`); a bare commit provably doesn't (stays on the default `.git/index`). Confirmed across all 5 scenarios, no exceptions.
+  2. **The conclusion is still correct, for a sharper reason.** That signal detects whether scoping syntax was used, not whether the commit is safe. A bare commit where everything staged is genuinely one session's work is indistinguishable, on every signal a hook can see, from a bare commit that sweeps a stray — git's index has no field recording which session staged which file, by design (it's a flat snapshot of "what goes in the next commit," nothing more). A git-level "require a pathspec" hook would just relocate F9(a)'s rule and its blind spot (a lazy `-- .` defeats both equally), while adding a gap F9(a) doesn't have: `core.hooksPath` activation is per-clone and manual (`scripts/install-hooks.ps1`), and it had **silently drifted on this exact machine** — found live mid-investigation: a **worktree-scoped** `core.hooksPath` override (`.git/hooks`) was shadowing the correct `.githooks` value set at local scope, meaning F8's own secret+style guard had not actually been running here despite F8 being marked closed. Fixed as a side effect (`git config --worktree core.hooksPath .githooks`); nothing currently re-checks it, so it can drift back the same way, silently, again — a real, separate follow-up (not filed as its own ledger item here; whoever picks this up should check `git config --worktree --get core.hooksPath` on every clone, not just `--local`). Also tested and confirmed unavailable on this Windows/Git-Bash target: `/proc/$PPID/cmdline` and `ps -o args=` — no direct argv inspection either.
+  3. **A weaker, warn-only heuristic is real, but it lives in `commit-msg`, not `pre-commit`.** Confirmed empirically that `pre-commit` cannot see the commit message at all, even with `-m` — `.git/COMMIT_EDITMSG` holds the *previous* commit's leftover content at pre-commit time, since git only writes the real message after pre-commit succeeds. At `commit-msg` time the message IS available alongside the same staged-file view. A check there — warn when a staged file's directory/name shares no keyword with the commit message — would have caught this incident's actual shape: commit `2104668` touched `eq/pending.md` (a 2-line tick, matching its "eq-solves-intake tenant-scoping" message) and `hooks/adversarial_test.sh` (a full 56-line deletion, mentioned nowhere in that message). Checked against noise before trusting it: a cruder "spans 2+ top-level directories" version would NOT work — this repo's last 40 commits show `eq/` + `sessions/` together constantly (routine session-close), so a directory-count rule would warn on roughly half the log within days and train itself to be ignored. `hooks/` appearing beside something the message never mentions, by contrast, shows up exactly twice in that same window: this sweep and its own cleanup commit. Not built — it's standing, tunable infrastructure that would run on every future commit, worth Royce's call rather than shipping silently; sketch is above if wanted. `--no-verify` bypasses it exactly as it already bypasses F8's existing hook, same as today.
+  4. **Actual recommendation: tighten the existing Cowork convention, don't add detection.** CLAUDE.md already requires Cowork to emit a script for Royce to run rather than executing git itself in this checkout. The real gap isn't missing detection — it's that nothing yet requires those emitted scripts to pathspec-scope their `git commit` the same way F9(a) already requires of Claude Code. That's a one-line addition to an existing convention, not new infrastructure with its own false-positive rate to manage. _(investigated 2026-08-05)_
+
+---
+
+## eq-shell + eq-context: sign-off register sprint closed out — reminders, certificate/templates, real UI critique → a reusable feature-baseline rule, bulk upload (2026-08-04) (rotated 2026-08-07 — open items remain in pending.md)
+
+- [x] **eq-shell [PR #1222](https://github.com/eq-solutions/eq-shell/pull/1222) merged** — sign-off certificate PDF (standalone, not merged into the original file) + the Templates tab (blank reusable documents, no signer, filtered out of the Register).
+- [x] **eq-shell [PR #1226](https://github.com/eq-solutions/eq-shell/pull/1226) merged** — T2, the reminder cron: daily scheduled email for anyone with a document outstanding past the cadence.
+- [x] **eq-shell [PR #1228](https://github.com/eq-solutions/eq-shell/pull/1228) merged** — reminder cadence corrected to a uniform 7 days (was 3-day-first/4-day-repeat). **Still unproven live** — the one real signoff was signed 16 seconds after assignment, so the cron has never actually had a row to fire on.
+- [x] **`eq-context/rules/admin-feature-baseline.md` written**, indexed in `CLAUDE.md` §8 — a minimum bar for any new admin/data-management feature (lifecycle action, bulk, export scope, configurable taxonomy, scale, smart intake), written directly off Royce's live critique. Half the gaps he named already had a matching eq-ui component (`EmptyState` action slot, `Pagination`, `ConfirmDialog`+`DropdownMenu`) sitting unused — the rule says check eq-ui first.
+- [x] **eq-shell [PR #1239](https://github.com/eq-solutions/eq-shell/pull/1239) merged** — the two "quick win" gaps that already had an eq-ui component: Templates' empty state gets a real "Upload a template" button; Register gains a per-document Archive action (hides, never deletes — a signed document is a compliance record). `app_data.document_register` already exposed the column needed to make the filter durable across a refresh — no migration needed, verified live on both tenants before writing any endpoint code.
+- [x] **eq-shell [PR #1241](https://github.com/eq-solutions/eq-shell/pull/1241) merged** — T3, bulk upload for Templates. Royce tried to load a real 15-file batch (`SKS-DB-Schedules-BLANK-structures.zip`) and chose to build this rather than do 15 manual passes. Bounded 3-at-a-time concurrency, editable per-file titles, per-file retry on failure. Also fixed a real bug found along the way: the file picker's hidden input sat before the visible button in the DOM, which silently broke keyboard focus when the upload modal opened.
+
+---
+
+## eq-shell: self-join's "double sign-in" for Cards root-caused and fixed — worker-add nav trimmed further too (2026-08-03) (rotated 2026-08-07 — open items remain in pending.md)
+
+
+---
+
+## eq-cards/eq-shell: Cards SSO handoff hardening, identity-fragmentation root-cause fix, worker-invite dedup (2026-08-04) (rotated 2026-08-07 — open items remain in pending.md)
+
+- [x] **Profile polish batch** — email prefill from the sign-in session (mobile mirrored it in a later PR), Trade + Emergency Contact Relationship converted from free text to dropdown + "Other", Android keyboard now correctly resizes the layout (`interactive-widget=resizes-content` in `web/index.html`) instead of covering the app, home icon added to Edit Profile's app bar. eq-cards [PR #206](https://github.com/eq-solutions/eq-cards/pull/206), merged + deployed.
+- [x] **Cards↔Shell SSO handoff reliability fix.** Cards' postMessage listener only recognized a *successful* token-mint response — an error-shaped one from Shell was silently discarded, so a real failure burned the full 10s timeout before falling back to sign-in, with zero diagnostic trail on either side (matched Royce's "signed in OK on Core, Cards asked to sign in again" report, though the specific trigger for his case was never confirmed — no Sentry evidence of a genuine mint failure). Now fails fast and logs the real reason. Also fixed, on the Shell side: a silent postMessage-origin-mismatch swallow (now logged), and a latent `VITE_CARDS_URL` normalization bug that would've broken every handoff had that env var ever been set (confirmed unset in prod — not live, fixed defensively). eq-cards [PR #207](https://github.com/eq-solutions/eq-cards/pull/207) + eq-shell [PR #1225](https://github.com/eq-solutions/eq-shell/pull/1225), merged; eq-cards deployed, eq-shell auto-deployed.
+- [x] **Identity-fragmentation root cause found and fixed — bigger than originally scoped, a real production gap.** Traced Royce's reports (missing credential alerts, unpopulated profile fields, an apprentice QR landing in a broken state) to: deleting a test/offboarded account from `auth.users` without also cleaning up Shell's own `shell_control.users` row leaves an orphaned row behind. A legitimate phone-format self-healing mechanism (`custom_access_token_hook`'s phone-fallback, built 2026-08-02 for a real, different bug) can't tell that apart from "same person, different phone format" — it silently borrowed the orphan's tenant/role for an unrelated, later signup, while that signup's own Cards-side data (profile, org membership) never got created. Separately, `shell-join-tenant.ts` had the identical gap on its own phone-match "existing user" path. Fixed both: eq-cards migration `0117` + [PR #208](https://github.com/eq-solutions/eq-cards/pull/208) (applied live to eq-canonical directly — auth-critical, Royce's explicit go after a `/decide`-style scope check), eq-shell [PR #1229](https://github.com/eq-solutions/eq-shell/pull/1229). Cleaned up 3 orphaned `shell_control.users` rows created by this session's own test-account cycles; verified live pre- and post-apply that a normal properly-provisioned user's claims are unaffected.
+- [x] **Mobile prefill, Apprentice/Labour Hire/Subcontractor Employment Type soft-default, home icon on the licence-scan screen.** The employment-type default reads the join code's own role tag (`eq_role` claim) — confirmed genuinely QR-specific, not hardcoded to Apprentice, when Royce questioned it. eq-cards [PR #209](https://github.com/eq-solutions/eq-cards/pull/209), merged + deployed.
+- [x] **Worker-invite duplicate bug found and fixed.** Royce's own "Add worker" for SKS created two invite rows for the same new starter (Sonam) 39 seconds apart; root cause was a non-atomic check-then-insert in `create-worker-invite.ts`. Added a DB-level partial unique index (`worker_invites_org_worker_unclaimed_unique`) making a duplicate structurally impossible — verified live, in a rolled-back transaction, that it actually blocks the exact scenario before applying for real. eq-cards migration `0118` + [PR #210](https://github.com/eq-solutions/eq-cards/pull/210) (applied live), eq-shell [PR #1232](https://github.com/eq-solutions/eq-shell/pull/1232) (graceful recovery instead of a 500 if the race is ever hit again). Confirmed live: two real new-starter invites (Fernando, Sonam) working end-to-end.
+- [x] **Stale `support@eq.solutions` (unmonitored inbox) → `contact@eq.solutions`** on 3 auth-flow help links (TOTP recovery, Reset PIN, Accept Invite). eq-shell [PR #1219](https://github.com/eq-solutions/eq-shell/pull/1219), merged, auto-deployed.
+- [x] **`fast-uri` bumped to 4.1.2** — closes Dependabot alert #187 (CVE-2026-18446, high severity). Checked actual exposure first: only used via `ajv` for JSON-schema `format:uri` validation in two vendored eq-intake test/lint scripts, never for a host-security decision — not actually exploitable here, but a free, in-range patch bump. eq-shell [PR #1233](https://github.com/eq-solutions/eq-shell/pull/1233), merged, auto-deployed.
+- [x] **Confirmed live: "Add worker" → SKS tenant link works end-to-end** — traced the full path (`create-worker-invite.ts` → `shellJoinUrl` → `shell-join-tenant.ts`, same self-join door just hardened above) and confirmed with live data, not just code reading.
+
+---
+
+## eq-solves-intake + eq-shell: duplicate-site console's two dead ends fixed, then a live permission bug found and fixed mid-testing (2026-08-01) (rotated 2026-08-07 — open items remain in pending.md)
+
+
+---
+
+## eq-solves-service: fixed a broken safety check that was silently skipping every code review, then found the "176,000 findings" it surfaced was almost entirely noise, cleaned up what was real (2026-08-01) (rotated 2026-08-07 — open items remain in pending.md)
+
+
+---
+
+## eq-shell + eq-solves-intake + eq-receipts: closed every open security alert across the EQ suite, found 5 repos where the alert system was switched off entirely (2026-08-01) (rotated 2026-08-07 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: Richard Brown's mobile crash fixed, then a simplified mobile nav for supervisors driven by real usage data (2026-07-31) (rotated 2026-08-07 — open items remain in pending.md)
+
+
+---
+
+## eq-solves-service: Found why photo uploads were failing everywhere, then added a link/create/skip option to the paste-import flow (2026-07-31) (rotated 2026-08-07 — open items remain in pending.md)
+
+
+---
+
+## eq-intake + eq-shell: 4-part fix from Royce's live screenshot review of the Intake console (2026-07-31) (rotated 2026-08-07 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: EQ Ops quote status → job status sync fixed for all 5 stages, plus a new "Target period" badge for future-dated quotes (2026-07-31) (rotated 2026-08-07 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: Compliance-roster-only workers — Field access can now be switched off per worker (2026-07-30) (rotated 2026-08-07 — open items remain in pending.md)
+
+
+---
+
+## eq-solves-service: Field Run-Sheet asset headers now show the maintenance plan's Job Code (2026-07-29) (rotated 2026-08-07 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: Staff page edits silently reverting overnight — root-caused and fixed, deployed (2026-07-28) (rotated 2026-08-07 — open items remain in pending.md)
+
+
+---
+
+## eq-cards/eq-shell: onboarding minimum-requirements switch, bulk connect-worker, and a live anon-EXECUTE fix (2026-07-26) (rotated 2026-08-07 — open items remain in pending.md)
+
+
+---
+
+## EQ Field: real Incidents / Near Miss reporting, shipped and live (2026-07-22) (rotated 2026-08-07 — open items remain in pending.md)
+
+
+---
+
+## Core dashboard rebuilt — replaced the passive AI-brief-only home with three permission-gated live signal bands (2026-07-17, MERGED + LIVE) (rotated 2026-08-07 — open items remain in pending.md)
+
+
+---
+
+## ⏩ EQ Shell — admin licence backfill: back-photo support + OCR-hang diagnosis (2026-08-04) (rotated 2026-08-07)
+
+**Trigger:** Royce onboarding a real SKS worker (Fernando Alba) via Shell's admin Add Licence flow, hit two live gaps in the same session — see `sks/pending.md` for the worker-side thread.
+
+**Built + deployed live (`core.eq.solutions`):**
+- **Back-photo support**, PR [#1234](https://github.com/eq-solutions/eq-shell/pull/1234) — Add Licence modal now takes an optional second file for the back of a two-sided licence in the same submit; `staff-licence-backfill.ts` writes it to `photo_back_url`. Also wired the `side` param `staff-licence-replace-photo.ts` already supported server-side but nothing called — Staff panel now has separate "Replace front"/"Replace back" controls.
+- **OCR timeout fix**, eq-cards PR [#211](https://github.com/eq-solutions/eq-cards/pull/211) + eq-shell PR #1235 — spawned as background task `task_58cd3592` from a live diagnosis (the `ocr-licence` edge function booted for a real request and produced zero completion/error/shutdown log for 29+ minutes — no timeout anywhere in the client→Shell-proxy→edge-function→Anthropic call chain). Both PRs built and shipped this session: `ocr-licence`'s Anthropic call gets a 20s `AbortSignal.timeout` (distinct `anthropic_timeout`/`anthropic_unreachable` logging), `staff-licence-ocr.ts` gets 24s (distinct `ocr_timeout` Sentry capture), `AddLicenceModal.tsx`'s client fetch gets a 28s backstop — all inside Netlify's 26s function ceiling. Both merged and verified live via the actual Netlify production deploy record (commit_ref match, not just the GitHub merge) — the fix published at 10:03 UTC, ~5.5 min after merge, which likely explains why a same-day retry screenshot still showed the old hanging behaviour (caught mid-build).
+- **Manual-fill photo/PDF backup**, eq-shell PR [#1238](https://github.com/eq-solutions/eq-shell/pull/1238) — Royce's direct ask as a companion to the timeout fix ("when a licence is uploaded can it be shown so the user can fill it in manually"). Front/back photo inputs now show a click-to-enlarge thumbnail (or a "View PDF" link) as soon as a file is picked, always available — not just after a failed OCR read. Object URLs created/revoked via `useEffect` keyed on the file state. Merged and confirmed live via Netlify deploy commit-ref match, published 10:17 UTC.
+- **"Back on file" indicator**, PR [#1240](https://github.com/eq-solutions/eq-shell/pull/1240) — Royce reported the back photo "didn't upload" after using #1234; live DB query on Fernando's actual driver-licence row confirmed it had, in fact, saved correctly (`photo_back_url` set, real 982KB JPEG in storage) — the Staff panel just had no way to show it existed. Added `has_back_photo` to `staff-canonical-licences.ts`'s response and a small check/label in `LicGroup`.
+- **Actual back-photo preview**, PR [#1242](https://github.com/eq-solutions/eq-shell/pull/1242) — same-day follow-up: #1240's indicator was text-only, and Royce expected to actually see the photo the way the front already worked. Replaced `has_back_photo` (presence boolean) with `back_photo_url` (signed URL, same pattern as the front) and gave the back photo its own click-to-reveal + zoom thumbnail via the existing `LicPhoto` component. Both merged and confirmed live by polling the production JS bundle directly for each change's literal UI string (Netlify's MCP connector was intermittently disconnected this session, so this was the fallback verification method).
+
+**Notes:**
+- This session's `/brief` flag needed re-writing mid-session (blocked once, unexpectedly, despite already having satisfied the gate once for eq-shell earlier) — worked around by re-touching the flag file, but the root cause (TTL? cleanup sweep? per-worktree scoping?) wasn't investigated. Worth a look if it recurs.
+- Root eq-shell checkout (`C:\Projects\eq-shell`) was mid-work on an unrelated branch (`claude/document-signoff-register`, uncommitted migration changes from a concurrent session) — built this in a dedicated worktree instead (`C:\Projects\eq-shell\.claude\worktrees\admin-licence-back-photo`) rather than touching it. Same pattern repeated for #1235 and #1238 (separate worktrees off `origin/main` each time) rather than disturbing that same still-dirty root checkout.
+- Found a stale `claude/admin-licence-backfill` branch (2+ months old, predates dozens of since-deleted/renamed CI files) — this is an old, already-superseded copy of the original admin-backfill feature, not related to this session's work. Safe to ignore/delete in a future cleanup.
+- Netlify's production (main-branch) deploys post no GitHub status/check at all — only PR deploy-previews do. Confirming a production deploy actually landed requires the Netlify API/MCP directly (`get-projects` → `currentDeploy`), not `gh pr checks` or commit statuses.
+- eq-cards' `claude/profile-scan-prefill` branch (source of #211) was 6 commits behind `origin/main` — merged main into it and pushed before branching off for the actual PR; checked none of the 6 commits touched OCR code, so no duplicate-work risk.
 
 ---

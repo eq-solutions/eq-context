@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Verify Queue
 owner: Royce Milmlow
-last_updated: 2026-08-06
+last_updated: 2026-08-07
 scope: Items whose only remaining blocker is your own live sign-in/click-through — the underlying work is already built, merged, and (unless the line itself says otherwise) live. Moved here from eq/pending.md by scripts/rotate_pending.py once a session's real build work is fully done, so a stale "click through to confirm" line no longer pins a whole finished write-up in the live pending doc.
 read_priority: high
 status: live
@@ -229,5 +229,11 @@ a bug rather than just deleting the line.
 **From:** eq-receipts: full-width nav + one-click Review from Inbox after a photo import (2026-08-03)
 
 - [ ] **Neither change has been clicked through live** — Supabase OTP auth gated this session out of the real app, no test login available. Same underlying gap as the still-open react-router click-through below — worth doing both in the same real-device pass. _(added 2026-08-03)_
+
+---
+
+**From:** ⏩ EQ Shell — admin licence backfill: back-photo support + OCR-hang diagnosis (2026-08-04)
+
+- [ ] **Live click-through of both the OCR timeout fix (#211/#1235) and the photo-preview backup (#1238) not done** — both PRs' UI paths only render inside an authenticated Shell admin session, off-limits for Claude to sign into. Royce to confirm: a slow/failing OCR read now surfaces a clean timeout instead of hanging; picking a photo shows a working thumbnail that opens full-size; picking a PDF shows a working "View PDF" link. _(added 2026-08-04)_
 
 ---
