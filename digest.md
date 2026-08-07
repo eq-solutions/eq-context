@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-07 14:46 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-07 14:52 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-07 14:07 UTC → 2026-08-07 14:46 UTC)
+## Since last refresh (2026-08-07 14:46 UTC → 2026-08-07 14:52 UTC)
 
+- Merged: eq-shell [#1282](https://github.com/eq-solutions/eq-shell/pull/1282) fix(control-plane): backfill labour-hire review functions (d
+- Merged: eq-shell [#1180](https://github.com/eq-solutions/eq-shell/pull/1180) feat(documents): internal document sign-off register schema 
 - Merged: eq-solves-service [#691](https://github.com/eq-solutions/eq-service/pull/691) fix(canonical-outbox): use the public-schema client for the 
 - Merged: eq-solves-service [#690](https://github.com/eq-solutions/eq-service/pull/690) fix(tenant-scoping): two service-role queries had no defense
 - Merged: eq-solves-service [#689](https://github.com/eq-solutions/eq-service/pull/689) fix(types): close canonical types drift on media_library + s
 - Merged: eq-solves-service [#683](https://github.com/eq-solutions/eq-service/pull/683) fix(reports): PM report supervisor/contact fields ignored th
 - Merged: eq-solves-service [#682](https://github.com/eq-solutions/eq-service/pull/682) fix(migrations): sites/assets update triggers referenced a d
 - Merged: eq-solves-service [#681](https://github.com/eq-solutions/eq-service/pull/681) fix(sites): site supervisor picks from site contacts, not te
-- Merged: eq-solves-service [#680](https://github.com/eq-solutions/eq-service/pull/680) fix(migrations): 0201 view-column-order failure that broke t
-- Merged: eq-solves-service [#679](https://github.com/eq-solutions/eq-service/pull/679) Sites: retire stale go-live doc, add site supervisor field, 
 
 ## ⚠ Needs you (3)
 
@@ -49,10 +49,10 @@ _…and 95 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 3 | 0d |
+| eq-shell | ✓ success | 0d ago | 2 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 5 | 4d |
 | eq-field | ✓ success | 0d ago | 0 | — |
-| eq-cards | ✓ success | 15d ago | 1 | 0d |
+| eq-cards | ✓ success | 2d ago | 1 | 0d |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
 ## Live errors (Sentry)
@@ -73,13 +73,9 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-07 | eq-shell | [#1282](https://github.com/eq-solutions/eq-shell/pull/1282) fix(control-plane): backfill labour-hire review functions (drift  |
 | 2026-08-07 | eq-shell | [#1280](https://github.com/eq-solutions/eq-shell/pull/1280) fix(auth): Field's JWT now gets live extra_perms, not a stale log |
 | 2026-08-07 | eq-shell | [#1278](https://github.com/eq-solutions/eq-shell/pull/1278) ci: add a static check that function grants survive CREATE OR REP |
-| 2026-08-07 | eq-shell | [#1277](https://github.com/eq-solutions/eq-shell/pull/1277) fix(documents): revoke authenticated grants on document_signoffs  |
-| 2026-08-07 | eq-shell | [#1275](https://github.com/eq-solutions/eq-shell/pull/1275) fix(auth): restore eq_cards_admin_upsert_worker's authenticated g |
-| 2026-08-07 | eq-shell | [#1276](https://github.com/eq-solutions/eq-shell/pull/1276) Revert "fix(documents): signer-scoped RLS on document_signoffs +  |
-| 2026-08-07 | eq-shell | [#1274](https://github.com/eq-solutions/eq-shell/pull/1274) fix(documents): signer-scoped RLS on document_signoffs + document |
-| 2026-08-07 | eq-shell | [#1273](https://github.com/eq-solutions/eq-shell/pull/1273) fix(auth): restore link_pending_invites' authenticated grant |
 | 2026-08-07 | eq-field | [#662](https://github.com/eq-solutions/eq-field/pull/662) fix(roles): vendor verify-pin.js's role list, log the silent-down |
 | 2026-08-07 | eq-solves-intake | [#112](https://github.com/eq-solutions/eq-solves-intake/pull/112) feat(intake): fuzzy identity match in the Reconcile engine |
 | 2026-08-07 | eq-solves-intake | [#111](https://github.com/eq-solutions/eq-solves-intake/pull/111) feat(intake): polish the Overview/To Do data-cleaning flow |
@@ -88,7 +84,11 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-04 | eq-solves-intake | [#109](https://github.com/eq-solutions/eq-solves-intake/pull/109) fix(tenant-scoping): close 2 real gaps in api-intake + approve-wo |
 | 2026-08-04 | eq-solves-intake | [#110](https://github.com/eq-solutions/eq-solves-intake/pull/110) fix(scripts): hard-stop migrate-cards-to-canonical.mjs rather tha |
 | 2026-08-03 | eq-solves-service | [#689](https://github.com/eq-solutions/eq-service/pull/689) fix(types): close canonical types drift on media_library + sites |
-_Showing 15 of 47 · full record in [sessions/](sessions/)_
+| 2026-08-03 | eq-solves-intake | [#108](https://github.com/eq-solutions/eq-solves-intake/pull/108) build(platform): narrow check:packages, wire in verified test gat |
+| 2026-08-03 | eq-solves-intake | [#107](https://github.com/eq-solutions/eq-solves-intake/pull/107) fix: resolve the 13 remaining no-unused-vars errors (vendored-cop |
+| 2026-08-02 | eq-shell | [#1180](https://github.com/eq-solutions/eq-shell/pull/1180) feat(documents): internal document sign-off register schema (tena |
+| 2026-08-02 | eq-solves-service | [#683](https://github.com/eq-solutions/eq-service/pull/683) fix(reports): PM report supervisor/contact fields ignored the sit |
+_Showing 15 of 44 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
@@ -145,4 +145,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-07 14:46 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-07 14:52 UTC._
