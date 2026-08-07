@@ -71,7 +71,6 @@ _If this file is >48h old, the cron is broken._
 - #684 chore(deps): bump the eq-design-system group with 2 updates
 
 **eq-shell:**
-- #1282 fix(control-plane): backfill labour-hire review functions (drift check)
 - #1281 feat(access-control): expose eq-field's 74 fine-grained permission keys
 - #1279 feat(staff): labour-hire candidate review + ops intake tool
 
