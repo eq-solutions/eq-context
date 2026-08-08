@@ -1,7 +1,7 @@
 ---
 title: CLAUDE.md — Master Behavioural Contract
 owner: Royce Milmlow
-last_updated: 2026-07-20
+last_updated: 2026-08-08
 scope: Single source of truth for how every assistant (Chat, Cowork, Code, ChatGPT, Grok, any future tool) must behave when working with Royce
 read_priority: critical
 status: live
@@ -39,7 +39,7 @@ Every session, every tool. No exceptions.
 
 4. **Load tier defaults:**
 
-   **Always read first (every session, all tiers):** `system/TODAY.md` — the focus filter. Then `digest.md` — the health feed. If **Needs you** is non-empty, lead with those items before asking what we're working on.
+   **Always read first (every session, all tiers):** `system/TODAY.md` — the focus filter. Then `system/punch-list.md` — the capped, active work queue (curated by Royce; separate from the tier `pending.md` backlog). Then `digest.md` — the health feed. If **Needs you** is non-empty, lead with those items before asking what we're working on.
 
    | Answer | Files to read |
    |---|---|
