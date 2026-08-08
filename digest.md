@@ -8,13 +8,17 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-08 01:58 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-08 02:01 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-08 01:54 UTC → 2026-08-08 01:58 UTC)
+## Since last refresh (2026-08-08 01:58 UTC → 2026-08-08 02:01 UTC)
 
-- Merged: eq-field [#668](https://github.com/eq-solutions/eq-field/pull/668) fix(mobile): 5 confirmed mobile.css bugs (v3.5.469)
-- Merged: eq-cards [#198](https://github.com/eq-solutions/eq-cards/pull/198) feat(wallet): Show mode — offline fullscreen ID display for 
-- Merged: eq-solves-intake [#105](https://github.com/eq-solutions/eq-solves-intake/pull/105) feat(intake): AI sanity-check on the Contacts duplicate-arch
+- Merged: eq-field [#670](https://github.com/eq-solutions/eq-field/pull/670) v3.5.469 — Data tab: gate People/Sites/Schedule CSV import b
+- Merged: eq-solves-intake [#107](https://github.com/eq-solutions/eq-solves-intake/pull/107) fix: resolve the 13 remaining no-unused-vars errors (vendore
+- Merged: eq-solves-intake [#106](https://github.com/eq-solutions/eq-solves-intake/pull/106) feat(intake): real Contacts merge system (Sites-equivalent)
+- Merged: eq-solves-intake [#104](https://github.com/eq-solutions/eq-solves-intake/pull/104) test(format-ui): prove a real timesheet record survives xero
+- Merged: eq-solves-intake [#103](https://github.com/eq-solutions/eq-solves-intake/pull/103) docs(intake): correct stale Cards-Field SSO and reshape-prof
+- Merged: eq-solves-intake [#102](https://github.com/eq-solutions/eq-solves-intake/pull/102) fix(deps): bring react/react-dom pin in line with eq-shell's
+- Merged: eq-solves-intake [#101](https://github.com/eq-solutions/eq-solves-intake/pull/101) fix(deps): pin ajv to 8.20.0 in eq-schemas manifest
 
 ## ⚠ Needs you (2)
 
@@ -45,7 +49,7 @@ _…and 96 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 2 | 0d |
 | eq-solves-service | ✓ success | 1d ago | 5 | 4d |
-| eq-field | ✓ success | 0d ago | 2 | 0d |
+| eq-field | ✓ success | 0d ago | 1 | 0d |
 | eq-cards | ✓ success | 2d ago | 1 | 0d |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
@@ -67,6 +71,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-08 | eq-field | [#670](https://github.com/eq-solutions/eq-field/pull/670) v3.5.469 — Data tab: gate People/Sites/Schedule CSV import behind |
 | 2026-08-08 | eq-field | [#668](https://github.com/eq-solutions/eq-field/pull/668) fix(mobile): 5 confirmed mobile.css bugs (v3.5.469) |
 | 2026-08-08 | eq-field | [#667](https://github.com/eq-solutions/eq-field/pull/667) fix(safety): gate incident records/export to Supervision (v3.5.46 |
 | 2026-08-08 | eq-field | [#666](https://github.com/eq-solutions/eq-field/pull/666) v3.5.469 — Calibration + Projects had no mobile nav path |
@@ -81,8 +86,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-06 | eq-shell | [#1265](https://github.com/eq-solutions/eq-shell/pull/1265) fix(ops): stop tenant-data-proxy crashing on 204 responses (EQ-SH |
 | 2026-08-04 | eq-solves-intake | [#109](https://github.com/eq-solutions/eq-solves-intake/pull/109) fix(tenant-scoping): close 2 real gaps in api-intake + approve-wo |
 | 2026-08-04 | eq-solves-intake | [#110](https://github.com/eq-solutions/eq-solves-intake/pull/110) fix(scripts): hard-stop migrate-cards-to-canonical.mjs rather tha |
-| 2026-08-03 | eq-solves-intake | [#108](https://github.com/eq-solutions/eq-solves-intake/pull/108) build(platform): narrow check:packages, wire in verified test gat |
-_Showing 15 of 23 · full record in [sessions/](sessions/)_
+_Showing 15 of 24 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
@@ -139,4 +143,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-08 01:58 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-08 02:01 UTC._
