@@ -14,6 +14,20 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: Dependabot sweep — 5 of 7 open alerts fixed, merged + deployed clean (2026-08-08)
+*GitHub flagged 7 open alerts (6 high, 1 moderate) during an unrelated branch-cleanup push. All are transitive — no source file imports any of them directly.*
+
+- [x] js-yaml (GHSA-5p4m-2wfm-xmqj, quadratic-CPU DoS parsing untrusted YAML) — pnpm override bumped 4.3.0→4.3.1; confirmed a patched version exists in the 4.x line itself (no need to jump to the 5.x major).
+- [x] brace-expansion, 5.x line (GHSA-rgw5-rvv9-x895, bypasses an earlier DoS mitigation) — comes in via eslint's `minimatch@10`; override bumped 5.0.8→5.0.9. The 1.x/2.x lines (via the exceljs/archiver chain) were already patched by a pre-existing override.
+- [x] nanoid (GHSA-qrpm-p2h7-hrv2, indefinite loop when size=0) — new override added, 3.3.16→3.3.18.
+- [x] dompurify (IN_PLACE hook removal → XSS) — existing override bumped 3.4.12→3.4.13. Gotcha: the old override (`^3.4.12`) already technically permitted 3.4.13, but pnpm doesn't auto-bump a resolved lockfile version just because a newer one satisfies the range — the pin itself has to move to force re-resolution.
+- All four shipped in [eq-shell PR #1286](https://github.com/eq-solutions/eq-shell/pull/1286) (squash-merged `d8fa4f42`). Netlify production deploy verified clean afterward (state `ready`, `error_message: null`, commit_ref matches, live smoke check on `verify-shell-session` returned the expected 401). GitHub now shows 2 open alerts, down from 7.
+- [ ] **image-size (2 alerts left open)** — ICNS + JXL/HEIF parser infinite-loop DoS. No upstream fix exists yet: comes in via `@netlify/blobs`→`@netlify/dev-utils`, and even `@netlify/dev-utils@latest` (4.4.7) still requires the vulnerable `image-size@^2.0.2`. Nothing to bump until Netlify ships a patch. _(added 2026-08-08)_
+- [ ] **nanoid re-vendor gap** — the fix above was also hand-patched into the vendored `eq-intake/eq-platform/pnpm-lock.yaml` to close a duplicate alert GitHub was scanning on that file, but that lockfile isn't actually consumed by eq-shell's build (only `eq-intake/eq-platform/packages/*` are real pnpm workspace members). The patch is cosmetic only — the durable fix belongs in the `eq-solves-intake` source repo, then flows back in on the next re-vendor. Spun off as a background task (not duplicated here). _(added 2026-08-08)_
+- [ ] **Stale substrate claim found, not yet corrected** — the 2026-07-28 "full Dependabot sweep" entry below says the leftover `brace-expansion` DoS in the exceljs→archiver→glob@7→minimatch@3.1.5 chain has "only one full fix: a minimatch major bump," deliberately left unfixed. Live check this session (`pnpm why brace-expansion`) shows that chain already resolves to `1.1.18` via a `brace-expansion@1: ^1.1.17` override — which the GHSA advisories confirm is itself a fully patched version, no minimatch bump needed. Left that old entry untouched (out of this session's scope to edit) but flagging for someone to re-verify and close it out. _(added 2026-08-08)_
+
+---
+
 ## eq-roles + eq-field + eq-shell: security-groups export → Field/Shell permission-pipeline fix, 6 PRs merged + live (2026-08-08)
 *Started from "give me a full HTML export of security groups across the whole suite." Investigating it surfaced a real role-conflation gap between Field and Shell, which snowballed into fixing a genuinely broken permission pipeline — approved as a 4-phase plan (`happy-knitting-karp.md`).*
 
@@ -40,6 +54,14 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ## eq-shell: Sentry sweep → root-caused a suite-wide duplicate-account bug → suite-wide grant audit → new CI gate, all merged + live (2026-08-07)
 
 - [ ] **EQ-SHELL-Y (ocr-licence 401)** — not an eq-shell code bug; the licence-photo-reading feature occasionally fails a permission check talking to eq-canonical. Someone already patched the underlying cause elsewhere (~5 Aug) and it's been quiet since, but needs a few more quiet days before marking resolved for good. _(added 2026-08-07)_
+
+---
+
+## eq-service: canonical-outbox schema-mismatch fixed, merged, verified live (2026-08-06)
+*Follow-up on the `canonical_outbox` 404 flagged below — Royce asked for it explained "with pictures" and a solution, which turned diagnosis into a same-session fix.*
+
+- [x] `canonical_outbox`/`enqueueCanonicalOutbox`/`drainCanonicalOutbox` 404 root-caused to a schema mismatch (client pinned to `service`, table lives in `public`) rather than a credential or table problem. Confirmed live before writing the fix that `customers`/`sites` exist in *both* `service` and `app_data` schemas, so a blanket client swap would have fixed the outbox while breaking the write-back in the same commit — used two schema-pinned clients instead of one. [eq-service PR #691](https://github.com/eq-solutions/eq-service/pull/691), merged (`940323c`). Verified live, not just merged: Netlify deploy confirmed matching the merge commit, then the actual cron's first post-deploy firing confirmed via ehow's own API logs — the exact query that 404'd before now returns 200.
+- [ ] **The `_health` 404 (a separate keep-warm ping, same ~5-min cadence) is still open** — not part of this fix, not investigated. `_health` genuinely doesn't exist on ehow; low priority, nothing depends on it succeeding. _(added 2026-08-06)_
 
 ---
 
