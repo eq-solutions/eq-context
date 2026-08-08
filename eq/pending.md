@@ -14,6 +14,51 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: QR-code self-join account creation — audited, already clean (2026-08-08)
+*Asked "anything outstanding before I issue QR codes for account creation" — the self-join flow (`AdminSelfJoinLinks.tsx` → `shell-join-tenant.ts`) turned out to already be fully live and correct, no changes needed.*
+
+- [x] Confirmed `ENABLE_PHONE_OTP` live in production (probed the endpoint directly — 400 not 404).
+- [x] Confirmed the same-day duplicate-identity trigger fixes (`handle_phone_dedup`, `link_pending_invites`) and the `eq_cards_admin_upsert_worker` grant restore were all live on jvkn.
+- [x] No open Sentry issues touch this flow.
+
+---
+
+## eq-cards + eq-field + eq-intake + eq-ui + eq-receipts + eq-roles + eq-design-tokens + eq-context + eq-shell + eq-service: suite-wide stale-branch + orphaned-worktree cleanup (2026-08-08)
+*Started as a routine "check for other stale branches" during the QR self-join review, escalated once a `/ultrareview` attempt revealed the "unmerged" branches were actually already-shipped squash-merges — a `git branch --contains` blind spot (see `squash-merge-branch-contains-trap.md`). From there: mechanical empty-diff sweep → full agent-based semantic review (each branch's actual diff checked against current main, not just git metadata) across every EQ repo.*
+
+- [x] **470 stale branches deleted** across 10 repos, every one individually verified (not just diffed) as already-shipped, superseded, or abandoned — never a bare "unmerged, therefore delete." Breakdown: eq-cards 45, eq-field 90, eq-shell 139, eq-service 131, eq-context 27, eq-intake 19, eq-ui 11, eq-receipts/eq-roles/eq-design-tokens 8.
+- [x] **58 orphaned worktree folders removed** from `C:\Projects\` — leftover `node_modules`/vendored-copy husks from worktrees torn down outside `git worktree remove`, no `.git`, nothing of value. ~7 currently-registered worktrees (incl. `eq-field-mobile-weekend-wt`, `eq-context-reflection-protocol-wt`) confirmed untouched.
+- [x] **9 branches deliberately kept** — real unshipped work surfaced by the review, not stale: `claude/shift-events-canonical` (eq-field, defect-overdue event enrichment + cron), `claude/audit-team-access-events` (eq-shell, unshipped duplicate-staff-stub fix — see the recurring bug in `staff-duplicate-stubs-onboarding.md`), `claude/data-parsing-cleaning-polish-4d29aa` (eq-intake, already merged as #111 by the time of writing), `claude/sidebar-nav-icon-contrast` (eq-ui, a still-flagged-bad contrast value), 2 eq-context branches holding the only copy of specific session logs, `fix/type-bypass-column-audit` + `canonical/overdue-events` + `claude/frosty-franklin-d28812` (eq-service, see below + a missing doc line).
+- [ ] **2 items need Royce's call, not a code fix** — `claude/service-canonical-identity-phase3-4` (eq-service): re-keys shell-auth JWT + remaps 5 SKS users' FK refs, explicitly marked "DO NOT DEPLOY without Royce's go" in its own commit, never landed — still wanted or shelved? `worktree-wf_79f7a4de-c56-4` (eq-intake): the quality-guardian engine is live but no admin UI in eq-service ever surfaced its output — still wanted? _(added 2026-08-08)_
+- [ ] **5 open Dependabot PRs on eq-service** never reviewed (vitejs/plugin-react, sentry/nextjs, react-dom, eslint-config-next, @eq-solutions packages) — surfaced as "KEEP" by the branch audit since they're genuinely unmerged, not stale. _(added 2026-08-08)_
+- [ ] **Structural risk, not a branch problem**: this session hit the shared-non-worktree-root collision the eq-field entry below (2026-08-08) already flagged — two concurrent sessions both doing git work directly in `C:\Projects\eq-shell` (not a worktree) at the same time. Caught before any damage. A second instance hit `eq-context` itself mid-close (this file, twice) — see `eq-context-shared-checkout-contention` memory; fixed by switching to an isolated worktree + direct `push origin HEAD:main` for this close. _(added 2026-08-08)_
+
+---
+
+## eq-shell: commercial-write RLS restriction landed + dispatched live on both planes (2026-08-08)
+*A written-but-never-shipped fix surfaced by the branch cleanup above (`claude/eq-roles-enterprise-eval-177343`, drafted 2026-07-16). Re-verified live before touching anything — the gap it fixes was still real.*
+
+- [x] `app_data.contract_scopes` / `field_tenders` / `field_projects` INSERT/UPDATE/DELETE restricted to `eq_role in (manager, supervisor)` or platform admin; reads unchanged. Migration renumbered 0186→0239 (0186 had been claimed by an unrelated migration since the draft was written). [eq-shell PR #1283](https://github.com/eq-solutions/eq-shell/pull/1283), merged `885264e1`.
+- [x] Dispatched via `tenant-migrate.yml` (One Pipe) — applied fleet-wide in 18s, live-verified via `pg_policies` on both zaap and ehow (all 4 policies per table on zaap; `contract_scopes` only on ehow, correctly — `field_tenders`/`field_projects` don't exist there).
+
+---
+
+## eq-service: empty "assign to" member picker on Create Check — root-caused, fixed, merged, live (2026-08-08)
+*Surfaced as a side effect of the eq-service branch-audit agent's deep-dive, not from a bug report.*
+
+- [x] `listTestingMembersAction` embedded `tenant_members -> profiles` via PostgREST, but `tenant_members` has no FK to `profiles` (only to `auth.users`) — confirmed live on ehow. The unresolvable embed errored; the code only destructured `data` (dropped `error`), so it silently returned `[]` for every tenant, emptying the ACB/NSX Create Check "assign to" dropdown for everyone. Rebuilt on the same canonical-first/local-fallback pattern already shipped on the Maintenance page's own picker. [eq-service PR #692](https://github.com/eq-solutions/eq-service/pull/692), merged `770fbc97`. Live-verified the fixed query returns 5 real SKS members instead of the old silent `[]`.
+- [ ] **Not click-tested live** — local dev server hung on an unrelated issue during the fix session. Needs a quick manual pass on ACB and NSX Create Check to confirm the dropdown actually populates in the browser. _(added 2026-08-08)_
+
+---
+
+## eq-service: live cross-tenant info-disclosure gap in `next_variation_number` — fix already written, blocked on tooling (2026-08-08)
+*Also surfaced by the branch-audit agent, initially mis-described as "auto-generated variation numbers are broken" — that part was wrong and corrected; the real finding is a security gap, not a functional bug.*
+
+- [ ] **Migration `0140_harden_next_variation_number.sql` was never actually applied to ehow**, despite being merged to main since 2026-07-03 (PR #321) — its ledger row (`service._eq_migrations`) was falsely marked "applied" by the one-time 2026-07-03 grandfather backfill (`checksum: null, applied_by: 'backfill-2026-07-03'`), so the governed pipeline's own runner thinks it's done and will silently skip it on every future dispatch. Live right now: the RPC still has its old 2-arg signature (`p_tenant_id uuid, p_year integer`), EXECUTE-granted to `authenticated` — any logged-in user, any tenant, can call it directly with someone else's tenant UUID and enumerate that tenant's variation-number sequence.
+- [ ] **Direct DDL apply blocked twice by the Claude Code permission classifier** (same class of restriction as Netlify security-setting edits) — needs Royce's own hands via the Supabase SQL editor on `ehow` (`ehowgjardagevnrluult`), or fixing the false ledger row so the normal governed pipeline picks it up, or a permission rule change. Exact SQL is the migration file verbatim — ready to paste. _(added 2026-08-08)_
+
+---
+
 ## eq-shell: Dependabot sweep — 5 of 7 open alerts fixed, merged + deployed clean (2026-08-08)
 *GitHub flagged 7 open alerts (6 high, 1 moderate) during an unrelated branch-cleanup push. All are transitive — no source file imports any of them directly.*
 
