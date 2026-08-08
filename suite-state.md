@@ -69,8 +69,6 @@ _If this file is >48h old, the cron is broken._
 - #668 fix(mobile): 5 confirmed mobile.css bugs (v3.5.469)
 - #667 fix(safety): gate incident records/export to Supervision (v3.5.469)
 - #666 v3.5.469 — Calibration + Projects had no mobile nav path
-- #665 fix(sign-documents): mobile UX — signature pad size, popup-blocker guard, tab touch targets (v3.5.469)
-- #664 fix(leave): mobile responsive breakpoint for worker balance cards
 
 **eq-service:**
 - #688 chore(deps): bump @sentry/nextjs from 10.68.0 to 10.69.0
@@ -93,7 +91,7 @@ _If this file is >48h old, the cron is broken._
 |------|--------|
 | eq-service | ✓ success |
 | eq-shell | ✓ success |
-| eq-field | ✓ success |
+| eq-field | ? queued |
 | eq-cards | ✓ success |
 | eq-solves-intake | ✓ success |
 
