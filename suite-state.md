@@ -64,8 +64,7 @@ _If this file is >48h old, the cron is broken._
 - #219 feat(labour-hire): candidate intake — control-layer profile + licence staging
 
 **eq-field:**
-- #670 v3.5.469 — Data tab: gate People/Sites/Schedule CSV import behind isManager
-- #669 fix(apprentices): Skills Passport mobile CSS selector was dead (v3.5.469)
+- #672 fix(managers): gate Supervision CSV import behind isManager (v3.5.471)
 
 **eq-service:**
 - #688 chore(deps): bump @sentry/nextjs from 10.68.0 to 10.69.0
@@ -75,6 +74,7 @@ _If this file is >48h old, the cron is broken._
 - #684 chore(deps): bump the eq-design-system group with 2 updates
 
 **eq-shell:**
+- #1285 fix(ci): field-perms-drift skips cleanly until FIELD_PERMS_DRIFT_PAT exists
 - #1284 chore(intake): auto re-vendor eq-intake/eq-platform
 - #1279 feat(staff): labour-hire candidate review + ops intake tool
 
