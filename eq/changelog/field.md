@@ -1,13 +1,22 @@
 ---
 title: Changelog — EQ Solves Field
 owner: Royce Milmlow
-last_updated: 2026-08-07
+last_updated: 2026-08-08
 scope: Append-only history of changes to the EQ Solves Field product. Canonical — eq-field.md was merged into this file 2026-07-19, don't split again.
 read_priority: reference
 status: live
 ---
 
 # Changelog — EQ Solves Field
+
+## [2026-08-08] Data tab: People/Sites/Schedule CSV import gated behind isManager (v3.5.470, #670)
+- `importPeopleCSV`/`importSitesCSV`/`importScheduleCSV` (`scripts/import-export.js`) had no permission check — `importFullBackup` in the same file already gated on `isManager`, these three never did. Found in passing during an unrelated mobile-view audit (2026-08-07), independently re-verified live before touching anything.
+- Live `pg_policies` check on ehow confirmed `app_data.sites` and `app_data.staff` (backs People/Supervision) scope INSERT/UPDATE/DELETE by `tenant_id` only, no role condition — the missing client-side check was the only gate stopping any authenticated non-manager from bulk-wiping Sites or overwriting the People roster on the live SKS tenant. `app_data.schedule_entries` RLS already required `manager`/`supervisor`, so Schedule had a DB-level backstop regardless.
+- `nav-data` is hidden for SKS (v3.5.211) but that's `display:none`, not access control — devtools could still call these functions directly. On the `eq` tenant the nav item is visible to any signed-in non-apprentice user, so this was reachable through the UI there too.
+- Fix: added the identical guard `importFullBackup` already uses to all three functions — no change to the permission model. `import-export.js` sits on the parked 11-file `isManager`→canonical-permission migration list (`eq/pending.md`, parked 2026-07-27 for the SKS cutover window); this is not that migration, just completing a missing instance of the mechanism the file already relies on.
+- Shipped as v3.5.470, not v3.5.469 as originally branched — 5 unrelated PRs (#663, #665, #666, #667, #668) merged to `main` claiming v3.5.469 from concurrent sessions while this one was in review; rebased twice and renumbered to the actual next-free version before merging.
+- Companion gap in `importManagersCSV` (`scripts/managers.js:498` — same Data page, same missing check) found but not fixed here — spun off as a separate task.
+- Logged as SEC-21 in `ops/security-register.md`, now closed. `tests/*.test.js` 0 failed, `eslint` 0 errors both before and after the rebase.
 
 ## [2026-08-07] Contacts CSV import no longer wipes the whole roster (v3.5.466, #660)
 - Closes the top item on eq-shell's "close what's worth closing" plan (see `eq/pending.md` / `sessions/2026-08-06.md`). The existing Contacts CSV import purged the entire `people` table and reinserted from the file — safe only if the CSV was a perfect, complete export, and silently orphaning any of 6 tables carrying an unenforced soft `person_id` reference (timesheets, leave, licences, etc.) whenever it wasn't. `people` has no FK constraints, so nothing enforced this before — the risk had been live all along, not introduced by this fix.
