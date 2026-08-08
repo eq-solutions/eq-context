@@ -1,16 +1,16 @@
 ---
 title: TODAY — Focus Filter
 owner: Royce Milmlow
-last_updated: 2026-07-20
-scope: The filter for every Claude session decision. Facts are machine-verified. Goals are human-owned and currently UNSET.
+last_updated: 2026-08-08
+scope: The filter for every Claude session decision. Facts are machine-verified. Goals are human-owned — see GOALS section for current status.
 read_priority: critical
 status: live
 ---
 
 # TODAY — Focus Filter
 
-> **Goals: UNSET.** See below. **Do not invent them. Do not infer them from old files.**
-> Until Royce sets them, no assistant may defer, deprioritise, or justify work by appeal to a deadline or quarterly outcome. There isn't one.
+> **Goals: 1 active, expires 2026-08-22.** See below. **Do not invent new ones. Do not infer them from old files.**
+> This goal is Royce's own text, confirmed 2026-08-08 (wording and expiry chosen by Royce via AskUserQuestion, not authored unilaterally). Apply only what it actually says — it is not license to defer or justify unrelated work.
 
 ---
 
@@ -28,22 +28,26 @@ Full write-up: [`system/lessons.md`](lessons.md) → "The Substrate Contained a 
 
 ---
 
-## GOALS — `type: goal` · `owner: royce` · **status: UNSET**
+## GOALS — `type: goal` · `owner: royce` · **status: 1 active**
 
 ```yaml
-claims: []
-# Royce to define. Each goal must carry:
-#   type: goal
-#   owner: royce
-#   asserted_on: YYYY-MM-DD
-#   expires_on: YYYY-MM-DD    # goals expire. unreconfirmed = dead.
-#   verify: human
+claims:
+  - type: goal
+    owner: royce
+    text: >
+      Get the EQ Suite operationally hardened (onboarding, security, backup,
+      mobile) while I'm overseas, without any live/auth changes that could
+      affect real users mid-flow. Track progress via the 5 items in
+      system/punch-list.md.
+    asserted_on: 2026-08-08
+    expires_on: 2026-08-22
+    verify: human
 ```
 
 **Rules for this section — enforced by [`claim-expiry.yml`](../.github/workflows/claim-expiry.yml) (rung 3, built 2026-07-12): a goal that is undated, unowned, or past `expires_on` fails CI. Checked on every change to this file and nightly.**
 - A goal with no `expires_on` is **invalid** — `claim-expiry.yml` fails CI.
-- A goal past `expires_on` is **dead**, and surfaces as *"Royce — confirm or kill."* It does not silently persist.
-- **No assistant may write a goal here.** Assistants may only propose. Goals are human-owned. This is not a formality — it is the specific safeguard that would have prevented this phantom.
+- A goal past `expires_on` is **dead**, and surfaces as *"Royce — confirm or kill."* It does not silently persist. **This one expires 2026-08-22 — re-confirm or let it die, don't let it go stale.**
+- **No assistant may write a goal here.** Assistants may only propose. Goals are human-owned. This is not a formality — it is the specific safeguard that would have prevented this phantom. (This goal's wording and expiry were Royce's own confirmed choice, 2026-08-08 — see `sessions/2026-08-08.md`.)
 
 ---
 
@@ -73,6 +77,6 @@ These are **not** assertions. They are direct reads of ehow (`ehowgjardagevnrluu
 
 ## How to use this file
 
-1. **Read the GOALS section.** If it is UNSET, you have **no basis to defer or deprioritise anything.** Say so plainly rather than borrowing a deadline from somewhere else.
+1. **Read the GOALS section.** If it is UNSET, you have **no basis to defer or deprioritise anything** — say so plainly rather than borrowing a deadline from somewhere else. If a goal is active, apply only what it actually says — don't stretch its scope to justify unrelated work.
 2. **Treat FACTS as leads with a shelf life.** Re-run the query. This table is a cache of reality, not reality. (`CLAUDE.md` §7.)
 3. **Never fill a slot in this file because it looks empty.** The blank goals section is the most valuable thing on this page.
