@@ -1,5 +1,10 @@
 # EQ Intake — Changelog
 
+## 2026-08-08 (PR #113 MERGED — export dice/identityKeyFor/HIGH_SIM; suite-wide role audit)
+- **Exported `dice`, `identityKeyFor`, `HIGH_SIM` from the public barrel** (`src/index.ts`) — only `detectAllDuplicates()` was reachable from outside the package before; the fuzzy-match primitives underneath it weren't, so any consumer wanting just the matcher had no way to import it. Purely additive. eq-solves-intake [PR #113](https://github.com/eq-solutions/eq-solves-intake/pull/113), merged.
+- Prerequisite for eq-shell [PR #1287](https://github.com/eq-solutions/eq-shell/pull/1287) — see `eq-shell.md` — which re-vendored this package and swapped `CustomersPage.tsx`'s private duplicate matcher for this export.
+- **Audited where `@eq/intake` actually gets used across the suite**, live against real code in eq-shell/eq-solves-service/eq-field/eq-cards, not assumed from docs. Result: only eq-shell touches it (the `/intake` screen + Equipment Certificate Import), and even there only for 2 of its 6+ import surfaces. Full report + gaps + advice published; 4 architecture decisions recorded in `eq-context/eq/pending.md` (Ops PDF imports stay separate, Service's importers stay separate, ABN validation deferred, `enrich.ts`/`dedup.ts` stay dormant).
+
 ## 2026-08-07 (PRs #111 + #112 MERGED — Overview/To Do polish + fuzzy-match Reconcile)
 - **Overview empty state**: a brand-new tenant with zero records anywhere sees "Bring your first file in →" instead of six 0%-filled dimension bars.
 - **Cross-tab auto-refresh**: approving/archiving a To Do item or confirming a site/contact merge now bumps a shared signal that refreshes Overview's cached scores and the To Do badge count, instead of requiring the manual Refresh button.

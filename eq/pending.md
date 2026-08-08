@@ -19,6 +19,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 *Followed the Overview/To Do polish pass (#111) and the fuzzy-match Reconcile fix (#112) with a cross-repo audit of where `@eq/intake` actually gets used across the suite — verified live against eq-shell, eq-solves-service, eq-field, eq-cards, not assumed from docs. Shipped the one clean win (eq-shell's Contacts dedup now reuses Intake's matcher instead of a private copy, #1287) and walked the rest of the gap list through with Royce one by one.*
 
 **Completed:**
+- Published a suite-wide "where does EQ Intake actually get used" report (per-app verdicts, a relationship diagram, ranked gaps, ranked advice) — built off 4 parallel research agents checking real code in eq-shell, eq-solves-service, eq-field, eq-cards rather than assuming from docs.
 - `suite-state.md` "What Owns What" gained an Import/write-time tooling row — Intake was previously undocumented as a suite component.
 - eq-solves-intake [PR #113](https://github.com/eq-solutions/eq-solves-intake/pull/113): exported `dice`/`identityKeyFor`/`HIGH_SIM` from the public barrel (prerequisite for reuse elsewhere).
 - eq-shell [PR #1287](https://github.com/eq-solutions/eq-shell/pull/1287): re-vendored `eq-intake/eq-platform` (picked up #111/#112/#113) + swapped `CustomersPage.tsx`'s private Dice matcher for the shared one. Merged, live on `core.eq.solutions`.
@@ -80,24 +81,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 - [ ] **Migration `0140_harden_next_variation_number.sql` was never actually applied to ehow**, despite being merged to main since 2026-07-03 (PR #321) — its ledger row (`service._eq_migrations`) was falsely marked "applied" by the one-time 2026-07-03 grandfather backfill (`checksum: null, applied_by: 'backfill-2026-07-03'`), so the governed pipeline's own runner thinks it's done and will silently skip it on every future dispatch. Live right now: the RPC still has its old 2-arg signature (`p_tenant_id uuid, p_year integer`), EXECUTE-granted to `authenticated` — any logged-in user, any tenant, can call it directly with someone else's tenant UUID and enumerate that tenant's variation-number sequence.
 - [ ] **Direct DDL apply blocked twice by the Claude Code permission classifier** (same class of restriction as Netlify security-setting edits) — needs Royce's own hands via the Supabase SQL editor on `ehow` (`ehowgjardagevnrluult`), or fixing the false ledger row so the normal governed pipeline picks it up, or a permission rule change. Exact SQL is the migration file verbatim — ready to paste. _(added 2026-08-08)_
-
----
-
-## ⏩ Session close — 2026-08-08 (eq-intake) — suite-wide Intake role audit, 4 decisions made
-
-*Followed the Overview/To Do polish pass (#111) and the fuzzy-match Reconcile fix (#112) with a cross-repo audit of where `@eq/intake` actually gets used across the suite — verified live against eq-shell, eq-solves-service, eq-field, eq-cards, not assumed from docs. Shipped the one clean win (eq-shell's Contacts dedup now reuses Intake's matcher instead of a private copy, #1287) and walked the rest of the gap list through with Royce one by one.*
-
-**Completed:**
-- `suite-state.md` "What Owns What" gained an Import/write-time tooling row — Intake was previously undocumented as a suite component.
-- eq-solves-intake [PR #113](https://github.com/eq-solutions/eq-solves-intake/pull/113): exported `dice`/`identityKeyFor`/`HIGH_SIM` from the public barrel (prerequisite for reuse elsewhere).
-- eq-shell [PR #1287](https://github.com/eq-solutions/eq-shell/pull/1287): re-vendored `eq-intake/eq-platform` (picked up #111/#112/#113) + swapped `CustomersPage.tsx`'s private Dice matcher for the shared one. Merged, live on `core.eq.solutions`.
-
-**Decided (Royce, this session):**
-- **EQ Ops's PDF imports (quotes, subcontractor pricing, labour-hire) stay a separate Claude-direct pipeline, not migrated onto Intake.** Deliberate — pricing-table extraction from supplier PDFs is a different problem than entity reconciliation. Not an oversight; don't re-flag as a gap.
-- **EQ Service's four importers (commercial-sheet, asset-register, Jemena RCD, Maximo Delta WO) are NOT being migrated onto Intake's path.** The 2026-05-19 `docs/architecture/2026-05-19-shell-intake-integration.md` plan stays unexecuted by choice, not neglect — Royce's gut ("is there value in changing what's working?") plus a real technical reason: Service's own Levenshtein job-plan-code matcher solves a differently-shaped problem (short codes, not names) than Intake's Dice matcher, so the clean-swap case that justified the eq-shell fix doesn't hold here. Don't re-propose the full migration without a new reason (a live bug, not architecture tidiness).
-- **ABN validation in EQ Service: not now.** Flagged as a cheap, independent, zero-risk win (Service stores/displays ABN but never validates it) — Royce declined for now. Revisit if it ever causes a real problem.
-- **`enrich.ts`/`dedup.ts` in eq-intake stay dormant — not required at the moment.** Investigated properly first (the 2026-07-02 backlog note calling them "unused" was wrong — they're real, wired into `@eq/confirm-ui`'s `store.ts`, tested, and hardened against a real past incident, issue #47). Checked eq-solves-service's actual asset-register importer as the natural consumer: it already does its own exact-match duplicate detection (Asset #/name, both within-batch and against-existing) — so no gap there beyond a missing serial-number check. It does **zero** AI gap-filling though: `criticality` and `ppm_frequency` are never set on newly-imported assets (asset_type is fine, sourced from the job-plan link). That's the one genuinely real, unaddressed opportunity here — Royce's call was to leave it for now regardless. Don't re-raise without a reason someone actually needs criticality/ppm_frequency populated.
-- **`ANTHROPIC_API_KEY` on sks-canonical: not yet.** Still the blocker for Intake's Ask tab / gap-suggest / AI-adjudication. Royce's call, not a build task. _(long-open item, unchanged — see the 2026-07-02 block below)_
 
 ---
 
