@@ -1,14 +1,14 @@
 ---
 title: EQ Suite — Current State
 owner: Royce Milmlow
-last_updated: 2026-08-07
+last_updated: 2026-08-08
 scope: Live suite state — app lineup, DB counts, open PRs, architectural decisions. Auto-refreshed nightly by GitHub Action.
 read_priority: critical
 status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-08-07 (nightly cron)_
+_Last verified: 2026-08-08 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -58,10 +58,19 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-08-07)
+## Open PRs (as of 2026-08-08)
 
 **eq-cards:**
 - #219 feat(labour-hire): candidate intake — control-layer profile + licence staging
+
+**eq-field:**
+- #670 v3.5.469 — Data tab: gate People/Sites/Schedule CSV import behind isManager
+- #669 fix(apprentices): Skills Passport mobile CSS selector was dead (v3.5.469)
+- #668 fix(mobile): 5 confirmed mobile.css bugs (v3.5.469)
+- #667 fix(safety): gate incident records/export to Supervision (v3.5.469)
+- #666 v3.5.469 — Calibration + Projects had no mobile nav path
+- #665 fix(sign-documents): mobile UX — signature pad size, popup-blocker guard, tab touch targets (v3.5.469)
+- #664 fix(leave): mobile responsive breakpoint for worker balance cards
 
 **eq-service:**
 - #688 chore(deps): bump @sentry/nextjs from 10.68.0 to 10.69.0
@@ -76,7 +85,7 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## System Health (as of 2026-08-07)
+## System Health (as of 2026-08-08)
 
 **CI on main:**
 
