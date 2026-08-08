@@ -121,6 +121,12 @@ _Auto-refreshed nightly. ✓ = has data · ⚠ = empty (no data yet) · ✗ = ta
 | Users / Roles | Shell → service.tenant_members | Service, Field |
 | Staff / Licences / Availability | Field | Field only |
 
+**Import/write-time tooling** (not a data entity — the engine that gets data *into* the tables above; verified live 2026-08-08, see [eq-solves-intake](changelog/eq-intake.md)):
+
+| Tool | Owner | Real usage | Everyone else |
+|------|-------|------------|----------------|
+| `@eq/intake` | eq-solves-intake | Shell only — `/intake` screen (Overview/To Do/Bring Data In/Ask) + Equipment → Certificate Import. Shell's own Contacts dedup reimplements Intake's fuzzy matcher instead of importing it. | Service (4 separate `exceljs` importers, own Levenshtein matcher, no ABN validation — migration proposed in Service's own `docs/architecture/2026-05-19-shell-intake-integration.md`, not executed), Field (hand-rolled CSV parser, exact-match only — no build step, can't consume the npm package), Cards (own OCR pipeline; a proposed swap to Intake was investigated and shelved — the needed Intake capability doesn't exist yet) |
+
 ---
 
 ## Crons (as of 2026-06-22)
