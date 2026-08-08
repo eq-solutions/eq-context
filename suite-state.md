@@ -74,7 +74,6 @@ _If this file is >48h old, the cron is broken._
 - #684 chore(deps): bump the eq-design-system group with 2 updates
 
 **eq-shell:**
-- #1285 fix(ci): field-perms-drift skips cleanly until FIELD_PERMS_DRIFT_PAT exists
 - #1284 chore(intake): auto re-vendor eq-intake/eq-platform
 - #1279 feat(staff): labour-hire candidate review + ops intake tool
 
