@@ -8,12 +8,16 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-08 01:51 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-08 01:54 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-08 01:46 UTC → 2026-08-08 01:51 UTC)
+## Since last refresh (2026-08-08 01:51 UTC → 2026-08-08 01:54 UTC)
 
-- Merged: eq-field [#666](https://github.com/eq-solutions/eq-field/pull/666) v3.5.469 — Calibration + Projects had no mobile nav path
-- Merged: eq-solves-intake [#105](https://github.com/eq-solutions/eq-solves-intake/pull/105) feat(intake): AI sanity-check on the Contacts duplicate-arch
+- Merged: eq-field [#667](https://github.com/eq-solutions/eq-field/pull/667) fix(safety): gate incident records/export to Supervision (v3
+- Merged: eq-solves-intake [#106](https://github.com/eq-solutions/eq-solves-intake/pull/106) feat(intake): real Contacts merge system (Sites-equivalent)
+- Merged: eq-solves-intake [#104](https://github.com/eq-solutions/eq-solves-intake/pull/104) test(format-ui): prove a real timesheet record survives xero
+- Merged: eq-solves-intake [#103](https://github.com/eq-solutions/eq-solves-intake/pull/103) docs(intake): correct stale Cards-Field SSO and reshape-prof
+- Merged: eq-solves-intake [#102](https://github.com/eq-solutions/eq-solves-intake/pull/102) fix(deps): bring react/react-dom pin in line with eq-shell's
+- Merged: eq-solves-intake [#101](https://github.com/eq-solutions/eq-solves-intake/pull/101) fix(deps): pin ajv to 8.20.0 in eq-schemas manifest
 
 ## ⚠ Needs you (2)
 
@@ -44,7 +48,7 @@ _…and 96 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 2 | 0d |
 | eq-solves-service | ✓ success | 1d ago | 5 | 4d |
-| eq-field | ✓ success | 0d ago | 4 | 0d |
+| eq-field | ✓ success | 0d ago | 3 | 0d |
 | eq-cards | ✓ success | 2d ago | 1 | 0d |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
@@ -66,6 +70,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-08 | eq-field | [#667](https://github.com/eq-solutions/eq-field/pull/667) fix(safety): gate incident records/export to Supervision (v3.5.46 |
 | 2026-08-08 | eq-field | [#666](https://github.com/eq-solutions/eq-field/pull/666) v3.5.469 — Calibration + Projects had no mobile nav path |
 | 2026-08-08 | eq-field | [#665](https://github.com/eq-solutions/eq-field/pull/665) fix(sign-documents): mobile UX — signature pad size, popup-blocke |
 | 2026-08-08 | eq-field | [#664](https://github.com/eq-solutions/eq-field/pull/664) fix(leave): mobile responsive breakpoint for worker balance cards |
@@ -80,8 +85,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-04 | eq-solves-intake | [#110](https://github.com/eq-solutions/eq-solves-intake/pull/110) fix(scripts): hard-stop migrate-cards-to-canonical.mjs rather tha |
 | 2026-08-03 | eq-solves-intake | [#108](https://github.com/eq-solutions/eq-solves-intake/pull/108) build(platform): narrow check:packages, wire in verified test gat |
 | 2026-08-03 | eq-solves-intake | [#107](https://github.com/eq-solutions/eq-solves-intake/pull/107) fix: resolve the 13 remaining no-unused-vars errors (vendored-cop |
-| 2026-08-02 | eq-cards | [#198](https://github.com/eq-solutions/eq-cards/pull/198) feat(wallet): Show mode — offline fullscreen ID display for site  |
-_Showing 15 of 21 · full record in [sessions/](sessions/)_
+_Showing 15 of 22 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
@@ -138,4 +142,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-08 01:51 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-08 01:54 UTC._
