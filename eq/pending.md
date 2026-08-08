@@ -14,6 +14,12 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-context: `/close` skill's own archive-rule text is stale (2026-08-08)
+
+- [ ] **`/close`'s Step 2 says to manually move a fully-closed pending.md section to `pending-archive.md`** — but that file's own frontmatter states done items have been rotated out automatically, per-item, nightly by `scripts/rotate_pending.py` since 2026-07-27 (confirmed live: the script + its CI workflow `pending-rotate.yml` both exist, with their own test suite). Found while closing a fully-ticked eq-field section this session — didn't manually archive it, to avoid duplicating/conflicting with the automation. The skill's own text should point at the script instead of describing the pre-automation manual process. _(added 2026-08-08)_
+
+---
+
 ## eq-shell: QR-code self-join account creation — audited, already clean (2026-08-08)
 *Asked "anything outstanding before I issue QR codes for account creation" — the self-join flow (`AdminSelfJoinLinks.tsx` → `shell-join-tenant.ts`) turned out to already be fully live and correct, no changes needed.*
 
