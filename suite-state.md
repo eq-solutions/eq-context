@@ -68,7 +68,6 @@ _If this file is >48h old, the cron is broken._
 - #669 fix(apprentices): Skills Passport mobile CSS selector was dead (v3.5.469)
 - #668 fix(mobile): 5 confirmed mobile.css bugs (v3.5.469)
 - #667 fix(safety): gate incident records/export to Supervision (v3.5.469)
-- #666 v3.5.469 — Calibration + Projects had no mobile nav path
 
 **eq-service:**
 - #688 chore(deps): bump @sentry/nextjs from 10.68.0 to 10.69.0
