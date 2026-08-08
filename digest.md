@@ -8,28 +8,30 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-08 04:40 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-08 05:05 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-08 04:33 UTC → 2026-08-08 04:40 UTC)
+## Since last refresh (2026-08-08 04:40 UTC → 2026-08-08 05:05 UTC)
 
-- Merged: eq-shell [#1287](https://github.com/eq-solutions/eq-shell/pull/1287) refactor(customers): reuse @eq/intake's fuzzy matcher instea
-- Merged: eq-shell [#1283](https://github.com/eq-solutions/eq-shell/pull/1283) fix(rls): restrict commercial-table writes to management tie
-- Merged: eq-shell [#1265](https://github.com/eq-solutions/eq-shell/pull/1265) fix(ops): stop tenant-data-proxy crashing on 204 responses (
+- Merged: eq-shell [#1288](https://github.com/eq-solutions/eq-shell/pull/1288) fix(deps): patch image-size DoS + re-vendor to restore the n
+- Merged: eq-shell [#1281](https://github.com/eq-solutions/eq-shell/pull/1281) feat(access-control): expose eq-field's 74 fine-grained perm
 - Merged: eq-solves-service [#692](https://github.com/eq-solutions/eq-service/pull/692) fix(testing): assignee picker empty on ACB/NSX Create Check
-- Merged: eq-cards [#198](https://github.com/eq-solutions/eq-cards/pull/198) feat(wallet): Show mode — offline fullscreen ID display for 
-- Merged: eq-solves-intake [#112](https://github.com/eq-solutions/eq-solves-intake/pull/112) feat(intake): fuzzy identity match in the Reconcile engine
-- Merged: eq-solves-intake [#109](https://github.com/eq-solutions/eq-solves-intake/pull/109) fix(tenant-scoping): close 2 real gaps in api-intake + appro
-- Merged: eq-solves-intake [#108](https://github.com/eq-solutions/eq-solves-intake/pull/108) build(platform): narrow check:packages, wire in verified tes
+- Merged: eq-field [#662](https://github.com/eq-solutions/eq-field/pull/662) fix(roles): vendor verify-pin.js's role list, log the silent
+- Merged: eq-solves-intake [#114](https://github.com/eq-solutions/eq-solves-intake/pull/114) fix(deps): bump nanoid to close GHSA-qrpm-p2h7-hrv2
+- Merged: eq-solves-intake [#113](https://github.com/eq-solutions/eq-solves-intake/pull/113) feat(intake): export dice/identityKeyFor/HIGH_SIM from the p
+- Merged: eq-solves-intake [#111](https://github.com/eq-solutions/eq-solves-intake/pull/111) feat(intake): polish the Overview/To Do data-cleaning flow
+- Merged: eq-solves-intake [#110](https://github.com/eq-solutions/eq-solves-intake/pull/110) fix(scripts): hard-stop migrate-cards-to-canonical.mjs rathe
 
 ## ⚠ Needs you (2)
 
 - 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-9 (P0 — confirmed exposure, same window as SEC-3, possible second exposure 2026-07-27) — A different service_role key (`jvkn`/eq-canonical) was pasted directly into a ch · [security-register.md](ops/security-register.md)
 
-## 🙋 Waiting on you (107)
+## 🙋 Waiting on you (109)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
+- **EQ** · **2 items need Royce's call, not a code fix** — `claude/service-canonical-identity-phase3-4` (eq-service): re-keys shell-auth JWT + remaps 5 SKS users' FK refs, explicitly marked "DO NOT DEPLOY without Royce's go" in its own commit, never landed — still wanted or shelved? `worktree-wf_79f7a4de-c56-4` (eq-intake): the quality-guardian engine is live but no admin UI in eq-service ever surfaced its output — still wanted? _(added 2026-08-08)_
+- **EQ** · **Direct DDL apply blocked twice by the Claude Code permission classifier** (same class of restriction as Netlify security-setting edits) — needs Royce's own hands via the Supabase SQL editor on `ehow` (`ehowgjardagevnrluult`), or fixing the false ledger row so the normal governed pipeline picks it up, or a permission rule change. Exact SQL is the migration file verbatim — ready to paste. _(added 2026-08-08)_
 - **EQ** · **Not click-tested live** — EQ Field's CSV import was rewired from destructive (purge+reinsert) to additive (match existing person by phone/email before insert) ([eq-field PR #660](https://github.com/eq-solutions/eq-field/pull/660), merged, live). Needs Royce to re-upload a real SKS person's CSV row and confirm their linked records (timesheets, leave, licences — 6 tables carry a soft `person_id` reference) and id survive the round trip. _(added 2026-08-07)_
 - **EQ** · **Not yet confirmed on a real device through Core that the maps link now opens.** Three attempts: v3.5.460 (eq-field #655) dropped `target="_blank"` for iOS standalone; v3.5.465 (eq-field #659) switched to Apple's `maps://` scheme — both real, defensible fixes for genuine standalone-PWA use, but Royce's actual test was always through Core (`core.eq.solutions/sks/field`), where neither could work. The real cause: `FieldIframe.tsx`'s iframe `sandbox` attribute never included `allow-popups`, so **any** `target="_blank"` link or `window.open()` inside Field, Service, or Cards was silently blocked whenever accessed through Shell — on any device, not iOS-specific. Fixed for all three apps (eq-shell [#1268](https://github.com/eq-solutions/eq-shell/pull/1268), merged, live on `core.eq.solutions`). Royce to confirm the maps icon now actually opens Maps when accessed through Core. _(added 2026-08-05, updated 2026-08-06)_
 - **EQ** · **Royce to confirm the SKS dashboard loads cleanly** — needs an authenticated session, off-limits for Claude to drive. _(added 2026-08-05)_
@@ -40,9 +42,7 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **EQ** · **Royce to test on his Samsung/Android Chrome** now that the code and the SMS template are live together for the first time — not yet confirmed working end-to-end. No fix exists for iOS Safari (WebOTP isn't implemented there); manual entry stays as-is on that platform.
 - **EQ** · **Not click-tested live** — no way to drive a real cross-origin Field session from this environment. Royce to confirm: open Field as an SKS admin, click "🏷 Edit category" on a supervisor, change category/role, save, confirm it reflects back on Shell's own Staff page. _(added 2026-08-05)_
 - **EQ** · **Not confirmed by Royce on the real embedded session** — everything above was verified against a standalone repro (deploy preview + forced `.shell-mode` class), not the actual `core.eq.solutions/sks/field` iframe Royce was looking at (no way to drive that cross-origin session from this environment). Royce to hard-refresh (or bypass the service worker) and confirm the nav bar is back. _(added 2026-08-05)_
-- **EQ** · Auto-login from Shell's tenant tile into Cards was silently skipping the handoff and bouncing to the sign-in screen instead — reported live by Royce, root-caused same session. `cards.eq.solutions` iframes across every open Shell tab share one browser's local storage, and a refresh-token rotation triggered by one tab invalidates the session another tab still has cached. The splash screen only checked whether *a* session object existed in storage, not whether it was still valid, so a stale cached session silently pre-empted the working handoff. Root-caused live against Royce's own SKS account: PostHog showed `shell_handoff_started` never fired on the failing attempt, and eq-canonical's auth logs showed `403 bad_jwt: invalid claim: missing sub claim` at the same second. Fixed in eq-cards [PR #212](https://github.com/eq-solutions/eq-cards/pull/212) (squash-merged `36a23cd`) — `_handleShellEntry()` now validates any cached session with a live `getUser()` call before trusting it, signing out and falling through to the existing handoff on any failure. Merged and deployed (explicit `Build & Deploy` workflow dispatch — Netlify + Sentry source-map upload both succeeded). **Needs Royce's click-through**: his own browser has a bad session already stuck in local storage from before the fix — clearing site data for `cards.eq.solutions` once (or a private window) and reloading the tenant tile is a device-side action only he can do; confirming the clean auto-login after that is the last open step. _(added 2026-08-04)_
-- **EQ** · **Sign-off records can be read or overwritten by any signed-in person on the same tenant, not just the person they belong to.** Investigated 2026-08-04 (sprint task T1): the obvious fix (`signer_user_id = auth.uid()`) would break real signing — eq-field's data-plane JWT sets `sub` to the tenant id for every user, not the actor, so `auth.uid()` on the real sign path never equals the signer. Closing this needs an identity-model decision, not a migration. Royce's call: leave deferred, revisit alongside a real second-signer rollout. _(updated 2026-08-04)_
-_…and 95 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 97 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
@@ -72,6 +72,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-08 | eq-shell | [#1288](https://github.com/eq-solutions/eq-shell/pull/1288) fix(deps): patch image-size DoS + re-vendor to restore the nanoid |
 | 2026-08-08 | eq-shell | [#1287](https://github.com/eq-solutions/eq-shell/pull/1287) refactor(customers): reuse @eq/intake's fuzzy matcher instead of  |
 | 2026-08-08 | eq-shell | [#1286](https://github.com/eq-solutions/eq-shell/pull/1286) fix(deps): resolve 2 high-severity Dependabot alerts (js-yaml, br |
 | 2026-08-08 | eq-shell | [#1285](https://github.com/eq-solutions/eq-shell/pull/1285) fix(ci): field-perms-drift skips cleanly until FIELD_PERMS_DRIFT_ |
@@ -86,22 +87,21 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-08 | eq-field | [#666](https://github.com/eq-solutions/eq-field/pull/666) v3.5.469 — Calibration + Projects had no mobile nav path |
 | 2026-08-08 | eq-field | [#665](https://github.com/eq-solutions/eq-field/pull/665) fix(sign-documents): mobile UX — signature pad size, popup-blocke |
 | 2026-08-08 | eq-field | [#664](https://github.com/eq-solutions/eq-field/pull/664) fix(leave): mobile responsive breakpoint for worker balance cards |
-| 2026-08-08 | eq-field | [#663](https://github.com/eq-solutions/eq-field/pull/663) fix(safety-forms): crew/attendee name overflow + prestart draft c |
-_Showing 15 of 31 · full record in [sessions/](sessions/)_
+_Showing 15 of 33 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **5 open Dependabot PRs on eq-service** never reviewed (vitejs/plugin-react, sentry/nextjs, react-dom, eslint-config-next, @eq-solutions packages) — surfaced as "KEEP" by the branch audit since they're genuinely unmerged, not stale. _(added 2026-08-08)_
+- **Structural risk, not a branch problem**: this session hit the shared-non-worktree-root collision the eq-field entry below (2026-08-08) already flagged — two concurrent sessions both doing git work directly in `C:\Projects\eq-shell` (not a worktree) at the same time. Caught before any damage. A second instance hit `eq-context` itself mid-close (this file, twice) — see `eq-context-shared-checkout-contention` memory; fixed by switching to an isolated worktree + direct `push origin HEAD:main` for this close. _(added 2026-08-08)_
+- **Not click-tested live** — local dev server hung on an unrelated issue during the fix session. Needs a quick manual pass on ACB and NSX Create Check to confirm the dropdown actually populates in the browser. _(added 2026-08-08)_
+- **Migration `0140_harden_next_variation_number.sql` was never actually applied to ehow**, despite being merged to main since 2026-07-03 (PR #321) — its ledger row (`service._eq_migrations`) was falsely marked "applied" by the one-time 2026-07-03 grandfather backfill (`checksum: null, applied_by: 'backfill-2026-07-03'`), so the governed pipeline's own runner thinks it's done and will silently skip it on every future dispatch. Live right now: the RPC still has its old 2-arg signature (`p_tenant_id uuid, p_year integer`), EXECUTE-granted to `authenticated` — any logged-in user, any tenant, can call it directly with someone else's tenant UUID and enumerate that tenant's variation-number sequence.
 - **image-size (2 alerts left open)** — ICNS + JXL/HEIF parser infinite-loop DoS. No upstream fix exists yet: comes in via `@netlify/blobs`→`@netlify/dev-utils`, and even `@netlify/dev-utils@latest` (4.4.7) still requires the vulnerable `image-size@^2.0.2`. Nothing to bump until Netlify ships a patch. _(added 2026-08-08)_
 - **nanoid re-vendor gap** — the fix above was also hand-patched into the vendored `eq-intake/eq-platform/pnpm-lock.yaml` to close a duplicate alert GitHub was scanning on that file, but that lockfile isn't actually consumed by eq-shell's build (only `eq-intake/eq-platform/packages/*` are real pnpm workspace members). The patch is cosmetic only — the durable fix belongs in the `eq-solves-intake` source repo, then flows back in on the next re-vendor. Spun off as a background task (not duplicated here). _(added 2026-08-08)_
 - **Stale substrate claim found, not yet corrected** — the 2026-07-28 "full Dependabot sweep" entry below says the leftover `brace-expansion` DoS in the exceljs→archiver→glob@7→minimatch@3.1.5 chain has "only one full fix: a minimatch major bump," deliberately left unfixed. Live check this session (`pnpm why brace-expansion`) shows that chain already resolves to `1.1.18` via a `brace-expansion@1: ^1.1.17` override — which the GHSA advisories confirm is itself a fully patched version, no minimatch bump needed. Left that old entry untouched (out of this session's scope to edit) but flagging for someone to re-verify and close it out. _(added 2026-08-08)_
 - **`FIELD_PERMS_DRIFT_PAT` secret still needs creating** — fine-grained PAT, `Contents:read` on eq-field only, add as an eq-shell repo secret. Royce: "I can't do the secret now." Until it exists the drift-guard above stays a no-op (green, but not actually checking anything). _(added 2026-08-08)_
 - **No live click-through yet** on any of the Shell↔Field permission changes above — needs a real signed-in session, off-limits to this environment. _(added 2026-08-08)_
-- **Worth a policy call**: at least 4 separate Claude Code sessions today independently hit the same shared, non-worktree `C:\Projects\eq-field` root checkout getting switched to a different branch mid-task by a concurrent session (confirmed via that repo's own `docs/reflection-log.md`). Each worked around it solo by moving to an isolated worktree. Repeated pattern today specifically — worth deciding whether concurrent eq-field sessions should default to worktrees rather than the shared root. _(added 2026-08-08)_
 - **EQ-SHELL-Y (ocr-licence 401)** — not an eq-shell code bug; the licence-photo-reading feature occasionally fails a permission check talking to eq-canonical. Someone already patched the underlying cause elsewhere (~5 Aug) and it's been quiet since, but needs a few more quiet days before marking resolved for good. _(added 2026-08-07)_
-- **The `_health` 404 (a separate keep-warm ping, same ~5-min cadence) is still open** — not part of this fix, not investigated. `_health` genuinely doesn't exist on ehow; low priority, nothing depends on it succeeding. _(added 2026-08-06)_
-- **Not click-tested live** — self-join bulk approve/decline ([PR #1257](https://github.com/eq-solutions/eq-shell/pull/1257)) needs a tenant with 2+ pending self-join requests to actually exercise the new checkbox/bulk-action UI on Staff → pending. _(added 2026-08-06)_
-- **Not click-tested live** — bulk-invite ceiling raise 50→150 ([PR #1259](https://github.com/eq-solutions/eq-shell/pull/1259)) needs a real >50-row invite batch; also watch the next scheduled `licence-expiry-scheduler` run for the employer-alert log line to confirm the new range-based claim path behaves. Royce: "will click test later." _(added 2026-08-06)_
-_…and 448 more · [eq/pending.md](eq/pending.md)_
+_…and 451 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -123,7 +123,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 3217 | 560 | 49 | 12 |
+| [EQ](eq/pending.md) | 3262 | 565 | 59 | 12 |
 | [SKS](sks/pending.md) | 404 | 82 | 0 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 409 | 37 | 2 | 1 |
@@ -144,4 +144,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-08 04:40 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-08 05:05 UTC._
