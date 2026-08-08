@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-08 04:13 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-08 04:28 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-08 03:10 UTC → 2026-08-08 04:13 UTC)
+## Since last refresh (2026-08-08 04:13 UTC → 2026-08-08 04:28 UTC)
 
-- Merged: eq-shell [#1286](https://github.com/eq-solutions/eq-shell/pull/1286) fix(deps): resolve 2 high-severity Dependabot alerts (js-yam
-- Merged: eq-solves-intake [#111](https://github.com/eq-solutions/eq-solves-intake/pull/111) feat(intake): polish the Overview/To Do data-cleaning flow
-- Merged: eq-solves-intake [#110](https://github.com/eq-solutions/eq-solves-intake/pull/110) fix(scripts): hard-stop migrate-cards-to-canonical.mjs rathe
-- Merged: eq-solves-intake [#107](https://github.com/eq-solutions/eq-solves-intake/pull/107) fix: resolve the 13 remaining no-unused-vars errors (vendore
-- Merged: eq-solves-intake [#106](https://github.com/eq-solutions/eq-solves-intake/pull/106) feat(intake): real Contacts merge system (Sites-equivalent)
-- Merged: eq-solves-intake [#104](https://github.com/eq-solutions/eq-solves-intake/pull/104) test(format-ui): prove a real timesheet record survives xero
-- Merged: eq-solves-intake [#103](https://github.com/eq-solutions/eq-solves-intake/pull/103) docs(intake): correct stale Cards-Field SSO and reshape-prof
-- Merged: eq-solves-intake [#102](https://github.com/eq-solutions/eq-solves-intake/pull/102) fix(deps): bring react/react-dom pin in line with eq-shell's
+- Merged: eq-shell [#1265](https://github.com/eq-solutions/eq-shell/pull/1265) fix(ops): stop tenant-data-proxy crashing on 204 responses (
+- Merged: eq-solves-service [#692](https://github.com/eq-solutions/eq-service/pull/692) fix(testing): assignee picker empty on ACB/NSX Create Check
+- Merged: eq-cards [#198](https://github.com/eq-solutions/eq-cards/pull/198) feat(wallet): Show mode — offline fullscreen ID display for 
+- Merged: eq-solves-intake [#113](https://github.com/eq-solutions/eq-solves-intake/pull/113) feat(intake): export dice/identityKeyFor/HIGH_SIM from the p
+- Merged: eq-solves-intake [#112](https://github.com/eq-solutions/eq-solves-intake/pull/112) feat(intake): fuzzy identity match in the Reconcile engine
+- Merged: eq-solves-intake [#109](https://github.com/eq-solutions/eq-solves-intake/pull/109) fix(tenant-scoping): close 2 real gaps in api-intake + appro
+- Merged: eq-solves-intake [#108](https://github.com/eq-solutions/eq-solves-intake/pull/108) build(platform): narrow check:packages, wire in verified tes
+- Merged: eq-solves-intake [#105](https://github.com/eq-solutions/eq-solves-intake/pull/105) feat(intake): AI sanity-check on the Contacts duplicate-arch
 
 ## ⚠ Needs you (2)
 
@@ -49,7 +49,7 @@ _…and 95 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 2 | 0d |
-| eq-solves-service | ✓ success | 1d ago | 6 | 4d |
+| eq-solves-service | ✓ success | 0d ago | 5 | 4d |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 2d ago | 1 | 0d |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
@@ -74,6 +74,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 |--------|------|----|
 | 2026-08-08 | eq-shell | [#1286](https://github.com/eq-solutions/eq-shell/pull/1286) fix(deps): resolve 2 high-severity Dependabot alerts (js-yaml, br |
 | 2026-08-08 | eq-shell | [#1285](https://github.com/eq-solutions/eq-shell/pull/1285) fix(ci): field-perms-drift skips cleanly until FIELD_PERMS_DRIFT_ |
+| 2026-08-08 | eq-solves-service | [#692](https://github.com/eq-solutions/eq-service/pull/692) fix(testing): assignee picker empty on ACB/NSX Create Check |
 | 2026-08-08 | eq-field | [#672](https://github.com/eq-solutions/eq-field/pull/672) fix(managers): gate Supervision CSV import behind isManager (v3.5 |
 | 2026-08-08 | eq-field | [#671](https://github.com/eq-solutions/eq-field/pull/671) v3.5.471 — fix(mobile): isManagerSession() read window.isManager, |
 | 2026-08-08 | eq-field | [#670](https://github.com/eq-solutions/eq-field/pull/670) v3.5.469 — Data tab: gate People/Sites/Schedule CSV import behind |
@@ -84,24 +85,23 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-08 | eq-field | [#665](https://github.com/eq-solutions/eq-field/pull/665) fix(sign-documents): mobile UX — signature pad size, popup-blocke |
 | 2026-08-08 | eq-field | [#664](https://github.com/eq-solutions/eq-field/pull/664) fix(leave): mobile responsive breakpoint for worker balance cards |
 | 2026-08-08 | eq-field | [#663](https://github.com/eq-solutions/eq-field/pull/663) fix(safety-forms): crew/attendee name overflow + prestart draft c |
+| 2026-08-08 | eq-solves-intake | [#113](https://github.com/eq-solutions/eq-solves-intake/pull/113) feat(intake): export dice/identityKeyFor/HIGH_SIM from the public |
 | 2026-08-07 | eq-shell | [#1283](https://github.com/eq-solutions/eq-shell/pull/1283) fix(rls): restrict commercial-table writes to management tiers (0 |
-| 2026-08-07 | eq-shell | [#1281](https://github.com/eq-solutions/eq-shell/pull/1281) feat(access-control): expose eq-field's 74 fine-grained permissio |
-| 2026-08-07 | eq-field | [#662](https://github.com/eq-solutions/eq-field/pull/662) fix(roles): vendor verify-pin.js's role list, log the silent-down |
-_Showing 15 of 28 · full record in [sessions/](sessions/)_
+_Showing 15 of 30 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
 - **`FIELD_PERMS_DRIFT_PAT` secret still needs creating** — fine-grained PAT, `Contents:read` on eq-field only, add as an eq-shell repo secret. Royce: "I can't do the secret now." Until it exists the drift-guard above stays a no-op (green, but not actually checking anything). _(added 2026-08-08)_
 - **No live click-through yet** on any of the Shell↔Field permission changes above — needs a real signed-in session, off-limits to this environment. _(added 2026-08-08)_
-- **Companion gap, not fixed** — `importManagersCSV` (`scripts/managers.js:498`) has the identical missing check, same Data page, same destructive write pattern. Spun off as its own task, not yet built. _(added 2026-08-08)_
 - **Worth a policy call**: at least 4 separate Claude Code sessions today independently hit the same shared, non-worktree `C:\Projects\eq-field` root checkout getting switched to a different branch mid-task by a concurrent session (confirmed via that repo's own `docs/reflection-log.md`). Each worked around it solo by moving to an isolated worktree. Repeated pattern today specifically — worth deciding whether concurrent eq-field sessions should default to worktrees rather than the shared root. _(added 2026-08-08)_
 - **EQ-SHELL-Y (ocr-licence 401)** — not an eq-shell code bug; the licence-photo-reading feature occasionally fails a permission check talking to eq-canonical. Someone already patched the underlying cause elsewhere (~5 Aug) and it's been quiet since, but needs a few more quiet days before marking resolved for good. _(added 2026-08-07)_
-- **The `_health` 404 (a separate keep-warm ping, same ~5-min cadence) is still open** — not part of this fix, not investigated. `_health` genuinely doesn't exist on ehow; low priority, nothing depends on it succeeding. _(added 2026-08-06)_
 - **Not click-tested live** — self-join bulk approve/decline ([PR #1257](https://github.com/eq-solutions/eq-shell/pull/1257)) needs a tenant with 2+ pending self-join requests to actually exercise the new checkbox/bulk-action UI on Staff → pending. _(added 2026-08-06)_
 - **Not click-tested live** — bulk-invite ceiling raise 50→150 ([PR #1259](https://github.com/eq-solutions/eq-shell/pull/1259)) needs a real >50-row invite batch; also watch the next scheduled `licence-expiry-scheduler` run for the employer-alert log line to confirm the new range-based claim path behaves. Royce: "will click test later." _(added 2026-08-06)_
 - **Build a Cards bulk-invite path** — Cards has none today, every account provisioned one at a time. Scope: a CSV-in/result-table-out screen mirroring `AdminBulkInvite.tsx`, backed by a batch version of Cards' own single-invite flow. _(added 2026-08-06)_
 - **Load-test the auth path against a synchronised login burst** (e.g. every site clocking on at 7am) — Supabase connection-pool headroom and Netlify Function concurrency under that pattern have never been measured either way. _(added 2026-08-06)_
-_…and 447 more · [eq/pending.md](eq/pending.md)_
+- **SSO/SCIM and state-scoped RBAC — explicitly excluded from the closure plan, not a gap to chase.** Royce's own call today: build if/when a real customer names either by name, not speculatively ahead of demand. Recorded so this isn't re-flagged as an oversight later. _(added 2026-08-06)_
+- **Not click-tested live** — `.msg`/`.eml` quote-attachment upload ([PR #1262](https://github.com/eq-solutions/eq-shell/pull/1262), merged `d494d9d5`) verified by typecheck/lint/build only. Royce (or the SKS user who hit the original error) to confirm a real Outlook email actually attaches and opens correctly from the quote's attachment list on `/sks/ops`. _(added 2026-08-06)_
+_…and 445 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -123,7 +123,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 3203 | 559 | 44 | 12 |
+| [EQ](eq/pending.md) | 3195 | 557 | 44 | 12 |
 | [SKS](sks/pending.md) | 404 | 82 | 0 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 409 | 37 | 2 | 1 |
@@ -144,4 +144,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-08 04:13 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-08 04:28 UTC._
