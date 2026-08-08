@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Index
 owner: Royce Milmlow
-last_updated: 2026-06-08
+last_updated: 2026-08-08
 scope: Operational support — entities, finance, legal, admin
 read_priority: standard
 status: live
@@ -26,6 +26,7 @@ Every canonical OPS file as a full URL — clickable from `/context/claude`:
 - [ops/financial-architecture.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/financial-architecture.md) — AHD design, Delta Elcom cliff, CDC PSI position
 - [ops/decisions.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/decisions.md) — append-only decisions log (ADR format) — covers all tiers
 - [ops/security-register.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/security-register.md) — live security findings register (P0/P1/P2), across all tiers
+- [ops/secrets-inventory.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/secrets-inventory.md) — names/owner/where-set map of every real secret across the EQ/SKS Netlify projects, no values
 
 ## Files
 
@@ -37,6 +38,7 @@ Every canonical OPS file as a full URL — clickable from `/context/claude`:
 | `decisions.md` | Append-only decisions (ADR format) — covers all tiers |
 | `financial-architecture.md` | AHD design, Delta Elcom cliff, CDC PSI position |
 | `security-register.md` | Live security findings register (P0/P1/P2) — check for open P0s before any cross-tier work |
+| `secrets-inventory.md` | Names/owner/environment/where-set for every real secret across EQ/SKS Netlify projects — no values |
 
 ## When to load OPS
 
