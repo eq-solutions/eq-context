@@ -66,7 +66,6 @@ _If this file is >48h old, the cron is broken._
 **eq-field:**
 - #670 v3.5.469 — Data tab: gate People/Sites/Schedule CSV import behind isManager
 - #669 fix(apprentices): Skills Passport mobile CSS selector was dead (v3.5.469)
-- #668 fix(mobile): 5 confirmed mobile.css bugs (v3.5.469)
 
 **eq-service:**
 - #688 chore(deps): bump @sentry/nextjs from 10.68.0 to 10.69.0
