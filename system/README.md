@@ -1,7 +1,7 @@
 ---
 title: SYSTEM Tier — Index
 owner: Royce Milmlow
-last_updated: 2026-08-03
+last_updated: 2026-08-08
 scope: The substrate itself — how the AI context system works
 read_priority: reference
 status: live
@@ -17,6 +17,7 @@ Files that run the substrate, not the work. Read by AIs to understand
 Every canonical system file as a full URL — clickable from `/context/claude`:
 
 - [system/TODAY.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/TODAY.md) — session focus filter (always loaded first, every session). **Goals currently UNSET** — see failures.md F3; don't assume it still carries the retracted Q3 2026 goals.
+- [system/punch-list.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/punch-list.md) — capped (~5-6 item) active work queue, curated by Royce, read at session start next to TODAY.md; separate from the full tier `pending.md` backlog
 - [system/infrastructure.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/infrastructure.md) — Supabase project IDs, Cloudflare, Netlify, Beelink, GitHub orgs
 - [system/architecture.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/architecture.md) — tech architecture (Cloudflare, Supabase, substrate, single-file HTML pattern)
 - [system/lessons.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/lessons.md) — tech gotchas (append-only)
@@ -46,6 +47,7 @@ Every canonical system file as a full URL — clickable from `/context/claude`:
 | `md-style.md` | MD writing standard (slimmed) |
 | `onboarding.md` | First-time tutorial |
 | `TODAY.md` | Session focus filter — goals currently UNSET |
+| `punch-list.md` | Capped active work queue, curated by Royce — separate from tier `pending.md` |
 | `failures.md` | Guard-ratchet failure ledger |
 | `worktree-registry.md` | Active/stale git worktrees |
 | `incident-claims.md` | Same-day claim lock so concurrent sessions don't duplicate investigation of the same flagged finding |
