@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-08-06
+last_updated: 2026-08-08
 scope: Done items rotated out of ops/pending.md nightly by scripts/rotate_pending.py to keep the live doc scannable. Nothing here is actionable — pure historical record (also covered in changelogs and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -283,5 +283,12 @@ exists," it's "why didn't the guard that already existed fire."
 
 - [x] **Code fix shipped and live**: `people?select=*` → explicit column list excluding `pin`. sks-nsw-labour PR [#73](https://github.com/eq-solutions/sks-nsw-labour/pull/73) (v3.10.106, `c846374`), merged by Royce, live-verified via Netlify (`production`, deploy `ready`). Neither real login path touched — main gate uses the server-side `verify-pin` function, staff-timesheet gate does its own scoped fetch.
 - [x] **DB hardening closed, live-verified**: revoked anon/authenticated EXECUTE on 3 unused RPCs (`verify_staff_pin`, `trigger_shift_events`, `bump_rate_limit` — confirmed unused by the app, Netlify functions, and all 7 `pg_cron` jobs before touching), pinned `search_path` on those 3 plus `eq_field_shift_payload`/`incidents_set_updated_at`. Royce ran the SQL himself — blocked from Claude Code by the "modifying security settings" classifier, same as SEC-12/SEC-18.
+
+---
+
+## eq-context: shared checkout (`C:\Projects\eq-context`) needed a manual sync — RESOLVED (2026-08-05) (rotated 2026-08-08)
+
+- [x] **Closed.** A later session picked this up directly: the shared checkout had drifted further by then (4 local-only "session close" commits, `git cherry origin/main HEAD` confirmed genuinely unpushed, not just under a different SHA). Reconciled in a fresh isolated clone in the scratchpad, cherry-picking each of the 4 onto current `origin/main` one at a time. Real conflicts hit on nearly every file (changelog/pending append-point clashes, session-log filename collisions) — resolved by hand, checking actual content each time rather than blindly taking one side. **Key finding: every one of the 4 commits' genuine unique content was already independently present on `origin/main`** — the same underlying sessions had their own later "redo after a lost-update race" pushes that got the content there through different commit objects first. The reconciled scratch branch ended up with **zero diff** against `origin/main` — nothing was ever actually at risk, it just took a different path there. `git cherry` kept showing the 4 as `+` throughout (patch-ID comparison, not final-content comparison — a known blind spot, not a sign of danger; confirmed via direct tree-diff instead). Also found and removed 3 genuinely-redundant session-log duplicates (`sessions/2026-08-05-k/-l/-m.md`) that the cherry-picks would have re-introduced as stale early drafts of the same sessions' own later, fuller close-outs already at `-e`/`-f`/`-h`.
+- [x] **Shared checkout brought back in line with `origin/main`.** Since content-safety was verified directly (not assumed), and the working tree was confirmed clean immediately before, ran the exact fetch + `reset --hard` this item already flagged as the safe fix — this time it went through without the earlier permission-classifier block. `git status` now shows clean, up to date, zero divergence; `git cherry origin/main HEAD -v` returns empty.
 
 ---

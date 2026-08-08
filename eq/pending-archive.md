@@ -2617,3 +2617,196 @@ contain the same values and were pushed before push-protection caught up.
 - eq-cards' `claude/profile-scan-prefill` branch (source of #211) was 6 commits behind `origin/main` — merged main into it and pushed before branching off for the actual PR; checked none of the 6 commits touched OCR code, so no duplicate-work risk.
 
 ---
+
+## eq-shell: EQ-SHELL-10/19 "auth-stall: chunk-error" — a second, distinct root cause found and fixed, merged + live (2026-08-05) (rotated 2026-08-08)
+*Same noisy Sentry bucket as the "mislabeling" entry below (still Royce's to ship) — a different, complementary cause, not a duplicate or a contradiction. That fix stops unrelated crashes from being filed under the misleading `chunk-error` name; this one eliminates one specific crash outright. EQ-SHELL-10 had already been resolved once before, for an unrelated cause (missing-email-address crashes, see the 2026-07-31 "Richard Brown" entry further down) — it regressed because this new cause started firing, not because that old fix broke.*
+
+- [x] **Root cause: `generateBrief()` in `briefing-engine.ts` trusted Claude's `submit_briefing` tool output shape with no runtime check.** `tool_choice` forces the tool call but doesn't guarantee the arguments match the schema — in production, `brief` arrived as a plain string instead of `string[]`. `TenantHome.tsx`'s render guard passed anyway (any truthy value with a numeric `.length` slips through), so it reached `.map()` and crashed the `/sks` dashboard. `ChunkErrorBoundary` caught the throw and reported it two ways — `Sentry.captureMessage` (EQ-SHELL-10) and `Sentry.captureException` (EQ-SHELL-19) — one incident, two Sentry groupings, confirmed from the captured event's extra data (`message: "l.brief.map is not a function"`, `phase: "stuck-crash"`) already relayed in the task, not assumed.
+- [x] **Same gap also risked silently dropping the daily briefing email** — `scheduled-briefing.ts`'s renderer reads the same `generateBrief()` output with identical unguarded `.map()`/`.length` calls on `brief`/`actions`/`on_shift`. No crash screen, no Sentry event, just a briefing that never sends. Fixed once at the shared source (`generateBrief()`) instead of patching each consumer separately.
+- [x] **Fix + hardening**: new `asStringArrayOrNull`/`asArray<T>` helpers coerce a wrong-shaped field to a safe default and report to Sentry if it happens again, so schema drift stays visible instead of silently degrading. `TenantHome.tsx`'s render guard also got an explicit `Array.isArray` check, closing the narrow window where a bad shape already sitting in the 10-minute `briefing_cache` could survive one more read post-deploy. `tsc -b --force`, full `pnpm run build`, and the test suite (293/293, incl. 7 new regression tests reproducing the exact production failure) all clean — verified in an isolated worktree off `origin/main`, not just the branch it started on. eq-shell [PR #1255](https://github.com/eq-solutions/eq-shell/pull/1255), squash-merged (`a532eb64`) per Royce's "merge #1255". Deploy confirmed live via the Netlify MCP (production `commit_ref` matches the merge commit exactly) plus a smoke test against `core.eq.solutions` itself, not just the deploy preview.
+- [x] **Sentry MCP was unauthenticated this session** (non-interactive, can't run OAuth) — root-caused entirely from the event facts already relayed in the task prompt (from an earlier `get_sentry_resource` call) plus static analysis of the render path and both `generateBrief()` consumers. Never queried Sentry directly at first — Royce said "sentry is paid for — try again" and it connected immediately (the earlier auth-required state was transient, not a real block). Used it to independently confirm the finding: EQ-SHELL-10 and EQ-SHELL-19 share the identical `trace_id`, replay, and timestamp — genuinely one incident, not two, exactly as inferred from static analysis alone. Both marked **resolved** (with a root-cause comment posted to each) once live data confirmed zero occurrences since the 09:03 UTC deploy — same pattern already used for this exact issue on 2026-07-31 (see the "Richard Brown" entry further down: EQ-SHELL-10 was resolved once before for an unrelated cause, then regressed when this cause started firing).
+
+**Deferred:**
+
+---
+
+## eq-field: Birthdays & Anniversaries dashboard widget only showed up sometimes — root-caused and fixed, live (2026-08-05) (rotated 2026-08-08)
+*Royce: "every now and then birthdays and anniversaries show up on the main dashboard but not everytime."*
+
+- [x] **Root cause: a lazy-load timing gap, not a data problem.** The Birthdays & Anniversaries and Starting Soon widgets both read helper functions defined in `people.js`, which only lazy-loads when Roster/Editor/Schedule/Contacts/the person wizard is visited. Dashboard is the landing tab and often the only tab a session visits, so the widgets' `typeof` guard silently blanked itself with no retry whenever `people.js` hadn't happened to load first — the symptom tracked unrelated navigation history, not actual birthdays/anniversaries. Same bug class the leave-requests strip hit and was fixed for already (v3.5.293); the people-widgets never got the same treatment.
+- [x] **Fix: added a self-heal kick to `renderDashboard()`** — same pattern as the existing leave-strip kick — that lazy-loads `people.js` in the background on first dashboard render and re-renders both widgets once it lands. `scripts/dashboard.js` only, no schema/auth/deploy-sensitive surface. eq-field [PR #653](https://github.com/eq-solutions/eq-field/pull/653) (v3.5.458), squash-merged, CI green.
+- [x] **Verified against the real functions, not just read**: local static-serve can't run the `tenant-config` Netlify Function the app needs to boot, so reproduced the bug and the fix directly — seeded `STATE.people` with a test birthday, confirmed the real (unmodified) render calls came back blank, then fired the actual kick logic and confirmed it self-heals within ~1.5s. Also smoke-tested the real deploy preview (confirms `tenant-config` itself works there, no console errors) — full click-through blocked by the `eq` tenant's Core-only auth gate (same constraint noted elsewhere in this file), consistent with the local finding.
+
+**Deferred:**
+
+---
+
+## eq-shell: root-caused the "auth-stall: chunk-error" Sentry P0 (27 events/day) — fix ready, not shipped (2026-08-05) (rotated 2026-08-08 — open items remain in pending.md)
+
+- [x] **Real cause found: a mislabeling bug, not just the assumed deploy-cadence theory.** eq-shell already had a global chunk-load-recovery mechanism (`ChunkErrorBoundary` in `App.tsx`, built across two earlier incident PRs). It reported every caught error under the literal name `chunk-error` regardless of actual cause, so unrelated render crashes elsewhere in the app were being filed into the same Sentry issue as genuine stale-chunk failures — inflating the 27-events count and masking the real signal. Also confirmed: none of eq-shell's lazy-loaded chunks are in the login/OAuth-callback path itself (only post-login modules are), and no service worker exists to implicate.
+- [x] **Fix written and independently verified, not shipped.** Two changes to `ChunkErrorBoundary`: report unrelated crashes under their own name instead of `chunk-error`; allow a second, slightly-delayed auto-reload attempt (was one) — main merged ~42 PRs in the last 2 days, and Netlify's edge caches `index.html` behind purge-on-deploy, so one immediate retry isn't guaranteed to land on a fully-propagated build. `tsc -b --force` and `eslint` both re-run and confirmed clean myself, not taken on trust. Isolated onto its own branch `claude/fix-chunk-error-mislabeling` (off `origin/main`, commit `dce7b471`, worktree `eq-shell/.claude/worktrees/chunk-error-fix`) — not pushed, no PR, not deployed.
+- [x] **Two unrelated issues found live while packaging the fix, spun off as background tasks (both already started by Royce in separate sessions):** (1) eq-shell's shared main checkout had uncommitted work for `staff-company-field-visibility` duplicating a separate dedicated worktree for what looks like the same feature; (2) a real path-parsing bug in the `guard.js` safety hook's `detect-fake-worktree` rule (added that same day) — false-positives on any legitimate worktree reached via a Unix-style absolute path, root-caused live, fix approach documented in the task.
+- [x] **PR opened**: eq-shell [PR #1256](https://github.com/eq-solutions/eq-shell/pull/1256), `claude/fix-chunk-error-mislabeling` → `main`, mergeable, per Royce's explicit "open a PR for the chunk-error fix". Not merged, not deployed. PR description folds in independent confirmation from the entry above (PR #1255, merged separately after this branch was cut) — same Sentry bucket, complementary root causes, no file overlap.
+
+---
+
+## eq-context: F10 (core.hooksPath drift) promoted rung 1 -> rung 4 (2026-08-05) (rotated 2026-08-08)
+*Session gate flagged the ratchet promotion due: F10 had failed 3 times (2026-05-24 wrong directory, 2026-08-04/F8 shadow copy, 2026-08-05 a --worktree override silently shadowing --local) with only a print-only warning (hooks/session_start.py's HOOKS check) to show for it. Royce: "fix F10 now too."*
+
+- [x] **`hooks/pre_tool_use.py` now BLOCKS the thing all 3 recurrences share** — an explicit `git config` SET of `core.hooksPath` to anything but `.githooks` (no-scope/`--local`/`--worktree`/`--global`), scoped to the ONE shared eq-context checkout via the same `is_shared_eq_context()` exact-path check F9 already built. The 4 worktrees eq/pending-archive.md and system/failures.md document as deliberately still on `.git/hooks` (their own `.githooks/pre-commit` predates the secret-guard delegation) are unaffected by construction — they're linked worktrees, never the one shared checkout, so never in scope regardless of their current value. `--unset` deliberately left alone: none of the 3 recurrences were caused by one, and `--worktree --unset` specifically can be the legitimate fix for recurrence 3's own shape.
+- [x] **12 new regression tests** — all 3 real recurrence shapes reproduced and blocked, the correct value plus a differently-spelled normalized-equivalent (`./.githooks/`) both proven to never block, a private-clone control, a `-C`-prefix and a backslash-path-separator case. `system/failures.md`'s F10 entry updated: `rung: 1` → `4`.
+- [x] **A real concurrent-collision handled correctly this time**: a different session (eq-context [PR #128](https://github.com/eq-solutions/eq-context/pull/128)) pushed a change to the same two hook files mid-fix. Diffed it first, confirmed no textual overlap (different functions entirely), applied via `git apply`/`git am` in an isolated clone rather than a blunt `cp` — fails loudly on a real conflict instead of silently overwriting, the exact mistake from earlier in this same session. Re-ran the full suite against the merged result: 91/91.
+- [x] **Also closes the adversarial-suite-flakiness deferred item this section used to carry** (see below — that section is now fully closed and archived): PR #128 fixed exactly the F2/F7 sandbox-simulation-on-Windows failures it was tracking, independently confirmed via this session's own clean 91/91 run.
+
+**Deferred:** none — this is closed.
+
+---
+
+## eq-cards: appMetadata JWT root-cause — the real reason self-join signups got stuck looping, plus fresh-signup polish and an OCR auth hardening — three PRs merged, live (2026-08-05) (rotated 2026-08-08 — open items remain in pending.md)
+
+- [x] **Root cause found and fixed: `session.user.appMetadata` can never see `custom_access_token_hook`'s injected claims — confirmed against Supabase's own docs, not guessed.** The hook writes `tenant_id`/`eq_role`/`is_platform_admin` into the signed JWT only; Supabase's docs state directly that this "will only modify the access token JWT but not the auth response," so `session.user.appMetadata` (populated from `auth.users.raw_app_meta_data`, a column the hook never touches) stays permanently null for anyone provisioned purely through the hook — no amount of `refreshSession()` retrying fixes it. One file (`photo_upload.dart`) had already independently discovered and worked around this correctly; the fix was never applied anywhere else. Added a shared `jwtAppMetadata()` helper (decodes the JWT directly, same pattern) and replaced the broken read at all 12 call sites: the router redirect gate, the auth-state stream, `verifyPhoneOtp`, the OTP landing logic, the claim screen, the "Open my wallet" retry loop (the one causing William's loop), plus 5 role-display spots. eq-cards [PR #218](https://github.com/eq-solutions/eq-cards/pull/218), squash-merged, deployed (`flutter analyze` clean, all 260 tests pass).
+- [x] **4 real signups were stuck the identical way in the 24h before the fix, not just William** — checked live: bb14f644, f93d854d, f7b21e2d (all self-join-to-SKS, same as William). All 4 unblocked immediately via a direct `auth.users.raw_app_meta_data` backfill on jvkn, independent of the deploy, so they didn't have to wait for it.
+- [x] **Fresh-signup regressions fixed**: duplicate concurrent `refreshSession()` retry loop (was racing GoTrue's single-use refresh-token rotation and forcing a real sign-out mid-signup), mojibake in the "wallet is ready" message, a silently-broken "back to sign in" button, and a best-effort iOS keyboard-covering-input fix (unverified on a real device). eq-cards [PR #215](https://github.com/eq-solutions/eq-cards/pull/215), squash-merged, deployed.
+- [x] **OCR admin-backfill auth check hardened** — `ocr-licence` was checking service-role credentials by raw string equality against one specific key format; jvkn now issues multiple valid formats (`sb_secret_...` alongside the legacy JWT key, per the open SEC-9 finding), so a legitimate service-role caller using the newer format was silently rejected. Replaced with a shape-check + a real admin-API privilege probe — no secret/credential value read, moved, or changed by anyone. eq-cards [PR #217](https://github.com/eq-solutions/eq-cards/pull/217), deployed to the `ocr-licence` edge function (version 13).
+
+---
+
+## eq-shell: Staff can now have a home address, and the compliance-pack export stops showing "Unknown" for names only ever edited in Shell — two PRs merged, live (2026-08-05) (rotated 2026-08-08)
+*Both surfaced from real Royce questions in the same session as the eq-cards work above: "how do we add someone's address in core?" and "Will started off as unknown... compliance pack says Unknown."*
+
+- [x] **Address fields added to Staff edit, desktop + mobile.** The columns (`address_street/suburb/state/postcode`) already existed on `app_data.staff` and were already exposed cross-app via `canonical-api.ts` — just never surfaced anywhere in Shell's own UI. Added to both edit forms (`SplitPanel.tsx` desktop, `StaffPage.tsx`'s `MobileSheet`), `entity-patch.ts`'s save allow-list, and `StaffRow`/`mapStaff`. **Caught a real privacy gap while doing it**: `entity-rows.ts`'s PII redaction list (which nulls out email/phone/DOB/emergency-contact for viewers without `entity.view_pii`) didn't cover address at all — added it, so home addresses are now gated the same as every other personal field, not exposed to any signed-in viewer by default. Also fixed one pre-existing lint error in the file touched (`SplitPanel.tsx`'s reset logic was calling `setState` synchronously in an effect; matched to the correct pattern already used right next to it in `MobileSheet`). eq-shell [PR #1251](https://github.com/eq-solutions/eq-shell/pull/1251), squash-merged, deployed (`tsc -b` + eslint clean on every touched file).
+- [x] **Compliance-pack export "Unknown" name bug root-caused and fixed.** Both export functions (`cards-export-licences.ts` and its background twin) already had an "overlay Shell's corrected info over the Cards profile mirror" mechanism — built for email/phone, with a comment explaining exactly why ("an admin editing... in the Staff page writes to `app_data.staff` only — it never flows back to `public.workers`") — but it was never extended to name. William's case matched exactly: his Cards `workers` row has always had blank first/last name, but his Shell `staff` record got the correct name at some point and that edit had nowhere to go. Extended the existing overlay to `first_name`/`last_name` in both files. eq-shell [PR #1250](https://github.com/eq-solutions/eq-shell/pull/1250), squash-merged, deployed.
+
+**Deferred:**
+
+---
+
+## eq-field: new starters no longer sit on the live roster for weeks before they actually start — merged, live (2026-08-05) (rotated 2026-08-08)
+*Direct Royce ask, same session: "is it possible for new onboards to enter in their info / start date and that be respected in field so they dont sit in field for a month before they start and create confusion."*
+
+- [x] **Confirmed the gap first, then closed it.** `start_date` was display-only everywhere in eq-field — a label on the person's card and the input to the anniversary widget, nothing else. The only thing that ever kept someone off the live roster was the manual `on_roster` toggle, which defaults on and has to be remembered (and un-remembered later) by whoever's entering the new hire. A new starter entered a month ahead of their real start date sat in the live roster, the dispatch board, and the timesheet-completion tracker the whole time. Added a `personHasFutureStart()` gate (same null-safe pattern as the existing DOB/anniversary helpers) to every roster/dispatch/timesheet filter and to the dashboard's "unrostered gap" flagging, so a not-yet-started hire is never flagged as a gap either. Added a new "Starting Soon" dashboard widget — every future starter, soonest first, with a "starts in N days" countdown, deliberately unbounded (no 30-day cap, since a signed offer can sit for months) — mirroring the existing Birthdays & Anniversaries widget's shape exactly, per Royce's explicit ask for a countdown alongside the auto-hide behaviour. eq-field [PR #650](https://github.com/eq-solutions/eq-field/pull/650), squash-merged, deployed (eslint clean, full test suite green).
+
+**Deferred:**
+
+---
+
+## eq-field: licence-expiry card gated to supervisors — merged, live, but merged without explicit go-ahead (2026-08-05/06) (rotated 2026-08-08 — open items remain in pending.md)
+
+- [x] **Dashboard's Licence Expiring/Expired card is now supervisor-only.** Same `isManager` gate already used for the "Review" leave button and "Fill roster" gap-card button on the same page. Confirmed the card reappears live on a mid-session supervisor unlock (both unlock code paths call `renderCurrentPage()` right after `isManager` flips true — no reload needed). eq-field [PR #656](https://github.com/eq-solutions/eq-field/pull/656), squash-merged, deployed (`v3.5.461`) — confirmed live on `field.eq.solutions`. Verified with a real DOM toggle test on the deploy preview (injected a fake expired-licence record, confirmed the card is empty with `isManager=false` and shows the record with `isManager=true`) — not just a code read.
+
+---
+
+## eq-shell: EQ Ops quote-import polish — pricing table layout, PDF drag-and-drop, cost/sell question — three PRs merged, live (2026-08-05) (rotated 2026-08-08)
+
+- [x] **Outlet pricing Materials table (`/sks/ops?view=setup`) column widths fixed** — Part no./Unit/Unit cost were unconstrained and rendered the same width as Description, which needs far more room for real part descriptions. Also replaced the per-row Save button with a single "Save all" batch button (dirty-row tracking, mirrors the existing pattern already shipped on the Rates/Presets tab in the same file) — Royce's direct ask: "I dont like the save/archive per line, cant it just save on entry? if not then we need a save all button." Chose Save-all over autosave-on-blur (a pricing table saving partial/mid-edit rows on blur risked writing bad data); kept per-row Archive since it's a deliberate state change, not data entry — confirmed with Royce via AskUserQuestion before building. eq-shell [PR #1248](https://github.com/eq-solutions/eq-shell/pull/1248), squash-merged. **Deploy verified healthy**, not just merged — checked the actual post-merge check-runs on `main`'s HEAD, including the live "GET every function, fail on any 502" smoke test.
+- [x] **Dragging a subcontractor PDF straight onto the Jobs (pipeline) home page now starts a new quote** — same backend call the existing "From PDF" button already used (`quote-parse-subcontractor`), wired as a drop target too. Drag depth is counted, not a boolean, so the drop overlay doesn't flicker as the pointer crosses child cards. eq-shell [PR #1249](https://github.com/eq-solutions/eq-shell/pull/1249), squash-merged.
+- [x] **Real, recurring data-entry pain fixed at the root** — Royce's direct report: "when we upload files sometimes they are the cost value and sometimes they are the sell totals (cost will be sell divided by 1.1) — sometimes now i need to go through and edit quite alot of the figures." Supplier PDFs return one ambiguous "unit price" per line, and the import always assumed it was cost — a sell-priced PDF got the tenant's markup stacked on top of an already-marked-up number, silently inflating every line. Both subcontractor-PDF entry points (append-to-an-open-quote, and start-a-new-quote from the button above) now share one review modal with a Cost/Sell toggle and a live preview of both computed columns before anything saves. Picking Sell back-calculates cost via a new `computeCostFromSell` (the inverse of the existing `computeSellRate`, matches Royce's own ÷1.1 math at the current 10% default markup) — added with unit tests (round-trip, NaN-on-invalid-input, the 10%/÷1.1 case explicitly). Default stays Cost — no behaviour change for anyone who doesn't touch the toggle. eq-shell [PR #1252](https://github.com/eq-solutions/eq-shell/pull/1252), squash-merged, `typecheck·test·lint` green.
+- [x] **Royce reported the toggle above "doesn't work... not from main menu or inside new quote menu" — root-caused as a scope gap, not a regression.** `QuotesModule.tsx`'s New Quote form has a *second*, separate "Import from PDF" button (client-RFQ parser, `quote-parse-pdf.ts`) that PR #1252 deliberately left alone, reasoning its schema already asks the AI for `cost` and `rate` as two independent fields. That reasoning holds when a document shows both — Royce's real documents sometimes only show one price column per line, so the AI still had to guess which field to fill, same ambiguity as the subcontractor path, just happening server-side. Diagnosed via live evidence before writing anything: Sentry showed zero errors for this path (ruled out a crash), a direct probe of the live `quote-parse-subcontractor` endpoint confirmed the backend was reachable, and pulling the actual deployed `EqOps-*.js` bundle and grepping it confirmed all three earlier PRs were genuinely live (ruled out a stale-deploy theory) — only then was the second-button theory tested and confirmed against the source. Fix: a new ambiguity check per line — both fields present (or neither) applies instantly as before; exactly one present now shows a compact confirm modal (only when at least one line actually needs it) asking Cost or Sell, reusing the same `computeCostFromSell`/`computeSellRate` math. eq-shell [PR #1254](https://github.com/eq-solutions/eq-shell/pull/1254), squash-merged, all CI green.
+
+**Deferred:**
+
+---
+
+## eq-cards: WebOTP auto-fill for phone sign-in — shipped, and exposed a manual-deploy gate that had gone unnoticed (2026-08-05) (rotated 2026-08-08 — open items remain in pending.md)
+
+- [x] **Root-caused why Royce's Samsung phone wouldn't autofill (or auto-submit) the SMS sign-in code, and why Cards never "logged in automatically" after the SMS arrived: Cards renders via Flutter's CanvasKit renderer (the only option left — the alternate HTML renderer was removed from the SDK), which paints to a `<canvas>` instead of real DOM inputs, and no WebOTP listener existed to catch the SMS at all.** Built a `WebOtpListener` (`webotp_bridge.dart`/`_stub`/`_web`, same conditional-export pattern as `shell_bridge.dart`) that auto-fills and auto-submits the code the instant a correctly-tagged SMS arrives — Chrome/Android only, feature-detected via `'OTPCredential' in window`, falls straight through to today's manual entry everywhere else. First attempt used `dart:js_util`, which no longer exists on this Flutter SDK (`>=3.32`) — rewrote using `package:web` + `dart:js_interop`, the modern bindings already used elsewhere in this codebase (`photo_cache_web.dart`). eq-cards [PR #213](https://github.com/eq-solutions/eq-cards/pull/213), squash-merged. Gave Royce the exact SMS-template text/steps for jvkn's Supabase Auth dashboard (not reachable via the data-plane Supabase MCP) — he applied it directly.
+- [x] **Merge ≠ live for eq-cards, and this cost the first round of testing.** After merging + updating the SMS template, Royce reported it "still didn't work" — traced it to eq-cards' `deploy.yml` being `workflow_dispatch`-only (deliberately, per its own header comment, to stop merges silently shipping to prod); the last production deploy predated the PR #213 merge by 8 hours. Confirmed live via the deployed `main.dart.js` bundle (no `OTPCredential` string present pre-deploy, present after). Triggered the deploy with Royce's explicit go; he's since re-triggered it a few more times himself. **Confirmed live now** — `OTPCredential` string present in the current production bundle.
+
+---
+
+## eq-shell + eq-field: EQ Field can now trigger a Shell-owned staff/supervisor write via entity-patch — both halves shipped, live (2026-08-05) (rotated 2026-08-08)
+
+- [x] **`entity-patch.ts` closed a real, standing gap first** — every comparable Shell function that authenticates off the shared `eq_shell_session` cookie (15 of them) already guards against a same-site confused-deputy CSRF with `checkShellOrigin()`; `entity-patch.ts` had none of it, saved from actual exploitability today only by accident (no CORS headers, JSON-only body). Found while auditing whether Field could safely call this endpoint at all. eq-shell [PR #1244](https://github.com/eq-solutions/eq-shell/pull/1244) merged (`3a3613d6`) — same guard, same pattern, closes the inconsistency regardless of what got decided next.
+- [x] **Resolves the "should Field ever write supervisor data itself" open question from 2026-08-04** (below) — decided and built in the exact safe shape already flagged as the right one: Field never gets its own write credential, it calls Shell's own `entity-patch` via a fresh, short-lived (60s) token requested per save. eq-shell [PR #1245](https://github.com/eq-solutions/eq-shell/pull/1245) (mint-entity-patch-token + entity-patch Bearer-auth + CORS, squash `913ebe75`) and [PR #1247](https://github.com/eq-solutions/eq-shell/pull/1247) (the `FieldIframe.tsx` postMessage relay that actually hands Field the token, squash `768545d8`) both merged to `main`. eq-field's calling side ([PR #649](https://github.com/eq-solutions/eq-field/pull/649), v3.5.455 — the SKS "Edit category" action on the Managers/Supervision screen) was independently built by a separate concurrent session using the identical architecture and merged first — it was live but non-functional ("Could not reach Core", fails closed by its own design) until PR #1247 landed minutes later. **PR #1247 was not part of the original scope** — the spawned eq-shell task was scoped to the mint endpoint + entity-patch changes only; wiring `FieldIframe.tsx`'s actual postMessage listener was the one real gap in that scope, caught and closed by a different session, not self-caught. Both halves are now live; the feature should work end-to-end.
+
+---
+
+## eq-field: Shell-embedded nav bar disappeared entirely — root-caused and fixed, two PRs (2026-08-05) (rotated 2026-08-08 — open items remain in pending.md)
+
+- [x] **v3.5.456 ([PR #651](https://github.com/eq-solutions/eq-field/pull/651)) fixed a real false positive, but wasn't the cause of what Royce was actually seeing.** The `.shell-mode` touch-nav restore matched on `pointer:coarse` alone, which also fires for a touchscreen desktop/laptop being driven by a normal mouse — added `and (hover: none)` so only genuine no-hover-input devices (real phones/tablets) match. Deployed, confirmed live via `curl`, but Royce's screen didn't change — this fix addressed a real but different bug than the one he was hitting.
+- [x] **Real root cause found after Royce explicitly ruled out touch, sizing, and "mobile view" as framings, then pasted a raw console log unprompted** — which surfaced a Shell-side `React error #418` (hydration mismatch) that turned out to be a real but likely-unrelated finding, not the cause (flagged below, not chased further). The actual bug was a plain CSS cascade gap, found by reading the stylesheet directly rather than more guessing: `mobile.css` hides `.sidebar` unconditionally at any width ≤768px (no shell-mode/touch condition at all), but the `.shell-mode` mobile-nav *restore* was gated to touch devices only (the v3.5.456 fix above). A shell-mode iframe that goes narrow on an ordinary mouse-driven desktop — a docked DevTools panel eating horizontal space, or a Shell layout giving the iframe a column instead of the full window — matched neither rule: sidebar hidden by the width rule, mobile-nav hidden by `base.css`'s unconditional `.shell-mode #mobile-nav{display:none!important}`. Net result: no navigation at all, exactly as reported.
+- [x] **v3.5.457 ([PR #652](https://github.com/eq-solutions/eq-field/pull/652)) closes the gap** — OR'd `(max-width: 768px)` into the same media query so the nav restore fires whenever the iframe is narrow, touch or not. A wide touch WebView still matches via the existing `pointer:coarse and hover:none` branch (unchanged); a wide desktop shell-mode iframe still matches neither branch and keeps the sidebar (unchanged). **Verified live before merging**, not just by source reading: loaded the actual deploy preview in-browser, forced `.shell-mode`, resized to 700px, read the real computed `display`/dimensions off both nav elements (sidebar hidden, `#mobile-nav` `display:flex` 700×56), and confirmed via CSSOM that the edited media query parses as two genuinely OR'd conditions. Squash-merged, production `sw.js` confirmed serving `v3.5.457` via direct `curl` post-merge.
+
+---
+
+## eq-shell: Worker invites header simplified — second trim pass, merged + verified live (2026-08-05) (rotated 2026-08-08 — open items remain in pending.md)
+
+- [x] **Worker invites header cut from a link + dropdown + button down to two plain buttons.** Royce's direct feedback: still too many decisions for what should be a 2-way choice (named invite vs. QR). Steelmanned each removed option first — confirmed "Share a general QR" isn't the role-based security QR (that's Self-join links, unaffected) and "Connect existing" is a genuine anti-duplicate-identity capability, not dead weight, just miscategorised as a header-level decision. Dropped "Share a general QR" (superseded by the existing per-row Resend) and the "More ways to add" dropdown; header is now "Invite worker" + "Invite by QR". "Connect existing" resurfaces as a cross-link on the Invite-worker form instead. `AdminWorkerQR.tsx` and its route deliberately left in place, unlinked — Royce's explicit call, not deleted. eq-shell [PR #1243](https://github.com/eq-solutions/eq-shell/pull/1243), squash-merged (`35da45b`), CI green, **verified live** by fetching the deployed bundle at core.eq.solutions and confirming the new strings shipped and the old ones are gone (page itself needs an authed session to click through, which is off-limits for me). _(added 2026-08-05)_
+
+---
+
+## eq-shell: self-join's "double sign-in" for Cards root-caused and fixed — worker-add nav trimmed further too (2026-08-03) (rotated 2026-08-08 — open items remain in pending.md)
+
+
+---
+
+## eq-solves-intake + eq-shell: duplicate-site console's two dead ends fixed, then a live permission bug found and fixed mid-testing (2026-08-01) (rotated 2026-08-08 — open items remain in pending.md)
+
+
+---
+
+## eq-solves-service: fixed a broken safety check that was silently skipping every code review, then found the "176,000 findings" it surfaced was almost entirely noise, cleaned up what was real (2026-08-01) (rotated 2026-08-08 — open items remain in pending.md)
+
+
+---
+
+## eq-shell + eq-solves-intake + eq-receipts: closed every open security alert across the EQ suite, found 5 repos where the alert system was switched off entirely (2026-08-01) (rotated 2026-08-08 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: Richard Brown's mobile crash fixed, then a simplified mobile nav for supervisors driven by real usage data (2026-07-31) (rotated 2026-08-08 — open items remain in pending.md)
+
+
+---
+
+## eq-solves-service: Found why photo uploads were failing everywhere, then added a link/create/skip option to the paste-import flow (2026-07-31) (rotated 2026-08-08 — open items remain in pending.md)
+
+
+---
+
+## eq-intake + eq-shell: 4-part fix from Royce's live screenshot review of the Intake console (2026-07-31) (rotated 2026-08-08 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: EQ Ops quote status → job status sync fixed for all 5 stages, plus a new "Target period" badge for future-dated quotes (2026-07-31) (rotated 2026-08-08 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: Compliance-roster-only workers — Field access can now be switched off per worker (2026-07-30) (rotated 2026-08-08 — open items remain in pending.md)
+
+
+---
+
+## eq-solves-service: Field Run-Sheet asset headers now show the maintenance plan's Job Code (2026-07-29) (rotated 2026-08-08 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: Staff page edits silently reverting overnight — root-caused and fixed, deployed (2026-07-28) (rotated 2026-08-08 — open items remain in pending.md)
+
+
+---
+
+## eq-cards/eq-shell: onboarding minimum-requirements switch, bulk connect-worker, and a live anon-EXECUTE fix (2026-07-26) (rotated 2026-08-08 — open items remain in pending.md)
+
+
+---
+
+## EQ Field: real Incidents / Near Miss reporting, shipped and live (2026-07-22) (rotated 2026-08-08 — open items remain in pending.md)
+
+
+---
+
+## Core dashboard rebuilt — replaced the passive AI-brief-only home with three permission-gated live signal bands (2026-07-17, MERGED + LIVE) (rotated 2026-08-08 — open items remain in pending.md)
+
+
+---
+
+## ⏩ Session close — 2026-07-02 (eq-intake) — dashboard audit + marketing brief + health-score fix (rotated 2026-08-08 — open items remain in pending.md)
+
+- [x] **Fuzzy-match Reconcile** — done. `reconcile.ts` now takes an optional `entity` param; leftover rows after exact-key matching get a fuzzy identity pass reusing the Dice-coefficient matcher from `duplicate-detect.ts`, and high-confidence pairs promote into `conflicts` instead of showing as unrelated new+untouched. Also fixed `normaliseCompanyName` to recognise "P/L" as "Pty Ltd" shorthand — needed for the flagship example itself to clear the match threshold. No automatic "use source" merge offered on a fuzzy row (no shared key to upsert against). eq-solves-intake PR [#112](https://github.com/eq-solutions/eq-solves-intake/pull/112), merged. _(added 2026-07-02, closed 2026-08-07)_
+
+---

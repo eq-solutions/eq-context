@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-06
+last_updated: 2026-08-08
 scope: Operational support to-do list — Webb, infra, substrate
 read_priority: standard
 status: live
@@ -51,13 +51,6 @@ entry of its own — the exact gap F9's own note warns about elsewhere in that f
   actually runs unprompted, unlike a lessons.md entry. Spawned as a background task chip
   (self-contained prompt, file paths included) so it's one click rather than a dangling
   note. _(added 2026-08-05)_
-
----
-
-## eq-context: shared checkout (`C:\Projects\eq-context`) needed a manual sync — RESOLVED (2026-08-05)
-
-- [x] **Closed.** A later session picked this up directly: the shared checkout had drifted further by then (4 local-only "session close" commits, `git cherry origin/main HEAD` confirmed genuinely unpushed, not just under a different SHA). Reconciled in a fresh isolated clone in the scratchpad, cherry-picking each of the 4 onto current `origin/main` one at a time. Real conflicts hit on nearly every file (changelog/pending append-point clashes, session-log filename collisions) — resolved by hand, checking actual content each time rather than blindly taking one side. **Key finding: every one of the 4 commits' genuine unique content was already independently present on `origin/main`** — the same underlying sessions had their own later "redo after a lost-update race" pushes that got the content there through different commit objects first. The reconciled scratch branch ended up with **zero diff** against `origin/main` — nothing was ever actually at risk, it just took a different path there. `git cherry` kept showing the 4 as `+` throughout (patch-ID comparison, not final-content comparison — a known blind spot, not a sign of danger; confirmed via direct tree-diff instead). Also found and removed 3 genuinely-redundant session-log duplicates (`sessions/2026-08-05-k/-l/-m.md`) that the cherry-picks would have re-introduced as stale early drafts of the same sessions' own later, fuller close-outs already at `-e`/`-f`/`-h`.
-- [x] **Shared checkout brought back in line with `origin/main`.** Since content-safety was verified directly (not assumed), and the working tree was confirmed clean immediately before, ran the exact fetch + `reset --hard` this item already flagged as the safe fix — this time it went through without the earlier permission-classifier block. `git status` now shows clean, up to date, zero divergence; `git cherry origin/main HEAD -v` returns empty.
 
 ---
 

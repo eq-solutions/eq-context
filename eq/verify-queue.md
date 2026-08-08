@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Verify Queue
 owner: Royce Milmlow
-last_updated: 2026-08-07
+last_updated: 2026-08-08
 scope: Items whose only remaining blocker is your own live sign-in/click-through — the underlying work is already built, merged, and (unless the line itself says otherwise) live. Moved here from eq/pending.md by scripts/rotate_pending.py once a session's real build work is fully done, so a stale "click through to confirm" line no longer pins a whole finished write-up in the live pending doc.
 read_priority: high
 status: live
@@ -235,5 +235,41 @@ a bug rather than just deleting the line.
 **From:** ⏩ EQ Shell — admin licence backfill: back-photo support + OCR-hang diagnosis (2026-08-04)
 
 - [ ] **Live click-through of both the OCR timeout fix (#211/#1235) and the photo-preview backup (#1238) not done** — both PRs' UI paths only render inside an authenticated Shell admin session, off-limits for Claude to sign into. Royce to confirm: a slow/failing OCR read now surfaces a clean timeout instead of hanging; picking a photo shows a working thumbnail that opens full-size; picking a PDF shows a working "View PDF" link. _(added 2026-08-04)_
+
+---
+
+**From:** eq-shell: EQ-SHELL-10/19 "auth-stall: chunk-error" — a second, distinct root cause found and fixed, merged + live (2026-08-05)
+
+- [ ] **Royce to confirm the SKS dashboard loads cleanly** — needs an authenticated session, off-limits for Claude to drive. _(added 2026-08-05)_
+
+---
+
+**From:** eq-field: Birthdays & Anniversaries dashboard widget only showed up sometimes — root-caused and fixed, live (2026-08-05)
+
+- [ ] **Not click-tested live by a real signed-in user** — everything above was verified at the function level and via the deploy preview's boot path, not by an authenticated session actually seeing the widget populate with real people. Royce to confirm on `field.eq.solutions` (or the Shell embed) that Birthdays & Anniversaries now shows up reliably from a fresh Dashboard landing. _(added 2026-08-05)_
+
+---
+
+**From:** eq-shell: Staff can now have a home address, and the compliance-pack export stops showing "Unknown" for names only ever edited in Shell — two PRs merged, live (2026-08-05)
+
+- [ ] **Neither fix has been click-tested live** — Royce to confirm: (1) the address fields save and display correctly on a real staff member, desktop and mobile, (2) re-downloading William's compliance pack now shows "William Hong" instead of "Unknown." _(added 2026-08-05)_
+
+---
+
+**From:** eq-field: new starters no longer sit on the live roster for weeks before they actually start — merged, live (2026-08-05)
+
+- [ ] **Not click-tested live** — Royce to confirm a real future-dated new starter actually disappears from the roster/dispatch/timesheets and shows up correctly in the new Starting Soon widget. _(added 2026-08-05)_
+
+---
+
+**From:** eq-shell: EQ Ops quote-import polish — pricing table layout, PDF drag-and-drop, cost/sell question — three PRs merged, live (2026-08-05)
+
+- [ ] **None of the four PDF-import/pricing-table changes above have been click-tested live yet** — all need an authenticated Shell admin session, off-limits for me to drive. Royce to confirm: (1) Materials save-all + archive behaves correctly on the live setup page, (2) dragging a PDF onto the Jobs page actually fires the import in a real browser, (3) the Cost/Sell toggle on the main "From PDF" button — especially that a real sell-priced supplier PDF now computes cost correctly, and the default Cost path is unchanged, (4) the *same* toggle now also appearing on the second "Import from PDF" button inside the New Quote form when a document has ambiguous pricing. _(added 2026-08-05, updated 2026-08-05)_
+
+---
+
+**From:** eq-shell + eq-field: EQ Field can now trigger a Shell-owned staff/supervisor write via entity-patch — both halves shipped, live (2026-08-05)
+
+- [ ] **Not click-tested live** — no way to drive a real cross-origin Field session from this environment. Royce to confirm: open Field as an SKS admin, click "🏷 Edit category" on a supervisor, change category/role, save, confirm it reflects back on Shell's own Staff page. _(added 2026-08-05)_
 
 ---
