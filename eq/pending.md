@@ -14,6 +14,20 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-roles + eq-field + eq-shell: security-groups export → Field/Shell permission-pipeline fix, 6 PRs merged + live (2026-08-08)
+*Started from "give me a full HTML export of security groups across the whole suite." Investigating it surfaced a real role-conflation gap between Field and Shell, which snowballed into fixing a genuinely broken permission pipeline — approved as a 4-phase plan (`happy-knitting-karp.md`).*
+
+- [x] eq-roles: canonical `security-groups.html` export (role matrix, permission matrix, default groups) + README fixes. [eq-roles PR #20](https://github.com/eq-solutions/eq-roles/pull/20), merged.
+- [x] eq-field: non-functional role drift-guard fixed; building a bundle-regen tool in the same branch surfaced 3 real production bugs that had shipped-but-never-deployed since the v3.5.403 hand-merge bundling started (entity-patch token bridge, 2 missing lazy-loader tab entries, the Birthdays/Starting Soon self-heal fix). [eq-field PR #658](https://github.com/eq-solutions/eq-field/pull/658), merged, confirmed live.
+- [x] eq-shell — **the real find**: Field's JWT was minted from a stale login-time session cookie, not live permission state, so role-matrix grants/denials set in Shell's Access Control page never actually reached Field. [eq-shell PR #1280](https://github.com/eq-solutions/eq-shell/pull/1280), merged (admin-override, blocked by an unrelated pre-existing check), confirmed live.
+- [x] eq-field: `verify-pin.js`'s second independent hardcoded role list vendored from source; an unlogged silent privilege-downgrade path now logged. [eq-field PR #662](https://github.com/eq-solutions/eq-field/pull/662), merged clean, confirmed live.
+- [x] eq-shell: the 74 Field-owned fine-grained permissions (roster/timesheets/leave/sites/etc.) are now visible and grantable from Access Control via Custom Groups, without merging them into the canonical role model. [eq-shell PR #1281](https://github.com/eq-solutions/eq-shell/pull/1281), merged (admin-override), confirmed live.
+- [x] eq-shell: the new drift-guard for the row above (`field-perms-drift.yml`) was hard-failing every run since it has no working secret yet — fixed to skip clean with a `::notice::` instead of failing red. [eq-shell PR #1285](https://github.com/eq-solutions/eq-shell/pull/1285), merged clean.
+- [ ] **`FIELD_PERMS_DRIFT_PAT` secret still needs creating** — fine-grained PAT, `Contents:read` on eq-field only, add as an eq-shell repo secret. Royce: "I can't do the secret now." Until it exists the drift-guard above stays a no-op (green, but not actually checking anything). _(added 2026-08-08)_
+- [ ] **No live click-through yet** on any of the Shell↔Field permission changes above — needs a real signed-in session, off-limits to this environment. _(added 2026-08-08)_
+
+---
+
 ## eq-field: Data-tab CSV import had no permission check — found, fixed, merged, live (2026-08-08)
 *Flagged in passing during an unrelated mobile-view audit (2026-08-07); this session independently re-verified it live before touching anything.*
 

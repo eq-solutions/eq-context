@@ -1,13 +1,18 @@
 ---
 title: eq-roles — Changelog
 owner: Royce Milmlow
-last_updated: 2026-07-27
+last_updated: 2026-08-08
 scope: eq-roles (@eq-solutions/roles package) append-only history, mirrored from the repo's own CHANGELOG.md
 read_priority: reference
 status: live
 ---
 
 # eq-roles changelog
+
+## 2026-08-08 — canonical security-groups HTML export (no version bump — tooling/docs only)
+- Answers "give me a full HTML export of security groups across the whole suite": `scripts/export-security-groups.mjs` generates a full HTML export (role matrix, permission matrix, default security groups) straight from `roles.json`, run via `npm run export:html`. The canonical half of the ask — a separate live per-tenant data pull was delivered outside this repo.
+- README: added the missing `project_managers` row to the default-groups table, and — after a correction — a caveat on eq-field's adoption status that accurately reflects the legacy raw-PIN staff/supervisor squash as confirmed dead (server-gated unreachable since PR #575), not an active fallback.
+- [PR #20](https://github.com/eq-solutions/eq-roles/pull/20), merged.
 
 ## 2026-07-27 — v2.5.8, new permission: ops.view_supplier_credentials
 - Royce asked to make Suppliers' login/password columns Security-Groups-controlled instead of hardcoded to Manager/Supervisor. Found the DB-side gate (`eq_list_suppliers`, ehow migration 0195, live since 2026-07-21) already checked for this exact permission key via `extra_perms` — it just didn't exist yet in the roles package for anyone to grant.
