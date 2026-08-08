@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-08-07
+last_updated: 2026-08-08
 scope: Done items rotated out of eq/pending.md nightly by scripts/rotate_pending.py (per-item since 2026-07-27; before that, occasional manual whole-section moves). Nothing here is actionable — pure historical record (also covered in eq/changelog/*.md and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -13,6 +13,14 @@ Done items and fully-closed session write-ups rotated out of `eq/pending.md`.
 If you''re looking for something to action, it''s not here — check `eq/pending.md`.
 A "(rotated YYYY-MM-DD ...)" note on a section header means only that
 section's done items live here; its open items stayed in `eq/pending.md`.
+
+---
+
+## eq-service: canonical-outbox schema-mismatch fixed, merged, verified live (2026-08-06) (fully closed, no open items remain)
+*Follow-up on the `canonical_outbox` 404 flagged in the same session's review — Royce asked for it explained "with pictures" and a solution, which turned diagnosis into a same-session fix.*
+
+- [x] `canonical_outbox`/`enqueueCanonicalOutbox`/`drainCanonicalOutbox` 404 root-caused to a schema mismatch (client pinned to `service`, table lives in `public`) rather than a credential or table problem. Confirmed live before writing the fix that `customers`/`sites` exist in *both* `service` and `app_data` schemas, so a blanket client swap would have fixed the outbox while breaking the write-back in the same commit — used two schema-pinned clients instead of one. [eq-service PR #691](https://github.com/eq-solutions/eq-service/pull/691), merged (`940323c`). Verified live, not just merged: Netlify deploy confirmed matching the merge commit, then the actual cron's first post-deploy firing confirmed via ehow's own API logs — the exact query that 404'd before now returns 200.
+- [x] **The `_health` 404 flagged alongside it turned out not to be a bug at all.** Read `eq-service`'s `app/api/health/route.ts` directly (2026-08-08) before assuming anything: `_health` is a deliberate sentinel table name, chosen specifically because it always 404s from PostgREST — the route uses that structured error as its proof Supabase is reachable at all (a genuine network failure looks different: no response, not a clean error). This pattern's been live since at least 2026-04-18, not a recent regression. Corrects the "still open, worth a look" framing from the original flag — it was a misread of an intentional design as a failure, the same class of mistake (status code without checking caller intent) as the earlier EQ-SHELL-1A misread, just smaller stakes. No fix needed or made.
 
 ---
 

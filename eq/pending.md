@@ -43,14 +43,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## eq-service: canonical-outbox schema-mismatch fixed, merged, verified live (2026-08-06)
-*Follow-up on the `canonical_outbox` 404 flagged below — Royce asked for it explained "with pictures" and a solution, which turned diagnosis into a same-session fix.*
-
-- [x] `canonical_outbox`/`enqueueCanonicalOutbox`/`drainCanonicalOutbox` 404 root-caused to a schema mismatch (client pinned to `service`, table lives in `public`) rather than a credential or table problem. Confirmed live before writing the fix that `customers`/`sites` exist in *both* `service` and `app_data` schemas, so a blanket client swap would have fixed the outbox while breaking the write-back in the same commit — used two schema-pinned clients instead of one. [eq-service PR #691](https://github.com/eq-solutions/eq-service/pull/691), merged (`940323c`). Verified live, not just merged: Netlify deploy confirmed matching the merge commit, then the actual cron's first post-deploy firing confirmed via ehow's own API logs — the exact query that 404'd before now returns 200.
-- [ ] **The `_health` 404 (a separate keep-warm ping, same ~5-min cadence) is still open** — not part of this fix, not investigated. `_health` genuinely doesn't exist on ehow; low priority, nothing depends on it succeeding. _(added 2026-08-06)_
-
----
-
 ## eq-context: production-readiness review + 3 backup-workflow reliability fixes, ledger loop closed (2026-08-06)
 *Royce asked for a warts-and-all review across onboarding/licences/security/backup/code-integrity/UX, then a follow-up sprint of whatever was safe to fix solo while he's overseas — substrate-only, no live-app merges.*
 
