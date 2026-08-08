@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-08 04:28 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-08 04:33 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-08 04:13 UTC → 2026-08-08 04:28 UTC)
+## Since last refresh (2026-08-08 04:28 UTC → 2026-08-08 04:33 UTC)
 
-- Merged: eq-shell [#1265](https://github.com/eq-solutions/eq-shell/pull/1265) fix(ops): stop tenant-data-proxy crashing on 204 responses (
+- Merged: eq-shell [#1281](https://github.com/eq-solutions/eq-shell/pull/1281) feat(access-control): expose eq-field's 74 fine-grained perm
 - Merged: eq-solves-service [#692](https://github.com/eq-solutions/eq-service/pull/692) fix(testing): assignee picker empty on ACB/NSX Create Check
-- Merged: eq-cards [#198](https://github.com/eq-solutions/eq-cards/pull/198) feat(wallet): Show mode — offline fullscreen ID display for 
-- Merged: eq-solves-intake [#113](https://github.com/eq-solutions/eq-solves-intake/pull/113) feat(intake): export dice/identityKeyFor/HIGH_SIM from the p
-- Merged: eq-solves-intake [#112](https://github.com/eq-solutions/eq-solves-intake/pull/112) feat(intake): fuzzy identity match in the Reconcile engine
-- Merged: eq-solves-intake [#109](https://github.com/eq-solutions/eq-solves-intake/pull/109) fix(tenant-scoping): close 2 real gaps in api-intake + appro
-- Merged: eq-solves-intake [#108](https://github.com/eq-solutions/eq-solves-intake/pull/108) build(platform): narrow check:packages, wire in verified tes
-- Merged: eq-solves-intake [#105](https://github.com/eq-solutions/eq-solves-intake/pull/105) feat(intake): AI sanity-check on the Contacts duplicate-arch
+- Merged: eq-field [#673](https://github.com/eq-solutions/eq-field/pull/673) docs: mandate worktree isolation in the deploy flow
+- Merged: eq-field [#662](https://github.com/eq-solutions/eq-field/pull/662) fix(roles): vendor verify-pin.js's role list, log the silent
+- Merged: eq-solves-intake [#111](https://github.com/eq-solutions/eq-solves-intake/pull/111) feat(intake): polish the Overview/To Do data-cleaning flow
+- Merged: eq-solves-intake [#110](https://github.com/eq-solutions/eq-solves-intake/pull/110) fix(scripts): hard-stop migrate-cards-to-canonical.mjs rathe
+- Merged: eq-solves-intake [#107](https://github.com/eq-solutions/eq-solves-intake/pull/107) fix: resolve the 13 remaining no-unused-vars errors (vendore
+- Merged: eq-solves-intake [#106](https://github.com/eq-solutions/eq-solves-intake/pull/106) feat(intake): real Contacts merge system (Sites-equivalent)
 
 ## ⚠ Needs you (2)
 
@@ -75,6 +75,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-08 | eq-shell | [#1286](https://github.com/eq-solutions/eq-shell/pull/1286) fix(deps): resolve 2 high-severity Dependabot alerts (js-yaml, br |
 | 2026-08-08 | eq-shell | [#1285](https://github.com/eq-solutions/eq-shell/pull/1285) fix(ci): field-perms-drift skips cleanly until FIELD_PERMS_DRIFT_ |
 | 2026-08-08 | eq-solves-service | [#692](https://github.com/eq-solutions/eq-service/pull/692) fix(testing): assignee picker empty on ACB/NSX Create Check |
+| 2026-08-08 | eq-field | [#673](https://github.com/eq-solutions/eq-field/pull/673) docs: mandate worktree isolation in the deploy flow |
 | 2026-08-08 | eq-field | [#672](https://github.com/eq-solutions/eq-field/pull/672) fix(managers): gate Supervision CSV import behind isManager (v3.5 |
 | 2026-08-08 | eq-field | [#671](https://github.com/eq-solutions/eq-field/pull/671) v3.5.471 — fix(mobile): isManagerSession() read window.isManager, |
 | 2026-08-08 | eq-field | [#670](https://github.com/eq-solutions/eq-field/pull/670) v3.5.469 — Data tab: gate People/Sites/Schedule CSV import behind |
@@ -86,8 +87,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-08 | eq-field | [#664](https://github.com/eq-solutions/eq-field/pull/664) fix(leave): mobile responsive breakpoint for worker balance cards |
 | 2026-08-08 | eq-field | [#663](https://github.com/eq-solutions/eq-field/pull/663) fix(safety-forms): crew/attendee name overflow + prestart draft c |
 | 2026-08-08 | eq-solves-intake | [#113](https://github.com/eq-solutions/eq-solves-intake/pull/113) feat(intake): export dice/identityKeyFor/HIGH_SIM from the public |
-| 2026-08-07 | eq-shell | [#1283](https://github.com/eq-solutions/eq-shell/pull/1283) fix(rls): restrict commercial-table writes to management tiers (0 |
-_Showing 15 of 30 · full record in [sessions/](sessions/)_
+_Showing 15 of 31 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
@@ -144,4 +144,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-08 04:28 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-08 04:33 UTC._
