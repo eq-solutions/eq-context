@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-08
+last_updated: 2026-08-09
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -130,7 +130,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ## eq-service: canonical-outbox schema-mismatch fixed, merged, verified live (2026-08-06)
 *Follow-up on the `canonical_outbox` 404 flagged below — Royce asked for it explained "with pictures" and a solution, which turned diagnosis into a same-session fix.*
 
-- [x] `canonical_outbox`/`enqueueCanonicalOutbox`/`drainCanonicalOutbox` 404 root-caused to a schema mismatch (client pinned to `service`, table lives in `public`) rather than a credential or table problem. Confirmed live before writing the fix that `customers`/`sites` exist in *both* `service` and `app_data` schemas, so a blanket client swap would have fixed the outbox while breaking the write-back in the same commit — used two schema-pinned clients instead of one. [eq-service PR #691](https://github.com/eq-solutions/eq-service/pull/691), merged (`940323c`). Verified live, not just merged: Netlify deploy confirmed matching the merge commit, then the actual cron's first post-deploy firing confirmed via ehow's own API logs — the exact query that 404'd before now returns 200.
 - [ ] **The `_health` 404 (a separate keep-warm ping, same ~5-min cadence) is still open** — not part of this fix, not investigated. `_health` genuinely doesn't exist on ehow; low priority, nothing depends on it succeeding. _(added 2026-08-06)_
 
 ---
@@ -183,13 +182,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 **Deferred:**
 - [ ] **eq-shell's own migration to `@eq-solutions/contracts`** (replacing its local `SupabaseJwtClaims` with the shared `ShellHandoffClaims` type) — the canary's originally-envisioned "durable fix" endpoint. `/decide`d 2026-08-06: not worth doing as a drive-by — touches live auth-minting code, gated behind explicit chat review before deploy per CLAUDE.md's hard rule. Do as its own deliberately-scoped, reviewed piece of work next time eq-shell's JWT code is touched, not bundled into an unrelated fix. _(added 2026-08-06)_
 - [ ] **Version-pin skew between eq-shell's and eq-service's independent `@eq-solutions/contracts` pins has no guard.** No live risk today — both pin the identical tag. `/decide`d 2026-08-06: not worth building yet — it would guard a risk that can't occur until the migration above ships; add it in the same pass as that migration, not before. _(added 2026-08-06)_
-
----
-
-## eq-field + eq-shell: My Schedule maps link — real root cause found, iframe popups were blocked, merged, live (2026-08-06)
-
-**Deferred:**
-- [ ] **Not yet confirmed on a real device through Core that the maps link now opens.** Three attempts: v3.5.460 (eq-field #655) dropped `target="_blank"` for iOS standalone; v3.5.465 (eq-field #659) switched to Apple's `maps://` scheme — both real, defensible fixes for genuine standalone-PWA use, but Royce's actual test was always through Core (`core.eq.solutions/sks/field`), where neither could work. The real cause: `FieldIframe.tsx`'s iframe `sandbox` attribute never included `allow-popups`, so **any** `target="_blank"` link or `window.open()` inside Field, Service, or Cards was silently blocked whenever accessed through Shell — on any device, not iOS-specific. Fixed for all three apps (eq-shell [#1268](https://github.com/eq-solutions/eq-shell/pull/1268), merged, live on `core.eq.solutions`). Royce to confirm the maps icon now actually opens Maps when accessed through Core. _(added 2026-08-05, updated 2026-08-06)_
 
 ---
 

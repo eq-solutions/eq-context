@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-08-08
+last_updated: 2026-08-09
 scope: Done items rotated out of eq/pending.md nightly by scripts/rotate_pending.py (per-item since 2026-07-27; before that, occasional manual whole-section moves). Nothing here is actionable — pure historical record (also covered in eq/changelog/*.md and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -2808,5 +2808,102 @@ contain the same values and were pushed before push-protection caught up.
 ## ⏩ Session close — 2026-07-02 (eq-intake) — dashboard audit + marketing brief + health-score fix (rotated 2026-08-08 — open items remain in pending.md)
 
 - [x] **Fuzzy-match Reconcile** — done. `reconcile.ts` now takes an optional `entity` param; leftover rows after exact-key matching get a fuzzy identity pass reusing the Dice-coefficient matcher from `duplicate-detect.ts`, and high-confidence pairs promote into `conflicts` instead of showing as unrelated new+untouched. Also fixed `normaliseCompanyName` to recognise "P/L" as "Pty Ltd" shorthand — needed for the flagship example itself to clear the match threshold. No automatic "use source" merge offered on a fuzzy row (no shared key to upsert against). eq-solves-intake PR [#112](https://github.com/eq-solutions/eq-solves-intake/pull/112), merged. _(added 2026-07-02, closed 2026-08-07)_
+
+---
+
+## eq-service: canonical-outbox schema-mismatch fixed, merged, verified live (2026-08-06) (rotated 2026-08-09 — open items remain in pending.md)
+
+- [x] `canonical_outbox`/`enqueueCanonicalOutbox`/`drainCanonicalOutbox` 404 root-caused to a schema mismatch (client pinned to `service`, table lives in `public`) rather than a credential or table problem. Confirmed live before writing the fix that `customers`/`sites` exist in *both* `service` and `app_data` schemas, so a blanket client swap would have fixed the outbox while breaking the write-back in the same commit — used two schema-pinned clients instead of one. [eq-service PR #691](https://github.com/eq-solutions/eq-service/pull/691), merged (`940323c`). Verified live, not just merged: Netlify deploy confirmed matching the merge commit, then the actual cron's first post-deploy firing confirmed via ehow's own API logs — the exact query that 404'd before now returns 200.
+
+---
+
+## eq-shell: self-join bulk-approve + gap-analysis-driven onboarding fixes (2026-08-06) (rotated 2026-08-09 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: EQ-SHELL-R closed (false alarm) + EQ-SHELL-1B fixed — Outlook email attachments on quotes, merged + live (2026-08-06) (rotated 2026-08-09 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: EQ-SHELL-1A "eq-ops rpc ... failed: TypeError: Failed to fetch (ehow)" — durable fix live, all known consumers migrated (2026-08-06) (rotated 2026-08-09 — open items remain in pending.md)
+
+
+---
+
+## eq-field + eq-shell: My Schedule maps link — real root cause found, iframe popups were blocked, merged, live (2026-08-06) (rotated 2026-08-09)
+
+**Deferred:**
+
+---
+
+## eq-shell: self-join's "double sign-in" for Cards root-caused and fixed — worker-add nav trimmed further too (2026-08-03) (rotated 2026-08-09 — open items remain in pending.md)
+
+
+---
+
+## eq-solves-intake + eq-shell: duplicate-site console's two dead ends fixed, then a live permission bug found and fixed mid-testing (2026-08-01) (rotated 2026-08-09 — open items remain in pending.md)
+
+
+---
+
+## eq-solves-service: fixed a broken safety check that was silently skipping every code review, then found the "176,000 findings" it surfaced was almost entirely noise, cleaned up what was real (2026-08-01) (rotated 2026-08-09 — open items remain in pending.md)
+
+
+---
+
+## eq-shell + eq-solves-intake + eq-receipts: closed every open security alert across the EQ suite, found 5 repos where the alert system was switched off entirely (2026-08-01) (rotated 2026-08-09 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: Richard Brown's mobile crash fixed, then a simplified mobile nav for supervisors driven by real usage data (2026-07-31) (rotated 2026-08-09 — open items remain in pending.md)
+
+
+---
+
+## eq-solves-service: Found why photo uploads were failing everywhere, then added a link/create/skip option to the paste-import flow (2026-07-31) (rotated 2026-08-09 — open items remain in pending.md)
+
+
+---
+
+## eq-intake + eq-shell: 4-part fix from Royce's live screenshot review of the Intake console (2026-07-31) (rotated 2026-08-09 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: EQ Ops quote status → job status sync fixed for all 5 stages, plus a new "Target period" badge for future-dated quotes (2026-07-31) (rotated 2026-08-09 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: Compliance-roster-only workers — Field access can now be switched off per worker (2026-07-30) (rotated 2026-08-09 — open items remain in pending.md)
+
+
+---
+
+## eq-solves-service: Field Run-Sheet asset headers now show the maintenance plan's Job Code (2026-07-29) (rotated 2026-08-09 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: Staff page edits silently reverting overnight — root-caused and fixed, deployed (2026-07-28) (rotated 2026-08-09 — open items remain in pending.md)
+
+
+---
+
+## eq-cards/eq-shell: onboarding minimum-requirements switch, bulk connect-worker, and a live anon-EXECUTE fix (2026-07-26) (rotated 2026-08-09 — open items remain in pending.md)
+
+
+---
+
+## EQ Field: real Incidents / Near Miss reporting, shipped and live (2026-07-22) (rotated 2026-08-09 — open items remain in pending.md)
+
+
+---
+
+## Core dashboard rebuilt — replaced the passive AI-brief-only home with three permission-gated live signal bands (2026-07-17, MERGED + LIVE) (rotated 2026-08-09 — open items remain in pending.md)
+
 
 ---
