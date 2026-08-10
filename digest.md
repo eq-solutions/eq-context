@@ -8,31 +8,30 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-10 11:08 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-10 11:29 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-10 11:02 UTC → 2026-08-10 11:08 UTC)
+## Since last refresh (2026-08-10 11:08 UTC → 2026-08-10 11:29 UTC)
 
-- Merged: eq-shell [#1281](https://github.com/eq-solutions/eq-shell/pull/1281) feat(access-control): expose eq-field's 74 fine-grained perm
+- Merged: eq-shell [#1283](https://github.com/eq-solutions/eq-shell/pull/1283) fix(rls): restrict commercial-table writes to management tie
+- Merged: eq-shell [#1265](https://github.com/eq-solutions/eq-shell/pull/1265) fix(ops): stop tenant-data-proxy crashing on 204 responses (
+- Merged: eq-solves-service [#695](https://github.com/eq-solutions/eq-service/pull/695) docs(ci): fix stale approval-gate comment on apply-service-m
 - Merged: eq-solves-service [#694](https://github.com/eq-solutions/eq-service/pull/694) feat(testing): compute RCD circuit pass/fail, auto-create de
 - Merged: eq-solves-service [#693](https://github.com/eq-solutions/eq-service/pull/693) fix(maintenance): archived checks still reachable by direct 
 - Merged: eq-solves-service [#692](https://github.com/eq-solutions/eq-service/pull/692) fix(testing): assignee picker empty on ACB/NSX Create Check
-- Merged: eq-field [#671](https://github.com/eq-solutions/eq-field/pull/671) v3.5.471 — fix(mobile): isManagerSession() read window.isMan
-- Merged: eq-field [#670](https://github.com/eq-solutions/eq-field/pull/670) v3.5.469 — Data tab: gate People/Sites/Schedule CSV import b
-- Merged: eq-field [#668](https://github.com/eq-solutions/eq-field/pull/668) fix(mobile): 5 confirmed mobile.css bugs (v3.5.469)
-- Merged: eq-field [#666](https://github.com/eq-solutions/eq-field/pull/666) v3.5.469 — Calibration + Projects had no mobile nav path
+- Merged: eq-solves-service [#686](https://github.com/eq-solutions/eq-service/pull/686) chore(deps-dev): bump @vitejs/plugin-react from 6.0.4 to 6.0
+- Merged: eq-solves-service [#684](https://github.com/eq-solutions/eq-service/pull/684) chore(deps): bump the eq-design-system group across 1 direct
+- ✅ Needs you: 8 → 6
 
-## ⚠ Needs you (8)
+## ⚠ Needs you (6)
 
 - 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-9 (P0 — confirmed exposure, same window as SEC-3, possible second exposure 2026-07-27) — A different service_role key (`jvkn`/eq-canonical) was pasted directly into a ch · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-24 (P1 — OPEN, found 2026-08-08) — `QUOTES_CRON_SECRET` on eq-shell stored `is_secret: false` — full plaintext retu · [security-register.md](ops/security-register.md)
 - 🟠 **PR aging 7d** — eq-solves-service [#688](https://github.com/eq-solutions/eq-service/pull/688) "chore(deps): bump @sentry/nextjs from 10.68.0 to 10.69.0"
-- 🟠 **PR aging 7d** — eq-solves-service [#687](https://github.com/eq-solutions/eq-service/pull/687) "chore(deps-dev): bump eslint-config-next from 16.2.2 to 16.2.12"
-- 🟠 **PR aging 7d** — eq-solves-service [#686](https://github.com/eq-solutions/eq-service/pull/686) "chore(deps-dev): bump @vitejs/plugin-react from 6.0.4 to 6.0.5"
+- 🟠 **PR aging 7d** — eq-solves-service [#687](https://github.com/eq-solutions/eq-service/pull/687) "chore(deps-dev): bump eslint-config-next from 16.2.2 to 16.3.0"
 - 🟠 **PR aging 7d** — eq-solves-service [#685](https://github.com/eq-solutions/eq-service/pull/685) "chore(deps): bump react-dom and @types/react-dom"
-- 🟠 **PR aging 7d** — eq-solves-service [#684](https://github.com/eq-solutions/eq-service/pull/684) "chore(deps): bump the eq-design-system group across 1 directory with 2"
 
-## 🙋 Waiting on you (103)
+## 🙋 Waiting on you (102)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
@@ -48,14 +47,14 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **EQ** · **Royce to retry the actual save in the browser** to confirm end-to-end — DB-level fix is verified, only the real click-through confirms the full path. _(added 2026-08-02)_
 - **EQ** · **Staff duplicate handling — still Archive-only, needs your call before any build.** A real staff merge fans out into Field-owned operational tables (timesheets, schedule, licences, dispatch) — per the durable architecture rule, that can't be rebuilt Shell-side; it needs Field-repo coordination, which is a scope decision, not something to default on. _(added 2026-08-02)_
 - **EQ** · **Royce to check `admin/users/migrate` for SKS against the 44-workers number above** — the invite screen and the 44 are counted two different ways (one by tenant employee record, one by Cards worker record), so they may not match exactly. Worth confirming they're the same gap before assuming the invite screen alone closes it. _(added 2026-08-02)_
-_…and 91 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 90 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 2 | 2d |
-| eq-solves-service | ✓ success | 0d ago | 5 | 7d |
+| eq-solves-service | ✓ success | 0d ago | 3 | 7d |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 1 | — |
 | eq-solves-intake | ✓ success | 2d ago | 0 | — |
@@ -82,6 +81,9 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-10 | eq-shell | [#1292](https://github.com/eq-solutions/eq-shell/pull/1292) fix(canonical-sync): let a duplicate worker adopt a dangling-link |
 | 2026-08-10 | eq-shell | [#1279](https://github.com/eq-solutions/eq-shell/pull/1279) feat(staff): labour-hire candidate review + ops intake tool |
 | 2026-08-10 | eq-shell | [#1291](https://github.com/eq-solutions/eq-shell/pull/1291) fix(quotes): surface errors on Word-doc download instead of swall |
+| 2026-08-10 | eq-solves-service | [#695](https://github.com/eq-solutions/eq-service/pull/695) docs(ci): fix stale approval-gate comment on apply-service-migrat |
+| 2026-08-10 | eq-solves-service | [#684](https://github.com/eq-solutions/eq-service/pull/684) chore(deps): bump the eq-design-system group across 1 directory w |
+| 2026-08-10 | eq-solves-service | [#686](https://github.com/eq-solutions/eq-service/pull/686) chore(deps-dev): bump @vitejs/plugin-react from 6.0.4 to 6.0.5 |
 | 2026-08-10 | eq-solves-service | [#694](https://github.com/eq-solutions/eq-service/pull/694) feat(testing): compute RCD circuit pass/fail, auto-create defects |
 | 2026-08-10 | eq-solves-service | [#693](https://github.com/eq-solutions/eq-service/pull/693) fix(maintenance): archived checks still reachable by direct ID |
 | 2026-08-10 | eq-field | [#674](https://github.com/eq-solutions/eq-field/pull/674) fix(leave): Calendar didn't show approved leave since the roster- |
@@ -90,10 +92,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-08 | eq-shell | [#1288](https://github.com/eq-solutions/eq-shell/pull/1288) fix(deps): patch image-size DoS + re-vendor to restore the nanoid |
 | 2026-08-08 | eq-shell | [#1287](https://github.com/eq-solutions/eq-shell/pull/1287) refactor(customers): reuse @eq/intake's fuzzy matcher instead of  |
 | 2026-08-08 | eq-shell | [#1286](https://github.com/eq-solutions/eq-shell/pull/1286) fix(deps): resolve 2 high-severity Dependabot alerts (js-yaml, br |
-| 2026-08-08 | eq-shell | [#1285](https://github.com/eq-solutions/eq-shell/pull/1285) fix(ci): field-perms-drift skips cleanly until FIELD_PERMS_DRIFT_ |
-| 2026-08-08 | eq-solves-service | [#692](https://github.com/eq-solutions/eq-service/pull/692) fix(testing): assignee picker empty on ACB/NSX Create Check |
-| 2026-08-08 | eq-field | [#673](https://github.com/eq-solutions/eq-field/pull/673) docs: mandate worktree isolation in the deploy flow |
-_Showing 15 of 36 · full record in [sessions/](sessions/)_
+_Showing 15 of 39 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
@@ -150,4 +149,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-10 11:08 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-10 11:29 UTC._
