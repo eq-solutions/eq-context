@@ -1,7 +1,7 @@
 ---
 title: SYSTEM Tier — Index
 owner: Royce Milmlow
-last_updated: 2026-08-08
+last_updated: 2026-08-11
 scope: The substrate itself — how the AI context system works
 read_priority: reference
 status: live
@@ -16,7 +16,7 @@ Files that run the substrate, not the work. Read by AIs to understand
 
 Every canonical system file as a full URL — clickable from `/context/claude`:
 
-- [system/TODAY.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/TODAY.md) — session focus filter (always loaded first, every session). **Goals currently UNSET** — see failures.md F3; don't assume it still carries the retracted Q3 2026 goals.
+- [system/TODAY.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/TODAY.md) — session focus filter (always loaded first, every session). Goals section is human-owned and time-bound — read it fresh each session rather than trusting this note's memory of its state; see failures.md F3 for why an assumed-stale goal is a real failure mode.
 - [system/punch-list.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/punch-list.md) — capped (~5-6 item) active work queue, curated by Royce, read at session start next to TODAY.md; separate from the full tier `pending.md` backlog
 - [system/infrastructure.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/infrastructure.md) — Supabase project IDs, Cloudflare, Netlify, Beelink, GitHub orgs
 - [system/architecture.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/architecture.md) — tech architecture (Cloudflare, Supabase, substrate, single-file HTML pattern)
@@ -27,6 +27,7 @@ Every canonical system file as a full URL — clickable from `/context/claude`:
 - [system/worktree-registry.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/worktree-registry.md) — active/stale git worktrees, check before creating one
 - [system/incident-claims.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/incident-claims.md) — same-day claim lock so 2-3 concurrent sessions don't independently chase the same flagged finding; checked automatically by `hooks/session_start.py` against digest.md's "Needs you" list
 - [system/dr-backups.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/dr-backups.md) — offsite backup coverage across projects
+- [system/infra-redundancy-scoping-2026-08-11.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/infra-redundancy-scoping-2026-08-11.md) — suite-wide single points of failure outside the DB-backup picture (Netlify account, Supabase org, DNS, auth hub, crons) — scoping only, no fixes built
 - [system/substrate-facts.yml](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/substrate-facts.yml) — CI-checked live/deleted status manifest, drives digest.md's drift check
 - [system/task-brief-template.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/task-brief-template.md) — Rule 0.6 session-gate brief template
 - [system/tenant-routing-master-key-rotation.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/tenant-routing-master-key-rotation.md) — tenant_routing key rotation runbook
@@ -52,6 +53,7 @@ Every canonical system file as a full URL — clickable from `/context/claude`:
 | `worktree-registry.md` | Active/stale git worktrees |
 | `incident-claims.md` | Same-day claim lock so concurrent sessions don't duplicate investigation of the same flagged finding |
 | `dr-backups.md` | Offsite backup coverage |
+| `infra-redundancy-scoping-2026-08-11.md` | Suite-wide single points of failure outside DB backups (Netlify/Supabase/DNS/auth-hub/crons) |
 | `substrate-facts.yml` | CI-checked live/deleted status manifest |
 | `task-brief-template.md` | Rule 0.6 session-gate brief template |
 | `tenant-routing-master-key-rotation.md` | tenant_routing key rotation runbook |
