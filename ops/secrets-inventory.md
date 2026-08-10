@@ -1,7 +1,7 @@
 ---
 title: OPS — Secrets Inventory
 owner: Royce Milmlow
-last_updated: 2026-08-10
+last_updated: 2026-08-11
 scope: Names, owner app, environment, and where-set for every real secret across the EQ/SKS Netlify projects. No values — this is the map, not the vault. Companion to ops/security-register.md (incident/finding history) and the Grok-authored "Secrets & Environment Variables" guide (Google Drive, 2026-08-08), which recommends exactly this file.
 read_priority: high
 status: live
@@ -54,9 +54,31 @@ name similarity. Full detail in `security-register.md` SEC-9/SEC-18.
 ### Suspected shared values — not yet confirmed, worth a value-suffix check
 
 Same apparent purpose, same or near-same name, but nobody has explicitly
-compared the actual values yet (only the masked last-4-chars would be needed
-— never the full value). Flagging rather than asserting, after this file's
-own 2026-08-08 correction for guessing wrong once already.
+compared the actual values yet. Flagging rather than asserting, after this
+file's own 2026-08-08 correction for guessing wrong once already.
+
+**2026-08-11 — deliberately not verified via Netlify API.** A masked-suffix
+comparison was scoped as a sprint task, then dropped before running it:
+Netlify only returns a comparable value through the leaking `dev` context
+(SEC-9) — the correctly-masked contexts (production/branch-deploy/
+deploy-preview) come back as a literal `****`, no suffix, nothing to
+compare. Any comparison read would therefore reproduce the exact
+`dev`-context leak SEC-9 already logged twice, for a hygiene question, not
+a security fix. Per SEC-9's own standing process fix ("future
+credential-consumer mapping should be scoped to env-var names/presence
+only, never fetch/print/decode actual values"), this needs Royce's own
+answer instead — he set these values originally and can confirm
+same-or-different in one line with zero exposure.
+
+Also confirmed live this session: eq-cards' Netlify project is genuinely
+live, not disconnected — git-triggered Netlify builds were turned off
+2026-07-29 (PR #186), but GitHub Actions' `deploy.yml` zip-uploads the
+Flutter web build to the same Netlify project via API, and its real
+Netlify Functions (`shell-verify.js` etc.) still run there. So eq-cards'
+env vars are live, in-use credentials, not orphaned — SEC-9/SEC-18's
+eq-cards rows stand as written. The planned retry of eq-cards' env-var
+read was dropped for the same reason as the cluster comparison above —
+same leaking call, no new information it would actually buy.
 
 | Suspected cluster | Appears as | Why suspected |
 |---|---|---|

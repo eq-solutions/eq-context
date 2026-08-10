@@ -1,7 +1,7 @@
 ---
 title: PUNCH LIST — Active Work Queue
 owner: Royce Milmlow
-last_updated: 2026-08-08
+last_updated: 2026-08-11
 scope: The capped, currently-active work queue. Read at session start next to TODAY.md. Separate from the full eq/pending.md backlog.
 read_priority: critical
 status: live
@@ -43,11 +43,22 @@ solves a different problem, not a real gap (`eq/pending-archive.md`,
 who uploads onboarding info. **Done =** one doc states the intended flow
 per scenario.
 
+**Proposed done, 2026-08-11 — your call to tick off:** `eq/identity/worker-onboarding-flows.md`
+now states the per-app flow (Cards settled, Shell admin/worker-invite,
+Field manager-driven, Service read-only from Shell), written 2026-08-10.
+
 ### 2. Definitive backup rules plan
 Target design exists (`system/infrastructure.md` → "Backup strategy — target
 state"), never turned into a plan actually being followed. PITR explicitly
 declined already (`eq/pending-archive.md`, 2026-07-23). **Done =** a written
 plan — what's backed up, how often, retention, restore-test cadence.
+
+**Proposed done, 2026-08-11 — your call to tick off:** the old target-state
+section in `system/infrastructure.md` was stale (planned, never built) —
+corrected 2026-08-10 to point at `system/dr-backups.md`, the actual
+shipped implementation (full logical dump + all buckets + Sentry cron
+check-in, ~6¢/mo, not zero-touch — see [[platform-dr-plain-english]] memory
+for the plain-English version).
 
 ### 3. Mobile polish (Field/Cards) — close the remainder
 8 PRs merged 2026-08-08 in eq-field already. Remaining un-eyeballed screens
@@ -64,6 +75,10 @@ Already answered — cross-repo audit closed the question 2026-08-08
 (`eq/pending.md:17-31`, session close). Currently only lives as a pending
 entry. **Done =** a short reference doc (or a pointer added to
 `eq/products.md`) so the question doesn't get re-asked next quarter.
+
+**Proposed done, 2026-08-11 — your call to tick off:** `eq/products.md`
+gained a "EQ Intake — import/write-time engine" section 2026-08-10, with
+the per-app usage table (Shell yes; Service/Field/Cards no, with reasons).
 
 ---
 
