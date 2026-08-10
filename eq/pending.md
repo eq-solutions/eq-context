@@ -111,12 +111,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## eq-shell: Dependabot sweep — 5 of 7 open alerts fixed, merged + deployed clean (2026-08-08)
-
-- [ ] **Stale substrate claim found, not yet corrected** — the 2026-07-28 "full Dependabot sweep" entry below says the leftover `brace-expansion` DoS in the exceljs→archiver→glob@7→minimatch@3.1.5 chain has "only one full fix: a minimatch major bump," deliberately left unfixed. Live check this session (`pnpm why brace-expansion`) shows that chain already resolves to `1.1.18` via a `brace-expansion@1: ^1.1.17` override — which the GHSA advisories confirm is itself a fully patched version, no minimatch bump needed. Left that old entry untouched (out of this session's scope to edit) but flagging for someone to re-verify and close it out. _(added 2026-08-08)_
-
----
-
 ## eq-roles + eq-field + eq-shell: security-groups export → Field/Shell permission-pipeline fix, 6 PRs merged + live (2026-08-08)
 *Started from "give me a full HTML export of security groups across the whole suite." Investigating it surfaced a real role-conflation gap between Field and Shell, which snowballed into fixing a genuinely broken permission pipeline — approved as a 4-phase plan (`happy-knitting-karp.md`).*
 
@@ -737,13 +731,6 @@ Royce asked four architecture questions about the Cards→tenant consent model (
 
 **Both deferred items below investigated 2026-07-29 (same day), via the Netlify dashboard deploy log — not visible from GitHub or from the Netlify MCP's reader tools, which only expose single deploys by ID, not a project's deploy history:**
 - [ ] **If `Failed to fetch environment variables` recurs on any site**, check status.netlify.com for a platform incident at that timestamp before assuming a repo-side cause — this instance had no corresponding repo change that could explain it. No action taken this pass since a single occurrence isn't enough to file anything upstream. _(added 2026-07-29)_
-
----
-
-## eq-shell: full Dependabot sweep — 146 alerts down to 6 known/deferred (2026-07-28)
-
-**Deferred:**
-- [ ] **One DoS CVE left deliberately unfixed**: `brace-expansion` inside `exceljs`'s zip-writer chain (`archiver` → `archiver-utils` → `glob@7` → `minimatch@3.1.5`). The only full fix is a `minimatch` major bump, and this deep tree isn't verified against `minimatch`'s newer API — accepted as a residual rather than risk breaking xlsx writing in production. Low real-world exploitability (internal file-glob matching during archive creation, not attacker-reachable input). _(added 2026-07-28)_
 
 ---
 

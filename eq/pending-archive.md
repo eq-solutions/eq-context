@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-08-09
+last_updated: 2026-08-10
 scope: Done items rotated out of eq/pending.md nightly by scripts/rotate_pending.py (per-item since 2026-07-27; before that, occasional manual whole-section moves). Nothing here is actionable — pure historical record (also covered in eq/changelog/*.md and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -2905,5 +2905,18 @@ contain the same values and were pushed before push-protection caught up.
 
 ## Core dashboard rebuilt — replaced the passive AI-brief-only home with three permission-gated live signal bands (2026-07-17, MERGED + LIVE) (rotated 2026-08-09 — open items remain in pending.md)
 
+
+---
+
+## eq-shell: Dependabot sweep — 5 of 7 open alerts fixed, merged + deployed clean (2026-08-08) (fully closed, no open items remain)
+
+- [x] **Stale substrate claim found and corrected** — the 2026-07-28 "full Dependabot sweep" entry (below) said the leftover `brace-expansion` DoS in the exceljs→archiver→glob@7→minimatch@3.1.5 chain had "only one full fix: a minimatch major bump," deliberately left unfixed. Live check (`pnpm why brace-expansion`) showed that chain already resolves to `1.1.18` via a `brace-expansion@1: ^1.1.17` override — which the GHSA advisories confirm is itself a fully patched version, no minimatch bump needed. Corrected same day, see below.
+
+---
+
+## eq-shell: full Dependabot sweep — 146 alerts down to 6 known/deferred (2026-07-28) (fully closed, no open items remain)
+
+**Deferred:**
+- [x] ~~One DoS CVE left deliberately unfixed~~ **Corrected 2026-08-08 — was never actually unfixed, the claim was stale.** Originally: `brace-expansion` inside `exceljs`'s zip-writer chain (`archiver` → `archiver-utils` → `glob@7` → `minimatch@3.1.5`) was said to need a `minimatch` major bump as "the only full fix," accepted as a residual risk rather than touch xlsx writing in production. Live-verified 2026-08-08 (`pnpm why brace-expansion` against `origin/main`'s actual lockfile, during an unrelated Dependabot sweep): a `brace-expansion@1: ^1.1.17` pnpm override was already in place, resolving that exact chain to `1.1.18` — which the GHSA advisories for both the original CVE (CVE-2026-14257) and its later bypass (CVE-2026-69152) confirm is itself a fully patched version. No minimatch bump was ever needed; nothing on `main` was exploitable. The override's exact origin/date wasn't traced — this was a stale write-up in the register, not a live gap.
 
 ---
