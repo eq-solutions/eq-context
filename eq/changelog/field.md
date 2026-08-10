@@ -1,7 +1,7 @@
 ---
 title: Changelog — EQ Solves Field
 owner: Royce Milmlow
-last_updated: 2026-08-10
+last_updated: 2026-08-11
 scope: Append-only history of changes to the EQ Solves Field product. Canonical — eq-field.md was merged into this file 2026-07-19, don't split again.
 read_priority: reference
 status: live
@@ -838,7 +838,7 @@ Four iterative ships turning apprentice TAFE days from a locked cell into a prep
 - v3.5.205 — Presence + Supervisor Notes retired for SKS (dead/absent surfaces).
 - v3.5.206 — Managers + Sites read-only for SKS (Shell-owned; write entry points gated).
 - Digest opt-out (DB migration, no version bump): `field_managers.digest_opt_in` writable via a digest-only INSTEAD OF trigger; 19 supervisors backfilled opted-in.
-**Deferred:** Teams wire, Safety grants + create `site_audits`, Apprentices cluster, realtime publication, `user_id` backfill (see `eq/pending.md`).
+**Deferred:** Teams wire, Safety grants + create `site_audits`, realtime publication, `user_id` backfill (see `eq/pending.md`). ~~Apprentices cluster~~ — shipped the same sprint (PR #371, v3.5.210); this footer was never updated, corrected 2026-08-11.
 
 ## [2026-06-27] on_roster now filters the roster grid (PR #349, merged)
 - The eq-field roster grid + timesheets now honour `app_data.staff.on_roster`, hiding off-roster people (office/managers) from the roster while keeping them in Contacts. Later superseded/extended by v3.5.301 (#454, 2026-07-11), which added the full Roster + Timesheets + completion-stats hide keyed on the same flag.
