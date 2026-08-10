@@ -1,0 +1,258 @@
+name: Restore-drill eq-canonical-internal (R2 tarball → ephemeral Postgres → sanity-check)
+
+# The automated GAME-DAY for the tenant-data plane — proves the eq-canonical-internal
+# offsite backup actually RESTORES and the restored database is sound, the same
+# *executability* half restore-drill-ehow.yml already proves for ehow. Before this
+# workflow, eq-canonical-internal only had the daily integrity check
+# (verify-backup-eq-canonical-internal.yml: archive intact, rows present) — never an
+# actual restore. Closes that gap (system/dr-backups.md Follow-ups, "Restore-drill
+# coverage is ehow-only", found 2026-08-11).
+#
+# Same mechanics as restore-drill-ehow.yml: pull the freshest eq-canonical-internal
+# db_backup.tar.gz from R2 and restore roles → schema → data into an ephemeral
+# `supabase/postgres` container, then sanity-check core row counts + RLS coverage and
+# report the achieved RTO.
+#
+# No auth restore step here: this plane genuinely has 0 auth.users (confirmed live
+# 2026-08-11) — it's the tenant operational-data plane, not an identity plane. The
+# ehow/eq-canonical drills' auth-schema caveat doesn't apply; there's nothing to skip.
+#
+# Read-only against live: it only GETs the R2 artifact. The restore target is a throwaway
+# container that dies with the job — nothing live is ever touched or written.
+#
+# Restore tolerance: same as ehow — ON_ERROR_STOP=0, gate on the OUTCOME (are rows actually
+# queryable?), not on restore stderr.
+#
+# Schedule: quarterly (08:00 UTC on the 1st of Jan/Apr/Jul/Oct — staggered an hour after the
+# eq-canonical drill, same stagger convention the three daily backup jobs already use) +
+# workflow_dispatch.
+# Sentry monitor: `eq-canonical-internal-restore-drill` — pages if the quarterly drill fails
+# OR never runs.
+# Secrets (production-ops): R2_* + SENTRY_DSN (already present, shared with the other
+# backup/drill jobs). No DB URL / service-role key — this drill never touches the live project.
+
+on:
+  schedule:
+    # 08:00 UTC on the 1st of each quarter (~18:00 AEST)
+    - cron: '0 8 1 1,4,7,10 *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  drill:
+    name: eq-canonical-internal backup → restore into ephemeral Postgres → verify
+    runs-on: ubuntu-latest
+    # R2 keys + SENTRY_DSN are scoped to this Environment (main-only branch rule).
+    environment: production-ops
+    services:
+      # Supabase-parity Postgres (matches eq-canonical-internal's PG line) as a throwaway restore target.
+      db:
+        image: supabase/postgres:17.6.1.142
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 40
+    env:
+      MONITOR_SLUG: eq-canonical-internal-restore-drill
+      R2_PREFIX: 'eq-canonical-internal'             # eq-canonical-internal writes under this prefix
+      DRILL_DB_URL: postgresql://postgres:postgres@localhost:5432/postgres
+      RLS_BASELINE: '0'                              # eq-canonical-internal live has 0 public tables w/o RLS (2026-08-11)
+      # Reference counts (live 2026-08-11) — reported vs restored; gate is >0 on the canonical core.
+      EXPECT_CUSTOMERS: '50'
+      EXPECT_SITES: '30'
+    steps:
+      # ── Sentry cron: check in "in_progress" (upserts the monitor incl. schedule) ──
+      - name: Sentry check-in (start)
+        env:
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+        run: |
+          set -uo pipefail
+          if [ -z "${SENTRY_DSN:-}" ]; then
+            echo "::warning::SENTRY_DSN not set — this drill run is UNMONITORED."
+            exit 0
+          fi
+          KEY="${SENTRY_DSN#https://}"; KEY="${KEY%%@*}"
+          REST="${SENTRY_DSN#*@}"; HOST="${REST%%/*}"; PID="${REST##*/}"
+          BASE="https://${HOST}/api/${PID}/cron/${MONITOR_SLUG}/${KEY}"
+          CID=$(curl -sS -X POST "${BASE}/" \
+            -H 'Content-Type: application/json' \
+            -d '{"status":"in_progress","monitor_config":{"schedule":{"type":"crontab","value":"0 8 1 1,4,7,10 *"},"checkin_margin":720,"max_runtime":30,"timezone":"UTC"}}' \
+            | jq -r '.id // empty') || true
+          echo "SENTRY_BASE=$BASE" >> "$GITHUB_ENV"
+          echo "SENTRY_CID=$CID"  >> "$GITHUB_ENV"
+          echo "Sentry monitor '${MONITOR_SLUG}' checked in (in_progress), id=${CID:-none}"
+
+      - name: Install tools
+        run: |
+          set -euo pipefail
+          pip install awscli --quiet
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq postgresql-client >/dev/null
+          psql --version
+          jq --version
+
+      # ── Pull the freshest eq-canonical-internal backup from R2 (start of the RTO clock) ──
+      - name: Download latest backup tarball
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+          R2_BUCKET: ${{ secrets.R2_BUCKET_NAME }}
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+        run: |
+          set -euo pipefail
+          echo "T0=$(date -u +%s)" >> "$GITHUB_ENV"   # RTO clock: begin recovery
+          LIST_PATH="s3://${R2_BUCKET}/${R2_PREFIX:+${R2_PREFIX}/}"
+          LATEST=$(aws s3 ls "$LIST_PATH" --endpoint-url "$R2_ENDPOINT" \
+            | awk '{print $NF}' | tr -d '/' \
+            | grep -E '^[0-9]{4}-[0-9]{2}-[0-9]{2}' | sort | tail -1)
+          if [ -z "${LATEST:-}" ]; then
+            echo "::error::No dated eq-canonical-internal backup folder in R2 — nothing to drill."
+            exit 1
+          fi
+          echo "Restoring from backup: ${LATEST}"
+          aws s3 cp \
+            "s3://${R2_BUCKET}/${R2_PREFIX:+${R2_PREFIX}/}${LATEST}/db_backup.tar.gz" \
+            db_backup.tar.gz --endpoint-url "$R2_ENDPOINT"
+          mkdir -p unpack && tar xzf db_backup.tar.gz -C unpack
+          echo "Members: $(ls -1 unpack | tr '\n' ' ')"
+          echo "LATEST=$LATEST" >> "$GITHUB_ENV"
+
+      # ── Seed the Supabase auth helper functions the schema depends on ──
+      # A real Supabase project has auth.jwt()/auth.uid()/etc. (installed by the auth
+      # service). The bare supabase/postgres image does NOT — but this plane's table
+      # DEFAULTs and RLS policies reference them, so CREATE TABLE fails to validate and
+      # nothing restores, even though this plane itself has 0 auth.users. Seeding
+      # matching-signature stubs (they only need to EXIST for the DDL to parse — COPY
+      # provides explicit values, so the defaults are never evaluated) lets the real
+      # restore proceed. Identical approach to restore-drill-ehow.yml.
+      - name: Prepare parity (auth helper functions)
+        run: |
+          set -uo pipefail
+          echo "── role landscape ──"
+          psql "$DRILL_DB_URL" -v ON_ERROR_STOP=0 \
+            -c "select current_user, current_setting('is_superuser') as is_super" \
+            -c "select rolname, rolsuper, rolcanlogin from pg_roles where rolsuper or rolname like 'supabase%' or rolname='postgres' order by rolname" \
+            -c "select nspname, nspowner::regrole::text as owner from pg_namespace where nspname in ('auth','app_data')" \
+            -c "select coalesce(string_agg(r.rolname,','),'(none)') as postgres_member_of from pg_auth_members m join pg_roles r on r.oid=m.roleid where m.member=(select oid from pg_roles where rolname='postgres')" || true
+
+          cat > auth_stubs.sql <<'SQL'
+          create schema if not exists auth;
+          create or replace function auth.jwt() returns jsonb language sql stable as $fn$
+            select coalesce(
+              nullif(current_setting('request.jwt.claim', true), '')::jsonb,
+              nullif(current_setting('request.jwt.claims', true), '')::jsonb,
+              '{}'::jsonb) $fn$;
+          create or replace function auth.uid() returns uuid language sql stable as $fn$
+            select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid $fn$;
+          create or replace function auth.role() returns text language sql stable as $fn$
+            select nullif(current_setting('request.jwt.claim.role', true), '') $fn$;
+          create or replace function auth.email() returns text language sql stable as $fn$
+            select nullif(current_setting('request.jwt.claim.email', true), '') $fn$;
+          SQL
+
+          # The auth schema is owned by a managed superuser (supabase_admin /
+          # supabase_auth_admin) that the postgres login can neither assume nor create in.
+          # Seed as a role that CAN — try the likely owners with the container password;
+          # gate on auth.jwt() actually existing afterwards.
+          seeded=no
+          for U in supabase_admin supabase_auth_admin postgres; do
+            if psql "postgresql://${U}:postgres@localhost:5432/postgres" -v ON_ERROR_STOP=1 -q -f auth_stubs.sql 2>seed_err.log; then
+              echo "Seeded auth stubs as ${U}"; seeded=yes; break
+            fi
+            echo "  seed as ${U}: $(tail -1 seed_err.log 2>/dev/null || echo 'failed')"
+          done
+          if psql "$DRILL_DB_URL" -tAc "select 1 from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='auth' and p.proname='jwt'" 2>/dev/null | grep -q 1; then
+            echo "✅ auth.jwt() present — restore can proceed"
+          else
+            echo "::error::could not seed auth.jwt() as any candidate role (see role landscape above)."
+            exit 1
+          fi
+
+      # ── Restore into the throwaway container (tolerant; gate on outcome, not stderr) ──
+      - name: Restore roles → schema → data
+        run: |
+          set -uo pipefail
+          run_sql () {  # $1 = file; replay tolerantly, summarise errors
+            local f="$1" log="${1##*/}.log"
+            if [ ! -f "$f" ]; then echo "  (skip $f — not in tarball)"; return 0; fi
+            psql "$DRILL_DB_URL" -v ON_ERROR_STOP=0 -q -f "$f" >"unpack/${log}" 2>&1 || true
+            echo "  $(basename "$f"): $(grep -c '^ERROR' "unpack/${log}" || true) statement error(s) (benign on a pre-initialised image)"
+          }
+          echo "Restoring into throwaway supabase/postgres…"
+          run_sql unpack/roles.sql
+          run_sql unpack/schema.sql
+          run_sql unpack/data.sql
+          # No auth_data.sql expected/restored — this plane has 0 auth.users (live 2026-08-11).
+
+      # ── Sanity-check the restored DB + compute RTO ──
+      - name: Verify restored database
+        run: |
+          set -euo pipefail
+          q () { psql "$DRILL_DB_URL" -tAc "$1" 2>/dev/null || echo "ERR"; }
+          CUST=$(q "select count(*) from app_data.customers")
+          SITES=$(q "select count(*) from app_data.sites")
+          TABLES=$(q "select count(*) from information_schema.tables where table_schema in ('public','app_data','service')")
+          NORLS=$(q "select count(*) from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname='public' and c.relkind='r' and not c.relrowsecurity")
+          T1=$(date -u +%s); RTO=$(( T1 - ${T0} ))
+
+          echo "──── eq-canonical-internal restore-drill result (backup ${LATEST}) ────"
+          printf '  %-22s restored=%-6s expected=%s\n' "app_data.customers" "$CUST"  "$EXPECT_CUSTOMERS"
+          printf '  %-22s restored=%-6s expected=%s\n' "app_data.sites"     "$SITES" "$EXPECT_SITES"
+          echo "  tables(public,app_data,service)=${TABLES}   public-tables-without-RLS=${NORLS} (baseline ${RLS_BASELINE})"
+          echo "  RTO (pull + restore + verify): ${RTO}s"
+          echo "─────────────────────────────────────────────────────────────────────"
+
+          # Gate: the canonical core (customers, sites) must be present and queryable —
+          # that is "restorable". Mirrors ehow's own core gate — same app_data schema shape.
+          if [ "$CUST" = "ERR" ] || [ "$SITES" = "ERR" ]; then
+            echo "::error::core tables not queryable after restore — schema restore failed."
+            exit 1
+          fi
+          if [ "$CUST" -le 0 ] || [ "$SITES" -le 0 ]; then
+            echo "::error::core tables empty after restore (customers=$CUST sites=$SITES) — backup not restorable."
+            exit 1
+          fi
+          # RLS must not be WORSE than the live baseline (restore must not silently drop RLS).
+          if [ "$NORLS" != "ERR" ] && [ "$NORLS" -gt "$RLS_BASELINE" ]; then
+            echo "::error::restore left $((NORLS - RLS_BASELINE)) extra public table(s) without RLS vs baseline ${RLS_BASELINE}."
+            exit 1
+          fi
+          echo "DRILL_SUMMARY=customers=$CUST sites=$SITES tables=$TABLES norls=$NORLS RTO=${RTO}s from=${LATEST}" >> "$GITHUB_ENV"
+          echo "✅ eq-canonical-internal backup ${LATEST} RESTORED and verified sound in ${RTO}s."
+
+      - name: Print drill summary
+        if: always()
+        run: echo "${DRILL_SUMMARY:-<drill did not reach summary>}"
+
+      # ── Sentry cron: report terminal status ──
+      - name: Sentry check-in (ok)
+        if: success() && env.SENTRY_BASE != ''
+        run: |
+          set -uo pipefail
+          if [ -n "${SENTRY_CID:-}" ]; then
+            curl -sS -X PUT "${SENTRY_BASE}/${SENTRY_CID}/" \
+              -H 'Content-Type: application/json' -d '{"status":"ok"}' >/dev/null || true
+          else
+            curl -sS "${SENTRY_BASE}/?status=ok" >/dev/null || true
+          fi
+          echo "Sentry monitor checked in: ok"
+
+      - name: Sentry check-in (error)
+        if: failure() && env.SENTRY_BASE != ''
+        run: |
+          set -uo pipefail
+          if [ -n "${SENTRY_CID:-}" ]; then
+            curl -sS -X PUT "${SENTRY_BASE}/${SENTRY_CID}/" \
+              -H 'Content-Type: application/json' -d '{"status":"error"}' >/dev/null || true
+          else
+            curl -sS "${SENTRY_BASE}/?status=error" >/dev/null || true
+          fi
+          echo "Sentry monitor checked in: error"
