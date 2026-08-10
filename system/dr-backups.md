@@ -10,7 +10,7 @@ status: live
 # Disaster Recovery — platform backups
 
 **Owner:** Royce
-**Status:** ✅ LIVE + **restore-proven** — all three backups green daily (data + COPY-format auth); **automated daily restore-verify** green (`verify-backup-ehow`: archive intact + exact rows); **automated quarterly restore-drill** green (`restore-drill-ehow` actually restored the 2026-07-04 tarball into an ephemeral Postgres — 241 sites / 44 customers / 4 checks, RLS intact, **RTO 6 s**); eq-service copy **retired** ([PR #438](https://github.com/eq-solutions/eq-service/pull/438) merged). Only auth-data restore into a real Supabase target + the app-repoint smoke test remain a rare human game-day.
+**Status:** ✅ LIVE + **restore-proven** — all three backups green daily (data + COPY-format auth); **automated daily restore-verify** green on all three planes (`verify-backup-{ehow,eq-canonical,eq-canonical-internal}`: archive intact + exact rows); **automated quarterly restore-drill** green on ehow (`restore-drill-ehow` actually restored the 2026-07-04 tarball into an ephemeral Postgres — 241 sites / 44 customers / 4 checks, RLS intact, **RTO 6 s**); eq-service copy **retired** ([PR #438](https://github.com/eq-solutions/eq-service/pull/438) merged). **2026-08-11: restore-drill extended to eq-canonical + eq-canonical-internal** (`restore-drill-eq-canonical.yml` / `restore-drill-eq-canonical-internal.yml`) — same mechanics, calibrated against live counts that day (eq-canonical: 4 tenants / 110 memberships / 73 auth.users; eq-canonical-internal: 50 customers / 30 sites, 0 auth.users by design). **Armed, first proving run pending** — not yet dispatched, so "restore-proven" above still describes ehow only until that first run goes green. Only auth-data restore into a real Supabase target + the app-repoint smoke test remain a rare human game-day.
 **Scope:** the shared EQ platform substrate. SKS-only DBs are out of scope (SKS owns their DR).
 **Last reviewed:** 2026-07-04 (issue [#60](https://github.com/eq-solutions/eq-context/issues/60), verified live)
 
@@ -183,6 +183,16 @@ is proven in **two layers**, rather than relying on a human remembering a quarte
   verifies the app-data comes back — reporting a real **RTO**. First run 2026-07-04: ✅ 241 sites /
   44 customers / 4 checks restored, 210 tables, RLS coverage = live baseline, **RTO 6 s**. (It seeds
   the `auth.jwt()`/`uid()` stubs the schema depends on, as `supabase_admin`, before restoring.)
+  **2026-08-11 — same pattern extended to the other two planes**, closing the "ehow-only" gap below:
+  [`restore-drill-eq-canonical.yml`](../.github/workflows/restore-drill-eq-canonical.yml) (Sentry
+  `eq-canonical-restore-drill`, gates on `shell_control.tenants`/`user_tenant_memberships` +
+  reports `auth.users`) and
+  [`restore-drill-eq-canonical-internal.yml`](../.github/workflows/restore-drill-eq-canonical-internal.yml)
+  (Sentry `eq-canonical-internal-restore-drill`, gates on `app_data.customers`/`sites` — no auth
+  step, this plane has 0 `auth.users` by design). Both quarterly + `workflow_dispatch`, staggered an
+  hour after ehow's slot (07:00 / 08:00 UTC on the 1st of Jan/Apr/Jul/Oct) so the three drills don't
+  contend on the same runner. **Written and armed, not yet proven** — first run pending a manual
+  `workflow_dispatch` after merge, same as ehow's own first-run proof above.
 - **Rare, manual — auth-data restore + app-repoint.** Two things automation can't cheaply cover:
   restoring **auth data** into a true Supabase target (the dump excludes the managed auth *schema*,
   so auth rows load only where Supabase provisions it — a fresh project/branch, not a bare
@@ -240,11 +250,10 @@ moved to `--use-copy`.
   at this scale"). ehow/eq-canonical/eq-canonical-internal carry the same cost logic by inheritance,
   not by a direct call — worth a one-line yes/no from Royce rather than assuming it still holds at
   this scale.
-- **Restore-drill coverage is ehow-only** (found 2026-08-11) — `restore-drill-ehow.yml` is the only
-  restore-drill workflow that exists. eq-canonical and eq-canonical-internal get the daily
-  `verify-backup-*` integrity check (archive intact, rows present) but have **never had an actual
-  restore tested** — no workflow restores their tarball into a working database the way the ehow
-  drill does. Same pattern would need parameterising per project, same as the backup jobs themselves.
+- ~~**Restore-drill coverage is ehow-only**~~ **CLOSED same day (2026-08-11)** — `restore-drill-eq-canonical.yml`
+  and `restore-drill-eq-canonical-internal.yml` now exist, parameterising the proven ehow pattern
+  per project (see "Proving restorability" above). Still needs a first `workflow_dispatch` proving
+  run on each before "restore-proven" (Status line, top of this doc) can honestly extend past ehow.
 - **Code repos have no backup coverage** (found 2026-08-11) — this doc, and every job it describes,
   covers Supabase DBs and storage only. No repo is mirrored, exported, or otherwise backed up beyond
   GitHub's own hosting durability plus whatever exists as local clones. Worth a decision on whether
