@@ -8,27 +8,27 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-10 11:52 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-10 12:56 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-10 11:29 UTC → 2026-08-10 11:52 UTC)
+## Since last refresh (2026-08-10 11:52 UTC → 2026-08-10 12:56 UTC)
 
-- Merged: eq-shell [#1285](https://github.com/eq-solutions/eq-shell/pull/1285) fix(ci): field-perms-drift skips cleanly until FIELD_PERMS_D
-- Merged: eq-shell [#1281](https://github.com/eq-solutions/eq-shell/pull/1281) feat(access-control): expose eq-field's 74 fine-grained perm
+- Merged: eq-shell [#1286](https://github.com/eq-solutions/eq-shell/pull/1286) fix(deps): resolve 2 high-severity Dependabot alerts (js-yam
+- Merged: eq-shell [#1283](https://github.com/eq-solutions/eq-shell/pull/1283) fix(rls): restrict commercial-table writes to management tie
+- Merged: eq-shell [#1265](https://github.com/eq-solutions/eq-shell/pull/1265) fix(ops): stop tenant-data-proxy crashing on 204 responses (
 - Merged: eq-solves-service [#696](https://github.com/eq-solutions/eq-service/pull/696) feat(migrations): extend --verify to catch function signatur
 - Merged: eq-solves-service [#695](https://github.com/eq-solutions/eq-service/pull/695) docs(ci): fix stale approval-gate comment on apply-service-m
 - Merged: eq-solves-service [#694](https://github.com/eq-solutions/eq-service/pull/694) feat(testing): compute RCD circuit pass/fail, auto-create de
 - Merged: eq-solves-service [#693](https://github.com/eq-solutions/eq-service/pull/693) fix(maintenance): archived checks still reachable by direct 
 - Merged: eq-solves-service [#692](https://github.com/eq-solutions/eq-service/pull/692) fix(testing): assignee picker empty on ACB/NSX Create Check
-- Merged: eq-solves-service [#686](https://github.com/eq-solutions/eq-service/pull/686) chore(deps-dev): bump @vitejs/plugin-react from 6.0.4 to 6.0
+- ✅ Needs you: 6 → 5
 
-## ⚠ Needs you (6)
+## ⚠ Needs you (5)
 
 - 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-9 (P0 — confirmed exposure, same window as SEC-3, possible second exposure 2026-07-27) — A different service_role key (`jvkn`/eq-canonical) was pasted directly into a ch · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-24 (P1 — OPEN, found 2026-08-08) — `QUOTES_CRON_SECRET` on eq-shell stored `is_secret: false` — full plaintext retu · [security-register.md](ops/security-register.md)
 - 🟠 **PR aging 7d** — eq-solves-service [#688](https://github.com/eq-solutions/eq-service/pull/688) "chore(deps): bump @sentry/nextjs from 10.68.0 to 10.69.0"
 - 🟠 **PR aging 7d** — eq-solves-service [#687](https://github.com/eq-solutions/eq-service/pull/687) "chore(deps-dev): bump eslint-config-next from 16.2.2 to 16.3.0"
-- 🟠 **PR aging 7d** — eq-solves-service [#685](https://github.com/eq-solutions/eq-service/pull/685) "chore(deps): bump react-dom and @types/react-dom"
 
 ## 🙋 Waiting on you (104)
 
@@ -52,8 +52,8 @@ _…and 92 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 2 | 2d |
-| eq-solves-service | ✓ success | 0d ago | 3 | 7d |
+| eq-shell | ✓ success | 0d ago | 1 | — |
+| eq-solves-service | ✓ success | 0d ago | 2 | 7d |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 1 | — |
 | eq-solves-intake | ✓ success | 2d ago | 0 | — |
@@ -127,7 +127,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 3220 | 562 | 24 | 12 |
+| [EQ](eq/pending.md) | 3214 | 561 | 24 | 12 |
 | [SKS](sks/pending.md) | 409 | 83 | 0 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 402 | 37 | 0 | 1 |
@@ -148,4 +148,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-10 11:52 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-10 12:56 UTC._
