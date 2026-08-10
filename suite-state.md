@@ -1,14 +1,14 @@
 ---
 title: EQ Suite — Current State
 owner: Royce Milmlow
-last_updated: 2026-08-09
+last_updated: 2026-08-10
 scope: Live suite state — app lineup, DB counts, open PRs, architectural decisions. Auto-refreshed nightly by GitHub Action.
 read_priority: critical
 status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-08-09 (nightly cron)_
+_Last verified: 2026-08-10 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -41,7 +41,7 @@ _If this file is >48h old, the cron is broken._
 | Tenants | 1 (SKS Technologies) | service.tenants |
 | Users | 5 | service.tenant_members |
 | Maintenance checks | 35 | service.maintenance_checks |
-| Defects | 0 | service.defects |
+| Defects | 1 | service.defects |
 
 **SKS tenant ID on ehow:** `7dee117c-98bd-4d39-af8c-2c81d02a1e85`
 **Demo tenant ID:** `a0000000-0000-0000-0000-000000000001`
@@ -58,7 +58,7 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-08-09)
+## Open PRs (as of 2026-08-10)
 
 **eq-cards:**
 - #219 feat(labour-hire): candidate intake — control-layer profile + licence staging
@@ -76,13 +76,13 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## System Health (as of 2026-08-09)
+## System Health (as of 2026-08-10)
 
 **CI on main:**
 
 | Repo | Status |
 |------|--------|
-| eq-service | ✓ success |
+| eq-service | ? in_progress |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
