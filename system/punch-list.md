@@ -34,31 +34,7 @@ actually being worked **right now**.
 
 ---
 
-## Active (5)
-
-### 1. Onboarding procedure — suite-wide, not just Cards
-Settled for Cards specifically: self-join-only by design, `AdminBulkInvite.tsx`
-solves a different problem, not a real gap (`eq/pending-archive.md`,
-2026-08-08). Not yet written down as one place that states, per app/scenario,
-who uploads onboarding info. **Done =** one doc states the intended flow
-per scenario.
-
-**Proposed done, 2026-08-11 — your call to tick off:** `eq/identity/worker-onboarding-flows.md`
-now states the per-app flow (Cards settled, Shell admin/worker-invite,
-Field manager-driven, Service read-only from Shell), written 2026-08-10.
-
-### 2. Definitive backup rules plan
-Target design exists (`system/infrastructure.md` → "Backup strategy — target
-state"), never turned into a plan actually being followed. PITR explicitly
-declined already (`eq/pending-archive.md`, 2026-07-23). **Done =** a written
-plan — what's backed up, how often, retention, restore-test cadence.
-
-**Proposed done, 2026-08-11 — your call to tick off:** the old target-state
-section in `system/infrastructure.md` was stale (planned, never built) —
-corrected 2026-08-10 to point at `system/dr-backups.md`, the actual
-shipped implementation (full logical dump + all buckets + Sentry cron
-check-in, ~6¢/mo, not zero-touch — see [[platform-dr-plain-english]] memory
-for the plain-English version).
+## Active (2)
 
 ### 3. Mobile polish (Field/Cards) — close the remainder
 8 PRs merged 2026-08-08 in eq-field already. Remaining un-eyeballed screens
@@ -78,15 +54,37 @@ on the licence-detail screen (uncapped metadata rows), sized Small.
 Everything else checked is fine as-is. Ready for a build session whenever
 you want it — not started.
 
-### 5. Write up "what intake does" as a durable answer
-Already answered — cross-repo audit closed the question 2026-08-08
-(`eq/pending.md:17-31`, session close). Currently only lives as a pending
-entry. **Done =** a short reference doc (or a pointer added to
-`eq/products.md`) so the question doesn't get re-asked next quarter.
+---
 
-**Proposed done, 2026-08-11 — your call to tick off:** `eq/products.md`
-gained a "EQ Intake — import/write-time engine" section 2026-08-10, with
-the per-app usage table (Shell yes; Service/Field/Cards no, with reasons).
+## Closed
+
+### 1. Onboarding procedure — suite-wide, not just Cards
+**Closed 2026-08-11, confirmed by Royce.** `eq/identity/worker-onboarding-flows.md`
+states the per-app flow (Cards self-join, Shell admin/worker-invite, Field
+manager-driven, Service read-only from Shell) — written 2026-08-10, verified
+against live code before being marked done (every citation checked against
+the real repos). Two nuances worth knowing but not gaps in the doc: Cards
+self-join has a manager-approval gate on by default (not fully zero-touch),
+and Field's CSV-import fix (PR #660) is live but not yet click-tested on
+real data.
+
+### 2. Definitive backup rules plan
+**Closed 2026-08-11, confirmed by Royce.** `system/infrastructure.md`'s stale
+"target state, not built" section was corrected to point at
+`system/dr-backups.md` — the plan that actually shipped 2026-07-04/05
+(full logical dump + all buckets + Sentry cron check-in, daily automated
+restore-verify, one proven quarterly restore-drill). 3 real gaps found during
+the confirmation pass, folded into `dr-backups.md`'s own Follow-ups section
+rather than reopening this item: no restore-drill exists for eq-canonical or
+eq-canonical-internal (only ehow has ever had a restore proven), no backup
+coverage for the GitHub repos themselves (DB/storage only), and PITR-off is
+only formally decided for SKS Labour — the three platform-DR projects carry
+the same cost logic without an explicit re-confirm.
+
+### 5. Write up "what intake does" as a durable answer
+**Closed 2026-08-11, confirmed by Royce.** `eq/products.md` gained a
+"EQ Intake — import/write-time engine" section 2026-08-10, with the real
+per-app usage table (Shell yes; Service/Field/Cards no, with reasons).
 
 ---
 
