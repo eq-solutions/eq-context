@@ -64,13 +64,11 @@ _If this file is >48h old, the cron is broken._
 - #221 refactor(auth): shell-verify.js relays to eq-shell instead of local crypto
 
 **eq-service:**
-- #688 chore(deps): bump @sentry/nextjs from 10.68.0 to 10.69.0
-- #687 chore(deps-dev): bump eslint-config-next from 16.2.2 to 16.3.0
-- #685 chore(deps): bump react-dom and @types/react-dom
+- #697 chore(deps): bump @eq-solutions/ui to v1.14.0
 
 **eq-shell:**
+- #1295 chore(deps): bump @eq-solutions/ui to v1.14.0
 - #1294 feat(cards): centralize Cards' SSO minting via token-exchange-cards.ts
-- #1284 chore(intake): auto re-vendor eq-intake/eq-platform
 
 ---
 
