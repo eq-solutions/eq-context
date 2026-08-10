@@ -1,13 +1,17 @@
 ---
 title: EQ Service — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-01
+last_updated: 2026-08-11
 scope: EQ Service append-only history. NOTE — duplicates eq/changelog/service.md, which stalls mid-deploy at 2026-06-09; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # EQ Service — Changelog
+
+## 2026-08-11
+- **PR #688 (MERGED) — fixed a real typecheck break in the `@sentry/nextjs` 10.69.0 dependency bump.** The bump left two mismatched `@sentry/core` copies in `node_modules` (bundler-plugins still pinned 10.68.0, npm hoisted it over the newer direct copy), breaking `sentry.server.config.ts`'s typed `beforeSend` callback. Fixed by dropping the bare `@sentry/core` type import and letting the type flow contextually from `Sentry.init` instead — one line, no lockfile changes. Verified via clean typecheck, full build, 393/393 tests, 0 audit vulnerabilities.
+- **PR #687 (MERGED) — eslint-config-next 16.3.0 bump, no code change needed.** Its one failing check (`Integration tests`) traced to a pre-existing, `main`-independent infra bug (migration `0152` / `app_data` schema bootstrap ordering) — confirmed identical lint output before/after the bump, and this repo doesn't even run lint in CI.
 
 ## 2026-08-01
 - **PR #670 (MERGED) — cover logo band redesigned: centred, transparent, on-dark.** Royce's direct feedback on a live sample: "should be centred and transparent / using for dark background." The no-photo cover band (shared by the PM Asset Report and PM Check Report) put the customer logo in a white inset plate and always used the light-surface variant, even though the band itself is the tenant's dark brand colour. Removed the plate; logo now sits directly on the band, centred, dark-surface variant with a light fallback. Verified by generating a real sample with the live Equinix logo and confirming directly in the docx XML — no white fill left, genuinely centred.
