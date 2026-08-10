@@ -14,6 +14,16 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-solves-service: maintenance_checks is_active/deleted_at sync gap (2026-08-10)
+*Surfaced while chasing down a "68-day overdue" check flagged in `TODAY.md`'s FACTS refresh — that check turned out to be soft-deleted, which led to finding and fixing 3 unfiltered by-ID read/write paths ([eq-service PR #693](https://github.com/eq-solutions/eq-service/pull/693), merged). This is the one real gap found but not fixed that session.*
+
+- [ ] **`archiveTestingCheckAction` (`app/(app)/testing/check-actions.ts`) soft-deletes via `is_active: false` only — never stamps `deleted_at`.** The auto-stamping `set_deleted_at` trigger (migration `0035`) was only ever created on `public.maintenance_checks`; production reads/writes `app_data.maintenance_checks`, which has no such trigger. `service.maintenance_checks`'s `INSTEAD OF UPDATE` trigger (migration `0147`) just echoes back whatever `deleted_at` already was — it doesn't stamp `now()` either.
+- **Verified live impact, 2026-08-10: currently benign.** Of 35 total rows, 2 have `is_active=false` with `deleted_at` still null (the sync gap is real, not theoretical) — but 0 rows have `is_active=true` with `deleted_at` set, so nothing is leaking through the app's `is_active`-based filters today. Latent, not active.
+- **Why it's still worth fixing:** the Archive page's grace-period/auto-purge countdown (migrations `0035`, `0193`) reads `deleted_at`. For those 2 rows, that countdown either never started or is silently wrong.
+- **Fix options, neither built:** (a) have `archiveTestingCheckAction` stamp `deleted_at: new Date().toISOString()` explicitly alongside `is_active: false` — smaller, safer, one call site; (b) create the missing `set_deleted_at` trigger on `app_data.maintenance_checks` to match `public.maintenance_checks` — more durable, catches every future archive path, not just this one action.
+
+---
+
 ## eq-shell: image-size DoS patched locally + nanoid re-vendor fixed properly + suite-wide sweep (2026-08-08)
 *Continuation of the same day's earlier Dependabot sweep (see below) — Royce asked to fix the 2 remaining deferred items rather than leave them open.*
 
