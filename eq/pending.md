@@ -14,6 +14,37 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-cards: info-density scoping — which screens, what collapses (2026-08-10)
+*Punch-list item 4 ("Cards is very heavy on information — look at simplifying or collapsing info unless a user clicks around") said "needs scoping first." This is that scoping pass — code survey only, no UI changes made. Screen line count used as a rough density proxy, then read the actual outlier to find the real cause.*
+
+- **Clear outlier: `licences_list_screen.dart` (2,022 lines, 55 `Text()` calls)** — more than double the next-biggest screen (`licence_edit_screen.dart`, 1,429 lines; `settings_screen.dart`, 1,224). The other big screens (`profile_screen.dart` 764, `admin_worker_detail_screen.dart` 773, `card_screen.dart` 710) are each in a normal range — the density complaint is really about one screen, not the app broadly.
+- **The individual licence list-item cards are already lean** — thumbnail, title, one meta line, an expiry badge, a privacy toggle, a conditional Renew button. Not the problem.
+- **The real cause: screen-level banner stacking, not the list itself.** Before a user reaches their actual licences, the wallet screen can show, in order: an offline banner, a wallet health card (valid/expiring/expired counts), a pending-connections banner, an outgoing-requests banner, and a required-by-org strip — plus first-run onboarding, first-licence-success, and connection-confirmation moments layered on top via post-frame callbacks. Several of these can legitimately be true at once, so a returning user with a normal wallet can see 3-4 stacked cards before any licence.
+- **What "collapse unless clicked" concretely means here:** candidates are the wallet health card (could collapse to a single-line summary that expands on tap) and consolidating the pending-connections / outgoing-requests / required-by-org strips into one "Needs your attention (N)" affordance instead of one card each. Not scoped further than this — actual collapse/expand UX is a design decision, not made here.
+- [ ] **Not built.** Royce to decide whether this graduates back onto `system/punch-list.md` for the actual simplification work, given the goal's current exclusion on live UI changes affecting real users while overseas. _(added 2026-08-10)_
+
+---
+
+## eq-service: RCD circuit pass/fail computed + auto-defect on fail — built, shipped, dispatched live (2026-08-10)
+*Asked to check the current RCD testing flow and compare against industry practice — RCD was the only test module that never computed pass/fail (ACB/NSX/generic tests all auto-create a defect from a failed reading; RCD stored trip-time data but never compared it to a limit). Scoped as an implementation plan, confirmed, built.*
+
+- [x] New migration adds a compute trigger on `app_data.rcd_test_circuits` (30mA-rated circuits only — the only rating in live data — per Royce's explicit scoping call; other ratings stay `NULL` rather than guessed) and an auto-defect trigger mirroring the existing ACB/NSX pattern (`fn_acb_reading_to_defect`) exactly. [eq-service PR #694](https://github.com/eq-solutions/eq-service/pull/694), merged, migration dispatched + live-verified on ehow (`is_pass` column, `source_rcd_circuit_id`, both triggers all confirmed present).
+- [x] Report (docx) and the live RCD editor now shade pass/fail with the same green/red convention the ACB/NSX detail tables already use.
+- [x] Found + fixed a stale, self-contradicting comment in `apply-service-migrations.yml` while dispatching — one inline comment claimed the `production` environment pauses for a required-reviewer approval, the file's own header comment said the opposite. Re-verified live: dispatch runs DDL against ehow immediately, no pause. [eq-service PR #695](https://github.com/eq-solutions/eq-service/pull/695), merged.
+- [ ] **Threshold values not independently verified against primary standard text** — 300ms trip time at rated current / 100ms at 5× rated current for 30mA RCDs, sourced from AS/NZS 3000 Table J1 via web search, flagged explicitly in the PR. Worth Royce's direct confirmation these are the right numbers before they're the sole gate on a real compliance defect. _(added 2026-08-10)_
+- [ ] **Not click-tested live** — verified end-to-end via a rolled-back transaction against live ehow (untested/pass/fail/nuisance-trip/unverified-rating cases, create-on-fail, auto-resolve-on-refix) and by inspecting the generated docx's actual XML for the expected shading, but never through the real browser UI. _(added 2026-08-10)_
+- [ ] **Remaining RCD improvements scoped but not built**: restructure the flat single-page circuit grid into the same 3-step wizard ACB/NSX use, and generalize the schema off Jemena's specific shape (hardcoded section labels, per-circuit ID field, calendar-month-driven test cycle) before a second customer needs RCD. _(added 2026-08-10)_
+
+---
+
+## eq-service: app_data fresh-bootstrap CI fixture — still blocked on Docker, work uncommitted (2026-08-10)
+*Spawned as a background task off the earlier CI-bootstrap investigation (2026-08-08) — the local/CI Supabase bootstrap can't recreate `app_data` (owned by eq-shell, never captured by this repo's own migration history), so the integration-test suite has never actually run successfully in CI.*
+
+- [ ] **Blocked on Docker Desktop** — launches then exits within ~1-2 min with no crash log in this environment, no GUI automation available to click past what looks like an undismissed first-run dialog. Real progress made without it: root cause confirmed (`app_data` is eq-shell's to recreate, not this repo's), a drift-check script + weekly CI workflow written, and the live `app_data` shape captured (147 tables, 2378 columns) via SQL. The actual DDL snapshot migration is what's blocked.
+- [ ] **Work sits uncommitted, not lost** — on branch `fix/integration-ci-app-data-bootstrap` in the shared root checkout at `C:\Projects\eq-solves-service`. Needs Royce to get Docker running (or hand over a `supabase db dump` directly, or greenlight a pure-SQL fallback) to resume. _(added 2026-08-10)_
+
+---
+
 ## eq-solves-service: maintenance_checks is_active/deleted_at sync gap (2026-08-10)
 *Surfaced while chasing down a "68-day overdue" check flagged in `TODAY.md`'s FACTS refresh — that check turned out to be soft-deleted, which led to finding and fixing 3 unfiltered by-ID read/write paths ([eq-service PR #693](https://github.com/eq-solutions/eq-service/pull/693), merged). This is the one real gap found but not fixed that session.*
 
