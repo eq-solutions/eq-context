@@ -34,7 +34,7 @@ actually being worked **right now**.
 
 ---
 
-## Active (3)
+## Active (2)
 
 ### 3. Mobile polish (Field/Cards) — close the remainder
 8 PRs merged 2026-08-08 in eq-field already. Remaining un-eyeballed screens
@@ -51,16 +51,9 @@ around." **Needs scoping first** — which screens, what collapses by default.
 new/mid-setup worker, plus urgent items rendering twice); proposed fix is a
 collapsible "To do" summary + de-dupe, sized Medium. One small companion fix
 on the licence-detail screen (uncapped metadata rows), sized Small.
-Everything else checked is fine as-is. Ready for a build session whenever
-you want it — not started.
-
-### 12. Simultaneous users — how it works, limits, edge cases
-Added 2026-08-11, from the same 2026-08-08 brain dump. No consolidated answer
-exists — only incidental fixes have surfaced (Cards' multi-tab session-collision
-bug, root-caused and fixed, PR #212 2026-08-04; a synchronized-login-burst load
-test flagged 2026-08-06 as never actually run). **Done =** a written answer —
-how session/auth concurrency actually works across the suite today, and what
-the real limits and edge cases are, not assumed ones. Investigation in progress.
+Everything else checked is fine as-is. **Royce is sending screenshots of the
+first-open popup/info overload separately** — reconcile against this scope
+before building, don't build from this doc alone.
 
 ---
 
@@ -84,17 +77,6 @@ draws.
 
 ---
 
-## Being scoped, not active build (2026-08-11)
-
-- **Apprentices onto tracker** — the biggest debt in the original brain dump
-  (missing tables, Field-twin sync, JWT routing, org RLS — 42 days stale).
-  Touches auth/RLS, so it's deliberately **not** going on the active build
-  list while the current goal says no live/auth changes overseas. Scoping
-  (research + a written plan) is happening now; nothing gets built without
-  an explicit go-ahead once you're able to review the auth pieces directly.
-
----
-
 ## Closed
 
 ### 1. Onboarding procedure — suite-wide, not just Cards
@@ -106,6 +88,25 @@ the real repos). Two nuances worth knowing but not gaps in the doc: Cards
 self-join has a manager-approval gate on by default (not fully zero-touch),
 and Field's CSV-import fix (PR #660) is live but not yet click-tested on
 real data.
+
+### 9. Apprentices onto tracker
+**Closed 2026-08-11 — was never actually the "largest debt," pending.md was
+stale.** The tables/grants/RLS the old bullet described as outstanding were
+shipped the same day it was logged (2026-06-30, PR #371) — the bullet just
+never got updated. Live-verified: all 8 tables, zero security-advisor
+issues, a real 2,501-line feature live on field.eq.solutions. The two
+genuinely open pieces both resolved same day: Royce declined the `field_*`
+canonical-twin build (nothing's broken, not needed), and 2 orphan test rows
+were verified dangling and deleted live on ehow. Full corrected scope:
+`eq/apprentices-cluster-scoping-2026-08-11.md`.
+
+### 12. Simultaneous users — how it works, limits, edge cases
+**Closed 2026-08-11.** `eq/identity/simultaneous-users-2026-08-11.md` — one
+real bug found, already fixed (Cards' multi-tab session collision, live
+since 2026-08-05); multi-device-same-person is sound by design, no seat caps
+anywhere. Honest gap surfaced, not closed: multi-person-same-tenant-at-volume
+has never been load-tested — the one number that exists is scoped to a
+legacy DB, not the ones the platform runs on now.
 
 ### 2. Definitive backup rules plan
 **Closed 2026-08-11, confirmed by Royce.** `system/infrastructure.md`'s stale
