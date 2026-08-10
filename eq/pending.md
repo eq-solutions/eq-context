@@ -136,7 +136,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ## eq-service: `next_variation_number` cross-tenant gap — CLOSED, live (2026-08-10)
 
-- [ ] **Process gap flagged, not yet built**: eq-service's migration `--verify` tooling only checks object *existence*, not signature drift — this is how `0140` slipped through it earlier. Spun off as background task `task_808f61f4` to extend `--verify` to catch signature drift, not just presence. _(added 2026-08-10)_
+- [ ] **`--verify` signature-drift check built, PR open, not yet merged** — [eq-service PR #696](https://github.com/eq-solutions/eq-service/pull/696) extends the migration `--verify` tooling to catch a DROP+CREATE FUNCTION signature change whose live signature still matches the pre-migration (dropped) form, the exact blind spot that let `0140` through undetected. Live-validated end-to-end in the PR's own CI run against real ehow credentials: `171 unverified · 0 MISMATCH · 0 SIGNATURE DRIFT` — correctly clean now that 0140 is fixed, no false positives across the other 171 files. `tsc + next build` and `Typecheck + audit` both pass; `Integration tests (Supabase local)` is this repo's known pre-existing failure, not a real gate. Royce to merge. _(added 2026-08-10)_
 
 ---
 
