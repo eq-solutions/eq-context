@@ -65,11 +65,10 @@ _If this file is >48h old, the cron is broken._
 - #687 chore(deps-dev): bump eslint-config-next from 16.2.2 to 16.2.12
 - #686 chore(deps-dev): bump @vitejs/plugin-react from 6.0.4 to 6.0.5
 - #685 chore(deps): bump react-dom and @types/react-dom
-- #684 chore(deps): bump the eq-design-system group with 2 updates
+- #684 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 
 **eq-shell:**
 - #1284 chore(intake): auto re-vendor eq-intake/eq-platform
-- #1279 feat(staff): labour-hire candidate review + ops intake tool
 
 ---
 
