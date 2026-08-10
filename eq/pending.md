@@ -103,13 +103,9 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## eq-service: live cross-tenant info-disclosure gap in `next_variation_number` — CLOSED, live (2026-08-10)
-*Also surfaced by the branch-audit agent 2026-08-08, initially mis-described as "auto-generated variation numbers are broken" — that part was wrong and corrected; the real finding was a security gap, not a functional bug. Actually correct 2026-06-20 (PR #321, merged 13 days before the backfill that phantom-marked it), not 2026-07-03 as first recorded here.*
+## eq-service: `next_variation_number` cross-tenant gap — CLOSED, live (2026-08-10)
 
-- [x] **Root cause**: migration `0140_harden_next_variation_number.sql` (PR #321, merged 2026-06-20) was never applied to ehow — its ledger row was falsely marked "applied" by the one-time 2026-07-03 grandfather backfill (`checksum: null, applied_by: 'backfill-2026-07-03'`), so the governed pipeline's runner silently skipped it on every dispatch since. Live RPC had the old 2-arg signature (`p_tenant_id uuid, p_year integer`), EXECUTE-granted to `authenticated` — any tenant could enumerate another tenant's variation-number sequence by passing their UUID.
-- [x] **Fix**: deleted the phantom `0140` ledger row on ehow, dispatched `apply-service-migrations.yml` (run [31381351162](https://github.com/eq-solutions/eq-service/actions/runs/31381351162), 16s). Live-verified: `service.next_variation_number` now takes a single `p_year integer` arg, tenant derived from JWT — the old signature is gone. _(2026-08-10)_
-- [x] **Systemic check**: the same 2026-07-03 backfill phantom-marked 172 migrations total, not just 0140 — audited all of them before touching anything. Result: 0140 was isolated. 4 others from the same backfill (`0102`/`0104`, `0126`/`0129`, `0089`) had already been independently found and fixed by PR #614's own `--verify` tooling (`docs/HISTORY.md`) between 2026-07-08 and 2026-07-28. One more (`0136_lock_internal_identity_helpers.sql`) is dead code PR #614's audit missed — locks down two functions that were never created because their own creator migration was also phantom; nothing live to expose. Everything else in the 172 is either genuinely-applied historical schema or superseded dead code with equivalent protection already live under `app_data`/`service`. No other open gaps found.
-- [ ] **Process gap flagged, not yet built**: PR #614's `--verify` only checks object *existence*, which is why it caught the other 4 but not `0140` — 0140's function still existed, just with the old signature. Spun off as a background task (`task_808f61f4`) to extend `--verify` to catch signature drift, not just presence. _(added 2026-08-10)_
+- [ ] **Process gap flagged, not yet built**: eq-service's migration `--verify` tooling only checks object *existence*, not signature drift — this is how `0140` slipped through it earlier. Spun off as background task `task_808f61f4` to extend `--verify` to catch signature drift, not just presence. _(added 2026-08-10)_
 
 ---
 
