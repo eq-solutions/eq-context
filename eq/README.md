@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Index
 owner: Royce Milmlow
-last_updated: 2026-08-03
+last_updated: 2026-08-10
 scope: EQ Solutions work — products, decisions, build state
 read_priority: critical
 status: live
@@ -86,6 +86,7 @@ Every canonical EQ file as a full URL — clickable from `/context/claude`:
 | `identity/onboarding-portable-identity-2026-06-04.md` | Portable-identity onboarding design |
 | `identity/service-canonical-identity-seam-2026-06-25.md` | Service/canonical identity seam design |
 | `identity/worker-credentials-model-2026-05-31.md` | Worker credentials model |
+| `identity/worker-onboarding-flows.md` | Who enters what, per app — answers "who uploads onboarding info" per scenario (Shell/Field/Service/Cards), names the one real gap (Shell↔Field worker duplication, parked in eq-field's own ADR) |
 | `identity/parity-harness/phase1-parity-note-2026-07-10.md` | Phase 1 parity-harness note |
 | `ops/EQ-OPS-ARCHITECTURE.md` | **Read before touching `app_data.quote`, `app_data.jobs`, `job_number`, or the Kanban stage taxonomy** — EQ Ops scope, its relationship to NSW Comms and EQ Field, and the quote-to-job data model |
 | `design/claude-design-context.md` | Claude Design "start with context" brief for EQ brand |
