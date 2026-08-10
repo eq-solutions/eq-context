@@ -8,26 +8,27 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-10 21:46 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-10 23:55 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-10 12:56 UTC → 2026-08-10 21:46 UTC)
+## Since last refresh (2026-08-10 21:46 UTC → 2026-08-10 23:55 UTC)
 
-- Merged: eq-shell [#1285](https://github.com/eq-solutions/eq-shell/pull/1285) fix(ci): field-perms-drift skips cleanly until FIELD_PERMS_D
-- Merged: eq-shell [#1281](https://github.com/eq-solutions/eq-shell/pull/1281) feat(access-control): expose eq-field's 74 fine-grained perm
+- Merged: eq-shell [#1288](https://github.com/eq-solutions/eq-shell/pull/1288) fix(deps): patch image-size DoS + re-vendor to restore the n
+- Merged: eq-shell [#1287](https://github.com/eq-solutions/eq-shell/pull/1287) refactor(customers): reuse @eq/intake's fuzzy matcher instea
+- Merged: eq-shell [#1286](https://github.com/eq-solutions/eq-shell/pull/1286) fix(deps): resolve 2 high-severity Dependabot alerts (js-yam
+- Merged: eq-shell [#1283](https://github.com/eq-solutions/eq-shell/pull/1283) fix(rls): restrict commercial-table writes to management tie
+- Merged: eq-shell [#1265](https://github.com/eq-solutions/eq-shell/pull/1265) fix(ops): stop tenant-data-proxy crashing on 204 responses (
 - Merged: eq-solves-service [#696](https://github.com/eq-solutions/eq-service/pull/696) feat(migrations): extend --verify to catch function signatur
 - Merged: eq-solves-service [#695](https://github.com/eq-solutions/eq-service/pull/695) docs(ci): fix stale approval-gate comment on apply-service-m
 - Merged: eq-solves-service [#694](https://github.com/eq-solutions/eq-service/pull/694) feat(testing): compute RCD circuit pass/fail, auto-create de
-- Merged: eq-solves-service [#693](https://github.com/eq-solutions/eq-service/pull/693) fix(maintenance): archived checks still reachable by direct 
-- Merged: eq-solves-service [#692](https://github.com/eq-solutions/eq-service/pull/692) fix(testing): assignee picker empty on ACB/NSX Create Check
-- Merged: eq-solves-service [#688](https://github.com/eq-solutions/eq-service/pull/688) chore(deps): bump @sentry/nextjs from 10.68.0 to 10.69.0
-- ✅ Needs you: 5 → 4
+- ⚠ Needs you: 4 → 5 (new items)
 
-## ⚠ Needs you (4)
+## ⚠ Needs you (5)
 
 - 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-9 (P0 — confirmed exposure, same window as SEC-3, possible second exposure 2026-07-27) — A different service_role key (`jvkn`/eq-canonical) was pasted directly into a ch · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-24 (P1 — OPEN, found 2026-08-08) — `QUOTES_CRON_SECRET` on eq-shell stored `is_secret: false` — full plaintext retu · [security-register.md](ops/security-register.md)
 - 🟠 **Sentry new error** — `eq-cards` [LateInitializationError: Field '' has not been initialized.](https://eq-solutions.sentry.io/issues/139929381/)
+- 🟠 **Sentry new error** — `eq-cards` [minified:C4: Exception: Could not load Blob from its URL. Ha](https://eq-solutions.sentry.io/issues/131122766/)
 
 ## 🙋 Waiting on you (105)
 
@@ -61,12 +62,12 @@ _…and 93 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 
 | Project | Error | Events | Last seen |
 |---------|-------|--------|-----------|
-| eq-shell | [Error: app_data.staff.cards_worker_id pointing at missing jvkn workers: 2](https://eq-solutions.sentry.io/issues/138175643/) | 8 | 2026-08-09 |
 | eq-cards | [<unknown>](https://eq-solutions.sentry.io/issues/137265513/) | 5 | 2026-08-09 |
 | eq-cards | [LateInitializationError: Field '' has not been initialized.](https://eq-solutions.sentry.io/issues/139929381/) | 4 | 2026-08-10 |
 | eq-cards | [minified:C4: Exception: Could not load Blob from its URL. Has it been revoked?](https://eq-solutions.sentry.io/issues/131122766/) | 4 | 2026-08-10 |
 | eq-cards | [LateInitializationError: Field '' has not been initialized.](https://eq-solutions.sentry.io/issues/136695941/) | 4 | 2026-08-04 |
 | eq-cards | [minified:a3W: FunctionException(status: 401, details: {error: unauthorized}, rea](https://eq-solutions.sentry.io/issues/138367603/) | 3 | 2026-08-02 |
+| eq-shell | [Error: events GET 500: Error - Request ID: 01KZPVXME1ZW9F7NMD4TDF2CDF](https://eq-solutions.sentry.io/issues/139586029/) | 2 | 2026-08-10 |
 | eq-cards | [TimeoutException: TimeoutException after 0:00:14.000000: Future not completed](https://eq-solutions.sentry.io/issues/129414832/) | 2 | 2026-08-07 |
 | eq-shell | [TimeoutError: The operation was aborted due to timeout](https://eq-solutions.sentry.io/issues/138753891/) | 2 | 2026-08-04 |
 _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunresolved)_
@@ -87,13 +88,15 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-10 | eq-solves-service | [#686](https://github.com/eq-solutions/eq-service/pull/686) chore(deps-dev): bump @vitejs/plugin-react from 6.0.4 to 6.0.5 |
 | 2026-08-10 | eq-solves-service | [#694](https://github.com/eq-solutions/eq-service/pull/694) feat(testing): compute RCD circuit pass/fail, auto-create defects |
 | 2026-08-10 | eq-solves-service | [#693](https://github.com/eq-solutions/eq-service/pull/693) fix(maintenance): archived checks still reachable by direct ID |
+| 2026-08-10 | eq-field | [#676](https://github.com/eq-solutions/eq-field/pull/676) chore(lint): tighten file-size ratchet after decomposition (#675) |
 | 2026-08-10 | eq-field | [#675](https://github.com/eq-solutions/eq-field/pull/675) v3.5.474-477 — docx-export fix + file-size decomposition (timeshe |
 | 2026-08-10 | eq-field | [#674](https://github.com/eq-solutions/eq-field/pull/674) fix(leave): Calendar didn't show approved leave since the roster- |
-| 2026-08-10 | eq-cards | [#222](https://github.com/eq-solutions/eq-cards/pull/222) chore: remove dead CardScreen |
-_Showing 15 of 43 · full record in [sessions/](sessions/)_
+_Showing 15 of 44 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **EQ_SECRET_SALT rotation readiness never actually verified.** Flagged as the top production-readiness risk (single point of failure for suite-wide SSO — session cookie, tenant JWTs, Cards, quotes handoff, internal tokens all fall back to it per `token.ts`), but never checked this session. Real next step once Royce is back on his main setup. _(added 2026-08-11)_
+- **Shift-start concurrency unverified.** 65-70 people logging in around the same time against a 60s iframe-token TTL has never been load-tested. No evidence of a problem, no evidence against one either. _(added 2026-08-11)_
 - **O&M manual upload is mislabeled, not missing.** `AdminDocumentUpload.tsx`'s doc-type dropdown already has an "O&M manual" option (`value: 'om'`) — but only `doc_type === 'template'` gets the no-signoff/reusable-library treatment (skips audience-push, shows in Templates tab, gets a category). Selecting "O&M manual" today forces it through the normal sign-off/push flow, which makes no sense for a reference manual nobody needs to sign. Fix is a small conditional change (give `'om'` the same treatment as `'template'`), no schema change. Separately: there's no asset/equipment association anywhere in the data model (`documents`/`document_categories` have no `asset_id`) — fine if browse-by-category is enough, genuinely new work if "show me the manual for this switchboard" is wanted.
 - **Compliance-doc SKS-website linking is independent of the pilot-gated signing feature — confirmed, safe to build separately.** The pilot gate (`PILOT_SIGN_ALLOWLIST`, eq-field) only restricts Field's "Sign Documents" page; the Shell-side Templates/Register admin surface has no permission gate at all today. A link field would live on the ungated side — add a URL column/reuse `reference` on `app_data.documents`, render as a link in the Register/Templates table (`AdminDocumentUpload.tsx:2006` currently renders `reference` as plain text). The *signing* half of that same original brain-dump line ("finalise how people sign these including environmental and SWMS") is not independent — that's the existing pilot-gated feature, blocked on the same T5 rollout-past-pilot decision already tracked in `eq/documents/internal-signoff-register-sprint-2026-08-04.md`.
 - **Deploy order matters, spelled out:** eq-cards' new `shell-verify.js` has no fallback to the old local-signing path — if it deploys before eq-shell's endpoint is live and keyed on both sides, Cards login breaks for real users immediately (Cards is taking live self-signup traffic today). Sequence: (1) generate `EQ_CARDS_HANDOFF_KEY`, set on both projects, (2) merge+deploy eq-shell #1294, confirm the endpoint responds, (3) merge+deploy eq-cards #221. Royce's stated plan: do this from the Beelink, not ad hoc. _(added 2026-08-11)_
@@ -102,9 +105,7 @@ _Showing 15 of 43 · full record in [sessions/](sessions/)_
 - **Not click-tested live** — verified end-to-end via a rolled-back transaction against live ehow (untested/pass/fail/nuisance-trip/unverified-rating cases, create-on-fail, auto-resolve-on-refix) and by inspecting the generated docx's actual XML for the expected shading, but never through the real browser UI. _(added 2026-08-10)_
 - **Remaining RCD improvements scoped but not built**: restructure the flat single-page circuit grid into the same 3-step wizard ACB/NSX use, and generalize the schema off Jemena's specific shape (hardcoded section labels, per-circuit ID field, calendar-month-driven test cycle) before a second customer needs RCD. _(added 2026-08-10)_
 - **Blocked on Docker Desktop** — launches then exits within ~1-2 min with no crash log in this environment, no GUI automation available to click past what looks like an undismissed first-run dialog. Real progress made without it: root cause confirmed (`app_data` is eq-shell's to recreate, not this repo's), a drift-check script + weekly CI workflow written, and the live `app_data` shape captured (147 tables, 2378 columns) via SQL. The actual DDL snapshot migration is what's blocked.
-- **`archiveTestingCheckAction` (`app/(app)/testing/check-actions.ts`) soft-deletes via `is_active: false` only — never stamps `deleted_at`.** The auto-stamping `set_deleted_at` trigger (migration `0035`) was only ever created on `public.maintenance_checks`; production reads/writes `app_data.maintenance_checks`, which has no such trigger. `service.maintenance_checks`'s `INSTEAD OF UPDATE` trigger (migration `0147`) just echoes back whatever `deleted_at` already was — it doesn't stamp `now()` either.
-- **`/close`'s Step 2 says to manually move a fully-closed pending.md section to `pending-archive.md`** — but that file's own frontmatter states done items have been rotated out automatically, per-item, nightly by `scripts/rotate_pending.py` since 2026-07-27 (confirmed live: the script + its CI workflow `pending-rotate.yml` both exist, with their own test suite). Found while closing a fully-ticked eq-field section this session — didn't manually archive it, to avoid duplicating/conflicting with the automation. The skill's own text should point at the script instead of describing the pre-automation manual process. _(added 2026-08-08)_
-_…and 455 more · [eq/pending.md](eq/pending.md)_
+_…and 457 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -126,7 +127,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 3234 | 564 | 29 | 12 |
+| [EQ](eq/pending.md) | 3244 | 566 | 31 | 12 |
 | [SKS](sks/pending.md) | 409 | 83 | 0 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 402 | 37 | 0 | 1 |
@@ -147,4 +148,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-10 21:46 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-10 23:55 UTC._
