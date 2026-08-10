@@ -14,6 +14,16 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell production-readiness pass — EQ-SHELL-14 closed live, grant audit clean, two readiness gaps still open (2026-08-11)
+*Requested: top 3-5 actions to get eq-shell production-ready for ~65-70 daily users. Royce was overseas on a secondary device, own env-var/secrets review already covering the Netlify-secret findings (SEC-9/SEC-24) — skipped those, ran two remote-friendly checks instead, then used `/decide` to pick one cheap follow-up that closed a real loop.*
+
+- [x] **EQ-SHELL-14 (dangling staff→worker pointers) verified fixed and closed in Sentry.** Queried live: 0 of 92 `app_data.staff.cards_worker_id` values on ehow point at a missing jvkn worker (anti-join against `public.workers`, 2026-08-11). Confirms both halves of the earlier fix held — Emma Curth's 2 dangling pointers stayed nulled, and PR #1292's adoption logic is stopping new ones. Resolved in Sentry with the verification noted in the issue comment.
+- [x] **Function-grant audit re-checked, clean.** Every migration touching a guarded function since the 2026-08-07 suite sweep is a fix *from* that sweep, not a new gap — none of the 4 eq-shell PRs merged 2026-08-10 (#1293/#1292/#1291/#1279) touched `supabase/migrations/` at all.
+- [ ] **EQ_SECRET_SALT rotation readiness never actually verified.** Flagged as the top production-readiness risk (single point of failure for suite-wide SSO — session cookie, tenant JWTs, Cards, quotes handoff, internal tokens all fall back to it per `token.ts`), but never checked this session. Real next step once Royce is back on his main setup. _(added 2026-08-11)_
+- [ ] **Shift-start concurrency unverified.** 65-70 people logging in around the same time against a 60s iframe-token TTL has never been load-tested. No evidence of a problem, no evidence against one either. _(added 2026-08-11)_
+
+---
+
 ## eq-shell: two small fixes found, not built — logged so they don't evaporate (2026-08-11)
 *Surfaced while scoping "manuals in EQ" and "compliance docs — SKS-site linking" from the 2026-08-08 brain dump. Royce: neither now.*
 
