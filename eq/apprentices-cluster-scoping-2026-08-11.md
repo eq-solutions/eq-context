@@ -46,21 +46,20 @@ So of the original bullet's five clauses — "missing tables," "grants,"
 
 ---
 
-## What's genuinely still open
+## Resolved, 2026-08-11
 
-1. **`field_*` canonical-twin views — not built, and this is a scope
-   question, not a gap.** Every other clusters that got twinned (Roster,
-   Teams, Safety) needed it because the un-twinned version actually **broke**
-   in production this same sprint. Apprentices hasn't broken — it's
-   authenticated, RLS'd, zero live incidents. The twin was applied elsewhere
-   for fleet-wide consistency, not because this pattern failed. **Royce's
-   call:** does Apprentices need the same canonical-twin treatment, or is the
-   current in-place pattern fine to leave as-is?
-2. **2 orphan `apprentice_profiles` rows** — real, precisely identified: both
-   created 2026-06-18/19 during initial build/testing, both pointing at a
-   `person_id` that matches nobody on the live 11-apprentice SKS roster.
-   Cheap to delete, but it's a DELETE against live tenant-scoped data —
-   wants a one-line go-ahead first, not assumed.
+1. **`field_*` canonical-twin views — decided: not needed.** Royce's call:
+   leave the in-place pattern as-is. Nothing's broken today; the other
+   clusters got twinned for fleet-wide consistency, not because this pattern
+   failed. Not a gap — a deliberate choice.
+2. **2 orphan `apprentice_profiles` rows — deleted.** Verified live before
+   deleting: both created 2026-06-18/19 during initial testing
+   (`goals_updated_by: 'Royce Milmlow'`), both pointing at
+   `person_id = 6b8badf5-38bb-40b0-a20b-3266be052a7f`, confirmed zero matches
+   in `app_data.field_people`. Removed via `DELETE ... WHERE id IN (1, 2)`,
+   table now empty (0 rows) — clean, no real apprentice affected.
+
+**This item is now fully closed.** Nothing further to track.
 
 **One footgun worth knowing regardless of the answer above:** a second,
 unrelated schema already uses the *same table names* under `app_data.*` —

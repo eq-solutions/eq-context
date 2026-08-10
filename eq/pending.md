@@ -14,6 +14,14 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: two small fixes found, not built — logged so they don't evaporate (2026-08-11)
+*Surfaced while scoping "manuals in EQ" and "compliance docs — SKS-site linking" from the 2026-08-08 brain dump. Royce: neither now.*
+
+- [ ] **O&M manual upload is mislabeled, not missing.** `AdminDocumentUpload.tsx`'s doc-type dropdown already has an "O&M manual" option (`value: 'om'`) — but only `doc_type === 'template'` gets the no-signoff/reusable-library treatment (skips audience-push, shows in Templates tab, gets a category). Selecting "O&M manual" today forces it through the normal sign-off/push flow, which makes no sense for a reference manual nobody needs to sign. Fix is a small conditional change (give `'om'` the same treatment as `'template'`), no schema change. Separately: there's no asset/equipment association anywhere in the data model (`documents`/`document_categories` have no `asset_id`) — fine if browse-by-category is enough, genuinely new work if "show me the manual for this switchboard" is wanted.
+- [ ] **Compliance-doc SKS-website linking is independent of the pilot-gated signing feature — confirmed, safe to build separately.** The pilot gate (`PILOT_SIGN_ALLOWLIST`, eq-field) only restricts Field's "Sign Documents" page; the Shell-side Templates/Register admin surface has no permission gate at all today. A link field would live on the ungated side — add a URL column/reuse `reference` on `app_data.documents`, render as a link in the Register/Templates table (`AdminDocumentUpload.tsx:2006` currently renders `reference` as plain text). The *signing* half of that same original brain-dump line ("finalise how people sign these including environmental and SWMS") is not independent — that's the existing pilot-gated feature, blocked on the same T5 rollout-past-pilot decision already tracked in `eq/documents/internal-signoff-register-sprint-2026-08-04.md`.
+
+---
+
 ## eq-shell + eq-cards: Cards SSO broker fix — built, verified, deliberately held (2026-08-10)
 *Scoped from the secrets-redundancy work: eq-cards' `shell-verify.js` was minting its own Supabase JWTs and provisioning auth.users locally, holding its own copies of `SUPABASE_JWT_SECRET` and `SUPABASE_SERVICE_ROLE_KEY` (jvkn). Built the fix, then ran `/decide` — TODAY.md's live goal (expires 2026-08-22) explicitly excludes "any live/auth changes that could affect real users mid-flow" while Royce is overseas. Both PRs are complete, verified, and draft — not merged, on purpose.*
 
@@ -2787,7 +2795,7 @@ PR #379 revoked the 4 worker-PII tables (the instances). The *class* + ratchet a
 
 **Deferred (added 2026-06-30):**
 - [ ] **Teams wire** — field_teams/field_team_members twins + grants + RLS + JWT routing (0-row unused feature; lowest value) _(added 2026-06-30)_
-- [x] **Apprentices cluster — corrected, mostly closed** (was stale since 2026-06-30 — tables/grants/org RLS were actually shipped the same day this was logged, PR #371 v3.5.210, the bullet just never got updated; found + fixed 2026-08-11). Live feature: 2,501-line `apprentices.js` on field.eq.solutions, zero security-advisor issues on all 8 tables. Two real things left, not "largest debt": whether the `field_*` canonical-twin views are actually wanted (a scope decision, not a fix — nothing's broken today), and 2 orphan test rows pending a delete confirm. Full corrected scope + phased plan: `eq/apprentices-cluster-scoping-2026-08-11.md`. _(added 2026-06-30, corrected 2026-08-11)_
+- [x] **Apprentices cluster — corrected, fully closed** (was stale since 2026-06-30 — tables/grants/org RLS were actually shipped the same day this was logged, PR #371 v3.5.210, the bullet just never got updated; found + fixed 2026-08-11). Live feature: 2,501-line `apprentices.js` on field.eq.solutions, zero security-advisor issues on all 8 tables. The two real remaining pieces both resolved same day: Royce declined the `field_*` canonical-twin build (nothing's broken, was fleet-consistency-only elsewhere, not a fix here), and the 2 orphan test rows in `apprentice_profiles` were verified dangling (matched no real person) and deleted live on ehow. Full corrected scope: `eq/apprentices-cluster-scoping-2026-08-11.md`. _(added 2026-06-30, corrected + closed 2026-08-11)_
 - [ ] **Realtime publication** — add app_data.schedule_entries/leave_requests to supabase_realtime (verify realtime.js channel target first) _(added 2026-06-30)_
 - [ ] **app_data.staff.user_id backfill** — ~61 SKS staff unresolved (14/75 via field_person_by_user_id); may need a Core account→staff_id mapping _(added 2026-06-30)_
 - [ ] **frame-ancestors tightening** — drop `*.netlify.app` (clickjacking surface; declined once) _(added 2026-06-30)_
