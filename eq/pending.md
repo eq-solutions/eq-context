@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-10
+last_updated: 2026-08-11
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -11,6 +11,15 @@ status: live
 
 EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-shell + eq-cards: Cards SSO broker fix — built, verified, deliberately held (2026-08-10)
+*Scoped from the secrets-redundancy work: eq-cards' `shell-verify.js` was minting its own Supabase JWTs and provisioning auth.users locally, holding its own copies of `SUPABASE_JWT_SECRET` and `SUPABASE_SERVICE_ROLE_KEY` (jvkn). Built the fix, then ran `/decide` — TODAY.md's live goal (expires 2026-08-22) explicitly excludes "any live/auth changes that could affect real users mid-flow" while Royce is overseas. Both PRs are complete, verified, and draft — not merged, on purpose.*
+
+- [x] New eq-shell endpoint `netlify/functions/token-exchange-cards.ts` — mirrors the existing Field/Service `token-exchange.ts` pattern rather than extending it (that function carries real Field/Service entitlement logic with zero bearing on Cards). Auth: `EQ_CARDS_HANDOFF_KEY` header + forwarded session cookie, both required. `tsc -b` clean, eslint clean, full suite 308/308 pass. [eq-shell PR #1294](https://github.com/eq-solutions/eq-shell/pull/1294) (draft).
+- [x] eq-cards' `shell-verify.js` rewritten to relay to the new endpoint instead of local crypto — drops its dependency on all three secrets above. `node --check` clean. [eq-cards PR #221](https://github.com/eq-solutions/eq-cards/pull/221) (draft).
+- [ ] **Needs Royce, not more building:** merge/deploy waits until he's back (2026-08-22) or explicitly comfortable being reachable if it needs a fast revert — same standing hold as any auth-path change per CLAUDE.md, made explicit here because of the overseas goal specifically. Also still needed regardless of timing: generate + set `EQ_CARDS_HANDOFF_KEY` on both Netlify projects (nothing works until it exists) — manual-hands-only, Claude Code is blocked from writing Netlify secrets by design. _(added 2026-08-10)_
 
 ---
 
