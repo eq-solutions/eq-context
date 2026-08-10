@@ -1,7 +1,7 @@
 ---
 title: Disaster Recovery — platform backups
 owner: Royce Milmlow
-last_updated: 2026-07-05
+last_updated: 2026-08-11
 scope: Platform-level DR — offsite backups + restore verification for the shared EQ Supabase DBs
 read_priority: high
 status: live
@@ -235,3 +235,17 @@ moved to `--use-copy`.
   Royce owns this secret. Once eq-context is green, the eq-service job is retired regardless.
 - **PITR:** if a project moves to the paid plan, add a PITR section here (tightens Tier-1 RPO below 24 h).
   Most valuable for the identity plane (eq-canonical) if account-loss RPO ever needs to be tighter than the daily offsite copy.
+  **Not formally re-confirmed for these three projects** (found 2026-08-11) — PITR-off is only an
+  explicit Royce decision for SKS Labour (`ops/pending-archive.md`, 2026-06-06, "$100/mo too expensive
+  at this scale"). ehow/eq-canonical/eq-canonical-internal carry the same cost logic by inheritance,
+  not by a direct call — worth a one-line yes/no from Royce rather than assuming it still holds at
+  this scale.
+- **Restore-drill coverage is ehow-only** (found 2026-08-11) — `restore-drill-ehow.yml` is the only
+  restore-drill workflow that exists. eq-canonical and eq-canonical-internal get the daily
+  `verify-backup-*` integrity check (archive intact, rows present) but have **never had an actual
+  restore tested** — no workflow restores their tarball into a working database the way the ehow
+  drill does. Same pattern would need parameterising per project, same as the backup jobs themselves.
+- **Code repos have no backup coverage** (found 2026-08-11) — this doc, and every job it describes,
+  covers Supabase DBs and storage only. No repo is mirrored, exported, or otherwise backed up beyond
+  GitHub's own hosting durability plus whatever exists as local clones. Worth a decision on whether
+  that's an accepted risk (GitHub's durability is genuinely strong) or a real gap to close.
