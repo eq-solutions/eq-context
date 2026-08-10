@@ -34,7 +34,7 @@ actually being worked **right now**.
 
 ---
 
-## Active (2)
+## Active (3)
 
 ### 3. Mobile polish (Field/Cards) — close the remainder
 8 PRs merged 2026-08-08 in eq-field already. Remaining un-eyeballed screens
@@ -53,6 +53,45 @@ collapsible "To do" summary + de-dupe, sized Medium. One small companion fix
 on the licence-detail screen (uncapped metadata rows), sized Small.
 Everything else checked is fine as-is. Ready for a build session whenever
 you want it — not started.
+
+### 12. Simultaneous users — how it works, limits, edge cases
+Added 2026-08-11, from the same 2026-08-08 brain dump. No consolidated answer
+exists — only incidental fixes have surfaced (Cards' multi-tab session-collision
+bug, root-caused and fixed, PR #212 2026-08-04; a synchronized-login-burst load
+test flagged 2026-08-06 as never actually run). **Done =** a written answer —
+how session/auth concurrency actually works across the suite today, and what
+the real limits and edge cases are, not assumed ones. Investigation in progress.
+
+---
+
+## Waiting on you — no more building needed
+
+Distinct from the active list above: these are **fully built**, the only
+open step is something only Royce can do (a secret, a click-test, a rollout
+decision). Not engineering backlog — same distinction `digest.md` already
+draws.
+
+- **Security settings per user group** — live. Needs the `FIELD_PERMS_DRIFT_PAT`
+  secret (you: "I can't do the secret now") + a live click-test.
+- **Env var/secrets structure doc** — done (`ops/secrets-inventory.md`). A
+  ~15-minute Netlify click-through, runbook already written
+  (`ops/sec9-sec24-netlify-manual-fix-runbook-2026-08-11.md`), closes SEC-9/24.
+- **Templates (DB schedules)** — 12 of 15 files landed 2026-08-05, never
+  reconfirmed. Needs the last 3 files + a "did this actually finish" check.
+- **Acknowledgement feature** — this is the Document Sign-off Register,
+  fully built and live, pilot-gated to you alone. Needs your call on
+  widening the rollout, not more code.
+
+---
+
+## Being scoped, not active build (2026-08-11)
+
+- **Apprentices onto tracker** — the biggest debt in the original brain dump
+  (missing tables, Field-twin sync, JWT routing, org RLS — 42 days stale).
+  Touches auth/RLS, so it's deliberately **not** going on the active build
+  list while the current goal says no live/auth changes overseas. Scoping
+  (research + a written plan) is happening now; nothing gets built without
+  an explicit go-ahead once you're able to review the auth pieces directly.
 
 ---
 
@@ -90,14 +129,24 @@ per-app usage table (Shell yes; Service/Field/Cards no, with reasons).
 
 ## Parked from the same brain dump (visible, not on the active list)
 
-Tracked/partial in `eq/pending.md` already — pull one up here when a slot
-opens: security settings per user group (active today, needs click-test),
-prebuilds/AI pricing help (active), apprentices onto tracker (39 days stale,
-flagged as needing a dedicated session), redundancy review (only answered
-narrowly for Cards), env var/secrets structure doc, compliance docs
-(SWMS + SKS-site linking, signing itself is live), templates (warranties/QA
-remainder — DB schedules are 12/15 done).
+**Corrected 2026-08-11** — security settings and the acknowledgement feature
+had both moved from "active/genuinely new" to fully built and live since this
+list was first cut; see "Waiting on you" above, not here. Prebuilds/AI pricing
+help was mislabeled "active" — that was adjacent quote-import UI polish, not
+the actual AI pricing-consistency feature, which has never been scoped.
 
-Genuinely new, not tracked anywhere: manuals in EQ, acknowledgement feature,
-labour-hire self-verify times, roster-change notifications, simultaneous-user
-limits/edge cases.
+Tracked/partial in `eq/pending.md` already — pull one up here when a slot
+opens: prebuilds/AI pricing help (genuinely unscoped, not started), redundancy
+review (secrets redundancy fully mapped, needs a 1-line Royce confirm on the
+verification approach; general infra redundancy still answered narrowly for
+Cards only), compliance docs (SKS-site linking is a fast, small addition —
+worth checking it's independent of the still-pilot-gated signing feature
+first; SWMS-specific handling unscoped).
+
+Genuinely new, not tracked anywhere: manuals in EQ (2026-08-11: scoped as
+**equipment/O&M manuals for SKS installs** — check whether the Templates
+document feature already covers this before treating it as new work),
+labour-hire self-verify portal (holding — same auth/access-boundary concern
+as apprentices, a new external-facing surface), roster-change notifications
+(blocked on a business decision — should the app auto-notify at all —
+before it's buildable).
