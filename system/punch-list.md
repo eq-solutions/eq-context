@@ -34,12 +34,7 @@ actually being worked **right now**.
 
 ---
 
-## Active (2)
-
-### 3. Mobile polish (Field/Cards) — close the remainder
-8 PRs merged 2026-08-08 in eq-field already. Remaining un-eyeballed screens
-flagged 2026-07-07 (`eq/pending.md`). **Done =** remaining screens reviewed,
-item closes.
+## Active (1)
 
 ### 4. Cards info density — simplify/collapse
 Not tracked anywhere before today. Brain dump: "Cards is very heavy on
@@ -78,6 +73,18 @@ draws.
 ---
 
 ## Closed
+
+### 3. Mobile polish (Field/Cards) — verified fine, no bug found
+**Closed 2026-08-11.** Checked all three real candidates at 375px via a
+standalone harness (app itself can't boot in this sandbox — no network to
+the live config service — so real CSS + real markup shapes were rendered
+and measured directly through the actual browser engine, not guessed from
+source): the prestart form's top grid, the roster editor's deliberately
+horizontal-scrolling grid (`min-width: 600px`, by design), and the actual
+mobile roster view technicians see (day-switcher + crew rows, rebuilt after
+Royce's own device-smoke feedback). Nothing overflows, nothing truncates —
+even a 32-character stress-test name held. Closes as "reviewed, confirmed
+working," not "found and fixed a bug."
 
 ### 1. Onboarding procedure — suite-wide, not just Cards
 **Closed 2026-08-11, confirmed by Royce.** `eq/identity/worker-onboarding-flows.md`

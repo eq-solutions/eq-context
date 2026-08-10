@@ -2062,7 +2062,7 @@ Net: on a deep-linked `?tab=leave` view — exactly how Core embeds Field — `l
 
 **Deferred / needs Royce:**
 - [ ] **Live signed-in smoke of Field voice on SKS** — can't test programmatically (needs a browser + physical mic). Sign in → /sks/field → open a report → tap 🎤 → allow mic → dictate into a freeform field. _(added 2026-07-07)_
-- [ ] **Field mobile polish — remaining screens** — prestart form top grid (Site/Supervisor/Date/Time) and the roster grid at 375px still un-eyeballed. _(added 2026-07-07)_
+- [x] **Field mobile polish — remaining screens, verified fine, no bug found** (2026-08-11). Checked all three candidates at 375px via a standalone harness (real CSS + real markup shapes, actual browser-engine geometry measured — app itself can't boot in this sandbox, no network to the config service): prestart form's top grid (Site/Supervisor/Date/Time — all fields fit within viewport, no overflow), the roster editor grid (`.roster-editor-row`, `min-width: 600px` — confirmed horizontal-scroll by deliberate design, not a bug), and the actual mobile roster view technicians see (Direction C day-switcher + crew rows, rebuilt 2026-07-xx specifically after Royce's own device-smoke feedback) — 7 day buttons fit cleanly, even a 32-character stress-test name never truncates. Nothing broken; item closes as "reviewed," not "fixed." _(added 2026-07-07, closed 2026-08-11)_
 
 **Notes:**
 - Voice was NOT pulled after a problem — it was dropped in the safety.js → site-reports.js prestart/toolbox rewrite; still lives on Site Audits (audits.js, v3.5.236).
