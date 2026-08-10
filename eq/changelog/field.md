@@ -1,13 +1,20 @@
 ---
 title: Changelog — EQ Solves Field
 owner: Royce Milmlow
-last_updated: 2026-08-08
+last_updated: 2026-08-10
 scope: Append-only history of changes to the EQ Solves Field product. Canonical — eq-field.md was merged into this file 2026-07-19, don't split again.
 read_priority: reference
 status: live
 ---
 
 # Changelog — EQ Solves Field
+
+## [2026-08-10] Calendar stopped showing approved leave since the July 10 roster-overlay migration (v3.5.473, #674)
+- Found while checking eq-field for parity with a leave-deletion feature just shipped to SKS NSW Labour (see `sks-nsw-labour` history) — eq-field already had `hardDeleteLeaveRequest()` (v3.5.31) and a cleaner architecture than SKS to begin with: v3.5.281/282 (PR #433, 2026-07-10) removed `writeLeaveToSchedule()` entirely, making `leave_requests` the single source of truth, with `roster.js`/`dashboard.js` overlaying it live at render time (`approvedLeaveCode()`/`overlayApprovedLeave()`, `roster-rules.js`).
+- That PR touched `index.html`/`app-state.js`/`dashboard.js`/`leave.js`/`roster.js`/`sw.js` but not `scripts/calendar.js` — its `_getCodeForDate()` kept reading raw `STATE.schedule` cells directly. Since nothing writes leave into `schedule` any more, any leave approved after 2026-07-10 silently stopped showing on the main Calendar page (Roster grid and the Leave tab's own mini-calendar were unaffected — neither shares that code path). Not previously tracked in `eq/pending.md` or flagged in the digest.
+- Fix: `_getCodeForDate()` now calls the existing, already-tested `approvedLeaveCode()` first (same "leave wins for display" semantics as the roster overlay), falling back to the raw schedule cell only when there's no leave. Reuses the exact primitive `roster.js` already relies on — no new logic added to `roster-rules.js`. Also added the same `_ensureLeaveLoaded()` self-heal kick `dashboard.js` already had (v3.5.293), so a Calendar-first deep link doesn't render before `leave.js` has lazy-loaded and `leaveRequests` is populated.
+- Also corrected `hardDeleteLeaveRequest()`'s confirm copy — "the roster entry (if any) is not affected" was accurate about the underlying `schedule` cell (never written) but read as "the roster will still show this," which is backwards now that both roster and calendar overlay `leave_requests` live.
+- Verified: `tests/roster-rules.test.js` 51/51 (unchanged, confirms the reused primitive), full suite 26/26 files, `node --check` clean, `npx eslint@9` 0 new errors/warnings on both touched files. App couldn't be click-tested live in this environment (no network to the canonical config service, blocks even the `demo` tenant) — instead verified via a standalone `vm` harness running the actual edited `calendar.js` against the real `roster-rules.js`. eq-field [PR #674](https://github.com/eq-solutions/eq-field/pull/674), squash-merged `8beb80a`, Royce's "merge PR #674" go.
 
 ## [2026-08-08] Data tab: People/Sites/Schedule CSV import gated behind isManager (v3.5.470, #670)
 - `importPeopleCSV`/`importSitesCSV`/`importScheduleCSV` (`scripts/import-export.js`) had no permission check — `importFullBackup` in the same file already gated on `isManager`, these three never did. Found in passing during an unrelated mobile-view audit (2026-08-07), independently re-verified live before touching anything.

@@ -24,6 +24,13 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-field: Calendar stopped showing approved leave since the July 10 roster-overlay migration — found + fixed (v3.5.473, PR #674, merged 2026-08-10)
+*Surfaced while checking eq-field for parity with the SKS leave-deletion feature (see `sks/pending.md`) — turned out eq-field already had `hardDeleteLeaveRequest()` (v3.5.31) and a cleaner architecture (v3.5.281/282, PR #433: `leave_requests` is the single source of truth, roster/dashboard overlay it live, nothing written back to `schedule`). That same migration updated `roster.js`/`dashboard.js` but missed `calendar.js`, which kept reading raw schedule cells directly — so any leave approved since 2026-07-10 didn't show on the main Calendar page at all (still fine on the Roster grid and the Leave tab's own mini-calendar). Fixed by reusing the existing, already-tested `approvedLeaveCode()` overlay; also tightened `hardDeleteLeaveRequest`'s confirm copy, which had gone stale post-migration.*
+
+- [ ] **Live click-through not done** — app can't boot in this sandbox (no network to the canonical config service, even for the demo tenant); verified instead via a standalone harness running the actual edited code plus the full existing test suite (26/26) and eslint. Royce to confirm approved leave now shows on the Calendar page on a real tenant. _(added 2026-08-10)_
+
+---
+
 ## eq-shell: image-size DoS patched locally + nanoid re-vendor fixed properly + suite-wide sweep (2026-08-08)
 *Continuation of the same day's earlier Dependabot sweep (see below) — Royce asked to fix the 2 remaining deferred items rather than leave them open.*
 
