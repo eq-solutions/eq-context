@@ -70,6 +70,14 @@ Not tracked anywhere before today. Brain dump: "Cards is very heavy on
 information — look at simplifying or collapsing info unless a user clicks
 around." **Needs scoping first** — which screens, what collapses by default.
 
+**Scoped 2026-08-11, not built:** `eq/cards-info-density-scoping-2026-08-11.md`
+— Wallet (home tab) is the real target (up to 7 stacked nudge cards for a
+new/mid-setup worker, plus urgent items rendering twice); proposed fix is a
+collapsible "To do" summary + de-dupe, sized Medium. One small companion fix
+on the licence-detail screen (uncapped metadata rows), sized Small.
+Everything else checked is fine as-is. Ready for a build session whenever
+you want it — not started.
+
 ### 5. Write up "what intake does" as a durable answer
 Already answered — cross-repo audit closed the question 2026-08-08
 (`eq/pending.md:17-31`, session close). Currently only lives as a pending

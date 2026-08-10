@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Index
 owner: Royce Milmlow
-last_updated: 2026-08-10
+last_updated: 2026-08-11
 scope: EQ Solutions work — products, decisions, build state
 read_priority: critical
 status: live
@@ -55,6 +55,7 @@ Every canonical EQ file as a full URL — clickable from `/context/claude`:
 | `documents/internal-signoff-register-design-2026-08-01.md` | Internal document sign-off register — design + build-plan; steps 1-5 (register view) live, reminder cron + rollout past the pilot still open |
 | `documents/internal-signoff-register-sprint-2026-08-04.md` | Internal document sign-off register — hardening sprint, companion to the design doc above; T1 (per-signer RLS scoping) blocked on an identity-model call, deferred by Royce |
 | `cards/portable-trade-identity-audit-2026-07-20.md` | Cards portable-trade-identity audit — first-slice item 1 closed, items 2–4 + Path A/B/C await Royce |
+| `cards-info-density-scoping-2026-08-11.md` | Cards info-density scoping (punch-list #4) — which screens over-show info by default, default-visible vs collapsed-behind-a-tap split per screen, Wallet home tab flagged as the real fix (medium), everything else fine as-is |
 | `products.md` | EQ live product status |
 | `active.md` | Live-state snapshot (staff/site/licence counts) — cross-check against products.md before quoting a headcount, they've drifted before |
 | `punch-list-2026-06-02.md` | 2026-06-02 punch list — several items superseded, treat as historical unless re-confirmed live |
