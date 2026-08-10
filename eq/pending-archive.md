@@ -16,6 +16,17 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-service: `next_variation_number` cross-tenant gap closed, plus the tooling fix that prevents a repeat (2026-08-10) (fully closed, no open items remain)
+*First flagged 2026-08-08 by a branch-audit agent, initially mis-described as "auto-generated variation numbers are broken" — corrected same session to what it actually was: a live security gap, not a functional bug.*
+
+- [x] **Root cause**: migration `0140_harden_next_variation_number.sql` (PR #321, merged 2026-06-20) was never applied to ehow. Its ledger row was falsely marked "applied" by the one-time 2026-07-03 grandfather backfill that bootstrapped `service._eq_migrations` (`checksum: null, applied_by: 'backfill-2026-07-03'`), so the governed pipeline's runner silently skipped it on every dispatch since. Live impact: `service.next_variation_number` kept its old 2-arg signature (`p_tenant_id uuid, p_year integer`), EXECUTE-granted to `authenticated` — any signed-in user could pass another tenant's UUID and enumerate that tenant's variation-number sequence.
+- [x] **Fix**: deleted the phantom `0140` ledger row on ehow, dispatched `apply-service-migrations.yml` ([run 31381351162](https://github.com/eq-solutions/eq-service/actions/runs/31381351162), 16s). Live-verified: the RPC now takes a single JWT-derived `p_year integer` arg — the old caller-supplied-tenant-UUID signature is gone.
+- [x] **Systemic check before treating it as isolated**: the same 2026-07-03 backfill phantom-marked 172 migrations total, not just 0140. Audited all of them via a background agent: 4 others (`0102`/`0104`, `0126`/`0129`, `0089`) were already independently fixed by eq-service's own PR #614 `--verify` tooling between 2026-07-08 and 2026-07-28; one more (`0136_lock_internal_identity_helpers.sql`) is dead code with nothing live to expose. No other open gaps found.
+- [x] **Follow-up tooling built and merged**: [eq-service PR #696](https://github.com/eq-solutions/eq-service/pull/696) (squash-merged `0db9a83`) extends the `--verify` script to catch the exact blind spot that hid 0140 — a migration that DROPs a function's old signature and CREATEs a new one, where the DROP+CREATE never actually ran and the old function just keeps existing under its old name. First implementation used `pg_get_function_identity_arguments`, assumed types-only per Postgres docs; verified live against ehow before trusting it and found it actually still includes parameter names, which would have silently made the whole check inert. Switched to `proargtypes`/`format_type` (the raw type-OID vector, no name in it at all) and re-verified. End-to-end validated in the PR's own CI run against real ehow credentials: `171 unverified · 0 MISMATCH · 0 SIGNATURE DRIFT` — clean, as expected now that 0140 is fixed, with zero false positives across the other 171 migration files.
+- **Substrate correction made along the way**: the original 2026-08-08 entry recorded 0140 as merged 2026-07-03. Actual merge date is 2026-06-20 (PR #321, commit `c65b9c3`) — 13 days before the backfill that wrongly grandfathered it, not a same-moment timing fluke.
+
+---
+
 ## eq-service: canonical-outbox schema-mismatch fixed, merged, verified live (2026-08-06) (fully closed, no open items remain)
 *Follow-up on the `canonical_outbox` 404 flagged in the same session's review — Royce asked for it explained "with pictures" and a solution, which turned diagnosis into a same-session fix.*
 
