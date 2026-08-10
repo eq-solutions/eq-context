@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Products
 owner: Royce Milmlow
-last_updated: 2026-07-16
+last_updated: 2026-08-10
 scope: Live EQ products, plus the canonical Killed / Deferred list (CLAUDE.md §9 points here — don't duplicate facts back into CLAUDE.md). Field section flagged stale — see banner in that section.
 read_priority: standard
 status: live
@@ -229,6 +229,36 @@ not stale — deferred, not dropped.
 - [ ] `src/modules/tender-pipeline/` scaffolding cleanup — delete
       the stub pages (not on roadmap) OR keep as future-exploration
       with a `// stale 2026-05-20` marker. Royce decision.
+
+---
+
+## EQ Intake — import/write-time engine
+
+Added 2026-08-10 (`system/punch-list.md` item 5 — "write up 'what intake
+does' as a durable answer", closing the gap the 2026-08-08 audit answered
+but never turned into a doc). Not a screen users open — the shared
+parse/dedupe/write engine behind other apps' import flows: fuzzy matching
+(Dice coefficient), ABN validation, canonical write RPCs.
+
+**Status:** Live, but only fully adopted by one consumer. Real usage across
+the suite, verified live 2026-08-08 (cross-repo audit, `eq/pending.md`
+"Session close — 2026-08-08 (eq-intake)"):
+
+| App | Uses it? | Reality |
+|---|---|---|
+| **EQ Shell** | Yes | The only real consumer — `/intake` screen (Overview/To Do/Bring Data In/Ask) + Equipment → Certificate Import + Contacts dedup (swapped from a private copy, PR #1287). |
+| **EQ Service** | No | 4 separate `exceljs` importers, its own Levenshtein matcher, no ABN validation. A migration was proposed (`eq-solves-service/docs/architecture/2026-05-19-shell-intake-integration.md`) and explicitly declined — Service's short-code matching problem doesn't fit Intake's name-matching shape. Not neglect, a real technical mismatch. |
+| **EQ Field** | No | Hand-rolled CSV parser, exact-match only — no build step, can't consume the npm package as-is. |
+| **EQ Cards** | No | Own OCR pipeline; a swap to Intake was investigated and shelved — the capability Cards needs doesn't exist in Intake yet. |
+
+**Repo:** `eq-solutions/eq-solves-intake` (private), vendored into eq-shell at
+`eq-intake/eq-platform/packages/` (Netlify can't clone private submodules).
+
+Full detail lives in `suite-state.md` → "Import/write-time tooling" table
+(kept current nightly, don't duplicate it here) and `eq/changelog/eq-intake.md`.
+**Don't re-propose the Service/Field/Cards migrations without a new concrete
+reason** (a live bug, not architecture tidiness) — each was investigated and
+declined on its own merits, 2026-08-08.
 
 ---
 
