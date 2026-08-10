@@ -1,7 +1,7 @@
 ---
 title: SYSTEM — Infrastructure Accounts
 owner: Royce Milmlow
-last_updated: 2026-07-20
+last_updated: 2026-08-10
 scope: Supabase project IDs, Cloudflare, Netlify, GitHub, Beelink workstation
 read_priority: standard
 status: live
@@ -160,7 +160,20 @@ no schema, RLS policies, functions, triggers, or sequences** → a restore would
 **not downloadable, and die with the project** (the urjh scenario) — not a substitute for an
 off-platform copy.
 
-### Backup strategy — target state (planned 2026-06-26, not yet built)
+### Backup strategy — SUPERSEDED, this section is stale
+
+**This "target state, not yet built" framing is out of date.** The design below was in fact
+built — see [`system/dr-backups.md`](dr-backups.md), the live, restore-proven platform DR doc
+(status confirmed there as of 2026-07-05, corrected here 2026-08-10 after this stale section
+was found still asserting "not yet built" a month after it shipped). Summary: `pg_dump`-based
+daily offsite backups to R2 for `ehow` + `eq-canonical` + `eq-canonical-internal`, 8-week
+retention, automated daily restore-verify, automated quarterly restore-drill (RTO 6s proven,
+2026-07-04 drill). The old per-app eq-service backup job was retired in favour of this
+platform-level job (eq-service PR #438). Read `dr-backups.md` for the actual current state —
+don't rebuild from the plan below, it already happened.
+
+<details>
+<summary>Original target-state plan (2026-06-26), kept for history</summary>
 
 **Decision: do NOT buy Supabase PITR** ($100–400/mo per project) at current scale. On managed
 Supabase you can't self-host cheap WAL-based PITR (no `archive_command` access), so the real
@@ -179,6 +192,8 @@ Target design:
   holds paying-customer CMMS + financial data) — never blanket.
 
 Rationale: backup-gap analysis, 2026-06-26 session.
+
+</details>
 
 ### Other (royce@eq.solutions)
 
