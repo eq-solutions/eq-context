@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-09
+last_updated: 2026-08-10
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -11,6 +11,16 @@ status: live
 
 EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-shell: image-size DoS patched locally + nanoid re-vendor fixed properly + suite-wide sweep (2026-08-08)
+*Continuation of the same day's earlier Dependabot sweep (see below) — Royce asked to fix the 2 remaining deferred items rather than leave them open.*
+
+- [x] **image-size (2 Dependabot alerts, ICNS/JXL/HEIF infinite-loop DoS)** — no upstream fix will ever ship: the GitHub repo was archived by its maintainer 2026-06-03. Root-caused: all three parsers advance a loop offset by a length field read straight from the file, no guard against it being 0 — a crafted file stalls the offset and the loop never terminates. Patched via `pnpm patch` (mirrors a guard the library's own internal `findBox` helper already has). Verified empirically against the real installed package, before and after: hand-crafted malicious payloads hung all three parsers indefinitely pre-patch (confirmed via a 4s child-process timeout kill, not assumed from reading code), returned/threw in under 1ms post-patch. [eq-shell PR #1288](https://github.com/eq-solutions/eq-shell/pull/1288), squash-merged `46829c6f`, deployed clean. GitHub's alerts #193/#194 will likely stay open regardless — a version-string-based scanner has no concept of a local patch, documented as such in `ops/security-register.md` SEC-23, not a real gap.
+- [x] **nanoid re-vendor gap, closed properly this time** — the earlier hand-patch to the vendored `eq-intake/eq-platform/pnpm-lock.yaml` had been silently reverted by an unrelated re-vendor PR (#1287) landing in between, reopening alert #190 — exactly the fragility flagged when the hand-patch first went in. Fixed at the actual source: merged [eq-solves-intake PR #114](https://github.com/eq-solutions/eq-solves-intake/pull/114), then ran the real `revendor:intake` script against that fixed `main` rather than hand-patching again. The ~40 other files the script touched came back byte-identical modulo Windows CRLF churn — reverted the churn to keep the diff scoped to the actual fix. Same PR #1288.
+- [x] **Suite-wide sweep for the same issue — only eq-shell affected.** eq-solves-service uses `@netlify/functions`/`@netlify/types` but never `@netlify/blobs`/`@netlify/dev-utils` (the chain that pulls in image-size); eq-roles/eq-ui/eq-design-tokens/eq-solves-assets/eq-receipts/eq-contracts have no `@netlify/*` dependency at all; eq-field/eq-cards/eq-context/sks-nsw-labour have no npm dependency tree at all. Noted the clean result in a `_note` field in eq-solves-service's local, gitignored `.claude/launch.json`.
+- All 7 of the original alerts now accounted for: 5 genuinely closed, 2 fixed at the code level with a documented scanner-visibility caveat.
 
 ---
 
@@ -85,15 +95,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ---
 
 ## eq-shell: Dependabot sweep — 5 of 7 open alerts fixed, merged + deployed clean (2026-08-08)
-*GitHub flagged 7 open alerts (6 high, 1 moderate) during an unrelated branch-cleanup push. All are transitive — no source file imports any of them directly.*
 
-- [x] js-yaml (GHSA-5p4m-2wfm-xmqj, quadratic-CPU DoS parsing untrusted YAML) — pnpm override bumped 4.3.0→4.3.1; confirmed a patched version exists in the 4.x line itself (no need to jump to the 5.x major).
-- [x] brace-expansion, 5.x line (GHSA-rgw5-rvv9-x895, bypasses an earlier DoS mitigation) — comes in via eslint's `minimatch@10`; override bumped 5.0.8→5.0.9. The 1.x/2.x lines (via the exceljs/archiver chain) were already patched by a pre-existing override.
-- [x] nanoid (GHSA-qrpm-p2h7-hrv2, indefinite loop when size=0) — new override added, 3.3.16→3.3.18.
-- [x] dompurify (IN_PLACE hook removal → XSS) — existing override bumped 3.4.12→3.4.13. Gotcha: the old override (`^3.4.12`) already technically permitted 3.4.13, but pnpm doesn't auto-bump a resolved lockfile version just because a newer one satisfies the range — the pin itself has to move to force re-resolution.
-- All four shipped in [eq-shell PR #1286](https://github.com/eq-solutions/eq-shell/pull/1286) (squash-merged `d8fa4f42`). Netlify production deploy verified clean afterward (state `ready`, `error_message: null`, commit_ref matches, live smoke check on `verify-shell-session` returned the expected 401). GitHub now shows 2 open alerts, down from 7.
-- [ ] **image-size (2 alerts left open)** — ICNS + JXL/HEIF parser infinite-loop DoS. No upstream fix exists yet: comes in via `@netlify/blobs`→`@netlify/dev-utils`, and even `@netlify/dev-utils@latest` (4.4.7) still requires the vulnerable `image-size@^2.0.2`. Nothing to bump until Netlify ships a patch. _(added 2026-08-08)_
-- [ ] **nanoid re-vendor gap** — the fix above was also hand-patched into the vendored `eq-intake/eq-platform/pnpm-lock.yaml` to close a duplicate alert GitHub was scanning on that file, but that lockfile isn't actually consumed by eq-shell's build (only `eq-intake/eq-platform/packages/*` are real pnpm workspace members). The patch is cosmetic only — the durable fix belongs in the `eq-solves-intake` source repo, then flows back in on the next re-vendor. Spun off as a background task (not duplicated here). _(added 2026-08-08)_
 - [ ] **Stale substrate claim found, not yet corrected** — the 2026-07-28 "full Dependabot sweep" entry below says the leftover `brace-expansion` DoS in the exceljs→archiver→glob@7→minimatch@3.1.5 chain has "only one full fix: a minimatch major bump," deliberately left unfixed. Live check this session (`pnpm why brace-expansion`) shows that chain already resolves to `1.1.18` via a `brace-expansion@1: ^1.1.17` override — which the GHSA advisories confirm is itself a fully patched version, no minimatch bump needed. Left that old entry untouched (out of this session's scope to edit) but flagging for someone to re-verify and close it out. _(added 2026-08-08)_
 
 ---
