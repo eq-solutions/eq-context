@@ -61,6 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-10)
 
 **eq-service:**
+- #694 feat(testing): compute RCD circuit pass/fail, auto-create defects on fail
 - #688 chore(deps): bump @sentry/nextjs from 10.68.0 to 10.69.0
 - #687 chore(deps-dev): bump eslint-config-next from 16.2.2 to 16.2.12
 - #686 chore(deps-dev): bump @vitejs/plugin-react from 6.0.4 to 6.0.5
