@@ -2787,7 +2787,7 @@ PR #379 revoked the 4 worker-PII tables (the instances). The *class* + ratchet a
 
 **Deferred (added 2026-06-30):**
 - [ ] **Teams wire** — field_teams/field_team_members twins + grants + RLS + JWT routing (0-row unused feature; lowest value) _(added 2026-06-30)_
-- [ ] **Apprentices cluster** — create missing tables (competencies/feedback_requests/apprentice_journal) + field_* twins + JWT routing + grants + org RLS + migrate 2 orphan apprentice_profiles rows (largest debt — dedicated session) _(added 2026-06-30)_
+- [x] **Apprentices cluster — corrected, mostly closed** (was stale since 2026-06-30 — tables/grants/org RLS were actually shipped the same day this was logged, PR #371 v3.5.210, the bullet just never got updated; found + fixed 2026-08-11). Live feature: 2,501-line `apprentices.js` on field.eq.solutions, zero security-advisor issues on all 8 tables. Two real things left, not "largest debt": whether the `field_*` canonical-twin views are actually wanted (a scope decision, not a fix — nothing's broken today), and 2 orphan test rows pending a delete confirm. Full corrected scope + phased plan: `eq/apprentices-cluster-scoping-2026-08-11.md`. _(added 2026-06-30, corrected 2026-08-11)_
 - [ ] **Realtime publication** — add app_data.schedule_entries/leave_requests to supabase_realtime (verify realtime.js channel target first) _(added 2026-06-30)_
 - [ ] **app_data.staff.user_id backfill** — ~61 SKS staff unresolved (14/75 via field_person_by_user_id); may need a Core account→staff_id mapping _(added 2026-06-30)_
 - [ ] **frame-ancestors tightening** — drop `*.netlify.app` (clickjacking surface; declined once) _(added 2026-06-30)_

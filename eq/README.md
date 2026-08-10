@@ -56,6 +56,7 @@ Every canonical EQ file as a full URL — clickable from `/context/claude`:
 | `documents/internal-signoff-register-sprint-2026-08-04.md` | Internal document sign-off register — hardening sprint, companion to the design doc above; T1 (per-signer RLS scoping) blocked on an identity-model call, deferred by Royce |
 | `cards/portable-trade-identity-audit-2026-07-20.md` | Cards portable-trade-identity audit — first-slice item 1 closed, items 2–4 + Path A/B/C await Royce |
 | `cards-info-density-scoping-2026-08-11.md` | Cards info-density scoping (punch-list #4) — which screens over-show info by default, default-visible vs collapsed-behind-a-tap split per screen, Wallet home tab flagged as the real fix (medium), everything else fine as-is |
+| `apprentices-cluster-scoping-2026-08-11.md` | Corrects the stale "largest debt, 42 days untouched" pending.md framing — most of it shipped the same day it was logged; two real open pieces (field_* twin scope decision, 2 orphan rows) plus a phased build plan |
 | `products.md` | EQ live product status |
 | `active.md` | Live-state snapshot (staff/site/licence counts) — cross-check against products.md before quoting a headcount, they've drifted before |
 | `punch-list-2026-06-02.md` | 2026-06-02 punch list — several items superseded, treat as historical unless re-confirmed live |
@@ -88,6 +89,7 @@ Every canonical EQ file as a full URL — clickable from `/context/claude`:
 | `identity/service-canonical-identity-seam-2026-06-25.md` | Service/canonical identity seam design |
 | `identity/worker-credentials-model-2026-05-31.md` | Worker credentials model |
 | `identity/worker-onboarding-flows.md` | Who enters what, per app — answers "who uploads onboarding info" per scenario (Shell/Field/Service/Cards), names the one real gap (Shell↔Field worker duplication, parked in eq-field's own ADR) |
+| `identity/simultaneous-users-2026-08-11.md` | How session/auth concurrency actually works per app (punch-list #12) — one real bug found and fixed (Cards multi-tab collision), multi-device-same-person proven safe by design, multi-person-same-tenant-at-volume never load-tested |
 | `identity/parity-harness/phase1-parity-note-2026-07-10.md` | Phase 1 parity-harness note |
 | `ops/EQ-OPS-ARCHITECTURE.md` | **Read before touching `app_data.quote`, `app_data.jobs`, `job_number`, or the Kanban stage taxonomy** — EQ Ops scope, its relationship to NSW Comms and EQ Field, and the quote-to-job data model |
 | `design/claude-design-context.md` | Claude Design "start with context" brief for EQ brand |
