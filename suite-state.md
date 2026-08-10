@@ -60,8 +60,10 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-10)
 
+**eq-cards:**
+- #221 refactor(auth): shell-verify.js relays to eq-shell instead of local crypto
+
 **eq-service:**
-- #694 feat(testing): compute RCD circuit pass/fail, auto-create defects on fail
 - #688 chore(deps): bump @sentry/nextjs from 10.68.0 to 10.69.0
 - #687 chore(deps-dev): bump eslint-config-next from 16.2.2 to 16.2.12
 - #686 chore(deps-dev): bump @vitejs/plugin-react from 6.0.4 to 6.0.5
@@ -69,6 +71,7 @@ _If this file is >48h old, the cron is broken._
 - #684 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 
 **eq-shell:**
+- #1294 feat(cards): centralize Cards' SSO minting via token-exchange-cards.ts
 - #1284 chore(intake): auto re-vendor eq-intake/eq-platform
 
 ---
@@ -88,7 +91,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 208 (latest: 0202) applied
+**Migrations:** eq-service has 209 (latest: 0203) applied
 
 ---
 
