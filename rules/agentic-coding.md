@@ -1,7 +1,7 @@
 ---
 title: Rules — Agentic Coding
 owner: Royce Milmlow
-last_updated: 2026-08-04
+last_updated: 2026-08-10
 scope: How assistants write and verify EQ/SKS product code — plan gate, verification standard, maintainability guards
 read_priority: critical
 status: live
@@ -24,7 +24,7 @@ Before any build task (any Edit, Write, migration, or PR), run in this order:
 1. **Suite state** — read `suite-state.md` first. Check System Health for CI failures and stale deploys.
 2. **Live recon** — query the live system, don't infer it. `list_tables` / a targeted `select` on the relevant Supabase project beats an assumption. Same for a deployed version or an applied migration. (`rules/non-negotiables.md` — substrate claims about live state are leads, not facts.)
 3. **Branch check** — `git branch -a` + `git status` on the target repo, **plus `git fetch origin main --quiet && git log HEAD..origin/main --oneline`**. Non-empty output means real history from `main` is missing. Skim the titles for anything touching the same files or feature before writing new code — a stale branch once shipped a fix that had already merged days earlier via another session, discovered mid-build instead of before it (2026-07-28).
-4. **Worktree check** — read `system/worktree-registry.md` before creating any worktree.
+4. **Worktree check** — read `system/worktree-registry.md` before creating any worktree. **Default to a fresh worktree for any commit-producing work** in a repo with concurrent-session traffic (eq-shell, eq-field, eq-context itself) — not just app code. eq-context's own root checkout forked from `origin/main` multiple times on 2026-08-08 from concurrent sessions committing directly on its shared `main`; recovered without loss, but only after real content-level forensics (see `sessions/2026-08-08.md`). `git worktree add <path> origin/<branch>`, commit and push from there, remove the worktree after. This is a *documented* rule, not a self-enforcing one — per §3, it's backed by a structural guard: `eq-guard`'s `stale-main-gate` rule (added 2026-08-09) blocks a `git commit` directly on a shared checkout's `main`/`master` when local HEAD is behind its upstream (`EQ_SKIP_STALE_MAIN=1` to override for a deliberate one-off). eq-field's identical rule (its own `CLAUDE.md`, PR #673) was violated same-day by concurrent sessions before this guard existed — the prose alone doesn't hold; the guard is what actually closes the gap.
 5. **State the brief** — what exists (verified), what's broken, what changes, what not to touch. Royce confirms. Then build.
 
 **Step 5 is not optional.** Template: `system/task-brief-template.md`. On the Beelink
