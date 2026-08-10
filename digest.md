@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-10 08:06 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-10 08:10 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-10 03:42 UTC → 2026-08-10 08:06 UTC)
+## Since last refresh (2026-08-10 08:06 UTC → 2026-08-10 08:10 UTC)
 
-- Merged: eq-shell [#1291](https://github.com/eq-solutions/eq-shell/pull/1291) fix(quotes): surface errors on Word-doc download instead of 
-- Merged: eq-shell [#1283](https://github.com/eq-solutions/eq-shell/pull/1283) fix(rls): restrict commercial-table writes to management tie
-- Merged: eq-shell [#1265](https://github.com/eq-solutions/eq-shell/pull/1265) fix(ops): stop tenant-data-proxy crashing on 204 responses (
+- Merged: eq-shell [#1281](https://github.com/eq-solutions/eq-shell/pull/1281) feat(access-control): expose eq-field's 74 fine-grained perm
 - Merged: eq-solves-service [#693](https://github.com/eq-solutions/eq-service/pull/693) fix(maintenance): archived checks still reachable by direct 
 - Merged: eq-solves-service [#692](https://github.com/eq-solutions/eq-service/pull/692) fix(testing): assignee picker empty on ACB/NSX Create Check
-- Merged: eq-field [#665](https://github.com/eq-solutions/eq-field/pull/665) fix(sign-documents): mobile UX — signature pad size, popup-b
-- Merged: eq-field [#663](https://github.com/eq-solutions/eq-field/pull/663) fix(safety-forms): crew/attendee name overflow + prestart dr
-- Merged: eq-solves-intake [#112](https://github.com/eq-solutions/eq-solves-intake/pull/112) feat(intake): fuzzy identity match in the Reconcile engine
+- Merged: eq-field [#666](https://github.com/eq-solutions/eq-field/pull/666) v3.5.469 — Calibration + Projects had no mobile nav path
+- Merged: eq-field [#664](https://github.com/eq-solutions/eq-field/pull/664) fix(leave): mobile responsive breakpoint for worker balance 
+- Merged: eq-field [#662](https://github.com/eq-solutions/eq-field/pull/662) fix(roles): vendor verify-pin.js's role list, log the silent
+- Merged: eq-cards [#219](https://github.com/eq-solutions/eq-cards/pull/219) feat(labour-hire): candidate intake — control-layer profile 
+- Merged: eq-solves-intake [#114](https://github.com/eq-solutions/eq-solves-intake/pull/114) fix(deps): bump nanoid to close GHSA-qrpm-p2h7-hrv2
 
 ## ⚠ Needs you (3)
 
@@ -52,7 +52,7 @@ _…and 92 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 | eq-shell | ✓ success | 0d ago | 2 | 3d |
 | eq-solves-service | ✓ success | 0d ago | 5 | 6d |
 | eq-field | ✓ success | 0d ago | 0 | — |
-| eq-cards | ✓ success | 5d ago | 1 | 3d |
+| eq-cards | ✓ success | 5d ago | 0 | — |
 | eq-solves-intake | ✓ success | 2d ago | 0 | — |
 
 ## Live errors (Sentry)
@@ -76,6 +76,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-10 | eq-shell | [#1291](https://github.com/eq-solutions/eq-shell/pull/1291) fix(quotes): surface errors on Word-doc download instead of swall |
 | 2026-08-10 | eq-solves-service | [#693](https://github.com/eq-solutions/eq-service/pull/693) fix(maintenance): archived checks still reachable by direct ID |
 | 2026-08-10 | eq-field | [#674](https://github.com/eq-solutions/eq-field/pull/674) fix(leave): Calendar didn't show approved leave since the roster- |
+| 2026-08-10 | eq-cards | [#219](https://github.com/eq-solutions/eq-cards/pull/219) feat(labour-hire): candidate intake — control-layer profile + lic |
 | 2026-08-08 | eq-shell | [#1288](https://github.com/eq-solutions/eq-shell/pull/1288) fix(deps): patch image-size DoS + re-vendor to restore the nanoid |
 | 2026-08-08 | eq-shell | [#1287](https://github.com/eq-solutions/eq-shell/pull/1287) refactor(customers): reuse @eq/intake's fuzzy matcher instead of  |
 | 2026-08-08 | eq-shell | [#1286](https://github.com/eq-solutions/eq-shell/pull/1286) fix(deps): resolve 2 high-severity Dependabot alerts (js-yaml, br |
@@ -87,8 +88,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-08 | eq-field | [#670](https://github.com/eq-solutions/eq-field/pull/670) v3.5.469 — Data tab: gate People/Sites/Schedule CSV import behind |
 | 2026-08-08 | eq-field | [#669](https://github.com/eq-solutions/eq-field/pull/669) fix(apprentices): Skills Passport mobile CSS selector was dead (v |
 | 2026-08-08 | eq-field | [#668](https://github.com/eq-solutions/eq-field/pull/668) fix(mobile): 5 confirmed mobile.css bugs (v3.5.469) |
-| 2026-08-08 | eq-field | [#667](https://github.com/eq-solutions/eq-field/pull/667) fix(safety): gate incident records/export to Supervision (v3.5.46 |
-_Showing 15 of 31 · full record in [sessions/](sessions/)_
+_Showing 15 of 32 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
@@ -145,4 +145,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-10 08:06 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-10 08:10 UTC._
