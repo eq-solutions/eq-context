@@ -64,7 +64,6 @@ _If this file is >48h old, the cron is broken._
 - #221 refactor(auth): shell-verify.js relays to eq-shell instead of local crypto
 
 **eq-service:**
-- #701 fix(rcd): correct 5x-rated-current pass/fail threshold, 100ms -> 40ms
 - #697 chore(deps): bump @eq-solutions/ui to v1.14.0
 
 **eq-shell:**
@@ -88,7 +87,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 211 (latest: 0205) applied
+**Migrations:** eq-service has 212 (latest: 0206) applied
 
 ---
 
