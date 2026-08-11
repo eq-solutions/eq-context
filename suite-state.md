@@ -61,15 +61,12 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-11)
 
 **eq-cards:**
-- #225 fix(auth): allow subcontractor to claim its own invite
 - #221 refactor(auth): shell-verify.js relays to eq-shell instead of local crypto
 
 **eq-service:**
-- #700 fix(db): allow subcontractor role in service.tenant_members
 - #697 chore(deps): bump @eq-solutions/ui to v1.14.0
 
 **eq-shell:**
-- #1297 Replace AI Brief prose with grounded Ask Anything Q&A
 - #1295 chore(deps): bump @eq-solutions/ui to v1.14.0
 - #1294 feat(cards): centralize Cards' SSO minting via token-exchange-cards.ts
 
@@ -90,7 +87,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 210 (latest: 0204) applied
+**Migrations:** eq-service has 211 (latest: 0205) applied
 
 ---
 
