@@ -1,7 +1,7 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-10
+last_updated: 2026-08-11
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
@@ -962,3 +962,10 @@ status: live
 - **PR [#1283](https://github.com/eq-solutions/eq-shell/pull/1283) merged (`885264e1`).** Restricts INSERT/UPDATE/DELETE on `app_data.contract_scopes`, `field_tenders`, `field_projects` to `eq_role in (manager, supervisor)` or platform admin — reads stay tenant-scoped/unchanged. Closes a 2026-07-16 audit finding that had a written fix sitting abandoned on a stale branch (`claude/eq-roles-enterprise-eval-177343`) since the day it was found. Renumbered 0186→0239 (0186 had since been claimed by an unrelated migration). Re-verified live against zaap before landing — the gap was still real (`field_tenders`/`field_projects` had an `ALL`-command policy open to any authenticated tenant member, no role check).
 - **Dispatched via `tenant-migrate.yml`** (One Pipe, fleet-wide, no approval gate) — applied in 18s. Live-confirmed via `pg_policies` on both zaap and ehow: all 4 policies per table on zaap; `contract_scopes` only on ehow, correctly (`field_tenders`/`field_projects` don't exist on that plane).
 - **470 stale branches + 58 orphaned worktree folders removed suite-wide** this same session (10 repos incl. eq-shell's own 139) — see `eq/pending.md` for the full breakdown and the 9 branches deliberately kept as real unshipped work.
+
+## 2026-08-11 (labour-hire licence intake — tenant review UI + ops upload tool, consolidated with the existing admin invite form)
+
+- **PR [#1279](https://github.com/eq-solutions/eq-shell/pull/1279) MERGED.** New "Labour-hire candidates" section on the Staff page (third independent pending queue alongside Cards-connect and self-join, same shape: own backend, own query, summed into the same badge count) with approve/decline calling eq-cards' `eq_ops_review_labour_hire_candidate`. New cross-tenant `/_platform/labour-hire-intake` page (`is_platform_admin`-gated) — the ops secret never reaches the browser, held server-side by `labour-hire-intake-proxy.ts`.
+- **PR [#1282](https://github.com/eq-solutions/eq-shell/pull/1282) MERGED (separate session, rebased onto).** Backfilled `eq_ops_review_labour_hire_candidate`/`eq_verify_labour_hire_intake_secret` into this repo's own control-plane migration ledger — the scheduled drift check scans every live jvkn function against `supabase/migrations/` here, with no visibility into eq-cards' own migrations tree, so a function created live via MCP in a sibling repo still needs a source-parity file in this one.
+- **PR [#1293](https://github.com/eq-solutions/eq-shell/pull/1293) MERGED — multi-file support, and consolidation with the existing "Invite a worker" form.** Audit found a platform admin could already create a live invite for any tenant via `AdminWorkerInviteForm` (`is_org_admin()` short-circuits true for platform admins) — the worker-creation primitive wasn't new. Added optional multi-file OCR upload to that existing form (via the existing `staff-licence-ocr.ts`, no new auth surface; phone stays required, unchanged) and extended `create-worker-invite.ts` to stage the attached licences as `worker_credentials` on the resolved worker — same shape the labour-hire path writes. `LabourHireIntakeTool` updated to accept multiple documents per submission too, fixing the exact gap that would have created a duplicate stub worker per document for one person's driver licence + White Card + EWP + CPR.
+- **Sentry EQ-SHELL-Y resolved** — see eq-cards changelog 2026-08-11 (same fix, cross-repo).
