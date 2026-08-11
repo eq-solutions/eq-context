@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-11 05:50 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-11 05:56 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-11 05:38 UTC → 2026-08-11 05:50 UTC)
+## Since last refresh (2026-08-11 05:50 UTC → 2026-08-11 05:56 UTC)
 
-- Merged: eq-shell [#1285](https://github.com/eq-solutions/eq-shell/pull/1285) fix(ci): field-perms-drift skips cleanly until FIELD_PERMS_D
-- Merged: eq-shell [#1281](https://github.com/eq-solutions/eq-shell/pull/1281) feat(access-control): expose eq-field's 74 fine-grained perm
+- Merged: eq-shell [#1288](https://github.com/eq-solutions/eq-shell/pull/1288) fix(deps): patch image-size DoS + re-vendor to restore the n
+- Merged: eq-shell [#1287](https://github.com/eq-solutions/eq-shell/pull/1287) refactor(customers): reuse @eq/intake's fuzzy matcher instea
+- Merged: eq-shell [#1286](https://github.com/eq-solutions/eq-shell/pull/1286) fix(deps): resolve 2 high-severity Dependabot alerts (js-yam
+- Merged: eq-shell [#1283](https://github.com/eq-solutions/eq-shell/pull/1283) fix(rls): restrict commercial-table writes to management tie
 - Merged: eq-solves-service [#700](https://github.com/eq-solutions/eq-service/pull/700) fix(db): allow subcontractor role in service.tenant_members
 - Merged: eq-solves-service [#699](https://github.com/eq-solutions/eq-service/pull/699) fix(testing): RCD circuit editor unusable on phone, real tou
 - Merged: eq-solves-service [#698](https://github.com/eq-solutions/eq-service/pull/698) fix(migrations): pin search_path on 6 functions flagged by a
 - Merged: eq-solves-service [#696](https://github.com/eq-solutions/eq-service/pull/696) feat(migrations): extend --verify to catch function signatur
-- Merged: eq-solves-service [#695](https://github.com/eq-solutions/eq-service/pull/695) docs(ci): fix stale approval-gate comment on apply-service-m
-- Merged: eq-solves-service [#694](https://github.com/eq-solutions/eq-service/pull/694) feat(testing): compute RCD circuit pass/fail, auto-create de
 
 ## ⚠ Needs you (5)
 
@@ -82,6 +82,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-11 | eq-solves-service | [#700](https://github.com/eq-solutions/eq-service/pull/700) fix(db): allow subcontractor role in service.tenant_members |
 | 2026-08-11 | eq-solves-service | [#699](https://github.com/eq-solutions/eq-service/pull/699) fix(testing): RCD circuit editor unusable on phone, real touch ta |
 | 2026-08-11 | eq-solves-service | [#698](https://github.com/eq-solutions/eq-service/pull/698) fix(migrations): pin search_path on 6 functions flagged by adviso |
+| 2026-08-11 | eq-field | [#678](https://github.com/eq-solutions/eq-field/pull/678) fix(staff-reviews): quarterly_reviews migration should ADD, not R |
 | 2026-08-11 | eq-field | [#677](https://github.com/eq-solutions/eq-field/pull/677) feat(staff-reviews): resource-management pilot — skills, quarterl |
 | 2026-08-11 | eq-cards | [#225](https://github.com/eq-solutions/eq-cards/pull/225) fix(auth): allow subcontractor to claim its own invite |
 | 2026-08-11 | eq-cards | [#224](https://github.com/eq-solutions/eq-cards/pull/224) fix(licences): guard against a silent no-op renewal |
@@ -89,8 +90,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-10 | eq-shell | [#1293](https://github.com/eq-solutions/eq-shell/pull/1293) feat(staff): multi-file OCR intake, shared between admin invite a |
 | 2026-08-10 | eq-shell | [#1292](https://github.com/eq-solutions/eq-shell/pull/1292) fix(canonical-sync): let a duplicate worker adopt a dangling-link |
 | 2026-08-10 | eq-shell | [#1279](https://github.com/eq-solutions/eq-shell/pull/1279) feat(staff): labour-hire candidate review + ops intake tool |
-| 2026-08-10 | eq-shell | [#1291](https://github.com/eq-solutions/eq-shell/pull/1291) fix(quotes): surface errors on Word-doc download instead of swall |
-_Showing 15 of 54 · full record in [sessions/](sessions/)_
+_Showing 15 of 55 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
@@ -147,4 +147,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-11 05:50 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-11 05:56 UTC._
