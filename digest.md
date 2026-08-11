@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-11 03:06 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-11 03:58 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-11 02:40 UTC → 2026-08-11 03:06 UTC)
+## Since last refresh (2026-08-11 03:06 UTC → 2026-08-11 03:58 UTC)
 
-- Merged: eq-shell [#1285](https://github.com/eq-solutions/eq-shell/pull/1285) fix(ci): field-perms-drift skips cleanly until FIELD_PERMS_D
-- Merged: eq-shell [#1281](https://github.com/eq-solutions/eq-shell/pull/1281) feat(access-control): expose eq-field's 74 fine-grained perm
+- Merged: eq-shell [#1296](https://github.com/eq-solutions/eq-shell/pull/1296) fix(platform): link labour-hire intake tool from platform na
+- Merged: eq-shell [#1288](https://github.com/eq-solutions/eq-shell/pull/1288) fix(deps): patch image-size DoS + re-vendor to restore the n
+- Merged: eq-shell [#1287](https://github.com/eq-solutions/eq-shell/pull/1287) refactor(customers): reuse @eq/intake's fuzzy matcher instea
+- Merged: eq-shell [#1286](https://github.com/eq-solutions/eq-shell/pull/1286) fix(deps): resolve 2 high-severity Dependabot alerts (js-yam
+- Merged: eq-shell [#1283](https://github.com/eq-solutions/eq-shell/pull/1283) fix(rls): restrict commercial-table writes to management tie
 - Merged: eq-solves-service [#698](https://github.com/eq-solutions/eq-service/pull/698) fix(migrations): pin search_path on 6 functions flagged by a
 - Merged: eq-solves-service [#696](https://github.com/eq-solutions/eq-service/pull/696) feat(migrations): extend --verify to catch function signatur
 - Merged: eq-solves-service [#695](https://github.com/eq-solutions/eq-service/pull/695) docs(ci): fix stale approval-gate comment on apply-service-m
-- Merged: eq-solves-service [#694](https://github.com/eq-solutions/eq-service/pull/694) feat(testing): compute RCD circuit pass/fail, auto-create de
-- Merged: eq-solves-service [#693](https://github.com/eq-solutions/eq-service/pull/693) fix(maintenance): archived checks still reachable by direct 
-- Merged: eq-solves-service [#692](https://github.com/eq-solutions/eq-service/pull/692) fix(testing): assignee picker empty on ACB/NSX Create Check
 
 ## ⚠ Needs you (5)
 
@@ -75,6 +75,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-11 | eq-shell | [#1296](https://github.com/eq-solutions/eq-shell/pull/1296) fix(platform): link labour-hire intake tool from platform nav |
 | 2026-08-11 | eq-solves-service | [#698](https://github.com/eq-solutions/eq-service/pull/698) fix(migrations): pin search_path on 6 functions flagged by adviso |
 | 2026-08-11 | eq-cards | [#224](https://github.com/eq-solutions/eq-cards/pull/224) fix(licences): guard against a silent no-op renewal |
 | 2026-08-11 | eq-cards | [#223](https://github.com/eq-solutions/eq-cards/pull/223) fix(licences): recover gracefully when a photo's blob URL is revo |
@@ -89,11 +90,13 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-10 | eq-solves-service | [#684](https://github.com/eq-solutions/eq-service/pull/684) chore(deps): bump the eq-design-system group across 1 directory w |
 | 2026-08-10 | eq-solves-service | [#686](https://github.com/eq-solutions/eq-service/pull/686) chore(deps-dev): bump @vitejs/plugin-react from 6.0.4 to 6.0.5 |
 | 2026-08-10 | eq-solves-service | [#694](https://github.com/eq-solutions/eq-service/pull/694) feat(testing): compute RCD circuit pass/fail, auto-create defects |
-| 2026-08-10 | eq-solves-service | [#693](https://github.com/eq-solutions/eq-service/pull/693) fix(maintenance): archived checks still reachable by direct ID |
 _Showing 15 of 47 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **Still not click-tested live** — deploy health confirms the code reached production, not that the Customers page's duplicate-detection UI still behaves correctly. Needs a real click-through. _(added 2026-08-11)_
+- **Real end-to-end click-through never run** — upload → OCR → candidate → tenant approves → worker claims. Everything above verified by code review, typecheck, and CI, not by an authenticated session actually doing it. Test tenant: EQ Solutions (`eq`, `is_seed_demo: true`) — not SKS Technologies (live pilot, real workers). _(added 2026-08-11)_
+- Sentry EQ-CARDS-1F (`LateInitializationError`, `main.dart`) investigated — traces entirely into Flutter/CanvasKit engine internals, zero first-party frames, 0 users impacted, isolated to a 2-minute window and non-recurring. Not independently fixable in application code; flagged for awareness only, no action taken. _(added 2026-08-11)_
 - **eq-cards fix not yet built** — spun off as background task (silent no-op renewal: Save should warn/block when a renewal's expiry date wasn't actually changed from the pre-renewal baseline, and the "Renewed — new expiry saved" confirmation currently shows even when OCR found nothing). Not started this session. _(added 2026-08-11)_
 - **Royce also asked whether to rename eq-cards' wallet actions to "Add / Update License"** — recommended against it: mobile's "Add to wallet" vs "Renew" split is already clearer than a generic unified label, and the real gap was the silent-no-op bug above, not the naming. No change made. _(added 2026-08-11)_
 - **The actual blocker to Field being prod-ready is still open: why did real usage never start.** SKS NSW Labour is what real workers use today; Field's own parallel-run proving period sits at 0 consecutive clean weeks (per `ops/security-register.md`). Recommended pulling PostHog/`audit_log` data to find the real adoption friction (login flow, missing feature parity, mobile gaps) rather than waiting for it to self-resolve — not started this session, got sidetracked into the file-size work instead. Real next step if "prod ready" is the goal.
@@ -101,10 +104,7 @@ _Showing 15 of 47 · full record in [sessions/](sessions/)_
 - **EQ_SECRET_SALT rotation readiness never actually verified.** Flagged as the top production-readiness risk (single point of failure for suite-wide SSO — session cookie, tenant JWTs, Cards, quotes handoff, internal tokens all fall back to it per `token.ts`), but never checked this session. Real next step once Royce is back on his main setup. _(added 2026-08-11)_
 - **Shift-start concurrency unverified.** 65-70 people logging in around the same time against a 60s iframe-token TTL has never been load-tested. No evidence of a problem, no evidence against one either. _(added 2026-08-11)_
 - **O&M manual upload is mislabeled, not missing.** `AdminDocumentUpload.tsx`'s doc-type dropdown already has an "O&M manual" option (`value: 'om'`) — but only `doc_type === 'template'` gets the no-signoff/reusable-library treatment (skips audience-push, shows in Templates tab, gets a category). Selecting "O&M manual" today forces it through the normal sign-off/push flow, which makes no sense for a reference manual nobody needs to sign. Fix is a small conditional change (give `'om'` the same treatment as `'template'`), no schema change. Separately: there's no asset/equipment association anywhere in the data model (`documents`/`document_categories` have no `asset_id`) — fine if browse-by-category is enough, genuinely new work if "show me the manual for this switchboard" is wanted.
-- **Compliance-doc SKS-website linking is independent of the pilot-gated signing feature — confirmed, safe to build separately.** The pilot gate (`PILOT_SIGN_ALLOWLIST`, eq-field) only restricts Field's "Sign Documents" page; the Shell-side Templates/Register admin surface has no permission gate at all today. A link field would live on the ungated side — add a URL column/reuse `reference` on `app_data.documents`, render as a link in the Register/Templates table (`AdminDocumentUpload.tsx:2006` currently renders `reference` as plain text). The *signing* half of that same original brain-dump line ("finalise how people sign these including environmental and SWMS") is not independent — that's the existing pilot-gated feature, blocked on the same T5 rollout-past-pilot decision already tracked in `eq/documents/internal-signoff-register-sprint-2026-08-04.md`.
-- **Deploy order matters, spelled out:** eq-cards' new `shell-verify.js` has no fallback to the old local-signing path — if it deploys before eq-shell's endpoint is live and keyed on both sides, Cards login breaks for real users immediately (Cards is taking live self-signup traffic today). Sequence: (1) generate `EQ_CARDS_HANDOFF_KEY`, set on both projects, (2) merge+deploy eq-shell #1294, confirm the endpoint responds, (3) merge+deploy eq-cards #221. Royce's stated plan: do this from the Beelink, not ad hoc. _(added 2026-08-11)_
-- **After the deploy confirms working:** delete `SUPABASE_JWT_SECRET` / `SUPABASE_SERVICE_ROLE_KEY` (jvkn) / `EQ_SESSION_SALT` from eq-cards' Netlify project — otherwise the whole point of this fix (cutting Cards' blast radius) doesn't actually land, they just sit there unused but still exposed to SEC-9's dev-context leak. _(added 2026-08-11)_
-_…and 461 more · [eq/pending.md](eq/pending.md)_
+_…and 465 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -126,7 +126,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 3268 | 570 | 39 | 12 |
+| [EQ](eq/pending.md) | 3290 | 574 | 45 | 12 |
 | [SKS](sks/pending.md) | 414 | 84 | 1 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 402 | 37 | 0 | 1 |
@@ -147,4 +147,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-11 03:06 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-11 03:58 UTC._
