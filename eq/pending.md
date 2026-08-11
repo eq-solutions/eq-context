@@ -14,6 +14,14 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: PR #1287 (Contacts dedup swap) deploy verified clean (2026-08-11)
+*Follow-up from the 2026-08-08 close's "needs you" item. Checked what could be checked without an authenticated session.*
+
+- [x] Confirmed via Netlify MCP: `4fa7646e` (the `CustomersPage.tsx` dedup swap) is an ancestor of current `main` (2 commits behind tip), and the current production deploy is `state: ready`, `error_message: null`, published 2026-08-10. The deploy shipped clean.
+- [ ] **Still not click-tested live** — deploy health confirms the code reached production, not that the Customers page's duplicate-detection UI still behaves correctly. Needs a real click-through. _(added 2026-08-11)_
+
+---
+
 ## eq-cards + eq-shell: labour-hire licence intake pipeline — built, consolidated with existing admin invite tool, 2 Sentry issues resolved (2026-08-11)
 *Started from "labour-hire partners email us licences for people — is there a way to drop these into a webpage." Design ruled out two existing mechanisms before landing on a new one (`org_access_requests` — its reviewer screen and approval handler both assume an already-authenticated worker, wrong lifecycle stage; eq-shell's Intake engine — bulk CSV import into a tenant's own data plane, wrong target). Mid-build audit found real overlap with the existing "Invite a worker" admin form and consolidated onto one shared mechanism instead of running two.*
 
