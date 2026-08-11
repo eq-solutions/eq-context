@@ -1,26 +1,25 @@
 ---
 title: EQ Suite — Health Digest
 owner: Royce Milmlow
-last_updated: 2026-08-10
+last_updated: 2026-08-11
 scope: Push-style 'what needs your attention' feed across the EQ suite. Regenerated on merge (repository_dispatch: suite-state-changed) and nightly. Full snapshot in suite-state.md.
 read_priority: high
 status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-10 23:55 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-11 01:44 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-10 21:46 UTC → 2026-08-10 23:55 UTC)
+## Since last refresh (2026-08-10 23:55 UTC → 2026-08-11 01:44 UTC)
 
-- Merged: eq-shell [#1288](https://github.com/eq-solutions/eq-shell/pull/1288) fix(deps): patch image-size DoS + re-vendor to restore the n
-- Merged: eq-shell [#1287](https://github.com/eq-solutions/eq-shell/pull/1287) refactor(customers): reuse @eq/intake's fuzzy matcher instea
-- Merged: eq-shell [#1286](https://github.com/eq-solutions/eq-shell/pull/1286) fix(deps): resolve 2 high-severity Dependabot alerts (js-yam
-- Merged: eq-shell [#1283](https://github.com/eq-solutions/eq-shell/pull/1283) fix(rls): restrict commercial-table writes to management tie
-- Merged: eq-shell [#1265](https://github.com/eq-solutions/eq-shell/pull/1265) fix(ops): stop tenant-data-proxy crashing on 204 responses (
+- Merged: eq-shell [#1285](https://github.com/eq-solutions/eq-shell/pull/1285) fix(ci): field-perms-drift skips cleanly until FIELD_PERMS_D
+- Merged: eq-shell [#1281](https://github.com/eq-solutions/eq-shell/pull/1281) feat(access-control): expose eq-field's 74 fine-grained perm
+- Merged: eq-solves-service [#698](https://github.com/eq-solutions/eq-service/pull/698) fix(migrations): pin search_path on 6 functions flagged by a
 - Merged: eq-solves-service [#696](https://github.com/eq-solutions/eq-service/pull/696) feat(migrations): extend --verify to catch function signatur
 - Merged: eq-solves-service [#695](https://github.com/eq-solutions/eq-service/pull/695) docs(ci): fix stale approval-gate comment on apply-service-m
 - Merged: eq-solves-service [#694](https://github.com/eq-solutions/eq-service/pull/694) feat(testing): compute RCD circuit pass/fail, auto-create de
-- ⚠ Needs you: 4 → 5 (new items)
+- Merged: eq-solves-service [#693](https://github.com/eq-solutions/eq-service/pull/693) fix(maintenance): archived checks still reachable by direct 
+- Merged: eq-solves-service [#692](https://github.com/eq-solutions/eq-service/pull/692) fix(testing): assignee picker empty on ACB/NSX Create Check
 
 ## ⚠ Needs you (5)
 
@@ -76,6 +75,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-11 | eq-solves-service | [#698](https://github.com/eq-solutions/eq-service/pull/698) fix(migrations): pin search_path on 6 functions flagged by adviso |
 | 2026-08-10 | eq-shell | [#1293](https://github.com/eq-solutions/eq-shell/pull/1293) feat(staff): multi-file OCR intake, shared between admin invite a |
 | 2026-08-10 | eq-shell | [#1292](https://github.com/eq-solutions/eq-shell/pull/1292) fix(canonical-sync): let a duplicate worker adopt a dangling-link |
 | 2026-08-10 | eq-shell | [#1279](https://github.com/eq-solutions/eq-shell/pull/1279) feat(staff): labour-hire candidate review + ops intake tool |
@@ -90,11 +90,12 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-10 | eq-solves-service | [#693](https://github.com/eq-solutions/eq-service/pull/693) fix(maintenance): archived checks still reachable by direct ID |
 | 2026-08-10 | eq-field | [#676](https://github.com/eq-solutions/eq-field/pull/676) chore(lint): tighten file-size ratchet after decomposition (#675) |
 | 2026-08-10 | eq-field | [#675](https://github.com/eq-solutions/eq-field/pull/675) v3.5.474-477 — docx-export fix + file-size decomposition (timeshe |
-| 2026-08-10 | eq-field | [#674](https://github.com/eq-solutions/eq-field/pull/674) fix(leave): Calendar didn't show approved leave since the roster- |
-_Showing 15 of 44 · full record in [sessions/](sessions/)_
+_Showing 15 of 45 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **The actual blocker to Field being prod-ready is still open: why did real usage never start.** SKS NSW Labour is what real workers use today; Field's own parallel-run proving period sits at 0 consecutive clean weeks (per `ops/security-register.md`). Recommended pulling PostHog/`audit_log` data to find the real adoption friction (login flow, missing feature parity, mobile gaps) rather than waiting for it to self-resolve — not started this session, got sidetracked into the file-size work instead. Real next step if "prod ready" is the goal.
+- Decided **against** an ES-modules + event-delegation rewrite of the script architecture for now (would kill the `window.foo` exposure boilerplate and `onclick=""`-global pattern this session hit repeatedly) — real value, but delivers nothing user-visible and competes with the adoption question above. Revisit once Field has real daily use and there's slack for invisible cleanup.
 - **EQ_SECRET_SALT rotation readiness never actually verified.** Flagged as the top production-readiness risk (single point of failure for suite-wide SSO — session cookie, tenant JWTs, Cards, quotes handoff, internal tokens all fall back to it per `token.ts`), but never checked this session. Real next step once Royce is back on his main setup. _(added 2026-08-11)_
 - **Shift-start concurrency unverified.** 65-70 people logging in around the same time against a 60s iframe-token TTL has never been load-tested. No evidence of a problem, no evidence against one either. _(added 2026-08-11)_
 - **O&M manual upload is mislabeled, not missing.** `AdminDocumentUpload.tsx`'s doc-type dropdown already has an "O&M manual" option (`value: 'om'`) — but only `doc_type === 'template'` gets the no-signoff/reusable-library treatment (skips audience-push, shows in Templates tab, gets a category). Selecting "O&M manual" today forces it through the normal sign-off/push flow, which makes no sense for a reference manual nobody needs to sign. Fix is a small conditional change (give `'om'` the same treatment as `'template'`), no schema change. Separately: there's no asset/equipment association anywhere in the data model (`documents`/`document_categories` have no `asset_id`) — fine if browse-by-category is enough, genuinely new work if "show me the manual for this switchboard" is wanted.
@@ -103,9 +104,7 @@ _Showing 15 of 44 · full record in [sessions/](sessions/)_
 - **After the deploy confirms working:** delete `SUPABASE_JWT_SECRET` / `SUPABASE_SERVICE_ROLE_KEY` (jvkn) / `EQ_SESSION_SALT` from eq-cards' Netlify project — otherwise the whole point of this fix (cutting Cards' blast radius) doesn't actually land, they just sit there unused but still exposed to SEC-9's dev-context leak. _(added 2026-08-11)_
 - **Threshold values not independently verified against primary standard text** — 300ms trip time at rated current / 100ms at 5× rated current for 30mA RCDs, sourced from AS/NZS 3000 Table J1 via web search, flagged explicitly in the PR. Worth Royce's direct confirmation these are the right numbers before they're the sole gate on a real compliance defect. _(added 2026-08-10)_
 - **Not click-tested live** — verified end-to-end via a rolled-back transaction against live ehow (untested/pass/fail/nuisance-trip/unverified-rating cases, create-on-fail, auto-resolve-on-refix) and by inspecting the generated docx's actual XML for the expected shading, but never through the real browser UI. _(added 2026-08-10)_
-- **Remaining RCD improvements scoped but not built**: restructure the flat single-page circuit grid into the same 3-step wizard ACB/NSX use, and generalize the schema off Jemena's specific shape (hardcoded section labels, per-circuit ID field, calendar-month-driven test cycle) before a second customer needs RCD. _(added 2026-08-10)_
-- **Blocked on Docker Desktop** — launches then exits within ~1-2 min with no crash log in this environment, no GUI automation available to click past what looks like an undismissed first-run dialog. Real progress made without it: root cause confirmed (`app_data` is eq-shell's to recreate, not this repo's), a drift-check script + weekly CI workflow written, and the live `app_data` shape captured (147 tables, 2378 columns) via SQL. The actual DDL snapshot migration is what's blocked.
-_…and 457 more · [eq/pending.md](eq/pending.md)_
+_…and 459 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -127,7 +126,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 3244 | 566 | 31 | 12 |
+| [EQ](eq/pending.md) | 3256 | 568 | 35 | 12 |
 | [SKS](sks/pending.md) | 409 | 83 | 0 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 402 | 37 | 0 | 1 |
@@ -148,4 +147,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-10 23:55 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-11 01:44 UTC._
