@@ -9,6 +9,11 @@ status: live
 
 # EQ Cards — Changelog
 
+## 2026-08-11 (PR #225 MERGED, APPLIED LIVE — Subcontractor could claim an invite but got silently downgraded)
+- **`eq_cards_claim_invite`'s role whitelist never included `subcontractor`** — introduced in migration 0018, last touched in 0072 (2026-06-17), three weeks before Subcontractor joined the canonical role model suite-wide (2026-07-05). An admin could select Subcontractor for a worker and it saved/displayed correctly, but the claim RPC silently fell back to `'employee'` for the real session role (`shell_control.users.role`, `shell_control.user_tenant_memberships.role`) the moment that worker accepted their invite — no error anywhere.
+- Surfaced by the "how identity flows through the suite" artifact (2026-08-10), scoped into a sprint the next session via AskUserQuestion (Royce: fix both this and the matching Service gap, minimal whitelist widen, no new behaviour, build now).
+- Confirmed live before writing the fix: zero workers affected — exactly 1 worker platform-wide had `role='subcontractor'` and hadn't been invited yet. Migration 0121 reproduces the live function byte-for-byte (diffed against a fresh `pg_get_functiondef` pull) with only the whitelist widened. eq-cards [PR #225](https://github.com/eq-solutions/eq-cards/pull/225), squash-merged `ab0ff88`, applied directly to live jvkn (no automated apply pipeline for this repo — confirmed via `gh workflow list`) and independently re-confirmed live afterward.
+
 ## 2026-08-11 (PR #222 MERGED — dead CardScreen removed)
 - **`CardScreen` (710 lines, `lib/features/card/presentation/screens/card_screen.dart`) deleted as confirmed dead code.** `Routes.card` has redirected straight to the wallet (Licences tab) since the 3→2 tab merge; fresh grep across `lib/` and `test/` found zero references to `CardScreen` anywhere outside its own definition. The `/card` legacy-deep-link redirect itself (still needed — old SMS/email links point at it) was left untouched. `flutter analyze` clean post-deletion. eq-cards [PR #222](https://github.com/eq-solutions/eq-cards/pull/222), merged.
 
