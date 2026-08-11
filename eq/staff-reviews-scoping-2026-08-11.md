@@ -2,9 +2,9 @@
 title: Staff resource management (reviews, skills, progress) — scoping
 owner: Royce Milmlow
 last_updated: 2026-08-11
-scope: Audit + design for a manager-only staff review/skills feature in EQ Field, requested by Royce as Operations Manager. Scoping only — no migration applied, no code written yet.
+scope: Audit, design, build, and live migration for a manager-only staff review/skills feature in EQ Field, requested by Royce as Operations Manager. Built and merged (eq-field #677/#678/#679); migration applied live 2026-08-11. Screen click-through is the only remaining open step.
 read_priority: high
-status: draft
+status: live
 ---
 
 # Staff resource management — scoping
@@ -166,14 +166,42 @@ of the build. Also found `scripts/build-bundles.mjs`'s drift guard fires on any
 `lazy-loader.js` edit (a hand-merged `core-bundle-b1.js` needs regenerating in lockstep) —
 caught and fixed before commit, not left for CI to catch.
 
-Migration is a file only — **not applied to either live database.** Code verification:
-26/26 existing tests pass, 0 eslint errors/warnings, syntax-checked including the exact
-inline `<script>` block in `index.html`, and the PR's own CI (drift guard + tests+lint) is
-green. **Also checked against the real Netlify deploy preview** (deploy-preview-677, not
-just the sandbox, which can't boot the app at all) — confirmed live: the app boots clean
-with zero console errors, `APP_VERSION` reads `3.5.483`, `nav-staff-reviews` exists in the
-DOM and correctly renders `display:none` (not on the allowlist from that session), and
-`STAFF_REVIEWS_ALLOWLIST` is present with exactly 1 entry. The gate fails closed exactly as
-designed. Not yet checked: the actual screen's internal rendering and save flow, which needs
-a real allowlisted login session — that's Royce's own click-through once the migration
-lands, not something fakeable from here.
+Code verification: 26/26 existing tests pass, 0 eslint errors/warnings, syntax-checked
+including the exact inline `<script>` block in `index.html`, PR CI green. **Checked against
+the real Netlify deploy preview** (not just the sandbox, which can't boot the app at all) —
+app boots clean, zero console errors, `nav-staff-reviews` correctly renders `display:none`
+for a non-allowlisted session, gate fails closed exactly as designed.
+
+**PR #677 merged and deployed live** — real production check on `field.eq.solutions` after
+merge: `APP_VERSION` reads `3.5.483`, zero console errors, gate still correctly hidden for
+the unauthenticated session that checked it.
+
+## Migration — applied live, 2026-08-11, after one real bug caught first
+
+Royce asked directly to apply the migration same session ("can you do it now"). Before
+running anything, re-verified the design one more time and found a real problem in the
+original plan: `quarterly_reviews`'s column was going to be **renamed** (`apprentice_id` →
+`person_id`), reasoning it was "just a correction" since the column was already
+`uuid`-typed. That reasoning was incomplete — `apprentices-reviews-rotations.js`'s
+`saveQuarterlyReview()` still builds its insert as `{ apprentice_id: profile.person_id, ... }`
+and POSTs it. A rename would have silently broken every future real apprentice
+quarterly-review save until that file was also updated — caught before this was ever run
+against a live database, not after. Fixed to **ADD** `person_id` instead
+([eq-field PR #678](https://github.com/eq-solutions/eq-field/pull/678)), matching the other
+two tables exactly. `apprentice_id` stays untouched everywhere.
+
+Applying it live surfaced one more real asymmetry, also caught before it caused a problem:
+`public.quarterly_reviews` **doesn't exist on `zaap` (eq-canonical-internal) at all** — only
+on `ehow`. `apprentices.js`'s own fetch for that table already wraps the call in
+`.catch(() => [])` for exactly this reason — a pre-existing gap on the `eq` tenant, not
+introduced by this change, not expanded here.
+
+**Final applied state, live-verified after:**
+| Database | skills_ratings | feedback_entries | quarterly_reviews |
+|---|---|---|---|
+| ehow (sks-canonical) | ✅ person_id added | ✅ person_id added | ✅ person_id added |
+| zaap (eq-canonical-internal) | ✅ person_id added | ✅ person_id added | — table doesn't exist |
+
+Every `apprentice_id` column confirmed untouched on both databases after applying. The
+screen's own save flow still needs a real allowlisted click-through (Royce's own next step)
+— that part genuinely can't be verified from here.
