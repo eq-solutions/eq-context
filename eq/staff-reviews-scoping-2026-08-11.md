@@ -131,9 +131,49 @@ file; a generalized sibling.
 
 ---
 
-## What this doc is not
+## Built — 2026-08-11, same day, held for review
 
-No migration has been applied. No code has been written. This is the scoping pass Royce
-asked for before deciding whether to build — the next step, if he confirms, is a real PR
-(migration + permission key + screen) on its own branch, held for explicit review the same
-way every other change this session has been.
+Royce confirmed the direction via `/decide` (both pre-build checks — eq-field's migration
+pipeline, RLS/triggers on the 4 tables — came back clean, see below). Built same session:
+[eq-field PR #677](https://github.com/eq-solutions/eq-field/pull/677) (draft) —
+`scripts/staff-reviews.js`, the `STAFF_REVIEWS_ALLOWLIST` pilot gate (reused
+`PILOT_SIGN_ALLOWLIST`'s exact email, not a new one — see that pattern's own "don't gate on
+royce@eq.solutions" caveat), and the draft migration SQL.
+
+**One design change from the plan above:** the original idea was a new `field.manage_*`
+permission key. Live investigation found a closer, already-proven precedent —
+`PILOT_SIGN_ALLOWLIST` (`index.html`) already does exactly "visible to one person," three
+layers deep (nav-hiding, `showPage()` direct-nav refusal, render-time self-check). Reused
+that mechanism directly rather than inventing a permission-matrix key for a single-person
+pilot — cheaper, and it's the codebase's own established answer to this exact question.
+
+**Pre-build checks, resolved:**
+- eq-field has no governed migration-apply pipeline (unlike eq-shell/eq-service) — every
+  migration is hand-applied via the Supabase MCP `apply_migration` tool, then committed to
+  the repo as a record afterward, per this repo's own `CLAUDE.md`. Confirmed via full
+  `.github/workflows/` sweep (8 workflows, none touch Supabase/SQL) and `git log` on the
+  existing migration files' own headers.
+- All 5 tables (`skills_ratings`, `quarterly_reviews`, `feedback_entries`,
+  `apprentice_profiles`, `competencies`) have RLS enabled, 2 policies each, **zero
+  triggers** — nothing hidden that an `ALTER TABLE` could disturb.
+
+**Real drift caught mid-build, not assumed away:** the live eq-field root checkout was 17
+commits behind main, including one that decomposed `apprentices.js` (2,500 → 1,931 lines,
+feedback/rating modals moved to `apprentices-reviews-rotations.js`) and one that mandates
+worktree isolation for exactly this reason. Re-verified the current file layout before
+writing anything — the earlier "UI pattern" citations above were already stale by the time
+of the build. Also found `scripts/build-bundles.mjs`'s drift guard fires on any
+`lazy-loader.js` edit (a hand-merged `core-bundle-b1.js` needs regenerating in lockstep) —
+caught and fixed before commit, not left for CI to catch.
+
+Migration is a file only — **not applied to either live database.** Code verification:
+26/26 existing tests pass, 0 eslint errors/warnings, syntax-checked including the exact
+inline `<script>` block in `index.html`, and the PR's own CI (drift guard + tests+lint) is
+green. **Also checked against the real Netlify deploy preview** (deploy-preview-677, not
+just the sandbox, which can't boot the app at all) — confirmed live: the app boots clean
+with zero console errors, `APP_VERSION` reads `3.5.483`, `nav-staff-reviews` exists in the
+DOM and correctly renders `display:none` (not on the allowlist from that session), and
+`STAFF_REVIEWS_ALLOWLIST` is present with exactly 1 entry. The gate fails closed exactly as
+designed. Not yet checked: the actual screen's internal rendering and save flow, which needs
+a real allowlisted login session — that's Royce's own click-through once the migration
+lands, not something fakeable from here.
