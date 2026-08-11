@@ -1,13 +1,18 @@
 ---
 title: SKS — Pending
 owner: Royce Milmlow
-last_updated: 2026-08-10
+last_updated: 2026-08-11
 scope: SKS Technologies operational TODO list
 read_priority: critical
 status: live
 ---
 
 # SKS Pending
+
+## Mohamed Hussain's Open Cabling licence expiry corrected (2026-08-11)
+*Fix landed on the EQ side (eq-shell + eq-cards) — see `eq/pending.md` (2026-08-11) for full root-cause + build detail. This entry is the SKS-side pointer.*
+- [x] Expiry corrected 2026-08-28 → 2029-08-28, matching his renewed TITAB Australia Open Cabling Registration — the compliance pack now reflects the real date.
+- [ ] **Underlying Cards mobile bug not yet fixed** — a licence "renewal" can silently save nothing if on-device OCR can't read the card and the user doesn't notice the date field still shows the old value. Worth watching for other workers hitting the same silent failure until eq-cards ships the fix. _(added 2026-08-11)_
 
 ## Leave — delete an approved request, including its roster entry — shipped (v3.10.111, PR #78, merged 2026-08-10)
 *Royce: someone's approved leave needed to be deleted, including removing it from the roster/calendar. Investigated first — no delete path existed at all; Archive only hid it from the Leave tab, the roster grid still showed the leave code because approval writes it directly into schedule cells (`writeLeaveToSchedule()`) and nothing reversed that. Built a manager-only Delete action that reverses the write-back (only clears a day if it still holds exactly that leave code, so a day since overwritten with a real shift is left alone) then hard-deletes the row. `realtime.js` already had DELETE handling wired up for `leave_requests` — this was the missing UI trigger.*

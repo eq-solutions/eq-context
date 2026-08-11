@@ -14,6 +14,18 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-cards + eq-shell: Mohamed Hussain's Open Cabling licence — root-caused mobile OCR silent no-op, patched record directly (2026-08-11)
+*Royce reported updating Mohamed Hussain's Open Cabling licence via Cards mobile didn't OCR and wouldn't let him update the expiry. Traced to a real eq-cards bug: mobile OCR reads on-device (ML Kit), not the Claude Vision `ocr-licence` edge function eq-shell's admin tools use — confirmed via `ocr_usage` having no entry near the failed attempt. When ML Kit finds nothing on a card, the Renew flow lands on the edit screen with the OLD expiry pre-loaded (correct, so a failed scan doesn't blank the field) but nothing signals it's stale — Save went through as a genuine DB write with zero fields actually changed.*
+
+- [x] **Root-caused via live DB evidence, not guesswork** — confirmed exactly one UPDATE fired on the licence row at the time Royce described, with `expiry_date`/`licence_number`/`photo_front_url` all byte-identical to before; `ocr_usage` (which the edge-function OCR path always logs to, success or failure) had nothing since 12 days earlier — proves the mobile app used on-device OCR, not the server path.
+- [x] **Corrected an earlier mis-diagnosis before building anything** — first assumed eq-cards had no way to edit an existing licence's details outside the 30-day renewal window; re-read the actual file and found an unconditional Edit button already exists in the app bar. Deleted the task before any code was touched.
+- [x] **Patched Mohamed Hussain's Open Cabling Registration directly** — expiry corrected from 2026-08-28 to 2029-08-28 (matches his renewed TITAB Australia card, verified against the photo he emailed), written to both jvkn `public.licences` (Cards/system-of-record) and ehow `app_data.licences` (Staff-page copy) since there's no DB trigger syncing licence edits between the two planes — confirmed live via `information_schema.triggers`.
+- [x] **Verified which plane actually drives real controls, not just which one is easier to read** — `cards-export-licences-background.ts` (the actual compliance-pack generator) and the Field-access-unlock trigger both read jvkn `public.licences` directly, live. The ehow copy only feeds the Staff page's on-screen display. Confirms the jvkn write was the one that mattered; the ehow write was for admin-UI correctness, not compliance.
+- [ ] **eq-cards fix not yet built** — spun off as background task (silent no-op renewal: Save should warn/block when a renewal's expiry date wasn't actually changed from the pre-renewal baseline, and the "Renewed — new expiry saved" confirmation currently shows even when OCR found nothing). Not started this session. _(added 2026-08-11)_
+- [ ] **Royce also asked whether to rename eq-cards' wallet actions to "Add / Update License"** — recommended against it: mobile's "Add to wallet" vs "Renew" split is already clearer than a generic unified label, and the real gap was the silent-no-op bug above, not the naming. No change made. _(added 2026-08-11)_
+
+---
+
 ## eq-field: docx-export fix + timesheets/apprentices/roster decomposition, both PRs merged (2026-08-11)
 *Started from "top 3 things to get Field production-ready" — first answer wrongly assumed Field was live; corrected by Royce: SKS NSW Labour is the live system, Field has no real users yet (Core/Shell integration is the blocker). Redirected to "decompose now and fix the Sentry items" instead. Scope grew via a mid-session `/decide` on the 1,500-line file-size convention (traced to two multi-lens audits with no measured justification for the number) and a "full sweep" choice via AskUserQuestion.*
 
