@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Verify Queue
 owner: Royce Milmlow
-last_updated: 2026-08-09
+last_updated: 2026-08-11
 scope: Items whose only remaining blocker is your own live sign-in/click-through — the underlying work is already built, merged, and (unless the line itself says otherwise) live. Moved here from eq/pending.md by scripts/rotate_pending.py once a session's real build work is fully done, so a stale "click through to confirm" line no longer pins a whole finished write-up in the live pending doc.
 read_priority: high
 status: live
@@ -277,5 +277,11 @@ a bug rather than just deleting the line.
 **From:** eq-field + eq-shell: My Schedule maps link — real root cause found, iframe popups were blocked, merged, live (2026-08-06)
 
 - [ ] **Not yet confirmed on a real device through Core that the maps link now opens.** Three attempts: v3.5.460 (eq-field #655) dropped `target="_blank"` for iOS standalone; v3.5.465 (eq-field #659) switched to Apple's `maps://` scheme — both real, defensible fixes for genuine standalone-PWA use, but Royce's actual test was always through Core (`core.eq.solutions/sks/field`), where neither could work. The real cause: `FieldIframe.tsx`'s iframe `sandbox` attribute never included `allow-popups`, so **any** `target="_blank"` link or `window.open()` inside Field, Service, or Cards was silently blocked whenever accessed through Shell — on any device, not iOS-specific. Fixed for all three apps (eq-shell [#1268](https://github.com/eq-solutions/eq-shell/pull/1268), merged, live on `core.eq.solutions`). Royce to confirm the maps icon now actually opens Maps when accessed through Core. _(added 2026-08-05, updated 2026-08-06)_
+
+---
+
+**From:** eq-service: empty "assign to" member picker on Create Check — root-caused, fixed, merged, live (2026-08-08)
+
+- [ ] **Not click-tested live** — local dev server hung on an unrelated issue during the fix session. Needs a quick manual pass on ACB and NSX Create Check to confirm the dropdown actually populates in the browser. _(added 2026-08-08)_
 
 ---
