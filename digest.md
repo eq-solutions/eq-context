@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-11 13:56 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-11 14:19 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-11 13:33 UTC → 2026-08-11 13:56 UTC)
+## Since last refresh (2026-08-11 13:56 UTC → 2026-08-11 14:19 UTC)
 
-- Merged: eq-shell [#1292](https://github.com/eq-solutions/eq-shell/pull/1292) fix(canonical-sync): let a duplicate worker adopt a dangling
-- Merged: eq-shell [#1291](https://github.com/eq-solutions/eq-shell/pull/1291) fix(quotes): surface errors on Word-doc download instead of 
-- Merged: eq-shell [#1285](https://github.com/eq-solutions/eq-shell/pull/1285) fix(ci): field-perms-drift skips cleanly until FIELD_PERMS_D
-- Merged: eq-shell [#1281](https://github.com/eq-solutions/eq-shell/pull/1281) feat(access-control): expose eq-field's 74 fine-grained perm
+- Merged: eq-shell [#1304](https://github.com/eq-solutions/eq-shell/pull/1304) fix(security): RLS gate on staff_conversations now enforces 
+- Merged: eq-shell [#1293](https://github.com/eq-solutions/eq-shell/pull/1293) feat(staff): multi-file OCR intake, shared between admin inv
+- Merged: eq-shell [#1288](https://github.com/eq-solutions/eq-shell/pull/1288) fix(deps): patch image-size DoS + re-vendor to restore the n
+- Merged: eq-shell [#1287](https://github.com/eq-solutions/eq-shell/pull/1287) refactor(customers): reuse @eq/intake's fuzzy matcher instea
+- Merged: eq-shell [#1286](https://github.com/eq-solutions/eq-shell/pull/1286) fix(deps): resolve 2 high-severity Dependabot alerts (js-yam
+- Merged: eq-shell [#1283](https://github.com/eq-solutions/eq-shell/pull/1283) fix(rls): restrict commercial-table writes to management tie
+- Merged: eq-shell [#1279](https://github.com/eq-solutions/eq-shell/pull/1279) feat(staff): labour-hire candidate review + ops intake tool
 - Merged: eq-solves-service [#705](https://github.com/eq-solutions/eq-service/pull/705) feat(rcd): generate circuit rows from board size instead of 
-- Merged: eq-solves-service [#704](https://github.com/eq-solutions/eq-service/pull/704) fix(rcd): Create Check page touch targets under 44px on mobi
-- Merged: eq-solves-service [#703](https://github.com/eq-solutions/eq-service/pull/703) feat(rcd): in-app circuit entry — manual, photo, or both
-- Merged: eq-solves-service [#702](https://github.com/eq-solutions/eq-service/pull/702) fix(testing): ACB/NSX check lists unreadable on mobile, real
 
 ## ⚠ Needs you (5)
 
@@ -29,12 +29,13 @@ _2026-08-11 13:56 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🟠 **Sentry new error** — `eq-cards` [LateInitializationError: Field '' has not been initialized.](https://eq-solutions.sentry.io/issues/139929381/)
 - 🟠 **Sentry new error** — `eq-cards` [minified:C4: Exception: Could not load Blob from its URL. Ha](https://eq-solutions.sentry.io/issues/131122766/)
 
-## 🙋 Waiting on you (104)
+## 🙋 Waiting on you (105)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
 - **EQ** · **Needs Royce, not more building:** merge/deploy waits until he's back (2026-08-22) or explicitly comfortable being reachable if it needs a fast revert — same standing hold as any auth-path change per CLAUDE.md, made explicit here because of the overseas goal specifically. Also still needed regardless of timing: generate + set `EQ_CARDS_HANDOFF_KEY` on both Netlify projects (nothing works until it exists) — manual-hands-only, Claude Code is blocked from writing Netlify secrets by design. _(added 2026-08-10)_
 - **EQ** · **Not built.** Royce to decide whether this graduates back onto `system/punch-list.md` for the actual simplification work, given the goal's current exclusion on live UI changes affecting real users while overseas. _(added 2026-08-10)_
+- **EQ** · **Migration 0206 not yet applied to the live database** — merged to code, needs Royce to manually dispatch `apply-service-migrations.yml`; Claude Code's own permission classifier blocks doing that directly (same wall as the Netlify secret above). _(added 2026-08-11)_
 - **EQ** · **Work sits uncommitted, not lost** — on branch `fix/integration-ci-app-data-bootstrap` in the shared root checkout at `C:\Projects\eq-solves-service`. Needs Royce to get Docker running (or hand over a `supabase db dump` directly, or greenlight a pure-SQL fallback) to resume. _(added 2026-08-10)_
 - **EQ** · **Live click-through not done** — app can't boot in this sandbox (no network to the canonical config service, even for the demo tenant); verified instead via a standalone harness running the actual edited code plus the full existing test suite (26/26) and eslint. Royce to confirm approved leave now shows on the Calendar page on a real tenant. _(added 2026-08-10)_
 - **EQ** · **2 items need Royce's call, not a code fix** — `claude/service-canonical-identity-phase3-4` (eq-service): re-keys shell-auth JWT + remaps 5 SKS users' FK refs, explicitly marked "DO NOT DEPLOY without Royce's go" in its own commit, never landed — still wanted or shelved? `worktree-wf_79f7a4de-c56-4` (eq-intake): the quality-guardian engine is live but no admin UI in eq-service ever surfaced its output — still wanted? _(added 2026-08-08)_
@@ -44,14 +45,13 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **EQ** · Auto-login from Shell's tenant tile into Cards was silently skipping the handoff and bouncing to the sign-in screen instead — reported live by Royce, root-caused same session. `cards.eq.solutions` iframes across every open Shell tab share one browser's local storage, and a refresh-token rotation triggered by one tab invalidates the session another tab still has cached. The splash screen only checked whether *a* session object existed in storage, not whether it was still valid, so a stale cached session silently pre-empted the working handoff. Root-caused live against Royce's own SKS account: PostHog showed `shell_handoff_started` never fired on the failing attempt, and eq-canonical's auth logs showed `403 bad_jwt: invalid claim: missing sub claim` at the same second. Fixed in eq-cards [PR #212](https://github.com/eq-solutions/eq-cards/pull/212) (squash-merged `36a23cd`) — `_handleShellEntry()` now validates any cached session with a live `getUser()` call before trusting it, signing out and falling through to the existing handoff on any failure. Merged and deployed (explicit `Build & Deploy` workflow dispatch — Netlify + Sentry source-map upload both succeeded). **Needs Royce's click-through**: his own browser has a bad session already stuck in local storage from before the fix — clearing site data for `cards.eq.solutions` once (or a private window) and reloading the tenant tile is a device-side action only he can do; confirming the clean auto-login after that is the last open step. _(added 2026-08-04)_
 - **EQ** · **Sign-off records can be read or overwritten by any signed-in person on the same tenant, not just the person they belong to.** Investigated 2026-08-04 (sprint task T1): the obvious fix (`signer_user_id = auth.uid()`) would break real signing — eq-field's data-plane JWT sets `sub` to the tenant id for every user, not the actor, so `auth.uid()` on the real sign path never equals the signer. Closing this needs an identity-model decision, not a migration. Royce's call: leave deferred, revisit alongside a real second-signer rollout. _(updated 2026-08-04)_
 - **EQ** · **Sentry MCP connector needs Royce to reconnect** — "user's connection to this connector was invalidated" mid-session; `search_issues`/`search_events` unavailable for the rest of the session, worked around via code + live DB reads instead. _(added 2026-08-04)_
-- **EQ** · **`credentials-canonical-sync` is broken and not actually running** — the edge function that's supposed to copy a worker's licence/credential updates from Cards into the SKS compliance/Field-legacy database is deployed but wired to nothing (no database trigger calls it), and even if it were, it hardcodes the wrong SKS tenant ID (the old, corrected-in-2026-06 wrong value). Net effect: a worker updating a licence or White Card in Cards today does not reach the older SKS compliance view at all. Needs Royce's call on reviving it (fix + wire it up) vs retiring it in favour of the newer eq-field app's live-read pattern, which doesn't have this problem by design. Spawned as background task `task_5687d06b`, already started in a separate session. **Checked eq-field's actual "live-read pattern" this session (Royce: "have Field pick it up") — it's narrower than assumed: `eq_get_org_licences` (via `canon-read.js`) only lists licences a worker already holds and flags expiry, with NO org-required-credential gap-checking anywhere in eq-field (no `org_credential_requirements` lookup exists in the repo at all). So retiring the old sync is safe — Field was never depending on it — but "Field picks this up" isn't a real feature swap yet; Field doesn't currently show missing-credential warnings the way the old SKS view did. Retire-vs-revive is still Royce's call; if he wants Field to show compliance gaps going forward, that's new work, not a revival.** _(added 2026-08-03, updated 2026-08-03)_
-_…and 92 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 93 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 2 | 0d |
+| eq-shell | ✓ success | 0d ago | 3 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 1 | 0d |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 1 | — |
@@ -75,6 +75,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-11 | eq-shell | [#1304](https://github.com/eq-solutions/eq-shell/pull/1304) fix(security): RLS gate on staff_conversations now enforces the p |
 | 2026-08-11 | eq-shell | [#1303](https://github.com/eq-solutions/eq-shell/pull/1303) fix(dashboard): logo, outstanding-quotes value, on-leave count, F |
 | 2026-08-11 | eq-shell | [#1302](https://github.com/eq-solutions/eq-shell/pull/1302) feat(staff): add Conversations log to Staff detail panel |
 | 2026-08-11 | eq-shell | [#1301](https://github.com/eq-solutions/eq-shell/pull/1301) fix(dashboard): mobile hero card was display:none on every viewpo |
@@ -89,8 +90,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-11 | eq-solves-service | [#702](https://github.com/eq-solutions/eq-service/pull/702) fix(testing): ACB/NSX check lists unreadable on mobile, real touc |
 | 2026-08-11 | eq-solves-service | [#701](https://github.com/eq-solutions/eq-service/pull/701) fix(rcd): correct 5x-rated-current pass/fail threshold, 100ms ->  |
 | 2026-08-11 | eq-solves-service | [#700](https://github.com/eq-solutions/eq-service/pull/700) fix(db): allow subcontractor role in service.tenant_members |
-| 2026-08-11 | eq-solves-service | [#699](https://github.com/eq-solutions/eq-service/pull/699) fix(testing): RCD circuit editor unusable on phone, real touch ta |
-_Showing 15 of 66 · full record in [sessions/](sessions/)_
+_Showing 15 of 67 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
@@ -104,7 +104,7 @@ _Showing 15 of 66 · full record in [sessions/](sessions/)_
 - **`eq-solves-assets`'s `origin` remote points at `https://github.com/Milmlow/eq-solves-service.git`** — a personal fork of a different project, not an asset-capture-app repo. Local history (`main` + 7 feature branches) looks like real, non-stale work. Not touched — Royce confirmed the repo is parked for now, don't re-flag without being asked. _(added 2026-08-11)_
 - **Real end-to-end click-through never run** — upload → OCR → candidate → tenant approves → worker claims. Test tenant: EQ Solutions (`eq`, `is_seed_demo: true`) — not SKS Technologies (live pilot, real workers). The tool is now actually reachable and functional (was silently broken until this session — see below), so this is unblocked. _(added 2026-08-11)_
 - Sentry EQ-CARDS-1F (`LateInitializationError`, `main.dart`) investigated — engine-internal, not independently fixable, flagged for awareness only, no action taken. _(added 2026-08-11)_
-_…and 463 more · [eq/pending.md](eq/pending.md)_
+_…and 466 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -126,7 +126,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 3243 | 575 | 25 | 12 |
+| [EQ](eq/pending.md) | 3256 | 578 | 29 | 12 |
 | [SKS](sks/pending.md) | 418 | 84 | 2 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 402 | 37 | 0 | 1 |
@@ -147,4 +147,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-11 13:56 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-11 14:19 UTC._
