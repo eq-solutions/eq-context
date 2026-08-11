@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-11 04:51 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-11 05:38 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-11 04:31 UTC → 2026-08-11 04:51 UTC)
+## Since last refresh (2026-08-11 04:51 UTC → 2026-08-11 05:38 UTC)
 
-- Merged: eq-shell [#1298](https://github.com/eq-solutions/eq-shell/pull/1298) Add compact action cards to the mobile dashboard
-- Merged: eq-shell [#1285](https://github.com/eq-solutions/eq-shell/pull/1285) fix(ci): field-perms-drift skips cleanly until FIELD_PERMS_D
-- Merged: eq-shell [#1281](https://github.com/eq-solutions/eq-shell/pull/1281) feat(access-control): expose eq-field's 74 fine-grained perm
+- Merged: eq-shell [#1299](https://github.com/eq-solutions/eq-shell/pull/1299) Fix: mobile dashboard was showing licence-expiry info three 
+- Merged: eq-shell [#1288](https://github.com/eq-solutions/eq-shell/pull/1288) fix(deps): patch image-size DoS + re-vendor to restore the n
+- Merged: eq-shell [#1287](https://github.com/eq-solutions/eq-shell/pull/1287) refactor(customers): reuse @eq/intake's fuzzy matcher instea
+- Merged: eq-shell [#1286](https://github.com/eq-solutions/eq-shell/pull/1286) fix(deps): resolve 2 high-severity Dependabot alerts (js-yam
+- Merged: eq-shell [#1283](https://github.com/eq-solutions/eq-shell/pull/1283) fix(rls): restrict commercial-table writes to management tie
 - Merged: eq-solves-service [#700](https://github.com/eq-solutions/eq-service/pull/700) fix(db): allow subcontractor role in service.tenant_members
 - Merged: eq-solves-service [#699](https://github.com/eq-solutions/eq-service/pull/699) fix(testing): RCD circuit editor unusable on phone, real tou
 - Merged: eq-solves-service [#698](https://github.com/eq-solutions/eq-service/pull/698) fix(migrations): pin search_path on 6 functions flagged by a
-- Merged: eq-solves-service [#696](https://github.com/eq-solutions/eq-service/pull/696) feat(migrations): extend --verify to catch function signatur
-- Merged: eq-solves-service [#695](https://github.com/eq-solutions/eq-service/pull/695) docs(ci): fix stale approval-gate comment on apply-service-m
 
 ## ⚠ Needs you (5)
 
@@ -55,7 +55,7 @@ _…and 93 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 | eq-solves-service | ✓ success | 0d ago | 1 | 0d |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 1 | — |
-| eq-solves-intake | ✓ success | 2d ago | 0 | — |
+| eq-solves-intake | ✓ success | 3d ago | 0 | — |
 
 ## Live errors (Sentry)
 
@@ -75,6 +75,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-11 | eq-shell | [#1299](https://github.com/eq-solutions/eq-shell/pull/1299) Fix: mobile dashboard was showing licence-expiry info three times |
 | 2026-08-11 | eq-shell | [#1298](https://github.com/eq-solutions/eq-shell/pull/1298) Add compact action cards to the mobile dashboard |
 | 2026-08-11 | eq-shell | [#1297](https://github.com/eq-solutions/eq-shell/pull/1297) Replace AI Brief prose with grounded Ask Anything Q&A |
 | 2026-08-11 | eq-shell | [#1296](https://github.com/eq-solutions/eq-shell/pull/1296) fix(platform): link labour-hire intake tool from platform nav |
@@ -89,22 +90,21 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-10 | eq-shell | [#1279](https://github.com/eq-solutions/eq-shell/pull/1279) feat(staff): labour-hire candidate review + ops intake tool |
 | 2026-08-10 | eq-shell | [#1291](https://github.com/eq-solutions/eq-shell/pull/1291) fix(quotes): surface errors on Word-doc download instead of swall |
 | 2026-08-10 | eq-solves-service | [#687](https://github.com/eq-solutions/eq-service/pull/687) chore(deps-dev): bump eslint-config-next from 16.2.2 to 16.3.0 |
-| 2026-08-10 | eq-solves-service | [#688](https://github.com/eq-solutions/eq-service/pull/688) chore(deps): bump @sentry/nextjs from 10.68.0 to 10.69.0 |
-_Showing 15 of 52 · full record in [sessions/](sessions/)_
+_Showing 15 of 53 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **Mobile action cards not visually verified in a real browser.** `tsc -b` and the full test suite (304/304) are clean, but this sandbox's local `netlify dev` has a pre-existing CSP-vs-Vite-preamble conflict that blocks the whole app from mounting, confirmed unrelated to this change (even the bare login page renders empty). Worth a real phone check on core.eq.solutions now that it's live. _(added 2026-08-11)_
+- **Mobile action cards are view + tap-through only** — no mark-done/dismiss controls, a deliberate v1 simplicity choice (confirmed via AskUserQuestion). Add if Royce wants parity with desktop. _(added 2026-08-11)_
+- **Compliance click-through only covers Staff and Ops today.** EQ Field has no record-level deep-linking (only `?tab=`), EQ Service has an unused `?return=` path mechanism Shell never constructs a specific path for, and EQ Cards has no deep-link support at all — out of scope for this pass since it wasn't asked for, but the next domain to add if Ask Anything grows past licences/quotes. _(added 2026-08-11)_
 - **`eq-solves-assets`'s `origin` remote points at `https://github.com/Milmlow/eq-solves-service.git`** — a personal fork of a different project, not an asset-capture-app repo. Local history (`main` + 7 feature branches) looks like real, non-stale work. Not touched — Royce confirmed the repo is parked for now, don't re-flag without being asked. _(added 2026-08-11)_
 - **Still not click-tested live** — deploy health confirms the code reached production, not that the Customers page's duplicate-detection UI still behaves correctly. Needs a real click-through. _(added 2026-08-11)_
 - **`eq-solves-assets`'s `origin` remote points at `https://github.com/Milmlow/eq-solves-service.git`** — a personal fork of a different project, not an asset-capture-app repo. Local history (`main` + 7 feature branches) looks like real, non-stale work. Not touched — Royce confirmed the repo is parked for now, don't re-flag without being asked. _(added 2026-08-11)_
 - **Real end-to-end click-through never run** — upload → OCR → candidate → tenant approves → worker claims. Test tenant: EQ Solutions (`eq`, `is_seed_demo: true`) — not SKS Technologies (live pilot, real workers). The tool is now actually reachable and functional (was silently broken until this session — see below), so this is unblocked. _(added 2026-08-11)_
 - Sentry EQ-CARDS-1F (`LateInitializationError`, `main.dart`) investigated — engine-internal, not independently fixable, flagged for awareness only, no action taken. _(added 2026-08-11)_
-- **eq-cards fix not yet built** — spun off as background task (silent no-op renewal: Save should warn/block when a renewal's expiry date wasn't actually changed from the pre-renewal baseline, and the "Renewed — new expiry saved" confirmation currently shows even when OCR found nothing). Not started this session. _(added 2026-08-11)_
-- **Royce also asked whether to rename eq-cards' wallet actions to "Add / Update License"** — recommended against it: mobile's "Add to wallet" vs "Renew" split is already clearer than a generic unified label, and the real gap was the silent-no-op bug above, not the naming. No change made. _(added 2026-08-11)_
 - **The actual blocker to Field being prod-ready is still open: why did real usage never start.** SKS NSW Labour is what real workers use today; Field's own parallel-run proving period sits at 0 consecutive clean weeks (per `ops/security-register.md`). Recommended pulling PostHog/`audit_log` data to find the real adoption friction (login flow, missing feature parity, mobile gaps) rather than waiting for it to self-resolve — not started this session, got sidetracked into the file-size work instead. Real next step if "prod ready" is the goal.
 - Decided **against** an ES-modules + event-delegation rewrite of the script architecture for now (would kill the `window.foo` exposure boilerplate and `onclick=""`-global pattern this session hit repeatedly) — real value, but delivers nothing user-visible and competes with the adoption question above. Revisit once Field has real daily use and there's slack for invisible cleanup.
-- **EQ_SECRET_SALT rotation readiness never actually verified.** Flagged as the top production-readiness risk (single point of failure for suite-wide SSO — session cookie, tenant JWTs, Cards, quotes handoff, internal tokens all fall back to it per `token.ts`), but never checked this session. Real next step once Royce is back on his main setup. _(added 2026-08-11)_
-_…and 464 more · [eq/pending.md](eq/pending.md)_
+_…and 463 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -126,7 +126,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 3303 | 575 | 47 | 12 |
+| [EQ](eq/pending.md) | 3298 | 574 | 48 | 12 |
 | [SKS](sks/pending.md) | 418 | 84 | 2 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 402 | 37 | 0 | 1 |
@@ -147,4 +147,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-11 04:51 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-11 05:38 UTC._
