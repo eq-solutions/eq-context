@@ -57,6 +57,7 @@ Every canonical EQ file as a full URL — clickable from `/context/claude`:
 | `cards/portable-trade-identity-audit-2026-07-20.md` | Cards portable-trade-identity audit — first-slice item 1 closed, items 2–4 + Path A/B/C await Royce |
 | `cards-info-density-scoping-2026-08-11.md` | Cards info-density scoping (punch-list #4) — which screens over-show info by default, default-visible vs collapsed-behind-a-tap split per screen, Wallet home tab flagged as the real fix (medium), everything else fine as-is |
 | `apprentices-cluster-scoping-2026-08-11.md` | Corrects the stale "largest debt, 42 days untouched" pending.md framing — most of it shipped the same day it was logged; two real open pieces (field_* twin scope decision, 2 orphan rows) plus a phased build plan |
+| `staff-reviews-scoping-2026-08-11.md` | Staff resource-management scoping — EQ Field's apprentice-only review/skills subsystem is complete but never actually used (zero rows live on both DBs); design to widen it to all staff via an additive `person_id` FK, manager-only gated to Royce first |
 | `products.md` | EQ live product status |
 | `active.md` | Live-state snapshot (staff/site/licence counts) — cross-check against products.md before quoting a headcount, they've drifted before |
 | `punch-list-2026-06-02.md` | 2026-06-02 punch list — several items superseded, treat as historical unless re-confirmed live |
