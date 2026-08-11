@@ -94,15 +94,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## EQ Suite: identity/role model mapped across Shell/Service/Field/Cards — two live gaps surfaced, need Royce's call (2026-08-10)
-*Grew out of "I'd like to look at the suite as a whole — also need to consider labour hire / sub contractor," following the eq-field mobile access-control audit above. Built as "how identity flows through the suite" (Cards sets the role → Shell owns it → Field/Service each enforce it differently) rather than forcing 4 structurally different apps into one grid — framing confirmed with Royce before building.*
-
-- [ ] **Cards: Subcontractor role silently downgrades to Employee on invite claim.** `eq_cards_claim_invite`'s role whitelist (migration 0018, last touched in migration 0072 — three weeks before Subcontractor existed in the canonical model at all) doesn't include `subcontractor`, so a worker invited with that role gets `'employee'` stamped into their real session (JWT `app_metadata.eq_role`, `shell_control.users.role`, `shell_control.user_tenant_memberships.role`) the instant they claim. Admin-side display is correct; only the claim path is wrong. Auth-session-minting territory — needs Royce's go before touching. _(added 2026-08-10)_
-- [ ] **Service: Subcontractor can't be assigned at all.** Live `tenant_members_role_check` CHECK constraint on ehow only allows 5 of the 6 canonical roles — the 2026-07-05 migration that added Subcontractor suite-wide never touched Service's own constraint. Live-schema change — needs Royce's go before touching. _(added 2026-08-10)_
-- [x] Reference artifact built and published: "How identity flows through the suite" — role-package versions per app, an identity-flow diagram, a Labour Hire vs. Subcontractor comparison table, and the two gaps above written up in plain English, each explicitly flagged "needs your call" rather than silently fixed. Saved to Royce's Downloads folder 2026-08-11.
-
----
-
 ## eq-shell + eq-cards: Cards SSO broker fix — built, verified, deliberately held (2026-08-10)
 *Scoped from the secrets-redundancy work: eq-cards' `shell-verify.js` was minting its own Supabase JWTs and provisioning auth.users locally, holding its own copies of `SUPABASE_JWT_SECRET` and `SUPABASE_SERVICE_ROLE_KEY` (jvkn). Built the fix, then ran `/decide` — TODAY.md's live goal (expires 2026-08-22) explicitly excludes "any live/auth changes that could affect real users mid-flow" while Royce is overseas. Both PRs are complete, verified, and draft — not merged, on purpose.*
 

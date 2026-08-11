@@ -27,6 +27,15 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## EQ Suite: both live Subcontractor gaps closed — Cards claim-downgrade fixed, Service constraint widened (2026-08-11) (fully closed, no open items remain)
+*Both surfaced 2026-08-10 by the "how identity flows through the suite" artifact, logged "needs Royce's call" since one is an auth-claim path and the other a live-schema change. Royce ran `/decide`-style scoping via AskUserQuestion the next session (2026-08-11): both in scope, minimal fix for each, no new behaviour, build now.*
+
+- [x] **Cards: `eq_cards_claim_invite` now accepts Subcontractor.** Whitelist widened by one value, same claim path as the other 5 roles — `CREATE OR REPLACE FUNCTION` reproduced the live definition byte-for-byte (diffed against a fresh `pg_get_functiondef` pull before writing) with only that line changed. Confirmed live before the fix: zero workers affected (exactly 1 worker platform-wide had `role='subcontractor'`, not yet invited). [eq-cards PR #225](https://github.com/eq-solutions/eq-cards/pull/225), squash-merged `ab0ff88`, applied directly to live jvkn (no automated apply pipeline for this repo) and independently re-confirmed via a fresh live query afterward.
+- [x] **Service: `tenant_members_role_check` now allows Subcontractor.** Constraint-only, per Royce's direction — stays inert in Service same as Labour Hire already is (Service doesn't assign roles itself, see PR #344). [eq-service PR #700](https://github.com/eq-solutions/eq-service/pull/700), squash-merged `c56f334`, applied live to ehow via the governed `apply-service-migrations` dispatch (run succeeded, "Apply to ehow" job green) and independently re-confirmed via a fresh live query afterward.
+- **Note**: both live-apply actions (the direct Cards SQL write and the Service workflow dispatch) were initially blocked by Claude Code's own permission classifier despite Royce's "merge" — re-confirmed per-action via AskUserQuestion before either proceeded, rather than working around the block.
+
+---
+
 ## eq-service: `next_variation_number` cross-tenant gap closed, plus the tooling fix that prevents a repeat (2026-08-10) (fully closed, no open items remain)
 *First flagged 2026-08-08 by a branch-audit agent, initially mis-described as "auto-generated variation numbers are broken" — corrected same session to what it actually was: a live security gap, not a functional bug.*
 
