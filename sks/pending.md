@@ -9,6 +9,10 @@ status: live
 
 # SKS Pending
 
+## sks-nsw-labour: local `main` synced, no feature change (2026-08-11)
+*Side effect of a suite-wide git-staleness sweep — see `eq/pending.md` (2026-08-11, "control-plane drift check fixed...") for the full story.*
+- [x] Local `main` was 11 commits behind `origin/main` (checked out in worktree `elastic-dirac-c994f1`, idle since 2026-07-21) — fast-forwarded, no code change. A real local `.claude/launch.json` (custom dev-server config) collided with a newly-tracked generic one from upstream; preserved as `.claude/launch.json.local-backup-preexisting` rather than overwritten. _(added 2026-08-11)_
+
 ## Mohamed Hussain's Open Cabling licence expiry corrected (2026-08-11)
 *Fix landed on the EQ side (eq-shell + eq-cards) — see `eq/pending.md` (2026-08-11) for full root-cause + build detail. This entry is the SKS-side pointer.*
 - [x] Expiry corrected 2026-08-28 → 2029-08-28, matching his renewed TITAB Australia Open Cabling Registration — the compliance pack now reflects the real date.
