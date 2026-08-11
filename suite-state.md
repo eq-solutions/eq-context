@@ -41,7 +41,7 @@ _If this file is >48h old, the cron is broken._
 | Tenants | 1 (SKS Technologies) | service.tenants |
 | Users | 5 | service.tenant_members |
 | Maintenance checks | 35 | service.maintenance_checks |
-| Defects | 2 | service.defects |
+| Defects | 1 | service.defects |
 
 **SKS tenant ID on ehow:** `7dee117c-98bd-4d39-af8c-2c81d02a1e85`
 **Demo tenant ID:** `a0000000-0000-0000-0000-000000000001`
@@ -61,12 +61,15 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-11)
 
 **eq-cards:**
+- #225 fix(auth): allow subcontractor to claim its own invite
 - #221 refactor(auth): shell-verify.js relays to eq-shell instead of local crypto
 
 **eq-service:**
+- #700 fix(db): allow subcontractor role in service.tenant_members
 - #697 chore(deps): bump @eq-solutions/ui to v1.14.0
 
 **eq-shell:**
+- #1297 Replace AI Brief prose with grounded Ask Anything Q&A
 - #1295 chore(deps): bump @eq-solutions/ui to v1.14.0
 - #1294 feat(cards): centralize Cards' SSO minting via token-exchange-cards.ts
 
