@@ -67,7 +67,6 @@ _If this file is >48h old, the cron is broken._
 - #697 chore(deps): bump @eq-solutions/ui to v1.14.0
 
 **eq-shell:**
-- #1301 fix(dashboard): mobile hero card was display:none on every viewport
 - #1295 chore(deps): bump @eq-solutions/ui to v1.14.0
 - #1294 feat(cards): centralize Cards' SSO minting via token-exchange-cards.ts
 
