@@ -29,6 +29,17 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-field: staff resource management (skills/reviews) — built, deployed, migration applied live (2026-08-11)
+*Royce, as Operations Manager, asked for an audit of what already existed toward tracking staff reviews/skills/weaknesses. Full detail — audit, design, build, live migration, real Netlify/production verification — lives in `eq/staff-reviews-scoping-2026-08-11.md`, not duplicated here.*
+
+- [x] Found and generalized EQ Field's existing apprentice-only review/skills subsystem (`skills_ratings`/`quarterly_reviews`/`feedback_entries`) to any staff member via an additive `person_id` column — `apprentice_id` untouched, apprentice flow unaffected. eq-field [PR #677](https://github.com/eq-solutions/eq-field/pull/677) (feature), [#678](https://github.com/eq-solutions/eq-field/pull/678) (caught + fixed a real bug before it ever touched a live DB — the first draft would have renamed a column live apprentice code still writes to), [#679](https://github.com/eq-solutions/eq-field/pull/679) (record). All merged, live on field.eq.solutions (v3.5.483).
+- [x] New "Staff Reviews" screen (`scripts/staff-reviews.js`), gated to Royce only via the same allowlist mechanism the Documents-to-Sign pilot already uses (`STAFF_REVIEWS_ALLOWLIST`, reused the same email). Verified live on the real deploy preview and on production: gate fails closed correctly for a non-allowlisted session.
+- [x] Migration applied live 2026-08-11 (Royce's explicit go-ahead) to both `ehow` and `zaap` — `ehow` got all 3 tables, `zaap` got 2 of 3 (`public.quarterly_reviews` doesn't exist there at all, a pre-existing asymmetry `apprentices.js` already tolerates, not expanded here).
+- [ ] **The allowlist gate is UI-only, not a database lock** — the underlying RLS policies on the 3 tables are tenant-scoped (any authenticated SKS session), not person-scoped, same threat model the existing pilot-sign feature already runs on. Royce asked directly and got this answered live 2026-08-11; flagged here in case he later wants a real DB-level restriction, not acted on. _(added 2026-08-11)_
+- [ ] **Royce's own click-through** — screen renders and the code is complete, but nobody has verified the actual save flow (add a rating, log a review, add feedback) through a real allowlisted session yet. _(added 2026-08-11)_
+
+---
+
 ## eq-shell + eq-context: control-plane drift check fixed, then a suite-wide git-staleness sweep (2026-08-11)
 *Started from an incidental finding while verifying CI on an unrelated PR — the scheduled "Tenant drift" check had been red on `main` since 2026-08-07. Fixing it surfaced a real, actively-recurring problem: eq-context's own local checkout had forked from `origin/main` from concurrent sessions committing without syncing — not a one-off, closes the standing "worktree-isolation vs accept-and-rebase" question flagged 2026-08-04/05 (see the eq-field section below).*
 
