@@ -16,6 +16,18 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## Suite-wide: "spinner shows but doesn't animate on iPhone" was Reduce Motion, not any of the 5 code fixes that chased it (2026-08-11) (fully closed, no open items remain)
+*Royce: "we have had several attempts" — a search across `pending.md`/`pending-archive.md`/`sessions/*`/changelogs turned up 5 separate fix attempts for "spinner frozen on iOS" across 3 repos since 2026-06-30, nearly all logged as "fixed but never confirmed on a real device":*
+*1. eq-cards `c159717`/`9f2b408` (2026-06-30/07-01) — CanvasKit/WebGL throttling, `renderer:'auto'`. 2. eq-shell PR #566 (2026-06-30) — `will-change:transform` for iOS compositing. 3. eq-cards PR #110 `d9d87a3` (2026-07-02) — `canvas.toDataURL()` blocking the main thread during OCR compression, swapped to `toBlob()`. 4. eq-cards PR #144 (2026-07-12) — replaced `CircularProgressIndicator` suite-wide with a Timer-driven `EqSpinner` (28 instances/26 files) that keeps ticking regardless of iOS's WebGL frame-loop throttle. 5. eq-field v3.5.387 (2026-07-31) — forces a reflow so a `@keyframes` animation restarts after a `display:none` toggle, a WebKit-specific quirk.*
+
+- [x] **Root cause, finally confirmed**: none of the 5 fixes above were wrong — Royce's own iPhone had **Settings → Accessibility → Motion → Reduce Motion** turned on, which freezes CSS/WebGL animations at the OS level regardless of what the app code does. That explains every symptom that made this look unfixable: identical "icon renders, never spins" behaviour across 3 independently-built codebases (React/CSS in eq-shell, vanilla-JS/CSS in eq-field, Flutter/CanvasKit in eq-cards), works fine on Android (no equivalent toggle was set there), and every one of the 5 code fixes being individually correct yet still "not confirmed working."
+- [x] **Verified live 2026-08-11**: before asking Royce to check the device setting, re-confirmed all 5 fixes are still intact in their respective codebases (none had regressed) — `will-change: transform` still present in eq-shell's `App.css`, the reflow-forcing logic still present in eq-field's `dashboard.js`, `EqSpinner`'s Timer-driven rotation still correctly bypassing the frozen ticker in eq-cards. Asked Royce to toggle Reduce Motion off and retry — confirmed: "was the motion setting - all good" across all three apps.
+- **Playbook for next time**: if a spinner/animation report is iOS-specific, works on Android, and shows a static icon rather than a fully-missing/broken element, check the device's Reduce Motion (and Low Power Mode, which can independently throttle background timers/WebGL) *before* touching any code — cheaper than a 6th fix attempt, and this incident shows it can mask several genuinely-correct fixes at once.
+
+---
+
+---
+
 ## eq-cards + eq-shell: Mohamed Hussain's Open Cabling licence — root-caused mobile OCR silent no-op, patched record directly (2026-08-11) (fully closed, no open items remain)
 *Royce reported updating Mohamed Hussain's Open Cabling licence via Cards mobile didn't OCR and wouldn't let him update the expiry. Traced to a real eq-cards bug: mobile OCR reads on-device (ML Kit), not the Claude Vision `ocr-licence` edge function eq-shell's admin tools use — confirmed via `ocr_usage` having no entry near the failed attempt. When ML Kit finds nothing on a card, the Renew flow lands on the edit screen with the OLD expiry pre-loaded (correct, so a failed scan doesn't blank the field) but nothing signals it's stale — Save went through as a genuine DB write with zero fields actually changed.*
 

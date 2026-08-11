@@ -2641,19 +2641,6 @@ Net: on a deep-linked `?tab=leave` view — exactly how Core embeds Field — `l
 - **This worktree (`nifty-feynman-7e97ce`) had no `node_modules` installed at all** — needed a temporary (accidentally non-symlink, actual-copy) `node_modules` to typecheck; cleaned up after. If revisiting this worktree, either run `pnpm install` properly or symlink carefully (confirm with `fsutil reparsepoint query` that `ln -s` actually produced a link, not a copy, on this machine).
 ---
 
-## ⏩ Session close — 2026-07-02 (eq-cards) — OCR spinner freeze root-caused + fixed, demo account cleaned up
-
-**Completed (eq-cards, PR #110 merged `d9d87a3`, deployed run 28540590608):**
-
-**Notes (load-bearing):**
-- Investigated via a live-browser test setup (Flutter web dev server + Claude Preview MCP) but hit two dead ends worth remembering next time: (1) code generation (`build_runner`) must run before `flutter run -d web-server` will even compile — the repo doesn't ship `.g.dart`/`.freezed.dart` files; (2) the sandboxed headless browser got stuck on the app's own boot loader (never fired `flutter-first-frame`), so full iOS-Safari-in-browser repro isn't currently possible in this environment — static analysis + real build compilation was the fallback verification path.
-- Mid-session both GitHub and Supabase MCP hit a genuine sandbox-wide network outage (DNS resolution itself failing) — correctly identified as infra, not app-specific, and paused rather than worked around; retried clean once connectivity returned.
-- A prior commit (`c159717`, 2026-07-01) had already partially diagnosed a related-but-distinct issue — CanvasKit's WebGL loop throttled by iOS Safari — and fixed it via `renderer: 'auto'` in `web/index.html`. A same-day follow-up commit (`9f2b408`) reverted part of that fix's spinner-widget change for an unrelated, also-valid reason. Neither commit touched the actual root cause found this session (the `toDataURL()` block), which is why the freeze persisted after both.
-
-**Deferred (added 2026-07-02):**
-- [ ] **Manual verification on a real iOS Safari session post-deploy** — confirm the spinner now animates smoothly through a real scan; couldn't be verified live in this sandbox. _(added 2026-07-02)_
----
-
 ## ⏩ Session close — 2026-07-02 (eq-shell) — token lint ratchet + staff licence resync
 
 **Completed (eq-shell, all merged + deployed):**
