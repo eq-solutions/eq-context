@@ -14,6 +14,21 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell dashboard: AI Brief cut, Ask Anything made real with clickable compliance links, mobile manager view added (2026-08-11)
+*Royce's feedback on the dashboard's "AI Summary": "I feel like it's a bit of a waste of time... feels like fancy info that doesn't add value right now," plus a specific ask that alerts be clickable links to the actual record. Via AskUserQuestion: cut the free-text brief paragraph, make action links go to the specific record, and "be creative — what are some cutting edge ways to utilise our canonical layer" (delivered as a separate one-pager artifact, not built). Then asked to build "Ask Anything" for real, still prioritising compliance click-through links. Then asked whether mobile was covered — it wasn't, so that got scoped and built too.*
+
+- [x] **Cut the AI Brief free-text paragraph entirely** — not reformatted, removed: the schema field, the system-prompt rule that generated it, and the frontend block. Its useful bits (freshness, "based on…" coverage line, degraded-source warning, refresh button) moved into the Today's Actions panel header instead of disappearing. Closes the loop on the 2026-07-26 "AI Brief scannability" item above (now moot).
+- [x] **"Ask anything" is now a real grounded Q&A feature**, not a re-run of the daily briefing. New `ask-ops.ts` endpoint fetches live licence-expiry + quote-pipeline data, asks Claude to answer using only that data via a forced tool call, and returns short server-built reference codes (never a raw record ID the model has to copy correctly) validated against a map before going out.
+- [x] **Compliance links are now genuinely clickable, the specific priority ask.** A licence-expiry citation deep-links straight to that staff member's record (`/staff?open=<id>`, new support added to the Staff page); a quote citation deep-links into the Ops pipeline (already-existing `?quote=<id>` support, just wired up).
+- [x] **Mobile dashboard was completely uncovered — fixed.** The mobile home screen was a generic app launcher with zero operational content; a manager checking their phone saw exactly what a field worker sees. Added a compact, tap-through action-card list reusing the same data already powering desktop's Today's Actions, automatically manager-only (the existing worker/manager split in `TenantHome.tsx` already gates this whole surface).
+- eq-shell [PR #1297](https://github.com/eq-solutions/eq-shell/pull/1297) (Brief cut + Ask Anything) and [PR #1298](https://github.com/eq-solutions/eq-shell/pull/1298) (mobile action cards) — both CI-green, squash-merged, auto-deployed to core.eq.solutions (eq-shell has no separate manual deploy step; merging `main` is the deploy).
+- [ ] **Mobile action cards not visually verified in a real browser.** `tsc -b` and the full test suite (304/304) are clean, but this sandbox's local `netlify dev` has a pre-existing CSP-vs-Vite-preamble conflict that blocks the whole app from mounting, confirmed unrelated to this change (even the bare login page renders empty). Worth a real phone check on core.eq.solutions now that it's live. _(added 2026-08-11)_
+- [ ] **Mobile action cards are view + tap-through only** — no mark-done/dismiss controls, a deliberate v1 simplicity choice (confirmed via AskUserQuestion). Add if Royce wants parity with desktop. _(added 2026-08-11)_
+- [ ] **Compliance click-through only covers Staff and Ops today.** EQ Field has no record-level deep-linking (only `?tab=`), EQ Service has an unused `?return=` path mechanism Shell never constructs a specific path for, and EQ Cards has no deep-link support at all — out of scope for this pass since it wasn't asked for, but the next domain to add if Ask Anything grows past licences/quotes. _(added 2026-08-11)_
+- [ ] **A six-idea "where the canonical layer goes next" one-pager was delivered as a standalone artifact** (Ask Anything, Pipeline Shadow, Automation Bus, Worker 360, Auto-Drafted Docs, Anomaly Detection — with mockups, ratings, a comparison table) per Royce's "be creative" ask — not committed anywhere, purely a discussion aid for whichever idea he wants to pursue next. _(added 2026-08-11)_
+
+---
+
 ## eq-shell + eq-context: control-plane drift check fixed, then a suite-wide git-staleness sweep (2026-08-11)
 *Started from an incidental finding while verifying CI on an unrelated PR — the scheduled "Tenant drift" check had been red on `main` since 2026-08-07. Fixing it surfaced a real, actively-recurring problem: eq-context's own local checkout had forked from `origin/main` from concurrent sessions committing without syncing — not a one-off, closes the standing "worktree-isolation vs accept-and-rebase" question flagged 2026-08-04/05 (see the eq-field section below).*
 
@@ -49,18 +64,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [ ] **Real end-to-end click-through never run** — upload → OCR → candidate → tenant approves → worker claims. Test tenant: EQ Solutions (`eq`, `is_seed_demo: true`) — not SKS Technologies (live pilot, real workers). The tool is now actually reachable and functional (was silently broken until this session — see below), so this is unblocked. _(added 2026-08-11)_
 - [ ] Sentry EQ-CARDS-1F (`LateInitializationError`, `main.dart`) investigated — engine-internal, not independently fixable, flagged for awareness only, no action taken. _(added 2026-08-11)_
 - [ ] **Front-door merge (AdminWorkerInviteForm vs LabourHireIntakeTool) scoped, not decided.** A live-wiring audit (this session) found worker-creation fragmented across 6 independent paths with inconsistent phone rules and notification behaviour. Two real bugs found and fixed same session: the intake edge function was stuck on a stale single-file deploy despite the multi-file rework already being merged to eq-cards `main` (redeployed live) and `/_platform/labour-hire-intake` had no nav link anywhere, findable only by typing the URL (added, eq-shell [#1296](https://github.com/eq-solutions/eq-shell/pull/1296), merged). A third option — merging the admin-invite and labour-hire write paths into one shared matching function — was investigated and explicitly rejected: they're deliberately different trust models (admin-known-person reuse-first vs ops-blind-document never-auto-attach-to-claimed), not duplicate code; merging would regress one path or the other. Whether to merge the two *front-end forms* themselves (not the write logic) is still open — Royce's call, not re-raised without new information. _(added 2026-08-11)_
-
----
-
-## eq-cards + eq-shell: Mohamed Hussain's Open Cabling licence — root-caused mobile OCR silent no-op, patched record directly (2026-08-11)
-*Royce reported updating Mohamed Hussain's Open Cabling licence via Cards mobile didn't OCR and wouldn't let him update the expiry. Traced to a real eq-cards bug: mobile OCR reads on-device (ML Kit), not the Claude Vision `ocr-licence` edge function eq-shell's admin tools use — confirmed via `ocr_usage` having no entry near the failed attempt. When ML Kit finds nothing on a card, the Renew flow lands on the edit screen with the OLD expiry pre-loaded (correct, so a failed scan doesn't blank the field) but nothing signals it's stale — Save went through as a genuine DB write with zero fields actually changed.*
-
-- [x] **Root-caused via live DB evidence, not guesswork** — confirmed exactly one UPDATE fired on the licence row at the time Royce described, with `expiry_date`/`licence_number`/`photo_front_url` all byte-identical to before; `ocr_usage` (which the edge-function OCR path always logs to, success or failure) had nothing since 12 days earlier — proves the mobile app used on-device OCR, not the server path.
-- [x] **Corrected an earlier mis-diagnosis before building anything** — first assumed eq-cards had no way to edit an existing licence's details outside the 30-day renewal window; re-read the actual file and found an unconditional Edit button already exists in the app bar. Deleted the task before any code was touched.
-- [x] **Patched Mohamed Hussain's Open Cabling Registration directly** — expiry corrected from 2026-08-28 to 2029-08-28 (matches his renewed TITAB Australia card, verified against the photo he emailed), written to both jvkn `public.licences` (Cards/system-of-record) and ehow `app_data.licences` (Staff-page copy) since there's no DB trigger syncing licence edits between the two planes — confirmed live via `information_schema.triggers`.
-- [x] **Verified which plane actually drives real controls, not just which one is easier to read** — `cards-export-licences-background.ts` (the actual compliance-pack generator) and the Field-access-unlock trigger both read jvkn `public.licences` directly, live. The ehow copy only feeds the Staff page's on-screen display. Confirms the jvkn write was the one that mattered; the ehow write was for admin-UI correctness, not compliance.
-- [ ] **eq-cards fix not yet built** — spun off as background task (silent no-op renewal: Save should warn/block when a renewal's expiry date wasn't actually changed from the pre-renewal baseline, and the "Renewed — new expiry saved" confirmation currently shows even when OCR found nothing). Not started this session. _(added 2026-08-11)_
-- [ ] **Royce also asked whether to rename eq-cards' wallet actions to "Add / Update License"** — recommended against it: mobile's "Add to wallet" vs "Renew" split is already clearer than a generic unified label, and the real gap was the silent-no-op bug above, not the naming. No change made. _(added 2026-08-11)_
 
 ---
 
@@ -1053,14 +1056,6 @@ Royce asked four architecture questions about the Cards→tenant consent model (
 - [ ] **Royce to click through the new "Who can join" Settings section and confirm it reads clearly and saves correctly** — code-complete and tested, not yet user-verified. _(added 2026-07-26)_
 - [ ] **Royce to run one more fresh Cards signup** to confirm the nudge and the approval-time flag actually show correctly end to end — the full loop has never been walked through live since these changes landed. _(added 2026-07-26)_
 - [ ] **Royce to test the new bulk connect-worker tool** with a real list of phone numbers. _(added 2026-07-26)_
-
----
-
-## eq-shell dashboard: AI Brief scannability + action-ranking clarity (2026-07-26)
-
-**Deferred:**
-- [ ] **Live smoke test of the new brief bullets + action-reason labels, and the CSS dedup above** on a tenant with an active AI brief — not yet manually verified in the running app (needs a signed-in session), only build/typecheck confirmed clean for both changes. _(added 2026-07-26)_
-- [ ] **Confirm the daily email digest** (`scheduled-briefing.ts`) still renders correctly for a tenant with `brief_recipients` set, now that the brief is a list of lines instead of one string — not yet sent/verified live. _(added 2026-07-26)_
 
 ---
 

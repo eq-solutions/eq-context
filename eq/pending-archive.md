@@ -16,6 +16,26 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-cards + eq-shell: Mohamed Hussain's Open Cabling licence — root-caused mobile OCR silent no-op, patched record directly (2026-08-11) (fully closed, no open items remain)
+*Royce reported updating Mohamed Hussain's Open Cabling licence via Cards mobile didn't OCR and wouldn't let him update the expiry. Traced to a real eq-cards bug: mobile OCR reads on-device (ML Kit), not the Claude Vision `ocr-licence` edge function eq-shell's admin tools use — confirmed via `ocr_usage` having no entry near the failed attempt. When ML Kit finds nothing on a card, the Renew flow lands on the edit screen with the OLD expiry pre-loaded (correct, so a failed scan doesn't blank the field) but nothing signals it's stale — Save went through as a genuine DB write with zero fields actually changed.*
+
+- [x] **Root-caused via live DB evidence, not guesswork** — confirmed exactly one UPDATE fired on the licence row at the time Royce described, with `expiry_date`/`licence_number`/`photo_front_url` all byte-identical to before; `ocr_usage` (which the edge-function OCR path always logs to, success or failure) had nothing since 12 days earlier — proves the mobile app used on-device OCR, not the server path.
+- [x] **Corrected an earlier mis-diagnosis before building anything** — first assumed eq-cards had no way to edit an existing licence's details outside the 30-day renewal window; re-read the actual file and found an unconditional Edit button already exists in the app bar. Deleted the task before any code was touched.
+- [x] **Patched Mohamed Hussain's Open Cabling Registration directly** — expiry corrected from 2026-08-28 to 2029-08-28 (matches his renewed TITAB Australia card, verified against the photo he emailed), written to both jvkn `public.licences` (Cards/system-of-record) and ehow `app_data.licences` (Staff-page copy) since there's no DB trigger syncing licence edits between the two planes — confirmed live via `information_schema.triggers`.
+- [x] **Verified which plane actually drives real controls, not just which one is easier to read** — `cards-export-licences-background.ts` (the actual compliance-pack generator) and the Field-access-unlock trigger both read jvkn `public.licences` directly, live. The ehow copy only feeds the Staff page's on-screen display. Confirms the jvkn write was the one that mattered; the ehow write was for admin-UI correctness, not compliance.
+- [x] **eq-cards fix built and shipped same day.** `scan_ocr_flow.dart`'s "found nothing" path now builds a dedicated `manualFillPrefill` (`ocrFailed: true`) instead of reusing the real OCR prefill, so the edit screen shows an honest "couldn't read automatically" warning instead of implying fields were read. `licence_edit_screen.dart` now captures the pre-renewal baseline expiry and blocks Save with a "Go back and check / Save anyway" confirm dialog when a renewal's expiry is unchanged; the "Renewed — new expiry saved" snackbar no longer shows when nothing actually changed. [eq-cards PR #224](https://github.com/eq-solutions/eq-cards/pull/224), CI green, squash-merged, `Build & Deploy` dispatched and confirmed successful (~3m49s). Closes the loop from this section's original report.
+- [x] **Royce also asked whether to rename eq-cards' wallet actions to "Add / Update License"** — recommended against it: mobile's "Add to wallet" vs "Renew" split is already clearer than a generic unified label, and the real gap was the silent-no-op bug above, not the naming. No change made.
+
+---
+
+## eq-shell dashboard: AI Brief scannability + action-ranking clarity (2026-07-26) (fully closed, no open items remain)
+
+**Deferred, both closed 2026-08-11 by the feature's outright removal rather than by testing:**
+- [x] **Moot — the brief paragraph itself was removed entirely, 2026-08-11.** Royce's feedback: "feels like fancy info that doesn't add value right now." The whole free-text brief (schema field, system-prompt rule, frontend block) is gone, not just reformatted, so there was nothing left to smoke-test.
+- [x] **Moot for the same reason** — `scheduled-briefing.ts`'s email template no longer has a brief section to render (also confirmed live, 2026-08-11: 0 tenants currently have `brief_recipients` set, so this had no real subscriber impact either way).
+
+---
+
 ## eq-field: `isManagerSession()` sent every manager/supervisor to the wrong mobile home screen since launch — found, fixed, merged, live (2026-08-08) (fully closed, no open items remain)
 *Surfaced during a ground-truth audit Royce asked for ("confirm all wiring and audit what the truth is so we build from a base we understand") of the document sign-off flow, the week's merged mobile fixes, and the permission/security-group model — not something flagged by name going in.*
 
