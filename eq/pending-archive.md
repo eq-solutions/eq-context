@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-08-10
+last_updated: 2026-08-11
 scope: Done items rotated out of eq/pending.md nightly by scripts/rotate_pending.py (per-item since 2026-07-27; before that, occasional manual whole-section moves). Nothing here is actionable — pure historical record (also covered in eq/changelog/*.md and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -13,6 +13,17 @@ Done items and fully-closed session write-ups rotated out of `eq/pending.md`.
 If you''re looking for something to action, it''s not here — check `eq/pending.md`.
 A "(rotated YYYY-MM-DD ...)" note on a section header means only that
 section's done items live here; its open items stayed in `eq/pending.md`.
+
+---
+
+## eq-field: `isManagerSession()` sent every manager/supervisor to the wrong mobile home screen since launch — found, fixed, merged, live (2026-08-08) (fully closed, no open items remain)
+*Surfaced during a ground-truth audit Royce asked for ("confirm all wiring and audit what the truth is so we build from a base we understand") of the document sign-off flow, the week's merged mobile fixes, and the permission/security-group model — not something flagged by name going in.*
+
+- [x] **Root cause**: `scripts/home.js`'s `isManagerSession()` read `window.isManager`, but `isManager` is declared with a top-level `let` in `scripts/app-state.js` — a top-level `let`/`const` never becomes a `window` property, even in eq-field's classic (non-module) shared-global-scope scripts. `window.isManager` was always `undefined`, so every manager and supervisor landed on the STAFF mobile home screen instead of the supervisor one, silently missing the Edit roster / Sites / Job numbers / Apprentices / Supervision / Import-Export / Audit log drawer links — live since the feature's introduction in v3.5.1. A prior changelog entry (v3.5.30) had wrongly claimed this exact issue was already fixed.
+- [x] **Fix**: read the bare `isManager` identifier instead, matching the already-correct pattern in `safety-dashboard.js`. [eq-field PR #671](https://github.com/eq-solutions/eq-field/pull/671), merged `35dd1f6`.
+- [x] **Same-pass companion fix**: `importManagersCSV` (`scripts/managers.js:498`) was missing the `isManager` guard already used 8 other places in the same file — the SEC-22 companion gap tracked separately elsewhere in this file. [eq-field PR #672](https://github.com/eq-solutions/eq-field/pull/672), merged `5cc5069`.
+- [x] **Both merged to `main`, live at v3.5.472.** Merge caught a silent auto-merge defect: `app-state.js`'s `APP_VERSION` and `sw.js`'s `CACHE` constant both independently landed on the same wrong string (`3.5.471`, already claimed by #671) with no conflict marker raised, since both branches made the identical textual change — corrected by hand to `3.5.472` alongside the genuine conflicts (`docs/reflection-log.md`, `index.html`'s changelog header).
+- [x] **Reference artifact built off the back of this audit**: an EQ Field mobile access-control guide for Royce — roles, the one `isManager` switch, the two real Manager-vs-Supervisor exceptions (Tender Pipeline, full-crew visibility), and an honest "worth knowing" section on gaps between the written permission matrix and what's actually enforced. Saved to Royce's Downloads folder 2026-08-11.
 
 ---
 
