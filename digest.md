@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-11 04:31 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-11 04:51 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-11 04:28 UTC → 2026-08-11 04:31 UTC)
+## Since last refresh (2026-08-11 04:31 UTC → 2026-08-11 04:51 UTC)
 
-- Merged: eq-shell [#1297](https://github.com/eq-solutions/eq-shell/pull/1297) Replace AI Brief prose with grounded Ask Anything Q&A
-- Merged: eq-shell [#1288](https://github.com/eq-solutions/eq-shell/pull/1288) fix(deps): patch image-size DoS + re-vendor to restore the n
-- Merged: eq-shell [#1287](https://github.com/eq-solutions/eq-shell/pull/1287) refactor(customers): reuse @eq/intake's fuzzy matcher instea
-- Merged: eq-shell [#1286](https://github.com/eq-solutions/eq-shell/pull/1286) fix(deps): resolve 2 high-severity Dependabot alerts (js-yam
-- Merged: eq-shell [#1283](https://github.com/eq-solutions/eq-shell/pull/1283) fix(rls): restrict commercial-table writes to management tie
+- Merged: eq-shell [#1298](https://github.com/eq-solutions/eq-shell/pull/1298) Add compact action cards to the mobile dashboard
+- Merged: eq-shell [#1285](https://github.com/eq-solutions/eq-shell/pull/1285) fix(ci): field-perms-drift skips cleanly until FIELD_PERMS_D
+- Merged: eq-shell [#1281](https://github.com/eq-solutions/eq-shell/pull/1281) feat(access-control): expose eq-field's 74 fine-grained perm
 - Merged: eq-solves-service [#700](https://github.com/eq-solutions/eq-service/pull/700) fix(db): allow subcontractor role in service.tenant_members
 - Merged: eq-solves-service [#699](https://github.com/eq-solutions/eq-service/pull/699) fix(testing): RCD circuit editor unusable on phone, real tou
 - Merged: eq-solves-service [#698](https://github.com/eq-solutions/eq-service/pull/698) fix(migrations): pin search_path on 6 functions flagged by a
+- Merged: eq-solves-service [#696](https://github.com/eq-solutions/eq-service/pull/696) feat(migrations): extend --verify to catch function signatur
+- Merged: eq-solves-service [#695](https://github.com/eq-solutions/eq-service/pull/695) docs(ci): fix stale approval-gate comment on apply-service-m
 
 ## ⚠ Needs you (5)
 
@@ -29,12 +29,10 @@ _2026-08-11 04:31 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🟠 **Sentry new error** — `eq-cards` [LateInitializationError: Field '' has not been initialized.](https://eq-solutions.sentry.io/issues/139929381/)
 - 🟠 **Sentry new error** — `eq-cards` [minified:C4: Exception: Could not load Blob from its URL. Ha](https://eq-solutions.sentry.io/issues/131122766/)
 
-## 🙋 Waiting on you (107)
+## 🙋 Waiting on you (105)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
-- **EQ** · **Cards: Subcontractor role silently downgrades to Employee on invite claim.** `eq_cards_claim_invite`'s role whitelist (migration 0018, last touched in migration 0072 — three weeks before Subcontractor existed in the canonical model at all) doesn't include `subcontractor`, so a worker invited with that role gets `'employee'` stamped into their real session (JWT `app_metadata.eq_role`, `shell_control.users.role`, `shell_control.user_tenant_memberships.role`) the instant they claim. Admin-side display is correct; only the claim path is wrong. Auth-session-minting territory — needs Royce's go before touching. _(added 2026-08-10)_
-- **EQ** · **Service: Subcontractor can't be assigned at all.** Live `tenant_members_role_check` CHECK constraint on ehow only allows 5 of the 6 canonical roles — the 2026-07-05 migration that added Subcontractor suite-wide never touched Service's own constraint. Live-schema change — needs Royce's go before touching. _(added 2026-08-10)_
 - **EQ** · **Needs Royce, not more building:** merge/deploy waits until he's back (2026-08-22) or explicitly comfortable being reachable if it needs a fast revert — same standing hold as any auth-path change per CLAUDE.md, made explicit here because of the overseas goal specifically. Also still needed regardless of timing: generate + set `EQ_CARDS_HANDOFF_KEY` on both Netlify projects (nothing works until it exists) — manual-hands-only, Claude Code is blocked from writing Netlify secrets by design. _(added 2026-08-10)_
 - **EQ** · **Not built.** Royce to decide whether this graduates back onto `system/punch-list.md` for the actual simplification work, given the goal's current exclusion on live UI changes affecting real users while overseas. _(added 2026-08-10)_
 - **EQ** · **Work sits uncommitted, not lost** — on branch `fix/integration-ci-app-data-bootstrap` in the shared root checkout at `C:\Projects\eq-solves-service`. Needs Royce to get Docker running (or hand over a `supabase db dump` directly, or greenlight a pure-SQL fallback) to resume. _(added 2026-08-10)_
@@ -45,7 +43,9 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **EQ** · **Not confirmed by Royce on the real embedded session** — everything above was verified against a standalone repro (deploy preview + forced `.shell-mode` class), not the actual `core.eq.solutions/sks/field` iframe Royce was looking at (no way to drive that cross-origin session from this environment). Royce to hard-refresh (or bypass the service worker) and confirm the nav bar is back. _(added 2026-08-05)_
 - **EQ** · Auto-login from Shell's tenant tile into Cards was silently skipping the handoff and bouncing to the sign-in screen instead — reported live by Royce, root-caused same session. `cards.eq.solutions` iframes across every open Shell tab share one browser's local storage, and a refresh-token rotation triggered by one tab invalidates the session another tab still has cached. The splash screen only checked whether *a* session object existed in storage, not whether it was still valid, so a stale cached session silently pre-empted the working handoff. Root-caused live against Royce's own SKS account: PostHog showed `shell_handoff_started` never fired on the failing attempt, and eq-canonical's auth logs showed `403 bad_jwt: invalid claim: missing sub claim` at the same second. Fixed in eq-cards [PR #212](https://github.com/eq-solutions/eq-cards/pull/212) (squash-merged `36a23cd`) — `_handleShellEntry()` now validates any cached session with a live `getUser()` call before trusting it, signing out and falling through to the existing handoff on any failure. Merged and deployed (explicit `Build & Deploy` workflow dispatch — Netlify + Sentry source-map upload both succeeded). **Needs Royce's click-through**: his own browser has a bad session already stuck in local storage from before the fix — clearing site data for `cards.eq.solutions` once (or a private window) and reloading the tenant tile is a device-side action only he can do; confirming the clean auto-login after that is the last open step. _(added 2026-08-04)_
 - **EQ** · **Sign-off records can be read or overwritten by any signed-in person on the same tenant, not just the person they belong to.** Investigated 2026-08-04 (sprint task T1): the obvious fix (`signer_user_id = auth.uid()`) would break real signing — eq-field's data-plane JWT sets `sub` to the tenant id for every user, not the actor, so `auth.uid()` on the real sign path never equals the signer. Closing this needs an identity-model decision, not a migration. Royce's call: leave deferred, revisit alongside a real second-signer rollout. _(updated 2026-08-04)_
-_…and 95 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+- **EQ** · **Sentry MCP connector needs Royce to reconnect** — "user's connection to this connector was invalidated" mid-session; `search_issues`/`search_events` unavailable for the rest of the session, worked around via code + live DB reads instead. _(added 2026-08-04)_
+- **EQ** · **`credentials-canonical-sync` is broken and not actually running** — the edge function that's supposed to copy a worker's licence/credential updates from Cards into the SKS compliance/Field-legacy database is deployed but wired to nothing (no database trigger calls it), and even if it were, it hardcodes the wrong SKS tenant ID (the old, corrected-in-2026-06 wrong value). Net effect: a worker updating a licence or White Card in Cards today does not reach the older SKS compliance view at all. Needs Royce's call on reviving it (fix + wire it up) vs retiring it in favour of the newer eq-field app's live-read pattern, which doesn't have this problem by design. Spawned as background task `task_5687d06b`, already started in a separate session. **Checked eq-field's actual "live-read pattern" this session (Royce: "have Field pick it up") — it's narrower than assumed: `eq_get_org_licences` (via `canon-read.js`) only lists licences a worker already holds and flags expiry, with NO org-required-credential gap-checking anywhere in eq-field (no `org_credential_requirements` lookup exists in the repo at all). So retiring the old sync is safe — Field was never depending on it — but "Field picks this up" isn't a real feature swap yet; Field doesn't currently show missing-credential warnings the way the old SKS view did. Retire-vs-revive is still Royce's call; if he wants Field to show compliance gaps going forward, that's new work, not a revival.** _(added 2026-08-03, updated 2026-08-03)_
+_…and 93 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
@@ -75,6 +75,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-11 | eq-shell | [#1298](https://github.com/eq-solutions/eq-shell/pull/1298) Add compact action cards to the mobile dashboard |
 | 2026-08-11 | eq-shell | [#1297](https://github.com/eq-solutions/eq-shell/pull/1297) Replace AI Brief prose with grounded Ask Anything Q&A |
 | 2026-08-11 | eq-shell | [#1296](https://github.com/eq-solutions/eq-shell/pull/1296) fix(platform): link labour-hire intake tool from platform nav |
 | 2026-08-11 | eq-solves-service | [#700](https://github.com/eq-solutions/eq-service/pull/700) fix(db): allow subcontractor role in service.tenant_members |
@@ -89,8 +90,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-10 | eq-shell | [#1291](https://github.com/eq-solutions/eq-shell/pull/1291) fix(quotes): surface errors on Word-doc download instead of swall |
 | 2026-08-10 | eq-solves-service | [#687](https://github.com/eq-solutions/eq-service/pull/687) chore(deps-dev): bump eslint-config-next from 16.2.2 to 16.3.0 |
 | 2026-08-10 | eq-solves-service | [#688](https://github.com/eq-solutions/eq-service/pull/688) chore(deps): bump @sentry/nextjs from 10.68.0 to 10.69.0 |
-| 2026-08-10 | eq-solves-service | [#696](https://github.com/eq-solutions/eq-service/pull/696) feat(migrations): extend --verify to catch function signature dri |
-_Showing 15 of 51 · full record in [sessions/](sessions/)_
+_Showing 15 of 52 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
@@ -104,7 +104,7 @@ _Showing 15 of 51 · full record in [sessions/](sessions/)_
 - **The actual blocker to Field being prod-ready is still open: why did real usage never start.** SKS NSW Labour is what real workers use today; Field's own parallel-run proving period sits at 0 consecutive clean weeks (per `ops/security-register.md`). Recommended pulling PostHog/`audit_log` data to find the real adoption friction (login flow, missing feature parity, mobile gaps) rather than waiting for it to self-resolve — not started this session, got sidetracked into the file-size work instead. Real next step if "prod ready" is the goal.
 - Decided **against** an ES-modules + event-delegation rewrite of the script architecture for now (would kill the `window.foo` exposure boilerplate and `onclick=""`-global pattern this session hit repeatedly) — real value, but delivers nothing user-visible and competes with the adoption question above. Revisit once Field has real daily use and there's slack for invisible cleanup.
 - **EQ_SECRET_SALT rotation readiness never actually verified.** Flagged as the top production-readiness risk (single point of failure for suite-wide SSO — session cookie, tenant JWTs, Cards, quotes handoff, internal tokens all fall back to it per `token.ts`), but never checked this session. Real next step once Royce is back on his main setup. _(added 2026-08-11)_
-_…and 465 more · [eq/pending.md](eq/pending.md)_
+_…and 464 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -126,7 +126,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 3316 | 577 | 51 | 12 |
+| [EQ](eq/pending.md) | 3303 | 575 | 47 | 12 |
 | [SKS](sks/pending.md) | 418 | 84 | 2 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 402 | 37 | 0 | 1 |
@@ -147,4 +147,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-11 04:31 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-11 04:51 UTC._
