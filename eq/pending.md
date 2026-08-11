@@ -14,6 +14,18 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-field: docx-export fix + timesheets/apprentices/roster decomposition, both PRs merged (2026-08-11)
+*Started from "top 3 things to get Field production-ready" — first answer wrongly assumed Field was live; corrected by Royce: SKS NSW Labour is the live system, Field has no real users yet (Core/Shell integration is the blocker). Redirected to "decompose now and fix the Sentry items" instead. Scope grew via a mid-session `/decide` on the 1,500-line file-size convention (traced to two multi-lens audits with no measured justification for the number) and a "full sweep" choice via AskUserQuestion.*
+
+- [x] **Fixed a live Sentry bug** — `incidents.js`/`site-reports.js`/`toolbox.js` passed `fetchTenantLogo()`'s whole `{base64,cx,cy}` object as `logoBase64` instead of `.base64`, crashing docx export (Incident/Prestart/Toolbox) for any tenant with a logo — SKS, live since 2026-08-04. Verified against the real bundled JSZip build. [eq-field PR #675](https://github.com/eq-solutions/eq-field/pull/675), merged.
+- [x] **Decomposed the 3 largest files in the codebase**, all still over the repo's ~1,500-line convention going in: `timesheets.js` 3,217→2,298, `apprentices.js` 2,500→1,482 (now under the default), `roster.js` 2,272→1,616 lines. 8 new companion modules. Same PR #675, merged and live-verified on `field.eq.solutions`.
+- [x] **Tightened the CI line-count ratchet to match** — `eslint.config.js`'s grandfathered ceilings for these 3 files were still at the pre-decomposition values (3-4x actual size), so the ratchet was enforcing nothing. Lowered per the file's own existing rule ("if a file shrinks, lower its entry by hand"). [eq-field PR #676](https://github.com/eq-solutions/eq-field/pull/676), merged.
+- [x] Caught and fixed 2 real process gaps found along the way: `core-bundle-b1.js`/`core-bundle-a2.js` CI drift (twice — lazy-loader.js and week-picker.js edits not regenerated into their bundles before push) and stale `<script>` cache-buster version tags on 2 core files (one predated this session).
+- [ ] **The actual blocker to Field being prod-ready is still open: why did real usage never start.** SKS NSW Labour is what real workers use today; Field's own parallel-run proving period sits at 0 consecutive clean weeks (per `ops/security-register.md`). Recommended pulling PostHog/`audit_log` data to find the real adoption friction (login flow, missing feature parity, mobile gaps) rather than waiting for it to self-resolve — not started this session, got sidetracked into the file-size work instead. Real next step if "prod ready" is the goal.
+- [ ] Decided **against** an ES-modules + event-delegation rewrite of the script architecture for now (would kill the `window.foo` exposure boilerplate and `onclick=""`-global pattern this session hit repeatedly) — real value, but delivers nothing user-visible and competes with the adoption question above. Revisit once Field has real daily use and there's slack for invisible cleanup.
+
+---
+
 ## eq-shell production-readiness pass — EQ-SHELL-14 closed live, grant audit clean, two readiness gaps still open (2026-08-11)
 *Requested: top 3-5 actions to get eq-shell production-ready for ~65-70 daily users. Royce was overseas on a secondary device, own env-var/secrets review already covering the Netlify-secret findings (SEC-9/SEC-24) — skipped those, ran two remote-friendly checks instead, then used `/decide` to pick one cheap follow-up that closed a real loop.*
 
