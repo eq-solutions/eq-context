@@ -67,9 +67,11 @@ _If this file is >48h old, the cron is broken._
 **eq-field:**
 - #683 v3.5.486 — gate the 4 safety-report submit actions to Supervision
 
+**eq-service:**
+- #707 fix(security): enforce reports.view + audit.view role gates
+
 **eq-shell:**
 - #1316 feat(staff): create one credential per document, not per photo
-- #1311 feat(staff): resourcing dashboard + draft org chart
 - #1310 fix(ops): quote attachments now upload direct to Storage, not through a function
 - #1309 chore(storage): drop 2 dead Supabase Storage buckets on ehow
 - #1294 feat(cards): centralize Cards' SSO minting via token-exchange-cards.ts
