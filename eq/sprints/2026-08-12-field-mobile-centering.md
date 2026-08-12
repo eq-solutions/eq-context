@@ -4,60 +4,54 @@ owner: Royce Milmlow
 created: 2026-08-12
 source: C:\Users\EQ\OneDrive - eq-power.com.au\eq-field-mobile-centering.html (audit dated 2026-08-07)
 repo: eq-field
-scope: Close every mobile gap the 2026-08-07 audit found in EQ Field — 12 P1 fixes, 2 P2 items scoped (not built), 2 P3 items bundled opportunistically. No redesign; every fix makes the app match what it already intends to do.
+scope: Originally 12 P1 + 2 P2 + 2 P3 items from a 2026-08-07 mobile audit. Corrected same-day, 2026-08-12, after live verification found all 12 P1 items already shipped. Real remaining backlog is 3 items (2 P2 + 1 P3).
 read_priority: high
 status: draft
 ---
 
 # Field mobile-experience centering
 
-**Status:** backlog — none of the 16 items below have been started. No eq-field code has been touched yet.
+**Status:** corrected 2026-08-12 — see "What actually happened" below. Only 3 items remain open.
 
-Turned from `eq-field-mobile-centering.html` (full six-cluster mobile audit, 2026-08-07) into an executable backlog. File references re-checked live 2026-08-12 against the current `main` (post v3.5.474-482 decomposition of timesheets/apprentices/roster.js) — all still accurate; `apprentices-skills-passport.js` is the new home for the Skills Passport item (it moved out of `apprentices.js` in that decomposition), everything else is unchanged.
+## What actually happened
 
-Zero real users on Field today — this is the window to fix these without any user-facing disruption risk.
+The source audit (`eq-field-mobile-centering.html`, 2026-08-07) listed 12 P1 items as open gaps. Before starting build work, each was re-verified against live `main` (per this repo's standing Rule 0.5: verify live, don't trust a doc). **All 12 were already shipped** — mostly in a single release, `v3.5.469` ("Mobile P1 bundle — 5 confirmed mobile.css bugs, one release"), plus 3 companion changelog entries in the same version (Calibration+Projects drawer, Safety Records role gate, Skills Passport dead CSS). The audit doc was almost certainly the scoping input for that release and was never updated afterward — it kept describing bugs that were already fixed.
 
-## P1 — ship now (12 items)
+This means "start P1 now" required zero new code. Caught before any eq-field file was touched.
 
-All independently scoped, bounded to 1–2 files each. No design decisions required except item 12. Grouped below into suggested PRs by shared file to keep branch/version-bump overhead sane (per eq-field's per-PR deploy-preview convention) — grouping is a suggestion, not a requirement.
+## P1 — all 12 items, verified already shipped (v3.5.469)
 
-| # | Gap | File(s) | Next verifiable outcome |
-|---|-----|---------|--------------------------|
-| 1 | Bottom-nav clearance CSS bug | `styles/mobile.css` / `styles/base.css` | Trailing content/buttons no longer sit under the nav bar on a 375–480px device |
-| 2 | Crew-name overflow — Prestart/Toolbox/Diary/Incident | `scripts/site-reports-shared.js` (shared — re-verify against all 4 callers before merge) | Long crew name ellipsises instead of overflowing, on all four forms |
-| 3 | Prestart crash-recovery draft loss | Prestart form script | Evicted tab mid-prestart restores the draft on return, not a blank form |
-| 4 | Incident modal height, Shell-embedded mode | Incident form script | Save/Submit reachable on Incident the same as the other 3 safety forms |
-| 5 | Sign Documents: missing mobile-style call + unguarded popup | `scripts/sign-documents.js` | Signature pad matches sibling forms' size; View can't be silently popup-blocked |
-| 6 | Apprentices Skills Passport — dead CSS selector | `scripts/apprentices-skills-passport.js` (moved here in v3.5.481 decomposition — was `apprentices.js`) | Table actually shrinks on a phone instead of relying on horizontal scroll |
-| 7 | Calibration + Projects unreachable on mobile | `index.html` mobile drawer wiring | Both reachable via the mobile drawer, same as every other page |
-| 8 | Roster Overview map — no mobile hide | `scripts/roster.js` | Same guard Dashboard's identical map already has |
-| 9 | Edit Roster undo/redo unreachable on mobile | `scripts/roster.js` / `scripts/roster-undo.js` | Undo/redo reachable by tap, not just a desktop keyboard shortcut |
-| 10 | Timesheets Job Numbers panel — fixed 260px sidebar | `scripts/timesheets.js` | Panel adapts at phone width instead of eating most of the screen |
-| 11 | Leave balance cards squeeze at phone width | `scripts/leave.js` | Same fix the supervisor stat-row already got, applied to the worker view |
-| 12 | Safety Records — no role gate in code | TBD — pending Royce's decision | **Blocked on Royce**: decide intended access first, then implement whichever way |
+| # | Gap | Verified fix |
+|---|-----|---------------|
+| 1 | Bottom-nav clearance CSS bug | `styles/mobile.css` — `.page{padding:10px 10px 76px}` (was a bare `padding:10px` wiping the 76px nav clearance) |
+| 2 | Crew-name overflow — Prestart/Toolbox/Diary/Incident | All 4 (`site-reports.js`, `toolbox.js`, `diary.js`, `incidents.js`) carry identical `min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis` |
+| 3 | Prestart crash-recovery draft loss | `site-reports.js` — full stash/resume via `visibilitychange`/`pagehide` + `sessionStorage`, 30-min TTL |
+| 4 | Incident modal height, Shell-embedded mode | `#modal-incident` added to the shell-mode forced-height selector list |
+| 5 | Sign Documents: mobile-style call + unguarded popup | `injectMobileStyle('signdoc')` wired; `window.open()` return value checked, toast on popup-block |
+| 6 | Apprentices Skills Passport — dead CSS selector | `styles/apprentices.css` selector corrected from nonexistent `#section-apprentices` to `#page-apprentices` |
+| 7 | Calibration + Projects unreachable on mobile | Both added to the mobile drawer + `DRAWER_NAV_PAGES` |
+| 8 | Roster Overview map — no mobile hide | `#rv-ov-map` + toggle hidden below 768px, same as Dashboard's map |
+| 9 | Edit Roster undo/redo unreachable on mobile | Undo/redo buttons now survive the blanket `.topbar-actions .btn{display:none}` rule |
+| 10 | Timesheets Job Numbers panel — fixed 260px sidebar | Converted to the same bottom-sheet convention as mobile modals |
+| 11 | Leave balance cards squeeze at phone width | `leave.js` — stacks to 1 column below 560px |
+| 12 | Safety Records — no role gate in code | **Royce's call was already made and implemented**: prestarts/toolboxes stay open to everyone; incidents/records gated to `reports.incident.view` (manager/supervisor) |
 
-**Suggested PR batching:** #1+#7 (index.html/CSS, drawer + nav), #2 (shared safety-form component, needs the extra caller re-verification called out in kill criteria), #3+#4 (safety forms), #5, #6, #8+#9 (roster.js), #10, #11, #12 (once Royce decides).
+No action needed on any of these. Item 12 in particular: the decision this sprint flagged as "blocked on Royce" turns out to already have Royce's own decision quoted directly in the changelog ("safety history is fine - we want to enable everyone for prestarts and toolboxes only. incidents and records should be gated.") and built.
 
-## P2 — scoped, not built (design pass, next after P1)
+## P2 — genuinely still open (re-verified 2026-08-12)
 
-| # | Gap | Why it waits |
-|---|-----|--------------|
-| 1 | Safety forms, Timesheets, Leave never got a Home-style per-role split | This is the real "100/100 moments" delivery — needs a design pass (staff vs. supervisor view), not a CSS fix. Scope after P1 lands. |
-| 2 | Calendar has zero mobile work | Needs a card/agenda fallback for the month grid + a mobile-sized day panel — a small design decision, not a bug fix. |
+| # | Gap | Status |
+|---|-----|--------|
+| 1 | Safety forms, Timesheets, Leave never got a Home-style per-role split | Confirmed open — no evidence of this design pass in the changelog. Needs scoping, not a bug fix. |
+| 2 | Calendar has zero mobile work | Confirmed open — `scripts/calendar.js` has no mobile/responsive handling at all. |
 
-## P3 — bundle opportunistically (no standalone PR)
+## P3 — genuinely still open (re-verified 2026-08-12)
 
-| # | Gap | Bundle into |
-|---|-----|-------------|
-| 1 | Several manager-only buttons under the 44px tap-target standard | Whichever P1 PR already touches that file |
-| 2 | Teams missing active-state highlight in mobile drawer | The #1+#7 drawer/nav PR above |
+| # | Gap | Status |
+|---|-----|--------|
+| 1 | Several manager-only buttons under the 44px tap-target standard | Not independently re-verified (no exact button list in the source audit to check against) — treat as unconfirmed, low urgency. |
+| 2 | Teams missing active-state highlight in mobile drawer | Confirmed open — v3.5.469's own changelog explicitly notes it: "ditem-teams still doesn't get this — separate pre-existing gap, not touched here." |
 
-## Kill criteria (carried from the source audit)
+## Lesson
 
-- Any fix touching a component shared across 4+ forms (item 2) gets independently re-verified against every caller before merge — this exact bug class has already been lost once to an unreviewed shared-file change.
-- Item 12 (Safety Records) does not ship without Royce's explicit call on intended scope.
-- If a "small" fix turns out to need a real layout decision, it stops and moves to the P2 pass instead of being rushed.
-
-## Sequencing note
-
-Item 6 already needed a live-file check because `apprentices.js` was decomposed the day before this audit (v3.5.474-482, 2026-08-11) — its Skills Passport code now lives in `apprentices-skills-passport.js`. Re-check file locations again before starting if more decomposition/refactor PRs land between now and execution.
+The source OneDrive doc had no version stamp tying it to a specific commit/release, so there was no cheap way to tell "already fixed" from "still open" without reading the actual code. Any future audit-style doc should note the `APP_VERSION` it was checked against, so staleness is detectable at a glance next time.
