@@ -63,9 +63,17 @@ _If this file is >48h old, the cron is broken._
 **eq-cards:**
 - #221 refactor(auth): shell-verify.js relays to eq-shell instead of local crypto
 
+**eq-field:**
+- #685 security: gate 8 unguarded HR-write functions to Supervision
+
+**eq-service:**
+- #710 test(security): add permission-enforcement drift guard (ratchet, non-blocking debt)
+- #709 fix(security): gate admin/imports + admin/activity on canViewAuditLog
+- #708 fix(security): close assignee-bypass on close + status-setter bypass of reopen/cancel gates
+
 **eq-shell:**
+- #1322 chore(security): permission-enforcement drift guard (ratchet, non-blocking debt)
 - #1321 feat(staff): write path for team/supervisor assignment on the org chart
-- #1318 fix(security): gate audit rollback + align entity archive/restore perms
 - #1317 fix(ops): retry quote-doc/job-creation fetches on a transient network drop
 - #1310 fix(ops): quote attachments now upload direct to Storage, not through a function
 - #1294 feat(cards): centralize Cards' SSO minting via token-exchange-cards.ts
