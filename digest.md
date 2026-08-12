@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-12 04:53 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-12 05:05 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-12 04:26 UTC → 2026-08-12 04:53 UTC)
+## Since last refresh (2026-08-12 04:53 UTC → 2026-08-12 05:05 UTC)
 
-- Merged: eq-shell [#1313](https://github.com/eq-solutions/eq-shell/pull/1313) fix(staff): move labour-hire intake from platform to tenant 
-- Merged: eq-shell [#1297](https://github.com/eq-solutions/eq-shell/pull/1297) Replace AI Brief prose with grounded Ask Anything Q&A
-- Merged: eq-shell [#1292](https://github.com/eq-solutions/eq-shell/pull/1292) fix(canonical-sync): let a duplicate worker adopt a dangling
-- Merged: eq-shell [#1291](https://github.com/eq-solutions/eq-shell/pull/1291) fix(quotes): surface errors on Word-doc download instead of 
-- Merged: eq-shell [#1285](https://github.com/eq-solutions/eq-shell/pull/1285) fix(ci): field-perms-drift skips cleanly until FIELD_PERMS_D
-- Merged: eq-shell [#1281](https://github.com/eq-solutions/eq-shell/pull/1281) feat(access-control): expose eq-field's 74 fine-grained perm
-- Merged: eq-solves-service [#705](https://github.com/eq-solutions/eq-service/pull/705) feat(rcd): generate circuit rows from board size instead of 
-- Merged: eq-solves-service [#704](https://github.com/eq-solutions/eq-service/pull/704) fix(rcd): Create Check page touch targets under 44px on mobi
+- Merged: eq-shell [#1298](https://github.com/eq-solutions/eq-shell/pull/1298) Add compact action cards to the mobile dashboard
+- Merged: eq-shell [#1296](https://github.com/eq-solutions/eq-shell/pull/1296) fix(platform): link labour-hire intake tool from platform na
+- Merged: eq-shell [#1293](https://github.com/eq-solutions/eq-shell/pull/1293) feat(staff): multi-file OCR intake, shared between admin inv
+- Merged: eq-shell [#1288](https://github.com/eq-solutions/eq-shell/pull/1288) fix(deps): patch image-size DoS + re-vendor to restore the n
+- Merged: eq-shell [#1287](https://github.com/eq-solutions/eq-shell/pull/1287) refactor(customers): reuse @eq/intake's fuzzy matcher instea
+- Merged: eq-shell [#1286](https://github.com/eq-solutions/eq-shell/pull/1286) fix(deps): resolve 2 high-severity Dependabot alerts (js-yam
+- Merged: eq-shell [#1283](https://github.com/eq-solutions/eq-shell/pull/1283) fix(rls): restrict commercial-table writes to management tie
+- Merged: eq-shell [#1279](https://github.com/eq-solutions/eq-shell/pull/1279) feat(staff): labour-hire candidate review + ops intake tool
 
 ## ⚠ Needs you (5)
 
@@ -81,6 +81,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-12 | eq-shell | [#1307](https://github.com/eq-solutions/eq-shell/pull/1307) fix(ops): file uploads failing on a payload limit no function cou |
 | 2026-08-12 | eq-shell | [#1306](https://github.com/eq-solutions/eq-shell/pull/1306) fix(ops): file uploads failed with a fake "check your connection" |
 | 2026-08-12 | eq-solves-service | [#697](https://github.com/eq-solutions/eq-service/pull/697) chore(deps): bump @eq-solutions/ui to v1.14.0 |
+| 2026-08-12 | eq-field | [#680](https://github.com/eq-solutions/eq-field/pull/680) v3.5.484 — mobile: Safety count louder, Leave tap-target fix |
 | 2026-08-12 | eq-cards | [#226](https://github.com/eq-solutions/eq-cards/pull/226) fix(labour-hire): OCR documents concurrently, not sequentially |
 | 2026-08-11 | eq-shell | [#1295](https://github.com/eq-solutions/eq-shell/pull/1295) chore(deps): bump @eq-solutions/ui to v1.14.0 |
 | 2026-08-11 | eq-shell | [#1305](https://github.com/eq-solutions/eq-shell/pull/1305) fix(dashboard): on-leave count zeroed by overnight schema rename; |
@@ -89,8 +90,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-11 | eq-shell | [#1302](https://github.com/eq-solutions/eq-shell/pull/1302) feat(staff): add Conversations log to Staff detail panel |
 | 2026-08-11 | eq-shell | [#1301](https://github.com/eq-solutions/eq-shell/pull/1301) fix(dashboard): mobile hero card was display:none on every viewpo |
 | 2026-08-11 | eq-shell | [#1300](https://github.com/eq-solutions/eq-shell/pull/1300) Make the mobile hero stats actionable, not just informational |
-| 2026-08-11 | eq-shell | [#1299](https://github.com/eq-solutions/eq-shell/pull/1299) Fix: mobile dashboard was showing licence-expiry info three times |
-_Showing 15 of 74 · full record in [sessions/](sessions/)_
+_Showing 15 of 75 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
@@ -147,4 +147,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-12 04:53 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-12 05:05 UTC._
