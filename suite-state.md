@@ -63,9 +63,6 @@ _If this file is >48h old, the cron is broken._
 **eq-cards:**
 - #221 refactor(auth): shell-verify.js relays to eq-shell instead of local crypto
 
-**eq-field:**
-- #684 Permission-enforcement drift guard (ratchet) for eq-field
-
 **eq-shell:**
 - #1321 feat(staff): write path for team/supervisor assignment on the org chart
 - #1318 fix(security): gate audit rollback + align entity archive/restore perms
