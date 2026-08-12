@@ -72,6 +72,7 @@ _If this file is >48h old, the cron is broken._
 - #708 fix(security): close assignee-bypass on close + status-setter bypass of reopen/cancel gates
 
 **eq-shell:**
+- #1324 feat(staff): swap Resourcing desktop view to eq-ui Table
 - #1317 fix(ops): retry quote-doc/job-creation fetches on a transient network drop
 - #1310 fix(ops): quote attachments now upload direct to Storage, not through a function
 - #1294 feat(cards): centralize Cards' SSO minting via token-exchange-cards.ts
