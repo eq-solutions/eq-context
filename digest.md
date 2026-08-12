@@ -10,16 +10,16 @@ status: live
 # EQ Suite — Health Digest
 _2026-08-12 03:55 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-12 00:47 UTC → 2026-08-12 03:55 UTC)
+## Since last refresh (2026-08-12 03:55 UTC → 2026-08-12 03:55 UTC)
 
-- Merged: eq-shell [#1308](https://github.com/eq-solutions/eq-shell/pull/1308) docs(ci): field-perms-drift's setup note is stale, secret no
-- Merged: eq-shell [#1293](https://github.com/eq-solutions/eq-shell/pull/1293) feat(staff): multi-file OCR intake, shared between admin inv
-- Merged: eq-shell [#1288](https://github.com/eq-solutions/eq-shell/pull/1288) fix(deps): patch image-size DoS + re-vendor to restore the n
-- Merged: eq-shell [#1287](https://github.com/eq-solutions/eq-shell/pull/1287) refactor(customers): reuse @eq/intake's fuzzy matcher instea
-- Merged: eq-shell [#1286](https://github.com/eq-solutions/eq-shell/pull/1286) fix(deps): resolve 2 high-severity Dependabot alerts (js-yam
-- Merged: eq-shell [#1283](https://github.com/eq-solutions/eq-shell/pull/1283) fix(rls): restrict commercial-table writes to management tie
-- Merged: eq-shell [#1279](https://github.com/eq-solutions/eq-shell/pull/1279) feat(staff): labour-hire candidate review + ops intake tool
+- Merged: eq-shell [#1292](https://github.com/eq-solutions/eq-shell/pull/1292) fix(canonical-sync): let a duplicate worker adopt a dangling
+- Merged: eq-shell [#1291](https://github.com/eq-solutions/eq-shell/pull/1291) fix(quotes): surface errors on Word-doc download instead of 
+- Merged: eq-shell [#1285](https://github.com/eq-solutions/eq-shell/pull/1285) fix(ci): field-perms-drift skips cleanly until FIELD_PERMS_D
+- Merged: eq-shell [#1281](https://github.com/eq-solutions/eq-shell/pull/1281) feat(access-control): expose eq-field's 74 fine-grained perm
 - Merged: eq-solves-service [#705](https://github.com/eq-solutions/eq-service/pull/705) feat(rcd): generate circuit rows from board size instead of 
+- Merged: eq-solves-service [#704](https://github.com/eq-solutions/eq-service/pull/704) fix(rcd): Create Check page touch targets under 44px on mobi
+- Merged: eq-solves-service [#703](https://github.com/eq-solutions/eq-service/pull/703) feat(rcd): in-app circuit entry — manual, photo, or both
+- Merged: eq-solves-service [#702](https://github.com/eq-solutions/eq-service/pull/702) fix(testing): ACB/NSX check lists unreadable on mobile, real
 
 ## ⚠ Needs you (5)
 
@@ -51,10 +51,10 @@ _…and 94 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 2 | 0d |
+| eq-shell | ✓ success | 0d ago | 3 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 0 | — |
 | eq-field | ✓ success | 0d ago | 0 | — |
-| eq-cards | ✓ success | 0d ago | 2 | 0d |
+| eq-cards | ✓ success | 0d ago | 1 | — |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
 ## Live errors (Sentry)
@@ -79,6 +79,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-12 | eq-shell | [#1307](https://github.com/eq-solutions/eq-shell/pull/1307) fix(ops): file uploads failing on a payload limit no function cou |
 | 2026-08-12 | eq-shell | [#1306](https://github.com/eq-solutions/eq-shell/pull/1306) fix(ops): file uploads failed with a fake "check your connection" |
 | 2026-08-12 | eq-solves-service | [#697](https://github.com/eq-solutions/eq-service/pull/697) chore(deps): bump @eq-solutions/ui to v1.14.0 |
+| 2026-08-12 | eq-cards | [#226](https://github.com/eq-solutions/eq-cards/pull/226) fix(labour-hire): OCR documents concurrently, not sequentially |
 | 2026-08-11 | eq-shell | [#1295](https://github.com/eq-solutions/eq-shell/pull/1295) chore(deps): bump @eq-solutions/ui to v1.14.0 |
 | 2026-08-11 | eq-shell | [#1305](https://github.com/eq-solutions/eq-shell/pull/1305) fix(dashboard): on-leave count zeroed by overnight schema rename; |
 | 2026-08-11 | eq-shell | [#1304](https://github.com/eq-solutions/eq-shell/pull/1304) fix(security): RLS gate on staff_conversations now enforces the p |
@@ -89,8 +90,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-11 | eq-shell | [#1299](https://github.com/eq-solutions/eq-shell/pull/1299) Fix: mobile dashboard was showing licence-expiry info three times |
 | 2026-08-11 | eq-shell | [#1298](https://github.com/eq-solutions/eq-shell/pull/1298) Add compact action cards to the mobile dashboard |
 | 2026-08-11 | eq-shell | [#1297](https://github.com/eq-solutions/eq-shell/pull/1297) Replace AI Brief prose with grounded Ask Anything Q&A |
-| 2026-08-11 | eq-shell | [#1296](https://github.com/eq-solutions/eq-shell/pull/1296) fix(platform): link labour-hire intake tool from platform nav |
-_Showing 15 of 71 · full record in [sessions/](sessions/)_
+_Showing 15 of 72 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
