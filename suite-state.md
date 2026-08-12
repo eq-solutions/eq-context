@@ -71,7 +71,6 @@ _If this file is >48h old, the cron is broken._
 - #1321 feat(staff): write path for team/supervisor assignment on the org chart
 - #1318 fix(security): gate audit rollback + align entity archive/restore perms
 - #1317 fix(ops): retry quote-doc/job-creation fetches on a transient network drop
-- #1316 feat(staff): create one credential per document, not per photo
 - #1310 fix(ops): quote attachments now upload direct to Storage, not through a function
 - #1294 feat(cards): centralize Cards' SSO minting via token-exchange-cards.ts
 
