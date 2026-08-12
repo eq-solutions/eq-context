@@ -229,10 +229,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ---
 
 ## eq-roles + eq-field + eq-shell: security-groups export → Field/Shell permission-pipeline fix, 6 PRs merged + live (2026-08-08)
-*Started from "give me a full HTML export of security groups across the whole suite." Investigating it surfaced a real role-conflation gap between Field and Shell, which snowballed into fixing a genuinely broken permission pipeline — approved as a 4-phase plan (`happy-knitting-karp.md`).*
-
-- [ ] **`FIELD_PERMS_DRIFT_PAT` secret still needs creating** — fine-grained PAT, `Contents:read` on eq-field only, add as an eq-shell repo secret. Royce: "I can't do the secret now." Until it exists the drift-guard above stays a no-op (green, but not actually checking anything). _(added 2026-08-08)_
-- [ ] **No live click-through yet** on any of the Shell↔Field permission changes above — needs a real signed-in session, off-limits to this environment. _(added 2026-08-08)_
+- [ ] **No live click-through yet** on the Shell↔Field permission changes — needs a real signed-in session, off-limits to this environment. `FIELD_PERMS_DRIFT_PAT` was added 2026-08-12 (initially to the wrong repo, eq-field; caught and corrected to eq-shell) and eq-shell [PR #1308](https://github.com/eq-solutions/eq-shell/pull/1308) confirmed the real drift check now passes with it in place — that half is done. Royce has exact test steps: (1) Access Control → revoke/grant a permission → confirm it reaches Field without a fresh login (the actual Phase 0 fix); (2) Custom Groups → new "Field permissions" section → toggle one → confirm it applies in Field. Neither run yet. _(added 2026-08-08, updated 2026-08-12)_
 
 ---
 

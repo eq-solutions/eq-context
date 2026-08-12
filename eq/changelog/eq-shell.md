@@ -9,6 +9,9 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-12 (field-perms-drift secret added, real check confirmed live)
+- **PR #1308** — `FIELD_PERMS_DRIFT_PAT` (the fine-grained PAT #1281/#1285 needed) was added to eq-shell's repo secrets, closing out the last open item from the Field/Shell permission-pipeline work. `field-perms-drift.yml`'s header comment still described the pre-secret skip-gate as current state — fixed, and the fix itself doubled as a live functional test: this PR touches the workflow file, which is in its own `pull_request` path filter, so it triggered a real run. Confirmed step-by-step that the actual cross-repo eq-field checkout + 74-key comparison ran (not the skip path) and passed clean. Squash-merged, no override needed. Live click-through of the permission changes themselves is still open — needs Royce's own signed-in session.
+
 ## 2026-08-12 (dependency bump)
 - **PR #1295 (MERGED)** — bumped `@eq-solutions/ui` v1.13.0 → v1.14.0 (EmptyState variants, density mode, new DateRangePicker — see eq-ui changelog). Verified in an isolated worktree off fresh `main` (root checkout was mid unrelated work): `pnpm run build` clean, 308/308 tests passing, lint failures confirmed pre-existing/unrelated (vendored `eq-intake/eq-platform` debt, already tracked by its own cleanup worktrees). Deployed to `core.eq.solutions` — confirmed live via GitHub, not assumed.
 
