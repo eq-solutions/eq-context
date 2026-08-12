@@ -64,9 +64,6 @@ _If this file is >48h old, the cron is broken._
 - #227 fix(ocr): detect and flag when one photo shows multiple documents
 - #221 refactor(auth): shell-verify.js relays to eq-shell instead of local crypto
 
-**eq-field:**
-- #681 v3.5.485 — mobile: Calendar agenda-list view + bottom-sheet day detail
-
 **eq-shell:**
 - #1314 fix(staff): surface multi-document warning on the regular invite form
 - #1311 feat(staff): resourcing dashboard + draft org chart
@@ -82,7 +79,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ? in_progress |
+| eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
