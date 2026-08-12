@@ -17,7 +17,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ## eq-ui: design-direction sprint (EmptyState variants, density mode, DateRangePicker) + suite-wide version bump (2026-08-12)
 
 - [ ] Combobox/multi-select and inline-edit primitives (reusing Table's filter language) — deferred pending a spike on whether Table's internal filter UI can actually be extracted into a shared primitive; `Table.tsx` is already 1,265 lines, extraction risk untested. _(added 2026-08-12)_
-- [ ] Design-direction doc (Royce's OneDrive Word doc, "Eq ui 8.8.26.docx") still says Table "continues expanding... saved views" — Royce confirmed saved views stay page-level (not an eq-ui component), doc wording not yet corrected to match. _(added 2026-08-12)_
 
 ---
 
