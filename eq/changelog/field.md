@@ -1,13 +1,20 @@
 ---
 title: Changelog — EQ Solves Field
 owner: Royce Milmlow
-last_updated: 2026-08-11
+last_updated: 2026-08-12
 scope: Append-only history of changes to the EQ Solves Field product. Canonical — eq-field.md was merged into this file 2026-07-19, don't split again.
 read_priority: reference
 status: live
 ---
 
 # Changelog — EQ Solves Field
+
+## [2026-08-12] Safety-report submit actions gated to Supervision (v3.5.487, #683)
+Found during a suite-wide declared-vs-actual permission audit comparing Shell's Access Control page / `@eq-solutions/roles` against what each EQ app actually enforces in code.
+
+- `submitPrestart()`/`submitToolbox()`/`submitDiary()`/`submitIncident()` had no permission check at all — each file's sibling `create()`/`openXForm()` function already gated on `reports.<module>.create` (manager+supervisor per `permission-matrix.js`), but the corresponding `reports.<module>.submit` key, declared with the identical role set, was never actually checked anywhere. Each submit function now opens with the same `EQ_PERMS.can()` + "Supervision access required" guard its own `create()` sibling already used — no new pattern introduced.
+- Renumbered `3.5.486` → `3.5.487` mid-PR: an unrelated mobile PR (#682) merged to `main` as `v3.5.486` while this branch was in flight, colliding version stamps. Rebased onto `main`; a mid-rebase `git commit --amend` briefly broke commit ancestry (rewrote #682's own commit instead of layering on top of it) — content stayed correct throughout, rebuilt with `git commit-tree` against the verified tree once caught.
+- 26/26 tests pass, `node --check` clean on all 4 touched files. Live click-test not possible in this sandbox (no network path to the tenant-config service). Build+PR only — held on merge/deploy pending Royce's explicit go-ahead per the standing auth-change rule and the active `system/TODAY.md` "no live/auth changes" constraint.
 
 ## [2026-08-11] Staff Reviews — resource-management pilot for Royce (v3.5.483, #677, #678, #679)
 Royce, as Operations Manager, asked for a way to track staff reviews, progress, and skills/weaknesses. Full audit + design in `eq-context/eq/staff-reviews-scoping-2026-08-11.md`.

@@ -14,6 +14,25 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-field + suite-wide: permission audit (131 rows, Excel), 2 live gaps flagged, next-sprint fix built + shipped as PR #683 (2026-08-12)
+*Royce: "i think we need a full excel of all security groups ... i have a feeling whats wired in each app isnt always reflected here and vice versa." Then: "flag the two live gaps as spawn_task." Then: "/decide next best sprint and build it."*
+
+- [x] Built a 131-row, 7-sheet Excel audit comparing Shell's Access Control page / `@eq-solutions/roles` declared permissions against what Field/Service/Shell/Cards actually enforce in code — 47 confirmed correct, 23 partial/hardcoded, 61 dead (key declared, never checked anywhere). Delivered directly to Royce as a working artifact, not committed to any repo.
+- [x] Flagged the two most severe live gaps (not just doc-drift) as background tasks — EQ Service's ungated GM reports + missing `audit.view` gate (`task_de667109`), EQ Shell's `audit.rollback`/`entity.edit` gaps (`task_fd65aa59`). Both started by Royce in separate sessions, running independently.
+- [x] Ran `/decide` on the audit's own findings for "next best sprint" — picked the smallest, most-evidenced, lowest-risk fix specifically because it could be scoped as build+PR-only under the active "no live/auth changes" TODAY.md constraint: 4 eq-field safety-report submit actions (Prestart/Toolbox/Diary/Incident) had `reports.<module>.submit` declared but never checked in code, unlike their sibling `create()` functions. Fixed, tested (26/26), eq-field [PR #683](https://github.com/eq-solutions/eq-field/pull/683) — CI green, mergeable. Caught and fixed a real self-inflicted git ancestry bug during PR maintenance (a mid-rebase `commit --amend` had rewritten an unrelated already-merged commit); full detail in `sessions/2026-08-12.md`.
+- [x] Added interactive permission-level editing + comments + a "download amended copy" export to Royce's personal `field-mobile-access-guide.html` reference doc (OneDrive, not a repo file), so he can mark it up before the next sprint is scoped.
+- [ ] **PR #683 needs a live click-test (manager/supervisor/employee) before merge** — this sandbox has no network path to the tenant-config service (punch-list item #3), so the app can't fully boot here. _(added 2026-08-12)_
+- [ ] **PR #683 merge/deploy** — held pending Royce's explicit go-ahead, per the standing auth-change rule and the active TODAY.md constraint (expires 2026-08-22). _(added 2026-08-12)_
+- [ ] **Outcome of the two spawned background tasks** (`task_de667109` EQ Service, `task_fd65aa59` EQ Shell) — still running as of this close. _(added 2026-08-12)_
+
+---
+
+## eq-field: mobile-centering sprint — 12 of 16 audited items already shipped, real gaps closed same day (2026-08-12)
+*A 2026-08-07 OneDrive audit doc listed 12 P1 mobile gaps in Field. Live-code verification before building anything found all 12 already fixed in `v3.5.469` — the audit was never updated after that release shipped. The follow-on scope (a worker/supervisor split for Safety + Leave) was also partly stale once checked: Leave already had a full supervisor view, and Safety's Prestart/Toolbox/Diary/Incident forms are already supervisor-only by permission grant, so there was no worker view to split from. Real gaps found and shipped instead: Safety list-header counts made prominent + Leave approve/reject buttons to 44px tap target (`v3.5.484`, field PR [#680](https://github.com/eq-solutions/eq-field/pull/680)); Calendar's desktop-only month grid gained a mobile agenda list + bottom-sheet day detail (`v3.5.485`, field PR [#681](https://github.com/eq-solutions/eq-field/pull/681)); Teams drawer's missing active-page highlight + 2 more manager-only tap-target fixes (`v3.5.486`, field PR [#682](https://github.com/eq-solutions/eq-field/pull/682)) — a photo-remove badge was explicitly declined rather than rushed (would have been bigger than the thumbnail it sits on). All three merged, confirmed live via `field.eq.solutions/sw.js`. Full record: `eq-context/eq/sprints/2026-08-12-field-mobile-centering.md`.*
+- [ ] **Timesheets mobile-entry** — deliberately not touched (Royce: "timesheets aren't a priority on mobile"). Revisit only if there's a real reason to think people are trying to do timesheets on their phone (e.g. PostHog `timesheet_saved` event breakdown by device). _(added 2026-08-12)_
+
+---
+
 ## eq-ui: design-direction sprint (EmptyState variants, density mode, DateRangePicker) + suite-wide version bump (2026-08-12)
 
 - [ ] Inline-edit primitives for Table — still deferred, needs its own spike on whether Table's cell/row model can support it cleanly; `Table.tsx` is already 1,265 lines. _(added 2026-08-12)_
