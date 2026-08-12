@@ -61,6 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-12)
 
 **eq-cards:**
+- #227 fix(ocr): detect and flag when one photo shows multiple documents
 - #221 refactor(auth): shell-verify.js relays to eq-shell instead of local crypto
 
 **eq-shell:**
