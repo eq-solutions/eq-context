@@ -64,11 +64,11 @@ _If this file is >48h old, the cron is broken._
 - #221 refactor(auth): shell-verify.js relays to eq-shell instead of local crypto
 
 **eq-field:**
+- #686 chore(tests): tighten permission-enforcement-drift baseline post-#683
 - #685 security: gate 8 unguarded HR-write functions to Supervision
 
 **eq-service:**
 - #711 security: remove orphaned customer/site write REST routes
-- #709 fix(security): gate admin/imports + admin/activity on canViewAuditLog
 - #708 fix(security): close assignee-bypass on close + status-setter bypass of reopen/cancel gates
 
 **eq-shell:**
@@ -84,7 +84,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ✓ success |
+| eq-service | ? in_progress |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
