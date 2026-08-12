@@ -67,10 +67,9 @@ _If this file is >48h old, the cron is broken._
 **eq-field:**
 - #683 v3.5.486 — gate the 4 safety-report submit actions to Supervision
 
-**eq-service:**
-- #707 fix(security): enforce reports.view + audit.view role gates
-
 **eq-shell:**
+- #1318 fix(security): gate audit rollback + align entity archive/restore perms
+- #1317 fix(ops): retry quote-doc/job-creation fetches on a transient network drop
 - #1316 feat(staff): create one credential per document, not per photo
 - #1310 fix(ops): quote attachments now upload direct to Storage, not through a function
 - #1309 chore(storage): drop 2 dead Supabase Storage buckets on ehow
@@ -93,7 +92,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 212 (latest: 0206) applied
+**Migrations:** eq-service has 213 (latest: 0206) applied
 
 ---
 
