@@ -4,14 +4,14 @@ owner: Royce Milmlow
 created: 2026-08-12
 source: C:\Users\EQ\OneDrive - eq-power.com.au\eq-field-mobile-centering.html (audit dated 2026-08-07)
 repo: eq-field
-scope: Originally 12 P1 + 2 P2 + 2 P3 items from a 2026-08-07 mobile audit. Corrected same-day, 2026-08-12, after live verification found all 12 P1 items already shipped, and again after live-code checks found Leave's supervisor view already built. Real new work landed: Safety count prominence + Leave tap-target fix (v3.5.484, PR #680, merged, live in production) and Calendar mobile agenda view (v3.5.485, PR #681). Remaining: 2 small bundle-ins (P3), no separate work planned.
+scope: Originally 12 P1 + 2 P2 + 2 P3 items from a 2026-08-07 mobile audit. Corrected same-day, 2026-08-12, after live verification found all 12 P1 items already shipped, and again after live-code checks found Leave's supervisor view already built. Every item resolved same day: Safety+Leave (v3.5.484, PR #680, merged/live), Calendar agenda view (v3.5.485, PR #681, merged/live), P3 sweep — Teams highlight + mic tap targets (v3.5.486, PR #682, deploy-preview verified, awaiting merge).
 read_priority: high
 status: draft
 ---
 
 # Field mobile-experience centering
 
-**Status:** P1 verified already-shipped (no build needed). Safety + Leave: merged and live in production (v3.5.484). Calendar: built, tested, deploy-preview verified, PR #681 open — awaiting Royce's merge call.
+**Status:** Every item resolved same day (2026-08-12) — 12 already shipped (no build needed), 3 real gaps built and verified (v3.5.484/485 merged and live; v3.5.486 built and deploy-preview verified, PR #682 open awaiting Royce's merge call), 1 correctly declined (photo-remove badge, would have been a visual regression).
 
 ## What actually happened (P1)
 
@@ -45,14 +45,18 @@ Premise held up this time — `scripts/calendar.js` genuinely had zero mobile ha
 
 Awaiting Royce: merge PR #681. This closes out the last scoped P2 item.
 
-## P3 — small, bundle into a future PR (no separate work)
+## What actually happened (P3)
 
-| # | Gap | Plan |
-|---|-----|------|
-| 1 | Several manager-only buttons under 44px tap target | Not independently confirmed against specific buttons — sweep opportunistically whenever a relevant file is next touched. |
-| 2 | Teams missing active-state highlight in mobile drawer | Confirmed open (v3.5.469's own changelog flags it). One-line fix — bundle into whichever PR next touches `index.html`'s drawer wiring. |
+Closed as its own small pass, 2026-08-12, at Royce's request — didn't wait for an unrelated PR to bundle into.
+
+- **Teams drawer highlight** — confirmed the exact cause: `DRAWER_NAV_PAGES` (index.html) drives every drawer item's active-page highlight; Teams was the one entry never added when `ditem-teams` shipped (v3.5.27). Added it — reuses the existing mechanism, no new CSS.
+- **Manager-only buttons under 44px** — the source wording named no specific buttons, so grepped every small inline button pattern across `scripts/*.js` (14 hits) and checked each: excluded decorative avatars (not tap targets), excluded Roster's Team Week nav buttons (its own comment says "for staff," not manager-only — would've been a false positive), excluded every Timesheets instance per Royce's stated priority this session even though one (`.eq-apq-btn`) is a legitimate same-class bug already fixed in Leave. Landed on 2 real instances: the voice-dictation mic button on Prestart/Toolbox/Diary/Incident and on Site Audits (both 34px, both genuinely gated to `isManager`/`reports.*.create`). Bumped both to 44px.
+- **Declined, not missed:** the photo-remove badge on the same 4 safety forms is also under 44px and also manager-only — but it's 20px sitting on an 84px thumbnail corner; forcing it to 44px would make the button bigger than half the photo. Named and left alone rather than rushed — matches this sprint's own kill criteria ("if a small fix needs a real layout decision, it stops").
+
+**Shipped, v3.5.486, PR #682:** verified directly on the deploy preview — Teams drawer item computed `.active-page` (navy, bold) after navigating there; both mic-button locations (Prestart form: 4 buttons, Site Audits form: several) computed 44×44px; no new console errors. Not yet merged.
 
 ## Lessons
 
 1. The source OneDrive doc had no version stamp tying it to a specific commit/release — no cheap way to tell "already fixed" from "still open" without reading the actual code. Any future audit-style doc should note the `APP_VERSION` it was checked against.
 2. Same lesson, twice in one sprint: a planning doc's *design* assumptions (not just its bug list) can also be stale. "Leave needs a supervisor view built" and "Safety needs a worker/supervisor split" were both wrong once the actual permission model and existing code were checked. Verify the code, not just the symptom list, before scoping a build.
+3. "Bundle into a future PR" backlog items are easy to lose. Closing P3 as its own small, deliberate pass (rather than waiting indefinitely for an unrelated PR to ride along on) got 2 confirmed-real gaps fixed same-day instead of never.
