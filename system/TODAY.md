@@ -1,7 +1,7 @@
 ---
 title: TODAY — Focus Filter
 owner: Royce Milmlow
-last_updated: 2026-08-08
+last_updated: 2026-08-12
 scope: The filter for every Claude session decision. Facts are machine-verified. Goals are human-owned — see GOALS section for current status.
 read_priority: critical
 status: live
@@ -9,8 +9,8 @@ status: live
 
 # TODAY — Focus Filter
 
-> **Goals: 1 active, expires 2026-08-22.** See below. **Do not invent new ones. Do not infer them from old files.**
-> This goal is Royce's own text, confirmed 2026-08-08 (wording and expiry chosen by Royce via AskUserQuestion, not authored unilaterally). Apply only what it actually says — it is not license to defer or justify unrelated work.
+> **Goals: 0 active.** See below. **Do not invent new ones. Do not infer them from old files.**
+> No goal is currently set. This is honest, not a gap to fill — see "Never fill a slot in this file because it looks empty" below.
 
 ---
 
@@ -28,26 +28,18 @@ Full write-up: [`system/lessons.md`](lessons.md) → "The Substrate Contained a 
 
 ---
 
-## GOALS — `type: goal` · `owner: royce` · **status: 1 active**
+## GOALS — `type: goal` · `owner: royce` · **status: 0 active**
 
 ```yaml
-claims:
-  - type: goal
-    owner: royce
-    text: >
-      Get the EQ Suite operationally hardened (onboarding, security, backup,
-      mobile) while I'm overseas, without any live/auth changes that could
-      affect real users mid-flow. Track progress via the 5 items in
-      system/punch-list.md.
-    asserted_on: 2026-08-08
-    expires_on: 2026-08-22
-    verify: human
+claims: []
 ```
+
+**Killed 2026-08-12, Royce's explicit choice, via `/decide`.** The prior goal ("Get the EQ Suite operationally hardened (onboarding, security, backup, mobile) while I'm overseas, without any live/auth changes that could affect real users mid-flow," set 2026-08-08, would have expired 2026-08-22) was killed early rather than left to expire — raised because that session's own eq-field mobile-centering sprint had just deployed 3 live production changes (v3.5.484/485/486) under the goal's "no live changes" wording; Royce confirmed each merge was already covered by his own explicit "Merge it" in the moment, and separately chose to kill the goal itself rather than hold future work to it. Full context: `sessions/2026-08-12.md`.
 
 **Rules for this section — enforced by [`claim-expiry.yml`](../.github/workflows/claim-expiry.yml) (rung 3, built 2026-07-12): a goal that is undated, unowned, or past `expires_on` fails CI. Checked on every change to this file and nightly.**
 - A goal with no `expires_on` is **invalid** — `claim-expiry.yml` fails CI.
-- A goal past `expires_on` is **dead**, and surfaces as *"Royce — confirm or kill."* It does not silently persist. **This one expires 2026-08-22 — re-confirm or let it die, don't let it go stale.**
-- **No assistant may write a goal here.** Assistants may only propose. Goals are human-owned. This is not a formality — it is the specific safeguard that would have prevented this phantom. (This goal's wording and expiry were Royce's own confirmed choice, 2026-08-08 — see `sessions/2026-08-08.md`.)
+- A goal past `expires_on` is **dead**, and surfaces as *"Royce — confirm or kill."* It does not silently persist.
+- **No assistant may write a goal here.** Assistants may only propose. Goals are human-owned. This is not a formality — it is the specific safeguard that would have prevented the 2026-07-11 phantom-deadline incident (see below).
 
 ---
 
