@@ -25,6 +25,17 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: EQ Ops archive view gets full search/filter, quotes auto-archive after 7 days invoiced (2026-08-12)
+*Royce: "EQ OPS. Can we add two features — full search and filter functions as per EQ-UI in archive view. Archive anything that has been invoiced for 7 days."*
+
+- [x] Archive ("Archived") tab now uses the shared @eq-solutions/ui Table (search, status filters, column toggle, CSV export) instead of a bare list — matches how Equipment/Staff/Suppliers already work. eq-shell [PR #1319](https://github.com/eq-solutions/eq-shell/pull/1319), merged.
+- [x] New scheduled job soft-archives any quote that's sat "Invoiced" for 7+ days — same shape as the existing auto-expire job (migration 0243). Dispatched and confirmed live on both the EQ (zaap) and SKS (ehow) databases same session; one already-qualifying SKS quote will get archived on the first run (daily, ~9:15pm UTC, just after the existing expiry job).
+- [x] Confirmed for Royce: archived quotes never auto-delete or further expire — they sit in Archived until someone manually deletes that specific quote (permanent, no undo). The existing data-retention purge job is unrelated (leaver/HR data only, not quotes).
+- [x] Royce asked mid-session for tick-box multi-select on the Archived tab too — added Restore-many / Delete-many, one confirm for the whole batch rather than one per row. eq-shell [PR #1320](https://github.com/eq-solutions/eq-shell/pull/1320), merged. Caught and fixed a merge conflict from #1319's squash-merge orphaning the branch history (not a real content clash — rebase resolved it cleanly, both PRs' changes intact).
+- [ ] **Live click-through not done** — this sandbox has no network path to the tenant-config service, so the Archived-tab search/filter/bulk-select hasn't been visually confirmed in a real browser session. Built against the exact same Table component already proven live elsewhere in the app; build + typecheck clean on both PRs. _(added 2026-08-12)_
+
+---
+
 ## eq-field + suite-wide: permission audit (131 rows, Excel), 2 live gaps flagged, next-sprint fix built + shipped as PR #683 (2026-08-12)
 *Royce: "i think we need a full excel of all security groups ... i have a feeling whats wired in each app isnt always reflected here and vice versa." Then: "flag the two live gaps as spawn_task." Then: "/decide next best sprint and build it."*
 
@@ -34,7 +45,9 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] Added interactive permission-level editing + comments + a "download amended copy" export to Royce's personal `field-mobile-access-guide.html` reference doc (OneDrive, not a repo file), so he can mark it up before the next sprint is scoped.
 - [ ] **PR #683 needs a live click-test (manager/supervisor/employee) before merge** — this sandbox has no network path to the tenant-config service (punch-list item #3), so the app can't fully boot here. _(added 2026-08-12)_
 - [ ] **PR #683 merge/deploy** — held pending Royce's explicit go-ahead, per the standing auth-change rule and the active TODAY.md constraint (expires 2026-08-22). _(added 2026-08-12)_
-- [ ] **Outcome of the two spawned background tasks** (`task_de667109` EQ Service, `task_fd65aa59` EQ Shell) — still running as of this close. _(added 2026-08-12)_
+- [x] **`task_de667109` (EQ Service) outcome: fixed and deployed, same session.** The reports dashboard (was reachable by anyone signed in — no role check at all) and the audit log page (blocked supervisors who should have access, while being the *only* thing stopping anyone else reading it) both now enforce the correct role. Also added the same role check to the database itself, so a direct API call can't read the audit log even bypassing the page. eq-service [PR #707](https://github.com/eq-solutions/eq-service/pull/707) — merged and the database change applied live, both confirmed working. While checking for other places that read the audit log, found the identical gap on two more pages (`admin/imports`, one of which is meant to run on a wall display for customer reviews) — spun off as a new background task (`task_9f6fca23`), Royce already has it running. Also flagged but not touched: the report-download endpoint allows a supervisor to download reports the dashboard itself won't show them (pre-existing, narrower business call, not mine to make silently) — noted in the PR.
+- [ ] **`task_fd65aa59` (EQ Shell) outcome** — still running as of this close. _(added 2026-08-12)_
+- [ ] **`task_9f6fca23` (EQ Service) — two more ungated audit-log pages** (`admin/imports`, `admin/activity`) found and spun off this session; Royce already has it running as of this close. _(added 2026-08-12)_
 
 ---
 
