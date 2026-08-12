@@ -16,7 +16,8 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ## eq-ui: design-direction sprint (EmptyState variants, density mode, DateRangePicker) + suite-wide version bump (2026-08-12)
 
-- [ ] Combobox/multi-select and inline-edit primitives (reusing Table's filter language) — deferred pending a spike on whether Table's internal filter UI can actually be extracted into a shared primitive; `Table.tsx` is already 1,265 lines, extraction risk untested. _(added 2026-08-12)_
+- [ ] Inline-edit primitives for Table — still deferred, needs its own spike on whether Table's cell/row model can support it cleanly; `Table.tsx` is already 1,265 lines. _(added 2026-08-12)_
+- [ ] Whether Table's own column filters should ever be rebuilt on top of the new `MultiSelect` component — low priority, only worth revisiting if the inline-edit spike above happens anyway and touches the same filter code. Not blocking anything; `MultiSelect` shipped standalone (eq-ui PR [#38](https://github.com/eq-solutions/eq-ui/pull/38)) specifically so it didn't have to wait on this. _(added 2026-08-12)_
 
 ---
 

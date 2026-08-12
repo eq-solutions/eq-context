@@ -9,6 +9,9 @@ status: live
 
 # eq-ui changelog
 
+## 2026-08-12 (PR #38, MultiSelect — open, not yet merged)
+- **PR #38 (OPEN, CI green)** — new `MultiSelect` component: trigger + popover checklist for picking a set of discrete values, chips for 1-2 selections collapsing to a count for 3+, search box past 8 options, density-aware. Deliberately standalone — doesn't share code with Table's own filter popover, decided via a full `/decide` pass rather than assumed (the code-sharing question was the actually risky/unverified part of the original sprint scope; the general-purpose component itself was low-risk). `npm run check` green, 89/89 tests. axe caught a real bug in development: `role="listbox"` requires `role="option"` children, not native checkboxes — fixed to `role="group"`. Not merged yet — Royce needs to do it himself (same classifier restriction all session).
+
 ## 2026-08-12 (PR #36/#37, EmptyState variants + density mode + DateRangePicker — published v1.14.0)
 - **PR #36 (MERGED) — three additive components/props, scoped against live repo state rather than the design-direction doc's own claims** (doc had drifted: EmptyState's action slot was already shipped, only 2 of 16 components had a density hook despite the doc's stated rule).
   - `EmptyState` gets a `variant` prop (`filtered`/`error`/`no-access`) with default icons; `error` gets the red token tone. `default` unchanged.
