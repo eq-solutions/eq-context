@@ -1,14 +1,14 @@
 ---
 title: EQ Suite — Current State
 owner: Royce Milmlow
-last_updated: 2026-08-11
+last_updated: 2026-08-12
 scope: Live suite state — app lineup, DB counts, open PRs, architectural decisions. Auto-refreshed nightly by GitHub Action.
 read_priority: critical
 status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-08-11 (nightly cron)_
+_Last verified: 2026-08-12 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -58,20 +58,18 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-08-11)
+## Open PRs (as of 2026-08-12)
 
 **eq-cards:**
 - #221 refactor(auth): shell-verify.js relays to eq-shell instead of local crypto
 
-**eq-service:**
-- #697 chore(deps): bump @eq-solutions/ui to v1.14.0
-
 **eq-shell:**
+- #1306 fix(ops): file uploads failed with a fake "check your connection" error
 - #1294 feat(cards): centralize Cards' SSO minting via token-exchange-cards.ts
 
 ---
 
-## System Health (as of 2026-08-11)
+## System Health (as of 2026-08-12)
 
 **CI on main:**
 
