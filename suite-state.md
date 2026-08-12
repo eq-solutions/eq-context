@@ -61,13 +61,13 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-12)
 
 **eq-cards:**
-- #227 fix(ocr): detect and flag when one photo shows multiple documents
 - #221 refactor(auth): shell-verify.js relays to eq-shell instead of local crypto
 
 **eq-field:**
 - #683 v3.5.486 — gate the 4 safety-report submit actions to Supervision
 
 **eq-shell:**
+- #1319 feat(ops): archive view search/filter + auto-archive invoiced quotes at 7 days
 - #1318 fix(security): gate audit rollback + align entity archive/restore perms
 - #1317 fix(ops): retry quote-doc/job-creation fetches on a transient network drop
 - #1316 feat(staff): create one credential per document, not per photo
