@@ -1,13 +1,21 @@
 ---
 title: EQ UI — Changelog
 owner: Royce Milmlow
-last_updated: 2026-07-27
+last_updated: 2026-08-12
 scope: eq-ui (@eq-solutions/ui) append-only history — substrate summary of merges. The package's own CHANGELOG.md (Changesets-generated) is the authoritative version history; this file is for cross-repo context.
 read_priority: reference
 status: live
 ---
 
 # eq-ui changelog
+
+## 2026-08-12 (PR #36/#37, EmptyState variants + density mode + DateRangePicker — published v1.14.0)
+- **PR #36 (MERGED) — three additive components/props, scoped against live repo state rather than the design-direction doc's own claims** (doc had drifted: EmptyState's action slot was already shipped, only 2 of 16 components had a density hook despite the doc's stated rule).
+  - `EmptyState` gets a `variant` prop (`filtered`/`error`/`no-access`) with default icons; `error` gets the red token tone. `default` unchanged.
+  - `density?: 'comfortable'|'compact'` added to FormInput, Pagination, StatusBadge, KindPill, DropdownMenu, matching Table's existing `data-density` convention. Button and Card deliberately excluded — already have equivalent control via `size`/`padding`.
+  - New `DateRangePicker` component — trigger + popover calendar, 5 presets, `min`/`max` bounds, density-aware. No new dependency (native `Date`/`Intl.DateTimeFormat`, no date-fns).
+  - Backfilled README sections for EmptyState, Pagination, DropdownMenu (none existed since #32/#33).
+  - `npm run check` green, 77/77 tests. Version Packages PR [#37](https://github.com/eq-solutions/eq-ui/pull/37) merged same day, published as `@eq-solutions/ui@1.14.0` — confirmed via the release workflow's own publish log, not assumed.
 
 ## 2026-07-27 (PR #34/#35, Table column reorder + composite-column filters — published v1.13.0)
 - **PR #34 (MERGED) — Table's Columns popover gets move-up/move-down reorder buttons**, order persisted to localStorage alongside the existing show/hide state (`persistKey`). Chose buttons over native drag-and-drop deliberately — full keyboard/touch support, and native HTML5 drag-and-drop doesn't work reliably in the jsdom test environment this package tests against.

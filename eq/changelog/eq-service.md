@@ -1,13 +1,16 @@
 ---
 title: EQ Service — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-11
+last_updated: 2026-08-12
 scope: EQ Service append-only history. NOTE — duplicates eq/changelog/service.md, which stalls mid-deploy at 2026-06-09; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # EQ Service — Changelog
+
+## 2026-08-12 (dependency bump, resolved a real merge conflict)
+- **PR #697 (MERGED)** — bumped `@eq-solutions/ui` v1.12.0 → v1.14.0, a two-version jump that also picked up v1.13.0's Table column-reorder/composite-filter-export work. Hit a genuine merge conflict: an unrelated grouped Dependabot PR (#684) had independently bumped eq-ui to v1.13.0 on `main` after this branch forked, so `gh pr merge` failed silently rather than merging. Resolved by keeping v1.14.0 (supersedes) and taking `main`'s side for everything else it touched (`@sentry/nextjs`, `@eslint/compat`, `@vitejs/plugin-react`, `@eq-solutions/roles`). Also hit — twice — an npm quirk worth flagging for future bumps: `npm install` silently no-ops re-resolving a `github:`-pinned dependency when package.json/package-lock.json's top-level manifest already "agree," even if the deeper resolved commit is stale; fixed both times with an explicit `npm install @eq-solutions/ui@github:eq-solutions/eq-ui#v1.14.0`. Verified post-merge: `tsc --noEmit && next build` clean, 393/393 tests, lint problems confirmed pre-existing (none in files importing `@eq-solutions/ui`). Deployed to `service.eq.solutions` — confirmed via the Netlify deploy record itself (commit_ref matched the merge SHA, secret scan clean across 927 files).
 
 ## 2026-08-11
 - **PR #700 (MERGED + APPLIED live, migration 0205) — `tenant_members_role_check` now allows Subcontractor.** The 2026-07-05 migration that added Subcontractor to the shared role model (`@eq-solutions/roles`) suite-wide never touched this constraint, so Service had no way to assign anyone that role. Constraint-only fix per Royce's direction — Subcontractor stays inert here, same as Labour Hire already is (Service doesn't assign roles itself, see PR #344; Shell does). Companion fix to eq-cards PR #225 (the claim-invite whitelist gap), both scoped together as a sprint via AskUserQuestion after the 2026-08-10 "how identity flows through the suite" artifact flagged them. Applied via the governed `apply-service-migrations` pipeline, confirmed post-apply via a fresh live query.

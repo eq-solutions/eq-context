@@ -1,13 +1,16 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-11
+last_updated: 2026-08-12
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # eq-shell changelog
+
+## 2026-08-12 (dependency bump)
+- **PR #1295 (MERGED)** — bumped `@eq-solutions/ui` v1.13.0 → v1.14.0 (EmptyState variants, density mode, new DateRangePicker — see eq-ui changelog). Verified in an isolated worktree off fresh `main` (root checkout was mid unrelated work): `pnpm run build` clean, 308/308 tests passing, lint failures confirmed pre-existing/unrelated (vendored `eq-intake/eq-platform` debt, already tracked by its own cleanup worktrees). Deployed to `core.eq.solutions` — confirmed live via GitHub, not assumed.
 
 ## 2026-08-11 (mobile dashboard: duplicate-info fix, hero tiles built then made to actually work)
 - **PR #1299** — fixed Today's Actions rendering three times on mobile: `App.css` hid `.eq-hub-cols`, a class that doesn't exist anywhere in the JSX (the real class is `.eq-hub-col`), so the desktop columns were never actually hidden. Also trimmed the redundant "Licences expiring" list out of `SignalsBoard` on mobile (same names already shown in Today's Actions), with a fallback note so the card doesn't look empty when that was its only content.

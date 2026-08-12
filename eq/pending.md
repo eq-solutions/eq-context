@@ -14,6 +14,13 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-ui: design-direction sprint (EmptyState variants, density mode, DateRangePicker) + suite-wide version bump (2026-08-12)
+
+- [ ] Combobox/multi-select and inline-edit primitives (reusing Table's filter language) — deferred pending a spike on whether Table's internal filter UI can actually be extracted into a shared primitive; `Table.tsx` is already 1,265 lines, extraction risk untested. _(added 2026-08-12)_
+- [ ] Design-direction doc (Royce's OneDrive Word doc, "Eq ui 8.8.26.docx") still says Table "continues expanding... saved views" — Royce confirmed saved views stay page-level (not an eq-ui component), doc wording not yet corrected to match. _(added 2026-08-12)_
+
+---
+
 ## eq-shell dashboard: AI Brief cut, Ask Anything made real with clickable compliance links, mobile manager view added (2026-08-11)
 
 - [ ] **Mobile action cards are view + tap-through only** — no mark-done/dismiss controls, a deliberate v1 simplicity choice (confirmed via AskUserQuestion). Add if Royce wants parity with desktop. _(added 2026-08-11)_
