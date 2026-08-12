@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-12 00:47 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-12 03:55 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-12 00:40 UTC → 2026-08-12 00:47 UTC)
+## Since last refresh (2026-08-12 00:47 UTC → 2026-08-12 03:55 UTC)
 
-- Merged: eq-shell [#1307](https://github.com/eq-solutions/eq-shell/pull/1307) fix(ops): file uploads failing on a payload limit no functio
-- Merged: eq-shell [#1292](https://github.com/eq-solutions/eq-shell/pull/1292) fix(canonical-sync): let a duplicate worker adopt a dangling
-- Merged: eq-shell [#1291](https://github.com/eq-solutions/eq-shell/pull/1291) fix(quotes): surface errors on Word-doc download instead of 
-- Merged: eq-shell [#1285](https://github.com/eq-solutions/eq-shell/pull/1285) fix(ci): field-perms-drift skips cleanly until FIELD_PERMS_D
-- Merged: eq-shell [#1281](https://github.com/eq-solutions/eq-shell/pull/1281) feat(access-control): expose eq-field's 74 fine-grained perm
+- Merged: eq-shell [#1308](https://github.com/eq-solutions/eq-shell/pull/1308) docs(ci): field-perms-drift's setup note is stale, secret no
+- Merged: eq-shell [#1293](https://github.com/eq-solutions/eq-shell/pull/1293) feat(staff): multi-file OCR intake, shared between admin inv
+- Merged: eq-shell [#1288](https://github.com/eq-solutions/eq-shell/pull/1288) fix(deps): patch image-size DoS + re-vendor to restore the n
+- Merged: eq-shell [#1287](https://github.com/eq-solutions/eq-shell/pull/1287) refactor(customers): reuse @eq/intake's fuzzy matcher instea
+- Merged: eq-shell [#1286](https://github.com/eq-solutions/eq-shell/pull/1286) fix(deps): resolve 2 high-severity Dependabot alerts (js-yam
+- Merged: eq-shell [#1283](https://github.com/eq-solutions/eq-shell/pull/1283) fix(rls): restrict commercial-table writes to management tie
+- Merged: eq-shell [#1279](https://github.com/eq-solutions/eq-shell/pull/1279) feat(staff): labour-hire candidate review + ops intake tool
 - Merged: eq-solves-service [#705](https://github.com/eq-solutions/eq-service/pull/705) feat(rcd): generate circuit rows from board size instead of 
-- Merged: eq-solves-service [#704](https://github.com/eq-solutions/eq-service/pull/704) fix(rcd): Create Check page touch targets under 44px on mobi
-- Merged: eq-solves-service [#703](https://github.com/eq-solutions/eq-service/pull/703) feat(rcd): in-app circuit entry — manual, photo, or both
 
 ## ⚠ Needs you (5)
 
@@ -51,10 +51,10 @@ _…and 94 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 1 | — |
+| eq-shell | ✓ success | 0d ago | 2 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 0 | — |
 | eq-field | ✓ success | 0d ago | 0 | — |
-| eq-cards | ✓ success | 0d ago | 1 | — |
+| eq-cards | ✓ success | 0d ago | 2 | 0d |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
 ## Live errors (Sentry)
@@ -75,6 +75,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-12 | eq-shell | [#1308](https://github.com/eq-solutions/eq-shell/pull/1308) docs(ci): field-perms-drift's setup note is stale, secret now exi |
 | 2026-08-12 | eq-shell | [#1307](https://github.com/eq-solutions/eq-shell/pull/1307) fix(ops): file uploads failing on a payload limit no function cou |
 | 2026-08-12 | eq-shell | [#1306](https://github.com/eq-solutions/eq-shell/pull/1306) fix(ops): file uploads failed with a fake "check your connection" |
 | 2026-08-12 | eq-solves-service | [#697](https://github.com/eq-solutions/eq-service/pull/697) chore(deps): bump @eq-solutions/ui to v1.14.0 |
@@ -89,22 +90,21 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-11 | eq-shell | [#1298](https://github.com/eq-solutions/eq-shell/pull/1298) Add compact action cards to the mobile dashboard |
 | 2026-08-11 | eq-shell | [#1297](https://github.com/eq-solutions/eq-shell/pull/1297) Replace AI Brief prose with grounded Ask Anything Q&A |
 | 2026-08-11 | eq-shell | [#1296](https://github.com/eq-solutions/eq-shell/pull/1296) fix(platform): link labour-hire intake tool from platform nav |
-| 2026-08-11 | eq-solves-service | [#705](https://github.com/eq-solutions/eq-service/pull/705) feat(rcd): generate circuit rows from board size instead of addin |
-_Showing 15 of 70 · full record in [sessions/](sessions/)_
+_Showing 15 of 71 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
 - Combobox/multi-select and inline-edit primitives (reusing Table's filter language) — deferred pending a spike on whether Table's internal filter UI can actually be extracted into a shared primitive; `Table.tsx` is already 1,265 lines, extraction risk untested. _(added 2026-08-12)_
-- Design-direction doc (Royce's OneDrive Word doc, "Eq ui 8.8.26.docx") still says Table "continues expanding... saved views" — Royce confirmed saved views stay page-level (not an eq-ui component), doc wording not yet corrected to match. _(added 2026-08-12)_
 - **Mobile action cards are view + tap-through only** — no mark-done/dismiss controls, a deliberate v1 simplicity choice (confirmed via AskUserQuestion). Add if Royce wants parity with desktop. _(added 2026-08-11)_
 - **Compliance click-through only covers Staff and Ops today.** EQ Field has no record-level deep-linking (only `?tab=`), EQ Service has an unused `?return=` path mechanism Shell never constructs a specific path for, and EQ Cards has no deep-link support at all — out of scope for this pass since it wasn't asked for, but the next domain to add if Ask Anything grows past licences/quotes. _(added 2026-08-11)_
-- **Not checked: does the same schedule_entries-vs-leave_requests gap affect desktop's "Crew you can deploy" capacity numbers?** This session only fixed the mobile tile's headcount; `computeCrewWindow`'s `on_leave`/`deployable` math (used by `SignalsBoard` on both desktop and mobile) was deliberately left untouched — verified correct for what it represents (capacity, not headcount) — but it's still sourced from `schedule_entries`, which isn't kept in sync with `leave_requests` approvals. Worth checking whether that ever produces a wrong "deployable" count, not just a wrong "on leave" headcount. _(added 2026-08-11)_
+- **Tab-deeplink click-through still not explicitly confirmed.** Logo and Outstanding-quotes drew no complaint on the next phone check (implicitly fine); On-leave was reported broken and is now re-fixed (see the 2026-08-12 entry below) — but nobody has explicitly confirmed tapping "On leave" actually lands on Field's Leave tab. _(added 2026-08-12, carried from 2026-08-11)_
+- **Not checked: does the same schedule_entries-vs-leave_requests gap affect desktop's "Crew you can deploy" capacity numbers?** `computeCrewWindow`'s `on_leave`/`deployable` math (used by `SignalsBoard` on both desktop and mobile) was deliberately left untouched — verified correct for what it represents (capacity, not headcount) — but it's still sourced from `schedule_entries`, which isn't kept in sync with `leave_requests` approvals. _(added 2026-08-11)_
+- **Same unreachable-file-size-limit pattern found in ~8 more upload paths suite-wide** (licence photos, OCR, worker invites, asset certs, admin document versions) — full file:line list handed off as a background task; Royce already started it running in a separate session. _(added 2026-08-12)_
 - **The allowlist gate is UI-only, not a database lock** — the underlying RLS policies on the 3 tables are tenant-scoped (any authenticated SKS session), not person-scoped, same threat model the existing pilot-sign feature already runs on. Royce asked directly and got this answered live 2026-08-11; flagged here in case he later wants a real DB-level restriction, not acted on. _(added 2026-08-11)_
 - **Royce's own click-through** — screen renders and the code is complete, but nobody has verified the actual save flow (add a rating, log a review, add feedback) through a real allowlisted session yet. _(added 2026-08-11)_
 - **`eq-solves-assets`'s `origin` remote points at `https://github.com/Milmlow/eq-solves-service.git`** — a personal fork of a different project, not an asset-capture-app repo. Local history (`main` + 7 feature branches) looks like real, non-stale work. Not touched — Royce confirmed the repo is parked for now, don't re-flag without being asked. _(added 2026-08-11)_
 - **Still not click-tested live** — deploy health confirms the code reached production, not that the Customers page's duplicate-detection UI still behaves correctly. Needs a real click-through. _(added 2026-08-11)_
-- **`eq-solves-assets`'s `origin` remote points at `https://github.com/Milmlow/eq-solves-service.git`** — a personal fork of a different project, not an asset-capture-app repo. Local history (`main` + 7 feature branches) looks like real, non-stale work. Not touched — Royce confirmed the repo is parked for now, don't re-flag without being asked. _(added 2026-08-11)_
-_…and 469 more · [eq/pending.md](eq/pending.md)_
+_…and 470 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -126,7 +126,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 3263 | 580 | 29 | 12 |
+| [EQ](eq/pending.md) | 3267 | 580 | 28 | 12 |
 | [SKS](sks/pending.md) | 418 | 84 | 2 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 402 | 37 | 0 | 1 |
@@ -147,4 +147,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-12 00:47 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-12 03:55 UTC._
