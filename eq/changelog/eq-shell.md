@@ -9,6 +9,11 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-12 (EQ Ops Archived tab: search/filter, auto-archive at 7 days invoiced, bulk select)
+- **PR #1319** — Archived tab's hand-rolled `<table>` (the one spot in EQ Ops without search/filter) replaced with the shared `@eq-solutions/ui` `Table` — global search, status slicers, column toggle, CSV export, matching Equipment/Staff/Suppliers. New `eq_mark_archived_quotes` RPC (migration `0243`, mirrors the existing `eq_mark_expired_quotes` shape) plus a daily scheduled function soft-archive any quote sitting in `invoiced` status for 7+ days. Migration dispatched same session, applied clean on both zaap (eq) and ehow (sks).
+- **PR #1320** — added row selection + a bulk-action bar (Restore N / Delete N) to the same tab, mirroring the pipeline board's existing bulk-archive pattern. Caught a squash-merge ancestry artifact (PR #1319's squash orphaned the branch, making a same-branch follow-up PR show a false merge conflict) — resolved with a clean rebase, no content actually lost or overwritten.
+- Live click-through not done for either PR (sandbox has no path to the tenant-config service) — both verified via clean build + typecheck against the same `Table`/`TableBulkAction` components already proven live elsewhere.
+
 ## 2026-08-12 (field-perms-drift secret added, real check confirmed live)
 - **PR #1308** — `FIELD_PERMS_DRIFT_PAT` (the fine-grained PAT #1281/#1285 needed) was added to eq-shell's repo secrets, closing out the last open item from the Field/Shell permission-pipeline work. `field-perms-drift.yml`'s header comment still described the pre-secret skip-gate as current state — fixed, and the fix itself doubled as a live functional test: this PR touches the workflow file, which is in its own `pull_request` path filter, so it triggered a real run. Confirmed step-by-step that the actual cross-repo eq-field checkout + 74-key comparison ran (not the skip path) and passed clean. Squash-merged, no override needed. Live click-through of the permission changes themselves is still open — needs Royce's own signed-in session.
 
