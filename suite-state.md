@@ -61,6 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-12)
 
 **eq-cards:**
+- #228 fix(ocr): raise client OCR timeout to 25s so it doesn't undercut the server's own 20s budget (EQ-CARDS-H)
 - #221 refactor(auth): shell-verify.js relays to eq-shell instead of local crypto
 
 **eq-field:**
@@ -85,7 +86,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ? in_progress |
+| eq-service | ✗ failure |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
