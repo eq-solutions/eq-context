@@ -67,7 +67,6 @@ _If this file is >48h old, the cron is broken._
 - #683 v3.5.486 — gate the 4 safety-report submit actions to Supervision
 
 **eq-shell:**
-- #1319 feat(ops): archive view search/filter + auto-archive invoiced quotes at 7 days
 - #1318 fix(security): gate audit rollback + align entity archive/restore perms
 - #1317 fix(ops): retry quote-doc/job-creation fetches on a transient network drop
 - #1316 feat(staff): create one credential per document, not per photo
