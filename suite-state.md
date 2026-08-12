@@ -65,7 +65,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-field:**
 - #684 Permission-enforcement drift guard (ratchet) for eq-field
-- #683 v3.5.486 — gate the 4 safety-report submit actions to Supervision
 
 **eq-shell:**
 - #1321 feat(staff): write path for team/supervisor assignment on the org chart
