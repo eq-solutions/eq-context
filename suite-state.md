@@ -65,9 +65,10 @@ _If this file is >48h old, the cron is broken._
 - #221 refactor(auth): shell-verify.js relays to eq-shell instead of local crypto
 
 **eq-field:**
-- #682 v3.5.486 — mobile: Teams drawer highlight, voice-mic tap targets (P3 close-out)
+- #683 v3.5.486 — gate the 4 safety-report submit actions to Supervision
 
 **eq-shell:**
+- #1316 feat(staff): create one credential per document, not per photo
 - #1311 feat(staff): resourcing dashboard + draft org chart
 - #1310 fix(ops): quote attachments now upload direct to Storage, not through a function
 - #1309 chore(storage): drop 2 dead Supabase Storage buckets on ehow
