@@ -4,14 +4,14 @@ owner: Royce Milmlow
 created: 2026-08-12
 source: C:\Users\EQ\OneDrive - eq-power.com.au\eq-field-mobile-centering.html (audit dated 2026-08-07)
 repo: eq-field
-scope: Originally 12 P1 + 2 P2 + 2 P3 items from a 2026-08-07 mobile audit. Corrected same-day, 2026-08-12, after live verification found all 12 P1 items already shipped, and again after live-code checks found Leave's supervisor view already built. Real new work landed: Safety count prominence + Leave tap-target fix (v3.5.484, PR #680). Remaining: Calendar mobile view + 2 small bundle-ins.
+scope: Originally 12 P1 + 2 P2 + 2 P3 items from a 2026-08-07 mobile audit. Corrected same-day, 2026-08-12, after live verification found all 12 P1 items already shipped, and again after live-code checks found Leave's supervisor view already built. Real new work landed: Safety count prominence + Leave tap-target fix (v3.5.484, PR #680, merged, live in production) and Calendar mobile agenda view (v3.5.485, PR #681). Remaining: 2 small bundle-ins (P3), no separate work planned.
 read_priority: high
 status: draft
 ---
 
 # Field mobile-experience centering
 
-**Status:** P1 verified already-shipped (no build needed). Safety + Leave fixes built, tested, deploy-preview verified, PR #680 open — awaiting Royce's merge call. Calendar not started.
+**Status:** P1 verified already-shipped (no build needed). Safety + Leave: merged and live in production (v3.5.484). Calendar: built, tested, deploy-preview verified, PR #681 open — awaiting Royce's merge call.
 
 ## What actually happened (P1)
 
@@ -29,15 +29,21 @@ Scoped as "build a worker/supervisor split for Safety and Leave" on the assumpti
 - Leave: approve/reject buttons bumped to 44×44px below 768px.
 - Verified on the deploy preview against live rendering (not just code review) — all 4 Safety headers and the Leave stylesheet confirmed correct, no new console errors.
 
-Awaiting Royce: merge PR #680.
+**Merged and live in production** (2026-08-12, confirmed via `curl field.eq.solutions/sw.js` showing v3.5.484).
 
 ### Timesheets — explicitly deferred
 
 Royce's call, 2026-08-12: mobile timesheets isn't a priority right now. Revisit only if there's a reason to believe people are actually trying to do timesheets on their phone.
 
-### Calendar — mobile agenda list (not started)
+## What actually happened (Calendar)
 
-Desktop's month grid doesn't fit a phone (confirmed — `scripts/calendar.js` has zero mobile handling). Scoped fix: below phone width, swap the grid for a scrolling list of dates (date + who's on leave that day), tap a date for the existing detail view.
+Premise held up this time — `scripts/calendar.js` genuinely had zero mobile handling. Built: an agenda list (one row per weekday: date + site/leave summary) shown below 768px instead of the 7-column grid, using the same desktop/mobile toggle pattern Roster and Job Numbers already use. Tapping a row opens the existing day-detail panel, now converted to a bottom-sheet on mobile (same pattern already used for Timesheets' Job Numbers panel) instead of the 312px side-flyout that wouldn't fit a phone.
+
+**Shipped, v3.5.485, PR #681:**
+- Verified directly on the deploy preview at 375px: desktop grid hidden, agenda list shown with correct per-day data; tapping a row opens the bottom sheet (confirmed `position:fixed`, full width, correct open/close state); closing works. Re-checked at 1280px: agenda hidden, grid shown, day-detail panel unaffected by the mobile CSS (`position:static`, not `fixed`) — desktop untouched.
+- No new console errors (only the same pre-existing, documented standalone-demo-gate 401s).
+
+Awaiting Royce: merge PR #681. This closes out the last scoped P2 item.
 
 ## P3 — small, bundle into a future PR (no separate work)
 
