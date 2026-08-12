@@ -67,7 +67,7 @@ _If this file is >48h old, the cron is broken._
 - #685 security: gate 8 unguarded HR-write functions to Supervision
 
 **eq-service:**
-- #710 test(security): add permission-enforcement drift guard (ratchet, non-blocking debt)
+- #711 security: remove orphaned customer/site write REST routes
 - #709 fix(security): gate admin/imports + admin/activity on canViewAuditLog
 - #708 fix(security): close assignee-bypass on close + status-setter bypass of reopen/cancel gates
 
