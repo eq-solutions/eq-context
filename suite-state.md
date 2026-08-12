@@ -64,8 +64,10 @@ _If this file is >48h old, the cron is broken._
 - #227 fix(ocr): detect and flag when one photo shows multiple documents
 - #221 refactor(auth): shell-verify.js relays to eq-shell instead of local crypto
 
+**eq-field:**
+- #682 v3.5.486 — mobile: Teams drawer highlight, voice-mic tap targets (P3 close-out)
+
 **eq-shell:**
-- #1314 fix(staff): surface multi-document warning on the regular invite form
 - #1311 feat(staff): resourcing dashboard + draft org chart
 - #1310 fix(ops): quote attachments now upload direct to Storage, not through a function
 - #1309 chore(storage): drop 2 dead Supabase Storage buckets on ehow
