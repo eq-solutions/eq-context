@@ -3189,3 +3189,107 @@ contain the same values and were pushed before push-protection caught up.
 - [x] Found via Sentry (`EQ-SHELL-1J`): the "Download Quote" button (Word doc export) can fail on a one-off network blip because the template download had no retry at all — same gap in the "Job Creation" Excel export. Added an automatic retry to both (checked the Excel path specifically for safety first — the server re-checks the quote's status fresh on every call, so a retry can't accidentally create a duplicate job). eq-shell PR [#1317](https://github.com/eq-solutions/eq-shell/pull/1317), merged (`ab0b31e`), live.
 
 ---
+
+## eq-shell + eq-cards: Cards SSO broker fix — built, verified, deliberately held (2026-08-10) (rotated 2026-08-13 — open items remain in pending.md)
+
+- [x] New eq-shell endpoint `netlify/functions/token-exchange-cards.ts` — mirrors the existing Field/Service `token-exchange.ts` pattern rather than extending it (that function carries real Field/Service entitlement logic with zero bearing on Cards). Auth: `EQ_CARDS_HANDOFF_KEY` header + forwarded session cookie, both required. `tsc -b` clean, eslint clean, full suite 308/308 pass. [eq-shell PR #1294](https://github.com/eq-solutions/eq-shell/pull/1294) (draft).
+- [x] eq-cards' `shell-verify.js` rewritten to relay to the new endpoint instead of local crypto — drops its dependency on all three secrets above. `node --check` clean. [eq-cards PR #221](https://github.com/eq-solutions/eq-cards/pull/221) (draft).
+- [x] **Code-reviewed + merge-readiness audited 2026-08-11 — both mechanically clean.** CI green on every required check both repos, 1-2 commits behind main with zero file overlap on either branch (no conflict risk), scope matches description exactly, no drive-by changes. Live-reconfirmed `EQ_CARDS_HANDOFF_KEY` is set on **neither** Netlify project yet — the manual step above is still the actual blocker, not a formality. eq-cards has no branch-protection rules at all (404, unlike eq-shell's 5 required checks) — worth knowing, not a blocker.
+
+---
+
+## eq-field: Calendar stopped showing approved leave since the July 10 roster-overlay migration — found + fixed (v3.5.473, PR #674, merged 2026-08-10) (rotated 2026-08-13)
+*Surfaced while checking eq-field for parity with the SKS leave-deletion feature (see `sks/pending.md`) — turned out eq-field already had `hardDeleteLeaveRequest()` (v3.5.31) and a cleaner architecture (v3.5.281/282, PR #433: `leave_requests` is the single source of truth, roster/dashboard overlay it live, nothing written back to `schedule`). That same migration updated `roster.js`/`dashboard.js` but missed `calendar.js`, which kept reading raw schedule cells directly — so any leave approved since 2026-07-10 didn't show on the main Calendar page at all (still fine on the Roster grid and the Leave tab's own mini-calendar). Fixed by reusing the existing, already-tested `approvedLeaveCode()` overlay; also tightened `hardDeleteLeaveRequest`'s confirm copy, which had gone stale post-migration.*
+
+---
+
+## eq-cards + eq-field + eq-intake + eq-ui + eq-receipts + eq-roles + eq-design-tokens + eq-context + eq-shell + eq-service: suite-wide stale-branch + orphaned-worktree cleanup (2026-08-08) (rotated 2026-08-13 — open items remain in pending.md)
+
+- [x] **The other item is resolved**: `worktree-wf_79f7a4de-c56-4` (eq-intake)'s "quality-guardian engine is live but no admin UI ever surfaced its output" question — yes, still wanted. New `/admin/quality` page built, eq-service [PR #721](https://github.com/eq-solutions/eq-service/pull/721), merged. See the 2026-08-13 entry below for detail. _(resolved 2026-08-13)_
+
+---
+
+## eq-shell: self-join bulk-approve + gap-analysis-driven onboarding fixes (2026-08-06) (rotated 2026-08-13 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: EQ-SHELL-R closed (false alarm) + EQ-SHELL-1B fixed — Outlook email attachments on quotes, merged + live (2026-08-06) (rotated 2026-08-13 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: EQ-SHELL-1A "eq-ops rpc ... failed: TypeError: Failed to fetch (ehow)" — durable fix live, all known consumers migrated (2026-08-06) (rotated 2026-08-13 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: self-join's "double sign-in" for Cards root-caused and fixed — worker-add nav trimmed further too (2026-08-03) (rotated 2026-08-13 — open items remain in pending.md)
+
+
+---
+
+## eq-solves-intake + eq-shell: duplicate-site console's two dead ends fixed, then a live permission bug found and fixed mid-testing (2026-08-01) (rotated 2026-08-13 — open items remain in pending.md)
+
+
+---
+
+## eq-solves-service: fixed a broken safety check that was silently skipping every code review, then found the "176,000 findings" it surfaced was almost entirely noise, cleaned up what was real (2026-08-01) (rotated 2026-08-13 — open items remain in pending.md)
+
+
+---
+
+## eq-shell + eq-solves-intake + eq-receipts: closed every open security alert across the EQ suite, found 5 repos where the alert system was switched off entirely (2026-08-01) (rotated 2026-08-13 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: Richard Brown's mobile crash fixed, then a simplified mobile nav for supervisors driven by real usage data (2026-07-31) (rotated 2026-08-13 — open items remain in pending.md)
+
+
+---
+
+## eq-solves-service: Found why photo uploads were failing everywhere, then added a link/create/skip option to the paste-import flow (2026-07-31) (rotated 2026-08-13 — open items remain in pending.md)
+
+
+---
+
+## eq-intake + eq-shell: 4-part fix from Royce's live screenshot review of the Intake console (2026-07-31) (rotated 2026-08-13 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: EQ Ops quote status → job status sync fixed for all 5 stages, plus a new "Target period" badge for future-dated quotes (2026-07-31) (rotated 2026-08-13 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: Compliance-roster-only workers — Field access can now be switched off per worker (2026-07-30) (rotated 2026-08-13 — open items remain in pending.md)
+
+
+---
+
+## eq-solves-service: Field Run-Sheet asset headers now show the maintenance plan's Job Code (2026-07-29) (rotated 2026-08-13 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: Staff page edits silently reverting overnight — root-caused and fixed, deployed (2026-07-28) (rotated 2026-08-13 — open items remain in pending.md)
+
+
+---
+
+## eq-cards/eq-shell: onboarding minimum-requirements switch, bulk connect-worker, and a live anon-EXECUTE fix (2026-07-26) (rotated 2026-08-13 — open items remain in pending.md)
+
+
+---
+
+## EQ Field: real Incidents / Near Miss reporting, shipped and live (2026-07-22) (rotated 2026-08-13 — open items remain in pending.md)
+
+
+---
+
+## Core dashboard rebuilt — replaced the passive AI-brief-only home with three permission-gated live signal bands (2026-07-17, MERGED + LIVE) (rotated 2026-08-13 — open items remain in pending.md)
+
+
+---

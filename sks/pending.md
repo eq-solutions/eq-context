@@ -23,11 +23,6 @@ status: live
 - [x] Expiry corrected 2026-08-28 → 2029-08-28, matching his renewed TITAB Australia Open Cabling Registration — the compliance pack now reflects the real date.
 - [ ] **Underlying Cards mobile bug not yet fixed** — a licence "renewal" can silently save nothing if on-device OCR can't read the card and the user doesn't notice the date field still shows the old value. Worth watching for other workers hitting the same silent failure until eq-cards ships the fix. _(added 2026-08-11)_
 
-## Leave — delete an approved request, including its roster entry — shipped (v3.10.111, PR #78, merged 2026-08-10)
-*Royce: someone's approved leave needed to be deleted, including removing it from the roster/calendar. Investigated first — no delete path existed at all; Archive only hid it from the Leave tab, the roster grid still showed the leave code because approval writes it directly into schedule cells (`writeLeaveToSchedule()`) and nothing reversed that. Built a manager-only Delete action that reverses the write-back (only clears a day if it still holds exactly that leave code, so a day since overwritten with a real shift is left alone) then hard-deletes the row. `realtime.js` already had DELETE handling wired up for `leave_requests` — this was the missing UI trigger.*
-
-- [ ] **Live click-through not done** — verified via a full standalone test in the demo sandbox (stubbed the two network calls since this environment can't reach the real Supabase project) rather than a real production click-through. Royce to confirm on a real approved leave record. _(added 2026-08-10)_
-
 ## Safety records 200-row cap — fixed, merged, live (v3.10.109, PR #76, sks-nsw-labour)
 - [ ] **Declined this session, still open if wanted:** widen the Prestart tab past its hardcoded 7-day window, or add a "Show older → Records" link — Royce picked "fix the cap only" via AskUserQuestion; the tab itself is unchanged. _(added 2026-08-04)_
 

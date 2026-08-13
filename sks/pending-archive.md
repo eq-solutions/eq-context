@@ -1,7 +1,7 @@
 ---
 title: SKS Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-08-05
+last_updated: 2026-08-13
 scope: Done items rotated out of sks/pending.md nightly by scripts/rotate_pending.py to keep the live doc scannable. Nothing here is actionable — pure historical record (also covered in changelogs and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -389,5 +389,15 @@ output).*
 
 **Deferred:**
 - [x] `prestarts`/`toolbox_talks` recency caps — fixed 2026-08-04, see below. `audit_log` still uncapped/unaudited.
+
+---
+
+## Leave — delete an approved request, including its roster entry — shipped (v3.10.111, PR #78, merged 2026-08-10) (rotated 2026-08-13)
+*Royce: someone's approved leave needed to be deleted, including removing it from the roster/calendar. Investigated first — no delete path existed at all; Archive only hid it from the Leave tab, the roster grid still showed the leave code because approval writes it directly into schedule cells (`writeLeaveToSchedule()`) and nothing reversed that. Built a manager-only Delete action that reverses the write-back (only clears a day if it still holds exactly that leave code, so a day since overwritten with a real shift is left alone) then hard-deletes the row. `realtime.js` already had DELETE handling wired up for `leave_requests` — this was the missing UI trigger.*
+
+---
+
+## SKS national scale discovery — "what breaks EQ at ~2,000 employees" (2026-07-23) (rotated 2026-08-13 — open items remain in pending.md)
+
 
 ---
