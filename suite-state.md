@@ -67,7 +67,7 @@ _If this file is >48h old, the cron is broken._
 - #685 security: gate 8 unguarded HR-write functions to Supervision
 
 **eq-service:**
-- #717 fix(security): close latent labour_hire/subcontractor view-access gap on entity + equipment pages
+- #718 fix(security): wire canonical equipment.view; confirm reports.view_financial is subsumed
 
 **eq-shell:**
 - #1310 fix(ops): quote attachments now upload direct to Storage, not through a function
