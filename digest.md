@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-13 10:52 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-13 11:23 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-13 10:51 UTC → 2026-08-13 10:52 UTC)
+## Since last refresh (2026-08-13 10:52 UTC → 2026-08-13 11:23 UTC)
 
-- Merged: eq-shell [#1331](https://github.com/eq-solutions/eq-shell/pull/1331) fix(db): drop unused quote_attachment table + fix stale docs
-- Merged: eq-shell [#1322](https://github.com/eq-solutions/eq-shell/pull/1322) chore(security): permission-enforcement drift guard (ratchet
-- Merged: eq-shell [#1319](https://github.com/eq-solutions/eq-shell/pull/1319) feat(ops): archive view search/filter + auto-archive invoice
-- Merged: eq-shell [#1318](https://github.com/eq-solutions/eq-shell/pull/1318) fix(security): gate audit rollback + align entity archive/re
-- Merged: eq-shell [#1314](https://github.com/eq-solutions/eq-shell/pull/1314) fix(staff): surface multi-document warning on the regular in
-- Merged: eq-shell [#1311](https://github.com/eq-solutions/eq-shell/pull/1311) feat(staff): resourcing dashboard + draft org chart
-- Merged: eq-shell [#1308](https://github.com/eq-solutions/eq-shell/pull/1308) docs(ci): field-perms-drift's setup note is stale, secret no
-- Merged: eq-shell [#1307](https://github.com/eq-solutions/eq-shell/pull/1307) fix(ops): file uploads failing on a payload limit no functio
+- Merged: eq-shell [#1332](https://github.com/eq-solutions/eq-shell/pull/1332) chore: delete unrouted CoreHome.tsx (EQ Intelligence mock ho
+- Merged: eq-shell [#1330](https://github.com/eq-solutions/eq-shell/pull/1330) fix(documents): treat O&M manuals as reference library, not 
+- Merged: eq-shell [#1329](https://github.com/eq-solutions/eq-shell/pull/1329) fix(shell): quote-job-consumer reads canonical_events direct
+- Merged: eq-shell [#1323](https://github.com/eq-solutions/eq-shell/pull/1323) fix(staff): thread licence_verifications through the invite-
+- Merged: eq-shell [#1321](https://github.com/eq-solutions/eq-shell/pull/1321) feat(staff): write path for team/supervisor assignment on th
+- Merged: eq-shell [#1320](https://github.com/eq-solutions/eq-shell/pull/1320) feat(ops): bulk select in Archived tab (restore / delete mul
+- Merged: eq-shell [#1316](https://github.com/eq-solutions/eq-shell/pull/1316) feat(staff): create one credential per document, not per pho
+- Merged: eq-shell [#1315](https://github.com/eq-solutions/eq-shell/pull/1315) chore(deps): bump @eq-solutions/ui to v1.15.0
 
 ## ⚠ Needs you (4)
 
@@ -50,10 +50,10 @@ _…and 95 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 4 | 0d |
-| eq-solves-service | ✓ success | 0d ago | 0 | — |
+| eq-shell | ✓ success | 0d ago | 2 | 0d |
+| eq-solves-service | ✓ success | 0d ago | 1 | 0d |
 | eq-field | ✓ success | 0d ago | 0 | — |
-| eq-cards | ✓ success | 0d ago | 2 | 0d |
+| eq-cards | ✓ success | 0d ago | 1 | — |
 | eq-solves-intake | ✓ success | 1d ago | 0 | — |
 
 ## Live errors (Sentry)
@@ -74,25 +74,26 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-13 | eq-shell | [#1332](https://github.com/eq-solutions/eq-shell/pull/1332) chore: delete unrouted CoreHome.tsx (EQ Intelligence mock home pa |
+| 2026-08-13 | eq-shell | [#1330](https://github.com/eq-solutions/eq-shell/pull/1330) fix(documents): treat O&M manuals as reference library, not sign- |
+| 2026-08-13 | eq-shell | [#1329](https://github.com/eq-solutions/eq-shell/pull/1329) fix(shell): quote-job-consumer reads canonical_events directly, s |
 | 2026-08-13 | eq-shell | [#1331](https://github.com/eq-solutions/eq-shell/pull/1331) fix(db): drop unused quote_attachment table + fix stale docs |
 | 2026-08-13 | eq-shell | [#1310](https://github.com/eq-solutions/eq-shell/pull/1310) fix(ops): quote attachments now upload direct to Storage, not thr |
 | 2026-08-13 | eq-shell | [#1328](https://github.com/eq-solutions/eq-shell/pull/1328) chore(ci): triage is_worker_in_org into KNOWN_UNSOURCED (cross-re |
 | 2026-08-13 | eq-shell | [#1317](https://github.com/eq-solutions/eq-shell/pull/1317) fix(ops): retry quote-doc/job-creation fetches on a transient net |
 | 2026-08-13 | eq-shell | [#1324](https://github.com/eq-solutions/eq-shell/pull/1324) feat(staff): swap Resourcing desktop view to eq-ui Table |
+| 2026-08-13 | eq-solves-service | [#722](https://github.com/eq-solutions/eq-service/pull/722) fix(audit): log bulkUpdateAssetNamesAction — was skipping the man |
 | 2026-08-13 | eq-solves-service | [#721](https://github.com/eq-solutions/eq-service/pull/721) feat(admin): surface eq-intake's quality-guardian output |
 | 2026-08-13 | eq-solves-service | [#720](https://github.com/eq-solutions/eq-service/pull/720) fix(security): stamp deleted_at on maintenance-check soft-delete |
 | 2026-08-13 | eq-solves-service | [#719](https://github.com/eq-solutions/eq-service/pull/719) docs(security): record Royce's call on entity.create — supervisor |
 | 2026-08-13 | eq-solves-service | [#717](https://github.com/eq-solutions/eq-service/pull/717) fix(security): wire equipment.view on the Test Equipment register |
 | 2026-08-13 | eq-solves-service | [#716](https://github.com/eq-solutions/eq-service/pull/716) fix(security): wire canonical entity.view as defense-in-depth on  |
 | 2026-08-13 | eq-solves-service | [#715](https://github.com/eq-solutions/eq-service/pull/715) fix(admin): Media Library Upload/Delete no longer wedge on a stal |
-| 2026-08-13 | eq-solves-service | [#714](https://github.com/eq-solutions/eq-service/pull/714) docs(security): document entity.view_pii as investigated + delibe |
-| 2026-08-13 | eq-solves-service | [#713](https://github.com/eq-solutions/eq-service/pull/713) fix(security): wire entity.edit + entity.manage_activation; corre |
-| 2026-08-13 | eq-solves-service | [#711](https://github.com/eq-solutions/eq-service/pull/711) security: remove orphaned customer/site write REST routes |
-| 2026-08-13 | eq-solves-service | [#708](https://github.com/eq-solutions/eq-service/pull/708) fix(security): close assignee-bypass on close + status-setter byp |
-_Showing 15 of 100 · full record in [sessions/](sessions/)_
+_Showing 15 of 101 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **`/decide` surfaced 3 items that are 100% Royce's — none buildable further from here**: SEC-9 (jvkn service_role key, chat-transcript exposure) and SEC-24 (`QUOTES_CRON_SECRET` plaintext on eq-shell) both need a manual Netlify dashboard re-store, blocked from Claude Code by the safety classifier by design. _(added 2026-08-13)_
 - **Live click-test still not done anywhere across this whole thread** — every fix above was verified against live data/CI/direct database checks, never a real signed-in click-through session on any of the four apps. _(added 2026-08-13)_
 - **Live click-through not done** — this sandbox has no network path to the tenant-config service, so the Archived-tab search/filter/bulk-select hasn't been visually confirmed in a real browser session. Built against the exact same Table component already proven live elsewhere in the app; build + typecheck clean on both PRs. _(added 2026-08-12)_
 - **Live click-through not done** — this sandbox has no network path to the tenant-config service, so the Archived-tab search/filter/bulk-select hasn't been visually confirmed in a real browser session. Built against the exact same Table component already proven live elsewhere in the app; build + typecheck clean on both PRs. _(added 2026-08-12)_
@@ -102,8 +103,7 @@ _Showing 15 of 100 · full record in [sessions/](sessions/)_
 - **Intake engine's CSV import path bypasses the same-worker dedup** the direct upload paths now go through — flagged, not touched. _(added 2026-08-13)_
 - **Dead code**: `eq_cards_find_invites_by_phone` RPC and `ClaimByPhoneScreen` appear unused since the "Find my company account" flow replaced join-by-code — not confirmed dead, not removed. _(added 2026-08-13)_
 - **Open question, not decided**: should the manual labour-hire-document-upload form and the regular worker-invite form (which now also accepts documents) eventually merge into one? Deliberately left as two separate entry points this session. _(added 2026-08-13)_
-- **Live click-through not done** — the invite path (existing SimPRO/import staff record, `staff_id`) now records flagged-licence reviews and notifies the worker on approval, matching the self-signup path's existing behaviour. Needs a real signed-in Shell session with `admin.review_cards` to confirm end-to-end — off-limits for this environment. _(added 2026-08-13)_
-_…and 485 more · [eq/pending.md](eq/pending.md)_
+_…and 487 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -125,7 +125,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 3397 | 599 | 62 | 17 |
+| [EQ](eq/pending.md) | 3418 | 601 | 69 | 17 |
 | [SKS](sks/pending.md) | 423 | 85 | 3 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 402 | 37 | 0 | 1 |
@@ -146,4 +146,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-13 10:52 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-13 11:23 UTC._
