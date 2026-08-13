@@ -61,7 +61,6 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-13)
 
 **eq-cards:**
-- #229 fix(licences): stop a failed photo/document step from duplicating the row
 - #221 refactor(auth): shell-verify.js relays to eq-shell instead of local crypto
 
 **eq-field:**
