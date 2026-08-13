@@ -428,12 +428,12 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## eq-shell: root-caused the "auth-stall: chunk-error" Sentry P0 (27 events/day) — fix ready, not shipped (2026-08-05)
+## eq-shell: root-caused the "auth-stall: chunk-error" Sentry P0 (27 events/day) — fix merged + live (2026-08-05)
 *Session gate flagged it 🔴 P0. Sentry itself was unreachable all session (MCP connector flagged invalid 2026-08-04; dashboard login-walled, no credentials entered) — root cause came entirely from code + git history.*
 
+- [x] **PR #1256 merged same day** (`d84ae8be`, 2026-08-05T10:10:09Z) — "stop mislabeling render crashes as chunk-error." Live on core.eq.solutions since (auto-deploy on merge to main). Corrected 2026-08-13 — this had sat marked "awaiting review" for a week after it actually merged.
 
 **Deferred:**
-- [ ] **Merge + deploy decision is Royce's** — PR #1256 is open and mergeable, awaiting review. _(updated 2026-08-05)_
 - [ ] **Confirmed-vs-inferred split of today's 27 events still needs live Sentry data** — specifically what fraction were the mislabeling bug (this PR) vs. #1255's `.brief.map()` cause vs. genuine stale-chunk failures, and whether Netlify's edge-purge has a real propagation lag. A fresh set of Sentry-shaped MCP tools appeared in the deferred-tools list right as the earlier session closed, still unverified — worth trying next session before assuming the connector is still broken. _(added 2026-08-05, updated 2026-08-05)_
 
 ---
@@ -1632,7 +1632,7 @@ changelog and session logs are for.
 ## ✅ EQ Ops rate-library copy polish + mobile login-freeze recovery (2026-07-14, BOTH MERGED + LIVE)
 *Two eq-shell changes off Royce's review of the live tool. First, three copy/default touches on the Rate library so the pricing semantics read right. Then a production incident: the NSW Comms crew frozen at the mobile login — root-caused to a client-side stall with no failsafe, fixed with recovery + observability.*
 - [ ] **Crew retry + Sentry watch** — have the crew reopen via a normal browser tab (their home-screen icon may hold stale code from the day's deploys); if anyone still freezes, the fix now self-tags the exact stall in Sentry (`verify-timeout` / `login-timeout` / `session-spinner-timeout` / `chunk-error`). _(added 2026-07-14)_
-- [ ] **eq-shell #863 open — the login/OTP/provision twin of #858.** Same "body read not under the timeout" gap in `shell-login` / `shell-login-phone-otp` / `shell-handoff-provision` (built by the spawned background task). Auth-path code — needs review + merge; deploys to core.eq.solutions on merge. _(added 2026-07-14)_
+- [x] **eq-shell #863 — merged 2026-07-18, live.** The login/OTP/provision twin of #858 (also merged, 2026-07-14, same day it was added). Same "body read not under the timeout" gap in `shell-login` / `shell-login-phone-otp` / `shell-handoff-provision`. Both had sat marked "needs review + merge" for weeks after actually shipping. Corrected 2026-08-13.
 - [ ] **Material-preset sanity check** — since materials presets now quote at Rate + markup, any entered as already-marked-up sell prices will read higher; worth a glance in the Rate library. _(added 2026-07-14, carried from #820)_
 
 ---
@@ -1659,7 +1659,7 @@ changelog and session logs are for.
 ## ✅ EQ Intake — duplicate-site detector was blind to inactive rows (the SY9 silent-failure) (2026-07-13, MERGED + DEPLOYED)
 *The SY9 customer silently vanished from Service because its one correctly-linked site row was inactive, and the "Scan for possible duplicates" tool filtered inactive rows out before clustering — so the tool meant to catch it couldn't see it. Live SY9 data reconciled by hand first (activated the correct row, retired 3 dupes, repointed 8 roster entries + 1 quote onto the survivor).*
 - [ ] **3 site pairs/groups still need Royce's manual pick, not auto-seeded: SYD10, SYD11, M5 Motorway East.** Plus the 3 three-row groups (North Shore/Port Macquarie/St George Private Hospital) — no clear 2-way survivor without a human choosing. Now that usage-check (below) is built, these might resolve automatically once it's applied — re-check before assuming they still need manual review. _(added 2026-07-16)_
-- [ ] **eq-shell's OWN vulnerable `xlsx` — FIX OPEN as draft eq-shell PR #824, needs review + merge.** Distinct from the vendored-copy item above: eq-shell had `xlsx` (SheetJS, proto-pollution/ReDoS) as a direct dep in TWO of its own files — the Comms "import from Melbourne workbook" parser (a 424 kB chunk in the prod client bundle) and the server-side `upload-gm-report` function. Both repointed to `exceljs` (already a dep); `xlsx` removed from package.json + lockfile. Build confirmed no `xlsx-*.js` chunk; parse behaviour verified. Draft PR — merge auto-deploys to core.eq.solutions, so Royce-gated. _(added 2026-07-13)_
+- [x] **eq-shell's OWN vulnerable `xlsx` — fixed, PR #824 merged same day it was opened** (2026-07-13). Distinct from the vendored-copy item above: eq-shell had `xlsx` (SheetJS, proto-pollution/ReDoS) as a direct dep in TWO of its own files — the Comms "import from Melbourne workbook" parser (a 424 kB chunk in the prod client bundle) and the server-side `upload-gm-report` function. Both repointed to `exceljs` (already a dep); `xlsx` removed from package.json + lockfile. Build confirmed no `xlsx-*.js` chunk; parse behaviour verified. Merged and live since — this had sat marked "draft, needs review + merge" for a month after it actually shipped. Corrected 2026-08-13.
 
 ---
 
@@ -1758,7 +1758,7 @@ Overhauled the worker connection flow so a declined worker isn't left in the dar
 
 ---
 
-## Job numbers are canonical — "workbench job numbers are just job numbers" (2026-07-12, PR #776 OPEN — not merged/dispatched)
+## Job numbers are canonical — "workbench job numbers are just job numbers" (2026-07-12, PR #776 merged same day — 2 follow-ups still open)
 Royce: kill the "Workbench" name; job numbers should be listed once everywhere (Ops, Field, Comms, GM). Verify-first found the number was ALREADY functionally unified — Ops master `quote.workbench_job_no`, read by Comms directly and by Field via the `app_data.field_job_numbers` view (which already outputs `job_number`) — so the real work was the NAME. Store relocation scoped OUT once verification showed it drags in eq-field's write path.
 - [ ] **Post-merge cleanup:** drop the `eq_set_workbench_job_no` wrapper once no caller remains — the last trace of the word. _(added 2026-07-12)_
 - [ ] **Optional (declined for now):** rename GM `job_code` → `job_number` across the 3 GM tables (+ unique constraints, parser, UI) for strict one-name-in-the-schema. _(added 2026-07-12)_
@@ -2494,7 +2494,7 @@ Net: on a deep-linked `?tab=leave` view — exactly how Core embeds Field — `l
 **Completed:**
 
 **Deferred:**
-- [ ] **Merge eq-context PR #62** — still open, 24 days old. Re-checked live 2026-07-28: no longer cleanly mergeable (`gh pr merge` refused — "the merge commit cannot be cleanly created"), main has drifted too far since 2026-07-04. Pure frontmatter-hygiene/docs change (adds missing frontmatter to 6 changelog/runbook files + one workflow allowlist entry), all its own CI checks still green — just needs a rebase before it can land. Not attempting the rebase unprompted on a 24-day-old branch touching 10 files. _(added 2026-07-04, re-checked 2026-07-28)_
+- [ ] **eq-context PR #62 is CLOSED, not open — re-check corrected 2026-08-13, was stale since whenever it closed.** Previous entries tracked it as "still open... just needs a rebase," last re-verified 2026-07-28. It's since been closed (no merge commit — not merged, just closed) and nobody logged when or why. Unknown whether the underlying frontmatter-hygiene fix (6 changelog/runbook files + one workflow allowlist entry) landed some other way or is genuinely dropped — needs a look, not a re-open on autopilot. _(added 2026-07-04, corrected 2026-08-13)_
 
 **Notes:**
 - A concurrent console (different tool, screenshot shared mid-session) was independently working the exact same arming task with its own checklist. Drafted Royce a coordination prompt handing that console the just-verified live-secret facts and standing this session's Code instance down from touching any secrets/environments, so the two consoles don't race on creating the same GitHub Environment or setting conflicting values.
