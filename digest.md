@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-13 10:51 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-13 10:52 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-13 10:47 UTC → 2026-08-13 10:51 UTC)
+## Since last refresh (2026-08-13 10:51 UTC → 2026-08-13 10:52 UTC)
 
-- Merged: eq-shell [#1323](https://github.com/eq-solutions/eq-shell/pull/1323) fix(staff): thread licence_verifications through the invite-
-- Merged: eq-shell [#1321](https://github.com/eq-solutions/eq-shell/pull/1321) feat(staff): write path for team/supervisor assignment on th
-- Merged: eq-shell [#1320](https://github.com/eq-solutions/eq-shell/pull/1320) feat(ops): bulk select in Archived tab (restore / delete mul
-- Merged: eq-shell [#1316](https://github.com/eq-solutions/eq-shell/pull/1316) feat(staff): create one credential per document, not per pho
-- Merged: eq-shell [#1315](https://github.com/eq-solutions/eq-shell/pull/1315) chore(deps): bump @eq-solutions/ui to v1.15.0
-- Merged: eq-shell [#1313](https://github.com/eq-solutions/eq-shell/pull/1313) fix(staff): move labour-hire intake from platform to tenant 
-- Merged: eq-shell [#1312](https://github.com/eq-solutions/eq-shell/pull/1312) fix(auth): mint-tenant-jwt.ts never embedded extra_perms — s
-- Merged: eq-shell [#1310](https://github.com/eq-solutions/eq-shell/pull/1310) fix(ops): quote attachments now upload direct to Storage, no
+- Merged: eq-shell [#1331](https://github.com/eq-solutions/eq-shell/pull/1331) fix(db): drop unused quote_attachment table + fix stale docs
+- Merged: eq-shell [#1322](https://github.com/eq-solutions/eq-shell/pull/1322) chore(security): permission-enforcement drift guard (ratchet
+- Merged: eq-shell [#1319](https://github.com/eq-solutions/eq-shell/pull/1319) feat(ops): archive view search/filter + auto-archive invoice
+- Merged: eq-shell [#1318](https://github.com/eq-solutions/eq-shell/pull/1318) fix(security): gate audit rollback + align entity archive/re
+- Merged: eq-shell [#1314](https://github.com/eq-solutions/eq-shell/pull/1314) fix(staff): surface multi-document warning on the regular in
+- Merged: eq-shell [#1311](https://github.com/eq-solutions/eq-shell/pull/1311) feat(staff): resourcing dashboard + draft org chart
+- Merged: eq-shell [#1308](https://github.com/eq-solutions/eq-shell/pull/1308) docs(ci): field-perms-drift's setup note is stale, secret no
+- Merged: eq-shell [#1307](https://github.com/eq-solutions/eq-shell/pull/1307) fix(ops): file uploads failing on a payload limit no functio
 
 ## ⚠ Needs you (4)
 
@@ -50,7 +50,7 @@ _…and 95 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 5 | 0d |
+| eq-shell | ✓ success | 0d ago | 4 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 0 | — |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 2 | 0d |
@@ -74,6 +74,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-13 | eq-shell | [#1331](https://github.com/eq-solutions/eq-shell/pull/1331) fix(db): drop unused quote_attachment table + fix stale docs |
 | 2026-08-13 | eq-shell | [#1310](https://github.com/eq-solutions/eq-shell/pull/1310) fix(ops): quote attachments now upload direct to Storage, not thr |
 | 2026-08-13 | eq-shell | [#1328](https://github.com/eq-solutions/eq-shell/pull/1328) chore(ci): triage is_worker_in_org into KNOWN_UNSOURCED (cross-re |
 | 2026-08-13 | eq-shell | [#1317](https://github.com/eq-solutions/eq-shell/pull/1317) fix(ops): retry quote-doc/job-creation fetches on a transient net |
@@ -88,7 +89,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-13 | eq-solves-service | [#713](https://github.com/eq-solutions/eq-service/pull/713) fix(security): wire entity.edit + entity.manage_activation; corre |
 | 2026-08-13 | eq-solves-service | [#711](https://github.com/eq-solutions/eq-service/pull/711) security: remove orphaned customer/site write REST routes |
 | 2026-08-13 | eq-solves-service | [#708](https://github.com/eq-solutions/eq-service/pull/708) fix(security): close assignee-bypass on close + status-setter byp |
-| 2026-08-13 | eq-field | [#685](https://github.com/eq-solutions/eq-field/pull/685) security: gate 8 unguarded HR-write functions to Supervision |
 _Showing 15 of 100 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -146,4 +146,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-13 10:51 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-13 10:52 UTC._
