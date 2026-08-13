@@ -92,9 +92,9 @@ Of the remaining 5 (all storage-writing):
 
 **Recommendation:** if this gets built at all, do `upload-document-version.ts` alone first — it's the one path with a real, plausible size problem, matching the same justification that made the quote-attachments fix worth it. Leave the other 4 alone unless one of them actually starts failing — no evidence any currently do.
 
-**Action:** Royce call on priority. If yes: `upload-document-version.ts` only, to start.
+**Done 2026-08-13.** Built `upload-document-version.ts`'s conversion — [eq-shell PR #1334](https://github.com/eq-solutions/eq-shell/pull/1334), merged + live (`49f92c14`). New `document-version-upload-init.ts`/`-commit.ts`, same two-step shape as the quote-attachments flow. Two things worth remembering if this pattern gets reused again: the `content_hash` (what a signer's attestation binds to) has to be recomputed server-side by re-downloading the upload, since the commit function never sees the bytes as they land — and the parent `documents` row is deliberately NOT created until after the upload is confirmed, to avoid the same orphaned-row class of bug as A3's dangling rows. The other 4 storage-writing paths (licence photos, asset certs) stay untouched — no evidence any of them need it.
 
-**Status:** Scoped — not built. Recommendation above, not a build.
+**Status:** ✅ Done.
 
 ---
 
@@ -146,13 +146,14 @@ Of the remaining 5 (all storage-writing):
 - [ ] A1 — PR #1310 merged + live 2026-08-13, but the original reported issue was never confirmed fixed (no repro provided) — leave open until Royce confirms or it resurfaces
 - [x] A2 — confirmed out of scope for eq-shell (no action needed here)
 - [x] A3 — dropped, [PR #1331](https://github.com/eq-solutions/eq-shell/pull/1331) merged + live 2026-08-13
-- [ ] A4 — scoped (recommend `upload-document-version.ts` only, if anything); Royce call: build or drop
+- [x] A4 — scoped, `upload-document-version.ts` built, [PR #1334](https://github.com/eq-solutions/eq-shell/pull/1334) merged + live 2026-08-13
 - [ ] A5 — scoped (recommend pilot on quote attachments only, vendor TBD); Royce call: pick a vendor or drop
 - [x] A6 — capacity numbers pulled and logged — ~21MB total, no concern
+- [x] Bonus — 19 dangling `app_data.attachments` rows found + deleted on ehow, reconciliation check shipped to catch a repeat: [PR #1333](https://github.com/eq-solutions/eq-shell/pull/1333), merged + live
 
 ## Where to start
 
-Everything buildable is done. What's left is entirely Royce's: confirm A1 is actually fixed (or report what's still broken), and call priority on A4/A5.
+Only A5 is still buildable, and it's blocked on a vendor pick, not effort. Everything else is done or is Royce's call: confirm A1 is actually fixed (or report what's still broken), and pick a vendor for A5 (or explicitly drop it).
 
 ---
 
@@ -163,4 +164,6 @@ Everything buildable is done. What's left is entirely Royce's: confirm A1 is act
 - [eq-shell PR #1310](https://github.com/eq-solutions/eq-shell/pull/1310) — direct-to-storage quote attachments, merged + live
 - [eq-shell PR #1331](https://github.com/eq-solutions/eq-shell/pull/1331) — dropped `quote_attachment`, merged + live
 - [eq-shell PR #1317](https://github.com/eq-solutions/eq-shell/pull/1317) — Download Quote retry fix, merged 2026-08-13
+- [eq-shell PR #1333](https://github.com/eq-solutions/eq-shell/pull/1333) — attachment row/file reconciliation check, merged + live
+- [eq-shell PR #1334](https://github.com/eq-solutions/eq-shell/pull/1334) — document-version uploads direct-to-storage (A4), merged + live
 - [eq-context/sessions/2026-08-13.md](../../sessions/2026-08-13.md) — full session log
