@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-08-11
+last_updated: 2026-08-13
 scope: Done items rotated out of eq/pending.md nightly by scripts/rotate_pending.py (per-item since 2026-07-27; before that, occasional manual whole-section moves). Nothing here is actionable — pure historical record (also covered in eq/changelog/*.md and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -13,6 +13,15 @@ Done items and fully-closed session write-ups rotated out of `eq/pending.md`.
 If you''re looking for something to action, it''s not here — check `eq/pending.md`.
 A "(rotated YYYY-MM-DD ...)" note on a section header means only that
 section's done items live here; its open items stayed in `eq/pending.md`.
+
+---
+
+## eq-service: PR #710 permission-enforcement drift guard merged, deploy verified live (2026-08-13) (fully closed, no open items remain)
+*A mechanical, ratcheting version of the manual permission audit that found the two live gaps fixed in PR #707 — checks every canonical `@eq-solutions/roles` permission key Service owns has at least one real enforcement call site, failing CI only if a *new* key goes dead (20 pre-existing dead keys grandfathered into a baseline, not treated as failures). Held as a draft carrying its own "do not merge without explicit go-ahead" note, since it's security-adjacent.*
+
+- [x] Verified CI green before merge: `check` (tsc + next build, incl. `npx vitest run`) and `ci` (Typecheck + audit) both passed; the new drift-guard test passed in CI (4/4) matching local. Only the pre-existing "Integration tests (Supabase local)" failure present — this repo's known non-blocker.
+- [x] Confirmed with Royce via AskUserQuestion before merging (draft status + Netlify auto-deploy to service.eq.solutions were both surfaced first) — merged on his "merge now" instruction. Marked ready for review, squash-merged into `main` (`d66449a`), branch deleted.
+- [x] Verified the resulting production deploy directly rather than assuming it from the merge: Netlify's live deploy record `commit_ref` matches `d66449a`, state `ready`, secret scan clean (930 files, 0 matches), 5 functions + 1 edge function deployed successfully. Post-merge GitHub CI on `main` re-confirmed green.
 
 ---
 
