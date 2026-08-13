@@ -5,14 +5,14 @@ last_updated: 2026-08-13
 scope: Remaining items from the upload-size-limit + direct-to-storage attachment thread (2026-08-12 → 2026-08-13) — everything still open after the build work landed
 read_priority: standard
 status: live
-duration_estimate: A1 needs Royce's live repro; A2-A5 are investigation/decision items, no urgent build
-shipped: A0 (8-file honest-limit fix, dead-bucket cleanup, download-retry fix)
-pending: A1 (live upload bug), A2-A5 (parked investigation items)
+duration_estimate: Only A1 and A5 still open. A1 needs Royce's live repro (or it stays closed by default). A5 is parked on Royce's own vendor account signup, revisit ~2026-08-20.
+shipped: A0, A3, A4, A6 — all built and live. A2 confirmed out of scope.
+pending: A1 (unconfirmed original bug, no repro), A5 (parked, vendor picked, waiting on Royce's account signup)
 ---
 
 # Sprint — Attachment Upload / Quote Documents close-out
 
-**Status:** in flight — opened 2026-08-13. The build phase (suite-wide honest upload limits, direct-to-storage signed-upload flow for quote attachments, dead-bucket cleanup, Download Quote retry fix) is merged. What's left: one live bug needs Royce's repro, and four items were surfaced during research but deliberately parked.
+**Status:** mostly closed. A0/A2/A3/A4/A6 are done. A1 stays open until Royce confirms the original upload issue is actually fixed (or it resurfaces). A5 is parked — vendor decided, waiting on Royce to create the account — revisit no earlier than 2026-08-20.
 
 ---
 
@@ -115,9 +115,20 @@ Of the remaining 5 (all storage-writing):
 
 **Recommendation:** pilot on quote attachments only (`attachment-upload-commit.ts`) — the highest-risk path, since it explicitly accepts arbitrary external files (drawings, PDFs, emails from outside the company). Don't build it into all 8 upload paths from A4 up front; extend later if the pilot's worth keeping.
 
-**Action:** Royce call — pick a vendor (or explicitly decide it's not worth it yet).
+**Vendor picked 2026-08-13: Cloudmersive.** VirusTotal ruled out — its free/consumer tier may share submitted files with its partner/researcher ecosystem, which is a real problem for client quote documents (drawings, contracts, site plans), not a hypothetical. Self-hosted ClamAV has the better privacy story (nothing leaves EQ's infrastructure) but means standing up the one piece of persistent, always-on compute in an otherwise fully serverless stack, for a feature scanning single-digit files a month — solving a scale problem that doesn't exist yet. Cloudmersive is a standard B2B API vendor (no data-sharing surprise), fits the serverless architecture with zero new infra, and its free tier comfortably covers current volume (13 quote attachments, total, ever). Migration to self-hosted later is a small change if volume or sensitivity ever justifies it — same call site, swap what's behind it.
 
-**Status:** Scoped — not built. Recommendation above, not a build.
+**Critique of the direction, not just the vendor** (asked for explicitly, worth keeping on record):
+- Signature-based scanning is a floor, not a shield — catches commodity malware, does nothing against something novel or targeted. Don't let "we scan uploads" become a blanket reassurance.
+- The actual risk isn't "malware runs on our server" — nothing in eq-shell executes an uploaded file, it sits in Storage until a person opens it later. The real exposure is a colleague downloading an external subcontractor's file and opening it on their own machine. Given that, this is a sound direction, not security theatre — just be clear on what it protects.
+- Given that threat model, `.msg`/`.eml`/Word/Excel from quote attachments (external subcontractors sending Office documents) is the sharpest edge, not licence photos or asset certs. Basic AV scanning helps here but a macro-aware check would help more — not a blocker for the pilot, worth remembering as the natural next step if this proves worth keeping.
+- Fail-open vs. fail-closed needs a real decision: at this volume, fail open with a Sentry alert on every skip — rejecting a legitimate upload because a third-party scanning API hiccuped is worse than the marginal risk, and nothing else in the suite scans uploads today either.
+- Genuinely low-urgency — near-zero volume, no incident, no compliance driver. Worth building because it's cheap and closes a real gap, not because anything's on fire.
+
+**Parked 2026-08-13 — "remind me next week."** Vendor picked, design settled (pilot on quote attachments, fail-open + Sentry alert on skip), nothing built. Blocked on Royce signing up for a Cloudmersive account and generating an API key himself — account creation is not something Claude does, even with a go-ahead. **Revisit no earlier than 2026-08-20** — logged as a dated deferred item in `eq/pending.md` so it resurfaces via the nightly digest's "Needs you" section, the same mechanism already used for every other "come back to this" item in this substrate.
+
+**Action:** Royce signs up for Cloudmersive, gets an API key, hands it over — then this is a small, fast build (one shared helper + a call in the existing commit function).
+
+**Status:** ⏸ Parked — vendor decided, not built. Revisit ~2026-08-20.
 
 ---
 
@@ -147,13 +158,13 @@ Of the remaining 5 (all storage-writing):
 - [x] A2 — confirmed out of scope for eq-shell (no action needed here)
 - [x] A3 — dropped, [PR #1331](https://github.com/eq-solutions/eq-shell/pull/1331) merged + live 2026-08-13
 - [x] A4 — scoped, `upload-document-version.ts` built, [PR #1334](https://github.com/eq-solutions/eq-shell/pull/1334) merged + live 2026-08-13
-- [ ] A5 — scoped (recommend pilot on quote attachments only, vendor TBD); Royce call: pick a vendor or drop
+- [ ] A5 — ⏸ parked 2026-08-13, vendor decided (Cloudmersive), waiting on Royce's account signup — **revisit ~2026-08-20**
 - [x] A6 — capacity numbers pulled and logged — ~21MB total, no concern
 - [x] Bonus — 19 dangling `app_data.attachments` rows found + deleted on ehow, reconciliation check shipped to catch a repeat: [PR #1333](https://github.com/eq-solutions/eq-shell/pull/1333), merged + live
 
 ## Where to start
 
-Only A5 is still buildable, and it's blocked on a vendor pick, not effort. Everything else is done or is Royce's call: confirm A1 is actually fixed (or report what's still broken), and pick a vendor for A5 (or explicitly drop it).
+Everything buildable is done. A1: confirm it's actually fixed, or report what's still broken. A5: sign up for Cloudmersive, hand over an API key, and it's a small fast build — but not before ~2026-08-20 per Royce's own "remind me next week."
 
 ---
 
