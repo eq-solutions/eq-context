@@ -61,13 +61,9 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-13)
 
 **eq-cards:**
-- #235 fix(wallet): collapse the nudge-card stack + de-dupe urgent items (punch-list #4)
 - #221 refactor(auth): shell-verify.js relays to eq-shell instead of local crypto
 
 **eq-shell:**
-- #1332 chore: delete unrouted CoreHome.tsx (EQ Intelligence mock home page)
-- #1330 fix(documents): treat O&M manuals as reference library, not sign-off
-- #1329 fix(shell): quote-job-consumer reads canonical_events directly, skips the self-HTTP hop
 - #1294 feat(cards): centralize Cards' SSO minting via token-exchange-cards.ts
 
 ---
