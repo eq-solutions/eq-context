@@ -66,6 +66,9 @@ _If this file is >48h old, the cron is broken._
 **eq-field:**
 - #685 security: gate 8 unguarded HR-write functions to Supervision
 
+**eq-service:**
+- #717 fix(security): close latent labour_hire/subcontractor view-access gap on entity + equipment pages
+
 **eq-shell:**
 - #1310 fix(ops): quote attachments now upload direct to Storage, not through a function
 - #1294 feat(cards): centralize Cards' SSO minting via token-exchange-cards.ts
