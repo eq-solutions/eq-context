@@ -57,13 +57,20 @@ Close out the loose ends from the "5-10MB attachment fails on quotes" incident s
 
 ---
 
-### A3 — Dead `app_data.quote_attachment` table on ehow
+### A3 — `app_data.quote_attachment` table on ehow — investigated, decision needed
 
-**Why:** Surfaced during the bucket audit, not investigated further — unclear if it's a leftover from an earlier attachment design or still referenced somewhere.
+**Why:** Surfaced during the bucket audit. Now fully investigated:
 
-**Action:** Query ehow for row count + any live code references before deciding whether to drop it via the governed migration path.
+- **0 rows** on ehow (live SKS plane) — never received data.
+- It's schema-live and wired into the generic intake commit pipeline (`0009_intake_quotes_rpc.sql`, table→module routing in `intake-modules.ts`) as a valid target table, so it's not orphaned scaffolding in the DDL sense.
+- But the feature it sounds like it backs — the "N files" badge on each quote row — is actually served by a **different** table. `eq_list_quote_attachment_counts()` (the RPC `QuotesModule.tsx` calls for that badge) reads `app_data.attachments WHERE entity_type = 'quote'`, never touches `quote_attachment` at all. Same is true for the attachment feature itself — `AttachmentList.tsx` and both the old and new (PR #1310) upload paths all write to `app_data.attachments`, not `quote_attachment`.
+- **`docs/ARCHITECTURE-V2.md:500` marks `quote_attachment` "✅ Live" — that line is stale/wrong.** It hasn't been the live path since `app_data.attachments` (the generic entity-attachment table) took over.
 
-**Status:** Parked — not investigated.
+**Read:** the table is either (a) genuinely dead — an earlier quote-attachment design superseded by the generic `attachments` table and never cleaned up, or (b) still the intended target for a specific intake producer (e.g. a Cards/PDF-parse path) that just hasn't fired in SKS production yet. Didn't chase (b) further — would mean tracing eq-intake's own emit logic, out of scope for this pass.
+
+**Action:** Royce call — drop via governed migration (One Pipe, not by hand) if (a), or leave it and fix the stale doc line either way.
+
+**Status:** Investigated — decision needed, not a further-digging task.
 
 ---
 
@@ -89,11 +96,20 @@ Close out the loose ends from the "5-10MB attachment fails on quotes" incident s
 
 ### A6 — Total Supabase Storage capacity/quota
 
-**Why:** Royce asked once during the discussion ("what about as a total capacity") — never actually checked against the live project plan/quota.
+**Why:** Royce asked once during the discussion ("what about as a total capacity") — never actually checked.
 
-**Action:** Pull current usage + plan limit from the Supabase dashboard or MCP for both zaap and ehow.
+**Checked:** Org (`EQ Solutions`) is on the **Pro plan**. Actual Storage usage, queried live:
 
-**Status:** Parked — not checked.
+| Plane | Bucket | Objects | Used |
+|---|---|---|---|
+| ehow (SKS) | `attachments` | 28 | 14 MB |
+| ehow (SKS) | `logos` | 18 | 6.8 MB |
+| ehow (SKS) | `compliance-packs` / `licence-photos` / `safety-photos` | 0 | — |
+| zaap (EQ) | `compliance-packs` / `tenant-logos` / `safety-photos` | 0 | — |
+
+**~21 MB total across both tenant planes.** Not a capacity concern at any realistic scale — Pro-plan storage allowances are measured in the hundreds of GB, and current usage is five orders of magnitude below that. The one number this MCP can't pull is the exact byte quota / overage rate on the current plan — that's a billing-dashboard figure, not a query. Not worth chasing unless usage actually grows; flagging so it isn't re-asked as if unknown.
+
+**Status:** ✅ Done — no action needed, usage is trivial.
 
 ---
 
@@ -101,11 +117,11 @@ Close out the loose ends from the "5-10MB attachment fails on quotes" incident s
 
 - [x] A0 — suite-wide honest limits, dead buckets, download-retry: shipped
 - [ ] A1 — Royce's live repro done, upload confirmed working (or bug found + fixed)
-- [ ] A2 — confirmed out of scope for eq-shell (no action needed here)
-- [ ] A3 — `quote_attachment` table checked, kept or dropped via governed migration
+- [x] A2 — confirmed out of scope for eq-shell (no action needed here)
+- [ ] A3 — investigated (0 rows, superseded by `app_data.attachments`, docs stale); Royce call on drop vs. leave
 - [ ] A4 — Royce call: scope or drop
 - [ ] A5 — Royce call: scope or drop
-- [ ] A6 — capacity numbers pulled and logged
+- [x] A6 — capacity numbers pulled and logged — ~21MB total, no concern
 
 ## Where to start
 
