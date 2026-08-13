@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-13 05:44 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-13 06:04 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-13 03:02 UTC → 2026-08-13 05:44 UTC)
+## Since last refresh (2026-08-13 05:44 UTC → 2026-08-13 06:04 UTC)
 
-- Merged: eq-shell [#1315](https://github.com/eq-solutions/eq-shell/pull/1315) chore(deps): bump @eq-solutions/ui to v1.15.0
-- Merged: eq-shell [#1313](https://github.com/eq-solutions/eq-shell/pull/1313) fix(staff): move labour-hire intake from platform to tenant 
-- Merged: eq-shell [#1312](https://github.com/eq-solutions/eq-shell/pull/1312) fix(auth): mint-tenant-jwt.ts never embedded extra_perms — s
-- Merged: eq-shell [#1308](https://github.com/eq-solutions/eq-shell/pull/1308) docs(ci): field-perms-drift's setup note is stale, secret no
-- Merged: eq-shell [#1306](https://github.com/eq-solutions/eq-shell/pull/1306) fix(ops): file uploads failed with a fake "check your connec
-- Merged: eq-shell [#1304](https://github.com/eq-solutions/eq-shell/pull/1304) fix(security): RLS gate on staff_conversations now enforces 
-- Merged: eq-shell [#1302](https://github.com/eq-solutions/eq-shell/pull/1302) feat(staff): add Conversations log to Staff detail panel
-- Merged: eq-shell [#1299](https://github.com/eq-solutions/eq-shell/pull/1299) Fix: mobile dashboard was showing licence-expiry info three 
+- Merged: eq-shell [#1314](https://github.com/eq-solutions/eq-shell/pull/1314) fix(staff): surface multi-document warning on the regular in
+- Merged: eq-shell [#1307](https://github.com/eq-solutions/eq-shell/pull/1307) fix(ops): file uploads failing on a payload limit no functio
+- Merged: eq-shell [#1305](https://github.com/eq-solutions/eq-shell/pull/1305) fix(dashboard): on-leave count zeroed by overnight schema re
+- Merged: eq-shell [#1303](https://github.com/eq-solutions/eq-shell/pull/1303) fix(dashboard): logo, outstanding-quotes value, on-leave cou
+- Merged: eq-shell [#1301](https://github.com/eq-solutions/eq-shell/pull/1301) fix(dashboard): mobile hero card was display:none on every v
+- Merged: eq-shell [#1300](https://github.com/eq-solutions/eq-shell/pull/1300) Make the mobile hero stats actionable, not just informationa
+- Merged: eq-shell [#1298](https://github.com/eq-solutions/eq-shell/pull/1298) Add compact action cards to the mobile dashboard
+- Merged: eq-shell [#1297](https://github.com/eq-solutions/eq-shell/pull/1297) Replace AI Brief prose with grounded Ask Anything Q&A
 
 ## ⚠ Needs you (5)
 
@@ -33,7 +33,7 @@ _2026-08-13 05:44 UTC · what needs your attention. Full snapshot: [suite-state.
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
-- **EQ** · **Needs Royce, not more building:** merge/deploy waits until he's back (2026-08-22) or explicitly comfortable being reachable if it needs a fast revert — same standing hold as any auth-path change per CLAUDE.md, made explicit here because of the overseas goal specifically. Also still needed regardless of timing: generate + set `EQ_CARDS_HANDOFF_KEY` on both Netlify projects (nothing works until it exists) — manual-hands-only, Claude Code is blocked from writing Netlify secrets by design. _(added 2026-08-10)_
+- **EQ** · **Needs Royce, not more building:** already superseded below (2026-08-11 explicit go-ahead) for the overseas-goal exclusion specifically — the real remaining blocker is operational: generate + set `EQ_CARDS_HANDOFF_KEY` on both Netlify projects (nothing works until it exists) — manual-hands-only, Claude Code is blocked from writing Netlify secrets by design. **Note 2026-08-13:** the TODAY.md overseas goal this entry originally cited was killed (Royce's explicit call) — doesn't change anything here, the Netlify-secret step was already the actual blocker, not the goal. _(added 2026-08-10)_
 - **EQ** · **Not built.** Royce to decide whether this graduates back onto `system/punch-list.md` for the actual simplification work, given the goal's current exclusion on live UI changes affecting real users while overseas. _(added 2026-08-10)_
 - **EQ** · **Migration 0206 not yet applied to the live database** — merged to code, needs Royce to manually dispatch `apply-service-migrations.yml`; Claude Code's own permission classifier blocks doing that directly (same wall as the Netlify secret above). _(added 2026-08-11)_
 - **EQ** · **Work sits uncommitted, not lost** — on branch `fix/integration-ci-app-data-bootstrap` in the shared root checkout at `C:\Projects\eq-solves-service`. Needs Royce to get Docker running (or hand over a `supabase db dump` directly, or greenlight a pure-SQL fallback) to resume. _(added 2026-08-10)_
@@ -75,6 +75,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-13 | eq-solves-service | [#714](https://github.com/eq-solutions/eq-service/pull/714) docs(security): document entity.view_pii as investigated + delibe |
 | 2026-08-13 | eq-solves-service | [#713](https://github.com/eq-solutions/eq-service/pull/713) fix(security): wire entity.edit + entity.manage_activation; corre |
 | 2026-08-13 | eq-solves-service | [#711](https://github.com/eq-solutions/eq-service/pull/711) security: remove orphaned customer/site write REST routes |
 | 2026-08-13 | eq-solves-service | [#708](https://github.com/eq-solutions/eq-service/pull/708) fix(security): close assignee-bypass on close + status-setter byp |
@@ -89,25 +90,25 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-12 | eq-shell | [#1316](https://github.com/eq-solutions/eq-shell/pull/1316) feat(staff): create one credential per document, not per photo |
 | 2026-08-12 | eq-shell | [#1320](https://github.com/eq-solutions/eq-shell/pull/1320) feat(ops): bulk select in Archived tab (restore / delete multiple |
 | 2026-08-12 | eq-shell | [#1319](https://github.com/eq-solutions/eq-shell/pull/1319) feat(ops): archive view search/filter + auto-archive invoiced quo |
-| 2026-08-12 | eq-shell | [#1311](https://github.com/eq-solutions/eq-shell/pull/1311) feat(staff): resourcing dashboard + draft org chart |
-_Showing 15 of 94 · full record in [sessions/](sessions/)_
+_Showing 15 of 95 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **PR #1310 not yet verified or merged** — Royce reported issues testing it. Checked live and ruled out: the storage system's cross-origin access rules, and whether the new code actually deployed (both fine). The actual failure is still unidentified — waiting on the specific error message/network response before it can be diagnosed further. _(added 2026-08-12)_
+- **Live click-test still not done anywhere across this whole thread** — every fix above was verified against live data/CI/direct database checks, never a real signed-in click-through session on any of the four apps. _(added 2026-08-13)_
 - **Live click-through not done** — this sandbox has no network path to the tenant-config service, so the Archived-tab search/filter/bulk-select hasn't been visually confirmed in a real browser session. Built against the exact same Table component already proven live elsewhere in the app; build + typecheck clean on both PRs. _(added 2026-08-12)_
 - **Live click-through not done** — this sandbox has no network path to the tenant-config service, so the Archived-tab search/filter/bulk-select hasn't been visually confirmed in a real browser session. Built against the exact same Table component already proven live elsewhere in the app; build + typecheck clean on both PRs. _(added 2026-08-12)_
-- **`task_fd65aa59` (EQ Shell) outcome** — still running as of this close. _(added 2026-08-12)_
-- **`task_9f6fca23` (EQ Service) — two more ungated audit-log pages** (`admin/imports`, `admin/activity`) found and spun off this session; Royce already has it running as of this close. _(added 2026-08-12)_
-- **Timesheets mobile-entry** — deliberately not touched (Royce: "timesheets aren't a priority on mobile"). Revisit only if there's a real reason to think people are trying to do timesheets on their phone (e.g. PostHog `timesheet_saved` event breakdown by device). _(added 2026-08-12)_
-- Inline-edit primitives for Table — still deferred, needs its own spike on whether Table's cell/row model can support it cleanly; `Table.tsx` is already 1,265 lines. _(added 2026-08-12)_
-- Whether Table's own column filters should ever be rebuilt on top of the new `MultiSelect` component — low priority, only worth revisiting if the inline-edit spike above happens anyway and touches the same filter code. Not blocking anything; `MultiSelect` shipped standalone (eq-ui PR [#38](https://github.com/eq-solutions/eq-ui/pull/38)) specifically so it didn't have to wait on this. _(added 2026-08-12)_
-- **Mobile action cards are view + tap-through only** — no mark-done/dismiss controls, a deliberate v1 simplicity choice (confirmed via AskUserQuestion). Add if Royce wants parity with desktop. _(added 2026-08-11)_
-- **Compliance click-through only covers Staff and Ops today.** EQ Field has no record-level deep-linking (only `?tab=`), EQ Service has an unused `?return=` path mechanism Shell never constructs a specific path for, and EQ Cards has no deep-link support at all — out of scope for this pass since it wasn't asked for, but the next domain to add if Ask Anything grows past licences/quotes. _(added 2026-08-11)_
-- **Tab-deeplink click-through still not explicitly confirmed.** Logo and Outstanding-quotes drew no complaint on the next phone check (implicitly fine); On-leave was reported broken and is now re-fixed (see the 2026-08-12 entry below) — but nobody has explicitly confirmed tapping "On leave" actually lands on Field's Leave tab. _(added 2026-08-12, carried from 2026-08-11)_
-_…and 474 more · [eq/pending.md](eq/pending.md)_
+- **Richard Brown needs to re-add his LV Rescue (C40385) photo** — the surviving row has the correct licence details but no photo attached; nothing existed anywhere to recover. The fix means his retry will now update that row cleanly instead of duplicating again. _(added 2026-08-13)_
+- **Live click-through still not done** on the multi-document extraction / PDF preview / flag-notification features — verified via CI + direct DB checks only, no real signed-in session. _(added 2026-08-13)_
+- **SMS-notification coverage is inconsistent across the different invite paths** — flagged during the original audit, not touched this session. _(added 2026-08-13)_
+- **Intake engine's CSV import path bypasses the same-worker dedup** the direct upload paths now go through — flagged, not touched. _(added 2026-08-13)_
+- **Dead code**: `eq_cards_find_invites_by_phone` RPC and `ClaimByPhoneScreen` appear unused since the "Find my company account" flow replaced join-by-code — not confirmed dead, not removed. _(added 2026-08-13)_
+- **Open question, not decided**: should the manual labour-hire-document-upload form and the regular worker-invite form (which now also accepts documents) eventually merge into one? Deliberately left as two separate entry points this session. _(added 2026-08-13)_
+_…and 488 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
+- **Richard needs to re-add his LV Rescue photo** — none of the 6 attempts ever actually captured one; the surviving row has the licence details but no photo. _(added 2026-08-13)_
 - **Underlying Cards mobile bug not yet fixed** — a licence "renewal" can silently save nothing if on-device OCR can't read the card and the user doesn't notice the date field still shows the old value. Worth watching for other workers hitting the same silent failure until eq-cards ships the fix. _(added 2026-08-11)_
 - **Declined this session, still open if wanted:** widen the Prestart tab past its hardcoded 7-day window, or add a "Show older → Records" link — Royce picked "fix the cap only" via AskUserQuestion; the tab itself is unchanged. _(added 2026-08-04)_
 - **Live phone click-through not done** — camera vs. gallery picker, and that "Save changes" actually persists an edit after Submit. _(added 2026-07-31)_
@@ -117,8 +118,7 @@ _…and 474 more · [eq/pending.md](eq/pending.md)_
 - **Timesheets mobile-entry strategy** — Royce asked "will users actually be doing timesheets on their phone?" No usage data was pulled to answer it responsibly; recommended checking PostHog's `timesheet_saved` event breakdown by device before deciding whether to simplify or cut anything, not done. _(added 2026-07-31)_
 - **Build the fix**: `openPinManagement()` does a narrow on-demand `people?select=id,pin&group=in.(Apprentice,Labour Hire)` fetch (same pattern as the staff-timesheet PIN gate in `auth.js`), caches it, `renderPinList()` reads from that cache instead of `p.pin`. Keeps raw PINs out of the general bulk load. Branch fresh off `origin/main`, not the stale `claude/loadfromsupabase-resilient-sync` branch. _(added 2026-07-30)_
 - **Separate, lower-priority**: the DB's `has_pin` boolean column is stale/unmaintained (verified live 2026-07-30: 32 of 35 people with a set PIN had `has_pin=false`) — would need an INSERT/UPDATE trigger to sync before it's trustworthy. Not needed for the fix above (on-demand fetch sidesteps it), but worth fixing separately if `has_pin` is ever relied on elsewhere. _(added 2026-07-30)_
-- Mirror the roster-grid archive + rating feature (SKS v3.10.104/.105) in EQ Field — flagged as a follow-up task; Royce started it in a separate session, result not yet known. _(added 2026-07-28)_
-_…and 66 more · [sks/pending.md](sks/pending.md)_
+_…and 67 more · [sks/pending.md](sks/pending.md)_
 
 ## Queue health
 
@@ -126,8 +126,8 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 3308 | 587 | 41 | 17 |
-| [SKS](sks/pending.md) | 418 | 84 | 2 | 16 |
+| [EQ](eq/pending.md) | 3406 | 600 | 63 | 17 |
+| [SKS](sks/pending.md) | 423 | 85 | 3 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 402 | 37 | 0 | 1 |
 
@@ -135,11 +135,11 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | Date | Session |
 |------|---------|
+| 2026-08-13 | [eq-shell: invite-path approval was silently dropping flagged licences, fixed + merged + deployed](sessions/2026-08-13.md) |
 | 2026-08-12 | [EQ UI design sprint (EmptyState, density mode, DateRangePicker) shipped and rolled out to eq-shell + eq-service](sessions/2026-08-12.md) |
 | 2026-08-11 | [EQ Cards: removed dead CardScreen (710 lines), merged live](sessions/2026-08-11.md) |
 | 2026-08-10 | [Delete an approved leave request (SKS), then found + fixed a live Calendar regression in EQ Field](sessions/2026-08-10.md) |
 | 2026-08-08 | [eq-field CSV import permission gap: found, fixed, merged, deployed](sessions/2026-08-08.md) |
-| 2026-08-07 | [My Schedule maps link: the real root cause was Shell's iframe sandbox, not iOS](sessions/2026-08-07.md) |
 _[sessions/](sessions/) · 5 shown_
 
 ## Substrate honesty
@@ -147,4 +147,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-13 05:44 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-13 06:04 UTC._
