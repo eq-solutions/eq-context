@@ -1,13 +1,19 @@
 ---
 title: EQ Cards — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-11
+last_updated: 2026-08-13
 scope: EQ Cards append-only history. NOTE — duplicates eq/changelog/cards.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # EQ Cards — Changelog
+
+## 2026-08-13 (PR #228 MERGED — OCR client timeout was shorter than the server's own budget)
+- **`ocr_service.dart`'s client-side timeout on the `ocr-licence` edge function call was hardcoded to 14s — shorter than that edge function's own 20s Anthropic-call timeout** (`supabase/functions/ocr-licence/index.ts:481`, added in PR #211 and tuned for a different caller, Shell's admin path). Any scan that genuinely needed 14-20s always failed client-side even though the server was built to allow it. Found during a suite-wide Sentry triage (EQ-CARDS-H): 7 distinct users hit this over 7 weeks on `/licences/new`.
+- Raised the client timeout to 25s, ~5s of margin above the server's 20s for the base64 image upload + JSON response round trip. New worst-case single-retry budget: ~51.5s (was ~32s).
+- Same triage pass also closed **EQ-CARDS-19** (DOB picker null-check, already fixed 2026-07-30) and **EQ-CARDS-W** (blob-URL-revoked crash — re-diagnosed correctly as already fixed by PR #223's `_PhotoSlotState` errorBuilder, not a download-path issue as first suspected) in Sentry, and flagged 3 more already-fixed issues (EQ-CARDS-1D here, plus EQ-FIELD-13/EQ-SHELL-1J in their own repos) that need a manual Sentry resolve — the tool call was blocked by the Claude Code classifier this session.
+- eq-cards [PR #228](https://github.com/eq-solutions/eq-cards/pull/228), squash-merged `df5d93f`.
 
 ## 2026-08-11 (PR #225 MERGED, APPLIED LIVE — Subcontractor could claim an invite but got silently downgraded)
 - **`eq_cards_claim_invite`'s role whitelist never included `subcontractor`** — introduced in migration 0018, last touched in 0072 (2026-06-17), three weeks before Subcontractor joined the canonical role model suite-wide (2026-07-05). An admin could select Subcontractor for a worker and it saved/displayed correctly, but the claim RPC silently fell back to `'employee'` for the real session role (`shell_control.users.role`, `shell_control.user_tenant_memberships.role`) the moment that worker accepted their invite — no error anywhere.

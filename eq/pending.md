@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-12
+last_updated: 2026-08-13
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -33,6 +33,63 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] Confirmed for Royce: archived quotes never auto-delete or further expire — they sit in Archived until someone manually deletes that specific quote (permanent, no undo). The existing data-retention purge job is unrelated (leaver/HR data only, not quotes).
 - [x] Royce asked mid-session for tick-box multi-select on the Archived tab too — added Restore-many / Delete-many, one confirm for the whole batch rather than one per row. eq-shell [PR #1320](https://github.com/eq-solutions/eq-shell/pull/1320), merged. Caught and fixed a merge conflict from #1319's squash-merge orphaning the branch history (not a real content clash — rebase resolved it cleanly, both PRs' changes intact).
 - [ ] **Live click-through not done** — this sandbox has no network path to the tenant-config service, so the Archived-tab search/filter/bulk-select hasn't been visually confirmed in a real browser session. Built against the exact same Table component already proven live elsewhere in the app; build + typecheck clean on both PRs. _(added 2026-08-12)_
+
+---
+
+## eq-cards: licence save silently duplicated the row on a failed photo upload — found via Sentry, fixed, merged, deployed live (2026-08-13)
+*Royce: "Richard Brown - three of the same certificate have been created." Investigation found 6, not 3 (half were hidden via `is_private`). Root cause: `licence_edit_screen.dart`'s save flow inserts the row, then uploads the photo — if the photo step throws, the screen doesn't remember the row already saved, so retrying inserts a new one instead of updating it. Confirmed via Sentry (`EQ-CARDS-1G`/`1H`, same trace, same user). Luke Wheeler was initially flagged as a second victim of the same pattern — that was a false positive in the blast-radius query (his 3 rows were 3 genuinely different certificates sharing an empty licence number, a normal quick-document quirk); corrected before touching his data.*
+
+- [x] Root-caused and fixed: the screen now records the saved row immediately after each successful upsert, so a later step failing + a retry updates instead of duplicating. eq-cards [#229](https://github.com/eq-solutions/eq-cards/pull/229), merged + deployed live (`Build & Deploy` workflow, confirmed against `cards.eq.solutions`'s published commit SHA).
+- [x] Cleaned up the data: soft-deleted Richard Brown's 5 duplicate rows on jvkn, kept the earliest. Confirmed via `storage.objects` that no photo or PDF was ever actually captured across any of the 6 attempts (the failure was in the browser's image-decode step, before the network upload even started) — nothing was recoverable to attach.
+- [ ] **Richard Brown needs to re-add his LV Rescue (C40385) photo** — the surviving row has the correct licence details but no photo attached; nothing existed anywhere to recover. The fix means his retry will now update that row cleanly instead of duplicating again. _(added 2026-08-13)_
+
+---
+
+## eq-cards + eq-shell: labour-hire licence intake — multi-document OCR extraction + PDF review + flag notifications, all merged + live (2026-08-13)
+*Royce clicked through the labour-hire test tenant, hit a real multi-card-in-one-photo edge case (a worker photographed 6 credential cards laid out together), and asked to fix it properly. Also asked whether admins get any signal when they flag a licence during review — they didn't.*
+
+- [x] eq-cards `ocr-licence` edge function rewritten to fully extract every document in a multi-card photo (not just detect there are more) — deployed live independently, then eq-cards [#227](https://github.com/eq-solutions/eq-cards/pull/227) merged.
+- [x] "One photo → N credentials" wired through both write paths: eq-cards `labour-hire-candidate-intake` and eq-shell `create-worker-invite.ts` — one upload, one row per document found, all pointing at the same stored file.
+- [x] eq-shell PDF/image thumbnail preview in the licence review modal (client-side `pdfjs-dist`, Royce's explicit choice over server-side rendering) — reviewers see the actual document, not just OCR'd text. eq-shell [#1316](https://github.com/eq-solutions/eq-shell/pull/1316) merged + deployed live to core.eq.solutions.
+- [x] Flagging a licence during review now emails + SMS's the worker (which licence, the admin's comment, a link to fix it) — previously silent. Shared helper `_shared/licence-flag-notification.ts`, wired into both the re-review path and the application-approval path.
+- [x] Found while building (not part of the original ask): a *third* flagging entry point — approving an existing SimPRO-imported staff member's first Cards connection — was silently dropping the flagged-licence data before it could ever be saved or notified. Spun off as `task_41714f80`; Royce started it separately — already landed (see the entry above this one).
+- [ ] **Live click-through still not done** on the multi-document extraction / PDF preview / flag-notification features — verified via CI + direct DB checks only, no real signed-in session. _(added 2026-08-13)_
+- [ ] **SMS-notification coverage is inconsistent across the different invite paths** — flagged during the original audit, not touched this session. _(added 2026-08-13)_
+- [ ] **Intake engine's CSV import path bypasses the same-worker dedup** the direct upload paths now go through — flagged, not touched. _(added 2026-08-13)_
+- [ ] **Dead code**: `eq_cards_find_invites_by_phone` RPC and `ClaimByPhoneScreen` appear unused since the "Find my company account" flow replaced join-by-code — not confirmed dead, not removed. _(added 2026-08-13)_
+- [ ] **Open question, not decided**: should the manual labour-hire-document-upload form and the regular worker-invite form (which now also accepts documents) eventually merge into one? Deliberately left as two separate entry points this session. _(added 2026-08-13)_
+
+---
+
+## eq-shell: labour-hire invite-path approval was silently dropping flagged licences — found, fixed, merged, live (2026-08-13)
+
+- [ ] **Live click-through not done** — the invite path (existing SimPRO/import staff record, `staff_id`) now records flagged-licence reviews and notifies the worker on approval, matching the self-signup path's existing behaviour. Needs a real signed-in Shell session with `admin.review_cards` to confirm end-to-end — off-limits for this environment. _(added 2026-08-13)_
+
+---
+
+## eq-shell: Shell Conversations built end-to-end — logging, permission-locked, resourcing dashboard, draft org chart, team assignment (2026-08-11 → 2026-08-12)
+*Started from Royce reviewing his own SKS HR review templates as candidates for a new feature. `/decide` landed on Shell (not Field — Field owns operational stuff, Shell owns the canonical staff record). Full history, data model, and every decision behind this thread: `eq/shell-conversations-scoping-2026-08-11.md`.*
+
+- [x] **Conversations log** on the Staff detail panel — two Formal tiers (Check-in, Development Review, sourced from Royce's real SKS templates) plus a Casual type, digital-only by design (no paper fallback). New `staff.manage_conversations` permission, group-only, granted to nobody by default — Royce granted it to himself the same day via Access Control. eq-shell PRs [#1302](https://github.com/eq-solutions/eq-shell/pull/1302)/[#1304](https://github.com/eq-solutions/eq-shell/pull/1304).
+- [x] **Real security gap closed same day, before real use**: the original RLS only checked tenant, not the permission — any signed-in SKS user could read/write the table directly, bypassing the UI gate. Closed by embedding security-group grants into the session token (a channel that already existed for Field but was never populated) and adding the first permission-aware RLS policy in this codebase. Surfaced a second, real bug in the process: the CI check that scans for orphaned permission keys didn't know Shell-local, group-only permissions could exist at all, and started failing on *every* PR the moment one was actually granted — fixed in the same PR.
+- [x] **A second, more serious regression found and fixed same day**: the permission fix above only patched one of two separate token-minting paths in this codebase — the one the Conversations screen doesn't actually use. The real path was silently failing every read/write for everyone, including Royce, from the moment the RLS hardening went live. eq-shell [PR #1312](https://github.com/eq-solutions/eq-shell/pull/1312), merged and confirmed live. (A background task Royce independently started on this same bug, `task_4e2997ca`, ended with zero commits — no conflict with the merged fix.)
+- [x] **Resourcing dashboard + draft org chart** — every active person, grouped by team read live from canonical roster data (no names/roles hardcoded — Royce was explicit this has to stay agnostic to the current roster), tenure, last conversation, time since last Formal review, new-starter flag. Org chart explicitly labelled draft on the page itself — real gap found live: 32 of 88 active SKS staff had no team link at all. eq-shell [PR #1311](https://github.com/eq-solutions/eq-shell/pull/1311), merged.
+- [x] **Team/supervisor assignment** — `/decide` picked this as the highest-value next build (over staleness-based nudges, which have no real data yet to act on; and over a hand-authored division/role structure, which would have broken the agnostic-roster constraint). Turned out to be genuinely new surface: the underlying tables had zero write access at the database level and no edit UI existed anywhere, verified live before building, not assumed. New `staff.manage_teams` permission (kept separate from `staff.manage_conversations` — different capability). eq-shell [PR #1321](https://github.com/eq-solutions/eq-shell/pull/1321), merged and confirmed live on core.eq.solutions. Two real CI gate failures fixed directly post-build (a test file in the wrong directory tripped Netlify's deploy-name guard; a role-literal ratchet false-flagged a team-role value that happens to share a name with an EQ permission role).
+- [ ] **Royce's own click-through, still not done** — nobody has logged a conversation, added a rating, or assigned someone off the Unassigned list through the real UI yet. Every fix above should make this work now; only a live session can confirm it. _(added 2026-08-11, carried through every entry above)_
+- [ ] **Proactive "overdue for review" nudges** — deliberately held per `/decide`: there's no conversation data yet for staleness to mean anything. Worth building once the click-through above happens and some real data exists. _(added 2026-08-12)_
+
+---
+
+## EQ Suite production-readiness deep dive + 18-issue Sentry triage, 1 real bug found + fixed (2026-08-13)
+*Royce: "how close are we to production ready across the board? deep dive, spend time on this /gap". Ran the /gap centering protocol suite-wide (Shell/Service/Field/Cards/Intake/Ops), grounded in live systems (Netlify deploy state, live Supabase migrations, the security register, Sentry) rather than docs — corrected a stale suite-state.md claim that eq-service has no test suite (it does, `vitest run`). Then "go wider" — root-caused all 18 suite-wide unresolved Sentry issues via 4 parallel agents against live code/origin, not local checkouts (eq-field's local clone was 40+ commits behind origin without saying so).*
+
+- [x] **Production-readiness verdict**: close, not clean. 4 of 6 products live, CI green everywhere, real test suites confirmed on every app, security register mostly closed (18 of 24 findings). Full picture in session transcript (2026-08-13), not written to a separate doc.
+- [x] **18 Sentry issues triaged suite-wide** (Cards 11, Shell 3, Field 2, Service 2). 5 were already fixed in shipped code but never marked resolved in Sentry — EQ-CARDS-19 and EQ-FIELD-14 closed directly this session.
+- [x] **EQ-CARDS-W re-diagnosed correctly before any wasted edit**: first triage pass pointed at the wrong file (`image_download_web.dart`); checking a same-named branch (`fix/licence-photo-blob-revoked`) before editing surfaced that PR #223 (merged 2026-08-11, cites this issue by name) already fixed the real cause in `licence_edit_screen.dart`. Marked resolved.
+- [x] **Real bug found + fixed: eq-cards OCR client timeout** (`ocr_service.dart`) was hardcoded to 14s — shorter than the `ocr-licence` edge function's own 20s Anthropic-call budget (added in #211 for a different caller), so the client was giving up before the server had a chance to finish. 7 users hit this over 7 weeks (Sentry EQ-CARDS-H). Raised to 25s. eq-cards [PR #228](https://github.com/eq-solutions/eq-cards/pull/228), merged same session.
+- [ ] **3 Sentry issues need a manual resolve** — EQ-CARDS-1D, EQ-FIELD-13, EQ-SHELL-1J are fixed in code (verified against origin/main + live) but still show unresolved in Sentry; the resolve tool call was blocked by the Claude Code classifier on 3 of 5 identical attempts, inconsistently. _(added 2026-08-13)_
+- [ ] **4 genuinely open, low-priority bugs found, not built**: EQ-CARDS-1E (OCR 401-retry isn't wrapped in its own try/catch, so the intended clean sign-out doesn't fire — user sees "sign-in expired" but isn't redirected), EQ-CARDS-1A/1B (profile auto-provision RPC can hit a raw DB not-null violation if the session dies mid-call — 1 user so far, needs an `auth.uid() IS NULL` guard), EQ-SOLVES-SERVICE-3's Media Library Upload/Delete handlers missing the same stale-deploy catch Edit already has (admin-only, self-heals on refresh). _(added 2026-08-13)_
+- [ ] **GitHub MCP connector isn't scoped to eq-cards** — `create_pull_request`/`list_pull_requests` both 404'd against eq-solutions/eq-cards even though `gh` CLI (same GitHub login, Milmlow) has full admin access. Worked around via `gh` CLI this session (PR #228 opened + merged that way); the connector's GitHub App needs eq-cards added to its repo install list if it should cover this repo going forward. _(added 2026-08-13)_
 
 ---
 
