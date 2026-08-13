@@ -116,7 +116,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [ ] **Live click-through still not done** on the multi-document extraction / PDF preview / flag-notification features — verified via CI + direct DB checks only, no real signed-in session. _(added 2026-08-13)_
 - [ ] **SMS-notification coverage is inconsistent across the different invite paths** — flagged during the original audit, not touched this session. _(added 2026-08-13)_
 - [ ] **Intake engine's CSV import path bypasses the same-worker dedup** the direct upload paths now go through — flagged, not touched. _(added 2026-08-13)_
-- [ ] **Dead code**: `eq_cards_find_invites_by_phone` RPC and `ClaimByPhoneScreen` appear unused since the "Find my company account" flow replaced join-by-code — not confirmed dead, not removed. _(added 2026-08-13)_
+- [x] **Not dead code — checked properly, was flagged on a guess.** `ClaimByPhoneScreen` is the live handler for `/claim?tenant=<slug>` (no token) — the QR-scan entry point, deliberately separate from the "Find my company account" button flow. Confirmed the counterpart still generates that exact link: eq-shell's `AdminWorkerQR.tsx` builds `${CARDS_BASE}/claim?tenant=<slug>` for the admin QR-code worker-onboarding flow, live today. `eq_cards_find_invites_by_phone` is the RPC that screen calls. No removal — nothing to fix here. _(checked 2026-08-13)_
 - [ ] **Open question, not decided**: should the manual labour-hire-document-upload form and the regular worker-invite form (which now also accepts documents) eventually merge into one? Deliberately left as two separate entry points this session. _(added 2026-08-13)_
 
 ---
