@@ -6,12 +6,13 @@ scope: Remaining items from the Shell Conversations + Resourcing dashboard threa
 read_priority: standard
 status: live
 duration_estimate: All Royce-gated — no further build required to close R1-R3; R4/R5 are future scope, not this sprint
-pending: R1 (merge #1324), R2 (click-through), R3 (team linking)
+shipped: R1
+pending: R2 (click-through), R3 (team linking)
 ---
 
 # Sprint — Resourcing / Shell Conversations close-out
 
-**Status:** in flight — opened 2026-08-13. The build phase (Conversations log, permission hardening, Resourcing dashboard, draft org chart, team/supervisor write path, desktop Table swap) is done and merged except one PR. Everything left in this sprint is a Royce action, not a build task.
+**Status:** in flight — opened 2026-08-13. The build phase (Conversations log, permission hardening, Resourcing dashboard, draft org chart, team/supervisor write path, desktop Table swap) is fully merged. What's left is Royce actions only — no more build.
 
 ---
 
@@ -27,11 +28,11 @@ Close out the loose ends from the Shell Conversations + Resourcing feature arc s
 
 **Why:** Swapped the Resourcing desktop view from a hand-rolled grouped-card list to eq-ui's `Table` component — sortable columns, per-column filters, global search, column show/hide (persisted per user), CSV export. Mobile view untouched. This was the scoped ask ("do the Table swap first, hold off on the rest") — the rollup/trend/"my reports" ideas raised alongside it were deliberately not built (see Out of scope below).
 
-**Status:** Open, unreviewed. CI green (typecheck/test/lint, gitleaks, schema-drift/anon-grant/policy-lint, function-grant check), merge state clean against `main`, deploy preview live at https://deploy-preview-1324--eq-shell.netlify.app.
+**Status:** ✅ Done — merged 2026-08-13 (`4590831d`), branch deleted. Netlify auto-deploy to core.eq.solutions triggered on merge; not yet click-through verified (see R2).
 
-**Action:** Royce reviews + merges [eq-shell PR #1324](https://github.com/eq-solutions/eq-shell/pull/1324).
+**Action:** ~~Royce reviews + merges~~ [eq-shell PR #1324](https://github.com/eq-solutions/eq-shell/pull/1324) — done.
 
-**DoD:** Merged to `main`, live on core.eq.solutions.
+**DoD:** Merged to `main` ✅. Live on core.eq.solutions — pending Netlify deploy confirmation.
 
 **Blast radius:** UI-only change to one page (`StaffResourcingPage.tsx`), gated behind the existing `staff.manage_conversations` permission (held by exactly one user today). No schema or auth changes.
 
@@ -76,7 +77,7 @@ Close out the loose ends from the Shell Conversations + Resourcing feature arc s
 
 ## Sprint success criteria
 
-- [ ] R1 — PR #1324 merged, live on core.eq.solutions
+- [x] R1 — PR #1324 merged, deploying to core.eq.solutions
 - [ ] R2 — Royce's click-through done, nothing broken (or breakage reported + fixed)
 - [ ] R3 — 0 unlinked active staff on the org chart
 
