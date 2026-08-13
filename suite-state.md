@@ -68,9 +68,6 @@ _If this file is >48h old, the cron is broken._
 **eq-field:**
 - #685 security: gate 8 unguarded HR-write functions to Supervision
 
-**eq-service:**
-- #715 fix(admin): Media Library Upload/Delete no longer wedge on a stale-bundle error (EQ-SOLVES-SERVICE-3)
-
 **eq-shell:**
 - #1317 fix(ops): retry quote-doc/job-creation fetches on a transient network drop
 - #1310 fix(ops): quote attachments now upload direct to Storage, not through a function
@@ -84,10 +81,10 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ✗ failure |
+| eq-service | ? in_progress |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
-| eq-cards | ? in_progress |
+| eq-cards | ✓ success |
 | eq-solves-intake | ✓ success |
 
 **Deploys:**
