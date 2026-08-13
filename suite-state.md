@@ -69,7 +69,6 @@ _If this file is >48h old, the cron is broken._
 - #1331 fix(db): drop unused quote_attachment table + fix stale docs
 - #1330 fix(documents): treat O&M manuals as reference library, not sign-off
 - #1329 fix(shell): quote-job-consumer reads canonical_events directly, skips the self-HTTP hop
-- #1310 fix(ops): quote attachments now upload direct to Storage, not through a function
 - #1294 feat(cards): centralize Cards' SSO minting via token-exchange-cards.ts
 
 ---
