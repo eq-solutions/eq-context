@@ -68,6 +68,13 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ---
 
 ## eq-shell: Shell Conversations built end-to-end — logging, permission-locked, resourcing dashboard, draft org chart, team assignment (2026-08-11 → 2026-08-12)
+
+- [ ] **Royce's own click-through, still not done** — nobody has logged a conversation, added a rating, or assigned someone off the Unassigned list through the real UI yet. Every fix above should make this work now; only a live session can confirm it. _(added 2026-08-11, carried through every entry above)_
+- [ ] **Proactive "overdue for review" nudges** — deliberately held per `/decide`: there's no conversation data yet for staleness to mean anything. Worth building once the click-through above happens and some real data exists. _(added 2026-08-12)_
+
+---
+
+## eq-shell: Shell Conversations built end-to-end — logging, permission-locked, resourcing dashboard, draft org chart, team assignment (2026-08-11 → 2026-08-12)
 *Started from Royce reviewing his own SKS HR review templates as candidates for a new feature. `/decide` landed on Shell (not Field — Field owns operational stuff, Shell owns the canonical staff record). Full history, data model, and every decision behind this thread: `eq/shell-conversations-scoping-2026-08-11.md`.*
 
 - [x] **Conversations log** on the Staff detail panel — two Formal tiers (Check-in, Development Review, sourced from Royce's real SKS templates) plus a Casual type, digital-only by design (no paper fallback). New `staff.manage_conversations` permission, group-only, granted to nobody by default — Royce granted it to himself the same day via Access Control. eq-shell PRs [#1302](https://github.com/eq-solutions/eq-shell/pull/1302)/[#1304](https://github.com/eq-solutions/eq-shell/pull/1304).

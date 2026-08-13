@@ -1,13 +1,22 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-12
+last_updated: 2026-08-13
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # eq-shell changelog
+
+## 2026-08-11 → 2026-08-12 (Shell Conversations feature suite: logging, RLS lockdown, resourcing dashboard, draft org chart, team assignment)
+Full detail: `eq-context/eq/shell-conversations-scoping-2026-08-11.md`.
+- **PR #1302** — new Conversations log on the Staff detail panel (Formal Check-in/Development Review tiers sourced from Royce's real SKS HR templates, plus an untemplated Casual type). New `staff.manage_conversations` permission, group-only, no default role grant.
+- **PR #1304** — the original RLS only checked tenant, not the permission, so any signed-in SKS user could read/write the table directly. Added the first permission-aware RLS policy in this codebase (embeds security-group grants into the session token via a channel that already existed for Field but was never populated for this path). Also fixed a real CI gap it exposed: `check-orphan-perms.mjs` didn't account for Shell-local, group-only permission keys.
+- **PR #1312** — found the RLS fix above only patched one of two separate JWT-minting functions (`mint-supabase-jwt.ts`, not `mint-tenant-jwt.ts` — the one the Conversations screen actually uses). Every read/write had been silently failing for everyone, including Royce, since PR #1304 shipped. Fixed both signing branches; confirmed deployed live.
+- **PR #1311** — resourcing dashboard + draft org chart. Team groupings read live from `app_data.teams`/`team_members`/`team_supervisors`, nothing hardcoded. Surfaced a real data gap: 32 of 88 active SKS staff have no team link — chart labelled draft on the page because of it.
+- **PR #1321** — team/supervisor assignment (assign/reassign/unassign, create team). New `staff.manage_teams` permission, kept separate from `staff.manage_conversations`. Verified live before building that `team_members`/`team_supervisors`/`teams` had zero write access at the RLS level and no edit UI existed anywhere in the codebase — genuinely new surface. Two CI gates needed direct fixes post-build: a test file at the top level of `netlify/functions/` tripped the Netlify deploy-filename guard, and a role-literal ratchet false-flagged a team-role value (`'supervisor'`) that collides in name with an EQ permission role.
+- Live click-through (log a conversation, add a rating, assign someone off the Unassigned list) still not done by a human — every fix above should make it work now.
 
 ## 2026-08-12 (EQ Ops Archived tab: search/filter, auto-archive at 7 days invoiced, bulk select)
 - **PR #1319** — Archived tab's hand-rolled `<table>` (the one spot in EQ Ops without search/filter) replaced with the shared `@eq-solutions/ui` `Table` — global search, status slicers, column toggle, CSV export, matching Equipment/Staff/Suppliers. New `eq_mark_archived_quotes` RPC (migration `0243`, mirrors the existing `eq_mark_expired_quotes` shape) plus a daily scheduled function soft-archive any quote sitting in `invoiced` status for 7+ days. Migration dispatched same session, applied clean on both zaap (eq) and ehow (sks).
