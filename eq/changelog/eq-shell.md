@@ -9,6 +9,17 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-13 (PR #1316 MERGED + deployed live — one credential per document, PDF/image review preview, licence-flag notifications)
+- `create-worker-invite.ts` and the labour-hire intake path now create one `worker_credentials`/`licences` row per document found in a photo (not per photo) — companion to eq-cards' full multi-document OCR extraction (PR #227).
+- Licence review modal now shows the actual document, not just OCR'd text — client-side `pdfjs-dist` renders PDF page 1 to a thumbnail; images render directly. Clicking opens a full-screen lightbox. Explicit choice over server-side rendering.
+- New: flagging a licence during review emails + SMS's the worker (which licence, the admin's comment, a link to fix it) — previously silent. Shared helper `_shared/licence-flag-notification.ts`, wired into the re-review path (`staff-record-licence-review.ts`) and the self-signup application-approval path (`cards-approve-staff.ts`). Confirmed live on core.eq.solutions (deploy commit matches merge SHA exactly).
+- Found while building, not fixed here: a third flagging entry point (the invite-path approval of an existing SimPRO/import staff record) was silently dropping the flagged data before it could be saved or notified — spun off separately, see the entry below (already landed).
+
+## 2026-08-13 (invite-path staff approval was silently dropping flagged licences)
+- **PR #1323** — `cards-approve-staff.ts`'s invite path (`staff_id` — existing SimPRO/import staff records) destructured `licence_verifications` from the request body but never wrote it to `cards_field_approvals` or notified the worker of a flag, unlike the self-signup application path (`application_id`), which did both. Fixed to match: records the verifications on approval and calls `notifyWorkerOfFlaggedLicences` for any flagged entry. Squash-merged `8d09ee75`, confirmed live on core.eq.solutions.
+- **Found mid-session: the shared worktree branch this landed on had silently drifted 6 commits behind `main`** (diverged ~3h earlier, no open PR). Merging it as-is would have deleted the staff resourcing/org-chart and quotes auto-archive/bulk-select features from `main` (2001-line deletion in the real tree-diff). Rebased onto current `main` before opening the PR — 3 of the branch's other 4 commits turned out to already be independently merged by concurrent sessions and dropped out as empty; the PR ended up containing only the one real fix. Full detail in `eq-context/sessions/2026-08-13.md`.
+- Live click-through not done — needs a real signed-in Shell session with `admin.review_cards`.
+
 ## 2026-08-11 → 2026-08-12 (Shell Conversations feature suite: logging, RLS lockdown, resourcing dashboard, draft org chart, team assignment)
 Full detail: `eq-context/eq/shell-conversations-scoping-2026-08-11.md`.
 - **PR #1302** — new Conversations log on the Staff detail panel (Formal Check-in/Development Review tiers sourced from Royce's real SKS HR templates, plus an untemplated Casual type). New `staff.manage_conversations` permission, group-only, no default role grant.

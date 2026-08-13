@@ -9,6 +9,17 @@ status: live
 
 # EQ Cards — Changelog
 
+## 2026-08-13 (PR #229 MERGED + deployed live — licence save was duplicating the row on a failed photo upload)
+- **`licence_edit_screen.dart`'s `_save()` inserts the row first, then uploads the photo — if the photo step throws, `_existing` (which decides insert-vs-update on the next save) was never updated, so a retry inserted a brand-new row instead of updating the one that already saved.** Found from a direct report ("Richard Brown - three of the same certificate have been created"); actual count was 6, not 3 — half were hidden via `is_private`. Root-caused via Sentry (`EQ-CARDS-1G`/`1H`, same user/trace: `InvalidStateError: source image could not be decoded` × 7, thrown inside `photo_compress_web.dart`'s `createImageBitmap()` call — a photo upload, not a PDF, and the failure was client-side, before any network call).
+- Fix: `_existing = saved` immediately after each successful upsert (Step 1 and Step 3), so a later-step failure + retry updates in place. Deployed live via `Build & Deploy` (workflow `headSha` confirmed matching `main`).
+- Data cleanup: soft-deleted Richard Brown's 5 duplicate `lvr` rows on jvkn, kept the earliest. Confirmed via `storage.objects` that no photo/PDF was ever actually captured across any of the 6 attempts — nothing recoverable; he needs to re-add the photo once.
+- A second worker (Luke Wheeler) was initially flagged as a second occurrence by a naive blast-radius query grouping on `(user_id, licence_number)` alone — false positive (his 3 rows were 3 different certificates that happen to share an empty licence number, normal for quick-documents). Re-checked with `licence_type` included before touching his data; corrected before merge.
+
+## 2026-08-13 (multi-document OCR extraction + one-credential-per-photo, PR #227)
+- `ocr-licence` edge function rewritten to fully extract every document in a multi-card photo (previously only detected that there were more, named them, and discarded the extra data). Real edge case that triggered this: a worker photographed 6 credential cards laid out together in one photo.
+- `labour-hire-candidate-intake` now uploads a photo once but creates one `worker_credentials` row per document found in it, all referencing the same stored file — same pattern mirrored in eq-shell's `create-worker-invite.ts`.
+- Licence-flag notifications: flagging a licence during review now emails + SMS's the worker (new shared helper, eq-shell `_shared/licence-flag-notification.ts`) — previously silent.
+
 ## 2026-08-13 (PR #228 MERGED — OCR client timeout was shorter than the server's own budget)
 - **`ocr_service.dart`'s client-side timeout on the `ocr-licence` edge function call was hardcoded to 14s — shorter than that edge function's own 20s Anthropic-call timeout** (`supabase/functions/ocr-licence/index.ts:481`, added in PR #211 and tuned for a different caller, Shell's admin path). Any scan that genuinely needed 14-20s always failed client-side even though the server was built to allow it. Found during a suite-wide Sentry triage (EQ-CARDS-H): 7 distinct users hit this over 7 weeks on `/licences/new`.
 - Raised the client timeout to 25s, ~5s of margin above the server's 20s for the base64 image upload + JSON response round trip. New worst-case single-retry budget: ~51.5s (was ~32s).
