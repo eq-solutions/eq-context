@@ -61,12 +61,19 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-13)
 
 **eq-cards:**
+- #235 fix(wallet): collapse the nudge-card stack + de-dupe urgent items (punch-list #4)
 - #221 refactor(auth): shell-verify.js relays to eq-shell instead of local crypto
 
-**eq-field:**
-- #685 security: gate 8 unguarded HR-write functions to Supervision
+**eq-service:**
+- #721 feat(admin): surface eq-intake's quality-guardian output
+- #720 fix(security): stamp deleted_at on maintenance-check soft-delete
 
 **eq-shell:**
+- #1332 chore: delete unrouted CoreHome.tsx (EQ Intelligence mock home page)
+- #1331 docs(architecture): flag quote_attachment as unused, not stale-Live
+- #1330 fix(documents): treat O&M manuals as reference library, not sign-off
+- #1329 fix(shell): quote-job-consumer reads canonical_events directly, skips the self-HTTP hop
+- #1328 chore(ci): triage is_worker_in_org into KNOWN_UNSOURCED (cross-repo sourced)
 - #1310 fix(ops): quote attachments now upload direct to Storage, not through a function
 - #1294 feat(cards): centralize Cards' SSO minting via token-exchange-cards.ts
 
@@ -78,7 +85,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ✓ success |
+| eq-service | ✗ failure |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
