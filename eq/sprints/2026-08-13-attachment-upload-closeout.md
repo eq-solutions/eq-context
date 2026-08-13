@@ -27,7 +27,7 @@ Close out the loose ends from the "5-10MB attachment fails on quotes" incident s
 ### A0 — Shipped this session (context, not an action item)
 
 - Suite-wide fix: 8 Netlify functions claimed 10-20MB upload limits that were unreachable (~4.5MB real ceiling from Netlify's 6MB Lambda payload cap) — now fail honestly instead of a misleading "check your connection" error. [PR #1307](https://github.com/eq-solutions/eq-shell/pull/1307) — merged, live.
-- Quote attachments (drawings/PDFs/emails for reference) rebuilt as a direct-to-browser-to-Storage signed-upload flow, raising the real ceiling to 50MB (matches the live bucket's own limit). [PR #1310](https://github.com/eq-solutions/eq-shell/pull/1310) — open, see A1.
+- Quote attachments (drawings/PDFs/emails for reference) rebuilt as a direct-to-browser-to-Storage signed-upload flow, raising the real ceiling to 50MB (matches the live bucket's own limit). [PR #1310](https://github.com/eq-solutions/eq-shell/pull/1310) — **merged by Royce 2026-08-13 10:51, live.** See A1.
 - 2 dead Supabase Storage buckets (leftover from an earlier CMMS migration) deleted after audit confirmed nothing live pointed at them.
 - Unrelated bug found via Sentry while root-causing the incident — "Download Quote" failing on a transient network drop with no retry — fixed. [PR #1317](https://github.com/eq-solutions/eq-shell/pull/1317) — **merged 2026-08-13** (`ab0b31e`).
 
@@ -35,15 +35,13 @@ Close out the loose ends from the "5-10MB attachment fails on quotes" incident s
 
 ### A1 — Diagnose Royce's live upload issue on PR #1310
 
-**Why:** Royce reported "issues" testing the new 50MB direct-to-storage flow live. CORS and deployment were both explicitly checked and ruled out as causes. No further hypothesis is possible without the actual browser error — this is the one item in the thread that isn't a decision, it's a missing repro.
+**Why:** Royce reported "issues" testing the new 50MB direct-to-storage flow live. CORS and deployment were both explicitly checked and ruled out as causes. No further hypothesis was possible without the actual browser error.
 
-**Status:** ⏳ Blocked on Royce — PR #1310 CI is green (typecheck/lint/tests/gitleaks/schema-drift all pass, deploy preview builds clean) and it's mergeable, but it has not been confirmed working against a real upload.
+**Status:** Royce merged PR #1310 directly on GitHub, 2026-08-13 10:51 — live on core.eq.solutions (confirmed via smoke check post-deploy). No repro was ever provided, so **whether the original reported issue is actually resolved is unconfirmed** — Royce's own call to proceed, not a diagnosed fix. Leaving this open until a real upload is confirmed working, or closing outright if Royce says the issue's gone.
 
-**Action:** From the [deploy preview](https://deploy-preview-1310--eq-shell.netlify.app) or a local `netlify dev` session, attach a 5-10MB file to a quote and, if it fails, capture the browser console error + Network tab request/response for the failed call (`attachment-upload-init` or the direct `uploadToSignedUrl` PUT to Supabase Storage).
+**Action (if it resurfaces):** attach a 5-10MB file to a quote on core.eq.solutions and, if it fails, capture the browser console error + Network tab request/response for the failed call (`attachment-upload-init` or the direct `uploadToSignedUrl` PUT to Supabase Storage).
 
-**DoD:** Either a successful upload confirmed, or a specific error message/status code to root-cause against.
-
-**Blast radius:** None yet — PR #1310 not merged, no live behaviour change until then.
+**DoD:** Confirmed working live, or a specific error to root-cause against.
 
 ---
 
@@ -68,9 +66,9 @@ Close out the loose ends from the "5-10MB attachment fails on quotes" incident s
 
 **Decided (2026-08-13):** drop it — no known reason to keep it, no downside to removing it.
 
-**Done:** [eq-shell PR #1331](https://github.com/eq-solutions/eq-shell/pull/1331) — governed drop migration (`0244_drop_quote_attachment.sql`), plus removed the two dead code references that would otherwise point at a now-gone table (`intake-modules.ts` routing map, `sync-tenant-data.mjs` table list), plus the doc fix. All CI checks green. **Not merged yet — merge is a separate explicit go-ahead per deploy policy.**
+**Done:** [eq-shell PR #1331](https://github.com/eq-solutions/eq-shell/pull/1331) — governed drop migration (`0244_drop_quote_attachment.sql`), plus removed the two dead code references that would otherwise point at a now-gone table (`intake-modules.ts` routing map, `sync-tenant-data.mjs` table list), plus the doc fix. **Merged 2026-08-13 (`e81e77c9`), live** — confirmed via post-deploy smoke check.
 
-**Status:** ✅ Built, PR open, awaiting merge decision.
+**Status:** ✅ Done.
 
 ---
 
@@ -116,16 +114,16 @@ Close out the loose ends from the "5-10MB attachment fails on quotes" incident s
 ## Sprint success criteria
 
 - [x] A0 — suite-wide honest limits, dead buckets, download-retry: shipped
-- [ ] A1 — Royce's live repro done, upload confirmed working (or bug found + fixed)
+- [ ] A1 — PR #1310 merged + live 2026-08-13, but the original reported issue was never confirmed fixed (no repro provided) — leave open until Royce confirms or it resurfaces
 - [x] A2 — confirmed out of scope for eq-shell (no action needed here)
-- [ ] A3 — decided (drop), built, [PR #1331](https://github.com/eq-solutions/eq-shell/pull/1331) open + green; needs merge go-ahead
+- [x] A3 — dropped, [PR #1331](https://github.com/eq-solutions/eq-shell/pull/1331) merged + live 2026-08-13
 - [ ] A4 — Royce call: scope or drop
 - [ ] A5 — Royce call: scope or drop
 - [x] A6 — capacity numbers pulled and logged — ~21MB total, no concern
 
 ## Where to start
 
-A1 first — it's the only item blocking PR #1310 from merging. A2 needs no action. A3/A6 are quick checks either of us can do async. A4/A5 need Royce's call before any build starts.
+Everything buildable is done. What's left is entirely Royce's: confirm A1 is actually fixed (or report what's still broken), and call priority on A4/A5.
 
 ---
 
@@ -133,6 +131,7 @@ A1 first — it's the only item blocking PR #1310 from merging. A2 needs no acti
 
 - [eq-context/eq/pending.md](../pending.md)
 - [eq-shell PR #1307](https://github.com/eq-solutions/eq-shell/pull/1307) — honest upload limits, merged
-- [eq-shell PR #1310](https://github.com/eq-solutions/eq-shell/pull/1310) — direct-to-storage quote attachments, open, blocked on A1
+- [eq-shell PR #1310](https://github.com/eq-solutions/eq-shell/pull/1310) — direct-to-storage quote attachments, merged + live
+- [eq-shell PR #1331](https://github.com/eq-solutions/eq-shell/pull/1331) — dropped `quote_attachment`, merged + live
 - [eq-shell PR #1317](https://github.com/eq-solutions/eq-shell/pull/1317) — Download Quote retry fix, merged 2026-08-13
 - [eq-context/sessions/2026-08-13.md](../../sessions/2026-08-13.md) — full session log
