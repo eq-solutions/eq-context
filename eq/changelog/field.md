@@ -9,6 +9,12 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-08-13] Hours triage finished — group pending pills + Status & tools sheet (v3.5.490, #688)
+Continuation of the same-day #687 — builds the 2 items its own PR body flagged as deferred.
+- **Collapsed Timesheets groups now show a "N pending" pill**, reusing the existing `_tsRowStatus()` every row already computes — was "N people", said nothing about who still needs a timesheet. Mirrored across all 3 render paths: mobile card-stack, the real desktop renderer (`timesheets-spans.js`), and the fallback table.
+- **The SHOW-status chips + action-button row now collapse into their own mobile "Status & tools" sheet.** No DOM relocation needed — `position:fixed` renders relative to the viewport regardless of nesting depth, same reason `#ts-job-panel` already works nested this deep.
+- Desktop: zero layout change on both.
+
 ## [2026-08-13] Documents to Sign view-query perf fix (v3.5.488) + Hours/Job Numbers mobile declutter (v3.5.489, #687)
 - **`document-signoffs.js`'s `view` action collapsed from 2 sequential upstream queries to 1**, via PostgREST embedding over the existing `document_signoffs → document_versions` FK. Found while investigating a report of slow "Documents to Sign" loads and the Environmental Management Plan not showing as signed — the signoff was genuinely correct in the DB (live-verified on ehow), most likely explanation for "not showing" is the page defaulting to the Outstanding tab with no nudge toward Signed (declined as a fix for now).
 - **Hours overview + Job Numbers panel decluttered on mobile**, per Royce's own screenshots and a 3-option mockup review — he picked "Triage-first". Search + Group/Agency filters collapse into a mobile Filters bottom sheet (Job Numbers/Batch Fill stay always-visible); the redundant 4-tile stat grid drops on mobile (the progress bar below it already carries the same numbers + the pending/reminder popover); Job Numbers rows pair number + description onto one line instead of 3 stacked lines. The SHOW filter chips/action-row and the mobile card-stack's own group view are deliberately not touched this pass — flagged as follow-up.

@@ -21,11 +21,9 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## eq-field: Hours overview + Job Numbers panel — mobile decluttered per Royce's screenshots, "Triage-first" option shipped in part (2026-08-13)
+## eq-field: Hours overview + Job Numbers panel — mobile decluttered per Royce's screenshots, "Triage-first" fully shipped (2026-08-13)
 
-- [ ] Royce reviewed 2 mobile screenshots (Hours overview, Job Numbers panel) against 3 redesign options and picked "Triage-first". Shipped: search + Group/Agency filters collapse into a mobile Filters sheet (Job Numbers/Batch Fill stay always-visible), the redundant 4-tile stat grid drops on mobile (the progress bar right below it already shows the same numbers plus the pending/reminder popover), Job Numbers rows pair number+description onto one line instead of 3 stacked lines. [eq-field PR #687](https://github.com/eq-solutions/eq-field/pull/687), merged, live (v3.5.489).
-- [ ] Not built this pass — the SHOW filter chips + Weekends/From Roster/By Job/Outstanding action row (lives inside `renderTimesheets()`'s hot re-render path, higher risk to bundle in blind) and the mobile card-stack's own collapsed-group/triage view (`timesheets-mobile.js`, untouched). Both are real further steps toward "Triage-first". _(added 2026-08-13)_
-- [ ] Not click-tested on a real phone — merged on Royce's explicit go-ahead after CI + the deploy-preview build went green, but no live click-through of the new Filters sheet or compressed rows happened (this sandbox has no live browser access). Worth a real look next time Royce is on the app. _(added 2026-08-13)_
+- [ ] Not click-tested on a real phone — the full "Triage-first" mobile pass is now shipped across 2 PRs ([#687](https://github.com/eq-solutions/eq-field/pull/687): Filters sheet, desktop-only stat grid, tidied Job Numbers rows; [#688](https://github.com/eq-solutions/eq-field/pull/688): group "N pending" pills on collapsed groups, the SHOW-chips/action-row collapsed into its own "Status & tools" sheet), both merged on Royce's explicit go-ahead after CI + deploy-preview went green, but no live click-through has happened on any of it (this sandbox has no live browser access — confirmed again this session via a `file://` preview that boots far enough to hit the same tenant-config network wall every prior mobile PR here has hit). Worth a real look next time Royce is on the app — in particular whether the mobile action row (now 4 buttons: Filters/Status/Job Numbers/Batch Fill) reads as cluttered in its own right. _(updated 2026-08-13)_
 
 ---
 
