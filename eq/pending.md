@@ -14,6 +14,21 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-field: Documents to Sign — diagnosed "signed but not showing" report, closed one real inefficiency (2026-08-13)
+
+- [ ] No confirmation or nudge exists for "you just signed something, here's where to find it" — the page defaults to the Outstanding tab on every load, so a freshly-signed document simply disappears (only a toast), unless the signer manually taps Signed afterward. Surfaced while investigating a report of the Environmental Management Plan not showing as signed — the underlying data was genuinely correct (live-verified on ehow: signed 2026-08-03 18:57 AEST, signer confirmed as Royce), not a bug. Offered as a fix option, not selected — Royce chose the query-perf fix instead. [eq-field PR #687](https://github.com/eq-solutions/eq-field/pull/687), merged, live (v3.5.489). _(added 2026-08-13)_
+- [ ] "View" on a document is still 2 network hops end-to-end (the server call, then a separate Storage signed-URL call) — only the first hop's 2-sequential-query inefficiency was fixed this session (PostgREST embed over an existing FK, `document-signoffs.js`). _(added 2026-08-13)_
+
+---
+
+## eq-field: Hours overview + Job Numbers panel — mobile decluttered per Royce's screenshots, "Triage-first" option shipped in part (2026-08-13)
+
+- [ ] Royce reviewed 2 mobile screenshots (Hours overview, Job Numbers panel) against 3 redesign options and picked "Triage-first". Shipped: search + Group/Agency filters collapse into a mobile Filters sheet (Job Numbers/Batch Fill stay always-visible), the redundant 4-tile stat grid drops on mobile (the progress bar right below it already shows the same numbers plus the pending/reminder popover), Job Numbers rows pair number+description onto one line instead of 3 stacked lines. [eq-field PR #687](https://github.com/eq-solutions/eq-field/pull/687), merged, live (v3.5.489).
+- [ ] Not built this pass — the SHOW filter chips + Weekends/From Roster/By Job/Outstanding action row (lives inside `renderTimesheets()`'s hot re-render path, higher risk to bundle in blind) and the mobile card-stack's own collapsed-group/triage view (`timesheets-mobile.js`, untouched). Both are real further steps toward "Triage-first". _(added 2026-08-13)_
+- [ ] Not click-tested on a real phone — merged on Royce's explicit go-ahead after CI + the deploy-preview build went green, but no live click-through of the new Filters sheet or compressed rows happened (this sandbox has no live browser access). Worth a real look next time Royce is on the app. _(added 2026-08-13)_
+
+---
+
 ## eq-service: migrations dispatched live; mobile check-detail header overflow found+fixed+deployed; eq-context accidental-checkout scare investigated (2026-08-13)
 
 - [x] Migrations 0206 (RCD 40ms threshold fix) and 0207 (backfill `maintenance_checks.deleted_at`) dispatched via `apply-service-migrations.yml` on Royce's explicit go-ahead and confirmed applied live on ehow — 0207 independently verified by querying `app_data.maintenance_checks`, all 4 target rows now carry `deleted_at` matching `updated_at`.
@@ -540,7 +555,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ## eq-shell + eq-field: Internal Document Sign-off Register — register view shipped, then a real signature pad + evidence view after Royce used the pilot (2026-08-03)
 
-- [ ] **Sign-off records can be read or overwritten by any signed-in person on the same tenant, not just the person they belong to.** Investigated 2026-08-04 (sprint task T1): the obvious fix (`signer_user_id = auth.uid()`) would break real signing — eq-field's data-plane JWT sets `sub` to the tenant id for every user, not the actor, so `auth.uid()` on the real sign path never equals the signer. Closing this needs an identity-model decision, not a migration. Royce's call: leave deferred, revisit alongside a real second-signer rollout. _(updated 2026-08-04)_
 - [ ] **Roll out past the one-person pilot** — push a real document to a real second person, get them to sign on their own phone. Royce reaffirmed this is lower priority than hardening the feature itself first. _(updated 2026-08-04)_
 - [ ] **eq-field's `sw.js` `CACHE_FIRST_PATHS` only lists `/icons/` (SKS) and `/manifest.json`, not `/icons-eq/` or the new `/manifest-eq.json`** — a pre-existing asymmetry noticed while fixing the item above (SKS assets get faster but staler cache-first serving; EQ assets are always network-first/fresh). Left alone deliberately — fixing it means deciding a caching tradeoff, not just correcting a stale value. _(added 2026-08-04)_
 
