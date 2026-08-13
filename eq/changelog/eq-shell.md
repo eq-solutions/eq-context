@@ -9,6 +9,10 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-13 (PR #1310 MERGED + deployed live — the 2026-08-12 direct-to-Storage attachment PR resolved)
+- **PR #1310's stuck live-test report investigated and resolved.** No code bug found (CORS re-confirmed open, both functions confirmed reachable, live bucket config matches what the code assumes). Real finding: zero Sentry events exist for either function despite both being `withSentry`-wrapped — the client-side `uploadOne()` in `AttachmentList.tsx` discarded every real error past the point of returning a bare string to the UI, so the direct browser→Storage PUT (and any client-side failure) was never visible anywhere. Fixed: `Sentry.captureException` at all 4 failure points (init/put/commit/catch), tagged by step, mirroring the module's own existing `captureRpcError` convention. Doesn't explain what Royce originally hit, but the next occurrence will finally leave a trace. Merged and confirmed live.
+- **PR #1328 MERGED** — eq-shell's scheduled "Tenant drift" check was failing because eq-cards' `#230` created `public.is_worker_in_org` live on jvkn, a function eq-shell's own `check-control-plane-drift.mjs` can't see (it only scans its own repo's migrations). Triaged into `KNOWN_UNSOURCED` with the cross-repo reason recorded inline. `#1310` above depended on this merging first to pass CI.
+
 ## 2026-08-13 (PR #1316 MERGED + deployed live — one credential per document, PDF/image review preview, licence-flag notifications)
 - `create-worker-invite.ts` and the labour-hire intake path now create one `worker_credentials`/`licences` row per document found in a photo (not per photo) — companion to eq-cards' full multi-document OCR extraction (PR #227).
 - Licence review modal now shows the actual document, not just OCR'd text — client-side `pdfjs-dist` renders PDF page 1 to a thumbnail; images render directly. Clicking opens a full-screen lightbox. Explicit choice over server-side rendering.

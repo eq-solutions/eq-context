@@ -9,6 +9,11 @@ status: live
 
 # EQ Cards — Changelog
 
+## 2026-08-13 (deploy confirmed + duplicate-work found + 2 fixes reviewed)
+- eq-cards `#229` (above) deployed live via `Build & Deploy`, confirmed `headSha` matches `main`. Root-caused the original upload as a photo, not a PDF — `createImageBitmap()` in `photo_compress_web.dart`.
+- Built a clear-error-message fix for the same decode failure (`#231`) — found `#232` had already shipped the identical fix independently. Closed `#231` as superseded rather than forcing a duplicate merge.
+- Reviewed `#233` (OCR 401-retry now signs out cleanly) and `#234` (`eq_cards_auto_provision()` guarded against a NULL `auth.uid()` race) for correctness — both confirmed correct. `#234`'s migration confirmed live on jvkn with the `authenticated` EXECUTE grant intact.
+
 ## 2026-08-13 (PR #229 MERGED + deployed live — licence save was duplicating the row on a failed photo upload)
 - **`licence_edit_screen.dart`'s `_save()` inserts the row first, then uploads the photo — if the photo step throws, `_existing` (which decides insert-vs-update on the next save) was never updated, so a retry inserted a brand-new row instead of updating the one that already saved.** Found from a direct report ("Richard Brown - three of the same certificate have been created"); actual count was 6, not 3 — half were hidden via `is_private`. Root-caused via Sentry (`EQ-CARDS-1G`/`1H`, same user/trace: `InvalidStateError: source image could not be decoded` × 7, thrown inside `photo_compress_web.dart`'s `createImageBitmap()` call — a photo upload, not a PDF, and the failure was client-side, before any network call).
 - Fix: `_existing = saved` immediately after each successful upsert (Step 1 and Step 3), so a later-step failure + retry updates in place. Deployed live via `Build & Deploy` (workflow `headSha` confirmed matching `main`).

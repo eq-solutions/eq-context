@@ -14,6 +14,27 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell + eq-field + eq-service: CI sweep, duplicate-work cleanup, 2 real PRs merged + deployed (2026-08-13)
+*Royce: "check for any other failing CI or unmerged fixes" → found + fixed. Then "/decide" on what next → recommended surfacing what's already ready over starting new speculative work. Then "merge685andinvestigate1310" → both actioned. Then "merge #1310 once CI is green" → done, blocked once on a dependency, resolved.*
+
+- [x] **eq-shell's scheduled "Tenant drift" check was failing** (2 of 3 recent runs) — eq-cards' [#230](https://github.com/eq-solutions/eq-cards/pull/230) created `public.is_worker_in_org` live on jvkn, but eq-shell's `check-control-plane-drift.mjs` only scans its own `supabase/migrations/`, so anything sourced by an eq-cards migration against the same shared database will always false-positive as unsourced. Confirmed the function's real source by reading eq-cards' migration directly. Triaged into `KNOWN_UNSOURCED` with the cross-repo reason recorded inline — eq-shell [#1328](https://github.com/eq-solutions/eq-shell/pull/1328), merged.
+- [x] **eq-field `#685` merged + deployed** — a real live gap: several HR-write functions (supervisor notes, performance reviews, feedback, ratings) had no permission check at all, only their sibling "open modal" function did; any signed-in Field user of any role could call them from the browser console. Fix mirrors each function's own existing sibling gate. Confirmed live.
+- [x] **eq-shell `#1310` investigated and merged.** Royce had reported a live-testing issue with the direct-to-Storage attachment upload; the root cause was never findable because the client-side upload code had **zero Sentry capture** anywhere past the point of returning a bare string to the UI — the direct browser→Storage PUT and every failure branch discarded the real error object, and `withSentry` only covers the two Netlify functions either side of it. Fixed: `Sentry.captureException` at all 4 failure points (init/put/commit/catch), tagged by which step failed. Doesn't explain what Royce originally hit, but the next occurrence will finally leave a trace. Rebased twice (once onto `#1328` above, which it depended on to pass CI) and merged. Confirmed live.
+- [x] **Duplicate-work check run suite-wide, two real collisions found and resolved:**
+  - eq-cards `#231` (photo-decode error message) vs `#232` — two sessions independently fixed the identical root cause; `#232` merged first, `#231` closed as superseded rather than forced through.
+  - eq-service `#716` (merged) vs `#717` — two sessions independently found the identical latent gap (`entity.view`/`equipment.view` missing from Service's canonical-record pages) 6 minutes apart. `#717` carried one real non-overlapping piece (`equipment.view` on the Test Equipment register); a concurrent worktree had already rebased-and-trimmed it to just that piece by the time this session got there — verified (typecheck clean, 69/69 tests) rather than redone, committed, merged, confirmed live.
+- [x] **Reviewed (not built) two other same-day security fixes for correctness**: eq-cards `#233` (OCR 401-retry now signs out cleanly) and `#234` (`eq_cards_auto_provision()` guarded against a NULL `auth.uid()` race) — both confirmed correct by reading the actual diffs; `#234`'s migration confirmed live on jvkn with the `authenticated` EXECUTE grant intact (this exact function caused a 9-hour signup outage once before when that grant was missed).
+- [ ] **`/decide` surfaced 3 items that are 100% Royce's — none buildable further from here**: SEC-9 (jvkn service_role key, chat-transcript exposure) and SEC-24 (`QUOTES_CRON_SECRET` plaintext on eq-shell) both need a manual Netlify dashboard re-store, blocked from Claude Code by the safety classifier by design. _(added 2026-08-13)_
+- [ ] **eq-shell `#1310`'s original live-testing error is still unknown** — the new Sentry capture means the *next* occurrence will be diagnosable, but this session couldn't reconstruct what Royce actually hit the first time. Worth a retry now that it's deployed. _(added 2026-08-13)_
+
+---
+
+## eq-cards: licence save silently duplicated the row on a failed photo upload — deployed live + follow-up (2026-08-13)
+- [x] Deployed live to cards.eq.solutions (explicit "yes deploy it") — `Build & Deploy` workflow confirmed successful, `headSha` matches `main` exactly.
+- [x] Confirmed the failed upload was a **photo**, not a PDF — traced to `photo_compress_web.dart`'s `createImageBitmap()` call specifically (the PDF/document path stores bytes verbatim with no decode step, so couldn't produce this error).
+
+---
+
 ## eq-shell: unreachable upload-size limits fixed across 8 upload paths, live (2026-08-12)
 *Royce hit a real "network error" attaching a file to a quote. Investigation found Netlify's hard 6 MB function payload ceiling made several `MAX_BYTES` constants unreachable in practice (10–20 MB claimed, ~4.5 MB actually reachable after multipart/base64 inflation) — any file in that gap failed at the network layer with a misleading "check your connection" message instead of an honest size error.*
 
