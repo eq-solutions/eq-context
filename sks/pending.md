@@ -118,7 +118,7 @@ _Nothing pending — migrations 001–023 all applied._
 - [ ] **SKS anon-remediation (nspb)** — exact policy worklist in `cross-app-linkage-remediation-plan-2026-06-07.md` §7a. Separate from ehow work. SKS-live gated.
 
 **SKS roles / security-groups track (from 2026-06-07):**
-- [ ] **Security groups Phase 2–5** — wire group perms into session, `AdminSecurityGroups` page, first real `user_security_groups` row for a SKS user. **Narrowed 2026-07-27 — 2 of 3 confirmed shipped and live** (session extra_perms wiring + the AdminSecurityGroups CRUD page); live-queried `shell_control.user_security_groups` on jvkn today: still 0 rows — only the first real SKS user assignment remains open.
+- [x] **Security groups Phase 2–5 — all 3 pieces now confirmed live, checked 2026-08-13.** Session extra_perms wiring + AdminSecurityGroups CRUD page (confirmed 2026-07-27), and the first real `user_security_groups` row landed 2026-08-11 (`royce.milmlow@sks.com.au` → "Staff Conversations" group, live-queried on jvkn). Worth noting: that row is for the unrelated Staff Conversations feature, not a deliberate exercise of this specific SKS rollout track — but it does satisfy the letter of "first real row for a SKS user." No further action unless a broader SKS security-groups rollout was actually intended beyond this.
 
 ## ⏩ SKS Field — session 2026-07-03 (QA batch: 9 live bug reports)
 
@@ -147,7 +147,7 @@ _Nothing pending — migrations 001–023 all applied._
 **Deferred:**
 - [ ] **Anthony Hartley correction**: not actually a violation of the 2026-07-05 "never touch it" plan — re-checked live. His canonical worker id `098e4bff-…` (the one documented as "dead weight, exclude, no hard-archive field") is still there, untouched, exactly as decided — it's referenced from his current live `app_data.staff` row. What got hard-deleted was a *different* duplicate, at the `app_data.staff` (Service/ehow) layer, not the canonical-worker (jvkn) layer the 2026-07-05 decision was about. No action needed.
 - [ ] **121 items still pending in `eq_remediation_queue`** (steward-run-001) — unreviewed AI data-quality suggestions for staff/contacts, sitting in EQ Intake's review queue. Breakdown: 54 missing emergency contacts (low confidence — queue's own guidance is dismiss-only, collect via a future Cards prompt), 43 low-confidence trade guesses, 9 more staff duplicates, 11 more email gaps, 8 firmer trade guesses, 1 contact duplicate. Informational, surfaced while auditing the 16 already-committed rows. _(added 2026-07-06)_
-- [ ] **eq-shell PR #681 needs review + merge** — fix is already live on ehow (applied directly ahead of the PR); the PR just brings the source-controlled migration back in sync. _(added 2026-07-06)_
+- [ ] **"eq-shell PR #681" reference doesn't check out — checked 2026-08-13.** eq-shell#681 is CLOSED, unmerged, and about an unrelated `eq_update_staff` fix. eq-solves-service#681 is a different unrelated fix too (site-supervisor contact picker). Neither matches "brings the job_plans/defects migration back in sync." Likely a wrong PR number or a session-transcription slip, not a correctly-tracked open PR. Didn't guess at the right number — if the underlying migration-sync gap is still real, it needs re-identifying from scratch, not assumed fixed just because the PR reference is broken.
 
 ## ⏩ SKS Field — session 2026-07-08 (TAFE timesheet prefill — 4 iterative ships)
 
