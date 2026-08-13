@@ -61,14 +61,11 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-13)
 
 **eq-cards:**
+- #230 fix(security): close cross-org IDOR on worker/credential admin write RPCs
 - #221 refactor(auth): shell-verify.js relays to eq-shell instead of local crypto
 
 **eq-field:**
 - #685 security: gate 8 unguarded HR-write functions to Supervision
-
-**eq-service:**
-- #713 fix(security): wire entity.edit + entity.manage_activation; correct stale baseline note
-- #711 security: remove orphaned customer/site write REST routes
 
 **eq-shell:**
 - #1324 feat(staff): swap Resourcing desktop view to eq-ui Table
@@ -84,7 +81,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ? queued |
+| eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
