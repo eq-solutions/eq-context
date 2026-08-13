@@ -1,13 +1,17 @@
 ---
 title: EQ Service — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-12
+last_updated: 2026-08-13
 scope: EQ Service append-only history. NOTE — duplicates eq/changelog/service.md, which stalls mid-deploy at 2026-06-09; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # EQ Service — Changelog
+
+## 2026-08-13 (assignee-bypass on closing a check fixed; 2 orphaned REST routes removed)
+- **PR [#708](https://github.com/eq-solutions/eq-service/pull/708) MERGED — `completeCheckAction` assignee-bypass closed; `updateTestingCheckStatusAction` restricted to its one documented purpose.** `completeCheckAction` carried the exact `canWrite()`-or-assignee bypass a sibling function (`reopenCheckAction`) had already had closed — any assigned technician, any role, could close a check themselves. A second function accepted an unvalidated status string that could bypass `reopenCheckAction`/`cancelCheckAction`'s stricter gates entirely. Needed a same-day rebase after PR #712 (concurrent session) landed an equivalent `service.close` wrapper under a different name on a different call site — adopted their naming (`canCloseWorkOrder`) rather than shipping a duplicate.
+- **PR [#711](https://github.com/eq-solutions/eq-service/pull/711) MERGED — removed `app/api/customers/[id]` + `app/api/sites/[id]` (and their POST collection siblings).** Both still allowed direct edit/archive of canonical records the rest of the app has treated as Shell-owned/read-only since PR #617; no caller found anywhere in the suite. Royce's explicit direction (asked via AskUserQuestion): delete entirely rather than keep read-only GET or document in place.
 
 ## 2026-08-12 (permission audit follow-up: reports.view + audit.view enforced, live)
 - **PR #707 (MERGED + APPLIED live, migration 0203) — closed the two live gaps from the suite-wide permission audit (`task_de667109`).** `reports.view` (canonically manager-only) had zero enforcement on `app/(app)/reports/page.tsx` — any authenticated tenant member could open GM/financial reports directly; the sidebar only hid the link for `role==='employee'`, which is cosmetic. `audit.view` (canonically manager+supervisor) was inverted on `app/(app)/audit-log/page.tsx` (used `isAdmin`, manager-only, blocking supervisors) — and it was the *only* barrier, since `service.audit_logs`' RLS (`al_select`) checked tenant only, no role. Added `canViewReports`/`canViewAuditLog` to `lib/utils/roles.ts` (existing `can()`-backed pattern), gated both pages, and added a role check to `al_select` itself as defense-in-depth (migration 0203).

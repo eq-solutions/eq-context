@@ -1,13 +1,17 @@
 ---
 title: Changelog — EQ Solves Field
 owner: Royce Milmlow
-last_updated: 2026-08-12
+last_updated: 2026-08-13
 scope: Append-only history of changes to the EQ Solves Field product. Canonical — eq-field.md was merged into this file 2026-07-19, don't split again.
 read_priority: reference
 status: live
 ---
 
 # Changelog — EQ Solves Field
+
+## [2026-08-13] 8 unguarded HR-write functions closed (#685) + drift-guard baseline tightened (#686)
+- **PR [#685](https://github.com/eq-solutions/eq-field/pull/685) MERGED — 8 "save" functions had zero permission check while their sibling "open modal" functions correctly gated on `isManager`.** `managers.js`, `staff-reviews.js`, `apprentices-reviews-rotations.js`, `apprentices-feedback-forms.js` — each callable directly from devtools regardless of role. Confirmed live against ehow that RLS didn't backstop any of them (tenant-only policy, no role check). Part of the suite-wide permission audit thread (see eq-shell changelog, 2026-08-12).
+- **PR [#686](https://github.com/eq-solutions/eq-field/pull/686) MERGED — permission-enforcement-drift baseline tightened, 54 → 51.** #684's ratchet baseline was generated one commit before #683's fix landed, so 3 already-fixed keys (`reports.diary/incident/prestart.submit`) were still counted as debt.
 
 ## [2026-08-12] Safety-report submit actions gated to Supervision (v3.5.487, #683)
 Found during a suite-wide declared-vs-actual permission audit comparing Shell's Access Control page / `@eq-solutions/roles` against what each EQ app actually enforces in code.
