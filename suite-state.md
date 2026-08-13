@@ -64,7 +64,6 @@ _If this file is >48h old, the cron is broken._
 - #221 refactor(auth): shell-verify.js relays to eq-shell instead of local crypto
 
 **eq-shell:**
-- #1333 chore(ci): add attachment row/file reconciliation check
 - #1294 feat(cards): centralize Cards' SSO minting via token-exchange-cards.ts
 
 ---
