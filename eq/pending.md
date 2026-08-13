@@ -89,13 +89,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ---
 
 ## eq-cards + eq-shell: labour-hire licence intake — multi-document OCR extraction + PDF review + flag notifications, all merged + live (2026-08-13)
-*Royce clicked through the labour-hire test tenant, hit a real multi-card-in-one-photo edge case (a worker photographed 6 credential cards laid out together), and asked to fix it properly. Also asked whether admins get any signal when they flag a licence during review — they didn't.*
-
-- [x] eq-cards `ocr-licence` edge function rewritten to fully extract every document in a multi-card photo (not just detect there are more) — deployed live independently, then eq-cards [#227](https://github.com/eq-solutions/eq-cards/pull/227) merged.
-- [x] "One photo → N credentials" wired through both write paths: eq-cards `labour-hire-candidate-intake` and eq-shell `create-worker-invite.ts` — one upload, one row per document found, all pointing at the same stored file.
-- [x] eq-shell PDF/image thumbnail preview in the licence review modal (client-side `pdfjs-dist`, Royce's explicit choice over server-side rendering) — reviewers see the actual document, not just OCR'd text. eq-shell [#1316](https://github.com/eq-solutions/eq-shell/pull/1316) merged + deployed live to core.eq.solutions.
-- [x] Flagging a licence during review now emails + SMS's the worker (which licence, the admin's comment, a link to fix it) — previously silent. Shared helper `_shared/licence-flag-notification.ts`, wired into both the re-review path and the application-approval path.
-- [x] Found while building (not part of the original ask): a *third* flagging entry point — approving an existing SimPRO-imported staff member's first Cards connection — was silently dropping the flagged-licence data before it could ever be saved or notified. Spun off as `task_41714f80`; Royce started it separately — already landed (see the entry above this one).
 - [ ] **Live click-through still not done** on the multi-document extraction / PDF preview / flag-notification features — verified via CI + direct DB checks only, no real signed-in session. _(added 2026-08-13)_
 - [ ] **SMS-notification coverage is inconsistent across the different invite paths** — flagged during the original audit, not touched this session. _(added 2026-08-13)_
 - [ ] **Intake engine's CSV import path bypasses the same-worker dedup** the direct upload paths now go through — flagged, not touched. _(added 2026-08-13)_
