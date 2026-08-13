@@ -14,6 +14,37 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: unreachable upload-size limits fixed across 8 upload paths, live (2026-08-12)
+*Royce hit a real "network error" attaching a file to a quote. Investigation found Netlify's hard 6 MB function payload ceiling made several `MAX_BYTES` constants unreachable in practice (10–20 MB claimed, ~4.5 MB actually reachable after multipart/base64 inflation) — any file in that gap failed at the network layer with a misleading "check your connection" message instead of an honest size error.*
+
+- [x] Fixed across 8 functions (`staff-licence-backfill`/`-ocr`/`-replace-photo`, `upload-asset-cert`, `upload-document-version`, `ocr-parse`, `labour-hire-parse`, `create-worker-invite`) + all their frontend callers — `MAX_BYTES` lowered to a reachable 4 MB, error messages made honest, instant client-side pre-checks added so an oversized file fails immediately instead of after a doomed network round-trip. eq-shell [#1307](https://github.com/eq-solutions/eq-shell/pull/1307), merged + deployed live.
+- [x] `create-worker-invite.ts` needed more than a number change — it can carry several licence documents in one request body, so a per-file cap alone wasn't enough (two files can each pass individually and still blow the shared request limit together). Added a combined-total check alongside the per-file one.
+
+---
+
+## eq-shell: quote attachments moved to direct-to-storage upload — real limit now 50 MB, not merged yet (2026-08-12)
+*Royce's actual quote attachments (drawings, PDFs, emails) run 5–10 MB on average — above even the "honest" 4 MB fix above. No size number fixes that while the file still routes through a Netlify function; the ceiling itself had to go.*
+
+- [x] Built a new upload path for plain quote reference attachments (drawings/PDFs/emails — NOT the AI "Import from PDF" feature, which is untouched and stays as-is). The file now goes straight from the browser to Supabase Storage instead of through a function, removing the payload ceiling entirely. New limit is 50 MB, matching the real storage-level limit (checked live, not guessed). eq-shell PR [#1310](https://github.com/eq-solutions/eq-shell/pull/1310), open.
+- [ ] **PR #1310 not yet verified or merged** — Royce reported issues testing it. Checked live and ruled out: the storage system's cross-origin access rules, and whether the new code actually deployed (both fine). The actual failure is still unidentified — waiting on the specific error message/network response before it can be diagnosed further. _(added 2026-08-12)_
+
+---
+
+## eq-shell: 2 dead Supabase Storage folders found + removed from the SKS database (2026-08-12)
+*Found while investigating the size-limit work above — two storage folders sitting on the SKS (ehow) database that nothing in the live apps actually uses.*
+
+- [x] Audited every storage folder across all three EQ Supabase projects. One (`job-plan-references`, empty) turned out to be EQ Service's own abandoned feature — they'd already written their own cleanup for it, it just never actually ran. The other (`sks-quote-attachments`, one real file — a hospital job quote PDF that nothing in the database points to anymore) predates both eq-shell's and EQ Service's tracked history — most likely a leftover from the old standalone SKS app, before it was folded into Shell.
+- [x] Tried to remove both through the normal governed database-update process — blocked: Supabase itself refuses to let a plain update-script delete storage folders/files directly (a deliberate safety feature, not a bug, to stop orphaned files). That update was abandoned (eq-shell PR #1309, closed without merging) and both folders were deleted directly through the Supabase dashboard instead — confirmed gone.
+
+---
+
+## eq-shell: "Download Quote" failing with no retry — root-caused + fixed, not merged yet (2026-08-12)
+*While investigating the size-limit bug above, checked Sentry for the actual error that started the session — turned out to be a different, real, still-open bug on the same page.*
+
+- [x] Found via Sentry (`EQ-SHELL-1J`): the "Download Quote" button (Word doc export) can fail on a one-off network blip because the template download had no retry at all — same gap in the "Job Creation" Excel export. Added an automatic retry to both (checked the Excel path specifically for safety first — the server re-checks the quote's status fresh on every call, so a retry can't accidentally create a duplicate job). eq-shell PR [#1317](https://github.com/eq-solutions/eq-shell/pull/1317), open.
+
+---
+
 ## eq-shell: EQ Ops archive view gets full search/filter, quotes auto-archive after 7 days invoiced (2026-08-12)
 *Royce: "EQ OPS. Can we add two features — full search and filter functions as per EQ-UI in archive view. Archive anything that has been invoiced for 7 days."*
 
