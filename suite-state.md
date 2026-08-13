@@ -61,10 +61,15 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-13)
 
 **eq-cards:**
+- #234 fix(auth): guard eq_cards_auto_provision() against a NULL auth.uid() (EQ-CARDS-1A/1B)
+- #231 fix(licences): surface a clear message when a photo can't be decoded
 - #221 refactor(auth): shell-verify.js relays to eq-shell instead of local crypto
 
 **eq-field:**
 - #685 security: gate 8 unguarded HR-write functions to Supervision
+
+**eq-service:**
+- #715 fix(admin): Media Library Upload/Delete no longer wedge on a stale-bundle error (EQ-SOLVES-SERVICE-3)
 
 **eq-shell:**
 - #1317 fix(ops): retry quote-doc/job-creation fetches on a transient network drop
@@ -79,10 +84,10 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ✓ success |
+| eq-service | ✗ failure |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
-| eq-cards | ✓ success |
+| eq-cards | ? in_progress |
 | eq-solves-intake | ✓ success |
 
 **Deploys:**
