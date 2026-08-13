@@ -66,11 +66,11 @@ Close out the loose ends from the "5-10MB attachment fails on quotes" incident s
 - But the feature it sounds like it backs — the "N files" badge on each quote row — is actually served by a **different** table. `eq_list_quote_attachment_counts()` (the RPC `QuotesModule.tsx` calls for that badge) reads `app_data.attachments WHERE entity_type = 'quote'`, never touches `quote_attachment` at all. Same is true for the attachment feature itself — `AttachmentList.tsx` and both the old and new (PR #1310) upload paths all write to `app_data.attachments`, not `quote_attachment`.
 - **`docs/ARCHITECTURE-V2.md:500` marks `quote_attachment` "✅ Live" — that line is stale/wrong.** It hasn't been the live path since `app_data.attachments` (the generic entity-attachment table) took over.
 
-**Read:** the table is either (a) genuinely dead — an earlier quote-attachment design superseded by the generic `attachments` table and never cleaned up, or (b) still the intended target for a specific intake producer (e.g. a Cards/PDF-parse path) that just hasn't fired in SKS production yet. Didn't chase (b) further — would mean tracing eq-intake's own emit logic, out of scope for this pass.
+**Decided (2026-08-13):** drop it — no known reason to keep it, no downside to removing it.
 
-**Action:** Royce call — drop via governed migration (One Pipe, not by hand) if (a), or leave it and fix the stale doc line either way.
+**Done:** [eq-shell PR #1331](https://github.com/eq-solutions/eq-shell/pull/1331) — governed drop migration (`0244_drop_quote_attachment.sql`), plus removed the two dead code references that would otherwise point at a now-gone table (`intake-modules.ts` routing map, `sync-tenant-data.mjs` table list), plus the doc fix. All CI checks green. **Not merged yet — merge is a separate explicit go-ahead per deploy policy.**
 
-**Status:** Investigated — decision needed, not a further-digging task.
+**Status:** ✅ Built, PR open, awaiting merge decision.
 
 ---
 
@@ -118,7 +118,7 @@ Close out the loose ends from the "5-10MB attachment fails on quotes" incident s
 - [x] A0 — suite-wide honest limits, dead buckets, download-retry: shipped
 - [ ] A1 — Royce's live repro done, upload confirmed working (or bug found + fixed)
 - [x] A2 — confirmed out of scope for eq-shell (no action needed here)
-- [ ] A3 — investigated (0 rows, superseded by `app_data.attachments`, docs stale); Royce call on drop vs. leave
+- [ ] A3 — decided (drop), built, [PR #1331](https://github.com/eq-solutions/eq-shell/pull/1331) open + green; needs merge go-ahead
 - [ ] A4 — Royce call: scope or drop
 - [ ] A5 — Royce call: scope or drop
 - [x] A6 — capacity numbers pulled and logged — ~21MB total, no concern
