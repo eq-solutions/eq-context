@@ -1,6 +1,7 @@
 ---
 title: Field mobile-experience centering — P1/P2/P3 sprint
 owner: Royce Milmlow
+last_updated: 2026-08-13
 created: 2026-08-12
 source: C:\Users\EQ\OneDrive - eq-power.com.au\eq-field-mobile-centering.html (audit dated 2026-08-07)
 repo: eq-field
