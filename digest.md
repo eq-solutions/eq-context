@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-13 12:13 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-13 12:58 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-13 11:29 UTC → 2026-08-13 12:13 UTC)
+## Since last refresh (2026-08-13 12:13 UTC → 2026-08-13 12:58 UTC)
 
-- Merged: eq-shell [#1334](https://github.com/eq-solutions/eq-shell/pull/1334) feat(documents): move document-version uploads to direct-to-
-- Merged: eq-shell [#1322](https://github.com/eq-solutions/eq-shell/pull/1322) chore(security): permission-enforcement drift guard (ratchet
-- Merged: eq-shell [#1319](https://github.com/eq-solutions/eq-shell/pull/1319) feat(ops): archive view search/filter + auto-archive invoice
-- Merged: eq-shell [#1318](https://github.com/eq-solutions/eq-shell/pull/1318) fix(security): gate audit rollback + align entity archive/re
-- Merged: eq-shell [#1314](https://github.com/eq-solutions/eq-shell/pull/1314) fix(staff): surface multi-document warning on the regular in
-- Merged: eq-shell [#1313](https://github.com/eq-solutions/eq-shell/pull/1313) fix(staff): move labour-hire intake from platform to tenant 
-- Merged: eq-shell [#1312](https://github.com/eq-solutions/eq-shell/pull/1312) fix(auth): mint-tenant-jwt.ts never embedded extra_perms — s
-- Merged: eq-shell [#1311](https://github.com/eq-solutions/eq-shell/pull/1311) feat(staff): resourcing dashboard + draft org chart
+- Merged: eq-shell [#1323](https://github.com/eq-solutions/eq-shell/pull/1323) fix(staff): thread licence_verifications through the invite-
+- Merged: eq-shell [#1321](https://github.com/eq-solutions/eq-shell/pull/1321) feat(staff): write path for team/supervisor assignment on th
+- Merged: eq-shell [#1320](https://github.com/eq-solutions/eq-shell/pull/1320) feat(ops): bulk select in Archived tab (restore / delete mul
+- Merged: eq-shell [#1316](https://github.com/eq-solutions/eq-shell/pull/1316) feat(staff): create one credential per document, not per pho
+- Merged: eq-shell [#1315](https://github.com/eq-solutions/eq-shell/pull/1315) chore(deps): bump @eq-solutions/ui to v1.15.0
+- Merged: eq-shell [#1308](https://github.com/eq-solutions/eq-shell/pull/1308) docs(ci): field-perms-drift's setup note is stale, secret no
+- Merged: eq-shell [#1307](https://github.com/eq-solutions/eq-shell/pull/1307) fix(ops): file uploads failing on a payload limit no functio
+- Merged: eq-shell [#1306](https://github.com/eq-solutions/eq-shell/pull/1306) fix(ops): file uploads failed with a fake "check your connec
 
 ## ⚠ Needs you (4)
 
@@ -51,10 +51,10 @@ _…and 94 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 1 | — |
-| eq-solves-service | ✓ success | 0d ago | 0 | — |
+| eq-solves-service | ✓ success | 0d ago | 1 | 0d |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 1 | — |
-| eq-solves-intake | ✓ success | 1d ago | 0 | — |
+| eq-solves-intake | ✓ success | 2d ago | 0 | — |
 
 ## Live errors (Sentry)
 
@@ -93,6 +93,7 @@ _Showing 15 of 102 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **A5 (malware scanning) — parked, revisit no earlier than 2026-08-20 ("remind me next week").** Scoped, vendor picked (Cloudmersive — VirusTotal ruled out, its free tier may share submitted files with its researcher ecosystem, a real problem for client documents; self-hosted ClamAV would mean the one piece of persistent infra in an otherwise fully serverless stack, for near-zero volume). Design settled: pilot on quote attachments only, fail-open with a Sentry alert on skip. Not built — blocked on Royce signing up for a Cloudmersive account and handing over an API key; account creation isn't something Claude does. Full critique of the direction (what it does/doesn't protect against) in the sprint doc. _(added 2026-08-13, revisit 2026-08-20)_
 - **`/decide` surfaced 3 items that are 100% Royce's — none buildable further from here**: SEC-9 (jvkn service_role key, chat-transcript exposure) and SEC-24 (`QUOTES_CRON_SECRET` plaintext on eq-shell) both need a manual Netlify dashboard re-store, blocked from Claude Code by the safety classifier by design. _(added 2026-08-13)_
 - **Live click-test still not done anywhere across this whole thread** — every fix above was verified against live data/CI/direct database checks, never a real signed-in click-through session on any of the four apps. _(added 2026-08-13)_
 - **Live click-through not done** — this sandbox has no network path to the tenant-config service, so the Archived-tab search/filter/bulk-select hasn't been visually confirmed in a real browser session. Built against the exact same Table component already proven live elsewhere in the app; build + typecheck clean on both PRs. _(added 2026-08-12)_
@@ -102,8 +103,7 @@ _Showing 15 of 102 · full record in [sessions/](sessions/)_
 - **SMS-notification coverage is inconsistent across the different invite paths** — flagged during the original audit, not touched this session. _(added 2026-08-13)_
 - **Intake engine's CSV import path bypasses the same-worker dedup** the direct upload paths now go through — flagged, not touched. _(added 2026-08-13)_
 - **Open question, not decided**: should the manual labour-hire-document-upload form and the regular worker-invite form (which now also accepts documents) eventually merge into one? Deliberately left as two separate entry points this session. _(added 2026-08-13)_
-- **Live click-through not done** — the invite path (existing SimPRO/import staff record, `staff_id`) now records flagged-licence reviews and notifies the worker on approval, matching the self-signup path's existing behaviour. Needs a real signed-in Shell session with `admin.review_cards` to confirm end-to-end — off-limits for this environment. _(added 2026-08-13)_
-_…and 486 more · [eq/pending.md](eq/pending.md)_
+_…and 483 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -125,7 +125,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 3395 | 601 | 65 | 17 |
+| [EQ](eq/pending.md) | 3397 | 597 | 70 | 17 |
 | [SKS](sks/pending.md) | 418 | 84 | 3 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 402 | 37 | 0 | 1 |
@@ -146,4 +146,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-13 12:13 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-13 12:58 UTC._
