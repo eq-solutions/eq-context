@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-13 06:04 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-13 06:25 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-13 05:44 UTC → 2026-08-13 06:04 UTC)
+## Since last refresh (2026-08-13 06:04 UTC → 2026-08-13 06:25 UTC)
 
-- Merged: eq-shell [#1314](https://github.com/eq-solutions/eq-shell/pull/1314) fix(staff): surface multi-document warning on the regular in
-- Merged: eq-shell [#1307](https://github.com/eq-solutions/eq-shell/pull/1307) fix(ops): file uploads failing on a payload limit no functio
-- Merged: eq-shell [#1305](https://github.com/eq-solutions/eq-shell/pull/1305) fix(dashboard): on-leave count zeroed by overnight schema re
-- Merged: eq-shell [#1303](https://github.com/eq-solutions/eq-shell/pull/1303) fix(dashboard): logo, outstanding-quotes value, on-leave cou
-- Merged: eq-shell [#1301](https://github.com/eq-solutions/eq-shell/pull/1301) fix(dashboard): mobile hero card was display:none on every v
-- Merged: eq-shell [#1300](https://github.com/eq-solutions/eq-shell/pull/1300) Make the mobile hero stats actionable, not just informationa
-- Merged: eq-shell [#1298](https://github.com/eq-solutions/eq-shell/pull/1298) Add compact action cards to the mobile dashboard
-- Merged: eq-shell [#1297](https://github.com/eq-solutions/eq-shell/pull/1297) Replace AI Brief prose with grounded Ask Anything Q&A
+- Merged: eq-shell [#1324](https://github.com/eq-solutions/eq-shell/pull/1324) feat(staff): swap Resourcing desktop view to eq-ui Table
+- Merged: eq-shell [#1315](https://github.com/eq-solutions/eq-shell/pull/1315) chore(deps): bump @eq-solutions/ui to v1.15.0
+- Merged: eq-shell [#1313](https://github.com/eq-solutions/eq-shell/pull/1313) fix(staff): move labour-hire intake from platform to tenant 
+- Merged: eq-shell [#1312](https://github.com/eq-solutions/eq-shell/pull/1312) fix(auth): mint-tenant-jwt.ts never embedded extra_perms — s
+- Merged: eq-shell [#1311](https://github.com/eq-solutions/eq-shell/pull/1311) feat(staff): resourcing dashboard + draft org chart
+- Merged: eq-shell [#1308](https://github.com/eq-solutions/eq-shell/pull/1308) docs(ci): field-perms-drift's setup note is stale, secret no
+- Merged: eq-shell [#1306](https://github.com/eq-solutions/eq-shell/pull/1306) fix(ops): file uploads failed with a fake "check your connec
+- Merged: eq-shell [#1304](https://github.com/eq-solutions/eq-shell/pull/1304) fix(security): RLS gate on staff_conversations now enforces 
 
 ## ⚠ Needs you (5)
 
@@ -51,7 +51,7 @@ _…and 94 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 4 | 1d |
+| eq-shell | ✓ success | 0d ago | 3 | 1d |
 | eq-solves-service | ✓ success | 0d ago | 0 | — |
 | eq-field | ✓ success | 0d ago | 1 | 0d |
 | eq-cards | ✓ success | 0d ago | 1 | — |
@@ -75,6 +75,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-13 | eq-shell | [#1324](https://github.com/eq-solutions/eq-shell/pull/1324) feat(staff): swap Resourcing desktop view to eq-ui Table |
 | 2026-08-13 | eq-solves-service | [#714](https://github.com/eq-solutions/eq-service/pull/714) docs(security): document entity.view_pii as investigated + delibe |
 | 2026-08-13 | eq-solves-service | [#713](https://github.com/eq-solutions/eq-service/pull/713) fix(security): wire entity.edit + entity.manage_activation; corre |
 | 2026-08-13 | eq-solves-service | [#711](https://github.com/eq-solutions/eq-service/pull/711) security: remove orphaned customer/site write REST routes |
@@ -89,7 +90,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-12 | eq-shell | [#1318](https://github.com/eq-solutions/eq-shell/pull/1318) fix(security): gate audit rollback + align entity archive/restore |
 | 2026-08-12 | eq-shell | [#1316](https://github.com/eq-solutions/eq-shell/pull/1316) feat(staff): create one credential per document, not per photo |
 | 2026-08-12 | eq-shell | [#1320](https://github.com/eq-solutions/eq-shell/pull/1320) feat(ops): bulk select in Archived tab (restore / delete multiple |
-| 2026-08-12 | eq-shell | [#1319](https://github.com/eq-solutions/eq-shell/pull/1319) feat(ops): archive view search/filter + auto-archive invoiced quo |
 _Showing 15 of 95 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -104,7 +104,7 @@ _Showing 15 of 95 · full record in [sessions/](sessions/)_
 - **Intake engine's CSV import path bypasses the same-worker dedup** the direct upload paths now go through — flagged, not touched. _(added 2026-08-13)_
 - **Dead code**: `eq_cards_find_invites_by_phone` RPC and `ClaimByPhoneScreen` appear unused since the "Find my company account" flow replaced join-by-code — not confirmed dead, not removed. _(added 2026-08-13)_
 - **Open question, not decided**: should the manual labour-hire-document-upload form and the regular worker-invite form (which now also accepts documents) eventually merge into one? Deliberately left as two separate entry points this session. _(added 2026-08-13)_
-_…and 488 more · [eq/pending.md](eq/pending.md)_
+_…and 487 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -126,7 +126,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 3406 | 600 | 63 | 17 |
+| [EQ](eq/pending.md) | 3402 | 600 | 64 | 17 |
 | [SKS](sks/pending.md) | 423 | 85 | 3 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 402 | 37 | 0 | 1 |
@@ -147,4 +147,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-13 06:04 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-13 06:25 UTC._
