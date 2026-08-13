@@ -1,14 +1,14 @@
 ---
 title: EQ Suite — Current State
 owner: Royce Milmlow
-last_updated: 2026-08-12
+last_updated: 2026-08-13
 scope: Live suite state — app lineup, DB counts, open PRs, architectural decisions. Auto-refreshed nightly by GitHub Action.
 read_priority: critical
 status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-08-12 (nightly cron)_
+_Last verified: 2026-08-13 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -37,7 +37,7 @@ _If this file is >48h old, the cron is broken._
 |--------|-------|--------|
 | Sites | 221 | app_data.sites |
 | Customers | 39 | app_data.customers |
-| Assets | 2,841 | app_data.assets |
+| Assets | 2,842 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
 | Users | 5 | service.tenant_members |
 | Maintenance checks | 35 | service.maintenance_checks |
@@ -58,10 +58,10 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-08-12)
+## Open PRs (as of 2026-08-13)
 
 **eq-cards:**
-- #228 fix(ocr): raise client OCR timeout to 25s so it doesn't undercut the server's own 20s budget (EQ-CARDS-H)
+- #229 fix(licences): stop a failed photo/document step from duplicating the row
 - #221 refactor(auth): shell-verify.js relays to eq-shell instead of local crypto
 
 **eq-field:**
@@ -80,7 +80,7 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## System Health (as of 2026-08-12)
+## System Health (as of 2026-08-13)
 
 **CI on main:**
 
