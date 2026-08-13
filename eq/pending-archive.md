@@ -3158,3 +3158,34 @@ contain the same values and were pushed before push-protection caught up.
 - [x] **Apprentices cluster — corrected, fully closed** (was stale since 2026-06-30 — tables/grants/org RLS were actually shipped the same day this was logged, PR #371 v3.5.210, the bullet just never got updated; found + fixed 2026-08-11). Live feature: 2,501-line `apprentices.js` on field.eq.solutions, zero security-advisor issues on all 8 tables. The two real remaining pieces both resolved same day: Royce declined the `field_*` canonical-twin build (nothing's broken, was fleet-consistency-only elsewhere, not a fix here), and the 2 orphan test rows in `apprentice_profiles` were verified dangling (matched no real person) and deleted live on ehow. Full corrected scope: `eq/apprentices-cluster-scoping-2026-08-11.md`. _(added 2026-06-30, corrected + closed 2026-08-11)_
 
 ---
+
+## eq-shell: unreachable upload-size limits fixed across 8 upload paths, live (2026-08-12) (fully closed, no open items remain)
+*Royce hit a real "network error" attaching a file to a quote. Investigation found Netlify's hard 6 MB function payload ceiling made several `MAX_BYTES` constants unreachable in practice (10–20 MB claimed, ~4.5 MB actually reachable after multipart/base64 inflation) — any file in that gap failed at the network layer with a misleading "check your connection" message instead of an honest size error.*
+
+- [x] Fixed across 8 functions (`staff-licence-backfill`/`-ocr`/`-replace-photo`, `upload-asset-cert`, `upload-document-version`, `ocr-parse`, `labour-hire-parse`, `create-worker-invite`) + all their frontend callers — `MAX_BYTES` lowered to a reachable 4 MB, error messages made honest, instant client-side pre-checks added so an oversized file fails immediately instead of after a doomed network round-trip. eq-shell [#1307](https://github.com/eq-solutions/eq-shell/pull/1307), merged + deployed live.
+- [x] `create-worker-invite.ts` needed more than a number change — it can carry several licence documents in one request body, so a per-file cap alone wasn't enough (two files can each pass individually and still blow the shared request limit together). Added a combined-total check alongside the per-file one.
+
+---
+
+## eq-shell: quote attachments moved to direct-to-storage upload — real limit now 50 MB, merged + live (2026-08-12) (fully closed, no open items remain)
+*Royce's actual quote attachments (drawings, PDFs, emails) run 5–10 MB on average — above even the "honest" 4 MB fix above. No size number fixes that while the file still routes through a Netlify function; the ceiling itself had to go.*
+
+- [x] Built a new upload path for plain quote reference attachments (drawings/PDFs/emails — NOT the AI "Import from PDF" feature, which is untouched and stays as-is). The file now goes straight from the browser to Supabase Storage instead of through a function, removing the payload ceiling entirely. New limit is 50 MB, matching the real storage-level limit (checked live, not guessed). eq-shell PR [#1310](https://github.com/eq-solutions/eq-shell/pull/1310), merged + live.
+- [x] Royce merged #1310 directly on GitHub 2026-08-13 without a repro of the "issues" he'd hit testing it live. A concurrent session added Sentry capture to the client-side upload path the same day (previously zero error tracking past the browser) so a repeat is diagnosable — whether the original issue is actually fixed stayed genuinely unconfirmed; tracked as its own item in the 2026-08-13 session-close entry above, not duplicated here.
+
+---
+
+## eq-shell: 2 dead Supabase Storage folders found + removed from the SKS database (2026-08-12) (fully closed, no open items remain)
+*Found while investigating the size-limit work above — two storage folders sitting on the SKS (ehow) database that nothing in the live apps actually uses.*
+
+- [x] Audited every storage folder across all three EQ Supabase projects. One (`job-plan-references`, empty) turned out to be EQ Service's own abandoned feature — they'd already written their own cleanup for it, it just never actually ran. The other (`sks-quote-attachments`, one real file — a hospital job quote PDF that nothing in the database points to anymore) predates both eq-shell's and EQ Service's tracked history — most likely a leftover from the old standalone SKS app, before it was folded into Shell.
+- [x] Tried to remove both through the normal governed database-update process — blocked: Supabase itself refuses to let a plain update-script delete storage folders/files directly (a deliberate safety feature, not a bug, to stop orphaned files). That update was abandoned (eq-shell PR #1309, closed without merging) and both folders were deleted directly through the Supabase dashboard instead — confirmed gone.
+
+---
+
+## eq-shell: "Download Quote" failing with no retry — root-caused, fixed, merged + live (2026-08-12) (fully closed, no open items remain)
+*While investigating the size-limit bug above, checked Sentry for the actual error that started the session — turned out to be a different, real, still-open bug on the same page.*
+
+- [x] Found via Sentry (`EQ-SHELL-1J`): the "Download Quote" button (Word doc export) can fail on a one-off network blip because the template download had no retry at all — same gap in the "Job Creation" Excel export. Added an automatic retry to both (checked the Excel path specifically for safety first — the server re-checks the quote's status fresh on every call, so a retry can't accidentally create a duplicate job). eq-shell PR [#1317](https://github.com/eq-solutions/eq-shell/pull/1317), merged (`ab0b31e`), live.
+
+---

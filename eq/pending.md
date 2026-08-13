@@ -14,6 +14,20 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: quote_attachment table dropped, suite-wide file-storage map built, 19 dangling attachment rows cleaned up + reconciliation check shipped (2026-08-13)
+*Continuation of the attachment-upload thread below. Royce: "explain how all files are stored using a workflow diagram throughout eq suite" → investigated live (3 parallel agents across eq-field/eq-cards/eq-solves-service, plus eq-shell's own code + live Supabase queries). Found `app_data.attachments` + the `attachments` Storage bucket are genuinely shared between eq-shell and eq-solves-service, told apart only by `entity_type` — and that sharing had already produced 19 dangling rows on the SKS (ehow) database, eq-solves-service demo/seed data with no matching file. Royce: "clean up the... dangling seed rows" → done, confirmed count first (19, not 2, as originally guessed) before deleting. Then "check the eq-solves-service seed script so this doesn't recur" → investigated, current script is safe, root cause is historical/unrecoverable. Then "build the reconciliation check" → shipped.*
+
+- [x] eq-shell PR [#1317](https://github.com/eq-solutions/eq-shell/pull/1317) ("Download Quote" retry fix, from the earlier upload-limits investigation — see `eq/pending-archive.md`) merged this session (`ab0b31e`), live.
+- [x] Sprint doc opened to track what's left from the whole attachment-upload thread: `eq-context/eq/sprints/2026-08-13-attachment-upload-closeout.md`.
+- [x] `docs/ARCHITECTURE-V2.md` had a stale "✅ Live" line claiming `app_data.quote_attachment` was in active use — it has 0 rows in production on both tenant planes; the real quote-attachment feature has always used `app_data.attachments` instead (confirmed by reading the actual RPC body, not assumed). Investigated, confirmed dead (0 rows, no inbound FK, no live producer), dropped via governed migration `0244_drop_quote_attachment.sql`, and removed the two dead code references that would've pointed at the now-gone table — eq-shell [#1331](https://github.com/eq-solutions/eq-shell/pull/1331), merged + live.
+- [x] Built a suite-wide diagram of where every app's files actually live: two Supabase planes (jvkn = shared control plane, ehow/zaap = per-tenant planes), which of the 4 apps write to which and how (direct-upload vs. function-relay). Surfaced a genuine naming trap worth remembering: `licence-photos` and `compliance-packs` exist on BOTH planes under the same name, but only the control-plane copy is real — the tenant-plane copies are empty leftovers from a design that was never adopted.
+- [x] Found + deleted 19 dangling `app_data.attachments` rows on ehow (SKS) — eq-solves-service demo/seed data (`defect`/`maintenance_check`/`site`, all dated 2026-04-26) whose storage paths never had a matching file. Verified live before and after; only the 13 real `quote` rows (eq-shell's) remain.
+- [x] Checked eq-solves-service's `scripts/seed-demo-attachments.ts` for the root cause — the script as it stands today is safe (uploads first, only inserts metadata after a successful upload, rolls back on DB failure). The dangling rows' storage-path naming doesn't match this script at all, and predates its only commit by ~46 minutes — most likely an uncommitted/ad-hoc earlier draft from the same day. Historical, unrecoverable, no code fix needed in eq-solves-service.
+- [x] Shipped a reconciliation check so this can't go unnoticed again — `scripts/check-attachment-orphans.mjs`, wired into eq-shell's existing 3-hourly `tenant-drift.yml` schedule (not PRs — this checks live data, not a diff). Flags any `app_data.attachments` row with no matching file across both tenant planes; opens/updates/closes its own GitHub issue, kept separate from the security-violation issue in the same job. Deliberately one direction only — the reverse (a file with no row) was tested live first and produced false positives (files legitimately tracked by a different table, plus generated reports with no row by design), so it isn't checked. eq-shell [#1333](https://github.com/eq-solutions/eq-shell/pull/1333), merged + live.
+- [ ] **A4/A5 from the sprint doc, Royce's call, not scoped** — extend the same direct-to-storage pattern to the other 8 upload paths fixed in #1307 (nothing's broken today, just capped lower than it could be), and/or add malware/content-scanning on uploads (nothing scans file content anywhere in the suite today). _(added 2026-08-13)_
+
+---
+
 ## eq-shell + eq-field + eq-service: CI sweep, duplicate-work cleanup, 2 real PRs merged + deployed (2026-08-13)
 *Royce: "check for any other failing CI or unmerged fixes" → found + fixed. Then "/decide" on what next → recommended surfacing what's already ready over starting new speculative work. Then "merge685andinvestigate1310" → both actioned. Then "merge #1310 once CI is green" → done, blocked once on a dependency, resolved.*
 
@@ -32,37 +46,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ## eq-cards: licence save silently duplicated the row on a failed photo upload — deployed live + follow-up (2026-08-13)
 - [x] Deployed live to cards.eq.solutions (explicit "yes deploy it") — `Build & Deploy` workflow confirmed successful, `headSha` matches `main` exactly.
 - [x] Confirmed the failed upload was a **photo**, not a PDF — traced to `photo_compress_web.dart`'s `createImageBitmap()` call specifically (the PDF/document path stores bytes verbatim with no decode step, so couldn't produce this error).
-
----
-
-## eq-shell: unreachable upload-size limits fixed across 8 upload paths, live (2026-08-12)
-*Royce hit a real "network error" attaching a file to a quote. Investigation found Netlify's hard 6 MB function payload ceiling made several `MAX_BYTES` constants unreachable in practice (10–20 MB claimed, ~4.5 MB actually reachable after multipart/base64 inflation) — any file in that gap failed at the network layer with a misleading "check your connection" message instead of an honest size error.*
-
-- [x] Fixed across 8 functions (`staff-licence-backfill`/`-ocr`/`-replace-photo`, `upload-asset-cert`, `upload-document-version`, `ocr-parse`, `labour-hire-parse`, `create-worker-invite`) + all their frontend callers — `MAX_BYTES` lowered to a reachable 4 MB, error messages made honest, instant client-side pre-checks added so an oversized file fails immediately instead of after a doomed network round-trip. eq-shell [#1307](https://github.com/eq-solutions/eq-shell/pull/1307), merged + deployed live.
-- [x] `create-worker-invite.ts` needed more than a number change — it can carry several licence documents in one request body, so a per-file cap alone wasn't enough (two files can each pass individually and still blow the shared request limit together). Added a combined-total check alongside the per-file one.
-
----
-
-## eq-shell: quote attachments moved to direct-to-storage upload — real limit now 50 MB, not merged yet (2026-08-12)
-*Royce's actual quote attachments (drawings, PDFs, emails) run 5–10 MB on average — above even the "honest" 4 MB fix above. No size number fixes that while the file still routes through a Netlify function; the ceiling itself had to go.*
-
-- [x] Built a new upload path for plain quote reference attachments (drawings/PDFs/emails — NOT the AI "Import from PDF" feature, which is untouched and stays as-is). The file now goes straight from the browser to Supabase Storage instead of through a function, removing the payload ceiling entirely. New limit is 50 MB, matching the real storage-level limit (checked live, not guessed). eq-shell PR [#1310](https://github.com/eq-solutions/eq-shell/pull/1310), open.
-- [ ] **PR #1310 not yet verified or merged** — Royce reported issues testing it. Checked live and ruled out: the storage system's cross-origin access rules, and whether the new code actually deployed (both fine). The actual failure is still unidentified — waiting on the specific error message/network response before it can be diagnosed further. _(added 2026-08-12)_
-
----
-
-## eq-shell: 2 dead Supabase Storage folders found + removed from the SKS database (2026-08-12)
-*Found while investigating the size-limit work above — two storage folders sitting on the SKS (ehow) database that nothing in the live apps actually uses.*
-
-- [x] Audited every storage folder across all three EQ Supabase projects. One (`job-plan-references`, empty) turned out to be EQ Service's own abandoned feature — they'd already written their own cleanup for it, it just never actually ran. The other (`sks-quote-attachments`, one real file — a hospital job quote PDF that nothing in the database points to anymore) predates both eq-shell's and EQ Service's tracked history — most likely a leftover from the old standalone SKS app, before it was folded into Shell.
-- [x] Tried to remove both through the normal governed database-update process — blocked: Supabase itself refuses to let a plain update-script delete storage folders/files directly (a deliberate safety feature, not a bug, to stop orphaned files). That update was abandoned (eq-shell PR #1309, closed without merging) and both folders were deleted directly through the Supabase dashboard instead — confirmed gone.
-
----
-
-## eq-shell: "Download Quote" failing with no retry — root-caused + fixed, not merged yet (2026-08-12)
-*While investigating the size-limit bug above, checked Sentry for the actual error that started the session — turned out to be a different, real, still-open bug on the same page.*
-
-- [x] Found via Sentry (`EQ-SHELL-1J`): the "Download Quote" button (Word doc export) can fail on a one-off network blip because the template download had no retry at all — same gap in the "Job Creation" Excel export. Added an automatic retry to both (checked the Excel path specifically for safety first — the server re-checks the quote's status fresh on every call, so a retry can't accidentally create a duplicate job). eq-shell PR [#1317](https://github.com/eq-solutions/eq-shell/pull/1317), open.
 
 ---
 
