@@ -74,11 +74,27 @@ Close out the loose ends from the "5-10MB attachment fails on quotes" incident s
 
 ### A4 — Convert other upload paths to direct-to-storage
 
-**Why:** Raised during the "what are industry leaders doing" research pass — the same signed-upload pattern now used for quote attachments (PR #1310) would also remove the artificial ~4.5MB Netlify Lambda ceiling from the 8 files fixed honestly in PR #1307 (staff licences, asset certs, document versions, worker-invite credentials, etc.). Real but not urgent — those paths work correctly today, just capped lower than ideal.
+**Why:** Raised during the "what are industry leaders doing" research pass — the same signed-upload pattern now used for quote attachments (PR #1310) would also remove the artificial ~4.5MB Netlify Lambda ceiling from the 8 files fixed honestly in PR #1307. Real but not urgent — those paths work correctly today, just capped lower than ideal.
 
-**Action:** Royce call on priority — no incident is currently blocked on this.
+**Scoped 2026-08-13.** Read all 8 against the reference pattern (`attachment-upload-init.ts`/`attachment-upload-commit.ts`). Checked Sentry for the last 90 days first — **zero size-related failures on any of the 8**, unlike quote attachments where a real incident triggered this whole thread. This is preventive, not incident-driven.
 
-**Status:** Parked — deferred, real project not yet scoped.
+3 of 8 aren't storage functions at all — `staff-licence-ocr.ts`, `ocr-parse.ts`, `labour-hire-parse.ts` never touch Storage, they proxy raw bytes straight to an OCR/vision API (Claude document block, Google Document AI, Claude vision tool-use respectively). Direct-to-storage doesn't apply to them on its own.
+
+Of the remaining 5 (all storage-writing):
+
+| Function | Effort | Real upside? |
+|---|---|---|
+| `upload-document-version.ts` | Moderate — needs re-fetch-after-upload to keep the server-side SHA-256 anti-tamper hash computed on the server, not trust a client-supplied one | **Yes** — scanned sign-off register PDFs plausibly already hit the 4MB wall, same size class as quote attachments |
+| `upload-asset-cert.ts` | Trivial — simplest of the 8, doesn't even insert a DB row | No — certs are typically <2MB |
+| `staff-licence-replace-photo.ts` | Trivial — near-identical shape to the reference pattern | No — phone photos are typically 1–3MB |
+| `staff-licence-backfill.ts` | Moderate — 2-file case (front/back), dedupe logic wraps the upload | No — same size class as above |
+| `create-worker-invite.ts` | Moderate — needs a batch/multi-file signed-upload pattern (up to 10 credentials per invite) for marginal benefit, since the combined cap already forces small individual files | Marginal |
+
+**Recommendation:** if this gets built at all, do `upload-document-version.ts` alone first — it's the one path with a real, plausible size problem, matching the same justification that made the quote-attachments fix worth it. Leave the other 4 alone unless one of them actually starts failing — no evidence any currently do.
+
+**Action:** Royce call on priority. If yes: `upload-document-version.ts` only, to start.
+
+**Status:** Scoped — not built. Recommendation above, not a build.
 
 ---
 
@@ -86,9 +102,22 @@ Close out the loose ends from the "5-10MB attachment fails on quotes" incident s
 
 **Why:** Noted during the same research pass — neither the old function-relay uploads nor the new direct-to-storage flow scan file content before it lands in Storage. Industry-standard for a bucket accepting arbitrary user files, but no incident has surfaced from this yet.
 
-**Action:** Royce call on priority.
+**Scoped 2026-08-13.** Confirmed no existing scanning infra anywhere in the suite (grepped for virus/malware/clamav/scan across eq-shell — no real hits). Neither Supabase Storage nor Netlify offer built-in AV scanning; this would be a new external integration.
 
-**Status:** Parked — not built, not scoped.
+**Where it plugs in:** `attachment-upload-commit.ts` already has the right hook — it does a post-upload verification step today (downloads `.msg`/`.eml` files to check their byte signature before finalizing). A malware-scan call is the same shape: scan after upload, before the DB row is inserted; delete + reject on a positive.
+
+**Vendor options:**
+- **Cloudmersive Virus Scan API** — has a real free tier built for exactly this ("scan a file upload"), single API call, clean/infected response. Best fit for a serverless function.
+- **VirusTotal API** — broader AV-engine coverage (70+), but the free tier's rate limit (4 req/min) is tight for a production gate, not just a lookup tool.
+- **Self-hosted ClamAV** — no per-scan cost or vendor lock-in, and no file content leaves EQ's own infrastructure (a real point in its favour for customer documents) — but needs persistent compute (a small always-on service, e.g. Fly.io/Railway), which Netlify Functions can't provide. More ops overhead for less integration work.
+
+**The real blocker isn't build effort — it's picking and signing up for a vendor.** Implementation itself is small (one shared helper + a call in the existing commit function). This needs Royce to choose (and, for anything beyond a free tier, approve a cost) before any code gets written.
+
+**Recommendation:** pilot on quote attachments only (`attachment-upload-commit.ts`) — the highest-risk path, since it explicitly accepts arbitrary external files (drawings, PDFs, emails from outside the company). Don't build it into all 8 upload paths from A4 up front; extend later if the pilot's worth keeping.
+
+**Action:** Royce call — pick a vendor (or explicitly decide it's not worth it yet).
+
+**Status:** Scoped — not built. Recommendation above, not a build.
 
 ---
 
@@ -117,8 +146,8 @@ Close out the loose ends from the "5-10MB attachment fails on quotes" incident s
 - [ ] A1 — PR #1310 merged + live 2026-08-13, but the original reported issue was never confirmed fixed (no repro provided) — leave open until Royce confirms or it resurfaces
 - [x] A2 — confirmed out of scope for eq-shell (no action needed here)
 - [x] A3 — dropped, [PR #1331](https://github.com/eq-solutions/eq-shell/pull/1331) merged + live 2026-08-13
-- [ ] A4 — Royce call: scope or drop
-- [ ] A5 — Royce call: scope or drop
+- [ ] A4 — scoped (recommend `upload-document-version.ts` only, if anything); Royce call: build or drop
+- [ ] A5 — scoped (recommend pilot on quote attachments only, vendor TBD); Royce call: pick a vendor or drop
 - [x] A6 — capacity numbers pulled and logged — ~21MB total, no concern
 
 ## Where to start
