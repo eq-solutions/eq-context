@@ -61,11 +61,9 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-14)
 
 **eq-cards:**
-- #245 feat(auth): sign in with a mobile number or an email, in one field
 - #221 refactor(auth): shell-verify.js relays to eq-shell instead of local crypto
 
 **eq-shell:**
-- #1347 fix(auth): admin phone change now updates the login identity, not just the mirror
 - #1294 feat(cards): centralize Cards' SSO minting via token-exchange-cards.ts
 
 ---
