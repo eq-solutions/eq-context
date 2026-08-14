@@ -15,16 +15,8 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ---
 
 ## eq-shell: Staff list — apprentice year badge + Trade multi-select shipped, text[] conversion blocked on eq-field coordination (2026-08-14)
-*Royce asked where apprentice year was stored (thought it was wired to Field) and whether Trade could be capitalized + multi-select — as an electrical company, a single "electrical" label on almost every row was close to useless, and some workers do both electrical and comms.*
 
-- [x] Apprentice year (`year_level` — already live, shared with eq-field's own apprentice-advance logic) now shows as a "Year N" badge next to Job Title in the Staff list. It was real data the whole time, just never surfaced in the list view — only in the full detail panel.
-- [x] Trade column is now a multi-select (Electrical / Communications, capitalized display) — a worker can be tagged with more than one.
-- [x] Found a concrete blocker before building a real `text[]` array column: `app_data.staff.trade` is read and written directly by eq-field's own `app_data.field_people` / `field_people_removed` views and their IUD trigger functions (eq-field repo, not eq-shell). Converting the column type would need a coordinated eq-field-side migration touching the exact `CREATE OR REPLACE VIEW` / `security_invoker` pattern that's already caused 3 live incidents there. Given that finding, Royce chose comma-separated text on the existing column instead — zero schema change, zero eq-field risk, ships today.
-- [x] eq-shell PR [#1346](https://github.com/eq-solutions/eq-shell/pull/1346) merged (squash `25b4a0fb`). CI failed once on the role-literal enforcement ratchet — a false positive on an `employment_type === 'apprentice'` display check, not a permission gate — annotated and fixed same session.
-
-**Deferred:**
 - [ ] **Proper `text[]` array for Trade** — needs its own eq-field session to rebuild the `field_people`/`field_people_removed` views and the IUD trigger functions. Not scoped further; Royce's call on when to take it on. _(added 2026-08-14)_
-- [ ] **Not deployed** — merged to `main`, but core.eq.solutions production deploys are explicit-only (merging doesn't auto-deploy on this repo, by design). Royce to trigger when ready. _(added 2026-08-14)_
 - [ ] **Not click-tested live** — verified via `tsc -b --force`, eslint, full CI (all green), and the Netlify deploy preview build succeeding — not by clicking through a real signed-in session. _(added 2026-08-14)_
 
 ---
