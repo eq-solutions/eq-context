@@ -14,6 +14,19 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-cards: invite-claim IDOR fixed, 3-day claim outage found + fixed, stale-invite cleanup + guard shipped (2026-08-14)
+*A live code audit found `eq_cards_claim_invite` only checked that the caller was signed in — never that their verified phone matched the invite's target phone, letting one worker claim a colleague's invite by looking up their phone number. Verified against the live database before writing the fix. While preparing it, found something bigger already broken in production.*
+
+- [x] **Invite-claim security gap fixed.** The claim function now checks the caller's verified phone against the invite's target phone before allowing a claim. eq-cards migration `0124`, PR [#239](https://github.com/eq-solutions/eq-cards/pull/239), applied live, merged, deployed.
+- [x] **Found and fixed a live 3-day outage in the same function.** An earlier migration had silently stripped that function's permissions (a known trap in this database — function edits auto-revoke access unless explicitly re-granted). Zero invite claims had gone through since 2026-08-11. Fixed in the same migration, verified live.
+- [x] **William Brown's stale invite investigated and cleaned up** — he already had a live account and had recently updated his licences through it, but an old unclaimed invite for him was still sitting open. Traced the cause to a 2026-07-22 account-merge repair that didn't stop the invite system from still thinking he needed one.
+- [x] **Built a detection tool for this class of problem** — an admin tool that lists any worker who already has a live account but still has an invite outstanding, so this can be caught going forward. eq-cards migration `0125`, PR [#241](https://github.com/eq-solutions/eq-cards/pull/241), live.
+- [x] **Fixed the root cause** — the invite-sending function now refuses to create a new invite for a worker who already has a live account. eq-cards migration `0126`, PR [#242](https://github.com/eq-solutions/eq-cards/pull/242), live.
+- [x] Both deploys confirmed live on cards.eq.solutions.
+- [x] **Security register write-up committed** — was blocked by a stash-pop conflict in this repo (digest.md/suite-state.md/a sprint doc had unresolved conflict markers); resolved same session, register entry now live in `ops/security-register.md`.
+
+---
+
 ## eq-solves-service: /admin/* pages closed to non-managers (2026-08-14)
 *Royce: gate the remaining Admin pages that were reachable by any signed-in technician who typed the URL directly — the sidebar hid the link, but that's not access control. A prior sweep (PRs #707-#727) had already closed 3 of 9 admin pages; this closed the rest.*
 
