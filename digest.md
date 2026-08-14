@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-14 08:27 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-14 08:36 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-14 08:15 UTC → 2026-08-14 08:27 UTC)
+## Since last refresh (2026-08-14 08:27 UTC → 2026-08-14 08:36 UTC)
 
-- Merged: eq-shell [#1342](https://github.com/eq-solutions/eq-shell/pull/1342) fix(staff): compress licence photo before OCR/storage in Add
-- Merged: eq-shell [#1334](https://github.com/eq-solutions/eq-shell/pull/1334) feat(documents): move document-version uploads to direct-to-
-- Merged: eq-shell [#1329](https://github.com/eq-solutions/eq-shell/pull/1329) fix(shell): quote-job-consumer reads canonical_events direct
-- Merged: eq-shell [#1324](https://github.com/eq-solutions/eq-shell/pull/1324) feat(staff): swap Resourcing desktop view to eq-ui Table
-- Merged: eq-shell [#1322](https://github.com/eq-solutions/eq-shell/pull/1322) chore(security): permission-enforcement drift guard (ratchet
-- Merged: eq-shell [#1320](https://github.com/eq-solutions/eq-shell/pull/1320) feat(ops): bulk select in Archived tab (restore / delete mul
-- Merged: eq-shell [#1319](https://github.com/eq-solutions/eq-shell/pull/1319) feat(ops): archive view search/filter + auto-archive invoice
-- Merged: eq-shell [#1318](https://github.com/eq-solutions/eq-shell/pull/1318) fix(security): gate audit rollback + align entity archive/re
+- Merged: eq-shell [#1333](https://github.com/eq-solutions/eq-shell/pull/1333) chore(ci): add attachment row/file reconciliation check
+- Merged: eq-shell [#1332](https://github.com/eq-solutions/eq-shell/pull/1332) chore: delete unrouted CoreHome.tsx (EQ Intelligence mock ho
+- Merged: eq-shell [#1331](https://github.com/eq-solutions/eq-shell/pull/1331) fix(db): drop unused quote_attachment table + fix stale docs
+- Merged: eq-shell [#1330](https://github.com/eq-solutions/eq-shell/pull/1330) fix(documents): treat O&M manuals as reference library, not 
+- Merged: eq-shell [#1328](https://github.com/eq-solutions/eq-shell/pull/1328) chore(ci): triage is_worker_in_org into KNOWN_UNSOURCED (cro
+- Merged: eq-shell [#1323](https://github.com/eq-solutions/eq-shell/pull/1323) fix(staff): thread licence_verifications through the invite-
+- Merged: eq-shell [#1321](https://github.com/eq-solutions/eq-shell/pull/1321) feat(staff): write path for team/supervisor assignment on th
+- Merged: eq-shell [#1317](https://github.com/eq-solutions/eq-shell/pull/1317) fix(ops): retry quote-doc/job-creation fetches on a transien
 
 ## ⚠ Needs you (5)
 
@@ -81,11 +81,11 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-14 | eq-solves-service | [#727](https://github.com/eq-solutions/eq-service/pull/727) fix(actions): extend session-expiry Server Action guard to the re |
 | 2026-08-14 | eq-solves-service | [#726](https://github.com/eq-solutions/eq-service/pull/726) fix(archive): restoreEntityAction clears deleted_at for maintenan |
 | 2026-08-14 | eq-solves-service | [#725](https://github.com/eq-solutions/eq-service/pull/725) fix(maintenance): surface a clean message on session-expiry Serve |
+| 2026-08-14 | eq-field | [#696](https://github.com/eq-solutions/eq-field/pull/696) v3.5.497 — FIX: Email Templates nav button was permanently invisi |
 | 2026-08-14 | eq-field | [#695](https://github.com/eq-solutions/eq-field/pull/695) v3.5.496 — Email Templates pilot: leave.js's 3 templates now DB-e |
 | 2026-08-14 | eq-field | [#694](https://github.com/eq-solutions/eq-field/pull/694) v3.5.495 — Teams route guard (deep-link access-control gap) |
 | 2026-08-14 | eq-field | [#693](https://github.com/eq-solutions/eq-field/pull/693) supervisor-digest: widen leave lookahead from 1 week to 4, groupe |
-| 2026-08-14 | eq-field | [#692](https://github.com/eq-solutions/eq-field/pull/692) v3.5.494 — Leave notification gaps closed; Job Numbers panel fix |
-_Showing 15 of 113 · full record in [sessions/](sessions/)_
+_Showing 15 of 112 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
@@ -99,7 +99,7 @@ _Showing 15 of 113 · full record in [sessions/](sessions/)_
 - **There's no "executive" or "stakeholder" concept anywhere in this app** — the notify-list and the Friday digest both only ever draw from people flagged as Supervisors. If Royce wants a broader audience notified than that, it's a real feature decision, not a bug fix. _(added 2026-08-14)_
 - **Not click-tested live** — same sandbox limitation as every other item this session; verified by direct database checks, production file checks, and the full automated test suite instead. _(added 2026-08-14)_
 - "View" on a document is still 2 network hops end-to-end (the server call, then a separate Storage signed-URL call) — only the first hop's 2-sequential-query inefficiency was fixed this session (PostgREST embed over an existing FK, `document-signoffs.js`). _(added 2026-08-13)_
-_…and 494 more · [eq/pending.md](eq/pending.md)_
+_…and 493 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -142,4 +142,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-14 08:27 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-14 08:36 UTC._
