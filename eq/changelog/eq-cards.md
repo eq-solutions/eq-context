@@ -9,8 +9,9 @@ status: live
 
 # EQ Cards — Changelog
 
-## 2026-08-14 (PR #243 MERGED — Profile/Settings duplicate widgets removed)
+## 2026-08-14 (PR #243 MERGED + deployed live — Profile/Settings duplicate widgets removed)
 - **PR #243 MERGED.** Settings had re-implemented the workspace switcher and manager/supervisor join-QR card that already live on Profile — confirmed via git history it was accidental (the QR card was added to Settings only in an earlier PR, the Profile copy pasted in later during a 3→2 tab nav merge, never reusing what existed). Removed from Settings; Profile stays the one home for both. CI's `flutter analyze` caught a leftover unused `eq_spinner.dart` import before merge — no local Flutter toolchain existed to catch it first. Part of a suite-wide nav-simplification pass — see `eq-context/eq/sprints/2026-08-14-nav-simplification.md`.
+- **Deployed live** — merged but not yet deployed (this repo's deploy is manual-dispatch-only), found by a separate session, dispatched `Build & Deploy` on Royce's go, confirmed live on `cards.eq.solutions`.
 
 ## 2026-08-14 (PRs #239, #241, #242 MERGED + deployed live — invite-claim security fix + stale-invite cleanup)
 - **PR #239 MERGED — invite-claim IDOR fixed (SEC-25).** `eq_cards_claim_invite` only checked `auth.uid() IS NOT NULL`, never that the OTP-verified phone matched the invite's target phone — one authenticated worker could claim a colleague's invite via `eq_cards_lookup_invite_by_phone`. Migration `0124` adds the phone check, preferring `workers.phone` over `profile_data->>'phone'` when a worker record already exists (a real historical case where they disagreed was found live). Same migration also restored a `GRANT EXECUTE ... TO authenticated` that an earlier migration (0121) had silently dropped — that gap had killed every invite claim in production for 3 days (last success 2026-08-11) before this was caught.
