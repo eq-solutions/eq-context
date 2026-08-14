@@ -9,6 +9,10 @@ status: live
 
 # EQ Service — Changelog
 
+## 2026-08-14 (PRs #729/#730 MERGED + deployed live — nav simplification: embedded nav parity, Admin sidebar relabel)
+- **PR #729 MERGED, live.** The Shell-embedded nav bar (`app/(app)/layout.tsx`) was a hand-maintained second copy of the standalone sidebar's nav list and had silently fallen behind — missing Today, Insight, Search, Settings. Added all three (Insight gated, matching the standalone sidebar's own `role !== 'employee'` check; Today/Search/Settings unconditional, matching standalone). Part of a suite-wide nav-simplification pass — see `eq-context/eq/sprints/2026-08-14-nav-simplification.md`.
+- **PR #730 MERGED.** Same AdminHub-undersell fix as eq-shell #1343 — relabelled the sidebar's single "Admin" link (sitting directly under an identically-worded "Admin" section header, opening a 10-tile hub) to "All admin tools." Held until [#728](https://github.com/eq-solutions/eq-service/pull/728) (a concurrent security fix touching the same file) merged first, to avoid a collision.
+
 ## 2026-08-14 (PR #726 MERGED + deployed live — restore-side deleted_at fix for maintenance/testing checks)
 - **PR #726 MERGED** — `restoreEntityAction` (`app/(app)/admin/archive/actions.ts`) now clears `deleted_at` when restoring a `maintenance_check`/`testing_check`, matching the archive-side stamping `#720` already shipped. Needed because `service.maintenance_checks`' `INSTEAD OF UPDATE` trigger (migration `0147`) passes `deleted_at` straight through from the update payload instead of deriving it from the `is_active` transition, unlike the customers/sites pattern. Confirmed `assets` has no `deleted_at` column at all before touching it — would have broken if applied unconditionally. Deploy confirmed live via Netlify's deploy record (`commit_ref` exact match to `638b670e`, published 92s after merge).
 

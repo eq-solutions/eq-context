@@ -9,6 +9,10 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-08-14] Add Person nav gating closed suite-wide (v3.5.498-499, #697/#698)
+- **Desktop's "Add Person" button had no manager/supervisor gate** while the mobile drawer's equivalent already did. Verified Field's role model first — no separate supervisor flag, `isManager` already covers both (PIN-unlock checks `role === 'supervisor'` against a broad allowlist; the Shell-JWT handoff grants it for any non-employee role). Added the missing `.edit-only` class to match mobile. Collided on version number with the concurrently-merged Email Templates hotfix below (both wanted v3.5.497) — rebased, kept both changelog/reflection-log entries, renumbered to v3.5.498. Part of a suite-wide nav-simplification pass — see `eq-context/eq/sprints/2026-08-14-nav-simplification.md`. #697, live.
+- **3 more buttons with the identical bug** (Contacts "Add Contact," Managers "Add Contact," Editor "Add Person") found in passing, fixed separately as v3.5.499. #698, live.
+
 ## [2026-08-14] FIX — Email Templates nav button was permanently invisible (v3.5.497, #696)
 - The `Testing → Email Templates` nav button shipped earlier the same day (#695, below) carried both the correct `edit-only` class AND a leftover inline `style="display:none"` copied from the neighbouring Diary button — an inline style always beats the CSS class rule meant to reveal it, so the button was unreachable for every user in every role. Royce caught it live (screenshot of his own Supervision-unlocked sidebar, button missing). Fix: removed the inline style. Confirmed live via `field.eq.solutions/sw.js`. The Diary nav button likely has the identical bug — flagged as a separate follow-up, deliberately left alone this session per Royce's call.
 
