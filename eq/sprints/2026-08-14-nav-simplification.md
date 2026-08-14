@@ -5,14 +5,14 @@ last_updated: 2026-08-14
 scope: Code-level nav/menu audit across Shell/Field/Service/Cards, Royce's picks off the resulting decision sheet, and the fixes built same-session. Triggered by "how do we make the average user experience feel easier" — what would Atlassian/Microsoft do at this stage.
 read_priority: standard
 status: live
-duration_estimate: All 5 build items are done and committed. 4 are unpushed, waiting on Royce's push/PR go-ahead. SERVICE-1 is scoped but deliberately not started — sequenced behind a concurrent security fix.
-shipped: CARD-1 (pushed, PR open). SUITE-1 (doc, pushed this commit).
-pending: SHELL-1/2/3/4, FIELD-2, SERVICE-2 — built, committed, not pushed. SERVICE-1 — scoped, held.
+duration_estimate: Closed. All 7 buildable items merged (CARD-1, SHELL-1/2/3/4, FIELD-2, SERVICE-1/2). SUITE-1 doc written. FIELD-1 reviewed and closed with no action — the audit's framing was wrong, the split was a deliberate prior decision, not cruft. CARD-2/FIELD-3 confirmed no action.
+shipped: CARD-1 (eq-cards#243), SHELL-1 (eq-shell#1344), SHELL-2/3/4 (eq-shell#1343), FIELD-2 (eq-field#697), SERVICE-1 (eq-service#730), SERVICE-2 (eq-service#729) — all merged. SUITE-1 doc merged (eq-context#155).
+pending: none — sprint closed.
 ---
 
 # Sprint — Suite-wide Navigation Simplification
 
-**Status:** audit done, decisions made, 6 of 7 buildable items shipped-to-commit same session. One (CARD-1) is pushed with a PR open; four more are committed and build-clean but waiting on a push decision. One (SERVICE-1) is intentionally not started yet.
+**Status:** closed. All 7 buildable items merged. SUITE-1 doc merged. FIELD-1 reviewed and closed with no action after a pre-build check found the audit's own framing was wrong — see its entry below. CARD-2/FIELD-3 confirmed no action, as decided on the sheet.
 
 ---
 
@@ -57,9 +57,9 @@ Four parallel agents read the actual navigation source in each repo (not `eq/pro
 
 **Built:** new `ReportsIndex` page at `src/pages/ReportsIndex.tsx`, matching AdminHub's existing tile-grid visual pattern. Route split: `/reports` (exact) → `ReportsIndex`; `/reports/gm/*` → `GmReportsModule` (unchanged internally, still its own lazy chunk). One live card today: "GM Reports." AdminHub's tile and MobileTabBar's tab both still point at bare `/reports` — no gate changes on either. A third door (a `⌘K` command-palette "Reports" entry, found during the build, not in the original audit) also correctly lands on the new index with no change needed.
 
-**Done.** Branch `claude/reports-index` (eq-shell), build green. **Not pushed.**
+**Done.** [eq-shell PR #1344](https://github.com/eq-solutions/eq-shell/pull/1344) — merged.
 
-**Status:** ✅ Built, awaiting push decision.
+**Status:** ✅ Merged.
 
 ---
 
@@ -69,9 +69,9 @@ Four parallel agents read the actual navigation source in each repo (not `eq/pro
 
 **Built:** lowest-risk fix, per the original recommendation's explicit scope constraint — relabelled "Overview" → "All admin tools" (`HubSidebar.tsx:154`) so the link signals it's the full index, not a redundant home button. Did not restructure the sidebar to list all 16 tiles — that was explicitly out of scope for this pass.
 
-**Done.** Branch `claude/nav-cleanup-fixes` (eq-shell), commit `5f1f518f`. **Not pushed.**
+**Done.** [eq-shell PR #1343](https://github.com/eq-solutions/eq-shell/pull/1343), commit `5f1f518f` — merged.
 
-**Status:** ✅ Built, awaiting push decision.
+**Status:** ✅ Merged.
 
 ---
 
@@ -79,9 +79,9 @@ Four parallel agents read the actual navigation source in each repo (not `eq/pro
 
 **Why:** A literal customer/vendor name was baked into a nav menu label inside Ops's "More" dropdown — contra the product-copy-genericization rule already applied everywhere else in the suite.
 
-**Done:** relabelled to "Import purchase orders" (`QuotesModule.tsx:7092`), verified against the actual import behaviour first. Branch `claude/nav-cleanup-fixes` (eq-shell), commit `2144a141`. **Not pushed.**
+**Done:** relabelled to "Import purchase orders" (`QuotesModule.tsx:7092`), verified against the actual import behaviour first. [eq-shell PR #1343](https://github.com/eq-solutions/eq-shell/pull/1343), commit `2144a141` — merged (same PR as SHELL-2, one cleanup batch).
 
-**Status:** ✅ Built, awaiting push decision.
+**Status:** ✅ Merged.
 
 ---
 
@@ -89,9 +89,9 @@ Four parallel agents read the actual navigation source in each repo (not `eq/pro
 
 **Why:** Two routes doing nothing but `Navigate` to `/ops`, kept for old bookmarks — not in any menu, nothing to simplify by removing them. Royce's explicit call, overriding the original "leave as-is" recommendation: *"Remove these references - save finding them again and again."*
 
-**Done:** both routes deleted (`App.tsx:782-784`). Grepped first to confirm nothing else in the repo constructs a link expecting the redirect. Branch `claude/nav-cleanup-fixes` (eq-shell), commit `8e134384`. **Not pushed.**
+**Done:** both routes deleted (`App.tsx:782-784`). Grepped first to confirm nothing else in the repo constructs a link expecting the redirect. [eq-shell PR #1343](https://github.com/eq-solutions/eq-shell/pull/1343), commit `8e134384` — merged (same PR as SHELL-2/3).
 
-**Status:** ✅ Built, awaiting push decision.
+**Status:** ✅ Merged.
 
 ---
 
@@ -101,11 +101,13 @@ Four parallel agents read the actual navigation source in each repo (not `eq/pro
 
 **Verified before building:** Field doesn't track manager and supervisor as separate flags — `isManager` is a single "supervision unlocked" flag already covering both (PIN-unlock path checks `role === 'supervisor'` against a broad category allowlist; Shell-JWT handoff grants it for any non-employee role). So "supervisor or manager" maps directly onto the existing `.edit-only` mechanism — no new gating logic needed, just applying the class desktop was missing.
 
-**Done:** added `edit-only` to the desktop button (`index.html`, was line 11361). Mobile's equivalent was already correct. Version-stamp bumped (3.5.496→3.5.497) and a reflection-log entry added, matching this repo's own convention for permission-gating fixes. 27/27 tests pass, bundle-check clean. Branch `claude/nav-addperson-gate` (eq-field), commit `8a028900`. **Not pushed.**
+**Done:** added `edit-only` to the desktop button (`index.html`, was line 11361). Mobile's equivalent was already correct. Version-stamp bumped and a reflection-log entry added, matching this repo's own convention for permission-gating fixes. 27/27 tests pass, bundle-check clean. [eq-field PR #697](https://github.com/eq-solutions/eq-field/pull/697) — merged, **live on field.eq.solutions**.
 
-**Found in passing, spun off separately (not built here):** 3 more buttons with the identical ungated bug — Contacts "Add Contact," Managers "Add Contact," Editor "Add Person." Flagged as its own background task rather than expanding this fix's scope.
+Landed as v3.5.498, not v3.5.497 as first built — a concurrent hotfix (Email Templates nav visibility, #696) claimed 3.5.497 on `main` first. Rebased on top of it, kept both changelog/reflection-log entries, renumbered, re-ran the full test suite (27/27) and bundle-check clean, force-pushed, then merged.
 
-**Status:** ✅ Built, awaiting push decision.
+**Found in passing, spun off separately (not built here):** 3 more buttons with the identical ungated bug — Contacts "Add Contact," Managers "Add Contact," Editor "Add Person." Flagged as its own background task; **that task ran and merged separately** as [eq-field PR #698](https://github.com/eq-solutions/eq-field/pull/698) (v3.5.499).
+
+**Status:** ✅ Merged, live.
 
 ---
 
@@ -113,9 +115,11 @@ Four parallel agents read the actual navigation source in each repo (not `eq/pro
 
 **Why:** Service's Admin sidebar entry hides Users, Workspace Settings, Media Library, Report Settings, Archive, Audit Log, Imports, Backup, Activity behind one row — same undersell pattern as Shell.
 
-**Not built.** `app/(app)/admin/page.tsx` — the exact file this fix would touch — already has an active branch, `fix/admin-hub-role-gate`, from Royce's own separately-running security task (adding a read-side role check to the same file). Building this alongside it risked a real merge collision on the same file for no benefit. Deliberately sequenced behind that fix landing first.
+**Held, then built.** `app/(app)/admin/page.tsx` had an active branch, `fix/admin-hub-role-gate`, from Royce's own separately-running security task (adding a read-side role check). Held to avoid a merge collision; started once that branch merged as [eq-service PR #728](https://github.com/eq-solutions/eq-service/pull/728). The actual fix landed in `components/ui/Sidebar.tsx`, not `admin/page.tsx` — relabelled the sidebar's single "Admin" link (which sat directly under an identically-worded "Admin" section header) to "All admin tools," same fix as SHELL-2, no collision with #728 after all once the real edit location was found.
 
-**Status:** ⏸ Scoped, held — sequence after `fix/admin-hub-role-gate` merges.
+**Done.** [eq-service PR #730](https://github.com/eq-solutions/eq-service/pull/730) — merged. `tsc --noEmit` clean.
+
+**Status:** ✅ Merged.
 
 ---
 
@@ -123,9 +127,9 @@ Four parallel agents read the actual navigation source in each repo (not `eq/pro
 
 **Why:** The Shell-embedded top bar for Service silently omitted Today, Search, and Settings — not gated out, just never added when that bar was last touched, so it hand-drifted out of sync with the standalone sidebar.
 
-**Done:** added the three missing items, each carrying the exact gating condition its standalone-sidebar counterpart uses (e.g. Insight/Records both check `role !== 'employee'`), not just added visually. Stayed clear of `admin/page.tsx` per the same SERVICE-1 collision-avoidance. `tsc --noEmit` clean. Branch `claude/nav-parity-embedded` (eq-solves-service), commit `151d63ac`. **Not pushed.**
+**Done:** added the three missing items, each carrying the exact gating condition its standalone-sidebar counterpart uses (e.g. Insight/Records both check `role !== 'employee'`), not just added visually. Stayed clear of `admin/page.tsx` per the same SERVICE-1 collision-avoidance. `tsc --noEmit` clean. [eq-service PR #729](https://github.com/eq-solutions/eq-service/pull/729) — merged, **live on service.eq.solutions**.
 
-**Status:** ✅ Built, awaiting push decision.
+**Status:** ✅ Merged, live.
 
 ---
 
@@ -141,11 +145,13 @@ Four parallel agents read the actual navigation source in each repo (not `eq/pro
 
 ### FIELD-1 — Site Audits and Records, one page split into two entries
 
-**Why:** Both route through the same underlying safety page/tab, split into separate sidebar items for historical reasons.
+**Why (original framing, wrong):** the initial code-level audit found both routing through the same underlying safety page/tab and called the split "historical reasons" — implying leftover cruft, not a real design choice.
 
-**Not built — deliberately deprioritized.** Royce marked this "Later," not "Do it." Lowest-risk of the recommended items; no reason it can't wait.
+**Correction (2026-08-14, before building):** Royce asked to start this after initially marking it "Later." Before touching code, checked `index.html`'s own changelog (v3.5.342) rather than build from the audit's framing alone — it directly contradicts it. Site Audits and Records were originally tabs inside one page; Royce explicitly asked for them to become separate flat sidebar entries instead, rejecting the merged/tabbed layout on purpose: *"Prestarts/Toolboxes/Site Audits/Records/Report/Test Equipment should ALL be direct entries under one collapsible Safety group — not a separate 'Site Reports' hub tile plus a 'Safety' tile whose own page had internal Site Audits/Records tabs."* This is a previously-made, deliberate UX decision, not an oversight — merging them back would reverse it, not fix anything.
 
-**Status:** ⏸ Later, per Royce.
+**Not built.** Surfaced the correction and asked before proceeding rather than build against a decision already on record. Royce's call, informed: leave them separate.
+
+**Status:** ✅ Reviewed, closed — no action. Not the same as "Skip" above (CARD-2/FIELD-3, where the recommendation itself was to leave alone) — this one reverses what the decision sheet said, because the decision sheet's own premise was wrong.
 
 ---
 
@@ -177,29 +183,32 @@ While pulling this sprint doc's template, found the shared `C:\Projects\eq-conte
 
 ## Sprint success criteria
 
-- [x] CARD-1 — de-duped, [PR #243](https://github.com/eq-solutions/eq-cards/pull/243) open
-- [x] SHELL-1 — Reports landing page built, `claude/reports-index`, not pushed
-- [x] SHELL-2 — AdminHub relabel, `claude/nav-cleanup-fixes`, not pushed
-- [x] SHELL-3 — vendor name removed from nav label, same branch, not pushed
-- [x] SHELL-4 — dead redirects deleted, same branch, not pushed
-- [x] FIELD-2 — Add Person gated to supervisor+manager, `claude/nav-addperson-gate`, not pushed
-- [ ] SERVICE-1 — held, sequenced behind `fix/admin-hub-role-gate`
-- [x] SERVICE-2 — embedded nav parity, `claude/nav-parity-embedded`, not pushed
-- [x] SUITE-1 — nav-access-matrix.md written
-- [ ] FIELD-1 — later, per Royce
+- [x] CARD-1 — de-duped, [eq-cards#243](https://github.com/eq-solutions/eq-cards/pull/243) merged
+- [x] SHELL-1 — Reports landing page, [eq-shell#1344](https://github.com/eq-solutions/eq-shell/pull/1344) merged
+- [x] SHELL-2 — AdminHub relabel, [eq-shell#1343](https://github.com/eq-solutions/eq-shell/pull/1343) merged
+- [x] SHELL-3 — vendor name removed from nav label, same PR, merged
+- [x] SHELL-4 — dead redirects deleted, same PR, merged
+- [x] FIELD-2 — Add Person gated to supervisor+manager, [eq-field#697](https://github.com/eq-solutions/eq-field/pull/697) merged, live
+- [x] SERVICE-1 — Admin sidebar relabel, [eq-service#730](https://github.com/eq-solutions/eq-service/pull/730) merged
+- [x] SERVICE-2 — embedded nav parity, [eq-service#729](https://github.com/eq-solutions/eq-service/pull/729) merged, live
+- [x] SUITE-1 — nav-access-matrix.md written, [eq-context#155](https://github.com/eq-solutions/eq-context/pull/155) merged
+- [x] FIELD-1 — reviewed after Royce asked to start it; found the split was a deliberate prior decision (v3.5.342), not cruft — closed with no action, corrected on the record above
 - [x] CARD-2 / FIELD-3 — confirmed no action
 
 ## Where to start
 
-Everything buildable this pass is done except SERVICE-1. What's open: push the 4 unpushed branches (or hold — Royce's call, each already build-verified clean), merge `fix/admin-hub-role-gate` so SERVICE-1 can start, and separately decide whether the eq-context stale-checkout/conflict-marker finding gets its own cleanup pass.
+Sprint's closed — every item resolved one way or another. What's still open, not part of this sprint: Field's 3-more-ungated-buttons follow-up (already merged as eq-field#698, separate task), and the eq-context stale-checkout/conflict-marker finding (spun off as its own task, running in a separate session as of this doc).
 
 ---
 
 ## Related
 
 - [eq-context/eq/identity/nav-access-matrix.md](../identity/nav-access-matrix.md)
-- [eq-cards PR #243](https://github.com/eq-solutions/eq-cards/pull/243) — merged/open, Profile/Settings de-dupe
-- eq-shell `claude/reports-index` — Reports landing page, not pushed
-- eq-shell `claude/nav-cleanup-fixes` — AdminHub relabel + vendor-name fix + dead-route deletion, not pushed
-- eq-field `claude/nav-addperson-gate` — Add Person gating fix, not pushed
-- eq-solves-service `claude/nav-parity-embedded` — embedded nav parity, not pushed
+- [eq-cards PR #243](https://github.com/eq-solutions/eq-cards/pull/243) — merged, Profile/Settings de-dupe
+- [eq-shell PR #1344](https://github.com/eq-solutions/eq-shell/pull/1344) — merged, Reports landing page
+- [eq-shell PR #1343](https://github.com/eq-solutions/eq-shell/pull/1343) — merged, AdminHub relabel + vendor-name fix + dead-route deletion
+- [eq-field PR #697](https://github.com/eq-solutions/eq-field/pull/697) — merged, live, Add Person gating fix
+- [eq-field PR #698](https://github.com/eq-solutions/eq-field/pull/698) — merged, live, the 3-more-buttons follow-up
+- [eq-service PR #729](https://github.com/eq-solutions/eq-service/pull/729) — merged, live, embedded nav parity
+- [eq-service PR #730](https://github.com/eq-solutions/eq-service/pull/730) — merged, Admin sidebar relabel
+- [eq-context PR #155](https://github.com/eq-solutions/eq-context/pull/155) — merged, nav-access-matrix.md
