@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-14 05:50 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-14 05:59 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-14 05:35 UTC → 2026-08-14 05:50 UTC)
+## Since last refresh (2026-08-14 05:50 UTC → 2026-08-14 05:59 UTC)
 
-- Merged: eq-shell [#1333](https://github.com/eq-solutions/eq-shell/pull/1333) chore(ci): add attachment row/file reconciliation check
-- Merged: eq-shell [#1332](https://github.com/eq-solutions/eq-shell/pull/1332) chore: delete unrouted CoreHome.tsx (EQ Intelligence mock ho
-- Merged: eq-shell [#1331](https://github.com/eq-solutions/eq-shell/pull/1331) fix(db): drop unused quote_attachment table + fix stale docs
-- Merged: eq-shell [#1330](https://github.com/eq-solutions/eq-shell/pull/1330) fix(documents): treat O&M manuals as reference library, not 
-- Merged: eq-shell [#1328](https://github.com/eq-solutions/eq-shell/pull/1328) chore(ci): triage is_worker_in_org into KNOWN_UNSOURCED (cro
-- Merged: eq-shell [#1323](https://github.com/eq-solutions/eq-shell/pull/1323) fix(staff): thread licence_verifications through the invite-
-- Merged: eq-shell [#1321](https://github.com/eq-solutions/eq-shell/pull/1321) feat(staff): write path for team/supervisor assignment on th
-- Merged: eq-shell [#1320](https://github.com/eq-solutions/eq-shell/pull/1320) feat(ops): bulk select in Archived tab (restore / delete mul
+- Merged: eq-shell [#1334](https://github.com/eq-solutions/eq-shell/pull/1334) feat(documents): move document-version uploads to direct-to-
+- Merged: eq-shell [#1329](https://github.com/eq-solutions/eq-shell/pull/1329) fix(shell): quote-job-consumer reads canonical_events direct
+- Merged: eq-shell [#1324](https://github.com/eq-solutions/eq-shell/pull/1324) feat(staff): swap Resourcing desktop view to eq-ui Table
+- Merged: eq-shell [#1322](https://github.com/eq-solutions/eq-shell/pull/1322) chore(security): permission-enforcement drift guard (ratchet
+- Merged: eq-shell [#1319](https://github.com/eq-solutions/eq-shell/pull/1319) feat(ops): archive view search/filter + auto-archive invoice
+- Merged: eq-shell [#1318](https://github.com/eq-solutions/eq-shell/pull/1318) fix(security): gate audit rollback + align entity archive/re
+- Merged: eq-shell [#1317](https://github.com/eq-solutions/eq-shell/pull/1317) fix(ops): retry quote-doc/job-creation fetches on a transien
+- Merged: eq-shell [#1316](https://github.com/eq-solutions/eq-shell/pull/1316) feat(staff): create one credential per document, not per pho
 
 ## ⚠ Needs you (5)
 
@@ -51,10 +51,10 @@ _…and 92 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 1 | — |
+| eq-shell | ✓ success | 0d ago | 2 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 0 | — |
 | eq-field | ✓ success | 0d ago | 0 | — |
-| eq-cards | ✓ success | 0d ago | 1 | — |
+| eq-cards | ✓ success | 0d ago | 2 | 0d |
 | eq-solves-intake | ✓ success | 2d ago | 0 | — |
 
 ## Live errors (Sentry)
@@ -78,13 +78,13 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-14 | eq-solves-service | [#727](https://github.com/eq-solutions/eq-service/pull/727) fix(actions): extend session-expiry Server Action guard to the re |
 | 2026-08-14 | eq-solves-service | [#726](https://github.com/eq-solutions/eq-service/pull/726) fix(archive): restoreEntityAction clears deleted_at for maintenan |
 | 2026-08-14 | eq-solves-service | [#725](https://github.com/eq-solutions/eq-service/pull/725) fix(maintenance): surface a clean message on session-expiry Serve |
+| 2026-08-14 | eq-field | [#695](https://github.com/eq-solutions/eq-field/pull/695) v3.5.496 — Email Templates pilot: leave.js's 3 templates now DB-e |
 | 2026-08-14 | eq-field | [#694](https://github.com/eq-solutions/eq-field/pull/694) v3.5.495 — Teams route guard (deep-link access-control gap) |
 | 2026-08-14 | eq-field | [#693](https://github.com/eq-solutions/eq-field/pull/693) supervisor-digest: widen leave lookahead from 1 week to 4, groupe |
 | 2026-08-14 | eq-field | [#692](https://github.com/eq-solutions/eq-field/pull/692) v3.5.494 — Leave notification gaps closed; Job Numbers panel fix |
 | 2026-08-14 | eq-field | [#691](https://github.com/eq-solutions/eq-field/pull/691) v3.5.493 — FIX: app-state.js cache-buster stuck at v3.5.486 for 6 |
 | 2026-08-14 | eq-field | [#690](https://github.com/eq-solutions/eq-field/pull/690) v3.5.492 — Map hover tooltips list people's names |
 | 2026-08-14 | eq-field | [#689](https://github.com/eq-solutions/eq-field/pull/689) v3.5.491 — Dashboard map moved to its own page; Staff Reviews tab |
-| 2026-08-14 | eq-cards | [#238](https://github.com/eq-solutions/eq-cards/pull/238) fix(ocr): cap per-call extraction so a busy multi-card photo can' |
 _Showing 15 of 110 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -121,7 +121,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 3507 | 607 | 103 | 24 |
+| [EQ](eq/pending.md) | 3502 | 607 | 98 | 24 |
 | [SKS](sks/pending.md) | 438 | 89 | 4 | 15 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 402 | 37 | 0 | 1 |
@@ -142,4 +142,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-14 05:50 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-14 05:59 UTC._
