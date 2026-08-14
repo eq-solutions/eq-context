@@ -1,13 +1,21 @@
 ---
 title: Changelog — EQ Context Repo
 owner: Royce Milmlow
-last_updated: 2026-08-04
+last_updated: 2026-08-14
 scope: Append-only history of changes to the eq-context repository itself
 read_priority: reference
 status: live
 ---
 
 # Changelog — EQ Context Repo
+
+## [2026-08-14] index-drift.yml cron fixed; shared-checkout stash-pop repair verified and synced
+
+**Built by:** Claude Code
+
+- **`index-drift.yml` (the hard CI gate over every tier README's file index) had been failing every scheduled run since 2026-08-12 and every PR check since 2026-08-14 09:xx UTC.** Root cause: `eq/sprints/2026-08-14-nav-simplification.md` landed via PR #156/#157 without a matching line in `eq/README.md`'s file table — a real missed index entry, not a flaky check. Fixed in an isolated worktree off `origin/main` (the shared checkout's own `git pull` guard, F9, correctly blocked doing this in-place), verified clean against `scripts/index_drift.py`/`scripts/test_index_drift.py` locally before pushing, then confirmed green via a manual `workflow_dispatch` re-run.
+- **Verified, not just trusted, that "part 10"'s eq-context stash-pop repair (same day, other session) was actually complete** — re-ran a whole-tree anchored `git grep` for stray conflict markers (zero matches), confirmed the 3 files originally flagged as having committed conflict markers (`sessions/2026-08-03.md`, `sessions/2026-08-13.md`, `system/failures.md`) were false positives from an unanchored pickaxe search matching prose that only quoted marker text, not live corruption. Synced the shared checkout to the repaired `origin/main`, dropped the now-superseded stash entry, left the other 23 historical stashes untouched.
+- **`~/.claude/hooks/guard.js`'s `stale-main-gate` worktree detection hardened** (not part of this repo, tracked in the separate `~/.claude` git repo, `ed72be4`) — the rule's `inWorktree10` check only recognized paths containing `/worktrees/` or ending `-wt`, missing a worktree created anywhere else (e.g. a session's scratchpad dir), which caused a real false-block during the stash-pop repair above. Now falls back to comparing `git rev-parse --git-dir` vs `--git-common-dir` (diverge in any linked worktree regardless of naming/location) when the path heuristic doesn't match. 14/14 `hooks/selftest.js` cases still pass.
 
 ## [2026-08-04] Pre-commit hook gains a status-enum guard (F8); a repo-wide hook-wiring gap found and fixed
 
