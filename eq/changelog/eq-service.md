@@ -1,13 +1,17 @@
 ---
 title: EQ Service — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-13
+last_updated: 2026-08-14
 scope: EQ Service append-only history. NOTE — duplicates eq/changelog/service.md, which stalls mid-deploy at 2026-06-09; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # EQ Service — Changelog
+
+## 2026-08-14 (session-expiry Server Action crash fixed suite-wide, EQ-SOLVES-SERVICE-D)
+- **Root-caused Sentry `EQ-SOLVES-SERVICE-D`.** `proxy.ts`'s session guard redirects a mid-flight Server Action POST to `/auth/signin` when the session expires mid-tab; the client runtime surfaces that as a generic "unexpected response" crash instead of a friendly message. A concurrent session was independently fixing the same issue live — caught it mid-edit and waited rather than collide, then discovered the real scope was ~160 unguarded call sites across 67 files, not the ~15 originally estimated. That session's maintenance-module-only fix shipped as [#725](https://github.com/eq-solutions/eq-service/pull/725), merged.
+- **Extended the fix to the remaining 58 files (~121 call sites) app-wide** — auth, portal, customers, sites, defects, job-plans, contract-scope, variations, pm-calendar, onboarding, assets, testing (ACB/NSX/RCD), commercials, admin. Extended the shared `callAction()` helper with an optional custom-fallback factory for ~15 call sites that return `{ok, error}` instead of `{success, error}`. Fixed 3 real crash-risk sites (result discarded but still an unguarded `await` outside `startTransition`) and 2 unrelated pre-existing ACB call sites with zero error handling at all, found along the way. `tsc --noEmit` clean, `vitest run` 434/434 passed, `next build` compiles clean (page-data collection fails only on a missing local Supabase env file — pre-existing/environmental). [#727](https://github.com/eq-solutions/eq-service/pull/727) open, holds for Royce's merge approval.
 
 ## 2026-08-13 (drift-guard thread's last open item closed — entity.create scoping decision recorded)
 - **PR [#719](https://github.com/eq-solutions/eq-service/pull/719) MERGED — `entity.create` scoping question resolved: supervisors keep asset-creation access.** `createAssetAction` has always used `canWrite` (manager+supervisor); canonical `entity.create` is manager-only. Asked Royce directly rather than guessing which way to reconcile — he confirmed: keep supervisors able to create assets, no narrowing. No behaviour change; recorded in the drift-guard baseline (same pattern as #714's `entity.view_pii` writeup) plus an inline comment on `createAssetAction`. Closes out every open item from the permission-enforcement-drift thread that started 2026-08-12.
