@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-08
+last_updated: 2026-08-14
 scope: Operational support to-do list — Webb, infra, substrate
 read_priority: standard
 status: live
@@ -370,33 +370,40 @@ Changelog at `archive/changelog-ahd.md`.
 
 ---
 
-## guard.js selftest fixed, `~/.claude` git-init'd (2026-07-30)
+## stale-main-gate false positive fixed: cd-regex anchor bug (2026-08-14)
 
-`selftest.js` reported 10/11 — root cause wasn't rule 2 (scan-secrets) or the
-`decide()` blockers filter, both already correct. Rule 8 (`brief-gate`, added
-2026-07-21) forces a deny on any non-exempt file write with no session brief
-flag, regardless of `EQ_GUARD_MODE`; it piggybacked on the test harness's
-`write()` cases (none of which are brief-gate-exempt, and the harness never
-set `EQ_SKIP_BRIEF`), flipping the one case expecting `allow`. Checked
-`guard.log` for real-session false positives — none found; brief-gate has
-only ever fired as designed. Fix: default every `selftest.js` invocation to
-`EQ_SKIP_BRIEF=1` so each case isolates the rule it targets. `guard.js`
-unchanged. 11/11 now passes.
+`guard.js`'s `stale-main-gate` rule (blocks a direct `git commit` on
+`main`/`master` when the checkout is behind its upstream) resolves which
+directory a commit targets by parsing the shell command for `cd <path>` /
+`git -C <path>` before falling back to the tool-reported cwd. The `cd`
+detection regex (shared with `reflection-gate`) was anchored with `^` and no
+`m` flag, so it only matched `cd` at the very start of the whole command
+string — a multi-line command (`VAR="path"` on one line, `cd "$VAR" && git
+commit` on the next) never matched at all and silently fell back to the
+tool's default cwd instead of the real target. Concretely: a fully isolated,
+freshly-fetched clone that was 0 commits behind got blocked with a stale "10
+commits behind" reading. Fixed to match `cd` right after any command
+boundary (line break, `;`, `&&`, `||`, `&`, `|`, or string start), and the
+previously copy-pasted cd/-C parsing consolidated into one shared
+`resolveEffCwd()` helper. Verified end-to-end against the real `evaluate()`
+function with throwaway git repos. `~/.claude` commit `4bb4235`.
 
-Separately, `C:\Users\EQ\.claude` had no git history at all. Initialised a
-repo there (was not a repo, no parent `.git` either) with a `.gitignore`
-excluding `.credentials.json`, session/cache/telemetry/chrome/shell-snapshot
-data, `hooks/guard.log` (churns constantly), and the `plugins/marketplaces/`
-third-party clone — then committed the selftest fix and, on request, the
-rest of the directory's config (CLAUDE.md, hooks, settings.json, commands,
-plans, plugins metadata, reference docs) in a second commit. Not a repo
-change to `eq-context`, so no PR here either — same pattern as the
-2026-07-21 brief-gate fix above.
+This is the sibling bug to the worktree-naming gap the "index-drift.yml
+cron / guard.js worktree-detection" session already fixed and logged the
+same day (`ed72be4`, see `sessions/2026-08-14.md` "part 13") — both in
+`stale-main-gate`'s cwd-resolution, found and fixed independently within
+hours of each other while the shared checkout was under the same kind of
+contention documented throughout today's session log.
 
-**Needs Royce:**
-- [ ] **Where should `~/.claude` push to?** Asked mid-session; not yet
-  answered. Contains sensitive content under `plans/` (SKS live-Supabase
-  `nspbmirochztcjijmcrx` lockdown/remediation SQL) that must never land in a
-  public repo — needs an explicit target (new private repo + account/org, or
-  an existing empty repo) before any `git remote add` + push happens.
-  _(added 2026-07-30)_
+Also committed, separately, a pre-existing already-authorized 2026-08-06 fix
+that had been sitting uncommitted in the same `~/.claude` working tree the
+whole time (`brief-gate`'s eq-context exemption missing eq-context
+*worktrees*, not just the bare repo — commit `4ec0363`). Not a repo change
+to `eq-context`, so no PR for either — same pattern as the 2026-07-30
+`guard.js selftest fixed` entry (now closed and archived).
+
+**Also resolved this session**: the `~/.claude` push-target question that's
+been open since 2026-07-30 (see `ops/pending-archive.md`) — Royce's call:
+leave it local-only, no remote.
+
+No open items.

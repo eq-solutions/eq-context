@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-08-08
+last_updated: 2026-08-14
 scope: Done items rotated out of ops/pending.md nightly by scripts/rotate_pending.py to keep the live doc scannable. Nothing here is actionable — pure historical record (also covered in changelogs and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -290,5 +290,32 @@ exists," it's "why didn't the guard that already existed fire."
 
 - [x] **Closed.** A later session picked this up directly: the shared checkout had drifted further by then (4 local-only "session close" commits, `git cherry origin/main HEAD` confirmed genuinely unpushed, not just under a different SHA). Reconciled in a fresh isolated clone in the scratchpad, cherry-picking each of the 4 onto current `origin/main` one at a time. Real conflicts hit on nearly every file (changelog/pending append-point clashes, session-log filename collisions) — resolved by hand, checking actual content each time rather than blindly taking one side. **Key finding: every one of the 4 commits' genuine unique content was already independently present on `origin/main`** — the same underlying sessions had their own later "redo after a lost-update race" pushes that got the content there through different commit objects first. The reconciled scratch branch ended up with **zero diff** against `origin/main` — nothing was ever actually at risk, it just took a different path there. `git cherry` kept showing the 4 as `+` throughout (patch-ID comparison, not final-content comparison — a known blind spot, not a sign of danger; confirmed via direct tree-diff instead). Also found and removed 3 genuinely-redundant session-log duplicates (`sessions/2026-08-05-k/-l/-m.md`) that the cherry-picks would have re-introduced as stale early drafts of the same sessions' own later, fuller close-outs already at `-e`/`-f`/`-h`.
 - [x] **Shared checkout brought back in line with `origin/main`.** Since content-safety was verified directly (not assumed), and the working tree was confirmed clean immediately before, ran the exact fetch + `reset --hard` this item already flagged as the safe fix — this time it went through without the earlier permission-classifier block. `git status` now shows clean, up to date, zero divergence; `git cherry origin/main HEAD -v` returns empty.
+
+---
+
+## guard.js selftest fixed, `~/.claude` git-init'd (2026-07-30) — RESOLVED (2026-08-14)
+
+`selftest.js` reported 10/11 — root cause wasn't rule 2 (scan-secrets) or the
+`decide()` blockers filter, both already correct. Rule 8 (`brief-gate`, added
+2026-07-21) forces a deny on any non-exempt file write with no session brief
+flag, regardless of `EQ_GUARD_MODE`; it piggybacked on the test harness's
+`write()` cases (none of which are brief-gate-exempt, and the harness never
+set `EQ_SKIP_BRIEF`), flipping the one case expecting `allow`. Checked
+`guard.log` for real-session false positives — none found; brief-gate has
+only ever fired as designed. Fix: default every `selftest.js` invocation to
+`EQ_SKIP_BRIEF=1` so each case isolates the rule it targets. `guard.js`
+unchanged. 11/11 now passes.
+
+Separately, `C:\Users\EQ\.claude` had no git history at all. Initialised a
+repo there (was not a repo, no parent `.git` either) with a `.gitignore`
+excluding `.credentials.json`, session/cache/telemetry/chrome/shell-snapshot
+data, `hooks/guard.log` (churns constantly), and the `plugins/marketplaces/`
+third-party clone — then committed the selftest fix and, on request, the
+rest of the directory's config (CLAUDE.md, hooks, settings.json, commands,
+plans, plugins metadata, reference docs) in a second commit. Not a repo
+change to `eq-context`, so no PR here either — same pattern as the
+2026-07-21 brief-gate fix above.
+
+- [x] **Where should `~/.claude` push to? — answered 2026-08-14: nowhere, stay local-only.** Asked 2026-07-30, unresolved for two weeks. Royce's explicit call this session (via AskUserQuestion, recommended option): leave `~/.claude` as a local-only git history, no remote. Consistent with the standing sensitivity constraint noted here — `plans/` holds SKS live-Supabase (`nspbmirochztcjijmcrx`) lockdown/remediation SQL that must never land in a public repo — local-only sidesteps that risk entirely rather than requiring a private-repo setup and an access decision.
 
 ---
