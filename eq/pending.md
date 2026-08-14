@@ -14,6 +14,15 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-solves-service: /admin/* pages closed to non-managers (2026-08-14)
+*Royce: gate the remaining Admin pages that were reachable by any signed-in technician who typed the URL directly — the sidebar hid the link, but that's not access control. A prior sweep (PRs #707-#727) had already closed 3 of 9 admin pages; this closed the rest.*
+
+- [x] **Gated the last 6 ungated `/admin/*` pages (hub, users, settings, media, reports, backup) to managers only.** Before this, any signed-in technician who typed the URL directly could see the full team roster (names, emails, phones), branding settings, and download a full workspace backup. eq-service [PR #728](https://github.com/eq-solutions/eq-service/pull/728), merged (Royce's "merge the PR once CI passes" go) and confirmed live on service.eq.solutions (Netlify deploy `commit_ref` matches the merge commit exactly, secret scan clean).
+- [x] Deliberately left `admin/imports` and `admin/activity` on their existing, slightly wider permission (manager **or** supervisor, from PR #709) instead of tightening everyone to manager-only — a blanket gate would have silently undone that earlier, confirmed decision.
+- [ ] **Not click-tested by a real non-manager account** — no such login was available in this environment. Worth Royce confirming a technician account gets bounced off `/admin/*` now. _(added 2026-08-14)_
+
+---
+
 ## eq-shell / eq-cards: suite-wide Sentry sweep, identity-collision root cause fixed, 2 bugs shipped (2026-08-14)
 *Continuation of a 17-issue Sentry sweep across all 4 apps. Found the exact mechanism behind 3 identity-collision alerts (a login race in Cards' signup code), confirmed the code fix was already live, and corrected the bad data it left behind (Royce approved before any identity-data write). Also shipped a Cards OCR fix and a Shell dashboard scroll bug Royce spotted from a screenshot. (The EQ Service session-expiry Server Action work from the same sweep is tracked in its own section above/`eq-solves-service` changelog — not repeated here.)*
 
