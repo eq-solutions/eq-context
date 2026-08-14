@@ -61,11 +61,9 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-14)
 
 **eq-cards:**
-- #238 fix(ocr): cap per-call extraction so a busy multi-card photo can't time out
 - #221 refactor(auth): shell-verify.js relays to eq-shell instead of local crypto
 
 **eq-shell:**
-- #1338 fix(staff): surface documents_not_extracted from ocr-licence's per-call cap
 - #1294 feat(cards): centralize Cards' SSO minting via token-exchange-cards.ts
 
 ---
