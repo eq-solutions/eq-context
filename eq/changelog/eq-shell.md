@@ -9,6 +9,12 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-14 (PR #1346 MERGED — Staff list: apprentice year badge + Trade multi-select, not yet deployed)
+- **PR #1346 MERGED (squash `25b4a0fb`) — Staff list Job Title cell now shows a "Year N" badge for apprentices.** `app_data.staff.year_level` was already live and already shared with eq-field's own apprentice-advance logic — Shell just never surfaced it outside the full detail panel until now. Computed at render, doesn't write into `job_title`.
+- **Trade column becomes a multi-select** (Electrical / Communications, capitalized display) via a new `InlineMultiSelectCell`, stored as comma-separated text on the existing `staff.trade` column rather than a real `text[]` array. Investigated the array option first: `staff.trade` is read/written directly by eq-field's own `app_data.field_people`/`field_people_removed` views and their IUD triggers, so a type change would need a coordinated eq-field-side migration touching the same `CREATE OR REPLACE VIEW`/`security_invoker` pattern already responsible for 3 prior live incidents there. Royce chose the zero-schema comma-separated approach once that was found.
+- CI's role-literal ratchet flagged the apprentice display check as a suspected permission-gate literal (false positive — annotated per the script's own guidance).
+- **Not deployed** — merged to `main` only; this repo's production deploy is a separate explicit step.
+
 ## 2026-08-14 (PR #1345 MERGED + deployed live — self-join links now default to a 7-day expiry)
 - **PR #1345 MERGED + deployed live — self-join QR/link codes default to a 7-day expiry instead of never.** Follow-up to the same day's #1339 open-enrollment fix. The expiry mechanism (`self_join_codes.expires_at`, enforced server-side, editable via `self-join-codes.ts`, audit-logged) already existed — nothing ever defaulted it. `AdminSelfJoinLinks.tsx`'s create form now defaults to "7 days" (still overridable to "Never expires" for the shared-QR-poster case); the backend now treats an omitted `expires_days` as 7 days rather than never, distinguishing it from an explicit `0` ("Never expires", a deliberate choice). No use-count cap added — matches Royce's call that a shared QR code is meant for many workers, bounded by access + expiry, not use count.
 - Also this session: Maylin Ung's Core-side display name (one of the 3 accounts created via the #1339 gap before it was fixed) backfilled live.
