@@ -37,8 +37,9 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 *Royce was about to send an eq-shell self-join link (Core admin → Add workers → Apprentice role) to all SKS apprentices — some already have EQ Cards accounts, some don't — and asked whether any would end up with a duplicate account.*
 
 - [x] Traced the actual join handler in eq-shell rather than assuming from the general phone-dedup pattern used elsewhere in the suite — confirmed eq-shell and eq-cards share one identity system (jvkn). Matching is phone-only: the same phone number as an existing account attaches a new membership to that identity instead of creating a new one.
-- [x] Real risk identified: matching only works if the apprentice enters the *same* phone number their Cards account uses — nothing cross-checks by name. Told Royce to add a line to the broadcast asking apprentices to use their existing number.
+- [x] Real risk identified, then narrowed: matching only works via phone number, nothing cross-checks by name — but Royce correctly pointed out phone-OTP means there's no "which number do I enter" choice for a normal apprentice, it's just whatever phone is in their hand. No broadcast wording needed. The only genuine edge case is someone who's changed phone numbers since their Cards account was created — rare, not worth flagging to the whole group.
 - [ ] **Not live-tested today** — this was code-level assurance (plus an old "confirmed live" comment already in the code from an earlier check), not a fresh click-through with a real pre-existing Cards account before the mass send goes out. _(added 2026-08-14)_
+- [ ] **Follow-up question raised, being checked now**: if a worker's phone number genuinely changes, is there an admin-facing way in eq-shell to update it on their existing account (so OTP login works with the new number under the same identity), or would that need an out-of-band fix today? _(added 2026-08-14)_
 
 ---
 
