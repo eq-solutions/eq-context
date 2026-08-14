@@ -35,7 +35,7 @@ _If this file is >48h old, the cron is broken._
 
 | Entity | Count | Schema |
 |--------|-------|--------|
-| Sites | 221 | app_data.sites |
+| Sites | 219 | app_data.sites |
 | Customers | 39 | app_data.customers |
 | Assets | 2,842 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
@@ -63,6 +63,12 @@ _If this file is >48h old, the cron is broken._
 **eq-cards:**
 - #221 refactor(auth): shell-verify.js relays to eq-shell instead of local crypto
 
+**eq-field:**
+- #689 v3.5.491 — Dashboard map moved to its own page; Staff Reviews tab removed
+
+**eq-service:**
+- #727 fix(actions): extend session-expiry Server Action guard to the rest of the app
+
 **eq-shell:**
 - #1294 feat(cards): centralize Cards' SSO minting via token-exchange-cards.ts
 
@@ -74,7 +80,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ? in_progress |
+| eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
