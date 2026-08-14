@@ -61,10 +61,12 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-14)
 
 **eq-cards:**
-- #247 fix(auth): sign-in copy said no new accounts, but mobile makes them
 - #221 refactor(auth): shell-verify.js relays to eq-shell instead of local crypto
 
 **eq-shell:**
+- #1356 perf(shell): self-host Plus Jakarta Sans, drop the render-blocking Google Fonts request
+- #1354 fix(auth): link_pending_invites writes the tenant membership row, not just the user row
+- #1353 fix(security): gate staff-update on field.manage_people, not the field.view read key
 - #1352 feat(auth): platform-admin endpoint to correct a standalone user's login phone
 - #1294 feat(cards): centralize Cards' SSO minting via token-exchange-cards.ts
 
