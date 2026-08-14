@@ -1,13 +1,18 @@
 ---
 title: Changelog — EQ Solves Field
 owner: Royce Milmlow
-last_updated: 2026-08-13
+last_updated: 2026-08-14
 scope: Append-only history of changes to the EQ Solves Field product. Canonical — eq-field.md was merged into this file 2026-07-19, don't split again.
 read_priority: reference
 status: live
 ---
 
 # Changelog — EQ Solves Field
+
+## [2026-08-14] Dashboard map → own page; Staff Reviews removed; Map hover shows names; cache-buster hotfix (v3.5.491-493, #689/#690/#691)
+- **Dashboard's embedded "Where people are today" map moved to its own dedicated Map page** (`scripts/site-map.js`) — root cause of ~25-30 versions of squash/centering bugs (v3.5.400-490) was a live Leaflet canvas sharing a container with the Dashboard's own frequent re-renders; own page = own lifecycle, structurally avoids the problem instead of patching the symptom again. Staff Reviews tab removed in the same PR (functionality moved to eq-shell). #689, v3.5.491.
+- **`get_site_headcount_for_map` RPC gained a `people text[]` column** (migration `20260814_field_site_headcount_people_names.sql`, applied live to ehow) — the Map page and Roster Overview mini-map hover tooltips now list who's rostered at a site, not just a headcount, capped at 15 names. Cluster-pin tooltips (multiple sites collapsed into one pin) deliberately left headcount-only — click to zoom in and see individual named pins. #690, v3.5.492.
+- **FIX — `index.html`'s `app-state.js?v=` cache-buster tag was stuck at v3.5.486 for 6 releases** (v3.5.487-492), so `/scripts/*`'s `Cache-Control: immutable, max-age=1yr` meant returning browsers kept re-serving that exact cached file forever. Royce caught it live ("its showing 3.5.486 and the map view is there?"). Diffed content confirmed only the version string had drifted, nothing functional. Also fixed `core-bundle-a1.js`'s tag, found one release stale (PR #658/v3.5.464) during the same audit. Same bug class as v3.5.409/410, v3.5.479, v3.5.482 — no CI check exists yet to catch it automatically. #691, v3.5.493.
 
 ## [2026-08-13] Hours triage finished — group pending pills + Status & tools sheet (v3.5.490, #688)
 Continuation of the same-day #687 — builds the 2 items its own PR body flagged as deferred.
