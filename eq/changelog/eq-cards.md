@@ -9,6 +9,12 @@ status: live
 
 # EQ Cards — Changelog
 
+## 2026-08-14 (PRs #240, #244 MERGED + deployed — CI now deploys edge functions, not just the web app)
+- **PR #240 MERGED — `deploy.yml` gained a `deploy-edge-functions` job.** Found after PR #238's ocr-licence timeout fix merged, `Build & Deploy` reported success, and the live function on jvkn kept serving the old code anyway — the workflow had never deployed anything under `supabase/functions/`, only the Flutter web app. New job runs `supabase functions deploy --project-ref jvknxcmbtrfnxfrwfimn` via the CLI, same explicit-only `workflow_dispatch`/`release/v*` gate as the rest of the workflow, own job so it can't be blocked by (or block) the Flutter build.
+- **PR #244 MERGED — pinned the Supabase CLI version.** First live run of the new job failed on a CLI bug in `latest`: it validates the whole `config.toml`, including unrelated auth email-template settings, and mis-resolved a relative template path against the repo root instead of `supabase/`. Pinned to `2.109.1`, confirmed working locally before merging.
+- Re-ran `Build & Deploy` after both merges — `deploy-edge-functions` succeeded in 33s, confirmed via the Actions log.
+- New repo secret `SUPABASE_ACCESS_TOKEN` added (Royce, via Supabase dashboard → Account → Access Tokens).
+
 ## 2026-08-14 (PR #243 MERGED + deployed live — Profile/Settings duplicate widgets removed)
 - **PR #243 MERGED.** Settings had re-implemented the workspace switcher and manager/supervisor join-QR card that already live on Profile — confirmed via git history it was accidental (the QR card was added to Settings only in an earlier PR, the Profile copy pasted in later during a 3→2 tab nav merge, never reusing what existed). Removed from Settings; Profile stays the one home for both. CI's `flutter analyze` caught a leftover unused `eq_spinner.dart` import before merge — no local Flutter toolchain existed to catch it first. Part of a suite-wide nav-simplification pass — see `eq-context/eq/sprints/2026-08-14-nav-simplification.md`.
 - **Deployed live** — merged but not yet deployed (this repo's deploy is manual-dispatch-only), found by a separate session, dispatched `Build & Deploy` on Royce's go, confirmed live on `cards.eq.solutions`.

@@ -22,6 +22,26 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-cards: CI silently never deployed edge functions — found after a live fix didn't ship, closed for good (2026-08-14)
+*Discovered when PR #238's ocr-licence timeout fix merged, `Build & Deploy` reported success, but the live function on jvkn kept 504ing anyway — the workflow only ever built and deployed the Flutter web app; nothing under `supabase/functions/` was ever touched by CI. Had been silently true the whole time; today's fix was deployed by hand as a stopgap while this was built.*
+
+- [x] Added a `deploy-edge-functions` job to `deploy.yml`, same explicit-only gate (`workflow_dispatch` / `release/v*` tag) as the existing Flutter/Netlify job — deploys stay a deliberate action, not automatic on merge. eq-cards PR [#240](https://github.com/eq-solutions/eq-cards/pull/240), merged.
+- [x] Audited today's earlier manual out-of-band deploy of `ocr-licence` (done via the Supabase MCP as the stopgap) for drift against git — found one harmless one-line difference (a hardcoded value vs. a variable that always evaluates to the same thing), otherwise byte-identical. Confirmed CI deploys won't hit the manual tool's file-path quirk that caused it.
+- [x] First real run of the new job failed immediately — not a secrets problem, a bug in the Supabase CLI's "latest" build: it validates the *entire* project config (including unrelated auth email-template settings) and mis-resolves a file path against the wrong folder. Reproduced locally, pinned CI to a known-good CLI version instead of floating on latest. eq-cards PR [#244](https://github.com/eq-solutions/eq-cards/pull/244), merged.
+- [x] Re-ran the deploy after both fixes — succeeded end-to-end this time, confirmed via the Actions run log.
+- [x] New secret added to eq-cards (`SUPABASE_ACCESS_TOKEN`) — Royce generated and set it himself, not handled by Claude.
+
+---
+
+## SKS: self-join link duplicate-account risk checked before a mass send to apprentices (2026-08-14)
+*Royce was about to send an eq-shell self-join link (Core admin → Add workers → Apprentice role) to all SKS apprentices — some already have EQ Cards accounts, some don't — and asked whether any would end up with a duplicate account.*
+
+- [x] Traced the actual join handler in eq-shell rather than assuming from the general phone-dedup pattern used elsewhere in the suite — confirmed eq-shell and eq-cards share one identity system (jvkn). Matching is phone-only: the same phone number as an existing account attaches a new membership to that identity instead of creating a new one.
+- [x] Real risk identified: matching only works if the apprentice enters the *same* phone number their Cards account uses — nothing cross-checks by name. Told Royce to add a line to the broadcast asking apprentices to use their existing number.
+- [ ] **Not live-tested today** — this was code-level assurance (plus an old "confirmed live" comment already in the code from an earlier check), not a fresh click-through with a real pre-existing Cards account before the mass send goes out. _(added 2026-08-14)_
+
+---
+
 ## eq-cards: invite-claim IDOR fixed, 3-day claim outage found + fixed, stale-invite cleanup + guard shipped (2026-08-14)
 *A live code audit found `eq_cards_claim_invite` only checked that the caller was signed in — never that their verified phone matched the invite's target phone, letting one worker claim a colleague's invite by looking up their phone number. Verified against the live database before writing the fix. While preparing it, found something bigger already broken in production.*
 
