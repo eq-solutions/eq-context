@@ -14,11 +14,9 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## Suite-wide nav simplification — 7 items shipped across Shell/Field/Service/Cards, FIELD-1 correctly left alone (2026-08-14)
+## Suite-wide nav simplification — 7 items shipped and deployed (2026-08-14)
 
 - [ ] **Decide the long-term fix for nav-visibility drift.** Three real drift incidents found and fixed this session (Cards' duplicate workspace-switcher/join-QR widgets, Field's ungated desktop Add Person, Service's stale embedded nav bar) all trace to the same root cause: no shared source of truth for "what's in the nav and who can see it" across the four apps. `eq/identity/nav-access-matrix.md` lays out two options — a shared roles-derived config each app imports, or a lighter review checklist — not decided, Royce's call. _(added 2026-08-14)_
-- [ ] **eq-shell PRs #1343/#1344 merged but not deployed.** core.eq.solutions doesn't auto-deploy on merge (deliberate platform-level setting) — needs Royce's manual Netlify trigger before the Reports landing page and the sidebar cleanup go live. _(added 2026-08-14)_
-- [ ] **`guard.js`'s `stale-main-gate` has a worktree-detection bug** — only recognizes paths containing `/worktrees/` or ending `-wt`; a worktree created elsewhere (e.g. a session's scratchpad directory) gets misclassified as "not a worktree" and blocked unnecessarily. Found and documented while working around it, not fixed. _(added 2026-08-14)_
 
 ---
 
