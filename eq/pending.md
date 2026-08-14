@@ -43,7 +43,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ## eq-shell: Staff list — apprentice year badge + Trade multi-select shipped, text[] conversion blocked on eq-field coordination (2026-08-14)
 
-- [ ] **Proper `text[]` array for Trade** — needs its own eq-field session to rebuild the `field_people`/`field_people_removed` views and the IUD trigger functions. Not scoped further; Royce's call on when to take it on. _(added 2026-08-14)_
+- [ ] **Proper `text[]` array for Trade** — scoped (2026-08-14): [eq/sprints/2026-08-14-trade-array-eq-field-coordination.md](sprints/2026-08-14-trade-array-eq-field-coordination.md). Found a real, previously-undocumented ehow/zaap asymmetry while scoping — ehow's `field_people` view has a live write trigger, zaap's doesn't — so zaap needs its own investigation, not a mirror of ehow's fix. Royce's constraint: `app_data.staff` stays the one canonical table, no eq-field-local trade copy. Needs its own eq-field session; not started. _(added 2026-08-14, scoped 2026-08-14)_
 - [ ] **Not click-tested live** — verified via `tsc -b --force`, eslint, full CI (all green), and the Netlify deploy preview build succeeding — not by clicking through a real signed-in session. _(added 2026-08-14)_
 
 ---
