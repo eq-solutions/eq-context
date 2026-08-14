@@ -61,6 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-14)
 
 **eq-cards:**
+- #247 fix(auth): sign-in copy said no new accounts, but mobile makes them
 - #221 refactor(auth): shell-verify.js relays to eq-shell instead of local crypto
 
 **eq-shell:**
