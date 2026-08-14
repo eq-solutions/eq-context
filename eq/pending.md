@@ -14,6 +14,22 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: Mobile Home redesign — compliance card collapsed, Suppliers + Compliance report quick links added (2026-08-14)
+*Royce reviewed 3 mobile Home dashboard screenshots and found the Compliance & safety card was mostly dead space — a "see Today's actions" pointer with nothing else in it once licences were the only signal. Asked to rethink the space: add a compliance report, surface Suppliers, keep NSW Comms.*
+
+- [x] Mobile Compliance & safety card now hides entirely (not just the licences group inside it) when licences would be its only content — Today's Actions already lists them there. Alert cases (rostered-non-compliant, open incidents) still show as before.
+- [x] New mobile "Quick links" card fills the reclaimed space: Suppliers (was 3 taps deep under Ops → Suppliers, despite being built mobile-first — tap-to-call) and Compliance report.
+- [x] New Compliance report page (`/reports/compliance`) — full, uncapped licences/incidents/roster-non-compliance snapshot, printable (reuses the `LabourHireRates.tsx` print-sheet pattern, same "Export PDF" via browser print). The dashboard card only ever shows a top-8; a report can't silently truncate the same way without being wrong for the audit/client/regulator use it's for.
+- [x] Fixed NSW Comms missing from the mobile "App connection status" sync bar — added to the main app list when NSW Comms shipped, but the sync bar had its own separate hardcoded array that never got the same update.
+- [x] eq-shell PR [#1348](https://github.com/eq-solutions/eq-shell/pull/1348) merged (squash `42c88462`), all CI green (typecheck/test/lint, schema drift + anon-grant + policy-lint, gitleaks, function grants, migration ledger, deploy preview).
+- [x] Deployed to production — core.eq.solutions live on deploy `6a7f0ff0`, published 2026-08-14T12:59:30Z, secret scan clean (1,357 files, 0 matches).
+
+**Deferred:**
+- [ ] **Today's Actions vs Outstanding Works can still contradict each other for up to 10 minutes** — found while reviewing the same screenshots (separate issue from the compliance-card redundancy, not addressed by this build): Today's Actions is cached 10 min per user (`ai-briefing.ts`), Outstanding Works refetches every 60s off the same table. Resolving a Service item mid-cache-window shows "overdue" in one card and "nothing overdue" in the other, same screen, same moment. Needs Royce's call: shrink the cache TTL, or add a "generated Xm ago" stamp so it reads as expected staleness rather than a bug. _(added 2026-08-14)_
+- [ ] **Not click-tested live on a real tenant** — verified via `tsc -b --force`, eslint (clean except pre-existing tolerated patterns already present identically in `Suppliers.tsx`/`LabourHireRates.tsx`, not introduced by this change), full CI, and the Netlify deploy preview build succeeding. A local click-through attempt hit a pre-existing sandbox limitation (`VITE_FIELD_URL` unset crashes the app at module scope, unrelated to this change) and was abandoned per the standing "default browser only" rule rather than switched to Chrome for a low-value local check. Worth Royce opening Suppliers, Compliance report, and the mobile Home on his phone once. _(added 2026-08-14)_
+
+---
+
 ## eq-shell/eq-field: deactivating someone didn't actually cut their EQ Field access — fixed + 2 follow-ups (2026-08-14)
 *Investigating who can see the Resourcing tab (EQ Shell's Access Control) led to a broader question: does deactivating someone in Core actually cut their access everywhere? Shell itself does (checks within 5 minutes); eq-solves-service does too (4-hour session refresh checks back with Shell). EQ Field did not — a session, once created, silently renewed itself forever with no re-check at all, so a deactivated SKS field tech could keep working in Field indefinitely.*
 

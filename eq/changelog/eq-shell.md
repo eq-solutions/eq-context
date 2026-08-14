@@ -9,6 +9,13 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-14 (PR #1348 MERGED + deployed live — compliance report + mobile Home quick links)
+- **PR #1348 MERGED (squash `42c88462`) + deployed live (Netlify deploy `6a7f0ff0`) — mobile Home's Compliance & safety card no longer shows when it has nothing to say beyond "see Today's actions".** Found while reviewing 3 mobile screenshots Royce sent: the card collapsed to a pointer-only stub whenever licences were its only content, wasting the space on nothing. It still renders in full for the cases that matter — a rostered worker with a lapsed licence, or an open incident.
+- **New mobile "Quick links" card** in the reclaimed space: Suppliers (previously 3 taps deep under Ops → Suppliers despite being built mobile-first — searchable, tap-to-call) and a new Compliance report.
+- **New Compliance report** (`/reports/compliance`, tile on the Reports landing page) — the full, uncapped licences/incidents/roster-non-compliance snapshot, printable via the same `window.print()` pattern already live in `LabourHireRates.tsx`. The dashboard card only ever shows a top-8; this is the complete version for handing to a client, insurer, or regulator. Backend reuses the existing `fetchCompliance()` query (now takes an optional row-cap param) rather than duplicating it.
+- **Fixed:** NSW Comms was missing from the mobile "App connection status" sync bar — added to the main app list when NSW Comms shipped, but the sync bar had its own separate hardcoded array that never got the same update.
+- Verified via `tsc -b --force` + eslint + full CI (typecheck·test·lint, schema drift/anon-grant/policy-lint, gitleaks, function grants, migration ledger, deploy preview) — all green. Not yet click-tested live on a real tenant.
+
 ## 2026-08-14 (PR #1349 OPEN — deactivating a user now leaves an audit trail)
 - **PR #1349 opened, not yet merged** — `edit-user.ts`'s `active` flip (deactivate/reactivate) now writes `user.deactivated`/`user.reactivated` to `shell_control.audit_log`, matching the existing `phone_changed`/`pin.unlocked` pattern in the same file. Previously silent: verified live against a real deactivation (Huon Henne, SKS, today) that the only trace was the bare `deactivated_at` timestamp on the row, no record of who or when. Found while auditing the Resourcing tab's access model and what actually stops an archived user from seeing company data.
 
