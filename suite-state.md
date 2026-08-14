@@ -64,11 +64,8 @@ _If this file is >48h old, the cron is broken._
 - #221 refactor(auth): shell-verify.js relays to eq-shell instead of local crypto
 
 **eq-shell:**
+- #1360 chore(identity): remove 7 orphaned test identities from the June sign-up trial
 - #1359 refactor(auth): fold the login timing-burn hash into one shared module
-- #1358 perf(staff): one staff-bootstrap request instead of eight cold starts
-- #1357 feat(audit): make login outcomes queryable across all three doors
-- #1356 perf(shell): self-host Plus Jakarta Sans, drop the render-blocking Google Fonts request
-- #1354 fix(auth): link_pending_invites writes the tenant membership row, not just the user row
 - #1294 feat(cards): centralize Cards' SSO minting via token-exchange-cards.ts
 
 ---
