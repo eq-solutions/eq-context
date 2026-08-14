@@ -1,13 +1,33 @@
 ---
 title: SKS — Pending
 owner: Royce Milmlow
-last_updated: 2026-08-13
+last_updated: 2026-08-14
 scope: SKS Technologies operational TODO list
 read_priority: critical
 status: live
 ---
 
 # SKS Pending
+
+## SKS → EQ Field roster CSV sync — investigated live, feasible with zero new code (2026-08-14)
+*Royce wants to start publishing the weekly roster into EQ Field alongside SKS NSW Labour as a changeover dry-run — people list and leave explicitly parked as separate concerns; this pass covered roster (site assignments) only. Pure investigation session — no code or data changed.*
+
+Found live, not assumed: EQ Field's "sks" org is already a real, active tenant, routed to its own database (`ehow`), with a canonical roster adapter (`eq-field/scripts/roster-adapter.js`) already enabled for it — code comment: *"ENABLED: ETL done + org repointed to ehow."* The existing Export/Import Schedule CSV buttons already write to the right place; there is no integration left to build. A one-time bulk migration ran 2026-07-05 (993 rows, tagged `nspb-phase3-2026-07-05`), and EQ Field's SKS roster has had **317 more rows entered natively since, up to 2026-08-05**, with nothing feeding back to SKS NSW Labour — the two have already been quietly diverging for over a month. **This corrects the "actual weekly entry hasn't started yet" premise of the 2026-07-26 entry below** — entry has in fact been happening, just informally, unlogged, and one-way.
+
+Two known site-code collisions (`EC6`, `SYD27`) both trace to one physical address, 17 Roberts Rd Eastern Creek — confirmed live these originate entirely on the EQ Field/canonical side (multiple import lineages over time), not from SKS NSW Labour's own site list, which has zero internal duplicates. Confirmed by reading the actual import code (not assumed) that neither this nor a handful of staff name-mismatches will error a CSV import — an unresolved site cell or an unmatched name just gets skipped with a console warning, never a failure.
+
+**Decided (Royce):**
+- "CDC - SYD27" is the correct current site record; "Microsoft SYD27" is stale (the site was rebranded and SKS's own record hasn't caught up either).
+- Fix stale site rows by deactivating (`active=false`), never deleting — `app_data.sites` has ~30 incoming foreign keys (schedule_entries, timesheets, jobs, assets, etc.), and "Microsoft SYD27" already has 3 real historical `schedule_entries` rows pointing at it.
+- Site/staff cleanup is not a blocker — a first real test export/import can run today without erroring.
+
+**Deferred:**
+- [ ] **Run the first real weekly export/import test** — SKS NSW Labour → Export Schedule CSV → EQ Field (logged in as the SKS org) → Import Schedule CSV. Discussed and confirmed safe; not actually run this session. _(added 2026-08-14)_
+- [ ] **Deactivate the two stale site rows in ehow** — `Erilyan` (`site_id 6c221319…`, code EC6) and `Microsoft SYD27` (`site_id 7fb2d662…`, code SYD27). Single-column `active=false` flip each, no code change, no deploy — Royce hasn't given the explicit go to execute it yet. _(added 2026-08-14)_
+- [ ] **~7 SKS staff missing from EQ Field's staff table** (hired since the 5 Jul snapshot): Ahmed Masaud, Amir Farid, Callum Treharne, Jhon Jairo Velasquez Meneses, Nabeel Hussain, Paul Bolger, Timothy Sue — plus a handful of name-string mismatches (e.g. "Bruno Pedrosa" vs "Bruno Vita Pedrosa", "Jose Quintanilla" vs "Jose Luis Quintanilla Rodriguez"). Royce said he'll manage this himself via EQ Field's People admin. _(added 2026-08-14)_
+- [ ] **Leave sync parked deliberately** — an imported leave code lands on `schedule_entries.leave_type` directly, not in `app_data.leave_requests`, so it displays but carries no approver/audit trail. Royce explicitly scoped this session to roster only; leave is its own future task. _(added 2026-08-14)_
+- [ ] **`SKS-FIELD-PARALLEL-RUN-LOG.md` and the "EQ Field parallel-run restarted" entry below are now stale** — both assume manual entry hadn't started; live data shows it has, informally. Worth a proper reconcile pass — out of scope for this session's /close. _(added 2026-08-14)_
+- [ ] **Optional code fix, not required**: the roster site-map query in `eq-field/scripts/supabase.js` (~line 992) filters on `active=eq.true` only, not `field_enabled` — a small latent gap (found live) unrelated to the SYD27/EC6 fix above; deactivating the stale rows sidesteps it, so this is cosmetic cleanup only if ever revisited. _(added 2026-08-14)_
 
 ## sks-nsw-labour: local `main` synced, no feature change (2026-08-11)
 *Side effect of a suite-wide git-staleness sweep — see `eq/pending.md` (2026-08-11, "control-plane drift check fixed...") for the full story.*
@@ -51,7 +71,7 @@ status: live
 ## EQ Field parallel-run restarted — mismatch log set up (2026-07-26)
 *Royce: "start manually entering our weekly labour from SKS NSW Labour to see what breaks." Checked live state first rather than assuming from the docs — `SKS-CUTOVER-CRITICAL-PATH.md`'s 2026-07-11 decision (manual weekly re-entry into EQ Field in parallel with SKS Labour, N clean weeks, then cut over) had never actually been sustained: real timesheet-entry activity on `ehow` had dropped to ~1 action in the last 14 days, against an 86-row burst the week of 2026-07-06 that looks like a one-time backfill. Also chased down and ruled out a suspected security issue before recommending Royce put more real data in.*
 
-- [ ] **Actual weekly entry hasn't started yet** — the log is ready, first week isn't logged. Per the plan's own proving discipline, needs at least one real supervisor entering their own crew's data (not just one person doing it centrally) to actually test the load the new app has to carry. _(added 2026-07-26)_
+- [ ] **Superseded 2026-08-14 — entry has actually been happening, just not through this log.** Live data shows 317 `schedule_entries` rows created natively in EQ Field's SKS org since this entry was written, up to 2026-08-05 — informal, unlogged, one person doing it centrally rather than supervisors entering their own crews. Still doesn't satisfy the plan's own proving discipline (needs real supervisors, not central entry). See the 2026-08-14 entry above for the full picture and the CSV-export path being considered instead. _(added 2026-07-26, corrected 2026-08-14)_
 
 ---
 
