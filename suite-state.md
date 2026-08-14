@@ -61,9 +61,11 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-14)
 
 **eq-cards:**
+- #239 fix(auth): verify invite claim matches the caller's phone (SEC-25)
 - #221 refactor(auth): shell-verify.js relays to eq-shell instead of local crypto
 
 **eq-shell:**
+- #1339 fix(auth): reject self-join when there's no role code and no admin invite
 - #1294 feat(cards): centralize Cards' SSO minting via token-exchange-cards.ts
 
 ---
