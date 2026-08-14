@@ -35,18 +35,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## eq-shell: open self-join enrollment gap closed — any tenant slug let anyone self-provision an active Core account (2026-08-14)
-*Royce asked to dig into a live OCR timeout; while checking who'd been affected, found a much bigger issue: eq-shell's self-join flow would silently create a fully active `employee`-role Core account for literally anyone who knew an active tenant's slug — no invite, no QR code, no vetting, phone OTP alone.*
-
-- [x] **Root cause**: `LoginPage.tsx` sets `shouldCreateUser: !!joinTenantSlug` — any request carrying a `?tenant=<slug>` param could create a brand-new identity. `shell-join-tenant.ts`'s fallback (`resolvedRole = codeRole ?? 'employee'`, approval only required when a code demanded it) meant a genuinely new account got provisioned instantly-active with real default grants (`entity.view`, `field.view`, `service.view`, `quotes.view`, etc.) — not a throwaway role. Every active tenant was exposed, not just SKS. A second, identical door existed on the Cards side (`/join?tenant=<slug>`), closed by the same fix since both paths share this one backend function.
-- [x] Fixed: reject any brand-new self-join that resolves neither a real admin-generated join code nor a phone-matched pending invite, with an audit-log entry (`login.join_register_rejected`) recording why it was rejected. eq-shell [#1339](https://github.com/eq-solutions/eq-shell/pull/1339), merged (Royce's explicit go via AskUserQuestion — auth changes need approval before deploy).
-- [x] **Impact confirmed via direct DB query, not guesswork**: exactly 3 real accounts on SKS (none on `eq`) were created through the gap before the fix landed; none show a login since creation. Royce reviewed and confirmed: "they are fine."
-- [x] **Side effect of the impact check — a real, separate data-quality gap found**: those self-joined accounts had no display name on the Core side, because phone-OTP self-join never asks for one — an existing Cards profile name (set separately, if the person had ever used Cards) was never synced across. Fixed going forward: `shell-join-tenant.ts` now looks up an existing Cards `profiles.full_name` and uses it when provisioning a brand-new Core identity. eq-shell [#1340](https://github.com/eq-solutions/eq-shell/pull/1340), merged + deployed live.
-- [ ] **One of the 3 affected accounts (Maylin Ung) still has a null Core-side name** — #1340 only fixes it going forward; her existing record needs a one-time backfill. Single id-scoped `UPDATE`, drafted and ready — blocked on the safety classifier (direct live-data write to a real, named individual), needs Royce's explicit go-ahead. _(added 2026-08-14)_
-- [ ] **Follow-up hardening not yet scoped**: admin-generated self-join QR links currently never expire and have no per-code use cap, and this vulnerability class has no security-register entry yet (deliberately not added this session — see Notes in the 2026-08-14 session log on the SEC-25/26 numbering collision risk with a concurrent session). Needs Royce's numbers (default expiry, use cap) before anyone touches `shell-join-tenant.ts` again — deliberately not bundled into the fix above. _(added 2026-08-14)_
-
----
-
 ## eq-shell: Tom's licence-upload timeout root-caused for real — Shell's admin path was sending full-res photos, unlike Cards (2026-08-14)
 *Same-day follow-up: Royce reported Tom's licence photo still failing with "could not auto-read" after the earlier multi-document OCR timeout fix (PR #238) had already shipped.*
 
