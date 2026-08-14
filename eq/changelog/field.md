@@ -9,6 +9,9 @@ status: live
 
 # Changelog — EQ Solves Field
 
+## [2026-08-14] FIX — Email Templates nav button was permanently invisible (v3.5.497, #696)
+- The `Testing → Email Templates` nav button shipped earlier the same day (#695, below) carried both the correct `edit-only` class AND a leftover inline `style="display:none"` copied from the neighbouring Diary button — an inline style always beats the CSS class rule meant to reveal it, so the button was unreachable for every user in every role. Royce caught it live (screenshot of his own Supervision-unlocked sidebar, button missing). Fix: removed the inline style. Confirmed live via `field.eq.solutions/sw.js`. The Diary nav button likely has the identical bug — flagged as a separate follow-up, deliberately left alone this session per Royce's call.
+
 ## [2026-08-14] Leave notification gaps closed; digest widened to 4 weeks; Email Templates pilot (v3.5.494-496, #692/#693/#695)
 - **Leave has 3 separate approve paths; only 1 correctly emailed the CC list before this.** Dashboard quick-approve sent no email at all, to anyone; fixed to mirror the full modal's email/audit/analytics side-effects, plus picked up a self-approval guard it was missing. The magic-link "Approve" button inside the notification email — likely the most-used path — never CC'd the configured list in canonical mode (live for SKS since 2026-07-29, confirmed via live Netlify env check); fixed via a new `canonResolveCcEmails()`. Legacy plane (eq/demo tenant) left as a documented, deliberate gap. Also: CC-list modal copy simplified, Timesheets' Job Numbers panel lazy-load bug fixed. #692, v3.5.494.
 - **`supervisor-digest` edge function's leave section widened from a 1-week to a 4-week lookahead**, grouped into 4 week-headed mini-tables. Deployed live via Supabase MCP (version 11→12). #693, not version-stamped (Edge Function, separate deploy path from the Netlify-built client).
