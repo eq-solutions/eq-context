@@ -64,9 +64,6 @@ _If this file is >48h old, the cron is broken._
 - #240 ci(deploy): add edge function deploy step to Build & Deploy workflow
 - #221 refactor(auth): shell-verify.js relays to eq-shell instead of local crypto
 
-**eq-service:**
-- #730 fix(nav): relabel Admin sidebar link to signal it's the full index
-
 **eq-shell:**
 - #1294 feat(cards): centralize Cards' SSO minting via token-exchange-cards.ts
 
@@ -78,7 +75,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ✓ success |
+| eq-service | ✗ failure |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
