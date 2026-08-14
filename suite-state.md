@@ -64,6 +64,8 @@ _If this file is >48h old, the cron is broken._
 - #221 refactor(auth): shell-verify.js relays to eq-shell instead of local crypto
 
 **eq-shell:**
+- #1348 feat(reports): compliance report + mobile Home quick links, drop redundant compliance card
+- #1347 fix(auth): admin phone change now updates the login identity, not just the mirror
 - #1294 feat(cards): centralize Cards' SSO minting via token-exchange-cards.ts
 
 ---
