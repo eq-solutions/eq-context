@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-14 08:36 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-14 08:44 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-14 08:27 UTC → 2026-08-14 08:36 UTC)
+## Since last refresh (2026-08-14 08:36 UTC → 2026-08-14 08:44 UTC)
 
-- Merged: eq-shell [#1333](https://github.com/eq-solutions/eq-shell/pull/1333) chore(ci): add attachment row/file reconciliation check
-- Merged: eq-shell [#1332](https://github.com/eq-solutions/eq-shell/pull/1332) chore: delete unrouted CoreHome.tsx (EQ Intelligence mock ho
-- Merged: eq-shell [#1331](https://github.com/eq-solutions/eq-shell/pull/1331) fix(db): drop unused quote_attachment table + fix stale docs
-- Merged: eq-shell [#1330](https://github.com/eq-solutions/eq-shell/pull/1330) fix(documents): treat O&M manuals as reference library, not 
-- Merged: eq-shell [#1328](https://github.com/eq-solutions/eq-shell/pull/1328) chore(ci): triage is_worker_in_org into KNOWN_UNSOURCED (cro
-- Merged: eq-shell [#1323](https://github.com/eq-solutions/eq-shell/pull/1323) fix(staff): thread licence_verifications through the invite-
-- Merged: eq-shell [#1321](https://github.com/eq-solutions/eq-shell/pull/1321) feat(staff): write path for team/supervisor assignment on th
-- Merged: eq-shell [#1317](https://github.com/eq-solutions/eq-shell/pull/1317) fix(ops): retry quote-doc/job-creation fetches on a transien
+- Merged: eq-shell [#1340](https://github.com/eq-solutions/eq-shell/pull/1340) feat(auth): sync Core's name from an existing Cards profile 
+- Merged: eq-shell [#1334](https://github.com/eq-solutions/eq-shell/pull/1334) feat(documents): move document-version uploads to direct-to-
+- Merged: eq-shell [#1329](https://github.com/eq-solutions/eq-shell/pull/1329) fix(shell): quote-job-consumer reads canonical_events direct
+- Merged: eq-shell [#1324](https://github.com/eq-solutions/eq-shell/pull/1324) feat(staff): swap Resourcing desktop view to eq-ui Table
+- Merged: eq-shell [#1322](https://github.com/eq-solutions/eq-shell/pull/1322) chore(security): permission-enforcement drift guard (ratchet
+- Merged: eq-shell [#1320](https://github.com/eq-solutions/eq-shell/pull/1320) feat(ops): bulk select in Archived tab (restore / delete mul
+- Merged: eq-shell [#1319](https://github.com/eq-solutions/eq-shell/pull/1319) feat(ops): archive view search/filter + auto-archive invoice
+- Merged: eq-shell [#1318](https://github.com/eq-solutions/eq-shell/pull/1318) fix(security): gate audit rollback + align entity archive/re
 
 ## ⚠ Needs you (5)
 
@@ -51,9 +51,9 @@ _…and 92 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 2 | 0d |
-| eq-solves-service | ✓ success | 0d ago | 0 | — |
-| eq-field | ✓ success | 0d ago | 0 | — |
+| eq-shell | ✓ success | 0d ago | 3 | 0d |
+| eq-solves-service | ✓ success | 0d ago | 1 | 0d |
+| eq-field | ✓ success | 0d ago | 1 | 0d |
 | eq-cards | ✓ success | 0d ago | 3 | 0d |
 | eq-solves-intake | ✓ success | 2d ago | 0 | — |
 
@@ -70,6 +70,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-14 | eq-shell | [#1340](https://github.com/eq-solutions/eq-shell/pull/1340) feat(auth): sync Core's name from an existing Cards profile on se |
 | 2026-08-14 | eq-shell | [#1342](https://github.com/eq-solutions/eq-shell/pull/1342) fix(staff): compress licence photo before OCR/storage in AddLicen |
 | 2026-08-14 | eq-shell | [#1341](https://github.com/eq-solutions/eq-shell/pull/1341) chore(ci): triage eq_cards_admin_list_stale_invites into KNOWN_UN |
 | 2026-08-14 | eq-shell | [#1339](https://github.com/eq-solutions/eq-shell/pull/1339) fix(auth): reject self-join when there's no role code and no admi |
@@ -84,7 +85,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-14 | eq-field | [#696](https://github.com/eq-solutions/eq-field/pull/696) v3.5.497 — FIX: Email Templates nav button was permanently invisi |
 | 2026-08-14 | eq-field | [#695](https://github.com/eq-solutions/eq-field/pull/695) v3.5.496 — Email Templates pilot: leave.js's 3 templates now DB-e |
 | 2026-08-14 | eq-field | [#694](https://github.com/eq-solutions/eq-field/pull/694) v3.5.495 — Teams route guard (deep-link access-control gap) |
-| 2026-08-14 | eq-field | [#693](https://github.com/eq-solutions/eq-field/pull/693) supervisor-digest: widen leave lookahead from 1 week to 4, groupe |
 _Showing 15 of 112 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -142,4 +142,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-14 08:36 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-14 08:44 UTC._
