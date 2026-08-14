@@ -1,13 +1,17 @@
 ---
 title: EQ Cards — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-13
+last_updated: 2026-08-14
 scope: EQ Cards append-only history. NOTE — duplicates eq/changelog/cards.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # EQ Cards — Changelog
+
+## 2026-08-14 (PR #236 MERGED + deployed live — OCR no longer forwards undecodable photos)
+- **PR #236 MERGED — fixes EQ-CARDS-1H.** `scan_ocr_flow.dart`'s compress-catch block was falling back to raw (undecoded) photo bytes and calling the OCR edge function anyway whenever a photo failed to decode, producing a misleading 502 instead of surfacing PR #232's existing "photo couldn't be read" message. Now short-circuits on that specific `ServerFailure`: dismisses the loading dialog, shows the failure's own message, returns without ever calling OCR. Deployed live via `Build & Deploy` workflow, confirmed `cards.eq.solutions` serving the new build.
+- Part of a suite-wide Sentry sweep (17 issues across 4 apps) that also root-caused the identity-collision alerts (EQ-SHELL-Z/11/1M) to a login race in `eq_cards_auto_provision()` — code fix already live (PR #234, migration 0123), confirmed unchanged this session; one victim's live data corrected (staff record repointed, ghost account deactivated).
 
 ## 2026-08-13 (deploy confirmed + duplicate-work found + 2 fixes reviewed)
 - eq-cards `#229` (above) deployed live via `Build & Deploy`, confirmed `headSha` matches `main`. Root-caused the original upload as a photo, not a PDF — `createImageBitmap()` in `photo_compress_web.dart`.

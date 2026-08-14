@@ -14,6 +14,18 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell / eq-cards: suite-wide Sentry sweep, identity-collision root cause fixed, 2 bugs shipped (2026-08-14)
+*Continuation of a 17-issue Sentry sweep across all 4 apps. Found the exact mechanism behind 3 identity-collision alerts (a login race in Cards' signup code), confirmed the code fix was already live, and corrected the bad data it left behind (Royce approved before any identity-data write). Also shipped a Cards OCR fix and a Shell dashboard scroll bug Royce spotted from a screenshot. (The EQ Service session-expiry Server Action work from the same sweep is tracked in its own section above/`eq-solves-service` changelog — not repeated here.)*
+
+- [x] **Identity-collision root cause found: a login race in `eq_cards_auto_provision()`.** A session dying mid-signup could leave a broken "Personal Wallet" account with no name/email attached; a downstream sync then wrongly pointed a real staff member's record at the ghost account instead of their real one. The code fix was already live (eq-cards PR #234, confirmed against production) — didn't need re-shipping. Fixed the one known victim's data live (Royce approved first): repointed the staff record to the correct account, switched the ghost one off (deactivated, not deleted).
+- [x] **Full Sentry sweep closed: 17 issues across all 4 apps** — 13 resolved (already-fixed-and-confirmed, or fixed this session), 4 ignored as one-off noise (never recurred), 1 spun off as its own follow-up job (the eq-solves-service Server Action work above).
+- [x] **Cards: licence photo scan crash on unreadable photos fixed** (EQ-CARDS-1H) — was silently forwarding unreadable image bytes to the OCR service instead of showing the existing "photo couldn't be read" message. eq-cards [#236](https://github.com/eq-solutions/eq-cards/pull/236), merged + deployed live.
+- [x] **Shell: dashboard scroll ending in a big blank white bar, fixed.** Royce caught this live from a screenshot ("scrolling ends up with a big white bar at the bottom"). Root cause: scrolling past the end of the sidebar or content pane let the scroll action bubble out to the whole page instead of stopping there. eq-shell [#1336](https://github.com/eq-solutions/eq-shell/pull/1336), merged + deployed live.
+- [x] **Corrected a wrong assumption about why Shell's live site doesn't auto-update after a merge to main.** First guess (a broken GitHub connection) was wrong — it's a deliberate Netlify setting that only auto-publishes preview links, not the live site, matching the "never deploy without being told" rule already in place. Documented the accurate reason and the manual-publish steps in the global CLAUDE.md.
+- [ ] **Shell's own styling and the shared `@eq-solutions/ui` design library define colliding layout style names** (`eq-hub` and friends) — noticed while fixing the scroll bug above, not the cause of it, not yet looked into properly. _(added 2026-08-14)_
+
+---
+
 ## eq-shell: hard-delete for archived user accounts — built, merged, live (2026-08-14)
 
 - [x] Royce asked what happens to archived users and for a real hard-delete, having kept seeing old test accounts resurface. Root cause: Archive only ever flips `active=false` — the row (name/email/phone) survives 7 years under ADR-005's leaver retention, and the row/id survive forever after that for `audit_log`/FK integrity. No admin-facing hard-delete existed anywhere in the suite; clearing test accounts had necessarily been happening by hand (SQL/dashboard).
