@@ -14,6 +14,33 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: Staff list — apprentice year badge + Trade multi-select shipped, text[] conversion blocked on eq-field coordination (2026-08-14)
+*Royce asked where apprentice year was stored (thought it was wired to Field) and whether Trade could be capitalized + multi-select — as an electrical company, a single "electrical" label on almost every row was close to useless, and some workers do both electrical and comms.*
+
+- [x] Apprentice year (`year_level` — already live, shared with eq-field's own apprentice-advance logic) now shows as a "Year N" badge next to Job Title in the Staff list. It was real data the whole time, just never surfaced in the list view — only in the full detail panel.
+- [x] Trade column is now a multi-select (Electrical / Communications, capitalized display) — a worker can be tagged with more than one.
+- [x] Found a concrete blocker before building a real `text[]` array column: `app_data.staff.trade` is read and written directly by eq-field's own `app_data.field_people` / `field_people_removed` views and their IUD trigger functions (eq-field repo, not eq-shell). Converting the column type would need a coordinated eq-field-side migration touching the exact `CREATE OR REPLACE VIEW` / `security_invoker` pattern that's already caused 3 live incidents there. Given that finding, Royce chose comma-separated text on the existing column instead — zero schema change, zero eq-field risk, ships today.
+- [x] eq-shell PR [#1346](https://github.com/eq-solutions/eq-shell/pull/1346) merged (squash `25b4a0fb`). CI failed once on the role-literal enforcement ratchet — a false positive on an `employment_type === 'apprentice'` display check, not a permission gate — annotated and fixed same session.
+
+**Deferred:**
+- [ ] **Proper `text[]` array for Trade** — needs its own eq-field session to rebuild the `field_people`/`field_people_removed` views and the IUD trigger functions. Not scoped further; Royce's call on when to take it on. _(added 2026-08-14)_
+- [ ] **Not deployed** — merged to `main`, but core.eq.solutions production deploys are explicit-only (merging doesn't auto-deploy on this repo, by design). Royce to trigger when ready. _(added 2026-08-14)_
+- [ ] **Not click-tested live** — verified via `tsc -b --force`, eslint, full CI (all green), and the Netlify deploy preview build succeeding — not by clicking through a real signed-in session. _(added 2026-08-14)_
+
+---
+
+## eq-solves-service: NSX Test Report fixed — dead ACB-only fields left it always printing blank sections (2026-08-14)
+*Simon Bramall reported an ACB check's report came out empty in some sections. ACB's report wiring traced clean end-to-end (every field has a real collection path). The NSX Test Report, though, still carried template rows copy-pasted from ACB that the NSX workflow never actually collects.*
+
+- [x] Removed Performance Level, Protection Unit Fitted, and Earth-Leakage Tripping Delay from the NSX report's breaker-details table — NSX has no data for any of them (no earth-leakage column even exists on the table).
+- [x] Removed the Main Contact Resistance table — Royce deliberately stopped NSX from collecting that reading back in May, but the report kept showing an empty table for it on every single NSX report since.
+- [x] eq-service PR [#731](https://github.com/eq-solutions/eq-service/pull/731) merged, deployed live on service.eq.solutions (confirmed via Netlify — deploy `6a7ef65d`, production, matches the merge commit).
+
+**Deferred:**
+- [ ] **Not click-tested against a real generated NSX report** — fix verified via typecheck + code trace only; worth Royce pulling a real NSX Test Report next time one's generated to eyeball the CB Details table looks right. _(added 2026-08-14)_
+
+---
+
 ## Suite-wide nav simplification — 7 items shipped and deployed (2026-08-14)
 
 - [ ] **Decide the long-term fix for nav-visibility drift.** Three real drift incidents found and fixed this session (Cards' duplicate workspace-switcher/join-QR widgets, Field's ungated desktop Add Person, Service's stale embedded nav bar) all trace to the same root cause: no shared source of truth for "what's in the nav and who can see it" across the four apps. `eq/identity/nav-access-matrix.md` lays out two options — a shared roles-derived config each app imports, or a lighter review checklist — not decided, Royce's call. _(added 2026-08-14)_
@@ -1008,11 +1035,8 @@ Royce asked four architecture questions about the Cards→tenant consent model (
 ---
 
 ## eq-solves-service: ACB/NSX Test Report shipped with real data; Report Settings toggles extended to 3 more reports (2026-07-29)
-*Two background plans from an earlier session came back and were reviewed with Royce via three separate yes/no calls: (1) build the dormant ACB/NSX Test Report generator against real data, (2) wire the Report Settings toggles (sign-off, cover page, executive summary) into more report types beyond the Customer Report, (3) do the extra refactor needed to gate the Compliance Report's cover page too. All three: yes.*
-
 
 **Deferred:**
-- [ ] **The ACB Test Report has been verified correct by code symmetry with the NSX path, not against a real ACB check** — there are currently zero completed ACB checks in the live database to test against. Worth a quick look the first time SKS actually completes one. _(added 2026-07-29)_
 - [ ] **No live check has reached the Secondary Injection/Electrical Testing step yet either** (ACB or NSX) — the #647 fix is verified against the real stored label *format* (traced from the save actions) plus a synthetic end-to-end docx generation, not an actual live reading. Worth a real spot-check the first time a technician gets that far. _(added 2026-07-29)_
 
 ---
