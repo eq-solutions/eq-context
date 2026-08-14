@@ -65,8 +65,15 @@ _If this file is >48h old, the cron is broken._
 - #240 ci(deploy): add edge function deploy step to Build & Deploy workflow
 - #221 refactor(auth): shell-verify.js relays to eq-shell instead of local crypto
 
+**eq-field:**
+- #697 fix(nav): gate desktop Add Person to supervisor+manager, matching mobile
+
+**eq-service:**
+- #729 fix(nav): embedded nav bar parity with standalone sidebar
+
 **eq-shell:**
-- #1340 feat(auth): sync Core's name from an existing Cards profile on self-join
+- #1344 feat(nav): Reports landing page — GM Reports as the first option
+- #1343 fix(nav): sidebar cleanup batch — vendor name, dead routes, AdminHub label
 - #1294 feat(cards): centralize Cards' SSO minting via token-exchange-cards.ts
 
 ---
