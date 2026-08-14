@@ -68,12 +68,8 @@ _If this file is >48h old, the cron is broken._
 **eq-field:**
 - #697 fix(nav): gate desktop Add Person to supervisor+manager, matching mobile
 
-**eq-service:**
-- #729 fix(nav): embedded nav bar parity with standalone sidebar
-
 **eq-shell:**
 - #1344 feat(nav): Reports landing page — GM Reports as the first option
-- #1343 fix(nav): sidebar cleanup batch — vendor name, dead routes, AdminHub label
 - #1294 feat(cards): centralize Cards' SSO minting via token-exchange-cards.ts
 
 ---
