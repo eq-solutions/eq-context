@@ -1,7 +1,7 @@
 ---
 title: SKS Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-08-13
+last_updated: 2026-08-14
 scope: Done items rotated out of sks/pending.md nightly by scripts/rotate_pending.py to keep the live doc scannable. Nothing here is actionable — pure historical record (also covered in changelogs and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -399,5 +399,28 @@ output).*
 
 ## SKS national scale discovery — "what breaks EQ at ~2,000 employees" (2026-07-23) (rotated 2026-08-13 — open items remain in pending.md)
 
+
+---
+
+## sks-nsw-labour: local `main` synced, no feature change (2026-08-11) (rotated 2026-08-14)
+*Side effect of a suite-wide git-staleness sweep — see `eq/pending.md` (2026-08-11, "control-plane drift check fixed...") for the full story.*
+- [x] Local `main` was 11 commits behind `origin/main` (checked out in worktree `elastic-dirac-c994f1`, idle since 2026-07-21) — fast-forwarded, no code change. A real local `.claude/launch.json` (custom dev-server config) collided with a newly-tracked generic one from upstream; preserved as `.claude/launch.json.local-backup-preexisting` rather than overwritten. _(added 2026-08-11)_
+
+---
+
+## Mohamed Hussain's Open Cabling licence expiry corrected (2026-08-11) (rotated 2026-08-14 — open items remain in pending.md)
+
+- [x] Expiry corrected 2026-08-28 → 2029-08-28, matching his renewed TITAB Australia Open Cabling Registration — the compliance pack now reflects the real date.
+
+---
+
+## SKS national scale discovery — "what breaks EQ at ~2,000 employees" (2026-07-23) (rotated 2026-08-14 — open items remain in pending.md)
+
+
+---
+
+## ⏩ SKS Field — sessions 2026-06-07 through 2026-06-13 (rotated 2026-08-14 — open items remain in pending.md)
+
+- [x] **Security groups Phase 2–5 — all 3 pieces now confirmed live, checked 2026-08-13.** Session extra_perms wiring + AdminSecurityGroups CRUD page (confirmed 2026-07-27), and the first real `user_security_groups` row landed 2026-08-11 (`royce.milmlow@sks.com.au` → "Staff Conversations" group, live-queried on jvkn). Worth noting: that row is for the unrelated Staff Conversations feature, not a deliberate exercise of this specific SKS rollout track — but it does satisfy the letter of "first real row for a SKS user." No further action unless a broader SKS security-groups rollout was actually intended beyond this.
 
 ---

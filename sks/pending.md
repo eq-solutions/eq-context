@@ -29,10 +29,6 @@ Two known site-code collisions (`EC6`, `SYD27`) both trace to one physical addre
 - [ ] **`SKS-FIELD-PARALLEL-RUN-LOG.md` and the "EQ Field parallel-run restarted" entry below are now stale** — both assume manual entry hadn't started; live data shows it has, informally. Worth a proper reconcile pass — out of scope for this session's /close. _(added 2026-08-14)_
 - [ ] **Optional code fix, not required**: the roster site-map query in `eq-field/scripts/supabase.js` (~line 992) filters on `active=eq.true` only, not `field_enabled` — a small latent gap (found live) unrelated to the SYD27/EC6 fix above; deactivating the stale rows sidesteps it, so this is cosmetic cleanup only if ever revisited. _(added 2026-08-14)_
 
-## sks-nsw-labour: local `main` synced, no feature change (2026-08-11)
-*Side effect of a suite-wide git-staleness sweep — see `eq/pending.md` (2026-08-11, "control-plane drift check fixed...") for the full story.*
-- [x] Local `main` was 11 commits behind `origin/main` (checked out in worktree `elastic-dirac-c994f1`, idle since 2026-07-21) — fast-forwarded, no code change. A real local `.claude/launch.json` (custom dev-server config) collided with a newly-tracked generic one from upstream; preserved as `.claude/launch.json.local-backup-preexisting` rather than overwritten. _(added 2026-08-11)_
-
 ## Richard Brown's duplicate LV Rescue certificates cleaned up (2026-08-13)
 *Fix landed on the eq-cards side — see `eq/pending.md` (2026-08-13, "licence save silently duplicated the row...") for full root-cause + build detail. This entry is the SKS-side pointer.*
 - [x] 6 duplicate `lvr` rows found (a failed photo upload was silently duplicating the row on every retry), 5 removed, root cause fixed and deployed live.
@@ -40,7 +36,6 @@ Two known site-code collisions (`EC6`, `SYD27`) both trace to one physical addre
 
 ## Mohamed Hussain's Open Cabling licence expiry corrected (2026-08-11)
 *Fix landed on the EQ side (eq-shell + eq-cards) — see `eq/pending.md` (2026-08-11) for full root-cause + build detail. This entry is the SKS-side pointer.*
-- [x] Expiry corrected 2026-08-28 → 2029-08-28, matching his renewed TITAB Australia Open Cabling Registration — the compliance pack now reflects the real date.
 - [ ] **Underlying Cards mobile bug not yet fixed** — a licence "renewal" can silently save nothing if on-device OCR can't read the card and the user doesn't notice the date field still shows the old value. Worth watching for other workers hitting the same silent failure until eq-cards ships the fix. _(added 2026-08-11)_
 
 ## Safety records 200-row cap — fixed, merged, live (v3.10.109, PR #76, sks-nsw-labour)
@@ -138,7 +133,6 @@ _Nothing pending — migrations 001–023 all applied._
 - [ ] **SKS anon-remediation (nspb)** — exact policy worklist in `cross-app-linkage-remediation-plan-2026-06-07.md` §7a. Separate from ehow work. SKS-live gated.
 
 **SKS roles / security-groups track (from 2026-06-07):**
-- [x] **Security groups Phase 2–5 — all 3 pieces now confirmed live, checked 2026-08-13.** Session extra_perms wiring + AdminSecurityGroups CRUD page (confirmed 2026-07-27), and the first real `user_security_groups` row landed 2026-08-11 (`royce.milmlow@sks.com.au` → "Staff Conversations" group, live-queried on jvkn). Worth noting: that row is for the unrelated Staff Conversations feature, not a deliberate exercise of this specific SKS rollout track — but it does satisfy the letter of "first real row for a SKS user." No further action unless a broader SKS security-groups rollout was actually intended beyond this.
 
 ## ⏩ SKS Field — session 2026-07-03 (QA batch: 9 live bug reports)
 

@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Verify Queue
 owner: Royce Milmlow
-last_updated: 2026-08-13
+last_updated: 2026-08-14
 scope: Items whose only remaining blocker is your own live sign-in/click-through — the underlying work is already built, merged, and (unless the line itself says otherwise) live. Moved here from eq/pending.md by scripts/rotate_pending.py once a session's real build work is fully done, so a stale "click through to confirm" line no longer pins a whole finished write-up in the live pending doc.
 read_priority: high
 status: live
@@ -283,6 +283,18 @@ a bug rather than just deleting the line.
 **From:** eq-service: empty "assign to" member picker on Create Check — root-caused, fixed, merged, live (2026-08-08)
 
 - [ ] **Not click-tested live** — local dev server hung on an unrelated issue during the fix session. Needs a quick manual pass on ACB and NSX Create Check to confirm the dropdown actually populates in the browser. _(added 2026-08-08)_
+
+---
+
+**From:** eq-field: Calendar stopped showing approved leave since the July 10 roster-overlay migration — found + fixed (v3.5.473, PR #674, merged 2026-08-10)
+
+- [ ] **Live click-through not done** — app can't boot in this sandbox (no network to the canonical config service, even for the demo tenant); verified instead via a standalone harness running the actual edited code plus the full existing test suite (26/26) and eslint. Royce to confirm approved leave now shows on the Calendar page on a real tenant. _(added 2026-08-10)_
+
+---
+
+**From:** eq-shell: PR #1287 (Contacts dedup swap) deploy verified clean (2026-08-11)
+
+- [ ] **Still not click-tested live** — deploy health confirms the code reached production, not that the Customers page's duplicate-detection UI still behaves correctly. Needs a real click-through. _(added 2026-08-11)_
 
 ---
 

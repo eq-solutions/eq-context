@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-08-13
+last_updated: 2026-08-14
 scope: Done items rotated out of eq/pending.md nightly by scripts/rotate_pending.py (per-item since 2026-07-27; before that, occasional manual whole-section moves). Nothing here is actionable — pure historical record (also covered in eq/changelog/*.md and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -3303,5 +3303,198 @@ contain the same values and were pushed before push-protection caught up.
 
 ## Core dashboard rebuilt — replaced the passive AI-brief-only home with three permission-gated live signal bands (2026-07-17, MERGED + LIVE) (rotated 2026-08-13 — open items remain in pending.md)
 
+
+---
+
+## eq-field: staff resource management (skills/reviews) — built, deployed, migration applied live (2026-08-11) (rotated 2026-08-14 — open items remain in pending.md)
+
+- [x] Found and generalized EQ Field's existing apprentice-only review/skills subsystem (`skills_ratings`/`quarterly_reviews`/`feedback_entries`) to any staff member via an additive `person_id` column — `apprentice_id` untouched, apprentice flow unaffected. eq-field [PR #677](https://github.com/eq-solutions/eq-field/pull/677) (feature), [#678](https://github.com/eq-solutions/eq-field/pull/678) (caught + fixed a real bug before it ever touched a live DB — the first draft would have renamed a column live apprentice code still writes to), [#679](https://github.com/eq-solutions/eq-field/pull/679) (record). All merged, live on field.eq.solutions (v3.5.483).
+- [x] New "Staff Reviews" screen (`scripts/staff-reviews.js`), gated to Royce only via the same allowlist mechanism the Documents-to-Sign pilot already uses (`STAFF_REVIEWS_ALLOWLIST`, reused the same email). Verified live on the real deploy preview and on production: gate fails closed correctly for a non-allowlisted session.
+- [x] Migration applied live 2026-08-11 (Royce's explicit go-ahead) to both `ehow` and `zaap` — `ehow` got all 3 tables, `zaap` got 2 of 3 (`public.quarterly_reviews` doesn't exist there at all, a pre-existing asymmetry `apprentices.js` already tolerates, not expanded here).
+
+---
+
+## eq-shell + eq-context: control-plane drift check fixed, then a suite-wide git-staleness sweep (2026-08-11) (rotated 2026-08-14 — open items remain in pending.md)
+
+- [x] **eq-shell control-plane drift check fixed.** 2 live jvkn functions (`eq_ops_review_labour_hire_candidate`, `eq_verify_labour_hire_intake_secret`) had no matching migration file, failing the scheduled "Tenant drift + anon-grant + policy-lint check" on every run since 2026-08-07. Wrote the backfill migration byte-for-byte from live `pg_get_functiondef`, recorded in `CONTROL-PLANE-LEDGER.md`. eq-shell [PR #1282](https://github.com/eq-solutions/eq-shell/pull/1282), merged — confirmed clean on its own drift-check run (115 files, 144 functions, zero unsourced). Not applied to live jvkn (source-parity only, no DB write needed since the check only scans the migrations tree).
+- [x] **eq-context's own `main` had genuinely forked from `origin/main`** — multiple concurrent sessions committing locally without syncing, several producing content-identical duplicate commits under different SHAs/authors. Audited every local-only commit's content against origin before touching anything; recovered the one genuinely unique piece (an Intake suite-audit decision log) via an isolated worktree, then reset local `main` to match `origin/main`. Backup branch (`backup/main-divergence-2026-08-08`) and a stash left in place, not deleted — safe to drop once confirmed unneeded.
+- [x] **Structural fix built, closing the standing open question below.** Ran `/decide`: bare worktree-by-default policy wasn't enough on its own — eq-field's identical rule (its own `CLAUDE.md`, PR #673) was already violated same-day by concurrent sessions before any guard existed. Built both: a new `stale-main-gate` rule in `eq-guard` (`~/.claude/hooks/guard.js`) that blocks a `git commit` directly on a shared checkout's `main`/`master` when local is behind its upstream (skipped entirely inside worktrees, `EQ_SKIP_STALE_MAIN=1` to override) — tested against throwaway repos before touching the real file — plus the worktree-isolation guidance in `eq-context/rules/agentic-coding.md` §1 step 4, referencing the guard as the actual enforcement.
+- [x] **Suite-wide staleness sweep, once the guard existed to catch it going forward.** Local `main` was genuinely behind `origin/main` (never forked, just stale) in eq-roles, eq-field, eq-shell, eq-cards, eq-solves-service, eq-ui, and SKS's sks-nsw-labour — all fast-forwarded. Three needed extra care: eq-shell's and eq-solves-service's `main` were each checked out in a different, idle worktree (not the root checkout) — inspected each directly, confirmed clean and abandoned (last activity 1.5–8 days old) before fast-forwarding. sks-nsw-labour's worktree had a real untracked `.claude/launch.json` (custom `npx serve` config) that collided with a newly-tracked generic one — preserved as `.claude/launch.json.local-backup-preexisting` rather than overwritten.
+
+---
+
+## eq-shell: PR #1287 (Contacts dedup swap) deploy verified clean (2026-08-11) (rotated 2026-08-14)
+*Follow-up from the 2026-08-08 close's "needs you" item. Checked what could be checked without an authenticated session.*
+
+- [x] Confirmed via Netlify MCP: `4fa7646e` (the `CustomersPage.tsx` dedup swap) is an ancestor of current `main` (2 commits behind tip), and the current production deploy is `state: ready`, `error_message: null`, published 2026-08-10. The deploy shipped clean.
+
+---
+
+## eq-shell + eq-context: control-plane drift check fixed, then a suite-wide git-staleness sweep (2026-08-11) (rotated 2026-08-14 — open items remain in pending.md)
+
+- [x] **eq-shell control-plane drift check fixed.** 2 live jvkn functions (`eq_ops_review_labour_hire_candidate`, `eq_verify_labour_hire_intake_secret`) had no matching migration file, failing the scheduled "Tenant drift + anon-grant + policy-lint check" on every run since 2026-08-07. Wrote the backfill migration byte-for-byte from live `pg_get_functiondef`, recorded in `CONTROL-PLANE-LEDGER.md`. eq-shell [PR #1282](https://github.com/eq-solutions/eq-shell/pull/1282), merged — confirmed clean on its own drift-check run (115 files, 144 functions, zero unsourced). Not applied to live jvkn (source-parity only, no DB write needed since the check only scans the migrations tree).
+- [x] **eq-context's own `main` had genuinely forked from `origin/main`** — multiple concurrent sessions committing locally without syncing, several producing content-identical duplicate commits under different SHAs/authors. Audited every local-only commit's content against origin before touching anything; recovered the one genuinely unique piece (an Intake suite-audit decision log) via an isolated worktree, then reset local `main` to match `origin/main`. Backup branch (`backup/main-divergence-2026-08-08`) and a stash left in place, not deleted — safe to drop once confirmed unneeded.
+- [x] **Structural fix built, closing the standing open question below.** Ran `/decide`: bare worktree-by-default policy wasn't enough on its own — eq-field's identical rule (its own `CLAUDE.md`, PR #673) was already violated same-day by concurrent sessions before any guard existed. Built both: a new `stale-main-gate` rule in `eq-guard` (`~/.claude/hooks/guard.js`) that blocks a `git commit` directly on a shared checkout's `main`/`master` when local is behind its upstream (skipped entirely inside worktrees, `EQ_SKIP_STALE_MAIN=1` to override) — tested against throwaway repos before touching the real file — plus the worktree-isolation guidance in `eq-context/rules/agentic-coding.md` §1 step 4, referencing the guard as the actual enforcement.
+- [x] **Suite-wide staleness sweep, once the guard existed to catch it going forward.** Local `main` was genuinely behind `origin/main` (never forked, just stale) in eq-roles, eq-field, eq-shell, eq-cards, eq-solves-service, eq-ui, and SKS's sks-nsw-labour — all fast-forwarded. Three needed extra care: eq-shell's and eq-solves-service's `main` were each checked out in a different, idle worktree (not the root checkout) — inspected each directly, confirmed clean and abandoned (last activity 1.5–8 days old) before fast-forwarding. sks-nsw-labour's worktree had a real untracked `.claude/launch.json` (custom `npx serve` config) that collided with a newly-tracked generic one — preserved as `.claude/launch.json.local-backup-preexisting` rather than overwritten.
+
+---
+
+## eq-field: docx-export fix + timesheets/apprentices/roster decomposition, both PRs merged (2026-08-11) (rotated 2026-08-14 — open items remain in pending.md)
+
+- [x] **Fixed a live Sentry bug** — `incidents.js`/`site-reports.js`/`toolbox.js` passed `fetchTenantLogo()`'s whole `{base64,cx,cy}` object as `logoBase64` instead of `.base64`, crashing docx export (Incident/Prestart/Toolbox) for any tenant with a logo — SKS, live since 2026-08-04. Verified against the real bundled JSZip build. [eq-field PR #675](https://github.com/eq-solutions/eq-field/pull/675), merged.
+- [x] **Decomposed the 3 largest files in the codebase**, all still over the repo's ~1,500-line convention going in: `timesheets.js` 3,217→2,298, `apprentices.js` 2,500→1,482 (now under the default), `roster.js` 2,272→1,616 lines. 8 new companion modules. Same PR #675, merged and live-verified on `field.eq.solutions`.
+- [x] **Tightened the CI line-count ratchet to match** — `eslint.config.js`'s grandfathered ceilings for these 3 files were still at the pre-decomposition values (3-4x actual size), so the ratchet was enforcing nothing. Lowered per the file's own existing rule ("if a file shrinks, lower its entry by hand"). [eq-field PR #676](https://github.com/eq-solutions/eq-field/pull/676), merged.
+- [x] Caught and fixed 2 real process gaps found along the way: `core-bundle-b1.js`/`core-bundle-a2.js` CI drift (twice — lazy-loader.js and week-picker.js edits not regenerated into their bundles before push) and stale `<script>` cache-buster version tags on 2 core files (one predated this session).
+
+---
+
+## eq-shell production-readiness pass — EQ-SHELL-14 closed live, grant audit clean, two readiness gaps still open (2026-08-11) (rotated 2026-08-14 — open items remain in pending.md)
+
+- [x] **EQ-SHELL-14 (dangling staff→worker pointers) verified fixed and closed in Sentry.** Queried live: 0 of 92 `app_data.staff.cards_worker_id` values on ehow point at a missing jvkn worker (anti-join against `public.workers`, 2026-08-11). Confirms both halves of the earlier fix held — Emma Curth's 2 dangling pointers stayed nulled, and PR #1292's adoption logic is stopping new ones. Resolved in Sentry with the verification noted in the issue comment.
+- [x] **Function-grant audit re-checked, clean.** Every migration touching a guarded function since the 2026-08-07 suite sweep is a fix *from* that sweep, not a new gap — none of the 4 eq-shell PRs merged 2026-08-10 (#1293/#1292/#1291/#1279) touched `supabase/migrations/` at all.
+
+---
+
+## eq-shell + eq-cards: Cards SSO broker fix — built, verified, deliberately held (2026-08-10) (rotated 2026-08-14 — open items remain in pending.md)
+
+- [x] New eq-shell endpoint `netlify/functions/token-exchange-cards.ts` — mirrors the existing Field/Service `token-exchange.ts` pattern rather than extending it (that function carries real Field/Service entitlement logic with zero bearing on Cards). Auth: `EQ_CARDS_HANDOFF_KEY` header + forwarded session cookie, both required. `tsc -b` clean, eslint clean, full suite 308/308 pass. [eq-shell PR #1294](https://github.com/eq-solutions/eq-shell/pull/1294) (draft).
+- [x] eq-cards' `shell-verify.js` rewritten to relay to the new endpoint instead of local crypto — drops its dependency on all three secrets above. `node --check` clean. [eq-cards PR #221](https://github.com/eq-solutions/eq-cards/pull/221) (draft).
+- [x] **Code-reviewed + merge-readiness audited 2026-08-11 — both mechanically clean.** CI green on every required check both repos, 1-2 commits behind main with zero file overlap on either branch (no conflict risk), scope matches description exactly, no drive-by changes. Live-reconfirmed `EQ_CARDS_HANDOFF_KEY` is set on **neither** Netlify project yet — the manual step above is still the actual blocker, not a formality. eq-cards has no branch-protection rules at all (404, unlike eq-shell's 5 required checks) — worth knowing, not a blocker.
+
+---
+
+## eq-service + eq-solves-intake: RCD in-app entry (manual + photo) shipped, ACB mobile nav bug fixed, RCD threshold corrected (2026-08-11) (rotated 2026-08-14 — open items remain in pending.md)
+
+
+---
+
+## eq-field: Calendar stopped showing approved leave since the July 10 roster-overlay migration — found + fixed (v3.5.473, PR #674, merged 2026-08-10) (rotated 2026-08-14)
+*Surfaced while checking eq-field for parity with the SKS leave-deletion feature (see `sks/pending.md`) — turned out eq-field already had `hardDeleteLeaveRequest()` (v3.5.31) and a cleaner architecture (v3.5.281/282, PR #433: `leave_requests` is the single source of truth, roster/dashboard overlay it live, nothing written back to `schedule`). That same migration updated `roster.js`/`dashboard.js` but missed `calendar.js`, which kept reading raw schedule cells directly — so any leave approved since 2026-07-10 didn't show on the main Calendar page at all (still fine on the Roster grid and the Leave tab's own mini-calendar). Fixed by reusing the existing, already-tested `approvedLeaveCode()` overlay; also tightened `hardDeleteLeaveRequest`'s confirm copy, which had gone stale post-migration.*
+
+---
+
+## eq-shell: self-join bulk-approve + gap-analysis-driven onboarding fixes (2026-08-06) (rotated 2026-08-14 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: EQ-SHELL-R closed (false alarm) + EQ-SHELL-1B fixed — Outlook email attachments on quotes, merged + live (2026-08-06) (rotated 2026-08-14 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: EQ-SHELL-1A "eq-ops rpc ... failed: TypeError: Failed to fetch (ehow)" — durable fix live, all known consumers migrated (2026-08-06) (rotated 2026-08-14 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: root-caused the "auth-stall: chunk-error" Sentry P0 (27 events/day) — fix merged + live (2026-08-05) (rotated 2026-08-14 — open items remain in pending.md)
+
+- [x] **PR #1256 merged same day** (`d84ae8be`, 2026-08-05T10:10:09Z) — "stop mislabeling render crashes as chunk-error." Live on core.eq.solutions since (auto-deploy on merge to main). Corrected 2026-08-13 — this had sat marked "awaiting review" for a week after it actually merged.
+
+---
+
+## eq-shell: self-join's "double sign-in" for Cards root-caused and fixed — worker-add nav trimmed further too (2026-08-03) (rotated 2026-08-14 — open items remain in pending.md)
+
+
+---
+
+## eq-solves-intake + eq-shell: duplicate-site console's two dead ends fixed, then a live permission bug found and fixed mid-testing (2026-08-01) (rotated 2026-08-14 — open items remain in pending.md)
+
+
+---
+
+## eq-solves-service: fixed a broken safety check that was silently skipping every code review, then found the "176,000 findings" it surfaced was almost entirely noise, cleaned up what was real (2026-08-01) (rotated 2026-08-14 — open items remain in pending.md)
+
+
+---
+
+## eq-shell + eq-solves-intake + eq-receipts: closed every open security alert across the EQ suite, found 5 repos where the alert system was switched off entirely (2026-08-01) (rotated 2026-08-14 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: Richard Brown's mobile crash fixed, then a simplified mobile nav for supervisors driven by real usage data (2026-07-31) (rotated 2026-08-14 — open items remain in pending.md)
+
+
+---
+
+## eq-solves-service: Found why photo uploads were failing everywhere, then added a link/create/skip option to the paste-import flow (2026-07-31) (rotated 2026-08-14 — open items remain in pending.md)
+
+
+---
+
+## eq-intake + eq-shell: 4-part fix from Royce's live screenshot review of the Intake console (2026-07-31) (rotated 2026-08-14 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: EQ Ops quote status → job status sync fixed for all 5 stages, plus a new "Target period" badge for future-dated quotes (2026-07-31) (rotated 2026-08-14 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: Compliance-roster-only workers — Field access can now be switched off per worker (2026-07-30) (rotated 2026-08-14 — open items remain in pending.md)
+
+
+---
+
+## eq-solves-service: Field Run-Sheet asset headers now show the maintenance plan's Job Code (2026-07-29) (rotated 2026-08-14 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: Staff page edits silently reverting overnight — root-caused and fixed, deployed (2026-07-28) (rotated 2026-08-14 — open items remain in pending.md)
+
+
+---
+
+## eq-shell Staff table: reorderable columns + compact Status/Contact cells (2026-07-27) (rotated 2026-08-14 — open items remain in pending.md)
+
+- [x] **eq-shell PR #1051 — merged same day** (2026-07-27, shortly after this was written). Corrected 2026-08-13 — had sat marked "needs a merge decision" for 2+ weeks after it actually merged.
+
+---
+
+## eq-cards/eq-shell: onboarding minimum-requirements switch, bulk connect-worker, and a live anon-EXECUTE fix (2026-07-26) (rotated 2026-08-14 — open items remain in pending.md)
+
+
+---
+
+## EQ Field: real Incidents / Near Miss reporting, shipped and live (2026-07-22) (rotated 2026-08-14 — open items remain in pending.md)
+
+
+---
+
+## Core dashboard rebuilt — replaced the passive AI-brief-only home with three permission-gated live signal bands (2026-07-17, MERGED + LIVE) (rotated 2026-08-14 — open items remain in pending.md)
+
+
+---
+
+## ✅ EQ Ops rate-library copy polish + mobile login-freeze recovery (2026-07-14, BOTH MERGED + LIVE) (rotated 2026-08-14 — open items remain in pending.md)
+
+- [x] **eq-shell #863 — merged 2026-07-18, live.** The login/OTP/provision twin of #858 (also merged, 2026-07-14, same day it was added). Same "body read not under the timeout" gap in `shell-login` / `shell-login-phone-otp` / `shell-handoff-provision`. Both had sat marked "needs review + merge" for weeks after actually shipping. Corrected 2026-08-13.
+
+---
+
+## ✅ EQ Intake — duplicate-site detector was blind to inactive rows (the SY9 silent-failure) (2026-07-13, MERGED + DEPLOYED) (rotated 2026-08-14 — open items remain in pending.md)
+
+- [x] **eq-shell's OWN vulnerable `xlsx` — fixed, PR #824 merged same day it was opened** (2026-07-13). Distinct from the vendored-copy item above: eq-shell had `xlsx` (SheetJS, proto-pollution/ReDoS) as a direct dep in TWO of its own files — the Comms "import from Melbourne workbook" parser (a 424 kB chunk in the prod client bundle) and the server-side `upload-gm-report` function. Both repointed to `exceljs` (already a dep); `xlsx` removed from package.json + lockfile. Build confirmed no `xlsx-*.js` chunk; parse behaviour verified. Merged and live since — this had sat marked "draft, needs review + merge" for a month after it actually shipped. Corrected 2026-08-13.
+
+---
+
+## ⏩ Session close — 2026-07-04 (frontmatter CI green + DR-arming prep) — PR #62 fixes the repo-wide frontmatter check; verified exact live-secret state ahead of arming (rotated 2026-08-14)
+
+*Follow-on within the same day's platform-DR arc. Royce flagged `Frontmatter validation` had been red on `main` for days (masks real regressions) and asked for it fixed; separately walked through what "arming" the Phase 1+2 backups actually requires, then a concurrent console (different tool) surfaced its own arming checklist — verified live-secret state to reconcile the two and drafted a coordination handoff.*
+
+**Completed:**
+
+**Deferred:**
+- [x] **eq-context PR #62 investigated properly, 2026-08-13 — legitimately superseded, correctly closed.** PR #62 (opened 2026-07-04) was never merged or commented on, closed 2026-08-07 with no explanation. Root cause found: a *different* fix for the exact same problem — commit `f25847c` (2026-07-12, pushed directly to main, not via PR) — broadened the frontmatter-check's exemption list (`CHAT-PROMPT.md`, `*/README.md`, `*/changelog/*`) and fixed frontmatter on the genuinely-governed docs #62 also touched, 8 days after #62 was opened. #62 got closed because it was made redundant, not abandoned by mistake — no reconstruction needed.
+  - **But the check was red again the same day this was checked** — confirmed live: `f25847c` fixed the violations that existed in July, but new drift since then broke it again. Ran the check's exact logic locally against current `main`: one violation, `eq/sprints/2026-08-12-field-mobile-centering.md` missing `last_updated`. Fixed and confirmed the next live CI run passed clean.
+
+**Notes:**
+- A concurrent console (different tool, screenshot shared mid-session) was independently working the exact same arming task with its own checklist. Drafted Royce a coordination prompt handing that console the just-verified live-secret facts and standing this session's Code instance down from touching any secrets/environments, so the two consoles don't race on creating the same GitHub Environment or setting conflicting values.
+- Steelmanned "should we arm this" on request — recommended yes (asymmetric cost: ~15 minutes of copy-paste vs. total/permanent loss of platform identity if eq-canonical is ever lost with no offsite copy); named real counterpoints (R2 becomes a second location holding auth-adjacent data, deserves real key hygiene; the `auth_data.sql` capture is guarded but unproven until a live run). **Not yet a decision** — Royce hasn't confirmed arming in words.
+- Rebased eq-context PR #61 (Phase 2) mid-session after discovering Phase 1 had landed on `main` under a different commit SHA than the one this branch was originally stacked on — dropped the resulting duplicate commit, re-pushed as Phase-2-only before it merged.
 
 ---
