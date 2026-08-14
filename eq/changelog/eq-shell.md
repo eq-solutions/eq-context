@@ -1,13 +1,16 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-13
+last_updated: 2026-08-14
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # eq-shell changelog
+
+## 2026-08-14 (PR #1337 MERGED + deployed live — admin hard-delete for archived users)
+- **PR #1337 MERGED** — Archive only ever flipped `active=false`; the row survived 7 years under ADR-005's leaver retention with no supported way to actually remove a ghost/test account. New "Delete permanently" step on `AdminEditUser.tsx` + `netlify/functions/delete-user.ts`, visible only once a user is already archived, gated on `admin.edit_user` (same roster as Archive), type-the-name confirmation. Blocks and reports — never auto-resolves — on any live FK reference (verified jvkn's actual FK graph directly rather than trusting a stale code comment) or a linked staff/worker record on any of the target's tenant memberships. Confirmed live via Netlify's deploy record (`commit_ref` exact match to `1424baa6`).
 
 ## 2026-08-13 (PR #1317, #1331, #1333, #1334 MERGED + deployed live — Download Quote retry, quote_attachment table dropped, attachment reconciliation check, document-version direct-to-storage)
 - **PR #1334 MERGED** — `upload-document-version.ts` (internal sign-off register) converted to the same direct-to-storage pattern as PR #1310's quote attachments, removing its ~4.5MB effective ceiling (new limit 50MB). New `document-version-upload-init.ts`/`-commit.ts`; the commit step re-downloads the uploaded file to compute `content_hash` server-side (never trust a client-supplied hash — it's what a signer's attestation binds to) and deliberately doesn't create the parent `documents` row until the upload is confirmed, to avoid the same orphaned-row class of bug PR #1333 was built to catch. Scoped first (`eq-context/eq/sprints/2026-08-13-attachment-upload-closeout.md`, A4): of the 8 functions fixed in PR #1307, this was the only one with a real, evidenced-by-size-class case for the upgrade — the other 4 storage-writing paths handle small files and were left alone.

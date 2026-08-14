@@ -14,6 +14,17 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: hard-delete for archived user accounts — built, merged, live (2026-08-14)
+
+- [x] Royce asked what happens to archived users and for a real hard-delete, having kept seeing old test accounts resurface. Root cause: Archive only ever flips `active=false` — the row (name/email/phone) survives 7 years under ADR-005's leaver retention, and the row/id survive forever after that for `audit_log`/FK integrity. No admin-facing hard-delete existed anywhere in the suite; clearing test accounts had necessarily been happening by hand (SQL/dashboard).
+- [x] Scoped with Royce via 3 quick questions: same roster as Archive (managers + platform_admin, not platform-admin-only), block-and-report on any live reference rather than auto-reassigning it, type-the-person's-name confirmation (stronger than Archive's plain click, since this can't be undone).
+- [x] Built `netlify/functions/delete-user.ts` + a "Delete permanently" section on `AdminEditUser.tsx`, visible only once a user is already archived. Reuses `admin.edit_user` rather than a new permission key (a real shared key needs its own `@eq-solutions/roles` release — separate, deliberate piece of work if ever wanted). Checked jvkn's live FK graph directly rather than trusting `retention-purge.ts`'s 3-week-old comment, which turned out to list one blocker (`worker_invites`) that isn't actually a live FK on this plane. Also blocks on a linked staff/worker record on *any* of the target's tenant memberships, not just the caller's own tenant — avoids leaving a dangling pointer on a second tenant.
+- [x] eq-shell [#1337](https://github.com/eq-solutions/eq-shell/pull/1337), merged (`1424baa6`), live on core.eq.solutions — confirmed via Netlify's deploy record (`commit_ref` exact match, published ~4.5 min after merge, `delete-user` present in the function bundle).
+- [ ] **Not click-tested live** — same sandbox limitation as everything else this session; built against `tsc`/lint/the permission-drift guard only. _(added 2026-08-14)_
+- [ ] **Minor, unrelated gap noticed in passing**: `admin.deactivate_user` is declared in the permission matrix but never actually checked anywhere — `edit-user.ts`'s archive/restore action (and now `delete-user.ts`) both gate on `admin.edit_user` instead. Harmless today since the two keys are granted to the same roles, but if they're ever meant to diverge, deactivate silently wouldn't. _(added 2026-08-14)_
+
+---
+
 ## eq-solves-service: session-expiry Server Action crash (EQ-SOLVES-SERVICE-D) — root-caused, fixed suite-wide across ~120 call sites, PR open (2026-08-14)
 
 - [x] Root-caused Sentry `EQ-SOLVES-SERVICE-D`: `proxy.ts`'s session guard redirects a mid-flight Server Action POST to `/auth/signin` when the session expires mid-tab; the client runtime surfaces that as a generic "unexpected response" crash instead of anything mentioning auth.
