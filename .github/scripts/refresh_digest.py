@@ -54,11 +54,24 @@ HEALTHY_CI = {"success", "skipped", "neutral"}
 # eq/pending.md's open count was this queue, invisible inside the engineering
 # backlog; surfacing it separately is what lets 15 minutes of clicking clear
 # dozens of "open" items. Matches the phrasings session write-ups actually use.
+#
+# Extended 2026-08-14: measured against the live file, the original pattern
+# caught only 7 of 50 open items that actually describe needing a human
+# click-through/live-test (99 -> 146 total matches after the extension,
+# spot-checked for false positives — see test_pending_queue_health.py).
+# "click-through"/"click-test(ed)" are matched broadly rather than requiring
+# a specific suffix phrase ("not done", "still not", ...) because the corpus
+# showed session write-ups use too many different verbs/tenses around those
+# two words to enumerate, and the broad match held ~98% precision in the
+# spot check.
 ROYCE_QUEUE_RE = re.compile(
     r"Royce (?:to|himself)\b"
-    r"|Royce'?s (?:call|confirmation|go-ahead|sign-off|approval)"
+    r"|Royce'?s (?:call|confirmation|go-ahead|sign-off|approval|own\b)"
     r"|needs Royce|waiting on Royce|Royce manual step"
-    r"|needs your call|your call on|needs your confirmation",
+    r"|needs your call|your call on|needs your confirmation"
+    r"|click-through|click-test(?:ed)?|live-tested"
+    r"|no live click|needs a live click|worth Royce"
+    r"|not\s+(?:yet\s+)?confirmed\s+(?:live|working)",
     re.I,
 )
 ROYCE_QUEUE_LIMIT = 12  # max rows shown; full lists stay in the pending files
@@ -225,39 +238,34 @@ SECTION_HEADER_DATE_RE = re.compile(r"(\d{4}-\d{2}-\d{2})")
 AGING_OPEN_THRESHOLD_DAYS = 45
 
 
-def pending_queue_health(path):
-    """(total_lines, open_count, unrotated_done_count, aging_open_count) for a
-    pending/active file.
+def _count_queue_health(lines, cutoff, royce_re=ROYCE_QUEUE_RE):
+    """Pure counting logic behind pending_queue_health() — no file I/O, so it's
+    directly testable (same split as _scan_run_conclusions/scheduled_workflow_health).
 
-    Surfaces queue bloat as a quiet signal, not an alert — hygiene debt
-    (done items never rotated to the archive) is a different thing from a real
-    backlog, and neither is urgent the way a Needs You item is. Open/done/aging
-    are three separate numbers because a big file that's mostly open work reads
-    very differently from one that's mostly unrotated done history, and both
-    differ from one where open items have simply gone quiet.
+    Returns (total_lines, open_count, royce_open_count, done_count, aging_open_count).
 
-    aging_open_count is the early-warning `scripts/rotate_pending.py` doesn't
-    provide on its own: it rotates DONE items nightly, but a section can carry
-    OPEN items under an old dated header indefinitely — exactly how eq/pending.md
-    reached 478 open items before the 2026-07-27 backlog review forced a manual
-    cull. Counts open items in any section whose header carries a date 45+ days
-    old. Undated sections are excluded — a section with no date (e.g. the
-    deliberately-parked "Parked — AHD (revisit 2027)") isn't newly stale just
-    because nothing there has a timestamp.
+    royce_open_count is a SUBSET of open_count, not additive — every open item
+    is either "waiting on Royce personally" (a confirm, a click-through, a
+    call) or real engineering backlog, never both. Added 2026-08-14: the flat
+    open_count alone conflated the two, so a large number here always read as
+    "backlog," even when a real chunk of it was actually a fast personal
+    queue Royce could clear in one sitting — the same split digest.md's own
+    "Waiting on you" section already makes for display, just never reflected
+    back into this health signal until now.
     """
-    try:
-        with open(path, encoding="utf-8") as f:
-            lines = f.readlines()
-    except FileNotFoundError:
-        return None
     def is_open(ln):
         s = ln.strip()
         return s.startswith("- [ ]") or s.startswith("- [~]")
 
-    open_count = sum(1 for ln in lines if is_open(ln))
+    open_count = 0
+    royce_open_count = 0
+    for ln in lines:
+        if is_open(ln):
+            open_count += 1
+            if royce_re.search(ln):
+                royce_open_count += 1
     done_count = sum(1 for ln in lines if ln.strip().startswith("- [x]"))
 
-    cutoff = (NOW - timedelta(days=AGING_OPEN_THRESHOLD_DAYS)).strftime("%Y-%m-%d")
     aging = 0
     section_date = None
     section_open = 0
@@ -277,7 +285,38 @@ def pending_queue_health(path):
             section_open += 1
     flush()
 
-    return len(lines), open_count, done_count, aging
+    return len(lines), open_count, royce_open_count, done_count, aging
+
+
+def pending_queue_health(path):
+    """(total_lines, open_count, royce_open_count, unrotated_done_count,
+    aging_open_count) for a pending/active file.
+
+    Surfaces queue bloat as a quiet signal, not an alert — hygiene debt
+    (done items never rotated to the archive) is a different thing from a real
+    backlog, and neither is urgent the way a Needs You item is. Open/done/aging
+    are separate numbers because a big file that's mostly open work reads
+    very differently from one that's mostly unrotated done history, and both
+    differ from one where open items have simply gone quiet. royce_open_count
+    further splits open_count into "waiting on Royce personally" vs real
+    engineering backlog — see _count_queue_health()'s docstring.
+
+    aging_open_count is the early-warning `scripts/rotate_pending.py` doesn't
+    provide on its own: it rotates DONE items nightly, but a section can carry
+    OPEN items under an old dated header indefinitely — exactly how eq/pending.md
+    reached 478 open items before the 2026-07-27 backlog review forced a manual
+    cull. Counts open items in any section whose header carries a date 45+ days
+    old. Undated sections are excluded — a section with no date (e.g. the
+    deliberately-parked "Parked — AHD (revisit 2027)") isn't newly stale just
+    because nothing there has a timestamp.
+    """
+    try:
+        with open(path, encoding="utf-8") as f:
+            lines = f.readlines()
+    except FileNotFoundError:
+        return None
+    cutoff = (NOW - timedelta(days=AGING_OPEN_THRESHOLD_DAYS)).strftime("%Y-%m-%d")
+    return _count_queue_health(lines, cutoff)
 
 
 def recent_sessions(sessions_dir="sessions", n=5):
@@ -988,13 +1027,17 @@ def build():
             "a large done count is unrotated history that belongs in a changelog; "
             f"a large aging count is open work that's gone {AGING_OPEN_THRESHOLD_DAYS}+ "
             "days quiet under its dated section and is worth a look before it becomes "
-            "the next 478-item surprise._"
+            "the next 478-item surprise. Open splits engineering backlog from Royce's "
+            "own queue (a confirm, a click-through, a call) — the two used to be "
+            "counted together here, which made the number look worse than the real "
+            "engineering backlog actually is; the split matches 'Waiting on you' above._"
         )
         lines.append("")
-        lines.append(f"| File | Lines | Open | Done (unrotated) | Aging {AGING_OPEN_THRESHOLD_DAYS}d+ |")
-        lines.append("|------|------:|-----:|------------------:|------------:|")
-        for label, path, (total, open_n, done_n, aging_n) in queue_rows:
-            lines.append(f"| [{label}]({path}) | {total} | {open_n} | {done_n} | {aging_n} |")
+        lines.append(f"| File | Lines | Open (eng / you) | Done (unrotated) | Aging {AGING_OPEN_THRESHOLD_DAYS}d+ |")
+        lines.append("|------|------:|------------------:|------------------:|------------:|")
+        for label, path, (total, open_n, royce_n, done_n, aging_n) in queue_rows:
+            eng_n = open_n - royce_n
+            lines.append(f"| [{label}]({path}) | {total} | {eng_n} / {royce_n} | {done_n} | {aging_n} |")
         lines.append("")
 
     # Possible recurring failures — the missing half of guard-ratchet.yml. That

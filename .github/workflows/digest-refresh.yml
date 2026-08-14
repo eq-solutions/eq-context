@@ -51,7 +51,9 @@ jobs:
 
       - name: Test the digest generator's pure logic
         working-directory: .github/scripts
-        run: python test_scheduled_workflow_health.py
+        run: |
+          python test_scheduled_workflow_health.py
+          python test_pending_queue_health.py
 
       - name: Generate digest.md
         env:
