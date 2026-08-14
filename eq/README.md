@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Index
 owner: Royce Milmlow
-last_updated: 2026-08-13
+last_updated: 2026-08-14
 scope: EQ Solutions work — products, decisions, build state
 read_priority: critical
 status: live
@@ -97,6 +97,7 @@ Every canonical EQ file as a full URL — clickable from `/context/claude`:
 | `sprints/2026-05-20-S3-polish-and-audit.md` | Sprint S3 polish + audit doc, historical |
 | `sprints/2026-08-12-field-mobile-centering.md` | eq-field mobile-centering sprint: 12 of 16 audited items already shipped; real gaps closed same day (list-header counts, Leave tap targets, Calendar mobile agenda view, Teams drawer highlight) |
 | `sprints/2026-08-13-resourcing-closeout.md` | Sprint: close out Shell Conversations/Resourcing — merge PR #1324, Royce's live click-through, link remaining unlinked staff to teams. All Royce-gated, no build left |
+| `sprints/2026-08-13-attachment-upload-closeout.md` | Sprint: close out the 5-10MB attachment-upload incident thread — A0/A3/A4/A6 shipped and live (PR #1307, #1310, #1317), A2 out of scope; A1 (Royce's live repro) and A5 (parked vendor signup, revisit ~2026-08-20) still open |
 | `changelog/*.md` | Per-product changelogs — **all 4 duplicate pairs resolved 2026-07-19**. `shell.md`/`service.md`/`cards.md` were abandoned (stopped 3-19 days before their twin) — each carries a "Superseded" banner; use `eq-shell.md`/`eq-service.md`/`eq-cards.md`. `field.md` and `eq-field.md` had both been actively written for months in parallel — 18 PRs that only existed in `eq-field.md` were merged into `field.md` at their correct dates; `eq-field.md` now carries a "Merged" banner listing what moved. `field.md` is canonical going forward. Plus `changelog/eq-context.md` and `changelog/eq-intake.md`, which have no duplicate, and the newer single-copy logs `eq-roles.md`, `eq-ui.md`, `eq-receipts.md`, and `eq-solves-service.md`. |
 
 ## Killed / deferred (do not reference as live products)
