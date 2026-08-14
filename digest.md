@@ -8,28 +8,28 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-14 11:19 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-14 12:46 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-14 11:05 UTC → 2026-08-14 11:19 UTC)
+## Since last refresh (2026-08-14 11:19 UTC → 2026-08-14 12:46 UTC)
 
-- Merged: eq-shell [#1346](https://github.com/eq-solutions/eq-shell/pull/1346) feat(staff): apprentice year badge + multi-select Trade on S
-- Merged: eq-shell [#1334](https://github.com/eq-solutions/eq-shell/pull/1334) feat(documents): move document-version uploads to direct-to-
-- Merged: eq-shell [#1329](https://github.com/eq-solutions/eq-shell/pull/1329) fix(shell): quote-job-consumer reads canonical_events direct
-- Merged: eq-shell [#1324](https://github.com/eq-solutions/eq-shell/pull/1324) feat(staff): swap Resourcing desktop view to eq-ui Table
-- Merged: eq-shell [#1322](https://github.com/eq-solutions/eq-shell/pull/1322) chore(security): permission-enforcement drift guard (ratchet
-- Merged: eq-shell [#1320](https://github.com/eq-solutions/eq-shell/pull/1320) feat(ops): bulk select in Archived tab (restore / delete mul
-- Merged: eq-shell [#1319](https://github.com/eq-solutions/eq-shell/pull/1319) feat(ops): archive view search/filter + auto-archive invoice
-- Merged: eq-shell [#1318](https://github.com/eq-solutions/eq-shell/pull/1318) fix(security): gate audit rollback + align entity archive/re
+- Merged: eq-shell [#1333](https://github.com/eq-solutions/eq-shell/pull/1333) chore(ci): add attachment row/file reconciliation check
+- Merged: eq-shell [#1332](https://github.com/eq-solutions/eq-shell/pull/1332) chore: delete unrouted CoreHome.tsx (EQ Intelligence mock ho
+- Merged: eq-shell [#1331](https://github.com/eq-solutions/eq-shell/pull/1331) fix(db): drop unused quote_attachment table + fix stale docs
+- Merged: eq-shell [#1330](https://github.com/eq-solutions/eq-shell/pull/1330) fix(documents): treat O&M manuals as reference library, not 
+- Merged: eq-shell [#1328](https://github.com/eq-solutions/eq-shell/pull/1328) chore(ci): triage is_worker_in_org into KNOWN_UNSOURCED (cro
+- Merged: eq-shell [#1323](https://github.com/eq-solutions/eq-shell/pull/1323) fix(staff): thread licence_verifications through the invite-
+- Merged: eq-shell [#1321](https://github.com/eq-solutions/eq-shell/pull/1321) feat(staff): write path for team/supervisor assignment on th
+- Merged: eq-shell [#1317](https://github.com/eq-solutions/eq-shell/pull/1317) fix(ops): retry quote-doc/job-creation fetches on a transien
+- ✅ Needs you: 5 → 4
 
-## ⚠ Needs you (5)
+## ⚠ Needs you (4)
 
 - 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-9 (P0 — confirmed exposure, same window as SEC-3, possible second exposure 2026-07-27) — A different service_role key (`jvkn`/eq-canonical) was pasted directly into a ch · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-24 (P1 — OPEN, found 2026-08-08) — `QUOTES_CRON_SECRET` on eq-shell stored `is_secret: false` — full plaintext retu · [security-register.md](ops/security-register.md)
-- 🔴 **Cron failing** — `index-drift.yml` 2 consecutive scheduled run(s) failed, last success 2026-08-11 · [failures.md](system/failures.md) F11
 - 🟠 **Sentry new error** — `eq-cards` [minified:a42: FunctionException(status: 502, details: {error](https://eq-solutions.sentry.io/issues/140383786/)
 
-## 🙋 Waiting on you (105)
+## 🙋 Waiting on you (104)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
@@ -38,20 +38,20 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **EQ** · **Needs Royce, not more building:** already superseded below (2026-08-11 explicit go-ahead) for the overseas-goal exclusion specifically — the real remaining blocker is operational: generate + set `EQ_CARDS_HANDOFF_KEY` on both Netlify projects (nothing works until it exists) — manual-hands-only, Claude Code is blocked from writing Netlify secrets by design. **Note 2026-08-13:** the TODAY.md overseas goal this entry originally cited was killed (Royce's explicit call) — doesn't change anything here, the Netlify-secret step was already the actual blocker, not the goal. _(added 2026-08-10)_
 - **EQ** · **Not built.** Royce to decide whether this graduates back onto `system/punch-list.md` for the actual simplification work, given the goal's current exclusion on live UI changes affecting real users while overseas. _(added 2026-08-10)_
 - **EQ** · **Work sits uncommitted, not lost** — on branch `fix/integration-ci-app-data-bootstrap` in the shared root checkout at `C:\Projects\eq-solves-service`. Needs Royce to get Docker running (or hand over a `supabase db dump` directly, or greenlight a pure-SQL fallback) to resume. _(added 2026-08-10)_
-- **EQ** · **Live click-through not done** — app can't boot in this sandbox (no network to the canonical config service, even for the demo tenant); verified instead via a standalone harness running the actual edited code plus the full existing test suite (26/26) and eslint. Royce to confirm approved leave now shows on the Calendar page on a real tenant. _(added 2026-08-10)_
 - **EQ** · **2 items need Royce's call, not a code fix** — `claude/service-canonical-identity-phase3-4` (eq-service): re-keys shell-auth JWT + remaps 5 SKS users' FK refs, explicitly marked "DO NOT DEPLOY without Royce's go" in its own commit, never landed — still wanted or shelved? `worktree-wf_79f7a4de-c56-4` (eq-intake): the quality-guardian engine is live but no admin UI in eq-service ever surfaced its output — still wanted? _(added 2026-08-08)_
 - **EQ** · **Not click-tested live** — EQ Field's CSV import was rewired from destructive (purge+reinsert) to additive (match existing person by phone/email before insert) ([eq-field PR #660](https://github.com/eq-solutions/eq-field/pull/660), merged, live). Needs Royce to re-upload a real SKS person's CSV row and confirm their linked records (timesheets, leave, licences — 6 tables carry a soft `person_id` reference) and id survive the round trip. _(added 2026-08-07)_
 - **EQ** · **Royce to test on his Samsung/Android Chrome** now that the code and the SMS template are live together for the first time — not yet confirmed working end-to-end. No fix exists for iOS Safari (WebOTP isn't implemented there); manual entry stays as-is on that platform.
 - **EQ** · **Not confirmed by Royce on the real embedded session** — everything above was verified against a standalone repro (deploy preview + forced `.shell-mode` class), not the actual `core.eq.solutions/sks/field` iframe Royce was looking at (no way to drive that cross-origin session from this environment). Royce to hard-refresh (or bypass the service worker) and confirm the nav bar is back. _(added 2026-08-05)_
 - **EQ** · Auto-login from Shell's tenant tile into Cards was silently skipping the handoff and bouncing to the sign-in screen instead — reported live by Royce, root-caused same session. `cards.eq.solutions` iframes across every open Shell tab share one browser's local storage, and a refresh-token rotation triggered by one tab invalidates the session another tab still has cached. The splash screen only checked whether *a* session object existed in storage, not whether it was still valid, so a stale cached session silently pre-empted the working handoff. Root-caused live against Royce's own SKS account: PostHog showed `shell_handoff_started` never fired on the failing attempt, and eq-canonical's auth logs showed `403 bad_jwt: invalid claim: missing sub claim` at the same second. Fixed in eq-cards [PR #212](https://github.com/eq-solutions/eq-cards/pull/212) (squash-merged `36a23cd`) — `_handleShellEntry()` now validates any cached session with a live `getUser()` call before trusting it, signing out and falling through to the existing handoff on any failure. Merged and deployed (explicit `Build & Deploy` workflow dispatch — Netlify + Sentry source-map upload both succeeded). **Needs Royce's click-through**: his own browser has a bad session already stuck in local storage from before the fix — clearing site data for `cards.eq.solutions` once (or a private window) and reloading the tenant tile is a device-side action only he can do; confirming the clean auto-login after that is the last open step. _(added 2026-08-04)_
 - **EQ** · **Sentry MCP connector needs Royce to reconnect** — "user's connection to this connector was invalidated" mid-session; `search_issues`/`search_events` unavailable for the rest of the session, worked around via code + live DB reads instead. _(added 2026-08-04)_
-_…and 93 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+- **EQ** · **`credentials-canonical-sync` is broken and not actually running** — the edge function that's supposed to copy a worker's licence/credential updates from Cards into the SKS compliance/Field-legacy database is deployed but wired to nothing (no database trigger calls it), and even if it were, it hardcodes the wrong SKS tenant ID (the old, corrected-in-2026-06 wrong value). Net effect: a worker updating a licence or White Card in Cards today does not reach the older SKS compliance view at all. Needs Royce's call on reviving it (fix + wire it up) vs retiring it in favour of the newer eq-field app's live-read pattern, which doesn't have this problem by design. Spawned as background task `task_5687d06b`, already started in a separate session. **Checked eq-field's actual "live-read pattern" this session (Royce: "have Field pick it up") — it's narrower than assumed: `eq_get_org_licences` (via `canon-read.js`) only lists licences a worker already holds and flags expiry, with NO org-required-credential gap-checking anywhere in eq-field (no `org_credential_requirements` lookup exists in the repo at all). So retiring the old sync is safe — Field was never depending on it — but "Field picks this up" isn't a real feature swap yet; Field doesn't currently show missing-credential warnings the way the old SKS view did. Retire-vs-revive is still Royce's call; if he wants Field to show compliance gaps going forward, that's new work, not a revival.** _(added 2026-08-03, updated 2026-08-03)_
+_…and 92 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 1 | — |
+| eq-shell | ✓ success | 0d ago | 3 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 0 | — |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 1 | — |
@@ -89,7 +89,6 @@ _Showing 15 of 114 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **`guard.js`'s `stale-main-gate` has a worktree-detection bug** — only recognizes paths containing `/worktrees/` or ending `-wt`; a worktree created elsewhere (e.g. a session's scratchpad directory) gets misclassified as "not a worktree" and blocked unnecessarily. Found and documented while working around it, not fixed. _(added 2026-08-14)_
 - **Not live-tested today** — this was code-level assurance (plus an old "confirmed live" comment already in the code from an earlier check), not a fresh click-through with a real pre-existing Cards account before the mass send goes out. _(added 2026-08-14)_
 - **Follow-up question raised, being checked now**: if a worker's phone number genuinely changes, is there an admin-facing way in eq-shell to update it on their existing account (so OTP login works with the new number under the same identity), or would that need an out-of-band fix today? _(added 2026-08-14)_
 - **Not yet confirmed by Tom actually retrying** — the fix is live, but nobody's re-tested his specific photo since deploy. _(added 2026-08-14)_
@@ -99,7 +98,8 @@ _Showing 15 of 114 · full record in [sessions/](sessions/)_
 - **Minor, unrelated gap noticed in passing**: `admin.deactivate_user` is declared in the permission matrix but never actually checked anywhere — `edit-user.ts`'s archive/restore action (and now `delete-user.ts`) both gate on `admin.edit_user` instead. Harmless today since the two keys are granted to the same roles, but if they're ever meant to diverge, deactivate silently wouldn't. _(added 2026-08-14)_
 - **No manual browser smoke test yet** — need to actually expire a session mid-form-submit on a few touched pages and confirm the friendly "sign in again" message renders, rather than just type/unit verification. _(added 2026-08-14)_
 - **No automated check exists to catch this cache-tag class of bug before it ships** — found and fixed the symptom 4 times now (this session + 3 historical), never built the actual guard. Worth a CI check that flags a cache-busted file whose content changed but whose version tag didn't. _(added 2026-08-14)_
-_…and 498 more · [eq/pending.md](eq/pending.md)_
+- **Not click-tested live** — this sandbox has no network path to the real app (confirmed again this session), so the Map page's hover behaviour and the version-badge fix are verified by direct database/production-file checks only, not by clicking through a real signed-in session. _(added 2026-08-14)_
+_…and 496 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -121,8 +121,8 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 3561 | 615 | 116 | 24 |
-| [SKS](sks/pending.md) | 438 | 89 | 4 | 15 |
+| [EQ](eq/pending.md) | 3504 | 611 | 90 | 24 |
+| [SKS](sks/pending.md) | 432 | 89 | 1 | 15 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 409 | 36 | 0 | 1 |
 
@@ -142,4 +142,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-14 11:19 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-14 12:46 UTC._
