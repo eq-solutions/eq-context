@@ -1,32 +1,34 @@
 ---
 title: EQ Suite — Health Digest
 owner: Royce Milmlow
-last_updated: 2026-08-13
+last_updated: 2026-08-14
 scope: Push-style 'what needs your attention' feed across the EQ suite. Regenerated on merge (repository_dispatch: suite-state-changed) and nightly. Full snapshot in suite-state.md.
 read_priority: high
 status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-13 23:20 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-14 01:19 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-13 13:15 UTC → 2026-08-13 23:20 UTC)
+## Since last refresh (2026-08-13 23:20 UTC → 2026-08-14 01:19 UTC)
 
-- Merged: eq-shell [#1322](https://github.com/eq-solutions/eq-shell/pull/1322) chore(security): permission-enforcement drift guard (ratchet
-- Merged: eq-shell [#1319](https://github.com/eq-solutions/eq-shell/pull/1319) feat(ops): archive view search/filter + auto-archive invoice
-- Merged: eq-shell [#1318](https://github.com/eq-solutions/eq-shell/pull/1318) fix(security): gate audit rollback + align entity archive/re
-- Merged: eq-shell [#1314](https://github.com/eq-solutions/eq-shell/pull/1314) fix(staff): surface multi-document warning on the regular in
-- Merged: eq-shell [#1313](https://github.com/eq-solutions/eq-shell/pull/1313) fix(staff): move labour-hire intake from platform to tenant 
-- Merged: eq-shell [#1312](https://github.com/eq-solutions/eq-shell/pull/1312) fix(auth): mint-tenant-jwt.ts never embedded extra_perms — s
-- Merged: eq-shell [#1311](https://github.com/eq-solutions/eq-shell/pull/1311) feat(staff): resourcing dashboard + draft org chart
-- Merged: eq-shell [#1305](https://github.com/eq-solutions/eq-shell/pull/1305) fix(dashboard): on-leave count zeroed by overnight schema re
+- Merged: eq-shell [#1323](https://github.com/eq-solutions/eq-shell/pull/1323) fix(staff): thread licence_verifications through the invite-
+- Merged: eq-shell [#1321](https://github.com/eq-solutions/eq-shell/pull/1321) feat(staff): write path for team/supervisor assignment on th
+- Merged: eq-shell [#1320](https://github.com/eq-solutions/eq-shell/pull/1320) feat(ops): bulk select in Archived tab (restore / delete mul
+- Merged: eq-shell [#1316](https://github.com/eq-solutions/eq-shell/pull/1316) feat(staff): create one credential per document, not per pho
+- Merged: eq-shell [#1315](https://github.com/eq-solutions/eq-shell/pull/1315) chore(deps): bump @eq-solutions/ui to v1.15.0
+- Merged: eq-shell [#1308](https://github.com/eq-solutions/eq-shell/pull/1308) docs(ci): field-perms-drift's setup note is stale, secret no
+- Merged: eq-shell [#1307](https://github.com/eq-solutions/eq-shell/pull/1307) fix(ops): file uploads failing on a payload limit no functio
+- Merged: eq-shell [#1306](https://github.com/eq-solutions/eq-shell/pull/1306) fix(ops): file uploads failed with a fake "check your connec
+- ⚠ Needs you: 4 → 5 (new items)
 
-## ⚠ Needs you (4)
+## ⚠ Needs you (5)
 
 - 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-9 (P0 — confirmed exposure, same window as SEC-3, possible second exposure 2026-07-27) — A different service_role key (`jvkn`/eq-canonical) was pasted directly into a ch · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-24 (P1 — OPEN, found 2026-08-08) — `QUOTES_CRON_SECRET` on eq-shell stored `is_secret: false` — full plaintext retu · [security-register.md](ops/security-register.md)
 - 🔴 **Cron failing** — `index-drift.yml` 2 consecutive scheduled run(s) failed, last success 2026-08-11 · [failures.md](system/failures.md) F11
+- 🟠 **Sentry new error** — `eq-cards` [minified:a42: FunctionException(status: 502, details: {error](https://eq-solutions.sentry.io/issues/140383786/)
 
 ## 🙋 Waiting on you (104)
 
@@ -52,7 +54,7 @@ _…and 92 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 1 | — |
 | eq-solves-service | ✓ success | 0d ago | 0 | — |
-| eq-field | ✓ success | -1d ago | 0 | — |
+| eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 1 | — |
 | eq-solves-intake | ✓ success | 2d ago | 0 | — |
 
@@ -60,20 +62,15 @@ _…and 92 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendin
 
 | Project | Error | Events | Last seen |
 |---------|-------|--------|-----------|
-| eq-shell | [Error: Duplicate Shell accounts detected: 1](https://eq-solutions.sentry.io/issues/137721706/) | 5 | 2026-08-13 |
-| eq-cards | [LateInitializationError: Field '' has not been initialized.](https://eq-solutions.sentry.io/issues/139929381/) | 4 | 2026-08-10 |
-| eq-shell | [Error: events GET 500: Error - Request ID: 01KZX930A5G7FC4SZ1YT32QQ6A](https://eq-solutions.sentry.io/issues/139586029/) | 3 | 2026-08-13 |
-| eq-shell | [Error: Unresolved identity collisions detected on jvkn: 1](https://eq-solutions.sentry.io/issues/136887159/) | 3 | 2026-08-13 |
-| eq-shell | [TimeoutError: The operation was aborted due to timeout](https://eq-solutions.sentry.io/issues/138753891/) | 2 | 2026-08-04 |
-| eq-cards | [LateInitializationError: Field '' has not been initialized.](https://eq-solutions.sentry.io/issues/136695941/) | 2 | 2026-08-04 |
-| eq-shell | [Error: workers.staff_id shared by multiple workers on jvkn: 1](https://eq-solutions.sentry.io/issues/140574570/) | 1 | 2026-08-13 |
 | eq-cards | [minified:a42: FunctionException(status: 502, details: {error: anthropic_upstream](https://eq-solutions.sentry.io/issues/140383786/) | 1 | 2026-08-13 |
+| eq-solves-service | [Error: An unexpected response was received from the server.](https://eq-solutions.sentry.io/issues/139724869/) | 1 | 2026-08-09 |
 _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunresolved)_
 
 ## Recently built (last 7 days)
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-14 | eq-cards | [#236](https://github.com/eq-solutions/eq-cards/pull/236) fix(licences): stop forwarding undecodable photos to OCR (EQ-CARD |
 | 2026-08-13 | eq-shell | [#1334](https://github.com/eq-solutions/eq-shell/pull/1334) feat(documents): move document-version uploads to direct-to-stora |
 | 2026-08-13 | eq-shell | [#1333](https://github.com/eq-solutions/eq-shell/pull/1333) chore(ci): add attachment row/file reconciliation check |
 | 2026-08-13 | eq-shell | [#1332](https://github.com/eq-solutions/eq-shell/pull/1332) chore: delete unrouted CoreHome.tsx (EQ Intelligence mock home pa |
@@ -88,14 +85,11 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-13 | eq-solves-service | [#723](https://github.com/eq-solutions/eq-service/pull/723) fix(security): reconcile contact CSV import to admin-only, matchi |
 | 2026-08-13 | eq-solves-service | [#722](https://github.com/eq-solutions/eq-service/pull/722) fix(audit): log bulkUpdateAssetNamesAction — was skipping the man |
 | 2026-08-13 | eq-solves-service | [#721](https://github.com/eq-solutions/eq-service/pull/721) feat(admin): surface eq-intake's quality-guardian output |
-| 2026-08-13 | eq-solves-service | [#720](https://github.com/eq-solutions/eq-service/pull/720) fix(security): stamp deleted_at on maintenance-check soft-delete |
-_Showing 15 of 104 · full record in [sessions/](sessions/)_
+_Showing 15 of 105 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
 - "View" on a document is still 2 network hops end-to-end (the server call, then a separate Storage signed-URL call) — only the first hop's 2-sequential-query inefficiency was fixed this session (PostgREST embed over an existing FK, `document-signoffs.js`). _(added 2026-08-13)_
-- Not built this pass — the SHOW filter chips + Weekends/From Roster/By Job/Outstanding action row (lives inside `renderTimesheets()`'s hot re-render path, higher risk to bundle in blind) and the mobile card-stack's own collapsed-group/triage view (`timesheets-mobile.js`, untouched). Both are real further steps toward "Triage-first". _(added 2026-08-13)_
-- Not click-tested on a real phone — merged on Royce's explicit go-ahead after CI + the deploy-preview build went green, but no live click-through of the new Filters sheet or compressed rows happened (this sandbox has no live browser access). Worth a real look next time Royce is on the app. _(added 2026-08-13)_
 - **Not click-tested on a real phone** — same sandbox limitation as other recent mobile fixes (no path to complete the Shell-iframe auth handoff here). Verified instead via `tsc --noEmit` (clean) and a static Tailwind-class repro at 375px sent directly to Royce, plus confirming the live Netlify production deploy matches the merge commit. _(added 2026-08-13)_
 - **No independent confirmation yet from the other session.** Messaged it directly via `send_message` with the full incident writeup, asking for its own explicit confirmation that nothing is missing — no reply received before this session closed. _(added 2026-08-13)_
 - **A5 (malware scanning) — parked, revisit no earlier than 2026-08-20 ("remind me next week").** Scoped, vendor picked (Cloudmersive — VirusTotal ruled out, its free tier may share submitted files with its researcher ecosystem, a real problem for client documents; self-hosted ClamAV would mean the one piece of persistent infra in an otherwise fully serverless stack, for near-zero volume). Design settled: pilot on quote attachments only, fail-open with a Sentry alert on skip. Not built — blocked on Royce signing up for a Cloudmersive account and handing over an API key; account creation isn't something Claude does. Full critique of the direction (what it does/doesn't protect against) in the sprint doc.
@@ -103,7 +97,9 @@ _Showing 15 of 104 · full record in [sessions/](sessions/)_
 - **Live click-test still not done anywhere across this whole thread** — every fix above was verified against live data/CI/direct database checks, never a real signed-in click-through session on any of the four apps. _(added 2026-08-13)_
 - **Live click-through not done** — this sandbox has no network path to the tenant-config service, so the Archived-tab search/filter/bulk-select hasn't been visually confirmed in a real browser session. Built against the exact same Table component already proven live elsewhere in the app; build + typecheck clean on both PRs. _(added 2026-08-12)_
 - **Live click-through not done** — this sandbox has no network path to the tenant-config service, so the Archived-tab search/filter/bulk-select hasn't been visually confirmed in a real browser session. Built against the exact same Table component already proven live elsewhere in the app; build + typecheck clean on both PRs. _(added 2026-08-12)_
-_…and 486 more · [eq/pending.md](eq/pending.md)_
+- **Richard Brown needs to re-add his LV Rescue (C40385) photo** — the surviving row has the correct licence details but no photo attached; nothing existed anywhere to recover. The fix means his retry will now update that row cleanly instead of duplicating again. _(added 2026-08-13)_
+- **Live click-through still not done** on the multi-document extraction / PDF preview / flag-notification features — verified via CI + direct DB checks only, no real signed-in session. _(added 2026-08-13)_
+_…and 484 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -125,7 +121,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open | Done (unrotated) | Aging 45d+ |
 |------|------:|-----:|------------------:|------------:|
-| [EQ](eq/pending.md) | 3452 | 600 | 83 | 17 |
+| [EQ](eq/pending.md) | 3450 | 598 | 83 | 24 |
 | [SKS](sks/pending.md) | 418 | 83 | 4 | 15 |
 | [SKS active](sks/active.md) | 109 | 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 402 | 37 | 0 | 1 |
@@ -146,4 +142,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-13 23:20 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-14 01:19 UTC._
