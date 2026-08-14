@@ -14,6 +14,17 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell/eq-field: deactivating someone didn't actually cut their EQ Field access — fixed + 2 follow-ups (2026-08-14)
+*Investigating who can see the Resourcing tab (EQ Shell's Access Control) led to a broader question: does deactivating someone in Core actually cut their access everywhere? Shell itself does (checks within 5 minutes); eq-solves-service does too (4-hour session refresh checks back with Shell). EQ Field did not — a session, once created, silently renewed itself forever with no re-check at all, so a deactivated SKS field tech could keep working in Field indefinitely.*
+
+- [x] eq-shell PR [#1349](https://github.com/eq-solutions/eq-shell/pull/1349) — deactivating or reactivating someone now leaves an audit trail (previously silent — only a bare timestamp survived, no record of who did it or when).
+- [x] eq-field PR [#699](https://github.com/eq-solutions/eq-field/pull/699) (v3.5.500) — Field sessions now expire after 4 hours unless re-checked against Shell, matching how eq-solves-service already works. A background refresh keeps this invisible to anyone still actively working — merged, confirmed live.
+- [x] eq-field PR [#700](https://github.com/eq-solutions/eq-field/pull/700) (v3.5.501) — same-day follow-up: the first fix shipped with two of its own files' cache-busting tags unbumped, which would have left some devices stuck on the old, unfixed code indefinitely. Merged, confirmed live.
+- [ ] **No automated check exists to catch the cache-tag mistake above** — flagged 5 times now in eq-field's own changelog history, never built. Spun off as its own task (`task_9bd3247c`). _(added 2026-08-14)_
+- [ ] **Not click-tested live** — the 4-hour session cap and its background-refresh recovery were verified by full test suite + source tracing + a live production version-banner check, not by actually leaving a real signed-in Field session open past 4 hours and watching it recover. _(added 2026-08-14)_
+
+---
+
 ## eq-shell: Staff list — apprentice year badge + Trade multi-select shipped, text[] conversion blocked on eq-field coordination (2026-08-14)
 
 - [ ] **Proper `text[]` array for Trade** — needs its own eq-field session to rebuild the `field_people`/`field_people_removed` views and the IUD trigger functions. Not scoped further; Royce's call on when to take it on. _(added 2026-08-14)_

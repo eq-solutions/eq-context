@@ -9,6 +9,9 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-14 (PR #1349 OPEN — deactivating a user now leaves an audit trail)
+- **PR #1349 opened, not yet merged** — `edit-user.ts`'s `active` flip (deactivate/reactivate) now writes `user.deactivated`/`user.reactivated` to `shell_control.audit_log`, matching the existing `phone_changed`/`pin.unlocked` pattern in the same file. Previously silent: verified live against a real deactivation (Huon Henne, SKS, today) that the only trace was the bare `deactivated_at` timestamp on the row, no record of who or when. Found while auditing the Resourcing tab's access model and what actually stops an archived user from seeing company data.
+
 ## 2026-08-14 (PR #1346 MERGED — Staff list: apprentice year badge + Trade multi-select, not yet deployed)
 - **PR #1346 MERGED (squash `25b4a0fb`) — Staff list Job Title cell now shows a "Year N" badge for apprentices.** `app_data.staff.year_level` was already live and already shared with eq-field's own apprentice-advance logic — Shell just never surfaced it outside the full detail panel until now. Computed at render, doesn't write into `job_title`.
 - **Trade column becomes a multi-select** (Electrical / Communications, capitalized display) via a new `InlineMultiSelectCell`, stored as comma-separated text on the existing `staff.trade` column rather than a real `text[]` array. Investigated the array option first: `staff.trade` is read/written directly by eq-field's own `app_data.field_people`/`field_people_removed` views and their IUD triggers, so a type change would need a coordinated eq-field-side migration touching the same `CREATE OR REPLACE VIEW`/`security_invoker` pattern already responsible for 3 prior live incidents there. Royce chose the zero-schema comma-separated approach once that was found.
