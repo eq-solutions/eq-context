@@ -91,6 +91,7 @@ Every canonical EQ file as a full URL — clickable from `/context/claude`:
 | `identity/worker-credentials-model-2026-05-31.md` | Worker credentials model |
 | `identity/worker-onboarding-flows.md` | Who enters what, per app — answers "who uploads onboarding info" per scenario (Shell/Field/Service/Cards), names the one real gap (Shell↔Field worker duplication, parked in eq-field's own ADR) |
 | `identity/simultaneous-users-2026-08-11.md` | How session/auth concurrency actually works per app (punch-list #12) — one real bug found and fixed (Cards multi-tab collision), multi-device-same-person proven safe by design, multi-person-same-tenant-at-volume never load-tested |
+| `identity/nav-access-matrix.md` | Who sees which nav items and how it's enforced, per app (punch-list SUITE-1) — four independently-built gating mechanisms, three confirmed drift incidents found and fixed in the same pass that wrote this doc |
 | `identity/parity-harness/phase1-parity-note-2026-07-10.md` | Phase 1 parity-harness note |
 | `ops/EQ-OPS-ARCHITECTURE.md` | **Read before touching `app_data.quote`, `app_data.jobs`, `job_number`, or the Kanban stage taxonomy** — EQ Ops scope, its relationship to NSW Comms and EQ Field, and the quote-to-job data model |
 | `design/claude-design-context.md` | Claude Design "start with context" brief for EQ brand |
