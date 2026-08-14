@@ -46,13 +46,8 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## eq-solves-service: session-expiry Server Action crash (EQ-SOLVES-SERVICE-D) — root-caused, fixed suite-wide across ~120 call sites, PR open (2026-08-14)
+## eq-solves-service: session-expiry Server Action crash (EQ-SOLVES-SERVICE-D) — root-caused, fixed suite-wide across ~120 call sites, merged (2026-08-14)
 
-- [x] Root-caused Sentry `EQ-SOLVES-SERVICE-D`: `proxy.ts`'s session guard redirects a mid-flight Server Action POST to `/auth/signin` when the session expires mid-tab; the client runtime surfaces that as a generic "unexpected response" crash instead of anything mentioning auth.
-- [x] Found a concurrent session already fixing the same issue live, mid-edit, in a locked worktree — waited rather than collide (verified via repeated diff checks, not assumed). That session's fix, scoped to the maintenance module only, shipped as eq-service [#725](https://github.com/eq-solutions/eq-service/pull/725), merged. In the process, discovered the real scope was ~160 unguarded call sites across 67 files app-wide — not the ~15 the task was originally scoped at.
-- [x] Extended the fix to the remaining 58 files (~121 call sites) across auth, portal, customers, sites, defects, job-plans, contract-scope, variations, pm-calendar, onboarding, assets, testing (ACB/NSX/RCD), commercials, admin — 5 parallel agents plus a manual synthesis pass. Extended the shared `callAction()` helper (`lib/utils/session-expired-action-error.ts`) with an optional custom-fallback factory for ~15 call sites that return `{ok, error}` instead of the default `{success, error}` shape.
-- [x] Found + fixed 3 real crash-risk sites the batch agents correctly declined to auto-wrap (result discarded but still an unguarded `await` outside `startTransition`, so still crash-prone) and 2 unrelated pre-existing ACB call sites with zero error handling at all.
-- [x] `tsc --noEmit` clean across the whole repo, `vitest run` 434/434 passed, `next build` compiles clean (page-data collection fails only on a missing local Supabase env file — pre-existing/environmental, same failure mode #726 already documented for `/api/health`). eq-service [#727](https://github.com/eq-solutions/eq-service/pull/727) open, holds for Royce's merge approval — no merge, no deploy.
 - [ ] **No manual browser smoke test yet** — need to actually expire a session mid-form-submit on a few touched pages and confirm the friendly "sign in again" message renders, rather than just type/unit verification. _(added 2026-08-14)_
 - [ ] **Old branch `fix/session-expiry-server-action-errors` left with a redundant commit** (`df74500`, content-identical to the now-merged #725) — harmless, but worth deleting next time someone's in eq-service. _(added 2026-08-14)_
 
