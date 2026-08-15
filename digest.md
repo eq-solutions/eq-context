@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-15 00:08 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-15 02:07 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-14 23:58 UTC → 2026-08-15 00:08 UTC)
+## Since last refresh (2026-08-15 00:08 UTC → 2026-08-15 02:07 UTC)
 
-- Merged: eq-shell [#1359](https://github.com/eq-solutions/eq-shell/pull/1359) refactor(auth): fold the login timing-burn hash into one sha
-- Merged: eq-shell [#1344](https://github.com/eq-solutions/eq-shell/pull/1344) feat(nav): Reports landing page — GM Reports as the first op
-- Merged: eq-shell [#1341](https://github.com/eq-solutions/eq-shell/pull/1341) chore(ci): triage eq_cards_admin_list_stale_invites into KNO
-- Merged: eq-shell [#1338](https://github.com/eq-solutions/eq-shell/pull/1338) fix(staff): surface documents_not_extracted from ocr-licence
-- Merged: eq-shell [#1337](https://github.com/eq-solutions/eq-shell/pull/1337) feat(admin): hard-delete for archived user accounts
-- Merged: eq-shell [#1335](https://github.com/eq-solutions/eq-shell/pull/1335) feat(staff): step through every document found in a multi-ca
-- Merged: eq-shell [#1334](https://github.com/eq-solutions/eq-shell/pull/1334) feat(documents): move document-version uploads to direct-to-
-- Merged: eq-shell [#1330](https://github.com/eq-solutions/eq-shell/pull/1330) fix(documents): treat O&M manuals as reference library, not 
+- Merged: eq-shell [#1363](https://github.com/eq-solutions/eq-shell/pull/1363) docs(migrations): retire the stale tenant migration ledger
+- Merged: eq-shell [#1345](https://github.com/eq-solutions/eq-shell/pull/1345) fix(auth): default self-join QR/link codes to 7-day expiry
+- Merged: eq-shell [#1343](https://github.com/eq-solutions/eq-shell/pull/1343) fix(nav): sidebar cleanup batch — vendor name, dead routes, 
+- Merged: eq-shell [#1342](https://github.com/eq-solutions/eq-shell/pull/1342) fix(staff): compress licence photo before OCR/storage in Add
+- Merged: eq-shell [#1340](https://github.com/eq-solutions/eq-shell/pull/1340) feat(auth): sync Core's name from an existing Cards profile 
+- Merged: eq-shell [#1339](https://github.com/eq-solutions/eq-shell/pull/1339) fix(auth): reject self-join when there's no role code and no
+- Merged: eq-shell [#1336](https://github.com/eq-solutions/eq-shell/pull/1336) fix(shell): stop dashboard scroll chaining into blank body s
+- Merged: eq-shell [#1333](https://github.com/eq-solutions/eq-shell/pull/1333) chore(ci): add attachment row/file reconciliation check
 
 ## ⚠ Needs you (4)
 
@@ -28,10 +28,14 @@ _2026-08-15 00:08 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🔴 **Open security finding** — SEC-24 (P1 — OPEN, found 2026-08-08) — `QUOTES_CRON_SECRET` on eq-shell stored `is_secret: false` — full plaintext retu · [security-register.md](ops/security-register.md)
 - 🟠 **Sentry new error** — `eq-shell` [Error: workers.staff_id shared by multiple workers on jvkn: ](https://eq-solutions.sentry.io/issues/140574570/)
 
-## 🙋 Waiting on you (158)
+## 🙋 Waiting on you (162)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
+- **EQ** · **Nothing alerts on this yet.** Recording a lockout is not the same as being told about one. The two questions worth alerting on — who got locked out in the last 24 hours, and who had the password right but never cleared the second step — are written and tested, but have to be run by hand. Turning either into a real alert is separate work and needs your call on where it should land. _(added 2026-08-15, needs your call)_
+- **EQ** · **Neither half click-tested on a real phone** — verified by `flutter analyze`, 283 passing tests, full CI on both repos and the ancestry check, not by actually scanning an old `/claim?tenant=sks` poster or walking a fresh sign-in. Worth Royce doing both once. _(added 2026-08-15)_
+- **EQ** · **`eq_cards_lookup_invite_by_phone` still has anon EXECUTE on jvkn** — this session removed its last caller, so it is now an unused anon phone-enumeration surface. Revoking it needs a live DB migration plus removing the `cards-api` op and updating `check-tenant-drift.mjs` (~line 599), so it was raised as a chip (`task_5264c029`) rather than done in passing. _(added 2026-08-15, needs your call)_
+- **EQ** · **Not click-tested in a browser** — both sign-in doors were checked by calling them directly on production (an unknown mobile and an unknown email each return an identical "no" with no extra detail; the unauthed session check still refuses correctly) plus full CI, but nobody signed in through the actual page. Worth Royce trying two things on his phone: a *wrong* PIN, and a number that has *no* PIN set — both should now show the same "That number and PIN didn't match. If you haven't set a PIN yet, use 'Text me a code instead'". Then sign in by text on an account with no PIN and confirm the "Set a PIN" prompt still appears on the Home screen — that prompt is now the only place that guidance is given. _(added 2026-08-15)_
 - **EQ** · **Today's Actions vs Outstanding Works can still contradict each other for up to 10 minutes** — found while reviewing the same screenshots (separate issue from the compliance-card redundancy, not addressed by this build): Today's Actions is cached 10 min per user (`ai-briefing.ts`), Outstanding Works refetches every 60s off the same table. Resolving a Service item mid-cache-window shows "overdue" in one card and "nothing overdue" in the other, same screen, same moment. Needs Royce's call: shrink the cache TTL, or add a "generated Xm ago" stamp so it reads as expected staleness rather than a bug. _(added 2026-08-14)_
 - **EQ** · **Not click-tested live on a real tenant** — verified via `tsc -b --force`, eslint (clean except pre-existing tolerated patterns already present identically in `Suppliers.tsx`/`LabourHireRates.tsx`, not introduced by this change), full CI, and the Netlify deploy preview build succeeding. A local click-through attempt hit a pre-existing sandbox limitation (`VITE_FIELD_URL` unset crashes the app at module scope, unrelated to this change) and was abandoned per the standing "default browser only" rule rather than switched to Chrome for a low-value local check. Worth Royce opening Suppliers, Compliance report, and the mobile Home on his phone once. _(added 2026-08-14)_
 - **EQ** · **Not click-tested live** — the 4-hour session cap and its background-refresh recovery were verified by full test suite + source tracing + a live production version-banner check, not by actually leaving a real signed-in Field session open past 4 hours and watching it recover. _(added 2026-08-14)_
@@ -40,17 +44,13 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **EQ** · **Not click-tested against a real generated NSX report** — fix verified via typecheck + code trace only; worth Royce pulling a real NSX Test Report next time one's generated to eyeball the CB Details table looks right. _(added 2026-08-14)_
 - **EQ** · **Decide the long-term fix for nav-visibility drift.** Three real drift incidents found and fixed this session (Cards' duplicate workspace-switcher/join-QR widgets, Field's ungated desktop Add Person, Service's stale embedded nav bar) all trace to the same root cause: no shared source of truth for "what's in the nav and who can see it" across the four apps. `eq/identity/nav-access-matrix.md` lays out two options — a shared roles-derived config each app imports, or a lighter review checklist — not decided, Royce's call. _(added 2026-08-14)_
 - **EQ** · **Not live-tested today** — this was code-level assurance (plus an old "confirmed live" comment already in the code from an earlier check), not a fresh click-through with a real pre-existing Cards account before the mass send goes out. _(added 2026-08-14)_
-- **EQ** · **Not click-tested by a real non-manager account** — no such login was available in this environment. Worth Royce confirming a technician account gets bounced off `/admin/*` now. _(added 2026-08-14)_
-- **EQ** · **Not click-tested live** — same sandbox limitation as everything else this session; built against `tsc`/lint/the permission-drift guard only. _(added 2026-08-14)_
-- **EQ** · **Not click-tested live** — this sandbox has no network path to the real app (confirmed again this session), so the Map page's hover behaviour and the version-badge fix are verified by direct database/production-file checks only, not by clicking through a real signed-in session. _(added 2026-08-14)_
-- **EQ** · **Not click-tested live** — same sandbox limitation as every other item this session; verified by direct database checks, production file checks, and the full automated test suite instead. _(added 2026-08-14)_
-_…and 146 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 150 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 3 | 0d |
+| eq-shell | ✓ success | 0d ago | 6 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 0 | — |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 1 | — |
@@ -71,11 +71,12 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-15 | eq-shell | [#1363](https://github.com/eq-solutions/eq-shell/pull/1363) docs(migrations): retire the stale tenant migration ledger |
 | 2026-08-15 | eq-shell | [#1359](https://github.com/eq-solutions/eq-shell/pull/1359) refactor(auth): fold the login timing-burn hash into one shared m |
+| 2026-08-14 | eq-shell | [#1357](https://github.com/eq-solutions/eq-shell/pull/1357) feat(audit): make login outcomes queryable across all three doors |
 | 2026-08-14 | eq-shell | [#1358](https://github.com/eq-solutions/eq-shell/pull/1358) perf(staff): one staff-bootstrap request instead of eight cold st |
 | 2026-08-14 | eq-shell | [#1356](https://github.com/eq-solutions/eq-shell/pull/1356) perf(shell): self-host Plus Jakarta Sans, drop the render-blockin |
 | 2026-08-14 | eq-shell | [#1361](https://github.com/eq-solutions/eq-shell/pull/1361) chore(admin): retire the redeem-an-invite worker QR, leaving one  |
-| 2026-08-14 | eq-shell | [#1357](https://github.com/eq-solutions/eq-shell/pull/1357) feat(audit): make login outcomes queryable across all three doors |
 | 2026-08-14 | eq-shell | [#1354](https://github.com/eq-solutions/eq-shell/pull/1354) fix(auth): link_pending_invites writes the tenant membership row, |
 | 2026-08-14 | eq-shell | [#1352](https://github.com/eq-solutions/eq-shell/pull/1352) feat(auth): platform-admin endpoint to correct a standalone user' |
 | 2026-08-14 | eq-shell | [#1353](https://github.com/eq-solutions/eq-shell/pull/1353) fix(security): gate staff-update on field.manage_people, not the  |
@@ -85,22 +86,21 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-14 | eq-shell | [#1347](https://github.com/eq-solutions/eq-shell/pull/1347) fix(auth): admin phone change now updates the login identity, not |
 | 2026-08-14 | eq-shell | [#1349](https://github.com/eq-solutions/eq-shell/pull/1349) fix(audit): log user.deactivated/reactivated in edit-user.ts |
 | 2026-08-14 | eq-shell | [#1348](https://github.com/eq-solutions/eq-shell/pull/1348) feat(reports): compliance report + mobile Home quick links, drop  |
-| 2026-08-14 | eq-shell | [#1346](https://github.com/eq-solutions/eq-shell/pull/1346) feat(staff): apprentice year badge + multi-select Trade on Staff  |
 _Showing 15 of 117 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **No sign-in has happened yet since it went live, so nothing has been recorded in practice.** The code is live on core.eq.solutions and it writes the same way sign-ins are already recorded today, so there's no reason to expect trouble — but the first real proof arrives with the next actual sign-in. Worth a look at the log once a few people have signed in tomorrow. _(added 2026-08-15)_
+- **Cards has a fully built PIN lock screen that nothing mounts** — `pin_entry_screen.dart` + `app_lock_notifier.dart` + `app_lock_state.dart`, not registered in the router and imported by nothing. Either wire it up or delete it; chip raised (`task_4e685ee7`). _(added 2026-08-15)_
+- **3 PRs open, need Royce's merge decision** — [#1364](https://github.com/eq-solutions/eq-shell/pull/1364) (GRANT revoke, CI green), [#1365](https://github.com/eq-solutions/eq-shell/pull/1365) (field.view_hours/licences gate fix), [#1366](https://github.com/eq-solutions/eq-shell/pull/1366) (retire staff-update.ts). All independent, can merge in any order. Merging any of them to eq-shell `main` auto-deploys to production in 2-4s. _(added 2026-08-15)_
+- **#1364's migration needs a `tenant-migrate.yml` dispatch after merge** — One Pipe governance, production-gated, Royce's explicit go (same as every prod migration). _(added 2026-08-15)_
+- **#1365's rough edge**: `StaffPage.tsx`'s licence query has no client-side gate for excluded roles — degrades to a silent "No licences recorded" rather than an informative message. `EntityBrowserPage.tsx`'s timesheet view does surface a clear error. Real polish, not scoped into the security fix. Chip `task_e97a18c2` is unrelated (Dependabot) — this doesn't have a chip yet. _(added 2026-08-15)_
+- **2 high-severity Dependabot alerts on eq-shell's default branch** — surfaced on push, not yet triaged. Chip `task_e97a18c2`. _(added 2026-08-15)_
 - **No automated check exists to catch the cache-tag mistake above** — flagged 5 times now in eq-field's own changelog history, never built. Spun off as its own task (`task_9bd3247c`), already started in a separate session. _(added 2026-08-14)_
 - **Follow-up question raised, being checked now**: if a worker's phone number genuinely changes, is there an admin-facing way in eq-shell to update it on their existing account (so OTP login works with the new number under the same identity), or would that need an out-of-band fix today? _(added 2026-08-14)_
 - **Not yet confirmed by Tom actually retrying** — the fix is live, but nobody's re-tested his specific photo since deploy. _(added 2026-08-14)_
 - **Shell's own styling and the shared `@eq-solutions/ui` design library define colliding layout style names** (`eq-hub` and friends) — noticed while fixing the scroll bug above, not the cause of it, not yet looked into properly. _(added 2026-08-14)_
-- **Minor, unrelated gap noticed in passing**: `admin.deactivate_user` is declared in the permission matrix but never actually checked anywhere — `edit-user.ts`'s archive/restore action (and now `delete-user.ts`) both gate on `admin.edit_user` instead. Harmless today since the two keys are granted to the same roles, but if they're ever meant to diverge, deactivate silently wouldn't. _(added 2026-08-14)_
-- **No manual browser smoke test yet** — need to actually expire a session mid-form-submit on a few touched pages and confirm the friendly "sign in again" message renders, rather than just type/unit verification. _(added 2026-08-14)_
-- **There's no "executive" or "stakeholder" concept anywhere in this app** — the notify-list and the Friday digest both only ever draw from people flagged as Supervisors. If Royce wants a broader audience notified than that, it's a real feature decision, not a bug fix. _(added 2026-08-14)_
-- **Diary nav button likely has the same invisible-nav bug just found and fixed on the new Email Templates button** (a leftover inline style overriding the CSS that's meant to reveal it) — confirmed via code that nothing clears its inline style either, but left alone deliberately per Royce's "leave Diary invisible for now." _(added 2026-08-14)_
-- "View" on a document is still 2 network hops end-to-end (the server call, then a separate Storage signed-URL call) — only the first hop's 2-sequential-query inefficiency was fixed this session (PostgREST embed over an existing FK, `document-signoffs.js`). _(added 2026-08-13)_
-- **No independent confirmation yet from the other session.** Messaged it directly via `send_message` with the full incident writeup, asking for its own explicit confirmation that nothing is missing — no reply received before this session closed. _(added 2026-08-13)_
-_…and 452 more · [eq/pending.md](eq/pending.md)_
+_…and 457 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -122,7 +122,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [EQ](eq/pending.md) | 3541 | 470 / 149 | 95 | 59 |
+| [EQ](eq/pending.md) | 3590 | 475 / 153 | 110 | 59 |
 | [SKS](sks/pending.md) | 432 | 81 / 8 | 1 | 15 |
 | [SKS active](sks/active.md) | 109 | 0 / 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 409 | 32 / 4 | 0 | 1 |
@@ -131,11 +131,11 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | Date | Session |
 |------|---------|
+| 2026-08-15 | [staff-update was gating an HR write on a read permission; fixed, shipped, and corrected the repo's deploy model on the way](sessions/2026-08-15.md) |
 | 2026-08-14 | [SKS → EQ Field weekly roster CSV sync: investigated live, confirmed feasible with zero new code](sessions/2026-08-14.md) |
 | 2026-08-13 | [eq-shell PR #1316: misdiagnosed build error, real cause was a pdfjs-dist v6 type break, fixed + merged + deployed clean](sessions/2026-08-13.md) |
 | 2026-08-12 | [EQ UI design sprint (EmptyState, density mode, DateRangePicker) shipped and rolled out to eq-shell + eq-service](sessions/2026-08-12.md) |
 | 2026-08-11 | [EQ Cards: removed dead CardScreen (710 lines), merged live](sessions/2026-08-11.md) |
-| 2026-08-10 | [Delete an approved leave request (SKS), then found + fixed a live Calendar regression in EQ Field](sessions/2026-08-10.md) |
 _[sessions/](sessions/) · 5 shown_
 
 ## Substrate honesty
@@ -143,4 +143,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-15 00:08 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-15 02:07 UTC._
