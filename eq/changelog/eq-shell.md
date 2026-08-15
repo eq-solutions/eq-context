@@ -9,6 +9,13 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-15 (PR #1373 MERGED + deployed live — the Cards duplicate-identity gap that caused the Richard Brown incident, closed at the code level)
+- Two Sentry alerts (`EQ-SHELL-Z` "unresolved identity collisions" since 2026-07-27, `EQ-SHELL-1M` "workers.staff_id shared by multiple workers" since 2026-08-13) traced to the same root cause: when a Cards signup collides by email with an existing worker, `cards-approve-staff.ts` correctly re-resolves the real person's staff record — then wrote it onto the new, duplicate worker row **unconditionally**, even when another worker already had it. That's the exact defect class that hit William Brown on 2026-07-22, patched as a data-only fix at the time, which is why it recurred with Richard Brown three weeks later.
+- **Now hard-blocks instead of silently proceeding.** When an admin confirms a signup is a genuine duplicate identity ("same person, flag for merge"), approval now returns `422 identity_merge_required` and stops before any worker/staff write, instead of logging the acknowledgement and continuing anyway.
+- **A second, unconditional guard on the write itself** refuses to attach a staff record already claimed by a different worker, covering paths that reach the write without going through the collision-confirmation gate (e.g. a cross-tenant collision, which is deliberately never surfaced to the approving admin).
+- Live jvkn data was independently re-verified clean before this shipped (no `staff_id` shared across `workers` anywhere) — a parallel session had already repointed Richard Brown's record the same day (see `eq/pending.md`'s "two Sentry monitors" entry). This PR is the code-level fix that data patch was missing; without it, the same thing was always going to happen to a third person.
+- Not click-tested live through the admin UI — needs a real duplicate-identity application walked through by hand to confirm the 422 path end to end.
+
 ## 2026-08-15 (PR #1350 MERGED + deployed — the email sign-in door was the easiest one to guess at)
 - The email + PIN sign-in door only limited guesses **per computer**. The phone door has always limited them per account *and* per computer. Since both doors check the **same** stored PIN, an attacker with many computers could just use the weaker door to attack the same secret — and that PIN can be as short as 4 characters, so the limit is what makes guessing impractical, not the PIN itself.
 - Now limited per account as well. Deliberately counts every attempt against an address whether or not that account exists, so being locked out never reveals whether someone is a real user.

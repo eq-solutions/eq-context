@@ -3538,3 +3538,10 @@ Diagnosed 2026-05-19. 17 advisor warnings, fix drafted but not applied.
 - [ ] **Stale-cull sweep of the ~90 open items older than 30 days** (including the restored May section) — close dead ones, merge duplicate threads. Good multi-agent session on its own; not run this session. _(added 2026-07-27)_
 
 ---
+
+## eq-context: substrate campaign phases 1-5 closed; process gap + Royce-hands item found (2026-08-15)
+
+- [ ] **The shared `C:\Projects\eq-context` checkout can silently drift behind origin with nothing flagging it.** Found live this session: 38-40 commits behind origin/main, carrying 4 never-pushed local commits (an independent, wasted rebuild of a guard that already existed on `main` via a different branch — no work lost, but real duplicated effort). Not fixed this session — flagged, Royce chose to prioritise an eq-shell investigation instead. Worth a guard (compare the shared checkout's HEAD against `origin/main` at session start) if this keeps recurring. _(added 2026-08-15)_
+- [ ] **`field_canonical_health()` RPC fix still needs Royce's own hands** — exact SQL drafted at `system/field-canonical-health-org-id-fix-2026-08-15.md` (fixes `org_id`→`tenant_id` on `field_schedule`/`field_timesheets`/`prestarts`/`toolbox_talks` on ehow; `site_audits` genuinely still uses `org_id`, verified live, leave alone). The Claude Code safety classifier blocks `apply_migration` on this one regardless of chat authorization, so it's Royce-hands-only. _(added 2026-08-15)_
+
+---
