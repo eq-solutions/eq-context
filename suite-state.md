@@ -87,6 +87,22 @@ _NETLIFY_TOKEN not set — deploy status unavailable_
 
 ---
 
+## Field Data Plane — SKS tenant (as of 2026-08-15)
+
+> ⚠ **These counts are stale and the automated refresh is currently broken.**
+> `field_canonical_health()` on ehow has thrown on every nightly run since a
+> column rename (`org_id` → `tenant_id` on 4 of its 8 tables) was never
+> propagated into this function. The refresh script's own error handling
+> silently caught the failure and left this table frozen — see
+> `system/field-canonical-health-org-id-fix-2026-08-15.md` for the live-
+> verified fix, why this session couldn't apply it directly (blocked by the
+> Claude Code safety classifier, same as SEC-9/24), and the exact SQL to run.
+> Live `app_data.field_people` is **83**, not the 66 below (confirmed by
+> direct query 2026-08-15). **This note is inside the block the nightly
+> refresh regex replaces whole** — once the RPC is fixed and a refresh run
+> succeeds, this warning disappears automatically. If it's still here, the
+> refresh is still broken.
+
 | Layer | View / Table | Rows | Status |
 |-------|-------------|------|--------|
 | Directory | app_data.field_people | 66 | ✓ 66 |

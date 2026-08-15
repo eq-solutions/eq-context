@@ -58,6 +58,7 @@ Every canonical system file as a full URL — clickable from `/context/claude`:
 | `substrate-facts.yml` | CI-checked live/deleted status manifest |
 | `task-brief-template.md` | Rule 0.6 session-gate brief template |
 | `tenant-routing-master-key-rotation.md` | tenant_routing key rotation runbook |
+| `field-canonical-health-org-id-fix-2026-08-15.md` | Live-verified fix for a nightly refresh that's been silently failing — `field_canonical_health()` RPC needs Royce's own hands (Claude Code safety classifier blocks live-DB writes) |
 | `chat-bootstrap.md` / `cowork-bootstrap.md` | Tool-specific session bootstraps |
 | `substrate-plan-v2.md` | Active substrate-hardening plan (draft) |
 | `auto-pr-scope.md` | Leash (ALLOW/DENY paths) for a future auto-PR-finding agent — enforced by `hooks/auto_pr_guard.py` |

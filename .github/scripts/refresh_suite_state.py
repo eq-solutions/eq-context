@@ -420,6 +420,18 @@ try:
         content,
     )
 except Exception as e:
+    # Found 2026-08-15: this bare except had been silently swallowing a real
+    # failure -- field_canonical_health() threw on every nightly run after a
+    # column rename (org_id -> tenant_id on 4 of its 8 tables), and because
+    # this except left `content` untouched, the Field Data Plane table stayed
+    # frozen at a stale count (field_people showed 66 against a live 83) while
+    # the rest of the file, and the file's own last_updated stamp, kept
+    # refreshing normally every night. A reader had no way to tell one section
+    # was dead -- the file looked current. `::error::` makes this fail loud in
+    # the workflow run summary instead of requiring someone to notice a wrong
+    # number by hand; the WARNING text is kept for local/manual runs where
+    # nothing parses GitHub annotations.
+    print(f"::error::field_canonical_health() failed -- Field Data Plane table in suite-state.md was NOT refreshed this run: {e}")
     print(f"  WARNING: field canonical health check failed: {e}", file=sys.stderr)
 
 # ── 8. Write back ─────────────────────────────────────────────────────────────
