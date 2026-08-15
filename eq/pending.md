@@ -14,6 +14,19 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: 21 CRM/staff database functions only checked which tenant you were in, not who you were — closed, merged, live (2026-08-15)
+*Follow-on from #1353 (staff-update.ts), which fixed the app-side check but flagged that the underlying database function itself had no check at all — anyone signed in could call it directly and bypass the app entirely. Swept every database function with that same shape across both tenant databases (ehow/SKS and zaap/EQ) rather than just the one that had already been found.*
+
+- [x] Found 80 database write functions reachable directly from the browser (bigger than the ~30 originally estimated) — classified all of them. 21 had no permission check at all and matched a write the app already restricts to managers/supervisors elsewhere (delete a customer, merge sites, rewrite a staff record). The other ~59 were either already correctly locked down or intentionally open (e.g. anyone can create a quote).
+- [x] Confirmed this wasn't just a theoretical gap: the customers screen in EQ Ops had no permission check on its buttons at all — any signed-in person could already click Delete on a customer record today.
+- [x] Fixed all 21 at the database level, greyed out the now-restricted buttons on the customers screen so people don't hit a confusing error, and fixed a second bug found along the way — the Access Control page's role-permission toggles weren't actually reaching the database, so a permission change there silently did nothing for this class of function.
+- [x] A different session found and fixed the worst single case of this (staff records) independently the same day ([#1364](https://github.com/eq-solutions/eq-shell/pull/1364)) — reconciled the two fixes before shipping so neither one silently undid the other.
+- [x] Merged and deployed — [#1362](https://github.com/eq-solutions/eq-shell/pull/1362), live on core.eq.solutions, confirmed against the actual production site, not just the deploy log.
+- [ ] **Quote records (create/edit/delete) were deliberately left open to everyone** — Royce's call, not a gap. Worth a second look later if quote data starts needing tighter control. _(added 2026-08-15)_
+- [ ] **One low-traffic function on the EQ side accepts an org ID as a plain parameter instead of reading it from the login session** — the table it writes to is empty today so there's nothing to lose, but it's a different shape of risk from everything else fixed here and wasn't touched. _(added 2026-08-15)_
+
+---
+
 ## eq-cards + eq-shell: changing your mobile number used to split you into two accounts — fixed, and a second way in shipped (2026-08-15)
 
 **Deferred:**
