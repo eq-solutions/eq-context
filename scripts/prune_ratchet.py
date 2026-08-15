@@ -70,8 +70,23 @@ HEADING = re.compile(r"^##\s+")
 # loose file to root, or archiving one without recording why, should both be
 # arguments you have on purpose. They are rare events, so the friction is
 # cheap and lands exactly where the judgement is needed.
+#
+# Lowered 412 -> 411, 2026-08-15 same day. NOT from a sweep -- a 20-item spread
+# sample of residue found most of it is real, correctly-still-open work
+# (a restore drill never run, worker invites never sent, "SEC-9/24 need
+# Royce's hands" already noted) filed under a heading that also mentions what
+# shipped, not stale cruft. Bulk-closing on the raw count would have silently
+# dropped real work; declined for exactly that reason. The one item this
+# session DID verify and tick: a residue line asking for a global CLAUDE.md
+# correction that had, in fact, already landed the same day, evidenced against
+# both the corrected file and F13's own rung-4 ledger entry, not assumed.
+# Rotate_pending's VERIFY_RE was also widened the same session (16 real
+# "not click-tested"/"click-through not done" phrasings it had been missing)
+# -- that fix's effect (~10 items moving to verify-queue.md) lands on the next
+# rotation run, not this commit; the ceiling here reflects only what changed
+# in THIS commit's content, not a number borrowed from a future run.
 CEILINGS = {
-    "residue": 450,
+    "residue": 411,
     "root_files": 16,
     "archive_unindexed": 0,
 }

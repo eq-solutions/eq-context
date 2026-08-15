@@ -105,6 +105,34 @@ check("2d: section leaves live file", "nothing built, just a note" not in live, 
 check("2d: verify item queued", s["moved_verify"] == 1, s)
 check("2d: nothing archived (no done items)", s["moved"] == 0, s)
 
+# 2e — VERIFY_RE widened 2026-08-15: real phrasings a residue-sample review
+# found the original pattern missing. Each of these is quoted verbatim (or
+# near-verbatim) from a real eq/pending.md line at the time this was added —
+# not invented shapes.
+for phrase in [
+    "Not click-tested on a real phone",
+    "Live click-through not done",
+    "Live click-test still not done anywhere across this whole thread",
+    "Royce's own click-through",
+    "Not click-tested against a real generated NSX report",
+]:
+    body = f"\n## widened verify check (2026-06-01)\n\n- [ ] {phrase}\n"
+    live, append, s = run(body)
+    check(f"2e widened match: {phrase[:40]!r}", s["moved_verify"] == 1, s)
+
+# 2f — the false positive the original broad "confirm" attempt produced,
+# pinned so it never regresses: an UNSTARTED planning item that happens to
+# use the word "confirmed" in an unrelated clause must NOT be treated as
+# verify-only — there is no build here for Royce to merely click-through.
+body = (
+    "\n## planning only (2026-06-01)\n\n"
+    "- [ ] EQ Field / SKS Labour adoption has no tracked parity list — "
+    "SKS Labour is genuinely NOT feature-frozen (confirmed live, corrected "
+    "a stale memory). Real open question, nothing started.\n"
+)
+live, append, s = run(body)
+check("2f: unstarted planning item is NOT swept as verify-only", s["moved_verify"] == 0, s)
+
 # 3 — section inside the grace window is untouched even if fully done
 body = "\n## fresh work (2026-07-26)\n\n- [x] just did this\n"
 live, append, s = run(body)

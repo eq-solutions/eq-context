@@ -68,10 +68,28 @@ HEADER_DATE_RE = re.compile(r"\((?:[^)]*\b)?(\d{4}-\d{2}-\d{2})\)")
 # every phrase here is one actually used across eq/sks/ops pending.md for
 # exactly this class of item (checked against the live files 2026-08-01,
 # not guessed).
+#
+# Widened 2026-08-15 — a residue-sample review found 16 items in this exact
+# category the original pattern missed, all real: "Not click-tested on a
+# real phone", "Live click-through not done", "Live click-test still not
+# done anywhere across this whole thread", "Royce's own click-through".
+# The original only matched "Royce to click-through" (that specific prefix)
+# or "click through live/production" (space, not hyphen) — real usage
+# varies the grammar ("Royce's click-through" vs "Royce to click-through")
+# and compounds "click" with "test" as often as "through" ("not click-
+# tested", "click-test"). Same discipline as the original: every new
+# alternative below is a phrase confirmed present in eq/pending.md, not a
+# generic "confirm"/"verify" catch-all — a loose "confirm" match was tried
+# first and false-positived on "EQ Field/SKS Labour... confirmed live,
+# corrected a stale memory", an unstarted planning item with zero build
+# done, the exact shape this regex must never rotate.
 VERIFY_RE = re.compile(
     r"Royce to (click[\s-]through|confirm|spot-check|eyeball)"
+    r"|Royce'?s?( own)? click[\s-]through"
     r"|click[\s-]tested live"
     r"|click(?:ed)? through (live|production)"
+    r"|(no|not) (yet )?click[\s-]?(tested|through|test)"
+    r"|live click[\s-](through|test)"
     r"|no test login"
     r"|needs? sign-?in"
     r"|off-limits for Claude"
