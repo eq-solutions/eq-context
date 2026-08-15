@@ -14,6 +14,13 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: sign-in lockouts and refusals are now queryable, not just in the logs — live (2026-08-15)
+
+- [ ] **No sign-in has happened yet since it went live, so nothing has been recorded in practice.** The code is live on core.eq.solutions and it writes the same way sign-ins are already recorded today, so there's no reason to expect trouble — but the first real proof arrives with the next actual sign-in. Worth a look at the log once a few people have signed in tomorrow. _(added 2026-08-15)_
+- [ ] **Nothing alerts on this yet.** Recording a lockout is not the same as being told about one. The two questions worth alerting on — who got locked out in the last 24 hours, and who had the password right but never cleared the second step — are written and tested, but have to be run by hand. Turning either into a real alert is separate work and needs your call on where it should land. _(added 2026-08-15, needs your call)_
+
+---
+
 ## eq-cards + eq-shell: audited every sign-in door, retired the two that weren't real — both live (2026-08-15)
 *Started from one false sentence on the Cards sign-in screen and turned into a full audit of every way into Cards, checked against both repos and live jvkn rather than docs. Royce's read — "a lot of this has evolved into a single login QR method" — was right, but that method lives in Shell, not Cards: `create/resend-worker-invite` and the role-tagged QR both emit `core.eq.solutions/login`, and Cards' own onboarding routes turned out to be the previous generation.*
 
