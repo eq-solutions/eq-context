@@ -52,6 +52,57 @@ QUALIFIER = re.compile(
     re.IGNORECASE,
 )
 
+# --- F13: false deploy-posture claims about eq-shell -------------------------
+# Merging to eq-shell's main starts a production build that is live on
+# core.eq.solutions 2-4s later, unattended, via Netlify's own GitHub App
+# (installation 121276861). Any active-substrate sentence saying otherwise is
+# false. This earns a check rather than another note because it has already been
+# wrong twice while PASSING re-verification: its two supporting observations
+# (deploy_source: api, cdp_enabled_contexts: [deploy-preview]) are still
+# literally true, and only the inference drawn from them was wrong — so anyone
+# re-checking the config finds it exactly as described and marks the note
+# verified. See system/failures.md F13. Worst case it nearly caused: an
+# auth-change PR annotated "manual-deploy-only", which makes merging read as a
+# safe intermediate step rather than as deploying auth straight to production.
+AUTO_DEPLOY_TOKENS = ("eq-shell", "core.eq.solutions")
+
+# Repos where a manual trigger genuinely IS required. A closed, named set — the
+# check allow-lists by name rather than inferring which repo a sentence is
+# about, because guessing is what produced F13 in the first place.
+MANUAL_DEPLOY_TOKENS = ("eq-cards", "eq-receipts", "eq-website", "sks-nsw-labour",
+                        "cloudflare", "eq-intake")
+
+DEPLOY_POSTURE = re.compile(
+    r"manual[- ]deploy[- ]only|explicit[- ]only"
+    r"|merged but not (?:live|deployed|shipped)"
+    r"|not (?:yet )?deployed"
+    r"|(?:doesn'?t|does not|never|won'?t) auto.?deploy"
+    r"|deploy(?:s|ment)?[^.\n]{0,30}separate explicit step"
+    r"|Royce to trigger|needs? (?:an? )?(?:explicit|manual) (?:deploy|trigger)",
+    re.IGNORECASE,
+)
+
+# Quoting the false claim in order to correct it is not making the claim. Without
+# this the correction trips the guard — and a guard that flags its own fix gets
+# muted, which is exactly how the original claim survives.
+# NOTE the shape here: only POSITIVE assertions count as corrections. An earlier
+# draft included a bare `auto.?deploys?\b`, which matches "doesn't auto-deploy"
+# — the single most common wording of the false claim — and silently suppressed
+# it. The unit tests caught that; without them this guard would have shipped
+# catching nothing, which is worse than no guard at all.
+DEPLOY_CORRECTION = re.compile(
+    r"\bF13\b|\bwrong\b|\bfalse\b|correct(?:ed|ion)|retract|stale claim"
+    r"|no longer true|used to say|previously said"
+    r"|does auto.?deploy|is auto.?deploy"
+    r"|2-4 ?s\b|\bseconds later\b",
+    re.IGNORECASE,
+)
+
+# failures.md defines this pattern (title, signal regex, note) by design; the
+# script and its tests name it to test it.
+DEPLOY_SCAN_EXEMPT = ("system/failures.md", "scripts/substrate_honesty.py",
+                      "scripts/test_substrate_honesty.py")
+
 
 def is_historical(path):
     """True if path is append-only history / a dated snapshot (scan-exempt)."""
@@ -143,8 +194,9 @@ def probe_deploy(url):
 
 
 # --- stale-reference scan ----------------------------------------------------
-def _qualified_in_context(repo, path, lineno, window=3):
-    """True if a QUALIFIER word appears within +/-window lines of lineno."""
+def _qualified_in_context(repo, path, lineno, window=3, pattern=None):
+    """True if `pattern` (default QUALIFIER) matches within +/-window lines."""
+    pattern = pattern or QUALIFIER
     try:
         with open(os.path.join(repo, path), encoding="utf-8", errors="replace") as f:
             lines = f.readlines()
@@ -152,7 +204,71 @@ def _qualified_in_context(repo, path, lineno, window=3):
         return False
     lo = max(0, lineno - 1 - window)
     hi = min(len(lines), lineno + window)
-    return bool(QUALIFIER.search("".join(lines[lo:hi])))
+    return bool(pattern.search("".join(lines[lo:hi])))
+
+
+def classify_deploy_posture(line, path=""):
+    """Pure: does this line make a FALSE manual-deploy claim about eq-shell?
+
+    Returns (bool, reason). Kept pure and unit-tested rather than trusted,
+    because a noisy guard gets muted and a muted guard is how F13 survived two
+    re-verifications. Every suppression below is a real false-positive seen in
+    this substrate, not a hypothetical.
+    """
+    p = path.replace("\\", "/")
+    if p in DEPLOY_SCAN_EXEMPT:
+        return False, "file defines this pattern by design"
+    low = line.lower()
+    if not DEPLOY_POSTURE.search(line):
+        return False, "no deploy-posture phrasing"
+    if not any(t in low for t in AUTO_DEPLOY_TOKENS):
+        return False, "not about eq-shell / core.eq.solutions"
+    if any(t in low for t in MANUAL_DEPLOY_TOKENS):
+        return False, "line also names a genuinely manual-deploy repo"
+    if DEPLOY_CORRECTION.search(line):
+        return False, "quoted in order to correct it"
+    return True, ("claims eq-shell needs a manual deploy — merging to main is "
+                  "live on core.eq.solutions 2-4s later, unattended (F13)")
+
+
+def scan_deploy_posture():
+    """git-grep the active tree for false eq-shell deploy-posture claims.
+
+    Returns (findings, suppressed). Suppressed = historical record, or a
+    correction sitting within a few lines.
+    """
+    repo = os.path.join(HERE, "..")
+    findings, suppressed, seen = [], 0, set()
+    for token in AUTO_DEPLOY_TOKENS:
+        try:
+            out = subprocess.run(
+                ["git", "grep", "-n", "--no-color", "-i", token],
+                capture_output=True, timeout=30, cwd=repo,
+                encoding="utf-8", errors="replace",
+            ).stdout or ""
+        except Exception as e:  # not a git checkout, or git missing
+            print(f"  (deploy-posture scan skipped for {token}: {e})")
+            continue
+        for line in out.splitlines():
+            parts = line.split(":", 2)
+            if len(parts) < 3:
+                continue
+            path, lineno, content = parts
+            path = path.replace("\\", "/")
+            key = (path, lineno)
+            if key in seen:
+                continue
+            hit, reason = classify_deploy_posture(content, path)
+            if not hit:
+                continue
+            seen.add(key)
+            if is_historical(path) or _qualified_in_context(
+                repo, path, int(lineno), pattern=DEPLOY_CORRECTION
+            ):
+                suppressed += 1
+                continue
+            findings.append((path, lineno, content.strip()[:110], reason))
+    return findings, suppressed
 
 
 def scan_forbidden(forbidden):
@@ -170,10 +286,20 @@ def scan_forbidden(forbidden):
         if not token:
             continue
         try:
+            # encoding pinned rather than text=True: text=True decodes with the
+            # locale codec, cp1252 on Windows, and this substrate is full of em
+            # dashes — a grep whose output includes one raises UnicodeDecodeError
+            # and leaves stdout None. LATENT here today, not active: the sole
+            # current token (a Supabase project ref) only ever matches ASCII
+            # lines, verified 2026-08-15 (53 hits, clean). It bites the moment a
+            # token matches prose — which the deploy-posture scan below does, and
+            # that is how this was found. Pinned in both places so the next token
+            # added to the manifest doesn't silently turn this scan into a no-op.
             out = subprocess.run(
                 ["git", "grep", "-n", "--no-color", token],
-                capture_output=True, text=True, timeout=30, cwd=repo,
-            ).stdout
+                capture_output=True, timeout=30, cwd=repo,
+                encoding="utf-8", errors="replace",
+            ).stdout or ""
         except Exception as e:  # not a git checkout, or git missing
             print(f"  (stale-ref scan skipped for {token}: {e})")
             continue
@@ -250,8 +376,19 @@ def main():
     else:
         print("  ok    no deleted refs used as live mentions in the active tree")
 
+    print("\n--- Deploy-posture scan (F13: eq-shell claimed manual-deploy) ---")
+    posture, posture_suppressed = scan_deploy_posture()
+    if posture_suppressed:
+        print(f"  ({posture_suppressed} historical or self-correcting mention(s) — exempt.)")
+    if posture:
+        for path, lineno, content, reason in posture:
+            print(f"  FALSE {path}:{lineno}  {content}")
+            print(f"        ^ {reason}")
+    else:
+        print("  ok    no active claim that eq-shell needs a manual deploy")
+
     print("\n=== summary ===")
-    total = len(drift) + len(stale)
+    total = len(drift) + len(stale) + len(posture)
     if total == 0:
         print("Substrate is honest: every checked fact matches reality.")
         return 0
@@ -260,6 +397,8 @@ def main():
         print(f"  - DRIFT: {d}")
     for path, lineno, content, _ in stale:
         print(f"  - STALE: {path}:{lineno}")
+    for path, lineno, content, _ in posture:
+        print(f"  - FALSE DEPLOY POSTURE: {path}:{lineno}")
     if strict:
         print("\nSUBSTRATE_HONESTY_STRICT=1 -> failing the build.")
         return 1
