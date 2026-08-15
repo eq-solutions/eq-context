@@ -3,6 +3,7 @@ title: EQ Field — Changelog (supplementary, MERGED)
 owner: Royce Milmlow
 last_updated: 2026-07-19
 scope: RETIRED — every entry below is now in eq/changelog/field.md. Kept for git history only, do not append to this file.
+superseded_by: field.md
 read_priority: reference
 status: live
 ---

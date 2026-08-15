@@ -58,6 +58,15 @@ jobs:
       - name: Changelog duplicates — self-test
         run: python scripts/test_changelog_duplicates.py
 
+      # Ratchet at 0, no headroom -- a broken link has no honest reason to
+      # exist (unlike prune_ratchet's residue count, which gets slack because
+      # normal sessions legitimately add follow-up items).
+      - name: Link check
+        run: python scripts/link_check.py
+
+      - name: Link check — self-test
+        run: python scripts/test_link_check.py
+
       - name: Run MD health checks
         run: |
           set -euo pipefail

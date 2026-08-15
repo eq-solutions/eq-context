@@ -90,6 +90,6 @@ R1 first (five-minute review + merge, unblocks the Table half of R2). Then R2 an
 ## Related
 
 - [eq/pending.md](../pending.md) — source section: "Shell Conversations built end-to-end"
-- [eq/shell-conversations-scoping-2026-08-11.md](../shell-conversations-scoping-2026-08-11.md) — full history and data model behind this thread
+- `eq/shell-conversations-scoping-2026-08-11.md` — **referenced but never written** (link corrected 2026-08-15, checked against git history — no commit ever added this file). The full history it was meant to hold lives instead in `eq/pending.md`'s "Shell Conversations built end-to-end" section and `eq/changelog/eq-shell.md`'s 2026-08-11 → 2026-08-12 entry.
 - [eq-shell PR #1324](https://github.com/eq-solutions/eq-shell/pull/1324) — R1
 - [eq-shell PR #1321](https://github.com/eq-solutions/eq-shell/pull/1321) — the team/supervisor write path R3 uses

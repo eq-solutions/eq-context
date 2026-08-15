@@ -3,6 +3,7 @@ title: Changelog — EQ Shell
 owner: Royce Milmlow
 last_updated: 2026-07-12
 scope: Append-only history of changes to EQ Shell through 2026-07-14. Superseded by eq-shell.md going forward — see banner below.
+superseded_by: eq-shell.md
 read_priority: reference
 status: live
 ---

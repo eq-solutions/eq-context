@@ -839,9 +839,9 @@ After Unit 7:
 - [eq/identity/IDENTITY-MODEL.md](../identity/IDENTITY-MODEL.md) — auth foundation; Phase 1.F's RLS sweep covers every canonical table this plan adds
 - [eq/cards/canonical-migration/plan.md](../cards/canonical-migration/plan.md) — the worked pattern this plan generalises; Cards Units 1-2.A are complete and serve as the reference implementation
 - [eq/field/multi-tenancy/plan.md](../field/multi-tenancy/plan.md) — Field's Phase 1/2 plan, gated on customer trigger; becomes the *surface migration* plan after canonical-readiness lands
-- [eq-app-build-principle](../eq-app-build-principle.md) — canonical-first; Field's legacy data model is supplanted surface-by-surface, not migrated
-- [supabase-architecture-decision](../supabase-architecture-decision.md) — one Supabase per tenant decision (Prereq C reaffirms or revisits)
-- [auth-session-single-source](../auth-session-single-source.md) — login at tenant subdomain carries role + platform_admin through every module
+- `eq-app-build-principle` — canonical-first; Field's legacy data model is supplanted surface-by-surface, not migrated. **Never a file in this repo** (link corrected 2026-08-15) — same shape as the "Memory says (per `supabase-architecture-decision.md` Phase 1.E)" citation above: a Claude-memory reference written with a `.md` suffix and then turned into a markdown link by habit. No corresponding markdown file has ever existed in this repo's git history.
+- `supabase-architecture-decision` — one Supabase per tenant decision (Prereq C reaffirms or revisits). Same correction as above — a memory citation, not a file.
+- `auth-session-single-source` — login at tenant subdomain carries role + platform_admin through every module. Same correction — a memory citation, not a file.
 - `eq/pending.md` "EQ Shell + EQ Intake" — Phase 2 critique items; Prereq A + Prereq B in this plan map directly to two of those items, fast-tracked
 - `C:\Projects\eq-quotes\eq-quotes-port\migrations\001_eq_quotes_supabase_port.sql` — Quotes entity source-of-truth (Flask v1 schema)
 - `C:\Projects\eq-solves-field\migrations\*` — Field entity source-of-truth (working migrations on `ktmjmdzqrogauaevbktn`)

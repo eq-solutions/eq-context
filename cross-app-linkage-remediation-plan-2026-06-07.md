@@ -39,7 +39,7 @@ single owners, and finishing the in-flight Field anon-remediation** — not rede
 `workers.user_id` 4/38, `app_data.staff.cards_worker_id` 1/50, `ktmj.people.worker_id` 0/605.
 
 > **⚠ SUPERSEDED — this priority is already owned.** An **APPROVED-FOR-BUILD** spec exists:
-> [`worker-identity-linker-spec-2026-06-07.md`](worker-identity-linker-spec-2026-06-07.md) (concurrent session). It
+> [`worker-identity-linker-spec-2026-06-07.md`](archive/worker-identity-linker-spec-2026-06-07.md) (concurrent session). It
 > covers GATE A + the worker→staff link end-to-end (M1 `user_invites.worker_id`, M2 FK `workers.user_id`→shell user,
 > M3 `workers.staff_id` soft-ref to `app_data.staff`, unified invite flow, `accept-invite.ts` linking, Phase-5
 > backfill). **Defer to that spec — do not build P1 in parallel.** Two reconciliation notes for whoever runs it:

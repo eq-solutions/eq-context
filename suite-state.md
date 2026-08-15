@@ -112,7 +112,7 @@ _Auto-refreshed nightly. ✓ = has data · ⚠ = empty (no data yet) · ✗ = ta
 | Users / Roles | Shell → service.tenant_members | Service, Field |
 | Staff / Licences / Availability | Field | Field only |
 
-**Import/write-time tooling** (not a data entity — the engine that gets data *into* the tables above; verified live 2026-08-08, see [eq-solves-intake](changelog/eq-intake.md)):
+**Import/write-time tooling** (not a data entity — the engine that gets data *into* the tables above; verified live 2026-08-08, see [eq-solves-intake](eq/changelog/eq-intake.md)):
 
 | Tool | Owner | Real usage | Everyone else |
 |------|-------|------------|----------------|

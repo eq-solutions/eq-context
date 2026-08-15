@@ -165,7 +165,7 @@ status: live
 - Live click-through not done — needs a real signed-in Shell session with `admin.review_cards`.
 
 ## 2026-08-11 → 2026-08-12 (Shell Conversations feature suite: logging, RLS lockdown, resourcing dashboard, draft org chart, team assignment)
-Full detail: `eq-context/eq/shell-conversations-scoping-2026-08-11.md`.
+Full detail was meant to be captured at `eq-context/eq/shell-conversations-scoping-2026-08-11.md`, but that file was never actually written (checked 2026-08-15) — this changelog entry and `eq/pending.md`'s "Shell Conversations built end-to-end" section are the record.
 - **PR #1302** — new Conversations log on the Staff detail panel (Formal Check-in/Development Review tiers sourced from Royce's real SKS HR templates, plus an untemplated Casual type). New `staff.manage_conversations` permission, group-only, no default role grant.
 - **PR #1304** — the original RLS only checked tenant, not the permission, so any signed-in SKS user could read/write the table directly. Added the first permission-aware RLS policy in this codebase (embeds security-group grants into the session token via a channel that already existed for Field but was never populated for this path). Also fixed a real CI gap it exposed: `check-orphan-perms.mjs` didn't account for Shell-local, group-only permission keys.
 - **PR #1312** — found the RLS fix above only patched one of two separate JWT-minting functions (`mint-supabase-jwt.ts`, not `mint-tenant-jwt.ts` — the one the Conversations screen actually uses). Every read/write had been silently failing for everyone, including Royce, since PR #1304 shipped. Fixed both signing branches; confirmed deployed live.

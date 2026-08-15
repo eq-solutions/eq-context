@@ -399,8 +399,8 @@ After cutover lands:
 
 - [eq/identity/IDENTITY-MODEL.md](../../identity/IDENTITY-MODEL.md) — authoritative cross-product identity/auth spec; Cards is the first external consumer of the Supabase JWT issued by mint-supabase-jwt (§6.2 + §7.2)
 - [eq/identity/PHASE-1F-PLAN.md](../../identity/PHASE-1F-PLAN.md) — eq-shell implementation plan for the identity model; **blocks Unit 4** of this plan
-- [eq-app-build-principle](../../eq-app-build-principle.md) — canonical-first principle
-- [supabase-architecture-decision](../../supabase-architecture-decision.md) — one Supabase per tenant
+- `eq-app-build-principle` — canonical-first principle. **Never a file in this repo** (link corrected 2026-08-15) — a Claude-memory reference written with a `.md` suffix and turned into a markdown link by habit; see the fuller note in `eq/canonical-readiness/plan.md`'s Related section.
+- `supabase-architecture-decision` — one Supabase per tenant. Same correction — a memory citation, not a file.
 - `C:\Projects\eq-cards\ARCHITECTURE.md` §18 — the original cross-module data architecture spec
 - `C:\Projects\eq-cards\STATUS.md` — Cards's "pause-and-polish" framing being overridden
 - `sessions/2026-05-19.md` — original §18 reconciliation flagging
