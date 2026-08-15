@@ -44,7 +44,7 @@ permissions:
 
 jobs:
   adversarial-suite:
-    name: Adversarial suite (51/51)
+    name: Adversarial suite
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -62,3 +62,13 @@ jobs:
       - name: Run the adversarial suite
         working-directory: /mnt/Projects/eq-context
         run: python hooks/adversarial_test.py
+
+      # Separate runner: this one builds real throwaway git repos to prove the
+      # SessionStart gate cannot report a clean sync state for a clone whose
+      # HEAD differs from origin/main. Wired explicitly because CI here invokes
+      # every test by name -- a test file that is merely present never runs, and
+      # an unrun guard is the failure class this repo keeps re-learning (F10:
+      # "a rung-4 guard was actually rung 0 in practice").
+      - name: Session-start SYNC check (F1)
+        working-directory: /mnt/Projects/eq-context
+        run: python hooks/test_session_start_sync.py

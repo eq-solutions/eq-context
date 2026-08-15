@@ -62,6 +62,61 @@ def age_days(datestr):
         return None
 
 
+# --- 0. SYNC (F1, the half the freshness check cannot see) -------------------
+# digest.md's stamp is a FILE MTIME, not a sync check. A clone 34 commits behind
+# still carries a digest.md stamped today, so FRESHNESS below prints "ok" while
+# every file the session reads is stale. That is not hypothetical: on 2026-08-15
+# this gate reported "F13 (rung 1, 2x) PROMOTION DUE" off a stale clone when
+# origin/main already had F13 at rung 4 with the guard built and merged. The
+# session then spent its opening turn acting on a guard that was not overdue.
+#
+# F1's lesson is "freshness is not truth". A timestamp cannot express staleness
+# that arrives as *absence* of commits, so compare refs, not mtimes.
+def git(*args, timeout=15):
+    try:
+        r = subprocess.run(
+            ("git", "-C", ROOT) + args, capture_output=True, text=True, timeout=timeout
+        )
+        return r.stdout.strip() if r.returncode == 0 else ""
+    except Exception:
+        return ""
+
+
+# origin/main is itself only as current as the last fetch. If nothing has
+# fetched recently the ref is stale and HEAD == origin/main proves nothing, so
+# refresh it first. Same 10-minute cadence the UserPromptSubmit hook uses; fails
+# open on a network stall rather than blocking the session.
+try:
+    fh = os.path.join(ROOT, ".git", "FETCH_HEAD")
+    stale = (not os.path.exists(fh)) or (
+        (datetime.now(timezone.utc).timestamp() - os.path.getmtime(fh)) > 600
+    )
+    if stale:
+        git("fetch", "origin", "main", timeout=20)
+except Exception:
+    pass
+
+_local = git("rev-parse", "HEAD")
+_remote = git("rev-parse", "origin/main")
+if not _local or not _remote:
+    out.append(
+        "SYNC       ? cannot resolve HEAD or origin/main — verify the clone by hand.\n"
+        "           Do not assume the substrate you are reading is current."
+    )
+elif _local == _remote:
+    out.append(f"SYNC       ok — HEAD == origin/main ({_local[:7]})")
+else:
+    _behind = git("rev-list", "--count", f"{_local}..{_remote}") or "?"
+    _ahead = git("rev-list", "--count", f"{_remote}..{_local}") or "?"
+    out.append(
+        f"SYNC       *** STOP *** clone is behind {_behind} / ahead {_ahead} vs origin/main.\n"
+        f"           Every substrate file you read may be stale, and the checks below\n"
+        f"           (FRESHNESS, NEEDS YOU, GOALS, RATCHET) are computed from those\n"
+        f"           same stale files — treat all of them as unverified.\n"
+        f"           A current digest.md stamp does NOT mean the clone is current.\n"
+        f"           Reconcile against origin/main before trusting substrate content."
+    )
+
 # --- 1. FRESHNESS (F1) ------------------------------------------------------
 digest = read("digest.md")
 m = re.search(r"_(\d{4}-\d{2}-\d{2})[^\n]*UTC", digest)
