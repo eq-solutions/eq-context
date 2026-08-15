@@ -64,7 +64,6 @@ _If this file is >48h old, the cron is broken._
 - #221 refactor(auth): shell-verify.js relays to eq-shell instead of local crypto
 
 **eq-shell:**
-- #1369 docs(auth): active-user-guard claimed the cookie path was covered; it isn't
 - #1294 feat(cards): centralize Cards' SSO minting via token-exchange-cards.ts
 
 ---
