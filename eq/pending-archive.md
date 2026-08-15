@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-08-14
+last_updated: 2026-08-15
 scope: Done items rotated out of eq/pending.md nightly by scripts/rotate_pending.py (per-item since 2026-07-27; before that, occasional manual whole-section moves). Nothing here is actionable — pure historical record (also covered in eq/changelog/*.md and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -3496,5 +3496,237 @@ contain the same values and were pushed before push-protection caught up.
 - A concurrent console (different tool, screenshot shared mid-session) was independently working the exact same arming task with its own checklist. Drafted Royce a coordination prompt handing that console the just-verified live-secret facts and standing this session's Code instance down from touching any secrets/environments, so the two consoles don't race on creating the same GitHub Environment or setting conflicting values.
 - Steelmanned "should we arm this" on request — recommended yes (asymmetric cost: ~15 minutes of copy-paste vs. total/permanent loss of platform identity if eq-canonical is ever lost with no offsite copy); named real counterpoints (R2 becomes a second location holding auth-adjacent data, deserves real key hygiene; the `auth_data.sql` capture is guarded but unproven until a live run). **Not yet a decision** — Royce hasn't confirmed arming in words.
 - Rebased eq-context PR #61 (Phase 2) mid-session after discovering Phase 1 had landed on `main` under a different commit SHA than the one this branch was originally stacked on — dropped the resulting duplicate commit, re-pushed as Phase-2-only before it merged.
+
+---
+
+## eq-shell: unreachable upload-size limits fixed across 8 upload paths, live (2026-08-12) (rotated 2026-08-15)
+*Royce hit a real "network error" attaching a file to a quote. Investigation found Netlify's hard 6 MB function payload ceiling made several `MAX_BYTES` constants unreachable in practice (10–20 MB claimed, ~4.5 MB actually reachable after multipart/base64 inflation) — any file in that gap failed at the network layer with a misleading "check your connection" message instead of an honest size error.*
+
+- [x] Fixed across 8 functions (`staff-licence-backfill`/`-ocr`/`-replace-photo`, `upload-asset-cert`, `upload-document-version`, `ocr-parse`, `labour-hire-parse`, `create-worker-invite`) + all their frontend callers — `MAX_BYTES` lowered to a reachable 4 MB, error messages made honest, instant client-side pre-checks added so an oversized file fails immediately instead of after a doomed network round-trip. eq-shell [#1307](https://github.com/eq-solutions/eq-shell/pull/1307), merged + deployed live.
+- [x] `create-worker-invite.ts` needed more than a number change — it can carry several licence documents in one request body, so a per-file cap alone wasn't enough (two files can each pass individually and still blow the shared request limit together). Added a combined-total check alongside the per-file one.
+
+---
+
+## eq-shell: quote attachments moved to direct-to-storage upload — real limit now 50 MB, not merged yet (2026-08-12) (rotated 2026-08-15 — open items remain in pending.md)
+
+- [x] Built a new upload path for plain quote reference attachments (drawings/PDFs/emails — NOT the AI "Import from PDF" feature, which is untouched and stays as-is). The file now goes straight from the browser to Supabase Storage instead of through a function, removing the payload ceiling entirely. New limit is 50 MB, matching the real storage-level limit (checked live, not guessed). eq-shell PR [#1310](https://github.com/eq-solutions/eq-shell/pull/1310), open.
+
+---
+
+## eq-shell: 2 dead Supabase Storage folders found + removed from the SKS database (2026-08-12) (rotated 2026-08-15)
+*Found while investigating the size-limit work above — two storage folders sitting on the SKS (ehow) database that nothing in the live apps actually uses.*
+
+- [x] Audited every storage folder across all three EQ Supabase projects. One (`job-plan-references`, empty) turned out to be EQ Service's own abandoned feature — they'd already written their own cleanup for it, it just never actually ran. The other (`sks-quote-attachments`, one real file — a hospital job quote PDF that nothing in the database points to anymore) predates both eq-shell's and EQ Service's tracked history — most likely a leftover from the old standalone SKS app, before it was folded into Shell.
+- [x] Tried to remove both through the normal governed database-update process — blocked: Supabase itself refuses to let a plain update-script delete storage folders/files directly (a deliberate safety feature, not a bug, to stop orphaned files). That update was abandoned (eq-shell PR #1309, closed without merging) and both folders were deleted directly through the Supabase dashboard instead — confirmed gone.
+
+---
+
+## eq-shell: "Download Quote" failing with no retry — root-caused + fixed, not merged yet (2026-08-12) (rotated 2026-08-15)
+*While investigating the size-limit bug above, checked Sentry for the actual error that started the session — turned out to be a different, real, still-open bug on the same page.*
+
+- [x] Found via Sentry (`EQ-SHELL-1J`): the "Download Quote" button (Word doc export) can fail on a one-off network blip because the template download had no retry at all — same gap in the "Job Creation" Excel export. Added an automatic retry to both (checked the Excel path specifically for safety first — the server re-checks the quote's status fresh on every call, so a retry can't accidentally create a duplicate job). eq-shell PR [#1317](https://github.com/eq-solutions/eq-shell/pull/1317), open.
+
+---
+
+## eq-shell: EQ Ops archive view gets full search/filter, quotes auto-archive after 7 days invoiced (2026-08-12) (rotated 2026-08-15)
+*Royce: "EQ OPS. Can we add two features — full search and filter functions as per EQ-UI in archive view. Archive anything that has been invoiced for 7 days."*
+
+- [x] Archive ("Archived") tab now uses the shared @eq-solutions/ui Table (search, status filters, column toggle, CSV export) instead of a bare list — matches how Equipment/Staff/Suppliers already work. eq-shell [PR #1319](https://github.com/eq-solutions/eq-shell/pull/1319), merged.
+- [x] New scheduled job soft-archives any quote that's sat "Invoiced" for 7+ days — same shape as the existing auto-expire job (migration 0243). Dispatched and confirmed live on both the EQ (zaap) and SKS (ehow) databases same session; one already-qualifying SKS quote will get archived on the first run (daily, ~9:15pm UTC, just after the existing expiry job).
+- [x] Confirmed for Royce: archived quotes never auto-delete or further expire — they sit in Archived until someone manually deletes that specific quote (permanent, no undo). The existing data-retention purge job is unrelated (leaver/HR data only, not quotes).
+- [x] Royce asked mid-session for tick-box multi-select on the Archived tab too — added Restore-many / Delete-many, one confirm for the whole batch rather than one per row. eq-shell [PR #1320](https://github.com/eq-solutions/eq-shell/pull/1320), merged. Caught and fixed a merge conflict from #1319's squash-merge orphaning the branch history (not a real content clash — rebase resolved it cleanly, both PRs' changes intact).
+
+---
+
+## eq-shell: EQ Ops archive view gets full search/filter, quotes auto-archive after 7 days invoiced (2026-08-12) (rotated 2026-08-15)
+*Royce: "EQ OPS. Can we add two features — full search and filter functions as per EQ-UI in archive view. Archive anything that has been invoiced for 7 days."*
+
+- [x] Archive ("Archived") tab now uses the shared @eq-solutions/ui Table (search, status filters, column toggle, CSV export) instead of a bare list — matches how Equipment/Staff/Suppliers already work. eq-shell [PR #1319](https://github.com/eq-solutions/eq-shell/pull/1319), merged.
+- [x] New scheduled job soft-archives any quote that's sat "Invoiced" for 7+ days — same shape as the existing auto-expire job (migration 0243). Dispatched and confirmed live on both the EQ (zaap) and SKS (ehow) databases same session; one already-qualifying SKS quote will get archived on the first run (daily, ~9:15pm UTC, just after the existing expiry job).
+- [x] Confirmed for Royce: archived quotes never auto-delete or further expire — they sit in Archived until someone manually deletes that specific quote (permanent, no undo). The existing data-retention purge job is unrelated (leaver/HR data only, not quotes).
+- [x] Royce asked mid-session for tick-box multi-select on the Archived tab too — added Restore-many / Delete-many, one confirm for the whole batch rather than one per row. eq-shell [PR #1320](https://github.com/eq-solutions/eq-shell/pull/1320), merged. Caught and fixed a merge conflict from #1319's squash-merge orphaning the branch history (not a real content clash — rebase resolved it cleanly, both PRs' changes intact).
+
+---
+
+## eq-field + suite-wide: permission audit (131 rows, Excel), 2 live gaps flagged, next-sprint fix built + shipped as PR #683 (2026-08-12) (rotated 2026-08-15)
+
+---
+
+## eq-shell: on-leave tile broke again (overnight schema rename), logo doubled, Ops upload "check your connection" root-caused (2026-08-12) (rotated 2026-08-15 — open items remain in pending.md)
+
+- [x] **On-leave regressed to 0 overnight — not a pending-vs-approved semantics issue.** `app_data.leave_requests` had its columns renamed live on ehow between sessions (`date_start`/`date_end`/`id` → `from_date`/`to_date`/`leave_request_id`, plus new `imported_at`/`imported_from`/`intake_id` columns — looks like a bulk-leave-import pipeline landing). The query still used the old column names; it errors server-side but doesn't throw, so it silently degraded to 0 instead of failing loud. Fixed by reading the `field_leave_requests` view instead of the base table — it keeps the old column names as a stable compatibility layer (what Field's own app already depends on), a safer contract than the renamed table's actively-evolving internal shape. Verified live: still 4 real approved leave requests. Logo doubled 24px → 48px same PR. eq-shell [PR #1305](https://github.com/eq-solutions/eq-shell/pull/1305) (admin-merged past an unrelated pre-existing CI failure — an orphan permission key from a concurrent session's PR #1302, confirmed unrelated via the check's own schedule history before overriding).
+- [x] **Verified live that the staff-conversations RLS security fix (PR #1304, a concurrent session) is safe and already applied** — Royce asked directly before trusting it. Confirmed: the tightened policy (`staff_conversations_tenant_and_perm`) is live on both zaap and ehow, tenant isolation is preserved (additive, not replaced), the companion JWT-mint fix is genuinely deployed (verified the positional args against `signSupabaseJwt`'s real signature, not just skimmed the diff), and the one real risk the PR flagged — a stale cached JWT locking out the legitimate permission holder for up to 15 min — has already fully passed (fix has been live ~24h). Nothing built here, verification only.
+- [x] **Root-caused "check your connection" on Ops file uploads — not a connectivity problem.** Netlify's synchronous functions sit behind a hard 6 MB request-payload ceiling (AWS Lambda proxy limit, confirmed via Netlify's own docs — not raisable); both affected functions base64-encode the file in transit (multipart auto-encoding for `upload-attachment.ts`, explicit client-side encoding for `quote-parse-subcontractor.ts`), inflating it ~33% — so the real reachable file size was always ~4.5 MB, not the 20 MB / 10 MB either function claimed. A file in that gap failed at the network layer before the function ever ran; the generic catch-block error looked like a connection problem. Lowered both limits to a genuinely reachable 4 MB and added client-side pre-checks (instant, honest "File too large" instead of a doomed network round-trip) across all 3 Ops upload paths — attachments, and both "Import from PDF" entry points. eq-shell [PR #1306](https://github.com/eq-solutions/eq-shell/pull/1306).
+
+---
+
+## eq-field: staff resource management (skills/reviews) — built, deployed, migration applied live (2026-08-11) (rotated 2026-08-15 — open items remain in pending.md)
+
+
+---
+
+## eq-service + eq-solves-intake: RCD in-app entry (manual + photo) shipped, ACB mobile nav bug fixed, RCD threshold corrected (2026-08-11) (rotated 2026-08-15 — open items remain in pending.md)
+
+
+---
+
+## eq-roles + eq-field + eq-shell: security-groups export → Field/Shell permission-pipeline fix, 6 PRs merged + live (2026-08-08) (rotated 2026-08-15)
+
+---
+
+## eq-shell: self-join bulk-approve + gap-analysis-driven onboarding fixes (2026-08-06) (rotated 2026-08-15 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: EQ-SHELL-R closed (false alarm) + EQ-SHELL-1B fixed — Outlook email attachments on quotes, merged + live (2026-08-06) (rotated 2026-08-15 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: EQ-SHELL-1A "eq-ops rpc ... failed: TypeError: Failed to fetch (ehow)" — durable fix live, all known consumers migrated (2026-08-06) (rotated 2026-08-15 — open items remain in pending.md)
+
+
+---
+
+## eq-cards: Shell tenant auto-login bug root-caused and fixed — deployed live, needs your click-through (2026-08-04) (rotated 2026-08-15 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: self-join's "double sign-in" for Cards root-caused and fixed — worker-add nav trimmed further too (2026-08-03) (rotated 2026-08-15 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: fixed 8 pre-existing react-hooks/refs eslint errors in the iframe pre-warm keeper (2026-08-03) (rotated 2026-08-15 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: comms job table's JobRow extraction closes out react-hooks/refs — PR #1202 (2026-08-03) (rotated 2026-08-15)
+*Fixed the 1 instance deliberately deferred from the second pass — extracted the inline `.map()` row renderer into a real named `JobRow` component. Closes all 28 `react-hooks/refs` errors across the whole repo.*
+
+**Deferred:**
+
+---
+
+## eq-solves-intake + eq-shell: duplicate-site console's two dead ends fixed, then a live permission bug found and fixed mid-testing (2026-08-01) (rotated 2026-08-15 — open items remain in pending.md)
+
+
+---
+
+## eq-solves-service: fixed a broken safety check that was silently skipping every code review, then found the "176,000 findings" it surfaced was almost entirely noise, cleaned up what was real (2026-08-01) (rotated 2026-08-15 — open items remain in pending.md)
+
+
+---
+
+## eq-shell + eq-solves-intake + eq-receipts: closed every open security alert across the EQ suite, found 5 repos where the alert system was switched off entirely (2026-08-01) (rotated 2026-08-15 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: Richard Brown's mobile crash fixed, then a simplified mobile nav for supervisors driven by real usage data (2026-07-31) (rotated 2026-08-15 — open items remain in pending.md)
+
+
+---
+
+## eq-solves-service: Found why photo uploads were failing everywhere, then added a link/create/skip option to the paste-import flow (2026-07-31) (rotated 2026-08-15 — open items remain in pending.md)
+
+
+---
+
+## eq-intake + eq-shell: 4-part fix from Royce's live screenshot review of the Intake console (2026-07-31) (rotated 2026-08-15 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: EQ Ops quote status → job status sync fixed for all 5 stages, plus a new "Target period" badge for future-dated quotes (2026-07-31) (rotated 2026-08-15 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: Compliance-roster-only workers — Field access can now be switched off per worker (2026-07-30) (rotated 2026-08-15 — open items remain in pending.md)
+
+
+---
+
+## eq-solves-service: Field Run-Sheet asset headers now show the maintenance plan's Job Code (2026-07-29) (rotated 2026-08-15 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: Staff page edits silently reverting overnight — root-caused and fixed, deployed (2026-07-28) (rotated 2026-08-15 — open items remain in pending.md)
+
+
+---
+
+## eq-field: Labour Hire archive + "would rehire" rating, ported from SKS (2026-07-28) (rotated 2026-08-15)
+*Royce asked to build EQ Field's own version of a feature SKS just shipped (v3.10.104): archiving a Labour Hire worker straight from the roster grid instead of the People page, with an optional 1-5 star "would rehire" rating. Verified EQ Field's own database first rather than assuming it matched SKS — EQ Field's people data is a shared view with database-side rules behind it, not a plain table like SKS, so the database side needed adapting, not copying.*
+
+
+**Deferred:**
+
+---
+
+## eq-shell Staff table: reorderable columns + compact Status/Contact cells (2026-07-27) (rotated 2026-08-15)
+*Royce asked to simplify the Staff table, whether columns could be reordered, and for any smart ideas to make it "simple but powerful" — with the instruction that whatever's decided should land in the shared component library (eq-ui), not just Shell. Checked the real table first: show/hide columns and CSV export already existed, reorder didn't. Recommended against a natural-language "ask the table a question" AI feature — the existing filters already answer that need — in favour of two concrete, scoped wins Royce picked from a shortlist.*
+
+
+**Deferred:**
+
+---
+
+## eq-shell: quick-edit Staff list — Supervisor/Roster toggles + inline fields, no more open-record-to-flip-one-checkbox (2026-07-27) (rotated 2026-08-15)
+
+---
+
+## eq-cards/eq-shell: onboarding minimum-requirements switch, bulk connect-worker, and a live anon-EXECUTE fix (2026-07-26) (rotated 2026-08-15 — open items remain in pending.md)
+
+
+---
+
+## eq-shell: EQ Ops quote-detail panel simplified for real-world use, then the Coupa PO import tool rebuilt from scratch against the real export (2026-07-23 → 2026-07-24) (rotated 2026-08-15 — open items remain in pending.md)
+
+
+---
+
+## EQ Field: real Incidents / Near Miss reporting, shipped and live (2026-07-22) (rotated 2026-08-15 — open items remain in pending.md)
+
+
+---
+
+## eq-field: who does a supervisor actually see? — built, live, then loosened on your feedback (2026-07-22) (rotated 2026-08-15)
+*The big lever for scale isn't fetching faster, it's fetching less: a supervisor only needs their own crew, not all 1,500 people. That turns a ~10,500-row week into about 200 — one quick request instead of eighty. Royce's steer: "only their crew, but able to filter by predefined teams / search / the usual filtering features."*
+
+---
+
+## Core dashboard rebuilt — replaced the passive AI-brief-only home with three permission-gated live signal bands (2026-07-17, MERGED + LIVE) (rotated 2026-08-15 — open items remain in pending.md)
+
+
+---
+
+## ⏩ Session close — 2026-07-06 (eq-field + eq-shell) — canonical link redesigned + shipped, job_title added tenant-wide, root-caused Liam Holmgreen's stuck supervisor status, Batch Fill filters (rotated 2026-08-15)
+
+*Continuation of an earlier compacted eq-field audit session. Royce pushed back on the canonical-link button ("manual buttons feel clunky in time") — redesigned to auto-link-on-save, then found and fixed a real persistence bug in what had just shipped (button produced a success toast but the write never reached the DB). Royce then flagged Liam Holmgreen was still showing as a supervisor despite "we fixed this" — investigation surfaced three separate, unconnected "supervisor" signals across eq-field/eq-shell and a live mobile-Contacts bug that was silently hiding people with an unrecognized Type value. Session closed with a requested Batch Fill usability improvement.*
+
+**Shipped:**
+
+**Decided:**
+- Royce: auto-link-on-save, not a manual button — the original objection (duplicate worker stubs) no longer holds now the email→phone dedup is proven.
+- Royce: fix Liam's DB record directly now (is_supervisor + employment_type), confirmed via AskUserQuestion.
+- Not yet decided: how to close the systemic gap — no live UI can set `is_supervisor` for SKS at all (Field blocked it in 2026-06 "managed in Core"; Core never built a replacement). Two options on the table: re-open Field's own already-working Supervision CRUD for SKS (cheap, no new build), or build a real Shell-side surface. Royce was mid-conversation on this when the session closed — **needs his call next session**.
+
+**Deferred:**
+
+**Notes:**
+- Repeated pattern this session, worth remembering: a shipped feature that produces a success toast is not proof the write reached the DB — the canonical-link button's v3.5.248 persistence bug and the `job_title` whitelist gap were both caught by explicitly checking the table, not by trusting the UI.
+- The "three unconnected supervisor signals" finding generalizes: anywhere a word/concept ("supervisor", "role", "type") appears in more than one of eq-field/eq-shell's UIs, check whether they're actually reading/writing the same column before assuming a fix in one place propagates to the other.
+
+---
+
+## ⏩ Session close — 2026-07-04 (15 July CEO presentation prep) — pre-pass bug sweep across Field/Shell/Cards; self-serve tenant provisioning fully hardened + verified live end-to-end for the first time ever (rotated 2026-08-15 — open items remain in pending.md)
+
+- [x] ~~**QR/join-code worker flow** — `JoinContextNotifier`'s keepalive fix (PR #120) was applied by exact code-pattern match to the provision-context bug, not independently reproduced/verified live. Worth a live pass before the 15th.~~ **Moot 2026-08-15** — the flow it guarded (`/join`) turned out to have been unreachable since 2026-06-10, and `JoinContextNotifier` was deleted with it in eq-cards PR #248. Never needed the live pass. _(added 2026-07-04, closed 2026-08-15)_
 
 ---

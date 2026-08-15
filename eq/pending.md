@@ -339,34 +339,10 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## eq-shell: unreachable upload-size limits fixed across 8 upload paths, live (2026-08-12)
-*Royce hit a real "network error" attaching a file to a quote. Investigation found Netlify's hard 6 MB function payload ceiling made several `MAX_BYTES` constants unreachable in practice (10–20 MB claimed, ~4.5 MB actually reachable after multipart/base64 inflation) — any file in that gap failed at the network layer with a misleading "check your connection" message instead of an honest size error.*
-
-- [x] Fixed across 8 functions (`staff-licence-backfill`/`-ocr`/`-replace-photo`, `upload-asset-cert`, `upload-document-version`, `ocr-parse`, `labour-hire-parse`, `create-worker-invite`) + all their frontend callers — `MAX_BYTES` lowered to a reachable 4 MB, error messages made honest, instant client-side pre-checks added so an oversized file fails immediately instead of after a doomed network round-trip. eq-shell [#1307](https://github.com/eq-solutions/eq-shell/pull/1307), merged + deployed live.
-- [x] `create-worker-invite.ts` needed more than a number change — it can carry several licence documents in one request body, so a per-file cap alone wasn't enough (two files can each pass individually and still blow the shared request limit together). Added a combined-total check alongside the per-file one.
-
----
-
 ## eq-shell: quote attachments moved to direct-to-storage upload — real limit now 50 MB, not merged yet (2026-08-12)
 *Royce's actual quote attachments (drawings, PDFs, emails) run 5–10 MB on average — above even the "honest" 4 MB fix above. No size number fixes that while the file still routes through a Netlify function; the ceiling itself had to go.*
 
-- [x] Built a new upload path for plain quote reference attachments (drawings/PDFs/emails — NOT the AI "Import from PDF" feature, which is untouched and stays as-is). The file now goes straight from the browser to Supabase Storage instead of through a function, removing the payload ceiling entirely. New limit is 50 MB, matching the real storage-level limit (checked live, not guessed). eq-shell PR [#1310](https://github.com/eq-solutions/eq-shell/pull/1310), open.
 - [ ] **PR #1310 not yet verified or merged** — Royce reported issues testing it. Checked live and ruled out: the storage system's cross-origin access rules, and whether the new code actually deployed (both fine). The actual failure is still unidentified — waiting on the specific error message/network response before it can be diagnosed further. _(added 2026-08-12)_
-
----
-
-## eq-shell: 2 dead Supabase Storage folders found + removed from the SKS database (2026-08-12)
-*Found while investigating the size-limit work above — two storage folders sitting on the SKS (ehow) database that nothing in the live apps actually uses.*
-
-- [x] Audited every storage folder across all three EQ Supabase projects. One (`job-plan-references`, empty) turned out to be EQ Service's own abandoned feature — they'd already written their own cleanup for it, it just never actually ran. The other (`sks-quote-attachments`, one real file — a hospital job quote PDF that nothing in the database points to anymore) predates both eq-shell's and EQ Service's tracked history — most likely a leftover from the old standalone SKS app, before it was folded into Shell.
-- [x] Tried to remove both through the normal governed database-update process — blocked: Supabase itself refuses to let a plain update-script delete storage folders/files directly (a deliberate safety feature, not a bug, to stop orphaned files). That update was abandoned (eq-shell PR #1309, closed without merging) and both folders were deleted directly through the Supabase dashboard instead — confirmed gone.
-
----
-
-## eq-shell: "Download Quote" failing with no retry — root-caused + fixed, not merged yet (2026-08-12)
-*While investigating the size-limit bug above, checked Sentry for the actual error that started the session — turned out to be a different, real, still-open bug on the same page.*
-
-- [x] Found via Sentry (`EQ-SHELL-1J`): the "Download Quote" button (Word doc export) can fail on a one-off network blip because the template download had no retry at all — same gap in the "Job Creation" Excel export. Added an automatic retry to both (checked the Excel path specifically for safety first — the server re-checks the quote's status fresh on every call, so a retry can't accidentally create a duplicate job). eq-shell PR [#1317](https://github.com/eq-solutions/eq-shell/pull/1317), open.
 
 ---
 
@@ -382,28 +358,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **eq-solves-service: same drift-guard pattern, and its own investigation found a genuine latent security gap.** [#710](https://github.com/eq-solutions/eq-service/pull/710)/[#712](https://github.com/eq-solutions/eq-service/pull/712)/[#713](https://github.com/eq-solutions/eq-service/pull/713) wired the ratchet + `service.close`/`entity.edit`/`entity.manage_activation`. `entity.view_pii` investigated and deliberately left unwired ([#714](https://github.com/eq-solutions/eq-service/pull/714), Royce's call via AskUserQuestion — wiring it strictly would hide contact phone numbers from on-site technicians who plausibly need to call ahead). Checking the guard's last 2 unchecked keys (`equipment.view`, `reports.view_financial`) surfaced migration `0205` (#700, merged 2026-08-11): it deliberately widened `service.tenant_members`'s DB constraint to accept `labour_hire`/`subcontractor` roles "for Shell to push," but no page in Service ever checked the role *value* for viewing — `getApiUser()` passed it straight through with zero filtering. Confirmed live via Supabase MCP: 0 such rows exist on ehow today, so not an active exposure, but exactly the scenario #700 was built to allow. A concurrent session independently found and fixed the `entity.view` half mid-build ([#716](https://github.com/eq-solutions/eq-service/pull/716), 7 pages) — rebased and kept only the piece it didn't cover, `equipment.view` on the Test Equipment register ([#717](https://github.com/eq-solutions/eq-service/pull/717), merged).
 - [x] **The one open scoping question from the drift-guard thread is now resolved: supervisors keep asset-creation access in eq-solves-service.** `entity.create`'s canonical grant is manager-only, but `createAssetAction` has always used the broader `canWrite` (manager+supervisor) — asked Royce directly rather than guessing which way to reconcile it. He confirmed: keep supervisors able to create assets, no narrowing. No behaviour change; documented in the drift-guard baseline (same pattern as `entity.view_pii`'s writeup) plus an inline comment on `createAssetAction` so it doesn't get "fixed" the wrong way later. eq-service [PR #719](https://github.com/eq-solutions/eq-service/pull/719), merged. Closes out every open item from this thread.
 - [ ] **Live click-test still not done anywhere across this whole thread** — every fix above was verified against live data/CI/direct database checks, never a real signed-in click-through session on any of the four apps. _(added 2026-08-13)_
-
----
-
-## eq-shell: EQ Ops archive view gets full search/filter, quotes auto-archive after 7 days invoiced (2026-08-12)
-*Royce: "EQ OPS. Can we add two features — full search and filter functions as per EQ-UI in archive view. Archive anything that has been invoiced for 7 days."*
-
-- [x] Archive ("Archived") tab now uses the shared @eq-solutions/ui Table (search, status filters, column toggle, CSV export) instead of a bare list — matches how Equipment/Staff/Suppliers already work. eq-shell [PR #1319](https://github.com/eq-solutions/eq-shell/pull/1319), merged.
-- [x] New scheduled job soft-archives any quote that's sat "Invoiced" for 7+ days — same shape as the existing auto-expire job (migration 0243). Dispatched and confirmed live on both the EQ (zaap) and SKS (ehow) databases same session; one already-qualifying SKS quote will get archived on the first run (daily, ~9:15pm UTC, just after the existing expiry job).
-- [x] Confirmed for Royce: archived quotes never auto-delete or further expire — they sit in Archived until someone manually deletes that specific quote (permanent, no undo). The existing data-retention purge job is unrelated (leaver/HR data only, not quotes).
-- [x] Royce asked mid-session for tick-box multi-select on the Archived tab too — added Restore-many / Delete-many, one confirm for the whole batch rather than one per row. eq-shell [PR #1320](https://github.com/eq-solutions/eq-shell/pull/1320), merged. Caught and fixed a merge conflict from #1319's squash-merge orphaning the branch history (not a real content clash — rebase resolved it cleanly, both PRs' changes intact).
-- [ ] **Live click-through not done** — this sandbox has no network path to the tenant-config service, so the Archived-tab search/filter/bulk-select hasn't been visually confirmed in a real browser session. Built against the exact same Table component already proven live elsewhere in the app; build + typecheck clean on both PRs. _(added 2026-08-12)_
-
----
-
-## eq-shell: EQ Ops archive view gets full search/filter, quotes auto-archive after 7 days invoiced (2026-08-12)
-*Royce: "EQ OPS. Can we add two features — full search and filter functions as per EQ-UI in archive view. Archive anything that has been invoiced for 7 days."*
-
-- [x] Archive ("Archived") tab now uses the shared @eq-solutions/ui Table (search, status filters, column toggle, CSV export) instead of a bare list — matches how Equipment/Staff/Suppliers already work. eq-shell [PR #1319](https://github.com/eq-solutions/eq-shell/pull/1319), merged.
-- [x] New scheduled job soft-archives any quote that's sat "Invoiced" for 7+ days — same shape as the existing auto-expire job (migration 0243). Dispatched and confirmed live on both the EQ (zaap) and SKS (ehow) databases same session; one already-qualifying SKS quote will get archived on the first run (daily, ~9:15pm UTC, just after the existing expiry job).
-- [x] Confirmed for Royce: archived quotes never auto-delete or further expire — they sit in Archived until someone manually deletes that specific quote (permanent, no undo). The existing data-retention purge job is unrelated (leaver/HR data only, not quotes).
-- [x] Royce asked mid-session for tick-box multi-select on the Archived tab too — added Restore-many / Delete-many, one confirm for the whole batch rather than one per row. eq-shell [PR #1320](https://github.com/eq-solutions/eq-shell/pull/1320), merged. Caught and fixed a merge conflict from #1319's squash-merge orphaning the branch history (not a real content clash — rebase resolved it cleanly, both PRs' changes intact).
-- [ ] **Live click-through not done** — this sandbox has no network path to the tenant-config service, so the Archived-tab search/filter/bulk-select hasn't been visually confirmed in a real browser session. Built against the exact same Table component already proven live elsewhere in the app; build + typecheck clean on both PRs. _(added 2026-08-12)_
 
 ---
 
@@ -459,12 +413,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## eq-field + suite-wide: permission audit (131 rows, Excel), 2 live gaps flagged, next-sprint fix built + shipped as PR #683 (2026-08-12)
-
-- [ ] **Live click-test still not done anywhere across the whole audit thread this section started** (eq-shell, eq-field, eq-solves-service, eq-cards — all fixes merged/applied, `task_fd65aa59`/`task_de667109`/`task_9f6fca23` all resolved. See the 2026-08-13 entry near the top of this file for the full closed-out scope). Every fix across all four apps was verified against live data/CI/direct DB checks, never a real signed-in click-through session. _(added 2026-08-12, updated 2026-08-13)_
-
----
-
 ## eq-field: mobile-centering sprint — 12 of 16 audited items already shipped, real gaps closed same day (2026-08-12)
 *A 2026-08-07 OneDrive audit doc listed 12 P1 mobile gaps in Field. Live-code verification before building anything found all 12 already fixed in `v3.5.469` — the audit was never updated after that release shipped. The follow-on scope (a worker/supervisor split for Safety + Leave) was also partly stale once checked: Leave already had a full supervisor view, and Safety's Prestart/Toolbox/Diary/Incident forms are already supervisor-only by permission grant, so there was no worker view to split from. Real gaps found and shipped instead: Safety list-header counts made prominent + Leave approve/reject buttons to 44px tap target (`v3.5.484`, field PR [#680](https://github.com/eq-solutions/eq-field/pull/680)); Calendar's desktop-only month grid gained a mobile agenda list + bottom-sheet day detail (`v3.5.485`, field PR [#681](https://github.com/eq-solutions/eq-field/pull/681)); Teams drawer's missing active-page highlight + 2 more manager-only tap-target fixes (`v3.5.486`, field PR [#682](https://github.com/eq-solutions/eq-field/pull/682)) — a photo-remove badge was explicitly declined rather than rushed (would have been bigger than the thumbnail it sits on). All three merged, confirmed live via `field.eq.solutions/sw.js`. Full record: `eq-context/eq/sprints/2026-08-12-field-mobile-centering.md`.*
 - [ ] **Timesheets mobile-entry** — deliberately not touched (Royce: "timesheets aren't a priority on mobile"). Revisit only if there's a real reason to think people are trying to do timesheets on their phone (e.g. PostHog `timesheet_saved` event breakdown by device). _(added 2026-08-12)_
@@ -495,9 +443,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ## eq-shell: on-leave tile broke again (overnight schema rename), logo doubled, Ops upload "check your connection" root-caused (2026-08-12)
 *Royce: "leave is 0 now - can you confirm if it's looking at pending or active leave. make the logo twice as big" — a fresh bug, one day after the leave-count fix above shipped. Then: "check why I couldn't upload a file to Ops just now, it said 'check connection' but should have been fine."*
 
-- [x] **On-leave regressed to 0 overnight — not a pending-vs-approved semantics issue.** `app_data.leave_requests` had its columns renamed live on ehow between sessions (`date_start`/`date_end`/`id` → `from_date`/`to_date`/`leave_request_id`, plus new `imported_at`/`imported_from`/`intake_id` columns — looks like a bulk-leave-import pipeline landing). The query still used the old column names; it errors server-side but doesn't throw, so it silently degraded to 0 instead of failing loud. Fixed by reading the `field_leave_requests` view instead of the base table — it keeps the old column names as a stable compatibility layer (what Field's own app already depends on), a safer contract than the renamed table's actively-evolving internal shape. Verified live: still 4 real approved leave requests. Logo doubled 24px → 48px same PR. eq-shell [PR #1305](https://github.com/eq-solutions/eq-shell/pull/1305) (admin-merged past an unrelated pre-existing CI failure — an orphan permission key from a concurrent session's PR #1302, confirmed unrelated via the check's own schedule history before overriding).
-- [x] **Verified live that the staff-conversations RLS security fix (PR #1304, a concurrent session) is safe and already applied** — Royce asked directly before trusting it. Confirmed: the tightened policy (`staff_conversations_tenant_and_perm`) is live on both zaap and ehow, tenant isolation is preserved (additive, not replaced), the companion JWT-mint fix is genuinely deployed (verified the positional args against `signSupabaseJwt`'s real signature, not just skimmed the diff), and the one real risk the PR flagged — a stale cached JWT locking out the legitimate permission holder for up to 15 min — has already fully passed (fix has been live ~24h). Nothing built here, verification only.
-- [x] **Root-caused "check your connection" on Ops file uploads — not a connectivity problem.** Netlify's synchronous functions sit behind a hard 6 MB request-payload ceiling (AWS Lambda proxy limit, confirmed via Netlify's own docs — not raisable); both affected functions base64-encode the file in transit (multipart auto-encoding for `upload-attachment.ts`, explicit client-side encoding for `quote-parse-subcontractor.ts`), inflating it ~33% — so the real reachable file size was always ~4.5 MB, not the 20 MB / 10 MB either function claimed. A file in that gap failed at the network layer before the function ever ran; the generic catch-block error looked like a connection problem. Lowered both limits to a genuinely reachable 4 MB and added client-side pre-checks (instant, honest "File too large" instead of a doomed network round-trip) across all 3 Ops upload paths — attachments, and both "Import from PDF" entry points. eq-shell [PR #1306](https://github.com/eq-solutions/eq-shell/pull/1306).
 - [ ] **Same unreachable-file-size-limit pattern found in ~8 more upload paths suite-wide** (licence photos, OCR, worker invites, asset certs, admin document versions) — full file:line list handed off as a background task; Royce already started it running in a separate session. _(added 2026-08-12)_
 
 ---
@@ -641,11 +586,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [ ] **2 items need Royce's call, not a code fix** — `claude/service-canonical-identity-phase3-4` (eq-service): re-keys shell-auth JWT + remaps 5 SKS users' FK refs, explicitly marked "DO NOT DEPLOY without Royce's go" in its own commit, never landed — still wanted or shelved? `worktree-wf_79f7a4de-c56-4` (eq-intake): the quality-guardian engine is live but no admin UI in eq-service ever surfaced its output — still wanted? _(added 2026-08-08)_
 - [ ] **5 open Dependabot PRs on eq-service** never reviewed (vitejs/plugin-react, sentry/nextjs, react-dom, eslint-config-next, @eq-solutions packages) — surfaced as "KEEP" by the branch audit since they're genuinely unmerged, not stale. _(added 2026-08-08)_
 - [ ] **Structural risk, not a branch problem**: this session hit the shared-non-worktree-root collision the eq-field entry below (2026-08-08) already flagged — two concurrent sessions both doing git work directly in `C:\Projects\eq-shell` (not a worktree) at the same time. Caught before any damage. A second instance hit `eq-context` itself mid-close (this file, twice) — see `eq-context-shared-checkout-contention` memory; fixed by switching to an isolated worktree + direct `push origin HEAD:main` for this close. _(added 2026-08-08)_
-
----
-
-## eq-roles + eq-field + eq-shell: security-groups export → Field/Shell permission-pipeline fix, 6 PRs merged + live (2026-08-08)
-- [ ] **No live click-through yet** on the Shell↔Field permission changes — needs a real signed-in session, off-limits to this environment. `FIELD_PERMS_DRIFT_PAT` was added 2026-08-12 (initially to the wrong repo, eq-field; caught and corrected to eq-shell) and eq-shell [PR #1308](https://github.com/eq-solutions/eq-shell/pull/1308) confirmed the real drift check now passes with it in place — that half is done. Royce has exact test steps: (1) Access Control → revoke/grant a permission → confirm it reaches Field without a fresh login (the actual Phase 0 fix); (2) Custom Groups → new "Field permissions" section → toggle one → confirm it applies in Field. Neither run yet. _(added 2026-08-08, updated 2026-08-12)_
 
 ---
 
@@ -907,12 +847,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 **Deferred:**
 - [ ] **Visual check not done** — `LabourHireRates.tsx` and `WorkerHome.tsx` are both behind real auth; couldn't click through myself. A local Browser-tool CSS-swatch comparison also failed (file:// navigate timed out), so verification rests on `@eq-design-tokens`'s own hex definitions, not a live render. Two of the eight swaps aren't exact-hex matches (`var(--eq-grey)` for `#5F5E5A`, and the three status tokens for the WorkerHome tile accents) — worth a glance to confirm nothing looks off. _(added 2026-08-03)_
-
-## eq-shell: comms job table's JobRow extraction closes out react-hooks/refs — PR #1202 (2026-08-03)
-*Fixed the 1 instance deliberately deferred from the second pass — extracted the inline `.map()` row renderer into a real named `JobRow` component. Closes all 28 `react-hooks/refs` errors across the whole repo.*
-
-**Deferred:**
-- [ ] **Live click-through not done** — the comms job table's inline editing (click-to-edit, Enter/Tab save-and-move, Esc cancel, cross-row keyboard nav) needs a real click-through on the NSW Comms board before trusting the extraction blind. Content moved verbatim and the shared-state/keyboard-nav logic was reasoned through carefully, but a structural change like this deserves a real look. Needs a real authenticated session, off-limits for me to do myself. _(added 2026-08-03)_
 
 ## eq-cards: workers can now self-report their trade/employer, and a new platform-admin console gives Royce a live view of the whole network (2026-08-02)
 *Two features, one session: closing the "who's actually using Cards" gap. First let workers tell Cards their trade and who they work through (licence data alone only reveals trade for the regulated minority). Then, since Royce kept asking "can I see this without writing SQL by hand," built him an actual screen for it.*
@@ -1331,15 +1265,6 @@ Royce asked four architecture questions about the Cards→tenant consent model (
 
 ---
 
-## eq-field: Labour Hire archive + "would rehire" rating, ported from SKS (2026-07-28)
-*Royce asked to build EQ Field's own version of a feature SKS just shipped (v3.10.104): archiving a Labour Hire worker straight from the roster grid instead of the People page, with an optional 1-5 star "would rehire" rating. Verified EQ Field's own database first rather than assuming it matched SKS — EQ Field's people data is a shared view with database-side rules behind it, not a plain table like SKS, so the database side needed adapting, not copying.*
-
-
-**Deferred:**
-- [ ] **No live click-through was possible this session** — the local preview needs credentials this session doesn't have access to. Verified instead via automated tests, a code check, and the exact same checks GitHub runs (all passed), plus a live preview link — but nobody has actually clicked through the real feature yet. Worth a quick real check next time you're in the app. _(added 2026-07-28)_
-
----
-
 ## eq-roles/access-model audit + release tagging shipped across eq-field/eq-shell/eq-solves-service (2026-07-27)
 
 - [ ] **`service.create`/`service.close` PermKey split** — real gap (one key gates different behaviour in Shell vs. EQ Service's ~520-usage `canWrite()`), explicitly parked: Phase 3 auth-touching work stays out of the SKS cutover window (parallel-run proving period still at 0 consecutive clean weeks as of this session). Revisit post-cutover. _(added 2026-07-27)_
@@ -1353,15 +1278,6 @@ Royce asked four architecture questions about the Cards→tenant consent model (
 
 **Deferred:**
 - [ ] **SEC-9 rotation runbook** — no runbook exists yet for rotating the jvkn (eq-canonical) service_role key exposed 2026-07-12 in a chat transcript; offered to draft one (docs only, no keys touched) but session closed before Royce answered. _(added 2026-07-28)_
-
----
-
-## eq-shell Staff table: reorderable columns + compact Status/Contact cells (2026-07-27)
-*Royce asked to simplify the Staff table, whether columns could be reordered, and for any smart ideas to make it "simple but powerful" — with the instruction that whatever's decided should land in the shared component library (eq-ui), not just Shell. Checked the real table first: show/hide columns and CSV export already existed, reorder didn't. Recommended against a natural-language "ask the table a question" AI feature — the existing filters already answer that need — in favour of two concrete, scoped wins Royce picked from a shortlist.*
-
-
-**Deferred:**
-- [ ] **No live click-through yet** — the blocker ("once merged and live") has been true for 2+ weeks now; still nobody's confirmed the reorderable-columns/compact-cells changes look right live. Worth an actual look. _(added 2026-07-27, unblocked 2026-08-13)_
 
 ---
 
@@ -1387,12 +1303,6 @@ Royce asked four architecture questions about the Cards→tenant consent model (
 - [ ] **Fix sign-in logging at the source — real, but bigger and more sensitive than "simple," needs Royce's explicit go-ahead first.** It writes a fresh record every time the app re-checks you're signed in (reopening a tab, switching back to it, a reload) — real timestamps pulled from Royce's own login history show this firing anywhere from 26 seconds to 23 minutes apart, not on any fixed clock (an earlier note here claiming "every ~14 minutes" was wrong — that figure came from an unrelated eq-shell bug, not from anything measured against Field's own data, and has been corrected). Rolling repeat checks into one row would shrink the table at the source instead of just hiding it in the view. Steelmanned before touching anything: this changes what a live, load-bearing security control (`verify-pin.js`, every SKS sign-in) actually writes, not just a display filter — a genuinely different risk class from the rest of this session's work, and this repo's own rules require explicit sign-off before an auth-adjacent change like this ships. Not scoped or built — ended on a question back to Royce (scope it now, or leave parked) that hadn't been answered when this session closed. _(added 2026-07-27)_
 - [ ] **A weekly summary of audit activity in the existing Friday digest email** — "3 people removed, 5 PIN resets, 1 tender archived" — so Royce doesn't need to open the log cold to know if anything happened. _(added 2026-07-27)_
 - [ ] **Proactive alert on the highest-stakes actions** (a permanent delete, a bulk PIN reset) — push a notification the moment it happens rather than waiting for someone to think to check. _(added 2026-07-27)_
-
----
-
-## eq-shell: quick-edit Staff list — Supervisor/Roster toggles + inline fields, no more open-record-to-flip-one-checkbox (2026-07-27)
-
-- [ ] **Live click-through as a lower-permission user (employee/apprentice/labour-hire/subcontractor) still not done** — verified instead by reading the code directly: those roles all lack `field.dispatch`, and without it the new checkboxes render natively `disabled` and the inline text/select cells render as plain unclickable text with no edit affordance at all (not just a disabled button) — confirmed in both `StaffPage.tsx` and the shared roles package. The write endpoint (`entity-patch.ts`) enforces the same permission server-side regardless of what the UI shows. Needs Royce to actually sign in as one of those roles to eyeball it, since Claude doesn't hold a lower-permission test login. _(added 2026-07-27)_
 
 ---
 
@@ -1721,13 +1631,6 @@ changelog and session logs are for.
 *Third angle on the same "could we take a 1,500-person customer" question. Nothing to do with connections or screen rendering this time — this is about the app asking the database for a list and quietly getting back only the first 1,000 items, with no error and no warning. The screen looks completely normal; people are just missing. On timesheets that means missing pay.*
 
 - [ ] **The real scaling answer is still ahead and needs your decision** — see the crew-scoping entry below. _(added 2026-07-22)_
-
----
-
-## eq-field: who does a supervisor actually see? — built, live, then loosened on your feedback (2026-07-22)
-*The big lever for scale isn't fetching faster, it's fetching less: a supervisor only needs their own crew, not all 1,500 people. That turns a ~10,500-row week into about 200 — one quick request instead of eighty. Royce's steer: "only their crew, but able to filter by predefined teams / search / the usual filtering features."*
-
-- [ ] **Couldn't get eyes on it working in a real browser this session** — the testing tool kept timing out for reasons unrelated to the change, so it was verified a different way (driving the actual running code directly) instead of a live click-through. Worth a real look next time you're in Timesheets or Roster with supervision unlocked. _(added 2026-07-22)_
 
 ---
 
@@ -2586,25 +2489,6 @@ Net: on a deep-linked `?tab=leave` view — exactly how Core embeds Field — `l
 - Confirmed a benign gap from this session: 0165 wasn't registered in `check-tenant-drift.mjs`'s `KNOWN_LEGACY_ANON` allowlist convention when it first landed — a separate session (PR #685) caught and fixed it, live-verifying it was never a real anon exposure (RLS-on with tenant_id policies on both planes) before allowlisting. Worth registering the allowlist entry in the SAME PR as any new `security_invoker` view going forward, not after the drift gate complains.
 ---
 
-## ⏩ Session close — 2026-07-06 (eq-field + eq-shell) — canonical link redesigned + shipped, job_title added tenant-wide, root-caused Liam Holmgreen's stuck supervisor status, Batch Fill filters
-
-*Continuation of an earlier compacted eq-field audit session. Royce pushed back on the canonical-link button ("manual buttons feel clunky in time") — redesigned to auto-link-on-save, then found and fixed a real persistence bug in what had just shipped (button produced a success toast but the write never reached the DB). Royce then flagged Liam Holmgreen was still showing as a supervisor despite "we fixed this" — investigation surfaced three separate, unconnected "supervisor" signals across eq-field/eq-shell and a live mobile-Contacts bug that was silently hiding people with an unrecognized Type value. Session closed with a requested Batch Fill usability improvement.*
-
-**Shipped:**
-
-**Decided:**
-- Royce: auto-link-on-save, not a manual button — the original objection (duplicate worker stubs) no longer holds now the email→phone dedup is proven.
-- Royce: fix Liam's DB record directly now (is_supervisor + employment_type), confirmed via AskUserQuestion.
-- Not yet decided: how to close the systemic gap — no live UI can set `is_supervisor` for SKS at all (Field blocked it in 2026-06 "managed in Core"; Core never built a replacement). Two options on the table: re-open Field's own already-working Supervision CRUD for SKS (cheap, no new build), or build a real Shell-side surface. Royce was mid-conversation on this when the session closed — **needs his call next session**.
-
-**Deferred:**
-- [ ] **Live click-through of v3.5.253 (mobile Other bucket) and v3.5.254 (Batch Fill Group/Team filters)** — both deployed and verified via Netlify (commit match, no errors, secret scan clean), but not exercised through a real authenticated SKS session — eq-field's Shell-JWT handoff auth isn't reproducible in a local dev server. _(added 2026-07-06)_
-
-**Notes:**
-- Repeated pattern this session, worth remembering: a shipped feature that produces a success toast is not proof the write reached the DB — the canonical-link button's v3.5.248 persistence bug and the `job_title` whitelist gap were both caught by explicitly checking the table, not by trusting the UI.
-- The "three unconnected supervisor signals" finding generalizes: anywhere a word/concept ("supervisor", "role", "type") appears in more than one of eq-field/eq-shell's UIs, check whether they're actually reading/writing the same column before assuming a fix in one place propagates to the other.
----
-
 ## ⏩ Session close — 2026-07-06 (eq-shell) — command palette + skeleton loading + optimistic archive shipped, live; unrelated drift fixed same session
 
 *Royce asked for creative, industry-leading nav/login/UX ideas, then a steelman, then to scope and build the highest-value "Overall UX" items ("everything must get completed"). Session first surveyed the real nav/iframe-auth architecture (found pre-warm + persistent iframes + reactive token refresh already solved most of the perceived login-speed problem — no build needed there) before scoping a command palette + two smaller UX fixes. Build hit a genuinely unrelated blocked-merge (a pre-existing security-drift gate failure), fixed via the governed One Pipe migration path rather than an admin bypass, then both PRs merged and deployed live same session.*
@@ -2772,7 +2656,6 @@ Net: on a deep-linked `?tab=leave` view — exactly how Core embeds Field — `l
 **Deferred:**
 - [ ] **Test the Add-tenant → data-plane Provision button flow fresh** — this session verified the *self-serve invite-link* path end-to-end; the *admin manually creates a tenant, then clicks Provision* path (same PR #627 fix) was never independently walked start-to-finish on a brand-new tenant. _(added 2026-07-04)_
 - [ ] **Leave submit-path** — never load-tested a real leave submission this session (real-email side effect); still open ahead of Royce's stress-testing week. _(added 2026-07-04)_
-- [x] ~~**QR/join-code worker flow** — `JoinContextNotifier`'s keepalive fix (PR #120) was applied by exact code-pattern match to the provision-context bug, not independently reproduced/verified live. Worth a live pass before the 15th.~~ **Moot 2026-08-15** — the flow it guarded (`/join`) turned out to have been unreachable since 2026-06-10, and `JoinContextNotifier` was deleted with it in eq-cards PR #248. Never needed the live pass. _(added 2026-07-04, closed 2026-08-15)_
 - [ ] **Set a code-freeze date before 15 July** — not yet decided. _(added 2026-07-04, needs your call)_
 - [ ] **206 Supabase security advisories on ehow** — Royce's call from earlier this session: keep for a dedicated session, not folded into this one. _(added 2026-07-03, needs your call)_
 

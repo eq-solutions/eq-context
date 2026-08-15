@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Verify Queue
 owner: Royce Milmlow
-last_updated: 2026-08-14
+last_updated: 2026-08-15
 scope: Items whose only remaining blocker is your own live sign-in/click-through — the underlying work is already built, merged, and (unless the line itself says otherwise) live. Moved here from eq/pending.md by scripts/rotate_pending.py once a session's real build work is fully done, so a stale "click through to confirm" line no longer pins a whole finished write-up in the live pending doc.
 read_priority: high
 status: live
@@ -301,5 +301,65 @@ a bug rather than just deleting the line.
 **From:** eq-field: Calendar stopped showing approved leave since the July 10 roster-overlay migration — found + fixed (v3.5.473, PR #674, merged 2026-08-10)
 
 - [ ] **Live click-through not done** — app can't boot in this sandbox (no network to the canonical config service, even for the demo tenant); verified instead via a standalone harness running the actual edited code plus the full existing test suite (26/26) and eslint. Royce to confirm approved leave now shows on the Calendar page on a real tenant. _(added 2026-08-10)_
+
+---
+
+**From:** eq-shell: EQ Ops archive view gets full search/filter, quotes auto-archive after 7 days invoiced (2026-08-12)
+
+- [ ] **Live click-through not done** — this sandbox has no network path to the tenant-config service, so the Archived-tab search/filter/bulk-select hasn't been visually confirmed in a real browser session. Built against the exact same Table component already proven live elsewhere in the app; build + typecheck clean on both PRs. _(added 2026-08-12)_
+
+---
+
+**From:** eq-shell: EQ Ops archive view gets full search/filter, quotes auto-archive after 7 days invoiced (2026-08-12)
+
+- [ ] **Live click-through not done** — this sandbox has no network path to the tenant-config service, so the Archived-tab search/filter/bulk-select hasn't been visually confirmed in a real browser session. Built against the exact same Table component already proven live elsewhere in the app; build + typecheck clean on both PRs. _(added 2026-08-12)_
+
+---
+
+**From:** eq-field + suite-wide: permission audit (131 rows, Excel), 2 live gaps flagged, next-sprint fix built + shipped as PR #683 (2026-08-12)
+
+- [ ] **Live click-test still not done anywhere across the whole audit thread this section started** (eq-shell, eq-field, eq-solves-service, eq-cards — all fixes merged/applied, `task_fd65aa59`/`task_de667109`/`task_9f6fca23` all resolved. See the 2026-08-13 entry near the top of this file for the full closed-out scope). Every fix across all four apps was verified against live data/CI/direct DB checks, never a real signed-in click-through session. _(added 2026-08-12, updated 2026-08-13)_
+
+---
+
+**From:** eq-roles + eq-field + eq-shell: security-groups export → Field/Shell permission-pipeline fix, 6 PRs merged + live (2026-08-08)
+
+- [ ] **No live click-through yet** on the Shell↔Field permission changes — needs a real signed-in session, off-limits to this environment. `FIELD_PERMS_DRIFT_PAT` was added 2026-08-12 (initially to the wrong repo, eq-field; caught and corrected to eq-shell) and eq-shell [PR #1308](https://github.com/eq-solutions/eq-shell/pull/1308) confirmed the real drift check now passes with it in place — that half is done. Royce has exact test steps: (1) Access Control → revoke/grant a permission → confirm it reaches Field without a fresh login (the actual Phase 0 fix); (2) Custom Groups → new "Field permissions" section → toggle one → confirm it applies in Field. Neither run yet. _(added 2026-08-08, updated 2026-08-12)_
+
+---
+
+**From:** eq-shell: comms job table's JobRow extraction closes out react-hooks/refs — PR #1202 (2026-08-03)
+
+- [ ] **Live click-through not done** — the comms job table's inline editing (click-to-edit, Enter/Tab save-and-move, Esc cancel, cross-row keyboard nav) needs a real click-through on the NSW Comms board before trusting the extraction blind. Content moved verbatim and the shared-state/keyboard-nav logic was reasoned through carefully, but a structural change like this deserves a real look. Needs a real authenticated session, off-limits for me to do myself. _(added 2026-08-03)_
+
+---
+
+**From:** eq-field: Labour Hire archive + "would rehire" rating, ported from SKS (2026-07-28)
+
+- [ ] **No live click-through was possible this session** — the local preview needs credentials this session doesn't have access to. Verified instead via automated tests, a code check, and the exact same checks GitHub runs (all passed), plus a live preview link — but nobody has actually clicked through the real feature yet. Worth a quick real check next time you're in the app. _(added 2026-07-28)_
+
+---
+
+**From:** eq-shell Staff table: reorderable columns + compact Status/Contact cells (2026-07-27)
+
+- [ ] **No live click-through yet** — the blocker ("once merged and live") has been true for 2+ weeks now; still nobody's confirmed the reorderable-columns/compact-cells changes look right live. Worth an actual look. _(added 2026-07-27, unblocked 2026-08-13)_
+
+---
+
+**From:** eq-shell: quick-edit Staff list — Supervisor/Roster toggles + inline fields, no more open-record-to-flip-one-checkbox (2026-07-27)
+
+- [ ] **Live click-through as a lower-permission user (employee/apprentice/labour-hire/subcontractor) still not done** — verified instead by reading the code directly: those roles all lack `field.dispatch`, and without it the new checkboxes render natively `disabled` and the inline text/select cells render as plain unclickable text with no edit affordance at all (not just a disabled button) — confirmed in both `StaffPage.tsx` and the shared roles package. The write endpoint (`entity-patch.ts`) enforces the same permission server-side regardless of what the UI shows. Needs Royce to actually sign in as one of those roles to eyeball it, since Claude doesn't hold a lower-permission test login. _(added 2026-07-27)_
+
+---
+
+**From:** eq-field: who does a supervisor actually see? — built, live, then loosened on your feedback (2026-07-22)
+
+- [ ] **Couldn't get eyes on it working in a real browser this session** — the testing tool kept timing out for reasons unrelated to the change, so it was verified a different way (driving the actual running code directly) instead of a live click-through. Worth a real look next time you're in Timesheets or Roster with supervision unlocked. _(added 2026-07-22)_
+
+---
+
+**From:** ⏩ Session close — 2026-07-06 (eq-field + eq-shell) — canonical link redesigned + shipped, job_title added tenant-wide, root-caused Liam Holmgreen's stuck supervisor status, Batch Fill filters
+
+- [ ] **Live click-through of v3.5.253 (mobile Other bucket) and v3.5.254 (Batch Fill Group/Team filters)** — both deployed and verified via Netlify (commit match, no errors, secret scan clean), but not exercised through a real authenticated SKS session — eq-field's Shell-JWT handoff auth isn't reproducible in a local dev server. _(added 2026-07-06)_
 
 ---
