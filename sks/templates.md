@@ -1,7 +1,7 @@
 ---
 title: SKS — Document Templates
 owner: Royce Milmlow
-last_updated: 2026-07-16
+last_updated: 2026-08-15
 scope: Standard templates and document formats for SKS work
 read_priority: reference
 status: live
@@ -24,7 +24,7 @@ check here first — don't reinvent.
 
 **Format:** A4 .docx, built with docx-js (Node)
 **Font:** Roboto for headings, Calibri for body (per `rules/brand-sks.md` §3 — supersedes the prior "Arial throughout" policy; see `ops/decisions.md` 2026-05-21 for rationale)
-**Brand colour:** SKS Navy #1F335C
+**Brand colour:** SKS Navy #203060
 **Logo:** White+Text variant from R2 (`SKS_Logo_White_Text_Clean.png`)
 **Footer:** SKS Technologies Pty Ltd | ABN 51 168 906 956 | 27/10 Gladstone Rd, Castle Hill NSW 2154 | (02) 9659 9199 | Page N
 

@@ -1,12 +1,20 @@
 ---
 title: EQ Cards — Canonical migration plan
 owner: Royce Milmlow
-last_updated: 2026-05-20
+last_updated: 2026-08-15
+kind: record
 scope: Plan for retiring EQ Cards's standalone Supabase project and moving its data + auth onto eq-canonical, with Cards becoming both a mobile intake door and a wallet viewer against the canonical spine. Spans 5 work units across eq-intake (schema + spine), eq-canonical (migration + RLS), eq-cards (Flutter app), eq-shell (SSO + iframe wiring), and Netlify (custom domain).
-read_priority: critical
-status: live
+read_priority: reference
+status: archived
 ---
 
+> **EXECUTED — this is a record, not a plan.** Verified 2026-08-15: the
+> standalone Cards Supabase project (`hshvnjzczdytfiklhojz`) named throughout
+> this document **no longer exists** in the org, which is the migration's own
+> completion test. Cards is live on canonical and taking real self-signup and
+> claim traffic. Kept in place rather than archived because 6 other documents
+> link here; the SSO/iframe framing is superseded by
+> `eq/cards/worker-platform-direction-2026-06-15.md` and `ops/decisions.md`.
 # EQ Cards — Canonical migration plan
 
 This is the §18 close-out from `C:\Projects\eq-cards\ARCHITECTURE.md`.
@@ -391,8 +399,8 @@ After cutover lands:
 
 - [eq/identity/IDENTITY-MODEL.md](../../identity/IDENTITY-MODEL.md) — authoritative cross-product identity/auth spec; Cards is the first external consumer of the Supabase JWT issued by mint-supabase-jwt (§6.2 + §7.2)
 - [eq/identity/PHASE-1F-PLAN.md](../../identity/PHASE-1F-PLAN.md) — eq-shell implementation plan for the identity model; **blocks Unit 4** of this plan
-- [eq-app-build-principle](../../eq-app-build-principle.md) — canonical-first principle
-- [supabase-architecture-decision](../../supabase-architecture-decision.md) — one Supabase per tenant
+- `eq-app-build-principle` — canonical-first principle. **Never a file in this repo** (link corrected 2026-08-15) — a Claude-memory reference written with a `.md` suffix and turned into a markdown link by habit; see the fuller note in `eq/canonical-readiness/plan.md`'s Related section.
+- `supabase-architecture-decision` — one Supabase per tenant. Same correction — a memory citation, not a file.
 - `C:\Projects\eq-cards\ARCHITECTURE.md` §18 — the original cross-module data architecture spec
 - `C:\Projects\eq-cards\STATUS.md` — Cards's "pause-and-polish" framing being overridden
 - `sessions/2026-05-19.md` — original §18 reconciliation flagging

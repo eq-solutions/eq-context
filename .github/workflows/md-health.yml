@@ -18,6 +18,63 @@ jobs:
         with:
           fetch-depth: 0
 
+      # What a session pays to start. Separate step so its failure is legible
+      # on its own rather than buried in the violation counter below: this is a
+      # budget, not a style rule, and the fix is different (trim or de-mandate
+      # the file, don't reformat it).
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Session-start budget
+        run: python scripts/session_start_budget.py
+
+      - name: Session-start budget — self-test
+        run: python scripts/test_session_start_budget.py
+
+      # Ceilings on the shapes that actually re-bloat. Does not prune; refuses
+      # regrowth. Cleanup stays a deliberate choice, but silting up does not.
+      - name: Prune ratchet
+        run: python scripts/prune_ratchet.py
+
+      - name: Prune ratchet — self-test
+        run: python scripts/test_prune_ratchet.py
+
+      # The other half of pruning. prune_ratchet stops the substrate GROWING;
+      # this stops it quietly going WRONG. Only 'state' files are clocked —
+      # records and generated files are classified out, which is what keeps the
+      # review list at ~15 instead of the 82 a flat status:live check would show.
+      - name: Review clock
+        run: python scripts/review_clock.py
+
+      - name: Review clock — self-test
+        run: python scripts/test_review_clock.py
+
+      # A duplicate changelog is allowed; a SILENT one is not. Catches a new
+      # eq-service.md/eq-solves-service.md before it costs a second PR #727.
+      - name: Changelog duplicates
+        run: python scripts/changelog_duplicates.py
+
+      - name: Changelog duplicates — self-test
+        run: python scripts/test_changelog_duplicates.py
+
+      # Ratchet at 0, no headroom -- a broken link has no honest reason to
+      # exist (unlike prune_ratchet's residue count, which gets slack because
+      # normal sessions legitimately add follow-up items).
+      - name: Link check
+        run: python scripts/link_check.py
+
+      - name: Link check — self-test
+        run: python scripts/test_link_check.py
+
+      # The one genuinely portable check extracted from md-health-daily.py,
+      # which itself never ran anywhere -- see that file's own docstring.
+      - name: Duplicate sessions
+        run: python scripts/duplicate_sessions.py
+
+      - name: Duplicate sessions — self-test
+        run: python scripts/test_duplicate_sessions.py
+
       - name: Run MD health checks
         run: |
           set -euo pipefail

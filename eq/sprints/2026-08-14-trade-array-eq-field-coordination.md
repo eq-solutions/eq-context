@@ -4,7 +4,7 @@ owner: Royce Milmlow
 last_updated: 2026-08-14
 scope: Scoping only — not started. Converts app_data.staff.trade from text to a real text[] array so a worker can be tagged with more than one trade at the database level, matching the multi-select already shipped in eq-shell (PR #1346, comma-separated text as an interim). Requires a paired eq-field migration because trade is read/written directly by eq-field's own field_people compatibility views and triggers, not just by eq-shell.
 read_priority: standard
-status: scoped, not started
+status: draft
 duration_estimate: Unscoped in days — needs its own eq-field session to read live trigger definitions and eq-field's own Trade UI before estimating.
 ---
 

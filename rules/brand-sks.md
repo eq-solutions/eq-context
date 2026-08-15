@@ -1,7 +1,7 @@
 ---
 title: SKS Brand — Rules & Assets
 owner: Royce Milmlow
-last_updated: 2026-05-30
+last_updated: 2026-08-15
 scope: SKS Technologies brand specification — colours, fonts, logos, usage rules
 read_priority: critical
 status: live
@@ -42,7 +42,7 @@ Base URL: `https://pub-97a4f025d993484e91b8f15a8c73084d.r2.dev/`
 
 ### Logo backgrounds
 
-- White logo variants → dark backgrounds (e.g. Dark Blue `#1F335C`).
+- White logo variants → dark backgrounds (e.g. Dark Blue `#203060`).
 - Colour logo variants → white or light backgrounds (e.g. Light Blue `#F0F7F7`).
 - On busy backgrounds (e.g. photography), use the **white backing frame** pattern from the Style Guide (logo in a white box, placed in top-left/right or bottom-left/right corner of the document). Frame the primary logo rather than dropping to the secondary.
 
@@ -63,9 +63,53 @@ Base URL: `https://pub-97a4f025d993484e91b8f15a8c73084d.r2.dev/`
 
 | Name | Hex | RGB | CMYK | PMS |
 |---|---|---|---|---|
-| Dark Blue | `#1F335C` | 31, 51, 92 | 98, 85, 37, 28 | PMS 2955 |
+| Dark Blue | `#203060` | 32, 48, 96 | ⚠ needs print source | ⚠ needs print source |
 | White | `#FFFFFF` | 255, 255, 255 | — | — |
 | Purple (accent) | `#7C77B9` | 124, 119, 185 | 56, 55, 0, 0 | PMS 272C |
+
+> **Dark Blue corrected 2026-08-15 — screen values only.** The hex was
+> `#1F335C` here and had drifted; the live canonical value is `#203060`,
+> re-verified this date by direct query of
+> `organisations.branding.palette.primary` on eq-canonical (`jvkn…`). The code
+> was fixed repo-wide weeks earlier (eq-shell PR #1173, eq-field email
+> templates) — **this spec, the thing that tells you what to build, was not.**
+> That is failure F14 exactly, and it is why this file now carries a review
+> clock.
+>
+> Hex and RGB are safe: RGB is a mechanical conversion of the hex. **CMYK
+> `98, 85, 37, 28` and PMS 2955 are not.** They were specified against
+> `#1F335C` and cannot be recalculated from a new hex — press profile and paper
+> stock decide them. They are marked ⚠ rather than silently carried over
+> (which would pair print values with a colour they were never measured for) or
+> invented. **Get them from the SKS brand/print source before any printed
+> collateral goes out.** Screen output is unaffected.
+>
+> Two other values in this file were derived from the old hex and have the same
+> problem: Slate Blue `#34486C` (90% tint) and Dusty Blue `#566686` (75% tint).
+> Recomputed from `#203060` they would be ≈`#364670` and ≈`#586488`, but they
+> are left as-is pending the same source — a guessed tint is still a guess.
+> Charcoal `#373D58` and Onyx `#3E3E48` are labelled as shades of Dark Blue but
+> are not arithmetically derivable from either hex, so they appear to be
+> independent brand colours and are untouched.
+>
+> **Unresolved — the purple. Royce's call, deliberately not made here.**
+> Canonical carries `palette.deep = 8070C0` for this tenant while this file
+> documents the accent purple as `#7C77B9`. Two readings, and the evidence
+> genuinely splits:
+>
+> - *It is drift.* The key names are EQ's schema, and for the EQ tenant `deep`
+>   (`2986B4`) is a darker shade of `primary` (`3DA8D8`) — same hue. For SKS,
+>   `deep` (`8070C0`) is **purple**, not a darker navy, so structurally it is
+>   filling the accent-colour slot. On that reading `8070C0` is live and
+>   `#7C77B9` is stale, same story as Dark Blue above.
+> - *It is not.* The 2026-07-30 correction — the one that verified `primary`
+>   against live and caught the `#1F335C` drift — states the purple as
+>   `#7C77B9` in the same breath. A human looked at both and changed only one.
+>   `#7C77B9` is also paired with PMS 272C, a real print spec.
+>
+> Not changed, because a wrong purple ships into customer-facing collateral and
+> the cost of guessing exceeds the cost of asking. Resolve it by checking the
+> SKS brand source, not by inference from key names.
 
 **Usage:** Dark Blue and White are the foundation, alternating for contrast. Purple is an accent only — interactive elements (buttons, CTAs), not a primary fill.
 
@@ -150,10 +194,10 @@ For Word / PDF customer-facing outputs:
 | Page size | US Letter (12240 × 15840 DXA) or A4 |
 | Margins | 1 inch / 1440 DXA all sides |
 | Header logo | Top-right, Colour Arrows variant, ~160–220 px wide |
-| Title | Roboto Black, Dark Blue `#1F335C`, 18 pt |
+| Title | Roboto Black, Dark Blue `#203060`, 18 pt |
 | Subtitle / strap | Roboto Bold, Slate Blue `#34486C`, 11 pt, with 1.5pt Purple `#7C77B9` underline rule |
-| Body | Calibri Regular (docx) or Roboto Regular (PDF), Dark Blue `#1F335C`, 11 pt |
-| Table headers | Dark Blue `#1F335C` fill, White text, bold |
+| Body | Calibri Regular (docx) or Roboto Regular (PDF), Dark Blue `#203060`, 11 pt |
+| Table headers | Dark Blue `#203060` fill, White text, bold |
 | Table body rows | Alternating White and Light Blue `#F0F7F7` |
 | Table borders | `#CCCCCC` thin |
 | Footer | Centred, Slate Blue `#34486C`, 8 pt, with Dark Blue top rule |

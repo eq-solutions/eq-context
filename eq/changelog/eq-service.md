@@ -2,12 +2,39 @@
 title: EQ Service — Changelog
 owner: Royce Milmlow
 last_updated: 2026-08-14
-scope: EQ Service append-only history. NOTE — duplicates eq/changelog/service.md, which stalls mid-deploy at 2026-06-09; this file is the one actually kept current. Consolidate, flagged as a follow-up.
+scope: EQ Service append-only history. UNRECONCILED PAIR — see the warning below before citing anything here as complete.
 read_priority: reference
 status: live
 ---
 
 # EQ Service — Changelog
+
+> **⚠ This file has a live twin: `eq/changelog/eq-solves-service.md`. Neither is
+> complete on its own.** Both were appended on 2026-08-14 by different sessions,
+> they carry non-overlapping PRs, and neither references the other. Read both.
+>
+> The `scope:` line above previously warned about a *different* twin —
+> `eq/changelog/service.md`, "which stalls mid-deploy at 2026-06-09; this file is
+> the one actually kept current." That pair was resolved 2026-07-19 and
+> `service.md` now carries a supersede banner, so the warning pointed at a closed
+> problem while the open one went unnamed. `eq/README.md` compounds it by
+> declaring "all 4 duplicate pairs resolved 2026-07-19" and listing
+> `eq-solves-service.md` among the "newer single-copy logs" — it is not one.
+>
+> **What this cost:** PR #727 was recorded here as "open, holds for Royce's merge
+> approval" for a day after it merged, while the twin recorded the merge
+> correctly. Corrected 2026-08-15 against the GitHub API.
+>
+> **Not consolidated here deliberately.** Choosing which of two same-day product
+> histories survives, and interleaving them, is a judgement call about the
+> record itself rather than a cleanup — flagged for Royce (`sessions/2026-08-11.md`
+> reached the same conclusion and also declined to "silently pick a side").
+> Note for whoever does it: `scripts/index_drift.py` cannot help. Its orphan test
+> is `if base not in readme_text`, so `"service.md"` matches as a substring of
+> both `eq-service.md` and `eq-solves-service.md` — the same collision hides
+> `cards.md`, `field.md` and `shell.md`. And the naming is inverted for Field:
+> `field.md` is the 356 KB canonical log, `eq-field.md` is the retired twin. A
+> pattern rule applied blindly deletes the largest active changelog in the repo.
 
 ## 2026-08-14 (PRs #729/#730 MERGED + deployed live — nav simplification: embedded nav parity, Admin sidebar relabel)
 - **PR #729 MERGED, live.** The Shell-embedded nav bar (`app/(app)/layout.tsx`) was a hand-maintained second copy of the standalone sidebar's nav list and had silently fallen behind — missing Today, Insight, Search, Settings. Added all three (Insight gated, matching the standalone sidebar's own `role !== 'employee'` check; Today/Search/Settings unconditional, matching standalone). Part of a suite-wide nav-simplification pass — see `eq-context/eq/sprints/2026-08-14-nav-simplification.md`.
@@ -18,7 +45,9 @@ status: live
 
 ## 2026-08-14 (session-expiry Server Action crash fixed suite-wide, EQ-SOLVES-SERVICE-D)
 - **Root-caused Sentry `EQ-SOLVES-SERVICE-D`.** `proxy.ts`'s session guard redirects a mid-flight Server Action POST to `/auth/signin` when the session expires mid-tab; the client runtime surfaces that as a generic "unexpected response" crash instead of a friendly message. A concurrent session was independently fixing the same issue live — caught it mid-edit and waited rather than collide, then discovered the real scope was ~160 unguarded call sites across 67 files, not the ~15 originally estimated. That session's maintenance-module-only fix shipped as [#725](https://github.com/eq-solutions/eq-service/pull/725), merged.
-- **Extended the fix to the remaining 58 files (~121 call sites) app-wide** — auth, portal, customers, sites, defects, job-plans, contract-scope, variations, pm-calendar, onboarding, assets, testing (ACB/NSX/RCD), commercials, admin. Extended the shared `callAction()` helper with an optional custom-fallback factory for ~15 call sites that return `{ok, error}` instead of `{success, error}`. Fixed 3 real crash-risk sites (result discarded but still an unguarded `await` outside `startTransition`) and 2 unrelated pre-existing ACB call sites with zero error handling at all, found along the way. `tsc --noEmit` clean, `vitest run` 434/434 passed, `next build` compiles clean (page-data collection fails only on a missing local Supabase env file — pre-existing/environmental). [#727](https://github.com/eq-solutions/eq-service/pull/727) open, holds for Royce's merge approval.
+- **Extended the fix to the remaining 58 files (~121 call sites) app-wide** — auth, portal, customers, sites, defects, job-plans, contract-scope, variations, pm-calendar, onboarding, assets, testing (ACB/NSX/RCD), commercials, admin. Extended the shared `callAction()` helper with an optional custom-fallback factory for ~15 call sites that return `{ok, error}` instead of `{success, error}`. Fixed 3 real crash-risk sites (result discarded but still an unguarded `await` outside `startTransition`) and 2 unrelated pre-existing ACB call sites with zero error handling at all, found along the way. `tsc --noEmit` clean, `vitest run` 434/434 passed, `next build` compiles clean (page-data collection fails only on a missing local Supabase env file — pre-existing/environmental). [#727](https://github.com/eq-solutions/eq-service/pull/727) **MERGED 2026-08-14T03:26:53Z** (`f7b378b`, merged directly by Royce).
+
+  _Corrected 2026-08-15._ This line read "open, holds for Royce's merge approval" for a day after the PR had already merged, so any session reading this file was told a merged PR was sitting on Royce. The merge state was verified against the GitHub API, not against the substrate. The sibling log `eq/changelog/eq-solves-service.md` recorded the merge correctly on the day — the two files are an unreconciled duplicate pair and neither references the other; see the consolidation note at the head of this file.
 
 ## 2026-08-13 (drift-guard thread's last open item closed — entity.create scoping decision recorded)
 - **PR [#719](https://github.com/eq-solutions/eq-service/pull/719) MERGED — `entity.create` scoping question resolved: supervisors keep asset-creation access.** `createAssetAction` has always used `canWrite` (manager+supervisor); canonical `entity.create` is manager-only. Asked Royce directly rather than guessing which way to reconcile — he confirmed: keep supervisors able to create assets, no narrowing. No behaviour change; recorded in the drift-guard baseline (same pattern as #714's `entity.view_pii` writeup) plus an inline comment on `createAssetAction`. Closes out every open item from the permission-enforcement-drift thread that started 2026-08-12.

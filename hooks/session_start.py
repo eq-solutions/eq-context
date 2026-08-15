@@ -62,6 +62,73 @@ def age_days(datestr):
         return None
 
 
+# --- 0. SYNC (F1, the half the freshness check cannot see) -------------------
+# digest.md's stamp is a FILE MTIME, not a sync check. A clone 34 commits behind
+# still carries a digest.md stamped today, so FRESHNESS below prints "ok" while
+# every file the session reads is stale. That is not hypothetical: on 2026-08-15
+# this gate reported "F13 (rung 1, 2x) PROMOTION DUE" off a stale clone when
+# origin/main already had F13 at rung 4 with the guard built and merged. The
+# session then spent its opening turn acting on a guard that was not overdue.
+#
+# F1's lesson is "freshness is not truth". A timestamp cannot express staleness
+# that arrives as *absence* of commits, so compare refs, not mtimes.
+def git(*args, timeout=15):
+    try:
+        r = subprocess.run(
+            ("git", "-C", ROOT) + args, capture_output=True, text=True, timeout=timeout
+        )
+        return r.stdout.strip() if r.returncode == 0 else ""
+    except Exception:
+        return ""
+
+
+# origin/main is itself only as current as the last fetch. If nothing has
+# fetched recently the ref is stale and HEAD == origin/main proves nothing, so
+# refresh it first. Same 10-minute cadence the UserPromptSubmit hook uses; fails
+# open on a network stall rather than blocking the session.
+try:
+    fh = os.path.join(ROOT, ".git", "FETCH_HEAD")
+    stale = (not os.path.exists(fh)) or (
+        (datetime.now(timezone.utc).timestamp() - os.path.getmtime(fh)) > 600
+    )
+    if stale:
+        git("fetch", "origin", "main", timeout=20)
+except Exception:
+    pass
+
+_local = git("rev-parse", "HEAD")
+_remote = git("rev-parse", "origin/main")
+if not _local or not _remote:
+    out.append(
+        "SYNC       ? cannot resolve HEAD or origin/main — verify the clone by hand.\n"
+        "           Do not assume the substrate you are reading is current."
+    )
+elif _local == _remote:
+    out.append(f"SYNC       ok — HEAD == origin/main ({_local[:7]})")
+else:
+    # Only BEHIND is staleness. Being ahead is just local work not pushed yet,
+    # which is the normal state of every feature branch — alarming on it would
+    # make this line fire in most sessions, and a guard that always fires is
+    # one people learn to scroll past. That is how F10's guard reached "rung 4
+    # on paper, rung 0 in practice".
+    _behind = int(git("rev-list", "--count", f"{_local}..{_remote}") or 0)
+    _ahead = int(git("rev-list", "--count", f"{_remote}..{_local}") or 0)
+    if _behind:
+        out.append(
+            f"SYNC       *** STOP *** clone is behind {_behind}"
+            + (f" / ahead {_ahead}" if _ahead else "")
+            + " vs origin/main.\n"
+            "           Every substrate file you read may be stale, and the checks below\n"
+            "           (FRESHNESS, NEEDS YOU, GOALS, RATCHET) are computed from those\n"
+            "           same stale files — treat all of them as unverified.\n"
+            "           A current digest.md stamp does NOT mean the clone is current.\n"
+            "           Reconcile against origin/main before trusting substrate content."
+        )
+    else:
+        out.append(
+            f"SYNC       ok — {_ahead} local commit(s) ahead of origin/main, none missing"
+        )
+
 # --- 1. FRESHNESS (F1) ------------------------------------------------------
 digest = read("digest.md")
 m = re.search(r"_(\d{4}-\d{2}-\d{2})[^\n]*UTC", digest)
@@ -80,6 +147,70 @@ if m:
         out.append(f"FRESHNESS  ok — digest.md {m.group(1)} ({a}d)")
 else:
     out.append("FRESHNESS  *** digest.md not found or unstamped — you are flying blind. ***")
+
+# --- 1b. REVIEW CLOCK (staleness of the files this gate is about to mandate) --
+# FRESHNESS above asks "is the clone current". This asks the other half: "is the
+# CONTENT current". A file can be perfectly synced and 62 days out of date, and
+# until 2026-08-15 nothing anywhere noticed — 174 files claimed status: live and
+# 82 had not been touched in a month.
+#
+# scripts/review_clock.py gates the whole repo in CI, which is rung 3: it catches
+# staleness after the damage. This is the rung-4 half. The action worth
+# intercepting is not a file aging — no write to hook — it is a SESSION TRUSTING
+# a stale file, and that happens here, at the moment the gate tells you to read
+# it. So this checks only CLAUDE.md section 1 step 4's mandated chain, not all 91
+# state files. Precision is the point: a gate that lists twenty files nobody is
+# about to read is a gate that gets skimmed, which is F10's failure mode.
+#
+# The rule is IMPORTED, not restated, for the same reason as RATCHET below.
+try:
+    sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "scripts"))
+    from review_clock import (
+        cadence_days as _cadence,
+        classify as _classify,
+        days_overdue as _overdue,
+        parse_date as _pdate,
+        parse_frontmatter as _pfm,
+        review_due as _due,
+    )
+
+    # The mandated chain is IMPORTED from session_start_budget.py, which already
+    # owns that list and carries the "keep this in step with CLAUDE.md section 1
+    # step 4" warning. Retyping it here would create a second copy to drift —
+    # and a copy that drifts SHORT goes quiet rather than loud, so nobody would
+    # find out. Every tier is checked because the tier question has not been
+    # asked yet when this runs.
+    from session_start_budget import ALWAYS as _always, TIERS as _tiers
+
+    _today = datetime.now(timezone.utc).date()
+    _mandated = list(_always) + [f for files in _tiers.values() for f in files]
+    _stale = []
+    for _rel in _mandated:
+        _text = read(_rel)
+        if not _text:
+            continue
+        _fm = _pfm(_text)
+        _kind = _classify(_rel, _fm)
+        _n = _overdue(
+            _due(_pdate(_fm.get("last_updated", "")),
+                 _cadence(_kind, _fm.get("read_priority")),
+                 _pdate(_fm.get("review_by", ""))),
+            _today,
+        )
+        if _n:
+            _stale.append((_n, _rel, _kind))
+    _stale.sort(reverse=True)
+
+    if _stale:
+        out.append(f"REVIEW     *** {len(_stale)} mandated file(s) past their review clock ***")
+        for _n, _rel, _kind in _stale:
+            out.append(f"           {_rel} — {_n}d overdue")
+        out.append("           Treat their claims as leads, not facts. This is about TRUST,")
+        out.append("           not priority — nothing here is a deadline you owe anyone.")
+    else:
+        out.append(f"REVIEW     ok — all {len(_mandated)} mandated files within their review clock")
+except Exception as exc:  # a broken clock must never silence the rest of the gate
+    out.append(f"REVIEW     ? clock unavailable ({exc}) — check by hand.")
 
 # --- 2. NEEDS YOU -----------------------------------------------------------
 nm = re.search(r"##\s*⚠?\s*Needs you[^\n]*\n(.*?)(?=\n##\s)", digest, re.S)
@@ -112,22 +243,33 @@ else:
         out.append("GOALS      set")
 
 # --- 4. RATCHET (promotions due) --------------------------------------------
-fails = read("system/failures.md")
-due = []
-for blk in re.split(r"\n\s*-\s+id:\s*", fails)[1:]:
-    fid = blk.split("\n", 1)[0].strip()
-    rec = re.search(r"recurrences:\s*(\d+)", blk)
-    rung = re.search(r"rung:\s*(\d+)", blk)
-    title = re.search(r"title:\s*(.+)", blk)
-    if rec and rung and int(rec.group(1)) >= 2 and int(rung.group(1)) < 4:
-        due.append(f"{fid} (rung {rung.group(1)}, {rec.group(1)}x) — {title.group(1)[:70] if title else ''}")
-if due:
-    out.append("RATCHET    *** PROMOTION DUE *** a guard has failed twice and must climb:")
-    for d in due:
-        out.append("           " + d)
-    out.append("           A lesson that failed twice IS the thing that failed. Promote it to a hook.")
-else:
-    out.append("RATCHET    no promotions due")
+# The rule lives in hooks/ratchet_rules.py and is IMPORTED, not restated:
+# this gate and .github/scripts/guard_ratchet.py used to carry two copies that
+# already disagreed (hardcoded `rung < 4` here vs `rung < target` there), which
+# is the shape of F13.
+try:
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from ratchet_rules import scan as _ratchet_scan
+
+    found = _ratchet_scan(read("system/failures.md"))
+except Exception as exc:  # never let a broken classifier silence the gate
+    found = None
+    out.append(f"RATCHET    ? classifier unavailable ({exc}) — check by hand.")
+
+if found is not None:
+    overdue = [f for f in found if f[5] == "OVERDUE"]
+    due = [f for f in found if f[5] == "DUE"]
+    if overdue:
+        out.append("RATCHET    *** PROMOTION DUE *** a guard has failed twice and must climb:")
+        for fid, title, rec, rung, target, _ in overdue:
+            out.append(f"           {fid} (rung {rung} -> {target}, {rec}x) — {title[:66]}")
+        out.append("           A lesson that failed twice IS the thing that failed. Promote it to a hook.")
+    if due:
+        out.append("RATCHET    below declared target (not yet recurred, guard already owed):")
+        for fid, title, rec, rung, target, _ in due:
+            out.append(f"           {fid} (rung {rung} -> {target}) — {title[:66]}")
+    if not overdue and not due:
+        out.append("RATCHET    no promotions due")
 
 # --- 5. CLAIMS (duplicate-investigation guard) ------------------------------
 # Cross-references active rows in system/incident-claims.md against this

@@ -1,7 +1,7 @@
 ---
 title: EQ Field — Staff & Site Visibility Model
 owner: Royce Milmlow
-last_updated: 2026-06-15
+last_updated: 2026-08-15
 scope: How a staff member or site becomes visible in EQ Field — the gates, the flags, and the canonical→tenant pipeline. Includes the locked definition of the `on_roster` flag.
 read_priority: critical
 status: live
@@ -46,18 +46,33 @@ separate.
 ## How a staff member becomes visible in EQ Field
 
 A staff row in `app_data.staff` must pass **three** gates before it shows.
-All three were silently blocking SKS on 2026-06-15:
+The gates are structural and still current. The *state* column below is a
+snapshot and was completely inverted between the two dates:
 
-| Gate | Where | Rule | 2026-06-15 state |
-|---|---|---|---|
-| Tenant (RLS) | base table `app_data.staff` | JWT `tenant_id` must equal row `tenant_id` | 39/40 SKS staff mis-tagged to EQ/`core` (`dcb71d03`) instead of SKS (`7dee117c`) |
-| Approval | `app_data.field_people` view | `field_approved IS TRUE OR NULL` AND `active IS NOT FALSE` | **all 40 = `field_approved = false`** → all hidden regardless of tenant |
-| Strict approval | secondary staff loader in `eq-field` | `staff?...&field_approved=eq.true` | 0 staff are `true` |
+| Gate | Where | Rule | 2026-06-15 | 2026-08-15 (live) |
+|---|---|---|---|---|
+| Tenant (RLS) | base table `app_data.staff` | JWT `tenant_id` must equal row `tenant_id` | 39/40 SKS staff mis-tagged to EQ/`core` (`dcb71d03`) instead of SKS (`7dee117c`) | resolved |
+| Approval | `app_data.field_people` view | `field_approved IS TRUE OR NULL` AND `active IS NOT FALSE` | all 40 = `field_approved = false` → all hidden | **83 rows, all 83 `field_approved = true`, 0 false, 0 null** |
+| Strict approval | secondary staff loader in `eq-field` | `staff?...&field_approved=eq.true` | 0 staff are `true` | all 83 pass |
 
-**Consequence:** to make a staff member appear, the import/approval must
-stamp **`tenant_id = SKS` AND `field_approved = true` AND `active =
-true`** (plus `on_roster` once it exists). Re-tagging the tenant alone is
-**not** sufficient — `field_approved = false` hides everyone on its own.
+**The outage this file was written to explain is over.** Every gate is
+open: 83 people, all approved, all `active IS NOT FALSE`. The rules stay
+documented because they are how visibility works, not because anything is
+currently blocked.
+
+**Consequence (unchanged):** to make a staff member appear, the
+import/approval must stamp **`tenant_id = SKS` AND `field_approved = true`
+AND `active = true`**. Re-tagging the tenant alone is **not** sufficient —
+`field_approved = false` hides someone on its own. `on_roster` now exists
+as `boolean NOT NULL` on `app_data.staff` (with `is_supervisor`,
+`supervisor_role`, `supervisor_category`), so the "once it exists" caveat
+in the original is retired.
+
+> **Discrepancy worth chasing.** `suite-state.md` — regenerated nightly and
+> stamped today — reports `app_data.field_people` at **66** rows. Live is
+> **83**. A generated file is only as current as its query; this one is
+> either filtered differently or reading a stale source. Logged rather than
+> guessed at.
 
 `field_approved` is a real, intended gate (approve people before they hit
 Field) — but nothing is currently approving anyone, so it functions as a

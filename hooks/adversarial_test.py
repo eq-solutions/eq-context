@@ -9,6 +9,7 @@ The system's own history becomes its test corpus. This is the part that compound
 Run:  python hooks/adversarial_test.py
 """
 import json, os, shutil, subprocess, sys, tempfile
+from datetime import datetime, timedelta, timezone
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 HOOK = os.path.join(ROOT, "hooks", "pre_tool_use.py")
@@ -432,11 +433,70 @@ g = subprocess.run([sys.executable, GATE], capture_output=True, text=True,
 out = g.stdout
 for label, key in [("gate reports freshness", "FRESHNESS"),
                    ("gate reports goals status (F3)", "GOALS"),
-                   ("gate reports ratchet state", "RATCHET")]:
+                   ("gate reports ratchet state", "RATCHET"),
+                   ("gate reports review clock", "REVIEW")]:
     ok = key in out
     print("  {:<52}{}".format(label, "PASS" if ok else "*** FAIL ***"))
     passed += ok
     failed += (not ok)
+
+print("=== REVIEW CLOCK — the gate must name a stale MANDATED file, and shut up otherwise ===")
+# FRESHNESS proves the clone is current; this proves the CONTENT is. The two are
+# independent — a perfectly synced clone can serve a 62-day-old claim, which is
+# what 174 status:live files with 82 untouched-in-a-month looked like on
+# 2026-08-15. Fixture-driven so the assertion does not drift with live ROOT.
+
+
+def review_fixture(last_updated, priority="critical"):
+    """A throwaway substrate holding one mandated file with a chosen age."""
+    d = tempfile.mkdtemp(prefix="eq-review-")
+    os.makedirs(os.path.join(d, "sks"), exist_ok=True)
+    with open(os.path.join(d, "sks", "active.md"), "w", encoding="utf-8") as fh:
+        fh.write(
+            "---\ntitle: SKS Active\nowner: Royce Milmlow\n"
+            f"last_updated: {last_updated}\nscope: test fixture\n"
+            f"read_priority: {priority}\nstatus: live\n---\n\n# Active\n"
+        )
+    return d
+
+
+def review_says(root):
+    r = subprocess.run([sys.executable, GATE], capture_output=True, text=True,
+                       env=dict(env, EQ_CONTEXT=root))
+    return [ln for ln in (r.stdout or "").split("\n") if "REVIEW" in ln or "overdue" in ln]
+
+
+_old = (datetime.now(timezone.utc).date() - timedelta(days=400)).isoformat()
+_new = datetime.now(timezone.utc).date().isoformat()
+
+for label, root, want in [
+    ("stale mandated file is named, with its age", review_fixture(_old), True),
+    ("fresh mandated file is not flagged", review_fixture(_new), False),
+    # A record must never be clocked. If path-derivation ever regressed so that
+    # sks/active.md classified as a record, this gate would go permanently quiet
+    # and nobody would notice — silence is the dangerous direction.
+    ("critical file uses its 30d clock, not the 90d default",
+     review_fixture((datetime.now(timezone.utc).date() - timedelta(days=45)).isoformat()), True),
+    ("...and a 45d-old reference file is still within its 90d clock",
+     review_fixture((datetime.now(timezone.utc).date() - timedelta(days=45)).isoformat(),
+                    priority="reference"), False),
+]:
+    lines = review_says(root)
+    flagged = any("active.md" in ln for ln in lines)
+    ok = (flagged == want) and any("REVIEW" in ln for ln in lines)
+    print("  {:<52}{}".format(label, "PASS" if ok else "*** FAIL ***"))
+    passed += ok
+    failed += (not ok)
+    _rmtree_retry(root)
+
+# NOT tested here: fail-open when review_clock.py itself is broken. The gate
+# imports it by path relative to hooks/, not from EQ_CONTEXT, so the only way to
+# exercise that branch is to corrupt a shared repo file mid-suite — and a
+# cleanup that fails leaves the checkout broken for everything downstream. It
+# was verified by hand instead (2026-08-15: a syntax error in review_clock.py
+# produced "REVIEW ? clock unavailable (...)" with all seven other sections
+# still printing). A test that cannot fail is worse than no test; it reads as
+# coverage while asserting nothing, which is F10 in miniature.
 
 print("=== SESSION END GATE — Stop hook must speak on dirty state, stay quiet clean, never block ===")
 

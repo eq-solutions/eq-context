@@ -48,9 +48,9 @@ defaults from one tier only. Cross-tier loads are explicit, not implicit.
 
 ## Substrate
 
-**GitHub is canonical for `eq-context`. Supabase is a runtime cache.** Direct chat-to-Supabase writes to the `context_files` table are emergency-only and MUST be reconciled to GitHub the same day. Bypassing GitHub destroys the audit trail that is the actual moat of this repo — once Supabase and the git log drift, every "what did we decide and why" question has two possibly-conflicting answers. The git log is the substrate's value; the Supabase row is just the assistant-readable cache.
+**GitHub is canonical for `eq-context` — and is now its only store.** The Supabase edge cache (the `context_files` table) was **retired 2026-06-22**: there is no cache and no sync step, so a push to `main` is the publish. Bypassing GitHub is no longer possible rather than merely forbidden. Owner of this fact: `rules/deployment.md`.
 
-**`updated_at` is the freshness signal of record.** A change to `context_files` is not "done" until the row's `updated_at` reflects it. Terminal output, commit hashes, and "looks good" visual confirmation do not count. The assistant MUST verify after every push (the workflow's verification job does this automatically; if it ever fires green but the row is stale, treat it as a substrate incident).
+**A change is not "done" until it is on `origin/main`.** Terminal output, commit hashes, and "looks good" visual confirmation do not count — and neither does a local commit. On 2026-08-15 a clone sat 34 commits behind `origin/main` while every gate reported green, because the auto-pull swallowed its own failure and the freshness check only read a file timestamp (`system/failures.md` → F1). The assistant MUST confirm `HEAD` against `origin/main`, not infer currency from a fresh-looking file; `hooks/substrate_sync.py` reports this unprompted at every prompt submit.
 
 ---
 
@@ -71,7 +71,7 @@ defaults from one tier only. Cross-tier loads are explicit, not implicit.
 1. The assistant MUST NOT deploy or push to any branch without explicit instruction from Royce.
 2. The assistant MUST NOT expose the Anthropic API key in any frontend file — worker.js proxy only, always.
 3. The assistant MUST NOT cross-deploy between EQ and SKS codebases — ever.
-4. **The assistant MUST NOT touch SKS live Supabase (`nspbmirochztcjijmcrx`) unless Royce explicitly says "SKS live".** Three Supabase projects exist (sks-labour, eq-solves-field, eq-solves-service-dev) — the assistant MUST confirm which before connecting.
+4. **The assistant MUST NOT touch SKS live Supabase (`nspbmirochztcjijmcrx`) unless Royce explicitly says "SKS live".** More than one Supabase project is reachable and the set changes — the assistant MUST confirm which project it is connecting to first. Registry: `system/substrate-facts.yml` (machine-checked) and `system/infrastructure.md`. This clause used to name three projects inline; two of them (`eq-solves-field`, and urjh behind `eq-substrate`) have since been deleted, which is why the list now lives in one place instead of here.
 5. The assistant MUST NOT remove DEMO_FLAG comments — they mark live re-enable points.
 6. The assistant MUST NOT delete files without explicit permission.
 7. The assistant MUST NOT hardcode credentials, API keys, or secrets anywhere.

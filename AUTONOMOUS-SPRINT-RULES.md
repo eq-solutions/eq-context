@@ -1,7 +1,7 @@
 ---
 title: Autonomous Sprint — Rules
 owner: Royce Milmlow
-last_updated: 2026-07-12
+last_updated: 2026-08-15
 scope: Diverge-proof conventions for all parallel autonomous agent work across EQ repos
 read_priority: critical
 status: live
@@ -21,11 +21,24 @@ status: live
 These are the hard conventions that make parallel autonomous work **diverge-proof**. Every one exists because we hit the failure on 2026-05-30. Breaking one re-introduces a known break. If a task seems to require breaking a rule, STOP and flag it — don't work around it.
 
 ## 0. The one hard line — SKS LIVE IS UNTOUCHABLE
-Autonomy is **full-auto build → PR → merge → deploy on green**, EXCEPT:
+
+> **The full-auto grant this section used to open with is REVOKED.** It read
+> "Autonomy is full-auto build → PR → merge → deploy on green". The 2026-05-30
+> ADR that conditionally relaxed non-negotiable #1 **lapsed 2026-07-16** —
+> Royce's confirmation, recorded at `rules/non-negotiables.md` #1: "#1 applies
+> as written, no exceptions." This file was last touched 2026-07-12, four days
+> before the lapse, and was never revisited, so it went on granting merge-and-
+> deploy authority that no longer existed. On eq-shell that is not a paperwork
+> distinction: **merging to `main` IS the production deploy**, live on
+> core.eq.solutions 2-4 seconds later (`rules/deployment.md`).
+
+Autonomy is **build → PR, and stop.** Merging and deploying require explicit
+instruction from Royce, every time. The hard lines below are additional to that,
+not alternatives to it:
 - **Never deploy to `sks-nsw-labour.netlify.app`.** No pushes/merges that trigger a build of the SKS live site.
 - **Never write to the SKS live database** (`sks-labour`, Supabase `nspbmirochztcjijmcrx`). Read-only at most, and prefer not at all.
 - **Never run the Field-merge CUTOVER** (repointing the SKS Netlify site at the merged repo) — that is a Royce-gated step (board item B5).
-- The merged Field codebase is built/tested **EQ-side only** (`eq-solves-field.netlify.app` + deploy previews). SKS validation is via previews, never the live site.
+- The merged Field codebase is built/tested **EQ-side only** (`field.eq.solutions` + deploy previews). SKS validation is via previews, never the live site. *(Host corrected 2026-08-15: this read `eq-solves-field.netlify.app`, dead since mid-2026 — a rule pointing at a dead host is a rule that cannot be followed.)*
 - **EQ and SKS are separate entities** — never mix code, credentials, or data across them.
 
 ## 1. Standing gates (still require Royce, despite full-auto)
@@ -38,13 +51,13 @@ Autonomy is **full-auto build → PR → merge → deploy on green**, EXCEPT:
 - **Work in your own isolated worktree.** `git worktree add -b <branch> <path> origin/main`. **Never touch, prune, or commit another session's worktree** — it may hold uncommitted work (we saw 85 uncommitted files in one).
 - **Stage explicitly** (`git add <files>`), never `git add -A`. **Verify the PR diff contains ONLY your files** before merge (a diverged branch once showed 8 files instead of 3).
 - **Gate on the green deploy-preview** before any merge. No merging red required checks.
-- Commit-message + PR trailers per repo convention; `Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>`.
+- Commit-message + PR trailers per repo convention; `Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>`.
 
 ## 3. Migrations (kills the dup-version collisions — `0097`, `0110`)
 - **Name migrations with a UTC timestamp prefix, NEVER a sequential `00xx`.** Format `YYYYMMDDHHMMSS_description.sql` (generate via `date -u +%Y%m%d%H%M%S` at creation time). Sequential numbers race across parallel branches and collide — this is the single biggest divergence we hit.
 - **Never renumber an already-applied migration** without checking the remote `schema_migrations` (use the Supabase MCP `list_migrations`); the remote tracks by recorded version.
 - Run Supabase advisors (security + performance) after any migration; zero new ERROR-level findings.
-- **Claimed numbers:** `eq-solves-service` `0110` is taken (`0110_performance_level_hf.sql`, #204) — the `charming-dirac` canonical_id back-ref must use a timestamp, not `0110`.
+- ~~**Claimed numbers:** `eq-solves-service` `0110` is taken~~ — obsolete 2026-08-15: eq-service is at **0207** (214 applied). The rule above it stands; this specific claim was a 2026-05-30 sprint artefact and is not a live reservation.
 
 ## 4. Coordination (kills two-sessions-in-one-repo)
 - **Claim before you start.** In `SPRINT-BOARD.md`, set the item's `owner` + `branch` + `status: in-progress` before touching code. If an item or its repo is already claimed and you'd edit the same files, pick another item or coordinate.

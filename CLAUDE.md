@@ -43,10 +43,21 @@ Every session, every tool. No exceptions.
 
    | Answer | Files to read |
    |---|---|
-   | EQ | `eq/README.md` + `eq/pending.md` |
-   | SKS | `sks/README.md` + `sks/pending.md` + `sks/active.md` |
+   | EQ | `eq/README.md` |
+   | SKS | `sks/README.md` + `sks/active.md` |
    | Cross-tier | Both — state which tier owns the work |
-   | OPS | `ops/README.md` + `ops/pending.md` |
+   | OPS | `ops/README.md` |
+
+   **The tier `pending.md` is NOT a session-start read. Search it, don't load it.**
+   `eq/pending.md` is 491 KB — roughly 125,000 tokens, about 82% of everything a
+   session used to load before its first question. Reading it whole was costing
+   more context than the entire rest of the substrate combined, and no automation
+   ever required it: the SessionStart hook reads only `digest.md` and `TODAY.md`,
+   and `rotate_pending.py` / `refresh_digest.py` consume the file mechanically.
+   What you actually need at session start is already above — `punch-list.md` is
+   the capped active queue and `digest.md`'s **Needs you** is the alert feed.
+   Open the tier `pending.md` when you have a specific question for it (grep the
+   repo or app name), and read the section you land in, not the file.
 
    `archive/` only when Royce explicitly references parked content (AHD). `sks-team/` is a separate tier for SKS team members' sessions — not loaded for Royce's personal sessions.
 
@@ -103,7 +114,7 @@ The risk is silent substitution — output that looks substrate-aware but is fre
 
 ## 3. Templates First — Operational Outputs
 
-Before drafting any operational deliverable (quote, email, MOP, scope, log, letter, variation, report), check `sks/templates.md` (SKS) or `eq/templates.md` (EQ).
+Before drafting any operational deliverable (quote, email, MOP, scope, log, letter, variation, report), check `sks/templates.md` (SKS). **There is no EQ template library yet** — `eq/templates.md` has never existed, so for an EQ deliverable the "no template" branch below always applies: produce it, then ask whether to capture it as the first entry.
 
 - **Template exists** → follow it exactly.
 - **No template** → produce the deliverable AND ask Royce whether to draft a template capturing what was just produced.
@@ -210,6 +221,7 @@ This contract points; it doesn't restate. Authoritative files:
 | Agentic coding (session gate, verification standard, multi-tenancy, effort threshold) | [rules/agentic-coding.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/agentic-coding.md) |
 | Reflection protocol (mandatory pre-finalization self-critique) | [rules/reflection-protocol.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/reflection-protocol.md) |
 | Decision protocol (on-demand steelman/pre-mortem/value/feasibility pass) | [rules/decision-protocol.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/decision-protocol.md) |
+| Gap protocol (light centering pass — one-sentence problem, four blunt questions, one next move) | [rules/gap-protocol.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/gap-protocol.md) |
 | EQ Brand (Design Brief v1.3) | [rules/brand-eq.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/brand-eq.md) |
 | SKS Brand | [rules/brand-sks.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/brand-sks.md) |
 | Deployment | [rules/deployment.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/deployment.md) |
@@ -234,6 +246,7 @@ This contract points; it doesn't restate. Authoritative files:
 | MD style | [system/md-style.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/md-style.md) |
 | Onboarding | [system/onboarding.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/onboarding.md) |
 | Parked | [archive/README.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/archive/README.md) |
+| Session log index (dated, newest first — start here instead of globbing `sessions/`) | [sessions/INDEX.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sessions/INDEX.md) |
 
 Do NOT duplicate content into this file. Update facts in their home.
 

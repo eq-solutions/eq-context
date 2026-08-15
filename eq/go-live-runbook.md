@@ -1,12 +1,24 @@
 ---
 title: EQ Core — Weekend Go-Live Runbook
 owner: Royce Milmlow
-last_updated: 2026-06-05
+last_updated: 2026-08-15
+kind: record
 scope: Taking EQ Core (core.eq.solutions = eq-shell, iframing Field/Service/Cards/Quotes) live. Grounded in live-system checks 2026-06-05.
-read_priority: critical
-status: live
+read_priority: reference
+status: archived
 ---
 
+> **COMPLETE — kept as the record of how EQ Core went live.** Every gate in
+> section B is closed, verified 2026-08-15: `core.eq.solutions` and
+> `service.eq.solutions` are both live (the B-1 domain cutover was THE
+> blocker); B-2's one open item, an anon guard on `eq_cards_claim_invite`, is
+> present in the live function (`IF v_user_id IS NULL THEN RAISE EXCEPTION
+> 'not_authenticated'`) and `anon` holds no EXECUTE on it either way; B-4 was
+> already resolved. **Do not follow this as a runbook.** Its auth description
+> is now false — the 60s minted HMAC token path it describes was retired
+> (`EQ_SECRET_SALT` / `validateLegacyToken()` removed, PR #326); the live
+> mechanism is a short-lived Supabase JWT from `token-exchange.ts`. Current
+> auth truth: `eq/identity/IDENTITY-MODEL.md`.
 # EQ Core — Weekend Go-Live Runbook
 
 **Host topology:** `core.eq.solutions` = **eq-shell** (Netlify). It embeds Field, Service,
