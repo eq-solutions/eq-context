@@ -9,6 +9,14 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-15 (PR #1357 MERGED + live — login outcomes queryable across all three sign-in doors)
+- **PR #1357 MERGED (squash `25b2ef56`), live via `36a77b6c`.** Lockouts, access refusals and half-logins existed only in Netlify function logs. New `_shared/login-audit.ts` gives every door one event vocabulary: `login.rate_limited` (the alertable one), `login.blocked` (credential RIGHT, access refused — a provisioning bug, not an attack), `login.failed`, `login.totp_challenge_issued` (first factor passed, no session minted — a challenge with no `login.totp.success` after it is a held password stopped by 2FA).
+- **Failure rows now carry the attempted address as `detail.identity`.** The 30 pre-existing `login.failed` rows were anonymous (`actor_id: null`, IP + reason only) and could not answer which account was targeted. Safe because these land in `shell_control.audit_log` — `deny_all` RLS, service_role-only grants, no browser path. NOT `public.audit_log`, which is `authenticated`-readable and is what SEC-1 flags.
+- **`writeAuditLogBounded`** — 1500ms ceiling so a hung control-plane insert can't stall a sign-in. Deliberately still awaited, not fire-and-forget: Netlify freezes the container on return, which would drop exactly the lockout rows this change exists to keep.
+- **Also closed a forgeable-IP hole** in `shell-login-phone-pin.ts` / `shell-login-phone-otp.ts`: both derived `ip` from caller-settable `x-forwarded-for`, and on phone-pin that value keyed the IP rate-limit bucket, so rotating one header bought a fresh allowance. Both now use Netlify's `ctx.ip`.
+- Deliberately NOT audited, commented in place so each isn't "fixed" later: unparseable/missing body (scanner noise), db + membership errors (Sentry's job), and multi-tenant-pending-selection (no session is minted there — `select-tenant.ts` already writes `login.success`, so a row would double-count every multi-tenant sign-in).
+- 330/330 tests, clean typecheck against the merged content, all CI green.
+
 ## 2026-08-15 (PR #1361 MERGED + live — the redeem-an-invite worker QR retired, leaving one QR door)
 - **PR #1361 MERGED (squash `84647b81`) — `/admin/workers/qr` route, lazy import and `AdminWorkerQR.tsx` deleted.** It generated `cards.eq.solutions/claim?tenant=<slug>`, which asked a worker for their mobile and looked up a pre-existing unclaimed invite. Live on jvkn, `worker_invites` holds 7 rows: 6 claimed, **0 unclaimed and unexpired** — so every scan of that poster resolved to "no invite found".
 - **`/admin/workers/join-links` is now the only worker QR.** Role-tagged across all 6 roles, resolved server-side from an opaque code, with the expiry and approval gate added 2026-08-02 and defaulted on in #1345. It points at `core.eq.solutions/login`, which is where `create-worker-invite` and `resend-worker-invite` have pointed since `shellJoinUrl()` moved off Cards. One QR, one destination.
