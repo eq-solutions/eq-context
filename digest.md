@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-15 02:12 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-15 02:14 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-15 02:07 UTC → 2026-08-15 02:12 UTC)
+## Since last refresh (2026-08-15 02:12 UTC → 2026-08-15 02:14 UTC)
 
-- Merged: eq-shell [#1346](https://github.com/eq-solutions/eq-shell/pull/1346) feat(staff): apprentice year badge + multi-select Trade on S
-- Merged: eq-shell [#1344](https://github.com/eq-solutions/eq-shell/pull/1344) feat(nav): Reports landing page — GM Reports as the first op
-- Merged: eq-shell [#1341](https://github.com/eq-solutions/eq-shell/pull/1341) chore(ci): triage eq_cards_admin_list_stale_invites into KNO
-- Merged: eq-shell [#1338](https://github.com/eq-solutions/eq-shell/pull/1338) fix(staff): surface documents_not_extracted from ocr-licence
-- Merged: eq-shell [#1337](https://github.com/eq-solutions/eq-shell/pull/1337) feat(admin): hard-delete for archived user accounts
-- Merged: eq-shell [#1335](https://github.com/eq-solutions/eq-shell/pull/1335) feat(staff): step through every document found in a multi-ca
-- Merged: eq-shell [#1334](https://github.com/eq-solutions/eq-shell/pull/1334) feat(documents): move document-version uploads to direct-to-
-- Merged: eq-solves-service [#731](https://github.com/eq-solutions/eq-service/pull/731) fix(reports): drop dead ACB-only fields from NSX Test Report
+- Merged: eq-shell [#1365](https://github.com/eq-solutions/eq-shell/pull/1365) fix(security): gate timesheet/licence reads on the split-out
+- Merged: eq-shell [#1348](https://github.com/eq-solutions/eq-shell/pull/1348) feat(reports): compliance report + mobile Home quick links, 
+- Merged: eq-shell [#1345](https://github.com/eq-solutions/eq-shell/pull/1345) fix(auth): default self-join QR/link codes to 7-day expiry
+- Merged: eq-shell [#1343](https://github.com/eq-solutions/eq-shell/pull/1343) fix(nav): sidebar cleanup batch — vendor name, dead routes, 
+- Merged: eq-shell [#1342](https://github.com/eq-solutions/eq-shell/pull/1342) fix(staff): compress licence photo before OCR/storage in Add
+- Merged: eq-shell [#1340](https://github.com/eq-solutions/eq-shell/pull/1340) feat(auth): sync Core's name from an existing Cards profile 
+- Merged: eq-shell [#1339](https://github.com/eq-solutions/eq-shell/pull/1339) fix(auth): reject self-join when there's no role code and no
+- Merged: eq-shell [#1336](https://github.com/eq-solutions/eq-shell/pull/1336) fix(shell): stop dashboard scroll chaining into blank body s
 
 ## ⚠ Needs you (4)
 
@@ -50,7 +50,7 @@ _…and 150 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 5 | 0d |
+| eq-shell | ✓ success | 0d ago | 4 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 0 | — |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 1 | — |
@@ -71,6 +71,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-15 | eq-shell | [#1365](https://github.com/eq-solutions/eq-shell/pull/1365) fix(security): gate timesheet/licence reads on the split-out keys |
 | 2026-08-15 | eq-shell | [#1364](https://github.com/eq-solutions/eq-shell/pull/1364) fix(security): revoke authenticated EXECUTE on eq_update_staff |
 | 2026-08-15 | eq-shell | [#1363](https://github.com/eq-solutions/eq-shell/pull/1363) docs(migrations): retire the stale tenant migration ledger |
 | 2026-08-15 | eq-shell | [#1359](https://github.com/eq-solutions/eq-shell/pull/1359) refactor(auth): fold the login timing-burn hash into one shared m |
@@ -85,14 +86,12 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-14 | eq-shell | [#1350](https://github.com/eq-solutions/eq-shell/pull/1350) fix(auth): dual-key shell-login's rate limit on IP + email, close |
 | 2026-08-14 | eq-shell | [#1351](https://github.com/eq-solutions/eq-shell/pull/1351) perf(shell): route-split admin pages, load pdf.js on demand, cach |
 | 2026-08-14 | eq-shell | [#1347](https://github.com/eq-solutions/eq-shell/pull/1347) fix(auth): admin phone change now updates the login identity, not |
-| 2026-08-14 | eq-shell | [#1349](https://github.com/eq-solutions/eq-shell/pull/1349) fix(audit): log user.deactivated/reactivated in edit-user.ts |
 _Showing 15 of 117 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
 - **No sign-in has happened yet since it went live, so nothing has been recorded in practice.** The code is live on core.eq.solutions and it writes the same way sign-ins are already recorded today, so there's no reason to expect trouble — but the first real proof arrives with the next actual sign-in. Worth a look at the log once a few people have signed in tomorrow. _(added 2026-08-15)_
 - **Cards has a fully built PIN lock screen that nothing mounts** — `pin_entry_screen.dart` + `app_lock_notifier.dart` + `app_lock_state.dart`, not registered in the router and imported by nothing. Either wire it up or delete it; chip raised (`task_4e685ee7`). _(added 2026-08-15)_
-- **#1365's rough edge**: `StaffPage.tsx`'s licence query has no client-side gate for excluded roles — degrades to a silent "No licences recorded" rather than an informative message. `EntityBrowserPage.tsx`'s timesheet view does surface a clear error. Real polish, not scoped into the security fix. Chip `task_e97a18c2` is unrelated (Dependabot) — this doesn't have a chip yet. _(added 2026-08-15)_
 - **2 high-severity Dependabot alerts on eq-shell's default branch** — surfaced on push, not yet triaged. Chip `task_e97a18c2`. _(added 2026-08-15)_
 - **No automated check exists to catch the cache-tag mistake above** — flagged 5 times now in eq-field's own changelog history, never built. Spun off as its own task (`task_9bd3247c`), already started in a separate session. _(added 2026-08-14)_
 - **Follow-up question raised, being checked now**: if a worker's phone number genuinely changes, is there an admin-facing way in eq-shell to update it on their existing account (so OTP login works with the new number under the same identity), or would that need an out-of-band fix today? _(added 2026-08-14)_
@@ -100,7 +99,8 @@ _Showing 15 of 117 · full record in [sessions/](sessions/)_
 - **Shell's own styling and the shared `@eq-solutions/ui` design library define colliding layout style names** (`eq-hub` and friends) — noticed while fixing the scroll bug above, not the cause of it, not yet looked into properly. _(added 2026-08-14)_
 - **Minor, unrelated gap noticed in passing**: `admin.deactivate_user` is declared in the permission matrix but never actually checked anywhere — `edit-user.ts`'s archive/restore action (and now `delete-user.ts`) both gate on `admin.edit_user` instead. Harmless today since the two keys are granted to the same roles, but if they're ever meant to diverge, deactivate silently wouldn't. _(added 2026-08-14)_
 - **No manual browser smoke test yet** — need to actually expire a session mid-form-submit on a few touched pages and confirm the friendly "sign in again" message renders, rather than just type/unit verification. _(added 2026-08-14)_
-_…and 455 more · [eq/pending.md](eq/pending.md)_
+- **There's no "executive" or "stakeholder" concept anywhere in this app** — the notify-list and the Friday digest both only ever draw from people flagged as Supervisors. If Royce wants a broader audience notified than that, it's a real feature decision, not a bug fix. _(added 2026-08-14)_
+_…and 454 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -143,4 +143,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-15 02:12 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-15 02:14 UTC._
