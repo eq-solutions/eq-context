@@ -14,6 +14,28 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: two Sentry monitors kept re-firing after being "fixed" — the earlier fix had never actually landed (2026-08-15)
+*Royce asked what's next after the load-speed work below; a `/decide` pass first wrongly suggested two P0 security findings that turn out to be standing "not now" decisions already on record — corrected before acting. The real next thing was two Sentry alerts for Richard Brown's duplicate-account incident, supposedly closed the day before, firing again.*
+
+- [x] **Root cause: the previous day's fix never actually reached the database.** The write that was supposed to repoint his staff record to his real account either silently failed or was never run — live data still showed it linked to the deactivated duplicate, a day later. Confirmed by reading the two monitors' own source rather than guessing: one reads a one-way flag that only clears on an explicit write nothing had made, the other freshly recomputes from live data every run and correctly kept finding the same problem.
+- [x] **Fixed live, in two rounds of confirmation** (the first approval was for a narrower "just remove the duplicate" version; checking live data first showed that would have broken his real, currently-active record, so re-asked with the full picture before writing anything). Staff record repointed to the real account, the duplicate account's leftover record deleted (checked first — carried no information the real one didn't already have, and nothing else referenced it), the alert marked handled. Verified after: exactly one record for him, zero unresolved alerts of this kind anywhere.
+- [ ] **Real gap found, not fixed: a "deactivated" account can still sign in and write data.** Flipping the deactivated switch on Richard's duplicate account didn't actually stop it — it kept authenticating and pushing profile updates for two days afterward, because at least one sync endpoint only checks "is this a valid session" and never checks whether the account was deactivated. Needs its own look at how many places have this gap and what "deactivated" should actually do to a live session — not something to patch as a side effect of one cleanup. _(added 2026-08-15, needs your call on priority)_
+
+---
+
+## eq-shell: load speed — Suppliers and Staff were slow; database wasn't the cause (2026-08-15)
+*Royce: "load speed is very slow inside shell - suppliers list and staff records in particular." Investigation ruled out the database first (queries run 6-9ms) and found three real causes instead: an oversized PDF library loading on every page for a rarely-used feature, most of the app's pages loading eagerly instead of on demand, and the Staff page making eight separate slow round-trips instead of one.*
+
+- [x] **A PDF-reading library (~0.5MB) was loading on every single page load, including the login screen** — used only when a labour-hire candidate's uploaded document happens to be a PDF, on the Staff page. Now only loads when actually needed.
+- [x] **Most of the app's pages (43 of 53) were loading eagerly** rather than only when visited — meaning the login page was downloading nearly the whole admin section before it could even show the login form. The ~26 admin/rarely-visited pages now load on demand instead; the everyday pages (Home, Staff, Customers, sign-in) stay instant.
+- [x] **The render-blocking Google Fonts request removed** — was costing about half a second before the page could start drawing anything, on every page. The font now loads from our own server instead.
+- [x] **The Staff page was making eight separate slow requests on every visit, now makes one.** Each of those requests has its own ~3-second "cold start" delay the first time it's hit — the database work itself was always fast, the delay was infrastructure spin-up, repeated eight times in parallel. Consolidated into one request that does the same eight checks, keeping every existing permission check exactly as strict as before.
+- [x] Both Staff and Suppliers now remember what they loaded for about 30 seconds — revisiting the page within that window is instant instead of re-fetching everything; any edit still forces an immediate fresh read, never a stale one.
+- [x] All shipped and confirmed live: entry download size cut from 2.28MB to 1.52MB (a third smaller), the eight-request page now makes one.
+- [ ] **Further squeezing is possible but lower value** — a smaller vendor library could be deferred too (~80KB), the Staff page's functions could be kept artificially warm to dodge the cold-start delay entirely (ongoing cost, not a one-off fix), and one more internal database lookup could be cached. None built — diminishing returns after the fixes above, and each has its own trade-off worth weighing on its own. _(added 2026-08-15)_
+
+---
+
 ## eq-shell: sign-in lockouts and refusals are now queryable, not just in the logs — live (2026-08-15)
 
 - [ ] **No sign-in has happened yet since it went live, so nothing has been recorded in practice.** The code is live on core.eq.solutions and it writes the same way sign-ins are already recorded today, so there's no reason to expect trouble — but the first real proof arrives with the next actual sign-in. Worth a look at the log once a few people have signed in tomorrow. _(added 2026-08-15)_
