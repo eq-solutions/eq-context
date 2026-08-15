@@ -583,5 +583,53 @@ else:
           "something on the Beelink)".format(_user_settings_path))
 
 print()
+print("=== F13 - false eq-shell deploy-posture claim into substrate (must BLOCK) ===")
+
+
+def md_write(path, content):
+    return {"tool_name": "Write", "tool_input": {"file_path": path, "content": content}}
+
+
+# The sentences that actually shipped — quoted from F13's own cost field.
+F13_PHANTOM = ("- **Not deployed** - merged to `main`, but core.eq.solutions "
+               "production deploys are explicit-only. Royce to trigger when ready.")
+F13_REGISTRY = ("| eq-shell PR #1352 (auth) | core.eq.solutions is manual-deploy-only, "
+                "so merging is a safe intermediate step |")
+# Repo name and posture phrase on DIFFERENT wrapped lines of one bullet. The
+# rung-3 scanner classifies a line at a time; the hook must not, or the most
+# natural way to write this claim walks straight past it.
+F13_WRAPPED = ("- **Not deployed** - merged to `main`, but production deploys on\n"
+               "  core.eq.solutions are a separate explicit step.")
+
+_PEND = os.path.join(ROOT, "eq", "pending.md")
+
+# EQ_FORCE_GUARD pinned per case, same reasoning as F7/F9 above: with the
+# sandbox guard ON, F2's mount rule blocks ANY Write to an existing long .md
+# regardless of content, so every case would go green for the wrong reason and
+# prove nothing about F13's own verdict.
+OFF = {"EQ_FORCE_GUARD": "0"}
+
+te("phantom 'Royce to trigger' action item", md_write(_PEND, F13_PHANTOM), 2, OFF)
+te("worktree-registry auth-PR annotation", md_write(_PEND, F13_REGISTRY), 2, OFF)
+te("claim wrapped across two lines of one bullet", md_write(_PEND, F13_WRAPPED), 2, OFF)
+te("same claim arriving via Edit new_string",
+   {"tool_name": "Edit", "tool_input": {"file_path": _PEND, "new_string": F13_PHANTOM}}, 2, OFF)
+te("blocks with the sandbox guard ON too (not sandbox-scoped)",
+   md_write(_PEND, F13_PHANTOM), 2, {"EQ_FORCE_GUARD": "1"})
+
+print("=== F13 - legitimate mentions (must NOT block) ===")
+te("truthful phrasing (merge IS the deploy)",
+   md_write(_PEND, "- eq-shell #1350 merged - live on core.eq.solutions within seconds."), 0, OFF)
+te("quoting the claim in order to correct it",
+   md_write(_PEND, "- The old note said eq-shell was manual-deploy-only. That was WRONG."), 0, OFF)
+te("eq-cards, a genuinely manual-deploy repo",
+   md_write(_PEND, "- eq-cards is manual-deploy-only, unlike eq-shell."), 0, OFF)
+te("session log narrating the failure (historical)",
+   md_write(os.path.join(ROOT, "sessions", "2026-08-15.md"), F13_PHANTOM), 0, OFF)
+te("the failure ledger itself (quotes it by design)",
+   md_write(os.path.join(ROOT, "system", "failures.md"), F13_PHANTOM), 0, OFF)
+te("non-markdown file", md_write(os.path.join(ROOT, "scripts", "whatever.py"), F13_PHANTOM), 0, OFF)
+
+print()
 print("  {} passed, {} failed".format(passed, failed))
 sys.exit(1 if failed else 0)

@@ -356,6 +356,76 @@ def block(msg):
     sys.exit(2)
 
 
+# --- F13: false eq-shell deploy-posture claim (rung 4) -----------------------
+# scripts/substrate_honesty.py already catches this claim once it is on disk
+# (rung 3, per-PR + nightly). That is detection AFTER the damage: by then the
+# sentence has been read by whoever the substrate auto-loads into. This layer
+# stops it landing at all.
+#
+# Every PATTERN lives in that scanner and is IMPORTED here, never restated. Two
+# copies of this definition drifting apart is precisely the shape of F13, so a
+# guard built by copy-paste would reproduce the failure it exists to prevent.
+# Only the SCOPING is local: the scanner classifies a line at a time, which is
+# right for a file it can re-read around, while a Write payload arrives as one
+# blob, so this splits it into bullets first.
+F13_HISTORICAL = re.compile(
+    r"(^|/)(sessions|archive)/|-archive\.md$|changelog|failures\.md$", re.IGNORECASE
+)
+_F13_BULLET = re.compile(r"\s*(?:[-*+]\s|#{1,6}\s|\d+\.\s|\|)")
+
+
+def _f13_classifier():
+    """substrate_honesty.classify_deploy_posture, or None if it can't load.
+
+    Degrades to "no opinion" rather than blocking every write — an import error
+    here must not become an outage on the Write tool.
+    """
+    try:
+        scripts = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "scripts")
+        if scripts not in sys.path:
+            sys.path.insert(0, scripts)
+        from substrate_honesty import classify_deploy_posture
+        return classify_deploy_posture
+    except Exception:
+        return None
+
+
+def f13_verdict(tool, ti):
+    """(reason) if this edit writes the false claim, else None."""
+    if tool not in EDIT_TOOLS:
+        return None
+    path = (ti.get("file_path") or ti.get("notebook_path") or "").replace("\\", "/")
+    if not path.lower().endswith(".md") or F13_HISTORICAL.search(path):
+        return None
+    classify = _f13_classifier()
+    if classify is None:
+        return None
+
+    chunks = [ti.get("content") or "", ti.get("new_string") or ""]
+    for e in ti.get("edits") or []:
+        if isinstance(e, dict):
+            chunks.append(e.get("new_string") or "")
+
+    for chunk in chunks:
+        lines = chunk.splitlines()
+        # Bullet-scoped, not line-scoped: the repo name and the posture phrase
+        # routinely land on different wrapped lines of one item, and F13's own
+        # guard spec is written per-bullet for exactly that reason.
+        start = 0
+        for i in range(len(lines) + 1):
+            if i == len(lines) or (i > start and _F13_BULLET.match(lines[i])):
+                scope = " ".join(lines[start:i]).strip()
+                if scope:
+                    try:
+                        bad, reason = classify(scope, path)
+                    except Exception:
+                        bad, reason = False, ""
+                    if bad:
+                        return reason
+                start = i
+    return None
+
+
 def main():
     raw = sys.stdin.read()
     if not raw.strip():
@@ -499,6 +569,33 @@ def main():
                         f"    git config {flag10}core.hooksPath .githooks\n\n"
                         f"  system/failures.md -> F10.\n"
                     )
+
+    # --- F13: false eq-shell deploy-posture claim entering substrate --------
+    # Deliberately ABOVE the in_sandbox() gate, same reasoning as F7/F9/F10:
+    # both recorded recurrences were written from a normal Windows session, not
+    # the sandbox. Gated below, this would be dormant in the exact environment
+    # where the failure actually happens.
+    _f13 = f13_verdict(tool, ti)
+    if _f13:
+        block(
+            f"BLOCKED by pre_tool_use (F13, rung 4).\n\n"
+            f"  This {tool} writes a deploy-posture claim about eq-shell /\n"
+            f"  core.eq.solutions that is never true on that repo:\n"
+            f"    {_f13}\n\n"
+            f"  Merging a PR to eq-shell main IS the deploy — Netlify's GitHub App\n"
+            f"  (installation 121276861) builds production, live 2-4s later,\n"
+            f"  unattended. There is no gap between 'merge it' and 'ship it'.\n\n"
+            f"  This bites hardest on AUTH changes: the claim makes a merge read as\n"
+            f"  a safe intermediate step when it IS the production deploy.\n\n"
+            f"  Do NOT re-derive the posture from deploy_source or\n"
+            f"  cdp_enabled_contexts — both look exactly as the false claim\n"
+            f"  describes, which is how it survived two re-verifications. Check\n"
+            f"  liveness by commit ancestry against the newest ready production\n"
+            f"  deploy instead.\n\n"
+            f"  Quoting the claim in order to CORRECT it is fine — say so in the\n"
+            f"  same bullet (wrong / corrected / no longer / F13) and this passes.\n\n"
+            f"  system/failures.md -> F13 · rules/deployment.md\n"
+        )
 
     if not in_sandbox():
         sys.exit(0)
