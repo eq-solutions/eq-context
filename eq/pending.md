@@ -24,6 +24,24 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] Merged and deployed — [#1362](https://github.com/eq-solutions/eq-shell/pull/1362), live on core.eq.solutions, confirmed against the actual production site, not just the deploy log.
 - [ ] **Quote records (create/edit/delete) were deliberately left open to everyone** — Royce's call, not a gap. Worth a second look later if quote data starts needing tighter control. _(added 2026-08-15)_
 - [ ] **One low-traffic function on the EQ side accepts an org ID as a plain parameter instead of reading it from the login session** — the table it writes to is empty today so there's nothing to lose, but it's a different shape of risk from everything else fixed here and wasn't touched. _(added 2026-08-15)_
+## eq-shell: switching someone off didn't actually stop them — closed at both ends, live (2026-08-15)
+*Follow-on from the Richard Brown incident, where a deactivated duplicate account kept writing to a live staff record for two days. The question asked was whether that was one endpoint or something wider. It was wider: deactivating someone set a flag and did nothing else — it never ended the session they already had. Three sessions closed it in parallel; the numbers below were measured against the live code and database, not estimated.*
+
+- [x] **A deactivated worker's phone app kept working indefinitely.** Their sign-in session was never cancelled, and the two endpoints that push profile and licence data into an employer's staff records only ever checked whether their company membership was active — never whether the person's account still was. Both now check the account.
+- [x] **Switching someone off now actually ends their session**, rather than only flagging the account.
+- [x] **Anything that changes data now refuses a switched-off account**, even if their browser still holds a valid session. Previously that session stayed good for up to a week: 124 places check the sign-in cookie, only 30 re-checked whether the account was still active, and 92 of the remaining 94 change data. Live at the time: 5 switched-off accounts, 3 still attached to a company.
+- [x] **Reads deliberately left alone** — Royce's call. Checking on every read would put a database round trip back on every page load, which is exactly what the load-speed work removed. The check follows the *permission* being used rather than the page, so reads cost nothing.
+- [x] **Corrected a comment that claimed this was already handled** — it wasn't, and left as-is it would have stopped the next person looking.
+- [x] All three live on core.eq.solutions, each confirmed serving after deploy.
+
+**Deferred:**
+- [ ] **None of it has been tried on a real switched-off account.** Everything above is verified by tests and by calling the live endpoints unauthenticated, not by taking a real person's session and watching it get refused. Three switched-off accounts still attached to a company are available to test with whenever you want to spend ten minutes on it. _(added 2026-08-15)_
+- [ ] **33 data-changing endpoints don't use the shared permission check** and so didn't get the new guard. Several are actually reads that a crude scan mislabelled, and a couple are internal background jobs — they need looking at one by one rather than a blanket fix, which is why they weren't swept in. _(added 2026-08-15)_
+
+---
+
+## eq-cards + eq-shell: changing your mobile number used to split you into two accounts — fixed, and a second way in shipped (2026-08-15)
+*Started from one question — "what happens if a user changes mobile numbers, can an admin update it?" — and followed it all the way down. The answer was no: the admin screen only changed Shell's copy of the number, so the next sign-in created a brand-new account and left every licence stranded on the old one. Fixing that opened up the wider question of who can be helped at all when a number is lost, which turned into a full audit of every way into the apps. Every number below was read from the live databases, not from a document.*
 
 ---
 
