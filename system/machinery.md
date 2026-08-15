@@ -57,6 +57,7 @@ its pure logic separable — that is the convention, not an accident.
 | `session_start_budget.py` | Caps what a session pays to start. Fails when the mandated read chain exceeds its byte budget. |
 | `prune_ratchet.py` | Ceilings on the shapes that re-bloat — residue items, loose root files, unindexed archives. Refuses regrowth; does not prune. |
 | `review_clock.py` | Classifies every doc `generated`/`record`/`state` from its path, and clocks only the state. Catches a dead refresh cron, a record given a review date, and staleness past its ceiling. |
+| `changelog_duplicates.py` | Every `eq/changelog/*.md` duplicate must self-mark (`superseded_by:` or `UNRECONCILED PAIR`) — catches a silent live/live duplicate before it costs another PR #727. |
 | `rotate_pending.py` | Moves done items out of the tier `pending.md` files into their archives, per item rather than per session. |
 | `substrate_honesty.py` | Verifies load-bearing facts against reality — dead project refs, the F13 deploy-posture claim, liveness probes. |
 | `claim_expiry.py` | The F3 guard: expires stale incident claims so a dead claim cannot block a live investigation. |
@@ -64,7 +65,7 @@ its pure logic separable — that is the convention, not an accident.
 | `md-health-daily.py` | Daily markdown health audit; emits JSON for the dashboard. |
 | `security_audit.py` | Cross-project Supabase security-advisor sweep. Needs `SUPABASE_ACCESS_TOKEN`; no-ops cleanly without it. |
 | `rls_probe.py` | The public-key data-leak test — proves an anon key returns zero rows where it should. |
-| `test_index_drift.py` · `test_session_start_budget.py` · `test_prune_ratchet.py` · `test_rotate_pending.py` · `test_substrate_honesty.py` · `test_claim_expiry.py` · `test_review_clock.py` · `test_security.py` | Unit tests for the pure logic of their namesakes. No network, no fixtures on disk. |
+| `test_index_drift.py` · `test_session_start_budget.py` · `test_prune_ratchet.py` · `test_rotate_pending.py` · `test_substrate_honesty.py` · `test_claim_expiry.py` · `test_review_clock.py` · `test_changelog_duplicates.py` · `test_security.py` | Unit tests for the pure logic of their namesakes. No network, no fixtures on disk. |
 
 ## `.github/scripts/` — generators
 

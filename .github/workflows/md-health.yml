@@ -50,6 +50,14 @@ jobs:
       - name: Review clock — self-test
         run: python scripts/test_review_clock.py
 
+      # A duplicate changelog is allowed; a SILENT one is not. Catches a new
+      # eq-service.md/eq-solves-service.md before it costs a second PR #727.
+      - name: Changelog duplicates
+        run: python scripts/changelog_duplicates.py
+
+      - name: Changelog duplicates — self-test
+        run: python scripts/test_changelog_duplicates.py
+
       - name: Run MD health checks
         run: |
           set -euo pipefail

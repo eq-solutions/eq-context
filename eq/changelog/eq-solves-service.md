@@ -1,4 +1,23 @@
+---
+title: eq-solves-service changelog
+owner: Royce Milmlow
+last_updated: 2026-08-15
+scope: EQ Service append-only history. UNRECONCILED PAIR — see the warning at the head of eq/changelog/eq-service.md before citing anything here as complete.
+read_priority: reference
+status: live
+---
+
 # eq-solves-service changelog
+
+> **⚠ This file has a live twin: `eq/changelog/eq-service.md`.** Neither is
+> complete alone — this file carried no frontmatter and no self-awareness of
+> the twin at all until 2026-08-15. That silence was the actual gap: PR #727
+> got recorded as still-open in `eq-service.md` a day after it had merged,
+> while THIS file recorded the merge correctly on the day — a session reading
+> only the other one had no way to know a second, contradicting record even
+> existed. Read both files. Consolidating them is a call about which product
+> history survives; that stays Royce's, see the fuller warning in
+> `eq-service.md`. This note only adds a pointer — no entry below is changed.
 
 ## 2026-08-14 (NSX Test Report: dropped dead ACB-only fields that printed blank on every report)
 - **PR [#731](https://github.com/eq-solutions/eq-service/pull/731) merged (`d015dd7`), deployed live.** Simon Bramall reported an ACB check's report came out empty in some sections. ACB's report wiring traced clean end-to-end — every rendered field has a real save path back to the workflow UI. The actual bug was on the NSX side: `lib/reports/nsx-report.ts`'s breaker-details table still carried three fields copy-pasted from the ACB template that the NSX workflow never collects (Performance Level, Protection Unit Fitted, Earth-Leakage Tripping Delay — confirmed live, `nsx_tests` has no earth-leakage column at all), plus an unconditional "Main Contact Resistance" table even though Royce deliberately removed that reading from NSX data collection back on 2026-05-27 (`6c7eb74`, "not typically performed on NSX/MCCB") — the report generator, written afterward (#644), was never updated to match. All four printed blank on every NSX report regardless of data completeness.
