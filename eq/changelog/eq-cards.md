@@ -9,10 +9,10 @@ status: live
 
 # EQ Cards — Changelog
 
-## 2026-08-15 (PR #249 OPEN, not yet merged — closes the two chips left by #248)
-- **`eq_cards_lookup_invite_by_phone` anon-EXECUTE revoke, `task_5264c029`.** Live grants checked first (`anon`, `authenticated`, `service_role`, `postgres` all held EXECUTE); migration `0127` revokes `anon`/`authenticated`/`public`, leaving only `service_role`/`postgres`. Companion eq-shell PR [#1368](https://github.com/eq-solutions/eq-shell/pull/1368) removes the dead `cards-api.ts` op that was its last caller.
+## 2026-08-15 (PR #249 MERGED + deployed live — closes the two chips left by #248)
+- **`eq_cards_lookup_invite_by_phone` anon-EXECUTE revoke, `task_5264c029`.** Live grants checked first (`anon`, `authenticated`, `service_role`, `postgres` all held EXECUTE); migration `0127` revokes `anon`/`authenticated`/`public`, leaving only `service_role`/`postgres`. Applied to jvkn after merge — grants re-checked live, confirmed clean. Companion eq-shell PR [#1368](https://github.com/eq-solutions/eq-shell/pull/1368) removes the dead `cards-api.ts` op that was its last caller.
 - **Dead PIN lock deleted, `task_4e685ee7`.** `pin_entry_screen.dart`, `app_lock_notifier.dart`, `app_lock_state.dart` — plus two more found live-orphaned by the same cut and not in the original chip scope: `raw_auth_events_provider.dart` and `pin_repository.dart`, both built solely to support the PIN lock, called from nowhere else in the app.
-- Both changes Royce's explicit call via `AskUserQuestion` (revoke fully; delete rather than wire up or park). eq-cards PR [#249](https://github.com/eq-solutions/eq-cards/pull/249), CI green, **not merged** — migration `0127` has not been applied to jvkn yet.
+- Both changes Royce's explicit call via `AskUserQuestion` (revoke fully; delete rather than wire up or park). eq-cards PR [#249](https://github.com/eq-solutions/eq-cards/pull/249) merged (squash `2728110`), deployed via `workflow_dispatch`, both jobs green, `cards.eq.solutions` 200.
 
 ## 2026-08-15 (PRs #246, #248 MERGED + deployed live — email sign-in, and two onboarding doors retired)
 - **PR #246 MERGED (squash `e090418`) — sign in by email, so a lost number isn't a lost account.** An account is created by mobile OTP and, until this, mobile was also the only way back into one — a problem the moment the number is lost, ported or reassigned, since an admin can only edit users inside their own tenant. `sendOtp` uses `shouldCreateUser: false` so an unknown address can never mint an identity; one field takes either a mobile or an email and works out which was typed, deliberately with no "sign in with email" button.
