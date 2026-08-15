@@ -14,6 +14,14 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: the email sign-in door could be guessed at from many computers at once — closed, live (2026-08-15)
+
+- [ ] **Write down the trade-off we accepted** — the new per-account limit means someone who knows a person's email address can deliberately lock that person out of Core for 15 minutes at a time by getting the PIN wrong five times. That is the normal, accepted cost of this kind of protection, and the phone sign-in door has always worked the same way, but it isn't recorded anywhere yet. Belongs in the security register so nobody "discovers" it later and treats it as a bug. _(added 2026-08-15)_
+
+**Also worth knowing (no action needed):** the sign-in limiter has **never once** locked anyone out since it went in on 3 June — the highest anyone has reached is 4 wrong tries out of 5. So the new limit is very unlikely to trouble a real person; it exists to stop an attacker with many computers, not to police typos.
+
+---
+
 ## eq-shell: 21 CRM/staff database functions only checked which tenant you were in, not who you were — closed, merged, live (2026-08-15)
 *Follow-on from #1353 (staff-update.ts), which fixed the app-side check but flagged that the underlying database function itself had no check at all — anyone signed in could call it directly and bypass the app entirely. Swept every database function with that same shape across both tenant databases (ehow/SKS and zaap/EQ) rather than just the one that had already been found.*
 

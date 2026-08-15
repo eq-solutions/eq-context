@@ -9,6 +9,13 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-15 (PR #1350 MERGED + deployed — the email sign-in door was the easiest one to guess at)
+- The email + PIN sign-in door only limited guesses **per computer**. The phone door has always limited them per account *and* per computer. Since both doors check the **same** stored PIN, an attacker with many computers could just use the weaker door to attack the same secret — and that PIN can be as short as 4 characters, so the limit is what makes guessing impractical, not the PIN itself.
+- Now limited per account as well. Deliberately counts every attempt against an address whether or not that account exists, so being locked out never reveals whether someone is a real user.
+- Closed a second, quieter leak on the same door: it used to answer noticeably faster when no such account existed than when the PIN was simply wrong (~270ms apart), which gave away the same thing the wording was careful not to.
+- Verified on the live system afterwards: a limit does get recorded for an address with no account behind it, and malformed attempts still cost nothing.
+- Worth knowing: this limiter has never actually locked anyone out since June — most people who get it wrong stop at 4 tries out of 5.
+
 ## 2026-08-15 (PR #1362 MERGED + deployed — 21 CRM/staff RPCs gated at the DB, not just the app)
 - **`0245_entity_role_gate_crm_rpcs.sql` live on both tenant planes.** Follow-on from #1353's finding that `eq_update_staff`'s app-layer gate wasn't the real boundary — swept every `public` function granted `EXECUTE` to `authenticated` on ehow/zaap (140 total, 80 writes — bigger than the ~30 estimated in #1353). 21 had no permission check at all and duplicated a write `crm-write.ts` already restricts (customer/site/contact create/edit/delete, merge). New `eq__assert_entity_role(p_perm)` helper (same pattern as the existing `eq__assert_pricing_role`) gates all 21; `authenticated` GRANT deliberately kept on 20 of them (revoking breaks the live Ops customers UI), `service_role` bypasses.
 - **`mint-tenant-jwt.ts` + `mint-supabase-jwt.ts` fixed** — neither minter read `tenant_role_overrides` into the JWT's `extra_perms`, only security-group grants. Without this, the Access Control page's role-matrix toggles would have been silently inert against every gate this migration adds — same bug class `token-exchange.ts` fixed for Field on 2026-08-07, now fixed for both tenant-plane minters.
