@@ -126,6 +126,16 @@ SHARED_EQ_CONTEXT = (os.environ.get("EQ_CONTEXT", r"C:\Projects\eq-context")
 COMMIT_RE = re.compile(r'(?<![\w-])git\s+(?:-C\s+(?:"[^"]*"|\S+)\s+)?commit(?!-)\b')
 REBASE_MERGE_PULL_RE = re.compile(r'(?<![\w-])git\s+(?:-C\s+(?:"[^"]*"|\S+)\s+)?(rebase|merge|pull)(?!-)\b')
 
+# effective_cwd()'s cd-detection (2026-08-15) — `cd` recognised at true string
+# start, at the start of a literal line (re.MULTILINE), OR immediately after a
+# command separator (`&&`/`;`/`|`), so `git worktree add X && cd X && git
+# rebase ...` — this hook's own escape-valve advice, followed literally, on
+# ONE line — resolves correctly instead of falling through to the session's
+# nominal cwd. See effective_cwd()'s own docstring for the live incident this
+# closes. finditer() returns matches left-to-right; effective_cwd() takes the
+# LAST one, since a later cd in a chain overrides an earlier one.
+_CD_CHAIN_RE = re.compile(r'(?:^|&&|;|\|)\s*cd\s+(?:"([^"]*)"|(\S+))', re.MULTILINE)
+
 # F10 — matches a `git config` SET of core.hooksPath: an optional --local/
 # --worktree/--global scope, then the key, then a value (quoted or bare).
 # Deliberately does NOT match a bare read (`git config core.hooksPath`, no
@@ -202,11 +212,47 @@ def effective_cwd(cmd, data):
     against the raw multi-line command, so it was never exposed to this
     particular gap. system/failures.md -> F9 — a guard false-positive, not a
     new corruption recurrence, so it isn't counted as one there (same
-    treatment as F9(a)'s merge-completion exemption above)."""
+    treatment as F9(a)'s merge-completion exemption above).
+
+    2026-08-15: the cd-detection above only recognised `cd` at the true start
+    of the command string or of a literal line (bare `^` / re.MULTILINE) — it
+    did not recognise `cd` chained onto an EARLIER command on the SAME line
+    via `&&`/`;`/`|`, e.g. `git worktree add X origin/main && cd X && git
+    rebase origin/main`. That shape is not exotic — it is this hook's OWN
+    escape-valve advice, followed literally (`git clone ... && cd <dir> &&
+    git rebase ...`), and this environment's Bash tool genuinely produces it
+    as one line. Found live: a rebase run inside a real, separate `git
+    worktree add` AND inside a fresh `git clone` was both wrongly blocked —
+    the exact two escape valves this hook recommends. Root cause distinct
+    from the 2026-08-05 fix above: that one handles `cd` on a later LINE;
+    this handles `cd` later on the SAME line, which has no literal newline
+    for `^`/MULTILINE to anchor to. Fixed by also matching `cd` immediately
+    after a command separator, and by taking the LAST such match — a later
+    `cd` in a chain overrides an earlier one for where the trailing git verb
+    actually runs, same reasoning `-C` already gets.
+
+    Deliberately NOT quote-stripped: a first pass ran this whole function
+    against _strip_quoted(cmd), reasoning that a commit message merely
+    containing the text "cd <path>" shouldn't be misread as a real shell cd.
+    That broke 6 of this suite's own existing tests — _strip_quoted() blanks
+    quoted CONTENTS to "" (an empty quoted string), and every real -C/cd
+    value in actual use here IS quoted (`cd "<path>"`, `git -C "<path>"`), so
+    stripping first destroys the exact value this function exists to read.
+    The false-negative that pass was guarding against is real in principle
+    but was already equally present in the ORIGINAL code (an embedded
+    newline inside a quoted multi-line argument could already misplace a
+    line-start cd) — a distinct, pre-existing, narrower risk, not something
+    this fix introduces or is scoped to close. Left as-is rather than solved
+    partially and unsafely; a genuine fix needs position-aware quote
+    tracking (know which & / cd / ^ occurrences are real shell syntax vs.
+    inside a string literal), which is adversarial-test-grade work in its
+    own right, not a same-pass addition to a narrower, already-confirmed bug."""
     m = re.search(r'git\s+-C\s+"([^"]+)"', cmd) or re.search(r'git\s+-C\s+(\S+)', cmd)
     if not m:
-        m = (re.search(r'^\s*cd\s+"([^"]+)"', cmd, re.MULTILINE)
-             or re.search(r'^\s*cd\s+(\S+)', cmd, re.MULTILINE))
+        cd_matches = list(_CD_CHAIN_RE.finditer(cmd))
+        if cd_matches:
+            last = cd_matches[-1]
+            return last.group(1) if last.group(1) is not None else last.group(2)
     if m:
         return m.group(1)
     return data.get("cwd") or os.getcwd()
