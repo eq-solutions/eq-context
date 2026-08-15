@@ -1,7 +1,7 @@
 ---
 title: SYSTEM — Failure Ledger (the ratchet's memory)
 owner: Royce Milmlow
-last_updated: 2026-08-07
+last_updated: 2026-08-15
 scope: Every failure that escaped the safeguards, with the rung its guard currently sits at. Machine-read by guard-ratchet.yml. Append-only for entries; rung/count are mutable.
 read_priority: high
 status: live
@@ -196,6 +196,20 @@ failures:
     note: "Happened while reconciling eq/pending.md through an isolated side clone — the F9-mandated escape valve for rebase/merge/pull on the shared checkout, since a direct pull/rebase there is itself blocked by F9's own guard. The reconciliation step needed to copy a local edit into the clone to merge it back, but the first attempt copied the checkout's older local copy OVER the clone's freshly-pulled content instead of merging the two — silently reverting the other session's already-pushed edits for one push cycle. Caught immediately by diffing before trusting the push, not by any guard. Surfaced into this ledger via a /decide pass run on a different question entirely (whether F6/F7's 'possibly recurred' gate flag was real) — that investigation found F6/F7 were both false alarms (single historical incidents, both already at target_rung, zero NUL bytes found on a direct byte-scan of every file touched that session) but turned up this adjacent, genuinely new, not-yet-ledgered gap along the way. Deliberately not given a hook-level guard today (see guard: field) — logged first so a second occurrence has something to increment, per this file's own stated purpose (F9's note: a failure class with no ledger entry has 'nothing to scan for')."
     signal: "(cp|copy)(-| )overwr(o|i)te.{0,60}(clone|checkout)|silently revert(ed)?\\b.{0,80}(already.pushed|pushed edits|concurrent session|another session)|blind.?overwr(o|i)te.{0,40}(pending|shared|clone)"
     confirmed_in: ["sessions/2026-08-05-o.md"]
+
+  - id: F13
+    title: "\"eq-shell doesn't auto-deploy on merge\" — a false deploy-posture claim that survived two re-verifications because its evidence was still true"
+    first_seen: 2026-08-14
+    last_seen: 2026-08-15
+    recurrences: 2
+    rung: 1
+    target_rung: 4
+    guard: "none built yet — prose only (rules/deployment.md, global ~/.claude/CLAUDE.md). Proposed: a substrate_honesty.py check that flags 'not deployed'/'merged but not live'/'manual-deploy-only'/'explicit-only' phrasing appearing in the same bullet as eq-shell or core.eq.solutions, since on this repo that sentence is never true. Cheap and high-precision — the genuine manual-trigger repos (eq-cards, eq-receipts) are a closed, named set, so the check allow-lists by repo name rather than guessing."
+    detected_by: "human — Royce, a day after the same claim was corrected in global ~/.claude/CLAUDE.md; the substrate copy outlived the correction and kept propagating"
+    cost: "a phantom 'Royce to trigger when ready' action item sat in eq/pending.md and was surfaced verbatim in digest.md — auto-loaded into every session for ~1 day — for work (PR #1346) that had been live since the second it merged. At least four PRs (#1343, #1344, #1355, #1361) were reported to Royce as merged-but-not-live when all four were already serving production. Worst case not realised: auth-change PR #1352 sat in system/worktree-registry.md annotated 'core.eq.solutions is manual-deploy-only', which would have made merging it read as a safe intermediate step rather than as deploying an auth change."
+    note: "The trap is that the claim's two supporting observations are STILL literally true — cdp_enabled_contexts really is [deploy-preview], and production deploys really do report deploy_source: api. Only the inference was false: 'api' does not mean 'a human triggered it'. Anyone re-checking the config finds it exactly as described and marks the note verified, which is how it passed two re-verifications while staying wrong. Same shape as the retired supabase/MIGRATION-LEDGER.md (eq-shell PR #1363): a stale doc that still reads as authoritative and inverts a verified fact. Ground truth: 13 consecutive merges to eq-shell main produced 13 production deploys, live 2-4s later, via Netlify's own GitHub App (installation 121276861). NEVER re-derive this from deploy_source/cdp_enabled_contexts — correlate merge timestamps against deploy created_at, and check liveness by commit ancestry against the newest ready production deploy, not by your own deploy's state (concurrent merges produce state:error/Skipped deploys whose commits still shipped inside a later build)."
+    signal: "core\\.eq\\.solutions.{0,80}(doesn'?t|does not|never) auto.?deploy|core\\.eq\\.solutions.{0,80}(manual-deploy-only|explicit-only|manual.{0,20}trigger|is a separate explicit step)|(merged but not|not deployed|manual.{0,20}trigger|manual-deploy-only|explicit-only).{0,80}core\\.eq\\.solutions|eq-shell.{0,60}(manual-deploy-only|deploy.{0,20}separate explicit step)"
+    confirmed_in: ["sessions/2026-08-14.md", "sessions/2026-08-15.md"]
 ```
 
 ---

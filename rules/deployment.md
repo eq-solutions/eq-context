@@ -1,7 +1,7 @@
 ---
 title: Rules — Deployment
 owner: Royce Milmlow
-last_updated: 2026-08-04
+last_updated: 2026-08-15
 scope: Deployment guardrails for EQ and SKS sites and infrastructure
 read_priority: critical
 status: live
@@ -29,7 +29,7 @@ status: live
 
 | App | Source repo | Branch | Deploy method | Account | Who triggers |
 |------|-------------|--------|---------------|---------|--------------|
-| EQ Shell | `eq-solutions/eq-shell` | `main` | GitHub push → Netlify CD | dev@eq.solutions | Explicit instruction only |
+| EQ Shell | `eq-solutions/eq-shell` | `main` | GitHub push → Netlify CD — **merging to `main` IS the deploy** (auto, live 2-4s later, unattended; see note below) | dev@eq.solutions | Explicit instruction only — **and the approval gate bites at the merge click** |
 | EQ Field | `eq-solutions/eq-field` | `main` (was `demo` until 2026-05-20 rename) | GitHub push → Netlify CD | dev@eq.solutions | Explicit instruction only |
 | EQ Service | `eq-solutions/eq-service` (local folder `eq-solves-service`) | `main` | GitHub push → Netlify CD | dev@eq.solutions | Explicit instruction only |
 | EQ Cards | `eq-solutions/eq-cards` | `main` | Netlify (deploy NOT automatic on merge — must be triggered) | dev@eq.solutions | Explicit instruction only |
@@ -101,6 +101,9 @@ Every Netlify or Cloudflare Pages site must ship with a `_headers` file containi
 - `eq-solutions/sks-nsw-labour` repo (split out 2026-05-20): auto-deploys on push to `main`
 - `eq-solutions/eq-field` repo: auto-deploys on push to `main` (branch formerly `demo` — renamed 2026-05-20 after the SKS Live split)
 - **Auto-deploy on push is not universal.** `eq-cards` and `eq-receipts` both need a manual Netlify trigger despite carrying a `netlify.toml` that implies otherwise — a merged PR on those repos is not a live change. Confirm the deploy, don't infer it.
+- **`eq-shell` is the opposite trap, and it is the one that bites harder.** Merging a PR to `main` **does** trigger a Netlify production build, live on core.eq.solutions **2-4 seconds later, unattended**. There is no gap between "merge it" and "ship it" on this repo. **Never say something is "merged but not live" here.** Treat every eq-shell merge approval as a production-deploy approval — this is what makes the auth-change review rule bite at the *merge* click, not at some later step. Trigger is Netlify's own GitHub App (installation `121276861`), not a repo webhook and not a workflow. Verified 2026-08-15 across 13 consecutive merges → 13 production deploys spanning 15 hours and multiple concurrent sessions.
+  - **Do not re-derive this from `deploy_source` or `cdp_enabled_contexts`.** A stale note claimed the opposite and survived two re-verifications because its two observations are still literally true — `cdp_enabled_contexts` really is `["deploy-preview"]` and production deploys really do report `deploy_source: "api"`. The *inference* was false: `"api"` does not mean "a human triggered it". **Correlate merge timestamps against deploy `created_at` instead:** `npx netlify api listSiteDeploys --data '{"site_id":"a3473f83-7c82-4f1e-872d-aa96eaa55172","per_page":40}'`
+  - **"My deploy succeeded" ≠ "my code is live", and neither implies the other.** Concurrent merges make Netlify supersede in-flight production builds (`state: "error"`, `error_message: "Skipped"`) — those commits still ship inside a later build. The inverse also happens. **The check is commit ancestry against whatever is actually serving:** take `commit_ref` from the newest `state: "ready"` / `context: "production"` row, then `git merge-base --is-ancestor <my-sha> <live-commit_ref>`. Don't infer liveness from deploy titles — a skipped deploy still carries its commit's title.
 
 ---
 
