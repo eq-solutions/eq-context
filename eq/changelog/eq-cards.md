@@ -1,13 +1,22 @@
 ---
 title: EQ Cards — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-14
+last_updated: 2026-08-15
 scope: EQ Cards append-only history. NOTE — duplicates eq/changelog/cards.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # EQ Cards — Changelog
+
+## 2026-08-15 (PRs #246, #248 MERGED + deployed live — email sign-in, and two onboarding doors retired)
+- **PR #246 MERGED (squash `e090418`) — sign in by email, so a lost number isn't a lost account.** An account is created by mobile OTP and, until this, mobile was also the only way back into one — a problem the moment the number is lost, ported or reassigned, since an admin can only edit users inside their own tenant. `sendOtp` uses `shouldCreateUser: false` so an unknown address can never mint an identity; one field takes either a mobile or an email and works out which was typed, deliberately with no "sign in with email" button.
+- **Fixed the footer copy in the same PR.** It read "This sign-in is for existing accounts only" — false for the mobile path, which creates accounts by design (`sendPhoneOtp` leaves `shouldCreateUser` at its `true` default deliberately; `OtpScreen._resolveAndLand` calls that case "new self-signup" and auto-provisions a personal wallet). The copy landed 2026-06-25 in `0a1a26f`, two days before codeless self-signup shipped, and was never revisited. Verified deliberate three ways, including reading `eq_cards_auto_provision()` live on jvkn, before changing a word.
+- **PR #248 MERGED (squash `13bfe54`) — retired `/join` and `/claim?tenant=`.** `/join` had been unreachable since 2026-06-10 (no emitter in eq-cards or eq-shell; `AdminWorkerQR.tsx` recorded routing to `/claim` "not `/join`, is deliberate") while still carrying `JoinTenantScreen`, `JoinContext`, `join_context_notifier`, `AuthRepository.joinTenantExchange`, `AuthFlowNotifier.joinTenant`, `InviteLookupApi` and three redirect exemptions. `/claim?tenant=` — the worker QR poster — resolved against `worker_invites`, which holds 7 rows, 6 claimed and 0 unclaimed-and-unexpired, so every scan landed on "no invite found".
+- **Tokenless `/claim` now falls through to normal sign-in** rather than erroring, so posters already printed still work: the poster's whole job was "find my invite from my phone number", and `_resolveAndLand` already does that against `eq_cards_find_pending_invite` once the code lands.
+- **Kept deliberately:** `/claim?token=` (links already sent), `/provision?token=` (still the only way to create a workspace), `/connect` (where the volume is — `org_access_requests` 54 rows, 47 approved, newest 13 Aug), and the invisible post-OTP invite match.
+- **Deployed live** via `workflow_dispatch` run `31852098680`, both jobs green; the workflow also redeploys every edge function to jvkn. `cards.eq.solutions` 200. Neither change click-tested on a real phone.
+- **Left open:** `eq_cards_lookup_invite_by_phone` still has anon EXECUTE on jvkn and, as of #248, no caller — an unused phone-enumeration surface. Revoking needs a live migration plus a `cards-api` op removal and a `check-tenant-drift.mjs` update, so it was chipped (`task_5264c029`) rather than done in passing.
 
 ## 2026-08-14 (PRs #240, #244 MERGED + deployed — CI now deploys edge functions, not just the web app)
 - **PR #240 MERGED — `deploy.yml` gained a `deploy-edge-functions` job.** Found after PR #238's ocr-licence timeout fix merged, `Build & Deploy` reported success, and the live function on jvkn kept serving the old code anyway — the workflow had never deployed anything under `supabase/functions/`, only the Flutter web app. New job runs `supabase functions deploy --project-ref jvknxcmbtrfnxfrwfimn` via the CLI, same explicit-only `workflow_dispatch`/`release/v*` gate as the rest of the workflow, own job so it can't be blocked by (or block) the Flutter build.
