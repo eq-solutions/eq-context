@@ -177,44 +177,8 @@ _Auto-refreshed nightly. ✓ = has data · ⚠ = empty (no data yet) · ✗ = ta
 - Field↔Service **site pull rewired to canonical** — `/api/eq-service/sites` (dead: queried a non-existent `public.sites` → 404) now reads the canonical `app_data.field_sites` adapter view (field PR #422, 2026-07-08)
 - Field permission matrix **guarded against canonical role drift** — warn-only startup check flags any Field role key that isn't a subset of the `@eq-solutions/roles` enum (field PR #418, 2026-07-06)
 - Contract-scope commercial-sheet import now **also seeds unscheduled RCD maintenance checks** — RCD Testing scope lines create header-only `maintenance_checks` (`kind='rcd'`, scheduled, unassigned) so contracted RCD visits surface in the queue/calendar instead of living only as dollar line items; cadence read from `intervals_text`, editable default dates (service PR #465, 2026-07-06)
-- Shell delegates **microphone capability to the Field iframe only** — `netlify.toml` Permissions-Policy opens `microphone` to the two Field origins + `FieldIframe` gets `allow="microphone"`; enables voice-to-text on Field safety forms embedded in core.eq.solutions (camera/geo stay disabled) (shell PR #693, 2026-07-06)
-- Onboarding first-run wizard **retired permanently** — disabled outright and `setup_completed_at` backfilled for the SKS tenant so it never re-triggers (service PRs #453/#454, 2026-07-06)
-- Contract-scope commercial-sheet import now **creates and reconciles canonical assets directly from the sheet upload** — new asset-reconciliation screen fills contract-scope asset gaps; assets route to `app_data.assets` via the canonical write layer (service PRs #444/#445/#452, 2026-07-05→06)
-- Staff `employment_type` **locked to a canonical vocabulary unified with eq-field** — stops role→type conflation; type is now a controlled field, not inferred from role (shell PRs #687/#690, 2026-07-06)
-- Shell admin: **one-spot app-activation view with canonical entitlement merge** — app activation/entitlements managed from a single admin surface against canonical org-keyed entitlements (shell PR #680, 2026-07-06)
-- Field job numbers: **EQ Ops is the single source of truth** — Field reads a canonical `app_data.field_job_numbers` view (SECURITY DEFINER, financials never exposed); Field-local manual numbers still allowed and Ops wins on overlap. Invoiced quotes auto-retire off the board by rule; new `public.field_job_number_overrides` table backs manual hide/restore (field PRs #404/#405/#409/#410/#411, shell PRs #651/#652/#653/#669, 2026-07-04→05)
-- **Subcontractor role** added to the canonical role model (eq-roles v2.4.0) — exposed as a selectable role (safe subset) across Shell + Service (service PR #440, shell PRs #662/#664, 2026-07-05)
-- Labour hire rates went **canonical** — new canonical tables + read-only Ops tab with a weekly-cost rollup (shell PRs #663/#670, 2026-07-05)
-- New-tenant provisioning hardened — `app_data` schema now exposed over PostgREST for new tenants (EQ-SHELL-M), and the creating admin is auto-joined so a fresh tenant is reachable (shell PRs #656/#647, 2026-07-04→05)
-- eq-service offsite backup RETIRED — platform DR (ehow + eq-canonical + eq-canonical-internal) now owned by eq-context, not baked into a consuming app; old job was schema-only + 2/6 buckets, replacement is full logical dump + all buckets + Sentry cron check-in (merged PR #438, 2026-07-04)
-- Fly.io account deleted 2026-07-04 — EQ Quotes (quotes.eq.solutions) and the Gotenberg HTML→PDF host retired; dead CORS origins + env refs removed (merged service PRs #397/#432, 2026-07-04)
-- Shell: app-tile entitlements moved from tenant-keyed `shell_control.module_entitlements` to canonical org-keyed `public.org_module_entitlements`; legacy table + sync trigger dropped (readers Stage A #648, writers + drop Stage B #650, 2026-07-04)
-- Shell: tenant branding collapsed to one canonical copy in `public.organisations.branding`; `shell_control.tenants.brand_color/brand_logo_url` dropped — session/JWT shape unchanged, source moved (merged shell PR #644, 2026-07-04)
-- Shell: view security_invoker invariant (CHECK 7, no allow-list) added to `check-tenant-drift.mjs` — every anon/authenticated-reachable canonical view must carry security_invoker or the tenant-migration gate blocks (merged shell PR #625, 2026-07-03)
-- Field: prestart auto-fills customer from the chosen site (QA row 29) — reads canonical `customer_name` off `field_sites` (blank-only, no-op for unlinked sites). Client shipped v3.5.237 (merged field PR #402, 2026-07-04). eq-shell PR #645 (`tenant-migrations/0159_field_sites_customer_name.sql`). **RESOLVED — jam cleared 2026-07-10**: the One Pipe fleet is applied through **0167+** on all tenants (ehow, zaap, favour-perfect) with **zero checksum drift**, so Row 29 (prestart customer auto-fill) is live. The 2026-07-04 "0159 not applied / apply aborts on drift" note was stale.
-- Contacts joined the canonical view+INSTEAD OF trigger model — service.contacts is a view over app_data, DML routed to canonical (0167) (merged PR #410, 2026-07-02)
-- Governed migration-apply pipeline + service invariants gate — migrations now apply through a checked pipeline, not ad-hoc (0168/0169) (merged PR #412, 2026-07-03)
-- Dead auth exemptions removed from PUBLIC_PATHS — /api/shell-sso (merged PR #394) and /auth/shell-bridge (merged PR #388), 2026-07-01
-- Fail closed on unresolved Shell→Service tenant slug — no silent fallthrough on handoff (merged PR #376, 2026-06-29)
-- Shell: create-worker-invite routed through the canonical worker resolver (merged shell PR #597, 2026-07-02)
-- Shell: anon RPC grants closed + tenant-JWT policies on quality-guardian tables (0157) (merged shell PR #612, 2026-07-03)
-- Shell: self-serve tenant provisioning hardened — transactional RPC, phone-bound links, runs as a background function (merged shell PRs #617/#627, 2026-07-03)
-- Field: edge functions rewritten for canonical/ehow compatibility (merged field PR #380, 2026-06-30)
-- Shell user_id is now the canonical join key between Shell identity and Field roster person (via app_data.staff.user_id → field_person_by_user_id RPC) (PR #352, 2026-06-27)
-- CLAUDE.md project ID corrected from deleted urjh to live ehow (ehowgjardagevnrluult) (PR #332, 2026-06-22)
-- Auto-defect trigger ON CONFLICT regression rule moved from memory to CLAUDE.md (PR #332, 2026-06-22)
 
-- **urjh deleted 2026-06-22** — ehow (`ehowgjardagevnrluult`) is the sole DB for EQ Service (PR #327)
-- **Shell owns canonical records** — sites/customers/assets live in `app_data.*` on ehow; service.* are live views; Field sync removed from Service (PR #328, #310)
-- **TOKEN MODE live** — Shell iframe mints JWT via `token-exchange`; `mint-iframe-token` deleted (shell PR #430)
-- **Legacy HMAC retired** — `EQ_SECRET_SALT` / `validateLegacyToken()` removed from `shell-auth` (PR #326)
-- **Public-schema RPCs use `createPublicAdminClient()`** — `service.*` schema is for operational queries; dashboard/asset RPCs in `public.*` need admin client (PRs #314, #315, #325)
-- **Shell JWT preferred over OTP session** — `layout.tsx` skips tenant_members query when `hasJwtSession=true` (PR #320)
-- **`inviteUserAction` must set `app_metadata.tenant_id`** — ehow RLS uses JWT claims, not helper functions; invite + orphan-attach both stamp it (PR #318)
-- **Shell/Service URL sync via postMessage** — `core.eq.solutions/sks/service/...` is bookmarkable; browser back works (PR #422)
-- **Sites activate via contract scope** — a site becomes relevant in Service when a contract scope is created against it
-- **No test suite** — tsc + manual verify is the gate
-- **Canonical pull cron removed** — service.* views are live over app_data; no sync job needed (PR #310)
+_Older decisions are evicted here, not deleted: the full record lives in `eq/changelog/*.md` and `ops/decisions.md`, which is where this detail is authored in the first place. Kept: 30 most recent. Evicted this run: 37._
 
 ---
 
