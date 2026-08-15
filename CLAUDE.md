@@ -103,7 +103,7 @@ The risk is silent substitution — output that looks substrate-aware but is fre
 
 ## 3. Templates First — Operational Outputs
 
-Before drafting any operational deliverable (quote, email, MOP, scope, log, letter, variation, report), check `sks/templates.md` (SKS) or `eq/templates.md` (EQ).
+Before drafting any operational deliverable (quote, email, MOP, scope, log, letter, variation, report), check `sks/templates.md` (SKS). **There is no EQ template library yet** — `eq/templates.md` has never existed, so for an EQ deliverable the "no template" branch below always applies: produce it, then ask whether to capture it as the first entry.
 
 - **Template exists** → follow it exactly.
 - **No template** → produce the deliverable AND ask Royce whether to draft a template capturing what was just produced.

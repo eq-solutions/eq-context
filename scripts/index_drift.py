@@ -23,6 +23,7 @@ Run:  python scripts/index_drift.py
 """
 import glob
 import os
+import re
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -62,13 +63,24 @@ def find_orphans(relative_paths, readme_text, readme_basename, exempt=frozenset(
     """Pure: which relative_paths (e.g. 'changelog/shell.md') are unmentioned in
     readme_text. A file is considered indexed if its basename appears anywhere
     in the README text — loose on purpose (table, prose link, either is fine).
+
+    Matched on a filename BOUNDARY, not as a bare substring. The old test was
+    `if base not in readme_text`, which meant a shorter name matched inside a
+    longer one: "service.md" was reported as indexed because the README mentions
+    "eq-service.md". In eq/ alone that collision hid four changelogs —
+    service.md, cards.md, field.md and shell.md — every one of which is half of
+    a real duplicate pair, which is exactly what this check exists to surface.
+
+    The boundary is "not preceded by a filename character". A leading `/` still
+    counts as a mention, so `eq/changelog/shell.md` in a link indexes
+    `shell.md` — that is the intended looseness. `eq-shell.md` does not.
     """
     orphans = []
     for rel in relative_paths:
         base = os.path.basename(rel)
         if base == readme_basename or base in exempt:
             continue
-        if base not in readme_text:
+        if not re.search(r"(?<![A-Za-z0-9_.-])" + re.escape(base), readme_text):
             orphans.append(rel)
     return orphans
 

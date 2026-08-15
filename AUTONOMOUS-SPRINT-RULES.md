@@ -21,7 +21,20 @@ status: live
 These are the hard conventions that make parallel autonomous work **diverge-proof**. Every one exists because we hit the failure on 2026-05-30. Breaking one re-introduces a known break. If a task seems to require breaking a rule, STOP and flag it — don't work around it.
 
 ## 0. The one hard line — SKS LIVE IS UNTOUCHABLE
-Autonomy is **full-auto build → PR → merge → deploy on green**, EXCEPT:
+
+> **The full-auto grant this section used to open with is REVOKED.** It read
+> "Autonomy is full-auto build → PR → merge → deploy on green". The 2026-05-30
+> ADR that conditionally relaxed non-negotiable #1 **lapsed 2026-07-16** —
+> Royce's confirmation, recorded at `rules/non-negotiables.md` #1: "#1 applies
+> as written, no exceptions." This file was last touched 2026-07-12, four days
+> before the lapse, and was never revisited, so it went on granting merge-and-
+> deploy authority that no longer existed. On eq-shell that is not a paperwork
+> distinction: **merging to `main` IS the production deploy**, live on
+> core.eq.solutions 2-4 seconds later (`rules/deployment.md`).
+
+Autonomy is **build → PR, and stop.** Merging and deploying require explicit
+instruction from Royce, every time. The hard lines below are additional to that,
+not alternatives to it:
 - **Never deploy to `sks-nsw-labour.netlify.app`.** No pushes/merges that trigger a build of the SKS live site.
 - **Never write to the SKS live database** (`sks-labour`, Supabase `nspbmirochztcjijmcrx`). Read-only at most, and prefer not at all.
 - **Never run the Field-merge CUTOVER** (repointing the SKS Netlify site at the merged repo) — that is a Royce-gated step (board item B5).

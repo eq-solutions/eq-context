@@ -62,9 +62,15 @@ deploy_urls:
     url: https://eq.solutions
     status: paused
     role: Intentionally taken down 2026-07-16 while Royce works through SKS's employer adopting the software — avoiding any dramas mid-discussion. Not a bug; don't re-flag.
-  - label: EQ Service (Netlify)
-    url: https://eq-solves-service.netlify.app
+  - label: EQ Service
+    url: https://service.eq.solutions
     status: live
+    role: >-
+      Netlify site name is eq-service; custom domain service.eq.solutions,
+      confirmed live 2026-08-04. The previous entry probed
+      eq-solves-service.netlify.app as live -- suite-state.md records that this
+      was NEVER the live domain, so the honesty oracle was itself asserting
+      something the substrate calls false.
 
 # --- Forbidden live references ----------------------------------------------
 # Tokens that must NOT appear as a live reference in the active tree. archive/

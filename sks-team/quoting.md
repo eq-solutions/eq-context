@@ -213,7 +213,9 @@ If the user provides only a single number (no breakdown), don't invent one. Ask:
 
 ### 6.5 Quote reference format
 
-`SKS-QT-XXXX-XXX` (year-batch + sequence). If the user doesn't have one, ask. Do not generate randomly — references usually come from Workbench or the team's sequence tracker.
+`SKS-QT-XXXX-XXX` (year-batch + sequence). **Quote numbers are assigned manually from Workbench. Never generate, suggest, or auto-assign one — not as a placeholder, not as an example, not even a plausible-looking pattern.** If the user doesn't have one, ask for it and leave the field blank until they do.
+
+This is the canonical rule as written in `sks/README.md`. It previously read "do not generate *randomly* — references *usually* come from Workbench or the team's sequence tracker", which softened an absolute prohibition into a preference on the copy the team actually reads, and left a second source open.
 
 ---
 
