@@ -9,6 +9,11 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-15 (PRs #1364/#1365/#1366 OPEN, not merged — closing out the staff-update security thread)
+- Revoked `authenticated` EXECUTE on `public.eq_update_staff` (both zaap + ehow) — closed the direct-PostgREST door into the same write PR #1353's gate fixed. Migration only, needs Royce's `tenant-migrate.yml` dispatch after merge. [#1364](https://github.com/eq-solutions/eq-shell/pull/1364)
+- Re-audited the permission-enforcement baseline's "enforced downstream" claims, found `field.view_hours` and `field.view_licences` (timesheet + licence reads) had the same bug as `field.manage_people`: gated on the coarse `field.view` instead of the split-out, manager+supervisor-only key. Fixed in `entity-rows.ts` and `staff-canonical-licences.ts`. [#1365](https://github.com/eq-solutions/eq-shell/pull/1365)
+- Retired `netlify/functions/staff-update.ts` outright — confirmed fully superseded by `entity-patch.ts`, zero frontend callers, never actually worked. Royce's explicit call. [#1366](https://github.com/eq-solutions/eq-shell/pull/1366)
+
 ## 2026-08-15 (PR #1357 MERGED + live — login outcomes queryable across all three sign-in doors)
 - **PR #1357 MERGED (squash `25b2ef56`), live via `36a77b6c`.** Lockouts, access refusals and half-logins existed only in Netlify function logs. New `_shared/login-audit.ts` gives every door one event vocabulary: `login.rate_limited` (the alertable one), `login.blocked` (credential RIGHT, access refused — a provisioning bug, not an attack), `login.failed`, `login.totp_challenge_issued` (first factor passed, no session minted — a challenge with no `login.totp.success` after it is a held password stopped by 2FA).
 - **Failure rows now carry the attempted address as `detail.identity`.** The 30 pre-existing `login.failed` rows were anonymous (`actor_id: null`, IP + reason only) and could not answer which account was targeted. Safe because these land in `shell_control.audit_log` — `deny_all` RLS, service_role-only grants, no browser path. NOT `public.audit_log`, which is `authenticated`-readable and is what SEC-1 flags.
