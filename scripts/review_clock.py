@@ -184,12 +184,26 @@ def days_overdue(due, today):
     return max(0, (today - due).days)
 
 
-# Measured 2026-08-15 with the rules above: 3 generated / 234 record / 91 state,
-# of which 15 state files are overdue. Ratchet, not cliff -- the ceiling is where
-# the substrate is today and can only be lowered. A gate that failed on day one
-# would be grandfathered on day one, which is the failure it exists to prevent.
-# Lowering this is the actual review work; raising it needs a reason in the
-# commit message.
+# Ratchet, not cliff -- the ceiling is where the substrate is today and can only
+# be lowered. A gate that failed on day one would be grandfathered on day one,
+# which is the failure it exists to prevent. Lowering this is the actual review
+# work; raising it needs a reason in the commit message.
+#
+# 2026-08-15 first measurement:  3 generated / 234 record /  91 state, 15 overdue
+# 2026-08-15 after the review:   3 generated / 237 record /  88 state,  5 overdue
+#
+# The 10 cleared in between were not cleared by bumping dates. Three were
+# finished work still flying status: live (the executed canonical-readiness and
+# Cards migration plans, and the go-live runbook) and became kind: record. Seven
+# were re-verified against the live systems and corrected where they disagreed --
+# spine.md's headline was 55 tables against a live 128, brand-sks.md still
+# specified the retired #1F335C, and the Field visibility model claimed all 40
+# people were hidden when all 83 are visible.
+#
+# The 5 that remain are SKS operational files (sks/active.md, sks-team/*) whose
+# truth lives with Royce, not in any system this can query. They are left overdue
+# on purpose: a number that stays honest is worth more than a number driven to
+# zero by stamping files nobody read.
 #
 # No headroom, unlike prune_ratchet's residue ceiling. Residue gets slack because
 # ordinary sessions legitimately add follow-ups and a gate that trips on normal
@@ -197,7 +211,7 @@ def days_overdue(due, today):
 # that touches a state file bumps its last_updated and REMOVES it from this
 # count, so normal work drives the number down, never up. It rises only when
 # something ages out untouched, which is precisely the event worth stopping for.
-STATE_OVERDUE_CEILING = 15
+STATE_OVERDUE_CEILING = 5
 
 
 def iter_tracked_md():

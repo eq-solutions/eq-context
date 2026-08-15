@@ -1,7 +1,7 @@
 ---
 title: OPS — Financial Architecture
 owner: Royce Milmlow
-last_updated: 2026-05-04
+last_updated: 2026-08-15
 scope: AHD design, CDC PSI position, Delta Elcom consulting cliff
 read_priority: standard
 status: live

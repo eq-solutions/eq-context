@@ -1,12 +1,19 @@
 ---
 title: EQ Canonical Layer — Readiness Plan
 owner: Royce Milmlow
-last_updated: 2026-05-30
+last_updated: 2026-08-15
+kind: record
 scope: Bring eq-canonical (jvknxcmbtrfnxfrwfimn) to the shape needed to host EQ Intake, EQ Field, and EQ Quotes as first-class canonical-backed modules. Captures the gap matrix per app, sequences the schema + RPC + storage work, and surfaces architectural prerequisites (mega-RPC decomposition, schema split, per-tenant data plane decision) that get more expensive every week they're deferred.
-read_priority: critical
-status: live
+read_priority: reference
+status: archived
 ---
 
+> **EXECUTED 2026-05-20 — this is a record, not a plan.** All 6 work units
+> shipped. Marked `kind: record` on 2026-08-15 because it had been sitting at
+> `status: live` / `read_priority: critical` for 87 days as 886 lines of
+> finished work, which is 886 lines a session could mistake for outstanding.
+> Structural numbers here are point-in-time and have since moved — the
+> canonical schema went 55 → 128 tables; see `spine.md`, re-derived live.
 # EQ Canonical Layer — Readiness Plan
 
 **Status:** EXECUTED 2026-05-20 (autonomous push). All 6 work units shipped (1 → 2 → 3 → 4 → 5 → 7). Canonical now hosts 42 entities across 5 modules (core=3, field=30, cards=1, quotes=7, service=1), split into shell_control + app_data schemas with per-domain RPCs, unwinders, and registry-driven Intake UI landing pages. See §"Execution record" for the migration log.

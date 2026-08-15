@@ -1,7 +1,7 @@
 ---
 title: SKS Brand — Preflight Check
 owner: Royce Milmlow
-last_updated: 2026-05-30
+last_updated: 2026-08-15
 scope: Mandatory checklist before presenting any SKS customer-facing output
 read_priority: critical
 status: live
@@ -21,7 +21,7 @@ The check is six lines. It exists because the brand spec in `rules/brand-sks.md`
 |---|---|---|
 | 1 | **Logo source** | Image URL is one of the four R2 URLs: `SKS_Logo_Colour_Arrows_Clean.png`, `SKS_Logo_Colour_Text_Clean.png`, `SKS_Logo_White_Arrows_Clean.png`, `SKS_Logo_White_Text_Clean.png`. No local files. No alternate hosts. |
 | 2 | **Logo aspect ratio** | Arrows variant width:height = 1.230:1 (2000×1626). Text variant width:height = 2.766:1 (2000×723). Height derived from width using these ratios — never set independently. |
-| 3 | **Palette is correct** | Primary fills are Dark Blue `#1F335C` or White only. Purple `#7C77B9` appears only on CTAs / buttons / accent rules, never as a primary fill or background. No EQ tokens (Plus Jakarta Sans, Sky `#3DA8D8`, Ice `#EAF5FB`). |
+| 3 | **Palette is correct** | Primary fills are Dark Blue `#203060` or White only. Purple `#7C77B9` appears only on CTAs / buttons / accent rules, never as a primary fill or background. No EQ tokens (Plus Jakarta Sans, Sky `#3DA8D8`, Ice `#EAF5FB`). |
 | 4 | **Fonts are correct** | Headings: Roboto (all outputs; if recipient lacks Roboto, Word fallback to Calibri is acceptable). Body in docx: Calibri Regular (Word default, universally installed). Body in PDF/web: Roboto Regular (fonts embedded in PDFs we generate). HTML links to `sks-brand.css` and uses `var(--sks-font-heading)` / `var(--sks-font-body)`. Word docs inherit from `SKS_Master.docx` named styles (SKSTitle/SKSH1/SKSBody/etc.). |
 | 5 | **Flat — no gradients, no shadows** | No `linear-gradient`, no `radial-gradient`, no `box-shadow`, no `text-shadow`, no Word drop-shadow effects, no glow on logo. SKS visual language is flat. |
 | 6 | **Footer + placeholders** | Footer present with `SKS Technologies Pty Ltd \| ABN 51 168 906 956 \| 27/10 Gladstone Rd, Castle Hill NSW 2154 \| (02) 9659 9199`. Real client names (Equinix, AirTrunk, AWS, Schneider, etc.) replaced with placeholders ("Data Centre Client A", "Tier 1 Client", "Healthcare Client"). |

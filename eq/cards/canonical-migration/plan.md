@@ -1,12 +1,20 @@
 ---
 title: EQ Cards — Canonical migration plan
 owner: Royce Milmlow
-last_updated: 2026-05-20
+last_updated: 2026-08-15
+kind: record
 scope: Plan for retiring EQ Cards's standalone Supabase project and moving its data + auth onto eq-canonical, with Cards becoming both a mobile intake door and a wallet viewer against the canonical spine. Spans 5 work units across eq-intake (schema + spine), eq-canonical (migration + RLS), eq-cards (Flutter app), eq-shell (SSO + iframe wiring), and Netlify (custom domain).
-read_priority: critical
-status: live
+read_priority: reference
+status: archived
 ---
 
+> **EXECUTED — this is a record, not a plan.** Verified 2026-08-15: the
+> standalone Cards Supabase project (`hshvnjzczdytfiklhojz`) named throughout
+> this document **no longer exists** in the org, which is the migration's own
+> completion test. Cards is live on canonical and taking real self-signup and
+> claim traffic. Kept in place rather than archived because 6 other documents
+> link here; the SSO/iframe framing is superseded by
+> `eq/cards/worker-platform-direction-2026-06-15.md` and `ops/decisions.md`.
 # EQ Cards — Canonical migration plan
 
 This is the §18 close-out from `C:\Projects\eq-cards\ARCHITECTURE.md`.
