@@ -333,6 +333,46 @@ if new_decisions:
     )
     print(f"  Added {len(new_decisions)} new ARCH decisions")
 
+# 7f-ii. ARCH: decisions — EVICT the tail.
+#
+# This section was append-only with no eviction and had reached 67 bullets /
+# 21 KB — 79% of suite-state.md, a file auto-loaded into EVERY session in
+# C:\Projects regardless of tier via the @eq-context/suite-state.md directive.
+# It could only ever grow, and its entries near-verbatim duplicate the
+# per-product changelogs, which are the actual home for this detail.
+#
+# Newest-first is already the insertion order (new decisions are spliced
+# directly under the heading), so keeping the head keeps the recent ones.
+KEEP_DECISIONS = 30
+
+_dec = re.search(r"(## Key Decisions[^\n]*\n)(.*?)(\n---|\Z)", content, flags=re.DOTALL)
+if _dec:
+    head, body, tail = _dec.group(1), _dec.group(2), _dec.group(3)
+    # A "bullet" here is a top-level "- " line plus any continuation lines under
+    # it; entries in this section are long and often wrap.
+    bullets, current = [], []
+    for line in body.split("\n"):
+        if line.startswith("- "):
+            if current:
+                bullets.append("\n".join(current))
+            current = [line]
+        elif current:
+            current.append(line)
+    if current:
+        bullets.append("\n".join(current))
+
+    if len(bullets) > KEEP_DECISIONS:
+        dropped = len(bullets) - KEEP_DECISIONS
+        kept = "\n".join(bullets[:KEEP_DECISIONS]).rstrip()
+        note = (
+            f"\n\n_Older decisions are evicted here, not deleted: the full record lives in "
+            f"`eq/changelog/*.md` and `ops/decisions.md`, which is where this detail is "
+            f"authored in the first place. Kept: {KEEP_DECISIONS} most recent. "
+            f"Evicted this run: {dropped}._\n"
+        )
+        content = content.replace(head + body + tail, head + kept + note + tail, 1)
+        print(f"  Evicted {dropped} decisions past the {KEEP_DECISIONS} most recent")
+
 # 7g. Field canonical data plane — SKS tenant counts
 print("Querying Field canonical data plane (ehow)...")
 try:

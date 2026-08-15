@@ -18,6 +18,20 @@ jobs:
         with:
           fetch-depth: 0
 
+      # What a session pays to start. Separate step so its failure is legible
+      # on its own rather than buried in the violation counter below: this is a
+      # budget, not a style rule, and the fix is different (trim or de-mandate
+      # the file, don't reformat it).
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Session-start budget
+        run: python scripts/session_start_budget.py
+
+      - name: Session-start budget — self-test
+        run: python scripts/test_session_start_budget.py
+
       - name: Run MD health checks
         run: |
           set -euo pipefail

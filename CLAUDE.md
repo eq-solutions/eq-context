@@ -43,10 +43,21 @@ Every session, every tool. No exceptions.
 
    | Answer | Files to read |
    |---|---|
-   | EQ | `eq/README.md` + `eq/pending.md` |
-   | SKS | `sks/README.md` + `sks/pending.md` + `sks/active.md` |
+   | EQ | `eq/README.md` |
+   | SKS | `sks/README.md` + `sks/active.md` |
    | Cross-tier | Both — state which tier owns the work |
-   | OPS | `ops/README.md` + `ops/pending.md` |
+   | OPS | `ops/README.md` |
+
+   **The tier `pending.md` is NOT a session-start read. Search it, don't load it.**
+   `eq/pending.md` is 491 KB — roughly 125,000 tokens, about 82% of everything a
+   session used to load before its first question. Reading it whole was costing
+   more context than the entire rest of the substrate combined, and no automation
+   ever required it: the SessionStart hook reads only `digest.md` and `TODAY.md`,
+   and `rotate_pending.py` / `refresh_digest.py` consume the file mechanically.
+   What you actually need at session start is already above — `punch-list.md` is
+   the capped active queue and `digest.md`'s **Needs you** is the alert feed.
+   Open the tier `pending.md` when you have a specific question for it (grep the
+   repo or app name), and read the section you land in, not the file.
 
    `archive/` only when Royce explicitly references parked content (AHD). `sks-team/` is a separate tier for SKS team members' sessions — not loaded for Royce's personal sessions.
 
