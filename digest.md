@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-15 03:29 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-15 03:35 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-15 03:09 UTC → 2026-08-15 03:29 UTC)
+## Since last refresh (2026-08-15 03:29 UTC → 2026-08-15 03:35 UTC)
 
-- Merged: eq-shell [#1367](https://github.com/eq-solutions/eq-shell/pull/1367) fix(security): a deactivated shell_control.users account can
-- Merged: eq-shell [#1350](https://github.com/eq-solutions/eq-shell/pull/1350) fix(auth): dual-key shell-login's rate limit on IP + email, 
-- Merged: eq-shell [#1348](https://github.com/eq-solutions/eq-shell/pull/1348) feat(reports): compliance report + mobile Home quick links, 
-- Merged: eq-shell [#1347](https://github.com/eq-solutions/eq-shell/pull/1347) fix(auth): admin phone change now updates the login identity
-- Merged: eq-shell [#1345](https://github.com/eq-solutions/eq-shell/pull/1345) fix(auth): default self-join QR/link codes to 7-day expiry
-- Merged: eq-shell [#1343](https://github.com/eq-solutions/eq-shell/pull/1343) fix(nav): sidebar cleanup batch — vendor name, dead routes, 
-- Merged: eq-shell [#1342](https://github.com/eq-solutions/eq-shell/pull/1342) fix(staff): compress licence photo before OCR/storage in Add
-- Merged: eq-shell [#1340](https://github.com/eq-solutions/eq-shell/pull/1340) feat(auth): sync Core's name from an existing Cards profile 
+- Merged: eq-shell [#1355](https://github.com/eq-solutions/eq-shell/pull/1355) fix(auth): close account-enumeration oracle on the phone+PIN
+- Merged: eq-shell [#1351](https://github.com/eq-solutions/eq-shell/pull/1351) perf(shell): route-split admin pages, load pdf.js on demand,
+- Merged: eq-shell [#1349](https://github.com/eq-solutions/eq-shell/pull/1349) fix(audit): log user.deactivated/reactivated in edit-user.ts
+- Merged: eq-shell [#1346](https://github.com/eq-solutions/eq-shell/pull/1346) feat(staff): apprentice year badge + multi-select Trade on S
+- Merged: eq-shell [#1344](https://github.com/eq-solutions/eq-shell/pull/1344) feat(nav): Reports landing page — GM Reports as the first op
+- Merged: eq-shell [#1341](https://github.com/eq-solutions/eq-shell/pull/1341) chore(ci): triage eq_cards_admin_list_stale_invites into KNO
+- Merged: eq-shell [#1339](https://github.com/eq-solutions/eq-shell/pull/1339) fix(auth): reject self-join when there's no role code and no
+- Merged: eq-shell [#1338](https://github.com/eq-solutions/eq-shell/pull/1338) fix(staff): surface documents_not_extracted from ocr-licence
 
 ## ⚠ Needs you (4)
 
@@ -28,7 +28,7 @@ _2026-08-15 03:29 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🔴 **Open security finding** — SEC-24 (P1 — OPEN, found 2026-08-08) — `QUOTES_CRON_SECRET` on eq-shell stored `is_secret: false` — full plaintext retu · [security-register.md](ops/security-register.md)
 - 🟠 **Sentry new error** — `eq-shell` [Error: workers.staff_id shared by multiple workers on jvkn: ](https://eq-solutions.sentry.io/issues/140574570/)
 
-## 🙋 Waiting on you (164)
+## 🙋 Waiting on you (162)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
@@ -36,15 +36,15 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **EQ** · **Real gap found, not fixed: a "deactivated" account can still sign in and write data.** Flipping the deactivated switch on Richard's duplicate account didn't actually stop it — it kept authenticating and pushing profile updates for two days afterward, because at least one sync endpoint only checks "is this a valid session" and never checks whether the account was deactivated. Needs its own look at how many places have this gap and what "deactivated" should actually do to a live session — not something to patch as a side effect of one cleanup. _(added 2026-08-15, needs your call on priority)_
 - **EQ** · **Nothing alerts on this yet.** Recording a lockout is not the same as being told about one. The two questions worth alerting on — who got locked out in the last 24 hours, and who had the password right but never cleared the second step — are written and tested, but have to be run by hand. Turning either into a real alert is separate work and needs your call on where it should land. _(added 2026-08-15, needs your call)_
 - **EQ** · **Neither half click-tested on a real phone** — verified by `flutter analyze`, 283 passing tests, full CI on both repos and the ancestry check, not by actually scanning an old `/claim?tenant=sks` poster or walking a fresh sign-in. Worth Royce doing both once. _(added 2026-08-15)_
-- **EQ** · **`eq_cards_lookup_invite_by_phone` anon-EXECUTE revoke — Royce's call made (revoke fully), PRs open, not yet merged.** eq-cards [#249](https://github.com/eq-solutions/eq-cards/pull/249) adds migration `0127` (revoke anon/authenticated/public EXECUTE); companion eq-shell [#1368](https://github.com/eq-solutions/eq-shell/pull/1368) removes the now-dead `cards-api.ts` op and its `check-tenant-drift.mjs` allow-list entry. Verification while scoping found two more files orphaned by the same removal chain (`raw_auth_events_provider.dart`, `pin_repository.dart` — see next line) and folded them in. CI was green on both as of close; migration still needs applying to jvkn after merge. `task_5264c029`. _(added 2026-08-15, resolved 2026-08-15 pending merge)_
-- **EQ** · **Cards' dead PIN lock screen — Royce's call made (delete), PR open, not yet merged.** `pin_entry_screen.dart` + `app_lock_notifier.dart` + `app_lock_state.dart` deleted in eq-cards [#249](https://github.com/eq-solutions/eq-cards/pull/249) — plus `raw_auth_events_provider.dart` and `pin_repository.dart`, both found live-orphaned once app-lock's callers were gone (built solely to support it, no other caller anywhere in the app). `task_4e685ee7`. _(added 2026-08-15, resolved 2026-08-15 pending merge)_
 - **EQ** · **Not click-tested in a browser** — both sign-in doors were checked by calling them directly on production (an unknown mobile and an unknown email each return an identical "no" with no extra detail; the unauthed session check still refuses correctly) plus full CI, but nobody signed in through the actual page. Worth Royce trying two things on his phone: a *wrong* PIN, and a number that has *no* PIN set — both should now show the same "That number and PIN didn't match. If you haven't set a PIN yet, use 'Text me a code instead'". Then sign in by text on an account with no PIN and confirm the "Set a PIN" prompt still appears on the Home screen — that prompt is now the only place that guidance is given. _(added 2026-08-15)_
 - **EQ** · **Today's Actions vs Outstanding Works can still contradict each other for up to 10 minutes** — found while reviewing the same screenshots (separate issue from the compliance-card redundancy, not addressed by this build): Today's Actions is cached 10 min per user (`ai-briefing.ts`), Outstanding Works refetches every 60s off the same table. Resolving a Service item mid-cache-window shows "overdue" in one card and "nothing overdue" in the other, same screen, same moment. Needs Royce's call: shrink the cache TTL, or add a "generated Xm ago" stamp so it reads as expected staleness rather than a bug. _(added 2026-08-14)_
 - **EQ** · **Not click-tested live on a real tenant** — verified via `tsc -b --force`, eslint (clean except pre-existing tolerated patterns already present identically in `Suppliers.tsx`/`LabourHireRates.tsx`, not introduced by this change), full CI, and the Netlify deploy preview build succeeding. A local click-through attempt hit a pre-existing sandbox limitation (`VITE_FIELD_URL` unset crashes the app at module scope, unrelated to this change) and was abandoned per the standing "default browser only" rule rather than switched to Chrome for a low-value local check. Worth Royce opening Suppliers, Compliance report, and the mobile Home on his phone once. _(added 2026-08-14)_
 - **EQ** · **Not click-tested live** — the 4-hour session cap and its background-refresh recovery were verified by full test suite + source tracing + a live production version-banner check, not by actually leaving a real signed-in Field session open past 4 hours and watching it recover. _(added 2026-08-14)_
 - **EQ** · **Not click-tested live** — verified via `tsc -b --force`, eslint, full CI (all green), and the Netlify deploy preview build succeeding — not by clicking through a real signed-in session. _(added 2026-08-14)_
 - **EQ** · **Not click-tested against a real generated NSX report** — fix verified via typecheck + code trace only; worth Royce pulling a real NSX Test Report next time one's generated to eyeball the CB Details table looks right. _(added 2026-08-14)_
-_…and 152 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+- **EQ** · **Decide the long-term fix for nav-visibility drift.** Three real drift incidents found and fixed this session (Cards' duplicate workspace-switcher/join-QR widgets, Field's ungated desktop Add Person, Service's stale embedded nav bar) all trace to the same root cause: no shared source of truth for "what's in the nav and who can see it" across the four apps. `eq/identity/nav-access-matrix.md` lays out two options — a shared roles-derived config each app imports, or a lighter review checklist — not decided, Royce's call. _(added 2026-08-14)_
+- **EQ** · **Not live-tested today** — this was code-level assurance (plus an old "confirmed live" comment already in the code from an earlier check), not a fresh click-through with a real pre-existing Cards account before the mass send goes out. _(added 2026-08-14)_
+_…and 150 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
@@ -53,7 +53,7 @@ _…and 152 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | eq-shell | ✓ success | 0d ago | 2 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 0 | — |
 | eq-field | ✓ success | 0d ago | 0 | — |
-| eq-cards | ✓ success | 0d ago | 2 | 0d |
+| eq-cards | ✓ success | 0d ago | 1 | — |
 | eq-solves-intake | ✓ success | 3d ago | 0 | — |
 
 ## Live errors (Sentry)
@@ -79,28 +79,28 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-15 | eq-shell | [#1364](https://github.com/eq-solutions/eq-shell/pull/1364) fix(security): revoke authenticated EXECUTE on eq_update_staff |
 | 2026-08-15 | eq-shell | [#1363](https://github.com/eq-solutions/eq-shell/pull/1363) docs(migrations): retire the stale tenant migration ledger |
 | 2026-08-15 | eq-shell | [#1359](https://github.com/eq-solutions/eq-shell/pull/1359) refactor(auth): fold the login timing-burn hash into one shared m |
+| 2026-08-15 | eq-cards | [#249](https://github.com/eq-solutions/eq-cards/pull/249) chore(auth): revoke the dead invite-lookup RPC anon grant, delete |
 | 2026-08-14 | eq-shell | [#1357](https://github.com/eq-solutions/eq-shell/pull/1357) feat(audit): make login outcomes queryable across all three doors |
 | 2026-08-14 | eq-shell | [#1358](https://github.com/eq-solutions/eq-shell/pull/1358) perf(staff): one staff-bootstrap request instead of eight cold st |
 | 2026-08-14 | eq-shell | [#1356](https://github.com/eq-solutions/eq-shell/pull/1356) perf(shell): self-host Plus Jakarta Sans, drop the render-blockin |
 | 2026-08-14 | eq-shell | [#1361](https://github.com/eq-solutions/eq-shell/pull/1361) chore(admin): retire the redeem-an-invite worker QR, leaving one  |
 | 2026-08-14 | eq-shell | [#1354](https://github.com/eq-solutions/eq-shell/pull/1354) fix(auth): link_pending_invites writes the tenant membership row, |
 | 2026-08-14 | eq-shell | [#1352](https://github.com/eq-solutions/eq-shell/pull/1352) feat(auth): platform-admin endpoint to correct a standalone user' |
-| 2026-08-14 | eq-shell | [#1353](https://github.com/eq-solutions/eq-shell/pull/1353) fix(security): gate staff-update on field.manage_people, not the  |
-_Showing 15 of 116 · full record in [sessions/](sessions/)_
+_Showing 15 of 117 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **Global CLAUDE.md still says eq-shell is manual-deploy-only.** It isn't — merging to main starts a production deploy that is live 2-3 seconds later, unattended, confirmed again this session by matching merge times against deploy times. That file is yours to edit. Until it's corrected every session starts from a false deploy posture, and this is the guard the ratchet has now flagged for promotion after failing twice (F13). _(added 2026-08-15, needs your edit)_
+- **Where the 7 deleted test logins came from was never explained.** Each had a Core identity naming SKS but no company invite, so the sign-up fault repaired this session cannot have created them. Creation stopped on its own at the end of June and none have appeared since. Harmless now they're gone, but the door that made them is still unidentified. _(added 2026-08-15)_
 - **The new standalone-worker tool has never been used on a real account.** It has tests and clean CI, but the first genuine run will be someone's actual login. Richard Brown was the obvious safe first case since he was already a known duplicate — that's since been cleaned up separately, so the next candidate is whoever asks first. Worth doing one deliberate supervised run before it's needed under pressure. _(added 2026-08-15)_
 - **Cards carries a fully built licence card component that nothing displays** — 404 lines across six classes, plus a maintained test file, superseded by the tiles built into the wallet screen. Safe to delete, but it is not a one-liner and wasn't in scope here. _(added 2026-08-15)_
 - **Shell's intake review flow has no buttons.** Both halves — approve and reject staged rows — are fully written and reachable over the network, but nothing in the app calls either. Reviewers can stage rows and then cannot act on them. Either wire it up or retire it. _(added 2026-08-15)_
 - **No skill exists for the drift audit this session ran by hand.** Worth encoding, with one caveat learned the hard way: 4 of 6 "dead code" candidates were false positives (factory constructors, static helpers, same-file use). The pattern-matching is trivial; the verification is the entire job, and a skill that emits candidates without forcing the check would generate confident nonsense at scale. _(added 2026-08-15)_
+- **That automated guard is not built — deliberately.** A check that scans wording across 600+ open items and every session log could easily misfire, and a false alarm on this repo blocks every session from saving work. Wants a proper test pass against the real files first, not a quick add. _(added 2026-08-15)_
+- **A safety guard is misfiring three different ways and pushing sessions toward workarounds.** The rule meant to block risky git operations in the shared folder also blocks them in a fresh isolated copy where they're completely safe — it checks the wrong location — and it then blocked a session-log write purely because the log *text* quoted the command while describing this very problem. A guard that blocks you for writing about it can't be reported from inside a session. Cost three blocked attempts and two workarounds today. The same bug class was noted about a sibling guard on 2026-08-14 and never fixed. _(added 2026-08-15)_
 - **Further squeezing is possible but lower value** — a smaller vendor library could be deferred too (~80KB), the Staff page's functions could be kept artificially warm to dodge the cold-start delay entirely (ongoing cost, not a one-off fix), and one more internal database lookup could be cached. None built — diminishing returns after the fixes above, and each has its own trade-off worth weighing on its own. _(added 2026-08-15)_
 - **No sign-in has happened yet since it went live, so nothing has been recorded in practice.** The code is live on core.eq.solutions and it writes the same way sign-ins are already recorded today, so there's no reason to expect trouble — but the first real proof arrives with the next actual sign-in. Worth a look at the log once a few people have signed in tomorrow. _(added 2026-08-15)_
-- **2 high-severity Dependabot alerts on eq-shell's default branch** — background triage (chip `task_e97a18c2`) ran in a separate session; outcome not visible from this session. _(added 2026-08-15)_
-- **No automated check exists to catch the cache-tag mistake above** — flagged 5 times now in eq-field's own changelog history, never built. Spun off as its own task (`task_9bd3247c`), already started in a separate session. _(added 2026-08-14)_
-- **Follow-up question raised, being checked now**: if a worker's phone number genuinely changes, is there an admin-facing way in eq-shell to update it on their existing account (so OTP login works with the new number under the same identity), or would that need an out-of-band fix today? _(added 2026-08-14)_
-- **Not yet confirmed by Tom actually retrying** — the fix is live, but nobody's re-tested his specific photo since deploy. _(added 2026-08-14)_
-_…and 458 more · [eq/pending.md](eq/pending.md)_
+_…and 460 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -122,7 +122,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [EQ](eq/pending.md) | 3615 | 478 / 155 | 115 | 59 |
+| [EQ](eq/pending.md) | 3616 | 479 / 155 | 112 | 59 |
 | [SKS](sks/pending.md) | 432 | 81 / 8 | 1 | 15 |
 | [SKS active](sks/active.md) | 109 | 0 / 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 409 | 32 / 4 | 0 | 1 |
@@ -143,4 +143,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-15 03:29 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-15 03:35 UTC._
