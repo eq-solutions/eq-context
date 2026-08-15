@@ -42,6 +42,41 @@ it shipped 2026-08-04; fixed here.
 
 ---
 
+## The three kinds — only one of them can go stale
+
+Every file is exactly one of these. `scripts/review_clock.py` derives the
+kind from the path and gates on it; you normally write nothing.
+
+| Kind | What it is | Clock |
+|---|---|---|
+| `generated` | Rebuilt from source by a workflow — `digest.md`, `suite-state.md`, `sessions/INDEX.md` | **3 days.** Not an exemption: if it goes stale the cron is dead |
+| `record` | A dated, past-tense account — sessions, changelogs, sprints, progress, archive, anything with a date in the filename | **None.** Superseded, never revised |
+| `state` | A claim about how things are *now* — everything else | 30 / 60 / 90 days by `read_priority` |
+
+**Why this exists.** On 2026-08-15, 174 files declared `status: live` and 82
+of them hadn't been touched in 30+ days. Most weren't stale, they were
+mislabelled: a session log from May isn't out of date, it's a record of May.
+Split properly it's 234 records, 3 generated, and 91 real state claims — of
+which 15 are overdue. A blanket clock over all 174 goes overdue on 82 files
+on day one, gets grandfathered on day one, and becomes F10: rung 4 on paper,
+rung 0 in practice. Fifteen is a list one person actually clears.
+
+**Two rules when writing.**
+
+- **Don't type a `review_by:` date.** The clock is derived from
+  `last_updated` + your `read_priority`. A hand-typed date is a deadline
+  nobody owns, which is F3. Override only with a reason in the commit.
+- **The clock governs trust, not priority.** Overdue means *this may be out
+  of date*, never *you must ship by this date*. Nothing here creates an
+  obligation.
+
+If the derived kind is wrong, set `kind:` explicitly rather than renaming the
+file. Derivation defaults to `state`, so an unrecognised path is
+over-reviewed rather than trusted forever — a wrong guess costs a look, never
+a missed lie.
+
+---
+
 ## Tool-neutral writing
 
 Substrate prose references *actions*, not *actors*. The same file is

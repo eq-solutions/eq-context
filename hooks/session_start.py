@@ -148,6 +148,70 @@ if m:
 else:
     out.append("FRESHNESS  *** digest.md not found or unstamped — you are flying blind. ***")
 
+# --- 1b. REVIEW CLOCK (staleness of the files this gate is about to mandate) --
+# FRESHNESS above asks "is the clone current". This asks the other half: "is the
+# CONTENT current". A file can be perfectly synced and 62 days out of date, and
+# until 2026-08-15 nothing anywhere noticed — 174 files claimed status: live and
+# 82 had not been touched in a month.
+#
+# scripts/review_clock.py gates the whole repo in CI, which is rung 3: it catches
+# staleness after the damage. This is the rung-4 half. The action worth
+# intercepting is not a file aging — no write to hook — it is a SESSION TRUSTING
+# a stale file, and that happens here, at the moment the gate tells you to read
+# it. So this checks only CLAUDE.md section 1 step 4's mandated chain, not all 91
+# state files. Precision is the point: a gate that lists twenty files nobody is
+# about to read is a gate that gets skimmed, which is F10's failure mode.
+#
+# The rule is IMPORTED, not restated, for the same reason as RATCHET below.
+try:
+    sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "scripts"))
+    from review_clock import (
+        cadence_days as _cadence,
+        classify as _classify,
+        days_overdue as _overdue,
+        parse_date as _pdate,
+        parse_frontmatter as _pfm,
+        review_due as _due,
+    )
+
+    # The mandated chain is IMPORTED from session_start_budget.py, which already
+    # owns that list and carries the "keep this in step with CLAUDE.md section 1
+    # step 4" warning. Retyping it here would create a second copy to drift —
+    # and a copy that drifts SHORT goes quiet rather than loud, so nobody would
+    # find out. Every tier is checked because the tier question has not been
+    # asked yet when this runs.
+    from session_start_budget import ALWAYS as _always, TIERS as _tiers
+
+    _today = datetime.now(timezone.utc).date()
+    _mandated = list(_always) + [f for files in _tiers.values() for f in files]
+    _stale = []
+    for _rel in _mandated:
+        _text = read(_rel)
+        if not _text:
+            continue
+        _fm = _pfm(_text)
+        _kind = _classify(_rel, _fm)
+        _n = _overdue(
+            _due(_pdate(_fm.get("last_updated", "")),
+                 _cadence(_kind, _fm.get("read_priority")),
+                 _pdate(_fm.get("review_by", ""))),
+            _today,
+        )
+        if _n:
+            _stale.append((_n, _rel, _kind))
+    _stale.sort(reverse=True)
+
+    if _stale:
+        out.append(f"REVIEW     *** {len(_stale)} mandated file(s) past their review clock ***")
+        for _n, _rel, _kind in _stale:
+            out.append(f"           {_rel} — {_n}d overdue")
+        out.append("           Treat their claims as leads, not facts. This is about TRUST,")
+        out.append("           not priority — nothing here is a deadline you owe anyone.")
+    else:
+        out.append(f"REVIEW     ok — all {len(_mandated)} mandated files within their review clock")
+except Exception as exc:  # a broken clock must never silence the rest of the gate
+    out.append(f"REVIEW     ? clock unavailable ({exc}) — check by hand.")
+
 # --- 2. NEEDS YOU -----------------------------------------------------------
 nm = re.search(r"##\s*⚠?\s*Needs you[^\n]*\n(.*?)(?=\n##\s)", digest, re.S)
 items = []

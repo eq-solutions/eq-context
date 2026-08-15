@@ -40,6 +40,16 @@ jobs:
       - name: Prune ratchet — self-test
         run: python scripts/test_prune_ratchet.py
 
+      # The other half of pruning. prune_ratchet stops the substrate GROWING;
+      # this stops it quietly going WRONG. Only 'state' files are clocked —
+      # records and generated files are classified out, which is what keeps the
+      # review list at ~15 instead of the 82 a flat status:live check would show.
+      - name: Review clock
+        run: python scripts/review_clock.py
+
+      - name: Review clock — self-test
+        run: python scripts/test_review_clock.py
+
       - name: Run MD health checks
         run: |
           set -euo pipefail

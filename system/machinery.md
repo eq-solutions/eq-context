@@ -56,6 +56,7 @@ its pure logic separable — that is the convention, not an accident.
 | `index_drift.py` | Verifies every tier README lists its own folder — and now that this file lists every machine. Strict-gates in CI. |
 | `session_start_budget.py` | Caps what a session pays to start. Fails when the mandated read chain exceeds its byte budget. |
 | `prune_ratchet.py` | Ceilings on the shapes that re-bloat — residue items, loose root files, unindexed archives. Refuses regrowth; does not prune. |
+| `review_clock.py` | Classifies every doc `generated`/`record`/`state` from its path, and clocks only the state. Catches a dead refresh cron, a record given a review date, and staleness past its ceiling. |
 | `rotate_pending.py` | Moves done items out of the tier `pending.md` files into their archives, per item rather than per session. |
 | `substrate_honesty.py` | Verifies load-bearing facts against reality — dead project refs, the F13 deploy-posture claim, liveness probes. |
 | `claim_expiry.py` | The F3 guard: expires stale incident claims so a dead claim cannot block a live investigation. |
@@ -63,7 +64,7 @@ its pure logic separable — that is the convention, not an accident.
 | `md-health-daily.py` | Daily markdown health audit; emits JSON for the dashboard. |
 | `security_audit.py` | Cross-project Supabase security-advisor sweep. Needs `SUPABASE_ACCESS_TOKEN`; no-ops cleanly without it. |
 | `rls_probe.py` | The public-key data-leak test — proves an anon key returns zero rows where it should. |
-| `test_index_drift.py` · `test_session_start_budget.py` · `test_prune_ratchet.py` · `test_rotate_pending.py` · `test_substrate_honesty.py` · `test_claim_expiry.py` · `test_security.py` | Unit tests for the pure logic of their namesakes. No network, no fixtures on disk. |
+| `test_index_drift.py` · `test_session_start_budget.py` · `test_prune_ratchet.py` · `test_rotate_pending.py` · `test_substrate_honesty.py` · `test_claim_expiry.py` · `test_review_clock.py` · `test_security.py` | Unit tests for the pure logic of their namesakes. No network, no fixtures on disk. |
 
 ## `.github/scripts/` — generators
 
@@ -85,7 +86,7 @@ each one needs an eviction story; `refresh_suite_state.py` had none until
 
 | Workflow | Trigger |
 |---|---|
-| `md-health.yml` — markdown style, session-start budget, prune ratchet | PR + push |
+| `md-health.yml` — markdown style, session-start budget, prune ratchet, review clock | PR + push |
 | `frontmatter-check.yml` — frontmatter schema + line endings | PR + push |
 | `index-drift.yml` — strict, every tier plus this file | cron + PR |
 | `adversarial-suite.yml` — the 104 guard regressions + hook tests | cron + PR + push |
