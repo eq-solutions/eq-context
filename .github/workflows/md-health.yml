@@ -32,6 +32,14 @@ jobs:
       - name: Session-start budget — self-test
         run: python scripts/test_session_start_budget.py
 
+      # Ceilings on the shapes that actually re-bloat. Does not prune; refuses
+      # regrowth. Cleanup stays a deliberate choice, but silting up does not.
+      - name: Prune ratchet
+        run: python scripts/prune_ratchet.py
+
+      - name: Prune ratchet — self-test
+        run: python scripts/test_prune_ratchet.py
+
       - name: Run MD health checks
         run: |
           set -euo pipefail
