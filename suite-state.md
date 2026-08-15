@@ -61,9 +61,11 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-15)
 
 **eq-cards:**
+- #249 chore(auth): revoke the dead invite-lookup RPC anon grant, delete the unmounted PIN lock
 - #221 refactor(auth): shell-verify.js relays to eq-shell instead of local crypto
 
 **eq-shell:**
+- #1368 chore(cards-api): retire the lookup_invite_by_phone op, dead since #248
 - #1294 feat(cards): centralize Cards' SSO minting via token-exchange-cards.ts
 
 ---
