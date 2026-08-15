@@ -65,7 +65,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #1362 fix(security): role-gate 21 CRM/staff RPCs that only checked tenant_id
-- #1360 chore(identity): remove 7 orphaned test identities from the June sign-up trial
 - #1294 feat(cards): centralize Cards' SSO minting via token-exchange-cards.ts
 
 ---
