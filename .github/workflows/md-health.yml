@@ -67,6 +67,14 @@ jobs:
       - name: Link check — self-test
         run: python scripts/test_link_check.py
 
+      # The one genuinely portable check extracted from md-health-daily.py,
+      # which itself never ran anywhere -- see that file's own docstring.
+      - name: Duplicate sessions
+        run: python scripts/duplicate_sessions.py
+
+      - name: Duplicate sessions — self-test
+        run: python scripts/test_duplicate_sessions.py
+
       - name: Run MD health checks
         run: |
           set -euo pipefail

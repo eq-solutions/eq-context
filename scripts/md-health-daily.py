@@ -1,7 +1,66 @@
 #!/usr/bin/env python3
-"""Daily MD health audit — whitespace-aware, emits JSON for dashboard."""
-import hashlib, json, os, re, subprocess, sys
-from datetime import datetime, timedelta, date
+"""Beelink-local cross-repo git audit. NOT CI -- cannot be, by construction.
+
+Walks every git repo directly under C:\\Projects (eq-shell, eq-field,
+eq-context, and every sibling) for uncommitted work, unpushed/unpulled
+commits, stale lock files, cleanup-patch leftovers, and orphaned worktrees.
+A GitHub Actions runner for eq-context checks out ONLY eq-context -- it has
+no access to sibling repos on disk, so this half of the script can never
+move into CI. It stays exactly where it is, run by hand or by a scheduled
+task on the workstation itself.
+
+What this file used to also do, and where that went (2026-08-15). Until
+today this file was the ONLY place three checks lived, and NOTHING ran it --
+no workflow, no cron, no hook. `git log --diff-filter=A` on this repo's own
+history shows it was last touched 2026-07-19 and has been dead weight ever
+since. Three of its checks WERE portable (eq-context-only, no sibling-repo
+access needed) and have moved to gated, tested scripts:
+
+  binary files in eq-context      already duplicated by md-health.yml's own
+                                   inline "17.2 — binary files" step; this
+                                   file's copy was just a second, weaker
+                                   version of a check that already ran.
+  status:live + last_updated>30d  superseded by scripts/review_clock.py,
+                                   which does the same job properly --
+                                   kind-aware (a record can't go stale, a
+                                   generated file gets the tight cron-liveness
+                                   clock a flat rule can't express), gated,
+                                   ratcheted. This file's version had no
+                                   kind-awareness at all: on 2026-08-15 it
+                                   would have flagged 82 files, of which 59
+                                   were session logs and changelogs -- records,
+                                   not stale claims -- which is exactly the
+                                   false-signal problem review_clock.py exists
+                                   to fix.
+  next_review: past due           the frontmatter key this checked for has
+                                   ZERO uses across all 328 tracked .md files
+                                   (checked 2026-08-15) -- a dead code path
+                                   that had never once fired on real data.
+                                   review_clock.py's derived cadence replaces
+                                   the INTENT (a review clock) without a
+                                   hand-typed date, which is the same F3
+                                   shape ("a deadline nobody owns") this
+                                   check's own design invited.
+  broken internal links           superseded by scripts/link_check.py --
+                                   exhaustive (this file capped output at 10
+                                   and stopped scanning once hit), gated,
+                                   tested. This file found 20 real broken
+                                   links and reported none of them anywhere
+                                   anyone would see, because nothing ran it.
+  duplicate session content       genuinely unique, genuinely portable, no
+                                   equivalent existed -- extracted whole to
+                                   scripts/duplicate_sessions.py, now gated.
+  non-canonical session filename  was ALREADY independently covered by
+                                   md-health.yml's own rule 17.4 this whole
+                                   time; this file's copy was fully redundant
+                                   from the start, not just newly superseded.
+
+Emits a Markdown + JSON report to md-health-reports/ either way -- kept for
+whoever runs this by hand, not read by anything automated (no dashboard or
+workflow consumes the JSON; checked 2026-08-15, see system/machinery.md).
+"""
+import json, os, re, subprocess, sys
+from datetime import datetime, timedelta
 from pathlib import Path
 try:
     from zoneinfo import ZoneInfo
@@ -46,7 +105,6 @@ LATEST_JSON = REPORTS / "latest.json"
 findings = []
 repos = []
 EXCLUDE_PARTS = {"node_modules", ".git", "dist", "build", ".next"}
-BINARY_EXT = {"zip","tar","gz","7z","docx","doc","xlsx","xls","pptx","ppt","pdf","png","jpg","jpeg","gif","bmp","webp","mov","mp4","mp3","wav"}
 
 def add(sev, cat, msg): findings.append((sev, cat, msg))
 
@@ -137,114 +195,6 @@ for dp, dns, fns in safe_walk(ROOT):
             except OSError: pass
     for fn in fns:
         if ver_re.match(fn): add("WARN","per-version changelog",str(dp/fn))
-
-# ===== 3. binary files in eq-context =====
-eqc = ROOT / "eq-context"
-if eqc.is_dir():
-    for dp, dns, fns in safe_walk(eqc):
-        for fn in fns:
-            ext = Path(fn).suffix.lstrip(".").lower()
-            if ext in BINARY_EXT: add("ERROR","eq-context: binary file",str(dp/fn))
-
-# ===== 6. duplicate / non-canonical sessions =====
-sess = eqc / "sessions"
-if sess.is_dir():
-    s2p = {}
-    for p in sess.glob("*.md"):
-        try: h = hashlib.sha1(p.read_bytes()).hexdigest()
-        except: continue
-        if h in s2p: add("ERROR","duplicate session content",str(s2p[h])+" <-> "+str(p))
-        else: s2p[h] = p
-    # Allow YYYY-MM-DD[-slug].md session logs and the generated INDEX.md
-    # (scripts/generate_session_index.py) — mirrors .github/workflows/md-health.yml rule 17.4.
-    can = re.compile(r"^(\d{4}-\d{2}-\d{2}(-[a-z0-9-]+)?|INDEX)\.md$")
-    for p in sess.glob("*.md"):
-        if not can.match(p.name): add("ERROR","non-canonical session filename",str(p))
-
-# ===== 6b. freshness =====
-FM_RE = re.compile(r"^---\s*$")
-KV_RE = re.compile(r"^([A-Za-z_][\w\-]*)\s*:\s*(.*?)\s*$")
-DATE_RE = re.compile(r"^(\d{4})-(\d{2})-(\d{2})")
-LINK_RE = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
-def pfm(text):
-    ls = text.splitlines()
-    if not ls or not FM_RE.match(ls[0].lstrip("﻿")): return {}
-    fm = {}
-    for ln in ls[1:]:
-        if FM_RE.match(ln): return fm
-        m = KV_RE.match(ln)
-        if m: fm[m.group(1).lower()] = m.group(2).strip().strip('"').strip("'")
-    return {}
-def pid(s):
-    if not s: return None
-    m = DATE_RE.match(s.strip())
-    if not m: return None
-    try: return date(int(m.group(1)),int(m.group(2)),int(m.group(3)))
-    except ValueError: return None
-
-STALE, LCAP, SCAP = 30, 10, 8
-td = _today_aest()
-fr = ROOT / "eq-context"
-if fr.is_dir():
-    sh, ph, dh, bl = [], [], [], []
-    # Map of repo-relative posix path -> YYYY-MM-DD of last commit touching the file.
-    # Used instead of mtime for the last_updated-lag check: mtime advances on every
-    # checkout/merge/pull, which is noise; git-log date reflects real edits.
-    file_commit_dates = {}
-    log_out, _ = run(["git","log","--format=COMMIT %ad","--date=short","--name-only"], cwd=fr)
-    current_date = None
-    for ln in log_out.splitlines():
-        if ln.startswith("COMMIT "):
-            current_date = ln[7:].strip()
-        elif ln.strip() and current_date:
-            if ln not in file_commit_dates:
-                file_commit_dates[ln] = current_date
-    for dp, dns, fns in safe_walk(fr):
-        rr = dp.relative_to(fr)
-        if any(part in ("drafts","_archive",".github",".githooks","md-health-reports") for part in rr.parts): continue
-        if any(part.startswith("_archive-") or part.startswith("_cleanup-") for part in rr.parts): continue
-        for fn in fns:
-            if not fn.lower().endswith(".md"): continue
-            p = dp / fn
-            try: text = p.read_text(encoding="utf-8", errors="replace")
-            except (OSError, PermissionError): continue
-            fm = pfm(text); rel = p.relative_to(ROOT)
-            if fm.get("status","").lower() == "live":
-                lu = pid(fm.get("last_updated",""))
-                if lu is not None:
-                    age = (td - lu).days
-                    if age > STALE: sh.append((age, str(rel)))
-                else: sh.append((9999, str(rel)+" (no last_updated)"))
-            nr = pid(fm.get("next_review",""))
-            if nr is not None and nr < td: ph.append(((td-nr).days, str(rel)))
-            lu = pid(fm.get("last_updated",""))
-            if lu is not None:
-                rel_to_fr = str(p.relative_to(fr)).replace("\\", "/")
-                gd_str = file_commit_dates.get(rel_to_fr)
-                if gd_str:
-                    gd = pid(gd_str)
-                    if gd is not None:
-                        dr = (gd - lu).days
-                        if dr > 7: dh.append((dr, str(rel)))
-            for m in LINK_RE.finditer(text):
-                tgt = m.group(1).split("#",1)[0].strip()
-                if not tgt or tgt.startswith(("http://","https://","mailto:","//")): continue
-                if not tgt.lower().endswith(".md"): continue
-                res = (p.parent / tgt).resolve()
-                try: inside = res.is_relative_to(fr)
-                except AttributeError: inside = str(res).startswith(str(fr.resolve()))
-                if inside and not res.exists():
-                    bl.append(str(p.relative_to(ROOT))+" -> "+tgt)
-                    if len(bl) >= LCAP: break
-            if len(bl) >= LCAP: break
-        if len(bl) >= LCAP: break
-    sh.sort(reverse=True); ph.sort(reverse=True); dh.sort(reverse=True)
-    for a, p in sh[:SCAP]:
-        if a == 9999: add("INFO","freshness: status=live no last_updated", p)
-        else: add("INFO","freshness: stale (>30d)", str(a)+"d - "+p)
-    for d, p in ph[:SCAP]: add("WARN","freshness: next_review past due", str(d)+"d overdue - "+p)
-    for d, p in dh[:SCAP]: add("INFO","freshness: last_updated lags mtime", str(d)+"d behind - "+p)
-    for b in bl[:LCAP]: add("WARN","freshness: broken internal link", b)
 
 # ===== 7. md count + delta =====
 md_count = 0
