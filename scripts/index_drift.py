@@ -45,6 +45,16 @@ TIERS = {
     "sks-team": ("sks-team", "sks-team/README.md", True),
     "ops": ("ops", "ops/README.md", True),
     "archive": ("archive", "archive/README.md", True),
+    # The machinery tiers, added 2026-08-15. Until then the prose half of the
+    # substrate had a CI-enforced per-file index and the executable half had
+    # none: 17 of 18 scripts, all 22 workflows and all 6 CI scripts were
+    # unlisted anywhere, and hooks/README.md had fallen four files behind.
+    # All four point at one home so there is a single place to look and a
+    # single place to keep current.
+    "hooks": ("hooks", "system/machinery.md", False, (".py", ".json")),
+    "scripts": ("scripts", "system/machinery.md", False, (".py",)),
+    "ci-scripts": (".github/scripts", "system/machinery.md", False, (".py",)),
+    "workflows": (".github/workflows", "system/machinery.md", False, (".yml",)),
 }
 
 # Root-level files that are their own special-cased pointers, not tier content —
@@ -55,15 +65,23 @@ ROOT_EXEMPT = {
 }
 
 
-def discover_md_files(folder_abs, recursive):
-    """List .md basenames in folder_abs (pure: no README exclusion here)."""
-    if recursive:
-        pattern = os.path.join(folder_abs, "**", "*.md")
-        files = glob.glob(pattern, recursive=True)
-    else:
-        pattern = os.path.join(folder_abs, "*.md")
-        files = glob.glob(pattern)
-    return sorted(os.path.relpath(f, folder_abs).replace(os.sep, "/") for f in files)
+def discover_md_files(folder_abs, recursive, extensions=(".md",)):
+    """List matching basenames in folder_abs (pure: no README exclusion here).
+
+    `extensions` exists so the machinery tiers can be checked too. The prose
+    tiers had a per-file index enforced here for months while hooks/, scripts/
+    and .github/ had none — which is the half where a filename tells you least
+    (substrate_honesty.py vs prune_ratchet.py vs claim_expiry.py).
+    """
+    files = []
+    for ext in extensions:
+        if recursive:
+            files += glob.glob(os.path.join(folder_abs, "**", "*" + ext), recursive=True)
+        else:
+            files += glob.glob(os.path.join(folder_abs, "*" + ext))
+    return sorted(
+        set(os.path.relpath(f, folder_abs).replace(os.sep, "/") for f in files)
+    )
 
 
 def find_orphans(relative_paths, readme_text, readme_basename, exempt=frozenset()):
@@ -102,7 +120,9 @@ def main():
     total_orphans = 0
 
     print("--- Index drift scan (files present but not mentioned in their tier README) ---")
-    for tier, (folder, readme_rel, recursive) in TIERS.items():
+    for tier, spec in TIERS.items():
+        folder, readme_rel, recursive = spec[0], spec[1], spec[2]
+        extensions = spec[3] if len(spec) > 3 else (".md",)
         folder_abs = os.path.join(ROOT, folder)
         readme_abs = os.path.join(ROOT, readme_rel)
         if not os.path.isfile(readme_abs):
@@ -112,7 +132,7 @@ def main():
         with open(readme_abs, "r", encoding="utf-8") as fh:
             readme_text = fh.read()
 
-        files = discover_md_files(folder_abs, recursive)
+        files = discover_md_files(folder_abs, recursive, extensions)
         exempt = ROOT_EXEMPT if tier == "root" else frozenset()
         orphans = find_orphans(files, readme_text, os.path.basename(readme_rel), exempt)
 

@@ -5,9 +5,11 @@ No filesystem, no network — find_orphans() takes plain strings/lists.
 
 Run:  python scripts/test_index_drift.py
 """
+import os
 import sys
+import tempfile
 
-from index_drift import find_orphans
+from index_drift import discover_md_files, find_orphans
 
 
 def check(name, got, want):
@@ -99,6 +101,26 @@ def main():
         find_orphans(real_files, real_readme, "README.md"),
         ["TODAY.md", "worktree-registry.md"],
     )
+
+    # discover_md_files gained an `extensions` arg so the machinery tiers
+    # (hooks/, scripts/, .github/*) can be indexed too. Default must stay .md,
+    # or every prose tier silently starts scanning the wrong thing.
+    with tempfile.TemporaryDirectory() as tmp:
+        for name in ("a.md", "b.py", "c.yml", "d.json"):
+            open(os.path.join(tmp, name), "w").close()
+
+        f += check("default extensions is .md only", discover_md_files(tmp, False), ["a.md"])
+        f += check(
+            "explicit extensions are honoured",
+            discover_md_files(tmp, False, (".py", ".yml")),
+            ["b.py", "c.yml"],
+        )
+        # Overlapping globs must not double-count a file.
+        f += check(
+            "no duplicates when extensions overlap",
+            discover_md_files(tmp, False, (".md", ".md")),
+            ["a.md"],
+        )
 
     print()
     if f:

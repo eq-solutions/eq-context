@@ -44,6 +44,7 @@ Every canonical system file as a full URL — clickable from `/context/claude`:
 | `architecture.md` | Tech architecture (Cloudflare, Supabase, substrate, single-file HTML pattern) |
 | `git-automation.md` | Post-commit hook, credential helpers, push-failure recovery |
 | `infrastructure.md` | Supabase project IDs, Cloudflare account, Netlify, Beelink, GitHub orgs |
+| `machinery.md` | Every executable in the substrate — hooks, scripts, CI scripts, all 22 workflows — one line each on what it does and when it fires. CI-enforced: adding a machine without a row here fails `index-drift` |
 | `lessons.md` | Tech gotchas (append-only) |
 | `md-style.md` | MD writing standard (slimmed) |
 | `onboarding.md` | First-time tutorial |
