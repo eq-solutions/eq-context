@@ -97,9 +97,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ---
 
 ## eq-shell: staff-update — a read permission was gating an HR write (2026-08-15)
-- [ ] **`eq_update_staff` GRANT revoke ([#1364](https://github.com/eq-solutions/eq-shell/pull/1364), merged+deployed) needs a `tenant-migrate.yml` dispatch** — the code landed, but the actual DB grant change on zaap/ehow only happens on dispatch (One Pipe governance, production-gated, Royce's explicit go). _(added 2026-08-15)_
 - [ ] **#1365's rough edge**: `StaffPage.tsx`'s licence query has no client-side gate for excluded roles — degrades to a silent "No licences recorded" rather than an informative message. `EntityBrowserPage.tsx`'s timesheet view does surface a clear error. Real polish, not scoped into the security fix (merged+deployed). _(added 2026-08-15)_
-- [ ] **2 high-severity Dependabot alerts on eq-shell's default branch** — background triage (chip `task_e97a18c2`) ran in a separate session; outcome not visible from this session. _(added 2026-08-15)_
 
 ## eq-shell: Mobile Home redesign — compliance card collapsed, Suppliers + Compliance report quick links added (2026-08-14)
 *Royce reviewed 3 mobile Home dashboard screenshots and found the Compliance & safety card was mostly dead space — a "see Today's actions" pointer with nothing else in it once licences were the only signal. Asked to rethink the space: add a compliance report, surface Suppliers, keep NSW Comms.*
