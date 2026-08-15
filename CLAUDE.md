@@ -246,6 +246,7 @@ This contract points; it doesn't restate. Authoritative files:
 | MD style | [system/md-style.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/md-style.md) |
 | Onboarding | [system/onboarding.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/onboarding.md) |
 | Parked | [archive/README.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/archive/README.md) |
+| Session log index (dated, newest first — start here instead of globbing `sessions/`) | [sessions/INDEX.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sessions/INDEX.md) |
 
 Do NOT duplicate content into this file. Update facts in their home.
 

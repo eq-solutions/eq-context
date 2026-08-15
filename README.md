@@ -102,7 +102,7 @@ sessions/
 scripts/
   install-hooks.ps1          ← Pre-commit hook installer
 
-.github/workflows/            ← 17 workflows as of 2026-07-16 — no GitHub→Supabase
+.github/workflows/            ← 22 workflows, 20 scheduled (counted 2026-08-15) — no GitHub→Supabase
                                  sync (that path was retired 2026-06-22, see
                                  CLAUDE.md §1). Key ones: digest-refresh.yml +
                                  suite-state-refresh.yml (nightly substrate
@@ -135,24 +135,52 @@ has somewhere to point and so they're not simply invisible.
 here was checked individually (read in full, cross-referenced against every
 live pointer doc, not just guessed from date) rather than assumed from "most
 predate 2026-06-08." 15 were genuinely done and moved into `archive/` (see
-`archive/README.md`); the 7 below are still cited as live by something
-current and stay at root until whatever cites them is itself resolved:
+`archive/README.md`); the 9 below are still cited as live by something
+current and stay at root until whatever cites them is itself resolved.
+
+> **⚠ Re-verified 2026-08-15 — this list is NOT a delete list, and four of its
+> justifications had already expired.** They are corrected inline below. The
+> underlying problem is structural: several justifications were anchored to
+> `digest.md`, which regenerates nightly, so a hand-written claim about what it
+> "still points to" decays silently and reads as verified. Do not archive
+> anything on the strength of a line here without re-checking the citation
+> first. The count also said "7" over nine entries — two were appended without
+> bumping it.
 
 `SKS-CUTOVER-CRITICAL-PATH.md` — cited by `eq/pending.md` as the current
 pre-cutover state; Phases A–C not yet started.
 `auth-phase4-hmac-retirement-runbook.md` — cited by
 `eq/identity/IDENTITY-MODEL.md` §7.1 as the authority for the completed
 HMAC→JWT cutover.
-`cross-app-linkage-remediation-plan-2026-06-07.md` — `digest.md` still points
-to its §7a for the open SKS anon-remediation policy worklist.
-`eq-platform-verified-state-2026-06-03.md` — named explicitly in this
-repo's own `CLAUDE.md` as the Rule 0.5 starting snapshot.
-`eq-secret-salt-rotation-runbook-2026-06-06.md` — `eq/pending.md` records
-the rotation as "DECLINED for now," runbook explicitly kept on file.
-`field-feature-backlog-2026-05-30.md` — named "source of truth" in
-`eq/punch-list-2026-06-02.md` for still-parked, migration-gated Field items.
-`sks-live-sprint-2026-06-07.md` — `digest.md` still lists its Security
-Groups Phase 2–5 work as open.
+`cross-app-linkage-remediation-plan-2026-06-07.md` — **justification corrected
+2026-08-15.** It claimed `digest.md` "still points to its §7a"; `digest.md` has
+zero matches for `cross-app-linkage`. The real live dependency is
+`sks/pending.md` (an open, SKS-live-gated item). Note the file self-declares
+`status: archived` in its own frontmatter while sitting at root — the only root
+file in that state.
+`eq-platform-verified-state-2026-06-03.md` — **justification corrected
+2026-08-15.** It claimed the file is "named explicitly in this repo's own
+`CLAUDE.md`"; grep returns zero. The real citer is `C:\Projects\CLAUDE.md`, the
+umbrella file that is **not in this repo** and self-describes as invisible to
+every tool except a session rooted there. Keep the file; the reason was wrong.
+`eq-secret-salt-rotation-runbook-2026-06-06.md` — **justification corrected
+2026-08-15.** It claimed `eq/pending.md` records the rotation as "DECLINED for
+now"; grep of `eq/pending.md` returns zero — that decision has since rotated
+into `eq/pending-archive.md`. Separately, `EQ_SECRET_SALT` itself is NOT dead
+(still an active session-signing fallback in `token.ts`), so this is a
+superseded decision record, not a dead key.
+`field-feature-backlog-2026-05-30.md` — **strongest archive candidate; zero live
+citers.** Its stated authority, `eq/punch-list-2026-06-02.md`, is itself
+`status: archived` and self-headed "Mostly SUPERSEDED as of 2026-07-16". Every
+other inbound is `archive/` or `sessions/`. It reads a `v3.5.30` codebase;
+Field shipped `v3.5.486`. Its own body: "no-migration EQ-tenant backlog
+exhausted."
+`sks-live-sprint-2026-06-07.md` — **justification corrected 2026-08-15.** It
+claimed `digest.md` "still lists its Security Groups Phase 2–5 work as open";
+`digest.md` has zero matches for `sks-live-sprint`. `eq/pending.md` does keep
+Phase 4 open, but flags it as possibly superseded by the access-model cluster
+work, and `shell_control.user_security_groups` has been 0 rows for 50+ days.
+Still-wanted-or-superseded is Royce's call, not an archival one.
 `SKS-FIELD-PARALLEL-RUN-LOG.md` — the EQ Field parallel-run mismatch log +
 clean-week counter the 2026-07-11 cutover plan requires; live, streak at 0.
 `sec9-jvkn-key-rotation-runbook-2026-07-27.md` — ready-to-run SEC-9 rotation

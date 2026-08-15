@@ -78,7 +78,13 @@ def main():
         "|------|---------|",
     ]
     for s in sessions:
-        link = f"[{s['title']}]({s['path']})"
+        # INDEX.md is written INTO sessions/, so the link must be relative to
+        # that directory. It used to emit the repo-root-relative path, which
+        # resolves to sessions/sessions/<file> from inside the index -- all 127
+        # links 404'd on GitHub for as long as the index has existed. Nothing
+        # caught it because nothing reads the index: it is regenerated nightly
+        # and no file in the repo points a reader at it.
+        link = f"[{s['title']}]({os.path.basename(s['path'])})"
         lines.append(f"| {s['date']} | {link} |")
     lines.append("")
     lines.append(
