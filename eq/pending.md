@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-14
+last_updated: 2026-08-15
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -13,6 +13,44 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 (entities, tax, infra) in `ops/pending.md`.
 
 ---
+
+## eq-cards + eq-shell: audited every sign-in door, retired the two that weren't real — both live (2026-08-15)
+*Started from one false sentence on the Cards sign-in screen and turned into a full audit of every way into Cards, checked against both repos and live jvkn rather than docs. Royce's read — "a lot of this has evolved into a single login QR method" — was right, but that method lives in Shell, not Cards: `create/resend-worker-invite` and the role-tagged QR both emit `core.eq.solutions/login`, and Cards' own onboarding routes turned out to be the previous generation.*
+
+- [x] Cards sign-in footer said "this sign-in is for existing accounts only" — false for the mobile path, which creates accounts by design. Verified deliberate three ways (`OtpScreen._resolveAndLand`, `NotProvisionedScreen`, and `eq_cards_auto_provision()` read live) before touching it. Copy landed 2026-06-25 in `0a1a26f`, two days before codeless self-signup shipped; never revisited. eq-cards PR [#246](https://github.com/eq-solutions/eq-cards/pull/246), squash `e090418`.
+- [x] `/join` removed entirely — provably unreachable since 2026-06-10 (no emitter in either repo; `AdminWorkerQR.tsx` said routing to `/claim` "not `/join`, is deliberate"). Took `JoinTenantScreen`, `JoinContext`, `join_context_notifier`, `AuthRepository.joinTenantExchange`, `AuthFlowNotifier.joinTenant`, `InviteLookupApi` and three redirect exemptions with it.
+- [x] `/claim?tenant=` (the worker QR poster) removed — resolved against `worker_invites`, which holds 7 rows: 6 claimed, 0 unclaimed and unexpired, so every scan dead-ended on "no invite found". Tokenless `/claim` now falls through to normal sign-in, so already-printed posters still land somewhere sensible — `eq_cards_find_pending_invite` matches their number post-OTP anyway. eq-cards PR [#248](https://github.com/eq-solutions/eq-cards/pull/248), squash `13bfe54`.
+- [x] Shell's `/admin/workers/qr` retired — route, lazy import and `AdminWorkerQR.tsx` deleted, leaving `/admin/workers/join-links` as the single QR door. Its hub link was already removed in the 2026-08-05 simplification pass, so the page had been reachable only by typed URL. eq-shell PR [#1361](https://github.com/eq-solutions/eq-shell/pull/1361), squash `84647b81`.
+- [x] Both live. Cards deployed via `workflow_dispatch` (run `31852098680`, both jobs green, edge functions redeployed to jvkn as part of it). Shell live via the merge itself — its own build came back `Skipped`, superseded by concurrent merges, but `84647b81` is an ancestor of `8bf83a79`, the newest `ready` production deploy.
+
+**Deferred:**
+- [ ] **Neither half click-tested on a real phone** — verified by `flutter analyze`, 283 passing tests, full CI on both repos and the ancestry check, not by actually scanning an old `/claim?tenant=sks` poster or walking a fresh sign-in. Worth Royce doing both once. _(added 2026-08-15)_
+- [ ] **`eq_cards_lookup_invite_by_phone` still has anon EXECUTE on jvkn** — this session removed its last caller, so it is now an unused anon phone-enumeration surface. Revoking it needs a live DB migration plus removing the `cards-api` op and updating `check-tenant-drift.mjs` (~line 599), so it was raised as a chip (`task_5264c029`) rather than done in passing. _(added 2026-08-15, needs your call)_
+- [ ] **Cards has a fully built PIN lock screen that nothing mounts** — `pin_entry_screen.dart` + `app_lock_notifier.dart` + `app_lock_state.dart`, not registered in the router and imported by nothing. Either wire it up or delete it; chip raised (`task_4e685ee7`). _(added 2026-08-15)_
+
+---
+
+## eq-shell: account-enumeration hole closed on the phone+PIN sign-in door (2026-08-15)
+
+- [ ] **Not click-tested in a browser** — both sign-in doors were checked by calling them directly on production (an unknown mobile and an unknown email each return an identical "no" with no extra detail; the unauthed session check still refuses correctly) plus full CI, but nobody signed in through the actual page. Worth Royce trying two things on his phone: a *wrong* PIN, and a number that has *no* PIN set — both should now show the same "That number and PIN didn't match. If you haven't set a PIN yet, use 'Text me a code instead'". Then sign in by text on an account with no PIN and confirm the "Set a PIN" prompt still appears on the Home screen — that prompt is now the only place that guidance is given. _(added 2026-08-15)_
+
+---
+
+## eq-shell: staff-update — a read permission was gating an HR write (2026-08-15)
+*Security finding handed in against `netlify/functions/staff-update.ts`: the endpoint mutates an `app_data.staff` row (name, email, phone, trade, level, employment_type) via the `eq_update_staff` RPC, gated only on `requirePerm(session, 'field.view')` — a READ key all six roles in @eq-solutions/roles v2.5.8 hold — with no self-scoping on the caller-supplied `staff_id`. Tenant was the only containment.*
+
+- [x] Re-gated on `field.manage_people` (manager + supervisor) — "Add, edit, remove, restore, or permanently delete a worker record". Same module as the read key it replaced, same tier Field applies to its own worker-record actions. `admin.edit_user` was the other candidate and is the wrong domain (login accounts and roles, not HR records). Follows the verb-split `org-join-requirements.ts` / `org-credential-requirements.ts` already use.
+- [x] **No self-edit carve-out, deliberately.** `app_data.staff` has a `user_id` column so one is technically possible, but `email`/`phone` here are login identity and this path writes only the `app_data` mirror — a worker editing their own would desync `auth.users` exactly as [#1347](https://github.com/eq-solutions/eq-shell/pull/1347) did (new auth uid on next sign-in, licences stranded on the old one). `trade`/`level`/`employment_type` are rate-bearing, so self-service on those is self-promotion. Both want a canonical-write path first.
+- [x] Ratchet tightened: `field.manage_people` had **zero** enforcement sites in eq-shell and sat in `permission-enforcement-baseline.json`'s `dead_keys` under `enforced_downstream_field` — described as a benign Field-JWT passthrough ("it never itself gates Field-owned UI or API on them"). That claim was false and was masking this hole. Dropped from `dead_keys` (13 → 12), category note corrected, `_resolved` entry added.
+- [x] eq-shell PR [#1353](https://github.com/eq-solutions/eq-shell/pull/1353) merged (squash `4c17e188`), all CI green (typecheck/test/lint, schema drift + anon-grant + policy-lint, gitleaks, function grants, migration ledger, deploy preview). 311/311 tests.
+- [x] Deployed and verified live — its own production deploy (`commit_ref 4c17e188`) reached `ready`, and `4c17e188` confirmed an ancestor of the currently-serving deploy (`23fa05fb`). Endpoint reachable: unauthenticated POST → `401 {"error":"Not signed in"}`.
+- [x] **Global `~/.claude/CLAUDE.md` deploy row corrected** (Royce's explicit instruction) — see Notes in the session log; merging eq-shell to `main` DOES auto-deploy production in 2-4s, 14/14 verified. Old note's reasoning from `cdp_enabled_contexts` / `deploy_source` was the trap. Skipped-deploy caveat added on top.
+
+**Deferred:**
+- [ ] **`public.eq_update_staff` carries `GRANT EXECUTE … TO authenticated` on BOTH tenant planes** (zaap + ehow, re-asserted by migration 0172) — a door into the same `app_data.staff` write that bypasses this function and every permission check in it. Verified live: zaap has 0 `auth.users` (unreachable); **ehow has 5, all carrying a real `app_metadata.tenant_id`, so the RPC would execute for them** — but all 5 are known internal accounts (3× @sks.com.au, dev@eq.solutions, one outlook.com) and every one is dormant 7+ weeks (last sign-in 2026-06-24). Real, not a fire. Needs a tenant migration through the One Pipe (`tenant-migrate.yml`, production-gated, Royce's dispatch) after sweeping eq-field for legitimate `authenticated` callers. Chip `task_4d026294`. _(added 2026-08-15)_
+- [ ] **Re-audit the other 11 keys carrying the same unverified "enforced downstream" claim** — 6 field (`field.view_hours`, `field.view_licences`, `field.view_rates`, `field.manage_roster`, `field.manage_licences`, `field.manage_labour_hire`) + 5 service (`service.view_commercials`, `service.create`, `service.close`, `service.reopen`, `service.record_tests`). The failure mode is NOT "this key is unused" — it's "eq-shell has a surface that should be gated on this key but is gated on something weaker, or not at all", which is exactly what `field.manage_people` turned out to be. Pay-adjacent/commercial ones first. Chip `task_4ece4bf6`. _(added 2026-08-15)_
+- [ ] **`staff-update.ts` cannot currently write at all — decide repair or retire.** Its client is built with `db.schema='app_data'` (`tenant-routing.ts:330`) but `eq_update_staff` exists only in `public` on both planes (verified live), so PostgREST answers PGRST202 and the handler 500s. True since its first commit (`1f63a829`); migration 0172 reached the same conclusion from the data side ("the only caller, is unused dead code"). Deliberately left inert — swapping in `getTenantRpcClientById` would convert dead code into a live write path, a behaviour change and Royce's call. Documented at the call site so nobody "fixes" it into production without re-reading the gate. Zero UI callers, so retiring may be the right answer. _(added 2026-08-15)_
+- [ ] **Gate not behaviourally tested with a real session** — verified by resolving the installed roles matrix, `tsc -b --force`, eslint, 311/311 tests, and live ACL/function queries on both planes; not by signing in as a supervisor vs an apprentice. Can't be tested end-to-end while the endpoint 500s for every authorised caller (see above) — worth doing only if it's repaired rather than retired. _(added 2026-08-15)_
 
 ## eq-shell: Mobile Home redesign — compliance card collapsed, Suppliers + Compliance report quick links added (2026-08-14)
 *Royce reviewed 3 mobile Home dashboard screenshots and found the Compliance & safety card was mostly dead space — a "see Today's actions" pointer with nothing else in it once licences were the only signal. Asked to rethink the space: add a compliance report, surface Suppliers, keep NSW Comms.*
@@ -2656,7 +2694,7 @@ Net: on a deep-linked `?tab=leave` view — exactly how Core embeds Field — `l
 **Deferred:**
 - [ ] **Test the Add-tenant → data-plane Provision button flow fresh** — this session verified the *self-serve invite-link* path end-to-end; the *admin manually creates a tenant, then clicks Provision* path (same PR #627 fix) was never independently walked start-to-finish on a brand-new tenant. _(added 2026-07-04)_
 - [ ] **Leave submit-path** — never load-tested a real leave submission this session (real-email side effect); still open ahead of Royce's stress-testing week. _(added 2026-07-04)_
-- [ ] **QR/join-code worker flow** — `JoinContextNotifier`'s keepalive fix (PR #120) was applied by exact code-pattern match to the provision-context bug, not independently reproduced/verified live. Worth a live pass before the 15th. _(added 2026-07-04)_
+- [x] ~~**QR/join-code worker flow** — `JoinContextNotifier`'s keepalive fix (PR #120) was applied by exact code-pattern match to the provision-context bug, not independently reproduced/verified live. Worth a live pass before the 15th.~~ **Moot 2026-08-15** — the flow it guarded (`/join`) turned out to have been unreachable since 2026-06-10, and `JoinContextNotifier` was deleted with it in eq-cards PR #248. Never needed the live pass. _(added 2026-07-04, closed 2026-08-15)_
 - [ ] **Set a code-freeze date before 15 July** — not yet decided. _(added 2026-07-04, needs your call)_
 - [ ] **206 Supabase security advisories on ehow** — Royce's call from earlier this session: keep for a dedicated session, not folded into this one. _(added 2026-07-03, needs your call)_
 

@@ -1,13 +1,19 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-14
+last_updated: 2026-08-15
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # eq-shell changelog
+
+## 2026-08-15 (PR #1353 MERGED + deployed live — staff-update was gating an HR write on a read permission)
+- **PR #1353 MERGED (squash `4c17e188`) + deployed live — `staff-update.ts` re-gated from `field.view` to `field.manage_people`.** The endpoint mutates a staff record (name, email, phone, trade, level, employment type) but its only authorisation was `field.view`, a READ key every one of the six roles holds — apprentice and subcontractor included — and it took `staff_id` straight from the request body with no self-scoping. Tenant was the only containment, so any session could rewrite any colleague's record in the same tenant. Now manager + supervisor only, matching the tier Field applies to its own worker-record actions.
+- **No self-edit carve-out, deliberately.** `email`/`phone` here are login identity and this path writes only the tenant-side mirror, so a worker editing their own would desync `auth.users` exactly as PR #1347 did the day before (new auth uid at next sign-in, licences stranded on the old one). `trade`/`level`/`employment_type` are rate-bearing.
+- **Permission-enforcement ratchet tightened 13 → 12.** `field.manage_people` sat in `dead_keys` as a benign "enforced downstream in eq-field" passthrough. That claim was false — it was masking this hole. Category note corrected; eleven sibling keys still carry the same unverified claim.
+- **Not fixed, documented in-file:** the endpoint has never actually been able to write (its client targets `app_data`, the RPC lives only in `public`, so PostgREST 404s and it 500s — true since its first commit). Left inert on purpose: the obvious one-line fix converts dead code into a live write path. Separately, `public.eq_update_staff` carries `GRANT EXECUTE … TO authenticated` on both tenant planes, which bypasses this function entirely — tracked for a One Pipe migration.
 
 ## 2026-08-14 (PR #1348 MERGED + deployed live — compliance report + mobile Home quick links)
 - **PR #1348 MERGED (squash `42c88462`) + deployed live (Netlify deploy `6a7f0ff0`) — mobile Home's Compliance & safety card no longer shows when it has nothing to say beyond "see Today's actions".** Found while reviewing 3 mobile screenshots Royce sent: the card collapsed to a pointer-only stub whenever licences were its only content, wasting the space on nothing. It still renders in full for the cases that matter — a rostered worker with a lapsed licence, or an open incident.
