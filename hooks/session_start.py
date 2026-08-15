@@ -106,16 +106,28 @@ if not _local or not _remote:
 elif _local == _remote:
     out.append(f"SYNC       ok — HEAD == origin/main ({_local[:7]})")
 else:
-    _behind = git("rev-list", "--count", f"{_local}..{_remote}") or "?"
-    _ahead = git("rev-list", "--count", f"{_remote}..{_local}") or "?"
-    out.append(
-        f"SYNC       *** STOP *** clone is behind {_behind} / ahead {_ahead} vs origin/main.\n"
-        f"           Every substrate file you read may be stale, and the checks below\n"
-        f"           (FRESHNESS, NEEDS YOU, GOALS, RATCHET) are computed from those\n"
-        f"           same stale files — treat all of them as unverified.\n"
-        f"           A current digest.md stamp does NOT mean the clone is current.\n"
-        f"           Reconcile against origin/main before trusting substrate content."
-    )
+    # Only BEHIND is staleness. Being ahead is just local work not pushed yet,
+    # which is the normal state of every feature branch — alarming on it would
+    # make this line fire in most sessions, and a guard that always fires is
+    # one people learn to scroll past. That is how F10's guard reached "rung 4
+    # on paper, rung 0 in practice".
+    _behind = int(git("rev-list", "--count", f"{_local}..{_remote}") or 0)
+    _ahead = int(git("rev-list", "--count", f"{_remote}..{_local}") or 0)
+    if _behind:
+        out.append(
+            f"SYNC       *** STOP *** clone is behind {_behind}"
+            + (f" / ahead {_ahead}" if _ahead else "")
+            + " vs origin/main.\n"
+            "           Every substrate file you read may be stale, and the checks below\n"
+            "           (FRESHNESS, NEEDS YOU, GOALS, RATCHET) are computed from those\n"
+            "           same stale files — treat all of them as unverified.\n"
+            "           A current digest.md stamp does NOT mean the clone is current.\n"
+            "           Reconcile against origin/main before trusting substrate content."
+        )
+    else:
+        out.append(
+            f"SYNC       ok — {_ahead} local commit(s) ahead of origin/main, none missing"
+        )
 
 # --- 1. FRESHNESS (F1) ------------------------------------------------------
 digest = read("digest.md")
@@ -167,22 +179,33 @@ else:
         out.append("GOALS      set")
 
 # --- 4. RATCHET (promotions due) --------------------------------------------
-fails = read("system/failures.md")
-due = []
-for blk in re.split(r"\n\s*-\s+id:\s*", fails)[1:]:
-    fid = blk.split("\n", 1)[0].strip()
-    rec = re.search(r"recurrences:\s*(\d+)", blk)
-    rung = re.search(r"rung:\s*(\d+)", blk)
-    title = re.search(r"title:\s*(.+)", blk)
-    if rec and rung and int(rec.group(1)) >= 2 and int(rung.group(1)) < 4:
-        due.append(f"{fid} (rung {rung.group(1)}, {rec.group(1)}x) — {title.group(1)[:70] if title else ''}")
-if due:
-    out.append("RATCHET    *** PROMOTION DUE *** a guard has failed twice and must climb:")
-    for d in due:
-        out.append("           " + d)
-    out.append("           A lesson that failed twice IS the thing that failed. Promote it to a hook.")
-else:
-    out.append("RATCHET    no promotions due")
+# The rule lives in hooks/ratchet_rules.py and is IMPORTED, not restated:
+# this gate and .github/scripts/guard_ratchet.py used to carry two copies that
+# already disagreed (hardcoded `rung < 4` here vs `rung < target` there), which
+# is the shape of F13.
+try:
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from ratchet_rules import scan as _ratchet_scan
+
+    found = _ratchet_scan(read("system/failures.md"))
+except Exception as exc:  # never let a broken classifier silence the gate
+    found = None
+    out.append(f"RATCHET    ? classifier unavailable ({exc}) — check by hand.")
+
+if found is not None:
+    overdue = [f for f in found if f[5] == "OVERDUE"]
+    due = [f for f in found if f[5] == "DUE"]
+    if overdue:
+        out.append("RATCHET    *** PROMOTION DUE *** a guard has failed twice and must climb:")
+        for fid, title, rec, rung, target, _ in overdue:
+            out.append(f"           {fid} (rung {rung} -> {target}, {rec}x) — {title[:66]}")
+        out.append("           A lesson that failed twice IS the thing that failed. Promote it to a hook.")
+    if due:
+        out.append("RATCHET    below declared target (not yet recurred, guard already owed):")
+        for fid, title, rec, rung, target, _ in due:
+            out.append(f"           {fid} (rung {rung} -> {target}) — {title[:66]}")
+    if not overdue and not due:
+        out.append("RATCHET    no promotions due")
 
 # --- 5. CLAIMS (duplicate-investigation guard) ------------------------------
 # Cross-references active rows in system/incident-claims.md against this

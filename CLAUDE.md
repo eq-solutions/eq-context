@@ -221,6 +221,7 @@ This contract points; it doesn't restate. Authoritative files:
 | Agentic coding (session gate, verification standard, multi-tenancy, effort threshold) | [rules/agentic-coding.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/agentic-coding.md) |
 | Reflection protocol (mandatory pre-finalization self-critique) | [rules/reflection-protocol.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/reflection-protocol.md) |
 | Decision protocol (on-demand steelman/pre-mortem/value/feasibility pass) | [rules/decision-protocol.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/decision-protocol.md) |
+| Gap protocol (light centering pass — one-sentence problem, four blunt questions, one next move) | [rules/gap-protocol.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/gap-protocol.md) |
 | EQ Brand (Design Brief v1.3) | [rules/brand-eq.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/brand-eq.md) |
 | SKS Brand | [rules/brand-sks.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/brand-sks.md) |
 | Deployment | [rules/deployment.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/deployment.md) |

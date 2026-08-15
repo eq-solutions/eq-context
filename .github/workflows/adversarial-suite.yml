@@ -72,3 +72,7 @@ jobs:
       - name: Session-start SYNC check (F1)
         working-directory: /mnt/Projects/eq-context
         run: python hooks/test_session_start_sync.py
+
+      - name: Ratchet promotion rule (single definition)
+        working-directory: /mnt/Projects/eq-context
+        run: python hooks/test_ratchet_rules.py

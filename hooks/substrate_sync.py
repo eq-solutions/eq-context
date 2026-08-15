@@ -86,11 +86,18 @@ def main():
     if not local or not remote or local == remote:
         return
 
-    behind = git("rev-list", "--count", f"{local}..{remote}") or "?"
-    ahead = git("rev-list", "--count", f"{remote}..{local}") or "?"
+    # Only BEHIND is staleness -- ahead is unpushed local work, the normal state
+    # of any feature branch. Warning on that would fire this hook on nearly
+    # every prompt, and a warning that always fires is one nobody reads.
+    behind = int(git("rev-list", "--count", f"{local}..{remote}") or 0)
+    if not behind:
+        return
+
+    ahead = int(git("rev-list", "--count", f"{remote}..{local}") or 0)
     print(
-        f"*** SUBSTRATE OUT OF SYNC *** {REPO} is behind {behind} / ahead {ahead} "
-        f"vs origin/main. Files you read from it may be stale, and a current "
+        f"*** SUBSTRATE OUT OF SYNC *** {REPO} is behind {behind}"
+        + (f" / ahead {ahead}" if ahead else "")
+        + f" vs origin/main. Files you read from it may be stale, and a current "
         f"digest.md stamp does NOT mean the clone is current (failure F1). "
         f"Reconcile before trusting substrate content."
     )

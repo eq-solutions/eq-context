@@ -33,6 +33,13 @@ ROOT = os.path.join(HERE, "..")
 TIERS = {
     "root": (".", "README.md", False),
     "system": ("system", "system/README.md", True),
+    # rules/ was absent from this map until 2026-08-15 despite every file in it
+    # being read_priority: critical. The consequence was live:
+    # rules/gap-protocol.md is missing from CLAUDE.md section 8, so /gap is
+    # undiscoverable from the contract while /decide and /reflect are both
+    # documented. rules/ has no README, so it indexes against CLAUDE.md, which
+    # is where its files are actually meant to be listed.
+    "rules": ("rules", "CLAUDE.md", True),
     "eq": ("eq", "eq/README.md", True),
     "sks": ("sks", "sks/README.md", True),
     "sks-team": ("sks-team", "sks-team/README.md", True),

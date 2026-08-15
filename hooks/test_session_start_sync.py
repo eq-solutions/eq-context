@@ -123,6 +123,28 @@ class SyncCheck(unittest.TestCase):
             self.assertIn("*** STOP ***", out, "diverged clone reported as clean")
             self.assertNotIn("SYNC       ok", out)
 
+    def test_ahead_only_does_not_cry_wolf(self):
+        """Unpushed local work is not staleness.
+
+        Every feature branch is ahead of origin/main. If that tripped the STOP
+        banner the line would fire in most sessions, and a guard that always
+        fires is one people scroll past -- which is exactly how F10 ended up
+        "rung 4 on paper, rung 0 in practice". Nothing is missing from this
+        clone, so it must read as fine.
+        """
+        with tempfile.TemporaryDirectory() as tmp:
+            _, clone, _ = build_pair(tmp)
+            commit(clone, "mine.md", "local work only\n")
+            git(clone, "fetch", "origin", "main")
+
+            out = run_gate(clone)
+            self.assertNotIn(
+                "*** STOP ***",
+                out,
+                "gate cried STOP over unpushed local commits with nothing missing",
+            )
+            self.assertIn("SYNC       ok", out)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

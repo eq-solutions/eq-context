@@ -14,24 +14,33 @@ on an agent recalling the right line of 455 at the right instant is not a safegu
 """
 import os, re, sys
 
-LADDER = {0: "unknown", 1: "prose lesson", 2: "session checklist",
-          3: "CI check (catches after)", 4: "HOOK (prevents)"}
+# The promotion rule is IMPORTED, not restated. This file and
+# hooks/session_start.py each used to carry their own copy and they already
+# disagreed -- this one read target_rung, that one hardcoded 4. Two definitions
+# of one rule, free to drift, is the shape of F13, so there is now exactly one:
+# hooks/ratchet_rules.py.
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "hooks"))
+from ratchet_rules import LADDER, parse_entry, classify  # noqa: E402
 
 src = open("system/failures.md", encoding="utf-8").read()
 due = []
 for blk in re.split(r"\n\s*-\s+id:\s*", src)[1:]:
     fid = blk.split("\n", 1)[0].strip()
     g = lambda k, d=None: (re.search(rf"{k}:\s*(.+)", blk) or [None, d])[1]
-    rec = int((re.search(r"recurrences:\s*(\d+)", blk) or [0, 0])[1])
-    rung = int((re.search(r"\brung:\s*(\d+)", blk) or [0, 0])[1])
-    target = int((re.search(r"target_rung:\s*(\d+)", blk) or [0, 4])[1])
-    if rec >= 2 and rung < target:
+    rec, rung, target = parse_entry(blk)
+    # Only OVERDUE opens an issue. Anything merely below its declared target is
+    # surfaced by the session gate instead -- an issue per un-recurred entry
+    # would file three on day one and train everyone to close them unread.
+    if classify(rec, rung, target) == "OVERDUE":
         due.append(dict(id=fid, title=(g("title") or "").strip(), rec=rec,
                         rung=rung, target=target, guard=(g("guard") or "").strip()))
 
 if not due:
     print("guard-ratchet: no promotions due.")
-    with open(os.environ.get("GITHUB_OUTPUT", "/dev/null"), "a") as fh:
+    # os.devnull, not "/dev/null" -- the literal makes every local run on
+    # Windows crash after printing its result, which discourages running the
+    # ratchet by hand at exactly the moment you would want to.
+    with open(os.environ.get("GITHUB_OUTPUT", os.devnull), "a") as fh:
         fh.write("due=\n")
     sys.exit(0)
 
