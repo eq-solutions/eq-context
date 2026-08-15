@@ -337,6 +337,28 @@ te("CONTROL: multi-line, NOMINAL cwd IS the shared checkout, but a second-line c
    {"tool_name": "Bash",
     "tool_input": {"command": 'echo starting\ncd "' + nominal_cwd + '" && git commit -m x'},
     "cwd": f9_repo}, 0, SAME)
+
+# Found live 2026-08-15: a rebase run inside a REAL, separate `git worktree
+# add` and inside a fresh `git clone` was both wrongly blocked. Distinct from
+# the 2026-08-05 multi-line fix above -- that one covers `cd` on a LATER
+# LINE; this covers `cd` later on the SAME line, chained via `&&` onto an
+# earlier command with no literal newline for `^`/MULTILINE to anchor to.
+# This is not an exotic shape: it's this hook's OWN escape-valve advice
+# (`git clone ... && cd <dir> && git rebase ...`) followed literally as one
+# line, which this environment's Bash tool genuinely produces.
+te("same-line command: cd chained via && onto an EARLIER command (not at line "
+   "start) while NOMINAL cwd is a real worktree -> still BLOCK "
+   "(2026-08-15, effective_cwd()'s cd regex only matched string/line start)",
+   {"tool_name": "Bash",
+    "tool_input": {"command": 'git worktree add "ignored" origin/main && cd "'
+                    + f9_repo + '" && git rebase origin/main'},
+    "cwd": nominal_cwd}, 2, SAME)
+te("CONTROL: same-line, NOMINAL cwd IS the shared checkout, but a &&-chained cd "
+   "(not at line start) moves OUT to a private repo -> NOT blocked",
+   {"tool_name": "Bash",
+    "tool_input": {"command": 'echo starting && cd "' + nominal_cwd
+                    + '" && git commit -m x'},
+    "cwd": f9_repo}, 0, SAME)
 _rmtree_retry(nominal_cwd)
 
 # Found live 2026-08-05 running real recon commands against this exact fixture
