@@ -14,6 +14,36 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: permission-hygiene report checked against live code, 2 real gaps fixed, 1 database fix applied by Royce (2026-08-16)
+*A 4-item report on eq-shell's permission setup was checked against the actual live code rather than trusted outright — 2 of the 4 items turned out already fixed by other same-day work before this session even started.*
+
+- [x] **A safety check meant to catch "permission declared but never actually enforced" had a blind spot** — it could be fooled by a permission name that only appeared in a code comment, not real enforcement. Fixed so a comment no longer counts. Didn't change anything visible today, but stops the next real gap of this kind from hiding the same way.
+- [x] **Two screens showed a control to people whose access didn't actually match** — the "Show in Field & Service" toggle (Data Activation) and the security-groups checklist on a person's edit screen were both visible to a slightly wider group than could actually use them, via the seeded "Project Managers" access group. Fixed both to only show when the access actually matches, so nobody sees a button that just fails.
+- [x] **The "Number reuse checks" page had the same mismatch, but at the database level** — the page correctly hid itself from the wrong people, but the database function behind it didn't know about the same access group, so a Project Manager could open the page and then have every action on it fail. Fixed and **applied directly to the live database by Royce** (I couldn't reach it myself this session — handed him the exact steps, he ran them and confirmed clean).
+- [x] eq-shell [PR #1397](https://github.com/eq-solutions/eq-shell/pull/1397), merged, live.
+- [x] **Found while checking why a report showed the wrong thing:** the seeded "Report viewers" access group promised full report access but was actually missing the piece that lets it see the money figures — anyone added to it would open GM Reports to an error. Root cause was a mistake from an earlier session, not this report. Fixed in the shared roles package ([eq-roles PR #27](https://github.com/eq-solutions/eq-roles/pull/27)), merged and released as v2.7.3.
+
+**Deferred:**
+- [ ] **eq-shell hasn't picked up the new roles release yet** — the fix above lives in the shared package (v2.7.3) but eq-shell is still pinned to the version before it. A small follow-up PR to bump the pin is needed; not opened yet. _(added 2026-08-16)_
+- [ ] **The "Rollback" button on the activity log still doesn't work** — confirmed still broken, an earlier fix already made it fail with a clear message instead of crashing, and explicitly left the "build it for real, or remove the button" decision for Royce. Not decided again this session. _(added 2026-08-16)_
+- [ ] **One database function has the same access-group blind spot as the Number Reviews fix above, not yet fixed** — `eq_revoke_session`. Noted, not actioned. _(added 2026-08-16)_
+
+---
+
+## eq-shell: "Today's Actions" removed from the dashboard — Royce's call, not yet merged (2026-08-16)
+*Royce looked at his own live dashboard and asked to steelman removing the AI-written "Today's Actions" panel — "AI slop and not useful plus slow to load." Ran the decision-check process first, then built it once he said "remove it."*
+
+- [x] **The AI-written action list is gone from the dashboard** — both the desktop panel and its mobile equivalent. Removed the whole thing behind it too, not just hidden, since leaving it running in the background wouldn't have fixed the actual complaint (it was genuinely slow, not just showing something unwanted).
+- [x] **Two other small numbers on the dashboard quietly depended on the same slow AI call** — "scheduled today" and "live quotes" now always show their plain, fast counts (no visible change for anyone who wasn't already seeing the fancier version). A third, mobile-only "Outstanding quotes" number had nothing else to fall back to, so it's gone too rather than left permanently blank.
+- [x] **Fixed a knock-on effect found while writing this note, not reported separately:** the mobile compliance card was hiding some licence-expiry detail on the assumption "Today's Actions already shows this elsewhere" — no longer true, so un-hid it. Same information mobile users had before, just not doubled-up anymore.
+- [x] The two backend pieces this removal leaves with nothing calling them aren't deleted — that's a separate decision (rebuild it lighter, or retire it for good), spun off as its own tracked item rather than decided unilaterally.
+
+**Deferred:**
+- [ ] **Not merged yet** — eq-shell [PR #1406](https://github.com/eq-solutions/eq-shell/pull/1406) is open, waiting on a quick look at the preview link (the top row of the dashboard has fewer boxes now) before it goes live. _(added 2026-08-16)_
+- [ ] **Decide what happens to the AI-briefing pieces left with nothing calling them** — rebuild lighter, keep dormant, or retire for good. Spun off as a tracked follow-up, not decided. _(added 2026-08-16)_
+
+---
+
 ## eq-cards: role-assignment could hand someone suite-wide manager power with no audit trail — found, fixed, merged, live (2026-08-16)
 *A worker's role — including "manager", the top tier every EQ app trusts — could be set from Cards' admin screen through the exact same check used for editing a phone number or address, with nothing recording who did it. eq-shell had already split this into its own separate, narrower permission earlier the same day (the new permission's own description names this exact Cards gap as the reason it was created); Cards had never adopted anything like it.*
 

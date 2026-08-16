@@ -9,6 +9,18 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-16 (PR #1397 MERGED, live — permission-hygiene sweep)
+- Drift-test ratchet no longer counts a permission key mentioned only in a code comment as "enforced" (was a real blind spot; the specific case that surfaced it had already been independently fixed).
+- Data Activation page and AdminEditUser's Security-groups section now gate on the same permission key their respective server endpoints actually require — both previously showed a control to a slightly wider group (via the seeded "Project Managers" default group) than could use it.
+- Migration `2026_08_16c_review_queue_group_perm_gap.sql` (jvkn) — the Number Reviews page's 4 backing RPCs now honour a security-group grant of `admin.list_users`, not just the literal `manager` role. Applied to jvkn by Royce directly via the dashboard SQL editor (Supabase MCP unavailable this session); verified clean.
+- `reports.view_financial` un-deprecated + the seeded "Report viewers" default group fixed to actually grant it — [eq-roles v2.7.3](https://github.com/eq-solutions/eq-roles/pull/27). eq-shell's own pin bump is a separate, not-yet-opened follow-up.
+
+## 2026-08-16 (PR #1406 OPEN, not merged — "Today's Actions" removed from the dashboard)
+- Royce's call, after a `/decide` pass: removed the AI-briefing "Today's Actions" panel and its underlying fetch entirely (not just hidden) — the load-time complaint was structural (a 10-minute cache TTL means most loads hit a live Claude call), so hiding the panel alone wouldn't have fixed it.
+- Two other stat tiles ("scheduled today", "live quotes") that quietly used the same payload as an optional override now always show their plain counts; a third mobile-only tile ("Outstanding quotes") had no other data source and was removed.
+- Follow-up fix in the same PR: `SignalsBoard`'s Compliance card had two mobile-only suppressions premised on "Today's Actions already shows this" — un-suppressed both.
+- `ai-briefing.ts`/`briefing-action.ts` now have zero callers in the repo; not deleted, flagged as a separate decision (`task_b07e0052`).
+
 ## 2026-08-16 (PR #1399 MERGED — Home screen Photo ID banner regression fixed)
 - `eq_worker_compliance_status()` wrongly showed "Photo ID — not added yet" on the worker Home screen for anyone who'd already uploaded a driver's licence or passport. Same-day migration `2026_08_16_org_credential_requirements_role_scope.sql` (adding role-scoping) rebuilt the function from its pre-equivalence baseline, silently dropping an earlier fix (`2026_08_02b`) for the identical driver_licence/passport → photo_id case eq-cards already handles correctly.
 - Fixed by re-applying the equivalence logic on top of the role-scoped version, so both are present together. Spun off as a background task from an eq-field/eq-cards session that traced the false banner to this repo; confirmed live post-merge by pulling the deployed function and re-running the exact repro worker through it — resolves to `held`, correctly.
