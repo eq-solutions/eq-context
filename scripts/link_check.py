@@ -46,9 +46,16 @@ LINK_RE = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
 
 
 def find_md_files(root):
-    """Tracked-looking .md files under root, skipping .git."""
+    """Tracked-looking .md files under root, skipping .git and other sessions'
+    checked-out worktrees (.claude/worktrees/<name>/ is a full nested clone of
+    this repo -- walking into it double-counts every file and re-resolves
+    links against a copy that may be mid-edit, producing false positives that
+    don't reproduce in a clean CI checkout, which has no worktree)."""
     out = []
     for dirpath, dirnames, filenames in os.walk(root):
+        rel_dir = os.path.relpath(dirpath, root).replace(os.sep, "/")
+        if rel_dir == ".claude":
+            dirnames[:] = [d for d in dirnames if d != "worktrees"]
         dirnames[:] = [d for d in dirnames if d not in (".git", "__pycache__", ".pytest_cache", "node_modules")]
         for name in filenames:
             if name.endswith(".md"):
