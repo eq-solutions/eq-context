@@ -61,6 +61,9 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-16)
 
 **eq-shell:**
+- #1407 fix(security): origin-guard 4 attachment/document upload endpoints
+- #1406 fix(dashboard): remove Today's Actions from the Shell home page
+- #1405 fix(security): origin-guard 4 quotes/ops/briefing endpoints
 - #1404 fix(security): origin-guard 3 intake-staging endpoints + document register
 - #1403 fix(admin-settings): stop crash on role-scoped licence requirements
 - #1402 fix(security): origin-guard 4 GM Reports mutation endpoints
