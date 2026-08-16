@@ -14,6 +14,20 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: two staff pages could be reached from any linked company site, not just the main one — found, fixed, merged, live (2026-08-16)
+*A security review flagged two Cards-related staff actions — approving someone onto the roster, and exporting the licence pack — that only checked "is this person signed in", not "did this request actually come from our own site." Because the sign-in cookie is shared across every EQ subdomain, a compromised or malicious page on any of those other sites could have quietly triggered either action using a manager's own sign-in, without them doing anything. Checked every other staff/admin action in the app for the same gap while in there.*
+
+- [x] Both flagged actions (approve-onto-roster, export-licence-pack) now check where the request actually came from, matching how a sibling export action already worked. No visible change for normal use.
+- [x] Checked the rest of the app for the identical gap: found 109 actions with the same missing check, of which 51 actually change something (the rest only display data, a lower-risk shape). Fixed the 5 that are near-identical twins of actions already protected this way: two record-editing actions, a login-phone-change tool, and two new-company-setup actions.
+- [x] eq-shell [PR #1386](https://github.com/eq-solutions/eq-shell/pull/1386), merged, confirmed live on core.eq.solutions.
+- [x] While merging, hit the same "3 unknown database functions" block another session traced and fixed as PR #1389 (see that entry below) — this session's own attempt at the identical fix turned out to be duplicate work once #1389 was found, so it was dropped rather than duplicated.
+
+**Deferred:**
+- [ ] **The remaining 46 actions with the same missing check** — spans account-security settings, GM Reports, Labour Hire, Intake, file uploads, and invites. Deliberately not bundled into the same fix (would've been the biggest change of this kind ever made to this app in one go); instead handed off as a prioritised follow-up, account-security actions first. Already picked up and running in separate sessions. _(added 2026-08-16)_
+- [ ] **Two adjacent staff-approval screens require different levels of permission to do very similar things** — one needs a manager, another needs only a much more junior permission to view/act on the same underlying approval data. Doesn't look deliberate. Needs your call on whether they should match. _(added 2026-08-16)_
+
+---
+
 ## eq-field: dozens of pages had no access check at all — a direct link could open any of them regardless of role (2026-08-16)
 *Auditing Field's page-switching code found it only checked permission on 5 of the app's 41 pages, each one added reactively after someone separately noticed it could be reached by a direct link. The other 36 had no check at all. Rebuilt so every page needs an explicit, listed reason to be reachable — an unrecognised page is refused, not rendered.*
 
