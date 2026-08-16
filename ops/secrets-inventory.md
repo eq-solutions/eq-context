@@ -279,9 +279,5 @@ eq-solves-service #734+#732, eq-field #703 (Netlify auto-deploy on merge),
 eq-cards #250 (`gh workflow run deploy.yml`, confirmed live at commit
 `c5024a7`). All 4 apps' running code now matches this file.
 
-**Still open:**
-
-1. **ProtonPass entry** for the real secrets that have no vendor source of
-   truth — partial as of 2026-08-16, not complete. See the EQ Secrets Map
-   artifact's master list for the full 35-row checklist. This is the only
-   item left from the entire 2026-08-16 audit that isn't closed.
+**Nothing open.** ProtonPass entry done 2026-08-16 — Royce's own words,
+"as well as I could." Closes the last item from the 2026-08-16 audit.
