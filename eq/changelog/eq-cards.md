@@ -1,13 +1,18 @@
 ---
 title: EQ Cards — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-16
+last_updated: 2026-08-17
 scope: EQ Cards append-only history. NOTE — duplicates eq/changelog/cards.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # EQ Cards — Changelog
+
+## 2026-08-16 (PR #256 MERGED — review-needed email for auto-joined workers)
+- `notify-connection-request` edge function now picks copy based on a `status` field in its trigger payload: a genuine pending connect request keeps the existing "please review" wording; a worker who auto-joined via an accepts-applications tenant config (no pending decision — they're already on the roster) gets new "already joined, here's what to check" wording instead. Same recipients (each tenant's nominated contacts from Settings), same review link.
+- Companion eq-shell change (`workers-canonical-sync`) is what actually fires this path — see eq-shell changelog, same date.
+- Deployed and confirmed live.
 
 ## 2026-08-16 (PR #255 MERGED — jvkn Supabase branch-replay root-caused and documented; no schema/code changes)
 - Follow-up to PR #254's abandoned branch-test (`task_390981f1`, entry below) — created a fresh throwaway branch specifically to capture the actual `MIGRATIONS_FAILED` error this time, rather than just noting it was blocked.

@@ -1,13 +1,18 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-16
+last_updated: 2026-08-17
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # eq-shell changelog
+
+## 2026-08-16 (PR #1414 MERGED — review-needed email for auto-joined workers; also caught + fixed PR #1413's edge function never having been deployed)
+- `workers-canonical-sync`'s genuinely-new-person branch now also inserts an already-resolved `org_access_requests` row, reusing the existing connect-request notification pipeline (trigger → `eq_notify_connection_request_targets` RPC → `notify-connection-request` edge fn, eq-cards) so a tenant's nominated recipients get emailed when a worker auto-joins via an accepts-applications config — a path that previously notified nobody. Companion migration passes the row's `status` through the trigger payload so the edge function can pick "already joined" copy over "please review" copy.
+- **Found while deploying, not reported as a symptom:** PR #1413 (below) had been merged into the repo but its edge function was never actually redeployed — Netlify auto-deploys the web app on merge, but Supabase edge functions living in the same repo need their own explicit deploy step, which never happened. The blank-name Staff-list fix had therefore still been broken live this whole time. Deployed the current, correct code for both fixes together; confirmed live afterward via `get_edge_function`, not assumed from the deploy call succeeding.
+- Not dry-run tested end to end (the trigger queues a real outbound email, which can survive a rolled-back test transaction) — merged on code review, Royce's explicit go.
 
 ## 2026-08-16 (PR #1413 MERGED — 3 name-sync bugs + a real double-navbar bug fixed)
 - `workers-canonical-sync/index.ts`: `app_data.staff.first_name`/`last_name` could get permanently locked blank — the merge branch checked the existing value raw instead of sanitizing it (`c.first_name ?? ...`), so an empty string never fell through to a later real value. Fixed to match the pattern already used for email/phone.

@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-08-16
+last_updated: 2026-08-17
 scope: Done items rotated out of eq/pending.md nightly by scripts/rotate_pending.py (per-item since 2026-07-27; before that, occasional manual whole-section moves). Nothing here is actionable — pure historical record (also covered in eq/changelog/*.md and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -3984,5 +3984,10 @@ contain the same values and were pushed before push-protection caught up.
 ## ⏩ Session close — 2026-07-07 (eq-cards) — Onboarding shipped live, approval-flow audit, offline ID card + install nudge (super-easy onsite login) (rotated 2026-08-16 — open items remain in pending.md)
 
 - [x] **Minimum-requirements model** — RESOLVED 2026-08-16: built as the soft, non-blocking checklist this note recommended, extended to be per-role (an apprentice and a manager can now be asked for different licences, not one shared list). See the 2026-08-16 eq-shell entry above. _(added 2026-07-07, resolved 2026-08-16)_
+
+---
+
+## eq-field mobile UI pass + eq-shell name-sync/nav bugs + Photo ID regression (2026-08-16)
+- [x] **No alert tells an admin a new worker's profile + licences are ready for review** when they connect directly — RESOLVED same day: built a review-needed email reusing the existing connect-request notification pipeline (same nominated recipients, same review link), fired from the point a worker auto-joins via an accepts-applications tenant config. eq-cards [PR #256](https://github.com/eq-solutions/eq-cards/pull/256) + eq-shell [PR #1414](https://github.com/eq-solutions/eq-shell/pull/1414), merged, migration applied, both edge functions deployed and confirmed live. _(added 2026-08-16, resolved 2026-08-16)_
 
 ---

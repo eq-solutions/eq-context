@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-16
+last_updated: 2026-08-17
 scope: EQ Solutions to-do list; overwrite in place
 read_priority: critical
 status: live
@@ -50,11 +50,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [ ] **Not clicked through live** — verified against real production data directly, not by an actual admin opening the screen and watching Manager disappear from the list. Worth two minutes on a real admin account. _(added 2026-08-16)_
 - [ ] **Testing this kind of database change on a safe, disposable copy first didn't work** — tried to spin one up before applying anything live, and discovered the database's own history of past changes can't currently rebuild itself from scratch on a fresh copy, unrelated to this fix. Spun off as its own follow-up (already running); until it's fixed, changes like this one have to be verified against the live database directly rather than on a safe copy first. _(added 2026-08-16)_
 - [ ] **Cards' own copy of the shared role/permission rulebook is a few versions behind** — old enough that it doesn't know about the new narrower "who can change someone's role" permission at all. Not required for this fix (handled a different way instead, described above) but worth catching up eventually so Cards can check permissions the same direct way Shell does. _(added 2026-08-16)_
-
----
-
-## eq-field mobile UI pass + eq-shell name-sync/nav bugs + Photo ID regression (2026-08-16)
-- [ ] **No alert tells an admin a new worker's profile + licences are ready for review** when they connect directly (not via the existing invite/QR/labour-hire queues) — they're auto-approved by design (a 2026-06-15 decision, not a bug) so they show up on the roster immediately, but nothing surfaces them for a human to actually look at. Needs Royce's call on whether that's wanted. _(added 2026-08-16)_
 
 ---
 
