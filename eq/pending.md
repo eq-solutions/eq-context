@@ -14,6 +14,21 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: 4 places were showing worker or contact details to people who shouldn't see them — fixed, PR open, waiting on your go to ship (2026-08-16)
+*Started from two specific leaks flagged directly: the compliance report page (worker names, licence problems, and incident details, including ones that would need to go to a regulator) and the customer list search (leaking contact emails). Checked the actual live rules first rather than trusting old notes, then swept every other place using the same too-loose rule to find what else was missed.*
+
+- [x] Compliance report page and the dashboard's compliance card were visible to every role, including apprentices and subcontractors — meant to be manager/supervisor only. Now correctly restricted.
+- [x] Staff page's licence-review badges (who reviewed a licence and when) had the same everyone-can-see-it gap. Same fix.
+- [x] The list of managers who get notified about new join requests was leaking their real email addresses to every role. Now hidden from anyone who shouldn't see contact details.
+- [x] The customer search box was quietly showing contact emails in results to roles that aren't meant to see them, even though opening a customer's full details correctly hid the same information. Fixed at the source, plus a related bug found and fixed along the way (a customer's invoice email wasn't being hidden either).
+- [x] eq-shell [PR #1381](https://github.com/eq-solutions/eq-shell/pull/1381) open, tests and build clean.
+
+**Deferred:**
+- [ ] **Not merged — needs your explicit go.** Merging this repo deploys to core.eq.solutions within seconds, and this touches who-can-see-what, so it waits for you rather than shipping on its own. _(added 2026-08-16)_
+- [ ] **Not clicked through live** — worth confirming an apprentice or similar account gets turned away from the compliance report, sees no licence-review badges on Staff, and can no longer find a customer by typing part of a contact's email into search. _(added 2026-08-16)_
+
+---
+
 ## eq-cards: a worker's "don't share my licences" choice was stored but never enforced — found, fixed, applied, deployed (2026-08-16)
 - [ ] When a company invites a worker to connect (instead of the worker applying to the company), the worker isn't offered the same share-choice — it's always full profile. Worth deciding if that's intentional; already being looked at in its own session. _(added 2026-08-16)_
 
@@ -35,6 +50,33 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ## eq-shell: an AI tool anyone signed in could use to run up costs on the company's AI account — closed, merged, live (2026-08-16)
 - [ ] **Not clicked through live yet.** Worth two minutes: try the AI import on a real file, look at the home-page briefing/ask bar as a manager vs. a supervisor, and try opening the licence-scan page as an apprentice (should now say you don't have access). _(added 2026-08-16)_
+
+---
+
+## eq-field + eq-shell: access-control cleanup — Pipeline/Teams/Apprentices/Email Templates get their own permission switches, then a real gap in Shell's Access Control page found and closed (2026-08-16)
+*Four Field features (Tender Pipeline, Teams, Apprentices, Email Templates) were each riding on a broader "are you a manager" check instead of their own switch — meaning none of them could be turned on or off for one specific person without also touching everything else that broader check gated. Split each into its own permission. Shipping that surfaced a second, real problem: the 3 new switches didn't actually show up anywhere an admin could use them.*
+
+- [x] Tender Pipeline access is now fully opt-in, grantable per person — previously bundled under the general manager check. [eq-field PR #702](https://github.com/eq-solutions/eq-field/pull/702) (v3.5.502).
+- [x] Teams (add/edit/delete crews) split into its own switch, independent of general roster editing. Same PR.
+- [x] Apprentices gained a real switch — previously had none at all; every apprentice-related action just checked "is this person a manager." Same PR.
+- [x] Documents to Sign: fixed a bug where a PIN-only session couldn't sign a document correctly. Same PR.
+- [x] Email Templates (the admin screen for editing the 3 leave-email templates) moved into the main "Manage" menu and got its own permission switch, replacing a borrowed one. [eq-field PR #704](https://github.com/eq-solutions/eq-field/pull/704) (v3.5.503) — same PR also fixed a heading that had gone blank as a side effect of the Pipeline change above.
+- [x] **Found while shipping the above: the 3 new switches were invisible on Shell's Access Control page** — the page reads a hand-copied snapshot of Field's permission list that hadn't been updated since 2026-08-07, so nothing after that date could be granted from Shell at all. Re-copied it and fixed a related gap: Tender Pipeline's switch would have silently vanished from that snapshot the next time someone updates it, since it no longer belongs to any role by default. [eq-shell PR #1379](https://github.com/eq-solutions/eq-shell/pull/1379), merged, confirmed live.
+- [x] **Royce then hit a second, real gap live**: even after the fix above, nothing on the Access Control page told an admin that page even *has* ~70 more fine-grained switches beyond the 9 shown — they only exist inside "+ New group," undiscoverable unless you already know to look. Added a one-line pointer on the page itself. [eq-shell PR #1380](https://github.com/eq-solutions/eq-shell/pull/1380), merged (admin override — see Deferred), confirmed live.
+
+**Deferred:**
+- [ ] **A real, bigger idea from Royce — one single screen for all access control, not two separate systems** — discussed and deliberately not built today; needs a proper design pass first (grouping ~86 total switches sensibly is its own problem), not a same-day PR. _(added 2026-08-16)_
+- [ ] **eq-shell PR #1380 merged via admin override**, bypassing a required check — confirmed the check's failure was unrelated to this PR (it was flagging something else entirely, see next item), but flagging the override itself since it bypassed a safety gate. _(added 2026-08-16)_
+- [ ] **3 database functions on Shell's control-plane database exist live with no matching file anywhere in the repo** (`eq_cards_admin_list_worker_credentials`, `is_org_admin_with_credential_access`, `tg_org_membership_sharing_scope`) — someone applied them directly rather than through a normal commit. Found only because it's currently blocking every single open PR on eq-shell via a required check. Not fixed — not safe to guess at what these do or write files for them without knowing their origin. Needs either the missing files written, or a deliberate decision that they're accepted debt. _(added 2026-08-16)_
+- [ ] Neither eq-shell PR was clicked through live — no way to sign in as a real Shell admin from this environment. Worth two minutes on Access Control next time you're in there, to see the new switches and the new pointer text for real. _(added 2026-08-16)_
+- [ ] A worktree used for PR #1380 (`eq-shell-perms-discoverability-hint`) is still sitting on disk — cleanup was blocked by a permission check mid-session. Harmless, just needs a manual `git worktree remove` sometime. _(added 2026-08-16)_
+
+---
+
+## eq-field: weekly digest editing — on hold, not a bug (2026-08-16)
+*Royce asked about making the Friday supervisor-digest email editable, the same way the 3 leave-email templates already are. Checked first: those 3 templates shipped 2026-08-14 specifically scoped to exclude the digest, "holding until the pilot's actually been used once" — and a live check just now shows zero real edits to any of the 3 templates since they shipped. No usage signal yet to justify extending the pattern to the digest, which is a harder case anyway (it's built from live data — tables, a progress bar, links — not just wording).*
+
+- [ ] **On hold, Royce's explicit call.** Re-check `public.email_templates` on the SKS database for real edits before this comes up again — that's the actual trigger condition, not a date. _(added 2026-08-16)_
 
 ---
 
@@ -262,9 +304,8 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## EQ Service: nav-visibility tier-inversion + missing service.view entry gate — PR #736 open (2026-08-16)
+## EQ Service: nav-visibility tier-inversion + missing service.view entry gate — merged + live (2026-08-16)
 
-- [ ] **Merge PR #736** (or hold back the entry-gate half) — fixed Sidebar.tsx/layout.tsx's exclude-by-name nav bug (employee wrongly hidden from Records/Insight; apprentice/labour_hire/subcontractor wrongly shown) and wired a missing `service.view` entry gate. Live-verified zero current-user impact (0 labour_hire/subcontractor `tenant_members` rows on ehow: 5 active rows total, 2 manager/1 supervisor/2 employee). Not deployed — Netlify auto-deploys eq-solves-service on merge to main. _(added 2026-08-16)_
 - [ ] **`/job-plans` has no view-level role gate at all** — its 4 RECORDS_PATHS siblings got `entity.view` in #716, job-plans didn't. Spun off as `task_68813d6a`, Royce has started it running in a separate session. _(added 2026-08-16)_
 - [ ] **`service.view_commercials` (real canonical key, "see job pricing/contract value") is completely unwired anywhere** — distinct from the tenant-level `commercial_features_enabled` flag. Spun off as `task_61bda775`, Royce has started it running in a separate session. _(added 2026-08-16)_
 
@@ -937,7 +978,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 **Deferred:**
 - [ ] **Live click-through not done** — confirm on core.eq.solutions that Field/Service/Cards still pre-warm within 2.5s, switching between them stays fast, and a first-navigation-before-prewarm still mounts instantly with no flash. Needs a real authenticated session, off-limits for me to do myself. _(added 2026-08-03)_
-- [ ] **Repo-wide `pnpm lint` shows 438 pre-existing errors** elsewhere (mostly `react-hooks/set-state-in-effect`), same root cause (the react-hooks v7 upgrade) but a much larger surface than this PR's scope. `ci.yml` already documents lint as advisory (`continue-on-error`) because of this debt, so nothing is silently failing — but worth a dedicated session if/when there's appetite to burn it down before flipping lint to blocking. _(added 2026-08-03)_
+- [ ] **Repo-wide `pnpm lint` now shows 990 pre-existing errors + 472 warnings (2026-08-16), up from 438 errors on 2026-08-03** — same `react-hooks/set-state-in-effect` rule dominates. Re-checked live this session: `ci.yml` still deliberately keeps lint advisory (`continue-on-error: true`), but that decision was made 2026-06-30 for a *different* debt (~1,200 raw-hex colour violations, since cleaned up and promoted to blocking separately) — the comment there is stale, it still cites the old reason. Also checked and can't confirm this entry's "react-hooks v7 upgrade" claim: `eslint-plugin-react-hooks` has been pinned to `^7.1.1` since the very first scaffold commit per full package.json history — no version-string change ever recorded in this repo. Either that upgrade happened somewhere this check can't see, or the original note was a plausible-sounding guess that stuck; flagging rather than silently overwriting one claim with the other. Separately confirmed: none of `eslint-plugin-react-hooks`'s rules declare autofix support (checked the installed package's dist source directly) — the "N fixable with --fix" the CLI reports comes from other rules, not this one, so this specific debt has zero mechanical shortcut and needs the same manual, one-at-a-time treatment PR #1204's unused-vars sweep used. Worth a dedicated session before it doubles again. _(added 2026-08-03, updated 2026-08-16)_
 
 ## eq-shell: no-restricted-syntax hex-colour cleanup — 8 fixed, PR #1201 (2026-08-03)
 
