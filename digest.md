@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-16 10:45 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-16 11:00 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-16 10:28 UTC → 2026-08-16 10:45 UTC)
+## Since last refresh (2026-08-16 10:45 UTC → 2026-08-16 11:00 UTC)
 
-- Merged: eq-shell [#1411](https://github.com/eq-solutions/eq-shell/pull/1411) fix(dashboard): retire ai-briefing.ts + briefing-action.ts
-- Merged: eq-shell [#1403](https://github.com/eq-solutions/eq-shell/pull/1403) fix(admin-settings): stop crash on role-scoped licence requi
-- Merged: eq-shell [#1400](https://github.com/eq-solutions/eq-shell/pull/1400) fix(security): P2 access-control sweep — 5 unchecked read en
-- Merged: eq-shell [#1399](https://github.com/eq-solutions/eq-shell/pull/1399) fix(compliance): restore photo-ID equivalence dropped by rol
-- Merged: eq-shell [#1397](https://github.com/eq-solutions/eq-shell/pull/1397) fix(security): permission-model hygiene sweep — drift-test b
-- Merged: eq-shell [#1385](https://github.com/eq-solutions/eq-shell/pull/1385) fix(security): gate the Documents module on documents.view/m
-- Merged: eq-shell [#1381](https://github.com/eq-solutions/eq-shell/pull/1381) fix(security): close 4 PII leaks gated on field.view/entity.
+- Merged: eq-shell [#1414](https://github.com/eq-solutions/eq-shell/pull/1414) feat(notifications): fire the connect-request email for auto
+- Merged: eq-shell [#1408](https://github.com/eq-solutions/eq-shell/pull/1408) chore(ci): triage can_assign_worker_role into KNOWN_UNSOURCE
+- Merged: eq-shell [#1393](https://github.com/eq-solutions/eq-shell/pull/1393) fix(security): origin-guard 5 account-credential endpoints (
+- Merged: eq-shell [#1387](https://github.com/eq-solutions/eq-shell/pull/1387) fix(security): close the admin.manage_groups escalation path
+- Merged: eq-shell [#1386](https://github.com/eq-solutions/eq-shell/pull/1386) fix(security): origin-guard 2 Cards mutation/PII endpoints +
+- Merged: eq-shell [#1384](https://github.com/eq-solutions/eq-shell/pull/1384) docs: confirm zaap Field write-guard absence is deliberate, 
 - Merged: eq-solves-service [#738](https://github.com/eq-solutions/eq-service/pull/738) fix(security): wire entity.view on job-plans (missed by #716
+- Merged: eq-solves-service [#737](https://github.com/eq-solutions/eq-service/pull/737) fix(ci): app_data CI-bootstrap fixture guard + drift check
 
 ## ⚠ Needs you (3)
 
@@ -49,7 +49,7 @@ _…and 146 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 0 | — |
+| eq-shell | ✓ success | 0d ago | 1 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 0 | — |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
@@ -71,6 +71,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-16 | eq-shell | [#1414](https://github.com/eq-solutions/eq-shell/pull/1414) feat(notifications): fire the connect-request email for auto-join |
 | 2026-08-16 | eq-shell | [#1411](https://github.com/eq-solutions/eq-shell/pull/1411) fix(dashboard): retire ai-briefing.ts + briefing-action.ts |
 | 2026-08-16 | eq-shell | [#1412](https://github.com/eq-solutions/eq-shell/pull/1412) chore(roles): bump @eq-solutions/roles to v2.7.3 |
 | 2026-08-16 | eq-shell | [#1413](https://github.com/eq-solutions/eq-shell/pull/1413) fix(sync): close 3 name-propagation gaps found live-testing as an |
@@ -85,16 +86,15 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-16 | eq-shell | [#1398](https://github.com/eq-solutions/eq-shell/pull/1398) fix(security): origin-guard 5 worker-linking/org-config endpoints |
 | 2026-08-16 | eq-shell | [#1396](https://github.com/eq-solutions/eq-shell/pull/1396) fix(security): origin-guard 5 staff/licence mutation endpoints |
 | 2026-08-16 | eq-shell | [#1395](https://github.com/eq-solutions/eq-shell/pull/1395) fix(security): origin-guard 4 worker/user invite endpoints |
-| 2026-08-16 | eq-shell | [#1394](https://github.com/eq-solutions/eq-shell/pull/1394) fix(security): origin-guard 4 session/account-lifecycle endpoints |
 _Showing 15 of 114 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
 - **Worth a direct spot-check of the Netlify function logs** (dashboard, not something reachable from here) for any blocked requests in the ~20 minutes after this went live. The two checks above are good evidence but not a substitute for looking at the actual log lines — no tool available this session could pull that history directly. _(added 2026-08-16)_
+- **Root cause #2 (eq-shell's `shell_control` untracked tables) needs eq-shell to trace and fix** — eq-cards has no visibility into their original shape. eq-shell PR #1389 ("triage 3 jvkn functions into KNOWN_UNSOURCED", merged same day) suggests they may already have a related tracking mechanism worth connecting to instead of duplicating. _(added 2026-08-16)_
 - **`WORKERS_WEBHOOK_SECRET` rotation** — investigated, confirmed lower-urgency than it first looked, Royce: leave it for now. If picked up later: needs jvkn's vault AND eq-shell's Edge Function secret updated in the same window or the live Cards→SKS staff sync 401s. _(added 2026-08-16)_
 - **The "Rollback" button on the activity log still doesn't work** — confirmed still broken, an earlier fix already made it fail with a clear message instead of crashing, and explicitly left the "build it for real, or remove the button" decision for Royce. Not decided again this session. _(added 2026-08-16)_
 - **One database function has the same access-group blind spot as the Number Reviews fix above, not yet fixed** — `eq_revoke_session`. Noted, not actioned. _(added 2026-08-16)_
-- **Decide what happens to the AI-briefing pieces left with nothing calling them** — rebuild lighter, keep dormant, or retire for good. Spun off as a tracked follow-up, not decided. _(added 2026-08-16)_
 - **Not clicked through live** — verified against real production data directly, not by an actual admin opening the screen and watching Manager disappear from the list. Worth two minutes on a real admin account. _(added 2026-08-16)_
 - **Testing this kind of database change on a safe, disposable copy first didn't work** — tried to spin one up before applying anything live, and discovered the database's own history of past changes can't currently rebuild itself from scratch on a fresh copy, unrelated to this fix. Spun off as its own follow-up (already running); until it's fixed, changes like this one have to be verified against the live database directly rather than on a safe copy first. _(added 2026-08-16)_
 - **Cards' own copy of the shared role/permission rulebook is a few versions behind** — old enough that it doesn't know about the new narrower "who can change someone's role" permission at all. Not required for this fix (handled a different way instead, described above) but worth catching up eventually so Cards can check permissions the same direct way Shell does. _(added 2026-08-16)_
@@ -122,7 +122,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [EQ](eq/pending.md) | 3804 | 509 / 148 | 176 | 64 |
+| [EQ](eq/pending.md) | 3790 | 507 / 148 | 172 | 64 |
 | [SKS](sks/pending.md) | 439 | 83 / 9 | 2 | 15 |
 | [SKS active](sks/active.md) | 109 | 0 / 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 421 | 33 / 4 | 3 | 1 |
@@ -149,4 +149,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-16 10:45 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-16 11:00 UTC._
