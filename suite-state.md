@@ -69,9 +69,6 @@ _If this file is >48h old, the cron is broken._
 - #706 fix(tests): close permission-enforcement-drift's KNOWN_WRAPPERS + index.html gap
 - #705 security(rls): own/crew read scoping for timesheets + leave_requests (DRAFT — not dispatched)
 
-**eq-service:**
-- #736 fix(security): nav visibility allow-by-role, wire service.view as an entry gate
-
 **eq-shell:**
 - #1382 chore(roles): bump @eq-solutions/roles to v2.7.2, wire documents + ai, fix daily-briefing gate
 - #1381 fix(security): close 4 PII leaks gated on field.view/entity.view instead of the narrower key
