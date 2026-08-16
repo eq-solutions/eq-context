@@ -60,13 +60,8 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-16)
 
-**eq-field:**
-- #706 fix(tests): close permission-enforcement-drift's KNOWN_WRAPPERS + index.html gap
-
 **eq-shell:**
-- #1392 chore(ci): triage 3 control-plane functions into KNOWN_UNSOURCED (cross-repo sourced)
-- #1391 fix(ci): triage 3 control-plane functions as cross-repo KNOWN_UNSOURCED
-- #1390 fix(ci): source 3 jvkn functions to eq-cards, unblock the drift gate
+- #1393 fix(security): origin-guard 5 account-credential endpoints (TOTP/PIN/email/reset)
 - #1387 fix(security): close the admin.manage_groups escalation path in security groups
 - #1386 fix(security): origin-guard 2 Cards mutation/PII endpoints + 5 clear siblings
 - #1385 fix(security): gate the Documents module on documents.view/manage/assign
