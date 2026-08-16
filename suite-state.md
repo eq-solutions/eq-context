@@ -66,7 +66,6 @@ _If this file is >48h old, the cron is broken._
 - #705 security(rls): own/crew read scoping for timesheets + leave_requests (DRAFT — not dispatched)
 
 **eq-service:**
-- #738 fix(security): wire entity.view on job-plans (missed by #716)
 - #737 fix(ci): app_data CI-bootstrap fixture guard + drift check
 
 **eq-shell:**
@@ -84,7 +83,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ✓ success |
+| eq-service | ? in_progress |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
