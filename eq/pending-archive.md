@@ -16,6 +16,17 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-shell: "Today's Actions" removed from the dashboard, then its orphaned backend retired for good (2026-08-16) (fully closed, no open items remain)
+*Royce looked at his own live dashboard and asked to steelman removing the AI-written "Today's Actions" panel — "AI slop and not useful plus slow to load." Ran the decision-check process first, then built it once he said "remove it."*
+
+- [x] **The AI-written action list is gone from the dashboard** — both the desktop panel and its mobile equivalent. Removed the whole thing behind it too, not just hidden, since leaving it running in the background wouldn't have fixed the actual complaint (it was genuinely slow, not just showing something unwanted).
+- [x] **Two other small numbers on the dashboard quietly depended on the same slow AI call** — "scheduled today" and "live quotes" now always show their plain, fast counts (no visible change for anyone who wasn't already seeing the fancier version). A third, mobile-only "Outstanding quotes" number had nothing else to fall back to, so it's gone too rather than left permanently blank.
+- [x] **Fixed a knock-on effect found while writing this note, not reported separately:** the mobile compliance card was hiding some licence-expiry detail on the assumption "Today's Actions already shows this elsewhere" — no longer true, so un-hid it. Same information mobile users had before, just not doubled-up anymore.
+- [x] **eq-shell PR #1406 merged and live** — confirmed against the actual production deploy (exact commit match), not just a green merge button.
+- [x] **Decided: retired for good, not rebuilt lighter or kept dormant.** The two backend pieces the removal left with nothing calling them were flagged rather than deleted on the spot, pending a real decision. That decision: the old plan behind the original feature was checked and confirmed stale — nobody's picking it back up — so both pieces were deleted outright. A same-day unrelated security fix touched the same two files on its way to being merged first, turning a clean deletion into a small real conflict; resolved in favour of the deletion, re-verified, then merged. eq-shell PR #1411 merged and live same day.
+
+---
+
 ## eq-shell: Photo ID banner wrongly flagged workers who'd already covered it with a driver's licence or passport (2026-08-16) (fully closed, no open items remain)
 *A same-day database update that scoped credential requirements by role was rebuilt from an older version of the underlying logic — one that pre-dated an earlier fix letting a driver's licence or passport count toward a company's "Photo ID" requirement. The rebuild silently undid that earlier fix. Reported directly by Royce with a specific affected worker; confirmed, fixed, and re-verified against that exact worker in the same session.*
 

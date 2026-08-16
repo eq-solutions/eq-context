@@ -49,20 +49,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## eq-shell: "Today's Actions" removed from the dashboard — Royce's call, not yet merged (2026-08-16)
-*Royce looked at his own live dashboard and asked to steelman removing the AI-written "Today's Actions" panel — "AI slop and not useful plus slow to load." Ran the decision-check process first, then built it once he said "remove it."*
-
-- [x] **The AI-written action list is gone from the dashboard** — both the desktop panel and its mobile equivalent. Removed the whole thing behind it too, not just hidden, since leaving it running in the background wouldn't have fixed the actual complaint (it was genuinely slow, not just showing something unwanted).
-- [x] **Two other small numbers on the dashboard quietly depended on the same slow AI call** — "scheduled today" and "live quotes" now always show their plain, fast counts (no visible change for anyone who wasn't already seeing the fancier version). A third, mobile-only "Outstanding quotes" number had nothing else to fall back to, so it's gone too rather than left permanently blank.
-- [x] **Fixed a knock-on effect found while writing this note, not reported separately:** the mobile compliance card was hiding some licence-expiry detail on the assumption "Today's Actions already shows this elsewhere" — no longer true, so un-hid it. Same information mobile users had before, just not doubled-up anymore.
-- [x] The two backend pieces this removal leaves with nothing calling them aren't deleted — that's a separate decision (rebuild it lighter, or retire it for good), spun off as its own tracked item rather than decided unilaterally.
-
-**Deferred:**
-- [ ] **Not merged yet** — eq-shell [PR #1406](https://github.com/eq-solutions/eq-shell/pull/1406) is open, waiting on a quick look at the preview link (the top row of the dashboard has fewer boxes now) before it goes live. _(added 2026-08-16)_
-- [ ] **Decide what happens to the AI-briefing pieces left with nothing calling them** — rebuild lighter, keep dormant, or retire for good. Spun off as a tracked follow-up, not decided. _(added 2026-08-16)_
-
----
-
 ## eq-cards: role-assignment could hand someone suite-wide manager power with no audit trail — found, fixed, merged, live (2026-08-16)
 *A worker's role — including "manager", the top tier every EQ app trusts — could be set from Cards' admin screen through the exact same check used for editing a phone number or address, with nothing recording who did it. eq-shell had already split this into its own separate, narrower permission earlier the same day (the new permission's own description names this exact Cards gap as the reason it was created); Cards had never adopted anything like it.*
 
