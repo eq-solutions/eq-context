@@ -62,7 +62,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #1400 fix(security): P2 access-control sweep — 5 unchecked read endpoints + Intake write-tier gap
-- #1399 fix(compliance): restore photo-ID equivalence dropped by role-scope rebuild
 - #1398 fix(security): origin-guard 5 worker-linking/org-config endpoints
 - #1396 fix(security): origin-guard 5 staff/licence mutation endpoints
 - #1395 fix(security): origin-guard 4 worker/user invite endpoints
