@@ -61,12 +61,9 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-16)
 
 **eq-shell:**
+- #1412 chore(roles): bump @eq-solutions/roles to v2.7.3
 - #1411 fix(dashboard): retire ai-briefing.ts + briefing-action.ts
-- #1410 fix(security): origin-guard user-preferences.ts
-- #1409 fix(security): origin-guard 3 misc upload endpoints
-- #1407 fix(security): origin-guard 4 attachment/document upload endpoints
 - #1406 fix(dashboard): remove Today's Actions from the Shell home page
-- #1405 fix(security): origin-guard 4 quotes/ops/briefing endpoints
 
 ---
 
@@ -77,7 +74,7 @@ _If this file is >48h old, the cron is broken._
 | Repo | Status |
 |------|--------|
 | eq-service | ✓ success |
-| eq-shell | ? in_progress |
+| eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
 | eq-solves-intake | ✓ success |
