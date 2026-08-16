@@ -8,19 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-16 04:33 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-16 04:53 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-15 12:27 UTC → 2026-08-16 04:33 UTC)
+## Since last refresh (2026-08-16 04:33 UTC → 2026-08-16 04:53 UTC)
 
-- Merged: eq-shell [#1374](https://github.com/eq-solutions/eq-shell/pull/1374) fix(security): gate EQ Ops Setup on ops.view_rates
-- Merged: eq-shell [#1361](https://github.com/eq-solutions/eq-shell/pull/1361) chore(admin): retire the redeem-an-invite worker QR, leaving
-- Merged: eq-shell [#1358](https://github.com/eq-solutions/eq-shell/pull/1358) perf(staff): one staff-bootstrap request instead of eight co
-- Merged: eq-shell [#1355](https://github.com/eq-solutions/eq-shell/pull/1355) fix(auth): close account-enumeration oracle on the phone+PIN
-- Merged: eq-shell [#1352](https://github.com/eq-solutions/eq-shell/pull/1352) feat(auth): platform-admin endpoint to correct a standalone 
-- Merged: eq-shell [#1351](https://github.com/eq-solutions/eq-shell/pull/1351) perf(shell): route-split admin pages, load pdf.js on demand,
-- Merged: eq-shell [#1349](https://github.com/eq-solutions/eq-shell/pull/1349) fix(audit): log user.deactivated/reactivated in edit-user.ts
-- Merged: eq-shell [#1346](https://github.com/eq-solutions/eq-shell/pull/1346) feat(staff): apprentice year badge + multi-select Trade on S
-- ✅ Needs you: 5 → 4
+- Merged: eq-shell [#1363](https://github.com/eq-solutions/eq-shell/pull/1363) docs(migrations): retire the stale tenant migration ledger
+- Merged: eq-shell [#1359](https://github.com/eq-solutions/eq-shell/pull/1359) refactor(auth): fold the login timing-burn hash into one sha
+- Merged: eq-shell [#1357](https://github.com/eq-solutions/eq-shell/pull/1357) feat(audit): make login outcomes queryable across all three 
+- Merged: eq-shell [#1356](https://github.com/eq-solutions/eq-shell/pull/1356) perf(shell): self-host Plus Jakarta Sans, drop the render-bl
+- Merged: eq-shell [#1354](https://github.com/eq-solutions/eq-shell/pull/1354) fix(auth): link_pending_invites writes the tenant membership
+- Merged: eq-shell [#1353](https://github.com/eq-solutions/eq-shell/pull/1353) fix(security): gate staff-update on field.manage_people, not
+- Merged: eq-shell [#1350](https://github.com/eq-solutions/eq-shell/pull/1350) fix(auth): dual-key shell-login's rate limit on IP + email, 
+- Merged: eq-shell [#1348](https://github.com/eq-solutions/eq-shell/pull/1348) feat(reports): compliance report + mobile Home quick links, 
 
 ## ⚠ Needs you (4)
 
@@ -51,11 +50,11 @@ _…and 140 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 2 | 0d |
+| eq-shell | ✓ success | 0d ago | 3 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 2 | 0d |
-| eq-field | ✓ success | 0d ago | 0 | — |
+| eq-field | ✓ success | 0d ago | 1 | 0d |
 | eq-cards | ✓ success | 1d ago | 1 | — |
-| eq-solves-intake | ✓ success | 4d ago | 0 | — |
+| eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
 ## Live errors (Sentry)
 
@@ -73,7 +72,9 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 |--------|------|----|
 | 2026-08-16 | eq-shell | [#1374](https://github.com/eq-solutions/eq-shell/pull/1374) fix(security): gate EQ Ops Setup on ops.view_rates |
 | 2026-08-16 | eq-solves-service | [#733](https://github.com/eq-solutions/eq-service/pull/733) fix(settings): defer Profile/Password to Shell for embedded sessi |
+| 2026-08-16 | eq-field | [#704](https://github.com/eq-solutions/eq-field/pull/704) v3.5.503 — Email Templates: own permission key + moved to Manage |
 | 2026-08-16 | eq-field | [#702](https://github.com/eq-solutions/eq-field/pull/702) v3.5.502 — access-control cleanup: Pipeline opt-in-only, Teams +  |
+| 2026-08-16 | eq-solves-intake | [#116](https://github.com/eq-solutions/eq-solves-intake/pull/116) fix(intake): review-queue polish — already-merged bug, change-ans |
 | 2026-08-15 | eq-shell | [#1373](https://github.com/eq-solutions/eq-shell/pull/1373) fix(staff): stop cards-approve-staff.ts from creating duplicate w |
 | 2026-08-15 | eq-shell | [#1370](https://github.com/eq-solutions/eq-shell/pull/1370) fix(security): revoke the Supabase Auth session when Shell deacti |
 | 2026-08-15 | eq-shell | [#1372](https://github.com/eq-solutions/eq-shell/pull/1372) docs(migrations): record 2026_08_15c as applied + the one-time se |
@@ -84,9 +85,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-15 | eq-shell | [#1362](https://github.com/eq-solutions/eq-shell/pull/1362) fix(security): role-gate 21 CRM/staff RPCs that only checked tena |
 | 2026-08-15 | eq-shell | [#1360](https://github.com/eq-solutions/eq-shell/pull/1360) chore(identity): remove 7 orphaned test identities from the June  |
 | 2026-08-15 | eq-shell | [#1366](https://github.com/eq-solutions/eq-shell/pull/1366) chore(security): retire staff-update.ts |
-| 2026-08-15 | eq-shell | [#1365](https://github.com/eq-solutions/eq-shell/pull/1365) fix(security): gate timesheet/licence reads on the split-out keys |
-| 2026-08-15 | eq-shell | [#1364](https://github.com/eq-solutions/eq-shell/pull/1364) fix(security): revoke authenticated EXECUTE on eq_update_staff |
-_Showing 15 of 115 · full record in [sessions/](sessions/)_
+_Showing 15 of 117 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
@@ -143,4 +142,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-16 04:33 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-16 04:53 UTC._
