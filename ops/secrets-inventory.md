@@ -41,60 +41,34 @@ it currently is leaking.
 
 ### Confirmed shared values (one secret, multiple names/apps)
 
-These are stated as fact because a prior session's `getAllEnvVars` read
-explicitly compared them and said so in plain English — not inferred from
-name similarity. Full detail in `security-register.md` SEC-9/SEC-18.
+First 3 rows are stated as fact because a prior session's `getAllEnvVars`
+read explicitly compared them and said so in plain English — not inferred
+from name similarity. Full detail in `security-register.md` SEC-9/SEC-18.
+Remaining 4 rows were confirmed 2026-08-16 by Royce directly — his own
+words were "assume"/"no idea but assume same," not an independently
+verified value comparison, so treat as high-confidence working assumptions
+rather than the same rigor as the first 3.
 
 | Real secret | Appears as | If it leaks |
 |---|---|---|
 | Shell's session-signing JWT secret | eq-shell `SUPABASE_JWT_SECRET` = eq-shell `EQ_SHELL_JWT_SECRET` = eq-service `EQ_SHELL_JWT_SECRET` | Forge a valid login session for **any** user, on any app in the suite — the top secret in the whole inventory. |
 | SKS/ehow tenant JWT secret | eq-shell `SKS_SUPABASE_JWT_SECRET` = eq-field `SKS_JWT_SECRET` = eq-service `EQ_SERVICE_JWT_SECRET` | Forge a valid SKS-tenant session across Shell/Field/Service. |
-| jvkn control-plane service_role key | eq-shell `SUPABASE_SERVICE_ROLE_KEY` = eq-cards `SUPABASE_SERVICE_ROLE_KEY` | Full read/write on the control-plane DB, bypasses every RLS policy — **SEC-9**, still open. |
-
-### Suspected shared values — not yet confirmed, worth a value-suffix check
-
-Same apparent purpose, same or near-same name, but nobody has explicitly
-compared the actual values yet. Flagging rather than asserting, after this
-file's own 2026-08-08 correction for guessing wrong once already.
-
-**2026-08-11 — deliberately not verified via Netlify API.** A masked-suffix
-comparison was scoped as a sprint task, then dropped before running it:
-Netlify only returns a comparable value through the leaking `dev` context
-(SEC-9) — the correctly-masked contexts (production/branch-deploy/
-deploy-preview) come back as a literal `****`, no suffix, nothing to
-compare. Any comparison read would therefore reproduce the exact
-`dev`-context leak SEC-9 already logged twice, for a hygiene question, not
-a security fix. Per SEC-9's own standing process fix ("future
-credential-consumer mapping should be scoped to env-var names/presence
-only, never fetch/print/decode actual values"), this needs Royce's own
-answer instead — he set these values originally and can confirm
-same-or-different in one line with zero exposure.
-
-Also confirmed live this session: eq-cards' Netlify project is genuinely
-live, not disconnected — git-triggered Netlify builds were turned off
-2026-07-29 (PR #186), but GitHub Actions' `deploy.yml` zip-uploads the
-Flutter web build to the same Netlify project via API, and its real
-Netlify Functions (`shell-verify.js` etc.) still run there. So eq-cards'
-env vars are live, in-use credentials, not orphaned — SEC-9/SEC-18's
-eq-cards rows stand as written. The planned retry of eq-cards' env-var
-read was dropped for the same reason as the cluster comparison above —
-same leaking call, no new information it would actually buy.
-
-| Suspected cluster | Appears as | Why suspected |
-|---|---|---|
-| ehow/sks-canonical service_role key | eq-service `CANONICAL_SERVICE_ROLE_KEY`, eq-field `CANONICAL_SERVICE_ROLE_KEY`, eq-field `EHOW_SERVICE_ROLE_KEY`, eq-shell `FIELD_SUPABASE_SERVICE_ROLE_KEY` | All four are named and positioned as "the ehow service_role key" and eq-field alone has *two* separately-named vars for what looks like one purpose. If confirmed, this is the single most duplicated secret in the suite — up to 4 names for 1 value. |
-| Platform admin key | eq-shell `EQ_PLATFORM_ADMIN_KEY`, eq-service `EQ_PLATFORM_ADMIN_KEY` | Identical name, and an "admin key" is inherently one credential by definition — very likely one value, not independently confirmed. |
-| Resend account key | `RESEND_API_KEY` on eq-shell, eq-field, eq-service, sks-nsw-labour | Same name on 4 sites. The PDF's own rule 3 ("prefer separate keys per app") suggests this *should* be 4 different keys — if it's actually 1 shared key, that's the redundancy finding; if genuinely 4 separate keys that happen to share a var name, no issue. |
+| jvkn control-plane service_role key | eq-shell `SUPABASE_SERVICE_ROLE_KEY` = eq-cards `SUPABASE_SERVICE_ROLE_KEY` | Full read/write on the control-plane DB, bypasses every RLS policy — **SEC-9, closed 2026-08-16.** |
+| ehow/sks-canonical service_role key | eq-service `CANONICAL_SERVICE_ROLE_KEY` = eq-field `CANONICAL_SERVICE_ROLE_KEY` = eq-field `EHOW_SERVICE_ROLE_KEY` = eq-shell `FIELD_SUPABASE_SERVICE_ROLE_KEY` | Full read/write on the ehow/sks-canonical DB behind Field + Service, bypasses every RLS policy. 4 names, 1 value — the most duplicated secret in the suite. Royce: never generated separate keys, it's the one default Supabase issued. |
+| Platform admin key | eq-shell `EQ_PLATFORM_ADMIN_KEY` = eq-service `EQ_PLATFORM_ADMIN_KEY` | Admin-level access wherever this key is checked, on both apps that hold it. |
+| Resend account key | `RESEND_API_KEY` on eq-shell, eq-field, eq-service, sks-nsw-labour | Sends transactional email on the EQ Resend account — spam/phishing risk, not data access. |
+| Anthropic API key | `ANTHROPIC_API_KEY` on eq-shell, sks-nsw-labour | Runs up Royce's Claude API bill — sks-nsw-labour is frozen either way, low real exposure. |
 
 ### Suite-wide by design (not a bug, but worth a deliberate call)
 
 `EQ_SECRET_SALT` is set — under the identical name — on **all five** apps
-(eq-shell, eq-field, eq-service, eq-cards, sks-nsw-labour). This is the
-exact pattern the PDF's rule 3 warns against ("reuse one master key across
-every app 'for convenience'"). It may be intentional (a suite-wide salt has
-a legitimate use case), but nobody has made that call explicitly — it's
-just always been this way. Worth Royce deciding once: keep it shared, or
-split it per-app next time any of these five get touched.
+(eq-shell, eq-field, eq-service, eq-cards, sks-nsw-labour). `EQ_SESSION_SALT`
+(eq-shell, eq-service, eq-cards — confirmed same-value 2026-08-16, Royce's
+assumption, not independently checked) is the same pattern on 3 of them.
+This is the exact pattern the PDF's rule 3 warns against ("reuse one master
+key across every app 'for convenience'"). It may be intentional (a
+suite-wide salt has a legitimate use case) — **decided 2026-08-16: keep
+both shared for now**, no split planned unless raised again.
 
 ### Everything else, ranked by blast radius
 
@@ -294,13 +268,16 @@ SEC-18 (eq-field/eq-service ×4 never-masked vars), SEC-24
 previously-unverified site (found + closed a worse variant of SEC-9/18 in
 the process — see eq-cards section above).
 
+**Also closed 2026-08-16:** all 5 previously-suspected clusters confirmed
+by Royce directly (ehow service_role key, platform admin key, Resend key,
+`EQ_SESSION_SALT`, `ANTHROPIC_API_KEY`) — moved into the confirmed tables
+above. His answers were "assume"/"no idea but assume same," not an
+independently verified value comparison — high-confidence, not certain.
+
 **Still open:**
 
-1. **Confirm the 3 "suspected shared" clusters** — one-line same/different
-   from Royce, zero exposure risk (see table above): the 4-named ehow
-   service_role key, the platform admin key, and the Resend key.
-2. **ProtonPass entry** for the ~9 EQ-minted secrets that have no vendor
-   source of truth — partial as of 2026-08-16, not complete. See the EQ
-   Secrets Map artifact's master list for the full 35-row checklist.
-3. **PR merge decisions** — eq-shell #1375, eq-solves-service #734+#732,
+1. **ProtonPass entry** for the real secrets that have no vendor source of
+   truth — partial as of 2026-08-16, not complete. See the EQ Secrets Map
+   artifact's master list for the full 35-row checklist.
+2. **PR merge decisions** — eq-shell #1375, eq-solves-service #734+#732,
    eq-field #703, eq-cards #250 are all open, Royce's call, none merged.
