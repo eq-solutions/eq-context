@@ -1,13 +1,21 @@
 ---
 title: SKS — Pending
 owner: Royce Milmlow
-last_updated: 2026-08-14
+last_updated: 2026-08-16
 scope: SKS Technologies operational TODO list
 read_priority: critical
 status: live
 ---
 
 # SKS Pending
+
+## EQ Field: timesheets/leave weren't scoped per-person — draft fix ready, not dispatched (2026-08-16)
+*P1 finding: any authenticated SKS Field session — including labour_hire — could read every worker's timesheet and leave request in the tenant by querying the database directly. Only a client-side convenience filter existed, and its own code comment already admitted it "fails open" rather than acting as a real boundary. PR [#705](https://github.com/eq-solutions/eq-field/pull/705) (eq-field) drafts the actual database-level fix: a worker sees their own records, a supervisor sees their crew's, a manager sees everyone's. CI green. Written without live database access this session — verified instead against the actual committed database-setup files, and a check-before-you-apply list is built into the fix itself. Two carve-outs matter: the leave email-approval links still work (they use a special login that isn't tied to one person), and the 2 SKS supervisors who don't have a crew assigned yet keep seeing everything, matching the rule Royce already set for that case on 2026-07-22 — an earlier draft would have accidentally cut them down to their own record only, caught and fixed before anything was committed.*
+
+- [ ] **Dispatch PR #705's migration to ehow** — drafted, reviewed, CI green, not yet applied to the live database. Needs Royce's go through the normal governed process. _(added 2026-08-16)_
+- [ ] **jvkn's `licences` table needs its own live check** — the original finding lumped it in with the timesheets/leave tables, but it actually lives on a completely different system (the shared control layer, not SKS's own database) owned by a different repo. Royce's framing: a worker owns their own licence data and chooses what to share, so the real question is whether that's actually how it behaves today — not whether it needs the same fix as timesheets. Handed off as its own task, already running in a separate session. _(added 2026-08-16)_
+- [ ] **Same two tables can still be edited by anyone, not just read** — this fix only closes the reading side. Today, any tenant member can still change another worker's submitted hours or leave details, just not the actual approve/reject decision (that part was already locked down separately). Handed off as its own task, already running in a separate session. _(added 2026-08-16)_
+- [ ] **The disposable EQ-side tenant doesn't have this fix** — lower priority, since that tenant holds no real data, but the identical gap exists there too and needs some prerequisite pieces built first before it can be ported. _(added 2026-08-16)_
 
 ## SKS → EQ Field roster CSV sync — investigated live, feasible with zero new code (2026-08-14)
 *Royce wants to start publishing the weekly roster into EQ Field alongside SKS NSW Labour as a changeover dry-run — people list and leave explicitly parked as separate concerns; this pass covered roster (site assignments) only. Pure investigation session — no code or data changed.*
