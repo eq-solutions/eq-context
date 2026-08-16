@@ -61,7 +61,6 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-16)
 
 **eq-cards:**
-- #250 fix(auth): stop shell-verify from optimistically proceeding on a failed admin getUser check
 - #221 refactor(auth): shell-verify.js relays to eq-shell instead of local crypto
 
 **eq-field:**
@@ -70,8 +69,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-service:**
 - #735 fix(security): enforce write roles in the database, not just the app
-- #734 fix(security): drop the CANONICAL_SERVICE_ROLE_KEY fallback to urjh's key
-- #732 fix(security): drop the SUPABASE_JWT_SECRET fallback in service-jwt auth
 
 **eq-shell:**
 - #1294 feat(cards): centralize Cards' SSO minting via token-exchange-cards.ts
@@ -87,7 +84,7 @@ _If this file is >48h old, the cron is broken._
 | eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
-| eq-cards | ✓ success |
+| eq-cards | ? queued |
 | eq-solves-intake | ✓ success |
 
 **Deploys:**
