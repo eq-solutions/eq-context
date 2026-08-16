@@ -64,12 +64,12 @@ _If this file is >48h old, the cron is broken._
 - #706 fix(tests): close permission-enforcement-drift's KNOWN_WRAPPERS + index.html gap
 
 **eq-shell:**
+- #1391 fix(ci): triage 3 control-plane functions as cross-repo KNOWN_UNSOURCED
 - #1390 fix(ci): source 3 jvkn functions to eq-cards, unblock the drift gate
 - #1387 fix(security): close the admin.manage_groups escalation path in security groups
 - #1386 fix(security): origin-guard 2 Cards mutation/PII endpoints + 5 clear siblings
 - #1385 fix(security): gate the Documents module on documents.view/manage/assign
 - #1384 docs: confirm zaap Field write-guard absence is deliberate, not a gap
-- #1381 fix(security): close 4 PII leaks gated on field.view/entity.view instead of the narrower key
 
 ---
 
