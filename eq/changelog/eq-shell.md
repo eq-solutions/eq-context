@@ -9,6 +9,12 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-16 (PR #1413 MERGED — 3 name-sync bugs + a real double-navbar bug fixed)
+- `workers-canonical-sync/index.ts`: `app_data.staff.first_name`/`last_name` could get permanently locked blank — the merge branch checked the existing value raw instead of sanitizing it (`c.first_name ?? ...`), so an empty string never fell through to a later real value. Fixed to match the pattern already used for email/phone.
+- `MobileTabBar.tsx` / `App.css`: Cards was missing from `APP_TOPBAR_MODULES`, so it fell through to Shell's generic "Home" mobile layout — the same persistent bottom bar Shell's own Home page uses, painted directly over Cards' own Wallet/Profile nav with no space reserved for it, making Profile unreachable. Added Cards to the map (routes it through the same treatment Ops/Comms already get) and closed the identical padding gap on the field-first/adapted path.
+- New migration (`2026_08_16d_sync_profile_name_to_shell_user.sql`, applied live): `shell_control.users.name` had no ongoing sync from the Cards profile at all, only a creation-time read. Added a trigger mirroring the existing `trg_sync_profile_to_worker` pattern, plus a one-time backfill for 38 workers already stuck blank.
+- Found live-testing as an apprentice; full write-up in `sessions/2026-08-16.md`.
+
 ## 2026-08-16 (PR #1412 OPEN, not merged — roles pin bump to v2.7.3 + default-groups mirror fix)
 - Bumped `@eq-solutions/roles` from `#v2.7.2` to `#v2.7.3` — the tag carrying the `report_viewers` fix from eq-roles PR #27 (same day). Package-side fix alone hadn't reached production: eq-shell was still pinned to the old version.
 - Netlify's build command runs `pnpm run check:perms` before `build`, which caught a second, separate gap: `netlify/functions/_shared/default-groups.ts` is a hand-kept mirror of the roles package's default groups (the function bundler can't import the package directly), and it still had the pre-fix `report_viewers` perms. Fixed to match. Practical effect: tenants provisioned through the Netlify Function path were still getting the broken group right up to this PR, regardless of the roles-package fix already being tagged.

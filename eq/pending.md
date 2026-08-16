@@ -38,7 +38,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] **The "Number reuse checks" page had the same mismatch, but at the database level** — the page correctly hid itself from the wrong people, but the database function behind it didn't know about the same access group, so a Project Manager could open the page and then have every action on it fail. Fixed and **applied directly to the live database by Royce** (I couldn't reach it myself this session — handed him the exact steps, he ran them and confirmed clean).
 - [x] eq-shell [PR #1397](https://github.com/eq-solutions/eq-shell/pull/1397), merged, live.
 - [x] **Found while checking why a report showed the wrong thing:** the seeded "Report viewers" access group promised full report access but was actually missing the piece that lets it see the money figures — anyone added to it would open GM Reports to an error. Root cause was a mistake from an earlier session, not this report. Fixed in the shared roles package ([eq-roles PR #27](https://github.com/eq-solutions/eq-roles/pull/27)), merged and released as v2.7.3.
-- [ ] **Correction, same day: the fix above wasn't actually live yet.** eq-shell was still pinned to the pre-fix roles version, and separately a hand-kept copy of the same group list (`netlify/functions/_shared/default-groups.ts` — Netlify's function bundler can't import the roles package directly, so this file has to be kept in sync by hand) still had the old, broken definition too. Both closed in eq-shell [PR #1412](https://github.com/eq-solutions/eq-shell/pull/1412) — **open, needs Royce's merge-go, not live yet.**
+- [x] **Correction, same day: the fix above wasn't actually live yet.** eq-shell was still pinned to the pre-fix roles version, and separately a hand-kept copy of the same group list (`netlify/functions/_shared/default-groups.ts` — Netlify's function bundler can't import the roles package directly, so this file has to be kept in sync by hand) still had the old, broken definition too. Both closed in eq-shell [PR #1412](https://github.com/eq-solutions/eq-shell/pull/1412), merged and **confirmed live** (deploy commit checked against Netlify's own production-deploy record, not just "the merge succeeded").
 
 **Deferred:**
 - [ ] **eq-shell hasn't picked up the new roles release yet** — the fix above lives in the shared package (v2.7.3) but eq-shell is still pinned to the version before it. A small follow-up PR to bump the pin is needed; not opened yet. _(added 2026-08-16)_
@@ -77,18 +77,8 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## eq-field mobile UI pass + eq-shell Photo ID regression — found live-testing, fixed, merged (2026-08-16)
-*Royce field-tested Cards + Field live as an apprentice on the SKS tenant and reported six issues via screenshots (uploaded to Google Drive). Investigated each; four were real eq-field bugs bundled into one PR, one turned out to be a same-day regression in a different repo (eq-shell), and one didn't reproduce.*
-
-- [x] **Schedule/Roster/Editor/Dashboard week-nav row broke onto two lines on real phones** — the "next week" button ended up orphaned under a slab of empty space. Fixed a hardcoded label width; confirmed with a live mobile-browser repro before shipping.
-- [x] **Field login sometimes looked locked on first load, fixed itself on refresh** — the app was waiting for every icon/stylesheet to finish loading before even checking if you were signed in, which on a slow connection could burn past the 5-minute handoff window from Core. Now checks as soon as the page itself is ready.
-- [x] **Apprentices (and regular employees/labour hire) saw Timesheets and Records in the menu, but tapping either went nowhere** — both are supervisor/manager screens that were never actually hidden from anyone. Now hidden correctly.
-- [x] **Prestarts opened up to everyone** — Royce's explicit call ("prestarts should be there for everyone"), was manager/supervisor-only browsing before. eq-field [PR #709](https://github.com/eq-solutions/eq-field/pull/709), merged, v3.5.506.
-- [x] **The "Photo ID — not added yet" banner on the Home screen was wrongly nagging workers who'd already uploaded a driver's licence or passport** — a migration applied earlier the same day had accidentally undone an existing fix for this while adding an unrelated permission change. Fixed, merged, and confirmed directly against the database that the exact worker from the bug report now shows correctly. eq-shell [PR #1399](https://github.com/eq-solutions/eq-shell/pull/1399).
-- [x] **Two of the six reports weren't code bugs.** Cards' own Photo ID logic was already correct and live from an earlier fix — the false banner was coming entirely from eq-shell. And the "stuck on the Profile screen, can't navigate away" report couldn't be reproduced — the navigation code checked out correct against a real interaction test.
-
-**Deferred:**
-- [ ] **Cards "stuck on Profile screen" report — not reproducible in code, so likely a stale cached app on the device that reported it.** If it comes up again, check for a stale install/cache before assuming a regression. _(added 2026-08-16)_
+## eq-field mobile UI pass + eq-shell name-sync/nav bugs + Photo ID regression (2026-08-16)
+- [ ] **No alert tells an admin a new worker's profile + licences are ready for review** when they connect directly (not via the existing invite/QR/labour-hire queues) — they're auto-approved by design (a 2026-06-15 decision, not a bug) so they show up on the roster immediately, but nothing surfaces them for a human to actually look at. Needs Royce's call on whether that's wanted. _(added 2026-08-16)_
 
 ---
 
