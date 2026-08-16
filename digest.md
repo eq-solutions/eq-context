@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-16 06:24 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-16 06:31 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-16 06:08 UTC → 2026-08-16 06:24 UTC)
+## Since last refresh (2026-08-16 06:24 UTC → 2026-08-16 06:31 UTC)
 
-- Merged: eq-shell [#1373](https://github.com/eq-solutions/eq-shell/pull/1373) fix(staff): stop cards-approve-staff.ts from creating duplic
-- Merged: eq-shell [#1372](https://github.com/eq-solutions/eq-shell/pull/1372) docs(migrations): record 2026_08_15c as applied + the one-ti
-- Merged: eq-shell [#1371](https://github.com/eq-solutions/eq-shell/pull/1371) fix(security): refuse writes from a deactivated account's li
-- Merged: eq-shell [#1370](https://github.com/eq-solutions/eq-shell/pull/1370) fix(security): revoke the Supabase Auth session when Shell d
-- Merged: eq-shell [#1368](https://github.com/eq-solutions/eq-shell/pull/1368) chore(cards-api): retire the lookup_invite_by_phone op, dead
-- Merged: eq-shell [#1366](https://github.com/eq-solutions/eq-shell/pull/1366) chore(security): retire staff-update.ts
-- Merged: eq-shell [#1363](https://github.com/eq-solutions/eq-shell/pull/1363) docs(migrations): retire the stale tenant migration ledger
-- Merged: eq-shell [#1359](https://github.com/eq-solutions/eq-shell/pull/1359) refactor(auth): fold the login timing-burn hash into one sha
+- Merged: eq-shell [#1369](https://github.com/eq-solutions/eq-shell/pull/1369) docs(auth): active-user-guard claimed the cookie path was co
+- Merged: eq-shell [#1367](https://github.com/eq-solutions/eq-shell/pull/1367) fix(security): a deactivated shell_control.users account can
+- Merged: eq-shell [#1365](https://github.com/eq-solutions/eq-shell/pull/1365) fix(security): gate timesheet/licence reads on the split-out
+- Merged: eq-shell [#1364](https://github.com/eq-solutions/eq-shell/pull/1364) fix(security): revoke authenticated EXECUTE on eq_update_sta
+- Merged: eq-shell [#1362](https://github.com/eq-solutions/eq-shell/pull/1362) fix(security): role-gate 21 CRM/staff RPCs that only checked
+- Merged: eq-shell [#1361](https://github.com/eq-solutions/eq-shell/pull/1361) chore(admin): retire the redeem-an-invite worker QR, leaving
+- Merged: eq-shell [#1360](https://github.com/eq-solutions/eq-shell/pull/1360) chore(identity): remove 7 orphaned test identities from the 
+- Merged: eq-shell [#1358](https://github.com/eq-solutions/eq-shell/pull/1358) perf(staff): one staff-bootstrap request instead of eight co
 
 ## ⚠ Needs you (5)
 
@@ -27,7 +27,7 @@ _2026-08-16 06:24 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🔴 **Open security finding** — SEC-9 (P0 — confirmed exposure, same window as SEC-3, possible second exposure 2026-07-27) — A different service_role key (`jvkn`/eq-canonical) was pasted directly into a ch · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-24 (P1 — OPEN, found 2026-08-08) — `QUOTES_CRON_SECRET` on eq-shell stored `is_secret: false` — full plaintext retu · [security-register.md](ops/security-register.md)
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-08-13.md](sessions/2026-08-13.md) · [failures.md](system/failures.md)
-- 🟠 **Sentry new error** — `eq-shell` [auth-stall: render-crash](https://eq-solutions.sentry.io/issues/140924723/)
+- 🟠 **Sentry new error** — `eq-field` [TypeError: Cannot set properties of null (setting 'innerHTML](https://eq-solutions.sentry.io/issues/140928608/)
 
 ## 🙋 Waiting on you (155)
 
@@ -52,8 +52,8 @@ _…and 143 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 4 | 0d |
-| eq-solves-service | ✓ success | 0d ago | 2 | 0d |
-| eq-field | ✓ success | 0d ago | 1 | 0d |
+| eq-solves-service | ✓ success | 0d ago | 1 | 0d |
+| eq-field | ✓ success | 0d ago | 2 | 0d |
 | eq-cards | ✓ success | 0d ago | 2 | 0d |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
@@ -63,6 +63,7 @@ _…and 143 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 |---------|-------|--------|-----------|
 | eq-shell | [Error: staff-licence-ocr: ocr-licence returned 504](https://eq-solutions.sentry.io/issues/135986280/) | 5 | 2026-08-14 |
 | eq-shell | [Error: Unresolved identity collisions detected on jvkn: 1](https://eq-solutions.sentry.io/issues/136887159/) | 2 | 2026-08-14 |
+| eq-field | [TypeError: Cannot set properties of null (setting 'innerHTML')](https://eq-solutions.sentry.io/issues/140928608/) | 1 | 2026-08-16 |
 | eq-shell | [auth-stall: render-crash](https://eq-solutions.sentry.io/issues/140924723/) | 1 | 2026-08-16 |
 | eq-shell | [Error: Objects are not valid as a React child (found: object with keys {licence_](https://eq-solutions.sentry.io/issues/140924722/) | 1 | 2026-08-16 |
 | eq-cards | [minified:a42: FunctionException(status: 502, details: {error: anthropic_upstream](https://eq-solutions.sentry.io/issues/140383786/) | 1 | 2026-08-13 |
@@ -79,6 +80,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-16 | eq-shell | [#1378](https://github.com/eq-solutions/eq-shell/pull/1378) feat(staff): let a manager scope a required ticket to one role |
 | 2026-08-16 | eq-shell | [#1376](https://github.com/eq-solutions/eq-shell/pull/1376) feat(staff): scope credential requirements by role |
 | 2026-08-16 | eq-shell | [#1374](https://github.com/eq-solutions/eq-shell/pull/1374) fix(security): gate EQ Ops Setup on ops.view_rates |
+| 2026-08-16 | eq-solves-service | [#735](https://github.com/eq-solutions/eq-service/pull/735) fix(security): enforce write roles in the database, not just the  |
 | 2026-08-16 | eq-solves-service | [#732](https://github.com/eq-solutions/eq-service/pull/732) fix(security): drop the SUPABASE_JWT_SECRET fallback in service-j |
 | 2026-08-16 | eq-solves-service | [#734](https://github.com/eq-solutions/eq-service/pull/734) fix(security): drop the CANONICAL_SERVICE_ROLE_KEY fallback to ur |
 | 2026-08-16 | eq-solves-service | [#733](https://github.com/eq-solutions/eq-service/pull/733) fix(settings): defer Profile/Password to Shell for embedded sessi |
@@ -87,27 +89,26 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-16 | eq-field | [#702](https://github.com/eq-solutions/eq-field/pull/702) v3.5.502 — access-control cleanup: Pipeline opt-in-only, Teams +  |
 | 2026-08-16 | eq-cards | [#253](https://github.com/eq-solutions/eq-cards/pull/253) fix(security): close 3 permission-audit gaps — dead JWT minter, e |
 | 2026-08-16 | eq-cards | [#250](https://github.com/eq-solutions/eq-cards/pull/250) fix(auth): stop shell-verify from optimistically proceeding on a  |
-| 2026-08-16 | eq-cards | [#251](https://github.com/eq-solutions/eq-cards/pull/251) fix(privacy): enforce sharing_scope on every licence read path |
 _Showing 15 of 118 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- When a company invites a worker to connect (instead of the worker applying to the company), the worker isn't offered the same share-choice — it's always full profile. Worth deciding if that's intentional; already being looked at in its own session. _(added 2026-08-16)_
+- **Not merged, not applied anywhere — the vulnerability is still live on production right now.** Needs your explicit go for both steps: merging the PR, then a separate governed step to actually run the database change against the real system. _(added 2026-08-16)_
+- **Can't be fully proven safe until it's live.** Confirming a low-privilege worker actually gets blocked, and that an assigned technician can still do their own job, both need a real signed-in session to check — not possible to test from here. _(added 2026-08-16)_
 - **Not clicked through live yet.** Worth two minutes: try the AI import on a real file, look at the home-page briefing/ask bar as a manager vs. a supervisor, and try opening the licence-scan page as an apprentice (should now say you don't have access). _(added 2026-08-16)_
-- **No admin screen yet to add a role-specific requirement** — the groundwork supports it, but today the UI can only add a requirement that applies to everyone. Someone would need it done by hand until that control gets built. _(added 2026-08-16)_
 - **The practice/demo account is still broken** — unrelated to this fix, but found while trying to test it. Sign-in intentionally hides the "try the demo" option because it fails every time; worth reseeding if the demo link is still wanted. _(added 2026-08-16)_
 - **The original question — what Shell's access-control screen looks like for Service permissions — wasn't followed up.** This session only got as far as the settings-page bug that jumped out first; the permissions-matrix screenshot Royce shared is still unreviewed. _(added 2026-08-16)_
 - Once resolved, update `punch-list.md` item 4's note to match reality — it currently still reads as if nothing shipped. _(added 2026-08-16)_
 - **Write down the trade-off we accepted** — the new per-account limit means someone who knows a person's email address can deliberately lock that person out of Core for 15 minutes at a time by getting the PIN wrong five times. That is the normal, accepted cost of this kind of protection, and the phone sign-in door has always worked the same way, but it isn't recorded anywhere yet. Belongs in the security register so nobody "discovers" it later and treats it as a bug. _(added 2026-08-15)_
 - **One low-traffic function on the EQ side accepts an org ID as a plain parameter instead of reading it from the login session** — the table it writes to is empty today so there's nothing to lose, but it's a different shape of risk from everything else fixed here and wasn't touched. _(added 2026-08-15)_
 - **None of it has been tried on a real switched-off account.** Everything above is verified by tests and by calling the live endpoints unauthenticated, not by taking a real person's session and watching it get refused. Three switched-off accounts still attached to a company are available to test with whenever you want to spend ten minutes on it. _(added 2026-08-15)_
-- **33 data-changing endpoints don't use the shared permission check** and so didn't get the new guard. Several are actually reads that a crude scan mislabelled, and a couple are internal background jobs — they need looking at one by one rather than a blanket fix, which is why they weren't swept in. _(added 2026-08-15)_
-- **Where the 7 deleted test logins came from was never explained.** Each had a Core identity naming SKS but no company invite, so the sign-up fault repaired this session cannot have created them. Creation stopped on its own at the end of June and none have appeared since. Harmless now they're gone, but the door that made them is still unidentified. _(added 2026-08-15)_
-_…and 469 more · [eq/pending.md](eq/pending.md)_
+_…and 471 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
-- **jvkn's `licences` table needs its own live check** — the original finding lumped it in with the timesheets/leave tables, but it actually lives on a completely different system (the shared control layer, not SKS's own database) owned by a different repo. Royce's framing: a worker owns their own licence data and chooses what to share, so the real question is whether that's actually how it behaves today — not whether it needs the same fix as timesheets. Handed off as its own task, already running in a separate session. _(added 2026-08-16)_
-- **Same two tables can still be edited by anyone, not just read** — this fix only closes the reading side. Today, any tenant member can still change another worker's submitted hours or leave details, just not the actual approve/reject decision (that part was already locked down separately). Handed off as its own task, already running in a separate session. _(added 2026-08-16)_
+- **Dispatch both the read fix (PR #705) and its write-side companion to ehow** — both drafted, committed, CI green, not yet applied to the live database. Newly blocked on a separate gap, not the migrations themselves: shipping either one right now would lock the ~44 SKS staff who haven't signed in yet out of their own timesheet/leave the moment they do, since the fix depends on their login already being linked to their staff record. That population is bounded (hasn't grown since 2026-07-05) and resolves itself as Royce's QR-code onboarding rollout (apprentices first) gets people signed in — needs a call on whether to wait for that to land or dispatch anyway with a documented gap. _(added 2026-08-16)_
+- **jvkn's `licences` table needs its own live check** — lives on a different system (the shared control layer, not SKS's own database), owned by a different repo. Handed off as its own task, already running in a separate session. _(added 2026-08-16)_
 - **The disposable EQ-side tenant doesn't have this fix** — lower priority, since that tenant holds no real data, but the identical gap exists there too and needs some prerequisite pieces built first before it can be ported. _(added 2026-08-16)_
 - **Run the first real weekly export/import test** — SKS NSW Labour → Export Schedule CSV → EQ Field (logged in as the SKS org) → Import Schedule CSV. Discussed and confirmed safe; not actually run this session. _(added 2026-08-14)_
 - **Deactivate the two stale site rows in ehow** — `Erilyan` (`site_id 6c221319…`, code EC6) and `Microsoft SYD27` (`site_id 7fb2d662…`, code SYD27). Single-column `active=false` flip each, no code change, no deploy — Royce hasn't given the explicit go to execute it yet. _(added 2026-08-14)_
@@ -124,8 +125,8 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [EQ](eq/pending.md) | 3616 | 487 / 146 | 130 | 64 |
-| [SKS](sks/pending.md) | 440 | 84 / 9 | 1 | 15 |
+| [EQ](eq/pending.md) | 3635 | 489 / 146 | 135 | 64 |
+| [SKS](sks/pending.md) | 439 | 84 / 9 | 1 | 15 |
 | [SKS active](sks/active.md) | 109 | 0 / 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 421 | 33 / 4 | 3 | 1 |
 
@@ -145,4 +146,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-16 06:24 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-16 06:31 UTC._
