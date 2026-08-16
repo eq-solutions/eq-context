@@ -14,6 +14,18 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: closed a cookie-sharing gap across 46 endpoints, and answered a 2-month-old open question about whether the protection was even switched on (2026-08-16)
+*A security check added earlier the same day (PR #1386) on core.eq.solutions revealed a much bigger pattern behind it: a page on any of EQ's other websites — or malicious code slipped onto one — can ride a signed-in user's browser straight into an action on core.eq.solutions, without the user ever knowing, because the sign-in cookie is shared across every eq.solutions subdomain. #1386 already fixed 7 places; a full sweep found 45 more spots with the same gap. Closed the entire list in one session, then separately answered a genuinely important two-month-old open question about this same protection.*
+
+- [x] **All 45 remaining spots (plus one more, a low-priority settings endpoint, added on request) now carry the same protection as the original 7** — worker invites, staff and licence records, CRM, reports, quotes, file/document uploads, and more. Split into 12 separate reviewable changes rather than one giant one (matching how this team has always shipped this kind of fix), all merged and confirmed live on core.eq.solutions.
+- [x] **One item on the original list turned out to be a false alarm** — a read-only database-migration status page that doesn't actually change anything, left alone rather than "fixed" for no reason.
+- [x] **Answered a real open question from 2026-07-26** ("check the Netlify dashboard for `ENFORCE_IFRAME_ORIGIN`, confirms whether this protection is actually switched on in production, not just watching"): it's not just watching — it has been **actively blocking** on the live site since mid-June, two months before this fix even existed. That means every one of today's 46 newly-protected pages started actively blocking the instant its change went live, not later when someone flips a switch. Checked carefully afterward whether anything legitimate got blocked by today's additions: two independent checks (which pages call which endpoints, and a live error-tracking pull six minutes after the last change went out) both came back clean — nothing did.
+
+**Deferred:**
+- [ ] **Worth a direct spot-check of the Netlify function logs** (dashboard, not something reachable from here) for any blocked requests in the ~20 minutes after this went live. The two checks above are good evidence but not a substitute for looking at the actual log lines — no tool available this session could pull that history directly. _(added 2026-08-16)_
+
+---
+
 ## eq-cards: jvkn Supabase branch-replay diagnosed and documented (2026-08-16)
 *A routine attempt to branch-test an unrelated eq-cards migration (0131) hit `create_branch` failing `MIGRATIONS_FAILED` on jvkn (eq-canonical) — turned into a full root-cause investigation, since this blocks Supabase's branch-preview workflow for the whole shared control-plane project, not just eq-cards.*
 
@@ -1589,7 +1601,6 @@ Royce asked four architecture questions about the Cards→tenant consent model (
 ## SKS onboarding security deep-dive: 3 pre-rollout fixes + leaver data-retention policy built end-to-end (2026-07-26)
 
 **Deferred:**
-- [ ] **Royce to check the Netlify dashboard for `ENFORCE_IFRAME_ORIGIN`** on eq-shell — confirms whether the iframe-origin check is actually enforcing in production (not just in code). Not readable via the connected tools. _(added 2026-07-26)_
 - [ ] **Royce to remediate SEC-12** (plaintext Netlify secrets on eq-shell) via the Netlify dashboard — same-value re-store per key (not a rotation), just needs "contains sensitive values" ticked. `GOOGLE_DOC_AI_CREDENTIALS` (an RSA private key) is the highest-priority one. Full detail in `ops/security-register.md`. _(added 2026-07-26)_
 - [ ] **EQ Cards' own worker-initiated 30-day account-deletion promise** (separate from the leaver-retention work above — this is a worker deleting their *own* Cards account) is still built but switched off (dry-run only). Not actioned this session, just a known standing gap. _(added 2026-07-26)_
 - [ ] **Access-Model Phase 2 ("One admin") and Phase 3 (permission-key guardrails)** — explained to Royce in the Q&A, deliberately not built yet. Locked decision to keep auth changes out of the SKS launch window; revisit post-cutover. _(added 2026-07-26)_ **Note:** later the same day Royce separately approved one narrow piece of Phase 3 scoping — a pure internal cleanup with zero change to who can do what (see "collapsed the hand-typed permission list" above) — not a reversal of the launch-window lock, just a specific low-risk carve-out he signed off on directly. **Second note, later still:** Royce also explicitly approved a real behaviour-changing piece of Phase 3 — cleaning up SKS's one-off permission tweaks (see "tenant_role_overrides cleanup" below). Asked directly whether the launch-window lock applied here; his call was to proceed anyway. Phase 2 ("One admin") remains untouched.
