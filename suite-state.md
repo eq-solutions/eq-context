@@ -65,6 +65,7 @@ _If this file is >48h old, the cron is broken._
 - #221 refactor(auth): shell-verify.js relays to eq-shell instead of local crypto
 
 **eq-field:**
+- #707 v3.5.504 — security(routing): showPage() deny-by-default route guards
 - #706 fix(tests): close permission-enforcement-drift's KNOWN_WRAPPERS + index.html gap
 - #705 security(rls): own/crew read scoping for timesheets + leave_requests (DRAFT — not dispatched)
 
@@ -74,7 +75,6 @@ _If this file is >48h old, the cron is broken._
 **eq-shell:**
 - #1382 chore(roles): bump @eq-solutions/roles to v2.7.2, wire documents + ai, fix daily-briefing gate
 - #1381 fix(security): close 4 PII leaks gated on field.view/entity.view instead of the narrower key
-- #1380 fix(access-control): surface fine-grained Field perms from the Base panel
 - #1294 feat(cards): centralize Cards' SSO minting via token-exchange-cards.ts
 
 ---
