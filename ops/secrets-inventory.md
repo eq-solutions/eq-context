@@ -1,7 +1,7 @@
 ---
 title: OPS — Secrets Inventory
 owner: Royce Milmlow
-last_updated: 2026-08-11
+last_updated: 2026-08-16
 scope: Names, owner app, environment, and where-set for every real secret across the EQ/SKS Netlify projects. No values — this is the map, not the vault. Companion to ops/security-register.md (incident/finding history) and the Grok-authored "Secrets & Environment Variables" guide (Google Drive, 2026-08-08), which recommends exactly this file.
 read_priority: high
 status: live
@@ -148,9 +148,10 @@ masking status. Tier 1 = suite-wide compromise. Tier 4 = low real stakes.
 | `VITE_GOOGLE_MAPS_KEY` | eq-shell | Client-side, Google-domain-restricted by design. |
 | `STAFF_CODE` / `MANAGER_CODE` | eq-field, sks-nsw-labour | Shared demo-tier access codes, confirmed genuinely different values per app — not a redundancy case. |
 
-eq-cards is excluded from every table above except the confirmed-shared-value
-one — its full var list hasn't been re-verified since 2026-07-30 (Netlify
-tool declined the read twice this month), so ranking it would be guessing.
+eq-cards was re-verified live 2026-08-16 (see its own section below) — full
+7-var list, all previously-open items now closed. Not re-ranked into the
+tables above because its only Tier 1/2 secrets are the two already covered
+by the confirmed-shared-value cluster table; the rest are Tier 4 or n/a.
 
 ---
 
@@ -158,18 +159,18 @@ tool declined the read twice this month), so ranking it would be guessing.
 
 | Secret name | Masked? | Where set | Notes |
 |---|---|---|---|
-| `SUPABASE_SERVICE_ROLE_KEY` | ⚠ leaks via `dev` | Netlify (all contexts) | jvkn/eq-canonical service_role. **SEC-9** — confirmed leaking via `dev` context today despite `is_secret:true`. |
-| `EQ_SHELL_JWT_SECRET` | ⚠ leaks via `dev` | Netlify (all contexts) | Signs every session JWT suite-wide. **SEC-9 addendum.** |
-| `EQ_QUOTES_HANDOFF_KEY` | ⚠ leaks via `dev` | Netlify (all contexts) | **SEC-9 addendum.** `dev-server` context is empty (clean) — only `dev` leaks. |
-| `CANONICAL_API_KEY_SERVICE` | ⚠ leaks via `dev` | Netlify (all contexts) | **SEC-9 addendum.** |
-| `CANONICAL_API_KEY_FIELD` | ⚠ leaks via `dev` | Netlify (all contexts) | **SEC-9 addendum.** |
-| `EQ_PLATFORM_ADMIN_KEY` | ⚠ leaks via `dev` | Netlify (all contexts) | **SEC-9 addendum.** |
-| `EQ_SESSION_SALT` | ⚠ leaks via `dev` | Netlify (all contexts) | **SEC-9 addendum.** |
-| `EQ_SERVICE_HANDOFF_KEY` | ⚠ leaks via `dev` | Netlify (all contexts) | **SEC-9 addendum.** |
-| `EQ_SHELL_BRIDGE_SECRET` | ⚠ leaks via `dev` | Netlify (all contexts) | **SEC-9 addendum.** |
-| `SKS_SUPABASE_JWT_SECRET` | ⚠ leaks via `dev` | Netlify (all contexts) | **SEC-9 addendum.** |
-| `SUPABASE_JWT_SECRET` | ⚠ leaks via `dev` | Netlify (all contexts) | jvkn legacy JWT secret. **SEC-9 addendum.** |
-| `QUOTES_CRON_SECRET` | ✗ not masked, all contexts | Netlify | **SEC-24 — OPEN.** Full plaintext including production. |
+| `SUPABASE_SERVICE_ROLE_KEY` | ✓ masked, `dev` cleared (fixed 2026-08-16) | Netlify (all contexts) | jvkn/eq-canonical service_role. **SEC-9 — closed.** |
+| `EQ_SHELL_JWT_SECRET` | ✓ masked, `dev` cleared (fixed 2026-08-16) | Netlify (all contexts) | Signs every session JWT suite-wide. **SEC-9 — closed.** |
+| `CANONICAL_API_KEY_SERVICE` | ✓ masked, `dev` cleared (fixed 2026-08-16) | Netlify (all contexts) | **SEC-9 — closed.** |
+| `CANONICAL_API_KEY_FIELD` | ✓ masked, `dev` cleared (fixed 2026-08-16) | Netlify (all contexts) | **SEC-9 — closed.** |
+| `EQ_PLATFORM_ADMIN_KEY` | ✓ masked, `dev` cleared (fixed 2026-08-16) | Netlify (all contexts) | **SEC-9 — closed.** |
+| `EQ_SESSION_SALT` | ✓ masked, `dev` cleared (fixed 2026-08-16) | Netlify (all contexts) | **SEC-9 — closed.** |
+| `SKS_SUPABASE_JWT_SECRET` | ✓ masked, `dev` cleared (fixed 2026-08-16) | Netlify (all contexts) | **SEC-9 — closed.** |
+| `SUPABASE_JWT_SECRET` | ✓ masked, `dev` cleared (fixed 2026-08-16) | Netlify (all contexts) | jvkn legacy JWT secret. **SEC-9 — closed.** |
+| `EQ_QUOTES_HANDOFF_KEY` | **DELETED 2026-08-16** | — | Confirmed dead + retiring `mint-quotes-iframe-token.ts` call deliberately left to fail loud now instead of minting on a leaking secret. |
+| `EQ_SERVICE_HANDOFF_KEY` | **DELETED 2026-08-16** | — | Confirmed no live caller in eq-shell or eq-service — dead code, not masked-and-kept. |
+| `EQ_SHELL_BRIDGE_SECRET` | **DELETED 2026-08-16** | — | Confirmed no live caller — dead code, not masked-and-kept. |
+| `QUOTES_CRON_SECRET` | ✓ masked, all contexts (fixed 2026-08-16, delete+recreate) | Netlify | **SEC-24 — closed.** |
 | `GOOGLE_DOC_AI_CREDENTIALS` | ✓ masked | Netlify (production) | Full GCP service-account JSON. `dev` context empty — clean. |
 | `SUPABASE_ACCESS_TOKEN` | ✓ masked | Netlify | Used by `security_audit.py`'s advisor-audit step. `dev` empty. |
 | `CANONICAL_API_KEY_QUOTES` | ✓ masked | Netlify (all) | Single-context var, no separate `dev` value. |
@@ -191,8 +192,8 @@ tool declined the read twice this month), so ranking it would be guessing.
 
 | Secret name | Masked? | Where set | Notes |
 |---|---|---|---|
-| `SKS_JWT_SECRET` | ⚠ leaks via `dev` | Netlify (all contexts) | Same value as eq-shell's `SKS_SUPABASE_JWT_SECRET`. **SEC-9 addendum.** |
-| `EQ_FIELD_HANDOFF_KEY` | ✗ not masked, all contexts | Netlify | **SEC-18 — still open**, unchanged since 2026-07-30. |
+| `SKS_JWT_SECRET` | ✓ masked, `dev` cleared (fixed 2026-08-16) | Netlify (all contexts) | Same value as eq-shell's `SKS_SUPABASE_JWT_SECRET`. **SEC-9 — closed.** |
+| `EQ_FIELD_HANDOFF_KEY` | ✓ masked, all contexts (fixed 2026-08-16, delete+recreate) | Netlify | **SEC-18 — closed.** |
 | `LEAVE_CANONICAL_JWT_SECRET` | ✓ masked | Netlify | No `dev` context on this var at all — clean. |
 | `RESEND_API_KEY` | ✓ masked | Netlify | `dev` empty. |
 | `AUDIT_SB_KEY` | ✓ masked | Netlify | |
@@ -209,14 +210,14 @@ tool declined the read twice this month), so ranking it would be guessing.
 
 | Secret name | Masked? | Where set | Notes |
 |---|---|---|---|
-| `SUPABASE_SERVICE_ROLE_KEY` | ⚠ leaks via `dev` | Netlify | **Points at the deleted `urjh` project** — dead var, cleanup candidate, not a live risk. |
-| `EQ_PLATFORM_ADMIN_KEY` | ⚠ leaks via `dev` | Netlify | **SEC-9 addendum.** |
-| `EQ_SECRET_SALT` | ⚠ leaks via `dev` | Netlify | **SEC-9 addendum.** |
-| `EQ_SHELL_JWT_SECRET` | ⚠ leaks via `dev` | Netlify | **SEC-9 addendum.** |
-| `CANONICAL_API_KEY_SERVICE` | ⚠ leaks via `dev` | Netlify | **SEC-9 addendum.** |
-| `EQ_SERVICE_HANDOFF_KEY` | ✗ not masked, single context | Netlify | **SEC-18 — still open.** |
-| `EQ_SERVICE_JWT_SECRET` | ✗ not masked, all contexts | Netlify | **SEC-18 — still open.** |
-| `EQ_SERVICE_API_KEY` | ✗ not masked, all contexts | Netlify | **SEC-18 — still open.** |
+| `SUPABASE_SERVICE_ROLE_KEY` | **DELETED 2026-08-16** | — | Pointed at the deleted `urjh` project — dead var, no live use. The code-level fallback to it was separately removed in eq-solves-service PR #734 (open, not yet merged). |
+| `EQ_PLATFORM_ADMIN_KEY` | ✓ masked, `dev` cleared (fixed 2026-08-16) | Netlify | **SEC-9 — closed.** |
+| `EQ_SECRET_SALT` | ✓ masked, `dev` cleared (fixed 2026-08-16) | Netlify | **SEC-9 — closed.** |
+| `EQ_SHELL_JWT_SECRET` | ✓ masked, `dev` cleared (fixed 2026-08-16) | Netlify | **SEC-9 — closed.** |
+| `CANONICAL_API_KEY_SERVICE` | ✓ masked, `dev` cleared (fixed 2026-08-16) | Netlify | **SEC-9 — closed.** |
+| `EQ_SERVICE_HANDOFF_KEY` | ✓ masked, all contexts (fixed 2026-08-16, delete+recreate) | Netlify | **SEC-18 — closed.** |
+| `EQ_SERVICE_JWT_SECRET` | ✓ masked, all contexts (fixed 2026-08-16, delete+recreate) | Netlify | **SEC-18 — closed.** |
+| `EQ_SERVICE_API_KEY` | ✓ masked, all contexts (fixed 2026-08-16, delete+recreate) | Netlify | **SEC-18 — closed.** |
 | `EQ_SHELL_BRIDGE_SECRET` | ✓ masked | Netlify | No `dev` context on this site — clean. |
 | `CANONICAL_SERVICE_ROLE_KEY` | ✓ masked | Netlify | ehow/sks-canonical service_role — the live DB behind Service + Field. `dev` empty. |
 | `RESEND_API_KEY` | ✓ masked | Netlify | `dev` empty. |
@@ -244,15 +245,32 @@ action, listed for completeness only.
 
 ---
 
-## eq-cards — NOT RE-VERIFIED 2026-08-08
+## eq-cards (`cards.eq.solutions`, site `c1bf4b4d-3131-4dd6-977f-2c0dd5cc4d72`) — re-verified 2026-08-16
 
-Netlify tool's own classifier blocked the live read this pass. Last confirmed
-via **SEC-18** (2026-07-27/30): `SUPABASE_SERVICE_ROLE_KEY` (jvkn control
-plane) and `SUPABASE_JWT_SECRET` were re-stored masked and verified `is_secret:
-true`; `EQ_SECRET_SALT` and `EQ_SESSION_SALT` were flagged exposed and **left
-open** ("still not touched" per the register). Treat this whole site as
-**unverified** until re-swept — do not assume the `dev`-context bug is absent
-here just because it wasn't re-checked.
+Full live re-sweep via Netlify's `getEnvVars` API (the classifier that
+blocked earlier attempts this month didn't trigger this pass). Found a
+worse variant of SEC-9/SEC-18 that the 07-30 sweep missed: **`is_secret:
+true` does not retroactively purge a value stored before the flag was
+set.** `SUPABASE_SERVICE_ROLE_KEY` and `SUPABASE_JWT_SECRET` had been
+"re-stored masked" in July and the flag was genuinely `true` — but the
+per-context values underneath predated that toggle and were still
+plaintext-readable via the API in **every context including production**,
+not just `dev`. These are the two highest-tier secrets in the whole
+inventory (jvkn service_role + the suite-wide session-signing secret), so
+this was the most serious live finding of the 2026-08-16 sweep. Fixed the
+same session via delete+recreate (the only reliable fix — a bare toggle
+doesn't clear pre-existing values, on this site or any other row in this
+file toggled the same way before today).
+
+| Secret name | Masked? | Where set | Notes |
+|---|---|---|---|
+| `SUPABASE_SERVICE_ROLE_KEY` | ✓ masked, all contexts (fixed 2026-08-16, delete+recreate) | Netlify | jvkn control-plane service_role — same value as eq-shell's copy. Was plaintext-readable in every context incl. production until today. |
+| `SUPABASE_JWT_SECRET` | ✓ masked, all contexts (fixed 2026-08-16, delete+recreate) | Netlify | Suite-wide session-signing secret — the top secret in the whole inventory. Same leak, same fix. |
+| `EQ_SESSION_SALT` | ✓ masked, all contexts (fixed 2026-08-16, delete+recreate) | Netlify | Tier 4, low stakes, closed anyway. |
+| `EQ_SECRET_SALT` | ✓ masked, all contexts (fixed 2026-08-16, delete+recreate) | Netlify | Suite-wide salt, same pattern. |
+| `POSTHOG_API_KEY` | ✗ not flagged secret — correct as-is | Netlify (builds scope) | `phc_...` — PostHog's public project key, compiled into the client bundle via `--dart-define` (`scripts/netlify_build.sh`), same pattern as `SUPABASE_ANON_KEY`. Meant to be public. |
+| `POSTHOG_HOST` | n/a | Netlify (builds scope) | URL, not a secret. |
+| `SUPABASE_URL` | n/a | Netlify (builds scope) | URL, not a secret. |
 
 ## Other Netlify projects (checked, low/no risk)
 
@@ -265,9 +283,29 @@ projects).
 
 ---
 
-## Open actions (manual-hands-only, Royce via Netlify dashboard/CLI)
+## Open actions
 
-1. **Re-store `QUOTES_CRON_SECRET`** (eq-shell) as masked, same value — closes SEC-24.
-2. **Clear the `dev`-context value** on the 17 vars flagged "⚠ leaks via `dev`" above (eq-shell ×11, eq-field ×1, eq-service ×5) — leave branch-deploy/deploy-preview/production untouched. This is the actual fix for SEC-9's confirmed leak pattern; re-storing as masked (already done) does not fix it.
-3. **Re-verify eq-cards** once the Netlify tool stops declining the read, or check it directly via the Netlify dashboard.
-4. **Delete the dead `SUPABASE_SERVICE_ROLE_KEY`** on eq-service pointing at the deleted `urjh` project — hygiene, not urgent.
+**Closed 2026-08-16** — full live walkthrough across all 4 Netlify sites:
+SEC-9 (17 dev-context leaks: eq-shell ×11, eq-field ×1, eq-service ×5),
+SEC-18 (eq-field/eq-service ×4 never-masked vars), SEC-24
+(`QUOTES_CRON_SECRET`), the dead `SUPABASE_SERVICE_ROLE_KEY` on eq-service,
+3 dead eq-shell vars deleted outright (`EQ_QUOTES_HANDOFF_KEY`,
+`EQ_SERVICE_HANDOFF_KEY`, `EQ_SHELL_BRIDGE_SECRET`), and eq-cards'
+previously-unverified site (found + closed a worse variant of SEC-9/18 in
+the process — see eq-cards section above).
+
+**Still open:**
+
+1. **Confirm the 3 "suspected shared" clusters** — one-line same/different
+   from Royce, zero exposure risk (see table above): the 4-named ehow
+   service_role key, the platform admin key, and the Resend key.
+2. **ProtonPass entry** for the ~9 EQ-minted secrets that have no vendor
+   source of truth — partial as of 2026-08-16, not complete. See the EQ
+   Secrets Map artifact's master list for the full 35-row checklist.
+3. **eq-cards `shell-verify.js` "optimistic proceed on bad key"** —
+   code-level finding from the 2026-08-16 failure-mode audit, needs a
+   design decision (how to distinguish "new user, expected 404" from "bad
+   credential, unexpected non-404") before any fix — deliberately not
+   started.
+4. **PR merge decisions** — eq-shell #1375, eq-solves-service #734+#732,
+   eq-field #703 are all open, Royce's call, none merged.
