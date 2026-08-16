@@ -3538,3 +3538,13 @@ Diagnosed 2026-05-19. 17 advisor warnings, fix drafted but not applied.
 - [ ] **Stale-cull sweep of the ~90 open items older than 30 days** (including the restored May section) — close dead ones, merge duplicate threads. Good multi-agent session on its own; not run this session. _(added 2026-07-27)_
 
 ---
+
+## eq-context: proper re-score against the 2026-07-20 audit found real gaps outside the campaign's scope (2026-08-15)
+*Royce asked for a fresh rating "properly," not a guess. Re-ran the original 7 findings against live state and actually ran every guard script rather than reading about them. Landed at 87/100 — below the 90 baseline, because the rigor of running the tools surfaced real problems a desk review wouldn't have.*
+
+- [ ] **`sks-team/variations.md` — critical-priority SKS Ops AI guidance, 92 days untouched, now the worst offender on `review_clock.py`'s own gate.** The whole campaign's attention went to the EQ tier; `sks-team/` drifted the entire time and the guard is currently red on it (7 files overdue against a ceiling of 5, all in `sks`/`sks-team`, none in `eq`). This is live, customer-facing content, not internal bookkeeping. _(added 2026-08-15, needs your call on whether sks-team content should get the same review-clock attention eq got)_
+- [ ] **`link_check.py` produces 576 false "broken links" when run outside a clean CI checkout** — it doesn't exclude `.claude/worktrees/`, so it trips on other sessions' checked-out copies. Zero real broken links once filtered; CI itself is unaffected (no worktrees in a GitHub Actions checkout), but the script cries wolf for anyone running it locally. Fix: exclude `.claude/worktrees/` explicitly rather than relying on CI's clean checkout to hide the bug. _(added 2026-08-15)_
+- [ ] **`substrate-a-plus-plan.md` claims a guard covers it that doesn't.** It says outright "It is subject to its own rules... If it is not reconfirmed, `claim-expiry` will kill it and tell you" — checked `claim-expiry.yml` directly, it's scoped only to `system/TODAY.md`. Nothing enforces this file's `expires_on`, or `substrate-plan-v2.md`'s (which is now 3 days past its own 2026-08-12 expiry with no decision recorded and nothing flagging it). Same shape of problem this whole campaign exists to catch, found in a new corner. _(added 2026-08-15)_
+- [ ] **Global `~/.claude/CLAUDE.md`'s Model Triage table is stale again** (still names Opus 4.8; Opus 5 exists) — the exact same failure the 2026-07-20 audit named, recurred, because this file lives outside the eq-context git repo and none of the campaign's guards can see it. _(added 2026-08-15)_
+
+---
