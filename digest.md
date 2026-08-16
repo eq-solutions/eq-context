@@ -8,28 +8,27 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-16 10:07 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-16 10:09 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-16 09:54 UTC → 2026-08-16 10:07 UTC)
+## Since last refresh (2026-08-16 10:07 UTC → 2026-08-16 10:09 UTC)
 
-- Merged: eq-shell [#1396](https://github.com/eq-solutions/eq-shell/pull/1396) fix(security): origin-guard 5 staff/licence mutation endpoin
-- Merged: eq-shell [#1395](https://github.com/eq-solutions/eq-shell/pull/1395) fix(security): origin-guard 4 worker/user invite endpoints
-- Merged: eq-shell [#1394](https://github.com/eq-solutions/eq-shell/pull/1394) fix(security): origin-guard 4 session/account-lifecycle endp
-- Merged: eq-shell [#1393](https://github.com/eq-solutions/eq-shell/pull/1393) fix(security): origin-guard 5 account-credential endpoints (
-- Merged: eq-shell [#1378](https://github.com/eq-solutions/eq-shell/pull/1378) feat(staff): let a manager scope a required ticket to one ro
-- Merged: eq-shell [#1377](https://github.com/eq-solutions/eq-shell/pull/1377) fix(security): gate 5 AI/OCR endpoints beyond session-only, 
-- Merged: eq-shell [#1374](https://github.com/eq-solutions/eq-shell/pull/1374) fix(security): gate EQ Ops Setup on ops.view_rates
-- Merged: eq-solves-service [#738](https://github.com/eq-solutions/eq-service/pull/738) fix(security): wire entity.view on job-plans (missed by #716
-- ⚠ Needs you: 3 → 4 (new items)
+- Merged: eq-shell [#1405](https://github.com/eq-solutions/eq-shell/pull/1405) fix(security): origin-guard 4 quotes/ops/briefing endpoints
+- Merged: eq-shell [#1404](https://github.com/eq-solutions/eq-shell/pull/1404) fix(security): origin-guard 3 intake-staging endpoints + doc
+- Merged: eq-shell [#1402](https://github.com/eq-solutions/eq-shell/pull/1402) fix(security): origin-guard 4 GM Reports mutation endpoints
+- Merged: eq-shell [#1401](https://github.com/eq-solutions/eq-shell/pull/1401) fix(security): origin-guard 4 CRM/suppliers/labour-hire muta
+- Merged: eq-shell [#1398](https://github.com/eq-solutions/eq-shell/pull/1398) fix(security): origin-guard 5 worker-linking/org-config endp
+- Merged: eq-shell [#1388](https://github.com/eq-solutions/eq-shell/pull/1388) fix(security): enforce admin.deactivate_user on edit-user.ts
+- Merged: eq-shell [#1383](https://github.com/eq-solutions/eq-shell/pull/1383) chore(roles): finish v2.7.2 bump — enforce admin.assign_role
+- Merged: eq-shell [#1382](https://github.com/eq-solutions/eq-shell/pull/1382) chore(roles): bump @eq-solutions/roles to v2.7.2, wire docum
+- ✅ Needs you: 4 → 3
 
-## ⚠ Needs you (4)
+## ⚠ Needs you (3)
 
-- 🔴 **CI cancelled** — eq-shell `main`
 - 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-08-16.md](sessions/2026-08-16.md) · [failures.md](system/failures.md)
 - 🟠 **Sentry new error** — `eq-shell` [auth-stall: render-crash](https://eq-solutions.sentry.io/issues/140924723/)
 
-## 🙋 Waiting on you (156)
+## 🙋 Waiting on you (157)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
@@ -45,13 +44,13 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **EQ** · **Not click-tested live on a real tenant** — verified via `tsc -b --force`, eslint (clean except pre-existing tolerated patterns already present identically in `Suppliers.tsx`/`LabourHireRates.tsx`, not introduced by this change), full CI, and the Netlify deploy preview build succeeding. A local click-through attempt hit a pre-existing sandbox limitation (`VITE_FIELD_URL` unset crashes the app at module scope, unrelated to this change) and was abandoned per the standing "default browser only" rule rather than switched to Chrome for a low-value local check. Worth Royce opening Suppliers, Compliance report, and the mobile Home on his phone once. _(added 2026-08-14)_
 - **EQ** · **Not click-tested live** — the 4-hour session cap and its background-refresh recovery were verified by full test suite + source tracing + a live production version-banner check, not by actually leaving a real signed-in Field session open past 4 hours and watching it recover. _(added 2026-08-14)_
 - **EQ** · **Not click-tested live** — verified via `tsc -b --force`, eslint, full CI (all green), and the Netlify deploy preview build succeeding — not by clicking through a real signed-in session. _(added 2026-08-14)_
-_…and 144 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 145 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ⚠ cancelled | 0d ago | 10 | 0d |
+| eq-shell | ✓ success | 0d ago | 5 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 0 | — |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
@@ -73,6 +72,11 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-16 | eq-shell | [#1405](https://github.com/eq-solutions/eq-shell/pull/1405) fix(security): origin-guard 4 quotes/ops/briefing endpoints |
+| 2026-08-16 | eq-shell | [#1404](https://github.com/eq-solutions/eq-shell/pull/1404) fix(security): origin-guard 3 intake-staging endpoints + document |
+| 2026-08-16 | eq-shell | [#1402](https://github.com/eq-solutions/eq-shell/pull/1402) fix(security): origin-guard 4 GM Reports mutation endpoints |
+| 2026-08-16 | eq-shell | [#1401](https://github.com/eq-solutions/eq-shell/pull/1401) fix(security): origin-guard 4 CRM/suppliers/labour-hire mutation  |
+| 2026-08-16 | eq-shell | [#1398](https://github.com/eq-solutions/eq-shell/pull/1398) fix(security): origin-guard 5 worker-linking/org-config endpoints |
 | 2026-08-16 | eq-shell | [#1396](https://github.com/eq-solutions/eq-shell/pull/1396) fix(security): origin-guard 5 staff/licence mutation endpoints |
 | 2026-08-16 | eq-shell | [#1395](https://github.com/eq-solutions/eq-shell/pull/1395) fix(security): origin-guard 4 worker/user invite endpoints |
 | 2026-08-16 | eq-shell | [#1394](https://github.com/eq-solutions/eq-shell/pull/1394) fix(security): origin-guard 4 session/account-lifecycle endpoints |
@@ -83,11 +87,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-16 | eq-shell | [#1399](https://github.com/eq-solutions/eq-shell/pull/1399) fix(compliance): restore photo-ID equivalence dropped by role-sco |
 | 2026-08-16 | eq-shell | [#1397](https://github.com/eq-solutions/eq-shell/pull/1397) fix(security): permission-model hygiene sweep — drift-test blind  |
 | 2026-08-16 | eq-shell | [#1385](https://github.com/eq-solutions/eq-shell/pull/1385) fix(security): gate the Documents module on documents.view/manage |
-| 2026-08-16 | eq-shell | [#1387](https://github.com/eq-solutions/eq-shell/pull/1387) fix(security): close the admin.manage_groups escalation path in s |
-| 2026-08-16 | eq-shell | [#1386](https://github.com/eq-solutions/eq-shell/pull/1386) fix(security): origin-guard 2 Cards mutation/PII endpoints + 5 cl |
-| 2026-08-16 | eq-shell | [#1384](https://github.com/eq-solutions/eq-shell/pull/1384) docs: confirm zaap Field write-guard absence is deliberate, not a |
-| 2026-08-16 | eq-shell | [#1381](https://github.com/eq-solutions/eq-shell/pull/1381) fix(security): close 4 PII leaks gated on field.view/entity.view  |
-| 2026-08-16 | eq-shell | [#1389](https://github.com/eq-solutions/eq-shell/pull/1389) chore(ci): triage 3 jvkn functions into KNOWN_UNSOURCED (cross-re |
 _Showing 15 of 113 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -151,4 +150,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-16 10:07 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-16 10:09 UTC._
