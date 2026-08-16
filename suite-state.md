@@ -65,14 +65,14 @@ _If this file is >48h old, the cron is broken._
 - #221 refactor(auth): shell-verify.js relays to eq-shell instead of local crypto
 
 **eq-field:**
+- #706 fix(tests): close permission-enforcement-drift's KNOWN_WRAPPERS + index.html gap
 - #705 security(rls): own/crew read scoping for timesheets + leave_requests (DRAFT — not dispatched)
 
 **eq-service:**
 - #736 fix(security): nav visibility allow-by-role, wire service.view as an entry gate
-- #735 fix(security): enforce write roles in the database, not just the app
 
 **eq-shell:**
-- #1382 chore(roles): bump @eq-solutions/roles to v2.7.1, wire documents + ai modules
+- #1382 chore(roles): bump @eq-solutions/roles to v2.7.2, wire documents + ai, fix daily-briefing gate
 - #1381 fix(security): close 4 PII leaks gated on field.view/entity.view instead of the narrower key
 - #1380 fix(access-control): surface fine-grained Field perms from the Base panel
 - #1294 feat(cards): centralize Cards' SSO minting via token-exchange-cards.ts
@@ -94,7 +94,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 214 (latest: 0207) applied
+**Migrations:** eq-service has 216 (latest: 0209) applied
 
 ---
 
