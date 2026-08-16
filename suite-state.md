@@ -60,8 +60,7 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-16)
 
-**eq-shell:**
-- #1415 chore(ci): extend control-plane drift-check to tables, backfill 10 untracked shell_control tables
+_No open PRs_
 
 ---
 
