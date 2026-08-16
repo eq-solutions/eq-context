@@ -8,17 +8,17 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-16 08:05 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-16 08:22 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-16 08:02 UTC → 2026-08-16 08:05 UTC)
+## Since last refresh (2026-08-16 08:05 UTC → 2026-08-16 08:22 UTC)
 
-- Merged: eq-shell [#1387](https://github.com/eq-solutions/eq-shell/pull/1387) fix(security): close the admin.manage_groups escalation path
-- Merged: eq-shell [#1369](https://github.com/eq-solutions/eq-shell/pull/1369) docs(auth): active-user-guard claimed the cookie path was co
-- Merged: eq-shell [#1367](https://github.com/eq-solutions/eq-shell/pull/1367) fix(security): a deactivated shell_control.users account can
-- Merged: eq-shell [#1365](https://github.com/eq-solutions/eq-shell/pull/1365) fix(security): gate timesheet/licence reads on the split-out
-- Merged: eq-shell [#1364](https://github.com/eq-solutions/eq-shell/pull/1364) fix(security): revoke authenticated EXECUTE on eq_update_sta
-- Merged: eq-shell [#1362](https://github.com/eq-solutions/eq-shell/pull/1362) fix(security): role-gate 21 CRM/staff RPCs that only checked
-- Merged: eq-shell [#1360](https://github.com/eq-solutions/eq-shell/pull/1360) chore(identity): remove 7 orphaned test identities from the 
+- Merged: eq-shell [#1385](https://github.com/eq-solutions/eq-shell/pull/1385) fix(security): gate the Documents module on documents.view/m
+- Merged: eq-shell [#1373](https://github.com/eq-solutions/eq-shell/pull/1373) fix(staff): stop cards-approve-staff.ts from creating duplic
+- Merged: eq-shell [#1372](https://github.com/eq-solutions/eq-shell/pull/1372) docs(migrations): record 2026_08_15c as applied + the one-ti
+- Merged: eq-shell [#1371](https://github.com/eq-solutions/eq-shell/pull/1371) fix(security): refuse writes from a deactivated account's li
+- Merged: eq-shell [#1370](https://github.com/eq-solutions/eq-shell/pull/1370) fix(security): revoke the Supabase Auth session when Shell d
+- Merged: eq-shell [#1368](https://github.com/eq-solutions/eq-shell/pull/1368) chore(cards-api): retire the lookup_invite_by_phone op, dead
+- Merged: eq-shell [#1366](https://github.com/eq-solutions/eq-shell/pull/1366) chore(security): retire staff-update.ts
 - Merged: eq-solves-service [#738](https://github.com/eq-solutions/eq-service/pull/738) fix(security): wire entity.view on job-plans (missed by #716
 
 ## ⚠ Needs you (3)
@@ -49,7 +49,7 @@ _…and 143 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 4 | 0d |
+| eq-shell | ✓ success | 0d ago | 3 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 0 | — |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
@@ -71,6 +71,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-16 | eq-shell | [#1385](https://github.com/eq-solutions/eq-shell/pull/1385) fix(security): gate the Documents module on documents.view/manage |
 | 2026-08-16 | eq-shell | [#1387](https://github.com/eq-solutions/eq-shell/pull/1387) fix(security): close the admin.manage_groups escalation path in s |
 | 2026-08-16 | eq-shell | [#1386](https://github.com/eq-solutions/eq-shell/pull/1386) fix(security): origin-guard 2 Cards mutation/PII endpoints + 5 cl |
 | 2026-08-16 | eq-shell | [#1384](https://github.com/eq-solutions/eq-shell/pull/1384) docs: confirm zaap Field write-guard absence is deliberate, not a |
@@ -85,11 +86,11 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-16 | eq-shell | [#1379](https://github.com/eq-solutions/eq-shell/pull/1379) fix(perms): re-vendor Field fine-grained perms — 3 new keys not i |
 | 2026-08-16 | eq-shell | [#1378](https://github.com/eq-solutions/eq-shell/pull/1378) feat(staff): let a manager scope a required ticket to one role |
 | 2026-08-16 | eq-shell | [#1376](https://github.com/eq-solutions/eq-shell/pull/1376) feat(staff): scope credential requirements by role |
-| 2026-08-16 | eq-shell | [#1374](https://github.com/eq-solutions/eq-shell/pull/1374) fix(security): gate EQ Ops Setup on ops.view_rates |
-_Showing 15 of 113 · full record in [sessions/](sessions/)_
+_Showing 15 of 112 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- **Not walked through live by a human.** Verified directly against the real site — as a signed-out visitor, as different roles, on both database checks — and the automated checks are all green, but worth your own two-minute look given how many pages this touches. _(added 2026-08-16)_
 - **One narrow follow-up, not urgent:** EQ's sandbox database still allows editing a couple of specific worker fields (licence status, agency, hire company) that SKS's side specifically blocks — nobody's checked whether that matters in practice. Low priority since it's sandbox data with no real customer on it, but worth a look if that database is ever used for anything real. _(added 2026-08-16)_
 - **Not merged — needs your explicit go.** Merging this repo deploys to core.eq.solutions within seconds, and this touches who-can-see-what, so it waits for you rather than shipping on its own. _(added 2026-08-16)_
 - **Not clicked through live** — worth confirming an apprentice or similar account gets turned away from the compliance report, sees no licence-review badges on Staff, and can no longer find a customer by typing part of a contact's email into search. _(added 2026-08-16)_
@@ -99,12 +100,11 @@ _Showing 15 of 113 · full record in [sessions/](sessions/)_
 - **A real, bigger idea from Royce — one single screen for all access control, not two separate systems** — discussed and deliberately not built today; needs a proper design pass first (grouping ~86 total switches sensibly is its own problem), not a same-day PR. _(added 2026-08-16)_
 - Neither eq-shell PR was clicked through live — no way to sign in as a real Shell admin from this environment. Worth two minutes on Access Control next time you're in there, to see the new switches and the new pointer text for real. _(added 2026-08-16)_
 - **On hold, Royce's explicit call.** Re-check `public.email_templates` on the SKS database for real edits before this comes up again — that's the actual trigger condition, not a date. _(added 2026-08-16)_
-- **The practice/demo account is still broken** — unrelated to this fix, but found while trying to test it. Sign-in intentionally hides the "try the demo" option because it fails every time; worth reseeding if the demo link is still wanted. _(added 2026-08-16)_
-_…and 474 more · [eq/pending.md](eq/pending.md)_
+_…and 476 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
-- **jvkn's `licences` table needs its own live check** — lives on a different system (the shared control layer, not SKS's own database), owned by a different repo. Handed off as its own task, already running in a separate session. _(added 2026-08-16)_
+- **Still not applied to the live database — checked directly, and Royce turned down the shortcut that would have unblocked it today.** Confirmed merging the PR didn't secretly switch it on. Turning it on for real right now would lock the people who haven't signed in yet out of their own timesheet and leave the moment they do, since the fix depends on their login already being linked to their staff record — 37 of 83 active SKS staff, checked again today. A workaround exists (let just those specific people keep today's wider access until they sign in, instead of holding up everyone else) but Royce said no — waiting for them to actually sign in through the real onboarding process instead, however long that takes. _(added 2026-08-16, decision confirmed 2026-08-16)_
 - **The disposable EQ-side tenant doesn't have this fix** — lower priority, since that tenant holds no real data, but the identical gap exists there too and needs some prerequisite pieces built first before it can be ported. _(added 2026-08-16)_
 - **Run the first real weekly export/import test** — SKS NSW Labour → Export Schedule CSV → EQ Field (logged in as the SKS org) → Import Schedule CSV. Discussed and confirmed safe; not actually run this session. _(added 2026-08-14)_
 - **Deactivate the two stale site rows in ehow** — `Erilyan` (`site_id 6c221319…`, code EC6) and `Microsoft SYD27` (`site_id 7fb2d662…`, code SYD27). Single-column `active=false` flip each, no code change, no deploy — Royce hasn't given the explicit go to execute it yet. _(added 2026-08-14)_
@@ -122,8 +122,8 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [EQ](eq/pending.md) | 3686 | 495 / 146 | 148 | 64 |
-| [SKS](sks/pending.md) | 439 | 84 / 9 | 1 | 15 |
+| [EQ](eq/pending.md) | 3689 | 496 / 146 | 145 | 64 |
+| [SKS](sks/pending.md) | 439 | 83 / 9 | 2 | 15 |
 | [SKS active](sks/active.md) | 109 | 0 / 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 421 | 33 / 4 | 3 | 1 |
 
@@ -149,4 +149,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-16 08:05 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-16 08:22 UTC._
