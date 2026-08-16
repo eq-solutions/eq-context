@@ -65,7 +65,6 @@ _If this file is >48h old, the cron is broken._
 - #706 fix(tests): close permission-enforcement-drift's KNOWN_WRAPPERS + index.html gap
 
 **eq-shell:**
-- #1389 chore(ci): triage 3 jvkn functions into KNOWN_UNSOURCED (cross-repo sourced)
 - #1387 fix(security): close the admin.manage_groups escalation path in security groups
 - #1386 fix(security): origin-guard 2 Cards mutation/PII endpoints + 5 clear siblings
 - #1385 fix(security): gate the Documents module on documents.view/manage/assign
