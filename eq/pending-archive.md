@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-08-15
+last_updated: 2026-08-16
 scope: Done items rotated out of eq/pending.md nightly by scripts/rotate_pending.py (per-item since 2026-07-27; before that, occasional manual whole-section moves). Nothing here is actionable — pure historical record (also covered in eq/changelog/*.md and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -3728,5 +3728,12 @@ contain the same values and were pushed before push-protection caught up.
 ## ⏩ Session close — 2026-07-04 (15 July CEO presentation prep) — pre-pass bug sweep across Field/Shell/Cards; self-serve tenant provisioning fully hardened + verified live end-to-end for the first time ever (rotated 2026-08-15 — open items remain in pending.md)
 
 - [x] ~~**QR/join-code worker flow** — `JoinContextNotifier`'s keepalive fix (PR #120) was applied by exact code-pattern match to the provision-context bug, not independently reproduced/verified live. Worth a live pass before the 15th.~~ **Moot 2026-08-15** — the flow it guarded (`/join`) turned out to have been unreachable since 2026-06-10, and `JoinContextNotifier` was deleted with it in eq-cards PR #248. Never needed the live pass. _(added 2026-07-04, closed 2026-08-15)_
+
+---
+
+## eq-context: substrate campaign phases 1-5 closed; process gap + Royce-hands item found (2026-08-15)
+
+- [x] **The shared `C:\Projects\eq-context` checkout drift, closed both ends.** Resynced the checkout itself later the same session (verified the 4 stuck local commits were a duplicate of content another session had already pushed cleanly, kept a safety branch, then reset to `origin/main`). A concurrent session separately built the guard this item asked for the same day — `hooks/session_start.py` now has a SYNC check comparing the local checkout's HEAD against `origin/main` at session start. Confirmed live: this session's own gate now prints `SYNC ok — HEAD == origin/main`.
+- [x] **`field_canonical_health()` RPC fix — applied live by Royce, verified.** Ran the drafted SQL on ehow via the dashboard. Bigger fix than the headline count suggested: `field_people` corrected 66→83 as expected, but `field_schedule` (0→1,310), `field_timesheets` (0→138), and `prestarts`/`toolbox_talks` (0→35/1) all came back from "empty" to real numbers too — the broken `org_id` filter had been silently hiding genuine Field usage data on the dashboard, not just under-counting one row. Confirmed via a manually-triggered `suite-state-refresh.yml` run (independent of the Supabase connection, which dropped mid-session) — the warning block self-cleared exactly as designed.
 
 ---
