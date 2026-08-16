@@ -29,6 +29,20 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-solves-intake: the data-cleaning queue actually shrinks as you work it now, plus a bad-merge error fixed (2026-08-16)
+*Royce flagged three problems with the review queue from screenshots: decided duplicate rows just sat there cluttering the list forever with no way to fix a wrong answer, a duplicate-contacts merge threw a raw error on screen, and the "unknown trade" list had no way to fix several people at once. Built and merged, then self-reviewed the same work and fixed six more bugs the review turned up before calling it done.*
+
+- [x] The duplicate-contacts merge crash is fixed — clicking "confirm merge" on a pair already merged elsewhere used to throw a raw error with no way out; it now just shows "already merged" and moves on.
+- [x] Deciding on a duplicate (same/different) now actually removes it from the working list instead of cluttering the screen forever — and there's a "change answer" link if a decision needs correcting.
+- [x] The "trade unknown" list can now be fixed in bulk — tick several people, pick one trade, approve them all in one click, instead of one at a time.
+- [x] Self-review of that work (two independent passes) found six more real bugs before shipping: a stale note that could attach itself to the wrong answer, a leftover draft note that could reappear, a bulk-approve button that could silently do nothing, and a bulk-approve failure that hid the actual reason it failed. All six fixed and confirmed working live, not just typechecked.
+- [x] eq-solves-intake [PR #116](https://github.com/eq-solutions/eq-solves-intake/pull/116) and [PR #117](https://github.com/eq-solutions/eq-solves-intake/pull/117), both merged, CI green.
+
+**Deferred:**
+- [ ] **A merged duplicate can still show up looking "active" again after a page reload** — the screen doesn't fully know a pair was already merged until it's clicked into once. The real fix needs a small database change in EQ Shell (not this app), so it's fully scoped (exact change, which table, which migration number) but deliberately not built yet — spun off as its own follow-up rather than done inside this session, per Royce's call to leave it for that follow-up to pick up. _(added 2026-08-16)_
+
+---
+
 ## eq-shell: workers can now be asked for different required licences depending on their role, not one shared list for everyone — closed, merged, live (2026-08-16)
 *Started from two of Royce's brain-dump emails: audited every idea in them against the live systems (not docs) first, ranked them into a task list, then built the top-priority one (#4 — per-role minimum requirements) end to end, including multi-org support from the start since it turned out to be nearly free once the underlying design was right. Closes the "minimum-requirements model" question left undecided since 2026-07-07 (see that entry further down).*
 
