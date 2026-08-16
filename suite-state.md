@@ -61,6 +61,8 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-16)
 
 **eq-shell:**
+- #1402 fix(security): origin-guard 4 GM Reports mutation endpoints
+- #1401 fix(security): origin-guard 4 CRM/suppliers/labour-hire mutation endpoints
 - #1398 fix(security): origin-guard 5 worker-linking/org-config endpoints
 - #1396 fix(security): origin-guard 5 staff/licence mutation endpoints
 - #1395 fix(security): origin-guard 4 worker/user invite endpoints
