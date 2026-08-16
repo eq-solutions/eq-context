@@ -1,13 +1,22 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-15
+last_updated: 2026-08-16
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # eq-shell changelog
+
+## 2026-08-16 (PR #1376 MERGED + deployed live — credential requirements can now be scoped per role, multi-org support built in)
+- `org_credential_requirements` gains a `role` column (empty-string sentinel = "all roles", NOT NULL by design — PostgREST's upsert `onConflict` needs a plain unique index, not a partial/functional one). `org_memberships` gains `eq_role`, a new per-org operational role distinct from its existing member/admin column (Shell's own admin-tier gating, an unrelated concept). `eq_worker_compliance_status()` filters by the new scope.
+- Deliberately keyed on `org_memberships.eq_role`, not `workers.role` — the latter is self-writable by the worker and read by no authorisation check anywhere today (per the 2026-07-21 lockdown migration's own "deliberately not touched" note), so gating a requirement on it would let a worker dodge it by relabelling themselves. `org_memberships` is admin-set only, already had no client UPDATE grant as of 2026-07-21, and is already the correct one-row-per-(user,org) shape — no second migration needed if a worker is ever linked to more than one org (0 are, today).
+- Stamped at all three points a worker joins an org: admin invite claim, self-join QR claim, Cards self-signup approval (`cards-approve-staff.ts` both branches, `shell-join-tenant.ts`).
+- Training Matrix (`MatrixView.tsx`) now resolves each worker's own applicable requirement set via a new `org-worker-roles.ts` cross-plane lookup (org/role data on jvkn, staff data on the tenant plane — no single query can join them) — added as a 9th part to `staff-bootstrap.ts`'s parallel fetch. Column headers still show "required" if any role needs it; the per-worker gap check is now genuinely per-role.
+- Also closes a gap found while verifying the approval flow: Cards signup review screen pre-selected `employee` with nothing distinguishing "chosen" from "never looked" (`StaffPage.tsx`/`staffTypes.ts` — `selectedRole` now starts `null`, Approve stays disabled until actively picked).
+- Migration hand-applied to jvkn (control plane, no CI path) — first attempt tried `DROP INDEX` on a named unique constraint's backing index, which Postgres refuses; fixed to `DROP CONSTRAINT`, re-applied, re-verified live (columns, index, grants — `authenticated` has EXECUTE on the updated function, `anon` does not).
+- Not included: no admin UI yet to add a role-specific (vs org-wide) requirement — API supports it via POST `role`, `RequiredTicketsBar` has no picker for it.
 
 ## 2026-08-15 (PR #1373 MERGED + deployed live — the Cards duplicate-identity gap that caused the Richard Brown incident, closed at the code level)
 - Two Sentry alerts (`EQ-SHELL-Z` "unresolved identity collisions" since 2026-07-27, `EQ-SHELL-1M` "workers.staff_id shared by multiple workers" since 2026-08-13) traced to the same root cause: when a Cards signup collides by email with an existing worker, `cards-approve-staff.ts` correctly re-resolves the real person's staff record — then wrote it onto the new, duplicate worker row **unconditionally**, even when another worker already had it. That's the exact defect class that hit William Brown on 2026-07-22, patched as a data-only fix at the time, which is why it recurred with Richard Brown three weeks later.

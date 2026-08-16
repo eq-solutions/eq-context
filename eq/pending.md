@@ -14,6 +14,23 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: workers can now be asked for different required licences depending on their role, not one shared list for everyone — closed, merged, live (2026-08-16)
+*Started from two of Royce's brain-dump emails: audited every idea in them against the live systems (not docs) first, ranked them into a task list, then built the top-priority one (#4 — per-role minimum requirements) end to end, including multi-org support from the start since it turned out to be nearly free once the underlying design was right. Closes the "minimum-requirements model" question left undecided since 2026-07-07 (see that entry further down).*
+
+- [x] An apprentice and a manager can now be asked for different licences on the same job — a requirement can be scoped to one role, or left applying to everyone the way it always has. Deliberately did NOT use the role field workers can set on themselves — used the one that's only ever set by whoever approves them into the org instead, so a worker can't dodge a requirement by relabelling themselves.
+- [x] The Training Matrix (the compliance grid managers use to see who's missing what) now checks each worker against their own role's requirements, not one shared list — it was quietly applying the same "missing" list to every worker regardless of role before this.
+- [x] Closed a rushed-approval gap found while verifying the sign-up flow end to end: the Cards sign-up approval screen pre-ticked "employee" as the role with nothing to distinguish "chosen" from "never looked at" — a fast click-through could silently misassign an apprentice or a supervisor. It now starts blank and Approve stays disabled until a role is actually picked.
+- [x] Built with multiple organisations in mind from day one — nobody is linked to more than one org today, but the design doesn't need a second rebuild the day someone is.
+- [x] Database change hand-applied to the control-plane database (the one substrate deliberately never auto-applies) and independently re-checked afterward — existing data untouched, new field not writable by workers themselves. Merged ([PR #1376](https://github.com/eq-solutions/eq-shell/pull/1376)) and confirmed live on core.eq.solutions by checking the live site's deploy record matched the exact commit that was merged, not just that the merge succeeded.
+
+**Deferred:**
+- [ ] **No admin screen yet to add a role-specific requirement** — the groundwork supports it, but today the UI can only add a requirement that applies to everyone. Someone would need it done by hand until that control gets built. _(added 2026-08-16)_
+
+**Notes:**
+- Also produced this session (not filed to substrate — sent directly to Royce): a ranked task list built from the two brain-dump emails, cross-checked against what's actually live rather than assumed.
+
+---
+
 ## eq-solves-service: Settings page showed broken account controls to Shell-embedded users — fixed, merged, live (2026-08-16)
 *Started from Royce spotting UI on `core.eq.solutions/sks/service/settings` that "shouldn't be there" — a broken "Member Since: Invalid Date" caught the eye. Traced live against both databases: Service's own old sign-in record for the account and Shell's real one are two different IDs, so the settings page was looking up the wrong record every time someone reached it through Shell.*
 
@@ -2463,7 +2480,7 @@ Net: on a deep-linked `?tab=leave` view — exactly how Core embeds Field — `l
 - **No per-org "required credentials" concept exists** anywhere (no RPC, no table, not in Core) — the parked feature. Recommended model if resurrected: soft per-org checklist (visible "0/2 met" at approval, non-blocking) + worker nudge, NOT a hard gate. Royce steered to login instead; requirements model still undecided.
 
 **Deferred / needs Royce:**
-- [ ] **Minimum-requirements model** — undecided. Options presented: soft per-org checklist (recommended) / manager-view-only / hard gate / leave-as-is. _(added 2026-07-07)_
+- [x] **Minimum-requirements model** — RESOLVED 2026-08-16: built as the soft, non-blocking checklist this note recommended, extended to be per-role (an apprentice and a manager can now be asked for different licences, not one shared list). See the 2026-08-16 eq-shell entry above. _(added 2026-07-07, resolved 2026-08-16)_
 - [ ] **Onboarding order #5 fork** — scan-first shipped; identity-first is the fallback if it tests poorly. _(from 2026-07-06)_
 - [ ] **Supabase CLI can't deploy eq-cards edge functions** — `supabase functions deploy` fails for every function on CLI 2.95.4 (mis-resolves `config.toml` email-template paths). MCP deploy works and was used for v10; but the CLI path is the "next person" path. Fix = upgrade CLI (2.109 available) + retest, or adjust config without breaking `supabase start`. Task chip `task_61ff8686`. _(added 2026-07-07)_
 
