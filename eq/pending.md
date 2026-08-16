@@ -14,6 +14,21 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-field mobile UI pass + eq-shell Photo ID regression — found live-testing, fixed, merged (2026-08-16)
+*Royce field-tested Cards + Field live as an apprentice on the SKS tenant and reported six issues via screenshots (uploaded to Google Drive). Investigated each; four were real eq-field bugs bundled into one PR, one turned out to be a same-day regression in a different repo (eq-shell), and one didn't reproduce.*
+
+- [x] **Schedule/Roster/Editor/Dashboard week-nav row broke onto two lines on real phones** — the "next week" button ended up orphaned under a slab of empty space. Fixed a hardcoded label width; confirmed with a live mobile-browser repro before shipping.
+- [x] **Field login sometimes looked locked on first load, fixed itself on refresh** — the app was waiting for every icon/stylesheet to finish loading before even checking if you were signed in, which on a slow connection could burn past the 5-minute handoff window from Core. Now checks as soon as the page itself is ready.
+- [x] **Apprentices (and regular employees/labour hire) saw Timesheets and Records in the menu, but tapping either went nowhere** — both are supervisor/manager screens that were never actually hidden from anyone. Now hidden correctly.
+- [x] **Prestarts opened up to everyone** — Royce's explicit call ("prestarts should be there for everyone"), was manager/supervisor-only browsing before. eq-field [PR #709](https://github.com/eq-solutions/eq-field/pull/709), merged, v3.5.506.
+- [x] **The "Photo ID — not added yet" banner on the Home screen was wrongly nagging workers who'd already uploaded a driver's licence or passport** — a migration applied earlier the same day had accidentally undone an existing fix for this while adding an unrelated permission change. Fixed, merged, and confirmed directly against the database that the exact worker from the bug report now shows correctly. eq-shell [PR #1399](https://github.com/eq-solutions/eq-shell/pull/1399).
+- [x] **Two of the six reports weren't code bugs.** Cards' own Photo ID logic was already correct and live from an earlier fix — the false banner was coming entirely from eq-shell. And the "stuck on the Profile screen, can't navigate away" report couldn't be reproduced — the navigation code checked out correct against a real interaction test.
+
+**Deferred:**
+- [ ] **Cards "stuck on Profile screen" report — not reproducible in code, so likely a stale cached app on the device that reported it.** If it comes up again, check for a stale install/cache before assuming a regression. _(added 2026-08-16)_
+
+---
+
 ## eq-shell: Documents module had no permission gate at all — found, fixed, merged, live (2026-08-16)
 *Any signed-in tenant member of any role — including labour_hire/subcontractor — could upload documents, push a sign-off obligation onto other people, archive documents, manage categories, and pull completion-evidence/certificate PDFs. Zero permission check anywhere, client or server, by the module's own code comments.*
 

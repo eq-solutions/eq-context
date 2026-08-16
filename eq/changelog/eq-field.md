@@ -9,6 +9,14 @@ status: live
 
 # eq-field changelog
 
+## 2026-08-16 (PR #709 MERGED — v3.5.506, mobile UI pass: schedule layout, login race, apprentice menu)
+- Schedule/Roster/Editor/Dashboard week-nav row wrapped onto two lines on real phone widths (orphaned "next week" button) — `.week-nav-label` no longer carries a fixed `min-width:180px` on mobile. `styles/mobile.css`.
+- Field login intermittently looked locked on first load, self-fixed by a refresh — auth boot was gated on `window.onload` (waits on every stylesheet/icon), letting Shell's 30s handoff-token window expire on a slow connection before `checkAccess()` ever ran. Swapped to `DOMContentLoaded`. `index.html`.
+- Apprentices (and employees/labour hire) saw Timesheets + Records in the MORE menu despite both leading to supervisor/manager-only content — `applyMobileNavPerms()` never gated either item. Wired to existing `ts.view_team`/`reports.incident.view` keys.
+- Prestarts opened to everyone (Royce's call) — `reports.prestart.view` added to employee/apprentice/labour_hire in `permission-matrix.js` + its hand-merged runtime copy `core-bundle-a1.js`; drawer button un-hidden.
+- `APP_VERSION`/service-worker `CACHE`/changed files' `?v=` tags bumped, `CHANGES IN v3.5.506` banner added, `core-bundle-a1.js` regenerated via `build-bundles.mjs --write`. `permission-enforcement-baseline.json` ratchet tightened (`ts.view_team` no longer dead).
+- Found while live-testing as an apprentice on the SKS tenant; full write-up in `sessions/2026-08-16.md`.
+
 ## 2026-08-16 (PR #703 MERGED + deployed live — anon-key fallback stopped masking auth failures)
 - `scripts/supabase.js` fell back past an anon-key auth failure instead of erroring loud — same silent-fallback shape as the eq-shell/eq-service/eq-cards fixes shipped the same day, found during the 2026-08-16 secrets audit's silent-failure sweep.
 - CI's `drift` (cache-buster) check caught a real gap before merge: an earlier fix to `app-state.js`'s internal `APP_VERSION` constant had never bumped that file's own `?v=` tag in `index.html`, independent of the `supabase.js` tag that had already been bumped. Fixed with a follow-up commit (`v3.5.502` → `v3.5.503`) before merging.

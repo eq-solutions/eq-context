@@ -9,6 +9,10 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-16 (PR #1399 MERGED — Home screen Photo ID banner regression fixed)
+- `eq_worker_compliance_status()` wrongly showed "Photo ID — not added yet" on the worker Home screen for anyone who'd already uploaded a driver's licence or passport. Same-day migration `2026_08_16_org_credential_requirements_role_scope.sql` (adding role-scoping) rebuilt the function from its pre-equivalence baseline, silently dropping an earlier fix (`2026_08_02b`) for the identical driver_licence/passport → photo_id case eq-cards already handles correctly.
+- Fixed by re-applying the equivalence logic on top of the role-scoped version, so both are present together. Spun off as a background task from an eq-field/eq-cards session that traced the false banner to this repo; confirmed live post-merge by pulling the deployed function and re-running the exact repro worker through it — resolves to `held`, correctly.
+
 ## 2026-08-16 (PR #1385 MERGED + deployed live — Documents module gated, was open to every role)
 - `AdminDocumentUpload.tsx` + 4 Netlify functions (`push-document-audience.ts`, `document-version-upload-init.ts`/`-commit.ts`, `upload-document-version.ts`) had no permission gate anywhere, client or server — any signed-in tenant member of any role, including `labour_hire`/`subcontractor`, could upload documents, push a sign-off obligation onto other people, archive documents, manage categories, and pull completion-evidence/certificate PDFs.
 - Gated on three new keys: `documents.view` (all six roles — browse/download only, never another person's signer status), `documents.manage` (manager+supervisor — upload/archive/category admin), `documents.assign` (manager+supervisor — push an audience, see who has/hasn't signed). Split `push-document-audience.ts`'s shared `resource=register` into a narrower `resource=templates` (gated at `documents.view`) so the Reference Library tab kept working for every role once the compliance register moved to `documents.assign`.
