@@ -41,6 +41,20 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: a way to hand yourself full admin power through the "custom access groups" screen — found, fixed, and live (2026-08-16)
+*The Access Control page has two ways to change what someone can do: editing a role's default permissions (already blocked handing out admin/audit-trail powers that way), and building a custom group of extra permissions to hand to specific people (had no such block). Someone who could build custom groups could build one with full admin power — including the power to build custom groups itself — and add themselves to it. Today only managers can build custom groups, so this was dormant, but that's exactly the power this screen exists to hand to other people, so it stops being dormant the moment it is.*
+
+- [x] Closed the actual gap — building a custom group with admin-level or audit-trail power is now blocked on the server, and the screen no longer offers those as choices when building a group either (they still correctly show on the separate, read-only "what does each role get by default" screen). eq-shell [PR #1387](https://github.com/eq-solutions/eq-shell/pull/1387), merged, live.
+- [x] Added a second, database-level backstop for the same rule, so no future feature can accidentally reopen the hole — checked against the real numbers first (7 existing custom-group grants, none affected).
+- [x] Found and fixed the same shape of gap one step earlier: someone with only "can invite new people" could invite a brand-new person straight in at the top role, when changing an *existing* person to that role already needed a stronger permission (closed earlier the same day, PR #1383). Same PR.
+- [x] One invite-related screen wasn't recording who got turned away when they tried something they weren't allowed to — now it does, matching every similar screen.
+
+**Deferred:**
+- [ ] **The database-level backstop is written but not yet applied to the real database** — it goes through the normal, separately-approved database update process, not automatic. _(added 2026-08-16)_
+- [ ] **Not clicked through live** — confirmed by tests and by calling the affected screen's backend directly, not by an actual person building a group in the UI and watching the dangerous options disappear. Worth two minutes on a real admin account. _(added 2026-08-16)_
+
+---
+
 ## eq-shell: checked whether a worker-protection feature exists on both company databases or just one — confirmed it's a deliberate difference, not something missed (2026-08-16)
 *Flagged as a possible security gap: SKS's database blocks people from editing certain protected worker fields and from approving their own timesheet/leave; EQ's own internal sandbox database doesn't have the same blocks. No live database access was available at the start of the session, so this was checked against dated, independent project records instead of assumed either way — turned out EQ's side is intentionally simpler (it's disposable test data, not a real customer, and the way it saves changes is built differently there), not a gap that got missed.*
 
