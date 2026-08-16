@@ -14,6 +14,22 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-cards: role-assignment could hand someone suite-wide manager power with no audit trail — found, fixed, merged, live (2026-08-16)
+*A worker's role — including "manager", the top tier every EQ app trusts — could be set from Cards' admin screen through the exact same check used for editing a phone number or address, with nothing recording who did it. eq-shell had already split this into its own separate, narrower permission earlier the same day (the new permission's own description names this exact Cards gap as the reason it was created); Cards had never adopted anything like it.*
+
+- [x] **Cards can no longer hand out "manager" from its own screen.** The dropdown that sets a worker's role no longer offers Manager at all — that stays a Shell action. Every other role (supervisor, employee, apprentice, labour hire, subcontractor) is unaffected.
+- [x] **Closed the same gap on the database side, which is the part that actually matters** — the dropdown was never the real boundary, since the underlying action is directly callable outside the app. Setting someone to "manager" now needs the same real-world standing eq-shell requires (an actual manager or platform admin) — everything else needs nothing new. Checked first: nobody loses anything they can do today, because everyone currently able to reach that path already qualifies the new way too.
+- [x] **Added the audit trail that didn't exist before.** Every successful role change through this path is now recorded — who did it, to whom, what changed. Previously nothing was recorded at all.
+- [x] **Verified against the real database, both before applying and after** — including a live, read-only test post-fix: a real manager can still grant "manager", an unrelated person can't, and every other role still works unchanged for everyone as before.
+- [x] eq-cards [PR #254](https://github.com/eq-solutions/eq-cards/pull/254), merged (`bc72c9a`); database change applied live to eq-canonical; app redeployed live. Royce's explicit go on both the database change and the deploy.
+
+**Deferred:**
+- [ ] **Not clicked through live** — verified against real production data directly, not by an actual admin opening the screen and watching Manager disappear from the list. Worth two minutes on a real admin account. _(added 2026-08-16)_
+- [ ] **Testing this kind of database change on a safe, disposable copy first didn't work** — tried to spin one up before applying anything live, and discovered the database's own history of past changes can't currently rebuild itself from scratch on a fresh copy, unrelated to this fix. Spun off as its own follow-up (already running); until it's fixed, changes like this one have to be verified against the live database directly rather than on a safe copy first. _(added 2026-08-16)_
+- [ ] **Cards' own copy of the shared role/permission rulebook is a few versions behind** — old enough that it doesn't know about the new narrower "who can change someone's role" permission at all. Not required for this fix (handled a different way instead, described above) but worth catching up eventually so Cards can check permissions the same direct way Shell does. _(added 2026-08-16)_
+
+---
+
 ## eq-field mobile UI pass + eq-shell Photo ID regression — found live-testing, fixed, merged (2026-08-16)
 *Royce field-tested Cards + Field live as an apprentice on the SKS tenant and reported six issues via screenshots (uploaded to Google Drive). Investigated each; four were real eq-field bugs bundled into one PR, one turned out to be a same-day regression in a different repo (eq-shell), and one didn't reproduce.*
 
