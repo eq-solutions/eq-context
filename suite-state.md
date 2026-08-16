@@ -61,7 +61,6 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-16)
 
 **eq-cards:**
-- #251 fix(privacy): enforce sharing_scope on every licence read path
 - #250 fix(auth): stop shell-verify from optimistically proceeding on a failed admin getUser check
 - #221 refactor(auth): shell-verify.js relays to eq-shell instead of local crypto
 
@@ -75,7 +74,6 @@ _If this file is >48h old, the cron is broken._
 - #732 fix(security): drop the SUPABASE_JWT_SECRET fallback in service-jwt auth
 
 **eq-shell:**
-- #1375 fix(security): stop SKS mint silently falling back to eq-canonical's JWT secret
 - #1294 feat(cards): centralize Cards' SSO minting via token-exchange-cards.ts
 
 ---
