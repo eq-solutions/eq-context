@@ -14,6 +14,20 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-solves-service: Settings page showed broken account controls to Shell-embedded users — fixed, merged, live (2026-08-16)
+*Started from Royce spotting UI on `core.eq.solutions/sks/service/settings` that "shouldn't be there" — a broken "Member Since: Invalid Date" caught the eye. Traced live against both databases: Service's own old sign-in record for the account and Shell's real one are two different IDs, so the settings page was looking up the wrong record every time someone reached it through Shell.*
+
+- [x] Confirmed live (not guessed): the "Update Profile" button was quietly doing nothing — it looked like it saved, but matched zero records — and "Change Password" would have failed outright, since it was pointed at a sign-in record that doesn't exist for anyone using it through Shell.
+- [x] Fixed: for anyone using Service through Shell, that section now just points them to Shell to manage their name, email and password — the same way the branding settings already do. Nothing changed for people who sign in to Service directly.
+- [x] Merged and confirmed live on service.eq.solutions ([PR #733](https://github.com/eq-solutions/eq-service/pull/733)).
+
+**Deferred:**
+- [ ] **Not clicked through live in either state.** No safe way to produce a working Shell login locally to test the fixed version, and the standalone side has no working test account — the practice/demo login has been broken since a database move in June and was never reconnected. Worth Royce opening `core.eq.solutions/sks/service/settings` once to eyeball it for real. _(added 2026-08-16)_
+- [ ] **The practice/demo account is still broken** — unrelated to this fix, but found while trying to test it. Sign-in intentionally hides the "try the demo" option because it fails every time; worth reseeding if the demo link is still wanted. _(added 2026-08-16)_
+- [ ] **The original question — what Shell's access-control screen looks like for Service permissions — wasn't followed up.** This session only got as far as the settings-page bug that jumped out first; the permissions-matrix screenshot Royce shared is still unreviewed. _(added 2026-08-16)_
+
+---
+
 ## eq-cards: punch-list #4 marked "Active" but partially shipped without its own caveat (2026-08-16)
 *`system/punch-list.md`'s item 4 still shows the pre-2026-08-13 note ("reconcile against screenshots before building, don't build from this doc alone"). [PR #235](https://github.com/eq-solutions/eq-cards/pull/235) shipped 2026-08-13 anyway, scoped strictly to the original doc — its own description confirms the screenshots were never incorporated. Not corrected in `punch-list.md` directly (Royce's file, his rule) — flagged here instead. Full detail: `sessions/2026-08-16.md`.*
 

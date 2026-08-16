@@ -1,7 +1,7 @@
 ---
 title: eq-solves-service changelog
 owner: Royce Milmlow
-last_updated: 2026-08-15
+last_updated: 2026-08-16
 scope: EQ Service append-only history. UNRECONCILED PAIR — see the warning at the head of eq/changelog/eq-service.md before citing anything here as complete.
 read_priority: reference
 status: live
@@ -18,6 +18,10 @@ status: live
 > existed. Read both files. Consolidating them is a call about which product
 > history survives; that stays Royce's, see the fuller warning in
 > `eq-service.md`. This note only adds a pointer — no entry below is changed.
+
+## 2026-08-16 (Settings page: Profile/Password stopped working for anyone signed in through Shell)
+- **PR [#733](https://github.com/eq-solutions/eq-service/pull/733) merged (`2f40f58`), deployed live.** Royce flagged UI on `core.eq.solutions/sks/service/settings` that "shouldn't be there" (a broken "Member Since: Invalid Date"). Root cause, confirmed live against `ehow` and `eq-canonical`: `service.profiles` is keyed by Service's own legacy `auth.users` id, but a Shell-embedded session's `user.id` is the canonical Shell id carried in the `eq_service_jwt` cookie — a different UUID on a different project entirely. The `profiles` lookup in `app/(app)/settings/page.tsx` always missed for embedded sessions, so Member Since/Last Login rendered blank, "Update Profile" silently no-op'd (0 rows matched, still reported success), and "Change Password" would have targeted an auth session that doesn't exist on `ehow`.
+- Shell-embedded sessions now collapse Account/Profile/Password to a "Manage in Shell ↗" link, mirroring the existing Brand-deferral pattern already live in `TenantSettingsForm.tsx`. Standalone/demo logins are unaffected. `tsc --noEmit` clean (real check, after `npm ci` in a fresh worktree with no prior `node_modules`). Netlify production deploy confirmed live via commit-ancestry check (`commit_ref` on the newest ready production deploy matches the merge commit exactly), not just the deploy log/title. **Not click-tested live in either branch** — no valid Shell JWT available locally (would need a production secret not present in local dev config), and no working standalone test account either (the demo tenant's data was lost in the urjh→ehow cutover on 2026-06-22 and was never reseeded — `SignInForm.tsx` deliberately hides the demo tile for this reason, unrelated pre-existing gap, found while trying to test this fix).
 
 ## 2026-08-14 (NSX Test Report: dropped dead ACB-only fields that printed blank on every report)
 - **PR [#731](https://github.com/eq-solutions/eq-service/pull/731) merged (`d015dd7`), deployed live.** Simon Bramall reported an ACB check's report came out empty in some sections. ACB's report wiring traced clean end-to-end — every rendered field has a real save path back to the workflow UI. The actual bug was on the NSX side: `lib/reports/nsx-report.ts`'s breaker-details table still carried three fields copy-pasted from the ACB template that the NSX workflow never collects (Performance Level, Protection Unit Fitted, Earth-Leakage Tripping Delay — confirmed live, `nsx_tests` has no earth-leakage column at all), plus an unconditional "Main Contact Resistance" table even though Royce deliberately removed that reading from NSX data collection back on 2026-05-27 (`6c7eb74`, "not typically performed on NSX/MCCB") — the report generator, written afterward (#644), was never updated to match. All four printed blank on every NSX report regardless of data completeness.
