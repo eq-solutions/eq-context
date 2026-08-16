@@ -14,6 +14,19 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-field: dozens of pages had no access check at all — a direct link could open any of them regardless of role (2026-08-16)
+*Auditing Field's page-switching code found it only checked permission on 5 of the app's 41 pages, each one added reactively after someone separately noticed it could be reached by a direct link. The other 36 had no check at all. Rebuilt so every page needs an explicit, listed reason to be reachable — an unrecognised page is refused, not rendered.*
+
+- [x] All 41 pages now have an explicit rule. Most stay open the way they already were; a handful now require the same check their own content already made; the worst case — the Import/Export/Reset page, whose "download everything" and "wipe all local data" buttons had no check of any kind — is properly locked down, and specifically blocked on the SKS side entirely, matching what the menu already implied. [eq-field PR #707](https://github.com/eq-solutions/eq-field/pull/707) (v3.5.504), merged, live.
+- [x] **Found in the same audit, shipped separately**: any signed-in person could open any apprentice's individual profile — skills, ratings, feedback, journal, reviews — not just their own. [eq-field PR #708](https://github.com/eq-solutions/eq-field/pull/708) (v3.5.505), merged, live.
+- [x] Caught a second session about to duplicate the apprentice-profile fix before it wrote any code — sent it a direct heads-up instead of letting it happen.
+- [x] Checked that a separate, unrelated PR merged in the same window (#705, the timesheets/leave database fix — see `sks/pending.md`) hadn't broken anything: it hadn't.
+
+**Deferred:**
+- [ ] **Not walked through live by a human.** Verified directly against the real site — as a signed-out visitor, as different roles, on both database checks — and the automated checks are all green, but worth your own two-minute look given how many pages this touches. _(added 2026-08-16)_
+
+---
+
 ## eq-shell: checked whether a worker-protection feature exists on both company databases or just one — confirmed it's a deliberate difference, not something missed (2026-08-16)
 *Flagged as a possible security gap: SKS's database blocks people from editing certain protected worker fields and from approving their own timesheet/leave; EQ's own internal sandbox database doesn't have the same blocks. No live database access was available at the start of the session, so this was checked against dated, independent project records instead of assumed either way — turned out EQ's side is intentionally simpler (it's disposable test data, not a real customer, and the way it saves changes is built differently there), not a gap that got missed.*
 
