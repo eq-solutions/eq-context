@@ -14,7 +14,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## eq-shell: an AI tool anyone signed in could use to run up costs on the company's AI account — fixed, PR open, needs your go before it ships (2026-08-16)
+## eq-shell: an AI tool anyone signed in could use to run up costs on the company's AI account — closed, merged, live (2026-08-16)
 *A P1 finding, verified line-by-line before any fix started: the server-side proxy that lets the data-import tool call Anthropic's AI had no restriction beyond "you're signed in." Any signed-in person, at any role, could have asked it to run any AI model, at any size, as many times as they liked — all billed to the company's account. The same audit found four related tools with the same gap, one of them worse: the licence-photo scanning tool returns a person's name, licence number and date of birth, and its page had no access check at all — reachable by typing the URL directly, by any signed-in role.*
 
 - [x] The AI proxy now checks who's asking (same people who can already use the data-import tool), caps how many requests one person can make in a few minutes, and only allows the specific AI models and response sizes the tool actually needs.
@@ -23,9 +23,10 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] Found and fixed in passing: a comment on the home page claimed a return path was "already manager-only" — it wasn't. Supervisors could reach it too and, without this session's fix, would have started hitting a hard error the moment the server-side gate went live.
 - [x] Full check run before opening the PR: typecheck clean, all 353 tests passing, no new lint issues, production build succeeds.
 
+- [x] Merged on your go and confirmed live on core.eq.solutions — checked the actual deploy record, not just that the merge succeeded ([PR #1377](https://github.com/eq-solutions/eq-shell/pull/1377)).
+
 **Deferred:**
-- [ ] **[PR #1377](https://github.com/eq-solutions/eq-shell/pull/1377) is open, not merged.** Merging it goes live within seconds like every eq-shell change, so it's deliberately holding for your explicit go. _(added 2026-08-16)_
-- [ ] **Not clicked through live yet.** Worth two minutes once it's live: try the AI import on a real file, look at the home-page briefing/ask bar as a manager vs. a supervisor, and try opening the licence-scan page as an apprentice (should now say you don't have access). _(added 2026-08-16)_
+- [ ] **Not clicked through live yet.** Worth two minutes: try the AI import on a real file, look at the home-page briefing/ask bar as a manager vs. a supervisor, and try opening the licence-scan page as an apprentice (should now say you don't have access). _(added 2026-08-16)_
 
 ---
 
