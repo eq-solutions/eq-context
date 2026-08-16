@@ -9,6 +9,11 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-16 (PR #1412 OPEN, not merged — roles pin bump to v2.7.3 + default-groups mirror fix)
+- Bumped `@eq-solutions/roles` from `#v2.7.2` to `#v2.7.3` — the tag carrying the `report_viewers` fix from eq-roles PR #27 (same day). Package-side fix alone hadn't reached production: eq-shell was still pinned to the old version.
+- Netlify's build command runs `pnpm run check:perms` before `build`, which caught a second, separate gap: `netlify/functions/_shared/default-groups.ts` is a hand-kept mirror of the roles package's default groups (the function bundler can't import the package directly), and it still had the pre-fix `report_viewers` perms. Fixed to match. Practical effect: tenants provisioned through the Netlify Function path were still getting the broken group right up to this PR, regardless of the roles-package fix already being tagged.
+- Build/test/lint clean, deploy preview green. Not merged — needs Royce's go per standing deploy rule.
+
 ## 2026-08-16 (PR #1408 MERGED + deployed live — control-plane drift gate fixed, 6 PRs unblocked)
 - `public.can_assign_worker_role` — live on jvkn via eq-cards migration `0131_gate_worker_role_assignment.sql` ([eq-cards PR #254](https://github.com/eq-solutions/eq-cards/pull/254), a Royce-approved live security fix) but with no matching source file in eq-shell's own migrations tree — added to `KNOWN_UNSOURCED` in `scripts/check-control-plane-drift.mjs`, same convention as 5 existing cross-repo entries. No behaviour change; this only teaches the CI gate the function is properly sourced elsewhere.
 - Had been failing the required "Schema drift + anon-grant + policy-lint" check on every open PR since ~09:11 UTC. Unblocked #1402, #1404, #1405, #1406, #1407 via the GitHub "update branch" API (`gh run rerun --failed` was tried first and confirmed NOT sufficient — it reuses the original merge-ref snapshot from before the fix landed). #1403 (the admin-settings crash fix below) picked up the fix the same way and was merged directly by Royce.
