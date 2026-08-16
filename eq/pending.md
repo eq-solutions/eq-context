@@ -54,12 +54,11 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 *The Access Control page has two ways to change what someone can do: editing a role's default permissions (already blocked handing out admin/audit-trail powers that way), and building a custom group of extra permissions to hand to specific people (had no such block). Someone who could build custom groups could build one with full admin power — including the power to build custom groups itself — and add themselves to it. Today only managers can build custom groups, so this was dormant, but that's exactly the power this screen exists to hand to other people, so it stops being dormant the moment it is.*
 
 - [x] Closed the actual gap — building a custom group with admin-level or audit-trail power is now blocked on the server, and the screen no longer offers those as choices when building a group either (they still correctly show on the separate, read-only "what does each role get by default" screen). eq-shell [PR #1387](https://github.com/eq-solutions/eq-shell/pull/1387), merged, live.
-- [x] Added a second, database-level backstop for the same rule, so no future feature can accidentally reopen the hole — checked against the real numbers first (7 existing custom-group grants, none affected).
+- [x] Added a second, database-level backstop for the same rule, so no future feature can accidentally reopen the hole — checked against the real numbers first (7 existing custom-group grants, none affected). Applied to the real database same day, your explicit go.
 - [x] Found and fixed the same shape of gap one step earlier: someone with only "can invite new people" could invite a brand-new person straight in at the top role, when changing an *existing* person to that role already needed a stronger permission (closed earlier the same day, PR #1383). Same PR.
 - [x] One invite-related screen wasn't recording who got turned away when they tried something they weren't allowed to — now it does, matching every similar screen.
 
 **Deferred:**
-- [ ] **The database-level backstop is written but not yet applied to the real database** — it goes through the normal, separately-approved database update process, not automatic. _(added 2026-08-16)_
 - [ ] **Not clicked through live** — confirmed by tests and by calling the affected screen's backend directly, not by an actual person building a group in the UI and watching the dangerous options disappear. Worth two minutes on a real admin account. _(added 2026-08-16)_
 
 ---
