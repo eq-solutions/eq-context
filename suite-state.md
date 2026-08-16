@@ -64,9 +64,11 @@ _If this file is >48h old, the cron is broken._
 - #221 refactor(auth): shell-verify.js relays to eq-shell instead of local crypto
 
 **eq-service:**
+- #734 fix(security): drop the CANONICAL_SERVICE_ROLE_KEY fallback to urjh's key
 - #732 fix(security): drop the SUPABASE_JWT_SECRET fallback in service-jwt auth
 
 **eq-shell:**
+- #1375 fix(security): stop SKS mint silently falling back to eq-canonical's JWT secret
 - #1294 feat(cards): centralize Cards' SSO minting via token-exchange-cards.ts
 
 ---
