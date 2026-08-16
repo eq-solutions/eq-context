@@ -62,14 +62,15 @@ _If this file is >48h old, the cron is broken._
 
 **eq-field:**
 - #708 v3.5.505 — security(apprentices): profile drill-down had no view-level identity gate
-- #707 v3.5.504 — security(routing): showPage() deny-by-default route guards
 - #706 fix(tests): close permission-enforcement-drift's KNOWN_WRAPPERS + index.html gap
 - #705 security(rls): own/crew read scoping for timesheets + leave_requests (DRAFT — not dispatched)
 
 **eq-service:**
+- #738 fix(security): wire entity.view on job-plans (missed by #716)
 - #737 fix(ci): app_data CI-bootstrap fixture guard + drift check
 
 **eq-shell:**
+- #1385 fix(security): gate the Documents module on documents.view/manage/assign
 - #1384 docs: confirm zaap Field write-guard absence is deliberate, not a gap
 - #1383 chore(roles): finish v2.7.2 bump — enforce admin.assign_role/admin.delete_user, add field.approve_* grants
 - #1381 fix(security): close 4 PII leaks gated on field.view/entity.view instead of the narrower key
