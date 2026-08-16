@@ -1,14 +1,14 @@
 ---
 title: EQ Suite — Current State
 owner: Royce Milmlow
-last_updated: 2026-08-15
+last_updated: 2026-08-16
 scope: Live suite state — app lineup, DB counts, open PRs, architectural decisions. Auto-refreshed nightly by GitHub Action.
 read_priority: critical
 status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-08-15 (nightly cron)_
+_Last verified: 2026-08-16 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -58,7 +58,7 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-08-15)
+## Open PRs (as of 2026-08-16)
 
 **eq-cards:**
 - #221 refactor(auth): shell-verify.js relays to eq-shell instead of local crypto
@@ -68,7 +68,7 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## System Health (as of 2026-08-15)
+## System Health (as of 2026-08-16)
 
 **CI on main:**
 
@@ -87,31 +87,15 @@ _NETLIFY_TOKEN not set — deploy status unavailable_
 
 ---
 
-## Field Data Plane — SKS tenant (as of 2026-08-15)
-
-> ⚠ **These counts are stale and the automated refresh is currently broken.**
-> `field_canonical_health()` on ehow has thrown on every nightly run since a
-> column rename (`org_id` → `tenant_id` on 4 of its 8 tables) was never
-> propagated into this function. The refresh script's own error handling
-> silently caught the failure and left this table frozen — see
-> `system/field-canonical-health-org-id-fix-2026-08-15.md` for the live-
-> verified fix, why this session couldn't apply it directly (blocked by the
-> Claude Code safety classifier, same as SEC-9/24), and the exact SQL to run.
-> Live `app_data.field_people` is **83**, not the 66 below (confirmed by
-> direct query 2026-08-15). **This note is inside the block the nightly
-> refresh regex replaces whole** — once the RPC is fixed and a refresh run
-> succeeds, this warning disappears automatically. If it's still here, the
-> refresh is still broken.
-
 | Layer | View / Table | Rows | Status |
 |-------|-------------|------|--------|
-| Directory | app_data.field_people | 66 | ✓ 66 |
-| Directory | app_data.field_sites | 66 | ✓ 66 |
-| Directory | app_data.field_managers | 19 | ✓ 19 |
-| Operational | app_data.field_schedule | 0 | ⚠ empty |
-| Operational | app_data.field_timesheets | 0 | ⚠ empty |
-| Safety | public.prestarts | 0 | ⚠ no data yet |
-| Safety | public.toolbox_talks | 0 | ⚠ no data yet |
+| Directory | app_data.field_people | 83 | ✓ 83 |
+| Directory | app_data.field_sites | 53 | ✓ 53 |
+| Directory | app_data.field_managers | 21 | ✓ 21 |
+| Operational | app_data.field_schedule | 1,310 | ✓ 1,310 |
+| Operational | app_data.field_timesheets | 138 | ✓ 138 |
+| Safety | public.prestarts | 35 | ✓ 35 |
+| Safety | public.toolbox_talks | 1 | ✓ 1 |
 | Safety | public.site_audits | 0 | ⚠ no data yet |
 _Auto-refreshed nightly. ✓ = has data · ⚠ = empty (no data yet) · ✗ = table missing_
 
