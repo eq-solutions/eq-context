@@ -14,6 +14,22 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-cards: jvkn Supabase branch-replay diagnosed and documented (2026-08-16)
+*A routine attempt to branch-test an unrelated eq-cards migration (0131) hit `create_branch` failing `MIGRATIONS_FAILED` on jvkn (eq-canonical) — turned into a full root-cause investigation, since this blocks Supabase's branch-preview workflow for the whole shared control-plane project, not just eq-cards.*
+
+- [x] **Root cause found and confirmed precise**: the 3rd migration ever tracked on jvkn (`2026_05_19_canonical_select_rls_policies`) references 12 tables no tracked migration ever created — traced directly against `supabase_migrations.schema_migrations.statements` (parent project, and the failed branch's own DB before it disappeared). Those 12 tables were dead first-week scaffolding, already dropped 6 days later (`2026_05_25_drop_empty_app_data`) — zero live-data risk either way.
+- [x] **Found a second, wider gap while checking whether the first was isolated**: cross-referencing all 61 currently-live tables against the full 334-row tracked history turns up 12 more untracked-origin tables, all in eq-shell's `shell_control` schema — several still live and load-bearing today (`user_invites`, `persons`, `platform_config`, `provision_tokens`). Not eq-cards' to fix blind; flagged for eq-shell.
+- [x] **Ruled out a red herring**: migration `0112`'s own header comment claims two functions "predate any tracked migration" — checked directly, both are actually properly tracked. That comment sent the investigation down the wrong path first; noted so nobody repeats it.
+- [x] Documented in `eq-cards/supabase/migrations/README.md` — root causes, the diagnostic technique (query the branch's own `schema_migrations` even after `get_project` starts 404ing), and an explicit "don't rely on branch-preview for jvkn until this is fixed." eq-cards [PR #255](https://github.com/eq-solutions/eq-cards/pull/255), merged, CI green on main.
+- [x] **Along the way**: investigated a hardcoded `WORKERS_WEBHOOK_SECRET` value found in one of the tracked migration statements — confirmed still live (never rotated since 2026-06-11), but corrected an initial overstated read: exposure needs the same service-role DB tier as the vault itself (`anon`/`authenticated` have no access to either `supabase_migrations` or `vault`), and the other 3 secrets created the same way already use the safe `gen_random_uuid()` + verify-RPC pattern — this is one early leftover, not a spreading problem. Directly relevant to the existing "`WORKERS_WEBHOOK_SECRET` (verify_jwt off)" item further down this file (added 2026-07-10) — same secret, different risk vector (that one's about the edge function accepting arbitrary POSTs if leaked; this session's finding is about the value sitting in plaintext migration history).
+
+**Deferred:**
+- [ ] **Root cause #1's precise backfill not attempted** — real archaeology (reconstructing minimal table shapes from ~32 migrations, no live table left to verify against) on a shared prod-adjacent project. Royce's call: document only for now. _(added 2026-08-16)_
+- [ ] **Root cause #2 (eq-shell's `shell_control` untracked tables) needs eq-shell to trace and fix** — eq-cards has no visibility into their original shape. eq-shell PR #1389 ("triage 3 jvkn functions into KNOWN_UNSOURCED", merged same day) suggests they may already have a related tracking mechanism worth connecting to instead of duplicating. _(added 2026-08-16)_
+- [ ] **`WORKERS_WEBHOOK_SECRET` rotation** — investigated, confirmed lower-urgency than it first looked, Royce: leave it for now. If picked up later: needs jvkn's vault AND eq-shell's Edge Function secret updated in the same window or the live Cards→SKS staff sync 401s. _(added 2026-08-16)_
+
+---
+
 ## eq-shell: permission-hygiene report checked against live code, 2 real gaps fixed, 1 database fix applied by Royce (2026-08-16)
 *A 4-item report on eq-shell's permission setup was checked against the actual live code rather than trusted outright — 2 of the 4 items turned out already fixed by other same-day work before this session even started.*
 
