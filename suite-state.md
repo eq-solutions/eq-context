@@ -84,7 +84,7 @@ _If this file is >48h old, the cron is broken._
 | eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
-| eq-cards | ? queued |
+| eq-cards | ✓ success |
 | eq-solves-intake | ✓ success |
 
 **Deploys:**
