@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Verify Queue
 owner: Royce Milmlow
-last_updated: 2026-08-15
+last_updated: 2026-08-16
 scope: Items whose only remaining blocker is your own live sign-in/click-through — the underlying work is already built, merged, and (unless the line itself says otherwise) live. Moved here from eq/pending.md by scripts/rotate_pending.py once a session's real build work is fully done, so a stale "click through to confirm" line no longer pins a whole finished write-up in the live pending doc.
 read_priority: high
 status: live
@@ -361,5 +361,23 @@ a bug rather than just deleting the line.
 **From:** ⏩ Session close — 2026-07-06 (eq-field + eq-shell) — canonical link redesigned + shipped, job_title added tenant-wide, root-caused Liam Holmgreen's stuck supervisor status, Batch Fill filters
 
 - [ ] **Live click-through of v3.5.253 (mobile Other bucket) and v3.5.254 (Batch Fill Group/Team filters)** — both deployed and verified via Netlify (commit match, no errors, secret scan clean), but not exercised through a real authenticated SKS session — eq-field's Shell-JWT handoff auth isn't reproducible in a local dev server. _(added 2026-07-06)_
+
+---
+
+**From:** eq-field: Hours overview + Job Numbers panel — mobile decluttered per Royce's screenshots, "Triage-first" fully shipped (2026-08-13)
+
+- [ ] Not click-tested on a real phone — the full "Triage-first" mobile pass is now shipped across 2 PRs ([#687](https://github.com/eq-solutions/eq-field/pull/687): Filters sheet, desktop-only stat grid, tidied Job Numbers rows; [#688](https://github.com/eq-solutions/eq-field/pull/688): group "N pending" pills on collapsed groups, the SHOW-chips/action-row collapsed into its own "Status & tools" sheet), both merged on Royce's explicit go-ahead after CI + deploy-preview went green, but no live click-through has happened on any of it (this sandbox has no live browser access — confirmed again this session via a `file://` preview that boots far enough to hit the same tenant-config network wall every prior mobile PR here has hit). Worth a real look next time Royce is on the app — in particular whether the mobile action row (now 4 buttons: Filters/Status/Job Numbers/Batch Fill) reads as cluttered in its own right. _(updated 2026-08-13)_
+
+---
+
+**From:** Suite-wide permission audit closed out across all 4 apps — 1 real live security hole found + fixed (eq-cards), everything else merged (2026-08-12 → 2026-08-13)
+
+- [ ] **Live click-test still not done anywhere across this whole thread** — every fix above was verified against live data/CI/direct database checks, never a real signed-in click-through session on any of the four apps. _(added 2026-08-13)_
+
+---
+
+**From:** eq-shell: labour-hire invite-path approval was silently dropping flagged licences — found, fixed, merged, live (2026-08-13)
+
+- [ ] **Live click-through not done** — the invite path (existing SimPRO/import staff record, `staff_id`) now records flagged-licence reviews and notifies the worker on approval, matching the self-signup path's existing behaviour. Needs a real signed-in Shell session with `admin.review_cards` to confirm end-to-end — off-limits for this environment. _(added 2026-08-13)_
 
 ---

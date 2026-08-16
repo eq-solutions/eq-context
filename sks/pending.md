@@ -38,7 +38,6 @@ Two known site-code collisions (`EC6`, `SYD27`) both trace to one physical addre
 
 ## Richard Brown's duplicate LV Rescue certificates cleaned up (2026-08-13)
 *Fix landed on the eq-cards side — see `eq/pending.md` (2026-08-13, "licence save silently duplicated the row...") for full root-cause + build detail. This entry is the SKS-side pointer.*
-- [x] 6 duplicate `lvr` rows found (a failed photo upload was silently duplicating the row on every retry), 5 removed, root cause fixed and deployed live.
 - [ ] **Richard needs to re-add his LV Rescue photo** — none of the 6 attempts ever actually captured one; the surviving row has the licence details but no photo. _(added 2026-08-13)_
 
 ## Mohamed Hussain's Open Cabling licence expiry corrected (2026-08-11)

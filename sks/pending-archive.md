@@ -1,7 +1,7 @@
 ---
 title: SKS Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-08-14
+last_updated: 2026-08-16
 scope: Done items rotated out of sks/pending.md nightly by scripts/rotate_pending.py to keep the live doc scannable. Nothing here is actionable — pure historical record (also covered in changelogs and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -422,5 +422,16 @@ output).*
 ## ⏩ SKS Field — sessions 2026-06-07 through 2026-06-13 (rotated 2026-08-14 — open items remain in pending.md)
 
 - [x] **Security groups Phase 2–5 — all 3 pieces now confirmed live, checked 2026-08-13.** Session extra_perms wiring + AdminSecurityGroups CRUD page (confirmed 2026-07-27), and the first real `user_security_groups` row landed 2026-08-11 (`royce.milmlow@sks.com.au` → "Staff Conversations" group, live-queried on jvkn). Worth noting: that row is for the unrelated Staff Conversations feature, not a deliberate exercise of this specific SKS rollout track — but it does satisfy the letter of "first real row for a SKS user." No further action unless a broader SKS security-groups rollout was actually intended beyond this.
+
+---
+
+## Richard Brown's duplicate LV Rescue certificates cleaned up (2026-08-13) (rotated 2026-08-16 — open items remain in pending.md)
+
+- [x] 6 duplicate `lvr` rows found (a failed photo upload was silently duplicating the row on every retry), 5 removed, root cause fixed and deployed live.
+
+---
+
+## SKS national scale discovery — "what breaks EQ at ~2,000 employees" (2026-07-23) (rotated 2026-08-16 — open items remain in pending.md)
+
 
 ---
