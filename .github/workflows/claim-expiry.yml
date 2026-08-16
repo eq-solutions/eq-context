@@ -1,30 +1,39 @@
 name: Claim expiry (F3 guard)
 
-# The F3 guard, rung 3. A goal in system/TODAY.md that is unowned/undated, or one
-# past its expires_on, FAILS this check.
+# The F3 guard, rung 3. Two checks, both "a claim about now that quietly stopped
+# being true":
+#   1. A goal in system/TODAY.md that is unowned/undated, or one past its
+#      expires_on.
+#   2. (added 2026-08-16) ANY tracked .md file's own frontmatter expires_on,
+#      once it's past due and the file isn't status: archived.
 #
-# WHY: on 2026-07-11 an unowned, undated goal in a read_priority:critical file
-# steered every session for two weeks while every green check verified recency,
-# not truth or ownership (failure F3). This check verifies ownership + expiry —
-# the thing frontmatter/line-ending checks structurally cannot see.
+# WHY (1): on 2026-07-11 an unowned, undated goal in a read_priority:critical
+# file steered every session for two weeks while every green check verified
+# recency, not truth or ownership (failure F3). This check verifies ownership +
+# expiry — the thing frontmatter/line-ending checks structurally cannot see.
 #
-# Runs on any change to TODAY.md AND nightly: a goal can go stale by the calendar
-# passing, with no commit. The nightly run is what turns a newly expired goal red.
-# An empty goals section (claims: []) always passes — a blank goals section is
-# honest; that is the whole lesson of F3.
+# WHY (2): system/substrate-a-plus-plan.md claimed outright that this exact
+# guard covered its own expires_on — it never did, scoped to TODAY.md only,
+# until this check was widened the same day the gap was found. Ratcheted (see
+# scripts/claim_expiry.py), so it starts at measured debt, not zero.
+#
+# Runs on any change to a tracked .md file AND nightly: a claim can go stale by
+# the calendar passing, with no commit. The nightly run is what turns a newly
+# expired claim red. An empty TODAY.md goals section (claims: []) always
+# passes — a blank goals section is honest; that is the whole lesson of F3.
 
 on:
   pull_request:
     branches: [main]
     paths:
-      - "system/TODAY.md"
+      - "**/*.md"
       - "scripts/claim_expiry.py"
       - "scripts/test_claim_expiry.py"
       - ".github/workflows/claim-expiry.yml"
   push:
     branches: [main]
     paths:
-      - "system/TODAY.md"
+      - "**/*.md"
       - "scripts/claim_expiry.py"
   schedule:
     - cron: '0 18 * * *'   # 04:00 AEST — daily calendar re-check for expiry
@@ -49,5 +58,5 @@ jobs:
       - name: Unit tests (the validator itself)
         run: python scripts/test_claim_expiry.py
 
-      - name: Goals in TODAY.md are owned and unexpired
+      - name: TODAY.md goals + frontmatter expires_on are owned and unexpired
         run: python scripts/claim_expiry.py

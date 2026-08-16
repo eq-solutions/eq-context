@@ -89,6 +89,80 @@ expect("no GOALS section is fatal",
 expect("claims not a list is fatal",
        today_md("claims: not-a-list"), fatal=True, n_violations=1)
 
+# --- check_frontmatter_expiry (added 2026-08-16) ---
+
+FM_TODAY = datetime.date(2026, 8, 16)
+
+
+def expect_fm(name, files, *, n_violations):
+    global passed, failed
+    msgs = ce.check_frontmatter_expiry(files, FM_TODAY)
+    ok = len(msgs) == n_violations
+    print("  {:<48}{}".format(
+        name, "PASS" if ok else f"*** FAIL *** (msgs={len(msgs)})"))
+    passed += ok
+    failed += (not ok)
+
+
+expect_fm("no expires_on -> no violation",
+          [("a.md", {"status": "live"})], n_violations=0)
+
+expect_fm("future expires_on -> no violation",
+          [("a.md", {"status": "draft", "expires_on": "2026-09-01"})], n_violations=0)
+
+expect_fm("past expires_on, status live -> violation",
+          [("a.md", {"status": "draft", "expires_on": "2026-08-12"})], n_violations=1)
+
+expect_fm("past expires_on, status archived -> skipped",
+          [("a.md", {"status": "archived", "expires_on": "2026-08-11"})], n_violations=0)
+
+expect_fm("archived is case-insensitive",
+          [("a.md", {"status": "Archived", "expires_on": "2026-08-11"})], n_violations=0)
+
+expect_fm("expires_on due today -> not yet expired",
+          [("a.md", {"status": "live", "expires_on": "2026-08-16"})], n_violations=0)
+
+expect_fm("unparseable expires_on -> ignored, not a crash",
+          [("a.md", {"status": "live", "expires_on": "next quarter"})], n_violations=0)
+
+expect_fm("multiple files, mixed -> only the real violations count",
+          [
+              ("a.md", {"status": "live", "expires_on": "2026-08-01"}),
+              ("b.md", {"status": "archived", "expires_on": "2026-08-01"}),
+              ("c.md", {"status": "live", "expires_on": "2026-09-01"}),
+              ("d.md", {}),
+          ], n_violations=1)
+
+# --- parse_frontmatter (added 2026-08-16) ---
+
+
+def expect_parse(name, text, expected):
+    global passed, failed
+    got = ce.parse_frontmatter(text)
+    ok = got == expected
+    print("  {:<48}{}".format(
+        name, "PASS" if ok else f"*** FAIL *** (got={got})"))
+    passed += ok
+    failed += (not ok)
+
+
+expect_parse(
+    "reads status and expires_on",
+    "---\nstatus: draft\nexpires_on: 2026-08-12\n---\n\nbody\n",
+    {"status": "draft", "expires_on": "2026-08-12"},
+)
+expect_parse("no frontmatter -> empty dict", "# just a heading\n", {})
+expect_parse(
+    "unterminated block -> empty dict, not a guess",
+    "---\nstatus: draft\n",
+    {},
+)
+expect_parse(
+    "quotes are stripped",
+    '---\nstatus: "draft"\n---\n',
+    {"status": "draft"},
+)
+
 print()
 print("  {} passed, {} failed".format(passed, failed))
 sys.exit(1 if failed else 0)
