@@ -35,7 +35,7 @@ _If this file is >48h old, the cron is broken._
 
 | Entity | Count | Schema |
 |--------|-------|--------|
-| Sites | 219 | app_data.sites |
+| Sites | 218 | app_data.sites |
 | Customers | 39 | app_data.customers |
 | Assets | 2,842 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
@@ -62,6 +62,9 @@ _If this file is >48h old, the cron is broken._
 
 **eq-cards:**
 - #221 refactor(auth): shell-verify.js relays to eq-shell instead of local crypto
+
+**eq-service:**
+- #732 fix(security): drop the SUPABASE_JWT_SECRET fallback in service-jwt auth
 
 **eq-shell:**
 - #1294 feat(cards): centralize Cards' SSO minting via token-exchange-cards.ts
