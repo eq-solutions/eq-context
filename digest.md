@@ -8,24 +8,23 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-16 06:41 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-16 06:46 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-16 06:31 UTC → 2026-08-16 06:41 UTC)
+## Since last refresh (2026-08-16 06:41 UTC → 2026-08-16 06:46 UTC)
 
-- Merged: eq-shell [#1380](https://github.com/eq-solutions/eq-shell/pull/1380) fix(access-control): surface fine-grained Field perms from t
-- Merged: eq-shell [#1373](https://github.com/eq-solutions/eq-shell/pull/1373) fix(staff): stop cards-approve-staff.ts from creating duplic
-- Merged: eq-shell [#1372](https://github.com/eq-solutions/eq-shell/pull/1372) docs(migrations): record 2026_08_15c as applied + the one-ti
-- Merged: eq-shell [#1371](https://github.com/eq-solutions/eq-shell/pull/1371) fix(security): refuse writes from a deactivated account's li
-- Merged: eq-shell [#1370](https://github.com/eq-solutions/eq-shell/pull/1370) fix(security): revoke the Supabase Auth session when Shell d
-- Merged: eq-shell [#1368](https://github.com/eq-solutions/eq-shell/pull/1368) chore(cards-api): retire the lookup_invite_by_phone op, dead
-- Merged: eq-shell [#1366](https://github.com/eq-solutions/eq-shell/pull/1366) chore(security): retire staff-update.ts
-- Merged: eq-shell [#1363](https://github.com/eq-solutions/eq-shell/pull/1363) docs(migrations): retire the stale tenant migration ledger
+- Merged: eq-shell [#1369](https://github.com/eq-solutions/eq-shell/pull/1369) docs(auth): active-user-guard claimed the cookie path was co
+- Merged: eq-shell [#1367](https://github.com/eq-solutions/eq-shell/pull/1367) fix(security): a deactivated shell_control.users account can
+- Merged: eq-shell [#1365](https://github.com/eq-solutions/eq-shell/pull/1365) fix(security): gate timesheet/licence reads on the split-out
+- Merged: eq-shell [#1364](https://github.com/eq-solutions/eq-shell/pull/1364) fix(security): revoke authenticated EXECUTE on eq_update_sta
+- Merged: eq-shell [#1362](https://github.com/eq-solutions/eq-shell/pull/1362) fix(security): role-gate 21 CRM/staff RPCs that only checked
+- Merged: eq-shell [#1361](https://github.com/eq-solutions/eq-shell/pull/1361) chore(admin): retire the redeem-an-invite worker QR, leaving
+- Merged: eq-shell [#1360](https://github.com/eq-solutions/eq-shell/pull/1360) chore(identity): remove 7 orphaned test identities from the 
+- Merged: eq-shell [#1359](https://github.com/eq-solutions/eq-shell/pull/1359) refactor(auth): fold the login timing-burn hash into one sha
+- ✅ Needs you: 5 → 3
 
-## ⚠ Needs you (5)
+## ⚠ Needs you (3)
 
 - 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
-- 🔴 **Open security finding** — SEC-9 (P0 — confirmed exposure, same window as SEC-3, possible second exposure 2026-07-27) — A different service_role key (`jvkn`/eq-canonical) was pasted directly into a ch · [security-register.md](ops/security-register.md)
-- 🔴 **Open security finding** — SEC-24 (P1 — OPEN, found 2026-08-08) — `QUOTES_CRON_SECRET` on eq-shell stored `is_secret: false` — full plaintext retu · [security-register.md](ops/security-register.md)
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-08-13.md](sessions/2026-08-13.md) · [failures.md](system/failures.md)
 - 🟠 **Sentry new error** — `eq-field` [TypeError: Cannot set properties of null (setting 'innerHTML](https://eq-solutions.sentry.io/issues/140928608/)
 
@@ -52,7 +51,7 @@ _…and 143 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 3 | 0d |
-| eq-solves-service | ✓ success | 0d ago | 1 | 0d |
+| eq-solves-service | ✓ success | 0d ago | 0 | — |
 | eq-field | ✓ success | 0d ago | 3 | 0d |
 | eq-cards | ✓ success | 0d ago | 2 | 0d |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
@@ -81,6 +80,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-16 | eq-shell | [#1378](https://github.com/eq-solutions/eq-shell/pull/1378) feat(staff): let a manager scope a required ticket to one role |
 | 2026-08-16 | eq-shell | [#1376](https://github.com/eq-solutions/eq-shell/pull/1376) feat(staff): scope credential requirements by role |
 | 2026-08-16 | eq-shell | [#1374](https://github.com/eq-solutions/eq-shell/pull/1374) fix(security): gate EQ Ops Setup on ops.view_rates |
+| 2026-08-16 | eq-solves-service | [#736](https://github.com/eq-solutions/eq-service/pull/736) fix(security): nav visibility allow-by-role, wire service.view as |
 | 2026-08-16 | eq-solves-service | [#735](https://github.com/eq-solutions/eq-service/pull/735) fix(security): enforce write roles in the database, not just the  |
 | 2026-08-16 | eq-solves-service | [#732](https://github.com/eq-solutions/eq-service/pull/732) fix(security): drop the SUPABASE_JWT_SECRET fallback in service-j |
 | 2026-08-16 | eq-solves-service | [#734](https://github.com/eq-solutions/eq-service/pull/734) fix(security): drop the CANONICAL_SERVICE_ROLE_KEY fallback to ur |
@@ -88,7 +88,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-16 | eq-field | [#703](https://github.com/eq-solutions/eq-field/pull/703) fix(observability): report the anon-key fallback once it's no lon |
 | 2026-08-16 | eq-field | [#704](https://github.com/eq-solutions/eq-field/pull/704) v3.5.503 — Email Templates: own permission key + moved to Manage |
 | 2026-08-16 | eq-field | [#702](https://github.com/eq-solutions/eq-field/pull/702) v3.5.502 — access-control cleanup: Pipeline opt-in-only, Teams +  |
-| 2026-08-16 | eq-cards | [#253](https://github.com/eq-solutions/eq-cards/pull/253) fix(security): close 3 permission-audit gaps — dead JWT minter, e |
 _Showing 15 of 118 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -103,7 +102,7 @@ _Showing 15 of 118 · full record in [sessions/](sessions/)_
 - **Write down the trade-off we accepted** — the new per-account limit means someone who knows a person's email address can deliberately lock that person out of Core for 15 minutes at a time by getting the PIN wrong five times. That is the normal, accepted cost of this kind of protection, and the phone sign-in door has always worked the same way, but it isn't recorded anywhere yet. Belongs in the security register so nobody "discovers" it later and treats it as a bug. _(added 2026-08-15)_
 - **One low-traffic function on the EQ side accepts an org ID as a plain parameter instead of reading it from the login session** — the table it writes to is empty today so there's nothing to lose, but it's a different shape of risk from everything else fixed here and wasn't touched. _(added 2026-08-15)_
 - **None of it has been tried on a real switched-off account.** Everything above is verified by tests and by calling the live endpoints unauthenticated, not by taking a real person's session and watching it get refused. Three switched-off accounts still attached to a company are available to test with whenever you want to spend ten minutes on it. _(added 2026-08-15)_
-_…and 473 more · [eq/pending.md](eq/pending.md)_
+_…and 472 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
 
@@ -146,4 +145,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-16 06:41 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-16 06:46 UTC._
