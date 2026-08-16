@@ -64,13 +64,16 @@ _If this file is >48h old, the cron is broken._
 - #221 refactor(auth): shell-verify.js relays to eq-shell instead of local crypto
 
 **eq-field:**
+- #705 security(rls): own/crew read scoping for timesheets + leave_requests (DRAFT — not dispatched)
 - #703 fix(observability): report the anon-key fallback once it's no longer expected
 
 **eq-service:**
+- #735 fix(security): enforce write roles in the database, not just the app
 - #734 fix(security): drop the CANONICAL_SERVICE_ROLE_KEY fallback to urjh's key
 - #732 fix(security): drop the SUPABASE_JWT_SECRET fallback in service-jwt auth
 
 **eq-shell:**
+- #1377 fix(security): gate 5 AI/OCR endpoints beyond session-only, constrain the Anthropic proxy
 - #1375 fix(security): stop SKS mint silently falling back to eq-canonical's JWT secret
 - #1294 feat(cards): centralize Cards' SSO minting via token-exchange-cards.ts
 
@@ -83,7 +86,7 @@ _If this file is >48h old, the cron is broken._
 | Repo | Status |
 |------|--------|
 | eq-service | ✓ success |
-| eq-shell | ✓ success |
+| eq-shell | ? in_progress |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
 | eq-solves-intake | ✓ success |
