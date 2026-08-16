@@ -63,12 +63,9 @@ _If this file is >48h old, the cron is broken._
 **eq-field:**
 - #708 v3.5.505 — security(apprentices): profile drill-down had no view-level identity gate
 - #706 fix(tests): close permission-enforcement-drift's KNOWN_WRAPPERS + index.html gap
-- #705 security(rls): own/crew read scoping for timesheets + leave_requests (DRAFT — not dispatched)
-
-**eq-service:**
-- #737 fix(ci): app_data CI-bootstrap fixture guard + drift check
 
 **eq-shell:**
+- #1389 chore(ci): triage 3 jvkn functions into KNOWN_UNSOURCED (cross-repo sourced)
 - #1387 fix(security): close the admin.manage_groups escalation path in security groups
 - #1386 fix(security): origin-guard 2 Cards mutation/PII endpoints + 5 clear siblings
 - #1385 fix(security): gate the Documents module on documents.view/manage/assign
@@ -83,7 +80,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ? in_progress |
+| eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
