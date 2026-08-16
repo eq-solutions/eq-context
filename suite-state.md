@@ -71,7 +71,6 @@ _If this file is >48h old, the cron is broken._
 - #732 fix(security): drop the SUPABASE_JWT_SECRET fallback in service-jwt auth
 
 **eq-shell:**
-- #1376 feat(staff): scope credential requirements by role
 - #1375 fix(security): stop SKS mint silently falling back to eq-canonical's JWT secret
 - #1294 feat(cards): centralize Cards' SSO minting via token-exchange-cards.ts
 
