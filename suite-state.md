@@ -64,7 +64,6 @@ _If this file is >48h old, the cron is broken._
 - #1394 fix(security): origin-guard 4 session/account-lifecycle endpoints
 - #1393 fix(security): origin-guard 5 account-credential endpoints (TOTP/PIN/email/reset)
 - #1391 fix(ci): triage 3 control-plane functions as cross-repo KNOWN_UNSOURCED
-- #1387 fix(security): close the admin.manage_groups escalation path in security groups
 - #1385 fix(security): gate the Documents module on documents.view/manage/assign
 
 ---
