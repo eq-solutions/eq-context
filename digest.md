@@ -1,35 +1,35 @@
 ---
 title: EQ Suite — Health Digest
 owner: Royce Milmlow
-last_updated: 2026-08-15
+last_updated: 2026-08-16
 scope: Push-style 'what needs your attention' feed across the EQ suite. Regenerated on merge (repository_dispatch: suite-state-changed) and nightly. Full snapshot in suite-state.md.
 read_priority: high
 status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-15 12:27 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-16 04:33 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-15 11:33 UTC → 2026-08-15 12:27 UTC)
+## Since last refresh (2026-08-15 12:27 UTC → 2026-08-16 04:33 UTC)
 
-- Merged: eq-shell [#1357](https://github.com/eq-solutions/eq-shell/pull/1357) feat(audit): make login outcomes queryable across all three 
-- Merged: eq-shell [#1356](https://github.com/eq-solutions/eq-shell/pull/1356) perf(shell): self-host Plus Jakarta Sans, drop the render-bl
-- Merged: eq-shell [#1354](https://github.com/eq-solutions/eq-shell/pull/1354) fix(auth): link_pending_invites writes the tenant membership
-- Merged: eq-shell [#1353](https://github.com/eq-solutions/eq-shell/pull/1353) fix(security): gate staff-update on field.manage_people, not
-- Merged: eq-shell [#1350](https://github.com/eq-solutions/eq-shell/pull/1350) fix(auth): dual-key shell-login's rate limit on IP + email, 
-- Merged: eq-shell [#1348](https://github.com/eq-solutions/eq-shell/pull/1348) feat(reports): compliance report + mobile Home quick links, 
-- Merged: eq-shell [#1347](https://github.com/eq-solutions/eq-shell/pull/1347) fix(auth): admin phone change now updates the login identity
-- Merged: eq-shell [#1345](https://github.com/eq-solutions/eq-shell/pull/1345) fix(auth): default self-join QR/link codes to 7-day expiry
+- Merged: eq-shell [#1374](https://github.com/eq-solutions/eq-shell/pull/1374) fix(security): gate EQ Ops Setup on ops.view_rates
+- Merged: eq-shell [#1361](https://github.com/eq-solutions/eq-shell/pull/1361) chore(admin): retire the redeem-an-invite worker QR, leaving
+- Merged: eq-shell [#1358](https://github.com/eq-solutions/eq-shell/pull/1358) perf(staff): one staff-bootstrap request instead of eight co
+- Merged: eq-shell [#1355](https://github.com/eq-solutions/eq-shell/pull/1355) fix(auth): close account-enumeration oracle on the phone+PIN
+- Merged: eq-shell [#1352](https://github.com/eq-solutions/eq-shell/pull/1352) feat(auth): platform-admin endpoint to correct a standalone 
+- Merged: eq-shell [#1351](https://github.com/eq-solutions/eq-shell/pull/1351) perf(shell): route-split admin pages, load pdf.js on demand,
+- Merged: eq-shell [#1349](https://github.com/eq-solutions/eq-shell/pull/1349) fix(audit): log user.deactivated/reactivated in edit-user.ts
+- Merged: eq-shell [#1346](https://github.com/eq-solutions/eq-shell/pull/1346) feat(staff): apprentice year badge + multi-select Trade on S
+- ✅ Needs you: 5 → 4
 
-## ⚠ Needs you (5)
+## ⚠ Needs you (4)
 
 - 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-9 (P0 — confirmed exposure, same window as SEC-3, possible second exposure 2026-07-27) — A different service_role key (`jvkn`/eq-canonical) was pasted directly into a ch · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-24 (P1 — OPEN, found 2026-08-08) — `QUOTES_CRON_SECRET` on eq-shell stored `is_secret: false` — full plaintext retu · [security-register.md](ops/security-register.md)
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-08-13.md](sessions/2026-08-13.md) · [failures.md](system/failures.md)
-- 🟠 **Sentry new error** — `eq-shell` [Error: workers.staff_id shared by multiple workers on jvkn: ](https://eq-solutions.sentry.io/issues/140574570/)
 
-## 🙋 Waiting on you (153)
+## 🙋 Waiting on you (152)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
@@ -45,25 +45,24 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **EQ** · **Not click-tested against a real generated NSX report** — fix verified via typecheck + code trace only; worth Royce pulling a real NSX Test Report next time one's generated to eyeball the CB Details table looks right. _(added 2026-08-14)_
 - **EQ** · **Decide the long-term fix for nav-visibility drift.** Three real drift incidents found and fixed this session (Cards' duplicate workspace-switcher/join-QR widgets, Field's ungated desktop Add Person, Service's stale embedded nav bar) all trace to the same root cause: no shared source of truth for "what's in the nav and who can see it" across the four apps. `eq/identity/nav-access-matrix.md` lays out two options — a shared roles-derived config each app imports, or a lighter review checklist — not decided, Royce's call. _(added 2026-08-14)_
 - **EQ** · **Not live-tested today** — this was code-level assurance (plus an old "confirmed live" comment already in the code from an earlier check), not a fresh click-through with a real pre-existing Cards account before the mass send goes out. _(added 2026-08-14)_
-_…and 141 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 140 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 1 | — |
-| eq-solves-service | ✓ success | 1d ago | 0 | — |
+| eq-shell | ✓ success | 0d ago | 2 | 0d |
+| eq-solves-service | ✓ success | 0d ago | 2 | 0d |
 | eq-field | ✓ success | 0d ago | 0 | — |
-| eq-cards | ✓ success | 0d ago | 1 | — |
-| eq-solves-intake | ✓ success | 3d ago | 0 | — |
+| eq-cards | ✓ success | 1d ago | 1 | — |
+| eq-solves-intake | ✓ success | 4d ago | 0 | — |
 
 ## Live errors (Sentry)
 
 | Project | Error | Events | Last seen |
 |---------|-------|--------|-----------|
 | eq-shell | [Error: staff-licence-ocr: ocr-licence returned 504](https://eq-solutions.sentry.io/issues/135986280/) | 5 | 2026-08-14 |
-| eq-shell | [Error: Unresolved identity collisions detected on jvkn: 1](https://eq-solutions.sentry.io/issues/136887159/) | 3 | 2026-08-14 |
-| eq-shell | [Error: workers.staff_id shared by multiple workers on jvkn: 1](https://eq-solutions.sentry.io/issues/140574570/) | 2 | 2026-08-14 |
+| eq-shell | [Error: Unresolved identity collisions detected on jvkn: 1](https://eq-solutions.sentry.io/issues/136887159/) | 2 | 2026-08-14 |
 | eq-cards | [minified:a42: FunctionException(status: 502, details: {error: anthropic_upstream](https://eq-solutions.sentry.io/issues/140383786/) | 1 | 2026-08-13 |
 | eq-solves-service | [Error: An unexpected response was received from the server.](https://eq-solutions.sentry.io/issues/139724869/) | 1 | 2026-08-09 |
 _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunresolved)_
@@ -72,6 +71,9 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-16 | eq-shell | [#1374](https://github.com/eq-solutions/eq-shell/pull/1374) fix(security): gate EQ Ops Setup on ops.view_rates |
+| 2026-08-16 | eq-solves-service | [#733](https://github.com/eq-solutions/eq-service/pull/733) fix(settings): defer Profile/Password to Shell for embedded sessi |
+| 2026-08-16 | eq-field | [#702](https://github.com/eq-solutions/eq-field/pull/702) v3.5.502 — access-control cleanup: Pipeline opt-in-only, Teams +  |
 | 2026-08-15 | eq-shell | [#1373](https://github.com/eq-solutions/eq-shell/pull/1373) fix(staff): stop cards-approve-staff.ts from creating duplicate w |
 | 2026-08-15 | eq-shell | [#1370](https://github.com/eq-solutions/eq-shell/pull/1370) fix(security): revoke the Supabase Auth session when Shell deacti |
 | 2026-08-15 | eq-shell | [#1372](https://github.com/eq-solutions/eq-shell/pull/1372) docs(migrations): record 2026_08_15c as applied + the one-time se |
@@ -84,13 +86,11 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-15 | eq-shell | [#1366](https://github.com/eq-solutions/eq-shell/pull/1366) chore(security): retire staff-update.ts |
 | 2026-08-15 | eq-shell | [#1365](https://github.com/eq-solutions/eq-shell/pull/1365) fix(security): gate timesheet/licence reads on the split-out keys |
 | 2026-08-15 | eq-shell | [#1364](https://github.com/eq-solutions/eq-shell/pull/1364) fix(security): revoke authenticated EXECUTE on eq_update_staff |
-| 2026-08-15 | eq-shell | [#1363](https://github.com/eq-solutions/eq-shell/pull/1363) docs(migrations): retire the stale tenant migration ledger |
-| 2026-08-15 | eq-shell | [#1359](https://github.com/eq-solutions/eq-shell/pull/1359) refactor(auth): fold the login timing-burn hash into one shared m |
-| 2026-08-15 | eq-cards | [#249](https://github.com/eq-solutions/eq-cards/pull/249) chore(auth): revoke the dead invite-lookup RPC anon grant, delete |
-_Showing 15 of 114 · full record in [sessions/](sessions/)_
+_Showing 15 of 115 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
+- Once resolved, update `punch-list.md` item 4's note to match reality — it currently still reads as if nothing shipped. _(added 2026-08-16)_
 - **Write down the trade-off we accepted** — the new per-account limit means someone who knows a person's email address can deliberately lock that person out of Core for 15 minutes at a time by getting the PIN wrong five times. That is the normal, accepted cost of this kind of protection, and the phone sign-in door has always worked the same way, but it isn't recorded anywhere yet. Belongs in the security register so nobody "discovers" it later and treats it as a bug. _(added 2026-08-15)_
 - **One low-traffic function on the EQ side accepts an org ID as a plain parameter instead of reading it from the login session** — the table it writes to is empty today so there's nothing to lose, but it's a different shape of risk from everything else fixed here and wasn't touched. _(added 2026-08-15)_
 - **None of it has been tried on a real switched-off account.** Everything above is verified by tests and by calling the live endpoints unauthenticated, not by taking a real person's session and watching it get refused. Three switched-off accounts still attached to a company are available to test with whenever you want to spend ten minutes on it. _(added 2026-08-15)_
@@ -100,7 +100,6 @@ _Showing 15 of 114 · full record in [sessions/](sessions/)_
 - **Cards carries a fully built licence card component that nothing displays** — 404 lines across six classes, plus a maintained test file, superseded by the tiles built into the wallet screen. Safe to delete, but it is not a one-liner and wasn't in scope here. _(added 2026-08-15)_
 - **Shell's intake review flow has no buttons.** Both halves — approve and reject staged rows — are fully written and reachable over the network, but nothing in the app calls either. Reviewers can stage rows and then cannot act on them. Either wire it up or retire it. _(added 2026-08-15)_
 - **No skill exists for the drift audit this session ran by hand.** Worth encoding, with one caveat learned the hard way: 4 of 6 "dead code" candidates were false positives (factory constructors, static helpers, same-file use). The pattern-matching is trivial; the verification is the entire job, and a skill that emits candidates without forcing the check would generate confident nonsense at scale. _(added 2026-08-15)_
-- **That automated guard is not built — deliberately.** A check that scans wording across 600+ open items and every session log could easily misfire, and a false alarm on this repo blocks every session from saving work. Wants a proper test pass against the real files first, not a quick add. _(added 2026-08-15)_
 _…and 464 more · [eq/pending.md](eq/pending.md)_
 
 ## Pending (SKS)
@@ -123,7 +122,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [EQ](eq/pending.md) | 3547 | 483 / 144 | 111 | 59 |
+| [EQ](eq/pending.md) | 3566 | 484 / 144 | 116 | 64 |
 | [SKS](sks/pending.md) | 432 | 81 / 8 | 1 | 15 |
 | [SKS active](sks/active.md) | 109 | 0 / 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 421 | 33 / 4 | 3 | 1 |
@@ -132,11 +131,11 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | Date | Session |
 |------|---------|
+| 2026-08-16 | [built a personal task register for Royce (OneDrive), cross-checked it live twice, found and cleared a false alarm on eq-context's git state](sessions/2026-08-16.md) |
 | 2026-08-15 | [staff-update was gating an HR write on a read permission; fixed, shipped, and corrected the repo's deploy model on the way](sessions/2026-08-15.md) |
 | 2026-08-14 | [SKS → EQ Field weekly roster CSV sync: investigated live, confirmed feasible with zero new code](sessions/2026-08-14.md) |
 | 2026-08-13 | [eq-shell PR #1316: misdiagnosed build error, real cause was a pdfjs-dist v6 type break, fixed + merged + deployed clean](sessions/2026-08-13.md) |
 | 2026-08-12 | [EQ UI design sprint (EmptyState, density mode, DateRangePicker) shipped and rolled out to eq-shell + eq-service](sessions/2026-08-12.md) |
-| 2026-08-11 | [EQ Cards: removed dead CardScreen (710 lines), merged live](sessions/2026-08-11.md) |
 _[sessions/](sessions/) · 5 shown_
 
 ## Substrate honesty
@@ -144,4 +143,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-15 12:27 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-16 04:33 UTC._

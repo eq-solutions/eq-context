@@ -1,8 +1,9 @@
 # Session Index
-_127 logs · reverse-chronological · auto-generated_
+_128 logs · reverse-chronological · auto-generated_
 
 | Date | Session |
 |------|---------|
+| 2026-08-16 | [built a personal task register for Royce (OneDrive), cross-checked it live twice, found and cleared a false alarm on eq-context's git state](2026-08-16.md) |
 | 2026-08-15 | [staff-update was gating an HR write on a read permission; fixed, shipped, and corrected the repo's deploy model on the way](2026-08-15.md) |
 | 2026-08-14 | [SKS → EQ Field weekly roster CSV sync: investigated live, confirmed feasible with zero new code](2026-08-14.md) |
 | 2026-08-13 | [eq-shell PR #1316: misdiagnosed build error, real cause was a pdfjs-dist v6 type break, fixed + merged + deployed clean](2026-08-13.md) |
