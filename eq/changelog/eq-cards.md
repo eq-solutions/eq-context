@@ -1,13 +1,24 @@
 ---
 title: EQ Cards — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-15
+last_updated: 2026-08-16
 scope: EQ Cards append-only history. NOTE — duplicates eq/changelog/cards.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # EQ Cards — Changelog
+
+## 2026-08-16 (PR #251 MERGED + deployed live — sharing_scope enforced on every licence read path)
+- **P1 privacy fix.** `sharing_scope` (worker's basic/full choice on `/connect`) was validated, stored on `org_access_requests`, and shown back to the worker — but no read path checked it. `licences_read`'s org-admin branch was `is_org_admin_of(user_id) AND is_private = false`, no scope term; verified live before writing anything, not assumed from the migration files (which still show the pre-consolidation `org_admins_read_member_licences` policy from `0006` — not actually live).
+- **Migration `0128_enforce_sharing_scope_on_licence_reads.sql`** — new `org_memberships.sharing_scope` column (default `'full'`), stamped by trigger `tg_org_membership_sharing_scope` off `org_access_requests` rather than patched into the approval RPC, since worker-initiated approvals happen in eq-shell, not Cards. New `is_org_admin_with_credential_access()` replaces `is_org_admin_of()` on `licences_read`, the licence-photo storage policy, `eq_get_org_licences`, `eq_get_org_credential_gaps`, `eq_get_licences_expiring_on`, `eq_get_licences_expiring_within`.
+- **Closed 3 more live `is_private` gaps** found in the same sweep, all pre-existing since `0096` only ever fixed the table itself: the licence-photo storage policy (7 objects / 6 private licences / 6 workers / 2 orgs live-readable at time of writing), `eq_get_org_credential_gaps`'s `held` flag, `eq_get_licences_expiring_on` (its `_within` sibling got the filter in `0046`, this one was missed).
+- **Fixed a real gap found by replay-testing, not just theory**: `is_org_admin_with_credential_access`'s first draft allowed "any shared full-scope org" — a caller admining 2+ orgs the same worker belongs to could leak a full-scope relationship in one org into visibility in another. Now requires at least one full AND none basic across shared orgs. Zero live pairs have this shape today (confirmed by query) — hardening, not a live exposure closed.
+- **Replay-tested against live jvkn** in `BEGIN…ROLLBACK` transactions impersonating real admin/manager/worker identities via RLS before ever applying — join path, no-request/invite-claim path (defaults `full`), both admin branches.
+- **Fixed `outgoing_requests_banner.dart`** — pending-application copy unconditionally said "they'll be able to see your licences" regardless of the worker's actual chosen scope; now conditional on `request.sharingScope`.
+- **Exposure audit**: 0 of 54 historical `org_access_requests` ever chose `'basic'` — no worker's actual restricted choice was ever violated historically; the photo-storage gap above is the real exposure this closes.
+- Applied to jvkn on Royce's explicit go — drift-checked immediately before applying (zero drift vs. replay-test time), verified live after (grants/policies/trigger/backfill all correct; 56/56 active memberships backfilled to `full`; spot-verified via RLS impersonation that a specific previously-exposed private licence is now unreadable; `get_advisors` clean). eq-cards [PR #251](https://github.com/eq-solutions/eq-cards/pull/251), squash-merged (`e4419f2`), deployed via `workflow_dispatch` run [31930472119](https://github.com/eq-solutions/eq-cards/actions/runs/31930472119), both jobs green.
+- **Left open**: the employer-initiated `eq_cards_request_worker_access` flow has no scope parameter at all (always full by construction) — separate product question, not part of this fix, spun off as its own session.
 
 ## 2026-08-15 (PR #249 MERGED + deployed live — closes the two chips left by #248)
 - **`eq_cards_lookup_invite_by_phone` anon-EXECUTE revoke, `task_5264c029`.** Live grants checked first (`anon`, `authenticated`, `service_role`, `postgres` all held EXECUTE); migration `0127` revokes `anon`/`authenticated`/`public`, leaving only `service_role`/`postgres`. Applied to jvkn after merge — grants re-checked live, confirmed clean. Companion eq-shell PR [#1368](https://github.com/eq-solutions/eq-shell/pull/1368) removes the dead `cards-api.ts` op that was its last caller.

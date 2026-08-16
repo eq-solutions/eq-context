@@ -14,6 +14,25 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-cards: a worker's "don't share my licences" choice was stored but never enforced — found, fixed, applied, deployed (2026-08-16)
+- [ ] When a company invites a worker to connect (instead of the worker applying to the company), the worker isn't offered the same share-choice — it's always full profile. Worth deciding if that's intentional; already being looked at in its own session. _(added 2026-08-16)_
+
+---
+
+## eq-solves-service: any signed-in worker — apprentice, labour hire, subcontractor — could write maintenance checks, defects, test results and assets straight to the database, skipping every in-app permission check. Fix written and verified, waiting on your go to ship it (2026-08-16)
+*Found via a direct P0 security brief, not from an existing pending item. Verified live against ehow: the database only ever checked which company (tenant) a write belonged to, never who was making it or what their role was — every one of the ~66 "can this person do this" checks in the app lives only in the app's own code, with nothing behind it in the database itself. Confirmed the obvious-looking fix (blocking it at the same layer the canonical Sites/Customers/Assets screens write through) would have been bypassable — there's a second, more direct door into the same data that a trigger-only fix wouldn't close.*
+
+- [x] Two database changes written, each covering one of the two ways data gets written, so both doors close together.
+- [x] Which roles can do what was pulled directly from the app's own existing rules, not decided fresh — including two real traps a naive version would have hit: an on-site technician needs to still be able to update a job assigned to them even if their role alone wouldn't normally allow it, and "mark a test as failed" needs to stay open to more roles than a first pass would assume, because that's how the ACB/NSX test screens already work today.
+- [x] Rehearsed both changes against the real database in a way that leaves zero trace either way (open a transaction, run it, throw it away) — caught and fixed one real bug this way before it could have shipped broken (a case-sensitivity mismatch that would have made the second change fail outright on 6 of 16 places it needed to touch).
+- [x] eq-service [PR #735](https://github.com/eq-solutions/eq-service/pull/735) open, CI green on everything that matters (the one red check is a known, unrelated, pre-existing gap in the test setup that has nothing to do with this change — confirmed by reading its failure log, not assumed).
+
+**Deferred:**
+- [ ] **Not merged, not applied anywhere — the vulnerability is still live on production right now.** Needs your explicit go for both steps: merging the PR, then a separate governed step to actually run the database change against the real system. _(added 2026-08-16)_
+- [ ] **Can't be fully proven safe until it's live.** Confirming a low-privilege worker actually gets blocked, and that an assigned technician can still do their own job, both need a real signed-in session to check — not possible to test from here. _(added 2026-08-16)_
+
+---
+
 ## eq-shell: an AI tool anyone signed in could use to run up costs on the company's AI account — closed, merged, live (2026-08-16)
 - [ ] **Not clicked through live yet.** Worth two minutes: try the AI import on a real file, look at the home-page briefing/ask bar as a manager vs. a supervisor, and try opening the licence-scan page as an apprentice (should now say you don't have access). _(added 2026-08-16)_
 
@@ -43,7 +62,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 - [x] Database change hand-applied to the control-plane database (the one substrate deliberately never auto-applies) and independently re-checked afterward — existing data untouched, new field not writable by workers themselves. Merged ([PR #1376](https://github.com/eq-solutions/eq-shell/pull/1376)) and confirmed live on core.eq.solutions by checking the live site's deploy record matched the exact commit that was merged, not just that the merge succeeded.
 
 **Deferred:**
-- [ ] **No admin screen yet to add a role-specific requirement** — the groundwork supports it, but today the UI can only add a requirement that applies to everyone. Someone would need it done by hand until that control gets built. _(added 2026-08-16)_
+- [x] **No admin screen yet to add a role-specific requirement** — RESOLVED 2026-08-16: shown as a mockup first, confirmed, then built — the Required tickets bar (Staff > Training matrix) now has a role picker in its add flow, and scoped requirements show a role badge on their pill. Merged and confirmed live ([PR #1378](https://github.com/eq-solutions/eq-shell/pull/1378)). _(added 2026-08-16, resolved 2026-08-16)_
 
 **Notes:**
 - Also produced this session (not filed to substrate — sent directly to Royce): a ranked task list built from the two brain-dump emails, cross-checked against what's actually live rather than assumed.
