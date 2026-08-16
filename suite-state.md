@@ -65,12 +65,14 @@ _If this file is >48h old, the cron is broken._
 
 **eq-field:**
 - #705 security(rls): own/crew read scoping for timesheets + leave_requests (DRAFT — not dispatched)
-- #703 fix(observability): report the anon-key fallback once it's no longer expected
 
 **eq-service:**
 - #735 fix(security): enforce write roles in the database, not just the app
 
 **eq-shell:**
+- #1382 chore(roles): bump @eq-solutions/roles to v2.7.1, wire documents + ai modules
+- #1381 fix(security): close 4 PII leaks gated on field.view/entity.view instead of the narrower key
+- #1380 fix(access-control): surface fine-grained Field perms from the Base panel
 - #1294 feat(cards): centralize Cards' SSO minting via token-exchange-cards.ts
 
 ---
