@@ -60,8 +60,7 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-16)
 
-**eq-shell:**
-- #1411 fix(dashboard): retire ai-briefing.ts + briefing-action.ts
+_No open PRs_
 
 ---
 
