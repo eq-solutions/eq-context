@@ -258,7 +258,15 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ## Suite-wide nav simplification — 7 items shipped and deployed (2026-08-14)
 
-- [ ] **Decide the long-term fix for nav-visibility drift.** Three real drift incidents found and fixed this session (Cards' duplicate workspace-switcher/join-QR widgets, Field's ungated desktop Add Person, Service's stale embedded nav bar) all trace to the same root cause: no shared source of truth for "what's in the nav and who can see it" across the four apps. `eq/identity/nav-access-matrix.md` lays out two options — a shared roles-derived config each app imports, or a lighter review checklist — not decided, Royce's call. _(added 2026-08-14)_
+- [ ] **Decide the long-term fix for nav-visibility drift.** Three real drift incidents found and fixed this session (Cards' duplicate workspace-switcher/join-QR widgets, Field's ungated desktop Add Person, Service's stale embedded nav bar) all trace to the same root cause: no shared source of truth for "what's in the nav and who can see it" across the four apps. `eq/identity/nav-access-matrix.md` lays out two options — a shared roles-derived config each app imports, or a lighter review checklist — not decided, Royce's call. A further, more serious instance surfaced 2026-08-16 (Service's Sidebar/embedded-nav gate was tier-inverted, not just missing items — see the EQ Service section below) — reinforces the case, still not decided. _(added 2026-08-14)_
+
+---
+
+## EQ Service: nav-visibility tier-inversion + missing service.view entry gate — PR #736 open (2026-08-16)
+
+- [ ] **Merge PR #736** (or hold back the entry-gate half) — fixed Sidebar.tsx/layout.tsx's exclude-by-name nav bug (employee wrongly hidden from Records/Insight; apprentice/labour_hire/subcontractor wrongly shown) and wired a missing `service.view` entry gate. Live-verified zero current-user impact (0 labour_hire/subcontractor `tenant_members` rows on ehow: 5 active rows total, 2 manager/1 supervisor/2 employee). Not deployed — Netlify auto-deploys eq-solves-service on merge to main. _(added 2026-08-16)_
+- [ ] **`/job-plans` has no view-level role gate at all** — its 4 RECORDS_PATHS siblings got `entity.view` in #716, job-plans didn't. Spun off as `task_68813d6a`, Royce has started it running in a separate session. _(added 2026-08-16)_
+- [ ] **`service.view_commercials` (real canonical key, "see job pricing/contract value") is completely unwired anywhere** — distinct from the tenant-level `commercial_features_enabled` flag. Spun off as `task_61bda775`, Royce has started it running in a separate session. _(added 2026-08-16)_
 
 ---
 
