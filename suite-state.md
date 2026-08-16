@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-16)
 
-**eq-cards:**
-- #255 docs(supabase): document jvkn branch-replay failure and root cause
-
 **eq-shell:**
 - #1409 fix(security): origin-guard 3 misc upload endpoints
 - #1407 fix(security): origin-guard 4 attachment/document upload endpoints
