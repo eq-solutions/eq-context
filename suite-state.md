@@ -60,9 +60,11 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-16)
 
+**eq-cards:**
+- #257 docs(supabase): trace jvkn Root Cause #2, correct the count, link eq-shell PR #1415
+
 **eq-shell:**
 - #1415 chore(ci): extend control-plane drift-check to tables, backfill 10 untracked shell_control tables
-- #1414 feat(notifications): fire the connect-request email for auto-joined workers too
 
 ---
 
