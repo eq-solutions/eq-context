@@ -16,6 +16,16 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-shell: Photo ID banner wrongly flagged workers who'd already covered it with a driver's licence or passport (2026-08-16) (fully closed, no open items remain)
+*A same-day database update that scoped credential requirements by role was rebuilt from an older version of the underlying logic — one that pre-dated an earlier fix letting a driver's licence or passport count toward a company's "Photo ID" requirement. The rebuild silently undid that earlier fix. Reported directly by Royce with a specific affected worker; confirmed, fixed, and re-verified against that exact worker in the same session.*
+
+- [x] Confirmed live against the actual affected worker (driver's licence held, no separate Photo ID upload, wrongly shown as outstanding) before writing any fix.
+- [x] Wrote a new database update that restores the driver's-licence/passport equivalence alongside the same-day role-scoping, rather than editing either earlier update — each piece checked line-for-line against its original before committing, ruling out copy mistakes.
+- [x] eq-shell [PR #1399](https://github.com/eq-solutions/eq-shell/pull/1399), merged (Royce's explicit go — this repo auto-deploys on merge), applied to the live database same session.
+- [x] Re-verified directly against the same worker's real record post-fix: Photo ID now correctly shows as satisfied.
+
+---
+
 ## eq-shell: open self-join enrollment gap closed — any tenant slug let anyone self-provision an active Core account (2026-08-14) (fully closed, no open items remain)
 *Royce asked to dig into a live OCR timeout; while checking who'd been affected, found a much bigger issue: eq-shell's self-join flow would silently create a fully active `employee`-role Core account for literally anyone who knew an active tenant's slug — no invite, no QR code, no vetting, phone OTP alone.*
 
