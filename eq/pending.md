@@ -14,6 +14,14 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-cards: punch-list #4 marked "Active" but partially shipped without its own caveat (2026-08-16)
+*`system/punch-list.md`'s item 4 still shows the pre-2026-08-13 note ("reconcile against screenshots before building, don't build from this doc alone"). [PR #235](https://github.com/eq-solutions/eq-cards/pull/235) shipped 2026-08-13 anyway, scoped strictly to the original doc — its own description confirms the screenshots were never incorporated. Not corrected in `punch-list.md` directly (Royce's file, his rule) — flagged here instead. Full detail: `sessions/2026-08-16.md`.*
+
+- [ ] Get Royce's "first-open popup / info overload" screenshots (mentioned as sent separately, never received/incorporated), scope what's still missing against what PR #235 already shipped, build the remainder. _(added 2026-08-16)_
+- [ ] Once resolved, update `punch-list.md` item 4's note to match reality — it currently still reads as if nothing shipped. _(added 2026-08-16)_
+
+---
+
 ## eq-shell: the email sign-in door could be guessed at from many computers at once — closed, live (2026-08-15)
 
 - [ ] **Write down the trade-off we accepted** — the new per-account limit means someone who knows a person's email address can deliberately lock that person out of Core for 15 minutes at a time by getting the PIN wrong five times. That is the normal, accepted cost of this kind of protection, and the phone sign-in door has always worked the same way, but it isn't recorded anywhere yet. Belongs in the security register so nobody "discovers" it later and treats it as a bug. _(added 2026-08-15)_
