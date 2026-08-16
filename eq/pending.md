@@ -297,12 +297,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## EQ Service: nav-visibility tier-inversion + missing service.view entry gate — merged + live (2026-08-16)
-
-- [ ] **`service.view_commercials` (real canonical key, "see job pricing/contract value") is completely unwired anywhere** — distinct from the tenant-level `commercial_features_enabled` flag. Spun off as `task_61bda775`, Royce has started it running in a separate session. _(added 2026-08-16)_
-
----
-
 ## eq-cards: 3 permission-audit gaps closed — dead JWT minter retired, empty employer credential list fixed, unreachable admin policy fixed (2026-08-16)
 
 - [ ] **Live click-through not done on the credential-list fix specifically.** Verified via live RLS/RPC checks, CI (`flutter analyze` + `flutter test`), and the deploy's ETag change — not by an actual signed-in admin opening a worker's detail screen and seeing their credentials render. _(added 2026-08-16)_
@@ -661,11 +655,9 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
-## eq-service: app_data fresh-bootstrap CI fixture — still blocked on Docker, work uncommitted (2026-08-10)
-*Spawned as a background task off the earlier CI-bootstrap investigation (2026-08-08) — the local/CI Supabase bootstrap can't recreate `app_data` (owned by eq-shell, never captured by this repo's own migration history), so the integration-test suite has never actually run successfully in CI.*
+## eq-service: app_data CI fixture — manifest fixed + merged (#737), DDL bootstrap snapshot still blocked (2026-08-16)
 
-- [ ] **Blocked on Docker Desktop** — launches then exits within ~1-2 min with no crash log in this environment, no GUI automation available to click past what looks like an undismissed first-run dialog. Real progress made without it: root cause confirmed (`app_data` is eq-shell's to recreate, not this repo's), a drift-check script + weekly CI workflow written, and the live `app_data` shape captured (147 tables, 2378 columns) via SQL. The actual DDL snapshot migration is what's blocked.
-- [ ] **Work sits uncommitted, not lost** — on branch `fix/integration-ci-app-data-bootstrap` in the shared root checkout at `C:\Projects\eq-solves-service`. Needs Royce to get Docker running (or hand over a `supabase db dump` directly, or greenlight a pure-SQL fallback) to resume. _(added 2026-08-10)_
+- [ ] **DDL bootstrap snapshot (`0000_app_data_tenant_plane_fixture.sql`) still stale — needs `supabase db dump --linked` from a machine with working IPv4/DB connectivity.** The JSON shape-manifest half is fixed and live (regenerated straight from ehow via the Management API, merged in [eq-service#737](https://github.com/eq-solutions/eq-service/pull/737)) — enough to make the new weekly drift-check pass. The SQL DDL fixture itself wasn't refreshed: this environment's `supabase db dump --linked` fails on an IPv6-only network with no cached DB password — a different, more specific blocker than the earlier Docker one (not hit this session; the manifest route queries live ehow directly and bypasses Docker/local `supabase start` entirely). Possibly the root cause of the pre-existing `Integration tests (Supabase local)` CI failure (`schema "app_data" does not exist` at migration 0061) — not confirmed. _(added 2026-08-16)_
 
 ---
 

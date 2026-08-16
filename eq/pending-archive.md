@@ -3737,3 +3737,9 @@ contain the same values and were pushed before push-protection caught up.
 - [x] **`field_canonical_health()` RPC fix — applied live by Royce, verified.** Ran the drafted SQL on ehow via the dashboard. Bigger fix than the headline count suggested: `field_people` corrected 66→83 as expected, but `field_schedule` (0→1,310), `field_timesheets` (0→138), and `prestarts`/`toolbox_talks` (0→35/1) all came back from "empty" to real numbers too — the broken `org_id` filter had been silently hiding genuine Field usage data on the dashboard, not just under-counting one row. Confirmed via a manually-triggered `suite-state-refresh.yml` run (independent of the Supabase connection, which dropped mid-session) — the warning block self-cleared exactly as designed.
 
 ---
+
+## EQ Service: nav-visibility tier-inversion + missing service.view entry gate — merged + live (2026-08-16)
+
+- [x] **`service.view_commercials` (real canonical key, "see job pricing/contract value") is completely unwired anywhere** — distinct from the tenant-level `commercial_features_enabled` flag. Spun off as `task_61bda775`, Royce started it running in a separate session. **Resolved 2026-08-16** — that session grepped every maintenance/defects page for cost/price/value fields and queried live ehow's `information_schema.columns` directly: no per-work-order or per-defect pricing field exists anywhere in the app, confirming the existing baseline note. No code change needed; reconfirmation recorded in memory so it isn't re-chased again.
+
+---
