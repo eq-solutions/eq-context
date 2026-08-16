@@ -302,10 +302,5 @@ the process — see eq-cards section above).
 2. **ProtonPass entry** for the ~9 EQ-minted secrets that have no vendor
    source of truth — partial as of 2026-08-16, not complete. See the EQ
    Secrets Map artifact's master list for the full 35-row checklist.
-3. **eq-cards `shell-verify.js` "optimistic proceed on bad key"** —
-   code-level finding from the 2026-08-16 failure-mode audit, needs a
-   design decision (how to distinguish "new user, expected 404" from "bad
-   credential, unexpected non-404") before any fix — deliberately not
-   started.
-4. **PR merge decisions** — eq-shell #1375, eq-solves-service #734+#732,
-   eq-field #703 are all open, Royce's call, none merged.
+3. **PR merge decisions** — eq-shell #1375, eq-solves-service #734+#732,
+   eq-field #703, eq-cards #250 are all open, Royce's call, none merged.
