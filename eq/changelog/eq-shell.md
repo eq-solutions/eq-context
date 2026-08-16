@@ -9,6 +9,10 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-16 (PR #1408 MERGED + deployed live — control-plane drift gate fixed, 6 PRs unblocked)
+- `public.can_assign_worker_role` — live on jvkn via eq-cards migration `0131_gate_worker_role_assignment.sql` ([eq-cards PR #254](https://github.com/eq-solutions/eq-cards/pull/254), a Royce-approved live security fix) but with no matching source file in eq-shell's own migrations tree — added to `KNOWN_UNSOURCED` in `scripts/check-control-plane-drift.mjs`, same convention as 5 existing cross-repo entries. No behaviour change; this only teaches the CI gate the function is properly sourced elsewhere.
+- Had been failing the required "Schema drift + anon-grant + policy-lint" check on every open PR since ~09:11 UTC. Unblocked #1402, #1404, #1405, #1406, #1407 via the GitHub "update branch" API (`gh run rerun --failed` was tried first and confirmed NOT sufficient — it reuses the original merge-ref snapshot from before the fix landed). #1403 (the admin-settings crash fix below) picked up the fix the same way and was merged directly by Royce.
+
 ## 2026-08-16 (PR #1397 MERGED, live — permission-hygiene sweep)
 - Drift-test ratchet no longer counts a permission key mentioned only in a code comment as "enforced" (was a real blind spot; the specific case that surfaced it had already been independently fixed).
 - Data Activation page and AdminEditUser's Security-groups section now gate on the same permission key their respective server endpoints actually require — both previously showed a control to a slightly wider group (via the seeded "Project Managers" default group) than could use it.
