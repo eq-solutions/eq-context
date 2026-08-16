@@ -63,7 +63,6 @@ _If this file is >48h old, the cron is broken._
 **eq-shell:**
 - #1412 chore(roles): bump @eq-solutions/roles to v2.7.3
 - #1411 fix(dashboard): retire ai-briefing.ts + briefing-action.ts
-- #1406 fix(dashboard): remove Today's Actions from the Shell home page
 
 ---
 
