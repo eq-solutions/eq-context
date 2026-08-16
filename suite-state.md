@@ -61,12 +61,14 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-16)
 
 **eq-cards:**
+- #252 chore(migrations): commit 0129, applied live but never recorded in git
 - #221 refactor(auth): shell-verify.js relays to eq-shell instead of local crypto
 
 **eq-field:**
 - #705 security(rls): own/crew read scoping for timesheets + leave_requests (DRAFT — not dispatched)
 
 **eq-service:**
+- #736 fix(security): nav visibility allow-by-role, wire service.view as an entry gate
 - #735 fix(security): enforce write roles in the database, not just the app
 
 **eq-shell:**
