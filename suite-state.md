@@ -61,7 +61,6 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-16)
 
 **eq-shell:**
-- #1412 chore(roles): bump @eq-solutions/roles to v2.7.3
 - #1411 fix(dashboard): retire ai-briefing.ts + briefing-action.ts
 
 ---
