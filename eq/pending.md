@@ -14,6 +14,18 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: checked whether a worker-protection feature exists on both company databases or just one — confirmed it's a deliberate difference, not something missed (2026-08-16)
+*Flagged as a possible security gap: SKS's database blocks people from editing certain protected worker fields and from approving their own timesheet/leave; EQ's own internal sandbox database doesn't have the same blocks. No live database access was available at the start of the session, so this was checked against dated, independent project records instead of assumed either way — turned out EQ's side is intentionally simpler (it's disposable test data, not a real customer, and the way it saves changes is built differently there), not a gap that got missed.*
+
+- [x] Confirmed the difference is deliberate and documented it directly in eq-shell's own project notes, so a future check doesn't re-raise it as a surprise. eq-shell [PR #1384](https://github.com/eq-solutions/eq-shell/pull/1384), merged.
+- [x] While trying to merge that PR, hit the same "3 unknown database functions" block noted further down this file — this session had database access and traced/fixed it directly. eq-shell [PR #1389](https://github.com/eq-solutions/eq-shell/pull/1389), merged; see that entry below for detail.
+- [x] Found afterward: 3 other sessions had independently built the exact same fix for the same block, all opened within minutes of each other. Closed all 3 as duplicates once the real one was confirmed merged — eq-shell #1390, #1391, #1392.
+
+**Deferred:**
+- [ ] **One narrow follow-up, not urgent:** EQ's sandbox database still allows editing a couple of specific worker fields (licence status, agency, hire company) that SKS's side specifically blocks — nobody's checked whether that matters in practice. Low priority since it's sandbox data with no real customer on it, but worth a look if that database is ever used for anything real. _(added 2026-08-16)_
+
+---
+
 ## eq-shell: 4 places were showing worker or contact details to people who shouldn't see them — fixed, PR open, waiting on your go to ship (2026-08-16)
 *Started from two specific leaks flagged directly: the compliance report page (worker names, licence problems, and incident details, including ones that would need to go to a regulator) and the customer list search (leaking contact emails). Checked the actual live rules first rather than trusting old notes, then swept every other place using the same too-loose rule to find what else was missed.*
 
@@ -60,7 +72,7 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 **Deferred:**
 - [ ] **A real, bigger idea from Royce — one single screen for all access control, not two separate systems** — discussed and deliberately not built today; needs a proper design pass first (grouping ~86 total switches sensibly is its own problem), not a same-day PR. _(added 2026-08-16)_
 - [ ] **eq-shell PR #1380 merged via admin override**, bypassing a required check — confirmed the check's failure was unrelated to this PR (it was flagging something else entirely, see next item), but flagging the override itself since it bypassed a safety gate. _(added 2026-08-16)_
-- [ ] **3 database functions on Shell's control-plane database exist live with no matching file anywhere in the repo** (`eq_cards_admin_list_worker_credentials`, `is_org_admin_with_credential_access`, `tg_org_membership_sharing_scope`) — someone applied them directly rather than through a normal commit. Found only because it's currently blocking every single open PR on eq-shell via a required check. Not fixed — not safe to guess at what these do or write files for them without knowing their origin. Needs either the missing files written, or a deliberate decision that they're accepted debt. _(added 2026-08-16)_
+- [x] **3 database functions on Shell's control-plane database exist live with no matching file anywhere in the repo** — not a mystery after all: all 3 traced directly to a same-day eq-cards change that landed minutes before this check ran. Confirmed by reading eq-cards' own files and comparing every definition to what's actually live, line for line — genuinely accounted for, just not written down in this repo too. Marked as known/accepted so the check stops flagging it; no database change needed. eq-shell [PR #1389](https://github.com/eq-solutions/eq-shell/pull/1389), merged — this is also what had been blocking PR #1380/#1381 above from merging cleanly.
 - [ ] Neither eq-shell PR was clicked through live — no way to sign in as a real Shell admin from this environment. Worth two minutes on Access Control next time you're in there, to see the new switches and the new pointer text for real. _(added 2026-08-16)_
 - [ ] A worktree used for PR #1380 (`eq-shell-perms-discoverability-hint`) is still sitting on disk — cleanup was blocked by a permission check mid-session. Harmless, just needs a manual `git worktree remove` sometime. _(added 2026-08-16)_
 

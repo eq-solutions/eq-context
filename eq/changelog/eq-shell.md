@@ -9,6 +9,20 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-16 (PR #1389 MERGED + deployed live — cleared a repo-wide block stopping every open eq-shell PR from merging)
+- The required `Schema drift + anon-grant + policy-lint` check had been failing on `main` since ~06:53 UTC for reasons unrelated to any specific PR: `check-control-plane-drift.mjs --strict` found 3 live jvkn functions (`eq_cards_admin_list_worker_credentials`, `is_org_admin_with_credential_access`, `tg_org_membership_sharing_scope`) with no matching `CREATE FUNCTION` anywhere in this repo's `supabase/migrations/`.
+- Traced all 3 to eq-cards migrations `0128_enforce_sharing_scope_on_licence_reads.sql` (PR #251) and `0129_worker_credentials_org_admin_read.sql` (PR #253), both merged to eq-cards minutes before this gate ran. Confirmed by reading both files directly and diffing every function body — plus the trigger attachment for `tg_org_membership_sharing_scope` — against live `pg_get_functiondef`/`pg_get_triggerdef` on jvkn: identical.
+- Triaged all 3 into `KNOWN_UNSOURCED` with full citations, matching the established cross-repo-sourcing pattern (precedent PR #1328). No backfill migration, no live database write, no `CONTROL-PLANE-LEDGER.md` entry — these functions are eq-cards' to own, not eq-shell's.
+- Unblocked PR #1384 (below) and at least one other unrelated PR (#1385) caught by the same gate. 3 other sessions had independently written the same fix in parallel — all opened within minutes of this one merging — closed as duplicates once this one was confirmed merged: #1390, #1391, #1392.
+- eq-shell [PR #1389](https://github.com/eq-solutions/eq-shell/pull/1389), merged (`4a683d6d`).
+
+## 2026-08-16 (PR #1384 MERGED + deployed live — confirmed zaap's missing Field write-guards are deliberate, not an unnoticed gap)
+- Investigated a flagged P2 finding: ehow (SKS tenant) has 7 database trigger functions gating Field write paths (`field_people_iud` family + `eq__guard_timesheet_status`/`eq__guard_leave_status`); zaap (EQ tenant) has none of them.
+- No Supabase MCP was connected and no `SUPABASE_ACCESS_TOKEN` was available locally at the start of the session, so this was verified via convergent same-day documentary evidence rather than a fresh query: eq-field's own CLAUDE.md ("the `eq` tenant... is disposable... not a customer"), migration `0196_staff_user_id_write_lockdown.sql` (zaap grants `authenticated` direct table UPDATE on `app_data.staff`, architecturally different from ehow's view+trigger path), and two same-day eq-field migrations (`20260816_timesheets_leave_own_crew_{read,write}.sql`) that independently reached the same conclusion.
+- Three reasons this is deliberate: zaap's `eq` tenant is non-production; zaap's write path is structurally different (direct grants, not view-mediated — porting the trigger verbatim would guard a path nothing writes through); and 3 of the 7 guards protect `app_data.teams`/`team_members`/`team_supervisors`, which don't exist on zaap at all.
+- Documented as a confirmed instance of the existing `--strict-spine` allowance in eq-shell's own CLAUDE.md, so a future audit doesn't re-raise it.
+- eq-shell [PR #1384](https://github.com/eq-solutions/eq-shell/pull/1384), merged (`22808d8c`).
+
 ## 2026-08-16 (PR #1375 MERGED + deployed live — SKS session mint stopped failing silently on a bad key)
 - Same silent-fallback shape as the eq-cards/eq-field/eq-service fixes shipped the same day (found during the 2026-08-16 secrets audit's silent-failure sweep): a bad key used to mint an SKS-tenant session was allowed to proceed past the failure instead of erroring loud.
 - eq-shell [PR #1375](https://github.com/eq-solutions/eq-shell/pull/1375), merged, live within seconds (Netlify auto-deploy on merge to `main`).
