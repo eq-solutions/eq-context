@@ -274,16 +274,14 @@ by Royce directly (ehow service_role key, platform admin key, Resend key,
 above. His answers were "assume"/"no idea but assume same," not an
 independently verified value comparison — high-confidence, not certain.
 
-**All 5 fix PRs merged 2026-08-16:** eq-shell #1375, eq-solves-service
-#734+#732, eq-field #703, eq-cards #250. eq-shell/eq-service/eq-field
-deploy on merge (Netlify) — live within seconds. eq-cards' `deploy.yml` is
-`workflow_dispatch`-only, so #250 is merged but **not yet deployed** —
-needs `gh workflow run deploy.yml --ref main` (eq-cards repo) when Royce
-wants it live.
+**All 5 fix PRs merged and deployed 2026-08-16:** eq-shell #1375,
+eq-solves-service #734+#732, eq-field #703 (Netlify auto-deploy on merge),
+eq-cards #250 (`gh workflow run deploy.yml`, confirmed live at commit
+`c5024a7`). All 4 apps' running code now matches this file.
 
 **Still open:**
 
 1. **ProtonPass entry** for the real secrets that have no vendor source of
    truth — partial as of 2026-08-16, not complete. See the EQ Secrets Map
-   artifact's master list for the full 35-row checklist.
-2. **eq-cards deploy** — PR #250 merged, not yet shipped (see above).
+   artifact's master list for the full 35-row checklist. This is the only
+   item left from the entire 2026-08-16 audit that isn't closed.
