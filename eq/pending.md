@@ -299,7 +299,6 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ## EQ Service: nav-visibility tier-inversion + missing service.view entry gate — merged + live (2026-08-16)
 
-- [ ] **`/job-plans` has no view-level role gate at all** — its 4 RECORDS_PATHS siblings got `entity.view` in #716, job-plans didn't. Spun off as `task_68813d6a`, Royce has started it running in a separate session. _(added 2026-08-16)_
 - [ ] **`service.view_commercials` (real canonical key, "see job pricing/contract value") is completely unwired anywhere** — distinct from the tenant-level `commercial_features_enabled` flag. Spun off as `task_61bda775`, Royce has started it running in a separate session. _(added 2026-08-16)_
 
 ---
