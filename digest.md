@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-16 07:32 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-16 07:34 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-16 07:12 UTC → 2026-08-16 07:32 UTC)
+## Since last refresh (2026-08-16 07:32 UTC → 2026-08-16 07:34 UTC)
 
-- Merged: eq-shell [#1388](https://github.com/eq-solutions/eq-shell/pull/1388) fix(security): enforce admin.deactivate_user on edit-user.ts
-- Merged: eq-shell [#1369](https://github.com/eq-solutions/eq-shell/pull/1369) docs(auth): active-user-guard claimed the cookie path was co
-- Merged: eq-shell [#1367](https://github.com/eq-solutions/eq-shell/pull/1367) fix(security): a deactivated shell_control.users account can
-- Merged: eq-shell [#1365](https://github.com/eq-solutions/eq-shell/pull/1365) fix(security): gate timesheet/licence reads on the split-out
-- Merged: eq-shell [#1364](https://github.com/eq-solutions/eq-shell/pull/1364) fix(security): revoke authenticated EXECUTE on eq_update_sta
-- Merged: eq-shell [#1362](https://github.com/eq-solutions/eq-shell/pull/1362) fix(security): role-gate 21 CRM/staff RPCs that only checked
-- Merged: eq-shell [#1361](https://github.com/eq-solutions/eq-shell/pull/1361) chore(admin): retire the redeem-an-invite worker QR, leaving
-- Merged: eq-shell [#1360](https://github.com/eq-solutions/eq-shell/pull/1360) chore(identity): remove 7 orphaned test identities from the 
+- Merged: eq-shell [#1373](https://github.com/eq-solutions/eq-shell/pull/1373) fix(staff): stop cards-approve-staff.ts from creating duplic
+- Merged: eq-shell [#1372](https://github.com/eq-solutions/eq-shell/pull/1372) docs(migrations): record 2026_08_15c as applied + the one-ti
+- Merged: eq-shell [#1371](https://github.com/eq-solutions/eq-shell/pull/1371) fix(security): refuse writes from a deactivated account's li
+- Merged: eq-shell [#1370](https://github.com/eq-solutions/eq-shell/pull/1370) fix(security): revoke the Supabase Auth session when Shell d
+- Merged: eq-shell [#1368](https://github.com/eq-solutions/eq-shell/pull/1368) chore(cards-api): retire the lookup_invite_by_phone op, dead
+- Merged: eq-shell [#1366](https://github.com/eq-solutions/eq-shell/pull/1366) chore(security): retire staff-update.ts
+- Merged: eq-shell [#1363](https://github.com/eq-solutions/eq-shell/pull/1363) docs(migrations): retire the stale tenant migration ledger
+- Merged: eq-shell [#1359](https://github.com/eq-solutions/eq-shell/pull/1359) refactor(auth): fold the login timing-burn hash into one sha
 
 ## ⚠ Needs you (3)
 
@@ -50,7 +50,7 @@ _…and 144 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 5 | 0d |
-| eq-solves-service | ✓ success | 0d ago | 2 | 0d |
+| eq-solves-service | ✓ success | 0d ago | 1 | 0d |
 | eq-field | ✓ success | 0d ago | 3 | 0d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
@@ -82,11 +82,11 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-16 | eq-shell | [#1378](https://github.com/eq-solutions/eq-shell/pull/1378) feat(staff): let a manager scope a required ticket to one role |
 | 2026-08-16 | eq-shell | [#1376](https://github.com/eq-solutions/eq-shell/pull/1376) feat(staff): scope credential requirements by role |
 | 2026-08-16 | eq-shell | [#1374](https://github.com/eq-solutions/eq-shell/pull/1374) fix(security): gate EQ Ops Setup on ops.view_rates |
+| 2026-08-16 | eq-solves-service | [#738](https://github.com/eq-solutions/eq-service/pull/738) fix(security): wire entity.view on job-plans (missed by #716) |
 | 2026-08-16 | eq-solves-service | [#736](https://github.com/eq-solutions/eq-service/pull/736) fix(security): nav visibility allow-by-role, wire service.view as |
 | 2026-08-16 | eq-solves-service | [#735](https://github.com/eq-solutions/eq-service/pull/735) fix(security): enforce write roles in the database, not just the  |
 | 2026-08-16 | eq-solves-service | [#732](https://github.com/eq-solutions/eq-service/pull/732) fix(security): drop the SUPABASE_JWT_SECRET fallback in service-j |
 | 2026-08-16 | eq-solves-service | [#734](https://github.com/eq-solutions/eq-service/pull/734) fix(security): drop the CANONICAL_SERVICE_ROLE_KEY fallback to ur |
-| 2026-08-16 | eq-solves-service | [#733](https://github.com/eq-solutions/eq-service/pull/733) fix(settings): defer Profile/Password to Shell for embedded sessi |
 _Showing 15 of 115 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -144,4 +144,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-16 07:32 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-16 07:34 UTC._
