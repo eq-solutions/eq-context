@@ -9,6 +9,11 @@ status: live
 
 # EQ Cards — Changelog
 
+## 2026-08-16 (PR #250 MERGED + deployed live — shell-verify.js no longer proceeds silently on a failed admin identity check)
+- `ensureAuthUser()`'s status-check branch treated any non-404 response from the admin `getUser` check as "user already exists" and proceeded — including a 401 caused by a bad `SUPABASE_SERVICE_ROLE_KEY`, which surfaced downstream as an unrelated-looking `setSession` failure in Flutter with nothing in this function's own logs pointing at the real cause. Now fails the same way a failed create does, logging the actual status code.
+- Found during the 2026-08-16 secrets audit's silent-failure sweep, same root-cause family as the eq-shell/eq-field/eq-service fixes shipped the same day and the Netlify masking findings (SEC-9/18/24) closed the same session.
+- eq-cards [PR #250](https://github.com/eq-solutions/eq-cards/pull/250), squash-merged, deployed via `gh workflow run deploy.yml` (its `deploy.yml` is `workflow_dispatch`-only, merge alone doesn't ship it), confirmed live at commit `c5024a7`.
+
 ## 2026-08-16 (PR #253 MERGED + deployed live — 3 permission-audit gaps closed)
 - **3 findings from a 2026-08-16 permission audit, verified live before any fix, not taken from migration files alone.**
 - **`netlify/functions/shell-verify.js` retired.** Confirmed undeployed by curling the live endpoint directly (returns Netlify's SPA fallback, not a function response) rather than inferring from `netlify.toml`/`deploy.yml` — the zip-upload deploy only ever includes `build/web`. Deleted the file and the now-empty `[functions]` stanza in `netlify.toml`.

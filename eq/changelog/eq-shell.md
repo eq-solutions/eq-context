@@ -9,6 +9,10 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-16 (PR #1375 MERGED + deployed live — SKS session mint stopped failing silently on a bad key)
+- Same silent-fallback shape as the eq-cards/eq-field/eq-service fixes shipped the same day (found during the 2026-08-16 secrets audit's silent-failure sweep): a bad key used to mint an SKS-tenant session was allowed to proceed past the failure instead of erroring loud.
+- eq-shell [PR #1375](https://github.com/eq-solutions/eq-shell/pull/1375), merged, live within seconds (Netlify auto-deploy on merge to `main`).
+
 ## 2026-08-16 (PR #1378 MERGED + deployed live — Required tickets bar can now scope a requirement to one role)
 - Follow-on to #1376 (same day): the backend already accepted an optional `role` on `org-credential-requirements.ts`, but `RequiredTicketsBar` (Staff > Training matrix) had no UI path to it — every added requirement was org-wide only.
 - Shown as an interactive mockup first and confirmed before building (Royce: "build it as shown"). Pills now carry a small role badge when scoped (e.g. "Manager"); the add flow gains a role dropdown (default "All roles") that narrows the ticket list to exclude combinations already required for the selected role. Removing a pill only removes that exact `(ticket, role)` row — an org-wide requirement and a role-scoped one for the same ticket are independent.
