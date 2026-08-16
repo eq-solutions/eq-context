@@ -61,10 +61,9 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-16)
 
 **eq-shell:**
+- #1395 fix(security): origin-guard 4 worker/user invite endpoints
 - #1394 fix(security): origin-guard 4 session/account-lifecycle endpoints
 - #1393 fix(security): origin-guard 5 account-credential endpoints (TOTP/PIN/email/reset)
-- #1391 fix(ci): triage 3 control-plane functions as cross-repo KNOWN_UNSOURCED
-- #1385 fix(security): gate the Documents module on documents.view/manage/assign
 
 ---
 
