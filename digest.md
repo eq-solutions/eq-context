@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-16 07:47 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-16 07:49 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-16 07:42 UTC → 2026-08-16 07:47 UTC)
+## Since last refresh (2026-08-16 07:47 UTC → 2026-08-16 07:49 UTC)
 
-- Merged: eq-shell [#1381](https://github.com/eq-solutions/eq-shell/pull/1381) fix(security): close 4 PII leaks gated on field.view/entity.
-- Merged: eq-shell [#1369](https://github.com/eq-solutions/eq-shell/pull/1369) docs(auth): active-user-guard claimed the cookie path was co
-- Merged: eq-shell [#1367](https://github.com/eq-solutions/eq-shell/pull/1367) fix(security): a deactivated shell_control.users account can
-- Merged: eq-shell [#1365](https://github.com/eq-solutions/eq-shell/pull/1365) fix(security): gate timesheet/licence reads on the split-out
-- Merged: eq-shell [#1364](https://github.com/eq-solutions/eq-shell/pull/1364) fix(security): revoke authenticated EXECUTE on eq_update_sta
-- Merged: eq-shell [#1362](https://github.com/eq-solutions/eq-shell/pull/1362) fix(security): role-gate 21 CRM/staff RPCs that only checked
-- Merged: eq-shell [#1360](https://github.com/eq-solutions/eq-shell/pull/1360) chore(identity): remove 7 orphaned test identities from the 
-- Merged: eq-shell [#1359](https://github.com/eq-solutions/eq-shell/pull/1359) refactor(auth): fold the login timing-burn hash into one sha
+- Merged: eq-shell [#1384](https://github.com/eq-solutions/eq-shell/pull/1384) docs: confirm zaap Field write-guard absence is deliberate, 
+- Merged: eq-shell [#1373](https://github.com/eq-solutions/eq-shell/pull/1373) fix(staff): stop cards-approve-staff.ts from creating duplic
+- Merged: eq-shell [#1372](https://github.com/eq-solutions/eq-shell/pull/1372) docs(migrations): record 2026_08_15c as applied + the one-ti
+- Merged: eq-shell [#1371](https://github.com/eq-solutions/eq-shell/pull/1371) fix(security): refuse writes from a deactivated account's li
+- Merged: eq-shell [#1370](https://github.com/eq-solutions/eq-shell/pull/1370) fix(security): revoke the Supabase Auth session when Shell d
+- Merged: eq-shell [#1368](https://github.com/eq-solutions/eq-shell/pull/1368) chore(cards-api): retire the lookup_invite_by_phone op, dead
+- Merged: eq-shell [#1366](https://github.com/eq-solutions/eq-shell/pull/1366) chore(security): retire staff-update.ts
+- Merged: eq-shell [#1363](https://github.com/eq-solutions/eq-shell/pull/1363) docs(migrations): retire the stale tenant migration ledger
 
 ## ⚠ Needs you (3)
 
@@ -49,7 +49,7 @@ _…and 144 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 7 | 0d |
+| eq-shell | ✓ success | 0d ago | 6 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 0 | — |
 | eq-field | ✓ success | 0d ago | 1 | 0d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
@@ -71,6 +71,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-16 | eq-shell | [#1384](https://github.com/eq-solutions/eq-shell/pull/1384) docs: confirm zaap Field write-guard absence is deliberate, not a |
 | 2026-08-16 | eq-shell | [#1381](https://github.com/eq-solutions/eq-shell/pull/1381) fix(security): close 4 PII leaks gated on field.view/entity.view  |
 | 2026-08-16 | eq-shell | [#1389](https://github.com/eq-solutions/eq-shell/pull/1389) chore(ci): triage 3 jvkn functions into KNOWN_UNSOURCED (cross-re |
 | 2026-08-16 | eq-shell | [#1388](https://github.com/eq-solutions/eq-shell/pull/1388) fix(security): enforce admin.deactivate_user on edit-user.ts's ar |
@@ -85,7 +86,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-16 | eq-shell | [#1374](https://github.com/eq-solutions/eq-shell/pull/1374) fix(security): gate EQ Ops Setup on ops.view_rates |
 | 2026-08-16 | eq-solves-service | [#737](https://github.com/eq-solutions/eq-service/pull/737) fix(ci): app_data CI-bootstrap fixture guard + drift check |
 | 2026-08-16 | eq-solves-service | [#738](https://github.com/eq-solutions/eq-service/pull/738) fix(security): wire entity.view on job-plans (missed by #716) |
-| 2026-08-16 | eq-solves-service | [#736](https://github.com/eq-solutions/eq-service/pull/736) fix(security): nav visibility allow-by-role, wire service.view as |
 _Showing 15 of 115 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -122,7 +122,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [EQ](eq/pending.md) | 3683 | 497 / 147 | 144 | 64 |
+| [EQ](eq/pending.md) | 3682 | 496 / 147 | 144 | 64 |
 | [SKS](sks/pending.md) | 439 | 84 / 9 | 1 | 15 |
 | [SKS active](sks/active.md) | 109 | 0 / 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 421 | 33 / 4 | 3 | 1 |
@@ -149,4 +149,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-16 07:47 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-16 07:49 UTC._
