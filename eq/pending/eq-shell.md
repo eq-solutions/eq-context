@@ -13,6 +13,20 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: Access Control page redesigned — searchable diffed drawer for Base permissions, unified Field permissions view — both shipped, live (2026-08-17)
+*Royce found the Access Control page very difficult to navigate. Ran a `/decide` pass on progressive-disclosure permission UI patterns, mocked up a redesign, had Claude Design produce a competing version, then built the winning ideas for real in two shipped PRs.*
+
+- [x] Fixed the stray "EQ" prefix on the Ops column label (every other module label is bare).
+- [x] Base Permissions table got a search box (highlights matching rows/cells, dims the rest) and the click-through detail view became a slide-in drawer with a git-diff-style ledger (what's added/removed vs. the role's default) instead of a static list. [PR #1420](https://github.com/eq-solutions/eq-shell/pull/1420), merged, live.
+- [x] Field's permissions were split across two places that looked unrelated — 8 role-level checkboxes in one screen, 77 fine-grained grant-only permissions buried in a separate Custom Groups tab. Unified them into one browsable, searchable drawer: the 8 checkboxes stay editable inline, the 77 are grouped by category (Roster, Timesheets, Leave, etc.) and each shows which custom group(s) grant it, with a link back to that group. Deliberately kept the two mechanisms honest rather than faking one control for both — role checkboxes are a real toggle, fine-grained perms are grant-only and say so. [PR #1425](https://github.com/eq-solutions/eq-shell/pull/1425), merged, confirmed live.
+- [x] Both confirmed live the careful way (commit ancestry against the actual production deploy, not just a green merge) — this repo's merges deploy automatically within seconds.
+
+**Deferred:**
+- [ ] **Compare-roles view and a Custom-Groups/preview-a-person retab** — scoped in the original `/decide` pass as follow-on, not built. Revisit if Royce wants the next layer. _(added 2026-08-17)_
+- [ ] **Not clicked through live** — verified by code review, typecheck/lint/tests, and a clean production deploy, not by an actual person opening the drawer and searching. Worth two minutes on a real admin account. _(added 2026-08-17)_
+
+---
+
 ## eq-shell: Staff table gets Excel-style filtering — built, merged, live (2026-08-17)
 *Royce asked what it would take to add Excel-style (search + checkbox list) filters to the Staff table, then asked for it on every column that could support it.*
 
