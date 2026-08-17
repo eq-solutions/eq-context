@@ -71,6 +71,7 @@ _If this file is >48h old, the cron is broken._
 - #739 chore(deps): bump react and @types/react
 
 **eq-shell:**
+- #1426 fix(staff): stop dob_day/dob_month drifting from a Cards-linked worker's real DOB
 - #1416 chore(intake): auto re-vendor eq-intake/eq-platform
 
 ---
@@ -81,7 +82,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ? in_progress |
+| eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
@@ -90,7 +91,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 217 (latest: 0210) applied
+**Migrations:** eq-service has 219 (latest: 0212) applied
 
 ---
 
