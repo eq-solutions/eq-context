@@ -35,6 +35,16 @@ Blocks the failures prose could not stop:
       Neither check fires outside the ONE shared checkout — a private clone
       (the escape valve both messages recommend) has no concurrent writer, so
       neither risk applies there.
+  F12 F9's escape valve (b) ends with `git push origin main` FROM the isolated
+      clone — never a manual copy of a resolved file back onto the shared
+      checkout's disk. Recurred twice (2026-08-05, 2026-08-17) via exactly
+      that anti-pattern: a raw cp/Copy-Item silently overwrote the shared
+      checkout's on-disk file with the side-clone's older content, reverting
+      a concurrent session's already-pushed edit. Blocks any copy/move whose
+      destination path resolves inside the shared checkout while its source
+      does not — push from the other checkout instead, so git's own
+      fast-forward check can refuse loudly on divergence instead of a
+      filesystem copy silently clobbering.
 
 Scope: F2/F6/the git-lock block are Linux sandbox (Cowork) only — on the Beelink
 (Windows) Claude Code writes and runs git natively; neither bug applies there, so
@@ -397,6 +407,86 @@ def _norm_hookspath(v):
     return (v[2:] if v.startswith("./") else v).rstrip("/")
 
 
+# F12 — a raw file copy/move whose DESTINATION lands inside the shared
+# eq-context checkout. Deliberately scoped on the PATH STRINGS in the command
+# text, never on cwd/repo-root the way F9/F10 are: the incident shape is an
+# absolute-path copy that can be issued from anywhere (a side-clone, a linked
+# worktree, a scratch dir), not only from a command run FROM inside the shared
+# checkout. See the F12 block below (in main()) for the full rationale.
+COPY_VERB_RE = re.compile(r'(?<![\w.-])(cp|mv|copy|xcopy|robocopy|Copy-Item|Move-Item)(?=\s)',
+                           re.IGNORECASE)
+
+
+def _norm_path_for_compare(p):
+    """Normalize a Windows-or-Git-Bash path to a lowercase, forward-slash form
+    for a simple prefix comparison against SHARED_EQ_CONTEXT. Not resolve() —
+    this never touches the filesystem, it only asks 'is this path SPELLED as
+    inside the shared checkout'. Mirrors guard.js's normalizeMsysPath() for the
+    /c/ drive-letter case; the /tmp MSYS-mount case doesn't apply here (F12's
+    risk is a copy INTO C:\\Projects\\eq-context specifically, never a copy
+    whose destination is under /tmp)."""
+    if not p:
+        return ""
+    p = p.strip().strip('"').strip("'").replace("\\", "/")
+    m = re.match(r'^/([A-Za-z])(/.*|$)', p)
+    if m:
+        p = f"{m.group(1).lower()}:{m.group(2) or '/'}"
+    return p.rstrip("/").lower()
+
+
+def _is_under_shared(p):
+    norm = _norm_path_for_compare(p)
+    return norm == SHARED_EQ_CONTEXT or norm.startswith(SHARED_EQ_CONTEXT + "/")
+
+
+def _looks_like_flag(token):
+    """True for a Windows/robocopy-style flag (-Force, /E, /MIR, /R:3) that
+    _copy_targets_shared should skip when hunting for the src/dest positional
+    args. A leading '-' is always a flag. A leading '/' is ambiguous on
+    Windows — it's ALSO how a genuine Git-Bash MSYS absolute path spells a
+    drive letter (/c/Projects/eq-context/...) — so it's only treated as a
+    flag when there's no FURTHER slash after the first segment; a real path
+    always has one (found live building this: an earlier version filtered
+    '/c/Projects/...' out entirely as if it were a bare '/E'-style flag,
+    silently defeating the msys-path BLOCK case one line down from PASS)."""
+    body = token.lstrip('\'"')
+    if body.startswith('-'):
+        return True
+    if body.startswith('/'):
+        return '/' not in body[1:]
+    return False
+
+
+def _copy_targets_shared(cmd):
+    """dest string if `cmd` looks like a copy/move whose DESTINATION resolves
+    inside the shared eq-context checkout while the SOURCE does not — the
+    exact F12 incident shape (a cross-checkout copy-back). None otherwise,
+    including a same-checkout copy (source already under the shared root too
+    — an ordinary, safe operation) and a copy whose destination is elsewhere.
+
+    Deliberately tolerant of flags (skips anything _looks_like_flag() calls)
+    and takes the LAST TWO remaining positional tokens as src/dest — covers
+    the common cp/Copy-Item/xcopy 2-path shape (including `Copy-Item -Path X
+    -Destination Y`, since the flag names themselves get filtered and X/Y
+    remain the last two positional tokens) and robocopy's dir-then-dir shape.
+    Known, accepted narrowing: this does NOT parse robocopy's trailing file
+    list or wildcard globs — a guard built to catch the incident shape that
+    actually happened (a single-file cp/Copy-Item), not to parse every copy
+    invocation grammar exhaustively. Same tradeoff this file already makes
+    for F9(a)'s pathspec detection."""
+    m = COPY_VERB_RE.search(cmd)
+    if not m:
+        return None
+    tokens = re.findall(r'"[^"]*"|\'[^\']*\'|\S+', cmd[m.end():])
+    positional = [t for t in tokens if not _looks_like_flag(t)]
+    if len(positional) < 2:
+        return None
+    src, dest = positional[-2], positional[-1]
+    if _is_under_shared(dest) and not _is_under_shared(src):
+        return dest
+    return None
+
+
 def block(msg):
     sys.stderr.write(msg)
     sys.exit(2)
@@ -615,6 +705,53 @@ def main():
                         f"    git config {flag10}core.hooksPath .githooks\n\n"
                         f"  system/failures.md -> F10.\n"
                     )
+
+    # --- F12: raw file copy blind-overwrites the SHARED checkout ------------
+    # The F9 escape valve (isolated clone/worktree for rebase/merge/pull) ends
+    # with `git push origin main` FROM that clone — never a manual copy of a
+    # resolved file back onto the shared checkout's disk. Two real incidents
+    # did exactly that instead (2026-08-05, 2026-08-17): a raw cp/Copy-Item
+    # overwrote the shared checkout's on-disk copy of a file with the
+    # side-clone's version, silently reverting whatever a concurrent session
+    # had already pushed there in the meantime. A `git push` merges/
+    # fast-forwards through git's own machinery and fails loudly on
+    # divergence; a filesystem copy has no such check — it just clobbers.
+    #
+    # Scoped on the DESTINATION path STRING alone (see _copy_targets_shared),
+    # not on cwd/repo-root the way F9/F10 are, and deliberately NOT gated on
+    # in_sandbox() — same reasoning as F9/F10/F13: both real incidents
+    # happened natively on Windows. Rung raised 2 -> 4, closing the general
+    # gap the ledger entry named as still open after the narrower
+    # substrate_sync.py dirty-checkout fix shipped 2026-08-17.
+    if tool in SHELL_TOOLS:
+        dest12 = _copy_targets_shared(ti.get("command", "") or "")
+        if dest12:
+            block(
+                f"BLOCKED by pre_tool_use (F12, rung 4).\n\n"
+                f"  This copies into the SHARED eq-context checkout\n"
+                f"  ({SHARED_EQ_CONTEXT}) from somewhere else — a side-clone, a\n"
+                f"  linked worktree, or another checkout entirely.\n\n"
+                f"  A raw file copy has no merge/divergence check. If a\n"
+                f"  concurrent session pushed to this same file in the\n"
+                f"  meantime, the copy silently overwrites it — no error, no\n"
+                f"  conflict marker, nothing to catch before it's gone. This is\n"
+                f"  exactly what happened twice (2026-08-05, 2026-08-17): an\n"
+                f"  older local copy landed on top of a concurrent session's\n"
+                f"  already-pushed edit.\n\n"
+                f"  Push from the OTHER checkout instead — git's own\n"
+                f"  fast-forward check refuses loudly on divergence instead of\n"
+                f"  clobbering:\n"
+                f"    git -C <other-checkout> push origin main\n\n"
+                f"  Then bring the shared checkout up to date the normal way\n"
+                f"  (only safe when it has nothing uncommitted — see F9):\n"
+                f"    git -C \"{SHARED_EQ_CONTEXT}\" pull --ff-only origin main\n\n"
+                f"  Deliberately placing a brand-new, unrelated file here (not\n"
+                f"  reconciling a divergent copy of something already tracked)?\n"
+                f"  Use the Write tool instead of a shell copy — this guard only\n"
+                f"  exists to stop a copy-back from silently clobbering someone\n"
+                f"  else's already-pushed edit.\n\n"
+                f"  system/failures.md -> F12.\n"
+            )
 
     # --- F13: false eq-shell deploy-posture claim entering substrate --------
     # Deliberately ABOVE the in_sandbox() gate, same reasoning as F7/F9/F10:
