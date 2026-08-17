@@ -13,6 +13,21 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-solves-service: notification bell was silently broken for anyone signed in through Shell — found, fixed, reviewed, merged, live (2026-08-17)
+*Found while doing unrelated identity-canonicalization work — the notification bell's API route was checking who's signed in using a method that only works for the old, direct sign-in path. Anyone using Service through Shell (the normal way people reach it) has been getting a silent failure: the bell just shows nothing, no error, no explanation.*
+
+- [x] Confirmed the bug by reading the code's own comments, which already documented the exact failure — no live repro needed.
+- [x] Checked live against the real database: the underlying rule that controls who can see which notifications only checks that you're in the right company. It does not by itself stop you seeing a colleague's notifications — the app's own "only show me mine" filter is the only thing doing that job, and it had to stay in place (and got a matching company-level check added alongside it, belt-and-braces).
+- [x] Fixed the route to check identity the same way every other similar route in the app already does. `tsc` and a full production build both came back clean.
+- [x] Independent code review run on the fix before merge (one reviewer lens only — the second wasn't available today, noted as such on the PR). No real problems found; one cosmetic note (a wrong-flavour error code in a case that can't currently happen) left as-is and recorded for the record.
+- [x] eq-service PR [#749](https://github.com/eq-solutions/eq-service/pull/749) merged to `main` (commit `70ab3ff`), auto-deployed to service.eq.solutions.
+
+**Deferred:**
+- [ ] **Not clicked through live on a real Shell sign-in** — no way to produce one in this environment. Worth opening the bell once after this deploys to see it actually populate. _(added 2026-08-17)_
+- [ ] **The cosmetic error-code mismatch the reviewer flagged** (wrong error code for a case that can't currently be reached) — left alone on purpose, your call if you want it tidied to match the other routes exactly. _(added 2026-08-17)_
+
+---
+
 ## eq-service: ACB/NSX cover masthead + blank page 2 fixed; live Secondary Injection load bug found and fixed (2026-08-17)
 *Royce reviewed a generated ACB Test Report (St George Private Hospital) and flagged four formatting issues plus one live-app discrepancy. Two formatting issues were confirmed bugs already fixed once elsewhere and never propagated to ACB/NSX — same recurring pattern as the 2026-08-14 NSX dead-fields fix below. The live-app discrepancy turned out to be a real, tenant-wide bug, not a stale report.*
 
