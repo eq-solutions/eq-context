@@ -63,9 +63,6 @@ _If this file is >48h old, the cron is broken._
 **eq-field:**
 - #715 v3.5.512 — My Schedule: cold-boot cache fallback
 
-**eq-service:**
-- #752 fix(notifications): gate the calendar supervisor digest on an Access Control group, not role
-
 **eq-shell:**
 - #1416 chore(intake): auto re-vendor eq-intake/eq-platform
 
@@ -77,7 +74,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ✓ success |
+| eq-service | ? in_progress |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
