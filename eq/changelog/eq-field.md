@@ -9,6 +9,9 @@ status: live
 
 # eq-field changelog
 
+## 2026-08-18 (PR #712 MERGED — v3.5.509, Contacts: Labour Hire archive now prompts for a rating)
+- Contacts' 📦 "Remove from roster" button called `archivePerson()` directly for every group, skipping the rehire-rating modal for Labour Hire rows — only the roster grid's archive icon went through `openLHArchiveModal()`. Found live: Royce archived Timothy Chapman (Labour Hire) from Contacts and got no rating prompt. Contacts now routes Labour Hire rows through the same shared modal as the roster grid; other groups unchanged. Confirmed live via `field.eq.solutions/sw.js`.
+
 ## 2026-08-17 (PR #711 MERGED — v3.5.508, roster site-map scoped to field_enabled)
 - Roster's site-map query (`scripts/supabase.js`) filtered sites on `active=eq.true` only, missing the `field_enabled` flag that actually gates whether a site should appear in Field — added `&field_enabled=eq.true`. Found during a live-recon pass at session start, not from a prior report. Confirmed additive-safe against live data (doesn't change the one existing duplicate-code collision count) before merging. Confirmed live via `field.eq.solutions/sw.js`.
 

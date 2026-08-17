@@ -13,6 +13,18 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: Contacts screen skipped the rehire-rating prompt when archiving Labour Hire (2026-08-18)
+*Royce archived Timothy Chapman (Labour Hire) from the Contacts screen and got no rating prompt. Traced live: the roster grid's archive icon went through a shared modal asking "would you rehire them?" before archiving, but the Contacts screen's own archive button called the plain archive function directly for every group — the modal was only ever wired to the roster grid.*
+
+- [x] Contacts' archive button now routes Labour Hire rows through the same rating modal the roster grid uses; other groups (Direct, Apprentice) are unchanged. [eq-field PR #712](https://github.com/eq-solutions/eq-field/pull/712) (v3.5.509), squash-merged, confirmed live via `field.eq.solutions/sw.js` (`v3.5.509`).
+- [x] Verified structurally against the live deploy-preview build (called the actual render function with mock records, confirmed the Labour Hire path calls the modal and other groups don't) — no real Core-authenticated session available in this sandbox to click through it directly.
+
+**Deferred:**
+- [ ] **Timothy Chapman's rating was never captured** — he's already archived with no rating; add it retroactively via the ★ button on his archived Contacts row. Royce's own action, not a code fix. _(added 2026-08-18)_
+- [ ] **Not click-tested live by a human** — same sandbox limitation as other recent items in this file. Worth a real archive-and-rate on a Labour Hire contact next time you're in Contacts. _(added 2026-08-18)_
+
+---
+
 ## eq-field: roster site-map query scoped to field_enabled, not just active (2026-08-17)
 *Found during a live-recon pass answering "what's outstanding" at session start, not from a prior report — the roster's site-map query filtered sites on `active=eq.true` only, missing the `field_enabled` flag that gates whether a site should actually appear in Field.*
 
