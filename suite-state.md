@@ -65,7 +65,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #1435 fix(field): drop zaap's dead legacy tables, fix field_people view parity
-- #1434 fix(staff): stop the compliance-pack poll from blanking the SPA on desktop
 - #1429 feat(access-control): ring visual for the permission matrix, real tab strip
 - #1428 chore(intake): auto re-vendor eq-intake/eq-platform
 - #1416 chore(intake): auto re-vendor eq-intake/eq-platform
