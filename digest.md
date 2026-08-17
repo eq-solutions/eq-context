@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-17 11:54 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-17 12:06 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-17 11:49 UTC → 2026-08-17 11:54 UTC)
+## Since last refresh (2026-08-17 11:54 UTC → 2026-08-17 12:06 UTC)
 
-- Merged: eq-shell [#1414](https://github.com/eq-solutions/eq-shell/pull/1414) feat(notifications): fire the connect-request email for auto
-- Merged: eq-shell [#1412](https://github.com/eq-solutions/eq-shell/pull/1412) chore(roles): bump @eq-solutions/roles to v2.7.3
-- Merged: eq-shell [#1409](https://github.com/eq-solutions/eq-shell/pull/1409) fix(security): origin-guard 3 misc upload endpoints
-- Merged: eq-shell [#1408](https://github.com/eq-solutions/eq-shell/pull/1408) chore(ci): triage can_assign_worker_role into KNOWN_UNSOURCE
-- Merged: eq-shell [#1406](https://github.com/eq-solutions/eq-shell/pull/1406) fix(dashboard): remove Today's Actions from the Shell home p
-- Merged: eq-shell [#1405](https://github.com/eq-solutions/eq-shell/pull/1405) fix(security): origin-guard 4 quotes/ops/briefing endpoints
-- Merged: eq-shell [#1402](https://github.com/eq-solutions/eq-shell/pull/1402) fix(security): origin-guard 4 GM Reports mutation endpoints
-- Merged: eq-shell [#1401](https://github.com/eq-solutions/eq-shell/pull/1401) fix(security): origin-guard 4 CRM/suppliers/labour-hire muta
+- Merged: eq-shell [#1415](https://github.com/eq-solutions/eq-shell/pull/1415) chore(ci): extend control-plane drift-check to tables, backf
+- Merged: eq-shell [#1413](https://github.com/eq-solutions/eq-shell/pull/1413) fix(sync): close 3 name-propagation gaps found live-testing 
+- Merged: eq-shell [#1411](https://github.com/eq-solutions/eq-shell/pull/1411) fix(dashboard): retire ai-briefing.ts + briefing-action.ts
+- Merged: eq-shell [#1410](https://github.com/eq-solutions/eq-shell/pull/1410) fix(security): origin-guard user-preferences.ts
+- Merged: eq-shell [#1407](https://github.com/eq-solutions/eq-shell/pull/1407) fix(security): origin-guard 4 attachment/document upload end
+- Merged: eq-shell [#1404](https://github.com/eq-solutions/eq-shell/pull/1404) fix(security): origin-guard 3 intake-staging endpoints + doc
+- Merged: eq-shell [#1403](https://github.com/eq-solutions/eq-shell/pull/1403) fix(admin-settings): stop crash on role-scoped licence requi
+- Merged: eq-shell [#1400](https://github.com/eq-solutions/eq-shell/pull/1400) fix(security): P2 access-control sweep — 5 unchecked read en
 
 ## ⚠ Needs you (4)
 
@@ -28,23 +28,23 @@ _2026-08-17 11:54 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🟠 **Sentry new error** — `eq-shell` [Degraded UI Performance](https://eq-solutions.sentry.io/issues/141127922/)
 - 🟠 **Sentry new error** — `eq-shell` [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/)
 
-## 🙋 Waiting on you (156)
+## 🙋 Waiting on you (159)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
-- **EQ** · **Secondary Injection load fix not click-tested live post-deploy** — verified via code trace (label-prefix mismatch confirmed against live DB data) plus a regenerated sample report, not by an actual technician reopening a check with saved SI data and watching the fields populate. Worth Royce doing that once. _(added 2026-08-17)_
-- **EQ** · **Live click-through still not observed** — same caveat as the 2026-08-14 entry further down this file, now scoped to this specific batch. Resolves once Royce sends the link and the first person scans. _(added 2026-08-17)_
-- **EQ** · **Max-uses cap on self-join codes — scoped, not built, Royce's call to hold.** Would need a `max_uses` column (mirrors `expires_at`'s existing shape), an atomic check-and-reject in `shell-join-tenant.ts`, and a field on the Join Links admin page. Estimated under an hour for a working version. Revisit if a link ever actually leaks past its intended recipients, or this becomes a recurring worry. _(added 2026-08-17)_
-- **EQ** · **Root cause #1's precise backfill not attempted** — real archaeology (reconstructing minimal table shapes from ~32 migrations, no live table left to verify against) on a shared prod-adjacent project. Royce's call: document only for now. _(added 2026-08-16)_
+- **EQ** · **Not yet seen working on Royce's own screen** — confirmed the code is correct and the production build deployed clean, but couldn't click through it personally (no login for this environment). Worth two minutes next time Royce is in Staff. _(added 2026-08-17)_
 - **EQ** · **Two adjacent staff-approval screens require different levels of permission to do very similar things** — one needs a manager, another needs only a much more junior permission to view/act on the same underlying approval data. Doesn't look deliberate. Needs your call on whether they should match. _(added 2026-08-16)_
-- **EQ** · **A merged duplicate can still show up looking "active" again after a page reload** — the screen doesn't fully know a pair was already merged until it's clicked into once. The real fix needs a small database change in EQ Shell (not this app), so it's fully scoped (exact change, which table, which migration number) but deliberately not built yet — spun off as its own follow-up rather than done inside this session, per Royce's call to leave it for that follow-up to pick up. _(added 2026-08-16)_
-- **EQ** · **Not clicked through live in either state.** No safe way to produce a working Shell login locally to test the fixed version, and the standalone side has no working test account — the practice/demo login has been broken since a database move in June and was never reconnected. Worth Royce opening `core.eq.solutions/sks/service/settings` once to eyeball it for real. _(added 2026-08-16)_
 - **EQ** · **Quote records (create/edit/delete) were deliberately left open to everyone** — Royce's call, not a gap. Worth a second look later if quote data starts needing tighter control. _(added 2026-08-15)_
-- **EQ** · **The email sign-in door reaches 22 of 73 accounts, and none of the six apprentices.** Shipping it didn't change that and can't: a worker still has no way to add an email to their own account. The email on the profile screen is a contact detail that travels with the street address — 73 of 101 worker records have one, but only 17 of those match an actual login. The remaining 58 were typed by admins and never verified, so they must never become logins without the worker proving they own the address. A verified add-an-email flow is the only thing that moves the 22. _(added 2026-08-15, needs your call on priority)_
 - **EQ** · **Nothing alerts on this yet.** Recording a lockout is not the same as being told about one. The two questions worth alerting on — who got locked out in the last 24 hours, and who had the password right but never cleared the second step — are written and tested, but have to be run by hand. Turning either into a real alert is separate work and needs your call on where it should land. _(added 2026-08-15, needs your call)_
-- **EQ** · **Neither half click-tested on a real phone** — verified by `flutter analyze`, 283 passing tests, full CI on both repos and the ancestry check, not by actually scanning an old `/claim?tenant=sks` poster or walking a fresh sign-in. Worth Royce doing both once. _(added 2026-08-15)_
 - **EQ** · **Not click-tested in a browser** — both sign-in doors were checked by calling them directly on production (an unknown mobile and an unknown email each return an identical "no" with no extra detail; the unauthed session check still refuses correctly) plus full CI, but nobody signed in through the actual page. Worth Royce trying two things on his phone: a *wrong* PIN, and a number that has *no* PIN set — both should now show the same "That number and PIN didn't match. If you haven't set a PIN yet, use 'Text me a code instead'". Then sign in by text on an account with no PIN and confirm the "Set a PIN" prompt still appears on the Home screen — that prompt is now the only place that guidance is given. _(added 2026-08-15)_
-_…and 144 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+- **EQ** · **Today's Actions vs Outstanding Works can still contradict each other for up to 10 minutes** — found while reviewing the same screenshots (separate issue from the compliance-card redundancy, not addressed by this build): Today's Actions is cached 10 min per user (`ai-briefing.ts`), Outstanding Works refetches every 60s off the same table. Resolving a Service item mid-cache-window shows "overdue" in one card and "nothing overdue" in the other, same screen, same moment. Needs Royce's call: shrink the cache TTL, or add a "generated Xm ago" stamp so it reads as expected staleness rather than a bug. _(added 2026-08-14)_
+- **EQ** · **Not click-tested live on a real tenant** — verified via `tsc -b --force`, eslint (clean except pre-existing tolerated patterns already present identically in `Suppliers.tsx`/`LabourHireRates.tsx`, not introduced by this change), full CI, and the Netlify deploy preview build succeeding. A local click-through attempt hit a pre-existing sandbox limitation (`VITE_FIELD_URL` unset crashes the app at module scope, unrelated to this change) and was abandoned per the standing "default browser only" rule rather than switched to Chrome for a low-value local check. Worth Royce opening Suppliers, Compliance report, and the mobile Home on his phone once. _(added 2026-08-14)_
+- **EQ** · **Not click-tested live** — verified via `tsc -b --force`, eslint, full CI (all green), and the Netlify deploy preview build succeeding — not by clicking through a real signed-in session. _(added 2026-08-14)_
+- **EQ** · **Not click-tested live** — same sandbox limitation as everything else this session; built against `tsc`/lint/the permission-drift guard only. _(added 2026-08-14)_
+- **EQ** · **Royce's own click-through, still not done** — nobody has logged a conversation, added a rating, or assigned someone off the Unassigned list through the real UI yet, and the new Table view is unverified live. Every fix above should make this work now; only a live session can confirm it. _(added 2026-08-11, carried through every entry above)_
+- **EQ** · **Proactive "overdue for review" nudges** — deliberately held per `/decide`: there's no conversation data yet for staleness to mean anything. Worth building once the click-through above happens and some real data exists. _(added 2026-08-12)_
+- **EQ** · **Compliance click-through only covers Staff and Ops today.** EQ Field has no record-level deep-linking (only `?tab=`), EQ Service has an unused `?return=` path mechanism Shell never constructs a specific path for, and EQ Cards has no deep-link support at all — out of scope for this pass since it wasn't asked for, but the next domain to add if Ask Anything grows past licences/quotes. _(added 2026-08-11)_
+_…and 147 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
@@ -79,27 +79,27 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-17 | eq-shell | [#1419](https://github.com/eq-solutions/eq-shell/pull/1419) feat(staff): show a PDF thumbnail preview instead of a plain link |
 | 2026-08-17 | eq-shell | [#1418](https://github.com/eq-solutions/eq-shell/pull/1418) fix(observability): close account-inactive blind spot on magic-li |
 | 2026-08-17 | eq-shell | [#1417](https://github.com/eq-solutions/eq-shell/pull/1417) fix(observability): surface silent PIN-reset lockouts on inactive |
+| 2026-08-17 | eq-solves-service | [#750](https://github.com/eq-solutions/eq-service/pull/750) fix(identity): canonicalize the supervisor-digest DB functions |
+| 2026-08-17 | eq-solves-service | [#749](https://github.com/eq-solutions/eq-service/pull/749) fix(notifications): authenticate via getApiUser() instead of raw  |
 | 2026-08-17 | eq-solves-service | [#748](https://github.com/eq-solutions/eq-service/pull/748) fix(identity): resolve Service's user/supervisor lookups from the |
 | 2026-08-17 | eq-solves-service | [#747](https://github.com/eq-solutions/eq-service/pull/747) fix(ui): Export button font-size actually applying now (tailwind- |
 | 2026-08-17 | eq-solves-service | [#746](https://github.com/eq-solutions/eq-service/pull/746) fix(reports): drop masthead caption on NSX + Work Order Details t |
 | 2026-08-17 | eq-solves-service | [#745](https://github.com/eq-solutions/eq-service/pull/745) fix(reports): ACB/NSX masthead alignment, blank page 2, sign-off  |
-| 2026-08-17 | eq-solves-service | [#744](https://github.com/eq-solutions/eq-service/pull/744) fix(ui): Export button font size on Maintenance Checks toolbar |
-| 2026-08-17 | eq-field | [#710](https://github.com/eq-solutions/eq-field/pull/710) v3.5.507 — auth.js file-size debt: split into 5 files |
 _Showing 15 of 118 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **Not clicked through live** — verified by code review, live database checks, and a clean preview build, not by an actual person scanning a licence on the real site and watching it save. Worth two minutes on a real account.
-- **The real fix for workers who already have no date of birth on file (e.g. Brian Griffin-Colls) is a different app (Cards), not this one.** Cards' own phone-based licence scanner never offers a scanned date of birth back into someone's profile — it's only ever been something a worker types in by hand. Spun off as its own follow-up in the Cards app; already started in a separate session.
-- **Not yet confirmed fixed on Royce's actual screen** — session ended before he could hard-refresh and check. If it's still oversized after a genuinely fresh tab, the Shell iframe embed path needs a look, not the eq-service build. _(added 2026-08-17)_
-- **Root cause #2 (eq-shell's `shell_control` untracked tables) needs eq-shell to trace and fix** — eq-cards has no visibility into their original shape. eq-shell PR #1389 ("triage 3 jvkn functions into KNOWN_UNSOURCED", merged same day) suggests they may already have a related tracking mechanism worth connecting to instead of duplicating. _(added 2026-08-16)_
-- **`WORKERS_WEBHOOK_SECRET` rotation** — investigated, confirmed lower-urgency than it first looked, Royce: leave it for now. If picked up later: needs jvkn's vault AND eq-shell's Edge Function secret updated in the same window or the live Cards→SKS staff sync 401s. _(added 2026-08-16)_
-- **The "Rollback" button on the activity log still doesn't work** — confirmed still broken, an earlier fix already made it fail with a clear message instead of crashing, and explicitly left the "build it for real, or remove the button" decision for Royce. Not decided again this session. _(added 2026-08-16)_
-- **One database function has the same access-group blind spot as the Number Reviews fix above, not yet fixed** — `eq_revoke_session`. Noted, not actioned. _(added 2026-08-16)_
-- **Not clicked through live** — verified against real production data directly, not by an actual admin opening the screen and watching Manager disappear from the list. Worth two minutes on a real admin account. _(added 2026-08-16)_
-- **Testing this kind of database change on a safe, disposable copy first didn't work** — tried to spin one up before applying anything live, and discovered the database's own history of past changes can't currently rebuild itself from scratch on a fresh copy, unrelated to this fix. Spun off as its own follow-up (already running); until it's fixed, changes like this one have to be verified against the live database directly rather than on a safe copy first. _(added 2026-08-16)_
-- **Cards' own copy of the shared role/permission rulebook is a few versions behind** — old enough that it doesn't know about the new narrower "who can change someone's role" permission at all. Not required for this fix (handled a different way instead, described above) but worth catching up eventually so Cards can check permissions the same direct way Shell does. _(added 2026-08-16)_
-_…and 491 more · [eq/pending.md](eq/pending.md)_
+- **eq-shell** (198 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-cards** (47 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
+- **eq-field** (95 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
+- **eq-solves-service** (72 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
+- **eq-solves-intake** (18 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
+- **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
+- **eq-ui** (2 open) · [eq/pending/eq-ui.md](eq/pending/eq-ui.md)
+- **eq-receipts** (4 open) · [eq/pending/eq-receipts.md](eq/pending/eq-receipts.md)
+- **eq-context** (21 open) · [eq/pending/eq-context.md](eq/pending/eq-context.md)
+- **cross-repo** (181 open) · [eq/pending/cross-repo.md](eq/pending/cross-repo.md)
+- **sks** (8 open) · [eq/pending/sks.md](eq/pending/sks.md)
 
 ## Pending (SKS)
 
@@ -121,7 +121,17 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [EQ](eq/pending.md) | 3691 | 510 / 146 | 102 | 88 |
+| [eq-shell](eq/pending/eq-shell.md) | 1160 | 150 / 50 | 72 | 29 |
+| [eq-cards](eq/pending/eq-cards.md) | 331 | 36 / 12 | 22 | 3 |
+| [eq-field](eq/pending/eq-field.md) | 615 | 84 / 14 | 5 | 11 |
+| [eq-solves-service](eq/pending/eq-solves-service.md) | 408 | 58 / 18 | 14 | 7 |
+| [eq-solves-intake](eq/pending/eq-solves-intake.md) | 147 | 13 / 5 | 5 | 11 |
+| [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
+| [eq-ui](eq/pending/eq-ui.md) | 22 | 2 / 0 | 0 | 0 |
+| [eq-receipts](eq/pending/eq-receipts.md) | 44 | 3 / 1 | 0 | 0 |
+| [eq-context](eq/pending/eq-context.md) | 169 | 19 / 2 | 9 | 2 |
+| [cross-repo](eq/pending/cross-repo.md) | 932 | 141 / 42 | 14 | 18 |
+| [sks](eq/pending/sks.md) | 53 | 3 / 5 | 0 | 6 |
 | [SKS](sks/pending.md) | 432 | 81 / 9 | 1 | 15 |
 | [SKS active](sks/active.md) | 109 | 0 / 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 421 | 33 / 4 | 3 | 1 |
@@ -148,4 +158,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-17 11:54 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-17 12:06 UTC._
