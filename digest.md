@@ -8,17 +8,17 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-17 23:04 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-17 23:43 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-17 23:03 UTC → 2026-08-17 23:04 UTC)
+## Since last refresh (2026-08-17 23:04 UTC → 2026-08-17 23:43 UTC)
 
-- Merged: eq-shell [#1420](https://github.com/eq-solutions/eq-shell/pull/1420) fix(access-control): Ops label consistency + searchable diff
-- Merged: eq-shell [#1419](https://github.com/eq-solutions/eq-shell/pull/1419) feat(staff): show a PDF thumbnail preview instead of a plain
-- Merged: eq-shell [#1418](https://github.com/eq-solutions/eq-shell/pull/1418) fix(observability): close account-inactive blind spot on mag
-- Merged: eq-shell [#1414](https://github.com/eq-solutions/eq-shell/pull/1414) feat(notifications): fire the connect-request email for auto
-- Merged: eq-shell [#1412](https://github.com/eq-solutions/eq-shell/pull/1412) chore(roles): bump @eq-solutions/roles to v2.7.3
-- Merged: eq-shell [#1409](https://github.com/eq-solutions/eq-shell/pull/1409) fix(security): origin-guard 3 misc upload endpoints
-- Merged: eq-shell [#1406](https://github.com/eq-solutions/eq-shell/pull/1406) fix(dashboard): remove Today's Actions from the Shell home p
+- Merged: eq-shell [#1422](https://github.com/eq-solutions/eq-shell/pull/1422) fix(ci): teach orphan-perms gate about eq-field's vendored f
+- Merged: eq-shell [#1421](https://github.com/eq-solutions/eq-shell/pull/1421) feat(staff): Excel-style multiselect filters on Type, Job Ti
+- Merged: eq-shell [#1417](https://github.com/eq-solutions/eq-shell/pull/1417) fix(observability): surface silent PIN-reset lockouts on ina
+- Merged: eq-shell [#1415](https://github.com/eq-solutions/eq-shell/pull/1415) chore(ci): extend control-plane drift-check to tables, backf
+- Merged: eq-shell [#1413](https://github.com/eq-solutions/eq-shell/pull/1413) fix(sync): close 3 name-propagation gaps found live-testing 
+- Merged: eq-shell [#1411](https://github.com/eq-solutions/eq-shell/pull/1411) fix(dashboard): retire ai-briefing.ts + briefing-action.ts
+- Merged: eq-shell [#1410](https://github.com/eq-solutions/eq-shell/pull/1410) fix(security): origin-guard user-preferences.ts
 - Merged: eq-solves-service [#752](https://github.com/eq-solutions/eq-service/pull/752) fix(notifications): gate the calendar supervisor digest on a
 
 ## ⚠ Needs you (4)
@@ -28,7 +28,7 @@ _2026-08-17 23:04 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🟠 **Sentry new error** — `eq-shell` [Degraded UI Performance](https://eq-solutions.sentry.io/issues/141127922/)
 - 🟠 **Sentry new error** — `eq-shell` [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/)
 
-## 🙋 Waiting on you (163)
+## 🙋 Waiting on you (164)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
@@ -44,7 +44,7 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **Royce's own click-through, still not done** — nobody has logged a conversation, added a rating, or assigned someone off the Unassigned list through the real UI yet, and the new Table view is unverified live. Every fix above should make this work now; only a live session can confirm it. _(added 2026-08-11, carried through every entry above)_
 - **eq-shell** · **Proactive "overdue for review" nudges** — deliberately held per `/decide`: there's no conversation data yet for staleness to mean anything. Worth building once the click-through above happens and some real data exists. _(added 2026-08-12)_
 - **eq-shell** · **Compliance click-through only covers Staff and Ops today.** EQ Field has no record-level deep-linking (only `?tab=`), EQ Service has an unused `?return=` path mechanism Shell never constructs a specific path for, and EQ Cards has no deep-link support at all — out of scope for this pass since it wasn't asked for, but the next domain to add if Ask Anything grows past licences/quotes. _(added 2026-08-11)_
-_…and 151 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 152 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
@@ -123,7 +123,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 |------|------:|------------------:|------------------:|------------:|
 | [eq-shell](eq/pending/eq-shell.md) | 1186 | 155 / 50 | 76 | 29 |
 | [eq-cards](eq/pending/eq-cards.md) | 336 | 37 / 12 | 22 | 3 |
-| [eq-field](eq/pending/eq-field.md) | 660 | 87 / 18 | 13 | 11 |
+| [eq-field](eq/pending/eq-field.md) | 661 | 86 / 19 | 14 | 11 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 453 | 64 / 18 | 28 | 7 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 147 | 13 / 5 | 5 | 11 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
@@ -192,4 +192,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-17 23:04 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-17 23:43 UTC._
