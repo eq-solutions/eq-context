@@ -2,7 +2,7 @@
 title: SKS Field — Parallel Run Log
 owner: Royce Milmlow
 scope: Weekly mismatch log for the EQ Field / SKS Labour parallel-entry proving run
-last_updated: 2026-07-26
+last_updated: 2026-08-17
 read_priority: high
 status: live
 ---
@@ -50,6 +50,29 @@ docs, which had gone stale:
   `site_diaries`, `toolbox_talks`) has RLS enabled with policies scoped to `{authenticated}` + tenant
   match only — no policy exists for `anon`, so the grant is unreachable. Not a blocker to this run;
   worth a P3 hygiene cleanup (revoke the unused grant) separately, not urgent.
+
+## 2026-08-17 reconcile — the exact "restarts then stalls silently" pattern recurred
+
+This file's own premise ("not yet started") had gone stale: `eq/pending.md`'s 2026-08-14 entry
+already corrected the record once, live-verifying that informal native entry into EQ Field's SKS
+org *had* been happening since the 2026-07-26 restart — 317 `schedule_entries` rows, one person
+entering centrally rather than supervisors entering their own crews, up to 2026-08-05. That
+correction was never carried into this file. Re-checked live against `ehow` today rather than
+trusting either prior note:
+
+- `field_schedule`: **1,305 rows** (was 1,012 at the 2026-07-26 baseline, +293) — but the latest
+  row is timestamped **2026-08-03 18:39 UTC**. Zero rows created since. 14 days of activity, then
+  nothing for the 12 days since.
+- `field_timesheets`: **138 rows** — identical to the 2026-07-26 baseline. Zero timesheet rows
+  added in over three weeks (last entry 2026-07-24, unchanged since that baseline check).
+
+So the fuller picture, not just "entry has been happening": it happened in one burst through
+early August, then stopped again — the second time this exact pattern has occurred (first:
+the 2026-07-11 decision was never sustained until this file's 2026-07-26 restart; second: the
+restart itself produced a burst, then went quiet). Whatever is causing entry to stall hasn't been
+diagnosed either time. This file's own proving discipline (step 4 below — real supervisors
+entering their own crews, not one person centrally) was never actually met during the burst
+either, so the clean-week streak stays honestly at 0 regardless of the stall.
 
 ## Weekly log
 
