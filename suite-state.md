@@ -61,7 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-17)
 
 **eq-field:**
-- #713 v3.5.510 — desktop polish slice 1: label letter-spacing consistency
+- #714 v3.5.511 — Access-Model Phase 3 prep: 7 new permission keys, unwired
 
 **eq-service:**
 - #752 fix(notifications): gate the calendar supervisor digest on an Access Control group, not role
