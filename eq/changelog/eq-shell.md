@@ -9,6 +9,11 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-17 (PR #1423 MERGED — the Shell licence-scanner page's save button had never once worked)
+- `LicenceOcrPage.tsx` (`/:tenantSlug/onboarding/licence`, the Shell-hosted fallback for anyone who can't use the Cards app) posted a body shape to `intake-commit.ts` that endpoint has never accepted since the Phase 2.B.6 intake-writer migration — every save 400'd before reaching any RPC. Confirmed live: `app_data.licences` has 118 rows, 100% synced from Cards, 0% from this page — this save call has never once succeeded.
+- New `netlify/functions/licence-ocr-commit.ts` writes to the real system of record instead — `public.licences` on jvkn (not the abandoned tenant-plane mirror `StaffPage.tsx`/`MobileRecordsDrawer.tsx` moved off of) — plus a fill-if-missing (never-clobber) update to `public.workers.date_of_birth` and a best-effort mirror into the tenant plane matching `cards-approve-staff.ts`'s existing shape.
+- Deployed and confirmed live (deploy `commit_ref` matches the merge commit exactly). Not yet click-tested live by a person.
+
 ## 2026-08-17 (PR #1422 MERGED — fixed a false-positive CI failure on the permission-drift check)
 - `scripts/check-orphan-perms.mjs` (the "Schema drift + anon-grant + policy-lint" gate) flagged `ts.edit_own`/`ts.submit_own`/`ts.view_own` as orphan permission keys on the live "Service tech" custom group — they're real, intentionally-grantable eq-field keys vendored into `src/lib/fieldFinePerms.ts`, which the check simply predated by 4 days and was never taught about.
 - Fix: the check now also validates against `fieldFinePerms.ts`, extracted the same way `field-perms-drift.yml` already reads that file.
