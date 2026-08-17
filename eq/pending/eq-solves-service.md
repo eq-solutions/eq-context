@@ -13,6 +13,22 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-solves-service: Calendar + every people-list in Service made canonical, 3 database updates shipped to live (2026-08-17)
+*Royce asked whether the maintenance calendar could be made canonical (shared with the rest of the EQ suite, not just Service's own copy) and asked that every place Service shows a list of people pull from the one shared roster Shell uses — the same duplicate-person risk already fixed for the Users list. While sweeping the app for "list of people" spots, found the separate notification-bell bug written up in the entry directly below — spun that off as its own piece of work rather than mixing it into this one.*
+
+- [x] Built a proper shared home for the maintenance calendar (was Service-only before) — entries now live alongside sites, customers, and assets in the same shared system the rest of the suite uses. A full rehearsal against the live database before shipping caught two real mistakes in the setup script before either one could touch production.
+- [x] Removed the "Seed Data" button and its ~100-entry hardcoded demo dataset from the Calendar page.
+- [x] Calendar's technician list and supervisor/notification-recipient list now pull from the one shared people-list (the same one Shell uses) instead of Service's own separate, out-of-sync copy.
+- [x] Swept the rest of the app for the same problem: 8 more pages (Instruments, Testing, Defects, Imports, Activity Log, Analytics, the "Do" hub, the pre-visit-brief email) plus the defect-alert and calibration-due emails now show the right name/email wherever they display "who", without touching any of the security/login-check code that happens to use the same old table.
+- [x] The daily supervisor-digest email and the Calendar's "Preview / Send Digest Now" buttons also now pull from the shared people-list — a colleague session built this specific piece as a same-day follow-up; reviewed and shipped it here.
+- [x] Royce said "Dispatch the migrations" — both database updates applied live. A routine safety check straight afterward caught one small, low-risk finding in the new calendar setup (a database function wasn't locked down quite as tightly as house style requires) — fixed immediately and shipped live too, after a separate explicit go-ahead since it was a new request beyond the original one.
+- eq-service PRs [#748](https://github.com/eq-solutions/eq-service/pull/748), [#750](https://github.com/eq-solutions/eq-service/pull/750), [#751](https://github.com/eq-solutions/eq-service/pull/751) — all merged, all live on service.eq.solutions.
+
+**Deferred:**
+- [ ] **Not clicked through live by a real signed-in user** — verified via code review, live-database dry-runs, and clean CI, not by actually opening the Calendar page and checking the technician/supervisor dropdowns show the right names. _(added 2026-08-17)_
+
+---
+
 ## eq-solves-service: notification bell was silently broken for anyone signed in through Shell — found, fixed, reviewed, merged, live (2026-08-17)
 *Found while doing unrelated identity-canonicalization work — the notification bell's API route was checking who's signed in using a method that only works for the old, direct sign-in path. Anyone using Service through Shell (the normal way people reach it) has been getting a silent failure: the bell just shows nothing, no error, no explanation.*
 
