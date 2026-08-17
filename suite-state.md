@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-17)
 
-**eq-field:**
-- #712 v3.5.509 — Contacts: Labour Hire archive now prompts for a rating
-
 **eq-shell:**
 - #1416 chore(intake): auto re-vendor eq-intake/eq-platform
 
