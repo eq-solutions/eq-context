@@ -1,7 +1,7 @@
 ---
 title: EQ Service — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-14
+last_updated: 2026-08-17
 scope: EQ Service append-only history. UNRECONCILED PAIR — see the warning below before citing anything here as complete.
 read_priority: reference
 status: live
@@ -35,6 +35,9 @@ status: live
 > `cards.md`, `field.md` and `shell.md`. And the naming is inverted for Field:
 > `field.md` is the 356 KB canonical log, `eq-field.md` is the retired twin. A
 > pattern rule applied blindly deletes the largest active changelog in the repo.
+
+## 2026-08-17 (PR #744 MERGED + deployed live — Export button font-size fix)
+- **PR #744 MERGED, live.** `SplitButton` (used by the Maintenance Checks toolbar's Export button for its CSV/Excel caret, and by the two print-report split buttons on check detail) hardcoded Tailwind `text-sm` (14px) instead of the `--eq-text-xs` design token `Button`'s `size="sm"` resolves to (11px), making Export visibly larger than its Import/Batch Create/Create Check neighbors. Fixed with a one-line class swap in `components/ui/SplitButton.tsx`. Verified live by fetching the production CSS bundle directly (`.text-eq-xs{font-size:var(--eq-text-xs)}`, `--eq-text-xs:11px` both present) and cross-checking the page's Sentry release tag against the merge commit.
 
 ## 2026-08-14 (PRs #729/#730 MERGED + deployed live — nav simplification: embedded nav parity, Admin sidebar relabel)
 - **PR #729 MERGED, live.** The Shell-embedded nav bar (`app/(app)/layout.tsx`) was a hand-maintained second copy of the standalone sidebar's nav list and had silently fallen behind — missing Today, Insight, Search, Settings. Added all three (Insight gated, matching the standalone sidebar's own `role !== 'employee'` check; Today/Search/Settings unconditional, matching standalone). Part of a suite-wide nav-simplification pass — see `eq-context/eq/sprints/2026-08-14-nav-simplification.md`.

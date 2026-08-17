@@ -14,6 +14,19 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-service: Export button font-size mismatch on Maintenance Checks — fixed, merged, deployed (2026-08-17)
+*Royce screenshotted the Maintenance Checks toolbar and asked why Export looked larger than Import/Batch Create/Create Check.*
+
+- [x] **Root-caused**: Export renders via `SplitButton` (needed for the CSV/Excel caret), which hardcoded Tailwind `text-sm` (14px) instead of the `--eq-text-xs` token the sibling `Button` component's `size="sm"` resolves to (11px) — same bug also affects the two print-report split buttons on check detail.
+- [x] Fixed in `components/ui/SplitButton.tsx` (one-line class swap), eq-service [PR #744](https://github.com/eq-solutions/eq-service/pull/744), merged, CI green (integration-test failure is the known pre-existing gate, not a blocker).
+- [x] **Deployed + verified live**: pulled the production CSS bundle directly and confirmed `.text-eq-xs{font-size:var(--eq-text-xs)}` with `--eq-text-xs:11px` is shipped; page's Sentry release tag matches the merge commit exactly.
+- [x] Royce reported it still looked wrong post-deploy despite Netlify showing green — diagnosed as client-side cache (stale Shell iframe/tab), not a broken deploy, since the server-side artifact is provably correct. Recommended a hard refresh or fresh tab.
+
+**Deferred:**
+- [ ] **Not yet confirmed fixed on Royce's actual screen** — session ended before he could hard-refresh and check. If it's still oversized after a genuinely fresh tab, the Shell iframe embed path needs a look, not the eq-service build. _(added 2026-08-17)_
+
+---
+
 ## SKS: QR self-join for 9 named apprentices — cohort verified safe, max-uses cap scoped and held (2026-08-17)
 *Follow-up to the 2026-08-16 "QR-code onboarding, apprentices first" decision and the 2026-08-14 duplicate-account-risk entry further down this file. Royce named the actual 9 people (Field roster screenshot, Apprentice filter, minus 2 shown) rather than the full 44-unlinked backlog.*
 
