@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Index
 owner: Royce Milmlow
-last_updated: 2026-08-11
+last_updated: 2026-08-18
 scope: Operational support — entities, finance, legal, admin
 read_priority: standard
 status: live
@@ -28,6 +28,7 @@ Every canonical OPS file as a full URL — clickable from `/context/claude`:
 - [ops/security-register.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/security-register.md) — live security findings register (P0/P1/P2), across all tiers
 - [ops/secrets-inventory.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/secrets-inventory.md) — names/owner/where-set map of every real secret across the EQ/SKS Netlify projects, no values
 - [ops/sec9-sec24-netlify-manual-fix-runbook-2026-08-11.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/sec9-sec24-netlify-manual-fix-runbook-2026-08-11.md) — literal checklist for the two open Netlify secret-masking findings, manual-hands-only
+- [ops/bus-factor-runbook.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/bus-factor-runbook.md) — what someone else needs to know to keep the platform running if Royce is unreachable; deploy safety per repo, where to look first, who-to-contact section still needs Royce
 
 ## Files
 
