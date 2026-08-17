@@ -3279,12 +3279,12 @@ PR #379 revoked the 4 worker-PII tables (the instances). The *class* + ratchet a
 
 **Decided (Royce):** managers/sites = read-only in Field (Shell-owned); supervisor notes = retire (worker-first); teams = wire; presence = off; digest = opt-out (keep everyone). EQ Field operational status: "not live yet" stands for the operational surface (schedule/timesheets/safety empty), but the **shared deploy + directory data are real** — treat changes touching them as live.
 
-**Deferred (added 2026-06-30):**
-- [ ] **Teams wire** — field_teams/field_team_members twins + grants + RLS + JWT routing (0-row unused feature; lowest value) _(added 2026-06-30)_
-- [ ] **Realtime publication** — add app_data.schedule_entries/leave_requests to supabase_realtime (verify realtime.js channel target first) _(added 2026-06-30)_
-- [ ] **app_data.staff.user_id backfill** — ~61 SKS staff unresolved (14/75 via field_person_by_user_id); may need a Core account→staff_id mapping _(added 2026-06-30)_
-- [ ] **frame-ancestors tightening** — drop `*.netlify.app` (clickjacking surface; declined once) _(added 2026-06-30)_
-- [ ] **app_config PIN key-scoping** — hygiene (PINs gate nothing now but still anon-readable) _(added 2026-06-30)_
+**Deferred (added 2026-06-30, re-verified live 2026-08-17 during the aging-45d+ sweep):**
+- [x] **Realtime publication — DONE.** Live-checked `pg_publication_tables`: both `app_data.schedule_entries` and `app_data.leave_requests` are in `supabase_realtime`. No longer open. _(added 2026-06-30, closed 2026-08-17)_
+- [ ] **Teams wire — original premise ("0-row unused feature; lowest value") is stale, not the fix itself.** Live-checked: `field_teams` has 6 rows, `field_team_members` has 71 — real, active data (crew-scoping work since, see `project_crew_scoping_model` memory / field PR #530). Whether grants/RLS/JWT routing specifically are still unbuilt wasn't re-verified this pass — re-scope before picking up, don't assume still lowest-value. _(added 2026-06-30, corrected 2026-08-17)_
+- [ ] **app_data.staff.user_id backfill — same gap tracked twice, different snapshot.** Live count today: 43 of 98 unresolved (was ~61/75 on 2026-06-30). This is the identical blocker named in `sks/pending.md`'s 2026-08-16 entry (37 of 83 *active* SKS staff, a different denominator) that's currently holding back eq-field PR #705's own/crew RLS activation. Worth consolidating to one tracked item — right now a fix could look "done" here while still blocked there. _(added 2026-06-30, re-verified 2026-08-17)_
+- [ ] **frame-ancestors tightening** — drop `*.netlify.app` (clickjacking surface). Still live in both `netlify.toml` and `_headers` today — confirmed unchanged. Note from the original entry stands: **declined once already**, so this is a known accepted risk, not a forgotten one. _(added 2026-06-30, re-verified 2026-08-17)_
+- [ ] **app_config PIN key-scoping** — hygiene (PINs gate nothing now but still anon-readable, confirmed live via `has_table_privilege`). Unchanged, still low-priority. _(added 2026-06-30, re-verified 2026-08-17)_
 ---
 
 ## ⏩ Session close — 2026-06-30 — Tenant Activity Log + polish fixes
