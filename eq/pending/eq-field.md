@@ -128,7 +128,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ## eq-field: Dashboard polish — filter row, map default view, table scroll — 6 rounds shipped, real map bug root-caused (2026-08-02)
 
-- [ ] **Dashboard map centering — now anchored on Sydney CBD (PR #640), still awaiting Royce's live confirmation.** Full history in `sessions/2026-08-03.md` and `eq/changelog/field.md`. The temporary 900px map-height testing bump (PR #634) should revert to 600px once this is confirmed settled — don't let it quietly become the new permanent height. _(added 2026-08-03)_
+- [ ] **Dashboard map centering — now anchored on Sydney CBD (PR #640), still awaiting Royce's live confirmation.** Full history in `sessions/2026-08-03.md` and `eq/changelog/eq-field.md`. The temporary 900px map-height testing bump (PR #634) should revert to 600px once this is confirmed settled — don't let it quietly become the new permanent height. _(added 2026-08-03)_
 
 ---
 
@@ -289,7 +289,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 - [ ] **`project_targets` (supabase.js:1765)** also calls `sbFetchAll` without `orderBy` — left as-is; normal entity table that should have an `id`. Verify if paranoid. _(added 2026-07-12)_
 
 ## 📋 OPEN — Retire the EQ Field PIN gate (`eq` tenant → Core-only)
-- [ ] **Plan saved 2026-07-11:** [`eq/field-eq-core-only-plan.md`](../field-eq-core-only-plan.md) called for a full strip of the shared-PIN code. **Superseded 2026-07-30** — closed via a fail-closed server-side gate with a kept, tested escape hatch instead (see eq-field [PR #575](https://github.com/eq-solutions/eq-field/pull/575), merged `9ed9c440`, live-verified). Detail in the 2026-07-30 session log and `eq/changelog/field.md`.
+- [ ] **Plan saved 2026-07-11:** [`eq/field-eq-core-only-plan.md`](../field-eq-core-only-plan.md) called for a full strip of the shared-PIN code. **Superseded 2026-07-30** — closed via a fail-closed server-side gate with a kept, tested escape hatch instead (see eq-field [PR #575](https://github.com/eq-solutions/eq-field/pull/575), merged `9ed9c440`, live-verified). Detail in the 2026-07-30 session log and `eq/changelog/eq-field.md`.
 - [ ] **Security hygiene (chip `task_ed725611`):** several EQ Netlify env vars are `is_secret=false` so full values leak via the API — incl. a **GCP service-account private key** (`GOOGLE_DOC_AI_CREDENTIALS`) + JWT/handoff secrets on eq-shell, and `SKS_JWT_SECRET`/`EQ_FIELD_HANDOFF_KEY`/`RESEND_API_KEY` on eq-field. Flip to secret; consider rotating the exposed GCP key. **eq-shell half CLOSED via SEC-12 (2026-07-27); eq-field's `SKS_JWT_SECRET`/`EQ_FIELD_HANDOFF_KEY` CLOSED 2026-08-16 (live dashboard walkthrough, re-verified masked in all contexts) — `RESEND_API_KEY` on eq-field not part of that pass, still unconfirmed.** _(added 2026-07-12)_
 
 ---

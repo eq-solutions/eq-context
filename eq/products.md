@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Products
 owner: Royce Milmlow
-last_updated: 2026-08-10
+last_updated: 2026-08-17
 scope: Live EQ products, plus the canonical Killed / Deferred list (CLAUDE.md §9 points here — don't duplicate facts back into CLAUDE.md). Field section flagged stale — see banner in that section.
 read_priority: standard
 status: live
@@ -26,7 +26,7 @@ in their own section at the bottom of this file — see there, not
 > suite-state.md, which still lists it as the live/demo URL — that entry needs a
 > generator-level fix, not a hand-edit here).
 
-**Status:** Live. Current version **v3.5.331** (verified 2026-07-20 against eq/changelog/field.md — check that file for the latest, this number will drift again without a live regeneration mechanism). SKS Field active on ehow. v8 design pass complete 2026-06-09 (all 14 screens + Shell warmup). Security sprint complete 2026-06-09. Shell SSO fixed 2026-06-10 (eq-shell PR #306). SKS canonical DB full JWT coverage 2026-06-11 (PR #267 — 591 sites; the "58 staff" figure from that PR is stale — **verified live 2026-07-16: 39 on-roster non-supervisor Direct staff** + 18 Labour Hire + 18 supervisors (10 off-roster, 8 on-roster) + 10 Apprentices = 88 active total. The 58→39 discrepancy Royce flagged was exactly a supervision/management counting difference, confirmed against ehow). EQ Service iframe loading fixed 2026-06-13 (eq-shell PR #334, 12s → 4s). Multi-tenant via DATA_JWT_ENABLED + per-tenant Supabase JWT.
+**Status:** Live. Current version **v3.5.331** (verified 2026-07-20 against eq/changelog/eq-field.md — check that file for the latest, this number will drift again without a live regeneration mechanism). SKS Field active on ehow. v8 design pass complete 2026-06-09 (all 14 screens + Shell warmup). Security sprint complete 2026-06-09. Shell SSO fixed 2026-06-10 (eq-shell PR #306). SKS canonical DB full JWT coverage 2026-06-11 (PR #267 — 591 sites; the "58 staff" figure from that PR is stale — **verified live 2026-07-16: 39 on-roster non-supervisor Direct staff** + 18 Labour Hire + 18 supervisors (10 off-roster, 8 on-roster) + 10 Apprentices = 88 active total. The 58→39 discrepancy Royce flagged was exactly a supervision/management counting difference, confirmed against ehow). EQ Service iframe loading fixed 2026-06-13 (eq-shell PR #334, 12s → 4s). Multi-tenant via DATA_JWT_ENABLED + per-tenant Supabase JWT.
 **URL:** field.eq.solutions (live) / core.eq.solutions/sks/field (SKS prod via Shell)
 **Repo:** eq-solutions/eq-field (private)
 **Working file:** index.html

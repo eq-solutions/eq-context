@@ -58,7 +58,7 @@ eq/                          ← EQ Solutions tier
     multi-tenancy/           ← MT plan + explainer (active reference)
     permissions/             ← Role/permission matrix
   changelog/
-    field.md                 ← EQ Field history
+    eq-field.md              ← EQ Field history
     eq-context.md            ← Substrate self-changelog
 
 sks/                         ← SKS Technologies tier

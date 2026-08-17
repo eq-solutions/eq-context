@@ -165,7 +165,7 @@ _Nothing pending — migrations 001–023 all applied._
 
 ## ⏩ SKS Field — session 2026-07-08 (TAFE timesheet prefill — 4 iterative ships)
 
-(full ship history — v3.10.82→87 TAFE prefill + agency filter + Jose Quintanilla fix — recorded in `sks/changelog/labour.md` "2026-07-08"; eq-field ports v3.5.263→269 recorded in `eq/changelog/field.md`)
+(full ship history — v3.10.82→87 TAFE prefill + agency filter + Jose Quintanilla fix — recorded in `sks/changelog/labour.md` "2026-07-08"; eq-field ports v3.5.263→269 recorded in `eq/changelog/eq-field.md`)
 
 **Deferred:**
 - [ ] `isTafeHolidayCell()` in `scripts/tafe.js` (both apps) is now **dead code** — the timesheet stopped consulting the holiday config at v3.10.84; writers use `tafeIsHolidayForDay` directly. Low-pri cleanup (leave or remove next timesheet touch). _(added 2026-07-08)_

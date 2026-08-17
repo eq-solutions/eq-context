@@ -1,7 +1,7 @@
 ---
 title: EQ Field — Multi-Tenancy & Dev Workflow Plan
 owner: Royce Milmlow
-last_updated: 2026-07-16
+last_updated: 2026-08-17
 scope: HISTORICAL — multi-tenancy has been live for months (4 tenants, JWT data path, canonical sync). See eq/active.md and suite-state.md for current state; this plan is kept for the original design rationale only.
 read_priority: reference
 status: archived
@@ -445,7 +445,7 @@ auditable. Confirm this is the model you want.
       permitted UI surfaces appear
 - [ ] Flag off → no project-hours UI; flag on + correct role → visible; flag on +
       wrong role → still hidden (defence in depth)
-- [ ] Documented in `eq/changelog/field.md`
+- [ ] Documented in `eq/changelog/eq-field.md`
 
 **Backout plan:** flip `feat_project_hours_v1` to off in PostHog (instant). Migration
 is additive (columns nullable / default false), no rollback needed unless schema
@@ -847,8 +847,8 @@ flow end-to-end during dev.
 - [ ] RLS migration written + applied for at least one canary table on
       eq-solves-field; zero regressions on existing `eq` tenant
 - [ ] Edge function hardening shipped (Step 2.5 A + B + C)
-- [ ] Documented in `eq-context/eq/changelog/field.md`
-- [ ] Documented in `eq/changelog/field.md`
+- [ ] Documented in `eq-context/eq/changelog/eq-field.md`
+- [ ] Documented in `eq/changelog/eq-field.md`
 - [ ] **Not deployed** without explicit Royce approval (per `rules/non-negotiables.md`)
 
 ---
