@@ -16,6 +16,16 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-solves-intake: "Bring Data In" one-screen redesign shipped; join-template pills dropped via /decide (2026-08-17) (fully closed, no open items remain)
+*Consolidated the old five-tab Intake demo (Health/Queue/Import/Reconcile/Ask split across separate screens) into one "Bring Data In" flow: destination-picker pill row, one unified export/commit result view, slot override + freeform/reconcile folded into the drop-zone screen. Then ran `/decide` (invoked with no args) on the destination picker; Royce delegated the call ("what would world leaders do"), so it was decided and executed directly in the same session: dropped join-template (Xero/MYOB/SimPRO) pills from the picker for v1, restoring the original build spec's recommendation over an earlier, more cautious call in this same session to keep them.*
+
+- [x] Destination-picker pill row + unified `DownloadResultView`/commit result state + slot override + freeform/reconcile folded into one screen — `tsc --noEmit` clean, `vitest run` 50/50, live-verified in browser preview.
+- [x] Join-template pills dropped from the picker — `TEMPLATE_PREFIX`/`TEMPLATE_OPTIONS`/`findTemplate`/`templateExportSpec`/the `joinTemplate` branch removed as dead code once nothing referenced them. Capability not lost — still fully live via `RollupDropZone` (the Rollup tab), which is also the only place user-built templates can render. Live-verified: exactly 7 pills render (Into EQ + 5 quick exports + disabled "Other…"), zero console errors in a fresh tab.
+- [x] Committed (`6b2f336`), pushed, eq-solves-intake [PR #119](https://github.com/eq-solutions/eq-solves-intake/pull/119) opened, CI green (build/typecheck/test, 1m24s), squash-merged (`61e7486`) on Royce's "merge it". No auto-deploy configured for this repo, so the merge is not a live-deploy event.
+- [x] **Decided against building two other flagged ideas this round**: deep-linking to exact staged rows in the review queue, and AI-vision for photo-based intake. Explicitly declined, not parked as build items.
+
+---
+
 ## eq-service: Export button font-size mismatch on Maintenance Checks — actually fixed, merged, deployed, live-verified (2026-08-17) (fully closed, no open items remain)
 *Royce screenshotted the Maintenance Checks toolbar and asked why Export looked larger than Import/Batch Create/Create Check. Took two rounds — first fix looked right from outside but wasn't; see below.*
 

@@ -1,10 +1,10 @@
 # EQ Intake — Changelog
 
-## 2026-08-17 (PR #119 OPEN, not yet merged)
+## 2026-08-17 (PR #119 MERGED — squash `61e7486`)
 - **"Bring Data In" one-screen redesign finished** — `eq-intake-demo` package: destination-picker pill row (replaces the old three-`<optgroup>` `<select>`), one unified `DownloadResultView` result state (replaces near-duplicate `ExportView`/`TemplateExportView`), slot override + freeform/reconcile folded into the drop-zone screen instead of separate tabs.
 - **Join-template pills dropped from the destination picker** — a same-session `/decide` call (invoked with no args; Royce delegated the choice) restored the original build spec's "drop join templates for v1" recommendation over an earlier, more cautious call in this same session to keep them. Removed `TEMPLATE_PREFIX`/`TEMPLATE_OPTIONS`/`findTemplate` (`DestinationPicker.tsx`), the `joinTemplate` branch (`IntakeModule.tsx`), and `templateExportSpec` (`DownloadResultView.tsx`) as dead code once nothing referenced them. The capability isn't gone — `RollupDropZone` (the Rollup tab) still owns it fully, and is the only place user-built templates could render anyway.
 - Verified: `tsc --noEmit` clean, `vitest run` 50/50, live browser check in a fresh tab (7 pills render correctly, zero console errors — a stale-console-buffer artifact on the original long-lived tab was ruled out by comparing against a fresh one).
-- Committed (`6b2f336`) and pushed on Royce's explicit "commit this and open a PR" go. eq-solves-intake [PR #119](https://github.com/eq-solutions/eq-solves-intake/pull/119) — opened, not yet merged.
+- Committed (`6b2f336`) and pushed on Royce's explicit "commit this and open a PR" go. eq-solves-intake [PR #119](https://github.com/eq-solutions/eq-solves-intake/pull/119) — CI green (build/typecheck/test, 1m24s), squash-merged on Royce's "merge it". No auto-deploy configured for this repo (confirmed no CI/CD workflow targets a live host), so this ships to `main` only — not a live-deploy event.
 
 ## 2026-08-16 (PRs #116 + #117 MERGED — review-queue polish, then self-review fixed 6 more bugs)
 - **Fixed the reported duplicate-contacts merge crash**: `previewContactMerge`/`previewSiteMerge` already returned an `already_merged` flag from the server, but `ContactDuplicateMergePanel.tsx`/`DuplicateMergePanel.tsx` ignored it and let "Confirm merge" fire anyway, throwing a raw RPC error (`... advisory row ... was already merged`). Preview now short-circuits to a done state instead. Sites had the identical latent bug, fixed for parity.
