@@ -1,13 +1,19 @@
 ---
 title: EQ Field — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-16
+last_updated: 2026-08-17
 scope: EQ Field append-only history.
 read_priority: reference
 status: live
 ---
 
 # eq-field changelog
+
+## 2026-08-17 (PR #711 MERGED — v3.5.508, roster site-map scoped to field_enabled)
+- Roster's site-map query (`scripts/supabase.js`) filtered sites on `active=eq.true` only, missing the `field_enabled` flag that actually gates whether a site should appear in Field — added `&field_enabled=eq.true`. Found during a live-recon pass at session start, not from a prior report. Confirmed additive-safe against live data (doesn't change the one existing duplicate-code collision count) before merging. Confirmed live via `field.eq.solutions/sw.js`.
+
+## 2026-08-17 (PR #710 MERGED — v3.5.507, auth.js file-size debt: split into 5 files)
+- `auth.js` (1,508 lines) split into `auth-gate-picker.js`, `auth-shell-handoff.js`, `auth-agency-gate.js`, `auth-staff-ts-gate.js`, and a slimmed `auth.js` (727 lines) — closes the last tracked file over the repo's ~1,500-line file-size convention from this list. `core-bundle-b3.js` MANIFEST widened to the 5 source files, regenerated via `build-bundles.mjs --write`. `eslint.config.js`'s `GRANDFATHERED_MAX_LINES` entry for `auth.js` removed outright, not lowered.
 
 ## 2026-08-16 (PR #709 MERGED — v3.5.506, mobile UI pass: schedule layout, login race, apprentice menu)
 - Schedule/Roster/Editor/Dashboard week-nav row wrapped onto two lines on real phone widths (orphaned "next week" button) — `.week-nav-label` no longer carries a fixed `min-width:180px` on mobile. `styles/mobile.css`.

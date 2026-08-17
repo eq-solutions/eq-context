@@ -13,6 +13,13 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: roster site-map query scoped to field_enabled, not just active (2026-08-17)
+*Found during a live-recon pass answering "what's outstanding" at session start, not from a prior report — the roster's site-map query filtered sites on `active=eq.true` only, missing the `field_enabled` flag that gates whether a site should actually appear in Field.*
+
+- [x] `scripts/supabase.js`'s roster site-map query now adds `&field_enabled=eq.true` alongside the existing `active` filter. Confirmed additive-safe against live data before merging — the extra filter doesn't change the one existing duplicate-code collision count. eq-field [PR #711](https://github.com/eq-solutions/eq-field/pull/711), squash-merged, confirmed live via `field.eq.solutions/sw.js` (`v3.5.508`).
+
+---
+
 ## eq-field: dozens of pages had no access check at all — a direct link could open any of them regardless of role (2026-08-16)
 *Auditing Field's page-switching code found it only checked permission on 5 of the app's 41 pages, each one added reactively after someone separately noticed it could be reached by a direct link. The other 36 had no check at all. Rebuilt so every page needs an explicit, listed reason to be reachable — an unrecognised page is refused, not rendered.*
 

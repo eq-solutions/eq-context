@@ -13,6 +13,20 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## Substrate: eq/pending.md split by repo, plus three follow-on queue-management fixes (2026-08-17)
+*Royce's reaction to seeing the raw scale of the EQ backlog ("insane to manage") drove this — the 3,741-line, 356-section monolith was hard to work from and getting harder. Picked all four fixes offered: split by repo, fix the Royce-queue label, add duplicate detection, surface aging items.*
+
+- [x] **`eq/pending.md`'s 356 sections split into 11 files under `eq/pending/<repo>.md`**, one per product repo plus `cross-repo.md`. Classified by 12 parallel agents reading full section content (~40% of headers had no parseable repo tag, so a mechanical header-only split would have missed almost half). Byte-conservative: 657 open / 145 done / 1 partial bullet, identical before and after. `rotate_pending.py` and `refresh_digest.py` both updated so nightly rotation and the digest still work against the new file list, not just the content move. Caught and fixed 11 broken relative links (files now sit one directory deeper) and a real gap in `system/auto-pr-scope.md`'s DENY list that would have left the new files unprotected. Two rounds of concurrent-session edits landed on the old `eq/pending.md` while this was in flight — both mirrored into the new split files by hand before merging, so nothing was lost. eq-context [PR #165](https://github.com/eq-solutions/eq-context/pull/165), merged.
+- [x] **"Waiting on you" in digest.md now tags each EQ item with its real repo** (`eq-shell`, `eq-field`, ...) instead of a flat `EQ` — post-split, `EQ` just meant "check up to 11 files," not actually actionable. This already existed as a mechanism (`ROYCE_QUEUE_RE`, pre-dating this session); a second "top of file" list was considered and dropped as a duplicate of it once found.
+- [x] **New "Aging open items" digest.md section** — the actual list of items behind Queue health's existing 45-day aging count, not just the number. 104 real items surfaced on first run, almost all `eq-shell`.
+- [x] **New "Possible duplicate pending items" digest.md section** — flags open items worded similarly enough to be the same thing logged twice. Found 3 real ones on the live corpus by hand first ("Send Huon the email," "gitleaks pre-commit hook," an "Update `.git-credentials`" note, each logged twice), then built detection to match. A naive all-pairs comparison took 2+ minutes against the ~850-item live corpus (measured, not assumed) — rewritten as a candidate-shortlist pass first, same matches in ~8s. Never auto-merges, only surfaces candidates. eq-context [PR #166](https://github.com/eq-solutions/eq-context/pull/166), merged. Verified live by manually triggering `digest-refresh.yml` rather than waiting for the nightly cron — confirmed both new sections and the repo-labeled queue actually rendered, not just that the tests passed locally.
+- [x] 29 new/extended unit tests across both PRs, all passing, all checked against real pending-file data.
+
+**Deferred:**
+- [ ] **`eq/changelog/` has two files per product for both eq-field and eq-service** (`eq-field.md`+`field.md`, `eq-service.md`+`eq-solves-service.md`) — found while deciding which file to append this session's own eq-field entry to. Different sessions have been writing the same day's work into different files. Flagged as a background task rather than fixed inline tonight — a content-preserving merge of four files isn't a session-close-sized job. _(added 2026-08-17)_
+
+---
+
 ## Substrate: a wrong note said Shell changes don't go live when you merge — corrected everywhere (2026-08-15)
 *A "waiting on you" item claimed a finished piece of Staff-list work was merged but not published, and that you needed to trigger the publish yourself. That was wrong — Shell publishes automatically the moment a change is merged, about two seconds later. The note had spread from the to-do list into the daily digest, which every session reads on startup.*
 
