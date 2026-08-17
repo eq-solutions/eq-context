@@ -9,6 +9,10 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-18 (PR #1434 MERGED — compliance-pack export no longer blanks the SPA on desktop)
+- Root cause of "export defaults to a white screen": the compliance-pack poll auto-clicked the download link from a `setInterval` callback with no user gesture, so a cross-origin navigation could unmount the whole app. Removed the auto-click — the existing "Download ready ↓" button click (a real gesture) is now the only trigger.
+- Added small captions under the Compliance pack and Add licence buttons.
+
 ## 2026-08-18 (PR #1431 MERGED — backfilled 2 undocumented control-plane functions, cleared repo-wide CI block)
 - `check-control-plane-drift.mjs --strict` (required check, jvkn control plane) was failing on every open eq-shell PR: `public.eq_audit_licence_sync_dispatch` and `public.eq_reconcile_licence_sync` were live on jvkn with no source file anywhere in the suite — confirmed via live `pg_get_functiondef` plus a repo-scoped grep across eq-shell/eq-cards/eq-field/eq-solves-service (no hits).
 - Not the same shape as the repo's 6 existing `KNOWN_UNSOURCED` entries, which are all functions verified sourced in a sibling repo's migration — these two aren't sourced anywhere, so whitelisting would have misused that list. Instead followed the repo's own precedent for exactly this case (`2026_07_24_reconcile_worker_sync_codify.sql`): a live dispatch/reconcile function pair with two support tables and two `pg_cron` jobs, all backfilled byte-for-byte from live `pg_get_functiondef`/`information_schema`/`pg_cron.job`. New file: `supabase/migrations/2026_08_18_reconcile_licence_sync_codify.sql`. Pure backfill — no behavior change on live jvkn, and not hand-applied (control-plane migrations have no CI apply path; that's a separate, optional later step).

@@ -9,6 +9,11 @@ status: live
 
 # EQ Cards — Changelog
 
+## 2026-08-18 (PR #265, #266, #267 MERGED — per-licence PDF export, xlsx bug fixes, logo contrast)
+- New "Export PDF" action on the licence detail screen — one-page branded PDF per licence, QR verify link (skipped for private licences). CI Flutter pin bumped 3.41.9 → 3.44.8 to unblock the `pdf` package dependency.
+- Fixed a real bug: `excel_plus`'s `Excel.save()` was silently triggering a second, wrongly-named browser download (`FlutterExcel.xlsx`) on every "Export my data" tap — switched to `Excel.encode()`.
+- xlsx register: logo 20x20px → 60x60px on a deep-blue banner fill, "Licence Type" column now shows the human label instead of the raw code, then a same-day follow-up recoloured the logo white after the banner fill made it nearly invisible.
+
 ## 2026-08-17 (PR #264 MERGED — nightly reconciliation for the Cards→tenant licence sync)
 - New jvkn edge function `licence-canonical-sync` — a service-secret-authenticated counterpart to eq-shell's `licence-push.ts`, so a licence-sync webhook can be safely re-fired for any worker without a live user session.
 - New `eq_reconcile_licence_sync()`/`eq_audit_licence_sync_dispatch()` + pg_cron schedules (migration 0132) — nightly repairs drift left by anything that mutates `public.licences` outside the app (e.g. a direct admin fix), the same safety net workers already had (migration 0084).
