@@ -9,6 +9,11 @@ status: live
 
 # EQ Cards — Changelog
 
+## 2026-08-17 (PR #261 MERGED — PDF licence documents now show a thumbnail preview)
+- Added `pdfrx` — first PDF-rendering capability in the app. Chosen over the older `pdfx`: pdfrx bundles pdfium natively for Android/iOS/Web, this app's exact three targets.
+- New `_PdfThumbnail` widget in `licence_edit_screen.dart`'s document upload slot, matching the file's existing `_PhotoSlot` cache/dispose convention (guards against a real prior blob-URL-revoked crash, Sentry `EQ-CARDS-W`).
+- Deployed and confirmed live — the first deploy run raced the merge and shipped the prior commit; caught via commit-ancestry check and re-run.
+
 ## 2026-08-16 (PR #256 MERGED — review-needed email for auto-joined workers)
 - `notify-connection-request` edge function now picks copy based on a `status` field in its trigger payload: a genuine pending connect request keeps the existing "please review" wording; a worker who auto-joined via an accepts-applications tenant config (no pending decision — they're already on the roster) gets new "already joined, here's what to check" wording instead. Same recipients (each tenant's nominated contacts from Settings), same review link.
 - Companion eq-shell change (`workers-canonical-sync`) is what actually fires this path — see eq-shell changelog, same date.

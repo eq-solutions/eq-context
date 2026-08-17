@@ -9,6 +9,11 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-17 (PR #1419 MERGED — PDF documents now show a real thumbnail preview, not just a link)
+- Extracted the pdf.js renderer already built for `StaffPage.tsx` into a shared `DocumentThumbnail` component + `usePdfPageDataUrl` hook (`src/pages/staff/`).
+- Wired into `AddLicenceModal.tsx` (upload preview) and `SplitPanel.tsx` (staff licence detail, click-to-reveal) — both previously showed only a plain "Open PDF" link for PDF documents.
+- Deployed and confirmed live.
+
 ## 2026-08-17 (PR #1418 MERGED — same inactive-account blind spot closed on magic-link and phone-OTP sign-in)
 - `shell-login-magic-link.ts`: query no longer filters `active=true` blindly — now tells "no account" from "account exists, inactive" apart and logs the latter (new `auditLoginBlocked` reason `account-inactive`) plus a Sentry warning. This door runs post-authentication, so there was never an enumeration reason for the silence it had; client response unchanged.
 - `shell-login-phone-otp.ts`: added a targeted inactive-match check so a deactivated account gets its own audit reason instead of being lumped in with `no-memberships`. Client response unchanged.
