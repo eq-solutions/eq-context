@@ -9,6 +9,13 @@ status: live
 
 # eq-field changelog
 
+## 2026-08-18 (PR #716 MERGED — v3.5.512, weekly digest: per-section on/off + custom intro)
+- Built the content-editability half of the digest/notifications design (`eq-context/eq/field/digest-notifications-foundation-2026-08-18.md`). The audience half of that design (a new `notification_subscriptions` table) turned out unnecessary once checked live — the recipient panel's query has no category filter, every `field_managers` row (18 real people on SKS, spanning Executive/Project Management/Operations/Internal/Supervisor) can already be added to the digest via a checkbox.
+- New "Digest sections" panel (`digest-settings.js`) — per-section on/off + optional custom intro, one JSON `app_config` row (`digest_sections`), mirrors `tafe.js`'s proven holiday-range read/write pattern exactly. No schema migration.
+- `supabase/functions/supervisor-digest/index.ts` reads the same config; `buildDigestHtml()` rebuilt so the bottom-rounded-corner email styling follows whichever section is actually last once some are disabled (was hardcoded onto section 4). Missing/malformed config falls back to "everything on" — never a blank email. Custom intro text is HTML-escaped before landing in outbound mail.
+- Verified via a 16-case standalone algorithm port (no Deno runtime available to exercise the real `.ts` file directly) plus live script-injection testing against the actual bundled client code.
+- **The edge function itself is not deployed by this merge** — ships the Netlify site only. `supabase functions deploy supervisor-digest` is a separate, explicit step against live production email delivery, deliberately not done here.
+
 ## 2026-08-18 (PR #714 MERGED — v3.5.511, Access-Model Phase 3 prep: 7 permission keys, unwired)
 - Minted `field.manage_sites`/`managers`/`job_numbers`/`projects`/`recognitions`/`audits` + `field.view_audit_log` in `permission-matrix.js` (v2.4 → v2.5). Zero behaviour change — no `isManager` check converted to use any of them; the actual gate-flip stays fenced to post-cutover. Added to `permission-enforcement-baseline.json`'s `dead_keys` deliberately (the drift guard correctly flags an unwired key as dead). Re-derived the real file/gate scope against live code — the 2026-07-26 scoping's "8 keys" estimate was never itemized anywhere recoverable.
 - Rebased over PR #713 mid-merge (both touched the same version-stamp lines in `index.html`/`app-state.js`/`sw.js`) — resolved keeping both changelog entries, `core-bundle-a1.js` regenerated fresh post-rebase.

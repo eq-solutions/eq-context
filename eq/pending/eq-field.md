@@ -13,6 +13,19 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: weekly digest — per-section on/off + custom intro (2026-08-18)
+*Built the second half of `eq-context/eq/field/digest-notifications-foundation-2026-08-18.md` — the first half (a new notification_subscriptions table so non-Supervisors could get the digest) turned out to be unnecessary once checked live: the recipient panel's query already has no category filter, every field_managers row (18 real people on SKS, including Executive/Project Management/Operations categories) can already be added via a checkbox. Dropped that half, built only the genuinely missing content-editability piece.*
+
+- [x] New "Digest sections" panel on the Supervision page — per-section on/off + optional custom intro line, one JSON `app_config` row (`digest_sections`), same read/write pattern `scripts/tafe.js` already proves for holiday ranges. No schema migration. eq-field [PR #716](https://github.com/eq-solutions/eq-field/pull/716) (v3.5.512), squash-merged, confirmed live via `field.eq.solutions/sw.js`.
+- [x] `supabase/functions/supervisor-digest/index.ts` updated to read the same config — bottom-rounded email styling now follows whichever section is actually last once some are toggled off; missing/malformed config falls back to "everything on," never a blank email; custom intro text is HTML-escaped before landing in outbound mail.
+- [x] Verified via a 16-case standalone algorithm port (no Deno runtime in this environment to exercise the real `.ts` file) plus live script-injection testing of the actual bundled client panel.
+
+**Deferred:**
+- [ ] **The edge function itself is NOT deployed by this merge.** Merging shipped the Netlify site (the new panel writes real config now); the Supabase Edge Function redeploy (`supabase functions deploy supervisor-digest`) is a separate step against live production email delivery to real supervisors — needs its own explicit go before the sections config actually changes any email. Until then the panel is inert, not broken. _(added 2026-08-18)_
+- [ ] **Not click-tested through a real signed-in session** — same sandbox limitation as other recent items in this file. _(added 2026-08-18)_
+
+---
+
 ## eq-field: sprint prep — desktop polish slice 1, Access-Model Phase 3 keys (2026-08-18)
 *Two of four items from a Royce-reviewed sprint scope (the other two — digest/notifications design, the bus-factor runbook — are doc-only, tracked in `eq-context/eq/field/` and `eq-context/ops/`, not here).*
 
