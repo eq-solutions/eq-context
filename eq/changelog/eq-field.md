@@ -1,13 +1,21 @@
 ---
 title: EQ Field — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-17
+last_updated: 2026-08-18
 scope: EQ Field append-only history. Canonical name (repo-slug convention, matching eq-shell.md/eq-cards.md/eq-intake.md/eq-context.md/eq-receipts.md/eq-ui.md) — absorbed field.md's full history 2026-08-17. field.md's own header had claimed the opposite direction ("eq-field.md was merged into this file 2026-07-19, don't split again"), but a fresh eq-field.md was recreated after that and diverged with 5 real, unique entries (PR #703/#705/#709/#710/#711) never merged back — exactly the drift that note warned about. Content of both preserved with no loss; field.md is now a stub pointing here. Don't split the log again.
 read_priority: reference
 status: live
 ---
 
 # eq-field changelog
+
+## 2026-08-18 (PR #714 MERGED — v3.5.511, Access-Model Phase 3 prep: 7 permission keys, unwired)
+- Minted `field.manage_sites`/`managers`/`job_numbers`/`projects`/`recognitions`/`audits` + `field.view_audit_log` in `permission-matrix.js` (v2.4 → v2.5). Zero behaviour change — no `isManager` check converted to use any of them; the actual gate-flip stays fenced to post-cutover. Added to `permission-enforcement-baseline.json`'s `dead_keys` deliberately (the drift guard correctly flags an unwired key as dead). Re-derived the real file/gate scope against live code — the 2026-07-26 scoping's "8 keys" estimate was never itemized anywhere recoverable.
+- Rebased over PR #713 mid-merge (both touched the same version-stamp lines in `index.html`/`app-state.js`/`sw.js`) — resolved keeping both changelog entries, `core-bundle-a1.js` regenerated fresh post-rebase.
+
+## 2026-08-18 (PR #713 MERGED — v3.5.510, desktop polish slice 1: label letter-spacing consistency)
+- 9 uppercase-label rules across `base.css`/`home.css`/`mobile.css` hardcoded their own letter-spacing (`.2px` to `.8px`, no two the same) instead of the canonical `var(--eq-tracking-label)` token already defined in `tokens.css` and already used in 5 other places. Normalized. Checked the audits' own "missing letter-spacing" framing against the real CSS first — the token existed, the gap was inconsistency.
+- Found, not fixed: `--eq-body-line-height` is defined in `tokens.css` but never applied to `body` anywhere — likely the real cause of the audits' separate "11px stats feel cramped" complaint. Scoped as the next polish slice, deliberately not attempted here (whole-app change, higher regression risk than a token substitution).
 
 ## 2026-08-18 (PR #712 MERGED — v3.5.509, Contacts: Labour Hire archive now prompts for a rating)
 - Contacts' 📦 "Remove from roster" button called `archivePerson()` directly for every group, skipping the rehire-rating modal for Labour Hire rows — only the roster grid's archive icon went through `openLHArchiveModal()`. Found live: Royce archived Timothy Chapman (Labour Hire) from Contacts and got no rating prompt. Contacts now routes Labour Hire rows through the same shared modal as the roster grid; other groups unchanged. Confirmed live via `field.eq.solutions/sw.js`.

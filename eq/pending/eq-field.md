@@ -1,7 +1,7 @@
 ---
 title: EQ Field — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-17
+last_updated: 2026-08-18
 scope: EQ Field engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -10,6 +10,19 @@ status: live
 # EQ Field — Pending
 
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-field: sprint prep — desktop polish slice 1, Access-Model Phase 3 keys (2026-08-18)
+*Two of four items from a Royce-reviewed sprint scope (the other two — digest/notifications design, the bus-factor runbook — are doc-only, tracked in `eq-context/eq/field/` and `eq-context/ops/`, not here).*
+
+- [x] **Label letter-spacing normalized to the existing token.** The multi-lens reviews' "missing letter-spacing" framing was checked against the actual CSS first: `--eq-tracking-label` already exists and was already used in 5 places — the real gap was 9 more uppercase-label rules hardcoding their own inconsistent value instead. Normalized. eq-field [PR #713](https://github.com/eq-solutions/eq-field/pull/713) (v3.5.510), squash-merged, confirmed live.
+- [x] **Access-Model Phase 3 prep** — 7 new Field-local permission keys minted (`field.manage_sites`/`managers`/`job_numbers`/`projects`/`recognitions`/`audits`, `field.view_audit_log`), zero behaviour change, no `isManager` check converted yet. The 2026-07-26 scoping's own "8 keys" estimate was never itemized anywhere recoverable — re-derived against live code instead. eq-field [PR #714](https://github.com/eq-solutions/eq-field/pull/714) (v3.5.511), squash-merged, confirmed live. Rebased over #713 mid-merge (both touched `index.html`/`app-state.js`/`sw.js`'s version stamps) — resolved by keeping both changelog entries, no content lost.
+
+**Deferred:**
+- [ ] **The real desktop-polish root cause, not yet touched**: `--eq-body-line-height: 1.5` is defined in `tokens.css` but never applied to `body` anywhere in the app — likely the actual cause of the "11px stats feel cramped" complaint, not the tracking gap PR #713 fixed. Whole-app change, higher regression risk, needs its own tested pass. _(added 2026-08-18)_
+- [ ] **Phase 3's actual gate-flip** (converting the 65 real `isManager` call-sites across 11 files to use the 7 keys above) — deliberately held for post-cutover per the standing access-model plan; SKS's parallel-run proving period is still at 0 consecutive clean weeks. _(added 2026-08-18)_
+- [ ] **Not click-tested live by a human** — both PRs verified via computed-style/drift-guard checks (no path to a real authenticated session in this sandbox), not by clicking through the actual app. _(added 2026-08-18)_
 
 ---
 
