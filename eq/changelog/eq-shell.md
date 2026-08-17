@@ -9,6 +9,16 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-17 (PR #1424 MERGED — Excel-style filters extended to Name and Start date)
+- Follow-up to #1421 below — Royce asked for the multiselect filter on every Staff column that could take it. Name and Start date now also get the search + select-all + checkbox popover.
+- Trade, Contact, Status, and Licences & review deliberately left unfiltered — Trade is a comma-joined multi-value string (multiselect would offer one option per unique combination, not per trade), Contact is a composite field with no real `row.contact` for the library to read, and Status/Licences are already covered by the existing slicer chips above the table.
+- Deployed and confirmed live (production deploy `commit_ref` matched the merge commit exactly, `published_at` ~5 min after merge — notably slower than this repo's usual 2-4s pattern, worth a note in `eq/pending.md` in case it recurs).
+
+## 2026-08-17 (PR #1421 MERGED — Excel-style multiselect filters added to the Staff table)
+- `@eq-solutions/ui` v1.15.0 (already pinned, no version bump) already implements `filterable: 'multiselect'` — a full Excel-style popover (search, select-all/reset, cascading checkbox list) — but Staff's own column definitions had never been switched over to it, still using plain text/single-select filters.
+- Switched Type, Job Title, Level, and Company to `filterable: 'multiselect'`.
+- Merge was blocked for ~30 min by an unrelated, repo-wide required CI check (see #1422 below) — held rather than force-merged; picked back up once that fix landed on `main`, updated this branch against it, re-ran CI, merged clean.
+
 ## 2026-08-17 (PR #1423 MERGED — the Shell licence-scanner page's save button had never once worked)
 - `LicenceOcrPage.tsx` (`/:tenantSlug/onboarding/licence`, the Shell-hosted fallback for anyone who can't use the Cards app) posted a body shape to `intake-commit.ts` that endpoint has never accepted since the Phase 2.B.6 intake-writer migration — every save 400'd before reaching any RPC. Confirmed live: `app_data.licences` has 118 rows, 100% synced from Cards, 0% from this page — this save call has never once succeeded.
 - New `netlify/functions/licence-ocr-commit.ts` writes to the real system of record instead — `public.licences` on jvkn (not the abandoned tenant-plane mirror `StaffPage.tsx`/`MobileRecordsDrawer.tsx` moved off of) — plus a fill-if-missing (never-clobber) update to `public.workers.date_of_birth` and a best-effort mirror into the tenant plane matching `cards-approve-staff.ts`'s existing shape.
