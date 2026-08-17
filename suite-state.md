@@ -60,7 +60,15 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-17)
 
+**eq-service:**
+- #743 chore(deps): bump lucide-react from 1.27.0 to 1.31.0
+- #742 chore(deps): bump @supabase/supabase-js from 2.111.0 to 2.112.3
+- #741 chore(deps): bump posthog-js from 1.407.5 to 1.417.0
+- #740 chore(deps-dev): bump eslint-config-next from 16.3.0 to 16.3.1
+- #739 chore(deps): bump react and @types/react
+
 **eq-shell:**
+- #1419 feat(staff): show a PDF thumbnail preview instead of a plain link
 - #1416 chore(intake): auto re-vendor eq-intake/eq-platform
 
 ---
