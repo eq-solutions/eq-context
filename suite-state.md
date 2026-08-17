@@ -64,7 +64,6 @@ _If this file is >48h old, the cron is broken._
 - #752 fix(notifications): gate the calendar supervisor digest on an Access Control group, not role
 
 **eq-shell:**
-- #1436 fix(field): drop zaap's worker_credentials/inductions/assignments satellites too
 - #1429 feat(access-control): ring visual for the permission matrix, real tab strip
 - #1416 chore(intake): auto re-vendor eq-intake/eq-platform
 
