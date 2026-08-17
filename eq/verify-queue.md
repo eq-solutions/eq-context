@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Verify Queue
 owner: Royce Milmlow
-last_updated: 2026-08-16
+last_updated: 2026-08-17
 scope: Items whose only remaining blocker is your own live sign-in/click-through — the underlying work is already built, merged, and (unless the line itself says otherwise) live. Moved here from eq/pending.md by scripts/rotate_pending.py once a session's real build work is fully done, so a stale "click through to confirm" line no longer pins a whole finished write-up in the live pending doc.
 read_priority: high
 status: live
@@ -379,5 +379,17 @@ a bug rather than just deleting the line.
 **From:** eq-shell: labour-hire invite-path approval was silently dropping flagged licences — found, fixed, merged, live (2026-08-13)
 
 - [ ] **Live click-through not done** — the invite path (existing SimPRO/import staff record, `staff_id`) now records flagged-licence reviews and notifies the worker on approval, matching the self-signup path's existing behaviour. Needs a real signed-in Shell session with `admin.review_cards` to confirm end-to-end — off-limits for this environment. _(added 2026-08-13)_
+
+---
+
+**From:** eq-solves-service: NSX Test Report fixed — dead ACB-only fields left it always printing blank sections (2026-08-14)
+
+- [ ] **Not click-tested against a real generated NSX report** — fix verified via typecheck + code trace only; worth Royce pulling a real NSX Test Report next time one's generated to eyeball the CB Details table looks right. _(added 2026-08-14)_
+
+---
+
+**From:** eq-solves-service: /admin/* pages closed to non-managers (2026-08-14)
+
+- [ ] **Not click-tested by a real non-manager account** — no such login was available in this environment. Worth Royce confirming a technician account gets bounced off `/admin/*` now. _(added 2026-08-14)_
 
 ---

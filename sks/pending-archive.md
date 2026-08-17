@@ -1,7 +1,7 @@
 ---
 title: SKS Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-08-16
+last_updated: 2026-08-17
 scope: Done items rotated out of sks/pending.md nightly by scripts/rotate_pending.py to keep the live doc scannable. Nothing here is actionable — pure historical record (also covered in changelogs and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -432,6 +432,22 @@ output).*
 ---
 
 ## SKS national scale discovery — "what breaks EQ at ~2,000 employees" (2026-07-23) (rotated 2026-08-16 — open items remain in pending.md)
+
+
+---
+
+## SKS → EQ Field roster CSV sync — investigated live, feasible with zero new code (2026-08-14) (rotated 2026-08-17 — open items remain in pending.md)
+
+- [x] **Reconcile pass done 2026-08-17.** `SKS-FIELD-PARALLEL-RUN-LOG.md` updated with a live re-check: the informal entry burst this note refers to (317 rows, up to 2026-08-05) had itself already stalled by the time this correction landed — zero `field_schedule` rows since 2026-08-03, zero `field_timesheets` rows in 3+ weeks. Second occurrence of the exact "restarts then goes quiet" pattern the log file was created to catch. Clean-week streak stays 0; nothing here changes the cutover gate. _(added 2026-08-14, closed 2026-08-17)_
+
+---
+
+## Labour Hire archive + rehire rating — DONE, shipped EQ Field v3.5.371 (rotated 2026-08-17)
+- [x] Mirrored live in `scripts/people-labour-hire.js` (split out of `people.js` at the same version, which is also what pulled `people.js` under the file-size threshold). Roster-grid archive icon (`openLHArchiveModal`) and a People-page re-rate button (`openLHRateModal`) share one modal, 1-5 star "would rehire" rating, writes through to Supabase, audit-logged. Verified directly against the live file 2026-08-17 — this item had gone stale for 3 weeks after the feature actually shipped (added 2026-07-28, merged 2026-07-31). _(added 2026-07-28, corrected 2026-08-17)_
+
+---
+
+## SKS national scale discovery — "what breaks EQ at ~2,000 employees" (2026-07-23) (rotated 2026-08-17 — open items remain in pending.md)
 
 
 ---
