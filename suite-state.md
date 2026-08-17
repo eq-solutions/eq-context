@@ -67,6 +67,7 @@ _If this file is >48h old, the cron is broken._
 - #752 fix(notifications): gate the calendar supervisor digest on an Access Control group, not role
 
 **eq-shell:**
+- #1437 fix(field): drop worker_assignments' functions/type too, unblocking 0248
 - #1416 chore(intake): auto re-vendor eq-intake/eq-platform
 
 ---
