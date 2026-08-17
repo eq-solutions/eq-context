@@ -9,6 +9,11 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-17 (PR #1417 MERGED — silent PIN-reset lockout on inactive accounts now visible in Sentry)
+- `shell-request-pin-reset.ts` always returned `{ok: true}` whether the target email didn't exist or existed but was inactive (deliberate anti-enumeration) — meaning a real, fixable lockout (an account left inactive mid identity-merge) was invisible everywhere, indistinguishable from a mistyped email in logs or Sentry.
+- New `captureInactiveAccountRequest()` helper in `_shared/sentry.ts` (PII-safe — email domain only), wired into the account-exists-but-inactive branch only. Client response and anti-enumeration behavior unchanged.
+- Root incident: Richard Brown (SKS) locked out of PIN reset for ~2 hours after a jvkn identity merge (see `sessions/2026-08-17.md`) left his kept account `shell_control.users.active = false` — every reset attempt sent nothing and logged nothing.
+
 ## 2026-08-16 (PR #1414 MERGED — review-needed email for auto-joined workers; also caught + fixed PR #1413's edge function never having been deployed)
 - `workers-canonical-sync`'s genuinely-new-person branch now also inserts an already-resolved `org_access_requests` row, reusing the existing connect-request notification pipeline (trigger → `eq_notify_connection_request_targets` RPC → `notify-connection-request` edge fn, eq-cards) so a tenant's nominated recipients get emailed when a worker auto-joins via an accepts-applications config — a path that previously notified nobody. Companion migration passes the row's `status` through the trigger payload so the edge function can pick "already joined" copy over "please review" copy.
 - **Found while deploying, not reported as a symptom:** PR #1413 (below) had been merged into the repo but its edge function was never actually redeployed — Netlify auto-deploys the web app on merge, but Supabase edge functions living in the same repo need their own explicit deploy step, which never happened. The blank-name Staff-list fix had therefore still been broken live this whole time. Deployed the current, correct code for both fixes together; confirmed live afterward via `get_edge_function`, not assumed from the deploy call succeeding.

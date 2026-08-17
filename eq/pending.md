@@ -3704,3 +3704,12 @@ Diagnosed 2026-05-19. 17 advisor warnings, fix drafted but not applied.
 - [ ] **eq-roles [PR #28](https://github.com/eq-solutions/eq-roles/pull/28) (`tender.view` permission key, v2.7.3) still open, unmerged, untagged** — checked live via `gh`. The eq-shell pin bump + `entity-rows.ts` gate it unlocks is still on hold per standing instruction; no action taken. _(added 2026-08-16)_
 
 ---
+
+## eq-cards / eq-shell / eq-solves-service: full outstanding-Sentry sweep (7 issues), Richard Brown's jvkn identity actually merged, silent PIN-reset lockout fixed and shipped (2026-08-17)
+
+- [ ] **Sentry [EQ-SOLVES-SERVICE-D](https://eq-solutions.sentry.io/issues/EQ-SOLVES-SERVICE-D) left unresolved** — single occurrence, no sourcemaps uploaded for this project, stack trace is fully minified with no first-party frame. Nothing actionable without more data; needs sourcemap upload (same gap already on record for eq-shell, 2026-07-12) or a recurrence to investigate. _(added 2026-08-17)_
+- [ ] **Other self-service auth doors in eq-shell (magic-link, phone-OTP sign-in) likely share the same silent-inactive-account blind spot** that `shell-request-pin-reset.ts` had — not audited. The fix pattern (`captureInactiveAccountRequest()` in `_shared/sentry.ts`) is already built and reusable; just needs wiring into the other handlers if they turn out to have the same gap. _(added 2026-08-17)_
+- [ ] **eq-shell [PR #1417](https://github.com/eq-solutions/eq-shell/pull/1417)'s test-plan click-through never run live** — "trigger a PIN reset for a deliberately-inactive test account, confirm the warning lands in Sentry." Verified by direct DB/code inspection instead (traced Richard Brown's actual live lockout through the exact code path); the merged fix is confirmed correct by that trace, but nobody's watched a real Sentry event land from this code yet. _(added 2026-08-17)_
+- [ ] **This jvkn-side identity merge is separate from the ehow-side `staff_id` duplicate already closed 2026-08-15/16** ([EQ-SHELL-1M](https://eq-solutions.sentry.io/issues/EQ-SHELL-1M), PR #1373) — same person, two independent duplication incidents on two different systems. Don't read this entry as a repeat of that one, and don't assume closing one closes the other if Richard (or anyone else) shows a similar symptom again. _(added 2026-08-17)_
+
+---
