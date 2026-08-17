@@ -60,11 +60,13 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-17)
 
+**eq-field:**
+- #715 v3.5.512 — My Schedule: cold-boot cache fallback
+
 **eq-service:**
 - #752 fix(notifications): gate the calendar supervisor digest on an Access Control group, not role
 
 **eq-shell:**
-- #1429 feat(access-control): ring visual for the permission matrix, real tab strip
 - #1416 chore(intake): auto re-vendor eq-intake/eq-platform
 
 ---
