@@ -68,9 +68,9 @@ _If this file is >48h old, the cron is broken._
 - #739 chore(deps): bump react and @types/react
 
 **eq-shell:**
+- #1422 fix(ci): teach orphan-perms gate about eq-field's vendored fine-grained perm keys
 - #1421 feat(staff): Excel-style multiselect filters on Type, Job Title, Level, Company
 - #1420 fix(access-control): Ops label consistency + searchable diffed customize drawer
-- #1419 feat(staff): show a PDF thumbnail preview instead of a plain link
 - #1416 chore(intake): auto re-vendor eq-intake/eq-platform
 
 ---
