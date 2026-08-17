@@ -27,6 +27,24 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-service: ACB/NSX cover masthead + blank page 2 fixed; live Secondary Injection load bug found and fixed (2026-08-17)
+*Royce reviewed a generated ACB Test Report (St George Private Hospital) and flagged four formatting issues plus one live-app discrepancy. Two formatting issues were confirmed bugs already fixed once elsewhere and never propagated to ACB/NSX — same recurring pattern as the 2026-08-14 NSX dead-fields fix below. The live-app discrepancy turned out to be a real, tenant-wide bug, not a stale report.*
+
+- [x] `buildMasthead()` (shared by ACB, NSX, Work Order Details, and the Run-Sheet) rebuilt as a percentage-width table so the tenant logo pins hard-right on every cover — the old tab-stop layout never reliably reached the margin.
+- [x] Removed a leading `PageBreak` before the ACB/NSX table of contents that produced a genuinely blank page 2 on every report — same defect already fixed in `pm-check-report.ts` on 2026-08-01, never propagated to ACB/NSX.
+- [x] Dropped the redundant "ACB Test Report" masthead caption on ACB (Royce's call) — it repeated both the cover title and the running page header.
+- [x] ACB/NSX sign-off "Prepared by" + a completion-status line now populate from real per-breaker `tested_by` / `overallResult` data instead of always rendering blank underscores.
+- [x] **Found and fixed a live production bug**: `SecondaryInjectionTable`'s `loadSiFunction()` matched saved reading labels without the `Electrical: ` category prefix the save action actually stores them with (every other field on the same tab got this right). Result: the Long Time / Short Time / Instantaneous fields always loaded blank on reopen, for every ACB and NSX test, tenant-wide, regardless of what was saved — confirmed live against a real SKS check with saved readings that were rendering correctly in the generated report but blank in the app itself.
+- [x] eq-service PR [#745](https://github.com/eq-solutions/eq-service/pull/745) merged to `main` (commit `2aa779c`), auto-deploys to service.eq.solutions.
+
+**Deferred:**
+- [ ] **"Approved by" has no real data source to wire to.** The DB carries unused `signature_technician_url` / `signature_site_url` / `signature_initials` columns from migration 0068 (2026-04), explicitly intended for exactly this, but no UI anywhere has ever captured them. Real feature gap, not a wiring fix — needs Royce's call on whether to build signature capture. _(added 2026-08-17)_
+- [ ] **Masthead caption redundancy also exists on NSX, Work Order Details, and the Run-Sheet** — only dropped for ACB per Royce's explicit scoping this session. Revisit if he wants it dropped everywhere. _(added 2026-08-17)_
+- [ ] **Secondary Injection load fix not click-tested live post-deploy** — verified via code trace (label-prefix mismatch confirmed against live DB data) plus a regenerated sample report, not by an actual technician reopening a check with saved SI data and watching the fields populate. Worth Royce doing that once. _(added 2026-08-17)_
+- [ ] **One CI check failed on the merge (Integration tests), confirmed pre-existing and unrelated** — CI's local Supabase bootstrap is missing the `app_data` schema (migration 0152 fails: `schema "app_data" does not exist`), same class of gap PR #737 (merged earlier the same day) was meant to close. Worth checking whether #737's fixture guard actually covers this migration. _(added 2026-08-17)_
+
+---
+
 ## SKS: QR self-join for 9 named apprentices — cohort verified safe, max-uses cap scoped and held (2026-08-17)
 *Follow-up to the 2026-08-16 "QR-code onboarding, apprentices first" decision and the 2026-08-14 duplicate-account-risk entry further down this file. Royce named the actual 9 people (Field roster screenshot, Apprentice filter, minus 2 shown) rather than the full 44-unlinked backlog.*
 
@@ -1261,13 +1279,6 @@ Royce asked four architecture questions about the Cards→tenant consent model (
 **Deferred:**
 - [ ] **Royce to click through live**: invite a labour-hire worker with the box unchecked, confirm they land on a Field-free home screen and can't reach Field directly; then invite/sign in a normal worker (box left checked) and confirm nothing changed for them. Bundled with the three click-through items below into one live-testing pass — see that section's deferred note. _(added 2026-07-30)_
 - [ ] No edit screen yet for switching an *existing* worker's Field access on/off after the fact — today it's invite-time only. _(added 2026-07-30)_
-
----
-
-## eq-solves-service: ACB/NSX Test Report shipped with real data; Report Settings toggles extended to 3 more reports (2026-07-29)
-
-**Deferred:**
-- [ ] **No live check has reached the Secondary Injection/Electrical Testing step yet either** (ACB or NSX) — the #647 fix is verified against the real stored label *format* (traced from the save actions) plus a synthetic end-to-end docx generation, not an actual live reading. Worth a real spot-check the first time a technician gets that far. _(added 2026-07-29)_
 
 ---
 

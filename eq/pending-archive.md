@@ -3991,3 +3991,10 @@ contain the same values and were pushed before push-protection caught up.
 - [x] **No alert tells an admin a new worker's profile + licences are ready for review** when they connect directly — RESOLVED same day: built a review-needed email reusing the existing connect-request notification pipeline (same nominated recipients, same review link), fired from the point a worker auto-joins via an accepts-applications tenant config. eq-cards [PR #256](https://github.com/eq-solutions/eq-cards/pull/256) + eq-shell [PR #1414](https://github.com/eq-solutions/eq-shell/pull/1414), merged, migration applied, both edge functions deployed and confirmed live. _(added 2026-08-16, resolved 2026-08-16)_
 
 ---
+
+## eq-solves-service: ACB/NSX Test Report shipped with real data; Report Settings toggles extended to 3 more reports (2026-07-29)
+
+**Deferred:**
+- [x] **No live check has reached the Secondary Injection/Electrical Testing step yet either** (ACB or NSX) — the #647 fix is verified against the real stored label *format* (traced from the save actions) plus a synthetic end-to-end docx generation, not an actual live reading. Worth a real spot-check the first time a technician gets that far. _(added 2026-07-29)_ — **Spot-checked 2026-08-17**: reviewed a live SKS check with real saved Secondary Injection data. The #647 report-side fix held up correctly, but the spot-check surfaced a separate, real bug — the app's own form was reading those same values back with the wrong label prefix and always showed them blank on reopen, tenant-wide, for every ACB and NSX test. Fixed in eq-service PR #745. See the 2026-08-17 session log. _(resolved 2026-08-17)_
+
+---
