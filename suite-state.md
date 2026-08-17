@@ -60,13 +60,11 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-17)
 
-**eq-field:**
-- #714 v3.5.511 — Access-Model Phase 3 prep: 7 new permission keys, unwired
-
 **eq-service:**
 - #752 fix(notifications): gate the calendar supervisor digest on an Access Control group, not role
 
 **eq-shell:**
+- #1436 fix(field): drop zaap's worker_credentials/inductions/assignments satellites too
 - #1429 feat(access-control): ring visual for the permission matrix, real tab strip
 - #1416 chore(intake): auto re-vendor eq-intake/eq-platform
 
