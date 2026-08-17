@@ -60,6 +60,9 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-17)
 
+**eq-field:**
+- #711 v3.5.508 — roster site map: scope to field_enabled, not just active
+
 **eq-service:**
 - #743 chore(deps): bump lucide-react from 1.27.0 to 1.31.0
 - #742 chore(deps): bump @supabase/supabase-js from 2.111.0 to 2.112.3
@@ -68,7 +71,6 @@ _If this file is >48h old, the cron is broken._
 - #739 chore(deps): bump react and @types/react
 
 **eq-shell:**
-- #1423 fix(licences): repair the Shell OCR page's save call, point it at the real licences table
 - #1416 chore(intake): auto re-vendor eq-intake/eq-platform
 
 ---
