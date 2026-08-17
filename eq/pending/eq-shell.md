@@ -27,16 +27,14 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ---
 
 ## eq-shell: the Shell licence-scanner page has never once saved a licence — found, fixed, merged, live (2026-08-17)
-*Started as a request to make a scanned licence's date of birth flow through to a worker's profile. Turned out the save button on that page (`/:tenantSlug/onboarding/licence`, the fallback for anyone who can't use the Cards app) has been silently broken since a backend rewrite — every save has failed with an error since then, for every field, not just date of birth. Checked live: 118 licences exist in the backup copy that page was supposed to write to, and every single one came from the Cards app's own sync, zero from this page, ever.*
-*Also found that even a working save button would have written to the wrong place — a backup table nothing else reads anymore. The real place the rest of the app reads from is a different (correct) table.*
 
-- [x] **Rebuilt the save call to point at the actual table everything else reads, not the abandoned backup copy.** A confirmed date of birth now fills in the worker's profile if it was empty — never overwrites one that's already there.
-- [x] **Verified the code compiles clean and the new function deploys correctly** (163 functions built successfully on the real preview, including the new one) — the checking tool on this laptop got stuck partway through loading the app locally, so verification leaned on the real preview build instead.
-- [x] [eq-shell PR #1423](https://github.com/eq-solutions/eq-shell/pull/1423), merged and confirmed live (deploy's commit matches the merge commit exactly).
-
-**Deferred:**
 - [ ] **Not clicked through live** — verified by code review, live database checks, and a clean preview build, not by an actual person scanning a licence on the real site and watching it save. Worth two minutes on a real account.
-- [ ] **The real fix for workers who already have no date of birth on file (e.g. Brian Griffin-Colls) is a different app (Cards), not this one.** Cards' own phone-based licence scanner never offers a scanned date of birth back into someone's profile — it's only ever been something a worker types in by hand. Spun off as its own follow-up in the Cards app; already started in a separate session.
+
+---
+
+## eq-shell: workers were losing their real birthday to a look-alike "reminder" field — found, fixed, merged, live, migration applied (2026-08-17)
+
+- [ ] **6 workers still have no real date of birth anywhere, and nothing in the data to recover one from** — 5 have no Cards account at all (their only possible source for a birthday); 1 has a Cards account but no licence uploaded yet. Needs either a Cards signup or someone asking them directly; no further code fix closes this. _(added 2026-08-17)_
 
 ---
 

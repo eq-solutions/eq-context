@@ -9,6 +9,14 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-17 (PR #1426 MERGED, migration 0247 dispatched — worker birthdays no longer drift from a real date of birth)
+- Root cause: Shell's Staff-page editor only ever had a day/month "birthday" box (built for eq-field's reminder feature, no year by design) — never a real `date_of_birth` field. An admin fixing a missing birthday had nothing else to type into; it looked fixed while the real DOB column stayed null and Cards never learned about the edit. Found live: 8 active SKS workers in exactly this state.
+- Migration 0247: DB trigger on `app_data.staff` force-derives day/month from `date_of_birth` on every write whenever a worker is Cards-linked, silently overwriting anything typed directly; leaves workers with no Cards account untouched, since day/month is their only possible source. One-time correction backfill included. Dispatched to both tenant planes (ehow, zaap).
+- `entity-patch.ts` now rejects a bare day/month edit for Cards-linked staff with a pointer to the new `date_of_birth` field (tenant-plane-local only — no write-back to Cards yet, tracked separately). `workers-canonical-sync` dropped its own now-redundant computation.
+- Backfilled real DOBs for 3 of the 8 affected workers (Brian Griffin-Colls, Sonam Gurung, William Hong) from their own licence photos already on file in Cards. One photo mismatch caught mid-backfill (licence number didn't match the DB record) and corrected before writing anything. Remaining 5 have no Cards account at all; 6th has an account but no licence uploaded yet — no data-only path to their DOB.
+- Also corrects a stale claim that had been sitting in this repo's own pending notes: Cards' licence-scan OCR *does* offer a scanned DOB back into a worker's profile (`ProfileFillFromLicenceScreen`, live since 2026-05-24) — the earlier session that flagged it as missing had only checked direct writes to `public.workers`, not the `profiles` → `workers` sync hop.
+- [eq-shell PR #1426](https://github.com/eq-solutions/eq-shell/pull/1426), merged and confirmed live (deploy `commit_ref` matched the merge commit).
+
 ## 2026-08-17 (PR #1424 MERGED — Excel-style filters extended to Name and Start date)
 - Follow-up to #1421 below — Royce asked for the multiselect filter on every Staff column that could take it. Name and Start date now also get the search + select-all + checkbox popover.
 - Trade, Contact, Status, and Licences & review deliberately left unfiltered — Trade is a comma-joined multi-value string (multiselect would offer one option per unique combination, not per trade), Contact is a composite field with no real `row.contact` for the library to read, and Status/Licences are already covered by the existing slicer chips above the table.
