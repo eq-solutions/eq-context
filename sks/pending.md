@@ -1,7 +1,7 @@
 ---
 title: SKS — Pending
 owner: Royce Milmlow
-last_updated: 2026-08-17
+last_updated: 2026-08-18
 scope: SKS Technologies operational TODO list
 read_priority: critical
 status: live
@@ -33,7 +33,7 @@ Two known site-code collisions (`EC6`, `SYD27`) both trace to one physical addre
 - [ ] **Deactivate the two stale site rows in ehow** — `Erilyan` (`site_id 6c221319…`, code EC6) and `Microsoft SYD27` (`site_id 7fb2d662…`, code SYD27). Single-column `active=false` flip each, no code change, no deploy — Royce hasn't given the explicit go to execute it yet. _(added 2026-08-14)_
 - [ ] **~7 SKS staff missing from EQ Field's staff table** (hired since the 5 Jul snapshot): Ahmed Masaud, Amir Farid, Callum Treharne, Jhon Jairo Velasquez Meneses, Nabeel Hussain, Paul Bolger, Timothy Sue — plus a handful of name-string mismatches (e.g. "Bruno Pedrosa" vs "Bruno Vita Pedrosa", "Jose Quintanilla" vs "Jose Luis Quintanilla Rodriguez"). Royce said he'll manage this himself via EQ Field's People admin. _(added 2026-08-14)_
 - [ ] **Leave sync parked deliberately** — an imported leave code lands on `schedule_entries.leave_type` directly, not in `app_data.leave_requests`, so it displays but carries no approver/audit trail. Royce explicitly scoped this session to roster only; leave is its own future task. _(added 2026-08-14)_
-- [ ] **Optional code fix, not required**: the roster site-map query in `eq-field/scripts/supabase.js` (~line 992) filters on `active=eq.true` only, not `field_enabled` — a small latent gap (found live) unrelated to the SYD27/EC6 fix above; deactivating the stale rows sidesteps it, so this is cosmetic cleanup only if ever revisited. _(added 2026-08-14)_
+- [x] **Roster site-map query fixed** — was filtering on `active=eq.true` only, now also filters on `field_enabled`. eq-field [PR #711](https://github.com/eq-solutions/eq-field/pull/711), merged, live (`v3.5.508`). _(added 2026-08-14, shipped 2026-08-17)_
 
 ## Richard Brown's duplicate LV Rescue certificates cleaned up (2026-08-13)
 *Fix landed on the eq-cards side — see `eq/pending.md` (2026-08-13, "licence save silently duplicated the row...") for full root-cause + build detail. This entry is the SKS-side pointer.*

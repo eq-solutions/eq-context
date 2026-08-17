@@ -1,7 +1,7 @@
 ---
 title: Machinery Index
 owner: Royce Milmlow
-last_updated: 2026-08-18
+last_updated: 2026-08-15
 scope: Every executable file in the substrate — hooks, scripts, CI workflows — and what each one actually does. The prose tiers have per-file tables enforced by index_drift; until 2026-08-15 the machinery had none.
 read_priority: reference
 status: live
