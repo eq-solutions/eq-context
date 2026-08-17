@@ -29,6 +29,20 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell + eq-solves-service: who gets the calendar digest — being rebuilt as a real permission, not a hardcoded list (2026-08-17)
+*Royce saw the live "Supervisor digest — Preview" panel and asked what levers exist to curate lists like it as headcount grows, while staying strictly canonical (no per-app override lists). Looked at Shell's Access Control page: two real levers exist — permissions by role, and Custom Groups for specific people. Custom Groups don't reach Service today because the API Service reads from doesn't expose group membership. Royce chose to scope this rather than build it immediately.*
+
+- [x] Confirmed exactly what the Calendar's "Assigned To" dropdown and "Notification recipients" checklist each are, and confirmed there's no canonical "active in field" flag — the closest field is a compliance gate (photo ID / white card on file), not a job-function flag.
+- [x] Mapped the real curation levers in Access Control and the exact gap stopping Service from seeing group membership.
+- [~] Spun off as a background task in a separate session — not built by this session. That task built a first version live in Shell's control plane before Royce reviewed it: an empty "Calendar Digest Recipients" group was created on tenant SKS (real write, zero live effect — no members, no code reads it yet).
+- [x] Royce redirected the design mid-build: a Custom Group should grant a real permission (the same mechanism every other Access Control permission already uses), not act as a one-off hardcoded roster. Wrote the other session a full handoff brief on what to keep, what to change, and what to verify before rebuilding.
+
+**Deferred:**
+- [ ] **Redesigned version not built yet** — running independently in a separate local session as of this close; the handoff brief was given but not yet confirmed actioned. _(added 2026-08-17)_
+- [ ] **The first attempt's group-ID membership check + its `CALENDAR_DIGEST_GROUP_ID` env var need to be removed, not left alongside the permission-based rebuild**, once that lands. _(added 2026-08-17)_
+
+---
+
 ## eq-solves-service: notification bell was silently broken for anyone signed in through Shell — found, fixed, reviewed, merged, live (2026-08-17)
 *Found while doing unrelated identity-canonicalization work — the notification bell's API route was checking who's signed in using a method that only works for the old, direct sign-in path. Anyone using Service through Shell (the normal way people reach it) has been getting a silent failure: the bell just shows nothing, no error, no explanation.*
 
