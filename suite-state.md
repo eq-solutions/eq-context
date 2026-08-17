@@ -60,6 +60,9 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-17)
 
+**eq-cards:**
+- #263 feat(licences): format the "Export my data" register as .xlsx, EQ-branded
+
 **eq-field:**
 - #711 v3.5.508 — roster site map: scope to field_enabled, not just active
 
@@ -71,6 +74,7 @@ _If this file is >48h old, the cron is broken._
 - #739 chore(deps): bump react and @types/react
 
 **eq-shell:**
+- #1424 feat(staff): extend Excel-style multiselect filters to Name and Start date
 - #1416 chore(intake): auto re-vendor eq-intake/eq-platform
 
 ---
@@ -81,7 +85,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ? in_progress |
+| eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
