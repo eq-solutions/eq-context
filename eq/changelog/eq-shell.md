@@ -9,6 +9,11 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-17 (PR #1422 MERGED — fixed a false-positive CI failure on the permission-drift check)
+- `scripts/check-orphan-perms.mjs` (the "Schema drift + anon-grant + policy-lint" gate) flagged `ts.edit_own`/`ts.submit_own`/`ts.view_own` as orphan permission keys on the live "Service tech" custom group — they're real, intentionally-grantable eq-field keys vendored into `src/lib/fieldFinePerms.ts`, which the check simply predated by 4 days and was never taught about.
+- Fix: the check now also validates against `fieldFinePerms.ts`, extracted the same way `field-perms-drift.yml` already reads that file.
+- No user impact — the flagged group has 0 members. Deployed and confirmed live.
+
 ## 2026-08-17 (PR #1419 MERGED — PDF documents now show a real thumbnail preview, not just a link)
 - Extracted the pdf.js renderer already built for `StaffPage.tsx` into a shared `DocumentThumbnail` component + `usePdfPageDataUrl` hook (`src/pages/staff/`).
 - Wired into `AddLicenceModal.tsx` (upload preview) and `SplitPanel.tsx` (staff licence detail, click-to-reveal) — both previously showed only a plain "Open PDF" link for PDF documents.
