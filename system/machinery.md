@@ -1,7 +1,7 @@
 ---
 title: Machinery Index
 owner: Royce Milmlow
-last_updated: 2026-08-15
+last_updated: 2026-08-18
 scope: Every executable file in the substrate — hooks, scripts, CI workflows — and what each one actually does. The prose tiers have per-file tables enforced by index_drift; until 2026-08-15 the machinery had none.
 read_priority: reference
 status: live
@@ -81,7 +81,7 @@ each one needs an eviction story; `refresh_suite_state.py` had none until
 | `refresh_suite_state.py` | Refreshes `suite-state.md` from live systems; evicts Key Decisions past the 30 most recent. |
 | `guard_ratchet.py` | The self-improving loop — opens one issue when a guard is overdue. Propose-only; never edits a rung. |
 | `fix_frontmatter.py` | One-shot backfill for missing frontmatter keys. Historical. |
-| `test_pending_queue_health.py` · `test_scheduled_workflow_health.py` | Unit tests for `refresh_digest.py`'s pure counting logic. |
+| `test_pending_queue_health.py` · `test_scheduled_workflow_health.py` · `test_pending_dupes.py` | Unit tests for `refresh_digest.py`'s pure logic — queue health/scheduled-workflow counting, and possible-duplicate-pending detection. |
 
 ## `.github/workflows/` — 22 workflows
 
