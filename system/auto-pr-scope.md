@@ -1,7 +1,7 @@
 ---
 title: SYSTEM — Auto-PR Scope (the leash)
 owner: Royce Milmlow
-last_updated: 2026-07-20
+last_updated: 2026-08-17
 scope: What an automated fix-finding agent may touch, what it may never touch, and what it must always do. Machine-read by hooks/auto_pr_guard.py — this file IS the enforced boundary, not a description of one.
 read_priority: critical
 status: live
@@ -65,6 +65,7 @@ ops/security-register.md
 ops/entities.md
 ops/financial-architecture.md
 eq/pending.md
+eq/pending/**
 sks/pending.md
 sks/active.md
 ops/pending.md
@@ -94,8 +95,9 @@ via explicit DENY below.
   first pass; revisit only after the narrower scope has a real track record.
 - `supabase/migrations/**`, the security register, entities, financial
   architecture — live-system or business-judgment content. Never mechanical.
-- `eq/pending.md`, `sks/pending.md`, `sks/active.md`, `ops/pending.md` — high
-  collision risk (edited by concurrent sessions constantly, see
+- `eq/pending.md` (now an index) + `eq/pending/**` (the actual per-repo files
+  it split into 2026-08-17), `sks/pending.md`, `sks/active.md`, `ops/pending.md`
+  — high collision risk (edited by concurrent sessions constantly, see
   `system/lessons.md` "concurrent writer") and require contextual judgment
   about what's actually done, not pattern-matching. `archive/**` is the safer
   analogous target for the file-sprawl problem instead.

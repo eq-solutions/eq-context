@@ -1,7 +1,7 @@
 ---
 title: Rules — Agentic Coding
 owner: Royce Milmlow
-last_updated: 2026-08-10
+last_updated: 2026-08-17
 scope: How assistants write and verify EQ/SKS product code — plan gate, verification standard, maintainability guards
 read_priority: critical
 status: live
@@ -56,7 +56,7 @@ Rules that follow:
 - The assistant MUST run the repo's own behavioural gate before calling a change done — widget tests for Flutter (`rules/stack.md`), `tsc + next build` for EQ Service, the test suite where one exists.
 - Where a change alters a user-visible flow, the assistant SHOULD exercise that flow end to end, or state plainly that it could not and what remains unproven. **"Analyzer clean, tests green, not click-tested" is an honest and acceptable outcome. "Done" when it means only the first two is not.**
 - A fix for a bug that inspection missed once MUST be verified by re-running the thing that failed, not by re-reading the patch.
-- Anything only Royce can prove (a real sign-in, a device, a customer-facing send) goes to `eq/pending.md` with a date — never left implied.
+- Anything only Royce can prove (a real sign-in, a device, a customer-facing send) goes to the relevant repo's `eq/pending/<repo>.md` with a date — never left implied. `eq/pending.md` is split by repo since 2026-08-17 (its own index lists the files); use `cross-repo.md` for work genuinely spanning 2+ repos.
 
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Index
 owner: Royce Milmlow
-last_updated: 2026-08-14
+last_updated: 2026-08-17
 scope: EQ Solutions work — products, decisions, build state
 read_priority: critical
 status: live
@@ -20,7 +20,7 @@ gated on outside validation. The old 5-outside-subbie GTM gate is dead
 
 Every canonical EQ file as a full URL — clickable from `/context/claude`:
 
-- [eq/pending.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/eq/pending.md) — EQ-only to-do list
+- [eq/pending.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/eq/pending.md) — EQ-only to-do list index; split 2026-08-17 into `eq/pending/<repo>.md` (one file per repo) — this file just links to them now
 - [eq/products.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/eq/products.md) — EQ live product status
 - [eq/cards/canonical-migration/plan.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/eq/cards/canonical-migration/plan.md) — Cards §18 close-out: move Cards data to eq-canonical, retire standalone Supabase, SSO via shared JWT (active workstream 2026-05-20)
 - [eq/canonical-readiness/plan.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/eq/canonical-readiness/plan.md) — Canonical layer readiness plan: bring eq-canonical to the shape needed to host Intake + Field + Quotes as first-class modules. **EXECUTED 2026-05-20** — all 6 work units shipped (42 entities across 5 modules)

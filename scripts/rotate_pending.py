@@ -50,10 +50,33 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 
+# eq/pending.md split 2026-08-17 into one file per repo (eq/pending/<repo>.md)
+# — see eq/pending.md's own frontmatter for why. EQ's "live" side is now a
+# LIST of files, all rotating into the same shared eq/pending-archive.md and
+# eq/verify-queue.md (the split only separates open engineering backlog by
+# repo; done/verify items stay tier-unified, matching how "Waiting on you" in
+# digest.md has always displayed EQ/SKS/OPS as one combined list rather than
+# splitting the queue itself by repo too). SKS/OPS are unaffected — still
+# single-file, wrapped in a one-element list so main()'s loop shape is the
+# same for every tier.
+EQ_LIVE_FILES = [
+    "eq/pending/eq-shell.md",
+    "eq/pending/eq-cards.md",
+    "eq/pending/eq-field.md",
+    "eq/pending/eq-solves-service.md",
+    "eq/pending/eq-solves-intake.md",
+    "eq/pending/eq-design-tokens.md",
+    "eq/pending/eq-ui.md",
+    "eq/pending/eq-receipts.md",
+    "eq/pending/eq-context.md",
+    "eq/pending/cross-repo.md",
+    "eq/pending/sks.md",
+]
+
 PAIRS = [
-    ("eq/pending.md", "eq/pending-archive.md", "eq/verify-queue.md", "EQ"),
-    ("sks/pending.md", "sks/pending-archive.md", "sks/verify-queue.md", "SKS"),
-    ("ops/pending.md", "ops/pending-archive.md", "ops/verify-queue.md", "OPS"),
+    (EQ_LIVE_FILES, "eq/pending-archive.md", "eq/verify-queue.md", "EQ"),
+    (["sks/pending.md"], "sks/pending-archive.md", "sks/verify-queue.md", "SKS"),
+    (["ops/pending.md"], "ops/pending-archive.md", "ops/verify-queue.md", "OPS"),
 ]
 
 OPEN_RE = re.compile(r"^- \[ \]")
@@ -462,18 +485,20 @@ def main(argv=None):
     today = date.today()
 
     any_moved = False
-    for live_rel, archive_rel, queue_rel, tier in PAIRS:
-        live_path = ROOT / live_rel
-        if not live_path.exists():
-            print(f"{tier}: {live_rel} missing — skipped")
-            continue
-        s = rotate_file(live_path, ROOT / archive_rel, ROOT / queue_rel, tier,
-                        args.grace_days, today, args.dry_run)
-        verb = "would move" if args.dry_run else "moved"
-        print(f"{tier}: {s['open']} open kept · {verb} {s['moved']}/{s['done_before']} done "
-              f"({s['full']} whole sections, {s['partial']} mixed) · "
-              f"{verb} {s['moved_verify']} verify item(s) to queue")
-        any_moved = any_moved or s["moved"] > 0 or s["moved_verify"] > 0
+    for live_rels, archive_rel, queue_rel, tier in PAIRS:
+        for live_rel in live_rels:
+            live_path = ROOT / live_rel
+            if not live_path.exists():
+                print(f"{tier}: {live_rel} missing — skipped")
+                continue
+            s = rotate_file(live_path, ROOT / archive_rel, ROOT / queue_rel, tier,
+                            args.grace_days, today, args.dry_run)
+            verb = "would move" if args.dry_run else "moved"
+            print(f"{tier} ({live_rel}): {s['open']} open kept · "
+                  f"{verb} {s['moved']}/{s['done_before']} done "
+                  f"({s['full']} whole sections, {s['partial']} mixed) · "
+                  f"{verb} {s['moved_verify']} verify item(s) to queue")
+            any_moved = any_moved or s["moved"] > 0 or s["moved_verify"] > 0
     if not any_moved:
         print("Nothing to rotate.")
     return 0
