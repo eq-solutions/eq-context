@@ -419,3 +419,45 @@ been open since 2026-07-30 (see `ops/pending-archive.md`) — Royce's call:
 leave it local-only, no remote.
 
 No open items.
+
+---
+
+## stale-main-gate + detect-fake-worktree: second cd-chain resolution bug found and fixed (2026-08-17)
+
+The 2026-08-14 fix above (`resolveEffCwd()` matching `cd` at any command
+boundary, not just string start) turned out to be half the fix. It widened
+*where* a `cd` could be recognised but never addressed *which* `cd` wins when
+a chain has more than one — `cmd.match()` with no `/g` flag only ever returns
+the FIRST match. A real, legitimate shape produces exactly that: `cd
+"<repo>" && SCRATCH="<isolated-clone-path>" && cd "$SCRATCH" && git commit
+...` — cd into a named repo for context, then into an isolated scratch clone
+before actually committing. `resolveEffCwd()` resolved to the first,
+unrelated repo instead of the clone the commit ran in. `guard.log` showed 6
+consecutive false `stale-main-gate` blocks in one session, all reporting the
+first repo's own genuinely-behind count instead of the clone's (current)
+state — traced from a bug report that suspected a hardcoded path (there
+isn't one; `pre_tool_use.py`'s F9 checks are hardcoded by design to the one
+shared checkout, a different rule entirely). Fixed to scan every `cd` in the
+chain and take the last, matching `pre_tool_use.py`'s own `_CD_CHAIN_RE`
+precedent for the identical shape. `~/.claude` commit `315fbc0`.
+
+Same sweep found a second, independent copy of the bug: rule 1c
+(`detect-fake-worktree`, the shell-command case) never went through the
+shared `resolveEffCwd()` helper — it had its own inline `cd`/`-C` regex, with
+both the "first not last" bug on `-C` AND a narrower blind spot on `cd`
+(anchored only at the true start of the whole command, so it couldn't see a
+`cd` chained after any earlier command at all — worse than
+`resolveEffCwd()`'s pre-2026-08-14 bug). A chained `cd "<repo>" && cd
+"<fake-worktree>" && git ...` was invisible to it and silently allowed.
+Fixed by routing rule 1c through `resolveEffCwd()` instead of a second
+hand-rolled copy. `~/.claude` commit `e272da0`.
+
+Both fixes verified by replaying the exact failing command shapes through
+old vs. fixed `guard.js` directly (old blocks falsely / misses silently,
+fixed doesn't); all 14 existing self-tests (`hooks/selftest.js`) still pass.
+Swept the rest of the workspace (every wired hook, every repo's
+`.claude/settings.json`, every repo under `C:\Projects`) for the same bug
+shape — found nothing else. Neither commit touches `eq-context`, same as the
+2026-08-14 entry above — no PR.
+
+No open items.
