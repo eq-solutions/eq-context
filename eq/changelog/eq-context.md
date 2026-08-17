@@ -1,13 +1,20 @@
 ---
 title: Changelog — EQ Context Repo
 owner: Royce Milmlow
-last_updated: 2026-08-14
+last_updated: 2026-08-18
 scope: Append-only history of changes to the eq-context repository itself
 read_priority: reference
 status: live
 ---
 
 # Changelog — EQ Context Repo
+
+## [2026-08-18] index_drift.py --strict cleared — 5 orphaned files indexed
+
+**Built by:** Claude Code
+
+- **`INDEX_DRIFT_STRICT=1 python3 scripts/index_drift.py` was failing on 5 orphaned files**, none related to the `field.md`/`eq-field.md` and `eq-service.md`/`eq-solves-service.md` changelog merge in the prior commit (`0fbee16`). 4 were `eq/pending/{cross-repo,eq-design-tokens,eq-solves-intake,sks}.md` — present on disk since the 2026-08-17 pending-queue split but never named in `eq/README.md`'s substrate-map bullet (the boundary-matching check in `index_drift.py` requires the literal filename, not just a folder reference). 1 was `.github/scripts/test_pending_dupes.py`, added alongside the "possible duplicate pending items" digest feature but never added to `system/machinery.md`'s ci-scripts test row.
+- Fixed by naming the 4 missing filenames in `eq/README.md`'s pending-index bullet, and folding `test_pending_dupes.py` into the existing `test_pending_queue_health.py` · `test_scheduled_workflow_health.py` unit-test row in `system/machinery.md`. Verified clean re-run of the strict check before committing. eq-context [158b781](https://github.com/eq-solutions/eq-context/commit/158b781), pushed direct to `main` (docs-only, no build/deploy surface).
 
 ## [2026-08-14] index-drift.yml cron fixed; shared-checkout stash-pop repair verified and synced
 
