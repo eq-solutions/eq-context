@@ -68,7 +68,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #1429 feat(access-control): ring visual for the permission matrix, real tab strip
-- #1428 chore(intake): auto re-vendor eq-intake/eq-platform
 - #1416 chore(intake): auto re-vendor eq-intake/eq-platform
 
 ---
