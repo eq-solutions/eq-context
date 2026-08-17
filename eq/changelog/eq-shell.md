@@ -9,6 +9,12 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-17 (PR #1418 MERGED — same inactive-account blind spot closed on magic-link and phone-OTP sign-in)
+- `shell-login-magic-link.ts`: query no longer filters `active=true` blindly — now tells "no account" from "account exists, inactive" apart and logs the latter (new `auditLoginBlocked` reason `account-inactive`) plus a Sentry warning. This door runs post-authentication, so there was never an enumeration reason for the silence it had; client response unchanged.
+- `shell-login-phone-otp.ts`: added a targeted inactive-match check so a deactivated account gets its own audit reason instead of being lumped in with `no-memberships`. Client response unchanged.
+- `shell-login-phone-pin.ts`: audited, deliberately left as-is — its collapsed no-account/no-pin/wrong-pin response is a documented anti-enumeration property.
+- `captureInactiveAccountRequest()`'s `toDomain` param generalized to `identityHint` (phone-keyed doors have no email domain).
+
 ## 2026-08-17 (PR #1417 MERGED — silent PIN-reset lockout on inactive accounts now visible in Sentry)
 - `shell-request-pin-reset.ts` always returned `{ok: true}` whether the target email didn't exist or existed but was inactive (deliberate anti-enumeration) — meaning a real, fixable lockout (an account left inactive mid identity-merge) was invisible everywhere, indistinguishable from a mistyped email in logs or Sentry.
 - New `captureInactiveAccountRequest()` helper in `_shared/sentry.ts` (PII-safe — email domain only), wired into the account-exists-but-inactive branch only. Client response and anti-enumeration behavior unchanged.
