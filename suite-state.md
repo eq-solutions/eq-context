@@ -74,7 +74,6 @@ _If this file is >48h old, the cron is broken._
 - #739 chore(deps): bump react and @types/react
 
 **eq-shell:**
-- #1424 feat(staff): extend Excel-style multiselect filters to Name and Start date
 - #1416 chore(intake): auto re-vendor eq-intake/eq-platform
 
 ---
