@@ -60,7 +60,12 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-17)
 
+**eq-service:**
+- #752 fix(notifications): gate the calendar supervisor digest on an Access Control group, not role
+
 **eq-shell:**
+- #1434 fix(staff): stop the compliance-pack poll from blanking the SPA on desktop
+- #1432 feat(access-control): expose Access Control group membership on list-members
 - #1430 fix(observability): raise auth spinner watchdog to clear the retry's worst case (EQ-SHELL-V)
 - #1429 feat(access-control): ring visual for the permission matrix, real tab strip
 - #1428 chore(intake): auto re-vendor eq-intake/eq-platform
