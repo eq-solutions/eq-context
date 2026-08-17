@@ -14,6 +14,20 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## SKS: QR self-join for 9 named apprentices — cohort verified safe, max-uses cap scoped and held (2026-08-17)
+*Follow-up to the 2026-08-16 "QR-code onboarding, apprentices first" decision and the 2026-08-14 duplicate-account-risk entry further down this file. Royce named the actual 9 people (Field roster screenshot, Apprentice filter, minus 2 shown) rather than the full 44-unlinked backlog.*
+
+- [x] **All 9 named apprentices verified individually against both jvkn and ehow before send.** Aiden Crowley and Jessica Robinson are the only two genuinely new identities (no existing Shell login, no Field link). The other 7 (Dylan Lieu, Elliot Gross, Marcus Fuente, Phoenix Khatri, Tara Demamiel, Taya Moody, Terry Su) already have a linked identity end-to-end but have never logged in — safe to send (the existing-user branch signs them in, doesn't duplicate) but doesn't move the 44-unlinked backlog number; only Aiden + Jessica do.
+- [x] **`shell-join-tenant.ts` read in full** — confirmed real adopt-before-create phone matching (handles +61/04/bare-9-digit formats, the same class of bug that created the Brett Kilpatrick duplicate on 2026-07-08) and that Field access stays locked behind a licence-presence trigger even for a true self-join — Core access ≠ Field access.
+- [x] **Baseline join count recorded** — the Apprentice self-join code sat at 1 prior join before today; should read 10 once all 9 scan. Simple before/after check, no tooling needed.
+- [x] **Reconfirmed (Royce's call, unchanged):** the 4 legacy self-join codes with no expiry/no approval (employee/manager/supervisor/apprentice, predating the 2026-08-14 hardening) stay live as-is.
+
+**Deferred:**
+- [ ] **Live click-through still not observed** — same caveat as the 2026-08-14 entry further down this file, now scoped to this specific batch. Resolves once Royce sends the link and the first person scans. _(added 2026-08-17)_
+- [ ] **Max-uses cap on self-join codes — scoped, not built, Royce's call to hold.** Would need a `max_uses` column (mirrors `expires_at`'s existing shape), an atomic check-and-reject in `shell-join-tenant.ts`, and a field on the Join Links admin page. Estimated under an hour for a working version. Revisit if a link ever actually leaks past its intended recipients, or this becomes a recurring worry. _(added 2026-08-17)_
+
+---
+
 ## eq-cards: jvkn Supabase branch-replay diagnosed and documented (2026-08-16)
 *A routine attempt to branch-test an unrelated eq-cards migration (0131) hit `create_branch` failing `MIGRATIONS_FAILED` on jvkn (eq-canonical) — turned into a full root-cause investigation, since this blocks Supabase's branch-preview workflow for the whole shared control-plane project, not just eq-cards.*
 
