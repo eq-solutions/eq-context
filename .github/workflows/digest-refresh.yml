@@ -54,6 +54,7 @@ jobs:
         run: |
           python test_scheduled_workflow_health.py
           python test_pending_queue_health.py
+          python test_pending_dupes.py
 
       - name: Generate digest.md
         env:

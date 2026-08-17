@@ -12,6 +12,7 @@ of waiting to be asked. Run on every merge to main via repository_dispatch
 (suite-state-changed) and nightly as fallback via digest-refresh.yml.
 """
 import base64
+import difflib
 import os
 import posixpath
 import re
@@ -338,6 +339,145 @@ def pending_queue_health(path):
         return None
     cutoff = (NOW - timedelta(days=AGING_OPEN_THRESHOLD_DAYS)).strftime("%Y-%m-%d")
     return _count_queue_health(lines, cutoff)
+
+
+def _aging_section_items(lines, cutoff):
+    """Pure logic behind pending_aging_items() — the actual open items behind
+    the aging_open_count number _count_queue_health() already computes,
+    instead of just the count. Same date/section-boundary rules as that
+    function (a section's date is the max date on its '## ' header; an
+    undated section is never aging), so the two can never disagree on what
+    counts. Returns [(section_title, section_date, [open_item_text, ...]), ...]
+    for every section whose header date is before cutoff and that still has
+    open items — a section that's aged out but has nothing left open isn't
+    included, there's nothing to act on.
+    """
+    def is_open(ln):
+        s = ln.strip()
+        return s.startswith("- [ ]") or s.startswith("- [~]")
+
+    results = []
+    title, sec_date, items = None, None, []
+
+    def flush():
+        if sec_date is not None and sec_date < cutoff and items:
+            results.append((title, sec_date, list(items)))
+
+    for ln in lines:
+        if ln.startswith("## "):
+            flush()
+            title = ln[3:].strip()
+            dates = SECTION_HEADER_DATE_RE.findall(ln)
+            sec_date = max(dates) if dates else None
+            items = []
+        elif is_open(ln):
+            items.append(ln.strip()[5:].strip())
+    flush()
+    return results
+
+
+def pending_aging_items(path):
+    """The actual items behind pending_queue_health()'s aging_open_count for
+    one file — which section, how stale, and what's still open in it. A
+    session can see the count go up in Queue health for weeks with no way to
+    tell what's actually gone quiet without opening the file; this is that.
+    """
+    try:
+        with open(path, encoding="utf-8") as f:
+            lines = f.readlines()
+    except FileNotFoundError:
+        return []
+    cutoff = (NOW - timedelta(days=AGING_OPEN_THRESHOLD_DAYS)).strftime("%Y-%m-%d")
+    base_dir = posixpath.dirname(path)
+    return [
+        (title, sec_date, [_reroot_links(i, base_dir) for i in items])
+        for title, sec_date, items in _aging_section_items(lines, cutoff)
+    ]
+
+
+_DEDUPE_PUNCT_RE = re.compile(r"[^\w\s]")
+
+
+def _normalize_for_dedupe(text):
+    """Lowercase and strip markdown formatting/punctuation so two bullets
+    compare on their actual words, not on bold/link/backtick noise."""
+    t = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", text)  # [label](url) -> label
+    t = re.sub(r"\*\*([^*]*)\*\*", r"\1", t)            # **bold** -> bold
+    t = re.sub(r"`([^`]*)`", r"\1", t)                  # `code` -> code
+    t = _DEDUPE_PUNCT_RE.sub(" ", t.lower())
+    return re.sub(r"\s+", " ", t).strip()
+
+
+def find_possible_duplicate_pending(items, threshold=0.82, min_len=12):
+    """items: [(label, raw_text), ...] of open pending bullets. Returns
+    [(label1, text1, label2, text2, score), ...], highest score first — pairs
+    whose normalized wording is similar enough that they might be the same
+    thing logged twice. Never merges anything; this only surfaces candidates
+    for a human look, same spirit as failure_recurrence_signals().
+
+    Found by hand during the 2026-08-17 pending-file split review: "Send
+    Huon the email" and "gitleaks pre-commit hook" were each logged as two
+    separate open items. threshold=0.82 (SequenceMatcher ratio on normalized
+    text) is tuned so both real pairs match and the known-different pairs in
+    test_pending_dupes.py don't — see that file for the actual phrasings.
+    min_len guards against short generic bullets ("- [ ] Fix it") matching
+    everything; a length-ratio pre-filter skips pairs whose normalized forms
+    are too different in length to be worth the full comparison.
+
+    A naive all-pairs SequenceMatcher.ratio() over the real ~850-item live
+    corpus took over two minutes (character-level comparison is not cheap,
+    and 850 items is ~360k pairs) — measured, not assumed, while building
+    this. Two-stage instead: build an inverted index of "significant" words
+    (5+ chars, so common short connectives like "the"/"and" don't matter) to
+    a shortlist of candidate pairs that share at least one such word, then
+    only run the real (accurate, tuned) SequenceMatcher ratio on that
+    shortlist. A word shared by more than MAX_WORD_FANOUT items is treated
+    as too generic to be a useful signal on its own (e.g. "confirmed",
+    "deployed") and dropped from the index — without this cap a single
+    common domain word reintroduces the same quadratic blowup this exists
+    to avoid. MAX_WORD_FANOUT=12 measured at 8.4s / 3-of-3 known real dupes
+    found against the live corpus (2026-08-17); tightening to 8 dropped one
+    of the three, so 12 is the floor, not a round-number guess. Two items
+    that are genuinely near-duplicates but share only generic/capped words
+    would still be missed; that's a recall tradeoff made for speed,
+    acceptable for a quiet, capped, "unconfirmed" surfacing tool that was
+    never meant to be exhaustive.
+    """
+    MAX_WORD_FANOUT = 12
+    normalized = [
+        (label, text, _normalize_for_dedupe(text)) for label, text in items
+    ]
+    normalized = [(l, t, n) for l, t, n in normalized if len(n) >= min_len]
+
+    word_index = {}
+    for idx, (_, _, n) in enumerate(normalized):
+        for word in set(n.split()):
+            if len(word) >= 5:
+                word_index.setdefault(word, []).append(idx)
+
+    candidate_pairs = set()
+    for idx_list in word_index.values():
+        if len(idx_list) < 2 or len(idx_list) > MAX_WORD_FANOUT:
+            continue
+        for a in range(len(idx_list)):
+            for b in range(a + 1, len(idx_list)):
+                i, j = idx_list[a], idx_list[b]
+                candidate_pairs.add((i, j) if i < j else (j, i))
+
+    results = []
+    for i, j in candidate_pairs:
+        l1, t1, n1 = normalized[i]
+        l2, t2, n2 = normalized[j]
+        if (l1, t1) == (l2, t2):
+            continue
+        len_ratio = min(len(n1), len(n2)) / max(len(n1), len(n2))
+        if len_ratio < 0.5:
+            continue
+        score = difflib.SequenceMatcher(None, n1, n2).ratio()
+        if score >= threshold:
+            results.append((l1, t1, l2, t2, round(score, 3)))
+    results.sort(key=lambda r: r[4], reverse=True)
+    return results
 
 
 def recent_sessions(sessions_dir="sessions", n=5):
@@ -851,24 +991,28 @@ def build():
 
     # eq/pending.md was split 2026-08-17 into one file per repo (eq/pending/
     # <repo>.md) — a session in one repo no longer wades through every other
-    # repo's backlog to find its own. eq_pending_all aggregates across all of
-    # them so the royce-queue split and the total-open-count logic below are
-    # unaffected by the split; EQ_PENDING_FILES is also the source of truth
-    # for the per-repo Queue health rows further down.
-    eq_pending_all = _drop_merged(
-        [item for path in EQ_PENDING_FILES for item in pending_open_items(path)]
-    )
+    # repo's backlog to find its own. eq_items_by_repo keeps that per-repo
+    # shape so "Waiting on you" below can tag each item with its real repo
+    # instead of a flat "EQ" (which post-split just means "go check up to 11
+    # files" — not actually actionable). eq_pending_all flattens it for the
+    # total-open-count logic and is also the source of truth for the
+    # per-repo Queue health rows further down.
+    eq_items_by_repo = {
+        path.rsplit("/", 1)[-1].removesuffix(".md"): _drop_merged(pending_open_items(path))
+        for path in EQ_PENDING_FILES
+    }
+    eq_pending_all = [item for items in eq_items_by_repo.values() for item in items]
     sks_pending_all = _drop_merged(pending_open_items("sks/pending.md"))
     ops_pending_all = _drop_merged(pending_open_items("ops/pending.md"))
 
     # Split out the personal queue: items only Royce can clear go to their own
     # section; the Pending sections below then read as engineering-only.
     royce_queue = (
-        [("EQ", i) for i in eq_pending_all if ROYCE_QUEUE_RE.search(i)]
+        [(repo, i) for repo, items in eq_items_by_repo.items() for i in items
+         if ROYCE_QUEUE_RE.search(i)]
         + [("SKS", i) for i in sks_pending_all if ROYCE_QUEUE_RE.search(i)]
         + [("OPS", i) for i in ops_pending_all if ROYCE_QUEUE_RE.search(i)]
     )
-    eq_pending = [i for i in eq_pending_all if not ROYCE_QUEUE_RE.search(i)]
     sks_pending = [i for i in sks_pending_all if not ROYCE_QUEUE_RE.search(i)]
 
     # ── render ──
@@ -1089,6 +1233,63 @@ def build():
             eng_n = open_n - royce_n
             lines.append(f"| [{label}]({path}) | {total} | {eng_n} / {royce_n} | {done_n} | {aging_n} |")
         lines.append("")
+
+    # Aging open items — the actual list behind Queue health's aging count
+    # above, not just the number. A count going up for weeks tells you
+    # nothing about what to look at; this does. Same quiet/capped spirit as
+    # Possible recurring failures below — worth a look, not an alarm, and
+    # never auto-actioned.
+    aging_rows = [
+        (label, path, title, sec_date, item)
+        for label, path, _h in queue_rows
+        for title, sec_date, items in pending_aging_items(path)
+        for item in items
+    ]
+    if aging_rows:
+        AGING_LIMIT = 15
+        lines.append(f"## Aging open items ({AGING_OPEN_THRESHOLD_DAYS}d+, unconfirmed)")
+        lines.append("")
+        lines.append(
+            "_Open items sitting under a section header this old or older — not "
+            "necessarily wrong, just gone quiet under its own dated write-up. "
+            "Worth a look before it reads as done-and-forgotten._"
+        )
+        lines.append("")
+        for label, path, title, sec_date, item in aging_rows[:AGING_LIMIT]:
+            lines.append(f"- **{label}** ({sec_date}) · {item}")
+        if len(aging_rows) > AGING_LIMIT:
+            lines.append(f"_…and {len(aging_rows) - AGING_LIMIT} more — see each file's Queue health row above._")
+        lines.append("")
+
+    # Possible duplicate pending items — the same open item logged twice
+    # under slightly different wording. Never merged automatically; this
+    # only surfaces candidates. Found by hand during the 2026-08-17 split
+    # review ("Send Huon the email", "gitleaks pre-commit hook" each logged
+    # twice) — see find_possible_duplicate_pending()'s docstring for the
+    # threshold this was tuned against.
+    dedupe_items = (
+        [(repo, i) for repo, items in eq_items_by_repo.items() for i in items]
+        + [("SKS", i) for i in sks_pending_all]
+        + [("OPS", i) for i in ops_pending_all]
+    )
+    possible_dupes = find_possible_duplicate_pending(dedupe_items)
+    if possible_dupes:
+        DUPE_LIMIT = 10
+        lines.append("## Possible duplicate pending items (unconfirmed)")
+        lines.append("")
+        lines.append(
+            "_Two open items worded similarly enough that they might be the same "
+            "thing logged twice. Not auto-merged — check both, close or fold one "
+            "into the other by hand if they really are the same._"
+        )
+        lines.append("")
+        for l1, t1, l2, t2, score in possible_dupes[:DUPE_LIMIT]:
+            lines.append(f"- **{l1}** · {t1}")
+            lines.append(f"  **{l2}** · {t2}")
+            lines.append("")
+        if len(possible_dupes) > DUPE_LIMIT:
+            lines.append(f"_…and {len(possible_dupes) - DUPE_LIMIT} more pair(s)._")
+            lines.append("")
 
     # Possible recurring failures — the missing half of guard-ratchet.yml. That
     # workflow proposes a rung promotion once `recurrences` is bumped in
