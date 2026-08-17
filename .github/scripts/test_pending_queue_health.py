@@ -13,7 +13,7 @@ match, so a future edit can't silently widen the pattern too far.
 
 Run: python .github/scripts/test_pending_queue_health.py
 """
-from refresh_digest import ROYCE_QUEUE_RE, _count_queue_health
+from refresh_digest import ROYCE_QUEUE_RE, _count_queue_health, _aging_section_items
 
 passed = failed = 0
 
@@ -104,6 +104,58 @@ check_counts(
 )
 
 check_counts("empty file", lines=[], cutoff="2026-06-01", expect=(0, 0, 0, 0, 0))
+
+
+def check_aging(name, lines, cutoff, expect):
+    global passed, failed
+    got = _aging_section_items(lines, cutoff)
+    ok = got == expect
+    print(("PASS" if ok else "FAIL") + f" {name}")
+    if ok:
+        passed += 1
+    else:
+        failed += 1
+        print(f"     got {got}\n     expected {expect}")
+
+
+check_aging(
+    "aging section with open items is returned",
+    lines=[
+        "## eq-shell: some old thing (2026-01-01)\n",
+        "- [ ] Still not done\n",
+        "- [x] This part is done\n",
+    ],
+    cutoff="2026-06-01",
+    expect=[("eq-shell: some old thing (2026-01-01)", "2026-01-01", ["Still not done"])],
+)
+
+check_aging(
+    "fresh section is excluded even with open items",
+    lines=["## brand new (2026-08-14)\n", "- [ ] Not aging\n"],
+    cutoff="2026-06-01",
+    expect=[],
+)
+
+check_aging(
+    "aging section with zero open items left is excluded — nothing to act on",
+    lines=["## old, fully done (2026-01-01)\n", "- [x] Already done\n"],
+    cutoff="2026-06-01",
+    expect=[],
+)
+
+check_aging(
+    "undated section is never aging, matches _count_queue_health",
+    lines=["## Parked — revisit later\n", "- [ ] Deliberately parked\n"],
+    cutoff="2026-06-01",
+    expect=[],
+)
+
+check_aging(
+    "in-progress items count as open in an aging section",
+    lines=["## old (2026-01-01)\n", "- [~] Partially applied\n"],
+    cutoff="2026-06-01",
+    expect=[("old (2026-01-01)", "2026-01-01", ["Partially applied"])],
+)
 
 print(f"\n{passed} passed, {failed} failed")
 if failed:
