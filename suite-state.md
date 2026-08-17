@@ -61,6 +61,8 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-17)
 
 **eq-shell:**
+- #1430 fix(observability): raise auth spinner watchdog to clear the retry's worst case (EQ-SHELL-V)
+- #1429 feat(access-control): ring visual for the permission matrix, real tab strip
 - #1428 chore(intake): auto re-vendor eq-intake/eq-platform
 - #1416 chore(intake): auto re-vendor eq-intake/eq-platform
 
