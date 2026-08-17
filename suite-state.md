@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-17)
 
-**eq-cards:**
-- #263 feat(licences): format the "Export my data" register as .xlsx, EQ-branded
-
 **eq-field:**
 - #711 v3.5.508 — roster site map: scope to field_enabled, not just active
 
