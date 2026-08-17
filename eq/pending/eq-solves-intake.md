@@ -13,6 +13,20 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-solves-intake: "Bring Data In" one-screen redesign finished, join-template pills dropped via /decide — built + verified, sitting UNCOMMITTED (2026-08-17)
+
+*Consolidated the old five-tab Intake demo (Health/Queue/Import/Reconcile/Ask split across separate screens) into one "Bring Data In" flow: destination-picker pill row, one unified export/commit result view, slot override + freeform/reconcile folded into the drop-zone screen. Then ran `/decide` (invoked with no args) on the destination picker; Royce delegated the call ("what would world leaders do"), so it was decided and executed directly in the same session: dropped join-template (Xero/MYOB/SimPRO) pills from the picker for v1, restoring the original build spec's recommendation over an earlier, more cautious call in this same session to keep them. Two other flagged ideas — deep-linking to staged review-queue rows, AI-vision photo intake — explicitly declined, not parked.*
+
+- [x] Destination-picker pill row + unified `DownloadResultView`/commit result state + slot override + freeform/reconcile folded into one screen — `tsc --noEmit` clean, `vitest run` 50/50, live-verified in browser preview.
+- [x] Join-template pills dropped from the picker — `TEMPLATE_PREFIX`/`TEMPLATE_OPTIONS`/`findTemplate`/`templateExportSpec`/the `joinTemplate` branch removed as dead code once nothing referenced them. Capability not lost — still fully live via `RollupDropZone` (the Rollup tab), which is also the only place user-built templates can render. Live-verified: exactly 7 pills render (Into EQ + 5 quick exports + disabled "Other…"), zero console errors in a fresh tab.
+- [ ] **Not committed — needs your call.** All of the above (both this session's picker change and the earlier phases #1-#3 it built on) sits as uncommitted changes in worktree `app-polish-improvements-8c03dd`, branch `claude/competent-gould-5aa5a8`: 9 modified + 5 new files, +555/-813 lines, nothing staged, no commit, no PR. Left uncommitted deliberately (commits only happen when you ask) rather than pushed on my own judgment. _(added 2026-08-17)_
+
+**Declined, not deferred:**
+- [ ] Deep-linking to exact staged rows in the review queue — decided against building this now. _(added 2026-08-17)_
+- [ ] AI-vision for photo-based intake — decided against building this now. _(added 2026-08-17)_
+
+---
+
 ## eq-solves-intake: the data-cleaning queue actually shrinks as you work it now, plus a bad-merge error fixed (2026-08-16)
 *Royce flagged three problems with the review queue from screenshots: decided duplicate rows just sat there cluttering the list forever with no way to fix a wrong answer, a duplicate-contacts merge threw a raw error on screen, and the "unknown trade" list had no way to fix several people at once. Built and merged, then self-reviewed the same work and fixed six more bugs the review turned up before calling it done.*
 
