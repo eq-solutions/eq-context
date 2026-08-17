@@ -69,7 +69,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #1423 fix(licences): repair the Shell OCR page's save call, point it at the real licences table
-- #1420 fix(access-control): Ops label consistency + searchable diffed customize drawer
 - #1416 chore(intake): auto re-vendor eq-intake/eq-platform
 
 ---
