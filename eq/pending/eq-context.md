@@ -1,7 +1,7 @@
 ---
 title: EQ Context (substrate/tooling) — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-17
+last_updated: 2026-08-18
 scope: EQ Context (substrate/tooling) engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -178,6 +178,11 @@ Autonomy policy: `ops/decisions.md` 2026-05-30. Session log: `sessions/2026-05-3
 - [x] **`link_check.py` produced 576 false "broken links" when run outside a clean CI checkout** — it didn't exclude `.claude/worktrees/`, so it tripped on other sessions' checked-out copies. Fixed 2026-08-16: `.claude/worktrees` added to the directory-skip filter, same pattern as the existing `.git`/`node_modules` exclusions. Re-ran against this checkout (which does have a live worktree present): 257 links checked, 0 broken, false-positive gone.
 - [x] **`substrate-a-plus-plan.md` claims a guard covers it that doesn't.** Fixed 2026-08-16 by making the claim true instead of editing it away: `claim_expiry.py` now also checks every tracked file's own frontmatter `expires_on`, not just `system/TODAY.md`'s goals block — ratcheted to today's measured debt (ceiling 1), so it doesn't fail the build over a lie it didn't create. `substrate-a-plus-plan.md` itself is `status: archived` and correctly skipped (an archived, superseded plan doesn't need its own past-tense expiry flagged on top). The real live one — `substrate-plan-v2.md`, `status: draft`, 4 days past its 2026-08-12 expiry, owner listed as "pending confirmation" — now surfaces as a violation in every CI run and nightly. That plan proposes a `claims.yml` ledger + product-pulse pushes + a full memory collapse; parts of it look already done by a different route (the courier auto-push hook found this session matches its Phase 5 almost exactly; `review_clock.py`/F14 covers similar ground to its Phase 2, more simply). Confirm, kill, or supersede it is still your call — the tooling just stopped staying silent about it.
 - [x] **Global `~/.claude/CLAUDE.md`'s Model Triage table is stale again** (still names Opus 4.8; Opus 5 exists) — fixed directly, same session — trivial text edit, no auth/deploy risk: table now names Opus 5, Opus 4.8 references removed.
+
+---
+
+## eq-context: F12 partially closed — dirty-checkout guard for the substrate sync, plus a detect-fake-worktree bug fixed (2026-08-17)
+- [ ] **F12 ratchet still below target** — `guard-ratchet.yml`'s own rule (`recurrences >= 2 AND rung < 4`) now flags F12 as PROMOTION DUE: rung 2, target 4. Root cause fixed this session (`hooks/substrate_sync.py` now skips its automatic `pull --ff-only` on the shared checkout whenever it's dirty, closing the mechanism that actually caused this session's own staged edits to vanish — eq-context [PR #164](https://github.com/eq-solutions/eq-context/pull/164), merged; also fixed live-only wiring drift, `C:/Users/EQ/.claude/settings.json` was still running a pre-2026-08-15 inline PowerShell pull blob instead of calling the governed script). The originally-proposed GENERAL guard — diff a side-clone's freshly-pulled content against the local copy before any copy-back, refuse anything that isn't a strict superset/merge — is still not built, deliberately deferred both times as adversarial-test-grade work. Also found and fixed while recovering from the incident: `guard.js`'s `detect-fake-worktree` rule didn't resolve the Git-Bash `/tmp` MSYS mount (only `/c/...` drive-letter paths), so F9's own recommended recovery path failed on the first attempt against a real, valid worktree under the OS temp dir — extended the normalizer to resolve `/tmp` via `os.tmpdir()` (local-only file, no PR). Propose-only per Royce's 2026-07-11 ruling on the ratchet; needs his call on scope/timing for the general guard, not a default next-session pickup. _(added 2026-08-17)_
 
 ---
 

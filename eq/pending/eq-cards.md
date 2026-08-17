@@ -1,7 +1,7 @@
 ---
 title: EQ Cards — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-17
+last_updated: 2026-08-18
 scope: EQ Cards engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -326,6 +326,11 @@ Overhauled the worker connection flow so a declined worker isn't left in the dar
 ### Notes (added 2026-07-23)
 - Auto-mode classifier hard-blocks `git merge`/`push` and `deploy_edge_function` regardless of in-chat authorization — confirmed twice this session. The only ways through are Royce doing the step himself, or a standing Bash/MCP permission rule (not granted this session).
 - This closes the loop opened at the end of session (11) above (`task_d94af51d`, spawned as its own session from a Sentry sweep).
+
+---
+
+## eq-cards + eq-shell: nightly reconciliation for the Cards→tenant licence sync (2026-08-17)
+- [ ] **Same scope limitation as `workers-canonical-sync`** — the new `licence-canonical-sync` edge function (jvkn) is hardcoded to ehow/SKS, not eq-shell's generic multi-tenant routing (`getTenantDataClientById`, the pattern `licence-push.ts` itself uses). Matches existing precedent deliberately — SKS is the only tenant with a live EQ Field roster today — but if a second tenant goes live on this sync path, this function and the pg_cron loop calling it (`eq_reconcile_licence_sync()`, [migration 0132](https://github.com/eq-solutions/eq-cards/blob/main/supabase/migrations/0132_licence_sync_reconciliation.sql)) need the same multi-tenant treatment. _(added 2026-08-17)_
 
 ---
 

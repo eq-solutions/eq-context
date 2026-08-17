@@ -1,13 +1,19 @@
 ---
 title: EQ Cards — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-17
+last_updated: 2026-08-18
 scope: EQ Cards append-only history. NOTE — duplicates eq/changelog/cards.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # EQ Cards — Changelog
+
+## 2026-08-17 (PR #264 MERGED — nightly reconciliation for the Cards→tenant licence sync)
+- New jvkn edge function `licence-canonical-sync` — a service-secret-authenticated counterpart to eq-shell's `licence-push.ts`, so a licence-sync webhook can be safely re-fired for any worker without a live user session.
+- New `eq_reconcile_licence_sync()`/`eq_audit_licence_sync_dispatch()` + pg_cron schedules (migration 0132) — nightly repairs drift left by anything that mutates `public.licences` outside the app (e.g. a direct admin fix), the same safety net workers already had (migration 0084).
+- Root incident: Richard Brown's EQ Field record kept showing 3 duplicate LV Rescue licences for 4 days after they'd been cleaned up on Cards' side, because the cleanup happened via direct SQL and never triggered the normal push. One-off fixed live; this closes the gap for good.
+- Deployed and tested live before merge: reconciled all 52 eligible workers cleanly.
 
 ## 2026-08-17 (PR #261 MERGED — PDF licence documents now show a thumbnail preview)
 - Added `pdfrx` — first PDF-rendering capability in the app. Chosen over the older `pdfx`: pdfrx bundles pdfium natively for Android/iOS/Web, this app's exact three targets.

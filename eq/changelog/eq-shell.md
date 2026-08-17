@@ -1,13 +1,16 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-17
+last_updated: 2026-08-18
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # eq-shell changelog
+
+## 2026-08-17 (PR #1427 MERGED — PDF preview button relabeled from "Open PDF" to "Show preview")
+- Clicking it reveals an inline thumbnail in place, it doesn't open a new tab — the label was misleading. The real "open in a new tab" action is the separate "Open original" link that appears once revealed.
 
 ## 2026-08-17 (PR #1425 MERGED — Field's role-level and person-only permissions unified into one drawer)
 - Field has two genuinely different permission systems by design: 8 role-level keys from `@eq-solutions/roles` (toggleable per role) and 77 fine-grained, grant-only keys (`fieldFinePerms.ts`, vendored from eq-field) that only exist via Custom Groups. They rendered in two disconnected places on the Access Control page.

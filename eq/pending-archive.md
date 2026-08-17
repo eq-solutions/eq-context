@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-08-17
+last_updated: 2026-08-18
 scope: Done items rotated out of eq/pending.md nightly by scripts/rotate_pending.py (per-item since 2026-07-27; before that, occasional manual whole-section moves). Nothing here is actionable — pure historical record (also covered in eq/changelog/*.md and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -4269,5 +4269,13 @@ contain the same values and were pushed before push-protection caught up.
 ## ⏩ Session close — 2026-06-30 (EQ Field) — Overnight security audit + canonical-wiring execution (rotated 2026-08-17 — open items remain in pending.md)
 
 - [x] **Realtime publication — DONE.** Live-checked `pg_publication_tables`: both `app_data.schedule_entries` and `app_data.leave_requests` are in `supabase_realtime`. No longer open. _(added 2026-06-30, closed 2026-08-17)_
+
+---
+
+## eq-shell + eq-cards: Richard Brown's LV Rescue photo confirmed never uploaded; PDF preview button relabeled (2026-08-17)
+*Royce asked to check whether Richard had re-uploaded his LV Rescue photo, then pushed back twice ("isn't it uploaded?" / "what about on jvkn?") — each time re-verified more thoroughly rather than restating the same answer, ending in three independent checks (jvkn `licences` table, the storage bucket itself, and EQ Field's mirror) all agreeing: nothing was ever attached, photo or PDF, to any of his 6 LV Rescue rows.*
+
+- [x] **Confirmed live, three ways, that nothing was ever uploaded** — `photo_front_url`/`photo_back_url`/`document_url` all null on every one of Richard's 6 LV Rescue rows (the 1 surviving record plus all 5 cleaned-up duplicates); zero matching objects in the `licence-photos` storage bucket under his exact tenant/user path; same null state on EQ Field's mirror. Not a case of something lost — nothing ever landed. _(added 2026-08-17, resolved 2026-08-17)_
+- [x] **A genuine UX confusion found along the way, fixed**: the PDF-preview trigger built earlier the same session (`LicPdfDocument` in `SplitPanel.tsx`) labeled itself "Open PDF", but clicking it doesn't open anything — it reveals an inline thumbnail in place (the same click-to-reveal privacy pattern the photo licences already use). Relabeled to "Show preview"; the real "open in a new tab" action is the separate "Open original" link that appears once revealed. eq-shell [PR #1427](https://github.com/eq-solutions/eq-shell/pull/1427), merged, live. _(added 2026-08-17, resolved 2026-08-17)_
 
 ---
