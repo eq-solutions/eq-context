@@ -47,6 +47,26 @@ def git(*args, timeout=20):
         return ""
 
 
+def working_tree_dirty():
+    """True if the shared checkout has ANY uncommitted state -- staged or not.
+
+    `git status --porcelain` is empty only when the index and working tree both
+    match HEAD exactly. Anything else (a concurrent session's staged edits, an
+    in-progress /close, a stray untracked file) means a `pull --ff-only` is no
+    longer a safe no-op: git's fast-forward checkout does a path-level 2-way
+    merge, and any path that differs from HEAD *and* also changed upstream
+    makes the whole pull fail -- but a real fetch still runs first every time,
+    and this repo's own history (system/failures.md -> F12, first seen
+    2026-08-05, second occurrence 2026-08-17 via this exact hook) is a session
+    finding its own staged eq/pending-archive.md, changelog, and session-log
+    edits gone with zero error message after nothing but read-only commands in
+    between. Skip the pull outright whenever the tree is dirty, regardless of
+    whether this particular pull would have conflicted -- "probably fine" is
+    exactly the reasoning that let F12 happen twice.
+    """
+    return bool(git("status", "--porcelain"))
+
+
 def refresh_remote_ref():
     """Fetch if the last one is stale, so origin/main is worth comparing against.
 
@@ -63,7 +83,7 @@ def refresh_remote_ref():
         pass  # missing or unreadable FETCH_HEAD -> treat as stale, fetch below
 
     branch = git("rev-parse", "--abbrev-ref", "HEAD")
-    if branch == "main":
+    if branch == "main" and not working_tree_dirty():
         before = git("rev-parse", "HEAD")
         git("pull", "--ff-only", "origin", "main", timeout=30)
         after = git("rev-parse", "HEAD")
@@ -72,6 +92,9 @@ def refresh_remote_ref():
             # ref is current so the comparison below is meaningful.
             git("fetch", "origin", "main", timeout=30)
     else:
+        # Either not on main (an isolated worktree/clone -- never pull those
+        # automatically) or main is dirty (see working_tree_dirty() above) --
+        # fetch only, never move HEAD or touch the working tree.
         git("fetch", "origin", "main", timeout=30)
 
 
