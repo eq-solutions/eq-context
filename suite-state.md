@@ -71,8 +71,10 @@ _If this file is >48h old, the cron is broken._
 - #739 chore(deps): bump react and @types/react
 
 **eq-shell:**
-- #1426 fix(staff): stop dob_day/dob_month drifting from a Cards-linked worker's real DOB
 - #1416 chore(intake): auto re-vendor eq-intake/eq-platform
+
+**eq-solves-intake:**
+- #119 feat(intake-demo): consolidate Bring Data In into one screen
 
 ---
 
@@ -82,7 +84,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ✓ success |
+| eq-service | ✗ failure |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
