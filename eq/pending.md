@@ -14,6 +14,19 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 
 ---
 
+## eq-shell: Staff table gets Excel-style filtering — built, merged, live (2026-08-17)
+*Royce asked what it would take to add Excel-style (search + checkbox list) filters to the Staff table, then asked for it on every column that could support it.*
+
+- [x] **Type, Job Title, Level, and Company switched to the multiselect popover** — the shared table component already had this built (`@eq-solutions/ui` v1.15.0, already the pinned version), just unused on this page. [eq-shell PR #1421](https://github.com/eq-solutions/eq-shell/pull/1421), merged.
+- [x] **Name and Start date added in a follow-up pass.** [eq-shell PR #1424](https://github.com/eq-solutions/eq-shell/pull/1424), merged.
+- [x] **Trade, Contact, Status, and Licences & review deliberately left as plain filters, not an oversight** — Trade stores multiple values as one comma-joined field (the checkbox list would offer combinations, not individual trades); Contact has no single real value to list; Status and Licences are already covered by the filter chips already above the table.
+- [x] **Both merges required waiting on an unrelated, repo-wide check that was failing on every open PR that day** (see the orphan-permissions fix, tracked elsewhere) — held rather than forced through, picked back up once that fix landed.
+
+**Deferred:**
+- [ ] **Not yet seen working on Royce's own screen** — confirmed the code is correct and the production build deployed clean, but couldn't click through it personally (no login for this environment). Worth two minutes next time Royce is in Staff. _(added 2026-08-17)_
+
+---
+
 ## eq-shell: the Shell licence-scanner page has never once saved a licence — found, fixed, merged, live (2026-08-17)
 *Started as a request to make a scanned licence's date of birth flow through to a worker's profile. Turned out the save button on that page (`/:tenantSlug/onboarding/licence`, the fallback for anyone who can't use the Cards app) has been silently broken since a backend rewrite — every save has failed with an error since then, for every field, not just date of birth. Checked live: 118 licences exist in the backup copy that page was supposed to write to, and every single one came from the Cards app's own sync, zero from this page, ever.*
 *Also found that even a working save button would have written to the wrong place — a backup table nothing else reads anymore. The real place the rest of the app reads from is a different (correct) table.*
@@ -37,15 +50,8 @@ EQ Solutions work only. SKS items live in `sks/pending.md`. OPS items
 ---
 
 ## SKS: QR self-join for 9 named apprentices — cohort verified safe, max-uses cap scoped and held (2026-08-17)
-*Follow-up to the 2026-08-16 "QR-code onboarding, apprentices first" decision and the 2026-08-14 duplicate-account-risk entry further down this file. Royce named the actual 9 people (Field roster screenshot, Apprentice filter, minus 2 shown) rather than the full 44-unlinked backlog.*
-
-- [x] **All 9 named apprentices verified individually against both jvkn and ehow before send.** Aiden Crowley and Jessica Robinson are the only two genuinely new identities (no existing Shell login, no Field link). The other 7 (Dylan Lieu, Elliot Gross, Marcus Fuente, Phoenix Khatri, Tara Demamiel, Taya Moody, Terry Su) already have a linked identity end-to-end but have never logged in — safe to send (the existing-user branch signs them in, doesn't duplicate) but doesn't move the 44-unlinked backlog number; only Aiden + Jessica do.
-- [x] **`shell-join-tenant.ts` read in full** — confirmed real adopt-before-create phone matching (handles +61/04/bare-9-digit formats, the same class of bug that created the Brett Kilpatrick duplicate on 2026-07-08) and that Field access stays locked behind a licence-presence trigger even for a true self-join — Core access ≠ Field access.
-- [x] **Baseline join count recorded** — the Apprentice self-join code sat at 1 prior join before today; should read 10 once all 9 scan. Simple before/after check, no tooling needed.
-- [x] **Reconfirmed (Royce's call, unchanged):** the 4 legacy self-join codes with no expiry/no approval (employee/manager/supervisor/apprentice, predating the 2026-08-14 hardening) stay live as-is.
 
 **Deferred:**
-- [ ] **Live click-through still not observed** — same caveat as the 2026-08-14 entry further down this file, now scoped to this specific batch. Resolves once Royce sends the link and the first person scans. _(added 2026-08-17)_
 - [ ] **Max-uses cap on self-join codes — scoped, not built, Royce's call to hold.** Would need a `max_uses` column (mirrors `expires_at`'s existing shape), an atomic check-and-reject in `shell-join-tenant.ts`, and a field on the Join Links admin page. Estimated under an hour for a working version. Revisit if a link ever actually leaks past its intended recipients, or this becomes a recurring worry. _(added 2026-08-17)_
 
 ---
