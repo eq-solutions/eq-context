@@ -60,7 +60,11 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-17)
 
+**eq-field:**
+- #710 v3.5.507 — auth.js file-size debt: split into 5 files
+
 **eq-service:**
+- #745 fix(reports): ACB/NSX masthead alignment, blank page 2, sign-off wiring + SI load bug
 - #743 chore(deps): bump lucide-react from 1.27.0 to 1.31.0
 - #742 chore(deps): bump @supabase/supabase-js from 2.111.0 to 2.112.3
 - #741 chore(deps): bump posthog-js from 1.407.5 to 1.417.0
@@ -68,6 +72,8 @@ _If this file is >48h old, the cron is broken._
 - #739 chore(deps): bump react and @types/react
 
 **eq-shell:**
+- #1421 feat(staff): Excel-style multiselect filters on Type, Job Title, Level, Company
+- #1420 fix(access-control): Ops label consistency + searchable diffed customize drawer
 - #1419 feat(staff): show a PDF thumbnail preview instead of a plain link
 - #1416 chore(intake): auto re-vendor eq-intake/eq-platform
 
