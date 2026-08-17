@@ -382,6 +382,70 @@ te("`git status` / `git push` untouched by F9 even INSIDE the shared checkout",
    bash_at("git push origin main", f9_repo), 0, SAME)
 _rmtree_retry(f9_repo)
 
+
+def _to_msys(win_path):
+    """Windows absolute path -> Git-Bash MSYS /c/... form, for testing F12's
+    path-string normalization against both spellings of the same location —
+    the identical case guard.js's own normalizeMsysPath() handles for the
+    detect-fake-worktree rule."""
+    p = win_path.replace("\\", "/")
+    if len(p) >= 2 and p[1] == ":":
+        return "/" + p[0].lower() + p[2:]
+    return p
+
+
+print("=== F12 - raw copy blind-overwrites the SHARED checkout (must BLOCK) ===")
+f12_shared = f9_fixture_repo("_f12_shared")
+f12_other = f9_fixture_repo("_f12_other")
+SAME12 = {"EQ_CONTEXT": f12_shared, "EQ_FORCE_GUARD": "0"}
+OTHER12 = {"EQ_CONTEXT": f12_shared + "-not-the-shared-one", "EQ_FORCE_GUARD": "0"}
+
+te("cp from a side-clone INTO the shared checkout -> BLOCK",
+   bash_at(f'cp "{f12_other}/seed.md" "{f12_shared}/seed.md"', f12_other), 2, SAME12)
+te("mv from a side-clone INTO the shared checkout -> BLOCK",
+   bash_at(f'mv "{f12_other}/seed.md" "{f12_shared}/seed.md"', f12_other), 2, SAME12)
+te("PowerShell 'cp' alias (Copy-Item) -> BLOCK (tool matching)",
+   {"tool_name": "PowerShell",
+    "tool_input": {"command": f'cp "{f12_other}\\seed.md" "{f12_shared}\\seed.md"'},
+    "cwd": f12_other}, 2, SAME12)
+te("PowerShell Copy-Item -Path/-Destination (flag-value form) -> BLOCK",
+   {"tool_name": "PowerShell",
+    "tool_input": {"command": f'Copy-Item -Path "{f12_other}\\seed.md" -Destination "{f12_shared}\\seed.md"'},
+    "cwd": f12_other}, 2, SAME12)
+te("PowerShell Move-Item -> BLOCK",
+   {"tool_name": "PowerShell",
+    "tool_input": {"command": f'Move-Item "{f12_other}\\seed.md" "{f12_shared}\\seed.md"'},
+    "cwd": f12_other}, 2, SAME12)
+te("Windows backslash path form for both src and dest -> BLOCK",
+   {"tool_name": "PowerShell",
+    "tool_input": {"command": 'copy "' + f12_other.replace("/", "\\") + '\\seed.md" "'
+                    + f12_shared.replace("/", "\\") + '\\pending.md"'},
+    "cwd": f12_other}, 2, SAME12)
+te("Git-Bash /c/... form of the SAME destination -> BLOCK (msys path normalization)",
+   bash_at(f'cp "{f12_other}/seed.md" "{_to_msys(f12_shared)}/seed.md"', f12_other), 2, SAME12)
+te("robocopy with a trailing Windows-style /E flag -> BLOCK (flag not mistaken "
+   "for the destination, and not mistaken for a path either — see _looks_like_flag)",
+   bash_at(f'robocopy "{f12_other}" "{f12_shared}" /E', f12_other), 2, SAME12)
+
+print("=== F12 controls - must NOT be blocked ===")
+te("CONTROL: cp WITHIN the shared checkout (both src and dest already shared) -> allowed",
+   bash_at(f'cp "{f12_shared}/seed.md" "{f12_shared}/copy.md"', f12_shared), 0, SAME12)
+te("CONTROL: cp FROM the shared checkout OUT to a side-clone -> allowed (legitimate direction)",
+   bash_at(f'cp "{f12_shared}/seed.md" "{f12_other}/seed.md"', f12_shared), 0, SAME12)
+te("CONTROL: `git push` from the side-clone (the RECOMMENDED alternative) -> allowed",
+   bash_at("git push origin main", f12_other), 0, SAME12)
+te("CONTROL: `scp` (secure copy) is not mistaken for the `cp` verb -> allowed",
+   bash_at(f'scp "{f12_other}/seed.md" "{f12_shared}/seed.md"', f12_other), 0, SAME12)
+te("CONTROL: a script name merely containing 'copy' doesn't false-positive",
+   bash_at(f'./backup-copy.sh "{f12_other}/seed.md" "{f12_shared}/seed.md"', f12_other), 0, SAME12)
+te("CONTROL: cp with only one argument (malformed, nothing to compare) -> allowed",
+   bash_at(f'cp "{f12_shared}/seed.md"', f12_other), 0, SAME12)
+te("CONTROL: identical cp command, but EQ_CONTEXT points elsewhere -> allowed "
+   "(F12 dormant outside the real shared checkout)",
+   bash_at(f'cp "{f12_other}/seed.md" "{f12_shared}/seed.md"', f12_other), 0, OTHER12)
+_rmtree_retry(f12_shared)
+_rmtree_retry(f12_other)
+
 print("=== F10 - core.hooksPath set away from .githooks in the shared checkout (must BLOCK) ===")
 f10_repo = f9_fixture_repo("_f10")
 SAME10 = {"EQ_CONTEXT": f10_repo, "EQ_FORCE_GUARD": "0"}
