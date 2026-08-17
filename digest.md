@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-17 09:59 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-17 10:01 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-17 09:27 UTC → 2026-08-17 09:59 UTC)
+## Since last refresh (2026-08-17 09:59 UTC → 2026-08-17 10:01 UTC)
 
-- Merged: eq-shell [#1408](https://github.com/eq-solutions/eq-shell/pull/1408) chore(ci): triage can_assign_worker_role into KNOWN_UNSOURCE
-- Merged: eq-shell [#1405](https://github.com/eq-solutions/eq-shell/pull/1405) fix(security): origin-guard 4 quotes/ops/briefing endpoints
-- Merged: eq-shell [#1402](https://github.com/eq-solutions/eq-shell/pull/1402) fix(security): origin-guard 4 GM Reports mutation endpoints
-- Merged: eq-shell [#1398](https://github.com/eq-solutions/eq-shell/pull/1398) fix(security): origin-guard 5 worker-linking/org-config endp
-- Merged: eq-shell [#1394](https://github.com/eq-solutions/eq-shell/pull/1394) fix(security): origin-guard 4 session/account-lifecycle endp
-- Merged: eq-shell [#1393](https://github.com/eq-solutions/eq-shell/pull/1393) fix(security): origin-guard 5 account-credential endpoints (
-- Merged: eq-shell [#1387](https://github.com/eq-solutions/eq-shell/pull/1387) fix(security): close the admin.manage_groups escalation path
-- Merged: eq-shell [#1386](https://github.com/eq-solutions/eq-shell/pull/1386) fix(security): origin-guard 2 Cards mutation/PII endpoints +
+- Merged: eq-shell [#1407](https://github.com/eq-solutions/eq-shell/pull/1407) fix(security): origin-guard 4 attachment/document upload end
+- Merged: eq-shell [#1404](https://github.com/eq-solutions/eq-shell/pull/1404) fix(security): origin-guard 3 intake-staging endpoints + doc
+- Merged: eq-shell [#1403](https://github.com/eq-solutions/eq-shell/pull/1403) fix(admin-settings): stop crash on role-scoped licence requi
+- Merged: eq-shell [#1401](https://github.com/eq-solutions/eq-shell/pull/1401) fix(security): origin-guard 4 CRM/suppliers/labour-hire muta
+- Merged: eq-shell [#1400](https://github.com/eq-solutions/eq-shell/pull/1400) fix(security): P2 access-control sweep — 5 unchecked read en
+- Merged: eq-shell [#1399](https://github.com/eq-solutions/eq-shell/pull/1399) fix(compliance): restore photo-ID equivalence dropped by rol
+- Merged: eq-shell [#1397](https://github.com/eq-solutions/eq-shell/pull/1397) fix(security): permission-model hygiene sweep — drift-test b
+- Merged: eq-shell [#1396](https://github.com/eq-solutions/eq-shell/pull/1396) fix(security): origin-guard 5 staff/licence mutation endpoin
 
 ## ⚠ Needs you (2)
 
@@ -49,7 +49,7 @@ _…and 145 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 2 | 0d |
-| eq-solves-service | ✓ success | 1d ago | 6 | 0d |
+| eq-solves-service | ✓ success | 0d ago | 5 | 0d |
 | eq-field | ✓ success | 1d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 1d ago | 0 | — |
@@ -67,6 +67,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 |--------|------|----|
 | 2026-08-17 | eq-shell | [#1418](https://github.com/eq-solutions/eq-shell/pull/1418) fix(observability): close account-inactive blind spot on magic-li |
 | 2026-08-17 | eq-shell | [#1417](https://github.com/eq-solutions/eq-shell/pull/1417) fix(observability): surface silent PIN-reset lockouts on inactive |
+| 2026-08-17 | eq-solves-service | [#744](https://github.com/eq-solutions/eq-service/pull/744) fix(ui): Export button font size on Maintenance Checks toolbar |
 | 2026-08-17 | eq-cards | [#262](https://github.com/eq-solutions/eq-cards/pull/262) feat(settings): mirror eq-shell's register columns in licences.cs |
 | 2026-08-17 | eq-cards | [#261](https://github.com/eq-solutions/eq-cards/pull/261) feat(licences): show a PDF thumbnail preview instead of an icon-o |
 | 2026-08-17 | eq-cards | [#260](https://github.com/eq-solutions/eq-cards/pull/260) feat(wallet): put "Export my data" on the Wallet app bar, not thr |
@@ -79,7 +80,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-16 | eq-shell | [#1413](https://github.com/eq-solutions/eq-shell/pull/1413) fix(sync): close 3 name-propagation gaps found live-testing as an |
 | 2026-08-16 | eq-shell | [#1406](https://github.com/eq-solutions/eq-shell/pull/1406) fix(dashboard): remove Today's Actions from the Shell home page |
 | 2026-08-16 | eq-shell | [#1410](https://github.com/eq-solutions/eq-shell/pull/1410) fix(security): origin-guard user-preferences.ts |
-| 2026-08-16 | eq-shell | [#1409](https://github.com/eq-solutions/eq-shell/pull/1409) fix(security): origin-guard 3 misc upload endpoints |
 _Showing 15 of 115 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -143,4 +143,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-17 09:59 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-17 10:01 UTC._
