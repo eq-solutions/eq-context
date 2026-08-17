@@ -13,6 +13,19 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: Staff table gets Excel-style filtering — built, merged, live (2026-08-17)
+*Royce asked what it would take to add Excel-style (search + checkbox list) filters to the Staff table, then asked for it on every column that could support it.*
+
+- [x] **Type, Job Title, Level, and Company switched to the multiselect popover** — the shared table component already had this built (`@eq-solutions/ui` v1.15.0, already the pinned version), just unused on this page. [eq-shell PR #1421](https://github.com/eq-solutions/eq-shell/pull/1421), merged.
+- [x] **Name and Start date added in a follow-up pass.** [eq-shell PR #1424](https://github.com/eq-solutions/eq-shell/pull/1424), merged.
+- [x] **Trade, Contact, Status, and Licences & review deliberately left as plain filters, not an oversight** — Trade stores multiple values as one comma-joined field (the checkbox list would offer combinations, not individual trades); Contact has no single real value to list; Status and Licences are already covered by the filter chips already above the table.
+- [x] **Both merges required waiting on an unrelated, repo-wide check that was failing on every open PR that day** (see the orphan-permissions fix, tracked elsewhere) — held rather than forced through, picked back up once that fix landed.
+
+**Deferred:**
+- [ ] **Not yet seen working on Royce's own screen** — confirmed the code is correct and the production build deployed clean, but couldn't click through it personally (no login for this environment). Worth two minutes next time Royce is in Staff. _(added 2026-08-17)_
+
+---
+
 ## eq-shell: the Shell licence-scanner page has never once saved a licence — found, fixed, merged, live (2026-08-17)
 *Started as a request to make a scanned licence's date of birth flow through to a worker's profile. Turned out the save button on that page (`/:tenantSlug/onboarding/licence`, the fallback for anyone who can't use the Cards app) has been silently broken since a backend rewrite — every save has failed with an error since then, for every field, not just date of birth. Checked live: 118 licences exist in the backup copy that page was supposed to write to, and every single one came from the Cards app's own sync, zero from this page, ever.*
 *Also found that even a working save button would have written to the wrong place — a backup table nothing else reads anymore. The real place the rest of the app reads from is a different (correct) table.*
