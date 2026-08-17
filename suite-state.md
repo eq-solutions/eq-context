@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-17)
 
-**eq-field:**
-- #710 v3.5.507 — auth.js file-size debt: split into 5 files
-
 **eq-service:**
 - #745 fix(reports): ACB/NSX masthead alignment, blank page 2, sign-off wiring + SI load bug
 - #743 chore(deps): bump lucide-react from 1.27.0 to 1.31.0
