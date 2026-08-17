@@ -76,6 +76,27 @@ ROYCE_QUEUE_RE = re.compile(
 )
 ROYCE_QUEUE_LIMIT = 12  # max rows shown; full lists stay in the pending files
 
+# eq/pending.md split 2026-08-17 into one file per repo — a session in one
+# repo no longer wades through every other repo's backlog to find its own.
+# eq/pending.md itself is now just an index pointing here. Keep this list in
+# sync with rotate_pending.py's own EQ_LIVE_FILES (same split, used by the
+# nightly rotation instead of the digest) — the two intentionally aren't
+# imported from one shared module since this script and that one are
+# invoked from different workflows with no shared import path today.
+EQ_PENDING_FILES = [
+    "eq/pending/eq-shell.md",
+    "eq/pending/eq-cards.md",
+    "eq/pending/eq-field.md",
+    "eq/pending/eq-solves-service.md",
+    "eq/pending/eq-solves-intake.md",
+    "eq/pending/eq-design-tokens.md",
+    "eq/pending/eq-ui.md",
+    "eq/pending/eq-receipts.md",
+    "eq/pending/eq-context.md",
+    "eq/pending/cross-repo.md",
+    "eq/pending/sks.md",
+]
+
 # Infra/notification workflows — not build CI. Blocked from ci_status() so they
 # don't overwrite the real build signal. Add any new meta-workflows here.
 META_WORKFLOW_PATHS = {
@@ -828,7 +849,15 @@ def build():
     def _drop_merged(items):
         return [item for item in items if not any(num in item for num in merged_pr_nums)]
 
-    eq_pending_all = _drop_merged(pending_open_items("eq/pending.md"))
+    # eq/pending.md was split 2026-08-17 into one file per repo (eq/pending/
+    # <repo>.md) — a session in one repo no longer wades through every other
+    # repo's backlog to find its own. eq_pending_all aggregates across all of
+    # them so the royce-queue split and the total-open-count logic below are
+    # unaffected by the split; EQ_PENDING_FILES is also the source of truth
+    # for the per-repo Queue health rows further down.
+    eq_pending_all = _drop_merged(
+        [item for path in EQ_PENDING_FILES for item in pending_open_items(path)]
+    )
     sks_pending_all = _drop_merged(pending_open_items("sks/pending.md"))
     ops_pending_all = _drop_merged(pending_open_items("ops/pending.md"))
 
@@ -992,9 +1021,29 @@ def build():
         lines.append(f"_No merges in the last {RECENTLY_MERGED_DAYS} days._")
     lines.append("")
 
-    # Pending open items (EQ + SKS) — engineering-only; the Royce-queue items
-    # were split into "Waiting on you" above.
-    for label, items, path in [("EQ", eq_pending, "eq/pending.md"), ("SKS", sks_pending, "sks/pending.md")]:
+    # Pending open items — engineering-only; the Royce-queue items were split
+    # into "Waiting on you" above.
+    #
+    # EQ used to get the same bullet-sample treatment as SKS below (up to 10
+    # items + a "…and N more" link), back when it was one file. Split across
+    # 11 repo files 2026-08-17, a flat top-10 sample across all of them would
+    # read as an arbitrary slice of whichever repo happened to sort first —
+    # not useful, and the per-repo Queue health table right below already
+    # gives real per-repo counts + links. So EQ gets a link-only line per
+    # repo file here instead of a content sample; SKS is unchanged (still one
+    # file, the sample is still representative).
+    if eq_pending_all:
+        lines.append("## Pending (EQ)")
+        lines.append("")
+        for path in EQ_PENDING_FILES:
+            n = len(_drop_merged(pending_open_items(path)))
+            if n == 0:
+                continue
+            label = path.rsplit("/", 1)[-1].removesuffix(".md")
+            lines.append(f"- **{label}** ({n} open) · [{path}]({path})")
+        lines.append("")
+
+    for label, items, path in [("SKS", sks_pending, "sks/pending.md")]:
         if not items:
             continue
         lines.append(f"## Pending ({label})")
@@ -1012,7 +1061,8 @@ def build():
     # mostly open work, one that's mostly unrotated history, and one where open
     # items have simply gone quiet, are three different problems.
     queue_files = [
-        ("eq/pending.md", "EQ"),
+        (path, path.rsplit("/", 1)[-1].removesuffix(".md")) for path in EQ_PENDING_FILES
+    ] + [
         ("sks/pending.md", "SKS"),
         ("sks/active.md", "SKS active"),
         ("ops/pending.md", "OPS"),

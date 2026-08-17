@@ -1,7 +1,7 @@
 ---
 title: CLAUDE.md — Master Behavioural Contract
 owner: Royce Milmlow
-last_updated: 2026-08-08
+last_updated: 2026-08-17
 scope: Single source of truth for how every assistant (Chat, Cowork, Code, ChatGPT, Grok, any future tool) must behave when working with Royce
 read_priority: critical
 status: live
@@ -49,15 +49,19 @@ Every session, every tool. No exceptions.
    | OPS | `ops/README.md` |
 
    **The tier `pending.md` is NOT a session-start read. Search it, don't load it.**
-   `eq/pending.md` is 491 KB — roughly 125,000 tokens, about 82% of everything a
-   session used to load before its first question. Reading it whole was costing
-   more context than the entire rest of the substrate combined, and no automation
-   ever required it: the SessionStart hook reads only `digest.md` and `TODAY.md`,
-   and `rotate_pending.py` / `refresh_digest.py` consume the file mechanically.
-   What you actually need at session start is already above — `punch-list.md` is
-   the capped active queue and `digest.md`'s **Needs you** is the alert feed.
-   Open the tier `pending.md` when you have a specific question for it (grep the
-   repo or app name), and read the section you land in, not the file.
+   `eq/pending.md` was 491 KB — roughly 125,000 tokens, about 82% of everything a
+   session used to load before its first question — before being split
+   2026-08-17 into one file per repo (`eq/pending/<repo>.md`; `eq/pending.md`
+   itself is now a small index pointing to them). Reading the old monolith
+   whole was costing more context than the entire rest of the substrate
+   combined, and no automation ever required it: the SessionStart hook reads
+   only `digest.md` and `TODAY.md`, and `rotate_pending.py` / `refresh_digest.py`
+   consume the files mechanically. What you actually need at session start is
+   already above — `punch-list.md` is the capped active queue and `digest.md`'s
+   **Needs you** is the alert feed. Open the specific repo's `eq/pending/<repo>.md`
+   when you have a question for it (`eq/pending.md`'s index tells you which file),
+   and read the section you land in, not the whole file. SKS/OPS are unaffected —
+   `sks/pending.md` and `ops/pending.md` are still single files.
 
    `archive/` only when Royce explicitly references parked content (AHD). `sks-team/` is a separate tier for SKS team members' sessions — not loaded for Royce's personal sessions.
 
@@ -232,7 +236,7 @@ This contract points; it doesn't restate. Authoritative files:
 | Infrastructure (Supabase IDs, CF, Netlify) | [system/infrastructure.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/infrastructure.md) |
 | Tech architecture | [system/architecture.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/architecture.md) |
 | Financial architecture | [ops/financial-architecture.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/financial-architecture.md) |
-| EQ pending | [eq/pending.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/eq/pending.md) |
+| EQ pending (index) | [eq/pending.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/eq/pending.md) — points to `eq/pending/<repo>.md`, one file per repo since 2026-08-17 |
 | EQ products | [eq/products.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/eq/products.md) |
 | SKS pending | [sks/pending.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/pending.md) |
 | SKS active | [sks/active.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/active.md) |
