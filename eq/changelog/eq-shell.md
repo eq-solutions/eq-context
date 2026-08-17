@@ -9,6 +9,17 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-17 (PR #1425 MERGED — Field's role-level and person-only permissions unified into one drawer)
+- Field has two genuinely different permission systems by design: 8 role-level keys from `@eq-solutions/roles` (toggleable per role) and 77 fine-grained, grant-only keys (`fieldFinePerms.ts`, vendored from eq-field) that only exist via Custom Groups. They rendered in two disconnected places on the Access Control page.
+- Rebuilt the Field permission drawer to show both together: the 8 stay as real toggles; the 77 are grouped by category (Roster, Timesheets, Leave, Sites, etc.), collapsed by default, searchable, each row showing "Not granted" or which custom group(s) grant it with a click-through back to that group. New `useGroupPermMap()` query aggregates every group's grants once, cached 5 min.
+- Built from a Claude Design mockup Royce reviewed and confirmed matched what he wanted ("This is what i was thinking i would see").
+- Deployed and confirmed live (deploy `commit_ref` matches the merge commit, no deploy race this time).
+
+## 2026-08-17 (PR #1420 MERGED — Ops label fix + searchable diffed drawer for Base Permissions)
+- Dropped the stray "EQ" prefix from the Ops column label — every other module label in the matrix is bare.
+- Added a search box to the Base Permissions matrix (highlights matching cells, dims the rest, with a cross-system hint when a term only matches one of Field's fine-grained permissions). Replaced the static click-through detail panel with a slide-in drawer showing a git-diff-style ledger of what's added/removed versus the role's real default, instead of a flat checkbox list.
+- Deployed and confirmed live via commit-ancestry check — this PR's own deploy was marked `error`/"Skipped" by a competing concurrent merge, confirmed live anyway since the commit is an ancestor of the deploy that did go `ready`.
+
 ## 2026-08-17 (PR #1426 MERGED, migration 0247 dispatched — worker birthdays no longer drift from a real date of birth)
 - Root cause: Shell's Staff-page editor only ever had a day/month "birthday" box (built for eq-field's reminder feature, no year by design) — never a real `date_of_birth` field. An admin fixing a missing birthday had nothing else to type into; it looked fixed while the real DOB column stayed null and Cards never learned about the edit. Found live: 8 active SKS workers in exactly this state.
 - Migration 0247: DB trigger on `app_data.staff` force-derives day/month from `date_of_birth` on every write whenever a worker is Cards-linked, silently overwriting anything typed directly; leaves workers with no Cards account untouched, since day/month is their only possible source. One-time correction backfill included. Dispatched to both tenant planes (ehow, zaap).
