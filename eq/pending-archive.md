@@ -16,6 +16,19 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-service: Export button font-size mismatch on Maintenance Checks — actually fixed, merged, deployed, live-verified (2026-08-17) (fully closed, no open items remain)
+*Royce screenshotted the Maintenance Checks toolbar and asked why Export looked larger than Import/Batch Create/Create Check. Took two rounds — first fix looked right from outside but wasn't; see below.*
+
+- [x] **Round 1 (PR #744)**: swapped `SplitButton`'s hardcoded Tailwind `text-sm` (14px) for the `--eq-text-xs` token `Button`'s `size="sm"` resolves to (11px). Merged, deployed. "Verified" by checking the production CSS bundle compiled the right rule — **this check was insufficient and gave false confidence**, see below.
+- [x] **Royce reported it still looked wrong after a green Netlify deploy.** Re-diagnosed live in his actual authenticated browser session (`service.eq.solutions/maintenance`) rather than re-assuming cache: the rendered button's `className` had **no font-size class at all** — worse than the original bug (16px browser default, not even the old 14px).
+- [x] **Real root cause found**: `SplitButton` builds its classes through `cn()` = `twMerge(clsx(...))`. `tailwind-merge` has no knowledge of this app's custom `--text-eq-xs` Tailwind v4 theme token — it grouped `text-eq-xs` into the same "text" conflict class as the variant's `text-eq-deep` color utility and silently dropped the font-size one at runtime, keeping only the color. A CSS-bundle check can't catch this: the utility class compiles fine, it just never survives the app's own class-merge step.
+- [x] **Round 2 (PR #747)**: moved font-size to an inline `style` on both `SplitButton` buttons, bypassing `cn()`/`tailwind-merge` entirely. Confirmed no other file in the codebase uses `text-eq-xs`/`sm`/`base` (grepped), so this was a contained, one-file landmine, not a wider pattern — no broader `cn()`/twMerge config fix needed right now.
+- [x] **Verified live for real this time**: read the actual DOM (`className`, `getComputedStyle`) in Royce's authenticated session post-deploy — Export and Import both compute to `11px`. Cross-checked the page's Sentry release tag against the merge commit.
+
+**Lesson for next time**: when a live UI bug looks fixed from a CSS-bundle/build check but the user says it isn't, don't defend the check — read the actual rendered DOM in a real authenticated session. A compiled utility class and a class that survives the app's runtime class-merge utility are not the same thing.
+
+---
+
 ## eq-shell: "Today's Actions" removed from the dashboard, then its orphaned backend retired for good (2026-08-16) (fully closed, no open items remain)
 *Royce looked at his own live dashboard and asked to steelman removing the AI-written "Today's Actions" panel — "AI slop and not useful plus slow to load." Ran the decision-check process first, then built it once he said "remove it."*
 
