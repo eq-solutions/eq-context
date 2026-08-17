@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-17 07:41 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-17 07:47 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-17 05:23 UTC → 2026-08-17 07:41 UTC)
+## Since last refresh (2026-08-17 07:41 UTC → 2026-08-17 07:47 UTC)
 
-- Merged: eq-shell [#1403](https://github.com/eq-solutions/eq-shell/pull/1403) fix(admin-settings): stop crash on role-scoped licence requi
-- Merged: eq-shell [#1400](https://github.com/eq-solutions/eq-shell/pull/1400) fix(security): P2 access-control sweep — 5 unchecked read en
-- Merged: eq-shell [#1399](https://github.com/eq-solutions/eq-shell/pull/1399) fix(compliance): restore photo-ID equivalence dropped by rol
-- Merged: eq-shell [#1397](https://github.com/eq-solutions/eq-shell/pull/1397) fix(security): permission-model hygiene sweep — drift-test b
-- Merged: eq-shell [#1396](https://github.com/eq-solutions/eq-shell/pull/1396) fix(security): origin-guard 5 staff/licence mutation endpoin
-- Merged: eq-shell [#1395](https://github.com/eq-solutions/eq-shell/pull/1395) fix(security): origin-guard 4 worker/user invite endpoints
-- Merged: eq-shell [#1394](https://github.com/eq-solutions/eq-shell/pull/1394) fix(security): origin-guard 4 session/account-lifecycle endp
-- Merged: eq-shell [#1385](https://github.com/eq-solutions/eq-shell/pull/1385) fix(security): gate the Documents module on documents.view/m
+- Merged: eq-shell [#1418](https://github.com/eq-solutions/eq-shell/pull/1418) fix(observability): close account-inactive blind spot on mag
+- Merged: eq-shell [#1408](https://github.com/eq-solutions/eq-shell/pull/1408) chore(ci): triage can_assign_worker_role into KNOWN_UNSOURCE
+- Merged: eq-shell [#1398](https://github.com/eq-solutions/eq-shell/pull/1398) fix(security): origin-guard 5 worker-linking/org-config endp
+- Merged: eq-shell [#1393](https://github.com/eq-solutions/eq-shell/pull/1393) fix(security): origin-guard 5 account-credential endpoints (
+- Merged: eq-shell [#1387](https://github.com/eq-solutions/eq-shell/pull/1387) fix(security): close the admin.manage_groups escalation path
+- Merged: eq-shell [#1386](https://github.com/eq-solutions/eq-shell/pull/1386) fix(security): origin-guard 2 Cards mutation/PII endpoints +
+- Merged: eq-solves-service [#738](https://github.com/eq-solutions/eq-service/pull/738) fix(security): wire entity.view on job-plans (missed by #716
+- Merged: eq-solves-service [#737](https://github.com/eq-solutions/eq-service/pull/737) fix(ci): app_data CI-bootstrap fixture guard + drift check
 
 ## ⚠ Needs you (2)
 
@@ -65,6 +65,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-17 | eq-shell | [#1418](https://github.com/eq-solutions/eq-shell/pull/1418) fix(observability): close account-inactive blind spot on magic-li |
 | 2026-08-17 | eq-shell | [#1417](https://github.com/eq-solutions/eq-shell/pull/1417) fix(observability): surface silent PIN-reset lockouts on inactive |
 | 2026-08-17 | eq-cards | [#258](https://github.com/eq-solutions/eq-cards/pull/258) feat(settings): give workers a real data export — ZIP with photos |
 | 2026-08-16 | eq-shell | [#1415](https://github.com/eq-solutions/eq-shell/pull/1415) chore(ci): extend control-plane drift-check to tables, backfill 1 |
@@ -79,8 +80,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-16 | eq-shell | [#1405](https://github.com/eq-solutions/eq-shell/pull/1405) fix(security): origin-guard 4 quotes/ops/briefing endpoints |
 | 2026-08-16 | eq-shell | [#1404](https://github.com/eq-solutions/eq-shell/pull/1404) fix(security): origin-guard 3 intake-staging endpoints + document |
 | 2026-08-16 | eq-shell | [#1402](https://github.com/eq-solutions/eq-shell/pull/1402) fix(security): origin-guard 4 GM Reports mutation endpoints |
-| 2026-08-16 | eq-shell | [#1401](https://github.com/eq-solutions/eq-shell/pull/1401) fix(security): origin-guard 4 CRM/suppliers/labour-hire mutation  |
-_Showing 15 of 114 · full record in [sessions/](sessions/)_
+_Showing 15 of 115 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
@@ -143,4 +143,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-17 07:41 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-17 07:47 UTC._
