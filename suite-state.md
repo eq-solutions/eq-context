@@ -63,9 +63,6 @@ _If this file is >48h old, the cron is broken._
 **eq-cards:**
 - #277 ci: guard against silent function-grant strips on jvkn migrations
 
-**eq-service:**
-- #758 feat(calendar): click-to-create day cells, session-expiry reconnect, post-deploy warm-up
-
 ---
 
 ## System Health (as of 2026-08-18)
