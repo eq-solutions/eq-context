@@ -63,6 +63,9 @@ _If this file is >48h old, the cron is broken._
 **eq-cards:**
 - #277 ci: guard against silent function-grant strips on jvkn migrations
 
+**eq-shell:**
+- #1456 fix(home): WorkerHome gets the Service tile + tenant logo it was missing
+
 ---
 
 ## System Health (as of 2026-08-18)
@@ -71,7 +74,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ✓ success |
+| eq-service | ? in_progress |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
@@ -80,7 +83,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 221 (latest: 0214) applied
+**Migrations:** eq-service has 222 (latest: 0215) applied
 
 ---
 
