@@ -13,11 +13,16 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-shell: self-join role never reaches `public.workers.role` — every self-joined apprentice lands on Field as "Direct" (2026-08-18)
-*Found while investigating (from eq-field) why a real SKS apprentice who self-signed up via the invite link showed as employment type "Direct" in Field. Traced to root cause, not fixed here — this is eq-shell's own self-join code, out of scope for the session that found it.*
+## eq-shell: self-join role never reached `public.workers.role` — found, fixed across all 3 claim paths, shipped (2026-08-18)
+*Found while investigating (from eq-field) why a real SKS apprentice who self-signed up via the invite link showed as employment type "Direct" in Field. Root-caused in that eq-field session, then fixed in its own follow-on eq-shell session same day — broader than the original finding: two more claim paths shared the identical gap.*
 
-- [ ] **Root cause, confirmed live**: `supabase/functions/workers-canonical-sync/index.ts` maps `jvkn.public.workers.role` → `ehow.app_data.staff.employment_type` via a lookup table that correctly includes `apprentice: "Apprentice"`. But the self-join flow (`netlify/functions/shell-join-tenant.ts` / `self-join-codes.ts`) only writes the chosen role onto `shell_control.user_tenant_memberships.role` — confirmed correctly set to `apprentice` for the real case that surfaced this. It never copies that role onto the separate `public.workers.role` column. With `role` null there, the sync's lookup finds nothing and falls back to its hardcoded default, `"Direct"`. Not a one-off — every future self-joined apprentice will land the same way until the self-join path writes `role` onto `workers` too (or the webhook payload/derivation is changed to read it from the membership row instead). _(added 2026-08-18)_
-- [ ] **The specific record (Jordan A. Sample, SKS) has been manually corrected** by Royce via Shell's Staff UI — this item is about the underlying self-join gap, not that one record. _(added 2026-08-18)_
+- [x] **Root cause**: `supabase/functions/workers-canonical-sync/index.ts` maps `jvkn.public.workers.role` → `ehow.app_data.staff.employment_type` via a lookup table that correctly includes `apprentice: "Apprentice"` / `labour_hire: "Labour Hire"`. `public.workers.role` was never written by any of the three places a worker's role is actually resolved — each wrote the role correctly to `shell_control.users` / `user_tenant_memberships` / `org_memberships.eq_role` and dropped it before it reached `public.workers`.
+- [x] **All three claim paths fixed, fill-if-missing** (never overwrites a role an admin already set via the Staff editor):
+  - `netlify/functions/shell-join-tenant.ts` — Cards phone-OTP self-join + admin-invite claim.
+  - `netlify/functions/accept-invite.ts` — desktop email+PIN admin-invite claim (found during the fix, not in the original report).
+  - `eq_cards_claim_invite` RPC (jvkn control plane, SECURITY DEFINER, Cards-native Flutter claim) — also found during the fix; migration `2026_08_18_cards_claim_invite_worker_role_fill.sql` hand-applied live via Supabase MCP on Royce's explicit go, grants and both fixed `UPDATE` blocks re-verified present post-apply.
+- [x] **Live impact scoped before fixing**: of 7 SKS workers with a null/mismatched `public.workers.role`, only Vinicius Zara Poli was actually still showing the wrong `employment_type` today — `workers-canonical-sync`'s own fill-if-missing logic had already protected the other 5 after a later correct touch. Jordan A. Sample (the record that surfaced this) was already hand-corrected by Royce. Vinicius backfilled directly on ehow: `Direct` → `Labour Hire`.
+- [x] eq-shell [PR #1448](https://github.com/eq-solutions/eq-shell/pull/1448), merged (`c354dd6b`), confirmed live via exact Netlify `commit_ref` match against the production deploy. Full session detail: `sessions/2026-08-18.md` ("eq-shell self-join `employment_type` bug fixed across all 3 claim paths").
 
 ---
 
