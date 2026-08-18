@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-18 19:03 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-18 19:21 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-18 18:48 UTC → 2026-08-18 19:03 UTC)
+## Since last refresh (2026-08-18 19:03 UTC → 2026-08-18 19:21 UTC)
 
-- Merged: eq-shell [#1438](https://github.com/eq-solutions/eq-shell/pull/1438) revert(staff): drop the compliance-pack caption, it read as 
-- Merged: eq-shell [#1435](https://github.com/eq-solutions/eq-shell/pull/1435) fix(field): drop zaap's dead legacy tables, fix field_people
-- Merged: eq-shell [#1434](https://github.com/eq-solutions/eq-shell/pull/1434) fix(staff): stop the compliance-pack poll from blanking the 
-- Merged: eq-shell [#1433](https://github.com/eq-solutions/eq-shell/pull/1433) fix(auth): raise the blocking-spinner watchdog to clear the 
-- Merged: eq-shell [#1431](https://github.com/eq-solutions/eq-shell/pull/1431) fix(ci): backfill eq_reconcile_licence_sync + eq_audit_licen
-- Merged: eq-shell [#1429](https://github.com/eq-solutions/eq-shell/pull/1429) feat(access-control): ring visual for the permission matrix,
+- Merged: eq-shell [#1455](https://github.com/eq-solutions/eq-shell/pull/1455) fix(staff): consistent column filters + Status as toggleable
+- Merged: eq-shell [#1439](https://github.com/eq-solutions/eq-shell/pull/1439) fix(staff): only block a Cards-linked worker's save when dob
+- Merged: eq-shell [#1437](https://github.com/eq-solutions/eq-shell/pull/1437) fix(field): drop worker_assignments' functions/type too, unb
+- Merged: eq-shell [#1436](https://github.com/eq-solutions/eq-shell/pull/1436) fix(field): drop zaap's worker_credentials/inductions/assign
+- Merged: eq-shell [#1432](https://github.com/eq-solutions/eq-shell/pull/1432) feat(access-control): expose Access Control group membership
+- Merged: eq-shell [#1428](https://github.com/eq-solutions/eq-shell/pull/1428) chore(intake): auto re-vendor eq-intake/eq-platform
+- Merged: eq-shell [#1427](https://github.com/eq-solutions/eq-shell/pull/1427) fix(staff): relabel PDF preview trigger to "Show preview"
 - Merged: eq-solves-service [#758](https://github.com/eq-solutions/eq-service/pull/758) feat(calendar): click-to-create day cells, session-expiry re
-- Merged: eq-solves-service [#757](https://github.com/eq-solutions/eq-service/pull/757) feat(calendar): link maintenance checks to the PM calendar; 
 
 ## ⚠ Needs you (5)
 
@@ -29,7 +29,7 @@ _2026-08-18 19:03 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🟠 **Sentry new error** — `eq-field` [TypeError: Failed to fetch](https://eq-solutions.sentry.io/issues/141259049/)
 - 🟠 **Cron failing** — `index-drift.yml` 1 consecutive scheduled run(s) failed, last success 2026-08-17 · [failures.md](system/failures.md) F11
 
-## 🙋 Waiting on you (172)
+## 🙋 Waiting on you (173)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
@@ -45,7 +45,7 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **Not click-tested live on a real tenant** — verified via `tsc -b --force`, eslint (clean except pre-existing tolerated patterns already present identically in `Suppliers.tsx`/`LabourHireRates.tsx`, not introduced by this change), full CI, and the Netlify deploy preview build succeeding. A local click-through attempt hit a pre-existing sandbox limitation (`VITE_FIELD_URL` unset crashes the app at module scope, unrelated to this change) and was abandoned per the standing "default browser only" rule rather than switched to Chrome for a low-value local check. Worth Royce opening Suppliers, Compliance report, and the mobile Home on his phone once. _(added 2026-08-14)_
 - **eq-shell** · **Not click-tested live** — verified via `tsc -b --force`, eslint, full CI (all green), and the Netlify deploy preview build succeeding — not by clicking through a real signed-in session. _(added 2026-08-14)_
 - **eq-shell** · **Not click-tested live** — same sandbox limitation as everything else this session; built against `tsc`/lint/the permission-drift guard only. _(added 2026-08-14)_
-_…and 160 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 161 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
@@ -53,7 +53,7 @@ _…and 160 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 0 | — |
 | eq-solves-service | ✓ success | 0d ago | 0 | — |
-| eq-field | ✓ success | 0d ago | 0 | — |
+| eq-field | ✓ success | 0d ago | 2 | 0d |
 | eq-cards | ✓ success | 0d ago | 1 | 0d |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
@@ -72,6 +72,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-18 | eq-shell | [#1455](https://github.com/eq-solutions/eq-shell/pull/1455) fix(staff): consistent column filters + Status as toggleable badg |
 | 2026-08-18 | eq-shell | [#1454](https://github.com/eq-solutions/eq-shell/pull/1454) fix(staff): drop duplicate email from Staff table NAME column |
 | 2026-08-18 | eq-shell | [#1416](https://github.com/eq-solutions/eq-shell/pull/1416) chore(intake): auto re-vendor eq-intake/eq-platform |
 | 2026-08-18 | eq-shell | [#1451](https://github.com/eq-solutions/eq-shell/pull/1451) perf(nav): cache staff sub-page queries, prefetch lazy route chun |
@@ -86,14 +87,13 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-18 | eq-shell | [#1443](https://github.com/eq-solutions/eq-shell/pull/1443) fix(field): add 7 missing columns to zaap's staff table, unblock  |
 | 2026-08-18 | eq-shell | [#1442](https://github.com/eq-solutions/eq-shell/pull/1442) fix(shell-join-tenant): match unlinked worker by email when phone |
 | 2026-08-18 | eq-shell | [#1441](https://github.com/eq-solutions/eq-shell/pull/1441) chore(roles): bump @eq-solutions/roles to v2.7.4 |
-| 2026-08-18 | eq-shell | [#1440](https://github.com/eq-solutions/eq-shell/pull/1440) feat(access-control): list-members exposes effective permissions, |
 _Showing 15 of 121 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
 - **eq-shell** (209 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (51 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
-- **eq-field** (107 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
+- **eq-field** (108 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (80 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
 - **eq-solves-intake** (18 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
@@ -125,7 +125,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 |------|------:|------------------:|------------------:|------------:|
 | [eq-shell](eq/pending/eq-shell.md) | 1296 | 160 / 53 | 106 | 33 |
 | [eq-cards](eq/pending/eq-cards.md) | 389 | 38 / 13 | 41 | 3 |
-| [eq-field](eq/pending/eq-field.md) | 700 | 90 / 22 | 22 | 11 |
+| [eq-field](eq/pending/eq-field.md) | 721 | 90 / 24 | 27 | 11 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 460 | 64 / 19 | 27 | 8 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 152 | 13 / 6 | 5 | 14 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
@@ -194,4 +194,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-18 19:03 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-18 19:21 UTC._
