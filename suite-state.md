@@ -1,14 +1,14 @@
 ---
 title: EQ Suite — Current State
 owner: Royce Milmlow
-last_updated: 2026-08-17
+last_updated: 2026-08-18
 scope: Live suite state — app lineup, DB counts, open PRs, architectural decisions. Auto-refreshed nightly by GitHub Action.
 read_priority: critical
 status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-08-17 (nightly cron)_
+_Last verified: 2026-08-18 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -40,7 +40,7 @@ _If this file is >48h old, the cron is broken._
 | Assets | 2,842 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
 | Users | 5 | service.tenant_members |
-| Maintenance checks | 35 | service.maintenance_checks |
+| Maintenance checks | 36 | service.maintenance_checks |
 | Defects | 1 | service.defects |
 
 **SKS tenant ID on ehow:** `7dee117c-98bd-4d39-af8c-2c81d02a1e85`
@@ -58,17 +58,18 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-08-17)
+## Open PRs (as of 2026-08-18)
 
 **eq-field:**
-- #715 v3.5.512 — My Schedule: cold-boot cache fallback
+- #717 v3.5.514 — security: scope apprentice data reads to own person
 
 **eq-shell:**
+- #1440 feat(access-control): list-members exposes effective permissions, not raw groups
 - #1416 chore(intake): auto re-vendor eq-intake/eq-platform
 
 ---
 
-## System Health (as of 2026-08-17)
+## System Health (as of 2026-08-18)
 
 **CI on main:**
 
