@@ -62,7 +62,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #1453 fix(cards-iframe): allow web-share so iOS Save works inside the Shell embed
-- #1451 perf(nav): cache staff sub-page queries, prefetch lazy route chunks on hover
 - #1416 chore(intake): auto re-vendor eq-intake/eq-platform
 
 ---
