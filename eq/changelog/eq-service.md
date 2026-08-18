@@ -9,6 +9,11 @@ status: live
 
 # EQ Service — Changelog
 
+## 2026-08-18 (PR #756 MERGED — ACB/NSX check saves made atomic, data-loss fix)
+- Root cause of a live report ("wouldn't save / then deleted all the info" at site CA1): `saveAcbVisualCheckAction`/`saveAcbElectricalReadingAction` and their NSX mirrors deleted existing readings then inserted new ones as two separate server calls. A dropped connection between the two left readings wiped with nothing to replace them.
+- Migration 0213 adds 4 atomic database functions (ACB/NSX × visual/electrical) folding delete + insert + step-complete status into one transaction — mirrors the identical fix already shipped for RCD checks (migration 0095, audit issue #103).
+- Migration dispatched via the governed pipeline and confirmed live on the database.
+
 ## 2026-08-18 (PR #755 MERGED — @eq-solutions/roles pin bumped to v2.7.4; recipient-count correction)
 - Pin bump v2.5.8 → v2.7.4, picking up `service.receive_calendar_digest`. Not functionally required — this repo's digest gate reads the key as a plain string (`CALENDAR_DIGEST_PERM_KEY`), no typed import — but keeps the pin from drifting further behind.
 - **Correction to the entry below**: "15 managers granted by default" undercounted and didn't check for overlap with the group. Verified live: **14** active SKS managers hold the permission by role default, and **3 of those 14 were never added to the "Calendar Digest Recipients" group at all** (including Royce himself, plus one address — `dev@eq.solutions` — that reads like a system/test account rather than a person). True distinct recipient count once `SUPERVISOR_DIGEST_PAUSED` is lifted: **20** people, not 18. Digest is still paused; Royce hasn't yet reviewed the corrected list.

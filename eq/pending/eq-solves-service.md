@@ -71,6 +71,18 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-solves-service: ACB/NSX check saves could wipe a technician's readings on a dropped connection — fixed and shipped live (2026-08-18)
+*A tech reported a check "wouldn't save / then deleted all the info" at site CA1, suspected offline-related. Root-caused: the ACB/NSX visual-check and electrical-reading saves deleted existing readings then inserted the new ones as two separate server calls — a dropped connection between them left the delete committed with nothing to replace it. Existing offline-safety measures (the banner, the pre-save connectivity check) can't catch this, since the failure window is between two server calls, not before the first one.*
+
+- [x] Fixed by folding delete + insert + step-status update into one atomic database call per breaker type × step (4 new functions) — mirrors the same fix already shipped for RCD checks after an earlier incident. eq-service [PR #756](https://github.com/eq-solutions/eq-service/pull/756), merged, migration dispatched and confirmed live on the database.
+- [x] Checked the live database for the specific lost record at site CA1 — found nothing currently sitting in a wiped state; the breakers Royce asked about already show full, complete readings as of today. Likely already re-entered by the tech, or the loss was of the "never reached the server" kind this fix doesn't cover (see below).
+
+**Deferred:**
+- [ ] **In-progress form entries still live only in on-screen state with no draft save** — if a tech fills in readings and the page reloads/closes before they hit Save, that data is lost with no trace in the database at all (different from the bug just fixed, which was about data that *had* been saved). Real gap, not yet built. _(added 2026-08-18)_
+- [ ] **Not click-tested live by a real technician** — verified via `tsc`/`next build` and a live database check, not by an actual on-site ACB/NSX save. _(added 2026-08-18)_
+
+---
+
 ## eq-solves-service: any signed-in worker — apprentice, labour hire, subcontractor — could write maintenance checks, defects, test results and assets straight to the database, skipping every in-app permission check. Fixed, shipped, and confirmed live (2026-08-16)
 
 **Deferred:**
