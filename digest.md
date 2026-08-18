@@ -8,25 +8,25 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-18 03:22 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-18 03:33 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-18 03:14 UTC → 2026-08-18 03:22 UTC)
+## Since last refresh (2026-08-18 03:22 UTC → 2026-08-18 03:33 UTC)
 
-- Merged: eq-shell [#1427](https://github.com/eq-solutions/eq-shell/pull/1427) fix(staff): relabel PDF preview trigger to "Show preview"
-- Merged: eq-shell [#1425](https://github.com/eq-solutions/eq-shell/pull/1425) feat(access-control): unify Field's role and person-only per
-- Merged: eq-shell [#1423](https://github.com/eq-solutions/eq-shell/pull/1423) fix(licences): repair the Shell OCR page's save call, point 
-- Merged: eq-shell [#1422](https://github.com/eq-solutions/eq-shell/pull/1422) fix(ci): teach orphan-perms gate about eq-field's vendored f
-- Merged: eq-shell [#1421](https://github.com/eq-solutions/eq-shell/pull/1421) feat(staff): Excel-style multiselect filters on Type, Job Ti
-- Merged: eq-shell [#1417](https://github.com/eq-solutions/eq-shell/pull/1417) fix(observability): surface silent PIN-reset lockouts on ina
-- Merged: eq-shell [#1415](https://github.com/eq-solutions/eq-shell/pull/1415) chore(ci): extend control-plane drift-check to tables, backf
-- Merged: eq-shell [#1413](https://github.com/eq-solutions/eq-shell/pull/1413) fix(sync): close 3 name-propagation gaps found live-testing 
+- Merged: eq-shell [#1441](https://github.com/eq-solutions/eq-shell/pull/1441) chore(roles): bump @eq-solutions/roles to v2.7.4
+- Merged: eq-shell [#1431](https://github.com/eq-solutions/eq-shell/pull/1431) fix(ci): backfill eq_reconcile_licence_sync + eq_audit_licen
+- Merged: eq-shell [#1426](https://github.com/eq-solutions/eq-shell/pull/1426) fix(staff): stop dob_day/dob_month drifting from a Cards-lin
+- Merged: eq-shell [#1424](https://github.com/eq-solutions/eq-shell/pull/1424) feat(staff): extend Excel-style multiselect filters to Name 
+- Merged: eq-shell [#1420](https://github.com/eq-solutions/eq-shell/pull/1420) fix(access-control): Ops label consistency + searchable diff
+- Merged: eq-shell [#1419](https://github.com/eq-solutions/eq-shell/pull/1419) feat(staff): show a PDF thumbnail preview instead of a plain
+- Merged: eq-shell [#1418](https://github.com/eq-solutions/eq-shell/pull/1418) fix(observability): close account-inactive blind spot on mag
+- Merged: eq-shell [#1414](https://github.com/eq-solutions/eq-shell/pull/1414) feat(notifications): fire the connect-request email for auto
 
 ## ⚠ Needs you (4)
 
 - 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-08-18.md](sessions/2026-08-18.md) · [failures.md](system/failures.md)
+- 🟠 **Sentry new error** — `eq-cards` [minified:yU: PostgrestException(message: permission denied f](https://eq-solutions.sentry.io/issues/137739023/)
 - 🟠 **Sentry new error** — `eq-field` [TypeError: Failed to fetch](https://eq-solutions.sentry.io/issues/141259049/)
-- 🟠 **Sentry new error** — `eq-shell` [Degraded UI Performance](https://eq-solutions.sentry.io/issues/141127922/)
 
 ## 🙋 Waiting on you (165)
 
@@ -50,9 +50,9 @@ _…and 153 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 2 | 1d |
+| eq-shell | ✓ success | 0d ago | 1 | 1d |
 | eq-solves-service | ✓ success | 0d ago | 0 | — |
-| eq-field | ✓ success | 0d ago | 0 | — |
+| eq-field | ✓ success | 0d ago | 1 | 0d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
@@ -61,6 +61,7 @@ _…and 153 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | Project | Error | Events | Last seen |
 |---------|-------|--------|-----------|
 | eq-shell | [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/) | 3 | 2026-08-17 |
+| eq-cards | [minified:yU: PostgrestException(message: permission denied for function eq_cards](https://eq-solutions.sentry.io/issues/137739023/) | 2 | 2026-08-18 |
 | eq-field | [TypeError: Failed to fetch](https://eq-solutions.sentry.io/issues/141259049/) | 1 | 2026-08-18 |
 | eq-shell | [Degraded UI Performance](https://eq-solutions.sentry.io/issues/141127922/) | 1 | 2026-08-17 |
 | eq-shell | [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/) | 1 | 2026-08-17 |
@@ -71,6 +72,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-18 | eq-shell | [#1441](https://github.com/eq-solutions/eq-shell/pull/1441) chore(roles): bump @eq-solutions/roles to v2.7.4 |
 | 2026-08-18 | eq-shell | [#1440](https://github.com/eq-solutions/eq-shell/pull/1440) feat(access-control): list-members exposes effective permissions, |
 | 2026-08-18 | eq-solves-service | [#754](https://github.com/eq-solutions/eq-service/pull/754) fix(calendar): add an explicit kill switch for the supervisor dig |
 | 2026-08-18 | eq-solves-service | [#753](https://github.com/eq-solutions/eq-service/pull/753) feat(calendar): gate the supervisor digest on a permission key, n |
@@ -85,7 +87,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-17 | eq-shell | [#1428](https://github.com/eq-solutions/eq-shell/pull/1428) chore(intake): auto re-vendor eq-intake/eq-platform |
 | 2026-08-17 | eq-shell | [#1434](https://github.com/eq-solutions/eq-shell/pull/1434) fix(staff): stop the compliance-pack poll from blanking the SPA o |
 | 2026-08-17 | eq-shell | [#1433](https://github.com/eq-solutions/eq-shell/pull/1433) fix(auth): raise the blocking-spinner watchdog to clear the verif |
-| 2026-08-17 | eq-shell | [#1432](https://github.com/eq-solutions/eq-shell/pull/1432) feat(access-control): expose Access Control group membership on l |
 _Showing 15 of 120 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -193,4 +194,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-18 03:22 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-18 03:33 UTC._
