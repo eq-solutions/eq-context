@@ -9,6 +9,18 @@ status: live
 
 # eq-field changelog
 
+## 2026-08-18 (PR #722 MERGED — v3.5.519, apprentice self-service actions now reach real SKS apprentices)
+- Follow-up to PR #720/#721 in the same session: Edit Goals, Ask for Feedback, and "How am I going?" (self-assessment) were silently not rendering for a real apprentice signed in through Core — the same-identity check behind all four actions was still keyed to the dead standalone-PIN identity instead of the real Core identity two other spots in the codebase already knew to use.
+- Centralized into one `_isSelfProfile()` helper so it can't drift a fourth time. File was sitting exactly at the 1550-line eslint cap — written tight (no line growth) rather than a lint-config change.
+- Caught and fixed the same cache-buster drift bug class again in passing (`app-state.js`'s tag in `index.html`).
+- CI green, deploy preview clean, confirmed live via `field.eq.solutions/sw.js` (`v3.5.519`). Not click-tested live by a real SKS apprentice — no such credentials in this environment.
+
+## 2026-08-18 (PR #721 MERGED — v3.5.518, apprentice list fail-open bug on SKS)
+- Royce reported PR #720's fix "still shows everyone" — traced live, not assumed. `loadApprenticeData()`'s scoped-fetch failure (bad/expired token, network blip, function error) fell through to the pre-fix unscoped legacy branch meant only for the 'eq' tenant; on SKS this silently reverted to the full company roster the instant the scoped call had any hiccup.
+- Root-caused against Jordan Sample's real data: linked (`worker_id`/`user_id` both set), zero `apprentice_profiles` rows, `authenticated` confirmed to have zero grants on that table (post-#717/#718 lockdown) — his report ("shows everyone, none set up") exactly matches the fail-open path, not a data leak.
+- Fix: SKS now fails closed on any scoped-fetch failure, same as "no resolvable identity". CI caught two real issues on the way through — file pushed 20 lines over its 1550-line grandfather cap (trimmed comments) and a missed `app-state.js` cache-buster bump.
+- Confirmed live via `field.eq.solutions/sw.js` (`v3.5.518`). Full cross-repo audit that followed (apprentice login/onboarding status, live Sentry sweep) logged in pending.md, not repeated here.
+
 ## 2026-08-18 (PR #719 migration applied — timesheets/leave own/crew read scoping now live on ehow)
 - Royce's explicit go to dispatch `20260819_timesheets_leave_actor_identity_fix.sql` (drafted/merged same day, see the PR #719 entry below) — applied live to ehow via Supabase MCP.
 - Pre-apply check confirmed a clean baseline: only the original tenant-scoped PERMISSIVE policies existed on `app_data.timesheets`/`leave_requests`, none of the new helper functions present — 20260816 had genuinely never been hand-applied out of band.

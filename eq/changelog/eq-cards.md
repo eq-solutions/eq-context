@@ -9,6 +9,12 @@ status: live
 
 # EQ Cards — Changelog
 
+## 2026-08-18 (PR #270 MERGED — auth: validate session before auto-provisioning, not after it 401s)
+- Root cause of live Sentry `EQ-CARDS-1C` (`permission denied for function eq_cards_auto_provision`, regressed): traced through actual jvkn request logs, not guessed. The RPC went out with no valid auth token attached — a concurrent refresh-token race (a refresh call 9s after a successful OTP verify came back 400), not simply an expired token. `NotProvisionedScreen` reached the call via a router redirect off a synchronously-read session, missing the same guard the splash screen already had (`_ensureSession`).
+- New shared `ensureValidSession()` helper — live-validates via `getUser()` first, falls back to one `refreshSession()` attempt, signs out if nothing usable remains. Called before `autoProvision()`.
+- Scoped live impact before fixing: 9 of the 10 occurrences over 3 weeks traced to one phone number — the same duplicate-identity case already merged the day before (`william_brown_identity_merge`), not a broad outage. That account was already fully provisioned at the data level; the fix just stops the spurious error surfacing on top of it.
+- Auth-flow change — held for explicit approval per standing rule, merged by Royce directly. CI green (analyze/test + migration hygiene).
+
 ## 2026-08-18 (PR #268 MERGED — Replace card always visible, not just near expiry)
 - The rescan+OCR "renew" flow (updates the licence in place, not a duplicate) was gated to expired/expiring-soon only. Relabelled "Renew licence" → "Replace card" and removed the gate on all three detail-screen layouts.
 
