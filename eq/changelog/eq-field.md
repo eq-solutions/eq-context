@@ -9,6 +9,13 @@ status: live
 
 # eq-field changelog
 
+## 2026-08-18 (PR #719 migration applied — timesheets/leave own/crew read scoping now live on ehow)
+- Royce's explicit go to dispatch `20260819_timesheets_leave_actor_identity_fix.sql` (drafted/merged same day, see the PR #719 entry below) — applied live to ehow via Supabase MCP.
+- Pre-apply check confirmed a clean baseline: only the original tenant-scoped PERMISSIVE policies existed on `app_data.timesheets`/`leave_requests`, none of the new helper functions present — 20260816 had genuinely never been hand-applied out of band.
+- Post-apply verified: `timesheets_own_crew_read`/`leave_requests_own_crew_read` RESTRICTIVE SELECT policies now exist on both tables alongside the untouched original PERMISSIVE ones; `eq__caller_actor_uid`/`eq__caller_actor_staff_id`/`eq__caller_has_broad_read` all present.
+- **Surfaced while verifying, not blocking**: re-ran 20260816's own unassigned-supervisor query and found **15 supervisors with no `team_supervisors` row**, not the "2" its header documented — that count was stale. Doesn't affect correctness (the carve-out grants full read regardless of how many are unassigned, so nobody loses visibility), but it means crew-scoping isn't actually narrowing anything for most supervisors yet, since most have no team assignment. Logged in pending.md as a separate Teams-completeness gap, not a security issue.
+- Not click-tested live as a real scoped worker (same SKS-Core-only sandbox limitation as the rest of this session) — the policies are confirmed present and correctly shaped, but the actual "does a real non-manager's SELECT now return only their own rows" behaviour hasn't been exercised through a real signed-in session.
+
 ## 2026-08-18 (PR #720 MERGED — v3.5.517, privacy: Apprentices list narrowed to self for non-managers)
 - Royce reported, from a real live session: signed into Field as a real self-signed-up apprentice, saw the full company Apprentices roster instead of just himself, and showed as employment type "Direct" instead of "Apprentice".
 - Traced live rather than assumed. The Apprentices nav item is deliberately ungated by existing design ("viewing open, mutation gated" — an apprentice's only entry point to their own profile, same pattern as Contacts), but `renderApprentices()` never had a self-view mode — anyone without an already-selected profile got the identical full-company-roster list, manager or not: every apprentice's name, average ratings, feedback count.
