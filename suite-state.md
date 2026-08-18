@@ -60,8 +60,10 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-18)
 
+**eq-cards:**
+- #272 feat(licences): embed the front photo in PDF exports
+
 **eq-shell:**
-- #1446 fix(entity-patch): mirror staff email/phone corrections to canonical workers
 - #1416 chore(intake): auto re-vendor eq-intake/eq-platform
 
 ---
