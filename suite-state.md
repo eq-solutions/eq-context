@@ -60,6 +60,10 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-18)
 
+**eq-field:**
+- #724 v3.5.520 — Apprentices: self-service profile creation
+- #723 v3.5.520 — auth: session-refresh no longer drops the caller's Shell identity
+
 **eq-shell:**
 - #1416 chore(intake): auto re-vendor eq-intake/eq-platform
 
