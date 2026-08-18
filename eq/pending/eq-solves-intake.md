@@ -1,7 +1,7 @@
 ---
 title: EQ Intake — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-17
+last_updated: 2026-08-18
 scope: EQ Intake engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -10,6 +10,11 @@ status: live
 # EQ Intake — Pending
 
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-solves-intake + eq-shell: Overview "Fix these" gap cards get a real bulk-fill grid instead of one-row-at-a-time (2026-08-18)
+- [ ] **Not click-tested live** — verified via `tsc --noEmit` clean, `vitest run` 50/50, CI green on both PRs, and a Netlify deploy-commit match confirming it's genuinely live — but no authenticated session was available to click through the real UI. Worth 2 minutes: open a "Fix these" card on the Overview tab, fill a few rows in the new grid, Save, confirm the count drops and the score updates. eq-solves-intake [PR #120](https://github.com/eq-solutions/eq-solves-intake/pull/120) + eq-shell [PR #1445](https://github.com/eq-solutions/eq-shell/pull/1445), both merged, live on core.eq.solutions. _(added 2026-08-18)_
 
 ---
 

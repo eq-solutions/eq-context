@@ -9,6 +9,11 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-18 (PR #1445 MERGED — intake re-vendor, bulk-fill grid now live)
+- Manually triggered `intake-revendor-check.yml` rather than wait for the nightly cron, to pick up eq-solves-intake #120 (bulk-fill grid for health-score gaps — see `eq-intake.md`). Sanity check (build/typecheck/test) passed clean this time — no repeat of the previous re-vendor's leftover-import bug.
+- Repo-wide "Schema drift" check also passed clean — confirms the same-day control-plane backfill (#1431) is holding across a third PR now.
+- Merged (squash `b0c97de`) on Royce's "merge it". Confirmed genuinely live via the Netlify deploy record: production `commit_ref` matches the merge SHA exactly, published 08:58:22Z UTC.
+
 ## 2026-08-18 (PR #1442 MERGED — self-join now matches an existing worker by email too, not just phone)
 - A Cards signup (Dave Rimmer) provisioned correctly on the Shell side but created a duplicate, blank worker/staff record instead of attaching to his existing one — `shell-join-tenant.ts`'s worker match only tried phone, and his pre-existing record had none on file. Added an email fallback, scoped to unlinked workers only and requiring a unique hit — never repoints an already-claimed login.
 - Compared dot-normalized, not exact — Dave's signup email and his on-file email differed only by a dot (`dave.rimmer@` vs `daverimmer@`), so a plain exact match would have missed him too. Mirrors the email-match tier `cards-approve-staff.ts` already uses for the same class of gap.
