@@ -9,6 +9,17 @@ status: live
 
 # eq-field changelog
 
+## 2026-08-19 (PR #728 MERGED + APPLIED — RLS: manager/supervisor-only write on 6 site-report tables)
+- `prestarts`/`toolbox_talks`/`incidents`/`site_diaries`/`site_audits`/`site_audit_items` enforced tenant/org scoping only on write, no role check — any authenticated SKS session (incl. apprentice/labour_hire) could INSERT/UPDATE/DELETE any of these tables directly via PostgREST, bypassing `permission-matrix.js`'s manager/supervisor-only create+submit gate.
+- Added RESTRICTIVE INSERT/UPDATE/DELETE policies requiring `app_metadata.eq_role IN ('manager','supervisor')` on all 6 tables. Read is unaffected. Verified against real client write paths first — no independent employee/apprentice write path exists for any of them.
+- eq-field [PR #728](https://github.com/eq-solutions/eq-field/pull/728), squash-merged. Migration hand-applied to ehow via Supabase MCP (Royce's explicit go), post-apply verified.
+- **Substrate correction surfaced in the process**: eq-shell's `tenant-migrate.yml` ("the One Pipe") only reads migration files from its own repo — it never sees eq-field's own `supabase/migrations/*.sql`. Every prior migration in this lineage claiming "dispatches via the One Pipe" has actually gone in by hand via Supabase MCP. See `sessions/2026-08-19.md` for detail.
+
+## 2026-08-19 (DRAFT, NOT APPLIED — timesheets/leave write-side RLS re-pointed at real identity, held)
+- Re-audited `20260816_timesheets_leave_own_crew_write.sql`: still not applied to ehow (no `eq__caller_is_approver` function, no RESTRICTIVE write policy on either table) — write is still tenant-only, unrestricted by role or crew.
+- Drafted `20260819_timesheets_leave_own_crew_write_actor_identity.sql`, re-pointing the same access-control logic at `eq__caller_actor_staff_id` (the real-identity claim already live on the read side, `20260819_timesheets_leave_actor_identity_fix.sql`). Committed to branch `claude/timesheets-leave-write-actor-identity` — not merged, not applied.
+- Held on the same blocker as 2026-08-16: 38 of 99 SKS staff still unlinked (31 plain workers), applying today would lock them out of saving their own timesheet/leave. Royce reconfirmed the hold.
+
 ## 2026-08-18 (PR #727 MERGED — v3.5.524, boot-perf: recognitions.js moved off the critical path)
 - Third and final candidate from the 2026-07-28 "audit which of the ~34 always-loaded boot scripts actually need to block first paint" item. `loadAcknowledgments()` removed from the boot-time `Promise.all([...])` and replaced with a render-when-ready pattern (`_ensureAcknowledgmentsLoaded()`, mirrors `leave.js`'s existing `_ensureLeaveLoaded()`), wired into `openPersonProfile()` via a new `openPersonProfileSafe()` dispatcher (mirrors `openLeaveRequestSafe()`) on both its Dashboard and People-screen entry points.
 - Verified `_acknowledgments` has exactly one reader (`_renderProfileAcks`) and one other writer (`saveAcknowledgment`) before redesigning the load path — safe to defer.
