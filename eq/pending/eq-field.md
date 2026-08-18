@@ -1,7 +1,7 @@
 ---
 title: EQ Field — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-18
+last_updated: 2026-08-19
 scope: EQ Field engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -10,6 +10,26 @@ status: live
 # EQ Field — Pending
 
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-field: apprentices can self-create their initial profile (2026-08-18)
+*Direct follow-up to the self-view fix in the section below — Royce asked "shouldn't the apprentice do their own setup?" after confirming self-viewers with no profile were stuck waiting on a manager. Confirmed via AskUserQuestion: yes, let them self-create.*
+
+- [x] Self-service profile creation shipped. `netlify/functions/apprentice-write.js`'s `create-profile` action made hybrid: manager branch unchanged (full field set, any target person); new self branch ignores any client-supplied `personId` (always the caller's own resolved identity), forces `year_level: 1`, and is idempotent (checks for an existing profile before inserting). `scripts/apprentices.js` gained `openSetupOwnProfile()`, routing self-viewers with no existing profile there; `saveApprenticeProfile()`'s create-gate now accepts goal-only self-creation. eq-field [PR #724](https://github.com/eq-solutions/eq-field/pull/724) (v3.5.521), squash-merged, confirmed live via `field.eq.solutions/sw.js`. Rebased mid-flight over a version-number collision with concurrent PR #723 (both landed on v3.5.520 first) — renumbered, no content lost.
+- [ ] **Not click-tested live by a real self-signed-up apprentice** — same SKS Core-only sandbox limitation as PR #722 below. _(added 2026-08-18)_
+
+---
+
+## eq-field: boot-perf — 3 of the 4 flagged scripts moved off the critical path, closes the 2026-07-28 audit item (2026-08-18)
+*Closes the "audit which of the ~34 always-loaded-at-boot scripts actually need to block first paint" item further down this file (2026-07-28). Built a grounded prompt for a future audit session, then ran it the same day — measured EQ Field's real boot performance first (the 2026-07-28 note was 3 weeks stale) and verified each of the 4 named candidates live before moving any. digest-settings.js, apprentice-widget.js and recognitions.js were all genuinely safe to defer, using the same render-when-ready pattern `leave.js` already proves (`_ensureLeaveLoaded()`); region-filter.js doesn't fit the tab-scoped lazy-load model at all and was dropped from scope, not deferred again.*
+
+- [x] **digest-settings.js** moved to lazy-load on the Managers page. Caught a real bug in the process: its `DOMContentLoaded` self-registration would silently never fire once loaded after the page had already parsed (exactly what lazy-loading does) — fixed with a `document.readyState` check. eq-field [PR #725](https://github.com/eq-solutions/eq-field/pull/725) (v3.5.522), squash-merged, confirmed live.
+- [x] **apprentice-widget.js** moved to lazy-load on the Dashboard page via `_ensureApprenticeWidgetLoaded()` — both live tenants confirmed Standard tier against jvkn's `organisations` table, so this Enterprise-gated widget was parsing on every boot for a feature neither tenant can reach. eq-field [PR #726](https://github.com/eq-solutions/eq-field/pull/726) (v3.5.523), squash-merged, confirmed live.
+- [x] **recognitions.js** moved off the boot-time `Promise.all` via `_ensureAcknowledgmentsLoaded()` + a new `openPersonProfileSafe()` dispatcher (mirrors the existing `openLeaveRequestSafe()`), wired into both its Dashboard and People-screen entry points. eq-field [PR #727](https://github.com/eq-solutions/eq-field/pull/727) (v3.5.524), squash-merged, confirmed live via `field.eq.solutions/sw.js` (`v3.5.524`).
+- [x] **region-filter.js** dropped from this backlog item, not deferred — doesn't fit the tab-scoped lazy-load model (not tied to a single page).
+- [ ] **`core-bundle-b4.js` is now a degenerate one-file bundle** (`home.js` only, after digest-settings.js and recognitions.js both moved out of it) — flagged in both PR bodies as a legitimate small follow-up, deliberately not done to keep each PR tight and respect "never delete files without explicit permission." _(added 2026-08-18)_
+- [ ] **Not click-tested live through a real signed-in session** — verified via CI, drift guards, and production `sw.js` CACHE checks instead. _(added 2026-08-18)_
 
 ---
 
@@ -244,8 +264,9 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ## eq-field: Safety nav reorder, dead TAFE buttons fixed, and a real load-time bug found + fixed (2026-07-28)
 
 - [ ] **Concatenate the always-loaded boot scripts into 2-3 files at deploy time** (plain concatenation, not a bundler — stays consistent with the repo's deliberate no-build-step architecture). Cuts request count on the true first-ever cold visit, which the version-tag fix below doesn't touch. _(added 2026-07-28)_
-- [ ] **Audit which of the ~34 always-loaded-at-boot scripts actually need to block first paint** — several (recognitions.js, digest-settings.js, apprentice-widget.js, region-filter.js) look like narrow-feature scripts that could join the existing on-demand-per-page loading pattern already used for Roster/Timesheets/etc. (whatsnew.js dropped off this list 2026-08-04 — deleted entirely, dead code since the banner was retired 2026-07-13; see changelog.) _(added 2026-07-28)_
 - [ ] **Netlify Early Hints (103) for the first, blocking script** — lets the browser start fetching before Netlify finishes streaming the page shell. Polish-tier, smallest expected impact. _(added 2026-07-28)_
+
+_(The boot-scripts audit item that used to sit here was resolved 2026-08-18 — see the "boot-perf" section above.)_
 
 ---
 

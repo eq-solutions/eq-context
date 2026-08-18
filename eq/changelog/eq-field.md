@@ -1,13 +1,36 @@
 ---
 title: EQ Field — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-18
+last_updated: 2026-08-19
 scope: EQ Field append-only history. Canonical name (repo-slug convention, matching eq-shell.md/eq-cards.md/eq-intake.md/eq-context.md/eq-receipts.md/eq-ui.md) — absorbed field.md's full history 2026-08-17. field.md's own header had claimed the opposite direction ("eq-field.md was merged into this file 2026-07-19, don't split again"), but a fresh eq-field.md was recreated after that and diverged with 5 real, unique entries (PR #703/#705/#709/#710/#711) never merged back — exactly the drift that note warned about. Content of both preserved with no loss; field.md is now a stub pointing here. Don't split the log again.
 read_priority: reference
 status: live
 ---
 
 # eq-field changelog
+
+## 2026-08-18 (PR #727 MERGED — v3.5.524, boot-perf: recognitions.js moved off the critical path)
+- Third and final candidate from the 2026-07-28 "audit which of the ~34 always-loaded boot scripts actually need to block first paint" item. `loadAcknowledgments()` removed from the boot-time `Promise.all([...])` and replaced with a render-when-ready pattern (`_ensureAcknowledgmentsLoaded()`, mirrors `leave.js`'s existing `_ensureLeaveLoaded()`), wired into `openPersonProfile()` via a new `openPersonProfileSafe()` dispatcher (mirrors `openLeaveRequestSafe()`) on both its Dashboard and People-screen entry points.
+- Verified `_acknowledgments` has exactly one reader (`_renderProfileAcks`) and one other writer (`saveAcknowledgment`) before redesigning the load path — safe to defer.
+- eq-field [PR #727](https://github.com/eq-solutions/eq-field/pull/727), squash-merged, confirmed live via `field.eq.solutions/sw.js` (`v3.5.524`).
+
+## 2026-08-18 (PR #726 MERGED — v3.5.523, boot-perf: apprentice-widget.js moved off the critical path)
+- Second of the 2026-07-28 audit's candidates. apprentice-widget.js is Enterprise-tier-gated and both live tenants (`eq`, `sks`) are confirmed Standard tier (checked live against jvkn's `organisations` table) — the script was parsing on every boot for a feature neither tenant can reach. Moved to lazy-load on the Dashboard page via `_ensureApprenticeWidgetLoaded()`, same render-when-ready shape as the digest-settings fix below.
+- eq-field [PR #726](https://github.com/eq-solutions/eq-field/pull/726), squash-merged, confirmed live via `field.eq.solutions/sw.js` (`v3.5.523`).
+
+## 2026-08-18 (PR #725 MERGED — v3.5.522, boot-perf: digest-settings.js moved off the critical path)
+- First of the 2026-07-28 audit's candidates — measured EQ Field's real boot performance first (the audit note was 3 weeks stale by the time this ran) before moving anything. Moved to lazy-load on the Managers page.
+- Caught a real bug in the process: digest-settings.js self-registered via `document.addEventListener('DOMContentLoaded', ...)`, which would silently never fire once the script loads after the page has already parsed (exactly what lazy-loading does) — fixed with a `document.readyState` check that runs immediately if the event has already passed.
+- eq-field [PR #725](https://github.com/eq-solutions/eq-field/pull/725), squash-merged, confirmed live via `field.eq.solutions/sw.js` (`v3.5.522`).
+
+## 2026-08-18 (PR #724 MERGED — v3.5.521, apprentices can now self-create their initial profile)
+- Direct follow-up to PR #722 (self-view fix, below) — Royce asked "shouldn't the apprentice do their own setup?" after confirming self-viewers with no profile were stuck waiting on a manager. Answered via AskUserQuestion: yes, let them self-create.
+- `netlify/functions/apprentice-write.js`'s `create-profile` action made hybrid: manager branch unchanged (full field set, any target person); new self branch ignores any client-supplied `personId` (always the caller's own resolved identity), forces `year_level: 1`, and is idempotent (checks for an existing profile before inserting, so a repeat call can't create a duplicate).
+- `scripts/apprentices.js` gained `openSetupOwnProfile()` + routed `openApprenticeProfile()` to it for self-viewers with no existing profile; `saveApprenticeProfile()`'s create-gate now accepts self-creation with goal-only fields.
+- `eslint.config.js`'s grandfathered line cap for `apprentices.js` bumped 1550 → 1650 with a documented reason, rather than force-fitting the feature into the existing budget.
+- New test coverage in `tests/apprentice-write-scoping.test.js`: self create-profile (goal-only, ignores client personId, forces year_level 1), idempotent re-call (no duplicate insert), manager create-profile (unchanged full field set).
+- Rebased mid-flight over a version-number collision with concurrent PR #723 (both landed on v3.5.520 first) — renumbered to v3.5.521, no content lost.
+- eq-field [PR #724](https://github.com/eq-solutions/eq-field/pull/724), squash-merged, confirmed live via `field.eq.solutions/sw.js` (`v3.5.521`). Not click-tested live by a real self-signed-up apprentice — same SKS Core-only sandbox limitation as PR #722.
 
 ## 2026-08-18 (PR #723 MERGED — v3.5.520, auth: session-refresh no longer drops the caller's Shell identity)
 - Found while auditing today's apprentice-profile fixes (#721/#722): `verify-pin.js`'s `verify-token` re-mint (fires on every remember-me page-load restore) explicitly passed `undefined` for `shell_user_id`, while `eq_role`/`tenant_slug`/`extra_perms` were correctly carried forward — the 2026-07-30 fix for those claims missed this one.
