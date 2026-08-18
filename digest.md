@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-18 08:37 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-18 08:54 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-18 08:32 UTC → 2026-08-18 08:37 UTC)
+## Since last refresh (2026-08-18 08:37 UTC → 2026-08-18 08:54 UTC)
 
-- Merged: eq-shell [#1438](https://github.com/eq-solutions/eq-shell/pull/1438) revert(staff): drop the compliance-pack caption, it read as 
-- Merged: eq-shell [#1435](https://github.com/eq-solutions/eq-shell/pull/1435) fix(field): drop zaap's dead legacy tables, fix field_people
-- Merged: eq-shell [#1434](https://github.com/eq-solutions/eq-shell/pull/1434) fix(staff): stop the compliance-pack poll from blanking the 
-- Merged: eq-shell [#1433](https://github.com/eq-solutions/eq-shell/pull/1433) fix(auth): raise the blocking-spinner watchdog to clear the 
-- Merged: eq-shell [#1431](https://github.com/eq-solutions/eq-shell/pull/1431) fix(ci): backfill eq_reconcile_licence_sync + eq_audit_licen
-- Merged: eq-shell [#1429](https://github.com/eq-solutions/eq-shell/pull/1429) feat(access-control): ring visual for the permission matrix,
-- Merged: eq-shell [#1426](https://github.com/eq-solutions/eq-shell/pull/1426) fix(staff): stop dob_day/dob_month drifting from a Cards-lin
-- Merged: eq-shell [#1424](https://github.com/eq-solutions/eq-shell/pull/1424) feat(staff): extend Excel-style multiselect filters to Name 
+- Merged: eq-shell [#1445](https://github.com/eq-solutions/eq-shell/pull/1445) chore(intake): auto re-vendor eq-intake/eq-platform
+- Merged: eq-shell [#1439](https://github.com/eq-solutions/eq-shell/pull/1439) fix(staff): only block a Cards-linked worker's save when dob
+- Merged: eq-shell [#1437](https://github.com/eq-solutions/eq-shell/pull/1437) fix(field): drop worker_assignments' functions/type too, unb
+- Merged: eq-shell [#1436](https://github.com/eq-solutions/eq-shell/pull/1436) fix(field): drop zaap's worker_credentials/inductions/assign
+- Merged: eq-shell [#1432](https://github.com/eq-solutions/eq-shell/pull/1432) feat(access-control): expose Access Control group membership
+- Merged: eq-shell [#1428](https://github.com/eq-solutions/eq-shell/pull/1428) chore(intake): auto re-vendor eq-intake/eq-platform
+- Merged: eq-shell [#1427](https://github.com/eq-solutions/eq-shell/pull/1427) fix(staff): relabel PDF preview trigger to "Show preview"
+- Merged: eq-shell [#1425](https://github.com/eq-solutions/eq-shell/pull/1425) feat(access-control): unify Field's role and person-only per
 
 ## ⚠ Needs you (4)
 
@@ -32,7 +32,6 @@ _2026-08-18 08:37 UTC · what needs your attention. Full snapshot: [suite-state.
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
-- **eq-shell** · **Database cleanup not yet run** — all three fixes are merged and live in the app's code, but the actual database step (removing the tables/functions) hasn't been triggered yet. Two earlier attempts failed safely (see above) and both are now fixed; a third attempt should go through cleanly, waiting on Royce's go. _(added 2026-08-17)_
 - **eq-shell** · **Not yet seen working on Royce's own screen** — confirmed the code is correct and the production build deployed clean, but couldn't click through it personally (no login for this environment). Worth two minutes next time Royce is in Staff. _(added 2026-08-17)_
 - **eq-shell** · **Two adjacent staff-approval screens require different levels of permission to do very similar things** — one needs a manager, another needs only a much more junior permission to view/act on the same underlying approval data. Doesn't look deliberate. Needs your call on whether they should match. _(added 2026-08-16)_
 - **eq-shell** · **Quote records (create/edit/delete) were deliberately left open to everyone** — Royce's call, not a gap. Worth a second look later if quote data starts needing tighter control. _(added 2026-08-15)_
@@ -44,13 +43,14 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **Not click-tested live** — same sandbox limitation as everything else this session; built against `tsc`/lint/the permission-drift guard only. _(added 2026-08-14)_
 - **eq-shell** · **Royce's own click-through, still not done** — nobody has logged a conversation, added a rating, or assigned someone off the Unassigned list through the real UI yet, and the new Table view is unverified live. Every fix above should make this work now; only a live session can confirm it. _(added 2026-08-11, carried through every entry above)_
 - **eq-shell** · **Proactive "overdue for review" nudges** — deliberately held per `/decide`: there's no conversation data yet for staleness to mean anything. Worth building once the click-through above happens and some real data exists. _(added 2026-08-12)_
+- **eq-shell** · **Compliance click-through only covers Staff and Ops today.** EQ Field has no record-level deep-linking (only `?tab=`), EQ Service has an unused `?return=` path mechanism Shell never constructs a specific path for, and EQ Cards has no deep-link support at all — out of scope for this pass since it wasn't asked for, but the next domain to add if Ask Anything grows past licences/quotes. _(added 2026-08-11)_
 _…and 155 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 1 | 1d |
+| eq-shell | ✓ success | 0d ago | 2 | 1d |
 | eq-solves-service | ✓ success | 0d ago | 0 | — |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
@@ -64,7 +64,6 @@ _…and 155 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | eq-cards | [minified:yU: PostgrestException(message: permission denied for function eq_cards](https://eq-solutions.sentry.io/issues/137739023/) | 2 | 2026-08-18 |
 | eq-field | [TypeError: Failed to fetch](https://eq-solutions.sentry.io/issues/141259049/) | 1 | 2026-08-18 |
 | eq-shell | [Degraded UI Performance](https://eq-solutions.sentry.io/issues/141127922/) | 1 | 2026-08-17 |
-| eq-shell | [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/) | 1 | 2026-08-17 |
 | eq-solves-service | [Error: An unexpected response was received from the server.](https://eq-solutions.sentry.io/issues/139724869/) | 1 | 2026-08-09 |
 _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunresolved)_
 
@@ -72,6 +71,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-18 | eq-shell | [#1445](https://github.com/eq-solutions/eq-shell/pull/1445) chore(intake): auto re-vendor eq-intake/eq-platform |
 | 2026-08-18 | eq-shell | [#1444](https://github.com/eq-solutions/eq-shell/pull/1444) fix(field): DROP+CREATE field_people view, CREATE OR REPLACE can' |
 | 2026-08-18 | eq-shell | [#1443](https://github.com/eq-solutions/eq-shell/pull/1443) fix(field): add 7 missing columns to zaap's staff table, unblock  |
 | 2026-08-18 | eq-shell | [#1442](https://github.com/eq-solutions/eq-shell/pull/1442) fix(shell-join-tenant): match unlinked worker by email when phone |
@@ -81,20 +81,19 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-18 | eq-solves-service | [#755](https://github.com/eq-solutions/eq-service/pull/755) chore(roles): bump @eq-solutions/roles to v2.7.4 |
 | 2026-08-18 | eq-solves-service | [#754](https://github.com/eq-solutions/eq-service/pull/754) fix(calendar): add an explicit kill switch for the supervisor dig |
 | 2026-08-18 | eq-solves-service | [#753](https://github.com/eq-solutions/eq-service/pull/753) feat(calendar): gate the supervisor digest on a permission key, n |
+| 2026-08-18 | eq-field | [#720](https://github.com/eq-solutions/eq-field/pull/720) v3.5.517 — privacy: Apprentices list narrowed to self for non-man |
 | 2026-08-18 | eq-field | [#719](https://github.com/eq-solutions/eq-field/pull/719) v3.5.516 — security: real per-person identity for timesheets/leav |
 | 2026-08-18 | eq-field | [#718](https://github.com/eq-solutions/eq-field/pull/718) v3.5.515 — security: scope apprentice writes to own person |
 | 2026-08-18 | eq-field | [#717](https://github.com/eq-solutions/eq-field/pull/717) v3.5.514 — security: scope apprentice data reads to own person |
 | 2026-08-18 | eq-cards | [#271](https://github.com/eq-solutions/eq-cards/pull/271) feat(licences): export-all as PDF or Excel, with a licence picker |
-| 2026-08-18 | eq-cards | [#270](https://github.com/eq-solutions/eq-cards/pull/270) fix(auth): validate the session before auto-provisioning, not aft |
-| 2026-08-18 | eq-cards | [#269](https://github.com/eq-solutions/eq-cards/pull/269) fix(licences): merge PDF export and photo download into one Expor |
-_Showing 15 of 120 · full record in [sessions/](sessions/)_
+_Showing 15 of 121 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
 - **eq-shell** (207 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (50 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
-- **eq-field** (109 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
-- **eq-solves-service** (78 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
+- **eq-field** (108 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
+- **eq-solves-service** (80 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
 - **eq-solves-intake** (18 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
 - **eq-ui** (2 open) · [eq/pending/eq-ui.md](eq/pending/eq-ui.md)
@@ -123,10 +122,10 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1252 | 159 / 51 | 95 | 33 |
+| [eq-shell](eq/pending/eq-shell.md) | 1259 | 161 / 50 | 96 | 33 |
 | [eq-cards](eq/pending/eq-cards.md) | 359 | 38 / 12 | 30 | 3 |
-| [eq-field](eq/pending/eq-field.md) | 690 | 91 / 21 | 20 | 11 |
-| [eq-solves-service](eq/pending/eq-solves-service.md) | 448 | 63 / 18 | 25 | 8 |
+| [eq-field](eq/pending/eq-field.md) | 684 | 90 / 21 | 18 | 11 |
+| [eq-solves-service](eq/pending/eq-solves-service.md) | 460 | 64 / 19 | 27 | 8 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 147 | 13 / 5 | 5 | 14 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
 | [eq-ui](eq/pending/eq-ui.md) | 22 | 2 / 0 | 0 | 0 |
@@ -194,4 +193,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-18 08:37 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-18 08:54 UTC._
