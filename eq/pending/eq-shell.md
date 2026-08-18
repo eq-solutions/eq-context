@@ -13,6 +13,14 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: self-join role never reaches `public.workers.role` — every self-joined apprentice lands on Field as "Direct" (2026-08-18)
+*Found while investigating (from eq-field) why a real SKS apprentice who self-signed up via the invite link showed as employment type "Direct" in Field. Traced to root cause, not fixed here — this is eq-shell's own self-join code, out of scope for the session that found it.*
+
+- [ ] **Root cause, confirmed live**: `supabase/functions/workers-canonical-sync/index.ts` maps `jvkn.public.workers.role` → `ehow.app_data.staff.employment_type` via a lookup table that correctly includes `apprentice: "Apprentice"`. But the self-join flow (`netlify/functions/shell-join-tenant.ts` / `self-join-codes.ts`) only writes the chosen role onto `shell_control.user_tenant_memberships.role` — confirmed correctly set to `apprentice` for the real case that surfaced this. It never copies that role onto the separate `public.workers.role` column. With `role` null there, the sync's lookup finds nothing and falls back to its hardcoded default, `"Direct"`. Not a one-off — every future self-joined apprentice will land the same way until the self-join path writes `role` onto `workers` too (or the webhook payload/derivation is changed to read it from the membership row instead). _(added 2026-08-18)_
+- [ ] **The specific record (Jordan A. Sample, SKS) has been manually corrected** by Royce via Shell's Staff UI — this item is about the underlying self-join gap, not that one record. _(added 2026-08-18)_
+
+---
+
 ## eq-shell: Cards self-join duplicate-record bug found, fixed, and shipped; suite-wide scan confirms it's isolated (2026-08-18)
 *Royce reported a Cards signup (Dave Rimmer) not showing up in Shell. Traced live: it DID provision correctly, but created a second, blank worker record instead of attaching to his existing one — `shell-join-tenant.ts`'s self-join matcher only tried phone, and his old record had no phone on file. Extended to also match by email, dot-normalized (his signup and on-file emails differed only by a dot). [PR #1442](https://github.com/eq-solutions/eq-shell/pull/1442), merged, confirmed live. Dave's duplicate records merged by hand. Reviewed all 5 self-joins from today (apprentice/supervisor/manager links) — only Dave's hit the bug. Also found and fixed a second, unrelated instance (William Hong, self-joined 2026-08-05, blank canonical name for 13 days — the Staff-page roster itself was already correct, only the canonical copy was stale). Ran a suite-wide scan before deciding whether to build a monitor for this class of bug: 0 blank-name workers now, and only 1 of 20 admin-corrected records (Cameron Tregoning) has actually drifted from canonical — concluded the base rate is too low (3 incidents, ever) to justify a dedicated monitor.*
 
