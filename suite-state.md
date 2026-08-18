@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-18)
 
-**eq-cards:**
-- #271 feat(licences): export-all as PDF or Excel, with a licence picker
-
 **eq-shell:**
 - #1416 chore(intake): auto re-vendor eq-intake/eq-platform
 
