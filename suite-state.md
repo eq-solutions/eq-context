@@ -61,7 +61,6 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-18)
 
 **eq-shell:**
-- #1453 fix(cards-iframe): allow web-share so iOS Save works inside the Shell embed
 - #1416 chore(intake): auto re-vendor eq-intake/eq-platform
 
 ---
