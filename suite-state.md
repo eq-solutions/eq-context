@@ -63,9 +63,6 @@ _If this file is >48h old, the cron is broken._
 **eq-cards:**
 - #277 ci: guard against silent function-grant strips on jvkn migrations
 
-**eq-field:**
-- #729 v3.5.525 — Screenshot review pass: Job Numbers nav, Digest access + mobile
-
 ---
 
 ## System Health (as of 2026-08-18)
