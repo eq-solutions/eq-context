@@ -13,6 +13,16 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## Substrate: F9's general copy-back guard (F12) — ratchet promoted rung 2 → 4, built, merged (2026-08-17)
+*F12 (a raw file copy/move whose destination lands inside the shared eq-context checkout, silently clobbering a concurrent session's already-pushed work) had a narrow partial fix from the day before (a dirty-checkout guard in `substrate_sync.py`) but the ledger's own `target_rung: 4` was still unmet — recurred twice (2026-08-05, 2026-08-17). Ran via `/decide`; Royce: "Promote to rung 4."*
+
+- [x] Built a general `pre_tool_use.py` guard: blocks any `cp`/`mv`/`Copy-Item`/`Move-Item`/`robocopy`-shaped command whose destination path resolves inside the shared checkout while its source does not — the actual incident shape, not just the narrower dirty-checkout case. Scoped on the path strings in the command text (not cwd/repo-root), so it catches the copy regardless of where it's issued from.
+- [x] Self-caught a real bug in the guard's own flag-detection while building the adversarial test suite: a `/`-prefixed token was being treated as a Windows-style flag (`/E`, `/MIR`) even when it was actually a genuine Git-Bash `/c/...` MSYS path — which silently defeated the guard's own msys-path handling. Fixed (`_looks_like_flag`: only a flag if there's no further `/` in the token); regression test added.
+- [x] 124/124 adversarial tests passing (8 new BLOCK cases + 7 controls for F12, zero regressions on the existing 116). eq-context [PR #167](https://github.com/eq-solutions/eq-context/pull/167), merged.
+- [x] Ledger (`system/failures.md`) F12 entry updated: rung 2 → 4, closed.
+
+---
+
 ## Substrate: eq/pending.md split by repo, plus three follow-on queue-management fixes (2026-08-17)
 *Royce's reaction to seeing the raw scale of the EQ backlog ("insane to manage") drove this — the 3,741-line, 356-section monolith was hard to work from and getting harder. Picked all four fixes offered: split by repo, fix the Royce-queue label, add duplicate detection, surface aging items.*
 

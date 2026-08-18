@@ -31,6 +31,27 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: Cards-linked worker's DOB guard was blocking unrelated edits (start date, phone, ...) — found, fixed, merged, live (2026-08-18)
+*Royce reported an error updating Mohammed Hussain's start date: "This worker has a Cards account — set their real date of birth instead." He was only touching start date.*
+
+- [x] Root cause: yesterday's `dob_locked_to_cards` guard (`entity-patch.ts`, PR #1426) checked KEY PRESENCE of `dob_day`/`dob_month` in the save payload, not whether the value actually changed. The Staff-page full edit form (`SplitPanel.tsx` `handleSave`) always resends both fields on every save regardless of which field was edited — so any edit at all to a Cards-linked worker (start date, phone, job title, address, ...) was being rejected.
+- [x] Fixed: the guard now reads the currently-stored `dob_day`/`dob_month` alongside `cards_worker_id` and only rejects when the submitted value actually differs from what's on file — the guard's real target, not an unrelated field save that happens to resend the same unchanged values.
+- [x] Verified `tsc -b --force` clean, eslint clean, diff scoped to the one guard block (14 insertions / 2 deletions, one file). eq-shell [PR #1439](https://github.com/eq-solutions/eq-shell/pull/1439), merged, confirmed live on core.eq.solutions.
+
+**Deferred:**
+- [ ] **Not clicked through live** — verified by code + typecheck/lint, not by an actual admin editing a Cards-linked worker's start date and a DOB and watching each behave correctly. Worth two minutes: edit Mohammed Hussain's start date (should now save), then try typing a different day/month for a Cards-linked worker (should still correctly block). _(added 2026-08-18)_
+
+---
+
+## eq-shell: auth-stall Sentry regression — blocking-spinner watchdog fired before session-verify's own retry finished, fixed, merged, live (2026-08-17)
+*Sentry "auth-stall: session-spinner-timeout" (7 occurrences since 2026-08-07) — root-caused in an earlier sprint-scoping pass and held for explicit go before building.*
+
+- [x] `App.tsx`'s `BlockingSpinner` watchdog (`WATCHDOG_MS`) gates the same `loading` state as `useSession()`'s session-verify call. #1269 (2026-08-07) added one retry-on-abort to session-verify, raising its worst case from ~15s to ~30s — the 20s watchdog was never reconciled with that change, so a save that genuinely needed the retry got a false "taking longer than usual" mid-recovery.
+- [x] Raised `WATCHDOG_MS` 20s → 35s (5s margin over the real ~30s ceiling). Scoped correctly since all 3 callers (`RequireSession`, `RootRoute`, `RequirePlatformSession`) gate on the exact same loading state.
+- [x] Verified `tsc -b --force` clean, eslint clean, diff scoped to one line + comment. eq-shell [PR #1433](https://github.com/eq-solutions/eq-shell/pull/1433), merged, confirmed live on core.eq.solutions (commit ancestry check against the actual production deploy, not just a green merge).
+
+---
+
 ## eq-shell: repo-wide CI block on 2 undocumented database functions — found, fixed, merged, live (2026-08-18)
 *The required "Schema drift" check was failing on every open eq-shell PR. Two database functions (a licence-sync dispatcher + its auditor) had been created directly on the live control-plane database with no record of them in any repo — the same class of issue this repo has hit before and has a standard fix for.*
 

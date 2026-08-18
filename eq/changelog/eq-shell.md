@@ -12,6 +12,14 @@ status: live
 ## 2026-08-18 (PR #1438 MERGED — dropped a compliance-pack caption that read as an unwanted PDF)
 - The "PDF of everyone's current licences" caption added in #1434 was misread as the app announcing an unwanted org-wide export — no PDF was actually generated. Reverted; compliance-pack generation itself untouched.
 
+## 2026-08-18 (PR #1439 MERGED — Cards-linked worker's DOB guard no longer blocks unrelated edits)
+- `entity-patch.ts`'s `dob_locked_to_cards` guard (added the day before in #1426) checked key presence of `dob_day`/`dob_month`, not whether the value changed — the Staff-page full edit form always resends both on every save, so any edit to a Cards-linked worker (start date, phone, job title, address, ...) was being blocked with the DOB-locked error.
+- Fixed: guard now compares the submitted value against what's actually stored and only rejects a genuine attempt to change it.
+
+## 2026-08-17 (PR #1433 MERGED — auth-stall watchdog raised to clear the verify-session retry window)
+- Sentry "auth-stall: session-spinner-timeout" (7 occurrences since regressing 2026-08-07): `App.tsx`'s `BlockingSpinner` watchdog (20s) was firing before `useSession()`'s own retry-on-abort logic (worst case ~30s since #1269) finished, showing a false stall mid-recovery.
+- `WATCHDOG_MS`: 20s → 35s.
+
 ## 2026-08-18 (PR #1434 MERGED — compliance-pack export no longer blanks the SPA on desktop)
 - Root cause of "export defaults to a white screen": the compliance-pack poll auto-clicked the download link from a `setInterval` callback with no user gesture, so a cross-origin navigation could unmount the whole app. Removed the auto-click — the existing "Download ready ↓" button click (a real gesture) is now the only trigger.
 - Added small captions under the Compliance pack and Add licence buttons.
