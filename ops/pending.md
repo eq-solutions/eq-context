@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-15
+last_updated: 2026-08-18
 scope: Operational support to-do list — Webb, infra, substrate
 read_priority: standard
 status: live
@@ -18,9 +18,6 @@ for operational support: tax, entities, infrastructure, substrate.
 
 *Merging a change to eq-shell puts it on core.eq.solutions within seconds, unattended. A note claiming otherwise had been circulating, and I repeated it to Royce this session about a live sign-in change — telling him it was still waiting on him hours after it had gone out. That was the second time, so the written warning was clearly not enough and had to become something enforced.*
 
-- [x] Two sessions independently built protection the same day. One added a check that scans the notes for the false claim; this session added a block that stops it being written in the first place. Kept as one shared definition rather than two — two copies would drift apart, which is the same problem all over again.
-- [x] Also catches the claim when it's split across two lines of one bullet point, which the scan alone reads straight past. Swept every note file: none currently on disk.
-- [x] Guard recorded as fully closed in the failure ledger — the highest level, prevention rather than after-the-fact detection.
 
 - [ ] **The shared eq-context folder needs someone to reconcile it** — it's well behind, with commits sitting on it that were never sent up (some belong to other sessions running at the same time). Not safe for me to force, since it isn't all my work. _(added 2026-08-15)_
 

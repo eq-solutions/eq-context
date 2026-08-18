@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Verify Queue
 owner: Royce Milmlow
-last_updated: 2026-08-17
+last_updated: 2026-08-18
 scope: Items whose only remaining blocker is your own live sign-in/click-through — the underlying work is already built, merged, and (unless the line itself says otherwise) live. Moved here from eq/pending.md by scripts/rotate_pending.py once a session's real build work is fully done, so a stale "click through to confirm" line no longer pins a whole finished write-up in the live pending doc.
 read_priority: high
 status: live
@@ -379,6 +379,24 @@ a bug rather than just deleting the line.
 **From:** eq-shell: labour-hire invite-path approval was silently dropping flagged licences — found, fixed, merged, live (2026-08-13)
 
 - [ ] **Live click-through not done** — the invite path (existing SimPRO/import staff record, `staff_id`) now records flagged-licence reviews and notifies the worker on approval, matching the self-signup path's existing behaviour. Needs a real signed-in Shell session with `admin.review_cards` to confirm end-to-end — off-limits for this environment. _(added 2026-08-13)_
+
+---
+
+**From:** eq-solves-service: NSX Test Report fixed — dead ACB-only fields left it always printing blank sections (2026-08-14)
+
+- [ ] **Not click-tested against a real generated NSX report** — fix verified via typecheck + code trace only; worth Royce pulling a real NSX Test Report next time one's generated to eyeball the CB Details table looks right. _(added 2026-08-14)_
+
+---
+
+**From:** eq-solves-service: /admin/* pages closed to non-managers (2026-08-14)
+
+- [ ] **Not click-tested by a real non-manager account** — no such login was available in this environment. Worth Royce confirming a technician account gets bounced off `/admin/*` now. _(added 2026-08-14)_
+
+---
+
+**From:** eq-shell: account-enumeration hole closed on the phone+PIN sign-in door (2026-08-15)
+
+- [ ] **Not click-tested in a browser** — both sign-in doors were checked by calling them directly on production (an unknown mobile and an unknown email each return an identical "no" with no extra detail; the unauthed session check still refuses correctly) plus full CI, but nobody signed in through the actual page. Worth Royce trying two things on his phone: a *wrong* PIN, and a number that has *no* PIN set — both should now show the same "That number and PIN didn't match. If you haven't set a PIN yet, use 'Text me a code instead'". Then sign in by text on an account with no PIN and confirm the "Set a PIN" prompt still appears on the Home screen — that prompt is now the only place that guidance is given. _(added 2026-08-15)_
 
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-08-14
+last_updated: 2026-08-18
 scope: Done items rotated out of ops/pending.md nightly by scripts/rotate_pending.py to keep the live doc scannable. Nothing here is actionable — pure historical record (also covered in changelogs and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -317,5 +317,13 @@ change to `eq-context`, so no PR here either — same pattern as the
 2026-07-21 brief-gate fix above.
 
 - [x] **Where should `~/.claude` push to? — answered 2026-08-14: nowhere, stay local-only.** Asked 2026-07-30, unresolved for two weeks. Royce's explicit call this session (via AskUserQuestion, recommended option): leave `~/.claude` as a local-only git history, no remote. Consistent with the standing sensitivity constraint noted here — `plans/` holds SKS live-Supabase (`nspbmirochztcjijmcrx`) lockdown/remediation SQL that must never land in a public repo — local-only sidesteps that risk entirely rather than requiring a private-repo setup and an access decision.
+
+---
+
+## The "eq-shell isn't live yet" myth can no longer be written down (2026-08-15) (rotated 2026-08-18 — open items remain in pending.md)
+
+- [x] Two sessions independently built protection the same day. One added a check that scans the notes for the false claim; this session added a block that stops it being written in the first place. Kept as one shared definition rather than two — two copies would drift apart, which is the same problem all over again.
+- [x] Also catches the claim when it's split across two lines of one bullet point, which the scan alone reads straight past. Swept every note file: none currently on disk.
+- [x] Guard recorded as fully closed in the failure ledger — the highest level, prevention rather than after-the-fact detection.
 
 ---

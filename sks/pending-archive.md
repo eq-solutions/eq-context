@@ -1,7 +1,7 @@
 ---
 title: SKS Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-08-17
+last_updated: 2026-08-18
 scope: Done items rotated out of sks/pending.md nightly by scripts/rotate_pending.py to keep the live doc scannable. Nothing here is actionable — pure historical record (also covered in changelogs and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -448,6 +448,17 @@ output).*
 ---
 
 ## SKS national scale discovery — "what breaks EQ at ~2,000 employees" (2026-07-23) (rotated 2026-08-17 — open items remain in pending.md)
+
+
+---
+
+## SKS → EQ Field roster CSV sync — investigated live, feasible with zero new code (2026-08-14) (rotated 2026-08-18 — open items remain in pending.md)
+
+- [x] **Roster site-map query fixed** — was filtering on `active=eq.true` only, now also filters on `field_enabled`. eq-field [PR #711](https://github.com/eq-solutions/eq-field/pull/711), merged, live (`v3.5.508`). _(added 2026-08-14, shipped 2026-08-17)_
+
+---
+
+## SKS national scale discovery — "what breaks EQ at ~2,000 employees" (2026-07-23) (rotated 2026-08-18 — open items remain in pending.md)
 
 
 ---
