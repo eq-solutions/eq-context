@@ -64,7 +64,6 @@ _If this file is >48h old, the cron is broken._
 - #717 v3.5.514 — security: scope apprentice data reads to own person
 
 **eq-shell:**
-- #1440 feat(access-control): list-members exposes effective permissions, not raw groups
 - #1416 chore(intake): auto re-vendor eq-intake/eq-platform
 
 ---
