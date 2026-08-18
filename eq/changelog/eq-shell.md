@@ -9,6 +9,11 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-18 (PR #1442 MERGED — self-join now matches an existing worker by email too, not just phone)
+- A Cards signup (Dave Rimmer) provisioned correctly on the Shell side but created a duplicate, blank worker/staff record instead of attaching to his existing one — `shell-join-tenant.ts`'s worker match only tried phone, and his pre-existing record had none on file. Added an email fallback, scoped to unlinked workers only and requiring a unique hit — never repoints an already-claimed login.
+- Compared dot-normalized, not exact — Dave's signup email and his on-file email differed only by a dot (`dave.rimmer@` vs `daverimmer@`), so a plain exact match would have missed him too. Mirrors the email-match tier `cards-approve-staff.ts` already uses for the same class of gap.
+- Dave's duplicate records merged by hand (data fix, no code path). A second, independent instance (William Hong, blank canonical name since 2026-08-05 — Staff page itself was already correct) found and backfilled the same session. A suite-wide scan afterward found no further instances (0 blank-name workers, 1 of 20 admin-corrected records actually drifted from canonical) — logged in `eq/pending/eq-shell.md`, not fixed this round (the one drifted record, Cameron Tregoning's canonical email, needs its own decision — Staff-page corrections don't currently propagate to the canonical copy at all).
+
 ## 2026-08-18 (PR #1441 MERGED — @eq-solutions/roles pin bumped to v2.7.4)
 - Picks up `service.receive_calendar_digest` (eq-roles v2.7.4) — needed for `list-members.ts`'s effective-permissions field (PR #1440, below) to actually recognise it: `resolveEffectivePermissions()` silently drops any group-granted `perm_key` it doesn't know about, so granting the "Calendar Digest Recipients" group this key did nothing until this pin landed.
 - Also adds `service.receive_calendar_digest` to `permission-enforcement-baseline.json`'s `enforced_downstream_service` category — eq-shell only resolves/exposes this key, it never itself checks it; enforcement is entirely in EQ Service.

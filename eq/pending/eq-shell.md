@@ -13,6 +13,20 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: Cards self-join duplicate-record bug found, fixed, and shipped; suite-wide scan confirms it's isolated (2026-08-18)
+*Royce reported a Cards signup (Dave Rimmer) not showing up in Shell. Traced live: it DID provision correctly, but created a second, blank worker record instead of attaching to his existing one — `shell-join-tenant.ts`'s self-join matcher only tried phone, and his old record had no phone on file. Extended to also match by email, dot-normalized (his signup and on-file emails differed only by a dot). [PR #1442](https://github.com/eq-solutions/eq-shell/pull/1442), merged, confirmed live. Dave's duplicate records merged by hand. Reviewed all 5 self-joins from today (apprentice/supervisor/manager links) — only Dave's hit the bug. Also found and fixed a second, unrelated instance (William Hong, self-joined 2026-08-05, blank canonical name for 13 days — the Staff-page roster itself was already correct, only the canonical copy was stale). Ran a suite-wide scan before deciding whether to build a monitor for this class of bug: 0 blank-name workers now, and only 1 of 20 admin-corrected records (Cameron Tregoning) has actually drifted from canonical — concluded the base rate is too low (3 incidents, ever) to justify a dedicated monitor.*
+
+- [x] Fixed and shipped the email-fallback matcher in `shell-join-tenant.ts`, PR #1442.
+- [x] Merged Dave Rimmer's duplicate worker/staff records by hand (data fix, no code path — one-off).
+- [x] Backfilled William Hong's blank canonical worker name/email to match the already-correct Staff record.
+- [x] Ran the suite-wide blank-name/stale-canonical-record scan; decided against building a monitor (base rate too low).
+
+**Deferred:**
+- [ ] **Cameron Tregoning's canonical email is stale and structurally can't self-heal** — his Staff-page correction (`cameron.tregoning@sks.com.au`) is locked into `app_data.staff` on ehow, but `public.workers.email` on jvkn (the canonical copy other code, including the new matcher, reads) still holds his original personal Gmail from the June bulk import. Staff-page edits never write back upstream. No fix scoped or approved yet. _(added 2026-08-18)_
+- [ ] **No real self-service "update my email" flow exists** — `set-recovery-email.ts` only lets a worker set an email once, while it's still null; it can't correct an existing one, and only ever writes to `shell_control.users`, never `public.workers` or `app_data.staff`. Widening it wouldn't by itself fix the canonical-staleness item above, since it writes to a different table. Royce raised this, no decision made. _(added 2026-08-18)_
+
+---
+
 ## eq-shell: Access Control gets a real ring visual + tab strip; roster now exposes real permissions instead of raw groups (2026-08-18)
 *Royce asked for the ring visual from the earlier Claude Design mockup, to also cover every sub-page and the click-through drawer.*
 
