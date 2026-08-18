@@ -13,6 +13,18 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: Cards iframe was blocking the Web Share API, breaking iOS exports through Shell — fixed, live (2026-08-18)
+*Found while investigating an eq-cards report ("it showed the save button but it didn't do anything") — the fix eq-cards shipped for silent iOS Safari export downloads (Web Share API, see `eq/pending/eq-cards.md`) worked when Cards was opened directly on cards.eq.solutions, but not through this Shell embed.*
+
+- [x] **Root cause**: `CardsIframe.tsx` sets `allow=""` on the Cards iframe — a Permissions-Policy attribute that blocks every browser feature inside it, including `navigator.share`/`navigator.canShare`. Git blame traced it to the original iframe mount, justified only as "no camera/mic/geolocation needed" — never a deliberate Web Share block, and untouched even by the dedicated sandbox-hardening security PR.
+- [x] **Two independent fixes landed for this** — a background task Royce started (eq-shell [PR #1452](https://github.com/eq-solutions/eq-shell/pull/1452)) merged first (`d5d027df`); a duplicate agent-built fix ([PR #1453](https://github.com/eq-solutions/eq-shell/pull/1453)) was closed as superseded once the overlap was caught.
+- [x] Confirmed live by pulling the real deployed Shell bundle and finding `allow:"web-share"` compiled into the Cards iframe's props (not just a green deploy log).
+
+**Deferred:**
+- [ ] **No live click-through yet** — the fix is confirmed genuinely deployed, but nobody has tapped "Save" on an export through `core.eq.solutions/sks/cards` on an actual iOS device since it landed. _(added 2026-08-18)_
+
+---
+
 ## eq-shell: "horrendous" screen-to-screen loading — root cause was full page reloads on every sidebar click, fixed, merged, live (2026-08-18)
 *Royce: "the loading between shell screens for staff and other tables is horrendous, can we do a review of how to speed this up." Investigated rather than guessed — found the query-cache gap first, shipped it, then kept digging per Royce's "keep building" and found the much bigger cause underneath.*
 

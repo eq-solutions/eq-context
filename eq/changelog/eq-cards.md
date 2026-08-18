@@ -9,6 +9,25 @@ status: live
 
 # EQ Cards — Changelog
 
+## 2026-08-18 (PR #275 MERGED — remove Add-to-Home-Screen nudge and connection toast)
+- Both "once-ever" reminders were reappearing every load when tested through the Shell iframe embed on iOS Safari — SharedPreferences (localStorage-backed on web) doesn't reliably persist in that context, so the "already shown" flag never stuck. Removed both outright: the "Connected to $tenant" SnackBar and the Add-to-Home-Screen nudge card, plus the now-dead `AddToHomeScreenNudge` widget file.
+
+## 2026-08-18 (PR #274 MERGED — fix silent iOS Safari export downloads via Web Share API)
+- Every export (single-licence PDF, export-all PDF/Excel, the "Everything" ZIP, single-photo download) reported success on iOS but nothing ever reached the device. Root cause: iOS Safari silently drops the `<a download>` anchor-click save — no error, no callback on any platform.
+- On iOS, saves now go through the Web Share API instead (`navigator.share()` with a real `File`, native "Save to Files" sheet), built on `dart:js_interop` — `dart:js_util` doesn't resolve against this Flutter SDK's web library set. Falls back to the anchor path when Web Share is unavailable; a cancelled share sheet is respected, not silently retried.
+- All 5 save call sites now defer the actual save to an explicit "Save" SnackBar tap instead of firing immediately — Web Share needs a fresh user gesture, which none of them still had by the time bytes were ready (a network fetch or two happens first).
+- Confirmed live by pulling the real deployed bundle and finding the new `canShare(` call compiled in.
+
+## 2026-08-18 (PR #272, #273 MERGED — PDF photo embed, then a crop fix same day)
+- Added the licence's front photo to PDF exports (single-licence and export-all), resized to keep file size sane.
+- Found broken by Royce's own export minutes after shipping: a fixed portrait crop box chopped the edges off a landscape card photo, cutting off the holder's name and licence number. Fixed by deriving the photo's display box from its own aspect ratio instead of a fixed one, and moving it to bottom-centre of the page — the full photo is now always visible regardless of which way round it was taken.
+
+## 2026-08-18 (PR #271 MERGED — export-all as PDF or Excel, with a licence picker)
+- The Wallet app-bar's export arrow only ever produced the "Everything" ZIP (all data + photos, no document option). Added a picker: Export as PDF (combined multi-page document, choose which licences), Export as Excel (standalone register, no photo fetch so it's fast), or Everything (unchanged).
+
+## 2026-08-18 (PR #269 MERGED — merge Export PDF + Download photos into one Export sheet)
+- "Export PDF doesn't work / just exports as JPG" — the single export icon on a licence's detail screen was ambiguous between the PDF and photo-download paths. Replaced with a bottom sheet offering both explicitly.
+
 ## 2026-08-18 (PR #270 MERGED — auth: validate session before auto-provisioning, not after it 401s)
 - Root cause of live Sentry `EQ-CARDS-1C` (`permission denied for function eq_cards_auto_provision`, regressed): traced through actual jvkn request logs, not guessed. The RPC went out with no valid auth token attached — a concurrent refresh-token race (a refresh call 9s after a successful OTP verify came back 400), not simply an expired token. `NotProvisionedScreen` reached the call via a router redirect off a synchronously-read session, missing the same guard the splash screen already had (`_ensureSession`).
 - New shared `ensureValidSession()` helper — live-validates via `getUser()` first, falls back to one `refreshSession()` attempt, signs out if nothing usable remains. Called before `autoProvision()`.

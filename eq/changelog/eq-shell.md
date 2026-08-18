@@ -9,6 +9,10 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-18 (PR #1452 MERGED — allow web-share on the Cards iframe)
+- The Cards iframe (`CardsIframe.tsx`) had `allow=""`, blocking every browser permission inside it including the Web Share API eq-cards' iOS export-download fix depends on (see eq-cards changelog, PR #274). Changed to `allow="web-share"`. Git blame: the empty value was a default-lockdown leftover from the original iframe mount, never a deliberate Web Share block.
+- Two independent fixes landed for this (a background task Royce started, and a duplicate agent build) — #1452 merged first; the duplicate (#1453) was closed as superseded. Confirmed live by finding `allow:"web-share"` in the real deployed bundle.
+
 ## 2026-08-18 (PR #1448 MERGED + jvkn migration applied — self-join role now reaches `public.workers.role`)
 - Root cause (from an eq-field session): three separate claim paths — `shell-join-tenant.ts` (Cards phone-OTP self-join + admin-invite), `accept-invite.ts` (desktop email+PIN admin-invite), and the `eq_cards_claim_invite` RPC (Cards-native Flutter claim) — all correctly wrote a joiner's role to `shell_control.users`/`user_tenant_memberships`/`org_memberships.eq_role`, but never to `public.workers.role`, the column `workers-canonical-sync` reads to set `ehow.app_data.staff.employment_type`. Every self-joined apprentice/labour-hire worker silently landed as "Direct".
 - Fixed all three, fill-if-missing so an admin-set role via the Staff editor is never overwritten. `shell-join-tenant.ts`/`accept-invite.ts` merged in PR #1448 (`c354dd6b`); `eq_cards_claim_invite` fixed via migration `2026_08_18_cards_claim_invite_worker_role_fill.sql`, hand-applied live to jvkn via Supabase MCP on Royce's explicit go.
