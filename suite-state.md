@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-18)
 
-**eq-field:**
-- #722 v3.5.519 — Apprentices: self-service actions now reach real SKS apprentices
-
 **eq-shell:**
 - #1450 perf(nav): intercept same-origin anchor clicks so sidebar nav is client-routed
 - #1416 chore(intake): auto re-vendor eq-intake/eq-platform
