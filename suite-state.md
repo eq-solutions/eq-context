@@ -62,9 +62,9 @@ _If this file is >48h old, the cron is broken._
 
 **eq-field:**
 - #724 v3.5.520 — Apprentices: self-service profile creation
-- #723 v3.5.520 — auth: session-refresh no longer drops the caller's Shell identity
 
 **eq-shell:**
+- #1451 perf(nav): cache staff sub-page queries, prefetch lazy route chunks on hover
 - #1416 chore(intake): auto re-vendor eq-intake/eq-platform
 
 ---
