@@ -11,6 +11,7 @@ status: live
 
 ## 2026-08-18 (PR #753 MERGED — PM Calendar digest gated on a permission key, not a group id)
 - Replaces `CALENDAR_DIGEST_GROUP_ID` (a hardcoded `shell_control.security_groups.id` env var) with a plain check against `service.receive_calendar_digest` in the new `permissions` field eq-shell's `list-members.ts` returns. Curation now happens entirely in Access Control — a role default, or the "Calendar Digest Recipients" custom group — instead of a bespoke group-ID mechanism only this feature had.
+- **PR #754 MERGED — explicit `SUPERVISOR_DIGEST_PAUSED` kill switch added and set live.** #753's permission-key gate was failing closed by accident (the permission key didn't exist in any released package yet) rather than by design — a separate concurrent thread finished that rollout later the same day (eq-roles v2.7.4, 15 managers granted by default), which would have silently turned real sends back on. The explicit switch, checked at the actual send call (Preview unaffected), is what's holding sends off now. Set to `true` on eq-service's Netlify; needs Royce's own call to flip back.
 
 ## 2026-08-17 (PR #744 + #747 MERGED + deployed live — Export button font-size fix, took two rounds)
 - **PR #744 MERGED** — `SplitButton` hardcoded Tailwind `text-sm` (14px) instead of the `--eq-text-xs` design token `Button`'s `size="sm"` resolves to (11px), making Export visibly larger than its Import/Batch Create/Create Check neighbors. One-line class swap. **This fix never actually reached the browser** — see #747.
