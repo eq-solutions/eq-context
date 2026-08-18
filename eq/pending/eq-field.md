@@ -28,6 +28,20 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: My Schedule cold-boot cache fallback, built from SKS NSW Labour usage data (2026-08-18)
+*Pulled PostHog behaviour data for SKS NSW Labour (the legacy app Field is replacing for SKS's field workers, not the eq-field app itself — its own PostHog numbers were explicitly ruled out as a signal, no real usage yet). Found schedule-checking is a mobile habit concentrated in a narrow 6-8am pre-shift window (27% of the week's sessions in 2 hours) — exactly where a spotty site connection is most likely to hit a cold-boot fetch failure. Also checked the open eq-shell Sentry issue `EQ-SHELL-V` (`auth-stall: session-spinner-timeout`, culprit `/sks/staff`) as a related thread — confirmed still unresolved/regressed, but out of reach: this session has no `eq-shell` repo access.*
+
+- [x] `loadFromSupabase()` now writes a tenant-scoped `localStorage` snapshot of the schedule window on every successful load, and falls back to it (capped at 3 weeks old) when a cold-boot fetch fails with `STATE.schedule` still empty. The existing v3.5.304 "preserve last-known" guard only ever covered a *warm* tab's later poll failing — a first-load failure on a fresh page had nothing to fall back to before this. `home.js`'s offline banner extended to also fire on this fallback, with distinct wording from the true-offline case. eq-field [PR #715](https://github.com/eq-solutions/eq-field/pull/715) (v3.5.513), squash-merged, confirmed live via `field.eq.solutions/sw.js` (`v3.5.513`).
+- [x] Hit two version-number collisions mid-PR — two other concurrent sessions took v3.5.511 and v3.5.512 first. Rebased twice; re-verified bundles, both drift guards, and the existing test suite clean each time before re-pushing.
+
+**Deferred:**
+- [ ] **Not click-tested live** — tried three real paths, all blocked: a plain local static server can't resolve tenant routing (`tenant-config` is a Netlify Function, 404s outside Netlify's runtime); the documented `window.__SB_URL__`/`__SB_KEY__` dev-override path was abandoned when this repo's secret-scan hook correctly flagged writing even a public/non-secret anon key (JWT-shaped) into any file — didn't route around it via a different tool; no local `netlify dev` environment with real function env vars. Needs either a real signed-in SKS session (Core, or the `sks` standalone login) or a session with a working local Functions environment. _(added 2026-08-18)_
+- [ ] **`eq-shell` `EQ-SHELL-V` (auth-stall: session-spinner-timeout) still open** — unresolved, regressed, culprit `/sks/staff`. Hypothesis: may partly explain Field's high standalone bounce rate. Needs a session with `eq-shell` repo access to triage the watchdog code and bisect the regression. _(added 2026-08-18)_
+- [ ] **What SKS NSW Labour's "Editor" screen actually does, unconfirmed** — 243 views/month on the legacy app (busier than Contacts or all of Safety combined), no obviously-named equivalent screen in Field today. _(added 2026-08-18)_
+- [ ] **Baseline Field's own rageclick rate** — the legacy app's rageclick count is climbing (52→262/month) roughly in step with its traffic growth, so its real rate is currently ambiguous. Worth tracking Field's own rate now while its volume is still small, so a future regression is catchable rather than lost in the same ambiguity. _(added 2026-08-18)_
+
+---
+
 ## eq-field: weekly digest — per-section on/off + custom intro (2026-08-18)
 *Built the second half of `eq-context/eq/field/digest-notifications-foundation-2026-08-18.md` — the first half (a new notification_subscriptions table so non-Supervisors could get the digest) turned out to be unnecessary once checked live: the recipient panel's query already has no category filter, every field_managers row (18 real people on SKS, including Executive/Project Management/Operations categories) can already be added via a checkbox. Dropped that half, built only the genuinely missing content-editability piece.*
 
