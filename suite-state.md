@@ -60,8 +60,8 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-18)
 
-**eq-service:**
-- #756 fix(testing): make ACB/NSX readings save atomic
+**eq-field:**
+- #719 v3.5.516 — security: real per-person identity for timesheets/leave RLS
 
 **eq-shell:**
 - #1416 chore(intake): auto re-vendor eq-intake/eq-platform
@@ -74,7 +74,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ✓ success |
+| eq-service | ? in_progress |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
@@ -83,7 +83,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 219 (latest: 0212) applied
+**Migrations:** eq-service has 220 (latest: 0213) applied
 
 ---
 
