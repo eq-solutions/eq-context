@@ -9,6 +9,16 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-17 (PRs #1435, #1436, #1437 MERGED — zaap's dead legacy worker tables cleaned up; dispatch not yet re-run)
+- Migration dropping zaap's dead legacy `public.people`/`managers`/`workers` trio (leftovers from before the `app_data.staff` architecture; ehow/SKS already went through this) + rebuilding zaap's `field_people` view to match ehow's richer 30-column definition. PR creation was blocked ~40+ min by a partial GitHub API outage (Issues subsystem degraded, confirmed via githubstatus.com) — writes failed on both GraphQL and REST while reads stayed healthy; opened once GitHub recovered. [PR #1435](https://github.com/eq-solutions/eq-shell/pull/1435), merged.
+- First live dispatch attempt failed: `DROP TABLE workers` blocked by FK constraints from `worker_credentials`/`worker_inductions`/`worker_assignments`, three tables not in the original migration. Rolled back atomically, zero live impact. All three confirmed empty with no live code reference anywhere in the suite; the "shared DB with eq-cards/shell" reason they'd been excluded from an earlier 2026-06-03 cleanup is wrong — eq-cards' own `worker_credentials` lives on a separate Supabase project (jvkn), not zaap. [PR #1436](https://github.com/eq-solutions/eq-shell/pull/1436), merged.
+- Second live dispatch attempt failed too: `DROP TABLE worker_assignments` blocked by two `SECURITY DEFINER` functions (`approve_worker_assignment`, `revoke_worker_assignment`) with a real approve/revoke state machine. Confirmed `EXECUTE` is service_role/postgres-only (not browser-reachable), 0 rows, no caller anywhere including zaap's 3 live edge functions — Royce confirmed drop before proceeding. [PR #1437](https://github.com/eq-solutions/eq-shell/pull/1437), merged — also drops the now-orphaned `worker_revoked_by` enum.
+- All three PRs merged; migration not yet redispatched to zaap since the second fix landed.
+
+## 2026-08-17 (Sentry EQ-SHELL-V + EQ-SHELL-1Q triaged)
+- **EQ-SHELL-V** (auth-stall: session-spinner-timeout) confirmed already fixed by a concurrent session's PR #1433 (see entry below) minutes before this session checked — closed a redundant duplicate that had independently found the identical fix, [PR #1430](https://github.com/eq-solutions/eq-shell/pull/1430).
+- **EQ-SHELL-1Q** (Degraded UI Performance, `/login`) investigated and confirmed as one-off noise — 1 occurrence ever in 90 days, 0 users impacted, no code smell in `LoginPage.tsx`. No fix applied.
+
 ## 2026-08-18 (PR #1438 MERGED — dropped a compliance-pack caption that read as an unwanted PDF)
 - The "PDF of everyone's current licences" caption added in #1434 was misread as the app announcing an unwanted org-wide export — no PDF was actually generated. Reverted; compliance-pack generation itself untouched.
 

@@ -4279,3 +4279,11 @@ contain the same values and were pushed before push-protection caught up.
 - [x] **A genuine UX confusion found along the way, fixed**: the PDF-preview trigger built earlier the same session (`LicPdfDocument` in `SplitPanel.tsx`) labeled itself "Open PDF", but clicking it doesn't open anything — it reveals an inline thumbnail in place (the same click-to-reveal privacy pattern the photo licences already use). Relabeled to "Show preview"; the real "open in a new tab" action is the separate "Open original" link that appears once revealed. eq-shell [PR #1427](https://github.com/eq-solutions/eq-shell/pull/1427), merged, live. _(added 2026-08-17, resolved 2026-08-17)_
 
 ---
+
+## eq-shell: two flagged Sentry alerts checked — one turned out already fixed by someone else, one wasn't a real bug (2026-08-17) (fully closed, no open items remain)
+*Two alerts flagged for attention: a sign-in stall warning and a one-off slow-page warning on the sign-in screen. Checked both properly before doing anything.*
+
+- [x] The sign-in stall warning had already been fixed and shipped by a different session just minutes before this one checked — same root cause, same fix, independently found. Closed the now-redundant duplicate fix that was still sitting open (eq-shell [PR #1430](https://github.com/eq-solutions/eq-shell/pull/1430)) rather than leave two competing versions of the same fix around.
+- [x] The slow-page warning on the sign-in screen was a single one-off (happened once, ever, affecting nobody) with nothing in the code that would explain it — read as ordinary noise (a slow moment on someone's device), not a real bug. Left alone rather than build a fix for something that isn't actually broken.
+
+---

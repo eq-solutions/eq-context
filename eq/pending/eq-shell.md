@@ -43,6 +43,19 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: zaap's leftover legacy worker tables cleaned up, view brought in line with SKS's — merged, live, database update still to run (2026-08-17)
+*Asked to clean up zaap's (EQ's own) database tables and fix a difference between how EQ and SKS see worker records. Found six empty, unused leftover tables from before the current staff-record system, plus two zaap-only database functions nobody was calling — all safe to remove, confirmed live rather than assumed. Also brought EQ's worker-list view up to the same level of detail SKS's already had.*
+
+- [x] Six leftover tables from zaap's old worker-record system (before today's staff records) queued for removal — all hold zero data, nothing in any app references them, and SKS's own database already went through the same cleanup with no issues. Two removal attempts failed safely first — Postgres refused rather than doing anything half-finished — each turning up something not checked the first time round (three more empty leftover tables tied to the ones flagged, then two unused database functions tied to those). Investigated each surprise properly rather than forcing it through; the last one (an "approve/revoke a worker assignment" pair of functions that looked like it might be a real feature) was confirmed dead — nobody but the system itself is even allowed to call it, and nothing anywhere ever did — then held for Royce's explicit yes before removing. eq-shell [PR #1435](https://github.com/eq-solutions/eq-shell/pull/1435), [PR #1436](https://github.com/eq-solutions/eq-shell/pull/1436), [PR #1437](https://github.com/eq-solutions/eq-shell/pull/1437), all merged.
+- [x] Corrected a stale note from an old cleanup (2026-06-03) that had called three of those tables "shared with EQ Cards" — they're not; EQ Cards' real data lives in a completely different database, this was a same-named leftover with nothing actually connecting them.
+- [x] EQ's worker-list view was missing columns SKS's already had — rebuilt to match exactly, so both companies' version of the same screen show the same information. Merged in the same PR as the table cleanup ([PR #1435](https://github.com/eq-solutions/eq-shell/pull/1435)).
+
+**Deferred:**
+- [ ] **Database cleanup not yet run** — all three fixes are merged and live in the app's code, but the actual database step (removing the tables/functions) hasn't been triggered yet. Two earlier attempts failed safely (see above) and both are now fixed; a third attempt should go through cleanly, waiting on Royce's go. _(added 2026-08-17)_
+- [ ] **One more leftover table with the same stale "shared with Cards" note wasn't touched** — `qualifications`. Flagged, not checked yet; needs its own look before deciding whether it's also safe to remove. _(added 2026-08-17)_
+
+---
+
 ## eq-shell: auth-stall Sentry regression — blocking-spinner watchdog fired before session-verify's own retry finished, fixed, merged, live (2026-08-17)
 *Sentry "auth-stall: session-spinner-timeout" (7 occurrences since 2026-08-07) — root-caused in an earlier sprint-scoping pass and held for explicit go before building.*
 
