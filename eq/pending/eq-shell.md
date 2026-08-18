@@ -131,15 +131,8 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ---
 
 ## eq-shell: repo-wide CI block on 2 undocumented database functions — found, fixed, merged, live (2026-08-18)
-*The required "Schema drift" check was failing on every open eq-shell PR. Two database functions (a licence-sync dispatcher + its auditor) had been created directly on the live control-plane database with no record of them in any repo — the same class of issue this repo has hit before and has a standard fix for.*
 
-- [x] Confirmed live against the database itself (not assumed): both functions are real and in active daily use (two scheduled jobs, ~3am), not stubs. Checked every other EQ repo for a copy of the source — none existed anywhere.
-- [x] Wrote the missing record, copied exactly from what's actually running live, matching this repo's own standard pattern for this situation (the same fix already used once before for a near-identical pair of functions). No behaviour change — purely paperwork, the two functions keep doing exactly what they already do. [eq-shell PR #1431](https://github.com/eq-solutions/eq-shell/pull/1431), merged, confirmed live and confirmed it actually cleared the CI block (not just assumed).
-- [x] Verified downstream: the PR used as the original example ([#1428](https://github.com/eq-solutions/eq-shell/pull/1428)) was re-checked after picking up the fix and now passes. [#1435](https://github.com/eq-solutions/eq-shell/pull/1435) turned out to have already merged on its own by the time it was checked.
-
-**Deferred:**
 - [ ] **#1434 and #1429 still haven't picked up the fix** — both showed signs of being actively worked on live by someone else at the moment of checking (very recent commits, same few minutes), so they were deliberately left alone rather than risk stepping on in-progress work. They'll pick up the fix next time their own branch is brought up to date with `main` — worth a second look if either is still stuck later. _(added 2026-08-18)_
-- [ ] **#1416's check shows green but that result predates the fix** — its branch doesn't contain the fix either, so that green tick likely isn't trustworthy; wasn't re-verified this session. _(added 2026-08-18)_
 - [ ] **Formally recording the two functions as officially "applied" (not just backfilled in a file) is optional follow-up, not done** — the file alone is what cleared the CI block; a separate step exists for actually marking them applied on record, same as this repo does for its other database changes, but it wasn't needed to unblock anything so it was left for later. _(added 2026-08-18)_
 
 ---
