@@ -9,6 +9,17 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-18 (PR #1447 MERGED — QR/join-code Cards signups now notify admins)
+- `shell-join-tenant.ts` provisioned every QR/join-code worker fully but only ever wrote an audit-log row — no email, no in-app signal. Now inserts into `public.org_access_requests` on every already-active join, reusing Cards' own in-app "connect to employer" notify pipe unchanged (pg_net trigger → `notify-connection-request` Edge Function → Resend, recipients narrowed by `org_join_notify_recipients`).
+- Free side-benefit: also surfaces these joins in the existing orange "needs review" Staff-nav badge (`staff-pending-connections.ts`), since it reads the same table.
+- Deliberately scoped to already-active joins only, not approval-gated self-joins — feeding both into `org_access_requests` would put the same person behind two disconnected "approve" buttons with two different reconciliation backends. Approval-gated self-joins keep their existing Self-join-links review surface.
+- Merged (`14255d3a`), confirmed live via exact Netlify `commit_ref` match.
+
+## 2026-08-18 (PR #1446 MERGED — Staff-page email/phone corrections now propagate to canonical)
+- Found via Royce's "I updated Cameron's email recently?" — `entity-patch.ts` only ever wrote a Staff-page email/phone correction to `app_data.staff` on ehow, never back to the canonical `public.workers` on jvkn that `shell-join-tenant.ts`'s own matcher (and other canonical-reading code) depends on.
+- Added a best-effort write-back via `cards_worker_id`, wrapped so a canonical-write failure never blocks the Staff-page save. Cameron Tregoning's existing stale canonical email backfilled by hand.
+- Merged (`c4c77c81`), confirmed live via exact Netlify `commit_ref` match.
+
 ## 2026-08-18 (PR #1445 MERGED — intake re-vendor, bulk-fill grid now live)
 - Manually triggered `intake-revendor-check.yml` rather than wait for the nightly cron, to pick up eq-solves-intake #120 (bulk-fill grid for health-score gaps — see `eq-intake.md`). Sanity check (build/typecheck/test) passed clean this time — no repeat of the previous re-vendor's leftover-import bug.
 - Repo-wide "Schema drift" check also passed clean — confirms the same-day control-plane backfill (#1431) is holding across a third PR now.

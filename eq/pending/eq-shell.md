@@ -22,16 +22,32 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ---
 
 ## eq-shell: Cards self-join duplicate-record bug found, fixed, and shipped; suite-wide scan confirms it's isolated (2026-08-18)
-*Royce reported a Cards signup (Dave Rimmer) not showing up in Shell. Traced live: it DID provision correctly, but created a second, blank worker record instead of attaching to his existing one — `shell-join-tenant.ts`'s self-join matcher only tried phone, and his old record had no phone on file. Extended to also match by email, dot-normalized (his signup and on-file emails differed only by a dot). [PR #1442](https://github.com/eq-solutions/eq-shell/pull/1442), merged, confirmed live. Dave's duplicate records merged by hand. Reviewed all 5 self-joins from today (apprentice/supervisor/manager links) — only Dave's hit the bug. Also found and fixed a second, unrelated instance (William Hong, self-joined 2026-08-05, blank canonical name for 13 days — the Staff-page roster itself was already correct, only the canonical copy was stale). Ran a suite-wide scan before deciding whether to build a monitor for this class of bug: 0 blank-name workers now, and only 1 of 20 admin-corrected records (Cameron Tregoning) has actually drifted from canonical — concluded the base rate is too low (3 incidents, ever) to justify a dedicated monitor.*
-
-- [x] Fixed and shipped the email-fallback matcher in `shell-join-tenant.ts`, PR #1442.
-- [x] Merged Dave Rimmer's duplicate worker/staff records by hand (data fix, no code path — one-off).
-- [x] Backfilled William Hong's blank canonical worker name/email to match the already-correct Staff record.
-- [x] Ran the suite-wide blank-name/stale-canonical-record scan; decided against building a monitor (base rate too low).
 
 **Deferred:**
-- [ ] **Cameron Tregoning's canonical email is stale and structurally can't self-heal** — his Staff-page correction (`cameron.tregoning@sks.com.au`) is locked into `app_data.staff` on ehow, but `public.workers.email` on jvkn (the canonical copy other code, including the new matcher, reads) still holds his original personal Gmail from the June bulk import. Staff-page edits never write back upstream. No fix scoped or approved yet. _(added 2026-08-18)_
-- [ ] **No real self-service "update my email" flow exists** — `set-recovery-email.ts` only lets a worker set an email once, while it's still null; it can't correct an existing one, and only ever writes to `shell_control.users`, never `public.workers` or `app_data.staff`. Widening it wouldn't by itself fix the canonical-staleness item above, since it writes to a different table. Royce raised this, no decision made. _(added 2026-08-18)_
+- [ ] **No real self-service "update my email" flow exists** — `set-recovery-email.ts` only lets a worker set an email once, while it's still null; it can't correct an existing one, and only ever writes to `shell_control.users`, never `public.workers` or `app_data.staff`. Royce raised this, no decision made. _(added 2026-08-18)_
+
+---
+
+## eq-shell: Staff-page corrections now propagate to the canonical worker copy — found via Cameron Tregoning's stale email, fixed, merged, live (2026-08-18)
+*Follow-up to the self-join duplicate-record bug above: Royce asked "I updated Cameron's email recently? we should allow a user to update their email addresses?" — surfaced that Staff-page edits (`entity-patch.ts`) only ever wrote to `app_data.staff` on ehow, never back to the canonical `public.workers` on jvkn that `shell-join-tenant.ts`'s own matcher and other canonical-reading code depend on. Ran `/decide` on the general "let a user update their own email" question first; landed on this narrower, already-scoped fix instead of a new self-service flow.*
+
+- [x] `entity-patch.ts` now mirrors an email/phone correction on a linked staff record back to `public.workers` on jvkn — best-effort, wrapped so a canonical-write failure never blocks the Staff-page save itself. Scoped to `entity === 'staff'` edits that actually touch email or phone, via `cards_worker_id`.
+- [x] Cameron Tregoning's existing stale canonical email backfilled by hand to match his already-correct Staff record (data fix, one-off).
+- [x] eq-shell [PR #1446](https://github.com/eq-solutions/eq-shell/pull/1446), merged (`c4c77c81`), confirmed live via exact Netlify `commit_ref` match against the production deploy.
+
+---
+
+## eq-shell: QR/join-code Cards signups notified nobody — admins now get the same email + roster badge the in-app connect flow already had (2026-08-18)
+*Royce: "when using the qr links there is no notification that users have joined / uploaded their info to cards." Traced live: `shell-join-tenant.ts` (the endpoint every QR/join-code signup hits) provisioned the worker fully but only ever wrote an audit-log row — no email, no in-app signal, confirmed by reading the whole file. Cards' own separate in-app "connect to employer" flow already has a working notify pipe (`org_access_requests` insert → pg_net trigger → `notify-connection-request` Edge Function → Resend, recipients narrowed by `org_join_notify_recipients`); the QR door just never fed it.*
+
+- [x] `shell-join-tenant.ts` now inserts into `public.org_access_requests` on every already-active join (`status='approved'`), reusing the existing notify pipe unchanged — same recipient-narrowing list a manager already curates from Admin → Self-join links, zero new eq-cards code.
+- [x] Confirmed as a free side-benefit, not built separately: this also makes these joins show up in the existing orange "needs review" badge on the Staff nav item (`staff-pending-connections.ts` / `usePendingConnectionsQuery`) — same table, same query.
+- [x] Deliberately scoped to already-active joins only — an approval-gated self-join (`pendingApproval=true`) is NOT fed into `org_access_requests`, because `staff-pending-connections.ts`'s own approve button runs a different reconciliation RPC (`eq_cards_respond_to_access_request`) than this endpoint's own approval gate (`self_join_status`, approved via the Self-join links admin page). Feeding both would put the same person behind two disconnected "approve" buttons with two different backends. Approval-gated self-joins keep their existing, correct review surface untouched.
+- [x] eq-shell [PR #1447](https://github.com/eq-solutions/eq-shell/pull/1447), merged (`14255d3a`), confirmed live via exact Netlify `commit_ref` match against the production deploy.
+
+**Deferred:**
+- [ ] **Email copy reads as "applied to connect," not "joined and is on the roster."** The eq-cards trigger (`notify_connection_request()`, migration 0044) never forwards `NEW.status` in its pg_net webhook payload, so the Edge Function's nicer "X joined, worth a review" copy branch is currently dead code for every caller, not just this one — every notification through this pipe gets the generic wording. Cosmetic only; the right people still get emailed. Fix belongs in eq-cards (trigger + migration + Edge Function redeploy), not this repo. _(added 2026-08-18)_
+- [ ] **Not click-tested live** — verified via eslint (0 errors) and the deploy-preview build succeeding, not by scanning a real QR/join-code link and watching an admin's inbox + the Staff badge. _(added 2026-08-18)_
 
 ---
 
