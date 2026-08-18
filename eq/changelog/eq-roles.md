@@ -1,13 +1,18 @@
 ---
 title: eq-roles — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-08
+last_updated: 2026-08-18
 scope: eq-roles (@eq-solutions/roles package) append-only history, mirrored from the repo's own CHANGELOG.md
 read_priority: reference
 status: live
 ---
 
 # eq-roles changelog
+
+## 2026-08-18 — v2.7.4, new permission: service.receive_calendar_digest
+- Registers the permission key EQ Service's calendar digest gate already checks by string literal (`isCalendarDigestRecipient`, eq-service PR #753, merged ahead of this key existing anywhere — deliberately inert until it shipped). Part of moving the PM Calendar supervisor digest off a hardcoded Access Control group ID onto a real, grantable permission.
+- `roles: ["manager"]` — the narrowest default that satisfies this package's manager-holds-every-permission invariant (`roles.test.ts`, unconditional across all 60 prior keys — a `roles: []` draft failed it). Everyone else reaches the permission via the existing "Calendar Digest Recipients" custom group.
+- [PR #29](https://github.com/eq-solutions/eq-roles/pull/29), merged, tagged v2.7.4. `npm test`: 110/110 pass.
 
 ## 2026-08-08 — canonical security-groups HTML export (no version bump — tooling/docs only)
 - Answers "give me a full HTML export of security groups across the whole suite": `scripts/export-security-groups.mjs` generates a full HTML export (role matrix, permission matrix, default security groups) straight from `roles.json`, run via `npm run export:html`. The canonical half of the ask — a separate live per-tenant data pull was delivered outside this repo.

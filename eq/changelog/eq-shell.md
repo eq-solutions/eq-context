@@ -9,6 +9,11 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-18 (PR #1441 MERGED — @eq-solutions/roles pin bumped to v2.7.4)
+- Picks up `service.receive_calendar_digest` (eq-roles v2.7.4) — needed for `list-members.ts`'s effective-permissions field (PR #1440, below) to actually recognise it: `resolveEffectivePermissions()` silently drops any group-granted `perm_key` it doesn't know about, so granting the "Calendar Digest Recipients" group this key did nothing until this pin landed.
+- Also adds `service.receive_calendar_digest` to `permission-enforcement-baseline.json`'s `enforced_downstream_service` category — eq-shell only resolves/exposes this key, it never itself checks it; enforcement is entirely in EQ Service.
+- The permission was then granted to the live "Calendar Digest Recipients" group directly (a data write, not a code change) — verified against live data that every group member's effective permissions now include it.
+
 ## 2026-08-18 (PR #1440 MERGED — list-members exposes effective permissions, not raw groups)
 - Replaces `groups: {id,name}[]` with `permissions: string[]` — each member's effective permission keys (role default ∪ custom-group grants, minus role-level denials), computed via `resolveEffectivePermissions`, the same resolver Access Control's own "Preview a person" tab uses. Part of moving EQ Service's PM Calendar digest gate off a hardcoded group-ID env var (eq-service PR #753).
 

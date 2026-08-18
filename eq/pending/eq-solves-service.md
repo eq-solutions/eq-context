@@ -1,7 +1,7 @@
 ---
 title: EQ Service — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-17
+last_updated: 2026-08-18
 scope: EQ Service engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -29,10 +29,12 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-shell + eq-solves-service: who gets the calendar digest — being rebuilt as a real permission, not a hardcoded list (2026-08-17)
+## eq-shell + eq-solves-service: who gets the calendar digest — rebuilt as a real permission, not a hardcoded list (2026-08-17 → 2026-08-18)
+*Follow-up to the 2026-08-17 build below: that shipped group-membership as a first cut, functionally identical to the old manager/supervisor role check. Royce asked for it done properly instead — a real Access Control permission, grantable by role or by the existing group. Full cross-repo build history: [eq/pending/cross-repo.md](../cross-repo.md).*
 
-**Deferred:**
-- [ ] **Digest sending is paused on purpose, on live production, until you say go.** The feature finished end-to-end today — 15 managers hold the permission by default, plus your own trimmed 18-person group — so a real daily email would go out now if the pause weren't there. Flip `SUPERVISOR_DIGEST_PAUSED` off on eq-service's Netlify once you're happy with who's set to receive it, then double-check the "Calendar Digest Recipients" group still reflects who you want on top of the manager default. _(added 2026-08-18)_
+**Deferred (eq-service-specific — both are live production Netlify settings, need your say-so):**
+- [ ] **Digest sending is still paused on purpose (`SUPERVISOR_DIGEST_PAUSED=true`), until you say go.** Real count once unpaused, checked directly against live data: **20 people**, not a smaller figure quoted earlier today — the "Calendar Digest Recipients" group's 18 members (17 with an email on file), plus 3 more managers who hold it automatically through their role and were never added to the group at all, including **you** (royce.milmlow@sks.com.au). One of those 3, `dev@eq.solutions`, looks like a system/test account rather than a person — worth deciding whether it should hold the manager role at all, separately from this feature. _(added 2026-08-18)_
+- [ ] **`CALENDAR_DIGEST_GROUP_ID` is still sitting in eq-service's Netlify env, unused** — the code stopped reading it once the permission-key gate shipped. Confirmed via a fresh search of the current codebase: nothing references it. Safe to delete. _(added 2026-08-18)_
 
 ---
 
