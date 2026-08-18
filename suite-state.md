@@ -60,6 +60,9 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-18)
 
+**eq-service:**
+- #756 fix(testing): make ACB/NSX readings save atomic
+
 **eq-shell:**
 - #1416 chore(intake): auto re-vendor eq-intake/eq-platform
 
