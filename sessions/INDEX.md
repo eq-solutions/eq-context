@@ -1,8 +1,9 @@
 # Session Index
-_130 logs · reverse-chronological · auto-generated_
+_131 logs · reverse-chronological · auto-generated_
 
 | Date | Session |
 |------|---------|
+| 2026-08-19 | [Cards iframe Web Share fix (eq-shell) + Wallet banner repeat fix (eq-cards)](2026-08-19.md) |
 | 2026-08-18 | [Fixed a real bug behind a suspected-hardcoded-path guard.js gate report](2026-08-18.md) |
 | 2026-08-17 | [Full Sentry sweep + Richard Brown's jvkn identity actually merged, silent PIN-reset lockout found and fixed](2026-08-17.md) |
 | 2026-08-16 | [built a personal task register for Royce (OneDrive), cross-checked it live twice, found and cleared a false alarm on eq-context's git state](2026-08-16.md) |
