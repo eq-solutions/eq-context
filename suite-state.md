@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-18)
 
-**eq-service:**
-- #755 chore(roles): bump @eq-solutions/roles to v2.7.4
-
 **eq-shell:**
 - #1416 chore(intake): auto re-vendor eq-intake/eq-platform
 
