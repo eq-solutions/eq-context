@@ -47,6 +47,12 @@ status: live
 - Verified the fix live on CI (not just by inspection): the drift check went green on #1431 itself, then on #1428 once its branch picked up the merge.
 - #1434 and #1429 were still stuck on the stale check at close — both showed very recent commit activity suggesting active concurrent sessions, so deliberately left untouched rather than merged into.
 
+## 2026-08-18 (PR #1428 MERGED — intake re-vendor merged, "Bring Data In" redesign now live)
+- Auto-opened by the nightly `intake-revendor-check.yml` workflow to pick up eq-solves-intake's #119 (Bring Data In redesign — see `eq-intake.md`). First CI run failed on a real bug (`QUICK_PREFIX` unused import, fixed at source same day — see `eq-intake.md`); second run's `gh pr create` step hit a transient GitHub API 503, resolved by retrying manually.
+- Blocked on the same repo-wide drift check as #1431 above — its own CI run predated that fix. Updated the branch off `main` (`gh pr update-branch`) once #1431 landed, re-ran CI clean across every check.
+- Merged (squash `44a039d`) on Royce's explicit "wait for the remaining checks then merge 1428". Confirmed genuinely live, not just green-merged: the Netlify production deploy's `commit_ref` matches the merge SHA exactly, published 19:08:14Z UTC.
+- This is the actual ship event for the Bring Data In redesign — eq-solves-intake's own #119 merge only landed the code in that repo (it has no auto-deploy); core.eq.solutions didn't serve it until this re-vendor PR went live. Lives under the Bring Data In tab specifically, not the Overview dashboard — a screenshot of the dashboard tab wouldn't show it either way.
+
 ## 2026-08-17 (PR #1427 MERGED — PDF preview button relabeled from "Open PDF" to "Show preview")
 - Clicking it reveals an inline thumbnail in place, it doesn't open a new tab — the label was misleading. The real "open in a new tab" action is the separate "Open original" link that appears once revealed.
 

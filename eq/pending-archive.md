@@ -26,6 +26,16 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-shell: intake re-vendor (#1428) merged — "Bring Data In" redesign now live on core.eq.solutions (2026-08-18) (fully closed, no open items remain)
+*Closes the loop on the "Bring Data In" redesign archived above — eq-solves-intake's #119 merge only landed the code in that source repo, which has no auto-deploy; core.eq.solutions never actually served it until this re-vendor PR shipped. Also downstream of the same-day repo-wide control-plane-drift fix (PR #1431, see `eq/pending/eq-shell.md`) — #1428's own CI run predated that fix and needed the branch brought up to date before it would pass. Royce noticed the dashboard tab looked unchanged and asked "nothing has changed?" — the actual redesign lives under the Bring Data In tab, and at that moment genuinely hadn't shipped yet.*
+
+- [x] eq-shell's automated re-vendor workflow (`intake-revendor-check.yml`) auto-opened #1428 to pick up #119. First CI run failed on a real leftover dead-import bug, fixed at source same day (`60afcbd`, see `eq/changelog/eq-intake.md`); second run's PR-creation step hit a transient GitHub API 503, resolved by retrying.
+- [x] Blocked on the same repo-wide "Schema drift" check documented in `eq/pending/eq-shell.md`'s CI-block section — a genuinely unrelated pre-existing issue, correctly spun off as a background task rather than fixed inline (out of eq-solves-intake's own scope). That task delivered eq-shell PR #1431 (merged separately, see `eq/pending/eq-shell.md`).
+- [x] Updated #1428's branch off `main` once #1431 landed (`gh pr update-branch`), re-ran CI — all checks green including the drift check.
+- [x] Merged (squash `44a039d`) on Royce's explicit "wait for the remaining checks then merge 1428". Confirmed genuinely live via the Netlify deploy record (commit ancestry, not just a green merge): production `commit_ref` exactly matches the merge SHA, published 19:08:14Z UTC.
+
+---
+
 ## eq-service: Export button font-size mismatch on Maintenance Checks — actually fixed, merged, deployed, live-verified (2026-08-17) (fully closed, no open items remain)
 *Royce screenshotted the Maintenance Checks toolbar and asked why Export looked larger than Import/Batch Create/Create Check. Took two rounds — first fix looked right from outside but wasn't; see below.*
 

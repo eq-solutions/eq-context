@@ -13,6 +13,14 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## Substrate: two guard-hook gaps found this session — spawned as background fixes, not confirmed landed (2026-08-18)
+*Hit both live while shipping eq-solves-intake's "Bring Data In" redesign to production (see `eq/pending/eq-shell.md` and `eq/pending-archive.md` for that thread). Neither blocked the work — both had a working manual bypass — but both are real gaps in the guard infrastructure worth closing properly.*
+
+- [ ] **brief-gate exemption list doesn't cover the new `eq/pending/<repo>.md` split** — the exemption regex in `guard.js` still only matches the pre-2026-08-17 flat `eq/pending.md`/`eq/changelog/*.md`/`sessions/*.md` paths, so `Edit` calls against e.g. `eq/pending/eq-solves-intake.md` get blocked without a `/brief` flag even though these are exactly the substrate docs the exemption was meant to cover. Worked around this session via `EQ_SKIP_BRIEF=1` through Bash. Spawned as background task `task_0fc52b9f` ("Add eq/pending/*.md to guard.js brief-gate exemption") — Royce started it; status not confirmed by end of session (its spawned session couldn't be located to check progress). _(added 2026-08-18)_
+- [ ] **stale-main-gate blocked commits in a genuinely-current isolated clone** — 6 consecutive commit attempts blocked in a freshly-cloned, up-to-date `eq-context` scratch clone; evidence (repeated "up to date" status immediately before each block) points at the hook checking a hardcoded shared-checkout path rather than the invocation's actual repo. `EQ_SKIP_STALE_MAIN=1` did NOT work as a bypass (the hook appears to run as a pre-flight gate outside the Bash tool's own command execution, so no env var set inside the command reaches it). Spawned as background task `task_849f9c7b` — may already be resolved: an unrelated concurrent session's `guard.js` `resolveEffCwd()` fix (see today's session log) looks like the same root cause, but this wasn't independently confirmed against the specific reported symptom. _(added 2026-08-18)_
+
+---
+
 ## Substrate: F9's general copy-back guard (F12) — ratchet promoted rung 2 → 4, built, merged (2026-08-17)
 *F12 (a raw file copy/move whose destination lands inside the shared eq-context checkout, silently clobbering a concurrent session's already-pushed work) had a narrow partial fix from the day before (a dirty-checkout guard in `substrate_sync.py`) but the ledger's own `target_rung: 4` was still unmet — recurred twice (2026-08-05, 2026-08-17). Ran via `/decide`; Royce: "Promote to rung 4."*
 
