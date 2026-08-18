@@ -9,6 +9,13 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-18 (PR #1440 MERGED — list-members exposes effective permissions, not raw groups)
+- Replaces `groups: {id,name}[]` with `permissions: string[]` — each member's effective permission keys (role default ∪ custom-group grants, minus role-level denials), computed via `resolveEffectivePermissions`, the same resolver Access Control's own "Preview a person" tab uses. Part of moving EQ Service's PM Calendar digest gate off a hardcoded group-ID env var (eq-service PR #753).
+
+## 2026-08-18 (PR #1429 MERGED — ring visual + real tab strip for Access Control)
+- Base Permissions matrix cells replace the old dot + hollow-dot + fraction stack with one ring visual (conic-gradient coverage, amber ring for tenant overrides) — reused in the click-through drawer's summary. Real tab strip (Base permissions / Custom groups / Preview a person / Activity) replaces one long scrolling page; Compare roles + a Custom-groups redesign are a deliberate follow-up PR.
+- Fixed a stale `Tabs` type shim (`src/types/eq-solutions-ui.d.ts`) that predated the real component's current API — nothing had used `Tabs` in this repo before, so the drift was invisible until now.
+
 ## 2026-08-17 (PRs #1435, #1436, #1437 MERGED — zaap's dead legacy worker tables cleaned up; dispatch not yet re-run)
 - Migration dropping zaap's dead legacy `public.people`/`managers`/`workers` trio (leftovers from before the `app_data.staff` architecture; ehow/SKS already went through this) + rebuilding zaap's `field_people` view to match ehow's richer 30-column definition. PR creation was blocked ~40+ min by a partial GitHub API outage (Issues subsystem degraded, confirmed via githubstatus.com) — writes failed on both GraphQL and REST while reads stayed healthy; opened once GitHub recovered. [PR #1435](https://github.com/eq-solutions/eq-shell/pull/1435), merged.
 - First live dispatch attempt failed: `DROP TABLE workers` blocked by FK constraints from `worker_credentials`/`worker_inductions`/`worker_assignments`, three tables not in the original migration. Rolled back atomically, zero live impact. All three confirmed empty with no live code reference anywhere in the suite; the "shared DB with eq-cards/shell" reason they'd been excluded from an earlier 2026-06-03 cleanup is wrong — eq-cards' own `worker_credentials` lives on a separate Supabase project (jvkn), not zaap. [PR #1436](https://github.com/eq-solutions/eq-shell/pull/1436), merged.

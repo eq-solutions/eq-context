@@ -1,13 +1,16 @@
 ---
 title: EQ Service — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-17
+last_updated: 2026-08-18
 scope: EQ Service append-only history. Canonical (repo-slug convention, matching eq-shell.md/eq-cards.md/eq-field.md/etc.) — this file absorbed eq-solves-service.md 2026-08-17, merging both same-day product histories by date (no entries dropped, both files' own internal ordering was already imperfectly chronological so blocks are sorted strictly by date; same-date ties keep this file's prior entries first, then eq-solves-service.md's). The two files had been left deliberately unreconciled since 2026-08-11/15 pending Royce's own call on how to interleave them (see sessions/2026-08-11.md) — this merge is that call, made 2026-08-17. eq-solves-service.md is now a stub pointing here; don't split the log again.
 read_priority: reference
 status: live
 ---
 
 # EQ Service — Changelog
+
+## 2026-08-18 (PR #753 MERGED — PM Calendar digest gated on a permission key, not a group id)
+- Replaces `CALENDAR_DIGEST_GROUP_ID` (a hardcoded `shell_control.security_groups.id` env var) with a plain check against `service.receive_calendar_digest` in the new `permissions` field eq-shell's `list-members.ts` returns. Curation now happens entirely in Access Control — a role default, or the "Calendar Digest Recipients" custom group — instead of a bespoke group-ID mechanism only this feature had.
 
 ## 2026-08-17 (PR #744 + #747 MERGED + deployed live — Export button font-size fix, took two rounds)
 - **PR #744 MERGED** — `SplitButton` hardcoded Tailwind `text-sm` (14px) instead of the `--eq-text-xs` design token `Button`'s `size="sm"` resolves to (11px), making Export visibly larger than its Import/Batch Create/Create Check neighbors. One-line class swap. **This fix never actually reached the browser** — see #747.

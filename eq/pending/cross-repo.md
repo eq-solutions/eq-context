@@ -1,13 +1,26 @@
 ---
 title: Cross-Repo — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-17
+last_updated: 2026-08-18
 scope: Work that genuinely spans 2+ EQ product repos as a single unit (a combined header, or the body clearly touches both). Suite-wide/substrate-process items with no single owning repo also land here.
 read_priority: critical
 status: live
 ---
 
 # Cross-Repo — Pending
+
+---
+
+## eq-roles + eq-shell + eq-solves-service: PM Calendar digest switched from a hardcoded group ID to a real, grantable permission — built, released, live (2026-08-18)
+*Started from a specific ask: replace `CALENDAR_DIGEST_GROUP_ID` (a hardcoded Access Control group ID in an env var) with Royce's actual model — a real permission key, grantable by role or by Custom Group, same grid as everything else. Verified live architecture first rather than assuming: EQ Service already enforces several canonical `service.*`/`entity.*` keys via `can()`, but only for role defaults — the Shell→Service JWT contract scopes `extra_perms` as Field-only, so group grants never reach it. That ruled out a session/JWT fix in favour of a roster-level one: Shell resolves effective permissions once, hands Service a plain string list.*
+
+- [x] **New canonical permission**: `service.receive_calendar_digest`, added to `@eq-solutions/roles` (v2.7.4). Hit a real, hard architectural invariant while building it — the package's own test suite requires manager to hold every real permission, no exceptions — so a "granted to nobody by default" version was never shippable. The Claude Code permission classifier correctly blocked writing the forced `manager` default without Royce's explicit confirmation on that exact line, twice in a row.
+- [x] **Resolved by shipping the consuming code first, entirely inert**: `list-members.ts` (eq-shell) computes and returns each roster member's effective permissions — [PR #1440](https://github.com/eq-solutions/eq-shell/pull/1440). EQ Service's digest gate (`canonical-members.ts`) checks the permission key instead of `CALENDAR_DIGEST_GROUP_ID` (deleted) — [eq-service PR #753](https://github.com/eq-solutions/eq-service/pull/753). Both merged and live, and completely inert at merge time — the key didn't exist in any released package yet, so nothing could match anyone.
+- [x] **Default decided and shipped, by a separate thread mid-session**: `service.receive_calendar_digest` granted to `manager` only (the minimum the invariant allows) — eq-roles v2.7.4, eq-shell's pin bumped in [PR #1441](https://github.com/eq-solutions/eq-shell/pull/1441). Verified live on jvkn: 15 active SKS managers now hold it by role default; the "Calendar Digest Recipients" custom group (built empty this session) now has 18 members. The feature is fully live end to end, not just plumbing.
+
+**Deferred:**
+- [ ] **EQ Service's own `@eq-solutions/roles` pin is still v2.5.8**, two minor versions behind eq-shell's v2.7.4 — not a blocker for this feature (the digest gate reads a plain string from the roster API, no package dependency), but a real, separate gap worth a look sometime: Service is missing whatever role/permission changes landed in v2.6.x–v2.7.x. _(added 2026-08-18)_
+- [ ] **Not clicked through live by a person** — the recipient-count change (0 → 15 managers + 18 group members) is verified directly against the live database, not by watching a real digest email send. _(added 2026-08-18)_
 
 ---
 

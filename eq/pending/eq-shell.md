@@ -13,6 +13,20 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: Access Control gets a real ring visual + tab strip; roster now exposes real permissions instead of raw groups (2026-08-18)
+*Royce asked for the ring visual from the earlier Claude Design mockup, to also cover every sub-page and the click-through drawer.*
+
+- [x] **Base Permissions matrix cells now use a real ring visual** — replaces the old dot + hollow-dot + fraction stack with one conic-gradient ring (coverage fill) + an amber ring for tenant overrides, matching the Claude Design brief. Reused in the click-through drawer's "N of Total granted" summary. [PR #1429](https://github.com/eq-solutions/eq-shell/pull/1429), merged, confirmed live.
+- [x] **Real tab strip added** — Base permissions / Custom groups / Preview a person / Activity, replacing one long scrolling page. Compare roles and a Custom-groups inline-expand redesign are deliberately deferred to a follow-up PR (2-PR split, confirmed with Royce). Same PR #1429.
+- [x] **Fixed a stale type shim that blocked the build** — `src/types/eq-solutions-ui.d.ts`'s hand-maintained `Tabs` type still described an old API (`tabs`/`activeKey`/`content`) that predated the real component (`items`/`value`/`onChange`/`count`); nobody had used `Tabs` in this repo before, so the drift was invisible until now.
+- [x] **`list-members.ts` now returns each member's effective permission keys** (`permissions: string[]`, role default ∪ custom-group grants minus role denials, via `resolveEffectivePermissions`) instead of raw `groups: {id,name}[]` — checked first that nothing else read `.groups`. Part of switching EQ Service's PM Calendar digest gate off a hardcoded group-ID env var — see the cross-repo entry in `eq/pending/cross-repo.md`. [PR #1440](https://github.com/eq-solutions/eq-shell/pull/1440), merged, confirmed live.
+
+**Deferred:**
+- [ ] **Compare roles tab + Custom Groups inline-expand redesign** — scoped in the original Claude Design brief, explicitly held for a second PR. _(added 2026-08-18)_
+- [ ] **Neither PR clicked through live by a person** — verified by typecheck/lint/tests and confirmed production deploys, not an actual admin session. _(added 2026-08-18)_
+
+---
+
 ## eq-shell: compliance-pack caption misread as an unwanted org-wide PDF — reverted same day (2026-08-18)
 *Follow-up to the blank-screen fix below. Royce sent a screenshot: "I noticed a PDF of everyone's licenses pop up in Shell which is incorrect... I didn't want to touch the core/tenant compliance pack." Investigated before assuming — pulled the actual screenshot via Drive rather than guessing.*
 
