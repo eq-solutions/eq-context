@@ -1,7 +1,7 @@
 ---
 title: EQ Shell — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-17
+last_updated: 2026-08-18
 scope: EQ Shell engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -10,6 +10,24 @@ status: live
 # EQ Shell — Pending
 
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-shell: compliance-pack caption misread as an unwanted org-wide PDF — reverted same day (2026-08-18)
+*Follow-up to the blank-screen fix below. Royce sent a screenshot: "I noticed a PDF of everyone's licenses pop up in Shell which is incorrect... I didn't want to touch the core/tenant compliance pack." Investigated before assuming — pulled the actual screenshot via Drive rather than guessing.*
+
+- [x] **No PDF was actually generated.** The screenshot showed the small static caption added alongside the blank-screen fix ("PDF of everyone's current licences," sitting under the Compliance pack button) — accurate UI copy, misread as the app announcing unwanted behaviour. Confirmed the compliance-pack generation logic itself (who it covers, when it fires) is completely unchanged by either PR.
+- [x] Reverted the caption. eq-shell [PR #1438](https://github.com/eq-solutions/eq-shell/pull/1438), merged (`8333df02`) — live on core.eq.solutions.
+
+---
+
+## eq-shell: compliance-pack export blanking the whole SPA on desktop — found, fixed, merged, live (2026-08-18)
+*Royce reported the Staff page's compliance-pack export "defaults back to a white screen on desktop." Traced to a real bug, not a rendering fluke.*
+
+- [x] **Root cause**: the compliance-pack poll auto-clicked the download link the moment the background job finished, from inside a `setInterval` callback — no user gesture behind it. Clicking a cross-origin signed-URL anchor with no active gesture is exactly the case browsers are strictest about; some navigate the tab itself to the URL instead of downloading, unmounting the whole React app.
+- [x] **Fix**: removed the auto-click. The button next to it already flips to "Download ready ↓" the instant the job completes — that click has a real user gesture, so it's the only place this now fires from. Added a toast so completion is still visible without the auto-download.
+- [x] Small captions added under the Compliance pack and Add licence buttons explaining what each does (Royce asked for this alongside the bug report).
+- [x] eq-shell [PR #1434](https://github.com/eq-solutions/eq-shell/pull/1434), merged (`5eca6417`) — **live on core.eq.solutions** (merging this repo is the deploy).
 
 ---
 

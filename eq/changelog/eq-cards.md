@@ -9,6 +9,9 @@ status: live
 
 # EQ Cards — Changelog
 
+## 2026-08-18 (PR #268 MERGED — Replace card always visible, not just near expiry)
+- The rescan+OCR "renew" flow (updates the licence in place, not a duplicate) was gated to expired/expiring-soon only. Relabelled "Renew licence" → "Replace card" and removed the gate on all three detail-screen layouts.
+
 ## 2026-08-18 (PR #265, #266, #267 MERGED — per-licence PDF export, xlsx bug fixes, logo contrast)
 - New "Export PDF" action on the licence detail screen — one-page branded PDF per licence, QR verify link (skipped for private licences). CI Flutter pin bumped 3.41.9 → 3.44.8 to unblock the `pdf` package dependency.
 - Fixed a real bug: `excel_plus`'s `Excel.save()` was silently triggering a second, wrongly-named browser download (`FlutterExcel.xlsx`) on every "Export my data" tap — switched to `Excel.encode()`.

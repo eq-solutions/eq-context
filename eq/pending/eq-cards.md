@@ -13,6 +13,29 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-cards: replacing an existing licence wasn't obvious — root-caused and fixed (2026-08-18)
+*Royce: "how does someone replace an existing licence from Cards? It isn't obvious to me." Investigated the full flow before touching anything.*
+
+- [x] **The rescan+OCR mechanism already worked correctly** — it's a full scan → crop → OCR pipeline that updates the existing licence record in place (new photo, new OCR-filled number/expiry), not a duplicate. But it was only shown when a licence was expired or within 30 days of expiring, gated identically in 3 places across the detail screen's layouts. A worker who gets a new physical card early (new number, years of validity left) had no visible way to swap it in — their only options were manually editing the photo with no OCR re-fill, or deleting and re-adding as a brand-new record.
+- [x] Relabelled "Renew licence" → "Replace card" and removed the near-expiry gate on all three detail-screen layouts — always available now. Left the wallet list tile's own compact per-row "Renew" chip untouched (still gated) — always showing a button on every row in a scrollable list is a bigger, separate call.
+- [x] eq-cards [PR #268](https://github.com/eq-solutions/eq-cards/pull/268), merged (`7a3377c`), deployed live — verified against the live bundle (grepped a fresh, cache-busted fetch of `main.dart.js`: "Replace card" now appears 3x, "Renew licence" 0x).
+
+---
+
+## eq-cards: per-licence PDF export shipped, real bugs found in the xlsx register (2026-08-18)
+*Started as "mock up a PDF and Excel export for a licence" — built for real, then Royce's live device testing surfaced two genuine bugs neither unit tests nor CI could have caught (both web-only browser behaviours), on top of the design polish he asked for.*
+
+- [x] **New: "Export PDF" action on the licence detail screen** — one-page branded PDF per licence (holder, fields, status, QR verify link; private licences export too but skip the QR). eq-cards [PR #265](https://github.com/eq-solutions/eq-cards/pull/265), merged (`4597bfd`), deployed live.
+- [x] **Real bug found: `excel_plus`'s `Excel.save()` silently double-downloads on web.** It clicks its own hidden `<a download>` using a hard-coded default filename (`FlutterExcel.xlsx`) — every "Export my data" tap was giving Royce two files, not one (confirmed by md5-matching his downloaded `FlutterExcel.xlsx` against the real `licences.xlsx` inside his ZIP). Fixed by switching to `Excel.encode()`, same bytes, no side effect. eq-cards [PR #266](https://github.com/eq-solutions/eq-cards/pull/266), merged (`5a3ce1d`), deployed live.
+- [x] **Design fixes from live testing, same PR**: logo bumped from 20x20px to 60x60px (xlsx, deep-blue banner fill) / 34x34px (PDF); xlsx "Licence Type" column now shows the human label (`White Card`) instead of the raw code (`white_card`).
+- [x] **Follow-up: logo contrast regression caught and fixed same day** — the #266 banner fill made the sky-blue logo nearly invisible against the deep-blue background it was placed on (no white logo asset exists). Fixed by recolouring the mark's opaque pixels to white at export time (`whitenLogoPng`, verified visually against a real composited sample). eq-cards [PR #267](https://github.com/eq-solutions/eq-cards/pull/267), merged (`821d9f1`), deployed live.
+- [x] CI's Flutter pin bumped 3.41.9 → 3.44.8 (required for #265 — the only `pdf` package version compatible with `excel_plus`'s xml dependency needs Dart ≥3.12).
+
+**Deferred:**
+- [ ] **Royce still hasn't confirmed finding "Export PDF" on his own phone** — verified the feature is genuinely in the live deployed bundle (grepped `cards.eq.solutions/main.dart.js` for the tooltip string), so this isn't a failed-deploy question. Gave him the exact tap path (open one licence → share-style icon in that screen's app bar, separate from "Export my data") and suggested a hard refresh in case of PWA cache staleness. Not yet confirmed either way. _(added 2026-08-18)_
+
+---
+
 ## eq-cards: jvkn Supabase branch-replay diagnosed and documented (2026-08-16)
 *A routine attempt to branch-test an unrelated eq-cards migration (0131) hit `create_branch` failing `MIGRATIONS_FAILED` on jvkn (eq-canonical) — turned into a full root-cause investigation, since this blocks Supabase's branch-preview workflow for the whole shared control-plane project, not just eq-cards.*
 
