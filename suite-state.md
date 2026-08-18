@@ -60,8 +60,8 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-18)
 
-**eq-field:**
-- #719 v3.5.516 — security: real per-person identity for timesheets/leave RLS
+**eq-cards:**
+- #271 feat(licences): export-all as PDF or Excel, with a licence picker
 
 **eq-shell:**
 - #1416 chore(intake): auto re-vendor eq-intake/eq-platform
@@ -74,7 +74,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ? in_progress |
+| eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
