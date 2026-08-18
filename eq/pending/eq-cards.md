@@ -1,7 +1,7 @@
 ---
 title: EQ Cards — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-18
+last_updated: 2026-08-19
 scope: EQ Cards engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -10,6 +10,18 @@ status: live
 # EQ Cards — Pending
 
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-cards: "You're ready for site" Wallet banner kept reappearing through the Shell embed — fixed, live (2026-08-19)
+*Royce uploaded a screenshot of the once-ever success banner reappearing on every Wallet visit; confirmed it only happened through Shell (`core.eq.solutions/sks/cards`), never standalone on cards.eq.solutions.*
+
+- [x] **Root cause**: the banner's once-ever flag is namespaced per real auth user id (`_uidSuffix`, added to fix an earlier demo-phone-reuse bug). Supabase's client `initialize()` doesn't wait for session restore to finish, so on a cold Flutter boot — which is exactly what a Shell iframe reload triggers — the check could run before `currentUser` resolved, silently falling back to an unsuffixed key and defeating the once-ever guard.
+- [x] **Fix**: if the user id isn't resolved yet when the check runs, skip entirely (no read/write, no "checked" flag set) so it retries cleanly on the next rebuild once auth settles, instead of writing under the wrong key. eq-cards [PR #276](https://github.com/eq-solutions/eq-cards/pull/276), merged, deployed live.
+- [x] Investigated via a bug-fixer agent — read the vendored Supabase client source directly to confirm the race exists in code, not just theorised; ruled out a per-visit-different-uid handoff issue and GoRouter's session gate as the cause.
+
+**Deferred:**
+- [ ] **Couldn't rule out browser-level storage partitioning (Safari ITP / Chrome CHIPS) as a second contributing factor** for cross-origin iframe storage — that would be inherent browser behaviour, not an app bug, and isn't fixable in this repo. No Sentry/Chrome MCP access in that session to check live frequency either. _(added 2026-08-19)_
 
 ---
 

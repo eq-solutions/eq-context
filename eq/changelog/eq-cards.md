@@ -1,13 +1,18 @@
 ---
 title: EQ Cards — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-18
+last_updated: 2026-08-19
 scope: EQ Cards append-only history. NOTE — duplicates eq/changelog/cards.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # EQ Cards — Changelog
+
+## 2026-08-19 (PR #276 MERGED — fix "You're ready for site" Wallet banner reappearing through Shell)
+- The once-ever Wallet success banner was reappearing on every visit when Cards was opened through the Shell embed (`core.eq.solutions/sks/cards`), never standalone. Root cause: the banner's SharedPreferences flag is namespaced by real auth user id, but `Supabase.initialize()` doesn't await session restore — a cold Flutter boot (every Shell iframe reload) could run the once-ever check before `currentUser` resolved, silently writing under an unsuffixed fallback key instead of the real one.
+- Fixed by skipping the check entirely (no read/write, no in-memory "checked" flag) until the uid resolves, so it retries cleanly on the next rebuild instead of writing to the wrong key. Verified in code against the vendored Supabase client source, not guessed.
+- Deploy workflow run green, live on cards.eq.solutions.
 
 ## 2026-08-18 (PR #275 MERGED — remove Add-to-Home-Screen nudge and connection toast)
 - Both "once-ever" reminders were reappearing every load when tested through the Shell iframe embed on iOS Safari — SharedPreferences (localStorage-backed on web) doesn't reliably persist in that context, so the "already shown" flag never stuck. Removed both outright: the "Connected to $tenant" SnackBar and the Add-to-Home-Screen nudge card, plus the now-dead `AddToHomeScreenNudge` widget file.
