@@ -9,6 +9,12 @@ status: live
 
 # eq-field changelog
 
+## 2026-08-18 (PR #723 MERGED — v3.5.520, auth: session-refresh no longer drops the caller's Shell identity)
+- Found while auditing today's apprentice-profile fixes (#721/#722): `verify-pin.js`'s `verify-token` re-mint (fires on every remember-me page-load restore) explicitly passed `undefined` for `shell_user_id`, while `eq_role`/`tenant_slug`/`extra_perms` were correctly carried forward — the 2026-07-30 fix for those claims missed this one.
+- Every session refresh silently dropped the caller's server-attributable Shell identity. Not a data leak — `apprentice-data.js`/`apprentice-write.js`/`mint-data-jwt`'s `actor_id` all resolve a caller's own person_id from this claim, and losing it just fails closed (same empty result as no session) — but could intermittently make someone lose access to their own apprentice/timesheet/leave data depending on whether their in-memory or a just-refreshed token was live.
+- One-line fix: `signToken(..., undefined, data.iat)` → `signToken(..., data.shell_user_id, data.iat)`. Two new regression tests in `verify-pin-core-only.test.js` — carries the claim through when present, confirms it's cleanly omitted (not literal `"undefined"`) when absent.
+- Auth-adjacent change, held for explicit approval per standing rule — Royce approved and merged directly. CI green (16/16 + 13/13 tests, 0 lint errors), deploy preview clean (zero console errors). Confirmed live via `field.eq.solutions/sw.js` (`v3.5.520`).
+
 ## 2026-08-18 (PR #722 MERGED — v3.5.519, apprentice self-service actions now reach real SKS apprentices)
 - Follow-up to PR #720/#721 in the same session: Edit Goals, Ask for Feedback, and "How am I going?" (self-assessment) were silently not rendering for a real apprentice signed in through Core — the same-identity check behind all four actions was still keyed to the dead standalone-PIN identity instead of the real Core identity two other spots in the codebase already knew to use.
 - Centralized into one `_isSelfProfile()` helper so it can't drift a fourth time. File was sitting exactly at the 1550-line eslint cap — written tight (no line growth) rather than a lint-config change.
