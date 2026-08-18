@@ -1,25 +1,25 @@
 ---
 title: EQ Suite — Health Digest
 owner: Royce Milmlow
-last_updated: 2026-08-17
+last_updated: 2026-08-18
 scope: Push-style 'what needs your attention' feed across the EQ suite. Regenerated on merge (repository_dispatch: suite-state-changed) and nightly. Full snapshot in suite-state.md.
 read_priority: high
 status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-17 23:54 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-18 02:45 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-17 23:43 UTC → 2026-08-17 23:54 UTC)
+## Since last refresh (2026-08-17 23:54 UTC → 2026-08-18 02:45 UTC)
 
-- Merged: eq-shell [#1439](https://github.com/eq-solutions/eq-shell/pull/1439) fix(staff): only block a Cards-linked worker's save when dob
-- Merged: eq-shell [#1420](https://github.com/eq-solutions/eq-shell/pull/1420) fix(access-control): Ops label consistency + searchable diff
-- Merged: eq-shell [#1419](https://github.com/eq-solutions/eq-shell/pull/1419) feat(staff): show a PDF thumbnail preview instead of a plain
-- Merged: eq-shell [#1418](https://github.com/eq-solutions/eq-shell/pull/1418) fix(observability): close account-inactive blind spot on mag
-- Merged: eq-shell [#1414](https://github.com/eq-solutions/eq-shell/pull/1414) feat(notifications): fire the connect-request email for auto
-- Merged: eq-shell [#1412](https://github.com/eq-solutions/eq-shell/pull/1412) chore(roles): bump @eq-solutions/roles to v2.7.3
-- Merged: eq-shell [#1406](https://github.com/eq-solutions/eq-shell/pull/1406) fix(dashboard): remove Today's Actions from the Shell home p
-- Merged: eq-solves-service [#752](https://github.com/eq-solutions/eq-service/pull/752) fix(notifications): gate the calendar supervisor digest on a
+- Merged: eq-shell [#1423](https://github.com/eq-solutions/eq-shell/pull/1423) fix(licences): repair the Shell OCR page's save call, point 
+- Merged: eq-shell [#1422](https://github.com/eq-solutions/eq-shell/pull/1422) fix(ci): teach orphan-perms gate about eq-field's vendored f
+- Merged: eq-shell [#1421](https://github.com/eq-solutions/eq-shell/pull/1421) feat(staff): Excel-style multiselect filters on Type, Job Ti
+- Merged: eq-shell [#1417](https://github.com/eq-solutions/eq-shell/pull/1417) fix(observability): surface silent PIN-reset lockouts on ina
+- Merged: eq-shell [#1415](https://github.com/eq-solutions/eq-shell/pull/1415) chore(ci): extend control-plane drift-check to tables, backf
+- Merged: eq-shell [#1413](https://github.com/eq-solutions/eq-shell/pull/1413) fix(sync): close 3 name-propagation gaps found live-testing 
+- Merged: eq-shell [#1411](https://github.com/eq-solutions/eq-shell/pull/1411) fix(dashboard): retire ai-briefing.ts + briefing-action.ts
+- Merged: eq-shell [#1410](https://github.com/eq-solutions/eq-shell/pull/1410) fix(security): origin-guard user-preferences.ts
 
 ## ⚠ Needs you (4)
 
@@ -50,9 +50,9 @@ _…and 152 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 1 | 1d |
+| eq-shell | ✓ success | 0d ago | 2 | 1d |
 | eq-solves-service | ✓ success | 0d ago | 0 | — |
-| eq-field | ✓ success | 0d ago | 0 | — |
+| eq-field | ✓ success | 0d ago | 1 | 0d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
@@ -70,6 +70,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-18 | eq-solves-service | [#753](https://github.com/eq-solutions/eq-service/pull/753) feat(calendar): gate the supervisor digest on a permission key, n |
 | 2026-08-17 | eq-shell | [#1439](https://github.com/eq-solutions/eq-shell/pull/1439) fix(staff): only block a Cards-linked worker's save when dob actu |
 | 2026-08-17 | eq-shell | [#1438](https://github.com/eq-solutions/eq-shell/pull/1438) revert(staff): drop the compliance-pack caption, it read as an al |
 | 2026-08-17 | eq-shell | [#1437](https://github.com/eq-solutions/eq-shell/pull/1437) fix(field): drop worker_assignments' functions/type too, unblocki |
@@ -84,13 +85,12 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-17 | eq-shell | [#1427](https://github.com/eq-solutions/eq-shell/pull/1427) fix(staff): relabel PDF preview trigger to "Show preview" |
 | 2026-08-17 | eq-shell | [#1426](https://github.com/eq-solutions/eq-shell/pull/1426) fix(staff): stop dob_day/dob_month drifting from a Cards-linked w |
 | 2026-08-17 | eq-shell | [#1425](https://github.com/eq-solutions/eq-shell/pull/1425) feat(access-control): unify Field's role and person-only permissi |
-| 2026-08-17 | eq-shell | [#1424](https://github.com/eq-solutions/eq-shell/pull/1424) feat(staff): extend Excel-style multiselect filters to Name and S |
 _Showing 15 of 120 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
 - **eq-shell** (202 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
-- **eq-cards** (49 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
+- **eq-cards** (50 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (101 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (78 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
 - **eq-solves-intake** (18 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
@@ -121,18 +121,18 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1186 | 155 / 50 | 76 | 29 |
-| [eq-cards](eq/pending/eq-cards.md) | 336 | 37 / 12 | 22 | 3 |
+| [eq-shell](eq/pending/eq-shell.md) | 1204 | 155 / 50 | 82 | 33 |
+| [eq-cards](eq/pending/eq-cards.md) | 359 | 38 / 12 | 30 | 3 |
 | [eq-field](eq/pending/eq-field.md) | 661 | 86 / 19 | 14 | 11 |
-| [eq-solves-service](eq/pending/eq-solves-service.md) | 453 | 64 / 18 | 28 | 7 |
-| [eq-solves-intake](eq/pending/eq-solves-intake.md) | 147 | 13 / 5 | 5 | 11 |
+| [eq-solves-service](eq/pending/eq-solves-service.md) | 453 | 64 / 18 | 28 | 8 |
+| [eq-solves-intake](eq/pending/eq-solves-intake.md) | 147 | 13 / 5 | 5 | 14 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
 | [eq-ui](eq/pending/eq-ui.md) | 22 | 2 / 0 | 0 | 0 |
 | [eq-receipts](eq/pending/eq-receipts.md) | 44 | 3 / 1 | 0 | 0 |
 | [eq-context](eq/pending/eq-context.md) | 188 | 20 / 2 | 15 | 2 |
-| [cross-repo](eq/pending/cross-repo.md) | 932 | 141 / 42 | 14 | 18 |
+| [cross-repo](eq/pending/cross-repo.md) | 932 | 141 / 42 | 14 | 25 |
 | [sks](eq/pending/sks.md) | 53 | 3 / 5 | 0 | 6 |
-| [SKS](sks/pending.md) | 432 | 80 / 9 | 2 | 15 |
+| [SKS](sks/pending.md) | 432 | 80 / 9 | 2 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 / 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 463 | 33 / 4 | 3 | 1 |
 
@@ -140,6 +140,10 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 _Open items sitting under a section header this old or older — not necessarily wrong, just gone quiet under its own dated write-up. Worth a look before it reads as done-and-forgotten._
 
+- **eq-shell** (2026-07-03) · **Remove worktree `.claude/worktrees/ops-site-create-edit`** — now that #616 is merged, safe to `git -C C:\Projects\eq-shell worktree remove .claude/worktrees/ops-site-create-edit`. _(added 2026-07-03)_
+- **eq-shell** (2026-07-03) · **Commit eq-intake/CLAUDE.md** — left untracked (eq-intake tree dirty on `feat/armada-sprint-polish`); fold into whichever branch lands next. _(added 2026-07-03)_
+- **eq-shell** (2026-07-03) · **Coordinated `--reconcile-ledger`** — after go-live settles: renames/stamps the 16 bare 0103–0116/0141 rows, drops `057` + go-live hand rows. Run only WITH eq-intake (their numbering reads the live ledger). _(added 2026-07-03)_
+- **eq-shell** (2026-07-03) · **Tenant-migrate run 28638433643 was dispatched then CANCELLED** — dispatched from the #608 branch on the stale premise that a live apply was needed to green the gate; the newer session-state showed #608 is code-only, and applying unmerged branch migrations risks checksum/ledger mess. Nothing was applied (cancelled at the production-approval gate, never approved). Post-merge apply of 0155/0156 from main is the normal One Pipe dispatch — separate explicit call. _(added 2026-07-03, needs your call)_
 - **eq-shell** (2026-07-02) · **Confirm the activity panel actually renders an event** — needs Royce to make one real change on `/admin/access-control` and check the panel. Can't be faked or tested without a real user action (see the zero-exceptions rule above). _(needs your call)_
 - **eq-shell** (2026-07-02) · **Live-verify `cards-export-licences`, `comms-jobs`, `admin-audit` return 403 on a disallowed Origin** — 3 of 6 endpoints confirmed by curl/real-traffic already; these 3 hit a sandbox DNS failure mid-check. Same code as the confirmed 3, not suspected broken, just not directly proven. _(low priority, needs a retry)_
 - **eq-shell** (2026-07-02) · **Fix `AdminWorkerQR` QR-colour crash** — Sentry `Error: Invalid hex color: var(--eq-ink)` (eq-shell, 4 events 2026-07-02) is the `qrcode` lib being passed `color.dark: 'var(--eq-ink)'` (a CSS var, not hex) in `AdminWorkerQR.tsx`. More frequent now #594 made that page the primary "Add workers" landing. Fix = pass a real hex (e.g. `#1A1A2E`). _(added 2026-07-02)_
@@ -151,11 +155,7 @@ _Open items sitting under a section header this old or older — not necessarily
 - **eq-shell** (2026-07-01) · **Verify cert import live** — once deploy goes green, import multiple certs at core.eq.solutions (hard-refresh for new panel JS); parser now writes a real failure reason to job status if a download fails _(added 2026-07-01)_
 - **eq-shell** (2026-06-30) · **EQ Ops active jobs view** — roster tab pulling from `app_data.jobs` (customer, site, job no, days active, value); not built _(added 2026-06-30)_
 - **eq-shell** (2026-06-30) · **EQ Ops home tile** — Shell home tile with overdue follow-ups, stale quotes, active jobs; not built _(added 2026-06-30)_
-- **eq-shell** (2026-06-30) · **Field crew on job** — workers in Field see their assigned job; requires eq-field repo changes _(added 2026-06-30)_
-- **eq-shell** (2026-06-30) · **`issues.*` PermKeys activation** — Phase 3 when Issues UI ships for EQ plane; currently deferred constants _(added 2026-06-30)_
-- **eq-shell** (2026-06-30) · **3 docs-spike branches KEPT — Royce's call to delete** — `claude/design-system-tokens` (41d; early @eq/tokens design spec + design-audit-2026-05-20.md), `claude/epic-ellis-987f75` (23d; single SCHEMA-GOVERNANCE.md note), `claude/vigilant-cray-4e074e` (36d; HANDOFF-*.md session notes). These hold **unique unmerged docs not in main** — superseded, but deleting unmerged work needs your sign-off. Likely all 3 safe to `git branch -D` _(added 2026-06-30)_
-- **eq-shell** (2026-06-30) · **nspbmir anon-PII audit** — NOT done (per Royce "don't touch nspbmir"); eq-guard blocks SKS-live from EQ sessions anyway → needs a dedicated SKS-context session _(added 2026-06-30)_
-_…and 89 more — see each file's Queue health row above._
+_…and 105 more — see each file's Queue health row above._
 
 ## Possible duplicate pending items (unconfirmed)
 
@@ -192,4 +192,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-17 23:54 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-18 02:45 UTC._
