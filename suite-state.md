@@ -60,8 +60,10 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-18)
 
+**eq-field:**
+- #718 v3.5.515 — security: scope apprentice writes to own person
+
 **eq-shell:**
-- #1441 chore(roles): bump @eq-solutions/roles to v2.7.4
 - #1416 chore(intake): auto re-vendor eq-intake/eq-platform
 
 ---
