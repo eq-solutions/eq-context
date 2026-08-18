@@ -13,6 +13,22 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: "horrendous" screen-to-screen loading — root cause was full page reloads on every sidebar click, fixed, merged, live (2026-08-18)
+*Royce: "the loading between shell screens for staff and other tables is horrendous, can we do a review of how to speed this up." Investigated rather than guessed — found the query-cache gap first, shipped it, then kept digging per Royce's "keep building" and found the much bigger cause underneath.*
+
+- [x] **Table/list screens (`EntityBrowserPage` — sites, assets, teams, etc.) now cache for 30s** instead of refetching on every navigation, matching the pattern already used by Suppliers/CustomersHubPage/StaffPage. eq-shell [PR #1449](https://github.com/eq-solutions/eq-shell/pull/1449), merged, live.
+- [x] **Root cause found**: the primary desktop sidebar (`@eq-solutions/ui`'s `AppSidebar` — Records/Apps/Admin/Account nav) renders every nav item as a plain `<a href>`, not a router link. Every sidebar click was therefore a full browser page reload — the whole app (JS bundle, query cache, session state) torn down and rebuilt from scratch on every single screen change. This is the actual dominant cause of the slow feel, not the query-cache gap above.
+- [x] **Fixed without touching the vendored nav package** (which would need a separate release in `eq-ui`): added a click listener that catches same-origin nav clicks app-wide and routes them through the app's own client-side navigation instead of a full reload — same effect a proper nav link already gets, applied everywhere. eq-shell [PR #1450](https://github.com/eq-solutions/eq-shell/pull/1450), merged, live.
+- [x] **Two more screens (Staff → Resourcing, Staff → Org chart) had the same 30s-cache gap** as the table screens above — same fix applied. eq-shell [PR #1451](https://github.com/eq-solutions/eq-shell/pull/1451), merged, live.
+- [x] **Admin/Reports/Suppliers and other rarely-visited pages now start loading their code the moment you hover or tab to the link**, before you click — so the loading flash on first visit should mostly disappear. Same PR #1451.
+- [x] **Checked and ruled out**: a "the server itself is slow to respond" theory — measured live production timings (6-44ms per request), not slow at all. Also confirmed the iframe apps (Field/Service/Cards) re-authenticating on every open is deliberate security design, not a bug — left untouched.
+- [x] **A real branch/mainline conflict was found and resolved mid-session** — unrelated to this fix, caused by how GitHub's "squash and merge" interacts with a branch staying open across several merges while other sessions merge other work in parallel. Confirmed the resolution kept 100% of the other changes intact before pushing.
+
+**Deferred:**
+- [ ] **Not click-tested live by a person** — verified via typecheck, lint, the full test suite, and confirmed production deploys (exact commit match against what's actually serving), not an actual signed-in click-through. Worth two minutes next time Royce is in Shell: click through Staff → Customers → Field → Admin from the sidebar (should feel instant, no white-flash reload), and confirm ctrl/cmd-click still opens a link in a new tab. _(added 2026-08-18)_
+
+---
+
 ## eq-shell: Cards self-join duplicate-record bug found, fixed, and shipped; suite-wide scan confirms it's isolated (2026-08-18)
 
 **Deferred:**
