@@ -16,6 +16,19 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-shell: self-join role never reached `public.workers.role` — found, fixed across all 3 claim paths, shipped (2026-08-18) (fully closed, no open items remain)
+*Found while investigating (from eq-field) why a real SKS apprentice who self-signed up via the invite link showed as employment type "Direct" in Field. Root-caused in that eq-field session, then fixed in its own follow-on eq-shell session same day — broader than the original finding: two more claim paths shared the identical gap.*
+
+- [x] **Root cause**: `supabase/functions/workers-canonical-sync/index.ts` maps `jvkn.public.workers.role` → `ehow.app_data.staff.employment_type` via a lookup table that correctly includes `apprentice: "Apprentice"` / `labour_hire: "Labour Hire"`. `public.workers.role` was never written by any of the three places a worker's role is actually resolved — each wrote the role correctly to `shell_control.users` / `user_tenant_memberships` / `org_memberships.eq_role` and dropped it before it reached `public.workers`.
+- [x] **All three claim paths fixed, fill-if-missing** (never overwrites a role an admin already set via the Staff editor):
+  - `netlify/functions/shell-join-tenant.ts` — Cards phone-OTP self-join + admin-invite claim.
+  - `netlify/functions/accept-invite.ts` — desktop email+PIN admin-invite claim (found during the fix, not in the original report).
+  - `eq_cards_claim_invite` RPC (jvkn control plane, SECURITY DEFINER, Cards-native Flutter claim) — also found during the fix; migration `2026_08_18_cards_claim_invite_worker_role_fill.sql` hand-applied live via Supabase MCP on Royce's explicit go, grants and both fixed `UPDATE` blocks re-verified present post-apply.
+- [x] **Live impact scoped before fixing**: of 7 SKS workers with a null/mismatched `public.workers.role`, only Vinicius Zara Poli was actually still showing the wrong `employment_type` today — `workers-canonical-sync`'s own fill-if-missing logic had already protected the other 5 after a later correct touch. Jordan A. Sample (the record that surfaced this) was already hand-corrected by Royce. Vinicius backfilled directly on ehow: `Direct` → `Labour Hire`.
+- [x] eq-shell [PR #1448](https://github.com/eq-solutions/eq-shell/pull/1448), merged (`c354dd6b`), confirmed live via exact Netlify `commit_ref` match against the production deploy. Full session detail: `sessions/2026-08-18.md` ("eq-shell self-join `employment_type` bug fixed across all 3 claim paths").
+
+---
+
 ## eq-solves-intake: "Bring Data In" one-screen redesign shipped; join-template pills dropped via /decide (2026-08-17) (fully closed, no open items remain)
 *Consolidated the old five-tab Intake demo (Health/Queue/Import/Reconcile/Ask split across separate screens) into one "Bring Data In" flow: destination-picker pill row, one unified export/commit result view, slot override + freeform/reconcile folded into the drop-zone screen. Then ran `/decide` (invoked with no args) on the destination picker; Royce delegated the call ("what would world leaders do"), so it was decided and executed directly in the same session: dropped join-template (Xero/MYOB/SimPRO) pills from the picker for v1, restoring the original build spec's recommendation over an earlier, more cautious call in this same session to keep them.*
 

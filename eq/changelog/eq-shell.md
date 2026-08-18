@@ -9,6 +9,12 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-18 (PR #1448 MERGED + jvkn migration applied — self-join role now reaches `public.workers.role`)
+- Root cause (from an eq-field session): three separate claim paths — `shell-join-tenant.ts` (Cards phone-OTP self-join + admin-invite), `accept-invite.ts` (desktop email+PIN admin-invite), and the `eq_cards_claim_invite` RPC (Cards-native Flutter claim) — all correctly wrote a joiner's role to `shell_control.users`/`user_tenant_memberships`/`org_memberships.eq_role`, but never to `public.workers.role`, the column `workers-canonical-sync` reads to set `ehow.app_data.staff.employment_type`. Every self-joined apprentice/labour-hire worker silently landed as "Direct".
+- Fixed all three, fill-if-missing so an admin-set role via the Staff editor is never overwritten. `shell-join-tenant.ts`/`accept-invite.ts` merged in PR #1448 (`c354dd6b`); `eq_cards_claim_invite` fixed via migration `2026_08_18_cards_claim_invite_worker_role_fill.sql`, hand-applied live to jvkn via Supabase MCP on Royce's explicit go.
+- Scoped live impact before fixing: of 7 affected SKS workers, only Vinicius Zara Poli was still actually wrong (`workers-canonical-sync`'s fill-if-missing logic protected the other 5 after a later correct sync). Backfilled directly on ehow: `Direct` → `Labour Hire`.
+- Confirmed live via exact Netlify `commit_ref` match; jvkn function body + grants re-verified post-apply.
+
 ## 2026-08-18 (PR #1447 MERGED — QR/join-code Cards signups now notify admins)
 - `shell-join-tenant.ts` provisioned every QR/join-code worker fully but only ever wrote an audit-log row — no email, no in-app signal. Now inserts into `public.org_access_requests` on every already-active join, reusing Cards' own in-app "connect to employer" notify pipe unchanged (pg_net trigger → `notify-connection-request` Edge Function → Resend, recipients narrowed by `org_join_notify_recipients`).
 - Free side-benefit: also surfaces these joins in the existing orange "needs review" Staff-nav badge (`staff-pending-connections.ts`), since it reads the same table.
