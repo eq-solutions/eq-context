@@ -61,7 +61,6 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-18)
 
 **eq-shell:**
-- #1448 fix(cards): write public.workers.role on every claim path
 - #1416 chore(intake): auto re-vendor eq-intake/eq-platform
 
 ---
