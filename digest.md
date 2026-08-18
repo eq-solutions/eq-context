@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-18 08:07 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-18 08:25 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-18 08:01 UTC → 2026-08-18 08:07 UTC)
+## Since last refresh (2026-08-18 08:07 UTC → 2026-08-18 08:25 UTC)
 
-- Merged: eq-shell [#1443](https://github.com/eq-solutions/eq-shell/pull/1443) fix(field): add 7 missing columns to zaap's staff table, unb
-- Merged: eq-shell [#1435](https://github.com/eq-solutions/eq-shell/pull/1435) fix(field): drop zaap's dead legacy tables, fix field_people
-- Merged: eq-shell [#1434](https://github.com/eq-solutions/eq-shell/pull/1434) fix(staff): stop the compliance-pack poll from blanking the 
-- Merged: eq-shell [#1433](https://github.com/eq-solutions/eq-shell/pull/1433) fix(auth): raise the blocking-spinner watchdog to clear the 
-- Merged: eq-shell [#1431](https://github.com/eq-solutions/eq-shell/pull/1431) fix(ci): backfill eq_reconcile_licence_sync + eq_audit_licen
-- Merged: eq-shell [#1426](https://github.com/eq-solutions/eq-shell/pull/1426) fix(staff): stop dob_day/dob_month drifting from a Cards-lin
-- Merged: eq-shell [#1424](https://github.com/eq-solutions/eq-shell/pull/1424) feat(staff): extend Excel-style multiselect filters to Name 
-- Merged: eq-shell [#1420](https://github.com/eq-solutions/eq-shell/pull/1420) fix(access-control): Ops label consistency + searchable diff
+- Merged: eq-shell [#1444](https://github.com/eq-solutions/eq-shell/pull/1444) fix(field): DROP+CREATE field_people view, CREATE OR REPLACE
+- Merged: eq-shell [#1436](https://github.com/eq-solutions/eq-shell/pull/1436) fix(field): drop zaap's worker_credentials/inductions/assign
+- Merged: eq-shell [#1432](https://github.com/eq-solutions/eq-shell/pull/1432) feat(access-control): expose Access Control group membership
+- Merged: eq-shell [#1428](https://github.com/eq-solutions/eq-shell/pull/1428) chore(intake): auto re-vendor eq-intake/eq-platform
+- Merged: eq-shell [#1427](https://github.com/eq-solutions/eq-shell/pull/1427) fix(staff): relabel PDF preview trigger to "Show preview"
+- Merged: eq-shell [#1425](https://github.com/eq-solutions/eq-shell/pull/1425) feat(access-control): unify Field's role and person-only per
+- Merged: eq-shell [#1423](https://github.com/eq-solutions/eq-shell/pull/1423) fix(licences): repair the Shell OCR page's save call, point 
+- Merged: eq-shell [#1422](https://github.com/eq-solutions/eq-shell/pull/1422) fix(ci): teach orphan-perms gate about eq-field's vendored f
 
 ## ⚠ Needs you (4)
 
@@ -72,6 +72,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-18 | eq-shell | [#1444](https://github.com/eq-solutions/eq-shell/pull/1444) fix(field): DROP+CREATE field_people view, CREATE OR REPLACE can' |
 | 2026-08-18 | eq-shell | [#1443](https://github.com/eq-solutions/eq-shell/pull/1443) fix(field): add 7 missing columns to zaap's staff table, unblock  |
 | 2026-08-18 | eq-shell | [#1442](https://github.com/eq-solutions/eq-shell/pull/1442) fix(shell-join-tenant): match unlinked worker by email when phone |
 | 2026-08-18 | eq-shell | [#1441](https://github.com/eq-solutions/eq-shell/pull/1441) chore(roles): bump @eq-solutions/roles to v2.7.4 |
@@ -86,7 +87,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-17 | eq-shell | [#1439](https://github.com/eq-solutions/eq-shell/pull/1439) fix(staff): only block a Cards-linked worker's save when dob actu |
 | 2026-08-17 | eq-shell | [#1438](https://github.com/eq-solutions/eq-shell/pull/1438) revert(staff): drop the compliance-pack caption, it read as an al |
 | 2026-08-17 | eq-shell | [#1437](https://github.com/eq-solutions/eq-shell/pull/1437) fix(field): drop worker_assignments' functions/type too, unblocki |
-| 2026-08-17 | eq-shell | [#1429](https://github.com/eq-solutions/eq-shell/pull/1429) feat(access-control): ring visual for the permission matrix, real |
 _Showing 15 of 120 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -94,7 +94,7 @@ _Showing 15 of 120 · full record in [sessions/](sessions/)_
 - **eq-shell** (207 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (50 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (105 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
-- **eq-solves-service** (77 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
+- **eq-solves-service** (78 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
 - **eq-solves-intake** (18 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
 - **eq-ui** (2 open) · [eq/pending/eq-ui.md](eq/pending/eq-ui.md)
@@ -126,13 +126,13 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | [eq-shell](eq/pending/eq-shell.md) | 1252 | 159 / 51 | 95 | 33 |
 | [eq-cards](eq/pending/eq-cards.md) | 359 | 38 / 12 | 30 | 3 |
 | [eq-field](eq/pending/eq-field.md) | 676 | 88 / 20 | 18 | 11 |
-| [eq-solves-service](eq/pending/eq-solves-service.md) | 446 | 62 / 18 | 25 | 8 |
+| [eq-solves-service](eq/pending/eq-solves-service.md) | 448 | 63 / 18 | 25 | 8 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 147 | 13 / 5 | 5 | 14 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
 | [eq-ui](eq/pending/eq-ui.md) | 22 | 2 / 0 | 0 | 0 |
 | [eq-receipts](eq/pending/eq-receipts.md) | 44 | 3 / 1 | 0 | 0 |
 | [eq-context](eq/pending/eq-context.md) | 206 | 22 / 2 | 19 | 2 |
-| [cross-repo](eq/pending/cross-repo.md) | 945 | 143 / 42 | 17 | 25 |
+| [cross-repo](eq/pending/cross-repo.md) | 948 | 143 / 42 | 20 | 25 |
 | [sks](eq/pending/sks.md) | 53 | 3 / 5 | 0 | 6 |
 | [SKS](sks/pending.md) | 432 | 80 / 9 | 2 | 16 |
 | [SKS active](sks/active.md) | 109 | 0 / 0 | 0 | 0 |
@@ -194,4 +194,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-18 08:07 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-18 08:25 UTC._
