@@ -79,7 +79,7 @@ _No open PRs_
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 220 (latest: 0213) applied
+**Migrations:** eq-service has 221 (latest: 0214) applied
 
 ---
 
