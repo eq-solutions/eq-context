@@ -65,7 +65,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-field:**
 - #729 v3.5.525 — Screenshot review pass: Job Numbers nav, Digest access + mobile
-- #728 security(rls): manager/supervisor-only write on 6 site-report tables (draft, not dispatched)
 
 ---
 
