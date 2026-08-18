@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-08-18
+last_updated: 2026-08-19
 scope: Done items rotated out of eq/pending.md nightly by scripts/rotate_pending.py (per-item since 2026-07-27; before that, occasional manual whole-section moves). Nothing here is actionable — pure historical record (also covered in eq/changelog/*.md and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -4626,5 +4626,16 @@ contain the same values and were pushed before push-protection caught up.
 
 ## eq-cards/eq-shell: onboarding minimum-requirements switch, bulk connect-worker, and a live anon-EXECUTE fix (2026-07-26) (rotated 2026-08-18 — open items remain in cross-repo.md)
 
+
+---
+
+## eq-solves-service: maintenance_checks is_active/deleted_at sync gap (2026-08-10) (fully closed, no open items remain — rotated 2026-08-18)
+*Surfaced while chasing down a "68-day overdue" check flagged in `TODAY.md`'s FACTS refresh — that check turned out to be soft-deleted, which led to finding and fixing 3 unfiltered by-ID read/write paths ([eq-service PR #693](https://github.com/eq-solutions/eq-service/pull/693), merged). This was the one real gap found but not fixed that session.*
+
+- [x] **RESOLVED — fixed in [PR #720](https://github.com/eq-solutions/eq-service/pull/720) (2026-08-13), confirmed live 2026-08-18.** `archiveTestingCheckAction` now stamps `deleted_at: new Date().toISOString()` explicitly alongside `is_active: false` (fix option (a) from this item, below). Live data check on 2026-08-18 confirms zero rows with the stale `is_active=false, deleted_at=null` combination — the 2 rows flagged on 2026-08-10 are no longer in that state. This item sat open in `eq/pending/eq-solves-service.md` for 5 days after the fix actually shipped — the pending note was simply never rotated out.
+- **Original finding, 2026-08-10:** `archiveTestingCheckAction` (`app/(app)/testing/check-actions.ts`) soft-deleted via `is_active: false` only — never stamped `deleted_at`. The auto-stamping `set_deleted_at` trigger (migration `0035`) was only ever created on `public.maintenance_checks`; production reads/writes `app_data.maintenance_checks`, which had no such trigger. `service.maintenance_checks`'s `INSTEAD OF UPDATE` trigger (migration `0147`) just echoed back whatever `deleted_at` already was — it didn't stamp `now()` either.
+- **Verified live impact, 2026-08-10: was benign at the time.** Of 35 total rows, 2 had `is_active=false` with `deleted_at` still null (the sync gap was real, not theoretical) — but 0 rows had `is_active=true` with `deleted_at` set, so nothing was leaking through the app's `is_active`-based filters. Latent, not active.
+- **Why it was worth fixing:** the Archive page's grace-period/auto-purge countdown (migrations `0035`, `0193`) reads `deleted_at`. For those 2 rows, that countdown either never started or was silently wrong.
+- **Fix options at the time:** (a) have `archiveTestingCheckAction` stamp `deleted_at` explicitly — smaller, safer, one call site (this is what shipped); (b) create the missing `set_deleted_at` trigger on `app_data.maintenance_checks` to match `public.maintenance_checks` — more durable, catches every future archive path, not just this one action. Option (b) was not built — not needed once (a) shipped.
 
 ---

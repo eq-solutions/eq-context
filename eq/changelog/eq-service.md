@@ -1,13 +1,32 @@
 ---
 title: EQ Service — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-18
+last_updated: 2026-08-19
 scope: EQ Service append-only history. Canonical (repo-slug convention, matching eq-shell.md/eq-cards.md/eq-field.md/etc.) — this file absorbed eq-solves-service.md 2026-08-17, merging both same-day product histories by date (no entries dropped, both files' own internal ordering was already imperfectly chronological so blocks are sorted strictly by date; same-date ties keep this file's prior entries first, then eq-solves-service.md's). The two files had been left deliberately unreconciled since 2026-08-11/15 pending Royce's own call on how to interleave them (see sessions/2026-08-11.md) — this merge is that call, made 2026-08-17. eq-solves-service.md is now a stub pointing here; don't split the log again.
 read_priority: reference
 status: live
 ---
 
 # EQ Service — Changelog
+
+## 2026-08-18 (PR #760 MERGED — ACB/NSX/RCD in-progress readings now autosave to the browser)
+- `lib/hooks/useDraftAutosave.ts` + `components/ui/DraftRestoredBanner.tsx` — debounced localStorage autosave for in-progress check forms, restored (with a Discard option) on reopen if the tab reloaded or closed before Save. Closes a real data-loss gap: unsaved readings previously lived only in on-screen React state.
+- Wired into all 3 ACB steps, NSX steps 2-3 (step 1 is a one-shot uncontrolled form, skipped), and RCD's header+circuits (autosave only while actively editing).
+- Picked as the highest-value unblocked engineering gap via a /decide pass against the live backlog — ahead of business-decision items (signature capture, scheduled notifications) and cosmetic/hygiene backlog.
+
+## 2026-08-18 (PR #759 MERGED — P0 hotfix, self-caused-and-fixed same session)
+- Migration 0214 (below) added `pm_schedule_id` to `app_data.maintenance_checks` via `ALTER TABLE` but never recreated `service.maintenance_checks` — a `SELECT *` view's column list is fixed at `CREATE VIEW` time, so the new column never became visible through the view. Broke every new maintenance-check creation in production (`createCheckAction` always includes the column in its insert payload) for ~30 minutes until caught by this session's own canonical-object trigger audit.
+- Fix: `CREATE OR REPLACE VIEW service.maintenance_checks` (migration 0215) recompiles the column list. Verified live via a rolled-back transaction before shipping.
+- **Durable lesson:** any migration that `ALTER TABLE ADD COLUMN`s a canonical table's underlying table must also `CREATE OR REPLACE VIEW` the `service.*` view on top of it in the same migration, or the new column is invisible through the view.
+
+## 2026-08-18 (PR #758 MERGED — click-to-create calendar, working Reconnect on session timeout, faster post-deploy warm-up)
+- Month-grid day cells are now clickable (Outlook-style) — opens Add Entry pre-filled to that date.
+- `useShellReconnect` extracted from `ShellSessionRecovery`'s token-refresh handshake into a reusable hook; new `SessionExpiredBanner` gives every `callAction` session-expired error a working Reconnect button instead of a dead-end message. Wired into all 5 pm-calendar error surfaces.
+- `netlify/plugins/warm-on-deploy` — an `onSuccess` local Netlify build plugin pings `/api/health` the moment a deploy goes live, instead of waiting up to 5 min for the next `keep-warm` cron tick. First push broke the deploy pipeline (missing `manifest.yml` for the local plugin) — caught and fixed via `netlify build --dry` before re-pushing.
+
+## 2026-08-18 (PR #757 MERGED — calendar wired into maintenance-check create/complete)
+- New checks auto-link to an unambiguous open calendar entry at the same site within a 14-day window (migration 0214); completing a linked check marks the calendar entry done.
+- Re-measured cold-start post-#571 (2.14s → 0.67s → 0.42s, clearly faster than the documented baseline); verified and closed GitHub issues #527/#528 (both already resolved live, tickets just never rotated).
 
 ## 2026-08-18 (PR #756 MERGED — ACB/NSX check saves made atomic, data-loss fix)
 - Root cause of a live report ("wouldn't save / then deleted all the info" at site CA1): `saveAcbVisualCheckAction`/`saveAcbElectricalReadingAction` and their NSX mirrors deleted existing readings then inserted new ones as two separate server calls. A dropped connection between the two left readings wiped with nothing to replace them.

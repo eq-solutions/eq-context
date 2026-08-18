@@ -1,7 +1,7 @@
 ---
 title: EQ Service — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-18
+last_updated: 2026-08-19
 scope: EQ Service engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -10,6 +10,32 @@ status: live
 # EQ Service — Pending
 
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-solves-service: calendar wired into maintenance checks — caused and fixed a same-session P0 regression along the way (2026-08-18)
+*Asked to speed up Service and make the maintenance calendar canonical (it already had gone canonical the day before, 2026-08-17 entry below) — the real gap was that nothing else in the app actually read or wrote it. Wired it into the maintenance-check workflow, then found and fixed a bug of my own making before it caused real damage.*
+
+- [x] New checks now auto-link to an open calendar entry at the same site within a 14-day window, but only when the match is unambiguous (0 or 2+ candidates → left unlinked, never guesses). Completing a linked check now closes the loop by marking the calendar entry done too. Migration 0214.
+- [x] **Caused and fixed a P0 regression same session.** Migration 0214 added the new link column to the underlying table but never refreshed the view built on top of it — Postgres doesn't do that automatically. Result: every single new maintenance-check creation started failing in production, not just the calendar feature, for about 30 minutes until caught by a follow-up safety sweep and fixed (migration 0215). Verified fixed against the live database before and after.
+- [x] Re-measured how long Service takes to load now that earlier speed fixes have landed — confirmed faster than before, nothing more needed there for now.
+- [x] Closed out two old "needs fixing" tickets (#527, #528) after checking the live database directly and finding they'd already been fixed by other work along the way — the tickets just never got marked done.
+- eq-service PRs [#757](https://github.com/eq-solutions/eq-service/pull/757) and [#759](https://github.com/eq-solutions/eq-service/pull/759) (the hotfix), both merged and confirmed live.
+
+---
+
+## eq-solves-service: click-to-create on the calendar, a working "reconnect" button on session timeouts, faster warm-up after a deploy, and a safety net for lost in-progress readings (2026-08-18)
+*Follow-on the same day: asked "can we click a date to create an entry, like Outlook" — yes, built it. While testing, hit two other real annoyances (a session-timeout message with nothing to click, and the calendar loading slowly right after a deploy) and fixed both. Then asked for "the best sprint possible" — picked the most real, most buildable items off the backlog rather than a wishlist.*
+
+- [x] Click an empty day on the calendar to add an entry pre-filled to that date, the same way Outlook works.
+- [x] The "your session has expired" message now has a working Reconnect button instead of just telling you to sign in again with nothing to click.
+- [x] After a deploy goes live, the app now pings itself immediately instead of waiting up to 5 minutes for the next scheduled warm-up — closes the exact "just deployed, first person in gets it slow" window hit live this session. (First attempt at this broke the whole deploy pipeline for ~2 minutes — a missing config file for the warm-up script — caught immediately via a local dry-run check and fixed before it affected anything real.)
+- [x] **In-progress ACB/NSX/RCD test readings now autosave to the browser as you go**, and restore with a one-click Discard if you reload the page or the tab closes before you hit Save — closes a real data-loss gap a technician could have hit on-site (same class of problem as the 2026-08-18 dropped-connection fix, just for the not-yet-saved case).
+- [x] Investigated two older backlog items and found neither needed building: the "soft-delete doesn't record when" gap was already fixed 5 days ago by someone else and the ticket just never got closed; the "assets list ignores archived status" ticket turned out to be describing something that would have broken the working "Show Archived" toggle — the ticket itself was stale, not the code.
+- eq-service PRs [#758](https://github.com/eq-solutions/eq-service/pull/758) and [#760](https://github.com/eq-solutions/eq-service/pull/760), both merged and confirmed live.
+
+**Deferred:**
+- [ ] **Not click-tested live by a real signed-in user.** This session's sandbox has no working login for service.eq.solutions — verified via type-checking and a full production build only. Worth two minutes clicking a calendar day, triggering a session timeout, and filling in part of an ACB/NSX/RCD check then reloading to confirm the draft comes back. _(added 2026-08-18)_
 
 ---
 
@@ -148,16 +174,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ## eq-service: app_data CI fixture — manifest fixed + merged (#737), DDL bootstrap snapshot still blocked (2026-08-16)
 
 - [ ] **DDL bootstrap snapshot (`0000_app_data_tenant_plane_fixture.sql`) still stale — needs `supabase db dump --linked` from a machine with working IPv4/DB connectivity.** The JSON shape-manifest half is fixed and live (regenerated straight from ehow via the Management API, merged in [eq-service#737](https://github.com/eq-solutions/eq-service/pull/737)) — enough to make the new weekly drift-check pass. The SQL DDL fixture itself wasn't refreshed: this environment's `supabase db dump --linked` fails on an IPv6-only network with no cached DB password — a different, more specific blocker than the earlier Docker one (not hit this session; the manifest route queries live ehow directly and bypasses Docker/local `supabase start` entirely). Possibly the root cause of the pre-existing `Integration tests (Supabase local)` CI failure (`schema "app_data" does not exist` at migration 0061) — not confirmed. _(added 2026-08-16)_
-
----
-
-## eq-solves-service: maintenance_checks is_active/deleted_at sync gap (2026-08-10)
-*Surfaced while chasing down a "68-day overdue" check flagged in `TODAY.md`'s FACTS refresh — that check turned out to be soft-deleted, which led to finding and fixing 3 unfiltered by-ID read/write paths ([eq-service PR #693](https://github.com/eq-solutions/eq-service/pull/693), merged). This is the one real gap found but not fixed that session.*
-
-- [ ] **`archiveTestingCheckAction` (`app/(app)/testing/check-actions.ts`) soft-deletes via `is_active: false` only — never stamps `deleted_at`.** The auto-stamping `set_deleted_at` trigger (migration `0035`) was only ever created on `public.maintenance_checks`; production reads/writes `app_data.maintenance_checks`, which has no such trigger. `service.maintenance_checks`'s `INSTEAD OF UPDATE` trigger (migration `0147`) just echoes back whatever `deleted_at` already was — it doesn't stamp `now()` either.
-- **Verified live impact, 2026-08-10: currently benign.** Of 35 total rows, 2 have `is_active=false` with `deleted_at` still null (the sync gap is real, not theoretical) — but 0 rows have `is_active=true` with `deleted_at` set, so nothing is leaking through the app's `is_active`-based filters today. Latent, not active.
-- **Why it's still worth fixing:** the Archive page's grace-period/auto-purge countdown (migrations `0035`, `0193`) reads `deleted_at`. For those 2 rows, that countdown either never started or is silently wrong.
-- **Fix options, neither built:** (a) have `archiveTestingCheckAction` stamp `deleted_at: new Date().toISOString()` explicitly alongside `is_active: false` — smaller, safer, one call site; (b) create the missing `set_deleted_at` trigger on `app_data.maintenance_checks` to match `public.maintenance_checks` — more durable, catches every future archive path, not just this one action.
 
 ---
 
@@ -426,7 +442,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 - `service.assets` view does NOT filter on `active = true` — it only filters by `service_enabled` site. Soft-delete is invisible to the view. Hard-delete was the right call for the reset.
 
 **Deferred:**
-- [ ] Add `WHERE a.active = true` to `service.assets` view so soft-delete works correctly _(added 2026-06-29)_
+- [x] **CONFIRMED STALE, do not build — checked live 2026-08-18.** `/assets` now has a working "Show Archived" toggle (`app/(app)/assets/page.tsx`) that depends on `service.assets` including inactive rows so it can filter them in/out on request. Adding `WHERE a.active = true` to the view itself — as this note originally proposed — would silently break that live feature by making archived assets permanently invisible even with the toggle on. This note predates the toggle; the toggle is correct, the note was not.
 - [ ] SKS contract scope reimport — Royce to run via `/sks/service/commercials/contract-scopes/import` _(added 2026-06-29)_
 ---
 
