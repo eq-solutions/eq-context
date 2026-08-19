@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-19 08:37 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-19 08:44 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-19 08:14 UTC → 2026-08-19 08:37 UTC)
+## Since last refresh (2026-08-19 08:37 UTC → 2026-08-19 08:44 UTC)
 
-- Merged: eq-shell [#1459](https://github.com/eq-solutions/eq-shell/pull/1459) feat(drift): add stacked-permissive-policy check (CHECK 9)
-- Merged: eq-shell [#1447](https://github.com/eq-solutions/eq-shell/pull/1447) feat(cards): notify org admins on QR/join-code signups
-- Merged: eq-shell [#1446](https://github.com/eq-solutions/eq-shell/pull/1446) fix(entity-patch): mirror staff email/phone corrections to c
-- Merged: eq-shell [#1445](https://github.com/eq-solutions/eq-shell/pull/1445) chore(intake): auto re-vendor eq-intake/eq-platform
-- Merged: eq-shell [#1443](https://github.com/eq-solutions/eq-shell/pull/1443) fix(field): add 7 missing columns to zaap's staff table, unb
-- Merged: eq-shell [#1441](https://github.com/eq-solutions/eq-shell/pull/1441) chore(roles): bump @eq-solutions/roles to v2.7.4
-- Merged: eq-shell [#1440](https://github.com/eq-solutions/eq-shell/pull/1440) feat(access-control): list-members exposes effective permiss
-- Merged: eq-shell [#1438](https://github.com/eq-solutions/eq-shell/pull/1438) revert(staff): drop the compliance-pack caption, it read as 
+- Merged: eq-shell [#1449](https://github.com/eq-solutions/eq-shell/pull/1449) perf(entity-browser): cache table-row queries for 30s
+- Merged: eq-shell [#1444](https://github.com/eq-solutions/eq-shell/pull/1444) fix(field): DROP+CREATE field_people view, CREATE OR REPLACE
+- Merged: eq-shell [#1442](https://github.com/eq-solutions/eq-shell/pull/1442) fix(shell-join-tenant): match unlinked worker by email when 
+- Merged: eq-shell [#1439](https://github.com/eq-solutions/eq-shell/pull/1439) fix(staff): only block a Cards-linked worker's save when dob
+- Merged: eq-shell [#1437](https://github.com/eq-solutions/eq-shell/pull/1437) fix(field): drop worker_assignments' functions/type too, unb
+- Merged: eq-shell [#1436](https://github.com/eq-solutions/eq-shell/pull/1436) fix(field): drop zaap's worker_credentials/inductions/assign
+- Merged: eq-shell [#1435](https://github.com/eq-solutions/eq-shell/pull/1435) fix(field): drop zaap's dead legacy tables, fix field_people
+- Merged: eq-shell [#1434](https://github.com/eq-solutions/eq-shell/pull/1434) fix(staff): stop the compliance-pack poll from blanking the 
 
 ## ⚠ Needs you (5)
 
@@ -51,10 +51,10 @@ _…and 164 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 0 | — |
-| eq-solves-service | ✓ success | 0d ago | 0 | — |
+| eq-shell | ✓ success | 20d ago | 0 | — |
+| eq-solves-service | ✓ success | 0d ago | 1 | 0d |
 | eq-field | ✓ success | 0d ago | 0 | — |
-| eq-cards | ✓ success | 0d ago | 1 | 0d |
+| eq-cards | ✓ success | 0d ago | 2 | 0d |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
 ## Live errors (Sentry)
@@ -79,6 +79,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-19 | eq-solves-service | [#762](https://github.com/eq-solutions/eq-service/pull/762) docs: pm_calendar joined the canonical write layer, 25 -> 26 |
 | 2026-08-19 | eq-field | [#731](https://github.com/eq-solutions/eq-field/pull/731) security(rls): manager/supervisor-only write on app_config (draft |
 | 2026-08-19 | eq-field | [#732](https://github.com/eq-solutions/eq-field/pull/732) security: revoke anon SELECT on app_config.value — live PIN/token |
+| 2026-08-19 | eq-cards | [#279](https://github.com/eq-solutions/eq-cards/pull/279) docs(privacy): explain why collection-notice banners stay as-is |
 | 2026-08-18 | eq-shell | [#1456](https://github.com/eq-solutions/eq-shell/pull/1456) fix(home): WorkerHome gets the Service tile + tenant logo it was  |
 | 2026-08-18 | eq-shell | [#1455](https://github.com/eq-solutions/eq-shell/pull/1455) fix(staff): consistent column filters + Status as toggleable badg |
 | 2026-08-18 | eq-shell | [#1454](https://github.com/eq-solutions/eq-shell/pull/1454) fix(staff): drop duplicate email from Staff table NAME column |
@@ -86,7 +87,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-18 | eq-shell | [#1451](https://github.com/eq-solutions/eq-shell/pull/1451) perf(nav): cache staff sub-page queries, prefetch lazy route chun |
 | 2026-08-18 | eq-shell | [#1452](https://github.com/eq-solutions/eq-shell/pull/1452) fix(cards): allow web-share in the Cards iframe so iOS Save works |
 | 2026-08-18 | eq-shell | [#1450](https://github.com/eq-solutions/eq-shell/pull/1450) perf(nav): intercept same-origin anchor clicks so sidebar nav is  |
-| 2026-08-18 | eq-shell | [#1448](https://github.com/eq-solutions/eq-shell/pull/1448) fix(cards): write public.workers.role on every claim path |
 _Showing 15 of 122 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -194,4 +194,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-19 08:37 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-19 08:44 UTC._
