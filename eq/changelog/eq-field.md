@@ -9,6 +9,12 @@ status: live
 
 # eq-field changelog
 
+## 2026-08-19 (PR #737 MERGED — dashboard licence-alert card also flags missing required credentials)
+- Companion to PR #734 below — same gap, second surface. The dashboard's licence-expiry alert card only ever showed held-but-lapsing licences, same blind spot the roster badge had before #734.
+- `getLicenceExpiryAlerts()` (people.js) now emits missing-required entries too (sorted ahead of expired/expiring); `renderLicenceExpiryAlert()` (dashboard.js) gets a third headline state ("Licence Missing") and a row variant with no action button.
+- Previewed for Royce (mockup using the real card's own classes/colors) before pushing, per his ask.
+- `core-bundle-b1.js` regenerated + cache-buster tag bumped, same as #734 required — verified locally this time before pushing, no CI surprise. Merged, deploy verified live via commit-ancestry match.
+
 ## 2026-08-19 (PR #734 MERGED — roster/contacts badge now flags missing required credentials, not just expiring ones)
 - `_licenceExpiryBadge()`/`getLicenceExpiryAlerts()` only ever computed off licences a worker already holds, so a worker with zero licences produced no badge at all — even though eq-shell's Training Matrix already shows that same worker red for missing an org-required credential. Dispatchers scheduling from Field saw "fine" where admins in Shell saw a gap.
 - New `scripts/people-required-credentials.js` ports `satisfiesRequirement`/`requiredForRow`/`missingRequired` from eq-shell's `staffLib.ts`/`MatrixView.tsx` (including the photo_id equivalence), fed by two new `canon-read.js` proxy actions calling the RPCs added in eq-shell [PR #1461](https://github.com/eq-solutions/eq-shell/pull/1461). Scoped to the roster/contacts view only — the dashboard licence-expiry alert card is untouched.
