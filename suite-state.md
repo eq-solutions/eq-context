@@ -66,9 +66,6 @@ _If this file is >48h old, the cron is broken._
 **eq-field:**
 - #734 fix(people): flag missing required credentials on the roster
 
-**eq-service:**
-- #764 fix(db): set security_invoker on service.contract_scopes
-
 **eq-shell:**
 - #1461 feat(field): add RPCs for Field roster credential parity
 - #1460 feat(staff): multiSlicer filter chips on Staff table
@@ -81,7 +78,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ✓ success |
+| eq-service | ✗ failure |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
@@ -90,7 +87,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 228 (latest: 0221) applied
+**Migrations:** eq-service has 229 (latest: 0222) applied
 
 ---
 
