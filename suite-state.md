@@ -66,10 +66,6 @@ _If this file is >48h old, the cron is broken._
 **eq-field:**
 - #731 security(rls): manager/supervisor-only write on app_config (draft, not dispatched)
 
-**eq-service:**
-- #762 docs: pm_calendar joined the canonical write layer, 25 -> 26
-- #761 feat(db): date-certainty gate on contract scopes + PM roster coverage view
-
 ---
 
 ## System Health (as of 2026-08-19)
@@ -87,7 +83,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 222 (latest: 0215) applied
+**Migrations:** eq-service has 224 (latest: 0217) applied
 
 ---
 
