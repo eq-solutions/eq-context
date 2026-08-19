@@ -60,7 +60,8 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-19)
 
-_No open PRs_
+**eq-service:**
+- #775 feat(contract-scope): timing gate on the commercial-sheet importer
 
 ---
 
