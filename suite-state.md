@@ -63,10 +63,8 @@ _If this file is >48h old, the cron is broken._
 **eq-cards:**
 - #277 ci: guard against silent function-grant strips on jvkn migrations
 
-**eq-field:**
-- #734 fix(people): flag missing required credentials on the roster
-
 **eq-shell:**
+- #1462 feat(auth): PIN reveal toggle + raise length ceiling 12→20
 - #1461 feat(field): add RPCs for Field roster credential parity
 - #1460 feat(staff): multiSlicer filter chips on Staff table
 
