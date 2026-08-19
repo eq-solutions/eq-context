@@ -16,6 +16,11 @@ status: live
 - `tsc --noEmit` and full `next build` clean. Not click-tested live — same sandbox login limitation as PR #766.
 - Not yet CI-checked or merged.
 
+## 2026-08-19 (PRs #770-774 MERGED — the remaining 30 page.tsx files swept for the Supabase-query-error-checking pattern, closing it out across all 55)
+- 5 PRs, each built by an isolated-worktree subagent auditing a disjoint module: [#770](https://github.com/eq-solutions/eq-service/pull/770) misc (today/do/insights/job-plans-items/maintenance-import/maintenance-paste/pm-calendar/records — 1/8 fixed, in `lib/today/getTodayBriefing.ts` rather than `today/page.tsx` itself), [#771](https://github.com/eq-solutions/eq-service/pull/771) commercials (1/4), [#772](https://github.com/eq-solutions/eq-service/pull/772) admin (4/8), [#773](https://github.com/eq-solutions/eq-service/pull/773) ACB/NSX testing (3/5), [#774](https://github.com/eq-solutions/eq-service/pull/774) RCD testing + summary (3/5).
+- 12 of 30 files had the bug; 18 were correctly left alone (no queries, client components reading via server actions, an existing guard, or the same `getTenantSettings`-style shared-helper exclusion dashboard.tsx already established). `tsc --noEmit` clean on every PR.
+- Confirmed live: 5 merges landing ~20s apart caused Netlify to skip several in-flight builds (documented "concurrent merging" behavior) — watched the deploy for the final merge commit through to `ready`, `commit_ref` matched exactly, clean secret scan.
+
 ## 2026-08-19 (PR #769 MERGED — 23 more page.tsx files get the Supabase-query-error-checking pattern)
 - Concurrent session's work, logged here for the record: admin/archive, admin/quality, analytics, assets/[id], assets, audit-log, calendar, commercials/renewal-pack, contacts, customers/[id], customers, defects/[id], defects, instruments, job-plans, maintenance/[id], maintenance, reports, search, settings, sites/[id], sites, variations — same pattern as #765/#768. Between the three PRs, 25 of 55 `page.tsx` files are now fixed; 30 remain (tracked in `eq/pending/eq-solves-service.md`).
 
