@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-19)
 
-**eq-cards:**
-- #277 ci: guard against silent function-grant strips on jvkn migrations
-
 **eq-shell:**
 - #1462 feat(auth): PIN reveal toggle + raise length ceiling 12→20
 - #1461 feat(field): add RPCs for Field roster credential parity
