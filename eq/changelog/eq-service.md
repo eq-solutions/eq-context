@@ -1,13 +1,20 @@
 ---
 title: EQ Service — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-19
+last_updated: 2026-08-20
 scope: EQ Service append-only history. Canonical (repo-slug convention, matching eq-shell.md/eq-cards.md/eq-field.md/etc.) — this file absorbed eq-solves-service.md 2026-08-17, merging both same-day product histories by date (no entries dropped, both files' own internal ordering was already imperfectly chronological so blocks are sorted strictly by date; same-date ties keep this file's prior entries first, then eq-solves-service.md's). The two files had been left deliberately unreconciled since 2026-08-11/15 pending Royce's own call on how to interleave them (see sessions/2026-08-11.md) — this merge is that call, made 2026-08-17. eq-solves-service.md is now a stub pointing here; don't split the log again.
 read_priority: reference
 status: live
 ---
 
 # EQ Service — Changelog
+
+## 2026-08-20 (PR #775 OPENED — at-import half of the contract-scope timing gate)
+- Commercial-sheet import wizard (`/commercials/contract-scopes/import`) gains a "How should these be dated?" section on the commit step — same `date_certainty` picker (fixed date / recurring window / not confirmed yet) as the admin screen's classification gate (PR #766), but applied once per import batch rather than per row, matching how these imports are actually run (one customer/contract at a time).
+- Extracted the recurrence-builder logic and its UI (`lib/utils/window-rule.ts`, `components/contract-scope/TimingFields.tsx`) out of the admin screen so both surfaces share one implementation instead of two copies of the same RRULE-safe builder.
+- No migration needed: read the live `eq_intake_commit_batch_service` RPC definition directly and confirmed it inserts via `jsonb_populate_record` against the table's actual live columns, so the new fields are picked up automatically.
+- `tsc --noEmit` and full `next build` clean. Not click-tested live — same sandbox login limitation as PR #766.
+- Not yet CI-checked or merged.
 
 ## 2026-08-19 (PR #769 MERGED — 23 more page.tsx files get the Supabase-query-error-checking pattern)
 - Concurrent session's work, logged here for the record: admin/archive, admin/quality, analytics, assets/[id], assets, audit-log, calendar, commercials/renewal-pack, contacts, customers/[id], customers, defects/[id], defects, instruments, job-plans, maintenance/[id], maintenance, reports, search, settings, sites/[id], sites, variations — same pattern as #765/#768. Between the three PRs, 25 of 55 `page.tsx` files are now fixed; 30 remain (tracked in `eq/pending/eq-solves-service.md`).
