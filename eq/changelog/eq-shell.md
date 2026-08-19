@@ -9,6 +9,11 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-19 (PR #1465 OPEN, CI green — Staff page load-time root-caused: keep-warm gap on staff-bootstrap)
+- Royce asked twice for the Staff page's slow load time to be profiled. Found it: `staff-bootstrap.ts` (built via #1358 to coalesce the page's 9 sub-fetches into one Lambda call) was never added to `warm-ping.ts`'s 4-minute keep-warm ping — each Netlify function is its own Lambda, so warming `entity-rows` separately never warmed this one.
+- Live-measured against production: 3.07s cold vs 0.39-0.42s warm on the same unauthenticated 401 fast-path the function's own header comment already benchmarks — confirms the DB side (already fast, ~6-9ms/part) was never the bottleneck; this was purely a Lambda-warmth gap.
+- One-line fix: added `/.netlify/functions/staff-bootstrap` to `WARM_PATHS`. `pnpm run build` clean. Not merged yet — needs Royce's sign-off.
+
 ## 2026-08-19 (PR #1462 MERGED — PIN show/hide toggle + 12→20 length ceiling)
 - Added a show/hide reveal toggle to every masked PIN input (sign-in, Set PIN on invite-accept, Set new PIN on reset, plus the phone-PIN fallback) — Sharon couldn't tell whether her PIN and confirm-PIN matched while typing blind.
 - Raised the PIN length ceiling from 12 to 20 characters (`accept-invite.ts`, `accept-pin-reset.ts`, and the sign-in field's matching cap). Confirmed safe: PINs are bcrypt-hashed, not stored raw.

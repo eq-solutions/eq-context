@@ -1,7 +1,7 @@
 ---
 title: EQ Shell — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-19
+last_updated: 2026-08-20
 scope: EQ Shell engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -1364,7 +1364,7 @@ Parallel to the Field schema/data cutover below. Full plan + agent prompts (A–
 - [x] **eq-ui `Table` multiSlicer prop shipped end-to-end** — [eq-ui PR #40](https://github.com/eq-solutions/eq-ui/pull/40) merged → published as `@eq-solutions/ui@1.16.0` (Changesets release). eq-shell [PR #1460](https://github.com/eq-solutions/eq-shell/pull/1460) bumped the pin and wired `multiSlicer` onto the Staff table's filter chips (Has expired / Has expiring / Needs review / Has flags / Supervisors / Off roster now click on/off and AND-combine). Merged, live.
 - [x] **No CI check catches two permissive RLS policies silently stacking on the same table** — closed via [eq-shell PR #1459](https://github.com/eq-solutions/eq-shell/pull/1459): CHECK 9 added to `check-tenant-drift.mjs`, flags >1 permissive policy per table/command. Live sweep of ehow + zaap confirmed the pattern wasn't widespread — only the one instance (#1458) existed. Merged.
 - [ ] **eq-ui `Skeleton` shimmer-sweep animation** (replaces the opacity pulse) — [eq-ui PR #41](https://github.com/eq-solutions/eq-ui/pull/41) still open, unreleased. Applies automatically everywhere `Skeleton` is used once released and the eq-shell pin is bumped — no eq-shell-side wiring needed beyond the version bump. _(added 2026-08-19)_
-- [ ] **Staff page load time — root cause not yet profiled.** `/staff-bootstrap` already coalesces 9 sub-fetches into one request with server-side `Promise.all` (fixed a real cold-start problem via #1358), but the client still can't paint the table until all 9 parts return, even though only the `staff` part is needed to render rows. No hard timing data pulled this session (no Sentry perf issue actually tied to this endpoint). Royce asked for this to be profiled; not done. _(added 2026-08-19)_
+- [x] **Staff page load time — root-caused and fixed, pending merge.** `/staff-bootstrap` coalesces the page's 9 sub-fetches into one Lambda invocation (fixed the multi-cold-start problem via #1358) but was never itself added to `warm-ping.ts`'s 4-minute keep-warm list — each Netlify function is its own Lambda, so warming `entity-rows` separately never warmed this one. Live-measured against production: 3.07s cold vs 0.39-0.42s warm, matching the function's own documented baseline exactly. [eq-shell PR #1465](https://github.com/eq-solutions/eq-shell/pull/1465) — one-line addition to `WARM_PATHS`, CI green, **not yet merged — needs Royce's sign-off.**
 - [ ] **`is_platform_admin` bypasses the Conversations UI permission gate with no exception list or audit trail** — noted while investigating the RLS gap above, not fixed. RLS closes the real exposure regardless, but the shared `dev@eq.solutions` account (or any future platform admin) would still see the "Log a conversation" button appear, just get zero rows back. Worth a real access-model decision (break-glass + audit log?) rather than a quick patch, flagged not built. _(added 2026-08-19)_
 
 ---
