@@ -14,28 +14,11 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ---
 
 ## eq-solves-service: PM calendar can now generate itself from contract dates — 3-regime date model, RRULE support, built end-to-end and shipped live in one session (2026-08-19)
-*Started as a research question ("what's the health of our canonical calendar, particularly between Service and Field") which surfaced a wrong assumption on my part — corrected by Royce mid-session (Field's SKS roster is on the same database as Service's calendar, not a separate one) — which changed the whole value case for linking them from "expensive cross-system project" to "cheap, same-database view." Royce steelmanned the idea further and asked for a spec, a plain-English explainer, then the real build — all landed same session.*
-
-- [x] **Corrected a wrong claim mid-session**: SKS's live Field roster data lives on the same database as Service (ehow), not a separate one (zaap) as first assumed — zaap only holds a disposable demo tenant. Re-rated the calendar-linking proposal's value from Low-Medium to Medium-High on the corrected picture.
-- [x] Wrote a marketing-style HTML spec and a simple explainer graphic for Royce to review before any code was written.
-- [x] **Refined to 3 regimes per Royce's real-world caveat** ("we don't always know everything for all contracts"): a **hard** date (contractually fixed — e.g. Earthing System test, 2026-11-15), a **placeholder** (nothing known yet — defaults to 60 days out, never financial-year-derived, matching [[project_scheduling_no_fy_anchor]] since contracts don't share one FY period), and a recurring **window** (e.g. "first Monday of the month") stored as a real iCal RRULE string, not custom syntax.
-- [x] **7 migrations written, dispatched, and confirmed live on ehow** (all via the governed apply pipeline, ledger-verified):
-  - `0216` — `date_certainty` + `window_rule` on `contract_scopes`
-  - `0217` — `pm_roster_coverage` view: matches each PM calendar date against Field's roster within a ±7 day window, so a gap ("nobody's rostered near this contracted check") becomes visible instead of silently missed
-  - `0218` — `hard_due_date` column (a gap in my own 0216 design, caught and fixed same session before it shipped as final)
-  - `0219` — a bounded RRULE engine (`rrule_next_occurrence`) covering daily/weekly/monthly patterns — hand-verified against a real calendar, raises rather than silently mis-computing anything outside what it supports
-  - `0220` — same-session hotfix for a typo in `0217` (`'complete'` vs the real `'completed'` status value) — caught before it ever showed wrong data, `pm_schedule` was still empty at the time
-  - `0221` — `generate_pm_schedule_from_scope()`: the actual generator. Dry-run by default. Never touches a calendar date a technician is already scheduled against. Verified against all 145 real SKS contract-scope rows before shipping.
-  - `0222` — a real security finding from the routine post-migration safety check (`contract_scopes` view was missing a tenant-isolation setting every other canonical view already has) — found and fixed same session
-- [x] eq-service PRs [#761](https://github.com/eq-solutions/eq-service/pull/761), [#762](https://github.com/eq-solutions/eq-service/pull/762) (the CLAUDE.md doc fix below), [#763](https://github.com/eq-solutions/eq-service/pull/763), [#764](https://github.com/eq-solutions/eq-service/pull/764) — all merged, all migrations confirmed live via the ledger, security advisors re-checked clean afterward (zero ERROR findings).
-- [x] Fixed a stale count in `eq-solves-service/CLAUDE.md` (said 25 canonical objects, should be 26 — `pm_calendar` was missing from the list).
-- [x] Hit one infrastructure hiccup mid-dispatch (a transient timeout applying `0219`) — checked the migration ledger directly before retrying rather than guessing, confirmed it had rolled back cleanly with nothing half-applied, then retried successfully.
-
-- [x] **Royce said go — ran the generator for real the same day**, against the full live SKS scope (145 rows). All 145 landed as `insert`/`placeholder` (none were `hard` or `window`) — confirmed live: `app_data.pm_schedule` now holds 145 real rows, every one dated 2026-10-18 (today+60), `draft_status = 'draft'`.
 
 **Deferred:**
-- [ ] **Every one of the 145 new calendar entries is a rough 60-day placeholder, not a real date — because nobody has classified any scope item as `hard` or `window` yet.** The generator itself worked correctly; the value it was built for (real contracted dates showing up automatically) needs the classification gate actually used first. That gate (one-time-at-import + an ongoing admin screen, both scoped this session) was never built — only the underlying 3-regime data model and the generator that reads it were. Needs its own session. _(added 2026-08-19)_
-- [ ] **`pm_roster_coverage` (the "is anyone rostered near this date" view) has no screen yet.** It's a real, live database view — nothing in the app UI shows it to anyone yet. _(added 2026-08-19)_
+- [ ] **The classification gate was never built — only the underlying 3-regime data model and the generator that reads it.** Every contract scope is still sitting in the default "we don't know yet" bucket; none have been through a real hard/window classification. Needs its own session: a one-time-at-import classification step plus an ongoing admin screen to reclassify later, both scoped but not built. _(added 2026-08-19)_
+- [ ] **`pm_roster_coverage` (the "is anyone rostered near this date" view) has no screen yet.** A real, live database view — nothing in the app UI shows it to anyone yet. _(added 2026-08-19)_
+- [ ] **The generator was run for real once today (145/145 SKS scopes, all placeholder-dated 18 Oct) and then deliberately cleared same day.** The single real run made the classification gap visible immediately — 145 identical placeholder dates, no real scheduling value yet — so Royce chose to reset the live calendar to empty rather than leave that in front of the team. Cleared via soft-delete (`is_active = false`), not dropped: the generator, its migrations, and all 145 original rows are fully intact and recoverable. Re-run any time — most usefully after the classification step above actually happens, at which point each reclassified scope moves off the shared placeholder date to its real one. _(added 2026-08-19)_
 
 ---
 
@@ -81,12 +64,10 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-shell + eq-solves-service: who gets the calendar digest — rebuilt as a real permission, not a hardcoded list (2026-08-17 → 2026-08-18)
-*Follow-up to the 2026-08-17 build below: that shipped group-membership as a first cut, functionally identical to the old manager/supervisor role check. Royce asked for it done properly instead — a real Access Control permission, grantable by role or by the existing group. Full cross-repo build history: [eq/pending/cross-repo.md](../cross-repo.md).*
+## eq-shell + eq-solves-service: who gets the calendar digest — rebuilt as a real permission, not a hardcoded list (2026-08-17 → 2026-08-19)
 
-**Deferred (eq-service-specific — both are live production Netlify settings, need your say-so):**
-- [ ] **Digest sending is still paused on purpose (`SUPERVISOR_DIGEST_PAUSED=true`), until you say go.** Real count once unpaused, checked directly against live data: **20 people**, not a smaller figure quoted earlier today — the "Calendar Digest Recipients" group's 18 members (17 with an email on file), plus 3 more managers who hold it automatically through their role and were never added to the group at all, including **you** (royce.milmlow@sks.com.au). One of those 3, `dev@eq.solutions`, looks like a system/test account rather than a person — worth deciding whether it should hold the manager role at all, separately from this feature. _(added 2026-08-18)_
-- [ ] **`CALENDAR_DIGEST_GROUP_ID` is still sitting in eq-service's Netlify env, unused** — the code stopped reading it once the permission-key gate shipped. Confirmed via a fresh search of the current codebase: nothing references it. Safe to delete. _(added 2026-08-18)_
+**Deferred (eq-service-specific — live production Netlify setting, needs your say-so):**
+- [ ] **Digest sending is still paused on purpose (`SUPERVISOR_DIGEST_PAUSED=true`), until you say go.** Re-verified live 2026-08-19, unchanged since 2026-08-18, all contexts — no send has happened since 2026-08-16. Recipient count as of 2026-08-19: 21 people currently eligible (18 explicit members of the "Calendar Digest Recipients" group + the rest via the `manager` role default, which includes **you** and, per the 2026-08-18 note, `dev@eq.solutions` — still worth deciding if that system/test account should hold `manager` at all) — close to the 20 recorded 2026-08-18, difference not investigated. To add/remove a specific person: `core.eq.solutions/sks/admin/access-control` → Groups tab → "Calendar Digest Recipients". To change who gets it by role instead: same page, Base tab (role matrix) — `service.receive_calendar_digest` is manager-only by default today. Also worth knowing before unpausing: the PM calendar itself is empty right now (see the entry above) — an unpause today would have nothing real to send regardless. _(re-verified 2026-08-19)_
 
 ---
 
