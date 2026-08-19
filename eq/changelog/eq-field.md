@@ -9,6 +9,12 @@ status: live
 
 # eq-field changelog
 
+## 2026-08-19 (PR #732 APPLIED — security: revoke anon SELECT on app_config.value, live PIN/token leak)
+- `public.app_config` (ehow) granted `anon` — unauthenticated — full-column SELECT, including `value`. That table stores the SKS `staff_code`/`supervisor_code` PINs and a TAFE API token in plaintext. Confirmed live with the project's own anon key: `GET ?select=key,value` returned 200 with the real values. No credential of any kind required — worse than the same-day role-blind-but-authenticated write gaps.
+- Fix is column-level, not a blanket anon revoke: verified `checkSupabaseHealth()` depends on anon-readable `key`, and the only anon consumer of `value` is a dead pre-login codes fetch (both live tenants are Core-only). Revoked anon's table-level SELECT, re-granted `id`/`key`/`org_id` only. `authenticated` untouched.
+- Hit a real gotcha applying it: a column-level `REVOKE` alone is a no-op against an existing table-level grant — had to revoke the table-level grant first, then re-grant the safe columns.
+- Applied live to ehow via Supabase MCP (Royce's explicit go), smoke-tested live pre/post with the anon key. eq-field [PR #732](https://github.com/eq-solutions/eq-field/pull/732).
+
 ## 2026-08-19 (PR #728 MERGED + APPLIED — RLS: manager/supervisor-only write on 6 site-report tables)
 - `prestarts`/`toolbox_talks`/`incidents`/`site_diaries`/`site_audits`/`site_audit_items` enforced tenant/org scoping only on write, no role check — any authenticated SKS session (incl. apprentice/labour_hire) could INSERT/UPDATE/DELETE any of these tables directly via PostgREST, bypassing `permission-matrix.js`'s manager/supervisor-only create+submit gate.
 - Added RESTRICTIVE INSERT/UPDATE/DELETE policies requiring `app_metadata.eq_role IN ('manager','supervisor')` on all 6 tables. Read is unaffected. Verified against real client write paths first — no independent employee/apprentice write path exists for any of them.
