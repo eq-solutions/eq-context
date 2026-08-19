@@ -9,6 +9,11 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-19 (PR #1460 MERGED — Staff table filter chips now click-to-toggle + AND-combine)
+- Bumped `@eq-solutions/ui` pin to v1.16.0 (publishes eq-ui [PR #40](https://github.com/eq-solutions/eq-ui/pull/40)'s `multiSlicer` prop) and turned it on for the Staff table: the filter chips above the table (Has expired / Has expiring / Needs review / Has flags / Supervisors / Off roster) now click on/off and AND-combine, instead of single-select.
+- Updated the hand-maintained `src/types/eq-solutions-ui.d.ts` type shim to add `multiSlicer?: boolean` — the shim shadows the package's raw-TS source so eq-shell's stricter compiler options don't choke on it; it needs manual sync, per its own header comment.
+- Merge was blocked by the required drift gate for reasons unrelated to this PR's own diff (see the #1461 entry below) — rebased onto `main` once that was resolved, CI went green, merged.
+
 ## 2026-08-19 (PR #1461 MERGED — jvkn anon-grant leak fixed, re-caught the same day it was introduced)
 - **What the PR actually adds** (the leak below was found in the same PR before merge, not a separate incident): two read-only RPCs, `eq_field_get_org_credential_requirements`/`eq_field_get_org_worker_roles`, so EQ Field's own roster/contacts badge can compute "missing required" the way the Training Matrix already does — see eq-field [PR #734](https://github.com/eq-solutions/eq-field/pull/734) for the consuming change.
 - Required "Schema drift + anon-grant + policy-lint" CI check went red on PR #1460's build: two new jvkn functions (`eq_field_get_org_credential_requirements`, `eq_field_get_org_worker_roles`) were live anon+authenticated-executable with no allow-list entry.

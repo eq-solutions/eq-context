@@ -9,9 +9,9 @@ status: live
 
 # eq-ui changelog
 
-## 2026-08-19 (PR #40 + #41 — open, not yet merged)
-- PR #40: opt-in `multiSlicer` prop on `Table` — click-to-toggle, AND-combined slicer chips, for eq-shell's Staff page. Default `false`; verified against all 8 existing `slicers=` call sites in eq-shell (2 use controlled `activeSlicer`/`onSlicerChange`, unaffected).
-- PR #41: `Skeleton` shimmer-sweep animation replacing the opacity pulse, plus a `prefers-reduced-motion` fallback. Applies to every existing `Skeleton` usage automatically once released.
+## 2026-08-19 (PR #40 MERGED, published v1.16.0 — PR #41 still open)
+- PR #40: opt-in `multiSlicer` prop on `Table` — click-to-toggle, AND-combined slicer chips, for eq-shell's Staff page. Default `false`; verified against all 8 existing `slicers=` call sites in eq-shell (2 use controlled `activeSlicer`/`onSlicerChange`, unaffected). Merged, published as `@eq-solutions/ui@1.16.0` via the Changesets version-packages PR (#42). Consumed same day in eq-shell [PR #1460](https://github.com/eq-solutions/eq-shell/pull/1460).
+- PR #41: `Skeleton` shimmer-sweep animation replacing the opacity pulse, plus a `prefers-reduced-motion` fallback. Applies to every existing `Skeleton` usage automatically once released. Still open, unreleased.
 
 ## 2026-08-12 (PR #38, MultiSelect — open, not yet merged)
 - **PR #38 (OPEN, CI green)** — new `MultiSelect` component: trigger + popover checklist for picking a set of discrete values, chips for 1-2 selections collapsing to a count for 3+, search box past 8 options, density-aware. Deliberately standalone — doesn't share code with Table's own filter popover, decided via a full `/decide` pass rather than assumed (the code-sharing question was the actually risky/unverified part of the original sprint scope; the general-purpose component itself was low-risk). `npm run check` green, 89/89 tests. axe caught a real bug in development: `role="listbox"` requires `role="option"` children, not native checkboxes — fixed to `role="group"`. Not merged yet — Royce needs to do it himself (same classifier restriction all session).

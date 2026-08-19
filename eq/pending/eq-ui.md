@@ -22,8 +22,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ## eq-ui: two Table/Skeleton PRs open from an eq-shell Staff-table session (2026-08-19)
 
-- [ ] [PR #40](https://github.com/eq-solutions/eq-ui/pull/40) — opt-in `multiSlicer` prop on `Table` (click-to-toggle, AND-combined slicer chips) for eq-shell's Staff page. Default `false`, verified against all 8 existing `slicers=` call sites in eq-shell (2 use controlled `activeSlicer`/`onSlicerChange` — unaffected). typecheck/lint/tests clean. Needs Royce's merge sign-off, then the Changesets version-packages PR, then eq-shell's pin bump. _(added 2026-08-19)_
-- [ ] [PR #41](https://github.com/eq-solutions/eq-ui/pull/41) — `Skeleton` shimmer-sweep animation replacing the opacity pulse, plus a `prefers-reduced-motion` fallback the old pulse never had. Applies to every existing `Skeleton` usage automatically once released — no prop change. Same release-pipeline dependency as #40. _(added 2026-08-19)_
+- [ ] [PR #41](https://github.com/eq-solutions/eq-ui/pull/41) — `Skeleton` shimmer-sweep animation replacing the opacity pulse, plus a `prefers-reduced-motion` fallback the old pulse never had. Applies to every existing `Skeleton` usage automatically once released — no prop change. Still open, unreleased. _(added 2026-08-19)_
 
 ---
 
