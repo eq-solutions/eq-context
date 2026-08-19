@@ -8,19 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-19 18:43 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-19 18:55 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-19 12:36 UTC → 2026-08-19 18:43 UTC)
+## Since last refresh (2026-08-19 18:43 UTC → 2026-08-19 18:55 UTC)
 
-- Merged: eq-shell [#1454](https://github.com/eq-solutions/eq-shell/pull/1454) fix(staff): drop duplicate email from Staff table NAME colum
-- Merged: eq-shell [#1451](https://github.com/eq-solutions/eq-shell/pull/1451) perf(nav): cache staff sub-page queries, prefetch lazy route
-- Merged: eq-shell [#1450](https://github.com/eq-solutions/eq-shell/pull/1450) perf(nav): intercept same-origin anchor clicks so sidebar na
-- Merged: eq-shell [#1449](https://github.com/eq-solutions/eq-shell/pull/1449) perf(entity-browser): cache table-row queries for 30s
-- Merged: eq-shell [#1444](https://github.com/eq-solutions/eq-shell/pull/1444) fix(field): DROP+CREATE field_people view, CREATE OR REPLACE
-- Merged: eq-shell [#1443](https://github.com/eq-solutions/eq-shell/pull/1443) fix(field): add 7 missing columns to zaap's staff table, unb
-- Merged: eq-shell [#1442](https://github.com/eq-solutions/eq-shell/pull/1442) fix(shell-join-tenant): match unlinked worker by email when 
-- Merged: eq-shell [#1440](https://github.com/eq-solutions/eq-shell/pull/1440) feat(access-control): list-members exposes effective permiss
-- ⚠ Needs you: 5 → 6 (new items)
+- Merged: eq-shell [#1465](https://github.com/eq-solutions/eq-shell/pull/1465) perf(staff): warm staff-bootstrap so Staff loads don't eat a
+- Merged: eq-shell [#1456](https://github.com/eq-solutions/eq-shell/pull/1456) fix(home): WorkerHome gets the Service tile + tenant logo it
+- Merged: eq-shell [#1455](https://github.com/eq-solutions/eq-shell/pull/1455) fix(staff): consistent column filters + Status as toggleable
+- Merged: eq-shell [#1452](https://github.com/eq-solutions/eq-shell/pull/1452) fix(cards): allow web-share in the Cards iframe so iOS Save 
+- Merged: eq-shell [#1448](https://github.com/eq-solutions/eq-shell/pull/1448) fix(cards): write public.workers.role on every claim path
+- Merged: eq-shell [#1447](https://github.com/eq-solutions/eq-shell/pull/1447) feat(cards): notify org admins on QR/join-code signups
+- Merged: eq-shell [#1446](https://github.com/eq-solutions/eq-shell/pull/1446) fix(entity-patch): mirror staff email/phone corrections to c
+- Merged: eq-shell [#1445](https://github.com/eq-solutions/eq-shell/pull/1445) chore(intake): auto re-vendor eq-intake/eq-platform
 
 ## ⚠ Needs you (6)
 
@@ -53,7 +52,7 @@ _…and 163 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 1 | 0d |
+| eq-shell | ✓ success | 0d ago | 0 | — |
 | eq-solves-service | ✓ success | 0d ago | 0 | — |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
@@ -75,6 +74,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-19 | eq-shell | [#1465](https://github.com/eq-solutions/eq-shell/pull/1465) perf(staff): warm staff-bootstrap so Staff loads don't eat a 3s c |
 | 2026-08-19 | eq-shell | [#1462](https://github.com/eq-solutions/eq-shell/pull/1462) feat(auth): PIN reveal toggle + raise length ceiling 12→20 |
 | 2026-08-19 | eq-shell | [#1464](https://github.com/eq-solutions/eq-shell/pull/1464) fix(entity-patch): bound the onboarding auto-push trigger to a re |
 | 2026-08-19 | eq-shell | [#1463](https://github.com/eq-solutions/eq-shell/pull/1463) fix(nav): full navigation audit across all 6 roles + 3 dead pages |
@@ -89,12 +89,11 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-19 | eq-solves-service | [#767](https://github.com/eq-solutions/eq-service/pull/767) fix(contract-scope): default Year filter to All Years, not curren |
 | 2026-08-19 | eq-solves-service | [#765](https://github.com/eq-solutions/eq-service/pull/765) fix(contract-scope): surface Supabase query errors instead of ren |
 | 2026-08-19 | eq-solves-service | [#764](https://github.com/eq-solutions/eq-service/pull/764) fix(db): set security_invoker on service.contract_scopes |
-| 2026-08-19 | eq-solves-service | [#763](https://github.com/eq-solutions/eq-service/pull/763) feat(db): generate PM calendar entries from contract-scope date c |
 _Showing 15 of 121 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **eq-shell** (218 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-shell** (219 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (51 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (111 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (81 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
@@ -197,4 +196,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-19 18:43 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-19 18:55 UTC._
