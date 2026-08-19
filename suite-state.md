@@ -62,8 +62,11 @@ _If this file is >48h old, the cron is broken._
 
 **eq-cards:**
 - #280 fix(auth): recover pending invite claim on reload
-- #278 fix(auth): don't auto-provision over a pending invite on reload
 - #277 ci: guard against silent function-grant strips on jvkn migrations
+
+**eq-shell:**
+- #1461 feat(field): add RPCs for Field roster credential parity
+- #1460 feat(staff): multiSlicer filter chips on Staff table
 
 ---
 
