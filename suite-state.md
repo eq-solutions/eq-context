@@ -61,7 +61,6 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-19)
 
 **eq-service:**
-- #769 fix(pages): surface Supabase query errors instead of rendering empty data
 - #768 fix(dashboard): surface Supabase query errors instead of rendering empty
 - #766 feat(contract-scope): classification gate for date_certainty
 
