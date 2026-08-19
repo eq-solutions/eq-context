@@ -65,9 +65,6 @@ _If this file is >48h old, the cron is broken._
 - #278 fix(auth): don't auto-provision over a pending invite on reload
 - #277 ci: guard against silent function-grant strips on jvkn migrations
 
-**eq-service:**
-- #763 feat(db): generate PM calendar entries from contract-scope date certainty
-
 ---
 
 ## System Health (as of 2026-08-19)
@@ -85,7 +82,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 224 (latest: 0217) applied
+**Migrations:** eq-service has 228 (latest: 0221) applied
 
 ---
 
