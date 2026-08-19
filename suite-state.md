@@ -65,7 +65,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #1462 feat(auth): PIN reveal toggle + raise length ceiling 12→20
-- #1460 feat(staff): multiSlicer filter chips on Staff table
 
 ---
 
