@@ -61,10 +61,13 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-19)
 
 **eq-field:**
+- #737 fix(dashboard): flag missing required credentials on the licence alert card
 - #735 v3.5.527 — Documents to Sign: pilot widened to a second signer
 
+**eq-service:**
+- #766 feat(contract-scope): classification gate for date_certainty
+
 **eq-shell:**
-- #1464 fix(entity-patch): bound the onboarding auto-push trigger to a real start_date window
 - #1462 feat(auth): PIN reveal toggle + raise length ceiling 12→20
 
 ---
