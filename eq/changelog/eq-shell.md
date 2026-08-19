@@ -1,13 +1,20 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-18
+last_updated: 2026-08-19
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # eq-shell changelog
+
+## 2026-08-19 (PR #1456 MERGED — WorkerHome gains a Service tile + the tenant logo)
+- Found via a screenshot review with Royce: `WorkerHome.tsx` (the worker/apprentice-facing Core home) showed only My Card + EQ Field, no Service tile, and no tenant branding beyond a plain text name.
+- Service tile added, gated the same way the manager dashboard's own Service tile already is: tenant entitlement + non-trial tier. `git log` on the file confirmed Service was never previously added or discussed here — an oversight, not a deliberate exclusion — and there's no per-user role gate for Service anywhere in the app to mirror instead.
+- Tenant logo (`brand.logoUrl`) added to the header — was already fetched app-wide but only ever consumed by two PDF/print report headers, never live app chrome; `WorkerHome` renders standalone with no `HubLayout` wrapper.
+- An empty-state ("you're all caught up" when no nudge cards are showing) was investigated and deliberately not built — the four nudge components each own their own async visibility, so this needs restructuring them, not a one-line add.
+- Squash-merged (`02fe9259`), `tsc -b --force` + eslint clean, full CI green, live on core.eq.solutions.
 
 ## 2026-08-18 (PR #1452 MERGED — allow web-share on the Cards iframe)
 - The Cards iframe (`CardsIframe.tsx`) had `allow=""`, blocking every browser permission inside it including the Web Share API eq-cards' iOS export-download fix depends on (see eq-cards changelog, PR #274). Changed to `allow="web-share"`. Git blame: the empty value was a default-lockdown leftover from the original iframe mount, never a deliberate Web Share block.

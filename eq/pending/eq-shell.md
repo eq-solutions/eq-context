@@ -1,7 +1,7 @@
 ---
 title: EQ Shell — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-18
+last_updated: 2026-08-19
 scope: EQ Shell engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -10,6 +10,20 @@ status: live
 # EQ Shell — Pending
 
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-shell: WorkerHome was missing the Service tile and never showed the tenant's logo — found via screenshot review, fixed, merged, live (2026-08-19)
+*Spawned from a screenshot review with Royce: an SKS apprentice test profile signed into `core.eq.solutions/sks` saw only two tiles (My Card, EQ Field) on the worker home screen, no way to reach EQ Service, and no tenant branding beyond a plain text name. Investigated rather than assumed — checked git history to rule out a deliberate exclusion before building.*
+
+- [x] **Service tile added.** `git log` on `WorkerHome.tsx` showed Service was never added or discussed for this screen — an oversight, not a deliberate call. There's no per-user role gate for Service anywhere in the app (the route itself is entitlement-only), so the new tile uses the exact same gate the main manager dashboard already uses for its own Service tile: the tenant has it turned on, and isn't on the free/trial tier.
+- [x] **Tenant logo added to the header.** The logo was already being fetched for the app but had only ever been wired into two printable PDF report headers — never the live screen a worker actually sees. Added using the same image pattern those reports already use; falls back to the existing text-only name when a tenant has no logo set.
+- [x] **Empty-state polish (the "you're all caught up" idea) deliberately not built.** The four status/nudge cards above the tiles each decide their own visibility independently and asynchronously — teaching the page to notice "none of them are showing" needs restructuring those four, not a one-line addition. Flagged as real scope creep for a low-priority cosmetic call from the original review, not built.
+- [x] eq-shell [PR #1456](https://github.com/eq-solutions/eq-shell/pull/1456), `tsc -b --force` + eslint clean, full CI green (typecheck/test/lint, schema drift + anon-grant + policy-lint, gitleaks, function grants, migration ledger, deploy preview), squash-merged (`02fe9259`) — live on core.eq.solutions (merging this repo is the deploy).
+
+**Deferred:**
+- [ ] **Not clicked through live by a person on a Service-entitled tenant** — verified by typecheck/lint/CI and a clean deploy preview build, plus a preview-URL smoke check for new console errors (found only pre-existing preview-sandbox noise, unrelated to this change). No login credentials were available in this environment to sign in as an actual worker/apprentice and see the new tile or logo render. _(added 2026-08-19)_
+- [ ] **The "you're all caught up" empty-state polish itself** — see above; a real if small piece of work if Royce wants it. _(added 2026-08-19)_
 
 ---
 
