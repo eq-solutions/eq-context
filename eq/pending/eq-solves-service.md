@@ -26,12 +26,27 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-solves-service: classification gate built for contract-scope timing — merged, live-verified (2026-08-19)
+*Direct continuation of the PM-calendar work below — asked to build the classification gate that work had deliberately left out. Covers the admin-screen half of Royce's "1 and 2" answer (part 2); the at-import half (part 1) is still not built, see Deferred.*
+
+- [x] Every contract scope item can now be marked as a fixed date, a recurring pattern (e.g. "first Monday of the month," picked from a simple builder — not free text, so it can't create a pattern the database can't understand), or left as "not confirmed yet." Shows as a small label on each scope line so it's visible at a glance.
+- [x] Added a "Generate Calendar" button so the generator can be run from the app itself now, not just by hand via SQL.
+- [x] Found and fixed a real gap along the way: the app's own record of the database's shape had quietly fallen three migrations behind — caught by the type-checker before it could ship broken, not by a user hitting an error.
+- [x] eq-service [PR #766](https://github.com/eq-solutions/eq-service/pull/766), merged (`11e9129`), confirmed live on service.eq.solutions — Netlify's own deploy record shows it was built from this exact merge commit, published ~2 minutes later, clean.
+
+**Deferred:**
+- [ ] **The at-import half still isn't built** — classifying a scope item's timing the moment it's first entered, not just afterwards. Scoped out this session as its own, more involved piece of work inside the Excel commercial-sheet import wizard. _(added 2026-08-19)_
+- [ ] **Not click-tested live** — no working local sign-in for this app in this environment, same limitation noted throughout this file's history. Verified via full type-check + production build instead. Worth two minutes: open a scope item, try all three timing options, confirm the label looks right, then press Generate Calendar once. _(added 2026-08-19)_
+
+**Note:** hit a real collision this session — a different concurrent session switched the shared checkout to its own branch mid-edit, so this work briefly landed on the wrong branch. Caught immediately before anything was pushed under the wrong name; both branches ended up exactly where they should, nothing lost. Same known, structural gap already tracked further down this file (2026-07-23 entry) — a fresh occurrence, not a new problem (a second, independent occurrence hit a concurrent session the same day too — see the dashboard.tsx entry above, bullet 3 — three known hits today alone).
+
+---
+
 ## eq-solves-service: PM calendar can now generate itself from contract dates — 3-regime date model, RRULE support, built end-to-end and shipped live in one session (2026-08-19)
 
 **Deferred:**
-- [ ] **The classification gate was never built — only the underlying 3-regime data model and the generator that reads it.** Every contract scope is still sitting in the default "we don't know yet" bucket; none have been through a real hard/window classification. Needs its own session: a one-time-at-import classification step plus an ongoing admin screen to reclassify later, both scoped but not built. _(added 2026-08-19)_
 - [ ] **`pm_roster_coverage` (the "is anyone rostered near this date" view) has no screen yet.** A real, live database view — nothing in the app UI shows it to anyone yet. _(added 2026-08-19)_
-- [ ] **The generator was run for real once today (145/145 SKS scopes, all placeholder-dated 18 Oct) and then deliberately cleared same day.** The single real run made the classification gap visible immediately — 145 identical placeholder dates, no real scheduling value yet — so Royce chose to reset the live calendar to empty rather than leave that in front of the team. Cleared via soft-delete (`is_active = false`), not dropped: the generator, its migrations, and all 145 original rows are fully intact and recoverable. Re-run any time — most usefully after the classification step above actually happens, at which point each reclassified scope moves off the shared placeholder date to its real one. _(added 2026-08-19)_
+- [ ] **The generator was run for real once today (145/145 SKS scopes, all placeholder-dated 18 Oct) and then deliberately cleared same day.** The single real run made the classification gap visible immediately — 145 identical placeholder dates, no real scheduling value yet — so Royce chose to reset the live calendar to empty rather than leave that in front of the team. Cleared via soft-delete (`is_active = false`), not dropped: the generator, its migrations, and all 145 original rows are fully intact and recoverable. Re-run any time — most usefully once scope items actually carry a real hard/window classification (see the classification-gate entry above), at which point each reclassified scope moves off the shared placeholder date to its real one. _(added 2026-08-19)_
 
 ---
 

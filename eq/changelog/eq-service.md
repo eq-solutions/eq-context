@@ -16,6 +16,12 @@ status: live
 - `app/(app)/dashboard/page.tsx`'s 8-query `Promise.all` (KPIs, upcoming/recent checks, site map, calibration-overdue banner) had zero `.error` checking — a failed query rendered as an all-zero dashboard instead of a visible error. Same `[label, error] as const` + `.find()` + `Sentry.captureException` + throw pattern as #765, placed upstream of all three of the page's render branches (setup checklist, tech dashboard, full dashboard). The cached tenant-branding read (`getCachedTenantSettings`) is excluded — it already discards its own Supabase error internally, so there's nothing to check.
 - Confirmed live: Netlify's current production deploy `commit_ref` matches the merge commit exactly, clean secret scan.
 
+## 2026-08-19 (PR #766 MERGED — classification gate for contract-scope timing)
+- `/contract-scope`'s Add/Edit form gains a Timing section: `date_certainty` (hard / placeholder / window) with a date picker for `hard_due_date` and a constrained recurrence builder for `window_rule`, matched exactly to the FREQ/BYDAY/BYMONTHDAY subset `service.rrule_next_occurrence()` (migration 0219) supports — the UI cannot construct a rule the backend would reject.
+- Classification badge per scope row; a "Generate Calendar" button (admin-gated) calls `service.generate_pm_schedule_from_scope()` for real from the app for the first time — previously only callable by hand via SQL.
+- `lib/supabase/database.types.ts` hand-patched: `contract_scopes` Row/Insert/Update gained `date_certainty`/`hard_due_date`/`window_rule`, `Functions` gained `generate_pm_schedule_from_scope`. The generated types had drifted behind migrations 0216/0218/0221 — caught by a real `tsc --noEmit` failure.
+- Live-verified via Netlify's own deploy record: `commit_ref` on the current production deploy matches the merge commit (`11e9129`) exactly.
+
 ## 2026-08-19 (PR #764 MERGED — fix security_definer_view on service.contract_scopes)
 - Routine post-migration advisor check (after #763) surfaced one ERROR-level finding: `service.contract_scopes` was the only one of 26 canonical views missing `security_invoker = true`, meaning it read `app_data` as its owner and bypassed tenant RLS. Pre-existing (faithfully reproduced from the live view's actual shape in migration 0216, not introduced by it) but in touched scope.
 - Migration 0222: `ALTER VIEW service.contract_scopes SET (security_invoker = true)`. Dry-run verified (145 rows, no error) before shipping. Re-checked advisors after dispatch: zero ERROR-level findings, zero references to `contract_scopes`.
