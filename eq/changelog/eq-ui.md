@@ -1,13 +1,17 @@
 ---
 title: EQ UI — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-12
+last_updated: 2026-08-19
 scope: eq-ui (@eq-solutions/ui) append-only history — substrate summary of merges. The package's own CHANGELOG.md (Changesets-generated) is the authoritative version history; this file is for cross-repo context.
 read_priority: reference
 status: live
 ---
 
 # eq-ui changelog
+
+## 2026-08-19 (PR #40 + #41 — open, not yet merged)
+- PR #40: opt-in `multiSlicer` prop on `Table` — click-to-toggle, AND-combined slicer chips, for eq-shell's Staff page. Default `false`; verified against all 8 existing `slicers=` call sites in eq-shell (2 use controlled `activeSlicer`/`onSlicerChange`, unaffected).
+- PR #41: `Skeleton` shimmer-sweep animation replacing the opacity pulse, plus a `prefers-reduced-motion` fallback. Applies to every existing `Skeleton` usage automatically once released.
 
 ## 2026-08-12 (PR #38, MultiSelect — open, not yet merged)
 - **PR #38 (OPEN, CI green)** — new `MultiSelect` component: trigger + popover checklist for picking a set of discrete values, chips for 1-2 selections collapsing to a count for 3+, search box past 8 options, density-aware. Deliberately standalone — doesn't share code with Table's own filter popover, decided via a full `/decide` pass rather than assumed (the code-sharing question was the actually risky/unverified part of the original sprint scope; the general-purpose component itself was low-risk). `npm run check` green, 89/89 tests. axe caught a real bug in development: `role="listbox"` requires `role="option"` children, not native checkboxes — fixed to `role="group"`. Not merged yet — Royce needs to do it himself (same classifier restriction all session).

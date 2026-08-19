@@ -9,6 +9,11 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-19 (PR #1454 + #1455 + #1457 + #1458 MERGED — Staff table declutter/filters + Conversations RLS fix)
+- **Staff table**: dropped the duplicate email shown under the person's name (already in the Contact column). Contact/Trade were the only per-column `'text'`-filter rows on a table otherwise built from `'multiselect'` popovers — Contact drops its filter row (global search still covers phone/email), Trade moves to `multiselect`. Status column rebuilt as clickable pill badges (Supervisor / On roster / Off roster) replacing a checkbox+caption pair; the redundant inline "Off roster" name-tag was dropped since Status now owns that fact.
+- **Security fix**: `app_data.staff_conversations` (personal HR check-in/development-review notes) had tenant-only RLS — any signed-in tenant user could bypass the UI's `staff.manage_conversations` permission and read every conversation directly via the browser's own Supabase client. Migration 0250 tightened RLS to `created_by = auth.uid()`. Dispatching it also applied an older, previously-undispatched migration (0242) that added a second, looser permissive policy on the same table — Postgres ORs multiple permissive policies together, so the live gate briefly allowed "creator OR permission-holder." Migration 0251 consolidated to exactly one creator-only policy. Verified live via `pg_policies`: exactly one policy on the table.
+- Both merged and confirmed live on core.eq.solutions (merge = deploy on this repo); the RLS migrations were separately dispatched via `tenant-migrate.yml --slug sks` and verified against ehow directly.
+
 ## 2026-08-19 (PR #1456 MERGED — WorkerHome gains a Service tile + the tenant logo)
 - Found via a screenshot review with Royce: `WorkerHome.tsx` (the worker/apprentice-facing Core home) showed only My Card + EQ Field, no Service tile, and no tenant branding beyond a plain text name.
 - Service tile added, gated the same way the manager dashboard's own Service tile already is: tenant entitlement + non-trial tier. `git log` on the file confirmed Service was never previously added or discussed here — an oversight, not a deliberate exclusion — and there's no per-user role gate for Service anywhere in the app to mirror instead.
