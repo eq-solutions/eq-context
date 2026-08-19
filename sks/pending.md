@@ -1,13 +1,23 @@
 ---
 title: SKS — Pending
 owner: Royce Milmlow
-last_updated: 2026-08-18
+last_updated: 2026-08-19
 scope: SKS Technologies operational TODO list
 read_priority: critical
 status: live
 ---
 
 # SKS Pending
+
+## EQ Field screenshot review — 4 fixes shipped live, 1 security migration drafted but not switched on (2026-08-19)
+*Royce walked through 6 mobile screenshots of the SKS app (via Google Drive) plus 3 live pasted screenshots, commenting on each. Real gaps fixed same session: Job Numbers nav item stuck under a stale "Beta" label on mobile; the weekly supervisor digest screen (names/emails of every supervisor, plus which digest sections are on) had no access restriction at all — any logged-in person, including an apprentice, could see and appeared able to edit it (the edit itself would have failed server-side, but the view was wide open); that same digest list ran very long on mobile with no way to collapse it; Edit Roster's row-action icons overflowed their column on Labour Hire rows; the Sites page was "very long... annoying to navigate" with every customer's sites always fully expanded. All five shipped and confirmed live same day ([eq-field #729](https://github.com/eq-solutions/eq-field/pull/729), [#730](https://github.com/eq-solutions/eq-field/pull/730)).*
+
+*Checking the digest-access gap also turned up a bigger one: the database itself didn't enforce who can create/edit/delete Prestarts, Toolbox Talks, Incidents, Site Diaries, or Site Audits — the app's own "only a manager or supervisor can do this" rule was UI-only, not backed by a database rule, so anyone technically inclined could have bypassed it entirely. Royce approved the fix and it's applied to the real system now (a separate, concurrent session on the same day handled the approval + apply — see that session's own write-up).*
+
+- [x] eq-shell's mobile home screen (what a non-manager worker sees first) was missing the button into the maintenance/defects app (Service) — other apps had it, this one didn't, and there was no reason found for the gap. Also added the SKS logo, which wasn't showing there at all. Fixed and live. _(eq-shell PR #1456)_
+- [x] **The database-level fix for who can create/edit/delete Prestarts/Toolbox Talks/Incidents/Site Diaries/Site Audits** — written, approved, applied to the live system, and confirmed working. _(eq-field PR #728, applied 2026-08-19)_
+- [ ] **Two more places with the same "database doesn't check who's allowed" gap were flagged mid-session** (the weekly digest's supervisor list, and a general settings table that also happens to store the login PIN codes) **but it's not confirmed whether they made it into the fix above or still need their own.** Worth a quick check before considering this closed. _(added 2026-08-19)_
+- [ ] **A reported roster-grid "alignment" issue (one person's row looked off) couldn't be reproduced from the code** — most likely just placeholder text in blank cells reading like real data at a glance, not an actual bug, but left open rather than guessed at. _(added 2026-08-19)_
 
 ## EQ Field: timesheets/leave weren't scoped per-person — fix merged into the app, still not switched on for real (2026-08-16)
 
