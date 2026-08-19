@@ -61,8 +61,13 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-19)
 
 **eq-cards:**
-- #280 fix(auth): recover pending invite claim on reload
 - #277 ci: guard against silent function-grant strips on jvkn migrations
+
+**eq-field:**
+- #734 fix(people): flag missing required credentials on the roster
+
+**eq-service:**
+- #764 fix(db): set security_invoker on service.contract_scopes
 
 **eq-shell:**
 - #1461 feat(field): add RPCs for Field roster credential parity
