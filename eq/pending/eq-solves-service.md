@@ -31,8 +31,10 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 - [x] Fixed a stale count in `eq-solves-service/CLAUDE.md` (said 25 canonical objects, should be 26 — `pm_calendar` was missing from the list).
 - [x] Hit one infrastructure hiccup mid-dispatch (a transient timeout applying `0219`) — checked the migration ledger directly before retrying rather than guessing, confirmed it had rolled back cleanly with nothing half-applied, then retried successfully.
 
+- [x] **Royce said go — ran the generator for real the same day**, against the full live SKS scope (145 rows). All 145 landed as `insert`/`placeholder` (none were `hard` or `window`) — confirmed live: `app_data.pm_schedule` now holds 145 real rows, every one dated 2026-10-18 (today+60), `draft_status = 'draft'`.
+
 **Deferred:**
-- [ ] **The generator has never actually been run for real.** It's live, safe, and dry-run-verified against the full real dataset — but `p_dry_run=false` (the switch that actually writes calendar entries) hasn't been thrown yet. Deliberate stopping point, not a gap — the first real run writes real data and should be your call. _(added 2026-08-19)_
+- [ ] **Every one of the 145 new calendar entries is a rough 60-day placeholder, not a real date — because nobody has classified any scope item as `hard` or `window` yet.** The generator itself worked correctly; the value it was built for (real contracted dates showing up automatically) needs the classification gate actually used first. That gate (one-time-at-import + an ongoing admin screen, both scoped this session) was never built — only the underlying 3-regime data model and the generator that reads it were. Needs its own session. _(added 2026-08-19)_
 - [ ] **`pm_roster_coverage` (the "is anyone rostered near this date" view) has no screen yet.** It's a real, live database view — nothing in the app UI shows it to anyone yet. _(added 2026-08-19)_
 
 ---
