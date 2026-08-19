@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-19 08:49 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-19 08:54 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-19 08:44 UTC → 2026-08-19 08:49 UTC)
+## Since last refresh (2026-08-19 08:49 UTC → 2026-08-19 08:54 UTC)
 
-- Merged: eq-shell [#1448](https://github.com/eq-solutions/eq-shell/pull/1448) fix(cards): write public.workers.role on every claim path
-- Merged: eq-shell [#1447](https://github.com/eq-solutions/eq-shell/pull/1447) feat(cards): notify org admins on QR/join-code signups
-- Merged: eq-shell [#1446](https://github.com/eq-solutions/eq-shell/pull/1446) fix(entity-patch): mirror staff email/phone corrections to c
-- Merged: eq-shell [#1445](https://github.com/eq-solutions/eq-shell/pull/1445) chore(intake): auto re-vendor eq-intake/eq-platform
-- Merged: eq-shell [#1443](https://github.com/eq-solutions/eq-shell/pull/1443) fix(field): add 7 missing columns to zaap's staff table, unb
-- Merged: eq-shell [#1441](https://github.com/eq-solutions/eq-shell/pull/1441) chore(roles): bump @eq-solutions/roles to v2.7.4
-- Merged: eq-shell [#1440](https://github.com/eq-solutions/eq-shell/pull/1440) feat(access-control): list-members exposes effective permiss
-- Merged: eq-shell [#1438](https://github.com/eq-solutions/eq-shell/pull/1438) revert(staff): drop the compliance-pack caption, it read as 
+- Merged: eq-shell [#1450](https://github.com/eq-solutions/eq-shell/pull/1450) perf(nav): intercept same-origin anchor clicks so sidebar na
+- Merged: eq-shell [#1449](https://github.com/eq-solutions/eq-shell/pull/1449) perf(entity-browser): cache table-row queries for 30s
+- Merged: eq-shell [#1444](https://github.com/eq-solutions/eq-shell/pull/1444) fix(field): DROP+CREATE field_people view, CREATE OR REPLACE
+- Merged: eq-shell [#1442](https://github.com/eq-solutions/eq-shell/pull/1442) fix(shell-join-tenant): match unlinked worker by email when 
+- Merged: eq-shell [#1439](https://github.com/eq-solutions/eq-shell/pull/1439) fix(staff): only block a Cards-linked worker's save when dob
+- Merged: eq-shell [#1437](https://github.com/eq-solutions/eq-shell/pull/1437) fix(field): drop worker_assignments' functions/type too, unb
+- Merged: eq-shell [#1436](https://github.com/eq-solutions/eq-shell/pull/1436) fix(field): drop zaap's worker_credentials/inductions/assign
+- Merged: eq-shell [#1435](https://github.com/eq-solutions/eq-shell/pull/1435) fix(field): drop zaap's dead legacy tables, fix field_people
 
 ## ⚠ Needs you (5)
 
@@ -51,10 +51,10 @@ _…and 164 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 13d ago | 0 | — |
+| eq-shell | ✓ success | 0d ago | 1 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 0 | — |
 | eq-field | ✓ success | 0d ago | 0 | — |
-| eq-cards | ✓ success | 0d ago | 3 | 0d |
+| eq-cards | ✓ success | 0d ago | 2 | 0d |
 | eq-solves-intake | ✓ success | 1d ago | 0 | — |
 
 ## Live errors (Sentry)
@@ -78,6 +78,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-19 | eq-solves-service | [#763](https://github.com/eq-solutions/eq-service/pull/763) feat(db): generate PM calendar entries from contract-scope date c |
 | 2026-08-19 | eq-solves-service | [#761](https://github.com/eq-solutions/eq-service/pull/761) feat(db): date-certainty gate on contract scopes + PM roster cove |
 | 2026-08-19 | eq-solves-service | [#762](https://github.com/eq-solutions/eq-service/pull/762) docs: pm_calendar joined the canonical write layer, 25 -> 26 |
+| 2026-08-19 | eq-field | [#733](https://github.com/eq-solutions/eq-field/pull/733) fix(auth): session name ignored the resolved field_person_name |
 | 2026-08-19 | eq-field | [#731](https://github.com/eq-solutions/eq-field/pull/731) security(rls): manager/supervisor-only write on app_config (draft |
 | 2026-08-19 | eq-field | [#732](https://github.com/eq-solutions/eq-field/pull/732) security: revoke anon SELECT on app_config.value — live PIN/token |
 | 2026-08-19 | eq-cards | [#279](https://github.com/eq-solutions/eq-cards/pull/279) docs(privacy): explain why collection-notice banners stay as-is |
@@ -86,13 +87,12 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-18 | eq-shell | [#1454](https://github.com/eq-solutions/eq-shell/pull/1454) fix(staff): drop duplicate email from Staff table NAME column |
 | 2026-08-18 | eq-shell | [#1416](https://github.com/eq-solutions/eq-shell/pull/1416) chore(intake): auto re-vendor eq-intake/eq-platform |
 | 2026-08-18 | eq-shell | [#1451](https://github.com/eq-solutions/eq-shell/pull/1451) perf(nav): cache staff sub-page queries, prefetch lazy route chun |
-| 2026-08-18 | eq-shell | [#1452](https://github.com/eq-solutions/eq-shell/pull/1452) fix(cards): allow web-share in the Cards iframe so iOS Save works |
-_Showing 15 of 122 · full record in [sessions/](sessions/)_
+_Showing 15 of 121 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
 - **eq-shell** (215 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
-- **eq-cards** (51 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
+- **eq-cards** (53 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (109 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (79 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
 - **eq-solves-intake** (18 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
@@ -105,6 +105,7 @@ _Showing 15 of 122 · full record in [sessions/](sessions/)_
 
 ## Pending (SKS)
 
+- **SKS's own number, for reference: 6 of 32 active SKS members are currently missing White Card** — visible today in Shell's Training Matrix; nothing blocks them from working while missing it (soft-flag by design, not an oversight). Worth a look if Royce wants a harder rule for SKS specifically. _(added 2026-08-19)_
 - **Two more places with the same "database doesn't check who's allowed" gap were flagged mid-session** (the weekly digest's supervisor list, and a general settings table that also happens to store the login PIN codes) **but it's not confirmed whether they made it into the fix above or still need their own.** Worth a quick check before considering this closed. _(added 2026-08-19)_
 - **A reported roster-grid "alignment" issue (one person's row looked off) couldn't be reproduced from the code** — most likely just placeholder text in blank cells reading like real data at a glance, not an actual bug, but left open rather than guessed at. _(added 2026-08-19)_
 - **Still not applied to the live database — checked directly, and Royce turned down the shortcut that would have unblocked it today.** Confirmed merging the PR didn't secretly switch it on. Turning it on for real right now would lock the people who haven't signed in yet out of their own timesheet and leave the moment they do, since the fix depends on their login already being linked to their staff record — 37 of 83 active SKS staff, checked again today. A workaround exists (let just those specific people keep today's wider access until they sign in, instead of holding up everyone else) but Royce said no — waiting for them to actually sign in through the real onboarding process instead, however long that takes. _(added 2026-08-16, decision confirmed 2026-08-16)_
@@ -114,8 +115,7 @@ _Showing 15 of 122 · full record in [sessions/](sessions/)_
 - **~7 SKS staff missing from EQ Field's staff table** (hired since the 5 Jul snapshot): Ahmed Masaud, Amir Farid, Callum Treharne, Jhon Jairo Velasquez Meneses, Nabeel Hussain, Paul Bolger, Timothy Sue — plus a handful of name-string mismatches (e.g. "Bruno Pedrosa" vs "Bruno Vita Pedrosa", "Jose Quintanilla" vs "Jose Luis Quintanilla Rodriguez"). Royce said he'll manage this himself via EQ Field's People admin. _(added 2026-08-14)_
 - **Leave sync parked deliberately** — an imported leave code lands on `schedule_entries.leave_type` directly, not in `app_data.leave_requests`, so it displays but carries no approver/audit trail. Royce explicitly scoped this session to roster only; leave is its own future task. _(added 2026-08-14)_
 - **Richard needs to re-add his LV Rescue photo** — none of the 6 attempts ever actually captured one; the surviving row has the licence details but no photo. _(added 2026-08-13)_
-- **Underlying Cards mobile bug not yet fixed** — a licence "renewal" can silently save nothing if on-device OCR can't read the card and the user doesn't notice the date field still shows the old value. Worth watching for other workers hitting the same silent failure until eq-cards ships the fix. _(added 2026-08-11)_
-_…and 72 more · [sks/pending.md](sks/pending.md)_
+_…and 73 more · [sks/pending.md](sks/pending.md)_
 
 ## Queue health
 
@@ -124,7 +124,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
 | [eq-shell](eq/pending/eq-shell.md) | 1325 | 166 / 54 | 114 | 39 |
-| [eq-cards](eq/pending/eq-cards.md) | 389 | 38 / 13 | 41 | 3 |
+| [eq-cards](eq/pending/eq-cards.md) | 403 | 40 / 13 | 45 | 3 |
 | [eq-field](eq/pending/eq-field.md) | 740 | 90 / 24 | 34 | 12 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 476 | 62 / 20 | 37 | 7 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 152 | 13 / 6 | 5 | 14 |
@@ -134,7 +134,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | [eq-context](eq/pending/eq-context.md) | 206 | 22 / 2 | 19 | 5 |
 | [cross-repo](eq/pending/cross-repo.md) | 948 | 143 / 42 | 20 | 30 |
 | [sks](eq/pending/sks.md) | 53 | 3 / 5 | 0 | 6 |
-| [SKS](sks/pending.md) | 441 | 82 / 9 | 3 | 18 |
+| [SKS](sks/pending.md) | 446 | 83 / 9 | 3 | 18 |
 | [SKS active](sks/active.md) | 109 | 0 / 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 460 | 33 / 4 | 0 | 1 |
 
@@ -194,4 +194,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-19 08:49 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-19 08:54 UTC._
