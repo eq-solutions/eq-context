@@ -13,6 +13,28 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: full navigation-by-role audit — 6 gate fixes + 3 dead pages removed, merged, live (2026-08-19)
+*Royce asked for a full review of eq-shell's navigation for every security role, outcome to simplify and make sure every menu makes sense. Mapped all 15 nav surfaces (desktop sidebar, mobile tabs, admin hub, command palette, records drawer, in-module navs) against the real 6-role + platform-admin permission model (63 `PermKey`s, `MATRIX` defaults, tenant overrides, Security Groups) before changing anything. Checked 10 candidate nav-relevant branches for collision risk first — every one had already shipped to main under squashed commits, zero live conflict.*
+
+- [x] **NSW Comms declared a view permission (`COMMS_VIEW_PERM` = `field.view`) but never checked it anywhere** — any authed role in a comms-enabled tenant saw client names/job values/invoicing with zero gate, and a tenant couldn't restrict it via Security Groups despite the code implying it could. Wired the `Gate`. Verified live against jvkn first (`tenant_role_overrides` + `security_group_perms`, zero rows reference `field.view`) — confirmed no-op for every currently-configured tenant, only closes the door for future restriction.
+- [x] **`TenantHome.tsx`'s Compliance-report quick link checked `field.view` (all 6 roles)**; its destination requires `field.view_licences` (manager/supervisor) — same mismatch this repo has fixed 4x before in server code, missed on the client. Matched.
+- [x] **`hasFieldAccess()` was missing from 2 of 5 Field surfaces** (`TenantHome.tsx`'s app tiles, the command palette) — a compliance-roster-only worker could be offered "EQ Field" there, unlike the sidebar/mobile tabs/WorkerHome. Added.
+- [x] **EQ Ops showed to every role then blocked apprentice/labour_hire/subcontractor after they clicked** — the one tile in the app that worked this way instead of just hiding. Now gated on `quotes.view` (which `EqOps.tsx` itself already hard-requires, so this removes zero real access) in `HubLayout.tsx`, `TenantHome.tsx`, `useCommandIndex.tsx` — matches Equipment/Suppliers/Labour-hire-rates.
+- [x] **Mobile Admin sheet mislabeled its Reports row "GM Reports"** while linking to the general Reports index; relabeled + fixed the matching stale doc-comment.
+- [x] **Removed 3 confirmed-dead files (1,512+ lines), asked first**: `AdminSecurityGroups.tsx` (byte-identical re-export, duplicate `/admin/security-groups` route, zero nav triggers) + `CustomersHubPage.tsx`/`SiteDetailView.tsx` (never wired into `App.tsx`, superseded by the real `CustomersPage.tsx`). Also dropped the now-dangling hover-prefetch entry.
+- [x] **Two other calls asked, both declined** — Customers/Staff stay ungated for all 6 roles (not tightened to match `entity.view`, which itself excludes labour_hire/subcontractor); `reports.view` stays manager-only (not extended to supervisor).
+- [x] Full role × nav matrix + every finding delivered as a working reference, not just a fix list — [audit artifact](https://claude.ai/code/artifact/d23bedd6-d5c3-4586-badd-cb5561fffc09).
+- [x] eq-shell [PR #1463](https://github.com/eq-solutions/eq-shell/pull/1463), 2 commits, `tsc -b --force` + permission-enforcement-drift guard clean (5/5, zero new dead keys), full CI green, squash-merged (`580aa3f3`) — confirmed live via Netlify `getDeploy` (`state: ready`, `commit_ref` matches the merge commit exactly, `published_at` 10:07:28Z), not just a green deploy log.
+- [x] **Byproduct**: this worktree's `node_modules` didn't match its own lockfile (`@eq-solutions/roles` stuck on v2.7.2 vs the pinned v2.7.4, which made the drift guard fail for real). `pnpm install` fixed it — local-only, Netlify installs fresh from the lockfile.
+
+**Deferred:**
+- [ ] **Not clicked through live** — confirmed by typecheck, the permission-drift guard, and a direct jvkn query proving the Comms fix is a no-op today, not by an actual signed-in click-through. Worth two minutes on NSW Comms, the Ops tile as apprentice/labour_hire/subcontractor, and the mobile Reports row. _(added 2026-08-19)_
+- [ ] **Storage browser (`/storage`) has no nav link anywhere** — reachable only by typing the URL. Its open browse/download for all roles is your own earlier call (2026-08-16), not revisited; just noting it's undiscoverable from any menu. _(added 2026-08-19)_
+- [ ] **Resourcing/Org-chart tabs are invisible to every role by default** — `staff.manage_conversations` has no role grants at all, Security-Group opt-in only. Matches the recent run of branches already touching this tab's visibility. _(added 2026-08-19)_
+- [ ] **`HubLayout.tsx` and `TenantHome.tsx` keep separate, near-identical `HUB_APPS` arrays** — not a bug (kept both in sync today), worth consolidating the next time a third surface needs the same list. _(added 2026-08-19)_
+
+---
+
 ## eq-shell: WorkerHome was missing the Service tile and never showed the tenant's logo — found via screenshot review, fixed, merged, live (2026-08-19)
 *Spawned from a screenshot review with Royce: an SKS apprentice test profile signed into `core.eq.solutions/sks` saw only two tiles (My Card, EQ Field) on the worker home screen, no way to reach EQ Service, and no tenant branding beyond a plain text name. Investigated rather than assumed — checked git history to rule out a deliberate exclusion before building.*
 

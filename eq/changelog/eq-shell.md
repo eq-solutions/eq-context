@@ -9,6 +9,15 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-19 (PR #1463 MERGED — full navigation-by-role audit: 6 gate fixes + 3 dead pages removed)
+- NSW Comms now actually enforces its declared view permission (`COMMS_VIEW_PERM`) — previously checked nowhere, so any authed role could see client names/job values/invoicing; a tenant can now restrict it via Security Groups. No default-visibility change for any currently-configured tenant (verified live against jvkn).
+- TenantHome's Compliance-report link now matches its destination's real gate (`field.view_licences`, not `field.view`).
+- EQ Field tiles in the manager dashboard and command palette now respect `hasFieldAccess()`, matching every other Field surface.
+- EQ Ops tile now hides for apprentice/labour_hire/subcontractor (who couldn't use it anyway) instead of showing then blocking after click, matching Equipment/Suppliers/Labour-hire-rates.
+- Mobile "Reports & admin" sheet's Reports row relabeled from "GM Reports" to "Reports" to match its actual destination.
+- Removed 3 confirmed-dead files (1,512+ lines): duplicate `/admin/security-groups` route + `AdminSecurityGroups.tsx`, and `CustomersHubPage.tsx`/`SiteDetailView.tsx` (superseded by `CustomersPage.tsx`).
+- Full role × nav matrix + findings: https://claude.ai/code/artifact/d23bedd6-d5c3-4586-badd-cb5561fffc09.
+
 ## 2026-08-19 (PR #1460 MERGED — Staff table filter chips now click-to-toggle + AND-combine)
 - Bumped `@eq-solutions/ui` pin to v1.16.0 (publishes eq-ui [PR #40](https://github.com/eq-solutions/eq-ui/pull/40)'s `multiSlicer` prop) and turned it on for the Staff table: the filter chips above the table (Has expired / Has expiring / Needs review / Has flags / Supervisors / Off roster) now click on/off and AND-combine, instead of single-select.
 - Updated the hand-maintained `src/types/eq-solutions-ui.d.ts` type shim to add `multiSlicer?: boolean` — the shim shadows the package's raw-TS source so eq-shell's stricter compiler options don't choke on it; it needs manual sync, per its own header comment.
