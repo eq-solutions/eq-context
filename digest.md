@@ -8,26 +8,26 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-19 10:38 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-19 12:36 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-19 10:33 UTC → 2026-08-19 10:38 UTC)
+## Since last refresh (2026-08-19 10:38 UTC → 2026-08-19 12:36 UTC)
 
-- Merged: eq-shell [#1462](https://github.com/eq-solutions/eq-shell/pull/1462) feat(auth): PIN reveal toggle + raise length ceiling 12→20
-- Merged: eq-shell [#1454](https://github.com/eq-solutions/eq-shell/pull/1454) fix(staff): drop duplicate email from Staff table NAME colum
-- Merged: eq-shell [#1451](https://github.com/eq-solutions/eq-shell/pull/1451) perf(nav): cache staff sub-page queries, prefetch lazy route
-- Merged: eq-shell [#1450](https://github.com/eq-solutions/eq-shell/pull/1450) perf(nav): intercept same-origin anchor clicks so sidebar na
-- Merged: eq-shell [#1449](https://github.com/eq-solutions/eq-shell/pull/1449) perf(entity-browser): cache table-row queries for 30s
-- Merged: eq-shell [#1444](https://github.com/eq-solutions/eq-shell/pull/1444) fix(field): DROP+CREATE field_people view, CREATE OR REPLACE
-- Merged: eq-shell [#1443](https://github.com/eq-solutions/eq-shell/pull/1443) fix(field): add 7 missing columns to zaap's staff table, unb
-- Merged: eq-shell [#1442](https://github.com/eq-solutions/eq-shell/pull/1442) fix(shell-join-tenant): match unlinked worker by email when 
+- Merged: eq-shell [#1456](https://github.com/eq-solutions/eq-shell/pull/1456) fix(home): WorkerHome gets the Service tile + tenant logo it
+- Merged: eq-shell [#1455](https://github.com/eq-solutions/eq-shell/pull/1455) fix(staff): consistent column filters + Status as toggleable
+- Merged: eq-shell [#1452](https://github.com/eq-solutions/eq-shell/pull/1452) fix(cards): allow web-share in the Cards iframe so iOS Save 
+- Merged: eq-shell [#1448](https://github.com/eq-solutions/eq-shell/pull/1448) fix(cards): write public.workers.role on every claim path
+- Merged: eq-shell [#1447](https://github.com/eq-solutions/eq-shell/pull/1447) feat(cards): notify org admins on QR/join-code signups
+- Merged: eq-shell [#1446](https://github.com/eq-solutions/eq-shell/pull/1446) fix(entity-patch): mirror staff email/phone corrections to c
+- Merged: eq-shell [#1445](https://github.com/eq-solutions/eq-shell/pull/1445) chore(intake): auto re-vendor eq-intake/eq-platform
+- Merged: eq-shell [#1441](https://github.com/eq-solutions/eq-shell/pull/1441) chore(roles): bump @eq-solutions/roles to v2.7.4
 
 ## ⚠ Needs you (5)
 
 - 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
+- 🔴 **Cron failing** — `index-drift.yml` 2 consecutive scheduled run(s) failed, last success 2026-08-17 · [failures.md](system/failures.md) F11
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-08-19.md](sessions/2026-08-19.md) · [failures.md](system/failures.md)
 - 🟠 **Sentry new error** — `eq-shell` [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/)
 - 🟠 **Sentry new error** — `eq-shell` [Degraded UI Performance](https://eq-solutions.sentry.io/issues/141127922/)
-- 🟠 **Cron failing** — `index-drift.yml` 1 consecutive scheduled run(s) failed, last success 2026-08-17 · [failures.md](system/failures.md) F11
 
 ## 🙋 Waiting on you (175)
 
@@ -51,8 +51,8 @@ _…and 163 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 0 | — |
-| eq-solves-service | ✓ success | 0d ago | 2 | 0d |
+| eq-shell | ✓ success | 0d ago | 1 | 0d |
+| eq-solves-service | ✓ success | 0d ago | 1 | 0d |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 1d ago | 0 | — |
@@ -80,18 +80,18 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-19 | eq-shell | [#1459](https://github.com/eq-solutions/eq-shell/pull/1459) feat(drift): add stacked-permissive-policy check (CHECK 9) |
 | 2026-08-19 | eq-shell | [#1458](https://github.com/eq-solutions/eq-shell/pull/1458) security(staff): consolidate staff_conversations RLS to one creat |
 | 2026-08-19 | eq-shell | [#1457](https://github.com/eq-solutions/eq-shell/pull/1457) security(staff): restrict staff_conversations RLS to the creator |
+| 2026-08-19 | eq-solves-service | [#768](https://github.com/eq-solutions/eq-service/pull/768) fix(dashboard): surface Supabase query errors instead of renderin |
 | 2026-08-19 | eq-solves-service | [#769](https://github.com/eq-solutions/eq-service/pull/769) fix(pages): surface Supabase query errors instead of rendering em |
 | 2026-08-19 | eq-solves-service | [#767](https://github.com/eq-solutions/eq-service/pull/767) fix(contract-scope): default Year filter to All Years, not curren |
 | 2026-08-19 | eq-solves-service | [#765](https://github.com/eq-solutions/eq-service/pull/765) fix(contract-scope): surface Supabase query errors instead of ren |
 | 2026-08-19 | eq-solves-service | [#764](https://github.com/eq-solutions/eq-service/pull/764) fix(db): set security_invoker on service.contract_scopes |
 | 2026-08-19 | eq-solves-service | [#763](https://github.com/eq-solutions/eq-service/pull/763) feat(db): generate PM calendar entries from contract-scope date c |
 | 2026-08-19 | eq-solves-service | [#761](https://github.com/eq-solutions/eq-service/pull/761) feat(db): date-certainty gate on contract scopes + PM roster cove |
-| 2026-08-19 | eq-solves-service | [#762](https://github.com/eq-solutions/eq-service/pull/762) docs: pm_calendar joined the canonical write layer, 25 -> 26 |
 _Showing 15 of 121 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **eq-shell** (218 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-shell** (219 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (51 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (111 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (81 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
@@ -123,7 +123,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1347 | 168 / 54 | 126 | 39 |
+| [eq-shell](eq/pending/eq-shell.md) | 1371 | 171 / 54 | 133 | 39 |
 | [eq-cards](eq/pending/eq-cards.md) | 406 | 40 / 13 | 43 | 3 |
 | [eq-field](eq/pending/eq-field.md) | 749 | 91 / 24 | 36 | 12 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 483 | 64 / 20 | 37 | 7 |
@@ -134,7 +134,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | [eq-context](eq/pending/eq-context.md) | 206 | 22 / 2 | 19 | 5 |
 | [cross-repo](eq/pending/cross-repo.md) | 948 | 143 / 42 | 20 | 30 |
 | [sks](eq/pending/sks.md) | 53 | 3 / 5 | 0 | 6 |
-| [SKS](sks/pending.md) | 446 | 83 / 9 | 3 | 18 |
+| [SKS](sks/pending.md) | 445 | 83 / 9 | 2 | 18 |
 | [SKS active](sks/active.md) | 109 | 0 / 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 460 | 33 / 4 | 0 | 1 |
 
@@ -194,4 +194,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-19 10:38 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-19 12:36 UTC._
