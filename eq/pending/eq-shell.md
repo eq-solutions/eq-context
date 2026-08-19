@@ -13,6 +13,30 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: PIN show/hide toggle + 4–20 length ceiling — built, PR open, blocked on an unrelated CI failure (2026-08-19)
+*Royce asked for a "show password" toggle (Sharon couldn't tell if her PIN and confirm-PIN matched while typing blind) and whether the 12-character PIN limit could safely go to 20.*
+
+- [x] **Reveal toggle added to all 6 masked PIN fields** — sign-in (email+PIN and phone+PIN fallback), Set PIN (invite-accept), Set new PIN (reset). Matches the pattern already built (unmerged) on `claude/has-email-refresh-and-pin-reveal` for the phone-PIN setup screen, checked first so the app doesn't end up with two different-looking toggles once both land.
+- [x] **Ceiling raised 4–12 → 4–20** in both PIN-setting functions (`accept-invite.ts`, `accept-pin-reset.ts`) plus the sign-in field, which had a second, easy-to-miss hardcoded `.slice(0,12)` alongside its `maxLength` that would've silently undone a maxLength-only fix. Confirmed safe: PINs are stored as bcrypt hashes, not raw text, so 20 characters touches neither storage nor bcrypt's 72-byte input cap — traced both the setter and verify (`shell-login.ts`) sides to confirm no other length-dependent check exists anywhere on the read path.
+- [x] Left the phone+PIN door (6-digit numeric, deliberately separate scheme) untouched.
+- [x] `tsc -b --force` clean, eslint clean, full test suite 367/368 (1 pre-existing unrelated failure — permission-baseline drift on `service.receive_calendar_digest`, no permission keys touched here). Live-tested in real Chrome (not the in-app pane) via `vite dev`: typing, 20-char truncation, and reveal all confirmed on sign-in, Set PIN, and Confirm PIN.
+- [x] eq-shell [PR #1462](https://github.com/eq-solutions/eq-shell/pull/1462) open — merge-readiness audit confirms the PR itself is fully clean (all its own checks green, no conflicts, scope matches exactly, 1 commit behind main with zero file overlap).
+
+**Deferred:**
+- [ ] **Blocked on a required CI check failing for an unrelated reason, not this PR's own code.** "Schema drift + anon-grant + policy-lint" is red because a different, unrelated branch (`claude/field-missing-required-rpcs`) added two new anon-executable SECURITY DEFINER functions — `eq_field_get_org_credential_requirements`, `eq_field_get_org_worker_roles` — not allow-listed on the shared eq-canonical control plane. Royce chose to wait for it to clear naturally rather than admin-bypass the check; a background poller + fallback wakeup are watching PR #1462 and will merge automatically (squash) the moment it goes green — no action needed unless it's still stuck next time this is checked. _(added 2026-08-19)_
+- [ ] **The anon-grant finding itself is a separate, real issue** worth its own fix regardless of what happens to PR #1462 — spun off as its own task (`task_831eaae4`) so it doesn't get lost once #1462 unblocks. _(added 2026-08-19)_
+- [ ] **Cosmetic-only, no fix needed:** in Chrome, the browser's own password-manager icon can sit next to the new reveal-toggle icon while a PIN field is masked — it disappears the instant either icon is clicked to reveal, so it never actually interferes with the reveal-and-compare workflow this was built for. Noted for awareness, not a bug. _(added 2026-08-19)_
+
+---
+
+## eq-shell: Staff licence "needs re-review" badge questioned on Collin Toohey's profile — confirmed working correctly, not a bug (2026-08-19)
+*Royce asked why Collin's profile kept asking for a licence re-review after already being reviewed on 18 Aug. Investigated the actual review-invalidation code rather than guessing, then verified the specific claim against live data (ehow + jvkn) rather than trusting the code alone.*
+
+- [x] **Confirmed the flag is correct.** Collin's driver's licence expiry moved from 1 Dec 2026 to 1 Dec 2027 (a renewal) after the 18 Aug review — verified directly against `app_data.licences` on ehow and the recorded review fingerprint in `shell_control.cards_field_approvals` on jvkn. That's the "1 licence changed since" the badge reports.
+- [x] **Confirmed the fingerprint-based re-review logic (already shipped, `staffHelpers.ts`'s `reviewBadgeFor`) is doing its job.** All 7 of Collin's licences got touched by the same bulk sync run today (identical `updated_at`), but only the driver's licence content actually changed — the other 6 correctly stayed "reviewed" because the badge compares real licence fields (number/expiry/photo), not the timestamp. Direct live proof the earlier `updated_at`-false-positive fix (documented in `staff-resync-licences.ts`'s own comments) is working as designed.
+
+---
+
 ## eq-shell: full navigation-by-role audit — 6 gate fixes + 3 dead pages removed, merged, live (2026-08-19)
 *Royce asked for a full review of eq-shell's navigation for every security role, outcome to simplify and make sure every menu makes sense. Mapped all 15 nav surfaces (desktop sidebar, mobile tabs, admin hub, command palette, records drawer, in-module navs) against the real 6-role + platform-admin permission model (63 `PermKey`s, `MATRIX` defaults, tenant overrides, Security Groups) before changing anything. Checked 10 candidate nav-relevant branches for collision risk first — every one had already shipped to main under squashed commits, zero live conflict.*
 
