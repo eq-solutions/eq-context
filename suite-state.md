@@ -64,6 +64,7 @@ _If this file is >48h old, the cron is broken._
 - #775 feat(contract-scope): timing gate on the commercial-sheet importer
 
 **eq-shell:**
+- #1468 chore(nav): remove 2 more orphaned pages (Field roster + Shell licence OCR)
 - #1466 chore(deps): bump @eq-solutions/ui to v1.16.1
 
 ---
