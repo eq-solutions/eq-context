@@ -9,10 +9,10 @@ status: live
 
 # EQ Cards — Changelog
 
-## 2026-08-19 (PR #278 OPENED, not yet merged — fix invite-misroute on reload in NotProvisionedScreen)
+## 2026-08-19 (PR #280 OPENED, not yet merged — fix invite-misroute on reload in NotProvisionedScreen)
 - `NotProvisionedScreen` is reached via a generic router redirect, not only right after OTP verify. A worker who opens an employer's invite link and then hits a full reload before finishing OTP loses the in-memory `PendingClaim.token` (intentionally non-persistent) and lands here, which was silently auto-provisioning a personal wallet with no check for the pending invite — leaving it dangling with no error shown.
-- Fix mirrors the same pending-invite recovery `OtpScreen._resolveAndLand()` already does: check `PendingClaim.token`, fall back to the `eq_cards_find_pending_invite` RPC (phone-matched), route to the claim screen if either finds one. Same RPC, same non-fatal error handling as the existing working path.
-- No local Flutter toolchain available to run `flutter analyze`/tests in this environment — verified by structural comparison against the already-compiling, already-deployed equivalent path instead. Relying on CI.
+- Fix extracts `OtpScreen._resolveAndLand()`'s existing pending-invite lookup (check `PendingClaim.token`, fall back to the `eq_cards_find_pending_invite` RPC) into a shared `PendingClaim.resolveToken()`, called from both `_resolveAndLand` and `NotProvisionedScreen`'s auto-provision path. Verified locally: `flutter analyze` clean, `flutter test` 329/329 passing.
+- **Correction, same day:** this was independently fixed twice in parallel — this session's own PR #278 (simpler, duplicated the check inline rather than extracting a shared helper, unverified locally — no Flutter toolchain in that environment) was closed in favor of #280 once the duplication was caught, per Royce's explicit call between the two.
 
 ## 2026-08-19 (PR #276 MERGED — fix "You're ready for site" Wallet banner reappearing through Shell)
 - The once-ever Wallet success banner was reappearing on every visit when Cards was opened through the Shell embed (`core.eq.solutions/sks/cards`), never standalone. Root cause: the banner's SharedPreferences flag is namespaced by real auth user id, but `Supabase.initialize()` doesn't await session restore — a cold Flutter boot (every Shell iframe reload) could run the once-ever check before `currentUser` resolved, silently writing under an unsuffixed fallback key instead of the real one.
