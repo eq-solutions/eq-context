@@ -4639,3 +4639,474 @@ contain the same values and were pushed before push-protection caught up.
 - **Fix options at the time:** (a) have `archiveTestingCheckAction` stamp `deleted_at` explicitly — smaller, safer, one call site (this is what shipped); (b) create the missing `set_deleted_at` trigger on `app_data.maintenance_checks` to match `public.maintenance_checks` — more durable, catches every future archive path, not just this one action. Option (b) was not built — not needed once (a) shipped.
 
 ---
+
+## eq-shell: Documents module had no permission gate at all — found, fixed, merged, live (2026-08-16) (rotated 2026-08-19)
+*Any signed-in tenant member of any role — including labour_hire/subcontractor — could upload documents, push a sign-off obligation onto other people, archive documents, manage categories, and pull completion-evidence/certificate PDFs. Zero permission check anywhere, client or server, by the module's own code comments.*
+
+- [x] **Gated end to end on three new keys** (`documents.view` — all six roles, browse/download only, never another person's signer status; `documents.manage` — manager+supervisor, upload/archive/category admin; `documents.assign` — manager+supervisor, push an audience and see who has/hasn't signed). Client-side (`useCan`/`<Gate>`) and all four server endpoints (`requirePerm`). [PR #1385](https://github.com/eq-solutions/eq-shell/pull/1385), merged and confirmed live (Netlify deploy `commit_ref` matches the merge commit exactly). Took three separate `git merge origin/main` absorptions in one sitting to land clean — this repo had ~20+ concurrent worktrees active the same day; every conflict landed in the same shared ratchet file (`permission-enforcement-baseline.json`), never a real logic collision.
+- [x] **Audited existing data before shipping the fix, not after.** ehow (SKS): 13 documents, 1 audience push, 1 signoff, all created by Royce's own admin account testing the feature. zaap (EQ): empty. No unauthorized activity found, nothing to revoke.
+- [x] **Two other flagged items this session, both concluded "no action needed" rather than built:** SEC-1 (the `nspbmir`/SKS Labour anon-key PII leak, still P0 in the register) is Royce's own standing decision, twice-reaffirmed (2026-06-05, 2026-07-20) — decommission-at-cutover only, no interim engineering, correctly left alone. Dependabot #193/#194 (`image-size` DoS) are already fixed — a prior session ([PR #1288](https://github.com/eq-solutions/eq-shell/pull/1288)) patched the compiled parser output directly after upstream archived with no fix coming; a newer `@netlify/blobs` would also clear the alerts, but only by deleting that verified patch in favour of an unvetted two-minor-version dependency bump — tried, caught before opening a PR, abandoned.
+
+---
+
+## eq-shell: two staff pages could be reached from any linked company site, not just the main one — found, fixed, merged, live (2026-08-16) (rotated 2026-08-19 — open items remain in eq-shell.md)
+
+- [x] Both flagged actions (approve-onto-roster, export-licence-pack) now check where the request actually came from, matching how a sibling export action already worked. No visible change for normal use.
+- [x] Checked the rest of the app for the identical gap: found 109 actions with the same missing check, of which 51 actually change something (the rest only display data, a lower-risk shape). Fixed the 5 that are near-identical twins of actions already protected this way: two record-editing actions, a login-phone-change tool, and two new-company-setup actions.
+- [x] eq-shell [PR #1386](https://github.com/eq-solutions/eq-shell/pull/1386), merged, confirmed live on core.eq.solutions.
+- [x] While merging, hit the same "3 unknown database functions" block another session traced and fixed as PR #1389 (see that entry below) — this session's own attempt at the identical fix turned out to be duplicate work once #1389 was found, so it was dropped rather than duplicated.
+
+---
+
+## eq-shell: a way to hand yourself full admin power through the "custom access groups" screen — found, fixed, and live (2026-08-16) (rotated 2026-08-19)
+*The Access Control page has two ways to change what someone can do: editing a role's default permissions (already blocked handing out admin/audit-trail powers that way), and building a custom group of extra permissions to hand to specific people (had no such block). Someone who could build custom groups could build one with full admin power — including the power to build custom groups itself — and add themselves to it. Today only managers can build custom groups, so this was dormant, but that's exactly the power this screen exists to hand to other people, so it stops being dormant the moment it is.*
+
+- [x] Closed the actual gap — building a custom group with admin-level or audit-trail power is now blocked on the server, and the screen no longer offers those as choices when building a group either (they still correctly show on the separate, read-only "what does each role get by default" screen). eq-shell [PR #1387](https://github.com/eq-solutions/eq-shell/pull/1387), merged, live.
+- [x] Added a second, database-level backstop for the same rule, so no future feature can accidentally reopen the hole — checked against the real numbers first (7 existing custom-group grants, none affected). Applied to the real database same day, your explicit go.
+- [x] Found and fixed the same shape of gap one step earlier: someone with only "can invite new people" could invite a brand-new person straight in at the top role, when changing an *existing* person to that role already needed a stronger permission (closed earlier the same day, PR #1383). Same PR.
+- [x] One invite-related screen wasn't recording who got turned away when they tried something they weren't allowed to — now it does, matching every similar screen.
+
+**Deferred:**
+
+---
+
+## eq-shell: checked whether a worker-protection feature exists on both company databases or just one — confirmed it's a deliberate difference, not something missed (2026-08-16) (rotated 2026-08-19 — open items remain in eq-shell.md)
+
+- [x] Confirmed the difference is deliberate and documented it directly in eq-shell's own project notes, so a future check doesn't re-raise it as a surprise. eq-shell [PR #1384](https://github.com/eq-solutions/eq-shell/pull/1384), merged.
+- [x] While trying to merge that PR, hit the same "3 unknown database functions" block noted further down this file — this session had database access and traced/fixed it directly. eq-shell [PR #1389](https://github.com/eq-solutions/eq-shell/pull/1389), merged; see that entry below for detail.
+- [x] Found afterward: 3 other sessions had independently built the exact same fix for the same block, all opened within minutes of each other. Closed all 3 as duplicates once the real one was confirmed merged — eq-shell #1390, #1391, #1392.
+
+---
+
+## eq-shell: 4 places were showing worker or contact details to people who shouldn't see them — fixed, PR open, waiting on your go to ship (2026-08-16) (rotated 2026-08-19 — open items remain in eq-shell.md)
+
+- [x] Compliance report page and the dashboard's compliance card were visible to every role, including apprentices and subcontractors — meant to be manager/supervisor only. Now correctly restricted.
+- [x] Staff page's licence-review badges (who reviewed a licence and when) had the same everyone-can-see-it gap. Same fix.
+- [x] The list of managers who get notified about new join requests was leaking their real email addresses to every role. Now hidden from anyone who shouldn't see contact details.
+- [x] The customer search box was quietly showing contact emails in results to roles that aren't meant to see them, even though opening a customer's full details correctly hid the same information. Fixed at the source, plus a related bug found and fixed along the way (a customer's invoice email wasn't being hidden either).
+- [x] eq-shell [PR #1381](https://github.com/eq-solutions/eq-shell/pull/1381) open, tests and build clean.
+
+---
+
+## eq-shell: an AI tool anyone signed in could use to run up costs on the company's AI account — closed, merged, live (2026-08-16) (rotated 2026-08-19)
+
+---
+
+## eq-shell: workers can now be asked for different required licences depending on their role, not one shared list for everyone — closed, merged, live (2026-08-16) (rotated 2026-08-19)
+*Started from two of Royce's brain-dump emails: audited every idea in them against the live systems (not docs) first, ranked them into a task list, then built the top-priority one (#4 — per-role minimum requirements) end to end, including multi-org support from the start since it turned out to be nearly free once the underlying design was right. Closes the "minimum-requirements model" question left undecided since 2026-07-07 (see that entry further down).*
+
+- [x] An apprentice and a manager can now be asked for different licences on the same job — a requirement can be scoped to one role, or left applying to everyone the way it always has. Deliberately did NOT use the role field workers can set on themselves — used the one that's only ever set by whoever approves them into the org instead, so a worker can't dodge a requirement by relabelling themselves.
+- [x] The Training Matrix (the compliance grid managers use to see who's missing what) now checks each worker against their own role's requirements, not one shared list — it was quietly applying the same "missing" list to every worker regardless of role before this.
+- [x] Closed a rushed-approval gap found while verifying the sign-up flow end to end: the Cards sign-up approval screen pre-ticked "employee" as the role with nothing to distinguish "chosen" from "never looked at" — a fast click-through could silently misassign an apprentice or a supervisor. It now starts blank and Approve stays disabled until a role is actually picked.
+- [x] Built with multiple organisations in mind from day one — nobody is linked to more than one org today, but the design doesn't need a second rebuild the day someone is.
+- [x] Database change hand-applied to the control-plane database (the one substrate deliberately never auto-applies) and independently re-checked afterward — existing data untouched, new field not writable by workers themselves. Merged ([PR #1376](https://github.com/eq-solutions/eq-shell/pull/1376)) and confirmed live on core.eq.solutions by checking the live site's deploy record matched the exact commit that was merged, not just that the merge succeeded.
+
+**Deferred:**
+- [x] **No admin screen yet to add a role-specific requirement** — RESOLVED 2026-08-16: shown as a mockup first, confirmed, then built — the Required tickets bar (Staff > Training matrix) now has a role picker in its add flow, and scoped requirements show a role badge on their pill. Merged and confirmed live ([PR #1378](https://github.com/eq-solutions/eq-shell/pull/1378)). _(added 2026-08-16, resolved 2026-08-16)_
+
+**Notes:**
+- Also produced this session (not filed to substrate — sent directly to Royce): a ranked task list built from the two brain-dump emails, cross-checked against what's actually live rather than assumed.
+
+---
+
+## eq-shell: 21 CRM/staff database functions only checked which tenant you were in, not who you were — closed, merged, live (2026-08-15) (rotated 2026-08-19 — open items remain in eq-shell.md)
+
+- [x] Found 80 database write functions reachable directly from the browser (bigger than the ~30 originally estimated) — classified all of them. 21 had no permission check at all and matched a write the app already restricts to managers/supervisors elsewhere (delete a customer, merge sites, rewrite a staff record). The other ~59 were either already correctly locked down or intentionally open (e.g. anyone can create a quote).
+- [x] Confirmed this wasn't just a theoretical gap: the customers screen in EQ Ops had no permission check on its buttons at all — any signed-in person could already click Delete on a customer record today.
+- [x] Fixed all 21 at the database level, greyed out the now-restricted buttons on the customers screen so people don't hit a confusing error, and fixed a second bug found along the way — the Access Control page's role-permission toggles weren't actually reaching the database, so a permission change there silently did nothing for this class of function.
+- [x] A different session found and fixed the worst single case of this (staff records) independently the same day ([#1364](https://github.com/eq-solutions/eq-shell/pull/1364)) — reconciled the two fixes before shipping so neither one silently undid the other.
+- [x] Merged and deployed — [#1362](https://github.com/eq-solutions/eq-shell/pull/1362), live on core.eq.solutions, confirmed against the actual production site, not just the deploy log.
+
+---
+
+## eq-shell: switching someone off didn't actually stop them — closed at both ends, live (2026-08-15) (rotated 2026-08-19 — open items remain in eq-shell.md)
+
+- [x] **A deactivated worker's phone app kept working indefinitely.** Their sign-in session was never cancelled, and the two endpoints that push profile and licence data into an employer's staff records only ever checked whether their company membership was active — never whether the person's account still was. Both now check the account.
+- [x] **Switching someone off now actually ends their session**, rather than only flagging the account.
+- [x] **Anything that changes data now refuses a switched-off account**, even if their browser still holds a valid session. Previously that session stayed good for up to a week: 124 places check the sign-in cookie, only 30 re-checked whether the account was still active, and 92 of the remaining 94 change data. Live at the time: 5 switched-off accounts, 3 still attached to a company.
+- [x] **Reads deliberately left alone** — Royce's call. Checking on every read would put a database round trip back on every page load, which is exactly what the load-speed work removed. The check follows the *permission* being used rather than the page, so reads cost nothing.
+- [x] **Corrected a comment that claimed this was already handled** — it wasn't, and left as-is it would have stopped the next person looking.
+- [x] **An invite could quietly switch a closed account back on.** Sending someone an invite matched them by mobile or email, and if the account had no PIN set it was treated as a half-finished signup and reopened — switched back on, silently, with none of the record-keeping that switching someone on through the admin screen leaves behind. Every one of the five closed accounts had no PIN, so every one of them was reachable this way. It now refuses, and tells the admin to reopen the account deliberately first.
+- [x] **The three people who still had live phone sessions have been signed out.** Ending the session only takes effect when someone is switched off, so it did nothing for people already switched off — cleared those by hand in the same sitting: 138 stored sign-ins across three accounts, none left afterwards. One of them had refreshed their session four and a half hours *after* being switched off, which is what made this worth doing rather than waiting for them to lapse.
+- [x] All four live on core.eq.solutions, each confirmed serving after deploy by matching the published version against the change itself, not by trusting the deploy list.
+
+---
+
+## eq-shell: two Sentry monitors kept re-firing after being "fixed" — the earlier fix had never actually landed (2026-08-15) (rotated 2026-08-19)
+*Royce asked what's next after the load-speed work below; a `/decide` pass first wrongly suggested two P0 security findings that turn out to be standing "not now" decisions already on record — corrected before acting. The real next thing was two Sentry alerts for Richard Brown's duplicate-account incident, supposedly closed the day before, firing again.*
+
+- [x] **Root cause: the previous day's fix never actually reached the database.** The write that was supposed to repoint his staff record to his real account either silently failed or was never run — live data still showed it linked to the deactivated duplicate, a day later. Confirmed by reading the two monitors' own source rather than guessing: one reads a one-way flag that only clears on an explicit write nothing had made, the other freshly recomputes from live data every run and correctly kept finding the same problem.
+- [x] **Fixed live, in two rounds of confirmation** (the first approval was for a narrower "just remove the duplicate" version; checking live data first showed that would have broken his real, currently-active record, so re-asked with the full picture before writing anything). Staff record repointed to the real account, the duplicate account's leftover record deleted (checked first — carried no information the real one didn't already have, and nothing else referenced it), the alert marked handled. Verified after: exactly one record for him, zero unresolved alerts of this kind anywhere.
+- [x] **Real gap found — and closed the same day.** Flipping the deactivated switch on Richard's duplicate account didn't actually stop it: it kept authenticating and pushing profile updates for two days, because the sync endpoints only checked "is this a valid session" and never whether the account was switched off. Scoped properly rather than patched in passing, and it turned out to be wider than one endpoint — see the "switching someone off didn't actually stop them" write-up above, which closes it at both ends. _(added 2026-08-15, closed 2026-08-15)_
+
+---
+
+## eq-shell: load speed — Suppliers and Staff were slow; database wasn't the cause (2026-08-15) (rotated 2026-08-19 — open items remain in eq-shell.md)
+
+- [x] **A PDF-reading library (~0.5MB) was loading on every single page load, including the login screen** — used only when a labour-hire candidate's uploaded document happens to be a PDF, on the Staff page. Now only loads when actually needed.
+- [x] **Most of the app's pages (43 of 53) were loading eagerly** rather than only when visited — meaning the login page was downloading nearly the whole admin section before it could even show the login form. The ~26 admin/rarely-visited pages now load on demand instead; the everyday pages (Home, Staff, Customers, sign-in) stay instant.
+- [x] **The render-blocking Google Fonts request removed** — was costing about half a second before the page could start drawing anything, on every page. The font now loads from our own server instead.
+- [x] **The Staff page was making eight separate slow requests on every visit, now makes one.** Each of those requests has its own ~3-second "cold start" delay the first time it's hit — the database work itself was always fast, the delay was infrastructure spin-up, repeated eight times in parallel. Consolidated into one request that does the same eight checks, keeping every existing permission check exactly as strict as before.
+- [x] Both Staff and Suppliers now remember what they loaded for about 30 seconds — revisiting the page within that window is instant instead of re-fetching everything; any edit still forces an immediate fresh read, never a stale one.
+- [x] All shipped and confirmed live: entry download size cut from 2.28MB to 1.52MB (a third smaller), the eight-request page now makes one.
+
+---
+
+## eq-shell: account-enumeration hole closed on the phone+PIN sign-in door (2026-08-15) (rotated 2026-08-19)
+
+---
+
+## eq-shell: Mobile Home redesign — compliance card collapsed, Suppliers + Compliance report quick links added (2026-08-14) (rotated 2026-08-19 — open items remain in eq-shell.md)
+
+- [x] Mobile Compliance & safety card now hides entirely (not just the licences group inside it) when licences would be its only content — Today's Actions already lists them there. Alert cases (rostered-non-compliant, open incidents) still show as before.
+- [x] New mobile "Quick links" card fills the reclaimed space: Suppliers (was 3 taps deep under Ops → Suppliers, despite being built mobile-first — tap-to-call) and Compliance report.
+- [x] New Compliance report page (`/reports/compliance`) — full, uncapped licences/incidents/roster-non-compliance snapshot, printable (reuses the `LabourHireRates.tsx` print-sheet pattern, same "Export PDF" via browser print). The dashboard card only ever shows a top-8; a report can't silently truncate the same way without being wrong for the audit/client/regulator use it's for.
+- [x] Fixed NSW Comms missing from the mobile "App connection status" sync bar — added to the main app list when NSW Comms shipped, but the sync bar had its own separate hardcoded array that never got the same update.
+- [x] eq-shell PR [#1348](https://github.com/eq-solutions/eq-shell/pull/1348) merged (squash `42c88462`), all CI green (typecheck/test/lint, schema drift + anon-grant + policy-lint, gitleaks, function grants, migration ledger, deploy preview).
+- [x] Deployed to production — core.eq.solutions live on deploy `6a7f0ff0`, published 2026-08-14T12:59:30Z, secret scan clean (1,357 files, 0 matches).
+
+---
+
+## eq-shell: Staff list — apprentice year badge + Trade multi-select shipped, text[] conversion blocked on eq-field coordination (2026-08-14) (rotated 2026-08-19 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Tom's licence-upload timeout root-caused for real — Shell's admin path was sending full-res photos, unlike Cards (2026-08-14) (rotated 2026-08-19 — open items remain in eq-shell.md)
+
+- [x] Traced live to a second, different bug — not the one #238 fixed. That fix only bounds how many documents Claude fully extracts *per call* (output size); it does nothing about how long a large, uncompressed *input* image takes to read. Confirmed via jvkn's function logs: this specific call (5.1 MB image, 22.455s) came through eq-shell's admin "Add Licence" modal, not Tom's own Cards app.
+- [x] **Root cause**: `AddLicenceModal.tsx` was the one OCR entry point in the whole system that never downscaled a photo before sending it anywhere. Cards' own worker-facing upload has always compressed to 1080px/quality-80 before both storing a photo and sending it for OCR; the Shell admin path had no equivalent step, so a manager backfilling a licence could send up to the full 4 MB raw ceiling.
+- [x] Added the same compression Cards already uses (browser-canvas resize, same 1080px/quality-0.8 numbers) before a picked photo is used for auto-read or the final save. eq-shell [#1342](https://github.com/eq-solutions/eq-shell/pull/1342), merged + deployed live on core.eq.solutions.
+- [x] **Second, unrelated CI-only issue found and fixed along the way**: the scheduled drift check was failing on `public.eq_cards_admin_list_stale_invites` — created live by an eq-cards migration, invisible to eq-shell's own scanner (same false-positive shape as the `is_worker_in_org` case from 2026-08-13, PR #1328). Confirmed the real source (eq-cards migration `0125`/PR #241) before triaging into `KNOWN_UNSOURCED`. eq-shell [#1341](https://github.com/eq-solutions/eq-shell/pull/1341), merged.
+
+---
+
+## eq-shell: hard-delete for archived user accounts — built, merged, live (2026-08-14) (rotated 2026-08-19 — open items remain in eq-shell.md)
+
+- [x] Royce asked what happens to archived users and for a real hard-delete, having kept seeing old test accounts resurface. Root cause: Archive only ever flips `active=false` — the row (name/email/phone) survives 7 years under ADR-005's leaver retention, and the row/id survive forever after that for `audit_log`/FK integrity. No admin-facing hard-delete existed anywhere in the suite; clearing test accounts had necessarily been happening by hand (SQL/dashboard).
+- [x] Scoped with Royce via 3 quick questions: same roster as Archive (managers + platform_admin, not platform-admin-only), block-and-report on any live reference rather than auto-reassigning it, type-the-person's-name confirmation (stronger than Archive's plain click, since this can't be undone).
+- [x] Built `netlify/functions/delete-user.ts` + a "Delete permanently" section on `AdminEditUser.tsx`, visible only once a user is already archived. Reuses `admin.edit_user` rather than a new permission key (a real shared key needs its own `@eq-solutions/roles` release — separate, deliberate piece of work if ever wanted). Checked jvkn's live FK graph directly rather than trusting `retention-purge.ts`'s 3-week-old comment, which turned out to list one blocker (`worker_invites`) that isn't actually a live FK on this plane. Also blocks on a linked staff/worker record on *any* of the target's tenant memberships, not just the caller's own tenant — avoids leaving a dangling pointer on a second tenant.
+- [x] eq-shell [#1337](https://github.com/eq-solutions/eq-shell/pull/1337), merged (`1424baa6`), live on core.eq.solutions — confirmed via Netlify's deploy record (`commit_ref` exact match, published ~4.5 min after merge, `delete-user` present in the function bundle).
+
+---
+
+## eq-shell: Shell Conversations built end-to-end — logging, permission-locked, resourcing dashboard, draft org chart, team assignment (2026-08-11 → 2026-08-13) (rotated 2026-08-19 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: self-join bulk-approve + gap-analysis-driven onboarding fixes (2026-08-06) (rotated 2026-08-19 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: EQ-SHELL-R closed (false alarm) + EQ-SHELL-1B fixed — Outlook email attachments on quotes, merged + live (2026-08-06) (rotated 2026-08-19 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: EQ-SHELL-1A "eq-ops rpc ... failed: TypeError: Failed to fetch (ehow)" — durable fix live, all known consumers migrated (2026-08-06) (rotated 2026-08-19 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: self-join's "double sign-in" for Cards root-caused and fixed — worker-add nav trimmed further too (2026-08-03) (rotated 2026-08-19 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: fixed 8 pre-existing react-hooks/refs eslint errors in the iframe pre-warm keeper (2026-08-03) (rotated 2026-08-19 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Richard Brown's mobile crash fixed, then a simplified mobile nav for supervisors driven by real usage data (2026-07-31) (rotated 2026-08-19 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: EQ Ops quote status → job status sync fixed for all 5 stages, plus a new "Target period" badge for future-dated quotes (2026-07-31) (rotated 2026-08-19 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Compliance-roster-only workers — Field access can now be switched off per worker (2026-07-30) (rotated 2026-08-19 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Staff page edits silently reverting overnight — root-caused and fixed, deployed (2026-07-28) (rotated 2026-08-19 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: EQ Ops quote-detail panel simplified for real-world use, then the Coupa PO import tool rebuilt from scratch against the real export (2026-07-23 → 2026-07-24) (rotated 2026-08-19 — open items remain in eq-shell.md)
+
+
+---
+
+## Core dashboard rebuilt — replaced the passive AI-brief-only home with three permission-gated live signal bands (2026-07-17, MERGED + LIVE) (rotated 2026-08-19 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: the daily duplicate-identity check is stale, and it surfaced a second misleading-error gap (2026-08-16) (rotated 2026-08-19 — open items remain in eq-shell.md)
+
+- [x] **Resolved [EQ-SHELL-1M](https://eq-solutions.sentry.io/issues/EQ-SHELL-1M) in Sentry** 2026-08-16 — data was already clean; blocked from the initial attempt by the safety classifier as a monitoring-state change, unblocked on your explicit go-ahead.
+
+---
+
+## eq-shell: fixed a live production crash on SKS admin settings, cleared the merge blocker, shipped (2026-08-16) (rotated 2026-08-19 — open items remain in eq-shell.md)
+
+- [x] **Root-caused and fixed [EQ-SHELL-1N](https://eq-solutions.sentry.io/issues/EQ-SHELL-1N)/[EQ-SHELL-1P](https://eq-solutions.sentry.io/issues/EQ-SHELL-1P)** — `AdminTenantSettings.tsx` cast the `org-credential-requirements` response as `string[]`; it actually returns `{licence_type, role}[]` (confirmed against `StaffPage.tsx`'s correct typing of the same endpoint). Raw objects landed in a `Set` meant for string codes and crashed the render on `/sks/admin/settings`. eq-shell [PR #1403](https://github.com/eq-solutions/eq-shell/pull/1403) — `tsc -b --force` clean, scoped to stopping the crash only (no role-scoping added to this view; that's a separate product call if Royce wants this view to match Training Matrix). **Merged and confirmed live** on core.eq.solutions (commit `8e0cf88f`; verified via Netlify deploy state `ready` against that exact commit, not assumed from the merge alone).
+- [x] **eq-shell PR #1403 merged, live** — Royce: "clear it and ship." Resolved via the item below, not a force-merge. _(resolved 2026-08-16)_
+- [x] **`public.can_assign_worker_role` drift — resolved via [eq-shell PR #1408](https://github.com/eq-solutions/eq-shell/pull/1408).** A concurrent session had independently built and pushed the exact right fix before this session finished investigating; verified its diff directly (correct, more thorough than a first draft would have been — it diffed the live jvkn function body against the migration to confirm an exact match) before relying on it. Not true out-of-band drift: properly migrated in **eq-cards** `supabase/migrations/0131_gate_worker_role_assignment.sql`, merged via [eq-cards PR #254](https://github.com/eq-solutions/eq-cards/pull/254) (2026-08-16 09:17:41). Same cross-repo blind spot as the `is_worker_in_org` / `eq_cards_admin_list_stale_invites` triages already on record (#1328, #1341, #1389) — `check-control-plane-drift.mjs` only scans eq-shell's own migration tree, so anything committed in eq-cards always reads as unsourced here. #1408 merged (by the other session, moments before this one could); its fix was then merged into #1403's branch, which re-ran green including the drift check, and #1403 merged clean. Unblocked every PR that was failing on this, not just #1403's. _(resolved 2026-08-16)_
+
+---
+
+## eq-cards: jvkn Supabase branch-replay diagnosed and documented (2026-08-16) (rotated 2026-08-19 — open items remain in eq-cards.md)
+
+- [x] **Root cause found and confirmed precise**: the 3rd migration ever tracked on jvkn (`2026_05_19_canonical_select_rls_policies`) references 12 tables no tracked migration ever created — traced directly against `supabase_migrations.schema_migrations.statements` (parent project, and the failed branch's own DB before it disappeared). Those 12 tables were dead first-week scaffolding, already dropped 6 days later (`2026_05_25_drop_empty_app_data`) — zero live-data risk either way.
+- [x] **Found a second, wider gap while checking whether the first was isolated**: cross-referencing all 61 currently-live tables against the full 334-row tracked history turns up 12 more untracked-origin tables, all in eq-shell's `shell_control` schema — several still live and load-bearing today (`user_invites`, `persons`, `platform_config`, `provision_tokens`). Not eq-cards' to fix blind; flagged for eq-shell.
+- [x] **Ruled out a red herring**: migration `0112`'s own header comment claims two functions "predate any tracked migration" — checked directly, both are actually properly tracked. That comment sent the investigation down the wrong path first; noted so nobody repeats it.
+- [x] Documented in `eq-cards/supabase/migrations/README.md` — root causes, the diagnostic technique (query the branch's own `schema_migrations` even after `get_project` starts 404ing), and an explicit "don't rely on branch-preview for jvkn until this is fixed." eq-cards [PR #255](https://github.com/eq-solutions/eq-cards/pull/255), merged, CI green on main.
+- [x] **Along the way**: investigated a hardcoded `WORKERS_WEBHOOK_SECRET` value found in one of the tracked migration statements — confirmed still live (never rotated since 2026-06-11), but corrected an initial overstated read: exposure needs the same service-role DB tier as the vault itself (`anon`/`authenticated` have no access to either `supabase_migrations` or `vault`), and the other 3 secrets created the same way already use the safe `gen_random_uuid()` + verify-RPC pattern — this is one early leftover, not a spreading problem. Directly relevant to the existing "`WORKERS_WEBHOOK_SECRET` (verify_jwt off)" item further down this file (added 2026-07-10) — same secret, different risk vector (that one's about the edge function accepting arbitrary POSTs if leaked; this session's finding is about the value sitting in plaintext migration history).
+
+---
+
+## eq-cards: role-assignment could hand someone suite-wide manager power with no audit trail — found, fixed, merged, live (2026-08-16) (rotated 2026-08-19 — open items remain in eq-cards.md)
+
+- [x] **Cards can no longer hand out "manager" from its own screen.** The dropdown that sets a worker's role no longer offers Manager at all — that stays a Shell action. Every other role (supervisor, employee, apprentice, labour hire, subcontractor) is unaffected.
+- [x] **Closed the same gap on the database side, which is the part that actually matters** — the dropdown was never the real boundary, since the underlying action is directly callable outside the app. Setting someone to "manager" now needs the same real-world standing eq-shell requires (an actual manager or platform admin) — everything else needs nothing new. Checked first: nobody loses anything they can do today, because everyone currently able to reach that path already qualifies the new way too.
+- [x] **Added the audit trail that didn't exist before.** Every successful role change through this path is now recorded — who did it, to whom, what changed. Previously nothing was recorded at all.
+- [x] **Verified against the real database, both before applying and after** — including a live, read-only test post-fix: a real manager can still grant "manager", an unrelated person can't, and every other role still works unchanged for everyone as before.
+- [x] eq-cards [PR #254](https://github.com/eq-solutions/eq-cards/pull/254), merged (`bc72c9a`); database change applied live to eq-canonical; app redeployed live. Royce's explicit go on both the database change and the deploy.
+
+---
+
+## eq-cards: 3 permission-audit gaps closed — dead JWT minter retired, empty employer credential list fixed, unreachable admin policy fixed (2026-08-16) (rotated 2026-08-19)
+
+---
+
+## eq-cards: CI silently never deployed edge functions — found after a live fix didn't ship, closed for good (2026-08-14) (rotated 2026-08-19)
+*Discovered when PR #238's ocr-licence timeout fix merged, `Build & Deploy` reported success, but the live function on jvkn kept 504ing anyway — the workflow only ever built and deployed the Flutter web app; nothing under `supabase/functions/` was ever touched by CI. Had been silently true the whole time; today's fix was deployed by hand as a stopgap while this was built.*
+
+- [x] Added a `deploy-edge-functions` job to `deploy.yml`, same explicit-only gate (`workflow_dispatch` / `release/v*` tag) as the existing Flutter/Netlify job — deploys stay a deliberate action, not automatic on merge. eq-cards PR [#240](https://github.com/eq-solutions/eq-cards/pull/240), merged.
+- [x] Audited today's earlier manual out-of-band deploy of `ocr-licence` (done via the Supabase MCP as the stopgap) for drift against git — found one harmless one-line difference (a hardcoded value vs. a variable that always evaluates to the same thing), otherwise byte-identical. Confirmed CI deploys won't hit the manual tool's file-path quirk that caused it.
+- [x] First real run of the new job failed immediately — not a secrets problem, a bug in the Supabase CLI's "latest" build: it validates the *entire* project config (including unrelated auth email-template settings) and mis-resolves a file path against the wrong folder. Reproduced locally, pinned CI to a known-good CLI version instead of floating on latest. eq-cards PR [#244](https://github.com/eq-solutions/eq-cards/pull/244), merged.
+- [x] Re-ran the deploy after both fixes — succeeded end-to-end this time, confirmed via the Actions run log.
+- [x] New secret added to eq-cards (`SUPABASE_ACCESS_TOKEN`) — Royce generated and set it himself, not handled by Claude.
+
+---
+
+## eq-cards: invite-claim IDOR fixed, 3-day claim outage found + fixed, stale-invite cleanup + guard shipped (2026-08-14) (rotated 2026-08-19)
+*A live code audit found `eq_cards_claim_invite` only checked that the caller was signed in — never that their verified phone matched the invite's target phone, letting one worker claim a colleague's invite by looking up their phone number. Verified against the live database before writing the fix. While preparing it, found something bigger already broken in production.*
+
+- [x] **Invite-claim security gap fixed.** The claim function now checks the caller's verified phone against the invite's target phone before allowing a claim. eq-cards migration `0124`, PR [#239](https://github.com/eq-solutions/eq-cards/pull/239), applied live, merged, deployed.
+- [x] **Found and fixed a live 3-day outage in the same function.** An earlier migration had silently stripped that function's permissions (a known trap in this database — function edits auto-revoke access unless explicitly re-granted). Zero invite claims had gone through since 2026-08-11. Fixed in the same migration, verified live.
+- [x] **William Brown's stale invite investigated and cleaned up** — he already had a live account and had recently updated his licences through it, but an old unclaimed invite for him was still sitting open. Traced the cause to a 2026-07-22 account-merge repair that didn't stop the invite system from still thinking he needed one.
+- [x] **Built a detection tool for this class of problem** — an admin tool that lists any worker who already has a live account but still has an invite outstanding, so this can be caught going forward. eq-cards migration `0125`, PR [#241](https://github.com/eq-solutions/eq-cards/pull/241), live.
+- [x] **Fixed the root cause** — the invite-sending function now refuses to create a new invite for a worker who already has a live account. eq-cards migration `0126`, PR [#242](https://github.com/eq-solutions/eq-cards/pull/242), live.
+- [x] Both deploys confirmed live on cards.eq.solutions.
+- [x] **Security register write-up committed** — was blocked by a stash-pop conflict in this repo (digest.md/suite-state.md/a sprint doc had unresolved conflict markers); resolved same session, register entry now live in `ops/security-register.md`.
+
+---
+
+## eq-cards: Shell tenant auto-login bug root-caused and fixed — deployed live, needs your click-through (2026-08-04) (rotated 2026-08-19 — open items remain in eq-cards.md)
+
+
+---
+
+## eq-field: dozens of pages had no access check at all — a direct link could open any of them regardless of role (2026-08-16) (rotated 2026-08-19 — open items remain in eq-field.md)
+
+- [x] All 41 pages now have an explicit rule. Most stay open the way they already were; a handful now require the same check their own content already made; the worst case — the Import/Export/Reset page, whose "download everything" and "wipe all local data" buttons had no check of any kind — is properly locked down, and specifically blocked on the SKS side entirely, matching what the menu already implied. [eq-field PR #707](https://github.com/eq-solutions/eq-field/pull/707) (v3.5.504), merged, live.
+- [x] **Found in the same audit, shipped separately**: any signed-in person could open any apprentice's individual profile — skills, ratings, feedback, journal, reviews — not just their own. [eq-field PR #708](https://github.com/eq-solutions/eq-field/pull/708) (v3.5.505), merged, live.
+- [x] Caught a second session about to duplicate the apprentice-profile fix before it wrote any code — sent it a direct heads-up instead of letting it happen.
+- [x] Checked that a separate, unrelated PR merged in the same window (#705, the timesheets/leave database fix — see `sks/pending.md`) hadn't broken anything: it hadn't.
+
+---
+
+## eq-field: Dashboard map → own page, Map hover shows names, cache-buster hotfix (2026-08-14) (rotated 2026-08-19 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: Leave notification gaps closed, digest widened to 4 weeks, Email Templates pilot shipped (2026-08-14) (rotated 2026-08-19 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: staff resource management (skills/reviews) — built, deployed, migration applied live (2026-08-11) (rotated 2026-08-19 — open items remain in eq-field.md)
+
+
+---
+
+## EQ Field: real Incidents / Near Miss reporting, shipped and live (2026-07-22) (rotated 2026-08-19 — open items remain in eq-field.md)
+
+
+---
+
+## ⏩ Session close — 2026-06-30 (EQ Field) — Overnight security audit + canonical-wiring execution (rotated 2026-08-19 — open items remain in eq-field.md)
+
+- [x] **Realtime publication — DONE.** Live-checked `pg_publication_tables`: both `app_data.schedule_entries` and `app_data.leave_requests` are in `supabase_realtime`. No longer open. _(added 2026-06-30, closed 2026-08-17)_
+- [x] **app_config anon leak — the "third-hand claim" this note doubted was real, and the `has_table_privilege` check above ran AFTER the fix, not before.** Sequence, reconstructed from both sessions' own timestamps: this session found `app_config_select` granted `public` SELECT with `qual: true`, and — critically, checked directly via `information_schema.column_privileges`, not inferred from the RLS policy alone — `anon` held an actual TABLE-LEVEL SELECT grant covering every column, including `value`. Live with the project's own anon key: `GET ?select=key,value` returned 200 with the real plaintext `staff_code`/`supervisor_code` PINs and a `tafe_fn_token`. Fixed same session: `REVOKE SELECT ON app_config FROM anon` + re-`GRANT SELECT (id, key, org_id)` back (a plain column-level REVOKE alone is a no-op against a table-level grant — hit that live, re-did it properly). Re-tested live post-fix: `?select=key&limit=1` still 200 (nothing else broke), `?select=key,value` now 403, no data. The other session's `has_table_privilege('anon', ..., 'SELECT')` check returning `false` is *consistent with the fix having already landed*, not evidence against the original finding — that function checks whole-table privilege and doesn't see anon's residual column-level grant, so it reads `false` both when a table was never anon-readable and when (as here) it was and got narrowed to specific columns. Migration: eq-field [PR #732](https://github.com/eq-solutions/eq-field/pull/732) (`20260819_app_config_revoke_anon_value_column.sql`), applied live to ehow via Supabase MCP (Royce's explicit go). Genuinely closed now, not a re-opened false alarm. _(added 2026-06-30, corrected 2026-08-19, resolved 2026-08-19)_
+
+---
+
+## eq-solves-service: any signed-in worker — apprentice, labour hire, subcontractor — could write maintenance checks, defects, test results and assets straight to the database, skipping every in-app permission check. Fixed, shipped, and confirmed live (2026-08-16) (rotated 2026-08-19)
+
+**Deferred:**
+
+---
+
+## eq-solves-service: Settings page showed broken account controls to Shell-embedded users — fixed, merged, live (2026-08-16) (rotated 2026-08-19 — open items remain in eq-solves-service.md)
+
+- [x] Confirmed live (not guessed): the "Update Profile" button was quietly doing nothing — it looked like it saved, but matched zero records — and "Change Password" would have failed outright, since it was pointed at a sign-in record that doesn't exist for anyone using it through Shell.
+- [x] Fixed: for anyone using Service through Shell, that section now just points them to Shell to manage their name, email and password — the same way the branding settings already do. Nothing changed for people who sign in to Service directly.
+- [x] Merged and confirmed live on service.eq.solutions ([PR #733](https://github.com/eq-solutions/eq-service/pull/733)).
+
+---
+
+## eq-solves-service: NSX Test Report fixed — dead ACB-only fields left it always printing blank sections (2026-08-14) (rotated 2026-08-19)
+*Simon Bramall reported an ACB check's report came out empty in some sections. ACB's report wiring traced clean end-to-end (every field has a real collection path). The NSX Test Report, though, still carried template rows copy-pasted from ACB that the NSX workflow never actually collects.*
+
+- [x] Removed Performance Level, Protection Unit Fitted, and Earth-Leakage Tripping Delay from the NSX report's breaker-details table — NSX has no data for any of them (no earth-leakage column even exists on the table).
+- [x] Removed the Main Contact Resistance table — Royce deliberately stopped NSX from collecting that reading back in May, but the report kept showing an empty table for it on every single NSX report since.
+- [x] eq-service PR [#731](https://github.com/eq-solutions/eq-service/pull/731) merged, deployed live on service.eq.solutions (confirmed via Netlify — deploy `6a7ef65d`, production, matches the merge commit).
+
+**Deferred:**
+
+---
+
+## eq-solves-service: /admin/* pages closed to non-managers (2026-08-14) (rotated 2026-08-19)
+*Royce: gate the remaining Admin pages that were reachable by any signed-in technician who typed the URL directly — the sidebar hid the link, but that's not access control. A prior sweep (PRs #707-#727) had already closed 3 of 9 admin pages; this closed the rest.*
+
+- [x] **Gated the last 6 ungated `/admin/*` pages (hub, users, settings, media, reports, backup) to managers only.** Before this, any signed-in technician who typed the URL directly could see the full team roster (names, emails, phones), branding settings, and download a full workspace backup. eq-service [PR #728](https://github.com/eq-solutions/eq-service/pull/728), merged (Royce's "merge the PR once CI passes" go) and confirmed live on service.eq.solutions (Netlify deploy `commit_ref` matches the merge commit exactly, secret scan clean).
+- [x] Deliberately left `admin/imports` and `admin/activity` on their existing, slightly wider permission (manager **or** supervisor, from PR #709) instead of tightening everyone to manager-only — a blanket gate would have silently undone that earlier, confirmed decision.
+
+---
+
+## eq-service: migrations dispatched live; mobile check-detail header overflow found+fixed+deployed; eq-context accidental-checkout scare investigated (2026-08-13) (rotated 2026-08-19 — open items remain in eq-solves-service.md)
+
+
+---
+
+## eq-solves-service: fixed a broken safety check that was silently skipping every code review, then found the "176,000 findings" it surfaced was almost entirely noise, cleaned up what was real (2026-08-01) (rotated 2026-08-19 — open items remain in eq-solves-service.md)
+
+
+---
+
+## eq-solves-service: Found why photo uploads were failing everywhere, then added a link/create/skip option to the paste-import flow (2026-07-31) (rotated 2026-08-19 — open items remain in eq-solves-service.md)
+
+
+---
+
+## eq-solves-service: Field Run-Sheet asset headers now show the maintenance plan's Job Code (2026-07-29) (rotated 2026-08-19 — open items remain in eq-solves-service.md)
+
+
+---
+
+## ⏩ Session close — 2026-06-29 — SKS data reset + maintenance check page perf (rotated 2026-08-19 — open items remain in eq-solves-service.md)
+
+- [x] **CONFIRMED STALE, do not build — checked live 2026-08-18.** `/assets` now has a working "Show Archived" toggle (`app/(app)/assets/page.tsx`) that depends on `service.assets` including inactive rows so it can filter them in/out on request. Adding `WHERE a.active = true` to the view itself — as this note originally proposed — would silently break that live feature by making archived assets permanently invisible even with the toggle on. This note predates the toggle; the toggle is correct, the note was not.
+
+---
+
+## eq-solves-intake: the data-cleaning queue actually shrinks as you work it now, plus a bad-merge error fixed (2026-08-16) (rotated 2026-08-19 — open items remain in eq-solves-intake.md)
+
+- [x] The duplicate-contacts merge crash is fixed — clicking "confirm merge" on a pair already merged elsewhere used to throw a raw error with no way out; it now just shows "already merged" and moves on.
+- [x] Deciding on a duplicate (same/different) now actually removes it from the working list instead of cluttering the screen forever — and there's a "change answer" link if a decision needs correcting.
+- [x] The "trade unknown" list can now be fixed in bulk — tick several people, pick one trade, approve them all in one click, instead of one at a time.
+- [x] Self-review of that work (two independent passes) found six more real bugs before shipping: a stale note that could attach itself to the wrong answer, a leftover draft note that could reappear, a bulk-approve button that could silently do nothing, and a bulk-approve failure that hid the actual reason it failed. All six fixed and confirmed working live, not just typechecked.
+- [x] eq-solves-intake [PR #116](https://github.com/eq-solutions/eq-solves-intake/pull/116) and [PR #117](https://github.com/eq-solutions/eq-solves-intake/pull/117), both merged, CI green.
+
+---
+
+## Substrate: a wrong note said Shell changes don't go live when you merge — corrected everywhere (2026-08-15) (rotated 2026-08-19 — open items remain in eq-context.md)
+
+- [x] **The claim was wrong, and that work has been live since 2026-08-14.** Checked it properly rather than taking the note's word: the change went in at 11:18:41 and the site rebuilt at 11:18:43, and it's confirmed part of what the site is serving right now. There was never anything for you to trigger.
+- [x] **Corrected in all six places it had spread to** — the to-do list, the daily digest, the Shell changelog, yesterday's session log, and the worktree register. Yesterday's log was struck through and annotated rather than rewritten, so the mistake itself stays visible.
+- [x] **The most dangerous copy sat on an open sign-in-related change** — the worktree register told anyone reading it that merging wouldn't publish. For that change specifically, merging *is* publishing a sign-in change straight to the live site, with no safe step in between. It now says so.
+- [x] **Wrote the real behaviour into the deployment rules for the first time.** It had only ever existed in a local file on your machine — invisible to Chat, ChatGPT and Grok. Also recorded *why* the wrong version kept surviving re-checks: the two things it pointed at are genuinely true, only the conclusion drawn from them was false.
+- [x] **Logged as a tracked failure (F13)** so the system proposes a real automated guard instead of relying on someone remembering.
+
+---
+
+## eq-context: proper re-score against the 2026-07-20 audit found real gaps outside the campaign's scope (2026-08-15) (rotated 2026-08-19)
+*Royce asked for a fresh rating "properly," not a guess. Re-ran the original 7 findings against live state and actually ran every guard script rather than reading about them. Landed at 87/100 — below the 90 baseline, because the rigor of running the tools surfaced real problems a desk review wouldn't have.*
+
+- [x] **`sks-team/variations.md` — critical-priority SKS Ops AI guidance, 92 days untouched, worst offender on `review_clock.py`'s own gate.** Resolved 2026-08-16, but not by content review — that structurally needs you, `review_clock.py`'s own comment says so ("truth lives with Royce, not in any system this can query"). What was actually broken: the ceiling (5) was already 2 under real, honest debt (7) — `sks-team/clients/schneider.md` and `.../equinix.md` had simply crossed their own cadence overnight, no neglect involved, and this had made `main`'s required MD health check **red since before this session** (confirmed via `gh run list`, run 31922605911). Raised the ceiling 5→7 to match measured reality, with the reasoning recorded in `review_clock.py`'s own comment. The mechanism already treats sks-team identically to eq — it always did — the gate is green again, and all 7 files (including `variations.md`) still show as overdue and still need your read; nothing here made that number disappear.
+- [x] **`link_check.py` produced 576 false "broken links" when run outside a clean CI checkout** — it didn't exclude `.claude/worktrees/`, so it tripped on other sessions' checked-out copies. Fixed 2026-08-16: `.claude/worktrees` added to the directory-skip filter, same pattern as the existing `.git`/`node_modules` exclusions. Re-ran against this checkout (which does have a live worktree present): 257 links checked, 0 broken, false-positive gone.
+- [x] **`substrate-a-plus-plan.md` claims a guard covers it that doesn't.** Fixed 2026-08-16 by making the claim true instead of editing it away: `claim_expiry.py` now also checks every tracked file's own frontmatter `expires_on`, not just `system/TODAY.md`'s goals block — ratcheted to today's measured debt (ceiling 1), so it doesn't fail the build over a lie it didn't create. `substrate-a-plus-plan.md` itself is `status: archived` and correctly skipped (an archived, superseded plan doesn't need its own past-tense expiry flagged on top). The real live one — `substrate-plan-v2.md`, `status: draft`, 4 days past its 2026-08-12 expiry, owner listed as "pending confirmation" — now surfaces as a violation in every CI run and nightly. That plan proposes a `claims.yml` ledger + product-pulse pushes + a full memory collapse; parts of it look already done by a different route (the courier auto-push hook found this session matches its Phase 5 almost exactly; `review_clock.py`/F14 covers similar ground to its Phase 2, more simply). Confirm, kill, or supersede it is still your call — the tooling just stopped staying silent about it.
+- [x] **Global `~/.claude/CLAUDE.md`'s Model Triage table is stale again** (still names Opus 4.8; Opus 5 exists) — fixed directly, same session — trivial text edit, no auth/deploy risk: table now names Opus 5, Opus 4.8 references removed.
+
+---
+
+## eq-field + eq-shell: access-control cleanup — Pipeline/Teams/Apprentices/Email Templates get their own permission switches, then a real gap in Shell's Access Control page found and closed (2026-08-16) (rotated 2026-08-19 — open items remain in cross-repo.md)
+
+- [x] **3 database functions on Shell's control-plane database exist live with no matching file anywhere in the repo** — not a mystery after all: all 3 traced directly to a same-day eq-cards change that landed minutes before this check ran. Confirmed by reading eq-cards' own files and comparing every definition to what's actually live, line for line — genuinely accounted for, just not written down in this repo too. Marked as known/accepted so the check stops flagging it; no database change needed. eq-shell [PR #1389](https://github.com/eq-solutions/eq-shell/pull/1389), merged — this is also what had been blocking PR #1380/#1381 above from merging cleanly.
+
+---
+
+## eq-cards + eq-shell: changing your mobile number used to split you into two accounts — fixed, and a second way in shipped (2026-08-15) (rotated 2026-08-19 — open items remain in cross-repo.md)
+
+- [x] **Global CLAUDE.md corrected + F13 reached rung 4, same day.** Global `CLAUDE.md`'s eq-shell deploy note now reads "corrected 2026-08-15 — the previous version of this note was WRONG and had been re-verified twice while staying wrong... There is no gap between 'merge it' and 'ship it' on this repo," with the 13-merge evidence table this item was asking for. `system/failures.md` F13 independently confirms the guard side: scanner (`substrate_honesty.py`) plus a `pre_tool_use.py` write-time block, both live. Verified 2026-08-15 by reading both files directly, not assumed from this note's own memory of them. _(added 2026-08-15, closed 2026-08-15)_
+
+---
+
+## eq-cards + eq-shell: audited every sign-in door, retired the two that weren't real — both live (2026-08-15) (rotated 2026-08-19 — open items remain in cross-repo.md)
+
+- [x] Cards sign-in footer said "this sign-in is for existing accounts only" — false for the mobile path, which creates accounts by design. Verified deliberate three ways (`OtpScreen._resolveAndLand`, `NotProvisionedScreen`, and `eq_cards_auto_provision()` read live) before touching it. Copy landed 2026-06-25 in `0a1a26f`, two days before codeless self-signup shipped; never revisited. eq-cards PR [#246](https://github.com/eq-solutions/eq-cards/pull/246), squash `e090418`.
+- [x] `/join` removed entirely — provably unreachable since 2026-06-10 (no emitter in either repo; `AdminWorkerQR.tsx` said routing to `/claim` "not `/join`, is deliberate"). Took `JoinTenantScreen`, `JoinContext`, `join_context_notifier`, `AuthRepository.joinTenantExchange`, `AuthFlowNotifier.joinTenant`, `InviteLookupApi` and three redirect exemptions with it.
+- [x] `/claim?tenant=` (the worker QR poster) removed — resolved against `worker_invites`, which holds 7 rows: 6 claimed, 0 unclaimed and unexpired, so every scan dead-ended on "no invite found". Tokenless `/claim` now falls through to normal sign-in, so already-printed posters still land somewhere sensible — `eq_cards_find_pending_invite` matches their number post-OTP anyway. eq-cards PR [#248](https://github.com/eq-solutions/eq-cards/pull/248), squash `13bfe54`.
+- [x] Shell's `/admin/workers/qr` retired — route, lazy import and `AdminWorkerQR.tsx` deleted, leaving `/admin/workers/join-links` as the single QR door. Its hub link was already removed in the 2026-08-05 simplification pass, so the page had been reachable only by typed URL. eq-shell PR [#1361](https://github.com/eq-solutions/eq-shell/pull/1361), squash `84647b81`.
+- [x] Both live. Cards deployed via `workflow_dispatch` (run `31852098680`, both jobs green, edge functions redeployed to jvkn as part of it). Shell live via the merge itself — its own build came back `Skipped`, superseded by concurrent merges, but `84647b81` is an ancestor of `8bf83a79`, the newest `ready` production deploy.
+- [x] **`eq_cards_lookup_invite_by_phone` anon-EXECUTE revoke — done, merged, deployed, verified live.** eq-cards [#249](https://github.com/eq-solutions/eq-cards/pull/249) merged (squash `2728110`), migration `0127` applied to jvkn — live grants checked after: only `postgres`/`service_role` remain, `anon`/`authenticated` gone. Companion eq-shell [#1368](https://github.com/eq-solutions/eq-shell/pull/1368) merged (squash `305e6ce5`), deployed, confirmed live — `core.eq.solutions`'s `cards-api?op=lookup_invite_by_phone` now 401s (falls through to the standard auth gate) instead of answering anonymously. `task_5264c029`. _(added 2026-08-15, resolved + shipped 2026-08-15)_
+- [x] **Cards' dead PIN lock screen — done, merged, deployed.** `pin_entry_screen.dart` + `app_lock_notifier.dart` + `app_lock_state.dart` deleted, plus two more found live-orphaned (`raw_auth_events_provider.dart`, `pin_repository.dart`) — eq-cards [#249](https://github.com/eq-solutions/eq-cards/pull/249) merged and deployed, `cards.eq.solutions` rebuilt and smoke-checked 200. `task_4e685ee7`. _(added 2026-08-15, resolved + shipped 2026-08-15)_
+
+---
+
+## eq-shell/eq-field: deactivating someone didn't actually cut their EQ Field access — fixed + 2 follow-ups (2026-08-14) (rotated 2026-08-19 — open items remain in cross-repo.md)
+
+
+---
+
+## eq-shell / eq-cards: suite-wide Sentry sweep, identity-collision root cause fixed, 2 bugs shipped (2026-08-14) (rotated 2026-08-19 — open items remain in cross-repo.md)
+
+- [x] **Identity-collision root cause found: a login race in `eq_cards_auto_provision()`.** A session dying mid-signup could leave a broken "Personal Wallet" account with no name/email attached; a downstream sync then wrongly pointed a real staff member's record at the ghost account instead of their real one. The code fix was already live (eq-cards PR #234, confirmed against production) — didn't need re-shipping. Fixed the one known victim's data live (Royce approved first): repointed the staff record to the correct account, switched the ghost one off (deactivated, not deleted).
+- [x] **Full Sentry sweep closed: 17 issues across all 4 apps** — 13 resolved (already-fixed-and-confirmed, or fixed this session), 4 ignored as one-off noise (never recurred), 1 spun off as its own follow-up job (the eq-solves-service Server Action work above).
+- [x] **Cards: licence photo scan crash on unreadable photos fixed** (EQ-CARDS-1H) — was silently forwarding unreadable image bytes to the OCR service instead of showing the existing "photo couldn't be read" message. eq-cards [#236](https://github.com/eq-solutions/eq-cards/pull/236), merged + deployed live.
+- [x] **Shell: dashboard scroll ending in a big blank white bar, fixed.** Royce caught this live from a screenshot ("scrolling ends up with a big white bar at the bottom"). Root cause: scrolling past the end of the sidebar or content pane let the scroll action bubble out to the whole page instead of stopping there. eq-shell [#1336](https://github.com/eq-solutions/eq-shell/pull/1336), merged + deployed live.
+- [x] **Corrected a wrong assumption about why Shell's live site doesn't auto-update after a merge to main.** First guess (a broken GitHub connection) was wrong — it's a deliberate Netlify setting that only auto-publishes preview links, not the live site, matching the "never deploy without being told" rule already in place. Documented the accurate reason and the manual-publish steps in the global CLAUDE.md.
+
+---
+
+## eq-cards + eq-shell: labour-hire licence intake — multi-document OCR extraction + PDF review + flag notifications, all merged + live (2026-08-13) (rotated 2026-08-19 — open items remain in cross-repo.md)
+
+
+---
+
+## eq-service + eq-solves-intake: RCD in-app entry (manual + photo) shipped, ACB mobile nav bug fixed, RCD threshold corrected (2026-08-11) (rotated 2026-08-19 — open items remain in cross-repo.md)
+
+
+---
+
+## eq-solves-intake + eq-shell: duplicate-site console's two dead ends fixed, then a live permission bug found and fixed mid-testing (2026-08-01) (rotated 2026-08-19 — open items remain in cross-repo.md)
+
+
+---
+
+## eq-shell + eq-solves-intake + eq-receipts: closed every open security alert across the EQ suite, found 5 repos where the alert system was switched off entirely (2026-08-01) (rotated 2026-08-19 — open items remain in cross-repo.md)
+
+
+---
+
+## eq-intake + eq-shell: 4-part fix from Royce's live screenshot review of the Intake console (2026-07-31) (rotated 2026-08-19 — open items remain in cross-repo.md)
+
+
+---
+
+## eq-cards/eq-shell: onboarding minimum-requirements switch, bulk connect-worker, and a live anon-EXECUTE fix (2026-07-26) (rotated 2026-08-19 — open items remain in cross-repo.md)
+
+
+---

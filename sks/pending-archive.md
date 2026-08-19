@@ -1,7 +1,7 @@
 ---
 title: SKS Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-08-18
+last_updated: 2026-08-19
 scope: Done items rotated out of sks/pending.md nightly by scripts/rotate_pending.py to keep the live doc scannable. Nothing here is actionable — pure historical record (also covered in changelogs and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -459,6 +459,17 @@ output).*
 ---
 
 ## SKS national scale discovery — "what breaks EQ at ~2,000 employees" (2026-07-23) (rotated 2026-08-18 — open items remain in pending.md)
+
+
+---
+
+## EQ Field: timesheets/leave weren't scoped per-person — fix merged into the app, still not switched on for real (2026-08-16) (rotated 2026-08-19 — open items remain in pending.md)
+
+- [x] Both the read-side and write-side fixes are now merged into EQ Field's own codebase (previously just sitting on a branch). [eq-field PR #705](https://github.com/eq-solutions/eq-field/pull/705). The write-side migration was corrected before merge: its first draft scoped supervisor writes to "their own crew only", which would have broken two real tenant-wide features (bulk roster-prefill, CSV import) — fixed to "own row, or any approver, tenant-wide" instead, matching how those features actually work today.
+
+---
+
+## SKS national scale discovery — "what breaks EQ at ~2,000 employees" (2026-07-23) (rotated 2026-08-19 — open items remain in pending.md)
 
 
 ---
