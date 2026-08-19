@@ -60,6 +60,9 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-19)
 
+**eq-field:**
+- #735 v3.5.527 — Documents to Sign: pilot widened to a second signer
+
 **eq-shell:**
 - #1462 feat(auth): PIN reveal toggle + raise length ceiling 12→20
 - #1460 feat(staff): multiSlicer filter chips on Staff table
@@ -72,7 +75,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ? in_progress |
+| eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
