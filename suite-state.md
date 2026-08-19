@@ -61,7 +61,6 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-19)
 
 **eq-field:**
-- #737 fix(dashboard): flag missing required credentials on the licence alert card
 - #735 v3.5.527 — Documents to Sign: pilot widened to a second signer
 
 **eq-service:**
