@@ -13,6 +13,19 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-solves-service: dashboard's silently-empty-on-failure Supabase queries fixed — the deliberately-deferred half of the contract-scope pattern, closed out the same day two more sessions closed most of the rest (2026-08-19)
+*Dashboard.tsx was flagged separately from the rest of this bug class because its 8-query fetch sits upstream of three different render paths (setup checklist, tech dashboard, full dashboard) and needed a real read-through rather than a mechanical copy of contract-scope's fix. Along the way, found the task's own premise ("other files already fixed") didn't hold up against a live check — then, independently, a concurrent session made most of it true anyway before this session closed.*
+
+- [x] dashboard.tsx's Promise.all (8 queries feeding KPI counts, upcoming/recent checks, the site map, the calibration-overdue banner) now throws a visible error instead of silently rendering an all-zero dashboard on a failed query — same Sentry-tagged pattern as contract-scope's own fix. One of the 8 (the cached tenant-branding read) structurally can't report its own errors and was left out on purpose, with a comment saying why, not missed. eq-service [PR #768](https://github.com/eq-solutions/eq-service/pull/768), merged on explicit instruction, confirmed live on service.eq.solutions (Netlify's current production deploy `commit_ref` matches the merge commit exactly, clean secret scan).
+- [x] **A concurrent session independently landed the same pattern across 23 more page.tsx files in the same half-hour window** ([PR #769](https://github.com/eq-solutions/eq-service/pull/769), not this session's work, noted here for the record): admin/archive, admin/quality, analytics, assets/[id], assets, audit-log, calendar, commercials/renewal-pack, contacts, customers/[id], customers, defects/[id], defects, instruments, job-plans, maintenance/[id], maintenance, reports, search, settings, sites/[id], sites, variations. Between contract-scope + dashboard + this, 25 of 55 `page.tsx` files are now fixed.
+- [x] **Hit a real shared-checkout collision mid-fix**: a concurrent session's own checkout/commit/merge sequence silently switched this session's working directory away and back, discarding this session's uncommitted edit with no conflict or error. Recovered only because the edit was still visible in this session's own recent tool-call history — redone with a much tighter edit-to-commit window. Broadened the existing eq-shell-specific shared-checkout memory note: confirmed not eq-shell-specific, and the sharper risk is silent loss of *uncommitted* work, not just a commit landing on the wrong branch.
+
+**Deferred:**
+- [ ] **30 of 55 `page.tsx` files still need the same audit** (55 total, minus the 25 above). Not all 30 necessarily have the bug — some may already have adequate error handling via a single-record `notFound()`-style guard, which is fine; needs the same file-by-file judgment dashboard.tsx needed, not a mechanical sweep. Spawned as its own task (`task_e5b73d01`), not started. _(added 2026-08-19)_
+- [ ] **Not click-tested live by a real signed-in user** — verified via `tsc --noEmit`, CI (only the pre-existing Integration-tests flake failed), and a Netlify commit-ancestry check, not by actually loading `/dashboard` and triggering a real query failure. Sentry MCP wasn't authenticated in this session either, so the new error tag (`route: dashboard`) hasn't been watched for live. _(added 2026-08-19)_
+
+---
+
 ## eq-solves-service: PM calendar can now generate itself from contract dates — 3-regime date model, RRULE support, built end-to-end and shipped live in one session (2026-08-19)
 
 **Deferred:**

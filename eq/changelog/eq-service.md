@@ -9,6 +9,13 @@ status: live
 
 # EQ Service — Changelog
 
+## 2026-08-19 (PR #769 MERGED — 23 more page.tsx files get the Supabase-query-error-checking pattern)
+- Concurrent session's work, logged here for the record: admin/archive, admin/quality, analytics, assets/[id], assets, audit-log, calendar, commercials/renewal-pack, contacts, customers/[id], customers, defects/[id], defects, instruments, job-plans, maintenance/[id], maintenance, reports, search, settings, sites/[id], sites, variations — same pattern as #765/#768. Between the three PRs, 25 of 55 `page.tsx` files are now fixed; 30 remain (tracked in `eq/pending/eq-solves-service.md`).
+
+## 2026-08-19 (PR #768 MERGED — dashboard.tsx joins the Supabase-query-error-checking pattern)
+- `app/(app)/dashboard/page.tsx`'s 8-query `Promise.all` (KPIs, upcoming/recent checks, site map, calibration-overdue banner) had zero `.error` checking — a failed query rendered as an all-zero dashboard instead of a visible error. Same `[label, error] as const` + `.find()` + `Sentry.captureException` + throw pattern as #765, placed upstream of all three of the page's render branches (setup checklist, tech dashboard, full dashboard). The cached tenant-branding read (`getCachedTenantSettings`) is excluded — it already discards its own Supabase error internally, so there's nothing to check.
+- Confirmed live: Netlify's current production deploy `commit_ref` matches the merge commit exactly, clean secret scan.
+
 ## 2026-08-19 (PR #764 MERGED — fix security_definer_view on service.contract_scopes)
 - Routine post-migration advisor check (after #763) surfaced one ERROR-level finding: `service.contract_scopes` was the only one of 26 canonical views missing `security_invoker = true`, meaning it read `app_data` as its owner and bypassed tenant RLS. Pre-existing (faithfully reproduced from the live view's actual shape in migration 0216, not introduced by it) but in touched scope.
 - Migration 0222: `ALTER VIEW service.contract_scopes SET (security_invoker = true)`. Dry-run verified (145 rows, no error) before shipping. Re-checked advisors after dispatch: zero ERROR-level findings, zero references to `contract_scopes`.
