@@ -13,6 +13,20 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-cards: checked whether signup is actually easy, found and fixed a real invite-drop bug, confirmed a reported repeating banner was already dead, confirmed Field's missing-licence gap is deliberate not an oversight (2026-08-19)
+*Royce: "we are getting people to sign up more and more... keen to see if its easy for them" — plus two specific reports: a "Welcome to SKS" message that "keeps coming up", and workers seeming to reach Field without entering any licences.*
+
+- [x] **The repeating "Welcome to SKS" toast was already dead.** Traced it to the "Connected to $tenant" SnackBar removed the day before (eq-cards PR #275) — confirmed the fix isn't just merged but actually serving live traffic (the most recent production deploy's commit hash matches `main` exactly). If it's still showing for anyone, that's a stale cached copy on that one device, not the old code still running.
+- [x] **Found and fixed a real gap in the signup path.** A worker who opens an employer's invite link and then has the app fully reload before finishing their sign-in code loses track of that invite — the app was silently giving them a personal (unaffiliated) wallet instead, no error shown, employer's invite left dangling. Mirrored the same recovery check the normal sign-in path already had into the one screen that was missing it (`NotProvisionedScreen`). eq-cards [PR #278](https://github.com/eq-solutions/eq-cards/pull/278), open, not yet merged.
+- [x] **Checked why workers can reach Field without any licences on file — deliberate, not a bug.** eq-shell shipped a "show what's missing" view for exactly this on 2026-07-10 (Training Matrix, soft-flag only, never meant to block anyone) — **corrects the 2026-07-07 note further down this file** that called the required-credentials model "still undecided." Field's own login has no licence check at all, by design. The one real inconsistency found: Field's own roster page warns about an *expiring* licence but says nothing about a worker with *zero* licences, while Shell's Training Matrix already catches both — chip spawned for that specific gap, not fixed here (product call on the right fix).
+- [x] **Near-miss: two follow-up chips got started as their own local sessions before they could be pulled back.** One duplicates the invite-fix already shipped in this session; one was at risk of "fixing" a banner that a separate concurrent session had just decided, for real Privacy-Act-notice reasons, should be left alone. Caught via `gh pr list` + a worktree check before either landed a commit — flagged to Royce to close both manually.
+
+**Deferred:**
+- [ ] **Field's roster page should probably warn about a worker with zero licences the same way it already warns about an expiring one** — Shell's Training Matrix already catches this, Field's own roster view doesn't. Product call on the right fix (badge it directly, or pull the same data Shell uses), not a straight bug fix. Chip spawned (`task_1ea8e1a4`). _(added 2026-08-19)_
+- [ ] **Confirm both redundant chip sessions were actually stopped** — `task_63cb080a` (invite-fix duplicate) and `task_ca9195ac` (banner "fix" superseded by a leave-as-is decision) had both already started before this session could withdraw them; not confirmed stopped as of this session's close. _(added 2026-08-19)_
+
+---
+
 ## eq-cards: "You're ready for site" Wallet banner kept reappearing through the Shell embed — fixed, live (2026-08-19)
 *Royce uploaded a screenshot of the once-ever success banner reappearing on every Wallet visit; confirmed it only happened through Shell (`core.eq.solutions/sks/cards`), never standalone on cards.eq.solutions.*
 

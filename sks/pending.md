@@ -9,6 +9,11 @@ status: live
 
 # SKS Pending
 
+## SKS worker signup checked for ease, one real bug fixed; the repeating "Welcome to SKS" message was already dead; Field's no-licence-required access confirmed deliberate (2026-08-19)
+*Fix + full investigation landed on the eq-cards/eq-shell side — see `eq/pending/eq-cards.md` (2026-08-19) for full detail. This entry is the SKS-side pointer.*
+
+- [ ] **SKS's own number, for reference: 6 of 32 active SKS members are currently missing White Card** — visible today in Shell's Training Matrix; nothing blocks them from working while missing it (soft-flag by design, not an oversight). Worth a look if Royce wants a harder rule for SKS specifically. _(added 2026-08-19)_
+
 ## EQ Field screenshot review — 4 fixes shipped live, 1 security migration drafted but not switched on (2026-08-19)
 *Royce walked through 6 mobile screenshots of the SKS app (via Google Drive) plus 3 live pasted screenshots, commenting on each. Real gaps fixed same session: Job Numbers nav item stuck under a stale "Beta" label on mobile; the weekly supervisor digest screen (names/emails of every supervisor, plus which digest sections are on) had no access restriction at all — any logged-in person, including an apprentice, could see and appeared able to edit it (the edit itself would have failed server-side, but the view was wide open); that same digest list ran very long on mobile with no way to collapse it; Edit Roster's row-action icons overflowed their column on Labour Hire rows; the Sites page was "very long... annoying to navigate" with every customer's sites always fully expanded. All five shipped and confirmed live same day ([eq-field #729](https://github.com/eq-solutions/eq-field/pull/729), [#730](https://github.com/eq-solutions/eq-field/pull/730)).*
 

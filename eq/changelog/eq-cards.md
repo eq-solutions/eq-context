@@ -9,6 +9,11 @@ status: live
 
 # EQ Cards — Changelog
 
+## 2026-08-19 (PR #278 OPENED, not yet merged — fix invite-misroute on reload in NotProvisionedScreen)
+- `NotProvisionedScreen` is reached via a generic router redirect, not only right after OTP verify. A worker who opens an employer's invite link and then hits a full reload before finishing OTP loses the in-memory `PendingClaim.token` (intentionally non-persistent) and lands here, which was silently auto-provisioning a personal wallet with no check for the pending invite — leaving it dangling with no error shown.
+- Fix mirrors the same pending-invite recovery `OtpScreen._resolveAndLand()` already does: check `PendingClaim.token`, fall back to the `eq_cards_find_pending_invite` RPC (phone-matched), route to the claim screen if either finds one. Same RPC, same non-fatal error handling as the existing working path.
+- No local Flutter toolchain available to run `flutter analyze`/tests in this environment — verified by structural comparison against the already-compiling, already-deployed equivalent path instead. Relying on CI.
+
 ## 2026-08-19 (PR #276 MERGED — fix "You're ready for site" Wallet banner reappearing through Shell)
 - The once-ever Wallet success banner was reappearing on every visit when Cards was opened through the Shell embed (`core.eq.solutions/sks/cards`), never standalone. Root cause: the banner's SharedPreferences flag is namespaced by real auth user id, but `Supabase.initialize()` doesn't await session restore — a cold Flutter boot (every Shell iframe reload) could run the once-ever check before `currentUser` resolved, silently writing under an unsuffixed fallback key instead of the real one.
 - Fixed by skipping the check entirely (no read/write, no in-memory "checked" flag) until the uid resolves, so it retries cleanly on the next rebuild instead of writing to the wrong key. Verified in code against the vendored Supabase client source, not guessed.
