@@ -60,10 +60,9 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-19)
 
-**eq-field:**
-- #735 v3.5.527 — Documents to Sign: pilot widened to a second signer
-
 **eq-service:**
+- #768 fix(dashboard): surface Supabase query errors instead of rendering empty
+- #767 fix(contract-scope): default Year filter to All Years, not current calendar year
 - #766 feat(contract-scope): classification gate for date_certainty
 
 **eq-shell:**
