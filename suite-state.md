@@ -60,8 +60,7 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-19)
 
-**eq-shell:**
-- #1465 perf(staff): warm staff-bootstrap so Staff loads don't eat a 3s cold start
+_No open PRs_
 
 ---
 
