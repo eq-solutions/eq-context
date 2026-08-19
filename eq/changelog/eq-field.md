@@ -9,6 +9,12 @@ status: live
 
 # eq-field changelog
 
+## 2026-08-19 (PR #734 MERGED — roster/contacts badge now flags missing required credentials, not just expiring ones)
+- `_licenceExpiryBadge()`/`getLicenceExpiryAlerts()` only ever computed off licences a worker already holds, so a worker with zero licences produced no badge at all — even though eq-shell's Training Matrix already shows that same worker red for missing an org-required credential. Dispatchers scheduling from Field saw "fine" where admins in Shell saw a gap.
+- New `scripts/people-required-credentials.js` ports `satisfiesRequirement`/`requiredForRow`/`missingRequired` from eq-shell's `staffLib.ts`/`MatrixView.tsx` (including the photo_id equivalence), fed by two new `canon-read.js` proxy actions calling the RPCs added in eq-shell [PR #1461](https://github.com/eq-solutions/eq-shell/pull/1461). Scoped to the roster/contacts view only — the dashboard licence-expiry alert card is untouched.
+- Extracted to its own file rather than added inline to `people.js`: the addition would have pushed that file to 1616 lines, over the repo's 1550-line CI ceiling. Same fix pattern as the earlier `people-canonical-link.js` split.
+- Merged, deploy verified live via commit-ancestry match against the Netlify deploy record.
+
 ## 2026-08-19 (PR #732 APPLIED — security: revoke anon SELECT on app_config.value, live PIN/token leak)
 - `public.app_config` (ehow) granted `anon` — unauthenticated — full-column SELECT, including `value`. That table stores the SKS `staff_code`/`supervisor_code` PINs and a TAFE API token in plaintext. Confirmed live with the project's own anon key: `GET ?select=key,value` returned 200 with the real values. No credential of any kind required — worse than the same-day role-blind-but-authenticated write gaps.
 - Fix is column-level, not a blanket anon revoke: verified `checkSupabaseHealth()` depends on anon-readable `key`, and the only anon consumer of `value` is a dead pre-login codes fetch (both live tenants are Core-only). Revoked anon's table-level SELECT, re-granted `id`/`key`/`org_id` only. `authenticated` untouched.
