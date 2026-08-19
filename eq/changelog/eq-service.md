@@ -9,6 +9,24 @@ status: live
 
 # EQ Service — Changelog
 
+## 2026-08-19 (PR #764 MERGED — fix security_definer_view on service.contract_scopes)
+- Routine post-migration advisor check (after #763) surfaced one ERROR-level finding: `service.contract_scopes` was the only one of 26 canonical views missing `security_invoker = true`, meaning it read `app_data` as its owner and bypassed tenant RLS. Pre-existing (faithfully reproduced from the live view's actual shape in migration 0216, not introduced by it) but in touched scope.
+- Migration 0222: `ALTER VIEW service.contract_scopes SET (security_invoker = true)`. Dry-run verified (145 rows, no error) before shipping. Re-checked advisors after dispatch: zero ERROR-level findings, zero references to `contract_scopes`.
+
+## 2026-08-19 (PR #763 MERGED — the PM-schedule generator: RRULE engine + generate_pm_schedule_from_scope())
+- Migration 0218: `hard_due_date` column on `contract_scopes` — a gap in 0216's original design (a "hard" classification recorded that a date was known without anywhere to store what it was), caught before this PR shipped.
+- Migration 0219: `service.rrule_next_occurrence(rule, after)` — a bounded RFC 5545 subset (DAILY/WEEKLY/MONTHLY, INTERVAL=1 only; raises rather than mis-computing on anything wider, e.g. YEARLY or multi-value BYDAY). Hand-verified against a real 2026 calendar.
+- Migration 0220: same-session hotfix for migration 0217's `status = 'complete'` typo (real CHECK constraint value is `'completed'`) — caught before `pm_schedule` held any real rows, so no wrong data was ever shown.
+- Migration 0221: `service.generate_pm_schedule_from_scope(tenant_id, dry_run=true)` — `SECURITY DEFINER`, tenant-asserted. Maps `contract_scopes.date_certainty` to a `pm_schedule` row: `hard` → `hard_due_date`, `draft_status='committed'`; `placeholder` → `today+60d` (never FY-derived — see project memory), `draft_status='draft'`; `window` → `rrule_next_occurrence(window_rule)`, `draft_status='committed'`. Idempotent (one row per `contract_scope_id`, re-running updates in place); never touches a `pm_schedule` row already claimed by an active `maintenance_checks` row. Writes through `service.pm_calendar`, not `app_data.pm_schedule` directly. Verified dry-run against all 145 live SKS contract-scope rows before shipping.
+- Dispatch hit one transient Supabase Management API 502 mid-apply (on 0219) — checked the migration ledger directly before retrying (confirmed a clean atomic rollback, nothing half-applied), then retried successfully.
+
+## 2026-08-19 (PR #762 MERGED — CLAUDE.md doc fix)
+- Canonical-object count corrected 25→26; `pm_calendar` (migration 0210, merged 2026-08-17) was missing from the enumerated list.
+
+## 2026-08-19 (PR #761 MERGED — contract_scopes date-certainty model)
+- Migration 0216: `date_certainty text CHECK (IN ('hard','placeholder','window'))` + `window_rule text` on `app_data.contract_scopes`, view and INSTEAD OF trigger rebuilt to carry both columns through INSERT/UPDATE.
+- Migration 0217: `service.pm_roster_coverage` view — LEFT JOIN LATERAL of `pm_schedule` against `schedule_entries` (Field's roster) on tenant/site, ±7 day window, so a PM date with nobody rostered nearby becomes a queryable gap instead of a silent miss. (Shipped with a status-filter typo, fixed same session — see #763/migration 0220 above.)
+
 ## 2026-08-18 (PR #760 MERGED — ACB/NSX/RCD in-progress readings now autosave to the browser)
 - `lib/hooks/useDraftAutosave.ts` + `components/ui/DraftRestoredBanner.tsx` — debounced localStorage autosave for in-progress check forms, restored (with a Discard option) on reopen if the tab reloaded or closed before Save. Closes a real data-loss gap: unsaved readings previously lived only in on-screen React state.
 - Wired into all 3 ACB steps, NSX steps 2-3 (step 1 is a one-shot uncontrolled form, skipped), and RCD's header+circuits (autosave only while actively editing).

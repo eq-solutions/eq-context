@@ -13,6 +13,30 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-solves-service: PM calendar can now generate itself from contract dates — 3-regime date model, RRULE support, built end-to-end and shipped live in one session (2026-08-19)
+*Started as a research question ("what's the health of our canonical calendar, particularly between Service and Field") which surfaced a wrong assumption on my part — corrected by Royce mid-session (Field's SKS roster is on the same database as Service's calendar, not a separate one) — which changed the whole value case for linking them from "expensive cross-system project" to "cheap, same-database view." Royce steelmanned the idea further and asked for a spec, a plain-English explainer, then the real build — all landed same session.*
+
+- [x] **Corrected a wrong claim mid-session**: SKS's live Field roster data lives on the same database as Service (ehow), not a separate one (zaap) as first assumed — zaap only holds a disposable demo tenant. Re-rated the calendar-linking proposal's value from Low-Medium to Medium-High on the corrected picture.
+- [x] Wrote a marketing-style HTML spec and a simple explainer graphic for Royce to review before any code was written.
+- [x] **Refined to 3 regimes per Royce's real-world caveat** ("we don't always know everything for all contracts"): a **hard** date (contractually fixed — e.g. Earthing System test, 2026-11-15), a **placeholder** (nothing known yet — defaults to 60 days out, never financial-year-derived, matching [[project_scheduling_no_fy_anchor]] since contracts don't share one FY period), and a recurring **window** (e.g. "first Monday of the month") stored as a real iCal RRULE string, not custom syntax.
+- [x] **7 migrations written, dispatched, and confirmed live on ehow** (all via the governed apply pipeline, ledger-verified):
+  - `0216` — `date_certainty` + `window_rule` on `contract_scopes`
+  - `0217` — `pm_roster_coverage` view: matches each PM calendar date against Field's roster within a ±7 day window, so a gap ("nobody's rostered near this contracted check") becomes visible instead of silently missed
+  - `0218` — `hard_due_date` column (a gap in my own 0216 design, caught and fixed same session before it shipped as final)
+  - `0219` — a bounded RRULE engine (`rrule_next_occurrence`) covering daily/weekly/monthly patterns — hand-verified against a real calendar, raises rather than silently mis-computing anything outside what it supports
+  - `0220` — same-session hotfix for a typo in `0217` (`'complete'` vs the real `'completed'` status value) — caught before it ever showed wrong data, `pm_schedule` was still empty at the time
+  - `0221` — `generate_pm_schedule_from_scope()`: the actual generator. Dry-run by default. Never touches a calendar date a technician is already scheduled against. Verified against all 145 real SKS contract-scope rows before shipping.
+  - `0222` — a real security finding from the routine post-migration safety check (`contract_scopes` view was missing a tenant-isolation setting every other canonical view already has) — found and fixed same session
+- [x] eq-service PRs [#761](https://github.com/eq-solutions/eq-service/pull/761), [#762](https://github.com/eq-solutions/eq-service/pull/762) (the CLAUDE.md doc fix below), [#763](https://github.com/eq-solutions/eq-service/pull/763), [#764](https://github.com/eq-solutions/eq-service/pull/764) — all merged, all migrations confirmed live via the ledger, security advisors re-checked clean afterward (zero ERROR findings).
+- [x] Fixed a stale count in `eq-solves-service/CLAUDE.md` (said 25 canonical objects, should be 26 — `pm_calendar` was missing from the list).
+- [x] Hit one infrastructure hiccup mid-dispatch (a transient timeout applying `0219`) — checked the migration ledger directly before retrying rather than guessing, confirmed it had rolled back cleanly with nothing half-applied, then retried successfully.
+
+**Deferred:**
+- [ ] **The generator has never actually been run for real.** It's live, safe, and dry-run-verified against the full real dataset — but `p_dry_run=false` (the switch that actually writes calendar entries) hasn't been thrown yet. Deliberate stopping point, not a gap — the first real run writes real data and should be your call. _(added 2026-08-19)_
+- [ ] **`pm_roster_coverage` (the "is anyone rostered near this date" view) has no screen yet.** It's a real, live database view — nothing in the app UI shows it to anyone yet. _(added 2026-08-19)_
+
+---
+
 ## eq-solves-service: calendar wired into maintenance checks — caused and fixed a same-session P0 regression along the way (2026-08-18)
 *Asked to speed up Service and make the maintenance calendar canonical (it already had gone canonical the day before, 2026-08-17 entry below) — the real gap was that nothing else in the app actually read or wrote it. Wired it into the maintenance-check workflow, then found and fixed a bug of my own making before it caused real damage.*
 

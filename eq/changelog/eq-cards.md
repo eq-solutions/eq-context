@@ -9,6 +9,11 @@ status: live
 
 # EQ Cards — Changelog
 
+## 2026-08-19 (PR #277 OPENED, not yet merged — port eq-shell's function-grants CI guard)
+- Root cause of the recurring `eq_cards_auto_provision` outage (Sentry `EQ-CARDS-1C`, 3rd+ occurrence, migrations 0111/0113/0123): jvkn's `eq_enforce_function_privacy` event trigger silently strips `authenticated`/`anon` EXECUTE grants on every `CREATE OR REPLACE FUNCTION`, unless the same migration explicitly re-grants them. eq-shell has a CI guard for its own migrations against exactly this; eq-cards never had one for its own.
+- Ported `check-function-grants.mjs` from eq-shell (git-diff based static check), pointed at eq-cards' own `supabase/migrations/`, wired in as a new `function-grants` CI job. Verified against both a known-good historical migration (has the re-grant) and the actual known-bad one (missing it, exit 2).
+- All 3 CI checks green (analyze/test, migration hygiene, function-grants). Merge is Royce's call, not made this session.
+
 ## 2026-08-19 (PR #280 OPENED, not yet merged — fix invite-misroute on reload in NotProvisionedScreen)
 - `NotProvisionedScreen` is reached via a generic router redirect, not only right after OTP verify. A worker who opens an employer's invite link and then hits a full reload before finishing OTP loses the in-memory `PendingClaim.token` (intentionally non-persistent) and lands here, which was silently auto-provisioning a personal wallet with no check for the pending invite — leaving it dangling with no error shown.
 - Fix extracts `OtpScreen._resolveAndLand()`'s existing pending-invite lookup (check `PendingClaim.token`, fall back to the `eq_cards_find_pending_invite` RPC) into a shared `PendingClaim.resolveToken()`, called from both `_resolveAndLand` and `NotProvisionedScreen`'s auto-provision path. Verified locally: `flutter analyze` clean, `flutter test` 329/329 passing.
