@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-19)
 
-**eq-service:**
-- #775 feat(contract-scope): timing gate on the commercial-sheet importer
-
 **eq-shell:**
 - #1468 chore(nav): remove 2 more orphaned pages (Field roster + Shell licence OCR)
 
