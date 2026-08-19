@@ -63,6 +63,13 @@ _If this file is >48h old, the cron is broken._
 **eq-cards:**
 - #277 ci: guard against silent function-grant strips on jvkn migrations
 
+**eq-field:**
+- #731 security(rls): manager/supervisor-only write on app_config (draft, not dispatched)
+
+**eq-service:**
+- #762 docs: pm_calendar joined the canonical write layer, 25 -> 26
+- #761 feat(db): date-certainty gate on contract scopes + PM roster coverage view
+
 ---
 
 ## System Health (as of 2026-08-19)
