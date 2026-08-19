@@ -1,7 +1,7 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-19
+last_updated: 2026-08-20
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
@@ -9,10 +9,10 @@ status: live
 
 # eq-shell changelog
 
-## 2026-08-19 (PR #1462 OPEN, not yet merged — PIN show/hide toggle + 12→20 length ceiling)
+## 2026-08-19 (PR #1462 MERGED — PIN show/hide toggle + 12→20 length ceiling)
 - Added a show/hide reveal toggle to every masked PIN input (sign-in, Set PIN on invite-accept, Set new PIN on reset, plus the phone-PIN fallback) — Sharon couldn't tell whether her PIN and confirm-PIN matched while typing blind.
 - Raised the PIN length ceiling from 12 to 20 characters (`accept-invite.ts`, `accept-pin-reset.ts`, and the sign-in field's matching cap). Confirmed safe: PINs are bcrypt-hashed, not stored raw.
-- Blocked from merging by a required CI check failing for an unrelated reason (a different branch's anon-exec function grant) — see `eq/pending/eq-shell.md` for the live status.
+- Held briefly by a required CI check failing for an unrelated reason (a different branch's anon-exec function grant on the shared control plane) — waited for it to clear naturally rather than bypass, then squash-merged (`7aa75c20`) once green. Live on core.eq.solutions (merging this repo is the deploy).
 
 ## 2026-08-19 (PR #1463 MERGED — full navigation-by-role audit: 6 gate fixes + 3 dead pages removed)
 - NSW Comms now actually enforces its declared view permission (`COMMS_VIEW_PERM`) — previously checked nowhere, so any authed role could see client names/job values/invoicing; a tenant can now restrict it via Security Groups. No default-visibility change for any currently-configured tenant (verified live against jvkn).
