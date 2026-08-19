@@ -64,6 +64,7 @@ _If this file is >48h old, the cron is broken._
 - #735 v3.5.527 — Documents to Sign: pilot widened to a second signer
 
 **eq-shell:**
+- #1464 fix(entity-patch): bound the onboarding auto-push trigger to a real start_date window
 - #1462 feat(auth): PIN reveal toggle + raise length ceiling 12→20
 
 ---
