@@ -64,9 +64,6 @@ _If this file is >48h old, the cron is broken._
 - #768 fix(dashboard): surface Supabase query errors instead of rendering empty
 - #766 feat(contract-scope): classification gate for date_certainty
 
-**eq-shell:**
-- #1462 feat(auth): PIN reveal toggle + raise length ceiling 12→20
-
 ---
 
 ## System Health (as of 2026-08-19)
