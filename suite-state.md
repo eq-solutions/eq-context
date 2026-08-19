@@ -62,7 +62,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-service:**
 - #768 fix(dashboard): surface Supabase query errors instead of rendering empty
-- #767 fix(contract-scope): default Year filter to All Years, not current calendar year
 - #766 feat(contract-scope): classification gate for date_certainty
 
 **eq-shell:**
