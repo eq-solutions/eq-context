@@ -9,6 +9,11 @@ status: live
 
 # SKS Pending
 
+## SKS crew's QR self-join logins weren't showing on Admin Users — root-caused and fixed on the EQ side (2026-08-20)
+*Fix landed on the eq-shell side — see `eq/pending/eq-shell.md` (2026-08-20) for full root-cause + build detail. This entry is the SKS-side pointer.*
+
+- [ ] **Whether Staff (`/sks/staff`) should also show login status is still open** — genuinely not built yet (Staff has no connection to login data at all today), and it's the same underlying gap as the "37 of 83 staff not yet login-linked" item below, not a separate one. _(added 2026-08-20)_
+
 ## SKS worker signup checked for ease, one real bug fixed; the repeating "Welcome to SKS" message was already dead; Field's no-licence-required access confirmed deliberate (2026-08-19)
 *Fix + full investigation landed on the eq-cards/eq-shell side — see `eq/pending/eq-cards.md` (2026-08-19) for full detail. This entry is the SKS-side pointer.*
 

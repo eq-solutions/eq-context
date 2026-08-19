@@ -13,6 +13,20 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: QR self-join workers showed as never logged in on Admin Users — root-caused, fixed, merged, live (2026-08-20)
+*Royce: "have we built the ability to see who's logged in on Staff?" and "the Admin Users page doesn't seem to show it properly — some of these people have definitely logged in." Investigated both against live data before writing anything, including a first question about how many people had signed on via the QR self-join links he'd been sending out.*
+
+- [x] **Counted the original question live**: self-join ("QR door") logins on jvkn — 14 total, all on the `sks` tenant (zero EQ-tenant self-join codes exist at all), 4 in the most recent ~24h window at the time of asking.
+- [x] **Root cause found and confirmed live**: `shell-join-tenant.ts` mints a real session cookie in both its branches but was the one login path in the repo that never wrote `last_login_at`/`last_active_tenant_id` — the 8 other login paths (`shell-login.ts`, phone-PIN, phone-OTP, magic-link, `select-tenant.ts`, `second-factor-session.ts`, `accept-pin-reset.ts`, `shell-handoff-provision.ts`) all do. Checked live before fixing: 13 of the 14 SKS workers who joined via a self-join QR link in the prior 3 days showed `last_login_at = NULL` despite an active session.
+- [x] Fix mirrors the identical best-effort update every other login path already uses — additive only, no schema/RPC/UI change. eq-shell [PR #1467](https://github.com/eq-solutions/eq-shell/pull/1467), `tsc -b --force` + eslint clean, squash-merged (`2cb32fef`) on Royce's explicit "merge" — confirmed live via exact Netlify `commit_ref` match against the newest ready production deploy, not just a green build.
+- [x] **Merged via admin override**, narrowly: the only failing required check ("Schema drift + anon-grant + policy-lint") was red for a reason unrelated to this change — a separate step in that same CI job (control-plane function-drift, Workstream A2) flags `public.eq_claim_connection_notification` on jvkn as a live function with no committed migration. Confirmed via repo-wide grep this is pre-existing on `main` itself right now, blocking every eq-shell PR, not something this change introduced. Spun off as its own task (`task_bec14b02`) rather than bundled in — Royce has already started it in a separate session.
+
+**Deferred:**
+- [ ] **Staff page (`/sks/staff`) has no "who's logged in" capability at all — not a bug, never built.** `StaffRow` carries zero auth fields; Staff is sourced entirely from `app_data.staff` on ehow, a different Supabase project from the Shell login identity (`shell_control.users` on jvkn), and nothing joins the two today. Real, bigger build — connects directly to the already-tracked SKS timesheet-access gap (37 of 83 staff not yet login-linked, see `sks/pending.md` 2026-08-16) rather than being a separate problem. Not started; Royce hasn't asked for it yet. _(added 2026-08-20)_
+- [ ] **Not click-tested live by a person** — verified via typecheck, lint, and exact commit-ancestry against the live production deploy, not by watching a real QR joiner's row actually change on `/sks/admin/users`. Worth a look next time someone joins via a self-join link. _(added 2026-08-20)_
+
+---
+
 ## eq-shell: PIN show/hide toggle + 4–20 length ceiling — built, PR open, blocked on an unrelated CI failure (2026-08-19)
 *Royce asked for a "show password" toggle (Sharon couldn't tell if her PIN and confirm-PIN matched while typing blind) and whether the 12-character PIN limit could safely go to 20.*
 

@@ -9,6 +9,12 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-20 (PR #1467 MERGED — QR self-join logins now show correctly on Admin Users)
+- `shell-join-tenant.ts` (the QR self-join door) minted a real session cookie but never bumped `last_login_at`/`last_active_tenant_id` — the one login path in the repo that skipped it. Live-confirmed before fixing: 13 of 14 SKS workers who joined via a self-join QR link in the prior 3 days showed `last_login_at = NULL` on Admin Users despite an active session.
+- Fix mirrors the identical update already used by every other login path (`shell-login.ts`, phone-PIN, phone-OTP, magic-link, `select-tenant.ts`, `second-factor-session.ts`, `accept-pin-reset.ts`, `shell-handoff-provision.ts`). Additive only — no schema/RPC/UI change.
+- Squash-merged (`2cb32fef`) on Royce's explicit "merge," via admin override: the only failing required check was red for an unrelated, pre-existing reason (a separate control-plane function-drift step flagging `public.eq_claim_connection_notification` on jvkn as unsourced — confirmed pre-existing on `main`, blocking every PR right now). Confirmed live via exact Netlify `commit_ref` match against the newest ready production deploy.
+- Along the way, answered Royce's original question live: 14 total self-join logins on jvkn, all on the `sks` tenant, 4 in the prior ~24h.
+
 ## 2026-08-19 (PR #1465 OPEN, CI green — Staff page load-time root-caused: keep-warm gap on staff-bootstrap)
 - Royce asked twice for the Staff page's slow load time to be profiled. Found it: `staff-bootstrap.ts` (built via #1358 to coalesce the page's 9 sub-fetches into one Lambda call) was never added to `warm-ping.ts`'s 4-minute keep-warm ping — each Netlify function is its own Lambda, so warming `entity-rows` separately never warmed this one.
 - Live-measured against production: 3.07s cold vs 0.39-0.42s warm on the same unauthenticated 401 fast-path the function's own header comment already benchmarks — confirms the DB side (already fast, ~6-9ms/part) was never the bottleneck; this was purely a Lambda-warmth gap.
