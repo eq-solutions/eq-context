@@ -64,7 +64,6 @@ _If this file is >48h old, the cron is broken._
 - #286 feat(labour-hire): OCR returns a crop_bounds box per document
 
 **eq-service:**
-- #798 fix(ci): notify job still claimed dispatch pauses for approval
 - #797 fix(migrations): reconstruct the service.* base tables ehow moved by hand
 - #791 fix(reports): make reissuing a report possible from the UI
 
@@ -76,7 +75,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ✓ success |
+| eq-service | ? in_progress |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
