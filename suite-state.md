@@ -61,6 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-20)
 
 **eq-service:**
+- #791 fix(reports): make reissuing a report possible from the UI
 - #789 chore(deps): align react-dom with react so components can render in tests
 - #788 fix(auth): Shell token keepalive dies permanently on any refresh failure
 
@@ -72,7 +73,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ✓ success |
+| eq-service | ? in_progress |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
@@ -81,7 +82,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 231 (latest: 0224) applied
+**Migrations:** eq-service has 232 (latest: 0225) applied
 
 ---
 
