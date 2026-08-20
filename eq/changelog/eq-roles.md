@@ -1,13 +1,17 @@
 ---
 title: eq-roles — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-18
+last_updated: 2026-08-20
 scope: eq-roles (@eq-solutions/roles package) append-only history, mirrored from the repo's own CHANGELOG.md
 read_priority: reference
 status: live
 ---
 
 # eq-roles changelog
+
+## 2026-08-20 — security-groups.html regenerated for v2.7.4 (no version bump — tooling/docs only)
+- Doc had drifted one release behind (still stamped v2.7.3), missing `service.receive_calendar_digest`. Regenerated via the existing `npm run export:html` from current `roles.json` — no manual edits, no model changes. Clean 2-hunk diff (version stamp + embedded data blob); confirmed the new key present in the output.
+- [PR #30](https://github.com/eq-solutions/eq-roles/pull/30), merged.
 
 ## 2026-08-18 — v2.7.4, new permission: service.receive_calendar_digest
 - Registers the permission key EQ Service's calendar digest gate already checks by string literal (`isCalendarDigestRecipient`, eq-service PR #753, merged ahead of this key existing anywhere — deliberately inert until it shipped). Part of moving the PM Calendar supervisor digest off a hardcoded Access Control group ID onto a real, grantable permission.
