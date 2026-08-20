@@ -1,0 +1,68 @@
+name: MD health backstop
+
+# md-health.yml's push trigger has no path filter (on: push: branches: [main],
+# no paths:), so a non-[skip ci] main commit with zero md-health runs is never
+# legitimate — unlike the other push-triggered workflows here, which scope by
+# path and can validly show zero runs for an unrelated change.
+#
+# Why this exists: the 2026-08-20/21 CI-trigger investigation found 3 of 11
+# genuine (non-bot, non-skip-ci) commits in a 2-hour window never fired
+# md-health.yml despite no config reason to skip them — no path filter, no
+# rate limit, no concurrency-group conflict, no published GitHub incident
+# that day. Most likely an occasional GitHub-side event-delivery miss under
+# this repo's push volume (same failure class as GitHub's own documented
+# 2026-08-06 Actions outage, just smaller-scale and unpublicized) — not
+# something fixable in-repo. This is a safety net for that gap, not a fix
+# for the underlying cause: if the current main tip is old enough to have
+# missed its push-triggered run, fire it once via workflow_dispatch.
+#
+# Deliberately scoped to md-health.yml only, and to the current tip only
+# (not a backlog scan of every recent commit) — the goal is "the substrate's
+# health check runs regularly," not a full historical replay.
+
+on:
+  schedule:
+    - cron: '*/20 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  backstop:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Re-fire md-health.yml if the current main tip never got a run
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          REPO="${{ github.repository }}"
+
+          sha=$(gh api "repos/$REPO/commits/main" --jq '.sha')
+          subject=$(gh api "repos/$REPO/commits/$sha" --jq '.commit.message' | head -1)
+          commit_date=$(gh api "repos/$REPO/commits/$sha" --jq '.commit.committer.date')
+
+          case "$subject" in
+            *"[skip ci]"*)
+              echo "Tip $sha is [skip ci] — nothing to backstop."
+              exit 0
+              ;;
+          esac
+
+          age=$(( $(date +%s) - $(date -d "$commit_date" +%s) ))
+          if [ "$age" -lt 900 ]; then
+            echo "Tip $sha is ${age}s old — giving the normal push trigger time to land."
+            exit 0
+          fi
+
+          has_run=$(gh api "repos/$REPO/actions/workflows/md-health.yml/runs?branch=main&per_page=10" \
+            --jq --arg sha "$sha" '[.workflow_runs[] | select(.head_sha == $sha)] | length')
+
+          if [ "$has_run" -eq 0 ]; then
+            echo "main tip $sha has no md-health run after ${age}s — re-firing."
+            gh workflow run md-health.yml --ref main
+          else
+            echo "main tip $sha already has $has_run md-health run(s) — nothing to do."
+          fi
