@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-20 04:36 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-20 04:38 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-20 03:58 UTC → 2026-08-20 04:36 UTC)
+## Since last refresh (2026-08-20 04:36 UTC → 2026-08-20 04:38 UTC)
 
-- Merged: eq-shell [#1464](https://github.com/eq-solutions/eq-shell/pull/1464) fix(entity-patch): bound the onboarding auto-push trigger to
-- Merged: eq-shell [#1460](https://github.com/eq-solutions/eq-shell/pull/1460) feat(staff): multiSlicer filter chips on Staff table
-- Merged: eq-shell [#1458](https://github.com/eq-solutions/eq-shell/pull/1458) security(staff): consolidate staff_conversations RLS to one 
-- Merged: eq-shell [#1454](https://github.com/eq-solutions/eq-shell/pull/1454) fix(staff): drop duplicate email from Staff table NAME colum
-- Merged: eq-shell [#1451](https://github.com/eq-solutions/eq-shell/pull/1451) perf(nav): cache staff sub-page queries, prefetch lazy route
-- Merged: eq-shell [#1450](https://github.com/eq-solutions/eq-shell/pull/1450) perf(nav): intercept same-origin anchor clicks so sidebar na
-- Merged: eq-shell [#1449](https://github.com/eq-solutions/eq-shell/pull/1449) perf(entity-browser): cache table-row queries for 30s
-- Merged: eq-shell [#1416](https://github.com/eq-solutions/eq-shell/pull/1416) chore(intake): auto re-vendor eq-intake/eq-platform
+- Merged: eq-shell [#1477](https://github.com/eq-solutions/eq-shell/pull/1477) feat(documents): signer picker sources canonical staff, not 
+- Merged: eq-shell [#1463](https://github.com/eq-solutions/eq-shell/pull/1463) fix(nav): full navigation audit across all 6 roles + 3 dead 
+- Merged: eq-shell [#1462](https://github.com/eq-solutions/eq-shell/pull/1462) feat(auth): PIN reveal toggle + raise length ceiling 12→20
+- Merged: eq-shell [#1461](https://github.com/eq-solutions/eq-shell/pull/1461) feat(field): add RPCs for Field roster credential parity
+- Merged: eq-shell [#1459](https://github.com/eq-solutions/eq-shell/pull/1459) feat(drift): add stacked-permissive-policy check (CHECK 9)
+- Merged: eq-shell [#1457](https://github.com/eq-solutions/eq-shell/pull/1457) security(staff): restrict staff_conversations RLS to the cre
+- Merged: eq-shell [#1456](https://github.com/eq-solutions/eq-shell/pull/1456) fix(home): WorkerHome gets the Service tile + tenant logo it
+- Merged: eq-shell [#1455](https://github.com/eq-solutions/eq-shell/pull/1455) fix(staff): consistent column filters + Status as toggleable
 
 ## ⚠ Needs you (4)
 
@@ -51,7 +51,7 @@ _…and 172 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 3 | 0d |
-| eq-solves-service | ✓ success | -1d ago | 0 | — |
+| eq-solves-service | ✓ success | 0d ago | 0 | — |
 | eq-field | ✓ success | 0d ago | 1 | 0d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 1d ago | 0 | — |
@@ -73,6 +73,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-20 | eq-shell | [#1477](https://github.com/eq-solutions/eq-shell/pull/1477) feat(documents): signer picker sources canonical staff, not Shell |
 | 2026-08-20 | eq-shell | [#1476](https://github.com/eq-solutions/eq-shell/pull/1476) chore(deps): bump @eq-solutions/ui to v1.16.4 |
 | 2026-08-20 | eq-shell | [#1475](https://github.com/eq-solutions/eq-shell/pull/1475) fix(documents): reject a direct push against a no-signoff documen |
 | 2026-08-20 | eq-shell | [#1474](https://github.com/eq-solutions/eq-shell/pull/1474) fix(documents): stop onboarding auto-push from targeting referenc |
@@ -87,7 +88,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-19 | eq-shell | [#1466](https://github.com/eq-solutions/eq-shell/pull/1466) chore(deps): bump @eq-solutions/ui to v1.16.1 |
 | 2026-08-19 | eq-shell | [#1469](https://github.com/eq-solutions/eq-shell/pull/1469) chore(drift): allowlist eq_claim_connection_notification — source |
 | 2026-08-19 | eq-shell | [#1467](https://github.com/eq-solutions/eq-shell/pull/1467) fix(auth): bump last_login_at on QR self-join |
-| 2026-08-19 | eq-shell | [#1465](https://github.com/eq-solutions/eq-shell/pull/1465) perf(staff): warm staff-bootstrap so Staff loads don't eat a 3s c |
 _Showing 15 of 123 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -195,4 +195,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-20 04:36 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-20 04:38 UTC._
