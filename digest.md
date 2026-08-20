@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-20 18:15 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-20 18:16 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-20 18:09 UTC → 2026-08-20 18:15 UTC)
+## Since last refresh (2026-08-20 18:15 UTC → 2026-08-20 18:16 UTC)
 
-- Merged: eq-shell [#1498](https://github.com/eq-solutions/eq-shell/pull/1498) fix(drift): CHECK 6 widen schema scan to service/app_data (S
-- Merged: eq-shell [#1482](https://github.com/eq-solutions/eq-shell/pull/1482) fix(crm): revoke authenticated INSERT/DELETE on contact_cust
-- Merged: eq-shell [#1478](https://github.com/eq-solutions/eq-shell/pull/1478) fix(documents): add missing origin guard to document-version
-- Merged: eq-shell [#1477](https://github.com/eq-solutions/eq-shell/pull/1477) feat(documents): signer picker sources canonical staff, not 
-- Merged: eq-shell [#1475](https://github.com/eq-solutions/eq-shell/pull/1475) fix(documents): reject a direct push against a no-signoff do
-- Merged: eq-shell [#1474](https://github.com/eq-solutions/eq-shell/pull/1474) fix(documents): stop onboarding auto-push from targeting ref
-- Merged: eq-shell [#1472](https://github.com/eq-solutions/eq-shell/pull/1472) feat(staff): show who hasn't signed in to Shell yet, with a 
-- Merged: eq-shell [#1471](https://github.com/eq-solutions/eq-shell/pull/1471) feat(staff): funnel filters on Contact, Status, Birthday
+- Merged: eq-shell [#1483](https://github.com/eq-solutions/eq-shell/pull/1483) fix(routing): swallow rejected hover-prefetch of a lazy rout
+- Merged: eq-shell [#1481](https://github.com/eq-solutions/eq-shell/pull/1481) fix(documents): reminder cron respects due_at, backs off on 
+- Merged: eq-shell [#1480](https://github.com/eq-solutions/eq-shell/pull/1480) feat(labour-hire): partner-agency self-service candidate int
+- Merged: eq-shell [#1479](https://github.com/eq-solutions/eq-shell/pull/1479) feat(customers): cross-customer contacts in EQ Ops + bottom 
+- Merged: eq-shell [#1476](https://github.com/eq-solutions/eq-shell/pull/1476) chore(deps): bump @eq-solutions/ui to v1.16.4
+- Merged: eq-shell [#1473](https://github.com/eq-solutions/eq-shell/pull/1473) chore(nav): remove orphaned Storage page
+- Merged: eq-shell [#1470](https://github.com/eq-solutions/eq-shell/pull/1470) fix(documents): revoke authenticated grants on documents/doc
+- Merged: eq-shell [#1468](https://github.com/eq-solutions/eq-shell/pull/1468) chore(nav): remove 2 more orphaned pages (Field roster + She
 
 ## ⚠ Needs you (4)
 
@@ -51,7 +51,7 @@ _…and 176 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 2 | 0d |
-| eq-solves-service | ✓ success | 0d ago | 3 | 0d |
+| eq-solves-service | ✓ success | 0d ago | 2 | 0d |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 2d ago | 0 | — |
@@ -196,4 +196,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-20 18:15 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-20 18:16 UTC._
