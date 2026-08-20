@@ -188,15 +188,11 @@ status: live
 ---
 
 ## eq-shell + eq-context: sign-off register sprint closed out — reminders, certificate/templates, real UI critique → a reusable feature-baseline rule, bulk upload (2026-08-04)
-*Continuation of the sprint above. T2 (reminders) and T3 (bulk template upload) both went from "not scoped" to shipped and live. Royce then clicked through the real Upload & push / Register / Templates screens and gave direct UX critique — half the gaps named already had a matching `@eq-solutions/ui` component sitting unused, which became a new governed standard rather than a one-off fix.*
 
-
-**Deferred:**
 - [ ] **Royce's actual 15-file template batch hasn't been uploaded yet** — bulk upload shipped specifically for this, but nobody's run it through yet. _(added 2026-08-04)_
 - [ ] **OCR / smart intake on document upload** (auto-fill title/date/reference from the file, like eq-cards' licence OCR) — named in the critique, real north-star item, not started. _(added 2026-08-04)_
 - [ ] **Document type list is a hardcoded array in the frontend**, no admin config surface — named in the critique (`rules/admin-feature-baseline.md` item 4), not started. _(added 2026-08-04)_
 - [ ] **Certificate export can't be scoped to a subset of signers** — always the whole document, every signer, one PDF. Named in the critique, not started. _(added 2026-08-04)_
-- [ ] **T4 (permission gate)** — fix written and merged: eq-shell [PR #1470](https://github.com/eq-solutions/eq-shell/pull/1470) revokes `authenticated`'s direct grants on `documents`/`document_audiences`/`document_categories` (migration `0252_documents_revoke_authenticated.sql`), closing the PostgREST bypass this item described. Verified first, not assumed: every write path already ran through a service-role client, zero direct browser or eq-field access found. **Not yet applied to any live tenant DB** — needs a separate `tenant-migrate.yml` dispatch, Royce's call, not requested yet. No longer "accepted interim, not urgent" — re-flagged by the 2026-08-19 Document Sign-off Audit (finding T4) and now closed in code, open only on live application. _(updated 2026-08-20)_
 - [ ] **EQ Field / SKS Labour adoption has no tracked parity list** — surfaced via a `/gap` this session (Royce: "need to get EQ Field adopted first"), then Royce pivoted back to the sign-off register before deciding next steps here. SKS Labour is genuinely NOT feature-frozen (confirmed live, corrected a stale memory that had over-claimed a full freeze) — both apps get real ongoing work in parallel, with no dated retirement and no tracked list of what EQ Field still lacks. Real open question, nothing started. _(added 2026-08-04)_
 
 ---
