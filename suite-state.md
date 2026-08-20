@@ -63,9 +63,6 @@ _If this file is >48h old, the cron is broken._
 **eq-service:**
 - #788 fix(auth): Shell token keepalive dies permanently on any refresh failure
 
-**eq-shell:**
-- #1495 chore: remove eq-shell's dead duplicate of workers-canonical-sync
-
 ---
 
 ## System Health (as of 2026-08-20)
