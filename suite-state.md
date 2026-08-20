@@ -61,11 +61,13 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-20)
 
 **eq-service:**
+- #796 test(testing): component tests for ACB/NSX/RCD testing pages
 - #792 fix(migrations): unbreak fresh-database bootstrap so integration tests run
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
-- #1498 fix(drift): CHECK 6 widen schema scan to service/app_data (SEC-13)
+- #1500 fix(labour-hire): allow jvkn Supabase storage in frame-src CSP
+- #1499 fix(security): close anon-EXECUTE gap on service/app_data functions (SEC-13)
 
 ---
 
