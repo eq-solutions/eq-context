@@ -360,6 +360,36 @@ te("CONTROL: same-line, NOMINAL cwd IS the shared checkout, but a &&-chained cd 
     "tool_input": {"command": 'echo starting && cd "' + nominal_cwd
                     + '" && git commit -m x'},
     "cwd": f9_repo}, 0, SAME)
+
+# Found while porting guard.js's identical fix (2026-08-20) to this file:
+# effective_cwd() returned a RELATIVE cd/-C target as-is, the same bug shape
+# as the multi-line/same-line cases above but for the TARGET STRING itself
+# rather than where `cd` sits in the command. repo_root_for()'s `git -C
+# <target>` then resolved it against wherever THIS PROCESS happens to be
+# running, not the tool call's actual cwd -- usually not a git repo at all,
+# so F7/F9 silently no-op instead of firing. Not observed live in this file
+# (unlike guard.js's detect-fake-worktree, which false-positived on a real
+# worktree entered via a relative cd -- confirmed there via `git worktree
+# list`); found by inspection while porting that fix, before it caused a
+# live F7/F9 miss here.
+rel_target = os.path.relpath(f9_repo, nominal_cwd)
+te("bare commit via a RELATIVE cd into the shared checkout, NOMINAL cwd "
+   "elsewhere -> still BLOCK (2026-08-21, effective_cwd() must resolve a "
+   "relative cd/-C target against the caller's cwd, not return it raw)",
+   {"tool_name": "Bash",
+    "tool_input": {"command": 'cd "' + rel_target + '" && git commit -m x'},
+    "cwd": nominal_cwd}, 2, SAME)
+te("same shape via `git -C <relative>` -> still BLOCK",
+   {"tool_name": "Bash",
+    "tool_input": {"command": 'git -C "' + rel_target + '" commit -m x'},
+    "cwd": nominal_cwd}, 2, SAME)
+te("CONTROL: identical relative cd, but EQ_CONTEXT points elsewhere -> NOT "
+   "blocked (F9's own escape valve -- proves this resolves the relative "
+   "target to a real directory rather than blocking on the mere presence "
+   "of a relative cd)",
+   {"tool_name": "Bash",
+    "tool_input": {"command": 'cd "' + rel_target + '" && git commit -m x'},
+    "cwd": nominal_cwd}, 0, OTHER)
 _rmtree_retry(nominal_cwd)
 
 # Found live 2026-08-05 running real recon commands against this exact fixture

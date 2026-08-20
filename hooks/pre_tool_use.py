@@ -146,6 +146,20 @@ REBASE_MERGE_PULL_RE = re.compile(r'(?<![\w-])git\s+(?:-C\s+(?:"[^"]*"|\S+)\s+)?
 # LAST one, since a later cd in a chain overrides an earlier one.
 _CD_CHAIN_RE = re.compile(r'(?:^|&&|;|\|)\s*cd\s+(?:"([^"]*)"|(\S+))', re.MULTILINE)
 
+# effective_cwd()'s relative-target fix (2026-08-21, mirroring guard.js's
+# resolveEffCwd(), fixed there 2026-08-20) — matches a leading slash/backslash
+# OR a drive letter + separator, so a captured -C/cd target is treated as
+# already-rooted and passed through unresolved. Deliberately NOT
+# os.path.isabs(): ntpath vs posixpath disagree with each other on what
+# counts as rooted, and this hook runs under both (native Windows on the
+# Beelink, posixpath under EQ_FORCE_GUARD's Linux-CI simulation). A bare
+# leading slash with no drive letter is intentionally treated as rooted too,
+# so an MSYS-style target (/c/Projects/...) is passed through rather than
+# joined onto a Windows base and mangled into something worse — see
+# effective_cwd()'s own docstring for why that pass-through doesn't mean such
+# a target actually resolves correctly downstream.
+_CD_TARGET_ROOTED_RE = re.compile(r'^(?:[\\/]|[A-Za-z]:[\\/])')
+
 # F10 — matches a `git config` SET of core.hooksPath: an optional --local/
 # --worktree/--global scope, then the key, then a value (quoted or bare).
 # Deliberately does NOT match a bare read (`git config core.hooksPath`, no
@@ -256,16 +270,57 @@ def effective_cwd(cmd, data):
     partially and unsafely; a genuine fix needs position-aware quote
     tracking (know which & / cd / ^ occurrences are real shell syntax vs.
     inside a string literal), which is adversarial-test-grade work in its
-    own right, not a same-pass addition to a narrower, already-confirmed bug."""
+    own right, not a same-pass addition to a narrower, already-confirmed bug.
+
+    2026-08-21 (ported from guard.js's resolveEffCwd(), fixed there
+    2026-08-20): both branches above returned their captured target RAW when
+    it was RELATIVE — e.g. `cd worktrees/myworktree && git commit ...`, this
+    repo's own worktree-naming convention. repo_root_for()'s `git -C <cwd>`
+    call then resolved that relative string against wherever THIS PROCESS
+    happens to be running, not the tool call's actual cwd — usually landing
+    on something that isn't a git repo at all, so repo_root_for() returns
+    None and F7/F9 silently no-op instead of firing. Not observed live in
+    THIS file (unlike guard.js's detect-fake-worktree, which false-positived
+    on a real, properly `git worktree add`-created worktree entered via a
+    relative cd — confirmed there via `git worktree list` plus a direct .git
+    gitdir-pointer read); found here by inspection while porting that fix,
+    before it caused a live F7/F9 miss. Fixed the same shape: resolve the
+    captured target against data.get("cwd") when it isn't already rooted
+    (_CD_TARGET_ROOTED_RE, defined above this function — deliberately not
+    os.path.isabs(), see that regex's own comment for why).
+
+    KNOWN SCOPE BOUNDARY, found while verifying this fix empirically, not
+    closed by it: an MSYS-style absolute target (/c/Projects/eq-context) is
+    correctly left unresolved by _CD_TARGET_ROOTED_RE — matching guard.js's
+    own pass-through for that shape, and this function's pre-fix behaviour
+    for it too, so nothing regresses here either way. But confirmed live
+    (not assumed from guard.js's Node-side fix) that such a target does not
+    actually resolve correctly downstream regardless: `git -C
+    /c/Projects/eq-context rev-parse --show-toplevel` fails outright
+    ("cannot change to ... No such file or directory") when git.exe is
+    invoked directly via subprocess.run(), exactly how repo_root_for() calls
+    it. Unlike Node's fs calls, which have zero MSYS awareness and need
+    guard.js's normalizeMsysPath() to translate by hand, git.exe's own MSYS
+    path translation only fires for processes launched through a
+    Git-Bash-aware shell — not for a plain subprocess spawn. That gap is
+    real, pre-existing (the old code returned an MSYS target unresolved
+    too), and stays open: a different root cause (git's own argument
+    handling, not this function's regex capture) needing a different fix,
+    on repo_root_for()'s side rather than this one."""
     m = re.search(r'git\s+-C\s+"([^"]+)"', cmd) or re.search(r'git\s+-C\s+(\S+)', cmd)
-    if not m:
+    if m:
+        target = m.group(1)
+    else:
+        target = None
         cd_matches = list(_CD_CHAIN_RE.finditer(cmd))
         if cd_matches:
             last = cd_matches[-1]
-            return last.group(1) if last.group(1) is not None else last.group(2)
-    if m:
-        return m.group(1)
-    return data.get("cwd") or os.getcwd()
+            target = last.group(1) if last.group(1) is not None else last.group(2)
+    if target is None:
+        return data.get("cwd") or os.getcwd()
+    if _CD_TARGET_ROOTED_RE.match(target):
+        return target
+    return os.path.normpath(os.path.join(data.get("cwd") or os.getcwd(), target))
 
 
 def repo_root_for(cwd):
