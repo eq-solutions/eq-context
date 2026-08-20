@@ -13,6 +13,14 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: Roster compliance gate — missing-required badge reaches both roster views, plus a hold point on assignment (2026-08-21)
+
+- [ ] **No live click-through by a person yet** — same sandbox limitation #734/#737 already logged (no Core-authenticated SKS session reachable from this environment). Verified via the full test suite, eslint, bundle/cache-buster checks, and live-browser verification against the real shipped files with synthetic data (badge rendering, gap detection, full modal flow including the empty-reason block and audit write) — but worth two minutes on the real tenant: open Edit Roster, type a real site into a cell for someone flagged on Contacts, confirm the hold point fires and the audit entry lands. _(added 2026-08-21)_
+- [ ] **Two different "how many are missing" numbers, not reconciled**: Shell's Training Matrix said 6 of 32 on 2026-08-19 (`sks/pending.md`); this session's live query said 27 of 65 on 2026-08-21. Different populations/dates, both real, but the exact gap between them is unexplained — worth a look if the precise number ever matters (e.g. for messaging). Doesn't affect the gate itself, which evaluates each person live rather than depending on either count. _(added 2026-08-21)_
+- [ ] **A hard block for White Card specifically was floated and deliberately not built** — Royce picked the soft gate as the starting point; revisit once the override log shows how many overrides are genuine gaps vs. just un-uploaded paperwork. _(added 2026-08-21)_
+
+---
+
 ## eq-field: Documents to Sign — nav visibility, then view, then the real sign-write bug, six rounds to root cause (2026-08-20)
 *Royce reported the "Documents to Sign" nav item invisible, then — once it was — that View and Sign both had real bugs. Each round used live evidence (DB queries, a DevTools trace, Netlify function logs) rather than re-theorizing; full root-cause detail per version is in `docs/reflection-log.md`'s 2026-08-20 entries.*
 
