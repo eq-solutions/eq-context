@@ -9,6 +9,10 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-20 (PR #1483 MERGED — fixed the top live Sentry error, hover-prefetch unhandled rejection)
+- Root-caused `EQ-SHELL-1S` (31 events): `lazyRoutePreload.ts`'s `preloadLazyRoute()` fires a speculative `import()` on link hover/focus, outside React's render tree — a stale chunk hash after a deploy landed since page-load rejected the promise with no `.catch()`, surfacing as a bare unhandled rejection. Distinct from `App.tsx`'s existing `ChunkErrorBoundary`, which already handles the same failure class correctly but only for the real `React.lazy()` navigation promise, not this speculative warm-up one.
+- Fix: `.catch(() => {})` on both prefetch branches (exact-match and prefix-match). Safe by construction — the real navigation still fetches fresh and still gets `ChunkErrorBoundary`'s handling if it also fails; this only silences a warm-up that was never going to be user-visible either way. eq-shell [PR #1483](https://github.com/eq-solutions/eq-shell/pull/1483), squash-merged (`495c95b4`). Deploy verified live via commit-ancestry match against the newest ready production deploy (PR #1484 merged 39s later and shipped in the same Netlify build).
+
 ## 2026-08-20 (PR #1479 MERGED + dispatched — cross-customer contacts reach EQ Ops, dropdown sort fixed, bottom bulk bar)
 - `eq_list_contacts_for_customer`/`eq_list_contacts_for_site` now also read `app_data.contact_customer_links` — a contact linked to a second customer via the Customers page "Link" button now shows up in that customer's EQ Ops New Quote contact picker too (previously only the primary `contacts.customer_id` was read). Both RPCs also switched `ORDER BY` from surname-primary to first-name-primary, matching the "First Last" row display — the dropdown was already alphabetical by surname, it just read as wrong because the display order didn't match the sort key.
 - Customers page contacts list gets a sticky bottom bar (Archive + Delete) so bulk actions work without scrolling back to the section header on a long list; wires bulk-archive UI up to the `archive_contact` action that already existed server-side.
