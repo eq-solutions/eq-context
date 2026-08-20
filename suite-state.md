@@ -65,9 +65,6 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 - #788 fix(auth): Shell token keepalive dies permanently on any refresh failure
 
-**eq-shell:**
-- #1496 feat(labour-hire): review each licence individually before approving
-
 ---
 
 ## System Health (as of 2026-08-20)
