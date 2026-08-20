@@ -65,9 +65,6 @@ _If this file is >48h old, the cron is broken._
 - #797 fix(migrations): reconstruct the service.* base tables ehow moved by hand
 - #791 fix(reports): make reissuing a report possible from the UI
 
-**eq-shell:**
-- #1506 fix(nav): HubLayout sidebar never enforced hideForTier for trial tenants
-
 ---
 
 ## System Health (as of 2026-08-20)
