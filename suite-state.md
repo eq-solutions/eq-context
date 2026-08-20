@@ -65,9 +65,9 @@ _If this file is >48h old, the cron is broken._
 
 **eq-service:**
 - #788 fix(auth): Shell token keepalive dies permanently on any refresh failure
-- #787 fix(reports): make the report-issue idempotency guard actually work
 
 **eq-shell:**
+- #1495 chore: remove eq-shell's dead duplicate of workers-canonical-sync
 - #1494 fix(labour-hire): batch flow never captured an employer name; spinner copy
 
 ---
