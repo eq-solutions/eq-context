@@ -21,11 +21,11 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 - [x] `fix/type-bypass-column-audit`, a branch only found because it still held 2 stashes, turned out to be fully superseded too — both its commits content-matched already-merged PRs #544 and #545.
 - [x] All 3 stashes on the repo checked by actual diff content, not just their own labels (one stash's label named a completely different branch than what was actually in it — the label just records whatever branch happened to be checked out at stash time). 2 were a stale pre-build draft of a proposal doc, already superseded by the real "built" version. 1 was real work — canonical-sync retry-on-failure logic — that turned out to have lost a race to a different session's version by about 100 minutes; that version has been live since PR #249.
 - [x] Every deletion (5 branches local + 3 remote, 7 worktrees, 23 folders, 3 stashes) confirmed safe first — either an exact content match against a merged PR, or, for the one live worktree, left alone entirely — then done only after your explicit go-ahead each time.
+- [x] **The sibling branch from the 2026-08-14 entry below (`fix/session-expiry-server-action-errors`, commit `df74500`) deleted too**, on your direct instruction — re-confirmed patch-id-identical to merged PR #725 first. Remote copy was already gone. That closes out the last open thread from this whole graveyard sweep.
 - No PR, no migration, no product code touched. Pure repo hygiene.
 
 **Deferred:**
 - [ ] **One leftover worktree folder (`acb-check-report-wiring-1baa7e`) still can't be deleted** — Windows reports it's in use by a running process. It's empty with no git linkage, so it's inert; delete it once whatever's holding it open is closed. Three attempts across the session all failed the same way. _(added 2026-08-21)_
-- [ ] **The sibling branch flagged just below (`fix/session-expiry-server-action-errors`, commit `df74500`, 2026-08-14) is still sitting there, untouched** — same shape as everything cleaned up this session (content already shipped, as PR #725), just a different, similarly-named branch this session's checks never reached. Still genuinely "next time someone's in eq-service." _(added 2026-08-21)_
 
 ---
 
@@ -223,7 +223,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ## eq-solves-service: session-expiry Server Action crash (EQ-SOLVES-SERVICE-D) — root-caused, fixed suite-wide across ~120 call sites, merged (2026-08-14)
 
 - [ ] **No manual browser smoke test yet** — need to actually expire a session mid-form-submit on a few touched pages and confirm the friendly "sign in again" message renders, rather than just type/unit verification. _(added 2026-08-14)_
-- [ ] **Old branch `fix/session-expiry-server-action-errors` left with a redundant commit** (`df74500`, content-identical to the now-merged #725) — harmless, but worth deleting next time someone's in eq-service. _(added 2026-08-14)_
 
 ---
 
