@@ -65,7 +65,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #1481 fix(documents): reminder cron respects due_at, backs off on delivery failure
-- #1478 fix(documents): add missing origin guard to document-version-upload-init
 
 ---
 
