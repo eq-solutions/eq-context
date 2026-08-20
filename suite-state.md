@@ -60,8 +60,7 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-20)
 
-**eq-shell:**
-- #1481 fix(documents): reminder cron respects due_at, backs off on delivery failure
+_No open PRs_
 
 ---
 
