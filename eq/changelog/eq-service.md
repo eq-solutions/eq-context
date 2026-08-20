@@ -9,6 +9,12 @@ status: live
 
 # EQ Service — Changelog
 
+## 2026-08-21 (PR #797 OPEN, NOT MERGED — proof-only fix for the automated-test database bootstrap)
+- Continuation of PR #792 (same day). Added `00001_service_schema_pre_canonical_fixture.sql`, reconstructing ~30 `service.*` database objects that were created by hand directly on the live database and never captured in any migration file — the same root cause #792 fixed for `app_data`, extended to a larger object set found by tracing actual references rather than a static text scan.
+- One real, unrelated bug fixed along the way: `service.defects_sites()` (migration 0142) was pointed at the wrong table (`assets` instead of `sites`) — a copy-paste slip, invisible until this fix gave `service.sites` a resolvable shape.
+- Proven against real CI: the automated-test database bootstrap now gets from an immediate failure at migration 0142 through migration 0188 — the full scope this fix was for.
+- **Left open, not merged, on purpose** — this only changes what a from-scratch test database looks like; nothing here touches the live app. A second, unrelated, pre-existing bug (three pairs of migration files sharing the same version number) was found blocking the step after this one and filed separately as issue #800, not fixed here.
+
 ## 2026-08-21 (migration 0226 APPLIED — the permanent-delete button on the admin archive page is now admin-only in the database, not just in the app)
 - `service.hard_delete_archived_entity` (permanently deletes an already-archived customer/site/asset/job_plan/maintenance_check) checked tenant ownership but not caller role — any signed-in team member could have called it directly and bypassed the app's own admin-only gate. Fixed via the existing `service.assert_write_role` helper, gated to manager only, matching the app's own rule. Fix authored by a separate session (PR #794); dispatched and independently verified live this session.
 - Applied through the governed `apply-service-migrations` dispatch, confirmed live against ehow afterward (ledger row, guard present, correct grants) rather than trusting the deploy's own success message.
