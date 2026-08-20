@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-20 19:12 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-20 19:18 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-20 19:09 UTC → 2026-08-20 19:12 UTC)
+## Since last refresh (2026-08-20 19:12 UTC → 2026-08-20 19:18 UTC)
 
-- Merged: eq-shell [#1489](https://github.com/eq-solutions/eq-shell/pull/1489) feat(labour-hire): drag-and-drop for the batch intake file p
-- Merged: eq-shell [#1488](https://github.com/eq-solutions/eq-shell/pull/1488) fix(labour-hire): staging-object cleanup is fire-and-forget,
-- Merged: eq-shell [#1486](https://github.com/eq-solutions/eq-shell/pull/1486) feat(labour-hire): batch intake — group upload for admin and
-- Merged: eq-shell [#1485](https://github.com/eq-solutions/eq-shell/pull/1485) feat(quotes): Excel labour/materials breakdown import + Cate
-- Merged: eq-shell [#1482](https://github.com/eq-solutions/eq-shell/pull/1482) fix(crm): revoke authenticated INSERT/DELETE on contact_cust
-- Merged: eq-shell [#1478](https://github.com/eq-solutions/eq-shell/pull/1478) fix(documents): add missing origin guard to document-version
-- Merged: eq-shell [#1477](https://github.com/eq-solutions/eq-shell/pull/1477) feat(documents): signer picker sources canonical staff, not 
-- Merged: eq-shell [#1475](https://github.com/eq-solutions/eq-shell/pull/1475) fix(documents): reject a direct push against a no-signoff do
+- Merged: eq-shell [#1487](https://github.com/eq-solutions/eq-shell/pull/1487) fix(labour-hire): zip-slip check false-positives on every en
+- Merged: eq-shell [#1484](https://github.com/eq-solutions/eq-shell/pull/1484) fix(documents): 0253 inserted reminder_count mid-view, PG re
+- Merged: eq-shell [#1483](https://github.com/eq-solutions/eq-shell/pull/1483) fix(routing): swallow rejected hover-prefetch of a lazy rout
+- Merged: eq-shell [#1481](https://github.com/eq-solutions/eq-shell/pull/1481) fix(documents): reminder cron respects due_at, backs off on 
+- Merged: eq-shell [#1480](https://github.com/eq-solutions/eq-shell/pull/1480) feat(labour-hire): partner-agency self-service candidate int
+- Merged: eq-shell [#1479](https://github.com/eq-solutions/eq-shell/pull/1479) feat(customers): cross-customer contacts in EQ Ops + bottom 
+- Merged: eq-shell [#1476](https://github.com/eq-solutions/eq-shell/pull/1476) chore(deps): bump @eq-solutions/ui to v1.16.4
+- Merged: eq-solves-service [#798](https://github.com/eq-solutions/eq-service/pull/798) fix(ci): notify job still claimed dispatch pauses for approv
 
 ## ⚠ Needs you (9)
 
@@ -55,10 +55,10 @@ _…and 176 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 0 | — |
+| eq-shell | ✓ success | 0d ago | 1 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 2 | 0d |
 | eq-field | ✓ success | 0d ago | 0 | — |
-| eq-cards | ✓ success | 0d ago | 1 | 0d |
+| eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 2d ago | 0 | — |
 
 ## Live errors (Sentry)
@@ -105,7 +105,7 @@ _Showing 15 of 124 · full record in [sessions/](sessions/)_
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
 - **eq-ui** (2 open) · [eq/pending/eq-ui.md](eq/pending/eq-ui.md)
 - **eq-receipts** (4 open) · [eq/pending/eq-receipts.md](eq/pending/eq-receipts.md)
-- **eq-context** (25 open) · [eq/pending/eq-context.md](eq/pending/eq-context.md)
+- **eq-context** (26 open) · [eq/pending/eq-context.md](eq/pending/eq-context.md)
 - **cross-repo** (182 open) · [eq/pending/cross-repo.md](eq/pending/cross-repo.md)
 - **sks** (8 open) · [eq/pending/sks.md](eq/pending/sks.md)
 
@@ -137,7 +137,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
 | [eq-ui](eq/pending/eq-ui.md) | 29 | 2 / 0 | 2 | 0 |
 | [eq-receipts](eq/pending/eq-receipts.md) | 44 | 3 / 1 | 0 | 0 |
-| [eq-context](eq/pending/eq-context.md) | 223 | 22 / 3 | 23 | 5 |
+| [eq-context](eq/pending/eq-context.md) | 232 | 23 / 3 | 25 | 5 |
 | [cross-repo](eq/pending/cross-repo.md) | 949 | 142 / 42 | 20 | 30 |
 | [sks](eq/pending/sks.md) | 53 | 3 / 5 | 0 | 6 |
 | [SKS](sks/pending.md) | 454 | 81 / 10 | 4 | 20 |
@@ -200,4 +200,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-20 19:12 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-20 19:18 UTC._
