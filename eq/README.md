@@ -28,6 +28,7 @@ Every canonical EQ file as a full URL — clickable from `/context/claude`:
 - [eq/sprints/2026-05-20-S1-canonical-lockin.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/eq/sprints/2026-05-20-S1-canonical-lockin.md) — Sprint S1: canonical-readiness lock-in + ship-ready. 10 items, 1-week, security rotations + PostgREST schema exposure + first functional Core dropzone + Cards iframe deploy (draft 2026-05-20)
 - [eq/canonical-readiness/audit-2026-05-21.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/eq/canonical-readiness/audit-2026-05-21.md) — Honest audit of core.eq.solutions post-S3. Top issues: EntityImportPanel hangs the renderer; home screen reads as admin dashboard not platform; intake legacy has no topbar. **All 8 items shipped + verified in browser 2026-05-21**.
 - `eq/templates.md` — forward-pointer; re-checked 2026-07-20, still does not exist — will be created when the first EQ deliverable template is captured
+- [eq/field/digest-notifications-foundation-2026-08-18.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/eq/field/digest-notifications-foundation-2026-08-18.md) — Design spec: general `notification_subscriptions` foundation (not just the digest) + `app_config`-based section toggles. Not yet built — gated on the 2026-08-14 hold (real edits to the 3 leave-email templates), still unmet as of 2026-08-18.
 
 ## Strategic focus (2026 Q2)
 
