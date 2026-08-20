@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-08-19
+last_updated: 2026-08-20
 scope: Done items rotated out of eq/pending.md nightly by scripts/rotate_pending.py (per-item since 2026-07-27; before that, occasional manual whole-section moves). Nothing here is actionable — pure historical record (also covered in eq/changelog/*.md and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -13,6 +13,12 @@ Done items and fully-closed session write-ups rotated out of `eq/pending.md`.
 If you''re looking for something to action, it''s not here — check `eq/pending.md`.
 A "(rotated YYYY-MM-DD ...)" note on a section header means only that
 section's done items live here; its open items stayed in `eq/pending.md`.
+
+---
+
+## eq-ui: two Table/Skeleton PRs open from an eq-shell Staff-table session (2026-08-19) (fully closed, no open items remain)
+
+- [x] [PR #41](https://github.com/eq-solutions/eq-ui/pull/41) — `Skeleton` shimmer-sweep animation replacing the opacity pulse, plus a `prefers-reduced-motion` fallback the old pulse never had. Applies to every existing `Skeleton` usage automatically once released — no prop change. Merged 2026-08-20 (squash `8e9cda5`). _(added 2026-08-19)_
 
 ---
 

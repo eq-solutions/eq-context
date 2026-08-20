@@ -9,8 +9,9 @@ status: live
 
 # eq-ui changelog
 
-## 2026-08-20 (PR #47 MERGED)
+## 2026-08-20 (PR #47 + PR #41 MERGED)
 - PR #47: local dev-tooling fix — `eslint.config.js` now ignores `.claude`, so `npm run lint` no longer recurses into other concurrent sessions' nested `.claude/worktrees/<name>/` checkouts and surfaces their unrelated errors. CI unaffected (a fresh checkout has no `.claude/` dir). Shipped with an empty changeset — `eslint.config.js` isn't in the published package's `files` allowlist, so no version bump applies.
+- PR #41: `Skeleton` shimmer-sweep animation replacing the opacity pulse, plus a `prefers-reduced-motion` fallback the old pulse never had. Applies to every existing `Skeleton` usage automatically once released — no prop change. Open since 2026-08-18, checked and squash-merged (`8e9cda5`) this session on Royce's "merge." Unpublished as of this entry — a version-packages PR will pick it up.
 
 ## 2026-08-19 (PR #40 MERGED, published v1.16.0 — PR #41 still open)
 - PR #40: opt-in `multiSlicer` prop on `Table` — click-to-toggle, AND-combined slicer chips, for eq-shell's Staff page. Default `false`; verified against all 8 existing `slicers=` call sites in eq-shell (2 use controlled `activeSlicer`/`onSlicerChange`, unaffected). Merged, published as `@eq-solutions/ui@1.16.0` via the Changesets version-packages PR (#42). Consumed same day in eq-shell [PR #1460](https://github.com/eq-solutions/eq-shell/pull/1460).
