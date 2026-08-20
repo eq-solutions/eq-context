@@ -60,8 +60,8 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-20)
 
-**eq-shell:**
-- #1492 feat(quotes): drag-and-drop + one import button + per-row section picker
+**eq-service:**
+- #784 fix(site-credentials): move to service schema, fix pgcrypto qualification
 
 ---
 
