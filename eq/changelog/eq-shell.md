@@ -9,6 +9,11 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-20 (PR #1478 MERGED + PR #1481 MERGED — Document Sign-off Audit fully closed)
+- `document-version-upload-init.ts` gained the `checkShellOrigin` guard its 3 sibling upload endpoints already had (missed at ship time, 2026-08-13). eq-shell [PR #1478](https://github.com/eq-solutions/eq-shell/pull/1478), squash-merged (`2b269ca3`).
+- Reminder cron now respects `due_at` when a signoff has one (onboarding auto-push sets it; a document due in 60 days no longer gets the same first nudge as one due tomorrow), and backs off to a 7-day cadence on delivery failure instead of retrying every day forever. `reminder_count`/`last_reminded_at` (migration `0253`) now show in the Register tab and sign-off evidence modal. eq-shell [PR #1481](https://github.com/eq-solutions/eq-shell/pull/1481), merged (`1d8a2332`).
+- Closes the last 2 open items from the 2026-08-19 Document Sign-off Audit — all 6 findings now resolved and live.
+
 ## 2026-08-20 (PR #1482 MERGED + dispatched — closed a permission-bypass on contact↔customer linking)
 - `app_data.contact_customer_links` had granted `authenticated` direct `INSERT`/`DELETE` since migration 0133, letting any signed-in tenant member bypass `crm-write.ts`'s `entity.edit` gate on `link_contact_customer`/`unlink_contact_customer` via raw PostgREST. Not cross-tenant — 0133's own `tenant_isolation` RLS policy scoped correctly throughout.
 - Migration `0254` revokes `INSERT, DELETE` from `authenticated`, leaves `SELECT` in place (matches 0028's original grant, RLS-scoped). eq-shell [PR #1482](https://github.com/eq-solutions/eq-shell/pull/1482), squash-merged (`09544c66`).
