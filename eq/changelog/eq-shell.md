@@ -9,6 +9,9 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-20 (PR #1495 MERGED — removed the dead workers-canonical-sync duplicate)
+- Follow-up to the employment_type fix further down this same day: eq-shell's own copy of `supabase/functions/workers-canonical-sync/index.ts` was confirmed to have no deploy path at all (eq-cards owns the real deploy) and had already silently diverged from the live function. Royce: "Delete the eq-shell copy" → removed entirely, then "Merge it when CI's green" once all required checks passed. eq-shell [PR #1495](https://github.com/eq-solutions/eq-shell/pull/1495), squash-merged (`18dabcdb`). Zero functional change — the file was never live.
+
 ## 2026-08-20 (PR #1493 MERGED — clarified which PDF-import button does what)
 - Two PDF-import buttons read as the same thing but do different jobs: one auto-fills a new quote's header from a client's request document, the other starts a quote from a supplier's priced document. Relabeled "Import from PDF" → "Fill from client PDF" (New Quote form) and "From PDF" → "From supplier PDF" (Jobs page), plus matching tooltips, drag-drop overlay/error copy, and code comments. Copy-only, no behavior change. Follow-up to a `/decide` pass confirming client RFQs never arrive as spreadsheets, so no Excel support was warranted there. eq-shell [PR #1493](https://github.com/eq-solutions/eq-shell/pull/1493), squash-merged (`8cffe0bb`), confirmed live via exact Netlify `commit_ref` match.
 
