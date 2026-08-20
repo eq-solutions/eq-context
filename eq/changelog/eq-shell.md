@@ -9,6 +9,11 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-20 (PR #1468 MERGED — 2 more orphaned pages removed: Field roster + Shell licence OCR)
+- Removed `FieldRosterPage.tsx` (`/field/roster`, redundant — Field's own iframe already has a Weekly Roster tab) and `LicenceOcrPage.tsx` (`/onboarding/licence`, licence capture now goes through Cards only) plus its two dedicated backend functions, `ocr-parse.ts` and `licence-ocr-commit.ts`.
+- `field.manage_licences` (that OCR flow's only enforcement call site) retired back into the permission-drift ratchet's dead-key list.
+- Follow-up to the [nav-by-role audit](https://github.com/eq-solutions/eq-shell/pull/1463); full list: https://claude.ai/code/artifact/d23bedd6-d5c3-4586-badd-cb5561fffc09.
+
 ## 2026-08-20 (PR #1472 MERGED — Staff page now shows who hasn't signed in to Shell, with a filter)
 - New `staff-login-status.ts` resolves each staff member's `app_data.staff.user_id` (ehow) to `shell_control.users.last_login_at` (jvkn), wired into the existing `staff-bootstrap` fan-out. Staff table gets a "Login" column and a filter to isolate who's unlinked.
 - Directly feeds eq-field PR #705 (a real P1: any signed-in SKS worker can currently read/edit every other worker's timesheet and leave data — undispatched because too many staff aren't yet login-linked). This makes the gap visible and trackable instead of invisible.
