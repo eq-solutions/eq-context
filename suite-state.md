@@ -60,12 +60,12 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-20)
 
-**eq-cards:**
-- #286 feat(labour-hire): OCR returns a crop_bounds box per document
-
 **eq-service:**
 - #797 fix(migrations): reconstruct the service.* base tables ehow moved by hand
 - #791 fix(reports): make reissuing a report possible from the UI
+
+**eq-shell:**
+- #1505 feat(labour-hire): crop preview in review modal + review-all queue
 
 ---
 
@@ -75,7 +75,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ? in_progress |
+| eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
