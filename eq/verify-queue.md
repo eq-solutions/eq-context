@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Verify Queue
 owner: Royce Milmlow
-last_updated: 2026-08-19
+last_updated: 2026-08-20
 scope: Items whose only remaining blocker is your own live sign-in/click-through — the underlying work is already built, merged, and (unless the line itself says otherwise) live. Moved here from eq/pending.md by scripts/rotate_pending.py once a session's real build work is fully done, so a stale "click through to confirm" line no longer pins a whole finished write-up in the live pending doc.
 read_priority: high
 status: live
@@ -433,6 +433,60 @@ a bug rather than just deleting the line.
 **From:** eq-cards: 3 permission-audit gaps closed — dead JWT minter retired, empty employer credential list fixed, unreachable admin policy fixed (2026-08-16)
 
 - [ ] **Live click-through not done on the credential-list fix specifically.** Verified via live RLS/RPC checks, CI (`flutter analyze` + `flutter test`), and the deploy's ETag change — not by an actual signed-in admin opening a worker's detail screen and seeing their credentials render. _(added 2026-08-16)_
+
+---
+
+**From:** eq-solves-service: any signed-in worker — apprentice, labour hire, subcontractor — could write maintenance checks, defects, test results and assets straight to the database, skipping every in-app permission check. Fixed, shipped, and confirmed live (2026-08-16)
+
+- [ ] **Not clicked through live.** The database change is live on production now — worth two minutes to confirm a low-privilege account (apprentice/labour hire/subcontractor) actually gets blocked from writing, and that an assigned technician can still update their own job. Needs a real signed-in session, not checkable from here. _(added 2026-08-16)_
+
+---
+
+**From:** eq-solves-service: NSX Test Report fixed — dead ACB-only fields left it always printing blank sections (2026-08-14)
+
+- [ ] **Not click-tested against a real generated NSX report** — fix verified via typecheck + code trace only; worth Royce pulling a real NSX Test Report next time one's generated to eyeball the CB Details table looks right. _(added 2026-08-14)_
+
+---
+
+**From:** eq-solves-service: /admin/* pages closed to non-managers (2026-08-14)
+
+- [ ] **Not click-tested by a real non-manager account** — no such login was available in this environment. Worth Royce confirming a technician account gets bounced off `/admin/*` now. _(added 2026-08-14)_
+
+---
+
+**From:** eq-shell: the Shell licence-scanner page has never once saved a licence — found, fixed, merged, live (2026-08-17)
+
+- [ ] **Not clicked through live** — verified by code review, live database checks, and a clean preview build, not by an actual person scanning a licence on the real site and watching it save. Worth two minutes on a real account.
+
+---
+
+**From:** eq-shell: a way to hand yourself full admin power through the "custom access groups" screen — found, fixed, and live (2026-08-16)
+
+- [ ] **Not clicked through live** — confirmed by tests and by calling the affected screen's backend directly, not by an actual person building a group in the UI and watching the dangerous options disappear. Worth two minutes on a real admin account. _(added 2026-08-16)_
+
+---
+
+**From:** eq-shell: an AI tool anyone signed in could use to run up costs on the company's AI account — closed, merged, live (2026-08-16)
+
+- [ ] **Not clicked through live yet.** Worth two minutes: try the AI import on a real file, look at the home-page briefing/ask bar as a manager vs. a supervisor, and try opening the licence-scan page as an apprentice (should now say you don't have access). _(added 2026-08-16)_
+
+---
+
+**From:** eq-shell: account-enumeration hole closed on the phone+PIN sign-in door (2026-08-15)
+
+- [ ] **Not click-tested in a browser** — both sign-in doors were checked by calling them directly on production (an unknown mobile and an unknown email each return an identical "no" with no extra detail; the unauthed session check still refuses correctly) plus full CI, but nobody signed in through the actual page. Worth Royce trying two things on his phone: a *wrong* PIN, and a number that has *no* PIN set — both should now show the same "That number and PIN didn't match. If you haven't set a PIN yet, use 'Text me a code instead'". Then sign in by text on an account with no PIN and confirm the "Set a PIN" prompt still appears on the Home screen — that prompt is now the only place that guidance is given. _(added 2026-08-15)_
+
+---
+
+**From:** eq-cards: 3 permission-audit gaps closed — dead JWT minter retired, empty employer credential list fixed, unreachable admin policy fixed (2026-08-16)
+
+- [ ] **Live click-through not done on the credential-list fix specifically.** Verified via live RLS/RPC checks, CI (`flutter analyze` + `flutter test`), and the deploy's ETag change — not by an actual signed-in admin opening a worker's detail screen and seeing their credentials render. _(added 2026-08-16)_
+
+---
+
+**From:** eq-solves-service: Calendar + every people-list in Service made canonical, 3 database updates shipped to live (2026-08-17)
+
+- [ ] **Not clicked through live by a real signed-in user** — verified via code review, live-database dry-runs, and clean CI, not by actually opening the Calendar page and checking the technician/supervisor dropdowns show the right names. _(added 2026-08-17)_
 
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: SKS Tier — Verify Queue
 owner: Royce Milmlow
-last_updated: 2026-08-13
+last_updated: 2026-08-20
 scope: Items whose only remaining blocker is your own live sign-in/click-through — the underlying work is already built, merged, and (unless the line itself says otherwise) live. Moved here from sks/pending.md by scripts/rotate_pending.py once a session's real build work is fully done, so a stale "click through to confirm" line no longer pins a whole finished write-up in the live pending doc.
 read_priority: high
 status: live
@@ -31,5 +31,11 @@ a bug rather than just deleting the line.
 **From:** Leave — delete an approved request, including its roster entry — shipped (v3.10.111, PR #78, merged 2026-08-10)
 
 - [ ] **Live click-through not done** — verified via a full standalone test in the demo sandbox (stubbed the two network calls since this environment can't reach the real Supabase project) rather than a real production click-through. Royce to confirm on a real approved leave record. _(added 2026-08-10)_
+
+---
+
+**From:** Roster-notification login popup removed (v3.10.110, PR #77, sks-nsw-labour)
+
+- [ ] **Royce to confirm live**: log in for real post-deploy and confirm no popup appears. Superseded by v3.10.111 (PR #78) landing cleanly on top with no reported regression, but that's not the same as an actual click-through. _(added 2026-08-04, recovered from an unpopped stash 2026-08-20 — never made it into this file at the time)_
 
 ---

@@ -1,7 +1,7 @@
 ---
 title: SKS Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-08-19
+last_updated: 2026-08-20
 scope: Done items rotated out of sks/pending.md nightly by scripts/rotate_pending.py to keep the live doc scannable. Nothing here is actionable — pure historical record (also covered in changelogs and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -471,5 +471,23 @@ output).*
 
 ## SKS national scale discovery — "what breaks EQ at ~2,000 employees" (2026-07-23) (rotated 2026-08-19 — open items remain in pending.md)
 
+
+---
+
+## Roster-notification login popup removed (v3.10.110, PR #77, sks-nsw-labour) (rotated 2026-08-20)
+*Royce: "remove the notification about getting notified when roster changes." Found the target was a real, live feature — `scripts/auth.js:1021-1126`'s "Get notified when your roster changes" banner (3s after login) is the front door to a deployed Supabase edge function (`send-roster-push`) that actually pushes when a supervisor rosters someone onto tomorrow's schedule. Confirmed scope via AskUserQuestion before touching anything: hide the ask-for-permission popup only, don't stop delivery for anyone already subscribed.*
+- [x] Deleted `_showPushBanner()`/`_requestAndSubscribe()` outright (both were only ever called from the popup's own click handlers) — `initPushOptIn()` now only refreshes an existing grant's subscription, never prompts.
+- [x] Verified: no leftover references anywhere in the repo; ran `initPushOptIn()` directly in-browser for both `Notification.permission` states, no throw, no banner element, existing-grant refresh path still fires.
+
+---
+
+## SKS national scale discovery — "what breaks EQ at ~2,000 employees" (2026-07-23) (rotated 2026-08-20 — open items remain in pending.md)
+
+
+---
+
+## ⏩ SKS Field — session 2026-07-04 (Cards→Field migration path verified, read-only) (rotated 2026-08-20 — open items remain in pending.md)
+
+- [x] ~~First Cards→Field approval for SKS never run~~ — **stale, checked live 2026-08-20: 99 of 101 total `cards_field_approvals` rows are now SKS's.** The tenant that was "unproven" in July is now the dominant one in the table — the approve + licence-verify path has clearly been exercised many times over since. _(added 2026-07-04, resolved — substrate correction 2026-08-20)_
 
 ---

@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-08-18
+last_updated: 2026-08-20
 scope: Done items rotated out of ops/pending.md nightly by scripts/rotate_pending.py to keep the live doc scannable. Nothing here is actionable — pure historical record (also covered in changelogs and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -325,5 +325,54 @@ change to `eq-context`, so no PR here either — same pattern as the
 - [x] Two sessions independently built protection the same day. One added a check that scans the notes for the false claim; this session added a block that stops it being written in the first place. Kept as one shared definition rather than two — two copies would drift apart, which is the same problem all over again.
 - [x] Also catches the claim when it's split across two lines of one bullet point, which the scan alone reads straight past. Swept every note file: none currently on disk.
 - [x] Guard recorded as fully closed in the failure ledger — the highest level, prevention rather than after-the-fact detection.
+
+---
+
+## The "eq-shell isn't live yet" myth can no longer be written down (2026-08-15) (rotated 2026-08-20)
+
+*Merging a change to eq-shell puts it on core.eq.solutions within seconds, unattended. A note claiming otherwise had been circulating, and I repeated it to Royce this session about a live sign-in change — telling him it was still waiting on him hours after it had gone out. That was the second time, so the written warning was clearly not enough and had to become something enforced.*
+
+
+- [x] ~~The shared eq-context folder needs someone to reconcile it~~ — **checked live 2026-08-20: fully reconciled, 0 commits behind/ahead of `origin/main`, clean working tree.** Whatever needed sending up has since gone up — dozens of sessions have pushed through the shared checkout today alone. _(added 2026-08-15, resolved — substrate correction 2026-08-20)_
+
+---
+
+## core.hooksPath worktree-scope shadow regressed F8 for ~1 day — root-caused, drift-check proposed (2026-08-05) (rotated 2026-08-20)
+
+`extensions.worktreeConfig` is `true` repo-wide, which means `core.hooksPath` can be
+overridden per-worktree independent of the shared `--local` value. On the main checkout
+(`C:\Projects\eq-context`), a `--worktree`-scope override was silently shadowing the
+correct `--local` value of `.githooks`, resolving effectively to `.git/hooks` — the exact
+symptom F8 was built to close (governed pre-commit hook, including the secret guard,
+never running). Found and fixed directly (`git config --worktree core.hooksPath
+.githooks`) before this write-up; confirmed live and holding this session
+(local/worktree/effective all agree on `.githooks`).
+
+**Root cause, reconstructed from `sessions/2026-08-04.md`:** that session's F8-fix work
+repointed all 5 then-open linked worktrees to `.githooks`, found 4 of 5 were on branches
+predating the secret-guard delegation (so pointing them at `.githooks` would have removed
+their only secret-scanning), and reverted those 4 to `--worktree core.hooksPath
+.git/hooks` — the only place in this repo's history that command was ever run. Main was
+never named in that plan. No transcript exists (git config changes aren't logged), but
+same value, same day, same only-known instance of the pattern — most likely the revert
+loop (or a copied command) touched main's path by accident. The 4 reverted worktrees
+(`agent-af31fd71dc13a91c7`, `silly-noether-ec8a81`, `skills-list-html-908d61`,
+`eq-context-reflection-protocol-wt`) are still on `.git/hooks` today — that's the
+documented, self-resolving state, not a new problem.
+
+**This is arguably the third distinct mechanism producing the same "pre-commit silently
+doesn't run" symptom**: 2026-05-24 (wrong directory name, `lessons.md` prose only,
+rung 1), 2026-08-04 (untracked shadow copy, folded into F8's `note:` field, no own
+ledger id), now this. Neither of the first two ever got a tracked `system/failures.md`
+entry of its own — the exact gap F9's own note warns about elsewhere in that file.
+
+- [x] ~~Royce's call, offered via `AskUserQuestion`, not yet answered: add a sixth check to `hooks/session_start.py`... plus a `system/failures.md` ledger entry~~ — **both done, checked live 2026-08-20.** `session_start.py` already carries the 6th check (the `HOOKS` line, comparing local/worktree/effective `core.hooksPath`, tagged F10) — it fired in this very session's own gate output at start ("HOOKS ok — core.hooksPath resolves to .githooks"). `system/failures.md` already carries the matching F10 ledger entry. Nothing outstanding. _(added 2026-08-05, resolved — substrate correction 2026-08-20)_
+
+---
+
+## SEC-18 — plaintext service-role/JWT secrets on eq-service/field/cards (2026-07-30) — stale, actually closed the same day it was opened (rotated 2026-08-20)
+
+- [x] ~~Royce: re-store each flagged secret as masked (same value, not a rotation)...~~ — **`ops/security-register.md`'s SEC-18 row has said CLOSED 2026-07-30 all along** (Royce re-stored all 8 vars himself via the Netlify dashboard, live-reverified). This pending.md section just never got updated to match — checked live 2026-08-20, nothing outstanding.
+- [x] ~~Royce's call: does `CANONICAL_SERVICE_ROLE_KEY`... warrant an actual rotation~~ — **resolved by the same closure entry**: no rotation performed, same-value re-store only, per the SEC-12 precedent the register's own closure note cites. That was the decision, not a hanging question. _(added 2026-07-30, resolved — substrate correction 2026-08-20)_
 
 ---

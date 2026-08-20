@@ -66,12 +66,6 @@ Two known site-code collisions (`EC6`, `SYD27`) both trace to one physical addre
 *Fix landed on the EQ side (eq-shell + eq-cards) — see `eq/pending.md` (2026-08-11) for full root-cause + build detail. This entry is the SKS-side pointer.*
 - [ ] **Underlying Cards mobile bug not yet fixed** — a licence "renewal" can silently save nothing if on-device OCR can't read the card and the user doesn't notice the date field still shows the old value. Worth watching for other workers hitting the same silent failure until eq-cards ships the fix. _(added 2026-08-11)_
 
-## Roster-notification login popup removed (v3.10.110, PR #77, sks-nsw-labour)
-*Royce: "remove the notification about getting notified when roster changes." Found the target was a real, live feature — `scripts/auth.js:1021-1126`'s "Get notified when your roster changes" banner (3s after login) is the front door to a deployed Supabase edge function (`send-roster-push`) that actually pushes when a supervisor rosters someone onto tomorrow's schedule. Confirmed scope via AskUserQuestion before touching anything: hide the ask-for-permission popup only, don't stop delivery for anyone already subscribed.*
-- [x] Deleted `_showPushBanner()`/`_requestAndSubscribe()` outright (both were only ever called from the popup's own click handlers) — `initPushOptIn()` now only refreshes an existing grant's subscription, never prompts.
-- [x] Verified: no leftover references anywhere in the repo; ran `initPushOptIn()` directly in-browser for both `Notification.permission` states, no throw, no banner element, existing-grant refresh path still fires.
-- [ ] **Royce to confirm live**: log in for real post-deploy and confirm no popup appears. Superseded by v3.10.111 (PR #78) landing cleanly on top with no reported regression, but that's not the same as an actual click-through. _(added 2026-08-04, recovered from an unpopped stash 2026-08-20 — never made it into this file at the time)_
-
 ## Safety records 200-row cap — fixed, merged, live (v3.10.109, PR #76, sks-nsw-labour)
 - [ ] **Declined this session, still open if wanted:** widen the Prestart tab past its hardcoded 7-day window, or add a "Show older → Records" link — Royce picked "fix the cap only" via AskUserQuestion; the tab itself is unchanged. _(added 2026-08-04)_
 
@@ -218,7 +212,6 @@ _Nothing pending — migrations 001–023 all applied._
 - **Licence review** = admin approval writes `shell_control.cards_field_approvals` (`licence_verifications` jsonb + `licences_verified_at`). Credential enum has NO review state — review lives on the approval row.
 
 **Deferred / next:**
-- [x] ~~First Cards→Field approval for SKS never run~~ — **stale, checked live 2026-08-20: 99 of 101 total `cards_field_approvals` rows are now SKS's.** The tenant that was "unproven" in July is now the dominant one in the table — the approve + licence-verify path has clearly been exercised many times over since. _(added 2026-07-04, resolved — substrate correction 2026-08-20)_
 - [ ] **SKS staff data-entry rule** — enter each person **once** with an accurate mobile (+ email where held); no DB uniqueness on `workers.phone`, so two stubs sharing a number = only the best-credentialed one gets adopted, the other dangles. 0 phones on multiple worker rows today — keep it that way _(added 2026-07-04)_
 
 ---
