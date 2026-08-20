@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-08-20
+last_updated: 2026-08-21
 scope: Done items rotated out of eq/pending.md nightly by scripts/rotate_pending.py (per-item since 2026-07-27; before that, occasional manual whole-section moves). Nothing here is actionable — pure historical record (also covered in eq/changelog/*.md and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -5854,5 +5854,15 @@ _(recovered from an unpopped stash 2026-08-20 — never made it into this file a
 
 ## eq-cards/eq-shell: onboarding minimum-requirements switch, bulk connect-worker, and a live anon-EXECUTE fix (2026-07-26) (rotated 2026-08-20 — open items remain in cross-repo.md)
 
+
+---
+
+## eq-service: the DDL half of the from-scratch test-database fixture rebuilt from the live database, closing out the older manifest-only fix (2026-08-20) (fully closed, no open items remain)
+*This item had been open since 2026-08-16, when only the shape-description half of the fix (the JSON manifest a drift-check compares against) had been repaired — the actual database-rebuild script itself was still missing the part of the schema that eq-shell owns, and the direct method for regenerating it (`supabase db dump --linked`) doesn't work in this environment (no IPv4 route to the database). Closed by building the same file a different way — reading the live database's structure directly and writing the equivalent update by hand — while separately root-causing and fixing an unrelated filing-order bug found at the same time.*
+
+- [x] Built a working (deliberately partial — just enough for every other update that references it, not a full copy) version of the missing piece straight from the live database, sidestepping the `supabase db dump` blocker entirely.
+- [x] Confirmed this really was a real cause of the from-scratch test database failing, not just a guess: fixing it (together with a separate filing-order bug fixed at the same time) let the test builder get roughly 120 updates further before hitting the next thing it's missing.
+- [x] Shipped as eq-service [PR #792](https://github.com/eq-solutions/eq-service/pull/792), merged 2026-08-20.
+- [x] **The full story doesn't end here — a third, bigger gap was found right after** (part of the database changed by hand on the live system, never tracked anywhere) — that's its own new, still-open item in `eq/pending/eq-solves-service.md`, not repeated here since this specific item (the DDL snapshot itself) is done.
 
 ---

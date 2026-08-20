@@ -72,8 +72,21 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ## eq-solves-service: the "don't send the same report twice" guard was dead code — fixed, merged, live; prerequisite for Tier C offline writes (2026-08-20)
 
 **Deferred:**
-- [~] **Sending a corrected report is impossible from the app** — the second send for any job always fails asking for a "revision reason" the UI gives you no way to type. The customer portal already displays the reason, so only the input half is missing. Picked up in its own session 2026-08-20. _(added 2026-08-20)_
+- [~] **Sending a corrected report is impossible from the app — fix built, PR open, deliberately not merged.** Added a revision-reason box to the Send Report screen (only appears when a report has already gone out once before), backed by a new check so the screen can ask the server whether a reason is needed instead of guessing. 7 new automated tests. eq-service [PR #791](https://github.com/eq-solutions/eq-service/pull/791) — held back on purpose: this path emails real customers, so it needs your explicit go-ahead rather than shipping on a "fix this" instruction. _(added 2026-08-20, updated 2026-08-21)_
 - [ ] **Not click-tested live by Royce** — verified by typecheck, full build, 444 unit tests, CI, and Netlify commit-ancestry, not by actually opening the Send Report modal and issuing a report. The path has zero production rows, so a live click-through would be the first real exercise it has ever had. _(added 2026-08-20)_
+
+---
+
+## eq-solves-service: the automated safety-check suite has been unable to fully test itself since April — fixed past two blocking bugs, a third is being fixed live in an open PR (2026-08-20)
+*Found while checking whether the report-reissue fix above actually got tested — asked directly "did the integration tests pass?", which surfaced that the CI check which spins up a fresh test database has been broken since migration 0042 (mid-April). Root-caused two separate, stacked bugs and fixed both. That let the test database get built roughly 120 database updates further than before it hit the next thing missing — which turned out to be a bigger, separate gap now being closed in its own follow-up.*
+
+- [x] **A filing-order bug fixed**: one database update (0042) depended on a table that a later-numbered update (00425) actually creates — the numbering looked right but the tool that replays these in order reads it differently, so 00425 was really running first despite its name. Made the earlier update tolerate the table not existing yet, and fixed a comment that had the explanation backwards.
+- [x] **A missing piece of the test database rebuilt from scratch.** Part of the schema this app depends on is owned and only ever changed by eq-shell, never by this repo — so this repo's own from-scratch test-database builder had nothing telling it that part existed at all, and had been failing at the first update that needed it. Rebuilt a working (deliberately partial — just enough to satisfy every update that references it, not a full copy) version straight from the live database.
+- [x] Both fixed and merged as eq-service [PR #792](https://github.com/eq-solutions/eq-service/pull/792) — database-only, no app behaviour changed. Checked by an independent second pass before merging: the real safety check came back clean, the two still-red checks were confirmed already broken beforehand for unrelated reasons, nothing touches the live database on merge.
+
+**Deferred:**
+- [~] **A third, bigger gap found immediately after the above landed: part of the database was restructured by hand directly on the live system at some point and never went through a proper tracked update at all**, so the from-scratch test builder still can't fully rebuild it even past the two fixes above. Deliberately handed off as its own separate piece of work rather than chased in the same sitting — genuinely bigger, open-ended. Being built as eq-service [PR #797](https://github.com/eq-solutions/eq-service/pull/797), still in progress as of this close (its own description says not to merge yet) — checked for merge-readiness and held back: found one real but currently low-risk mistake in the new fixture (it tries to lock down 10 tables that turn out to already be read-through mirrors of the real data, which isn't allowed and would fail loudly if ever run for real — safely, not silently, but still needs fixing). _(added 2026-08-21)_
+- [ ] **The safety-check suite still won't fully pass even once the above lands** — real progress each time, but nobody has checked yet whether there's a fourth gap waiting after this one. _(added 2026-08-21)_
 
 ---
 
@@ -276,12 +289,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ## eq-service: RCD circuit pass/fail computed + auto-defect on fail — built, shipped, dispatched live (2026-08-10)
 
 - [ ] **Remaining RCD improvements scoped but not built**: restructure the flat single-page circuit grid into the same 3-step wizard ACB/NSX use, and generalize the schema off Jemena's specific shape (hardcoded section labels, per-circuit ID field, calendar-month-driven test cycle) before a second customer needs RCD. _(added 2026-08-10)_
-
----
-
-## eq-service: app_data CI fixture — manifest fixed + merged (#737), DDL bootstrap snapshot still blocked (2026-08-16)
-
-- [ ] **DDL bootstrap snapshot (`0000_app_data_tenant_plane_fixture.sql`) still stale — needs `supabase db dump --linked` from a machine with working IPv4/DB connectivity.** The JSON shape-manifest half is fixed and live (regenerated straight from ehow via the Management API, merged in [eq-service#737](https://github.com/eq-solutions/eq-service/pull/737)) — enough to make the new weekly drift-check pass. The SQL DDL fixture itself wasn't refreshed: this environment's `supabase db dump --linked` fails on an IPv6-only network with no cached DB password — a different, more specific blocker than the earlier Docker one (not hit this session; the manifest route queries live ehow directly and bypasses Docker/local `supabase start` entirely). Possibly the root cause of the pre-existing `Integration tests (Supabase local)` CI failure (`schema "app_data" does not exist` at migration 0061) — not confirmed. _(added 2026-08-16)_
 
 ---
 
