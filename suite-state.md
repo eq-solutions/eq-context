@@ -61,8 +61,8 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-20)
 
 **eq-shell:**
+- #1492 feat(quotes): drag-and-drop + one import button + per-row section picker
 - #1491 fix(labour-hire): batch cleanup deletes staging docs before commit, not after
-- #1490 fix(labour-hire): employment_type never protected from Cards resync clobber
 
 ---
 
