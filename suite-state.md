@@ -60,12 +60,15 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-20)
 
+**eq-field:**
+- #751 v3.5.542 — fix: signing your last outstanding doc hid the whole Documents to Sign menu
+
 **eq-service:**
 - #797 fix(migrations): reconstruct the service.* base tables ehow moved by hand
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
-- #1507 test(quotes): accuracy harness for the subcontractor PDF import
+- #1508 fix(nav): 4 admin entry points show links their destination would block
 
 ---
 
