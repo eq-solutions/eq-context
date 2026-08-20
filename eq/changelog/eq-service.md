@@ -9,12 +9,13 @@ status: live
 
 # EQ Service — Changelog
 
-## 2026-08-20 (PR #775 OPENED — at-import half of the contract-scope timing gate)
+## 2026-08-20 (PR #775 MERGED — at-import half of the contract-scope timing gate)
 - Commercial-sheet import wizard (`/commercials/contract-scopes/import`) gains a "How should these be dated?" section on the commit step — same `date_certainty` picker (fixed date / recurring window / not confirmed yet) as the admin screen's classification gate (PR #766), but applied once per import batch rather than per row, matching how these imports are actually run (one customer/contract at a time).
 - Extracted the recurrence-builder logic and its UI (`lib/utils/window-rule.ts`, `components/contract-scope/TimingFields.tsx`) out of the admin screen so both surfaces share one implementation instead of two copies of the same RRULE-safe builder.
 - No migration needed: read the live `eq_intake_commit_batch_service` RPC definition directly and confirmed it inserts via `jsonb_populate_record` against the table's actual live columns, so the new fields are picked up automatically.
 - `tsc --noEmit` and full `next build` clean. Not click-tested live — same sandbox login limitation as PR #766.
-- Not yet CI-checked or merged.
+- CI checked: green on the real gate (`tsc + next build`, typecheck+audit, Netlify preview); only the pre-existing "Integration tests (Supabase local)" flake failed, same non-blocker every PR that day hit.
+- Squash-merged (`c34696f`) on Royce's explicit "merge". Not yet confirmed live via Netlify's deploy record — don't assume from the merge alone.
 
 ## 2026-08-19 (PRs #770-774 MERGED — the remaining 30 page.tsx files swept for the Supabase-query-error-checking pattern, closing it out across all 55)
 - 5 PRs, each built by an isolated-worktree subagent auditing a disjoint module: [#770](https://github.com/eq-solutions/eq-service/pull/770) misc (today/do/insights/job-plans-items/maintenance-import/maintenance-paste/pm-calendar/records — 1/8 fixed, in `lib/today/getTodayBriefing.ts` rather than `today/page.tsx` itself), [#771](https://github.com/eq-solutions/eq-service/pull/771) commercials (1/4), [#772](https://github.com/eq-solutions/eq-service/pull/772) admin (4/8), [#773](https://github.com/eq-solutions/eq-service/pull/773) ACB/NSX testing (3/5), [#774](https://github.com/eq-solutions/eq-service/pull/774) RCD testing + summary (3/5).
