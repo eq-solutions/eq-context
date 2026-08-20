@@ -61,6 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-20)
 
 **eq-service:**
+- #789 chore(deps): align react-dom with react so components can render in tests
 - #788 fix(auth): Shell token keepalive dies permanently on any refresh failure
 
 ---
