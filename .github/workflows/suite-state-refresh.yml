@@ -55,7 +55,7 @@ jobs:
             echo "No changes"
             exit 0
           fi
-          git commit -m "chore: nightly suite state refresh $(date -u +%Y-%m-%d)"
+          git commit -m "chore: nightly suite state refresh $(date -u +%Y-%m-%d) [skip ci]"
           # Concurrency group serializes the bots; retry-with-rebase covers a
           # human push to main landing mid-run so we never fail stale.
           for attempt in 1 2 3; do
