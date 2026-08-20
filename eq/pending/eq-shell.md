@@ -13,6 +13,21 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: Documents "duplicate" rows were phantom onboarding-push sign-offs, not real duplicates — root-caused, fixed, merged, live (2026-08-20)
+*Royce, with a screenshot of the Documents admin page: "why do we have duplicates and triplicates of the documents now" + "how do I get more people to sign onto the environmental plan." Investigated live (ehow) before assuming either was a real data problem.*
+
+- [x] **Root cause confirmed live**: `app_data.documents`/`document_versions` each had exactly 1 row per title — zero real duplicates. The "44" was `document_register` rows fanning out by sign-off: two categories (DB Schedules, Comms), both created by Royce's own account with "Auto-push to new starters" checked, feed `entity-patch.ts`'s onboarding auto-push, which pushed every document in a flagged category with no `doc_type` check — so reference-only `template` documents (already exempt from the manual Push step by design) got pushed too. 3 new starters (Brian Griffin-Colls, William Hong, Sonam Gurung) each triggered a full re-push: 12 × 3 + 4 × 2 = 44 phantom rows over 16 real documents.
+- [x] **Data cleanup done live, same session**: both categories un-flagged; all 44 stray `document_signoffs` rows deleted (verified `status='outstanding'` + `signed_at IS NULL` on every one first — nothing signed was touched).
+- [x] **Code guard shipped** — `entity-patch.ts`'s `pushOnboardingDocuments` now excludes `NO_SIGNOFF_DOC_TYPES` (template/om) from what it pushes, so a future mis-flagged category can't reproduce this. eq-shell [PR #1474](https://github.com/eq-solutions/eq-shell/pull/1474), squash-merged (`c678f1e1`), confirmed live via exact Netlify `commit_ref` match.
+- [x] **"Push to more people" action added to the Register tab** (`AdminDocumentUpload.tsx`) — answers the second question: the Environmental Management Plan had only ever been pushed to Royce himself (self-signed at upload), and there was previously no way back into the push step for an already-existing document once you'd navigated away from the upload flow. Same PR #1474, no backend change needed.
+- [x] **Found and reconciled a concurrent, partially-overlapping fix** — a parallel session (same account) had independently opened [PR #1475](https://github.com/eq-solutions/eq-shell/pull/1475) for the same `entity-patch.ts` gap plus a second, genuinely distinct one (`push-document-audience.ts`'s manual `handlePush` also never checked `doc_type`, so a direct push could still target a no-signoff document). Rebased #1475 onto main: dropped the now-redundant `entity-patch.ts` hunk (confirmed byte-identical to what #1474 already shipped), kept the `handlePush` guard, retitled to match. Squash-merged (`8d864327`), confirmed live via exact `commit_ref` match.
+- [x] **A real worktree filesystem desync recurred mid-session** (Edit/Write tool writes invisible to Bash/git) — worked around via direct Bash-native file reconstruction; full detail in the session log, not repeated here.
+
+**Deferred:**
+- [ ] **Not click-tested live** — verified via typecheck/lint/376 tests and confirmed production deploys (exact commit match) for both PRs, not an actual admin session. Worth two minutes: open the Reference library (should show 16 documents, not 44) and try "Push to more people" on an existing Register document. _(added 2026-08-20)_
+
+---
+
 ## eq-shell: Staff's new "Show columns" dropdown gets cut off on a filtered table — root-caused, fix landed on the eq-ui side (2026-08-20)
 *Fix landed on the eq-ui side — see `eq/pending/eq-ui.md` (2026-08-20) for full root-cause + build detail. This entry is the eq-shell-side pointer, since that's where Royce reported it (Staff page, right after the Login column shipped).*
 

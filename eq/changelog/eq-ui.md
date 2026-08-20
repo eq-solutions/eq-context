@@ -9,6 +9,12 @@ status: live
 
 # eq-ui changelog
 
+## 2026-08-19 (PR #44 MERGED, published v1.16.1 as PR #45 — Table columnToggle popover clipping fixed)
+- Root-caused from an eq-shell report (Staff table's "Show columns" dropdown cut off on a filtered view): the popover used `position: absolute` inside `Table`'s own scrolling wrapper, clipped by the ancestor's `overflow` whenever too few rows were below the trigger button to leave room for it.
+- Fixed by portalling the popover to `document.body` (`createPortal`) and positioning it from the trigger button's live `getBoundingClientRect()` instead of relying on normal document flow — `position: fixed`, `z-index` raised 40→500. Added a test asserting the portal target directly (`menu.parentElement === document.body`).
+- Released as `@eq-solutions/ui@1.16.1` (patch), consumed same day in eq-shell [PR #1466](https://github.com/eq-solutions/eq-shell/pull/1466).
+- Note: [PR #49](https://github.com/eq-solutions/eq-ui/pull/49) merged the following day (2026-08-20) as a further fix to the same popover (viewport-capping/scroll instead of overflow) — a different session's work, not detailed here.
+
 ## 2026-08-20 (PR #47 + PR #41 MERGED)
 - PR #47: local dev-tooling fix — `eslint.config.js` now ignores `.claude`, so `npm run lint` no longer recurses into other concurrent sessions' nested `.claude/worktrees/<name>/` checkouts and surfaces their unrelated errors. CI unaffected (a fresh checkout has no `.claude/` dir). Shipped with an empty changeset — `eslint.config.js` isn't in the published package's `files` allowlist, so no version bump applies.
 - PR #41: `Skeleton` shimmer-sweep animation replacing the opacity pulse, plus a `prefers-reduced-motion` fallback the old pulse never had. Applies to every existing `Skeleton` usage automatically once released — no prop change. Open since 2026-08-18, checked and squash-merged (`8e9cda5`) this session on Royce's "merge." Unpublished as of this entry — a version-packages PR will pick it up.
