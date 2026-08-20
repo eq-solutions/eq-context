@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-20 07:03 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-20 08:12 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-20 06:34 UTC → 2026-08-20 07:03 UTC)
+## Since last refresh (2026-08-20 07:03 UTC → 2026-08-20 08:12 UTC)
 
-- Merged: eq-shell [#1485](https://github.com/eq-solutions/eq-shell/pull/1485) feat(quotes): Excel labour/materials breakdown import + Cate
-- Merged: eq-shell [#1467](https://github.com/eq-solutions/eq-shell/pull/1467) fix(auth): bump last_login_at on QR self-join
-- Merged: eq-shell [#1466](https://github.com/eq-solutions/eq-shell/pull/1466) chore(deps): bump @eq-solutions/ui to v1.16.1
-- Merged: eq-shell [#1463](https://github.com/eq-solutions/eq-shell/pull/1463) fix(nav): full navigation audit across all 6 roles + 3 dead 
-- Merged: eq-shell [#1462](https://github.com/eq-solutions/eq-shell/pull/1462) feat(auth): PIN reveal toggle + raise length ceiling 12→20
-- Merged: eq-shell [#1461](https://github.com/eq-solutions/eq-shell/pull/1461) feat(field): add RPCs for Field roster credential parity
-- Merged: eq-shell [#1459](https://github.com/eq-solutions/eq-shell/pull/1459) feat(drift): add stacked-permissive-policy check (CHECK 9)
-- Merged: eq-shell [#1457](https://github.com/eq-solutions/eq-shell/pull/1457) security(staff): restrict staff_conversations RLS to the cre
+- Merged: eq-shell [#1486](https://github.com/eq-solutions/eq-shell/pull/1486) feat(labour-hire): batch intake — group upload for admin and
+- Merged: eq-shell [#1472](https://github.com/eq-solutions/eq-shell/pull/1472) feat(staff): show who hasn't signed in to Shell yet, with a 
+- Merged: eq-shell [#1469](https://github.com/eq-solutions/eq-shell/pull/1469) chore(drift): allowlist eq_claim_connection_notification — s
+- Merged: eq-shell [#1468](https://github.com/eq-solutions/eq-shell/pull/1468) chore(nav): remove 2 more orphaned pages (Field roster + She
+- Merged: eq-shell [#1465](https://github.com/eq-solutions/eq-shell/pull/1465) perf(staff): warm staff-bootstrap so Staff loads don't eat a
+- Merged: eq-shell [#1464](https://github.com/eq-solutions/eq-shell/pull/1464) fix(entity-patch): bound the onboarding auto-push trigger to
+- Merged: eq-shell [#1460](https://github.com/eq-solutions/eq-shell/pull/1460) feat(staff): multiSlicer filter chips on Staff table
+- Merged: eq-shell [#1458](https://github.com/eq-solutions/eq-shell/pull/1458) security(staff): consolidate staff_conversations RLS to one 
 
 ## ⚠ Needs you (5)
 
@@ -51,7 +51,7 @@ _…and 174 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 1 | 0d |
+| eq-shell | ✓ success | -1d ago | 0 | — |
 | eq-solves-service | ✓ success | 0d ago | 0 | — |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
@@ -74,6 +74,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-20 | eq-shell | [#1486](https://github.com/eq-solutions/eq-shell/pull/1486) feat(labour-hire): batch intake — group upload for admin and the  |
 | 2026-08-20 | eq-shell | [#1485](https://github.com/eq-solutions/eq-shell/pull/1485) feat(quotes): Excel labour/materials breakdown import + Category  |
 | 2026-08-20 | eq-shell | [#1484](https://github.com/eq-solutions/eq-shell/pull/1484) fix(documents): 0253 inserted reminder_count mid-view, PG rejects |
 | 2026-08-20 | eq-shell | [#1483](https://github.com/eq-solutions/eq-shell/pull/1483) fix(routing): swallow rejected hover-prefetch of a lazy route chu |
@@ -88,7 +89,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-20 | eq-shell | [#1474](https://github.com/eq-solutions/eq-shell/pull/1474) fix(documents): stop onboarding auto-push from targeting referenc |
 | 2026-08-20 | eq-shell | [#1473](https://github.com/eq-solutions/eq-shell/pull/1473) chore(nav): remove orphaned Storage page |
 | 2026-08-20 | eq-shell | [#1471](https://github.com/eq-solutions/eq-shell/pull/1471) feat(staff): funnel filters on Contact, Status, Birthday |
-| 2026-08-20 | eq-shell | [#1470](https://github.com/eq-solutions/eq-shell/pull/1470) fix(documents): revoke authenticated grants on documents/document |
 _Showing 15 of 124 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -108,7 +108,6 @@ _Showing 15 of 124 · full record in [sessions/](sessions/)_
 ## Pending (SKS)
 
 - **SKS's own number, for reference: 6 of 32 active SKS members are currently missing White Card** — visible today in Shell's Training Matrix; nothing blocks them from working while missing it (soft-flag by design, not an oversight). Worth a look if Royce wants a harder rule for SKS specifically. _(added 2026-08-19)_
-- **Two more places with the same "database doesn't check who's allowed" gap were flagged mid-session** (the weekly digest's supervisor list, and a general settings table that also happens to store the login PIN codes) **but it's not confirmed whether they made it into the fix above or still need their own.** Worth a quick check before considering this closed. _(added 2026-08-19)_
 - **A reported roster-grid "alignment" issue (one person's row looked off) couldn't be reproduced from the code** — most likely just placeholder text in blank cells reading like real data at a glance, not an actual bug, but left open rather than guessed at. _(added 2026-08-19)_
 - **Still not applied to the live database — checked directly, and Royce turned down the shortcut that would have unblocked it today.** Confirmed merging the PR didn't secretly switch it on. Turning it on for real right now would lock the people who haven't signed in yet out of their own timesheet and leave the moment they do, since the fix depends on their login already being linked to their staff record — 37 of 83 active SKS staff, checked again today. A workaround exists (let just those specific people keep today's wider access until they sign in, instead of holding up everyone else) but Royce said no — waiting for them to actually sign in through the real onboarding process instead, however long that takes. _(added 2026-08-16, decision confirmed 2026-08-16)_
 - **The disposable EQ-side tenant doesn't have this fix** — lower priority, since that tenant holds no real data, but the identical gap exists there too and needs some prerequisite pieces built first before it can be ported. _(added 2026-08-16)_
@@ -117,7 +116,8 @@ _Showing 15 of 124 · full record in [sessions/](sessions/)_
 - **~7 SKS staff missing from EQ Field's staff table** (hired since the 5 Jul snapshot): Ahmed Masaud, Amir Farid, Callum Treharne, Jhon Jairo Velasquez Meneses, Nabeel Hussain, Paul Bolger, Timothy Sue — plus a handful of name-string mismatches (e.g. "Bruno Pedrosa" vs "Bruno Vita Pedrosa", "Jose Quintanilla" vs "Jose Luis Quintanilla Rodriguez"). Royce said he'll manage this himself via EQ Field's People admin. _(added 2026-08-14)_
 - **Leave sync parked deliberately** — an imported leave code lands on `schedule_entries.leave_type` directly, not in `app_data.leave_requests`, so it displays but carries no approver/audit trail. Royce explicitly scoped this session to roster only; leave is its own future task. _(added 2026-08-14)_
 - **Richard needs to re-add his LV Rescue photo** — none of the 6 attempts ever actually captured one; the surviving row has the licence details but no photo. _(added 2026-08-13)_
-_…and 73 more · [sks/pending.md](sks/pending.md)_
+- **Underlying Cards mobile bug not yet fixed** — a licence "renewal" can silently save nothing if on-device OCR can't read the card and the user doesn't notice the date field still shows the old value. Worth watching for other workers hitting the same silent failure until eq-cards ships the fix. _(added 2026-08-11)_
+_…and 71 more · [sks/pending.md](sks/pending.md)_
 
 ## Queue health
 
@@ -136,7 +136,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | [eq-context](eq/pending/eq-context.md) | 216 | 22 / 3 | 22 | 5 |
 | [cross-repo](eq/pending/cross-repo.md) | 949 | 142 / 42 | 20 | 30 |
 | [sks](eq/pending/sks.md) | 53 | 3 / 5 | 0 | 6 |
-| [SKS](sks/pending.md) | 461 | 83 / 11 | 5 | 21 |
+| [SKS](sks/pending.md) | 461 | 82 / 11 | 6 | 20 |
 | [SKS active](sks/active.md) | 109 | 0 / 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 460 | 33 / 4 | 0 | 1 |
 
@@ -159,7 +159,7 @@ _Open items sitting under a section header this old or older — not necessarily
 - **eq-shell** (2026-07-02) · **Fix `AdminWorkerQR` QR-colour crash** — Sentry `Error: Invalid hex color: var(--eq-ink)` (eq-shell, 4 events 2026-07-02) is the `qrcode` lib being passed `color.dark: 'var(--eq-ink)'` (a CSS var, not hex) in `AdminWorkerQR.tsx`. More frequent now #594 made that page the primary "Add workers" landing. Fix = pass a real hex (e.g. `#1A1A2E`). _(added 2026-07-02)_
 - **eq-shell** (2026-07-02) · **EQ Cards address autocomplete = greenfield** — Cards worker address entry (`profile_edit_screen.dart` + `profile_fill_from_licence_screen.dart`) is manual text + static state dropdown; NO Places, no package, no key. "Should already be done" = it isn't. Flutter web, so the Shell JS pattern doesn't port directly. _(added 2026-07-02)_
 - **eq-shell** (2026-07-02) · **Full governed apply-pipeline for jvkn control-plane migrations** — the guardrails above (dup-guard + runbook) landed, but a One-Pipe-style governed/automated apply for eq-cards→jvkn is still not built. Architectural decision. _(added 2026-07-02, needs Royce's call)_
-_…and 124 more — see each file's Queue health row above._
+_…and 123 more — see each file's Queue health row above._
 
 ## Possible duplicate pending items (unconfirmed)
 
@@ -196,4 +196,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-20 07:03 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-20 08:12 UTC._
