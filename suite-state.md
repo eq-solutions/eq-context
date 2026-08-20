@@ -60,7 +60,11 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-20)
 
-_No open PRs_
+**eq-service:**
+- #786 docs(offline): scope Tier C against live recon — corrects two false premises
+
+**eq-shell:**
+- #1493 fix(quotes): clarify client-RFQ vs supplier-quote PDF button labels
 
 ---
 
@@ -70,7 +74,7 @@ _No open PRs_
 
 | Repo | Status |
 |------|--------|
-| eq-service | ? in_progress |
+| eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
