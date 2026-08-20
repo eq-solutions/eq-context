@@ -1,7 +1,7 @@
 ---
 title: EQ Service — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-20
+last_updated: 2026-08-21
 scope: EQ Service engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -10,6 +10,22 @@ status: live
 # EQ Service — Pending
 
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-solves-service: worktree/branch/stash graveyard cleared — 8 stranded branches, 23 orphaned folders, and 3 stale stashes, every one confirmed already-shipped before removal (2026-08-21)
+*Asked to check one specific stranded worktree (`fix/session-expiry-suite-wide`) that looked like finished work with no PR. Confirmed by content hash (`git patch-id`), not just ancestry, that it was a byte-for-byte duplicate of already-merged PR #727 — two sessions had done the same fix, one got the PR, the other was left behind under a different commit. Asked to check the rest of the repo's stranded worktrees for the same pattern, then to "complete the survey" against two more branches that were only visible because they still held old stashes. Same result every single time: the content had already shipped, just under a different SHA.*
+
+- [x] 7 worktrees checked (the flagged one + 6 more found live in the repo): 6 were exact-content duplicates of already-merged PRs (#727, #786, #746, #769, #755, #735). The 7th (`eq-service-report-type-wt`) was genuinely live work and left untouched — confirmed correct when that session committed its own work moments later, mid-survey.
+- [x] 23 empty leftover worktree-folder shells cleared — 7 registered-but-stranded, plus 16 more that were never even registered with git, just abandoned directories with no `.git` link left behind. One folder is still locked by a running process on this machine and couldn't be removed; harmless, empty, no git linkage.
+- [x] `fix/type-bypass-column-audit`, a branch only found because it still held 2 stashes, turned out to be fully superseded too — both its commits content-matched already-merged PRs #544 and #545.
+- [x] All 3 stashes on the repo checked by actual diff content, not just their own labels (one stash's label named a completely different branch than what was actually in it — the label just records whatever branch happened to be checked out at stash time). 2 were a stale pre-build draft of a proposal doc, already superseded by the real "built" version. 1 was real work — canonical-sync retry-on-failure logic — that turned out to have lost a race to a different session's version by about 100 minutes; that version has been live since PR #249.
+- [x] Every deletion (5 branches local + 3 remote, 7 worktrees, 23 folders, 3 stashes) confirmed safe first — either an exact content match against a merged PR, or, for the one live worktree, left alone entirely — then done only after your explicit go-ahead each time.
+- No PR, no migration, no product code touched. Pure repo hygiene.
+
+**Deferred:**
+- [ ] **One leftover worktree folder (`acb-check-report-wiring-1baa7e`) still can't be deleted** — Windows reports it's in use by a running process. It's empty with no git linkage, so it's inert; delete it once whatever's holding it open is closed. Three attempts across the session all failed the same way. _(added 2026-08-21)_
+- [ ] **The sibling branch flagged just below (`fix/session-expiry-server-action-errors`, commit `df74500`, 2026-08-14) is still sitting there, untouched** — same shape as everything cleaned up this session (content already shipped, as PR #725), just a different, similarly-named branch this session's checks never reached. Still genuinely "next time someone's in eq-service." _(added 2026-08-21)_
 
 ---
 
