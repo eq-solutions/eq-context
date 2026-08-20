@@ -9,6 +9,12 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-20 (PR #1485 MERGED — EQ Ops Excel cost-breakdown import + Labour/Materials quote view)
+- New quote-import path: `netlify/functions/quote-parse-excel.ts` deterministically parses a Labour/Materials cost-breakdown spreadsheet (no AI — the source is already structured cells), finding the header row positionally regardless of wording/column order, scanning every worksheet, skipping totals/note rows automatically.
+- New "Category Split" quote-document mode (`quoteDocGenerator.ts`) — pivots line items by name instead of by category, so each line shows its own Labour $ and Materials $ side by side in the customer-facing Word doc, reusing the existing template's grid via `gridSpan` merging.
+- Caught and fixed before shipping: the shared PDF-import pricing path was applying materials markup to labour figures once Excel imports started feeding `category: 'labour'` items through it — labour is now short-circuited to a 1:1 charge-out rate.
+- eq-shell [PR #1485](https://github.com/eq-solutions/eq-shell/pull/1485), squash-merged (`06f02d64`), confirmed live via exact Netlify `commit_ref` match. Click-tested live against production with Royce's own source spreadsheet, including the labour-markup fix.
+
 ## 2026-08-20 (PR #1483 MERGED — fixed the top live Sentry error, hover-prefetch unhandled rejection)
 - Root-caused `EQ-SHELL-1S` (31 events): `lazyRoutePreload.ts`'s `preloadLazyRoute()` fires a speculative `import()` on link hover/focus, outside React's render tree — a stale chunk hash after a deploy landed since page-load rejected the promise with no `.catch()`, surfacing as a bare unhandled rejection. Distinct from `App.tsx`'s existing `ChunkErrorBoundary`, which already handles the same failure class correctly but only for the real `React.lazy()` navigation promise, not this speculative warm-up one.
 - Fix: `.catch(() => {})` on both prefetch branches (exact-match and prefix-match). Safe by construction — the real navigation still fetches fresh and still gets `ChunkErrorBoundary`'s handling if it also fails; this only silences a warm-up that was never going to be user-visible either way. eq-shell [PR #1483](https://github.com/eq-solutions/eq-shell/pull/1483), squash-merged (`495c95b4`). Deploy verified live via commit-ancestry match against the newest ready production deploy (PR #1484 merged 39s later and shipped in the same Netlify build).
