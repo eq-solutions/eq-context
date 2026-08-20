@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Index
 owner: Royce Milmlow
-last_updated: 2026-08-20
+last_updated: 2026-08-21
 scope: Operational support — entities, finance, legal, admin
 read_priority: standard
 status: live
@@ -26,6 +26,7 @@ Every canonical OPS file as a full URL — clickable from `/context/claude`:
 - [ops/financial-architecture.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/financial-architecture.md) — AHD design, Delta Elcom cliff, CDC PSI position
 - [ops/decisions.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/decisions.md) — append-only decisions log (ADR format) — covers all tiers
 - [ops/security-register.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/security-register.md) — live security findings register (P0/P1/P2), across all tiers
+- [ops/security-pressure-test-prompt.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/security-pressure-test-prompt.md) — self-contained red-team/pressure-test prompt for the live EQ suite; companion to security-register.md, findings land there
 - [ops/secrets-inventory.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/secrets-inventory.md) — names/owner/where-set map of every real secret across the EQ/SKS Netlify projects, no values
 - [ops/sec9-sec24-netlify-manual-fix-runbook-2026-08-11.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/sec9-sec24-netlify-manual-fix-runbook-2026-08-11.md) — literal checklist for the SEC-9 / SEC-28 (formerly SEC-24) Netlify secret-masking findings, both closed 2026-08-16, manual-hands-only
 - [ops/bus-factor-runbook.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/bus-factor-runbook.md) — what someone else needs to know to keep the platform running if Royce is unreachable; deploy safety per repo, where to look first, who-to-contact section still needs Royce
@@ -40,6 +41,7 @@ Every canonical OPS file as a full URL — clickable from `/context/claude`:
 | `decisions.md` | Append-only decisions (ADR format) — covers all tiers |
 | `financial-architecture.md` | AHD design, Delta Elcom cliff, CDC PSI position |
 | `security-register.md` | Live security findings register (P0/P1/P2) — check for open P0s before any cross-tier work |
+| `security-pressure-test-prompt.md` | Self-contained red-team/pressure-test prompt for the live EQ suite — companion to security-register.md |
 | `secrets-inventory.md` | Names/owner/environment/where-set for every real secret across EQ/SKS Netlify projects — no values |
 | `sec9-sec24-netlify-manual-fix-runbook-2026-08-11.md` | Checklist for Royce's ~15 min of Netlify clicks to close SEC-9's dev-context leak + SEC-28 (formerly SEC-24) |
 
