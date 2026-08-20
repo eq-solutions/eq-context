@@ -61,11 +61,12 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-20)
 
 **eq-service:**
+- #799 test(reports): component tests for the /reports compliance dashboard
 - #797 fix(migrations): reconstruct the service.* base tables ehow moved by hand
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
-- #1505 feat(labour-hire): crop preview in review modal + review-all queue
+- #1506 fix(nav): HubLayout sidebar never enforced hideForTier for trial tenants
 
 ---
 
