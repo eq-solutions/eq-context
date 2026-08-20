@@ -1,7 +1,7 @@
 ---
 title: SYSTEM — Lessons Learned
 owner: Royce Milmlow
-last_updated: 2026-07-12
+last_updated: 2026-08-20
 scope: Hard-won technical gotchas; append-only. Full narratives for the entries marked "moved to archive" live in archive/lessons-history.md.
 read_priority: reference
 status: live
@@ -393,3 +393,13 @@ Three cases where inspection had already passed and the code was still broken:
 - **A merged PR is not a deployed change** on every repo — `eq-cards` and `eq-receipts` need a manual Netlify trigger despite a `netlify.toml` implying otherwise. A fix confirmed "live" from the merge alone was not live (2026-08-01).
 
 **Why it matters:** agents produce correct-*looking* code faster than any review can absorb it, so the cheap checks are the ones that scale — and they are exactly the ones that pass while the feature is broken. The expensive check (run the thing) is now the only one that distinguishes working from plausible. Codified as `rules/agentic-coding.md` §2; the multi-tenancy corollary — a missing tenant filter returns *more* rows, never an error — is `rules/non-negotiables.md` #11.
+
+---
+
+## Version Bumps — Grep the Old Literal, Don't Trust the Diff (2026-07-12)
+
+**Problem:** A version bump (a cache-buster tag, a config constant, a changelog header) touches every file carrying the OLD value — but a diff review only shows the files you already remembered to change. It's easy to bump the value everywhere you thought to look, call the task done, and miss a sibling file that carries the same literal under a different name or in a different format.
+
+**Fix:** Before calling a version bump done, `grep` the codebase for the OLD version literal (not just the new one) and confirm zero matches remain outside expected historical references (changelogs, session logs). Don't rely on remembering every file that needed the change.
+
+**Why it matters:** Already bit this same substrate once in a smaller form — an eq-field fix bumped `supabase.js`'s cache-buster tag but not `app-state.js`'s separate `APP_VERSION` constant, caught only because a CI drift check happened to compare them (see `eq/changelog/eq-field.md`, PR #703). The grep habit catches this class of gap without depending on a bespoke check existing for every version-carrying file pair. Recovered from an unpopped stash 2026-07-12 — queued as "propose-only" at the time and never actually added until now.
