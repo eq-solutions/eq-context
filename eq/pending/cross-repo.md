@@ -1,7 +1,7 @@
 ---
 title: Cross-Repo — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-18
+last_updated: 2026-08-20
 scope: Work that genuinely spans 2+ EQ product repos as a single unit (a combined header, or the body clearly touches both). Suite-wide/substrate-process items with no single owning repo also land here.
 read_priority: critical
 status: live
@@ -196,7 +196,7 @@ status: live
 - [ ] **OCR / smart intake on document upload** (auto-fill title/date/reference from the file, like eq-cards' licence OCR) — named in the critique, real north-star item, not started. _(added 2026-08-04)_
 - [ ] **Document type list is a hardcoded array in the frontend**, no admin config surface — named in the critique (`rules/admin-feature-baseline.md` item 4), not started. _(added 2026-08-04)_
 - [ ] **Certificate export can't be scoped to a subset of signers** — always the whole document, every signer, one PDF. Named in the critique, not started. _(added 2026-08-04)_
-- [ ] **T4 (permission gate)** — any signed-in tenant member can currently upload/push/see everything. Accepted interim decision, not urgent while usage is single-person. _(carried forward)_
+- [ ] **T4 (permission gate)** — fix written and merged: eq-shell [PR #1470](https://github.com/eq-solutions/eq-shell/pull/1470) revokes `authenticated`'s direct grants on `documents`/`document_audiences`/`document_categories` (migration `0252_documents_revoke_authenticated.sql`), closing the PostgREST bypass this item described. Verified first, not assumed: every write path already ran through a service-role client, zero direct browser or eq-field access found. **Not yet applied to any live tenant DB** — needs a separate `tenant-migrate.yml` dispatch, Royce's call, not requested yet. No longer "accepted interim, not urgent" — re-flagged by the 2026-08-19 Document Sign-off Audit (finding T4) and now closed in code, open only on live application. _(updated 2026-08-20)_
 - [ ] **EQ Field / SKS Labour adoption has no tracked parity list** — surfaced via a `/gap` this session (Royce: "need to get EQ Field adopted first"), then Royce pivoted back to the sign-off register before deciding next steps here. SKS Labour is genuinely NOT feature-frozen (confirmed live, corrected a stale memory that had over-claimed a full freeze) — both apps get real ongoing work in parallel, with no dated retirement and no tracked list of what EQ Field still lacks. Real open question, nothing started. _(added 2026-08-04)_
 
 ---
