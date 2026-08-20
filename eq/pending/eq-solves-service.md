@@ -1,7 +1,7 @@
 ---
 title: EQ Service — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-21
+last_updated: 2026-08-21 (cont.)
 scope: EQ Service engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -20,6 +20,19 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 - [x] Merged eq-service [PR #797](https://github.com/eq-solutions/eq-service/pull/797) on Royce's explicit "merge it once it passes," once CI cleared past the documented pre-existing `Integration tests (Supabase local)` exception. That PR's own entry (below) says "do not merge, proof only" — missed reading that before merging; flagged immediately, Royce reviewed the actual risk (every changed file a guarded `IF NOT EXISTS` no-op against live ehow, no app code touched, nothing auto-applies to ehow without a separate manual dispatch) and confirmed leaving it merged.
 - [x] A concurrent session sharing this same local checkout caused a stray commit to leak into #797's own history mid-session — recovered via cherry-pick-before-reset, but the concurrent session had already independently picked up and pushed the same commit before the reset completed. Disclosed to Royce; left #797's history untouched per his explicit call rather than force-rewriting a branch another session was actively on.
 
+## eq-solves-service: automated tests added for the compliance-reports page, merged, live (2026-08-21)
+*Continuing the same day's push to get real automated test coverage across the app, one page at a time (maintenance checks, then ACB/NSX/RCD testing pages, now Reports). Built in its own isolated copy of the repo rather than the shared one, since the shared one was busy with another session's database work at the time.*
+
+- [x] 41 new automated tests across the compliance-reports page: the shared compliance/site-health number-crunching (the same calculation the app doc-comments its own self warns must never be computed two different ways in two places), the customer/site/date filter bar (including the one non-obvious rule — picking a new customer clears any already-chosen site, since it may not belong to the new customer), and the report-download button (which filters get sent, the downloaded file's name, and what happens on a failed download — the tech sees why and can retry, nothing pretends to succeed).
+- [x] Deliberately left two files alone — the report-sending action and the "resend a report" popup — because another open PR is actively changing both; this one touches neither.
+- [x] Whole test suite re-run alongside it — 693 of 693 passing, nothing else broken.
+- [x] eq-service [PR #799](https://github.com/eq-solutions/eq-service/pull/799) — tests only, no app behaviour changed — merged; confirmed live on the production site by matching the exact update to what Netlify actually published, not just trusting the merge itself.
+- [x] Caught a false alarm before trusting it: the isolated copy of the repo's own first build check came back "passed" but had actually failed underneath (a missing local settings file the isolated copy never inherited) — re-ran it properly rather than taking the "passed" label at face value.
+- [x] Found in passing, not part of this task: a second copy of a stray database-history bookkeeping entry, already known to be safely duplicated elsewhere (see the entry below and its own Notes), still sitting untouched in the shared project folder. Backed it up to its own safe branch, then cleared it, so it stops silently threatening to double up on real entries the next time someone works from that shared folder.
+
+**Deferred:**
+- [ ] Cross-app documentation of the isolated-copy setup (which files a fresh isolated copy is missing by default, like local settings) wasn't updated — worth a note somewhere so the next session doesn't lose time on the same false alarm. _(added 2026-08-21)_
+
 ---
 
 ## eq-solves-service: found and fixed why the automated test database could never fully build itself from scratch — proof PR open, not merged (2026-08-21)
@@ -35,6 +48,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 **Deferred:**
 - [ ] **A second, unrelated, pre-existing bug found blocking the very next step** — three pairs of database-update files, going back a while, were accidentally given the same internal ID number as each other, which trips up the test-database tool the moment it tries to record both. Real, but a completely different kind of problem from everything above, and none of the 6 files involved were touched this session. Filed separately as [issue #800](https://github.com/eq-solutions/eq-service/issues/800) rather than fixed here, since the safe fix (renaming already-shipped files) needs someone to first confirm none of those exact files are still mid-flight on the live-database update pipeline — not a call to make blind. _(added 2026-08-21)_
+- [ ] **Even past #792 and this session's fixes, the from-scratch test build still can't finish — a third, different wall.** A different session confirmed it live, twice (once on the original PR's branch, once again after rebasing onto main with every fix above already included): the build now dies on a table called `asset_local` instead, same shape of problem — something reaches across to that table before the step that actually creates it runs. Same fix pattern should apply (find which step reaches across too early, compare it against the step that creates the table, guard rather than renumber). Flagged as its own follow-up; a background session picked it up but ended without a PR, issue, or write-up to show for it — next attempt should start fresh rather than assume any progress was made. _(added 2026-08-21)_
 
 ---
 
