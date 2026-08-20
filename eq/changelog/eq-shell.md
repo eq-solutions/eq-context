@@ -9,6 +9,14 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-21 (PR #1507 MERGED — accuracy harness for the subcontractor PDF import)
+- The Excel breakdown import is deterministic and already verified directly against the real parser; the PDF/photo import goes through Claude and had no repeatable check at all — only manual trials. Ran `/decide` on whether to also wire it into every-PR CI: no — the risk (a prompt/model edit silently misreading a document) is rare and deliberate-edit-triggered, not ambient, while a blanket `pull_request` trigger spends real API cost on every unrelated PR and adds a live-API flakiness risk to a pipeline that already carries a documented "don't block merges on this flaky check" carve-out for a different test class.
+- `extractSubcontractorQuote()` pulled out of `quote-parse-subcontractor.ts`'s HTTP handler into its own exported function, so a test can call the real prompt/schema directly without also faking a session cookie and a tenant's module-enabled flag. HTTP-level behavior unchanged.
+- New test runs the real Anthropic API against the 2 supplier-PDF trial files from this session, checking item count/qty/unit_price/subtotal exactly, description wording loosely. Skips cleanly with no `ANTHROPIC_API_KEY`, matching the existing `eq-ai` integration-test convention — not wired into CI, runnable on demand.
+- Also pinned `*.pdf binary` in `.gitattributes`: the 2 new fixtures were small/text-heavy enough that git's binary-detection heuristic guessed wrong, and `core.autocrlf=true` was about to CRLF-corrupt them on every fresh checkout.
+- Caught mid-merge: a top-level `.test.ts` file in `netlify/functions/` fails this repo's own "Guard function filenames" CI check (Netlify rejects any function filename outside `[A-Za-z0-9_-]`, failing the whole deploy) — moved to `_shared/` to match every other test file in that directory.
+- eq-shell [PR #1507](https://github.com/eq-solutions/eq-shell/pull/1507), squash-merged (`a2d8c394`), confirmed live via exact Netlify `commit_ref` match.
+
 ## 2026-08-21 (PR #1503 MERGED — fixed a stale import-error bug found in self-review)
 - Reviewing the full diff behind PRs #1492/#1493/#1497 (Royce: "critique our direction... is there anything else you can see?") found that the Line Items card's two import handlers, `importSubcontractorPdfFile` and `importExcelFile`, each cleared only their own error state before running — never the sibling's. Displayed error is the first non-null of `excelParseErr`/`pdfParseErr`/`lineItemsDropErr`, so a failed attempt of one file type left a stale error showing next to a later successful import of the other. Fix: each handler now also clears the sibling's error state up front. eq-shell [PR #1503](https://github.com/eq-solutions/eq-shell/pull/1503), squash-merged (`8094b454`), confirmed live via commit-ancestry check against the newest ready production deploy.
 

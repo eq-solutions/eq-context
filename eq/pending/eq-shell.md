@@ -17,7 +17,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 - [ ] **Add drag-and-drop to the New Quote form's "Fill from client PDF" button** — recommended in the `/decide` pass for consistency with the other PDF buttons; not yet confirmed or built. _(added 2026-08-20)_
 - [ ] **Consider a lightweight confirmation of what the client-RFQ autofill actually filled in** — today it silently overwrites the create-form's fields with no summary. Not a correctness gap (nothing saves until "Create Quote," so the form itself is the review step) but possibly worth it if the parse is often wrong in practice — needs Royce's read on that, not a guess. _(added 2026-08-20)_
-- [ ] **No accuracy check exists for the AI-parsed PDF/photo import path** — the Excel path is deterministic and was verified directly against the real parser; the PDF/photo path is an AI call with no local test access, so the only signal is manual trials (one so far: "PDF worked perfect"). Two supplier-PDF trial files already exist as fixture material — turning them into a standing pass/fail check (expected line items + totals) would catch a prompt/model drift instead of a silent misparse in production. Recommended, not built or confirmed. _(added 2026-08-21)_
 
 ---
 
