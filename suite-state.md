@@ -60,12 +60,8 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-20)
 
-**eq-field:**
-- #740 v3.5.531 — fix: Documents to Sign nav item stuck hidden for a real signer
-
 **eq-shell:**
 - #1484 fix(documents): 0253 inserted reminder_count mid-view, PG rejects that
-- #1483 fix(routing): swallow rejected hover-prefetch of a lazy route chunk
 
 ---
 
