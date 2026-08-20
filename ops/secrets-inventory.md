@@ -1,7 +1,7 @@
 ---
 title: OPS — Secrets Inventory
 owner: Royce Milmlow
-last_updated: 2026-08-16
+last_updated: 2026-08-20
 scope: Names, owner app, environment, and where-set for every real secret across the EQ/SKS Netlify projects. No values — this is the map, not the vault. Companion to ops/security-register.md (incident/finding history) and the Grok-authored "Secrets & Environment Variables" guide (Google Drive, 2026-08-08), which recommends exactly this file.
 read_priority: high
 status: live
@@ -107,7 +107,7 @@ masking status. Tier 1 = suite-wide compromise. Tier 4 = low real stakes.
 | `GITHUB_TOKEN` | eq-service | CI/deploy-time GitHub access, scoped to this app's build. |
 | `SENTRY_AUTH_TOKEN` | eq-service | Uploads source maps / manages Sentry config for this project only. |
 | `SUPABASE_ACCESS_TOKEN` | eq-shell | Supabase *management*-API token used by `security_audit.py`'s advisor step — not a database key itself. |
-| `QUOTES_CRON_SECRET` | eq-shell | Authenticates the Quotes-retirement cron calling Shell's own functions — **SEC-24, not masked.** |
+| `QUOTES_CRON_SECRET` | eq-shell | Authenticates the Quotes-retirement cron calling Shell's own functions — **SEC-28 (formerly SEC-24), masked — closed 2026-08-16.** |
 | `CRON_SECRET` | eq-service | Same purpose as above, already correctly masked here. |
 | `SCHEDULER_TEST_SECRET` | eq-shell | Test-only auth for a scheduler endpoint. |
 | `UNSUBSCRIBE_SECRET` | eq-service | Signs one-click unsubscribe links so they can't be forged/enumerated. |
@@ -144,7 +144,7 @@ by the confirmed-shared-value cluster table; the rest are Tier 4 or n/a.
 | `EQ_QUOTES_HANDOFF_KEY` | **DELETED 2026-08-16** | — | Confirmed dead + retiring `mint-quotes-iframe-token.ts` call deliberately left to fail loud now instead of minting on a leaking secret. |
 | `EQ_SERVICE_HANDOFF_KEY` | **DELETED 2026-08-16** | — | Confirmed no live caller in eq-shell or eq-service — dead code, not masked-and-kept. |
 | `EQ_SHELL_BRIDGE_SECRET` | **DELETED 2026-08-16** | — | Confirmed no live caller — dead code, not masked-and-kept. |
-| `QUOTES_CRON_SECRET` | ✓ masked, all contexts (fixed 2026-08-16, delete+recreate) | Netlify | **SEC-24 — closed.** |
+| `QUOTES_CRON_SECRET` | ✓ masked, all contexts (fixed 2026-08-16, delete+recreate) | Netlify | **SEC-28 (formerly SEC-24) — closed.** |
 | `GOOGLE_DOC_AI_CREDENTIALS` | ✓ masked | Netlify (production) | Full GCP service-account JSON. `dev` context empty — clean. |
 | `SUPABASE_ACCESS_TOKEN` | ✓ masked | Netlify | Used by `security_audit.py`'s advisor-audit step. `dev` empty. |
 | `CANONICAL_API_KEY_QUOTES` | ✓ masked | Netlify (all) | Single-context var, no separate `dev` value. |
@@ -261,8 +261,8 @@ projects).
 
 **Closed 2026-08-16** — full live walkthrough across all 4 Netlify sites:
 SEC-9 (17 dev-context leaks: eq-shell ×11, eq-field ×1, eq-service ×5),
-SEC-18 (eq-field/eq-service ×4 never-masked vars), SEC-24
-(`QUOTES_CRON_SECRET`), the dead `SUPABASE_SERVICE_ROLE_KEY` on eq-service,
+SEC-18 (eq-field/eq-service ×4 never-masked vars), SEC-28 (formerly SEC-24,
+`QUOTES_CRON_SECRET`), the dead `SUPABASE_SERVICE_ROLE_KEY` on eq-service,
 3 dead eq-shell vars deleted outright (`EQ_QUOTES_HANDOFF_KEY`,
 `EQ_SERVICE_HANDOFF_KEY`, `EQ_SHELL_BRIDGE_SECRET`), and eq-cards'
 previously-unverified site (found + closed a worse variant of SEC-9/18 in
