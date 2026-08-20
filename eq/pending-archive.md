@@ -5145,5 +5145,13 @@ contain the same values and were pushed before push-protection caught up.
 
 ## eq-cards/eq-shell: onboarding minimum-requirements switch, bulk connect-worker, and a live anon-EXECUTE fix (2026-07-26) (rotated 2026-08-19 — open items remain in cross-repo.md)
 
-
 ---
+
+## eq-shell: `authenticated` held direct write access on `contact_customer_links`, bypassing the app's own permission gate — root-caused, fixed, dispatched, verified live (2026-08-20) (fully closed, no open items remain)
+*Explicit ask: migration 0133 had granted `authenticated` `SELECT, INSERT, DELETE` on `app_data.contact_customer_links` on top of 0028's original service-role-only write design, letting any signed-in tenant member bypass `crm-write.ts`'s `entity.edit` gate on `link_contact_customer`/`unlink_contact_customer` via raw PostgREST. Not cross-tenant — 0133's own `tenant_isolation` RLS policy scoped correctly throughout.*
+
+- [x] **Verified live before writing anything**: confirmed current grants on both ehow and zaap via Supabase MCP (`information_schema.role_table_grants`), confirmed every writer (`crm-write.ts`) and reader (`crm-customers.ts`, `tenant-audit.ts`) of this table already resolves its client via `getAuditedTenantDataClientById()`/`getTenantDataClientById()` — both service-role, unaffected by the revoke.
+- [x] **Caught a migration-numbering near-collision**: local checkout was 12 commits behind `origin/main` — local `tenant-migrations/` topped out at `0251`, but main already had `0252` merged and open PR #1479 had claimed `0253` (same table, unrelated/read-only concern, no conflict). Used `0254`.
+- [x] **Migration 0254** (`REVOKE INSERT, DELETE ... FROM authenticated`, `SELECT` left as-is per 0028's own original grant) — eq-shell [PR #1482](https://github.com/eq-solutions/eq-shell/pull/1482), squash-merged (`09544c66`).
+- [x] **Dispatched via the governed One Pipe** (`tenant-migrate.yml` run [32333797479](https://github.com/eq-solutions/eq-shell/actions/runs/32333797479)) on Royce's explicit go-ahead, given as its own separate confirmation after the PR merged — applied cleanly to both `eq` (zaap) and `sks` (ehow), ~4s each.
+- [x] **Verified live post-dispatch** — re-queried `information_schema.role_table_grants` directly on both planes: `authenticated` now holds `SELECT` only; `service_role` retains `ALL`. Not inferred from the CI log.

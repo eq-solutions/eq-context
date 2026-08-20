@@ -9,6 +9,11 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-20 (PR #1482 MERGED + dispatched — closed a permission-bypass on contact↔customer linking)
+- `app_data.contact_customer_links` had granted `authenticated` direct `INSERT`/`DELETE` since migration 0133, letting any signed-in tenant member bypass `crm-write.ts`'s `entity.edit` gate on `link_contact_customer`/`unlink_contact_customer` via raw PostgREST. Not cross-tenant — 0133's own `tenant_isolation` RLS policy scoped correctly throughout.
+- Migration `0254` revokes `INSERT, DELETE` from `authenticated`, leaves `SELECT` in place (matches 0028's original grant, RLS-scoped). eq-shell [PR #1482](https://github.com/eq-solutions/eq-shell/pull/1482), squash-merged (`09544c66`).
+- Dispatched via `tenant-migrate.yml` (One Pipe, run [32333797479](https://github.com/eq-solutions/eq-shell/actions/runs/32333797479)) on Royce's explicit go-ahead — applied to both `eq` (zaap) and `sks` (ehow), confirmed live by direct `information_schema.role_table_grants` query post-dispatch.
+
 ## 2026-08-20 (PR #1465 + #1471 MERGED — Staff load time fixed, funnel filters added to Contact/Status/Birthday)
 - Merged [PR #1465](https://github.com/eq-solutions/eq-shell/pull/1465) (`5a49ef77`) — the `staff-bootstrap` keep-warm fix carried over from yesterday's investigation, live.
 - Royce, from a screenshot: "where are our filters for birthday and start date." First hypothesis (stale tab) was disproven — a full forensic bundle audit (curl the live production JS, byte-match literal column-definition strings against source) confirmed the deployed code was 100% correct and current; nothing was actually stale. Two rounds of AskUserQuestion established the real ask: Royce wanted funnel filters *added* to Contact, Status, and Birthday, not a regression fixed.
