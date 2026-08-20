@@ -9,6 +9,11 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-21 (PR #1501/#1504 MERGED — QuotesModule.tsx react-hooks lint debt cleared: Date.now() purity + 6 effect-timing errors)
+- Pre-existing lint debt from PR #601, not CI-blocking (real gate is `tsc -b`/`pnpm run build`). 4 `Date.now()` calls flagged by `react-hooks/purity` (Age column, expiring/stale filters, mobile card IIFE) hoisted into two new top-level helpers (`daysSince`, `isoDateOffset`) — same pattern the file already used for `stageAge`/`fmtExpiry`. No value/formatting change.
+- 6 more pre-existing errors in the create-form/draft-banner effects: a TDZ bug (`resetCreateForm` called before its own declaration) fixed via a new `resetCreateFormRef` mirroring the existing `openEditFormRef`/`handleDuplicateRef` pattern; 2 `exhaustive-deps` warnings fixed by adding the missing deps; 3 `set-state-in-effect` errors — 2 effects doing genuine I/O (fetch, `localStorage`) kept as effects with their state-setting deferred a tick via `queueMicrotask`, 1 pure derivation (`quotePristineSig`) rebuilt with React's own "adjust state during render" pattern instead of an effect.
+- eq-shell [PR #1501](https://github.com/eq-solutions/eq-shell/pull/1501) (`7219d6ba`) and [PR #1504](https://github.com/eq-solutions/eq-shell/pull/1504) (`b6bc0615`) — both squash-merged, both confirmed live via exact Netlify `commit_ref` match against their own deploy's `state: "ready"`.
+
 ## 2026-08-21 (PR #1511 MERGED — CLAUDE.md: netlify/functions test-file location gotcha documented)
 - Added a bullet to "Build + dev gotchas": new `netlify/functions/*.test.ts` files must live under `netlify/functions/_shared/`, never top-level — the "Guard function filenames" CI step (and a real Netlify deploy) fails on any top-level filename outside `[A-Za-z0-9_-]` once its extension is stripped. Discovered and worked around in PR #1507 earlier today; this writes the rule down.
 - eq-shell [PR #1511](https://github.com/eq-solutions/eq-shell/pull/1511) (`5337becb`) — squash-merged, confirmed live (commit_ref exact match, deploy `state: "ready"`).

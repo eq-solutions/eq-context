@@ -5866,3 +5866,13 @@ _(recovered from an unpopped stash 2026-08-20 — never made it into this file a
 - [x] **The full story doesn't end here — a third, bigger gap was found right after** (part of the database changed by hand on the live system, never tracked anywhere) — that's its own new, still-open item in `eq/pending/eq-solves-service.md`, not repeated here since this specific item (the DDL snapshot itself) is done.
 
 ---
+
+## eq-shell: pre-existing react-hooks lint debt in QuotesModule.tsx cleared — Date.now() purity + 6 effect-timing errors, two PRs merged and live (2026-08-21) (fully closed, no open items remain)
+*Pre-existing debt from PR #601, not CI-blocking (the real gate is `tsc -b`/`pnpm run build`, not eslint) — found and scoped as two separate fixes.*
+
+- [x] **4 `Date.now()` calls flagged by `react-hooks/purity`** (the Age column, the expiring/stale filters, and a mobile card-list IIFE) hoisted into two new top-level helpers (`daysSince`, `isoDateOffset`) — the same pattern the file already used for `stageAge`/`fmtExpiry`. No value or formatting change. eq-shell [PR #1501](https://github.com/eq-solutions/eq-shell/pull/1501), merged, confirmed live via exact Netlify `commit_ref` match (deploy `state: ready`).
+- [x] **6 more pre-existing errors in the create-form/draft-banner effect logic**: a TDZ bug (`resetCreateForm` called before its own declaration) fixed via the same ref-mirror pattern already used for `openEditFormRef`/`handleDuplicateRef`; 2 `exhaustive-deps` warnings fixed by adding the missing deps; 3 `set-state-in-effect` errors — 2 effects that do genuine I/O (a fetch, a `localStorage` read) kept as effects but had their state-setting deferred a tick via `queueMicrotask`, and 1 pure derivation (`quotePristineSig`, no I/O involved) rebuilt using React's own documented "adjust state during render" pattern instead of an effect. eq-shell [PR #1504](https://github.com/eq-solutions/eq-shell/pull/1504), merged, confirmed live via exact Netlify `commit_ref` match.
+- [x] Both verified via `tsc -b --force` (this repo's real build gate) plus scoped `eslint` runs, re-checked after unrelated concurrent PRs (#1503, #1505) landed on `main` underneath each branch.
+- [x] Cleaned up both feature worktrees afterward. One (`eq-shell-quotes-purity-lint`) had been left in a partially-corrupted state by an earlier interrupted removal attempt (its `.git` link file was gone but the directory and git's worktree metadata weren't) — resolved with a manual directory removal plus `git worktree prune`, rather than plain `git worktree remove`.
+
+---
