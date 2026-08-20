@@ -61,9 +61,11 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-20)
 
 **eq-service:**
-- #794 fix(security): role-gate service.hard_delete_archived_entity
 - #792 fix(migrations): unbreak fresh-database bootstrap so integration tests run
 - #791 fix(reports): make reissuing a report possible from the UI
+
+**eq-shell:**
+- #1497 feat(quotes): Jobs-page "From supplier file" button now takes Excel too
 
 ---
 
@@ -82,7 +84,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 232 (latest: 0225) applied
+**Migrations:** eq-service has 233 (latest: 0226) applied
 
 ---
 
