@@ -60,8 +60,8 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-20)
 
-**eq-service:**
-- #786 docs(offline): scope Tier C against live recon — corrects two false premises
+**eq-cards:**
+- #285 fix(labour-hire): carry address + employer name through to the roster
 
 **eq-shell:**
 - #1493 fix(quotes): clarify client-RFQ vs supplier-quote PDF button labels
@@ -74,7 +74,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ✓ success |
+| eq-service | ? in_progress |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
