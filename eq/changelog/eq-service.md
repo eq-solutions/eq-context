@@ -9,6 +9,14 @@ status: live
 
 # EQ Service — Changelog
 
+## 2026-08-20 (PR #782 MERGED — Tier B of the offline-first proposal: first real slice shipped)
+- **Technicians can now reopen an already-viewed page with zero signal.** New service worker (`app/sw.ts`, Serwist + `defaultCache` runtime-caching for RSC/navigation/static-asset responses), registered client-side in production only (`components/RegisterServiceWorker.tsx`). Read-cache only — no install-to-home-screen (no app icon exists yet, deliberately deferred), no offline write/save (Tier C, unscoped).
+- **Found `@serwist/next`'s webpack-plugin integration silently no-ops under this app's Turbopack-default build** — a clean `next build` shipped zero service worker with no error. Switched to `@serwist/cli`'s bundler-agnostic `serwist build` as a postbuild step; added the same step to `.github/workflows/check.yml` so CI actually covers it.
+- **Found and fixed a real pre-existing auth-proxy bug**: `/sw.js` wasn't in `PUBLIC_PATHS`, so the proxy 307-redirected the service-worker registration fetch — the Service Worker spec requires a direct 200, so every browser refused to register it. Auth-flow file, flagged in chat first, fixed on explicit go-ahead.
+- Verified live in a real browser: loaded a page online, killed the local server entirely, reloaded — full correct render, zero console errors.
+- **GitHub Actions CI is not currently running on this repo** — a per-repo `auto_trigger_checks` setting silently disabled (unrelated pre-existing issue, found while pushing this PR). Merged on local verification alone (442/442 tests, 0 high+ audit findings, clean `tsc`/`next build`/`serwist build`, clean mojibake guard) on Royce's explicit "merge it without CI." Needs a one-click UI fix or a PAT before any future PR on this repo gets real CI back.
+- Squash-merged (`0dbe4d4`) after resolving a real merge conflict in `lib/auth/mfa-routing.ts` (same squash-merge SHA-divergence class as PR #781, this time a genuine 3-way conflict).
+
 ## 2026-08-20 (PR #781 MERGED — Tier B of the offline-first proposal scoped)
 - **`docs/proposals/offline-first.md`: Tier B (installable PWA + read-cache) expanded from a one-paragraph proposal into a task-level breakdown** — app-icon blocker (no EQ Service app icon exists anywhere in the repo yet), manifest, service worker (`@serwist/next`), read-cache scope, an auth-grace step explicitly gated on Royce's sign-off (`verifyServiceJwt()` hard-fails on `exp` today, no grace concept), a smoke test, acceptance criteria, and an explicit boundary against Tier C (write queue/IndexedDB). Docs only — no code, schema, or behaviour change; both tier-gating decisions remain open. [PR #781](https://github.com/eq-solutions/eq-service/pull/781), confirmed live.
 

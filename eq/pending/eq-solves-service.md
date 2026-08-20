@@ -13,6 +13,23 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-solves-service: Tier B of the offline-first proposal — first slice built and shipped live: real offline read-cache via a service worker (2026-08-20)
+*Direct follow-on to the same-day "Tier B scoped" close (PR #781, archived). Initial `/decide` pass leaned against building yet — no incident on record, low real ACB/NSX volume. Reversed when Royce said the field techs are certain they'll need it as usage grows. Built the read-cache slice only — no icon/manifest, no install-to-home-screen, no offline write — per Royce's own scoping call ("start now — we can tidy up a logo quickly anytime").*
+
+- [x] Technicians can now reopen any page they've already viewed while online with zero signal — a service worker caches RSC/navigation/static-asset responses via Serwist. Verified for real: killed the local server outright and reloaded a previously-viewed page; full correct render, zero console errors.
+- [x] **Found and routed around a silent build gap**: `@serwist/next`'s webpack-plugin integration silently no-ops under this app's Turbopack-default build — `next build` stayed green while shipping zero service worker, no error anywhere. Switched to `@serwist/cli`'s bundler-agnostic `serwist build` as a postbuild step, and added the same step to CI (`.github/workflows/check.yml`) so this exact failure can't go quiet again.
+- [x] **Found and fixed a real pre-existing auth-proxy bug**: `/sw.js` wasn't in `PUBLIC_PATHS`, so the proxy 307-redirected the service-worker registration fetch — the Service Worker spec requires a direct 200, so every browser refused to register it with a `SecurityError`. Auth-flow file — flagged in chat before touching, fixed on Royce's explicit go-ahead.
+- [x] eq-service [PR #782](https://github.com/eq-solutions/eq-service/pull/782), squash-merged (`0dbe4d4`) after resolving a real merge conflict in `lib/auth/mfa-routing.ts`.
+
+**Deferred:**
+- [ ] **GitHub Actions isn't running on this repo at all right now** — a per-repo GitHub setting (`auto_trigger_checks`) silently flipped off; unrelated to this change but discovered while pushing it. PR #782 merged on local verification only (tests/build/audit all clean, no independent CI). One-click fix: [PR #781's checks tab](https://github.com/eq-solutions/eq-service/pull/781/checks) → gear icon on any GitHub Actions row → "Automatically request this check suite." Until fixed, every PR on this repo merges the same way — no independent CI confirmation. _(added 2026-08-20)_
+- [ ] **The proposal doc still overstates the icon as blocking the whole tier** ("nothing else in this tier can ship without it") — no longer true now the read-cache slice shipped without one. Small wording fix, promised mid-session, not yet made. _(added 2026-08-20)_
+- [ ] **Icon/manifest (install to home screen) — parked on purpose**, Royce's own call, revisit whenever there's a logo ready. _(added 2026-08-20)_
+- [ ] **Tier C (true offline write/save while disconnected) — still entirely unscoped.** _(added 2026-08-20)_
+- [ ] **Production deploy not yet independently confirmed** — merge landed, Netlify auto-deploys from `main`, nobody has checked the live deploy's commit against `0dbe4d4` yet. _(added 2026-08-20)_
+
+---
+
 ## eq-solves-service: unchecked-Supabase-query-error bug fully closed out across all 55 `page.tsx` files — dashboard fixed by hand, the remaining 30 swept by 5 parallel isolated-worktree agents, all 6 PRs merged and confirmed live (2026-08-19)
 *Dashboard.tsx was flagged separately from the rest of this bug class because its 8-query fetch sits upstream of three different render paths (setup checklist, tech dashboard, full dashboard) and needed a real read-through rather than a mechanical copy of contract-scope's fix. Along the way, found the task's own premise ("other files already fixed") didn't hold up against a live check — then, independently, a concurrent session made most of it true anyway before this session closed. Asked to "sprint the remaining 30" afterward — done via 5 parallel subagents, each isolated in its own git worktree (this repo's shared checkout had already cost this session one lost edit earlier the same day; 5 concurrent agents on the same tree would have guaranteed worse), each auditing a disjoint module and opening its own PR.*
 
