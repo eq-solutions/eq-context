@@ -376,3 +376,43 @@ entry of its own — the exact gap F9's own note warns about elsewhere in that f
 - [x] ~~Royce's call: does `CANONICAL_SERVICE_ROLE_KEY`... warrant an actual rotation~~ — **resolved by the same closure entry**: no rotation performed, same-value re-store only, per the SEC-12 precedent the register's own closure note cites. That was the decision, not a hanging question. _(added 2026-07-30, resolved — substrate correction 2026-08-20)_
 
 ---
+
+## eq-context's own effective_cwd() got the guard.js relative-cd fix too (2026-08-21) (rotated 2026-08-21)
+
+Same bug family as the two entries directly above (2026-08-14, 2026-08-17)
+— a `cd`/`-C` target used without resolving it against the real caller
+cwd — but found this time in `eq-context`'s own `hooks/pre_tool_use.py`
+(not `~/.claude/hooks/guard.js`), after guard.js's copy was fixed
+2026-08-20: `effective_cwd()` returned a RELATIVE `cd`/`-C` target raw
+instead of resolving it against `data["cwd"]`, so a relative target
+silently pointed F7 (pre-existing NUL-corruption scan) and F9 (this exact
+shared-checkout race guard) at the wrong directory — usually not a git
+repo at all, so both checks quietly no-op instead of firing. Not a live
+incident here (unlike guard.js's, which false-positived on a real
+worktree) — found by inspection while porting the fix, before it caused a
+miss. 3 new regression cases added to `hooks/adversarial_test.py`,
+verified against pre-fix code first to confirm they actually catch the bug.
+Full suite 127/127. eq-context
+[PR #168](https://github.com/eq-solutions/eq-context/pull/168),
+squash-merged on Royce's explicit "merge it", confirmed live on disk in the
+shared checkout afterward (function body read directly, not just a name
+match).
+
+- [x] ~~Fix the MSYS-path `git -C` gap in `repo_root_for()`~~ — **fixed.**
+  `_normalize_msys_path()` ports guard.js's `normalizeMsysPath()` into
+  `repo_root_for()` — the one chokepoint both F7 and F9 already funnel
+  through — covering both the drive-letter case above AND a second, worse
+  case found empirically while porting rather than assumed from guard.js:
+  an MSYS `/tmp` target doesn't fail cleanly the way `/c/...` does.
+  Windows' own "leading slash, no drive letter = root of the current
+  drive" convention was silently resolving it to a real-but-wrong `C:\tmp`
+  instead of the actual MSYS `/tmp` mount (`%TEMP%`) — confirmed live both
+  exist and differ on this machine. 6 new regression cases in
+  `hooks/adversarial_test.py` (4 confirmed to fail without the fix, via
+  `git stash`), full suite 133/133 before and after rebasing onto latest
+  `origin/main`. eq-context
+  [PR #170](https://github.com/eq-solutions/eq-context/pull/170),
+  squash-merged on Royce's explicit go-ahead. Closes background task
+  `task_1a9f2979`. _(added 2026-08-21, resolved same day)_
+
+---
