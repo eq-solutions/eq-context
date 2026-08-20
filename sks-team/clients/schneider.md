@@ -1,7 +1,7 @@
 ---
 title: SKS-TEAM — Schneider Electric Client Reference
 owner: Royce Milmlow
-last_updated: 2026-05-15
+last_updated: 2026-08-21
 scope: Schneider Electric-specific terminology, project conventions, and language patterns
 read_priority: standard
 status: live

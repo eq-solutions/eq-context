@@ -1,7 +1,7 @@
 ---
 title: AGENTS.md — Pointer to CLAUDE.md
 owner: Royce Milmlow
-last_updated: 2026-07-20
+last_updated: 2026-08-21
 scope: Entry-point alias for any LLM tool that prefers AGENTS.md naming
 read_priority: critical
 status: live

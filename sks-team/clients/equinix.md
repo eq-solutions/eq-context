@@ -1,7 +1,7 @@
 ---
 title: SKS-TEAM — Equinix Client Reference
 owner: Royce Milmlow
-last_updated: 2026-05-15
+last_updated: 2026-08-21
 scope: Equinix-specific terminology, site codes, and language patterns for SKS NSW Operations documents
 read_priority: standard
 status: live
@@ -21,6 +21,7 @@ Apply this knowledge when any document (quote, variation, MOP, scope, email) is 
 | SY1 | Sydney — Ultimo |
 | SY3 | Sydney — Alexandria |
 | SY4 | Sydney — Mascot |
+| SY5 | Sydney — TBC, confirm with Royce |
 | SY6 | Sydney — Eastern Creek |
 | SY7 | Sydney — Eastern Creek (expansion) |
 | ME1 | Melbourne — Port Melbourne |

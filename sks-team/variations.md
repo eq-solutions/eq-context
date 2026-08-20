@@ -1,7 +1,7 @@
 ---
 title: SKS-TEAM — Canonical Variation Claim Router
 owner: Royce Milmlow
-last_updated: 2026-05-15
+last_updated: 2026-08-21
 scope: Canonical AI guidance for drafting SKS variation claims — NSW Operations team
 read_priority: critical
 status: live

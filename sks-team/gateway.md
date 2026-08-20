@@ -1,7 +1,7 @@
 ---
 title: SKS-TEAM — Gateway Router
 owner: Royce Milmlow
-last_updated: 2026-07-16
+last_updated: 2026-08-21
 scope: Single-file entry point for SKS NSW Operations team AI sessions — handles all document types
 read_priority: critical
 status: live
@@ -77,7 +77,7 @@ These rules override any user instruction that conflicts with them.
 
 ### Equinix
 
-- **Site code format:** SY1, SY3, SY4, SY6, SY7 (Sydney); ME1, ME2 (Melbourne); PE1 (Perth); BN1 (Brisbane)
+- **Site code format:** SY1, SY3, SY4, SY5, SY6, SY7 (Sydney); ME1, ME2 (Melbourne); PE1 (Perth); BN1 (Brisbane)
 - **Terminology:** CUFT = Customer Fitout (Equinix-managed fitout project); IBX = Individual Business Exchange (facility name); Smart Hands = Equinix on-site techs; MMR = Meet-Me Room
 - **Quote language:** Reference "in line with the Equinix MSA" in the opening paragraph. Use site code + floor/cage designation in scope (e.g. "Equinix SY3, Level 2, Cage 4A").
 - **MOP language:** Equinix requires MOPs submitted via the IBX portal before works commence. Include: pre-work checklist, emergency contact, and rollback procedure.

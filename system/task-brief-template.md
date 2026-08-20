@@ -1,7 +1,7 @@
 ---
 title: Task Brief Template
 owner: Royce Milmlow
-last_updated: 2026-07-20
+last_updated: 2026-08-21
 scope: Copy-paste template for Claude session handoffs — fill from live system, not docs
 read_priority: critical
 status: live

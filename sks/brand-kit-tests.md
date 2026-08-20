@@ -1,7 +1,7 @@
 ---
 title: SKS Brand Kit — Test Prompts
 owner: Royce Milmlow
-last_updated: 2026-05-21
+last_updated: 2026-08-21
 scope: Canonical regression-test prompts for the SKS brand kit (sks-brand.css + SKS_Master.docx + rules/brand-check.md). Re-run any time brand drift is suspected, or after any change to the three artefacts.
 read_priority: reference
 status: live

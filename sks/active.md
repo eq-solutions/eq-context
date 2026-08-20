@@ -19,7 +19,6 @@ Client", "Healthcare Client").
 
 | Project | Status |
 |---------|--------|
-| AWS SYD053 PDC Acceleration | Live — 20-week programme (soft start 23 Mar 2026, target PC 21 Aug 2026), 3,220+ WHIP installations |
 | AirTrunk SYD3 transformer commissioning | Active — 29 × 2250kVA kiosks, ~$1.18M inc GST |
 | NEXTDC S3 tender | Tender phase — Artarmon, quantity takeoff from 11 IFT-1 drawings |
 | Equinix SY6 CUFT | Active — multi-contractor annual test, two-day programme |
