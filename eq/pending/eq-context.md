@@ -1,7 +1,7 @@
 ---
 title: EQ Context (substrate/tooling) — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-20
+last_updated: 2026-08-21
 scope: EQ Context (substrate/tooling) engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -10,6 +10,15 @@ status: live
 # EQ Context (substrate/tooling) — Pending
 
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-context: ~80 leftover scratch clones found across other sessions' temp folders — found, scope-checked with Royce, left alone (2026-08-21)
+*Asked to delete "the leftover eq-context scratch clones" left behind by an eq-solves-service session's own workaround for the shared-checkout guards (clone eq-context into a session's own scratchpad, commit and push from there instead of the shared root checkout). That session's own two clones were already gone — cleaned up immediately after each push. A broader search turned up roughly 80 more of the same pattern, scattered across other sessions' scratchpad folders (eq-shell, eq-field, eq-cards, eq-intake, eq-solves-service, and eq-context itself) — the same guard-workaround being independently rediscovered and repeated session after session, with nobody cleaning up afterward.*
+
+- [x] Confirmed the requesting session's own leftovers were already clean — nothing to delete there.
+- [x] Checked timestamps on the wider set before proposing anything: the newest was 4 minutes old at the time of checking — almost certainly a session still running. A full old-vs-live timestamp sweep across all ~80 timed out (each is a full git clone with its own history, slow to stat at that count).
+- [ ] **Scope check put to Royce directly: clean up only if scoped safely (24h+ untouched) or leave alone. He chose to leave it alone this session** — no deletions made outside the requesting session's own (already-clean) pair. The debris itself is real and will keep accumulating every time a session hits the shared-checkout guard this same way; worth a dedicated sweep later (same shape as the 2026-08-20 stale-stash audit above — verify each is genuinely pushed/dead before removing, not just old) rather than a rushed one folded into an unrelated task. _(added 2026-08-21)_
 
 ---
 
