@@ -63,6 +63,9 @@ _If this file is >48h old, the cron is broken._
 **eq-field:**
 - #739 v3.5.530 — Documents to Sign: ends the pilot for good
 
+**eq-service:**
+- #779 docs(testing): fix stale NSX checklist comment — trim already happened
+
 **eq-shell:**
 - #1481 fix(documents): reminder cron respects due_at, backs off on delivery failure
 
