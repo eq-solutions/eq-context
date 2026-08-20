@@ -13,16 +13,15 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: Staff's new "Show columns" dropdown gets cut off on a filtered table — root-caused, fix landed on the eq-ui side (2026-08-20)
+*Fix landed on the eq-ui side — see `eq/pending/eq-ui.md` (2026-08-20) for full root-cause + build detail. This entry is the eq-shell-side pointer, since that's where Royce reported it (Staff page, right after the Login column shipped).*
+
+- [ ] **eq-shell's `@eq-solutions/ui` pin needs bumping once eq-ui's fix ships a new version/tag** — currently pinned to `v1.16.1`; this repo's pin is a git-tag reference, not a semver range, so Renovate won't pick it up automatically. Manual bump, same as the last two `@eq-solutions/ui` version bumps this week. _(added 2026-08-20)_
+
+---
+
 ## eq-shell: 2 more orphaned pages removed (Field roster + Shell licence OCR) — built, merged, confirmed live (2026-08-20)
-*Follow-up to the [[eq-shell-nav-role-audit-2026-08-19|full nav-by-role audit]] — Royce asked for an "orphan pages" diagram (routes with zero nav trigger), reviewed live on his own screen, and approved deleting 2 of the 3 found.*
 
-- [x] **`FieldRosterPage.tsx` (`/:tenant/field/roster`) removed** — zero nav trigger anywhere in Shell's own code, and confirmed redundant rather than just unlinked: Field's own iframe already serves its own Weekly Roster view via `?tab=roster` (Royce confirmed live via screenshot).
-- [x] **`LicenceOcrPage.tsx` (`/:tenant/onboarding/licence`) + its two dedicated backend functions removed** — Royce's call: licence photo capture goes through Cards only. Both functions had exactly one caller each (this page), confirmed by repo-wide grep before deleting. `field.manage_licences` (its only enforcement call site) correctly moved back into `permission-enforcement-baseline.json`'s dead_keys with a retirement note.
-- [x] **Checked for live collisions before deleting**: a local unmerged branch rewriting the same OCR backend files was confirmed already shipped under a different PR/commit hash — nothing in-flight lost.
-- [x] `tsc -b --force` clean, permission-enforcement-drift guard 5/5. Initially blocked by the same pre-existing `eq_claim_connection_notification` drift as the entry below — cleared once that fix landed, then eq-shell [PR #1468](https://github.com/eq-solutions/eq-shell/pull/1468) squash-merged (`0424f401`) by Royce directly, confirmed live via `git merge-base --is-ancestor` against the newest ready production deploy.
-
-**Deferred:**
-- [ ] **Duplicate background task, still needs your call**: this session spawned `task_b2559f35` for the same `eq_claim_connection_notification` fix `task_bec14b02` (below) already covered — found only while writing this close, by which point you'd already started both in separate sessions. The drift is now fixed either way (confirmed — #1468's blocking check went green), so this is no longer blocking anything, but two sessions may still be redundantly running the identical fix. Worth stopping whichever one's still going. _(added 2026-08-20, needs your call)_
 - [ ] **Storage browser (`/storage`) has zero nav link anywhere, confirmed still true** — its open-to-all-roles access is your own 2026-08-16 call. Asked what it's for: a generic empty per-tenant file bucket, nothing currently writes to it. Real open question whether it's worth keeping findable or retiring — no lean given either way. _(added 2026-08-20, needs your call)_
 
 ---
