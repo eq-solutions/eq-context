@@ -182,6 +182,27 @@ if echo "$staged_files" | grep -q '^sessions/'; then
 fi
 
 # ----------------------------------------------------------------------
+# Changelog duplicates — BLOCK
+#
+# CI-only until now (.github/workflows/md-health.yml), which is how
+# field.md reappeared 2026-08-19 and sat silent for 2 days collecting real
+# entries: the commit that recreated it carried [skip ci], and this hook
+# never checked it either way -- there was no local check to skip. Runs
+# only when a commit actually touches eq/changelog/ or archive/ (this
+# check's only two inputs), so ordinary commits elsewhere pay nothing.
+# ----------------------------------------------------------------------
+if echo "$staged_files" | grep -qE '^(eq/changelog/|archive/)'; then
+    if ! command -v python >/dev/null 2>&1; then
+        echo "${RED}BLOCK: 'python' not found on PATH — cannot run scripts/changelog_duplicates.py.${NC}"
+        echo "  This check must not fail open. Install Python, or bypass deliberately: git commit --no-verify"
+        violations=$((violations+1))
+    elif ! python "$(git rev-parse --show-toplevel)/scripts/changelog_duplicates.py"; then
+        echo "${RED}Pre-commit blocked by scripts/changelog_duplicates.py (detail above).${NC}"
+        violations=$((violations+1))
+    fi
+fi
+
+# ----------------------------------------------------------------------
 # Tool-attribution drift in substrate prose — WARN (not block)
 # (See system/md-style.md "Tool-neutral writing")
 # Flags newly-added MD content that uses tool brand names instead of

@@ -9,7 +9,7 @@ import os
 import sys
 import tempfile
 
-from changelog_duplicates import classify, group_status, scan, slug
+from changelog_duplicates import archived_dead_twin_names, classify, group_status, scan, slug
 
 
 def check(name, got, want):
@@ -207,9 +207,15 @@ def main():
                 fh.write(content)
         return d
 
+    # A nonexistent archive dir, passed explicitly so these tests stay
+    # hermetic -- otherwise scan()'s archive_dir default would fall through
+    # to THIS repo's real archive/, and results would silently depend on
+    # what happens to be archived there on any given day.
+    NO_ARCHIVE = "/definitely/not/a/real/archive/path"
+
     # A single file per product: no problems, regardless of content.
     d = make_dir({"context.md": "# just a log\n## 2026-08-01\n- x\n"})
-    groups, problems = scan(d)
+    groups, problems = scan(d, NO_ARCHIVE)
     f += check("solo file group -> no problems", problems, [])
     f += check("solo file group -> counted", groups, {"context": ["context.md"]})
 
@@ -221,7 +227,7 @@ def main():
         "eq-solves-service.md": "# eq-solves-service changelog\n## 2026-08-14\n- PR merged\n",
         "context.md": "# solo, unrelated product\n",
     })
-    groups, problems = scan(d)
+    groups, problems = scan(d, NO_ARCHIVE)
     f += check(
         "scan groups by slug across the directory",
         {s: sorted(members) for s, members in groups.items()},
@@ -232,9 +238,55 @@ def main():
     f += check("solo product contributes no problems", any("context" in p for p in problems), False)
 
     # Missing directory must report, not crash.
-    groups, problems = scan("/definitely/not/a/real/path")
+    groups, problems = scan("/definitely/not/a/real/path", NO_ARCHIVE)
     f += check("missing directory reports instead of crashing", groups, {})
     f += check("...with a problem string", len(problems), 1)
+
+    # --- archived_dead_twin_names -------------------------------------------
+    ad = tempfile.mkdtemp(prefix="eq-archive-")
+    for name in ("changelog-field-dead-twin.md", "changelog-eq-field-dead-twin.md", "README.md"):
+        with open(os.path.join(ad, name), "w", encoding="utf-8") as fh:
+            fh.write("x")
+    f += check(
+        "derives original filenames from the dead-twin naming convention",
+        archived_dead_twin_names(ad),
+        {"field.md", "eq-field.md"},
+    )
+    f += check("non-matching files (README.md) are ignored", "README.md" in archived_dead_twin_names(ad), False)
+    f += check("missing archive dir -> empty set, not a crash", archived_dead_twin_names(NO_ARCHIVE), set())
+
+    # --- scan + archive_dir: the resurrection guard -------------------------
+    # field.md 2026-08-19: archived once, recreated with no live sibling
+    # at the moment of recreation, no self-marking. THE regression this
+    # section exists to catch -- ordinary slug-grouping alone would call
+    # this a harmless "group of one" and skip it.
+    d = make_dir({"field.md": "# EQ Field Changelog\n## 2026-08-19\n- v3.5.525 (PR #729)\n"})
+    groups, problems = scan(d, ad)
+    f += check("solo resurrection of an archived name -> flagged", len(problems), 1)
+    f += check("...names the resurrected file", "field.md" in problems[0], True)
+    f += check("groups dict is unaffected -- still just a group of one", groups, {"field": ["field.md"]})
+
+    # A solo file whose name was never archived is unaffected by archive_dir
+    # being non-empty -- only an exact-name match triggers this.
+    d = make_dir({"eq-context.md": "# log\n"})
+    groups, problems = scan(d, ad)
+    f += check("solo file with no archive history -> still no problems", problems, [])
+
+    # Self-marking clears a resurrection exactly like it clears an ordinary
+    # duplicate -- a resurrection is not forbidden, only silence is.
+    d = make_dir({"field.md": "---\nscope: UNRECONCILED PAIR, see eq-field.md\n---\n"})
+    groups, problems = scan(d, ad)
+    f += check("a self-marked resurrection is clean", problems, [])
+
+    # The real 2026-08-19 shape once eq-field.md is also present: ordinary
+    # slug-grouping (2 members) and the resurrection check now overlap on
+    # the same file -- must still report exactly once per file, not twice.
+    d = make_dir({
+        "field.md": "# EQ Field Changelog\n## 2026-08-19\n- v3.5.525 (PR #729)\n",
+        "eq-field.md": "# eq-field changelog\n## 2026-08-21\n- PR #750\n",
+    })
+    groups, problems = scan(d, ad)
+    f += check("live sibling present too -> both bare files flagged, no double-count", len(problems), 2)
 
     print()
     if f:

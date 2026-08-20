@@ -42,6 +42,7 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.join(HERE, "..")
 CHANGELOG_DIR = os.path.join(ROOT, "eq", "changelog")
+ARCHIVE_DIR = os.path.join(ROOT, "archive")
 
 sys.path.insert(0, HERE)
 from review_clock import parse_frontmatter  # noqa: E402  -- one parser, not a third copy
@@ -50,6 +51,13 @@ from review_clock import parse_frontmatter  # noqa: E402  -- one parser, not a t
 PREFIXES = ("eq-solves-", "eq-")
 
 UNRECONCILED_MARK = re.compile(r"UNRECONCILED PAIR", re.I)
+
+# archive/changelog-<name>-dead-twin.md -- every dead-twin archived so far
+# (cards, eq-field, eq-solves-service, field, service, shell; verified
+# 2026-08-21) follows this exact naming convention. Deriving from it rather
+# than parsing archive/README.md's prose table means the signal can't drift
+# out of sync with itself the way a hand-written summary can.
+DEAD_TWIN_RE = re.compile(r"^changelog-(.+)-dead-twin\.md$", re.I)
 
 
 def slug(filename):
@@ -164,7 +172,32 @@ def group_status(members, texts):
     return problems
 
 
-def scan(changelog_dir=CHANGELOG_DIR):
+def archived_dead_twin_names(archive_dir=ARCHIVE_DIR):
+    """eq/changelog/<name> filenames already retired once as a dead twin.
+
+    This is the resurrection guard. field.md was archived 2026-08-17
+    (superseded_by: eq-field.md) then recreated from scratch 2026-08-19 by a
+    session that never checked archive/ first -- and silently collected 5
+    real entries over 2 days before anything caught it, because with
+    eq-field.md unchanged throughout, ordinary slug-grouping below only
+    fires once BOTH files coexist. That happened to be immediate here since
+    the live sibling never went away, but is not guaranteed in general: a
+    solo resurrection with no live sibling under its slug reads as an
+    innocent "group of one" and scan() would skip it. This makes recreating
+    an explicitly-retired name fail self-explanation on its own, sibling or
+    not -- same rule, wider trigger.
+    """
+    if not os.path.isdir(archive_dir):
+        return set()
+    names = set()
+    for f in os.listdir(archive_dir):
+        m = DEAD_TWIN_RE.match(f)
+        if m:
+            names.add(m.group(1) + ".md")
+    return names
+
+
+def scan(changelog_dir=CHANGELOG_DIR, archive_dir=ARCHIVE_DIR):
     """Returns (groups, problems). groups: {slug: [filenames]}. problems: [str]."""
     if not os.path.isdir(changelog_dir):
         return {}, [f"{changelog_dir} not found"]
@@ -174,9 +207,15 @@ def scan(changelog_dir=CHANGELOG_DIR):
     for f in files:
         groups.setdefault(slug(f), []).append(f)
 
+    archived = archived_dead_twin_names(archive_dir)
+
     problems = []
     for s, members in sorted(groups.items()):
-        if len(members) < 2:
+        # A group of one is fine -- UNLESS its sole file's exact name was
+        # already archived once as a dead twin. That is not "no duplicate
+        # exists", it is "the duplicate was resolved once and someone undid
+        # it" -- see archived_dead_twin_names().
+        if len(members) < 2 and not any(m in archived for m in members):
             continue
         texts = {}
         for fn in members:
@@ -192,10 +231,16 @@ def main():
         sys.stdout.reconfigure(encoding="utf-8")
 
     groups, problems = scan()
-    dup_groups = {s: m for s, m in groups.items() if len(m) > 1}
+    # len > 1 catches an ordinary duplicate; the OR catches a solo file
+    # flagged only because its exact name was archived before (resurrection)
+    # -- same "s in p" prefix check main() already uses for the flag below.
+    dup_groups = {
+        s: m for s, m in groups.items()
+        if len(m) > 1 or any(s in p for p in problems)
+    }
 
     print("--- Changelog duplicate scan ---\n")
-    print(f"  {len(groups)} product(s), {len(dup_groups)} with more than one file\n")
+    print(f"  {len(groups)} product(s), {len(dup_groups)} flagged for review (duplicate or resurrected-after-archival)\n")
     for s, members in sorted(dup_groups.items()):
         flag = "FAIL" if any(s in p for p in problems) else "ok  "
         print(f"  {flag}  {s:<10} {members}")
