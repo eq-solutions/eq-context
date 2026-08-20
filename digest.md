@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-20 19:35 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-20 19:48 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-20 19:24 UTC → 2026-08-20 19:35 UTC)
+## Since last refresh (2026-08-20 19:35 UTC → 2026-08-20 19:48 UTC)
 
-- Merged: eq-shell [#1491](https://github.com/eq-solutions/eq-shell/pull/1491) fix(labour-hire): batch cleanup deletes staging docs before 
-- Merged: eq-shell [#1489](https://github.com/eq-solutions/eq-shell/pull/1489) feat(labour-hire): drag-and-drop for the batch intake file p
-- Merged: eq-shell [#1488](https://github.com/eq-solutions/eq-shell/pull/1488) fix(labour-hire): staging-object cleanup is fire-and-forget,
-- Merged: eq-shell [#1486](https://github.com/eq-solutions/eq-shell/pull/1486) feat(labour-hire): batch intake — group upload for admin and
-- Merged: eq-shell [#1485](https://github.com/eq-solutions/eq-shell/pull/1485) feat(quotes): Excel labour/materials breakdown import + Cate
-- Merged: eq-shell [#1482](https://github.com/eq-solutions/eq-shell/pull/1482) fix(crm): revoke authenticated INSERT/DELETE on contact_cust
-- Merged: eq-shell [#1478](https://github.com/eq-solutions/eq-shell/pull/1478) fix(documents): add missing origin guard to document-version
-- Merged: eq-shell [#1477](https://github.com/eq-solutions/eq-shell/pull/1477) feat(documents): signer picker sources canonical staff, not 
+- Merged: eq-shell [#1507](https://github.com/eq-solutions/eq-shell/pull/1507) test(quotes): accuracy harness for the subcontractor PDF imp
+- Merged: eq-shell [#1490](https://github.com/eq-solutions/eq-shell/pull/1490) fix(labour-hire): employment_type never protected from Cards
+- Merged: eq-shell [#1487](https://github.com/eq-solutions/eq-shell/pull/1487) fix(labour-hire): zip-slip check false-positives on every en
+- Merged: eq-shell [#1484](https://github.com/eq-solutions/eq-shell/pull/1484) fix(documents): 0253 inserted reminder_count mid-view, PG re
+- Merged: eq-shell [#1483](https://github.com/eq-solutions/eq-shell/pull/1483) fix(routing): swallow rejected hover-prefetch of a lazy rout
+- Merged: eq-shell [#1481](https://github.com/eq-solutions/eq-shell/pull/1481) fix(documents): reminder cron respects due_at, backs off on 
+- Merged: eq-shell [#1480](https://github.com/eq-solutions/eq-shell/pull/1480) feat(labour-hire): partner-agency self-service candidate int
+- Merged: eq-shell [#1479](https://github.com/eq-solutions/eq-shell/pull/1479) feat(customers): cross-customer contacts in EQ Ops + bottom 
 
 ## ⚠ Needs you (9)
 
@@ -57,7 +57,7 @@ _…and 176 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 1 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 2 | 0d |
-| eq-field | ✓ success | 0d ago | 0 | — |
+| eq-field | ✓ success | 0d ago | 1 | 0d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 2d ago | 0 | — |
 
@@ -78,6 +78,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-20 | eq-shell | [#1507](https://github.com/eq-solutions/eq-shell/pull/1507) test(quotes): accuracy harness for the subcontractor PDF import |
 | 2026-08-20 | eq-shell | [#1506](https://github.com/eq-solutions/eq-shell/pull/1506) fix(nav): HubLayout sidebar never enforced hideForTier for trial  |
 | 2026-08-20 | eq-shell | [#1505](https://github.com/eq-solutions/eq-shell/pull/1505) feat(labour-hire): crop preview in review modal + review-all queu |
 | 2026-08-20 | eq-shell | [#1504](https://github.com/eq-solutions/eq-shell/pull/1504) fix(quotes): clear 6 react-hooks lint errors in the create-form/d |
@@ -92,7 +93,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-20 | eq-shell | [#1495](https://github.com/eq-solutions/eq-shell/pull/1495) chore: remove eq-shell's dead duplicate of workers-canonical-sync |
 | 2026-08-20 | eq-shell | [#1494](https://github.com/eq-solutions/eq-shell/pull/1494) fix(labour-hire): batch flow never captured an employer name; spi |
 | 2026-08-20 | eq-shell | [#1493](https://github.com/eq-solutions/eq-shell/pull/1493) fix(quotes): clarify client-RFQ vs supplier-quote PDF button labe |
-| 2026-08-20 | eq-shell | [#1492](https://github.com/eq-solutions/eq-shell/pull/1492) feat(quotes): drag-and-drop + one import button + per-row section |
 _Showing 15 of 124 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -100,7 +100,7 @@ _Showing 15 of 124 · full record in [sessions/](sessions/)_
 - **eq-shell** (232 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (53 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (118 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
-- **eq-solves-service** (90 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
+- **eq-solves-service** (92 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
 - **eq-solves-intake** (17 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
 - **eq-ui** (2 open) · [eq/pending/eq-ui.md](eq/pending/eq-ui.md)
@@ -132,7 +132,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | [eq-shell](eq/pending/eq-shell.md) | 1463 | 174 / 61 | 160 | 39 |
 | [eq-cards](eq/pending/eq-cards.md) | 396 | 40 / 13 | 41 | 3 |
 | [eq-field](eq/pending/eq-field.md) | 771 | 94 / 26 | 43 | 12 |
-| [eq-solves-service](eq/pending/eq-solves-service.md) | 598 | 68 / 25 | 69 | 7 |
+| [eq-solves-service](eq/pending/eq-solves-service.md) | 605 | 69 / 25 | 72 | 7 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 152 | 13 / 6 | 5 | 14 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
 | [eq-ui](eq/pending/eq-ui.md) | 29 | 2 / 0 | 2 | 0 |
@@ -200,4 +200,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-20 19:35 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-20 19:48 UTC._
