@@ -65,7 +65,7 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
-- #1497 feat(quotes): Jobs-page "From supplier file" button now takes Excel too
+- #1498 fix(drift): CHECK 6 widen schema scan to service/app_data (SEC-13)
 
 ---
 
