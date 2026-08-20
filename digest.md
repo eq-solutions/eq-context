@@ -8,32 +8,32 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-20 20:11 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-20 20:46 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-20 19:48 UTC → 2026-08-20 20:11 UTC)
+## Since last refresh (2026-08-20 20:11 UTC → 2026-08-20 20:46 UTC)
 
-- Merged: eq-shell [#1508](https://github.com/eq-solutions/eq-shell/pull/1508) fix(nav): 4 admin entry points show links their destination 
-- Merged: eq-shell [#1492](https://github.com/eq-solutions/eq-shell/pull/1492) feat(quotes): drag-and-drop + one import button + per-row se
-- Merged: eq-shell [#1491](https://github.com/eq-solutions/eq-shell/pull/1491) fix(labour-hire): batch cleanup deletes staging docs before 
-- Merged: eq-shell [#1489](https://github.com/eq-solutions/eq-shell/pull/1489) feat(labour-hire): drag-and-drop for the batch intake file p
-- Merged: eq-shell [#1488](https://github.com/eq-solutions/eq-shell/pull/1488) fix(labour-hire): staging-object cleanup is fire-and-forget,
-- Merged: eq-shell [#1486](https://github.com/eq-solutions/eq-shell/pull/1486) feat(labour-hire): batch intake — group upload for admin and
-- Merged: eq-shell [#1485](https://github.com/eq-solutions/eq-shell/pull/1485) feat(quotes): Excel labour/materials breakdown import + Cate
-- Merged: eq-shell [#1482](https://github.com/eq-solutions/eq-shell/pull/1482) fix(crm): revoke authenticated INSERT/DELETE on contact_cust
+- Merged: eq-shell [#1493](https://github.com/eq-solutions/eq-shell/pull/1493) fix(quotes): clarify client-RFQ vs supplier-quote PDF button
+- Merged: eq-shell [#1490](https://github.com/eq-solutions/eq-shell/pull/1490) fix(labour-hire): employment_type never protected from Cards
+- Merged: eq-shell [#1487](https://github.com/eq-solutions/eq-shell/pull/1487) fix(labour-hire): zip-slip check false-positives on every en
+- Merged: eq-shell [#1484](https://github.com/eq-solutions/eq-shell/pull/1484) fix(documents): 0253 inserted reminder_count mid-view, PG re
+- Merged: eq-shell [#1483](https://github.com/eq-solutions/eq-shell/pull/1483) fix(routing): swallow rejected hover-prefetch of a lazy rout
+- Merged: eq-shell [#1481](https://github.com/eq-solutions/eq-shell/pull/1481) fix(documents): reminder cron respects due_at, backs off on 
+- Merged: eq-shell [#1480](https://github.com/eq-solutions/eq-shell/pull/1480) feat(labour-hire): partner-agency self-service candidate int
+- Merged: eq-shell [#1478](https://github.com/eq-solutions/eq-shell/pull/1478) fix(documents): add missing origin guard to document-version
 
 ## ⚠ Needs you (9)
 
 - 🔴 **Sentry new error** — `eq-shell` [TypeError: Failed to fetch dynamically imported module: http](https://eq-solutions.sentry.io/issues/141714696/)
 - 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
-- 🔴 **Open security finding** — SEC-30 (P0 — live, unauthenticated) — `public.app_config` on zaap grants `anon` SELECT (`USING (true)`) on `manager_pa · [security-register.md](ops/security-register.md)
+- 🔴 **Open security finding** — SEC-30 (P0 — live, unauthenticated, confirmed on BOTH tenant planes) — `public.app_config` grants unconditional SELECT (`qual=true`) to `anon` (zaap: p · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-31 (P1) — `public.organisations` on jvkn — any authenticated user, any tenant, reads every · [security-register.md](ops/security-register.md)
-- 🔴 **Open security finding** — SEC-32 (P1) — `public.organisations` on zaap (a distinct table from SEC-31 — different project · [security-register.md](ops/security-register.md)
+- 🔴 **Open security finding** — SEC-32 (P1, confirmed on BOTH tenant planes) — `public.organisations` — `anon` reads the full tenant registry. zaap: `id`/`slug · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-33 (P1) — `app_data.staff` on zaap — any authenticated tenant member (no role required) ca · [security-register.md](ops/security-register.md)
 - 🔴 **Guard bypass? rung 4** — F12: Side-clone reconciliation blind-overwrote a concurrent session's already-pushed shared-fil · possibly recurred in [2026-08-21.md](sessions/2026-08-21.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-08-19.md](sessions/2026-08-19.md) · [failures.md](system/failures.md)
 - 🟠 **Sentry new error** — `eq-shell` [EQ Field handoff auto-recovery (timeout)](https://eq-solutions.sentry.io/issues/141463602/)
 
-## 🙋 Waiting on you (188)
+## 🙋 Waiting on you (189)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
@@ -49,13 +49,13 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **Not yet seen working on Royce's own screen** — confirmed the code is correct and the production build deployed clean, but couldn't click through it personally (no login for this environment). Worth two minutes next time Royce is in Staff. _(added 2026-08-17)_
 - **eq-shell** · **Two adjacent staff-approval screens require different levels of permission to do very similar things** — one needs a manager, another needs only a much more junior permission to view/act on the same underlying approval data. Doesn't look deliberate. Needs your call on whether they should match. _(added 2026-08-16)_
 - **eq-shell** · **Quote records (create/edit/delete) were deliberately left open to everyone** — Royce's call, not a gap. Worth a second look later if quote data starts needing tighter control. _(added 2026-08-15)_
-_…and 176 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 177 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 0 | — |
+| eq-shell | ✓ success | 0d ago | 2 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 2 | 0d |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
@@ -66,7 +66,7 @@ _…and 176 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | Project | Error | Events | Last seen |
 |---------|-------|--------|-----------|
 | eq-shell | [TypeError: Failed to fetch dynamically imported module: https://core.eq.solution](https://eq-solutions.sentry.io/issues/141714696/) | 31 | 2026-08-20 |
-| eq-shell | [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/) | 3 | 2026-08-20 |
+| eq-shell | [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/) | 4 | 2026-08-20 |
 | eq-shell | [EQ Field handoff auto-recovery (timeout)](https://eq-solutions.sentry.io/issues/141463602/) | 2 | 2026-08-20 |
 | eq-shell | [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/) | 2 | 2026-08-19 |
 | eq-shell | [Degraded UI Performance](https://eq-solutions.sentry.io/issues/141127922/) | 2 | 2026-08-18 |
@@ -97,9 +97,9 @@ _Showing 15 of 124 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **eq-shell** (232 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-shell** (233 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (53 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
-- **eq-field** (118 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
+- **eq-field** (119 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (92 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
 - **eq-solves-intake** (17 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
@@ -129,7 +129,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1463 | 174 / 61 | 160 | 39 |
+| [eq-shell](eq/pending/eq-shell.md) | 1469 | 175 / 61 | 160 | 39 |
 | [eq-cards](eq/pending/eq-cards.md) | 396 | 40 / 13 | 41 | 3 |
 | [eq-field](eq/pending/eq-field.md) | 771 | 94 / 26 | 43 | 12 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 605 | 69 / 25 | 72 | 7 |
@@ -200,4 +200,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-20 20:11 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-20 20:46 UTC._
