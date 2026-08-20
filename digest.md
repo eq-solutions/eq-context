@@ -1,34 +1,33 @@
 ---
 title: EQ Suite — Health Digest
 owner: Royce Milmlow
-last_updated: 2026-08-19
+last_updated: 2026-08-20
 scope: Push-style 'what needs your attention' feed across the EQ suite. Regenerated on merge (repository_dispatch: suite-state-changed) and nightly. Full snapshot in suite-state.md.
 read_priority: high
 status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-19 23:41 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-20 00:05 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-19 23:05 UTC → 2026-08-19 23:41 UTC)
+## Since last refresh (2026-08-19 23:41 UTC → 2026-08-20 00:05 UTC)
 
-- Merged: eq-shell [#1468](https://github.com/eq-solutions/eq-shell/pull/1468) chore(nav): remove 2 more orphaned pages (Field roster + She
-- Merged: eq-shell [#1456](https://github.com/eq-solutions/eq-shell/pull/1456) fix(home): WorkerHome gets the Service tile + tenant logo it
-- Merged: eq-shell [#1455](https://github.com/eq-solutions/eq-shell/pull/1455) fix(staff): consistent column filters + Status as toggleable
-- Merged: eq-shell [#1452](https://github.com/eq-solutions/eq-shell/pull/1452) fix(cards): allow web-share in the Cards iframe so iOS Save 
-- Merged: eq-shell [#1448](https://github.com/eq-solutions/eq-shell/pull/1448) fix(cards): write public.workers.role on every claim path
-- Merged: eq-shell [#1447](https://github.com/eq-solutions/eq-shell/pull/1447) feat(cards): notify org admins on QR/join-code signups
-- Merged: eq-shell [#1446](https://github.com/eq-solutions/eq-shell/pull/1446) fix(entity-patch): mirror staff email/phone corrections to c
-- Merged: eq-shell [#1445](https://github.com/eq-solutions/eq-shell/pull/1445) chore(intake): auto re-vendor eq-intake/eq-platform
+- Merged: eq-shell [#1472](https://github.com/eq-solutions/eq-shell/pull/1472) feat(staff): show who hasn't signed in to Shell yet, with a 
+- Merged: eq-shell [#1454](https://github.com/eq-solutions/eq-shell/pull/1454) fix(staff): drop duplicate email from Staff table NAME colum
+- Merged: eq-shell [#1451](https://github.com/eq-solutions/eq-shell/pull/1451) perf(nav): cache staff sub-page queries, prefetch lazy route
+- Merged: eq-shell [#1450](https://github.com/eq-solutions/eq-shell/pull/1450) perf(nav): intercept same-origin anchor clicks so sidebar na
+- Merged: eq-shell [#1449](https://github.com/eq-solutions/eq-shell/pull/1449) perf(entity-browser): cache table-row queries for 30s
+- Merged: eq-shell [#1444](https://github.com/eq-solutions/eq-shell/pull/1444) fix(field): DROP+CREATE field_people view, CREATE OR REPLACE
+- Merged: eq-shell [#1443](https://github.com/eq-solutions/eq-shell/pull/1443) fix(field): add 7 missing columns to zaap's staff table, unb
+- Merged: eq-shell [#1442](https://github.com/eq-solutions/eq-shell/pull/1442) fix(shell-join-tenant): match unlinked worker by email when 
+- ✅ Needs you: 6 → 4
 
-## ⚠ Needs you (6)
+## ⚠ Needs you (4)
 
 - 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
 - 🔴 **Cron failing** — `index-drift.yml` 2 consecutive scheduled run(s) failed, last success 2026-08-17 · [failures.md](system/failures.md) F11
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-08-19.md](sessions/2026-08-19.md) · [failures.md](system/failures.md)
-- 🟠 **Sentry new error** — `eq-shell` [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/)
-- 🟠 **Sentry new error** — `eq-shell` [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/)
-- 🟠 **Sentry new error** — `eq-shell` [Degraded UI Performance](https://eq-solutions.sentry.io/issues/141127922/)
+- 🟠 **Sentry new error** — `eq-shell` [TypeError: Failed to fetch dynamically imported module: http](https://eq-solutions.sentry.io/issues/141714696/)
 
 ## 🙋 Waiting on you (177)
 
@@ -52,7 +51,7 @@ _…and 165 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 1 | 0d |
+| eq-shell | ✓ success | 0d ago | 2 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 0 | — |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
@@ -62,6 +61,7 @@ _…and 165 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Project | Error | Events | Last seen |
 |---------|-------|--------|-----------|
+| eq-shell | [TypeError: Failed to fetch dynamically imported module: https://core.eq.solution](https://eq-solutions.sentry.io/issues/141714696/) | 7 | 2026-08-20 |
 | eq-shell | [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/) | 2 | 2026-08-19 |
 | eq-shell | [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/) | 2 | 2026-08-19 |
 | eq-shell | [Degraded UI Performance](https://eq-solutions.sentry.io/issues/141127922/) | 2 | 2026-08-18 |
@@ -74,6 +74,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-20 | eq-shell | [#1472](https://github.com/eq-solutions/eq-shell/pull/1472) feat(staff): show who hasn't signed in to Shell yet, with a filte |
 | 2026-08-19 | eq-shell | [#1468](https://github.com/eq-solutions/eq-shell/pull/1468) chore(nav): remove 2 more orphaned pages (Field roster + Shell li |
 | 2026-08-19 | eq-shell | [#1466](https://github.com/eq-solutions/eq-shell/pull/1466) chore(deps): bump @eq-solutions/ui to v1.16.1 |
 | 2026-08-19 | eq-shell | [#1469](https://github.com/eq-solutions/eq-shell/pull/1469) chore(drift): allowlist eq_claim_connection_notification — source |
@@ -88,7 +89,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-19 | eq-shell | [#1458](https://github.com/eq-solutions/eq-shell/pull/1458) security(staff): consolidate staff_conversations RLS to one creat |
 | 2026-08-19 | eq-shell | [#1457](https://github.com/eq-solutions/eq-shell/pull/1457) security(staff): restrict staff_conversations RLS to the creator |
 | 2026-08-19 | eq-solves-service | [#775](https://github.com/eq-solutions/eq-service/pull/775) feat(contract-scope): timing gate on the commercial-sheet importe |
-| 2026-08-19 | eq-solves-service | [#774](https://github.com/eq-solutions/eq-service/pull/774) fix(testing): surface Supabase query errors instead of rendering  |
 _Showing 15 of 123 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -136,7 +136,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | [eq-context](eq/pending/eq-context.md) | 206 | 22 / 2 | 19 | 5 |
 | [cross-repo](eq/pending/cross-repo.md) | 948 | 143 / 42 | 20 | 30 |
 | [sks](eq/pending/sks.md) | 53 | 3 / 5 | 0 | 6 |
-| [SKS](sks/pending.md) | 450 | 84 / 9 | 2 | 18 |
+| [SKS](sks/pending.md) | 450 | 84 / 9 | 2 | 21 |
 | [SKS active](sks/active.md) | 109 | 0 / 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 460 | 33 / 4 | 0 | 1 |
 
@@ -159,7 +159,7 @@ _Open items sitting under a section header this old or older — not necessarily
 - **eq-shell** (2026-07-02) · **Fix `AdminWorkerQR` QR-colour crash** — Sentry `Error: Invalid hex color: var(--eq-ink)` (eq-shell, 4 events 2026-07-02) is the `qrcode` lib being passed `color.dark: 'var(--eq-ink)'` (a CSS var, not hex) in `AdminWorkerQR.tsx`. More frequent now #594 made that page the primary "Add workers" landing. Fix = pass a real hex (e.g. `#1A1A2E`). _(added 2026-07-02)_
 - **eq-shell** (2026-07-02) · **EQ Cards address autocomplete = greenfield** — Cards worker address entry (`profile_edit_screen.dart` + `profile_fill_from_licence_screen.dart`) is manual text + static state dropdown; NO Places, no package, no key. "Should already be done" = it isn't. Flutter web, so the Shell JS pattern doesn't port directly. _(added 2026-07-02)_
 - **eq-shell** (2026-07-02) · **Full governed apply-pipeline for jvkn control-plane migrations** — the guardrails above (dup-guard + runbook) landed, but a One-Pipe-style governed/automated apply for eq-cards→jvkn is still not built. Architectural decision. _(added 2026-07-02, needs Royce's call)_
-_…and 121 more — see each file's Queue health row above._
+_…and 124 more — see each file's Queue health row above._
 
 ## Possible duplicate pending items (unconfirmed)
 
@@ -196,4 +196,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-19 23:41 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-20 00:05 UTC._
