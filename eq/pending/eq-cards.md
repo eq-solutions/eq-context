@@ -31,12 +31,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-cards: checked whether signup is actually easy, found and fixed a real invite-drop bug, confirmed a reported repeating banner was already dead, confirmed Field's missing-licence gap is deliberate not an oversight (2026-08-19)
-
-- [ ] **eq-shell PR #1461 still open** — paper-trail record for the Field roster-badge parity migration; the feature itself is fully live (eq-field PR #734 merged+deployed, jvkn RPCs live since 2026-08-19). Merging #1461 is functionally inert but is still an eq-shell merge, which auto-deploys — needs your explicit go, not assumed. _(added 2026-08-19)_
-
----
-
 ## eq-cards: "You're ready for site" Wallet banner kept reappearing through the Shell embed — fixed, live (2026-08-19)
 *Royce uploaded a screenshot of the once-ever success banner reappearing on every Wallet visit; confirmed it only happened through Shell (`core.eq.solutions/sks/cards`), never standalone on cards.eq.solutions.*
 

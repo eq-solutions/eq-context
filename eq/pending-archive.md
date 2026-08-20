@@ -16,6 +16,16 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-cards: checked whether signup is actually easy, found and fixed a real invite-drop bug, confirmed a reported repeating banner was already dead, confirmed Field's missing-licence gap is deliberate not an oversight (2026-08-19) (fully closed, no open items remain)
+*Royce: "we are getting people to sign up more and more... keen to see if its easy for them" — plus two specific reports: a "Welcome to SKS" message that "keeps coming up", and workers seeming to reach Field without entering any licences.*
+
+- [x] **The repeating "Welcome to SKS" toast was already dead.** Traced to the "Connected to $tenant" SnackBar removed the day before (eq-cards PR #275) — confirmed live, not just merged.
+- [x] **Found a real gap in the signup path, fixed, merged, deployed live.** A worker who opens an employer's invite link and then has the app fully reload before finishing their sign-in code lost track of that invite. eq-cards [PR #280](https://github.com/eq-solutions/eq-cards/pull/280), merged, deployed, verified live via commit-ancestry match.
+- [x] **Checked why workers can reach Field without any licences on file — deliberate, not a bug.** eq-shell shipped a "show what's missing" view for exactly this on 2026-07-10 (Training Matrix, soft-flag only). The one real inconsistency found — Field's own roster page not flagging a zero-licence worker the way Shell's Training Matrix does — was closed same day: eq-field [PR #734](https://github.com/eq-solutions/eq-field/pull/734) (the badge itself) and eq-shell [PR #1461](https://github.com/eq-solutions/eq-shell/pull/1461) (the RPC paper-trail) both merged and confirmed live via commit-ancestry match.
+- [x] **Substrate correction, 2026-08-20:** #1461 was actually merged by Royce directly on 2026-08-19 at 09:24 UTC — confirmed live the same day. This file kept saying "still open" across two later session closes anyway, because the stale line sat in a section nobody was touching and got carried forward unread rather than re-verified. No live gap ever existed; the gap was in this document, not in production. Corrected here rather than left to recur a third time.
+
+---
+
 ## eq-shell + eq-field: Document Sign-off Audit follow-through — doc_type guard shipped on both write paths, Brian's-vanished-rows mystery resolved, and the last 2 "tidy the edges" items closed (2026-08-20) (fully closed, no open items remain — this closes the entire 2026-08-19 audit)
 *Continuation of the 2026-08-19 audit. Rotated wholesale from `eq/pending/cross-repo.md` — the section had 2 open items as of the first 2026-08-20 close; both closed by the end of the same day.*
 
