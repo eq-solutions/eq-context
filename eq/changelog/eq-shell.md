@@ -9,6 +9,12 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-20 (PR #1479 MERGED + dispatched — cross-customer contacts reach EQ Ops, dropdown sort fixed, bottom bulk bar)
+- `eq_list_contacts_for_customer`/`eq_list_contacts_for_site` now also read `app_data.contact_customer_links` — a contact linked to a second customer via the Customers page "Link" button now shows up in that customer's EQ Ops New Quote contact picker too (previously only the primary `contacts.customer_id` was read). Both RPCs also switched `ORDER BY` from surname-primary to first-name-primary, matching the "First Last" row display — the dropdown was already alphabetical by surname, it just read as wrong because the display order didn't match the sort key.
+- Customers page contacts list gets a sticky bottom bar (Archive + Delete) so bulk actions work without scrolling back to the section header on a long list; wires bulk-archive UI up to the `archive_contact` action that already existed server-side.
+- Migration `0253`, dispatched via `tenant-migrate.yml` (One Pipe, run [32332953003](https://github.com/eq-solutions/eq-shell/actions/runs/32332953003)) on Royce's explicit go-ahead — applied to both `eq` (zaap) and `sks` (ehow), confirmed live by direct RPC-definition query post-dispatch. eq-shell [PR #1479](https://github.com/eq-solutions/eq-shell/pull/1479), squash-merged (`33a9f892`).
+- Live-tested by Royce within minutes of deploy: linked contact Matt Wagner (Metronode NSW) to Equinix Australia Pty Ltd, confirmed correct in the database. A follow-up sweep of the other 4 Equinix-named customers for bad links found one unrelated pre-existing stale link (predates this change, logged in `eq/pending/eq-shell.md`), nothing wrong with this feature.
+
 ## 2026-08-20 (PR #1478 MERGED + PR #1481 MERGED — Document Sign-off Audit fully closed)
 - `document-version-upload-init.ts` gained the `checkShellOrigin` guard its 3 sibling upload endpoints already had (missed at ship time, 2026-08-13). eq-shell [PR #1478](https://github.com/eq-solutions/eq-shell/pull/1478), squash-merged (`2b269ca3`).
 - Reminder cron now respects `due_at` when a signoff has one (onboarding auto-push sets it; a document due in 60 days no longer gets the same first nudge as one due tomorrow), and backs off to a 7-day cadence on delivery failure instead of retrying every day forever. `reminder_count`/`last_reminded_at` (migration `0253`) now show in the Register tab and sign-off evidence modal. eq-shell [PR #1481](https://github.com/eq-solutions/eq-shell/pull/1481), merged (`1d8a2332`).
