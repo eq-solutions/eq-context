@@ -60,7 +60,11 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-20)
 
-_No open PRs_
+**eq-field:**
+- #742 v3.5.533 — Sidebar footer: hide Logout when Shell-embedded
+
+**eq-service:**
+- #782 feat(offline): service worker + read-cache (Tier B, first slice)
 
 ---
 
