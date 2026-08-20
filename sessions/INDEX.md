@@ -1,8 +1,9 @@
 # Session Index
-_132 logs · reverse-chronological · auto-generated_
+_133 logs · reverse-chronological · auto-generated_
 
 | Date | Session |
 |------|---------|
+| 2026-08-21 | [eq-service worktree/branch/stash graveyard cleared: 8 branches, 23 folders, 3 stashes, all confirmed already-shipped before removal](2026-08-21.md) |
 | 2026-08-20 | [Staff page load-time root-caused: staff-bootstrap missing from the keep-warm ping](2026-08-20.md) |
 | 2026-08-19 | [Cards iframe Web Share fix (eq-shell) + Wallet banner repeat fix (eq-cards)](2026-08-19.md) |
 | 2026-08-18 | [Fixed a real bug behind a suspected-hardcoded-path guard.js gate report](2026-08-18.md) |

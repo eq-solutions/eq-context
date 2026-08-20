@@ -8,24 +8,24 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-20 17:47 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-20 17:55 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-20 17:42 UTC → 2026-08-20 17:47 UTC)
+## Since last refresh (2026-08-20 17:47 UTC → 2026-08-20 17:55 UTC)
 
-- Merged: eq-shell [#1482](https://github.com/eq-solutions/eq-shell/pull/1482) fix(crm): revoke authenticated INSERT/DELETE on contact_cust
-- Merged: eq-shell [#1478](https://github.com/eq-solutions/eq-shell/pull/1478) fix(documents): add missing origin guard to document-version
-- Merged: eq-shell [#1477](https://github.com/eq-solutions/eq-shell/pull/1477) feat(documents): signer picker sources canonical staff, not 
-- Merged: eq-shell [#1475](https://github.com/eq-solutions/eq-shell/pull/1475) fix(documents): reject a direct push against a no-signoff do
-- Merged: eq-shell [#1474](https://github.com/eq-solutions/eq-shell/pull/1474) fix(documents): stop onboarding auto-push from targeting ref
-- Merged: eq-shell [#1472](https://github.com/eq-solutions/eq-shell/pull/1472) feat(staff): show who hasn't signed in to Shell yet, with a 
-- Merged: eq-shell [#1471](https://github.com/eq-solutions/eq-shell/pull/1471) feat(staff): funnel filters on Contact, Status, Birthday
-- Merged: eq-shell [#1469](https://github.com/eq-solutions/eq-shell/pull/1469) chore(drift): allowlist eq_claim_connection_notification — s
+- Merged: eq-shell [#1480](https://github.com/eq-solutions/eq-shell/pull/1480) feat(labour-hire): partner-agency self-service candidate int
+- Merged: eq-shell [#1479](https://github.com/eq-solutions/eq-shell/pull/1479) feat(customers): cross-customer contacts in EQ Ops + bottom 
+- Merged: eq-shell [#1476](https://github.com/eq-solutions/eq-shell/pull/1476) chore(deps): bump @eq-solutions/ui to v1.16.4
+- Merged: eq-shell [#1473](https://github.com/eq-solutions/eq-shell/pull/1473) chore(nav): remove orphaned Storage page
+- Merged: eq-shell [#1470](https://github.com/eq-solutions/eq-shell/pull/1470) fix(documents): revoke authenticated grants on documents/doc
+- Merged: eq-shell [#1468](https://github.com/eq-solutions/eq-shell/pull/1468) chore(nav): remove 2 more orphaned pages (Field roster + She
+- Merged: eq-shell [#1466](https://github.com/eq-solutions/eq-shell/pull/1466) chore(deps): bump @eq-solutions/ui to v1.16.1
+- Merged: eq-solves-service [#794](https://github.com/eq-solutions/eq-service/pull/794) fix(security): role-gate service.hard_delete_archived_entity
+- ✅ Needs you: 5 → 4
 
-## ⚠ Needs you (5)
+## ⚠ Needs you (4)
 
 - 🔴 **Sentry new error** — `eq-shell` [TypeError: Failed to fetch dynamically imported module: http](https://eq-solutions.sentry.io/issues/141714696/)
 - 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
-- 🔴 **Open security finding** — SEC-29 (P1 — OPEN, found 2026-08-20) — `service.hard_delete_archived_entity` (ehow) has no role/`eq_role` check — any a · [security-register.md](ops/security-register.md)
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-08-19.md](sessions/2026-08-19.md) · [failures.md](system/failures.md)
 - 🟠 **Sentry new error** — `eq-shell` [EQ Field handoff auto-recovery (timeout)](https://eq-solutions.sentry.io/issues/141463602/)
 
@@ -51,7 +51,7 @@ _…and 175 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 0 | — |
+| eq-shell | ✓ success | 0d ago | 1 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 2 | 0d |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
@@ -97,7 +97,7 @@ _Showing 15 of 124 · full record in [sessions/](sessions/)_
 - **eq-shell** (232 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (53 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (112 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
-- **eq-solves-service** (87 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
+- **eq-solves-service** (88 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
 - **eq-solves-intake** (17 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
 - **eq-ui** (2 open) · [eq/pending/eq-ui.md](eq/pending/eq-ui.md)
@@ -129,7 +129,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | [eq-shell](eq/pending/eq-shell.md) | 1470 | 174 / 62 | 163 | 39 |
 | [eq-cards](eq/pending/eq-cards.md) | 396 | 40 / 13 | 41 | 3 |
 | [eq-field](eq/pending/eq-field.md) | 746 | 90 / 25 | 34 | 12 |
-| [eq-solves-service](eq/pending/eq-solves-service.md) | 543 | 67 / 24 | 47 | 7 |
+| [eq-solves-service](eq/pending/eq-solves-service.md) | 559 | 69 / 24 | 52 | 7 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 152 | 13 / 6 | 5 | 14 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
 | [eq-ui](eq/pending/eq-ui.md) | 29 | 2 / 0 | 2 | 0 |
@@ -185,11 +185,11 @@ _Session logs mention a pattern matching a known failure below, dated after its 
 
 | Date | Session |
 |------|---------|
+| 2026-08-21 | [eq-service worktree/branch/stash graveyard cleared: 8 branches, 23 folders, 3 stashes, all confirmed already-shipped before removal](sessions/2026-08-21.md) |
 | 2026-08-20 | [Staff page load-time root-caused: staff-bootstrap missing from the keep-warm ping](sessions/2026-08-20.md) |
 | 2026-08-19 | [Cards iframe Web Share fix (eq-shell) + Wallet banner repeat fix (eq-cards)](sessions/2026-08-19.md) |
 | 2026-08-18 | [Fixed a real bug behind a suspected-hardcoded-path guard.js gate report](sessions/2026-08-18.md) |
 | 2026-08-17 | [Full Sentry sweep + Richard Brown's jvkn identity actually merged, silent PIN-reset lockout found and fixed](sessions/2026-08-17.md) |
-| 2026-08-16 | [built a personal task register for Royce (OneDrive), cross-checked it live twice, found and cleared a false alarm on eq-context's git state](sessions/2026-08-16.md) |
 _[sessions/](sessions/) · 5 shown_
 
 ## Substrate honesty
@@ -197,4 +197,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-20 17:47 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-20 17:55 UTC._
