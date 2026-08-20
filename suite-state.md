@@ -64,8 +64,8 @@ _If this file is >48h old, the cron is broken._
 - #739 v3.5.530 — Documents to Sign: ends the pilot for good
 
 **eq-shell:**
+- #1481 fix(documents): reminder cron respects due_at, backs off on delivery failure
 - #1480 feat(labour-hire): partner-agency self-service candidate intake via link
-- #1479 feat(customers): cross-customer contacts in EQ Ops + bottom bulk bar
 - #1478 fix(documents): add missing origin guard to document-version-upload-init
 
 ---
