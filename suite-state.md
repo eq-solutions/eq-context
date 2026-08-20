@@ -60,12 +60,18 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-20)
 
+**eq-cards:**
+- #286 feat(labour-hire): OCR returns a crop_bounds box per document
+
+**eq-field:**
+- #750 v3.5.540 — Roster compliance gate: missing-required badge + assignment hold point
+
 **eq-service:**
 - #797 fix(migrations): reconstruct the service.* base tables ehow moved by hand
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
-- #1501 fix(quotes): hoist Date.now() out of render to satisfy react-hooks/purity
+- #1504 fix(quotes): clear 6 react-hooks lint errors in the create-form/draft-banner effects
 
 ---
 
