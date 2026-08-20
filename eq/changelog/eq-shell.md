@@ -9,6 +9,14 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-20 (PR #1493 MERGED — clarified which PDF-import button does what)
+- Two PDF-import buttons read as the same thing but do different jobs: one auto-fills a new quote's header from a client's request document, the other starts a quote from a supplier's priced document. Relabeled "Import from PDF" → "Fill from client PDF" (New Quote form) and "From PDF" → "From supplier PDF" (Jobs page), plus matching tooltips, drag-drop overlay/error copy, and code comments. Copy-only, no behavior change. Follow-up to a `/decide` pass confirming client RFQs never arrive as spreadsheets, so no Excel support was warranted there. eq-shell [PR #1493](https://github.com/eq-solutions/eq-shell/pull/1493), squash-merged (`8cffe0bb`), confirmed live via exact Netlify `commit_ref` match.
+
+## 2026-08-20 (PR #1492 MERGED — one import button, drag-and-drop, per-row section picker)
+- Line Items card is now a drop target for Excel breakdowns and supplier PDFs/photos, auto-detected by file type — same pattern as the Jobs page's existing drop zone. The two separate click buttons ("Import from Excel" / "Import from PDF") are consolidated into one "Import file" button using the same detection.
+- The review screen's Section column is now a per-row dropdown (previously static text, shown only for Excel imports) — a parsed line can be routed to any of the 4 sections regardless of source. Pricing already keyed off each row's category dynamically, so no separate recalculation logic was needed.
+- eq-shell [PR #1492](https://github.com/eq-solutions/eq-shell/pull/1492), squash-merged (`0cc002d7`), confirmed live via exact Netlify `commit_ref` match.
+
 ## 2026-08-20 (PR #1490 MERGED + dispatched — employment_type no longer gets clobbered by the nightly Cards sync)
 - Root-caused Royce's report ("changed Ali Alsalman from labour hire to direct numerous times"): `workers-canonical-sync` re-derives `employment_type` from the worker's Cards-side role on every run, including the nightly reconcile cron, with no protection against a deliberate Shell correction — confirmed via `app_data.audit_log`, 3 revert cycles over two weeks, always by the same ~02:35 UTC job.
 - Fix: `employment_type_locked_by_shell` (migration 0255, mirrors the existing `email_locked_by_shell`/`phone_locked_by_shell` pattern from migration 0224), set by `entity-patch.ts` on a Staff-page edit. Migration dispatched live to both zaap and ehow before merge. eq-shell [PR #1490](https://github.com/eq-solutions/eq-shell/pull/1490), squash-merged (`495bc221`), confirmed live via Netlify deploy state.
