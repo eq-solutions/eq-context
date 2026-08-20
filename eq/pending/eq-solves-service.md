@@ -13,6 +13,19 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-solves-service: destructive-delete RPC missing a role check — found, fixed, verified live (2026-08-21)
+*Went looking for the next real, non-duplicate piece of work while the fleet's other obvious threads were already covered. Found `service.hard_delete_archived_entity` — the function behind the admin archive page's permanent-delete button — checked which tenant you belonged to but not what role you held: any signed-in team member, any role, could call it directly and permanently destroy an archived customer, site, asset, job plan, or maintenance check. The app's own "admin only" button was doing the right check; the database underneath it wasn't. Caught before duplicating work: another session had already found and fixed the same thing (PR #794) — confirmed that independently rather than building a second copy.*
+
+- [x] Verified the fix (migration `0226`) was safe before recommending dispatch: confirmed exactly one migration was actually pending — nothing else would ride along — and read the fix itself: it reads the live function definition at apply time, fails loudly with a full rollback if anything's off, and reuses the same technique already proven live elsewhere in this database.
+- [x] You approved the dispatch. Ran it, watched it succeed, then checked the database directly rather than trusting the green checkmark — confirmed live, not just merged: the role check is present, the admin-only grant is intact, and the general-access grant that should have been revoked actually was.
+- [x] Security register updated to reflect the closure, with the live verification recorded alongside it.
+- [x] Found in passing, spun off separately: the automated message this repo posts after a merge — the one pointing at the button to deploy a pending database update — claims clicking it "pauses for approval" first. It doesn't; it runs immediately. Fix already started in its own session.
+
+**Deferred:**
+- [ ] Tier C's `service.audit_logs` mystery (why on-site test entries never get an audit trail row) — the theory written into the merged Tier C scoping doc doesn't hold up under closer reading of the actual code: the mechanism it blamed is deliberate and demonstrably works fine elsewhere. Real cause still unknown. The fast way to actually answer it is one error-tracker query rather than more code reading, and that tool wasn't reachable this session. _(added 2026-08-21)_
+
+---
+
 ## eq-solves-service: added missing test coverage for the "just start tapping" check behaviour — merged, live (2026-08-21)
 *A maintenance check that hasn't been started yet doesn't reject a technician's first tap on pass/fail/N-A — it quietly starts the check on their behalf first, then records the result, so a tech who forgets to press "Start Check" isn't blocked. That behaviour already existed; nothing had ever tested that it actually works, or that it fails safely (no result saved, check left startable) if the auto-start itself fails. Direct ask, not self-discovered.*
 
