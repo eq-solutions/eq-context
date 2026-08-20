@@ -16,6 +16,27 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-ui: Table's "Show columns" popover ran past the bottom of the screen — root-caused, fixed, merged, live, click-tested (2026-08-20) (fully closed, no open items remain)
+*Royce, from a screenshot of eq-shell's Staff page: the "Show columns" dropdown gets cut off when the table's filtered to be smaller. Investigated rather than guessed — same session that had just added a 12th column to that same list.*
+
+- [x] **Root cause**: the popover is portalled to `document.body` (already solves an ancestor's `overflow-y:auto` clipping it) but had no cap on its own height. Its `top` is a fixed pixel offset below the trigger button, with nothing bounding how far the column list can extend below that — a short/filtered table, or just a long enough column list (now 12 for Staff), pushes it past the bottom of the viewport with no way to scroll to the rest.
+- [x] **Fix**: cap `maxHeight` to the space actually available below the button, `overflow-y: auto` on the popover — correct regardless of row count or column count, not just the specific case reported.
+- [x] Verified with a real install, not the local pre-commit hook (which silently no-ops without `node_modules` and was reporting a false blocking error on every edit) — `npm run typecheck` clean, `eslint` on the touched file clean (1 pre-existing unrelated warning). Confirmed the one typecheck failure seen along the way (`src/test-utils/axe.ts`, a pnpm/TS module-resolution quirk) is pre-existing on unmodified `origin/main`, not caused by this change.
+- [x] Changeset added (patch). eq-ui [PR #49](https://github.com/eq-solutions/eq-ui/pull/49), built in an isolated worktree (root checkout was occupied by another session earlier today) — squash-merged (`78334bcd`) on Royce's "merge #49".
+- [x] Changesets bot opened the automatic [PR #50](https://github.com/eq-solutions/eq-ui/pull/50) ("version packages") — merged on Royce's "merge #50", publishing `@eq-solutions/ui@1.16.4` and cutting the `v1.16.4` tag.
+- [x] eq-shell's pin bumped `v1.16.2` → `v1.16.4` (eq-shell [PR #1476](https://github.com/eq-solutions/eq-shell/pull/1476)), `tsc -b --force` clean, squash-merged on Royce's "merge #1476", confirmed live via exact Netlify `commit_ref` match against the newest ready production deploy.
+- [x] **Click-tested live for real** — not just asked Royce to check: drove his actual logged-in Chrome session (Claude in Chrome, per the standing "default browser only" rule) to `/sks/staff`, filtered to "Not signed in" (24 rows, reproducing the exact short-table scenario reported), opened Show columns. Full list — including Login — renders completely, nothing clipped. Confirmed the Login column itself too: correctly shows "Not signed in" per row, resolving the earlier "did the column even ship" question as a stale-tab non-issue.
+
+---
+
+## eq-shell: Staff's new "Show columns" dropdown gets cut off on a filtered table — root-caused, fixed, merged, live, click-tested (2026-08-20) (fully closed, no open items remain)
+*Fix landed on the eq-ui side — see this file's matching entry above (2026-08-20) for full root-cause + build detail. This entry is the eq-shell-side pointer, since that's where Royce reported it (Staff page, right after the Login column shipped).*
+
+- [x] eq-shell's `@eq-solutions/ui` pin bumped `v1.16.2` → `v1.16.4` (eq-shell [PR #1476](https://github.com/eq-solutions/eq-shell/pull/1476)), merged, confirmed live.
+- [x] Click-tested live on `/sks/staff` via Royce's real Chrome session: Login column renders correctly, Show columns dropdown no longer cut off when the table's filtered small.
+
+---
+
 ## eq-cards: duplicate "worker joined" emails root-caused and fixed, plus a related sync 500 found in the same investigation — both merged, deployed, live (2026-08-20) (fully closed, no open items remain)
 *Royce: "I received a double up email overnight from 0458 161 658 investigate." Traced to a real, live worker's SKS self-join the evening before.*
 

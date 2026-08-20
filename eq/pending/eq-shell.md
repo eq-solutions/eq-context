@@ -28,13 +28,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-shell: Staff's new "Show columns" dropdown gets cut off on a filtered table — root-caused, fix landed on the eq-ui side (2026-08-20)
-*Fix landed on the eq-ui side — see `eq/pending/eq-ui.md` (2026-08-20) for full root-cause + build detail. This entry is the eq-shell-side pointer, since that's where Royce reported it (Staff page, right after the Login column shipped).*
-
-- [ ] **eq-shell's `@eq-solutions/ui` pin needs bumping once eq-ui's fix ships a new version/tag** — currently pinned to `v1.16.1`; this repo's pin is a git-tag reference, not a semver range, so Renovate won't pick it up automatically. Manual bump, same as the last two `@eq-solutions/ui` version bumps this week. _(added 2026-08-20)_
-
----
-
 ## eq-shell: 2 more orphaned pages removed (Field roster + Shell licence OCR) — built, merged, confirmed live (2026-08-20)
 
 - [ ] **Storage browser (`/storage`) has zero nav link anywhere, confirmed still true** — its open-to-all-roles access is your own 2026-08-16 call. Asked what it's for: a generic empty per-tenant file bucket, nothing currently writes to it. Real open question whether it's worth keeping findable or retiring — no lean given either way. _(added 2026-08-20, needs your call)_

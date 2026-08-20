@@ -9,6 +9,12 @@ status: live
 
 # eq-ui changelog
 
+## 2026-08-20 (PR #49 MERGED + PR #50 MERGED, published v1.16.4 — Table's Show-columns popover no longer overflows the viewport)
+- Second, distinct fix to the same popover PR #44/#45 (2026-08-19, below) portalled the day before — that fix solved an ancestor's `overflow-y:auto` clipping it; this one caps the popover's own height so it can't run past the *viewport's* bottom edge either. Root cause: `top` was a fixed pixel offset below the trigger button with nothing bounding how far the column list (now 12 for Staff) could extend below that.
+- Fix: `maxHeight` computed from the space actually available below the trigger, `overflow-y: auto` on the popover — scrolls internally instead of overflowing, regardless of row or column count.
+- Squash-merged (`78334bcd`) on Royce's "merge #49"; the Changesets bot's automatic version-packages PR #50 merged right after on "merge #50", publishing `@eq-solutions/ui@1.16.4` and cutting the `v1.16.4` tag.
+- Consumed same session in eq-shell [PR #1476](https://github.com/eq-solutions/eq-shell/pull/1476) and click-tested live on `/sks/staff` via Royce's real Chrome session (filtered to a short table, Show columns confirmed fully visible and scrollable).
+
 ## 2026-08-19 (PR #44 MERGED, published v1.16.1 as PR #45 — Table columnToggle popover clipping fixed)
 - Root-caused from an eq-shell report (Staff table's "Show columns" dropdown cut off on a filtered view): the popover used `position: absolute` inside `Table`'s own scrolling wrapper, clipped by the ancestor's `overflow` whenever too few rows were below the trigger button to leave room for it.
 - Fixed by portalling the popover to `document.body` (`createPortal`) and positioning it from the trigger button's live `getBoundingClientRect()` instead of relying on normal document flow — `position: fixed`, `z-index` raised 40→500. Added a test asserting the portal target directly (`menu.parentElement === document.body`).

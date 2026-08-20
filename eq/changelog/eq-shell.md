@@ -9,6 +9,11 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-20 (PR #1476 MERGED — @eq-solutions/ui bumped to v1.16.4)
+- Picks up eq-ui [PR #49](https://github.com/eq-solutions/eq-ui/pull/49)/[#50](https://github.com/eq-solutions/eq-ui/pull/50): Table's "Show columns" popover no longer runs past the bottom of the viewport on a short/filtered table — the bug Royce reported right after the Staff page's Login column shipped.
+- Pin `v1.16.2` → `v1.16.4`, `pnpm-lock.yaml` refreshed (diff scoped entirely to the `@eq-solutions/ui` entry). `tsc -b --force` clean. Squash-merged on Royce's "merge #1476", confirmed live via exact Netlify `commit_ref` match.
+- Click-tested live via Royce's real Chrome session (Claude in Chrome): `/sks/staff` filtered to "Not signed in" (24 rows) reproduces the exact short-table scenario originally reported — Show columns now renders the full list, nothing clipped. Also confirmed the Login column itself was already correct (a stale browser tab had been the earlier "did it even ship" report, not a real defect).
+
 ## 2026-08-20 (PR #1474 MERGED + PR #1475 MERGED — Documents "duplicate" rows root-caused as phantom onboarding-push sign-offs, both write-path doc_type guards shipped)
 - Royce reported the Documents admin page showing duplicate/triplicate rows (e.g. "12 Pole" ×3) and asked how to push the Environmental Management Plan to more people. Live-verified (ehow) zero actual duplicate documents — the count was `document_register` rows fanning out by sign-off. Root cause: `DB Schedules`/`Comms` categories, both flagged "Auto-push to new starters," feed `entity-patch.ts`'s onboarding auto-push, which never checked `doc_type` before pushing — so `template`-type reference documents (already meant to be exempt, `NO_SIGNOFF_DOC_TYPES`) got a real sign-off pushed on every new starter. 3 starters × both categories = 44 phantom rows over 16 real documents.
 - With Royce's go: un-flagged both categories, deleted all 44 stray unsigned `document_signoffs` rows live (verified none were signed first), shipped the `entity-patch.ts` `doc_type NOT IN NO_SIGNOFF_DOC_TYPES` guard so it can't recur, and added a "Push to more people" action to the Register tab so an existing document can be pushed to a further audience without re-uploading. [PR #1474](https://github.com/eq-solutions/eq-shell/pull/1474), squash-merged (`c678f1e1`).
