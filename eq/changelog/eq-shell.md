@@ -9,6 +9,12 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-21 (PR #1503 MERGED — fixed a stale import-error bug found in self-review)
+- Reviewing the full diff behind PRs #1492/#1493/#1497 (Royce: "critique our direction... is there anything else you can see?") found that the Line Items card's two import handlers, `importSubcontractorPdfFile` and `importExcelFile`, each cleared only their own error state before running — never the sibling's. Displayed error is the first non-null of `excelParseErr`/`pdfParseErr`/`lineItemsDropErr`, so a failed attempt of one file type left a stale error showing next to a later successful import of the other. Fix: each handler now also clears the sibling's error state up front. eq-shell [PR #1503](https://github.com/eq-solutions/eq-shell/pull/1503), squash-merged (`8094b454`), confirmed live via commit-ancestry check against the newest ready production deploy.
+
+## 2026-08-20 (PR #1497 MERGED — Jobs-page "From supplier file" button now takes Excel too)
+- Extended the Jobs-page's single supplier-import button (built in #1492) to also accept Excel breakdowns, not just PDF/photo — same `looksLikeExcel`/`looksLikePdfOrPhoto` auto-detect the Line Items card already used, plus a new `startQuoteFromExcelFile` mirroring the existing `startQuoteFromPdfFile`. Closes the gap flagged as deferred in #1492/#1493: the Jobs page and the Line Items card now both accept either file type, via drag-drop or a button, everywhere in the quote-import flow. eq-shell [PR #1497](https://github.com/eq-solutions/eq-shell/pull/1497), squash-merged (`9d427dcf`), confirmed live via exact Netlify `commit_ref` match.
+
 ## 2026-08-20 (PR #1495 MERGED — removed the dead workers-canonical-sync duplicate)
 - Follow-up to the employment_type fix further down this same day: eq-shell's own copy of `supabase/functions/workers-canonical-sync/index.ts` was confirmed to have no deploy path at all (eq-cards owns the real deploy) and had already silently diverged from the live function. Royce: "Delete the eq-shell copy" → removed entirely, then "Merge it when CI's green" once all required checks passed. eq-shell [PR #1495](https://github.com/eq-solutions/eq-shell/pull/1495), squash-merged (`18dabcdb`). Zero functional change — the file was never live.
 
