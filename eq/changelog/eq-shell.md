@@ -9,6 +9,12 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-20 (PR #1490 MERGED + dispatched — employment_type no longer gets clobbered by the nightly Cards sync)
+- Root-caused Royce's report ("changed Ali Alsalman from labour hire to direct numerous times"): `workers-canonical-sync` re-derives `employment_type` from the worker's Cards-side role on every run, including the nightly reconcile cron, with no protection against a deliberate Shell correction — confirmed via `app_data.audit_log`, 3 revert cycles over two weeks, always by the same ~02:35 UTC job.
+- Fix: `employment_type_locked_by_shell` (migration 0255, mirrors the existing `email_locked_by_shell`/`phone_locked_by_shell` pattern from migration 0224), set by `entity-patch.ts` on a Staff-page edit. Migration dispatched live to both zaap and ehow before merge. eq-shell [PR #1490](https://github.com/eq-solutions/eq-shell/pull/1490), squash-merged (`495bc221`), confirmed live via Netlify deploy state.
+- Turned out this repo's copy of the actual sync function (`supabase/functions/workers-canonical-sync/`) has no deploy path of its own — see the eq-cards entry below for where the fix actually had to ship to take effect. eq-shell's copy is now a confirmed-stale duplicate; what to do with it is an open question, logged in `eq/pending/cross-repo.md`.
+- Confirmed genuinely fixed: Royce re-set Ali to Direct afterward (4th attempt) and it held — `employment_type_locked_by_shell: true` stamped correctly on the write, row unchanged since.
+
 ## 2026-08-20 (PR #1485 MERGED — EQ Ops Excel cost-breakdown import + Labour/Materials quote view)
 - New quote-import path: `netlify/functions/quote-parse-excel.ts` deterministically parses a Labour/Materials cost-breakdown spreadsheet (no AI — the source is already structured cells), finding the header row positionally regardless of wording/column order, scanning every worksheet, skipping totals/note rows automatically.
 - New "Category Split" quote-document mode (`quoteDocGenerator.ts`) — pivots line items by name instead of by category, so each line shows its own Labour $ and Materials $ side by side in the customer-facing Word doc, reusing the existing template's grid via `gridSpan` merging.

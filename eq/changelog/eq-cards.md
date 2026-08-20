@@ -1,13 +1,18 @@
 ---
 title: EQ Cards — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-19
+last_updated: 2026-08-20
 scope: EQ Cards append-only history. NOTE — duplicates eq/changelog/cards.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # EQ Cards — Changelog
+
+## 2026-08-20 (PR #284 MERGED + DEPLOYED — workers-canonical-sync now respects a Shell operator's employment_type correction)
+- Discovered this repo — not eq-shell — is the real deploy source for `workers-canonical-sync`: `.github/workflows/deploy.yml`'s `deploy-edge-functions` job (`workflow_dispatch`/release-tag gated) ships every function under this repo's own `supabase/functions/` to jvkn. The live function already carried this repo's 2026-08-19 blank-name fix (#282) that eq-shell's separate copy of the same file never had — eq-shell's copy turned out to be a dead, silently-diverged duplicate.
+- Ported eq-shell PR #1490's fix here, where it actually deploys: an `employmentTypeLocked` check mirroring the existing `emailLocked`/`phoneLocked` pattern, respecting `employment_type_locked_by_shell` (eq-shell migration 0255, already live on both tenant planes). eq-cards [PR #284](https://github.com/eq-solutions/eq-cards/pull/284), squash-merged (`8624f9c4`).
+- Deployed the single function directly via the Supabase MCP rather than dispatching `deploy-edge-functions` — that workflow's `workflow_dispatch` has no job filter, so it would have also triggered the workflow's other job (full Flutter web build + production Netlify deploy of the whole app), a materially bigger action than shipping this one fix. Deployed as version 18 on jvkn, confirmed live by re-fetching and diffing byte-for-byte against the intended source, `verify_jwt: false` preserved to match the existing config.
 
 ## 2026-08-20 (PR #283 MERGED + DEPLOYED — Platform console redesigned around a needs-attention queue)
 - Replaced the 4-tile metric grid + conditional headline + two separate detail sections with one prioritised queue (each row tagged Cards/Field for which app owns the fix), a slim Cards-to-Field linkage strip, everything else collapsed by default. Grew out of a live design review with Royce — two concepts mocked up, `/decide`d into a combined layout, then built for real.

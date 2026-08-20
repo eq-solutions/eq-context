@@ -11,6 +11,20 @@ status: live
 
 ---
 
+## eq-shell + eq-cards: Ali Alsalman's employment type kept flipping back to Labour Hire — root-caused and fixed, confirmed live (2026-08-20)
+*Royce: "I have changed ali alsalman from labour hire to direct numerous times — can you check on this." `app_data.audit_log` on ehow showed 3 confirmed cycles over two weeks (08-03→04, 08-14, 08-18→19): a Shell edit to Direct, reverted to Labour Hire within hours every time, always by the same ~02:35 UTC nightly job.*
+
+- [x] **Root cause**: `workers-canonical-sync` (the jvkn edge function that syncs Cards worker profiles into SKS's tenant `app_data.staff`) re-derives `employment_type` from the worker's Cards-side role on every run, including the nightly reconcile cron — with no protection against a deliberate Shell correction, unlike email/phone (which got exactly this protection after the same failure mode hit Ben Ritchie and Zemi Asri, migration 0224).
+- [x] **Fix**: `employment_type_locked_by_shell` column (eq-shell migration 0255, applied live to both `zaap`/EQ and `ehow`/SKS), set by `entity-patch.ts` whenever a Staff-page edit touches `employment_type`, respected by `workers-canonical-sync`'s merge. Same pattern as the existing email/phone lock, just ported to a new field. eq-shell [PR #1490](https://github.com/eq-solutions/eq-shell/pull/1490), merged and live.
+- [x] **Real discovery mid-fix: the eq-shell copy of `workers-canonical-sync` has no deploy path at all.** eq-cards owns the actual deploy — its `deploy.yml` → `deploy-edge-functions` job (`workflow_dispatch`/release-tag gated, deliberately not on every merge) is what ships this function to jvkn, from eq-cards' own copy of the same file. eq-shell's copy had silently diverged into a dead duplicate — missing eq-cards' 2026-08-19 blank-name fix ([#282](https://github.com/eq-solutions/eq-cards/pull/282)), and eq-cards' copy was missing eq-shell's dob-trigger cleanup. Ported the identical lock-flag fix into eq-cards' real copy — [eq-cards PR #284](https://github.com/eq-solutions/eq-cards/pull/284), merged.
+- [x] **Deployed the single function directly via the Supabase MCP rather than dispatching eq-cards' `deploy-edge-functions` workflow** — that workflow's `workflow_dispatch` trigger has no job filter, so it would have also triggered the *other* job in the same file (a full Flutter web build + Netlify production deploy of the entire eq-cards app), a materially bigger action than shipping this one fix. Deployed as version 18 on jvkn, content-verified live against the merged source.
+- [x] **Confirmed genuinely fixed, not just theoretically**: Royce re-set Ali to Direct one more time (his 4th attempt) — landed with `employment_type_locked_by_shell: true` stamped on the same write, row unchanged since. Next nightly reconcile will read the lock and leave it alone.
+
+**Deferred:**
+- [ ] **What to do with eq-shell's now-confirmed-dead duplicate copy of `workers-canonical-sync`** — leave it (current state, but keeps inviting this exact mistake for the next person who edits it there), delete it, or wire up a real eq-shell-side deploy step. Royce's call, not acted on. _(added 2026-08-20)_
+
+---
+
 ## eq-shell + eq-field: Internal Document Sign-off Register — T4 (DB permission gate) closed end to end by a concurrent session earlier today (2026-08-20)
 Full build/merge/dispatch narrative already in today's session log (three separate chapters) — not re-duplicated here. One-line summary for anyone scanning just this file: `documents`/`document_audiences`/`document_categories` no longer grant `authenticated` any direct access (was full CRUD, tenant-RLS only, walkable via Shell's own tenant-JWT minting) — migration `0252`, merged as [PR #1470](https://github.com/eq-solutions/eq-shell/pull/1470), dispatched live and independently re-verified (zero `authenticated` grants remain on either tenant plane). Fully done, nothing open here.
 
