@@ -40,7 +40,7 @@ _If this file is >48h old, the cron is broken._
 | Assets | 2,842 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
 | Users | 5 | service.tenant_members |
-| Maintenance checks | 36 | service.maintenance_checks |
+| Maintenance checks | 37 | service.maintenance_checks |
 | Defects | 1 | service.defects |
 
 **SKS tenant ID on ehow:** `7dee117c-98bd-4d39-af8c-2c81d02a1e85`
@@ -60,7 +60,14 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-20)
 
-_No open PRs_
+**eq-field:**
+- #739 v3.5.530 — Documents to Sign: ends the pilot for good
+
+**eq-shell:**
+- #1480 feat(labour-hire): partner-agency self-service candidate intake via link
+- #1479 feat(customers): cross-customer contacts in EQ Ops + bottom bulk bar
+- #1478 fix(documents): add missing origin guard to document-version-upload-init
+- #1477 feat(documents): signer picker sources canonical staff, not Shell logins
 
 ---
 
