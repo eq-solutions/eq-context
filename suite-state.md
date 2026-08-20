@@ -63,10 +63,8 @@ _If this file is >48h old, the cron is broken._
 **eq-cards:**
 - #286 feat(labour-hire): OCR returns a crop_bounds box per document
 
-**eq-field:**
-- #750 v3.5.540 — Roster compliance gate: missing-required badge + assignment hold point
-
 **eq-service:**
+- #798 fix(ci): notify job still claimed dispatch pauses for approval
 - #797 fix(migrations): reconstruct the service.* base tables ehow moved by hand
 - #791 fix(reports): make reissuing a report possible from the UI
 
