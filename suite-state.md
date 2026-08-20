@@ -62,7 +62,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-service:**
 - #791 fix(reports): make reissuing a report possible from the UI
-- #789 chore(deps): align react-dom with react so components can render in tests
 - #788 fix(auth): Shell token keepalive dies permanently on any refresh failure
 
 ---
@@ -73,7 +72,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ? in_progress |
+| eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
