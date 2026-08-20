@@ -68,9 +68,6 @@ _If this file is >48h old, the cron is broken._
 - #797 fix(migrations): reconstruct the service.* base tables ehow moved by hand
 - #791 fix(reports): make reissuing a report possible from the UI
 
-**eq-shell:**
-- #1504 fix(quotes): clear 6 react-hooks lint errors in the create-form/draft-banner effects
-
 ---
 
 ## System Health (as of 2026-08-20)
