@@ -1,11 +1,18 @@
 ---
 title: EQ Field — Changelog
 owner: Royce Milmlow
-scope: Notable shipped changes to eq-field, one line per item, newest first.
+last_updated: 2026-08-21
+scope: UNRECONCILED PAIR with eq/changelog/eq-field.md, the repo-slug-convention canonical file. This file was archived 2026-08-17 as a dead twin (superseded_by: eq-field.md — see archive/changelog-field-dead-twin.md), then recreated from scratch 2026-08-19 by a session that didn't check it had been retired. It has since collected 5 real entries (PR #729/#730/#735/#736/#738, 2026-08-19/20) that exist nowhere in eq-field.md. Not marked superseded_by because that would falsely claim eq-field.md already holds this content — it doesn't yet. Which record survives is Royce's call, same posture as the 2026-08-17 merge; until then both files stay flagged rather than silently diverging again (third time this pair has drifted — see archive/changelog-eq-field-dead-twin.md and archive/changelog-field-dead-twin.md for the first two).
+read_priority: reference
 status: live
 ---
 
 # EQ Field Changelog
+
+> **UNRECONCILED PAIR** — this file was archived 2026-08-17, then recreated
+> 2026-08-19 and has since collected entries not present in
+> `eq/changelog/eq-field.md` (the canonical, repo-slug-named file — read that
+> one first). See frontmatter `scope` for detail.
 
 ## 2026-08-20
 - v3.5.529 (PR #738): non-manager workers could see every other worker's hours on Timesheets, not just their own — `_getTsFilteredPeople()` had no identity scoping at all, only editing was ever gated. Now filters non-managers to their own row (agency logins exempted). Also fixed mobile Timesheets card rows rendering ~2x oversized — a bare `.empty` class collided with an unrelated generic empty-state placeholder rule.
