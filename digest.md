@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-20 09:57 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-20 09:58 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-20 09:37 UTC → 2026-08-20 09:57 UTC)
+## Since last refresh (2026-08-20 09:57 UTC → 2026-08-20 09:58 UTC)
 
-- Merged: eq-shell [#1474](https://github.com/eq-solutions/eq-shell/pull/1474) fix(documents): stop onboarding auto-push from targeting ref
-- Merged: eq-shell [#1472](https://github.com/eq-solutions/eq-shell/pull/1472) feat(staff): show who hasn't signed in to Shell yet, with a 
-- Merged: eq-shell [#1471](https://github.com/eq-solutions/eq-shell/pull/1471) feat(staff): funnel filters on Contact, Status, Birthday
-- Merged: eq-shell [#1469](https://github.com/eq-solutions/eq-shell/pull/1469) chore(drift): allowlist eq_claim_connection_notification — s
-- Merged: eq-shell [#1468](https://github.com/eq-solutions/eq-shell/pull/1468) chore(nav): remove 2 more orphaned pages (Field roster + She
-- Merged: eq-shell [#1465](https://github.com/eq-solutions/eq-shell/pull/1465) perf(staff): warm staff-bootstrap so Staff loads don't eat a
-- Merged: eq-shell [#1464](https://github.com/eq-solutions/eq-shell/pull/1464) fix(entity-patch): bound the onboarding auto-push trigger to
-- Merged: eq-shell [#1460](https://github.com/eq-solutions/eq-shell/pull/1460) feat(staff): multiSlicer filter chips on Staff table
+- Merged: eq-shell [#1490](https://github.com/eq-solutions/eq-shell/pull/1490) fix(labour-hire): employment_type never protected from Cards
+- Merged: eq-shell [#1473](https://github.com/eq-solutions/eq-shell/pull/1473) chore(nav): remove orphaned Storage page
+- Merged: eq-shell [#1470](https://github.com/eq-solutions/eq-shell/pull/1470) fix(documents): revoke authenticated grants on documents/doc
+- Merged: eq-shell [#1467](https://github.com/eq-solutions/eq-shell/pull/1467) fix(auth): bump last_login_at on QR self-join
+- Merged: eq-shell [#1466](https://github.com/eq-solutions/eq-shell/pull/1466) chore(deps): bump @eq-solutions/ui to v1.16.1
+- Merged: eq-shell [#1463](https://github.com/eq-solutions/eq-shell/pull/1463) fix(nav): full navigation audit across all 6 roles + 3 dead 
+- Merged: eq-shell [#1462](https://github.com/eq-solutions/eq-shell/pull/1462) feat(auth): PIN reveal toggle + raise length ceiling 12→20
+- Merged: eq-solves-service [#783](https://github.com/eq-solutions/eq-service/pull/783) docs(offline): correct Tier B section to match what PR #782 
 
 ## ⚠ Needs you (4)
 
@@ -73,6 +73,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-20 | eq-shell | [#1490](https://github.com/eq-solutions/eq-shell/pull/1490) fix(labour-hire): employment_type never protected from Cards resy |
 | 2026-08-20 | eq-shell | [#1489](https://github.com/eq-solutions/eq-shell/pull/1489) feat(labour-hire): drag-and-drop for the batch intake file picker |
 | 2026-08-20 | eq-shell | [#1488](https://github.com/eq-solutions/eq-shell/pull/1488) fix(labour-hire): staging-object cleanup is fire-and-forget, neve |
 | 2026-08-20 | eq-shell | [#1487](https://github.com/eq-solutions/eq-shell/pull/1487) fix(labour-hire): zip-slip check false-positives on every entry,  |
@@ -87,7 +88,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-20 | eq-shell | [#1479](https://github.com/eq-solutions/eq-shell/pull/1479) feat(customers): cross-customer contacts in EQ Ops + bottom bulk  |
 | 2026-08-20 | eq-shell | [#1477](https://github.com/eq-solutions/eq-shell/pull/1477) feat(documents): signer picker sources canonical staff, not Shell |
 | 2026-08-20 | eq-shell | [#1476](https://github.com/eq-solutions/eq-shell/pull/1476) chore(deps): bump @eq-solutions/ui to v1.16.4 |
-| 2026-08-20 | eq-shell | [#1475](https://github.com/eq-solutions/eq-shell/pull/1475) fix(documents): reject a direct push against a no-signoff documen |
 _Showing 15 of 124 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -195,4 +195,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-20 09:57 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-20 09:58 UTC._
