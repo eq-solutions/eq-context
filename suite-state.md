@@ -67,7 +67,6 @@ _If this file is >48h old, the cron is broken._
 - #1480 feat(labour-hire): partner-agency self-service candidate intake via link
 - #1479 feat(customers): cross-customer contacts in EQ Ops + bottom bulk bar
 - #1478 fix(documents): add missing origin guard to document-version-upload-init
-- #1477 feat(documents): signer picker sources canonical staff, not Shell logins
 
 ---
 
@@ -77,7 +76,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ? in_progress |
+| eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
