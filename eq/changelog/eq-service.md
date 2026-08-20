@@ -9,6 +9,10 @@ status: live
 
 # EQ Service — Changelog
 
+## 2026-08-21 (migration 0226 APPLIED — the permanent-delete button on the admin archive page is now admin-only in the database, not just in the app)
+- `service.hard_delete_archived_entity` (permanently deletes an already-archived customer/site/asset/job_plan/maintenance_check) checked tenant ownership but not caller role — any signed-in team member could have called it directly and bypassed the app's own admin-only gate. Fixed via the existing `service.assert_write_role` helper, gated to manager only, matching the app's own rule. Fix authored by a separate session (PR #794); dispatched and independently verified live this session.
+- Applied through the governed `apply-service-migrations` dispatch, confirmed live against ehow afterward (ledger row, guard present, correct grants) rather than trusting the deploy's own success message.
+
 ## 2026-08-21 (PR #795 MERGED — no functional change: added missing test coverage for the check auto-start behaviour)
 - Tapping pass/fail/N-A on a maintenance check that hasn't been started yet quietly starts the check first, then records the result, instead of rejecting the tap — that behaviour already existed and is unchanged. This PR only adds automated tests proving it actually works, including the failure path (a failed auto-start now provably shows an error and saves nothing, rather than that just being assumed).
 - No app code changed.
