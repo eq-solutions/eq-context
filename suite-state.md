@@ -61,9 +61,11 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-20)
 
 **eq-service:**
-- #799 test(reports): component tests for the /reports compliance dashboard
 - #797 fix(migrations): reconstruct the service.* base tables ehow moved by hand
 - #791 fix(reports): make reissuing a report possible from the UI
+
+**eq-shell:**
+- #1507 test(quotes): accuracy harness for the subcontractor PDF import
 
 ---
 
