@@ -1564,3 +1564,6 @@ Full detail was meant to be captured at `eq-context/eq/shell-conversations-scopi
 
 ## 2026-08-18 (PR #1416 MERGED)
 - **Routine auto-revendor of `eq-intake/eq-platform`** — `chore(intake): auto re-vendor eq-intake/eq-platform`, picks up upstream eq-solves-intake changes into eq-shell's vendored copy. Re-verified mergeable fresh against current `main` before merging (was 2 days stale; a same-day session had flagged its cached CI result as untrustworthy) — clean, no conflicts, all checks green. Merged (`18e7657d`), confirmed live via exact Netlify `commit_ref` match.
+
+## 2026-08-20 (PR #1468 MERGED)
+- **2 more orphaned eq-shell pages removed** — `FieldRosterPage.tsx` (`/:tenant/field/roster`, redundant with Field's own iframe roster tab) and `LicenceOcrPage.tsx` (`/:tenant/onboarding/licence`, licence capture goes through Cards only) plus their two dedicated backend functions, each confirmed single-caller via repo-wide grep before deleting. Full build detail in `eq/pending/eq-shell.md` and `sessions/2026-08-20.md`. Squash-merged (`0424f401`) on Royce's explicit "merge #1468" once the pre-existing, unrelated `eq_claim_connection_notification` drift block cleared — confirmed live via exact commit-ancestry against the newest ready production deploy, not assumed from the merge alone.
