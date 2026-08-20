@@ -57,6 +57,21 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: the Shell licence-scanner page had never once saved a licence — found, fixed, merged, live (2026-08-17)
+*Started as a request to make a scanned licence's date of birth flow through to a worker's profile. Turned out the save button on that page (`/:tenantSlug/onboarding/licence`, the fallback for anyone who can't use the Cards app) has been silently broken since a backend rewrite — every save has failed with an error since then, for every field, not just date of birth. Checked live: 118 licences exist in the backup copy that page was supposed to write to, and every single one came from the Cards app's own sync, zero from this page, ever. Also found that even a working save button would have written to the wrong place — a backup table nothing else reads anymore. Full detail in `eq/changelog/eq-shell.md` (PR #1423). Note: this page and its two backend functions were subsequently removed outright on 2026-08-20 (Royce's call — licence capture goes through Cards only), see the entry near the top of this file.*
+
+- [x] **Rebuilt the save call to point at the actual table everything else reads, not the abandoned backup copy.** A confirmed date of birth now fills in the worker's profile if it was empty — never overwrites one that's already there.
+- [x] **Verified the code compiles clean and the new function deploys correctly** (163 functions built successfully on the real preview, including the new one) — the checking tool on this laptop got stuck partway through loading the app locally, so verification leaned on the real preview build instead.
+- [x] [eq-shell PR #1423](https://github.com/eq-solutions/eq-shell/pull/1423), merged and confirmed live (deploy's commit matches the merge commit exactly).
+
+**Deferred (moot as of 2026-08-20 — page removed):**
+- [x] ~~Not clicked through live~~ — moot, page retired before anyone did.
+- [x] ~~The real fix for workers who already have no date of birth on file is a different app (Cards), not this one~~ — Cards-side follow-up already tracked separately.
+
+_(recovered from an unpopped stash 2026-08-20 — never made it into this file at the time; the matching changelog and session-log entries for the same fix did land.)_
+
+---
+
 ## eq-shell: PIN show/hide toggle + 4–20 length ceiling — built, PR open, blocked on an unrelated CI failure (2026-08-19)
 *Royce asked for a "show password" toggle (Sharon couldn't tell if her PIN and confirm-PIN matched while typing blind) and whether the 12-character PIN limit could safely go to 20.*
 
