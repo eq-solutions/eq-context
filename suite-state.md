@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-20)
 
-**eq-field:**
-- #749 v3.5.540 — fix: 2 latent bugs found during the sign investigation
-
 **eq-service:**
 - #797 fix(migrations): reconstruct the service.* base tables ehow moved by hand
 - #792 fix(migrations): unbreak fresh-database bootstrap so integration tests run
