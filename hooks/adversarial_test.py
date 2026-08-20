@@ -424,6 +424,82 @@ def _to_msys(win_path):
     return p
 
 
+print("=== F7/F9 - MSYS-style absolute cd/-C target must still resolve, not silently "
+      "no-op (2026-08-21, repo_root_for()'s KNOWN SCOPE BOUNDARY, closed) ===")
+# effective_cwd() correctly leaves an MSYS-style absolute target (/c/...)
+# unresolved (it's already "rooted" as far as _CD_TARGET_ROOTED_RE is
+# concerned) -- but confirmed live that repo_root_for()'s own `git -C <cwd>`
+# call then fails outright when git.exe is spawned directly via
+# subprocess.run(), unlike a real Git-Bash shell: "cannot change to ... No
+# such file or directory". repo_root_for() returned None, silently no-opping
+# both F7 and F9, exactly the "fail open" shape this whole guard file exists
+# to close -- just via git's own argument handling this time, not a regex
+# capture bug. NOGIT_CWD as the outer/nominal cwd (not the fixture itself) so
+# these can ONLY pass if the MSYS cd/-C target in the COMMAND TEXT is what's
+# actually being parsed, translated, and resolved -- same rigor as the
+# relative-cd tests above.
+msys_repo = f9_fixture_repo("_msys")
+SAME_MSYS = {"EQ_CONTEXT": msys_repo, "EQ_FORCE_GUARD": "0"}
+OTHER_MSYS = {"EQ_CONTEXT": msys_repo + "-not-the-shared-one", "EQ_FORCE_GUARD": "0"}
+
+te("bare commit via MSYS-style `cd \"/c/...\"` into the shared checkout -> still BLOCK (F9)",
+   {"tool_name": "Bash",
+    "tool_input": {"command": 'cd "' + _to_msys(msys_repo) + '" && git commit -m x'},
+    "cwd": NOGIT_CWD}, 2, SAME_MSYS)
+te("same shape via `git -C \"/c/...\"` -> still BLOCK (F9)",
+   {"tool_name": "Bash",
+    "tool_input": {"command": 'git -C "' + _to_msys(msys_repo) + '" commit -m x'},
+    "cwd": NOGIT_CWD}, 2, SAME_MSYS)
+te("CONTROL: identical MSYS-style cd, but EQ_CONTEXT points elsewhere -> NOT blocked "
+   "(proves this resolves the MSYS target to a real directory rather than blocking "
+   "on the mere presence of a /c/... path)",
+   {"tool_name": "Bash",
+    "tool_input": {"command": 'cd "' + _to_msys(msys_repo) + '" && git commit -m x'},
+    "cwd": NOGIT_CWD}, 0, OTHER_MSYS)
+_rmtree_retry(msys_repo)
+
+msys_corrupt_repo = f7_fixture_repo(corrupt=True)
+te("git commit via MSYS-style `cd \"/c/...\"` into a NUL-corrupted repo -> still BLOCK (F7)",
+   {"tool_name": "Bash",
+    "tool_input": {"command": 'cd "' + _to_msys(msys_corrupt_repo) + '" && git commit -am x'},
+    "cwd": NOGIT_CWD}, 2, {"EQ_FORCE_GUARD": "0"})
+_rmtree_retry(msys_corrupt_repo)
+
+print("=== F9 - MSYS /tmp mount must resolve to the REAL temp dir, not a same-named "
+      "C:\\tmp that may or may not exist (2026-08-21) ===")
+# Verified empirically before porting guard.js's /tmp branch, not assumed from
+# it: `git -C /tmp rev-parse --show-toplevel` does NOT fail the same clean way
+# /c/... does. Windows' own "leading slash, no drive letter = root of the
+# CURRENT drive" convention silently resolves it to C:\tmp when that happens
+# to exist (confirmed live 2026-08-21: it does, on this machine, and is a
+# different, unrelated directory from the real MSYS /tmp mount, tempfile.
+# gettempdir()) -- a real-but-WRONG location, worse than a clean failure,
+# since it can silently hand back the wrong repo's root instead of cleanly
+# returning None.
+tmp_fixture = tempfile.mkdtemp(prefix="eq_msys_tmp_", dir=tempfile.gettempdir())
+_run_tmp = lambda *a: subprocess.run(["git", *a], cwd=tmp_fixture, capture_output=True, text=True)
+_run_tmp("init", "-q", "-b", "main")
+_run_tmp("config", "user.email", "test@example.com")
+_run_tmp("config", "user.name", "test")
+with open(os.path.join(tmp_fixture, "seed.md"), "w") as fh:
+    fh.write("hello\n")
+_run_tmp("add", "-A")
+_run_tmp("commit", "-q", "-m", "seed")
+tmp_msys_target = "/tmp/" + os.path.basename(tmp_fixture)
+SAME_TMP = {"EQ_CONTEXT": tmp_fixture, "EQ_FORCE_GUARD": "0"}
+OTHER_TMP = {"EQ_CONTEXT": tmp_fixture + "-not-the-shared-one", "EQ_FORCE_GUARD": "0"}
+
+te("bare commit via `cd \"/tmp/<name>\"` (MSYS /tmp-mount shorthand) into the shared "
+   "checkout -> still BLOCK (F9)",
+   {"tool_name": "Bash",
+    "tool_input": {"command": 'cd "' + tmp_msys_target + '" && git commit -m x'},
+    "cwd": NOGIT_CWD}, 2, SAME_TMP)
+te("CONTROL: identical /tmp-shorthand cd, but EQ_CONTEXT points elsewhere -> NOT blocked",
+   {"tool_name": "Bash",
+    "tool_input": {"command": 'cd "' + tmp_msys_target + '" && git commit -m x'},
+    "cwd": NOGIT_CWD}, 0, OTHER_TMP)
+_rmtree_retry(tmp_fixture)
+
 print("=== F12 - raw copy blind-overwrites the SHARED checkout (must BLOCK) ===")
 f12_shared = f9_fixture_repo("_f12_shared")
 f12_other = f9_fixture_repo("_f12_other")
