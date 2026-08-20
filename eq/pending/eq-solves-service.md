@@ -13,6 +13,23 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-solves-service: the "don't send the same report twice" guard was dead code — fixed, merged, live; prerequisite for Tier C offline writes (2026-08-20)
+*Found during Tier C offline-write-queue scoping recon, verified by reading the file rather than trusting the report. The report-issuing action wraps itself in a replay guard that spots a repeat by looking for an audit-log entry stamped with the request's id — but the action never stamped one, and its only caller never sent an id. Dead at both ends. It was the only one of 21 such actions in the repo missing the stamp.*
+
+- [x] Report action now stamps its audit entry with the request id, matching the ACB/NSX pattern (`app/(app)/reports/actions.ts`).
+- [x] Send Report modal now mints one id per modal open and reuses it across retries — minting a fresh one per click (the pattern used everywhere else in this repo) would have left the guard doing nothing. Added a double-submit guard, and an "Already Sent" state so a deduped retry doesn't render "Revision undefined".
+- [x] **New CI test that makes this bug class mechanical** (`tests/lib/actions/idempotency-audit-drift.test.ts`): walks the source and fails if any action wraps itself in the replay guard without stamping its audit entry. Verified in both directions — passes on the fixed tree, flags the exact pre-fix line when run against the parent commit. Runs under `npx vitest run`, which `check.yml` already gates on.
+- [x] **Corrected the report's own severity claim rather than repeating it.** A repeat would NOT have re-emailed the customer today: two unrelated things block it before the send — a reissue needs a "revision reason" nothing in the UI supplies, and the database refuses a second delivery at the same revision number. Both verified live on ehow. Neither is a deliberate guard and neither survives reissue being wired up, so the fix still had to land before Tier C — but nothing was on fire.
+- [x] [PR #787](https://github.com/eq-solutions/eq-service/pull/787), squash-merged (`ba06818`) on Royce's explicit "merge it". Confirmed live by commit ancestry, not just a green build: Netlify triggered 2s after the merge (10:51:14 → 10:51:16), the deploy reached `ready`, and `ba06818` checks out as an ancestor of the newest ready production deploy's `commit_ref`. `service.eq.solutions` returns 200.
+- [x] **Live-substrate finds worth keeping** (ehow, 2026-08-20): `service.report_deliveries` holds **zero rows** — no report has ever been issued through this path in production. Its `report_type` column has lost the `NOT NULL DEFAULT 'pm_check' CHECK (...)` that migration 0059 declares, and the audit-log partial unique index was renamed `idx_audit_mutation_id_unique` → `al_mutation_idx` — both casualties of the `public.*` → `service.*` move that the migration ledger still records as cleanly "applied". Written into the migration-ledger memory note: never read a migration file to learn a live `service.*` column's nullability, default, or CHECK.
+
+**Deferred:**
+- [~] **Delivery records don't say which report was sent** — the action picks between three report flavours but never stores which one on the delivery row, so the history can't tell them apart. Also needs a migration to restore the column constraint it lost in the schema move. Picked up in its own session 2026-08-20. _(added 2026-08-20)_
+- [~] **Sending a corrected report is impossible from the app** — the second send for any job always fails asking for a "revision reason" the UI gives you no way to type. The customer portal already displays the reason, so only the input half is missing. Picked up in its own session 2026-08-20. _(added 2026-08-20)_
+- [ ] **Not click-tested live by Royce** — verified by typecheck, full build, 444 unit tests, CI, and Netlify commit-ancestry, not by actually opening the Send Report modal and issuing a report. The path has zero production rows, so a live click-through would be the first real exercise it has ever had. _(added 2026-08-20)_
+
+---
+
 ## eq-solves-service: Tier B of the offline-first proposal — first slice built and shipped live: real offline read-cache via a service worker (2026-08-20)
 *Direct follow-on to the same-day "Tier B scoped" close (PR #781, archived). Initial `/decide` pass leaned against building yet — no incident on record, low real ACB/NSX volume. Reversed when Royce said the field techs are certain they'll need it as usage grows. Built the read-cache slice only — no icon/manifest, no install-to-home-screen, no offline write — per Royce's own scoping call ("start now — we can tidy up a logo quickly anytime").*
 
