@@ -60,7 +60,8 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-20)
 
-_No open PRs_
+**eq-service:**
+- #785 chore(db): drop orphaned app_data.site_credentials
 
 ---
 
