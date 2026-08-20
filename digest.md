@@ -8,19 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-20 09:24 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-20 09:37 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-20 09:19 UTC → 2026-08-20 09:24 UTC)
+## Since last refresh (2026-08-20 09:24 UTC → 2026-08-20 09:37 UTC)
 
-- Merged: eq-shell [#1472](https://github.com/eq-solutions/eq-shell/pull/1472) feat(staff): show who hasn't signed in to Shell yet, with a 
-- Merged: eq-shell [#1471](https://github.com/eq-solutions/eq-shell/pull/1471) feat(staff): funnel filters on Contact, Status, Birthday
-- Merged: eq-shell [#1469](https://github.com/eq-solutions/eq-shell/pull/1469) chore(drift): allowlist eq_claim_connection_notification — s
-- Merged: eq-shell [#1468](https://github.com/eq-solutions/eq-shell/pull/1468) chore(nav): remove 2 more orphaned pages (Field roster + She
-- Merged: eq-shell [#1465](https://github.com/eq-solutions/eq-shell/pull/1465) perf(staff): warm staff-bootstrap so Staff loads don't eat a
-- Merged: eq-shell [#1464](https://github.com/eq-solutions/eq-shell/pull/1464) fix(entity-patch): bound the onboarding auto-push trigger to
-- Merged: eq-shell [#1460](https://github.com/eq-solutions/eq-shell/pull/1460) feat(staff): multiSlicer filter chips on Staff table
-- Merged: eq-solves-service [#782](https://github.com/eq-solutions/eq-service/pull/782) feat(offline): service worker + read-cache (Tier B, first sl
-- ✅ Needs you: 5 → 4
+- Merged: eq-shell [#1489](https://github.com/eq-solutions/eq-shell/pull/1489) feat(labour-hire): drag-and-drop for the batch intake file p
+- Merged: eq-shell [#1473](https://github.com/eq-solutions/eq-shell/pull/1473) chore(nav): remove orphaned Storage page
+- Merged: eq-shell [#1470](https://github.com/eq-solutions/eq-shell/pull/1470) fix(documents): revoke authenticated grants on documents/doc
+- Merged: eq-shell [#1467](https://github.com/eq-solutions/eq-shell/pull/1467) fix(auth): bump last_login_at on QR self-join
+- Merged: eq-shell [#1466](https://github.com/eq-solutions/eq-shell/pull/1466) chore(deps): bump @eq-solutions/ui to v1.16.1
+- Merged: eq-shell [#1463](https://github.com/eq-solutions/eq-shell/pull/1463) fix(nav): full navigation audit across all 6 roles + 3 dead 
+- Merged: eq-shell [#1462](https://github.com/eq-solutions/eq-shell/pull/1462) feat(auth): PIN reveal toggle + raise length ceiling 12→20
+- Merged: eq-shell [#1461](https://github.com/eq-solutions/eq-shell/pull/1461) feat(field): add RPCs for Field roster credential parity
 
 ## ⚠ Needs you (4)
 
@@ -53,7 +52,7 @@ _…and 172 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 0 | — |
 | eq-solves-service | ✓ success | 0d ago | 0 | — |
-| eq-field | ✓ success | 0d ago | 0 | — |
+| eq-field | ✓ success | 10d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 2d ago | 0 | — |
 
@@ -74,6 +73,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-20 | eq-shell | [#1489](https://github.com/eq-solutions/eq-shell/pull/1489) feat(labour-hire): drag-and-drop for the batch intake file picker |
 | 2026-08-20 | eq-shell | [#1488](https://github.com/eq-solutions/eq-shell/pull/1488) fix(labour-hire): staging-object cleanup is fire-and-forget, neve |
 | 2026-08-20 | eq-shell | [#1487](https://github.com/eq-solutions/eq-shell/pull/1487) fix(labour-hire): zip-slip check false-positives on every entry,  |
 | 2026-08-20 | eq-shell | [#1486](https://github.com/eq-solutions/eq-shell/pull/1486) feat(labour-hire): batch intake — group upload for admin and the  |
@@ -88,7 +88,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-20 | eq-shell | [#1477](https://github.com/eq-solutions/eq-shell/pull/1477) feat(documents): signer picker sources canonical staff, not Shell |
 | 2026-08-20 | eq-shell | [#1476](https://github.com/eq-solutions/eq-shell/pull/1476) chore(deps): bump @eq-solutions/ui to v1.16.4 |
 | 2026-08-20 | eq-shell | [#1475](https://github.com/eq-solutions/eq-shell/pull/1475) fix(documents): reject a direct push against a no-signoff documen |
-| 2026-08-20 | eq-shell | [#1474](https://github.com/eq-solutions/eq-shell/pull/1474) fix(documents): stop onboarding auto-push from targeting referenc |
 _Showing 15 of 124 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -96,7 +95,7 @@ _Showing 15 of 124 · full record in [sessions/](sessions/)_
 - **eq-shell** (227 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (53 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (111 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
-- **eq-solves-service** (82 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
+- **eq-solves-service** (83 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
 - **eq-solves-intake** (17 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
 - **eq-ui** (2 open) · [eq/pending/eq-ui.md](eq/pending/eq-ui.md)
@@ -128,7 +127,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | [eq-shell](eq/pending/eq-shell.md) | 1455 | 172 / 60 | 160 | 39 |
 | [eq-cards](eq/pending/eq-cards.md) | 396 | 40 / 13 | 41 | 3 |
 | [eq-field](eq/pending/eq-field.md) | 746 | 90 / 25 | 34 | 12 |
-| [eq-solves-service](eq/pending/eq-solves-service.md) | 504 | 63 / 22 | 41 | 7 |
+| [eq-solves-service](eq/pending/eq-solves-service.md) | 518 | 64 / 22 | 41 | 7 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 152 | 13 / 6 | 5 | 14 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
 | [eq-ui](eq/pending/eq-ui.md) | 29 | 2 / 0 | 2 | 0 |
@@ -196,4 +195,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-20 09:24 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-20 09:37 UTC._
