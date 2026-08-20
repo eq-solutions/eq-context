@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-18
+last_updated: 2026-08-20
 scope: Operational support to-do list — Webb, infra, substrate
 read_priority: standard
 status: live
@@ -19,7 +19,7 @@ for operational support: tax, entities, infrastructure, substrate.
 *Merging a change to eq-shell puts it on core.eq.solutions within seconds, unattended. A note claiming otherwise had been circulating, and I repeated it to Royce this session about a live sign-in change — telling him it was still waiting on him hours after it had gone out. That was the second time, so the written warning was clearly not enough and had to become something enforced.*
 
 
-- [ ] **The shared eq-context folder needs someone to reconcile it** — it's well behind, with commits sitting on it that were never sent up (some belong to other sessions running at the same time). Not safe for me to force, since it isn't all my work. _(added 2026-08-15)_
+- [x] ~~The shared eq-context folder needs someone to reconcile it~~ — **checked live 2026-08-20: fully reconciled, 0 commits behind/ahead of `origin/main`, clean working tree.** Whatever needed sending up has since gone up — dozens of sessions have pushed through the shared checkout today alone. _(added 2026-08-15, resolved — substrate correction 2026-08-20)_
 
 ---
 
@@ -52,14 +52,7 @@ rung 1), 2026-08-04 (untracked shadow copy, folded into F8's `note:` field, no o
 ledger id), now this. Neither of the first two ever got a tracked `system/failures.md`
 entry of its own — the exact gap F9's own note warns about elsewhere in that file.
 
-- [ ] **Royce's call, offered via `AskUserQuestion`, not yet answered**: add a sixth
-  check to `hooks/session_start.py` (matches its existing FRESHNESS/NEEDS YOU/GOALS/
-  RATCHET/CLAIMS pattern — comparing local vs. worktree vs. effective `core.hooksPath`)
-  plus a proper `system/failures.md` ledger entry for the 3-recurrence pattern —
-  recommended, since a hook is the only thing in this repo's own ratchet philosophy that
-  actually runs unprompted, unlike a lessons.md entry. Spawned as a background task chip
-  (self-contained prompt, file paths included) so it's one click rather than a dangling
-  note. _(added 2026-08-05)_
+- [x] ~~Royce's call, offered via `AskUserQuestion`, not yet answered: add a sixth check to `hooks/session_start.py`... plus a `system/failures.md` ledger entry~~ — **both done, checked live 2026-08-20.** `session_start.py` already carries the 6th check (the `HOOKS` line, comparing local/worktree/effective `core.hooksPath`, tagged F10) — it fired in this very session's own gate output at start ("HOOKS ok — core.hooksPath resolves to .githooks"). `system/failures.md` already carries the matching F10 ledger entry. Nothing outstanding. _(added 2026-08-05, resolved — substrate correction 2026-08-20)_
 
 ---
 
@@ -73,10 +66,10 @@ Royce asked for "simple security upgrades that won't affect people using sks nsw
 
 ---
 
-## SEC-18 — plaintext service-role/JWT secrets on eq-service/field/cards (2026-07-30)
+## SEC-18 — plaintext service-role/JWT secrets on eq-service/field/cards (2026-07-30) — stale, actually closed the same day it was opened
 
-- [ ] **Royce: re-store each flagged secret as masked (same value, not a rotation)** on eq-service, eq-field, and eq-cards' Netlify projects — per var: note the current value, delete, recreate identical, tick "contains sensitive values". Credential handling — cannot be done by Claude Code regardless of permission (same block as SEC-12). Full detail + exact variable list in `ops/security-register.md` SEC-18.
-- [ ] **Royce's call: does `CANONICAL_SERVICE_ROLE_KEY` (ehow) or `SUPABASE_SERVICE_ROLE_KEY` (jvkn) warrant an actual rotation**, not just re-masking — unlike SEC-12's set, these two grant full database bypass access if they ever did leak beyond Netlify's own storage.
+- [x] ~~Royce: re-store each flagged secret as masked (same value, not a rotation)...~~ — **`ops/security-register.md`'s SEC-18 row has said CLOSED 2026-07-30 all along** (Royce re-stored all 8 vars himself via the Netlify dashboard, live-reverified). This pending.md section just never got updated to match — checked live 2026-08-20, nothing outstanding.
+- [x] ~~Royce's call: does `CANONICAL_SERVICE_ROLE_KEY`... warrant an actual rotation~~ — **resolved by the same closure entry**: no rotation performed, same-value re-store only, per the SEC-12 precedent the register's own closure note cites. That was the decision, not a hanging question. _(added 2026-07-30, resolved — substrate correction 2026-08-20)_
 
 ---
 
