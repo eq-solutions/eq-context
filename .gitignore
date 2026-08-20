@@ -1,6 +1,11 @@
 # eq-context .gitignore — context repo only.
 # Rules and rationale: see system/md-style.md.
 
+# --- Secrets / local env — never commit ---
+.env
+.env.*
+!.env.example
+
 # --- Binary files (this repo holds context, not artefacts) ---
 *.zip
 *.tar
