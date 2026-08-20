@@ -62,7 +62,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #1492 feat(quotes): drag-and-drop + one import button + per-row section picker
-- #1491 fix(labour-hire): batch cleanup deletes staging docs before commit, not after
 
 ---
 
