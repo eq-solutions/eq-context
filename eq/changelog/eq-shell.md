@@ -9,6 +9,12 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-20 (PR #1472 MERGED — Staff page now shows who hasn't signed in to Shell, with a filter)
+- New `staff-login-status.ts` resolves each staff member's `app_data.staff.user_id` (ehow) to `shell_control.users.last_login_at` (jvkn), wired into the existing `staff-bootstrap` fan-out. Staff table gets a "Login" column and a filter to isolate who's unlinked.
+- Directly feeds eq-field PR #705 (a real P1: any signed-in SKS worker can currently read/edit every other worker's timesheet and leave data — undispatched because too many staff aren't yet login-linked). This makes the gap visible and trackable instead of invisible.
+- Deliberately visibility-only — checked live first that all 24 currently-unlinked staff already have a Cards worker record (not a "never invited" gap), and that at least one is a former employee who should never be re-invited. Held the resend/nudge action back pending a human review pass, rather than automate against an unverified list.
+- Squash-merged (`292c65f0`) on Royce's "merge it," full CI green (including the drift gate, cleared since yesterday). Confirmed live via commit-ancestry.
+
 ## 2026-08-20 (PR #1467 MERGED — QR self-join logins now show correctly on Admin Users)
 - `shell-join-tenant.ts` (the QR self-join door) minted a real session cookie but never bumped `last_login_at`/`last_active_tenant_id` — the one login path in the repo that skipped it. Live-confirmed before fixing: 13 of 14 SKS workers who joined via a self-join QR link in the prior 3 days showed `last_login_at = NULL` on Admin Users despite an active session.
 - Fix mirrors the identical update already used by every other login path (`shell-login.ts`, phone-PIN, phone-OTP, magic-link, `select-tenant.ts`, `second-factor-session.ts`, `accept-pin-reset.ts`, `shell-handoff-provision.ts`). Additive only — no schema/RPC/UI change.
