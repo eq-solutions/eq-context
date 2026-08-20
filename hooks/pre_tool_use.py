@@ -108,7 +108,7 @@ destroyed file that reports success.
 
 Contract: exit 2 = BLOCK (stderr shown to the model). exit 0 = allow.
 """
-import glob, json, os, platform, re, subprocess, sys
+import glob, json, os, platform, re, subprocess, sys, tempfile
 
 MAX_LINES = 200
 EDIT_TOOLS = {"Edit", "Write", "MultiEdit", "NotebookEdit"}
@@ -289,24 +289,27 @@ def effective_cwd(cmd, data):
     (_CD_TARGET_ROOTED_RE, defined above this function — deliberately not
     os.path.isabs(), see that regex's own comment for why).
 
-    KNOWN SCOPE BOUNDARY, found while verifying this fix empirically, not
-    closed by it: an MSYS-style absolute target (/c/Projects/eq-context) is
-    correctly left unresolved by _CD_TARGET_ROOTED_RE — matching guard.js's
-    own pass-through for that shape, and this function's pre-fix behaviour
-    for it too, so nothing regresses here either way. But confirmed live
-    (not assumed from guard.js's Node-side fix) that such a target does not
-    actually resolve correctly downstream regardless: `git -C
-    /c/Projects/eq-context rev-parse --show-toplevel` fails outright
-    ("cannot change to ... No such file or directory") when git.exe is
-    invoked directly via subprocess.run(), exactly how repo_root_for() calls
-    it. Unlike Node's fs calls, which have zero MSYS awareness and need
-    guard.js's normalizeMsysPath() to translate by hand, git.exe's own MSYS
-    path translation only fires for processes launched through a
-    Git-Bash-aware shell — not for a plain subprocess spawn. That gap is
-    real, pre-existing (the old code returned an MSYS target unresolved
-    too), and stays open: a different root cause (git's own argument
-    handling, not this function's regex capture) needing a different fix,
-    on repo_root_for()'s side rather than this one."""
+    KNOWN SCOPE BOUNDARY, found while verifying the relative-target fix
+    empirically, CLOSED 2026-08-21: an MSYS-style absolute target
+    (/c/Projects/eq-context) is correctly left unresolved by
+    _CD_TARGET_ROOTED_RE — matching guard.js's own pass-through for that
+    shape, and this function's pre-fix behaviour for it too, so nothing
+    regresses here either way. But confirmed live (not assumed from
+    guard.js's Node-side fix) that such a target does not actually resolve
+    correctly downstream regardless: `git -C /c/Projects/eq-context
+    rev-parse --show-toplevel` fails outright ("cannot change to ... No such
+    file or directory") when git.exe is invoked directly via
+    subprocess.run(), exactly how repo_root_for() calls it. Unlike Node's fs
+    calls, which have zero MSYS awareness and need guard.js's
+    normalizeMsysPath() to translate by hand, git.exe's own MSYS path
+    translation only fires for processes launched through a Git-Bash-aware
+    shell — not for a plain subprocess spawn. This was always
+    repo_root_for()'s gap to close, not this function's (a different root
+    cause — git's own argument handling, not this function's regex capture)
+    — see _normalize_msys_path() and repo_root_for()'s own docstring for the
+    fix, which also turned out to cover a second, worse-shaped MSYS mount
+    (/tmp) found empirically while porting guard.js's helper rather than
+    assumed from it — see that docstring."""
     m = re.search(r'git\s+-C\s+"([^"]+)"', cmd) or re.search(r'git\s+-C\s+(\S+)', cmd)
     if m:
         target = m.group(1)
@@ -323,10 +326,73 @@ def effective_cwd(cmd, data):
     return os.path.normpath(os.path.join(data.get("cwd") or os.getcwd(), target))
 
 
+def _normalize_msys_path(p):
+    """Git-Bash (MSYS) absolute path -> the real Windows path git.exe can
+    actually chdir into. Ported from guard.js's normalizeMsysPath() (fixed
+    there 2026-08-05 for the drive-letter case, 2026-08-17 for /tmp) — same
+    two shapes, same reasoning, different runtime: guard.js needed this for
+    Node's fs calls (zero MSYS awareness, ever); this file needs it for
+    subprocess.run(["git", "-C", cwd, ...]) instead, which gets none of a
+    real Git-Bash shell's own path translation either — see repo_root_for()'s
+    docstring for the live confirmation of both cases.
+
+    Drive-letter case (/c/Projects/... -> C:/Projects/...): identical regex
+    to _norm_path_for_compare()'s above, reused rather than redefined.
+
+    /tmp case: MSYS maps /tmp to %TEMP% (tempfile.gettempdir() in Python),
+    NOT to a literal C:\\tmp — confirmed live 2026-08-21 that those are two
+    different, both-real directories on this machine, which makes this shape
+    more dangerous than the drive-letter one: Windows' own "leading slash,
+    no drive letter = root of the CURRENT drive" convention lets `git -C
+    /tmp ...` silently chdir into C:\\tmp when that happens to exist, instead
+    of cleanly failing "cannot change to" the way /c/Projects/eq-context
+    does. A silent wrong-but-real resolution is worse than a clean one that
+    reliably returns None — a coincidental C:\\tmp git repo would make
+    repo_root_for() return an entirely wrong toplevel instead of just
+    failing to find one.
+
+    A no-op on a genuine POSIX path (real Linux CI, not the Windows-native
+    default): tempfile.gettempdir() there is already /tmp, so the /tmp
+    branch reconstructs its input unchanged, and a real single-letter
+    top-level directory name is not a shape any fixture in this suite
+    produces."""
+    if not p:
+        return p
+    norm = p.replace("\\", "/")
+    m = re.match(r'^/([A-Za-z])(/.*|$)', norm)
+    if m:
+        return f"{m.group(1).upper()}:{m.group(2) or '/'}"
+    if norm == "/tmp" or norm.startswith("/tmp/"):
+        return os.path.join(tempfile.gettempdir(), norm[4:].lstrip("/")).replace("\\", "/")
+    return p
+
+
 def repo_root_for(cwd):
-    """git's own idea of the repo root for `cwd` — None if not inside one."""
+    """git's own idea of the repo root for `cwd` — None if not inside one.
+
+    2026-08-21: cwd is translated through _normalize_msys_path() first. This
+    is the fix effective_cwd()'s KNOWN SCOPE BOUNDARY note pointed at: that
+    function correctly passes an MSYS-style target through unresolved
+    (matching guard.js's own pass-through for the same shape), but confirmed
+    live that such a target still doesn't work downstream — `git -C
+    /c/Projects/eq-context rev-parse --show-toplevel` fails outright
+    ("cannot change to ... No such file or directory") when git.exe is
+    spawned directly via subprocess.run(), because git's own MSYS path
+    translation only fires for processes launched through a Git-Bash-aware
+    shell, never for a plain subprocess spawn. Without this, an MSYS-style
+    cd/-C target — this environment's Bash tool documentation's own
+    recommended form, and what Git Bash's `cd` naturally produces — silently
+    defeated F7/F9: repo_root_for() returned None, and both checks no-op
+    instead of firing, exactly like the untranslated-relative-target bug
+    just above it, just via a different mechanism (git's own argument
+    handling, not this file's regex capture).
+
+    Also closes a second, worse-shaped case found empirically while porting
+    this rather than assumed from guard.js's fix: an MSYS `/tmp` target
+    doesn't fail cleanly the way /c/... does — see _normalize_msys_path()'s
+    own docstring."""
     try:
-        p = subprocess.run(["git", "-C", cwd or ".", "rev-parse", "--show-toplevel"],
+        p = subprocess.run(["git", "-C", _normalize_msys_path(cwd) or ".", "rev-parse", "--show-toplevel"],
                             capture_output=True, text=True, timeout=5)
     except Exception:
         return None
