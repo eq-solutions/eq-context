@@ -9,6 +9,16 @@ status: live
 
 # EQ Cards — Changelog
 
+## 2026-08-20 (PR #283 MERGED + DEPLOYED — Platform console redesigned around a needs-attention queue)
+- Replaced the 4-tile metric grid + conditional headline + two separate detail sections with one prioritised queue (each row tagged Cards/Field for which app owns the fix), a slim Cards-to-Field linkage strip, everything else collapsed by default. Grew out of a live design review with Royce — two concepts mocked up, `/decide`d into a combined layout, then built for real.
+- Zero new queries — reuses `eq_cards_platform_stats()` and the existing `PlatformStats` model exactly as before, presentation-layer restructure only. Deliberately no action buttons (nothing in the app can re-invite in bulk or force a retry yet) and the bridge strip is honestly one-directional (Cards→Field linkage only, no independent Field-side count) — both flagged as open follow-ups, not silently glossed over.
+- CI green (analyze/test, migration hygiene, function-grants), merged, deployed, verified live via commit-ancestry match (`cab7e85`).
+
+## 2026-08-20 (PR #281 + #282 MERGED + DEPLOYED — duplicate connection-notify emails fixed, workers-canonical-sync 500 fixed)
+- Royce reported a duplicate "worker joined SKS" email overnight. Root-caused to pg_net redelivering `notify-connection-request` twice for one event (two distinct execution IDs, 21ms apart) — not a bug in the trigger or the function, just no idempotency guard. Fixed with a new atomic claim-before-send RPC, migration `0133`. PR #281.
+- Same investigation surfaced a second, related bug on the same worker: `workers-canonical-sync` 500ing on every re-sync for any blank-name worker, because its own null-safety merge logic produced `null` (not `''`) when both sides were genuinely blank, violating ehow's `NOT NULL` constraint. One-line fallback fix; also brought this previously live-only function into git for the first time. PR #282.
+- Both merged, both deployed (swept up by the same deploy run as #283 below, since main is linear), both verified live via commit-ancestry match.
+
 ## 2026-08-19 (PR #277 OPENED, not yet merged — port eq-shell's function-grants CI guard)
 - Root cause of the recurring `eq_cards_auto_provision` outage (Sentry `EQ-CARDS-1C`, 3rd+ occurrence, migrations 0111/0113/0123): jvkn's `eq_enforce_function_privacy` event trigger silently strips `authenticated`/`anon` EXECUTE grants on every `CREATE OR REPLACE FUNCTION`, unless the same migration explicitly re-grants them. eq-shell has a CI guard for its own migrations against exactly this; eq-cards never had one for its own.
 - Ported `check-function-grants.mjs` from eq-shell (git-diff based static check), pointed at eq-cards' own `supabase/migrations/`, wired in as a new `function-grants` CI job. Verified against both a known-good historical migration (has the re-grant) and the actual known-bad one (missing it, exit 2).

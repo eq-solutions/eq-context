@@ -16,6 +16,16 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-cards: duplicate "worker joined" emails root-caused and fixed, plus a related sync 500 found in the same investigation — both merged, deployed, live (2026-08-20) (fully closed, no open items remain)
+*Royce: "I received a double up email overnight from 0458 161 658 investigate." Traced to a real, live worker's SKS self-join the evening before.*
+
+- [x] **Root cause found and confirmed precise**: `notify-connection-request`'s trigger fired correctly once (one row inserted, one `net.http_post()` call), but pg_net's own delivery layer invoked the edge function twice, 21ms apart (two distinct execution IDs, confirmed via edge-function logs) — each execution fanned out to both configured recipients, so both admins got 2 copies of the same email. Neither the trigger nor the function had a bug; nothing checked for a prior send.
+- [x] **Fixed**: new `eq_claim_connection_notification()` RPC atomically claims the row (`notification_sent_at`) before sending; a redelivered call sees it already claimed and skips. Migration `0133`, eq-cards [PR #281](https://github.com/eq-solutions/eq-cards/pull/281) — merged, deployed live, verified via commit-ancestry match on the deploy.
+- [x] **Second bug found in the same investigation window, same worker**: `workers-canonical-sync` was 500ing on every re-sync attempt for any blank-name (phone-only, no name entered yet) worker — the merge branch's own null-safety fallback (`ne(existing) ?? ne(incoming)`) produced `null` when both sides were genuinely blank, and that null hit ehow's `NOT NULL` constraint on `staff.first_name`. Fixed with the missing final `?? ''` fallback. eq-cards [PR #282](https://github.com/eq-solutions/eq-cards/pull/282) — merged, deployed live, re-triggered a real sync for the affected worker post-fix and confirmed 200 instead of 500.
+- [x] This function was previously live-only (deployed by hand via Supabase MCP, never in git) — brought into the repo for the first time as part of #282.
+
+---
+
 ## eq-ui: two Table/Skeleton PRs open from an eq-shell Staff-table session (2026-08-19) (fully closed, no open items remain)
 
 - [x] [PR #41](https://github.com/eq-solutions/eq-ui/pull/41) — `Skeleton` shimmer-sweep animation replacing the opacity pulse, plus a `prefers-reduced-motion` fallback the old pulse never had. Applies to every existing `Skeleton` usage automatically once released — no prop change. Merged 2026-08-20 (squash `8e9cda5`). _(added 2026-08-19)_

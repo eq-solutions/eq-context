@@ -24,6 +24,13 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-cards: Platform console redesigned around a "needs attention" queue instead of a stats wall — merged, deployed, live (2026-08-20)
+
+- [ ] **No real action buttons yet.** Each queue row is tagged which app (Cards/Field) owns the fix, but stays read-only — nothing in this app today can re-invite in bulk or force a sync retry, so a button would have nowhere real to go. Building those is separate follow-on work, your call whether/when. _(added 2026-08-20)_
+- [ ] **The Cards↔Field "bridge" is one-directional.** `eq_cards_platform_stats()` only queries jvkn (Cards' own database) — it can say how many Cards workers have been linked into Field, but not give Field's own independent total to reconcile against. A genuine two-sided view needs a second query into ehow, not built this session. _(added 2026-08-20)_
+
+---
+
 ## eq-cards: checked whether signup is actually easy, found and fixed a real invite-drop bug, confirmed a reported repeating banner was already dead, confirmed Field's missing-licence gap is deliberate not an oversight (2026-08-19)
 
 - [ ] **eq-shell PR #1461 still open** — paper-trail record for the Field roster-badge parity migration; the feature itself is fully live (eq-field PR #734 merged+deployed, jvkn RPCs live since 2026-08-19). Merging #1461 is functionally inert but is still an eq-shell merge, which auto-deploys — needs your explicit go, not assumed. _(added 2026-08-19)_
