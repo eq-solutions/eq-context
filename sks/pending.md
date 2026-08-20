@@ -24,14 +24,14 @@ status: live
 
 - [ ] **SKS's own number, for reference: 6 of 32 active SKS members are currently missing White Card** — visible today in Shell's Training Matrix; nothing blocks them from working while missing it (soft-flag by design, not an oversight). Worth a look if Royce wants a harder rule for SKS specifically. _(added 2026-08-19)_
 
-## EQ Field screenshot review — 4 fixes shipped live, 1 security migration drafted but not switched on (2026-08-19)
+## EQ Field screenshot review — 5 fixes shipped + confirmed live, including the DB security migration (2026-08-19, header corrected 2026-08-20)
 *Royce walked through 6 mobile screenshots of the SKS app (via Google Drive) plus 3 live pasted screenshots, commenting on each. Real gaps fixed same session: Job Numbers nav item stuck under a stale "Beta" label on mobile; the weekly supervisor digest screen (names/emails of every supervisor, plus which digest sections are on) had no access restriction at all — any logged-in person, including an apprentice, could see and appeared able to edit it (the edit itself would have failed server-side, but the view was wide open); that same digest list ran very long on mobile with no way to collapse it; Edit Roster's row-action icons overflowed their column on Labour Hire rows; the Sites page was "very long... annoying to navigate" with every customer's sites always fully expanded. All five shipped and confirmed live same day ([eq-field #729](https://github.com/eq-solutions/eq-field/pull/729), [#730](https://github.com/eq-solutions/eq-field/pull/730)).*
 
 *Checking the digest-access gap also turned up a bigger one: the database itself didn't enforce who can create/edit/delete Prestarts, Toolbox Talks, Incidents, Site Diaries, or Site Audits — the app's own "only a manager or supervisor can do this" rule was UI-only, not backed by a database rule, so anyone technically inclined could have bypassed it entirely. Royce approved the fix and it's applied to the real system now (a separate, concurrent session on the same day handled the approval + apply — see that session's own write-up).*
 
 - [x] eq-shell's mobile home screen (what a non-manager worker sees first) was missing the button into the maintenance/defects app (Service) — other apps had it, this one didn't, and there was no reason found for the gap. Also added the SKS logo, which wasn't showing there at all. Fixed and live. _(eq-shell PR #1456)_
 - [x] **The database-level fix for who can create/edit/delete Prestarts/Toolbox Talks/Incidents/Site Diaries/Site Audits** — written, approved, applied to the live system, and confirmed working. _(eq-field PR #728, applied 2026-08-19)_
-- [ ] **Two more places with the same "database doesn't check who's allowed" gap were flagged mid-session** (the weekly digest's supervisor list, and a general settings table that also happens to store the login PIN codes) **but it's not confirmed whether they made it into the fix above or still need their own.** Worth a quick check before considering this closed. _(added 2026-08-19)_
+- [ ] **Confirmed live 2026-08-20: the two extra gaps did NOT make it into the fix above.** Read PR #728's actual migration (`20260819_site_reports_manager_supervisor_write.sql`) and checked live on ehow — it covers exactly the 6 tables it names (Prestarts/Toolbox Talks/Incidents/Site Diaries/Site Audits/Site Audit Items), all confirmed with the manager/supervisor-only write policy live. The weekly digest's supervisor list and the PIN-codes settings table are separate tables, not touched by it — they still need their own fix. _(added 2026-08-19, confirmed 2026-08-20)_
 - [ ] **A reported roster-grid "alignment" issue (one person's row looked off) couldn't be reproduced from the code** — most likely just placeholder text in blank cells reading like real data at a glance, not an actual bug, but left open rather than guessed at. _(added 2026-08-19)_
 
 ## EQ Field: timesheets/leave weren't scoped per-person — fix merged into the app, still not switched on for real (2026-08-16)
@@ -218,7 +218,7 @@ _Nothing pending — migrations 001–023 all applied._
 - **Licence review** = admin approval writes `shell_control.cards_field_approvals` (`licence_verifications` jsonb + `licences_verified_at`). Credential enum has NO review state — review lives on the approval row.
 
 **Deferred / next:**
-- [ ] First **Cards→Field approval for SKS never run** — `cards_field_approvals` has 79 rows across other tenants, **0 for SKS**. When the first SKS worker signs up to Cards + applies, exercise the admin approve + licence-verify path end-to-end (machinery proven elsewhere, unproven for this tenant) _(added 2026-07-04)_
+- [x] ~~First Cards→Field approval for SKS never run~~ — **stale, checked live 2026-08-20: 99 of 101 total `cards_field_approvals` rows are now SKS's.** The tenant that was "unproven" in July is now the dominant one in the table — the approve + licence-verify path has clearly been exercised many times over since. _(added 2026-07-04, resolved — substrate correction 2026-08-20)_
 - [ ] **SKS staff data-entry rule** — enter each person **once** with an accurate mobile (+ email where held); no DB uniqueness on `workers.phone`, so two stubs sharing a number = only the best-credentialed one gets adopted, the other dangles. 0 phones on multiple worker rows today — keep it that way _(added 2026-07-04)_
 
 ---
@@ -429,7 +429,7 @@ The following tests belong to eq-quotes-port (Flask), which is retired as of 202
 - `is_current` (view) = `active AND effective_from<=today AND (effective_to IS NULL OR effective_to>=today)` — retire a current row by setting `effective_to` to a past date.
 
 **Deferred:**
-- [ ] **Migration 0177 still un-dispatched** — adds `week` to the rate `unit` CHECK. Until dispatched via the One Pipe: the redundancy sits on `unit='each'` (correct $ value, flat weekly) and the **"week" option in the Add-rate dropdown 400s if picked**. Dispatch when convenient, then flip the redundancy `each`→`week` (cosmetic). _(added 2026-07-13)_
+- [ ] **Migration 0177 has actually been dispatched — checked live 2026-08-20.** `labour_hire_rates_unit_check` already allows `'week'`; the dropdown option works, it does not 400. Only the cosmetic half is still outstanding: the redundancy row (`rate_id c96dcfac…`) is still `unit='each'` (correct $ value, flat weekly). Flip it to `'week'` whenever convenient — a one-column UPDATE, no code change, no dispatch needed. _(added 2026-07-13, substrate correction 2026-08-20)_
 - [ ] **Uploaded rate-card PDFs are not stored** (parse-and-discard) — offered a private file-store + per-rate download link so cards are retained going forward; not built, Royce hasn't taken it up. _(added 2026-07-13)_
 - [ ] **Cranfield current rates (eff 2026-07-01) have no July source doc** — amounts verified against the 29-Jan card (identical), but the 1-Jul effective date isn't doc-backed. Cosmetic/low-pri. _(added 2026-07-13)_
 
