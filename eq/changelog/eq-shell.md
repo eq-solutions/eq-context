@@ -9,6 +9,13 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-20 (PR #1465 + #1471 MERGED — Staff load time fixed, funnel filters added to Contact/Status/Birthday)
+- Merged [PR #1465](https://github.com/eq-solutions/eq-shell/pull/1465) (`5a49ef77`) — the `staff-bootstrap` keep-warm fix carried over from yesterday's investigation, live.
+- Royce, from a screenshot: "where are our filters for birthday and start date." First hypothesis (stale tab) was disproven — a full forensic bundle audit (curl the live production JS, byte-match literal column-definition strings against source) confirmed the deployed code was 100% correct and current; nothing was actually stale. Two rounds of AskUserQuestion established the real ask: Royce wanted funnel filters *added* to Contact, Status, and Birthday, not a regression fixed.
+- Building it surfaced a real bug in the shared `@eq-solutions/ui` `Table` component: `filterable: 'multiselect'` never fell back to a column's `filterValue(row)` the way `'text'`/`'select'` already did, so a composite column with no single backing field (Contact = phone+email, Status = is_supervisor+on_roster, Birthday = dob_day+dob_month) could never populate multiselect options or match rows. Fixed in `Table.tsx` (`autoSelectOptions`, `rowMatchesFilters`), regression test added. eq-ui [PR #43](https://github.com/eq-solutions/eq-ui/pull/43), released as `@eq-solutions/ui@1.16.2` via [PR #46](https://github.com/eq-solutions/eq-ui/pull/46).
+- Wired onto the Staff table: Contact reuses its existing composite `filterValue`; Status gets a new `statusFilterValue` (Supervisor/Not supervisor × On roster/Off roster); Birthday filters on the same formatted label already shown in the cell. Pin bumped to `v1.16.2`. [PR #1471](https://github.com/eq-solutions/eq-shell/pull/1471), squash-merged (`5e23b8fc`), live.
+- Separately, eq-ui [PR #41](https://github.com/eq-solutions/eq-ui/pull/41) (Skeleton shimmer-sweep, already merged) released via version-packages [PR #48](https://github.com/eq-solutions/eq-ui/pull/48) as `@eq-solutions/ui@1.16.3` — moot for eq-shell's own pin, which a concurrent session had already bumped straight to `v1.16.4` (PR #1476, below) by the time this was checked.
+
 ## 2026-08-20 (PR #1476 MERGED — @eq-solutions/ui bumped to v1.16.4)
 - Picks up eq-ui [PR #49](https://github.com/eq-solutions/eq-ui/pull/49)/[#50](https://github.com/eq-solutions/eq-ui/pull/50): Table's "Show columns" popover no longer runs past the bottom of the viewport on a short/filtered table — the bug Royce reported right after the Staff page's Login column shipped.
 - Pin `v1.16.2` → `v1.16.4`, `pnpm-lock.yaml` refreshed (diff scoped entirely to the `@eq-solutions/ui` entry). `tsc -b --force` clean. Squash-merged on Royce's "merge #1476", confirmed live via exact Netlify `commit_ref` match.
@@ -49,7 +56,7 @@ status: live
 - Squash-merged (`2cb32fef`) on Royce's explicit "merge," via admin override: the only failing required check was red for an unrelated, pre-existing reason (a separate control-plane function-drift step flagging `public.eq_claim_connection_notification` on jvkn as unsourced — confirmed pre-existing on `main`, blocking every PR right now). Confirmed live via exact Netlify `commit_ref` match against the newest ready production deploy.
 - Along the way, answered Royce's original question live: 14 total self-join logins on jvkn, all on the `sks` tenant, 4 in the prior ~24h.
 
-## 2026-08-19 (PR #1465 OPEN, CI green — Staff page load-time root-caused: keep-warm gap on staff-bootstrap)
+## 2026-08-19 (PR #1465 MERGED 2026-08-20 — Staff page load-time root-caused: keep-warm gap on staff-bootstrap)
 - Royce asked twice for the Staff page's slow load time to be profiled. Found it: `staff-bootstrap.ts` (built via #1358 to coalesce the page's 9 sub-fetches into one Lambda call) was never added to `warm-ping.ts`'s 4-minute keep-warm ping — each Netlify function is its own Lambda, so warming `entity-rows` separately never warmed this one.
 - Live-measured against production: 3.07s cold vs 0.39-0.42s warm on the same unauthenticated 401 fast-path the function's own header comment already benchmarks — confirms the DB side (already fast, ~6-9ms/part) was never the bottleneck; this was purely a Lambda-warmth gap.
 - One-line fix: added `/.netlify/functions/staff-bootstrap` to `WARM_PATHS`. `pnpm run build` clean. Not merged yet — needs Royce's sign-off.

@@ -20,3 +20,10 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-ui: Table multiselect filter ignored filterValue for composite columns — found via an eq-shell Staff table request, fixed, released (2026-08-20)
+
+- [x] **`filterable: 'multiselect'` now falls back to `filterValue(row)`, same as `'text'`/`'select'` already did.** Previously multiselect always read `row[key]` raw, so a composite column with no single backing field (e.g. a Contact column built from phone + email) could never work as a multiselect filter — option-derivation produced an empty list and no row ever matched. [PR #43](https://github.com/eq-solutions/eq-ui/pull/43), `src/Table/Table.tsx`, regression test added. Patch release `@eq-solutions/ui@1.16.2` via version-packages [PR #46](https://github.com/eq-solutions/eq-ui/pull/46).
+- [x] **`Skeleton` shimmer-sweep animation released** — [PR #41](https://github.com/eq-solutions/eq-ui/pull/41) (merged earlier, unreleased) went out via version-packages [PR #48](https://github.com/eq-solutions/eq-ui/pull/48) as `@eq-solutions/ui@1.16.3`.
+
+---
+

@@ -9,6 +9,15 @@ status: live
 
 # eq-ui changelog
 
+## 2026-08-20 (PR #43 MERGED + PR #46 MERGED, published v1.16.2 — Table multiselect filter now supports filterValue on composite columns)
+- Found via an eq-shell request (funnel filters on Staff's Contact/Status/Birthday columns): `filterable: 'multiselect'` always read `row[key]` raw, unlike `'text'`/`'select'` which already fell back to a column's `filterValue(row)`. A composite column with no single backing field (e.g. Contact = phone+email) could never populate options or match rows as a multiselect — option-derivation came back empty and no row ever matched.
+- Fixed in `Table.tsx`: both `autoSelectOptions` (option-derivation) and `rowMatchesFilters`'s multiselect branch (row-matching) now use `col.filterValue?.(row) ?? row[col.key]`. Regression test added reusing the existing Contact composite-column fixture. Patch changeset — additive only, columns without `filterValue` unaffected.
+- Squash-merged (`62f1d982`) on Royce's "merge #43 once green"; released as `@eq-solutions/ui@1.16.2` via version-packages [PR #46](https://github.com/eq-solutions/eq-ui/pull/46), merged on "merge #46 once green."
+- Consumed same session in eq-shell [PR #1471](https://github.com/eq-solutions/eq-shell/pull/1471) to add the actual Contact/Status/Birthday filters.
+
+## 2026-08-20 (PR #48 MERGED, published v1.16.3 — Skeleton shimmer-sweep released)
+- Royce: "cut the version-packages PR to release it." The auto-opened Changesets release PR #48 (covering PR #41's shimmer-sweep, merged 2026-08-18) was already open, CI green — merged, publishing `@eq-solutions/ui@1.16.3`.
+
 ## 2026-08-20 (PR #49 MERGED + PR #50 MERGED, published v1.16.4 — Table's Show-columns popover no longer overflows the viewport)
 - Second, distinct fix to the same popover PR #44/#45 (2026-08-19, below) portalled the day before — that fix solved an ancestor's `overflow-y:auto` clipping it; this one caps the popover's own height so it can't run past the *viewport's* bottom edge either. Root cause: `top` was a fixed pixel offset below the trigger button with nothing bounding how far the column list (now 12 for Staff) could extend below that.
 - Fix: `maxHeight` computed from the space actually available below the trigger, `overflow-y: auto` on the popover — scrolls internally instead of overflowing, regardless of row or column count.
@@ -23,7 +32,7 @@ status: live
 
 ## 2026-08-20 (PR #47 + PR #41 MERGED)
 - PR #47: local dev-tooling fix — `eslint.config.js` now ignores `.claude`, so `npm run lint` no longer recurses into other concurrent sessions' nested `.claude/worktrees/<name>/` checkouts and surfaces their unrelated errors. CI unaffected (a fresh checkout has no `.claude/` dir). Shipped with an empty changeset — `eslint.config.js` isn't in the published package's `files` allowlist, so no version bump applies.
-- PR #41: `Skeleton` shimmer-sweep animation replacing the opacity pulse, plus a `prefers-reduced-motion` fallback the old pulse never had. Applies to every existing `Skeleton` usage automatically once released — no prop change. Open since 2026-08-18, checked and squash-merged (`8e9cda5`) this session on Royce's "merge." Unpublished as of this entry — a version-packages PR will pick it up.
+- PR #41: `Skeleton` shimmer-sweep animation replacing the opacity pulse, plus a `prefers-reduced-motion` fallback the old pulse never had. Applies to every existing `Skeleton` usage automatically once released — no prop change. Open since 2026-08-18, checked and squash-merged (`8e9cda5`) this session on Royce's "merge." Released as `@eq-solutions/ui@1.16.3` via PR #48 (2026-08-20, above).
 
 ## 2026-08-19 (PR #40 MERGED, published v1.16.0 — PR #41 still open)
 - PR #40: opt-in `multiSlicer` prop on `Table` — click-to-toggle, AND-combined slicer chips, for eq-shell's Staff page. Default `false`; verified against all 8 existing `slicers=` call sites in eq-shell (2 use controlled `activeSlicer`/`onSlicerChange`, unaffected). Merged, published as `@eq-solutions/ui@1.16.0` via the Changesets version-packages PR (#42). Consumed same day in eq-shell [PR #1460](https://github.com/eq-solutions/eq-shell/pull/1460).
