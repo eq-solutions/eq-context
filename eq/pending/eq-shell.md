@@ -13,6 +13,13 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell / ops: SEC-13 gate-coverage fix + REVOKE closed live (2026-08-21)
+
+- [ ] **`field_people_removed_iud` tenant-tautology bug** — fail-open on both ehow and zaap, unaffected by the SEC-13 REVOKE (a trigger fires through its attachment regardless of EXECUTE grants). Flagged in `ops/security-register.md` SEC-13 addendum for Royce's read, not actioned. _(added 2026-08-21)_
+- [ ] **`FUNC_EXEC_ANON_TRACKED`'s 15 entries in `check-tenant-drift.mjs` are now dead** — all 15 are REVOKEd, so nothing will ever hit that check again. Safe, low-priority cleanup. Spun off as background task `task_e09ab379`. _(added 2026-08-21)_
+
+---
+
 ## eq-shell: Quote import UX — one button, drag-and-drop, per-row section picker, clearer PDF-button labels (2026-08-20)
 
 - [ ] **Add drag-and-drop to the New Quote form's "Fill from client PDF" button** — recommended in the `/decide` pass for consistency with the other PDF buttons; not yet confirmed or built. _(added 2026-08-20)_
