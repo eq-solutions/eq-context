@@ -61,9 +61,9 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-20)
 
 **eq-service:**
+- #794 fix(security): role-gate service.hard_delete_archived_entity
 - #792 fix(migrations): unbreak fresh-database bootstrap so integration tests run
 - #791 fix(reports): make reissuing a report possible from the UI
-- #788 fix(auth): Shell token keepalive dies permanently on any refresh failure
 
 ---
 
