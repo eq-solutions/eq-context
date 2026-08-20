@@ -62,7 +62,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #1471 feat(staff): funnel filters on Contact, Status, Birthday
-- #1470 fix(documents): revoke authenticated grants on documents/document_audiences/document_categories
 
 ---
 
