@@ -16,6 +16,15 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-cards: root-caused the recurring `eq_cards_auto_provision` outage and built a permanent guard against it recurring (2026-08-19) (fully closed, no open items remain)
+*The Sentry issue `EQ-CARDS-1C` (auto-provision failing with a permission error) kept coming back — this was its 3rd+ occurrence, a different root cause each time. This time: a database-wide safety trigger on the shared control-plane project silently strips a function's permissions every time its code is redefined, unless the same migration explicitly re-grants them — and nothing in eq-cards' own CI checked for a missing re-grant before it shipped (eq-shell has this guard for its own migrations; eq-cards never got its own copy).*
+
+- [x] Ported eq-shell's grant-check script into eq-cards and wired it into eq-cards' own CI as a new required check, verified against both a real historical good migration and the actual bad one that caused this bug.
+- [x] eq-cards [PR #277](https://github.com/eq-solutions/eq-cards/pull/277) — merged 2026-08-19T09:18:44Z. No separate deploy needed (a CI-workflow-only change takes effect on the next PR opened, not through `deploy.yml`) — and it's since been directly observed working: the "Function grants preserved" check this guard adds has passed as a required check on every eq-cards PR opened since (#281, #282, #283), confirmed live in practice, not just merged in theory.
+- [x] **Substrate correction, 2026-08-20:** `eq/pending/eq-cards.md` still called this "PR open... your call" a day after it merged — same stale-claim pattern as #1461 above, caught in the same sweep after Royce asked to double-check "the other PR" too. Corrected here instead of left for a third recurrence.
+
+---
+
 ## eq-cards: checked whether signup is actually easy, found and fixed a real invite-drop bug, confirmed a reported repeating banner was already dead, confirmed Field's missing-licence gap is deliberate not an oversight (2026-08-19) (fully closed, no open items remain)
 *Royce: "we are getting people to sign up more and more... keen to see if its easy for them" — plus two specific reports: a "Welcome to SKS" message that "keeps coming up", and workers seeming to reach Field without entering any licences.*
 

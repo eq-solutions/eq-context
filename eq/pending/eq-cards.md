@@ -13,17 +13,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-cards: root-caused the recurring `eq_cards_auto_provision` outage and built a permanent guard against it recurring — PR open (2026-08-19)
-*The Sentry issue `EQ-CARDS-1C` (auto-provision failing with a permission error) kept coming back — this was its 3rd+ occurrence, a different root cause each time. This time: a database-wide safety trigger on the shared control-plane project silently strips a function's permissions every time its code is redefined, unless the same migration explicitly re-grants them — and nothing in eq-cards' own CI checked for a missing re-grant before it shipped (eq-shell has this guard for its own migrations; eq-cards never got its own copy).*
-
-- [x] Ported eq-shell's grant-check script into eq-cards and wired it into eq-cards' own CI as a new required check, verified against both a real historical good migration and the actual bad one that caused this bug.
-- [x] eq-cards [PR #277](https://github.com/eq-solutions/eq-cards/pull/277) — open, all CI checks green (analyze/test, migration hygiene, and the new grant-check itself).
-
-**Deferred:**
-- [ ] **PR #277 not yet merged** — built and CI-verified, but merging it is your call, not made automatically this session. _(added 2026-08-19)_
-
----
-
 ## eq-cards: Platform console redesigned around a "needs attention" queue instead of a stats wall — merged, deployed, live (2026-08-20)
 
 - [ ] **No real action buttons yet.** Each queue row is tagged which app (Cards/Field) owns the fix, but stays read-only — nothing in this app today can re-invite in bulk or force a sync retry, so a button would have nowhere real to go. Building those is separate follow-on work, your call whether/when. _(added 2026-08-20)_
