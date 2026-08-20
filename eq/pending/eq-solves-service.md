@@ -29,6 +29,23 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-solves-service: Shell session keepalive found permanently dying on any hiccup — fixed, merged, confirmed live (2026-08-20)
+*Flagged directly, not self-discovered — handed a specific known defect in `ShellTokenRefresh.tsx` (the component that quietly renews a Shell-embedded tech's login every 4 hours, built 2026-06-28) found during Tier C offline-write scoping recon: after a single failed renewal attempt, it gave up silently for the rest of the browser tab's life. The renewal only ever gets one ~15-second try, once, per 4-hour session — a tech with one bad moment of signal in that window lost their whole session for good, with every save afterward failing on a generic, unhelpful error until they reloaded the page. Already showing up once in the error tracker before this was fixed.*
+
+- [x] Every failure path now retries on a backing-off schedule instead of giving up for good — a dropped connection during the one renewal attempt no longer permanently kills the session.
+- [x] Reconnects instantly the moment wifi/signal comes back or the tab regains focus, instead of silently waiting out the full retry backoff.
+- [x] A working "Reconnect" button now appears — but only once the login has genuinely expired and a retry has already failed, never while it's still working silently in the background.
+- [x] Deliberately kept retrying even past the point the login technically expires, on purpose — the recovery handshake mints a wholly fresh login from nothing, so stopping retries at the expiry point would have thrown away the exact plant-room recovery case this fix exists for.
+- [x] 15 new automated tests written specifically to catch this bug, then proved they actually would have: deliberately re-broke the code and confirmed 8 of the 15 fail against it.
+- [x] Along the way: found and fixed a broken local build tool (`serwist`) that was silently blocking the full pre-push safety check from running at all (no diff — just a missing local install, now reinstalled from the existing lockfile).
+- [x] eq-service [PR #788](https://github.com/eq-solutions/eq-service/pull/788) — flagged as an auth-flow change per house rules, approved by Royce in chat, merged, and confirmed live on service.eq.solutions by checking the production deploy's own commit hash directly, not just its merge status (concurrent merges were landing on this repo at the same time).
+- [x] Also flagged in passing (not touched, not part of this fix): a stray react/react-dom version mismatch was silently blocking any UI-component test in the whole repo from ever running. Picked up separately the same day and landed as [PR #789](https://github.com/eq-solutions/eq-service/pull/789) (versions aligned, component-testing library added) and [PR #793](https://github.com/eq-solutions/eq-service/pull/793) (first real component tests built on top of it) — both merged. Confirmed merged and version-aligned only; their diffs weren't reviewed in depth by this session.
+
+**Deferred:**
+- [ ] **Not click-tested live in an actual embedded Shell session** — verified via 15 targeted automated tests (8 of which fail against the original broken code, proving they're real regression tests, not vacuous ones), a full clean production build, and full lint, not by watching a real technician's session survive a real dropped connection on-site. _(added 2026-08-20)_
+
+---
+
 ## eq-solves-service: the "don't send the same report twice" guard was dead code — fixed, merged, live; prerequisite for Tier C offline writes (2026-08-20)
 
 **Deferred:**

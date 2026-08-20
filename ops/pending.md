@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-20
+last_updated: 2026-08-21
 scope: Operational support to-do list — Webb, infra, substrate
 read_priority: standard
 status: live
@@ -11,6 +11,15 @@ status: live
 
 EQ items in `eq/pending.md`. SKS items in `sks/pending.md`. This file is
 for operational support: tax, entities, infrastructure, substrate.
+
+---
+
+## SEC-1 — Royce: "we are very close to the change over" (2026-08-21)
+*Raised mid-session while confirming, unrelated to any eq-service work, that SEC-1 (the sks-nsw-labour PII leak — anon key reads `people`/`timesheets`/`leave_requests`/`audit_log`) is scoped entirely to sks-nsw-labour, not eq-service or anything else in the suite. Royce's response: ignore it, the Field changeover is close.*
+
+**Deferred:**
+- [ ] **Qualitative only — no new date given, not checked against the 4-gate decommission checklist in `ops/security-register.md`** (proving-run streak, VIC scale-jump decision, sign-off owner, the 44 unmigrated workers' own date), which showed 0/4 clear as of its last live verification 2026-07-26. Full detail appended to the SEC-1 entry there is still pending — that file needs its own `/brief` before editing (brief-gate correctly caught this session trying to touch it without one; not bypassed). Worth a fresh live re-check of all 4 gates next time someone's actually working the cutover, rather than assuming this remark alone clears them. _(added 2026-08-21)_
+- [ ] Still no interim hardening on sks-nsw-labour, still decommission-at-cutover only — unchanged in kind from the existing 2026-07-20 call, just narrows the likely timeframe. _(added 2026-08-21)_
 
 ---
 
