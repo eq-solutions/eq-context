@@ -9,6 +9,10 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-21 (PR #1511 MERGED — CLAUDE.md: netlify/functions test-file location gotcha documented)
+- Added a bullet to "Build + dev gotchas": new `netlify/functions/*.test.ts` files must live under `netlify/functions/_shared/`, never top-level — the "Guard function filenames" CI step (and a real Netlify deploy) fails on any top-level filename outside `[A-Za-z0-9_-]` once its extension is stripped. Discovered and worked around in PR #1507 earlier today; this writes the rule down.
+- eq-shell [PR #1511](https://github.com/eq-solutions/eq-shell/pull/1511) (`5337becb`) — squash-merged, confirmed live (commit_ref exact match, deploy `state: "ready"`).
+
 ## 2026-08-21 (PR #1502/#1506/#1508 MERGED — nav-by-role audit rounds 4-5: HUB_APPS consolidated, 3 permission-gate bugs found across a full 6-role ground-up sweep)
 - Continuation of the 2026-08-19 nav-by-role audit. Consolidated `HubLayout.tsx`/`TenantHome.tsx`'s separate `HUB_APPS` arrays into a shared `src/lib/hubApps.ts` — found in the process that `HubLayout`'s sidebar (47 files route through it) never enforced `hideForTier`, silently showing the Service tile to trial-tier tenants. Fixed.
 - Found and fixed the health digest's long-open "two adjacent staff-approval screens" item (logged 2026-08-16): `staff-record-licence-review.ts` required `admin.review_cards` (manager-only) where `staff-review-state.ts`, reading the same underlying data, only required `field.view_licences` (manager+supervisor). Matched to the looser gate on Royce's call, plus added a matching client-side gate that hadn't existed at all.
