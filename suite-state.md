@@ -60,12 +60,16 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-20)
 
+**eq-field:**
+- #749 v3.5.540 — fix: 2 latent bugs found during the sign investigation
+
 **eq-service:**
+- #797 fix(migrations): reconstruct the service.* base tables ehow moved by hand
 - #792 fix(migrations): unbreak fresh-database bootstrap so integration tests run
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
-- #1499 fix(security): REVOKE anon-EXECUTE on 15 service/app_data functions (SEC-13)
+- #1501 fix(quotes): hoist Date.now() out of render to satisfy react-hooks/purity
 
 ---
 
