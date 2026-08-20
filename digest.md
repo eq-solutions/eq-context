@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-20 22:50 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-20 23:13 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-20 22:38 UTC → 2026-08-20 22:50 UTC)
+## Since last refresh (2026-08-20 22:50 UTC → 2026-08-20 23:13 UTC)
 
-- Merged: eq-shell [#1494](https://github.com/eq-solutions/eq-shell/pull/1494) fix(labour-hire): batch flow never captured an employer name
-- Merged: eq-shell [#1493](https://github.com/eq-solutions/eq-shell/pull/1493) fix(quotes): clarify client-RFQ vs supplier-quote PDF button
-- Merged: eq-shell [#1490](https://github.com/eq-solutions/eq-shell/pull/1490) fix(labour-hire): employment_type never protected from Cards
-- Merged: eq-shell [#1487](https://github.com/eq-solutions/eq-shell/pull/1487) fix(labour-hire): zip-slip check false-positives on every en
-- Merged: eq-shell [#1484](https://github.com/eq-solutions/eq-shell/pull/1484) fix(documents): 0253 inserted reminder_count mid-view, PG re
-- Merged: eq-shell [#1483](https://github.com/eq-solutions/eq-shell/pull/1483) fix(routing): swallow rejected hover-prefetch of a lazy rout
-- Merged: eq-shell [#1481](https://github.com/eq-solutions/eq-shell/pull/1481) fix(documents): reminder cron respects due_at, backs off on 
-- Merged: eq-shell [#1478](https://github.com/eq-solutions/eq-shell/pull/1478) fix(documents): add missing origin guard to document-version
+- Merged: eq-shell [#1512](https://github.com/eq-solutions/eq-shell/pull/1512) chore(security): retire dead FUNC_EXEC_ANON_TRACKED entries 
+- Merged: eq-shell [#1492](https://github.com/eq-solutions/eq-shell/pull/1492) feat(quotes): drag-and-drop + one import button + per-row se
+- Merged: eq-shell [#1491](https://github.com/eq-solutions/eq-shell/pull/1491) fix(labour-hire): batch cleanup deletes staging docs before 
+- Merged: eq-shell [#1489](https://github.com/eq-solutions/eq-shell/pull/1489) feat(labour-hire): drag-and-drop for the batch intake file p
+- Merged: eq-shell [#1488](https://github.com/eq-solutions/eq-shell/pull/1488) fix(labour-hire): staging-object cleanup is fire-and-forget,
+- Merged: eq-shell [#1486](https://github.com/eq-solutions/eq-shell/pull/1486) feat(labour-hire): batch intake — group upload for admin and
+- Merged: eq-shell [#1485](https://github.com/eq-solutions/eq-shell/pull/1485) feat(quotes): Excel labour/materials breakdown import + Cate
+- Merged: eq-shell [#1482](https://github.com/eq-solutions/eq-shell/pull/1482) fix(crm): revoke authenticated INSERT/DELETE on contact_cust
 
 ## ⚠ Needs you (8)
 
@@ -78,6 +78,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-20 | eq-shell | [#1512](https://github.com/eq-solutions/eq-shell/pull/1512) chore(security): retire dead FUNC_EXEC_ANON_TRACKED entries (SEC- |
 | 2026-08-20 | eq-shell | [#1511](https://github.com/eq-solutions/eq-shell/pull/1511) docs: note the netlify/functions test-file location gotcha |
 | 2026-08-20 | eq-shell | [#1508](https://github.com/eq-solutions/eq-shell/pull/1508) fix(nav): 4 admin entry points show links their destination would |
 | 2026-08-20 | eq-shell | [#1507](https://github.com/eq-solutions/eq-shell/pull/1507) test(quotes): accuracy harness for the subcontractor PDF import |
@@ -92,7 +93,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-20 | eq-shell | [#1498](https://github.com/eq-solutions/eq-shell/pull/1498) fix(drift): CHECK 6 widen schema scan to service/app_data (SEC-13 |
 | 2026-08-20 | eq-shell | [#1497](https://github.com/eq-solutions/eq-shell/pull/1497) feat(quotes): Jobs-page "From supplier file" button now takes Exc |
 | 2026-08-20 | eq-shell | [#1496](https://github.com/eq-solutions/eq-shell/pull/1496) feat(labour-hire): review each licence individually before approv |
-| 2026-08-20 | eq-shell | [#1495](https://github.com/eq-solutions/eq-shell/pull/1495) chore: remove eq-shell's dead duplicate of workers-canonical-sync |
 _Showing 15 of 124 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -132,7 +132,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | [eq-shell](eq/pending/eq-shell.md) | 1464 | 172 / 62 | 151 | 39 |
 | [eq-cards](eq/pending/eq-cards.md) | 396 | 40 / 13 | 41 | 3 |
 | [eq-field](eq/pending/eq-field.md) | 773 | 95 / 27 | 43 | 12 |
-| [eq-solves-service](eq/pending/eq-solves-service.md) | 620 | 70 / 25 | 77 | 7 |
+| [eq-solves-service](eq/pending/eq-solves-service.md) | 630 | 70 / 25 | 81 | 7 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 152 | 13 / 6 | 5 | 14 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
 | [eq-ui](eq/pending/eq-ui.md) | 29 | 2 / 0 | 2 | 0 |
@@ -200,4 +200,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-20 22:50 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-20 23:13 UTC._
