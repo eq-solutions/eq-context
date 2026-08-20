@@ -9,6 +9,10 @@ status: live
 
 # EQ Service — Changelog
 
+## 2026-08-21 (PR #795 MERGED — no functional change: added missing test coverage for the check auto-start behaviour)
+- Tapping pass/fail/N-A on a maintenance check that hasn't been started yet quietly starts the check first, then records the result, instead of rejecting the tap — that behaviour already existed and is unchanged. This PR only adds automated tests proving it actually works, including the failure path (a failed auto-start now provably shows an error and saves nothing, rather than that just being assumed).
+- No app code changed.
+
 ## 2026-08-20 (PR #790 MERGED — delivery rows now record which report was sent; lost column constraint restored)
 - Report deliveries now store which of the three reports was issued (PM Check / Customer Report / Work Order Details). The action already chose between them; it just never wrote the choice down, so every delivery row was blank and the history couldn't tell them apart.
 - Migration 0225 restores `NOT NULL DEFAULT 'pm_check' CHECK (report_type IN ('pm_check','wo_details','pm_asset'))` on `service.report_deliveries.report_type` — all three had been lost in the `public.*` → `service.*` move that migration 0059 still appears to declare. Applied through the governed `apply-service-migrations` dispatch (checksummed ledger row), never MCP `apply_migration`.

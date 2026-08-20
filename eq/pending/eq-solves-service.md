@@ -13,6 +13,16 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-solves-service: added missing test coverage for the "just start tapping" check behaviour — merged, live (2026-08-21)
+*A maintenance check that hasn't been started yet doesn't reject a technician's first tap on pass/fail/N-A — it quietly starts the check on their behalf first, then records the result, so a tech who forgets to press "Start Check" isn't blocked. That behaviour already existed; nothing had ever tested that it actually works, or that it fails safely (no result saved, check left startable) if the auto-start itself fails. Direct ask, not self-discovered.*
+
+- [x] 14 new automated tests: the check starts on the very first tap; it does not try to start again on a second tap; a failed start shows an error and saves nothing; location-capture degrades gracefully (starts anyway, with no coordinates) whether the tech denies location or the device doesn't support it at all.
+- [x] Whole existing maintenance-page test suite re-run alongside it — 120 of 120 passing, nothing else broken.
+- [x] eq-service [PR #795](https://github.com/eq-solutions/eq-service/pull/795) — tests only, no app behaviour changed — merged; the real build-and-typecheck safety check confirmed green after merge.
+- [x] Found in passing, not part of this task but worth knowing: this repo's "merge" button doesn't actually wait for its own safety checks to finish first — armed it to merge automatically once checks passed, and it went through immediately instead of waiting, before the main build check had even finished (it did pass, just after the fact, confirmed separately). Logged in [worktree-registry.md](../../system/worktree-registry.md) so the next merge on this repo doesn't assume otherwise.
+
+---
+
 ## eq-solves-service: worktree/branch/stash graveyard cleared — 8 stranded branches, 23 orphaned folders, and 3 stale stashes, every one confirmed already-shipped before removal (2026-08-21)
 *Asked to check one specific stranded worktree (`fix/session-expiry-suite-wide`) that looked like finished work with no PR. Confirmed by content hash (`git patch-id`), not just ancestry, that it was a byte-for-byte duplicate of already-merged PR #727 — two sessions had done the same fix, one got the PR, the other was left behind under a different commit. Asked to check the rest of the repo's stranded worktrees for the same pattern, then to "complete the survey" against two more branches that were only visible because they still held old stashes. Same result every single time: the content had already shipped, just under a different SHA.*
 
