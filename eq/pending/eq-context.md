@@ -16,7 +16,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ## Substrate: F9/F14 "possibly recurred" digest flags — reviewed informally, not yet written to the ledger (2026-08-20)
 *Both flags in digest.md's Needs You linked to the same session log (`sessions/2026-08-20.md`), the day's own — a high-concurrent-session-volume day. Read the actual matching text for both: F9's match is a session narrating the guard correctly blocking a risky git op (citing its own historical rationale — conflict markers, stuck rebases, detached HEAD — as context for why, not reporting a new one); F14's match likewise reads as sessions catching and correcting stale claims, which is the guard working, not failing. Same self-referential-citation shape `failures.md` §"How to add a failure" already documents for the F1 precedent. Assessed as false positives, not confirmed as a formal ledger entry.*
 
-- [ ] **Add `sessions/2026-08-20.md` to F9's and F14's `confirmed_in` list in `system/failures.md`**, without bumping `recurrences`/`rung` — closes the self-triggering loop so this same day doesn't keep re-flagging on every future digest run. _(added 2026-08-20)_
+- [x] **Add `sessions/2026-08-20.md` to F9's and F14's `confirmed_in` list in `system/failures.md`**, without bumping `recurrences`/`rung` — closes the self-triggering loop so this same day doesn't keep re-flagging on every future digest run. Done — both entries now list `sessions/2026-08-20.md` alongside their prior confirmations.
 
 ---
 
