@@ -1,7 +1,7 @@
 ---
 title: EQ Field — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-20
+last_updated: 2026-08-21
 scope: EQ Field engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -10,6 +10,23 @@ status: live
 # EQ Field — Pending
 
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-field: Documents to Sign — nav visibility, then view, then the real sign-write bug, six rounds to root cause (2026-08-20)
+*Royce reported the "Documents to Sign" nav item invisible, then — once it was — that View and Sign both had real bugs. Each round used live evidence (DB queries, a DevTools trace, Netlify function logs) rather than re-theorizing; full root-cause detail per version is in `docs/reflection-log.md`'s 2026-08-20 entries.*
+
+- [x] **Pilot access removed for good** — any signer with ≥1 outstanding row now sees the nav item, not just two hardcoded pilot emails. v3.5.530 ([PR #739](https://github.com/eq-solutions/eq-field/pull/739)), merged, live.
+- [x] **Nav item still not showing, round 1**: the gate's "no token yet" branch was latching `false` (permanent) instead of leaving `null` (retryable) on an async Shell-token timing race. v3.5.531, merged, live.
+- [x] **Nav item still not showing, round 2**: the gate function was only ever called from `showPage()`, which never runs for the default desktop-manager dashboard landing. Added an unconditional call in `initApp()`. v3.5.532, merged, live.
+- [x] **Sidebar: hide Logout when Shell-embedded** — small unrelated report mid-investigation ("it doesn't do anything"). Confirmed cause: `logoutUser()` clears Field's own session but never touches Shell's `eq_shell_session` cookie, so the click was a no-op in that mode specifically (a genuine logout standalone). Now hidden only when Shell-embedded. v3.5.533, merged, live.
+- [x] **Root cause of the whole nav/list/view/sign saga, finally found**: `document-signoffs.js`'s `ehowFetch()` never sent `Accept-Profile`/`Content-Profile: app_data`, so every call 404'd upstream against the wrong schema — surfaced the entire time as a generic "Upstream query failed"/"Write failed". Two rounds of production `DROP`+`CREATE VIEW` and a Supabase project restart, chasing a schema-cache-staleness theory, were both harmless but never the actual fix. v3.5.534 ([PR #743](https://github.com/eq-solutions/eq-field/pull/743)), merged, live.
+- [x] **View button: popup silently blocked on desktop Chrome**, then **blank tab that never navigated on iPhone Safari** — two separate browser mechanisms, two separate fixes. Resolved by making the second tap itself the direct, synchronous `window.open()` call with the URL already resolved. v3.5.535 ([PR #744](https://github.com/eq-solutions/eq-field/pull/744)), v3.5.536 ([PR #745](https://github.com/eq-solutions/eq-field/pull/745)), merged, live.
+- [x] **Sign failures showed a hardcoded "Couldn't sign" regardless of actual cause** — now surfaces the real server error text, so the next attempt is self-diagnosing. This is what actually caught the bug below. v3.5.537 ([PR #746](https://github.com/eq-solutions/eq-field/pull/746)), merged, live.
+- [x] **Office Online viewer routing for .docx/.xlsx/.pptx got stuck on mobile** — dropped; View now always opens the raw signed URL and lets the browser/OS handle it natively (same as Royce's original, working desktop behaviour). v3.5.538 ([PR #747](https://github.com/eq-solutions/eq-field/pull/747)), merged, live.
+- [x] **The actual sign-write bug**: `ehowFetch()`'s header merge put the PATCH call's own extra header (`Prefer: return=minimal`) in a position where it wholesale-overwrote the entire headers object — silently dropping `apikey`/`Authorization`/`Content-Profile` on Sign only (List/View never pass extra headers, which is why they always worked). Confirmed via live Netlify function logs from Royce's own failed attempt, not inferred — grants and triggers were re-checked clean first. Live since v3.5.534; every sign attempt in this whole thread was doomed regardless of which View-side fix was live at the time. v3.5.539 ([PR #748](https://github.com/eq-solutions/eq-field/pull/748)), merged, live. **Royce confirmed live**: his own test document now shows SIGNED, cross-verified in Shell's admin register.
+- [ ] **Two real, separate latent bugs found during this investigation, confirmed NOT the cause of any of the above, neither fixed**: (1) `verify-pin.js`'s `verify-shell-cookie` branch never passes `shell_user_id` into `signToken()`, unlike its two sibling branches — Royce has consistently logged in via the other (working) branch, so this hasn't bitten him yet. (2) `refreshDocumentSignGate()`'s `res.ok ? res.json() : []` treats any non-2xx server response identically to a genuine "nothing outstanding," latching that false negative permanently with no retry. Both named in `docs/reflection-log.md`, neither acted on. _(added 2026-08-20)_
+- [ ] **Sign's write success confirmed on desktop only** — View is confirmed working on both desktop and iPhone Safari; Sign itself (v3.5.539) has only been confirmed via Royce's desktop test so far. Worth a real mobile Sign attempt. _(added 2026-08-20)_
 
 ---
 

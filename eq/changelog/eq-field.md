@@ -1,13 +1,41 @@
 ---
 title: EQ Field — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-19
+last_updated: 2026-08-21
 scope: EQ Field append-only history. Canonical name (repo-slug convention, matching eq-shell.md/eq-cards.md/eq-intake.md/eq-context.md/eq-receipts.md/eq-ui.md) — absorbed field.md's full history 2026-08-17. field.md's own header had claimed the opposite direction ("eq-field.md was merged into this file 2026-07-19, don't split again"), but a fresh eq-field.md was recreated after that and diverged with 5 real, unique entries (PR #703/#705/#709/#710/#711) never merged back — exactly the drift that note warned about. Content of both preserved with no loss; field.md is now a stub pointing here. Don't split the log again.
 read_priority: reference
 status: live
 ---
 
 # eq-field changelog
+
+## 2026-08-20 (PR #748 MERGED — Documents to Sign: fixed the real sign-write bug, header-merge order)
+- `ehowFetch()`'s header merge (`Object.assign({headers: merged}, init)`) put `init` as the last source in a shallow merge; `sign`'s PATCH call is the only call site that passes its own `init.headers` (`Prefer: return=minimal`), which wholesale-overwrote the entire merged headers object — `apikey`/`Authorization`/`Content-Profile` included. PostgREST rejected every Sign attempt: `401 "No API key found in request"`.
+- Confirmed via Netlify's own function logs from Royce's live test, not inferred — grants and triggers on `document_signoffs` re-checked clean first.
+- Live since v3.5.534 (#743) — every sign attempt across this entire thread (v3.5.534-538) was doomed regardless of which View-side fix was live, since none of them touched the write path.
+- Fix: compute the merged headers object last so it always wins. eq-field [PR #748](https://github.com/eq-solutions/eq-field/pull/748) (v3.5.539), merged, confirmed live, confirmed working by Royce (his test document shows SIGNED, cross-verified in Shell's admin register).
+
+## 2026-08-20 (PR #747 MERGED — Documents to Sign: Office viewer got stuck on mobile, dropped it)
+- The `isOffice` routing (v3.5.535) sent `.docx`/`.xlsx`/`.pptx` through `view.officeapps.live.com`, which Royce reported getting stuck on mobile. Removed entirely — View now always opens the raw signed URL and lets the browser/OS handle it natively, matching Royce's original working desktop behaviour before any routing was added. eq-field [PR #747](https://github.com/eq-solutions/eq-field/pull/747) (v3.5.538), merged, live.
+
+## 2026-08-20 (PR #746 MERGED — Documents to Sign: "Couldn't sign" now shows the real reason)
+- Six materially different server responses on the sign path all collapsed into the same hardcoded toast, even though the real error text was already being extracted into `e.message` two lines away. Now shown when present. Observability fix only, not a root-cause fix — but it's what caught #748's bug on the next real attempt. eq-field [PR #746](https://github.com/eq-solutions/eq-field/pull/746) (v3.5.537), merged, live.
+
+## 2026-08-20 (PR #744/#745 MERGED — Documents to Sign: View button popup-block, then iPhone Safari blank tab)
+- Desktop Chrome: `window.open()` after two awaited network round-trips was being silently blocked. Iterated to opening a blank tab synchronously first, then redirecting once the URL resolved (v3.5.535, [PR #744](https://github.com/eq-solutions/eq-field/pull/744)).
+- iPhone Safari: that same redirect-after-await trick doesn't work on WebKit — a tab opened, never navigated. Replaced with a genuine second-tap "Open document" button using an already-resolved URL, so the click itself is the direct synchronous `window.open()` on every browser (v3.5.536, [PR #745](https://github.com/eq-solutions/eq-field/pull/745)).
+- Both merged, live.
+
+## 2026-08-20 (PR #743 MERGED — Documents to Sign: found the real root cause, four rounds in)
+- `document-signoffs.js`'s `ehowFetch()` never sent `Accept-Profile`/`Content-Profile: app_data`. `document_register`/`document_signoffs`/`document_versions` all live in `app_data`, not `public` — every call (`list`/`view`/`sign`) had been 404ing upstream since this endpoint was first written, surfaced as a generic "Upstream query failed"/"Write failed" the whole time.
+- Two rounds of production `DROP`+`CREATE VIEW` and a Supabase project restart, chasing a schema-cache-staleness theory, were both harmless but never the fix — a `curl` without the profile header (matching what the code actually sent) would have ruled that theory out immediately.
+- eq-field [PR #743](https://github.com/eq-solutions/eq-field/pull/743) (v3.5.534), merged, live.
+
+## 2026-08-20 (v3.5.530-533 MERGED — Documents to Sign: pilot opened up, nav-visibility gate fixed twice, sidebar Logout hidden when Shell-embedded)
+- Pilot access removed entirely — any signer with ≥1 outstanding row sees the nav item now, not just two hardcoded emails. eq-field [PR #739](https://github.com/eq-solutions/eq-field/pull/739) (v3.5.530).
+- Nav-visibility gate fixed twice: first, an async token-timing race was latching a permanent false instead of a retryable null (v3.5.531); then, the gate was only ever invoked from `showPage()`, which never runs for the default desktop-manager dashboard landing — added an unconditional call in `initApp()` (v3.5.532).
+- Unrelated small fix mid-thread: `logoutUser()` never touched Shell's session cookie, so the sidebar Logout button was a no-op when Shell-embedded — now hidden in that mode only (v3.5.533).
+- All merged, live.
 
 ## 2026-08-19 (PR #737 MERGED — dashboard licence-alert card also flags missing required credentials)
 - Companion to PR #734 below — same gap, second surface. The dashboard's licence-expiry alert card only ever showed held-but-lapsing licences, same blind spot the roster badge had before #734.
