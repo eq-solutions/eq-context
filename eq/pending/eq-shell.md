@@ -13,6 +13,21 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: 2 more orphaned pages removed (Field roster + Shell licence OCR) — PR open, blocked on the SAME unrelated drift as the entry below, duplicate fix task spawned by mistake (2026-08-20)
+*Follow-up to the [[eq-shell-nav-role-audit-2026-08-19|full nav-by-role audit]] — Royce asked for an "orphan pages" diagram (routes with zero nav trigger), reviewed live on his own screen, and approved deleting 2 of the 3 found.*
+
+- [x] **`FieldRosterPage.tsx` (`/:tenant/field/roster`) removed** — zero nav trigger anywhere in Shell's own code, and confirmed redundant rather than just unlinked: Field's own iframe already serves its own Weekly Roster view via `?tab=roster` (Royce confirmed live via screenshot).
+- [x] **`LicenceOcrPage.tsx` (`/:tenant/onboarding/licence`) + its two dedicated backend functions removed** — Royce's call: licence photo capture goes through Cards only. Both functions had exactly one caller each (this page), confirmed by repo-wide grep before deleting. `field.manage_licences` (its only enforcement call site) correctly moved back into `permission-enforcement-baseline.json`'s dead_keys with a retirement note.
+- [x] **Checked for live collisions before deleting**: a local unmerged branch rewriting the same OCR backend files was confirmed already shipped under a different PR/commit hash — nothing in-flight lost.
+- [x] `tsc -b --force` clean, permission-enforcement-drift guard 5/5. eq-shell [PR #1468](https://github.com/eq-solutions/eq-shell/pull/1468) open, NOT merged.
+
+**Deferred:**
+- [ ] **Blocked on the identical pre-existing drift as the entry directly below** (`public.eq_claim_connection_notification`, no committed migration) — confirmed independently, same root cause, same day. **Duplicate task spawned by mistake**: this session spawned `task_b2559f35` for the same fix `task_bec14b02` (below) already covers — Royce had already started `task_bec14b02` in a separate session before this session's own investigation surfaced the same finding independently; then also started `task_b2559f35`. Two sessions may now be racing the identical fix. Needs your call on which to keep running. _(added 2026-08-20, needs your call)_
+- [ ] **PR #1467 (below) was merged via admin override past this same check** — worth knowing that's an available, already-used precedent for #1468 too, if you'd rather not wait for either drift-fix task. Not done here — that's your call, not mine to take. _(added 2026-08-20, needs your call)_
+- [ ] **Storage browser (`/storage`) has zero nav link anywhere, confirmed still true** — its open-to-all-roles access is your own 2026-08-16 call. Asked what it's for: a generic empty per-tenant file bucket, nothing currently writes to it. Real open question whether it's worth keeping findable or retiring — no lean given either way. _(added 2026-08-20, needs your call)_
+
+---
+
 ## eq-shell: QR self-join workers showed as never logged in on Admin Users — root-caused, fixed, merged, live (2026-08-20)
 *Royce: "have we built the ability to see who's logged in on Staff?" and "the Admin Users page doesn't seem to show it properly — some of these people have definitely logged in." Investigated both against live data before writing anything, including a first question about how many people had signed on via the QR self-join links he'd been sending out.*
 
