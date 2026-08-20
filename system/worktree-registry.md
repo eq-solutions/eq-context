@@ -1,7 +1,7 @@
 ---
 title: Worktree Registry
 owner: Royce Milmlow
-last_updated: 2026-08-20
+last_updated: 2026-08-21
 scope: Active and stale git worktrees — check before creating a new one
 read_priority: critical
 status: live
@@ -109,6 +109,10 @@ If orphaned top-level `-wt` folders start reappearing in `eq-shell`/`eq-solves-s
 ---
 
 ## Active (do not touch)
+
+## Recently pruned (2026-08-21 — 1 worktree, full lifecycle same session)
+
+~~C:\Projects\eq-solves-service\.claude\worktrees\check-detail-autostart (eq-solves-service)~~ REMOVED | worktree-check-detail-autostart (merged, branch deleted) | Claude (eq-solves-service session — component-test coverage for the auto-start-on-first-result-tap behaviour in `CheckDetailPage.tsx`'s `handleItemResult`; the task's named source branch `test/maintenance-component-tests` had already merged as eq-service [PR #793](https://github.com/eq-solutions/eq-service/pull/793) by the time work started, and the shared root checkout had since moved to another session's `fix/migration-order-briefs-stub-tables` — isolated here rather than disturbing either) | 2026-08-21 | DONE — **eq-service [PR #795](https://github.com/eq-solutions/eq-service/pull/795) MERGED** (squash `04c6d13`, Royce's step-by-step go — "commit this" / "push it" / "open a PR" / "merge"). Adds `tests/components/maintenance/check-detail-autostart.test.tsx` (14 tests): start-before-record ordering, no re-start on a second tap, failed-start error path with no result recorded, geolocation denied/unsupported still starts with null coords. Full `tests/components/maintenance/` suite 120/120 pass pre-push. `tsc --noEmit` clean pre-push; `next build` unverifiable from the nested `.claude/worktrees/` path (Turbopack can't resolve `next/package.json` from there even with `turbopack.root` pinned in `next.config.ts` — worktree/tooling limitation, not a defect in the diff) but confirmed green in CI post-merge (`tsc + next build` passed, 3m49s). `Integration tests (Supabase local)` failed — this repo's documented pre-existing failure, non-blocking per its own "tsc + next build is the real gate" rule. ⚠ **New finding, not previously documented here:** this repo's branch protection does **not** actually gate merge on required checks — `gh pr merge --squash --auto` merged immediately (state `MERGED`) while `tsc + next build` was still `pending`, rather than queuing until it passed. `--auto` is not a substitute for required-checks branch protection on this repo; if that matters for a future change, verify checks are green BEFORE merging, don't rely on `--auto` to wait. Tests only, no production code touched. Worktree + branch removed (both remote `origin/worktree-check-detail-autostart` and local) post-merge.
 
 ## Recently pruned (2026-08-20 -- 3 dead worktrees found unregistered, closed-unmerged PRs)
 
