@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-20)
 
-**eq-field:**
-- #747 v3.5.538 — fix: Office viewer got stuck on mobile, dropped it
-
 **eq-service:**
 - #792 fix(migrations): unbreak fresh-database bootstrap so integration tests run
 - #791 fix(reports): make reissuing a report possible from the UI
