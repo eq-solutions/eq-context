@@ -60,8 +60,7 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-20)
 
-**eq-shell:**
-- #1471 feat(staff): funnel filters on Contact, Status, Birthday
+_No open PRs_
 
 ---
 
