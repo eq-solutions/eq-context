@@ -60,6 +60,9 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-20)
 
+**eq-cards:**
+- #287 fix(auth): reject deactivated identities in worker-link/claim-invite RPCs
+
 **eq-service:**
 - #791 fix(reports): make reissuing a report possible from the UI
 
@@ -75,7 +78,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ✓ success |
+| eq-service | ✗ failure |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
