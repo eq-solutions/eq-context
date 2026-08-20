@@ -61,7 +61,6 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-20)
 
 **eq-service:**
-- #797 fix(migrations): reconstruct the service.* base tables ehow moved by hand
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
@@ -85,7 +84,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 234 (latest: 0226) applied
+**Migrations:** eq-service has 235 (latest: 0226) applied
 
 ---
 
