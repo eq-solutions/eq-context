@@ -5876,3 +5876,13 @@ _(recovered from an unpopped stash 2026-08-20 — never made it into this file a
 - [x] Cleaned up both feature worktrees afterward. One (`eq-shell-quotes-purity-lint`) had been left in a partially-corrupted state by an earlier interrupted removal attempt (its `.git` link file was gone but the directory and git's worktree metadata weren't) — resolved with a manual directory removal plus `git worktree prune`, rather than plain `git worktree remove`.
 
 ---
+
+## eq-cards: "auto-provision null-auth guard" task turned out already shipped — verified merged (PR #234, 2026-08-13) and live on jvkn, stale local branch cleaned up (2026-08-21) (fully closed, no open items remain)
+*Asked to push a local-only eq-cards branch (`fix/auto-provision-null-auth-guard`, guards `eq_cards_auto_provision()` against a NULL `auth.uid()` race — Sentry EQ-CARDS-1A/1B) and open a PR for it, treating it as dormant/unshipped work. Verified against live GitHub state before building anything.*
+
+- [x] **Turned out already merged.** The same commit content had already been pushed under that identical branch name, opened as PR #234, and squash-merged to `main` on 2026-08-13 (8 days earlier) — confirmed by diffing the migration file byte-for-byte between `origin/main` and the stale local branch (zero lines different). No new PR was needed or opened.
+- [x] **Root cause of the false "never pushed" premise:** the task's own check (`git log origin/main..origin/fix/auto-provision-null-auth-guard`) erroring "unknown revision" was read as proof the branch was never pushed — it actually just meant GitHub had auto-deleted the remote branch after the merge, an unrelated and completely normal event. Logged as a general trap for future sessions (`stale-branch-existence-check-misreads-merged-work` in eq-shell's memory store).
+- [x] **Confirmed live on jvkn, not just merged in the repo** — a concurrent session independently queried `pg_proc` directly and found the deployed `eq_cards_auto_provision()` already carries the guard clause from this migration. Fully closed: merged AND applied.
+- [x] **Cleaned up the dead leftover** — deleted the stale local-only branch from the eq-cards root checkout (`git branch -D fix/auto-provision-null-auth-guard`) with Royce's confirmation; it had zero content not already on `main`.
+
+---
