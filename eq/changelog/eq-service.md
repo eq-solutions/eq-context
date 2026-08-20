@@ -9,6 +9,12 @@ status: live
 
 # EQ Service — Changelog
 
+## 2026-08-20 (PR #790 MERGED — delivery rows now record which report was sent; lost column constraint restored)
+- Report deliveries now store which of the three reports was issued (PM Check / Customer Report / Work Order Details). The action already chose between them; it just never wrote the choice down, so every delivery row was blank and the history couldn't tell them apart.
+- Migration 0225 restores `NOT NULL DEFAULT 'pm_check' CHECK (report_type IN ('pm_check','wo_details','pm_asset'))` on `service.report_deliveries.report_type` — all three had been lost in the `public.*` → `service.*` move that migration 0059 still appears to declare. Applied through the governed `apply-service-migrations` dispatch (checksummed ledger row), never MCP `apply_migration`.
+- CHECK uses the app's vocabulary (`wo_details`), not 0059's (`work_order_details`), and includes `pm_asset`, which that constraint never knew about.
+- No breakage window: DEFAULT lands before NOT NULL, so pre-deploy code omitting the column still inserted cleanly.
+
 ## 2026-08-20 (PR #787 MERGED — the "don't send the same report twice" guard was dead code; fixed before Tier C offline writes can rely on it)
 - **`issueMaintenanceReportAction`'s `withIdempotency` wrapper was a permanent no-op.** The wrapper detects a replay by calling `isMutationProcessed(id)`, which looks for an `audit_logs` row carrying that id — but the action's `logAuditEvent` call omitted `mutationId` entirely, so no report issuance ever wrote a row it could match on. It was the only one of 21 `withIdempotency` call sites in the repo missing it. The sole caller, `SendReportModal`, never passed a `mutationId` either, so the guard was inert from both ends. Found during Tier C offline-write-queue scoping recon.
 - Fixed at both ends: `app/(app)/reports/actions.ts` now passes `mutationId: data.mutationId ?? null` to `logAuditEvent` (matching `testing/nsx` and `testing/acb`); `SendReportModal` mints one id per modal instance and reuses it across retries. Minting fresh per click — the pattern used at every other client call site in this repo — would have left the guard doing nothing. Added a `sendingRef` double-submit guard (the Send button is already `disabled` while pending, but a click landing before that render commits would start a second request) and an "Already Sent" render path, since `withIdempotency`'s short-circuit returns no revision and the modal would otherwise show "Revision undefined".

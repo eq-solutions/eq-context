@@ -5245,3 +5245,24 @@ contain the same values and were pushed before push-protection caught up.
 **Deferred:** none.
 
 ---
+
+---
+
+## eq-solves-service: delivery rows now record which report was sent, and the column got back the constraint it lost in the schema move (2026-08-20, archived at close — no open items)
+*Direct follow-on to the same-day #787 close, which found this and filed it as its own task. `issueMaintenanceReportAction` dispatches on `report_type` to choose between three generators — PM Check, Customer Report, Work Order Details — but the `report_deliveries` INSERT omitted the column, so every delivery landed `NULL` and the history couldn't tell them apart.*
+
+- [x] One line added to the INSERT (`app/(app)/reports/actions.ts:141`), reusing the `reportType` the dispatcher had already computed.
+- [x] Migration `0225_report_deliveries_report_type_constraint.sql` restores `NOT NULL DEFAULT 'pm_check' CHECK (report_type IN ('pm_check','wo_details','pm_asset'))`. **Ordering is load-bearing:** backfill → DEFAULT → CHECK → NOT NULL, so the default exists before NOT NULL bites.
+- [x] **The app's vocabulary won, not 0059's.** 0059's CHECK said `work_order_details`; the app has only ever sent `wo_details`, and `pm_asset` (added 2026-07-30) was never in that constraint at all.
+- [x] **Confirmed 0059 describes nothing live** (the generalised rule from #787, applied): live column was plain nullable `text`, no default, **no CHECK at all**. Also confirmed `service.report_deliveries` is a real table (`relkind='r'`) — no `app_data` copy, no INSTEAD OF triggers — so a plain `ALTER TABLE`, not the base-table/view/trigger trio that canonical entities like `contract_scopes` (0216) need. Not everything in `service.*` is a canonical view.
+- [x] **Dry-run technique worth reusing:** ran the exact migration against live ehow inside a `DO $$ ... RAISE EXCEPTION $$` block — every statement executes, then the raise aborts and rolls the whole block back. Guaranteed regardless of whether the endpoint honours an explicit `BEGIN/ROLLBACK`. Re-queried the column afterwards to prove zero drift was left behind.
+- [x] [PR #790](https://github.com/eq-solutions/eq-service/pull/790), squash-merged (`8eecfeb`) on Royce's explicit "merge #790 and dispatch the migration". Live confirmed by commit ancestry, not a green tick: newest ready production deploy's `commit_ref` is `8eecfeb` exactly.
+- [x] Migration applied via the **governed dispatch**, never MCP `apply_migration` — ledger row carries a checksum and `applied_by: gh-actions:Milmlow`; ledger total 232 = 232 repo files. Live column re-verified post-apply: `NO` nullable, `'pm_check'::text` default, CHECK present.
+- [x] No breakage window by construction: DEFAULT lands before NOT NULL, so the pre-deploy code omitting the column would still have inserted cleanly as `pm_check`.
+- [x] Merged with `Integration tests (Supabase local)` red — verified pre-existing, not mine: it dies at migration **0042** on `relation "public.briefs" does not exist`, 183 files before 0225. (A concurrent session picked this up the same day as `fix/migration-order-briefs-stub-tables`.)
+
+**Gotchas found, worth not re-learning:**
+- [x] **`npm run check | tail -N` reports exit 0 even when the build fails** — the pipe returns `tail`'s status, not npm's. A genuinely failed build read as passing; only caught by reading the log. Capture the exit code directly (`cmd > log 2>&1; echo $?`).
+- [x] **A git worktree has no `.env.local`** (gitignored, doesn't come across), so `next build` dies on missing `NEXT_PUBLIC_SUPABASE_*`. Use the placeholders `check.yml` already defines.
+- [x] **`git worktree remove` can unregister the worktree but leave the directory** on Windows (node_modules locks) — it drops out of `git worktree list` while the folder persists. That is exactly how the orphaned `-wt` build-cruft folders in `system/worktree-registry.md` are born. Finish with a plain recursive delete.
+- [x] **Concurrent-session collision in the shared checkout, and the fix.** Another session was live in `C:\Projects\eq-solves-service` editing the *same file*; `git checkout -b` silently carried their uncommitted work onto my branch, and the switch back was refused (git protected them). Backed out entirely: did the work in a top-level sibling worktree, and renamed the branch their tree had landed on so they couldn't push under my task's name. Nothing of theirs was lost — their react-dom alignment landed independently as #789. Reinforces the standing rule: in a shared checkout, branch off main into a **top-level sibling** worktree (never `.claude/worktrees/`, which trips the guard) and commit fast.
