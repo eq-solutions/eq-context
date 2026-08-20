@@ -9,6 +9,9 @@ status: live
 
 # EQ Service — Changelog
 
+## 2026-08-20 (PR #781 MERGED — Tier B of the offline-first proposal scoped)
+- **`docs/proposals/offline-first.md`: Tier B (installable PWA + read-cache) expanded from a one-paragraph proposal into a task-level breakdown** — app-icon blocker (no EQ Service app icon exists anywhere in the repo yet), manifest, service worker (`@serwist/next`), read-cache scope, an auth-grace step explicitly gated on Royce's sign-off (`verifyServiceJwt()` hard-fails on `exp` today, no grace concept), a smoke test, acceptance criteria, and an explicit boundary against Tier C (write queue/IndexedDB). Docs only — no code, schema, or behaviour change; both tier-gating decisions remain open. [PR #781](https://github.com/eq-solutions/eq-service/pull/781), confirmed live.
+
 ## 2026-08-20 (PRs #776-780 MERGED — offline draft-save gap closed, 2 real bugs found + fixed)
 - **NSX Step 1 draft-save** — the one form left uncontrolled/unprotected after Royce's 2026-08-19 draft-persistence ship (`119eba4`). Converted to controlled state, wired into the existing `useDraftAutosave` hook, mirroring ACB Step 1. [PR #776](https://github.com/eq-solutions/eq-service/pull/776), confirmed live.
 - **`docs/proposals/offline-first.md` updated** — Tier A marked shipped instead of proposed; Tiers B/C remain correctly unstarted. [PR #777](https://github.com/eq-solutions/eq-service/pull/777), confirmed live.
