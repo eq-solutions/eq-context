@@ -9,6 +9,11 @@ status: live
 
 # EQ Service — Changelog
 
+## 2026-08-20 (PR #783 MERGED — offline-first proposal doc corrected to match what shipped)
+- `docs/proposals/offline-first.md`'s Tier B section fully corrected: no longer overstates the icon as blocking the whole tier, no longer describes the service worker/read-cache as unbuilt, and the originally-scoped technical approach (`@serwist/next` + `next.config.ts`) is corrected to note the actual shipped approach (`@serwist/cli` postbuild, after the Turbopack incompatibility) so nobody retries the dead end. Decision #1 (connectivity bad enough to start) marked resolved.
+- Production deploy for PR #782 independently confirmed: `service.eq.solutions` serving `0dbe4d4` exactly, secret scan clean.
+- Squash-merged (`d0a9a00`) with a full, real GitHub Actions run — the first PR tonight to get one. Investigated whether that recovery is durable: confirmed real on two independent trigger types (`pull_request` and `push`-to-`main`), but root cause of the recovery is unknown (nothing this session did fixed it) — flagged as unconfirmed-but-working rather than claimed as resolved.
+
 ## 2026-08-20 (PR #782 MERGED — Tier B of the offline-first proposal: first real slice shipped)
 - **Technicians can now reopen an already-viewed page with zero signal.** New service worker (`app/sw.ts`, Serwist + `defaultCache` runtime-caching for RSC/navigation/static-asset responses), registered client-side in production only (`components/RegisterServiceWorker.tsx`). Read-cache only — no install-to-home-screen (no app icon exists yet, deliberately deferred), no offline write/save (Tier C, unscoped).
 - **Found `@serwist/next`'s webpack-plugin integration silently no-ops under this app's Turbopack-default build** — a clean `next build` shipped zero service worker with no error. Switched to `@serwist/cli`'s bundler-agnostic `serwist build` as a postbuild step; added the same step to `.github/workflows/check.yml` so CI actually covers it.
