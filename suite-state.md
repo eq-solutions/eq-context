@@ -70,7 +70,7 @@ _No open PRs_
 
 | Repo | Status |
 |------|--------|
-| eq-service | ✗ failure |
+| eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
