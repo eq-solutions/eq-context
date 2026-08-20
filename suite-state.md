@@ -63,8 +63,12 @@ _If this file is >48h old, the cron is broken._
 **eq-cards:**
 - #285 fix(labour-hire): carry address + employer name through to the roster
 
+**eq-service:**
+- #788 fix(auth): Shell token keepalive dies permanently on any refresh failure
+- #787 fix(reports): make the report-issue idempotency guard actually work
+
 **eq-shell:**
-- #1493 fix(quotes): clarify client-RFQ vs supplier-quote PDF button labels
+- #1494 fix(labour-hire): batch flow never captured an employer name; spinner copy
 
 ---
 
@@ -74,7 +78,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ? in_progress |
+| eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
