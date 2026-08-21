@@ -9,6 +9,11 @@ status: live
 
 # eq-field changelog
 
+## 2026-08-21 (PR #753 OPEN — zaap timesheets/leave_requests get per-row RLS, SEC-37)
+- `app_data.timesheets`/`leave_requests` on the EQ tenant (zaap) had a single tenant-only permissive policy — any authenticated tenant member could read every coworker's timesheet and leave record. Same shape SEC-33 already fixed for `staff`.
+- Not a port of ehow's crew-scoped pattern — zaap has no Teams feature (`team_supervisors`/`team_members` confirmed absent, live), and porting that pattern was already reasoned against in this repo's own `20260722_field_team_supervisors.sql`/`20260816` migration headers. Ships the simpler own-row-or-manager RESTRICTIVE policy those headers recommended instead — no new schema.
+- Dry-run verified live on zaap (`begin...rollback`), CI green. Not merged, not dispatched — needs Royce's go for both, and dispatch specifically needs `--slug=eq` (see PR body — the default dispatch applies to every tenant, confirmed via a sibling PR's plan output).
+
 ## 2026-08-21 (PR #752 MERGED — Roster compliance gate, part 2: worker-facing compliance card on My Schedule)
 - Companion to PR #750 (same day, below) — that badge is supervisor-only. Royce's own framing: "the whole model for me is based around empowering and encouraging our employees to ensure their profile is correct... across apprentices, labour hire and direct employees... higher compliance with less input from the business." My Schedule — the page a worker opens about themselves, not a crew-wide view — gets a status card: green "up to date" when compliant, amber naming the specific missing credential when not. Always renders both states, not just the gap.
 - Real scope correction found before writing code: assumed My Schedule needed a fix to default to the logged-in worker's own name. It already does — `index.html`'s `refreshPersonSelects()` reads `sessionStorage.eq_logged_in_name` with fuzzy-match fallback, and has locked the picker to self-only for apprentices since v3.5.172. No identity-resolution code needed; the actual gap was narrower than scoped.
