@@ -1,14 +1,14 @@
 ---
 title: EQ Suite — Current State
 owner: Royce Milmlow
-last_updated: 2026-08-20
+last_updated: 2026-08-21
 scope: Live suite state — app lineup, DB counts, open PRs, architectural decisions. Auto-refreshed nightly by GitHub Action.
 read_priority: critical
 status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-08-20 (nightly cron)_
+_Last verified: 2026-08-21 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -58,20 +58,24 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-08-20)
+## Open PRs (as of 2026-08-21)
 
 **eq-cards:**
 - #287 fix(auth): reject deactivated identities in worker-link/claim-invite RPCs
 
+**eq-field:**
+- #753 Security: zaap timesheets/leave_requests had no per-row RLS
+
 **eq-service:**
+- #801 fix(assets): exclude it_equipment from the customer-facing Assets view
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
-- #1509 fix(security): REVOKE anon read on app_config + organisations (SEC-30/32)
+- #1514 feat(equipment): add IT equipment as a second internal register type
 
 ---
 
-## System Health (as of 2026-08-20)
+## System Health (as of 2026-08-21)
 
 **CI on main:**
 
