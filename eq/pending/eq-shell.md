@@ -1,7 +1,7 @@
 ---
 title: EQ Shell — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-20
+last_updated: 2026-08-21
 scope: EQ Shell engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -16,7 +16,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ## eq-shell / ops: SEC-13 gate-coverage fix + REVOKE closed live (2026-08-21)
 
 - [ ] **`field_people_removed_iud` tenant-tautology bug** — fail-open on both ehow and zaap, unaffected by the SEC-13 REVOKE (a trigger fires through its attachment regardless of EXECUTE grants). Flagged in `ops/security-register.md` SEC-13 addendum for Royce's read, not actioned. _(added 2026-08-21)_
-- [ ] **`FUNC_EXEC_ANON_TRACKED`'s 15 entries in `check-tenant-drift.mjs` are now dead** — all 15 are REVOKEd, so nothing will ever hit that check again. Safe, low-priority cleanup. Spun off as background task `task_e09ab379`. _(added 2026-08-21)_
 
 ---
 

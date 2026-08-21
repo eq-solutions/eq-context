@@ -1,13 +1,18 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-20
+last_updated: 2026-08-21
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # eq-shell changelog
+
+## 2026-08-21 (PR #1512 MERGED — SEC-13 TRACKED cleanup, dead anon-exec entries retired)
+- SEC-13's 15 `FUNC_EXEC_ANON_TRACKED` entries in `scripts/check-tenant-drift.mjs` (12 ehow + 3 zaap) were pending-revoke placeholders; the REVOKE landed live 2026-08-20 (PR #1499, migration `0252_close_anon_exec_gap_service_app_data_trigger_fns.sql`, dispatch run `32406586537` 19:03Z) and all 15 confirmed `anon_exec: false` on both planes — the Sets could never match a query row again. Replaced with a historical comment matching the existing 2026-06-27 resolved-entry pattern; trimmed the CHECK-6 header comment's stale forward-looking language to past tense. No logic change.
+- Verified via a live `workflow_dispatch` (`anon_only=true`) run before opening the PR — clean, zero violations, no stale tracked-entry noise in the report.
+- eq-shell [PR #1512](https://github.com/eq-solutions/eq-shell/pull/1512) (`94d6606`) — squash-merged, confirmed live via exact Netlify `commit_ref` match against the deploy's `state: "ready"`, `context: "production"`, published 23:18:10Z.
 
 ## 2026-08-21 (PR #1501/#1504 MERGED — QuotesModule.tsx react-hooks lint debt cleared: Date.now() purity + 6 effect-timing errors)
 - Pre-existing lint debt from PR #601, not CI-blocking (real gate is `tsc -b`/`pnpm run build`). 4 `Date.now()` calls flagged by `react-hooks/purity` (Age column, expiring/stale filters, mobile card IIFE) hoisted into two new top-level helpers (`daysSince`, `isoDateOffset`) — same pattern the file already used for `stageAge`/`fmtExpiry`. No value/formatting change.
