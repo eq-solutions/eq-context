@@ -1,38 +1,38 @@
 ---
 title: EQ Suite — Health Digest
 owner: Royce Milmlow
-last_updated: 2026-08-20
+last_updated: 2026-08-21
 scope: Push-style 'what needs your attention' feed across the EQ suite. Regenerated on merge (repository_dispatch: suite-state-changed) and nightly. Full snapshot in suite-state.md.
 read_priority: high
 status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-20 23:38 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-21 01:14 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-20 23:32 UTC → 2026-08-20 23:38 UTC)
+## Since last refresh (2026-08-20 23:38 UTC → 2026-08-21 01:14 UTC)
 
-- Merged: eq-shell [#1510](https://github.com/eq-solutions/eq-shell/pull/1510) fix(security): close SEC-33 on zaap (staff PII read+delete)
-- Merged: eq-shell [#1496](https://github.com/eq-solutions/eq-shell/pull/1496) feat(labour-hire): review each licence individually before a
-- Merged: eq-shell [#1492](https://github.com/eq-solutions/eq-shell/pull/1492) feat(quotes): drag-and-drop + one import button + per-row se
-- Merged: eq-shell [#1491](https://github.com/eq-solutions/eq-shell/pull/1491) fix(labour-hire): batch cleanup deletes staging docs before 
-- Merged: eq-shell [#1489](https://github.com/eq-solutions/eq-shell/pull/1489) feat(labour-hire): drag-and-drop for the batch intake file p
-- Merged: eq-shell [#1488](https://github.com/eq-solutions/eq-shell/pull/1488) fix(labour-hire): staging-object cleanup is fire-and-forget,
-- Merged: eq-shell [#1486](https://github.com/eq-solutions/eq-shell/pull/1486) feat(labour-hire): batch intake — group upload for admin and
-- Merged: eq-shell [#1485](https://github.com/eq-solutions/eq-shell/pull/1485) feat(quotes): Excel labour/materials breakdown import + Cate
+- Merged: eq-shell [#1509](https://github.com/eq-solutions/eq-shell/pull/1509) fix(security): close SEC-30/32 on both planes, org-scoped (v
+- Merged: eq-shell [#1497](https://github.com/eq-solutions/eq-shell/pull/1497) feat(quotes): Jobs-page "From supplier file" button now take
+- Merged: eq-shell [#1495](https://github.com/eq-solutions/eq-shell/pull/1495) chore: remove eq-shell's dead duplicate of workers-canonical
+- Merged: eq-shell [#1494](https://github.com/eq-solutions/eq-shell/pull/1494) fix(labour-hire): batch flow never captured an employer name
+- Merged: eq-shell [#1493](https://github.com/eq-solutions/eq-shell/pull/1493) fix(quotes): clarify client-RFQ vs supplier-quote PDF button
+- Merged: eq-shell [#1490](https://github.com/eq-solutions/eq-shell/pull/1490) fix(labour-hire): employment_type never protected from Cards
+- Merged: eq-shell [#1487](https://github.com/eq-solutions/eq-shell/pull/1487) fix(labour-hire): zip-slip check false-positives on every en
+- Merged: eq-shell [#1484](https://github.com/eq-solutions/eq-shell/pull/1484) fix(documents): 0253 inserted reminder_count mid-view, PG re
 
 ## ⚠ Needs you (8)
 
 - 🔴 **Sentry new error** — `eq-shell` [TypeError: Failed to fetch dynamically imported module: http](https://eq-solutions.sentry.io/issues/141714696/)
 - 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
-- 🔴 **Open security finding** — SEC-30 (P0 — live, unauthenticated, confirmed on BOTH tenant planes. Proposed fix REJECTED 2026-08-21 — do not dispatch #1509.) — `public.app_config` grants unconditional SELECT (`qual=true`) to `anon` (zaap: p · [security-register.md](ops/security-register.md)
-- 🔴 **Open security finding** — SEC-31 (P1) — `public.organisations` on jvkn — any authenticated user, any tenant, reads every · [security-register.md](ops/security-register.md)
-- 🔴 **Open security finding** — SEC-32 (P1, confirmed on BOTH tenant planes. Bundled fix REJECTED alongside SEC-30 2026-08-21 — do not dispatch #1509.) — `public.organisations` — `anon` reads the full tenant registry. zaap: `id`/`slug · [security-register.md](ops/security-register.md)
-- 🔴 **Open security finding** — SEC-33 (P1 — fix ready, isolated, dry-run verified on BOTH planes.) — `app_data.staff` on zaap — any authenticated tenant member (no role required) ca · [security-register.md](ops/security-register.md)
+- 🔴 **Open security finding** — SEC-30 (P0 — live, unauthenticated, confirmed on BOTH tenant planes. Real fix ready 2026-08-21, verified against jvkn's canonical tenant registry, awaiting dispatch approval.) — `public.app_config` grants unconditional SELECT (`qual=true`) to `anon` (zaap: p · [security-register.md](ops/security-register.md)
+- 🔴 **Open security finding** — SEC-31 (P1 — fix ready, blocked on Royce's hands, not on design.) — `public.organisations` on jvkn — any authenticated user, any tenant, reads every · [security-register.md](ops/security-register.md)
+- 🔴 **Open security finding** — SEC-32 (P1, confirmed on BOTH tenant planes. Fix ready alongside SEC-30 2026-08-21, awaiting dispatch approval.) — `public.organisations` — `anon` reads the full tenant registry. zaap: `id`/`slug · [security-register.md](ops/security-register.md)
+- 🔴 **Open security finding** — SEC-37 (P1 — fix ready, isolated, dry-run verified on zaap.) — `app_data.timesheets` / `app_data.leave_requests` on zaap — any authenticated te · [security-register.md](ops/security-register.md)
 - 🔴 **Guard bypass? rung 4** — F12: Side-clone reconciliation blind-overwrote a concurrent session's already-pushed shared-fil · possibly recurred in [2026-08-21.md](sessions/2026-08-21.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-08-19.md](sessions/2026-08-19.md) · [failures.md](system/failures.md)
 
-## 🙋 Waiting on you (191)
+## 🙋 Waiting on you (190)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
@@ -48,15 +48,15 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **Not click-tested live** — verified via eslint (0 errors) and the deploy-preview build succeeding, not by scanning a real QR/join-code link and watching an admin's inbox + the Staff badge. _(added 2026-08-18)_
 - **eq-shell** · **Not yet seen working on Royce's own screen** — confirmed the code is correct and the production build deployed clean, but couldn't click through it personally (no login for this environment). Worth two minutes next time Royce is in Staff. _(added 2026-08-17)_
 - **eq-shell** · **Two adjacent staff-approval screens require different levels of permission to do very similar things** — one needs a manager, another needs only a much more junior permission to view/act on the same underlying approval data. Doesn't look deliberate. Needs your call on whether they should match. _(added 2026-08-16)_
-_…and 179 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 178 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 1 | 0d |
-| eq-solves-service | ✓ success | 0d ago | 1 | 0d |
-| eq-field | ✓ success | 0d ago | 0 | — |
+| eq-shell | ✓ success | 0d ago | 2 | 0d |
+| eq-solves-service | ✓ success | 0d ago | 2 | 0d |
+| eq-field | ✓ success | 0d ago | 1 | 0d |
 | eq-cards | ✓ success | 0d ago | 1 | 0d |
 | eq-solves-intake | ✓ success | 2d ago | 0 | — |
 
@@ -71,13 +71,14 @@ _…and 179 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | eq-shell | [EQ Field handoff auto-recovery (timeout)](https://eq-solutions.sentry.io/issues/141463602/) | 2 | 2026-08-20 |
 | eq-shell | [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/) | 2 | 2026-08-19 |
 | eq-shell | [Degraded UI Performance](https://eq-solutions.sentry.io/issues/141127922/) | 2 | 2026-08-18 |
-| eq-cards | [minified:yU: PostgrestException(message: permission denied for function eq_cards](https://eq-solutions.sentry.io/issues/137739023/) | 2 | 2026-08-18 |
+| eq-solves-service | [Error: An unexpected response was received from the server.](https://eq-solutions.sentry.io/issues/139724869/) | 1 | 2026-08-09 |
 _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunresolved)_
 
 ## Recently built (last 7 days)
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-21 | eq-shell | [#1509](https://github.com/eq-solutions/eq-shell/pull/1509) fix(security): close SEC-30/32 on both planes, org-scoped (verifi |
 | 2026-08-20 | eq-shell | [#1510](https://github.com/eq-solutions/eq-shell/pull/1510) fix(security): close SEC-33 on zaap (staff PII read+delete) |
 | 2026-08-20 | eq-shell | [#1513](https://github.com/eq-solutions/eq-shell/pull/1513) fix(labour-hire): auto-send the claim email on candidate approval |
 | 2026-08-20 | eq-shell | [#1512](https://github.com/eq-solutions/eq-shell/pull/1512) chore(security): retire dead FUNC_EXEC_ANON_TRACKED entries (SEC- |
@@ -92,15 +93,14 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-20 | eq-shell | [#1503](https://github.com/eq-solutions/eq-shell/pull/1503) fix(quotes): clear sibling import error on Line Items card |
 | 2026-08-20 | eq-shell | [#1502](https://github.com/eq-solutions/eq-shell/pull/1502) fix(staff): supervisor can complete licence re-review + consolida |
 | 2026-08-20 | eq-shell | [#1500](https://github.com/eq-solutions/eq-shell/pull/1500) fix(labour-hire): allow jvkn Supabase storage in frame-src CSP |
-| 2026-08-20 | eq-shell | [#1498](https://github.com/eq-solutions/eq-shell/pull/1498) fix(drift): CHECK 6 widen schema scan to service/app_data (SEC-13 |
 _Showing 15 of 124 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **eq-shell** (231 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-shell** (230 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (53 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (121 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
-- **eq-solves-service** (92 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
+- **eq-solves-service** (93 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
 - **eq-solves-intake** (17 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
 - **eq-ui** (2 open) · [eq/pending/eq-ui.md](eq/pending/eq-ui.md)
@@ -129,18 +129,18 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1464 | 172 / 62 | 151 | 39 |
-| [eq-cards](eq/pending/eq-cards.md) | 396 | 40 / 13 | 41 | 3 |
-| [eq-field](eq/pending/eq-field.md) | 773 | 95 / 27 | 43 | 12 |
-| [eq-solves-service](eq/pending/eq-solves-service.md) | 630 | 70 / 25 | 81 | 7 |
+| [eq-shell](eq/pending/eq-shell.md) | 1463 | 171 / 62 | 151 | 41 |
+| [eq-cards](eq/pending/eq-cards.md) | 396 | 40 / 13 | 41 | 6 |
+| [eq-field](eq/pending/eq-field.md) | 776 | 96 / 26 | 43 | 12 |
+| [eq-solves-service](eq/pending/eq-solves-service.md) | 644 | 72 / 25 | 87 | 11 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 152 | 13 / 6 | 5 | 14 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
 | [eq-ui](eq/pending/eq-ui.md) | 29 | 2 / 0 | 2 | 0 |
 | [eq-receipts](eq/pending/eq-receipts.md) | 44 | 3 / 1 | 0 | 0 |
 | [eq-context](eq/pending/eq-context.md) | 232 | 23 / 3 | 25 | 5 |
-| [cross-repo](eq/pending/cross-repo.md) | 949 | 142 / 42 | 20 | 30 |
+| [cross-repo](eq/pending/cross-repo.md) | 958 | 142 / 42 | 23 | 30 |
 | [sks](eq/pending/sks.md) | 53 | 3 / 5 | 0 | 6 |
-| [SKS](sks/pending.md) | 454 | 81 / 10 | 4 | 20 |
+| [SKS](sks/pending.md) | 454 | 81 / 10 | 4 | 23 |
 | [SKS active](sks/active.md) | 108 | 0 / 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 413 | 33 / 2 | 0 | 1 |
 
@@ -148,6 +148,8 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 _Open items sitting under a section header this old or older — not necessarily wrong, just gone quiet under its own dated write-up. Worth a look before it reads as done-and-forgotten._
 
+- **eq-shell** (2026-07-06) · **No live browser click-through of PR #686's changes** — bulk "All on/off" buttons and the collapsible customer/site grouping have only been typecheck/lint-verified, never clicked in a real browser session. _(added 2026-07-06, needs your call — or hand it to a session with live credentials)_
+- **eq-shell** (2026-07-06) · **`field_people` out-of-band regression provenance** — same open question as the already-tracked `field_job_numbers provenance` item below: migration `0158` confirmed ehow's `field_people` was safe as of 2026-07, and no repo migration touched it since, meaning something changed it live outside the One Pipe. Not investigated this session (scope was the fix, not the "who/what" — same pattern, could be the same root cause as the `field_job_numbers` provenance question). _(added 2026-07-06)_
 - **eq-shell** (2026-07-04) · **field_job_numbers provenance** — the view was created out-of-band (not originally in a repo migration); who made it + whether other planes need it tracked as `task_0467f68c`. _(added 2026-07-04)_
 - **eq-shell** (2026-07-04) · **Favour Perfect first-run config** — switch into it (after one workspace-switch or re-login), configure it, and invite its real customer admin from inside `/favour-perfect/admin/users`. _(added 2026-07-04, needs your call)_
 - **eq-shell** (2026-07-04) · **Optional: `reconcile_ledger` tidy for `favour-perfect`** — its `_eq_migrations` ledger has 204 rows incl. 39 null-checksum entries (cruft from a messy apply sequence: an 08:14 reconcile-path run stamped rows then failed; the 08:25 apply finished it). Schema is correct — purely cosmetic. A `reconcile_ledger=true` dispatch scoped to `favour-perfect` would tidy it. _(added 2026-07-04, needs your call)_
@@ -161,9 +163,7 @@ _Open items sitting under a section header this old or older — not necessarily
 - **eq-shell** (2026-07-02) · **Confirm the activity panel actually renders an event** — needs Royce to make one real change on `/admin/access-control` and check the panel. Can't be faked or tested without a real user action (see the zero-exceptions rule above). _(needs your call)_
 - **eq-shell** (2026-07-02) · **Live-verify `cards-export-licences`, `comms-jobs`, `admin-audit` return 403 on a disallowed Origin** — 3 of 6 endpoints confirmed by curl/real-traffic already; these 3 hit a sandbox DNS failure mid-check. Same code as the confirmed 3, not suspected broken, just not directly proven. _(low priority, needs a retry)_
 - **eq-shell** (2026-07-02) · **Fix `AdminWorkerQR` QR-colour crash** — Sentry `Error: Invalid hex color: var(--eq-ink)` (eq-shell, 4 events 2026-07-02) is the `qrcode` lib being passed `color.dark: 'var(--eq-ink)'` (a CSS var, not hex) in `AdminWorkerQR.tsx`. More frequent now #594 made that page the primary "Add workers" landing. Fix = pass a real hex (e.g. `#1A1A2E`). _(added 2026-07-02)_
-- **eq-shell** (2026-07-02) · **EQ Cards address autocomplete = greenfield** — Cards worker address entry (`profile_edit_screen.dart` + `profile_fill_from_licence_screen.dart`) is manual text + static state dropdown; NO Places, no package, no key. "Should already be done" = it isn't. Flutter web, so the Shell JS pattern doesn't port directly. _(added 2026-07-02)_
-- **eq-shell** (2026-07-02) · **Full governed apply-pipeline for jvkn control-plane migrations** — the guardrails above (dup-guard + runbook) landed, but a One-Pipe-style governed/automated apply for eq-cards→jvkn is still not built. Architectural decision. _(added 2026-07-02, needs Royce's call)_
-_…and 123 more — see each file's Queue health row above._
+_…and 135 more — see each file's Queue health row above._
 
 ## Possible duplicate pending items (unconfirmed)
 
@@ -200,4 +200,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-20 23:38 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-21 01:14 UTC._
