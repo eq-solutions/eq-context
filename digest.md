@@ -8,28 +8,31 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-21 01:29 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-21 12:35 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-21 01:14 UTC → 2026-08-21 01:29 UTC)
+## Since last refresh (2026-08-21 01:29 UTC → 2026-08-21 12:35 UTC)
 
-- Merged: eq-shell [#1515](https://github.com/eq-solutions/eq-shell/pull/1515) feat(access-control): role-level toggles for Field's 86 fine
-- Merged: eq-shell [#1498](https://github.com/eq-solutions/eq-shell/pull/1498) fix(drift): CHECK 6 widen schema scan to service/app_data (S
-- Merged: eq-shell [#1496](https://github.com/eq-solutions/eq-shell/pull/1496) feat(labour-hire): review each licence individually before a
-- Merged: eq-shell [#1492](https://github.com/eq-solutions/eq-shell/pull/1492) feat(quotes): drag-and-drop + one import button + per-row se
-- Merged: eq-shell [#1491](https://github.com/eq-solutions/eq-shell/pull/1491) fix(labour-hire): batch cleanup deletes staging docs before 
-- Merged: eq-shell [#1489](https://github.com/eq-solutions/eq-shell/pull/1489) feat(labour-hire): drag-and-drop for the batch intake file p
-- Merged: eq-shell [#1488](https://github.com/eq-solutions/eq-shell/pull/1488) fix(labour-hire): staging-object cleanup is fire-and-forget,
-- Merged: eq-shell [#1486](https://github.com/eq-solutions/eq-shell/pull/1486) feat(labour-hire): batch intake — group upload for admin and
-- ✅ Needs you: 8 → 6
+- Merged: eq-shell [#1500](https://github.com/eq-solutions/eq-shell/pull/1500) fix(labour-hire): allow jvkn Supabase storage in frame-src C
+- Merged: eq-shell [#1497](https://github.com/eq-solutions/eq-shell/pull/1497) feat(quotes): Jobs-page "From supplier file" button now take
+- Merged: eq-shell [#1495](https://github.com/eq-solutions/eq-shell/pull/1495) chore: remove eq-shell's dead duplicate of workers-canonical
+- Merged: eq-shell [#1494](https://github.com/eq-solutions/eq-shell/pull/1494) fix(labour-hire): batch flow never captured an employer name
+- Merged: eq-shell [#1493](https://github.com/eq-solutions/eq-shell/pull/1493) fix(quotes): clarify client-RFQ vs supplier-quote PDF button
+- Merged: eq-shell [#1490](https://github.com/eq-solutions/eq-shell/pull/1490) fix(labour-hire): employment_type never protected from Cards
+- Merged: eq-shell [#1487](https://github.com/eq-solutions/eq-shell/pull/1487) fix(labour-hire): zip-slip check false-positives on every en
+- Merged: eq-shell [#1485](https://github.com/eq-solutions/eq-shell/pull/1485) feat(quotes): Excel labour/materials breakdown import + Cate
+- ⚠ Needs you: 6 → 9 (new items)
 
-## ⚠ Needs you (6)
+## ⚠ Needs you (9)
 
 - 🔴 **Sentry new error** — `eq-shell` [TypeError: Failed to fetch dynamically imported module: http](https://eq-solutions.sentry.io/issues/141714696/)
+- 🔴 **Substrate drift** — DRIFT: deploy EQ Shell (core) (https://core.eq.solutions): claimed LIVE but reality looks DEAD
+- 🔴 **Substrate drift** — DRIFT: deploy EQ Service (https://service.eq.solutions): claimed LIVE but reality looks DEAD
 - 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-31 (P1 — fix ready, blocked on Royce's hands, not on design.) — `public.organisations` on jvkn — any authenticated user, any tenant, reads every · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-37 (P1 — fix ready, isolated, dry-run verified on zaap.) — `app_data.timesheets` / `app_data.leave_requests` on zaap — any authenticated te · [security-register.md](ops/security-register.md)
 - 🔴 **Guard bypass? rung 4** — F12: Side-clone reconciliation blind-overwrote a concurrent session's already-pushed shared-fil · possibly recurred in [2026-08-21.md](sessions/2026-08-21.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-08-19.md](sessions/2026-08-19.md) · [failures.md](system/failures.md)
+- 🟠 **Cron failing** — `index-drift.yml` 1 consecutive scheduled run(s) failed, last success 2026-08-20 · [failures.md](system/failures.md) F11
 
 ## 🙋 Waiting on you (190)
 
@@ -54,16 +57,16 @@ _…and 178 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 1 | 0d |
-| eq-solves-service | ✓ success | 0d ago | 2 | 0d |
+| eq-solves-service | ✓ success | 0d ago | 2 | 1d |
 | eq-field | ✓ success | 0d ago | 1 | 0d |
 | eq-cards | ✓ success | 0d ago | 1 | 0d |
-| eq-solves-intake | ✓ success | 2d ago | 0 | — |
+| eq-solves-intake | ✓ success | 3d ago | 0 | — |
 
 ## Live errors (Sentry)
 
 | Project | Error | Events | Last seen |
 |---------|-------|--------|-----------|
-| eq-shell | [TypeError: Failed to fetch dynamically imported module: https://core.eq.solution](https://eq-solutions.sentry.io/issues/141714696/) | 31 | 2026-08-20 |
+| eq-shell | [TypeError: Failed to fetch dynamically imported module: https://core.eq.solution](https://eq-solutions.sentry.io/issues/141714696/) | 37 | 2026-08-21 |
 | eq-shell | [Error: app_data.staff.cards_worker_id pointing at missing jvkn workers: 4](https://eq-solutions.sentry.io/issues/138175643/) | 5 | 2026-08-20 |
 | eq-shell | [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/) | 4 | 2026-08-20 |
 | eq-shell | [phone-otp: requested for inactive account](https://eq-solutions.sentry.io/issues/141933696/) | 2 | 2026-08-20 |
@@ -105,7 +108,7 @@ _Showing 15 of 124 · full record in [sessions/](sessions/)_
 - **eq-ui** (2 open) · [eq/pending/eq-ui.md](eq/pending/eq-ui.md)
 - **eq-receipts** (4 open) · [eq/pending/eq-receipts.md](eq/pending/eq-receipts.md)
 - **eq-context** (26 open) · [eq/pending/eq-context.md](eq/pending/eq-context.md)
-- **cross-repo** (182 open) · [eq/pending/cross-repo.md](eq/pending/cross-repo.md)
+- **cross-repo** (184 open) · [eq/pending/cross-repo.md](eq/pending/cross-repo.md)
 - **sks** (8 open) · [eq/pending/sks.md](eq/pending/sks.md)
 
 ## Pending (SKS)
@@ -137,7 +140,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | [eq-ui](eq/pending/eq-ui.md) | 29 | 2 / 0 | 2 | 0 |
 | [eq-receipts](eq/pending/eq-receipts.md) | 44 | 3 / 1 | 0 | 0 |
 | [eq-context](eq/pending/eq-context.md) | 232 | 23 / 3 | 25 | 5 |
-| [cross-repo](eq/pending/cross-repo.md) | 958 | 142 / 42 | 23 | 30 |
+| [cross-repo](eq/pending/cross-repo.md) | 968 | 144 / 42 | 23 | 30 |
 | [sks](eq/pending/sks.md) | 53 | 3 / 5 | 0 | 6 |
 | [SKS](sks/pending.md) | 454 | 81 / 10 | 4 | 23 |
 | [SKS active](sks/active.md) | 108 | 0 / 0 | 0 | 0 |
@@ -196,7 +199,7 @@ _[sessions/](sessions/) · 5 shown_
 
 ## Substrate honesty
 
-✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
+✗ Drift detected — see **Needs you** above. Source: `scripts/substrate_honesty.py`.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-21 01:29 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-21 12:35 UTC._
