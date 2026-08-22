@@ -9,6 +9,12 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-21 (PR #1513 MERGED — labour-hire approval now auto-sends the claim email)
+- Root cause of Royce's live-trial report ("licences approve but don't get added to the tenant staff list, cannot be exported as a compliance pack"): approving a labour-hire candidate only ever created an unclaimed `worker_invites` row — nothing prompted the candidate to claim it, so `workers.user_id` stayed null, licences never promoted, and the compliance-pack export (which needs `org_memberships` → `workers` → `licences`) couldn't see them. Confirmed live across both candidates in Royce's real trial (Conor Horgan, Nelson Sareto); their Staff-page rows existed fine — only licences/export were affected.
+- `labour-hire-candidate-review.ts` now sends the same claim-link email the existing admin "Resend" button sends, automatically, right after a successful approve — via a new shared `_shared/claim-email.ts` helper also adopted by `resend-worker-invite.ts`. Best-effort: a failed send doesn't undo the approval.
+- Still open: whether the Shell-join claim flow alone promotes credentials into real licences, or a separate Cards-app claim step is still needed — unconfirmed in code, needs a real claim to settle.
+- eq-shell [PR #1513](https://github.com/eq-solutions/eq-shell/pull/1513) — merged on explicit instruction, confirmed live via exact commit-ancestry match (`bba69d9f`).
+
 ## 2026-08-21 (PR #1512 MERGED — SEC-13 TRACKED cleanup, dead anon-exec entries retired)
 - SEC-13's 15 `FUNC_EXEC_ANON_TRACKED` entries in `scripts/check-tenant-drift.mjs` (12 ehow + 3 zaap) were pending-revoke placeholders; the REVOKE landed live 2026-08-20 (PR #1499, migration `0252_close_anon_exec_gap_service_app_data_trigger_fns.sql`, dispatch run `32406586537` 19:03Z) and all 15 confirmed `anon_exec: false` on both planes — the Sets could never match a query row again. Replaced with a historical comment matching the existing 2026-06-27 resolved-entry pattern; trimmed the CHECK-6 header comment's stale forward-looking language to past tense. No logic change.
 - Verified via a live `workflow_dispatch` (`anon_only=true`) run before opening the PR — clean, zero violations, no stale tracked-entry noise in the report.

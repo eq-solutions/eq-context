@@ -13,6 +13,20 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: Labour-hire claim gate found + fixed — approved candidates weren't reaching the compliance pack (2026-08-21)
+*Royce finished a real end-to-end trial of the batch-intake feature with two live candidates (Conor Horgan, Nelson Sareto) and reported back: cropping issues on combined front/back photo sheets, and approved licences "don't get added to the tenant staff list ... cannot be exported as a compliance pack (says they don't exist even though we just approved them)."*
+
+- [x] **Root cause confirmed live (two Supabase projects)**: approving a labour-hire candidate only ever created an unclaimed invite — nothing prompted the person to claim it, so `workers.user_id` stayed empty, licences never promoted out of staging, and no membership row existed. The compliance-pack export requires exactly that chain, so unclaimed candidates were structurally invisible to it — matching the report exactly. Both candidates' Staff-page rows were already there and active; only licences/export were affected, not the whole person.
+- [x] **Fix**: send the same claim-link email an admin's manual "Resend" button already sends, automatically, the moment an admin approves a candidate — no more silent unclaimed invite waiting to be noticed. New shared helper `_shared/claim-email.ts`, reused by both `resend-worker-invite.ts` and the new call in `labour-hire-candidate-review.ts`. Best-effort: a failed send doesn't undo the approval, Add Workers → Resend remains the fallback it already was. eq-shell [PR #1513](https://github.com/eq-solutions/eq-shell/pull/1513), merged on Royce's "merge," confirmed live via exact commit-ancestry match (`bba69d9f`).
+- [x] **Zero-code workaround surfaced for the two already-approved candidates**: Add Workers (`/admin/workers`) already had a working "Resend" button for any pending invite — Conor and Nelson both showed there as "Pending," so they were unblocked immediately, without waiting on the fix above.
+- [x] **eq-cards redeployed** on Royce's explicit separate request — edge functions + Flutter web build both confirmed independently successful.
+
+**Deferred:**
+- [ ] **Cropping fix for licence sheets with front + back on one photo** — diagnosed from real `crop_bounds` data (the OCR model draws one box spanning both faces instead of splitting them), not built. Royce's own framing was "not a big deal but would be nice" — needs his call between a low-effort prompt tweak and a fuller two-crop-box-per-credential redesign, not yet asked. _(added 2026-08-21)_
+- [ ] **Not yet real-world verified: does the Shell-join claim flow alone promote credentials into real licences, or is a separate Cards-app claim step still required?** Traced as far as code allows — `shell-join-tenant.ts` sets `worker_invites.claimed_at` and links `workers.user_id`, but whether that alone triggers credential promotion (historically a separate `eq_cards_claim_invite` RPC's job) is unconfirmed. Settle by watching what happens when Conor or Nelson actually claims via the new/resent email. _(added 2026-08-21)_
+
+---
+
 ## eq-shell / ops: SEC-13 gate-coverage fix + REVOKE closed live (2026-08-21)
 
 - [ ] **`field_people_removed_iud` tenant-tautology bug** — fail-open on both ehow and zaap, unaffected by the SEC-13 REVOKE (a trigger fires through its attachment regardless of EXECUTE grants). Flagged in `ops/security-register.md` SEC-13 addendum for Royce's read, not actioned. _(added 2026-08-21)_
