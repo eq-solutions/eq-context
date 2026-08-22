@@ -9,6 +9,13 @@ status: live
 
 # eq-field changelog
 
+## 2026-08-23 (PR #755 MERGED — Dashboard licence-missing card: one row per person, not per licence)
+- `renderLicenceExpiryAlert()` (`dashboard.js`) rendered one row per (person, licence) alert, so a person short 2+ credentials repeated their name once per credential — Royce's screenshot showed "Aiden Crowley" twice, once for White Card and once for Photo ID. Grouped by person: one row per person, all their missing/expired/expiring issues stacked as separate badges underneath. Existing missing-first/soonest-first sort preserved for free — grouping by first occurrence in the already-sorted alerts list keeps a person's row at their single most-urgent issue's position, no re-sort needed.
+- `getLicenceExpiryAlerts()` (`people.js`) untouched — grouping is render-layer only, and it has exactly one consumer. Header count badge still counts issues, not people, by design (not part of the ask).
+- Verified via direct function-level browser testing: this sandbox has no network path to reach eq-canonical (reproduced identically on both localhost and the real deploy preview URL — confirmed a Browser-pane tool limitation, not a CSP or app bug), so injected synthetic `STATE.people` data and called the real edited function directly. Confirmed one row per person, correct badge count per person, correct sort with mixed missing+expired issues, correct per-issue action buttons.
+- CI's cache-buster drift check caught 2 missed `?v=` tag bumps (`app-state.js`, `core-bundle-b1.js`) on the first push — bumping `APP_VERSION` doesn't move each script's own independent `?v=` tag in `index.html`. Third time this specific miss has recurred this month; local memory note strengthened to run `node scripts/check-cache-busters.mjs --base origin/main` before every future version-bump push instead of relying on CI to catch it.
+- eq-field [PR #755](https://github.com/eq-solutions/eq-field/pull/755), fully green CI, squash-merged on explicit "merge." Confirmed live via `field.eq.solutions/sw.js`'s `CACHE` literal reading `v3.5.544`.
+
 ## 2026-08-23 (PR #754 MERGED — 3 migrations retrofitted with the `-- Plane:` header)
 - Companion to eq-shell's new plane-scope guard (`eq/changelog/eq-shell.md`, same date) — `migrate-tenants.mjs` now reads a `-- Plane:` header to refuse dispatching a single-plane migration fleet-wide.
 - `20260722_field_team_supervisors.sql`, `20260722b_team_supervisors_tenant_lockdown.sql`, `20260722c_teams_team_members_tenant_lockdown.sql` each gained a `-- Plane: ehow (ehowgjardagevnrluult, SKS tenant) ONLY.` header — comment-only, no DDL change. Verified the guard's actual parsing regex against all 3 post-edit.

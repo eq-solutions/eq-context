@@ -1,7 +1,7 @@
 ---
 title: EQ Field — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-21
+last_updated: 2026-08-23
 scope: EQ Field engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -24,7 +24,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ## eq-field: Roster compliance gate — missing-required badge on both roster views, an assignment hold point, and a worker-facing self-compliance card (2026-08-21)
 
-- [ ] **No live click-through by a person yet, either PR** — same sandbox limitation #734/#737 already logged (no Core-authenticated SKS session reachable from this environment), now also true of PR #752's My Schedule card. Both verified via the full test suite, eslint, bundle/cache-buster checks, and live-browser verification against the real shipped files with synthetic data — but worth a few minutes on the real tenant: (1) open Edit Roster, type a real site into a cell for someone flagged on Contacts, confirm the hold point fires and the audit entry lands; (2) open My Schedule as a real flagged worker, confirm the amber card shows and names the right gap. _(added 2026-08-21)_
+- [ ] **No live click-through by a person yet, any of these PRs** — same sandbox limitation #734/#737 already logged (no Core-authenticated SKS session reachable from this environment), now also true of PR #752's My Schedule card and PR #755 (dashboard licence-missing card regrouped one row per person instead of one row per licence). All verified via the full test suite, eslint, bundle/cache-buster checks, and live-browser verification against the real shipped files with synthetic data — but worth a few minutes on the real tenant: (1) open Edit Roster, type a real site into a cell for someone flagged on Contacts, confirm the hold point fires and the audit entry lands; (2) open My Schedule as a real flagged worker, confirm the amber card shows and names the right gap; (3) open the Dashboard, confirm the Licence Missing/Expired card now shows one row per person with all their badges, not a repeated row per licence. _(added 2026-08-21, extended 2026-08-23)_
 - [ ] **Two different "how many are missing" numbers, not reconciled**: Shell's Training Matrix said 6 of 32 on 2026-08-19 (`sks/pending.md`); this session's live query said 27 of 65 on 2026-08-21. Different populations/dates, both real, but the exact gap between them is unexplained — worth a look if the precise number ever matters (e.g. for messaging). Doesn't affect either feature's logic, which evaluates each person live rather than depending on either count. _(added 2026-08-21)_
 - [ ] **A hard block for White Card specifically was floated and deliberately not built** — Royce picked the soft gate as the starting point; revisit once the override log shows how many overrides are genuine gaps vs. just un-uploaded paperwork. _(added 2026-08-21)_
 - [ ] **My Schedule's new compliance card has no link into EQ Cards** — no Cards URL exists anywhere in eq-field's codebase to build a deep link from (checked before building, not assumed). Card names Cards as where to go; wiring a real link is a fast follow once that URL — ideally routed to the specific credential-upload screen, not just Cards' homepage — is confirmed. _(added 2026-08-21)_
