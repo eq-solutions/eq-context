@@ -411,3 +411,42 @@ shape — found nothing else. Neither commit touches `eq-context`, same as the
 2026-08-14 entry above — no PR.
 
 No open items.
+
+---
+
+## eq-context's own effective_cwd() got the guard.js relative-cd fix too (2026-08-21)
+
+Same bug family as the two entries directly above (2026-08-14, 2026-08-17)
+— a `cd`/`-C` target used without resolving it against the real caller
+cwd — but found this time in `eq-context`'s own `hooks/pre_tool_use.py`
+(not `~/.claude/hooks/guard.js`), after guard.js's copy was fixed
+2026-08-20: `effective_cwd()` returned a RELATIVE `cd`/`-C` target raw
+instead of resolving it against `data["cwd"]`, so a relative target
+silently pointed F7 (pre-existing NUL-corruption scan) and F9 (this exact
+shared-checkout race guard) at the wrong directory — usually not a git
+repo at all, so both checks quietly no-op instead of firing. Not a live
+incident here (unlike guard.js's, which false-positived on a real
+worktree) — found by inspection while porting the fix, before it caused a
+miss. 3 new regression cases added to `hooks/adversarial_test.py`,
+verified against pre-fix code first to confirm they actually catch the bug.
+Full suite 127/127. eq-context
+[PR #168](https://github.com/eq-solutions/eq-context/pull/168),
+squash-merged on Royce's explicit "merge it", confirmed live on disk in the
+shared checkout afterward (function body read directly, not just a name
+match).
+
+- [ ] **Fix the MSYS-path `git -C` gap in `repo_root_for()`** — found while
+  verifying the fix above, NOT closed by it: `git -C /c/Projects/...`
+  (MSYS-style paths) fails outright when git.exe is invoked directly via
+  `subprocess.run()`, confirmed empirically. Unlike Node's `fs` calls
+  (guard.js needs `normalizeMsysPath()` to translate by hand), git's own
+  MSYS path translation only fires for processes launched through a
+  Git-Bash-aware shell — not a plain subprocess spawn — so an MSYS-style
+  absolute `cd`/`-C` target into the shared checkout still silently
+  defeats F7/F9 today. Documented in `effective_cwd()`'s own docstring;
+  not filed in `system/failures.md` since it's never escaped to a live
+  incident. Flagged as a background task (`task_1a9f2979`), Royce started
+  it running in a separate session — not yet complete as of this entry.
+  _(added 2026-08-21)_
+
+No other open items.
