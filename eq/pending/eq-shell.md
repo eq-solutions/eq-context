@@ -13,6 +13,18 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: tenant-migration runner now refuses to silently fleet-wide-dispatch a single-plane migration — built, merged, live (2026-08-23)
+*`scripts/migrate-tenants.mjs`'s default (no `--slug`) applies every pending migration to every active tenant, and a migration had no way to declare "single-plane only" except a filename suffix or prose comment — neither of which the runner reads. Confirmed concretely exploitable via eq-shell PR #1510's own `--plan` job showing a `_zaap`-suffixed migration pending for both tenants. Four eq-field migrations (3 ehow/SKS-only, 1 zaap/EQ-only) were flagged at-risk. Read the full runner source before choosing a fix, per explicit instruction.*
+
+- [x] **`migrate-tenants.mjs` now parses an optional `-- Plane: <name> (<ref>, <description>) ONLY.` header** and resolves it against the runner's own live tenant-routing lookup — no new hardcoded tenant-name table. A real apply or `--dry-run` whose targets aren't fully covered by a pending migration's declared plane is refused outright, fail-closed; `--plan` warns instead of blocking (same precedent as the existing checksum-drift check). No header = fleet-wide, unchanged default behaviour.
+- [x] **Two stale docs corrected in the same PR**: `SCHEMA-GOVERNANCE.md` and `supabase/tenant-migrations/README.md` both still claimed dispatch is gated behind a required-reviewer `production` environment — it never has been (SEC-11, confirmed live 2026-07-23: `protection_rules: []`, ~15s start-to-finish, no pause). `SCHEMA-GOVERNANCE.md` gains a new step 7 documenting the guard.
+- [x] eq-shell [PR #1516](https://github.com/eq-solutions/eq-shell/pull/1516) — CI green including the live `--plan` job actually exercising the new guard against real tenant data, squash-merged (`4f1a00b9`) on explicit "merge both," confirmed live via exact commit-ancestry match against the newest ready production deploy.
+
+**Deferred:**
+- [ ] **None of the at-risk migrations have actually been copied into `supabase/tenant-migrations/` yet** — confirmed live: the directory's newest files are `0256`/`0257`, none of the eq-field migrations. No active dispatch risk today; the guard is preventive for whenever that copy happens. Copying + dispatching remain explicitly Royce's call. _(added 2026-08-23)_
+
+---
+
 ## eq-shell: Labour-hire claim gate found + fixed — approved candidates weren't reaching the compliance pack (2026-08-21)
 *Royce finished a real end-to-end trial of the batch-intake feature with two live candidates (Conor Horgan, Nelson Sareto) and reported back: cropping issues on combined front/back photo sheets, and approved licences "don't get added to the tenant staff list ... cannot be exported as a compliance pack (says they don't exist even though we just approved them)."*
 

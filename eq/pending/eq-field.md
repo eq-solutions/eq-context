@@ -13,6 +13,15 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: 3 pre-convention single-plane migrations retrofitted with the structured `-- Plane:` header (2026-08-23)
+*Companion to eq-shell's new plane-scope guard (`eq/pending/eq-shell.md`, same date) — these 3 migrations already stated "ehow (SKS) ONLY" in prose but predated the machine-readable header convention the new guard reads.*
+
+- [x] **`20260722_field_team_supervisors.sql`, `20260722b_team_supervisors_tenant_lockdown.sql`, `20260722c_teams_team_members_tenant_lockdown.sql`** each gained a `-- Plane: ehow (ehowgjardagevnrluult, SKS tenant) ONLY.` header line — comment-only, zero DDL/schema change. Verified the guard's actual header-parsing regex against all 3 post-edit, not just visually. eq-field [PR #754](https://github.com/eq-solutions/eq-field/pull/754), fully green CI, squash-merged on explicit "merge both."
+- [x] **Confirmed the other 2 at-risk migrations already had the header, no retrofit needed** — `20260819_timesheets_leave_actor_identity_fix.sql` (ehow-only) and PR #753's `20260821_timesheets_leave_zaap_own_manager_read.sql` (zaap-only) were both already written with a conforming `-- Plane:` line by whoever authored them.
+- [ ] **Not yet copied into eq-shell's `supabase/tenant-migrations/` (the One Pipe) or dispatched** — see `eq/pending/eq-shell.md`'s matching entry; explicitly Royce's call. _(added 2026-08-23)_
+
+---
+
 ## eq-field: Roster compliance gate — missing-required badge on both roster views, an assignment hold point, and a worker-facing self-compliance card (2026-08-21)
 
 - [ ] **No live click-through by a person yet, either PR** — same sandbox limitation #734/#737 already logged (no Core-authenticated SKS session reachable from this environment), now also true of PR #752's My Schedule card. Both verified via the full test suite, eslint, bundle/cache-buster checks, and live-browser verification against the real shipped files with synthetic data — but worth a few minutes on the real tenant: (1) open Edit Roster, type a real site into a cell for someone flagged on Contacts, confirm the hold point fires and the audit entry lands; (2) open My Schedule as a real flagged worker, confirm the amber card shows and names the right gap. _(added 2026-08-21)_
