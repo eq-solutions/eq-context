@@ -1,13 +1,18 @@
 ---
 title: EQ Field — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-21
+last_updated: 2026-08-22
 scope: EQ Field append-only history. Canonical name (repo-slug convention, matching eq-shell.md/eq-cards.md/eq-intake.md/eq-context.md/eq-receipts.md/eq-ui.md) — absorbed field.md's full history 2026-08-17. field.md's own header had claimed the opposite direction ("eq-field.md was merged into this file 2026-07-19, don't split again"), but a fresh eq-field.md was recreated after that and diverged with 5 real, unique entries (PR #703/#705/#709/#710/#711) never merged back — exactly the drift that note warned about. Content of both preserved with no loss. UPDATE 2026-08-21: the "field.md is now a stub" claim did not hold — a session recreated eq/changelog/field.md from scratch 2026-08-19, two days after archival, without checking it had been retired, and it has since collected 5 more real entries (PR #729/#730/#735/#736/#738) not present here. UNRECONCILED PAIR with eq/changelog/field.md again — third occurrence of this exact drift (see archive/changelog-eq-field-dead-twin.md and archive/changelog-field-dead-twin.md for the first two). Don't mark field.md superseded_by until those 5 entries are folded in here — that's Royce's call, not automatic.
 read_priority: reference
 status: live
 ---
 
 # eq-field changelog
+
+## 2026-08-22 (PR #753 MERGED — zaap timesheets/leave_requests get per-row RLS, SEC-37)
+- Merged on Royce's explicit "merge" go. The migration file now lives in this repo only — not applied to any live database.
+- Dispatching it to the live EQ tenant (zaap) is a separate step, still pending: copy into eq-shell's `supabase/tenant-migrations/` and run with `--slug=eq` specifically, never the default all-tenant dispatch.
+- The systemic dispatch-safety gap found while building this fix (no per-file tenant routing in eq-shell's migration runner) is being addressed separately as eq-shell PR #1516, in progress.
 
 ## 2026-08-21 (PR #753 OPEN — zaap timesheets/leave_requests get per-row RLS, SEC-37)
 - `app_data.timesheets`/`leave_requests` on the EQ tenant (zaap) had a single tenant-only permissive policy — any authenticated tenant member could read every coworker's timesheet and leave record. Same shape SEC-33 already fixed for `staff`.

@@ -12,9 +12,7 @@ status: live
 ---
 
 ## eq-field + eq-shell: SEC-37 (zaap timesheets/leave_requests RLS) — fix merged, dispatch to zaap still pending (2026-08-22)
-*SEC-33 follow-up: zaap's `app_data.timesheets`/`leave_requests` had the same unscoped-read shape SEC-33 found for `staff`. The obvious fix (port ehow's `team_supervisors`/`team_members` crew-scoped pattern) turned out to be the wrong shape — eq-field's own migration headers already document Teams as deliberately SKS-only, must-not-dispatch-to-zaap. Shipped the simpler own-row-or-manager pattern those same headers had already recommended for this exact case instead.*
 
-- [x] **eq-field [PR #753](https://github.com/eq-solutions/eq-field/pull/753) merged 2026-08-22.** The migration file now lives in eq-field's repo only — nothing applied to any live database yet.
 - [ ] **Dispatch still pending, needs Royce's explicit go**: copy the file into eq-shell's `supabase/tenant-migrations/` and dispatch with `--slug=eq` specifically, never the default all-tenant run. _(added 2026-08-21)_
 - [ ] **Dispatch-safety gap, found while building the fix**: eq-shell's `migrate-tenants.mjs` applies every pending migration to every active tenant by default — no per-file routing, `--slug` is the only real scoping mechanism. Several other already-written, still-undispatched eq-field migrations (the Teams-lockdown ones, the timesheets/leave actor-identity fix) carry the same exposure if ever dispatched carelessly. Now in progress as eq-shell [PR #1516](https://github.com/eq-solutions/eq-shell/pull/1516) (open, CI running) — a separate session's work. _(added 2026-08-21)_
 
