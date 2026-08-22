@@ -1,14 +1,14 @@
 ---
 title: EQ Suite — Current State
 owner: Royce Milmlow
-last_updated: 2026-08-21
+last_updated: 2026-08-22
 scope: Live suite state — app lineup, DB counts, open PRs, architectural decisions. Auto-refreshed nightly by GitHub Action.
 read_priority: critical
 status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-08-21 (nightly cron)_
+_Last verified: 2026-08-22 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -58,7 +58,7 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-08-21)
+## Open PRs (as of 2026-08-22)
 
 **eq-cards:**
 - #287 fix(auth): reject deactivated identities in worker-link/claim-invite RPCs
@@ -75,13 +75,13 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## System Health (as of 2026-08-21)
+## System Health (as of 2026-08-22)
 
 **CI on main:**
 
 | Repo | Status |
 |------|--------|
-| eq-service | ✓ success |
+| eq-service | ✗ failure |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
