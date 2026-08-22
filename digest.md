@@ -1,38 +1,36 @@
 ---
 title: EQ Suite — Health Digest
 owner: Royce Milmlow
-last_updated: 2026-08-21
+last_updated: 2026-08-22
 scope: Push-style 'what needs your attention' feed across the EQ suite. Regenerated on merge (repository_dispatch: suite-state-changed) and nightly. Full snapshot in suite-state.md.
 read_priority: high
 status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-21 12:35 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-22 12:28 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-21 01:29 UTC → 2026-08-21 12:35 UTC)
+## Since last refresh (2026-08-21 12:35 UTC → 2026-08-22 12:28 UTC)
 
-- Merged: eq-shell [#1500](https://github.com/eq-solutions/eq-shell/pull/1500) fix(labour-hire): allow jvkn Supabase storage in frame-src C
-- Merged: eq-shell [#1497](https://github.com/eq-solutions/eq-shell/pull/1497) feat(quotes): Jobs-page "From supplier file" button now take
-- Merged: eq-shell [#1495](https://github.com/eq-solutions/eq-shell/pull/1495) chore: remove eq-shell's dead duplicate of workers-canonical
-- Merged: eq-shell [#1494](https://github.com/eq-solutions/eq-shell/pull/1494) fix(labour-hire): batch flow never captured an employer name
-- Merged: eq-shell [#1493](https://github.com/eq-solutions/eq-shell/pull/1493) fix(quotes): clarify client-RFQ vs supplier-quote PDF button
-- Merged: eq-shell [#1490](https://github.com/eq-solutions/eq-shell/pull/1490) fix(labour-hire): employment_type never protected from Cards
-- Merged: eq-shell [#1487](https://github.com/eq-solutions/eq-shell/pull/1487) fix(labour-hire): zip-slip check false-positives on every en
-- Merged: eq-shell [#1485](https://github.com/eq-solutions/eq-shell/pull/1485) feat(quotes): Excel labour/materials breakdown import + Cate
-- ⚠ Needs you: 6 → 9 (new items)
+- Merged: eq-shell [#1498](https://github.com/eq-solutions/eq-shell/pull/1498) fix(drift): CHECK 6 widen schema scan to service/app_data (S
+- Merged: eq-shell [#1496](https://github.com/eq-solutions/eq-shell/pull/1496) feat(labour-hire): review each licence individually before a
+- Merged: eq-shell [#1492](https://github.com/eq-solutions/eq-shell/pull/1492) feat(quotes): drag-and-drop + one import button + per-row se
+- Merged: eq-shell [#1491](https://github.com/eq-solutions/eq-shell/pull/1491) fix(labour-hire): batch cleanup deletes staging docs before 
+- Merged: eq-shell [#1489](https://github.com/eq-solutions/eq-shell/pull/1489) feat(labour-hire): drag-and-drop for the batch intake file p
+- Merged: eq-shell [#1488](https://github.com/eq-solutions/eq-shell/pull/1488) fix(labour-hire): staging-object cleanup is fire-and-forget,
+- Merged: eq-shell [#1486](https://github.com/eq-solutions/eq-shell/pull/1486) feat(labour-hire): batch intake — group upload for admin and
+- Merged: eq-solves-service [#799](https://github.com/eq-solutions/eq-service/pull/799) test(reports): component tests for the /reports compliance d
+- ✅ Needs you: 9 → 7
 
-## ⚠ Needs you (9)
+## ⚠ Needs you (7)
 
 - 🔴 **Sentry new error** — `eq-shell` [TypeError: Failed to fetch dynamically imported module: http](https://eq-solutions.sentry.io/issues/141714696/)
-- 🔴 **Substrate drift** — DRIFT: deploy EQ Shell (core) (https://core.eq.solutions): claimed LIVE but reality looks DEAD
-- 🔴 **Substrate drift** — DRIFT: deploy EQ Service (https://service.eq.solutions): claimed LIVE but reality looks DEAD
 - 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-31 (P1 — fix ready, blocked on Royce's hands, not on design.) — `public.organisations` on jvkn — any authenticated user, any tenant, reads every · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-37 (P1 — fix ready, isolated, dry-run verified on zaap.) — `app_data.timesheets` / `app_data.leave_requests` on zaap — any authenticated te · [security-register.md](ops/security-register.md)
+- 🔴 **Cron failing** — `index-drift.yml` 2 consecutive scheduled run(s) failed, last success 2026-08-20 · [failures.md](system/failures.md) F11
 - 🔴 **Guard bypass? rung 4** — F12: Side-clone reconciliation blind-overwrote a concurrent session's already-pushed shared-fil · possibly recurred in [2026-08-21.md](sessions/2026-08-21.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-08-19.md](sessions/2026-08-19.md) · [failures.md](system/failures.md)
-- 🟠 **Cron failing** — `index-drift.yml` 1 consecutive scheduled run(s) failed, last success 2026-08-20 · [failures.md](system/failures.md) F11
 
 ## 🙋 Waiting on you (190)
 
@@ -56,18 +54,18 @@ _…and 178 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 1 | 0d |
-| eq-solves-service | ✓ success | 0d ago | 2 | 1d |
-| eq-field | ✓ success | 0d ago | 1 | 0d |
-| eq-cards | ✓ success | 0d ago | 1 | 0d |
-| eq-solves-intake | ✓ success | 3d ago | 0 | — |
+| eq-shell | ✓ success | 1d ago | 1 | 1d |
+| eq-solves-service | ✓ success | 1d ago | 2 | 2d |
+| eq-field | ✓ success | 1d ago | 1 | 1d |
+| eq-cards | ✓ success | 1d ago | 1 | 1d |
+| eq-solves-intake | ✓ success | 4d ago | 0 | — |
 
 ## Live errors (Sentry)
 
 | Project | Error | Events | Last seen |
 |---------|-------|--------|-----------|
 | eq-shell | [TypeError: Failed to fetch dynamically imported module: https://core.eq.solution](https://eq-solutions.sentry.io/issues/141714696/) | 37 | 2026-08-21 |
-| eq-shell | [Error: app_data.staff.cards_worker_id pointing at missing jvkn workers: 4](https://eq-solutions.sentry.io/issues/138175643/) | 5 | 2026-08-20 |
+| eq-shell | [Error: app_data.staff.cards_worker_id pointing at missing jvkn workers: 4](https://eq-solutions.sentry.io/issues/138175643/) | 5 | 2026-08-21 |
 | eq-shell | [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/) | 4 | 2026-08-20 |
 | eq-shell | [phone-otp: requested for inactive account](https://eq-solutions.sentry.io/issues/141933696/) | 2 | 2026-08-20 |
 | eq-shell | [EQ Field handoff auto-recovery (timeout)](https://eq-solutions.sentry.io/issues/141463602/) | 2 | 2026-08-20 |
@@ -132,15 +130,15 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
 | [eq-shell](eq/pending/eq-shell.md) | 1463 | 171 / 62 | 151 | 41 |
-| [eq-cards](eq/pending/eq-cards.md) | 396 | 40 / 13 | 41 | 6 |
-| [eq-field](eq/pending/eq-field.md) | 776 | 96 / 26 | 43 | 12 |
-| [eq-solves-service](eq/pending/eq-solves-service.md) | 644 | 72 / 25 | 87 | 11 |
+| [eq-cards](eq/pending/eq-cards.md) | 396 | 40 / 13 | 41 | 8 |
+| [eq-field](eq/pending/eq-field.md) | 776 | 96 / 26 | 43 | 14 |
+| [eq-solves-service](eq/pending/eq-solves-service.md) | 644 | 72 / 25 | 87 | 15 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 152 | 13 / 6 | 5 | 14 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
 | [eq-ui](eq/pending/eq-ui.md) | 29 | 2 / 0 | 2 | 0 |
 | [eq-receipts](eq/pending/eq-receipts.md) | 44 | 3 / 1 | 0 | 0 |
 | [eq-context](eq/pending/eq-context.md) | 232 | 23 / 3 | 25 | 5 |
-| [cross-repo](eq/pending/cross-repo.md) | 968 | 144 / 42 | 23 | 30 |
+| [cross-repo](eq/pending/cross-repo.md) | 968 | 144 / 42 | 23 | 31 |
 | [sks](eq/pending/sks.md) | 53 | 3 / 5 | 0 | 6 |
 | [SKS](sks/pending.md) | 454 | 81 / 10 | 4 | 23 |
 | [SKS active](sks/active.md) | 108 | 0 / 0 | 0 | 0 |
@@ -165,7 +163,7 @@ _Open items sitting under a section header this old or older — not necessarily
 - **eq-shell** (2026-07-02) · **Confirm the activity panel actually renders an event** — needs Royce to make one real change on `/admin/access-control` and check the panel. Can't be faked or tested without a real user action (see the zero-exceptions rule above). _(needs your call)_
 - **eq-shell** (2026-07-02) · **Live-verify `cards-export-licences`, `comms-jobs`, `admin-audit` return 403 on a disallowed Origin** — 3 of 6 endpoints confirmed by curl/real-traffic already; these 3 hit a sandbox DNS failure mid-check. Same code as the confirmed 3, not suspected broken, just not directly proven. _(low priority, needs a retry)_
 - **eq-shell** (2026-07-02) · **Fix `AdminWorkerQR` QR-colour crash** — Sentry `Error: Invalid hex color: var(--eq-ink)` (eq-shell, 4 events 2026-07-02) is the `qrcode` lib being passed `color.dark: 'var(--eq-ink)'` (a CSS var, not hex) in `AdminWorkerQR.tsx`. More frequent now #594 made that page the primary "Add workers" landing. Fix = pass a real hex (e.g. `#1A1A2E`). _(added 2026-07-02)_
-_…and 135 more — see each file's Queue health row above._
+_…and 144 more — see each file's Queue health row above._
 
 ## Possible duplicate pending items (unconfirmed)
 
@@ -199,7 +197,7 @@ _[sessions/](sessions/) · 5 shown_
 
 ## Substrate honesty
 
-✗ Drift detected — see **Needs you** above. Source: `scripts/substrate_honesty.py`.
+✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-21 12:35 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-22 12:28 UTC._
