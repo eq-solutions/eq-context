@@ -63,6 +63,9 @@ _If this file is >48h old, the cron is broken._
 **eq-cards:**
 - #287 fix(auth): reject deactivated identities in worker-link/claim-invite RPCs
 
+**eq-field:**
+- #755 v3.5.544 — dashboard: one row per person on the licence-missing card
+
 **eq-service:**
 - #801 fix(assets): exclude it_equipment from the customer-facing Assets view
 - #791 fix(reports): make reissuing a report possible from the UI
