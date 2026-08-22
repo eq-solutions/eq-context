@@ -450,3 +450,20 @@ match).
   _(added 2026-08-21)_
 
 No other open items.
+
+---
+
+## Suite pressure-test sweep §C-G: 31 findings logged (SEC-38-68), PR #171 open (2026-08-23)
+
+Continuation of the suite-wide security pressure-test (`ops/security-pressure-test-prompt.md`) — §A/§B merged via #169, this session ran §C (secrets hygiene), §D (cross-app iframe/JWT), §E (privilege escalation), §F (standard web surface), §G (CI/CD integrity) live via 5 parallel subagents. Reconciled twice against `origin/main`'s fast-moving tip (a genuine SEC-37 ID collision with another concurrent session's own finding, then a late SEC-31 closure) before pushing. Full findings: `ops/security-register.md` SEC-38-68, `ops/secrets-inventory.md` Tier-1 corrections. Read-only sweep, no code changes, no writes to any live system — logged only per Royce's call.
+
+**Needs Royce:**
+- [ ] **Review + merge eq-context [PR #171](https://github.com/eq-solutions/eq-context/pull/171)** — not yet merged. Auto-merges cleanly against current `main` (verified via `git merge-tree`).
+- [ ] **SEC-42 (P0)** — `eq_cards_link_or_create_worker` cross-org identity bind, no caller check. Highest-severity item from this sweep.
+- [ ] **SEC-39/SEC-40 (P1)** — quote delete/line-item-replace RPCs, tenant-checked only, no role check.
+- [ ] **SEC-48 (P1)** — SSRF in eq-service's report logo/photo fetch.
+- [ ] **SEC-55 (P1)** — org-wide GitHub App holds write access equal to or beyond the sole repo collaborator.
+- [ ] **SEC-59/SEC-60 (P1)** — Netlify `dev`-context secret-masking gap; the standard delete+recreate remediation used for SEC-9/12/18/19 actually re-introduces this leak. Needs a different fix, not the established playbook.
+- [ ] **SEC-61** — is the newly-found account-scope Netlify secret shared across all sites, or site-scoped? Needs a dashboard check this sweep couldn't do.
+- [ ] **SEC-49/50** — confirm the live `ENFORCE_IFRAME_ORIGIN` value; code path traced as far as static analysis allows.
+_(added 2026-08-23)_
