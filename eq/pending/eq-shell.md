@@ -1,7 +1,7 @@
 ---
 title: EQ Shell — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-21
+last_updated: 2026-08-23
 scope: EQ Shell engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -1472,6 +1472,11 @@ Parallel to the Field schema/data cutover below. Full plan + agent prompts (A–
 - [x] **Stale link found and removed on Royce's go-ahead**: contact Maryam Shahpasand was still actively linked to "Equinix Hyperscale," a customer record archived since before this session. Unlinked (`contact_customer_links` row deleted, scoped by contact + customer + tenant, matching `crm-write.ts`'s own `unlink_contact_customer` query shape). Her real relationship to Equinix Australia Pty Ltd is untouched.
 - [ ] **Live click-through not done on the new Customers-page bottom bar** — verified via typecheck, eslint on the touched lines, and confirmed production deploy, but the Archive/Delete buttons in the new sticky bar haven't been clicked by a person on a long real contact list yet. _(added 2026-08-20)_
 - [ ] **Not investigated, noticed in passing**: two inactive duplicate contact records for "Amir Heshmati" under Equinix Hyperscale 2 (SY9), same email, one with the full name crammed into the first-name field. Both already inactive so nothing live is affected — flagged for whenever contact dedup work is next in scope. _(added 2026-08-20)_
+
+---
+
+## eq-shell: role-level toggles for Field's 86 fine-grained permissions; deny-support investigated and declined (2026-08-21)
+- [ ] **Live click-test not done** — same limitation as every prior PR on this page (#1425, #1429, #1420); needs a real authenticated admin session. Worth two minutes: open a role's Field cell, toggle one of the new checkboxes, confirm it sticks and reaches a live Field session. Full build/decision detail: `sessions/2026-08-23.md`, `eq/changelog/eq-shell.md`, and eq-shell's own memory store (`field-fine-perms-role-matrix.md`). _(added 2026-08-21)_
 
 ---
 

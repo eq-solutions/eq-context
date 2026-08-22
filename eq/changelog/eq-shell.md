@@ -1,7 +1,7 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-21
+last_updated: 2026-08-23
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
@@ -15,6 +15,11 @@ status: live
 - SEC-31: `public.organisations` on jvkn (the control-plane registry, not a tenant plane) had `qual=true` for every authenticated user, any tenant -- full cross-tenant read of every org's `supabase_url`/`supabase_anon_key`. No CI apply path exists for jvkn control-plane migrations; statement drafted and dry-run verified (`2026_08_21_organisations_tenant_scope_read.sql`, added via PR #1510), but the auto-mode classifier correctly blocked a direct live apply outside a governed pipeline. Royce applied it himself via the Supabase SQL editor 2026-08-23; independently re-verified live afterward.
 - All four closures live-verified by direct query against the actual databases (zaap, ehow, jvkn), not inferred from a green dispatch run alone. Full detail: `ops/security-register.md`.
 - eq-shell [PR #1509](https://github.com/eq-solutions/eq-shell/pull/1509) (`tenant-migrate.yml` [run 32435618623](https://github.com/eq-solutions/eq-shell/actions/runs/32435618623)) and [PR #1510](https://github.com/eq-solutions/eq-shell/pull/1510) (`tenant-migrate.yml` [run 32431685992](https://github.com/eq-solutions/eq-shell/actions/runs/32431685992)) -- both squash-merged.
+
+## 2026-08-21 (PR #1515 MERGED — role-level toggles for Field's 86 fine-grained permissions)
+- Field's fine-grained permission keys (roster, timesheets, leave, sites, etc.) were grantable only per-person via Custom Groups — no role-level default or override existed. Re-vendored `fieldFinePerms.ts` from eq-field's live source (77→86 keys, catching 9 that had drifted) and added a per-role default matrix; Access Control's Field cell now renders all 86 as real per-role checkboxes, grouped by category, instead of read-only "granted via group" rows.
+- Grant-only scope: raises a role's Field access above eq-field's baked-in default, doesn't lower it — Field has no deny-enforcement path today. Deny support investigated separately and declined (would require independent eq-field tech debt plus new RLS before a client-side deny claim meant anything); grant-only was confirmed sufficient.
+- eq-shell [PR #1515](https://github.com/eq-solutions/eq-shell/pull/1515), squash-merged (`0c71ad37`), confirmed live via exact Netlify `commit_ref` match. Not click-tested live by a person.
 
 ## 2026-08-21 (PR #1513 MERGED — labour-hire approval now auto-sends the claim email)
 - Root cause of Royce's live-trial report ("licences approve but don't get added to the tenant staff list, cannot be exported as a compliance pack"): approving a labour-hire candidate only ever created an unclaimed `worker_invites` row — nothing prompted the candidate to claim it, so `workers.user_id` stayed null, licences never promoted, and the compliance-pack export (which needs `org_memberships` → `workers` → `licences`) couldn't see them. Confirmed live across both candidates in Royce's real trial (Conor Horgan, Nelson Sareto); their Staff-page rows existed fine — only licences/export were affected.
