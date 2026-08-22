@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Verify Queue
 owner: Royce Milmlow
-last_updated: 2026-08-21
+last_updated: 2026-08-22
 scope: Items whose only remaining blocker is your own live sign-in/click-through — the underlying work is already built, merged, and (unless the line itself says otherwise) live. Moved here from eq/pending.md by scripts/rotate_pending.py once a session's real build work is fully done, so a stale "click through to confirm" line no longer pins a whole finished write-up in the live pending doc.
 read_priority: high
 status: live
@@ -577,6 +577,126 @@ a bug rather than just deleting the line.
 **From:** eq-field: apprentice list fail-open bug + full onboarding/login audit across ehow, jvkn, Sentry (2026-08-18)
 
 - [ ] **Not click-tested live as a non-manager** — same SKS Core-only sandbox limitation as PR #720's own entry below; verified via CI + live DB trace instead. _(added 2026-08-18)_
+
+---
+
+**From:** eq-solves-service: click-to-create on the calendar, a working "reconnect" button on session timeouts, faster warm-up after a deploy, and a safety net for lost in-progress readings (2026-08-18)
+
+- [ ] **Not click-tested live by a real signed-in user.** This session's sandbox has no working login for service.eq.solutions — verified via type-checking and a full production build only. Worth two minutes clicking a calendar day, triggering a session timeout, and filling in part of an ACB/NSX/RCD check then reloading to confirm the draft comes back. _(added 2026-08-18)_
+
+---
+
+**From:** eq-solves-service: Calendar + every people-list in Service made canonical, 3 database updates shipped to live (2026-08-17)
+
+- [ ] **Not clicked through live by a real signed-in user** — verified via code review, live-database dry-runs, and clean CI, not by actually opening the Calendar page and checking the technician/supervisor dropdowns show the right names. _(added 2026-08-17)_
+
+---
+
+**From:** eq-solves-service: any signed-in worker — apprentice, labour hire, subcontractor — could write maintenance checks, defects, test results and assets straight to the database, skipping every in-app permission check. Fixed, shipped, and confirmed live (2026-08-16)
+
+- [ ] **Not clicked through live.** The database change is live on production now — worth two minutes to confirm a low-privilege account (apprentice/labour hire/subcontractor) actually gets blocked from writing, and that an assigned technician can still update their own job. Needs a real signed-in session, not checkable from here. _(added 2026-08-16)_
+
+---
+
+**From:** eq-solves-service: NSX Test Report fixed — dead ACB-only fields left it always printing blank sections (2026-08-14)
+
+- [ ] **Not click-tested against a real generated NSX report** — fix verified via typecheck + code trace only; worth Royce pulling a real NSX Test Report next time one's generated to eyeball the CB Details table looks right. _(added 2026-08-14)_
+
+---
+
+**From:** eq-solves-service: /admin/* pages closed to non-managers (2026-08-14)
+
+- [ ] **Not click-tested by a real non-manager account** — no such login was available in this environment. Worth Royce confirming a technician account gets bounced off `/admin/*` now. _(added 2026-08-14)_
+
+---
+
+**From:** eq-solves-intake + eq-shell: Overview "Fix these" gap cards get a real bulk-fill grid instead of one-row-at-a-time (2026-08-18)
+
+- [ ] **Not click-tested live** — verified via `tsc --noEmit` clean, `vitest run` 50/50, CI green on both PRs, and a Netlify deploy-commit match confirming it's genuinely live — but no authenticated session was available to click through the real UI. Worth 2 minutes: open a "Fix these" card on the Overview tab, fill a few rows in the new grid, Save, confirm the count drops and the score updates. eq-solves-intake [PR #120](https://github.com/eq-solutions/eq-solves-intake/pull/120) + eq-shell [PR #1445](https://github.com/eq-solutions/eq-shell/pull/1445), both merged, live on core.eq.solutions. _(added 2026-08-18)_
+
+---
+
+**From:** eq-shell: Cards iframe was blocking the Web Share API, breaking iOS exports through Shell — fixed, live (2026-08-18)
+
+- [ ] **No live click-through yet** — the fix is confirmed genuinely deployed, but nobody has tapped "Save" on an export through `core.eq.solutions/sks/cards` on an actual iOS device since it landed. _(added 2026-08-18)_
+
+---
+
+**From:** eq-shell: "horrendous" screen-to-screen loading — root cause was full page reloads on every sidebar click, fixed, merged, live (2026-08-18)
+
+- [ ] **Not click-tested live by a person** — verified via typecheck, lint, the full test suite, and confirmed production deploys (exact commit match against what's actually serving), not an actual signed-in click-through. Worth two minutes next time Royce is in Shell: click through Staff → Customers → Field → Admin from the sidebar (should feel instant, no white-flash reload), and confirm ctrl/cmd-click still opens a link in a new tab. _(added 2026-08-18)_
+
+---
+
+**From:** eq-shell: Cards-linked worker's DOB guard was blocking unrelated edits (start date, phone, ...) — found, fixed, merged, live (2026-08-18)
+
+- [ ] **Not clicked through live** — verified by code + typecheck/lint, not by an actual admin editing a Cards-linked worker's start date and a DOB and watching each behave correctly. Worth two minutes: edit Mohammed Hussain's start date (should now save), then try typing a different day/month for a Cards-linked worker (should still correctly block). _(added 2026-08-18)_
+
+---
+
+**From:** eq-shell: the Shell licence-scanner page has never once saved a licence — found, fixed, merged, live (2026-08-17)
+
+- [ ] **Not clicked through live** — verified by code review, live database checks, and a clean preview build, not by an actual person scanning a licence on the real site and watching it save. Worth two minutes on a real account.
+
+---
+
+**From:** eq-shell: a way to hand yourself full admin power through the "custom access groups" screen — found, fixed, and live (2026-08-16)
+
+- [ ] **Not clicked through live** — confirmed by tests and by calling the affected screen's backend directly, not by an actual person building a group in the UI and watching the dangerous options disappear. Worth two minutes on a real admin account. _(added 2026-08-16)_
+
+---
+
+**From:** eq-shell: an AI tool anyone signed in could use to run up costs on the company's AI account — closed, merged, live (2026-08-16)
+
+- [ ] **Not clicked through live yet.** Worth two minutes: try the AI import on a real file, look at the home-page briefing/ask bar as a manager vs. a supervisor, and try opening the licence-scan page as an apprentice (should now say you don't have access). _(added 2026-08-16)_
+
+---
+
+**From:** eq-shell: account-enumeration hole closed on the phone+PIN sign-in door (2026-08-15)
+
+- [ ] **Not click-tested in a browser** — both sign-in doors were checked by calling them directly on production (an unknown mobile and an unknown email each return an identical "no" with no extra detail; the unauthed session check still refuses correctly) plus full CI, but nobody signed in through the actual page. Worth Royce trying two things on his phone: a *wrong* PIN, and a number that has *no* PIN set — both should now show the same "That number and PIN didn't match. If you haven't set a PIN yet, use 'Text me a code instead'". Then sign in by text on an account with no PIN and confirm the "Set a PIN" prompt still appears on the Home screen — that prompt is now the only place that guidance is given. _(added 2026-08-15)_
+
+---
+
+**From:** eq-shell: hard-delete for archived user accounts — built, merged, live (2026-08-14)
+
+- [ ] **Not click-tested live** — same sandbox limitation as everything else this session; built against `tsc`/lint/the permission-drift guard only. _(added 2026-08-14)_
+
+---
+
+**From:** eq-cards: export flow finished end-to-end — Export/Download merged into one sheet, auto-provision session race fixed, export-all PDF/Excel added, PDF photo embed shipped then fixed twice, iOS downloads fixed, two nagging reminders removed (2026-08-18)
+
+- [ ] **No live click-through yet on the Web Share "Save" flow specifically through the Shell iframe** since the `allow="web-share"` fix landed — the permission-policy fix is confirmed live (grepped the deployed Shell bundle for `allow:"web-share"`), but nobody has tapped Save through `core.eq.solutions/sks/cards` since. _(added 2026-08-18)_
+
+---
+
+**From:** eq-cards: 3 permission-audit gaps closed — dead JWT minter retired, empty employer credential list fixed, unreachable admin policy fixed (2026-08-16)
+
+- [ ] **Live click-through not done on the credential-list fix specifically.** Verified via live RLS/RPC checks, CI (`flutter analyze` + `flutter test`), and the deploy's ETag change — not by an actual signed-in admin opening a worker's detail screen and seeing their credentials render. _(added 2026-08-16)_
+
+---
+
+**From:** eq-field: apprentices can self-create their initial profile (2026-08-18)
+
+- [ ] **Not click-tested live by a real self-signed-up apprentice** — same SKS Core-only sandbox limitation as PR #722 below. _(added 2026-08-18)_
+
+---
+
+**From:** eq-field: apprentice list fail-open bug + full onboarding/login audit across ehow, jvkn, Sentry (2026-08-18)
+
+- [ ] **Not click-tested live as a non-manager** — same SKS Core-only sandbox limitation as PR #720's own entry below; verified via CI + live DB trace instead. _(added 2026-08-18)_
+
+---
+
+**From:** eq-solves-service: unchecked-Supabase-query-error bug fully closed out across all 55 `page.tsx` files — dashboard fixed by hand, the remaining 30 swept by 5 parallel isolated-worktree agents, all 6 PRs merged and confirmed live (2026-08-19)
+
+- [ ] **Not click-tested live by a real signed-in user, across all 43 touched files now (dashboard + the 30-file sweep)** — verified via `tsc --noEmit`, CI (only the pre-existing Integration-tests flake failed on every PR), and Netlify commit-ancestry/secret-scan checks, not by actually loading the app and triggering a real query failure. Sentry MCP wasn't authenticated in this session either, so none of the new `route:`-tagged error captures have been watched for live. _(added 2026-08-19)_
+
+---
+
+**From:** eq-solves-service: classification gate built for contract-scope timing — merged, live-verified (2026-08-19)
+
+- [ ] **Not click-tested live** — verified via full type-check + production build, not a real signed-in click-through. Worth a few minutes: open a scope item, try all three timing options, confirm the label looks right, press Generate Calendar once; separately, run an import and confirm the batch timing picker sets the right dates. A working live-session path now exists for this app (`claude-in-chrome` MCP against Royce's own already-authenticated Shell browser session — used 2026-08-20 to click-test the job-plans Global-scope filter fix), so "no working local sign-in" is no longer the real blocker; a bare local dev server still has no session, but that workaround does. _(added 2026-08-19, updated 2026-08-20)_
 
 ---
 
