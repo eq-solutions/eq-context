@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-22 21:57 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-22 22:32 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-22 21:27 UTC → 2026-08-22 21:57 UTC)
+## Since last refresh (2026-08-22 21:57 UTC → 2026-08-22 22:32 UTC)
 
-- Merged: eq-shell [#1517](https://github.com/eq-solutions/eq-shell/pull/1517) fix(labour-hire): promote worker_credentials to licences on 
-- Merged: eq-shell [#1516](https://github.com/eq-solutions/eq-shell/pull/1516) fix(migrations): enforce per-migration tenant scope in the O
-- Merged: eq-shell [#1502](https://github.com/eq-solutions/eq-shell/pull/1502) fix(staff): supervisor can complete licence re-review + cons
-- Merged: eq-shell [#1498](https://github.com/eq-solutions/eq-shell/pull/1498) fix(drift): CHECK 6 widen schema scan to service/app_data (S
-- Merged: eq-shell [#1496](https://github.com/eq-solutions/eq-shell/pull/1496) feat(labour-hire): review each licence individually before a
-- Merged: eq-shell [#1492](https://github.com/eq-solutions/eq-shell/pull/1492) feat(quotes): drag-and-drop + one import button + per-row se
-- Merged: eq-shell [#1491](https://github.com/eq-solutions/eq-shell/pull/1491) fix(labour-hire): batch cleanup deletes staging docs before 
-- Merged: eq-shell [#1489](https://github.com/eq-solutions/eq-shell/pull/1489) feat(labour-hire): drag-and-drop for the batch intake file p
+- Merged: eq-shell [#1503](https://github.com/eq-solutions/eq-shell/pull/1503) fix(quotes): clear sibling import error on Line Items card
+- Merged: eq-shell [#1501](https://github.com/eq-solutions/eq-shell/pull/1501) fix(quotes): hoist Date.now() out of render to satisfy react
+- Merged: eq-shell [#1500](https://github.com/eq-solutions/eq-shell/pull/1500) fix(labour-hire): allow jvkn Supabase storage in frame-src C
+- Merged: eq-shell [#1499](https://github.com/eq-solutions/eq-shell/pull/1499) fix(security): REVOKE anon-EXECUTE on 15 service/app_data fu
+- Merged: eq-shell [#1497](https://github.com/eq-solutions/eq-shell/pull/1497) feat(quotes): Jobs-page "From supplier file" button now take
+- Merged: eq-shell [#1495](https://github.com/eq-solutions/eq-shell/pull/1495) chore: remove eq-shell's dead duplicate of workers-canonical
+- Merged: eq-shell [#1494](https://github.com/eq-solutions/eq-shell/pull/1494) fix(labour-hire): batch flow never captured an employer name
+- Merged: eq-shell [#1493](https://github.com/eq-solutions/eq-shell/pull/1493) fix(quotes): clarify client-RFQ vs supplier-quote PDF button
 
 ## ⚠ Needs you (6)
 
@@ -30,10 +30,11 @@ _2026-08-22 21:57 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🔴 **Guard bypass? rung 4** — F12: Side-clone reconciliation blind-overwrote a concurrent session's already-pushed shared-fil · possibly recurred in [2026-08-21.md](sessions/2026-08-21.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-08-23.md](sessions/2026-08-23.md) · [failures.md](system/failures.md)
 
-## 🙋 Waiting on you (193)
+## 🙋 Waiting on you (195)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
+- **eq-shell** · **None of the at-risk migrations have actually been copied into `supabase/tenant-migrations/` yet** — confirmed live: the directory's newest files are `0256`/`0257`, none of the eq-field migrations. No active dispatch risk today; the guard is preventive for whenever that copy happens. Copying + dispatching remain explicitly Royce's call. _(added 2026-08-23)_
 - **eq-shell** · **Cropping fix for licence sheets with front + back on one photo** — diagnosed from real `crop_bounds` data (the OCR model draws one box spanning both faces instead of splitting them), not built. Royce's own framing was "not a big deal but would be nice" — needs his call between a low-effort prompt tweak and a fuller two-crop-box-per-credential redesign, not yet asked. _(added 2026-08-21)_
 - **eq-shell** · **Consider a lightweight confirmation of what the client-RFQ autofill actually filled in** — today it silently overwrites the create-form's fields with no summary. Not a correctness gap (nothing saves until "Create Quote," so the form itself is the review step) but possibly worth it if the parse is often wrong in practice — needs Royce's read on that, not a guess. _(added 2026-08-20)_
 - **eq-shell** · **Not click-tested live** — verified via typecheck/lint/376 tests and confirmed production deploys (exact commit match) for both PRs, not an actual admin session. Worth two minutes: open the Reference library (should show 16 documents, not 44) and try "Push to more people" on an existing Register document. _(added 2026-08-20)_
@@ -45,17 +46,16 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **No live click-through yet** — the fix is confirmed genuinely deployed, but nobody has tapped "Save" on an export through `core.eq.solutions/sks/cards` on an actual iOS device since it landed. _(added 2026-08-18)_
 - **eq-shell** · **Not click-tested live by a person** — verified via typecheck, lint, the full test suite, and confirmed production deploys (exact commit match against what's actually serving), not an actual signed-in click-through. Worth two minutes next time Royce is in Shell: click through Staff → Customers → Field → Admin from the sidebar (should feel instant, no white-flash reload), and confirm ctrl/cmd-click still opens a link in a new tab. _(added 2026-08-18)_
 - **eq-shell** · **Not click-tested live** — verified via eslint (0 errors) and the deploy-preview build succeeding, not by scanning a real QR/join-code link and watching an admin's inbox + the Staff badge. _(added 2026-08-18)_
-- **eq-shell** · **Not yet seen working on Royce's own screen** — confirmed the code is correct and the production build deployed clean, but couldn't click through it personally (no login for this environment). Worth two minutes next time Royce is in Staff. _(added 2026-08-17)_
-_…and 181 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 183 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 1 | 1d |
+| eq-shell | ✓ success | 0d ago | 2 | 1d |
 | eq-solves-service | ✓ success | 1d ago | 2 | 2d |
-| eq-field | ✓ success | 0d ago | 1 | 0d |
-| eq-cards | ✓ success | 2d ago | 1 | 1d |
+| eq-field | ✓ success | 0d ago | 0 | — |
+| eq-cards | ✓ success | 2d ago | 2 | 1d |
 | eq-solves-intake | ✓ success | 4d ago | 0 | — |
 
 ## Live errors (Sentry)
@@ -78,6 +78,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 |--------|------|----|
 | 2026-08-22 | eq-shell | [#1517](https://github.com/eq-solutions/eq-shell/pull/1517) fix(labour-hire): promote worker_credentials to licences on Shell |
 | 2026-08-22 | eq-shell | [#1516](https://github.com/eq-solutions/eq-shell/pull/1516) fix(migrations): enforce per-migration tenant scope in the One Pi |
+| 2026-08-22 | eq-field | [#755](https://github.com/eq-solutions/eq-field/pull/755) v3.5.544 — dashboard: one row per person on the licence-missing c |
 | 2026-08-22 | eq-field | [#754](https://github.com/eq-solutions/eq-field/pull/754) docs(migrations): add structured Plane: header to 3 SKS-only migr |
 | 2026-08-22 | eq-field | [#753](https://github.com/eq-solutions/eq-field/pull/753) Security: zaap timesheets/leave_requests had no per-row RLS |
 | 2026-08-21 | eq-shell | [#1515](https://github.com/eq-solutions/eq-shell/pull/1515) feat(access-control): role-level toggles for Field's 86 fine-grai |
@@ -90,14 +91,13 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-20 | eq-shell | [#1507](https://github.com/eq-solutions/eq-shell/pull/1507) test(quotes): accuracy harness for the subcontractor PDF import |
 | 2026-08-20 | eq-shell | [#1506](https://github.com/eq-solutions/eq-shell/pull/1506) fix(nav): HubLayout sidebar never enforced hideForTier for trial  |
 | 2026-08-20 | eq-shell | [#1505](https://github.com/eq-solutions/eq-shell/pull/1505) feat(labour-hire): crop preview in review modal + review-all queu |
-| 2026-08-20 | eq-shell | [#1504](https://github.com/eq-solutions/eq-shell/pull/1504) fix(quotes): clear 6 react-hooks lint errors in the create-form/d |
 _Showing 15 of 124 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **eq-shell** (233 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-shell** (234 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (53 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
-- **eq-field** (121 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
+- **eq-field** (122 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (93 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
 - **eq-solves-intake** (17 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
@@ -127,9 +127,9 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1482 | 172 / 64 | 155 | 41 |
+| [eq-shell](eq/pending/eq-shell.md) | 1494 | 172 / 65 | 158 | 41 |
 | [eq-cards](eq/pending/eq-cards.md) | 396 | 40 / 13 | 41 | 8 |
-| [eq-field](eq/pending/eq-field.md) | 776 | 96 / 26 | 43 | 14 |
+| [eq-field](eq/pending/eq-field.md) | 785 | 96 / 27 | 45 | 14 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 644 | 72 / 25 | 87 | 15 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 152 | 13 / 6 | 5 | 14 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
@@ -140,7 +140,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | [sks](eq/pending/sks.md) | 53 | 3 / 5 | 0 | 6 |
 | [SKS](sks/pending.md) | 454 | 81 / 10 | 4 | 23 |
 | [SKS active](sks/active.md) | 108 | 0 / 0 | 0 | 0 |
-| [OPS](ops/pending.md) | 452 | 34 / 2 | 0 | 1 |
+| [OPS](ops/pending.md) | 469 | 42 / 2 | 0 | 1 |
 
 ## Aging open items (45d+, unconfirmed)
 
@@ -198,4 +198,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-22 21:57 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-22 22:32 UTC._
