@@ -8,25 +8,24 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-22 12:28 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-22 21:27 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-21 12:35 UTC → 2026-08-22 12:28 UTC)
+## Since last refresh (2026-08-22 12:28 UTC → 2026-08-22 21:27 UTC)
 
-- Merged: eq-shell [#1498](https://github.com/eq-solutions/eq-shell/pull/1498) fix(drift): CHECK 6 widen schema scan to service/app_data (S
-- Merged: eq-shell [#1496](https://github.com/eq-solutions/eq-shell/pull/1496) feat(labour-hire): review each licence individually before a
-- Merged: eq-shell [#1492](https://github.com/eq-solutions/eq-shell/pull/1492) feat(quotes): drag-and-drop + one import button + per-row se
-- Merged: eq-shell [#1491](https://github.com/eq-solutions/eq-shell/pull/1491) fix(labour-hire): batch cleanup deletes staging docs before 
-- Merged: eq-shell [#1489](https://github.com/eq-solutions/eq-shell/pull/1489) feat(labour-hire): drag-and-drop for the batch intake file p
-- Merged: eq-shell [#1488](https://github.com/eq-solutions/eq-shell/pull/1488) fix(labour-hire): staging-object cleanup is fire-and-forget,
-- Merged: eq-shell [#1486](https://github.com/eq-solutions/eq-shell/pull/1486) feat(labour-hire): batch intake — group upload for admin and
-- Merged: eq-solves-service [#799](https://github.com/eq-solutions/eq-service/pull/799) test(reports): component tests for the /reports compliance d
-- ✅ Needs you: 9 → 7
+- Merged: eq-shell [#1500](https://github.com/eq-solutions/eq-shell/pull/1500) fix(labour-hire): allow jvkn Supabase storage in frame-src C
+- Merged: eq-shell [#1497](https://github.com/eq-solutions/eq-shell/pull/1497) feat(quotes): Jobs-page "From supplier file" button now take
+- Merged: eq-shell [#1495](https://github.com/eq-solutions/eq-shell/pull/1495) chore: remove eq-shell's dead duplicate of workers-canonical
+- Merged: eq-shell [#1494](https://github.com/eq-solutions/eq-shell/pull/1494) fix(labour-hire): batch flow never captured an employer name
+- Merged: eq-shell [#1493](https://github.com/eq-solutions/eq-shell/pull/1493) fix(quotes): clarify client-RFQ vs supplier-quote PDF button
+- Merged: eq-shell [#1490](https://github.com/eq-solutions/eq-shell/pull/1490) fix(labour-hire): employment_type never protected from Cards
+- Merged: eq-shell [#1487](https://github.com/eq-solutions/eq-shell/pull/1487) fix(labour-hire): zip-slip check false-positives on every en
+- Merged: eq-shell [#1485](https://github.com/eq-solutions/eq-shell/pull/1485) feat(quotes): Excel labour/materials breakdown import + Cate
+- ✅ Needs you: 7 → 6
 
-## ⚠ Needs you (7)
+## ⚠ Needs you (6)
 
 - 🔴 **Sentry new error** — `eq-shell` [TypeError: Failed to fetch dynamically imported module: http](https://eq-solutions.sentry.io/issues/141714696/)
 - 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
-- 🔴 **Open security finding** — SEC-31 (P1 — fix ready, blocked on Royce's hands, not on design.) — `public.organisations` on jvkn — any authenticated user, any tenant, reads every · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-37 (P1 — fix ready, isolated, dry-run verified on zaap.) — `app_data.timesheets` / `app_data.leave_requests` on zaap — any authenticated te · [security-register.md](ops/security-register.md)
 - 🔴 **Cron failing** — `index-drift.yml` 2 consecutive scheduled run(s) failed, last success 2026-08-20 · [failures.md](system/failures.md) F11
 - 🔴 **Guard bypass? rung 4** — F12: Side-clone reconciliation blind-overwrote a concurrent session's already-pushed shared-fil · possibly recurred in [2026-08-21.md](sessions/2026-08-21.md) · [failures.md](system/failures.md)
@@ -54,10 +53,10 @@ _…and 178 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 1d ago | 1 | 1d |
+| eq-shell | ✓ success | 1d ago | 2 | 1d |
 | eq-solves-service | ✓ success | 1d ago | 2 | 2d |
-| eq-field | ✓ success | 1d ago | 1 | 1d |
-| eq-cards | ✓ success | 1d ago | 1 | 1d |
+| eq-field | ✓ success | 0d ago | 1 | 0d |
+| eq-cards | ✓ success | 2d ago | 1 | 1d |
 | eq-solves-intake | ✓ success | 4d ago | 0 | — |
 
 ## Live errors (Sentry)
@@ -78,6 +77,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-22 | eq-field | [#753](https://github.com/eq-solutions/eq-field/pull/753) Security: zaap timesheets/leave_requests had no per-row RLS |
 | 2026-08-21 | eq-shell | [#1515](https://github.com/eq-solutions/eq-shell/pull/1515) feat(access-control): role-level toggles for Field's 86 fine-grai |
 | 2026-08-21 | eq-shell | [#1509](https://github.com/eq-solutions/eq-shell/pull/1509) fix(security): close SEC-30/32 on both planes, org-scoped (verifi |
 | 2026-08-20 | eq-shell | [#1510](https://github.com/eq-solutions/eq-shell/pull/1510) fix(security): close SEC-33 on zaap (staff PII read+delete) |
@@ -92,7 +92,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-20 | eq-shell | [#1501](https://github.com/eq-solutions/eq-shell/pull/1501) fix(quotes): hoist Date.now() out of render to satisfy react-hook |
 | 2026-08-20 | eq-shell | [#1499](https://github.com/eq-solutions/eq-shell/pull/1499) fix(security): REVOKE anon-EXECUTE on 15 service/app_data functio |
 | 2026-08-20 | eq-shell | [#1503](https://github.com/eq-solutions/eq-shell/pull/1503) fix(quotes): clear sibling import error on Line Items card |
-| 2026-08-20 | eq-shell | [#1502](https://github.com/eq-solutions/eq-shell/pull/1502) fix(staff): supervisor can complete licence re-review + consolida |
 _Showing 15 of 124 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -106,7 +105,7 @@ _Showing 15 of 124 · full record in [sessions/](sessions/)_
 - **eq-ui** (2 open) · [eq/pending/eq-ui.md](eq/pending/eq-ui.md)
 - **eq-receipts** (4 open) · [eq/pending/eq-receipts.md](eq/pending/eq-receipts.md)
 - **eq-context** (26 open) · [eq/pending/eq-context.md](eq/pending/eq-context.md)
-- **cross-repo** (184 open) · [eq/pending/cross-repo.md](eq/pending/cross-repo.md)
+- **cross-repo** (183 open) · [eq/pending/cross-repo.md](eq/pending/cross-repo.md)
 - **sks** (8 open) · [eq/pending/sks.md](eq/pending/sks.md)
 
 ## Pending (SKS)
@@ -200,4 +199,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-22 12:28 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-22 21:27 UTC._
