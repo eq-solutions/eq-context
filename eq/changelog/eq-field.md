@@ -1,13 +1,18 @@
 ---
 title: EQ Field — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-23
+last_updated: 2026-08-24
 scope: EQ Field append-only history. Canonical name (repo-slug convention, matching eq-shell.md/eq-cards.md/eq-intake.md/eq-context.md/eq-receipts.md/eq-ui.md) — absorbed field.md's full history 2026-08-17. field.md's own header had claimed the opposite direction ("eq-field.md was merged into this file 2026-07-19, don't split again"), but a fresh eq-field.md was recreated after that and diverged with 5 real, unique entries (PR #703/#705/#709/#710/#711) never merged back — exactly the drift that note warned about. Content of both preserved with no loss. UPDATE 2026-08-21: the "field.md is now a stub" claim did not hold — a session recreated eq/changelog/field.md from scratch 2026-08-19, two days after archival, without checking it had been retired, and it has since collected 5 more real entries (PR #729/#730/#735/#736/#738) not present here. UNRECONCILED PAIR with eq/changelog/field.md again — third occurrence of this exact drift (see archive/changelog-eq-field-dead-twin.md and archive/changelog-field-dead-twin.md for the first two). Don't mark field.md superseded_by until those 5 entries are folded in here — that's Royce's call, not automatic.
 read_priority: reference
 status: live
 ---
 
 # eq-field changelog
+
+## 2026-08-24 (PR #762 MERGED + LIVE — SEC-65: AUDIT_SB_KEY mislabeled as publishable, it's the full ehow service_role key)
+- `verify-pin.js`, `eq-agent.js`, `eq-service-sites.js` documented `AUDIT_SB_KEY` as a publishable or narrowly-scoped read key. It's actually the live ehow `service_role` key — full DB access, bypasses RLS — fingerprint-matched to the already-tracked 4-alias service_role cluster in eq-context's `ops/secrets-inventory.md` (now 5 aliases, not its own separate entry).
+- Comment-only fix, no rotation, no behavior change. `_shared/sentry.js` already redacted the value from error reports — no change needed there.
+- Not tested this pass: whether any of the 3 non-Sentry consumers actually ships the value client-side. Label corrected; exposure question stays open.
 
 ## 2026-08-23 (PR #760 MERGED v3.5.547 — Roster/Edit Roster silently dropped an unrecognized group)
 - `getRosterPeopleForGroup()` and Edit Roster's inline equivalent both iterated a hardcoded 4-value group list (Direct/Apprentice/Labour Hire/Subcontractor) with no catch-all, so anyone whose `group` value didn't exactly match one of the 4 was invisible on Roster, the mobile roster view, and Edit Roster — regardless of `on_roster`.

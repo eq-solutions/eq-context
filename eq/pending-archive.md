@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-08-23
+last_updated: 2026-08-24
 scope: Done items rotated out of eq/pending.md nightly by scripts/rotate_pending.py (per-item since 2026-07-27; before that, occasional manual whole-section moves). Nothing here is actionable — pure historical record (also covered in eq/changelog/*.md and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -13,6 +13,15 @@ Done items and fully-closed session write-ups rotated out of `eq/pending.md`.
 If you''re looking for something to action, it''s not here — check `eq/pending.md`.
 A "(rotated YYYY-MM-DD ...)" note on a section header means only that
 section's done items live here; its open items stayed in `eq/pending.md`.
+
+---
+
+## eq-shell: control-plane migration ledger 5 weeks stale against its own changelog — SEC-58, 54 files object-verified (2026-08-24) (fully closed, no open items remain)
+*Royce asked "is there anything else we should be doing" after the staff-deactivation-sync work closed; a fresh (non-stale) pull of the security register surfaced SEC-58 alongside 3 unrelated P1s. Royce picked this one plus SEC-65 (`eq/pending/eq-field.md`) to actually build this round. Confirmed safe first (`/decide` pass: read-only against jvkn, docs-only output, nothing found missing gets hand-applied).*
+
+- [x] All 54 untracked `supabase/migrations/*.sql` files object-verified against live jvkn — table/function/trigger/column/constraint/bucket/policy existence, plus a live function-body diff (not just existence) for the 3 functions redefined by more than one untracked file, to correctly attribute current-vs-superseded rather than assume newest filename wins. Result: 53 applied, 1 misfiled (targets ehow/zaap by its own header, not jvkn — same class as 3 already-tombstoned misfiles from the original 2026-07-11 pass), 0 pending, 0 not-found. No live hand-apply gap existed — the gap was entirely in the ledger document, not the database.
+- [x] Two small pre-existing regressions surfaced and confirmed already-fixed along the way (both already had their own ledger rows from an earlier 2026-08-23 session): `public.organisations`'s anon column-grant and `shell_control.eq_schema_registry`'s anon grant had each independently lost their grant sometime between 2026-07-12 and 2026-08-20.
+- [x] `supabase/CONTROL-PLANE-LEDGER.md` updated (54 new rows, corrected summary, changelog entry), eq-shell [PR #1561](https://github.com/eq-solutions/eq-shell/pull/1561), merged, live (docs-only, no functional change).
 
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: EQ Field — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-23
+last_updated: 2026-08-24
 scope: EQ Field engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -14,13 +14,17 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ---
 
 ## eq-field: field_people_iud() writes identity content with zero path back to jvkn — the writer audit's biggest finding, fix built (2026-08-23)
-*Handed off from the eq-shell/eq-cards identity-ownership writer audit (IDENTITY-MODEL.md §3.3): the audit's code-side grep couldn't see this at all — it's a Postgres trigger function on ehow, not a Netlify/edge function. Found by querying the live DB catalog directly (pg_trigger, pg_proc), on both ehow and zaap, not by reading code.*
 
-- [x] **Confirmed live**: `app_data.field_people_iud()` — the INSTEAD OF trigger behind Field's own Add Person/Edit Roster screens — writes `first_name`/`last_name`/`email`/`phone`/`date_of_birth`/`emergency_contact_name` straight into `app_data.staff` on every UPDATE, with no path back to jvkn at all. Same class of gap eq-shell PR #1544 already closed twice for Shell's Staff-page edits, never audited for Field's own DB-side write.
-- [x] **Also confirmed: exists only on ehow, not on zaap.** `sync_staff_to_field()` (mirrors `app_data.staff` into a second local table, `public.people`) is also ehow-only. Real cross-tenant drift in Field's own write path, not previously documented.
-- [x] **Fix built, migration written, not applied**: extends `field_people_iud()`'s UPDATE branch to fire an async upward push (vault secret + `net.http_post`, mirroring jvkn's own `sync_worker_to_canonical()` pattern reversed) to a new eq-shell endpoint, `field-identity-push.ts`. Only fires when the row has a `cards_worker_id` — a brand-new Field-created person (INSERT branch) has none by construction, nothing to push. eq-field [PR #761](https://github.com/eq-solutions/eq-field/pull/761), companion eq-shell PR #1555 (second commit).
-- [ ] **Inert until two secrets exist out-of-band, deliberately not created yet**: a vault secret named `field_identity_push_secret` on ehow, and `FIELD_IDENTITY_PUSH_SECRET` set to the same value on eq-shell's Netlify env. Until both exist, the trigger's own `RAISE WARNING` fires and the push silently no-ops — staff/roster writes are unaffected either way. **Needs Royce's explicit go** before either secret is created, same posture as every other jvkn-identity-adjacent change from this session. _(added 2026-08-23)_
-- [ ] **Migration itself also needs explicit sign-off before hand-applying to live ehow** — this is a control-plane-adjacent function on live SKS data, same convention as the Zemi Asri auth fix earlier the same day. _(added 2026-08-23)_
+- [ ] **Migration needs its live-apply on ehow independently confirmed.** Both out-of-band prerequisites are now done (2026-08-24): the vault secret `field_identity_push_secret` on ehow and `FIELD_IDENTITY_PUSH_SECRET` on eq-shell's Netlify env both exist, match, and the eq-shell receiver (`field-identity-push.ts`) was verified live end-to-end with the real secret. **But that only proves the receiver works when called correctly — it does not prove this migration's trigger code is actually live on ehow.** Not independently re-confirmed this pass. Worth a direct live check (`pg_get_functiondef` on `field_people_iud()`, looking for the `net.http_post` call) or just watching a real Field roster edit reach eq-shell, before assuming the pipe is actually firing end-to-end. _(added 2026-08-23, narrowed 2026-08-24)_
+
+---
+
+## eq-field: AUDIT_SB_KEY mislabeled as publishable — it's the full ehow service_role key (SEC-65, fixed 2026-08-24)
+*Surfaced while triaging the security register's open findings at Royce's "is there anything else" prompt; picked to build alongside SEC-58 (see eq-shell).*
+
+- [x] `verify-pin.js`, `eq-agent.js`, `eq-service-sites.js` header comments corrected — `AUDIT_SB_KEY` is the live ehow `service_role` key (full DB access, bypasses RLS), not a publishable or narrowly-scoped key as previously documented. Comment-only, no rotation. eq-field [PR #762](https://github.com/eq-solutions/eq-field/pull/762), merged, live.
+- [x] `ops/secrets-inventory.md` corrected: `AUDIT_SB_KEY` was a 5th alias of the already-tracked ehow service_role key cluster (Tier 1), not its own separate Tier 2 entry — folded in, standalone row removed.
+- [ ] **Not tested: whether any of the 4 consumers (`verify-pin.js`, `eq-agent.js`, `eq-service-sites.js`, `_shared/sentry.js`) actually ships the value client-side.** Reasoned-not-proved in the original SEC-65 finding, still is — the label fix removes the "believed safe" premise but doesn't itself prove or disprove exposure. `_shared/sentry.js` already redacts it from error reports (no change needed there); the other 3 weren't traced end-to-end. _(added 2026-08-24)_
 
 ---
 

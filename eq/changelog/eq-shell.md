@@ -9,6 +9,13 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-24 (PR #1561 MERGED + LIVE — SEC-58: control-plane migration ledger 54-file backlog closed)
+- `supabase/CONTROL-PLANE-LEDGER.md`'s headline summary hadn't matched its own changelog since 2026-07-11, despite 23+ files being individually added and verified after that date — and separately, 54 files had no ledger row at all.
+- All 54 object-verified against live jvkn: table/function/trigger/column/constraint/bucket/policy existence, grant spot-checks, and — for the 3 functions redefined by more than one untracked file (`eq_worker_completeness`, `eq_worker_compliance_status`, `eq_get_tenant_user`) — a live function-body diff to correctly attribute current vs. superseded rather than assume the newest filename wins.
+- Result: 53 applied, 1 misfiled (`2026_07_11_tender_tables_anon_lockdown.sql` — self-declared as targeting ehow/zaap, not jvkn), 0 pending, 0 not-found. No live hand-apply gap existed — the gap was entirely in the document.
+- Two small pre-existing anon-grant regressions confirmed already-fixed along the way (both already had their own ledger rows from 2026-08-23): `public.organisations`'s column-scoped anon grant and `shell_control.eq_schema_registry`'s anon grant had each independently lapsed sometime between 2026-07-12 and 2026-08-20.
+- Docs-only PR, no application code touched, nothing found missing was hand-applied.
+
 ## 2026-08-23 (PR #1552 + #1556 + #1557 + #1558 MERGED + LIVE — access-control sweep completed: Documents/Intake/Admin covered, 3 more gaps closed)
 - Sprint doc items shipped: S1 (`entity-patch.ts` gains an `INTERNAL_ASSET_TYPES` scope guard on its generic asset PATCH, matching `asset-calibration.ts` — closes a path to touching a customer/CMMS-owned asset row through the equipment edit door, PR #1556) and S3 (Equipment's Archive/Delete buttons no longer render for view-only roles, PR #1552).
 - Documents module audited at the DB grant layer — fully clean, both prior REVOKE migrations (0240, 0252) still hold live.
