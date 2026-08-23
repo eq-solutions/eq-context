@@ -13,6 +13,21 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: Supervisors are excluded from Contacts BY DESIGN — not a bug, mis-diagnosed twice (2026-08-23)
+*Royce: "Rhys Scott still doesn't appear in the list on EQ Field — he shows in the supervisor list but not contacts." Recorded because it was mis-diagnosed twice in one session and a fix was shipped for the wrong cause.*
+
+**The behaviour:** `renderContacts()` (`scripts/people.js`, ~L896) does not read `STATE.people`. It reads `_peopleExMgrs()` (`scripts/utils.js`), which subtracts everyone present in `STATE.managers` (the `app_data.field_managers` view = staff `WHERE is_supervisor`), matched by email then by normalised name. Its own header states the intent: *"Contacts minus supervisors/managers (QA row 11, v3.5.228) — Supervisors/managers have their own Supervision list, so they're kept out of Contacts."* All **20** SKS supervisors are excluded, not just Rhys. Working exactly as written.
+
+**Not affected — verified:** the Roster does NOT use `_peopleExMgrs()`; `getRosterPeopleForGroup()` filters `STATE.people` directly, so supervisors DO appear on the roster. Royce confirmed live: "Rhys is in the roster." Only Contacts (and the Contacts nav badge, which shares the same helper deliberately so the two can't disagree) excludes them.
+
+**How it was mis-diagnosed, twice:**
+1. First answer was "stale client cache, hard-refresh" — wrong; Royce pushed back, correctly.
+2. Second answer blamed the team-pill filter (`personInActiveTeam`) and shipped **v3.5.546** for it. That fix is a **genuine, independent bug** — a supervisor who runs a crew via `team_supervisors` without also being a `team_members` row vanished from Roster/Timesheets under a team pill — and it stands on its own. But it was **never the cause of this report and did not fix it**, and the claim "clearing the filter will surface him" was wrong: clearing a pill does not put a supervisor into Contacts.
+3. The miss both times: `app_data.field_people` was queried and Rhys found present, which correctly ruled out the data layer — but the *client-side source list* Contacts actually renders from was never checked, and the exclusion lives in a function whose name says what it does.
+
+**Open, if wanted (Royce's steer 2026-08-23: "there should be the ability to have them both as supervisor and in roster — that's what we set up in Shell"):**
+- [ ] **Field's Contacts contradicts Shell's model.** Shell's Staff page carries two *independent* badges per person — "Supervisor" and "On roster" — so a supervisor can be on the roster. Field's Contacts instead treats is-a-supervisor as not-a-contact. Royce confirmed the current state is acceptable because the roster (the surface that matters) already shows them, so **no change was made** — but the two apps do disagree, and if Contacts is ever meant to be a true directory of everyone, the fix is to stop `renderContacts()`/`_contactsCount()` subtracting `STATE.managers`. Blast radius is narrow: the Contacts list and its nav badge only. Note this would reverse v3.5.228's deliberate "QA row 11" decision, so surface why that was added before undoing it. _(added 2026-08-23)_
+
 ## eq-field: Field-wide outage — canonical anon-read regression fixed, boot hardened against slow-fetch failures (2026-08-23)
 *Royce reported Field "could not connect to this workspace" through Core. Investigated live rather than assuming Field-side; the first fix built (boot fetch retry/timeout hardening) turned out NOT to be the actual cause of the outage — caught by insisting on a live deploy-preview smoke test even after CI passed, before reporting it fixed.*
 
