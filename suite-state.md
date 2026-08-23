@@ -63,16 +63,8 @@ _If this file is >48h old, the cron is broken._
 **eq-cards:**
 - #287 fix(auth): reject deactivated identities in worker-link/claim-invite RPCs
 
-**eq-field:**
-- #758 v3.5.545 — Boot: canonical/routing fetches retry instead of hard-failing on one slow moment
-
 **eq-service:**
 - #791 fix(reports): make reissuing a report possible from the UI
-
-**eq-shell:**
-- #1533 Incident: restore anon SELECT on shell_control.eq_schema_registry (jvkn)
-- #1532 feat(drift-guard): CHECK 10 -- positive assertion for INTENTIONAL_ANON_READS tables
-- #1530 Incident: restore anon's pre-login bootstrap read on public.organisations (jvkn)
 
 ---
 
