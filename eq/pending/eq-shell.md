@@ -30,7 +30,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ## eq-shell: 283 merged `claude/*` branches confirmed safe to delete, 44 flagged for a human look (2026-08-23)
 
-- [ ] **`claude/audit-team-access-events` needs your look** — a training-matrix Excel export, pushed to GitHub, never had a PR opened. Current `MatrixView.tsx` still has no Excel export, so this looks like real unshipped work. _(43 of the original 44 flagged branches investigated and deleted 2026-08-23 — this is the only one that didn't check out as safe.)_
+- [x] **`claude/audit-team-access-events` reviewed and skipped** — training-matrix Excel export, real and unshipped, but no chase-up in the 2 months it sat there and no PR ever opened. Royce's call via `/decide`: not worth building speculatively without a confirmed ask; revisit only if actually requested. Branch left as-is, untouched. _(resolved 2026-08-23)_
 - [ ] **2 branches still can't be deleted** (`chunk-prefetch-catch`, `reminder-cron-due-at-backoff`) — both already merged, just still holding an idle linked worktree open in `C:\Projects\eq-shell`. Not urgent, clears itself once those worktrees are removed. _(added 2026-08-23)_
 
 ---
