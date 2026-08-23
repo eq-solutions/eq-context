@@ -68,11 +68,10 @@ _If this file is >48h old, the cron is broken._
 - #756 Security: leave visibility fail-open closed for unassigned/unresolved supervisors
 
 **eq-service:**
-- #801 fix(assets): exclude it_equipment from the customer-facing Assets view
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
-- #1514 feat(equipment): add IT equipment as a second internal register type
+- #1530 Incident: restore anon's pre-login bootstrap read on public.organisations (jvkn)
 
 ---
 
@@ -82,7 +81,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ✗ failure |
+| eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
@@ -91,7 +90,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 235 (latest: 0226) applied
+**Migrations:** eq-service has 236 (latest: 0227) applied
 
 ---
 
