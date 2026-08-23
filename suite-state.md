@@ -61,10 +61,11 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-23)
 
 **eq-service:**
+- #806 fix(migrations): rename colliding 0192 migration to 0228
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
-- #1545 fix(security): staff_conversations RLS never re-gated who may write
+- #1547 docs(security): correct stale mint-supabase-jwt carve-out claim (SEC-51)
 
 ---
 
