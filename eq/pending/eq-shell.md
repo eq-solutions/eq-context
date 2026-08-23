@@ -13,6 +13,20 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: compliance pack now includes approved-but-unclaimed labour-hire candidates in a separate "Pending" section (2026-08-23)
+*Royce, right after confirming the Staff page correctly shows Conor's and Nelson's licences as "Not yet confirmed": he still needs to download their credentials in a compliance pack today, before either has signed in. The pack's entire data chain (`org_memberships` → `workers.user_id` → `licences.user_id`) requires a real claimed account, so the two of them were structurally absent from every export, not merely filtered out.*
+
+- [x] **Presented 3 real options** (build a Pending section into the export / manual per-person workaround today / wait for them to claim) — Royce chose to build it, for this pair and every future one.
+- [x] **Built a second, parallel data path** into `cards-export-licences-background.ts` pulling the same staged `worker_credentials` the Staff page's "Not yet confirmed" section already reads, rendered into a distinctly-separate "Pending (Unclaimed)" register sheet + zip folder — never merged into the confirmed sheets/folders, since this is self-reported by the candidate and unverified. Summary sheet gets its own clearly-labelled pending sub-section, kept out of the audited stats.
+- [x] **Relaxed two early-return failures** that fired when a staff-selection matched zero *confirmed* workers — no longer an error on its own, since the selection may be entirely pending candidates. Now only fails once both paths resolve and neither found anything.
+- [x] `tsc -b --force` and eslint both clean; every new Supabase column checked against live schema or copied verbatim from the already-shipped pending-licences endpoint (this repo's own `.select()`-vs-live-schema blindspot bit a sibling PR in this exact area before — #1522/#1527).
+- [x] eq-shell [PR #1551](https://github.com/eq-solutions/eq-shell/pull/1551), merged (`b264c81b`) on Royce's explicit "yes," confirmed live via the deploy reaching `state: ready` (not just merge status).
+
+**Deferred:**
+- [ ] **Not click-tested live** — no actual compliance-pack download has been run against Conor's/Nelson's real data yet. Worth running one export and checking the new "Pending (Unclaimed)" sheet + zip folder render correctly. _(added 2026-08-23)_
+
+---
+
 ## eq-shell: SKS roster editing found broken for 5 days — trigger silently dropped by migration 0249, fix drafted (2026-08-23)
 
 - [ ] **Dispatch still needs Royce's own click** — `0270_field_people_iud_trigger_reattach.sql` is committed + pushed (`672bf380`, branch `claude/platform-console-cards-core-reconcile`), verified against 3 independent live checks (`pg_trigger`, `has_table_privilege`, a real user's failed PATCH in `postgres_logs`). `gh workflow run tenant-migrate.yml` was denied by the auto-mode classifier — confirmed twice now, by two separate sessions. Dispatch directly against that branch here (leave other fields blank/default): https://github.com/eq-solutions/eq-shell/actions/workflows/tenant-migrate.yml — will also pick up two already-merged, unrelated migrations (0268, 0269) waiting on `main`, which is expected, not extra scope.
@@ -145,13 +159,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 - [ ] **`20260816_timesheets_leave_own_crew_write.sql`'s identity-helper bug** — flagged as `task_c6df5631`, in progress in a separate session as of this entry. _(added 2026-08-23)_
 - [x] **`0262` (PR #753/SEC-37, zaap) dispatched** — a different session (this one) hit a real plane-scope-guard bug blocking the dispatch (see the PR #1516 section below), fixed it (PR #1524), then dispatched `--slug=eq` successfully and verified live. Full detail in `ops/security-register.md` (SEC-37) and today's session log.
 - [ ] **`0258`-`0261` (the 4 ehow-only migrations) still not dispatched** — dispatching each (with `--slug=<tenant>` matching its declared plane) remains explicitly Royce's call. _(added 2026-08-23, narrowed from "none of the 5" — one of the five is now done)_
-
----
-
-## eq-shell: approved-but-unclaimed labour-hire candidates now show their licences on the Staff page (2026-08-23)
-
-**Deferred:**
-- [ ] **Not click-tested live** — the underlying bug is fixed and verified against Conor's and Nelson's actual data (correct paths now resolve, signable), but nobody has opened their Staff row and watched the "Not yet confirmed" section actually render an image/PDF. Worth two minutes. _(added 2026-08-23)_
 
 ---
 

@@ -7645,3 +7645,24 @@ _(recovered from an unpopped stash 2026-08-20 — never made it into this file a
 No open items — feature fully closed, no standing risk. Full technical detail: `sessions/2026-08-23.md`, eq-shell's own memory store (`it-equipment-register-2026-08-21.md`, `eq-service-migration-pipeline-blocked-00001-fixture.md`, `admin-merge-override-classifier-gate.md`).
 
 ---
+
+## eq-shell: 7 divergent shell-login names resolved, migration applied live, PR merged (2026-08-23) (fully closed, no open items remain)
+*Follow-up to PR #1537's own scope note, which deliberately left non-null-but-divergent `shell_control.users.name` vs. linked staff-record names unresolved — picking a winner needed Royce's call, not a mechanical backfill.*
+
+- [x] **Re-verified all 7 pairs live** (unchanged since the earlier snapshot, no drift) before asking, and confirmed eq-cards [PR #287](https://github.com/eq-solutions/eq-cards/pull/287) (Zemi Asri's separately-tracked duplicate-identity guard) had merged and was live on jvkn — including both RPCs' `authenticated` grants — before including that pair, per the earlier session's explicit caution not to cut across it blind.
+- [x] **Asked Royce individually for all 7 via structured questions** — staff wins in every case. Shihab Al-Gburi/Al-Gbory needed a follow-up at Royce's request ("check his cards"): his own Cards profile entry independently agreed with the staff spelling, resolving what first looked like a plain typo with no way to tell which side was right.
+- [x] Migration applied live to jvkn via Supabase MCP, confirmed by reading all 7 rows back; audit-trail copy + [PR #1540](https://github.com/eq-solutions/eq-shell/pull/1540) merged (`9b580b89`) on Royce's explicit "merge," confirmed live via commit-ancestry against the newest ready production deploy (not just merge status).
+
+No open items — fully closed. Full detail: `sessions/2026-08-23.md`, eq-shell memory (`staff-name-shell-sync-pr1537.md`).
+
+---
+
+## eq-shell: approved-but-unclaimed labour-hire candidates confirmed showing their licences on the Staff page (2026-08-23) (fully closed, no open items remain)
+*Resolves the one deferred item left by the sibling "approved-but-unclaimed labour-hire candidates now show their licences" entry above.*
+
+- [x] **Click-tested live**: Royce reported Conor Horgan's and Nelson Sareto's licences still not showing. Investigation traced the entire chain live — staged credentials, the `staff-labour-hire-pending-licences.ts` endpoint's own preconditions, `staff-bootstrap.ts`'s wiring, and both desktop (`SplitPanel`) and mobile (`MobileSheet`) rendering — and found it was already correct and live (the #1527 fix confirmed an ancestor of the serving production commit, Sentry clean). Root cause of the report: a stale browser bundle from before the fix shipped, not a code defect.
+- [x] Royce hard-refreshed and confirmed both now show "Not yet confirmed" correctly.
+
+No open items — fully closed. Full detail: `sessions/2026-08-23.md`.
+
+---
