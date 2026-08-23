@@ -1,13 +1,20 @@
 ---
 title: SKS — Pending
 owner: Royce Milmlow
-last_updated: 2026-08-20
+last_updated: 2026-08-23
 scope: SKS Technologies operational TODO list
 read_priority: critical
 status: live
 ---
 
 # SKS Pending
+
+## Users admin list showed the wrong name for staff who are actually linked — fixed + backfilled, 2 gaps spawned off (2026-08-23)
+*Royce: "user name here reflects the same name as in their staff profile? Fernando (bigandsmall) should be consistent across? A users name should be one record, canonical" — the SKS Users list (`/sks/admin/users`) showed "bigandsmall2021" (an email fragment) for a person whose Staff profile already has the real name "Fernando Alba". Root-caused live: `app_data.staff.user_id` (ehow) already links straight to `shell_control.users.id` (jvkn) for 69/107 SKS staff, but nothing ever pushed the resolved staff name across once a login existed blank.*
+
+- [x] **Fixed + shipped live.** eq-shell [PR #1537](https://github.com/eq-solutions/eq-shell/pull/1537), merged + confirmed live (commit `b998e8d1`). Fill-only sync (never overwrites a manager's deliberate "Display name" override) added at both write sites: `entity-patch.ts` (fires when a manager saves the Staff page) and `cards-approve-staff.ts` (both its approval branches — closed a real `ignoreDuplicates: true` gap that left a shell login blank forever once approved). One-time backfill applied live to jvkn for the 5 people already stuck blank: Fernando Alba, Dylan Lieu, Ali Alsalman, David Boyd, Todd Wilson.
+- [ ] **A second, unidentified path also creates blank-name logins** — proven by timing, not guessed: Todd Wilson's and David Boyd's shell logins were created 7 weeks *after* their Cards approval, which rules out the path just patched as their cause. Spawned as background task `task_d904d388`, Royce started it in a separate session; running independently, not yet reported back as of this session's close. _(added 2026-08-23)_
+- [ ] **7 SKS logins where the shell name already differs from the staff record** (not just blank) — e.g. an untidied Cards name still showing vs. the cleaned-up staff version, a legal name vs. a workplace nickname, one plain typo pair. Needs Royce to pick a winner per case; one of the seven (Zemi Asri) overlaps the already-separately-tracked duplicate-identity fix in eq-cards PR #287, so needs care. Spawned as background task `task_e553cb55`, Royce started it in a separate session; running independently, not yet reported back as of this session's close. _(added 2026-08-23)_
 
 ## Contacts/Roster/Timesheets team-pill filter didn't account for supervisors — real report (Rhys Scott), general fix shipped (2026-08-23)
 *Royce: "why doesn't Rhys Scott appear in the contacts list" then, once the first answer (suggesting a hard refresh) didn't hold up — "doesn't make sense... drill into this." Right to push back: the real cause was a stuck filter, not something a refresh clears.*
