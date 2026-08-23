@@ -60,8 +60,17 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-23)
 
+**eq-cards:**
+- #296 fix(security): restore authenticated grant on eq_cards_admin_create_invite
+
 **eq-service:**
+- #807 fix(security): close anon-open get_customer_period_summary, restore authenticated
 - #791 fix(reports): make reissuing a report possible from the UI
+
+**eq-shell:**
+- #1560 feat(staff): show pending labour-hire credentials on the Staff list
+- #1558 fix(security): close 2 Intake write-path gaps (cross-tenant RPC + accepted-risk RPCs)
+- #1557 fix(security): invite-users-batch.ts missing the admin.assign_role guard
 
 ---
 
