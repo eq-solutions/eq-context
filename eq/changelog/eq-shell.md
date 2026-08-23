@@ -9,6 +9,13 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-23 (PR #1539 MERGED + DISPATCHED LIVE — quotes ownership scoping: Employees now see only quotes they created)
+- New Shell-local `quotes.view_all` permission (manager/supervisor default, unchanged from today; Employee's existing `quotes.view` becomes an own-only floor). `eq_list_quotes`/`eq_get_quote_detail` now filter rows to `v_can_view_all OR created_by = caller`, same JWT-claims mechanism already gating margins/PII on those two RPCs.
+- Found live along the way, deliberately left open, not fixed: `app_data.customers/staff/sites/contacts` grant SELECT to `authenticated` with tenant-only RLS, no role check — this is what EQ Service's own `security_invoker` views rely on for Field/Service workers to see their job site/customer info regardless of Shell role; tightening it would have broken that legitimate cross-app read.
+- Two CI guards updated to recognize the new permission's shape, not bypassed: `permission-enforcement-drift.test.ts`'s baseline (documented under the existing `enforced_at_db_layer` category) and `check-perm-sync.mjs`'s hybrid-module check (generalized from `intake/permissions.ts`'s existing single case into a shared `checkHybridModule()` helper).
+- Migration `0267_quotes_own_only_view_scope.sql` dispatched fleet-wide (zaap + ehow), confirmed live via direct function-body inspection, not just the migration ledger.
+- eq-shell [PR #1539](https://github.com/eq-solutions/eq-shell/pull/1539), squash-merged (`2377e3d0`) on Royce's explicit "merge," confirmed live via exact Netlify deploy commit match.
+
 ## 2026-08-23 (PR #1538 MERGED + DISPATCHED — timesheet/leave guard self-approval bypass closed on ehow)
 - Verified live (not just from source) that `eq__guard_timesheet_status`/`eq__guard_leave_status` could never actually block a supervisor from self-approving their own timesheet or self-deciding their own leave request — the identity helper they used always resolved to the tenant id, never a real person. Fixed by re-pointing both at the already-live actor-identity helpers from migration 0261; verified via a rollback-safe live probe both before and after the fix.
 - Migration `0266_timesheet_leave_guard_actor_identity_fix.sql` merged and dispatched to ehow. The same dispatch also applied `0265` (SEC-47's `approve_safety_record` self-approval fix, merged earlier the same day but never dispatched) — confirmed with Royce before running, since the dispatch mechanism applies everything pending for a tenant, not a single chosen migration.

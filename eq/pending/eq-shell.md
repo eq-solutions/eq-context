@@ -13,6 +13,28 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: quotes ownership scoping built — own-quotes-only for Employees; a Records DB gap found and deliberately left alone (2026-08-23)
+*Started as a nav-bar access-control question (screenshot of the Access Control admin page, SKS Technologies workspace), broadened to "what security controls do we have on Records... and can we limit Ops so a user only sees quotes they created."*
+
+- [x] **Confirmed live how "None" access actually works**: a permission-gated nav item is never rendered (not shown-disabled), and the matching route redirects away too — verified via `HubSidebar.tsx`/`App.tsx`'s `ModuleGate`, not assumed.
+- [x] **Investigated Records (Customers/Staff/Sites) DB-layer security live on ehow**: found `app_data.customers/staff/sites/contacts` grant `SELECT` to `authenticated` with tenant-only RLS (no role check). Traced this to EQ Service's own `security_invoker` views on the same tables, which depend on that grant for its own legitimate field-worker access. **Royce's call: leave it** — tightening it would block Field/Service workers from seeing their job site/customer info, which EQ Service's own design deliberately allows regardless of Shell role.
+- [x] **Investigated Ops/Quotes server-side enforcement live**: `eq_list_quotes`/`eq_get_quote_detail` already mask margins (`ops.view_margins`) and contact PII (`entity.view_pii`) server-side, but had no server-side `quotes.view` check and no ownership/creator scoping anywhere in Ops.
+- [x] **`/decide` pass on the broader "narrowing levers" direction** — recommended keeping the pattern (closed 4 real gaps by this same lens this session's evidence alone: Suppliers, Rates/Setup, CRM writes, quote delete/line-items), paired with a one-time systematic RPC inventory rather than only reactive fixes.
+- [x] **Built and shipped own-quotes-only scoping**: new Shell-local `quotes.view_all` permission (manager/supervisor default — unchanged from today; Employee's existing `quotes.view` becomes own-only). Migration `0267_quotes_own_only_view_scope.sql` filters `eq_list_quotes`/`eq_get_quote_detail` to `v_can_view_all OR created_by = caller`, same JWT-claims pattern already used for the existing margin/PII masking.
+- [x] **Two CI guards needed fixing, not bypassing**: `permission-enforcement-drift.test.ts` (new key has no TS call site by design — documented in the baseline under the existing `enforced_at_db_layer` category, same precedent as `ops.view_supplier_credentials`) and `check-perm-sync.mjs` (hardcoded `quotes/permissions.ts` as a zero-literal pure re-export — generalized `intake/permissions.ts`'s existing hybrid-module check into a shared helper and registered quotes' new shape).
+- [x] eq-shell [PR #1539](https://github.com/eq-solutions/eq-shell/pull/1539), squash-merged (`2377e3d0`) on Royce's explicit "merge," confirmed live via exact Netlify deploy commit match.
+- [x] **Migration dispatched to both ehow and zaap** — found already applied (ledger timestamps ~7 min after merge, before Royce's explicit dispatch request arrived) by a concurrent fleet-wide dispatch that also picked up an unrelated PR's same-window migration. Confirmed live via direct function-body inspection on both planes (`v_can_view_all` present in `eq_list_quotes`/`eq_get_quote_detail`), not just the ledger row.
+
+**Deferred:**
+- [ ] **Systematic RPC-by-RPC inventory** (which Ops/Shell surfaces have role/field/row-level checks, which don't) — recommended in the `/decide` pass, not started. _(added 2026-08-23)_
+- [ ] **No server-side `quotes.view` check exists** on `eq_list_quotes`/`eq_get_quote_detail` — any authenticated tenant member can still call them directly regardless of role. Royce chose to build ownership scoping first over closing this. _(added 2026-08-23)_
+- [ ] **Quote status/notes write RPCs** (`eq_update_quote_status`, `eq_add_quote_note`) — not verified live for role checks this session. _(added 2026-08-23)_
+- [ ] **45 of 199 live quotes on ehow predate `created_by`** and stay invisible to own-only viewers (still visible to Manager/Supervisor) — not backfilled, no reliable source to attribute them from. _(added 2026-08-23)_
+- [ ] **Not click-tested live** — an Employee's quote list, and confirming they can't open another employee's quote by pasting its ID into the URL. _(added 2026-08-23)_
+- [ ] **EQ Service's own DB-layer visibility model** (tenant-only, no role gate) — Royce explicitly declined to extend this session's fix there; a bigger, separate, cross-repo initiative if ever revisited. _(added 2026-08-23)_
+
+---
+
 ## eq-shell: timesheet/leave self-approval bypass found + fixed + dispatched live (2026-08-23)
 *Verified a specific claim end-to-end: `eq__guard_timesheet_status`/`eq__guard_leave_status` (ehow/SKS tenant) resolve the caller's own identity via a helper that reads the JWT `sub` claim — always the tenant id on Field's data-plane JWT, never a real person — so the self-approval/self-decision check could never fire. Confirmed live via a BEGIN...rollback probe before touching anything: a supervisor (managers are deliberately exempt by design) could self-approve their own timesheet and self-decide their own leave request, unblocked.*
 
