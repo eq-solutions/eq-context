@@ -69,8 +69,7 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
-- #1555 fix(identity): push date_of_birth/address_* upward to canonical too
-- #1553 fix(field-people): close 4 role-check gaps on field_people_iud + field_people_removed_iud (0270)
+- #1555 fix(identity): push date_of_birth/address_* upward; receive Field's own upward push
 - #1547 docs(security): correct stale mint-supabase-jwt carve-out claim (SEC-51)
 
 ---
