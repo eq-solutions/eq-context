@@ -9,6 +9,13 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-23 (PR #1525 MERGED — Staff page deep-link no longer trips react-hooks/set-state-in-effect)
+- Handed over as a fully-specified code-review finding (file, line range, exact eslint output), not discovered fresh this session. The `?open=<staffId>&focus=conversations` deep-link effect on `StaffPage.tsx` called `setSelId(openId)` synchronously inside a mount-only `useEffect`, tripping `react-hooks/set-state-in-effect`.
+- `selId` now seeds via a lazy `useState` initializer reading `searchParams.get('open')` directly, instead of via the effect. The existing prevId-guard pattern (`SplitPanel`/`MobileSheet`) doesn't fit this case — it resets state on a prop *change*; this needed seed-once-at-*mount*, a different problem — so the underlying idea was adapted rather than the pattern ported literally. The effect keeps its other job unchanged: stripping `?open=&focus=` from the URL and scrolling to Conversations.
+- Verified via `npx eslint` (0 errors, was 1) and `npx tsc -b --force` (clean), plus tracing both real callers of the deep link (`StaffResourcingPage.tsx`, `TenantHome.tsx`) to confirm neither ever updates `?open=` on an already-mounted `StaffPage` — the mount-only assumption behind the fix holds for both.
+- Fixed in an isolated worktree off current `main`, not the root checkout (`claude/platform-console-cards-core-reconcile`), which was 56 commits stale with unrelated uncommitted work already sitting in it.
+- eq-shell [PR #1525](https://github.com/eq-solutions/eq-shell/pull/1525), squash-merged (`6d2f4e93`), confirmed live via the Netlify deploy for that exact commit reaching `state: ready` (published 2026-08-23T01:50:36Z), on Royce's explicit "merge."
+
 ## 2026-08-23 (PR #1521 MERGED — 5 single-plane migrations staged into the One Pipe)
 - Follow-up to PR #1516's plane-scope guard. Investigating the "5 at-risk migrations" surfaced 2 more in the same cluster: `20260816_timesheets_leave_own_crew_read.sql` (superseded by `20260819`, its own header says don't dispatch it) and `20260816_timesheets_leave_own_crew_write.sql` (a real bug — still calls the pre-fix `sub`-based identity helper `20260819` replaced, which per that migration's own finding resolves to the tenant id for every caller, not a person; would lock out every non-manager SKS worker's own timesheet/leave writes, not just the documented unlinked-staff population). Both excluded from staging; the write-side bug spun off as its own task (`task_c6df5631`).
 - Staged the original 5 (`20260722`/`722b`/`722c`, `20260819`, `20260821`/PR #753) as `0258`–`0262`, byte-identical to source. CI green including the live `--plan` job; merged after a scaled `/decide` pass on Royce's "then merge if safe."

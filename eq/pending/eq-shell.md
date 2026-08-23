@@ -13,6 +13,20 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: Staff page deep-link (`?open=<id>`) tripped react-hooks/set-state-in-effect — fixed (2026-08-23)
+*Handed over as a fully-specified code-review finding (file, line range, exact eslint output), not discovered fresh this session.*
+
+- [x] **Confirmed the root checkout (`claude/platform-console-cards-core-reconcile`) was 56 commits stale**, with unrelated uncommitted work already sitting in it (`entity-patch.ts`, `AdminDocumentUpload.tsx`) — left it untouched. Diffed the target effect directly against `origin/main` first: unchanged there despite `StaffPage.tsx` diverging 666 lines elsewhere, so the fix target was still valid.
+- [x] **Fixed in an isolated worktree off current main**: `selId` now seeds from `searchParams.get('open')` via a lazy `useState` initializer instead of `setSelId(openId)` inside a mount-only effect. The prevId-guard pattern `SplitPanel`/`MobileSheet` already use doesn't fit here — that one resets state on a prop *change*; this needed a seed-once-at-*mount* — ported the underlying idea, not the literal pattern (see the eq-shell Claude memory store, `set-state-in-effect-prevId-guard-vs-lazy-init`).
+- [x] `npx eslint src/pages/StaffPage.tsx` → 0 errors (was 1); `npx tsc -b --force` → clean. Traced both real callers of the deep link (`StaffResourcingPage.tsx`, `TenantHome.tsx`) — both always navigate fresh to `/staff`, matching the mount-only assumption both old and new code rely on.
+- [x] `/decide` pass run before committing (commit+PR now vs. folding into the stale branch) — recommended a standalone PR; Royce confirmed.
+- [x] eq-shell [PR #1525](https://github.com/eq-solutions/eq-shell/pull/1525) — CI green, squash-merged (`6d2f4e93`), confirmed live via the Netlify deploy for that exact commit reaching `state: ready` (published 2026-08-23T01:50:36Z), on Royce's explicit "merge."
+
+**Deferred:**
+- [ ] **Not click-tested live** — verified via eslint/tsc and commit-ancestry against the live deploy, not an actual `?open=<id>` link clicked by a person. Worth confirming next time someone opens a Staff deep-link from the "Ask anything" bar or a Resourcing row click. _(added 2026-08-23)_
+
+---
+
 ## eq-shell: 5 single-plane migrations staged into the One Pipe; a real bug found and excluded, not fixed (2026-08-23)
 *Direct follow-up to the plane-scope guard (PR #1516, same day) — Royce said "go" on the deferred next step, then scoped it via AskUserQuestion to staging only (copy + PR, no merge/dispatch) once the real dependency chain turned out to be 7 files, not the 5 originally flagged, with one carrying a live population blocker.*
 
