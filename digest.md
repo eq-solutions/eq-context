@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-23 10:11 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-23 12:28 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-23 09:33 UTC → 2026-08-23 10:11 UTC)
+## Since last refresh (2026-08-23 10:11 UTC → 2026-08-23 12:28 UTC)
 
-- Merged: eq-shell [#1540](https://github.com/eq-solutions/eq-shell/pull/1540) fix(staff): resolve the 7 divergent staff/shell login names 
-- Merged: eq-shell [#1537](https://github.com/eq-solutions/eq-shell/pull/1537) fix(staff): sync staff record name into the linked Shell log
-- Merged: eq-shell [#1535](https://github.com/eq-solutions/eq-shell/pull/1535) fix(security): role-gate + self-approval check on approve_sa
-- Merged: eq-shell [#1534](https://github.com/eq-solutions/eq-shell/pull/1534) fix(security): entity-role-gate quote delete/line-item RPCs 
-- Merged: eq-shell [#1532](https://github.com/eq-solutions/eq-shell/pull/1532) feat(drift-guard): CHECK 10 -- positive assertion for INTENT
-- Merged: eq-shell [#1528](https://github.com/eq-solutions/eq-shell/pull/1528) fix(chunk-loading): catch chunk-load failures that bypass Ch
-- Merged: eq-solves-service [#806](https://github.com/eq-solutions/eq-service/pull/806) fix(migrations): rename colliding 0192 migration to 0228
-- Merged: eq-solves-service [#805](https://github.com/eq-solutions/eq-service/pull/805) fix(security): IPv6-bracket bypass in isSafeFetchUrl's SSRF 
+- Merged: eq-shell [#1542](https://github.com/eq-solutions/eq-shell/pull/1542) fix(auth): close 2nd blank-name gap in phone-OTP cards-appro
+- Merged: eq-shell [#1541](https://github.com/eq-solutions/eq-shell/pull/1541) fix(security): DB-layer role gate on app_data.sites writes (
+- Merged: eq-shell [#1538](https://github.com/eq-solutions/eq-shell/pull/1538) fix(security): use actor identity in timesheet/leave guard s
+- Merged: eq-shell [#1536](https://github.com/eq-solutions/eq-shell/pull/1536) fix(equipment): drop custodian wording, show assigned person
+- Merged: eq-shell [#1533](https://github.com/eq-solutions/eq-shell/pull/1533) Incident: restore anon SELECT on shell_control.eq_schema_reg
+- Merged: eq-shell [#1530](https://github.com/eq-solutions/eq-shell/pull/1530) Incident: restore anon's pre-login bootstrap read on public.
+- Merged: eq-shell [#1529](https://github.com/eq-solutions/eq-shell/pull/1529) fix(security): revoke anon EXECUTE on actor-identity helpers
+- Merged: eq-shell [#1514](https://github.com/eq-solutions/eq-shell/pull/1514) feat(equipment): add IT equipment as a second internal regis
 
 ## ⚠ Needs you (8)
 
@@ -27,7 +27,7 @@ _2026-08-23 10:11 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🔴 **Open security finding** — SEC-57 (P1) — An org-wide GitHub App installation (`grok-by-xai`, `repository_selection: all`) · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-61 (P1) — SEC-9's 2026-08-16 closure does not hold: 22 secret-flagged vars across eq-shell · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-63 (P1) — An uninventoried Netlify **account-scope** (team `milmlow`) secret, `SUPABASE_JW · [security-register.md](ops/security-register.md)
-- 🔴 **Cron failing** — `index-drift.yml` 2 consecutive scheduled run(s) failed, last success 2026-08-20 · [failures.md](system/failures.md) F11
+- 🔴 **Cron failing** — `index-drift.yml` 3 consecutive scheduled run(s) failed, last success 2026-08-20 · [failures.md](system/failures.md) F11
 - 🔴 **Guard bypass? rung 4** — F1: Substrate read path served 8-12 day stale content, 200 OK, no error · possibly recurred in [2026-08-23.md](sessions/2026-08-23.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F12: Side-clone reconciliation blind-overwrote a concurrent session's already-pushed shared-fil · possibly recurred in [2026-08-21.md](sessions/2026-08-21.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-08-23.md](sessions/2026-08-23.md) · [failures.md](system/failures.md)
@@ -55,7 +55,7 @@ _…and 196 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 0 | — |
-| eq-solves-service | ✓ success | 0d ago | 1 | 2d |
+| eq-solves-service | ✓ success | 0d ago | 1 | 3d |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 5d ago | 0 | — |
@@ -140,7 +140,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | [eq-context](eq/pending/eq-context.md) | 246 | 24 / 4 | 25 | 5 |
 | [cross-repo](eq/pending/cross-repo.md) | 958 | 142 / 42 | 23 | 40 |
 | [sks](eq/pending/sks.md) | 53 | 3 / 5 | 0 | 6 |
-| [SKS](sks/pending.md) | 484 | 83 / 14 | 8 | 25 |
+| [SKS](sks/pending.md) | 476 | 83 / 14 | 4 | 25 |
 | [SKS active](sks/active.md) | 108 | 0 / 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 509 | 44 / 3 | 0 | 1 |
 
@@ -200,4 +200,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-23 10:11 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-23 12:28 UTC._
