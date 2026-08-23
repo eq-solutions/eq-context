@@ -9,6 +9,12 @@ status: live
 
 # eq-field changelog
 
+## 2026-08-23 (direct migration apply — no PR — ehow RLS: 26 tables closed for hardcoded-org_id-only policies)
+- Two waves, same session: 11 tables (`audit_log`, `competencies`, `people_notes`, `supervisor_notes` + 7 more sharing the same shape) then a suite-wide re-check found 15 more (`app_config`, `organisations` — both anon-reachable — plus 12 more authenticated-cross-tenant tables including `tenders`, `site_audits`, `nominations`). All had a policy qual gated only on a hardcoded SKS `org_id`, with no check on the caller's own JWT `tenant_id` — any authenticated user from any org could reach the 12 (`app_config`/`organisations` were worse: reachable with no login at all).
+- Fix: AND the caller's JWT `app_metadata.tenant_id` claim onto the existing qual on all 51 policies across the 26 tables — no grant changes, no schema changes. For `app_config`/`organisations` this closes anon specifically (anon carries no JWT, so the added clause never matches) while leaving authenticated SKS users unaffected.
+- `supabase/migrations/20260823_audit_apprentice_tables_jwt_tenant_gate.sql`, `20260823_apprentice_tables_jwt_tenant_gate_inert.sql`, `20260823_ehow_second_wave_jwt_tenant_gate.sql` — applied directly against ehow (`ehowgjardagevnrluult`) via Supabase MCP, not through this repo's normal CI/PR pipeline (no dispatch runner covers ad-hoc RLS-only migrations the way the tenant-fleet migrator does). Each migration verified its own result live via an internal `DO $verify$` assertion before returning success.
+- Not yet click-tested by a real SKS login — see `ops/pending.md` (2026-08-23) for the open item.
+
 ## 2026-08-23 (PR #755 MERGED — Dashboard licence-missing card: one row per person, not per licence)
 - `renderLicenceExpiryAlert()` (`dashboard.js`) rendered one row per (person, licence) alert, so a person short 2+ credentials repeated their name once per credential — Royce's screenshot showed "Aiden Crowley" twice, once for White Card and once for Photo ID. Grouped by person: one row per person, all their missing/expired/expiring issues stacked as separate badges underneath. Existing missing-first/soonest-first sort preserved for free — grouping by first occurrence in the already-sorted alerts list keeps a person's row at their single most-urgent issue's position, no re-sort needed.
 - `getLicenceExpiryAlerts()` (`people.js`) untouched — grouping is render-layer only, and it has exactly one consumer. Header count badge still counts issues, not people, by design (not part of the ask).

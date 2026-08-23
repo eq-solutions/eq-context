@@ -9,6 +9,11 @@ status: live
 
 # SKS Pending
 
+## ehow RLS gap — 26 SKS tables were readable/writable cross-tenant, now closed (2026-08-23)
+*Fix landed on the eq-field side — see `ops/pending.md` (2026-08-23, "ehow (SKS canonical) hardcoded-org_id RLS sweep") for full detail. This entry is the SKS-side pointer.*
+
+- [ ] **Needs a real SKS login to confirm nothing broke** — apprentice competencies, supervisor/people notes, audit log, tenders, site audits, nominations, pending schedule. Same "not click-tested live by a person" gap as everything else in this queue. _(added 2026-08-23)_
+
 ## SKS crew's QR self-join logins weren't showing on Admin Users — root-caused and fixed on the EQ side (2026-08-20)
 *Fix landed on the eq-shell side — see `eq/pending/eq-shell.md` (2026-08-20) for full root-cause + build detail. This entry is the SKS-side pointer.*
 

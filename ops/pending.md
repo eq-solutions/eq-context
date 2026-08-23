@@ -467,3 +467,27 @@ Continuation of the suite-wide security pressure-test (`ops/security-pressure-te
 - [ ] **SEC-61** — is the newly-found account-scope Netlify secret shared across all sites, or site-scoped? Needs a dashboard check this sweep couldn't do.
 - [ ] **SEC-49/50** — confirm the live `ENFORCE_IFRAME_ORIGIN` value; code path traced as far as static analysis allows.
 _(added 2026-08-23)_
+
+---
+
+## ehow (SKS canonical) hardcoded-org_id RLS sweep: 26 tables found + closed, both waves (2026-08-23)
+
+**Different system from the SEC-1 entry above** — that's sks-nsw-labour (`nspbmirochztcjijmcrx`, the standalone legacy app). This is `ehow` (`ehowgjardagevnrluult`, "sks-canonical" — the live SKS tenant plane behind eq-field/core.eq.solutions), a different Supabase project entirely. A separate session's own memory notes used "SEC-1" loosely for this — flagging that so it doesn't get conflated with the real SEC-1 above in a future reconciliation.
+
+Started from the `field_*` compat-view thread (anon grant on `field_people`/`field_timesheets`/`field_leave_requests`, revoked live) which led to `field_audit_log` resolving to `public.audit_log`, whose policy turned out to be one of 11 tables sharing the same hardcoded-org_id-no-JWT-check shape (`eq-field/scripts/app-state.js`'s "Option A RLS" list: `audit_log`, `competencies`, `people_notes`, `supervisor_notes` + 7 more, all closed live). A follow-up suite-wide query (policy qual has a hardcoded UUID literal, no `auth.jwt()`/`auth.uid()` call anywhere) re-run against ehow/zaap/jvkn found **15 more** on ehow alone, never in app-state.js's list and never touched by any existing SEC-30/31/32/33 fix (those only ever covered zaap+jvkn). zaap/jvkn independently confirmed clean for the same pattern — nothing left there.
+
+Of the second wave, 2 tables (`app_config`, `organisations`) had a confirmed live `anon` SELECT grant — the same shape as this sweep's own SEC-30/32 findings elsewhere, just on a plane nobody had checked. Verified via eq-field's own client code (not assumed) that SKS's standalone PIN gate is hardcoded dead (`auth.js _isCoreOnly()`: `TENANT.ORG_SLUG === 'sks'` forces Core-only unconditionally), so the anon path is very likely vestigial — code-level evidence, not a live click-through. The other 12 were `authenticated`-only, full CRUD, any org — business data this time (tenders, site audits, nominations, pending schedule), not just apprentice/audit records.
+
+**Fixed and applied live, both waves, same session:**
+- `eq-field/supabase/migrations/20260823_audit_apprentice_tables_jwt_tenant_gate.sql` (4 reachable tables, first wave)
+- `eq-field/supabase/migrations/20260823_apprentice_tables_jwt_tenant_gate_inert.sql` (7 inert tables, first wave — closed pre-emptively, no grant existed, zero live behaviour change)
+- `eq-field/supabase/migrations/20260823_ehow_second_wave_jwt_tenant_gate.sql` (all 15, second wave — Royce chose "fix all 15 now" over splitting anon from authenticated or holding)
+
+All three AND the caller's JWT `app_metadata.tenant_id` claim onto the existing hardcoded qual — no grant changes, no schema changes. Verified live via each migration's own internal post-condition assertion (all passed).
+
+**Needs Royce:**
+- [ ] **Not registered in `ops/security-register.md` yet** — no SEC-N number assigned this session, deliberately, to avoid colliding with the concurrent SEC-38-68 sweep above (same day, still being reconciled). Needs a real number from whoever reconciles both sessions' work.
+- [ ] **The click-test — real SKS login needed**, now covering 26 tables across apprentice/audit/tender/site-audit/roster screens. Structurally can't be done by Claude — needs an actual signed-in session. If the JWT `tenant_id` claim doesn't populate for some real login path, this is where it would show up.
+- [ ] **`app_config`/`organisations` anon-lockout rests on a code trace, not a live click** — high confidence (SKS's PIN gate is hardcoded off), but worth a deliberate live check if certainty matters more than the code-level evidence already gathered.
+- [ ] **`eq-field`'s local checkout is in detached HEAD** with an unrelated modified file and an untracked `.branch_candidates.txt`, pre-existing, not investigated — worth a glance next time someone's in that repo.
+_(added 2026-08-23)_
