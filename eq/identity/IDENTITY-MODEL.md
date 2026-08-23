@@ -128,6 +128,35 @@ Named here because it was built directly in the database and retro-codified a mo
   > **Consequence for anyone doing bulk work on `public.workers`:** any mass UPDATE will insert every unlinked worker into SKS. 39 of 105 workers currently have no active SKS membership. Treat a bulk write to that table as a roster-modifying operation until the tenant is resolved per-worker from `org_memberships`.
 
 - **`worker_canonical_sync`'s AFTER-trigger fan-out is not a read-only projection.** It can INSERT (above), so "the receiving function is idempotent and diffs before writing" — true of its merge path — must not be used to argue a fan-out is harmless. Verify what an unmatched row would do before triggering one at scale.
+
+#### 3.3.2 Why the hardcoded tenant cannot be fixed by a lookup (audited 2026-08-23)
+
+The obvious remedy for the hardcoded `SKS_TENANT_ID` is "resolve the tenant from the worker's org instead." **That is not currently possible: at the instant the sync runs, no tenant linkage for that worker exists in any table.** Established by tracing the two most recent genuine labour-hire onboards end to end.
+
+**Who actually creates the staff row — settled from code, not timing.** `labour-hire-candidate-review.ts` contains **zero** writes to `app_data.staff`. Its RPC `eq_ops_review_labour_hire_candidate` does not create the worker either — its own comment states it links *"the pre-created stub worker by exact id (no phone/email matching involved)"*. None of the 22 `labour-hire-*` Netlify functions INSERT into `public.workers` or `app_data.staff`; all are reads. The `workers` INSERT happens at **intake** (via one of `eq_cards_admin_upsert_worker` / `eq_cards_find_or_create_worker_for_invite` / `eq_cards_link_or_create_worker` — the only three functions on jvkn that insert into that table), which fires `worker_canonical_sync` with `TG_OP = 'INSERT'`, and **the edge function's insert branch creates the staff row.**
+
+**Therefore: deleting the insert branch would break labour-hire onboarding.** It is not dead weight. (Note it is not the *only* creator — `cards-approve-staff.ts` writes `app_data.staff` directly for the Cards approval path — but it is the sole creator for the labour-hire/stub-worker path.)
+
+**The ordering problem, which is the real blocker:**
+
+| Event | Conor Horgan | Nelson Sareto |
+|---|---|---|
+| `public.workers` row created (intake) | `22:55:42.836` | `22:56:07.369` |
+| **`app_data.staff` row created (this sync)** | `22:55:43.153` | `22:56:07.620` |
+| `public.labour_hire_candidates` row created | `22:55:48.484` | `22:56:12.379` |
+| `public.worker_invites` row created | later, at approval | later, at approval |
+| `public.org_memberships` row | **never** (both `user_id IS NULL`) | **never** |
+
+The candidate row — the **first** record anywhere naming the org — lands ~5 seconds *after* the staff row already exists. So every candidate lookup source is written after the fact: `org_memberships` (absent entirely here, and separately proven unreliable — see §3.3.1's note on the 5 login-holders without SKS membership, three of them real SKS staff), `labour_hire_candidates`, and `worker_invites` alike.
+
+**Consequence:** the hardcoded constant is not laziness — it is currently the only thing that answers a question the data cannot yet answer. It is also why this is **actively wrong the moment a second tenant exists**: every intake, for any customer, would file the person onto SKS.
+
+**De-hardcoding therefore requires a design change, not a substitution.** Three viable shapes, none scoped or chosen:
+1. **Carry the tenant with the event** — intake knows the org; put it on the worker row (a nullable `origin_org_id`) or into the webhook payload, so the sync is told rather than guessing.
+2. **Reorder** — write the candidate/invite link *before* the `workers` INSERT, making a lookup genuinely possible.
+3. **Move creation** — have intake create the staff row itself (as `cards-approve-staff.ts` already does for its path) and retire the sync's insert branch.
+
+Until one is done, treat `workers-canonical-sync` as **single-tenant by construction**, and treat any bulk write to `public.workers` as a roster-modifying operation (§3.3.1).
 - `eq-field/scripts/people-canonical-link.js` attempts to create canonical worker stubs **directly from the browser using jvkn's anon key**. `anon` holds no privilege on `public.workers`, so every call 401s and is silently swallowed — it fails closed and is not a live exposure, but it is dead code whose silent failure masks itself. Either give it a server-side path or delete it.
 - `postgres_fdw` was evaluated for this seam and **deliberately rejected** (it would place jvkn credentials inside a tenant DB) — see `eq/identity/service-canonical-identity-seam-2026-06-25.md`. Do not reach for it.
 
