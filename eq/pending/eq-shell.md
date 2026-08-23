@@ -36,7 +36,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ## eq-shell: SKS roster editing found broken for 5 days — trigger dropped by migration 0249, fixed + dispatched + merged, live (2026-08-23)
 
-- [ ] **Not click-tested live by a real person** — a manager/supervisor session should add, edit, archive, and reactivate a real SKS person end-to-end, including a hard-delete of a test row. Fix (`0270` + `0271`) is dispatched to ehow and verified live via direct DB query, and shipped through [PR #1553](https://github.com/eq-solutions/eq-shell/pull/1553) (merged, confirmed live), but not via an actual UI session. _(added 2026-08-23)_
+- [ ] **Add / archive / reactivate / hard-delete still not click-tested live.** Edit IS now click-tested (2026-08-23, Royce's own manager session in the real SKS Field UI, Emergency Contact field on a real person, hard-reload-confirmed both the save and the revert — not just the post-save optimistic UI). The other four actions in this trigger's write surface (`savePersonToSB` add, `archivePersonInSB`/`restorePersonInSB`, hard-delete) are still unverified by an actual UI session.
 
 ---
 
