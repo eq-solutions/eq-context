@@ -60,14 +60,8 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-23)
 
-**eq-field:**
-- #762 fix(security): correct AUDIT_SB_KEY label (SEC-65)
-
 **eq-service:**
 - #791 fix(reports): make reissuing a report possible from the UI
-
-**eq-shell:**
-- #1561 docs(security): close SEC-58 — control-plane ledger 54-file backlog
 
 ---
 
