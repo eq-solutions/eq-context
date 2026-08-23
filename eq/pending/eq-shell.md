@@ -13,6 +13,21 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: chunk-load errors now self-heal even when they bypass the error boundary — fixed + live (2026-08-23)
+*The reported issue (Sentry EQ-SHELL-1S, escalating — 37+ events/4+ users on the admin pages) had already been "fixed" once, 2026-08-20, PR #1483 — that fix was real but only closed one of two separate causes feeding the same Sentry issue; this session found and closed the second, unrelated one.*
+
+- [x] **Confirmed PR #1523 (case-sensitivity wording fix, merged earlier same day) was real but didn't explain the reported issue** — Sentry's own tag showed the error was caught by the browser's global handler, never by React's error boundary, meaning the boundary's message-matching logic (right or wrong) was never even reached.
+- [x] **Root-caused the actual gap**: traced the exact code the browser runs in production (not just the source) and found that the browser only tracks whether a lazy page's *own* file loaded — not whether the other files it depends on did. If one of those goes missing after a new version ships, the failure can slip past the existing "reload and try again" safety net completely invisible, on any of this app's ~26 lazy-loaded pages, not just the two (Admin Hub, Admin Settings) it was first seen on. Confirmed this is a different, non-overlapping cause from PR #1483's 2026-08-20 fix (that one closed a hover-preview path; this one is the normal click-through-to-the-page path) — explains why the same Sentry issue kept climbing (31 → 37+ events) after #1483 shipped.
+- [x] **Fixed**: added a second, broader safety net that also watches for this failure at the browser level, sharing the same "try reloading twice, then show a message" logic the existing one already uses, so a future wording fix only has to happen in one place. eq-shell [PR #1528](https://github.com/eq-solutions/eq-shell/pull/1528), squash-merged (`53e53034`), confirmed live, on Royce's explicit "merge."
+- [x] **Verified for real, not just by reading code**: built it, opened it in an actual browser, manually triggered the exact failure — confirmed the page genuinely reloads on its own.
+- [x] **Along the way, found and closed a live, unrelated security gap** blocking every merge to this repo: a database function meant to be internal-only could be called by anyone, unauthenticated (confirmed nothing sensitive actually leaked through it). A previous fix for this exact function had been silently undone by later, unrelated database changes — the automatic safety net that's supposed to catch that turns out not to cover this part of the database (new finding, not fixed at the systemic level — see Deferred). Closed via eq-shell PR #1529 (migration `0263`) — produced by a concurrent session working with Royce on a different PR that hit the identical repo-wide block; confirmed live before merging #1528.
+
+**Deferred:**
+- [ ] **Sentry access still not sorted** — both the Sentry MCP connector and Royce's own logged-in Chrome hit an auth wall this session, which is why the exact click-by-click trigger for the reported occurrences couldn't be pinned down with full certainty (the fix covers the whole class of failure regardless of the precise trigger). Worth revisiting once either is authorized. _(added 2026-08-23)_
+- [ ] **The database safety net's blind spot is not itself fixed** — it only covers one part of the schema (`public`), not the part (`app_data`) the function this session hit lives in. Only that one function (plus its sibling helper) was patched. The next database change that touches a function there without remembering an explicit lockdown step could reopen the same class of gap. Widening the automatic safety net itself was flagged, not built. _(added 2026-08-23)_
+
+---
+
 ## eq-shell: 283 merged `claude/*` branches confirmed safe to delete, 44 flagged for a human look (2026-08-23)
 *Full audit of all ~330 `claude/*` branches against `origin/main`'s merge state, delivered directly to Royce as two files — not committed to this repo, nothing deleted or merged.*
 
@@ -50,16 +65,9 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ---
 
 ## eq-shell: approved-but-unclaimed labour-hire candidates now show their licences on the Staff page (2026-08-23)
-*Royce: "i want to be able to see their licenses in the list once the tenant admin approves them." A different gap from the promotion-on-claim fixes below (PR #1517/#1519) — those only fire once the WORKER signs in; this is about what an ADMIN sees the moment THEY approve, before any claim happens.*
-
-- [x] **Traced the exact blocker live**: `staff-canonical-licences.ts`'s whole read chain (active `org_memberships` → `workers.user_id` → `public.licences.user_id`, all NOT NULL) can't resolve until the person personally signs in — confirmed against Conor Horgan and Nelson Sareto's real rows (`status='approved'`, `user_id` still null, 4 unpromoted `worker_credentials` each).
-- [x] **Built**: new read-only endpoint (`staff-labour-hire-pending-licences.ts`) surfaces those still-staged credentials for approved-but-unclaimed candidates, wired into the existing `staff-bootstrap` fan-out. Staff page shows them in a new "Not yet confirmed" group next to Active/Expiring/Expired, reusing the existing licence-group component unmodified — its one write action stays permanently off for this group since there's no real licence row yet to act on. One plain photo per credential deliberately, no front/back split (several are one combined photo with a sub-region marking the back face; showing it twice would mislead).
-- [x] eq-shell [PR #1522](https://github.com/eq-solutions/eq-shell/pull/1522), squash-merged (`9fb1d6bc`), confirmed live via commit-ancestry — Netlify's own deploy for this commit came back `Skipped` (a second concurrent merge landed 90 seconds later and superseded it in the build queue); verified the careful way, checking the commit was an ancestor of the deploy that actually went `ready`, not just trusting "merged."
-- [x] **Was broken on arrival, found and fixed same day**: #1522's query selected `worker_credentials.document_url`/`document_type` — neither column exists on that table, confirmed live (every call 500s), despite `tsc -b --force` + `pnpm run build` + `pnpm check:perms` + 387/387 tests all being clean. Even patched to not error, it read `photo_front_path` (always null for this data — the real path lives at `metadata.source_document_url`) so it still would have shown nothing for Conor or Nelson specifically. eq-shell [PR #1527](https://github.com/eq-solutions/eq-shell/pull/1527), squash-merged (`8cd684fa`) by Royce via `gh pr merge --admin` (an unrelated required-check failure — see the anon-exec item below — blocked a plain merge), confirmed live via commit-ancestry.
 
 **Deferred:**
 - [ ] **Not click-tested live** — the underlying bug is fixed and verified against Conor's and Nelson's actual data (correct paths now resolve, signable), but nobody has opened their Staff row and watched the "Not yet confirmed" section actually render an image/PDF. Worth two minutes. _(added 2026-08-23)_
-- [ ] **`app_data.eq__caller_actor_staff_id(uuid)` newly anon-executable on zaap, not allow-listed** — the required Schema-drift check that blocked #1527's plain merge. Confirmed pre-existing and unrelated (same failure was hitting #1526 and #1528 simultaneously, neither touching SQL) — a real, live security gap, not fixed here. Spun off as `task_623d5c8f`. _(added 2026-08-23)_
 
 ---
 
