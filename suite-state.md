@@ -61,8 +61,10 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-23)
 
 **eq-cards:**
-- #294 fix(security): key licence-photos RLS off the current licences row, not the frozen path
 - #293 fix(identity): stop overwriting employment_type; make the SKS hardcode safe
+
+**eq-field:**
+- #761 fix(identity): push Field's own roster edits upward to canonical
 
 **eq-service:**
 - #806 fix(migrations): rename colliding 0192 migration to 0228
