@@ -63,6 +63,9 @@ _If this file is >48h old, the cron is broken._
 **eq-service:**
 - #791 fix(reports): make reissuing a report possible from the UI
 
+**eq-shell:**
+- #1539 feat(quotes): own-quotes-only row scoping via new quotes.view_all permission
+
 ---
 
 ## System Health (as of 2026-08-23)
