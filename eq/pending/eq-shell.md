@@ -13,6 +13,14 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: identity ownership rule enforced — lock bypass, upward-write gap, jvkn phone normalisation (PR #1544) (2026-08-23)
+*Ownership rule ratified by Royce and recorded in [`IDENTITY-MODEL.md` §3.3](../identity/IDENTITY-MODEL.md): the control layer (jvkn) owns who a person IS; a tenant plane reflects that and owns only the employment relationship. Full build detail in `eq/changelog/eq-shell.md` (2026-08-23).*
+
+- [x] Lock bypass in `worker-profile-push.ts` closed (22 email-locked / 20 phone-locked staff were exposed); upward-write gap in `staff-create.ts` closed; `public.workers.phone` normalised on jvkn (103/103 E.164) and all 22 contact locks cleared (22 → 0). Merged, live, migration hand-applied. _(2026-08-23)_
+- [ ] **`employment_type` is employer-owned per §3.3, yet `workers-canonical-sync` derives it from `workers.role` and overwrites unless locked.** One `employment_type_locked_by_shell` lock survives on ehow purely to compensate. The structural fix is to stop the sync writing that field at all — changes behaviour for every tenant, so it needs its own pass. Recorded, not fixed. _(added 2026-08-23)_
+- [ ] **The writer map is incomplete — "the rule is enforced everywhere" is NOT yet earned.** A grep found ~20 eq-shell functions referencing `from('staff')`; only 4 were audited (`entity-patch`, `staff-create`, `cards-approve-staff` partially, plus the edge fn). `labour-hire-candidate-review.ts` and `labour-hire-*` were subsequently confirmed read-only, but `staff-licence-backfill`, `delete-user`, `push-document-audience`, `comms-jobs`, `shell-login-phone-otp` and others remain unexamined, as do archive/delete paths and zaap generally. An agent dispatched to produce the definitive map died silently without output. _(added 2026-08-23)_
+- [ ] **2 auth users on jvkn have no `shell_control.users` row**; 8 shell users have no Cards profile and 7 no worker record (expected — office/admin accounts), and 3 profiles have no worker record. Only the 2 orphaned credentials look worth a look. _(added 2026-08-23)_
+
 ## eq-shell: access-control sweep — 2 more live gaps found and closed (staff conversations, GM Reports financial data) (2026-08-23)
 *Direct follow-up to the quotes-ownership session below: Royce asked to "complete the full sweep" and separately flagged the bigger goal — customizable per-role/per-person visibility everywhere, including staff records.*
 

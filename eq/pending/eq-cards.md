@@ -13,6 +13,14 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-cards: workers-canonical-sync no longer creates a staff row on a non-INSERT (PR #292) (2026-08-23)
+*Closes the mis-filing hazard proven live the same day — a phone backfill on jvkn put a Cards user with no SKS connection onto SKS's roster for ~10 minutes. Full detail in `eq/changelog/eq-cards.md`; the architectural analysis is in [`IDENTITY-MODEL.md` §3.3.1/§3.3.2](../identity/IDENTITY-MODEL.md).*
+
+- [x] Insert branch gated on `type === 'INSERT'`. Merged, `Build & Deploy` dispatched, confirmed live by reading the deployed artifact (v19 → v20, new content hash). Real onboarding verified preserved before shipping; `org_memberships` tested as an alternative gate and rejected. _(2026-08-23)_
+- [ ] **`SKS_TENANT_ID` is still hardcoded, and CANNOT be fixed by a lookup.** Audited: at the instant the sync runs, no tenant linkage for that worker exists in any table — `labour_hire_candidates` is written ~5s *after* the staff row, `worker_invites` later still at approval, `org_memberships` never for these people. The constant is currently the only thing answering a question the data can't yet answer. **Actively wrong the moment a second tenant exists** — every intake anywhere would file onto SKS. Three viable design shapes recorded in §3.3.2 (carry the tenant with the event / reorder so a lookup is possible / move creation to intake); none scoped or chosen. _(added 2026-08-23)_
+- [ ] **The `Build & Deploy` workflow deploys ALL jvkn edge functions**, not just the changed one (`supabase functions deploy --project-ref jvknxcmbtrfnxfrwfimn`, no function name). Normal path for this repo, but it means the blast radius of any edge-function deploy is "every function at current main". Worth knowing before a hurried deploy. _(added 2026-08-23)_
+- [ ] **Node 20 deprecation warning** on `supabase/setup-cli@v1` in the deploy workflow — forced onto Node 24 by the runner. Unrelated to any change, not failing, but will need bumping. _(added 2026-08-23)_
+
 ## eq-cards: PR #287 migration-number collision (with merged #289) found, fixed, deactivated-identity fix applied live (2026-08-23)
 *Asked to confirm and fix a suspected migration-hygiene CI failure on open PR #287 — both #287 and already-merged #289 had independently claimed migration number `0134`. The PR's own CI still showed green; confirmed that was stale (last ran 3 days before #289 merged), not evidence the collision didn't exist.*
 

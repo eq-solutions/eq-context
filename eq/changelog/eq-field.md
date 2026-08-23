@@ -9,6 +9,17 @@ status: live
 
 # eq-field changelog
 
+## 2026-08-23 (PR #760 MERGED v3.5.547 — Roster/Edit Roster silently dropped an unrecognized group)
+- `getRosterPeopleForGroup()` and Edit Roster's inline equivalent both iterated a hardcoded 4-value group list (Direct/Apprentice/Labour Hire/Subcontractor) with no catch-all, so anyone whose `group` value didn't exactly match one of the 4 was invisible on Roster, the mobile roster view, and Edit Roster — regardless of `on_roster`.
+- Contacts already closed this exact class of gap (v3.5.253/255, after an unrecognized `employment_type` silently dropped 2 real people there); the roster surfaces never got the same safety net. Found tracing `on_roster`'s wiring end to end at Royce's request. Verified live first: no SKS person is currently affected — all 71 on-roster staff match one of the 4 — so this is a dormant trap, not a live break.
+- New `getRosterPeopleForOther()` surfaces anyone outside the known 4 into an "Other" bucket on all three surfaces, each showing the raw unrecognized value as a diagnosable chip (same pattern Contacts uses). Only appears in the unfiltered view. Also refactored the 3 duplicated inline filter copies into shared `_rosterVisibilityGuard()`/`_rosterApplySearchSiteSort()` helpers.
+- 30/30 tests, eslint 0 errors, cache-buster + bundle-drift guards green. Confirmed live via exact `commit_ref` match on the production deploy.
+
+## 2026-08-23 (correction — v3.5.546 was NOT the fix for the reported Contacts problem)
+- Royce reported Rhys Scott missing from Contacts. v3.5.546 (below) shipped believing it was the cause. **It was not, and did not fix it.** The real behaviour is deliberate: `renderContacts()` reads `_peopleExMgrs()` (`scripts/utils.js`), which subtracts everyone in `STATE.managers` (`app_data.field_managers` = staff `WHERE is_supervisor`). Its own header says so — *"Contacts minus supervisors/managers (QA row 11, v3.5.228)"*. All 20 SKS supervisors are excluded by design.
+- Roster is NOT affected (`getRosterPeopleForGroup()` filters `STATE.people` directly); Royce confirmed live "Rhys is in the roster", so no change was made. Full write-up + the open Shell-vs-Field disagreement in `eq/pending/eq-field.md`.
+- v3.5.546 remains a genuine independent bug fix on its own merits — see below.
+
 ## 2026-08-23 (PR #759 MERGED v3.5.546 — team-pill filter didn't account for supervisors)
 - `personInActiveTeam()` (`scripts/teams.js`), the predicate behind the Contacts/Roster/Timesheets team-pill filter, only ever checked `app_data.team_members`. A supervisor tracked solely via `app_data.team_supervisors` — "who runs a crew" is a deliberately separate concept from "who's in it" — had no `team_members` row, so pilling any specific team silently dropped them from all three screens.
 - Found live investigating a real report: Rhys Scott (Site Supervisor) missing from Contacts while a team-member colleague showed fine. Root-caused to a `localStorage`-persisted team-pill filter, not data or RLS — confirmed Rhys's own record satisfies every column the Contacts view filters on, and that the one RESTRICTIVE policy on `app_data.staff` is requester-role-scoped, not row-scoped, so it couldn't explain the difference between two people.
