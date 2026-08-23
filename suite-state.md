@@ -60,12 +60,14 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-23)
 
-**eq-cards:**
-- #296 fix(security): restore authenticated grant on eq_cards_admin_create_invite
+**eq-field:**
+- #762 fix(security): correct AUDIT_SB_KEY label (SEC-65)
 
 **eq-service:**
-- #807 fix(security): close anon-open get_customer_period_summary, restore authenticated
 - #791 fix(reports): make reissuing a report possible from the UI
+
+**eq-shell:**
+- #1561 docs(security): close SEC-58 — control-plane ledger 54-file backlog
 
 ---
 
@@ -84,7 +86,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 236 (latest: 0230) applied
+**Migrations:** eq-service has 239 (latest: 0233) applied
 
 ---
 
