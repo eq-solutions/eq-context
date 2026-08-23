@@ -71,6 +71,7 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
+- #1525 fix(staff): seed deep-link selId at mount, satisfy react-hooks/set-state-in-effect
 - #1514 feat(equipment): add IT equipment as a second internal register type
 
 ---
