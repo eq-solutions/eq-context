@@ -9,6 +9,10 @@ status: live
 
 # EQ Service — Changelog
 
+## 2026-08-23 (SEC-50 CLOSED — SSRF guard on report-branding's logo fetch, plus a same-day IPv6 follow-up)
+- `report-branding.ts::fetchLogoImage` had no URL validation and followed redirects, fed tenant/customer-editable logo & site-photo URLs, wired into 4 report generators. `logo-variants.ts` already had the hardened pattern (`isSafeFetchUrl` + `redirect:'error'`) but it was never applied here. PR #803 merged and confirmed live.
+- Found in passing while fixing #803: `isSafeFetchUrl`'s blocklist contains the bare string `'::1'`, but the URL parser always returns IPv6 literals bracketed (`'[::1]'`), so the check never matched — an IPv6 loopback URL passed as "safe" in the already-live guard. Fixed same day, PR #805, merged and confirmed live.
+
 ## 2026-08-23 (PR #801 + #802 MERGED, migration 0227 dispatched — it_equipment excluded from the customer-facing Assets view)
 - Companion to eq-shell PR #1514 (IT equipment as a second internal register type): `service.assets`' `WHERE` clause widened from excluding only `plant_equipment` to also excluding `it_equipment`, so Shell-side internal gear doesn't leak into the customer CMMS asset list. Migration `0227`, PR #801.
 - First dispatch attempt failed on something unrelated: `00001_service_schema_pre_canonical_fixture.sql` — a CI-only bootstrap fixture, never previously applied to live ehow — broke on `ALTER TABLE service.pm_calendar ENABLE ROW SECURITY` (`pm_calendar` is a view on ehow now, not a table). Root cause: `migrate-service.mjs`'s `CI_BOOTSTRAP_FIXTURES` exclusion set already existed for exactly this purpose and already held one file (`0000_app_data_tenant_plane_fixture.sql`, its declared companion) — `00001` was simply never added alongside it. Fixed via PR #802 (one line, no new migration, no ledger manipulation); confirmed the Integration-tests job's own from-scratch bootstrap (Supabase CLI, not this runner) is unaffected — that job has its own separate, already-tracked failure modes (see `eq/pending/eq-solves-service.md`, and #799/#803's notes elsewhere in this file for two more distinct examples of the same chronic pattern).

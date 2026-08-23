@@ -13,6 +13,20 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-context: `index-drift.yml` cron failing, 2 consecutive scheduled runs — flagged in tonight's digest, never investigated (2026-08-23)
+*Surfaced via digest.md's "Needs you" during a broad security sweep; this session went deep on the security-register items instead and never looked at this one. Last success 2026-08-20.*
+
+- [ ] **Find out why and fix** — could be a real drift-detection gap (same failure class F11's own guard exists to catch) or a transient CI issue. Not yet triaged. _(added 2026-08-23)_
+
+---
+
+## eq-context: concurrent Claude sessions repeatedly duplicating work on the same digest items — pattern, not a one-off (2026-08-23)
+*One session worked digest.md's "Needs you" security findings top-to-bottom (SEC-41/42/45/46/47/50), spawning 3 sub-agents plus 3 more follow-on chips along the way. Five separate times across that one sitting, a DIFFERENT concurrent session had already independently picked up and fixed the exact same finding: SEC-41/42's dispatch, SEC-45 (PR #291), SEC-46 (PR #1541), SEC-50 (PR #803). Every instance was caught by live re-verification before anything got duplicated or clobbered — no harm done — but it's real wasted session time, repeatedly, on the same short list of P1 findings every session reads at start.*
+
+- [ ] **Consider a claim mechanism for digest-surfaced findings** — `system/TODAY.md`'s `CLAIMS` block already exists as a concept (empty tonight: `claims: []`) but doesn't appear to be used for this. A session picking up a "Needs you" security finding could stake a short-lived claim there before starting, so a second session reads "already claimed" instead of independently re-deriving the same fix. Needs Royce's call on whether this is worth the mechanism, given the actual cost tonight was low (idempotent migrations, nothing broke) — this is a real pattern, not an emergency. _(added 2026-08-23)_
+
+---
+
 ## eq-context: ~80 leftover scratch clones found across other sessions' temp folders — found, scope-checked with Royce, left alone (2026-08-21)
 *Asked to delete "the leftover eq-context scratch clones" left behind by an eq-solves-service session's own workaround for the shared-checkout guards (clone eq-context into a session's own scratchpad, commit and push from there instead of the shared root checkout). That session's own two clones were already gone — cleaned up immediately after each push. A broader search turned up roughly 80 more of the same pattern, scattered across other sessions' scratchpad folders (eq-shell, eq-field, eq-cards, eq-intake, eq-solves-service, and eq-context itself) — the same guard-workaround being independently rediscovered and repeated session after session, with nobody cleaning up afterward.*
 
