@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-23 09:33 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-23 10:11 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-23 09:24 UTC → 2026-08-23 09:33 UTC)
+## Since last refresh (2026-08-23 09:33 UTC → 2026-08-23 10:11 UTC)
 
-- Merged: eq-shell [#1542](https://github.com/eq-solutions/eq-shell/pull/1542) fix(auth): close 2nd blank-name gap in phone-OTP cards-appro
-- Merged: eq-shell [#1541](https://github.com/eq-solutions/eq-shell/pull/1541) fix(security): DB-layer role gate on app_data.sites writes (
-- Merged: eq-shell [#1538](https://github.com/eq-solutions/eq-shell/pull/1538) fix(security): use actor identity in timesheet/leave guard s
-- Merged: eq-shell [#1536](https://github.com/eq-solutions/eq-shell/pull/1536) fix(equipment): drop custodian wording, show assigned person
-- Merged: eq-shell [#1533](https://github.com/eq-solutions/eq-shell/pull/1533) Incident: restore anon SELECT on shell_control.eq_schema_reg
-- Merged: eq-shell [#1530](https://github.com/eq-solutions/eq-shell/pull/1530) Incident: restore anon's pre-login bootstrap read on public.
-- Merged: eq-shell [#1529](https://github.com/eq-solutions/eq-shell/pull/1529) fix(security): revoke anon EXECUTE on actor-identity helpers
-- Merged: eq-shell [#1514](https://github.com/eq-solutions/eq-shell/pull/1514) feat(equipment): add IT equipment as a second internal regis
+- Merged: eq-shell [#1540](https://github.com/eq-solutions/eq-shell/pull/1540) fix(staff): resolve the 7 divergent staff/shell login names 
+- Merged: eq-shell [#1537](https://github.com/eq-solutions/eq-shell/pull/1537) fix(staff): sync staff record name into the linked Shell log
+- Merged: eq-shell [#1535](https://github.com/eq-solutions/eq-shell/pull/1535) fix(security): role-gate + self-approval check on approve_sa
+- Merged: eq-shell [#1534](https://github.com/eq-solutions/eq-shell/pull/1534) fix(security): entity-role-gate quote delete/line-item RPCs 
+- Merged: eq-shell [#1532](https://github.com/eq-solutions/eq-shell/pull/1532) feat(drift-guard): CHECK 10 -- positive assertion for INTENT
+- Merged: eq-shell [#1528](https://github.com/eq-solutions/eq-shell/pull/1528) fix(chunk-loading): catch chunk-load failures that bypass Ch
+- Merged: eq-solves-service [#806](https://github.com/eq-solutions/eq-service/pull/806) fix(migrations): rename colliding 0192 migration to 0228
+- Merged: eq-solves-service [#805](https://github.com/eq-solutions/eq-service/pull/805) fix(security): IPv6-bracket bypass in isSafeFetchUrl's SSRF 
 
 ## ⚠ Needs you (8)
 
@@ -55,9 +55,9 @@ _…and 196 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 0 | — |
-| eq-solves-service | ✓ success | 0d ago | 2 | 2d |
+| eq-solves-service | ✓ success | 0d ago | 1 | 2d |
 | eq-field | ✓ success | 0d ago | 0 | — |
-| eq-cards | ✓ success | 0d ago | 1 | 0d |
+| eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 5d ago | 0 | — |
 
 ## Live errors (Sentry)
@@ -200,4 +200,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-23 09:33 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-23 10:11 UTC._
