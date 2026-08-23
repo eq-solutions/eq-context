@@ -9,6 +9,9 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-23 (PR #1534 MERGED + DISPATCHED LIVE — SEC-41/42: quote delete + line-item RPCs entity-role-gated)
+- `eq_delete_quote` and `eq_replace_line_items` checked tenant only, no role — any authenticated user of any role could hard-delete quotes or rewrite pricing/line items. Migration `0264` adds `eq__assert_entity_role` as the first statement of each, reusing `0245`'s helper: `entity.delete` (manager only) for delete, `entity.edit` (manager+supervisor) for line-item replace. Dispatched fleet-wide via `tenant-migrate.yml`; live-verified with a production probe (employee-role caller genuinely rejected).
+
 ## 2026-08-23 (PR #1528 MERGED — root cause of the EQ-SHELL-1S chunk-loading bug found and fixed)
 - Sentry EQ-SHELL-1S was already "fixed" once, 2026-08-20 (PR #1483) — that closed `lazyRoutePreload.ts`'s hover-prefetch path. The issue kept climbing (31→37+ events) because a second, unrelated cause on the normal navigation path was untouched; PR #1523 (case-sensitivity, merged earlier the same day) was also real but also didn't explain it — Sentry's `mechanism` tag showed the browser's own global handler caught it, never `ChunkErrorBoundary`.
 - Root cause traced byte-for-byte against the live production bundle (not just `node_modules`): Vite's client preload helper (inherited unchanged from classic Vite — confirmed not Rolldown-specific despite this repo's `vite@^8` using Rolldown as its bundler) tracks CSS dependency-link failures via `load`/`error` listeners but not JS `modulepreload` ones — those `<link>` elements are appended with zero tracking. A stale/missing *dependency* chunk (not the route's own chunk) can therefore fail invisibly to `vite:preloadError`, React's `lazy()`, and `ChunkErrorBoundary` alike, on any of the app's ~26 lazy routes.

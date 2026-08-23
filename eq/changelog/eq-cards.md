@@ -9,6 +9,9 @@ status: live
 
 # EQ Cards — Changelog
 
+## 2026-08-23 (PR #289 MERGED + APPLIED LIVE — SEC-44/SEC-43: eq_cards_link_or_create_worker gated on caller identity)
+- The resolver trusted its `p_user_id` parameter instead of deriving it from the session, and was independently `authenticated`-executable — any signed-in jvkn user could bind or create a `workers` row under an arbitrary uid. Adds a null-safe `p_user_id IS DISTINCT FROM auth.uid()` guard (no-op on all 9 real call sites) plus a tightened grant. Applied live via `apply_migration`; live-verified with production probes (mismatched uid rejected, matching uid passes through).
+
 ## 2026-08-23 (PR #288 MERGED + DEPLOYED — OCR splits front/back crop boxes for one-photo licence cards)
 - Companion fix to eq-shell's same-day crop redesign (see `eq/changelog/eq-shell.md`) — this is where the actual OCR model output changes. `ocr-licence`'s extraction schema and system prompt previously had no way to represent "front and back of the same card, one photo": the model drew a single box spanning both faces.
 - Added `crop_bounds_back` (nullable, same shape as `crop_bounds`) to `DOCUMENT_ITEM_PROPERTIES` and a new "SAME CARD, BOTH SIDES" paragraph in `SYSTEM_PROMPT`, explicit that this stays one document — no `multiple_documents_detected`, no `additional_documents` entry — extract fields once, set `crop_bounds` to the front face and `crop_bounds_back` to the back, leave it null rather than guess when unsure the two faces match.

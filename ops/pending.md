@@ -453,22 +453,35 @@ No other open items.
 
 ---
 
-## Suite pressure-test sweep §C-G: 31 findings logged (SEC-38-68), PR #171 open (2026-08-23)
-
-Continuation of the suite-wide security pressure-test (`ops/security-pressure-test-prompt.md`) — §A/§B merged via #169, this session ran §C (secrets hygiene), §D (cross-app iframe/JWT), §E (privilege escalation), §F (standard web surface), §G (CI/CD integrity) live via 5 parallel subagents. Reconciled twice against `origin/main`'s fast-moving tip (a genuine SEC-37 ID collision with another concurrent session's own finding, then a late SEC-31 closure) before pushing. Full findings: `ops/security-register.md` SEC-38-68, `ops/secrets-inventory.md` Tier-1 corrections. Read-only sweep, no code changes, no writes to any live system — logged only per Royce's call.
+## Suite pressure-test sweep §C-G: 31 findings logged (SEC-39-69) — 4 closed this session (2026-08-23)
 
 **Needs Royce:**
-- [ ] **Review + merge eq-context [PR #171](https://github.com/eq-solutions/eq-context/pull/171)** — not yet merged. Auto-merges cleanly against current `main` (verified via `git merge-tree`).
-- [ ] **SEC-42 (P0)** — `eq_cards_link_or_create_worker` cross-org identity bind, no caller check. Highest-severity item from this sweep.
-- [ ] **SEC-39/SEC-40 (P1)** — quote delete/line-item-replace RPCs, tenant-checked only, no role check.
-- [ ] **SEC-48 (P1)** — SSRF in eq-service's report logo/photo fetch.
-- [ ] **SEC-55 (P1)** — org-wide GitHub App holds write access equal to or beyond the sole repo collaborator.
-- [ ] **SEC-59/SEC-60 (P1)** — Netlify `dev`-context secret-masking gap; the standard delete+recreate remediation used for SEC-9/12/18/19 actually re-introduces this leak. Needs a different fix, not the established playbook.
-- [ ] **SEC-61** — is the newly-found account-scope Netlify secret shared across all sites, or site-scoped? Needs a dashboard check this sweep couldn't do.
-- [ ] **SEC-49/50** — confirm the live `ENFORCE_IFRAME_ORIGIN` value; code path traced as far as static analysis allows.
-_(added 2026-08-23)_
+- [ ] **SEC-57 (P1)** — org-wide GitHub App (`grok-by-xai`) holds write access equal to or beyond the sole repo collaborator. Needs a decision (tighten or accept), not a PR.
+- [ ] **SEC-60/SEC-61 (P1)** — Netlify `dev`-context secret-masking gap; the standard delete+recreate remediation used for SEC-9/12/18/19 actually re-introduces this leak. Needs a different fix, not the established playbook.
+- [ ] **SEC-63 (P1, possibly P0)** — is the account-scope Netlify secret (`SUPABASE_JWT_SECRET`) shared with sks-nsw-labour, or site-scoped? Narrowed 2026-08-23 by a concurrent session (confirmed sks-nsw-labour sits on the *same* Netlify team as every EQ site — not a separate account), but the final check — the secret's actual assigned-projects list — still needs a 2-minute dashboard look. If it reaches sks-nsw-labour, becomes P0.
+- [ ] **SEC-51 (P2)** — confirm the live `ENFORCE_IFRAME_ORIGIN` value. Not touched this session.
+_(added 2026-08-23, trimmed 2026-08-23 — closed items: PR #171 review, SEC-44/P0, SEC-41/42, SEC-50, all closed + live-verified, see sessions/2026-08-23.md)_
 
 ---
+
+## eq-service: duplicate migration version 0192 breaks CI's integration-test job (2026-08-23)
+
+Two unrelated migration files both claim version `0192`
+(`0192_backfill_testing_check_frequency_slugs.sql` and
+`0192_reconcile_rls_introspection_service_schema.sql`) — `supabase_migrations.schema_migrations`
+has a primary key on `version`, so the second one to apply during local-Supabase bootstrap
+fails with `duplicate key value violates unique constraint "schema_migrations_pkey"`,
+before any test runs. Found while confirming a SEC-50 CI failure was unrelated to that
+fix (it was) — this collision is real and pre-existing, breaking the `Integration tests
+(Supabase local)` CI job on every PR to this repo, not just the one that surfaced it.
+**Needs Royce or a follow-up session:** rename one of the two files to the next free
+version number and re-point its ledger expectations. Not fixed this session — out of
+scope for a security-focused pass, flagging so it isn't mistaken for a new regression on
+the next PR that hits it.
+- [ ] **Rename one of the two `0192_*.sql` migrations to a free version number** _(added 2026-08-23)_
+
+---
+
 
 ## ehow (SKS canonical) hardcoded-org_id RLS sweep: 26 tables found + closed, both waves (2026-08-23)
 

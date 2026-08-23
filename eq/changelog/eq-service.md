@@ -9,6 +9,9 @@ status: live
 
 # EQ Service — Changelog
 
+## 2026-08-23 (PR #803 MERGED — SEC-50: SSRF guard on report-branding.ts's logo fetch)
+- `report-branding.ts::fetchLogoImage` had no URL validation and followed redirects, fed tenant/customer-editable logo & site-photo URLs across 4 report generators. Exported `logo-variants.ts`'s existing `isSafeFetchUrl` (was private) and reused it here instead of duplicating the check, plus added `redirect: 'error'`. No call-site changes. Also noted in passing: two unrelated migration files both claim version `0192`, breaking the Integration-tests CI job on every PR — not fixed, flagged in `ops/pending.md`.
+
 ## 2026-08-21 (notify-job PR comment corrected — false "pauses for approval" claim)
 - The governed migration-apply workflow's post-merge PR comment claimed dispatching "pauses for production-environment approval before any DDL runs" — false. The file's own header (verified live 2026-07-28, re-confirmed 2026-08-10: the `production` GitHub Environment has no required-reviewer rule) and the `apply` job's own inline comment already said so; an earlier fix corrected that inline comment but missed this user-facing one. Now reads "runs immediately against production — no approval checkpoint." eq-service [PR #798](https://github.com/eq-solutions/eq-service/pull/798), merged.
 
