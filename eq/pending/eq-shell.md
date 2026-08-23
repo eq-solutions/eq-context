@@ -29,10 +29,9 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ---
 
 ## eq-shell: 283 merged `claude/*` branches confirmed safe to delete, 44 flagged for a human look (2026-08-23)
-*Full audit of all ~330 `claude/*` branches against `origin/main`'s merge state, delivered directly to Royce as two files — not committed to this repo, nothing deleted or merged.*
 
-- [ ] **Run `delete-merged-branches.ps1`** (283 branches, confirmed merged into `main`) whenever convenient — script only runs at Royce's own hand.
 - [ ] **Read `needs-review.md`** (44 branches with ambiguous merge state) before deciding those individually — deliberately not auto-included in the delete script.
+- [ ] **2 branches still can't be deleted** (`chunk-prefetch-catch`, `reminder-cron-due-at-backoff`) — both already merged, just still holding an idle linked worktree open in `C:\Projects\eq-shell`. Not urgent, clears itself once those worktrees are removed. _(added 2026-08-23)_
 
 ---
 
