@@ -74,7 +74,6 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
-- #1528 fix(chunk-loading): catch chunk-load failures that bypass ChunkErrorBoundary (EQ-SHELL-1S)
 - #1514 feat(equipment): add IT equipment as a second internal register type
 
 ---
