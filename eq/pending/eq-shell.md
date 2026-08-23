@@ -13,6 +13,14 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: 283 merged `claude/*` branches confirmed safe to delete, 44 flagged for a human look (2026-08-23)
+*Full audit of all ~330 `claude/*` branches against `origin/main`'s merge state, delivered directly to Royce as two files — not committed to this repo, nothing deleted or merged.*
+
+- [ ] **Run `delete-merged-branches.ps1`** (283 branches, confirmed merged into `main`) whenever convenient — script only runs at Royce's own hand.
+- [ ] **Read `needs-review.md`** (44 branches with ambiguous merge state) before deciding those individually — deliberately not auto-included in the delete script.
+
+---
+
 ## eq-shell: Staff page deep-link (`?open=<id>`) tripped react-hooks/set-state-in-effect — fixed (2026-08-23)
 *Handed over as a fully-specified code-review finding (file, line range, exact eslint output), not discovered fresh this session.*
 
