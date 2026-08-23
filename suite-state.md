@@ -64,6 +64,7 @@ _If this file is >48h old, the cron is broken._
 - #287 fix(auth): reject deactivated identities in worker-link/claim-invite RPCs
 
 **eq-field:**
+- #757 security(rls): land held write-side actor-identity fix for timesheets/leave_requests (draft, still gated)
 - #756 Security: leave visibility fail-open closed for unassigned/unresolved supervisors
 
 **eq-service:**
@@ -71,7 +72,6 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
-- #1525 fix(staff): seed deep-link selId at mount, satisfy react-hooks/set-state-in-effect
 - #1514 feat(equipment): add IT equipment as a second internal register type
 
 ---
