@@ -9,6 +9,12 @@ status: live
 
 # EQ Cards — Changelog
 
+## 2026-08-23 (PR #288 MERGED + DEPLOYED — OCR splits front/back crop boxes for one-photo licence cards)
+- Companion fix to eq-shell's same-day crop redesign (see `eq/changelog/eq-shell.md`) — this is where the actual OCR model output changes. `ocr-licence`'s extraction schema and system prompt previously had no way to represent "front and back of the same card, one photo": the model drew a single box spanning both faces.
+- Added `crop_bounds_back` (nullable, same shape as `crop_bounds`) to `DOCUMENT_ITEM_PROPERTIES` and a new "SAME CARD, BOTH SIDES" paragraph in `SYSTEM_PROMPT`, explicit that this stays one document — no `multiple_documents_detected`, no `additional_documents` entry — extract fields once, set `crop_bounds` to the front face and `crop_bounds_back` to the back, leave it null rather than guess when unsure the two faces match.
+- `labour-hire-candidate-intake/index.ts` passes the new field through to `worker_credentials.metadata` alongside the existing `crop_bounds`.
+- eq-cards [PR #288](https://github.com/eq-solutions/eq-cards/pull/288), squash-merged (`7c937e62`), redeployed via explicit `Build & Deploy` dispatch (merging alone doesn't deploy this repo) — confirmed via both jobs independently: "Deploy edge functions" and "deploy" (Flutter web build) both `completed success`.
+
 ## 2026-08-20 (PR #284 MERGED + DEPLOYED — workers-canonical-sync now respects a Shell operator's employment_type correction)
 - Discovered this repo — not eq-shell — is the real deploy source for `workers-canonical-sync`: `.github/workflows/deploy.yml`'s `deploy-edge-functions` job (`workflow_dispatch`/release-tag gated) ships every function under this repo's own `supabase/functions/` to jvkn. The live function already carried this repo's 2026-08-19 blank-name fix (#282) that eq-shell's separate copy of the same file never had — eq-shell's copy turned out to be a dead, silently-diverged duplicate.
 - Ported eq-shell PR #1490's fix here, where it actually deploys: an `employmentTypeLocked` check mirroring the existing `emailLocked`/`phoneLocked` pattern, respecting `employment_type_locked_by_shell` (eq-shell migration 0255, already live on both tenant planes). eq-cards [PR #284](https://github.com/eq-solutions/eq-cards/pull/284), squash-merged (`8624f9c4`).

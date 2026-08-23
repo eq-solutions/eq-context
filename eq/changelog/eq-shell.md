@@ -9,6 +9,13 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-23 (PR #1518 MERGED — labour-hire licence crop now splits front and back into two boxes)
+- Resolves the 2026-08-21 deferred item: OCR was drawing one bounding box spanning both faces when a licence's front and back were photographed together in one shot ("not a big deal but would be nice" — Royce). Built the fuller of the two flagged options, a full two-crop-box-per-credential redesign, on explicit go.
+- New nullable `crop_bounds_back` field, same `{x,y,width,height}` fraction-of-image shape as the existing `crop_bounds` — set only when the SAME card's back face is visible in the SAME photo; a genuinely different card still routes through `additional_documents`, unchanged. Threaded through `labour-hire-candidates-list.ts` and the `LicenceCard`/`LabourHireCandidate` types.
+- `LabourHireLicenceReviewModal` (`StaffPage.tsx`) gets a "See back"/"See front" flip button, shown only when `crop_bounds_back` is present — both views crop from the one shared `photo_front_url`, no second file. Read the modal architecture carefully first: `StaffPage.tsx` has a second, separate review modal (a different flow) that uses a real second uploaded file (`photo_back_url`) — left that one untouched.
+- Companion OCR schema/prompt change in eq-cards — see `eq/changelog/eq-cards.md`.
+- eq-shell [PR #1518](https://github.com/eq-solutions/eq-shell/pull/1518), squash-merged (`aba8752d`), confirmed live via exact Netlify `commit_ref` match against the newest ready production deploy.
+
 ## 2026-08-23 (PR #1516 MERGED — plane-scope guard for the tenant-migration runner)
 - `scripts/migrate-tenants.mjs`'s no-`--slug` default applies every pending migration to every active tenant; a migration meant for one plane only had no machine-readable way to say so. Confirmed concretely exploitable via PR #1510's own `--plan` job showing a `_zaap`-suffixed migration pending for both tenants. Four eq-field migrations (3 ehow/SKS-only, 1 zaap/EQ-only, the latter from PR #753) were flagged at-risk.
 - Runner now parses an optional `-- Plane: <name> (<ref>, <description>) ONLY.` header and resolves it against the runner's own live tenant-routing lookup (no new hardcoded tenant table). A real apply/`--dry-run` targeting a tenant outside a pending migration's declared plane is refused outright, fail-closed; `--plan` warns instead, mirroring the existing checksum-drift precedent. No header = fleet-wide, unchanged.
