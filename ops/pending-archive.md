@@ -416,3 +416,17 @@ match).
   `task_1a9f2979`. _(added 2026-08-21, resolved same day)_
 
 ---
+
+## eq-service: duplicate migration version 0192 breaks CI's integration-test job (2026-08-23)
+
+Two unrelated migration files both claim version `0192`
+(`0192_backfill_testing_check_frequency_slugs.sql` and
+`0192_reconcile_rls_introspection_service_schema.sql`) — `supabase_migrations.schema_migrations`
+has a primary key on `version`, so the second one to apply during local-Supabase bootstrap
+fails with `duplicate key value violates unique constraint "schema_migrations_pkey"`,
+before any test runs. Found while confirming a SEC-50 CI failure was unrelated to that
+fix (it was) — this collision is real and pre-existing, breaking the `Integration tests
+(Supabase local)` CI job on every PR to this repo, not just the one that surfaced it.
+- [x] **Rename one of the two `0192_*.sql` migrations to a free version number** — renamed the later-arriving file (`0192_reconcile_rls_introspection_service_schema.sql`, PR #619) to `0228`, fixed its two internal self-references. eq-service [PR #806](https://github.com/eq-solutions/eq-service/pull/806). _(added 2026-08-23, resolved same day)_
+
+---
