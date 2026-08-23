@@ -1,8 +1,8 @@
 ---
 title: EQ Solutions — Unified Identity & Permissions Model
 owner: Royce Milmlow
-last_updated: 2026-07-30
-scope: Authoritative cross-product reference. Every present and future EQ Solutions product (Field, Quotes, Cards, Service, Intake, Tender Pipeline, anything that follows) conforms to this model. Governs the 5-tier role system, the platform-admin escape hatch, naming conventions for roles and permission keys, the invite flow, session lifecycle, and the JWT shape that lets modules talk directly to Supabase.
+last_updated: 2026-08-23
+scope: Authoritative cross-product reference. Every present and future EQ Solutions product (Field, Quotes, Cards, Service, Intake, Tender Pipeline, anything that follows) conforms to this model. Governs the 5-tier role system, the platform-admin escape hatch, naming conventions for roles and permission keys, the invite flow, session lifecycle, the JWT shape that lets modules talk directly to Supabase, and (§3.3) identity data ownership between the control layer and tenant planes.
 read_priority: critical
 status: live
 ---
@@ -17,6 +17,8 @@ status: live
 `__personal__` is in fact a permanent, deliberate architectural feature, not a retired one: eq-cards' "Policy 1" (`supabase/migrations/0038_claim_invite_personal_tenant.sql`, decided 2026-06-17, live unchanged in the current `eq_cards_claim_invite`/`eq_cards_auto_provision` bodies through migration `0072`/`0076` as of 2026-07-27) makes `__personal__` the permanent **home** tenant for every Cards worker — the claiming org's tenant is added additively via a second active membership row + `last_active_tenant_id`, never replacing the personal one. Of the 47 live rows: 40 also hold exactly one active org membership (expected dual-membership under Policy 1), 6 hold only the personal membership (Cards signups that never claimed an org), 1 (a platform admin) holds 3 others.
 Net: this doc's own §11.2 backlog item ("Multi-tenant membership... v2 candidate... not yet built") is itself stale — eq-cards has shipped exactly that (one user, two simultaneous active tenant memberships) since 2026-06-17. Treat §11.2's "not yet built" framing as unverified against eq-cards until someone reconciles the two.
 **Resolved 2026-07-30 (Royce) — see §11.3 below.** Cards is the personal identity/control layer: every person gets one Cards identity they own, and tenant membership is additive and optional on top of it — a user may hold active membership in more than one tenant at once by choice. This formally supersedes §11 item 2's original "one user, one tenant" decision.
+**Correction 2026-08-23 (Royce's ratification, live-verified against jvkn + ehow + zaap):** this document had **no statement of identity data ownership** — and §3.2 actively asserted the opposite of the built system, calling operational person records "independent and managed per-module." Retracted; see §3.2's inline note and the new **§3.3**. The rule is now recorded: **the control layer (`jvkn`) wins on who a person is; a tenant plane reflects that and owns only the employment relationship.** This was the design intent all along — the reflection machinery implementing it (trigger → signed webhook → edge function, plus a nightly reconcile and dead-letter ledger) has been running in production since 2026-07-24 but was built directly in the database and codified only afterwards, so no repo and no doc described it. A session on 2026-08-23 read this file, concluded from §3.2 that nothing had been built, and began scoping a replacement before the live system was checked. §3.3 exists so that cannot recur.
+
 **Implementation owner (shell side):** see [eq/identity/PHASE-1F-PLAN.md](./PHASE-1F-PLAN.md).
 **Scope:** Authoritative reference for every present and future EQ Solutions product (Field, Quotes, Cards, Service, Intake, Tender Pipeline, and anything that follows). Every new module shipped under the EQ shell must conform to this document.
 
@@ -68,7 +70,41 @@ A `user` row may correspond to a `staff` row via a `staff.user_id` FK when the p
 - Not every `staff` is a `user`. A labour_hire person captured for a project might never log into the shell — they exist as a `staff` row only.
 - Not every `user` is `staff`. A `manager` who only configures things and never appears on a roster exists as a `user` row only.
 
-The role + permission system gates **what the logged-in `user` can do**. The data model around `staff` and other operational entities is independent and managed per-module against `eq-canonical`. When the two are linked (one human is both), `staff.user_id` is the join.
+The role + permission system gates **what the logged-in `user` can do**. When the two are linked (one human is both), `staff.user_id` is the join.
+
+> **Correction 2026-08-23 (live-verified against jvknxcmbtrfnxfrwfimn + ehowgjardagevnrluult).** This section previously ended: *"The data model around `staff` and other operational entities is independent and managed per-module against `eq-canonical`."* **That is retracted, not merely stale.** It was never true of the built system, and reading it caused a session to conclude that no identity reflection existed and to begin scoping a replacement for machinery that has been running in production for a month. Operational person records are **not** independent per-module. `jvkn` is the control layer of identity truth; tenant planes hold a reflection of it. See §3.3.
+
+### 3.3 Identity ownership — who wins when two copies disagree
+
+**The rule: the control layer wins.** `jvkn` (`eq-canonical`) owns who a person *is*. A tenant data plane (`ehow`, `zaap`) holds a **reflection** of that, plus the facts that belong to that employer alone. A tenant never owns a person's identity; it owns the employment relationship.
+
+| Fact | Owner | Truth lives in | Tenant plane may |
+|---|---|---|---|
+| Who the person is — name, DOB, contact details, address, emergency contact | The worker | `jvkn.public.workers` (fed by `jvkn.public.profiles` from Cards) | **read** — and propose a correction upward |
+| What they hold — licences, credentials | The worker | `jvkn.public.licences` | **read** |
+| Their relationship to *this* employer — `on_roster`, `employment_type`, `agency`, `job_title`, supervisor flags, crew membership, rostering, timesheets | The employer | tenant `app_data.*` | **write** — authoritative, never overwritten by canonical |
+
+Two conditions make this rule workable rather than merely declarative. Both are load-bearing:
+
+1. **The upward correction path must be complete.** When an operator corrects a person's details in Shell, that correction must reach `jvkn`, not just the local copy — otherwise "the control layer wins" degrades into "operators cannot fix anything." `eq-shell/netlify/functions/entity-patch.ts` began writing `email`/`phone` back to `jvkn.public.workers` on 2026-08-18 and `name` to `shell_control.users` on 2026-08-23. **Not yet audited: whether every operator edit surface routes through that path.**
+2. **A disagreement lock is a transient signal, not an ownership claim.** `app_data.staff.{email,phone,employment_type}_locked_by_shell` (tenant migrations `0224`/`0255`) freeze a local value so a nightly resync cannot flip-flop it. That is a **holding pen** — it prevents oscillation, it never resolves anything. Resolution always means correcting `jvkn`. A lock should therefore be visible as a worklist and should clear once canonical agrees.
+
+**Evidence the rule is affordable today (live, 2026-08-23):** all 22 `email_locked_by_shell` rows on `ehow` held a value **identical to** `jvkn.public.workers.email` — zero live divergence to arbitrate. 13 of the 22 lock a personal address canonical already agreed with (the lock fires whenever an operator touches the field, including to fill a blank — it is not a deliberate ownership assertion), and those 13 permanently prevent that worker from ever updating their own address at that employer. The single genuine conflict the lock model was built for (Ben Ritchie, 2026-07-28) was resolved on 2026-08-23 by correcting `jvkn`, which is exactly what this rule prescribes.
+
+**Explicitly not adopted:** a separate employer-owned `work_email` column. The work-vs-personal split that would justify it does not exist in live data — all 9 work-domain locks match canonical, which already holds the work address for those people.
+
+#### 3.3.1 How the reflection actually runs
+
+Named here because it was built directly in the database and retro-codified a month later (`eq-shell/supabase/migrations/2026_07_24_reconcile_worker_sync_codify.sql`), which is why it is invisible from the repos and absent from this document until now.
+
+- `jvkn.public.workers` carries an AFTER INSERT/UPDATE/DELETE trigger `worker_canonical_sync` → `sync_worker_to_canonical()` → signed `pg_net` webhook → Supabase **edge function `workers-canonical-sync`** (sourced in **eq-cards**, deployed on jvkn) → writes `ehow.app_data.staff` with the ehow service-role key. It honours the provenance locks above, matches identity by `cards_worker_id` → `user_id` → normalised phone → email, adopts dangling links, and diffs before writing.
+- `pg_cron` `reconcile-worker-sync` (02:35 UTC) → `eq_reconcile_worker_sync()` re-projects the full set nightly; `audit-worker-sync-dispatch` (02:50) writes a dead-letter ledger to `worker_sync_dispatch`. A licence twin runs at 03:05/03:20.
+- The reverse leg — Cards profile save → `app_data.staff` — is `eq-shell/netlify/functions/worker-profile-push.ts`.
+
+**Known limits, not yet closed:**
+- `workers-canonical-sync` **hardcodes** `EHOW_URL` and `SKS_TENANT_ID`. "The control layer is identity truth" is therefore true for exactly one tenant today and cannot onboard a second without a change. `worker-profile-push.ts` already demonstrates the right shape (`getTenantDataClientById` over active memberships).
+- `eq-field/scripts/people-canonical-link.js` attempts to create canonical worker stubs **directly from the browser using jvkn's anon key**. `anon` holds no privilege on `public.workers`, so every call 401s and is silently swallowed — it fails closed and is not a live exposure, but it is dead code whose silent failure masks itself. Either give it a server-side path or delete it.
+- `postgres_fdw` was evaluated for this seam and **deliberately rejected** (it would place jvkn credentials inside a tenant DB) — see `eq/identity/service-canonical-identity-seam-2026-06-25.md`. Do not reach for it.
 
 ## 4. Naming conventions — non-negotiable
 
