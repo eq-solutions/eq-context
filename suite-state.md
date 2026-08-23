@@ -68,7 +68,6 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
-- #1560 feat(staff): show pending labour-hire credentials on the Staff list
 - #1558 fix(security): close 2 Intake write-path gaps (cross-tenant RPC + accepted-risk RPCs)
 - #1557 fix(security): invite-users-batch.ts missing the admin.assign_role guard
 
