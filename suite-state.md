@@ -60,12 +60,11 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-23)
 
-**eq-cards:**
-- #287 fix(auth): reject deactivated identities in worker-link/claim-invite RPCs
-
 **eq-service:**
-- #804 fix(security): close SEC-50 -- SSRF guard on report-branding's fetchLogoImage
 - #791 fix(reports): make reissuing a report possible from the UI
+
+**eq-shell:**
+- #1536 fix(equipment): drop custodian wording, show assigned person's contact info
 
 ---
 
