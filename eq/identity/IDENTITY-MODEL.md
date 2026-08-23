@@ -120,6 +120,14 @@ Named here because it was built directly in the database and retro-codified a mo
 
 **Known limits, not yet closed:**
 - `workers-canonical-sync` **hardcodes** `EHOW_URL` and `SKS_TENANT_ID`. "The control layer is identity truth" is therefore true for exactly one tenant today and cannot onboard a second without a change. `worker-profile-push.ts` already demonstrates the right shape (`getTenantDataClientById` over active memberships).
+
+  > ⚠️ **This is not merely a scaling limit — it actively mis-files people, demonstrated live 2026-08-23.** Because the tenant is hardcoded, `workers-canonical-sync`'s INSERT branch puts **any** jvkn worker with no matching SKS staff row onto **SKS's roster**, regardless of who they actually are. Applying `2026_08_23e`'s phone backfill fired the `worker_canonical_sync` trigger for 65 changed rows; one of them (worker `9043532b`, a Cards user with a login and **zero** `org_memberships`, unrelated to SKS) had no SKS staff row, so the sync created one — active, `field_approved = true`, on-roster — and it appeared immediately in SKS's Field Contacts and roster. Reverted the same session (`2026_08_23f`), zero dependent records, ~10 minutes exposure.
+  >
+  > **Why this had never happened before, and why that is load-bearing:** the nightly reconcile (`eq_reconcile_worker_sync`) is scoped `where staff_id is not null` — it only ever re-projects *already-linked* workers, so it structurally cannot insert a stranger. The **trigger** has no such scoping and fires on every worker UPDATE. The safety everyone had been relying on lives in the cron's WHERE clause, not in the sync itself.
+  >
+  > **Consequence for anyone doing bulk work on `public.workers`:** any mass UPDATE will insert every unlinked worker into SKS. 39 of 105 workers currently have no active SKS membership. Treat a bulk write to that table as a roster-modifying operation until the tenant is resolved per-worker from `org_memberships`.
+
+- **`worker_canonical_sync`'s AFTER-trigger fan-out is not a read-only projection.** It can INSERT (above), so "the receiving function is idempotent and diffs before writing" — true of its merge path — must not be used to argue a fan-out is harmless. Verify what an unmatched row would do before triggering one at scale.
 - `eq-field/scripts/people-canonical-link.js` attempts to create canonical worker stubs **directly from the browser using jvkn's anon key**. `anon` holds no privilege on `public.workers`, so every call 401s and is silently swallowed — it fails closed and is not a live exposure, but it is dead code whose silent failure masks itself. Either give it a server-side path or delete it.
 - `postgres_fdw` was evaluated for this seam and **deliberately rejected** (it would place jvkn credentials inside a tenant DB) — see `eq/identity/service-canonical-identity-seam-2026-06-25.md`. Do not reach for it.
 
