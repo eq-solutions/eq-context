@@ -1,13 +1,18 @@
 ---
 title: EQ Cards — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-20
+last_updated: 2026-08-23
 scope: EQ Cards append-only history. NOTE — duplicates eq/changelog/cards.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # EQ Cards — Changelog
+
+## 2026-08-23 (PR #287 + #290 MERGED, migration 0135 APPLIED LIVE — deactivated identities blocked from worker-link/claim-invite RPCs)
+- `eq_cards_link_or_create_worker` and `eq_cards_claim_invite` now reject outright (`P0007`/`account_deactivated`) when the calling identity's `shell_control.users` row is explicitly `active = false` — closes the gap behind the Zemi Asri incident (2026-08-21): a deactivated identity that can still complete phone-OTP could silently accumulate fresh worker data forever, indistinguishable from a real signup. Also closes a live reactivation hole in `eq_cards_claim_invite`'s unconditional `active = true` upsert (same shape as the Shell-native fix in PR #1370, never ported to Cards' own claim path).
+- #287 collided on migration number `0134` with #289 (SEC-43, merged first) — CI's own green check on #287 was stale (last ran 3 days before #289 merged, never re-triggered). Renumbered to `0135`. A follow-up commit's `git mv` staged without re-staging the in-file edits, so the first push silently dropped the internal `[0134]→[0135]` comment fixes (comments only, SQL logic unaffected) — caught before applying to the database, fixed properly in PR #290.
+- Applied live to jvkn. Direct application via the Supabase MCP was blocked by the session's auto-mode classifier (a production DDL write); Royce applied the prepared, byte-verified SQL via the Supabase dashboard instead. Verified live: both functions carry the guard, and `eq_cards_link_or_create_worker`'s `authenticated` EXECUTE grant (found missing — pre-existing drift, unrelated to this fix) is restored as a side effect of the migration's explicit re-grant.
 
 ## 2026-08-23 (PR #289 MERGED + APPLIED LIVE — SEC-44/SEC-43: eq_cards_link_or_create_worker gated on caller identity)
 - The resolver trusted its `p_user_id` parameter instead of deriving it from the session, and was independently `authenticated`-executable — any signed-in jvkn user could bind or create a `workers` row under an arbitrary uid. Adds a null-safe `p_user_id IS DISTINCT FROM auth.uid()` guard (no-op on all 9 real call sites) plus a tightened grant. Applied live via `apply_migration`; live-verified with production probes (mismatched uid rejected, matching uid passes through).

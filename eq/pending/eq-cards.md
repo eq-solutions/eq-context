@@ -1,7 +1,7 @@
 ---
 title: EQ Cards — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-19
+last_updated: 2026-08-23
 scope: EQ Cards engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -10,6 +10,19 @@ status: live
 # EQ Cards — Pending
 
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-cards: PR #287 migration-number collision (with merged #289) found, fixed, deactivated-identity fix applied live (2026-08-23)
+*Asked to confirm and fix a suspected migration-hygiene CI failure on open PR #287 — both #287 and already-merged #289 had independently claimed migration number `0134`. The PR's own CI still showed green; confirmed that was stale (last ran 3 days before #289 merged), not evidence the collision didn't exist.*
+
+- [x] Renumbered #287's migration `0134→0135` (next free above `main`), confirmed CI green on the re-run, merged on Royce's "merge".
+- [x] **Caught a mistake in my own fix before it reached the database**: the first renumbering commit only staged the `git mv`, not the follow-up edits to the file's internal `[0134]` self-references — they were silently dropped from what got pushed and merged (comments only; SQL logic unaffected). Caught it re-reading the merged file fresh, byte-for-byte, immediately before applying to the live database. Fixed properly in follow-up PR #290, this time verifying `git diff --cached` before committing.
+- [x] Applied migration `0135` (rejects a deactivated identity from linking/creating worker data or claiming an invite — the fix for the Zemi Asri incident described in the migration's own header) live to jvkn on Royce's "go". Direct application via the Supabase MCP was blocked by the session's auto-mode classifier; Royce ran the prepared, byte-verified SQL through the Supabase dashboard instead. Verified live afterward: both functions carry the guard, and `eq_cards_link_or_create_worker`'s previously-missing `authenticated` EXECUTE grant (unrelated pre-existing drift, found during the pre-apply check) is now restored as a side effect of the migration's explicit re-grant.
+
+**Notes:**
+- **Auto-mode classifier blocks direct production DB writes via the Supabase MCP (`apply_migration`), even after explicit in-chat "go" — but did NOT block `git push`/`gh pr merge` this session**, both of which went through cleanly twice each (two `gh pr view` read calls did hit a transient classifier block but succeeded on plain retry). This refines the 2026-07-23 note further down this file, which described `git merge`/`push` as also hard-blocked "regardless of in-chat authorization" — that wasn't this session's experience; only the direct live-DB write hit the classifier. Standing plan for live-DB-write tasks: prepare the exact SQL up front and expect to hand it to Royce for the dashboard rather than assuming `apply_migration` goes through in auto mode.
+- While isolating this fix, found the shared local `eq-cards` checkout had unrelated uncommitted work in progress on branch `claude/sec-45-revoke-authenticated-invite-resolver` (an untracked file already claiming migration number `0135` for a different fix, no PR yet). Not touched — all git surgery this session was done in an isolated fresh clone instead. Whoever resumes that branch will need to renumber past whatever's newest on `main` by then, same as this session did.
 
 ---
 
