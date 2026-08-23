@@ -1,22 +1,13 @@
 ---
 title: Cross-Repo — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-22
+last_updated: 2026-08-23
 scope: Work that genuinely spans 2+ EQ product repos as a single unit (a combined header, or the body clearly touches both). Suite-wide/substrate-process items with no single owning repo also land here.
 read_priority: critical
 status: live
 ---
 
 # Cross-Repo — Pending
-
----
-
-## eq-field + eq-shell: SEC-37 (zaap timesheets/leave_requests RLS) — fix merged, dispatch to zaap still pending (2026-08-22)
-
-- [ ] **Dispatch still pending, needs Royce's explicit go**: copy the file into eq-shell's `supabase/tenant-migrations/` and dispatch with `--slug=eq` specifically, never the default all-tenant run. _(added 2026-08-21)_
-- [ ] **Dispatch-safety gap, found while building the fix**: eq-shell's `migrate-tenants.mjs` applies every pending migration to every active tenant by default — no per-file routing, `--slug` is the only real scoping mechanism. Several other already-written, still-undispatched eq-field migrations (the Teams-lockdown ones, the timesheets/leave actor-identity fix) carry the same exposure if ever dispatched carelessly. Now in progress as eq-shell [PR #1516](https://github.com/eq-solutions/eq-shell/pull/1516) (open, CI running) — a separate session's work. _(added 2026-08-21)_
-
----
 
 ---
 

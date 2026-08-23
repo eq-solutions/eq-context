@@ -60,7 +60,7 @@ fails on **new** exposure while keeping the open ones visible.
 | SEC-34 | P3 | `shell_control.user_invites` on jvkn — any authenticated member of a tenant (not just admins) can read all pending invites for that tenant, incl. invitee email/phone | eq-canonical (jvkn) | OPEN — found 2026-08-20, correctly tenant-isolated (no cross-tenant leak), invite token stored hashed not raw. Low urgency. |
 | SEC-35 | P3 — hygiene, latent | 7 `app_data.field_*` views on ehow (`field_leave_requests`/`_people`/`_prestarts`/`_schedule`/`_site_diaries`/`_timesheets`/`_toolbox_talks`) carry an unused `anon` SELECT grant at the view level; underlying base tables correctly have no anon grant, so it's inert today | sks-canonical (ehow) | **OPEN — found 2026-08-20**, proved inert via 4 live anon-key probes (all 401 against the base table). Same "one stray grant arms it instantly" shape as SEC-5/SEC-27. Cleanup: `REVOKE SELECT ... FROM anon` on all 7. |
 | SEC-36 | P3 | 4 tables on zaap (`tenders`, `pending_schedule`, `tender_import_runs`, `tender_review_decisions`) have only `{anon}`-scoped policies and no anon grant exists — proved latent, but `authenticated` (which does hold a grant) has no matching policy either, so this may double as a functionality gap, not just security hygiene | eq-canonical-internal (zaap) | OPEN — found 2026-08-20. Same family as the anon-only-policy pattern already removed from sibling tables `nominations`/`tender_enrichment` (shell PR #743, 2026-07-11) — these 4 look like the same sweep missed them. |
-| SEC-37 | **P1 — fix merged (eq-field), not yet dispatched to zaap.** | `app_data.timesheets` / `app_data.leave_requests` on zaap — any authenticated tenant member (no role required) can SELECT every coworker's timesheet/leave row; tenant-only policy never references `staff_id` | eq-canonical-internal (zaap) | **OPEN — found 2026-08-21, during SEC-33's own follow-up check.** Same shape as SEC-33, one class down (pay/health data, not PII+DELETE). Fix: eq-field [PR #753](https://github.com/eq-solutions/eq-field/pull/753) **merged 2026-08-22** — file now lives in eq-field's repo; still needs copying into eq-shell's `supabase/tenant-migrations/` and dispatching with `--slug=eq`. **Dispatch-safety risk, not yet resolved — see Detail** (eq-shell [PR #1516](https://github.com/eq-solutions/eq-shell/pull/1516) open, addressing it directly; landing this migration on ehow by accident would actively regress real SKS supervisors' access, not just be redundant). |
+| SEC-37 | **CLOSED — dispatched + verified live 2026-08-23.** | `app_data.timesheets` / `app_data.leave_requests` on zaap — any authenticated tenant member (no role required) could SELECT every coworker's timesheet/leave row; tenant-only policy never referenced `staff_id` | eq-canonical-internal (zaap) | **RESOLVED.** Fix (eq-field [PR #753](https://github.com/eq-solutions/eq-field/pull/753)) dispatched via eq-shell's One Pipe (`--slug=eq`) on Royce's explicit go, independently re-verified live via direct `pg_policies`/`pg_proc` query — both RESTRICTIVE policies and both helper functions exist on zaap. See Detail for the dispatch-safety fix (eq-shell PR #1516) and a follow-on bug in that fix found + closed the same day (PR #1524). |
 
 ## Weekend tasks (Field go-live + cutover)
 
@@ -896,11 +896,20 @@ policy per table: manager/supervisor role, or own row via `app_metadata.actor_id
 (same claim SEC-33's own fix already uses on this plane). Dry-run tested live on zaap
 (`begin...rollback`), verified clean — both policies + both helpers created inside the
 transaction with the intended qual, full post-rollback re-check confirms zero trace on
-committed state. **Merged into eq-field main 2026-08-22.** NOT dispatched — still needs
-copying into eq-shell's tenant-migrations and a `--slug=eq` run; Royce's go required,
-same as SEC-33.
+committed state. **Merged into eq-field main 2026-08-22.**
 
-**Dispatch-safety finding, found while building this fix, not yet resolved:** eq-field
+**Dispatched and verified live 2026-08-23.** Royce's explicit go, then eq-shell's One
+Pipe (`--slug=eq`) applied `0262_timesheets_leave_zaap_own_manager_read.sql` to zaap
+cleanly (the migration's own built-in verify block would have raised if either policy
+or either helper hadn't landed — it didn't). Independently re-confirmed outside the
+pipeline's own report via a direct `pg_policies`/`pg_proc` query against zaap:
+`timesheets_own_or_manager_read` and `leave_requests_own_or_manager_read` both exist
+as RESTRICTIVE SELECT policies alongside the original PERMISSIVE tenant-isolation
+policy (RESTRICTIVE+PERMISSIVE AND together, closing the gap rather than replacing the
+tenant check), and both `eq__caller_actor_uid`/`eq__caller_actor_staff_id` exist in
+`app_data`.
+
+**Dispatch-safety finding, found while building this fix — now resolved, in two parts:** eq-field
 has no dispatch mechanism of its own — the One Pipe is eq-shell's
 `scripts/migrate-tenants.mjs`, which reads only its own `supabase/tenant-migrations/`
 and, with no `--slug` flag, applies every pending file to every active tenant by default
@@ -917,9 +926,28 @@ comment, not an enforced control — the underlying gap (no machine routing for
 single-plane eq-field migrations) is real, affects several other still-undispatched
 eq-field migrations too (`20260722_field_team_supervisors.sql` and its two lockdown
 siblings, `20260819_timesheets_leave_actor_identity_fix.sql`), and is tracked as its
-own follow-up, not fixed here. **Update 2026-08-22: that follow-up is in progress as
-eq-shell [PR #1516](https://github.com/eq-solutions/eq-shell/pull/1516) (open, CI
-running) — a different session's work, not re-verified here.**
+own follow-up, not fixed here. **Update 2026-08-22: that follow-up merged as eq-shell
+[PR #1516](https://github.com/eq-solutions/eq-shell/pull/1516)** (a different session's
+work) — adds the `-- Plane:` header convention so a migration can declare which
+tenant(s) it's for, machine-checked by `migrate-tenants.mjs`.
+
+**Update 2026-08-23 — PR #1516 itself had a bug, found live while actually dispatching
+this fix:** its enforcement was a pre-flight check that scanned every file in
+`supabase/tenant-migrations/` (not just what's pending) against the full run target
+set, and blocked the ENTIRE run if any file anywhere declared a plane narrower than
+that set. By 2026-08-23 four ehow-only migrations (0258-0261, the Teams-lockdown ones
+plus the actor-identity fix this section already named) and this fix's own zaap-only
+migration (0262) all coexisted in the directory — so a real `--slug=eq` dispatch for
+0262 was blocked citing 0258-0261, migrations with nothing to do with eq. Zero tenants
+touched (fails safe by design), but the guard was self-defeating for the exact
+cross-tenant scenario it was built for. Fixed same day as eq-shell
+[PR #1524](https://github.com/eq-solutions/eq-shell/pull/1524): enforcement moved to
+per-tenant, per-migration, inside the actual apply loop rather than a whole-run
+pre-flight — a migration is now simply skipped for a tenant its plane doesn't cover,
+in every mode (plan/dry-run/real) alike. Verified against the live fleet via that PR's
+own read-only Plan job (showed 0262 pending only for `eq`, 0258-0261 pending only for
+`sks`, each correctly skipped for the other) before merging, then the real 0262
+dispatch to `eq` succeeded immediately after.
 
 ## Clean projects (probe + advisors, 2026-06-05)
 - eq-canonical, eq-canonical-internal, sks-canonical, eq-solves-field,
