@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-23 02:05 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-23 02:10 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-23 01:56 UTC → 2026-08-23 02:05 UTC)
+## Since last refresh (2026-08-23 02:05 UTC → 2026-08-23 02:10 UTC)
 
-- Merged: eq-shell [#1529](https://github.com/eq-solutions/eq-shell/pull/1529) fix(security): revoke anon EXECUTE on actor-identity helpers
-- Merged: eq-shell [#1515](https://github.com/eq-solutions/eq-shell/pull/1515) feat(access-control): role-level toggles for Field's 86 fine
-- Merged: eq-shell [#1512](https://github.com/eq-solutions/eq-shell/pull/1512) chore(security): retire dead FUNC_EXEC_ANON_TRACKED entries 
-- Merged: eq-shell [#1510](https://github.com/eq-solutions/eq-shell/pull/1510) fix(security): close SEC-33 on zaap (staff PII read+delete)
-- Merged: eq-shell [#1508](https://github.com/eq-solutions/eq-shell/pull/1508) fix(nav): 4 admin entry points show links their destination 
-- Merged: eq-shell [#1506](https://github.com/eq-solutions/eq-shell/pull/1506) fix(nav): HubLayout sidebar never enforced hideForTier for t
-- Merged: eq-shell [#1505](https://github.com/eq-solutions/eq-shell/pull/1505) feat(labour-hire): crop preview in review modal + review-all
-- Merged: eq-shell [#1503](https://github.com/eq-solutions/eq-shell/pull/1503) fix(quotes): clear sibling import error on Line Items card
+- Merged: eq-shell [#1528](https://github.com/eq-solutions/eq-shell/pull/1528) fix(chunk-loading): catch chunk-load failures that bypass Ch
+- Merged: eq-shell [#1513](https://github.com/eq-solutions/eq-shell/pull/1513) fix(labour-hire): auto-send the claim email on candidate app
+- Merged: eq-shell [#1511](https://github.com/eq-solutions/eq-shell/pull/1511) docs: note the netlify/functions test-file location gotcha
+- Merged: eq-shell [#1509](https://github.com/eq-solutions/eq-shell/pull/1509) fix(security): close SEC-30/32 on both planes, org-scoped (v
+- Merged: eq-shell [#1507](https://github.com/eq-solutions/eq-shell/pull/1507) test(quotes): accuracy harness for the subcontractor PDF imp
+- Merged: eq-shell [#1504](https://github.com/eq-solutions/eq-shell/pull/1504) fix(quotes): clear 6 react-hooks lint errors in the create-f
+- Merged: eq-shell [#1502](https://github.com/eq-solutions/eq-shell/pull/1502) fix(staff): supervisor can complete licence re-review + cons
+- Merged: eq-shell [#1501](https://github.com/eq-solutions/eq-shell/pull/1501) fix(quotes): hoist Date.now() out of render to satisfy react
 
 ## ⚠ Needs you (5)
 
@@ -29,14 +29,14 @@ _2026-08-23 02:05 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-08-23.md](sessions/2026-08-23.md) · [failures.md](system/failures.md)
 - 🟠 **Cron failing** — `md-health-backstop.yml` 1 consecutive scheduled run(s) failed, last success 2026-08-22 · [failures.md](system/failures.md) F11
 
-## 🙋 Waiting on you (199)
+## 🙋 Waiting on you (201)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
 - **eq-shell** · **Run `delete-merged-branches.ps1`** (283 branches, confirmed merged into `main`) whenever convenient — script only runs at Royce's own hand.
 - **eq-shell** · **Not click-tested live** — verified via eslint/tsc and commit-ancestry against the live deploy, not an actual `?open=<id>` link clicked by a person. Worth confirming next time someone opens a Staff deep-link from the "Ask anything" bar or a Resourcing row click. _(added 2026-08-23)_
 - **eq-shell** · **None of the 5 staged migrations have been dispatched** — they're now visible to the fleet runner but nothing has been applied to ehow or zaap. Dispatching each (with the correct `--slug`) remains explicitly Royce's call. _(added 2026-08-23)_
-- **eq-shell** · **Not click-tested live** — verified via `tsc -b --force`, `pnpm run build`, `pnpm check:perms`, and 387/387 tests passing, not an actual admin opening a Staff row and seeing the new section render. Worth two minutes on Conor or Nelson's row. _(added 2026-08-23)_
+- **eq-shell** · **Not click-tested live** — the underlying bug is fixed and verified against Conor's and Nelson's actual data (correct paths now resolve, signable), but nobody has opened their Staff row and watched the "Not yet confirmed" section actually render an image/PDF. Worth two minutes. _(added 2026-08-23)_
 - **eq-shell** · **Not click-tested live** — verified via `tsc -b --force`, eslint, and exact commit-ancestry against the live deploy, not an actual claim walked through by a person. Worth confirming once Conor or Nelson claims. _(added 2026-08-23)_
 - **eq-shell** · **Not click-tested live** — verified via `tsc -b --force` and eslint (0 new errors), not an actual file landing in a Downloads folder. Worth confirming next time a pack is built — same ask as the still-open 2026-07-28/07-26 "re-download and eyeball" items further down this file. _(added 2026-08-23)_
 - **eq-shell** · **None of the at-risk migrations have actually been copied into `supabase/tenant-migrations/` yet** — confirmed live: the directory's newest files are `0256`/`0257`, none of the eq-field migrations. No active dispatch risk today; the guard is preventive for whenever that copy happens. Copying + dispatching remain explicitly Royce's call. _(added 2026-08-23)_
@@ -45,13 +45,13 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **Storage browser (`/storage`) has zero nav link anywhere, confirmed still true** — its open-to-all-roles access is your own 2026-08-16 call. Asked what it's for: a generic empty per-tenant file bucket, nothing currently writes to it. Real open question whether it's worth keeping findable or retiring — no lean given either way. _(added 2026-08-20, needs your call)_
 - **eq-shell** · **Not click-tested live by a person** — verified via typecheck, lint, and exact commit-ancestry against the live production deploy, not by watching a real QR joiner's row actually change on `/sks/admin/users`. Worth a look next time someone joins via a self-join link. _(added 2026-08-20)_
 - **eq-shell** · **Not click-tested live** — verified via typecheck, lint, and full CI; no signed-in manager session available to confirm the Login column and filter render correctly, or to spot-check the 24 names against who's actually still active. _(added 2026-08-20)_
-_…and 187 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 189 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 2 | 2d |
+| eq-shell | ✓ success | 0d ago | 1 | 2d |
 | eq-solves-service | ✓ success | 2d ago | 2 | 2d |
 | eq-field | ✓ success | 0d ago | 3 | 0d |
 | eq-cards | ✓ success | 0d ago | 2 | 2d |
@@ -75,6 +75,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-23 | eq-shell | [#1528](https://github.com/eq-solutions/eq-shell/pull/1528) fix(chunk-loading): catch chunk-load failures that bypass ChunkEr |
 | 2026-08-23 | eq-shell | [#1529](https://github.com/eq-solutions/eq-shell/pull/1529) fix(security): revoke anon EXECUTE on actor-identity helpers (026 |
 | 2026-08-23 | eq-shell | [#1527](https://github.com/eq-solutions/eq-shell/pull/1527) fix(labour-hire): pending-licences endpoint reads columns that do |
 | 2026-08-23 | eq-shell | [#1525](https://github.com/eq-solutions/eq-shell/pull/1525) fix(staff): seed deep-link selId at mount, satisfy react-hooks/se |
@@ -89,7 +90,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-22 | eq-shell | [#1516](https://github.com/eq-solutions/eq-shell/pull/1516) fix(migrations): enforce per-migration tenant scope in the One Pi |
 | 2026-08-22 | eq-field | [#755](https://github.com/eq-solutions/eq-field/pull/755) v3.5.544 — dashboard: one row per person on the licence-missing c |
 | 2026-08-22 | eq-field | [#754](https://github.com/eq-solutions/eq-field/pull/754) docs(migrations): add structured Plane: header to 3 SKS-only migr |
-| 2026-08-22 | eq-field | [#753](https://github.com/eq-solutions/eq-field/pull/753) Security: zaap timesheets/leave_requests had no per-row RLS |
 _Showing 15 of 123 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -126,7 +126,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1553 | 174 / 71 | 171 | 44 |
+| [eq-shell](eq/pending/eq-shell.md) | 1555 | 175 / 71 | 172 | 44 |
 | [eq-cards](eq/pending/eq-cards.md) | 396 | 40 / 13 | 41 | 8 |
 | [eq-field](eq/pending/eq-field.md) | 791 | 97 / 27 | 45 | 15 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 644 | 72 / 25 | 87 | 20 |
@@ -137,9 +137,9 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | [eq-context](eq/pending/eq-context.md) | 232 | 23 / 3 | 25 | 5 |
 | [cross-repo](eq/pending/cross-repo.md) | 958 | 142 / 42 | 23 | 40 |
 | [sks](eq/pending/sks.md) | 53 | 3 / 5 | 0 | 6 |
-| [SKS](sks/pending.md) | 454 | 81 / 10 | 4 | 25 |
+| [SKS](sks/pending.md) | 459 | 81 / 11 | 4 | 25 |
 | [SKS active](sks/active.md) | 108 | 0 / 0 | 0 | 0 |
-| [OPS](ops/pending.md) | 469 | 42 / 2 | 0 | 1 |
+| [OPS](ops/pending.md) | 493 | 45 / 3 | 0 | 1 |
 
 ## Aging open items (45d+, unconfirmed)
 
@@ -197,4 +197,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-23 02:05 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-23 02:10 UTC._
