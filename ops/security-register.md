@@ -67,7 +67,7 @@ fails on **new** exposure while keeping the open ones visible.
 | SEC-41 | **P1** | `eq_delete_quote` (eq-shell) checks tenant only, no role — any authenticated user of any role can hard-delete any/all of a tenant's quotes via an existing multi-select bulk-delete button in the UI, no client gate either | eq-canonical-internal (zaap) + sks-canonical (ehow) | **OPEN — found 2026-08-20, reasoned (UI+code path traced, not clicked live).** 198 live quotes on ehow. Sibling CRM functions got this gate in migration `0245`; the quote family was left out. See Detail. |
 | SEC-42 | **P1** | `eq_replace_line_items` (eq-shell) — purge-then-replace on any quote's pricing/line items, tenant-checked only, no role check, called straight from the browser (no server-side twin) | eq-canonical-internal (zaap) + sks-canonical (ehow) | **OPEN — found 2026-08-20, reasoned.** 511 live line items on ehow. Same root cause as SEC-41. See Detail. |
 | SEC-43 | P2 | `eq_bulk_update_quote_status`/`eq_update_quote_status` — tenant-checked, no role check, writes status history + fires canonical events (`quote.accepted`/`.sent`/`.declined`); same ungated shape on `eq_remove_tenant_trade`, `eq_set_field_importance_override`, `eq_reset_field_importance_override`, `eq_archive_estimator`, `eq_archive_duplicate_record` | eq-canonical-internal (zaap) + sks-canonical (ehow) | OPEN — found 2026-08-20, reasoned. |
-| SEC-44 | **P0 — fix drafted, not yet applied.** | `eq_cards_link_or_create_worker` (jvkn) — takes the user id to bind as a plain parameter, no `auth.uid()`, no invite token, no org scoping; the four legitimate callers all guard it properly but the resolver itself is independently `authenticated`-executable | eq-canonical (jvkn) | **OPEN — found 2026-08-20, reasoned.** 35 of 104 jvkn workers are unclaimed — the vulnerable population. Fix: eq-cards [PR #289](https://github.com/eq-solutions/eq-cards/pull/289) — adds a null-safe `p_user_id IS DISTINCT FROM auth.uid()` guard inside the resolver (verified a no-op on all 9 real call sites) plus explicit `REVOKE ... FROM authenticated`. **Not dry-run tested live — the same classifier that blocks SEC-12/18/19 blocked a `begin...rollback` dry-run from this session too; PR body carries the dry-run SQL for a human to run.** Not applied to jvkn. See Detail. |
+| SEC-44 | ~~P0~~ **CLOSED 2026-08-23.** | `eq_cards_link_or_create_worker` (jvkn) — took the user id to bind as a plain parameter, no `auth.uid()`, no invite token, no org scoping; the four legitimate callers all guarded it properly but the resolver itself was independently `authenticated`-executable | eq-canonical (jvkn) | **CLOSED.** eq-cards [PR #289](https://github.com/eq-solutions/eq-cards/pull/289) applied live via `apply_migration` (tracked, not raw SQL) — independently re-verified, not just the success response: grants now `postgres:EXECUTE, service_role:EXECUTE` only (`authenticated` gone), live definition contains the guard, and two behavioural probes against jvkn confirm it — a mismatched-uid call raises `caller_uid_mismatch` at the top of the function, a matching-uid call passes the guard and fails only on an unrelated pre-existing FK constraint (the synthetic test uid isn't a real `auth.users` row), proving the guard is a true no-op on the legitimate path. Both probes ran inside `begin...rollback`, zero persisted rows. See Detail.
 | SEC-45 | P2 | `eq_cards_find_or_create_worker_for_invite` (jvkn) — same zero-caller-check shape as SEC-44; its only legitimate caller is a server-role function, so the `authenticated` grant buys nothing. Doubles as a cross-org existence oracle and lets a caller rewrite an unclaimed worker's phone/email — the setup step that makes SEC-44 work without knowing a real target's phone | eq-canonical (jvkn) | OPEN — found 2026-08-20, reasoned. Fix: `REVOKE EXECUTE ... FROM authenticated`. |
 | SEC-46 | P2 | eq-field's `_purgeTenantRows()` (Sites/Supervision CSV import) issues the DELETE with the user's own JWT against tables whose RLS is tenant-only (no role condition) — the SEC-21/22 fix (`canManageData()`) lives entirely in browser JS, so any authenticated non-manager can still wipe Sites/Supervision from devtools | eq-field, sks-canonical (ehow) | **OPEN — found 2026-08-20, proved via live `pg_policies` read.** Sibling sweep otherwise clean — all 6 eq-field importers now gate correctly except these two tables' DB layer. See Detail. |
 | SEC-47 | P2 | `app_data.approve_safety_record` (ehow) — tenant-checked, no role check and no check that the approver isn't the submitter; any tenant member can approve their own prestart/toolbox-talk submission | sks-canonical (ehow) | OPEN — found 2026-08-20, reasoned. 35 prestarts + 1 toolbox talk live behind it. |
@@ -1103,6 +1103,24 @@ SEC-12/18/19; the PR body carries the exact dry-run SQL for a human to paste int
 Supabase SQL editor. **Not applied to jvkn** — control-plane migrations here apply by hand
 (`apply_migration`/dashboard), and live application is an explicit separate step, same as
 SEC-30/31/33.
+
+**Update 2026-08-23: CLOSED — applied live to jvkn.** eq-cards PR #289 merged, then
+applied via `mcp__supabase__apply_migration` (the tracked path — lands in
+`supabase_migrations.schema_migrations`, unlike raw `execute_sql`; see this repo's own
+migration README on why untracked DDL breaks future branch replay). Not blocked by the
+classifier this time — only the earlier `begin...rollback` dry-run (a `DO` block with
+`set_config`) was. Verified independently after apply, not just the `{"success":true}`
+response:
+- `information_schema.routine_privileges` now shows exactly `postgres:EXECUTE,
+  service_role:EXECUTE` — `authenticated` is gone.
+- `pg_get_functiondef` on the live function contains `caller_uid_mismatch`.
+- Two behavioural probes, each in its own `begin...rollback` (zero persisted rows):
+  authenticated as uid A calling with `p_user_id` = uid B raises `caller_uid_mismatch`
+  immediately; authenticated as uid A calling with `p_user_id` = A passes the guard and
+  reaches the real insert logic, failing only on `workers_user_id_fkey` because the
+  synthetic test uid has no matching `auth.users` row — a different, expected, pre-existing
+  constraint, not a guard failure. Confirms the fix blocks the exploit shape and is a true
+  no-op on the legitimate shape.
 
 ### SEC-46 — eq-field CSV purge gate is client-side only; RLS has no role backstop (P2)
 `_purgeTenantRows()` (`scripts/supabase-entities.js:245`) issues
