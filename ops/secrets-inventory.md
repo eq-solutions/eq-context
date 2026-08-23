@@ -54,7 +54,7 @@ rather than the same rigor as the first 3.
 | Shell's session-signing JWT secret | eq-shell `SUPABASE_JWT_SECRET` = eq-shell `EQ_SHELL_JWT_SECRET` = eq-service `EQ_SHELL_JWT_SECRET` | Forge a valid login session for **any** user, on any app in the suite — the top secret in the whole inventory. |
 | SKS/ehow tenant JWT secret | eq-shell `SKS_SUPABASE_JWT_SECRET` = eq-field `SKS_JWT_SECRET` = eq-service `EQ_SERVICE_JWT_SECRET` | Forge a valid SKS-tenant session across Shell/Field/Service. |
 | jvkn control-plane service_role key | eq-shell `SUPABASE_SERVICE_ROLE_KEY` = eq-cards `SUPABASE_SERVICE_ROLE_KEY` | Full read/write on the control-plane DB, bypasses every RLS policy — **SEC-9, closed 2026-08-16.** |
-| ehow/sks-canonical service_role key | eq-service `CANONICAL_SERVICE_ROLE_KEY` = eq-field `CANONICAL_SERVICE_ROLE_KEY` = eq-field `EHOW_SERVICE_ROLE_KEY` = eq-shell `FIELD_SUPABASE_SERVICE_ROLE_KEY` | Full read/write on the ehow/sks-canonical DB behind Field + Service, bypasses every RLS policy. 4 names, 1 value — the most duplicated secret in the suite. Royce: never generated separate keys, it's the one default Supabase issued. |
+| ehow/sks-canonical service_role key | eq-service `CANONICAL_SERVICE_ROLE_KEY` = eq-field `CANONICAL_SERVICE_ROLE_KEY` = eq-field `EHOW_SERVICE_ROLE_KEY` = eq-field `AUDIT_SB_KEY` = eq-shell `FIELD_SUPABASE_SERVICE_ROLE_KEY` | Full read/write on the ehow/sks-canonical DB behind Field + Service, bypasses every RLS policy. 5 names, 1 value — the most duplicated secret in the suite. `AUDIT_SB_KEY` was fingerprint-matched into this cluster 2026-08-24 (SEC-65) — its code comments called it a "publishable" or read-scoped key until then; corrected in eq-field #762. Royce: never generated separate keys, it's the one default Supabase issued. |
 | Platform admin key | eq-shell `EQ_PLATFORM_ADMIN_KEY` = eq-service `EQ_PLATFORM_ADMIN_KEY` | Admin-level access wherever this key is checked, on both apps that hold it. |
 | Resend account key | `RESEND_API_KEY` on eq-shell, eq-field, eq-service, sks-nsw-labour | Sends transactional email on the EQ Resend account — spam/phishing risk, not data access. |
 | Anthropic API key | `ANTHROPIC_API_KEY` on eq-shell, sks-nsw-labour | Runs up Royce's Claude API bill — sks-nsw-labour is frozen either way, low real exposure. |
@@ -95,7 +95,6 @@ masking status. Tier 1 = suite-wide compromise. Tier 4 = low real stakes.
 | `SITE_CREDENTIALS_KEY` | eq-service | Encrypts/authenticates stored third-party site credentials inside Service. |
 | `LEAVE_CANONICAL_JWT_SECRET` | eq-field | Signs the token used for the Field↔canonical leave-request sync. |
 | `ZAAP_JWT_SECRET` | eq-field | Session/token secret scoped to the zaap (EQ-tenant) canonical plane. |
-| `AUDIT_SB_KEY` / `AUDIT_SB_URL` | eq-field | Credentials for the separate audit-log Supabase project. |
 
 **Tier 3 — real cost if leaked, but bounded (account abuse, not a data breach)**
 

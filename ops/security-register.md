@@ -1449,6 +1449,16 @@ those four actually ships the value client-side wasn't tested this pass. Fix: co
 label in code and in the inventory immediately (cheap, no live risk); separately confirm
 none of the 4 consumers exposes it outside a server-only context.
 
+**2026-08-24 — label corrected, exposure question still open.** `verify-pin.js`,
+`eq-agent.js`, `eq-service-sites.js` now document `AUDIT_SB_KEY` as the ehow
+service_role key, server-only, never expose client-side (`_shared/sentry.js` already
+treated it as sensitive — redacts it from error reports, no change needed there).
+eq-field [PR #762](https://github.com/eq-solutions/eq-field/pull/762). `ops/secrets-
+inventory.md` updated: `AUDIT_SB_KEY` was a 5th alias of the already-documented
+ehow/sks-canonical service_role key cluster (Tier 1), not its own Tier 2 entry — folded
+in there, removed as a standalone row. **Not done:** whether any of the 4 consumers
+actually ships the value client-side — still reasoned, not tested.
+
 ### SEC-68 — real secrets stored as GitHub Actions secrets on the public eq-context repo (P3, well-mitigated)
 eq-context (PUBLIC) repo secrets include `EQ_SHELL_JWT_SECRET` and
 `SUPABASE_SERVICE_ROLE_KEY` (jvkn); its `production-ops` environment adds several more
