@@ -13,6 +13,31 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: labour-hire licence promotion gap — Shell-join claim door was silently dropping credentials, root-caused + fixed (2026-08-23)
+*Royce, from a Staff page screenshot: why aren't the labour-hire licences (Conor Horgan, Nelson Sareto) showing up. Resolves the open question left by the 2026-08-21 "Labour-hire claim gate" entry (archived) about whether the Shell-join claim flow alone promotes credentials.*
+
+- [x] **Root cause confirmed live, three layers deep**: (1) both candidates' invites went unclaimed — approved 33 min before PR #1513's auto-send-claim-email fix went live, so no email ever sent; (2) even once claimed, the claim link (`shellJoinUrl()`) routes through `shell-join-tenant.ts`, which links the account correctly but never promotes `worker_credentials` into `public.licences` — that promotion loop only ever existed inside `eq_cards_claim_invite`, a separate Postgres RPC used by the Cards app's own claim flow; (3) confirmed concretely, not just by code reading: 0 of 8 `worker_credentials` rows in the entire database had ever been promoted — all 8 belonging to these two candidates.
+- [x] **Fixed**: ported the same promote-or-update loop from `eq_cards_claim_invite` into `shell-join-tenant.ts`. eq-shell [PR #1517](https://github.com/eq-solutions/eq-shell/pull/1517), squash-merged (`4231788f`), confirmed live via exact Netlify `commit_ref` match, on Royce's explicit "merge."
+- [x] **Companion gap flagged and spun off**: `accept-invite.ts` (Shell's other claim door — desktop email+PIN) has the identical gap. Spawned as a background task; produced eq-shell [PR #1519](https://github.com/eq-solutions/eq-shell/pull/1519) (open, not merged).
+
+**Deferred:**
+- [ ] **eq-shell PR #1519** (accept-invite.ts companion fix) — open, not merged. Needs Royce's review/merge call. _(added 2026-08-23)_
+- [ ] **Royce still needs to click Resend for Conor Horgan and Nelson Sareto** (`core.eq.solutions/admin/workers`) — the fix only fires on claim; nothing promotes until they actually verify. _(added 2026-08-23)_
+- [ ] **Not click-tested live** — verified via `tsc -b --force`, eslint, and exact commit-ancestry against the live deploy, not an actual claim walked through by a person. Worth confirming once Conor or Nelson claims. _(added 2026-08-23)_
+
+---
+
+## eq-shell: compliance-pack "Download ready" click stopped working — fixed via hidden-iframe auto-download (2026-08-23)
+*Royce: the compliance pack shows a ready-to-download notification, but clicking it doesn't download anything. Third round in this saga — see the 2026-08-18 blank-screen fix (PR #1434) and the 2026-07-28 filename/contact-details fix, both already archived/closed.*
+
+- [x] **Root cause**: PR #1434 (2026-08-18) deliberately removed auto-download-on-poll-ready — a gesture-less anchor click to the cross-origin signed URL made some browsers navigate the whole tab instead of downloading, blanking the SPA. The replacement, a manual "Download ready ↓" click, is the one now reported broken.
+- [x] **Fixed**: trigger the download via a hidden `<iframe>` instead of a clicked anchor. `Content-Disposition: attachment` on the signed URL still forces a real download; an iframe's navigation is scoped to its own browsing context, so the top-level SPA can never be blanked by it regardless of gesture. jvkn was already in `frame-src` (#1500) — no CSP change needed. The manual button stays as a fallback re-download. eq-shell [PR #1520](https://github.com/eq-solutions/eq-shell/pull/1520), squash-merged (`dfca2b11`), confirmed live via exact Netlify `commit_ref` match, on Royce's explicit "merge."
+
+**Deferred:**
+- [ ] **Not click-tested live** — verified via `tsc -b --force` and eslint (0 new errors), not an actual file landing in a Downloads folder. Worth confirming next time a pack is built — same ask as the still-open 2026-07-28/07-26 "re-download and eyeball" items further down this file. _(added 2026-08-23)_
+
+---
+
 ## eq-shell: tenant-migration runner now refuses to silently fleet-wide-dispatch a single-plane migration — built, merged, live (2026-08-23)
 *`scripts/migrate-tenants.mjs`'s default (no `--slug`) applies every pending migration to every active tenant, and a migration had no way to declare "single-plane only" except a filename suffix or prose comment — neither of which the runner reads. Confirmed concretely exploitable via eq-shell PR #1510's own `--plan` job showing a `_zaap`-suffixed migration pending for both tenants. Four eq-field migrations (3 ehow/SKS-only, 1 zaap/EQ-only) were flagged at-risk. Read the full runner source before choosing a fix, per explicit instruction.*
 
@@ -22,13 +47,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 **Deferred:**
 - [ ] **None of the at-risk migrations have actually been copied into `supabase/tenant-migrations/` yet** — confirmed live: the directory's newest files are `0256`/`0257`, none of the eq-field migrations. No active dispatch risk today; the guard is preventive for whenever that copy happens. Copying + dispatching remain explicitly Royce's call. _(added 2026-08-23)_
-
----
-
-## eq-shell: Labour-hire claim gate found + fixed — approved candidates weren't reaching the compliance pack (2026-08-21)
-
-**Deferred:**
-- [ ] **Not yet real-world verified: does the Shell-join claim flow alone promote credentials into real licences, or is a separate Cards-app claim step still required?** Traced as far as code allows — `shell-join-tenant.ts` sets `worker_invites.claimed_at` and links `workers.user_id`, but whether that alone triggers credential promotion (historically a separate `eq_cards_claim_invite` RPC's job) is unconfirmed. Settle by watching what happens when Conor or Nelson actually claims via the new/resent email. _(added 2026-08-21)_
 
 ---
 

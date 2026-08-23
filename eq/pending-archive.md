@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-08-22
+last_updated: 2026-08-23
 scope: Done items rotated out of eq/pending.md nightly by scripts/rotate_pending.py (per-item since 2026-07-27; before that, occasional manual whole-section moves). Nothing here is actionable — pure historical record (also covered in eq/changelog/*.md and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -7600,5 +7600,11 @@ _(recovered from an unpopped stash 2026-08-20 — never made it into this file a
 
 ## eq-cards/eq-shell: onboarding minimum-requirements switch, bulk connect-worker, and a live anon-EXECUTE fix (2026-07-26) (rotated 2026-08-22 — open items remain in cross-repo.md)
 
+
+---
+
+## eq-shell: Labour-hire claim gate found + fixed — approved candidates weren't reaching the compliance pack (2026-08-21) (rotated 2026-08-23 — resolved, no open items remain)
+
+- [x] **Resolved 2026-08-23**: confirmed live — the Shell-join claim flow alone does NOT promote credentials into real licences. `shell-join-tenant.ts` links `workers.user_id` and stamps `worker_invites.claimed_at`, but credential promotion (`worker_credentials` → `public.licences`) only ever existed inside `eq_cards_claim_invite`, a separate Postgres RPC used by the Cards app's own claim flow — this HTTP endpoint never called it. Verified concretely: 0 of 8 `worker_credentials` rows in the whole database had ever been promoted, all 8 belonging to the two Madagins labour-hire candidates (Conor Horgan, Nelson Sareto) whose licences weren't showing on the Staff page. Fixed by porting the same promote-or-update loop into `shell-join-tenant.ts`. eq-shell [PR #1517](https://github.com/eq-solutions/eq-shell/pull/1517), squash-merged (`4231788f`), confirmed live via exact Netlify `commit_ref` match. Full detail in the 2026-08-23 session log and the new `eq/pending/eq-shell.md` entry.
 
 ---

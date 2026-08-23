@@ -9,6 +9,17 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-23 (PR #1517 MERGED — labour-hire credential promotion fixed on Shell-join claim)
+- Resolves the question PR #1513 (2026-08-21) left explicitly open: whether the Shell-join claim flow alone promotes credentials into real licences. It doesn't. `shell-join-tenant.ts` correctly links `workers.user_id` and stamps `worker_invites.claimed_at` on claim, but the actual `worker_credentials` → `public.licences` promotion loop only ever existed inside `eq_cards_claim_invite`, a separate Postgres RPC used by the Cards app's own claim flow — this HTTP endpoint never called it. Confirmed live: 0 of 8 `worker_credentials` rows in the whole database had ever been promoted, all 8 belonging to Conor Horgan and Nelson Sareto (the same two candidates from #1513's trial) — root cause of Royce's "why aren't the labour-hire licences showing up" report.
+- Fixed by porting the same promote-or-update loop `eq_cards_claim_invite` already runs into `shell-join-tenant.ts`, scoped to the worker/user it just linked.
+- Identical gap flagged in `accept-invite.ts` (Shell's other claim door, desktop email+PIN) — spun off as a background task, produced [PR #1519](https://github.com/eq-solutions/eq-shell/pull/1519) (open, not merged as of this entry).
+- eq-shell [PR #1517](https://github.com/eq-solutions/eq-shell/pull/1517), squash-merged (`4231788f`), confirmed live via exact Netlify `commit_ref` match, on Royce's explicit "merge." Not click-tested live — needs Conor or Nelson to actually claim to fully settle end-to-end.
+
+## 2026-08-23 (PR #1520 MERGED — compliance pack downloads automatically again)
+- PR #1434 (2026-08-18) deliberately removed auto-download-on-poll-ready to fix a browser tab-navigation bug that was blanking the whole SPA — the replacement manual "Download ready ↓" click is what Royce then reported broken ("comes up with a notification... even if you click it that doesn't work").
+- Fixed by triggering the download through a hidden `<iframe>` instead of a clicked anchor. `Content-Disposition: attachment` on the signed URL (already set by `compliance-pack-status.ts`) still forces a real download; an iframe's navigation is scoped to its own browsing context, so the top-level SPA can never be blanked by it, gesture or not. jvkn was already allowlisted in `frame-src` for the labour-hire iframe handoff (#1500) — no CSP change needed. Manual button left in place as a fallback re-download.
+- eq-shell [PR #1520](https://github.com/eq-solutions/eq-shell/pull/1520), squash-merged (`dfca2b11`), confirmed live via exact Netlify `commit_ref` match, on Royce's explicit "merge." Not click-tested live — no authenticated admin session available this session.
+
 ## 2026-08-23 (PR #1518 MERGED — labour-hire licence crop now splits front and back into two boxes)
 - Resolves the 2026-08-21 deferred item: OCR was drawing one bounding box spanning both faces when a licence's front and back were photographed together in one shot ("not a big deal but would be nice" — Royce). Built the fuller of the two flagged options, a full two-crop-box-per-credential redesign, on explicit go.
 - New nullable `crop_bounds_back` field, same `{x,y,width,height}` fraction-of-image shape as the existing `crop_bounds` — set only when the SAME card's back face is visible in the SAME photo; a genuinely different card still routes through `additional_documents`, unchanged. Threaded through `labour-hire-candidates-list.ts` and the `LicenceCard`/`LabourHireCandidate` types.
