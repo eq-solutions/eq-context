@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-23 01:06 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-23 01:08 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-23 01:05 UTC → 2026-08-23 01:06 UTC)
+## Since last refresh (2026-08-23 01:06 UTC → 2026-08-23 01:08 UTC)
 
-- Merged: eq-shell [#1522](https://github.com/eq-solutions/eq-shell/pull/1522) feat(labour-hire): show a candidate's licences on the Staff 
-- Merged: eq-shell [#1508](https://github.com/eq-solutions/eq-shell/pull/1508) fix(nav): 4 admin entry points show links their destination 
-- Merged: eq-shell [#1506](https://github.com/eq-solutions/eq-shell/pull/1506) fix(nav): HubLayout sidebar never enforced hideForTier for t
-- Merged: eq-shell [#1505](https://github.com/eq-solutions/eq-shell/pull/1505) feat(labour-hire): crop preview in review modal + review-all
-- Merged: eq-shell [#1503](https://github.com/eq-solutions/eq-shell/pull/1503) fix(quotes): clear sibling import error on Line Items card
-- Merged: eq-shell [#1501](https://github.com/eq-solutions/eq-shell/pull/1501) fix(quotes): hoist Date.now() out of render to satisfy react
-- Merged: eq-shell [#1500](https://github.com/eq-solutions/eq-shell/pull/1500) fix(labour-hire): allow jvkn Supabase storage in frame-src C
-- Merged: eq-shell [#1499](https://github.com/eq-solutions/eq-shell/pull/1499) fix(security): REVOKE anon-EXECUTE on 15 service/app_data fu
+- Merged: eq-shell [#1521](https://github.com/eq-solutions/eq-shell/pull/1521) chore(migrations): stage 5 single-plane eq-field migrations 
+- Merged: eq-shell [#1511](https://github.com/eq-solutions/eq-shell/pull/1511) docs: note the netlify/functions test-file location gotcha
+- Merged: eq-shell [#1507](https://github.com/eq-solutions/eq-shell/pull/1507) test(quotes): accuracy harness for the subcontractor PDF imp
+- Merged: eq-shell [#1504](https://github.com/eq-solutions/eq-shell/pull/1504) fix(quotes): clear 6 react-hooks lint errors in the create-f
+- Merged: eq-shell [#1502](https://github.com/eq-solutions/eq-shell/pull/1502) fix(staff): supervisor can complete licence re-review + cons
+- Merged: eq-shell [#1498](https://github.com/eq-solutions/eq-shell/pull/1498) fix(drift): CHECK 6 widen schema scan to service/app_data (S
+- Merged: eq-shell [#1497](https://github.com/eq-solutions/eq-shell/pull/1497) feat(quotes): Jobs-page "From supplier file" button now take
+- Merged: eq-shell [#1496](https://github.com/eq-solutions/eq-shell/pull/1496) feat(labour-hire): review each licence individually before a
 
 ## ⚠ Needs you (6)
 
@@ -52,7 +52,7 @@ _…and 185 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 3 | 2d |
+| eq-shell | ✓ success | 0d ago | 2 | 2d |
 | eq-solves-service | ✓ success | 2d ago | 2 | 2d |
 | eq-field | ✓ success | 0d ago | 1 | 0d |
 | eq-cards | ✓ success | 0d ago | 1 | 2d |
@@ -76,6 +76,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-23 | eq-shell | [#1521](https://github.com/eq-solutions/eq-shell/pull/1521) chore(migrations): stage 5 single-plane eq-field migrations into  |
 | 2026-08-23 | eq-shell | [#1522](https://github.com/eq-solutions/eq-shell/pull/1522) feat(labour-hire): show a candidate's licences on the Staff page  |
 | 2026-08-23 | eq-shell | [#1523](https://github.com/eq-solutions/eq-shell/pull/1523) fix(chunk-error): case-insensitive match for stale-chunk dynamic- |
 | 2026-08-23 | eq-shell | [#1520](https://github.com/eq-solutions/eq-shell/pull/1520) fix(staff): auto-download the compliance pack instead of requirin |
@@ -90,7 +91,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-21 | eq-shell | [#1509](https://github.com/eq-solutions/eq-shell/pull/1509) fix(security): close SEC-30/32 on both planes, org-scoped (verifi |
 | 2026-08-20 | eq-shell | [#1510](https://github.com/eq-solutions/eq-shell/pull/1510) fix(security): close SEC-33 on zaap (staff PII read+delete) |
 | 2026-08-20 | eq-shell | [#1513](https://github.com/eq-solutions/eq-shell/pull/1513) fix(labour-hire): auto-send the claim email on candidate approval |
-| 2026-08-20 | eq-shell | [#1512](https://github.com/eq-solutions/eq-shell/pull/1512) chore(security): retire dead FUNC_EXEC_ANON_TRACKED entries (SEC- |
 _Showing 15 of 124 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -198,4 +198,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-23 01:06 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-23 01:08 UTC._
