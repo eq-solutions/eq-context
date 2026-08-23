@@ -1,7 +1,7 @@
 ---
 title: EQ Shell — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-23
+last_updated: 2026-08-24
 scope: EQ Shell engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -10,6 +10,23 @@ status: live
 # EQ Shell — Pending
 
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-shell: access-control sweep completed — Documents/Intake/Admin covered, 3 more gaps found and closed; sprint doc's S1/S3 also shipped (2026-08-23)
+*Continuation of the same-day sweep (see the entry below this one). Sprint doc (`docs/access-control-sweep-followup-sprint.md`) items S1 and S3 built and merged first; a `/decide` pass on "what's next" then recommended continuing the sweep into the areas not yet DB-layer-audited (Documents, Intake, Admin) over closing S2 — Royce confirmed.*
+
+- [x] **S1 built**: `entity-patch.ts`'s generic asset PATCH had no `INTERNAL_ASSET_TYPES` guard, unlike the dedicated `asset-calibration.ts` endpoint — could touch a customer/CMMS-owned asset row through the equipment edit path. Fixed with a pre-update check against the row's current `asset_type`, 404 on mismatch (same shape as the file's own `matchedNoRows` convention). eq-shell [PR #1556](https://github.com/eq-solutions/eq-shell/pull/1556), merged (`d18b06bf`), confirmed live.
+- [x] **S3 built**: `EquipmentModule` showed live Archive/Delete buttons to view-only roles the server already rejected. Gated both callbacks on the existing `canEdit` flag. eq-shell [PR #1552](https://github.com/eq-solutions/eq-shell/pull/1552), merged (`1f057382`), confirmed live.
+- [x] **Documents — audited, fully clean.** Both prior REVOKE migrations (`0240`, `0252`) confirmed still holding live on every base table; no re-opened grant, no direct browser path.
+- [x] **Admin — DB-grant layer fully clean** (several control-plane tables carry zero grant at all, not even SELECT); one real app-layer gap found: `invite-users-batch.ts` was missing the `admin.assign_role` escalation guard both its siblings (`invite-user.ts`, `self-join-codes.ts`) carry — added on 2026-08-16 specifically to stop inviting someone straight into a role that itself grants role-assignment power. Dormant today (two other controls currently block `admin.invite_user` from being delegated at all) but the exact hole those siblings exist to close. Fixed per-row in the batch's existing validation pre-pass — a mixed-role batch only fails the escalating rows. eq-shell [PR #1557](https://github.com/eq-solutions/eq-shell/pull/1557), merged (`123b05c8`), confirmed live.
+- [x] **Intake — two gaps, different severity classes.** (1) `eq_check_intake_rate_limit`/`eq_increment_intake_rate_limit` took a caller-supplied `p_tenant_id` with no check against the caller's own JWT tenant — cross-tenant, not just cross-role. No caller anywhere in eq-shell's code or any other Postgres function's body — confirmed genuinely orphaned before revoking; Royce confirmed no known external caller. (2) `eq_add_tenant_trade`/`eq_remove_tenant_trade`/`eq_duplicate_dismiss` were a deliberate accepted-risk call from migration `0229` ("gated at route/component layer, not DB") — revisited given today's sweep tightened every other RPC of this exact shape; Royce's call was to bring these in line too. Both fixed in one migration (`0272`). eq-shell [PR #1558](https://github.com/eq-solutions/eq-shell/pull/1558), merged (`03d77cde`), confirmed live.
+- [x] **Full sweep now covers 8 areas**: Ops/Quotes, Records, Equipment, GM Reports, Staff, Documents, Intake, Admin. 6 real gaps found and fixed across the whole pass; 2 consciously left open with reasons on record (Records/Equipment's `app_data` cross-app grants — EQ Service depends on them; see the entry below).
+
+**Deferred:**
+- [ ] **S2 (sprint doc) still open** — `entity-actions.ts`/`entity-patch.ts` gate asset writes on `entity.edit`/`entity.delete` (the CRM tier) rather than `equipment.edit`/`equipment.view`, aligned by coincidence today, not design. Needs Royce's call: re-point the keys, or document the CRM-tiering as deliberate. _(added 2026-08-23)_
+- [ ] **S6 (sprint doc), now larger** — not click-tested live: the original two fixes (`staff_conversations`, GM Reports) plus this round's three (`invite-users-batch.ts`'s guard, both Intake fixes). All verified via live grants/policy/function-body queries and full CI, not an actual signed-in session attempting the blocked action. _(added 2026-08-23)_
+- [ ] **`ai.use` and `service.do_work` still unresolved** — carried over from the sprint doc, untouched this round. _(added 2026-08-23)_
 
 ---
 

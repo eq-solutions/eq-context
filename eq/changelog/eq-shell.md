@@ -1,13 +1,21 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-23
+last_updated: 2026-08-24
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # eq-shell changelog
+
+## 2026-08-23 (PR #1552 + #1556 + #1557 + #1558 MERGED + LIVE — access-control sweep completed: Documents/Intake/Admin covered, 3 more gaps closed)
+- Sprint doc items shipped: S1 (`entity-patch.ts` gains an `INTERNAL_ASSET_TYPES` scope guard on its generic asset PATCH, matching `asset-calibration.ts` — closes a path to touching a customer/CMMS-owned asset row through the equipment edit door, PR #1556) and S3 (Equipment's Archive/Delete buttons no longer render for view-only roles, PR #1552).
+- Documents module audited at the DB grant layer — fully clean, both prior REVOKE migrations (0240, 0252) still hold live.
+- Admin module audited — DB-grant layer fully clean (several control-plane tables carry zero grant at all, not even SELECT). One app-layer gap found: `invite-users-batch.ts` was missing the `admin.assign_role` escalation guard both its siblings (`invite-user.ts`, `self-join-codes.ts`) carry since 2026-08-16 — dormant today, but the exact hole those exist to close. Fixed per-row in the batch's existing validation pre-pass. PR #1557.
+- Intake module audited — two gaps closed in one migration (`0272`): `eq_check_intake_rate_limit`/`eq_increment_intake_rate_limit` took a caller-supplied `p_tenant_id` with no check against the caller's own JWT tenant (cross-tenant, not just cross-role) — confirmed genuinely orphaned (no caller in TS or SQL) before revoking outright. `eq_add_tenant_trade`/`eq_remove_tenant_trade`/`eq_duplicate_dismiss` were a deliberate accepted-risk call from migration `0229`, revisited and role-gated to match today's broader pattern. PR #1558.
+- Full sweep now covers 8 areas end to end (Ops/Quotes, Records, Equipment, GM Reports, Staff, Documents, Intake, Admin) — 6 real gaps found and fixed across the day, 2 consciously left open with reasons on record.
+- All 4 PRs squash-merged on Royce's explicit go each time, confirmed live via commit-ancestry against the newest ready production deploy.
 
 ## 2026-08-23 (PR #1560 MERGED + LIVE — Staff list shows pending labour-hire credentials instead of "None recorded")
 - Third instance of the same underlying gap found and closed today, on a third surface: the Staff-list "Licences & review" column reads a pending, approved-but-unclaimed labour-hire candidate identically to someone with zero credentials at all — both show "None recorded" — because the column only ever reads confirmed `public.licences` rows, which by construction can't exist yet for someone with no `user_id`. Same root cause already fixed once for the per-person detail panel (earlier session) and once for the compliance-pack export (PR #1551), never previously fixed for the list view itself.
