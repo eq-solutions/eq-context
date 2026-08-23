@@ -8,17 +8,17 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-23 04:54 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-23 05:16 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-23 04:51 UTC → 2026-08-23 04:54 UTC)
+## Since last refresh (2026-08-23 04:54 UTC → 2026-08-23 05:16 UTC)
 
-- Merged: eq-shell [#1538](https://github.com/eq-solutions/eq-shell/pull/1538) fix(security): use actor identity in timesheet/leave guard s
-- Merged: eq-shell [#1523](https://github.com/eq-solutions/eq-shell/pull/1523) fix(chunk-error): case-insensitive match for stale-chunk dyn
-- Merged: eq-shell [#1522](https://github.com/eq-solutions/eq-shell/pull/1522) feat(labour-hire): show a candidate's licences on the Staff 
-- Merged: eq-shell [#1518](https://github.com/eq-solutions/eq-shell/pull/1518) fix(labour-hire): render both crop boxes when a card's back 
-- Merged: eq-shell [#1515](https://github.com/eq-solutions/eq-shell/pull/1515) feat(access-control): role-level toggles for Field's 86 fine
-- Merged: eq-shell [#1512](https://github.com/eq-solutions/eq-shell/pull/1512) chore(security): retire dead FUNC_EXEC_ANON_TRACKED entries 
-- Merged: eq-shell [#1510](https://github.com/eq-solutions/eq-shell/pull/1510) fix(security): close SEC-33 on zaap (staff PII read+delete)
+- Merged: eq-shell [#1521](https://github.com/eq-solutions/eq-shell/pull/1521) chore(migrations): stage 5 single-plane eq-field migrations 
+- Merged: eq-shell [#1520](https://github.com/eq-solutions/eq-shell/pull/1520) fix(staff): auto-download the compliance pack instead of req
+- Merged: eq-shell [#1517](https://github.com/eq-solutions/eq-shell/pull/1517) fix(labour-hire): promote worker_credentials to licences on 
+- Merged: eq-shell [#1516](https://github.com/eq-solutions/eq-shell/pull/1516) fix(migrations): enforce per-migration tenant scope in the O
+- Merged: eq-shell [#1513](https://github.com/eq-solutions/eq-shell/pull/1513) fix(labour-hire): auto-send the claim email on candidate app
+- Merged: eq-shell [#1511](https://github.com/eq-solutions/eq-shell/pull/1511) docs: note the netlify/functions test-file location gotcha
+- Merged: eq-shell [#1509](https://github.com/eq-solutions/eq-shell/pull/1509) fix(security): close SEC-30/32 on both planes, org-scoped (v
 - Merged: eq-solves-service [#805](https://github.com/eq-solutions/eq-service/pull/805) fix(security): IPv6-bracket bypass in isSafeFetchUrl's SSRF 
 
 ## ⚠ Needs you (7)
@@ -53,7 +53,7 @@ _…and 188 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 0 | — |
+| eq-shell | ✓ success | 0d ago | 1 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 1 | 2d |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
@@ -96,7 +96,7 @@ _Showing 15 of 120 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **eq-shell** (239 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-shell** (240 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (53 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (123 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (93 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
@@ -110,6 +110,7 @@ _Showing 15 of 120 · full record in [sessions/](sessions/)_
 
 ## Pending (SKS)
 
+- **A second, unidentified path also creates blank-name logins** — proven by timing, not guessed: Todd Wilson's and David Boyd's shell logins were created 7 weeks *after* their Cards approval, which rules out the path just patched as their cause. Spawned as background task `task_d904d388`, Royce started it in a separate session; running independently, not yet reported back as of this session's close. _(added 2026-08-23)_
 - **Not verified live by a person** — the specific pill-click behavior needs a real Core+SKS session to exercise (Teams is SKS-only, gated behind Core auth, not reachable from a standalone deploy-preview session). Confirmed the fix mirrors an already-shipped, working code pattern (the crew-supervisor picker), not watched working fresh. _(added 2026-08-23)_
 - **SKS's own number, for reference: 6 of 32 active SKS members are currently missing White Card** — visible today in Shell's Training Matrix; nothing blocks them from working while missing it (soft-flag by design, not an oversight). Worth a look if Royce wants a harder rule for SKS specifically. _(added 2026-08-19)_
 - **A reported roster-grid "alignment" issue (one person's row looked off) couldn't be reproduced from the code** — most likely just placeholder text in blank cells reading like real data at a glance, not an actual bug, but left open rather than guessed at. _(added 2026-08-19)_
@@ -119,8 +120,7 @@ _Showing 15 of 120 · full record in [sessions/](sessions/)_
 - **Deactivate the two stale site rows in ehow** — `Erilyan` (`site_id 6c221319…`, code EC6) and `Microsoft SYD27` (`site_id 7fb2d662…`, code SYD27). Single-column `active=false` flip each, no code change, no deploy — Royce hasn't given the explicit go to execute it yet. _(added 2026-08-14)_
 - **~7 SKS staff missing from EQ Field's staff table** (hired since the 5 Jul snapshot): Ahmed Masaud, Amir Farid, Callum Treharne, Jhon Jairo Velasquez Meneses, Nabeel Hussain, Paul Bolger, Timothy Sue — plus a handful of name-string mismatches (e.g. "Bruno Pedrosa" vs "Bruno Vita Pedrosa", "Jose Quintanilla" vs "Jose Luis Quintanilla Rodriguez"). Royce said he'll manage this himself via EQ Field's People admin. _(added 2026-08-14)_
 - **Leave sync parked deliberately** — an imported leave code lands on `schedule_entries.leave_type` directly, not in `app_data.leave_requests`, so it displays but carries no approver/audit trail. Royce explicitly scoped this session to roster only; leave is its own future task. _(added 2026-08-14)_
-- **Richard needs to re-add his LV Rescue photo** — none of the 6 attempts ever actually captured one; the surviving row has the licence details but no photo. _(added 2026-08-13)_
-_…and 72 more · [sks/pending.md](sks/pending.md)_
+_…and 73 more · [sks/pending.md](sks/pending.md)_
 
 ## Queue health
 
@@ -128,7 +128,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1566 | 174 / 69 | 180 | 44 |
+| [eq-shell](eq/pending/eq-shell.md) | 1576 | 175 / 70 | 182 | 44 |
 | [eq-cards](eq/pending/eq-cards.md) | 396 | 40 / 13 | 41 | 8 |
 | [eq-field](eq/pending/eq-field.md) | 804 | 98 / 27 | 49 | 15 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 644 | 72 / 25 | 87 | 20 |
@@ -139,9 +139,9 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | [eq-context](eq/pending/eq-context.md) | 232 | 23 / 3 | 25 | 5 |
 | [cross-repo](eq/pending/cross-repo.md) | 958 | 142 / 42 | 23 | 40 |
 | [sks](eq/pending/sks.md) | 53 | 3 / 5 | 0 | 6 |
-| [SKS](sks/pending.md) | 467 | 82 / 12 | 6 | 25 |
+| [SKS](sks/pending.md) | 474 | 83 / 13 | 7 | 25 |
 | [SKS active](sks/active.md) | 108 | 0 / 0 | 0 | 0 |
-| [OPS](ops/pending.md) | 506 | 42 / 3 | 0 | 1 |
+| [OPS](ops/pending.md) | 513 | 43 / 3 | 0 | 1 |
 
 ## Aging open items (45d+, unconfirmed)
 
@@ -199,4 +199,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-23 04:54 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-23 05:16 UTC._
