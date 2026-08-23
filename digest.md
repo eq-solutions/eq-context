@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-23 19:29 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-23 19:31 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-23 12:28 UTC → 2026-08-23 19:29 UTC)
+## Since last refresh (2026-08-23 19:29 UTC → 2026-08-23 19:31 UTC)
 
-- Merged: eq-shell [#1559](https://github.com/eq-solutions/eq-shell/pull/1559) feat(staff): show PDF/document preview in the licence review
-- Merged: eq-shell [#1540](https://github.com/eq-solutions/eq-shell/pull/1540) fix(staff): resolve the 7 divergent staff/shell login names 
-- Merged: eq-shell [#1537](https://github.com/eq-solutions/eq-shell/pull/1537) fix(staff): sync staff record name into the linked Shell log
-- Merged: eq-shell [#1535](https://github.com/eq-solutions/eq-shell/pull/1535) fix(security): role-gate + self-approval check on approve_sa
-- Merged: eq-shell [#1534](https://github.com/eq-solutions/eq-shell/pull/1534) fix(security): entity-role-gate quote delete/line-item RPCs 
-- Merged: eq-shell [#1532](https://github.com/eq-solutions/eq-shell/pull/1532) feat(drift-guard): CHECK 10 -- positive assertion for INTENT
-- Merged: eq-shell [#1528](https://github.com/eq-solutions/eq-shell/pull/1528) fix(chunk-loading): catch chunk-load failures that bypass Ch
-- Merged: eq-solves-service [#806](https://github.com/eq-solutions/eq-service/pull/806) fix(migrations): rename colliding 0192 migration to 0228
+- Merged: eq-shell [#1560](https://github.com/eq-solutions/eq-shell/pull/1560) feat(staff): show pending labour-hire credentials on the Sta
+- Merged: eq-shell [#1542](https://github.com/eq-solutions/eq-shell/pull/1542) fix(auth): close 2nd blank-name gap in phone-OTP cards-appro
+- Merged: eq-shell [#1541](https://github.com/eq-solutions/eq-shell/pull/1541) fix(security): DB-layer role gate on app_data.sites writes (
+- Merged: eq-shell [#1539](https://github.com/eq-solutions/eq-shell/pull/1539) feat(quotes): own-quotes-only row scoping via new quotes.vie
+- Merged: eq-shell [#1538](https://github.com/eq-solutions/eq-shell/pull/1538) fix(security): use actor identity in timesheet/leave guard s
+- Merged: eq-shell [#1536](https://github.com/eq-solutions/eq-shell/pull/1536) fix(equipment): drop custodian wording, show assigned person
+- Merged: eq-shell [#1533](https://github.com/eq-solutions/eq-shell/pull/1533) Incident: restore anon SELECT on shell_control.eq_schema_reg
+- Merged: eq-shell [#1530](https://github.com/eq-solutions/eq-shell/pull/1530) Incident: restore anon's pre-login bootstrap read on public.
 
 ## ⚠ Needs you (8)
 
@@ -54,7 +54,7 @@ _…and 195 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 3 | 0d |
+| eq-shell | ✓ success | 0d ago | 2 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 2 | 3d |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 1 | 0d |
@@ -78,6 +78,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-23 | eq-shell | [#1560](https://github.com/eq-solutions/eq-shell/pull/1560) feat(staff): show pending labour-hire credentials on the Staff li |
 | 2026-08-23 | eq-shell | [#1559](https://github.com/eq-solutions/eq-shell/pull/1559) feat(staff): show PDF/document preview in the licence review moda |
 | 2026-08-23 | eq-shell | [#1547](https://github.com/eq-solutions/eq-shell/pull/1547) docs(security): correct stale mint-supabase-jwt carve-out claim ( |
 | 2026-08-23 | eq-shell | [#1555](https://github.com/eq-solutions/eq-shell/pull/1555) fix(identity): push date_of_birth/address_* upward; receive Field |
@@ -92,7 +93,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-23 | eq-shell | [#1546](https://github.com/eq-solutions/eq-shell/pull/1546) fix(security): close GM Reports' direct-API bypass, correct destr |
 | 2026-08-23 | eq-shell | [#1545](https://github.com/eq-solutions/eq-shell/pull/1545) fix(security): staff_conversations RLS never re-gated who may wri |
 | 2026-08-23 | eq-shell | [#1544](https://github.com/eq-solutions/eq-shell/pull/1544) fix(identity): enforce the control-layer-wins rule — lock bypass, |
-| 2026-08-23 | eq-shell | [#1543](https://github.com/eq-solutions/eq-shell/pull/1543) fix(auth): correct #1542's client + close self-join name gap |
 _Showing 15 of 118 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -200,4 +200,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-23 19:29 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-23 19:31 UTC._
