@@ -58,7 +58,7 @@ jobs:
           fi
 
           has_run=$(gh api "repos/$REPO/actions/workflows/md-health.yml/runs?branch=main&per_page=10" \
-            --jq --arg sha "$sha" '[.workflow_runs[] | select(.head_sha == $sha)] | length')
+            | jq --arg sha "$sha" '[.workflow_runs[] | select(.head_sha == $sha)] | length')
 
           if [ "$has_run" -eq 0 ]; then
             echo "main tip $sha has no md-health run after ${age}s — re-firing."
