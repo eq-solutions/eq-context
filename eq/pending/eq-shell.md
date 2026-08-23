@@ -60,7 +60,8 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 **Deferred:**
 - [ ] **`20260816_timesheets_leave_own_crew_write.sql`'s identity-helper bug** — flagged as `task_c6df5631`, in progress in a separate session as of this entry. _(added 2026-08-23)_
-- [ ] **None of the 5 staged migrations have been dispatched** — they're now visible to the fleet runner but nothing has been applied to ehow or zaap. Dispatching each (with the correct `--slug`) remains explicitly Royce's call. _(added 2026-08-23)_
+- [x] **`0262` (PR #753/SEC-37, zaap) dispatched** — a different session (this one) hit a real plane-scope-guard bug blocking the dispatch (see the PR #1516 section below), fixed it (PR #1524), then dispatched `--slug=eq` successfully and verified live. Full detail in `ops/security-register.md` (SEC-37) and today's session log.
+- [ ] **`0258`-`0261` (the 4 ehow-only migrations) still not dispatched** — dispatching each (with `--slug=<tenant>` matching its declared plane) remains explicitly Royce's call. _(added 2026-08-23, narrowed from "none of the 5" — one of the five is now done)_
 
 ---
 
