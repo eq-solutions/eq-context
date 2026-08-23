@@ -13,6 +13,24 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: access-control sweep — 2 more live gaps found and closed (staff conversations, GM Reports financial data) (2026-08-23)
+*Direct follow-up to the quotes-ownership session below: Royce asked to "complete the full sweep" and separately flagged the bigger goal — customizable per-role/per-person visibility everywhere, including staff records.*
+
+- [x] **Ran the sweep across Equipment, GM Reports, and Staff's own RPCs** (3 parallel background agents) — the areas not already covered by this session's Ops work or by prior sessions' Intake/Documents/AI/Admin-nav audits.
+- [x] **Found and fixed: `app_data.staff_conversations` had no write-side permission check at all.** History check first (0242→0250→0251) showed 0251 wasn't a regression — it correctly converged reads to creator-only per Royce's own explicit 2026-08-19 call. What was actually missing: writes never got a permission check back. Fix: one policy, tenant + creator + `staff.manage_conversations`, ANDed — can't reproduce 0251's old OR-permissive bug since it's a single policy. eq-shell migration `0268`, [PR #1545](https://github.com/eq-solutions/eq-shell/pull/1545), squash-merged (`6e9726ff`), confirmed live.
+- [x] **Found and fixed: GM Reports' financial/invoice/forecast tables had a direct-API bypass.** This module never adopted the RPC pattern used everywhere else — confirmed via grep that nothing legitimate reads these tables directly, so a straight `REVOKE` (same shape as the Suppliers-credentials fix) closed it with zero effect on real behaviour. Also fixed the archive/delete action, which was checking the wrong permission key (`reports.upload` instead of `reports.manage`) — harmless today, would have been a real gap the moment someone was granted upload-only access. eq-shell migration `0269`, [PR #1546](https://github.com/eq-solutions/eq-shell/pull/1546), squash-merged (`12bdbc01`), confirmed live.
+- [x] **Confirmed Equipment's `app_data.assets` has the identical gap-shape as the Records gap already flagged** — same root cause (EQ Service's `security_invoker` view depends on the same grant). Asked Royce whether this recurrence changes the earlier "leave it" call — confirmed: leave both as-is for now.
+- [x] **"Customizable everywhere" — answered with evidence, not a proposal.** The skeleton already exists and works (Custom Groups + no-default permission keys + JWT-claims checks embedded in RLS/RPCs) — `staff.manage_teams` is a complete, correctly-wired example today. The gap is inconsistent wiring across surfaces, not a missing system.
+- [x] **One flagged anomaly, not acted on**: the GM Reports audit agent's live database query returned content shaped like it might be an instruction — the agent correctly treated it as data and ignored it. Surfaced to Royce; not investigated further this session.
+
+**Deferred:**
+- [ ] **Equipment's smaller findings** (an asset-edit write path with looser scoping than its dedicated endpoint; two independently-maintained permission matrices — `entity.edit` and `equipment.edit` — currently aligned by coincidence, not design; view-only roles seeing live Archive/Delete buttons client-side) — reported, not individually confirmed or fixed. _(added 2026-08-23)_
+- [ ] **`ai.use` and `service.do_work`** — the other 2 keys from the 2026-08-16 "new keys awaiting enforcement" batch, still unenforced. Untouched this session, pre-existing. _(added 2026-08-23)_
+- [ ] **Not click-tested live** — both new fixes verified via live grants/policy queries and full CI, not an actual signed-in non-permission-holder attempting either blocked action. _(added 2026-08-23)_
+- [ ] **The bigger "should EQ Service get its own role-aware DB layer" question** — declined again this session, same reasoning as before. Revisit only if a third instance of the same gap-shape shows up. _(added 2026-08-23)_
+
+---
+
 ## eq-shell: quotes ownership scoping built — own-quotes-only for Employees; a Records DB gap found and deliberately left alone (2026-08-23)
 *Started as a nav-bar access-control question (screenshot of the Access Control admin page, SKS Technologies workspace), broadened to "what security controls do we have on Records... and can we limit Ops so a user only sees quotes they created."*
 
@@ -26,7 +44,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 - [x] **Migration dispatched to both ehow and zaap** — found already applied (ledger timestamps ~7 min after merge, before Royce's explicit dispatch request arrived) by a concurrent fleet-wide dispatch that also picked up an unrelated PR's same-window migration. Confirmed live via direct function-body inspection on both planes (`v_can_view_all` present in `eq_list_quotes`/`eq_get_quote_detail`), not just the ledger row.
 
 **Deferred:**
-- [ ] **Systematic RPC-by-RPC inventory** (which Ops/Shell surfaces have role/field/row-level checks, which don't) — recommended in the `/decide` pass, not started. _(added 2026-08-23)_
+- [x] **Systematic RPC-by-RPC inventory — run same day, see the new section directly above.** Covered Equipment, GM Reports, and Staff's own RPCs; found and closed 2 more live gaps. _(resolved 2026-08-23)_
 - [ ] **No server-side `quotes.view` check exists** on `eq_list_quotes`/`eq_get_quote_detail` — any authenticated tenant member can still call them directly regardless of role. Royce chose to build ownership scoping first over closing this. _(added 2026-08-23)_
 - [ ] **Quote status/notes write RPCs** (`eq_update_quote_status`, `eq_add_quote_note`) — not verified live for role checks this session. _(added 2026-08-23)_
 - [ ] **45 of 199 live quotes on ehow predate `created_by`** and stay invisible to own-only viewers (still visible to Manager/Supervisor) — not backfilled, no reliable source to attribute them from. _(added 2026-08-23)_
