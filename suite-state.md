@@ -60,12 +60,12 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-23)
 
-**eq-cards:**
-- #290 fix(migrations): correct 0135's internal self-references (were still 0134)
-
 **eq-service:**
 - #805 fix(security): IPv6-bracket bypass in isSafeFetchUrl's SSRF guard
 - #791 fix(reports): make reissuing a report possible from the UI
+
+**eq-shell:**
+- #1537 fix(staff): sync staff record name into the linked Shell login
 
 ---
 
