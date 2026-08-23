@@ -64,7 +64,7 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
-- #1537 fix(staff): sync staff record name into the linked Shell login
+- #1538 fix(security): use actor identity in timesheet/leave guard self-checks
 
 ---
 
@@ -74,7 +74,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ? in_progress |
+| eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
