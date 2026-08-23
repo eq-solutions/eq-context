@@ -13,6 +13,19 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: Field-wide outage — canonical anon-read regression fixed, boot hardened against slow-fetch failures (2026-08-23)
+*Royce reported Field "could not connect to this workspace" through Core. Investigated live rather than assuming Field-side; the first fix built (boot fetch retry/timeout hardening) turned out NOT to be the actual cause of the outage — caught by insisting on a live deploy-preview smoke test even after CI passed, before reporting it fixed.*
+
+- [x] **Real root cause: jvkn's `public.organisations` anon SELECT grant had been silently dropped** — the same class of grant-drift regression this repo's own CLAUDE.md already documents for `field_people` (a `CREATE OR REPLACE VIEW`/grant-reset side effect), just never previously caught happening to `organisations` itself. Field's own boot fetches this table directly with the anon key; with the grant gone, every Field boot 401'd, tenant-wide, both tenants. Fixed live on jvkn — full detail in `eq/pending/eq-shell.md` (2026-08-23), including the new CI guard against recurrence. _(fixed 2026-08-23)_
+- [x] **Boot fetch retry/timeout hardening shipped anyway** (`scripts/app-state.js`, eq-field [PR #758](https://github.com/eq-solutions/eq-field/pull/758), v3.5.545) — `loadTenantConfig()`'s three boot fetches each had a single hard timeout with zero retry, genuinely fragile, just not what caused this specific incident. Kept as independent hardening rather than discarded once the real cause was found — said so plainly in the PR rather than letting the wrong diagnosis stand uncorrected.
+- [x] **Leave visibility fail-open closed for unassigned/unresolved supervisors** (eq-field [PR #756](https://github.com/eq-solutions/eq-field/pull/756)) — merged in the same batch as #758; hit a real merge conflict against it (both PRs appended to `docs/reflection-log.md` at the same spot), resolved via rebase, re-verified, re-pushed.
+- [ ] **Not verified live**: the boot-hardening retry path itself has never actually fired for real — the underlying fetch hasn't failed again since it shipped. Confirmed the happy path boots clean end-to-end, not the retry path itself. _(added 2026-08-23)_
+
+## eq-field: Contacts/Roster/Timesheets team-pill filter didn't account for supervisors (Rhys Scott) (2026-08-23)
+*Full detail in `sks/pending.md` (2026-08-23) — SKS-side pointer here since Teams is an SKS-only feature and the report was real live SKS data.*
+
+- [x] **eq-field [PR #759](https://github.com/eq-solutions/eq-field/pull/759) (v3.5.546)** — `personInActiveTeam()` (`scripts/teams.js`) now also passes a person through when they supervise a selected team, not just when they're a plain member of it. Merged, confirmed live.
+
 ## eq-field: 3 pre-convention single-plane migrations retrofitted with the structured `-- Plane:` header (2026-08-23)
 *Companion to eq-shell's new plane-scope guard (`eq/pending/eq-shell.md`, same date) — these 3 migrations already stated "ehow (SKS) ONLY" in prose but predated the machine-readable header convention the new guard reads.*
 

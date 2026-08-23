@@ -9,6 +9,14 @@ status: live
 
 # SKS Pending
 
+## Contacts/Roster/Timesheets team-pill filter didn't account for supervisors — real report (Rhys Scott), general fix shipped (2026-08-23)
+*Royce: "why doesn't Rhys Scott appear in the contacts list" then, once the first answer (suggesting a hard refresh) didn't hold up — "doesn't make sense... drill into this." Right to push back: the real cause was a stuck filter, not something a refresh clears.*
+
+- [x] **Root cause confirmed live, not guessed**: Rhys Scott's own record satisfies every condition EQ Field's Contacts view filters on (active, approved) and clears the one relevant access-control policy — the actual cause is a team-pill filter in Contacts/Roster/Timesheets that only ever checked who's a *member* of a team, never who *supervises* one. Rhys runs no team and belongs to none, so any specific team pill hides him; a colleague who's a plain team member showed fine, which is what made it look inconsistent.
+- [x] **General fix shipped, not just Rhys's case**: any supervisor who runs a crew without also being added as a member of it was invisible the moment anyone filtered to that specific team, across all three screens. eq-field [PR #759](https://github.com/eq-solutions/eq-field/pull/759) (v3.5.546), merged, confirmed live.
+- [ ] **Doesn't change what shows for Rhys specifically today** — he supervises zero teams too, so he's only reachable via "All" or "Unassigned" in the team-pill filter until/unless he's actually assigned to a team. Worth Royce's call on whether he should be. _(added 2026-08-23)_
+- [ ] **Not verified live by a person** — the specific pill-click behavior needs a real Core+SKS session to exercise (Teams is SKS-only, gated behind Core auth, not reachable from a standalone deploy-preview session). Confirmed the fix mirrors an already-shipped, working code pattern (the crew-supervisor picker), not watched working fresh. _(added 2026-08-23)_
+
 ## ehow RLS gap — 26 SKS tables were readable/writable cross-tenant, now closed (2026-08-23)
 *Fix landed on the eq-field side — see `ops/pending.md` (2026-08-23, "ehow (SKS canonical) hardcoded-org_id RLS sweep") for full detail. This entry is the SKS-side pointer.*
 

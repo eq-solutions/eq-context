@@ -13,6 +13,17 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: jvkn `organisations` anon-read regression fixed live + a permanent drift guard against it recurring (2026-08-23)
+*Found investigating an EQ Field-wide outage (Royce: "field isnt loading... could not connect to this workspace"). Root cause: anon's SELECT grant on `public.organisations` had been silently dropped — the exact "grant-drift" failure mode eq-field's own CLAUDE.md already documents for `field_people`, just never previously caught happening to `organisations` itself. The regression was several weeks old and invisible to existing tooling the whole time.*
+
+- [x] **`public.organisations` anon grant + RLS policy restored on jvkn** — two-part fix, found incrementally: the grant alone (6 non-sensitive columns — id/name/slug/branding/hostname/accepts_applications, never the routing secrets) turned out insufficient; a live re-check found the RLS policy layer had drifted too, fixed right after. eq-shell `supabase/migrations/2026_08_23_restore_organisations_anon_bootstrap_read.sql`, applied + verified live. _(fixed 2026-08-23)_
+- [x] **Root cause of why nothing caught it for weeks**: the existing tenant-drift CI guard checks `information_schema.role_table_grants`, which is structurally blind to column-scoped grants (`GRANT SELECT (col1,col2) ON ...`) — only visible via `information_schema.column_privileges`. Confirmed by direct empirical test against live jvkn, not assumed. (Also tried `has_table_privilege()` as an alternative check — empirically returns `false` even with real column grants present; a dead end, abandoned.)
+- [x] **New CHECK 10 in `check-tenant-drift.mjs`** — a positive assertion (not just an exclusion list) that every table on the new `INTENTIONAL_ANON_READ_COLUMNS` allow-list still has its expected anon columns reachable, checking both the grant and a live `anon`-scoped PERMISSIVE policy. eq-shell [PR #1532](https://github.com/eq-solutions/eq-shell/pull/1532). Scoped deliberately narrow — anon-only, cannot reopen the SEC-31 cross-tenant `authenticated` gap (RLS policies are role-scoped by their `TO` clause; an `authenticated` session never evaluates an `anon`-scoped policy). _(added 2026-08-23)_
+- [x] **A second, identical live instance found while verifying CHECK 10**: `shell_control.eq_schema_registry` had the same anon-grant gap. Fixed same day, eq-shell [PR #1533](https://github.com/eq-solutions/eq-shell/pull/1533). _(fixed 2026-08-23)_
+- [x] **All 3 PRs (#1530/#1532/#1533) merged and confirmed live** — verified via commit ancestry against the actual serving production deploy, not just merge success (a concurrent, unrelated PR's build landed in between and briefly served ahead of these three — the documented concurrent-merge behavior working as expected, not a failure). _(confirmed live 2026-08-23)_
+
+---
+
 ## eq-shell: chunk-load errors now self-heal even when they bypass the error boundary — fixed + live (2026-08-23)
 *The reported issue (Sentry EQ-SHELL-1S, escalating — 37+ events/4+ users on the admin pages) had already been "fixed" once, 2026-08-20, PR #1483 — that fix was real but only closed one of two separate causes feeding the same Sentry issue; this session found and closed the second, unrelated one.*
 
