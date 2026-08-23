@@ -13,6 +13,23 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: SKS roster editing found broken for 5 days — trigger silently dropped by migration 0249, fix drafted (2026-08-23)
+*Investigating eq-field's SKS roster-edit write path started as a permissions question (does `authenticated` have a hidden grant, or is the door correctly closed?) and surfaced a bigger, different answer — the write mechanism itself was gone, not a permissions ambiguity.*
+
+- [x] **Root-caused live**: `0249_field_people_view_parity` (2026-08-18) recreated `app_data.field_people` (`DROP VIEW` + `CREATE VIEW`) to fix a zaap/ehow column-parity gap. Its safety check only looked for other *views* depending on the target — missed that the `DROP` also destroys any trigger on it. Silently deleted both the `field_people_iud` INSTEAD OF trigger and the INSERT/UPDATE/DELETE grants that made the view writable at all — its closing statement only restored `SELECT`. Confirmed via `pg_trigger` (0 rows), `has_table_privilege` (write grants all false), and a real user's failed PATCH in `postgres_logs` (`cannot update column "archived" of view "field_people"`, 2026-08-23T02:57:52Z).
+- [x] **Impact confirmed**: add/edit person, archive/reactivate, and new-person creation have been silently failing for SKS since 2026-08-18. `archivePersonInSB`'s caller swallows the rejection with a client-side rollback and no visible error, which is almost certainly why nobody reported it. `field_people_removed` (the archived-roster twin) was untouched and still works.
+- [x] **Corrected a parallel session's (eq-shell-82) working theory** — a plausible but wrong PostgREST-schema-cache explanation for the one real 400 in the logs — with the actual `postgres_logs` entry, and coordinated with a third session (eq-shell-16, PR #1550) that had independently found the same "no role check on active/archived" gap. No code overlap confirmed: different write paths, safe to land in either order.
+- [x] **Fix drafted**: `0270_field_people_iud_trigger_reattach.sql` — restores the trigger + grants exactly as they were, and (Royce's explicit call: bundle both) closes two permission gaps found in the same function: `active`/`archived` had no server-side role check at all (any authenticated tenant member could deactivate a colleague), and `field_approved` was hardcoded `true` on insert with no manager gate. Both now key on `field.manage_people`, matching the client-side `canManagePeople()` check. ehow-only via the repo's `-- Plane:` header.
+- [ ] **Not yet committed/PR'd** — the git commands to commit + push + open the PR were blocked by this session's auto-mode permission classifier even after Royce approved the approach. Handed Royce the exact commands to run himself; unconfirmed as of session close whether he has.
+- [ ] **Dispatch explicitly gated** — once merged, `tenant-migrate.yml --slug=sks` still needs Royce's separate, explicit go (production PII write path, same bar as an auth change).
+
+**Deferred:**
+- [ ] **Confirm the PR actually exists** and, once merged, that it's dispatched — unverified as of session close. _(added 2026-08-23)_
+- [ ] **Post-merge**: confirm `tenant-migrate.yml`'s plan job shows this applying to ehow only, skipped on zaap, before dispatching. _(added 2026-08-23)_
+- [ ] **Post-dispatch**: click-test a real SKS roster edit (add/edit/archive/reactivate) end-to-end — nothing in this fix has been click-tested live. _(added 2026-08-23)_
+
+---
+
 ## eq-shell: identity ownership rule enforced — lock bypass, upward-write gap, jvkn phone normalisation (PR #1544) (2026-08-23)
 *Ownership rule ratified by Royce and recorded in [`IDENTITY-MODEL.md` §3.3](../identity/IDENTITY-MODEL.md): the control layer (jvkn) owns who a person IS; a tenant plane reflects that and owns only the employment relationship. Full build detail in `eq/changelog/eq-shell.md` (2026-08-23).*
 
