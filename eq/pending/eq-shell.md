@@ -23,14 +23,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ---
 
 ## eq-shell: staff deactivation wasn't revoking Shell logins — 9 real accounts found + fixed, PR #1550 merged + live (2026-08-23)
-*Started as a data-hygiene check on one flagged orphaned-looking row from an earlier session — turned out not to be an orphan at all, but chasing it down surfaced a real, bigger gap.*
 
-- [x] **`01c1bc13...` (jvkn) investigated and closed**: not actually an orphan — its `tenant_id` resolves fine against the FK-authoritative `shell_control.tenants`; `public.tenants` (a same-name, different-schema decoy) is what made it look orphaned, 3rd instance of that trap class on jvkn. Real story: a genuine phone-OTP signup whose auto-provisioned stub never got its phone copied down and never wrote an audit row. Royce's call: deactivate, not delete — done, including revoking its live GoTrue session + 2 outstanding refresh tokens (the flag alone doesn't kill an already-issued credential).
-- [x] **Luke Johnson (`524c3d6d...`) checked**: a real self-join user, not a stub. His `app_data.staff` record went inactive 2026-08-20 but his Shell login stayed fully live for 3 more days until Royce closed it himself 2026-08-23 — exposed that the two "active" flags (staff record vs. Shell login) have no propagation between them.
-- [x] **Broader sweep found 8 more real accounts** in the identical stuck state (live sessions, outstanding refresh tokens) — all backfilled + revoked live same day.
-- [x] **PR #1550 shipped the real fix**, two layers: a direct hook on the Shell Staff-page save path, plus a 15-minute scheduled sweep that also catches EQ Field's own "Remove from roster" archive action (which reaches `app_data.staff` through a view + trigger, no Netlify function in the loop to hook synchronously). Merged by Royce directly; confirmed live against the actual production deploy commit (`6e7d0692`), not just the merge status.
-
-**Deferred:**
 - [ ] **Reactivating staff does NOT restore Shell access** — deliberate, one-directional by design, same "revoke, not ban" reasoning as deactivation itself. _(added 2026-08-23)_
 
 ---
