@@ -13,6 +13,18 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: Staff list showed "None recorded" for approved-but-unclaimed labour-hire candidates, indistinguishable from having nothing on file — fixed (2026-08-23)
+*Direct follow-up to the same day's compliance-pack Pending-section work: Royce, from a screenshot of the Staff list, pointed out that Conor Horgan and Nelson Sareto both show "None recorded" in the Licences column even though each has 4 real uploaded credentials pending — a manager scanning the list has no way to tell that apart from someone with genuinely nothing on file, without opening the row.*
+
+- [x] **Threaded `pendingLicByStaff`** (already computed in the parent component for the per-person detail view built earlier today) into both list renderers — `StaffList` (desktop table) and `MobileStaffList` — as a new prop, same pattern as the existing `licByStaff`.
+- [x] **Extended `LicChips`'s empty state**: when a row has zero confirmed licences AND pending credentials exist, shows "N uploaded — not signed up to Cards yet" (styled to match the existing "Not signed in" Login-column convention) instead of the generic "None recorded". Genuinely licence-free people are unaffected — pending-candidate and confirmed-licence are mutually exclusive states by construction (a pending row only exists while `user_id IS NULL`, which is exactly when `licences.user_id` can't have a row yet either).
+- [x] eq-shell [PR #1560](https://github.com/eq-solutions/eq-shell/pull/1560), merged (`72852dcd`) on Royce's explicit "yes, merge it," confirmed live via the deploy reaching `state: ready` (published 19:38:54, not just merge status).
+
+**Deferred:**
+- [ ] **Not click-tested live** — verified via the deploy's exact commit match, not by anyone actually opening `core.eq.solutions/sks/staff` and looking at Conor's/Nelson's rows. _(added 2026-08-23)_
+
+---
+
 ## eq-shell: Zemi Asri's driver licence invisible after identity merge — missing org_membership row found, fixed, guard shipped + merged + live (2026-08-23)
 
 - [ ] **Guard's first real firing not yet confirmed** — `check-missing-org-memberships.ts` fires for the first time 2026-08-23 21:50 UTC; a one-time claude.ai cloud routine (with Sentry + Supabase access) is scheduled to check the actual alert against the documented baseline (`stale_grants=12`, `invisible_licences=0`, `at_risk=0`) at 08:00 AEST tomorrow. Not yet run as of this entry. _(added 2026-08-23)_
