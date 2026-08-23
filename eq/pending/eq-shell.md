@@ -68,12 +68,11 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 - [x] **Root cause confirmed live, three layers deep**: (1) both candidates' invites went unclaimed — approved 33 min before PR #1513's auto-send-claim-email fix went live, so no email ever sent; (2) even once claimed, the claim link (`shellJoinUrl()`) routes through `shell-join-tenant.ts`, which links the account correctly but never promotes `worker_credentials` into `public.licences` — that promotion loop only ever existed inside `eq_cards_claim_invite`, a separate Postgres RPC used by the Cards app's own claim flow; (3) confirmed concretely, not just by code reading: 0 of 8 `worker_credentials` rows in the entire database had ever been promoted — all 8 belonging to these two candidates.
 - [x] **Fixed**: ported the same promote-or-update loop from `eq_cards_claim_invite` into `shell-join-tenant.ts`. eq-shell [PR #1517](https://github.com/eq-solutions/eq-shell/pull/1517), squash-merged (`4231788f`), confirmed live via exact Netlify `commit_ref` match, on Royce's explicit "merge."
-- [x] **Companion gap flagged and spun off**: `accept-invite.ts` (Shell's other claim door — desktop email+PIN) has the identical gap. Spawned as a background task; produced eq-shell [PR #1519](https://github.com/eq-solutions/eq-shell/pull/1519) (open, not merged).
+- [x] **Companion gap flagged and spun off**: `accept-invite.ts` (Shell's other claim door — desktop email+PIN) has the identical gap. Spawned as a background task; produced eq-shell [PR #1519](https://github.com/eq-solutions/eq-shell/pull/1519), squash-merged, confirmed live via Netlify deploy polled to `state: ready` (not just merged), on Royce's explicit "merge it."
 
 **Deferred:**
-- [ ] **eq-shell PR #1519** (accept-invite.ts companion fix) — open, not merged. Needs Royce's review/merge call. _(added 2026-08-23)_
 - [ ] **Royce still needs to click Resend for Conor Horgan and Nelson Sareto** (`core.eq.solutions/admin/workers`) — the fix only fires on claim; nothing promotes until they actually verify. _(added 2026-08-23)_
-- [ ] **Not click-tested live** — verified via `tsc -b --force`, eslint, and exact commit-ancestry against the live deploy, not an actual claim walked through by a person. Worth confirming once Conor or Nelson claims. _(added 2026-08-23)_
+- [ ] **Not click-tested live, either claim door** — both #1517 (Shell-join) and #1519 (accept-invite.ts) verified via `tsc -b --force`/eslint and exact commit-ancestry against the live deploy, not an actual claim walked through by a person. Worth confirming once Conor or Nelson claims. _(added 2026-08-23)_
 
 ---
 
@@ -125,12 +124,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 **Deferred:**
 - [ ] **Not click-tested live** — verified via typecheck/lint/376 tests and confirmed production deploys (exact commit match) for both PRs, not an actual admin session. Worth two minutes: open the Reference library (should show 16 documents, not 44) and try "Push to more people" on an existing Register document. _(added 2026-08-20)_
-
----
-
-## eq-shell: 2 more orphaned pages removed (Field roster + Shell licence OCR) — built, merged, confirmed live (2026-08-20)
-
-- [ ] **Storage browser (`/storage`) has zero nav link anywhere, confirmed still true** — its open-to-all-roles access is your own 2026-08-16 call. Asked what it's for: a generic empty per-tenant file bucket, nothing currently writes to it. Real open question whether it's worth keeping findable or retiring — no lean given either way. _(added 2026-08-20, needs your call)_
 
 ---
 
@@ -207,7 +200,6 @@ _(recovered from an unpopped stash 2026-08-20 — never made it into this file a
 
 **Deferred:**
 - [ ] **Not clicked through live** — confirmed by typecheck, the permission-drift guard, and a direct jvkn query proving the Comms fix is a no-op today, not by an actual signed-in click-through. Worth two minutes on NSW Comms, the Ops tile as apprentice/labour_hire/subcontractor, and the mobile Reports row. _(added 2026-08-19)_
-- [ ] **Storage browser (`/storage`) has no nav link anywhere** — reachable only by typing the URL. Its open browse/download for all roles is your own earlier call (2026-08-16), not revisited; just noting it's undiscoverable from any menu. _(added 2026-08-19)_
 
 ---
 
