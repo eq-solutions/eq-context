@@ -65,6 +65,7 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
+- #1552 fix(equipment): hide Archive/Delete bulk actions from view-only roles
 - #1547 docs(security): correct stale mint-supabase-jwt carve-out claim (SEC-51)
 
 ---
