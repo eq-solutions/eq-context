@@ -60,11 +60,17 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-23)
 
+**eq-cards:**
+- #294 fix(security): key licence-photos RLS off the current licences row, not the frozen path
+- #293 fix(identity): stop overwriting employment_type; make the SKS hardcode safe
+
 **eq-service:**
 - #806 fix(migrations): rename colliding 0192 migration to 0228
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
+- #1555 fix(identity): push date_of_birth/address_* upward to canonical too
+- #1553 fix(field-people): close 4 role-check gaps on field_people_iud + field_people_removed_iud (0270)
 - #1547 docs(security): correct stale mint-supabase-jwt carve-out claim (SEC-51)
 
 ---
