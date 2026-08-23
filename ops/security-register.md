@@ -60,7 +60,8 @@ fails on **new** exposure while keeping the open ones visible.
 | SEC-34 | P3 | `shell_control.user_invites` on jvkn — any authenticated member of a tenant (not just admins) can read all pending invites for that tenant, incl. invitee email/phone | eq-canonical (jvkn) | OPEN — found 2026-08-20, correctly tenant-isolated (no cross-tenant leak), invite token stored hashed not raw. Low urgency. |
 | SEC-35 | P3 — hygiene, latent | 7 `app_data.field_*` views on ehow (`field_leave_requests`/`_people`/`_prestarts`/`_schedule`/`_site_diaries`/`_timesheets`/`_toolbox_talks`) carry an unused `anon` SELECT grant at the view level; underlying base tables correctly have no anon grant, so it's inert today | sks-canonical (ehow) | **OPEN — found 2026-08-20**, proved inert via 4 live anon-key probes (all 401 against the base table). Same "one stray grant arms it instantly" shape as SEC-5/SEC-27. Cleanup: `REVOKE SELECT ... FROM anon` on all 7. |
 | SEC-36 | P3 | 4 tables on zaap (`tenders`, `pending_schedule`, `tender_import_runs`, `tender_review_decisions`) have only `{anon}`-scoped policies and no anon grant exists — proved latent, but `authenticated` (which does hold a grant) has no matching policy either, so this may double as a functionality gap, not just security hygiene | eq-canonical-internal (zaap) | OPEN — found 2026-08-20. Same family as the anon-only-policy pattern already removed from sibling tables `nominations`/`tender_enrichment` (shell PR #743, 2026-07-11) — these 4 look like the same sweep missed them. |
-| SEC-37 | **CLOSED — dispatched + verified live 2026-08-23.** | `app_data.timesheets` / `app_data.leave_requests` on zaap — any authenticated tenant member (no role required) could SELECT every coworker's timesheet/leave row; tenant-only policy never referenced `staff_id` | eq-canonical-internal (zaap) | **RESOLVED.** Fix (eq-field [PR #753](https://github.com/eq-solutions/eq-field/pull/753)) dispatched via eq-shell's One Pipe (`--slug=eq`) on Royce's explicit go, independently re-verified live via direct `pg_policies`/`pg_proc` query — both RESTRICTIVE policies and both helper functions exist on zaap. See Detail for the dispatch-safety fix (eq-shell PR #1516) and a follow-on bug in that fix found + closed the same day (PR #1524). |
+| SEC-37 | **CLOSED — dispatched + verified live 2026-08-23.** | `app_data.timesheets` / `app_data.leave_requests` on zaap — any authenticated tenant member (no role required) could SELECT every coworker's timesheet/leave row; tenant-only policy never referenced `staff_id` | eq-canonical-internal (zaap) | **RESOLVED.** Fix (eq-field [PR #753](https://github.com/eq-solutions/eq-field/pull/753)) dispatched via eq-shell's One Pipe (`--slug=eq`) on Royce's explicit go, independently re-verified live via direct `pg_policies`/`pg_proc` query — both RESTRICTIVE policies and both helper functions exist on zaap. See Detail for the dispatch-safety fix (eq-shell PR #1516), a follow-on bug in that fix found + closed the same day (PR #1524), and a second follow-on (SEC-38) found via this dispatch's own required CI check. |
+| SEC-38 | **CLOSED same-day 2026-08-23.** | `app_data.eq__caller_actor_uid()` / `eq__caller_actor_staff_id(uuid)` on zaap — anon-executable (Postgres's implicit PUBLIC-EXECUTE-on-CREATE default, never revoked by SEC-37's own migration) | eq-canonical-internal (zaap) | **RESOLVED.** Found live by this repo's own required Function-EXECUTE invariant check, immediately after SEC-37's fix (0262) dispatched. Not an active leak — `eq__caller_actor_uid()` resolves NULL for anon, so the staff_id lookup can never match — but closed to the intended authenticated/service_role-only posture regardless. Fix: eq-shell [PR #1529](https://github.com/eq-solutions/eq-shell/pull/1529), migration `0263`, dispatched `--slug=eq`, verified live via `has_function_privilege('anon', ..., 'EXECUTE')` = false for both. See Detail. |
 
 ## Weekend tasks (Field go-live + cutover)
 
@@ -948,6 +949,49 @@ in every mode (plan/dry-run/real) alike. Verified against the live fleet via tha
 own read-only Plan job (showed 0262 pending only for `eq`, 0258-0261 pending only for
 `sks`, each correctly skipped for the other) before merging, then the real 0262
 dispatch to `eq` succeeded immediately after.
+
+### SEC-38 — zaap actor-identity helpers anon-executable, found via SEC-37's own dispatch (P3, CLOSED)
+Found 2026-08-23, immediately after SEC-37's migration (0262) dispatched to zaap:
+this repo's own required "Function-EXECUTE invariant" CI check flagged
+`app_data.eq__caller_actor_staff_id(uuid)` as a newly anon-executable SECURITY
+DEFINER function. Root cause: Postgres grants EXECUTE to PUBLIC by default on
+`CREATE FUNCTION`, and neither SEC-37's migration (0262) nor its ehow counterpart
+(0261, still undispatched) explicitly revoked that default before granting to
+`authenticated`/`service_role` — so `anon` inherited access to both
+`eq__caller_actor_uid()` and `eq__caller_actor_staff_id(uuid)` via PUBLIC. Confirmed
+live via `has_function_privilege('anon', ..., 'EXECUTE')` = true for both, on zaap,
+before writing the fix.
+
+**Assessed exploitability, not assumed:** `eq__caller_actor_uid()` reads the JWT's
+`app_metadata.actor_id` claim, which resolves NULL for an anon caller (no valid JWT
+claims to read). `eq__caller_actor_staff_id()`'s `WHERE s.user_id = ...actor_uid()`
+can therefore never match for anon regardless of the `p_tenant_id` argument passed —
+no real `staff_id` was ever actually returned to an unauthenticated caller, despite
+the SECURITY DEFINER function technically running with elevated privileges. This
+closes an unintended-but-inert exposure to the always-intended posture, not a patch
+on an already-exploited hole.
+
+Fix: eq-shell [PR #1529](https://github.com/eq-solutions/eq-shell/pull/1529),
+migration `0263_revoke_anon_exec_actor_identity_helpers.sql` — `REVOKE EXECUTE ...
+FROM anon` + `FROM PUBLIC` for both functions, each guarded by
+`to_regprocedure(...) IS NOT NULL` so the same migration is also the correct fix for
+whenever 0261 eventually dispatches to ehow (that migration defines the identical
+two functions with the identical gap, still unapplied there as of this writing).
+Merged, dispatched `--slug=eq`, verified live:
+`has_function_privilege('anon', 'app_data.eq__caller_actor_uid()', 'EXECUTE')` and
+the `staff_id` variant both `false`; `authenticated` access to both unaffected
+(`true`, unchanged). **Note on the merge itself:** the required drift-check gate
+still showed the pre-fix live state at merge time by construction (it reads live DB
+state, and cannot go green until the fix it names is itself dispatched, which can
+only happen after merge) — merged via `--admin` to break that chicken-and-egg,
+narrowly justified because the only failing check was the exact one this PR fixes,
+confirmed by reading its output line by line before overriding, not assumed.
+
+**Process note:** SEC-4's row above already established this exact function class
+(anon-executable SECURITY DEFINER) as a real, recurring pattern in this codebase,
+not a one-off — worth treating "does my new migration explicitly revoke the PUBLIC
+default?" as a standing checklist item for any future SECURITY DEFINER function,
+rather than relying on this same CI check to catch it after the fact each time.
 
 ## Clean projects (probe + advisors, 2026-06-05)
 - eq-canonical, eq-canonical-internal, sks-canonical, eq-solves-field,
