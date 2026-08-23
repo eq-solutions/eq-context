@@ -13,6 +13,16 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: timesheet/leave self-approval bypass found + fixed + dispatched live (2026-08-23)
+*Verified a specific claim end-to-end: `eq__guard_timesheet_status`/`eq__guard_leave_status` (ehow/SKS tenant) resolve the caller's own identity via a helper that reads the JWT `sub` claim — always the tenant id on Field's data-plane JWT, never a real person — so the self-approval/self-decision check could never fire. Confirmed live via a BEGIN...rollback probe before touching anything: a supervisor (managers are deliberately exempt by design) could self-approve their own timesheet and self-decide their own leave request, unblocked.*
+
+- [x] **Fix built and verified in the same probe before writing it for real** — re-pointed both triggers at the already-live actor-identity helpers (0261). Same probe confirmed the fix blocks both cases, preserves the manager exemption, and also fixes `approved_by_user_id`/`approver_id` attribution (previously always the tenant id or never stamped). eq-shell migration `0266_timesheet_leave_guard_actor_identity_fix.sql`, [PR #1538](https://github.com/eq-solutions/eq-shell/pull/1538), merged + dispatched to ehow, confirmed live via direct query. _(fixed 2026-08-23)_
+- [x] **Same dispatch also closed SEC-47** — `0265_approve_safety_record_role_gate.sql` ([PR #1535](https://github.com/eq-solutions/eq-shell/pull/1535), merged earlier the same day) had been sitting merged-but-undispatched; flagged to Royce before dispatching since a slug-scoped run still applies everything pending for that tenant, confirmed, applied in the same run. _(fixed 2026-08-23)_
+- [x] **Citation correction** — the original ask cited SEC-38 for this finding; SEC-38 is a different, already-closed issue (anon-EXECUTE hygiene on the actor-identity helpers). The real prior art is SEC-37 plus 0265's own header, which independently flagged this exact gap same-day without closing it.
+- [ ] **No security-register entry logged yet for this finding** — flagged as a suggested follow-up, not actioned this session. _(added 2026-08-23)_
+
+---
+
 ## eq-shell: jvkn `organisations` anon-read regression fixed live + a permanent drift guard against it recurring (2026-08-23)
 *Found investigating an EQ Field-wide outage (Royce: "field isnt loading... could not connect to this workspace"). Root cause: anon's SELECT grant on `public.organisations` had been silently dropped — the exact "grant-drift" failure mode eq-field's own CLAUDE.md already documents for `field_people`, just never previously caught happening to `organisations` itself. The regression was several weeks old and invisible to existing tooling the whole time.*
 
