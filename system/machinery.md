@@ -83,13 +83,14 @@ each one needs an eviction story; `refresh_suite_state.py` had none until
 | `fix_frontmatter.py` | One-shot backfill for missing frontmatter keys. Historical. |
 | `test_pending_queue_health.py` · `test_scheduled_workflow_health.py` · `test_pending_dupes.py` | Unit tests for `refresh_digest.py`'s pure logic — queue health/scheduled-workflow counting, and possible-duplicate-pending detection. |
 
-## `.github/workflows/` — 22 workflows
+## `.github/workflows/` — 23 workflows
 
 **Gates** (block a bad merge):
 
 | Workflow | Trigger |
 |---|---|
 | `md-health.yml` — markdown style, session-start budget, prune ratchet, review clock, changelog duplicates, link check, duplicate sessions | PR + push |
+| `md-health-backstop.yml` — re-fires `md-health.yml` on the current main tip if its push trigger silently missed it (occasional GitHub event-delivery miss under this repo's push volume) | cron (~20min) |
 | `frontmatter-check.yml` — frontmatter schema + line endings | PR + push |
 | `index-drift.yml` — strict, every tier plus this file | cron + PR |
 | `adversarial-suite.yml` — the 104 guard regressions + hook tests | cron + PR + push |
