@@ -66,7 +66,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #1550 fix(security): sync staff deactivation to the linked Shell login
-- #1549 docs: sprint plan for the access-control sweep follow-up items
 - #1547 docs(security): correct stale mint-supabase-jwt carve-out claim (SEC-51)
 
 ---
