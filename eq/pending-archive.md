@@ -8710,3 +8710,14 @@ _(recovered from an unpopped stash 2026-08-20 — never made it into this file a
 
 
 ---
+
+## eq-shell: compliance pack's new "Pending" section click-tested live, confirmed correct against real data (2026-08-23) (fully closed, no open items remain)
+*Resolves the one deferred item left by the sibling "compliance pack now includes approved-but-unclaimed labour-hire candidates" entry (PR #1551) — Royce ran a real export and sent the resulting zip to inspect directly rather than just eyeballing it himself.*
+
+- [x] **Inspected the actual downloaded zip** (`SKS_Technologies_Compliance_2026-08-23 (1).zip`), not just the report of it working. `Pending (Unclaimed)/Conor_Horgan/` and `Pending (Unclaimed)/Nelson_Sareto/` each hold all 4 of their real credential files (pdf/jpg, correctly extensioned from source), matching the 8 live `worker_credentials` rows exactly — zero missing evidence.
+- [x] **Inspected `register.xlsx` directly via `exceljs`**, not just confirmed it opens. All 4 sheets present in the right order; "Pending (Unclaimed)" sheet has the correct gray header (`FF6B7280`, deliberately not the brand colour), correct banner ("2 candidates · 8 credentials on file · self-reported, unverified"), and all 8 rows with correct names/contact/credential-type/expiry/evidence data. Summary sheet's pending sub-section reads "Candidates awaiting sign-in: 2" / "Pending credentials on file: 8", visibly separated from the (zero, in this scoped export) confirmed stats above it.
+- [x] **Confirmed Royce actually exercised the exact edge case the fix was for**: the confirmed side of this export came back "0 workers · 0 licences" — he scoped the export to just these two unclaimed candidates, which is precisely the "selection is entirely pending candidates" case that used to hard-fail with "No connected workers matched the selection" before this PR relaxed those two early returns. It didn't fail; it produced a clean pending-only pack.
+
+No open items — fully closed. Full detail: session transcript, 2026-08-23 (post-close verification).
+
+---

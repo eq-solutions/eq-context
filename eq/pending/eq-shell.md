@@ -20,20 +20,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-shell: compliance pack now includes approved-but-unclaimed labour-hire candidates in a separate "Pending" section (2026-08-23)
-*Royce, right after confirming the Staff page correctly shows Conor's and Nelson's licences as "Not yet confirmed": he still needs to download their credentials in a compliance pack today, before either has signed in. The pack's entire data chain (`org_memberships` → `workers.user_id` → `licences.user_id`) requires a real claimed account, so the two of them were structurally absent from every export, not merely filtered out.*
-
-- [x] **Presented 3 real options** (build a Pending section into the export / manual per-person workaround today / wait for them to claim) — Royce chose to build it, for this pair and every future one.
-- [x] **Built a second, parallel data path** into `cards-export-licences-background.ts` pulling the same staged `worker_credentials` the Staff page's "Not yet confirmed" section already reads, rendered into a distinctly-separate "Pending (Unclaimed)" register sheet + zip folder — never merged into the confirmed sheets/folders, since this is self-reported by the candidate and unverified. Summary sheet gets its own clearly-labelled pending sub-section, kept out of the audited stats.
-- [x] **Relaxed two early-return failures** that fired when a staff-selection matched zero *confirmed* workers — no longer an error on its own, since the selection may be entirely pending candidates. Now only fails once both paths resolve and neither found anything.
-- [x] `tsc -b --force` and eslint both clean; every new Supabase column checked against live schema or copied verbatim from the already-shipped pending-licences endpoint (this repo's own `.select()`-vs-live-schema blindspot bit a sibling PR in this exact area before — #1522/#1527).
-- [x] eq-shell [PR #1551](https://github.com/eq-solutions/eq-shell/pull/1551), merged (`b264c81b`) on Royce's explicit "yes," confirmed live via the deploy reaching `state: ready` (not just merge status).
-
-**Deferred:**
-- [ ] **Not click-tested live** — no actual compliance-pack download has been run against Conor's/Nelson's real data yet. Worth running one export and checking the new "Pending (Unclaimed)" sheet + zip folder render correctly. _(added 2026-08-23)_
-
----
-
 ## eq-shell: SKS roster editing found broken for 5 days — trigger dropped by migration 0249, fixed + dispatched + merged, live (2026-08-23)
 
 - [ ] **Add, restore, and hard-delete still not click-tested live.** Edit confirmed 2026-08-23 (Royce's own manager session in the real SKS Field UI, Emergency Contact field on a real person, hard-reload-confirmed both the save and the revert — not just the post-save optimistic UI). Archive confirmed 2026-08-23 (Royce archived a real test person, "Jordan Sample," on the SKS Field Contacts page — verified via direct DB query: `active` flipped to `false` within 25 seconds of the click). Still unverified by an actual UI session: `savePersonToSB` (add), `restorePersonInSB` (restore), hard-delete.
