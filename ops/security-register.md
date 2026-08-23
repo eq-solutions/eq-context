@@ -64,8 +64,8 @@ fails on **new** exposure while keeping the open ones visible.
 | SEC-38 | **CLOSED same-day 2026-08-23.** | `app_data.eq__caller_actor_uid()` / `eq__caller_actor_staff_id(uuid)` on zaap — anon-executable (Postgres's implicit PUBLIC-EXECUTE-on-CREATE default, never revoked by SEC-37's own migration) | eq-canonical-internal (zaap) | **RESOLVED.** Found live by this repo's own required Function-EXECUTE invariant check, immediately after SEC-37's fix (0262) dispatched. Not an active leak — `eq__caller_actor_uid()` resolves NULL for anon, so the staff_id lookup can never match — but closed to the intended authenticated/service_role-only posture regardless. Fix: eq-shell [PR #1529](https://github.com/eq-solutions/eq-shell/pull/1529), migration `0263`, dispatched `--slug=eq`, verified live via `has_function_privilege('anon', ..., 'EXECUTE')` = false for both. See Detail. |
 | SEC-39 | P2 | `mint-supabase-jwt` mints a general-purpose Shell JWT with no Field-access check, and Field's `verify-shell-token` receiver checks no `source_app`/`aud` binding — chained, a Shell user whose Field access is withheld can still reach Field, for their own tenant/role only | eq-shell, eq-field | **OPEN — found 2026-08-20, reasoned not proved (needs a real session to confirm).** No tenant-crossing or role escalation — capped severity. See Detail. |
 | SEC-40 | P3 | `field.eq.solutions`'s CSP `frame-ancestors` allows all of `*.netlify.app`, not just eq-shell's actual deploy-preview pattern — any Netlify-hosted site can iframe Field | eq-field | **OPEN — found independently by two agents in the same sweep (2026-08-20).** Proved live. Tighten to the specific `*--eq-shell.netlify.app` pattern, matching Service's already-correct scope. |
-| SEC-41 | **P1 — fix ready, dry-run verified on zaap.** | `eq_delete_quote` (eq-shell) checks tenant only, no role — any authenticated user of any role can hard-delete any/all of a tenant's quotes via an existing multi-select bulk-delete button in the UI, no client gate either | eq-canonical-internal (zaap) + sks-canonical (ehow) | **OPEN — found 2026-08-20, reasoned.** 198 live quotes on ehow. Fix: eq-shell [PR #1534](https://github.com/eq-solutions/eq-shell/pull/1534), migration `0264` — gates on `entity.delete` (manager only), reusing `0245`'s helper. Dry-run verified live on zaap, zero persisted changes. **Not dispatched to zaap/ehow — separate, explicit step.** See Detail.
-| SEC-42 | **P1 — fix ready, dry-run verified on zaap.** | `eq_replace_line_items` (eq-shell) — purge-then-replace on any quote's pricing/line items, tenant-checked only, no role check, called straight from the browser (no server-side twin) | eq-canonical-internal (zaap) + sks-canonical (ehow) | **OPEN — found 2026-08-20, reasoned.** 511 live line items on ehow. Fix: eq-shell [PR #1534](https://github.com/eq-solutions/eq-shell/pull/1534), migration `0264` — gates on `entity.edit` (manager + supervisor, not `entity.delete`'s tier — this is routine quote-building, Royce's explicit call). Dry-run verified live on zaap, zero persisted changes. **Not dispatched to zaap/ehow — separate, explicit step.** See Detail.
+| SEC-41 | ~~P1~~ **CLOSED 2026-08-23.** | `eq_delete_quote` (eq-shell) checked tenant only, no role — any authenticated user of any role could hard-delete any/all of a tenant's quotes via an existing multi-select bulk-delete button in the UI, no client gate either | eq-canonical-internal (zaap) + sks-canonical (ehow) | **CLOSED.** eq-shell [PR #1534](https://github.com/eq-solutions/eq-shell/pull/1534), migration `0264`, dispatched fleet-wide via `tenant-migrate.yml` (run [32613927114](https://github.com/eq-solutions/eq-shell/actions/runs/32613927114), success). Independently re-verified live on both planes, not just the dispatch log: `eq_delete_quote`'s source now contains the `eq__assert_entity_role` call on both zaap and ehow, and a live (not dry-run) probe against production zaap confirms an `employee`-role caller is rejected with `insufficient_permission: entity.delete required`. See Detail.
+| SEC-42 | ~~P1~~ **CLOSED 2026-08-23.** | `eq_replace_line_items` (eq-shell) — purge-then-replace on any quote's pricing/line items, tenant-checked only, no role check, called straight from the browser (no server-side twin) | eq-canonical-internal (zaap) + sks-canonical (ehow) | **CLOSED.** Same dispatch as SEC-41 (migration `0264`, run [32613927114](https://github.com/eq-solutions/eq-shell/actions/runs/32613927114)) — gates on `entity.edit` (manager + supervisor). Independently re-verified live on both planes: `eq_replace_line_items`'s source now contains the guard on both zaap and ehow. See SEC-41's Detail for the live probe methodology (same pattern, applies to both functions).
 | SEC-43 | P2 | `eq_bulk_update_quote_status`/`eq_update_quote_status` — tenant-checked, no role check, writes status history + fires canonical events (`quote.accepted`/`.sent`/`.declined`); same ungated shape on `eq_remove_tenant_trade`, `eq_set_field_importance_override`, `eq_reset_field_importance_override`, `eq_archive_estimator`, `eq_archive_duplicate_record` | eq-canonical-internal (zaap) + sks-canonical (ehow) | OPEN — found 2026-08-20, reasoned. |
 | SEC-44 | ~~P0~~ **CLOSED 2026-08-23.** | `eq_cards_link_or_create_worker` (jvkn) — took the user id to bind as a plain parameter, no `auth.uid()`, no invite token, no org scoping; the four legitimate callers all guarded it properly but the resolver itself was independently `authenticated`-executable | eq-canonical (jvkn) | **CLOSED.** eq-cards [PR #289](https://github.com/eq-solutions/eq-cards/pull/289) applied live via `apply_migration` (tracked, not raw SQL) — independently re-verified, not just the success response: grants now `postgres:EXECUTE, service_role:EXECUTE` only (`authenticated` gone), live definition contains the guard, and two behavioural probes against jvkn confirm it — a mismatched-uid call raises `caller_uid_mismatch` at the top of the function, a matching-uid call passes the guard and fails only on an unrelated pre-existing FK constraint (the synthetic test uid isn't a real `auth.users` row), proving the guard is a true no-op on the legitimate path. Both probes ran inside `begin...rollback`, zero persisted rows. See Detail.
 | SEC-45 | P2 | `eq_cards_find_or_create_worker_for_invite` (jvkn) — same zero-caller-check shape as SEC-44; its only legitimate caller is a server-role function, so the `authenticated` grant buys nothing. Doubles as a cross-org existence oracle and lets a caller rewrite an unclaimed worker's phone/email — the setup step that makes SEC-44 work without knowing a real target's phone | eq-canonical (jvkn) | OPEN — found 2026-08-20, reasoned. Fix: `REVOKE EXECUTE ... FROM authenticated`. |
@@ -1069,6 +1069,24 @@ revoking `authenticated`'s grant — `QuotesModule.tsx` calls this RPC directly 
 browser for every role, the gate goes inside the function body. **Not dispatched** —
 dispatching to zaap/ehow via `tenant-migrate.yml` is a separate, explicit step.
 
+**Update 2026-08-23: CLOSED — dispatched fleet-wide, live-verified on both planes.**
+`tenant-migrate.yml` dispatched with a blank slug (whole fleet) via `workflow_dispatch`
+(run [32613927114](https://github.com/eq-solutions/eq-shell/actions/runs/32613927114),
+`success`, `0 applied, 283 skipped` on both `eq`/`sks` — the 3 pending migrations
+`0256`/`0263`/`0264` had already landed by the time this dispatch ran, confirmed by
+independently checking the live ledger and function source directly rather than trusting
+the "0 applied" line at face value). `app_data._eq_migrations` on both zaap and ehow lists
+`0264_entity_role_gate_quote_rpcs.sql` as applied. Live `pg_proc.prosrc` for
+`eq_delete_quote` contains the `eq__assert_entity_role` call on both planes. A live
+(production, not dry-run) probe against zaap — `set local request.jwt.claims` to an
+`employee`-role JWT, then call `eq_delete_quote` — returns `insufficient_permission:
+entity.delete required`, confirming the gate is real and enforced, not just present in
+source. The dispatch also applied two unrelated pending migrations from other sessions
+(`0256`: extends an existing delete-guard trigger to a new asset category, idempotent;
+`0263`: revokes anon-EXECUTE on actor-identity helpers, already proven safe on zaap) —
+`tenant-migrate.yml` has no per-migration selector, so a fleet dispatch is all-pending-or-
+nothing; both were reviewed before dispatching and are unrelated to this fix.
+
 ### SEC-42 — eq_replace_line_items: purge-then-replace on quote pricing, no role gate (P1)
 Bug-class #6 verbatim. `SECURITY DEFINER`, `authenticated`: verifies the quote's tenant,
 then `DELETE FROM app_data.quote_line_item WHERE quote_id = …`, then bulk re-INSERTs from
@@ -1089,6 +1107,13 @@ after): an `employee`-role caller is blocked with `insufficient_permission: enti
 required`; a `supervisor`-role caller passes the gate and hits the expected "quote not
 found" on a fake id. Same cross-plane byte-identity check, same grant re-assert, same
 "not revoking `authenticated`" reasoning as SEC-41 — see its Detail. **Not dispatched.**
+
+**Update 2026-08-23: CLOSED — same dispatch as SEC-41 (run [32613927114](https://github.com/eq-solutions/eq-shell/actions/runs/32613927114)), live-verified on both planes.**
+`app_data._eq_migrations` lists `0264_entity_role_gate_quote_rpcs.sql` as applied on both
+zaap and ehow. Live `pg_proc.prosrc` for `eq_replace_line_items` contains the
+`eq__assert_entity_role` call on both planes. See SEC-41's Detail for the full dispatch
+record and the live-probe methodology (same pattern applies here: an `employee`-role
+caller hits `insufficient_permission: entity.edit required` on live zaap).
 
 ### SEC-44 — eq_cards_link_or_create_worker: cross-org identity bind, no caller check (P0)
 `public.eq_cards_link_or_create_worker(p_user_id uuid, p_phone text, p_email text,
