@@ -61,7 +61,6 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-23)
 
 **eq-service:**
-- #806 fix(migrations): rename colliding 0192 migration to 0228
 - #791 fix(reports): make reissuing a report possible from the UI
 
 ---
@@ -72,7 +71,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ? queued |
+| eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
