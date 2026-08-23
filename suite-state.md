@@ -61,6 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-23)
 
 **eq-cards:**
+- #289 fix(security): gate eq_cards_link_or_create_worker on caller identity (SEC-43)
 - #287 fix(auth): reject deactivated identities in worker-link/claim-invite RPCs
 
 **eq-field:**
@@ -72,6 +73,7 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
+- #1528 fix(chunk-loading): catch chunk-load failures that bypass ChunkErrorBoundary (EQ-SHELL-1S)
 - #1514 feat(equipment): add IT equipment as a second internal register type
 
 ---
