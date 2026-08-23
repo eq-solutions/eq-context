@@ -453,17 +453,29 @@ No other open items.
 
 ---
 
-## Suite pressure-test sweep §C-G: 31 findings logged (SEC-39-69) — 4 closed, sprint-scoped (2026-08-23)
+## Suite pressure-test sweep §C-G: 31 findings logged (SEC-39-69) — 4 closed live, 3 more merged, sprint-scoped (2026-08-23)
 
-Full triage of what's left: [`eq/sprints/2026-08-23-security-outstanding-triage.md`](../eq/sprints/2026-08-23-security-outstanding-triage.md)
+Full triage + execution runbook: [`eq/sprints/2026-08-23-security-outstanding-triage.md`](../eq/sprints/2026-08-23-security-outstanding-triage.md)
 — every item live-verified there, not restated here to avoid a second copy going stale.
+The sprint leads with a 3-step ordered runbook for the items below; I offered to
+walk Royce through them live or verify after he runs them — declined to execute
+SEC-57/61/63 myself even on a direct "complete that sprint" ask, since each has a
+specific, different reason it isn't mine to complete (his private knowledge needed,
+a classifier-blocked live write across 4 production sites, and repeating the exact
+secret-exposure mistake flagged earlier the same session) — not just general caution.
 
-**Needs Royce (see sprint for full detail):**
+**Needs Royce (see sprint for full detail + exact steps):**
 - [ ] **SEC-57 (P1)** — GitHub App permissions, your call (tighten or accept).
-- [ ] **SEC-61 (P1)** — Netlify `dev`-context leak, fix pattern known, needs your hands (classifier-blocked for Claude Code).
-- [ ] **SEC-63 (P1, possibly P0)** — account-scope Netlify secret scope, needs your 2-minute dashboard check.
+- [ ] **SEC-61 (P1)** — Netlify `dev`-context leak, fix procedure known, needs your hands (classifier-blocked for Claude Code, same as every prior secret fix this session).
+- [ ] **SEC-63 (P1, possibly P0)** — account-scope Netlify secret scope, needs your 2-minute dashboard check — do this one first, its answer changes SEC-61's urgency.
 - [ ] **SEC-60 (P3, 4 sub-items)** — org/repo hardening gaps; some buildable on your go, some your call.
-- [ ] **SEC-45/46/47 (P2)** — ready to build on your go, same patterns as today's SEC-44/41/42 fixes.
+
+**Merged, not yet applied/dispatched live** (Supabase MCP disconnected mid-session
+when these were built — reconnected right at session close, so this may now be
+unblocked next session):
+- [ ] **SEC-45 (P2)** — eq-cards PR #291 merged. Needs `apply_migration` to jvkn.
+- [ ] **SEC-46 (P2)** — eq-shell PR #1541 merged, **not live-dry-run verified** (built from source while MCP was down) — worth a live re-check before dispatch, not just a straight dispatch.
+- [ ] **SEC-47 (P2)** — already merged by a concurrent session (migration `0265`), register corrected to match. Needs dispatch.
 
 **Resolved while sprint-scoping:** SEC-51 was NOT a live gap (flag is on, feared breakage doesn't exist in current code) — closing as doc cleanup, not a fix.
 _(added 2026-08-23, corrected + sprint-scoped 2026-08-23 — earlier version of this entry incorrectly bundled SEC-60 into the Netlify leak; SEC-60 is unrelated)_

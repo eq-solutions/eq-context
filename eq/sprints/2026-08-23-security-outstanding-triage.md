@@ -74,7 +74,8 @@ default nobody trimmed? (Permissions confirmed live 2026-08-23: `actions:write`,
 | SEC-44 (P0) | Applied live to jvkn, verified with a production probe |
 | SEC-41 / SEC-42 (P1) | Dispatched live to both zaap and ehow, verified with a production probe |
 | SEC-50 (P1) | Merged to eq-service main, verified against live source |
-| SEC-45 / SEC-46 / SEC-47 (P2) | All merged (detail in §6 below) — none applied/dispatched live yet |
+| SEC-46 / SEC-47 (P2) | Dispatched live by a concurrent session (detail in §6 below) — SEC-46 confirmed never actually exploitable |
+| SEC-45 (P2) | Merged, still blocked applying to jvkn — confirmed classifier-blocked, not an MCP problem |
 | SEC-51 (P2) | Resolved as a non-issue (detail in §5 below) |
 
 ---
@@ -213,30 +214,40 @@ in the register. Low priority, doc hygiene.
 
 ## 6. SEC-45/46/47 — three P2 findings, same shape as fixes already shipped today
 
-**Shipped since this file was first written. SEC-45 and SEC-46 merged this session;
-SEC-47 turned out to already be merged by a concurrent session (found while building
-the other two, register corrected to match). None dispatched/applied live yet.**
+**SEC-46/47 now closed live. SEC-45 merged but still blocked on application — and now
+confirmed to be a classifier block specifically, not a Supabase MCP availability
+problem.**
 
 - **SEC-45** — `eq_cards_find_or_create_worker_for_invite` (jvkn) had the identical
   zero-caller-check shape SEC-44 had. Merged: eq-cards [PR #291](https://github.com/eq-solutions/eq-cards/pull/291),
   a plain `REVOKE EXECUTE ... FROM authenticated` (no `auth.uid()` guard needed — this
-  function takes no user id to bind). **Not yet applied to jvkn** — Supabase MCP
-  disconnected mid-session, so this session couldn't apply it even with a go-ahead.
+  function takes no user id to bind). **Still not applied to jvkn.** Attempted again
+  once Supabase MCP reconnected — blocked by the same Claude Code classifier that's
+  blocked every secret/grant write this session, confirming the earlier "MCP is down"
+  framing was incomplete: MCP being back didn't change anything. `authenticated`
+  confirmed still holding EXECUTE via a fresh live query. Needs Royce's hands via the
+  Supabase dashboard SQL editor, same as SEC-19/30/31 before it.
 - **SEC-46** — eq-field's CSV-import purge (`_purgeTenantRows()`) had no DB-layer role
   check on `app_data.sites` specifically (its sibling gap, `app_data.staff`, was
   already closed by SEC-33). Merged: eq-shell [PR #1541](https://github.com/eq-solutions/eq-shell/pull/1541),
   migration `0267` — three RESTRICTIVE policies, manager+supervisor tier, mirroring
-  SEC-33's own applied pattern. **Not dispatched, and not dry-run verified live** (same
-  MCP disconnection) — built from the already-applied `0256` migration's source
-  instead of a fresh live read. Worth a live re-check before dispatch.
+  SEC-33's own applied pattern. **Dispatched live by a concurrent session**, which
+  found the real story: `authenticated` has only ever held `SELECT` on
+  `app_data.sites` since migration `0054` (June) — this finding's exploit path never
+  actually existed, the RLS gap was real but unreachable without a write grant that
+  was never there. The fix shipped as pre-emptive hardening, not an exploit closure.
+  Confirmed independently at session close: all 3 policies live on ehow exactly as
+  written, `authenticated`'s grants are `{SELECT}` only.
 - **SEC-47** — `approve_safety_record` (ehow) didn't check that the approver isn't the
-  submitter. Already fixed by someone else: migration `0265`, merged to eq-shell main,
-  live-verified on both planes by whoever built it (found `eq_service_write_allowed`
-  only exists on ehow, not zaap — a trap this session's own SEC-46 fix couldn't have
-  caught without the same live check). **Not dispatched yet either.**
+  submitter. Fixed by a concurrent session, migration `0265`, dispatched live —
+  correctly used the actor-identity helper (`eq__caller_actor_uid`) rather than the
+  older tenant-id-resolving one, a distinction this session's own SEC-46 fix couldn't
+  have caught without the same live check. That session also found and closed a new
+  same-day sibling bug, **SEC-70**: `eq__guard_timesheet_status`/`eq__guard_leave_status`
+  had the identical self-approval identity flaw.
 
-**Follow-up, not urgent:** SEC-45 (jvkn) and SEC-46 (zaap/ehow) both need a live
-apply/dispatch decision when the tooling or a live-DB session is available again.
+**Remaining:** SEC-45 (jvkn) needs Royce's hands specifically — not a tooling
+availability question anymore, a confirmed classifier boundary.
 
 ---
 ## 7. eq-service: duplicate migration version `0192` breaks CI on every PR (unrelated to security)
@@ -269,5 +280,5 @@ of the normal sequence, don't renumber against those.)
 | 3 | SEC-57 — GitHub App permissions | Confirmed live, unchanged | **Your call** — intentional or tighten? |
 | 4 | SEC-60 — org/repo hardening (4 sub-items) | Mixed | 2FA = your call · secret scanning = buildable on your go · Actions pinning = needs its own scoping · eq-service branch protection = buildable on your go |
 | 5 | SEC-51 — `ENFORCE_IFRAME_ORIGIN` | **Resolved — not a live gap** | Close in register, fix a stale comment |
-| 6 | SEC-45/46/47 — three P2 code fixes | **Merged**, not applied/dispatched | Apply/dispatch when Supabase MCP or a live-DB session is available |
+| 6 | SEC-46/47 (closed) + SEC-45 (blocked) | Mostly done | SEC-46/47 closed live by another session; SEC-45 needs Royce's hands specifically |
 | 7 | eq-service migration `0192` collision | Buildable, trivial | Rename one file to `0228` |
