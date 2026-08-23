@@ -64,6 +64,7 @@ _If this file is >48h old, the cron is broken._
 - #287 fix(auth): reject deactivated identities in worker-link/claim-invite RPCs
 
 **eq-service:**
+- #804 fix(security): close SEC-50 -- SSRF guard on report-branding's fetchLogoImage
 - #791 fix(reports): make reissuing a report possible from the UI
 
 ---
@@ -74,7 +75,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ? in_progress |
+| eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
