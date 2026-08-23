@@ -63,9 +63,6 @@ _If this file is >48h old, the cron is broken._
 **eq-service:**
 - #791 fix(reports): make reissuing a report possible from the UI
 
-**eq-shell:**
-- #1538 fix(security): use actor identity in timesheet/leave guard self-checks
-
 ---
 
 ## System Health (as of 2026-08-23)
