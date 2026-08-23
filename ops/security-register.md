@@ -62,6 +62,37 @@ fails on **new** exposure while keeping the open ones visible.
 | SEC-36 | P3 | 4 tables on zaap (`tenders`, `pending_schedule`, `tender_import_runs`, `tender_review_decisions`) have only `{anon}`-scoped policies and no anon grant exists — proved latent, but `authenticated` (which does hold a grant) has no matching policy either, so this may double as a functionality gap, not just security hygiene | eq-canonical-internal (zaap) | OPEN — found 2026-08-20. Same family as the anon-only-policy pattern already removed from sibling tables `nominations`/`tender_enrichment` (shell PR #743, 2026-07-11) — these 4 look like the same sweep missed them. |
 | SEC-37 | **CLOSED — dispatched + verified live 2026-08-23.** | `app_data.timesheets` / `app_data.leave_requests` on zaap — any authenticated tenant member (no role required) could SELECT every coworker's timesheet/leave row; tenant-only policy never referenced `staff_id` | eq-canonical-internal (zaap) | **RESOLVED.** Fix (eq-field [PR #753](https://github.com/eq-solutions/eq-field/pull/753)) dispatched via eq-shell's One Pipe (`--slug=eq`) on Royce's explicit go, independently re-verified live via direct `pg_policies`/`pg_proc` query — both RESTRICTIVE policies and both helper functions exist on zaap. See Detail for the dispatch-safety fix (eq-shell PR #1516), a follow-on bug in that fix found + closed the same day (PR #1524), and a second follow-on (SEC-38) found via this dispatch's own required CI check. |
 | SEC-38 | **CLOSED same-day 2026-08-23.** | `app_data.eq__caller_actor_uid()` / `eq__caller_actor_staff_id(uuid)` on zaap — anon-executable (Postgres's implicit PUBLIC-EXECUTE-on-CREATE default, never revoked by SEC-37's own migration) | eq-canonical-internal (zaap) | **RESOLVED.** Found live by this repo's own required Function-EXECUTE invariant check, immediately after SEC-37's fix (0262) dispatched. Not an active leak — `eq__caller_actor_uid()` resolves NULL for anon, so the staff_id lookup can never match — but closed to the intended authenticated/service_role-only posture regardless. Fix: eq-shell [PR #1529](https://github.com/eq-solutions/eq-shell/pull/1529), migration `0263`, dispatched `--slug=eq`, verified live via `has_function_privilege('anon', ..., 'EXECUTE')` = false for both. See Detail. |
+| SEC-39 | P2 | `mint-supabase-jwt` mints a general-purpose Shell JWT with no Field-access check, and Field's `verify-shell-token` receiver checks no `source_app`/`aud` binding — chained, a Shell user whose Field access is withheld can still reach Field, for their own tenant/role only | eq-shell, eq-field | **OPEN — found 2026-08-20, reasoned not proved (needs a real session to confirm).** No tenant-crossing or role escalation — capped severity. See Detail. |
+| SEC-40 | P3 | `field.eq.solutions`'s CSP `frame-ancestors` allows all of `*.netlify.app`, not just eq-shell's actual deploy-preview pattern — any Netlify-hosted site can iframe Field | eq-field | **OPEN — found independently by two agents in the same sweep (2026-08-20).** Proved live. Tighten to the specific `*--eq-shell.netlify.app` pattern, matching Service's already-correct scope. |
+| SEC-41 | **P1** | `eq_delete_quote` (eq-shell) checks tenant only, no role — any authenticated user of any role can hard-delete any/all of a tenant's quotes via an existing multi-select bulk-delete button in the UI, no client gate either | eq-canonical-internal (zaap) + sks-canonical (ehow) | **OPEN — found 2026-08-20, reasoned (UI+code path traced, not clicked live).** 198 live quotes on ehow. Sibling CRM functions got this gate in migration `0245`; the quote family was left out. See Detail. |
+| SEC-42 | **P1** | `eq_replace_line_items` (eq-shell) — purge-then-replace on any quote's pricing/line items, tenant-checked only, no role check, called straight from the browser (no server-side twin) | eq-canonical-internal (zaap) + sks-canonical (ehow) | **OPEN — found 2026-08-20, reasoned.** 511 live line items on ehow. Same root cause as SEC-41. See Detail. |
+| SEC-43 | P2 | `eq_bulk_update_quote_status`/`eq_update_quote_status` — tenant-checked, no role check, writes status history + fires canonical events (`quote.accepted`/`.sent`/`.declined`); same ungated shape on `eq_remove_tenant_trade`, `eq_set_field_importance_override`, `eq_reset_field_importance_override`, `eq_archive_estimator`, `eq_archive_duplicate_record` | eq-canonical-internal (zaap) + sks-canonical (ehow) | OPEN — found 2026-08-20, reasoned. |
+| SEC-44 | **P0 — fix drafted, not yet applied.** | `eq_cards_link_or_create_worker` (jvkn) — takes the user id to bind as a plain parameter, no `auth.uid()`, no invite token, no org scoping; the four legitimate callers all guard it properly but the resolver itself is independently `authenticated`-executable | eq-canonical (jvkn) | **OPEN — found 2026-08-20, reasoned.** 35 of 104 jvkn workers are unclaimed — the vulnerable population. Fix: eq-cards [PR #289](https://github.com/eq-solutions/eq-cards/pull/289) — adds a null-safe `p_user_id IS DISTINCT FROM auth.uid()` guard inside the resolver (verified a no-op on all 9 real call sites) plus explicit `REVOKE ... FROM authenticated`. **Not dry-run tested live — the same classifier that blocks SEC-12/18/19 blocked a `begin...rollback` dry-run from this session too; PR body carries the dry-run SQL for a human to run.** Not applied to jvkn. See Detail. |
+| SEC-45 | P2 | `eq_cards_find_or_create_worker_for_invite` (jvkn) — same zero-caller-check shape as SEC-44; its only legitimate caller is a server-role function, so the `authenticated` grant buys nothing. Doubles as a cross-org existence oracle and lets a caller rewrite an unclaimed worker's phone/email — the setup step that makes SEC-44 work without knowing a real target's phone | eq-canonical (jvkn) | OPEN — found 2026-08-20, reasoned. Fix: `REVOKE EXECUTE ... FROM authenticated`. |
+| SEC-46 | P2 | eq-field's `_purgeTenantRows()` (Sites/Supervision CSV import) issues the DELETE with the user's own JWT against tables whose RLS is tenant-only (no role condition) — the SEC-21/22 fix (`canManageData()`) lives entirely in browser JS, so any authenticated non-manager can still wipe Sites/Supervision from devtools | eq-field, sks-canonical (ehow) | **OPEN — found 2026-08-20, proved via live `pg_policies` read.** Sibling sweep otherwise clean — all 6 eq-field importers now gate correctly except these two tables' DB layer. See Detail. |
+| SEC-47 | P2 | `app_data.approve_safety_record` (ehow) — tenant-checked, no role check and no check that the approver isn't the submitter; any tenant member can approve their own prestart/toolbox-talk submission | sks-canonical (ehow) | OPEN — found 2026-08-20, reasoned. 35 prestarts + 1 toolbox talk live behind it. |
+| SEC-48 | P3 | SEC-2's `user_metadata`-trust mistake has resurfaced in one place — 4 `storage.objects` policies on the `licence-photos` bucket (ehow) scope by `user_metadata->>'tenant_id'` instead of `app_metadata` | sks-canonical (ehow) | **OPEN — found 2026-08-20, reasoned.** Fails closed today (bucket is private, 0 objects, EQ JWTs carry no `user_metadata`) — fails open the moment both licence photos start landing there AND a GoTrue-native user can self-set `user_metadata`. See Detail. |
+| SEC-49 | P3 | `service.upsert_site_credential` (ehow) — tenant-checked, no role check; any tenant member could overwrite an existing site-credential row and re-encrypt it under a caller-supplied key | sks-canonical (ehow) | OPEN — found 2026-08-20, reasoned. `service.site_credentials` has 0 rows today — latent. |
+| SEC-50 | **P1** | `report-branding.ts::fetchLogoImage` (eq-service) has no URL validation and follows redirects, fed tenant/customer-editable logo & site-photo URLs, live-wired into 4 report generators. A hardened sibling (`logo-variants.ts`, `isSafeFetchUrl` + `redirect:'error'`) exists in the same codebase but wasn't applied here | sks-canonical (ehow) | **OPEN — found 2026-08-20, reasoned (proving needs an authenticated admin write of a malicious logo URL, correctly not attempted).** See Detail. |
+| SEC-51 | P2 | eq-shell's cross-subdomain origin guard (`checkShellOrigin`) is report-only by default; every privileged Shell mutation function depends on the same global `ENFORCE_IFRAME_ORIGIN` flag, and the code's own comment says that flag can't safely be flipped to `true` without breaking Cards — contradicts SEC-12's "set to true in production" claim | eq-shell | **OPEN — found 2026-08-20, reasoned (live flag value not read this pass — it's a feature flag, not a secret, worth a direct check).** `SameSite=Lax` still blocks external-origin CSRF; residual is same-site (a sibling-subdomain XSS/takeover). See Detail. |
+| SEC-52 | P3 | `service.eq.solutions`'s main CSP ships as `Content-Security-Policy-Report-Only` in production — script/connect/object-src restrictions are reported, not enforced; only `frame-ancestors` is a real enforcing header | sks-canonical (ehow) — eq-solves-service | OPEN — found 2026-08-20, proved live. Promote to enforcing once report-only telemetry is clean. |
+| SEC-53 | P3 | core.eq.solutions and field.eq.solutions CSPs both still allow-list `ktmjmdzqrogauaevbktn.supabase.co` (deleted project, SEC-17) in `connect-src`; core's `frame-src` still lists `quotes.eq.solutions` (retired) | eq-shell, eq-field | OPEN — found 2026-08-20, proved live. No exploit path (dead refs are inert) — cleanup. |
+| SEC-54 | P3 | eq-service's mutating route handlers have no explicit CSRF token or Origin/Referer check — mitigated by the `eq_service_jwt` cookie's CHIPS partitioning + the JSON-body requirement, but that's defense-by-side-effect, not by design | eq-solves-service | OPEN — found 2026-08-20, reasoned. AuthZ itself is fine (role/tenant from JWT claims server-side). Recommend an explicit same-origin assertion on mutating routes. |
+| SEC-55 | P3 | eq-service list/search pages interpolate raw user search terms into PostgREST `.or()`/`.ilike()` filter strings — bounded by a separate `.eq('tenant_id', …)` AND-filter plus RLS, so no cross-tenant read and no SQL injection (PostgREST compiles to parameterized SQL), but a crafted term can break the within-tenant match | eq-solves-service | OPEN — found 2026-08-20, reasoned. Hygiene: use `.textSearch()` or sanitize. |
+| SEC-56 | P3 | `apply-service-migrations.yml` (eq-service) still machine-posts a false "pauses for production-environment approval" claim on every migration PR — SEC-14's fix corrected the header/inline comments but missed this runtime string | eq-service (GitHub Actions) | **OPEN — found 2026-08-20, proved live.** 38 of the last 100 PR comments carry it, most recent 2026-08-20. Falsifies SEC-14's "closed as fully swept." See Detail. |
+| SEC-57 | **P1** | An org-wide GitHub App installation (`grok-by-xai`, `repository_selection: all`) holds `actions:write`/`contents:write`/`administration:write`/`workflows:write` on every repo — enough to dispatch live-DDL workflows or push to `main` on auto-deploying repos. Undercuts the "only Milmlow can dispatch" rationale SEC-11/SEC-14 both rest on; the collaborator check that rationale used is structurally blind to app installations | eq-solutions (GitHub org, all repos) | **OPEN — found 2026-08-20, proved (config) / reasoned (exploit step, correctly not exercised — that would be a write).** Two more apps (`figma`, `cloudflare-workers-and-pages`) hold similar permissions on unenumerated repo subsets. See Detail. |
+| SEC-58 | P2 | `CONTROL-PLANE-LEDGER.md` (eq-shell) tracks 84 of 131 files in `supabase/migrations/`, 48 with no entry at all, and its own summary still claims "0 pending" from a 2026-07-11 verification | eq-canonical (jvkn) | **OPEN — found 2026-08-20, proved. Live-verified 7 of the 48 untracked files directly against jvkn — all 7 are already applied, no live gap today.** One misfiled migration found targeting the wrong plane entirely (governed by neither pipeline). See Detail. |
+| SEC-59 | P3 | The `shell_control` write-lockdown migrations revoked INSERT/UPDATE/DELETE from `authenticated` but left TRUNCATE granted on 9 tables — TRUNCATE bypasses RLS entirely, though PostgREST has no TRUNCATE verb so there's no browser path today | eq-canonical (jvkn) | OPEN — found 2026-08-20, proved. May overlap with the completed §A sweep — flagging, not claiming novelty. |
+| SEC-60 | P3 | Several org/repo hardening gaps: 2FA not required org-wide; secret scanning + push protection disabled on all 7 in-scope repos incl. 3 public ones; third-party Actions unpinned org-wide; **branch protection exists on eq-shell only** — eq-service's `main` (auto-deploys service.eq.solutions, gates the ehow migration pipeline) accepts a direct push with zero required checks | eq-solutions (GitHub org, all repos) | OPEN — found 2026-08-20, proved. See Detail. |
+| SEC-61 | **P1** | SEC-9's 2026-08-16 closure does not hold: 22 secret-flagged vars across eq-shell/eq-service/eq-field/eq-cards + one Netlify account-scope var still return full plaintext in the `dev` deploy context. `updated_at` timestamps on the leaking vars predate 08-16 entirely — the remediation never touched them | eq-shell, eq-solves-service, eq-field, eq-cards, Netlify account scope | **OPEN — found 2026-08-21, proved live.** Severity capped at P1 (only Royce's own Netlify account can reach `dev`). Working fix pattern already visible on the same sites (delete the `dev` value row, don't recreate it — see SEC-62). See Detail. |
+| SEC-62 | P2 | The documented "delete+recreate" remediation for the `dev`-context leak (used to close SEC-9/10/12/18/19/24 historically) is itself what causes the leak — recreating a var with "same value, all contexts" always writes a fresh, unmasked `dev` row. All 6 vars this register records as "fixed via delete+recreate" now leak in `dev` | eq-shell, eq-field, eq-solves-service, eq-cards | **OPEN — found 2026-08-21, proved.** The only vars that don't leak are ones with `dev` left EMPTY, not recreated. Every past "delete+recreate" closure in this register should be re-read against this. See Detail. |
+| SEC-63 | **P1** | An uninventoried Netlify **account-scope** (team `milmlow`) secret, `SUPABASE_JWT_SECRET`, is the same value that signs every session in the suite (matches 5 per-site vars) — appears nowhere in `ops/secrets-inventory.md`, which only ever enumerated per-site vars. `dev` context unmasked (same as SEC-61) | Netlify account scope (team `milmlow`) | **OPEN — found 2026-08-21, proved (existence + value identity) / open question (site-scope).** Whether it's inherited by all 7+ sites — including sks-nsw-labour, a different entity — needs a 30-second check on Netlify's "Shared environment variables" page; couldn't be resolved read-only. **If scoped to all sites, this becomes P0.** See Detail. |
+| SEC-64 | P2 | `ops/secrets-inventory.md` maps eq-field's `CANONICAL_SERVICE_ROLE_KEY` to ehow — it's actually the jvkn/eq-canonical service_role key (the one with SEC-9's confirmed chat exposure), corroborated in code (`canon-read.js`) | eq-field, eq-canonical (jvkn) | OPEN — found 2026-08-21, proved. Makes SEC-9's eventual rotation scope wrong as documented — rotating jvkn would break eq-field unless this is caught first. Fix: correct the inventory mapping. |
+| SEC-65 | P2 | eq-field's `AUDIT_SB_KEY` is the live ehow **service_role** key, not a "publishable" key as both its own code comment and `ops/secrets-inventory.md` (Tier 2) claim. 4 live consumers (`verify-pin.js`, `eq-agent.js`, `eq-service-sites.js`, `_shared/sentry.js`) run on it believing it's safe to expose | eq-field, sks-canonical (ehow) | **OPEN — found 2026-08-21, proved (identity) / reasoned (impact — not tested whether it's actually exposed anywhere client-side).** See Detail. |
+| SEC-66 | P3 | eq-field's Sentry secret-scrubber allowlist omits every Tier-1 secret the app actually places in request headers (`CANONICAL_SERVICE_ROLE_KEY`, `EHOW_SERVICE_ROLE_KEY`, `SKS_JWT_SECRET`, `ZAAP_JWT_SECRET`, `LEAVE_CANONICAL_JWT_SECRET`, `SUPABASE_JWT_SECRET`) — a fetch-error event serializing headers would ship them to Sentry unscrubbed | eq-field | OPEN — found 2026-08-21, reasoned. Ironically the one key it does scrub (`AUDIT_SB_KEY`) is the one SEC-65 shows is mislabeled as low-tier. |
+| SEC-67 | P3 | Service_role keys/config still stored for Supabase projects that no longer exist: eq-shell's `FIELD_SUPABASE_*` point at `ktmjmdzqrogauaevbktn` (dead, distinct single-holder key — also disproves the inventory's claim it equals the ehow key), eq-shell's `NEXT_PUBLIC_SUPABASE_*` point at `urjhmkhbgaxrofurpbgc` (deleted, already known), sks-nsw-labour's `AUDIT_SB_URL` points at a project not even in the org | eq-shell, sks-nsw-labour | OPEN — found 2026-08-21, proved. Cleanup, no live exposure (dead refs). |
+| SEC-68 | P3 (structurally P1-shaped, well-mitigated) | `EQ_SHELL_JWT_SECRET` + `SUPABASE_SERVICE_ROLE_KEY` (jvkn) are stored as GitHub Actions secrets on the **public** eq-context repo | eq-context (public repo) | **OPEN — found 2026-08-21, proved.** Mitigations verified live: no `pull_request_target`/`workflow_run` trigger anywhere (fork PRs never see secrets), exactly one collaborator, no org-level secrets. Residual: this repo's Actions logs are world-readable, so any future log-leak here is public, not private. See Detail. |
+| SEC-69 | P3 | Zero use of `::add-mask::` across the whole suite's workflows, and one confirmed masking-defeat: 9 eq-context backup/verify/restore-drill workflows slice `SENTRY_DSN` and write the fragment to `$GITHUB_ENV` — GitHub masks only the exact secret string, never a derived substring, so the sliced value is unmasked in public-repo logs | eq-context (public repo) | **OPEN — found 2026-08-21, proved (pattern) / reasoned (impact — low today, a Sentry DSN is low-value by design).** Would be P1 if the same pattern were ever applied to a service_role key or DB URL. See Detail. |
 
 ## Weekend tasks (Field go-live + cutover)
 
@@ -992,6 +1023,323 @@ confirmed by reading its output line by line before overriding, not assumed.
 not a one-off — worth treating "does my new migration explicitly revoke the PUBLIC
 default?" as a standing checklist item for any future SECURITY DEFINER function,
 rather than relying on this same CI check to catch it after the fact each time.
+
+### SEC-39 — Field access-gate bypass chain via mint-supabase-jwt + verify-shell-token (P2)
+`mint-supabase-jwt.ts` mints a jvkn-signed Supabase JWT for any valid `eq_shell_session`
+cookie (any role), carrying `app_metadata.tenant_id`/`eq_role` — `source_app` is taken
+from a **client-controlled `?source_app=` query param**, and its origin check is
+report-only (no `alwaysEnforce`). Field's `verify-shell-token` action checks only
+signature + `exp` + `tenant_id` presence, never `source_app`, and derives tenant
+authoritatively from `app_metadata.tenant_id`. Field has no knowledge of
+`has_field_access`/`field_access_unlocked_at` — that gate lives only in
+`token-exchange.ts`, which `mint-supabase-jwt` doesn't call. Chain: a Shell user
+(including one with Field access withheld) → own-cookie POST to `mint-supabase-jwt` →
+POST that token to Field's `verify-shell-token` (no cookie/origin gate on that action) →
+Field mints a 7-day session at the user's real role for their own tenant. Root cause is
+the shared signing secret across two trust boundaries (SEC-24's pattern) plus no
+`source_app`/`aud` binding on either receiver. Fix needs both: bind `source_app` to the
+minter's own knowledge of the caller (not a query param), and check `has_field_access`
+in `mint-supabase-jwt` too, or route all Field access through `token-exchange` exclusively.
+
+### SEC-41 — eq_delete_quote: bulk hard-delete of live quotes, no role gate (P1)
+`SECURITY DEFINER`, `GRANT EXECUTE TO authenticated`. Body hard-`DELETE`s from
+`app_data.quote` scoped by JWT `tenant_id` only — no `eq__assert_entity_role` call, unlike
+its 20 CRM siblings (`eq_delete_customer`/`_site`/`_contact`, merge/archive/upsert family),
+all gated in `eq-shell/supabase/tenant-migrations/0245_entity_role_gate_crm_rpcs.sql` and
+confirmed applied live on both planes. The quote family was left out of `0245`. Reachable
+by clicking, any role: `QuotesModule.tsx:2709` (single delete) and `:2776` (**bulk** —
+loops a multi-select calling the RPC per id). That same file gates sites with `useCan`
+(`entity.create`/`.edit`/`.delete`) but has no `useCan` anywhere on the quote-delete paths
+— no client gate, no server gate. 198 live quotes on ehow. Fix: add the same
+`eq__assert_entity_role` first-statement pattern `0245` used — which permission key is a
+product decision.
+
+### SEC-42 — eq_replace_line_items: purge-then-replace on quote pricing, no role gate (P1)
+Bug-class #6 verbatim. `SECURITY DEFINER`, `authenticated`: verifies the quote's tenant,
+then `DELETE FROM app_data.quote_line_item WHERE quote_id = …`, then bulk re-INSERTs from
+caller-supplied JSON and recomputes totals. Data shape and tenant are checked; caller role
+is not. Called from the browser at `QuotesModule.tsx:2404`/`:2583` — no server-side twin,
+unlike the CRM family (`crm-write.ts` maps every customer/site/contact action to a
+permission and runs `requirePerm` before touching the same `app_data` tables; the quote
+family has no equivalent, the browser talks to tenant PostgREST directly). 511 live line
+items on ehow. Same fix shape as SEC-41.
+
+### SEC-44 — eq_cards_link_or_create_worker: cross-org identity bind, no caller check (P0)
+`public.eq_cards_link_or_create_worker(p_user_id uuid, p_phone text, p_email text,
+p_first text, p_last text)` — `SECURITY DEFINER`, `authenticated`. No `auth.uid()`, no
+invite token, no phone-ownership check, no org scoping. Searches `public.workers`
+suite-wide for an unclaimed row matching phone/email, then `UPDATE`s
+`user_id = p_user_id`. It's the shared inner resolver behind four outer RPCs that each
+guard it properly — `eq_cards_claim_invite` requires a valid unexpired invite token AND
+(per migration `0124`) compares the invite's phone against the session's OTP-verified
+phone; `eq_cards_upsert_my_worker` passes `auth.uid()` hardcoded. Called directly, the
+resolver performs the exact identity bind those guards exist to protect, with an
+arbitrary caller-supplied `p_user_id` — bug-class #4's "guard on the outer function but
+not an independently-reachable inner one." 35 of 104 `public.workers` rows on jvkn have
+`user_id IS NULL` today — the vulnerable population; claiming one inherits that worker's
+credentials/licences and pending org linkage. Meets this doc's own P0 wording ("a caller
+in the wrong tenant") since there's zero org scoping — an authenticated user of org A can
+bind a worker belonging to org B. Not proved end-to-end (needs a real claim-flow account,
+a §7 line). Fix: `REVOKE EXECUTE ... FROM authenticated` — it should only ever be called
+internally by the four guarded outer RPCs, which can use `SECURITY DEFINER` privilege to
+reach it without a public grant.
+
+**Update 2026-08-23: fix drafted, eq-cards [PR #289](https://github.com/eq-solutions/eq-cards/pull/289), not applied.**
+Went one step past the fix this entry originally proposed — instead of relying on the grant
+alone, the resolver now checks its own caller: `p_user_id IS DISTINCT FROM auth.uid()` raises
+`caller_uid_mismatch` (null-safe, so an unauthenticated caller is rejected the same way a
+mismatched one is). Traced all 9 real call sites first (grepped every `.sql` migration in
+eq-cards plus every `.ts`/`.tsx`/`.js` across eq-cards and eq-shell for a direct `.rpc()`
+call — none exist; all 9 are internal `PERFORM`/assignment calls from other `SECURITY
+DEFINER` functions in 0062/0067/0071/0072/0077/0082/0090/0121/0124, every one of which
+already derives `v_user_id := auth.uid()` before calling in) — the guard is a no-op on
+every real path. Live-checked before writing: `authenticated` currently holds EXECUTE
+alongside `service_role`/`postgres`; the migration also revokes it explicitly, matching
+this repo's own established grant-hygiene pattern (0062, 0094) rather than relying solely
+on the `eq_enforce_function_privacy` event trigger to strip it on `CREATE OR REPLACE`.
+**Not dry-run tested live** — a `begin...rollback` dry-run against jvkn from this session
+hit the same "modifying security settings" classifier block that stops Claude Code on
+SEC-12/18/19; the PR body carries the exact dry-run SQL for a human to paste into the
+Supabase SQL editor. **Not applied to jvkn** — control-plane migrations here apply by hand
+(`apply_migration`/dashboard), and live application is an explicit separate step, same as
+SEC-30/31/33.
+
+### SEC-46 — eq-field CSV purge gate is client-side only; RLS has no role backstop (P2)
+`_purgeTenantRows()` (`scripts/supabase-entities.js:245`) issues
+`DELETE /rest/v1/<table>?org_id=eq.<tenant>` with the user's own JWT. Live-verified via
+`pg_policies` on ehow: `app_data.sites` and `app_data.staff` each carry 4 policies
+(`*_tenant_isolation` ALL + `_delete`/`_insert`/`_update`), all role `authenticated`,
+scoped by `tenant_id` only — no role condition. The `canManageData()` check SEC-21/22
+added lives entirely in browser JS (`import-export.js`, `managers.js`), so any
+authenticated non-manager can still wipe and replace Sites or Supervision from devtools.
+Sibling sweep is otherwise clean — all 6 eq-field importers now carry a gate somewhere
+(`importPeopleCSV`/`importSitesCSV`/`importScheduleCSV`/`importFullBackup`/
+`importManagersCSV`/`importJobNumbersCSV`/`importTsCSV`); `app_data.schedule_entries` does
+have a DB-level backstop. Only `sites` and `staff` lack one. Fix: narrow the RLS policy to
+require a role claim, matching the pattern used elsewhere in this register (SEC-33's fix
+recommendation is the same shape).
+
+### SEC-48 — user_metadata resurfaced on ehow's licence-photos bucket (P3, fails closed today)
+SEC-2's mistake (trusting client-editable `user_metadata` instead of `app_metadata`) has
+come back in one place. Four `storage.objects` policies (`licence_photos_select`/
+`_insert`/`_update`/`_delete`, role `{public}`) scope the bucket by
+`(storage.foldername(name))[1])::uuid = (auth.jwt() -> 'user_metadata' ->> 'tenant_id')::uuid`.
+Latent, precisely: the bucket is private with 0 objects, ehow has only 5 `auth.users`, and
+EQ-minted JWTs carry no `user_metadata` at all, so the expression evaluates NULL and the
+policy denies — fails **closed** right now. Fails **open** the moment both (a) licence
+photos start landing in that bucket on ehow, and (b) a GoTrue-native user exists who can
+set their own `user_metadata` via `PATCH /auth/v1/user`. Everything else on this axis is
+clean — zero `user_metadata` policies on zaap, no role/tenant derivation from it in any
+application code across all four repos. Fix: rewrite the four policies to read
+`app_metadata`, same as everywhere else.
+
+### SEC-50 — SSRF in eq-service report logo/photo fetch (P1)
+`lib/reports/report-branding.ts::fetchLogoImage` does a plain `fetch(url, {...})` with no
+URL validation and default redirect-following. A hardened twin exists in the same
+codebase — `lib/reports/logo-variants.ts::fetchLogoImage` (comment "S2-13"), which
+validates via `isSafeFetchUrl()` (rejects non-http(s), raw IPs, private/blocked hosts) and
+sets `redirect: 'error'` — applied to the newer acb/nsx/pm-asset inputs but not to
+`report-branding.ts`. The unguarded version is live-reachable from real generators:
+`app/api/compliance-report/route.ts`, `lib/reports/generate-and-store.ts`,
+`lib/reports/maintenance-checklist-input.ts`, `lib/reports/report-shell.ts` — all fed
+tenant-editable `tenant_settings.report_logo_url` / customer `logo_url` / site photo URLs.
+During DOCX generation the server GETs the URL and embeds the response as an "image" the
+requester then downloads: SSRF from the report runtime to internal/link-local addresses
+(or an external URL that 302s to one — this copy follows redirects, the hardened twin
+doesn't), with a plausible exfil channel via the embedded image bytes. Firing it needs an
+authenticated admin write of a malicious logo URL — not attempted (§7). Fix: route these
+four callers through `logo-variants.fetchLogoImage`, or add the same guard directly.
+
+### SEC-51 — ENFORCE_IFRAME_ORIGIN is report-only, contradicting SEC-12's "enforced" claim (P2)
+`eq_shell_session` is `SameSite=Lax; Domain=.eq.solutions`, shared across every
+`*.eq.solutions` subdomain. The guard against a sibling-subdomain POST riding that ambient
+cookie (`_shared/origin-check.ts::checkShellOrigin`) is report-only by default — it 403s
+only when the **global** `ENFORCE_IFRAME_ORIGIN` flag is `true`, or a per-endpoint
+`alwaysEnforce: true` is set. Every privileged mutating function (`edit-user`,
+`entity-patch`, `provision-tenant-background`, `invite-users-batch`,
+`labour-hire-mutate`, `cards-approve-staff`, …) relies on the global flag alone — they
+carry the literal comment "Report-only until ENFORCE_IFRAME_ORIGIN=true"; only
+`token-exchange` opts into `alwaysEnforce`. `origin-check.ts`'s own comment states the
+global flag **cannot be safely flipped** because it would 403 Cards' legitimate
+`mint-supabase-jwt` calls (cards.eq.solutions is deliberately not on the allowlist) — which
+directly contradicts SEC-12's note that it's "set to true in production." `SameSite=Lax`
+still blocks external-origin (evil.com) CSRF — that's the active backstop, why this is P2
+not P1. Residual is same-site: a script executing on any `*.eq.solutions` origin (a
+sibling-app XSS, a subdomain takeover, a rogue subdomain) could drive these privileged
+mutations with the victim's cookie. Even if enabled, the allowlist ceiling is only
+`core.eq.solutions` + `*--eq-shell.netlify.app` + localhost, and a missing `Origin` header
+is always allowed. The live flag value wasn't read this pass — it's a plain feature flag,
+not a secret, worth a direct check before deciding whether SEC-12's claim or this finding
+is the stale one.
+
+### SEC-56 — false "pauses for approval" claim still machine-posted on live PRs (P3)
+`apply-service-migrations.yml`'s `notify` job, line 127, `printf`s a PR comment asserting
+"pauses for production-environment approval before any DDL runs." SEC-14's fix (PR #620)
+corrected the file's header and inline comments but missed this runtime string — same
+file, lines 18–32/160–165, now correctly say the opposite. Live config confirms no such
+gate exists: `gh api repos/eq-solutions/eq-service/environments/production` →
+`protection_rules: [{"type":"branch_policy"}]`, no `required_reviewers`. Actively
+republished: 38 of the last 100 PR comments on eq-service carry the string, most recent
+2026-08-20T17:54:36Z on PR #794. eq-shell's equivalent `printf` (`tenant-migrate.yml`)
+does not carry the claim — a one-repo miss, not a shared template. Worse than SEC-11/14's
+original shape: those are static comments read by whoever edits the file; this one is
+machine-posted to the human at the exact moment they decide whether to click Dispatch.
+Falsifies SEC-14's "closed as fully swept." Fix: delete or correct the `printf` string.
+
+### SEC-57 — org-wide GitHub App holds write access equal to or beyond the sole collaborator (P1)
+`gh api orgs/eq-solutions/installations` → `grok-by-xai`, id `133702612`,
+`target_type: Organization`, `repository_selection: all`, created 2026-05-19, not
+suspended. Permissions include `actions:write`, `administration:write`, `contents:write`,
+`workflows:write`, `pull_requests:write`, `secret_scanning_alerts:write`. `actions:write`
+is exactly what `POST /repos/{owner}/{repo}/actions/workflows/{id}/dispatches` requires —
+an installation token could dispatch `eq-shell/tenant-migrate.yml` (fleet-wide live DDL
+against zaap+ehow) or `eq-service/apply-service-migrations.yml` (live DDL against ehow).
+`contents:write` on eq-shell = push to `main` = a Netlify production deploy in 2-4s
+unattended; eq-shell's 5 required status checks would normally block a raw push, but
+`administration:write` can remove branch protection first and `workflows:write` can
+rewrite the checks. On eq-cards, `contents:write` also allows pushing a `release/v*` tag,
+triggering a deploy of Supabase edge functions to jvkn (the control plane). No `secrets`
+permission (no direct read), but `workflows:write` + `actions:write` is the standard path
+to exfiltrate Actions secrets via an added workflow step. This falsifies the accepted-risk
+rationale recorded in both SEC-11 and SEC-14 ("Milmlow is the only repo collaborator with
+dispatch access anyway") — `gh api repos/.../collaborators` is structurally blind to app
+installations, so the check that rationale rests on cannot establish it. Two more apps
+(`figma` id `125169606`, `cloudflare-workers-and-pages` id `125177545`) hold
+`administration:write` + `contents:write` on **selected** (not enumerated this pass) repos.
+Deliberately-installed integration, hence P1 not P0 — if Royce reads the xAI app as fully
+trusted, P2 is defensible, but the "only Royce can dispatch" framing in SEC-11/14 is wrong
+either way and both rows now say so. No exploit step attempted (would be a write).
+
+### SEC-58 — control-plane ledger 48 files behind; no live gap found on spot-check (P2)
+`eq-shell/supabase/migrations/` (jvkn) has 131 files on `main`;
+`CONTROL-PLANE-LEDGER.md` names 84, and its summary still reads "56 applied · 0 pending ·
+3 misfiled · 2 intentional no-ops," dated 2026-07-11. 48 files have no ledger entry at
+all. The CI gate that exists (`check-control-plane-drift.mjs --strict`, in
+`tenant-drift.yml`) is one-directional by design — it flags jvkn objects LIVE but absent
+from source, never the reverse (file-present-but-not-applied, bug-class #7's exact shape)
+— so the stale markdown is the only control for that direction. Object-verified 7 of the
+48 unrecorded files directly against live jvkn: **all 7 are applied** — including
+`2026_07_21b_user_invites_write_lockdown`, whose own file header still says "Status: NOT
+APPLIED, HIGHEST SEVERITY" (itself stale, in the safe direction). No live merged-but-
+unapplied hole exists today. Sub-finding: `2026_07_11_tender_tables_anon_lockdown.sql`
+sits in the control-plane tree but targets the tenant planes (zaap/ehow) in its own
+header, and is absent from `supabase/tenant-migrations/` — governed by neither pipeline,
+same class as the 3 misfiled files the ledger already tombstoned once. Fix: refresh the
+ledger against the current 131-file reality, or replace it with a generated report so it
+can't go stale the same way again.
+
+### SEC-60 — org/repo CI-CD hardening gaps (P3)
+`gh api orgs/eq-solutions` → `two_factor_requirement_enabled: false`. Secret scanning and
+push protection `disabled` on all 7 in-scope repos, including the three **public** ones
+(eq-context, eq-solves-intake, sks-nsw-labour) — eq-shell compensates with a blocking
+`gitleaks` required check, nothing equivalent on the others. `allowed_actions: "all"`,
+`sha_pinning_required: false` org-wide and per-repo — third-party Actions run unpinned.
+**Branch protection exists on eq-shell only** — eq-service, eq-field, eq-cards,
+eq-solves-intake, eq-context, sks-nsw-labour all return "Branch not protected," so
+eq-service's `main` (auto-deploys service.eq.solutions, gates the ehow migration
+pipeline) accepts a direct push with zero required checks. eq-shell's own protection has
+`enforce_admins: false` and no required reviews. Orphan: eq-service carries a
+`production-ops` environment referenced by zero workflows. Collaborator re-check (what §G
+was actually asked to confirm): no widening — exactly one entry (`Milmlow`, admin) on all
+15 org repos, no outside collaborators, no teams, no deploy keys, no repo webhooks.
+
+### SEC-61 — dev-context secret leak: SEC-9's 2026-08-16 closure doesn't hold (P1)
+Netlify masks `branch-deploy`/`deploy-preview`/`production`/`dev-server` but returns full
+plaintext for the **`dev`** context regardless of `is_secret: true`. Live 2026-08-21:
+eq-shell (`SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_JWT_SECRET`, `EQ_SHELL_JWT_SECRET`,
+`SKS_SUPABASE_JWT_SECRET`, `EQ_PLATFORM_ADMIN_KEY`, `EQ_SESSION_SALT`,
+`CANONICAL_API_KEY_FIELD`, `CANONICAL_API_KEY_SERVICE`, `QUOTES_CRON_SECRET` — 9 vars);
+eq-service (`EQ_SHELL_JWT_SECRET`, `EQ_SERVICE_JWT_SECRET`, `EQ_SERVICE_HANDOFF_KEY`,
+`EQ_SERVICE_API_KEY`, `EQ_PLATFORM_ADMIN_KEY`, `EQ_SESSION_SALT`, `EQ_SECRET_SALT`,
+`CANONICAL_API_KEY_SERVICE`, `UNSUBSCRIBE_SECRET` — 9); eq-field (`SKS_JWT_SECRET`,
+`EQ_FIELD_HANDOFF_KEY` — 2); eq-cards (`EQ_SECRET_SALT` — 1); Netlify account/team scope
+(`SUPABASE_JWT_SECRET` — 1, see SEC-63). sks-nsw-labour: clean, `dev` empty everywhere.
+Evidence the 2026-08-16 remediation never touched these: their `updated_at` timestamps
+are 2026-06-13/07-27/07-30 — not 08-16 — and the Netlify account audit log shows only 14
+env-var events that day (7 updated, 7 deleted, 0 created), far fewer than the closure
+implies. Severity capped at P1 not P0: the Netlify team has exactly one member
+(`dev@eq.solutions`, Owner) — reaching this needs Royce's own Netlify credential.
+Method note for whoever re-runs this: `is_secret` is a per-var boolean, not per-context —
+the per-context fact is whether a value row exists and whether Netlify masks it. Fix
+pattern: see SEC-62 — delete the `dev` row, don't recreate it.
+
+### SEC-62 — the standard remediation recipe re-introduces the dev-context leak it closes (P2)
+All 6 vars this register records as "fixed 2026-08-16, delete+recreate" now have an
+unmasked `dev` value, and all carry `updated_at = 2026-08-16` — proving the recreation
+itself is what wrote the leaking row: eq-shell `QUOTES_CRON_SECRET`; eq-field
+`EQ_FIELD_HANDOFF_KEY`; eq-service `EQ_SERVICE_API_KEY`, `EQ_SERVICE_HANDOFF_KEY`,
+`EQ_SERVICE_JWT_SECRET`; eq-cards `EQ_SECRET_SALT`. Recreating a var with "same value, all
+contexts" writes a `dev` row, and Netlify never masks `dev` regardless of the `is_secret`
+flag. The vars that don't leak are the ones with `dev` left EMPTY (never populated, not
+delete+recreated): eq-shell `TWILIO_AUTH_TOKEN`, `TENANT_ROUTING_MASTER_KEY`,
+`GOOGLE_DOC_AI_CREDENTIALS`, `SCHEDULER_TEST_SECRET`, `SUPABASE_ACCESS_TOKEN`,
+`FIELD_SUPABASE_SERVICE_ROLE_KEY`, `LABOUR_HIRE_INTAKE_SECRET`, `EQ_SERVICE_API_KEY`.
+Practical implication: every past register entry that closed a secrets finding via
+"delete+recreate, all contexts masked" (SEC-9's 2026-08-16 entry, SEC-10, SEC-12, SEC-18,
+SEC-19, the eq-cards 4-var close) should be read as re-open-pending-verification against
+this, not as settled. Fix, suite-wide: for each currently-leaking var, delete just the
+`dev`-context row and leave it empty — don't recreate it.
+
+### SEC-63 — uninventoried Netlify account-scope secret signs every session in the suite (P1)
+`SUPABASE_JWT_SECRET` exists at Netlify **account scope** (team `milmlow`, id
+`69cf614eac93ac4476af83c9`), `is_secret: true`, scopes `builds,functions,runtime`, updated
+2026-06-03, `dev` unmasked (same leak as SEC-61). Its masked fingerprint is identical to
+eq-shell `EQ_SHELL_JWT_SECRET`, eq-shell `SUPABASE_JWT_SECRET`, eq-field
+`SUPABASE_JWT_SECRET`, eq-service `EQ_SHELL_JWT_SECRET`, eq-service `SUPABASE_JWT_SECRET`
+— it is the secret that signs every session in the suite. It appears nowhere in
+`ops/secrets-inventory.md`, which only ever enumerated per-site vars, never account-scope
+ones. Whether Netlify injects it into every site with no per-site override — including
+**sks-nsw-labour, a separate entity**, plus any personal/hobby sites on the same account —
+could not be resolved read-only (`getEnvVar` with a `site_id` behaves inconsistently
+across sites in a way that doesn't cleanly answer the question). **Remaining step is
+Royce's own click**: the team-level "Shared environment variables" page in the Netlify
+dashboard shows its site scope directly. If it's scoped to all sites, this is P0 — it
+would mean sks-nsw-labour inherits (or could inherit) a signing secret that's supposed to
+be an EQ-only trust boundary.
+
+### SEC-65 — eq-field's AUDIT_SB_KEY is the live ehow service_role key, not publishable (P2)
+Fingerprint match: eq-field `AUDIT_SB_KEY` = eq-field `EHOW_SERVICE_ROLE_KEY` =
+eq-service `CANONICAL_SERVICE_ROLE_KEY` (the documented ehow service_role key).
+`AUDIT_SB_URL` resolves to `ehowgjardagevnrluult.supabase.co`, confirmed independently in
+`eq-service-sites.js:26` ("AUDIT_SB_URL/AUDIT_SB_KEY (live-verified) point at ehow"). But
+`verify-pin.js:7` documents it as "Supabase publishable key for audit logging," and
+`ops/secrets-inventory.md` ranks it Tier 2 (audit-log project credentials). Four live
+consumers run on it believing it's safe to expose client-side, and using it bypasses RLS
+entirely since it's actually a full service_role key: `verify-pin.js`, `eq-agent.js`,
+`eq-service-sites.js`, `_shared/sentry.js`. Impact is reasoned not proved — whether any of
+those four actually ships the value client-side wasn't tested this pass. Fix: correct the
+label in code and in the inventory immediately (cheap, no live risk); separately confirm
+none of the 4 consumers exposes it outside a server-only context.
+
+### SEC-68 — real secrets stored as GitHub Actions secrets on the public eq-context repo (P3, well-mitigated)
+eq-context (PUBLIC) repo secrets include `EQ_SHELL_JWT_SECRET` and
+`SUPABASE_SERVICE_ROLE_KEY` (jvkn); its `production-ops` environment adds several more
+(`EQ_CANONICAL_DB_URL`, `EQ_CANONICAL_INTERNAL_SERVICE_ROLE_KEY`, `SUPABASE_DB_URL`, …).
+Mitigations verified live, not assumed: no `pull_request_target` or `workflow_run`
+trigger in any workflow in any repo (fork PRs never receive secrets); exactly one
+collaborator on eq-context (`Milmlow`, admin); no org-level Actions secrets or variables
+at all — everything is repo- or environment-scoped, the correct answer to §C's "exist
+only as repo/org secrets" question. Residual risk, why this isn't a clean pass: this
+public repo's Actions logs are world-readable, so any future accidental log-leak of these
+values is public rather than private — the one scenario the mitigations above don't cover.
+
+### SEC-69 — zero `::add-mask::` suite-wide; one confirmed masking-defeat via $GITHUB_ENV (P3)
+`add-mask` appears zero times across eq-shell, eq-service, eq-field, eq-cards, eq-context,
+eq-ui. Nothing interpolates `${{ secrets.* }}` directly into a shell command anywhere —
+secrets are passed via `env:` blocks, which is correct — with one exception: 9 eq-context
+workflows (3 backup + 3 verify + 3 restore-drill) slice the `SENTRY_DSN` environment
+secret and write the fragment into `$GITHUB_ENV`, e.g.:
+```
+KEY="${SENTRY_DSN#https://}"; KEY="${KEY%%@*}"
+BASE="https://${HOST}/api/${PID}/cron/${MONITOR_SLUG}/${KEY}"
+echo "SENTRY_BASE=$BASE" >> "$GITHUB_ENV"
+```
+GitHub masks only the exact secret string, never a derived substring, so `SENTRY_BASE` is
+unmasked in a public repo's logs. Impact today is low — a Sentry DSN's public key is
+low-value by design — but this is precisely the pattern that would be P1 if ever applied
+to `SUPABASE_DB_URL` or a service_role key. Fix: mask the derived value explicitly
+(`echo "::add-mask::$KEY"`) before writing it anywhere, in these 9 workflows and as a
+standing rule for any future secret-slicing.
 
 ## Clean projects (probe + advisors, 2026-06-05)
 - eq-canonical, eq-canonical-internal, sks-canonical, eq-solves-field,
