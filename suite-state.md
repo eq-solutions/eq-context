@@ -66,7 +66,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-field:**
 - #758 v3.5.545 — Boot: canonical/routing fetches retry instead of hard-failing on one slow moment
-- #757 security(rls): land held write-side actor-identity fix for timesheets/leave_requests (draft, still gated)
 - #756 Security: leave visibility fail-open closed for unassigned/unresolved supervisors
 
 **eq-service:**
