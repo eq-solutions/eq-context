@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-23 07:12 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-23 07:26 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-23 06:43 UTC → 2026-08-23 07:12 UTC)
+## Since last refresh (2026-08-23 07:12 UTC → 2026-08-23 07:26 UTC)
 
-- Merged: eq-shell [#1528](https://github.com/eq-solutions/eq-shell/pull/1528) fix(chunk-loading): catch chunk-load failures that bypass Ch
-- Merged: eq-shell [#1527](https://github.com/eq-solutions/eq-shell/pull/1527) fix(labour-hire): pending-licences endpoint reads columns th
-- Merged: eq-shell [#1524](https://github.com/eq-solutions/eq-shell/pull/1524) fix(migrations): enforce Plane scoping per-tenant, not as a 
-- Merged: eq-shell [#1523](https://github.com/eq-solutions/eq-shell/pull/1523) fix(chunk-error): case-insensitive match for stale-chunk dyn
-- Merged: eq-shell [#1522](https://github.com/eq-solutions/eq-shell/pull/1522) feat(labour-hire): show a candidate's licences on the Staff 
-- Merged: eq-shell [#1518](https://github.com/eq-solutions/eq-shell/pull/1518) fix(labour-hire): render both crop boxes when a card's back 
+- Merged: eq-shell [#1546](https://github.com/eq-solutions/eq-shell/pull/1546) fix(security): close GM Reports' direct-API bypass, correct 
+- Merged: eq-shell [#1545](https://github.com/eq-solutions/eq-shell/pull/1545) fix(security): staff_conversations RLS never re-gated who ma
+- Merged: eq-shell [#1529](https://github.com/eq-solutions/eq-shell/pull/1529) fix(security): revoke anon EXECUTE on actor-identity helpers
+- Merged: eq-shell [#1525](https://github.com/eq-solutions/eq-shell/pull/1525) fix(staff): seed deep-link selId at mount, satisfy react-hoo
+- Merged: eq-shell [#1521](https://github.com/eq-solutions/eq-shell/pull/1521) chore(migrations): stage 5 single-plane eq-field migrations 
+- Merged: eq-shell [#1520](https://github.com/eq-solutions/eq-shell/pull/1520) fix(staff): auto-download the compliance pack instead of req
+- Merged: eq-shell [#1519](https://github.com/eq-solutions/eq-shell/pull/1519) fix(labour-hire): promote worker_credentials to licences on 
 - Merged: eq-solves-service [#805](https://github.com/eq-solutions/eq-service/pull/805) fix(security): IPv6-bracket bypass in isSafeFetchUrl's SSRF 
-- Merged: eq-solves-service [#803](https://github.com/eq-solutions/eq-service/pull/803) fix(security): SSRF guard on report-branding.ts's logo fetch
 
 ## ⚠ Needs you (7)
 
@@ -54,7 +54,7 @@ _…and 190 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 1 | 0d |
-| eq-solves-service | ✓ success | 0d ago | 1 | 2d |
+| eq-solves-service | ✓ success | 0d ago | 2 | 2d |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 4d ago | 0 | — |
@@ -77,6 +77,8 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-23 | eq-shell | [#1546](https://github.com/eq-solutions/eq-shell/pull/1546) fix(security): close GM Reports' direct-API bypass, correct destr |
+| 2026-08-23 | eq-shell | [#1545](https://github.com/eq-solutions/eq-shell/pull/1545) fix(security): staff_conversations RLS never re-gated who may wri |
 | 2026-08-23 | eq-shell | [#1544](https://github.com/eq-solutions/eq-shell/pull/1544) fix(identity): enforce the control-layer-wins rule — lock bypass, |
 | 2026-08-23 | eq-shell | [#1543](https://github.com/eq-solutions/eq-shell/pull/1543) fix(auth): correct #1542's client + close self-join name gap |
 | 2026-08-23 | eq-shell | [#1539](https://github.com/eq-solutions/eq-shell/pull/1539) feat(quotes): own-quotes-only row scoping via new quotes.view_all |
@@ -90,15 +92,13 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-23 | eq-shell | [#1533](https://github.com/eq-solutions/eq-shell/pull/1533) Incident: restore anon SELECT on shell_control.eq_schema_registry |
 | 2026-08-23 | eq-shell | [#1532](https://github.com/eq-solutions/eq-shell/pull/1532) feat(drift-guard): CHECK 10 -- positive assertion for INTENTIONAL |
 | 2026-08-23 | eq-shell | [#1530](https://github.com/eq-solutions/eq-shell/pull/1530) Incident: restore anon's pre-login bootstrap read on public.organ |
-| 2026-08-23 | eq-shell | [#1534](https://github.com/eq-solutions/eq-shell/pull/1534) fix(security): entity-role-gate quote delete/line-item RPCs (SEC- |
-| 2026-08-23 | eq-shell | [#1514](https://github.com/eq-solutions/eq-shell/pull/1514) feat(equipment): add IT equipment as a second internal register t |
 _Showing 15 of 118 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
 - **eq-shell** (247 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (53 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
-- **eq-field** (123 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
+- **eq-field** (124 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (93 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
 - **eq-solves-intake** (17 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
@@ -130,7 +130,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 |------|------:|------------------:|------------------:|------------:|
 | [eq-shell](eq/pending/eq-shell.md) | 1608 | 181 / 71 | 193 | 44 |
 | [eq-cards](eq/pending/eq-cards.md) | 409 | 40 / 13 | 44 | 8 |
-| [eq-field](eq/pending/eq-field.md) | 804 | 98 / 27 | 49 | 15 |
+| [eq-field](eq/pending/eq-field.md) | 819 | 99 / 27 | 49 | 15 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 644 | 72 / 25 | 87 | 20 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 152 | 13 / 6 | 5 | 14 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
@@ -141,7 +141,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | [sks](eq/pending/sks.md) | 53 | 3 / 5 | 0 | 6 |
 | [SKS](sks/pending.md) | 474 | 83 / 13 | 7 | 25 |
 | [SKS active](sks/active.md) | 108 | 0 / 0 | 0 | 0 |
-| [OPS](ops/pending.md) | 513 | 43 / 3 | 0 | 1 |
+| [OPS](ops/pending.md) | 525 | 45 / 3 | 0 | 1 |
 
 ## Aging open items (45d+, unconfirmed)
 
@@ -199,4 +199,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-23 07:12 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-23 07:26 UTC._
