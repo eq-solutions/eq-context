@@ -27,6 +27,18 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: approved-but-unclaimed labour-hire candidates now show their licences on the Staff page (2026-08-23)
+*Royce: "i want to be able to see their licenses in the list once the tenant admin approves them." A different gap from the promotion-on-claim fixes below (PR #1517/#1519) — those only fire once the WORKER signs in; this is about what an ADMIN sees the moment THEY approve, before any claim happens.*
+
+- [x] **Traced the exact blocker live**: `staff-canonical-licences.ts`'s whole read chain (active `org_memberships` → `workers.user_id` → `public.licences.user_id`, all NOT NULL) can't resolve until the person personally signs in — confirmed against Conor Horgan and Nelson Sareto's real rows (`status='approved'`, `user_id` still null, 4 unpromoted `worker_credentials` each).
+- [x] **Built**: new read-only endpoint (`staff-labour-hire-pending-licences.ts`) surfaces those still-staged credentials for approved-but-unclaimed candidates, wired into the existing `staff-bootstrap` fan-out. Staff page shows them in a new "Not yet confirmed" group next to Active/Expiring/Expired, reusing the existing licence-group component unmodified — its one write action stays permanently off for this group since there's no real licence row yet to act on. One plain photo per credential deliberately, no front/back split (several are one combined photo with a sub-region marking the back face; showing it twice would mislead).
+- [x] eq-shell [PR #1522](https://github.com/eq-solutions/eq-shell/pull/1522), squash-merged (`9fb1d6bc`), confirmed live via commit-ancestry — Netlify's own deploy for this commit came back `Skipped` (a second concurrent merge landed 90 seconds later and superseded it in the build queue); verified the careful way, checking the commit was an ancestor of the deploy that actually went `ready`, not just trusting "merged."
+
+**Deferred:**
+- [ ] **Not click-tested live** — verified via `tsc -b --force`, `pnpm run build`, `pnpm check:perms`, and 387/387 tests passing, not an actual admin opening a Staff row and seeing the new section render. Worth two minutes on Conor or Nelson's row. _(added 2026-08-23)_
+
+---
+
 ## eq-shell: labour-hire licence promotion gap — Shell-join claim door was silently dropping credentials, root-caused + fixed (2026-08-23)
 *Royce, from a Staff page screenshot: why aren't the labour-hire licences (Conor Horgan, Nelson Sareto) showing up. Resolves the open question left by the 2026-08-21 "Labour-hire claim gate" entry (archived) about whether the Shell-join claim flow alone promotes credentials.*
 
