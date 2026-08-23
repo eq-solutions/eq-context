@@ -1249,6 +1249,28 @@ but the failure was read, not waved through on the strength of "known pre-existi
 failures" alone. Post-merge, `origin/main:lib/reports/report-branding.ts` re-read directly:
 `isSafeFetchUrl` is imported and called, `redirect: 'error'` is present on the fetch call.
 
+**Update 2026-08-23 (2): a second, distinct gap in the same guard — found, fixed, merged.**
+`isSafeFetchUrl()` in `lib/reports/logo-variants.ts` itself had a bug pre-dating this entry
+(present since S2-13, untouched by #803): `blockedHosts` compared against `parsed.hostname`
+containing the bare string `'::1'` to block IPv6 loopback, but the WHATWG URL parser always
+returns IPv6 hostnames bracketed — `new URL('https://[::1]/x').hostname === '[::1]'`, never
+`'::1'` — confirmed via Node REPL. The bare-string entry was dead code: `https://[::1]/...`
+(and the IPv4-mapped form, `https://[::ffff:127.0.0.1]/...` → hostname `[::ffff:7f00:1]`)
+sailed through as "safe." One guard, two call sites both exposed: `logo-variants.ts`'s own
+`fetchLogoImage`, and, since #803 above, `report-branding.ts`'s. PR #804 (closed, unmerged)
+would have extracted this guard to a new `lib/reports/url-safety.ts` with its own test file —
+checked directly: that test file didn't cover the bracketed case either, so merging #804 as
+originally written would not have closed this gap.
+
+Fix: strip a bracket pair from `hostname` before the existing IPv4/blocklist checks, plus add
+`'::ffff:7f00:1'` (the parser's normalized form of `::ffff:127.0.0.1`) to `blockedHosts`. New
+regression test file, `tests/lib/reports/logo-variants.test.ts` (none existed for this guard
+before), covers both bracketed forms directly. `tsc --noEmit` clean; `vitest run` 700/700
+including the 7 new cases. eq-service [PR #805](https://github.com/eq-solutions/eq-service/pull/805)
+squash-merged 2026-08-23 04:47 UTC as `b4bbc214`. Post-merge, `origin/main:lib/reports/logo-variants.ts`
+re-read directly via the GitHub API (not just the merge record): the bracket-strip and the
+`'::ffff:7f00:1'` blocklist entry are both present.
+
 ### SEC-51 — ENFORCE_IFRAME_ORIGIN is report-only, contradicting SEC-12's "enforced" claim (P2)
 `eq_shell_session` is `SameSite=Lax; Domain=.eq.solutions`, shared across every
 `*.eq.solutions` subdomain. The guard against a sibling-subdomain POST riding that ambient
