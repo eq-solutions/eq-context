@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-23 02:12 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-23 02:13 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-23 02:10 UTC → 2026-08-23 02:12 UTC)
+## Since last refresh (2026-08-23 02:12 UTC → 2026-08-23 02:13 UTC)
 
-- Merged: eq-shell [#1515](https://github.com/eq-solutions/eq-shell/pull/1515) feat(access-control): role-level toggles for Field's 86 fine
-- Merged: eq-shell [#1512](https://github.com/eq-solutions/eq-shell/pull/1512) chore(security): retire dead FUNC_EXEC_ANON_TRACKED entries 
-- Merged: eq-shell [#1510](https://github.com/eq-solutions/eq-shell/pull/1510) fix(security): close SEC-33 on zaap (staff PII read+delete)
-- Merged: eq-shell [#1508](https://github.com/eq-solutions/eq-shell/pull/1508) fix(nav): 4 admin entry points show links their destination 
-- Merged: eq-shell [#1506](https://github.com/eq-solutions/eq-shell/pull/1506) fix(nav): HubLayout sidebar never enforced hideForTier for t
-- Merged: eq-shell [#1505](https://github.com/eq-solutions/eq-shell/pull/1505) feat(labour-hire): crop preview in review modal + review-all
-- Merged: eq-shell [#1503](https://github.com/eq-solutions/eq-shell/pull/1503) fix(quotes): clear sibling import error on Line Items card
-- Merged: eq-shell [#1500](https://github.com/eq-solutions/eq-shell/pull/1500) fix(labour-hire): allow jvkn Supabase storage in frame-src C
+- Merged: eq-shell [#1513](https://github.com/eq-solutions/eq-shell/pull/1513) fix(labour-hire): auto-send the claim email on candidate app
+- Merged: eq-shell [#1511](https://github.com/eq-solutions/eq-shell/pull/1511) docs: note the netlify/functions test-file location gotcha
+- Merged: eq-shell [#1509](https://github.com/eq-solutions/eq-shell/pull/1509) fix(security): close SEC-30/32 on both planes, org-scoped (v
+- Merged: eq-shell [#1507](https://github.com/eq-solutions/eq-shell/pull/1507) test(quotes): accuracy harness for the subcontractor PDF imp
+- Merged: eq-shell [#1504](https://github.com/eq-solutions/eq-shell/pull/1504) fix(quotes): clear 6 react-hooks lint errors in the create-f
+- Merged: eq-shell [#1502](https://github.com/eq-solutions/eq-shell/pull/1502) fix(staff): supervisor can complete licence re-review + cons
+- Merged: eq-shell [#1501](https://github.com/eq-solutions/eq-shell/pull/1501) fix(quotes): hoist Date.now() out of render to satisfy react
+- Merged: eq-shell [#1499](https://github.com/eq-solutions/eq-shell/pull/1499) fix(security): REVOKE anon-EXECUTE on 15 service/app_data fu
 
 ## ⚠ Needs you (5)
 
@@ -54,7 +54,7 @@ _…and 187 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | eq-shell | ✓ success | 0d ago | 1 | 2d |
 | eq-solves-service | ✓ success | 2d ago | 2 | 2d |
 | eq-field | ✓ success | 0d ago | 2 | 0d |
-| eq-cards | ✓ success | 0d ago | 2 | 2d |
+| eq-cards | ✓ success | 0d ago | 1 | 2d |
 | eq-solves-intake | ✓ success | 4d ago | 0 | — |
 
 ## Live errors (Sentry)
@@ -86,10 +86,10 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-23 | eq-shell | [#1523](https://github.com/eq-solutions/eq-shell/pull/1523) fix(chunk-error): case-insensitive match for stale-chunk dynamic- |
 | 2026-08-23 | eq-shell | [#1520](https://github.com/eq-solutions/eq-shell/pull/1520) fix(staff): auto-download the compliance pack instead of requirin |
 | 2026-08-23 | eq-field | [#757](https://github.com/eq-solutions/eq-field/pull/757) security(rls): land held write-side actor-identity fix for timesh |
+| 2026-08-23 | eq-cards | [#289](https://github.com/eq-solutions/eq-cards/pull/289) fix(security): gate eq_cards_link_or_create_worker on caller iden |
 | 2026-08-22 | eq-shell | [#1518](https://github.com/eq-solutions/eq-shell/pull/1518) fix(labour-hire): render both crop boxes when a card's back is in |
 | 2026-08-22 | eq-shell | [#1517](https://github.com/eq-solutions/eq-shell/pull/1517) fix(labour-hire): promote worker_credentials to licences on Shell |
 | 2026-08-22 | eq-shell | [#1516](https://github.com/eq-solutions/eq-shell/pull/1516) fix(migrations): enforce per-migration tenant scope in the One Pi |
-| 2026-08-22 | eq-field | [#755](https://github.com/eq-solutions/eq-field/pull/755) v3.5.544 — dashboard: one row per person on the licence-missing c |
 _Showing 15 of 123 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -197,4 +197,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-23 02:12 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-23 02:13 UTC._
