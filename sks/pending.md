@@ -12,7 +12,7 @@ status: live
 ## SKS roster editing was silently broken for 5 days — trigger dropped by migration 0249, fixed + dispatched, live (2026-08-23)
 *Fix landed on the eq-shell side — see `eq/pending/eq-shell.md` (2026-08-23, "SKS roster editing found broken") for full detail. This entry is the SKS-side pointer.*
 
-- [ ] **Not click-tested live by a real person** — a manager/supervisor should add, edit, archive, and reactivate a real SKS person end-to-end on the actual People page. Verified via direct DB query and successful migration dispatch, not an actual UI session. _(added 2026-08-23)_
+- [ ] **Edit and archive now click-tested live (2026-08-23, Royce's own manager session) — add, restore, and hard-delete still aren't.** Full detail in `eq/pending/eq-shell.md`. _(added 2026-08-23)_
 
 ## Staff deactivation wasn't revoking Shell logins — 9 real SKS accounts found + fixed, live (2026-08-23)
 *Fix landed on the eq-shell side — see `eq/pending/eq-shell.md` (2026-08-23, "staff deactivation wasn't revoking Shell logins") for full detail. This entry is the SKS-side pointer.*
