@@ -34,12 +34,9 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-shell: SKS roster editing found broken for 5 days — trigger silently dropped by migration 0249, fix drafted (2026-08-23)
+## eq-shell: SKS roster editing found broken for 5 days — trigger dropped by migration 0249, fixed + dispatched + merged, live (2026-08-23)
 
-- [ ] **Dispatch still needs Royce's own click** — `0270_field_people_iud_trigger_reattach.sql` is committed + pushed (`672bf380`, branch `claude/platform-console-cards-core-reconcile`), verified against 3 independent live checks (`pg_trigger`, `has_table_privilege`, a real user's failed PATCH in `postgres_logs`). `gh workflow run tenant-migrate.yml` was denied by the auto-mode classifier — confirmed twice now, by two separate sessions. Dispatch directly against that branch here (leave other fields blank/default): https://github.com/eq-solutions/eq-shell/actions/workflows/tenant-migrate.yml — will also pick up two already-merged, unrelated migrations (0268, 0269) waiting on `main`, which is expected, not extra scope.
-- [ ] **Still needs a proper PR to `main`** — valid to dispatch directly off the branch (this pipeline's own documented "dispatch before merge" pattern), but hasn't been through CI/drift-gate/review yet. Open one after dispatching so it lands on `main` normally. _(added 2026-08-23)_
-- [ ] **Post-dispatch**: click-test a real SKS roster edit (add/edit/archive/reactivate) end-to-end, and confirm `pg_trigger` count back to 1 + write grants restored on ehow — nothing in this fix has been verified live after applying. _(added 2026-08-23)_
-- [ ] **Related, already shipped**: [PR #1550](https://github.com/eq-solutions/eq-shell/pull/1550) (staff deactivation now auto-revokes the linked Shell login) — merged by Royce directly, confirmed live against the actual production deploy (`6e7d0692`), not just the merge status. Full detail in the staff-login-sync entry below. _(added 2026-08-23)_
+- [ ] **Not click-tested live by a real person** — a manager/supervisor session should add, edit, archive, and reactivate a real SKS person end-to-end, including a hard-delete of a test row. Fix (`0270` + `0271`) is dispatched to ehow and verified live via direct DB query, and shipped through [PR #1553](https://github.com/eq-solutions/eq-shell/pull/1553) (merged, confirmed live), but not via an actual UI session. _(added 2026-08-23)_
 
 ---
 
