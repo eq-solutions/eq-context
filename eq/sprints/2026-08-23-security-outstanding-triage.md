@@ -2,7 +2,7 @@
 title: Sprint scoping — outstanding items from the 2026-08-23 §C-G security sweep
 owner: Royce Milmlow
 last_updated: 2026-08-23
-scope: Triage of everything still open after this session's SEC-44/41/42/50 closures — what's genuinely buildable now vs. genuinely Royce's call, with a concrete proposal for each buildable item. Live-verified, not just restated from the register.
+scope: Triage of everything left after this session's closures — leads with a tight execution runbook for the 3 items only Royce can close (SEC-57/61/63), full detail for every item kept below. Live-verified, not restated from the register.
 read_priority: high
 status: live
 ---
@@ -10,16 +10,76 @@ status: live
 # Sprint scoping — outstanding items from the 2026-08-23 security sweep
 
 Triggered by Royce asking to turn the session-close "needs you" / "deferred" list into
-a sprint. Every item below was re-checked live this session, not copied from the
-register's existing writeup — three of the eight resolved or changed shape in the
-process.
+a sprint, then to sprint the 3 remaining Royce-only items specifically. Every item was
+re-checked live, not copied from the register's existing writeup.
 
-**Correction while writing this:** the prior session-close pending.md entry bundled
-"SEC-60/61" as one Netlify dev-context item. That was wrong — SEC-61 is the Netlify
-leak; **SEC-60 is a separate, unrelated P3 finding** (org/repo hardening gaps: 2FA,
-secret scanning, branch protection). Split correctly below.
+**Read this section, skip the rest unless you want the reasoning behind it.**
 
 ---
+
+## Royce's action list — do these 3, in this order
+
+### 1. SEC-63 — check first, it changes how urgent #2 is (2 minutes)
+
+**Netlify → Team settings → Environment variables → Shared** (or wherever the
+team-level "shared" vars live in the current UI — this is the account-scope list,
+not a per-site one). Find `SUPABASE_JWT_SECRET`. Check what it's assigned to.
+
+- **If `sks-nsw-labour` is in that list:** this is now P0 — a separate legal
+  entity's app is signing sessions with the same secret as the entire EQ suite.
+  Tell me and I'll re-prioritise everything else around it.
+- **If it's not:** SEC-63 closes as P1, scoped to EQ sites only. Still worth
+  fixing (see #2), just not an emergency.
+
+### 2. SEC-61 — the dev-context leak, per site (~5 min/site, 4 sites)
+
+For each of **eq-shell, eq-service, eq-field, eq-cards**: Site settings →
+Environment variables. For every variable with the padlock ("contains sensitive
+values") icon, open it and check the **dev** context row specifically.
+
+- **If `dev` shows a real value:** delete *only* that row. Leave branch-deploy /
+  deploy-preview / production untouched — deleting the whole variable breaks
+  those.
+- **If `dev` is already empty or the row doesn't exist:** already safe, skip it.
+
+This is the fix the register already worked out (SEC-61/62) — the standard
+"delete and recreate with the same value" remediation used for SEC-9/12/18/19
+always leaves a fresh `dev` row when it recreates, which is exactly the leak.
+Delete-only, don't recreate, and it stays closed this time.
+
+I already have eq-shell's variable list from an accidental pull earlier this
+session (checking `ENFORCE_IFRAME_ORIGIN` triggered a bulk read I didn't intend —
+see §5 below). I'm deliberately not repeating any of it here, key names included —
+that's exactly the kind of exposure this finding is about, and I'd rather you find
+it fresh than trust my memory of a live secrets dump. eq-service, eq-field, and
+eq-cards I haven't looked at at all.
+
+### 3. SEC-57 — one decision, then optionally a 5-minute config change
+
+Is `grok-by-xai`'s org-wide write/admin access on every repo intentional, or a
+default nobody trimmed? (Permissions confirmed live 2026-08-23: `actions:write`,
+`administration:write`, `contents:write`, `workflows:write`, all repos.)
+
+- **If intentional:** nothing to do, close the finding with a note why.
+- **If not:** GitHub → Organization settings → GitHub Apps → `grok-by-xai` →
+  reduce repository access to just the repos it actually needs, or drop the
+  `write`-tier permissions it doesn't use. Five minutes once you've decided.
+
+---
+
+## Shipped this sweep, for reference — no action needed on these
+
+| Item | Outcome |
+|---|---|
+| SEC-44 (P0) | Applied live to jvkn, verified with a production probe |
+| SEC-41 / SEC-42 (P1) | Dispatched live to both zaap and ehow, verified with a production probe |
+| SEC-50 (P1) | Merged to eq-service main, verified against live source |
+| SEC-45 / SEC-46 / SEC-47 (P2) | All merged (detail in §6 below) — none applied/dispatched live yet |
+| SEC-51 (P2) | Resolved as a non-issue (detail in §5 below) |
+
+---
+
+## Detail — the reasoning behind each item, unchanged from the original scoping pass
 
 ## 1. SEC-57 — org-wide GitHub App holds write + admin on every repo (P1)
 
@@ -153,29 +213,32 @@ in the register. Low priority, doc hygiene.
 
 ## 6. SEC-45/46/47 — three P2 findings, same shape as fixes already shipped today
 
-**Genuinely buildable, same pattern as this session's SEC-44/41/42 work. Not started —
-these are P2, below today's priority cut, not blocked on anything.**
+**Shipped since this file was first written. SEC-45 and SEC-46 merged this session;
+SEC-47 turned out to already be merged by a concurrent session (found while building
+the other two, register corrected to match). None dispatched/applied live yet.**
 
-- **SEC-45** — `eq_cards_find_or_create_worker_for_invite` (jvkn) has the identical
-  zero-caller-check shape SEC-44 had, on the sibling resolver. Its only legitimate
-  caller is server-role, so unlike SEC-44 this doesn't need an `auth.uid()` guard —
-  a plain `REVOKE EXECUTE ... FROM authenticated` closes it, same control-plane apply
-  path as SEC-44.
-- **SEC-46** — eq-field's CSV-import purge (`_purgeTenantRows()`) has no DB-layer role
-  check on the Sites/Supervision tables specifically (every other importer's table
-  does). Needs an `entity.delete`-equivalent RLS policy addition on ehow — same shape
-  as today's SEC-41/42 fix, dispatched via the tenant-migrate.yml One Pipe.
-- **SEC-47** — `approve_safety_record` (ehow) doesn't check that the approver isn't the
-  submitter. Needs a same-function guard (`submitted_by <> auth.uid()` or equivalent)
-  added as a first statement, same shape as SEC-44's fix. 35 prestarts + 1 toolbox talk
-  live behind it today.
+- **SEC-45** — `eq_cards_find_or_create_worker_for_invite` (jvkn) had the identical
+  zero-caller-check shape SEC-44 had. Merged: eq-cards [PR #291](https://github.com/eq-solutions/eq-cards/pull/291),
+  a plain `REVOKE EXECUTE ... FROM authenticated` (no `auth.uid()` guard needed — this
+  function takes no user id to bind). **Not yet applied to jvkn** — Supabase MCP
+  disconnected mid-session, so this session couldn't apply it even with a go-ahead.
+- **SEC-46** — eq-field's CSV-import purge (`_purgeTenantRows()`) had no DB-layer role
+  check on `app_data.sites` specifically (its sibling gap, `app_data.staff`, was
+  already closed by SEC-33). Merged: eq-shell [PR #1541](https://github.com/eq-solutions/eq-shell/pull/1541),
+  migration `0267` — three RESTRICTIVE policies, manager+supervisor tier, mirroring
+  SEC-33's own applied pattern. **Not dispatched, and not dry-run verified live** (same
+  MCP disconnection) — built from the already-applied `0256` migration's source
+  instead of a fresh live read. Worth a live re-check before dispatch.
+- **SEC-47** — `approve_safety_record` (ehow) didn't check that the approver isn't the
+  submitter. Already fixed by someone else: migration `0265`, merged to eq-shell main,
+  live-verified on both planes by whoever built it (found `eq_service_write_allowed`
+  only exists on ehow, not zaap — a trap this session's own SEC-46 fix couldn't have
+  caught without the same live check). **Not dispatched yet either.**
 
-None of these need a product decision first — permission tiers are either already
-established (SEC-45 mirrors SEC-44 exactly) or self-evident (SEC-47's fix is "don't
-let someone approve their own submission"). Ready to build on your go.
+**Follow-up, not urgent:** SEC-45 (jvkn) and SEC-46 (zaap/ehow) both need a live
+apply/dispatch decision when the tooling or a live-DB session is available again.
 
 ---
-
 ## 7. eq-service: duplicate migration version `0192` breaks CI on every PR (unrelated to security)
 
 **Buildable, trivial, found in passing while confirming today's SEC-50 CI failure was
@@ -196,14 +259,15 @@ of the normal sequence, don't renumber against those.)
 
 ---
 
+
 ## Summary
 
 | # | Item | Status | Action |
 |---|---|---|---|
-| 1 | SEC-57 — GitHub App permissions | Confirmed live, unchanged | **Your call** — intentional or tighten? |
-| 2 | SEC-61 — Netlify `dev`-context leak | Fix pattern known | **Your hands** — classifier-blocked for Claude Code, exact var list ready |
-| 3 | SEC-63 — account-scope secret scope | Narrowed, not resolved | **Your 2-minute dashboard check** — genuinely can't be read via tooling safely |
+| 1 | SEC-63 — account-scope secret scope | Narrowed, not resolved | **Your 2-minute dashboard check** — do this first, changes #2's urgency |
+| 2 | SEC-61 — Netlify `dev`-context leak | Fix procedure known | **Your hands** — classifier-blocked for Claude Code, ~20 min across 4 sites |
+| 3 | SEC-57 — GitHub App permissions | Confirmed live, unchanged | **Your call** — intentional or tighten? |
 | 4 | SEC-60 — org/repo hardening (4 sub-items) | Mixed | 2FA = your call · secret scanning = buildable on your go · Actions pinning = needs its own scoping · eq-service branch protection = buildable on your go |
 | 5 | SEC-51 — `ENFORCE_IFRAME_ORIGIN` | **Resolved — not a live gap** | Close in register, fix a stale comment |
-| 6 | SEC-45/46/47 — three P2 code fixes | Buildable, not started | **Ready to build on your go** — same patterns as today's fixes |
+| 6 | SEC-45/46/47 — three P2 code fixes | **Merged**, not applied/dispatched | Apply/dispatch when Supabase MCP or a live-DB session is available |
 | 7 | eq-service migration `0192` collision | Buildable, trivial | Rename one file to `0228` |
