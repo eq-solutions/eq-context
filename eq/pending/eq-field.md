@@ -13,6 +13,17 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: field_people_iud() writes identity content with zero path back to jvkn — the writer audit's biggest finding, fix built (2026-08-23)
+*Handed off from the eq-shell/eq-cards identity-ownership writer audit (IDENTITY-MODEL.md §3.3): the audit's code-side grep couldn't see this at all — it's a Postgres trigger function on ehow, not a Netlify/edge function. Found by querying the live DB catalog directly (pg_trigger, pg_proc), on both ehow and zaap, not by reading code.*
+
+- [x] **Confirmed live**: `app_data.field_people_iud()` — the INSTEAD OF trigger behind Field's own Add Person/Edit Roster screens — writes `first_name`/`last_name`/`email`/`phone`/`date_of_birth`/`emergency_contact_name` straight into `app_data.staff` on every UPDATE, with no path back to jvkn at all. Same class of gap eq-shell PR #1544 already closed twice for Shell's Staff-page edits, never audited for Field's own DB-side write.
+- [x] **Also confirmed: exists only on ehow, not on zaap.** `sync_staff_to_field()` (mirrors `app_data.staff` into a second local table, `public.people`) is also ehow-only. Real cross-tenant drift in Field's own write path, not previously documented.
+- [x] **Fix built, migration written, not applied**: extends `field_people_iud()`'s UPDATE branch to fire an async upward push (vault secret + `net.http_post`, mirroring jvkn's own `sync_worker_to_canonical()` pattern reversed) to a new eq-shell endpoint, `field-identity-push.ts`. Only fires when the row has a `cards_worker_id` — a brand-new Field-created person (INSERT branch) has none by construction, nothing to push. eq-field [PR #761](https://github.com/eq-solutions/eq-field/pull/761), companion eq-shell PR #1555 (second commit).
+- [ ] **Inert until two secrets exist out-of-band, deliberately not created yet**: a vault secret named `field_identity_push_secret` on ehow, and `FIELD_IDENTITY_PUSH_SECRET` set to the same value on eq-shell's Netlify env. Until both exist, the trigger's own `RAISE WARNING` fires and the push silently no-ops — staff/roster writes are unaffected either way. **Needs Royce's explicit go** before either secret is created, same posture as every other jvkn-identity-adjacent change from this session. _(added 2026-08-23)_
+- [ ] **Migration itself also needs explicit sign-off before hand-applying to live ehow** — this is a control-plane-adjacent function on live SKS data, same convention as the Zemi Asri auth fix earlier the same day. _(added 2026-08-23)_
+
+---
+
 ## eq-field: Supervisors are excluded from Contacts BY DESIGN — not a bug, mis-diagnosed twice (2026-08-23)
 *Royce: "Rhys Scott still doesn't appear in the list on EQ Field — he shows in the supervisor list but not contacts." Recorded because it was mis-diagnosed twice in one session and a fix was shipped for the wrong cause.*
 
