@@ -65,7 +65,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-field:**
 - #758 v3.5.545 — Boot: canonical/routing fetches retry instead of hard-failing on one slow moment
-- #756 Security: leave visibility fail-open closed for unassigned/unresolved supervisors
 
 **eq-service:**
 - #791 fix(reports): make reissuing a report possible from the UI
