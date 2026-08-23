@@ -13,6 +13,13 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: Zemi Asri's driver licence invisible after identity merge — missing org_membership row found, fixed, guard shipped + merged + live (2026-08-23)
+
+- [ ] **Guard's first real firing not yet confirmed** — `check-missing-org-memberships.ts` fires for the first time 2026-08-23 21:50 UTC; a one-time claude.ai cloud routine (with Sentry + Supabase access) is scheduled to check the actual alert against the documented baseline (`stale_grants=12`, `invisible_licences=0`, `at_risk=0`) at 08:00 AEST tomorrow. Not yet run as of this entry. _(added 2026-08-23)_
+- [ ] **Not click-tested live** — Zemi's licence confirmed via a direct query replay of the Staff page's own logic, not by opening the actual Staff page in a browser. Worth a 30-second look next time someone's on `core.eq.solutions/sks/staff`. _(added 2026-08-23)_
+
+---
+
 ## eq-shell: compliance pack now includes approved-but-unclaimed labour-hire candidates in a separate "Pending" section (2026-08-23)
 *Royce, right after confirming the Staff page correctly shows Conor's and Nelson's licences as "Not yet confirmed": he still needs to download their credentials in a compliance pack today, before either has signed in. The pack's entire data chain (`org_memberships` → `workers.user_id` → `licences.user_id`) requires a real claimed account, so the two of them were structurally absent from every export, not merely filtered out.*
 

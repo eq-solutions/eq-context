@@ -16,6 +16,17 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-cards: licence-photo RLS keyed off a frozen storage path instead of the licence row — found, fixed, migration applied live (2026-08-23) (fully closed, no open items remain)
+*Follow-up to the Zemi Asri `org_membership` fix in eq-shell (same day, `eq/pending/eq-shell.md`) — his licence photo's storage path still embedded his OLD dead-stub account's identity, since the path is written once at upload and never re-derived when an identity merge repoints ownership. Built in a spawned session (chip `task_78257548`); independently verified from the parent session before logging here.*
+
+- [x] Correctly re-scoped mid-task: `licences`/`licence-photos` are eq-cards' own control-plane tables on jvkn, not eq-shell's. Worked in an isolated worktree, left the root eq-cards checkout (mid-flight on unrelated work) untouched. Checked `origin/claude/zemi-asri-identity-guard` for a possible collision first — confirmed already merged as #287, no overlap.
+- [x] Found 6 live rows (not just Zemi's) with a stale storage-path identity — all 6 fixed live, object moved and columns updated to match the licence's current owner.
+- [x] Root-caused and closed the bug class: all 5 owner/admin-read RLS policies on `licence-photos` now check `public.licences.user_id` live via the licence id already in the path, instead of trusting a frozen path segment — a future identity merge self-heals instead of reproducing this silently. eq-cards migration `0137_licence_photos_owner_by_licence_row.sql`, [PR #294](https://github.com/eq-solutions/eq-cards/pull/294).
+- [x] Validated in a `BEGIN...ROLLBACK` against live jvkn before opening the PR. Applied live on Royce's explicit "Apply it live to jvkn" (this repo's own hand-apply convention for control-plane changes).
+- [x] Independently verified from a second session — live `pg_policies` text matches the new predicate exactly on all 5 policies, and `0137` is confirmed as the newest row in jvkn's migration ledger.
+
+---
+
 ## eq-cards: root-caused the recurring `eq_cards_auto_provision` outage and built a permanent guard against it recurring (2026-08-19) (fully closed, no open items remain)
 *The Sentry issue `EQ-CARDS-1C` (auto-provision failing with a permission error) kept coming back — this was its 3rd+ occurrence, a different root cause each time. This time: a database-wide safety trigger on the shared control-plane project silently strips a function's permissions every time its code is redefined, unless the same migration explicitly re-grants them — and nothing in eq-cards' own CI checked for a missing re-grant before it shipped (eq-shell has this guard for its own migrations; eq-cards never got its own copy).*
 
