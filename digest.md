@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-23 01:30 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-23 01:41 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-23 01:08 UTC → 2026-08-23 01:30 UTC)
+## Since last refresh (2026-08-23 01:30 UTC → 2026-08-23 01:41 UTC)
 
-- Merged: eq-shell [#1519](https://github.com/eq-solutions/eq-shell/pull/1519) fix(labour-hire): promote worker_credentials to licences on 
-- Merged: eq-shell [#1512](https://github.com/eq-solutions/eq-shell/pull/1512) chore(security): retire dead FUNC_EXEC_ANON_TRACKED entries 
-- Merged: eq-shell [#1508](https://github.com/eq-solutions/eq-shell/pull/1508) fix(nav): 4 admin entry points show links their destination 
-- Merged: eq-shell [#1506](https://github.com/eq-solutions/eq-shell/pull/1506) fix(nav): HubLayout sidebar never enforced hideForTier for t
-- Merged: eq-shell [#1505](https://github.com/eq-solutions/eq-shell/pull/1505) feat(labour-hire): crop preview in review modal + review-all
-- Merged: eq-shell [#1503](https://github.com/eq-solutions/eq-shell/pull/1503) fix(quotes): clear sibling import error on Line Items card
-- Merged: eq-shell [#1501](https://github.com/eq-solutions/eq-shell/pull/1501) fix(quotes): hoist Date.now() out of render to satisfy react
-- Merged: eq-shell [#1500](https://github.com/eq-solutions/eq-shell/pull/1500) fix(labour-hire): allow jvkn Supabase storage in frame-src C
+- Merged: eq-shell [#1524](https://github.com/eq-solutions/eq-shell/pull/1524) fix(migrations): enforce Plane scoping per-tenant, not as a 
+- Merged: eq-shell [#1513](https://github.com/eq-solutions/eq-shell/pull/1513) fix(labour-hire): auto-send the claim email on candidate app
+- Merged: eq-shell [#1511](https://github.com/eq-solutions/eq-shell/pull/1511) docs: note the netlify/functions test-file location gotcha
+- Merged: eq-shell [#1507](https://github.com/eq-solutions/eq-shell/pull/1507) test(quotes): accuracy harness for the subcontractor PDF imp
+- Merged: eq-shell [#1504](https://github.com/eq-solutions/eq-shell/pull/1504) fix(quotes): clear 6 react-hooks lint errors in the create-f
+- Merged: eq-shell [#1502](https://github.com/eq-solutions/eq-shell/pull/1502) fix(staff): supervisor can complete licence re-review + cons
+- Merged: eq-shell [#1499](https://github.com/eq-solutions/eq-shell/pull/1499) fix(security): REVOKE anon-EXECUTE on 15 service/app_data fu
+- Merged: eq-shell [#1498](https://github.com/eq-solutions/eq-shell/pull/1498) fix(drift): CHECK 6 widen schema scan to service/app_data (S
 
 ## ⚠ Needs you (6)
 
@@ -30,10 +30,12 @@ _2026-08-23 01:30 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-08-23.md](sessions/2026-08-23.md) · [failures.md](system/failures.md)
 - 🟠 **Cron failing** — `md-health-backstop.yml` 1 consecutive scheduled run(s) failed, last success 2026-08-22 · [failures.md](system/failures.md) F11
 
-## 🙋 Waiting on you (196)
+## 🙋 Waiting on you (198)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
+- **eq-shell** · **None of the 5 staged migrations have been dispatched** — they're now visible to the fleet runner but nothing has been applied to ehow or zaap. Dispatching each (with the correct `--slug`) remains explicitly Royce's call. _(added 2026-08-23)_
+- **eq-shell** · **Not click-tested live** — verified via `tsc -b --force`, `pnpm run build`, `pnpm check:perms`, and 387/387 tests passing, not an actual admin opening a Staff row and seeing the new section render. Worth two minutes on Conor or Nelson's row. _(added 2026-08-23)_
 - **eq-shell** · **Not click-tested live** — verified via `tsc -b --force`, eslint, and exact commit-ancestry against the live deploy, not an actual claim walked through by a person. Worth confirming once Conor or Nelson claims. _(added 2026-08-23)_
 - **eq-shell** · **Not click-tested live** — verified via `tsc -b --force` and eslint (0 new errors), not an actual file landing in a Downloads folder. Worth confirming next time a pack is built — same ask as the still-open 2026-07-28/07-26 "re-download and eyeball" items further down this file. _(added 2026-08-23)_
 - **eq-shell** · **None of the at-risk migrations have actually been copied into `supabase/tenant-migrations/` yet** — confirmed live: the directory's newest files are `0256`/`0257`, none of the eq-field migrations. No active dispatch risk today; the guard is preventive for whenever that copy happens. Copying + dispatching remain explicitly Royce's call. _(added 2026-08-23)_
@@ -44,15 +46,13 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **Not click-tested live** — verified via typecheck, lint, and full CI; no signed-in manager session available to confirm the Login column and filter render correctly, or to spot-check the 24 names against who's actually still active. _(added 2026-08-20)_
 - **eq-shell** · **Not clicked through live** — confirmed by typecheck, the permission-drift guard, and a direct jvkn query proving the Comms fix is a no-op today, not by an actual signed-in click-through. Worth two minutes on NSW Comms, the Ops tile as apprentice/labour_hire/subcontractor, and the mobile Reports row. _(added 2026-08-19)_
 - **eq-shell** · **Not click-tested live by a person** — every fix this round verified via `tsc -b --force` + production commit-ancestry against the live deploy, not a real signed-in session. Worth two minutes each: confirm a trial-tier tenant no longer sees Service/Ops on the sidebar, and that a Security-Group-scoped user holding `admin.list_users` but not `admin.manage_groups`/`admin.edit_user` no longer sees the now-hidden links. _(added 2026-08-21)_
-- **eq-shell** · **No live click-through yet** — the fix is confirmed genuinely deployed, but nobody has tapped "Save" on an export through `core.eq.solutions/sks/cards` on an actual iOS device since it landed. _(added 2026-08-18)_
-- **eq-shell** · **Not click-tested live by a person** — verified via typecheck, lint, the full test suite, and confirmed production deploys (exact commit match against what's actually serving), not an actual signed-in click-through. Worth two minutes next time Royce is in Shell: click through Staff → Customers → Field → Admin from the sidebar (should feel instant, no white-flash reload), and confirm ctrl/cmd-click still opens a link in a new tab. _(added 2026-08-18)_
-_…and 184 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 186 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 1 | 2d |
+| eq-shell | ✓ success | 0d ago | 2 | 2d |
 | eq-solves-service | ✓ success | 2d ago | 2 | 2d |
 | eq-field | ✓ success | 0d ago | 1 | 0d |
 | eq-cards | ✓ success | 0d ago | 1 | 2d |
@@ -76,6 +76,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-23 | eq-shell | [#1524](https://github.com/eq-solutions/eq-shell/pull/1524) fix(migrations): enforce Plane scoping per-tenant, not as a whole |
 | 2026-08-23 | eq-shell | [#1519](https://github.com/eq-solutions/eq-shell/pull/1519) fix(labour-hire): promote worker_credentials to licences on invit |
 | 2026-08-23 | eq-shell | [#1521](https://github.com/eq-solutions/eq-shell/pull/1521) chore(migrations): stage 5 single-plane eq-field migrations into  |
 | 2026-08-23 | eq-shell | [#1522](https://github.com/eq-solutions/eq-shell/pull/1522) feat(labour-hire): show a candidate's licences on the Staff page  |
@@ -90,12 +91,11 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-22 | eq-cards | [#288](https://github.com/eq-solutions/eq-cards/pull/288) fix(labour-hire): OCR splits front/back crop boxes for one-photo  |
 | 2026-08-21 | eq-shell | [#1515](https://github.com/eq-solutions/eq-shell/pull/1515) feat(access-control): role-level toggles for Field's 86 fine-grai |
 | 2026-08-21 | eq-shell | [#1509](https://github.com/eq-solutions/eq-shell/pull/1509) fix(security): close SEC-30/32 on both planes, org-scoped (verifi |
-| 2026-08-20 | eq-shell | [#1510](https://github.com/eq-solutions/eq-shell/pull/1510) fix(security): close SEC-33 on zaap (staff PII read+delete) |
 _Showing 15 of 124 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **eq-shell** (235 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-shell** (238 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (53 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (122 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (93 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
@@ -127,7 +127,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1505 | 172 / 67 | 159 | 44 |
+| [eq-shell](eq/pending/eq-shell.md) | 1531 | 173 / 69 | 166 | 44 |
 | [eq-cards](eq/pending/eq-cards.md) | 396 | 40 / 13 | 41 | 8 |
 | [eq-field](eq/pending/eq-field.md) | 785 | 96 / 27 | 45 | 15 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 644 | 72 / 25 | 87 | 20 |
@@ -198,4 +198,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-23 01:30 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-23 01:41 UTC._
