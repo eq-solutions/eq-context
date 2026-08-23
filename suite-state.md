@@ -61,7 +61,6 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-23)
 
 **eq-service:**
-- #805 fix(security): IPv6-bracket bypass in isSafeFetchUrl's SSRF guard
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
@@ -75,7 +74,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ✓ success |
+| eq-service | ? in_progress |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
