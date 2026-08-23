@@ -453,16 +453,23 @@ No other open items.
 
 ---
 
-## Suite pressure-test sweep §C-G: 31 findings logged (SEC-39-69) — 4 closed this session (2026-08-23)
+## Suite pressure-test sweep §C-G: 31 findings logged (SEC-39-69) — 4 closed, sprint-scoped (2026-08-23)
 
-**Needs Royce:**
-- [ ] **SEC-57 (P1)** — org-wide GitHub App (`grok-by-xai`) holds write access equal to or beyond the sole repo collaborator. Needs a decision (tighten or accept), not a PR.
-- [ ] **SEC-60/SEC-61 (P1)** — Netlify `dev`-context secret-masking gap; the standard delete+recreate remediation used for SEC-9/12/18/19 actually re-introduces this leak. Needs a different fix, not the established playbook.
-- [ ] **SEC-63 (P1, possibly P0)** — is the account-scope Netlify secret (`SUPABASE_JWT_SECRET`) shared with sks-nsw-labour, or site-scoped? Narrowed 2026-08-23 by a concurrent session (confirmed sks-nsw-labour sits on the *same* Netlify team as every EQ site — not a separate account), but the final check — the secret's actual assigned-projects list — still needs a 2-minute dashboard look. If it reaches sks-nsw-labour, becomes P0.
-- [ ] **SEC-51 (P2)** — confirm the live `ENFORCE_IFRAME_ORIGIN` value. Not touched this session.
-_(added 2026-08-23, trimmed 2026-08-23 — closed items: PR #171 review, SEC-44/P0, SEC-41/42, SEC-50, all closed + live-verified, see sessions/2026-08-23.md)_
+Full triage of what's left: [`eq/sprints/2026-08-23-security-outstanding-triage.md`](../eq/sprints/2026-08-23-security-outstanding-triage.md)
+— every item live-verified there, not restated here to avoid a second copy going stale.
+
+**Needs Royce (see sprint for full detail):**
+- [ ] **SEC-57 (P1)** — GitHub App permissions, your call (tighten or accept).
+- [ ] **SEC-61 (P1)** — Netlify `dev`-context leak, fix pattern known, needs your hands (classifier-blocked for Claude Code).
+- [ ] **SEC-63 (P1, possibly P0)** — account-scope Netlify secret scope, needs your 2-minute dashboard check.
+- [ ] **SEC-60 (P3, 4 sub-items)** — org/repo hardening gaps; some buildable on your go, some your call.
+- [ ] **SEC-45/46/47 (P2)** — ready to build on your go, same patterns as today's SEC-44/41/42 fixes.
+
+**Resolved while sprint-scoping:** SEC-51 was NOT a live gap (flag is on, feared breakage doesn't exist in current code) — closing as doc cleanup, not a fix.
+_(added 2026-08-23, corrected + sprint-scoped 2026-08-23 — earlier version of this entry incorrectly bundled SEC-60 into the Netlify leak; SEC-60 is unrelated)_
 
 ---
+
 
 ## eq-service: duplicate migration version 0192 breaks CI's integration-test job (2026-08-23)
 
