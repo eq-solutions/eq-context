@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-23 08:33 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-23 08:46 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-23 08:28 UTC → 2026-08-23 08:33 UTC)
+## Since last refresh (2026-08-23 08:33 UTC → 2026-08-23 08:46 UTC)
 
-- Merged: eq-shell [#1552](https://github.com/eq-solutions/eq-shell/pull/1552) fix(equipment): hide Archive/Delete bulk actions from view-o
-- Merged: eq-shell [#1535](https://github.com/eq-solutions/eq-shell/pull/1535) fix(security): role-gate + self-approval check on approve_sa
-- Merged: eq-shell [#1534](https://github.com/eq-solutions/eq-shell/pull/1534) fix(security): entity-role-gate quote delete/line-item RPCs 
-- Merged: eq-shell [#1532](https://github.com/eq-solutions/eq-shell/pull/1532) feat(drift-guard): CHECK 10 -- positive assertion for INTENT
-- Merged: eq-shell [#1528](https://github.com/eq-solutions/eq-shell/pull/1528) fix(chunk-loading): catch chunk-load failures that bypass Ch
-- Merged: eq-shell [#1527](https://github.com/eq-solutions/eq-shell/pull/1527) fix(labour-hire): pending-licences endpoint reads columns th
-- Merged: eq-shell [#1524](https://github.com/eq-solutions/eq-shell/pull/1524) fix(migrations): enforce Plane scoping per-tenant, not as a 
-- Merged: eq-shell [#1514](https://github.com/eq-solutions/eq-shell/pull/1514) feat(equipment): add IT equipment as a second internal regis
+- Merged: eq-shell [#1554](https://github.com/eq-solutions/eq-shell/pull/1554) fix(security): reattach field_people_iud trigger + close 2 p
+- Merged: eq-shell [#1536](https://github.com/eq-solutions/eq-shell/pull/1536) fix(equipment): drop custodian wording, show assigned person
+- Merged: eq-shell [#1533](https://github.com/eq-solutions/eq-shell/pull/1533) Incident: restore anon SELECT on shell_control.eq_schema_reg
+- Merged: eq-shell [#1530](https://github.com/eq-solutions/eq-shell/pull/1530) Incident: restore anon's pre-login bootstrap read on public.
+- Merged: eq-shell [#1529](https://github.com/eq-solutions/eq-shell/pull/1529) fix(security): revoke anon EXECUTE on actor-identity helpers
+- Merged: eq-shell [#1525](https://github.com/eq-solutions/eq-shell/pull/1525) fix(staff): seed deep-link selId at mount, satisfy react-hoo
+- Merged: eq-solves-service [#805](https://github.com/eq-solutions/eq-service/pull/805) fix(security): IPv6-bracket bypass in isSafeFetchUrl's SSRF 
+- Merged: eq-solves-service [#803](https://github.com/eq-solutions/eq-service/pull/803) fix(security): SSRF guard on report-branding.ts's logo fetch
 
 ## ⚠ Needs you (8)
 
@@ -32,10 +32,11 @@ _2026-08-23 08:33 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🔴 **Guard bypass? rung 4** — F12: Side-clone reconciliation blind-overwrote a concurrent session's already-pushed shared-fil · possibly recurred in [2026-08-21.md](sessions/2026-08-21.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-08-23.md](sessions/2026-08-23.md) · [failures.md](system/failures.md)
 
-## 🙋 Waiting on you (206)
+## 🙋 Waiting on you (207)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
+- **eq-shell** · **Not click-tested live** — no actual compliance-pack download has been run against Conor's/Nelson's real data yet. Worth running one export and checking the new "Pending (Unclaimed)" sheet + zip folder render correctly. _(added 2026-08-23)_
 - **eq-shell** · **Dispatch still needs Royce's own click** — `0270_field_people_iud_trigger_reattach.sql` is committed + pushed (`672bf380`, branch `claude/platform-console-cards-core-reconcile`), verified against 3 independent live checks (`pg_trigger`, `has_table_privilege`, a real user's failed PATCH in `postgres_logs`). `gh workflow run tenant-migrate.yml` was denied by the auto-mode classifier — confirmed twice now, by two separate sessions. Dispatch directly against that branch here (leave other fields blank/default): https://github.com/eq-solutions/eq-shell/actions/workflows/tenant-migrate.yml — will also pick up two already-merged, unrelated migrations (0268, 0269) waiting on `main`, which is expected, not extra scope.
 - **eq-shell** · **Post-dispatch**: click-test a real SKS roster edit (add/edit/archive/reactivate) end-to-end, and confirm `pg_trigger` count back to 1 + write grants restored on ehow — nothing in this fix has been verified live after applying. _(added 2026-08-23)_
 - **eq-shell** · **Not click-tested live** — both new fixes verified via live grants/policy queries and full CI, not an actual signed-in non-permission-holder attempting either blocked action. _(added 2026-08-23)_
@@ -43,22 +44,21 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **Sentry access still not sorted** — both the Sentry MCP connector and Royce's own logged-in Chrome hit an auth wall this session, which is why the exact click-by-click trigger for the reported occurrences couldn't be pinned down with full certainty (the fix covers the whole class of failure regardless of the precise trigger). Worth revisiting once either is authorized. _(added 2026-08-23)_
 - **eq-shell** · **Not click-tested live** — verified via eslint/tsc and commit-ancestry against the live deploy, not an actual `?open=<id>` link clicked by a person. Worth confirming next time someone opens a Staff deep-link from the "Ask anything" bar or a Resourcing row click. _(added 2026-08-23)_
 - **eq-shell** · **`0258`-`0261` (the 4 ehow-only migrations) still not dispatched** — dispatching each (with `--slug=<tenant>` matching its declared plane) remains explicitly Royce's call. _(added 2026-08-23, narrowed from "none of the 5" — one of the five is now done)_
-- **eq-shell** · **Not click-tested live** — the underlying bug is fixed and verified against Conor's and Nelson's actual data (correct paths now resolve, signable), but nobody has opened their Staff row and watched the "Not yet confirmed" section actually render an image/PDF. Worth two minutes. _(added 2026-08-23)_
+- **eq-shell** · **Not click-tested live, either claim door** — both #1517 (Shell-join) and #1519 (accept-invite.ts) verified via `tsc -b --force`/eslint and exact commit-ancestry against the live deploy, not an actual claim walked through by a person. Worth confirming once Conor or Nelson claims. _(added 2026-08-23)_
 - **eq-shell** · **Not click-tested live** — verified via `tsc -b --force` and eslint (0 new errors), not an actual file landing in a Downloads folder. Worth confirming next time a pack is built — same ask as the still-open 2026-07-28/07-26 "re-download and eyeball" items further down this file. _(added 2026-08-23)_
 - **eq-shell** · **None of the at-risk migrations have actually been copied into `supabase/tenant-migrations/` yet** — confirmed live: the directory's newest files are `0256`/`0257`, none of the eq-field migrations. No active dispatch risk today; the guard is preventive for whenever that copy happens. Copying + dispatching remain explicitly Royce's call. _(added 2026-08-23)_
 - **eq-shell** · **Consider a lightweight confirmation of what the client-RFQ autofill actually filled in** — today it silently overwrites the create-form's fields with no summary. Not a correctness gap (nothing saves until "Create Quote," so the form itself is the review step) but possibly worth it if the parse is often wrong in practice — needs Royce's read on that, not a guess. _(added 2026-08-20)_
-- **eq-shell** · **Not click-tested live** — verified via typecheck/lint/376 tests and confirmed production deploys (exact commit match) for both PRs, not an actual admin session. Worth two minutes: open the Reference library (should show 16 documents, not 44) and try "Push to more people" on an existing Register document. _(added 2026-08-20)_
-_…and 194 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 195 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 1 | 0d |
+| eq-shell | ✓ success | 0d ago | 2 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 2 | 2d |
 | eq-field | ✓ success | 0d ago | 0 | — |
-| eq-cards | ✓ success | 0d ago | 0 | — |
-| eq-solves-intake | ✓ success | 4d ago | 0 | — |
+| eq-cards | ✓ success | 0d ago | 2 | 0d |
+| eq-solves-intake | ✓ success | 5d ago | 0 | — |
 
 ## Live errors (Sentry)
 
@@ -78,6 +78,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-23 | eq-shell | [#1554](https://github.com/eq-solutions/eq-shell/pull/1554) fix(security): reattach field_people_iud trigger + close 2 permis |
 | 2026-08-23 | eq-shell | [#1552](https://github.com/eq-solutions/eq-shell/pull/1552) fix(equipment): hide Archive/Delete bulk actions from view-only r |
 | 2026-08-23 | eq-shell | [#1551](https://github.com/eq-solutions/eq-shell/pull/1551) feat(labour-hire): include pending unclaimed candidates in compli |
 | 2026-08-23 | eq-shell | [#1550](https://github.com/eq-solutions/eq-shell/pull/1550) fix(security): sync staff deactivation to the linked Shell login |
@@ -92,12 +93,11 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-23 | eq-shell | [#1541](https://github.com/eq-solutions/eq-shell/pull/1541) fix(security): DB-layer role gate on app_data.sites writes (SEC-4 |
 | 2026-08-23 | eq-shell | [#1540](https://github.com/eq-solutions/eq-shell/pull/1540) fix(staff): resolve the 7 divergent staff/shell login names (jvkn |
 | 2026-08-23 | eq-shell | [#1538](https://github.com/eq-solutions/eq-shell/pull/1538) fix(security): use actor identity in timesheet/leave guard self-c |
-| 2026-08-23 | eq-shell | [#1537](https://github.com/eq-solutions/eq-shell/pull/1537) fix(staff): sync staff record name into the linked Shell login |
 _Showing 15 of 118 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **eq-shell** (257 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-shell** (258 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (56 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (124 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (93 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
@@ -129,7 +129,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1656 | 189 / 74 | 205 | 44 |
+| [eq-shell](eq/pending/eq-shell.md) | 1656 | 189 / 74 | 206 | 44 |
 | [eq-cards](eq/pending/eq-cards.md) | 417 | 43 / 13 | 45 | 8 |
 | [eq-field](eq/pending/eq-field.md) | 819 | 99 / 27 | 49 | 15 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 644 | 72 / 25 | 87 | 20 |
@@ -142,7 +142,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | [sks](eq/pending/sks.md) | 53 | 3 / 5 | 0 | 6 |
 | [SKS](sks/pending.md) | 484 | 83 / 14 | 8 | 25 |
 | [SKS active](sks/active.md) | 108 | 0 / 0 | 0 | 0 |
-| [OPS](ops/pending.md) | 525 | 45 / 3 | 0 | 1 |
+| [OPS](ops/pending.md) | 509 | 44 / 3 | 0 | 1 |
 
 ## Aging open items (45d+, unconfirmed)
 
@@ -200,4 +200,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-23 08:33 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-23 08:46 UTC._
