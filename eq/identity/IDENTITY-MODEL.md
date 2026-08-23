@@ -86,7 +86,18 @@ The role + permission system gates **what the logged-in `user` can do**. When th
 
 Two conditions make this rule workable rather than merely declarative. Both are load-bearing:
 
-1. **The upward correction path must be complete.** When an operator corrects a person's details in Shell, that correction must reach `jvkn`, not just the local copy — otherwise "the control layer wins" degrades into "operators cannot fix anything." `eq-shell/netlify/functions/entity-patch.ts` began writing `email`/`phone` back to `jvkn.public.workers` on 2026-08-18 and `name` to `shell_control.users` on 2026-08-23. **Not yet audited: whether every operator edit surface routes through that path.**
+1. **The upward correction path must be complete.** When an operator corrects a person's details in Shell, that correction must reach `jvkn`, not just the local copy — otherwise "the control layer wins" degrades into "operators cannot fix anything."
+
+   **Audited 2026-08-23 — the path is INCOMPLETE. One confirmed gap:**
+
+   | Operator surface | Writes identity to tenant | Writes upward to jvkn | Sets lock |
+   |---|---|---|---|
+   | `entity-patch.ts` — edit an existing person | yes | **yes** (`email`/`phone` → `public.workers` since 2026-08-18; `name` → `shell_control.users` since 2026-08-23) | yes |
+   | `staff-create.ts` — add a person to the roster | yes — `email`/`phone` on **both** the insert branch (L183-195) and the reactivate-in-place branch (L152-168) | **no** | no |
+
+   `staff-create.ts` is therefore a one-way leak into the tenant plane: an operator adds someone, types their contact details, and canonical never learns them. This is the mechanism that produces null-`email` rows on `public.workers` for people whose employer plainly holds an address — 8 such rows were found and hand-backfilled on 2026-08-23. It is not immediately destructive (the edge function's unlocked merge is fill-if-missing, so the tenant value survives the next sync) but it guarantees canonical drifts stale, which is the precise failure this rule exists to prevent.
+
+   **Closing this is a precondition for treating §3.3 as enforced rather than merely declared.** Until then, "the control layer wins" is true of the *edit* path and false of the *create* path.
 2. **A disagreement lock is a transient signal, not an ownership claim.** `app_data.staff.{email,phone,employment_type}_locked_by_shell` (tenant migrations `0224`/`0255`) freeze a local value so a nightly resync cannot flip-flop it. That is a **holding pen** — it prevents oscillation, it never resolves anything. Resolution always means correcting `jvkn`. A lock should therefore be visible as a worklist and should clear once canonical agrees.
 
 **Evidence the rule is affordable today (live, 2026-08-23):** all 22 `email_locked_by_shell` rows on `ehow` held a value **identical to** `jvkn.public.workers.email` — zero live divergence to arbitrate. 13 of the 22 lock a personal address canonical already agreed with (the lock fires whenever an operator touches the field, including to fill a blank — it is not a deliberate ownership assertion), and those 13 permanently prevent that worker from ever updating their own address at that employer. The single genuine conflict the lock model was built for (Ben Ritchie, 2026-07-28) was resolved on 2026-08-23 by correcting `jvkn`, which is exactly what this rule prescribes.
