@@ -9,6 +9,16 @@ status: live
 
 # SKS Pending
 
+## SKS roster editing was silently broken for 5 days — fix drafted, dispatch pending (2026-08-23)
+*Fix landed on the eq-shell side — see `eq/pending/eq-shell.md` (2026-08-23, "SKS roster editing found broken") for full detail. This entry is the SKS-side pointer.*
+
+- [ ] **Add/edit/archive/reactivate on the SKS People page has been silently failing since 2026-08-18** — a mis-scoped migration dropped the trigger that makes the page's writes actually work, with no visible error to anyone using it. Fix is written and verified live but still needs Royce to click dispatch himself before it's live again. _(added 2026-08-23)_
+
+## Staff deactivation wasn't revoking Shell logins — 9 real SKS accounts found + fixed, live (2026-08-23)
+*Fix landed on the eq-shell side — see `eq/pending/eq-shell.md` (2026-08-23, "staff deactivation wasn't revoking Shell logins") for full detail. This entry is the SKS-side pointer.*
+
+- [x] All 9 affected people were SKS staff (Luke Johnson + 8 others) — found with an archived staff record but a still-live, auto-refreshing Shell login; all backfilled and revoked live same day.
+
 ## Users admin list showed the wrong name for staff who are actually linked — fixed + backfilled, 2 gaps spawned off (2026-08-23)
 *Royce: "user name here reflects the same name as in their staff profile? Fernando (bigandsmall) should be consistent across? A users name should be one record, canonical" — the SKS Users list (`/sks/admin/users`) showed "bigandsmall2021" (an email fragment) for a person whose Staff profile already has the real name "Fernando Alba". Root-caused live: `app_data.staff.user_id` (ehow) already links straight to `shell_control.users.id` (jvkn) for 69/107 SKS staff, but nothing ever pushed the resolved staff name across once a login existed blank.*
 
