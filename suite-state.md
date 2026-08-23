@@ -67,10 +67,6 @@ _If this file is >48h old, the cron is broken._
 - #807 fix(security): close anon-open get_customer_period_summary, restore authenticated
 - #791 fix(reports): make reissuing a report possible from the UI
 
-**eq-shell:**
-- #1558 fix(security): close 2 Intake write-path gaps (cross-tenant RPC + accepted-risk RPCs)
-- #1557 fix(security): invite-users-batch.ts missing the admin.assign_role guard
-
 ---
 
 ## System Health (as of 2026-08-23)
