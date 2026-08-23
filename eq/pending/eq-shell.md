@@ -1564,3 +1564,13 @@ Parallel to the Field schema/data cutover below. Full plan + agent prompts (A–
 
 ---
 
+## eq-shell: dropped "custodian" wording from Plant & Equipment, now shows the assigned person's phone/email instead (2026-08-23)
+*Off the same Plant & Equipment screenshot as the IT equipment check logged in `pending-archive.md` today — Royce asked to remove the word "custodian" from the UI and asked whether showing the assigned person's mobile/email was difficult.*
+
+- [x] The only user-visible "custodian" text (a subtitle under each person's name in the Person-grouped view's group header) replaced with the assigned person's phone/email, joined with a middle dot; unassigned rows now read "Needs assigning" instead of "No custodian — needs assigning". eq-shell [PR #1536](https://github.com/eq-solutions/eq-shell/pull/1536), merged, confirmed live on core.eq.solutions (exact commit match against the production Netlify deploy).
+- [x] **Not difficult** — the data was already available. `eq_browse_entity`'s staff branch returns the full row as JSON, so phone/email were already in the API response, just unused client-side. No backend or migration change. Redaction is unchanged: `entity-rows.ts` still nulls both fields server-side unless the viewer holds `entity.view_pii`, same gate as every other PII field in the product.
+- [ ] **Not click-tested live** — deploy previews sit on a different domain than `core.eq.solutions`, so the production session cookie doesn't carry over and entering credentials to get past login wasn't an option. Verified instead via `tsc -b --force` (clean), eslint (only the same 3 pre-existing errors #1514 already flagged, confirmed on lines this PR didn't touch), and the login page itself rendering correctly on the deploy preview (no build regression). Worth two minutes: group by Person, confirm no "custodian" text anywhere, and that phone/email actually show for an assigned item. _(added 2026-08-23)_
+- [ ] **Table cell and item-detail-drawer still show name only, no contact info** — the ask was specifically about the Person-group header view, so the table's "Assigned to" column and the drawer's "Assigned to" row weren't touched. Easy follow-up if Royce wants contact info there too. _(added 2026-08-23)_
+
+---
+

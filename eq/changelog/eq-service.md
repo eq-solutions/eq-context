@@ -9,6 +9,11 @@ status: live
 
 # EQ Service — Changelog
 
+## 2026-08-23 (PR #801 + #802 MERGED, migration 0227 dispatched — it_equipment excluded from the customer-facing Assets view)
+- Companion to eq-shell PR #1514 (IT equipment as a second internal register type): `service.assets`' `WHERE` clause widened from excluding only `plant_equipment` to also excluding `it_equipment`, so Shell-side internal gear doesn't leak into the customer CMMS asset list. Migration `0227`, PR #801.
+- First dispatch attempt failed on something unrelated: `00001_service_schema_pre_canonical_fixture.sql` — a CI-only bootstrap fixture, never previously applied to live ehow — broke on `ALTER TABLE service.pm_calendar ENABLE ROW SECURITY` (`pm_calendar` is a view on ehow now, not a table). Root cause: `migrate-service.mjs`'s `CI_BOOTSTRAP_FIXTURES` exclusion set already existed for exactly this purpose and already held one file (`0000_app_data_tenant_plane_fixture.sql`, its declared companion) — `00001` was simply never added alongside it. Fixed via PR #802 (one line, no new migration, no ledger manipulation); confirmed the Integration-tests job's own from-scratch bootstrap (Supabase CLI, not this runner) is unaffected — that job has its own separate, already-tracked failure modes (see `eq/pending/eq-solves-service.md`, and #799/#803's notes elsewhere in this file for two more distinct examples of the same chronic pattern).
+- Re-dispatched; `0227` applied and confirmed live both via the `service._eq_migrations` ledger and via `pg_get_viewdef('service.assets')` showing the widened exclusion.
+
 ## 2026-08-23 (PR #803 MERGED — SEC-50: SSRF guard on report-branding.ts's logo fetch)
 - `report-branding.ts::fetchLogoImage` had no URL validation and followed redirects, fed tenant/customer-editable logo & site-photo URLs across 4 report generators. Exported `logo-variants.ts`'s existing `isSafeFetchUrl` (was private) and reused it here instead of duplicating the check, plus added `redirect: 'error'`. No call-site changes. Also noted in passing: two unrelated migration files both claim version `0192`, breaking the Integration-tests CI job on every PR — not fixed, flagged in `ops/pending.md`.
 

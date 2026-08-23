@@ -9,6 +9,16 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-23 (PR #1536 MERGED — Plant & Equipment: dropped "custodian" wording, shows assigned person's phone/email)
+- Person-grouped view's group-header subtitle changed from "Custodian"/"No custodian — needs assigning" to the assigned person's phone/email (joined with a middle dot) or "Needs assigning". `eq_browse_entity`'s staff branch already returns the full row as JSON, so phone/email were already in the `entity-rows` response, just unused client-side — no backend or migration change; the existing `entity.view_pii` redaction gate covers both fields unchanged.
+- Confirmed live via exact Netlify `commit_ref` match against the production deploy (`381a96c`). Not click-tested live by a person — deploy previews sit on a different domain than `core.eq.solutions`, no shared session cookie.
+
+## 2026-08-23 (PR #1514 MERGED + migration 0256 dispatched — IT equipment register live; PR #801/#802 MERGED on eq-solves-service, migration 0227 dispatched)
+- IT equipment shipped as a second internal register type alongside `plant_equipment` in the Plant & Equipment module — same page, a new Plant/IT tab, same `equipment.view`/`equipment.edit` permission. Both PRs had been open, unmerged, undeployed since 2026-08-21 despite a prior session's memory note reading "shipped" — verified live via `gh pr view`, not the substrate, before acting.
+- Migration `0256` (extends the plant_equipment delete-guard to also cover it_equipment) dispatched and confirmed applied on both zaap and ehow via direct ledger query.
+- Companion eq-solves-service PR #801 (excludes `it_equipment` from the customer-facing `service.assets` view) merged. Its migration `0227`'s first dispatch attempt failed on an unrelated pre-existing bug in `migrate-service.mjs` (a CI-bootstrap fixture, `00001_service_schema_pre_canonical_fixture.sql`, missing from the runner's `CI_BOOTSTRAP_FIXTURES` exclusion set — its own declared companion file was already excluded, this one never got added). Fixed via eq-solves-service PR #802 (one line), merged, re-dispatched — `0227` applied and confirmed live via `pg_get_viewdef('service.assets')`.
+- Both eq-shell merges confirmed live via exact Netlify `commit_ref` match against the production deploy. Full detail: `sessions/2026-08-23.md`, memory `it-equipment-register-2026-08-21.md` + `eq-service-migration-pipeline-blocked-00001-fixture.md`.
+
 ## 2026-08-23 (PR #1534 MERGED + DISPATCHED LIVE — SEC-41/42: quote delete + line-item RPCs entity-role-gated)
 - `eq_delete_quote` and `eq_replace_line_items` checked tenant only, no role — any authenticated user of any role could hard-delete quotes or rewrite pricing/line items. Migration `0264` adds `eq__assert_entity_role` as the first statement of each, reusing `0245`'s helper: `entity.delete` (manager only) for delete, `entity.edit` (manager+supervisor) for line-item replace. Dispatched fleet-wide via `tenant-migrate.yml`; live-verified with a production probe (employee-role caller genuinely rejected).
 
