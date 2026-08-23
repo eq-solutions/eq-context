@@ -61,7 +61,6 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-23)
 
 **eq-cards:**
-- #289 fix(security): gate eq_cards_link_or_create_worker on caller identity (SEC-43)
 - #287 fix(auth): reject deactivated identities in worker-link/claim-invite RPCs
 
 **eq-field:**
