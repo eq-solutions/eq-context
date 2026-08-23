@@ -63,11 +63,15 @@ _If this file is >48h old, the cron is broken._
 **eq-cards:**
 - #287 fix(auth): reject deactivated identities in worker-link/claim-invite RPCs
 
+**eq-field:**
+- #756 Security: leave visibility fail-open closed for unassigned/unresolved supervisors
+
 **eq-service:**
 - #801 fix(assets): exclude it_equipment from the customer-facing Assets view
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
+- #1521 chore(migrations): stage 5 single-plane eq-field migrations into the One Pipe
 - #1519 fix(labour-hire): promote worker_credentials to licences on invite accept
 - #1514 feat(equipment): add IT equipment as a second internal register type
 
