@@ -13,6 +13,20 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: 5 single-plane migrations staged into the One Pipe; a real bug found and excluded, not fixed (2026-08-23)
+*Direct follow-up to the plane-scope guard (PR #1516, same day) — Royce said "go" on the deferred next step, then scoped it via AskUserQuestion to staging only (copy + PR, no merge/dispatch) once the real dependency chain turned out to be 7 files, not the 5 originally flagged, with one carrying a live population blocker.*
+
+- [x] **Investigated the full dependency chain before touching anything** — `20260819_timesheets_leave_actor_identity_fix.sql` supersedes `20260816_timesheets_leave_own_crew_read.sql` (that file's own header says "do NOT dispatch this file directly"); confirmed 20260819 is fully self-contained, doesn't need 816-read applied first. Excluded 816-read from the batch on that basis.
+- [x] **Found a real, unpatched bug in `20260816_timesheets_leave_own_crew_write.sql`** while reviewing it for staging: its RLS policies still call the old `sub`-based `eq__caller_staff_id()`, not the corrected `eq__caller_actor_staff_id()` that 20260819 introduced 3 days later. Per 20260819's own finding, `sub` resolves to the tenant id for every caller on this JWT design, not a real person — so this file would lock out every non-manager SKS worker from saving their own timesheet/leave, not just the "34 unlinked staff" population its own header discusses. Excluded from staging, not fixed (eq-field's file) — spun off as `task_c6df5631`, which Royce has since started in a separate session.
+- [x] **Staged the remaining 5 files** (the original 4 + PR #753's zaap fix) into `supabase/tenant-migrations/` as `0258`–`0262`, byte-identical to their eq-field source, numbers only. Verified the plane-scope guard's actual regex resolves all 5 headers correctly post-copy.
+- [x] eq-shell [PR #1521](https://github.com/eq-solutions/eq-shell/pull/1521) — full CI green including the live `--plan` job against real tenant data, squash-merged (`a53c124c`) after a scaled `/decide` pass (zero functional/behavioral change — the files are inert until a separate, explicit dispatch step), confirmed live via Netlify commit-ancestry match.
+
+**Deferred:**
+- [ ] **`20260816_timesheets_leave_own_crew_write.sql`'s identity-helper bug** — flagged as `task_c6df5631`, in progress in a separate session as of this entry. _(added 2026-08-23)_
+- [ ] **None of the 5 staged migrations have been dispatched** — they're now visible to the fleet runner but nothing has been applied to ehow or zaap. Dispatching each (with the correct `--slug`) remains explicitly Royce's call. _(added 2026-08-23)_
+
+---
+
 ## eq-shell: labour-hire licence promotion gap — Shell-join claim door was silently dropping credentials, root-caused + fixed (2026-08-23)
 *Royce, from a Staff page screenshot: why aren't the labour-hire licences (Conor Horgan, Nelson Sareto) showing up. Resolves the open question left by the 2026-08-21 "Labour-hire claim gate" entry (archived) about whether the Shell-join claim flow alone promotes credentials.*
 

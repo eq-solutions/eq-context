@@ -9,6 +9,12 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-23 (PR #1521 MERGED — 5 single-plane migrations staged into the One Pipe)
+- Follow-up to PR #1516's plane-scope guard. Investigating the "5 at-risk migrations" surfaced 2 more in the same cluster: `20260816_timesheets_leave_own_crew_read.sql` (superseded by `20260819`, its own header says don't dispatch it) and `20260816_timesheets_leave_own_crew_write.sql` (a real bug — still calls the pre-fix `sub`-based identity helper `20260819` replaced, which per that migration's own finding resolves to the tenant id for every caller, not a person; would lock out every non-manager SKS worker's own timesheet/leave writes, not just the documented unlinked-staff population). Both excluded from staging; the write-side bug spun off as its own task (`task_c6df5631`).
+- Staged the original 5 (`20260722`/`722b`/`722c`, `20260819`, `20260821`/PR #753) as `0258`–`0262`, byte-identical to source. CI green including the live `--plan` job; merged after a scaled `/decide` pass on Royce's "then merge if safe."
+- Staging only — copying into this directory applies nothing; dispatching each migration to its correct plane (via `--slug`) is still a separate, explicit, undone step.
+- eq-shell [PR #1521](https://github.com/eq-solutions/eq-shell/pull/1521) (`a53c124c`), squash-merged, confirmed live via Netlify commit-ancestry match (not just a green build — one concurrent deploy in the same window was superseded/skipped, this commit's own row reached `ready`/`production` directly).
+
 ## 2026-08-23 (PR #1517 MERGED — labour-hire credential promotion fixed on Shell-join claim)
 - Resolves the question PR #1513 (2026-08-21) left explicitly open: whether the Shell-join claim flow alone promotes credentials into real licences. It doesn't. `shell-join-tenant.ts` correctly links `workers.user_id` and stamps `worker_invites.claimed_at` on claim, but the actual `worker_credentials` → `public.licences` promotion loop only ever existed inside `eq_cards_claim_invite`, a separate Postgres RPC used by the Cards app's own claim flow — this HTTP endpoint never called it. Confirmed live: 0 of 8 `worker_credentials` rows in the whole database had ever been promoted, all 8 belonging to Conor Horgan and Nelson Sareto (the same two candidates from #1513's trial) — root cause of Royce's "why aren't the labour-hire licences showing up" report.
 - Fixed by porting the same promote-or-update loop `eq_cards_claim_invite` already runs into `shell-join-tenant.ts`, scoped to the worker/user it just linked.
