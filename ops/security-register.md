@@ -73,7 +73,7 @@ fails on **new** exposure while keeping the open ones visible.
 | SEC-47 | P2 | `app_data.approve_safety_record` (ehow) — tenant-checked, no role check and no check that the approver isn't the submitter; any tenant member can approve their own prestart/toolbox-talk submission | sks-canonical (ehow) | OPEN — found 2026-08-20, reasoned. 35 prestarts + 1 toolbox talk live behind it. |
 | SEC-48 | P3 | SEC-2's `user_metadata`-trust mistake has resurfaced in one place — 4 `storage.objects` policies on the `licence-photos` bucket (ehow) scope by `user_metadata->>'tenant_id'` instead of `app_metadata` | sks-canonical (ehow) | **OPEN — found 2026-08-20, reasoned.** Fails closed today (bucket is private, 0 objects, EQ JWTs carry no `user_metadata`) — fails open the moment both licence photos start landing there AND a GoTrue-native user can self-set `user_metadata`. See Detail. |
 | SEC-49 | P3 | `service.upsert_site_credential` (ehow) — tenant-checked, no role check; any tenant member could overwrite an existing site-credential row and re-encrypt it under a caller-supplied key | sks-canonical (ehow) | OPEN — found 2026-08-20, reasoned. `service.site_credentials` has 0 rows today — latent. |
-| SEC-50 | **P1** | `report-branding.ts::fetchLogoImage` (eq-service) has no URL validation and follows redirects, fed tenant/customer-editable logo & site-photo URLs, live-wired into 4 report generators. A hardened sibling (`logo-variants.ts`, `isSafeFetchUrl` + `redirect:'error'`) exists in the same codebase but wasn't applied here | sks-canonical (ehow) | **OPEN — found 2026-08-20, reasoned (proving needs an authenticated admin write of a malicious logo URL, correctly not attempted).** See Detail. |
+| SEC-50 | **P1 — fix drafted, not yet merged.** | `report-branding.ts::fetchLogoImage` (eq-service) has no URL validation and follows redirects, fed tenant/customer-editable logo & site-photo URLs, live-wired into 4 report generators. A hardened sibling (`logo-variants.ts`, `isSafeFetchUrl` + `redirect:'error'`) exists in the same codebase but wasn't applied here | sks-canonical (ehow) | **OPEN — found 2026-08-20, reasoned.** Fix: eq-service [PR #803](https://github.com/eq-solutions/eq-service/pull/803) — exports `isSafeFetchUrl` from `logo-variants.ts` (was private) and reuses it in `report-branding.ts`, plus adds `redirect: 'error'`. No call-site changes — same signature, only unsafe URLs behave differently. **This repo has no branch protection — CI is advisory, not merge-blocking; waiting for it regardless before merge.** See Detail.
 | SEC-51 | P2 | eq-shell's cross-subdomain origin guard (`checkShellOrigin`) is report-only by default; every privileged Shell mutation function depends on the same global `ENFORCE_IFRAME_ORIGIN` flag, and the code's own comment says that flag can't safely be flipped to `true` without breaking Cards — contradicts SEC-12's "set to true in production" claim | eq-shell | **OPEN — found 2026-08-20, reasoned (live flag value not read this pass — it's a feature flag, not a secret, worth a direct check).** `SameSite=Lax` still blocks external-origin CSRF; residual is same-site (a sibling-subdomain XSS/takeover). See Detail. |
 | SEC-52 | P3 | `service.eq.solutions`'s main CSP ships as `Content-Security-Policy-Report-Only` in production — script/connect/object-src restrictions are reported, not enforced; only `frame-ancestors` is a real enforcing header | sks-canonical (ehow) — eq-solves-service | OPEN — found 2026-08-20, proved live. Promote to enforcing once report-only telemetry is clean. |
 | SEC-53 | P3 | core.eq.solutions and field.eq.solutions CSPs both still allow-list `ktmjmdzqrogauaevbktn.supabase.co` (deleted project, SEC-17) in `connect-src`; core's `frame-src` still lists `quotes.eq.solutions` (retired) | eq-shell, eq-field | OPEN — found 2026-08-20, proved live. No exploit path (dead refs are inert) — cleanup. |
@@ -1218,6 +1218,23 @@ requester then downloads: SSRF from the report runtime to internal/link-local ad
 doesn't), with a plausible exfil channel via the embedded image bytes. Firing it needs an
 authenticated admin write of a malicious logo URL — not attempted (§7). Fix: route these
 four callers through `logo-variants.fetchLogoImage`, or add the same guard directly.
+
+**Update 2026-08-23: fix drafted, eq-service [PR #803](https://github.com/eq-solutions/eq-service/pull/803), not merged.**
+Took the "add the same guard directly" branch of this entry's own two suggested fixes,
+not the "route through logo-variants.fetchLogoImage" one — routing all 4 callers through
+the sibling would have meant touching 4 call sites for an option-name mismatch
+(`{maxWidth,maxHeight}` vs `{width,height}`) that a P1 security fix shouldn't be
+carrying. Instead: exported `isSafeFetchUrl` from `logo-variants.ts` (was a private
+function) and imported it into `report-branding.ts`, so the two copies share one tested
+security check instead of the SSRF guard existing in only one of two near-identical
+functions. Confirmed exactly 4 real callers via import-site grep (not just a name match),
+matching this entry's own count. Standalone `tsc --noEmit` on just the two edited files
+(no local `node_modules` in the drafting sandbox) surfaces only pre-existing "missing
+ambient types" noise (`Buffer`, `docx`, `@supabase/supabase-js`) — nothing tied to the new
+import or the added `redirect: 'error'` property. **Repo has no branch protection**
+(confirmed via `gh api .../branches/main/protection` → 404) — unlike eq-shell, CI here is
+advisory, not merge-blocking, so this PR still waits for `ci.yml`/`check.yml` before
+merging even though GitHub itself won't enforce it.
 
 ### SEC-51 — ENFORCE_IFRAME_ORIGIN is report-only, contradicting SEC-12's "enforced" claim (P2)
 `eq_shell_session` is `SameSite=Lax; Domain=.eq.solutions`, shared across every
