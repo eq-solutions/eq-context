@@ -1,7 +1,7 @@
 ---
 title: SKS Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-08-20
+last_updated: 2026-08-23
 scope: Done items rotated out of sks/pending.md nightly by scripts/rotate_pending.py to keep the live doc scannable. Nothing here is actionable — pure historical record (also covered in changelogs and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -489,5 +489,25 @@ output).*
 ## ⏩ SKS Field — session 2026-07-04 (Cards→Field migration path verified, read-only) (rotated 2026-08-20 — open items remain in pending.md)
 
 - [x] ~~First Cards→Field approval for SKS never run~~ — **stale, checked live 2026-08-20: 99 of 101 total `cards_field_approvals` rows are now SKS's.** The tenant that was "unproven" in July is now the dominant one in the table — the approve + licence-verify path has clearly been exercised many times over since. _(added 2026-07-04, resolved — substrate correction 2026-08-20)_
+
+---
+
+## SKS crew's QR self-join logins weren't showing on Admin Users — root-caused and fixed on the EQ side (2026-08-20) (rotated 2026-08-23)
+*Fix landed on the eq-shell side — see `eq/pending/eq-shell.md` (2026-08-20) for full root-cause + build detail. This entry is the SKS-side pointer.*
+
+- [x] **Staff now shows login status, same day** — see `eq/pending/eq-shell.md` (2026-08-20, "Staff page now shows who hasn't signed in"). Live: 24 of 83 active staff still unlinked, filterable on the Staff page. _(resolved 2026-08-20)_
+
+---
+
+## EQ Field screenshot review — 5 fixes shipped + confirmed live, including the DB security migration (2026-08-19, header corrected 2026-08-20) (rotated 2026-08-23 — open items remain in pending.md)
+
+- [x] eq-shell's mobile home screen (what a non-manager worker sees first) was missing the button into the maintenance/defects app (Service) — other apps had it, this one didn't, and there was no reason found for the gap. Also added the SKS logo, which wasn't showing there at all. Fixed and live. _(eq-shell PR #1456)_
+- [x] **The database-level fix for who can create/edit/delete Prestarts/Toolbox Talks/Incidents/Site Diaries/Site Audits** — written, approved, applied to the live system, and confirmed working. _(eq-field PR #728, applied 2026-08-19)_
+- [x] ~~Confirmed live 2026-08-20: the two extra gaps did NOT make it into the fix above~~ — **wrong, corrected same day.** That first check only looked at PR #728's migration (the 6-table one) and stopped there without searching for a sibling fix. There is one: `20260819_app_config_manager_supervisor_write.sql`, written the same session, targets `public.app_config` — the one settings table behind *both* the weekly digest's section toggles and EQ Field's own tenant PIN codes (`staff_code`/`supervisor_code`, read by `verify-pin.js` for tenants that use PIN-gated login instead of full Shell auth). Checked `pg_policies` on ehow directly: `app_config_manager_supervisor_{insert,update,delete}` are live now, same RESTRICTIVE pattern as the 6-table fix. Both extra gaps were already closed — the migration file's own "DRAFT — NOT APPLIED" header is just stale, like its sibling's was. Nothing left open here. _(added 2026-08-19, wrongly marked "still needs its own fix" 2026-08-20, corrected same day)_
+
+---
+
+## SKS national scale discovery — "what breaks EQ at ~2,000 employees" (2026-07-23) (rotated 2026-08-23 — open items remain in pending.md)
+
 
 ---

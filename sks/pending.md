@@ -39,11 +39,6 @@ status: live
 
 - [ ] **Needs a real SKS login to confirm nothing broke** — apprentice competencies, supervisor/people notes, audit log, tenders, site audits, nominations, pending schedule. Same "not click-tested live by a person" gap as everything else in this queue. _(added 2026-08-23)_
 
-## SKS crew's QR self-join logins weren't showing on Admin Users — root-caused and fixed on the EQ side (2026-08-20)
-*Fix landed on the eq-shell side — see `eq/pending/eq-shell.md` (2026-08-20) for full root-cause + build detail. This entry is the SKS-side pointer.*
-
-- [x] **Staff now shows login status, same day** — see `eq/pending/eq-shell.md` (2026-08-20, "Staff page now shows who hasn't signed in"). Live: 24 of 83 active staff still unlinked, filterable on the Staff page. _(resolved 2026-08-20)_
-
 ## Staff page login-status build surfaced a real list: 24 unlinked, at least one (Thomas Cavanough) already known as "never invite again" (2026-08-20)
 *Fix landed on the eq-shell side — see `eq/pending/eq-shell.md` (2026-08-20) for full detail. This entry is the SKS-side pointer.*
 
@@ -59,9 +54,6 @@ status: live
 
 *Checking the digest-access gap also turned up a bigger one: the database itself didn't enforce who can create/edit/delete Prestarts, Toolbox Talks, Incidents, Site Diaries, or Site Audits — the app's own "only a manager or supervisor can do this" rule was UI-only, not backed by a database rule, so anyone technically inclined could have bypassed it entirely. Royce approved the fix and it's applied to the real system now (a separate, concurrent session on the same day handled the approval + apply — see that session's own write-up).*
 
-- [x] eq-shell's mobile home screen (what a non-manager worker sees first) was missing the button into the maintenance/defects app (Service) — other apps had it, this one didn't, and there was no reason found for the gap. Also added the SKS logo, which wasn't showing there at all. Fixed and live. _(eq-shell PR #1456)_
-- [x] **The database-level fix for who can create/edit/delete Prestarts/Toolbox Talks/Incidents/Site Diaries/Site Audits** — written, approved, applied to the live system, and confirmed working. _(eq-field PR #728, applied 2026-08-19)_
-- [x] ~~Confirmed live 2026-08-20: the two extra gaps did NOT make it into the fix above~~ — **wrong, corrected same day.** That first check only looked at PR #728's migration (the 6-table one) and stopped there without searching for a sibling fix. There is one: `20260819_app_config_manager_supervisor_write.sql`, written the same session, targets `public.app_config` — the one settings table behind *both* the weekly digest's section toggles and EQ Field's own tenant PIN codes (`staff_code`/`supervisor_code`, read by `verify-pin.js` for tenants that use PIN-gated login instead of full Shell auth). Checked `pg_policies` on ehow directly: `app_config_manager_supervisor_{insert,update,delete}` are live now, same RESTRICTIVE pattern as the 6-table fix. Both extra gaps were already closed — the migration file's own "DRAFT — NOT APPLIED" header is just stale, like its sibling's was. Nothing left open here. _(added 2026-08-19, wrongly marked "still needs its own fix" 2026-08-20, corrected same day)_
 - [ ] **A reported roster-grid "alignment" issue (one person's row looked off) couldn't be reproduced from the code** — most likely just placeholder text in blank cells reading like real data at a glance, not an actual bug, but left open rather than guessed at. _(added 2026-08-19)_
 
 ## EQ Field: timesheets/leave weren't scoped per-person — fix merged into the app, still not switched on for real (2026-08-16)
