@@ -63,6 +63,9 @@ _If this file is >48h old, the cron is broken._
 **eq-service:**
 - #791 fix(reports): make reissuing a report possible from the UI
 
+**eq-shell:**
+- #1545 fix(security): staff_conversations RLS never re-gated who may write
+
 ---
 
 ## System Health (as of 2026-08-23)
