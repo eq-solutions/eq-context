@@ -16,6 +16,12 @@ status: live
 - Two small pre-existing anon-grant regressions confirmed already-fixed along the way (both already had their own ledger rows from 2026-08-23): `public.organisations`'s column-scoped anon grant and `shell_control.eq_schema_registry`'s anon grant had each independently lapsed sometime between 2026-07-12 and 2026-08-20.
 - Docs-only PR, no application code touched, nothing found missing was hand-applied.
 
+## 2026-08-23 (PR #1559 MERGED + LIVE — licence review modal shows a document/PDF preview, not just a photo)
+- Follow-up ask once Zemi Asri's licence photo was confirmed rendering again (see eq-cards changelog, PR #294): the Flag/Sighted review modal's hero image only ever tried `photo_url`, so a licence uploaded as a PDF or a generic "document" (no dedicated photo field) always fell through to "No photo uploaded" even with a real file on record.
+- `LicenceCard` gained `document_url`/`document_type`, threaded through `licRowToCard`. The modal now resolves a hero preview in order: photo → document image → document PDF (rendered client-side via the existing `usePdfPageDataUrl` hook, first page only — the same renderer already used elsewhere on the Staff page) → the existing placeholder, unchanged as the last resort.
+- `LabourHireLicenceReviewModal`'s own `LicenceCard` construction is behaviourally untouched — just added the two new fields as `null` placeholders to satisfy the now-stricter shared type.
+- Click-tested live: Zemi's photo renders; PDF/document fallback path not yet exercised against a real PDF-only licence.
+
 ## 2026-08-23 (PR #1552 + #1556 + #1557 + #1558 MERGED + LIVE — access-control sweep completed: Documents/Intake/Admin covered, 3 more gaps closed)
 - Sprint doc items shipped: S1 (`entity-patch.ts` gains an `INTERNAL_ASSET_TYPES` scope guard on its generic asset PATCH, matching `asset-calibration.ts` — closes a path to touching a customer/CMMS-owned asset row through the equipment edit door, PR #1556) and S3 (Equipment's Archive/Delete buttons no longer render for view-only roles, PR #1552).
 - Documents module audited at the DB grant layer — fully clean, both prior REVOKE migrations (0240, 0252) still hold live.

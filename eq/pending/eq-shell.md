@@ -45,7 +45,14 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ## eq-shell: Zemi Asri's driver licence invisible after identity merge — missing org_membership row found, fixed, guard shipped + merged + live (2026-08-23)
 
 - [ ] **Guard's first real firing not yet confirmed** — `check-missing-org-memberships.ts` fires for the first time 2026-08-23 21:50 UTC; a one-time claude.ai cloud routine (with Sentry + Supabase access) is scheduled to check the actual alert against the documented baseline (`stale_grants=12`, `invisible_licences=0`, `at_risk=0`) at 08:00 AEST tomorrow. Not yet run as of this entry. _(added 2026-08-23)_
-- [ ] **Not click-tested live** — Zemi's licence confirmed via a direct query replay of the Staff page's own logic, not by opening the actual Staff page in a browser. Worth a 30-second look next time someone's on `core.eq.solutions/sks/staff`. _(added 2026-08-23)_
+- [x] **Click-tested live 2026-08-23** — Royce confirmed Zemi's licence photo renders on `core.eq.solutions/sks/staff`. Didn't show on first load (a stale client-side fetch from before a *separate* same-day fix landed — see the storage-path-drift entry below — not a second bug; the endpoint already sends `Cache-Control: no-store`, a refresh fixed it).
+
+---
+
+## eq-shell: licence review modal shows PDF/document previews too, not just photos (PR #1559, merged + live 2026-08-23)
+*Asked for once Zemi's photo issue was confirmed fixed. `LicenceReviewModal`'s Flag/Sighted flow only ever checked `photo_front_url`/`photo_back_url` — a PDF-only credential (e.g. William Brown's CPR/LVR) showed "No photo uploaded" even though the document exists and already renders fine elsewhere on the same page via `DocumentThumbnail`.*
+
+- [x] `LicenceCard` extended with `document_url`/`document_type`; the review modal's hero now reuses `usePdfPageDataUrl` (the same pdf.js renderer `DocumentThumbnail` already uses) sized for the larger hero area, falling back to a loading spinner then the existing "No photo uploaded" placeholder only when there's genuinely nothing attached. Scoped to `LicenceReviewModal` only — `LabourHireLicenceReviewModal` (a separate candidate-review flow) untouched. Verified via `tsc -b --force` (clean) and the deploy preview before merge. Merged `8dec2e2`, confirmed live deploy.
 
 ---
 

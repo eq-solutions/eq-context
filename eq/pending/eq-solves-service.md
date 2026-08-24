@@ -13,6 +13,24 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-solves-service: PR #619 turned out to have 3 migration-number collisions, not 1 — all fixed (PR #806, merged + live 2026-08-23)
+*Started as a routine fix for the one known `0192` collision breaking `Integration tests (Supabase local)` CI on every PR to this repo. Fixing it exposed a second, previously-masked collision at `0193` (the bootstrap aborts at the first duplicate-key error, so it never reached the second) — and a full-repo sweep for any OTHER duplicate found a third, unrelated one at `0203`.*
+
+- [x] All 3 renamed (`0192`→`0228`, the later `0193`→`0229`, the later `0203`→`0230`), each file's own header self-references fixed, cross-checked no other migration referenced the renamed files specifically. Full suite-wide duplicate check now comes back empty. PR #806, merged.
+- [ ] **CI still fails on this job** — after all 3 renames, bootstrap gets further than ever but now fails on an unrelated, pre-existing bug: `0197_report_settings_per_tier.sql` references a column that doesn't exist yet at that point in a fresh migration sequence. Matches this workspace's own documented rule that this specific CI job is a known pre-existing failure, not a merge blocker (`tsc + next build` is the real gate) — left as-is, not investigated further. _(added 2026-08-23)_
+
+## eq-solves-service: suite-wide grant-drift sweep — 9 functions across jvkn/ehow fixed, zaap confirmed clean (PRs #295/#296/#807/#808/#809, all merged + live 2026-08-23)
+*Asked to sweep the rest of the EQ suite for the same "silently lost `authenticated` grant" bug class as `eq_cards_admin_upsert_worker`. Built a full-history replay across every repo that migrates the three canonical planes (jvkn, zaap, ehow).*
+
+- [x] **jvkn**: `eq_cards_admin_create_invite` (eq-cards PR #296) — sibling of the already-fixed `eq_cards_admin_upsert_worker`, same root cause (migration `0131`). `clear_rate_limit`, `eq_record_mint`, `eq_write_audit_log` found missing `authenticated` too but deliberately left service-role-only — none has an internal caller check and every real caller is already service-role-only; restoring the grant would open a hole (arbitrary rate-limit clearing / forged audit-log rows), not close one.
+- [x] **The sweep's own filter (`grantee IN ('authenticated','anon')`) had a blind spot** — a `GRANT ... TO PUBLIC` is invisible to that filter even though PUBLIC functionally includes anon. Found only while fixing `get_customer_period_summary` (ehow): it was granted to PUBLIC, meaning an unauthenticated caller could already read any tenant/customer's report data. Root cause: `0142_service_schema_completeness.sql` recreated it under `service.` without reproducing an earlier hardening pass (`0111`) already applied to its `public.` sibling.
+- [x] **Near-miss, caught within minutes**: the first-pass fix (revoke PUBLIC, grant authenticated) briefly broke a live cron job (`dispatch-notifications/route.ts`) — `service_role` had never been explicitly granted either, only riding on the PUBLIC grant just revoked. Hotfixed immediately. Lesson carried into every fix after: check `service_role`'s own grant *before* revoking PUBLIC, not after.
+- [x] **8 more functions fixed** across three follow-up PRs once the pattern was understood: `get_effective_notification_prefs`, `get_active_asset_counts_by_site`, `get_dashboard_counts`, `get_defect_counts` (PR #808) — all dead code or inert passthroughs to an already-hardened `public.` sibling, confirmed via every real caller already routing around them. `get_assets_for_grouping` + `get_distinct_asset_types` (PR #809) — held back initially (their `public.` siblings granted `anon` explicitly, predating the sweep, not obviously accidental); traced the actual caller, found no public-portal consumer anywhere in the codebase, confirmed with Royce a second time with that evidence, then fixed.
+- [x] **zaap confirmed clean** — every PUBLIC grant found there (13) is a trigger function, mechanically verified (not name-guessed), which Postgres refuses to execute outside a real trigger context regardless of grants.
+- [ ] **Not click-tested live** — none of the 9 fixes have been exercised by a real user/cron run since (beyond the near-miss cron job, which was specifically re-verified). _(added 2026-08-23)_
+
+---
+
 ## eq-solves-service: apply-service-migrations notify comment corrected; PR #797 merged after review (2026-08-21)
 *The workflow's post-merge PR comment claimed dispatching "pauses for production-environment approval" — false; the file's own header already documented (verified 2026-07-28, re-confirmed 2026-08-10) that the `production` GitHub Environment has no required-reviewer rule. An earlier fix corrected the `apply` job's inline comment but missed this user-facing one. Also merged PR #797 (a different session's CI-bootstrap fixture work, entry below) once its CI cleared.*
 

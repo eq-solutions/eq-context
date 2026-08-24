@@ -9,6 +9,12 @@ status: live
 
 # EQ Cards — Changelog
 
+## 2026-08-23 (PR #295 + #296 MERGED + APPLIED LIVE — two admin RPC grants silently dropped by migration 0131, restored)
+- Found while investigating the licence-photo bug below: `eq_cards_admin_upsert_worker` and `eq_cards_admin_create_invite` both lost their `authenticated` EXECUTE grant when migration `0131` replaced them — same bug class as the #0111 incident (`eq_enforce_function_privacy` REVOKEs on every `CREATE OR REPLACE` on this repo's guarded schemas and doesn't warn; a migration must re-GRANT explicitly or the replace silently narrows access). Live ~1 week undetected on `upsert_worker`; both blocked their front-end callers with a bare permission-denied.
+- PR #295 (`0139_restore_admin_upsert_worker_authenticated_grant.sql`) and PR #296 (`0140_restore_admin_create_invite_authenticated_grant.sql`) each add back the single `GRANT EXECUTE ... TO authenticated` line. Merged individually, applied live, confirmed via `information_schema.role_routine_grants` post-merge.
+- Triggered a same-day full-history grant-drift sweep across eq-solves-service (see that repo's changelog) — this repo's own `check-function-grants.mjs` CI lint would catch a NEW file dropping a grant, but not two functions already silently broken for a week before the lint's own baseline was taken.
+- Not yet click-tested live by a real authenticated org admin on either flow.
+
 ## 2026-08-23 (PR #294 MERGED + APPLIED LIVE — licence-photo RLS keyed off a frozen storage path instead of the licence row; 6 live rows fixed)
 - Follow-up to the same-day eq-shell org_membership fix (Zemi Asri's licence not showing on the Staff page) — his licence *photo* still pointed at his old dead-stub account's storage path, since the path is written once at upload and never re-derived when an identity merge repoints ownership.
 - **Correctly re-scoped to the right repo mid-task** — `licences`/`licence-photos` are eq-cards' own control-plane tables on jvkn, not eq-shell's. Worked in an isolated worktree (`eq-cards-licence-photo-rls`), left the root eq-cards checkout (mid-flight on an unrelated branch) untouched. Also checked `origin/claude/zemi-asri-identity-guard` for a possible collision — confirmed already merged as #287, no overlap.

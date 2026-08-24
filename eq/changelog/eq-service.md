@@ -1,13 +1,25 @@
 ---
 title: EQ Service — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-21
+last_updated: 2026-08-23
 scope: EQ Service append-only history. Canonical (repo-slug convention, matching eq-shell.md/eq-cards.md/eq-field.md/etc.) — this file absorbed eq-solves-service.md 2026-08-17, merging both same-day product histories by date (no entries dropped, both files' own internal ordering was already imperfectly chronological so blocks are sorted strictly by date; same-date ties keep this file's prior entries first, then eq-solves-service.md's). The two files had been left deliberately unreconciled since 2026-08-11/15 pending Royce's own call on how to interleave them (see sessions/2026-08-11.md) — this merge is that call, made 2026-08-17. eq-solves-service.md is now a stub pointing here; don't split the log again.
 read_priority: reference
 status: live
 ---
 
 # EQ Service — Changelog
+
+## 2026-08-23 (PR #807 + #808 + #809 MERGED + LIVE — suite-wide sweep: PUBLIC-granted functions, not just missing-authenticated ones)
+- Triggered by the two eq-cards grant restorations the same day (see that repo's changelog, PR #295/#296): a full-history replay of every GRANT/REVOKE across this repo's migrations (adapting `check-function-grants.mjs`'s own diff-only logic to full-history) to check for the same silently-dropped-grant bug class here. Found a bigger, differently-shaped issue instead — several functions were reachable via `GRANT ... TO PUBLIC`, invisible to a `grantee IN ('authenticated','anon')` filter even though PUBLIC functionally includes anon. A routine grant-restore became a suite-wide PUBLIC-grant audit across all three canonical planes (jvkn/zaap/ehow) — zaap confirmed clean throughout.
+- **#807**: `service.get_customer_period_summary` — PUBLIC/anon revoked, `authenticated` granted.
+- **#808**: `service.get_effective_notification_prefs`, `service.get_active_asset_counts_by_site`, `service.get_dashboard_counts`, `service.get_defect_counts` — PUBLIC revoked; no compensating grant needed, each already carried its own `authenticated`/`service_role` grant from an earlier migration, so PUBLIC was pure redundant over-exposure, not the only door.
+- **#809**: `public.get_assets_for_grouping` / `public.get_distinct_asset_types` hardened to authenticated-only, PUBLIC revoked from their `service.`-schema copies too. Held out of the first batch pending a live-caller trace rather than assumed safe from the function names alone — fixed once `app/(app)/assets/page.tsx`'s own auth-gated, service-role-admin-client call path confirmed no public-portal consumer exists.
+- **Near-miss, caught within minutes**: the #807 revoke briefly broke a live cron job (`dispatch-notifications`'s `createAdminClient()` path) — `service_role` had never held its own explicit grant on that function, only ridden on the now-revoked PUBLIC one. Hotfixed live immediately (`GRANT ... TO service_role`); every fix after this one checked `service_role`'s own grant status FIRST, before revoking PUBLIC. The hotfix was applied live before being written to a migration file — caught via the next migration's own pre-flight ledger check, backfilled as `0232` so the file and live state agree.
+- None of these 8 fixes have been exercised by a real user/cron run since, beyond the one near-miss cron job (specifically re-verified after the hotfix).
+
+## 2026-08-23 (PR #806 MERGED + LIVE — migration-number collision was 3, not 1)
+- The same-day SEC-50 entry below found and fixed one filename collision at `0192`. Re-checking the full migration-number history (prompted by the grant-drift sweep above) surfaced two more from the same source, PR #619 (2026-07-28): `0193_reconcile_notification_dispatch_schema.sql` and `0203_audit_logs_role_gate.sql` each also collided with a later-arriving file at the same number. All three later-arriving files renamed (`→0228`, `→0229`, `→0230`) with internal self-references fixed to match; no SQL logic changed, no ledger-shape change. Confirmed against the live `service._eq_migrations` ledger: 0 pending after merge.
+- One unrelated, pre-existing bug surfaced by the run getting further than before (`0197_report_settings_per_tier.sql`, a column reference) — not fixed here, matches this repo's own "integration tests aren't a merge blocker" rule; left for a dedicated pass.
 
 ## 2026-08-23 (SEC-50 CLOSED — SSRF guard on report-branding's logo fetch, plus a same-day IPv6 follow-up)
 - `report-branding.ts::fetchLogoImage` had no URL validation and followed redirects, fed tenant/customer-editable logo & site-photo URLs, wired into 4 report generators. `logo-variants.ts` already had the hardened pattern (`isSafeFetchUrl` + `redirect:'error'`) but it was never applied here. PR #803 merged and confirmed live.
