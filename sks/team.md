@@ -1,7 +1,7 @@
 ---
 title: SKS Tier — NSW Team
 owner: Royce Milmlow
-last_updated: 2026-07-16
+last_updated: 2026-08-24
 scope: SKS NSW team roster — leadership, PMs, supervisors
 read_priority: standard
 status: live
@@ -118,7 +118,10 @@ Labour App, not listed here. Disciplines: **Electrical** and **Comms**.
 
 ~55 NSW field staff across both NSW and NSW (Delta) tabs — reconciled 2026-07-20
 against `sks/active.md`'s ~55, which is the more recently-refreshed count; this
-file's older ~60 was stale.
+file's older ~60 was stale. **Flagged 2026-08-24: `active.md` hasn't itself
+been reconfirmed since 2026-07-05, so neither ~55 count should be treated as
+current** — this reconciliation just establishes the two files used to agree,
+not that either is still right today.
 Do not query this file for live roster. **Transitional dual-source state (DB
 cutover in progress, see `sks/README.md`):** directory data (people, sites,
 managers) is live on `sks-canonical`/`ehow`; operational data (schedule,
