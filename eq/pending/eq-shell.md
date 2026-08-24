@@ -13,6 +13,18 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: field_job_numbers showed the pre-rename site code for Ops-sourced job numbers — fixed + live (2026-08-24)
+*Side effect of the same-day Equinix site-rename session: `0275_equinix_site_names.sql`'s own header named this exact fix as a deliberate follow-up ("changing a SECURITY DEFINER function's COALESCE order deserves its own review, not a rename migration"), not something that migration touched itself.*
+
+- [x] **Root cause confirmed**: `app_data.field_job_numbers_src()` (SECURITY DEFINER fn on ehow) projected Ops-sourced `site_name` as `COALESCE(s.code, s.name)` — prefers the site's code over its name. Every SKS site has a code, so Ops-sourced rows kept showing the old bare code (e.g. "SY5") after the rename, while field-sourced rows in the same list already showed "Equinix SY5". Traced across all 3 migrations that ever touched this function (20260704b, 0163, 0173): never a deliberate choice, just copy-pasted forward unchanged, no comment ever addresses it.
+- [x] **Fixed**: body-only `CREATE OR REPLACE FUNCTION`, swapped to `COALESCE(s.name, s.code)`. Same grants/SECURITY DEFINER/search_path — verified live first that 0 of 261 `app_data.sites` rows have a NULL name, so this can't regress any site on the plane. No eq-field code change needed — `roster.js`'s `jobsForSiteCode()` already matched against `site.name`, so once the function agreed, it just worked. eq-shell [PR #1578](https://github.com/eq-solutions/eq-shell/pull/1578), CI green (schema-drift/anon-grant/policy-lint + function-grants + migration-ledger checks all passed), merged, dispatched live to ehow same session, re-verified after: SY5's ops (6 rows) and field (1 row) job numbers now both read "Equinix SY5".
+- [x] **Confirmed impact by reading every consumer, not just the one that surfaced it**: `roster.js` (silently dropped the per-day job-override dropdown for SY1/SY2/SY3/SY5/SY9/CA1 — cosmetic, supervisor-facing only, the primary roster job number resolves via a separate FK chain and was unaffected) and `jobnumbers.js` (Job Numbers admin table/cards/CSV export displayed the stale code directly, mixed with the new name from field-sourced rows in the same list).
+
+**Deferred:**
+- [ ] **Duplicate site rows sharing one code** — `app_data.sites` has 2-3 rows sharing the same code for SY3/SY4/SY5/SY9, and one SY9 row (`site_id 95cdc37d-3492-4849-869d-306484681451`) wasn't touched by the rename migration — still reads `name='SY9'`. Pre-existing data-quality issue, unrelated to the function fix above; needs Royce's call on which duplicate is canonical before anyone touches it. _(added 2026-08-24)_
+
+---
+
 ## eq-shell: Staff-page navigation slowness — two root causes found and fixed live (2026-08-24)
 *Direct continuation of the same-day "who can see Staff Conversations" session's own hand-off note: Royce interrupted that `/close` with "we really need to speed up how quickly the eq shell navigate, clicking the staff list seems to take an eternity" — investigated fresh in the next session rather than assumed.*
 
