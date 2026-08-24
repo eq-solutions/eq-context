@@ -13,6 +13,13 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: 3 already-applied ehow JWT-tenant-gate migrations had no git record — fixed (2026-08-24)
+
+- [x] Committed `20260823_apprentice_tables_jwt_tenant_gate_inert.sql` / `20260823_audit_apprentice_tables_jwt_tenant_gate.sql` / `20260823_ehow_second_wave_jwt_tenant_gate.sql` — applied live to ehow 2026-08-23 (01:06–01:56 UTC) but left as untracked files in the shared root checkout, one file's header still reading "DRAFT — NOT APPLIED" a full day after the hand-apply. Re-verified all 25 touched tables' live `pg_policies` match file content exactly before committing; corrected the stale header. eq-field [PR #764](https://github.com/eq-solutions/eq-field/pull/764), merged, live (docs-only, no app code — nothing to redeploy).
+- [ ] **Second instance of "applied via Supabase MCP, never committed" in this repo** (see also the `field_people_iud` upward-push migration, below). No tooling catches this — worth a lightweight guard (session-start check, or a CI/lint rule flagging untracked `supabase/migrations/*.sql`) rather than relying on the next session noticing by chance. Not built this session — flagged only. _(added 2026-08-24)_
+
+---
+
 ## eq-field: field_people_iud() writes identity content with zero path back to jvkn — the writer audit's biggest finding, fix built (2026-08-23)
 
 - [ ] **Migration needs its live-apply on ehow independently confirmed.** Both out-of-band prerequisites are now done (2026-08-24): the vault secret `field_identity_push_secret` on ehow and `FIELD_IDENTITY_PUSH_SECRET` on eq-shell's Netlify env both exist, match, and the eq-shell receiver (`field-identity-push.ts`) was verified live end-to-end with the real secret. **But that only proves the receiver works when called correctly — it does not prove this migration's trigger code is actually live on ehow.** Not independently re-confirmed this pass. Worth a direct live check (`pg_get_functiondef` on `field_people_iud()`, looking for the `net.http_post` call) or just watching a real Field roster edit reach eq-shell, before assuming the pipe is actually firing end-to-end. _(added 2026-08-23, narrowed 2026-08-24)_
