@@ -1,7 +1,7 @@
 ---
 title: SKS Tier — Index
 owner: Royce Milmlow
-last_updated: 2026-08-03
+last_updated: 2026-08-24
 scope: SKS Technologies work — operations, projects, team, tools
 read_priority: critical
 status: live
@@ -102,7 +102,7 @@ Separate audience — only fetch when explicitly authoring or reviewing team-fac
 | `active.md` | Rolling active projects (current quarter) |
 | `team.md` | NSW team |
 | `products.md` | SKS live tools (Labour, Receipt Tracker) |
-| `templates.md` | Quote v3 spec + client context blocks |
+| `templates.md` | Quote v3 spec + client context blocks + Role Step-Up Charter + ITC-EL-0006 |
 | `changelog/labour.md` | SKS Labour app history |
 | `brand-kit-tests.md` | Brand-artefact test log |
 

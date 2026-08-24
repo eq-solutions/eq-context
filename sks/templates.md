@@ -1,7 +1,7 @@
 ---
 title: SKS — Document Templates
 owner: Royce Milmlow
-last_updated: 2026-08-15
+last_updated: 2026-08-24
 scope: Standard templates and document formats for SKS work
 read_priority: reference
 status: live
@@ -110,3 +110,83 @@ check here first — don't reinvent.
 **Rules:** no real client names (build fails if found); no hard page breaks (Word blank-page bug); cantSplit on rows; brand tokens from rules/brand-sks.md; logo from R2 (2000×723, ratio 2.766); every charter a draft for Royce; Effective date blank.
 
 **Built 2026-07-05:** Collin Toohey (Site Foreman), Rhys Scott (Site Supervisor), William Brown (Field Service Supervisor), Simon Bramall (Data Centre Account Manager), Matthew Miller (Data Centre Site Manager), David Boyd (Site Manager), Luke Wheeler (Field Service Manager).
+
+---
+
+## ITC-EL-0006 — Switchboard, Submain & RS485/FCMS Comms Installation (Rev C — August 2026)
+
+**Added 2026-08-24.** Combined Inspection Test Certificate covering switchboard
+installation, the submain feeding it, and RS485/FCMS comms termination in one
+document. Supersedes and retires the standalone **ITC-EL-0004** (Submain Cable
+Field Inspection) and the switchboard-only **ITC-EL-0006** — a switchboard
+always has a submain, so testing them as two separate certificates duplicated
+the header/sign-off blocks and let the two go out of sync. Built via docx-js
+(Node), not a token-filled Word template.
+
+**When to use:** any switchboard/RPP/PDU install fed by a submain, with or
+without RS485/FCMS metering comms. One .docx per switchboard/RPP.
+
+**Structure (fixed):**
+- Header info table (Project / Job / Client / Area / Switchboard No. /
+  Description / Manufacturer / Model / Serial / Enclosure rating / Drawing
+  No. / Loop-Circuit Ref) + submain info table (From-To Equip. & tags /
+  Cable No., Type, Size / Length / Trip Setting / Rating / Trip Unit / SPD-CB No.)
+- **A — Visual Inspections** (AS/NZS 3000 Level 2A): 25 items, deduped and
+  merged from the old switchboard + submain checklists — no item dropped,
+  overlaps (labelling, drawings-issued, no-defects) collapsed to one line each
+- **B — Non-Energised Tests** (Level 2B): Earth Continuity (<0.5 Ω) · Insulation
+  Resistance (>1 MΩ @500 V DC, submain+busbars tested as one run) · Polarity —
+  each with a short italic "Guide" line giving the typical/expected reading
+  range (not a fabricated result), so the tester knows what healthy looks like
+  vs. bare pass/fail
+- **C — Energised Tests** (Level 3): Phase Rotation · Fault Loop Impedance ·
+  Voltage Check · Energy/BCPM Meter Check (cross-refs **ITC-EL-0053** for full
+  register-point verification) · **RS485/FCMS Comms Check** (new, see below)
+- Test Equipment table (Multimeter / IR Tester / Earth Continuity Tester /
+  Phase Rotation Meter) · two sign-off blocks (post-Visual, post-Energised)
+
+**RS485/FCMS Comms Check (Section C.5) — new in Rev C:**
+- Photo reference: cropped PAS600L Gateway PDU image showing the RS485
+  terminal block (bottom-left of unit), sourced from the vendor UDB wiring
+  diagram — confirms which terminal to check, not ETH1/ETH2
+- Fields: RS485 Cable Ref (blank — site/cable schedule assigns) · Loop Ref ·
+  From (UDB/Gateway) · To (RPP Tag)
+- 2-item checklist: cable connected to correct RS485 terminal · cable
+  labelled at both ends (From/To) matching the fields above
+- **Loop design (per Royce, 2026-08-24):** the UDB has 6 CB positions total.
+  Loop 1 = CB-A/B/C, Loop 2 = CB-D/E/F. Not every job populates all 6 — the
+  ITC and register should still show the full 6-position design so anyone
+  reading it understands the intended layout, not just what's wired today.
+- **Gap still open:** this covers the RS485 leg only (PDU → PAS600L Gateway,
+  terminated at UDB). The Cat6/Ethernet leg between gateways (ETH1/ETH2,
+  gateway → gateway → FCMS server) has no ITC yet — draft when that scope
+  is confirmed.
+
+**Fill pattern for job instances:** all header/submain/RS485 fields are
+handwritten on print (plain blank cells, no "Click here to enter text."
+content controls — removed deliberately since these forms are completed by
+hand on site). The 25+ Y/N/N-A decisions **are** real Word checkbox content
+controls (`w14:checkbox` SDTs) — tick natively in Word or by pen on the
+printed form. Job-specific instances are generated with python-docx by
+writing directly into known table indices (table 0 = header info, table 2 =
+submain info, table 19 → nested table = RS485 block) — these indices are
+**fragile to template structure changes**; re-verify with
+`doc.tables[i].rows[0].cells[0].text` before reusing the fill script if the
+master docx-js source changes.
+
+**Brand:** Dark Blue `#1F335C` (primary — from the verified brand PDF, not
+the `#203060` token used on some earlier SKS forms; the two navy values are
+currently both live in different documents, unreconciled — flag for Royce)
+· Purple `#7C77B9` accent, used on the Y/N/N-A checkbox column headers
+specifically (brand guide: purple = interactive elements) · Light Blue
+`#F0F7F7` row banding · Dusty Blue `#566686` sub-headers/guide text · Roboto
+headings, Calibri body · SKS Colour+Text logo (R2, 2000×723, ratio 2.766:1)
+in the page header, purple accent rule underneath.
+
+**Naming convention:** `ITC-EL-0006_<SwitchboardTag>.docx` per instance
+(e.g. `ITC-EL-0006_A2-PDU-43A.docx`). Multiple instances for one job are
+merged into a single print-ready PDF, ordered by tag, for one print job.
+
+**First use (Rev C):** A2 RPP Expansion, Job 17806, Equinix, GF-COLO2 — 8
+instances (A2-PDU-43A/B through 46A/B) fed from A2-UDB-08A/B, CB-A through
+CB-D populated, CB-E/F spare.
