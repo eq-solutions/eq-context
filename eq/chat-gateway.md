@@ -154,21 +154,25 @@ this in, or save it and point Code at it." Never imply the change is live.
 
 ## Bootstrap
 
-You already have an EQ-scoped Claude Project with its own hardcoded
-instructions, six months of real use behind it, and — per the same audit
-that found the gap this file exists to close — it still lost real facts
-(the 2026-07-16 connector diagnosis, the 2026-07-26 entity-linking scope)
-because those instructions only draft a patch when asked, never on their
-own. That's the one substantive thing this file adds: noticing a
-decision-moment and offering a patch unprompted.
+**Tested live 2026-08-24: do not use a "fetch this URL and follow its
+instructions" line in the Instructions field.** Claude Chat correctly
+refuses it — treating content fetched at runtime as standing behavioral
+instructions is exactly what Claude's own anti-prompt-injection design
+exists to block, and that block holds even when the Instructions field
+itself asks for it, since there's no way to distinguish a trusted URL from
+a planted one from inside the conversation. This is correct behavior, not a
+bug to route around — an earlier version of this section recommended the
+fetch-line approach without testing it first.
 
-Point your existing EQ project here instead of running two copies (a
-duplicate "EQ Substrate" project may already exist from earlier today —
+The channel that actually works, and what the existing EQ project was
+already doing before this file existed: **paste this file's full content
+directly into the Project's Instructions field.** That's genuine
+first-party configuration, not fetched data, so nothing refuses it. (A
+duplicate "EQ Substrate" project may exist from earlier today —
 consolidate down to one; either name is fine, just not "EQ Ops," which
-collides with the real product at `core.eq.solutions/ops`). Open the
-project's Instructions and replace the pasted text with:
+collides with the real product at `core.eq.solutions/ops`.)
 
-```
-Fetch https://raw.githubusercontent.com/eq-solutions/eq-context/main/eq/chat-gateway.md
-and follow its instructions for every conversation in this project.
-```
+Real cost, stated plainly: this is a static copy again — the exact problem
+a single versioned source was meant to avoid. When this file changes, the
+Instructions field doesn't update itself; re-paste it by hand. No cleaner
+mechanism exists right now.

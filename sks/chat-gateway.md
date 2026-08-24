@@ -149,19 +149,22 @@ drafted it. It isn't, until someone with write access applies it.
 
 ## Bootstrap
 
-You already have an SKS-scoped Claude Project with its own hardcoded
-instructions (SHA-pinning, the freshness gate, the hard rules — this file
-now carries the same substance in one versioned place instead of a copy
-frozen in a Project's settings, so an update here reaches every session that
-points at it). Point that existing project here instead of running two
-copies — open its Instructions and replace the pasted text with:
+**Tested live 2026-08-24: do not use a "fetch this URL and follow its
+instructions" line in the Instructions field.** Claude Chat correctly
+refuses it — treating content fetched at runtime as standing behavioral
+instructions is exactly what Claude's own anti-prompt-injection design
+exists to block, and that block holds even when the Instructions field
+itself asks for it, since there's no way to distinguish a trusted URL from
+a planted one from inside the conversation. This is correct behavior, not a
+bug to route around — an earlier version of this section recommended the
+fetch-line approach without testing it first.
 
-```
-Fetch https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/chat-gateway.md
-and follow its instructions for every conversation in this project.
-```
+The channel that actually works, and what the existing SKS project was
+already doing before this file existed: **paste this file's full content
+directly into the Project's Instructions field.** That's genuine
+first-party configuration, not fetched data, so nothing refuses it.
 
-The one substantive gap this file adds beyond what you already had: it
-tells Chat to *notice* a decision-moment and offer a patch unprompted, not
-just draft one when asked — likely the piece that mattered most, since the
-existing instructions were already doing everything else right.
+Real cost, stated plainly: this is a static copy again — the exact problem
+a single versioned source was meant to avoid. When this file changes, the
+Instructions field doesn't update itself; re-paste it by hand. No cleaner
+mechanism exists right now.
