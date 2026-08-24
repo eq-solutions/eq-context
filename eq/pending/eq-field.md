@@ -13,9 +13,11 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-field: field_people_iud() identity push was silently dropped by a concurrent eq-shell migration; job_title + emergency contact structure fixed alongside it (2026-08-24)
+## eq-field: birthday (day + month) silently doesn't save on Edit Person — real, reproducible, root cause not found (2026-08-24)
+*Surfaced during the real click-test of the field_people_iud() work (see archive, 2026-08-24) — job_title/emergency-contact all confirmed working, DOB was the one field that didn't. Pre-existing since v3.4.16, unrelated to tonight's build.*
 
-- [ ] **Not yet click-tested live.** Open Edit Person on a real linked SKS person: fill in Job Title + all three Emergency Contact fields (Name/Mobile/Relationship), save, reload to confirm they persisted, and confirm the emergency mobile/relationship reach jvkn's `public.workers`. Full detail: `eq/changelog/eq-field.md`, `sessions/2026-08-24.md`. _(added 2026-08-24)_
+- [ ] **Confirmed real on a live SKS person twice** (Aiden Crowley, staff_id `d9b7d717-a6cd-4c78-a0b3-8cd045891386`) — `updated_at` moved both times (genuine save), a screenshot proved the form held valid Day/Month values immediately before the second save, and `dob_day`/`dob_month`/`date_of_birth` stayed null both times regardless. Thorough code read (`people.js`, `supabase-entities.js`, `people-canonical-link.js`, the dropdown markup itself, Sentry) found nothing wrong — every file that should carry the value does, correctly. Root cause needs live network-level debugging (an authenticated session, DevTools Network tab, watching the actual PATCH body) that this session couldn't do itself. Tracked as background task `task_bb6cab43`, started by Royce in a separate session — running independently as of this close. _(added 2026-08-24)_
+- [ ] **Aiden Crowley's real SKS record still carries tonight's test data** — Job Title "1st Year apprentice", Emergency Contact "Mr Crowley" / "0400123456" / "Parent", Start Date 24/08/2026. Was explicitly a trial-then-undo plan; the undo step was never done this session. Needs Royce's go on when/whether to clear it back to blank. _(added 2026-08-24)_
 
 ---
 
