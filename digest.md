@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-24 11:10 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-24 11:19 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-24 10:50 UTC → 2026-08-24 11:10 UTC)
+## Since last refresh (2026-08-24 11:10 UTC → 2026-08-24 11:19 UTC)
 
-- Merged: eq-shell [#1575](https://github.com/eq-solutions/eq-shell/pull/1575) record(access): backfill Field access for nine Cards-door cl
-- Merged: eq-shell [#1562](https://github.com/eq-solutions/eq-shell/pull/1562) fix(labour-hire): resend-worker-invite always collided with 
-- Merged: eq-shell [#1559](https://github.com/eq-solutions/eq-shell/pull/1559) feat(staff): show PDF/document preview in the licence review
-- Merged: eq-shell [#1558](https://github.com/eq-solutions/eq-shell/pull/1558) fix(security): close 2 Intake write-path gaps (cross-tenant 
-- Merged: eq-shell [#1557](https://github.com/eq-solutions/eq-shell/pull/1557) fix(security): invite-users-batch.ts missing the admin.assig
-- Merged: eq-shell [#1556](https://github.com/eq-solutions/eq-shell/pull/1556) fix(entity-patch): scope asset edits to equipment-register r
-- Merged: eq-shell [#1553](https://github.com/eq-solutions/eq-shell/pull/1553) fix(field-people): close 4 role-check gaps on field_people_i
-- Merged: eq-shell [#1551](https://github.com/eq-solutions/eq-shell/pull/1551) feat(labour-hire): include pending unclaimed candidates in c
+- Merged: eq-shell [#1561](https://github.com/eq-solutions/eq-shell/pull/1561) docs(security): close SEC-58 — control-plane ledger 54-file 
+- Merged: eq-shell [#1560](https://github.com/eq-solutions/eq-shell/pull/1560) feat(staff): show pending labour-hire credentials on the Sta
+- Merged: eq-shell [#1555](https://github.com/eq-solutions/eq-shell/pull/1555) fix(identity): push date_of_birth/address_* upward; receive 
+- Merged: eq-shell [#1554](https://github.com/eq-solutions/eq-shell/pull/1554) fix(security): reattach field_people_iud trigger + close 2 p
+- Merged: eq-shell [#1552](https://github.com/eq-solutions/eq-shell/pull/1552) fix(equipment): hide Archive/Delete bulk actions from view-o
+- Merged: eq-shell [#1550](https://github.com/eq-solutions/eq-shell/pull/1550) fix(security): sync staff deactivation to the linked Shell l
+- Merged: eq-shell [#1549](https://github.com/eq-solutions/eq-shell/pull/1549) docs: sprint plan for the access-control sweep follow-up ite
+- Merged: eq-shell [#1548](https://github.com/eq-solutions/eq-shell/pull/1548) feat(identity): alert when a worker's org_membership goes mi
 
 ## ⚠ Needs you (6)
 
@@ -90,7 +90,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-24 | eq-shell | [#1564](https://github.com/eq-solutions/eq-shell/pull/1564) perf(warm-ping): warm the tenant-client cache, not just the conta |
 | 2026-08-24 | eq-shell | [#1563](https://github.com/eq-solutions/eq-shell/pull/1563) docs(security): sprint doc for SEC-61/SEC-63/SEC-60 |
 | 2026-08-24 | eq-solves-service | [#809](https://github.com/eq-solutions/eq-service/pull/809) fix(security): close anon access on get_assets_for_grouping + get |
-| 2026-08-24 | eq-field | [#767](https://github.com/eq-solutions/eq-field/pull/767) fix(db): stop staff_derive_dob_from_cards from clobbering direct  |
+| 2026-08-24 | eq-field | [#769](https://github.com/eq-solutions/eq-field/pull/769) v3.5.550 — Edit Person: reject a locked birthday edit instead of  |
 _Showing 15 of 119 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -198,4 +198,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-24 11:10 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-24 11:19 UTC._
