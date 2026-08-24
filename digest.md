@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-24 22:28 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-24 22:46 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-24 22:27 UTC → 2026-08-24 22:28 UTC)
+## Since last refresh (2026-08-24 22:28 UTC → 2026-08-24 22:46 UTC)
 
-- Merged: eq-shell [#1581](https://github.com/eq-solutions/eq-shell/pull/1581) feat(sites): self-serve internal contacts in Edit Site modal
-- Merged: eq-shell [#1565](https://github.com/eq-solutions/eq-shell/pull/1565) docs(security): mark SEC-61 closed in the sprint doc
-- Merged: eq-shell [#1564](https://github.com/eq-solutions/eq-shell/pull/1564) perf(warm-ping): warm the tenant-client cache, not just the 
-- Merged: eq-shell [#1563](https://github.com/eq-solutions/eq-shell/pull/1563) docs(security): sprint doc for SEC-61/SEC-63/SEC-60
-- Merged: eq-shell [#1562](https://github.com/eq-solutions/eq-shell/pull/1562) fix(labour-hire): resend-worker-invite always collided with 
-- Merged: eq-shell [#1559](https://github.com/eq-solutions/eq-shell/pull/1559) feat(staff): show PDF/document preview in the licence review
-- Merged: eq-shell [#1558](https://github.com/eq-solutions/eq-shell/pull/1558) fix(security): close 2 Intake write-path gaps (cross-tenant 
-- Merged: eq-shell [#1557](https://github.com/eq-solutions/eq-shell/pull/1557) fix(security): invite-users-batch.ts missing the admin.assig
+- Merged: eq-shell [#1566](https://github.com/eq-solutions/eq-shell/pull/1566) docs(security): SEC-63 status update
+- Merged: eq-shell [#1561](https://github.com/eq-solutions/eq-shell/pull/1561) docs(security): close SEC-58 — control-plane ledger 54-file 
+- Merged: eq-shell [#1560](https://github.com/eq-solutions/eq-shell/pull/1560) feat(staff): show pending labour-hire credentials on the Sta
+- Merged: eq-shell [#1556](https://github.com/eq-solutions/eq-shell/pull/1556) fix(entity-patch): scope asset edits to equipment-register r
+- Merged: eq-shell [#1555](https://github.com/eq-solutions/eq-shell/pull/1555) fix(identity): push date_of_birth/address_* upward; receive 
+- Merged: eq-shell [#1554](https://github.com/eq-solutions/eq-shell/pull/1554) fix(security): reattach field_people_iud trigger + close 2 p
+- Merged: eq-shell [#1553](https://github.com/eq-solutions/eq-shell/pull/1553) fix(field-people): close 4 role-check gaps on field_people_i
+- Merged: eq-shell [#1547](https://github.com/eq-solutions/eq-shell/pull/1547) docs(security): correct stale mint-supabase-jwt carve-out cl
 
 ## ⚠ Needs you (6)
 
@@ -198,4 +198,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-24 22:28 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-24 22:46 UTC._
