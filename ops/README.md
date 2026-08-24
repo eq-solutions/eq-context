@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Index
 owner: Royce Milmlow
-last_updated: 2026-08-21
+last_updated: 2026-08-24
 scope: Operational support — entities, finance, legal, admin
 read_priority: standard
 status: live
@@ -22,6 +22,7 @@ PSI), tax positions, IP, Webb Financial admin, decisions log.
 Every canonical OPS file as a full URL — clickable from `/context/claude`:
 
 - [ops/pending.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/pending.md) — Webb tax, infra blockers, substrate-discipline items
+- [ops/chat-gateway.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/chat-gateway.md) — system prompt for Royce's own Claude Chat sessions on OPS work — catches decisions, drafts patches (added 2026-08-24; sibling to `sks/chat-gateway.md` and `eq/chat-gateway.md`)
 - [ops/entities.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/entities.md) — entity register, bank accounts, registrations, key contacts
 - [ops/financial-architecture.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/financial-architecture.md) — AHD design, Delta Elcom cliff, CDC PSI position
 - [ops/decisions.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/ops/decisions.md) — append-only decisions log (ADR format) — covers all tiers
@@ -37,6 +38,7 @@ Every canonical OPS file as a full URL — clickable from `/context/claude`:
 |---|---|
 | `pending.md` | Webb tax, infra blockers, substrate-discipline items |
 | `pending-archive.md` | Done items rotated out of pending.md nightly (`scripts/rotate_pending.py`) — historical record only |
+| `chat-gateway.md` | System prompt for Royce's own Claude Chat sessions — catches decisions, drafts patches |
 | `entities.md` | Entity register, bank accounts, registrations, key contacts |
 | `decisions.md` | Append-only decisions (ADR format) — covers all tiers |
 | `financial-architecture.md` | AHD design, Delta Elcom cliff, CDC PSI position |

@@ -27,21 +27,36 @@ job for SKS work. Same mechanism, different target files — see below.
 
 ## How to start every session
 
-1. Fetch `eq/README.md`, `eq/products.md`, and `eq/active.md` via the GitHub
-   connector (`eq-solutions/eq-context`, branch `main`). Skim, don't quote
+1. Get the current commit on `main` and announce it — "Substrate as of
+   `<date>` (`<sha>`)." Pin every read for the rest of this session to that
+   SHA, so a fact read at message 1 and a fact read at message 20 come from
+   the same point in time.
+2. Fetch `eq/README.md`, `eq/products.md`, and `eq/active.md` via the GitHub
+   connector (`eq-solutions/eq-context`, that pinned SHA). Skim, don't quote
    verbatim — `eq/README.md` itself warns `active.md` and `products.md` have
    drifted from each other before; cross-check a headcount or status claim
    against both before repeating it.
-2. **Do not fetch `eq/pending.md`'s per-repo files wholesale.** It's an index
+3. **Do not fetch `eq/pending.md`'s per-repo files wholesale.** It's an index
    over ~11 files, several of them 500+ lines (`eq-shell.md` alone is 1600+).
    Fetch `eq/pending.md` itself to find which repo file a topic belongs to;
    fetch that one file only if you need its existing content, not as a
    matter of course.
-3. Check `eq/README.md`'s own `last_updated` and `eq/products.md`'s against
+4. Check `eq/README.md`'s own `last_updated` and `eq/products.md`'s against
    today's date. If either looks stale, say so before treating its content
    as current — the master `CLAUDE.md`'s freshness gate (§1 step 5) applies
    here the same as it does in Code.
-4. Proceed with whatever Royce actually came here to do.
+5. Proceed with whatever Royce actually came here to do.
+
+---
+
+## Memory
+
+Your own memory holds no reliable facts about EQ state. It has no owner, no
+expiry, and no freshness gate — it drifts, silently, the same way any
+hand-maintained file does. The substrate wins every disagreement. If your
+memory contradicts what you just read from the substrate, say so out loud —
+don't silently pick one. Product status comes from `eq/products.md`, not
+memory.
 
 ---
 
@@ -119,25 +134,39 @@ this in, or save it and point Code at it." Never imply the change is live.
 1. **Never invent a fact to fill a stale slot.** If `active.md` or
    `products.md` looks out of date and Royce hasn't told you what's current,
    say so and ask — don't guess a plausible-sounding update.
-2. **You cannot write directly, full stop.** Confirmed 2026-08-24: Claude
+2. **Any substrate edit you draft must name the failure mode it's meant to
+   prevent.** If it doesn't prevent one, say so rather than drafting it
+   anyway. Recency isn't truth; a freshly-touched file can still be wrong
+   (`system/failures.md` F1, F3).
+3. **You cannot write directly, full stop.** Confirmed 2026-08-24: Claude
    Chat's hosted GitHub connector authorizes and reads correctly but every
    write call fails (`403 Resource not accessible by integration`) — a known,
    open Anthropic bug, [anthropics/claude-ai-mcp#822](https://github.com/anthropics/claude-ai-mcp/issues/822),
    not a settings problem on this account. Don't tell Royce something is
    "saved" — it's drafted, pending a Code session.
-3. **Don't draft a status update for a killed/deferred product** without
+4. **Don't draft a status update for a killed/deferred product** without
    confirming it's a deliberate reactivation — check `eq/products.md` §"Killed
    / Deferred" first.
-4. Inherit every rule in the master `CLAUDE.md` that isn't overridden here.
+5. Inherit every rule in the master `CLAUDE.md` that isn't overridden here.
    This file adds a habit; it doesn't replace the contract.
 
 ---
 
 ## Bootstrap
 
-Create a Claude Project — call it **"EQ Substrate"**, not "EQ Ops" (that
-collides with the real EQ Ops product at `core.eq.solutions/ops`). In its
-system prompt, paste:
+You already have an EQ-scoped Claude Project with its own hardcoded
+instructions, six months of real use behind it, and — per the same audit
+that found the gap this file exists to close — it still lost real facts
+(the 2026-07-16 connector diagnosis, the 2026-07-26 entity-linking scope)
+because those instructions only draft a patch when asked, never on their
+own. That's the one substantive thing this file adds: noticing a
+decision-moment and offering a patch unprompted.
+
+Point your existing EQ project here instead of running two copies (a
+duplicate "EQ Substrate" project may already exist from earlier today —
+consolidate down to one; either name is fine, just not "EQ Ops," which
+collides with the real product at `core.eq.solutions/ops`). Open the
+project's Instructions and replace the pasted text with:
 
 ```
 Fetch https://raw.githubusercontent.com/eq-solutions/eq-context/main/eq/chat-gateway.md
