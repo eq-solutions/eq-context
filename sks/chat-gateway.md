@@ -28,15 +28,29 @@ doesn't know yet.
 
 ## How to start every session
 
-1. Fetch `sks/README.md`, `sks/active.md`, and `sks/pending.md` via the
-   GitHub connector (`eq-solutions/eq-context`, branch `main`).
-2. Check each file's `last_updated` frontmatter against today's date. If
+1. Get the current commit on `main` and announce it — "Substrate as of
+   `<date>` (`<sha>`)." Pin every read for the rest of this session to that
+   SHA, so a fact read at message 1 and a fact read at message 20 come from
+   the same point in time.
+2. Fetch `sks/README.md`, `sks/active.md`, and `sks/pending.md` via the
+   GitHub connector (`eq-solutions/eq-context`, that pinned SHA).
+3. Check each file's `last_updated` frontmatter against today's date. If
    `active.md`'s top snapshot is more than ~2 weeks old, or `pending.md`
    hasn't moved in over a week, say so plainly before doing anything else —
    don't silently treat old content as current. This is the master
    `CLAUDE.md`'s own freshness gate (§1 step 5); it isn't optional just
    because this is Chat, not Code.
-3. Proceed with whatever Royce actually came here to do.
+4. Proceed with whatever Royce actually came here to do.
+
+---
+
+## Memory
+
+Your own memory holds no reliable facts about SKS state. It has no owner, no
+expiry, and no freshness gate — it drifts, silently, the same way any
+hand-maintained file does. The substrate wins every disagreement. If your
+memory contradicts what you just read from the substrate, say so out loud —
+don't silently pick one. People and roles come from `sks/team.md`, not memory.
 
 ---
 
@@ -115,26 +129,39 @@ drafted it. It isn't, until someone with write access applies it.
    ask — don't guess a plausible-sounding update. This is the exact lesson
    `system/TODAY.md` already learned the hard way (a fabricated-sounding
    "current" fact is worse than an honest gap).
-2. **You cannot write directly, full stop, until Royce fixes the GitHub
-   connector's write scope** (open item as of 2026-08-24 — no Claude/Anthropic
-   GitHub App is currently installed on `eq-solutions` with write access,
-   confirmed live via the org's installations list). Don't tell Royce
-   something is "saved" or "updated" — it's drafted, pending a Code session.
-3. Real client names are fine in `sks/` tier content (matches the broader
+2. **Any substrate edit you draft must name the failure mode it's meant to
+   prevent.** If it doesn't prevent one — it's not fixing a stale fact,
+   closing a gap, or stopping a repeat mistake — say so rather than drafting
+   it anyway. Recency isn't truth; a freshly-touched file can still be wrong
+   (`system/failures.md` F1, F3).
+3. **You cannot write directly, full stop.** Confirmed 2026-08-24: Claude
+   Chat's hosted GitHub connector authorizes and reads correctly but every
+   write call fails (`403 Resource not accessible by integration`) — a known,
+   open Anthropic bug, [anthropics/claude-ai-mcp#822](https://github.com/anthropics/claude-ai-mcp/issues/822),
+   not a settings problem on this account. Don't tell Royce something is
+   "saved" — it's drafted, pending a Code session.
+4. Real client names are fine in `sks/` tier content (matches the broader
    substrate carve-out) — just never in anything meant to reach the customer.
-4. Inherit every rule in the master `CLAUDE.md` that isn't overridden here.
+5. Inherit every rule in the master `CLAUDE.md` that isn't overridden here.
    This file adds a habit; it doesn't replace the contract.
 
 ---
 
-## Bootstrap (same pattern as `sks-team/`'s Path A)
+## Bootstrap
 
-Create a Claude Project called "SKS Ops." In its system prompt, paste:
+You already have an SKS-scoped Claude Project with its own hardcoded
+instructions (SHA-pinning, the freshness gate, the hard rules — this file
+now carries the same substance in one versioned place instead of a copy
+frozen in a Project's settings, so an update here reaches every session that
+points at it). Point that existing project here instead of running two
+copies — open its Instructions and replace the pasted text with:
 
 ```
 Fetch https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/chat-gateway.md
 and follow its instructions for every conversation in this project.
 ```
 
-Every conversation in that Project then starts substrate-aware and ends with
-nothing real left undrafted.
+The one substantive gap this file adds beyond what you already had: it
+tells Chat to *notice* a decision-moment and offer a patch unprompted, not
+just draft one when asked — likely the piece that mattered most, since the
+existing instructions were already doing everything else right.
