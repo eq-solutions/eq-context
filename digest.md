@@ -1,25 +1,25 @@
 ---
 title: EQ Suite — Health Digest
 owner: Royce Milmlow
-last_updated: 2026-08-23
+last_updated: 2026-08-24
 scope: Push-style 'what needs your attention' feed across the EQ suite. Regenerated on merge (repository_dispatch: suite-state-changed) and nightly. Full snapshot in suite-state.md.
 read_priority: high
 status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-23 23:22 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-24 06:14 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-23 22:53 UTC → 2026-08-23 23:22 UTC)
+## Since last refresh (2026-08-23 23:22 UTC → 2026-08-24 06:14 UTC)
 
-- Merged: eq-shell [#1562](https://github.com/eq-solutions/eq-shell/pull/1562) fix(labour-hire): resend-worker-invite always collided with 
-- Merged: eq-shell [#1561](https://github.com/eq-solutions/eq-shell/pull/1561) docs(security): close SEC-58 — control-plane ledger 54-file 
-- Merged: eq-shell [#1543](https://github.com/eq-solutions/eq-shell/pull/1543) fix(auth): correct #1542's client + close self-join name gap
-- Merged: eq-shell [#1540](https://github.com/eq-solutions/eq-shell/pull/1540) fix(staff): resolve the 7 divergent staff/shell login names 
-- Merged: eq-shell [#1537](https://github.com/eq-solutions/eq-shell/pull/1537) fix(staff): sync staff record name into the linked Shell log
-- Merged: eq-shell [#1535](https://github.com/eq-solutions/eq-shell/pull/1535) fix(security): role-gate + self-approval check on approve_sa
-- Merged: eq-shell [#1532](https://github.com/eq-solutions/eq-shell/pull/1532) feat(drift-guard): CHECK 10 -- positive assertion for INTENT
-- Merged: eq-solves-service [#808](https://github.com/eq-solutions/eq-service/pull/808) fix(security): tighten PUBLIC grants on 4 dead service-schem
+- Merged: eq-shell [#1563](https://github.com/eq-solutions/eq-shell/pull/1563) docs(security): sprint doc for SEC-61/SEC-63/SEC-60
+- Merged: eq-shell [#1548](https://github.com/eq-solutions/eq-shell/pull/1548) feat(identity): alert when a worker's org_membership goes mi
+- Merged: eq-shell [#1546](https://github.com/eq-solutions/eq-shell/pull/1546) fix(security): close GM Reports' direct-API bypass, correct 
+- Merged: eq-shell [#1545](https://github.com/eq-solutions/eq-shell/pull/1545) fix(security): staff_conversations RLS never re-gated who ma
+- Merged: eq-shell [#1544](https://github.com/eq-solutions/eq-shell/pull/1544) fix(identity): enforce the control-layer-wins rule — lock by
+- Merged: eq-shell [#1542](https://github.com/eq-solutions/eq-shell/pull/1542) fix(auth): close 2nd blank-name gap in phone-OTP cards-appro
+- Merged: eq-shell [#1541](https://github.com/eq-solutions/eq-shell/pull/1541) fix(security): DB-layer role gate on app_data.sites writes (
+- Merged: eq-shell [#1539](https://github.com/eq-solutions/eq-shell/pull/1539) feat(quotes): own-quotes-only row scoping via new quotes.vie
 
 ## ⚠ Needs you (8)
 
@@ -32,7 +32,7 @@ _2026-08-23 23:22 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🔴 **Guard bypass? rung 4** — F12: Side-clone reconciliation blind-overwrote a concurrent session's already-pushed shared-fil · possibly recurred in [2026-08-21.md](sessions/2026-08-21.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-08-23.md](sessions/2026-08-23.md) · [failures.md](system/failures.md)
 
-## 🙋 Waiting on you (211)
+## 🙋 Waiting on you (210)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
@@ -48,7 +48,7 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **`0258`-`0261` (the 4 ehow-only migrations) still not dispatched** — dispatching each (with `--slug=<tenant>` matching its declared plane) remains explicitly Royce's call. _(added 2026-08-23, narrowed from "none of the 5" — one of the five is now done)_
 - **eq-shell** · **Not click-tested live, either claim door** — both #1517 (Shell-join) and #1519 (accept-invite.ts) verified via `tsc -b --force`/eslint and exact commit-ancestry against the live deploy, not an actual claim walked through by a person. Worth confirming once Conor or Nelson claims. _(added 2026-08-23)_
 - **eq-shell** · **Not click-tested live** — verified via `tsc -b --force` and eslint (0 new errors), not an actual file landing in a Downloads folder. Worth confirming next time a pack is built — same ask as the still-open 2026-07-28/07-26 "re-download and eyeball" items further down this file. _(added 2026-08-23)_
-_…and 199 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 198 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
@@ -78,6 +78,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-24 | eq-shell | [#1563](https://github.com/eq-solutions/eq-shell/pull/1563) docs(security): sprint doc for SEC-61/SEC-63/SEC-60 |
 | 2026-08-23 | eq-shell | [#1562](https://github.com/eq-solutions/eq-shell/pull/1562) fix(labour-hire): resend-worker-invite always collided with the u |
 | 2026-08-23 | eq-shell | [#1561](https://github.com/eq-solutions/eq-shell/pull/1561) docs(security): close SEC-58 — control-plane ledger 54-file backl |
 | 2026-08-23 | eq-shell | [#1558](https://github.com/eq-solutions/eq-shell/pull/1558) fix(security): close 2 Intake write-path gaps (cross-tenant RPC + |
@@ -92,7 +93,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-23 | eq-shell | [#1552](https://github.com/eq-solutions/eq-shell/pull/1552) fix(equipment): hide Archive/Delete bulk actions from view-only r |
 | 2026-08-23 | eq-shell | [#1551](https://github.com/eq-solutions/eq-shell/pull/1551) feat(labour-hire): include pending unclaimed candidates in compli |
 | 2026-08-23 | eq-shell | [#1550](https://github.com/eq-solutions/eq-shell/pull/1550) fix(security): sync staff deactivation to the linked Shell login |
-| 2026-08-23 | eq-shell | [#1549](https://github.com/eq-solutions/eq-shell/pull/1549) docs: sprint plan for the access-control sweep follow-up items |
 _Showing 15 of 119 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -131,7 +131,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 |------|------:|------------------:|------------------:|------------:|
 | [eq-shell](eq/pending/eq-shell.md) | 1676 | 190 / 76 | 210 | 44 |
 | [eq-cards](eq/pending/eq-cards.md) | 418 | 44 / 13 | 45 | 8 |
-| [eq-field](eq/pending/eq-field.md) | 830 | 100 / 28 | 52 | 15 |
+| [eq-field](eq/pending/eq-field.md) | 834 | 101 / 27 | 51 | 17 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 644 | 72 / 25 | 87 | 20 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 152 | 13 / 6 | 5 | 14 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
@@ -163,7 +163,7 @@ _Open items sitting under a section header this old or older — not necessarily
 - **eq-shell** (2026-07-03) · **Commit eq-intake/CLAUDE.md** — left untracked (eq-intake tree dirty on `feat/armada-sprint-polish`); fold into whichever branch lands next. _(added 2026-07-03)_
 - **eq-shell** (2026-07-03) · **Coordinated `--reconcile-ledger`** — after go-live settles: renames/stamps the 16 bare 0103–0116/0141 rows, drops `057` + go-live hand rows. Run only WITH eq-intake (their numbering reads the live ledger). _(added 2026-07-03)_
 - **eq-shell** (2026-07-03) · **Tenant-migrate run 28638433643 was dispatched then CANCELLED** — dispatched from the #608 branch on the stale premise that a live apply was needed to green the gate; the newer session-state showed #608 is code-only, and applying unmerged branch migrations risks checksum/ledger mess. Nothing was applied (cancelled at the production-approval gate, never approved). Post-merge apply of 0155/0156 from main is the normal One Pipe dispatch — separate explicit call. _(added 2026-07-03, needs your call)_
-_…and 164 more — see each file's Queue health row above._
+_…and 166 more — see each file's Queue health row above._
 
 ## Possible duplicate pending items (unconfirmed)
 
@@ -188,11 +188,11 @@ _Session logs mention a pattern matching a known failure below, dated after its 
 
 | Date | Session |
 |------|---------|
+| 2026-08-24 | [SEC-58 (control-plane ledger) and SEC-65 (AUDIT_SB_KEY label) closed](sessions/2026-08-24.md) |
 | 2026-08-23 | [Labour-hire live-trial bugs: licence/compliance-pack gap root-caused and fixed (PR #1513), cropping issue diagnosed](sessions/2026-08-23.md) |
 | 2026-08-21 | [eq-service worktree/branch/stash graveyard cleared: 8 branches, 23 folders, 3 stashes, all confirmed already-shipped before removal](sessions/2026-08-21.md) |
 | 2026-08-20 | [Staff page load-time root-caused: staff-bootstrap missing from the keep-warm ping](sessions/2026-08-20.md) |
 | 2026-08-19 | [Cards iframe Web Share fix (eq-shell) + Wallet banner repeat fix (eq-cards)](sessions/2026-08-19.md) |
-| 2026-08-18 | [Fixed a real bug behind a suspected-hardcoded-path guard.js gate report](sessions/2026-08-18.md) |
 _[sessions/](sessions/) · 5 shown_
 
 ## Substrate honesty
@@ -200,4 +200,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-23 23:22 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-24 06:14 UTC._
