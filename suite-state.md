@@ -61,7 +61,6 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-24)
 
 **eq-service:**
-- #809 fix(security): close anon access on get_assets_for_grouping + get_distinct_asset_types
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
@@ -84,7 +83,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 239 (latest: 0233) applied
+**Migrations:** eq-service has 240 (latest: 0234) applied
 
 ---
 
