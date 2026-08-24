@@ -71,6 +71,9 @@ _If this file is >48h old, the cron is broken._
 - #810 chore(deps): bump the eq-design-system group with 2 updates
 - #791 fix(reports): make reissuing a report possible from the UI
 
+**eq-shell:**
+- #1577 feat(sites): add primary/secondary internal contact columns
+
 ---
 
 ## System Health (as of 2026-08-24)
