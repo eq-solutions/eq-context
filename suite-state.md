@@ -63,10 +63,6 @@ _If this file is >48h old, the cron is broken._
 **eq-service:**
 - #791 fix(reports): make reissuing a report possible from the UI
 
-**eq-shell:**
-- #1568 docs(security): SEC-60 status update
-- #1567 fix(field-people): restore identity push dropped by 0270/0271
-
 ---
 
 ## System Health (as of 2026-08-24)
@@ -76,7 +72,7 @@ _If this file is >48h old, the cron is broken._
 | Repo | Status |
 |------|--------|
 | eq-service | ✓ success |
-| eq-shell | ? in_progress |
+| eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
 | eq-solves-intake | ✓ success |
