@@ -20,9 +20,9 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-field: field_people_iud() writes identity content with zero path back to jvkn — the writer audit's biggest finding, fix built (2026-08-23)
+## eq-field: field_people_iud() identity push was silently dropped by a concurrent eq-shell migration; job_title + emergency contact structure fixed alongside it (2026-08-24)
 
-- [ ] **Migration needs its live-apply on ehow independently confirmed.** Both out-of-band prerequisites are now done (2026-08-24): the vault secret `field_identity_push_secret` on ehow and `FIELD_IDENTITY_PUSH_SECRET` on eq-shell's Netlify env both exist, match, and the eq-shell receiver (`field-identity-push.ts`) was verified live end-to-end with the real secret. **But that only proves the receiver works when called correctly — it does not prove this migration's trigger code is actually live on ehow.** Not independently re-confirmed this pass. Worth a direct live check (`pg_get_functiondef` on `field_people_iud()`, looking for the `net.http_post` call) or just watching a real Field roster edit reach eq-shell, before assuming the pipe is actually firing end-to-end. _(added 2026-08-23, narrowed 2026-08-24)_
+- [ ] **Not yet click-tested live.** Open Edit Person on a real linked SKS person: fill in Job Title + all three Emergency Contact fields (Name/Mobile/Relationship), save, reload to confirm they persisted, and confirm the emergency mobile/relationship reach jvkn's `public.workers`. Full detail: `eq/changelog/eq-field.md`, `sessions/2026-08-24.md`. _(added 2026-08-24)_
 
 ---
 
