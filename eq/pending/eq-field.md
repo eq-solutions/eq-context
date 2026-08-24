@@ -13,6 +13,14 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: Site Audits — Submit silently did nothing when a non-conformance was flagged, inside the Shell iframe (2026-08-25)
+*Same BUG-009 family as eq-shell's sandboxed-iframe confirm()/prompt() bug class — the Field iframe has no `allow-modals`, so `confirm()` returns `false` silently, no dialog. PR #773 (v3.5.555, merged 2026-08-25) fixed the sibling case in Prestart/Toolbox and explicitly named this exact function as the deferred follow-up.*
+
+- [x] **`audits.js`'s `submitAudit()` converted to the shared `#modal-confirm` dialog** — new local `_auditConfirm()` helper, not a call into `SiteReportsShared` (`audits.js` can be lazy-loaded alone via the 'audits' tab bundle, where `site-reports-shared.js` isn't guaranteed loaded). Verified live on the deploy preview (both resolve paths, singular/plural wording, no handler leak across repeat calls); not click-tested through a real Shell iframe with live SKS credentials (same limitation the sibling PR carried). eq-field [PR #776](https://github.com/eq-solutions/eq-field/pull/776) (v3.5.556), squash-merged on explicit "merge it," confirmed live via `field.eq.solutions/sw.js`.
+- [ ] **6 more files still carry at least one of the same live-blocking confirm()/prompt() call**, per PR #773's own sweep (not independently re-verified this session): `audit.js` (different file from `audits.js`), `apprentices.js`, `journal.js`, `timesheets-export.js`, `timesheets-approvals.js`, `tender-pipeline.js`. Not tracked anywhere in eq-context before this entry — previously only visible in eq-field's own `docs/reflection-log.md`. _(added 2026-08-25)_
+
+---
+
 ## eq-field: leave.js file-size debt — email templates split out (2026-08-25)
 *leave.js was flush against its eslint `max-lines` grandfather ceiling (1899/1900, zero headroom) after #768 — the next PR touching the file would've broken CI with no room to absorb even a one-line fix.*
 
