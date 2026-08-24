@@ -1,7 +1,7 @@
 ---
 title: SKS — Pending
 owner: Royce Milmlow
-last_updated: 2026-08-24
+last_updated: 2026-08-25
 scope: SKS Technologies operational TODO list
 read_priority: critical
 status: live
@@ -479,3 +479,10 @@ The following tests belong to eq-quotes-port (Flask), which is retired as of 202
 **Deferred:**
 - [ ] **EQ Solutions' own org (`eq`) has zero credential requirements configured** — worth a call on whether EQ Solutions should require White Card/Photo ID too, or stay requirement-free deliberately (it's the seed-demo org). _(added 2026-07-16)_
 
+
+## ⏩ SKS Technologies — session 2026-08-24 (ITC-EL-0006 template + substrate critique + chat-gateway)
+
+(recorded in `sessions/2026-08-24.md`; eq-context PRs #177–#183)
+
+**Deferred:**
+- [ ] **ITC-EL-0006's brand colour (`#1F335C`) conflicts with `#203060`**, the live-verified value used elsewhere in the same file (corrected 2026-07-30 after `#1F335C` was found stale in EQ Field's transactional emails). Applied as drafted — may be sourced from an actual physical brand PDF for this specific certificate — never resolved. Worth a two-minute check before the template generates a real job document. _(added 2026-08-24)_
