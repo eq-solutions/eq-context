@@ -13,6 +13,13 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell + org: secrets-org-hardening-sprint — SEC-61 closed, SEC-63 resolved, SEC-60 built to scope (2026-08-24)
+
+- [ ] **SEC-63's `dev`-context leak fix** — the account-scope `SUPABASE_JWT_SECRET`'s dev-context plaintext leak is still live. Royce chose to delete it himself via the Netlify dashboard (Team settings → Shared environment variables) rather than have the session retry past its own classifier block. Not yet confirmed done. _(added 2026-08-24)_
+- [ ] **SEC-60's remaining 3 gaps, deliberately deferred** — org-wide 2FA requirement, branch protection on the other 5 repos (eq-field, eq-cards, eq-solves-intake, eq-context, sks-nsw-labour), SHA-pinning on third-party Actions. Royce picked the lowest-disruption subset this round; these three are a real future pass, not forgotten. _(added 2026-08-24)_
+
+---
+
 ## eq-shell: access-control sweep completed — Documents/Intake/Admin covered, 3 more gaps found and closed; sprint doc's S1/S3 also shipped (2026-08-23)
 *Continuation of the same-day sweep (see the entry below this one). Sprint doc (`docs/access-control-sweep-followup-sprint.md`) items S1 and S3 built and merged first; a `/decide` pass on "what's next" then recommended continuing the sweep into the areas not yet DB-layer-audited (Documents, Intake, Admin) over closing S2 — Royce confirmed.*
 

@@ -9,6 +9,12 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-24 (PRs #1563/#1565/#1566/#1568 MERGED + LIVE — secrets-org-hardening-sprint: SEC-61 closed, SEC-63 resolved, SEC-60 built to scope)
+- SEC-61: all 21 leaking Netlify `dev`-context secrets across eq-shell/eq-service/eq-field/eq-cards fixed live via `deleteEnvVarValue`, one context row at a time. Verified 0 remaining afterward; production/preview/branch-deploy confirmed untouched via unchanged ids and `updated_at` timestamps.
+- SEC-63: resolved the site-scope question the original finding couldn't answer via API — the account-scope `SUPABASE_JWT_SECRET` reaches only eq-shell/eq-service/eq-field, not sks-nsw-labour or any other site on the account. Confirmed P1, not P0. Its own `dev`-context leak left as a manual Netlify-dashboard step, Royce's choice.
+- SEC-60: branch protection added on eq-service `main` (2 verified PR-gating checks required, not the 11 named CI jobs — 5 only run post-merge and would have blocked all future merges if required, and one of the PR-triggered 6 is this workspace's own documented pre-existing-failing integration test). Secret scanning + push protection enabled on the 3 public repos. 2FA, the other 5 repos, and Action SHA-pinning deliberately left for a later pass.
+- `ops/security-register.md` and `ops/secrets-inventory.md` (eq-context) updated in step; `docs/secrets-org-hardening-sprint.md` (eq-shell) tracks live status per item.
+
 ## 2026-08-24 (PR #1561 MERGED + LIVE — SEC-58: control-plane migration ledger 54-file backlog closed)
 - `supabase/CONTROL-PLANE-LEDGER.md`'s headline summary hadn't matched its own changelog since 2026-07-11, despite 23+ files being individually added and verified after that date — and separately, 54 files had no ledger row at all.
 - All 54 object-verified against live jvkn: table/function/trigger/column/constraint/bucket/policy existence, grant spot-checks, and — for the 3 functions redefined by more than one untracked file (`eq_worker_completeness`, `eq_worker_compliance_status`, `eq_get_tenant_user`) — a live function-body diff to correctly attribute current vs. superseded rather than assume the newest filename wins.
