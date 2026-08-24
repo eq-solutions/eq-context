@@ -2,7 +2,7 @@
 title: SKS — Active Projects (Rolling)
 owner: Royce Milmlow
 last_updated: 2026-08-24
-scope: Current SKS NSW projects, refreshed when projects start/finish
+scope: Dated snapshots of SKS NSW project status, appended (never edited in place) when Royce reconfirms — not a live feed, check Workbench for real-time status
 read_priority: critical
 status: live
 ---
@@ -15,9 +15,18 @@ Client", "Healthcare Client").
 
 ---
 
-## Active Projects (Apr 2026)
+## Active Projects
 
-> ⚠️ **Not reconfirmed since 2026-07-05 (`last_updated` above) — this table is a dated snapshot, not live status, despite the file's "Rolling" title.** Flagged 2026-08-24: Royce's SKS substrate work happens mostly in Claude Chat, which can read this file but can't write back — so this table only updates when someone manually drafts and applies a patch, which hasn't happened since Apr's project list. **Workbench is the actual system of record for current SKS job status** — check there, not here, for anything that needs to be current today. Table left as-is below rather than guessed-updated; nobody has ground truth for "what's active now" except Royce.
+Dated snapshots, most recent first — same append pattern as `pending.md`, so
+updating this only ever means adding one new dated block below, never
+editing an existing table in place (that friction is *why* this table went
+7 weeks stale under the old single-table format — reshaped 2026-08-24).
+**Only the top-most snapshot is "recent"; everything below it is explicit
+history.** For status that needs to be true right now, check **Workbench** —
+this file is Royce's own periodic snapshot, not a live feed, and it lags by
+however long it's been since the top entry's date.
+
+### As of 2026-07-05 (last confirmed — not reconfirmed since)
 
 | Project | Status |
 |---------|--------|
