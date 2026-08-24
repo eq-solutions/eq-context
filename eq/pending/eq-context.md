@@ -1,7 +1,7 @@
 ---
 title: EQ Context (substrate/tooling) — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-21
+last_updated: 2026-08-24
 scope: EQ Context (substrate/tooling) engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -10,6 +10,23 @@ status: live
 # EQ Context (substrate/tooling) — Pending
 
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-context: Claude's hosted GitHub connector can read but not write — known open Anthropic bug, not a config issue (2026-08-24)
+*Surfaced twice, a month apart, at real cost both times: a 2026-07-16 Chat session diagnosed "a GitHub connector installation gap causing session context to fail silently" and got no further (found via a 45-day chat-activity export, not the substrate); this session independently re-derived the same root cause from zero, across roughly two hours of GitHub org/OAuth/Copilot-settings investigation, before finding it was already a filed, open bug on Anthropic's own tracker.*
+
+- [x] **Root cause confirmed via Anthropic's own issue tracker, not guessed**: [anthropics/claude-ai-mcp#822](https://github.com/anthropics/claude-ai-mcp/issues/822) — Claude Chat's hosted GitHub connector (GitHub's own remote `github-mcp-server`) authorizes and reads correctly but **every write call fails with `403 Resource not accessible by integration`**, across unrelated permission scopes (file writes and issue writes both fail identically) — the connector's underlying grant has no write permission at all, not a narrow missing scope. Confirmed live this session that `eq-solutions`' org OAuth policy ("No restrictions") and Royce's own GitHub permissions (org admin) are not the cause. **Open on Anthropic's side, no fix documented as of this date.** Per that same issue, already tried and confirmed NOT to work: disconnect/reconnect, revoke/re-authorize, remove/re-add the connector, setting every tool to "always allow" — don't re-attempt these if this resurfaces.
+- [x] **Mitigation shipped this session, not a fix for the bug itself**: `sks/chat-gateway.md` — Chat drafts a substrate patch at decision-moments instead of the fact evaporating; a Code session applies it. Checked against a real 45-day activity sample: roughly one genuine untracked SKS fact every 4 days, a cadence this handoff habit can plausibly keep up with.
+- [ ] **Not yet extended to EQ-tier chat work** — the same 45-day sample shows EQ-side conversations lose facts the identical way (this entry's own root-cause finding, plus the entity-linking item below, are both EQ-side examples). `chat-gateway.md` is currently SKS-scoped by design; whether it's worth an EQ equivalent is Royce's call, not decided this session. _(added 2026-08-24)_
+- **Considered and explicitly declined**: self-hosting `github-mcp-server` on the Beelink with a personal PAT, which would sidestep this bug entirely (confirmed working by another user on the linked issue). Royce's call, based on the real chat-volume data above: the cadence doesn't justify the standing cost of a second internet-facing, broadly-scoped write credential — see [SEC-57](../../ops/security-register.md) for what that risk shape actually costs when it goes wrong.
+
+---
+
+## eq-context: a substrate architecture upgrade was scoped in Chat and is now nowhere — needs recovery from the original conversation (2026-08-24)
+*Found via the same 45-day Claude Chat activity export: a 2026-07-26 conversation "compared the substrate architecture against an external productivity framework and scoped a lightweight entity-linking upgrade." Checked this repo directly — no trace anywhere (only a false-positive substring hit on the unrelated term "identity-linking" in a session log). Whatever was actually scoped never reached a pending file, a session log, or a decision record.*
+
+- [ ] **Recover the actual scope from the original 2026-07-26 conversation** — this entry can't say what "entity-linking upgrade" means beyond the one-line description above; writing more than that here would be inventing detail that was never verified. Royce would need to pull the original conversation (or ask Chat to re-summarise it) before this is buildable. _(added 2026-08-24)_
 
 ---
 
