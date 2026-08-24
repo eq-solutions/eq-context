@@ -35,7 +35,7 @@ _If this file is >48h old, the cron is broken._
 
 | Entity | Count | Schema |
 |--------|-------|--------|
-| Sites | 216 | app_data.sites |
+| Sites | 218 | app_data.sites |
 | Customers | 39 | app_data.customers |
 | Assets | 2,842 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
@@ -61,7 +61,8 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-24)
 
 **eq-field:**
-- #773 v3.5.554 — Prestart/Toolbox: Submit silently did nothing when a completeness gap was flagged, inside the Shell iframe
+- #775 v3.5.555 — BUG-009 sweep: 5 more confirm()/prompt() calls silently no-op'd inside the Shell iframe
+- #774 v3.5.555 — Timesheets Approvals: Query + Approve all silently did nothing in the Shell iframe
 
 **eq-service:**
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
