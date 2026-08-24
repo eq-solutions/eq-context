@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-24 20:25 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-24 21:44 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-24 19:50 UTC → 2026-08-24 20:25 UTC)
+## Since last refresh (2026-08-24 20:25 UTC → 2026-08-24 21:44 UTC)
 
-- Merged: eq-shell [#1561](https://github.com/eq-solutions/eq-shell/pull/1561) docs(security): close SEC-58 — control-plane ledger 54-file 
-- Merged: eq-shell [#1560](https://github.com/eq-solutions/eq-shell/pull/1560) feat(staff): show pending labour-hire credentials on the Sta
-- Merged: eq-shell [#1555](https://github.com/eq-solutions/eq-shell/pull/1555) fix(identity): push date_of_birth/address_* upward; receive 
-- Merged: eq-shell [#1554](https://github.com/eq-solutions/eq-shell/pull/1554) fix(security): reattach field_people_iud trigger + close 2 p
-- Merged: eq-shell [#1553](https://github.com/eq-solutions/eq-shell/pull/1553) fix(field-people): close 4 role-check gaps on field_people_i
-- Merged: eq-shell [#1552](https://github.com/eq-solutions/eq-shell/pull/1552) fix(equipment): hide Archive/Delete bulk actions from view-o
-- Merged: eq-shell [#1547](https://github.com/eq-solutions/eq-shell/pull/1547) docs(security): correct stale mint-supabase-jwt carve-out cl
-- Merged: eq-solves-service [#809](https://github.com/eq-solutions/eq-service/pull/809) fix(security): close anon access on get_assets_for_grouping 
+- Merged: eq-shell [#1565](https://github.com/eq-solutions/eq-shell/pull/1565) docs(security): mark SEC-61 closed in the sprint doc
+- Merged: eq-shell [#1564](https://github.com/eq-solutions/eq-shell/pull/1564) perf(warm-ping): warm the tenant-client cache, not just the 
+- Merged: eq-shell [#1563](https://github.com/eq-solutions/eq-shell/pull/1563) docs(security): sprint doc for SEC-61/SEC-63/SEC-60
+- Merged: eq-shell [#1562](https://github.com/eq-solutions/eq-shell/pull/1562) fix(labour-hire): resend-worker-invite always collided with 
+- Merged: eq-shell [#1559](https://github.com/eq-solutions/eq-shell/pull/1559) feat(staff): show PDF/document preview in the licence review
+- Merged: eq-shell [#1558](https://github.com/eq-solutions/eq-shell/pull/1558) fix(security): close 2 Intake write-path gaps (cross-tenant 
+- Merged: eq-shell [#1557](https://github.com/eq-solutions/eq-shell/pull/1557) fix(security): invite-users-batch.ts missing the admin.assig
+- Merged: eq-shell [#1556](https://github.com/eq-solutions/eq-shell/pull/1556) fix(entity-patch): scope asset edits to equipment-register r
 
 ## ⚠ Needs you (6)
 
@@ -52,9 +52,9 @@ _…and 205 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 0 | — |
+| eq-shell | ✓ success | 0d ago | 2 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 6 | 4d |
-| eq-field | ✓ success | -1d ago | 0 | — |
+| eq-field | ✓ success | 0d ago | 1 | 0d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 6d ago | 0 | — |
 
@@ -63,13 +63,13 @@ _…and 205 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | Project | Error | Events | Last seen |
 |---------|-------|--------|-----------|
 | eq-shell | [TypeError: Failed to fetch dynamically imported module: https://core.eq.solution](https://eq-solutions.sentry.io/issues/141714696/) | 37 | 2026-08-21 |
-| eq-shell | [Error: app_data.staff.cards_worker_id pointing at missing jvkn workers: 4](https://eq-solutions.sentry.io/issues/138175643/) | 5 | 2026-08-23 |
+| eq-shell | [Error: app_data.staff.cards_worker_id pointing at missing jvkn workers: 4](https://eq-solutions.sentry.io/issues/138175643/) | 6 | 2026-08-24 |
 | eq-shell | [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/) | 4 | 2026-08-20 |
+| eq-field | [TypeError: Failed to fetch](https://eq-solutions.sentry.io/issues/141259049/) | 2 | 2026-08-24 |
 | eq-shell | [phone-otp: requested for inactive account](https://eq-solutions.sentry.io/issues/141933696/) | 2 | 2026-08-20 |
 | eq-shell | [EQ Field handoff auto-recovery (timeout)](https://eq-solutions.sentry.io/issues/141463602/) | 2 | 2026-08-20 |
 | eq-shell | [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/) | 2 | 2026-08-19 |
 | eq-shell | [Degraded UI Performance](https://eq-solutions.sentry.io/issues/141127922/) | 2 | 2026-08-18 |
-| eq-shell | [Error: Active org_memberships held by non-members: 14](https://eq-solutions.sentry.io/issues/142429897/) | 1 | 2026-08-23 |
 _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunresolved)_
 
 ## Recently built (last 7 days)
@@ -198,4 +198,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-24 20:25 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-24 21:44 UTC._
