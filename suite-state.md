@@ -1,14 +1,14 @@
 ---
 title: EQ Suite — Current State
 owner: Royce Milmlow
-last_updated: 2026-08-23
+last_updated: 2026-08-24
 scope: Live suite state — app lineup, DB counts, open PRs, architectural decisions. Auto-refreshed nightly by GitHub Action.
 read_priority: critical
 status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-08-23 (nightly cron)_
+_Last verified: 2026-08-24 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -58,14 +58,14 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-08-23)
+## Open PRs (as of 2026-08-24)
 
 **eq-service:**
 - #791 fix(reports): make reissuing a report possible from the UI
 
 ---
 
-## System Health (as of 2026-08-23)
+## System Health (as of 2026-08-24)
 
 **CI on main:**
 
