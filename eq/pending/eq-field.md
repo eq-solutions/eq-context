@@ -1,7 +1,7 @@
 ---
 title: EQ Field — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-24
+last_updated: 2026-08-25
 scope: EQ Field engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -10,6 +10,15 @@ status: live
 # EQ Field — Pending
 
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-field: leave.js file-size debt — email templates split out (2026-08-25)
+*leave.js was flush against its eslint `max-lines` grandfather ceiling (1899/1900, zero headroom) after #768 — the next PR touching the file would've broken CI with no room to absorb even a one-line fix.*
+
+- [x] **`triggerLeaveEmail()`/`resendLeaveEmail()` extracted into new `scripts/leave-email.js`** — same file-size-convention split already used on timesheets.js/apprentices.js/people.js/roster.js/auth.js. Pure extraction, no behaviour change; extracted byte-for-byte via a verified script rather than hand-retyped. `leave.js`: 1899 → 1724 lines; ratchet lowered 1900 → 1750. eq-field [PR #772](https://github.com/eq-solutions/eq-field/pull/772) (v3.5.554), squash-merged, confirmed live via `field.eq.solutions/sw.js`. Function-level wiring verified live on the deploy preview before merge (`typeof triggerLeaveEmail === 'function'`, both files fetched by the browser, no ReferenceError) — the exact failure class this repo's own lazy-loader.js comments warn about.
+- [x] **Version collision handled mid-session**: picked 3.5.553 (confirmed free at the time), then PR #771 landed it first while this PR was mid-build, touching the same three version-stamp files. Reconciled via stash + fast-forward + manual conflict resolution to 3.5.554, full verification re-run afterward. Same collision class this repo's CLAUDE.md/reflection-log already document by number of past incidents.
+- [ ] **3 more extraction candidates identified but not built** (lower priority, flagged by the original task brief, not independently verified this session): the CC-recipients config subsystem (~124 lines), the submit flow (~271 lines), the respond/approve flow (~239 lines) — leave.js still has real headroom (1724/1750) so none of these are urgent. _(added 2026-08-25)_
 
 ---
 

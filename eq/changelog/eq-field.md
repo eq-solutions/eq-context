@@ -1,13 +1,21 @@
 ---
 title: EQ Field — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-24
+last_updated: 2026-08-25
 scope: EQ Field append-only history. Canonical name (repo-slug convention, matching eq-shell.md/eq-cards.md/eq-intake.md/eq-context.md/eq-receipts.md/eq-ui.md) — absorbed field.md's full history 2026-08-17. field.md's own header had claimed the opposite direction ("eq-field.md was merged into this file 2026-07-19, don't split again"), but a fresh eq-field.md was recreated after that and diverged with 5 real, unique entries (PR #703/#705/#709/#710/#711) never merged back — exactly the drift that note warned about. Content of both preserved with no loss. UPDATE 2026-08-21: the "field.md is now a stub" claim did not hold — a session recreated eq/changelog/field.md from scratch 2026-08-19, two days after archival, without checking it had been retired, and it has since collected 5 more real entries (PR #729/#730/#735/#736/#738) not present here. UNRECONCILED PAIR with eq/changelog/field.md again — third occurrence of this exact drift (see archive/changelog-eq-field-dead-twin.md and archive/changelog-field-dead-twin.md for the first two). Don't mark field.md superseded_by until those 5 entries are folded in here — that's Royce's call, not automatic.
 read_priority: reference
 status: live
 ---
 
 # eq-field changelog
+
+## 2026-08-25 (PR #772 MERGED + LIVE, v3.5.554 — leave.js file-size debt: email templates split into leave-email.js)
+- `leave.js` was flush against its eslint `max-lines` grandfather ceiling (1899/1900, zero headroom) after #768 — the next PR touching the file would break CI with no room to absorb even a one-line fix. `triggerLeaveEmail()` (the 3 email templates) + `resendLeaveEmail()` (manual resend) — the single biggest, most self-contained block in the file — extracted into new `scripts/leave-email.js`, same file-size-convention split already used on timesheets.js/apprentices.js/people.js/roster.js/auth.js. Pure extraction, no behaviour change.
+- Extracted byte-for-byte via a small Node script keyed on two unique marker comments (grepped first to confirm uniqueness, sanity-checked immediately before/after each marker before writing anything) rather than hand-retyped — the block contains emoji and em-dashes easy to corrupt by hand. `leave.js`: 1899 → 1724 lines; eslint ratchet lowered 1900 → 1750, rounded up to the nearest 50 per the block's own existing convention.
+- `lazy-loader.js`'s `'leave'` tab entry gained `leave-email.js`; `core-bundle-b1.js` (mirrors `lazy-loader.js`) regenerated via `build-bundles.mjs --write`. `leave.js` itself is lazy-loaded and not tagged in `index.html`, so `check-cache-busters.mjs` doesn't apply to it directly — but `core-bundle-b1.js` IS statically tagged, so that tag needed a manual bump.
+- Verified live on the deploy preview before merge, not just CI: `typeof triggerLeaveEmail === 'function'`, `typeof resendLeaveEmail === 'function'`, `scripts/leave-email.js?v=3.5.554` confirmed actually fetched by the browser via `lazy-loader.js`, `leaveCCList`/`leaveRequests` (leave.js's own module state) readable from the split file — zero `ReferenceError`, the exact failure class this file's own comments warn about repeatedly for cross-file lazy-loaded dependencies.
+- **Version collision mid-session**: picked `3.5.553` (confirmed free via `git fetch` + `git tag -l`), built the full extraction against it, then found PR #771 had landed `3.5.553` first — same three version-stamp files, different reason. Reconciled via `git stash -u` → `git merge --ff-only origin/main` → `git stash pop` (one real conflict, index.html's changelog-banner insertion point) → renumbered every reference this session had written to `3.5.554` → re-ran the full verification pass (bundle drift, cache-busters, eslint, all 30 tests) a second time.
+- Full test suite (30/30), eslint (0 errors), bundle-drift and cache-buster checks all clean both before and after the version renumber. `docs/reflection-log.md` entry added in the same commit.
 
 ## 2026-08-24 (PR #769 MERGED + LIVE, v3.5.550 — Edit Person: reject a locked birthday edit instead of silently discarding it)
 - Follow-up to #767 (same session, same day). That fix stopped a direct `dob_day`/`dob_month` edit from silently nulling out when a Cards-linked person had no `date_of_birth`. It deliberately left one case alone: a Cards-linked person who already has a real `date_of_birth` still had a direct day/month edit silently discarded — same trap, narrower group.
