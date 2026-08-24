@@ -72,6 +72,7 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
+- #1579 data(sites): SY5 primary/secondary internal contacts
 - #1577 feat(sites): add primary/secondary internal contact columns
 
 ---
