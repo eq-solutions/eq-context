@@ -13,6 +13,22 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: Staff-page navigation slowness — two root causes found and fixed live (2026-08-24)
+*Direct continuation of the same-day "who can see Staff Conversations" session's own hand-off note: Royce interrupted that `/close` with "we really need to speed up how quickly the eq shell navigate, clicking the staff list seems to take an eternity" — investigated fresh in the next session rather than assumed.*
+
+- [x] **Root cause #1**: the scheduled `warm-ping.ts` ping was unauthenticated, so it only ever warmed the Lambda container/module cold-start layer — it never got past the session guard into real per-tenant work. The lazy-cached tenant-plane Supabase client (a real DB routing lookup + AES decrypt + `createClient()`, cached per-tenant in a module-level `Map`) was therefore never pre-warmed on 6 of the busiest endpoints (`staff-bootstrap`, `entity-rows`, `tenant-dashboard`, `staff-pending-connections`, `crm-customers`, `equipment-list`) — the first real request after any idle period always paid that cost fresh.
+- [x] **Fixed**: `warm-ping.ts` now sends a shared-secret header (`x-warm-ping-secret`, timing-safe compared via `node:crypto`), and each of the 6 endpoints checks for it before session verification and, if present, calls a new `warmTenantClients()` (warms both known tenant slugs via `Promise.allSettled`) instead of doing real work. `WARM_PING_SECRET` set live via `netlify env:set` (the Netlify MCP's env-var write silently no-op'd — matches a known prior lesson, caught by reading the value back). eq-shell [PR #1564](https://github.com/eq-solutions/eq-shell/pull/1564), merged on Royce's explicit "go ahead," confirmed live via exact Netlify `commit_ref` match.
+- [x] **Verified against a real DevTools trace Royce provided, not just the deploy check**: `staff-bootstrap` improved (3.94s → 3.03s) but by less than predicted, and a second slow endpoint — `token-exchange`, up to 4.32s — wasn't touched by the fix at all. Confirmed via grep this endpoint never calls the tenant-client-cache path at all (it only touches the jvkn control-plane via `getServiceClient()`) — a genuinely separate cause, not the same bug recurring.
+- [x] **Root cause #2**: `token-exchange.ts` awaited its `writeAuditLog(...)` call with no timeout — the only iframe-SSO minting endpoint still on the plain (uncapped) variant. `writeAuditLogBounded` (1.5s ceiling) already existed in this codebase for exactly this failure mode, built for the login path, just never applied here. The inconsistent 1.72s/4.32s timings for the same endpoint in the real trace fit a stalled write (variable latency), not a fixed cold-start cost (which would repeat consistently).
+- [x] **Fixed**: swapped the import and call site to `writeAuditLogBounded`. Ruled out PR #1135 (merged 2026-07-30, "warm token-exchange to close the last cold-start gap") as already covering this first — read its diff, confirmed it only added `token-exchange` to `warm-ping.ts`'s ping *list*, never touched the file's own audit-log-await pattern. eq-shell [PR #1570](https://github.com/eq-solutions/eq-shell/pull/1570), merged on Royce's explicit "merge it," confirmed live via exact `commit_ref` match + `state: ready`.
+
+**Deferred:**
+- [ ] **No genuine before/after comparison yet** — need a fresh real trace from Royce now that both fixes are live and enough ping cycles (every 4 minutes) have passed to actually warm production containers. _(added 2026-08-24)_
+- [ ] **Full HAR export still not obtained** — this session only had a pasted summary table of totals, not the per-request DNS/connect/TTFB/download breakdown a HAR file would give. _(added 2026-08-24)_
+- [ ] **Not click-tested for real user-perceived speed** — both fixes verified via commit-ancestry + deploy state, not a fresh Staff-page load timed by a person. _(added 2026-08-24)_
+
+---
+
 ## eq-shell: resend-worker-invite always collided with its own unclaimed-invite index — fixed + live; Nelson's retry still unconfirmed (2026-08-24)
 *Direct follow-up to the 2026-08-23 "labour-hire licence promotion gap" entry below: Royce clicked Resend on Conor Horgan's existing pending invite looking for that entry's own fix, and hit a live 500 instead — a separate, previously-undiscovered bug.*
 

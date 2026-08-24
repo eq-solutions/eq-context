@@ -9,6 +9,13 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-24 (PR #1564 + PR #1570 MERGED + LIVE — Staff-page navigation slowness: tenant-client cache never warmed, token-exchange's audit-log write unbounded)
+- Royce: "we really need to speed up how quickly the eq shell navigate, clicking the staff list seems to take an eternity."
+- Cause #1: the scheduled `warm-ping.ts` was unauthenticated, so it only ever warmed Lambda cold-start — it never got past the session guard on the 6 busiest tenant-scoped endpoints, so the per-tenant Supabase client cache (DB routing lookup + AES decrypt + `createClient()`) was never actually pre-warmed. Fixed: ping now sends a timing-safe shared-secret header; each endpoint checks it before session verification and warms both tenant slugs' clients directly. [PR #1564](https://github.com/eq-solutions/eq-shell/pull/1564), merged on Royce's "go ahead," confirmed live.
+- Verified against a real trace: `staff-bootstrap` improved (3.94s → 3.03s) but less than predicted, and `token-exchange` (up to 4.32s) wasn't touched — confirmed via grep it never touches the tenant-client cache at all.
+- Cause #2: `token-exchange.ts` awaited its audit-log write with no timeout, the only iframe-SSO minter not using the existing `writeAuditLogBounded` (built for login, 1.5s ceiling). The trace's inconsistent 1.72s/4.32s timing for the same endpoint fit a stalled write, not a fixed cold-start cost. Ruled out PR #1135 (a month-old fix that only added `token-exchange` to the ping list) as already covering this. [PR #1570](https://github.com/eq-solutions/eq-shell/pull/1570), merged on Royce's "merge it," confirmed live.
+- Not yet click-tested for real user-perceived speed; no fresh before/after trace taken since both landed.
+
 ## 2026-08-24 (PR #1562 MERGED + LIVE — resend-worker-invite.ts's unconditional INSERT always collided with its own unclaimed-invite index)
 - Surfaced while root-causing Conor Horgan's (SKS labour hire) OTP login failure — that turned out to be working-as-designed (bare `/login` deliberately never self-provisions via phone OTP), but chasing the actual fix (resending his existing pending invite) hit a live 500 instead.
 - `resend-worker-invite.ts` did a plain `INSERT` into `worker_invites` with no existing-row check, colliding with the `worker_invites_org_worker_unclaimed_unique` partial index (migration 0118) on every real call — i.e. every time it was used for its own documented purpose. `create-worker-invite.ts` already had the right pattern; this file was never brought in line.
