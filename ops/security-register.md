@@ -83,7 +83,7 @@ fails on **new** exposure while keeping the open ones visible.
 | SEC-57 | **P1** | An org-wide GitHub App installation (`grok-by-xai`, `repository_selection: all`) holds `actions:write`/`contents:write`/`administration:write`/`workflows:write` on every repo — enough to dispatch live-DDL workflows or push to `main` on auto-deploying repos. Undercuts the "only Milmlow can dispatch" rationale SEC-11/SEC-14 both rest on; the collaborator check that rationale used is structurally blind to app installations | eq-solutions (GitHub org, all repos) | **OPEN — found 2026-08-20, proved (config) / reasoned (exploit step, correctly not exercised — that would be a write).** Two more apps (`figma`, `cloudflare-workers-and-pages`) hold similar permissions on unenumerated repo subsets. See Detail. |
 | SEC-58 | P2 | `CONTROL-PLANE-LEDGER.md` (eq-shell) tracks 84 of 131 files in `supabase/migrations/`, 48 with no entry at all, and its own summary still claims "0 pending" from a 2026-07-11 verification | eq-canonical (jvkn) | **OPEN — found 2026-08-20, proved. Live-verified 7 of the 48 untracked files directly against jvkn — all 7 are already applied, no live gap today.** One misfiled migration found targeting the wrong plane entirely (governed by neither pipeline). See Detail. |
 | SEC-59 | P3 | The `shell_control` write-lockdown migrations revoked INSERT/UPDATE/DELETE from `authenticated` but left TRUNCATE granted on 9 tables — TRUNCATE bypasses RLS entirely, though PostgREST has no TRUNCATE verb so there's no browser path today | eq-canonical (jvkn) | OPEN — found 2026-08-20, proved. May overlap with the completed §A sweep — flagging, not claiming novelty. |
-| SEC-60 | P3 | Several org/repo hardening gaps: 2FA not required org-wide; secret scanning + push protection disabled on all 7 in-scope repos incl. 3 public ones; third-party Actions unpinned org-wide; **branch protection exists on eq-shell only** — eq-service's `main` (auto-deploys service.eq.solutions, gates the ehow migration pipeline) accepts a direct push with zero required checks | eq-solutions (GitHub org, all repos) | OPEN — found 2026-08-20, proved. See Detail. |
+| SEC-60 | P3 | Several org/repo hardening gaps: 2FA not required org-wide; secret scanning + push protection disabled on all 7 in-scope repos incl. 3 public ones; third-party Actions unpinned org-wide; **branch protection exists on eq-shell only** — eq-service's `main` (auto-deploys service.eq.solutions, gates the ehow migration pipeline) accepts a direct push with zero required checks | eq-solutions (GitHub org, all repos) | **PARTIALLY CLOSED 2026-08-24** — branch protection added on eq-service; secret scanning + push protection enabled on the 3 public repos. 2FA, the other 5 repos' branch protection, and Action SHA-pinning deliberately left for a later pass (Royce's scope call). See Detail. |
 | SEC-61 | ~~P1~~ **CLOSED** | SEC-9's 2026-08-16 closure does not hold: 22 secret-flagged vars across eq-shell/eq-service/eq-field/eq-cards + one Netlify account-scope var still return full plaintext in the `dev` deploy context. `updated_at` timestamps on the leaking vars predate 08-16 entirely — the remediation never touched them | eq-shell, eq-solves-service, eq-field, eq-cards, Netlify account scope | **CLOSED 2026-08-24 — the 21 site-scoped vars fixed.** The 22nd (account-scope `SUPABASE_JWT_SECRET`) tracked separately under SEC-63, still open pending Royce's dashboard check. See Detail. |
 | SEC-62 | P2 | The documented "delete+recreate" remediation for the `dev`-context leak (used to close SEC-9/10/12/18/19/24 historically) is itself what causes the leak — recreating a var with "same value, all contexts" always writes a fresh, unmasked `dev` row. All 6 vars this register records as "fixed via delete+recreate" now leak in `dev` | eq-shell, eq-field, eq-solves-service, eq-cards | **OPEN — found 2026-08-21, proved.** The only vars that don't leak are ones with `dev` left EMPTY, not recreated. Every past "delete+recreate" closure in this register should be re-read against this. See Detail. |
 | SEC-63 | **P1** | An uninventoried Netlify **account-scope** (team `milmlow`) secret, `SUPABASE_JWT_SECRET`, is the same value that signs every session in the suite (matches 5 per-site vars) — appears nowhere in `ops/secrets-inventory.md`, which only ever enumerated per-site vars. `dev` context unmasked (same as SEC-61) | Netlify account scope (team `milmlow`) | **P1 CONFIRMED (not P0) 2026-08-24** — site-scope resolved by querying all 10 sites individually: reaches only eq-shell/eq-service/eq-field, not sks-nsw-labour. Inventory updated. **Still open:** the `dev`-context leak fix itself — blocked by the coding session's own classifier, needs a permission rule or a manual dashboard delete. See Detail. |
@@ -1380,6 +1380,31 @@ pipeline) accepts a direct push with zero required checks. eq-shell's own protec
 `production-ops` environment referenced by zero workflows. Collaborator re-check (what §G
 was actually asked to confirm): no widening — exactly one entry (`Milmlow`, admin) on all
 15 org repos, no outside collaborators, no teams, no deploy keys, no repo webhooks.
+
+**2026-08-24 — 2 of 4 gaps closed, Royce's explicit scope call (lowest-disruption first
+cut from the sprint doc, `docs/secrets-org-hardening-sprint.md`):**
+- **Branch protection added on eq-service `main`.** Mirrors eq-shell's own posture
+  (`enforce_admins: false`, no required reviews, no force-push, no deletions) — but the
+  required-checks list needed real verification, not a copy of every named CI job.
+  eq-service's main shows 11 check names in its commit history, but a live PR
+  (`#791`) only ever triggers 6 of them — the other 5 (`Apply to ehow`, `Canonical
+  types drift`, `Create release tag`, `Post dispatch link to merged PR`, `notify`) are
+  push-to-main/deploy-triggered and would never show a passing state on a PR, which
+  would have made merging impossible if required. Of the 6 PR-triggered checks,
+  `Integration tests (Supabase local)` is this workspace's own documented pre-existing
+  failure (`CLAUDE.md`: "never block a merge on integration test failure alone") and
+  `Header rules`/`Pages changed`/`Redirect rules` are Netlify's informational plugin
+  checks, not real gates. Required exactly the 2 that are both PR-triggered and
+  meaningful: `Typecheck + audit`, `tsc + next build`. Verified live via
+  `GET .../branches/main/protection` post-apply.
+- **Secret scanning + push protection enabled on all 3 public repos** (eq-context,
+  eq-solves-intake, sks-nsw-labour). Verified `private: false` before touching each
+  (confirmed genuinely public, not a stale assumption), then enabled both via
+  `security_and_analysis`, verified live afterward on all 3.
+- **Not touched, Royce's explicit choice:** org-wide 2FA requirement, branch protection
+  on the other 5 repos (eq-field, eq-cards, eq-solves-intake, eq-context,
+  sks-nsw-labour), SHA-pinning on third-party Actions. All three remain exactly as
+  found.
 
 ### SEC-61 — dev-context secret leak: SEC-9's 2026-08-16 closure doesn't hold (P1)
 Netlify masks `branch-deploy`/`deploy-preview`/`production`/`dev-server` but returns full
