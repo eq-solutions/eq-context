@@ -1,13 +1,32 @@
 ---
 title: Cross-Repo — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-23
+last_updated: 2026-08-24
 scope: Work that genuinely spans 2+ EQ product repos as a single unit (a combined header, or the body clearly touches both). Suite-wide/substrate-process items with no single owning repo also land here.
 read_priority: critical
 status: live
 ---
 
 # Cross-Repo — Pending
+
+---
+
+## eq-context + eq-shell + eq-field: field_people_iud cross-repo migration coordination gap — closed, restoration migration dispatched live (2026-08-24)
+*Investigated a specific incident: eq-field's own hand-applied migrations and eq-shell's governed One Pipe both edit a handful of `app_data` functions on ehow with no shared ledger between them — confirmed to have actually happened on `field_people_iud()` on 2026-08-23 (eq-field PR #761's upward-identity-push vs eq-shell's 0270/0271, same day). Verified live rather than trusting the task's own framing, which turned out wrong in two ways: 0270/0271 weren't "unrelated" busywork, they were eq-shell's own P0 recovery from a 5-day outage its earlier migration (0249) had silently caused; and PR #761 was never actually applied to ehow — it sat merged-but-dormant in git for most of a day, a live landmine that would have silently reverted 0270/0271's three security gates if hand-applied as written.*
+
+- [x] **Registry documented**: eq-context [PR #176](https://github.com/eq-solutions/eq-context/pull/176) — IDENTITY-MODEL.md §3.3.3, the canonical list of 7 shared functions both repos' CLAUDE.md now reference instead of restating.
+- [x] **eq-shell side**: [PR #1569](https://github.com/eq-solutions/eq-shell/pull/1569) — `migrate-tenants.mjs` fetches and surfaces a registry function's live definition before any migration fully replaces it, so a human reviewing the dispatch can diff it by eye. Merged, confirmed live on core.eq.solutions via commit-ancestry check against the newest ready production deploy, not just "merged."
+- [x] **eq-field side**: [PR #763](https://github.com/eq-solutions/eq-field/pull/763) — `tests/migration-shared-fn-guard.test.js` CI lint (grandfathers 10 pre-existing files; the list was generated programmatically after a hand-derived first pass missed one), marks the dormant PR #761 migration file superseded, CLAUDE.md cross-reference.
+- [x] **The landmine itself, found already fixed**: before building anything, `git branch -a` on eq-shell (forced by the repo's own brief-gate hook) surfaced eq-shell PR #1567 — another concurrent session had already restored the push (migration `0273`, dry-run verified against ehow) minutes before this session got there. Dropped that piece rather than duplicate it.
+- [x] **Migration 0273 dispatched live** — Royce triggered `tenant-migrate.yml` directly (`workflow_dispatch`, 08:33:32 UTC). Verified post-dispatch: live `pg_get_functiondef` shows all 3 security gates plus the upward-push block, correctly merged. Both prerequisite secrets (ehow vault + eq-shell Netlify env) already existed, so the push is functionally active on SKS now, not just code-complete.
+
+**Notes:**
+- The two-ledger mechanism is structural, not incidental: eq-field's hand-applied migrations land in the standard `supabase_migrations.schema_migrations`; eq-shell's governed One Pipe writes its own `app_data._eq_migrations`. Neither pipeline's tooling reads the other's — relevant next time this class of bug shows up on a different shared function.
+- Third documented instance of the same root cause in this codebase (`CREATE OR REPLACE` silently dropping more than the diff shows) — after the `security_invoker` view-clause loss (eq-field, 3 incidents) and the function-grant loss via `eq_enforce_function_privacy` (eq-shell, broke Cards signup 9h).
+- The brief-gate hook and worktree-isolation convention did real, non-theoretical work this session — found one already-open PR (#1567) and several other concurrently in-flight identity/actor-identity branches before any file was touched, purely from `git branch -a` + `gh pr list`.
+
+**Deferred:**
+- [ ] Background task `task_33c7272c` ("commit 3 untracked-but-applied migrations in eq-field's shared checkout") — spawned this session, started by Royce in a separate session, still running independently as of this close. Unrelated to the coordination gap above; a different instance of the same "applied but never committed" pattern, found in passing. _(added 2026-08-24)_
 
 ---
 

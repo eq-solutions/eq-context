@@ -9,6 +9,9 @@ status: live
 
 # eq-field changelog
 
+## 2026-08-24 (PR #763 MERGED + LIVE — field_people_iud coordination-gap guard)
+- `tests/migration-shared-fn-guard.test.js` — CI lint requiring any migration touching a shared-registry function (eq-context IDENTITY-MODEL.md §3.3.3) to cite it, grandfathering 10 pre-existing files (list generated programmatically, not hand-picked). `supabase/migrations/20260823_field_people_iud_identity_upward_push.sql` marked superseded — its `CREATE OR REPLACE` predates eq-shell's 0270/0271 gates, hand-applying it as-is would have silently reverted them. The correct version is eq-shell's `0273`, now dispatched and live. CLAUDE.md cross-references the registry. Full detail: `eq/pending/cross-repo.md` 2026-08-24.
+
 ## 2026-08-24 (PR #762 MERGED + LIVE — SEC-65: AUDIT_SB_KEY mislabeled as publishable, it's the full ehow service_role key)
 - `verify-pin.js`, `eq-agent.js`, `eq-service-sites.js` documented `AUDIT_SB_KEY` as a publishable or narrowly-scoped read key. It's actually the live ehow `service_role` key — full DB access, bypasses RLS — fingerprint-matched to the already-tracked 4-alias service_role cluster in eq-context's `ops/secrets-inventory.md` (now 5 aliases, not its own separate entry).
 - Comment-only fix, no rotation, no behavior change. `_shared/sentry.js` already redacted the value from error reports — no change needed there.
