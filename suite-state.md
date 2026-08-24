@@ -62,7 +62,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-field:**
 - #775 v3.5.555 — BUG-009 sweep: 5 more confirm()/prompt() calls silently no-op'd inside the Shell iframe
-- #774 v3.5.555 — Timesheets Approvals: Query + Approve all silently did nothing in the Shell iframe
 
 **eq-service:**
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
@@ -73,6 +72,7 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
+- #1584 fix(quotes): keep markup% in sync when rate is edited with cost set
 - #1583 fix(customers): clear 4 react-hooks/set-state-in-effect errors
 
 ---
