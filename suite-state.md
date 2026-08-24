@@ -35,7 +35,7 @@ _If this file is >48h old, the cron is broken._
 
 | Entity | Count | Schema |
 |--------|-------|--------|
-| Sites | 218 | app_data.sites |
+| Sites | 216 | app_data.sites |
 | Customers | 39 | app_data.customers |
 | Assets | 2,842 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-24)
 
-**eq-field:**
-- #768 v3.5.550 — Access-control review: 6 permission-default changes, crew scoping widened to Leave
-
 **eq-service:**
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
 - #813 chore(deps-dev): bump @types/leaflet from 1.9.21 to 1.9.22
@@ -70,9 +67,6 @@ _If this file is >48h old, the cron is broken._
 - #811 chore(deps-dev): bump vitest from 4.1.10 to 4.1.11
 - #810 chore(deps): bump the eq-design-system group with 2 updates
 - #791 fix(reports): make reissuing a report possible from the UI
-
-**eq-shell:**
-- #1579 data(sites): SY5 primary/secondary internal contacts
 
 ---
 
