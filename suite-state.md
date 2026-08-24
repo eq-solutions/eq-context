@@ -60,6 +60,9 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-24)
 
+**eq-field:**
+- #773 v3.5.554 — Prestart/Toolbox: Submit silently did nothing when a completeness gap was flagged, inside the Shell iframe
+
 **eq-service:**
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
 - #813 chore(deps-dev): bump @types/leaflet from 1.9.21 to 1.9.22
@@ -67,6 +70,10 @@ _If this file is >48h old, the cron is broken._
 - #811 chore(deps-dev): bump vitest from 4.1.10 to 4.1.11
 - #810 chore(deps): bump the eq-design-system group with 2 updates
 - #791 fix(reports): make reissuing a report possible from the UI
+
+**eq-shell:**
+- #1582 feat(sites): link an existing site to another customer
+- #1581 feat(sites): self-serve internal contacts in Edit Site modal
 
 ---
 
