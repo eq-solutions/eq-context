@@ -61,6 +61,24 @@ every passing remark either.
 
 ---
 
+## Verify before you draft, not after
+
+**Load-bearing rule, added after a real check.** On 2026-08-24, 6 candidate
+facts were pulled from a chat-activity sample and checked against live
+substrate state before writing anything. **4 of 6 turned out to be wrong** —
+already recorded elsewhere, dates that didn't line up, or already resolved
+by someone else. Written on the strength of the chat summary alone, the
+substrate would have 4 pieces of noise in it right now instead of nothing.
+
+You can't run the live checks a Code session can — no database queries, no
+`git log`, no cross-referencing five files at once. So: draft the patch, but
+flag explicitly what it's based on ("per this conversation" vs. "Royce
+stated directly" vs. "I'm inferring this") and let the Code session that
+applies it verify before committing. Never present a drafted patch as
+already checked against anything but this conversation.
+
+---
+
 ## Patch-file format (proven working 2026-08-24 — ITC-EL-0006)
 
 When you offer a patch, produce it as a downloadable file in exactly this

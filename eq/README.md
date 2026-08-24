@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Index
 owner: Royce Milmlow
-last_updated: 2026-08-18
+last_updated: 2026-08-24
 scope: EQ Solutions work — products, decisions, build state
 read_priority: critical
 status: live
@@ -22,6 +22,7 @@ Every canonical EQ file as a full URL — clickable from `/context/claude`:
 
 - [eq/pending.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/eq/pending.md) — EQ-only to-do list index; split 2026-08-17 into `eq/pending/<repo>.md` (one file per repo — includes `cross-repo.md` for multi-repo/governance items and `sks.md` for SKS-tagged items pending merge into `sks/pending.md`, alongside the per-repo files like `eq-design-tokens.md` and `eq-solves-intake.md`) — this file just links to them now
 - [eq/products.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/eq/products.md) — EQ live product status
+- [eq/chat-gateway.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/eq/chat-gateway.md) — system prompt for Royce's own Claude Chat sessions on EQ work — catches decisions, drafts patches (added 2026-08-24; sibling to `sks/chat-gateway.md`)
 - [eq/cards/canonical-migration/plan.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/eq/cards/canonical-migration/plan.md) — Cards §18 close-out: move Cards data to eq-canonical, retire standalone Supabase, SSO via shared JWT (active workstream 2026-05-20)
 - [eq/canonical-readiness/plan.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/eq/canonical-readiness/plan.md) — Canonical layer readiness plan: bring eq-canonical to the shape needed to host Intake + Field + Quotes as first-class modules. **EXECUTED 2026-05-20** — all 6 work units shipped (42 entities across 5 modules)
 - [eq/canonical-readiness/spine.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/eq/canonical-readiness/spine.md) — **The trust spine**: which 6 of 55 `app_data` tables must be identical/trusted across tenants vs free to vary. Foundation for the coherence rung + drift guard (2026-06-02)
@@ -60,6 +61,7 @@ Every canonical EQ file as a full URL — clickable from `/context/claude`:
 | `apprentices-cluster-scoping-2026-08-11.md` | Corrects the stale "largest debt, 42 days untouched" pending.md framing — most of it shipped the same day it was logged; two real open pieces (field_* twin scope decision, 2 orphan rows) plus a phased build plan |
 | `staff-reviews-scoping-2026-08-11.md` | Staff resource-management scoping — EQ Field's apprentice-only review/skills subsystem is complete but never actually used (zero rows live on both DBs); design to widen it to all staff via an additive `person_id` FK, manager-only gated to Royce first |
 | `products.md` | EQ live product status |
+| `chat-gateway.md` | System prompt for Royce's own Claude Chat sessions — catches decisions, drafts patches |
 | `active.md` | Live-state snapshot (staff/site/licence counts) — cross-check against products.md before quoting a headcount, they've drifted before |
 | `punch-list-2026-06-02.md` | 2026-06-02 punch list — several items superseded, treat as historical unless re-confirmed live |
 | `field-eq-core-only-plan.md` | Plan: EQ tenant is Core-only, closes the demo login gate |
