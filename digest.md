@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-24 11:44 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-24 11:53 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-24 11:19 UTC → 2026-08-24 11:44 UTC)
+## Since last refresh (2026-08-24 11:44 UTC → 2026-08-24 11:53 UTC)
 
-- Merged: eq-shell [#1576](https://github.com/eq-solutions/eq-shell/pull/1576) record(sites): rename 7 live Equinix sites from bare codes
-- Merged: eq-shell [#1562](https://github.com/eq-solutions/eq-shell/pull/1562) fix(labour-hire): resend-worker-invite always collided with 
-- Merged: eq-shell [#1559](https://github.com/eq-solutions/eq-shell/pull/1559) feat(staff): show PDF/document preview in the licence review
-- Merged: eq-shell [#1558](https://github.com/eq-solutions/eq-shell/pull/1558) fix(security): close 2 Intake write-path gaps (cross-tenant 
-- Merged: eq-shell [#1557](https://github.com/eq-solutions/eq-shell/pull/1557) fix(security): invite-users-batch.ts missing the admin.assig
-- Merged: eq-shell [#1556](https://github.com/eq-solutions/eq-shell/pull/1556) fix(entity-patch): scope asset edits to equipment-register r
-- Merged: eq-shell [#1553](https://github.com/eq-solutions/eq-shell/pull/1553) fix(field-people): close 4 role-check gaps on field_people_i
-- Merged: eq-shell [#1551](https://github.com/eq-solutions/eq-shell/pull/1551) feat(labour-hire): include pending unclaimed candidates in c
+- Merged: eq-shell [#1578](https://github.com/eq-solutions/eq-shell/pull/1578) fix(field-job-numbers): prefer site name over code in Ops-so
+- Merged: eq-shell [#1561](https://github.com/eq-solutions/eq-shell/pull/1561) docs(security): close SEC-58 — control-plane ledger 54-file 
+- Merged: eq-shell [#1560](https://github.com/eq-solutions/eq-shell/pull/1560) feat(staff): show pending labour-hire credentials on the Sta
+- Merged: eq-shell [#1555](https://github.com/eq-solutions/eq-shell/pull/1555) fix(identity): push date_of_birth/address_* upward; receive 
+- Merged: eq-shell [#1554](https://github.com/eq-solutions/eq-shell/pull/1554) fix(security): reattach field_people_iud trigger + close 2 p
+- Merged: eq-shell [#1552](https://github.com/eq-solutions/eq-shell/pull/1552) fix(equipment): hide Archive/Delete bulk actions from view-o
+- Merged: eq-shell [#1550](https://github.com/eq-solutions/eq-shell/pull/1550) fix(security): sync staff deactivation to the linked Shell l
+- Merged: eq-shell [#1549](https://github.com/eq-solutions/eq-shell/pull/1549) docs: sprint plan for the access-control sweep follow-up ite
 
 ## ⚠ Needs you (6)
 
@@ -52,7 +52,7 @@ _…and 205 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 1 | 0d |
+| eq-shell | ✓ success | 0d ago | 2 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 6 | 4d |
 | eq-field | ✓ success | 0d ago | 1 | 0d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
@@ -76,6 +76,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-24 | eq-shell | [#1578](https://github.com/eq-solutions/eq-shell/pull/1578) fix(field-job-numbers): prefer site name over code in Ops-sourced |
 | 2026-08-24 | eq-shell | [#1576](https://github.com/eq-solutions/eq-shell/pull/1576) record(sites): rename 7 live Equinix sites from bare codes |
 | 2026-08-24 | eq-shell | [#1575](https://github.com/eq-solutions/eq-shell/pull/1575) record(access): backfill Field access for nine Cards-door claims |
 | 2026-08-24 | eq-shell | [#1574](https://github.com/eq-solutions/eq-shell/pull/1574) feat(onboarding): chase unclaimed invites, and explain the login  |
@@ -90,7 +91,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-24 | eq-shell | [#1565](https://github.com/eq-solutions/eq-shell/pull/1565) docs(security): mark SEC-61 closed in the sprint doc |
 | 2026-08-24 | eq-shell | [#1564](https://github.com/eq-solutions/eq-shell/pull/1564) perf(warm-ping): warm the tenant-client cache, not just the conta |
 | 2026-08-24 | eq-shell | [#1563](https://github.com/eq-solutions/eq-shell/pull/1563) docs(security): sprint doc for SEC-61/SEC-63/SEC-60 |
-| 2026-08-24 | eq-solves-service | [#809](https://github.com/eq-solutions/eq-service/pull/809) fix(security): close anon access on get_assets_for_grouping + get |
 _Showing 15 of 119 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -198,4 +198,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-24 11:44 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-24 11:53 UTC._
