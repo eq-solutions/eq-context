@@ -1,8 +1,9 @@
 # Session Index
-_135 logs · reverse-chronological · auto-generated_
+_136 logs · reverse-chronological · auto-generated_
 
 | Date | Session |
 |------|---------|
+| 2026-08-25 | [Canonical wiring map: jvkn/Shell/Field read-write capabilities, verified live end-to-end](2026-08-25.md) |
 | 2026-08-24 | [SEC-58 (control-plane ledger) and SEC-65 (AUDIT_SB_KEY label) closed](2026-08-24.md) |
 | 2026-08-23 | [Labour-hire live-trial bugs: licence/compliance-pack gap root-caused and fixed (PR #1513), cropping issue diagnosed](2026-08-23.md) |
 | 2026-08-21 | [eq-service worktree/branch/stash graveyard cleared: 8 branches, 23 folders, 3 stashes, all confirmed already-shipped before removal](2026-08-21.md) |
