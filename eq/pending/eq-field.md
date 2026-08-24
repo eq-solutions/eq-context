@@ -13,13 +13,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-field: 3 already-applied ehow JWT-tenant-gate migrations had no git record — fixed (2026-08-24)
-
-- [x] Committed `20260823_apprentice_tables_jwt_tenant_gate_inert.sql` / `20260823_audit_apprentice_tables_jwt_tenant_gate.sql` / `20260823_ehow_second_wave_jwt_tenant_gate.sql` — applied live to ehow 2026-08-23 (01:06–01:56 UTC) but left as untracked files in the shared root checkout, one file's header still reading "DRAFT — NOT APPLIED" a full day after the hand-apply. Re-verified all 25 touched tables' live `pg_policies` match file content exactly before committing; corrected the stale header. eq-field [PR #764](https://github.com/eq-solutions/eq-field/pull/764), merged, live (docs-only, no app code — nothing to redeploy).
-- [ ] **Second instance of "applied via Supabase MCP, never committed" in this repo** (see also the `field_people_iud` upward-push migration, below). No tooling catches this — worth a lightweight guard (session-start check, or a CI/lint rule flagging untracked `supabase/migrations/*.sql`) rather than relying on the next session noticing by chance. Not built this session — flagged only. _(added 2026-08-24)_
-
----
-
 ## eq-field: field_people_iud() identity push was silently dropped by a concurrent eq-shell migration; job_title + emergency contact structure fixed alongside it (2026-08-24)
 
 - [ ] **Not yet click-tested live.** Open Edit Person on a real linked SKS person: fill in Job Title + all three Emergency Contact fields (Name/Mobile/Relationship), save, reload to confirm they persisted, and confirm the emergency mobile/relationship reach jvkn's `public.workers`. Full detail: `eq/changelog/eq-field.md`, `sessions/2026-08-24.md`. _(added 2026-08-24)_
