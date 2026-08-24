@@ -44,8 +44,9 @@ Every canonical SKS file as a full URL — clickable from `/context/claude`:
 - [sks/pending.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/pending.md) — SKS-only to-do list
 - [sks/pending-archive.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/pending-archive.md) — done items rotated out of pending.md nightly, historical record only
 - [sks/verify-queue.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/verify-queue.md) — items blocked only on Royce's own live click-through, rotated out of pending.md
-- [sks/active.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/active.md) — rolling active projects (current quarter) — ⚠ flagged stale 2026-08-24, see file
+- [sks/active.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/active.md) — dated project-status snapshots, most recent first (reshaped 2026-08-24 — was a single always-current table, now append-only; check the top entry's date)
 - [sks/templates.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/templates.md) — Quote v3 spec + Role Step-Up Charter + ITC-EL-0006 (Royce's own docx-js pipeline — see sks-team/quoting.md for the separate team-facing SharePoint-template pipeline)
+- [sks/chat-gateway.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/chat-gateway.md) — system prompt for Royce's own Claude Chat sessions on SKS work — catches decisions, drafts patches (added 2026-08-24)
 - [sks/team.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/team.md) — NSW team
 - [sks/products.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/products.md) — SKS app product status
 - [sks/brand-kit-tests.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/brand-kit-tests.md) — brand-artefact test log
@@ -101,10 +102,11 @@ Separate audience — only fetch when explicitly authoring or reviewing team-fac
 | `pending.md` | SKS-only to-do list |
 | `pending-archive.md` | Done items rotated out of pending.md nightly (`scripts/rotate_pending.py`) — historical record only |
 | `verify-queue.md` | Items only blocked on Royce's own live click-through — the build itself is already done, rotated out of pending.md by `scripts/rotate_pending.py` |
-| `active.md` | Rolling active projects (current quarter) |
+| `active.md` | Dated project-status snapshots, most recent first — check the top entry's date, not the filename's "Rolling" |
 | `team.md` | NSW team |
 | `products.md` | SKS live tools (Labour, Receipt Tracker) |
 | `templates.md` | Quote v3 spec + client context blocks + Role Step-Up Charter + ITC-EL-0006 |
+| `chat-gateway.md` | System prompt for Royce's own Claude Chat sessions — catches decisions, drafts patches |
 | `changelog/labour.md` | SKS Labour app history |
 | `brand-kit-tests.md` | Brand-artefact test log |
 
