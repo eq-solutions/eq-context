@@ -74,7 +74,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #1582 feat(sites): link an existing site to another customer
-- #1581 feat(sites): self-serve internal contacts in Edit Site modal
 
 ---
 
