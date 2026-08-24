@@ -86,7 +86,7 @@ fails on **new** exposure while keeping the open ones visible.
 | SEC-60 | P3 | Several org/repo hardening gaps: 2FA not required org-wide; secret scanning + push protection disabled on all 7 in-scope repos incl. 3 public ones; third-party Actions unpinned org-wide; **branch protection exists on eq-shell only** — eq-service's `main` (auto-deploys service.eq.solutions, gates the ehow migration pipeline) accepts a direct push with zero required checks | eq-solutions (GitHub org, all repos) | OPEN — found 2026-08-20, proved. See Detail. |
 | SEC-61 | ~~P1~~ **CLOSED** | SEC-9's 2026-08-16 closure does not hold: 22 secret-flagged vars across eq-shell/eq-service/eq-field/eq-cards + one Netlify account-scope var still return full plaintext in the `dev` deploy context. `updated_at` timestamps on the leaking vars predate 08-16 entirely — the remediation never touched them | eq-shell, eq-solves-service, eq-field, eq-cards, Netlify account scope | **CLOSED 2026-08-24 — the 21 site-scoped vars fixed.** The 22nd (account-scope `SUPABASE_JWT_SECRET`) tracked separately under SEC-63, still open pending Royce's dashboard check. See Detail. |
 | SEC-62 | P2 | The documented "delete+recreate" remediation for the `dev`-context leak (used to close SEC-9/10/12/18/19/24 historically) is itself what causes the leak — recreating a var with "same value, all contexts" always writes a fresh, unmasked `dev` row. All 6 vars this register records as "fixed via delete+recreate" now leak in `dev` | eq-shell, eq-field, eq-solves-service, eq-cards | **OPEN — found 2026-08-21, proved.** The only vars that don't leak are ones with `dev` left EMPTY, not recreated. Every past "delete+recreate" closure in this register should be re-read against this. See Detail. |
-| SEC-63 | **P1** | An uninventoried Netlify **account-scope** (team `milmlow`) secret, `SUPABASE_JWT_SECRET`, is the same value that signs every session in the suite (matches 5 per-site vars) — appears nowhere in `ops/secrets-inventory.md`, which only ever enumerated per-site vars. `dev` context unmasked (same as SEC-61) | Netlify account scope (team `milmlow`) | **OPEN — found 2026-08-21, proved (existence + value identity) / open question (site-scope).** Whether it's inherited by all 7+ sites — including sks-nsw-labour, a different entity — needs a 30-second check on Netlify's "Shared environment variables" page; couldn't be resolved read-only. **If scoped to all sites, this becomes P0.** See Detail. |
+| SEC-63 | **P1** | An uninventoried Netlify **account-scope** (team `milmlow`) secret, `SUPABASE_JWT_SECRET`, is the same value that signs every session in the suite (matches 5 per-site vars) — appears nowhere in `ops/secrets-inventory.md`, which only ever enumerated per-site vars. `dev` context unmasked (same as SEC-61) | Netlify account scope (team `milmlow`) | **P1 CONFIRMED (not P0) 2026-08-24** — site-scope resolved by querying all 10 sites individually: reaches only eq-shell/eq-service/eq-field, not sks-nsw-labour. Inventory updated. **Still open:** the `dev`-context leak fix itself — blocked by the coding session's own classifier, needs a permission rule or a manual dashboard delete. See Detail. |
 | SEC-64 | P2 | `ops/secrets-inventory.md` maps eq-field's `CANONICAL_SERVICE_ROLE_KEY` to ehow — it's actually the jvkn/eq-canonical service_role key (the one with SEC-9's confirmed chat exposure), corroborated in code (`canon-read.js`) | eq-field, eq-canonical (jvkn) | OPEN — found 2026-08-21, proved. Makes SEC-9's eventual rotation scope wrong as documented — rotating jvkn would break eq-field unless this is caught first. Fix: correct the inventory mapping. |
 | SEC-65 | P2 | eq-field's `AUDIT_SB_KEY` is the live ehow **service_role** key, not a "publishable" key as both its own code comment and `ops/secrets-inventory.md` (Tier 2) claim. 4 live consumers (`verify-pin.js`, `eq-agent.js`, `eq-service-sites.js`, `_shared/sentry.js`) run on it believing it's safe to expose | eq-field, sks-canonical (ehow) | **OPEN — found 2026-08-21, proved (identity) / reasoned (impact — not tested whether it's actually exposed anywhere client-side).** See Detail. |
 | SEC-66 | P3 | eq-field's Sentry secret-scrubber allowlist omits every Tier-1 secret the app actually places in request headers (`CANONICAL_SERVICE_ROLE_KEY`, `EHOW_SERVICE_ROLE_KEY`, `SKS_JWT_SECRET`, `ZAAP_JWT_SECRET`, `LEAVE_CANONICAL_JWT_SECRET`, `SUPABASE_JWT_SECRET`) — a fetch-error event serializing headers would ship them to Sentry unscrubbed | eq-field | OPEN — found 2026-08-21, reasoned. Ironically the one key it does scrub (`AUDIT_SB_KEY`) is the one SEC-65 shows is mislabeled as low-tier. |
@@ -1447,6 +1447,26 @@ Royce's own click**: the team-level "Shared environment variables" page in the N
 dashboard shows its site scope directly. If it's scoped to all sites, this is P0 — it
 would mean sks-nsw-labour inherits (or could inherit) a signing secret that's supposed to
 be an EQ-only trust boundary.
+
+**2026-08-24 — site-scope question resolved, P1 confirmed (not P0).** The earlier
+"inconsistent" `getEnvVar` behavior was a parameter-shape issue, not a real API
+limitation — `getEnvVars` (plural) with both `account_id` and `site_id` correctly
+surfaces inherited account-scope vars per site. Queried all 10 sites on the `milmlow`
+account individually: the var appears ONLY on eq-shell, eq-service, and eq-field —
+exactly the three sites the original fingerprint match already implicated, confirmed
+independently via a second, unrelated method. It does **not** reach sks-nsw-labour, or
+eq-cards, or any of the personal/hobby sites on the same account. eq-service and
+eq-field hold no site-level override of their own for this key — they inherit the
+account-scope row directly. `ops/secrets-inventory.md` updated to reflect this (folded
+into the existing Shell session-signing-secret cluster row, its first tracked
+account-scope entry).
+
+**Not done this pass:** the account-scope var's own `dev`-context leak (same class as
+SEC-61) is still open — the delete call was blocked by the coding session's own
+auto-mode classifier (account-scope deletes read as broader than site-scoped ones,
+even though the actual operation is identical: remove one context row, touch nothing
+live). Needs either a permission rule for that session or a manual delete of the `dev`
+value via the Netlify dashboard — functionally the same 2-minute action.
 
 ### SEC-65 — eq-field's AUDIT_SB_KEY is the live ehow service_role key, not publishable (P2)
 Fingerprint match: eq-field `AUDIT_SB_KEY` = eq-field `EHOW_SERVICE_ROLE_KEY` =
