@@ -13,6 +13,19 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: resend-worker-invite always collided with its own unclaimed-invite index — fixed + live; Nelson's retry still unconfirmed (2026-08-24)
+*Direct follow-up to the 2026-08-23 "labour-hire licence promotion gap" entry below: Royce clicked Resend on Conor Horgan's existing pending invite looking for that entry's own fix, and hit a live 500 instead — a separate, previously-undiscovered bug.*
+
+- [x] **Root cause confirmed**: `resend-worker-invite.ts` did an unconditional `INSERT` into `worker_invites`, colliding with the `worker_invites_org_worker_unclaimed_unique` partial index every time it ran for its own documented purpose (refreshing a pending/expired invite — exactly the case where an unclaimed row already exists). `create-worker-invite.ts` already had the correct existing-row check; this file was never brought in line after the index shipped (migration 0118).
+- [x] **Fixed**: mirrors `create-worker-invite.ts`'s pattern — look up the existing unclaimed row, `UPDATE` in place (new token, refreshed profile data, expiry pushed +30 days), only `INSERT` when the worker's most recent invite was already claimed. eq-shell [PR #1562](https://github.com/eq-solutions/eq-shell/pull/1562), merged, confirmed live via exact Netlify `commit_ref` match (deploy `6a8b8085`).
+
+**Deferred:**
+- [ ] **Nelson Sareto's Resend click reproduced the identical duplicate-key error after the fix was confirmed live.** No fresh Postgres duplicate-key log entry appears after the deploy's publish time, and Nelson's `worker_invites` row is unchanged — pointing toward a stale/leftover error banner rather than a genuinely new failure, but **not confirmed**. Asked Royce to refresh and retry; no response yet. If it still fails post-refresh: leading unverified hypothesis is the new `unclaimed` SELECT's `error` being silently discarded, falling through to the old broken `INSERT` path — needs Netlify function-log evidence or a defensive fix (surface `unclaimedErr` explicitly). _(added 2026-08-24)_
+- [ ] **Neither Conor nor Nelson has a confirmed-successful Resend since the fix shipped** — only Nelson's was attempted, ambiguously (above). Supersedes/continues the 2026-08-23 item below ("Royce still needs to click Resend for Conor Horgan and Nelson Sareto") — leave that item open too until both are confirmed. _(added 2026-08-24)_
+- [ ] **`resend-worker-invite-unclaimed-unique-bug` memory entry corrected but the underlying question is still open** — don't treat it as fully closed until Nelson's retry outcome is known. _(added 2026-08-24)_
+
+---
+
 ## eq-shell + org: secrets-org-hardening-sprint — SEC-61 closed, SEC-63 resolved, SEC-60 built to scope (2026-08-24)
 
 - [ ] **SEC-63's `dev`-context leak fix** — the account-scope `SUPABASE_JWT_SECRET`'s dev-context plaintext leak is still live. Royce chose to delete it himself via the Netlify dashboard (Team settings → Shared environment variables) rather than have the session retry past its own classifier block. Not yet confirmed done. _(added 2026-08-24)_

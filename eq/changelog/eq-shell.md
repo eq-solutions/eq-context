@@ -9,6 +9,12 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-24 (PR #1562 MERGED + LIVE — resend-worker-invite.ts's unconditional INSERT always collided with its own unclaimed-invite index)
+- Surfaced while root-causing Conor Horgan's (SKS labour hire) OTP login failure — that turned out to be working-as-designed (bare `/login` deliberately never self-provisions via phone OTP), but chasing the actual fix (resending his existing pending invite) hit a live 500 instead.
+- `resend-worker-invite.ts` did a plain `INSERT` into `worker_invites` with no existing-row check, colliding with the `worker_invites_org_worker_unclaimed_unique` partial index (migration 0118) on every real call — i.e. every time it was used for its own documented purpose. `create-worker-invite.ts` already had the right pattern; this file was never brought in line.
+- Fixed to match: look up the existing unclaimed row for `(org_id, worker_id)`, `UPDATE` it in place (new token, refreshed profile data, expiry +30 days) when found, `INSERT` only when the worker's most recent invite was already claimed. Squash-merged (`eb95c7b3`), confirmed live via exact `commit_ref` match.
+- **Not fully resolved**: Nelson Sareto's Resend click reproduced the same error after this shipped. Live-log evidence (no fresh duplicate-key entry post-deploy, Nelson's row unchanged) points toward a stale UI banner rather than a new failure, but this is unconfirmed as of this entry — see `eq/pending/eq-shell.md`.
+
 ## 2026-08-24 (PRs #1563/#1565/#1566/#1568 MERGED + LIVE — secrets-org-hardening-sprint: SEC-61 closed, SEC-63 resolved, SEC-60 built to scope)
 - SEC-61: all 21 leaking Netlify `dev`-context secrets across eq-shell/eq-service/eq-field/eq-cards fixed live via `deleteEnvVarValue`, one context row at a time. Verified 0 remaining afterward; production/preview/branch-deploy confirmed untouched via unchanged ids and `updated_at` timestamps.
 - SEC-63: resolved the site-scope question the original finding couldn't answer via API — the account-scope `SUPABASE_JWT_SECRET` reaches only eq-shell/eq-service/eq-field, not sks-nsw-labour or any other site on the account. Confirmed P1, not P0. Its own `dev`-context leak left as a manual Netlify-dashboard step, Royce's choice.
