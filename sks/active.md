@@ -1,7 +1,7 @@
 ---
 title: SKS — Active Projects (Rolling)
 owner: Royce Milmlow
-last_updated: 2026-07-05
+last_updated: 2026-08-24
 scope: Current SKS NSW projects, refreshed when projects start/finish
 read_priority: critical
 status: live
@@ -16,6 +16,8 @@ Client", "Healthcare Client").
 ---
 
 ## Active Projects (Apr 2026)
+
+> ⚠️ **Not reconfirmed since 2026-07-05 (`last_updated` above) — this table is a dated snapshot, not live status, despite the file's "Rolling" title.** Flagged 2026-08-24: Royce's SKS substrate work happens mostly in Claude Chat, which can read this file but can't write back — so this table only updates when someone manually drafts and applies a patch, which hasn't happened since Apr's project list. **Workbench is the actual system of record for current SKS job status** — check there, not here, for anything that needs to be current today. Table left as-is below rather than guessed-updated; nobody has ground truth for "what's active now" except Royce.
 
 | Project | Status |
 |---------|--------|

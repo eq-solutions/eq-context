@@ -42,8 +42,10 @@ the cutover. Do not conflate them:
 Every canonical SKS file as a full URL — clickable from `/context/claude`:
 
 - [sks/pending.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/pending.md) — SKS-only to-do list
-- [sks/active.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/active.md) — rolling active projects (current quarter)
-- [sks/templates.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/templates.md) — Quote v3 spec + client context blocks (Royce's own docx-js pipeline — see sks-team/quoting.md for the separate team-facing SharePoint-template pipeline)
+- [sks/pending-archive.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/pending-archive.md) — done items rotated out of pending.md nightly, historical record only
+- [sks/verify-queue.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/verify-queue.md) — items blocked only on Royce's own live click-through, rotated out of pending.md
+- [sks/active.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/active.md) — rolling active projects (current quarter) — ⚠ flagged stale 2026-08-24, see file
+- [sks/templates.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/templates.md) — Quote v3 spec + Role Step-Up Charter + ITC-EL-0006 (Royce's own docx-js pipeline — see sks-team/quoting.md for the separate team-facing SharePoint-template pipeline)
 - [sks/team.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/team.md) — NSW team
 - [sks/products.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/products.md) — SKS app product status
 - [sks/brand-kit-tests.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/sks/brand-kit-tests.md) — brand-artefact test log
